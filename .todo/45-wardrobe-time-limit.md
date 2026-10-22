@@ -87,8 +87,8 @@ new fields. No server, no DB.
 - **Help**: the unified help's icon list gets the timer (what the smile and numbers mean).
 
 ## Steps
-- [ ] Schema, defaults, `newProfile`, migration v2 -> v3 with tests; `super.ts` limit off.
-- [ ] `src/game/wardrobe-time.ts` with tests (share, cap, minimum, spend floor, faces at
+- [x] Schema, defaults, `newProfile`, migration v2 -> v3 with tests; `super.ts` limit off.
+- [x] `src/game/wardrobe-time.ts` with tests (share, cap, minimum, spend floor, faces at
       91/90/81/80/11/10/1 s, practice to open); earning in `recordSession` with a test.
 - [ ] `timer` round kind, `smile` icon, blink classes and reduced-motion variant in
       `src/ui/hud.ts`, `src/ui/dom.ts`, `src/styles.css`.

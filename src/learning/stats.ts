@@ -1,3 +1,4 @@
+import { earnWardrobe } from '../game/wardrobe-time';
 import { LAYOUTS } from '../keyboard/layouts';
 import { type KeyStat, type Profile, type SessionRecord, emptyKeyStat } from '../storage/schema';
 import { MASTERY_WINDOW, lessonOrder, median, reactionLimit, shiftKeyOf } from './lessons';
@@ -45,7 +46,7 @@ export function recordPress(profile: Profile, expected: string, typed: string, r
   }
 }
 
-/** Adds play time and characters to today's session record, and the time to all the training. */
+/** Adds play time and characters to today's session record, and the time to all the training and the wardrobe time. */
 export function recordSession(profile: Profile, seconds: number, chars: number, errors: number, cpm: number): void {
   const date = localDate();
   const sessions = profile.stats.sessions;
@@ -57,6 +58,7 @@ export function recordSession(profile: Profile, seconds: number, chars: number, 
   const prevChars = s.chars;
   s.seconds += Math.round(seconds);
   profile.progress.trainedSeconds += Math.round(seconds);
+  earnWardrobe(profile, Math.round(seconds));
   s.chars += chars;
   s.errors += errors;
   if (cpm > 0) s.cpm = Math.round((s.cpm * prevChars + cpm * chars) / Math.max(1, prevChars + chars));

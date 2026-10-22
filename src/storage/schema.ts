@@ -1,4 +1,4 @@
-// Storage schema v2. These types are the data contract of `localStorage['tapkotyper:v1']`
+// Storage schema v3. These types are the data contract of `localStorage['tapkotyper:v1']`
 // and of exported `.json` files. Older shapes are upgraded by the migrations in store.ts.
 
 export type Lang = 'sk' | 'en';
@@ -75,6 +75,8 @@ export interface Settings {
   readAloud: boolean;
   /** "Just typing" reads the child's own typed words aloud (with `readAloud` on). */
   speakTyped: boolean;
+  /** Wardrobe time is earned by practice and runs out (see game/wardrobe-time.ts). */
+  wardrobeLimit: boolean;
 }
 
 /** A little friend helped in a rescue mission: a dragon (story 1), a robot (story 2) or a forest friend (story 3). */
@@ -115,6 +117,8 @@ export interface Progress {
   levelsFinished: number;
   /** Stars earned ever, every finished run counts. */
   starsEarned: number;
+  /** Wardrobe time left in seconds, earned by training (`0..WARDROBE_MAX`, may hold fractions). */
+  wardrobeSeconds: number;
 }
 
 /** When a surprise tells its answer. */
@@ -205,7 +209,7 @@ export interface ParentLock {
 }
 
 export interface StoreData {
-  version: 2;
+  version: 3;
   profiles: Profile[];
   lastProfileId: string | null;
   language: Lang | null;
@@ -242,6 +246,7 @@ export function defaultSettings(): Settings {
     ownMix: 'some',
     readAloud: false,
     speakTyped: true,
+    wardrobeLimit: true,
   };
 }
 

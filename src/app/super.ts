@@ -44,5 +44,6 @@ export function superProfile(lang: Lang): Profile {
   p.progress.levels = Object.fromEntries(LEVELS.map((l) => [l.id, 0]));
   p.progress.pawHelp = PAW_MAX;
   p.progress.companionsUnlocked = [...COMPANION_KINDS];
+  p.settings.wardrobeLimit = false;
   return p;
 }

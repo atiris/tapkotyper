@@ -94,6 +94,21 @@ describe('nickname and seed', () => {
   });
 });
 
+describe('migration v3', () => {
+  it('turns the wardrobe limit on and gives the time the training so far earns', () => {
+    const old: any = newProfile('Jano', 'sk');
+    delete old.settings.wardrobeLimit;
+    delete old.progress.wardrobeSeconds;
+    old.progress.trainedSeconds = 600;
+    const long: any = { ...newProfile('Ema', 'sk'), progress: { ...old.progress, trainedSeconds: 36000 } };
+    const [a, b] = migrate({ version: 2, profiles: [old, long] }).profiles;
+    expect(a.settings.wardrobeLimit).toBe(true);
+    expect(a.progress.wardrobeSeconds).toBe(120);
+    expect(b.progress.wardrobeSeconds).toBe(420);
+    expect(newProfile('Nový', 'sk').progress.wardrobeSeconds).toBe(0);
+  });
+});
+
 describe('export and import', () => {
   it('round-trips and asks before replacing', () => {
     const a = new Store(mem(), mem());

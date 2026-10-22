@@ -1,3 +1,4 @@
+import { WARDROBE_MAX, WARDROBE_SHARE } from '../game/wardrobe-time';
 import { firstKeys } from '../learning/lessons';
 import {
   type CompanionKind,
@@ -15,7 +16,7 @@ import {
 export const STORE_KEY = 'tapkotyper:v1';
 const GUEST_KEY = 'tapkotyper:guest';
 
-export const STORE_VERSION = 2;
+export const STORE_VERSION = 3;
 
 /** Migrations from older stored shapes, keyed by the version they upgrade from. */
 const migrations: Record<number, (data: any) => any> = {
@@ -28,7 +29,20 @@ const migrations: Record<number, (data: any) => any> = {
       companion: p.companion && ['Ťapko', 'Tapko'].includes(p.companion.name) ? { ...p.companion, name: '' } : p.companion,
     }) : data.profiles,
   }),
+  // v3: wardrobe time is earned by practice; existing players start with what their training so far gives.
+  2: (data) => ({
+    ...data,
+    profiles: Array.isArray(data.profiles) ? data.profiles.map((p: any) => !p || typeof p !== 'object' ? p : {
+      ...p,
+      settings: { ...p.settings, wardrobeLimit: true },
+      progress: { ...p.progress, wardrobeSeconds: earnedFrom(p.progress?.trainedSeconds) },
+    }) : data.profiles,
+  }),
 };
+
+function earnedFrom(trained: unknown): number {
+  return typeof trained === 'number' && trained > 0 ? Math.min(WARDROBE_MAX, trained * WARDROBE_SHARE) : 0;
+}
 
 /** FNV-1a 32-bit hash of the normalized name: the same name always deals the same rewards. */
 export function nameSeed(name: string): number {
@@ -120,6 +134,7 @@ export function newProfile(name: string, language: Lang, layout?: LayoutId, kind
       trainedSeconds: 0,
       levelsFinished: 0,
       starsEarned: 0,
+      wardrobeSeconds: 0,
     },
     stats: { keys: {}, sessions: [] },
     createdAt: Date.now(),

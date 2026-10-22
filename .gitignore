@@ -1,0 +1,13 @@
+temp/
+node_modules/
+dist/
+coverage/
+test-results/
+playwright-report/
+*.log
+.DS_Store
+*.protect.*
+/.e2e/
+/assets-src/*
+!/assets-src/PROMPTS.md
+.playwright-mcp/

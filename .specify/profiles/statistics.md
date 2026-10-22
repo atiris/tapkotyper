@@ -1,0 +1,44 @@
+# Statistics
+
+## What
+- Per key: accuracy and typical reaction time from the **last 50 presses only**, the keys
+  typed instead of it lately, total presses, and a day-by-day history (accuracy and time
+  to press).
+- An overlay opened by clicking Tapko (on the map, or in a level, which pauses first)
+  starts with "My progress": a row of icon and number chips (keys mastered of the
+  layout's total, worlds finished, stories finished, and once a key is mastered the
+  accuracy and the speed in characters per minute of the mastered keys, each with its own
+  picture; the meaning is only in the tooltip), then one row per story (all stories, closed ones grey) with its picture and
+  name, its worlds' pictures (done in colour, the rest grey) and the stars earned in it, the
+  shelf of world badges ([story](../game/story.md)), and when
+  the child last trained (today, yesterday, n days ago) with the minutes of the last 7
+  days. Below it a friendly view of the keys: a keyboard colored
+  by how well each key goes, the 3 keys to practice, the growth medals earned, and a
+  button to practice them now. Clicking a key (or a key in the list) shows that key's
+  details: its finger, accuracy, what it is mixed up with, its history, and a one-minute
+  practice of just that key. A switch ("⇧ symbols") shows the shifted symbols of the keys
+  instead (question mark, exclamation mark, colon, Slovak digits), each with its own
+  statistics; capitals count for their letter and its Shift.
+- The overlay has three tabs: **Postup** (the progress above, a bigger Tapko, the growth
+  medals and the total stars ever earned as the last chip; stories come before worlds),
+  **Klávesy** (the key map and the key details) and **Cvičenia** (the history of exercises
+  from a teacher or parent, newest first, each with a button for its QR code).
+- QR codes (an exercise's result, or all of the player's statistics from the Postup tab) fill
+  the whole screen until clicked; the caption and frame colour tell an exercise from all
+  statistics, and a button at the bottom copies the code to send to the teacher. The code for
+  all statistics is a result link like any other, so the teacher's table takes it as one row
+  per child.
+- The parent dashboard has the same clickable key map, and the trends over sessions
+  (accuracy, rhythm, time per day) as charts side by side on wide screens.
+
+- A key is **mastered** when, over its last 30 recorded presses, at least 90 % are right and
+  the median reaction time is within the speed limit of the child's difficulty (the same limit
+  that readies a key for the next lesson). This is long-term: it is computed from the stored
+  key statistics, so it fades when the child stops typing the key well.
+
+## Why
+- A child asks "how am I doing?" in whole steps (stars, worlds, days), not per key; the
+  progress answers that first, and the key details stay for the curious.
+- Knowing the problem keys turns mistakes into a clear, small next step.
+- Old mistakes must not weigh on a key the child already fixed: only recent presses
+  count, while the history still shows the way there.

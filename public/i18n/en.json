@@ -1,0 +1,1587 @@
+{
+  "common": {
+    "ok": "OK",
+    "back": "Back",
+    "continue": "Continue",
+    "skip": "Skip",
+    "sound": "Sound",
+    "sound_normal": "normal",
+    "sound_quiet": "quiet",
+    "sound_off": "off",
+    "fullscreen": "Fullscreen",
+    "fullscreenExit": "Exit fullscreen"
+  },
+  "start": {
+    "tagline": "A calm typing adventure with all ten fingers",
+    "whoPlays": "Who is playing today?",
+    "newProfile": "New player",
+    "guest": "Play as guest",
+    "guestName": "Guest",
+    "import": "Import profiles",
+    "language": "Language",
+    "stars": "{n} stars"
+  },
+  "privacy": {
+    "short": "No ads, no accounts, no tracking. Everything stays on this device."
+  },
+  "newProfile": {
+    "title": "Hello, new friend!",
+    "name": "Your name",
+    "nameMissing": "Please write your name.",
+    "companion": "Choose your companion",
+    "companionName": "Companion's name",
+    "language": "Language",
+    "layout": "Keyboard",
+    "parentHint": "A parent can change everything later in the settings (the gear on the map).",
+    "create": "Let's go!"
+  },
+  "layouts": {
+    "sk-qwertz": "Slovak (QWERTZ)",
+    "sk-qwerty": "Slovak (QWERTY)",
+    "us-qwerty": "English US (QWERTY)"
+  },
+  "kinds": {
+    "fox": "Fox",
+    "cat": "Kitten",
+    "bunny": "Bunny",
+    "owl": "Owl",
+    "dog": "Puppy",
+    "bear": "Bear",
+    "panda": "Panda",
+    "penguin": "Penguin",
+    "lion": "Lion"
+  },
+  "worlds": {
+    "meadow": "Meadow",
+    "space": "Rocket",
+    "planet": "Planet",
+    "dragons": "Valley",
+    "egg": "Egg",
+    "junkyard": "Junkyard",
+    "workshop": "Workshop",
+    "raintown": "Rain",
+    "robocity": "City",
+    "robohome": "Home",
+    "garden": "Garden",
+    "forestpath": "Path",
+    "lilylake": "Lake",
+    "musictree": "Tree",
+    "moonball": "Ball"
+  },
+  "map": {
+    "welcome": {
+      "title": "Hi, {name}! I am {tapko}.",
+      "lines": [
+        "Press “Continue”, you will learn the keys step by step, one by one.",
+        "When you are not sure what to do, click “?”.",
+        "A parent can set everything up with the gear at the top right."
+      ],
+      "start": "Start"
+    },
+    "ownText": "My text",
+    "freeType": "Just typing",
+    "hello": "Hi, {name}!",
+    "continue": "Continue",
+    "practice": "Own practice",
+    "wardrobe": "Buddy and wardrobe",
+    "rescue": "Rescue missions",
+    "switchProfile": "Players",
+    "super": "big challenge",
+    "starsAria": "{n} stars",
+    "storyName": "Tapko and the Dragon Egg",
+    "settings": "Settings for parents",
+    "storyRobot": "Tapko and Bolt the Robot",
+    "storyOpens": "Opens when you know {n} letters. Now you know {have}.",
+    "lockWorld": "Finish {world} first.",
+    "lockKeys": "This story opens when you know {n} letters. Now you know {have}.",
+    "friends": "Little friends",
+    "keysOne": "You need one more letter for this level. You get new letters by playing or in Own practice.",
+    "keysFew": "You need {n} more letters for this level. You get new letters by playing or in Own practice.",
+    "keysMany": "You need {n} more letters for this level. You get new letters by playing or in Own practice.",
+    "keysLocked": "needs more letters",
+    "storyFairy": "Tapko and Melody the Fairy"
+  },
+  "level": {
+    "ownText": "My text",
+    "freeType": "Just typing",
+    "read": "Read aloud",
+    "titleWords": "{name} · level {level}",
+    "place": "Level {n} of {total} in this world",
+    "help": "Help in the level",
+    "helpNow": "Now",
+    "helpBest": "How to do your best",
+    "helpButtons": "Buttons",
+    "helpSteps": [
+      "Accuracy first: stars come from few mistakes.",
+      "Then a steady rhythm: when you type evenly, the green ring fills up.",
+      "When you are stuck, use the paw: Tapko types a few words for you.",
+      "Repeat a level until it has three stars.",
+      "Take a break after a few levels."
+    ],
+    "practice": "Own practice",
+    "rescue": "Rescue mission",
+    "guide": "Show or hide the keyboard",
+    "pause": "Pause",
+    "paused": "Little pause",
+    "resume": "Continue",
+    "slower": "Slower",
+    "slowerSaid": "Okay, we will go slower.",
+    "toMap": "Map",
+    "leave": "Back to the map",
+    "progress": "Progress",
+    "rhythm": "Rhythm: {n} letters per minute",
+    "speed": "Speed",
+    "layoutHint": "Your keyboard looks like {layout}. Ask a parent to switch it in the parent area.",
+    "shiftOtherHand": "Press Shift with the other hand: the little finger on the side away from the letter.",
+    "memoryWait": "Wait until it hides.",
+    "noVoice": "This browser cannot read aloud, so today you will see the words and copy them.",
+    "noVoiceMemory": "This browser cannot read aloud, so today every note glows first and you type it from memory."
+  },
+  "guide": {
+    "deadStep1": "{ch}: first the accent key, then the letter",
+    "deadStep2": "{ch}: now the letter"
+  },
+  "fingers": {
+    "leftPinky": "left little finger",
+    "leftRing": "left ring finger",
+    "leftMiddle": "left middle finger",
+    "leftIndex": "left index finger",
+    "leftThumb": "thumb",
+    "rightThumb": "thumb",
+    "rightIndex": "right index finger",
+    "rightMiddle": "right middle finger",
+    "rightRing": "right ring finger",
+    "rightPinky": "right little finger"
+  },
+  "posture": {
+    "title": "Ready, steady, type!",
+    "back": "Sit up straight, your back against the chair.",
+    "feet": "Both feet flat on the floor.",
+    "wrists": "Wrists relaxed and floating, not resting on the desk.",
+    "home": "Index fingers on the bumps of F and J, the other fingers next to them.",
+    "eyes": "Eyes on the screen, not on the keyboard.",
+    "space": "Fingers on home keys, then press the space bar.",
+    "spaceKey": "space bar",
+    "escHint": "Esc: back to the map"
+  },
+  "newKey": {
+    "title": "New key “{key}”",
+    "finger": "Press it with your {finger}, then go back home.",
+    "typeIt": "Type {key} three times.",
+    "shiftL": "Hold the left Shift with your left little finger and type the capital with your right hand. Type a capital {sample} three times.",
+    "shiftR": "Hold the right Shift with your right little finger and type the capital with your left hand. Type a capital {sample} three times.",
+    "space": "The other fingers stay at home. Press it three times."
+  },
+  "practice": {
+    "parts": "Parts: {n} of {total}",
+    "left": "{s} seconds left",
+    "words": "Words: {n}",
+    "finish": "Finish"
+  },
+  "practiceKeys": {
+    "title": "Which keys will you practise?",
+    "intro": "Move the slider to add keys in the lesson order. Click a key to add it or take it away.",
+    "slider": "Keys",
+    "step": "step {n} of {total}",
+    "own": "own choice",
+    "countOne": "{n} key",
+    "countFew": "{n} keys",
+    "countMany": "{n} keys",
+    "needLetters": "Choose at least {n} letters.",
+    "style": "How you will type",
+    "copy": "Copy",
+    "dictation": "Dictation",
+    "memory": "Remember it",
+    "start": "Start"
+  },
+  "freeType": {
+    "hint": "Type anything. When you stop, I will show it.",
+    "place": "Change the place",
+    "pick": "Where shall we type today?"
+  },
+  "touch": {
+    "title": "A keyboard is needed",
+    "text": "TapkoTyper teaches typing on a real keyboard. Please connect a keyboard to this tablet or play on a computer."
+  },
+  "tapko": {
+    "statsHint": "Click me to see how you are doing",
+    "correct_streak": [
+      "Great rhythm, {name}!",
+      "Your fingers know the way!",
+      "Smooth and calm, well done!",
+      "Wow, five words in a row!",
+      "You are getting better and better!",
+      "Keep that steady beat!"
+    ],
+    "mistake": [
+      "No problem, try again.",
+      "Mistakes help us learn.",
+      "Take your time."
+    ],
+    "hint": [
+      "Try {key} with your {finger}.",
+      "{key} belongs to your {finger}. Then back home!",
+      "Slowly: {key} is pressed by your {finger}."
+    ],
+    "level_done": [
+      "You did it, {name}!",
+      "Fantastic typing!",
+      "I'm so proud of you!",
+      "That was great teamwork!",
+      "Your fingers danced on the keys!"
+    ],
+    "break": [
+      "Time for a little stretch break. Your hands deserve it!",
+      "Let's stretch together and rest our eyes."
+    ]
+  },
+  "results": {
+    "title": "Level finished!",
+    "practiceDone": "Practice finished!",
+    "dictationClean": "By ear without a mistake: {n} of {total}",
+    "memoryClean": "From memory without a mistake: {n} of {total}",
+    "starsAria": "{n} of 3 stars",
+    "accuracy": "Accuracy {n} %",
+    "byTapko": "{tapko} did most of this level.",
+    "rhythm": "Rhythm {n} letters per minute",
+    "trendUp": "Your rhythm is smoother than last week!",
+    "newKey": "New key unlocked: {key}",
+    "newKeys": "New keys unlocked: {keys}",
+    "newAccessory": "New things in the wardrobe: {n}",
+    "newCompanion": "A new buddy in the wardrobe: {kind}",
+    "rescued": "You rescued the dragon {name}!",
+    "next": "Next level",
+    "nextRescue": "Another mission",
+    "replay": "Play again",
+    "reward": "See the reward",
+    "takeBreak": "Stretch break",
+    "growthTitle": "A new medal!",
+    "growthDifficulty": "Things will move a little faster now.",
+    "growthWordLen": "Words can now have {n} letters.",
+    "medalAria": "medal number {n}",
+    "repaired": "You repaired the little robot {name}!",
+    "badgeNew": "New badge!",
+    "badgeSilver": "Your badge is silver now!",
+    "badgeGold": "Your badge is gold now!",
+    "mixedClean": "By ear and from memory without a mistake: {n} of {total}",
+    "guided": "You helped {name} find the way home!"
+  },
+  "badge": {
+    "bronze": "bronze",
+    "silver": "silver",
+    "gold": "gold",
+    "aria": "Badge of {world}: {tier}",
+    "locked": "Finish world {n}"
+  },
+  "surprise": {
+    "ask": "{tapko} has a secret:",
+    "left": {
+      "minutes": "{n} more min of training and I will tell you.",
+      "levelsOne": "{n} more level and I will tell you.",
+      "levelsFew": "{n} more levels and I will tell you.",
+      "levelsMany": "{n} more levels and I will tell you.",
+      "starsOne": "{n} more star and I will tell you.",
+      "starsFew": "{n} more stars and I will tell you.",
+      "starsMany": "{n} more stars and I will tell you."
+    }
+  },
+  "teaser": {
+    "ask": "{tapko} asks:",
+    "later": "I will tell you the answer when you finish the next level.",
+    "answer": "The answer I promised:",
+    "meadow": {
+      "q": [
+        "Do you know how many eyes a spider has?",
+        "Why do ladybirds have spots?",
+        "Can you guess how many times a bee flaps its wings in one second?",
+        "Do you know what a butterfly tastes food with?"
+      ],
+      "a": [
+        "Most spiders have eight eyes! Still, many see badly and feel the world mostly with their legs.",
+        "Red with spots tells birds: careful, I taste awful! So birds leave ladybirds alone.",
+        "More than two hundred times a second! That is why you hear the buzz.",
+        "Its feet! A butterfly tastes a flower as soon as it lands on it."
+      ]
+    },
+    "space": {
+      "q": [
+        "Do you know what happens to an astronaut's tear in space?",
+        "How many sunrises a day do astronauts on the space station see?",
+        "Do you know why space is completely silent?",
+        "Can you guess how many Earths would fit inside Jupiter?"
+      ],
+      "a": [
+        "It does not run down! Without gravity it stays by the eye like a little ball of water.",
+        "About sixteen! The station flies around the Earth in about an hour and a half.",
+        "Sound needs air to travel. Space has no air, so you would not hear even a big bang.",
+        "More than a thousand! Jupiter is the biggest planet in our solar system."
+      ]
+    },
+    "planet": {
+      "q": [
+        "On which planet is a day longer than a whole year?",
+        "Do you know what colour a sunset on Mars is?",
+        "Can you guess which planet would float in water?",
+        "Do you know where in space it may rain diamonds?"
+      ],
+      "a": [
+        "On Venus! It turns around itself more slowly than it goes around the Sun.",
+        "Blue! The Martian sky is pinkish by day, but it turns blue around the setting Sun.",
+        "Saturn! For its size it is so light that it would float in a giant bathtub.",
+        "Scientists think diamonds may fall deep inside Neptune and Uranus!"
+      ]
+    },
+    "dragons": {
+      "q": [
+        "Do you know which real animal is called a dragon?",
+        "Can you guess which lizard can run on water?",
+        "Do you know which little dragon really flies?",
+        "Which animals lived in the time of the dinosaurs and still live today?"
+      ],
+      "a": [
+        "The Komodo dragon! It is the biggest lizard in the world, up to three metres long.",
+        "The basilisk! It runs on the water so fast that it has no time to sink.",
+        "The flying dragon! This small lizard spreads the skin on its sides like wings and glides from tree to tree.",
+        "Crocodiles! Their ancestors lived alongside the dinosaurs."
+      ]
+    },
+    "egg": {
+      "q": [
+        "Do you know how a baby bird gets out of its egg?",
+        "Can you guess which egg is the biggest in the world?",
+        "Do you know how a chick inside a closed egg can breathe?",
+        "Do you know which mammal lays eggs?"
+      ],
+      "a": [
+        "It has a tiny sharp bump on its beak, the egg tooth. It scratches the shell until it breaks through.",
+        "The ostrich egg! It is about as big as twenty hen eggs.",
+        "The shell has thousands of tiny holes that let air through.",
+        "The platypus! It is a mammal, but its babies hatch from eggs."
+      ]
+    },
+    "junkyard": {
+      "q": [
+        "Do you know how many times a glass bottle can be recycled?",
+        "Can you guess what a new park bench can be made of?",
+        "Do you know why iron rusts?",
+        "Do you know how a big magnet can lift a car?"
+      ],
+      "a": [
+        "Again and again! Glass can be melted into a new bottle forever.",
+        "Old plastic bottles and caps! Recycling turns them into boards for benches.",
+        "When water and air touch iron for a long time, it gets covered with brown rust.",
+        "Junkyards have electromagnets that lift a whole car. When the power goes off, they let it go."
+      ]
+    },
+    "workshop": {
+      "q": [
+        "Do you know why gears have teeth?",
+        "Can you guess how many parts a bicycle has?",
+        "Do you know what a spring does in a watch?",
+        "Do you know what is inside a battery?"
+      ],
+      "a": [
+        "The teeth fit into each other, so when one gear turns, the other turns too.",
+        "About a thousand, if you count every screw, ball and chain link!",
+        "A wound-up spring slowly unwinds and that moves the hands.",
+        "Materials that react together and make electricity. When they are used up, the battery is flat."
+      ]
+    },
+    "raintown": {
+      "q": [
+        "Do you know what color a raindrop is?",
+        "Can you guess where a rainbow comes from?",
+        "Do you know why the air smells nice after a storm?",
+        "Do you know why you hear thunder after the lightning?"
+      ],
+      "a": [
+        "None! It is clear, we just draw it blue.",
+        "Sunlight goes through raindrops and splits into colors.",
+        "Rain lets out the smell of soil and plants, and lightning makes a little fresh ozone.",
+        "Light is much faster than sound, so you see the flash before you hear the thunder."
+      ]
+    },
+    "robocity": {
+      "q": [
+        "Do you know what makes a good password?",
+        "Can you guess how long people have used locks?",
+        "Do you know what a secret code is?",
+        "Do you know why you never tell anyone your password?"
+      ],
+      "a": [
+        "Long and hard to guess, for example three words that have nothing to do with each other.",
+        "Thousands of years! The ancient Egyptians had wooden locks with pins.",
+        "A message written so that only someone who knows the key can read it.",
+        "Whoever knows it can open your things. Only your parents may know it."
+      ]
+    },
+    "robohome": {
+      "q": [
+        "Do you know how a robot vacuum finds its way?",
+        "Can you guess where most robots work?",
+        "Do you know if a robot can feel a touch?",
+        "Do you know who made up the word robot?"
+      ],
+      "a": [
+        "It has sensors that feel walls and stairs, and some draw a map of the home.",
+        "In factories! They build cars, pack parcels and never get tired.",
+        "Some can! Sensitive sensors in their fingers let them gently hold even an egg.",
+        "The Czech writer Karel Čapek, about a hundred years ago."
+      ]
+    },
+    "asked": "Remember the question?",
+    "garden": {
+      "q": [
+        "Do you know why flowers smell nice?",
+        "Can you guess which flower turns to follow the sun?",
+        "Do you know how bees tell each other where flowers are?",
+        "Do you know which flower is the biggest in the world?"
+      ],
+      "a": [
+        "The smell calls bees and butterflies, who carry pollen from flower to flower.",
+        "The sunflower! Young sunflowers turn their heads from east to west during the day.",
+        "They dance! A little waggle dance shows the other bees which way to fly and how far.",
+        "The rafflesia. Its flower can be as wide as a car tyre, and it smells bad on purpose to call flies."
+      ]
+    },
+    "forestpath": {
+      "q": [
+        "Do you know why birds sing in the morning?",
+        "Can you guess how an owl can turn its head?",
+        "Do you know which bird can fly backwards?",
+        "Do you know how young birds learn to sing?"
+      ],
+      "a": [
+        "The morning air is calm, so their song travels far. They say: this is my tree!",
+        "Almost all the way round to its back! Its eyes cannot move, so the whole head turns.",
+        "The hummingbird! It can also stay still in the air like a tiny helicopter.",
+        "They listen to their parents and practise, just like you practise typing."
+      ]
+    },
+    "lilylake": {
+      "q": [
+        "Do you know how a frog drinks water?",
+        "Can you guess why water lilies do not sink?",
+        "Do you know what a tadpole turns into?",
+        "Do you know why a lake looks like a mirror?"
+      ],
+      "a": [
+        "Through its skin! Frogs do not drink with their mouth.",
+        "Their leaves have tiny air pockets, so they float like little boats.",
+        "Into a frog! First its legs grow, then its tail disappears.",
+        "Calm water reflects light, so you see the sky and the trees upside down in it."
+      ]
+    },
+    "musictree": {
+      "q": [
+        "Do you know what makes a sound?",
+        "Can you guess how many strings a big harp has?",
+        "Do you know why music can make us happy?",
+        "Do you know which instrument is made from a hollow tree branch?"
+      ],
+      "a": [
+        "Things that shake very fast, like a string or the air in a flute. Our ears feel the shaking.",
+        "About forty-seven! Each string plays a different note.",
+        "Our brain loves patterns, and a happy tune makes it feel good.",
+        "The didgeridoo! Termites eat the inside of a branch and people make it into a long pipe."
+      ]
+    },
+    "moonball": {
+      "q": [
+        "Do you know why fireflies glow?",
+        "Can you guess why the moon changes its shape?",
+        "Do you know which animals are awake at night?",
+        "Do you know if the moon makes its own light?"
+      ],
+      "a": [
+        "They talk with light! Each kind of firefly blinks its own pattern.",
+        "It does not really change. We just see more or less of its sunny side.",
+        "Owls, bats, hedgehogs and moths. They are called nocturnal animals.",
+        "No! The moon shines because the sun lights it up, like a big mirror."
+      ]
+    }
+  },
+  "paw": {
+    "title": "Paw help: {n} words without a mistake charge a paw (3 at most). Enter: {tapko} types {words} words for you. Backspace: help by itself when it gets hard.",
+    "aria": "Paw help (Enter), charged paws: {n}",
+    "start": "Paws on the keys! My turn to type.",
+    "charged": "{n} words without a mistake! A paw is charged. Press Enter and I will type {words} words for you.",
+    "chargedAuto": "{n} words without a mistake! A paw is charged. When it gets hard, I will help by myself.",
+    "autoOn": "When it gets hard, I will type {words} words by myself. Backspace turns it off again.",
+    "autoOff": "You start the paw yourself with Enter."
+  },
+  "story": {
+    "next": "Next",
+    "meadowStart": [
+      "The animals want to play! You are the goalkeeper.",
+      "Catch the leaves with the fan!"
+    ],
+    "goalShout": "GOAL!",
+    "hedgehogStart": [
+      "The hedgehog has a pile of leaves on its back. Watch out, here they come!"
+    ],
+    "hedgehogDone": [
+      "All the leaves are back on the hedgehog. Well done!"
+    ],
+    "signView": [
+      "What a lovely view this way!",
+      "Look at those flowers!",
+      "This path smells like candy!"
+    ],
+    "boulderOpen": [
+      "The boulder became stepping stones!",
+      "Your careful typing did it!"
+    ],
+    "waveCalm": [
+      "The wave calmed down. Look, a rainbow!",
+      "Steady rhythm wins!"
+    ],
+    "scenes": {
+      "intro": [
+        "Hello {name}! I'm {tapko}.",
+        "Together we will learn to type with all ten fingers.",
+        "Put your index fingers on the little bumps of F and J. That's home.",
+        "Let's start on the Training Meadow!"
+      ],
+      "world1": [
+        "The meadow is full of curious little visitors.",
+        "Type the word on a leaf and Tapko fans it back with his fan.",
+        "When a leaf gets past, it is a goal and everybody cheers."
+      ],
+      "invitation": [
+        "Look what {tapko} found in the grass!",
+        "A secret invitation... to SPACE!",
+        "Your fingers are ready for a rocket flight."
+      ],
+      "world2": [
+        "Three, two, one... lift off!",
+        "Your typing rhythm drives the rocket.",
+        "Push sleepy asteroids out of the way with a soft energy beam."
+      ],
+      "landing": [
+        "The control tower says: landing clearance granted!",
+        "We are landing on a magical new planet."
+      ],
+      "world3": [
+        "Welcome to the new planet!",
+        "Build stepping stones across the swamp and choose paths at the signs.",
+        "Careful typing matters more than speed here."
+      ],
+      "force": [
+        "You found something amazing: the Force!",
+        "Now you can move things gently, just by typing.",
+        "The dragons in the next valley need help."
+      ],
+      "world4": [
+        "Space rocks are falling into the Dragon Valley.",
+        "Every word makes a shield bubble for a baby dragon.",
+        "The rocks just bounce away, nobody gets hurt."
+      ],
+      "egg": [
+        "The dragons are safe and happy.",
+        "As a thank you, they give you a magical Dragon Egg!"
+      ],
+      "world5": [
+        "Oh! The egg starts to wiggle and roll down the hill.",
+        "Help it jump over rocks and stumps.",
+        "Watch out for a friendly mole!"
+      ],
+      "hatched": [
+        "Crack... crack... the egg hatches!",
+        "A tiny baby dragon looks at you. You have a new friend!",
+        "Now you can go on rescue missions and help more dragons."
+      ],
+      "world6": [
+        "Tapko walks past an old junkyard. What is that beeping?",
+        "Someone is beeping sadly under a pile of old things.",
+        "Type a word and a soft magnet lifts the junk off the pile."
+      ],
+      "friends": [
+        "A small rusty robot climbs out of the pile.",
+        "He wants to say thank you, but he can only beep: Beep beep!",
+        "He gives you a tiny gear. His name is Bolt, and now you are friends!"
+      ],
+      "world7": [
+        "Bolt wants to go home, but he is missing some parts.",
+        "Gears, bolts and springs ride along the conveyor belt.",
+        "Type a part's word and Tapko tosses it into the basket."
+      ],
+      "legs": [
+        "Done! Bolt has new long legs.",
+        "And a bright new yellow antenna on his head.",
+        "Now he can walk the long way home."
+      ],
+      "world8": [
+        "Oh no, it starts to rain!",
+        "Robots must not get wet, or they rust.",
+        "Type the word on a raindrop and Tapko's umbrella catches it."
+      ],
+      "raincoat": [
+        "The rain stopped and a rainbow shines over the town.",
+        "Bolt gets a yellow raincoat and Tapko a new umbrella.",
+        "Now no rain can hurt them."
+      ],
+      "world9": [
+        "The way home leads through Robot City.",
+        "All doors are locked and the panels show passwords.",
+        "Type a password and the door opens with a chime."
+      ],
+      "key": [
+        "The big gate is open!",
+        "Bolt found the key card to his home.",
+        "We are almost home!"
+      ],
+      "world10": [
+        "Bolt's home is dark and all the robots are asleep.",
+        "Type a word and a lamp switches on.",
+        "The helper robots wake up and wave hello."
+      ],
+      "home": [
+        "Bolt's family is so happy he is home.",
+        "They thank you, {name}, for helping Bolt.",
+        "Now you can repair little robots on rescue missions too."
+      ],
+      "world11": [
+        "The forest has gone quiet. Not a bird sings, not a leaf rustles.",
+        "A tiny fairy with shimmering wings flies up to {tapko}. \"I am Melody. The forest forgot its songs!\"",
+        "Type a word and a sleeping bud opens. Each flower hums one note."
+      ],
+      "wreath": [
+        "The big flower is awake and the whole garden hums!",
+        "Melody weaves a flower wreath for {tapko}.",
+        "The garden has its song back. One song is home, four more to go."
+      ],
+      "world12": [
+        "The birds on the forest path forgot their words.",
+        "Each bird sings a word quietly. Listen well and type what you hear.",
+        "Tap a bird's word if you want to hear it again."
+      ],
+      "feather": [
+        "Who, who? The owl liked your answers.",
+        "She gives {tapko} a soft feather for his hat.",
+        "The birds are singing again!"
+      ],
+      "world13": [
+        "The lake is still as a mirror.",
+        "A word shows on the water, then a little wave washes it away.",
+        "Remember it and type it, and a lily blooms."
+      ],
+      "lily": [
+        "The long reflection is back in the water!",
+        "Melody gives {tapko} a shining water lily.",
+        "The frogs croak the lake's song."
+      ],
+      "world14": [
+        "In the middle of the forest stands the Music Tree.",
+        "Its notes hang on the branches. Some sing, some glow and then fade.",
+        "Listen or remember, then type, and the note flies up."
+      ],
+      "harp": [
+        "The Music Tree plays its song again!",
+        "Melody gives {tapko} a little harp.",
+        "Only one song is missing, the song of the night."
+      ],
+      "world15": [
+        "The moon rises and the fireflies come to the ball.",
+        "Melody sings a short sentence for each firefly.",
+        "Type it and the dance floor lights up."
+      ],
+      "wings": [
+        "The whole forest sings! Every bird, every frog, every tree.",
+        "The forest thanks you, {name}. Melody gives {tapko} fairy wings.",
+        "Now you can also guide little birds and fireflies home on rescue missions."
+      ]
+    },
+    "junkStart": [
+      "Can you hear that beeping? Someone is under the pile!",
+      "Type a word and the magnet takes the junk away."
+    ],
+    "knotOpen": [
+      "The knot is untied! Bolt is free.",
+      "Beep beep! That means thank you."
+    ],
+    "batteryFull": [
+      "The battery is full! Bolt is glowing with joy.",
+      "Nice steady rhythm!"
+    ],
+    "rainTickle": [
+      "Bolt: Beep, that tickles!",
+      "Bolt shakes like a puppy.",
+      "Bolt: Beep beep, a drop on my head!"
+    ],
+    "stormCalm": [
+      "The storm calmed down. Here comes the sun!",
+      "A calm rhythm did it!"
+    ],
+    "doorOpen": [
+      "Ding! The door is open.",
+      "Right password!",
+      "Another door is open!"
+    ],
+    "gateOpen": [
+      "The big gate is opening! Welcome to Robot City.",
+      "The whole code is right!"
+    ],
+    "gateIntro": "The main gate wants the whole code without a mistake. If you slip, you start again. There is no hurry.",
+    "gateSlow": "Slowly and exactly. No clock runs here.",
+    "welcomeDone": [
+      "The whole family said hello!",
+      "Beep beep beep! The little robots are happy."
+    ],
+    "flowerIntro": "The big flower is asleep. Melody whispers a word, listen and type it. Each word wakes the flower a little more.",
+    "flowerAwake": [
+      "The big flower is awake! It smells so nice.",
+      "The garden hums its song again!"
+    ],
+    "owlIntro": "The owl tells a riddle, one word at a time. Listen to each word and type it.",
+    "owlSolved": [
+      "Who, who! All riddles solved.",
+      "The owl is happy, the birds are singing!"
+    ],
+    "reflectionIntro": "The lake shows a whole long sentence, but only once. Look well, then type it word by word.",
+    "reflectionDone": [
+      "The long reflection is back in the lake!",
+      "What a memory! The frogs are clapping."
+    ],
+    "treeSong": [
+      "The Music Tree plays its song!",
+      "A calm steady beat did it."
+    ],
+    "lastSongIntro": "The last song of the night. Melody sings short sentences, one after another. Listen and type.",
+    "lastSongDone": [
+      "The whole forest sings!",
+      "Every song is home again."
+    ]
+  },
+  "fairy": {
+    "start": [
+      "Melody: Shall we sing together?",
+      "Melody: The forest is waiting for its song.",
+      "Melody: I am right here with you!"
+    ],
+    "mistake": [
+      "Melody: Hmm? Try that one again.",
+      "Melody: Every song has a wrong note sometimes.",
+      "Melody: Slowly, I will wait."
+    ],
+    "done": [
+      "Melody: La la la, beautiful!",
+      "Melody: The forest heard you!",
+      "Melody: One more song is home."
+    ]
+  },
+  "wave": {
+    "onBeat": "On the beat!",
+    "good": "Good!"
+  },
+  "progress": {
+    "title": "My progress",
+    "keys": "Keys you type well and fast: {n} of {total}",
+    "worlds": "Finished worlds: {n} of {total}",
+    "stories": "Finished stories: {n} of {total}",
+    "stars": "Stars in total: {n}",
+    "tabProgress": "Progress",
+    "tabKeys": "Keys",
+    "tabExercises": "Exercises",
+    "showCode": "QR code of all my progress",
+    "overallTitle": "All progress",
+    "overallCaption": "All my statistics",
+    "exerciseCaption": "Exercise: {title}",
+    "exercisesEmpty": "No exercise yet. Exercises from a teacher or parent are listed here.",
+    "exerciseLine": "{min} min, accuracy {acc} %, rhythm {cpm}",
+    "exerciseOpen": "Not finished yet",
+    "exerciseCode": "QR code",
+    "codeClose": "Tap the screen to close the code.",
+    "quality": "Accuracy of the keys you know well: {n} %",
+    "speed": "Speed of the keys you know well: {n} characters per minute",
+    "storyStars": "Stars in this story: {n}",
+    "lastToday": "We last trained today.",
+    "lastYesterday": "We last trained yesterday.",
+    "lastDays": "We last trained {n} days ago.",
+    "never": "We have not trained together yet.",
+    "week": "Last 7 days: {n} min",
+    "badges": "Badges"
+  },
+  "stats": {
+    "title": "My keys",
+    "intro": "I count the last {n} presses of every key, so old mistakes stop counting. Tap a key to see how it goes.",
+    "empty": "Play a level and I will show you how your keys are doing.",
+    "good": "going well",
+    "ok": "almost",
+    "practice": "let's practise",
+    "practiceKeys": "Keys to practise",
+    "keyLine": "{acc} % right, press it with",
+    "instead": "(often {key} instead)",
+    "practiceNow": "Practise them now (1 min)",
+    "clickKey": "Tap a key on the keyboard and I will show you how it goes.",
+    "fingerLine": "Press it with",
+    "keyNoData": "We have not typed this key yet.",
+    "keyAccuracy": "{acc} % right in the last {n} presses",
+    "keySpeed": "You usually press it in {s} s",
+    "keyTotal": "{n} presses so far",
+    "keyConfused": "Sometimes you press instead:",
+    "keyNoConfusion": "Lately you do not mix it up with anything.",
+    "keyAccuracyTrend": "Accuracy by day",
+    "keySpeedTrend": "Time to press by day",
+    "keyHistorySoon": "Play on at least two days to see how it changes.",
+    "practiceKey": "Practice {key} (1 min)",
+    "medals": "My medals",
+    "shifted": "⇧ symbols"
+  },
+  "wardrobe": {
+    "title": "Buddy and wardrobe",
+    "buddy": "Buddy",
+    "name": "Name",
+    "kindLocked": "{n} more ★",
+    "wardrobe": "Wardrobe",
+    "count": "{n} of {total} things",
+    "clear": "Remove accessories",
+    "byLevel": "Finish {level}",
+    "byWorld": "Finish world {world}",
+    "byMastery": "Master {n} keys",
+    "stars": "Stars: {n}"
+  },
+  "slots": {
+    "head": "Head",
+    "eyes": "Glasses",
+    "neck": "Neck",
+    "body": "Body",
+    "back": "Back",
+    "hand": "In hand",
+    "feet": "Feet"
+  },
+  "items": {
+    "cap": "Red cap",
+    "round-glasses": "Round glasses",
+    "scarf": "Striped scarf",
+    "sneakers": "Red sneakers",
+    "crown": "Golden crown",
+    "star-glasses": "Star glasses",
+    "bow-tie": "Bow tie",
+    "butterfly-wings": "Butterfly wings",
+    "wizard-hat": "Wizard hat",
+    "star-cape": "Starry cape",
+    "wand": "Magic wand",
+    "boots": "Brown boots",
+    "flower-wreath": "Flower wreath",
+    "knit-vest": "Knitted vest",
+    "rain-boots": "Rain boots",
+    "backpack": "Backpack",
+    "beanie": "Beanie",
+    "neckerchief": "Neckerchief",
+    "dragon-wings": "Dragon wings",
+    "balloon": "Balloon",
+    "hair-bow": "Hair bow",
+    "heart-glasses": "Heart glasses",
+    "star-shirt": "Star T-shirt",
+    "pink-sneakers": "Pink sneakers",
+    "explorer-hat": "Explorer hat",
+    "explorer-vest": "Explorer vest",
+    "lantern": "Lantern",
+    "green-boots": "Green boots",
+    "sunglasses": "Sunglasses",
+    "umbrella": "Umbrella",
+    "raincoat": "Raincoat",
+    "hard-hat": "Hard hat",
+    "goggles": "Safety goggles",
+    "jetpack": "Jetpack",
+    "antenna-band": "Antenna headband",
+    "feather": "Feather",
+    "harp": "Little harp",
+    "fairy-wings": "Fairy wings"
+  },
+  "dragonNames": [
+    "Sparky",
+    "Minty",
+    "Luna",
+    "Pebble",
+    "Sunny",
+    "Bubble",
+    "Ember",
+    "Clover",
+    "Misty",
+    "Pip",
+    "Nova",
+    "Honey",
+    "Willow",
+    "Puff",
+    "Comet",
+    "Biscuit",
+    "Maple",
+    "Ziggy",
+    "Tulip",
+    "Breeze"
+  ],
+  "break": {
+    "title": "Stretch {n}/{total}",
+    "arms": "Stretch your arms up high like a tree. Breathe in... and out.",
+    "fists": "Make fists, then open your fingers wide. Again and again!",
+    "shoulders": "Roll your shoulders slowly backwards. Then look far out of the window.",
+    "done": "Well rested, {name}! Remember how to sit:",
+    "parentSkip": "Parent: skip",
+    "skipTitle": "Skip the break?",
+    "skipText": "A short stretch helps the back and the eyes. Really skip it?",
+    "skipOk": "Yes, skip"
+  },
+  "parent": {
+    "title": "Local profile settings",
+    "checkTitle": "Settings for parents",
+    "checkText": "Difficulty, keys and data are changed here. Do you really want to open the settings?",
+    "tab": {
+      "settings": "Settings",
+      "own": "Own content",
+      "surprises": "Surprises",
+      "task": "Task",
+      "keys": "Keys",
+      "dashboard": "Progress",
+      "data": "Data"
+    },
+    "group": {
+      "child": "Child",
+      "practice": "Practice",
+      "look": "Look and sound",
+      "lock": "Settings password"
+    },
+    "childName": "Child's name",
+    "companionName": "Companion's name",
+    "switchTitle": "Switch to another child",
+    "companionKind": "Companion",
+    "messages": "Your own encouraging messages",
+    "messagesHint": "One per line. The companion mixes them in sometimes.",
+    "messagesPlaceholder": "I'm proud of you!",
+    "language": "Language",
+    "layout": "Keyboard layout",
+    "layoutHint": "Pick the layout of the real keyboard. The finger guide follows it.",
+    "difficulty": "Difficulty",
+    "wordLen": "Word length",
+    "min": "min {n}",
+    "max": "max {n}",
+    "noDiacritics": "Words without diacritics",
+    "noDiacriticsHint": "For beginners, for a while. Accents are part of correct writing.",
+    "noTimePressure": "No time pressure",
+    "noTimePressureHint": "Moving things stop and wait for the child.",
+    "sessionMinutes": "Session length before a break",
+    "minutes": "{n} min",
+    "guide": "Finger guide",
+    "guideAuto": "Fades when keys are mastered",
+    "guideOn": "Always on",
+    "guideOff": "Off",
+    "guideLocked": "The child cannot hide or show the guide",
+    "sfx": "Sound effects",
+    "music": "Music",
+    "speakTyped": "Read typed words aloud",
+    "speakTypedHint": "In “Just typing” the computer reads aloud what the child typed (when reading aloud is on). It is read only in this browser; nothing is stored or sent. There is no list of forbidden words: it is never complete and blocks innocent words too. Turn this off if you do not want it read.",
+    "font": "Font",
+    "largeText": "Large text",
+    "reduceMotion": "Reduce motion",
+    "highContrast": "High contrast",
+    "autoFullscreen": "Start in fullscreen",
+    "autoFullscreenHint": "The browser allows fullscreen only after the first key press or click.",
+    "keysMode": "Active keys",
+    "keysAuto": "Automatic (new key when the last one is mastered)",
+    "keysManual": "Picked by hand",
+    "keysHint": "Automatic is best: keys come one by one, starting from the home row (F J).",
+    "punctuation": "Punctuation",
+    "unlocked": "Unlocked so far: {keys}",
+    "preset": {
+      "home": "+ home row",
+      "homeUs": "+ home row",
+      "top": "+ top row",
+      "bottom": "+ bottom row",
+      "clear": "Clear"
+    },
+    "heatmap": "How each key goes",
+    "accuracyTrend": "Accuracy",
+    "rhythmTrend": "Rhythm",
+    "cpm": "letters/min",
+    "timePerDay": "Time per day",
+    "worlds": "Levels",
+    "levelsDone": "of {total} levels finished",
+    "keysUnlocked": "keys learned",
+    "keysMastered": "keys mastered",
+    "charsTyped": "letters in 14 days",
+    "noData": "No data yet.",
+    "dataText": "All data is stored only in this browser. Export it to move it to another device.",
+    "exportOne": "Export this profile",
+    "exportAll": "Export all profiles",
+    "import": "Import",
+    "print": "Print progress card",
+    "guestNote": "A guest profile is forgotten when the browser tab closes.",
+    "deleteTitle": "Delete",
+    "delete": "Delete profile {name}",
+    "deleteConfirm": "Really delete the profile {name} with all its progress?",
+    "checkOk": "Yes, open",
+    "deleteOk": "Yes, delete",
+    "autoDifficulty": "Automatic difficulty",
+    "autoDifficultyHint": "Grows with the child after a few minutes of accurate typing. Each step is a medal.",
+    "autoWordLen": "Automatic word length",
+    "autoWordLenHint": "Grows with the child, together with difficulty.",
+    "autoHint": "The start is slow: a short word takes about 10 seconds to reach the companion and at most two are on screen. If the child still cannot keep up, turn on No time pressure.",
+    "lock": {
+      "ask": "The settings are locked with a password. Please enter it.",
+      "password": "Password",
+      "open": "Open",
+      "wrong": "Wrong password",
+      "wait": "Too many tries. Try again in {n} s.",
+      "off": "One question opens the settings. A password locks them for every player on this device.",
+      "on": "The settings are locked with a password for every player on this device.",
+      "current": "Current password",
+      "new": "New password",
+      "again": "Password again",
+      "set": "Set password",
+      "change": "Change password",
+      "remove": "Remove password",
+      "empty": "Enter a password.",
+      "mismatch": "The passwords do not match.",
+      "saved": "The password is saved.",
+      "removed": "The password is removed."
+    }
+  },
+  "own": {
+    "group": {
+      "messages": "Own encouragements",
+      "words": "Own words",
+      "text": "Own text"
+    },
+    "remove": "Remove",
+    "words": "Words",
+    "wordsHint": "For example this week's spelling words. One per line, or separated by commas or spaces. They are used even with keys the child does not know yet; the guide shows them.",
+    "wordsPlaceholder": "school\nfriend\nsunny",
+    "wordsCount": "Words: {n} of {max}.",
+    "untypableWords": "Cannot be typed on this keyboard, left out: {list}",
+    "text": "Text",
+    "textHint": "It is split by sentences and commas. In the story it comes piece by piece; on the map, the My text button types all of it in order as own practice.",
+    "textPlaceholder": "Once there was a little dragon. He liked to fly over the meadow.",
+    "textCount": "Characters: {n} of {max}.",
+    "untypableChars": "Cannot be typed on this keyboard, left out: {list}",
+    "mix": {
+      "label": "How much of own words and text",
+      "off": "None",
+      "some": "A little (a quarter)",
+      "half": "Half",
+      "most": "Most"
+    },
+    "mixHint": "The share of targets in levels and own practice; the rest are the usual words.",
+    "preview": "Five sample targets",
+    "previewMore": "Another sample"
+  },
+  "surprises": {
+    "hint": "Hide a real reward (a treat, a trip, a game night) behind a rule. The companion asks the question before a level and tells the answer together with the question once the rule is met. One level has one surprise at most.",
+    "empty": "No surprise yet.",
+    "formTitle": "New surprise",
+    "q": "Question",
+    "a": "Answer",
+    "qPlaceholder": "Do you know where Dad hid a sweet reward? I know, and I will tell you after you train for a while.",
+    "aPlaceholder": "A little chocolate is hidden for you in the cupboard behind the fridge.",
+    "whenLabel": "When",
+    "level": "Level",
+    "n": {
+      "minutes": "Minutes of training",
+      "levels": "More levels",
+      "stars": "More stars"
+    },
+    "trigger": {
+      "level": "After a level",
+      "minutes": "After minutes of training",
+      "levels": "After more levels",
+      "stars": "After more stars",
+      "random": "At random, now and then"
+    },
+    "repeat": "Repeat",
+    "add": "Add",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "remove": "Remove",
+    "needBoth": "Fill in both the question and the answer.",
+    "badN": "Enter a whole number from 1 to {max}.",
+    "tooMany": "At most {n} surprises. Remove some first.",
+    "yes": "yes",
+    "no": "no",
+    "col": {
+      "q": "Question",
+      "a": "Answer",
+      "when": "When",
+      "repeat": "Repeat",
+      "state": "State",
+      "actions": "Actions"
+    },
+    "when": {
+      "random": "at random",
+      "minutes": "after {n} min of training",
+      "levelsOne": "after {n} more level",
+      "levelsMany": "after {n} more levels",
+      "starsOne": "after {n} more star",
+      "starsMany": "after {n} more stars"
+    },
+    "state": {
+      "done": "done {date}",
+      "minutes": "{have} / {need} min",
+      "waiting": "waiting",
+      "last": "last {date}"
+    }
+  },
+  "import": {
+    "title": "Import profiles",
+    "text": "Choose a TapkoTyper .json file.",
+    "found": "Found: {names} ({n}).",
+    "conflict": "These already exist here: {names}.",
+    "replace": "Replace them",
+    "keepBoth": "Keep both",
+    "do": "Import",
+    "errorJson": "This file is not a valid JSON file.",
+    "errorShape": "This file does not contain TapkoTyper profiles."
+  },
+  "print": {
+    "title": "Typing progress card",
+    "keys": "Keys learned: {n} ({keys})",
+    "mastered": "Keys mastered: {n}",
+    "stars": "Stars: {n} of {total}",
+    "worlds": "Worlds finished: {n} of {total}",
+    "rhythm": "Rhythm: {n} letters per minute"
+  },
+  "about": {
+    "code": "Code on GitHub",
+    "report": "Report a bug or an idea",
+    "intro": "TapkoTyper is a free, peaceful game that teaches children to type with all ten fingers. Together with a companion they travel through worlds full of adventures. Nothing bad ever happens: obstacles are pushed away or helped, never destroyed.",
+    "privacyTitle": "Our promise to parents",
+    "privacy": [
+      "No ads, purchases, sign-in or cookies. This site has no server of its own in the background.",
+      "All progress is stored only in this browser, but you can export it as a file.",
+      "Works offline after the first visit.",
+      "It can be installed as a desktop web app: it opens in its own window, with no need to start the whole browser."
+    ],
+    "dataTitle": "Your data and the visit counter",
+    "data": [
+      "Because everything is only on your computer, we cannot recover a forgotten settings password, or your settings and progress when your computer breaks. So export your progress to a file now and then.",
+      "We only count anonymous visits, without cookies and without any data about users (of course nothing is counted if you use it offline). The counting is done by GoatCounter, which uses no cookies and collects no personal data."
+    ],
+    "visits": "Visits to this site so far: {n}",
+    "visitsLink": "Statistics on GoatCounter",
+    "howTitle": "How it teaches",
+    "how": [
+      "Keys are learned one by one, starting from the home row (F and J).",
+      "Every key has its finger; the on-screen keyboard and hands show which one.",
+      "Accuracy comes first; speed is only shown as a personal trend.",
+      "Weak keys appear more often, and short breaks keep sessions healthy."
+    ],
+    "creditsTitle": "Links",
+    "credits": "Open source under the MIT license. Fonts: Lexend, Atkinson Hyperlegible and OpenDyslexic (SIL Open Font License)."
+  },
+  "help": {
+    "title": "Help",
+    "tab": {
+      "ui": "Buttons",
+      "typing": "How to type",
+      "progress": "How to progress",
+      "settings": "Settings",
+      "about": "About TapkoTyper"
+    },
+    "typeTitle": "How to type",
+    "type": [
+      "Sit up straight, feet on the floor, shoulders relaxed.",
+      "Feel the little bumps on F and J. Your index fingers live there.",
+      "The other fingers lie next to them on the middle row: A S D F and J K L.",
+      "Your thumbs rest above the space bar.",
+      "Each finger has its own keys. After every letter it goes back home.",
+      "Look at the screen, not at your hands. The keyboard below shows which finger goes.",
+      "First type correctly, then fast. Speed comes by itself.",
+      "After a little while of play, take a break: stand up, stretch and drink some water."
+    ],
+    "mapTitle": "Buttons on the map",
+    "levelTitle": "Buttons in a level",
+    "icons": {
+      "players": "Go back to choosing the player.",
+      "settings": "Settings. These are for parents.",
+      "sound": "Sound: normal, quiet or off.",
+      "fullscreen": "Play on the whole screen and back again.",
+      "help": "This help.",
+      "pause": "Pause. The Esc key pauses too.",
+      "paw": "The paw shows whether your help is ready: every word without a mistake fills a bit of the ring, after {n} words the paw is charged. Press Enter when you are stuck and {tapko} types {words} words for you.",
+      "ring": "The ring with the number shows which level of the world this is. Green pieces are levels done, orange is this one, empty ones are still to come. The web is the big challenge at the end of the world.",
+      "progress": "The bar shows how much of the level is behind you.",
+      "gauge": "The green ring shows your rhythm. When you type smoothly, it fills up.",
+      "levelHelp": "Help for this level: what to do and how to improve.",
+      "super": "The star at the top: super mode. Click it to turn it off.",
+      "read": "Read aloud: the computer reads the words to you.",
+      "guide": "Shows or hides the keyboard that tells where the finger goes."
+    },
+    "cardTitle": "Your card on the map",
+    "card": [
+      "Click your buddy and My progress opens: what you already do well and what to practise.",
+      "Continue starts the next level of the story.",
+      "Own practice: a short exercise on the keys you pick.",
+      "My text: when a parent adds their own text, you type all of it in order.",
+      "Just typing: type anything, Tapko walks through a world you choose and shows what you typed.",
+      "Buddy and wardrobe: pick your buddy and dress it in the things you have earned.",
+      "Rescue missions and Little friends: they appear after you finish your first story.",
+      "Today's task: when your teacher sends a task, you find it on the card. When it is done, you hand it in."
+    ],
+    "progressTitle": "My progress",
+    "progress": [
+      "Key, world and story: how many keys you type well and fast (at least 9 of 10 presses right), how many worlds and stories you have finished.",
+      "The tick is the accuracy of those keys in percent, the arrows are their speed in characters per minute.",
+      "Each story row shows its worlds: finished ones in colour, the rest grey, and the stars of that story.",
+      "My progress has three tabs: Progress, Keys and Exercises.",
+      "Keys shows which keys go well and which to practise. You can start practice right from there.",
+      "A QR code shows your progress or an exercise to your teacher or parent: they just take a photo of it."
+    ],
+    "moreTitle": "Rescue mission and badge",
+    "more": [
+      "Rescue mission: a short task where you help a little friend. It opens when you finish the first story, and you find it on the map.",
+      "Badge: you get one for every finished world. The more stars you collect in that world, the nicer it is: bronze, silver, gold."
+    ],
+    "playTitle": "How to play",
+    "play": [
+      "Type the word on the object. Then it clears the way.",
+      "When a word gets away, nothing bad happens. Another one comes.",
+      "Stars come from accuracy: the fewer mistakes, the more stars.",
+      "When you type well, new letters come.",
+      "Esc stops the game and another Esc lets it go on."
+    ],
+    "journeyTitle": "Worlds, levels and stars",
+    "journey": [
+      "The game has stories. Each story has worlds, and each world has a few levels.",
+      "You play the levels in order. At the end of a world a big challenge waits.",
+      "Every level gives you up to three stars. The fewer mistakes, the more stars.",
+      "You can play a level again when you want more stars.",
+      "New letters come when the old ones go well. Some levels and stories open only when you know enough letters.",
+      "When you miss a letter, practise it in Own practice."
+    ],
+    "taskTitle": "A task from your teacher",
+    "task": [
+      "Your teacher can send you a task as a link. Open it and choose who does it.",
+      "On the map you see Today's task. Type until the time is up.",
+      "When it is done, press Hand in and send your teacher the result link."
+    ],
+    "settingsIntro": "The settings are for parents. They open with the gear on the map. Until you lock them with a password, one question opens them.",
+    "settings": {
+      "settings": [
+        "Child: name, companion and its name, language and keyboard layout. Pick the layout of the real keyboard; the finger guide follows it.",
+        "Practice: difficulty and word length. In automatic mode they grow with the child; set them by hand when you want.",
+        "Words without diacritics help beginners for a while. No time pressure makes moving things stop and wait for the child.",
+        "Session length before a break: then the companion invites the child to a short rest.",
+        "Finger guide: fades when keys are mastered, or always on or off. You can lock it for the child.",
+        "Look and sound: font, large text, reduced motion, high contrast, volumes, fullscreen.",
+        "The settings password locks the settings for every player on this device. We cannot recover a forgotten password."
+      ],
+      "own": [
+        "Own words: for example this week's spelling words. They are used even with keys the child does not know yet.",
+        "Own text: split into sentences and parts. On the map, the My text button types all of it in order.",
+        "Own encouragements: the companion says them now and then.",
+        "How much of own words and text: the share of targets in levels."
+      ],
+      "surprises": [
+        "Hide a real reward behind a rule: after a level, after minutes of training, after more levels or stars, or at random.",
+        "The companion asks the question before a level and tells the answer once the rule is met."
+      ],
+      "task": [
+        "For teachers: make a task with words or a text and a length. You get a link and a QR code.",
+        "The children open the link and, when done, send you a result link. You see the results with the For teachers button on the start page."
+      ],
+      "keys": [
+        "Automatic: keys come one by one, starting from the home row F and J. This is best.",
+        "By hand: pick the keys the child learns, punctuation too."
+      ],
+      "dashboard": [
+        "How each key goes, accuracy and rhythm over time, time per day and the levels finished.",
+        "You can print a progress card."
+      ],
+      "data": [
+        "Everything is stored only in this browser. When the browser's data is cleared or the computer breaks, the progress is lost unless you have a backup.",
+        "So export the profile to a file now and then. Import loads it back, or on another device.",
+        "Move to another computer: the whole profile is inside a link. A guest profile is forgotten when the tab closes."
+      ]
+    }
+  },
+  "tips": {
+    "sit-straight": "Sit up straight and lean your back on the chair.",
+    "feet-floor": "Keep your feet flat on the floor or on a footrest.",
+    "elbows-close": "Keep your elbows near your body, not flying out.",
+    "right-angles": "Bend your elbows and knees at about a right angle.",
+    "sit-higher": "Sitting too low? Put a cushion under you.",
+    "screen-distance": "Keep the screen about an arm's length away.",
+    "screen-height": "Put the screen at eye level so your neck stays relaxed.",
+    "relax-shoulders": "Drop your shoulders, breathe out and relax your hands.",
+    "wrists-float": "Let your wrists float lightly, not bent.",
+    "no-palms": "Don't lean on your palms, keep your hands light.",
+    "soft-touch": "Press keys softly, no need to bang.",
+    "thumbs-rest": "Let your thumbs hover over the space bar.",
+    "fj-bumps": "Feel the bumps on F and J, your index fingers rest there.",
+    "home-row": "Home is the middle row: A S D F and J K L.",
+    "return-home": "After every letter, send your finger back home.",
+    "one-finger": "Every letter has its own finger, always the same one.",
+    "index-two": "Your index fingers do the most, two columns each.",
+    "middle-ei": "Your middle finger reaches E and I, then goes right back.",
+    "pinky-p": "Your right pinky reaches P, then goes back to the home row.",
+    "ring-finger": "Your ring finger is clever: S, L, W and the dot are its.",
+    "reach-t": "For the far T, stretch your index finger and return to F.",
+    "feel-center": "Aim for the middle of the key, even without looking.",
+    "thumb-space": "Press Space with the thumb that did not just type.",
+    "shift-opposite": "For a capital letter, press Shift with the pinky of the other hand.",
+    "capital-a": "You type A with the left hand, so press the right Shift.",
+    "yz-swap": "On a Slovak keyboard, Z is on top and Y is below.",
+    "z-finger": "Your right index types Z and your left pinky types Y.",
+    "number-row": "The number row holds ľ š č ť ž ý á í é, add Shift for digits.",
+    "number-fingers": "Type the top row with the same finger as the letters below it.",
+    "dead-keys": "Press the accent mark first, then the letter.",
+    "caron-shift": "The caron is the same key as the acute, with Shift.",
+    "accent-pinky": "The keys ú ä ô ň belong to your right pinky.",
+    "diacritics-fun": "Slovak accents are a little magic. You are learning it!",
+    "eyes-screen": "Look at the screen, your fingers will find the way.",
+    "no-peeking": "Tempted to peek at the keyboard? Picture the finger instead.",
+    "rest-eyes": "Look out the window sometimes, your eyes need rest too.",
+    "accuracy-first": "Be accurate first, speed will come by itself.",
+    "steady-beat": "Type in a steady beat, like tapping along to a song.",
+    "slow-down": "Making many mistakes? Slow down and it gets easier.",
+    "hard-word": "Type a tricky word a few times in a row, slowly at first.",
+    "mistakes-ok": "Mistakes are fine, you learn something from each one.",
+    "patience": "Feel like you're not improving? That's normal, keep going.",
+    "short-sessions": "A few short practices beat one long one.",
+    "stretch-fingers": "Spread your fingers, make fists, then open them again.",
+    "stretch-wrist": "Bend your wrist and gently press it with the other hand.",
+    "take-break": "After a few minutes, stand up, stretch and drink some water.",
+    "celebrate": "Great job! Your companion is proud of you too.",
+    "listen-whole": "Listen to the whole word first, then type it.",
+    "listen-again": "Did not catch it? Tap the word and you will hear it again.",
+    "listen-sounds": "Say the word quietly to yourself, letter by letter.",
+    "remember-picture": "Look at the whole word like a picture before it hides.",
+    "remember-wait": "Wait until the word hides, then type it from memory.",
+    "remember-slip": "Forgot a letter? A mistake shows the word for a moment again."
+  },
+  "super": {
+    "badge": "Super mode: everything unlocked. Click to end it."
+  },
+  "keys": {
+    "space": "space bar",
+    "shiftL": "left Shift",
+    "shiftR": "right Shift"
+  },
+  "names": [
+    "Tom",
+    "Sam",
+    "Ann",
+    "Ben",
+    "Kim",
+    "Max",
+    "Mia",
+    "Lily",
+    "Jack",
+    "Emma",
+    "Leo",
+    "Ella",
+    "Noah",
+    "Zoe",
+    "Finn",
+    "Ruby",
+    "Alex",
+    "Jade",
+    "Owen",
+    "Grace",
+    "Lucy",
+    "Eli",
+    "Ida",
+    "Hugo",
+    "Nora",
+    "Rose",
+    "Dan",
+    "Kate",
+    "Ted",
+    "Ava",
+    "Liam",
+    "Olivia",
+    "Isla",
+    "Oscar",
+    "Holly",
+    "Jake",
+    "Molly",
+    "Harry",
+    "Amy",
+    "Luke"
+  ],
+  "share": {
+    "link": "Link",
+    "copy": "Copy link",
+    "copyCode": "Copy code",
+    "copied": "Copied.",
+    "qr": "QR code of the link",
+    "noQr": "The link is too long for a QR code; copy it instead.",
+    "broken": "The link is damaged or incomplete. Try copying all of it again.",
+    "brokenTitle": "This link cannot be opened",
+    "reading": "Reading the link…"
+  },
+  "teacher": {
+    "title": "For teachers",
+    "intro": "The fastest way is to scan the QR codes on the children's screens: type a group (for example a class), start scanning and walk around the room. Every new code is written into that group. You can also open or paste a result link.",
+    "paste": "Result link",
+    "pastePlaceholder": "Paste a result link",
+    "add": "Add",
+    "added": "Result added: {name}, {title}.",
+    "already": "This result is already here: {name}, {title}.",
+    "notIntact": "The checksum does not match; the link was probably damaged when copied.",
+    "removeTitle": "Remove the result?",
+    "removeText": "The result of {name} for {title} will be removed from this table.",
+    "remove": "Remove",
+    "empty": "No results yet. Add them in one of three ways:",
+    "csv": "Download CSV",
+    "privacy": "Results are stored only in this browser. There are no accounts and nothing goes to a server. The checksum finds damaged links, not cheating.",
+    "col": {
+      "task": "Task",
+      "child": "Child",
+      "date": "Date",
+      "minutes": "Minutes",
+      "accuracy": "Accuracy",
+      "rhythm": "Rhythm (characters per minute)",
+      "weak": "Weakest keys",
+      "broken": "Damaged",
+      "group": "Group",
+      "level": "Levels",
+      "status": "Status"
+    },
+    "count": "{n} results",
+    "all": "All",
+    "noGroup": "No group",
+    "groupFilter": "Group filter",
+    "csvAll": "Download CSV (everything)",
+    "pick": "Select: {name}",
+    "assign": "Assign to a group ({n})",
+    "assignPrompt": "Group name (empty clears it). Existing: {groups}",
+    "removePicked": "Remove selected ({n})",
+    "removeManyTitle": "Remove the selected results?",
+    "removeManyText": "{n} results will be removed from the table.",
+    "way": {
+      "scan": "Scan the QR codes on the children's screens with the camera.",
+      "paste": "Paste a result link into the field above.",
+      "open": "Open a result link in this browser."
+    },
+    "scan": {
+      "start": "Scan with camera",
+      "privacy": "The camera picture is never sent or stored.",
+      "preview": "Camera picture",
+      "camera": "Camera",
+      "starting": "Starting the camera...",
+      "many": "Point the camera at one or more QR codes.",
+      "one": "Point at one code.",
+      "done": "Done",
+      "collected": "Collected",
+      "updated": "updated",
+      "unknown": "Unknown code",
+      "undo": "Undo this result",
+      "error": {
+        "denied": "Camera access is not allowed. Allow it in the browser settings.",
+        "none": "No camera was found.",
+        "insecure": "The camera works only on a secure page (HTTPS).",
+        "failed": "The camera could not be started."
+      },
+      "group": "Group for this scan",
+      "groupPlaceholder": "Group, for example 5.A"
+    },
+    "summary": "{ok} of {n} mastered, accuracy {accuracy} %, rhythm {rhythm}, levels finished {levels}",
+    "status": {
+      "ok": "mastered",
+      "practice": "needs practice"
+    }
+  },
+  "task": {
+    "importTitle": "New task",
+    "whoTakes": "Who will do the task?",
+    "untitled": "Task",
+    "kind": {
+      "practice": "Own practice with the task's words",
+      "story": "Story with the task's words"
+    },
+    "today": "Today's task",
+    "left": "{n} min left",
+    "start": "Start the task",
+    "continue": "Continue the task",
+    "doneToday": "Task done!",
+    "handIn": "Hand in",
+    "handInTitle": "Hand in the task",
+    "handInText": "Send this link to your teacher, for example by e-mail or your school app.",
+    "checksumNote": "The link holds the name, task, time, accuracy, rhythm and the five weakest keys. The checksum finds damaged links, not cheating.",
+    "doneLine": "Task “{title}” is done. Hand it in to your teacher.",
+    "leftLine": "Task “{title}”: {n} min left.",
+    "group": "Group (optional)",
+    "intro": "A task is a link. Send it to the children (for example in your school app); whoever opens it picks a player and sees Today's task on the map. When it is done, the child sends you a result link.",
+    "title": "Task name",
+    "titlePlaceholder": "For example: Farm animals",
+    "minutes": "Length",
+    "kindLabel": "What to play",
+    "make": "Create link",
+    "needContent": "Write at least one word or a text.",
+    "linkTitle": "Task link",
+    "linkHint": "Copy the link or show the QR code. The data is inside the link itself and stored nowhere.",
+    "giveHere": "Give the task to {name} too",
+    "doneAt": "done {date}",
+    "played": "{n} of {total} min",
+    "none": "This player has no tasks yet.",
+    "bigCode": "Show big code",
+    "groupPlaceholder": "For example: 5.A",
+    "groupHint": "The teacher's table groups results by it."
+  },
+  "move": {
+    "button": "Move to another computer",
+    "title": "Move to another computer",
+    "text": "Open this link on the other computer and {name} is loaded there with all progress.",
+    "privacy": "The whole profile is inside the link. Send it only to yourself or your family.",
+    "tooLong": "This profile is too big for a link. Export it to a file and load the file on the other computer.",
+    "importTitle": "A player from another computer",
+    "importText": "Load {name} ({n} stars) into this browser?"
+  },
+  "install": {
+    "title": "Install on your desktop",
+    "text": "You can install TapkoTyper as a web app. It opens in its own window, so you do not have to start the whole browser to type for a while.",
+    "button": "Install",
+    "later": "Not now"
+  },
+  "friends": {
+    "title": "Little friends",
+    "dragons": "Dragons",
+    "robots": "Robots",
+    "firstDragon": "My first dragon",
+    "bolt": "Bolt",
+    "empty": "Go on a rescue mission to meet new little friends.",
+    "forests": "Forest friends",
+    "melody": "Melody"
+  },
+  "robotNames": [
+    "Bip",
+    "Zip",
+    "Cog",
+    "Diode",
+    "Springy",
+    "Nutty",
+    "Bzzz",
+    "Chip",
+    "Screwy",
+    "Sparky",
+    "Volt",
+    "Pixel",
+    "Bubo",
+    "Button",
+    "Tick",
+    "Tock",
+    "Lampy",
+    "Click",
+    "Roller",
+    "Beepo"
+  ],
+  "forestNames": [
+    "Pip",
+    "Twinkle",
+    "Feather",
+    "Glow",
+    "Chirp",
+    "Spark",
+    "Tweet",
+    "Lumi",
+    "Peep",
+    "Flicker",
+    "Robin",
+    "Star",
+    "Wren",
+    "Shine",
+    "Trill",
+    "Beam"
+  ]
+}

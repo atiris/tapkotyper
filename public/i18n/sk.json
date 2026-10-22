@@ -1,0 +1,1587 @@
+{
+  "common": {
+    "ok": "OK",
+    "back": "Späť",
+    "continue": "Pokračovať",
+    "skip": "Preskočiť",
+    "sound": "Zvuk",
+    "sound_normal": "normálny",
+    "sound_quiet": "potichu",
+    "sound_off": "vypnutý",
+    "fullscreen": "Celá obrazovka",
+    "fullscreenExit": "Zrušiť celú obrazovku"
+  },
+  "start": {
+    "tagline": "Pokojné dobrodružstvo písania všetkými desiatimi",
+    "whoPlays": "Kto sa dnes hrá?",
+    "newProfile": "Nový hráč",
+    "guest": "Hrať ako hosť",
+    "guestName": "Hosť",
+    "import": "Načítať profily",
+    "language": "Jazyk",
+    "stars": "Hviezdičky: {n}"
+  },
+  "privacy": {
+    "short": "Žiadne reklamy, účty ani sledovanie. Všetko zostáva v tomto zariadení."
+  },
+  "newProfile": {
+    "title": "Ahoj, nový kamarát!",
+    "name": "Tvoje meno",
+    "nameMissing": "Napíš, prosím, svoje meno.",
+    "companion": "Vyber si kamaráta",
+    "companionName": "Meno kamaráta",
+    "language": "Jazyk",
+    "layout": "Klávesnica",
+    "parentHint": "Rodič môže všetko neskôr zmeniť v nastaveniach (ozubené koliesko na mape).",
+    "create": "Poďme na to!"
+  },
+  "layouts": {
+    "sk-qwertz": "slovenská (QWERTZ)",
+    "sk-qwerty": "slovenská (QWERTY)",
+    "us-qwerty": "anglická US (QWERTY)"
+  },
+  "kinds": {
+    "fox": "Líška",
+    "cat": "Mačiatko",
+    "bunny": "Zajko",
+    "owl": "Sovička",
+    "dog": "Psík",
+    "bear": "Macko",
+    "panda": "Panda",
+    "penguin": "Tučniak",
+    "lion": "Levík"
+  },
+  "worlds": {
+    "meadow": "Lúka",
+    "space": "Raketa",
+    "planet": "Planéta",
+    "dragons": "Údolie",
+    "egg": "Vajíčko",
+    "junkyard": "Šrotisko",
+    "workshop": "Dielňa",
+    "raintown": "Dážď",
+    "robocity": "Mesto",
+    "robohome": "Domov",
+    "garden": "Záhrada",
+    "forestpath": "Cestička",
+    "lilylake": "Jazero",
+    "musictree": "Strom",
+    "moonball": "Ples"
+  },
+  "map": {
+    "welcome": {
+      "title": "Ahoj, {name}! Ja som {tapko}.",
+      "lines": [
+        "Stlač „Pokračovať“, klávesy sa budeš učiť postupne, jeden po druhom.",
+        "Keď nevieš ako ďalej, klikni na „?“.",
+        "Rodič si môže všetko nastaviť cez ozubené koliesko vpravo hore."
+      ],
+      "start": "Začať"
+    },
+    "ownText": "Môj text",
+    "freeType": "Len chcem písať",
+    "hello": "Ahoj, {name}!",
+    "continue": "Pokračovať",
+    "practice": "Vlastné cvičenie",
+    "wardrobe": "Kamarát a šatník",
+    "rescue": "Záchranné misie",
+    "switchProfile": "Hráči",
+    "super": "veľká výzva",
+    "starsAria": "hviezdičky: {n}",
+    "storyName": "Ťapko a dračie vajíčko",
+    "settings": "Nastavenia pre rodičov",
+    "storyRobot": "Ťapko a robot Šróbik",
+    "storyOpens": "Otvorí sa, keď budeš vedieť {n} písmen. Teraz vieš {have}.",
+    "lockWorld": "Najprv dokonči svet {world}.",
+    "lockKeys": "Tento príbeh sa otvorí, keď budeš vedieť {n} písmen. Teraz vieš {have}.",
+    "friends": "Malí priatelia",
+    "keysOne": "Na túto úroveň potrebuješ ešte jedno písmeno. Nové písmenká získaš hraním alebo vo Vlastnom cvičení.",
+    "keysFew": "Na túto úroveň potrebuješ ešte {n} písmená. Nové písmenká získaš hraním alebo vo Vlastnom cvičení.",
+    "keysMany": "Na túto úroveň potrebuješ ešte {n} písmen. Nové písmenká získaš hraním alebo vo Vlastnom cvičení.",
+    "keysLocked": "potrebuješ viac písmen",
+    "storyFairy": "Ťapko a víla Melódia"
+  },
+  "level": {
+    "ownText": "Môj text",
+    "freeType": "Len chcem písať",
+    "read": "Čítať nahlas",
+    "titleWords": "{name} · úroveň {level}",
+    "place": "Úroveň {n} z {total} v tomto svete",
+    "help": "Pomoc v úrovni",
+    "helpNow": "Teraz",
+    "helpBest": "Ako postupovať najlepšie",
+    "helpButtons": "Tlačidlá",
+    "helpSteps": [
+      "Najprv presne: hviezdičky dostaneš za málo chýb.",
+      "Potom plynulo: keď píšeš rovnomerne, zelený kruh sa naplní.",
+      "Keď si zaseknutý, použi labku: Ťapko napíše za teba pár slov.",
+      "Úroveň si zopakuj, kým nemáš tri hviezdičky.",
+      "Po niekoľkých úrovniach si oddýchni."
+    ],
+    "practice": "Vlastné cvičenie",
+    "rescue": "Záchranná misia",
+    "guide": "Ukázať alebo skryť klávesnicu",
+    "pause": "Pauza",
+    "paused": "Malá prestávka",
+    "resume": "Pokračovať",
+    "slower": "Pomalšie",
+    "slowerSaid": "Dobre, pôjdeme pomalšie.",
+    "toMap": "Mapa",
+    "leave": "Späť na mapu",
+    "progress": "Postup",
+    "rhythm": "Rytmus: {n} písmen za minútu",
+    "speed": "Rýchlosť",
+    "layoutHint": "Tvoja klávesnica vyzerá ako {layout}. Popros rodiča, nech ju prepne v rodičovskej časti.",
+    "shiftOtherHand": "Shift stlač druhou rukou: malíčkom na opačnej strane ako písmeno.",
+    "memoryWait": "Počkaj, kým sa skryje.",
+    "noVoice": "Tento prehliadač nevie čítať nahlas, preto dnes slová uvidíš a odpíšeš ich.",
+    "noVoiceMemory": "Tento prehliadač nevie čítať nahlas, preto dnes každá nôtka najprv zasvieti a napíšeš ju z pamäti."
+  },
+  "guide": {
+    "deadStep1": "{ch}: najprv kláves s mäkčeňom alebo dĺžňom, potom písmeno",
+    "deadStep2": "{ch}: teraz písmeno"
+  },
+  "fingers": {
+    "leftPinky": "ľavým malíčkom",
+    "leftRing": "ľavým prstenníkom",
+    "leftMiddle": "ľavým prostredníkom",
+    "leftIndex": "ľavým ukazovákom",
+    "leftThumb": "palcom",
+    "rightThumb": "palcom",
+    "rightIndex": "pravým ukazovákom",
+    "rightMiddle": "pravým prostredníkom",
+    "rightRing": "pravým prstenníkom",
+    "rightPinky": "pravým malíčkom"
+  },
+  "posture": {
+    "title": "Pripraviť sa, pozor, píšeme!",
+    "back": "Seď rovno, chrbtom sa opri o stoličku.",
+    "feet": "Obe chodidlá polož na zem.",
+    "wrists": "Zápästia uvoľnené vo vzduchu, nie opreté o stôl.",
+    "home": "Ukazováky na výstupkoch klávesov F a J, ostatné prsty vedľa nich.",
+    "eyes": "Oči na obrazovke, nie na klávesnici.",
+    "space": "Polož prsty na domov a stlač medzerník.",
+    "spaceKey": "medzerník",
+    "escHint": "Esc: späť na mapu"
+  },
+  "newKey": {
+    "title": "Nový kláves „{key}“",
+    "finger": "Stláčaj ho {finger} a potom sa vráť domov.",
+    "typeIt": "Napíš {key} trikrát.",
+    "shiftL": "Ľavý Shift drž ľavým malíčkom a pravou rukou napíš veľké písmeno. Napíš trikrát veľké {sample}.",
+    "shiftR": "Pravý Shift drž pravým malíčkom a ľavou rukou napíš veľké písmeno. Napíš trikrát veľké {sample}.",
+    "space": "Ostatné prsty ostanú doma. Stlač ho trikrát."
+  },
+  "practice": {
+    "parts": "Časti: {n} z {total}",
+    "left": "Zostáva {s} sekúnd",
+    "words": "Slová: {n}",
+    "finish": "Skončiť"
+  },
+  "practiceKeys": {
+    "title": "Ktoré klávesy si precvičíš?",
+    "intro": "Posuň jazdec, pridá ďalšie klávesy v poradí lekcií. Klikni na kláves a pridáš ho alebo zoberieš.",
+    "slider": "Klávesy",
+    "step": "krok {n} z {total}",
+    "own": "vlastný výber",
+    "countOne": "{n} kláves",
+    "countFew": "{n} klávesy",
+    "countMany": "{n} kláves",
+    "needLetters": "Vyber aspoň {n} písmená.",
+    "style": "Ako budeš písať",
+    "copy": "Odpis",
+    "dictation": "Diktát",
+    "memory": "Zapamätaj si",
+    "start": "Začať"
+  },
+  "freeType": {
+    "hint": "Píš, čo chceš. Keď prestaneš, ukážem to.",
+    "place": "Zmeniť miesto",
+    "pick": "Kde dnes budeme písať?"
+  },
+  "touch": {
+    "title": "Potrebuješ klávesnicu",
+    "text": "TapkoTyper učí písať na skutočnej klávesnici. Pripoj ku tabletu klávesnicu alebo sa hraj na počítači."
+  },
+  "tapko": {
+    "statsHint": "Klikni na mňa a uvidíš, ako ti to ide",
+    "correct_streak": [
+      "Krásny rytmus, {name}!",
+      "Tvoje prsty poznajú cestu!",
+      "Pokojne a plynulo, výborne!",
+      "Páni, päť slov za sebou!",
+      "Ide ti to stále lepšie!",
+      "Len tak ďalej, pekne v rytme!"
+    ],
+    "mistake": [
+      "Nevadí, skús to znova.",
+      "Z chýb sa učíme.",
+      "Nikam sa neponáhľaj."
+    ],
+    "hint": [
+      "Kláves {key} skús {finger}.",
+      "{key} patrí pod prst: stláčaj ho {finger}. Potom späť domov!",
+      "Pomaly: {key} stláčaš {finger}."
+    ],
+    "level_done": [
+      "Podarilo sa ti to, {name}!",
+      "Úžasné písanie!",
+      "Mám z teba veľkú radosť!",
+      "To bola skvelá tímová práca!",
+      "Tvoje prsty tancovali po klávesoch!"
+    ],
+    "break": [
+      "Je čas na malú prestávku na pretiahnutie. Ruky si ju zaslúžia!",
+      "Poďme sa spolu natiahnuť a oddýchnuť si oči."
+    ]
+  },
+  "results": {
+    "title": "Úroveň hotová!",
+    "practiceDone": "Cvičenie hotové!",
+    "dictationClean": "Podľa sluchu bez chyby: {n} z {total}",
+    "memoryClean": "Z pamäti bez chyby: {n} z {total}",
+    "starsAria": "{n} z 3 hviezdičiek",
+    "accuracy": "Presnosť {n} %",
+    "byTapko": "Túto úroveň zvládol hlavne {tapko}.",
+    "rhythm": "Rytmus {n} písmen za minútu",
+    "trendUp": "Tvoj rytmus je plynulejší ako minulý týždeň!",
+    "newKey": "Nový kláves: {key}",
+    "newKeys": "Nové klávesy: {keys}",
+    "newAccessory": "Nové veci v šatníku: {n}",
+    "newCompanion": "Nový kamarát v šatníku: {kind}",
+    "rescued": "Dráčik {name} je zachránený!",
+    "next": "Ďalšia úroveň",
+    "nextRescue": "Ďalšia misia",
+    "replay": "Hrať znova",
+    "reward": "Pozrieť odmenu",
+    "takeBreak": "Prestávka na pretiahnutie",
+    "growthTitle": "Nová medaila!",
+    "growthDifficulty": "Predmety sa budú hýbať o kúsok rýchlejšie.",
+    "growthWordLen": "Slová môžu mať už {n} písmen.",
+    "medalAria": "medaila číslo {n}",
+    "repaired": "Robotík {name} je opravený!",
+    "badgeNew": "Nový odznak!",
+    "badgeSilver": "Odznak je teraz strieborný!",
+    "badgeGold": "Odznak je teraz zlatý!",
+    "mixedClean": "Podľa sluchu a z pamäti bez chyby: {n} z {total}",
+    "guided": "{name} je vďaka tebe zase doma!"
+  },
+  "badge": {
+    "bronze": "bronzový",
+    "silver": "strieborný",
+    "gold": "zlatý",
+    "aria": "Odznak sveta {world}: {tier}",
+    "locked": "Prejdi svet {n}"
+  },
+  "surprise": {
+    "ask": "{tapko} má tajomstvo:",
+    "left": {
+      "minutes": "Ešte {n} min tréningu a prezradím ti to.",
+      "levelsOne": "Ešte {n} úroveň a prezradím ti to.",
+      "levelsFew": "Ešte {n} úrovne a prezradím ti to.",
+      "levelsMany": "Ešte {n} úrovní a prezradím ti to.",
+      "starsOne": "Ešte {n} hviezdičku a prezradím ti to.",
+      "starsFew": "Ešte {n} hviezdičky a prezradím ti to.",
+      "starsMany": "Ešte {n} hviezdičiek a prezradím ti to."
+    }
+  },
+  "teaser": {
+    "ask": "{tapko} sa pýta:",
+    "later": "Odpoveď ti poviem, keď dokončíš ďalšiu úroveň.",
+    "answer": "Sľúbená odpoveď:",
+    "meadow": {
+      "q": [
+        "Vieš, koľko očí má pavúk?",
+        "Prečo majú lienky bodky?",
+        "Uhádneš, koľkokrát za sekundu mávne včela krídlami?",
+        "Vieš, čím motýľ ochutnáva jedlo?"
+      ],
+      "a": [
+        "Väčšina pavúkov má osem očí! Aj tak mnohé vidia zle a svet spoznávajú hlavne nohami.",
+        "Červená farba s bodkami hovorí vtákom: Pozor, chutím hnusne! Tak lienku radšej nechajú tak.",
+        "Vyše dvestokrát za sekundu! Preto počuješ to bzučanie.",
+        "Nohami! Motýľ ochutná kvet hneď, ako si naň sadne."
+      ]
+    },
+    "space": {
+      "q": [
+        "Vieš, čo sa stane so slzou astronauta vo vesmíre?",
+        "Koľkokrát za deň vidia astronauti na vesmírnej stanici východ Slnka?",
+        "Vieš, prečo je vo vesmíre úplné ticho?",
+        "Uhádneš, koľko Zemí by sa zmestilo do Jupitera?"
+      ],
+      "a": [
+        "Nesteká dole! V beztiaži ostane pri oku ako malá vodná guľôčka.",
+        "Asi šestnásťkrát! Stanica obletí Zem približne za hodinu a pol.",
+        "Zvuk potrebuje vzduch. Vo vesmíre vzduch nie je, takže ani veľký výbuch by si nepočul.",
+        "Vyše tisíc! Jupiter je najväčšia planéta našej slnečnej sústavy."
+      ]
+    },
+    "planet": {
+      "q": [
+        "Na ktorej planéte trvá deň dlhšie ako celý rok?",
+        "Vieš, akú farbu má západ slnka na Marse?",
+        "Uhádneš, ktorá planéta by plávala vo vode?",
+        "Vieš, kde vo vesmíre možno pršia diamanty?"
+      ],
+      "a": [
+        "Na Venuši! Otočí sa okolo seba pomalšie, ako obehne Slnko.",
+        "Modrú! Cez deň je obloha na Marse ružovkastá, ale pri západe slnka zmodrie.",
+        "Saturn! Na svoju veľkosť je taký ľahký, že by v obrovskej vani plával.",
+        "Vedci si myslia, že hlboko vo vnútri Neptúna a Uránu môžu padať diamanty!"
+      ]
+    },
+    "dragons": {
+      "q": [
+        "Vieš, ktoré skutočné zviera sa volá drak?",
+        "Uhádneš, ktorá jašterica vie behať po vode?",
+        "Vieš, ktorý malý drak naozaj lieta?",
+        "Ktoré zvieratá žili už v čase dinosaurov a žijú aj dnes?"
+      ],
+      "a": [
+        "Komodský drak! Je to najväčšia jašterica na svete, dlhá až tri metre.",
+        "Bazilišek! Beží po hladine tak rýchlo, že sa nestihne potopiť.",
+        "Drak lietavý! Je to malá jašterica, ktorá roztiahne kožu na bokoch ako krídla a plachtí zo stromu na strom.",
+        "Krokodíly! Ich predkovia žili spolu s dinosaurami."
+      ]
+    },
+    "egg": {
+      "q": [
+        "Vieš, ako sa vtáčatko dostane von z vajíčka?",
+        "Uhádneš, ktoré vajce je najväčšie na svete?",
+        "Vieš, ako môže mláďa vo vajíčku dýchať, keď je vajce zatvorené?",
+        "Vieš, ktorý cicavec znáša vajíčka?"
+      ],
+      "a": [
+        "Na zobáčiku má malý ostrý hrbolček, vajcový zub. Ním škrabe škrupinu, kým ju neprerazí.",
+        "Pštrosie! Je veľké asi ako dvadsať slepačích vajec.",
+        "Škrupina má tisíce maličkých dierok, cez ktoré prechádza vzduch.",
+        "Vtákopysk! Je to cicavec, ale mláďatá sa mu liahnu z vajíčok."
+      ]
+    },
+    "junkyard": {
+      "q": [
+        "Vieš, koľkokrát sa dá recyklovať sklenená fľaša?",
+        "Uhádneš, z čoho sa dá vyrobiť nová lavička?",
+        "Vieš, prečo železo hrdzavie?",
+        "Vieš, ako veľký magnet dokáže zdvihnúť auto?"
+      ],
+      "a": [
+        "Stále znova! Sklo sa dá roztaviť a vyrobiť z neho nová fľaša, a to donekonečna.",
+        "Zo starých plastových fliaš a vrchnákov! Recykláciou z nich vznikajú dosky na lavičky.",
+        "Keď sa železa dlho dotýka voda a vzduch, pokryje sa hnedou hrdzou.",
+        "Na šrotiskách sú elektromagnety, ktoré zdvihnú celé auto. Keď vypnú prúd, auto pustia."
+      ]
+    },
+    "workshop": {
+      "q": [
+        "Vieš, prečo majú ozubené kolieska zúbky?",
+        "Uhádneš, koľko súčiastok má bicykel?",
+        "Vieš, čo robí v hodinkách pružina?",
+        "Vieš, čo je vo vnútri batérie?"
+      ],
+      "a": [
+        "Zúbky do seba zapadnú, takže keď sa točí jedno koliesko, točí sa aj druhé.",
+        "Okolo tisíc, keď spočítaš každú skrutku, guličku a článok reťaze!",
+        "Natiahnutá pružina pomaly povoľuje a tým poháňa ručičky.",
+        "Látky, ktoré spolu reagujú a vyrábajú elektrinu. Keď sa minú, batéria je vybitá."
+      ]
+    },
+    "raintown": {
+      "q": [
+        "Vieš, akú farbu má kvapka dažďa?",
+        "Uhádneš, odkiaľ sa berie dúha?",
+        "Vieš, prečo po búrke voňia vzduch?",
+        "Vieš, prečo je hrom počuť až po blesku?"
+      ],
+      "a": [
+        "Žiadnu! Je priehľadná a na obrázkoch ju kreslíme modrou.",
+        "Slnečné svetlo prejde cez kvapky dažďa a rozloží sa na farby.",
+        "Dážď uvoľní vôňu zeme a rastlín a blesk vyrobí trochu čerstvého ozónu.",
+        "Svetlo je oveľa rýchlejšie ako zvuk, preto blesk vidíš skôr, ako hrom počuješ."
+      ]
+    },
+    "robocity": {
+      "q": [
+        "Vieš, aké heslo je dobré?",
+        "Uhádneš, ako dlho sa používajú zámky?",
+        "Vieš, čo je to tajná šifra?",
+        "Vieš, prečo sa heslo nikomu nehovorí?"
+      ],
+      "a": [
+        "Dlhé a ťažké na uhádnutie, napríklad tri slová, ktoré spolu nesúvisia.",
+        "Tisíce rokov! Už starí Egypťania mali drevené zámky s kolíkmi.",
+        "Správa napísaná tak, že ju prečíta len ten, kto pozná kľúč.",
+        "Kto pozná heslo, môže otvoriť tvoje veci. Povedať ho môžeš len rodičom."
+      ]
+    },
+    "robohome": {
+      "q": [
+        "Vieš, ako robotický vysávač nájde cestu?",
+        "Uhádneš, kde pracuje najviac robotov?",
+        "Vieš, či môže robot cítiť dotyk?",
+        "Vieš, kto vymyslel slovo robot?"
+      ],
+      "a": [
+        "Má senzory, ktoré cítia steny a schody, a niektoré si kreslia mapu bytu.",
+        "V továrňach! Skladajú autá, balia balíky a nikdy sa neunavia.",
+        "Niektoré áno! Majú citlivé senzory v prstoch a vedia jemne chytiť aj vajíčko.",
+        "Slovo robot vymyslel pred sto rokmi český spisovateľ Karel Čapek."
+      ]
+    },
+    "asked": "Pamätáš si otázku?",
+    "garden": {
+      "q": [
+        "Vieš, prečo kvety voňajú?",
+        "Uhádneš, ktorý kvet sa otáča za slnkom?",
+        "Vieš, ako si včely povedia, kde sú kvety?",
+        "Vieš, ktorý kvet je najväčší na svete?"
+      ],
+      "a": [
+        "Vôňa láka včely a motýle a tie nosia peľ z kvetu na kvet.",
+        "Slnečnica! Mladé slnečnice cez deň otáčajú hlavičku od východu na západ.",
+        "Tancujú! Malý tanec ukáže ostatným včelám, ktorým smerom a ako ďaleko majú letieť.",
+        "Raflézia. Jej kvet je široký ako pneumatika auta a schválne smrdí, aby prilákal muchy."
+      ]
+    },
+    "forestpath": {
+      "q": [
+        "Vieš, prečo vtáky spievajú ráno?",
+        "Uhádneš, ako ďaleko otočí sova hlavu?",
+        "Vieš, ktorý vták vie lietať dozadu?",
+        "Vieš, ako sa mláďatá naučia spievať?"
+      ],
+      "a": [
+        "Ráno je vzduch pokojný, tak ich pieseň doletí ďaleko. Hovoria: toto je môj strom!",
+        "Skoro až dozadu! Oči jej nehýbu, preto otáča celú hlavu.",
+        "Kolibrík! Vie aj stáť vo vzduchu ako malá helikoptéra.",
+        "Počúvajú rodičov a cvičia, presne ako ty cvičíš písanie."
+      ]
+    },
+    "lilylake": {
+      "q": [
+        "Vieš, ako pije žaba vodu?",
+        "Uhádneš, prečo sa lekná nepotopia?",
+        "Vieš, na čo sa zmení žubrienka?",
+        "Vieš, prečo vyzerá jazero ako zrkadlo?"
+      ],
+      "a": [
+        "Kožou! Žaby nepijú ústami.",
+        "Ich listy majú drobné vzduchové komôrky, tak plávajú ako lodičky.",
+        "Na žabu! Najprv jej narastú nohy, potom zmizne chvost.",
+        "Pokojná voda odráža svetlo, preto v nej vidíš oblohu a stromy hore nohami."
+      ]
+    },
+    "musictree": {
+      "q": [
+        "Vieš, čo robí zvuk?",
+        "Uhádneš, koľko strún má veľká harfa?",
+        "Vieš, prečo nás hudba poteší?",
+        "Vieš, ktorý nástroj je z dutého konára?"
+      ],
+      "a": [
+        "Veci, ktoré sa veľmi rýchlo chvejú, napríklad struna alebo vzduch vo flaute. Naše uši to chvenie cítia.",
+        "Asi štyridsaťsedem! Každá struna hrá iný tón.",
+        "Mozog má rád opakujúce sa vzory a veselá melódia mu robí dobre.",
+        "Didžeridu! Termity vyžerú konár zvnútra a ľudia z neho urobia dlhú trúbu."
+      ]
+    },
+    "moonball": {
+      "q": [
+        "Vieš, prečo svetlušky svietia?",
+        "Uhádneš, prečo mesiac mení tvar?",
+        "Vieš, ktoré zvieratá sú hore v noci?",
+        "Vieš, či mesiac svieti sám?"
+      ],
+      "a": [
+        "Rozprávajú sa svetlom! Každý druh svetlušky bliká inak.",
+        "V skutočnosti sa nemení. Len vidíme viac alebo menej z jeho strany, na ktorú svieti slnko.",
+        "Sovy, netopiere, ježkovia a nočné motýle. Volajú sa nočné zvieratá.",
+        "Nie! Mesiac svieti, lebo ho osvetľuje slnko, ako veľké zrkadlo."
+      ]
+    }
+  },
+  "paw": {
+    "title": "Labková pomoc: {n} slov bez chyby nabije labku (najviac 3). Enter: {tapko} napíše za teba {words} slová. Backspace: pomôže sám, keď bude ťažko.",
+    "aria": "Labková pomoc (Enter), nabité labky: {n}",
+    "start": "Labky na klávesy! Teraz píšem ja.",
+    "charged": "{n} slov bez chyby! Labka je nabitá. Stlač Enter a napíšem za teba {words} slová.",
+    "chargedAuto": "{n} slov bez chyby! Labka je nabitá. Keď bude ťažko, pomôžem ti sám.",
+    "autoOn": "Keď bude ťažko, napíšem {words} slová sám. Backspace to zase vypne.",
+    "autoOff": "Labku spustíš sám klávesom Enter."
+  },
+  "story": {
+    "next": "Ďalej",
+    "meadowStart": [
+      "Zvieratká chcú hrať! Ty si brankár.",
+      "Chyť listy vejárom!"
+    ],
+    "goalShout": "GÓÓL!",
+    "hedgehogStart": [
+      "Ježko má na chrbte kopu listov. Pozor, letia!"
+    ],
+    "hedgehogDone": [
+      "Všetky listy sú späť u ježka. Výborne!"
+    ],
+    "signView": [
+      "Tadiaľto je krásny výhľad!",
+      "Pozri na tie kvietky!",
+      "Tento chodník vonia ako cukríky!"
+    ],
+    "boulderOpen": [
+      "Z balvana sú kamene na prechod!",
+      "Dokázalo to tvoje presné písanie!"
+    ],
+    "waveCalm": [
+      "Vlna sa upokojila. Pozri, dúha!",
+      "Pokojný rytmus vyhráva!"
+    ],
+    "scenes": {
+      "intro": [
+        "Ahoj, {name}! Ja som {tapko}.",
+        "Spolu sa naučíme písať všetkými desiatimi prstami.",
+        "Polož ukazováky na malé výstupky na klávesoch F a J. To je tvoj domov.",
+        "Začneme na Cvičnej lúke!"
+      ],
+      "world1": [
+        "Na lúke je plno zvedavých malých návštevníkov.",
+        "Napíš slovo na liste a Ťapko ho odfúkne vejárom späť.",
+        "Keď list preletí, je to gól a všetci sa tešia."
+      ],
+      "invitation": [
+        "Pozri, čo sa našlo v tráve!",
+        "Tajná pozvánka... do VESMÍRU!",
+        "Tvoje prsty sú pripravené na let raketou."
+      ],
+      "world2": [
+        "Tri, dva, jeden... štart!",
+        "Rytmus tvojho písania poháňa raketu.",
+        "Jemným energetickým lúčom odsúvaj ospalé asteroidy z cesty."
+      ],
+      "landing": [
+        "Riadiaca veža hlási: povolenie na pristátie!",
+        "Pristávame na čarovnej novej planéte."
+      ],
+      "world3": [
+        "Vitaj na novej planéte!",
+        "Postav kamene cez močiar a pri smerovníkoch vyber cestu.",
+        "Tu je presnosť dôležitejšia ako rýchlosť."
+      ],
+      "force": [
+        "Objavili sme niečo úžasné: Silu!",
+        "Teraz dokážeš jemne pohybovať vecami, len písaním.",
+        "Dráčiky v susednom údolí potrebujú pomoc."
+      ],
+      "world4": [
+        "Do Dračieho údolia padajú vesmírne kamene.",
+        "Každé slovo vytvorí pre dráčika ochrannú bublinu.",
+        "Kamene sa len odrazia, nikomu sa nič nestane."
+      ],
+      "egg": [
+        "Dráčiky sú v bezpečí a šťastné.",
+        "Ako poďakovanie ti darujú čarovné dračie vajíčko!"
+      ],
+      "world5": [
+        "Ojoj! Vajíčko sa začína hýbať a kotúľa sa dolu kopcom.",
+        "Pomôž mu preskočiť kamene a pníky.",
+        "Pozor na priateľského krtka!"
+      ],
+      "hatched": [
+        "Krak... krak... vajíčko sa liahne!",
+        "Malý dráčik sa na teba pozerá. Máš nového kamaráta!",
+        "Teraz môžeš chodiť na záchranné misie a pomáhať ďalším dráčikom."
+      ],
+      "world6": [
+        "Ťapko ide okolo starého šrotiska. Čo to tam pípa?",
+        "Pod kopou starých vecí niekto smutne pípa.",
+        "Napíš slovo a jemný magnet zdvihne haraburdu z kopy."
+      ],
+      "friends": [
+        "Z kopy vylieza malý hrdzavý robot.",
+        "Chce povedať ďakujem, ale vie len pípať: Píp píp!",
+        "Daruje ti malé ozubené koliesko. Volá sa Šróbik a odteraz ste kamaráti!"
+      ],
+      "world7": [
+        "Šróbik chce ísť domov, ale chýbajú mu súčiastky.",
+        "Po páse sa vezú kolieska, skrutky a pružiny.",
+        "Napíš slovo súčiastky a Ťapko ju hodí do košíka."
+      ],
+      "legs": [
+        "Hotovo! Šróbik má nové dlhé nohy.",
+        "A na hlave mu svieti nová žltá anténa.",
+        "Teraz zvládne aj dlhú cestu domov."
+      ],
+      "world8": [
+        "Ojoj, začína pršať!",
+        "Roboti nesmú zmoknúť, inak zhrdzavejú.",
+        "Napíš slovo na kvapke a Ťapkov dáždnik ju zachytí."
+      ],
+      "raincoat": [
+        "Dážď prestal a nad mestom svieti dúha.",
+        "Šróbik dostal žltú pláštenku a Ťapko nový dáždnik.",
+        "Teraz im žiadny dážď neublíži."
+      ],
+      "world9": [
+        "Cesta domov vedie cez Robotické mesto.",
+        "Všetky dvere sú zamknuté a na paneloch sú heslá.",
+        "Napíš heslo a dvere sa so zvonením otvoria."
+      ],
+      "key": [
+        "Veľká brána je otvorená!",
+        "Šróbik našiel svoju kľúčovú kartu od domu.",
+        "Už sme skoro doma!"
+      ],
+      "world10": [
+        "Šróbikov dom je tmavý a všetci roboti spia.",
+        "Napíš slovo a rozsvieti sa lampa.",
+        "Pomocní roboti sa zobudia a zamávajú."
+      ],
+      "home": [
+        "Šróbikova rodina je šťastná, že je doma.",
+        "Ďakujú ti, {name}, za pomoc Šróbikovi.",
+        "Teraz môžeš na záchranných misiách opravovať aj malých robotov."
+      ],
+      "world11": [
+        "Les stíchol. Nespieva ani vtáčik, nezašumí ani lístok.",
+        "Priletí malá víla s trblietavými krídlami. „Som Melódia. Les zabudol svoje piesne!“",
+        "Napíš slovo a spiaci púčik sa otvorí. Každý kvet zabzučí jeden tón."
+      ],
+      "wreath": [
+        "Veľký kvet sa zobudil a celá záhrada si pobzukuje!",
+        "{tapko} dostane od Melódie kvetinový venček.",
+        "Záhrada má svoju pieseň späť. Jedna pieseň je doma, ešte štyri."
+      ],
+      "world12": [
+        "Vtáčiky na lesnej cestičke zabudli svoje slová.",
+        "Každý vtáčik potichu zaspieva slovo. Dobre počúvaj a napíš, čo počuješ.",
+        "Ťukni na slovo vtáčika, keď ho chceš počuť znova."
+      ],
+      "feather": [
+        "Hú, hú! Sove sa tvoje odpovede páčili.",
+        "{tapko} od nej dostane mäkké pierko za klobúk.",
+        "Vtáčiky zase spievajú!"
+      ],
+      "world13": [
+        "Jazero je tiché ako zrkadlo.",
+        "Na hladine sa ukáže slovo a malá vlnka ho zmyje.",
+        "Zapamätaj si ho a napíš ho, a rozkvitne lekno."
+      ],
+      "lily": [
+        "Dlhý odraz je späť na hladine!",
+        "{tapko} dostane od Melódie žiarivé lekno.",
+        "Žabky kvákajú pieseň jazera."
+      ],
+      "world14": [
+        "Uprostred lesa stojí Hudobný strom.",
+        "Na konároch visia nôtky. Niektoré spievajú, iné zasvietia a zhasnú.",
+        "Počúvaj alebo si zapamätaj, napíš a nôtka vyletí."
+      ],
+      "harp": [
+        "Hudobný strom zase hrá svoju pieseň!",
+        "{tapko} dostane od Melódie malú harfu.",
+        "Chýba už len jedna pieseň, pieseň noci."
+      ],
+      "world15": [
+        "Vychádza mesiac a svetlušky prichádzajú na ples.",
+        "Melódia každej svetluške zaspieva krátku vetu.",
+        "Napíš ju a tanečný parket sa rozžiari."
+      ],
+      "wings": [
+        "Spieva celý les! Každý vtáčik, každá žabka, každý strom.",
+        "Les ti ďakuje, {name}. {tapko} dostane od Melódie vílie krídla.",
+        "Teraz môžeš na záchranných misiách odprevadiť domov aj malé vtáčatá a svetlušky."
+      ]
+    },
+    "junkStart": [
+      "Počuješ to pípanie? Niekto je pod tou kopou!",
+      "Napíš slovo a magnet odnesie haraburdu."
+    ],
+    "knotOpen": [
+      "Uzol je rozmotaný! Šróbik je voľný.",
+      "Píp píp! To znamená ďakujem."
+    ],
+    "batteryFull": [
+      "Batéria je nabitá! Šróbik svieti od radosti.",
+      "Pekný rovnomerný rytmus!"
+    ],
+    "rainTickle": [
+      "Šróbik: Píp, to šteklí!",
+      "Šróbik sa otriasa ako psík.",
+      "Šróbik: Píp píp, kvapka na hlave!"
+    ],
+    "stormCalm": [
+      "Búrka sa upokojila. Vykuklo slniečko!",
+      "Pokojný rytmus pomohol!"
+    ],
+    "doorOpen": [
+      "Cink! Dvere sa otvorili.",
+      "Správne heslo!",
+      "Ďalšie dvere sú otvorené!"
+    ],
+    "gateOpen": [
+      "Veľká brána sa otvára! Vitaj v Robotickom meste.",
+      "Celý kód je správne!"
+    ],
+    "gateIntro": "Hlavná brána chce celý kód bez chyby. Keď sa pomýliš, začneš znova. Nikam sa neponáhľaj.",
+    "gateSlow": "Pomaly a presne. Čas tu nebeží.",
+    "welcomeDone": [
+      "Celá rodina ťa pozdravila!",
+      "Píp píp píp! Malí roboti sa tešia."
+    ],
+    "flowerIntro": "Veľký kvet spí. Melódia zašepká slovo, počúvaj a napíš ho. Každé slovo kvet trochu prebudí.",
+    "flowerAwake": [
+      "Veľký kvet sa zobudil! Tak krásne vonia.",
+      "Záhrada zase spieva svoju pieseň!"
+    ],
+    "owlIntro": "Sova hovorí hádanku, po jednom slove. Počúvaj každé slovo a napíš ho.",
+    "owlSolved": [
+      "Hú, hú! Všetky hádanky sú vyriešené.",
+      "Sova sa teší, vtáčiky spievajú!"
+    ],
+    "reflectionIntro": "Jazero ukáže celú dlhú vetu, ale len raz. Dobre sa pozri a potom ju napíš slovo po slove.",
+    "reflectionDone": [
+      "Dlhý odraz je späť v jazere!",
+      "To je pamäť! Žabky tlieskajú."
+    ],
+    "treeSong": [
+      "Hudobný strom hrá svoju pieseň!",
+      "Pokojný stály rytmus to dokázal."
+    ],
+    "lastSongIntro": "Posledná pieseň noci. Melódia spieva krátke vety, jednu za druhou. Počúvaj a píš.",
+    "lastSongDone": [
+      "Spieva celý les!",
+      "Všetky piesne sú zase doma."
+    ]
+  },
+  "fairy": {
+    "start": [
+      "Melódia: Zaspievame si spolu?",
+      "Melódia: Les čaká na svoju pieseň.",
+      "Melódia: Som tu s tebou!"
+    ],
+    "mistake": [
+      "Melódia: Hm? Skús to ešte raz.",
+      "Melódia: Aj v pesničke sa niekedy pomýlime.",
+      "Melódia: Pomaly, ja počkám."
+    ],
+    "done": [
+      "Melódia: La la la, nádhera!",
+      "Melódia: Les ťa počul!",
+      "Melódia: Ďalšia pieseň je doma."
+    ]
+  },
+  "wave": {
+    "onBeat": "Presne v rytme!",
+    "good": "Dobre!"
+  },
+  "progress": {
+    "title": "Môj postup",
+    "keys": "Klávesy, ktoré ti idú dobre a rýchlo: {n} z {total}",
+    "worlds": "Dokončené svety: {n} z {total}",
+    "stories": "Dokončené príbehy: {n} z {total}",
+    "stars": "Hviezdičky spolu: {n}",
+    "tabProgress": "Postup",
+    "tabKeys": "Klávesy",
+    "tabExercises": "Cvičenia",
+    "showCode": "QR kód celého postupu",
+    "overallTitle": "Celý postup",
+    "overallCaption": "Celé moje štatistiky",
+    "exerciseCaption": "Cvičenie: {title}",
+    "exercisesEmpty": "Zatiaľ tu nie je žiadne cvičenie. Cvičenia od učiteľa alebo rodiča sa zapíšu sem.",
+    "exerciseLine": "{min} min, presnosť {acc} %, rytmus {cpm}",
+    "exerciseOpen": "Ešte nedokončené",
+    "exerciseCode": "QR kód",
+    "codeClose": "Ťukni na obrazovku a kód sa zavrie.",
+    "quality": "Presnosť dobre zvládnutých kláves: {n} %",
+    "speed": "Rýchlosť dobre zvládnutých kláves: {n} znakov za minútu",
+    "storyStars": "Hviezdičky v tomto príbehu: {n}",
+    "lastToday": "Naposledy sme trénovali dnes.",
+    "lastYesterday": "Naposledy sme trénovali včera.",
+    "lastDays": "Naposledy sme trénovali pred {n} dňami.",
+    "never": "Ešte sme spolu netrénovali.",
+    "week": "Za posledných 7 dní: {n} min",
+    "badges": "Odznaky"
+  },
+  "stats": {
+    "title": "Moje klávesy",
+    "intro": "Rátam posledných {n} stlačení každého klávesu, staré chyby sa nepočítajú. Ťukni na kláves a uvidíš, ako ti ide.",
+    "empty": "Zahraj si úroveň a ukážem ti, ako ti idú klávesy.",
+    "good": "ide to",
+    "ok": "skoro",
+    "practice": "poďme cvičiť",
+    "practiceKeys": "Klávesy na precvičenie",
+    "keyLine": "{acc} % správne, stláčaj",
+    "instead": "(často namiesto neho {key})",
+    "practiceNow": "Precvičiť ich teraz (1 min)",
+    "clickKey": "Ťukni na kláves na klávesnici a ukážem ti, ako ti ide.",
+    "fingerLine": "Stláčaj ho",
+    "keyNoData": "Tento kláves sme ešte nepísali.",
+    "keyAccuracy": "{acc} % správne z posledných {n} stlačení",
+    "keySpeed": "Zvyčajne ho stlačíš za {s} s",
+    "keyTotal": "Spolu už {n} stlačení",
+    "keyConfused": "Namiesto neho niekedy stlačíš:",
+    "keyNoConfusion": "V poslednom čase si ho s ničím nemýliš.",
+    "keyAccuracyTrend": "Presnosť po dňoch",
+    "keySpeedTrend": "Čas na stlačenie po dňoch",
+    "keyHistorySoon": "Vývoj po dňoch uvidíš, keď budeš hrať aspoň dva dni.",
+    "practiceKey": "Precvičiť {key} (1 min)",
+    "medals": "Moje medaily",
+    "shifted": "⇧ znaky"
+  },
+  "wardrobe": {
+    "title": "Kamarát a šatník",
+    "buddy": "Kamarát",
+    "name": "Meno",
+    "kindLocked": "ešte {n} ★",
+    "wardrobe": "Šatník",
+    "count": "{n} z {total} vecí",
+    "clear": "Odstrániť doplnky",
+    "byLevel": "Dokonči {level}",
+    "byWorld": "Dokonči svet {world}",
+    "byMastery": "Zvládni {n} klávesov",
+    "stars": "Hviezdičky: {n}"
+  },
+  "slots": {
+    "head": "Hlava",
+    "eyes": "Okuliare",
+    "neck": "Krk",
+    "body": "Telo",
+    "back": "Chrbát",
+    "hand": "V ruke",
+    "feet": "Nohy"
+  },
+  "items": {
+    "cap": "Červená šiltovka",
+    "round-glasses": "Okrúhle okuliare",
+    "scarf": "Pásikavý šál",
+    "sneakers": "Červené tenisky",
+    "crown": "Zlatá korunka",
+    "star-glasses": "Hviezdičkové okuliare",
+    "bow-tie": "Motýlik",
+    "butterfly-wings": "Motýlie krídla",
+    "wizard-hat": "Čarodejnícky klobúk",
+    "star-cape": "Hviezdny plášť",
+    "wand": "Čarovný prútik",
+    "boots": "Hnedé čižmy",
+    "flower-wreath": "Venček z kvetov",
+    "knit-vest": "Pletená vesta",
+    "rain-boots": "Gumáky",
+    "backpack": "Batôžtek",
+    "beanie": "Čiapka",
+    "neckerchief": "Šatka",
+    "dragon-wings": "Dračie krídla",
+    "balloon": "Balón",
+    "hair-bow": "Mašľa",
+    "heart-glasses": "Srdiečkové okuliare",
+    "star-shirt": "Tričko s hviezdou",
+    "pink-sneakers": "Ružové tenisky",
+    "explorer-hat": "Klobúk objaviteľa",
+    "explorer-vest": "Vesta objaviteľa",
+    "lantern": "Lampáš",
+    "green-boots": "Zelené čižmy",
+    "sunglasses": "Slnečné okuliare",
+    "umbrella": "Dáždnik",
+    "raincoat": "Pláštenka",
+    "hard-hat": "Prilba",
+    "goggles": "Ochranné okuliare",
+    "jetpack": "Raketový batoh",
+    "antenna-band": "Čelenka s anténkami",
+    "feather": "Pierko",
+    "harp": "Malá harfa",
+    "fairy-wings": "Vílie krídla"
+  },
+  "dragonNames": [
+    "Iskrička",
+    "Mätka",
+    "Luna",
+    "Kamienok",
+    "Slniečko",
+    "Bublinka",
+    "Žiarik",
+    "Ďatelinka",
+    "Hmlička",
+    "Pipo",
+    "Hviezdička",
+    "Medík",
+    "Vŕbka",
+    "Obláčik",
+    "Kométka",
+    "Sušienka",
+    "Javorček",
+    "Zigi",
+    "Tulipán",
+    "Vánok"
+  ],
+  "break": {
+    "title": "Pretiahnutie {n}/{total}",
+    "arms": "Natiahni ruky vysoko hore ako strom. Nádych... a výdych.",
+    "fists": "Zovri päste a potom široko roztiahni prsty. Znova a znova!",
+    "shoulders": "Pomaly krúž ramenami dozadu. Potom sa pozri ďaleko z okna.",
+    "done": "Pekne oddýchnuté, {name}! Pamätaj si, ako sedieť:",
+    "parentSkip": "Rodič: preskočiť",
+    "skipTitle": "Preskočiť prestávku?",
+    "skipText": "Krátke pretiahnutie pomáha chrbtu aj očiam. Naozaj ju preskočiť?",
+    "skipOk": "Áno, preskočiť"
+  },
+  "parent": {
+    "title": "Nastavenia lokálneho profilu",
+    "checkTitle": "Nastavenia pre rodičov",
+    "checkText": "Tu sa mení náročnosť, klávesy a údaje. Naozaj chceš otvoriť nastavenia?",
+    "tab": {
+      "settings": "Nastavenia",
+      "own": "Vlastné",
+      "surprises": "Prekvapenia",
+      "task": "Úloha",
+      "keys": "Klávesy",
+      "dashboard": "Pokroky",
+      "data": "Údaje"
+    },
+    "group": {
+      "child": "Dieťa",
+      "practice": "Cvičenie",
+      "look": "Vzhľad a zvuk",
+      "lock": "Heslo na nastavenia"
+    },
+    "childName": "Meno dieťaťa",
+    "companionName": "Meno kamaráta",
+    "switchTitle": "Prepnúť na iné dieťa",
+    "companionKind": "Kamarát",
+    "messages": "Vaše vlastné povzbudenia",
+    "messagesHint": "Jedno na riadok. Kamarát ich občas použije.",
+    "messagesPlaceholder": "Som na teba hrdá!",
+    "language": "Jazyk",
+    "layout": "Rozloženie klávesnice",
+    "layoutHint": "Vyberte rozloženie skutočnej klávesnice. Podľa neho sa riadi nápoveda prstov.",
+    "difficulty": "Náročnosť",
+    "wordLen": "Dĺžka slov",
+    "min": "min. {n}",
+    "max": "max. {n}",
+    "noDiacritics": "Slová bez diakritiky",
+    "noDiacriticsHint": "Pre začiatočníkov, len na chvíľu. Diakritika patrí k správnemu písaniu.",
+    "noTimePressure": "Bez časového tlaku",
+    "noTimePressureHint": "Pohyblivé predmety zastanú a počkajú na dieťa.",
+    "sessionMinutes": "Dĺžka hrania pred prestávkou",
+    "minutes": "{n} min",
+    "guide": "Nápoveda prstov",
+    "guideAuto": "Slabne pri zvládnutých klávesoch",
+    "guideOn": "Vždy zapnutá",
+    "guideOff": "Vypnutá",
+    "guideLocked": "Dieťa nemôže nápovedu skryť ani zobraziť",
+    "sfx": "Zvukové efekty",
+    "music": "Hudba",
+    "speakTyped": "Čítať napísané slová",
+    "speakTypedHint": "Pri „Len chcem písať“ počítač nahlas prečíta, čo dieťa napísalo (keď je zapnuté čítanie nahlas). Číta sa iba v tomto prehliadači, nič sa neukladá ani neposiela. Zoznam zakázaných slov nemáme: nikdy nie je úplný a blokuje aj nevinné slová. Ak nechcete, aby sa čítalo, vypnite to tu.",
+    "font": "Písmo",
+    "largeText": "Veľké písmo",
+    "reduceMotion": "Menej pohybu",
+    "highContrast": "Vysoký kontrast",
+    "autoFullscreen": "Spúšťať na celú obrazovku",
+    "autoFullscreenHint": "Prehliadač dovolí celú obrazovku až po prvom stlačení klávesu alebo kliknutí.",
+    "keysMode": "Aktívne klávesy",
+    "keysAuto": "Automaticky (nový kláves, keď je posledný zvládnutý)",
+    "keysManual": "Vybrané ručne",
+    "keysHint": "Automatický režim je najlepší: klávesy pribúdajú postupne od základného radu (F J).",
+    "punctuation": "Interpunkcia",
+    "unlocked": "Zatiaľ odomknuté: {keys}",
+    "preset": {
+      "home": "+ základný rad",
+      "homeUs": "+ základný rad",
+      "top": "+ horný rad",
+      "bottom": "+ dolný rad",
+      "clear": "Vymazať"
+    },
+    "heatmap": "Ako ide ktorý kláves",
+    "accuracyTrend": "Presnosť",
+    "rhythmTrend": "Rytmus",
+    "cpm": "písmen/min",
+    "timePerDay": "Čas za deň",
+    "worlds": "Úrovne",
+    "levelsDone": "z {total} úrovní hotových",
+    "keysUnlocked": "naučených klávesov",
+    "keysMastered": "zvládnutých klávesov",
+    "charsTyped": "písmen za 14 dní",
+    "noData": "Zatiaľ bez údajov.",
+    "dataText": "Všetky údaje sú uložené len v tomto prehliadači. Exportom ich prenesiete do iného zariadenia.",
+    "exportOne": "Exportovať tento profil",
+    "exportAll": "Exportovať všetky profily",
+    "import": "Importovať",
+    "print": "Vytlačiť kartu pokrokov",
+    "guestNote": "Profil hosťa sa po zatvorení karty prehliadača zabudne.",
+    "deleteTitle": "Vymazanie",
+    "delete": "Vymazať profil {name}",
+    "deleteConfirm": "Naozaj vymazať profil {name} aj so všetkými pokrokmi?",
+    "checkOk": "Áno, otvoriť",
+    "deleteOk": "Áno, vymazať",
+    "autoDifficulty": "Automatická náročnosť",
+    "autoDifficultyHint": "Rastie s pokrokom dieťaťa po niekoľkých minútach presného písania. Každý krok je medaila.",
+    "autoWordLen": "Automatická dĺžka slov",
+    "autoWordLenHint": "Rastie s pokrokom dieťaťa, spolu s náročnosťou.",
+    "autoHint": "Začiatok je pomalý: krátke slovo putuje ku kamarátovi asi 10 sekúnd a na obrazovke sú najviac dve. Ak dieťa ani tak nestíha, zapnite Bez časového tlaku.",
+    "lock": {
+      "ask": "Nastavenia sú zamknuté heslom. Zadajte ho, prosím.",
+      "password": "Heslo",
+      "open": "Otvoriť",
+      "wrong": "Nesprávne heslo",
+      "wait": "Priveľa pokusov. Skúste znova o {n} s.",
+      "off": "Nastavenia otvára jedna otázka. Heslo ich zamkne pre všetkých hráčov na tomto zariadení.",
+      "on": "Nastavenia sú zamknuté heslom pre všetkých hráčov na tomto zariadení.",
+      "current": "Súčasné heslo",
+      "new": "Nové heslo",
+      "again": "Heslo ešte raz",
+      "set": "Nastaviť heslo",
+      "change": "Zmeniť heslo",
+      "remove": "Odstrániť heslo",
+      "empty": "Zadajte heslo.",
+      "mismatch": "Heslá sa nezhodujú.",
+      "saved": "Heslo je uložené.",
+      "removed": "Heslo je odstránené."
+    }
+  },
+  "own": {
+    "group": {
+      "messages": "Vlastné povzbudenia",
+      "words": "Vlastné slová",
+      "text": "Vlastný text"
+    },
+    "remove": "Odstrániť",
+    "words": "Slová",
+    "wordsHint": "Napríklad slová na tento týždeň. Jedno na riadok, alebo oddelené čiarkou či medzerou. Použijú sa aj s klávesmi, ktoré dieťa ešte nepozná; sprievodca ich ukáže.",
+    "wordsPlaceholder": "škola\nkamarát\nslnko",
+    "wordsCount": "Slov: {n} z {max}.",
+    "untypableWords": "Nedá sa napísať na tejto klávesnici, vynechajú sa: {list}",
+    "text": "Text",
+    "textHint": "Delí sa po vetách a čiarkach. V príbehu prichádza po kúskoch, vo Vlastnom cvičení je na mape tlačidlo Môj text, ktoré ho napíše celý po poradí.",
+    "textPlaceholder": "Bol raz jeden malý drak. Rád lietal nad lúkou.",
+    "textCount": "Znakov: {n} z {max}.",
+    "untypableChars": "Nedá sa napísať na tejto klávesnici, vynechá sa: {list}",
+    "mix": {
+      "label": "Koľko z vlastných slov a textu",
+      "off": "Nič",
+      "some": "Trochu (štvrtina)",
+      "half": "Polovica",
+      "most": "Väčšina"
+    },
+    "mixHint": "Podiel cieľov v úrovniach a vo vlastnom cvičení; zvyšok sú bežné slová.",
+    "preview": "Ukážka piatich cieľov",
+    "previewMore": "Iná ukážka"
+  },
+  "surprises": {
+    "hint": "Schovajte skutočnú odmenu (sladkosť, výlet, herný večer) za pravidlo. Kamarát sa na otázku spýta pred úrovňou a odpoveď prezradí spolu s otázkou, keď sa pravidlo splní. V jednej úrovni je najviac jedno prekvapenie.",
+    "empty": "Zatiaľ žiadne prekvapenie.",
+    "formTitle": "Nové prekvapenie",
+    "q": "Otázka",
+    "a": "Odpoveď",
+    "qPlaceholder": "Vieš, kde ti ocko schoval sladkú odmenu? Ja to viem a prezradím ti to, keď budeš chvíľu trénovať.",
+    "aPlaceholder": "Malá čokoláda je pre teba schovaná v skrini za chladničkou.",
+    "whenLabel": "Kedy",
+    "level": "Úroveň",
+    "n": {
+      "minutes": "Minúty tréningu",
+      "levels": "Ďalšie úrovne",
+      "stars": "Ďalšie hviezdičky"
+    },
+    "trigger": {
+      "level": "Po úrovni",
+      "minutes": "Po minútach tréningu",
+      "levels": "Po ďalších úrovniach",
+      "stars": "Po ďalších hviezdičkách",
+      "random": "Náhodne, raz za čas"
+    },
+    "repeat": "Opakovať",
+    "add": "Pridať",
+    "save": "Uložiť",
+    "cancel": "Zrušiť",
+    "edit": "Upraviť",
+    "remove": "Odstrániť",
+    "needBoth": "Vyplňte otázku aj odpoveď.",
+    "badN": "Zadajte celé číslo od 1 do {max}.",
+    "tooMany": "Najviac {n} prekvapení. Najprv nejaké odstráňte.",
+    "yes": "áno",
+    "no": "nie",
+    "col": {
+      "q": "Otázka",
+      "a": "Odpoveď",
+      "when": "Kedy",
+      "repeat": "Opakovať",
+      "state": "Stav",
+      "actions": "Akcie"
+    },
+    "when": {
+      "random": "náhodne",
+      "minutes": "po {n} min tréningu",
+      "levelsOne": "po {n} ďalšej úrovni",
+      "levelsMany": "po {n} ďalších úrovniach",
+      "starsOne": "po {n} ďalšej hviezdičke",
+      "starsMany": "po {n} ďalších hviezdičkách"
+    },
+    "state": {
+      "done": "hotové {date}",
+      "minutes": "{have} / {need} min",
+      "waiting": "čaká",
+      "last": "naposledy {date}"
+    }
+  },
+  "import": {
+    "title": "Import profilov",
+    "text": "Vyberte súbor .json z TapkoTypera.",
+    "found": "Nájdené: {names} ({n}).",
+    "conflict": "Tieto tu už existujú: {names}.",
+    "replace": "Nahradiť ich",
+    "keepBoth": "Ponechať oboje",
+    "do": "Importovať",
+    "errorJson": "Tento súbor nie je platný súbor JSON.",
+    "errorShape": "Tento súbor neobsahuje profily TapkoTypera."
+  },
+  "print": {
+    "title": "Karta pokrokov v písaní",
+    "keys": "Naučené klávesy: {n} ({keys})",
+    "mastered": "Zvládnuté klávesy: {n}",
+    "stars": "Hviezdičky: {n} z {total}",
+    "worlds": "Dokončené svety: {n} z {total}",
+    "rhythm": "Rytmus: {n} písmen za minútu"
+  },
+  "about": {
+    "code": "Kód na GitHube",
+    "report": "Nahlásiť chybu alebo nápad",
+    "intro": "TapkoTyper je bezplatná pokojná hra, ktorá učí deti písať všetkými desiatimi prstami. Spolu s kamarátom cestujú po svetoch plných dobrodružstiev. Nikdy sa nestane nič zlé: prekážky sa odsunú alebo sa im pomôže, nikdy sa neničia.",
+    "privacyTitle": "Náš sľub rodičom",
+    "privacy": [
+      "Bez reklám, nákupov, prihlasovania či cookies. Tento web nemá na pozadí vlastný server.",
+      "Všetky pokroky sú uložené len v tomto prehliadači, ale môžete ich exportovať do súboru.",
+      "Po prvej návšteve funguje aj bez internetu.",
+      "Dá sa nainštalovať ako desktopová webová aplikácia: otvorí sa vo vlastnom okne a netreba na to spúšťať celý prehliadač."
+    ],
+    "dataTitle": "Vaše údaje a počítadlo návštev",
+    "data": [
+      "Keďže všetko je len na vašom počítači, nevieme vám zistiť zabudnuté heslo k nastaveniam ani vaše nastavenia a pokrok, keď sa vám počítač pokazí. Preto si pokrok občas exportujte do súboru.",
+      "Počítame len anonymné návštevy, bez cookies a bez akýchkoľvek údajov o používateľoch (samozrejme nezapočítame nič, ak to používate offline). Počíta ich služba GoatCounter, ktorá nepoužíva cookies ani nezbiera osobné údaje."
+    ],
+    "visits": "Počet návštev tejto stránky doteraz: {n}",
+    "visitsLink": "Štatistiky na GoatCounter",
+    "howTitle": "Ako učí",
+    "how": [
+      "Klávesy sa učia postupne, od základného radu (F a J).",
+      "Každý kláves má svoj prst; klávesnica a ruky na obrazovke ukazujú ktorý.",
+      "Najprv presnosť; rýchlosť sa ukazuje len ako osobný pokrok.",
+      "Slabšie klávesy sa objavujú častejšie a krátke prestávky chránia zdravie."
+    ],
+    "creditsTitle": "Prepojenia",
+    "credits": "Otvorený kód pod licenciou MIT. Písma: Lexend, Atkinson Hyperlegible a OpenDyslexic (SIL Open Font License)."
+  },
+  "help": {
+    "title": "Pomoc",
+    "tab": {
+      "ui": "Rozhranie",
+      "typing": "Ako písať",
+      "progress": "Ako postupovať",
+      "settings": "Nastavenia",
+      "about": "O hre TapkoTyper"
+    },
+    "typeTitle": "Ako písať",
+    "type": [
+      "Seď rovno, chodidlá maj na zemi a ramená uvoľnené.",
+      "Nahmataj výstupky na F a J. Tam bývajú tvoje ukazováky.",
+      "Ostatné prsty si ľahnú vedľa nich na stredný rad: A S D F a J K L.",
+      "Palce oddychujú nad medzerníkom.",
+      "Každý prst má svoje klávesy. Po každom písmenku sa vráti domov.",
+      "Pozeraj na obrazovku, nie na ruky. Klávesnica dole ti ukáže, ktorý prst ide.",
+      "Najprv presne, potom rýchlo. Rýchlosť príde sama.",
+      "Po chvíľke hrania si oddýchni: vstaň, natiahni sa a napi sa vody."
+    ],
+    "mapTitle": "Tlačidlá na mape",
+    "levelTitle": "Tlačidlá v úrovni",
+    "icons": {
+      "players": "Vrátiš sa k výberu hráča.",
+      "settings": "Nastavenia. Tie patria rodičom.",
+      "sound": "Zvuk: normálny, potichu alebo vypnutý.",
+      "fullscreen": "Hra na celú obrazovku a zase späť.",
+      "help": "Táto pomoc.",
+      "pause": "Pauza. Rovnako ju zapne aj kláves Esc.",
+      "paw": "Labka ti ukazuje, či máš pomoc pripravenú: každé slovo bez chyby zaplní kúsok kruhu, po {n} slovách je labka nabitá. Stlač Enter, keď si zaseknutý, a {tapko} napíše za teba {words} slová.",
+      "ring": "Krúžok s číslom ukazuje, ktorá úroveň sveta je táto. Zelené kúsky sú hotové úrovne, oranžový je táto, prázdne ťa ešte čakajú. Pavučina je veľká výzva na konci sveta.",
+      "progress": "Pásik ukazuje, koľko z úrovne už máš za sebou.",
+      "gauge": "Zelený kruh ukazuje tvoj rytmus. Keď píšeš plynulo, naplní sa.",
+      "levelHelp": "Pomoc k úrovni: čo robiť a ako sa zlepšiť.",
+      "super": "Hviezda hore: super režim. Kliknutím ho vypneš.",
+      "read": "Čítanie nahlas: počítač ti slová prečíta.",
+      "guide": "Ukáže alebo skryje klávesnicu, ktorá radí, kam ide prst."
+    },
+    "cardTitle": "Tvoja karta na mape",
+    "card": [
+      "Klikni na svojho kamaráta a otvorí sa Môj postup: čo ti už ide a čo si ešte precvičiť.",
+      "Pokračovať spustí ďalšiu úroveň príbehu.",
+      "Vlastné cvičenie: krátke cvičenie na klávesy, ktoré si vyberieš.",
+      "Môj text: keď ti rodič pridá vlastný text, napíšeš ho celý po poradí.",
+      "Len chcem písať: píš, čo chceš, Ťapko sa prechádza po svete, ktorý si vyberieš, a ukáže, čo si napísal.",
+      "Kamarát a šatník: vyber si kamaráta a obleč ho do vecí, ktoré si získal.",
+      "Záchranné misie a Malí priatelia: objavia sa po prvom dokončenom príbehu.",
+      "Úloha na dnes: keď ti učiteľ pošle úlohu, nájdeš ju na karte. Po splnení ju odovzdáš."
+    ],
+    "progressTitle": "Môj postup",
+    "progress": [
+      "Kláves, svet a príbeh: koľko kláves ti ide dobre a rýchlo (aspoň 9 z 10 stlačení správne), koľko svetov a príbehov máš hotových.",
+      "Fajka je presnosť týchto kláves v percentách, šípky sú ich rýchlosť v znakoch za minútu.",
+      "V každom riadku príbehu sú jeho svety: hotové sú farebné, ostatné sivé, a hviezdičky z toho príbehu.",
+      "Môj postup má tri karty: Postup, Klávesy a Cvičenia.",
+      "Klávesy ukazujú, ktoré ti idú a ktoré si ešte precvičiť. Odtiaľ hneď spustíš cvičenie.",
+      "QR kód ukáže tvoj postup alebo cvičenie učiteľovi či rodičovi, stačí ho odfotiť."
+    ],
+    "moreTitle": "Záchranná misia a odznak",
+    "more": [
+      "Záchranná misia: krátka úloha, v ktorej pomôžeš malému kamarátovi. Otvorí sa, keď dokončíš prvý príbeh, a nájdeš ju na mape.",
+      "Odznak: dostaneš ho za dokončený svet. Čím viac hviezdičiek v svete zbieraš, tým je krajší: bronzový, strieborný, zlatý."
+    ],
+    "playTitle": "Ako hrať",
+    "play": [
+      "Napíš slovo, ktoré je na predmete. Potom ti uvoľní cestu.",
+      "Keď ti slovo ujde, nič zlé sa nestane. Príde ďalšie.",
+      "Hviezdičky dostaneš za presnosť: čím menej chýb, tým viac hviezdičiek.",
+      "Keď píšeš dobre, prídu nové písmenká.",
+      "Esc hru zastaví a ďalší Esc ju pustí ďalej."
+    ],
+    "journeyTitle": "Svety, úrovne a hviezdičky",
+    "journey": [
+      "Hra má príbehy. Každý príbeh má svety a každý svet má niekoľko úrovní.",
+      "Úrovne hráš po poradí. Na konci sveta ťa čaká veľká výzva.",
+      "Za každú úroveň dostaneš až tri hviezdičky. Čím menej chýb, tým viac hviezdičiek.",
+      "Úroveň môžeš hrať znova, keď chceš viac hviezdičiek.",
+      "Nové písmenká prídu, keď ti tie staré idú dobre. Niektoré úrovne a príbehy sa otvoria, až keď vieš dosť písmeniek.",
+      "Keď ti chýba písmenko, precvič ho vo Vlastnom cvičení."
+    ],
+    "taskTitle": "Úloha od učiteľa",
+    "task": [
+      "Učiteľ ti môže poslať úlohu ako odkaz. Otvor ho a vyber, kto ju bude robiť.",
+      "Na mape uvidíš Úlohu na dnes. Píš, kým neuplynie čas.",
+      "Keď je hotová, stlač Odovzdať a pošli učiteľovi odkaz s výsledkom."
+    ],
+    "settingsIntro": "Nastavenia sú pre rodičov. Otvoria sa ozubeným kolieskom na mape. Kým ich nezamknete heslom, otvorí ich jedna otázka.",
+    "settings": {
+      "settings": [
+        "Dieťa: meno, kamarát a jeho meno, jazyk a rozloženie klávesnice. Rozloženie vyberte podľa skutočnej klávesnice, sprievodca prstov sa podľa neho riadi.",
+        "Cvičenie: náročnosť a dĺžka slov. Automaticky rastú spolu s dieťaťom; ručne ich nastavíte, keď chcete.",
+        "Slová bez diakritiky pomôžu začiatočníkom na chvíľu. Bez časového tlaku veci zastanú a čakajú na dieťa.",
+        "Dĺžka hrania pred prestávkou: potom kamarát pozve dieťa na krátky oddych.",
+        "Sprievodca prstov: zmizne, keď sú klávesy zvládnuté, alebo je stále zapnutý či vypnutý. Môžete ho dieťaťu zamknúť.",
+        "Vzhľad a zvuk: písmo, veľký text, menej pohybu, vysoký kontrast, hlasitosť, celá obrazovka.",
+        "Heslo na nastavenia zamkne nastavenia pre všetkých hráčov na tomto zariadení. Zabudnuté heslo nevieme obnoviť."
+      ],
+      "own": [
+        "Vlastné slová: napríklad slovíčka na tento týždeň. Použijú sa aj s klávesmi, ktoré dieťa ešte nepozná.",
+        "Vlastný text: rozdelí sa na vety a časti. Na mape ho tlačidlo Môj text napíše celý po poradí.",
+        "Vlastné povzbudenia: kamarát ich občas povie.",
+        "Koľko vlastných slov a textu: aký diel cieľov v úrovniach budú tvoriť."
+      ],
+      "surprises": [
+        "Schovajte skutočnú odmenu za pravidlo: po úrovni, po minútach cvičenia, po ďalších úrovniach či hviezdičkách, alebo náhodou.",
+        "Kamarát sa na otázku spýta pred úrovňou a odpoveď prezradí, keď sa pravidlo splní."
+      ],
+      "task": [
+        "Pre učiteľa: vytvorte úlohu so slovami alebo textom a dĺžkou. Vznikne odkaz a QR kód.",
+        "Deti odkaz otvoria a po splnení vám pošlú odkaz s výsledkom. Výsledky si prezriete cez tlačidlo Pre učiteľov na úvodnej stránke."
+      ],
+      "keys": [
+        "Automaticky prídu klávesy po jednom, od základného radu F a J. To je najlepšie.",
+        "Ručne vyberiete, ktoré klávesy sa dieťa učí, aj interpunkciu."
+      ],
+      "dashboard": [
+        "Ako ide každý kláves, presnosť a rytmus v čase, čas hrania po dňoch a hotové úrovne.",
+        "Kartu s pokrokom si môžete vytlačiť."
+      ],
+      "data": [
+        "Všetko je uložené len v tomto prehliadači. Keď sa vymažú údaje prehliadača alebo sa pokazí počítač, pokrok sa stratí, ak nemáte zálohu.",
+        "Preto občas exportujte profil do súboru. Import ho načíta späť alebo na inom zariadení.",
+        "Preniesť na iný počítač: celý profil je v odkaze. Hosťovský profil sa zabudne po zatvorení karty."
+      ]
+    }
+  },
+  "tips": {
+    "sit-straight": "Seď rovno a chrbát si opri o operadlo.",
+    "feet-floor": "Chodidlá nech sú celé na zemi alebo na podstavci.",
+    "elbows-close": "Lakte maj pri tele, nech ti ruky nelietajú do strán.",
+    "right-angles": "Lakte aj kolená ohni asi do pravého uhla.",
+    "sit-higher": "Sedíš nízko? Podlož si vankúšik.",
+    "screen-distance": "Obrazovku maj asi na dĺžku natiahnutej ruky.",
+    "screen-height": "Obrazovka nech je v úrovni očí, krk ostane uvoľnený.",
+    "relax-shoulders": "Spusti ramená, vydýchni a uvoľni ruky.",
+    "wrists-float": "Zápästia nechaj ľahko vo vzduchu, nie ohnuté.",
+    "no-palms": "Neopieraj sa dlaňami o stôl, ruky nech sú ľahké.",
+    "soft-touch": "Kláves stačí stlačiť jemne, nemusíš búchať.",
+    "thumbs-rest": "Palce nechaj voľne nad medzerníkom.",
+    "fj-bumps": "Nahmataj si výstupky na F a J, tam ležia ukazováky.",
+    "home-row": "Domov je stredný rad: A S D F a J K L.",
+    "return-home": "Po každom písmenku pošli prst domov.",
+    "one-finger": "Každé písmenko má svoj prst, vždy ten istý.",
+    "index-two": "Ukazováky majú najviac práce, každý zvládne dva stĺpce.",
+    "middle-ei": "Na E a I siahne prostredník a hneď sa vráti.",
+    "pinky-p": "Na P siahne pravý malíček, potom späť na L.",
+    "ring-finger": "Prstenník je šikovný: S, L, W aj bodka sú jeho.",
+    "reach-t": "Na vzdialené T sa natiahni ukazovákom a vráť sa na F.",
+    "feel-center": "Mier do stredu klávesu, aj bez pozerania.",
+    "thumb-space": "Medzerník stláčaj palcom, ktorý práve nepísal.",
+    "shift-opposite": "Veľké písmeno? Shift stlač malíčkom opačnej ruky.",
+    "capital-a": "Veľké A píšeš ľavou rukou, preto Shift stlač pravým.",
+    "yz-swap": "Na slovenskej klávesnici je Z hore a Y dole.",
+    "z-finger": "Z píše pravý ukazovák, Y ľavý malíček.",
+    "number-row": "Pod číslami sú ľ š č ť ž ý á í é, číslo dáš so Shiftom.",
+    "number-fingers": "Horný rad píšeš tým istým prstom ako písmená pod ním.",
+    "dead-keys": "Čiarku alebo mäkčeň stlač najprv, až potom písmenko.",
+    "caron-shift": "Mäkčeň je ten istý kláves ako čiarka, ale so Shiftom.",
+    "accent-pinky": "Klávesy ú ä ô ň patria pravému malíčku.",
+    "diacritics-fun": "Slovenské znaky sú malé čaro. Ty sa ho učíš!",
+    "eyes-screen": "Pozeraj na obrazovku, prsty cestu nájdu samy.",
+    "no-peeking": "Chceš kuknúť na klávesnicu? Radšej si predstav prst.",
+    "rest-eyes": "Občas sa pozri z okna, aj oči si chcú oddýchnuť.",
+    "accuracy-first": "Najprv presne, rýchlosť príde sama.",
+    "steady-beat": "Píš v rovnakom rytme, ako keď ťukáš do pesničky.",
+    "slow-down": "Robíš veľa chýb? Spomaľ a pôjde to lepšie.",
+    "hard-word": "Zradné slovo napíš párkrát po sebe, najprv pomaly.",
+    "mistakes-ok": "Chyba nevadí, z každej sa niečo naučíš.",
+    "patience": "Zdá sa ti, že sa nezlepšuješ? To je normálne, vydrž.",
+    "short-sessions": "Viac krátkych cvičení je lepších ako jedno dlhé.",
+    "stretch-fingers": "Roztiahni prsty, zovri päste a znova ich otvor.",
+    "stretch-wrist": "Ohni zápästie a druhou rukou ho jemne potlač.",
+    "take-break": "Po pár minútach vstaň, natiahni sa a napi sa vody.",
+    "celebrate": "Dobrá práca! Tvoj kamarát má z teba radosť.",
+    "listen-whole": "Najprv si vypočuj celé slovo, potom ho napíš.",
+    "listen-again": "Chceš to počuť ešte raz? Ťukni na slovo a zaznie znova.",
+    "listen-sounds": "Potichu si slovo povedz, písmenko po písmenku.",
+    "remember-picture": "Pozri sa na celé slovo ako na obrázok, kým sa skryje.",
+    "remember-wait": "Počkaj, kým sa slovo skryje, a napíš ho z pamäti.",
+    "remember-slip": "Nevieš si spomenúť? Po chybe sa slovo na chvíľu ukáže znova."
+  },
+  "super": {
+    "badge": "Superrežim: všetko odomknuté. Kliknutím ho ukončíš."
+  },
+  "keys": {
+    "space": "medzerník",
+    "shiftL": "ľavý Shift",
+    "shiftR": "pravý Shift"
+  },
+  "names": [
+    "Ema",
+    "Eva",
+    "Ela",
+    "Jano",
+    "Ivo",
+    "Oto",
+    "Lea",
+    "Ina",
+    "Nela",
+    "Nina",
+    "Kika",
+    "Tina",
+    "Hana",
+    "Jana",
+    "Dana",
+    "Rita",
+    "Zuza",
+    "Mia",
+    "Lili",
+    "Sára",
+    "Adam",
+    "Filip",
+    "Matej",
+    "Juro",
+    "Rado",
+    "Fero",
+    "Laco",
+    "Milo",
+    "Tono",
+    "Peter",
+    "Kamil",
+    "Igor",
+    "Dodo",
+    "Olo",
+    "Sofia",
+    "Simona",
+    "Viera",
+    "Lucia",
+    "Oliver",
+    "Jakub"
+  ],
+  "share": {
+    "link": "Odkaz",
+    "copy": "Kopírovať odkaz",
+    "copyCode": "Kopírovať kód",
+    "copied": "Skopírované.",
+    "qr": "QR kód odkazu",
+    "noQr": "Odkaz je na QR kód príliš dlhý, skopírujte ho.",
+    "broken": "Odkaz je poškodený alebo neúplný. Skúste ho skopírovať celý ešte raz.",
+    "brokenTitle": "Tento odkaz sa nedá otvoriť",
+    "reading": "Čítam odkaz…"
+  },
+  "teacher": {
+    "title": "Pre učiteľov",
+    "intro": "Najrýchlejšie je skenovať QR kódy z obrazoviek detí kamerou: napíšte skupinu (napríklad triedu), zapnite skenovanie a obíďte triedu. Každý nový kód sa zapíše do tejto skupiny. Môžete tiež otvoriť alebo vložiť odkaz s výsledkom.",
+    "paste": "Odkaz s výsledkom",
+    "pastePlaceholder": "Vložte odkaz s výsledkom",
+    "add": "Pridať",
+    "added": "Pridaný výsledok: {name}, {title}.",
+    "already": "Tento výsledok tu už je: {name}, {title}.",
+    "notIntact": "Kontrolný súčet nesedí, odkaz bol asi pri kopírovaní poškodený.",
+    "removeTitle": "Odstrániť výsledok?",
+    "removeText": "Výsledok {name} z úlohy {title} sa z tejto tabuľky odstráni.",
+    "remove": "Odstrániť",
+    "empty": "Zatiaľ tu nie sú žiadne výsledky. Pridajte ich jedným z troch spôsobov:",
+    "csv": "Stiahnuť CSV",
+    "privacy": "Výsledky sú uložené len v tomto prehliadači. Nie sú tu žiadne účty a nič sa neposiela na server. Kontrolný súčet odhalí poškodený odkaz, nie podvádzanie.",
+    "col": {
+      "task": "Úloha",
+      "child": "Dieťa",
+      "date": "Dátum",
+      "minutes": "Minúty",
+      "accuracy": "Presnosť",
+      "rhythm": "Rytmus (znaky za minútu)",
+      "weak": "Najslabšie klávesy",
+      "broken": "Poškodený",
+      "group": "Skupina",
+      "level": "Levely",
+      "status": "Stav"
+    },
+    "count": "{n} výsledkov",
+    "all": "Všetky",
+    "noGroup": "Bez skupiny",
+    "groupFilter": "Filter skupiny",
+    "csvAll": "Stiahnuť CSV (všetko)",
+    "pick": "Vybrať: {name}",
+    "assign": "Priradiť do skupiny ({n})",
+    "assignPrompt": "Názov skupiny (prázdny ho zruší). Existujúce: {groups}",
+    "removePicked": "Odstrániť vybrané ({n})",
+    "removeManyTitle": "Odstrániť vybrané výsledky?",
+    "removeManyText": "Z tabuľky sa odstráni {n} výsledkov.",
+    "way": {
+      "scan": "Skenovať QR kódy z obrazoviek detí kamerou.",
+      "paste": "Vložiť odkaz s výsledkom do políčka vyššie.",
+      "open": "Otvoriť odkaz s výsledkom v tomto prehliadači."
+    },
+    "scan": {
+      "start": "Skenovať kamerou",
+      "privacy": "Obraz z kamery sa nikam neposiela ani neukladá.",
+      "preview": "Obraz z kamery",
+      "camera": "Kamera",
+      "starting": "Zapínam kameru...",
+      "many": "Namier kameru na jeden alebo viac QR kódov.",
+      "one": "Zamier na jeden kód.",
+      "done": "Hotovo",
+      "collected": "Načítané",
+      "updated": "aktualizované",
+      "unknown": "Neznámy kód",
+      "undo": "Zrušiť tento výsledok",
+      "error": {
+        "denied": "Prístup ku kamere nie je povolený. Povoľte ho v nastaveniach prehliadača.",
+        "none": "Nenašla sa žiadna kamera.",
+        "insecure": "Kamera funguje len na zabezpečenej stránke (HTTPS).",
+        "failed": "Kameru sa nepodarilo zapnúť."
+      },
+      "group": "Skupina pre tento sken",
+      "groupPlaceholder": "Skupina, napríklad 5.A"
+    },
+    "summary": "zvládli {ok} z {n}, presnosť {accuracy} %, rytmus {rhythm}, dokončené levely {levels}",
+    "status": {
+      "ok": "zvládnuté",
+      "practice": "viac cviku"
+    }
+  },
+  "task": {
+    "importTitle": "Nová úloha",
+    "whoTakes": "Kto bude úlohu robiť?",
+    "untitled": "Úloha",
+    "kind": {
+      "practice": "Vlastné cvičenie so slovami úlohy",
+      "story": "Príbeh so slovami úlohy"
+    },
+    "today": "Úloha na dnes",
+    "left": "Zostáva {n} min",
+    "start": "Začať úlohu",
+    "continue": "Pokračovať v úlohe",
+    "doneToday": "Úloha je splnená!",
+    "handIn": "Odovzdať",
+    "handInTitle": "Odovzdať úlohu",
+    "handInText": "Pošli tento odkaz učiteľovi, napríklad cez Edupage alebo e-mail.",
+    "checksumNote": "Odkaz obsahuje meno, úlohu, čas, presnosť, rytmus a päť najslabších kláves. Kontrolný súčet odhalí poškodený odkaz, nie podvádzanie.",
+    "doneLine": "Úloha „{title}“ je splnená. Odovzdaj ju učiteľovi.",
+    "leftLine": "Úloha „{title}“: zostáva ešte {n} min.",
+    "group": "Skupina (nepovinné)",
+    "intro": "Úloha je odkaz. Pošlite ho deťom (napríklad cez Edupage); kto ho otvorí, vyberie si hráča a na mape uvidí Úlohu na dnes. Po splnení vám dieťa pošle odkaz s výsledkom.",
+    "title": "Názov úlohy",
+    "titlePlaceholder": "Napríklad: Zvieratá na farme",
+    "minutes": "Dĺžka",
+    "kindLabel": "Čo sa bude hrať",
+    "make": "Vytvoriť odkaz",
+    "needContent": "Napíšte aspoň jedno slovo alebo text.",
+    "linkTitle": "Odkaz na úlohu",
+    "linkHint": "Skopírujte odkaz alebo ukážte QR kód. Údaje sú v samotnom odkaze, nikde sa neukladajú.",
+    "giveHere": "Dať úlohu aj hráčovi {name}",
+    "doneAt": "splnená {date}",
+    "played": "{n} z {total} min",
+    "none": "Tento hráč zatiaľ nemá žiadne úlohy.",
+    "bigCode": "Ukázať veľký kód",
+    "groupPlaceholder": "Napríklad: 5.A",
+    "groupHint": "Učiteľ podľa nej v tabuľke zoskupí výsledky."
+  },
+  "move": {
+    "button": "Preniesť na iný počítač",
+    "title": "Preniesť na iný počítač",
+    "text": "Otvorte tento odkaz na druhom počítači a hráč {name} sa tam načíta aj s pokrokom.",
+    "privacy": "Celý profil je v samotnom odkaze. Pošlite ho len sebe alebo rodine.",
+    "tooLong": "Tento profil je na odkaz príliš veľký. Exportujte ho do súboru a súbor načítajte na druhom počítači.",
+    "importTitle": "Hráč z iného počítača",
+    "importText": "Načítať hráča {name} ({n} hviezdičiek) do tohto prehliadača?"
+  },
+  "install": {
+    "title": "Inštalácia na plochu",
+    "text": "TapkoTyper si môžeš nainštalovať ako webovú aplikáciu. Otvorí sa vo vlastnom okne, nemusíš spúšťať celý prehliadač, keď chceš chvíľu písať.",
+    "button": "Nainštalovať",
+    "later": "Nie teraz"
+  },
+  "friends": {
+    "title": "Malí priatelia",
+    "dragons": "Dráčiky",
+    "robots": "Robotíci",
+    "firstDragon": "Môj prvý dráčik",
+    "bolt": "Šróbik",
+    "empty": "Choď na záchrannú misiu a spoznáš nových malých priateľov.",
+    "forests": "Lesní priatelia",
+    "melody": "Melódia"
+  },
+  "robotNames": [
+    "Bip",
+    "Zip",
+    "Kolík",
+    "Dioda",
+    "Pružinka",
+    "Matička",
+    "Bzzz",
+    "Čip",
+    "Skrutkáčik",
+    "Iskrička",
+    "Volt",
+    "Pixel",
+    "Bubo",
+    "Gombík",
+    "Tik",
+    "Tak",
+    "Lampáš",
+    "Klik",
+    "Rolka",
+    "Pípo"
+  ],
+  "forestNames": [
+    "Pípa",
+    "Iskrička",
+    "Pierko",
+    "Lúčik",
+    "Čvirik",
+    "Svetielko",
+    "Pipi",
+    "Hviezdička",
+    "Ťuťu",
+    "Blikotka",
+    "Červienka",
+    "Žiarka",
+    "Trilko",
+    "Muška",
+    "Vrabčik",
+    "Jasanka"
+  ]
+}

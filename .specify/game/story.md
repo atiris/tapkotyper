@@ -1,0 +1,135 @@
+# Story
+
+## What
+The child travels through worlds grouped into stories. Each world has several short
+levels and ends with a super-obstacle and a reward that opens the next world. Short,
+skippable intro scenes (a few lines of text and a simple animation) tell the story.
+
+### Story 1: Tapko and the Dragon Egg
+
+1. **Training Meadow** - the meadow creatures play catch with Tapko, the goalkeeper. A bee,
+   butterfly, ladybug, fly or mouse brings a leaf with a word and sends it toward Tapko; a
+   typed word lets his fan blow the leaf back to its creature, which catches it and goes
+   home. A leaf not typed in time flies past him: a goal, everybody cheers (a "GOAL!" pop,
+   confetti and the creature's joy, but no words from Tapko, which would nag), so a miss is
+   a laugh, not a failure. The leaf size shows the word length at a glance. Animals are
+   never the target of anything (no webs, nets or swatters): even soft hitting or catching
+   is the wrong message for small children; playing with them is better.
+   Super-obstacle: a hedgehog throws volleys of leaves from its back.
+   Reward: a secret invitation to space; the child meets **Tapko**.
+2. **Space Rocket Flight** - typing rhythm drives the rocket speedometer; a soft energy
+   beam pushes asteroids and planets out of the path. Super-obstacle: fractured asteroid.
+   Reward: landing clearance.
+3. **New Planet** - typing builds stepping stones across a swamp and picks the right path
+   at road signs (each sign shows a word). Super-obstacle: cracking boulder / rock
+   labyrinth. Reward: **Telekinesis (the Force)**.
+4. **Dragon Domain** - the Force and gentle shield fields divert falling space rocks away
+   from baby dragons. Super-obstacle: rolling energy wave. Reward: a **Dragon Egg**.
+5. **Egg Journey** - the hatching egg rolls downhill; typing makes it jump over rocks and
+   stumps. Super-obstacle: a friendly mole. Reward: a new companion hatches and
+   **endless rescue missions** unlock (replayable, generated from all worlds).
+
+### Story 2: Tapko and Bolt the Robot
+A more technical story for children who like machines. **Bolt** (Šróbik in Slovak), a
+small robot, walks next to Tapko in every level of this story, a second figure that never
+replaces Tapko: rusty and broken in the junkyard, repaired after it, with new legs and a
+bright antenna after the workshop, in a yellow raincoat after the rainy town. He looks
+worried at a mistake and happy at a finished word.
+
+6. **Junkyard** - Bolt beeps sadly under a pile of old things. Typed junk (tires, crates,
+   cans, springs) is lifted away by a soft magnet crane, untyped junk slides aside; the
+   pile over Bolt shrinks through the world. Super-obstacle: a big tangled cable knot,
+   untied piece by piece. Reward: Bolt climbs out, can only beep his thanks, and he and
+   Tapko are friends.
+7. **Workshop** - parts (gears, bolts, wheels, springs, an antenna) ride on a conveyor
+   belt; a typed part lands in Bolt's basket, the others ride on. Super-obstacle: Bolt's
+   battery, charged bar by bar by a steady rhythm. Reward: new legs and antenna.
+8. **Rain** (Dážď) - raindrops fall toward Bolt, who must not rust; a typed drop is caught
+   under Tapko's umbrella, a missed one lands on Bolt, who shakes like a dog and giggles
+   (no failure). Super-obstacle: a grumpy storm cloud calmed by rhythm. Reward: a raincoat
+   for Bolt and an umbrella for Tapko.
+9. **City** (Mesto) - locked doors with one to three password panels; typing every panel's
+   password opens the door with a chime. Super-obstacle: the main gate, whose long code
+   must be typed without a single mistake. Reward: Bolt's home key card.
+10. **Home** (Domov) - dark rooms; each typed word switches on a lamp and wakes a helper
+    robot that waves. Super-obstacle: Bolt's family welcome, little robots popping out of
+    boxes (like the friendly mole). Reward: the family thanks Tapko, and rescue missions
+    also repair little robots.
+
+### Story 3: Tapko and Melody the Fairy
+A gentle, musical story that is meant to appeal more to girls than the technical robot
+story, while staying open to every child, and the story where listening and remembering
+make sense: the forest has forgotten its songs and fell quiet, and each world brings one
+song back. **Melody** (Melódia in Slovak), a small fairy with shimmering wings, floats
+next to Tapko in every level, a second figure like Bolt that never replaces Tapko. She sings
+the words she dictates, looks curious at a mistake and twirls at a finished word, and has
+a short line at the start of a level, after repeated mistakes and at its end.
+
+11. **Garden** (Záhrada) - closed buds stand along the path; a typed word opens a bud,
+    which hums one note (copy typing). Super-obstacle: the big sleeping flower, woken by
+    six short dictated words, the first taste of listening. Reward: the garden's song and
+    a flower wreath for Tapko.
+12. **Path** (Cestička) - birds on branches sing their words (dictation); a typed word
+    lets the bird fly along with Tapko, a missed one keeps singing in its tree. Super-
+    obstacle: the owl's riddles, short sentences dictated word by word. Reward: a feather.
+13. **Lake** (Jazero) - a word is reflected on the water, then a ripple washes it away
+    (memory); a word typed from memory makes a lily bloom and a frog hop across.
+    Super-obstacle: the long reflection, a whole sentence shown once and typed word by
+    word from memory. Reward: a water lily.
+14. **Tree** (Strom) - notes hang on the music tree; some sing (dictation), some glow and
+    fade (memory), in turns; a typed note flies up and the tree plays. Super-obstacle:
+    the tree's song, dictated short words to a calm steady beat. Reward: a little harp.
+15. **Ball** (Ples) - fireflies drift down carrying short sentences of three to six words
+    that Melody sings; each typed one lights the dance floor more. Super-obstacle: the
+    last song, short sentences dictated one after another, and at the end the whole
+    forest sings. Reward: the forest thanks Tapko and Melody gives him fairy wings; rescue
+    missions also guide little forest friends (baby birds and fireflies) home.
+
+The first level of the path and the lake starts with single short words. Without a voice
+for the language the dictation worlds play as copy typing and the tree as memory, so the
+story stays playable in any browser ([mechanics](mechanics.md)).
+
+### All stories
+- Story 2 opens when the child knows 10 keys, story 3 at 20; from then on the stories go
+  on independently. Lesson keys do not depend on stories, and later stories' levels need
+  more keys ([lesson progression](../learning/lesson-progression.md)), since their words
+  are harder; listening and remembering need richer words, so story 3 comes later than
+  the robot story.
+- Worlds of a story unlock in order; finished levels can always be replayed. A level also
+  needs a few known keys ([lesson progression](../learning/lesson-progression.md)).
+- On the map each story is one row with its name above its world cards, left aligned with
+  the first card; a closed story shows when it opens. World numbers run on across stories.
+- Rescue missions open with the first finished story and are drawn from the finished
+  stories only. The friend met in a mission follows its story: a dragon, a little robot
+  or a little forest friend; missions of story 3 keep its way of typing (listening,
+  remembering or both). They collect on the **Little friends** screen, one group per
+  story.
+- Every level can be finished by any child: obstacles that are not cleared in time just
+  pass by or are helped by Tapko; they never cause failure.
+- World names are short words a young child reads at once, at most 12 characters (Lúka,
+  Raketa, Planéta, Údolie, Vajíčko, Dážď, Mesto, Domov, Jazero); the scenes use the longer
+  names (the Lily Lake).
+
+### World badges
+- Every finished world gives a badge to collect, a round medal with the world's picture:
+  meadow an invitation envelope, space a rocket, planet a glowing hand (the Force),
+  dragons a dragon egg, egg journey the hatched baby dragon, junkyard Bolt waving,
+  workshop a gear with a spring leg, rain an umbrella, city a key card, home a house with
+  a heart, garden a flower, path a feather, lake a lily, tree a note, ball a moon. The
+  story reward scenes stay; the badge comes in addition.
+- Its tier follows the world's stars (5 levels x 3): bronze when the world is done, silver
+  at 12 stars, gold at 15 (three stars everywhere). The tier is the colour of its ring.
+- The end screen says "New badge!" or "Your badge is silver / gold now!" when a level
+  earns or improves one. The badge sits in the corner of its world card on the map, and
+  the progress view has a badge shelf with a place for every world: earned ones in colour with
+  their tier, the others as grey outlines that say which world to finish.
+
+## Why
+- The story gives a reason to practice without competition; replayable rescue missions
+  give long-term variety without streak pressure.
+- More stories keep older children playing; typing passwords at locked doors fits a
+  typing game, and machines appeal to children whom dragons do not.
+- A gentle, musical story speaks to children whom machines do not, and a forest that has
+  forgotten its songs gives listening (dictation) and remembering (memory) a reason.
+- Badges are things to collect, like the dragon egg, and a badge that grows with stars
+  gives replaying a finished world a goal.

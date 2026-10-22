@@ -90,14 +90,14 @@ new fields. No server, no DB.
 - [x] Schema, defaults, `newProfile`, migration v2 -> v3 with tests; `super.ts` limit off.
 - [x] `src/game/wardrobe-time.ts` with tests (share, cap, minimum, spend floor, faces at
       91/90/81/80/11/10/1 s, practice to open); earning in `recordSession` with a test.
-- [ ] `timer` round kind, `smile` icon, blink classes and reduced-motion variant in
+- [x] `timer` round kind, `smile` icon, blink classes and reduced-motion variant in
       `src/ui/hud.ts`, `src/ui/dom.ts`, `src/styles.css`.
-- [ ] Wardrobe: lock decision on entry, countdown with pause and saves, locked view with the
+- [x] Wardrobe: lock decision on entry, countdown with pause and saves, locked view with the
       message, clickable character, random outfit button; cleanup on leave.
-- [ ] Parent switch with hint and balance; i18n sk + en (wardrobe, parent, help texts).
-- [ ] Specs: `.specify/companion/*` (wardrobe time, countdown, lock, character click, random
+- [x] Parent switch with hint and balance; i18n sk + en (wardrobe, parent, help texts).
+- [x] Specs: `.specify/companion/*` (wardrobe time, countdown, lock, character click, random
       outfit), `.specify/profiles/parent-controls.md` (the switch), `.specify/experience/help.md`.
-- [ ] `npm run build`, `npm test`, `npx playwright test` pass; an e2e test opens the
+- [x] `npm run build`, `npm test`, `npx playwright test` pass; an e2e test opens the
       wardrobe with a seeded balance of 25 s and sees it lock (clock mocked with
       `page.clock`).
 - [ ] Drive the app with the playwright MCP: new player -> wardrobe locked with the message;
@@ -105,3 +105,9 @@ new fields. No server, no DB.
       opens, smile shown; at 90 s the number 9; blinking at 20 s and faster at 10 s; at 0 the
       controls lock and the character still reacts to clicks; random outfit leaves some areas
       empty over several clicks; parent switch off -> no timer, unlocked; console clean.
+
+## State
+- Decisions taken while implementing: the timer is hidden while locked (entry or at 0), the
+  locked line sits under the character; specs in a new `.specify/companion/wardrobe.md`; the
+  e2e seeds 25 s (locked at entry) and 95 s (counts down to the lock with `page.clock`); the
+  help lists the timer among the map's buttons.

@@ -24,7 +24,8 @@
   place for everyone: the flower wreath (world 1), the umbrella (world 8), the raincoat
   (a level of world 9), the feather (world 12), the harp (world 14) and the fairy wings
   (world 15). One item per body area (head, eyes, neck, body, back, hand, feet); the child
-  mixes them freely in the "Me and my wardrobe" screen.
+  mixes them freely in the "Me and my wardrobe" screen, for a time earned by practice
+  ([wardrobe time](wardrobe.md)).
 - In the same screen the child sets the nickname (up to 16 characters, may be empty) and
   picks another animal kind. Other kinds are earned by stars over all levels, slowly:
   about one new animal per two worlds. Every player gets their own order and prices, set

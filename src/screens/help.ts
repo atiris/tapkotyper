@@ -3,7 +3,7 @@ import { t, tList } from '../i18n/i18n';
 import { captureKeys } from '../game/cards';
 import { PAW_MAX, PAW_STREAK, PAW_WORDS } from '../game/paw';
 import { type Child, ICONS, closeButton, h, icon } from '../ui/dom';
-import { levelRing, pawRing, rhythmPic, roundPic } from '../ui/hud';
+import { levelRing, pawRing, rhythmPic, roundPic, timerPic } from '../ui/hud';
 import { tabBar } from '../ui/tabs';
 
 const TABS = ['ui', 'typing', 'progress', 'settings', 'about'] as const;
@@ -30,6 +30,7 @@ function mapIcons(): HTMLElement[] {
     iconLine(round('sound'), t('help.icons.sound')),
     iconLine(round('fullscreen'), t('help.icons.fullscreen')),
     iconLine(round('help'), t('help.icons.help')),
+    iconLine(timerPic(150).el, t('help.icons.timer')),
   ];
 }
 

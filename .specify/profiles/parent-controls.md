@@ -18,6 +18,10 @@
   A parent who sets the value by hand turns its automatic mode off. Each automatic mode is
   its own switch with a title ("Automatic difficulty", "Automatic word length") and one short
   line; the note about the slow start sits under the difficulty slider.
+- **Wardrobe time earned by practice** (on by default) is a switch in the practice group,
+  with the rule in one line (1 minute in the wardrobe for 5 minutes of practice, at most 7
+  minutes) and the child's current balance; turned off, the wardrobe is always open
+  ([wardrobe time](../companion/wardrobe.md)).
 - The **child** section shows the character's picture (with its accessories) beside the
   child's name, then the character kind picked from a picture list and the nickname (up to
   16 characters; empty means the child's name). A kind picked here is granted at once.

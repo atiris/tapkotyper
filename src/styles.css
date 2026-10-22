@@ -94,6 +94,10 @@ p { line-height: 1.5; }
 .round-btn.rhythm { --rb: #2f8a4c; --rb-ring: #4fb57a; cursor: default; }
 .round-btn.super { --rb: #b07a0e; --rb-ring: #b07a0e; }
 .round-btn.place { --rb: #4a6fa5; --rb-ring: #4fb57a; cursor: default; }
+.round-btn.timer { --rb: #1f8a86; --rb-ring: #3cc0b8; cursor: default; }
+.round-btn.timer.ending { animation: timer-blink 1s ease-in-out infinite; }
+.round-btn.timer.ending.fast { animation-duration: 0.4s; }
+@keyframes timer-blink { 50% { opacity: 0.35; } }
 .rb-base { fill: none; stroke: #efe4d6; stroke-width: 4; }
 .rb-disc { fill: var(--rb); }
 .rb-arc { fill: none; stroke: transparent; stroke-width: 4; stroke-linecap: round; transition: stroke-dasharray 0.4s ease; }
@@ -600,6 +604,11 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .kind .lock { top: 18px; left: 50%; transform: translateX(-50%); width: 40px; height: 40px; }
 .wardrobe-preview { background: radial-gradient(circle at 50% 60%, #fff, rgba(255, 255, 255, 0.4) 70%); border-radius: 30px; display: flex; flex-direction: column; align-items: center; padding: 1rem; position: sticky; top: 1rem; align-self: start; }
 .wardrobe-grid { display: grid; gap: 1rem; align-content: start; }
+.wardrobe-tapko { border: 0; padding: 0; background: none; border-radius: 30px; cursor: pointer; }
+.wardrobe-tapko:focus-visible { outline: 3px solid var(--brand); outline-offset: 4px; }
+.wardrobe-tapko .tapko-stack.jump { animation: jump 0.6s ease; }
+.wardrobe-preview .row { justify-content: center; }
+.wardrobe-locked { max-width: 300px; text-align: center; font-weight: 600; color: var(--ink-soft); }
 @media (min-width: 1100px) { .wardrobe-grid { grid-template-columns: 1fr 1fr; } }
 .slot { background: rgba(255, 255, 255, 0.6); border-radius: 20px; padding: 0.8rem 1rem; }
 .slot h3 { font-size: 1rem; margin-bottom: 0.4rem; }
@@ -767,6 +776,8 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-dark); }
 
 /* Reduce motion */
 body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after { animation-duration: 0.001s !important; animation-iteration-count: 1 !important; transition-duration: 0.001s !important; }
+/* The wardrobe's ending time turns orange instead of blinking. */
+body.reduce-motion .round-btn.timer.ending { --rb: #d9661f; --rb-ring: #ff8a3d; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.001s !important; animation-iteration-count: 1 !important; transition-duration: 0.001s !important; }
 }

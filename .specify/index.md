@@ -27,6 +27,6 @@ feet and "tap" is a key press. An earlier working name was dropped for an unwant
 - [architecture.md](architecture.md) - platform and technical constraints
 - [learning/](learning/index.md) - keyboard layouts, lessons, words, finger guide, feedback
 - [game/](game/index.md) - story, the five worlds, mechanics, super-obstacles
-- [companion/](companion/index.md) - the character the child plays as, accessories, rewards
+- [companion/](companion/index.md) - the character the child plays as, accessories, rewards, wardrobe time
 - [profiles/](profiles/index.md) - profiles, guest, parent controls, statistics, export
 - [experience/](experience/index.md) - localization, visuals, audio, accessibility, pacing, privacy, offline

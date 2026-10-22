@@ -1,10 +1,11 @@
 import { app } from '../app/app';
 import { WORLDS, type LevelDef, worldLevels } from '../game/levels';
+import { WARDROBE_MAX, countdownFace } from '../game/wardrobe-time';
 import { t } from '../i18n/i18n';
 import { ICONS, h } from './dom';
 
-/** Colors of the round buttons: controls purple, paw orange, rhythm green, the super star gold, the place in the world blue. */
-export type RoundKind = 'control' | 'paw' | 'rhythm' | 'super' | 'place';
+/** Colors of the round buttons: controls purple, paw orange, rhythm green, the super star gold, the place in the world blue, the wardrobe's time teal. */
+export type RoundKind = 'control' | 'paw' | 'rhythm' | 'super' | 'place' | 'timer';
 
 const RING_LEN = 2 * Math.PI * 21;
 /** Glyphs drawn filled in white; the others are white lines. */
@@ -100,6 +101,32 @@ export function rhythmPic(): { el: HTMLElement; set(ratio: number): void; label(
       el.setAttribute('aria-label', text);
     },
   };
+}
+
+/**
+ * The wardrobe's countdown (a picture, not a button): the ring shows the time left; inside a
+ * smile, then a number a young child can read; it blinks the last 20 s, faster the last 10 s.
+ */
+export function timerPic(left: number): { el: HTMLElement; set(left: number): void } {
+  const el = h('div', { class: 'round-btn timer', role: 'timer' });
+  // The picture changes only with the 10 s step; the label follows every second.
+  let step = -1;
+  const set = (secs: number) => {
+    const s = Math.max(0, Math.ceil(secs));
+    const label = t('wardrobe.timer', { m: Math.floor(s / 60), s: s % 60 });
+    el.title = label;
+    el.setAttribute('aria-label', label);
+    el.classList.toggle('ending', s <= 20);
+    el.classList.toggle('fast', s <= 10);
+    const next = Math.ceil(s / 10);
+    if (next === step) return;
+    step = next;
+    const face = countdownFace(s);
+    const ring = rhythmRing(s / WARDROBE_MAX);
+    el.innerHTML = face === 'smile' ? roundSvg('smile', ring) : roundFrame(ring, `<text class="rb-num" x="24" y="24">${face}</text>`);
+  };
+  set(left);
+  return { el, set };
 }
 
 /** "Meadow · level 3": a level named without a world number. */

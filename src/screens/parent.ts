@@ -223,6 +223,8 @@ function settingsTab(p: Profile): HTMLElement {
         s.autoWordLen, (v) => { s.autoWordLen = v; save(); }, t('parent.autoWordLen'), t('parent.autoWordLenHint')), undefined, 'div'),
       switchField(t('parent.noDiacritics'), check(s.noDiacritics, (v) => { s.noDiacritics = v; save(); }), t('parent.noDiacriticsHint')),
       switchField(t('parent.noTimePressure'), check(s.noTimePressure, (v) => { s.noTimePressure = v; save(); }), t('parent.noTimePressureHint')),
+      switchField(t('parent.wardrobeLimit'), check(s.wardrobeLimit, (v) => { s.wardrobeLimit = v; save(); }), t('parent.wardrobeLimitHint')),
+      h('p', { class: 'hint' }, t('parent.wardrobeBalance', { m: Math.floor(p.progress.wardrobeSeconds / 60), s: Math.floor(p.progress.wardrobeSeconds % 60) })),
       field(t('parent.sessionMinutes'), range(s.sessionMinutes, 5, 30, 5, (v) => { s.sessionMinutes = v; save(); }, (v) => t('parent.minutes', { n: v }))),
       field(t('parent.guide'), select(s.guide, [['auto', t('parent.guideAuto')], ['on', t('parent.guideOn')], ['off', t('parent.guideOff')]], (v) => { s.guide = v; save(); })),
       switchField(t('parent.guideLocked'), check(s.guideLocked, (v) => { s.guideLocked = v; save(); }))),

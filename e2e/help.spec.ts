@@ -10,8 +10,8 @@ test('help opens from the map and from a paused level and goes back', async ({ p
   await page.locator('.map-top .help-btn').click();
   const help = page.locator('.help-page');
   await expect(help.locator('.tab[aria-selected="true"]')).toHaveText('Buttons');
-  // Five map buttons and eleven level buttons (with the super star).
-  await expect(help.locator('.help-icons li')).toHaveCount(16);
+  // Five map buttons, the wardrobe countdown and eleven level buttons (with the super star).
+  await expect(help.locator('.help-icons li')).toHaveCount(17);
   expect(page.url()).toMatch(/\/help\/ui$/);
   await help.getByRole('tab', { name: 'How to type' }).click();
   await expect(help.locator('h2', { hasText: 'How to type' })).toBeVisible();

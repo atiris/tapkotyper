@@ -6,7 +6,7 @@ Design (canvas, 8 artboards): https://claude.ai/artifact/MZ63iMmoi8n2XYymnakUbn 
 with the keyboard gate, top bar at three widths, phone scan, phone results list, phone child
 card, desktop table, the two QR codes. The design wins where this text is silent.
 
-Affected: `src/screens/{start,teacher,teacher-scan,stats,task}.ts`, `src/ui/{chrome,big-code,
+Affected: `src/screens/{start,teacher,teacher-scan,stats,task,free-type}.ts`, `src/ui/{chrome,big-code,
 hud,dom}.ts`, new `src/ui/menu.ts`, new `src/app/keyboard-gate.ts`, `src/app/app.ts` (route
 guard), `src/share/teacher.ts` (sort, per-child view), `src/audio/audio.ts`, `src/styles.css`,
 `public/i18n/{sk,en}.json`, `e2e/{layout,teacher-scan,teacher-links,styles}.spec.ts` + a new
@@ -49,6 +49,9 @@ Contracts: none (no storage, link or QR payload change). No server, no DB.
    still closes it. The frame's inner padding and the gaps between caption, code and buttons
    are one and the same size.
 6. **Sound on phones** plays (it does not today; that is a bug, not intended).
+7. **The place-in-the-world button in a story level** (number of the level inside a ring
+   of segments, one per level of the current world) looks like the other round buttons of
+   the level bar, e.g. the rhythm ring: a white circle, the same size, no square-ish frame.
 
 ## Why
 - The game needs a real keyboard; a child on a phone without one should learn that before
@@ -61,6 +64,7 @@ Contracts: none (no storage, link or QR payload change). No server, no DB.
   questions a teacher actually has ("who needs help", "how is Jakub doing").
 - The child's name first and one clear close button make the QR screen self-explaining;
   equal spacing makes it calm.
+- The level bar is one family of round buttons; one odd button looks broken.
 
 ## Decisions
 - **Keyboard gate** (`src/app/keyboard-gate.ts`):
@@ -146,6 +150,13 @@ Contracts: none (no storage, link or QR payload change). No server, no DB.
   one silent 1-frame buffer and retry `play()` of a waiting music element. The listeners
   are removed once `ctx.state === 'running'`. Note in the spec: the iPhone's silent switch
   mutes web audio by design.
+- **Place ring look** (`src/styles.css`, `src/screens/free-type.ts`): the free-typing place
+  picker's tile class `.place` (`styles.css` around line 372: padding, `border-radius: 18px`,
+  translucent background, grid) also matches the level bar's `round-btn place` and, being
+  later in the file, overrides `.round-btn`. Rename the picker tiles to `.place-tile` (rules
+  and the `class` in `free-type.ts`); the round kind stays `place`. An e2e check in
+  `e2e/styles.spec.ts` compares the computed `border-radius`, `padding` and size of the
+  place ring with the rhythm ring in a story level.
 - **Help**: the unified help mentions the Menu button on small screens and the keyboard
   requirement.
 - All new texts in sk and en; Slovak without gendered second-person past tense.
@@ -162,6 +173,7 @@ Contracts: none (no storage, link or QR payload change). No server, no DB.
 - [ ] Child card view with route param, tiles, weak keys, tasks, move and remove.
 - [ ] `bigCode` layout, caption with the name, two buttons, equal spacing; callers; e2e.
 - [ ] Audio unlock on touch gestures.
+- [ ] Place ring look: rename the picker tile class, e2e style check against the rhythm ring.
 - [ ] i18n sk + en; specs (`ui-rules.md` widths and menu, new `devices.md` keyboard gate,
       `teacher-links.md` sorting, child card and phone scan, `help.md`), `index.md` line.
 - [ ] `npm run build`, `npm test`, `npx playwright test` pass.
@@ -170,7 +182,8 @@ Contracts: none (no storage, link or QR payload change). No server, no DB.
       760 px, title fits at 320 px; teacher: paste three result links, sort by accuracy and
       rhythm on both layouts, open a child card and come back with Back; scan with the
       fake camera from `e2e/teacher-scan.spec.ts` and see the preview and Hotovo in view
-      with the counter; both QR screens show the name first and close by a click anywhere
+      with the counter; in a story level the place ring looks like the rhythm ring, and the
+      free-typing place picker tiles look as before; both QR screens show the name first and close by a click anywhere
       and by the button; console clean, no 404s.
 - [~] Real iPhone/Android sound check: the playwright MCP cannot play audio on a real
       phone; done by the user when trying the deployed build.

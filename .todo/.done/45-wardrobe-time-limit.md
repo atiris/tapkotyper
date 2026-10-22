@@ -100,7 +100,7 @@ new fields. No server, no DB.
 - [x] `npm run build`, `npm test`, `npx playwright test` pass; an e2e test opens the
       wardrobe with a seeded balance of 25 s and sees it lock (clock mocked with
       `page.clock`).
-- [ ] Drive the app with the playwright MCP: new player -> wardrobe locked with the message;
+- [x] Drive the app with the playwright MCP: new player -> wardrobe locked with the message;
       play about 5 minutes (or set the balance through a short level plus `page.clock`) ->
       opens, smile shown; at 90 s the number 9; blinking at 20 s and faster at 10 s; at 0 the
       controls lock and the character still reacts to clicks; random outfit leaves some areas
@@ -111,3 +111,18 @@ new fields. No server, no DB.
   locked line sits under the character; specs in a new `.specify/companion/wardrobe.md`; the
   e2e seeds 25 s (locked at entry) and 95 s (counts down to the lock with `page.clock`); the
   help lists the timer among the map's buttons.
+- Browser run (playwright MCP, preview build): a new player sees the locked wardrobe with
+  "5 min"; a seeded balance of 100 s shows the smile, 9 at 89 s, 2 with a 1 s blink at 19 s,
+  1 with a 0.4 s blink at 9 s, and at 0 the timer goes, all 38 items and the buttons are
+  disabled, the balance is stored as 0 and the character still changes faces; six random
+  outfits each left some areas empty; parent switch off shows no timer and no lock; the
+  help lists the timer; console clean apart from the counter's localhost warning. The
+  balance came from storage, not from 5 minutes of real play (the plan allows it).
+
+## Done - 2026-10-22
+- Shipped: schema v3 with `wardrobeLimit` and `wardrobeSeconds` (migration from the
+  training so far), earning in `recordSession`, `src/game/wardrobe-time.ts`, the teal
+  `timer` round picture with smile, numbers and blinking (orange with reduced motion), the
+  locked wardrobe with its message, the playful character, the random outfit, the parent
+  switch with the balance, help line, specs and unit + e2e tests.
+- Left out: nothing.

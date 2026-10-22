@@ -123,7 +123,7 @@ QR codes keep using the player's real name. No server, no DB.
       person); `.scenarios/full-playthrough.md` wording; `.specify/index.md` lines if they
       describe the character as a friend.
 - [x] `npm run build`, `npm test`, `npx playwright test` pass.
-- [ ] Drive the app with the playwright MCP: create a player (fox, name "Ema", nickname
+- [x] Drive the app with the playwright MCP: create a player (fox, name "Ema", nickname
       "Rýchla líška"); map greets the nickname, start tile shows nickname + "Ema", the
       result QR caption shows "Ema"; wardrobe shows the per-player prices; create a second
       player "Ema" again -> same prices and accessory hints; player "Jano" -> different
@@ -145,3 +145,14 @@ Decisions taken while implementing:
 - Specs outside the listed files that said "Tapko says/asks/shows" now say "the narrator".
 - The guest in session storage is not migrated (only normalized: seed filled); it is
   forgotten with the tab anyway.
+
+## Done - 2026-10-22
+Shipped: storage v2 with `seed` and a migration (old default name -> empty nickname),
+`nickname()`, per-player character prices (18-26 stars a step) and accessory deal with the
+six story items fixed, new player form (character, name, nickname), wardrobe and parent
+nickname fields (max 16, may be empty), nickname vs real name across all screens (start tile
+shows both), print card signed "TapkoTyper", second-person sk/en texts, specs and scenario.
+Verified in the browser: "Ema" twice gets the same prices and accessory hints, "Jano"
+others; map, welcome and intro greet the nickname; the QR caption shows "Ema"; sk and en
+intro and meadow lines read in second person; console clean.
+Left out: nothing.

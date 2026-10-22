@@ -122,7 +122,7 @@ describe('styles', () => {
     expect(memoryShow(5, 20)).toBeCloseTo(0.8 + 0.15 * 5);
   });
 
-  it('Tapko reveals a hidden target and can type it at once', () => {
+  it('the paw reveals a hidden target and can type it at once', () => {
     const c = new TypingCore();
     c.style = 'memory';
     const t = c.add('mak');

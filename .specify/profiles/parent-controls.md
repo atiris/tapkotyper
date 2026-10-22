@@ -18,36 +18,37 @@
   A parent who sets the value by hand turns its automatic mode off. Each automatic mode is
   its own switch with a title ("Automatic difficulty", "Automatic word length") and one short
   line; the note about the slow start sits under the difficulty slider.
-- The **child** section shows the companion's picture (with its accessories) beside the
-  child's name, then the companion picked from a picture list and its name.
+- The **child** section shows the character's picture (with its accessories) beside the
+  child's name, then the character kind picked from a picture list and the nickname (up to
+  16 characters; empty means the child's name). A kind picked here is granted at once.
 - The **progress** tab starts with the same picture and the icon and number summary of the
   child's "My progress", above the cards and charts.
 - A button by "Back" (the child's picture and name) switches the parent area to another
   profile from a list of small profile cards, keeping the open tab and without asking for
   the password again; with one profile it is hidden. The super player is never in the list.
-- Settings per profile: child name, companion name and kind, keyboard layout, active keys (pick by hand, with a punctuation row for the shifted `? ! :`, or "automatic"), word length range,
+- Settings per profile: child name, nickname and character kind, keyboard layout, active keys (pick by hand, with a punctuation row for the shifted `? ! :`, or "automatic"), word length range,
   difficulty 1-10, words without diacritics, no time pressure, session length, guide
   visibility, sound and music volume, reading typed words aloud in "Just typing"
   ([free typing](../game/free-typing.md)), start in fullscreen. The help text says the start
   is slow and points to "no time pressure" for a child who still cannot keep up.
 - An **own content** tab collects what the parent writes for the child:
-  - own encouraging messages, mixed into the companion's lines;
+  - own encouraging messages, mixed into the narrator's lines;
   - **own words** (up to 300) and **own text** (up to 4000 characters) with the share of
     targets taken from them and a preview of five sample targets
     ([words](../learning/words.md)).
 - A **surprises** tab holds the parent's surprises as rules in one table (up to 50; question
   and answer up to 200 characters each). Each rule says when the answer comes:
-  - **after a level** (a story level picked by world and level): the companion asks on that
+  - **after a level** (a story level picked by world and level): the game asks on that
     level's get-ready card and tells the answer on its results when it is finished;
   - **after minutes of training** (story levels and practice together), **after more
-    levels** or **after more stars**, counted from when the rule was made: the companion
+    levels** or **after more stars**, counted from when the rule was made: the game
     asks on every get-ready card while it waits, with what is still left ("3 more
     levels"), and tells the answer on the results of the level that reaches it;
   - **at random**: a pool of free questions; after a finished level, now and then (one in
     three) and never twice a day, one of them comes with its answer at once.
   A rule either repeats (counts again from the reveal, fires on every finish of its level,
   or goes back to the pool) or is done after its reveal and never shown again. A level run
-  has one surprise at most, in the order level, minutes, levels, stars, random; Tapko's own
+  has one surprise at most, in the order level, minutes, levels, stars, random; the narrator's own
   teaser waits in such a run. The answer always comes right under its question,
   highlighted. The table shows the question, the answer, when (in words), repeat, the
   state (waiting, "12 / 20 min", done with its date) and edit and delete; a form under it

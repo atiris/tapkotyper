@@ -31,12 +31,12 @@
   count between two groups (4 after `f j` and space) waits for the whole next group. All
   unlocked keys count (space, punctuation and Shifts too);
   with the parent's own key choice, its keys count. A level reached (the one before has its
-  star) but still short of keys shows a key on the map; tapping it, Tapko says how many
+  star) but still short of keys shows a key on the map; tapping it, the narrator says how many
   letters are missing and offers own practice. "Continue" skips such levels: it replays
   the last open one, or starts own practice when none is open. Rescue missions and the
   super profile have no key need.
 - Own practice mode: calm typing of words from the chosen keys, no story. Every way into
-  it (the practice button, "Continue" with nothing open, Tapko's offer on the map) first
+  it (the practice button, "Continue" with nothing open, the narrator's offer on the map) first
   opens a key picker; a task's practice, a drill from the stats and the parent's own text
   do not, they have their own targets. The picker shows the keyboard with the chosen keys
   lit in their finger colors, a slider over the lesson order (step 1 is `f j` and space,

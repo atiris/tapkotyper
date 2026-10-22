@@ -9,7 +9,7 @@ Written 2026-10-21 against `main` at `7ec2f7b`.
 
 Proves the main promise end to end as a real user: a child creates a profile,
 learns the first keys one by one with the finger guide, plays the whole first
-world by typing, meets Tapko, sees their key statistics; a parent tunes the
+world by typing, meets their character ("This is you."), sees their key statistics; a parent tunes the
 settings, exports the profile, imports it into a fresh browser, and the game
 keeps working offline. Re-run after changes to the lesson progression, the
 level engine, the storage schema, the parent area, the service worker or the
@@ -33,12 +33,12 @@ asset pipeline.
 
 ### P01 - A child creates a profile and is welcomed (budget: 5 min)
 
-- S1: In Slovak, create a new player with a name and pick a companion animal.
+- S1: In Slovak, create a new player: pick a character animal, a name and a nickname.
 - S2: Read the short intro story, or skip it.
 
 Assertions:
 
-- A01: The intro story greets the child by name and explains the home position (F and J).
+- A01: The intro story greets the child by nickname in the second person ("This is you.") and explains the home position (F and J).
 - A02: The map shows five worlds; only World 1 is open, its first level is marked as next.
 
 ### P02 - The first keys are taught one at a time (budget: 5 min)
@@ -55,24 +55,24 @@ Assertions:
 ### P03 - The child plays World 1 to its end by typing (budget: 25 min)
 
 - S1: Play every level of World 1 by typing what the targets carry, making a few mistakes on purpose.
-- S2: Make three mistakes in a row on one key once, and accept Tapko's mini practice.
+- S2: Make three mistakes in a row on one key once, and accept the narrator's mini practice.
 - S3: Finish the spider web level and watch the reward.
 
 Assertions:
 
 - A06: A wrong key never removes progress on a word; the letter wobbles and the right key glows.
-- A07: After three misses on one key Tapko names the finger for that key and offers a 20-second practice of it, which then returns to the level.
+- A07: After three misses on one key the narrator names the finger for that key and offers a 20-second practice of it, which then returns to the level.
 - A08: Each level ends with 1-3 stars and the accuracy in percent; at least one new key is unlocked during the world.
 - A09: After the web level a reward scene shows the invitation to space; back on the map World 2 is open.
 
-### P04 - Tapko, wardrobe and statistics (budget: 5 min)
+### P04 - Character, wardrobe and statistics (budget: 5 min)
 
-- S1: Open the wardrobe and dress the companion in earned items.
-- S2: Click the companion to see the statistics.
+- S1: Open the wardrobe and dress the character in earned items.
+- S2: Click the character to see the statistics.
 
 Assertions:
 
-- A10: Earned items can be worn; locked items say how to earn them.
+- A10: Earned items can be worn; locked items say how to earn them, and locked characters how many stars they still need.
 - A11: The statistics show a keyboard colored by how each key goes (with a text mark, not color only), up to three keys to practise and a button to practise them now.
 
 ### P05 - A parent tunes the settings and moves the profile (budget: 10 min)
@@ -107,5 +107,5 @@ Assertions:
 
 ## Appendix - last known paths (2026-10-21, orientation only, expected to go stale)
 
-- Parent area: gear button top right of the map. Statistics: the companion on the map.
+- Parent area: gear button top right of the map. Statistics: the character on the map.
 - The finger guide element carries the next character in `data-next`.

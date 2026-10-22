@@ -2,6 +2,7 @@ import { app, go } from '../app/app';
 import { audio } from '../audio/audio';
 import { tapkoElement } from '../gfx/tapko';
 import { t } from '../i18n/i18n';
+import { nickname } from '../storage/store';
 import { postureContent } from '../game/cards';
 import { button, confirmDialog, h } from '../ui/dom';
 import { cornerControls } from '../ui/chrome';
@@ -9,7 +10,7 @@ import { cornerControls } from '../ui/chrome';
 const EXERCISES = ['arms', 'fists', 'shoulders'] as const;
 const SECONDS = 20;
 
-/** Stretch break led by Tapko: three short exercises, then the posture card. */
+/** Stretch break led by the narrator: three short exercises, then the posture card. */
 export function breakScreen(root: HTMLElement): () => void {
   const p = app.profile!;
   app.breakCount++;
@@ -25,7 +26,7 @@ export function breakScreen(root: HTMLElement): () => void {
   const end = () => {
     clearInterval(tick);
     app.sessionSeconds = 0;
-    box.replaceChildren(postureContent(), h('p', {}, t('break.done', { name: p.name })),
+    box.replaceChildren(postureContent(), h('p', {}, t('break.done', { name: nickname(p) })),
       h('div', { class: 'row center' }, button(t('common.continue'), () => go('map'), 'btn primary', 'next')));
     (box.querySelector('.btn.primary') as HTMLElement).focus();
   };

@@ -22,7 +22,7 @@
 - The tab is part of the address (`#/p/<id>/help/<tab>`, `#/help/<tab>`), so a tab can be linked.
 - The round "?" in the map's top buttons opens it on the interface tab. The "?" on the start
   page (and on the other screens before a player is chosen) opens it on the about tab; help
-  works without a player, the companion is then called Tapko.
+  works without a player and names no one.
 - A "Help" button in a level's pause card opens it over the paused level, on how to type; closing
   it returns to the paused level.
 - A purple round "?" button in a level's top bar pauses the level and opens a card: what to do

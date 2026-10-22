@@ -25,15 +25,17 @@
     "short": "Žiadne reklamy, účty ani sledovanie. Všetko zostáva v tomto zariadení."
   },
   "newProfile": {
-    "title": "Ahoj, nový kamarát!",
+    "title": "Ahoj, vitaj!",
     "name": "Tvoje meno",
     "nameMissing": "Napíš, prosím, svoje meno.",
-    "companion": "Vyber si kamaráta",
-    "companionName": "Meno kamaráta",
+    "companion": "Vyber si svoju postavičku",
     "language": "Jazyk",
     "layout": "Klávesnica",
     "parentHint": "Rodič môže všetko neskôr zmeniť v nastaveniach (ozubené koliesko na mape).",
-    "create": "Poďme na to!"
+    "create": "Poďme na to!",
+    "nameHint": "Uvidí ho učiteľ a je aj v QR kódoch s výsledkami.",
+    "nickname": "Prezývka (nepovinná)",
+    "nicknameHint": "Bude pri tvojej postavičke v hre."
   },
   "layouts": {
     "sk-qwertz": "slovenská (QWERTZ)",
@@ -70,7 +72,7 @@
   },
   "map": {
     "welcome": {
-      "title": "Ahoj, {name}! Ja som {tapko}.",
+      "title": "Ahoj, {name}! Toto si ty.",
       "lines": [
         "Stlač „Pokračovať“, klávesy sa budeš učiť postupne, jeden po druhom.",
         "Keď nevieš ako ďalej, klikni na „?“.",
@@ -83,14 +85,14 @@
     "hello": "Ahoj, {name}!",
     "continue": "Pokračovať",
     "practice": "Vlastné cvičenie",
-    "wardrobe": "Kamarát a šatník",
+    "wardrobe": "Ja a môj šatník",
     "rescue": "Záchranné misie",
     "switchProfile": "Hráči",
     "super": "veľká výzva",
     "starsAria": "hviezdičky: {n}",
-    "storyName": "Ťapko a dračie vajíčko",
+    "storyName": "Dračie vajíčko",
     "settings": "Nastavenia pre rodičov",
-    "storyRobot": "Ťapko a robot Šróbik",
+    "storyRobot": "Robot Šróbik",
     "storyOpens": "Otvorí sa, keď budeš vedieť {n} písmen. Teraz vieš {have}.",
     "lockWorld": "Najprv dokonči svet {world}.",
     "lockKeys": "Tento príbeh sa otvorí, keď budeš vedieť {n} písmen. Teraz vieš {have}.",
@@ -99,7 +101,7 @@
     "keysFew": "Na túto úroveň potrebuješ ešte {n} písmená. Nové písmenká získaš hraním alebo vo Vlastnom cvičení.",
     "keysMany": "Na túto úroveň potrebuješ ešte {n} písmen. Nové písmenká získaš hraním alebo vo Vlastnom cvičení.",
     "keysLocked": "potrebuješ viac písmen",
-    "storyFairy": "Ťapko a víla Melódia"
+    "storyFairy": "Víla Melódia"
   },
   "level": {
     "ownText": "Môj text",
@@ -114,7 +116,7 @@
     "helpSteps": [
       "Najprv presne: hviezdičky dostaneš za málo chýb.",
       "Potom plynulo: keď píšeš rovnomerne, zelený kruh sa naplní.",
-      "Keď si zaseknutý, použi labku: Ťapko napíše za teba pár slov.",
+      "Keď to nejde, použi labku: napíše za teba pár slov.",
       "Úroveň si zopakuj, kým nemáš tri hviezdičky.",
       "Po niekoľkých úrovniach si oddýchni."
     ],
@@ -195,16 +197,16 @@
     "start": "Začať"
   },
   "freeType": {
-    "hint": "Píš, čo chceš. Keď prestaneš, ukážem to.",
+    "hint": "Píš, čo chceš. Keď prestaneš, napísané sa ukáže.",
     "place": "Zmeniť miesto",
-    "pick": "Kde dnes budeme písať?"
+    "pick": "Kde chceš dnes písať?"
   },
   "touch": {
     "title": "Potrebuješ klávesnicu",
     "text": "TapkoTyper učí písať na skutočnej klávesnici. Pripoj ku tabletu klávesnicu alebo sa hraj na počítači."
   },
   "tapko": {
-    "statsHint": "Klikni na mňa a uvidíš, ako ti to ide",
+    "statsHint": "Klikni na seba a pozri, ako ti to ide",
     "correct_streak": [
       "Krásny rytmus, {name}!",
       "Tvoje prsty poznajú cestu!",
@@ -226,13 +228,13 @@
     "level_done": [
       "Podarilo sa ti to, {name}!",
       "Úžasné písanie!",
-      "Mám z teba veľkú radosť!",
-      "To bola skvelá tímová práca!",
+      "Krása, len tak ďalej!",
+      "Prsty spolupracovali ako tím!",
       "Tvoje prsty tancovali po klávesoch!"
     ],
     "break": [
       "Je čas na malú prestávku na pretiahnutie. Ruky si ju zaslúžia!",
-      "Poďme sa spolu natiahnuť a oddýchnuť si oči."
+      "Natiahni sa a oddýchni si oči."
     ]
   },
   "results": {
@@ -242,13 +244,13 @@
     "memoryClean": "Z pamäti bez chyby: {n} z {total}",
     "starsAria": "{n} z 3 hviezdičiek",
     "accuracy": "Presnosť {n} %",
-    "byTapko": "Túto úroveň zvládol hlavne {tapko}.",
+    "byTapko": "Túto úroveň zvládla hlavne labka.",
     "rhythm": "Rytmus {n} písmen za minútu",
     "trendUp": "Tvoj rytmus je plynulejší ako minulý týždeň!",
     "newKey": "Nový kláves: {key}",
     "newKeys": "Nové klávesy: {keys}",
     "newAccessory": "Nové veci v šatníku: {n}",
-    "newCompanion": "Nový kamarát v šatníku: {kind}",
+    "newCompanion": "Nová postavička v šatníku: {kind}",
     "rescued": "Dráčik {name} je zachránený!",
     "next": "Ďalšia úroveň",
     "nextRescue": "Ďalšia misia",
@@ -274,20 +276,20 @@
     "locked": "Prejdi svet {n}"
   },
   "surprise": {
-    "ask": "{tapko} má tajomstvo:",
+    "ask": "Tajomstvo:",
     "left": {
-      "minutes": "Ešte {n} min tréningu a prezradím ti to.",
-      "levelsOne": "Ešte {n} úroveň a prezradím ti to.",
-      "levelsFew": "Ešte {n} úrovne a prezradím ti to.",
-      "levelsMany": "Ešte {n} úrovní a prezradím ti to.",
-      "starsOne": "Ešte {n} hviezdičku a prezradím ti to.",
-      "starsFew": "Ešte {n} hviezdičky a prezradím ti to.",
-      "starsMany": "Ešte {n} hviezdičiek a prezradím ti to."
+      "minutes": "Ešte {n} min tréningu a tajomstvo sa dozvieš.",
+      "levelsOne": "Ešte {n} úroveň a tajomstvo sa dozvieš.",
+      "levelsFew": "Ešte {n} úrovne a tajomstvo sa dozvieš.",
+      "levelsMany": "Ešte {n} úrovní a tajomstvo sa dozvieš.",
+      "starsOne": "Ešte {n} hviezdičku a tajomstvo sa dozvieš.",
+      "starsFew": "Ešte {n} hviezdičky a tajomstvo sa dozvieš.",
+      "starsMany": "Ešte {n} hviezdičiek a tajomstvo sa dozvieš."
     }
   },
   "teaser": {
-    "ask": "{tapko} sa pýta:",
-    "later": "Odpoveď ti poviem, keď dokončíš ďalšiu úroveň.",
+    "ask": "Otázka pre teba:",
+    "later": "Odpoveď sa dozvieš, keď dokončíš ďalšiu úroveň.",
     "answer": "Sľúbená odpoveď:",
     "meadow": {
       "q": [
@@ -502,13 +504,13 @@
     }
   },
   "paw": {
-    "title": "Labková pomoc: {n} slov bez chyby nabije labku (najviac 3). Enter: {tapko} napíše za teba {words} slová. Backspace: pomôže sám, keď bude ťažko.",
+    "title": "Labková pomoc: {n} slov bez chyby nabije labku (najviac 3). Enter: labka napíše za teba {words} slová. Backspace: labka pomôže sama, keď bude ťažko.",
     "aria": "Labková pomoc (Enter), nabité labky: {n}",
-    "start": "Labky na klávesy! Teraz píšem ja.",
-    "charged": "{n} slov bez chyby! Labka je nabitá. Stlač Enter a napíšem za teba {words} slová.",
-    "chargedAuto": "{n} slov bez chyby! Labka je nabitá. Keď bude ťažko, pomôžem ti sám.",
-    "autoOn": "Keď bude ťažko, napíšem {words} slová sám. Backspace to zase vypne.",
-    "autoOff": "Labku spustíš sám klávesom Enter."
+    "start": "Labka sa pustila do písania!",
+    "charged": "{n} slov bez chyby! Labka je nabitá. Stlač Enter a labka napíše za teba {words} slová.",
+    "chargedAuto": "{n} slov bez chyby! Labka je nabitá. Keď bude ťažko, labka pomôže sama.",
+    "autoOn": "Keď bude ťažko, labka napíše {words} slová sama. Backspace to zase vypne.",
+    "autoOff": "Labku spustíš klávesom Enter."
   },
   "story": {
     "next": "Ďalej",
@@ -538,14 +540,14 @@
     ],
     "scenes": {
       "intro": [
-        "Ahoj, {name}! Ja som {tapko}.",
-        "Spolu sa naučíme písať všetkými desiatimi prstami.",
+        "Ahoj, {name}! Toto si ty.",
+        "Naučíš sa písať všetkými desiatimi prstami.",
         "Polož ukazováky na malé výstupky na klávesoch F a J. To je tvoj domov.",
-        "Začneme na Cvičnej lúke!"
+        "Začni na Cvičnej lúke!"
       ],
       "world1": [
         "Na lúke je plno zvedavých malých návštevníkov.",
-        "Napíš slovo na liste a Ťapko ho odfúkne vejárom späť.",
+        "Napíš slovo na liste a odfúkneš ho vejárom späť.",
         "Keď list preletí, je to gól a všetci sa tešia."
       ],
       "invitation": [
@@ -592,7 +594,7 @@
         "Teraz môžeš chodiť na záchranné misie a pomáhať ďalším dráčikom."
       ],
       "world6": [
-        "Ťapko ide okolo starého šrotiska. Čo to tam pípa?",
+        "Ideš okolo starého šrotiska. Čo to tam pípa?",
         "Pod kopou starých vecí niekto smutne pípa.",
         "Napíš slovo a jemný magnet zdvihne haraburdu z kopy."
       ],
@@ -604,7 +606,7 @@
       "world7": [
         "Šróbik chce ísť domov, ale chýbajú mu súčiastky.",
         "Po páse sa vezú kolieska, skrutky a pružiny.",
-        "Napíš slovo súčiastky a Ťapko ju hodí do košíka."
+        "Napíš slovo súčiastky a hodíš ju do košíka."
       ],
       "legs": [
         "Hotovo! Šróbik má nové dlhé nohy.",
@@ -614,12 +616,12 @@
       "world8": [
         "Ojoj, začína pršať!",
         "Roboti nesmú zmoknúť, inak zhrdzavejú.",
-        "Napíš slovo na kvapke a Ťapkov dáždnik ju zachytí."
+        "Napíš slovo na kvapke a tvoj dáždnik ju zachytí."
       ],
       "raincoat": [
         "Dážď prestal a nad mestom svieti dúha.",
-        "Šróbik dostal žltú pláštenku a Ťapko nový dáždnik.",
-        "Teraz im žiadny dážď neublíži."
+        "Šróbik má žltú pláštenku a ty nový dáždnik.",
+        "Teraz vám žiadny dážď neublíži."
       ],
       "world9": [
         "Cesta domov vedie cez Robotické mesto.",
@@ -648,7 +650,7 @@
       ],
       "wreath": [
         "Veľký kvet sa zobudil a celá záhrada si pobzukuje!",
-        "{tapko} dostane od Melódie kvetinový venček.",
+        "Melódia ti uviaže kvetinový venček.",
         "Záhrada má svoju pieseň späť. Jedna pieseň je doma, ešte štyri."
       ],
       "world12": [
@@ -658,7 +660,7 @@
       ],
       "feather": [
         "Hú, hú! Sove sa tvoje odpovede páčili.",
-        "{tapko} od nej dostane mäkké pierko za klobúk.",
+        "Od sovy dostaneš mäkké pierko za klobúk.",
         "Vtáčiky zase spievajú!"
       ],
       "world13": [
@@ -668,7 +670,7 @@
       ],
       "lily": [
         "Dlhý odraz je späť na hladine!",
-        "{tapko} dostane od Melódie žiarivé lekno.",
+        "Melódia ti daruje žiarivé lekno.",
         "Žabky kvákajú pieseň jazera."
       ],
       "world14": [
@@ -678,7 +680,7 @@
       ],
       "harp": [
         "Hudobný strom zase hrá svoju pieseň!",
-        "{tapko} dostane od Melódie malú harfu.",
+        "Melódia ti daruje malú harfu.",
         "Chýba už len jedna pieseň, pieseň noci."
       ],
       "world15": [
@@ -688,7 +690,7 @@
       ],
       "wings": [
         "Spieva celý les! Každý vtáčik, každá žabka, každý strom.",
-        "Les ti ďakuje, {name}. {tapko} dostane od Melódie vílie krídla.",
+        "Les ti ďakuje, {name}. Melódia ti daruje vílie krídla.",
         "Teraz môžeš na záchranných misiách odprevadiť domov aj malé vtáčatá a svetlušky."
       ]
     },
@@ -795,17 +797,17 @@
     "quality": "Presnosť dobre zvládnutých kláves: {n} %",
     "speed": "Rýchlosť dobre zvládnutých kláves: {n} znakov za minútu",
     "storyStars": "Hviezdičky v tomto príbehu: {n}",
-    "lastToday": "Naposledy sme trénovali dnes.",
-    "lastYesterday": "Naposledy sme trénovali včera.",
-    "lastDays": "Naposledy sme trénovali pred {n} dňami.",
-    "never": "Ešte sme spolu netrénovali.",
+    "lastToday": "Posledný tréning: dnes.",
+    "lastYesterday": "Posledný tréning: včera.",
+    "lastDays": "Posledný tréning: pred {n} dňami.",
+    "never": "Zatiaľ žiadny tréning.",
     "week": "Za posledných 7 dní: {n} min",
     "badges": "Odznaky"
   },
   "stats": {
     "title": "Moje klávesy",
-    "intro": "Rátam posledných {n} stlačení každého klávesu, staré chyby sa nepočítajú. Ťukni na kláves a uvidíš, ako ti ide.",
-    "empty": "Zahraj si úroveň a ukážem ti, ako ti idú klávesy.",
+    "intro": "Počíta sa posledných {n} stlačení každého klávesu, staré chyby sa nepočítajú. Ťukni na kláves a uvidíš, ako ti ide.",
+    "empty": "Zahraj si úroveň a uvidíš, ako ti idú klávesy.",
     "good": "ide to",
     "ok": "skoro",
     "practice": "poďme cvičiť",
@@ -813,9 +815,9 @@
     "keyLine": "{acc} % správne, stláčaj",
     "instead": "(často namiesto neho {key})",
     "practiceNow": "Precvičiť ich teraz (1 min)",
-    "clickKey": "Ťukni na kláves na klávesnici a ukážem ti, ako ti ide.",
+    "clickKey": "Ťukni na kláves na klávesnici a uvidíš, ako ti ide.",
     "fingerLine": "Stláčaj ho",
-    "keyNoData": "Tento kláves sme ešte nepísali.",
+    "keyNoData": "Tento kláves zatiaľ nemá žiadne stlačenia.",
     "keyAccuracy": "{acc} % správne z posledných {n} stlačení",
     "keySpeed": "Zvyčajne ho stlačíš za {s} s",
     "keyTotal": "Spolu už {n} stlačení",
@@ -829,9 +831,9 @@
     "shifted": "⇧ znaky"
   },
   "wardrobe": {
-    "title": "Kamarát a šatník",
-    "buddy": "Kamarát",
-    "name": "Meno",
+    "title": "Ja a môj šatník",
+    "buddy": "Moja postavička",
+    "name": "Prezývka",
     "kindLocked": "ešte {n} ★",
     "wardrobe": "Šatník",
     "count": "{n} z {total} vecí",
@@ -943,11 +945,10 @@
       "lock": "Heslo na nastavenia"
     },
     "childName": "Meno dieťaťa",
-    "companionName": "Meno kamaráta",
     "switchTitle": "Prepnúť na iné dieťa",
-    "companionKind": "Kamarát",
+    "companionKind": "Postavička",
     "messages": "Vaše vlastné povzbudenia",
-    "messagesHint": "Jedno na riadok. Kamarát ich občas použije.",
+    "messagesHint": "Jedno na riadok. Hra ich občas použije.",
     "messagesPlaceholder": "Som na teba hrdá!",
     "language": "Jazyk",
     "layout": "Rozloženie klávesnice",
@@ -1016,7 +1017,7 @@
     "autoDifficultyHint": "Rastie s pokrokom dieťaťa po niekoľkých minútach presného písania. Každý krok je medaila.",
     "autoWordLen": "Automatická dĺžka slov",
     "autoWordLenHint": "Rastie s pokrokom dieťaťa, spolu s náročnosťou.",
-    "autoHint": "Začiatok je pomalý: krátke slovo putuje ku kamarátovi asi 10 sekúnd a na obrazovke sú najviac dve. Ak dieťa ani tak nestíha, zapnite Bez časového tlaku.",
+    "autoHint": "Začiatok je pomalý: krátke slovo putuje k postavičke asi 10 sekúnd a na obrazovke sú najviac dve. Ak dieťa ani tak nestíha, zapnite Bez časového tlaku.",
     "lock": {
       "ask": "Nastavenia sú zamknuté heslom. Zadajte ho, prosím.",
       "password": "Heslo",
@@ -1035,7 +1036,9 @@
       "mismatch": "Heslá sa nezhodujú.",
       "saved": "Heslo je uložené.",
       "removed": "Heslo je odstránené."
-    }
+    },
+    "nickname": "Prezývka v hre",
+    "nicknameHint": "Prázdna: hra použije meno dieťaťa."
   },
   "own": {
     "group": {
@@ -1066,7 +1069,7 @@
     "previewMore": "Iná ukážka"
   },
   "surprises": {
-    "hint": "Schovajte skutočnú odmenu (sladkosť, výlet, herný večer) za pravidlo. Kamarát sa na otázku spýta pred úrovňou a odpoveď prezradí spolu s otázkou, keď sa pravidlo splní. V jednej úrovni je najviac jedno prekvapenie.",
+    "hint": "Schovajte skutočnú odmenu (sladkosť, výlet, herný večer) za pravidlo. Hra položí otázku pred úrovňou a odpoveď prezradí spolu s otázkou, keď sa pravidlo splní. V jednej úrovni je najviac jedno prekvapenie.",
     "empty": "Zatiaľ žiadne prekvapenie.",
     "formTitle": "Nové prekvapenie",
     "q": "Otázka",
@@ -1143,7 +1146,7 @@
   "about": {
     "code": "Kód na GitHube",
     "report": "Nahlásiť chybu alebo nápad",
-    "intro": "TapkoTyper je bezplatná pokojná hra, ktorá učí deti písať všetkými desiatimi prstami. Spolu s kamarátom cestujú po svetoch plných dobrodružstiev. Nikdy sa nestane nič zlé: prekážky sa odsunú alebo sa im pomôže, nikdy sa neničia.",
+    "intro": "TapkoTyper je bezplatná pokojná hra, ktorá učí deti písať všetkými desiatimi prstami. Ako zvieratko podľa vlastného výberu cestujú po svetoch plných dobrodružstiev. Nikdy sa nestane nič zlé: prekážky sa odsunú alebo sa im pomôže, nikdy sa neničia.",
     "privacyTitle": "Náš sľub rodičom",
     "privacy": [
       "Bez reklám, nákupov, prihlasovania či cookies. Tento web nemá na pozadí vlastný server.",
@@ -1197,7 +1200,7 @@
       "fullscreen": "Hra na celú obrazovku a zase späť.",
       "help": "Táto pomoc.",
       "pause": "Pauza. Rovnako ju zapne aj kláves Esc.",
-      "paw": "Labka ti ukazuje, či máš pomoc pripravenú: každé slovo bez chyby zaplní kúsok kruhu, po {n} slovách je labka nabitá. Stlač Enter, keď si zaseknutý, a {tapko} napíše za teba {words} slová.",
+      "paw": "Labka ti ukazuje, či máš pomoc pripravenú: každé slovo bez chyby zaplní kúsok kruhu, po {n} slovách je labka nabitá. Keď to nejde, stlač Enter a labka napíše za teba {words} slová.",
       "ring": "Krúžok s číslom ukazuje, ktorá úroveň sveta je táto. Zelené kúsky sú hotové úrovne, oranžový je táto, prázdne ťa ešte čakajú. Pavučina je veľká výzva na konci sveta.",
       "progress": "Pásik ukazuje, koľko z úrovne už máš za sebou.",
       "gauge": "Zelený kruh ukazuje tvoj rytmus. Keď píšeš plynulo, naplní sa.",
@@ -1208,12 +1211,12 @@
     },
     "cardTitle": "Tvoja karta na mape",
     "card": [
-      "Klikni na svojho kamaráta a otvorí sa Môj postup: čo ti už ide a čo si ešte precvičiť.",
+      "Klikni na seba, na svoju postavičku, a otvorí sa Môj postup: čo ti už ide a čo si ešte precvičiť.",
       "Pokračovať spustí ďalšiu úroveň príbehu.",
       "Vlastné cvičenie: krátke cvičenie na klávesy, ktoré si vyberieš.",
       "Môj text: keď ti rodič pridá vlastný text, napíšeš ho celý po poradí.",
-      "Len chcem písať: píš, čo chceš, Ťapko sa prechádza po svete, ktorý si vyberieš, a ukáže, čo si napísal.",
-      "Kamarát a šatník: vyber si kamaráta a obleč ho do vecí, ktoré si získal.",
+      "Len chcem písať: píš, čo chceš, prechádzaš sa po svete, ktorý si vyberieš, a tvoj text sa tam ukáže.",
+      "Ja a môj šatník: vyber si postavičku, prezývku a obleč sa do odomknutých vecí.",
       "Záchranné misie a Malí priatelia: objavia sa po prvom dokončenom príbehu.",
       "Úloha na dnes: keď ti učiteľ pošle úlohu, nájdeš ju na karte. Po splnení ju odovzdáš."
     ],
@@ -1257,10 +1260,10 @@
     "settingsIntro": "Nastavenia sú pre rodičov. Otvoria sa ozubeným kolieskom na mape. Kým ich nezamknete heslom, otvorí ich jedna otázka.",
     "settings": {
       "settings": [
-        "Dieťa: meno, kamarát a jeho meno, jazyk a rozloženie klávesnice. Rozloženie vyberte podľa skutočnej klávesnice, sprievodca prstov sa podľa neho riadi.",
+        "Dieťa: meno, postavička a prezývka, jazyk a rozloženie klávesnice. Rozloženie vyberte podľa skutočnej klávesnice, sprievodca prstov sa podľa neho riadi.",
         "Cvičenie: náročnosť a dĺžka slov. Automaticky rastú spolu s dieťaťom; ručne ich nastavíte, keď chcete.",
         "Slová bez diakritiky pomôžu začiatočníkom na chvíľu. Bez časového tlaku veci zastanú a čakajú na dieťa.",
-        "Dĺžka hrania pred prestávkou: potom kamarát pozve dieťa na krátky oddych.",
+        "Dĺžka hrania pred prestávkou: potom hra pozve dieťa na krátky oddych.",
         "Sprievodca prstov: zmizne, keď sú klávesy zvládnuté, alebo je stále zapnutý či vypnutý. Môžete ho dieťaťu zamknúť.",
         "Vzhľad a zvuk: písmo, veľký text, menej pohybu, vysoký kontrast, hlasitosť, celá obrazovka.",
         "Heslo na nastavenia zamkne nastavenia pre všetkých hráčov na tomto zariadení. Zabudnuté heslo nevieme obnoviť."
@@ -1268,12 +1271,12 @@
       "own": [
         "Vlastné slová: napríklad slovíčka na tento týždeň. Použijú sa aj s klávesmi, ktoré dieťa ešte nepozná.",
         "Vlastný text: rozdelí sa na vety a časti. Na mape ho tlačidlo Môj text napíše celý po poradí.",
-        "Vlastné povzbudenia: kamarát ich občas povie.",
+        "Vlastné povzbudenia: hra ich občas povie.",
         "Koľko vlastných slov a textu: aký diel cieľov v úrovniach budú tvoriť."
       ],
       "surprises": [
         "Schovajte skutočnú odmenu za pravidlo: po úrovni, po minútach cvičenia, po ďalších úrovniach či hviezdičkách, alebo náhodou.",
-        "Kamarát sa na otázku spýta pred úrovňou a odpoveď prezradí, keď sa pravidlo splní."
+        "Hra položí otázku pred úrovňou a odpoveď prezradí, keď sa pravidlo splní."
       ],
       "task": [
         "Pre učiteľa: vytvorte úlohu so slovami alebo textom a dĺžkou. Vznikne odkaz a QR kód.",
@@ -1341,7 +1344,7 @@
     "stretch-fingers": "Roztiahni prsty, zovri päste a znova ich otvor.",
     "stretch-wrist": "Ohni zápästie a druhou rukou ho jemne potlač.",
     "take-break": "Po pár minútach vstaň, natiahni sa a napi sa vody.",
-    "celebrate": "Dobrá práca! Tvoj kamarát má z teba radosť.",
+    "celebrate": "Dobrá práca! Môžeš mať zo seba radosť.",
     "listen-whole": "Najprv si vypočuj celé slovo, potom ho napíš.",
     "listen-again": "Chceš to počuť ešte raz? Ťukni na slovo a zaznie znova.",
     "listen-sounds": "Potichu si slovo povedz, písmenko po písmenku.",

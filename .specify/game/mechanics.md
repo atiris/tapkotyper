@@ -32,14 +32,14 @@
   three times (Bolt hops with him in story 2, Melody twirls in story 3), and any tool he held in the level (fan,
   umbrella, shield) fades away; with reduced motion he only smiles and the tool is gone
   at once. About 1.4 seconds later the end screen shows stars (accuracy), new keys, and a
-  sentence from Tapko. The end screen is a compact card that fits a small laptop screen
+  sentence from the narrator. The end screen is a compact card that fits a small laptop screen
   (1024x600) without scrolling, also with a new key, a medal and a surprise: title and
-  stars in one line, a small Tapko with his sentence beside him, the facts (accuracy
+  stars in one line, the small character with the sentence beside it, the facts (accuracy
   first, rhythm, new keys, new things, a rescued friend, a medal, a new or better world
   badge) as small chips, the
-  task, surprise and Tapko's question in one small framed block, and one main button with
+  task, surprise and the narrator's question in one small framed block, and one main button with
   Replay and Map as smaller ones next to it. Accuracy counts only the child's own keys: a level where the child
-  typed fewer than 5 keys (Tapko's paws did the rest) says so, gives one star, never
+  typed fewer than 5 keys (the paw did the rest) says so, gives one star, never
   lowers a better result and adds no time toward automatic growth. Esc on the end screen
   goes back to the map, like closing any other card.
 - **Ways to type** (a style per run, the same movement and story in every mode):
@@ -54,20 +54,20 @@
     so; the reading-aloud button is hidden in a dictation (the voice is the task).
   - *Memory*: a target shows for a moment (longer for long words, shorter at a higher
     difficulty, with a small ring that empties), then its letters turn into dots and
-    typing starts. Keys pressed while it shows are not counted and Tapko asks to wait:
+    typing starts. Keys pressed while it shows are not counted and the narrator asks to wait:
     the one exception to "a word seen can be typed", clearly marked by the ring. A wrong
     key shows it again for a short flash; the letters typed so far stay. Targets get
     1.8 times the travel time (calm modes wait anyway).
   - *Mixed* (the fairy story's music tree): dictation and memory targets in turns, each
     with its own icon. Without a voice the run is memory only.
-  - In all of them, the finger guide does not light the key of a hidden letter, Tapko's paws
+  - In all of them, the finger guide does not light the key of a hidden letter, the paws
     show the target and type it as usual, and the end screen adds how many targets the
     child typed without the target being shown again ("by ear" / "from memory" / "by
     ear and from memory"). The get-ready tip of such a run is about listening or
     remembering.
 - Pause anytime (Esc or a visible button); the game also pauses when the tab is hidden.
   The pause is a small card at the top: the words and the guide's next key stay in sight.
-  Besides Continue and Map it offers "Slower", one step lower difficulty (Tapko confirms);
+  Besides Continue and Map it offers "Slower", one step lower difficulty (the narrator confirms);
   automatic growth may raise it again after accurate play.
 
 ## Why

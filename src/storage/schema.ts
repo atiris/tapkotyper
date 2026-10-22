@@ -1,4 +1,4 @@
-// Storage schema v1. These types are the data contract of `localStorage['tapkotyper:v1']`
+// Storage schema v2. These types are the data contract of `localStorage['tapkotyper:v1']`
 // and of exported `.json` files. Older shapes are upgraded by the migrations in store.ts.
 
 export type Lang = 'sk' | 'en';
@@ -7,9 +7,6 @@ export type CompanionKind = 'fox' | 'cat' | 'bunny' | 'owl' | 'dog' | 'bear' | '
 export type FontChoice = 'lexend' | 'atkinson' | 'opendyslexic';
 
 export const COMPANION_KINDS: CompanionKind[] = ['fox', 'cat', 'bunny', 'owl', 'dog', 'bear', 'panda', 'penguin', 'lion'];
-
-/** The companion's name until someone picks another one. */
-export const DEFAULT_COMPANION_NAME: Record<Lang, string> = { sk: 'Ťapko', en: 'Tapko' };
 
 /** One day of practice of a key. */
 export interface KeyDay {
@@ -74,7 +71,7 @@ export interface Settings {
   ownWords: string[];
   ownText: string;
   ownMix: OwnMix;
-  /** Read the target to type and Tapko's lines aloud. */
+  /** Read the target to type and the narrator's lines aloud. */
   readAloud: boolean;
   /** "Just typing" reads the child's own typed words aloud (with `readAloud` on). */
   speakTyped: boolean;
@@ -106,9 +103,9 @@ export interface Progress {
   growth: number;
   /** Seconds of good play collected toward the next automatic step. */
   growthSeconds: number;
-  /** Paw helps charged by mistake-free streaks (Tapko types a few words). */
+  /** Paw helps charged by mistake-free streaks (the paw types a few words). */
   pawHelp: number;
-  /** The child chose that Tapko helps by himself in hard moments. */
+  /** The child chose that the paw helps on its own in hard moments. */
   pawAuto: boolean;
   /** Companion kinds the child may pick: the starting kind first, then the ones earned by stars. */
   companionsUnlocked: CompanionKind[];
@@ -124,7 +121,7 @@ export interface Progress {
 export type SurpriseTrigger = 'level' | 'minutes' | 'levels' | 'stars' | 'random';
 
 /**
- * A rule for a real reward a parent hid: Tapko asks `q` and tells `a` when the trigger is met,
+ * A rule for a real reward a parent hid: the game asks `q` and tells `a` when the trigger is met,
  * always together with the question.
  */
 export interface Surprise {
@@ -147,7 +144,9 @@ export interface Surprise {
   lastShownAt?: string;
 }
 
+/** The character the child plays as. */
 export interface Companion {
+  /** The child's nickname in the game; empty means the player's name (see `nickname`). */
   name: string;
   kind: CompanionKind;
   /** Equipped accessory ids. */
@@ -181,7 +180,10 @@ export interface Task {
 
 export interface Profile {
   id: string;
+  /** The child's real name: shown to parents and teachers and in result codes. */
   name: string;
+  /** 32-bit hash of the name at creation; deals the per-player character prices and accessories. */
+  seed: number;
   avatar: CompanionKind;
   companion: Companion;
   customMessages: string[];
@@ -203,7 +205,7 @@ export interface ParentLock {
 }
 
 export interface StoreData {
-  version: 1;
+  version: 2;
   profiles: Profile[];
   lastProfileId: string | null;
   language: Lang | null;

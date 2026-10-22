@@ -102,29 +102,46 @@ QR codes keep using the player's real name. No server, no DB.
   replaces the character-name input id; e2e tests follow.
 
 ## Steps
-- [ ] Schema + store: `seed`, nickname doc, `nickname()`, `newProfile` (`companion.name = ''`,
+- [x] Schema + store: `seed`, nickname doc, `nickname()`, `newProfile` (`companion.name = ''`,
       seed), migration v1 -> v2 with tests, `normalizeProfile`, export/import tests.
-- [ ] Rewards: seeded PRNG, per-player kind prices (18-26 step), per-player accessory deal
+- [x] Rewards: seeded PRNG, per-player kind prices (18-26 step), per-player accessory deal
       with the six fixed story items, `unlockRules(p)`; tests: same seed -> same prices and
       deal, two seeds differ, every accessory appears exactly once, fixed items in place,
       last kind <= 208 stars, starting kind costs 0. `progress.ts`, `super.ts` follow.
-- [ ] New player form: "pick your character" grid, name (QR hint), nickname (optional, max
+- [x] New player form: "pick your character" grid, name (QR hint), nickname (optional, max
       16, game hint), language, layout; `newProfile` gets the nickname.
-- [ ] Wardrobe and parent screen: nickname field (max 16), "how to earn" from
+- [x] Wardrobe and parent screen: nickname field (max 16), "how to earn" from
       `unlockRules(p)`, locked kinds show the per-player missing stars; parent screen labels
       say "nickname".
-- [ ] Name use per the table in Decisions across `start`, `map`, `level`, `story`, `break`,
+- [x] Name use per the table in Decisions across `start`, `map`, `level`, `story`, `break`,
       `stats`, `help`, `runtime`, `cards`, `parent` (print sheet signature).
-- [ ] i18n sk + en: second-person rewrite of every text about the character, `{tapko}`
+- [x] i18n sk + en: second-person rewrite of every text about the character, `{tapko}`
       removed, `companion.defaultName` removed, Slovak gender rule checked line by line.
-- [ ] Specs: `.specify/companion/*` (the character is the player, nickname, per-player
+- [x] Specs: `.specify/companion/*` (the character is the player, nickname, per-player
       prices and accessory deal, story-fixed items), `.specify/profiles/profiles.md` (real
       name vs nickname, where each shows), `.specify/game/story.md` (narrator in second
       person); `.scenarios/full-playthrough.md` wording; `.specify/index.md` lines if they
       describe the character as a friend.
-- [ ] `npm run build`, `npm test`, `npx playwright test` pass.
+- [x] `npm run build`, `npm test`, `npx playwright test` pass.
 - [ ] Drive the app with the playwright MCP: create a player (fox, name "Ema", nickname
       "Rýchla líška"); map greets the nickname, start tile shows nickname + "Ema", the
       result QR caption shows "Ema"; wardrobe shows the per-player prices; create a second
       player "Ema" again -> same prices and accessory hints; player "Jano" -> different
       ones; play a level and read the texts in sk and en for second person; console clean.
+
+## State
+Decisions taken while implementing:
+- The seeded PRNG is the existing mulberry32 `Rng` in `src/engine/rng.ts` (no new code);
+  the accessory deal uses its own stream (`seed ^ 0x9e3779b9`) so it does not depend on
+  the kind prices.
+- `NICK_MAX` (16) lives in `store.ts` next to `nickname()`; the wardrobe accepts an empty
+  nickname (placeholder shows the real name).
+- Story titles lose "Tapko and": "Dračie vajíčko / The Dragon Egg", "Robot Šróbik / Bolt
+  the Robot", "Víla Melódia / Melody the Fairy".
+- Narrator first person ("ukážem", "prezradím", "sme trénovali") is gone from the changed
+  groups and from `progress.last*`, `stats.*`, `freeType.*`; Slovak lines with a gendered
+  past tense or adjective about the child that were touched were rewritten ("Keď si
+  zaseknutý" -> "Keď to nejde", "si napísal" / "si získal" removed).
+- Specs outside the listed files that said "Tapko says/asks/shows" now say "the narrator".
+- The guest in session storage is not migrated (only normalized: seed filled); it is
+  forgotten with the tab anyway.

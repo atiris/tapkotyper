@@ -1,6 +1,5 @@
 import { app, go, routeOf } from '../app/app';
-import { language, t, tList } from '../i18n/i18n';
-import { DEFAULT_COMPANION_NAME } from '../storage/schema';
+import { t, tList } from '../i18n/i18n';
 import { captureKeys } from '../game/cards';
 import { PAW_MAX, PAW_STREAK, PAW_WORDS } from '../game/paw';
 import { type Child, ICONS, closeButton, h, icon } from '../ui/dom';
@@ -41,7 +40,7 @@ export function levelIcons(withSuper = false): HTMLElement[] {
   return [
     iconLine(round('pause'), t('help.icons.pause')),
     iconLine(roundPic('paw', 'paw', pawRing(2, PAW_MAX)),
-      t('help.icons.paw', { n: PAW_STREAK, words: PAW_WORDS, tapko: app.profile?.companion.name ?? DEFAULT_COMPANION_NAME[language()] })),
+      t('help.icons.paw', { n: PAW_STREAK, words: PAW_WORDS })),
     iconLine(levelRing([true, true, false, false, false], 2, false), t('help.icons.ring')),
     iconLine(h('div', { class: 'progress' }, h('div', { class: 'progress-fill', style: 'width: 60%' })), t('help.icons.progress')),
     iconLine(gauge.el, t('help.icons.gauge')),

@@ -146,6 +146,7 @@ p { line-height: 1.5; }
 }
 .profile-card:hover, .profile-card:focus-visible { transform: translateY(-4px) rotate(-1deg); border-color: var(--brand); }
 .profile-name { font-weight: 700; font-size: 1.1rem; }
+.profile-real { color: var(--ink-soft); font-size: 0.85rem; margin-top: -0.3rem; }
 .profile-sub { font-size: 0.85rem; color: var(--ink-soft); }
 .profile-card.new { justify-content: center; border: 3px dashed var(--line); background: transparent; }
 .plus { width: clamp(48px, 9vh, 64px); height: clamp(48px, 9vh, 64px); border-radius: 50%; background: var(--green); color: #fff; display: grid; place-items: center; }

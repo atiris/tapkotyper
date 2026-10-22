@@ -182,7 +182,7 @@ function keysTab(p: Profile, close: () => void): HTMLElement {
   const total = Object.values(p.stats.keys).reduce((a, s) => a + s.presses, 0);
   return h('div', {},
     h('h3', {}, t('stats.title')),
-    h('p', {}, total ? t('stats.intro', { tapko: p.companion.name, n: STATS_WINDOW }) : t('stats.empty')),
+    h('p', {}, total ? t('stats.intro', { n: STATS_WINDOW }) : t('stats.empty')),
     heat,
     h('p', { class: 'legend' },
       h('span', { class: 'lg heat-good' }, `✓ ${t('stats.good')}`),
@@ -216,7 +216,7 @@ function exercisesTab(p: Profile): HTMLElement {
   }));
 }
 
-/** The child's friendly progress and statistics overlay (click on Tapko), in tabs: progress, keys, exercises. */
+/** The child's friendly progress and statistics overlay (click on the character), in tabs: progress, keys, exercises. */
 export function openStats(): void {
   const p = app.profile!;
   let close = () => {};

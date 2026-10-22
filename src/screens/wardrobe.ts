@@ -4,33 +4,29 @@ import { SLOTS, tapkoElement, renderTapkoInto } from '../gfx/tapko';
 import { t } from '../i18n/i18n';
 import { friendStars, grantCompanions, hasAccessory, hasCompanion, totalStars, unlockRules } from '../game/rewards';
 import { COMPANION_KINDS } from '../storage/schema';
+import { NICK_MAX } from '../storage/store';
 import { button, h, icon } from '../ui/dom';
 import { cornerControls } from '../ui/chrome';
 import { levelTitleWords } from '../ui/hud';
 
-/** Longest companion name the child can type. */
-const NAME_MAX = 16;
-
 /**
- * Buddy and wardrobe: the child renames the companion and picks a kind earned by
- * stars; then one item per body area, mixed freely; locked things show how to earn them.
+ * The child's character and wardrobe: the nickname and a kind earned by stars; then one
+ * item per body area, mixed freely; locked things show how this player earns them.
  */
 export function wardrobeScreen(root: HTMLElement): void {
   const p = app.profile!;
   // Stars earned before friends could be earned count too.
   if (grantCompanions(p).length) saveProfile();
   const preview = tapkoElement(p.companion, 'happy', 280);
-  const name = h('input', { id: 'buddy-name', type: 'text', maxlength: String(NAME_MAX), value: p.companion.name, autocomplete: 'off', spellcheck: 'false' });
-  name.addEventListener('input', () => {
-    const n = name.value.trim();
-    if (!n) return;
-    p.companion.name = n;
+  // An empty nickname is allowed: the game then uses the player's name.
+  const nick = h('input', { id: 'buddy-name', type: 'text', maxlength: String(NICK_MAX), value: p.companion.name, placeholder: p.name, autocomplete: 'off', spellcheck: 'false' });
+  nick.addEventListener('input', () => {
+    p.companion.name = nick.value.trim();
     saveProfile();
   });
-  name.addEventListener('change', () => (name.value = p.companion.name));
   const stars = totalStars(p);
   const kinds = h('div', { class: 'kind-picker', role: 'radiogroup', 'aria-label': t('wardrobe.buddy') });
-  const rules = new Map(unlockRules().map((r) => [r.acc, r.rule]));
+  const rules = new Map(unlockRules(p).map((r) => [r.acc, r.rule]));
   const howTo = (id: string): string => {
     const r = rules.get(id);
     if (!r) return '';
@@ -104,7 +100,7 @@ export function wardrobeScreen(root: HTMLElement): void {
       h('div', { class: 'wardrobe-main' },
         h('section', { class: 'buddy' },
           h('h2', {}, t('wardrobe.buddy')),
-          h('label', { for: 'buddy-name', class: 'field-label' }, t('wardrobe.name')), name,
+          h('label', { for: 'buddy-name', class: 'field-label' }, t('wardrobe.name')), nick,
           kinds),
         h('h2', {}, t('wardrobe.wardrobe')),
         grid))));

@@ -9,7 +9,7 @@ test('a new child plays the first level by typing and sees stars', async ({ page
   await skipStories(page);
   const text = await playLevel(page);
   expect(text).toMatch(/%/);
-  // Tapko celebrated in place, not running off.
+  // The character celebrated in place, not running off.
   await expect(page.locator('.level-tapko.celebrate')).toHaveCount(1);
   await expect(page.locator('.results-card .star.on').first()).toBeVisible();
   await expect(page.locator('.results-card .teaser.ask')).toBeVisible();
@@ -42,7 +42,7 @@ test('the super password typed fast on the start page opens everything', async (
   await expect(page.locator('.top-right .round-btn.super')).toHaveCount(0);
 });
 
-test('the robot story is a second row on the map, and Bolt walks with Tapko in it', async ({ page }) => {
+test('the robot story is a second row on the map, and Bolt walks with the child in it', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await page.goto('./');
@@ -60,7 +60,7 @@ test('the robot story is a second row on the map, and Bolt walks with Tapko in i
   expect(errors).toEqual([]);
 });
 
-test('Enter sends Tapko\'s paws to type a few words', async ({ page }) => {
+test('Enter sends the paws to type a few words', async ({ page }) => {
   await page.goto('./');
   await page.locator('.start-screen').waitFor();
   await page.keyboard.type('supertapkotyper', { delay: 40 });
@@ -173,7 +173,7 @@ test('world badges sit on the map, grow with stars and line up on the progress s
   await expect(page.locator('.badge-shelf .badge.none').first()).toHaveAttribute('aria-label', 'Finish world 4');
 });
 
-test('the fairy story is a third row; Melody floats with Tapko, and dictation plays as copying without a voice', async ({ page }) => {
+test('the fairy story is a third row; Melody floats with the child, and dictation plays as copying without a voice', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   // A browser without voices.
@@ -184,7 +184,7 @@ test('the fairy story is a third row; Melody floats with Tapko, and dictation pl
   await page.locator('.start-screen').waitFor();
   await page.keyboard.type('supertapkotyper', { delay: 40 });
   const row = page.locator('.story-fairy');
-  await expect(row.locator('.story-name')).toHaveText('Tapko and Melody the Fairy');
+  await expect(row.locator('.story-name')).toHaveText('Melody the Fairy');
   await expect(row.locator('.island')).toHaveCount(5);
   // The forest path: dictation, here without a voice.
   await row.locator('.island-forestpath .level-node').first().click();

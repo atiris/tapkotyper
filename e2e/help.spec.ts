@@ -33,7 +33,7 @@ test('help opens from the map and from a paused level and goes back', async ({ p
       if (nk) return { kind: 'newkey', key: nk.dataset.sample ?? '' };
       if (document.querySelector('.posture-card')) return { kind: 'ready', key: '' };
       if (document.querySelector('.mode-intro')) return { kind: 'intro', key: '' };
-      // Play has started once Tapko stops waiting.
+      // Play has started once the character stops waiting.
       return { kind: document.querySelector('.level-tapko.waiting') ? 'wait' : 'play', key: '' };
     });
     if (state.kind === 'play') break;

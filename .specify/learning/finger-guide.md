@@ -16,12 +16,12 @@
   to put the fingers on the home keys and press the space bar, shown as a drawn key; the
   space bar (or a tap on the drawing) starts, Esc goes back to the map. It is the only card
   before a level, apart from new keys.
-- A new key is introduced by Tapko on its own card, with the finger's name highlighted in
-  that finger's color; game objects (Tapko's fan) appear only when play starts. The space
+- A new key is introduced with the character on its own card, with the finger's name highlighted in
+  that finger's color; game objects (the character's fan) appear only when play starts. The space
   bar is pressed by a thumb; a Shift card names its hand and asks for three capitals of the
   other hand. For a capital the guide lights the Shift of the other hand.
 - If the child holds the Shift on the same hand as the letter, the letter still counts and
-  Tapko says once per level to use the other hand.
+  the narrator says once per level to use the other hand.
 - Preparation tip: at the start of every training session one short, random tip about
   getting ready to type well (posture, hands, fingers, eyes, rhythm, breaks), shown on the
   get-ready card. A pool of 40+ tips per language, no repeat of the last few shown.

@@ -11,6 +11,7 @@ import { preload } from '../gfx/assets';
 import { type FairyMood, drawFairy } from '../gfx/fairy';
 import { type RobotMood, type RobotState, drawRobot, robotFor } from '../gfx/robot';
 import { t, tList } from '../i18n/i18n';
+import { nickname } from '../storage/store';
 import { type InputHandlers, KeyInput, type TypedChar } from '../input/input';
 import { LAYOUTS, LayoutMismatchDetector, fingerFor, stepsFor } from '../keyboard/layouts';
 import { SHIFT_L, SHIFT_R, SPACE, activeKeys, isLetterKey, keysToIntroduce, masteryLevel, newestGroup, shiftKeyOf } from '../learning/lessons';
@@ -198,12 +199,12 @@ export class LevelRuntime {
   /** Targets the child typed without a reveal (dictation) or a flash (memory). */
   private cleanTargets = 0;
 
-  /** Paw help: the HUD button, words Tapko still types, seconds to his next key. */
+  /** Paw help: the HUD button, words the paw still types, seconds to its next key. */
   private pawBtn: HTMLButtonElement | null = null;
   private pawWords = 0;
   private pawTimer = 0;
   private pawIdle = 0;
-  /** Tapko started the current paw help by himself (auto mode), so the button pulses. */
+  /** The paw started the current help on its own (auto mode), so the button pulses. */
   private pawSelf = false;
   private guideBeforePaws = true;
   /** Seconds each visible word has been on screen (for the automatic help). */
@@ -245,7 +246,7 @@ export class LevelRuntime {
     // Free typing has nothing to pause: its X leaves.
     const pauseBtn = def.kind === 'freetype' ? roundButton('control', 'close', t('level.leave'), () => this.exit()) : roundButton('control', 'pause', t('level.pause'), () => this.pause());
     if (this.pawsAllowed) {
-      this.pawBtn = roundButton('paw', 'paw', t('paw.title', { n: PAW_STREAK, words: PAW_WORDS, tapko: p.companion.name }), () => this.startPaws());
+      this.pawBtn = roundButton('paw', 'paw', t('paw.title', { n: PAW_STREAK, words: PAW_WORDS }), () => this.startPaws());
       this.pawBtn.classList.add('paw-btn');
       this.renderPawBtn();
     }
@@ -413,7 +414,7 @@ export class LevelRuntime {
     for (; this.missesSeen < this.core.missed; this.missesSeen++) this.valve.miss();
   }
 
-  /** A target the child typed (not Tapko's paws). */
+  /** A target the child typed (not the paw). */
   private targetTyped(tg: Target): void {
     const since = this.shownAt.get(tg.id);
     if (since != null) this.paceSamples.push((this.elapsed - since) / tg.word.length);
@@ -558,11 +559,11 @@ export class LevelRuntime {
     if (this.wordStreak > 0 && this.wordStreak % 5 === 0 && now - this.lastCheer > 12) {
       this.lastCheer = now;
       const p = app.profile!;
-      this.say(pickLine('tapko.correct_streak', { name: p.name }, p.customMessages), 3);
+      this.say(pickLine('tapko.correct_streak', { name: nickname(p) }, p.customMessages), 3);
     }
   }
 
-  /** After three misses of one key Tapko shows which key and finger it is. */
+  /** After three misses of one key the narrator says which key and finger it is. */
   private showHint(ch: string): void {
     const finger = fingerFor(layout(), ch);
     const fingerName = finger != null ? t(`fingers.${FINGER_KEYS[finger]}`) : '';
@@ -660,7 +661,7 @@ export class LevelRuntime {
   // ---- Tapko --------------------------------------------------------------------
 
   /**
-   * Tapko's line in the bubble; only screen readers hear it, the voice reads the targets alone.
+   * The narrator's line in the bubble; only screen readers hear it, the voice reads the targets alone.
    * It stays long enough to read (`seconds` is a minimum) and a line still shown is not replaced.
    */
   say(text: string, seconds = 0): void {
@@ -754,7 +755,7 @@ export class LevelRuntime {
     this.renderPawBtn();
   }
 
-  /** Tapko's paws replace the hands and type the closest words for the child. */
+  /** The paws replace the hands and type the closest words for the child. */
   private startPaws(self = false): boolean {
     const p = app.profile!;
     if (!this.pawsAllowed || !this.started || this.paused || this.finished || this.pawWords) return false;
@@ -768,7 +769,7 @@ export class LevelRuntime {
     this.guideBeforePaws = this.guideOn;
     if (!this.guideOn) this.toggleGuide();
     this.guide.setPaws(pawColors(p.companion.kind));
-    this.say(t('paw.start', { tapko: p.companion.name }), 2.5);
+    this.say(t('paw.start'), 2.5);
     this.setMood('happy', 1.4);
     this.renderPawBtn();
     return true;
@@ -780,7 +781,7 @@ export class LevelRuntime {
     this.renderPawBtn();
     this.guide.setPaws(null);
     if (this.guideOn !== this.guideBeforePaws) this.toggleGuide();
-    // The child's next reaction time starts now, not with Tapko's last key.
+    // The child's next reaction time starts now, not with the paw's last key.
     this.lastKey = 0;
     this.readySince = performance.now();
     this.updateGuide();
@@ -926,7 +927,7 @@ export class LevelRuntime {
     this.trackPace();
     if (this.pawsAllowed) this.updatePaws(dt);
     this.readFocus();
-    // Free typing has no end screen: Tapko says himself when a break is due.
+    // Free typing has no end screen: the bubble says when a break is due.
     if (this.free && !this.breakSaid && app.sessionSeconds >= app.profile!.settings.sessionMinutes * 60) {
       this.breakSaid = true;
       this.say(pickLine('tapko.break'), 6);
@@ -1044,7 +1045,7 @@ export class LevelRuntime {
     this.labelShift = shifts;
   }
 
-  /** The word is the task, so Tapko's bubble never covers one: over a label it hides until its spot is free. */
+  /** The word is the task, so the narrator's bubble never covers one: over a label it hides until its spot is free. */
   private placeBubble(): void {
     const b = this.bubble;
     if (b.classList.contains('hidden')) return;
@@ -1080,7 +1081,7 @@ export class LevelRuntime {
     const seconds = this.elapsed;
     const cpm = Math.round(this.ema * 60);
     const chars = this.chars, errors = this.errors;
-    // Targets Tapko's paws typed count neither way.
+    // Targets the paw typed count neither way.
     const resolved = this.typedTargets + this.core.missed;
     const typedShare = resolved ? this.typedTargets / resolved : 1;
     const clean = this.cleanTargets;

@@ -4,7 +4,7 @@
 - Per key: accuracy and typical reaction time from the **last 50 presses only**, the keys
   typed instead of it lately, total presses, and a day-by-day history (accuracy and time
   to press).
-- An overlay opened by clicking Tapko (on the map, or in a level, which pauses first)
+- An overlay opened by clicking the child's character (on the map, or in a level, which pauses first)
   starts with "My progress": a row of icon and number chips (keys mastered of the
   layout's total, worlds finished, stories finished, and once a key is mastered the
   accuracy and the speed in characters per minute of the mastered keys, each with its own

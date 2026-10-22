@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { LEVELS, worldLevels } from './levels';
 import { AUTO_DIFFICULTY_MAX, GROWTH_TYPED_SHARE, MIN_OWN_KEYS, completeLevel, grow, growthNeed } from './progress';
-import { STARS_PER_FRIEND, badgeTier, friendStars, grantCompanions } from './rewards';
+import { COMPANION_KINDS } from '../storage/schema';
+import { STORY_ACCESSORIES, badgeTier, friendStars, grantAccessories, grantCompanions, kindPrices, unlockRules } from './rewards';
 
 describe('automatic growth', () => {
   it('steps up after enough good play, difficulty and word length in turn', () => {
@@ -38,7 +39,7 @@ describe('automatic growth', () => {
   });
 });
 
-describe('a level Tapko typed for the child', () => {
+describe('a level the paw typed for the child', () => {
   const run = { accuracy: 1, errors: 0, cpm: 60, seconds: 120 };
 
   it('earns one star, keeps a better best and adds no growth time', () => {
@@ -59,18 +60,67 @@ describe('a level Tapko typed for the child', () => {
   });
 });
 
-describe('companions earned by stars', () => {
-  it('unlocks one kind every 6 stars, skipping the starting kind', () => {
+describe('characters earned by stars', () => {
+  it('prices the kinds per player: start free, then 18-26 stars a step', () => {
+    for (const name of ['Ema', 'Jano', 'Zuzka', 'Ondrej', 'Guest']) {
+      const p = newProfile(name, 'sk', undefined, 'cat');
+      const prices = kindPrices(p);
+      expect(prices[0]).toEqual(['cat', 0]);
+      expect(prices.map(([k]) => k).sort()).toEqual([...COMPANION_KINDS].sort());
+      for (let i = 1; i < prices.length; i++) {
+        const step = prices[i][1] - prices[i - 1][1];
+        expect(step).toBeGreaterThanOrEqual(18);
+        expect(step).toBeLessThanOrEqual(26);
+      }
+      expect(prices[prices.length - 1][1]).toBeLessThanOrEqual(208);
+      expect(friendStars(p, 'cat')).toBe(0);
+    }
+  });
+
+  it('gives the same name the same prices and other names other ones', () => {
+    expect(kindPrices(newProfile('Ema', 'sk'))).toEqual(kindPrices(newProfile(' ema', 'en')));
+    expect(kindPrices(newProfile('Ema', 'sk'))).not.toEqual(kindPrices(newProfile('Jano', 'sk')));
+  });
+
+  it('unlocks the kinds the stars reach', () => {
     const p = newProfile('Ema', 'sk', undefined, 'cat');
-    p.progress.levels = { 'w1-1': 3, 'w1-2': 2 };
+    const [, [first, need]] = kindPrices(p);
+    p.progress.levels = { x: need - 1 };
     expect(grantCompanions(p)).toEqual([]);
-    expect(friendStars(p, 'bunny')).toBe(STARS_PER_FRIEND);
-    p.progress.levels['w1-3'] = 3;
-    p.progress.levels['w1-4'] = 3;
-    p.progress.levels['w2-1'] = 1;
-    expect(grantCompanions(p)).toEqual(['bunny', 'owl']);
-    expect(p.progress.companionsUnlocked).toEqual(['cat', 'bunny', 'owl']);
-    expect(friendStars(p, 'fox')).toBe(8 * STARS_PER_FRIEND);
+    p.progress.levels = { x: need };
+    expect(grantCompanions(p)).toEqual([first]);
+    expect(p.progress.companionsUnlocked).toEqual(['cat', first]);
+  });
+});
+
+describe('accessories dealt per player', () => {
+  const deal = (name: string) => unlockRules(newProfile(name, 'sk'));
+  const at = (name: string, acc: string) => deal(name).find((r) => r.acc === acc)?.rule;
+
+  it('deals every accessory exactly once with the story ones in place', () => {
+    const base = deal('Ema').map((r) => r.acc).sort();
+    expect(new Set(base).size).toBe(base.length);
+    for (const name of ['Jano', 'Zuzka']) {
+      expect(deal(name).map((r) => r.acc).sort()).toEqual(base);
+      for (const acc of STORY_ACCESSORIES) expect(base).toContain(acc);
+      expect(at(name, 'raincoat')).toEqual({ kind: 'level', id: 'w8-2' });
+      expect(at(name, 'flower-wreath')).toEqual({ kind: 'world', world: 0 });
+      expect(at(name, 'umbrella')).toEqual({ kind: 'world', world: 7 });
+      expect(at(name, 'feather')).toEqual({ kind: 'world', world: 11 });
+      expect(at(name, 'harp')).toEqual({ kind: 'world', world: 13 });
+      expect(at(name, 'fairy-wings')).toEqual({ kind: 'world', world: 14 });
+    }
+  });
+
+  it('gives the same name the same deal and other names other ones', () => {
+    expect(deal('Ema')).toEqual(deal('EMA'));
+    expect(deal('Ema')).not.toEqual(deal('Jano'));
+  });
+
+  it('grants the accessory dealt on a finished level', () => {
+    const p = newProfile('Jano', 'sk');
+    p.progress.levels['w1-1'] = 2;
+    expect(grantAccessories(p)).toEqual([unlockRules(p).find((r) => r.rule.kind === 'level' && r.rule.id === 'w1-1')!.acc]);
   });
 });
 

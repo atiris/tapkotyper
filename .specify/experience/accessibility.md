@@ -13,7 +13,7 @@
 - **Reading aloud** (off by default, per profile): a round button left of the keyboard
   button in the level bar switches it. It reads only the targets, each when it becomes
   the one to type, with the browser's own voice of the profile language, a little slower
-  than normal. Tapko's lines, cards and results are not read by the voice (screen readers
+  than normal. The narrator's lines, cards and results are not read by the voice (screen readers
   still get them). Pause and leaving the level stop it. Without such a voice the button
   is not shown, nor in a dictation run, where the voice always says the targets.
 

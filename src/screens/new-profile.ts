@@ -1,8 +1,8 @@
 import { app, go, selectProfile } from '../app/app';
 import { tapkoElement } from '../gfx/tapko';
 import { language, t } from '../i18n/i18n';
-import { COMPANION_KINDS, DEFAULT_COMPANION_NAME, type CompanionKind, type Lang, type LayoutId } from '../storage/schema';
-import { newProfile } from '../storage/store';
+import { COMPANION_KINDS, type CompanionKind, type Lang, type LayoutId } from '../storage/schema';
+import { NICK_MAX, newProfile } from '../storage/store';
 import { addTask } from '../share/task';
 import { closeButton, h } from '../ui/dom';
 import { LAYOUT_IDS } from '../keyboard/layouts';
@@ -13,7 +13,7 @@ export function newProfileScreen(root: HTMLElement): () => void {
   // Closing the form forgets a task link that brought the child here.
   const cancel = () => { app.pendingTask = null; go('start'); };
   const name = h('input', { id: 'np-name', type: 'text', maxlength: 24, autocomplete: 'off', required: true, autofocus: true });
-  const tapkoName = h('input', { id: 'np-tapko', type: 'text', maxlength: 20, value: DEFAULT_COMPANION_NAME[language()], autocomplete: 'off' });
+  const nick = h('input', { id: 'np-nick', type: 'text', maxlength: NICK_MAX, autocomplete: 'off', spellcheck: 'false' });
   const lang = h('select', { id: 'np-lang' },
     h('option', { value: 'sk', selected: language() === 'sk' }, 'Slovenčina'),
     h('option', { value: 'en', selected: language() === 'en' }, 'English'));
@@ -21,8 +21,6 @@ export function newProfileScreen(root: HTMLElement): () => void {
     ...LAYOUT_IDS.map((id) => h('option', { value: id, selected: id === (language() === 'sk' ? 'sk-qwertz' : 'us-qwerty') }, t(`layouts.${id}`))));
   lang.addEventListener('change', () => {
     lay.value = lang.value === 'sk' ? 'sk-qwertz' : 'us-qwerty';
-    // An untouched default name follows the language.
-    if (Object.values(DEFAULT_COMPANION_NAME).includes(tapkoName.value)) tapkoName.value = DEFAULT_COMPANION_NAME[lang.value as Lang];
   });
   const kinds = h('div', { class: 'kind-picker', role: 'radiogroup', 'aria-label': t('newProfile.companion') },
     ...COMPANION_KINDS.map((k) => {
@@ -43,8 +41,7 @@ export function newProfileScreen(root: HTMLElement): () => void {
       name.focus();
       return;
     }
-    const p = newProfile(n, lang.value as Lang, lay.value as LayoutId, kind);
-    p.companion.name = tapkoName.value.trim() || p.companion.name;
+    const p = newProfile(n, lang.value as Lang, lay.value as LayoutId, kind, nick.value);
     if (app.pendingTask) addTask(p, app.pendingTask);
     app.pendingTask = null;
     app.store.add(p);
@@ -54,11 +51,13 @@ export function newProfileScreen(root: HTMLElement): () => void {
   } },
     closeButton(cancel),
     h('h1', {}, t('newProfile.title')),
-    h('label', { for: 'np-name' }, t('newProfile.name')), name,
     h('div', { class: 'np-pick' },
       h('div', { class: 'np-col' }, h('label', {}, t('newProfile.companion')), kinds),
       h('div', { class: 'np-col np-side' },
-        h('label', { for: 'np-tapko' }, t('newProfile.companionName')), tapkoName,
+        h('label', { for: 'np-name' }, t('newProfile.name')), name,
+        h('p', { class: 'hint' }, t('newProfile.nameHint')),
+        h('label', { for: 'np-nick' }, t('newProfile.nickname')), nick,
+        h('p', { class: 'hint' }, t('newProfile.nicknameHint')),
         h('label', { for: 'np-lang' }, t('newProfile.language')), lang,
         h('label', { for: 'np-layout' }, t('newProfile.layout')), lay)),
     h('p', { class: 'hint' }, t('newProfile.parentHint')),

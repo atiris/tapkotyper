@@ -139,6 +139,7 @@ describe('move', () => {
     expect(trimHistory(p, 30, new Date(2026, 9, 21)).stats.keys.f.days.map((d) => d.date)).toEqual(['2026-10-20']);
     const back = await parseMove((await moveCode(p, ''))!);
     expect(back.id).toBe(p.id);
+    expect(back.seed).toBe(p.seed);
     expect(back.stats.keys.f.days).toHaveLength(2);
     expect(await moveCode(p, '', 50)).toBe(null);
   });

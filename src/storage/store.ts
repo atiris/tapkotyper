@@ -7,7 +7,6 @@ import {
   type Profile,
   type StoreData,
   COMPANION_KINDS,
-  DEFAULT_COMPANION_NAME,
   GUEST_ID,
   defaultSettings,
   emptyKeyStat,
@@ -16,10 +15,37 @@ import {
 export const STORE_KEY = 'tapkotyper:v1';
 const GUEST_KEY = 'tapkotyper:guest';
 
-export const STORE_VERSION = 1;
+export const STORE_VERSION = 2;
 
 /** Migrations from older stored shapes, keyed by the version they upgrade from. */
-const migrations: Record<number, (data: any) => any> = {};
+const migrations: Record<number, (data: any) => any> = {
+  // v2: the character is the player; its old default name becomes an empty nickname, and a seed is added.
+  1: (data) => ({
+    ...data,
+    profiles: Array.isArray(data.profiles) ? data.profiles.map((p: any) => !p || typeof p !== 'object' ? p : {
+      ...p,
+      seed: typeof p.name === 'string' ? nameSeed(p.name) : p.seed,
+      companion: p.companion && ['Ťapko', 'Tapko'].includes(p.companion.name) ? { ...p.companion, name: '' } : p.companion,
+    }) : data.profiles,
+  }),
+};
+
+/** FNV-1a 32-bit hash of the normalized name: the same name always deals the same rewards. */
+export function nameSeed(name: string): number {
+  let h = 0x811c9dc5;
+  for (const ch of name.trim().normalize('NFC').toLocaleLowerCase()) {
+    for (let i = 0; i < ch.length; i++) h = Math.imul(h ^ ch.charCodeAt(i), 0x01000193);
+  }
+  return h >>> 0;
+}
+
+/** Longest nickname the child can type. */
+export const NICK_MAX = 16;
+
+/** The name the game calls the child: the nickname, else the real name. */
+export function nickname(p: Profile): string {
+  return p.companion.name.trim() || p.name;
+}
 
 function emptyStore(): StoreData {
   return { version: STORE_VERSION, profiles: [], lastProfileId: null, language: null };
@@ -42,6 +68,7 @@ export function normalizeProfile(p: Profile): Profile {
   return {
     ...base,
     ...p,
+    seed: typeof p.seed === 'number' ? p.seed >>> 0 : base.seed,
     companion: { ...base.companion, ...p.companion },
     settings: { ...base.settings, ...p.settings },
     progress: { ...base.progress, ...p.progress },
@@ -61,14 +88,15 @@ export function isProfile(p: any): p is Profile {
     typeof p.progress === 'object' && typeof p.settings === 'object';
 }
 
-export function newProfile(name: string, language: Lang, layout?: LayoutId, kind: CompanionKind = 'fox'): Profile {
+export function newProfile(name: string, language: Lang, layout?: LayoutId, kind: CompanionKind = 'fox', nick = ''): Profile {
   const lay: LayoutId = layout ?? (language === 'sk' ? 'sk-qwertz' : 'us-qwerty');
   const start: CompanionKind = COMPANION_KINDS.includes(kind) ? kind : 'fox';
   return {
     id: Math.random().toString(36).slice(2, 10) + Date.now().toString(36),
     name,
+    seed: nameSeed(name),
     avatar: start,
-    companion: { name: DEFAULT_COMPANION_NAME[language], kind: start, accessories: [] },
+    companion: { name: nick.trim(), kind: start, accessories: [] },
     customMessages: [],
     surprises: [],
     tasks: [],

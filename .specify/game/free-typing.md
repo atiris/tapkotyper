@@ -19,7 +19,7 @@
 - Only keys the layout types count (letters, digits, space, punctuation, diacritics).
   Each counts in the key statistics as a correct press, so free typing never lowers
   accuracy; the time counts as training time and toward the break reminder: when a break
-  is due, Tapko says so in his bubble (there is no end screen). It never gives stars,
+  is due, the narrator says so in the bubble (there is no end screen). It never gives stars,
   levels, keys or task time.
 - No game cards: no get-ready card, no new key, no tip, no paw help. Esc or the round X
   leaves to the map; the keyboard guide can be shown as in other levels.

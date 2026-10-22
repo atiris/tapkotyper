@@ -1,3 +1,3 @@
-# Companion
+# Character
 
-- [tapko.md](tapko.md) - Tapko as a guide, customization, rewards
+- [tapko.md](tapko.md) - the character the child plays as, the narrator, nickname, per-player rewards

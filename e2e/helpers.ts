@@ -52,7 +52,7 @@ export async function createProfile(page: Page, name: string, layout?: string): 
   await page.locator('.map-screen').waitFor();
 }
 
-/** Skips the story scenes before a level (the very first level has Tapko's intro and the world's scene). */
+/** Skips the story scenes before a level (the very first level has the intro and the world's scene). */
 export async function skipStories(page: Page): Promise<void> {
   await page.locator('.story-screen').waitFor();
   while (await page.locator('.story-screen').count()) {

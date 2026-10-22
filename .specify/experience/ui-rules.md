@@ -26,8 +26,8 @@ One set of rules for where things sit and how they behave, so every screen feels
    the title; there are no dots under it.
 6. **Play controls stay together.** Pause and the paw sit side by side at the start of the play
    bar; nothing from the bar is drawn over the play field.
-7. **Tapko's lines in a level.** A tip or a line from Tapko appears in one fixed spot at the top
-   left of the play field, slightly see-through, and never moves with Tapko's jumps. It never
+7. **The narrator's lines in a level.** A tip or a narrator line appears in one fixed spot at the top
+   left of the play field, slightly see-through, and never moves with the character's jumps. It never
    covers a word to type.
 8. **Buttons.** The one main action of a view is the orange button ("primary"); everything
    else is plain or ghost. A view never has two orange buttons.

@@ -5,6 +5,7 @@ import { type FairyMood, fairyElement } from '../gfx/fairy';
 import { type Mood, tapkoElement } from '../gfx/tapko';
 import { type RobotMood, type RobotState, robotElement } from '../gfx/robot';
 import { t, tList } from '../i18n/i18n';
+import { nickname } from '../storage/store';
 import { cornerControls } from '../ui/chrome';
 import { button, h } from '../ui/dom';
 
@@ -81,7 +82,7 @@ interface StoryParams {
 export function storyScreen(root: HTMLElement, params: StoryParams): () => void {
   const p = app.profile!;
   const def = SCENES[params.scene] ?? SCENES.intro;
-  const lines = tList(`story.scenes.${params.scene}`, { name: p.name, tapko: p.companion.name });
+  const lines = tList(`story.scenes.${params.scene}`, { name: nickname(p) });
   audio.music(def.world);
   let i = 0;
   const bg = imageUrl(`bg-${def.world}-far`);

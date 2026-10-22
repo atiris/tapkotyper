@@ -6,7 +6,8 @@ WHAT the product does and WHY, per feature, with the best ideas from
 TapkoTyper is a free, peaceful, story-driven touch-typing game for children
 and young teens (about 10-15 years). It runs fully in the browser on GitHub Pages, with no backend.
 
-The companion is called Ťapko in Slovak and Tapko in English: "ťapkať" is the patter of small
+The child plays as an animal character; the game's name for that figure is Ťapko in Slovak
+and Tapko in English: "ťapkať" is the patter of small
 feet and "tap" is a key press. An earlier working name was dropped for an unwanted slang meaning.
 
 ## Product principles
@@ -26,6 +27,6 @@ feet and "tap" is a key press. An earlier working name was dropped for an unwant
 - [architecture.md](architecture.md) - platform and technical constraints
 - [learning/](learning/index.md) - keyboard layouts, lessons, words, finger guide, feedback
 - [game/](game/index.md) - story, the five worlds, mechanics, super-obstacles
-- [companion/](companion/index.md) - Tapko, accessories, rewards
+- [companion/](companion/index.md) - the character the child plays as, accessories, rewards
 - [profiles/](profiles/index.md) - profiles, guest, parent controls, statistics, export
 - [experience/](experience/index.md) - localization, visuals, audio, accessibility, pacing, privacy, offline

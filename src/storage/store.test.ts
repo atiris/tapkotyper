@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { STORE_KEY, STORE_VERSION, Store, applyImport, migrate, newProfile, parseImport, planImport } from './store';
+import { STORE_KEY, STORE_VERSION, Store, applyImport, migrate, nameSeed, newProfile, nickname, parseImport, planImport } from './store';
 
 class MemStorage {
   map = new Map<string, string>();
@@ -57,6 +57,43 @@ describe('Store', () => {
   });
 });
 
+describe('nickname and seed', () => {
+  it('falls back to the name when there is no nickname', () => {
+    const p = newProfile('Ema', 'sk');
+    expect(p.companion.name).toBe('');
+    expect(nickname(p)).toBe('Ema');
+    expect(nickname(newProfile('Ema', 'sk', undefined, 'cat', ' Líška '))).toBe('Líška');
+  });
+
+  it('hashes the normalized name and keeps the seed on rename', () => {
+    expect(nameSeed(' EMA ')).toBe(nameSeed('ema'));
+    expect(nameSeed('Ema')).not.toBe(nameSeed('Jano'));
+    expect(nameSeed('Ema')).toBe(nameSeed('Ema'.normalize('NFD')));
+    const p = newProfile('Ema', 'sk');
+    expect(p.seed).toBe(nameSeed('Ema'));
+    p.name = 'Emka';
+    expect(migrate({ version: STORE_VERSION, profiles: [p] }).profiles[0].seed).toBe(nameSeed('Ema'));
+  });
+
+  it('migrates v1: seed from the name, old default nickname emptied, rewards kept', () => {
+    const old: any = newProfile('Jano', 'sk');
+    delete old.seed;
+    old.companion = { name: 'Ťapko', kind: 'owl', accessories: ['cap'] };
+    old.progress.rewards = ['acc:cap'];
+    old.progress.companionsUnlocked = ['owl', 'cat'];
+    const named: any = { ...newProfile('Ema', 'en'), companion: { name: 'Foxy', kind: 'fox', accessories: [] } };
+    delete named.seed;
+    const [a, b] = migrate({ version: 1, profiles: [old, named] }).profiles;
+    expect(a.seed).toBe(nameSeed('Jano'));
+    expect(a.companion.name).toBe('');
+    expect(a.companion.accessories).toEqual(['cap']);
+    expect(a.progress.rewards).toEqual(['acc:cap']);
+    expect(a.progress.companionsUnlocked).toEqual(['owl', 'cat']);
+    expect(b.companion.name).toBe('Foxy');
+    expect(b.seed).toBe(nameSeed('Ema'));
+  });
+});
+
 describe('export and import', () => {
   it('round-trips and asks before replacing', () => {
     const a = new Store(mem(), mem());
@@ -67,6 +104,7 @@ describe('export and import', () => {
     expect(plan.conflicts).toHaveLength(0);
     applyImport(b, plan, false);
     expect(b.profiles[0].id).toBe(p.id);
+    expect(b.profiles[0].seed).toBe(p.seed);
     const again = planImport(b, parseImport(json));
     expect(again.conflicts).toHaveLength(1);
     applyImport(b, again, false);

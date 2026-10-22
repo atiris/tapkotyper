@@ -5,14 +5,14 @@ import { LEVELS, type LevelDef, WORLDS } from '../game/levels';
 import { SURPRISES_MAX, SURPRISE_LEN, SURPRISE_N_MAX, TRIGGERS, newSurprise, restartSurprise, surpriseCount } from '../game/own-content';
 import { wordSource } from '../game/runtime';
 import { lessonKeyOf, lessonOrder, punctuationKeys } from '../learning/lessons';
-import { COMPANION_KINDS, DEFAULT_COMPANION_NAME, GUEST_ID, SUPER_ID, type FontChoice, type Lang, type LayoutId, type OwnMix, type ParentLock, type Profile, type Surprise, type SurpriseTrigger, type TaskKind } from '../storage/schema';
+import { COMPANION_KINDS, GUEST_ID, SUPER_ID, type FontChoice, type Lang, type LayoutId, type OwnMix, type ParentLock, type Profile, type Surprise, type SurpriseTrigger, type TaskKind } from '../storage/schema';
 import { checkLock, makeLock } from '../storage/lock';
 import { linkOf } from '../share/codec';
 import { TASK_GROUP_MAX, TASK_MINUTES, TASK_TITLE_MAX, type TaskSpec, addTask, taskCode } from '../share/task';
 import { moveCode } from '../share/transfer';
 import { linkBox } from '../ui/link-box';
 import { handInDialog } from './task';
-import { applyImport, parseImport, planImport } from '../storage/store';
+import { NICK_MAX, applyImport, parseImport, planImport } from '../storage/store';
 import { KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
 import { button, confirmDialog, download, h, modal } from '../ui/dom';
 import { tapkoElement } from '../gfx/tapko';
@@ -184,8 +184,8 @@ function settingsTab(p: Profile): HTMLElement {
   const save = () => { saveProfile(); applyProfileLook(p); };
   const name = h('input', { type: 'text', value: p.name, maxlength: 24 });
   name.addEventListener('change', () => { p.name = name.value.trim() || p.name; save(); });
-  const tapkoName = h('input', { type: 'text', value: p.companion.name, maxlength: 20 });
-  tapkoName.addEventListener('change', () => { p.companion.name = tapkoName.value.trim() || DEFAULT_COMPANION_NAME[p.language]; save(); });
+  const nick = h('input', { type: 'text', value: p.companion.name, maxlength: NICK_MAX, placeholder: p.name });
+  nick.addEventListener('change', () => { p.companion.name = nick.value.trim(); save(); });
   const tapko = h('span', { class: 'child-tapko' });
   const paintTapko = () => tapko.replaceChildren(tapkoElement(p.companion, 'happy', 96));
   const kinds = h('div', { class: 'kind-picker', role: 'radiogroup', 'aria-label': t('parent.companionKind') },
@@ -204,7 +204,7 @@ function settingsTab(p: Profile): HTMLElement {
     h('fieldset', {}, h('legend', {}, t('parent.group.child')),
       h('div', { class: 'child-summary' }, tapko, field(t('parent.childName'), name)),
       field(t('parent.companionKind'), kinds, undefined, 'div'),
-      field(t('parent.companionName'), tapkoName),
+      field(t('parent.nickname'), nick, t('parent.nicknameHint')),
       field(t('parent.language'), select<Lang>(p.language, [['sk', 'Slovenčina'], ['en', 'English']], async (v) => { p.language = v; save(); await useLanguage(v); go('parent', { granted: true }); })),
       field(t('parent.layout'), select<LayoutId>(p.layout, LAYOUT_IDS.map((id) => [id, t(`layouts.${id}`)]), (v) => {
         p.layout = v;
@@ -688,7 +688,7 @@ function printCard(p: Profile): void {
     h('p', {}, t('print.worlds', { n: p.progress.worldsDone.length, total: WORLDS.length })),
     last ? h('p', {}, t('print.rhythm', { n: last.cpm })) : null,
     h('p', { class: 'print-date' }, new Date().toLocaleDateString(p.language)),
-    h('p', { class: 'print-sign' }, `${p.companion.name} & TapkoTyper`));
+    h('p', { class: 'print-sign' }, 'TapkoTyper'));
   document.body.append(card);
   document.body.classList.add('printing');
   const cleanup = () => { card.remove(); document.body.classList.remove('printing'); window.removeEventListener('afterprint', cleanup); };

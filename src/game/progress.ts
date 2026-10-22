@@ -20,7 +20,7 @@ export interface LevelResult {
   trend: number | null;
   /** An automatic step up earned with this level (a new medal), else null. */
   growth: GrowthStep | null;
-  /** The child typed too few keys; Tapko's paws did most of the level. */
+  /** The child typed too few keys; the paw did most of the level. */
   byTapko: boolean;
   /** The world's badge, when this level earned it (`upgrade` false) or made it better. */
   badge: { world: number; tier: BadgeTier; upgrade: boolean } | null;
@@ -43,7 +43,7 @@ export const AUTO_WORD_MAX = 9;
 const GROWTH_ACCURACY = 0.9;
 /** Share of a level's targets the child typed (not let pass) for its time to count. */
 export const GROWTH_TYPED_SHARE = 0.85;
-/** Fewer keys of the child's own in a story level: Tapko did most of it. */
+/** Fewer keys of the child's own in a story level: the paw did most of it. */
 export const MIN_OWN_KEYS = 5;
 
 /** Seconds of good play for the next step: 4 minutes, then one more for each step. */

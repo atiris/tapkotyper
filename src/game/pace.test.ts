@@ -53,7 +53,7 @@ describe('pressure valve', () => {
   });
 });
 
-describe('Tapko line time', () => {
+describe('narrator line time', () => {
   it('is at least 3.5 seconds and 0.08 seconds per character', () => {
     expect(sayTime('Hi')).toBe(3.5);
     expect(sayTime('x'.repeat(100))).toBeCloseTo(8);

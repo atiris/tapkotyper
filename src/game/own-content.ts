@@ -52,7 +52,7 @@ function countingOpen(p: Profile): Surprise[] {
 }
 
 /**
- * The rule Tapko asks about on the get-ready card of this run: the one of this level, else a
+ * The rule asked about on the get-ready card of this run: the one of this level, else a
  * counting rule (one already reached first). Drills have none.
  */
 export function surpriseFor(p: Profile, def: LevelDef, drill: boolean): Surprise | null {

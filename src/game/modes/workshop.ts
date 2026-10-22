@@ -156,7 +156,7 @@ export abstract class BeatMode extends Mode {
   /** Where the beat ring and its group stand. */
   protected ringX = 0.42;
 
-  /** The line Tapko says when all groups are done. */
+  /** The narrator's line when all groups are done. */
   protected abstract readonly doneLine: string;
   /** The scene, `k` = 0..1 done. */
   protected abstract drawScene(g: G, k: number): void;

@@ -26,8 +26,8 @@ Each world ends with a bigger, special challenge:
   the current group is typed in its panel and each typed group lights one part of the
   gate's ring. A wrong key starts the code again: the lit groups go dark with a soft
   buzz and the same code starts from its first group. A card says so before the first
-  group, and after three restarts Tapko says once to go slowly and exactly, since no clock
-  runs. There is no timer and no other loss, Tapko's paws are off (they would type the
+  group, and after three restarts the narrator says once to go slowly and exactly, since no clock
+  runs. There is no timer and no other loss, the paws are off (they would type the
   code for the child), and the stars come from the accuracy as usual.
 - **Family welcome** (robot home): little robots pop out of boxes with short words, like
   the friendly mole.

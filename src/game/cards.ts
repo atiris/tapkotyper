@@ -110,7 +110,7 @@ export function showPosture(host: HTMLElement, p: Profile, tip?: string, surpris
     const space = h('button', { class: 'space-key', type: 'button', 'aria-label': t('posture.space'), onClick: () => close('start') }, t('posture.spaceKey'));
     const card = h('div', { class: 'card posture-card' },
       postureContent(tip),
-      surprise ? surpriseAsk(p, surprise.q) : null,
+      surprise ? surpriseAsk(surprise.q) : null,
       surprise ? surpriseLeft(p, surprise) : null,
       note ? h('p', { class: 'hint style-note' }, note) : null,
       h('p', { class: 'space-label' }, t('posture.space')),
@@ -130,9 +130,9 @@ export function showPosture(host: HTMLElement, p: Profile, tip?: string, surpris
   });
 }
 
-/** Tapko asks the question of a parent's surprise. */
-export function surpriseAsk(p: Profile, question: string): HTMLElement {
-  return h('p', { class: 'surprise ask' }, h('b', {}, t('surprise.ask', { tapko: p.companion.name })), ' ', question);
+/** The question of a parent's surprise. */
+export function surpriseAsk(question: string): HTMLElement {
+  return h('p', { class: 'surprise ask' }, h('b', {}, t('surprise.ask')), ' ', question);
 }
 
 /** What a counting surprise still needs ("2 more levels"), or null when it is reached or does not count. */

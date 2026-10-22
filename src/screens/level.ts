@@ -2,6 +2,7 @@ import { app, go, pickLine, saveProfile } from '../app/app';
 import { starRow } from '../ui/chrome';
 import { tapkoElement } from '../gfx/tapko';
 import { t, tList } from '../i18n/i18n';
+import { nickname } from '../storage/store';
 import { LEVELS, type LevelDef, type StoryDef, WORLDS, freeTypeLevel, isWorldUnlocked, levelById, practiceLevel, rescueLevel, storyOf } from '../game/levels';
 import type { LevelResult } from '../game/progress';
 import type { Style } from '../game/typing';
@@ -101,7 +102,7 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
   // The facts as small chips in one wrapping row, accuracy first.
   const chip = (cls: string, ...kids: Child[]) => h('span', { class: `fact ${cls}` }, ...kids);
   const facts: HTMLElement[] = [
-    chip('main', r.byTapko ? t('results.byTapko', { tapko: p.companion.name }) : t('results.accuracy', { n: Math.round(r.accuracy * 100) })),
+    chip('main', r.byTapko ? t('results.byTapko') : t('results.accuracy', { n: Math.round(r.accuracy * 100) })),
   ];
   if (r.byStyle) facts.push(chip('', t(`results.${r.byStyle.style}Clean`, { n: r.byStyle.clean, total: r.byStyle.total })));
   if (r.cpm > 0) facts.push(chip('', t('results.rhythm', { n: r.cpm })));
@@ -120,7 +121,7 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
     facts.push(chip('growth', medal(r.growth.medal, true), h('span', {}, h('b', {}, t('results.growthTitle')), ' ',
       r.growth.kind === 'difficulty' ? t('results.growthDifficulty') : t('results.growthWordLen', { n: r.growth.value }))));
   }
-  const sentence = pickLine('tapko.level_done', { name: p.name }, p.customMessages);
+  const sentence = pickLine('tapko.level_done', { name: nickname(p) }, p.customMessages);
 
   const actions = h('div', { class: 'row center' });
   const taskOn = task && !task.doneAt ? task : null;
@@ -142,14 +143,14 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
   const toMap = () => go('map');
   actions.append(button(t('level.toMap'), toMap, 'btn', 'map'));
 
-  // The task, the surprise and Tapko's question share one small framed block; a run with a
+  // The task, the surprise and the narrator's question share one small framed block; a run with a
   // surprise has no built-in teaser.
   const outcome = surpriseOutcome(p, surprise, !!params.keys);
   if (outcome) saveProfile();
   const notes = [
     outcome ? surpriseResult(p, outcome.rule, outcome.revealed) : null,
     task ? h('p', { class: `task-line ${task.doneAt ? 'good' : ''}` }, task.doneAt ? t('task.doneLine', { title: task.title }) : t('task.leftLine', { title: task.title, n: minutesLeft(task) })) : null,
-    ...(outcome ? [] : teaser(p, def, !!nextDef && r.worldDone === null)),
+    ...(outcome ? [] : teaser(def, !!nextDef && r.worldDone === null)),
   ].filter((x) => x !== null);
   const card = h('div', { class: 'card results-card' },
     h('div', { class: 'results-top' },
@@ -174,28 +175,27 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
 /** A surprise asked again: its answer highlighted right under it, or what is still left. */
 function surpriseResult(p: Profile, s: Surprise, revealed: boolean): HTMLElement {
   return h('div', { class: 'surprise-result' },
-    surpriseAsk(p, s.q),
+    surpriseAsk(s.q),
     revealed ? h('p', { class: 'surprise answer' }, s.a) : surpriseLeft(p, s));
 }
 
 /**
- * Tapko's curious question about the next level, answered only after that level is
+ * A curious question about the next level, answered only after that level is
  * finished, so the child wants to go on; the answer comes with its question. Story levels only.
  */
-function teaser(p: Profile, def: LevelDef, hasNext: boolean): HTMLElement[] {
+function teaser(def: LevelDef, hasNext: boolean): HTMLElement[] {
   if (def.index < 0) return [];
   const world = WORLDS[def.world];
   const questions = tList(`teaser.${world}.q`);
   const answer = def.index > 0 ? tList(`teaser.${world}.a`)[def.index - 1] : undefined;
   const asked = def.index > 0 ? questions[def.index - 1] : undefined;
   const question = hasNext ? questions[def.index] : undefined;
-  const tapko = p.companion.name;
   const out: HTMLElement[] = [];
   if (answer) {
     out.push(h('div', { class: 'teaser-result' },
       asked ? h('p', { class: 'teaser asked' }, h('b', {}, t('teaser.asked')), ' ', asked) : null,
       h('p', { class: 'teaser answer' }, h('b', {}, t('teaser.answer')), ' ', answer)));
   }
-  if (question) out.push(h('p', { class: 'teaser ask' }, h('b', {}, t('teaser.ask', { tapko })), ' ', question, h('br'), h('small', {}, t('teaser.later'))));
+  if (question) out.push(h('p', { class: 'teaser ask' }, h('b', {}, t('teaser.ask')), ' ', question, h('br'), h('small', {}, t('teaser.later'))));
   return out;
 }

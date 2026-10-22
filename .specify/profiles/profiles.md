@@ -1,19 +1,31 @@
 # Profiles
 
 ## What
-- Several local child profiles on one device, picked on the start screen (name and
-  avatar; "New player" is one more card up to four profiles, a button beside "Play as guest" with more), plus a **Guest** mode that keeps nothing after the browser tab closes; the
+- Several local child profiles on one device, picked on the start screen (the character with the
+  nickname large and, when it differs, the real name small under it, so siblings recognize
+  their own tile; "New player" is one more card up to four profiles, a button beside "Play as guest" with more), plus a **Guest** mode that keeps nothing after the browser tab closes; the
   guest is greeted in the game's language ("Hosť" / "Guest").
-- The new player form is a window closed with the round X: the player's name on top, the nine
-  companions as a 3 x 3 grid with the companion's name, language and keyboard layout beside it
-  (below it on a narrow screen).
+- The new player form is a window closed with the round X: "pick your character", the nine
+  animals as a 3 x 3 grid, with the name (hint: shown to the teacher and in QR codes), the
+  nickname (optional, up to 16 characters; hint: shown with the character in the game),
+  language and keyboard layout beside it (below it on a narrow screen).
 - A new player lands on the map, not in a level, so a parent can set things up first. Above
-  the stories Tapko greets the child once by name and says in a few lines what to do (Continue,
+  the stories the narrator greets the child once by nickname ("This is you.") and says in a few lines what to do (Continue,
   keys come step by step, "?" helps, the gear is for the parent); closing it or starting from
-  it hides it for good. Tapko's own intro story plays before the first level. A guest and the
+  it hides it for good. The intro story plays before the first level. A guest and the
   super player get no greeting.
-- Profile data: child name, companion name and kind, custom messages, layout, settings,
-  progress, unlocked items, statistics.
+- Profile data: child name, nickname and character kind, a seed, custom messages, layout,
+  settings, progress, unlocked items, statistics.
+- **Real name vs nickname**: the real name is for adults; the nickname is play. An empty
+  nickname means the real name.
+  - Nickname: everything the child sees in play (map greeting and welcome, encouragement
+    lines, break, story scenes, results, wardrobe).
+  - Real name: parent screen (player switcher, fields, delete confirm, tasks), teacher
+    screen, result and QR code captions, share and move links, export file name, import
+    texts and the printed progress card (signed just "TapkoTyper").
+- The **seed** is a hash of the name when the player is created; it deals the per-player
+  character prices and accessories ([the character](../companion/tapko.md)). Renaming later
+  changes nothing; a profile recreated with the same name gets the same deal.
 - Export a profile (or all of them) to a `.json` file and import it on another device.
   Import validates the file and never silently overwrites (it asks: replace or keep both).
   A player can also move by link ([teacher-links.md](teacher-links.md)).

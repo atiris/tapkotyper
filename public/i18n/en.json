@@ -25,15 +25,17 @@
     "short": "No ads, no accounts, no tracking. Everything stays on this device."
   },
   "newProfile": {
-    "title": "Hello, new friend!",
+    "title": "Hello and welcome!",
     "name": "Your name",
     "nameMissing": "Please write your name.",
-    "companion": "Choose your companion",
-    "companionName": "Companion's name",
+    "companion": "Pick your character",
     "language": "Language",
     "layout": "Keyboard",
     "parentHint": "A parent can change everything later in the settings (the gear on the map).",
-    "create": "Let's go!"
+    "create": "Let's go!",
+    "nameHint": "Your teacher sees it, and it is in your result QR codes.",
+    "nickname": "Nickname (optional)",
+    "nicknameHint": "Shown with your character in the game."
   },
   "layouts": {
     "sk-qwertz": "Slovak (QWERTZ)",
@@ -70,7 +72,7 @@
   },
   "map": {
     "welcome": {
-      "title": "Hi, {name}! I am {tapko}.",
+      "title": "Hello {name}! This is you.",
       "lines": [
         "Press “Continue”, you will learn the keys step by step, one by one.",
         "When you are not sure what to do, click “?”.",
@@ -83,14 +85,14 @@
     "hello": "Hi, {name}!",
     "continue": "Continue",
     "practice": "Own practice",
-    "wardrobe": "Buddy and wardrobe",
+    "wardrobe": "Me and my wardrobe",
     "rescue": "Rescue missions",
     "switchProfile": "Players",
     "super": "big challenge",
     "starsAria": "{n} stars",
-    "storyName": "Tapko and the Dragon Egg",
+    "storyName": "The Dragon Egg",
     "settings": "Settings for parents",
-    "storyRobot": "Tapko and Bolt the Robot",
+    "storyRobot": "Bolt the Robot",
     "storyOpens": "Opens when you know {n} letters. Now you know {have}.",
     "lockWorld": "Finish {world} first.",
     "lockKeys": "This story opens when you know {n} letters. Now you know {have}.",
@@ -99,7 +101,7 @@
     "keysFew": "You need {n} more letters for this level. You get new letters by playing or in Own practice.",
     "keysMany": "You need {n} more letters for this level. You get new letters by playing or in Own practice.",
     "keysLocked": "needs more letters",
-    "storyFairy": "Tapko and Melody the Fairy"
+    "storyFairy": "Melody the Fairy"
   },
   "level": {
     "ownText": "My text",
@@ -114,7 +116,7 @@
     "helpSteps": [
       "Accuracy first: stars come from few mistakes.",
       "Then a steady rhythm: when you type evenly, the green ring fills up.",
-      "When you are stuck, use the paw: Tapko types a few words for you.",
+      "When you are stuck, use the paw: it types a few words for you.",
       "Repeat a level until it has three stars.",
       "Take a break after a few levels."
     ],
@@ -195,16 +197,16 @@
     "start": "Start"
   },
   "freeType": {
-    "hint": "Type anything. When you stop, I will show it.",
+    "hint": "Type anything. When you stop, it shows up.",
     "place": "Change the place",
-    "pick": "Where shall we type today?"
+    "pick": "Where do you want to type today?"
   },
   "touch": {
     "title": "A keyboard is needed",
     "text": "TapkoTyper teaches typing on a real keyboard. Please connect a keyboard to this tablet or play on a computer."
   },
   "tapko": {
-    "statsHint": "Click me to see how you are doing",
+    "statsHint": "Click yourself to see how you are doing",
     "correct_streak": [
       "Great rhythm, {name}!",
       "Your fingers know the way!",
@@ -226,13 +228,13 @@
     "level_done": [
       "You did it, {name}!",
       "Fantastic typing!",
-      "I'm so proud of you!",
-      "That was great teamwork!",
+      "Lovely, keep it up!",
+      "Your fingers worked as a team!",
       "Your fingers danced on the keys!"
     ],
     "break": [
       "Time for a little stretch break. Your hands deserve it!",
-      "Let's stretch together and rest our eyes."
+      "Stretch a little and rest your eyes."
     ]
   },
   "results": {
@@ -242,13 +244,13 @@
     "memoryClean": "From memory without a mistake: {n} of {total}",
     "starsAria": "{n} of 3 stars",
     "accuracy": "Accuracy {n} %",
-    "byTapko": "{tapko} did most of this level.",
+    "byTapko": "The paw did most of this level.",
     "rhythm": "Rhythm {n} letters per minute",
     "trendUp": "Your rhythm is smoother than last week!",
     "newKey": "New key unlocked: {key}",
     "newKeys": "New keys unlocked: {keys}",
     "newAccessory": "New things in the wardrobe: {n}",
-    "newCompanion": "A new buddy in the wardrobe: {kind}",
+    "newCompanion": "A new character in your wardrobe: {kind}",
     "rescued": "You rescued the dragon {name}!",
     "next": "Next level",
     "nextRescue": "Another mission",
@@ -274,21 +276,21 @@
     "locked": "Finish world {n}"
   },
   "surprise": {
-    "ask": "{tapko} has a secret:",
+    "ask": "A secret:",
     "left": {
-      "minutes": "{n} more min of training and I will tell you.",
-      "levelsOne": "{n} more level and I will tell you.",
-      "levelsFew": "{n} more levels and I will tell you.",
-      "levelsMany": "{n} more levels and I will tell you.",
-      "starsOne": "{n} more star and I will tell you.",
-      "starsFew": "{n} more stars and I will tell you.",
-      "starsMany": "{n} more stars and I will tell you."
+      "minutes": "{n} more min of training and you will find out.",
+      "levelsOne": "{n} more level and you will find out.",
+      "levelsFew": "{n} more levels and you will find out.",
+      "levelsMany": "{n} more levels and you will find out.",
+      "starsOne": "{n} more star and you will find out.",
+      "starsFew": "{n} more stars and you will find out.",
+      "starsMany": "{n} more stars and you will find out."
     }
   },
   "teaser": {
-    "ask": "{tapko} asks:",
-    "later": "I will tell you the answer when you finish the next level.",
-    "answer": "The answer I promised:",
+    "ask": "A question for you:",
+    "later": "You will hear the answer when you finish the next level.",
+    "answer": "The promised answer:",
     "meadow": {
       "q": [
         "Do you know how many eyes a spider has?",
@@ -502,12 +504,12 @@
     }
   },
   "paw": {
-    "title": "Paw help: {n} words without a mistake charge a paw (3 at most). Enter: {tapko} types {words} words for you. Backspace: help by itself when it gets hard.",
+    "title": "Paw help: {n} words without a mistake charge a paw (3 at most). Enter: your paw types {words} words for you. Backspace: the paw helps on its own when it gets hard.",
     "aria": "Paw help (Enter), charged paws: {n}",
-    "start": "Paws on the keys! My turn to type.",
-    "charged": "{n} words without a mistake! A paw is charged. Press Enter and I will type {words} words for you.",
-    "chargedAuto": "{n} words without a mistake! A paw is charged. When it gets hard, I will help by myself.",
-    "autoOn": "When it gets hard, I will type {words} words by myself. Backspace turns it off again.",
+    "start": "Your paw starts typing!",
+    "charged": "{n} words without a mistake! A paw is charged. Press Enter and your paw types {words} words for you.",
+    "chargedAuto": "{n} words without a mistake! A paw is charged. When it gets hard, your paw helps on its own.",
+    "autoOn": "When it gets hard, your paw types {words} words on its own. Backspace turns it off again.",
     "autoOff": "You start the paw yourself with Enter."
   },
   "story": {
@@ -538,18 +540,18 @@
     ],
     "scenes": {
       "intro": [
-        "Hello {name}! I'm {tapko}.",
-        "Together we will learn to type with all ten fingers.",
+        "Hello {name}! This is you.",
+        "You will learn to type with all ten fingers.",
         "Put your index fingers on the little bumps of F and J. That's home.",
-        "Let's start on the Training Meadow!"
+        "Start on the Training Meadow!"
       ],
       "world1": [
         "The meadow is full of curious little visitors.",
-        "Type the word on a leaf and Tapko fans it back with his fan.",
+        "Type the word on a leaf and fan it back.",
         "When a leaf gets past, it is a goal and everybody cheers."
       ],
       "invitation": [
-        "Look what {tapko} found in the grass!",
+        "Look what you found in the grass!",
         "A secret invitation... to SPACE!",
         "Your fingers are ready for a rocket flight."
       ],
@@ -592,7 +594,7 @@
         "Now you can go on rescue missions and help more dragons."
       ],
       "world6": [
-        "Tapko walks past an old junkyard. What is that beeping?",
+        "You walk past an old junkyard. What is that beeping?",
         "Someone is beeping sadly under a pile of old things.",
         "Type a word and a soft magnet lifts the junk off the pile."
       ],
@@ -604,7 +606,7 @@
       "world7": [
         "Bolt wants to go home, but he is missing some parts.",
         "Gears, bolts and springs ride along the conveyor belt.",
-        "Type a part's word and Tapko tosses it into the basket."
+        "Type a part's word and toss it into the basket."
       ],
       "legs": [
         "Done! Bolt has new long legs.",
@@ -614,12 +616,12 @@
       "world8": [
         "Oh no, it starts to rain!",
         "Robots must not get wet, or they rust.",
-        "Type the word on a raindrop and Tapko's umbrella catches it."
+        "Type the word on a raindrop and your umbrella catches it."
       ],
       "raincoat": [
         "The rain stopped and a rainbow shines over the town.",
-        "Bolt gets a yellow raincoat and Tapko a new umbrella.",
-        "Now no rain can hurt them."
+        "Bolt gets a yellow raincoat and you a new umbrella.",
+        "Now no rain can hurt you two."
       ],
       "world9": [
         "The way home leads through Robot City.",
@@ -643,12 +645,12 @@
       ],
       "world11": [
         "The forest has gone quiet. Not a bird sings, not a leaf rustles.",
-        "A tiny fairy with shimmering wings flies up to {tapko}. \"I am Melody. The forest forgot its songs!\"",
+        "A tiny fairy with shimmering wings flies up to you. \"I am Melody. The forest forgot its songs!\"",
         "Type a word and a sleeping bud opens. Each flower hums one note."
       ],
       "wreath": [
         "The big flower is awake and the whole garden hums!",
-        "Melody weaves a flower wreath for {tapko}.",
+        "Melody weaves you a flower wreath.",
         "The garden has its song back. One song is home, four more to go."
       ],
       "world12": [
@@ -658,7 +660,7 @@
       ],
       "feather": [
         "Who, who? The owl liked your answers.",
-        "She gives {tapko} a soft feather for his hat.",
+        "She gives you a soft feather for your hat.",
         "The birds are singing again!"
       ],
       "world13": [
@@ -668,7 +670,7 @@
       ],
       "lily": [
         "The long reflection is back in the water!",
-        "Melody gives {tapko} a shining water lily.",
+        "Melody gives you a shining water lily.",
         "The frogs croak the lake's song."
       ],
       "world14": [
@@ -678,7 +680,7 @@
       ],
       "harp": [
         "The Music Tree plays its song again!",
-        "Melody gives {tapko} a little harp.",
+        "Melody gives you a little harp.",
         "Only one song is missing, the song of the night."
       ],
       "world15": [
@@ -688,7 +690,7 @@
       ],
       "wings": [
         "The whole forest sings! Every bird, every frog, every tree.",
-        "The forest thanks you, {name}. Melody gives {tapko} fairy wings.",
+        "The forest thanks you, {name}. Melody gives you fairy wings.",
         "Now you can also guide little birds and fireflies home on rescue missions."
       ]
     },
@@ -795,17 +797,17 @@
     "quality": "Accuracy of the keys you know well: {n} %",
     "speed": "Speed of the keys you know well: {n} characters per minute",
     "storyStars": "Stars in this story: {n}",
-    "lastToday": "We last trained today.",
-    "lastYesterday": "We last trained yesterday.",
-    "lastDays": "We last trained {n} days ago.",
-    "never": "We have not trained together yet.",
+    "lastToday": "Last training: today.",
+    "lastYesterday": "Last training: yesterday.",
+    "lastDays": "Last training: {n} days ago.",
+    "never": "No training yet.",
     "week": "Last 7 days: {n} min",
     "badges": "Badges"
   },
   "stats": {
     "title": "My keys",
-    "intro": "I count the last {n} presses of every key, so old mistakes stop counting. Tap a key to see how it goes.",
-    "empty": "Play a level and I will show you how your keys are doing.",
+    "intro": "Only the last {n} presses of every key count, so old mistakes drop out. Tap a key to see how it goes.",
+    "empty": "Play a level to see how your keys are doing.",
     "good": "going well",
     "ok": "almost",
     "practice": "let's practise",
@@ -813,9 +815,9 @@
     "keyLine": "{acc} % right, press it with",
     "instead": "(often {key} instead)",
     "practiceNow": "Practise them now (1 min)",
-    "clickKey": "Tap a key on the keyboard and I will show you how it goes.",
+    "clickKey": "Tap a key on the keyboard to see how it goes.",
     "fingerLine": "Press it with",
-    "keyNoData": "We have not typed this key yet.",
+    "keyNoData": "This key has no presses yet.",
     "keyAccuracy": "{acc} % right in the last {n} presses",
     "keySpeed": "You usually press it in {s} s",
     "keyTotal": "{n} presses so far",
@@ -829,9 +831,9 @@
     "shifted": "⇧ symbols"
   },
   "wardrobe": {
-    "title": "Buddy and wardrobe",
-    "buddy": "Buddy",
-    "name": "Name",
+    "title": "Me and my wardrobe",
+    "buddy": "My character",
+    "name": "Nickname",
     "kindLocked": "{n} more ★",
     "wardrobe": "Wardrobe",
     "count": "{n} of {total} things",
@@ -943,11 +945,10 @@
       "lock": "Settings password"
     },
     "childName": "Child's name",
-    "companionName": "Companion's name",
     "switchTitle": "Switch to another child",
-    "companionKind": "Companion",
+    "companionKind": "Character",
     "messages": "Your own encouraging messages",
-    "messagesHint": "One per line. The companion mixes them in sometimes.",
+    "messagesHint": "One per line. The game mixes them in sometimes.",
     "messagesPlaceholder": "I'm proud of you!",
     "language": "Language",
     "layout": "Keyboard layout",
@@ -1016,7 +1017,7 @@
     "autoDifficultyHint": "Grows with the child after a few minutes of accurate typing. Each step is a medal.",
     "autoWordLen": "Automatic word length",
     "autoWordLenHint": "Grows with the child, together with difficulty.",
-    "autoHint": "The start is slow: a short word takes about 10 seconds to reach the companion and at most two are on screen. If the child still cannot keep up, turn on No time pressure.",
+    "autoHint": "The start is slow: a short word takes about 10 seconds to reach the character and at most two are on screen. If the child still cannot keep up, turn on No time pressure.",
     "lock": {
       "ask": "The settings are locked with a password. Please enter it.",
       "password": "Password",
@@ -1035,7 +1036,9 @@
       "mismatch": "The passwords do not match.",
       "saved": "The password is saved.",
       "removed": "The password is removed."
-    }
+    },
+    "nickname": "Nickname in the game",
+    "nicknameHint": "Empty: the game uses the child's name."
   },
   "own": {
     "group": {
@@ -1066,7 +1069,7 @@
     "previewMore": "Another sample"
   },
   "surprises": {
-    "hint": "Hide a real reward (a treat, a trip, a game night) behind a rule. The companion asks the question before a level and tells the answer together with the question once the rule is met. One level has one surprise at most.",
+    "hint": "Hide a real reward (a treat, a trip, a game night) behind a rule. The game asks the question before a level and tells the answer together with the question once the rule is met. One level has one surprise at most.",
     "empty": "No surprise yet.",
     "formTitle": "New surprise",
     "q": "Question",
@@ -1143,7 +1146,7 @@
   "about": {
     "code": "Code on GitHub",
     "report": "Report a bug or an idea",
-    "intro": "TapkoTyper is a free, peaceful game that teaches children to type with all ten fingers. Together with a companion they travel through worlds full of adventures. Nothing bad ever happens: obstacles are pushed away or helped, never destroyed.",
+    "intro": "TapkoTyper is a free, peaceful game that teaches children to type with all ten fingers. As an animal of their own choice they travel through worlds full of adventures. Nothing bad ever happens: obstacles are pushed away or helped, never destroyed.",
     "privacyTitle": "Our promise to parents",
     "privacy": [
       "No ads, purchases, sign-in or cookies. This site has no server of its own in the background.",
@@ -1197,7 +1200,7 @@
       "fullscreen": "Play on the whole screen and back again.",
       "help": "This help.",
       "pause": "Pause. The Esc key pauses too.",
-      "paw": "The paw shows whether your help is ready: every word without a mistake fills a bit of the ring, after {n} words the paw is charged. Press Enter when you are stuck and {tapko} types {words} words for you.",
+      "paw": "The paw shows whether your help is ready: every word without a mistake fills a bit of the ring, after {n} words the paw is charged. Press Enter when you are stuck and your paw types {words} words for you.",
       "ring": "The ring with the number shows which level of the world this is. Green pieces are levels done, orange is this one, empty ones are still to come. The web is the big challenge at the end of the world.",
       "progress": "The bar shows how much of the level is behind you.",
       "gauge": "The green ring shows your rhythm. When you type smoothly, it fills up.",
@@ -1208,12 +1211,12 @@
     },
     "cardTitle": "Your card on the map",
     "card": [
-      "Click your buddy and My progress opens: what you already do well and what to practise.",
+      "Click yourself, your character, and My progress opens: what you already do well and what to practise.",
       "Continue starts the next level of the story.",
       "Own practice: a short exercise on the keys you pick.",
       "My text: when a parent adds their own text, you type all of it in order.",
-      "Just typing: type anything, Tapko walks through a world you choose and shows what you typed.",
-      "Buddy and wardrobe: pick your buddy and dress it in the things you have earned.",
+      "Just typing: type anything, you walk through a world you choose and see what you typed.",
+      "Me and my wardrobe: pick your character and nickname and dress up in the things you unlocked.",
       "Rescue missions and Little friends: they appear after you finish your first story.",
       "Today's task: when your teacher sends a task, you find it on the card. When it is done, you hand it in."
     ],
@@ -1257,10 +1260,10 @@
     "settingsIntro": "The settings are for parents. They open with the gear on the map. Until you lock them with a password, one question opens them.",
     "settings": {
       "settings": [
-        "Child: name, companion and its name, language and keyboard layout. Pick the layout of the real keyboard; the finger guide follows it.",
+        "Child: name, character and nickname, language and keyboard layout. Pick the layout of the real keyboard; the finger guide follows it.",
         "Practice: difficulty and word length. In automatic mode they grow with the child; set them by hand when you want.",
         "Words without diacritics help beginners for a while. No time pressure makes moving things stop and wait for the child.",
-        "Session length before a break: then the companion invites the child to a short rest.",
+        "Session length before a break: then the game invites the child to a short rest.",
         "Finger guide: fades when keys are mastered, or always on or off. You can lock it for the child.",
         "Look and sound: font, large text, reduced motion, high contrast, volumes, fullscreen.",
         "The settings password locks the settings for every player on this device. We cannot recover a forgotten password."
@@ -1268,12 +1271,12 @@
       "own": [
         "Own words: for example this week's spelling words. They are used even with keys the child does not know yet.",
         "Own text: split into sentences and parts. On the map, the My text button types all of it in order.",
-        "Own encouragements: the companion says them now and then.",
+        "Own encouragements: the game says them now and then.",
         "How much of own words and text: the share of targets in levels."
       ],
       "surprises": [
         "Hide a real reward behind a rule: after a level, after minutes of training, after more levels or stars, or at random.",
-        "The companion asks the question before a level and tells the answer once the rule is met."
+        "The game asks the question before a level and tells the answer once the rule is met."
       ],
       "task": [
         "For teachers: make a task with words or a text and a length. You get a link and a QR code.",
@@ -1341,7 +1344,7 @@
     "stretch-fingers": "Spread your fingers, make fists, then open them again.",
     "stretch-wrist": "Bend your wrist and gently press it with the other hand.",
     "take-break": "After a few minutes, stand up, stretch and drink some water.",
-    "celebrate": "Great job! Your companion is proud of you too.",
+    "celebrate": "Great job! You can be proud of yourself.",
     "listen-whole": "Listen to the whole word first, then type it.",
     "listen-again": "Did not catch it? Tap the word and you will hear it again.",
     "listen-sounds": "Say the word quietly to yourself, letter by letter.",

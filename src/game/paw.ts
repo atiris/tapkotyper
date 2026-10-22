@@ -4,7 +4,7 @@ import type { Target } from './typing';
 export const PAW_MAX = 3;
 /** Words in a row without a mistake that charge one paw help. */
 export const PAW_STREAK = 15;
-/** Words Tapko types for the child per help. */
+/** Words the paw types for the child per help. */
 export const PAW_WORDS = 3;
 /** Share of its travel time a word may be on screen before it counts as close. */
 const CLOSE_SHARE = 0.7;

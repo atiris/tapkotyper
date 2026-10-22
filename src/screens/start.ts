@@ -4,6 +4,7 @@ import { imageUrl } from '../gfx/assets';
 import { tapkoElement } from '../gfx/tapko';
 import { totalStars } from '../game/rewards';
 import { LANGS, language, t } from '../i18n/i18n';
+import { nickname } from '../storage/store';
 import type { Lang } from '../storage/schema';
 import { button, h, icon } from '../ui/dom';
 import { cornerControls } from '../ui/chrome';
@@ -29,7 +30,9 @@ export function startScreen(root: HTMLElement): () => void {
   const cards = players.map((p) =>
     h('button', { class: 'profile-card', type: 'button', onClick: async () => { await selectProfile(p); go('map'); } },
       tapkoElement(p.companion, 'idle', 96),
-      h('span', { class: 'profile-name' }, p.name),
+      h('span', { class: 'profile-name' }, nickname(p)),
+      // Siblings recognize their own tile by the real name under the nickname.
+      nickname(p) !== p.name ? h('span', { class: 'profile-real' }, p.name) : null,
       h('span', { class: 'profile-sub' }, t('start.stars', { n: totalStars(p) }))));
   // Up to four profiles the new player is one more card; with more it is a button by the guest button.
   const newAsCard = players.length < MAX_PER_ROW;

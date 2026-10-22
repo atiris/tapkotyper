@@ -3,6 +3,7 @@ import { audio } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
 import { tapkoElement } from '../gfx/tapko';
 import { t, tList } from '../i18n/i18n';
+import { nickname } from '../storage/store';
 import { LEVELS, STORIES, type StoryDef, WORLDS, isLevelReached, isWorldUnlocked, keysMissing, nextLevel, rescueUnlocked, storyOpen, worldLevels, worldLock } from '../game/levels';
 import { GUEST_ID, type Profile, SUPER_ID } from '../storage/schema';
 import { activeKeys } from '../learning/lessons';
@@ -20,7 +21,7 @@ import { taskCard } from './task';
 
 /**
  * Starts a level (for a task, with its words), showing the world's intro scene the first time;
- * the very first level is introduced by Tapko's own story before it.
+ * the very first level is introduced by the intro story before it.
  */
 export function playLevel(id: string, task?: string): void {
   const p = app.profile!;
@@ -53,7 +54,7 @@ function welcomeCard(p: Profile, start: () => void): HTMLElement | null {
     closeButton(done),
     h('div', { class: 'welcome-tapko' }, tapkoElement(p.companion, 'happy', 110)),
     h('div', { class: 'welcome-text' },
-      h('h2', { id: 'welcome-title' }, t('map.welcome.title', { name: p.name, tapko: p.companion.name })),
+      h('h2', { id: 'welcome-title' }, t('map.welcome.title', { name: nickname(p) })),
       h('ul', {}, ...tList('map.welcome.lines').map((l) => h('li', {}, l))),
       button(t('map.welcome.start'), () => { done(); start(); }, 'btn primary', 'play')));
   return card;
@@ -68,7 +69,7 @@ export function mapScreen(root: HTMLElement): void {
   audio.music(app.menuTrack);
   const tapko = h('button', { class: 'map-tapko', type: 'button', title: t('tapko.statsHint'), 'aria-label': t('progress.title'), onClick: () => openStats() },
     tapkoElement(p.companion, 'idle', 130));
-  // Tapko's bubble on the map: why a level waits for more keys.
+  // The narrator's bubble on the map: why a level waits for more keys.
   const bubble = h('div', { class: 'bubble static map-bubble', role: 'status', 'aria-live': 'polite' });
   bubble.hidden = true;
   const keysBubble = (n: number) => {
@@ -102,7 +103,7 @@ export function mapScreen(root: HTMLElement): void {
       cornerControls(settingsButton())),
     h('main', { class: 'map-body' },
       h('aside', { class: 'map-side' },
-        h('h1', { class: 'map-hello' }, t('map.hello', { name: p.name })),
+        h('h1', { class: 'map-hello' }, t('map.hello', { name: nickname(p) })),
         tapko,
         bubble,
         taskCard(p),
@@ -122,7 +123,7 @@ export function mapScreen(root: HTMLElement): void {
 
 /**
  * One story: its title and its worlds as islands; a story still closed says when it opens.
- * A level reached without enough keys shows a key and lets Tapko say how many are missing.
+ * A level reached without enough keys shows a key and lets the bubble say how many are missing.
  */
 function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, keysBubble: (n: number) => void, lockBubble: (world: number) => void): HTMLElement {
   const islands = story.worlds.map((wi) => {

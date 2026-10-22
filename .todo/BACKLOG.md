@@ -9,3 +9,4 @@ Search before adding; an entry is worked only when it is named.
 - [P3] Objects can flash their fallback on first spawn - src/game/runtime.ts prepare() preloads only the three backgrounds; mode sprites load on first draw (declare them per mode)
 - [P3] An update re-downloads the whole install cache - scripts/sw-template.js addAll(CORE) fetches every file again when the version changes (about 6.6 MB)
 - [P3] Free typing presses count toward key readiness - src/game/runtime.ts freeChar records every free key as a correct press with its quick rhythm, so mashing the newest keys can make them "ready" and open the next group at the next level end
+- [P3] Check sound on a real iPhone and Android phone - src/audio/audio.ts now unlocks on pointerup/touchend/click with a silent buffer (plan 46); only a real device can confirm music and effects play

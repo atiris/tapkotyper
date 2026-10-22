@@ -7,4 +7,3 @@ listed here is never run. Lines whose plan has moved to `.todo/.done/` are
 skipped, and the session that finishes a plan removes its line.
 
 
-- [P2] 46-teacher-and-mobile.md - written to run after plans 44 and 45

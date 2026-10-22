@@ -234,3 +234,14 @@ Contracts: none (no storage, link or QR payload change). No server, no DB.
   The fake camera scan, Esc in the menu, the round language button switching and the place
   ring style were checked by the e2e tests (the MCP browser has no fake camera, and any key
   lifts the gate on a touch-only page).
+
+## Done - 2026-10-22
+- Shipped: keyboard gate for touch-only devices with route guard and the teacher turtle
+  button; corner controls in three widths with the Menu panel; title that fits from 320 px;
+  phone scan layout with the done bar counts; teacher sorting (unit-tested), task picker,
+  sortable headers with `aria-sort`, phone card list with sort chips, child card with its
+  own address, move and remove; the QR screen with the name first, two buttons and equal
+  spacing; audio unlock on tap gestures; the place ring fix; i18n, specs and e2e
+  (`e2e/mobile.spec.ts` plus layout, teacher-scan, styles, help, free-type updates).
+- Left out: the check of sound on a real iPhone and Android phone (needs a real device);
+  listed in `.todo/BACKLOG.md`.

@@ -1,9 +1,11 @@
 import { app, go } from '../app/app';
 import { audio, type SoundLevel } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
-import { t } from '../i18n/i18n';
-import { type Child, ICONS, h } from './dom';
-import { paintRound, roundButton } from './hud';
+import { LANGS, language, t } from '../i18n/i18n';
+import type { Lang } from '../storage/schema';
+import { type Child, ICONS, button, h } from './dom';
+import { paintRound, roundButton, roundTextSvg } from './hud';
+import { cornerMenu } from './menu';
 
 /** Super mode is on: a round star in the top row; clicking it ends the mode. Nothing otherwise. */
 export function superStar(): HTMLButtonElement | null {
@@ -75,9 +77,29 @@ export function globalButtons(help: HTMLButtonElement = helpButton()): (HTMLButt
   return [superStar(), soundButton(), fullscreenButton(), help];
 }
 
-/** The top right corner of every screen but a level: the screen's own buttons (`lead`), then the global ones, at one fixed offset. */
+/**
+ * The language: the SK/EN switch on a wide window, one round button showing the language on
+ * a narrower one (a click goes to the next language). CSS shows one of the two.
+ */
+export function languageControls(pick: (l: Lang) => void): HTMLElement[] {
+  const now = language();
+  const next = LANGS[(LANGS.indexOf(now) + 1) % LANGS.length];
+  const round = h('button', { class: 'round-btn control lang-btn', type: 'button', title: `${t('start.langNow')}. ${t('start.langNext')}`, 'aria-label': t('start.langNow'),
+    onClick: () => pick(next), html: roundTextSvg(now.toUpperCase()) });
+  return [
+    h('div', { class: 'lang-switch', role: 'group', 'aria-label': t('start.language') },
+      ...LANGS.map((l) => button(l.toUpperCase(), () => pick(l), `chip ${now === l ? 'on' : ''}`))),
+    round,
+  ];
+}
+
+/**
+ * The top right corner of every screen but a level, at one fixed offset: the screen's own
+ * buttons (`lead`), then the global ones; below 600 px all of them fold into the Menu button.
+ */
 export function cornerControls(...lead: Child[]): HTMLElement {
-  return h('div', { class: 'top-right' }, ...lead, ...globalButtons());
+  const row = h('div', { class: 'corner-row' }, ...lead, ...globalButtons());
+  return h('div', { class: 'top-right' }, row, cornerMenu(row));
 }
 
 /**

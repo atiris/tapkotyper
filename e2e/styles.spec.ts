@@ -1,5 +1,5 @@
 import { type Page, expect, test } from '@playwright/test';
-import { createProfile, typeChar } from './helpers';
+import { createProfile, skipStories, typeChar } from './helpers';
 
 /** Goes through the new-key cards and the get-ready card until play starts. */
 async function startRun(page: Page): Promise<void> {
@@ -110,4 +110,16 @@ test('memory: keys wait while the target shows, a mistake shows it again', async
   await page.getByRole('button', { name: 'Finish' }).click();
   await expect(page.locator('.results-card')).toContainText('From memory without a mistake: 0 of 1');
   expect(errors).toEqual([]);
+});
+
+test('the place ring in a story level looks like the rhythm ring', async ({ page }) => {
+  await createProfile(page, 'Ring');
+  await page.locator('.level-node.current').first().click({ force: true });
+  await skipStories(page);
+  const look = (sel: string) => page.locator(sel).evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { radius: s.borderRadius, padding: s.padding, width: s.width, height: s.height, background: s.backgroundColor };
+  });
+  await page.locator('.hud .round-btn.place').waitFor();
+  expect(await look('.hud .round-btn.place')).toEqual(await look('.hud .round-btn.rhythm'));
 });

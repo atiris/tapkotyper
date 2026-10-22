@@ -9,7 +9,9 @@
     "sound_quiet": "quiet",
     "sound_off": "off",
     "fullscreen": "Fullscreen",
-    "fullscreenExit": "Exit fullscreen"
+    "fullscreenExit": "Exit fullscreen",
+    "menu": "Menu",
+    "menuClose": "Close the menu"
   },
   "start": {
     "tagline": "A calm typing adventure with all ten fingers",
@@ -19,7 +21,20 @@
     "guestName": "Guest",
     "import": "Import profiles",
     "language": "Language",
-    "stars": "{n} stars"
+    "stars": "{n} stars",
+    "langNow": "Language: English",
+    "langNext": "Switch to Slovak",
+    "gate": {
+      "title": "Connect a keyboard",
+      "text": "TapkoTyper teaches typing on a real keyboard. Connect a keyboard to the phone or tablet (Bluetooth or USB) and press any key on it.",
+      "none": "No keyboard is connected yet.",
+      "press": "Press any key on the keyboard.",
+      "recheck": "Check again"
+    },
+    "teacher": {
+      "title": "For teachers",
+      "sub": "Scan QR codes and see the class results"
+    }
   },
   "privacy": {
     "short": "No ads, no accounts, no tracking. Everything stays on this device."
@@ -788,12 +803,11 @@
     "showCode": "QR code of all my progress",
     "overallTitle": "All progress",
     "overallCaption": "All my statistics",
-    "exerciseCaption": "Exercise: {title}",
+    "exerciseCaption": "Exercise statistics: {title}",
     "exercisesEmpty": "No exercise yet. Exercises from a teacher or parent are listed here.",
     "exerciseLine": "{min} min, accuracy {acc} %, rhythm {cpm}",
     "exerciseOpen": "Not finished yet",
     "exerciseCode": "QR code",
-    "codeClose": "Tap the screen to close the code.",
     "quality": "Accuracy of the keys you know well: {n} %",
     "speed": "Speed of the keys you know well: {n} characters per minute",
     "storyStars": "Stars in this story: {n}",
@@ -1173,7 +1187,8 @@
       "Keys are learned one by one, starting from the home row (F and J).",
       "Every key has its finger; the on-screen keyboard and hands show which one.",
       "Accuracy comes first; speed is only shown as a personal trend.",
-      "Weak keys appear more often, and short breaks keep sessions healthy."
+      "Weak keys appear more often, and short breaks keep sessions healthy.",
+      "It is played on a real keyboard; a phone or tablet needs a keyboard connected. A teacher with a phone and no keyboard can still scan the results."
     ],
     "creditsTitle": "Links",
     "credits": "Open source under the MIT license. Fonts: Lexend, Atkinson Hyperlegible and OpenDyslexic (SIL Open Font License)."
@@ -1189,6 +1204,7 @@
     },
     "typeTitle": "How to type",
     "type": [
+      "TapkoTyper needs a real keyboard. Connect one to a phone or tablet over Bluetooth or USB.",
       "Sit up straight, feet on the floor, shoulders relaxed.",
       "Feel the little bumps on F and J. Your index fingers live there.",
       "The other fingers lie next to them on the middle row: A S D F and J K L.",
@@ -1215,7 +1231,8 @@
       "levelHelp": "Help for this level: what to do and how to improve.",
       "super": "The star at the top: super mode. Click it to turn it off.",
       "read": "Read aloud: the computer reads the words to you.",
-      "guide": "Shows or hides the keyboard that tells where the finger goes."
+      "guide": "Shows or hides the keyboard that tells where the finger goes.",
+      "menu": "On a small screen these buttons hide under one Menu button."
     },
     "cardTitle": "Your card on the map",
     "card": [
@@ -1420,7 +1437,8 @@
     "noQr": "The link is too long for a QR code; copy it instead.",
     "broken": "The link is damaged or incomplete. Try copying all of it again.",
     "brokenTitle": "This link cannot be opened",
-    "reading": "Reading the link…"
+    "reading": "Reading the link…",
+    "closeByClick": "Close by clicking anywhere"
   },
   "teacher": {
     "title": "For teachers",
@@ -1486,12 +1504,45 @@
         "failed": "The camera could not be started."
       },
       "group": "Group for this scan",
-      "groupPlaceholder": "Group, for example 5.A"
+      "groupPlaceholder": "Group, for example 5.A",
+      "title": "Scanning",
+      "count": "{n} read",
+      "fresh": "{n} new",
+      "updatedCount": "{n} updated"
     },
     "summary": "{ok} of {n} mastered, accuracy {accuracy} %, rhythm {rhythm}, levels finished {levels}",
     "status": {
-      "ok": "mastered",
-      "practice": "needs practice"
+      "ok": "Mastered",
+      "practice": "Practice more"
+    },
+    "taskFilter": "Task",
+    "allTasks": "All tasks",
+    "sortBy": "Sort",
+    "sort": {
+      "child": "Name",
+      "date": "Date",
+      "minutes": "Minutes",
+      "accuracy": "Accuracy",
+      "rhythm": "Rhythm",
+      "levels": "Levels",
+      "status": "Status"
+    },
+    "unit": {
+      "cpm": "{n} cpm",
+      "min": "{n} min",
+      "levels": "levels: {n}"
+    },
+    "child": {
+      "tasks": "tasks handed in: {n}",
+      "accuracy": "average accuracy",
+      "cpm": "characters a minute",
+      "minutes": "minutes of practice",
+      "levels": "levels done",
+      "taskList": "Tasks",
+      "move": "Move to a group",
+      "remove": "Remove the child",
+      "removeTitle": "Remove {name}?",
+      "removeText": "All results of {name} ({n}) are removed from the table."
     }
   },
   "task": {

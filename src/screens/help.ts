@@ -30,6 +30,7 @@ function mapIcons(): HTMLElement[] {
     iconLine(round('sound'), t('help.icons.sound')),
     iconLine(round('fullscreen'), t('help.icons.fullscreen')),
     iconLine(round('help'), t('help.icons.help')),
+    iconLine(round('menu'), t('help.icons.menu')),
     iconLine(timerPic(150).el, t('help.icons.timer')),
   ];
 }

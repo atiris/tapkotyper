@@ -29,6 +29,11 @@ export function roundSvg(glyph: keyof typeof ICONS, ring = ''): string {
   return roundFrame(ring, `<g transform="translate(12 12)" fill="${filled ? '#fff' : 'none'}" stroke="#fff" stroke-width="${filled ? 1.2 : 2.2}" stroke-linecap="round" stroke-linejoin="round">${ICONS[glyph]}</g>`);
 }
 
+/** A round button's picture with a short text (a number, a language code) on the disc instead of a glyph. */
+export function roundTextSvg(text: string, ring = ''): string {
+  return roundFrame(ring, `<text class="rb-num" x="24" y="24">${text}</text>`);
+}
+
 /** A ring of segments, one per class (`on`, `now` or none). */
 function segments(classes: string[]): string {
   const gap = 16, n = classes.length;
@@ -51,7 +56,7 @@ export function levelRing(done: boolean[], current: number, web: boolean): HTMLE
   const ring = segments(done.map((d, i) => (i === current ? 'now' : d ? 'on' : '')));
   const label = t('level.place', { n: current + 1, total: done.length });
   return h('div', { class: 'round-btn place', role: 'img', title: label, 'aria-label': label,
-    html: web ? roundSvg('web', ring) : roundFrame(ring, `<text class="rb-num" x="24" y="24">${current + 1}</text>`) });
+    html: web ? roundSvg('web', ring) : roundTextSvg(String(current + 1), ring) });
 }
 
 /** The ring of a world level, from the player's progress. */
@@ -123,7 +128,7 @@ export function timerPic(left: number): { el: HTMLElement; set(left: number): vo
     step = next;
     const face = countdownFace(s);
     const ring = rhythmRing(s / WARDROBE_MAX);
-    el.innerHTML = face === 'smile' ? roundSvg('smile', ring) : roundFrame(ring, `<text class="rb-num" x="24" y="24">${face}</text>`);
+    el.innerHTML = face === 'smile' ? roundSvg('smile', ring) : roundTextSvg(String(face), ring);
   };
   set(left);
   return { el, set };

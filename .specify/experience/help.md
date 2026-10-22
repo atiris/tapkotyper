@@ -30,6 +30,8 @@
   the paw when stuck, repeat for three stars, rest after a few levels) and the real buttons.
   Escape or "Continue" closes it and resumes.
 - Works on a 1024x600 screen; the panel scrolls, the title, the tabs and the X stay in sight.
+- Explains that on a small screen the top buttons hide under one Menu button, and (in how to
+  type and in about) that a real keyboard is needed, also on a phone or tablet.
 - Explains the wardrobe's countdown (a smile, then a number that drops every 10 seconds, blinking at the end, time earned by practice) next to the map's buttons.
 - Explains the paw (what it shows, when to press), the ring with the level's number beside the pause button (levels done, this one, to come, a web for the big challenge), the rescue mission and the badge, each in one short sentence. The level help card has the same text, left-aligned and without the super star.
 

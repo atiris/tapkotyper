@@ -30,11 +30,24 @@ class AudioEngine {
       const saved = localStorage.getItem(SOUND_KEY) as SoundLevel | null;
       if (saved && SOUND_LEVELS.includes(saved)) this.level = saved;
     } catch { /* private mode */ }
+    // iOS Safari takes only a tap's end (pointerup, touchend, click) as the gesture that may start sound.
+    const events = ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown'];
     const unlock = () => {
-      this.ensure();
-      if (this.ctx?.state === 'suspended') void this.ctx.resume();
+      const ctx = this.ensure();
+      if (!ctx) return;
+      const unlocked = () => {
+        if (ctx.state === 'running') for (const ev of events) window.removeEventListener(ev, unlock, { capture: true });
+      };
+      if (ctx.state !== 'running') void ctx.resume().then(unlocked, () => undefined);
+      // A silent frame inside the gesture wakes the audio output; a waiting track tries to play again.
+      const blip = ctx.createBufferSource();
+      blip.buffer = ctx.createBuffer(1, 1, 22050);
+      blip.connect(ctx.destination);
+      blip.start();
+      if (this.current?.el?.paused) void this.current.el.play().catch(() => undefined);
+      unlocked();
     };
-    for (const ev of ['pointerdown', 'keydown']) window.addEventListener(ev, unlock, { capture: true });
+    for (const ev of events) window.addEventListener(ev, unlock, { capture: true });
   }
 
   private ensure(): AudioContext | null {

@@ -28,8 +28,28 @@
   list of what the scan collected lets the teacher undo a wrong read. The camera stops when
   the scan ends, the screen is left or the tab is hidden; clear messages say when access is
   denied, there is no camera or the page is not secure.
+- **Scanning on a phone:** after the scan starts the page scrolls so the heading
+  ("Skenovanie · group"), the camera preview and the done bar fill the screen; the done bar
+  counts this scan ("7 načítaných", under it "5 nových · 2 aktualizované") next to "Hotovo",
+  the list of this scan follows below. Hotovo stops the camera and shows the results of the
+  scanned group.
 - **Big code:** the child's hand-in can show the QR over the whole screen so it can be scanned
-  across a desk.
+  across a desk: the child's name and what it is first ("Ema · Štatistiky cvičenia …" in a
+  green frame, "Ema · Celé moje štatistiky" in an orange one), the code as big as fits, then
+  "Kopírovať kód" and "Zatvoriť klikom na obrazovku"; a click anywhere also closes it. The
+  frame's padding and the gaps between caption, code and buttons are one size.
+- **Sorting and tasks:** a task picker ("Všetky úlohy" or one task with its count) sits by the
+  group chips. Inside each group and task the children sort by name, date, minutes, accuracy,
+  rhythm, levels or status (first click: numbers and dates from the highest, names and status
+  from the top with "Precvičiť" first; a second click flips; ties by name). On a computer the
+  column headers sort; below 700 px the table becomes a list of cards with a row of sort chips,
+  each card showing the sorted value big. The summary and CSV follow the filters.
+- **A child's card:** clicking a child (the name in the table, the whole card on a phone)
+  opens the child's own page (with its address, so Back returns to the list): name, group,
+  number of tasks, average accuracy and rhythm, minutes in total, levels (from the newest
+  overall statistics), the four weakest keys, every task with date, minutes, rhythm, status
+  and accuracy, and "Presunúť do skupiny" and "Odstrániť žiaka". Two children of one name in
+  two groups stay apart.
 - **Groups:** a task may carry a group label (a class such as "5.A", typed in the task form).
   It travels in the task link and back in the result. The teacher's table has filter chips
   (all, each group, without a group), is grouped group > task > child, and shows the result
@@ -44,6 +64,9 @@
   Opening the link imports the player and asks before replacing one with the same id.
 
 ## Why
+- A teacher scans walking through a classroom with a phone in one hand: the camera and the way
+  out must be on screen without scrolling. A nine-column table is unreadable on a phone;
+  sorting and one child's card answer what a teacher asks ("who needs help", "how is Jakub doing").
 - A teacher with 20-30 screens in a room cannot paste links one at a time; walking past the
   screens with a phone or webcam fills the table, and links stay for children working at home.
 - Teachers and parents want to give today's task and get the child's results back, and

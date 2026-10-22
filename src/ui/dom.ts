@@ -64,8 +64,27 @@ export const ICONS = {
   fullscreen: '<path d="M4 9V4h5M4 4l5 5M15 4h5v5M20 4l-5 5M4 15v5h5M4 20l5-5M20 15v5h-5M20 20l-5-5"/>',
   smile: '<path d="M6.5 13.5a6.5 6.5 0 0011 0"/><path d="M8.5 8.5v1.5M15.5 8.5v1.5"/>',
   web: '<path d="M12 12L12 2M12 12l8.5-5M12 12l8.5 5M12 12L12 22M12 12l-8.5 5M12 12L3.5 7M5 4.5Q12 9 19 4.5M3 12Q12 16 21 12"/>',
+  sortDown: '<path d="M6 9l6 6 6-6"/>',
+  sortUp: '<path d="M6 15l6-6 6 6"/>',
+  menu: '<path d="M5 7h14M5 12h14M5 17h14"/>',
+  recheck: '<path d="M4 12a8 8 0 102.3-5.7"/><path d="M4 4v5h5"/>',
+  copy: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 00-1-1H5a1 1 0 00-1 1v10a1 1 0 001 1h3"/>',
   fullscreenExit: '<path d="M4 9h5V4M9 9L4 4M20 9h-5V4M15 9l5-5M4 15h5v5M9 15l-5 5M20 15h-5v5M15 15l5 5"/>',
 };
+
+/** The teacher's animal, not one of the players': a turtle with glasses and a mortar board. */
+export const TEACHER_ART = '<svg viewBox="0 0 76 64" aria-hidden="true">' +
+  '<ellipse cx="34" cy="40" rx="26" ry="18" fill="#2f8a4c"/><path d="M18 34l8-10h16l8 10-8 10H26z" fill="#4fb57a"/>' +
+  '<ellipse cx="34" cy="56" rx="22" ry="5" fill="#f2d39b"/><circle cx="62" cy="26" r="12" fill="#a8d88a"/>' +
+  '<circle cx="58" cy="25" r="4.5" fill="#fff" stroke="#3b2a3f" stroke-width="2"/><circle cx="68" cy="25" r="4.5" fill="#fff" stroke="#3b2a3f" stroke-width="2"/>' +
+  '<path d="M62.5 25h1" stroke="#3b2a3f" stroke-width="2"/><circle cx="58" cy="25.5" r="1.6" fill="#3b2a3f"/><circle cx="68" cy="25.5" r="1.6" fill="#3b2a3f"/>' +
+  '<path d="M59 32q3 2.5 6 0" fill="none" stroke="#3b2a3f" stroke-width="1.8" stroke-linecap="round"/>' +
+  '<rect x="52" y="10" width="20" height="4" rx="1" fill="#3b2a3f"/><path d="M62 10l-3-5h6z" fill="#3b2a3f"/></svg>';
+
+/** A keyboard drawn for the card that asks for one. */
+export const KEYBOARD_ART = '<svg viewBox="0 0 120 64" aria-hidden="true"><rect x="2" y="6" width="116" height="52" rx="10" fill="#fff6e6" stroke="#3b2a3f" stroke-width="3"/><g fill="#3b2a3f">' +
+  [14, 31, 48, 65, 82].map((x) => `<rect x="${x}" y="16" width="12" height="9" rx="2"/>`).join('') + '<rect x="99" y="16" width="8" height="9" rx="2"/>' +
+  [20, 37, 54, 71, 88].map((x) => `<rect x="${x}" y="30" width="12" height="9" rx="2"/>`).join('') + '<rect x="32" y="44" width="56" height="8" rx="2"/></g></svg>';
 
 export function button(label: string | Node, onClick: () => void, cls = 'btn', iconName?: keyof typeof ICONS): HTMLButtonElement {
   const b = h('button', { class: cls, type: 'button', onClick: () => onClick() });

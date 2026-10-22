@@ -9,20 +9,25 @@ export interface ScanCard {
   hit(): void;
   /** A short hint under the preview, for example an unknown code. */
   hint(text: string): void;
-  /** Replaces the list of what this scan collected. */
-  setList(rows: Node[]): void;
+  /** Replaces the list of what this scan collected, with its counts: new children and updated results. */
+  setList(rows: Node[], fresh: number, updated: number): void;
   /** Stops the camera for good. */
   stop(): void;
 }
 
-/** The camera card of the teacher view: a live preview, the cameras, and the list of this scan. */
-export function scanCard(onText: (text: string) => void, onDone: () => void): ScanCard {
+/**
+ * The camera card of the teacher view: the group being scanned, a live preview, the done bar
+ * with the counts of this scan, the cameras and the list of this scan.
+ */
+export function scanCard(group: string, onText: (text: string) => void, onDone: () => void): ScanCard {
   const video = h('video', { class: 'scan-video', playsinline: true, muted: true, 'aria-label': t('teacher.scan.preview') });
   video.muted = true;
   const status = h('p', { class: 'hint', role: 'status', 'aria-live': 'polite' });
   const picker = h('select', { class: 'scan-camera', 'aria-label': t('teacher.scan.camera'), onChange: (e: Event) => void camera?.use((e.target as HTMLSelectElement).value).catch(fail) });
   picker.hidden = true;
   const list = h('ul', { class: 'scan-list' });
+  const total = h('span', { class: 'scan-total' });
+  const split = h('span', { class: 'hint' });
   const frame = h('div', { class: 'scan-frame' }, video);
   let camera: Camera | null = null;
   let closed = false;
@@ -64,8 +69,14 @@ export function scanCard(onText: (text: string) => void, onDone: () => void): Sc
 
   return {
     el: h('section', { class: 'scan-card' },
-      frame,
-      h('div', { class: 'row' }, picker, button(t('teacher.scan.done'), onDone, 'btn primary', 'next')),
+      // On a phone this part fills the screen: the camera and the way out without scrolling.
+      h('div', { class: 'scan-stage' },
+        h('h2', { class: 'scan-title' }, group ? `${t('teacher.scan.title')} · ${group}` : t('teacher.scan.title')),
+        frame,
+        h('div', { class: 'scan-done' },
+          h('div', { class: 'scan-counts', 'aria-live': 'polite' }, total, split),
+          button(t('teacher.scan.done'), onDone, 'btn primary', 'next'))),
+      picker,
       status,
       h('h2', {}, t('teacher.scan.collected')),
       list),
@@ -80,8 +91,10 @@ export function scanCard(onText: (text: string) => void, onDone: () => void): Sc
       clearTimeout(restore);
       restore = window.setTimeout(() => base && say(base), 1500);
     },
-    setList(rows) {
+    setList(rows, fresh, updated) {
       list.replaceChildren(...rows);
+      total.textContent = t('teacher.scan.count', { n: fresh + updated });
+      split.textContent = [t('teacher.scan.fresh', { n: fresh }), updated ? t('teacher.scan.updatedCount', { n: updated }) : ''].filter(Boolean).join(' · ');
     },
     stop() {
       closed = true;

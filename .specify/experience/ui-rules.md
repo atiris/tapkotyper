@@ -8,6 +8,12 @@ One set of rules for where things sit and how they behave, so every screen feels
    window edge on every screen. There are only two placements: the **standard** one (all screens,
    windows and the map) and the **compact play bar** (inside a level, where they join the bar of
    the play controls). A button never moves between two screens of the same kind.
+   **By width** (every screen but a level): from 900 px all buttons and the SK/EN switch;
+   from 600 px to 899 px the language becomes one round button showing SK or EN (a click goes
+   to the next language); below 600 px one round **Menu** button opens a panel with each
+   button as its round picture and its label (a screen's own buttons too). The panel closes
+   with Escape, a click outside or after an action. The start page's title **TapkoTyper**
+   always fits on one line under the buttons, from 320 px up.
 2. **Leaving.** A page you navigated to (settings, teacher view, wardrobe, friends) closes with
    "Späť" at the top left. A window laid over a screen (dialogs, the progress panel, help, the
    new player form, level cards) closes with the round X at the top right, and with Escape. The
@@ -46,4 +52,6 @@ One set of rules for where things sit and how they behave, so every screen feels
 - Scrolling inside a window keeps the title and the way out in sight, and a page that
   scrolls as a whole is what a browser user expects.
 - The ring in the bar reuses a picture the child already reads (the rhythm ring), and frees the
-  space under the title.
+  space under the title. It is one of the bar's round buttons and looks exactly like them.
+- Five round buttons and a language switch do not fit beside a title on a phone; folding them
+  into one Menu keeps every control one tap away and the title whole.

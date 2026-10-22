@@ -162,22 +162,22 @@ Contracts: none (no storage, link or QR payload change). No server, no DB.
 - All new texts in sk and en; Slovak without gendered second-person past tense.
 
 ## Steps
-- [ ] Keyboard gate module, route guard, start screen gate card and teacher button with the
+- [x] Keyboard gate module, route guard, start screen gate card and teacher button with the
       turtle; e2e with a touch-only context (`hasTouch: true`, `isMobile: true`): gate
       shown, routes guarded, a key press lifts it; a desktop context is never gated.
-- [ ] Corner controls in three forms, menu panel with keyboard and focus handling, bar
+- [x] Corner controls in three forms, menu panel with keyboard and focus handling, bar
       padding, title sizing; e2e for the widths listed above.
-- [ ] Scan card order, scroll into view, phone preview height, done bar with counts.
-- [ ] Teacher store sort with unit tests; task picker; sortable headers with `aria-sort`;
+- [x] Scan card order, scroll into view, phone preview height, done bar with counts.
+- [x] Teacher store sort with unit tests; task picker; sortable headers with `aria-sort`;
       phone card list with sort chips.
-- [ ] Child card view with route param, tiles, weak keys, tasks, move and remove.
-- [ ] `bigCode` layout, caption with the name, two buttons, equal spacing; callers; e2e.
-- [ ] Audio unlock on touch gestures.
-- [ ] Place ring look: rename the picker tile class, e2e style check against the rhythm ring.
-- [ ] i18n sk + en; specs (`ui-rules.md` widths and menu, new `devices.md` keyboard gate,
+- [x] Child card view with route param, tiles, weak keys, tasks, move and remove.
+- [x] `bigCode` layout, caption with the name, two buttons, equal spacing; callers; e2e.
+- [x] Audio unlock on touch gestures.
+- [x] Place ring look: rename the picker tile class, e2e style check against the rhythm ring.
+- [x] i18n sk + en; specs (`ui-rules.md` widths and menu, new `devices.md` keyboard gate,
       `teacher-links.md` sorting, child card and phone scan, `help.md`), `index.md` line.
-- [ ] `npm run build`, `npm test`, `npx playwright test` pass.
-- [ ] Drive the app with the playwright MCP at 390 x 844 touch-only and at 1280 x 800:
+- [x] `npm run build`, `npm test`, `npx playwright test` pass.
+- [x] Drive the app with the playwright MCP at 390 x 844 touch-only and at 1280 x 800:
       gate and its lift, teacher button, menu open/close with Esc, language round button at
       760 px, title fits at 320 px; teacher: paste three result links, sort by accuracy and
       rhythm on both layouts, open a child card and come back with Back; scan with the
@@ -187,3 +187,50 @@ Contracts: none (no storage, link or QR payload change). No server, no DB.
       and by the button; console clean, no 404s.
 - [~] Real iPhone/Android sound check: the playwright MCP cannot play audio on a real
       phone; done by the user when trying the deployed build.
+
+## State
+- Decisions taken while implementing:
+  - The title sits under the corner row at **every** width (padding-top on the start screen),
+    not only below 900 px: at 900-1280 px the centered logo + title also ran under the
+    buttons. Below 900 px the hero stacks (logo over the title), below 600 px the logo hides
+    (as in the design), and the title size also keeps its old height cap so the start page
+    still does not scroll at 1024 x 600.
+  - The menu panel mirrors the hidden corner row: each item copies a round button's picture
+    and label and clicks the real (hidden) button, so a screen's own buttons (map: settings)
+    and the break's disabled help follow with no extra code. Arrow keys move between items.
+  - The language controls live in `chrome.ts` (`languageControls`); labels are
+    `start.langNow` ("Jazyk: slovenčina") and `start.langNext`, fixed per dictionary (two
+    languages).
+  - A task link blocked by the gate is remembered as its route and opened once a key lifts
+    the gate (the task is parsed only then); other blocked routes just start over.
+  - The big teacher button shows only while the gate is up; with a keyboard the round
+    teacher button in the corner stays.
+  - Scan: on a phone the heading, preview and done bar sit in one flex column one screen
+    tall (`100dvh - 2 x 16px`, preview `flex: 1`, min 240 px) instead of a calculated
+    preview height, so the done bar's real height never pushes it off screen. Counts use
+    two keys (`teacher.scan.fresh`, `teacher.scan.updatedCount`).
+  - The view state (group filter, task, sort) is kept in memory for the screen's module so
+    Back from a child card returns to the same list; the card's own Back uses
+    `history.back()` when it was opened from the list. After "Presunúť do skupiny" the card
+    reopens under the new group (replaced address); after removing, back to the list.
+  - The task picker hides while there is only one task.
+  - Phone sort chips use short labels (`teacher.sort.*`); the table keeps the column names.
+  - Status texts now read "Zvládnuté" / "Precvičiť" ("Mastered" / "Practice more") as in
+    the design.
+  - QR screen: the code is sized by a small fit function (room left by caption and buttons,
+    as a square) and the block is centered; on a tall phone the extra height goes above and
+    below, so "padding" in the e2e check is the smaller of the top and side padding.
+  - Fixed on the way (same file): the teacher CSV had 11 header columns but 9 values per
+    row; the rows now carry levels and status too.
+- Browser run (playwright MCP on the preview build): touch-only 390 x 844 - gate card,
+  teacher button, menu with five items and focus on the first, a tap outside closes it,
+  "Skontrolovať znova" changes the status and shakes, `#/new`, `#/p/x/wardrobe` and
+  `#/task/..` go to the start page, teacher and help open, a key lifts the gate (and opened
+  the held task link); computer 320-1280 px - title fits with no overlap and no sideways
+  scroll, round SK button at 600-899 px; teacher at 1280 and 390 - four pasted results,
+  sorting by accuracy and rhythm, task picker, child card and Back keeping filter and sort,
+  phone cards with sort chips; QR screen at 1280 x 800 and 390 x 844 - name first, padding
+  and gaps 24 / 16 px, copy keeps it open, close button and a click close it; console clean.
+  The fake camera scan, Esc in the menu, the round language button switching and the place
+  ring style were checked by the e2e tests (the MCP browser has no fake camera, and any key
+  lifts the gate on a touch-only page).

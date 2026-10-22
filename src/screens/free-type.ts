@@ -23,7 +23,7 @@ export function openPlacePicker(current?: number): void {
     const w = WORLDS[wi];
     const img = imageUrl(`ui-map-${w}`);
     return h('button', {
-      class: `place ${wi === current ? 'on' : ''}`,
+      class: `place-tile ${wi === current ? 'on' : ''}`,
       type: 'button',
       'aria-pressed': String(wi === current),
       onClick: () => {

@@ -5,7 +5,7 @@
   gentle wrong, word done, reward, a soft cheer for a goal), all synthesized with the Web Audio API.
 - Separate volume for music and effects (parent area); a quick sound button on every
   screen switches normal / quiet (20 % of normal) / off; audio starts only after the
-  first user interaction.
+  first user interaction (on phones the first tap; see [devices.md](devices.md)).
 - A right click on the sound button plays another random track from the whole library; the
   next screen or level sets its own track again.
 

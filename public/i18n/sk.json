@@ -9,7 +9,9 @@
     "sound_quiet": "potichu",
     "sound_off": "vypnutý",
     "fullscreen": "Celá obrazovka",
-    "fullscreenExit": "Zrušiť celú obrazovku"
+    "fullscreenExit": "Zrušiť celú obrazovku",
+    "menu": "Menu",
+    "menuClose": "Zavrieť menu"
   },
   "start": {
     "tagline": "Pokojné dobrodružstvo písania všetkými desiatimi",
@@ -19,7 +21,20 @@
     "guestName": "Hosť",
     "import": "Načítať profily",
     "language": "Jazyk",
-    "stars": "Hviezdičky: {n}"
+    "stars": "Hviezdičky: {n}",
+    "langNow": "Jazyk: slovenčina",
+    "langNext": "Prepnúť na angličtinu",
+    "gate": {
+      "title": "Pripoj klávesnicu",
+      "text": "TapkoTyper učí písať na skutočnej klávesnici. Pripoj k mobilu alebo tabletu klávesnicu (Bluetooth alebo USB) a stlač na nej ľubovoľný kláves.",
+      "none": "Klávesnica zatiaľ nie je pripojená.",
+      "press": "Stlač na klávesnici ľubovoľný kláves.",
+      "recheck": "Skontrolovať znova"
+    },
+    "teacher": {
+      "title": "Pre učiteľov",
+      "sub": "Skenovať QR kódy a pozrieť výsledky triedy"
+    }
   },
   "privacy": {
     "short": "Žiadne reklamy, účty ani sledovanie. Všetko zostáva v tomto zariadení."
@@ -788,12 +803,11 @@
     "showCode": "QR kód celého postupu",
     "overallTitle": "Celý postup",
     "overallCaption": "Celé moje štatistiky",
-    "exerciseCaption": "Cvičenie: {title}",
+    "exerciseCaption": "Štatistiky cvičenia {title}",
     "exercisesEmpty": "Zatiaľ tu nie je žiadne cvičenie. Cvičenia od učiteľa alebo rodiča sa zapíšu sem.",
     "exerciseLine": "{min} min, presnosť {acc} %, rytmus {cpm}",
     "exerciseOpen": "Ešte nedokončené",
     "exerciseCode": "QR kód",
-    "codeClose": "Ťukni na obrazovku a kód sa zavrie.",
     "quality": "Presnosť dobre zvládnutých kláves: {n} %",
     "speed": "Rýchlosť dobre zvládnutých kláves: {n} znakov za minútu",
     "storyStars": "Hviezdičky v tomto príbehu: {n}",
@@ -1173,7 +1187,8 @@
       "Klávesy sa učia postupne, od základného radu (F a J).",
       "Každý kláves má svoj prst; klávesnica a ruky na obrazovke ukazujú ktorý.",
       "Najprv presnosť; rýchlosť sa ukazuje len ako osobný pokrok.",
-      "Slabšie klávesy sa objavujú častejšie a krátke prestávky chránia zdravie."
+      "Slabšie klávesy sa objavujú častejšie a krátke prestávky chránia zdravie.",
+      "Hrá sa na skutočnej klávesnici; mobil alebo tablet potrebuje pripojenú klávesnicu. Učiteľ s mobilom bez klávesnice môže skenovať výsledky."
     ],
     "creditsTitle": "Prepojenia",
     "credits": "Otvorený kód pod licenciou MIT. Písma: Lexend, Atkinson Hyperlegible a OpenDyslexic (SIL Open Font License)."
@@ -1189,6 +1204,7 @@
     },
     "typeTitle": "Ako písať",
     "type": [
+      "TapkoTyper potrebuje skutočnú klávesnicu. K mobilu alebo tabletu ju pripoj cez Bluetooth alebo USB.",
       "Seď rovno, chodidlá maj na zemi a ramená uvoľnené.",
       "Nahmataj výstupky na F a J. Tam bývajú tvoje ukazováky.",
       "Ostatné prsty si ľahnú vedľa nich na stredný rad: A S D F a J K L.",
@@ -1215,7 +1231,8 @@
       "levelHelp": "Pomoc k úrovni: čo robiť a ako sa zlepšiť.",
       "super": "Hviezda hore: super režim. Kliknutím ho vypneš.",
       "read": "Čítanie nahlas: počítač ti slová prečíta.",
-      "guide": "Ukáže alebo skryje klávesnicu, ktorá radí, kam ide prst."
+      "guide": "Ukáže alebo skryje klávesnicu, ktorá radí, kam ide prst.",
+      "menu": "Na malej obrazovke sú tieto tlačidlá schované pod jedným tlačidlom Menu."
     },
     "cardTitle": "Tvoja karta na mape",
     "card": [
@@ -1420,7 +1437,8 @@
     "noQr": "Odkaz je na QR kód príliš dlhý, skopírujte ho.",
     "broken": "Odkaz je poškodený alebo neúplný. Skúste ho skopírovať celý ešte raz.",
     "brokenTitle": "Tento odkaz sa nedá otvoriť",
-    "reading": "Čítam odkaz…"
+    "reading": "Čítam odkaz…",
+    "closeByClick": "Zatvoriť klikom na obrazovku"
   },
   "teacher": {
     "title": "Pre učiteľov",
@@ -1486,12 +1504,45 @@
         "failed": "Kameru sa nepodarilo zapnúť."
       },
       "group": "Skupina pre tento sken",
-      "groupPlaceholder": "Skupina, napríklad 5.A"
+      "groupPlaceholder": "Skupina, napríklad 5.A",
+      "title": "Skenovanie",
+      "count": "{n} načítaných",
+      "fresh": "{n} nových",
+      "updatedCount": "{n} aktualizované"
     },
     "summary": "zvládli {ok} z {n}, presnosť {accuracy} %, rytmus {rhythm}, dokončené levely {levels}",
     "status": {
-      "ok": "zvládnuté",
-      "practice": "viac cviku"
+      "ok": "Zvládnuté",
+      "practice": "Precvičiť"
+    },
+    "taskFilter": "Úloha",
+    "allTasks": "Všetky úlohy",
+    "sortBy": "Zoradiť",
+    "sort": {
+      "child": "Meno",
+      "date": "Dátum",
+      "minutes": "Minúty",
+      "accuracy": "Presnosť",
+      "rhythm": "Rytmus",
+      "levels": "Levely",
+      "status": "Stav"
+    },
+    "unit": {
+      "cpm": "{n} zn/min",
+      "min": "{n} min",
+      "levels": "levely: {n}"
+    },
+    "child": {
+      "tasks": "odovzdané úlohy: {n}",
+      "accuracy": "priemerná presnosť",
+      "cpm": "znakov za minútu",
+      "minutes": "minút cvičenia",
+      "levels": "prejdených levelov",
+      "taskList": "Úlohy",
+      "move": "Presunúť do skupiny",
+      "remove": "Odstrániť žiaka",
+      "removeTitle": "Odstrániť žiaka {name}?",
+      "removeText": "Z tabuľky sa odstránia všetky výsledky žiaka {name} (počet: {n})."
     }
   },
   "task": {

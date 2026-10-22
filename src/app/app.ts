@@ -6,6 +6,7 @@ import { Store } from '../storage/store';
 import { GUEST_ID, type Lang, type Profile, SUPER_ID } from '../storage/schema';
 import type { TaskSpec } from '../share/task';
 import { loadWords } from '../words/words';
+import { keyboardGated, waitForKeyboard } from './keyboard-gate';
 
 export type ScreenName = 'start' | 'newProfile' | 'map' | 'level' | 'story' | 'parent' | 'wardrobe' | 'friends' | 'break' | 'teacher' | 'taskImport' | 'moveImport' | 'help';
 export type Screen = (root: HTMLElement, params: any) => (() => void) | void;
@@ -47,10 +48,10 @@ const OWN_ROUTE: ScreenName[] = ['map', 'wardrobe', 'friends', 'parent', 'help']
 const LINKS: Partial<Record<string, ScreenName>> = { task: 'taskImport', move: 'moveImport', result: 'teacher' };
 
 /** Address of a screen, so a player's map can be bookmarked or put on the desktop. */
-export function routeOf(name: ScreenName, params: { code?: string; tab?: string } = {}): string {
+export function routeOf(name: ScreenName, params: { code?: string; tab?: string; child?: string } = {}): string {
   if (name === 'newProfile') return '#/new';
-  // A result link is read once into the teacher's table.
-  if (name === 'teacher') return '#/teacher';
+  // A result link is read once into the teacher's table; one child's card has its own address.
+  if (name === 'teacher') return params.child ? `#/teacher/child/${encodeURIComponent(params.child)}` : '#/teacher';
   if (name === 'taskImport') return `#/task/${params.code ?? ''}`;
   if (name === 'moveImport') return `#/move/${params.code ?? ''}`;
   const id = app.profile?.id;
@@ -62,11 +63,11 @@ export function routeOf(name: ScreenName, params: { code?: string; tab?: string 
   return `#/p/${encodeURIComponent(id)}${sub ? `/${sub}` : ''}${tab}`;
 }
 
-export function parseRoute(hash: string): { name: ScreenName; profileId: string | null; code?: string; tab?: string } {
+export function parseRoute(hash: string): { name: ScreenName; profileId: string | null; code?: string; tab?: string; child?: string } {
   const parts = hash.replace(/^#\/?/, '').split('/').filter(Boolean).map(decodeURIComponent);
   if (parts[0] === 'new') return { name: 'newProfile', profileId: null };
   if (parts[0] === 'help') return { name: 'help', profileId: null, tab: parts[1] };
-  if (parts[0] === 'teacher') return { name: 'teacher', profileId: null };
+  if (parts[0] === 'teacher') return { name: 'teacher', profileId: null, ...(parts[1] === 'child' && parts[2] && { child: parts[2] }) };
   const link = LINKS[parts[0]];
   if (link && parts[1]) return { name: link, profileId: null, code: parts[1] };
   if (parts[0] !== 'p' || !parts[1]) return { name: 'start', profileId: null };
@@ -80,10 +81,19 @@ export async function openRoute(hash: string): Promise<void> {
   const p = r.profileId === SUPER_ID ? app.superPlayer : r.profileId ? app.store.get(r.profileId) : null;
   if (r.profileId && !p) return go('start', {}, false);
   if (p && app.profile?.id !== p.id) await selectProfile(p);
-  go(r.name, r.code ? { code: r.code } : r.tab ? { tab: r.tab } : {}, false);
+  go(r.name, r.code ? { code: r.code } : r.tab ? { tab: r.tab } : r.child ? { child: r.child } : {}, false);
 }
 
+/** Screens a touch-only device reaches before a keyboard is connected: the teacher needs none. */
+const NO_KEYBOARD: ScreenName[] = ['start', 'teacher', 'help'];
+
 export function go(name: ScreenName, params: any = {}, push = true): void {
+  if (!NO_KEYBOARD.includes(name) && keyboardGated()) {
+    // A task link continues once the keyboard is there; anything else starts over.
+    if (name === 'taskImport') waitForKeyboard(routeOf(name, params));
+    name = 'start';
+    params = {};
+  }
   const route = routeOf(name, params);
   if (route !== location.hash) history[push ? 'pushState' : 'replaceState'](null, '', route);
   const root = document.querySelector<HTMLElement>('#app')!;

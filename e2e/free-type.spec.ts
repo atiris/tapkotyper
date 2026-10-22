@@ -63,11 +63,11 @@ test('the place is picked from the open worlds and changed while typing', async 
   await editProfile(page, 'p.progress.worldsDone = [0]; p.progress.scenesSeen.push("welcome");');
   await page.locator('.map-side .btn', { hasText: 'Just typing' }).click();
   const picker = page.locator('.place-picker-modal');
-  await expect(picker.locator('.place')).toHaveText(['Meadow', 'Rocket']);
+  await expect(picker.locator('.place-tile')).toHaveText(['Meadow', 'Rocket']);
   await picker.getByRole('button', { name: 'Rocket' }).click();
   await expect(page.locator('.level-screen.world-space')).toBeVisible();
   await page.getByRole('button', { name: 'Change the place' }).click();
-  await expect(picker.locator('.place.on')).toHaveText('Rocket');
+  await expect(picker.locator('.place-tile.on')).toHaveText('Rocket');
   // Keys typed while the picker is open do not count.
   await page.keyboard.type('ab');
   await picker.getByRole('button', { name: 'Meadow' }).click();

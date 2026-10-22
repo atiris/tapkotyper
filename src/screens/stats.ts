@@ -159,7 +159,7 @@ type StatsTab = 'progress' | 'keys' | 'exercises';
 /** The QR code of all the player's statistics, over the whole screen. */
 async function showOverallCode(p: Profile): Promise<void> {
   const link = linkOf('result', await resultCode(makeOverallResult(p, t('progress.overallTitle'))));
-  bigCode(link, t('progress.overallCaption'), p.name, 'overall');
+  bigCode(link, p.name, t('progress.overallCaption'), 'overall');
 }
 
 /** Progress: the summary rows and badges, the growth medals and the code of all statistics. */
@@ -206,7 +206,7 @@ function exercisesTab(p: Profile): HTMLElement {
   if (!played.length) return h('p', { class: 'hint center' }, t('progress.exercisesEmpty'));
   return h('ul', { class: 'exercise-list' }, ...played.map((task) => {
     const total = task.chars + task.errors;
-    const show = async () => bigCode(linkOf('result', await resultCode(makeResult(p, task))), t('progress.exerciseCaption', { title: task.title || t('task.untitled') }), p.name, 'exercise');
+    const show = async () => bigCode(linkOf('result', await resultCode(makeResult(p, task))), p.name, t('progress.exerciseCaption', { title: task.title || t('task.untitled') }), 'exercise');
     return h('li', { class: `exercise ${task.doneAt ? 'done' : ''}` },
       h('div', {},
         h('b', {}, task.title || t('task.untitled')), task.group ? h('span', { class: 'chip' }, task.group) : null,

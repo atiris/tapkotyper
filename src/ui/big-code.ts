@@ -3,29 +3,42 @@ import { button, h } from './dom';
 import { qr } from './link-box';
 
 /**
- * A QR code over the whole screen, readable by a camera across a desk. `caption` says what
- * the code is (an exercise or all statistics), `kind` colours the frame so the two are told
- * apart at a glance. A click anywhere but the copy row, or Esc, closes it.
+ * A QR code over the whole screen, readable by a camera across a desk: the child's name and
+ * what the code is (`caption`: an exercise or all statistics) first, then the code, then
+ * copying and closing. `kind` colours the frame so the two are told apart at a glance. A click
+ * anywhere but the copy button, the close button or Esc closes it.
  */
-export function bigCode(link: string, caption: string, name: string, kind: 'exercise' | 'overall'): void {
-  const done = h('span', { 'aria-live': 'polite' });
-  const copy = button(t('share.copyCode'), async () => {
+export function bigCode(link: string, name: string, caption: string, kind: 'exercise' | 'overall'): void {
+  let copiedTimer = 0;
+  const copyLabel = h('span', {}, t('share.copyCode'));
+  const copy = button(copyLabel, async () => {
     try {
       await navigator.clipboard.writeText(link);
     } catch {
       return;
     }
-    done.textContent = t('share.copied');
-  }, 'btn primary', 'code');
-  const view = h('div', { class: `big-code ${kind}`, role: 'dialog', 'aria-modal': 'true', 'aria-label': caption },
-    h('p', { class: 'big-code-caption' }, caption),
-    qr(link),
-    h('p', { class: 'big-code-name' }, name),
-    h('div', { class: 'row', onClick: (e: Event) => e.stopPropagation() }, copy, done),
-    h('p', { class: 'big-code-hint' }, t('progress.codeClose')));
+    copyLabel.textContent = t('share.copied');
+    clearTimeout(copiedTimer);
+    copiedTimer = window.setTimeout(() => (copyLabel.textContent = t('share.copyCode')), 2000);
+  }, 'btn big-code-copy', 'copy');
+  copy.addEventListener('click', (e) => e.stopPropagation());
+  const code = qr(link);
+  const head = h('p', { class: 'big-code-caption' }, name, h('span', { class: 'big-code-dot', 'aria-hidden': 'true' }, '·'), caption);
+  const actions = h('div', { class: 'big-code-actions' }, copy, button(t('share.closeByClick'), () => undefined, 'btn big-code-close', 'close'));
+  const view = h('div', { class: `big-code ${kind}`, role: 'dialog', 'aria-modal': 'true', 'aria-label': `${name} · ${caption}` }, head, code, actions);
+  // The code takes all the room the caption and the buttons leave, as a square.
+  const fit = () => {
+    const s = getComputedStyle(view);
+    const gap = parseFloat(s.rowGap) || 0;
+    const room = view.clientHeight - parseFloat(s.paddingTop) - parseFloat(s.paddingBottom) - 2 * gap - head.offsetHeight - actions.offsetHeight;
+    const width = view.clientWidth - parseFloat(s.paddingLeft) - parseFloat(s.paddingRight);
+    code.style.width = `${Math.max(120, Math.floor(Math.min(room, width)))}px`;
+  };
   const close = () => {
+    clearTimeout(copiedTimer);
     view.remove();
     window.removeEventListener('keydown', onKey, true);
+    window.removeEventListener('resize', fit);
   };
   const onKey = (e: KeyboardEvent) => {
     if (e.key !== 'Escape') return;
@@ -34,6 +47,9 @@ export function bigCode(link: string, caption: string, name: string, kind: 'exer
     close();
   };
   window.addEventListener('keydown', onKey, true);
+  window.addEventListener('resize', fit);
   view.addEventListener('click', close);
   document.body.append(view);
+  fit();
+  copy.focus();
 }

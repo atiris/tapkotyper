@@ -31,7 +31,7 @@ test('the start screen does not scroll with 1, 5 and 7 profiles', async ({ page 
       await expect(page.locator('.profile-row')).toHaveCount(rows);
       // The teacher, sound and help buttons are in the first viewport whatever the number of profiles.
       await expect(page.locator('.top-right .help-btn, .top-right .sound-btn')).toHaveCount(2);
-      for (const b of await page.locator('.top-right .round-btn').all()) await expect(b).toBeInViewport();
+      for (const b of await page.locator('.top-right .round-btn:visible').all()) await expect(b).toBeInViewport();
       const newAsCard = count < 5;
       await expect(page.locator('.profile-card.new')).toHaveCount(newAsCard ? 1 : 0);
     }

@@ -1,13 +1,19 @@
 import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { CODEC_VERSION, checksum, codeFrom, decode, encode } from './codec';
-import { makeResult, parseResult, resultCode } from './result';
+import { OVERALL_ID, makeResult, parseResult, resultCode } from './result';
 import { activeTask, addTask, parseTask, recordTaskRun, taskCode, taskOwn } from './task';
-import { TeacherStore } from './teacher';
+import { type SortKey, TeacherStore, childKey, childSummary, nextSort } from './teacher';
 import { moveCode, parseMove, trimHistory } from './transfer';
 
 const b64 = (bytes: number[]) => btoa(String.fromCharCode(...bytes)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 const unb64 = (code: string) => Uint8Array.from(atob(code.replace(/-/g, '+').replace(/_/g, '/')), (c) => c.charCodeAt(0));
+
+/** A storage that lives in memory only. */
+function memory(): Storage {
+  const map = new Map<string, string>();
+  return { getItem: (k: string) => map.get(k) ?? null, setItem: (k: string, v: string) => void map.set(k, v) } as unknown as Storage;
+}
 
 describe('codec', () => {
   it('round-trips with link-safe characters', async () => {
@@ -109,11 +115,12 @@ describe('results', () => {
     expect(s.add({ ...r, accuracy: 95 }, true)).toBe('updated');
     s.add({ ...r, name: 'Adam, "A"' }, false);
     expect(new TeacherStore(local).results).toHaveLength(2);
-    const head = ['group', 'task', 'child', 'date', 'min', 'acc', 'cpm', 'weak', 'broken'];
-    expect(s.csv(head, (k) => k).split('\n')).toEqual([
+    const head = ['group', 'task', 'child', 'date', 'min', 'acc', 'cpm', 'levels', 'status', 'weak', 'broken'];
+    const names = { key: (k: string) => k, status: (ok: boolean) => (ok ? 'ok' : 'practice') };
+    expect(s.csv(head, names).split('\n')).toEqual([
       head.join(','),
-      ',Zvieratá,"Adam, ""A""",2026-10-21,2,90,50,ô 70 %,!',
-      ',Zvieratá,Ema,2026-10-21,2,95,50,ô 70 %,',
+      ',Zvieratá,"Adam, ""A""",2026-10-21,2,90,50,,ok,ô 70 %,!',
+      ',Zvieratá,Ema,2026-10-21,2,95,50,,ok,ô 70 %,',
     ]);
     const ema = s.results.find((x) => x.name === 'Ema')!;
     s.assign([ema], '5.A');
@@ -123,9 +130,51 @@ describe('results', () => {
     expect(s.add({ ...r, accuracy: 99 }, true)).toBe('updated');
     const kept = s.results.find((x) => x.name === 'Ema')!;
     expect(kept.group).toBe('5.A');
-    expect(s.csv(head, (k) => k, [kept]).split('\n')).toHaveLength(2);
+    expect(s.csv(head, names, [kept]).split('\n')).toHaveLength(2);
     s.removeMany([kept]);
     expect(s.results).toHaveLength(1);
+  });
+
+  it('teacher store sorts the children inside a group and task by every key, ties by name', () => {
+    const s = new TeacherStore(memory());
+    const base = { taskId: 't1', title: 'Zvieratá', date: '2026-10-21', minutes: 2, accuracy: 90, cpm: 50, weak: [] as [string, number][] };
+    s.add({ ...base, name: 'Cyril', date: '2026-10-20', minutes: 5, accuracy: 70, cpm: 60, levels: 3 }, true);
+    s.add({ ...base, name: 'Adam', date: '2026-10-22', minutes: 1, accuracy: 95, cpm: 40, levels: 1 }, true);
+    s.add({ ...base, name: 'Bea', minutes: 3, accuracy: 70, cpm: 50 }, true);
+    s.add({ ...base, name: 'Zora', taskId: 't2', title: 'Auto', accuracy: 99 }, true);
+    s.add({ ...base, name: 'Ema', group: '5.A', accuracy: 10 }, true);
+    const names = (key: SortKey, desc: boolean) => s.sorted(s.results, { key, desc }).map((r) => r.name);
+    // The blocks stay: group 5.A first, then the tasks by title, whatever the key.
+    expect(names('child', false)).toEqual(['Ema', 'Zora', 'Adam', 'Bea', 'Cyril']);
+    expect(names('child', true)).toEqual(['Ema', 'Zora', 'Cyril', 'Bea', 'Adam']);
+    expect(names('date', true)).toEqual(['Ema', 'Zora', 'Adam', 'Bea', 'Cyril']);
+    expect(names('minutes', true)).toEqual(['Ema', 'Zora', 'Cyril', 'Bea', 'Adam']);
+    // Bea and Cyril tie on accuracy: by name.
+    expect(names('accuracy', true)).toEqual(['Ema', 'Zora', 'Adam', 'Bea', 'Cyril']);
+    expect(names('accuracy', false)).toEqual(['Ema', 'Zora', 'Bea', 'Cyril', 'Adam']);
+    expect(names('rhythm', true)).toEqual(['Ema', 'Zora', 'Cyril', 'Bea', 'Adam']);
+    // No levels count as the fewest.
+    expect(names('levels', true)).toEqual(['Ema', 'Zora', 'Cyril', 'Adam', 'Bea']);
+    // Ascending status: "practice more" first.
+    expect(names('status', false)).toEqual(['Ema', 'Zora', 'Bea', 'Cyril', 'Adam']);
+    expect(names('status', true)).toEqual(['Ema', 'Zora', 'Adam', 'Bea', 'Cyril']);
+    expect(nextSort({ key: 'child', desc: false }, 'accuracy')).toEqual({ key: 'accuracy', desc: true });
+    expect(nextSort({ key: 'accuracy', desc: true }, 'accuracy')).toEqual({ key: 'accuracy', desc: false });
+    expect(nextSort({ key: 'accuracy', desc: true }, 'status')).toEqual({ key: 'status', desc: false });
+    expect(nextSort({ key: 'accuracy', desc: true }, 'child')).toEqual({ key: 'child', desc: false });
+  });
+
+  it('a child card sums one child: averages, minutes, levels of the whole statistics, weakest keys', () => {
+    const s = new TeacherStore(memory());
+    const base = { title: 'T', name: 'Jakub', minutes: 2.5, cpm: 50, weak: [] as [string, number][] };
+    s.add({ ...base, taskId: 'a', date: '2026-10-06', accuracy: 80, weak: [['ď', 61], ['p', 80]] }, true);
+    s.add({ ...base, taskId: OVERALL_ID, date: '2026-10-13', accuracy: 90, cpm: 60, levels: 12, weak: [['p', 72], ['ô', 68], ['ľ', 75], ['a', 90]] }, true);
+    // The same name in another group is another child.
+    s.add({ ...base, taskId: 'b', group: '5.B', date: '2026-10-20', accuracy: 10 }, true);
+    const rows = s.childResults(childKey(base));
+    expect(rows.map((r) => r.date)).toEqual(['2026-10-13', '2026-10-06']);
+    expect(childSummary(rows)).toEqual({ accuracy: 85, cpm: 55, minutes: 5, levels: 12, weak: [['ď', 61], ['ô', 68], ['p', 72], ['ľ', 75]] });
+    expect(childSummary(rows.slice(1)).levels).toBeUndefined();
   });
 });
 

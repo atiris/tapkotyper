@@ -92,3 +92,65 @@ test('groups: filter, assign, export respect the filter', async ({ page }) => {
   await expect(page.locator('.teacher-table tbody tr:not(.task-row):not(.group-row)')).toHaveCount(3);
   await expect(page.locator('.chips .chip')).toHaveText(['Všetky', '5.A', '5.B']);
 });
+
+test('on a phone the preview and Hotovo are in view with the counter', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('./#/teacher');
+  await page.locator('.scan-start input').fill('3.A');
+  await page.locator('.scan-start .btn.primary').click();
+  await expect(page.locator('.scan-title')).toHaveText('Skenovanie · 3.A');
+  await expect(page.locator('.scan-total')).toHaveText('1 načítaných', { timeout: 20_000 });
+  await expect(page.locator('.scan-counts .hint')).toHaveText('1 nových');
+  await expect(page.locator('.scan-frame')).toBeInViewport({ ratio: 1 });
+  await expect(page.locator('.scan-done')).toBeInViewport({ ratio: 1 });
+  await page.locator('.scan-done .btn.primary').click();
+  await expect(page.locator('.scan-card')).toHaveCount(0);
+  await expect(page.locator('.chips .chip.on')).toHaveText('3.A');
+  await expect(page.locator('.child-row')).toHaveCount(1);
+});
+
+test('sorting, the task picker and a child card, on a computer and on a phone', async ({ page }) => {
+  const add = async (r: ReturnType<typeof result>) => {
+    await page.locator('.teacher-screen form input').fill(`http://localhost:4173/tapkotyper/#/result/${await resultCode(r)}`);
+    await page.locator('.teacher-screen form .btn.primary').click();
+    await expect(page.locator('.teacher-screen [role=status]')).toContainText(r.name);
+  };
+  await page.goto('./#/teacher');
+  await add({ ...result('Ema', '3.A', 'Domáce'), accuracy: 96, cpm: 74 });
+  await add({ ...result('Jakub', '3.A', 'Domáce'), accuracy: 81, cpm: 80 });
+  await add({ ...result('Adam', '3.A', 'Domáce'), accuracy: 70, cpm: 41 });
+  await add({ ...result('Jakub', '3.A', 'Horný rad'), accuracy: 60, cpm: 50, date: '2026-10-22' });
+  const names = () => page.locator('.teacher-table tbody .child-link');
+  await expect(names()).toHaveText(['Adam', 'Ema', 'Jakub', 'Jakub']);
+  await page.locator('.sort-btn', { hasText: 'Presnosť' }).click();
+  await expect(page.locator('th[aria-sort=descending]')).toContainText('Presnosť');
+  await expect(names()).toHaveText(['Ema', 'Jakub', 'Adam', 'Jakub']);
+  await page.locator('.sort-btn', { hasText: 'Presnosť' }).click();
+  await expect(names()).toHaveText(['Adam', 'Jakub', 'Ema', 'Jakub']);
+  await page.locator('.sort-btn', { hasText: 'Rytmus' }).click();
+  await expect(names()).toHaveText(['Jakub', 'Ema', 'Adam', 'Jakub']);
+  await page.locator('.task-pick select').selectOption({ label: 'Horný rad (1)' });
+  await expect(names()).toHaveText(['Jakub']);
+  await expect(page.locator('.teacher-count')).toContainText('1 výsledkov');
+  await page.locator('.task-pick select').selectOption({ label: 'Všetky úlohy' });
+
+  // The child card: every task of the child, and Back returns to the same list.
+  await names().nth(0).click();
+  const card = page.locator('.child-screen');
+  await expect(card.locator('h1')).toHaveText('Jakub');
+  await expect(card.locator('.child-tasks li')).toHaveCount(2);
+  await expect(card.locator('.child-tile').first()).toContainText('71 %');
+  await page.goBack();
+  await expect(names()).toHaveText(['Jakub', 'Ema', 'Adam', 'Jakub']);
+
+  // A phone: cards with sort chips, the sorted value big on the right.
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(page.locator('.teacher-table')).toBeHidden();
+  await page.locator('.sort-chips .chip', { hasText: 'Presnosť' }).click();
+  await expect(page.locator('.child-row-big')).toHaveText(['96 %', '81 %', '70 %', '60 %']);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.locator('.child-row', { hasText: 'Adam' }).click();
+  await page.locator('.child-screen .btn', { hasText: 'Odstrániť žiaka' }).click();
+  await page.locator('.confirm .btn.danger').click();
+  await expect(page.locator('.child-row')).toHaveCount(3);
+});

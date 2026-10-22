@@ -51,7 +51,7 @@ export async function handInDialog(p: Profile, task: Task): Promise<void> {
     tapkoElement(p.companion, 'happy', 100),
     h('h2', {}, t('task.handInTitle')),
     h('p', {}, t('task.handInText')),
-    fitsQr(link) ? button(t('task.bigCode'), () => bigCode(link, t('progress.exerciseCaption', { title: task.title || t('task.untitled') }), p.name, 'exercise'), 'btn', 'fullscreen') : null,
+    fitsQr(link) ? button(t('task.bigCode'), () => bigCode(link, p.name, t('progress.exerciseCaption', { title: task.title || t('task.untitled') }), 'exercise'), 'btn', 'fullscreen') : null,
     linkBox(link),
     h('p', { class: 'hint' }, t('task.checksumNote'))), { cls: 'share-modal' });
 }

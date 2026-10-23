@@ -153,7 +153,7 @@ npm run build    # type check + production build into dist/
 npm test         # unit tests (Vitest)
 npm run test:e2e # browser tests (Playwright)
 npm run assets   # turn raw images and music in assets-src/ into public/assets/
-npm run icons    # render the PWA icons
+npm run icons    # render the favicon and the PWA icons from ui-icon (after npm run assets)
 ```
 
 Every push to `main` builds the site and deploys it to GitHub Pages

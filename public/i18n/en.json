@@ -1210,13 +1210,12 @@
   "about": {
     "code": "Code on GitHub",
     "report": "Report a bug or an idea",
-    "intro": "TapkoTyper is a free, peaceful game that teaches typing with all ten fingers. As an animal of their own choice, typists travel through worlds full of adventures. Nothing bad ever happens: obstacles are pushed away or helped, never destroyed.",
+    "intro": "TapkoTyper (Tapko) is a free, peaceful game that teaches typing with all ten fingers. As an animal of their own choice, typists travel through worlds full of adventures. Nothing bad ever happens: obstacles are pushed away or helped, never destroyed.",
     "privacyTitle": "Our promise to parents",
     "privacy": [
       "No ads, purchases, sign-in or cookies. This site has no server of its own in the background.",
-      "All progress is stored **only in this browser**, but you can export it as a file.",
-      "Works offline after the first visit.",
-      "It can be installed as a desktop web app: it opens in its own window, with no need to start the whole browser."
+      "All progress is stored **only in this browser** and nobody else can reach it, but you can export it to a file to back it up or move it to another computer.",
+      "After the first visit, or as a desktop app, it works without the internet too. Installed as a desktop web app, it opens in its own window without the whole browser, works offline and is quick and easy to start."
     ],
     "dataTitle": "Your data and the visit counter",
     "data": [
@@ -1241,12 +1240,12 @@
   "help": {
     "title": "Help",
     "tab": {
-      "ui": "Buttons",
-      "typing": "How to type",
-      "progress": "How to progress",
+      "ui": "Interface",
+      "typing": "Typing",
+      "progress": "Progress",
       "settings": "Settings",
       "mentoring": "Mentoring",
-      "about": "About TapkoTyper"
+      "about": "About Tapko"
     },
     "typeTitle": "How to type",
     "type": [

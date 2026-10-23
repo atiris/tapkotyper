@@ -165,15 +165,24 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
 }
 @media (max-width: 599px) { .screen > .bar { padding-right: calc(2rem + 52px); } }
 /*
- * Help and the mentors' page have no visible bar: it paints the page's own fixed background, so it
- * looks like the page, and the text scrolling under it fades out just below it.
+ * Help, the settings and the mentors' page have no visible bar: it paints the page's own fixed
+ * background, so it looks like the page, and the text scrolling under it fades out just below it.
  */
-.help-screen > .bar, .teacher-screen > .bar { background: var(--page-bg) fixed; backdrop-filter: none; }
-.help-screen > .bar::after, .teacher-screen > .bar::after {
+.help-screen > .bar, .parent-screen > .bar, .teacher-screen > .bar { background: var(--page-bg) fixed; backdrop-filter: none; }
+.help-screen > .bar::after, .parent-screen > .bar::after, .teacher-screen > .bar::after {
   content: ''; position: absolute; left: 0; right: 0; top: 100%; height: 1.6rem; pointer-events: none;
   background: var(--page-bg) fixed; -webkit-mask-image: linear-gradient(#000, transparent); mask-image: linear-gradient(#000, transparent);
 }
 .bar h1 { flex: 1; margin: 0; font-size: 1.6rem; }
+/* The tabs as links after the title, once the tab row scrolled away; only on a desktop with room for all of them. */
+.bar-links { display: none; }
+@media (hover: hover) and (pointer: fine) {
+  .bar.show-links:not(.links-cramped) h1 { flex: none; }
+  .bar.show-links .bar-links { display: block; flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; color: var(--ink-soft); font-weight: 600; font-size: 1.1rem; }
+  .bar.show-links.links-cramped .bar-links { display: none; }
+}
+.bar-links a { color: inherit; text-decoration: none; }
+.bar-links a:hover, .bar-links a:focus-visible, .bar-links a.on { color: var(--brand-dark); }
 /* Back buttons in top bars match the round 48 px buttons beside them. */
 .bar > .btn, .map-top > .btn { height: 48px; min-height: 48px; }
 
@@ -219,15 +228,15 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
 .profile-card.new { justify-content: center; border: 3px dashed var(--line); background: transparent; box-shadow: none; }
 .plus { width: clamp(48px, 9vh, 64px); height: clamp(48px, 9vh, 64px); border-radius: 50%; background: var(--green); color: #fff; display: grid; place-items: center; }
 .plus .icon { width: 34px; height: 34px; }
-.privacy-note { text-align: center; color: var(--ink-soft); max-width: 100%; font-size: 0.85rem; opacity: 0.7; }
-.privacy-note p { margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.privacy-note a { color: inherit; text-decoration: none; }
-.privacy-note a:hover, .privacy-note a:focus-visible { color: var(--ink); }
+.start-promise { text-align: center; color: var(--ink-soft); max-width: 100%; font-size: 0.85rem; opacity: 0.7; }
+.start-promise p { margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.start-promise a { color: inherit; text-decoration: none; }
+.start-promise a:hover, .start-promise a:focus-visible { color: var(--ink); }
 /* One line always: the short form on a narrow screen. */
-.privacy-note .note-short { display: none; }
+.start-promise .note-short { display: none; }
 @media (max-width: 719px) {
-  .privacy-note .note-long { display: none; }
-  .privacy-note .note-short { display: block; }
+  .start-promise .note-long { display: none; }
+  .start-promise .note-short { display: block; }
 }
 .start-screen .row { margin-top: 0.6rem; justify-content: center; }
 /* The new player is a card or a button, whichever fits. */
@@ -843,8 +852,8 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-dark); }
 .prose { line-height: 1.6; }
 .prose li { margin: 0.3em 0; }
 
-/* Help: the bar of every page, then the tabs in a narrower column; the page scrolls as a whole. */
-.help-column { width: 100%; max-width: 760px; margin: 0 auto; font-size: 1.1rem; }
+/* Help: the bar of every page, then the tabs in a narrower column (wider on a wide screen); the page scrolls as a whole. */
+.help-column { width: 100%; max-width: clamp(760px, 62vw, 1040px); margin: 0 auto; font-size: 1.1rem; }
 /* In a paused level: the same page over the whole level, opaque; it scrolls under its bar. No corner buttons there. */
 .level-help { position: absolute; inset: 0; z-index: 20; overflow-y: auto; background: var(--page-bg); }
 .level-help .screen > .bar { padding-right: var(--gut); }

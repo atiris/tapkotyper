@@ -4,18 +4,19 @@
 - One help page for everything, in short, big, friendly text (sk and en), in tabs like the
   settings screen (the tab row right above its panel). It is a page like the settings: "Back"
   at the top left in the same top bar that stays while the page scrolls, the same title style,
-  and the text in a narrower column (about 760 px) on wide screens; Escape goes back too.
+  and the text in a narrower column (about 760 px, wider on a wide screen, up to about 1040 px);
+  on a wide desktop the bar lists the tabs once they scrolled away. Escape goes back too.
   Back returns to where help was opened (settings without asking the parent question again),
   else to the map, or to the start page before a player is chosen. Opened from the settings,
   help starts on the settings tab:
   1. **Interface**: the buttons of the map and of a level, each drawn exactly as it looks in the
      game with one line on what it does, and the player's card on the map (the companion opens
      "My progress", the side buttons, the task card).
-  2. **How to type**: sitting, the home keys F and J, thumbs over the space bar, each finger
+  2. **Typing**: sitting, the home keys F and J, thumbs over the space bar, each finger
      with its own keys, eyes on the screen, accuracy before speed, short breaks; and how a level
      is played (type the word on the object, nothing bad happens when it gets away, stars come
      from accuracy, Esc pauses).
-  3. **How to progress**, in the child's voice: stories, worlds and levels, stars, letters that
+  3. **Progress**, in the child's voice: stories, worlds and levels, stars, letters that
      open levels and stories, "My progress" with its three tabs and QR codes, rescue missions
      and badges.
   4. **Settings**, for the parent: that the settings open with the gear on the map (the child's
@@ -28,7 +29,7 @@
      computer as a `.tapko` file, the yearly cleanup (7 more days for old results loaded from a
      file), CSV, the checksum, making a task, and the task from the child's side. The "?" (and F1) on the
      "For mentors" page opens this tab, since a mentor there needs exactly this.
-  6. **About TapkoTyper**: the intro, the privacy promise, data and one bullet with the open
+  6. **About Tapko**: the intro, the privacy promise, data and one bullet with the open
      GoatCounter address (we hide nothing: anyone sees the same usage data we do) and the visits
      recorded so far, how it teaches, links, the code and a bug report. Links are in the app's
      orange, underlined only on hover.

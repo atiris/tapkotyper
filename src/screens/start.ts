@@ -16,7 +16,7 @@ export function startScreen(root: HTMLElement): () => void {
   app.profile = null;
   applyProfileLook(null);
   audio.music(app.menuTrack);
-  const logo = imageUrl('ui-logo');
+  const logo = imageUrl('ui-icon');
   const lang = languageControls(async (l: Lang) => {
     app.store.data.language = l;
     app.store.save();
@@ -70,7 +70,7 @@ export function startScreen(root: HTMLElement): () => void {
         }, 'btn ghost', 'user'),
         button(t('start.import'), () => void import('./parent').then((m) => m.importDialog(() => go('start'))), 'btn ghost', 'upload'))),
     gated ? teacherButton() : null,
-    privacyNote()));
+    startPromise()));
   // A key of a real keyboard lifts the gate at once: the start page (or a waiting task link) opens.
   const offKeyboard = gated ? onKeyboard(() => {
     const waiting = takeWaiting();
@@ -141,9 +141,9 @@ function keyboardGate(): HTMLElement {
 /**
  * The promise in one quiet line: on a wide screen with the open visit count and the licence, on a
  * narrow one only its short form. Its "data stays on your device" (or the short form) opens the
- * help's about tab.
+ * help's about tab. Its class avoids words like "privacy" or "cookie": cookie-banner blockers hide those.
  */
-function privacyNote(): HTMLElement {
+function startPromise(): HTMLElement {
   const ext = { target: '_blank', rel: 'noopener' };
   const about = (text: string) => h('a', { href: '#/help/about', onClick: (e: Event) => { e.preventDefault(); go('help', { tab: 'about' }); } }, text);
   const visits = h('span', {});
@@ -153,7 +153,7 @@ function privacyNote(): HTMLElement {
     const key = n === 1 ? 'privacy.visitsOne' : n > 1 && n < 5 ? 'privacy.visitsFew' : 'privacy.visitsMany';
     visits.replaceChildren(' · ', h('a', { href: COUNTER, ...ext }, t(key, { n: count })));
   });
-  return h('footer', { class: 'privacy-note' },
+  return h('footer', { class: 'start-promise' },
     h('p', { class: 'note-long' }, t('privacy.short'), ' · ', about(t('privacy.local')), visits, ' · ', h('a', { href: 'https://github.com/atiris/tapkotyper', ...ext }, 'MIT Atiris')),
     h('p', { class: 'note-short' }, about(t('privacy.tiny'))));
 }

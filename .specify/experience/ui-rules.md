@@ -25,7 +25,11 @@ One set of rules for where things sit and how they behave, so every screen feels
    scrolls the whole page. The two are never mixed: a window never makes the page behind it
    scroll, and a page never hides its header in a scrolled box. A page's top bar (Back and
    the title) stays at the top while the page scrolls, on a slightly see-through paper band,
-   its row level with the corner controls.
+   its row level with the corner controls; help, the settings and the mentors' page paint the
+   page's own background there instead, so the bar looks like part of the page. Once a page's
+   tab row has scrolled away, its bar lists the tabs after the title as links separated by dots
+   ("Title · Tab · Tab", the open one in orange), only on a desktop wide enough for all of them;
+   a link opens its tab at the top of the page.
 4. **Tabs.** Tabs look and behave the same everywhere (one component) and sit directly on
    top of the panel they switch, with no gap. A window with tabs is aligned to the top so
    that switching tabs changes only its lower edge, never its position.

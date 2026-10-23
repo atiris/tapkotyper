@@ -503,9 +503,9 @@ BG is `magenta color (#FF00FF)` unless the table says `green`, then use `green c
 
 ## 5. Interface
 
-### ui-logo.jpg
+### ui-icon.jpg (the one picture of the game: start page logo, favicon and app icons; the owner's picture 2026-10-23)
 ```
-Cute, soft 2D children's game logo illustration, flat vector style, rounded friendly shapes, warm pastel palette. A small chubby orange baby fox (big shiny eyes, cream belly) sitting on top of a big rounded computer keyboard key. Leave empty space below the key for a title that will be added later. Do not write any text or letters. Background: one perfectly flat solid pure green color (#00FF00), no shadow. Square image.
+Cute, soft 2D children's game icon, flat vector style, rounded friendly shapes, bold dark-brown outline, warm pastel palette, bold simple shapes that stay readable when very small. A single icon: the head of a cute orange baby fox, front view, big shiny dark eyes with white highlights, cream cheeks and muzzle with pink blush, a small dark nose and a gentle smile, pointed ears with cream insides and dark tips. Centered, the whole head visible, wide empty margin. No text, no letters, no watermark. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no other objects. Square image.
 ```
 
 ### ui-map-*.jpg (world map islands)
@@ -538,7 +538,7 @@ The same star with exactly the same shape, size, position and outline, but empty
 Cute, soft 2D children's game icon, flat vector style with gentle gradients, soft dark-brown outline (not black), warm pastel palette, bold simple shapes that stay readable when very small. A single icon: one computer keyboard key, clearly recognizable as a key: a square key with rounded corners seen a little from above, a lighter cream square top surface with a slight dip, and darker peach sloping sides below it. The key top is completely empty: no letter, no symbol, no pattern. Centered, the whole icon visible, wide empty margin. No text, no letters, no numbers, no symbols, no watermark. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no other objects. Square image.
 ```
 
-### ui-key-star.jpg (typed characters chip in the stats; was ui-act-letters)
+### ui-key-star.jpg (typed characters chip in the stats; was ui-act-letters; the owner replaced it 2026-10-23)
 ```
 Cute, soft 2D children's game icon, flat vector style with gentle gradients, soft dark-brown outline (not black), warm pastel palette, bold simple shapes that stay readable when very small. A single icon: a single round keyboard key with a small sparkle at its corner, the key top empty. Front view, centered, the whole icon visible, wide empty margin. No text, no letters, no numbers, no watermark. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no other objects. Square image.
 ```

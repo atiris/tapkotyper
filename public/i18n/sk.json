@@ -1210,13 +1210,12 @@
   "about": {
     "code": "Kód na GitHube",
     "report": "Nahlásiť chybu alebo nápad",
-    "intro": "TapkoTyper je bezplatná pokojná hra, ktorá učí písať všetkými desiatimi prstami. Pisateľ ako zvieratko podľa vlastného výberu cestuje po svetoch plných dobrodružstiev. Nikdy sa nestane nič zlé: prekážky sa odsunú alebo sa im pomôže, nikdy sa neničia.",
+    "intro": "TapkoTyper (Ťapko) je bezplatná pokojná hra, ktorá učí písať všetkými desiatimi prstami. Pisateľ ako zvieratko podľa vlastného výberu cestuje po svetoch plných dobrodružstiev. Nikdy sa nestane nič zlé: prekážky sa odsunú alebo sa im pomôže, nikdy sa neničia.",
     "privacyTitle": "Náš sľub rodičom",
     "privacy": [
       "Bez reklám, nákupov, prihlasovania či cookies. Tento web nemá na pozadí vlastný server.",
-      "Všetky pokroky sú uložené **len v tomto prehliadači**, ale môžete ich exportovať do súboru.",
-      "Po prvej návšteve funguje aj bez internetu.",
-      "Dá sa nainštalovať ako desktopová webová aplikácia: otvorí sa vo vlastnom okne a netreba na to spúšťať celý prehliadač."
+      "Všetky pokroky sú uložené **len v tomto prehliadači**, a nikto k nim nemá prístup, ale môžete ich exportovať do súboru a zálohovať alebo preniesť na iný počítač.",
+      "Po prvej návšteve, alebo ako desktopová aplikácia, funguje aj bez internetu. Ak ju nainštalujete ako desktopovú webovú aplikáciu, otvorí sa bez celého prehliadača vo vlastnom okne, pracuje offline, je to rýchle a jednoduché na spustenie."
     ],
     "dataTitle": "Vaše údaje a počítadlo návštev",
     "data": [
@@ -1242,11 +1241,11 @@
     "title": "Pomoc",
     "tab": {
       "ui": "Rozhranie",
-      "typing": "Ako písať",
-      "progress": "Ako postupovať",
+      "typing": "Písanie",
+      "progress": "Postup v hre",
       "settings": "Nastavenia",
       "mentoring": "Mentoring",
-      "about": "O hre TapkoTyper"
+      "about": "O Ťapkovi"
     },
     "typeTitle": "Ako písať",
     "type": [

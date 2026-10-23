@@ -14,7 +14,6 @@
   "icons": [
     { "src": "icons/tapko-192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "icons/tapko-512.png", "sizes": "512x512", "type": "image/png" },
-    { "src": "icons/tapko-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
-    { "src": "icons/tapko.svg", "sizes": "any", "type": "image/svg+xml" }
+    { "src": "icons/tapko-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }

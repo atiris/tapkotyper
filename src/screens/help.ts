@@ -4,7 +4,7 @@ import { captureKeys } from '../game/cards';
 import { PAW_MAX, PAW_STREAK, PAW_WORDS } from '../game/paw';
 import { type Child, ICONS, button, h, icon, richText } from '../ui/dom';
 import { levelRing, pawRing, rhythmPic, roundPic, timerPic } from '../ui/hud';
-import { tabBar } from '../ui/tabs';
+import { barTabLinks, tabBar } from '../ui/tabs';
 
 const TABS = ['ui', 'typing', 'progress', 'settings', 'mentoring', 'about'] as const;
 export type HelpTab = (typeof TABS)[number];
@@ -132,7 +132,8 @@ function tabContent(tab: HelpTab, now: Child[] = []): HTMLElement[] {
 
 /**
  * The one help page: the buttons, how to type, how to progress, the settings, mentoring and
- * about the game, in tabs; the bar with Back like the settings' bar, then the tabs in a narrower column.
+ * about the game, in tabs; the bar with Back like the settings' bar (with the tabs as links once
+ * they scrolled away), then the tabs in a narrower column.
  */
 function helpPage(cls: string, tab: HelpTab, onBack: () => void, onTab: (tab: HelpTab) => void = () => {}, now: Child[] = []): HTMLElement {
   const body = h('div', { class: 'tab-panel prose' });
@@ -141,9 +142,9 @@ function helpPage(cls: string, tab: HelpTab, onBack: () => void, onTab: (tab: He
     body.scrollTop = 0;
     onTab(x);
   });
-  return h('div', { class: `help-page ${cls}` },
-    h('header', { class: 'bar' }, button(t('common.back'), onBack, 'btn ghost small', 'back'), h('h1', {}, t('help.title'))),
-    h('div', { class: 'help-column' }, nav, body));
+  const bar = h('header', { class: 'bar' }, button(t('common.back'), onBack, 'btn ghost small', 'back'), h('h1', {}, t('help.title')));
+  barTabLinks(bar, nav);
+  return h('div', { class: `help-page ${cls}` }, bar, h('div', { class: 'help-column' }, nav, body));
 }
 
 /** Escape goes back, like the Back button; a dialog over the help closes first. */

@@ -18,7 +18,7 @@ import { button, confirmDialog, download, h, modal } from '../ui/dom';
 import { tapkoElement } from '../gfx/tapko';
 import { numberPick, profileCard } from '../ui/profile-card';
 import { cornerControls, starRow } from '../ui/chrome';
-import { tabBar } from '../ui/tabs';
+import { barTabLinks, tabBar } from '../ui/tabs';
 import { clickableHeatmap, storyPicture, summaryRow } from './stats';
 import { barChart, lineChart } from '../ui/charts';
 import { hasCompanion, masteredCount } from '../game/rewards';
@@ -36,11 +36,10 @@ export function parentScreen(root: HTMLElement, params: { tab?: string }): void 
     current = tab;
     body.replaceChildren(tab === 'settings' ? settingsTab(p) : tab === 'own' ? ownTab(p) : tab === 'surprises' ? surprisesTab(p) : tab === 'task' ? taskTab(p) : tab === 'keys' ? keysTab(p) : tab === 'dashboard' ? dashboardTab(p) : dataTab(p));
   });
-  root.append(h('div', { class: 'screen parent-screen' },
-    h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'),
-      others.length ? childSwitch(p, others, () => current) : null, h('h1', {}, t('parent.title'))),
-    cornerControls(),
-    nav, body));
+  const bar = h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'),
+    others.length ? childSwitch(p, others, () => current) : null, h('h1', {}, t('parent.title')));
+  barTabLinks(bar, nav);
+  root.append(h('div', { class: 'screen parent-screen' }, bar, cornerControls(), nav, body));
 }
 
 /** The button by "Back": the child, and the start page's cards of the other profiles (number keys pick one) to switch to without leaving the parent area. */

@@ -79,6 +79,8 @@ const HOPS = 3;
 const HOP_TIME = 0.4;
 const TOOL_FADE = 0.4;
 const RESULTS_AFTER = 1.4;
+/** Milliseconds after play begins in which Enter does nothing. */
+const ENTER_GUARD_MS = 300;
 
 /**
  * The targets of a profile: its active keys (or a drill's, or the keys chosen for free practice),
@@ -240,14 +242,14 @@ export class LevelRuntime {
     this.minActive = !hasMinLength(def) ? 0 : import.meta.env.MODE === 'e2e' ? Number(new URLSearchParams(location.search).get('minActive') ?? 0) : MIN_ACTIVE_S;
 
     // DOM: HUD, stage, Tapko, bubble, guide.
-    this.el = h('div', { class: `level-screen world-${WORLDS[def.world]}` });
+    this.el = h('div', { class: `level-screen world-${WORLDS[def.world]}${def.rescue ? ' world-rescue' : ''}` });
     const story = def.kind !== 'practice' && def.kind !== 'freetype';
-    this.robot = story && storyOf(def.world).id === 'robot' ? robotFor(def.id === 'rescue' ? WORLDS.length - 1 : def.world) : null;
+    this.robot = story && storyOf(def.world).id === 'robot' ? robotFor(def.rescue ? WORLDS.length - 1 : def.world) : null;
     if (this.robot) this.el.dataset.bolt = this.robot.look;
     this.fairy = story && storyOf(def.world).id === 'fairy';
     if (this.fairy) this.el.dataset.fairy = 'melody';
     this.progressFill = h('div', { class: 'progress-fill' });
-    const title = def.kind === 'practice' ? t(def.phrases ? 'level.ownText' : 'level.practice') : def.kind === 'freetype' ? t('level.freeType') : def.id === 'rescue' ? t('level.rescue') : worldName(def);
+    const title = def.kind === 'practice' ? t(def.phrases ? 'level.ownText' : 'level.practice') : def.kind === 'freetype' ? t('level.freeType') : def.rescue ? t('level.rescue') : worldName(def);
     const guideBtn = roundButton('control', 'keyboard', t('level.guide'), () => this.toggleGuide());
     tip(guideBtn, withKey(t('level.guide'), 'F2'));
     if (p.settings.guideLocked) guideBtn.disabled = true;
@@ -322,6 +324,11 @@ export class LevelRuntime {
     return this.def.kind !== 'practice' && this.def.kind !== 'freetype' && this.def.kind !== 'gate' && !this.opts.keys;
   }
 
+  /** The background: the rescue camp in a rescue mission, else the mode's world. */
+  get backdrop(): string {
+    return this.def.rescue ? 'rescue' : this.mode.world;
+  }
+
   get tapkoOnStage(): boolean {
     return ['freetype', 'swamp', 'signs', 'boulder', 'doors', 'gate', 'rooms', 'buds', 'flower', 'owl', 'lilies', 'reflection'].includes(this.def.kind);
   }
@@ -329,7 +336,7 @@ export class LevelRuntime {
   /** Preparation: assets, new keys, the get-ready card with the tip and its password, then play. */
   private async prepare(): Promise<void> {
     const p = app.profile!;
-    await preload([`bg-${this.mode.world}-far`, `bg-${this.mode.world}-mid`, `bg-${this.mode.world}-near`]);
+    await preload([`bg-${this.backdrop}-far`, `bg-${this.backdrop}-mid`, `bg-${this.backdrop}-near`]);
     if (this.disposed) return;
     audio.music(this.def.kind === 'practice' ? app.menuTrack : this.mode.world);
     if (this.free) return this.begin();
@@ -364,11 +371,14 @@ export class LevelRuntime {
 
   /** The level's story line, picked once for the get-ready card and the first bubble. */
   private storyLine: string | null = null;
+  /** When play began (`performance.now()`). */
+  private begunAt = 0;
 
   /** Play starts: the mode, the story line or the friend's first line, the keys. */
   private begin(): void {
     this.mode.start();
     this.started = true;
+    this.begunAt = performance.now();
     if (this.storyLine) this.say(this.storyLine, 3);
     else if (this.fairy) this.say(pickLine('fairy.start'), 3);
     this.tapko.classList.remove('waiting');
@@ -383,7 +393,8 @@ export class LevelRuntime {
       onDead: () => { this.deadPending = true; this.updateGuide(); },
       onEscape: () => (this.paused ? this.resume() : this.free ? this.exit() : this.pause()),
       onRaw: (code, key, shift) => this.onRaw(code, key, shift),
-      onEnter: () => (this.free ? this.freeSend() : this.startPaws()),
+      // The Enter that closed a card just before play is not a call for the paw.
+      onEnter: () => (this.free ? this.freeSend() : performance.now() - this.begunAt >= ENTER_GUARD_MS && this.startPaws()),
       onBackspace: () => (this.free ? this.freeErase() : this.togglePawAuto()),
       // A pause or a dialog: the keys belong to its buttons.
       idle: () => this.paused || !!document.querySelector('.modal-back'),
@@ -881,7 +892,7 @@ export class LevelRuntime {
   private get ending(): { label: string; text: string } {
     if (this.def.kind === 'freetype') return { label: 'level.leave', text: '' };
     if (this.def.kind === 'practice') return { label: 'level.endPractice', text: 'level.endPracticeText' };
-    if (this.def.id === 'rescue') return { label: 'level.endRescue', text: 'level.endRescueText' };
+    if (this.def.rescue) return { label: 'level.endRescue', text: 'level.endRescueText' };
     return { label: 'level.endLevel', text: 'level.endLevelText' };
   }
 
@@ -1003,7 +1014,7 @@ export class LevelRuntime {
     // A paused level does not move: the last frame stays unless a resize cleared it.
     if (this.paused && !this.stage.dirty) return;
     const g = this.stage.begin();
-    drawBackground(g, this.mode.world, this.stage.vw, this.mode.scroll, !this.reduceMotion);
+    drawBackground(g, this.backdrop, this.stage.vw, this.mode.scroll, !this.reduceMotion);
     if (this.robot) this.drawBolt(g);
     if (this.fairy) this.drawMelody(g);
     this.labels = [];

@@ -122,20 +122,61 @@ server, no DB.
       `onEnter`: ignore Enter for 300 ms after start and while `event.repeat`.
   - Test in `paw` tests for the 3 s rule.
 
+## State
+- Gauge maximum: the unit test with a steady 1.2 cps at difficulty 3 gives a ratio of about
+  0.62, so `target` was right. The "stays high" report came from repeats of one key
+  (0.12 s intervals lifted the ema to the top) and the slow idle decay (0.05/s).
+- The rhythm module also measures the reaction time for the key statistics (from the
+  previous press of any kind), so the runtime has one clock instead of `lastKey` and
+  `readySince`.
+- Two-minute minimum: modes read `L.count` (the runtime's growing count) instead of
+  `def.count`; the runtime adds `max(3, maxActive + 1)` targets whenever fewer are left and
+  the active time is under the minimum. The super levels' phrases are generated words, so
+  "repeat the phrase set" is the same growth. The hedgehog turns new count into new volleys;
+  the gate gets a new code of the same length ("one more lock") instead of a longer one,
+  so its two-row panel layout stays readable. A mode test runs every mode with a steady
+  fake typist and checks it ends between 120 and 180 s.
+- e2e: Playwright now builds with `vite build --mode e2e` into `.e2e/dist`; only that build
+  reads `?minActive=` (default 0 there), because the e2e tests run on `vite preview`, where
+  `import.meta.env.DEV` is false.
+- Rescue camp: no `bg-rescue-*` files yet, so the drawn fallback is used; prompts are in
+  `PROMPTS.md` section 3 and the strip heights in `scripts/assets.mjs`. `def.rescue`
+  replaced the `def.id === 'rescue'` checks in the runtime and the results screen.
+- Paw in rescue: no code path starts the paw without `pawAuto` except Enter; a held Enter
+  from the get-ready card reached `onEnter` as `event.repeat`. Fixed in `KeyInput` (repeats
+  ignored) and with a 300 ms guard after play begins. Spawn positions do not depend on
+  rescue (`def.index` only changes the egg sprite and the knot's rope), so no layout fix.
+
 ## Steps
-- [ ] Rhythm module with tests; runtime and free typing use it; stats repeat rule with test.
-- [ ] Meadow texts sk + en; `Mode.startLine()`; story line on the get-ready card.
-- [ ] Two-minute minimum with unit test; progress bar; super levels repeat phrases; spec.
-- [ ] Rescue place: flag, backgrounds or drawn fallback, prompts in `PROMPTS.md`, spec.
-- [ ] Paw in rescue: reproduce, spawn distance, 3 s rule, Enter guard; test.
-- [ ] `npm run build`, `npm test`, `npx playwright test` pass (e2e that finish a level fast
+- [x] Rhythm module with tests; runtime and free typing use it; stats repeat rule with test.
+- [x] Meadow texts sk + en; `Mode.startLine()`; story line on the get-ready card.
+- [x] Two-minute minimum with unit test; progress bar; super levels repeat phrases; spec.
+- [x] Rescue place: flag, backgrounds or drawn fallback, prompts in `PROMPTS.md`, spec.
+- [x] Paw in rescue: reproduce, spawn distance, 3 s rule, Enter guard; test.
+- [x] `npm run build`, `npm test`, `npx playwright test` pass (e2e that finish a level fast
       need the fake clock helper or a test override of `MIN_ACTIVE_S`, exposed only in the
       e2e build flag that the helpers already use, if any; otherwise through a query
       parameter read only when `import.meta.env.DEV`).
-- [ ] Drive the app with the playwright MCP:
+- [x] Drive the app with the playwright MCP:
   - Type "ffff jjjj" at the start of a level and see the gauge not jump.
   - Type slowly and see it settle low.
   - The meadow intro and the get-ready card tell the leaf-goal story.
   - A first-world level does not finish before 2 minutes; the bar is honest.
   - A rescue mission shows the rescue camp and the paw stays idle without Enter.
   - Console clean.
+
+## Done - 2026-10-23
+Shipped: `src/game/rhythm.ts` (repeats of one key do not count, start capped at 80 % of the
+gauge, fast idle sinking) used by levels and free typing, with tests; the stats repeat rule;
+the meadow leaf-goal texts (sk, en) for the intro scene, the start line and the hedgehog;
+`Mode.startLine()` with the story line on the get-ready card; the two-minute minimum for
+story, super and rescue levels (growing `L.count`, a new gate code, more hedgehog volleys,
+an honest bar) with unit and mode tests and an e2e test on an e2e build with `?minActive=`;
+the rescue camp (`def.rescue`, `world-rescue`, drawn evening fallback, prompts in
+`PROMPTS.md`); the paw 3 s rule and the Enter guard. Specs updated. `npm run build`,
+`npm test` (282) and `npx playwright test` (56) pass. In the browser: repeated f/j did not
+lift the gauge, slow typing settled it at 24 per minute, level 1 ended at 131 s with the bar
+following the time, a rescue showed the camp and the paw stayed idle after a held Enter,
+console clean.
+Left out: the `bg-rescue-*` pictures (prompts are ready; the user generates them).
+Backlog: Backspace turns the automatic paw on for good (P2).

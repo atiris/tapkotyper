@@ -23,6 +23,23 @@ test('a new child plays the first level by typing and sees stars', async ({ page
   expect(errors).toEqual([]);
 });
 
+test('a quick child plays the first level until its minimum length, and the bar never runs ahead', async ({ page }) => {
+  await createProfile(page, 'Rio');
+  // The e2e build reads a shorter minimum from the address; the real one is two minutes.
+  const url = new URL(page.url());
+  url.search = '?minActive=60';
+  await page.goto(url.toString());
+  await page.locator('.map-side .btn.primary').click();
+  await skipStories(page);
+  const start = Date.now();
+  const played = playLevel(page, false);
+  await page.waitForTimeout(25_000);
+  const width = await page.locator('.progress-fill').evaluate((el) => parseFloat((el as HTMLElement).style.width));
+  expect(width).toBeLessThan(60);
+  await played;
+  expect(Date.now() - start).toBeGreaterThan(60_000);
+});
+
 test('a copied link opens the player directly', async ({ page, context }) => {
   await createProfile(page, 'Lea');
   expect(page.url()).toMatch(/#\/p\//);

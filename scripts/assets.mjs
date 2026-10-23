@@ -31,6 +31,7 @@ const STRIP_HEIGHT = {
   'bg-lilylake-mid': 0.4, 'bg-lilylake-near': 0.2,
   'bg-musictree-mid': 0.45, 'bg-musictree-near': 0.2,
   'bg-moonball-mid': 0.4, 'bg-moonball-near': 0.2,
+  'bg-rescue-mid': 0.45, 'bg-rescue-near': 0.25,
 };
 // A layer at least this wide (width / height) is a strip (generated at 21:9); older
 // 16:9 layer files keep their content in the lower part and are used as they are.

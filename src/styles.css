@@ -338,6 +338,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .level-screen { position: fixed; inset: 0; display: flex; flex-direction: column; background: #a8dcf0; overflow: hidden; }
 .level-screen.world-space { background: #1d1b4b; }
 .level-screen.world-moonball { background: #1f2350; }
+.level-screen.world-rescue { background: #3d3566; }
 .hud { display: flex; align-items: center; gap: 0.7rem; padding: 0.5rem 0.8rem; background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(6px); z-index: 3; flex-wrap: wrap; }
 .hud-title { font-size: 17px; white-space: nowrap; }
 .hud-divider { width: 2px; align-self: stretch; margin: 0.2rem 0; background: rgba(90, 61, 43, 0.15); border-radius: 2px; }

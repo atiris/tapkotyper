@@ -59,7 +59,8 @@ export class KeyInput {
     }
     if (this.handlers.idle?.()) return;
     if (key === 'Enter') {
-      if (this.handlers.onEnter?.()) e.preventDefault();
+      // A held Enter (from the card before) is not a new press.
+      if (!e.repeat && this.handlers.onEnter?.()) e.preventDefault();
       return;
     }
     if (key === 'Shift' && !e.repeat) this.shiftCode = e.code;

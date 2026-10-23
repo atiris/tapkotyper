@@ -15,6 +15,12 @@ describe('automatic paw help', () => {
     expect(isHardMoment(core.targets, null, () => 5, () => 10, 3)).toBe(false);
   });
 
+  it('never helps with a word visible for less than 3 s, even with a short travel time', () => {
+    const { core } = setup();
+    expect(isHardMoment(core.targets, null, () => 2.9, () => 2, 3)).toBe(false);
+    expect(isHardMoment(core.targets, null, () => 3, () => 2, 3)).toBe(true);
+  });
+
   it('waits while the child types the closest word or the screen is not full', () => {
     const { core, closest } = setup();
     expect(isHardMoment(core.targets, closest, () => 8, () => 10, 3)).toBe(false);

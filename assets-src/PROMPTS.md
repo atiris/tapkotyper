@@ -309,6 +309,9 @@ counted from the bottom); it lives in `STRIP_HEIGHT` in `scripts/assets.mjs`.
 | `bg-egg-far.jpg` | a bright morning valley with a long gentle grassy slope going down from left to right, a few trees and a blue river far away | full | done 2026-10-23 |
 | `bg-egg-mid.jpg` | a bush with yellow flowers, a leaning tree, a mossy boulder, a haystack, a pine, a bush with pink flowers, a signpost with empty boards and a rocky outcrop with ferns | 50 % | done 2026-10-23 |
 | `bg-egg-near.jpg` | only plants and small things: grass, yellow flowers, a pink wild rose, foxtail, a fern, a broken spotted eggshell, daisies, a mushroom and a thistle; no big rocks | 20 % | done 2026-10-23 |
+| `bg-rescue-far.jpg` | a cozy rescue camp in a calm evening: a few small tents and wooden huts with warm glowing lanterns on poles, soft hills far away, an evening sky from violet to warm peach with a few soft clouds | full | |
+| `bg-rescue-mid.jpg` | a wooden rope bridge between two posts, a lookout tower with a small flag, a tent with a glowing lantern, a stack of crates, a round bush, a signpost with empty boards, a pine and a campfire ring of stones (no fire) | 45 % | |
+| `bg-rescue-near.jpg` | evening grass tufts, a small lantern on a stake, a coil of rope, a smooth stone, a short wooden post with a small flag, a fern and a small backpack | 25 % | |
 
 ### World style (fills `WORLD STYLE` in the far and strip prompts)
 Paste the block of the world into every prompt of that world (far, mid, near) in place of
@@ -424,6 +427,13 @@ many small pieces and pale fills on a pale ground (robocity), a light pink rim (
 - Light and shading: flat fills, one soft lighter band on top, glow only on bells and flowers.
 - Ground line: grass in the lower quarter, round trees behind.
 - Never: sun, moon, white outline, perspective.
+
+**rescue** (the rescue camp of every rescue mission, not a world of its own)
+- Palette: sky #4A3F7A and #F2B08A, hills #5A4E78 and #3A3354, wood #8A6248, lanterns #FFC861 with glow #FFE3A8, tents #E89B6A and #6FA8A0, outline #2A2440.
+- Outline: 2 px dark violet-grey, uniform.
+- Light and shading: flat evening fills, one soft lighter band on top, warm glow only around lanterns.
+- Ground line: dusky grass in the lower quarter, the camp stands on it.
+- Never: sun, moon, fire flames, white outline, pink rim, perspective.
 
 **moonball**
 - Palette: sky #1E2556 and #3D2F7A, bushes #2E4A6B and #3F6E7A, grass #3C6A63, glow accents #FFE9A0 and #9AF0D8, outline #141B3D.

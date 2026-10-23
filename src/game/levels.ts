@@ -74,6 +74,8 @@ export interface LevelDef {
   style?: Style;
   /** Every target is one chunk or word, never several with a space (the first level, before the space bar is taught). */
   noSpace?: boolean;
+  /** A rescue mission: it plays its kind at the rescue camp. */
+  rescue?: boolean;
 }
 
 /** Story levels, super levels and rescue missions last at least this many seconds of active play. */
@@ -216,7 +218,7 @@ export function rescueLevel(p: Profile, seed: number): LevelDef {
   const open = RESCUE_KINDS.filter((r) => storyDone(p, storyOf(r.world)));
   const pool = open.length ? open : RESCUE_KINDS.filter((r) => STORIES[0].worlds.includes(r.world));
   const r = pool[Math.abs(seed) % pool.length];
-  return { id: 'rescue', world: r.world, index: -1, kind: r.kind, count: r.kind === 'fireflies' ? 8 : 14, variant: r.variant, isSuper: false, ...(r.style ? { style: r.style } : {}) };
+  return { id: 'rescue', world: r.world, index: -1, kind: r.kind, count: r.kind === 'fireflies' ? 8 : 14, variant: r.variant, isSuper: false, rescue: true, ...(r.style ? { style: r.style } : {}) };
 }
 
 /** Free typing ("just typing") in a world the child has opened. */

@@ -90,7 +90,7 @@ const RESCUED_LINE: Record<Friend['kind'], string> = { dragon: 'results.rescued'
 function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: LevelParams, surprise: Surprise | null, task: Task | null): void {
   const p = app.profile!;
   let rescued: Friend | null = null;
-  if (def.id === 'rescue') {
+  if (def.rescue) {
     // The friend helped follows the mission's story.
     const kind = FRIEND_OF[storyOf(def.world).id];
     const names = tList(`${kind}Names`);
@@ -138,7 +138,7 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
     actions.append(button(t('results.reward'), () => go('story', { scene: WORLD_REWARDS[r.worldDone!], next: 'map' }), `btn ${calm ? '' : 'primary'}`, 'star'));
   } else if (nextDef) {
     actions.append(button(t('results.next'), () => playLevel(nextDef.id, taskOn?.id), `btn ${calm ? '' : 'primary'}`, 'next'));
-  } else if (def.id === 'rescue') {
+  } else if (def.rescue) {
     actions.append(button(t('results.nextRescue'), () => go('level', { id: 'rescue' }), `btn ${calm ? '' : 'primary'}`, 'rescue'));
   }
   actions.append(button(t('results.replay'), () => go('level', params), 'btn', 'replay'));

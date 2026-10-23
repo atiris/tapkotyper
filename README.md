@@ -17,8 +17,8 @@ explosions, no punishment, no ads, no accounts.
 
 - **One key at a time.** Keys unlock from the home row (`F` `J`, then `D` `K`, `S` `L` ...),
   each new key is introduced alone (where it is, which finger), then mixed with known keys.
-  The next key unlocks when the last one is mastered (40 recent presses, 92 % accuracy,
-  steady reaction time).
+  The next keys unlock when the newest ones are ready (their last 25 presses, or 12 for a
+  punctuation key, at least 90 % right and in a calm rhythm).
 - **Real sentences early.** Space comes with the first keys, period and comma with the
   letters, and capitals in the middle of the path, one Shift at a time; targets grow from
   `fj jf` to short phrases like `Ema ide.`
@@ -28,14 +28,15 @@ explosions, no punishment, no ads, no accounts.
 - **Accuracy before speed.** Stars come from accuracy; speed is only a personal trend.
   Mistakes never cost anything: the letter wobbles, the right key glows, and after three
   misses on one key Tapko offers a 20-second mini practice.
-- **Weak keys come more often**, and the stats overlay (click Tapko) shows which keys to
+- **Weak keys come more often**, and "My progress" (click Tapko) shows which keys to
   practise, with a one-minute drill.
 - **Grows with the child.** Difficulty and word length go up in small automatic steps
   after a few minutes of accurate play where few words floated by, and every step earns a
   medal. Words move at the child's own word pace (reading included), and when two pass by
   in a row the next ones come slower.
-- **Levels open with keys.** The five levels of each world need 2, 4, 6, 8 and 10 known
-  keys, so ten keys carry a child through a whole story with varied words.
+- **Levels open with keys.** Each level needs a few more known keys than the one before
+  (the first story starts at 3 and ends at 20), so every new key opens new levels with
+  varied words.
 - **Tapko keeps the child curious and helps out.** After a level he asks a question about
   the next one and answers it only when that level is done. Fifteen words in a row
   without a mistake charge a paw (three at most): on Enter, Tapko's paws replace the hands
@@ -85,8 +86,9 @@ explosions, no punishment, no ads, no accounts.
 Every finished world gives a badge that turns silver and gold with more stars.
 Rescued dragons, repaired robots and forest friends guided home collect on the Little friends screen.
 
-Tapko can be one of nine animals and wears 38 accessories earned by progress (never by chance).
+Tapko can be one of nine animals and wears 47 accessories earned by progress (never by chance).
 
+![The map](docs/map.png)
 ![Meadow level](docs/meadow.png)
 ![Space level](docs/space.png)
 
@@ -134,10 +136,12 @@ e-mail), with the data inside the link.
 - **The child** opens the link, picks their player (or makes a new one) and sees
   "Today's task" first on the map. When the minutes are played, "Hand in" gives a result
   link to send back.
-- **Your table:** "For teachers" at the bottom of the start page. Open or paste result
-  links; each child's result (minutes, accuracy, rhythm, five weakest keys) is kept in your
-  browser only, grouped by task, with CSV export. A checksum shows damaged links; it does
-  not stop cheating.
+- **Your table:** "For mentors", the chart button at the top right of the start page (no
+  keyboard needed, so a phone works). Type a group (for example 5A) and scan the QR codes on
+  the children's screens with the camera, several at once, or open or paste result links.
+  Each result (minutes, accuracy, rhythm, five weakest keys) is kept in your browser only;
+  filter by group and task, sort, open one child's results, and export CSV. A checksum
+  shows damaged links; it does not stop cheating. The help's "Mentoring" tab explains it all.
 
 ## Development
 

@@ -72,7 +72,7 @@ export function fullscreenButton(): HTMLButtonElement | null {
 }
 
 /** The help tab that fits a screen; the others open help on its default tab. */
-const HELP_TAB: Partial<Record<ScreenName, string>> = { map: 'ui', parent: 'settings' };
+const HELP_TAB: Partial<Record<ScreenName, string>> = { map: 'ui', parent: 'settings', teacher: 'mentoring' };
 
 /**
  * The help page on the tab of the screen shown now (My progress open: how to progress), else on

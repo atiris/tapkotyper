@@ -40,7 +40,12 @@
     }
   },
   "privacy": {
-    "short": "Žiadne reklamy, účty ani sledovanie. Všetko zostáva v tomto zariadení."
+    "short": "Žiadne reklamy ani sledovanie vašich dát.",
+    "local": "Údaje len vo vašom zariadení.",
+    "tiny": "Bez reklám, len vo vašom zariadení.",
+    "visitsOne": "{n} návšteva",
+    "visitsFew": "{n} návštevy",
+    "visitsMany": "{n} návštev"
   },
   "newProfile": {
     "title": "Ahoj, vitaj!",
@@ -1220,7 +1225,8 @@
       "Hrá sa na skutočnej klávesnici; mobil alebo tablet potrebuje pripojenú klávesnicu. Mentor s mobilom bez klávesnice môže skenovať výsledky."
     ],
     "creditsTitle": "Prepojenia",
-    "credits": "Otvorený kód pod licenciou MIT. Písma: Lexend, Atkinson Hyperlegible a OpenDyslexic (SIL Open Font License)."
+    "credits": "Otvorený kód pod licenciou MIT. Písma: Lexend, Atkinson Hyperlegible a OpenDyslexic (SIL Open Font License).",
+    "open": "Nič neskrývame: všetky údaje o používaní nájdete rovnako ako my na adrese"
   },
   "help": {
     "title": "Pomoc",
@@ -1229,6 +1235,7 @@
       "typing": "Ako písať",
       "progress": "Ako postupovať",
       "settings": "Nastavenia",
+      "mentoring": "Mentoring",
       "about": "O hre TapkoTyper"
     },
     "typeTitle": "Ako písať",
@@ -1358,6 +1365,15 @@
       "**F1** otvorí pomoc, **F2** ukáže alebo skryje klávesnicu, **F3** zapne alebo vypne čítanie nahlas.",
       "**F4** prepína zvuk: normálny, potichu, vypnutý. **F8** pustí inú pesničku.",
       "**Esc** zastaví úroveň a z iných obrazoviek ide späť."
+    ],
+    "mentorTitle": "Výsledky a QR kódy",
+    "mentor": [
+      "Stránku **Pre mentorov** otvoríte ikonou grafu vpravo hore na úvodnej stránke. Výsledky sa ukladajú len v tomto prehliadači.",
+      "Najrýchlejšie je skenovať: napíšte skupinu (napríklad 5.A), stlačte **Skenovať kamerou** a obíďte miestnosť. Kamera načíta aj viac QR kódov naraz a každý nový výsledok zapíše do tejto skupiny.",
+      "Pisateľ ukáže QR kód v Môj postup alebo po odovzdaní úlohy. Bez kamery stačí vložiť alebo otvoriť **odkaz s výsledkom**.",
+      "Tabuľku môžete filtrovať podľa skupiny a úlohy a zoradiť. Kliknutím na meno uvidíte všetky výsledky pisateľa a celú tabuľku stiahnete ako CSV.",
+      "Kontrolný súčet ukáže poškodený odkaz (výkričník pri mene), nie podvádzanie.",
+      "Úlohu pre pisateľov vytvoríte v nastaveniach na karte Úloha: vznikne odkaz a QR kód, ktorý pisatelia otvoria."
     ]
   },
   "tips": {

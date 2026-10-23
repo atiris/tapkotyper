@@ -53,6 +53,7 @@ compatibility is needed: it is browser storage, not a DB.
       - lesson-progression.md and finger-guide.md: Enter practice, and why it never blocks progress.
       - mechanics.md: the practice styles.
       - help.md: no Backspace for the paw.
+      - README.md: the paw sentence ("Backspace lets Tapko help by himself") goes.
 - [ ] **Checks:** `npm run build`, `npm test` (update the paw, typing and lessons tests), e2e.
       Then drive the game with the playwright MCP:
       - A level with the paw: Enter helps, Backspace changes nothing.

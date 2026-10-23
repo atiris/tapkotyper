@@ -1,4 +1,5 @@
 /** Tiny DOM helpers. */
+import { imageUrl } from '../gfx/assets';
 
 type Attrs = Record<string, string | number | boolean | ((e: any) => void) | undefined | null>;
 export type Child = Node | string | number | null | undefined | false;
@@ -80,13 +81,19 @@ export const ICONS = {
 };
 
 /** The teacher's animal, not one of the players': a turtle with glasses and a mortar board. */
-export const TEACHER_ART = '<svg viewBox="0 0 76 64" aria-hidden="true">' +
+const TEACHER_ART = '<svg viewBox="0 0 76 64" aria-hidden="true">' +
   '<ellipse cx="34" cy="40" rx="26" ry="18" fill="#2f8a4c"/><path d="M18 34l8-10h16l8 10-8 10H26z" fill="#4fb57a"/>' +
   '<ellipse cx="34" cy="56" rx="22" ry="5" fill="#f2d39b"/><circle cx="62" cy="26" r="12" fill="#a8d88a"/>' +
   '<circle cx="58" cy="25" r="4.5" fill="#fff" stroke="#3b2a3f" stroke-width="2"/><circle cx="68" cy="25" r="4.5" fill="#fff" stroke="#3b2a3f" stroke-width="2"/>' +
   '<path d="M62.5 25h1" stroke="#3b2a3f" stroke-width="2"/><circle cx="58" cy="25.5" r="1.6" fill="#3b2a3f"/><circle cx="68" cy="25.5" r="1.6" fill="#3b2a3f"/>' +
   '<path d="M59 32q3 2.5 6 0" fill="none" stroke="#3b2a3f" stroke-width="1.8" stroke-linecap="round"/>' +
   '<rect x="52" y="10" width="20" height="4" rx="1" fill="#3b2a3f"/><path d="M62 10l-3-5h6z" fill="#3b2a3f"/></svg>';
+
+/** The teacher's turtle: its picture when there is one, else the drawn one. */
+export function teacherArt(): HTMLElement {
+  const src = imageUrl('ui-mentor');
+  return src ? h('span', { class: 'teacher-art' }, h('img', { src, alt: '' })) : h('span', { class: 'teacher-art', html: TEACHER_ART });
+}
 
 /** A keyboard drawn for the card that asks for one. */
 export const KEYBOARD_ART = '<svg viewBox="0 0 120 64" aria-hidden="true"><rect x="2" y="6" width="116" height="52" rx="10" fill="#fff6e6" stroke="#3b2a3f" stroke-width="3"/><g fill="#3b2a3f">' +

@@ -12,3 +12,4 @@ skipped, and the session that finishes a plan removes its line.
 - [P2] 54-stay-a-while.md - endless run on top of the settled runtime
 - [P2] 55-accuracy-target-practice.md - largest; reuses the cheers (52) and lock texts on the map
 - [P3] 56-playful-progress-companion.md - small UI polish, last
+- [P3] 57-tapko-in-the-rocket.md - world 2 polish, independent of the others

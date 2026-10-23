@@ -6,13 +6,13 @@ import { type Child, ICONS, button, h, icon, richText } from '../ui/dom';
 import { levelRing, pawRing, rhythmPic, roundPic, timerPic } from '../ui/hud';
 import { tabBar } from '../ui/tabs';
 
-const TABS = ['ui', 'typing', 'progress', 'settings', 'about'] as const;
+const TABS = ['ui', 'typing', 'progress', 'settings', 'mentoring', 'about'] as const;
 export type HelpTab = (typeof TABS)[number];
 
 /** The parent's settings tabs, in the order of the settings screen; each gets its own lines. */
 const SETTINGS_TABS = ['settings', 'own', 'surprises', 'task', 'keys', 'dashboard', 'data'] as const;
 
-const COUNTER = 'https://tapkotyper.goatcounter.com';
+export const COUNTER = 'https://tapkotyper.goatcounter.com';
 
 /** A top icon as the child sees it (a picture, not a working button) with its one line. */
 function iconLine(pic: HTMLElement, text: string): HTMLElement {
@@ -61,14 +61,21 @@ function section(title: string, ...kids: Child[]): HTMLElement {
 
 const list = (key: string) => h('ul', {}, ...tList(key).map((l) => h('li', {}, ...richText(l))));
 
-/** Fills `line` with the visit count the public counter reports; stays empty when offline. */
-async function showVisits(line: HTMLElement): Promise<void> {
+/** The visit count the public counter reports; null when offline or blocked. */
+export async function visitCount(): Promise<string | null> {
   try {
     const r = await fetch(`${COUNTER}/counter/TOTAL.json`);
     const { count } = await r.json();
-    if (typeof count !== 'string') return;
-    line.replaceChildren(t('about.visits', { n: count }), ' ', h('a', { href: COUNTER, target: '_blank', rel: 'noopener' }, t('about.visitsLink')));
-  } catch { /* offline or blocked: the line stays empty */ }
+    return typeof count === 'string' ? count : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Fills `line` with the visit count; stays empty when offline. */
+async function showVisits(line: HTMLElement): Promise<void> {
+  const count = await visitCount();
+  if (count !== null) line.replaceChildren(t('about.visits', { n: count }), ' ', h('a', { href: COUNTER, target: '_blank', rel: 'noopener' }, t('about.visitsLink')));
 }
 
 /** About the game and the privacy promise, for parents. */
@@ -78,7 +85,9 @@ function aboutTab(): HTMLElement[] {
   return [
     h('p', {}, ...richText(t('about.intro'))),
     section(t('about.privacyTitle'), list('about.privacy')),
-    section(t('about.dataTitle'), list('about.data'), visits),
+    section(t('about.dataTitle'), list('about.data'),
+      h('p', {}, t('about.open'), ' ', h('a', { href: `${COUNTER}/`, target: '_blank', rel: 'noopener' }, `${COUNTER}/`), '.'),
+      visits),
     section(t('about.howTitle'), list('about.how')),
     section(t('about.creditsTitle'), h('p', {}, t('about.credits')),
       h('div', { class: 'row about-actions' },
@@ -105,19 +114,22 @@ function tabContent(tab: HelpTab, now: Child[] = []): HTMLElement[] {
       section(t('help.journeyTitle'), list('help.journey')),
       section(t('help.progressTitle'), list('help.progress')),
       section(t('help.moreTitle'), list('help.more')),
-      section(t('help.taskTitle'), list('help.task')),
     ];
     case 'settings': return [
       h('p', {}, ...richText(t('help.settingsIntro'))),
       ...SETTINGS_TABS.map((s) => section(t(`parent.tab.${s}`), list(`help.settings.${s}`))),
+    ];
+    case 'mentoring': return [
+      section(t('help.mentorTitle'), list('help.mentor')),
+      section(t('help.taskTitle'), list('help.task')),
     ];
     case 'about': return aboutTab();
   }
 }
 
 /**
- * The one help page: the buttons, how to type, how to progress, the settings and about the
- * game, in tabs; the bar with Back like the settings' bar, then the tabs in a narrower column.
+ * The one help page: the buttons, how to type, how to progress, the settings, mentoring and
+ * about the game, in tabs; the bar with Back like the settings' bar, then the tabs in a narrower column.
  */
 function helpPage(cls: string, tab: HelpTab, onBack: () => void, onTab: (tab: HelpTab) => void = () => {}, now: Child[] = []): HTMLElement {
   const body = h('div', { class: 'tab-panel prose' });

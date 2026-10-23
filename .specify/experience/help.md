@@ -17,12 +17,17 @@
      from accuracy, Esc pauses).
   3. **How to progress**, in the child's voice: stories, worlds and levels, stars, letters that
      open levels and stories, "My progress" with its three tabs and QR codes, rescue missions
-     and badges, a task from a teacher.
+     and badges.
   4. **Settings**, for the parent: what each settings tab does (child, practice, look and sound,
      password, own words and text, surprises, tasks, keys, progress, data), with one section per
      settings tab, and what is lost without a backup.
-  5. **About TapkoTyper**: the intro, the privacy promise, data and the visit counter with its
-     live count, how it teaches, links, the code and a bug report.
+  5. **Mentoring**, for teachers and mentors in one place: the "For mentors" page, scanning
+     QR codes by group, result links, the table (filters, one child's results, CSV), the
+     checksum, making a task, and the task from the child's side. The "?" (and F1) on the
+     "For mentors" page opens this tab, since a mentor there needs exactly this.
+  6. **About TapkoTyper**: the intro, the privacy promise, data and the visit counter with its
+     live count and the open GoatCounter address (we hide nothing: anyone sees the same usage
+     data we do), how it teaches, links, the code and a bug report.
 - The tab is part of the address (`#/p/<id>/help/<tab>`, `#/help/<tab>`), so a tab can be linked.
 - The round "?" in the map's top buttons opens it on the interface tab. The "?" on the start
   page (and on the other screens before a player is chosen) opens it on the about tab; help

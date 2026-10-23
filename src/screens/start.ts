@@ -7,11 +7,12 @@ import { totalStars } from '../game/rewards';
 import { language, t } from '../i18n/i18n';
 import { nickname } from '../storage/store';
 import type { Lang, Profile } from '../storage/schema';
-import { KEYBOARD_ART, TEACHER_ART, arrowFocus, button, h, icon } from '../ui/dom';
+import { KEYBOARD_ART, teacherArt, arrowFocus, button, h, icon } from '../ui/dom';
 import { cornerControls, languageControls } from '../ui/chrome';
 import { roundButton } from '../ui/hud';
 import { MAX_PER_ROW, rowSplit } from '../ui/rows';
 import { listenForSuperPassword, superProfile } from '../app/super';
+import { COUNTER, visitCount } from './help';
 
 /** Players picked by the number keys. */
 const NUMBERED = 9;
@@ -86,7 +87,7 @@ export function startScreen(root: HTMLElement): () => void {
         }, 'btn ghost', 'user'),
         button(t('start.import'), () => void import('./parent').then((m) => m.importDialog(() => go('start'))), 'btn ghost', 'upload'))),
     gated ? teacherButton() : null,
-    h('footer', { class: 'privacy-note' }, h('p', {}, t('privacy.short')))));
+    privacyNote()));
   // A key of a real keyboard lifts the gate at once: the start page (or a waiting task link) opens.
   const offKeyboard = gated ? onKeyboard(() => {
     const waiting = takeWaiting();
@@ -146,10 +147,30 @@ function keyboardGate(): HTMLElement {
   return card;
 }
 
+/**
+ * The promise in one quiet line: on a wide screen with the open visit count and the licence, on a
+ * narrow one only its short form. Its "data stays on your device" (or the short form) opens the
+ * help's about tab.
+ */
+function privacyNote(): HTMLElement {
+  const ext = { target: '_blank', rel: 'noopener' };
+  const about = (text: string) => h('a', { href: '#/help/about', onClick: (e: Event) => { e.preventDefault(); go('help', { tab: 'about' }); } }, text);
+  const visits = h('span', {});
+  void visitCount().then((count) => {
+    if (count === null) return;
+    const n = Number(count.replace(/\D/g, ''));
+    const key = n === 1 ? 'privacy.visitsOne' : n > 1 && n < 5 ? 'privacy.visitsFew' : 'privacy.visitsMany';
+    visits.replaceChildren(' · ', h('a', { href: COUNTER, ...ext }, t(key, { n: count })));
+  });
+  return h('footer', { class: 'privacy-note' },
+    h('p', { class: 'note-long' }, t('privacy.short'), ' · ', about(t('privacy.local')), visits, ' · ', h('a', { href: 'https://github.com/atiris/tapkotyper', ...ext }, 'MIT Atiris')),
+    h('p', { class: 'note-short' }, about(t('privacy.tiny'))));
+}
+
 /** The teacher needs no keyboard: straight to the scanner and the class results. */
 function teacherButton(): HTMLButtonElement {
   return h('button', { class: 'teacher-big', type: 'button', onClick: () => go('teacher') },
-    h('span', { class: 'teacher-art', html: TEACHER_ART }),
+    teacherArt(),
     h('span', { class: 'teacher-big-text' },
       h('span', { class: 'teacher-big-title' }, t('start.teacher.title')),
       h('span', {}, t('start.teacher.sub'))));

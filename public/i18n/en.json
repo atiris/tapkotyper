@@ -40,7 +40,12 @@
     }
   },
   "privacy": {
-    "short": "No ads, no accounts, no tracking. Everything stays on this device."
+    "short": "No ads and no tracking of your data.",
+    "local": "Your data stays on your device.",
+    "tiny": "No ads, only on your device.",
+    "visitsOne": "{n} visit",
+    "visitsFew": "{n} visits",
+    "visitsMany": "{n} visits"
   },
   "newProfile": {
     "title": "Hello and welcome!",
@@ -1220,7 +1225,8 @@
       "It is played on a real keyboard; a phone or tablet needs a keyboard connected. A mentor with a phone and no keyboard can still scan the results."
     ],
     "creditsTitle": "Links",
-    "credits": "Open source under the MIT license. Fonts: Lexend, Atkinson Hyperlegible and OpenDyslexic (SIL Open Font License)."
+    "credits": "Open source under the MIT license. Fonts: Lexend, Atkinson Hyperlegible and OpenDyslexic (SIL Open Font License).",
+    "open": "We hide nothing: you can see all usage data, just as we do, at"
   },
   "help": {
     "title": "Help",
@@ -1229,6 +1235,7 @@
       "typing": "How to type",
       "progress": "How to progress",
       "settings": "Settings",
+      "mentoring": "Mentoring",
       "about": "About TapkoTyper"
     },
     "typeTitle": "How to type",
@@ -1358,6 +1365,15 @@
       "**F1** opens help, **F2** shows or hides the keyboard, **F3** turns reading aloud on or off.",
       "**F4** switches the sound: normal, quiet, off. **F8** plays another song.",
       "**Esc** pauses a level and goes back from other screens."
+    ],
+    "mentorTitle": "Results and QR codes",
+    "mentor": [
+      "Open the **For mentors** page with the chart icon at the top right of the start page. Results are stored only in this browser.",
+      "Scanning is fastest: type a group (for example 5A), press **Scan with camera** and walk around the room. The camera reads several QR codes at once and puts every new result into this group.",
+      "A typist shows the QR code in My progress or after handing in a task. Without a camera, paste or open the **result link**.",
+      "Filter the table by group and task and sort it. Click a name to see all of a typist's results, and download the whole table as CSV.",
+      "The checksum shows a damaged link (an exclamation mark by the name), not cheating.",
+      "Create a task for typists in the settings, on the Task tab: you get a link and a QR code for the typists to open."
     ]
   },
   "tips": {

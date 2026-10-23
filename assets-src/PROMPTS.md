@@ -536,6 +536,11 @@ Cute, soft 2D children's game icon, flat vector style with gentle gradients, sof
 Cute, soft 2D children's game icon, flat vector style with gentle gradients, soft dark-brown outline (not black), warm pastel palette, bold simple shapes that stay readable when very small. A single icon: a single round keyboard key with a small sparkle at its corner, the key top empty. Front view, centered, the whole icon visible, wide empty margin. No text, no letters, no numbers, no watermark. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no other objects. Square image.
 ```
 
+### ui-mentor.jpg (the mentors' turtle: the start page's mentor button, the empty results table; done 2026-10-23)
+```
+Generate an image: Cute, soft 2D children's game icon, flat vector style with gentle gradients, soft dark-brown outline (not black), warm pastel palette, bold simple shapes that stay readable when very small. A single icon: a friendly wise turtle teacher with a green shell, round glasses and a small dark graduation cap, smiling, holding a small tablet in its front flipper. Three-quarter front view, centered, the whole figure visible, wide empty margin. No text, no letters, no numbers, no watermark. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no other objects. Square image.
+```
+
 ### badge-*.jpg (world badges)
 One round badge picture per world, shown in a medal on the map, the results and the
 progress view. The ring (bronze, silver, gold) is drawn by the game, so the picture has

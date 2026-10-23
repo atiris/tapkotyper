@@ -92,7 +92,7 @@ test('the corner by width: switch, round language button, Menu', async ({ page }
   await expect(menu).toBeFocused();
   // A click outside closes it; an item does its job and closes it.
   await menu.click();
-  await page.locator('.privacy-note').click();
+  await page.mouse.click(8, 600);
   await expect(page.locator('.corner-menu-panel')).toHaveCount(0);
   await menu.click();
   await items.filter({ hasText: 'Pre mentorov' }).click();

@@ -1,4 +1,5 @@
 // TapkoTyper service worker. Generated at build time by vite.config.ts.
+// Build: __BUILD__
 const VERSION = '__VERSION__';
 const CORE = __FILES__;
 const CACHE = `tapkotyper-${VERSION}`;

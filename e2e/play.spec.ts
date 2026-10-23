@@ -238,7 +238,7 @@ test('free practice with a diacritic key is played to the results card', async (
     await page.waitForTimeout(90);
   }
   expect(typed).toContain('ô');
-  await page.locator('.hud .btn.small').click();
+  await page.locator('.hud').getByRole('button', { name: 'End exercise' }).click();
   await expect(page.locator('.results-card')).toBeVisible();
   expect(errors).toEqual([]);
 });

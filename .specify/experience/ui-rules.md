@@ -15,8 +15,9 @@ One set of rules for where things sit and how they behave, so every screen feels
    with Escape, a click outside or after an action. The start page's title **TapkoTyper**
    always fits on one line under the buttons, from 320 px up.
 2. **Leaving.** A page you navigated to (settings, help, teacher view, wardrobe, friends) closes with
-   "Späť" at the top left, also the help page in a paused level and the custom exercise (where Back
-   ends it and shows the results). A window laid over a screen (dialogs, the progress panel, the
+   "Späť" at the top left, also the help page in a paused level. A level that is not paused but
+   left (just typing, the custom exercise) has the round X at the start of its play bar; in the
+   custom exercise it ends it and shows the results. A window laid over a screen (dialogs, the progress panel, the
    new player form, level cards) closes with the round X at the top right, and with Escape. The
    only closing control at the bottom of a window is a normal action button (for example
    "Pokračovať"), never the one way out.
@@ -26,9 +27,9 @@ One set of rules for where things sit and how they behave, so every screen feels
    scrollbar's room is always kept, and the page's own background shows through it, so the empty
    room is not seen. The two are never mixed: a window never makes the page behind it
    scroll, and a page never hides its header in a scrolled box. A page's top bar (Back and
-   the title) stays at the top while the page scrolls, on a slightly see-through paper band,
-   its row level with the corner controls; help, the settings, the mentors' page and the wardrobe paint the
-   page's own background there instead, so the bar looks like part of the page. Once a page's
+   the title) stays at the top while the page scrolls, its row level with the corner controls;
+   every page (help also inside a level) paints the page's own background there, never a band, so
+   the bar looks like part of the page and the text fades out just below it. Once a page's
    tab row has scrolled away, its bar lists the tabs after the title as links separated by dots
    ("Title · Tab · Tab", the open one in orange), only on a desktop wide enough for all of them;
    a link opens its tab at the top of the page.

@@ -84,10 +84,10 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
     root.querySelector('.hud-title')!.after(roundButton('control', 'map', t('freeType.place'), () => openPlacePicker(def.world)));
   }
   if (def.kind === 'practice' && !params.seconds) {
-    // Untimed practice ends when the child wants: Back, like on every other screen, shows the results.
-    const back = button(t('common.back'), () => rt.endPractice(), 'btn ghost small', 'back');
-    back.dataset.tip = t('practice.backTip');
-    root.querySelector('.hud')!.prepend(back);
+    // Untimed practice ends when the child wants: the round X, like in just typing, shows the results.
+    const end = roundButton('control', 'close', t('level.endPractice'), () => rt.endPractice());
+    end.dataset.tip = t('practice.backTip');
+    root.querySelector('.hud')!.prepend(end);
   }
   return () => rt.dispose();
 }

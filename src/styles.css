@@ -127,7 +127,7 @@ p { line-height: 1.5; }
 .rb-num { fill: #fff; font: 700 19px var(--font-game); text-anchor: middle; dominant-baseline: central; }
 .round-btn[aria-pressed='true'] .rb-base { stroke: var(--brand); }
 .round-btn:disabled { opacity: 0.4; cursor: default; }
-.round-btn[hidden] { display: none; }
+.btn[hidden], .round-btn[hidden] { display: none; }
 /* Links in the app's orange, underlined only on hover. */
 a:not(.btn) { color: var(--brand-dark); text-decoration: none; }
 a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
@@ -165,24 +165,21 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
 /*
  * A page's header stays at the top while the page scrolls, so Back is always at hand. It spans
  * the window, its row lines up with the fixed corner controls (1rem from the top), and it leaves
- * them their room: four round buttons and the super star.
+ * them their room: four round buttons and the super star. It has no visible band: it paints the
+ * page's own fixed background, so it looks like the page, and the text scrolling under it fades
+ * out just below it.
  */
 .screen > .bar {
   position: sticky; top: 0; z-index: 3; min-height: var(--bar-h);
   margin: -1.2rem calc(-1 * var(--gut)) 0.7rem; padding: 1rem calc(2rem + 5 * 52px + 4 * 0.6rem) 0.5rem var(--gut);
-  background: color-mix(in srgb, var(--paper) 92%, transparent); backdrop-filter: blur(6px);
+  background: var(--page-bg) fixed;
 }
-@media (min-width: 600px) { .screen:has(.update-btn:not([hidden])) > .bar { padding-right: calc(2rem + 6 * 52px + 5 * 0.6rem); } }
-@media (max-width: 599px) { .screen > .bar { padding-right: calc(2rem + 52px); } }
-/*
- * Help, the settings, the mentors' page and the wardrobe have no visible bar: it paints the page's own fixed
- * background, so it looks like the page, and the text scrolling under it fades out just below it.
- */
-.help-screen > .bar, .parent-screen > .bar, .teacher-screen > .bar, .wardrobe-screen > .bar { background: var(--page-bg) fixed; backdrop-filter: none; }
-.help-screen > .bar::after, .parent-screen > .bar::after, .teacher-screen > .bar::after, .wardrobe-screen > .bar::after {
+.screen > .bar::after {
   content: ''; position: absolute; left: 0; right: 0; top: 100%; height: 1.6rem; pointer-events: none;
   background: var(--page-bg) fixed; -webkit-mask-image: linear-gradient(#000, transparent); mask-image: linear-gradient(#000, transparent);
 }
+@media (min-width: 600px) { .screen:has(.update-btn:not([hidden])) > .bar { padding-right: calc(2rem + 6 * 52px + 5 * 0.6rem); } }
+@media (max-width: 599px) { .screen > .bar { padding-right: calc(2rem + 52px); } }
 .bar h1 { flex: 1; margin: 0; font-size: 1.6rem; }
 /*
  * The tabs as links after the title, once the tab row scrolled away; only on a desktop with room
@@ -406,7 +403,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .level-screen.world-rescue { background: #3d3566; }
 .hud { display: flex; align-items: center; gap: 0.7rem; padding: 0.5rem 0.8rem; background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(6px); z-index: 3; flex-wrap: wrap; }
 .hud-title { font-size: 17px; white-space: nowrap; }
-.hud-divider { width: 2px; align-self: stretch; margin: 0.2rem 0; background: rgba(90, 61, 43, 0.15); border-radius: 2px; }
+/* The divider and the buttons after it keep to the right, also without a progress bar (just typing). */
+.hud-divider { width: 2px; align-self: stretch; margin: 0.2rem 0 0.2rem auto; background: rgba(90, 61, 43, 0.15); border-radius: 2px; }
 .paw-btn.empty { opacity: 0.6; cursor: default; }
 .paw-btn.charged { animation: pop-in 0.5s ease; }
 .hud-hint { flex: 1; min-width: 120px; font-size: 14px; font-weight: 700; opacity: 0.7; white-space: nowrap; }
@@ -858,7 +856,10 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-dark); }
 .break-stage { display: flex; justify-content: center; }
 .break-stage[data-ex='arms'] .tapko-stack { animation: stretch-up 4s ease-in-out infinite; }
 .break-stage[data-ex='fists'] .tapko-stack { animation: squeeze 1.4s ease-in-out infinite; }
-.break-stage[data-ex='shoulders'] .tapko-stack { animation: sway 3s ease-in-out infinite; }
+.break-stage[data-ex='shoulders'] .tapko-stack, .break-stage[data-ex='neck'] .tapko-stack { animation: sway 3s ease-in-out infinite; }
+.break-stage[data-ex='stand'] .tapko-stack { animation: stretch-up 4s ease-in-out infinite; }
+.break-stage[data-ex='march'] .tapko-stack { animation: jump-small 0.8s ease-in-out infinite; }
+.break-stage[data-ex='wrists'] .tapko-stack { animation: squeeze 1.4s ease-in-out infinite; }
 @keyframes stretch-up { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(0.94, 1.12); } }
 @keyframes squeeze { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08, 0.94); } }
 @keyframes sway { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }

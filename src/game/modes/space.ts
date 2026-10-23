@@ -48,7 +48,7 @@ export class SpaceMode extends ApproachMode {
   }
 
   protected scrollSpeed(): number {
-    return 40 + this.L.ema * 70;
+    return 40 + this.L.rhythm.ema * 70;
   }
 
   update(dt: number): void {
@@ -58,7 +58,7 @@ export class SpaceMode extends ApproachMode {
   }
 
   protected speedPct(): number {
-    return Math.min(1, this.L.ema / (0.9 + this.L.difficulty * 0.35));
+    return Math.min(1, this.L.rhythm.ratio(this.L.difficulty));
   }
 
   drawMover(g: G, m: Mover): void {
@@ -154,7 +154,7 @@ export class AsteroidMode extends SpaceMode {
   update(dt: number): void {
     const core = this.L.core;
     // Spawn the next big asteroid when the sky is clear.
-    if (this.bigs < this.L.def.count && core.active.length === 0) {
+    if (this.bigs < this.L.count && core.active.length === 0) {
       this.spawnTimer -= dt;
       if (this.spawnTimer <= 0) {
         const word = this.L.word();
@@ -199,10 +199,10 @@ export class AsteroidMode extends SpaceMode {
 
   progress(): number {
     const done = this.bigs - (this.L.core.active.some((t) => (t.data as Mover).big) ? 1 : 0);
-    return Math.min(1, Math.max(0, done) / this.L.def.count);
+    return Math.min(1, Math.max(0, done) / this.L.count);
   }
 
   get finished(): boolean {
-    return this.bigs >= this.L.def.count && this.L.core.targets.length === 0;
+    return this.bigs >= this.L.count && this.L.core.targets.length === 0;
   }
 }

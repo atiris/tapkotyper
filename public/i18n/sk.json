@@ -538,12 +538,11 @@
   "story": {
     "next": "Ďalej",
     "meadowStart": [
-      "Zvieratká chcú hrať! Ty si brankár.",
-      "Chyť listy vejárom!"
+      "Zvieratká ti chcú dať gól! Chytaj listy písmenami."
     ],
     "goalShout": "GÓÓL!",
     "hedgehogStart": [
-      "Ježko má na chrbte kopu listov. Pozor, letia!"
+      "Ježko má na chrbte kopu listov a chce ti s nimi dať gól. Chytaj ich písmenami!"
     ],
     "hedgehogDone": [
       "Všetky listy sú späť u ježka. Výborne!"
@@ -569,9 +568,9 @@
         "Začni na Cvičnej lúke!"
       ],
       "world1": [
-        "Na lúke je plno zvedavých malých návštevníkov.",
-        "Napíš slovo na liste a odfúkneš ho vejárom späť.",
-        "Keď list preletí, je to gól a všetci sa tešia."
+        "Zvieratká na lúke sa s tebou hrajú.",
+        "Vietor im nosí listy a chcú ti s nimi dať gól.",
+        "Chytaj listy písmenami: napíš slovo na liste a list je tvoj."
       ],
       "invitation": [
         "Pozri, čo sa našlo v tráve!",
@@ -749,6 +748,7 @@
     ],
     "gateIntro": "Hlavná brána chce celý kód bez chyby. Keď sa pomýliš, začneš znova. Nikam sa neponáhľaj.",
     "gateSlow": "Pomaly a presne. Čas tu nebeží.",
+    "gateMore": "Brána má ešte jeden zámok! Tu je nový kód.",
     "welcomeDone": [
       "Celá rodina ťa pozdravila!",
       "Píp píp píp! Malí roboti sa tešia."

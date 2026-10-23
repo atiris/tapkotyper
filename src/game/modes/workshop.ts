@@ -172,7 +172,7 @@ export abstract class BeatMode extends Mode {
   }
 
   private next(): void {
-    if (this.groups >= this.L.def.count) return;
+    if (this.groups >= this.L.count) return;
     this.groups++;
     this.group = this.L.core.add(this.L.word(3, 1), {});
   }
@@ -180,9 +180,9 @@ export abstract class BeatMode extends Mode {
   update(dt: number): void {
     const prev = this.beat;
     this.beat += dt / this.period;
-    if (Math.floor(prev) !== Math.floor(this.beat) && this.calmed < this.L.def.count) this.L.sfx('beat');
+    if (Math.floor(prev) !== Math.floor(this.beat) && this.calmed < this.L.count) this.L.sfx('beat');
     this.flash = Math.max(0, this.flash - dt * 1.5);
-    if (this.calmed >= this.L.def.count) this.end += dt;
+    if (this.calmed >= this.L.count) this.end += dt;
     this.scroll += dt * 8;
   }
 
@@ -196,7 +196,7 @@ export abstract class BeatMode extends Mode {
     this.L.particles.emit(this.L.vw * 0.7, VH * 0.45, nearBeat ? 18 : 8, 'sparkle', ['#bff3ff', '#ffe8a8', '#ffd1f5'], 200, 9);
     this.L.core.prune();
     this.group = null;
-    if (this.calmed >= this.L.def.count) {
+    if (this.calmed >= this.L.count) {
       this.L.say(pickLine(this.doneLine), 3);
       this.L.setRobotMood('happy', 4);
       this.L.setFairyMood('happy', 4);
@@ -204,7 +204,7 @@ export abstract class BeatMode extends Mode {
   }
 
   render(g: G): void {
-    this.drawScene(g, this.calmed / this.L.def.count);
+    this.drawScene(g, this.calmed / this.L.count);
     const cx = this.L.vw * this.ringX, cy = VH * 0.3;
     const pulse = 1 - (this.beat % 1);
     g.save();
@@ -231,7 +231,7 @@ export abstract class BeatMode extends Mode {
   }
 
   progress(): number {
-    return this.calmed / this.L.def.count;
+    return this.calmed / this.L.count;
   }
 
   get finished(): boolean {

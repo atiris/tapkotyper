@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
-import { charsInDays, recordSession } from './stats';
+import { charsInDays, recordPress, recordSession } from './stats';
 
 describe('recordSession', () => {
   it('counts the training time and earns wardrobe time from it, also with the limit off', () => {
@@ -19,5 +19,16 @@ describe('charsInDays', () => {
     const s = (date: string, chars: number) => ({ date, seconds: 60, chars, errors: 0, cpm: 40 });
     p.stats.sessions = [s('2026-10-09', 1000), s('2026-10-10', 5), s('2026-10-23', 7), s('2026-10-23', 3)];
     expect(charsInDays(p, 14, new Date(2026, 9, 23, 20))).toBe(15);
+  });
+});
+
+describe('recordPress', () => {
+  it('a repeat of the same key counts as a press but not in the day reaction time', () => {
+    const p = newProfile('Ema', 'sk');
+    recordPress(p, 'f', 'f', 600);
+    recordPress(p, 'f', 'f', 150, true);
+    recordPress(p, 'f', 'g', 300);
+    const day = p.stats.keys.f.days[0];
+    expect(day).toMatchObject({ presses: 3, errors: 1, rtSum: 600, rtCount: 1 });
   });
 });

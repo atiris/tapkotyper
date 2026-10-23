@@ -36,7 +36,7 @@ export class ShieldMode extends Mode {
     const L = this.L;
     const core = L.core;
     this.spawnTimer -= dt;
-    if (this.spawned < L.def.count && this.spawnTimer <= 0 && core.active.length < L.maxActive) {
+    if (this.spawned < L.count && this.spawnTimer <= 0 && core.active.length < L.maxActive) {
       const word = L.word();
       const d = L.rng.pick(this.dragons);
       const startY = -60;
@@ -120,11 +120,11 @@ export class ShieldMode extends Mode {
   }
 
   progress(): number {
-    return this.resolved / this.L.def.count;
+    return this.resolved / this.L.count;
   }
 
   get finished(): boolean {
-    return this.spawned >= this.L.def.count && this.L.core.targets.length === 0;
+    return this.spawned >= this.L.count && this.L.core.targets.length === 0;
   }
 }
 
@@ -147,7 +147,7 @@ export class WaveMode extends Mode {
   }
 
   private next(): void {
-    if (this.groups >= this.L.def.count) return;
+    if (this.groups >= this.L.count) return;
     this.groups++;
     this.group = this.L.core.add(this.L.word(3, 1), {});
   }
@@ -155,9 +155,9 @@ export class WaveMode extends Mode {
   update(dt: number): void {
     const prev = this.beat;
     this.beat += dt / this.period;
-    if (Math.floor(prev) !== Math.floor(this.beat) && this.calmed < this.L.def.count) this.L.sfx('beat');
+    if (Math.floor(prev) !== Math.floor(this.beat) && this.calmed < this.L.count) this.L.sfx('beat');
     this.flash = Math.max(0, this.flash - dt * 1.5);
-    if (this.calmed >= this.L.def.count) this.end += dt;
+    if (this.calmed >= this.L.count) this.end += dt;
     this.scroll += dt * 12;
   }
 
@@ -171,18 +171,18 @@ export class WaveMode extends Mode {
     this.L.particles.emit(this.waveX(), VH * 0.6, nearBeat ? 18 : 8, 'sparkle', ['#bff3ff', '#ffe8a8', '#ffd1f5'], 200, 9);
     this.L.core.prune();
     this.group = null;
-    if (this.calmed >= this.L.def.count) this.L.say(pickLine('story.waveCalm'), 3);
+    if (this.calmed >= this.L.count) this.L.say(pickLine('story.waveCalm'), 3);
     else this.next();
   }
 
   private waveX(): number {
-    const k = this.calmed / this.L.def.count;
+    const k = this.calmed / this.L.count;
     return this.L.vw * (0.55 + k * 0.5);
   }
 
   render(g: G): void {
     const vw = this.L.vw;
-    const k = this.calmed / this.L.def.count;
+    const k = this.calmed / this.L.count;
     // The wave: a soft glowing band that shrinks as it calms.
     const wx = this.waveX();
     const height = 260 * (1 - k * 0.85);
@@ -244,7 +244,7 @@ export class WaveMode extends Mode {
   }
 
   progress(): number {
-    return this.calmed / this.L.def.count;
+    return this.calmed / this.L.count;
   }
 
   get finished(): boolean {

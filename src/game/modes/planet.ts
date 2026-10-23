@@ -76,7 +76,7 @@ export class SwampMode extends HeroMode {
   }
 
   private next(): void {
-    if (this.done >= this.L.def.count) return;
+    if (this.done >= this.L.count) return;
     this.spot = { x: this.heroX + this.stoneGap + this.scroll, y: VH * (0.78 + (this.done % 2 ? 0.03 : -0.02)) };
     this.current = this.L.core.add(this.L.word(), {});
   }
@@ -84,7 +84,7 @@ export class SwampMode extends HeroMode {
   update(dt: number): void {
     super.update(dt);
     for (const s of this.stones) s.pop = Math.min(1, s.pop + dt * 3);
-    if (this.done >= this.L.def.count && !this.busy) this.finishT += dt;
+    if (this.done >= this.L.count && !this.busy) this.finishT += dt;
     this.L.core.prune();
   }
 
@@ -125,7 +125,7 @@ export class SwampMode extends HeroMode {
       g.restore();
       this.L.label(g, this.current, x, this.spot.y - 70);
     }
-    if (this.done >= this.L.def.count) {
+    if (this.done >= this.L.count) {
       // The far bank.
       g.fillStyle = '#7cc79a';
       g.beginPath();
@@ -136,7 +136,7 @@ export class SwampMode extends HeroMode {
   }
 
   progress(): number {
-    return this.done / this.L.def.count;
+    return this.done / this.L.count;
   }
 
   get finished(): boolean {
@@ -160,7 +160,7 @@ export class SignsMode extends HeroMode {
   }
 
   private place(): void {
-    if (this.done >= this.L.def.count) return;
+    if (this.done >= this.L.count) return;
     const n = this.L.difficulty >= 4 ? 3 : 2;
     this.postX = this.L.vw * 0.62;
     this.postOffset = 0;
@@ -178,7 +178,7 @@ export class SignsMode extends HeroMode {
       s.data.pop = Math.min(1, s.data.pop + dt * 2.5);
       if (s.gone || s.done) s.data.gone = Math.min(1, s.data.gone + dt * 1.5);
     }
-    if (this.done >= this.L.def.count && !this.busy) this.finishT += dt;
+    if (this.done >= this.L.count && !this.busy) this.finishT += dt;
   }
 
   onDone(tg: Target): void {
@@ -224,7 +224,7 @@ export class SignsMode extends HeroMode {
   }
 
   progress(): number {
-    return this.done / this.L.def.count;
+    return this.done / this.L.count;
   }
 
   get finished(): boolean {
@@ -251,7 +251,7 @@ export class BoulderMode extends HeroMode {
   update(dt: number): void {
     super.update(dt);
     this.shake = Math.max(0, this.shake - dt * 3);
-    if (this.crack >= this.L.def.count) this.opened = Math.min(1, this.opened + dt * 0.8);
+    if (this.crack >= this.L.count) this.opened = Math.min(1, this.opened + dt * 0.8);
   }
 
   onDone(tg: Target): void {
@@ -263,14 +263,14 @@ export class BoulderMode extends HeroMode {
     this.L.particles.emit(this.L.vw * 0.62, VH * 0.55, 16, 'dot', ['#c9c2b8', '#e9e4dc', '#a39586'], 200, 7);
     this.L.core.prune();
     this.chunk = null;
-    if (this.crack >= this.L.def.count) {
+    if (this.crack >= this.L.count) {
       this.L.say(pickLine('story.boulderOpen'), 3);
       this.hop(this.heroY, 0);
     } else this.nextChunk();
   }
 
   render(g: G): void {
-    const k = this.crack / this.L.def.count;
+    const k = this.crack / this.L.count;
     const name = k >= 1 ? 'obj-boulder-3' : k >= 0.5 ? 'obj-boulder-2' : 'obj-boulder-1';
     const sh = Math.sin(this.t * 50) * 6 * this.shake;
     drawSprite(g, name, this.L.vw * 0.62 + sh, VH * 0.56, 380, {}, blob('#a39586', true, 'rgba(0,0,0,0.12)'));
@@ -287,7 +287,7 @@ export class BoulderMode extends HeroMode {
   }
 
   progress(): number {
-    return Math.min(1, this.crack / this.L.def.count);
+    return Math.min(1, this.crack / this.L.count);
   }
 
   get finished(): boolean {

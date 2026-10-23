@@ -15,8 +15,12 @@ export function localDate(d = new Date()): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-/** Records one key press against the expected character; a capital also counts for its Shift. */
-export function recordPress(profile: Profile, expected: string, typed: string, reactionMs: number): void {
+/**
+ * Records one key press against the expected character; a capital also counts for its Shift.
+ * A `repeat` (the same key as the correct press before it) is no move between keys, so its
+ * time stays out of the day's reaction time.
+ */
+export function recordPress(profile: Profile, expected: string, typed: string, reactionMs: number, repeat = false): void {
   const shift = shiftKeyOf(LAYOUTS[profile.layout], expected);
   const keys = shift ? [expected.toLowerCase(), shift] : [expected];
   const ok = typed === expected;
@@ -39,10 +43,11 @@ export function recordPress(profile: Profile, expected: string, typed: string, r
       if (s.days.length > DAYS_KEEP) s.days.splice(0, s.days.length - DAYS_KEEP);
     }
     day.presses++;
-    if (ok) {
+    if (!ok) day.errors++;
+    else if (!repeat) {
       day.rtSum += rt;
       day.rtCount++;
-    } else day.errors++;
+    }
   }
 }
 

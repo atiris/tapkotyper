@@ -156,7 +156,7 @@ export class OwlMode extends HeroMode {
 
   update(dt: number): void {
     super.update(dt);
-    if (this.riddles >= this.L.def.count) this.end += dt;
+    if (this.riddles >= this.L.count) this.end += dt;
   }
 
   onDone(tg: Target): void {
@@ -169,7 +169,7 @@ export class OwlMode extends HeroMode {
     this.happy();
     this.L.sfx('cheer');
     this.L.particles.emit(this.L.vw * 0.7, VH * 0.4, 16, 'leaf', ['#a6e3c9', '#ffe27a', '#f7a8c9'], 170, 8);
-    if (this.riddles >= this.L.def.count) this.L.say(pickLine('story.owlSolved'), 3);
+    if (this.riddles >= this.L.count) this.L.say(pickLine('story.owlSolved'), 3);
     else this.L.tweens.add(0.8, () => undefined, undefined, () => this.nextRiddle());
   }
 
@@ -226,7 +226,7 @@ export class OwlMode extends HeroMode {
   progress(): number {
     // A solved riddle already counts in `riddles`.
     const part = this.typedParts.length < this.parts.length ? this.typedParts.length / this.parts.length : 0;
-    return Math.min(1, (this.riddles + part) / this.L.def.count);
+    return Math.min(1, (this.riddles + part) / this.L.count);
   }
 
   get finished(): boolean {

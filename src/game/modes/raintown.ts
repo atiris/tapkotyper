@@ -62,7 +62,7 @@ export class RainMode extends Mode {
     const core = L.core;
     const bx = this.friendSpot().x;
     this.spawnTimer -= dt;
-    if (this.spawned < L.def.count && this.spawnTimer <= 0 && core.active.length < L.maxActive) {
+    if (this.spawned < L.count && this.spawnTimer <= 0 && core.active.length < L.maxActive) {
       const word = L.word();
       const x = bx + L.rng.range(-320, 320);
       const startY = -50;
@@ -163,11 +163,11 @@ export class RainMode extends Mode {
   }
 
   progress(): number {
-    return this.resolved / this.L.def.count;
+    return this.resolved / this.L.count;
   }
 
   get finished(): boolean {
-    return this.spawned >= this.L.def.count && this.L.core.targets.length === 0;
+    return this.spawned >= this.L.count && this.L.core.targets.length === 0;
   }
 }
 

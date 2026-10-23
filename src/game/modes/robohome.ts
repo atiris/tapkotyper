@@ -64,7 +64,7 @@ export class RoomsMode extends HeroMode {
   }
 
   private next(): void {
-    if (this.done >= this.L.def.count) return;
+    if (this.done >= this.L.count) return;
     this.lamps.push({ x: this.heroX + this.gap + this.scroll, on: 0, helper: HELPERS[this.done % HELPERS.length], wave: 0 });
     this.current = this.L.core.add(this.L.word(), {});
   }
@@ -75,7 +75,7 @@ export class RoomsMode extends HeroMode {
       if (l.on > 0) l.on = Math.min(1, l.on + dt * 3);
       if (l.on >= 1) l.wave += dt;
     }
-    if (this.done >= this.L.def.count && !this.busy) this.finishT += dt;
+    if (this.done >= this.L.count && !this.busy) this.finishT += dt;
     this.L.core.prune();
   }
 
@@ -98,7 +98,7 @@ export class RoomsMode extends HeroMode {
   render(g: G): void {
     // The rooms brighten with every lamp.
     g.save();
-    g.fillStyle = `rgba(20,18,48,${0.55 * (1 - this.done / this.L.def.count)})`;
+    g.fillStyle = `rgba(20,18,48,${0.55 * (1 - this.done / this.L.count)})`;
     g.fillRect(0, 0, this.L.vw, VH);
     g.restore();
     for (const l of this.lamps) {
@@ -115,7 +115,7 @@ export class RoomsMode extends HeroMode {
   }
 
   progress(): number {
-    return this.done / this.L.def.count;
+    return this.done / this.L.count;
   }
 
   get finished(): boolean {
@@ -154,7 +154,7 @@ export class WelcomeMode extends Mode {
     this.spawnTimer -= dt;
     const busy = new Set(core.targets.map((tg) => tg.data.box));
     const free = this.boxes.map((_, i) => i).filter((i) => !busy.has(i));
-    if (this.spawned < L.def.count && this.spawnTimer <= 0 && core.active.length < L.maxActive && free.length) {
+    if (this.spawned < L.count && this.spawnTimer <= 0 && core.active.length < L.maxActive && free.length) {
       const word = L.word(4, 1);
       core.add(word, { box: L.rng.pick(free), sprite: this.spawned % LITTLE.length, up: 0, window: Math.max(2.5, L.travelTime(word) * 0.55), state: 'rise', t: 0 } satisfies Pop);
       this.spawned++;
@@ -227,10 +227,10 @@ export class WelcomeMode extends Mode {
   }
 
   progress(): number {
-    return this.resolved / this.L.def.count;
+    return this.resolved / this.L.count;
   }
 
   get finished(): boolean {
-    return this.spawned >= this.L.def.count && this.L.core.targets.length === 0;
+    return this.spawned >= this.L.count && this.L.core.targets.length === 0;
   }
 }

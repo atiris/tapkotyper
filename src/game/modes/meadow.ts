@@ -286,8 +286,9 @@ const TAPKO_CSS_X = 85;
 const TAPKO_CSS_H = 150;
 
 /**
- * World 1: Tapko is the goalkeeper. Meadow creatures bring leaves and send them toward him;
- * a typed word lets his fan blow the leaf back to its creature, a missed one is a goal everybody cheers.
+ * World 1: the meadow animals play with the child. The wind brings them leaves and they want
+ * to score a goal with them; a typed word catches the leaf and Tapko's fan sends it back to
+ * its creature, a missed one is a goal everybody cheers.
  */
 export class MeadowMode extends ApproachMode {
   readonly world = 'meadow';
@@ -300,8 +301,8 @@ export class MeadowMode extends ApproachMode {
     this.playerX = this.tapkoX();
   }
 
-  start(): void {
-    this.L.say(pickLine('story.meadowStart'), 3);
+  startLine(): string {
+    return pickLine('story.meadowStart');
   }
 
   /** Tapko's x on the stage in game units; the DOM Tapko keeps his CSS size while the stage scales. */
@@ -570,6 +571,8 @@ export class HedgehogMode extends MeadowMode {
   private hy = VH - 82;
   /** Leaves on the hedgehog's back. */
   private pile: number;
+  /** Leaves planned in volleys so far; a level still too short asks for more. */
+  private planned: number;
   private shake = 0;
   private hop = 0;
   /** Seconds of the happy end (curl, roll a circle, wave); -1 before it. */
@@ -577,8 +580,8 @@ export class HedgehogMode extends MeadowMode {
 
   constructor(L: LevelRuntime) {
     super(L);
-    this.sizes = volleys(L.def.count);
-    this.pile = L.def.count;
+    this.sizes = volleys(L.count);
+    this.pile = this.planned = L.count;
     this.spawnTimer = 1;
   }
 
@@ -586,12 +589,17 @@ export class HedgehogMode extends MeadowMode {
     return this.L.vw * 0.68;
   }
 
-  start(): void {
-    this.L.say(pickLine('story.hedgehogStart'), 3);
+  startLine(): string {
+    return pickLine('story.hedgehogStart');
   }
 
   update(dt: number): void {
     const L = this.L;
+    if (L.count > this.planned) {
+      this.sizes.push(...volleys(L.count - this.planned));
+      this.pile += L.count - this.planned;
+      this.planned = L.count;
+    }
     const flying = L.core.targets.some((tg) => (tg.data as Mover).state === 'come');
     if (this.volley < this.sizes.length && !flying) {
       this.spawnTimer -= dt;

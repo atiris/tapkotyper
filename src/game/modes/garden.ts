@@ -70,7 +70,7 @@ export class BudsMode extends HeroMode {
   }
 
   private next(): void {
-    if (this.done >= this.L.def.count) return;
+    if (this.done >= this.L.count) return;
     this.buds.push({ x: this.heroX + this.gap + this.scroll, open: 0, color: PETALS[this.done % PETALS.length] });
     this.current = this.L.core.add(this.L.word(), {});
   }
@@ -78,7 +78,7 @@ export class BudsMode extends HeroMode {
   update(dt: number): void {
     super.update(dt);
     for (const b of this.buds) if (b.open > 0) b.open = Math.min(1, b.open + dt * 2.5);
-    if (this.done >= this.L.def.count && !this.busy) this.finishT += dt;
+    if (this.done >= this.L.count && !this.busy) this.finishT += dt;
     this.L.core.prune();
   }
 
@@ -110,7 +110,7 @@ export class BudsMode extends HeroMode {
   }
 
   progress(): number {
-    return this.done / this.L.def.count;
+    return this.done / this.L.count;
   }
 
   get finished(): boolean {
@@ -143,7 +143,7 @@ export class FlowerMode extends HeroMode {
 
   update(dt: number): void {
     super.update(dt);
-    if (this.open >= this.L.def.count) this.bloom = Math.min(1, this.bloom + dt * 0.7);
+    if (this.open >= this.L.count) this.bloom = Math.min(1, this.bloom + dt * 0.7);
   }
 
   onDone(tg: Target): void {
@@ -154,14 +154,14 @@ export class FlowerMode extends HeroMode {
     this.L.particles.emit(this.L.vw * 0.62, VH * 0.45, 14, 'sparkle', ['#f7a8c9', '#ffe27a', '#ffffff'], 160, 8);
     this.L.core.prune();
     this.word = null;
-    if (this.open >= this.L.def.count) {
+    if (this.open >= this.L.count) {
       this.L.say(pickLine('story.flowerAwake'), 3);
       this.hop(this.heroY, 0);
     } else this.nextWord();
   }
 
   render(g: G): void {
-    const k = Math.min(1, this.open / this.L.def.count);
+    const k = Math.min(1, this.open / this.L.count);
     const x = this.L.vw * 0.62, y = VH * 0.84;
     const sway = Math.sin(this.t * 1.5) * 0.03;
     drawSprite(g, k >= 1 ? 'obj-big-flower-open' : 'obj-big-flower', x, y - 200, 400, { rot: sway }, (g2, w, h) => {
@@ -210,7 +210,7 @@ export class FlowerMode extends HeroMode {
   }
 
   progress(): number {
-    return Math.min(1, this.open / this.L.def.count);
+    return Math.min(1, this.open / this.L.count);
   }
 
   get finished(): boolean {

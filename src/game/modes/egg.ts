@@ -66,7 +66,7 @@ export class SlopeMode extends Mode {
     const L = this.L;
     const core = L.core;
     this.spawnTimer -= dt;
-    if (this.spawned < L.def.count && this.spawnTimer <= 0 && core.active.length < L.maxActive) {
+    if (this.spawned < L.count && this.spawnTimer <= 0 && core.active.length < L.maxActive) {
       this.spawnSomething();
       this.spawned++;
       this.spawnTimer = L.spawnGap + 0.6;
@@ -159,11 +159,11 @@ export class SlopeMode extends Mode {
   protected drawMole(_g: G, _tg: Target, _m: Mole): void {}
 
   progress(): number {
-    return this.resolved / this.L.def.count;
+    return this.resolved / this.L.count;
   }
 
   get finished(): boolean {
-    return this.spawned >= this.L.def.count && this.L.core.targets.length === 0 && this.jump === 0;
+    return this.spawned >= this.L.count && this.L.core.targets.length === 0 && this.jump === 0;
   }
 }
 

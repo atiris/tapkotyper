@@ -28,7 +28,10 @@
   (up, or down near the top), and a far-moved word gets a thin line to its object.
 - The start is slow: at difficulty 3 a short word needs about 10 seconds to reach Tapko
   and one word is on screen at a time.
-- Level length is about 1-3 minutes. At the end Tapko stays where he is and jumps happily
+- Every story level, super level and rescue mission lasts at least 2 minutes of active
+  play (pauses and cards do not count): a quick child gets more targets of the same kind
+  (the gate a new code), and the progress bar never runs ahead of the time. Practice,
+  custom exercises and free typing keep their own length. At the end Tapko stays where he is and jumps happily
   three times (Bolt hops with him in story 2, Melody twirls in story 3), and any tool he held in the level (fan,
   umbrella, shield) fades away; with reduced motion he only smiles and the tool is gone
   at once. About 1.4 seconds later the end screen shows stars (accuracy), new keys, and a
@@ -94,6 +97,8 @@
   ([research](../../.research/learning/exercise-types.md)). The style changes only how a
   target is shown, so every mode gets it without its own rules. A guide that lit the next
   key would turn both back into copying.
+- Some levels ended in under a minute, super levels with a few words in seconds: too short
+  to settle into a rhythm, and stars came cheap.
 - A pause that hides the game breaks the child's focus; a way to slow down without a
   parent keeps a struggling child playing instead of giving up.
 - "Map" on the pause card did not say that it throws the level away, and it did so without

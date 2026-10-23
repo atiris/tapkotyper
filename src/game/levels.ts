@@ -63,7 +63,7 @@ export interface LevelDef {
   /** 0-4 inside the world; 4 is the super-obstacle. */
   index: number;
   kind: LevelKind;
-  /** Number of words (targets) in the level. */
+  /** Planned number of words (targets); a level that would end before its minimum length gets more. */
   count: number;
   /** Creature / object mix. */
   variant: string;
@@ -74,6 +74,32 @@ export interface LevelDef {
   style?: Style;
   /** Every target is one chunk or word, never several with a space (the first level, before the space bar is taught). */
   noSpace?: boolean;
+}
+
+/** Story levels, super levels and rescue missions last at least this many seconds of active play. */
+export const MIN_ACTIVE_S = 120;
+
+/** Practice, custom exercises and free typing keep their own length; every other level has the minimum. */
+export function hasMinLength(l: LevelDef): boolean {
+  return l.kind !== 'practice' && l.kind !== 'freetype';
+}
+
+/**
+ * The target count of a level while it plays: as long as the active seconds are under `min`
+ * and fewer than `step` targets are left, `step` more come, so the mode never runs dry early.
+ */
+export function grownCount(count: number, done: number, active: number, step: number, min: number): number {
+  return active < min && count - done < step ? count + step : count;
+}
+
+/** A level ends when its mode is done and the minimum of active play is reached. */
+export function levelOver(modeFinished: boolean, active: number, min: number): boolean {
+  return modeFinished && active >= min;
+}
+
+/** The progress bar: the share of targets, never ahead of the share of the minimum time. */
+export function shownProgress(modeProgress: number, active: number, min: number): number {
+  return min > 0 ? Math.min(modeProgress, active / min) : modeProgress;
 }
 
 const def = (world: number, index: number, kind: LevelKind, count: number, variant = '', style?: Style, noSpace = false): LevelDef =>

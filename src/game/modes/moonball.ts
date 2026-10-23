@@ -77,7 +77,7 @@ export class FirefliesMode extends Mode {
     const L = this.L, core = L.core;
     this.spawnTimer -= dt;
     // Sentences are long: one at a time, two for quick typists.
-    if (this.spawned < L.def.count && this.spawnTimer <= 0 && core.active.length < Math.min(2, L.maxActive)) {
+    if (this.spawned < L.count && this.spawnTimer <= 0 && core.active.length < Math.min(2, L.maxActive)) {
       const word = L.word();
       // It starts just under its sentence, so the label never hides it.
       const startY = 120;
@@ -115,7 +115,7 @@ export class FirefliesMode extends Mode {
   }
 
   render(g: G): void {
-    drawFloor(g, this.L.vw, this.lit / this.L.def.count, this.t);
+    drawFloor(g, this.L.vw, this.lit / this.L.count, this.t);
     for (const tg of this.L.core.targets) {
       const f = tg.data as Fly;
       g.save();
@@ -130,11 +130,11 @@ export class FirefliesMode extends Mode {
   }
 
   progress(): number {
-    return this.resolved / this.L.def.count;
+    return this.resolved / this.L.count;
   }
 
   get finished(): boolean {
-    return this.spawned >= this.L.def.count && this.L.core.targets.length === 0;
+    return this.spawned >= this.L.count && this.L.core.targets.length === 0;
   }
 }
 
@@ -163,7 +163,7 @@ export class LastSongMode extends Mode {
   }
 
   update(dt: number): void {
-    if (this.sung >= this.L.def.count) this.end += dt;
+    if (this.sung >= this.L.count) this.end += dt;
     this.scroll += dt * 6;
   }
 
@@ -174,14 +174,14 @@ export class LastSongMode extends Mode {
     this.L.particles.emit(this.L.vw * 0.5, VH * 0.4, 16, 'sparkle', ['#fff6a8', '#ffd1f5', '#bff3ff'], 180, 8);
     this.L.core.prune();
     this.line = null;
-    if (this.sung >= this.L.def.count) {
+    if (this.sung >= this.L.count) {
       this.L.sfx('reward');
       this.L.say(pickLine('story.lastSongDone'), 3);
     } else this.next();
   }
 
   render(g: G): void {
-    const k = this.sung / this.L.def.count;
+    const k = this.sung / this.L.count;
     drawFloor(g, this.L.vw, k, this.t);
     // Fireflies dance in a ring, more with every sung line.
     const n = Math.round(k * 14);
@@ -200,7 +200,7 @@ export class LastSongMode extends Mode {
   }
 
   progress(): number {
-    return Math.min(1, this.sung / this.L.def.count);
+    return Math.min(1, this.sung / this.L.count);
   }
 
   get finished(): boolean {

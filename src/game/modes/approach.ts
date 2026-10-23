@@ -41,7 +41,7 @@ export abstract class ApproachMode extends Mode {
   protected waitGap = 200;
 
   protected get total(): number {
-    return this.L.def.count;
+    return this.L.count;
   }
 
   protected maxLen(): number | undefined {

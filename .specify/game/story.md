@@ -10,10 +10,12 @@ gives you a wreath"), never about the character as someone else.
 
 ### Story 1: The Dragon Egg
 
-1. **Training Meadow** - the meadow creatures play catch with the child, the goalkeeper. A bee,
-   butterfly, ladybug, fly or mouse brings a leaf with a word and sends it toward the child's character; a
-   typed word lets the character's fan blow the leaf back to its creature, which catches it and goes
-   home. A leaf not typed in time flies past: a goal, everybody cheers (a "GOAL!" pop,
+1. **Training Meadow** - the meadow animals play with the child: the wind brings them leaves
+   and they want to score a goal with them. A bee, butterfly, ladybug, fly or mouse brings a
+   leaf with a word and sends it toward the child's character; the child catches the leaf by
+   typing its word, and the leaf flies back to its creature, which catches it and goes
+   home. The intro scene and the level's start line tell exactly this, and the get-ready
+   card of every story level shows the level's one-line story under its title. A leaf not typed in time flies past: a goal, everybody cheers (a "GOAL!" pop,
    confetti and the creature's joy, but no words from the narrator, which would nag), so a miss is
    a laugh, not a failure. The leaf size shows the word length at a glance. Animals are
    never the target of anything (no webs, nets or swatters): even soft hitting or catching
@@ -108,6 +110,10 @@ story stays playable in any browser ([mechanics](mechanics.md)).
   or a little forest friend; missions of story 3 keep its way of typing (listening,
   remembering or both). They collect on the **Little friends** screen, one group per
   story.
+- Rescue missions happen at the **rescue camp**: an evening place with warm lanterns, a
+  rope bridge and a lookout flag, so a mission looks different from replaying a world. The
+  play keeps the mission's level kind and its friend. The paw never starts by itself in a
+  mission unless the child turned the automatic paw on.
 - Every level can be finished by any child: obstacles that are not cleared in time just
   pass by or are helped by Tapko; they never cause failure.
 - World names are short words a young child reads at once, at most 12 characters (Lúka,
@@ -131,6 +137,10 @@ story stays playable in any browser ([mechanics](mechanics.md)).
 ## Why
 - The story gives a reason to practice without competition; replayable rescue missions
   give long-term variety without streak pressure.
+- A rescue is a special event and should feel like one; a paw that types by itself takes
+  the mission away from the child.
+- The old meadow text (goals as the happy outcome, a fan) described something else than the
+  play and confused children.
 - More stories keep older children playing; typing passwords at locked doors fits a
   typing game, and machines appeal to children whom dragons do not.
 - A gentle, musical story speaks to children whom machines do not, and a forest that has

@@ -25,12 +25,13 @@ import { paintRound, pawRing, placeRing, rhythmPic, roundButton, worldName } fro
 import { OWN_SHARE, WordSource, type WordSourceOwn } from '../words/words';
 import type { Lang, Profile, Surprise } from '../storage/schema';
 import type { LevelDef } from './levels';
-import { WORLDS, storyOf } from './levels';
+import { MIN_ACTIVE_S, WORLDS, grownCount, hasMinLength, levelOver, shownProgress, storyOf } from './levels';
 import type { Mode } from './mode';
 import { PAW_MAX, PAW_STREAK, PAW_WORDS, isHardMoment } from './paw';
 import { createMode } from './modes';
 import { FreeTypeMode } from './modes/freetype';
 import { PressureValve, perChar, sayTime } from './pace';
+import { Rhythm } from './rhythm';
 import { type LevelResult, completeLevel } from './progress';
 import { type Style, type Target, TypingCore } from './typing';
 import { pickTip, showCard, showNewKey, showPosture } from './cards';
@@ -180,10 +181,13 @@ export class LevelRuntime {
   chars = 0;
   errors = 0;
   private elapsed = 0;
-  private lastKey = 0;
-  private readySince = 0;
-  /** Smoothed rhythm, correct characters per second. */
-  ema: number;
+  /** Targets the level wants now: the planned count, more while the level is shorter than its minimum. */
+  count: number;
+  /** Seconds of active play (no pause, no card) and the minimum before the level may end; 0 = no minimum. */
+  private played = 0;
+  private readonly minActive: number;
+  /** The child's rhythm; it also measures each press's reaction time. */
+  readonly rhythm: Rhythm;
   private wrongStreak = { ch: '', n: 0 };
   private wordStreak = 0;
   private lastCheer = 0;
@@ -223,14 +227,17 @@ export class LevelRuntime {
     this.tweens.speed = this.reduceMotion ? 0.5 : 1;
     this.particles.enabled = !this.reduceMotion;
     const lastCpm = p.stats.sessions[p.stats.sessions.length - 1]?.cpm ?? 0;
-    this.ema = lastCpm ? lastCpm / 60 : 1;
-    this.lastCps = this.ema;
+    this.rhythm = new Rhythm(lastCpm, this.difficulty);
+    this.lastCps = lastCpm ? lastCpm / 60 : 1;
     this.mismatch = new LayoutMismatchDetector(p.layout);
 
     const lay = LAYOUTS[p.layout];
     // Practice (the custom exercise, key drills, tasks) has its own word language; story levels use the player's.
     this.words = wordSource(p, def.kind === 'practice' ? p.settings.ownWordLang : p.settings.wordLang, opts.keys, opts.own, opts.chosen);
     this.surprise = surpriseFor(p, def, !!opts.keys);
+    this.count = def.count;
+    // The e2e build may shorten the minimum (`?minActive=8`), so its tests finish levels in seconds.
+    this.minActive = !hasMinLength(def) ? 0 : import.meta.env.MODE === 'e2e' ? Number(new URLSearchParams(location.search).get('minActive') ?? 0) : MIN_ACTIVE_S;
 
     // DOM: HUD, stage, Tapko, bubble, guide.
     this.el = h('div', { class: `level-screen world-${WORLDS[def.world]}` });
@@ -346,7 +353,8 @@ export class LevelRuntime {
     if (noVoice) this.style = this.style === 'mixed' ? 'memory' : 'copy';
     this.core.style = this.style;
     this.paintRead();
-    if (!this.opts.keys && await showPosture(host, p, tip, this.surprise, voiceNote) === 'cancel') return this.exit();
+    this.storyLine = this.mode.startLine();
+    if (!this.opts.keys && await showPosture(host, p, tip, this.surprise, voiceNote, this.storyLine) === 'cancel') return this.exit();
     if (this.disposed) return;
     const intro = this.mode.intro();
     if (intro) await showCard(host, h('p', {}, intro), { button: t('common.ok'), cls: 'mode-intro' });
@@ -354,13 +362,17 @@ export class LevelRuntime {
     this.begin();
   }
 
-  /** Play starts: the mode, the friend's first line, the keys. */
+  /** The level's story line, picked once for the get-ready card and the first bubble. */
+  private storyLine: string | null = null;
+
+  /** Play starts: the mode, the story line or the friend's first line, the keys. */
   private begin(): void {
     this.mode.start();
     this.started = true;
-    if (this.fairy) this.say(pickLine('fairy.start'), 3);
+    if (this.storyLine) this.say(this.storyLine, 3);
+    else if (this.fairy) this.say(pickLine('fairy.start'), 3);
     this.tapko.classList.remove('waiting');
-    this.readySince = performance.now();
+    this.rhythm.ready(performance.now());
     this.input = new KeyInput(window, this.handlers());
     this.updateGuide();
   }
@@ -472,10 +484,8 @@ export class LevelRuntime {
     this.pressed++;
     const p = app.profile!;
     this.keyAt = this.elapsed;
-    const since = Math.max(this.lastKey, this.readySince);
-    const rt = since ? c.time - since : 1000;
-    this.lastKey = c.time;
     if (res.kind === 'wrong') {
+      const { rt } = this.rhythm.press(null, c.time);
       if (res.expected) {
         recordPress(p, res.expected, c.ch, rt);
         this.errors++;
@@ -487,12 +497,11 @@ export class LevelRuntime {
       this.setFairyMood('curious', 1);
       this.mode.onWrong(res.target);
     } else {
-      recordPress(p, res.expected, c.ch, rt);
+      const { rt, repeat } = this.rhythm.press(res.expected, c.time);
+      recordPress(p, res.expected, c.ch, rt, repeat);
       this.checkShiftHand(res.expected, c.shiftCode);
       this.chars++;
       this.wrongStreak.n = 0;
-      const interval = Math.min(3, Math.max(0.12, rt / 1000));
-      this.ema = this.ema * 0.85 + (1 / interval) * 0.15;
       if (res.kind === 'done') {
         this.sfx('word');
         this.targetTyped(res.target);
@@ -525,12 +534,9 @@ export class LevelRuntime {
   private freeChar(c: TypedChar, mode: FreeTypeMode): void {
     if (!this.freeOpen || !stepsFor(layout(), c.ch).length) return;
     this.deadPending = false;
-    const since = Math.max(this.lastKey, this.readySince);
-    const rt = since ? c.time - since : 1000;
-    this.lastKey = c.time;
-    recordPress(app.profile!, c.ch, c.ch, rt);
+    const { rt, repeat } = this.rhythm.press(c.ch, c.time);
+    recordPress(app.profile!, c.ch, c.ch, rt, repeat);
     this.chars++;
-    this.ema = this.ema * 0.85 + (1 / Math.min(3, Math.max(0.12, rt / 1000))) * 0.15;
     this.sfx('key');
     mode.key(c.ch);
     this.updateGuide();
@@ -801,8 +807,7 @@ export class LevelRuntime {
     this.guide.setPaws(null);
     if (this.guideOn !== this.guideBeforePaws) this.toggleGuide();
     // The child's next reaction time starts now, not with the paw's last key.
-    this.lastKey = 0;
-    this.readySince = performance.now();
+    this.rhythm.ready(performance.now());
     this.updateGuide();
   }
 
@@ -919,8 +924,7 @@ export class LevelRuntime {
     this.pauseEl.remove();
     this.pauseEl = null;
     this.paused = false;
-    this.lastKey = 0;
-    this.readySince = performance.now();
+    this.rhythm.ready(performance.now());
     // The pause cut the voice: a dictated target is said again.
     if (this.dictating) this.readId = 0;
   }
@@ -948,14 +952,18 @@ export class LevelRuntime {
       return;
     }
     this.elapsed += dt;
-    if (!this.finished) app.sessionSeconds += dt;
+    if (!this.finished) {
+      app.sessionSeconds += dt;
+      this.played += dt;
+    }
     this.core.update(dt);
     this.tweens.update(dt);
     this.particles.update(dt);
     const hadFocus = !!this.core.focus();
+    if (this.minActive) this.count = grownCount(this.count, this.mode.progress() * this.count, this.played, Math.max(3, this.maxActive + 1), this.minActive);
     this.mode.t += dt;
     this.mode.update(dt);
-    if (!hadFocus && this.core.focus()) this.readySince = performance.now();
+    if (!hadFocus && this.core.focus()) this.rhythm.ready(performance.now());
     this.trackPace();
     if (this.pawsAllowed) this.updatePaws(dt);
     this.readFocus();
@@ -970,24 +978,22 @@ export class LevelRuntime {
     if (this.robotMoodT > 0 && (this.robotMoodT -= dt) <= 0) this.robotMood = 'idle';
     if (this.fairyMoodT > 0 && (this.fairyMoodT -= dt) <= 0) this.fairyMood = 'idle';
     this.fairySpin = Math.max(0, this.fairySpin - dt);
-    const pct = Math.round(this.mode.progress() * 100);
+    const pct = Math.round(shownProgress(this.mode.progress(), this.played, this.minActive) * 100);
     if (pct !== this.progressPct) {
       this.progressPct = pct;
       this.progressFill.style.width = `${pct}%`;
     }
-    const target = 0.9 + this.difficulty * 0.35;
-    this.gauge.set(this.ema / target);
+    this.gauge.set(this.rhythm.ratio(this.difficulty));
     if ((this.gaugeLabelIn -= dt) <= 0) {
       this.gaugeLabelIn = 1;
-      this.gauge.label(t('level.rhythm', { n: Math.round(this.ema * 60) }));
+      this.gauge.label(t('level.rhythm', { n: this.rhythm.cpm }));
     }
-    // Drift the rhythm down slowly while idle, so the gauge is honest.
-    if (performance.now() - this.lastKey > 2500) this.ema = Math.max(0.4, this.ema - dt * 0.05);
+    this.rhythm.idle(dt, performance.now());
     if (this.core.shownChar() !== this.lastExpected) {
       this.lastExpected = this.core.shownChar();
       this.updateGuide();
     }
-    if (this.mode.finished && !this.finished) this.finish();
+    if (!this.finished && levelOver(this.mode.finished, this.played, this.minActive)) this.finish();
   }
 
   private lastExpected: string | null = null;
@@ -1094,7 +1100,7 @@ export class LevelRuntime {
 
   private flushSession(): void {
     const p = app.profile!;
-    if (this.chars + this.errors > 0) recordSession(p, this.elapsed, this.chars, this.errors, Math.round(this.ema * 60));
+    if (this.chars + this.errors > 0) recordSession(p, this.elapsed, this.chars, this.errors, this.rhythm.cpm);
     this.elapsed = 0;
     this.chars = 0;
     this.errors = 0;
@@ -1111,7 +1117,7 @@ export class LevelRuntime {
     const total = this.chars + this.errors;
     const accuracy = total ? this.chars / total : 1;
     const seconds = this.elapsed;
-    const cpm = Math.round(this.ema * 60);
+    const cpm = this.rhythm.cpm;
     const chars = this.chars, errors = this.errors;
     // Targets the paw typed count neither way.
     const resolved = this.typedTargets + this.core.missed;

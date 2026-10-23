@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { TypingCore } from '../typing';
+import { MIN_ACTIVE_S, grownCount, levelOver } from '../levels';
 import type { LevelRuntime } from '../runtime';
 import type { Mode } from '../mode';
 
@@ -30,12 +31,14 @@ function fakeRuntime(count = 4): LevelRuntime {
   const base: Record<string, unknown> = {
     core: new TypingCore(),
     def: { count, variant: 'mix', index: 0, kind: 'x', world: 1 },
+    count,
     vw: 1280,
+    stage: { scale: 1 },
     maxActive: 3,
     spawnGap: 0.5,
     noPressure: false,
     difficulty: 5,
-    ema: 0.5,
+    rhythm: { ema: 0.5, ratio: () => 0.3 },
     robot: null,
     toolAlpha: 1,
     rng: { pick: <T>(a: T[]) => a[0], range: (a: number) => a, chance: () => false, int: (a: number) => a, next: () => 0.5 },
@@ -43,7 +46,8 @@ function fakeRuntime(count = 4): LevelRuntime {
     travelTime: () => 3,
     friendSpot: () => ({ x: 120, y: 600 }),
     particles: { emit: () => {} },
-    tweens: { add: () => {} },
+    // A tween ends at once.
+    tweens: { add: (_s: number, step?: (k: number) => void, _ease?: unknown, done?: () => void) => { step?.(1); done?.(); } },
   };
   return new Proxy(base, { get: (o, k) => (k in o ? o[k as string] : () => {}) }) as unknown as LevelRuntime;
 }
@@ -70,6 +74,31 @@ describe('no typing, no progress', () => {
     }
     expect(mode.progress()).toBe(0);
     expect(mode.finished).toBe(false);
+  });
+});
+
+describe('a level shorter than its minimum', () => {
+  it.each(MODES)('%s: a steady typist plays at least two minutes, then the level ends', (_name, Ctor) => {
+    const L = fakeRuntime();
+    const mode = new Ctor(L);
+    mode.start();
+    let time = 0, next = 0;
+    while (time < 600 && !levelOver(mode.finished, time, MIN_ACTIVE_S)) {
+      L.count = grownCount(L.count, mode.progress() * L.count, time, 4, MIN_ACTIVE_S);
+      L.core.update(0.05);
+      mode.update(0.05);
+      mode.t += 0.05;
+      time += 0.05;
+      const f = L.core.focus();
+      if (f?.selectable && time >= next) {
+        next = time + 0.5;
+        const res = L.core.type(f.word[f.typed]);
+        if (res.kind === 'done') mode.onDone(res.target);
+        else if (res.kind === 'ok') mode.onCorrect(res.target);
+      }
+    }
+    expect(time).toBeGreaterThanOrEqual(MIN_ACTIVE_S);
+    expect(time).toBeLessThan(MIN_ACTIVE_S + 60);
   });
 });
 

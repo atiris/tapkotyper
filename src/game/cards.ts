@@ -85,22 +85,24 @@ export function pickTip(p: Profile, style: Style = 'copy'): { id: string; text: 
 const POSTURE_TIPS = ['back', 'feet', 'wrists', 'home', 'eyes'];
 
 /** Good posture picture with one line: the given tip, else one random posture reminder (one is read, a list is skipped). */
-export function postureContent(line?: string): HTMLElement {
+/** The posture picture and a tip (or `line`); before a story level `story` tells what the level is about. */
+export function postureContent(line?: string, story?: string | null): HTMLElement {
   const src = imageUrl('ui-posture');
   const tip = POSTURE_TIPS[Math.floor(Math.random() * POSTURE_TIPS.length)];
   return h('div', { class: 'posture' },
     h('h2', {}, t('posture.title')),
+    story ? h('p', { class: 'posture-story' }, story) : null,
     src ? h('img', { class: 'posture-img', src, alt: '' }) : h('div', { class: 'posture-img', html: postureSvg() }),
     h('p', { class: 'posture-tip' }, line ?? t(`posture.${tip}`)));
 }
 
 /**
- * Get-ready card before every adventure, with the session's preparation tip when one is due
+ * Get-ready card before every adventure, with the level's story line when it has one, the session's preparation tip when one is due
  * and the question of a parent's surprise asked in this run (with what is still left when it
  * counts) and a note on the run when one is due; the space bar or Enter (or a tap on the
  * space bar's drawing) opens the adventure, Escape cancels it.
  */
-export function showPosture(host: HTMLElement, p: Profile, tip?: string, surprise?: Surprise | null, note?: string): Promise<'start' | 'cancel'> {
+export function showPosture(host: HTMLElement, p: Profile, tip?: string, surprise?: Surprise | null, note?: string, story?: string | null): Promise<'start' | 'cancel'> {
   return new Promise((resolve) => {
     const close = (how: 'start' | 'cancel') => {
       stop();
@@ -109,7 +111,7 @@ export function showPosture(host: HTMLElement, p: Profile, tip?: string, surpris
     };
     const space = h('button', { class: 'space-key', type: 'button', 'aria-label': t('posture.space'), onClick: () => close('start') }, t('posture.spaceKey'));
     const card = h('div', { class: 'card posture-card' },
-      postureContent(tip),
+      postureContent(tip, story),
       surprise ? surpriseAsk(surprise.q) : null,
       surprise ? surpriseLeft(p, surprise) : null,
       note ? h('p', { class: 'hint style-note' }, note) : null,

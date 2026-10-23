@@ -74,7 +74,7 @@ export class DoorsMode extends HeroMode {
   }
 
   private place(): void {
-    const left = this.L.def.count - this.done;
+    const left = this.L.count - this.done;
     if (left <= 0) return;
     const n = Math.min(left, this.L.rng.int(1, this.maxPanels));
     this.doorX = this.L.vw * 0.6;
@@ -88,7 +88,7 @@ export class DoorsMode extends HeroMode {
   update(dt: number): void {
     super.update(dt);
     if (this.door && this.door.panels.every((p) => p.done)) this.door.open = Math.min(1, this.door.open + dt * 2);
-    if (this.done >= this.L.def.count && !this.busy) this.finishT += dt;
+    if (this.done >= this.L.count && !this.busy) this.finishT += dt;
   }
 
   onDone(tg: Target): void {
@@ -131,7 +131,7 @@ export class DoorsMode extends HeroMode {
   }
 
   progress(): number {
-    return this.done / this.L.def.count;
+    return this.done / this.L.count;
   }
 
   get finished(): boolean {
@@ -143,12 +143,15 @@ export class DoorsMode extends HeroMode {
  * Super-obstacle: the main gate wants its whole long code without a single mistake. The
  * code shows at once, one panel per group in two rows; each typed group lights a part of
  * the ring. A wrong key darkens it all and the same code starts again. No timer runs.
+ * A gate opened too soon has another lock: a new code of the same length.
  */
 export class GateMode extends HeroMode {
   readonly world = 'robocity';
   readonly wrongSfx = 'bzzt';
   private code: string[] = [];
   private lit = 0;
+  /** Codes already typed; the level wants `L.count` groups in all. */
+  private rounds = 0;
   private group: Target | null = null;
   private opened = 0;
   private restarts = 0;
@@ -161,9 +164,19 @@ export class GateMode extends HeroMode {
 
   start(): void {
     this.heroY = VH * 0.8;
+    this.newCode();
+  }
+
+  private newCode(): void {
     const p = app.profile!;
     this.code = gateCode(activeKeys(p), this.L.def.count, p.settings.noDiacritics, this.L.rng);
+    this.lit = 0;
     this.next();
+  }
+
+  /** Groups typed in all codes so far. */
+  private get groups(): number {
+    return this.rounds * this.L.def.count + this.lit;
   }
 
   private next(): void {
@@ -183,10 +196,12 @@ export class GateMode extends HeroMode {
     this.L.sfx('click');
     this.L.core.prune();
     this.group = null;
-    if (this.lit >= this.code.length) {
-      this.L.sfx('cheer');
-      this.L.say(pickLine('story.gateOpen'), 3);
-    } else this.next();
+    if (this.lit < this.code.length) return this.next();
+    this.L.sfx('cheer');
+    if (this.groups >= this.L.count) return this.L.say(pickLine('story.gateOpen'), 3);
+    this.rounds++;
+    this.L.say(t('story.gateMore'), 3);
+    this.newCode();
   }
 
   /** A mistake starts the code again from its first group (nothing to lose before the first key). */
@@ -264,7 +279,7 @@ export class GateMode extends HeroMode {
   }
 
   progress(): number {
-    return this.code.length ? this.lit / this.code.length : 0;
+    return Math.min(1, this.groups / this.L.count);
   }
 
   get finished(): boolean {

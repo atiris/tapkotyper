@@ -83,7 +83,7 @@ export class NotesMode extends Mode {
     this.spawnTimer -= dt;
     const busy = new Set(core.targets.map((tg) => (tg.data as Note).spot));
     const free = SPOTS.map((_, i) => i).filter((i) => !busy.has(i));
-    if (this.spawned < L.def.count && this.spawnTimer <= 0 && core.active.length < Math.min(3, L.maxActive) && free.length) {
+    if (this.spawned < L.count && this.spawnTimer <= 0 && core.active.length < Math.min(3, L.maxActive) && free.length) {
       const spot = L.rng.pick(free);
       const c = this.crown;
       core.add(L.word(), { spot, color: NOTE_COLORS[this.spawned % NOTE_COLORS.length], state: 'hang', x: c.x + SPOTS[spot][0] * TREE * 0.5, y: c.y + SPOTS[spot][1] * TREE * 0.5, fade: 0 } satisfies Note);
@@ -112,7 +112,7 @@ export class NotesMode extends Mode {
 
   render(g: G): void {
     const c = this.crown;
-    drawTree(g, c.x, VH * 0.92, this.played / this.L.def.count);
+    drawTree(g, c.x, VH * 0.92, this.played / this.L.count);
     for (const tg of this.L.core.targets) {
       const n = tg.data as Note;
       g.save();
@@ -135,11 +135,11 @@ export class NotesMode extends Mode {
   }
 
   progress(): number {
-    return this.played / this.L.def.count;
+    return this.played / this.L.count;
   }
 
   get finished(): boolean {
-    return this.spawned >= this.L.def.count && this.L.core.targets.length === 0;
+    return this.spawned >= this.L.count && this.L.core.targets.length === 0;
   }
 }
 

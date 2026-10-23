@@ -32,8 +32,8 @@ export class JunkMode extends ApproachMode {
     this.playerX = 320;
   }
 
-  start(): void {
-    if (this.L.robot?.look === 'broken') this.L.say(pickLine('story.junkStart'), 3);
+  startLine(): string | null {
+    return this.L.robot?.look === 'broken' ? pickLine('story.junkStart') : null;
   }
 
   makeMover(word: string): Mover {
@@ -131,7 +131,7 @@ export class KnotMode extends Mode {
 
   update(dt: number): void {
     this.shake = Math.max(0, this.shake - dt * 3);
-    if (this.untied >= this.L.def.count) this.free = Math.min(1, this.free + dt * 0.7);
+    if (this.untied >= this.L.count) this.free = Math.min(1, this.free + dt * 0.7);
     this.scroll += dt * 8;
   }
 
@@ -144,14 +144,14 @@ export class KnotMode extends Mode {
     this.L.particles.emit(this.L.vw * 0.6, VH * 0.5, 14, 'dot', ['#ff8a65', '#7fd1ff', '#ffd25a', '#a6e3c9'], 220, 7);
     this.L.core.prune();
     this.piece = null;
-    if (this.untied >= this.L.def.count) {
+    if (this.untied >= this.L.count) {
       this.L.say(pickLine('story.knotOpen'), 3.5);
       this.L.setRobotMood('happy', 4);
     } else this.next();
   }
 
   render(g: G): void {
-    const k = Math.min(1, this.untied / this.L.def.count);
+    const k = Math.min(1, this.untied / this.L.count);
     const x = this.L.vw * 0.6, y = VH * 0.5;
     const sh = Math.sin(this.t * 50) * 6 * this.shake;
     g.save();
@@ -168,7 +168,7 @@ export class KnotMode extends Mode {
   }
 
   progress(): number {
-    return Math.min(1, this.untied / this.L.def.count);
+    return Math.min(1, this.untied / this.L.count);
   }
 
   get finished(): boolean {

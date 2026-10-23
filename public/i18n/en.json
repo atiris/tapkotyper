@@ -538,12 +538,11 @@
   "story": {
     "next": "Next",
     "meadowStart": [
-      "The animals want to play! You are the goalkeeper.",
-      "Catch the leaves with the fan!"
+      "The animals want to score a goal on you! Catch the leaves with letters."
     ],
     "goalShout": "GOAL!",
     "hedgehogStart": [
-      "The hedgehog has a pile of leaves on its back. Watch out, here they come!"
+      "The hedgehog has a pile of leaves on its back and wants to score a goal with them. Catch them with letters!"
     ],
     "hedgehogDone": [
       "All the leaves are back on the hedgehog. Well done!"
@@ -569,9 +568,9 @@
         "Start on the Training Meadow!"
       ],
       "world1": [
-        "The meadow is full of curious little visitors.",
-        "Type the word on a leaf and fan it back.",
-        "When a leaf gets past, it is a goal and everybody cheers."
+        "The meadow animals are playing with you.",
+        "The wind brings them leaves, and they want to score a goal on you with them.",
+        "Catch the leaves with letters: type the word on a leaf and the leaf is yours."
       ],
       "invitation": [
         "Look what you found in the grass!",
@@ -749,6 +748,7 @@
     ],
     "gateIntro": "The main gate wants the whole code without a mistake. If you slip, you start again. There is no hurry.",
     "gateSlow": "Slowly and exactly. No clock runs here.",
+    "gateMore": "The gate has one more lock! Here is a new code.",
     "welcomeDone": [
       "The whole family said hello!",
       "Beep beep beep! The little robots are happy."

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { SUPER_ID } from '../storage/schema';
 import { lessonOrder } from '../learning/lessons';
-import { LEVELS, STORIES, isLevelUnlocked, isWorldUnlocked, keysNeeded, levelById, nextLevel, rescueLevel, rescueUnlocked, worldLevels, worldLock } from './levels';
+import { LEVELS, MIN_ACTIVE_S, STORIES, freeTypeLevel, grownCount, hasMinLength, isLevelUnlocked, isWorldUnlocked, keysNeeded, levelById, levelOver, nextLevel, practiceLevel, rescueLevel, rescueUnlocked, shownProgress, worldLevels, worldLock } from './levels';
 
 const KEYS = ['f', 'j', 'd', 'k', 's', 'l', 'a', ';', 'g', 'h', 'r', 'u', 'e', 'i', 't', 'y', 'w', 'o', 'q', 'p', 'v', 'm', 'c', ',', 'x', '.'];
 
@@ -181,5 +181,36 @@ describe('world locks', () => {
     expect(worldLock(p, 5)).toEqual({ kind: 'keys', need: 10, have: 7 });
     p.progress.unlockedKeys = KEYS.slice(0, 10);
     expect(worldLock(p, 5)).toBeNull();
+  });
+});
+
+describe('minimum level length', () => {
+  it('practice and free typing keep their own length, every other level has the minimum', () => {
+    expect(hasMinLength(practiceLevel(60))).toBe(false);
+    expect(hasMinLength(freeTypeLevel(0))).toBe(false);
+    expect(hasMinLength(LEVELS[4])).toBe(true);
+  });
+
+  it('a quick level gets more targets until the minimum, and ends only after it', () => {
+    // Fake clock: one word every 3 s, 12 planned.
+    let count = 12, done = 0, t = 0;
+    while (!levelOver(done >= count, t, MIN_ACTIVE_S)) {
+      count = grownCount(count, done, t, 3, MIN_ACTIVE_S);
+      t += 3;
+      done++;
+    }
+    expect(t).toBeGreaterThanOrEqual(MIN_ACTIVE_S);
+    expect(t).toBeLessThan(MIN_ACTIVE_S + 12);
+    expect(done).toBeGreaterThan(12);
+  });
+
+  it('a slow level keeps its planned count', () => {
+    expect(grownCount(12, 10, 130, 3, MIN_ACTIVE_S)).toBe(12);
+  });
+
+  it('the bar is never ahead of the time', () => {
+    expect(shownProgress(1, 60, MIN_ACTIVE_S)).toBe(0.5);
+    expect(shownProgress(0.3, 60, MIN_ACTIVE_S)).toBe(0.3);
+    expect(shownProgress(0.3, 5, 0)).toBe(0.3);
   });
 });

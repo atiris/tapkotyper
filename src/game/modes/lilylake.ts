@@ -111,7 +111,7 @@ export class LiliesMode extends HeroMode {
   }
 
   private next(): void {
-    if (this.done >= this.L.def.count) return;
+    if (this.done >= this.L.count) return;
     this.current = this.L.core.add(this.L.word(this.L.def.variant === 'short' ? 5 : undefined), {});
   }
 
@@ -119,7 +119,7 @@ export class LiliesMode extends HeroMode {
     super.update(dt);
     this.blooms = this.blooms.map((b) => Math.min(1, b + dt * 2));
     this.frog.hop = Math.min(1, this.frog.hop + dt * 2.2);
-    if (this.done >= this.L.def.count && !this.busy) this.finishT += dt;
+    if (this.done >= this.L.count && !this.busy) this.finishT += dt;
     this.L.core.prune();
   }
 
@@ -133,7 +133,7 @@ export class LiliesMode extends HeroMode {
     this.frog = { from: pad - 1, to: pad, hop: 0 };
     this.L.sfx('note');
     this.L.particles.emit(this.padX(pad), WATER_Y - 30, 12, 'sparkle', ['#ffd1e6', '#ffffff', '#bff3ff'], 130, 8);
-    if (this.blooms.length < PADS.length || this.done >= this.L.def.count) return this.next();
+    if (this.blooms.length < PADS.length || this.done >= this.L.count) return this.next();
     // Four lilies: walk on to the next stretch of the lake.
     this.busy = true;
     const dist = this.L.vw * 0.5;
@@ -165,7 +165,7 @@ export class LiliesMode extends HeroMode {
   }
 
   progress(): number {
-    return this.done / this.L.def.count;
+    return this.done / this.L.count;
   }
 
   get finished(): boolean {
@@ -245,7 +245,7 @@ export class ReflectionMode extends HeroMode {
     // Once the phrase hid, only the next part takes keys.
     const hidden = this.parts.every((p) => p.tg.showFor > 0 && (p.tg.showLeft <= 0 || p.tg.done));
     if (hidden) this.parts.forEach((p, i) => (p.tg.selectable = i === this.at));
-    if (this.phrases >= this.L.def.count) this.bloom = Math.min(1, this.bloom + dt * 0.8);
+    if (this.phrases >= this.L.count) this.bloom = Math.min(1, this.bloom + dt * 0.8);
   }
 
   onDone(tg: Target): void {
@@ -258,12 +258,12 @@ export class ReflectionMode extends HeroMode {
     this.L.sfx('cheer');
     this.L.particles.emit(this.L.vw * 0.5, VH * 0.6, 18, 'sparkle', ['#ffd1e6', '#ffffff', '#bff3ff'], 180, 9);
     this.L.core.prune();
-    if (this.phrases >= this.L.def.count) this.L.say(pickLine('story.reflectionDone'), 3);
+    if (this.phrases >= this.L.count) this.L.say(pickLine('story.reflectionDone'), 3);
     else this.L.tweens.add(1, () => undefined, undefined, () => this.nextPhrase());
   }
 
   render(g: G): void {
-    const k = this.phrases / this.L.def.count;
+    const k = this.phrases / this.L.count;
     PADS.forEach((p, i) => drawPad(g, this.L.vw * p, VH * 0.82 + (i % 2 ? 8 : -4), i < Math.round(k * PADS.length) ? 1 : this.bloom));
     if (!this.placed && this.parts.length) this.place(g);
     for (const p of this.parts) {
@@ -277,7 +277,7 @@ export class ReflectionMode extends HeroMode {
   progress(): number {
     // A finished phrase already counts in `phrases`.
     const part = this.at < this.parts.length ? this.at / this.parts.length : 0;
-    return Math.min(1, (this.phrases + part) / this.L.def.count);
+    return Math.min(1, (this.phrases + part) / this.L.count);
   }
 
   get finished(): boolean {

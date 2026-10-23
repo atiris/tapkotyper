@@ -23,6 +23,10 @@ export abstract class Mode {
   intro(): string | null {
     return null;
   }
+  /** The level's story in one line, said when play starts and shown on the get-ready card; null without one. */
+  startLine(): string | null {
+    return null;
+  }
   /** Called once after construction, when the stage size is known. */
   start(): void {}
   abstract update(dt: number): void;

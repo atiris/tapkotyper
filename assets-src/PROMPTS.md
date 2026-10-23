@@ -526,9 +526,14 @@ Cute, soft 2D children's game icon, flat vector style with gentle gradients, sof
 The same star with exactly the same shape, size, position and outline, but empty: filled with flat soft light grey, no highlight. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no other objects. Square image.
 ```
 
-### ui-key.jpg (mastered keys chip in the stats)
+### ui-key.jpg (mastered keys chip in the stats; the owner replaced it 2026-10-23)
 ```
 Cute, soft 2D children's game icon, flat vector style with gentle gradients, soft dark-brown outline (not black), warm pastel palette, bold simple shapes that stay readable when very small. A single icon: one computer keyboard key, clearly recognizable as a key: a square key with rounded corners seen a little from above, a lighter cream square top surface with a slight dip, and darker peach sloping sides below it. The key top is completely empty: no letter, no symbol, no pattern. Centered, the whole icon visible, wide empty margin. No text, no letters, no numbers, no symbols, no watermark. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no other objects. Square image.
+```
+
+### ui-key-star.jpg (typed characters chip in the stats; was ui-act-letters)
+```
+Cute, soft 2D children's game icon, flat vector style with gentle gradients, soft dark-brown outline (not black), warm pastel palette, bold simple shapes that stay readable when very small. A single icon: a single round keyboard key with a small sparkle at its corner, the key top empty. Front view, centered, the whole icon visible, wide empty margin. No text, no letters, no numbers, no watermark. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no other objects. Square image.
 ```
 
 ### badge-*.jpg (world badges)
@@ -875,7 +880,6 @@ Cute, soft 2D children's game icon, flat vector style with gentle gradients, sof
 | File | ACTIVITY |
 |---|---|
 | `ui-act-chase.jpg` | a small leaf flying to the right with three short soft speed lines behind it (main game) |
-| `ui-act-letters.jpg` | a single round keyboard key with a small sparkle at its corner, the key top empty (catching letters) |
 | `ui-act-clean.jpg` | a short straight ribbon with a small round green check mark at its end (a clean line) |
 | `ui-act-build.jpg` | three small rounded building blocks stacked, the top one just landing (building) |
 | `ui-act-text.jpg` | an open book with a few soft grey lines on its pages, no letters (text page) |

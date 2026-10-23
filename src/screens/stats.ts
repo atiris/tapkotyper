@@ -120,19 +120,19 @@ export function summaryRow(p: Profile): HTMLElement {
     m.mastered ? chip(imageUrl('ui-accuracy'), '✓', `${percent} %`, t('progress.quality', { n: percent })) : null,
     m.mastered ? chip(imageUrl('ui-speed'), '»', String(m.cpm), t('progress.speed', { n: m.cpm })) : null,
     chip(imageUrl('ui-star'), '★', String(p.progress.starsEarned), t('progress.stars', { n: p.progress.starsEarned })),
-    chip(imageUrl('ui-act-letters'), 'Aa', String(chars), t('progress.chars14', { n: chars })));
+    chip(imageUrl('ui-key-star'), 'Aa', String(chars), t('progress.chars14', { n: chars })));
 }
 
 /** Who a story is about, for its row. */
-export function storyPicture(p: Profile, story: StoryDef): string | null {
-  return imageUrl(story.id === 'robot' ? 'robot-happy' : story.id === 'fairy' ? 'fairy-happy' : `tapko-${p.companion.kind}-happy`);
+export function storyPicture(story: StoryDef): string | null {
+  return imageUrl(story.id === 'robot' ? 'robot-happy' : story.id === 'fairy' ? 'fairy-happy' : 'obj-dragon-hatched');
 }
 
 /** One row per story: its picture and name, its worlds (done in colour), and its stars. */
 function storyRow(p: Profile, story: StoryDef): HTMLElement {
   const star = imageUrl('ui-star');
   const stars = story.worlds.reduce((a, w) => a + worldStars(p, w), 0);
-  const pic = storyPicture(p, story);
+  const pic = storyPicture(story);
   return h('div', { class: `progress-story ${storyOpen(p, story) ? '' : 'closed'}` },
     h('div', { class: 'story-head' }, pic ? h('img', { class: 'story-pic', src: pic, alt: '' }) : null, h('h4', {}, t(story.title))),
     h('div', { class: 'world-icons' }, ...story.worlds.map((w) => {

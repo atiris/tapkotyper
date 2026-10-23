@@ -26,7 +26,7 @@ The owner played the game and found things that feel wrong:
       - Use them when a creature or Tapko is glad: a super-obstacle is beaten, a creature is
         saved or reaches home, a world is finished.
       - At most once per such moment, never on every target.
-- [x] **Review other effects.** Check every mode's joy, end and celebration animation
+- [ ] **Review other effects.** Check every mode's joy, end and celebration animation
       (`grep -n "joy\|endT\|rotate\|scale" src/game/modes/*.ts`).
       - A living creature that shrinks, grows or spins to show joy now hops, waves or tilts a little.
       - Objects (balls, leaves, stars, sparks) may keep spinning.

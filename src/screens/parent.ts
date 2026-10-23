@@ -519,7 +519,7 @@ function keysTab(p: Profile): HTMLElement {
 /** The levels of each story under its picture and title, one row of level cells per world. */
 function storyLevels(p: Profile): HTMLElement[] {
   return STORIES.map((story) => {
-    const pic = storyPicture(p, story);
+    const pic = storyPicture(story);
     return h('section', { class: 'story-levels' },
       h('h3', { class: 'story-head' }, pic ? h('img', { class: 'story-pic', src: pic, alt: '' }) : null, t(story.title)),
       ...story.worlds.map((w) => h('div', { class: 'world-levels' },

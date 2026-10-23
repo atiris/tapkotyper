@@ -1,244 +1,248 @@
 {
  "images": {
   "acc-antenna-band": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-antenna-band-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-backpack-front": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-backpack": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-backpack-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-balloon": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-balloon-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-boots": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-boots-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-dragon-wings": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-dragon-wings-thumb": {
    "w": 160,
    "h": 160
   },
+  "acc-fairy-wings-front": {
+   "w": 384,
+   "h": 384
+  },
   "acc-fairy-wings": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-fairy-wings-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-feather": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-feather-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-goggles": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-goggles-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-hard-hat": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-hard-hat-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-harp": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-harp-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-jetpack-front": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-jetpack": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-jetpack-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-knit-vest": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-knit-vest-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-lantern": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-lantern-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-raincoat": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-raincoat-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-round-glasses": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-round-glasses-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-star-cape-front": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-star-cape": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-star-cape-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-star-glasses": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-star-glasses-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-sunglasses": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-sunglasses-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-umbrella": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-umbrella-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-wand": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-wand-thumb": {
    "w": 160,
    "h": 160
   },
   "badge-dragons": {
-   "w": 512,
-   "h": 481
+   "w": 384,
+   "h": 361
   },
   "badge-egg": {
-   "w": 485,
-   "h": 512
+   "w": 364,
+   "h": 384
   },
   "badge-forestpath": {
-   "w": 407,
-   "h": 512
+   "w": 305,
+   "h": 384
   },
   "badge-garden": {
-   "w": 512,
-   "h": 491
+   "w": 384,
+   "h": 368
   },
   "badge-junkyard": {
-   "w": 473,
-   "h": 512
+   "w": 355,
+   "h": 384
   },
   "badge-lilylake": {
-   "w": 512,
-   "h": 438
+   "w": 384,
+   "h": 329
   },
   "badge-meadow": {
-   "w": 512,
-   "h": 432
+   "w": 384,
+   "h": 324
   },
   "badge-moonball": {
-   "w": 512,
-   "h": 490
+   "w": 384,
+   "h": 367
   },
   "badge-musictree": {
-   "w": 512,
-   "h": 490
+   "w": 384,
+   "h": 367
   },
   "badge-planet": {
-   "w": 512,
-   "h": 510
+   "w": 384,
+   "h": 382
   },
   "badge-raintown": {
-   "w": 493,
-   "h": 512
+   "w": 370,
+   "h": 384
   },
   "badge-robocity": {
-   "w": 512,
-   "h": 483
+   "w": 384,
+   "h": 362
   },
   "badge-robohome": {
-   "w": 512,
-   "h": 510
+   "w": 384,
+   "h": 382
   },
   "badge-space": {
-   "w": 471,
-   "h": 512
+   "w": 353,
+   "h": 384
   },
   "badge-workshop": {
-   "w": 425,
-   "h": 512
+   "w": 318,
+   "h": 384
   },
   "base-template": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "bg-dragons-far": {
-   "w": 1376,
-   "h": 768
+   "w": 1024,
+   "h": 572
   },
   "bg-dragons-mid": {
    "w": 1376,
@@ -249,14 +253,38 @@
    "h": 768
   },
   "bg-egg-far": {
-   "w": 1376,
-   "h": 768
+   "w": 1024,
+   "h": 572
   },
   "bg-egg-mid": {
    "w": 1376,
    "h": 768
   },
   "bg-egg-near": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-forestpath-far": {
+   "w": 1024,
+   "h": 572
+  },
+  "bg-forestpath-mid": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-forestpath-near": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-garden-far": {
+   "w": 1024,
+   "h": 572
+  },
+  "bg-garden-mid": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-garden-near": {
    "w": 1376,
    "h": 768
   },
@@ -272,9 +300,21 @@
    "w": 1376,
    "h": 768
   },
-  "bg-meadow-far": {
+  "bg-lilylake-far": {
+   "w": 1024,
+   "h": 572
+  },
+  "bg-lilylake-mid": {
    "w": 1376,
    "h": 768
+  },
+  "bg-lilylake-near": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-meadow-far": {
+   "w": 1024,
+   "h": 572
   },
   "bg-meadow-mid": {
    "w": 1376,
@@ -284,9 +324,33 @@
    "w": 1376,
    "h": 768
   },
-  "bg-planet-far": {
+  "bg-moonball-far": {
+   "w": 1024,
+   "h": 572
+  },
+  "bg-moonball-mid": {
    "w": 1376,
    "h": 768
+  },
+  "bg-moonball-near": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-musictree-far": {
+   "w": 1024,
+   "h": 572
+  },
+  "bg-musictree-mid": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-musictree-near": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-planet-far": {
+   "w": 1024,
+   "h": 572
   },
   "bg-planet-mid": {
    "w": 1376,
@@ -320,6 +384,18 @@
    "w": 1376,
    "h": 768
   },
+  "bg-robohome-far": {
+   "w": 1024,
+   "h": 572
+  },
+  "bg-robohome-mid": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-robohome-near": {
+   "w": 1376,
+   "h": 768
+  },
   "bg-space-far": {
    "w": 1376,
    "h": 768
@@ -345,548 +421,776 @@
    "h": 768
   },
   "fairy-curious": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "fairy-happy": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "fairy-idle": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "fairy-singing": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
+  },
+  "obj-antenna": {
+   "w": 170,
+   "h": 384
   },
   "obj-asteroid-big": {
-   "w": 512,
-   "h": 501
+   "w": 384,
+   "h": 376
   },
   "obj-asteroid-small": {
-   "w": 512,
-   "h": 484
+   "w": 384,
+   "h": 363
+  },
+  "obj-baby-bird": {
+   "w": 372,
+   "h": 384
+  },
+  "obj-basket": {
+   "w": 384,
+   "h": 300
+  },
+  "obj-battery": {
+   "w": 384,
+   "h": 179
   },
   "obj-bee": {
-   "w": 497,
-   "h": 512
+   "w": 372,
+   "h": 384
+  },
+  "obj-big-flower-open": {
+   "w": 271,
+   "h": 384
+  },
+  "obj-big-flower": {
+   "w": 261,
+   "h": 384
   },
   "obj-bird": {
-   "w": 495,
-   "h": 512
+   "w": 372,
+   "h": 384
+  },
+  "obj-blueprint": {
+   "w": 312,
+   "h": 384
   },
   "obj-bolt": {
-   "w": 512,
-   "h": 320
+   "w": 384,
+   "h": 240
   },
   "obj-boulder-1": {
-   "w": 512,
-   "h": 480
+   "w": 384,
+   "h": 360
   },
   "obj-boulder-2": {
-   "w": 512,
-   "h": 480
+   "w": 384,
+   "h": 360
   },
   "obj-boulder-3": {
-   "w": 512,
-   "h": 461
+   "w": 384,
+   "h": 346
+  },
+  "obj-box": {
+   "w": 384,
+   "h": 279
   },
   "obj-bud": {
-   "w": 325,
-   "h": 512
+   "w": 244,
+   "h": 384
   },
   "obj-butterfly": {
-   "w": 463,
-   "h": 512
+   "w": 348,
+   "h": 384
+  },
+  "obj-cable-knot": {
+   "w": 384,
+   "h": 305
+  },
+  "obj-can": {
+   "w": 384,
+   "h": 299
   },
   "obj-crate": {
-   "w": 512,
-   "h": 314
+   "w": 384,
+   "h": 235
+  },
+  "obj-crystal-glow": {
+   "w": 304,
+   "h": 384
+  },
+  "obj-crystal": {
+   "w": 297,
+   "h": 384
+  },
+  "obj-dance-step": {
+   "w": 274,
+   "h": 384
+  },
+  "obj-dewdrop": {
+   "w": 384,
+   "h": 342
   },
   "obj-door-open": {
-   "w": 476,
-   "h": 512
+   "w": 357,
+   "h": 384
+  },
+  "obj-door-speaker": {
+   "w": 384,
+   "h": 379
   },
   "obj-door": {
-   "w": 476,
-   "h": 512
+   "w": 357,
+   "h": 384
   },
   "obj-dragon-baby-1": {
-   "w": 427,
-   "h": 512
+   "w": 320,
+   "h": 384
   },
   "obj-dragon-baby-2": {
-   "w": 430,
-   "h": 512
+   "w": 322,
+   "h": 384
   },
   "obj-dragon-baby-3": {
-   "w": 426,
-   "h": 512
+   "w": 320,
+   "h": 384
   },
   "obj-dragon-hatched": {
-   "w": 383,
-   "h": 512
+   "w": 287,
+   "h": 384
+  },
+  "obj-dragon-sleeping": {
+   "w": 384,
+   "h": 297
   },
   "obj-egg-cracking": {
-   "w": 401,
-   "h": 512
+   "w": 300,
+   "h": 384
+  },
+  "obj-egg-glow": {
+   "w": 310,
+   "h": 384
   },
   "obj-egg": {
-   "w": 401,
-   "h": 512
+   "w": 300,
+   "h": 384
   },
   "obj-fan": {
-   "w": 512,
-   "h": 462
+   "w": 384,
+   "h": 347
+  },
+  "obj-feather-falling": {
+   "w": 298,
+   "h": 384
   },
   "obj-firefly": {
-   "w": 512,
-   "h": 401
+   "w": 384,
+   "h": 301
   },
   "obj-flower-open": {
-   "w": 466,
-   "h": 512
+   "w": 350,
+   "h": 384
   },
   "obj-fly": {
-   "w": 512,
-   "h": 443
+   "w": 384,
+   "h": 332
+  },
+  "obj-fog": {
+   "w": 384,
+   "h": 359
+  },
+  "obj-frog-singing": {
+   "w": 384,
+   "h": 374
   },
   "obj-frog": {
-   "w": 512,
-   "h": 497
+   "w": 384,
+   "h": 373
+  },
+  "obj-gate": {
+   "w": 384,
+   "h": 384
   },
   "obj-gear": {
-   "w": 451,
-   "h": 512
+   "w": 339,
+   "h": 384
   },
   "obj-hedgehog": {
-   "w": 512,
-   "h": 445
+   "w": 384,
+   "h": 333
+  },
+  "obj-invitation": {
+   "w": 354,
+   "h": 384
   },
   "obj-ladybug": {
-   "w": 512,
-   "h": 455
+   "w": 384,
+   "h": 341
   },
   "obj-lamp-on": {
-   "w": 320,
-   "h": 512
+   "w": 240,
+   "h": 384
   },
   "obj-lamp": {
-   "w": 320,
-   "h": 512
+   "w": 240,
+   "h": 384
   },
   "obj-leaf-birch": {
-   "w": 443,
-   "h": 512
+   "w": 333,
+   "h": 384
+  },
+  "obj-leaf-card": {
+   "w": 384,
+   "h": 321
   },
   "obj-leaf-chestnut": {
-   "w": 506,
-   "h": 512
+   "w": 380,
+   "h": 384
   },
   "obj-leaf-ginkgo": {
-   "w": 420,
-   "h": 430
+   "w": 375,
+   "h": 384
   },
   "obj-leaf-maple": {
-   "w": 512,
-   "h": 460
-  },
-  "obj-leaf-oak": {
-   "w": 450,
-   "h": 512
-  },
-  "obj-lily-pad": {
-   "w": 512,
-   "h": 340
-  },
-  "obj-magnet": {
-   "w": 271,
-   "h": 512
-  },
-  "obj-mole": {
-   "w": 512,
-   "h": 441
-  },
-  "obj-mouse": {
-   "w": 476,
-   "h": 512
-  },
-  "obj-music-tree": {
-   "w": 497,
-   "h": 512
-  },
-  "obj-note1": {
-   "w": 375,
-   "h": 512
-  },
-  "obj-note2": {
-   "w": 471,
-   "h": 512
-  },
-  "obj-owl": {
-   "w": 433,
-   "h": 512
-  },
-  "obj-planet-1": {
-   "w": 512,
+   "w": 384,
    "h": 345
   },
+  "obj-leaf-oak": {
+   "w": 337,
+   "h": 384
+  },
+  "obj-lily-pad": {
+   "w": 384,
+   "h": 255
+  },
+  "obj-lily": {
+   "w": 384,
+   "h": 312
+  },
+  "obj-magnet": {
+   "w": 204,
+   "h": 384
+  },
+  "obj-manual": {
+   "w": 384,
+   "h": 255
+  },
+  "obj-mole": {
+   "w": 384,
+   "h": 331
+  },
+  "obj-mouse": {
+   "w": 357,
+   "h": 384
+  },
+  "obj-music-tree": {
+   "w": 373,
+   "h": 384
+  },
+  "obj-nest": {
+   "w": 384,
+   "h": 321
+  },
+  "obj-note1": {
+   "w": 281,
+   "h": 384
+  },
+  "obj-note2": {
+   "w": 353,
+   "h": 384
+  },
+  "obj-nut": {
+   "w": 384,
+   "h": 360
+  },
+  "obj-owl": {
+   "w": 325,
+   "h": 384
+  },
+  "obj-panel": {
+   "w": 319,
+   "h": 384
+  },
+  "obj-photo-frame": {
+   "w": 320,
+   "h": 384
+  },
+  "obj-planet-1": {
+   "w": 384,
+   "h": 259
+  },
   "obj-planet-2": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "obj-planet-3": {
-   "w": 473,
-   "h": 474
+   "w": 383,
+   "h": 384
   },
   "obj-planet-4": {
-   "w": 512,
-   "h": 511
+   "w": 384,
+   "h": 383
   },
   "obj-planet-5": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
+  },
+  "obj-puddle-stone": {
+   "w": 384,
+   "h": 211
+  },
+  "obj-radio": {
+   "w": 312,
+   "h": 384
   },
   "obj-raindrop": {
-   "w": 433,
-   "h": 512
+   "w": 325,
+   "h": 384
   },
   "obj-robot-small-1": {
-   "w": 438,
-   "h": 512
+   "w": 329,
+   "h": 384
   },
   "obj-robot-small-2": {
-   "w": 430,
-   "h": 498
+   "w": 332,
+   "h": 384
+  },
+  "obj-robot-small-3": {
+   "w": 321,
+   "h": 384
   },
   "obj-rock-falling-1": {
-   "w": 429,
-   "h": 492
+   "w": 335,
+   "h": 384
   },
   "obj-rock-falling-2": {
-   "w": 494,
-   "h": 512
+   "w": 371,
+   "h": 384
   },
   "obj-rock-round": {
-   "w": 512,
-   "h": 501
+   "w": 384,
+   "h": 376
   },
   "obj-rocket": {
-   "w": 512,
-   "h": 272
+   "w": 384,
+   "h": 204
+  },
+  "obj-screw": {
+   "w": 384,
+   "h": 210
+  },
+  "obj-seed": {
+   "w": 222,
+   "h": 384
   },
   "obj-sign": {
-   "w": 418,
-   "h": 512
+   "w": 314,
+   "h": 384
+  },
+  "obj-song-sheet": {
+   "w": 327,
+   "h": 384
   },
   "obj-spider": {
-   "w": 512,
-   "h": 370
+   "w": 384,
+   "h": 277
+  },
+  "obj-spring": {
+   "w": 228,
+   "h": 384
+  },
+  "obj-star-bright": {
+   "w": 384,
+   "h": 378
+  },
+  "obj-star-dim": {
+   "w": 384,
+   "h": 375
   },
   "obj-stone": {
-   "w": 512,
-   "h": 388
+   "w": 384,
+   "h": 291
+  },
+  "obj-storm-cloud": {
+   "w": 384,
+   "h": 244
   },
   "obj-stump": {
-   "w": 495,
-   "h": 512
+   "w": 371,
+   "h": 384
+  },
+  "obj-timetable": {
+   "w": 249,
+   "h": 384
   },
   "obj-tire": {
-   "w": 475,
-   "h": 512
+   "w": 356,
+   "h": 384
+  },
+  "obj-toaster-robot": {
+   "w": 384,
+   "h": 300
+  },
+  "obj-toolbox": {
+   "w": 384,
+   "h": 240
+  },
+  "obj-tree-leaf": {
+   "w": 342,
+   "h": 384
+  },
+  "obj-twig": {
+   "w": 384,
+   "h": 153
   },
   "obj-umbrella": {
-   "w": 512,
-   "h": 484
+   "w": 384,
+   "h": 363
+  },
+  "obj-vacuum-robot": {
+   "w": 384,
+   "h": 251
+  },
+  "obj-wheel": {
+   "w": 384,
+   "h": 384
   },
   "acc-cap": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-cap-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-scarf": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-scarf-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-sneakers": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-sneakers-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-crown": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-crown-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-bow-tie": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-bow-tie-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-butterfly-wings": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-butterfly-wings-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-wizard-hat": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-wizard-hat-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-flower-wreath": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-flower-wreath-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-rain-boots": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-rain-boots-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-beanie": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-beanie-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-neckerchief": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-neckerchief-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-hair-bow": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-hair-bow-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-heart-glasses": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-heart-glasses-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-star-shirt": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-star-shirt-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-pink-sneakers": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-pink-sneakers-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-explorer-hat": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-explorer-hat-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-explorer-vest": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-explorer-vest-thumb": {
    "w": 160,
    "h": 160
   },
   "acc-green-boots": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "acc-green-boots-thumb": {
    "w": 160,
    "h": 160
   },
-  "tapko-bear-happy": {
-   "w": 512,
-   "h": 512
-  },
-  "tapko-bear-idle": {
-   "w": 512,
-   "h": 512
-  },
-  "tapko-bear-thinking": {
-   "w": 512,
-   "h": 512
-  },
-  "tapko-bunny-happy": {
-   "w": 512,
-   "h": 512
-  },
-  "tapko-bunny-idle": {
-   "w": 512,
-   "h": 512
-  },
-  "tapko-bunny-thinking": {
-   "w": 512,
-   "h": 512
-  },
-  "tapko-cat-happy": {
-   "w": 512,
-   "h": 512
-  },
-  "tapko-cat-idle": {
-   "w": 512,
-   "h": 512
-  },
-  "tapko-cat-thinking": {
-   "w": 512,
-   "h": 512
-  },
-  "tapko-dog-happy": {
-   "w": 512,
-   "h": 512
-  },
-  "tapko-dog-idle": {
-   "w": 512,
-   "h": 512
-  },
-  "tapko-dog-thinking": {
-   "w": 512,
-   "h": 512
-  },
-  "tapko-fox-happy": {
-   "w": 512,
-   "h": 512
-  },
-  "tapko-fox-idle": {
-   "w": 512,
-   "h": 512
-  },
-  "tapko-fox-thinking": {
-   "w": 512,
-   "h": 512
-  },
-  "tapko-lion-happy": {
-   "w": 512,
-   "h": 512
-  },
-  "tapko-lion-idle": {
-   "w": 512,
-   "h": 512
-  },
-  "tapko-lion-thinking": {
-   "w": 512,
-   "h": 512
-  },
-  "tapko-owl-happy": {
-   "w": 512,
-   "h": 512
-  },
-  "tapko-owl-idle": {
-   "w": 512,
-   "h": 512
-  },
-  "tapko-owl-thinking": {
-   "w": 512,
-   "h": 512
-  },
-  "tapko-panda-happy": {
-   "w": 512,
-   "h": 512
-  },
-  "tapko-panda-idle": {
-   "w": 512,
-   "h": 512
-  },
-  "tapko-panda-thinking": {
-   "w": 512,
-   "h": 512
-  },
-  "tapko-penguin-happy": {
-   "w": 512,
-   "h": 512
-  },
-  "tapko-penguin-idle": {
-   "w": 512,
-   "h": 512
-  },
-  "tapko-penguin-thinking": {
-   "w": 512,
-   "h": 512
-  },
   "robot-broken": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "robot-happy": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "robot-idle": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "robot-raincoat": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "robot-wet": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "robot-worried": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "robot2-happy": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
   },
   "robot2-idle": {
-   "w": 512,
-   "h": 512
+   "w": 384,
+   "h": 384
+  },
+  "tapko-bear-happy": {
+   "w": 384,
+   "h": 384
+  },
+  "tapko-bear-idle": {
+   "w": 384,
+   "h": 384
+  },
+  "tapko-bear-thinking": {
+   "w": 384,
+   "h": 384
+  },
+  "tapko-bunny-happy": {
+   "w": 384,
+   "h": 384
+  },
+  "tapko-bunny-idle": {
+   "w": 384,
+   "h": 384
+  },
+  "tapko-bunny-thinking": {
+   "w": 384,
+   "h": 384
+  },
+  "tapko-cat-happy": {
+   "w": 384,
+   "h": 384
+  },
+  "tapko-cat-idle": {
+   "w": 384,
+   "h": 384
+  },
+  "tapko-cat-thinking": {
+   "w": 384,
+   "h": 384
+  },
+  "tapko-dog-happy": {
+   "w": 384,
+   "h": 384
+  },
+  "tapko-dog-idle": {
+   "w": 384,
+   "h": 384
+  },
+  "tapko-dog-thinking": {
+   "w": 384,
+   "h": 384
+  },
+  "tapko-fox-happy": {
+   "w": 384,
+   "h": 384
+  },
+  "tapko-fox-idle": {
+   "w": 384,
+   "h": 384
+  },
+  "tapko-fox-thinking": {
+   "w": 384,
+   "h": 384
+  },
+  "tapko-lion-happy": {
+   "w": 384,
+   "h": 384
+  },
+  "tapko-lion-idle": {
+   "w": 384,
+   "h": 384
+  },
+  "tapko-lion-thinking": {
+   "w": 384,
+   "h": 384
+  },
+  "tapko-owl-happy": {
+   "w": 384,
+   "h": 384
+  },
+  "tapko-owl-idle": {
+   "w": 384,
+   "h": 384
+  },
+  "tapko-owl-thinking": {
+   "w": 384,
+   "h": 384
+  },
+  "tapko-panda-happy": {
+   "w": 384,
+   "h": 384
+  },
+  "tapko-panda-idle": {
+   "w": 384,
+   "h": 384
+  },
+  "tapko-panda-thinking": {
+   "w": 384,
+   "h": 384
+  },
+  "tapko-penguin-happy": {
+   "w": 384,
+   "h": 384
+  },
+  "tapko-penguin-idle": {
+   "w": 384,
+   "h": 384
+  },
+  "tapko-penguin-thinking": {
+   "w": 384,
+   "h": 384
   },
   "ui-accuracy": {
    "w": 384,
    "h": 341
+  },
+  "ui-act-build": {
+   "w": 224,
+   "h": 384
+  },
+  "ui-act-chase": {
+   "w": 384,
+   "h": 254
+  },
+  "ui-act-clean": {
+   "w": 384,
+   "h": 145
+  },
+  "ui-act-crossroads": {
+   "w": 346,
+   "h": 384
+  },
+  "ui-act-hide": {
+   "w": 384,
+   "h": 252
+  },
+  "ui-act-letters": {
+   "w": 384,
+   "h": 380
+  },
+  "ui-act-listen": {
+   "w": 384,
+   "h": 333
+  },
+  "ui-act-remember": {
+   "w": 384,
+   "h": 352
+  },
+  "ui-act-rhythm": {
+   "w": 339,
+   "h": 384
+  },
+  "ui-act-super": {
+   "w": 384,
+   "h": 293
+  },
+  "ui-act-text": {
+   "w": 384,
+   "h": 302
   },
   "ui-earth": {
    "w": 383,
@@ -894,91 +1198,91 @@
   },
   "ui-key": {
    "w": 384,
-   "h": 294
+   "h": 384
   },
   "ui-level": {
    "w": 352,
    "h": 384
   },
   "ui-logo": {
-   "w": 428,
-   "h": 512
+   "w": 321,
+   "h": 384
   },
   "ui-map-dragons": {
-   "w": 512,
-   "h": 497
+   "w": 384,
+   "h": 373
   },
   "ui-map-egg": {
-   "w": 494,
-   "h": 512
+   "w": 370,
+   "h": 384
   },
   "ui-map-forestpath": {
-   "w": 497,
-   "h": 512
+   "w": 373,
+   "h": 384
   },
   "ui-map-garden": {
-   "w": 512,
-   "h": 500
+   "w": 384,
+   "h": 375
   },
   "ui-map-junkyard": {
-   "w": 437,
-   "h": 512
+   "w": 328,
+   "h": 384
   },
   "ui-map-lilylake": {
-   "w": 512,
-   "h": 445
+   "w": 384,
+   "h": 334
   },
   "ui-map-meadow": {
-   "w": 512,
-   "h": 422
+   "w": 384,
+   "h": 316
   },
   "ui-map-moonball": {
-   "w": 501,
-   "h": 512
+   "w": 376,
+   "h": 384
   },
   "ui-map-musictree": {
-   "w": 431,
-   "h": 512
+   "w": 323,
+   "h": 384
   },
   "ui-map-planet": {
-   "w": 460,
-   "h": 512
+   "w": 345,
+   "h": 384
   },
   "ui-map-raintown": {
-   "w": 434,
-   "h": 512
+   "w": 326,
+   "h": 384
   },
   "ui-map-robocity": {
-   "w": 441,
-   "h": 512
+   "w": 331,
+   "h": 384
   },
   "ui-map-robohome": {
-   "w": 433,
-   "h": 512
+   "w": 325,
+   "h": 384
   },
   "ui-map-space": {
-   "w": 512,
-   "h": 500
+   "w": 384,
+   "h": 375
   },
   "ui-map-workshop": {
-   "w": 453,
-   "h": 512
+   "w": 339,
+   "h": 384
   },
   "ui-posture": {
-   "w": 465,
-   "h": 512
+   "w": 349,
+   "h": 384
   },
   "ui-speed": {
    "w": 384,
    "h": 247
   },
   "ui-star-empty": {
-   "w": 512,
-   "h": 491
+   "w": 384,
+   "h": 368
   },
   "ui-star": {
-   "w": 512,
-   "h": 491
+   "w": 384,
+   "h": 368
   }
  },
  "accessories": [

@@ -17,6 +17,9 @@ The game works without any of these files (it draws simple shapes instead), so y
 them in any order, skip some, or redo one later with the same name.
 
 ### Tips
+- **Title first:** start every prompt with `Generate an image: <short title>`, for example
+  `Generate an image: Song sheet`, then an empty line and the prompt, so the Gemini chat
+  shows at once what the picture is.
 - **Same look everywhere:** every prompt carries the same style paragraph. Keep it.
 - **Companions and accessories** always start from `base-template.jpg` (see section 1).
 - **Background must stay flat:** sprites ask for a flat single-color background
@@ -24,6 +27,43 @@ them in any order, skip some, or redo one later with the same name.
   ask: "Same image, but the background must be one flat color, no shadow."
 - **No text in images.** If letters appear, ask for the same image without text.
 - If a result is scary, sharp-toothed or angry, ask again; everything must feel friendly and safe.
+
+### Lessons from generating
+Notes from real Gemini runs; add new ones here.
+- A motion word on an object ("bouncing", "running") makes Gemini add arms and legs. Say
+  "no arms, no legs" when the object should stay an object.
+- A vague technical object ("a round gate with three panels") turns into a character with a
+  face. Describe the shape concretely (material, how the parts are split, where they meet),
+  add "no face" and "strictly front view, symmetrical".
+- The common sprite prompt ("faces where the object has a face", "side view facing right")
+  gives flat things like a picture frame a face and a skewed shape. For such objects say
+  "no face, no eyes" and "strictly front view, not tilted".
+- When the game draws a state itself (battery charge bars, a glowing ring), ask for the
+  empty or neutral state, otherwise Gemini fills it with colors.
+- The "flat" background is never perfectly flat: magenta varies by about 40 in the green
+  channel across the image. `npm run assets` copes with it; only a floor, shadow or real
+  gradient needs a fix.
+- Clear or shiny things (a water drop, glass) take on the key color: the dew drop came out
+  pink on magenta. Give such objects their own color in hex ("light blue water #BFE6F7").
+- A follow-up keeps the wrong shape of the first picture. Use it only for color or a small
+  detail; when the shape or the view is wrong, send a new prompt. The nut stayed a
+  front-view hexagon with a hole drawn from the side (thread wall visible) after a follow-up.
+  Front-view objects with a hole: "the hole is a clean flat circle, no inner wall, no depth".
+- "The image can repeat horizontally" in a room scene made Gemini draw the room twice, as
+  two rows stacked in one picture. Add "one single continuous scene filling the whole image,
+  not split into rows, panels, strips or a grid" and list different things ("nothing repeated").
+- An image whose subject is tall (a flower on a stem) gets cut at the bottom edge. Say where
+  it ends ("the stem ends well above the bottom edge, nothing touches any edge").
+- In a strip, "ground in the ground color of the world" can come out pink-violet (garden near)
+  and the key then eats it. Name the ground color in hex and add "never pink, purple or magenta".
+- A switched-on lamp in a strip throws a pink glow into the magenta. Ask for lamps switched
+  off and "no glow, nothing behind the pieces except magenta".
+- "Silver" alone comes out cream or white. Say "blue-grey steel" and give hex shades.
+- With an attached reference, Gemini keeps its pose: "curled up asleep" on a sitting dragon
+  stayed sitting. Describe the new pose in full ("lying on its belly, curled like a
+  sleeping cat, head on its paws") and add "clearly lying, not sitting".
+- The background tone drifts (the twig got a dull 229,85,216 instead of 255,0,255). The
+  script samples the key from the corners, so it still works.
 
 ---
 
@@ -213,33 +253,33 @@ Cute, soft 2D children's storybook illustration, flat vector style with gentle g
 
 WORLD STYLE.
 
-Wide game background, landscape 16:9: SCENE. The sky is a small part of the image (about the top fifth); most of the picture is scenery. Simple and uncluttered, soft colors, low contrast so that big letters can be read on top of it. The left and right edges should continue smoothly so the image can repeat horizontally. No sun, no moon and no single big object in the sky: the image repeats horizontally, so the sky must be even (soft clouds or gradient only).
+Wide game background, landscape 16:9: SCENE. The sky is a small part of the image (about the top fifth); most of the picture is scenery. Rich and inviting for young teens, not primitive: several layers of depth and small details to discover (paths, little buildings, plants, rocks, water), but soft colors and low contrast so that big letters can be read on top of it. The left and right edges should continue smoothly so the image can repeat horizontally. No sun, no moon and no single big object in the sky: the image repeats horizontally, so the sky must be even (soft clouds or gradient only).
 ```
 
 ### Common prompt for `*-mid.jpg` and `*-near.jpg` (replace LAYER and WORLD STYLE)
 ```
-WORLD STYLE. Ultra-wide panoramic image, 21:9, on a flat solid pure magenta (#FF00FF) background. Along the bottom edge a low band of ground in the ground color of the world, about the lowest fifth of the image. Standing on that ground band: LAYER, 6 to 12 large whole pieces that overlap a little, no tiny pieces, soft muted colors and little fine detail. The pieces reach up to different heights (the tallest almost to the top edge), so their tops form an uneven silhouette, never a straight or flat top edge. Between and above the pieces there is only the flat magenta: no ground, no wall, no sky, no distant objects, no silhouettes in the background, nothing behind the pieces except magenta. Strong contrast: pieces clearly darker or more saturated than the ground band. Every piece appears only once: do not repeat or copy any part of the image inside it. The left and right edges continue seamlessly into each other so the strip can repeat side by side. No white or light outline, halo or sticker border around the pieces: their dark outlines meet the magenta directly. No characters, no text. Flat side view like a 2D platformer, no perspective and no vanishing point: the ground band is a straight horizontal band seen from the side, nothing runs toward a point in the distance.
+WORLD STYLE. Ultra-wide panoramic image, 21:9, on a flat solid pure magenta (#FF00FF) background. Along the bottom edge a low band of ground in the ground color of the world, about the lowest fifth of the image. Standing on that ground band: LAYER, 6 to 12 large whole pieces of different kinds and shapes that overlap a little, no tiny pieces, soft muted colors, each piece with a few interesting details (texture, a small flower, a stone, a crack) so the strip is never just a plain hill or a row of grass. The pieces reach up to different heights (the tallest almost to the top edge), so their tops form an uneven silhouette, never a straight or flat top edge. Between and above the pieces there is only the flat magenta: no ground, no wall, no sky, no distant objects, no silhouettes in the background, nothing behind the pieces except magenta. Strong contrast: pieces clearly darker or more saturated than the ground band. Every piece appears only once: do not repeat or copy any part of the image inside it. The left and right edges continue seamlessly into each other so the strip can repeat side by side. No white or light outline, halo or sticker border around the pieces: their dark outlines meet the magenta directly. No characters, no text. Flat side view like a 2D platformer, no perspective and no vanishing point: the ground band is a straight horizontal band seen from the side, nothing runs toward a point in the distance.
 ```
 The height column is where the script places the strip (part of the screen height,
 counted from the bottom); it lives in `STRIP_HEIGHT` in `scripts/assets.mjs`.
 
 | File | SCENE / LAYER | Height | Status |
 |---|---|---|---|
-| `bg-meadow-far.jpg` | a training meadow in soft daylight with soft blue sky, a few fluffy clouds, gentle green hills far away and a small wooden fence | full | regenerate (had a sun) |
-| `bg-meadow-mid.jpg` | rolling green grass hills with a few round bushes and small trees | 45 % | |
-| `bg-meadow-near.jpg` | tall grass blades, clover and small daisies | 25 % | |
+| `bg-meadow-far.jpg` | a training meadow in soft daylight with soft blue sky, a few fluffy clouds, gentle green hills far away and a small wooden fence | full | done 2026-10-23 |
+| `bg-meadow-mid.jpg` | a round grassy hill with a small tree, a bush with yellow flowers, an apple tree, a short wooden fence piece, a haystack, a tall birch, a bush with pink flowers and a beehive on a stand | 45 % | done 2026-10-23 |
+| `bg-meadow-near.jpg` | tall grass blades, clover with a pink flower, daisies, a dandelion seed ball, a smooth stone, a tall buttercup, a small wooden stake and a curled leaf | 25 % | done 2026-10-23 |
 | `bg-space-far.jpg` | deep friendly space in dark blue and violet with soft glowing stars, a pastel nebula and the curve of a blue-green Earth at the bottom left | full | |
 | `bg-space-mid.jpg` | **use the far prompt instead**, SCENE: "only scattered soft glowing stars and tiny distant pastel planets on a flat pure magenta (#FF00FF) background" | full | not a strip |
 | `bg-space-near.jpg` | **use the far prompt instead**, SCENE: "only a few small soft star sparkles and tiny space dust on a flat pure magenta (#FF00FF) background" | full | not a strip |
-| `bg-planet-far.jpg` | a magical alien planet with a pastel mint sky with soft glowing clouds, purple and turquoise mushroom-shaped trees far away | full | regenerate (had two moons) |
+| `bg-planet-far.jpg` | a magical alien planet with a pastel mint sky with soft glowing clouds, purple and turquoise mushroom-shaped trees far away | full | done 2026-10-23 |
 | `bg-planet-mid.jpg` | a magical forest edge with round turquoise and lilac trees and glowing flowers | 50 % | |
-| `bg-planet-near.jpg` | a calm green swamp with lily pads, reeds and soft mud | 30 % | regenerate: the water band has a flat straight top edge, ask for an uneven top line  |
-| `bg-dragons-far.jpg` | a peaceful dragon valley at sunset, warm orange and pink colours in the sky, the sun hidden behind the mountains, soft rounded mountains and a waterfall | full | regenerate (had a sun) |
+| `bg-planet-near.jpg` | a swamp band with an uneven top (tufts, humps, puddles) and on it turquoise reeds, a lily pad on a curly stem, a purple mushroom tree, a mossy hump with glowing flowers, a curly fern, lilac bulb plants, a glowing cattail and a small crystal | 30 % | done 2026-10-23 |
+| `bg-dragons-far.jpg` | a peaceful dragon valley at sunset, warm orange and pink colours in the sky, the sun hidden behind the mountains, soft rounded mountains and a waterfall | full | done 2026-10-23 |
 | `bg-dragons-mid.jpg` | rounded rocky hills with cozy cave entrances and soft moss | 45 % | |
-| `bg-dragons-near.jpg` | soft grass, smooth round pebbles and small ferns | 25 % | |
-| `bg-egg-far.jpg` | a bright morning valley with a long gentle grassy slope going down from left to right, a few trees and a blue river far away | full | regenerate (had a sun) |
-| `bg-egg-mid.jpg` | a gentle grassy slope going down from left to right with a few bushes | 50 % | |
-| `bg-egg-near.jpg` | grass tufts and small flowers | 20 % | |
+| `bg-dragons-near.jpg` | grass with orange tips, round pebbles, a big fern, a broken eggshell with orange spots, a mossy log, a small glowing crystal, a dry reed and a curled leaf plant | 25 % | done 2026-10-23 |
+| `bg-egg-far.jpg` | a bright morning valley with a long gentle grassy slope going down from left to right, a few trees and a blue river far away | full | done 2026-10-23 |
+| `bg-egg-mid.jpg` | a bush with yellow flowers, a leaning tree, a mossy boulder, a haystack, a pine, a bush with pink flowers, a signpost with empty boards and a rocky outcrop with ferns | 50 % | done 2026-10-23 |
+| `bg-egg-near.jpg` | only plants and small things: grass, yellow flowers, a pink wild rose, foxtail, a fern, a broken spotted eggshell, daisies, a mushroom and a thistle; no big rocks | 20 % | done 2026-10-23 |
 
 ### World style (fills `WORLD STYLE` in the far and strip prompts)
 Paste the block of the world into every prompt of that world (far, mid, near) in place of
@@ -447,6 +487,11 @@ Cute, soft 2D children's game icon, flat vector style with gentle gradients, sof
 The same star with exactly the same shape, size, position and outline, but empty: filled with flat soft light grey, no highlight. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no other objects. Square image.
 ```
 
+### ui-key.jpg (mastered keys chip in the stats)
+```
+Cute, soft 2D children's game icon, flat vector style with gentle gradients, soft dark-brown outline (not black), warm pastel palette, bold simple shapes that stay readable when very small. A single icon: one computer keyboard key, clearly recognizable as a key: a square key with rounded corners seen a little from above, a lighter cream square top surface with a slight dip, and darker peach sloping sides below it. The key top is completely empty: no letter, no symbol, no pattern. Centered, the whole icon visible, wide empty margin. No text, no letters, no numbers, no symbols, no watermark. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no other objects. Square image.
+```
+
 ### badge-*.jpg (world badges)
 One round badge picture per world, shown in a medal on the map, the results and the
 progress view. The ring (bronze, silver, gold) is drawn by the game, so the picture has
@@ -536,18 +581,18 @@ first, then attach it to the other prompts ("the same robot as in the attached i
 ### Backgrounds (section 3 prompts)
 | File | SCENE / LAYER | Height | Status |
 |---|---|---|---|
-| `bg-junkyard-far.jpg` | a friendly junkyard in soft daylight with soft hills of old things far away, a rusty but cheerful crane and a light blue sky | full | regenerate (was sunny) |
+| `bg-junkyard-far.jpg` | a friendly junkyard in soft daylight with soft hills of old things far away, a rusty but cheerful crane and a light blue sky | full | done 2026-10-22 |
 | `bg-junkyard-mid.jpg` | soft piles of old tires, wooden crates and round metal cans | 45 % | |
 | `bg-junkyard-near.jpg` | a few big coiled metal springs, large bolts and nuts and thick grass tufts | 25 % | done 2026-10-22 (reference for the strip prompt) |
 | `bg-workshop-far.jpg` | the inside of a warm cozy workshop with wooden walls, shelves with jars of screws, hanging tools and a round window | full | |
-| `bg-workshop-mid.jpg` | a long workbench with drawers and small toolboxes | 45 % | regenerate: a pale pink outline around every object  |
-| `bg-workshop-near.jpg` | a conveyor belt running across the whole image with rollers below | 25 % | regenerate: a pale pink outline around every object  |
+| `bg-workshop-mid.jpg` | a workbench with drawers and a vise, a tool cabinet, a mint toolbox, stacked crates, a pegboard with tools, a drill press, a stool and a barrel with rods | 45 % | done 2026-10-23 |
+| `bg-workshop-near.jpg` | a conveyor belt across the whole image with rollers below, and on it in one row a gear, an open crate, a robot arm part, copper wire, a box of bolts, a wheel, a battery and a small robot head; nothing behind them | 25 % | done 2026-10-23 |
 | `bg-raintown-far.jpg` | a calm small town on a rainy afternoon, soft grey-blue sky with gentle rain lines, colorful rounded houses with lit windows | full | |
 | `bg-raintown-mid.jpg` | wet cobblestone street with small lamp posts and round bushes | 40 % | |
 | `bg-raintown-near.jpg` | shiny puddles with ripples and a few fallen leaves | 20 % | |
 | `bg-robocity-far.jpg` | a friendly futuristic city with rounded silver and pastel towers, soft light trails and a lilac evening sky | full | |
-| `bg-robocity-mid.jpg` | a friendly electric fence of rounded silver panels with glowing pastel lines, and in front of it small round power posts with glowing tops, thick cables and big round connectors | 40 % | regenerate: busy and low contrast, hides the ground  |
-| `bg-robocity-near.jpg` | a low row of small round glowing lights, short thick cables and small rounded metal covers standing on a thin flat ground line | 20 % | regenerate: busy and low contrast  |
+| `bg-robocity-mid.jpg` | few big shapes with air between them: a rounded fence panel with a cyan line, a power post with a yellow top, a cable into a round connector, an antenna tower, a dome transformer, a fence panel with a round window and a battery block, on a dark ground band | 40 % | done 2026-10-23 |
+| `bg-robocity-near.jpg` | low chunky pieces on a thin dark ground band: round ground lights, a cable loop, a leaning manhole cover, a dome lamp, a bollard, a coiled cable and a vent box | 20 % | done 2026-10-23 |
 | `bg-robohome-far.jpg` | the inside of a cozy robot home: round windows, warm lamps, soft sofa, shelves with little gadgets, pastel colors | full | |
 | `bg-robohome-mid.jpg` | a row of cozy furniture: a low cabinet, a plant in a pot, a round rug | 40 % | |
 | `bg-robohome-near.jpg` | a warm wooden floor with a soft round rug edge | 20 % | |

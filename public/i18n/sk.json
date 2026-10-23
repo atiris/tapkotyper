@@ -40,9 +40,9 @@
     }
   },
   "privacy": {
-    "short": "Žiadne reklamy ani sledovanie vašich dát.",
-    "local": "Údaje len vo vašom zariadení.",
-    "tiny": "Bez reklám, len vo vašom zariadení.",
+    "short": "Žiadne reklamy ani sledovanie vašich dát",
+    "local": "Údaje len vo vašom zariadení",
+    "tiny": "Bez reklám, len vo vašom zariadení",
     "visitsOne": "{n} návšteva",
     "visitsFew": "{n} návštevy",
     "visitsMany": "{n} návštev"

@@ -40,9 +40,9 @@
     }
   },
   "privacy": {
-    "short": "No ads and no tracking of your data.",
-    "local": "Your data stays on your device.",
-    "tiny": "No ads, only on your device.",
+    "short": "No ads and no tracking of your data",
+    "local": "Your data stays on your device",
+    "tiny": "No ads, only on your device",
     "visitsOne": "{n} visit",
     "visitsFew": "{n} visits",
     "visitsMany": "{n} visits"

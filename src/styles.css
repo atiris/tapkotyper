@@ -951,7 +951,6 @@ body.reduce-motion .round-btn.timer.ending { --rb: #d9661f; --rb-ring: #ff8a3d; 
 .scan-name { font-weight: 700; }
 .teacher-count { margin: 0.4rem 0 0; }
 .teacher-actions { margin-top: 0.4rem; }
-.teacher-empty ul { margin: 0.3rem 0; padding-left: 1.2rem; }
 .teacher-table .group-row th { background: var(--brand); color: #fff; font-size: 1.1rem; }
 .teacher-table td:first-child { width: 2rem; }
 .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.6rem; }

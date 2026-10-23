@@ -64,7 +64,7 @@ test('a code in front of the camera is added once', async ({ page }) => {
 
 test('groups: filter, assign, export respect the filter', async ({ page }) => {
   await page.goto('./#/teacher');
-  await expect(page.locator('.teacher-empty li')).toHaveCount(3);
+  await expect(page.locator('.teacher-empty')).toContainText('odkaz s výsledkom');
   for (const link of [await linkOf('Ema', '5.A'), await linkOf('Adam', '5.B'), await linkOf('Zora'), await linkOf('Ján')]) {
     await page.locator('.teacher-screen form input').fill(link);
     await page.locator('.teacher-screen form .btn.primary').click();

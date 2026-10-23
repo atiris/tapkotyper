@@ -1495,7 +1495,7 @@
   },
   "teacher": {
     "title": "For mentors",
-    "intro": "The fastest way is to scan the QR codes on the typists' screens: type a group (for example a class), start scanning and walk around the room. Every new code is written into that group. You can also open or paste a result link.",
+    "intro": "Type a **group** (for example 5A) and press **Scan with camera**. Every QR code read goes into that group, so a class's results stay **together** and can be filtered. The details are in **Help** (?).",
     "paste": "Result link",
     "pastePlaceholder": "Paste a result link",
     "add": "Add",
@@ -1505,9 +1505,9 @@
     "removeTitle": "Remove the result?",
     "removeText": "The result of {name} for {title} will be removed from this table.",
     "remove": "Remove",
-    "empty": "No results yet. Add them in one of three ways:",
+    "empty": "No results yet. Scan the QR codes or paste a **result link**.",
     "csv": "Download CSV",
-    "privacy": "Results are stored only in this browser. There are no accounts and nothing goes to a server. The checksum finds damaged links, not cheating.",
+    "privacy": "Results are stored **only in this browser**; nothing goes to a server.",
     "col": {
       "task": "Task",
       "child": "Typist",
@@ -1532,11 +1532,6 @@
     "removePicked": "Remove selected ({n})",
     "removeManyTitle": "Remove the selected results?",
     "removeManyText": "{n} results will be removed from the table.",
-    "way": {
-      "scan": "Scan the QR codes on the typists' screens with the camera.",
-      "paste": "Paste a result link into the field above.",
-      "open": "Open a result link in this browser."
-    },
     "scan": {
       "start": "Scan with camera",
       "privacy": "The camera picture is never sent or stored.",

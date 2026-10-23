@@ -4,7 +4,7 @@ import { codeFrom } from '../share/codec';
 import { parseResult } from '../share/result';
 import { TASK_GROUP_MAX } from '../share/task';
 import { type Sort, type SortKey, type StoredResult, TeacherStore, childKey, childSummary, mastered, nextSort } from '../share/teacher';
-import { teacherArt, button, confirmDialog, download, h, icon } from '../ui/dom';
+import { teacherArt, button, confirmDialog, download, h, icon, richText } from '../ui/dom';
 import { keyLabel } from '../ui/keyboard-guide';
 import { cornerControls } from '../ui/chrome';
 import { type ScanCard, scanCard } from './teacher-scan';
@@ -220,7 +220,7 @@ export function teacherScreen(root: HTMLElement, params: { code?: string; child?
     if (!rows.length) {
       list.replaceChildren();
       return void table.replaceChildren(h('div', { class: 'hint teacher-empty' }, teacherArt(),
-        h('div', {}, h('p', {}, t('teacher.empty')), h('ul', {}, ...['scan', 'paste', 'open'].map((w) => h('li', {}, t(`teacher.way.${w}`)))))));
+        h('p', {}, ...richText(t('teacher.empty')))));
     }
     const grouped = store.groups().length > 0;
     const cols = head.length + 1;
@@ -309,14 +309,14 @@ export function teacherScreen(root: HTMLElement, params: { code?: string; child?
     h('header', { class: 'bar' }, button(t('common.back'), () => go('start'), 'btn ghost small', 'back'), h('h1', {}, t('teacher.title'))),
     cornerControls(),
     h('main', { class: 'panel' },
-      h('p', {}, t('teacher.intro')),
+      h('p', {}, ...richText(t('teacher.intro'))),
       h('div', { class: 'row scan-start' }, scanGroup, groupNames, scanButton, h('span', { class: 'hint' }, t('teacher.scan.privacy'))),
       scanSlot,
       h('form', { class: 'row', onSubmit: (e: Event) => { e.preventDefault(); void addCode(codeFrom(paste.value, 'result')).then(() => (paste.value = '')); } },
         paste, h('button', { class: 'btn primary', type: 'submit' }, t('teacher.add'))),
       msg,
       results,
-      h('p', { class: 'hint' }, t('teacher.privacy')))));
+      h('p', { class: 'hint' }, ...richText(t('teacher.privacy'))))));
   paint();
   if (params.code) void addCode(params.code);
   return stopScan;

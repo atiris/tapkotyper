@@ -1495,7 +1495,7 @@
   },
   "teacher": {
     "title": "Pre mentorov",
-    "intro": "Najrýchlejšie je skenovať QR kódy z obrazoviek pisateľov kamerou: napíšte skupinu (napríklad triedu), zapnite skenovanie a obíďte miestnosť. Každý nový kód sa zapíše do tejto skupiny. Môžete tiež otvoriť alebo vložiť odkaz s výsledkom.",
+    "intro": "Napíšte **skupinu** (napríklad 5.A) a stlačte **Skenovať kamerou**. Každý načítaný QR kód sa zapíše do tejto skupiny, takže výsledky triedy máte **pokope** a môžete ich filtrovať. Podrobnosti sú v **Pomoci** (?).",
     "paste": "Odkaz s výsledkom",
     "pastePlaceholder": "Vložte odkaz s výsledkom",
     "add": "Pridať",
@@ -1505,9 +1505,9 @@
     "removeTitle": "Odstrániť výsledok?",
     "removeText": "Výsledok {name} z úlohy {title} sa z tejto tabuľky odstráni.",
     "remove": "Odstrániť",
-    "empty": "Zatiaľ tu nie sú žiadne výsledky. Pridajte ich jedným z troch spôsobov:",
+    "empty": "Zatiaľ tu nie sú žiadne výsledky. Naskenujte QR kódy alebo vložte **odkaz s výsledkom**.",
     "csv": "Stiahnuť CSV",
-    "privacy": "Výsledky sú uložené len v tomto prehliadači. Nie sú tu žiadne účty a nič sa neposiela na server. Kontrolný súčet odhalí poškodený odkaz, nie podvádzanie.",
+    "privacy": "Výsledky sú uložené **len v tomto prehliadači**, nič sa neposiela na server.",
     "col": {
       "task": "Úloha",
       "child": "Pisateľ",
@@ -1532,11 +1532,6 @@
     "removePicked": "Odstrániť vybrané ({n})",
     "removeManyTitle": "Odstrániť vybrané výsledky?",
     "removeManyText": "Z tabuľky sa odstráni {n} výsledkov.",
-    "way": {
-      "scan": "Skenovať QR kódy z obrazoviek pisateľov kamerou.",
-      "paste": "Vložiť odkaz s výsledkom do políčka vyššie.",
-      "open": "Otvoriť odkaz s výsledkom v tomto prehliadači."
-    },
     "scan": {
       "start": "Skenovať kamerou",
       "privacy": "Obraz z kamery sa nikam neposiela ani neukladá.",

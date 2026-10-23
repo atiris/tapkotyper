@@ -20,7 +20,10 @@
   results are kept in this browser only, apart from the players, one row per child and task
   (a newer hand-in replaces the older one), with delete and CSV export. No accounts.
   Results come in three ways: scanning the result QR codes on the children's screens with the
-  camera, pasting a link, or opening a link. The empty state names all three.
+  camera, pasting a link, or opening a link.
+- The page itself stays short: one line on why to type a group (a class's results stay
+  together and can be filtered), the key words in bold, and a pointer to the help's Mentoring
+  tab, where everything else is explained; a teacher in a classroom reads the page at a glance.
 - **Camera scan:** the teacher types the group being scanned (a class), one tap starts a
   continuous scan, and every new valid code is written into that group at once
   (green flash, soft tick), a code seen again is ignored, a changed result of the same child

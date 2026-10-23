@@ -56,6 +56,10 @@ Notes from real Gemini runs; add new ones here.
   it ends ("the stem ends well above the bottom edge, nothing touches any edge").
 - In a strip, "ground in the ground color of the world" can come out pink-violet (garden near)
   and the key then eats it. Name the ground color in hex and add "never pink, purple or magenta".
+- With the whole WORLD STYLE block in a strip prompt (sky and hill colors), Gemini painted a
+  sky, hills and a camp behind the pieces (rescue mid and near). Leave the sky and hill colors
+  out of the strip palette, open with "THE WHOLE IMAGE IS ONE FLAT SOLID PURE MAGENTA EXCEPT
+  THE PIECES AND A LOW GROUND BAND" and list what is absent ("NO sky, NO hills, NO tents").
 - A switched-on lamp in a strip throws a pink glow into the magenta. Ask for lamps switched
   off and "no glow, nothing behind the pieces except magenta".
 - "Silver" alone comes out cream or white. Say "blue-grey steel" and give hex shades.
@@ -309,9 +313,9 @@ counted from the bottom); it lives in `STRIP_HEIGHT` in `scripts/assets.mjs`.
 | `bg-egg-far.jpg` | a bright morning valley with a long gentle grassy slope going down from left to right, a few trees and a blue river far away | full | done 2026-10-23 |
 | `bg-egg-mid.jpg` | a bush with yellow flowers, a leaning tree, a mossy boulder, a haystack, a pine, a bush with pink flowers, a signpost with empty boards and a rocky outcrop with ferns | 50 % | done 2026-10-23 |
 | `bg-egg-near.jpg` | only plants and small things: grass, yellow flowers, a pink wild rose, foxtail, a fern, a broken spotted eggshell, daisies, a mushroom and a thistle; no big rocks | 20 % | done 2026-10-23 |
-| `bg-rescue-far.jpg` | a cozy rescue camp in a calm evening: a few small tents and wooden huts with warm glowing lanterns on poles, soft hills far away, an evening sky from violet to warm peach with a few soft clouds | full | |
-| `bg-rescue-mid.jpg` | a wooden rope bridge between two posts, a lookout tower with a small flag, a tent with a glowing lantern, a stack of crates, a round bush, a signpost with empty boards, a pine and a campfire ring of stones (no fire) | 45 % | |
-| `bg-rescue-near.jpg` | evening grass tufts, a small lantern on a stake, a coil of rope, a smooth stone, a short wooden post with a small flag, a fern and a small backpack | 25 % | |
+| `bg-rescue-far.jpg` | a cozy rescue camp in a calm evening: a few small tents and wooden huts with warm glowing lanterns on poles, soft hills far away, an evening sky from violet to warm peach with a few soft clouds | full | done 2026-10-23 |
+| `bg-rescue-mid.jpg` | a wooden rope bridge between two posts, a lookout tower with a small flag, a tent with a glowing lantern, a stack of crates, a round bush, a signpost with empty boards, a pine and a campfire ring of stones (no fire) | 45 % | done 2026-10-23 (ground gap under the bridge, magenta left between the tower ladder rungs) |
+| `bg-rescue-near.jpg` | evening grass tufts, a small lantern on a stake, a coil of rope, a smooth stone, a short wooden post with a small flag, a fern and a small backpack | 25 % | done 2026-10-23 (the lantern floats beside its stake) |
 
 ### World style (fills `WORLD STYLE` in the far and strip prompts)
 Paste the block of the world into every prompt of that world (far, mid, near) in place of
@@ -905,12 +909,12 @@ the side, alone and readable at a small size (it flies at about 46 px).
 ### Game objects (section 4 prompt)
 | File | OBJECT | BG | Status |
 |---|---|---|---|
-| `obj-aim-target.jpg` | a round archery target made of soft red and cream rings with a golden center, painted on a wooden board, front view, no stand, no face | green | todo |
-| `obj-aim-ring.jpg` | a tall oval soap-bubble ring floating upright, thin shimmering rainbow edge in pink, light blue and mint, empty and see-through in the middle, front view | green | todo |
-| `obj-aim-pebble.jpg` | a single small smooth round grey pebble, no face | magenta | todo |
-| `obj-aim-screw.jpg` | a single shiny silver screw standing upright, round head on top, no face | magenta | todo |
-| `obj-aim-fly.jpg` | a funny little housefly with big red eyes and clear wings, flying, side view, happy | magenta | todo |
-| `obj-aim-tomato.jpg` | a single round ripe red tomato with a small green leafy top, no face | magenta | todo |
-| `obj-aim-arrow.jpg` | a short wooden toy arrow with a soft rounded grey tip and red feathers, pointing to the right, no face | magenta | todo |
-| `obj-aim-duck.jpg` | a yellow rubber bath duck with an orange beak, side view facing right, happy | magenta | todo |
-| `obj-aim-sock.jpg` | a single light blue striped child's sock with a white cuff, side view, no face | magenta | todo |
+| `obj-aim-target.jpg` | a round archery target made of soft red and cream rings with a golden center, painted on a wooden board, front view, no stand, no face | green | done 2026-10-23 |
+| `obj-aim-ring.jpg` | a tall oval soap-bubble ring floating upright, thin shimmering rainbow edge in pink, light blue and mint, empty and see-through in the middle, front view | green | done 2026-10-23 |
+| `obj-aim-pebble.jpg` | a single small smooth round grey pebble, no face | magenta | done 2026-10-23 |
+| `obj-aim-screw.jpg` | a single shiny silver screw standing upright, round head on top, no face | magenta | todo (2026-10-23: Gemini answered without a picture) |
+| `obj-aim-fly.jpg` | a funny little housefly with big red eyes and clear wings, flying, side view, happy | magenta | done 2026-10-23 |
+| `obj-aim-tomato.jpg` | a single round ripe red tomato with a small green leafy top, no face | magenta | done 2026-10-23 |
+| `obj-aim-arrow.jpg` | a short wooden toy arrow with a soft rounded grey tip and red feathers, pointing to the right, no face | magenta | done 2026-10-23 |
+| `obj-aim-duck.jpg` | a yellow rubber bath duck with an orange beak, side view facing right, happy | magenta | done 2026-10-23 |
+| `obj-aim-sock.jpg` | a single light blue striped child's sock with a white cuff, side view, no face | magenta | done 2026-10-23 |

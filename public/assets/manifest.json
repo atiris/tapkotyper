@@ -456,6 +456,18 @@
    "w": 1376,
    "h": 768
   },
+  "bg-rescue-far": {
+   "w": 1024,
+   "h": 572
+  },
+  "bg-rescue-mid": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-rescue-near": {
+   "w": 1376,
+   "h": 768
+  },
   "bg-robocity-far": {
    "w": 1376,
    "h": 768
@@ -518,6 +530,38 @@
   },
   "fairy-singing": {
    "w": 384,
+   "h": 384
+  },
+  "obj-aim-arrow": {
+   "w": 384,
+   "h": 128
+  },
+  "obj-aim-duck": {
+   "w": 384,
+   "h": 357
+  },
+  "obj-aim-fly": {
+   "w": 384,
+   "h": 291
+  },
+  "obj-aim-pebble": {
+   "w": 384,
+   "h": 302
+  },
+  "obj-aim-ring": {
+   "w": 291,
+   "h": 384
+  },
+  "obj-aim-sock": {
+   "w": 303,
+   "h": 384
+  },
+  "obj-aim-target": {
+   "w": 366,
+   "h": 384
+  },
+  "obj-aim-tomato": {
+   "w": 379,
    "h": 384
   },
   "obj-antenna": {

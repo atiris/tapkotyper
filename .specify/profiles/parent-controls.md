@@ -18,6 +18,11 @@
   A parent who sets the value by hand turns its automatic mode off. Each automatic mode is
   its own switch with a title ("Automatic difficulty", "Automatic word length") and one short
   line; the note about the slow start sits under the difficulty slider.
+- **Instructions for young typists** (off by default) is a switch in the practice group, with the
+  line "Shows a few extra instructions. Good for typists up to about 10 years old." On, the map's
+  welcome also lists what to do (Continue, keys come step by step, "?" helps); off, it is only
+  the greeting and the start button. Lines that only explain how to work a screen belong
+  behind this switch; story, mode intros and what a child needs to play stay for all.
 - **Wardrobe time earned by practice** (on by default) is a switch in the practice group,
   with the rule in one line (1 minute in the wardrobe for 5 minutes of practice, at most 7
   minutes) and the child's current balance; turned off, the wardrobe is always open
@@ -78,6 +83,9 @@
   needs no encryption, and the owner keeps a way back through the super player.
 - Fixed settings either bore a growing child or overwhelm a new one; small automatic steps,
   each celebrated, make getting better visible and rewarding.
+- Small children (up to about 10) need a few words on how to go on; older ones find them in
+  the way, so the parent decides per profile. A sentence for the parent ("the gear is for
+  you") does not belong on a child's screen; help says it.
 - Parents and mentors want control and visible progress; a flat list of all levels is
   unreadable, and cards that repeat the summary add nothing; printable cards avoid accounts
   and rosters ([research](../../.research/features/parent-dashboard.md)).

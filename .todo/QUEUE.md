@@ -7,4 +7,3 @@ listed here is never run. Lines whose plan has moved to `.todo/.done/` are
 skipped, and the session that finishes a plan removes its line.
 
 
-- [P3] 60-results-row-and-kid-hints.md - small polish, independent

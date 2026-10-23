@@ -55,6 +55,8 @@ export interface Settings {
   autoWordLen: boolean;
   noDiacritics: boolean;
   noTimePressure: boolean;
+  /** A few extra how-to lines for small children (the welcome card's instructions). */
+  kidHints: boolean;
   sessionMinutes: number;
   guide: 'auto' | 'on' | 'off';
   /** The parent locked the guide visibility; the child cannot toggle it. */
@@ -235,6 +237,7 @@ export function defaultSettings(wordLang: Lang): Settings {
     autoWordLen: true,
     noDiacritics: false,
     noTimePressure: false,
+    kidHints: false,
     sessionMinutes: 15,
     guide: 'auto',
     guideLocked: false,

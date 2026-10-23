@@ -115,6 +115,8 @@ test('the new player form has a 3 x 3 picker with a side column, closes with X, 
   await createProfile(page, 'Ema');
   const welcome = page.locator('.welcome-card');
   await expect(welcome).toContainText('Ema');
+  // The how-to lines are behind "Instructions for young typists", off by default.
+  await expect(welcome.locator('li')).toHaveCount(0);
   await welcome.locator('.modal-x').click();
   await expect(welcome).toHaveCount(0);
   await page.reload();

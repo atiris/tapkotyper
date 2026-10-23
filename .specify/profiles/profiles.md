@@ -13,8 +13,8 @@
   language, the word language and the keyboard layout. Without a nickname the form says so.
 - A new player lands on the map, not in a level, so a parent can set things up first. Above
   the stories the narrator greets the typist once by nickname ("This is your character in
-  this adventure.") and says in a few lines what to do (Continue,
-  keys come step by step, "?" helps, the gear is for the parent); closing it or starting from
+  this adventure."); with "Instructions for young typists" on it also says in a few lines what to
+  do (Continue, keys come step by step, "?" helps); closing it or starting from
   it hides it for good. The intro story plays before the first level. A guest and the
   super player get no greeting.
 - Profile data: nickname and character kind, an optional real name, a seed, custom

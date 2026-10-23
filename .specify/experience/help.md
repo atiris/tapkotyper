@@ -18,7 +18,8 @@
   3. **How to progress**, in the child's voice: stories, worlds and levels, stars, letters that
      open levels and stories, "My progress" with its three tabs and QR codes, rescue missions
      and badges.
-  4. **Settings**, for the parent: what each settings tab does (child, practice, look and sound,
+  4. **Settings**, for the parent: that the settings open with the gear on the map (the child's
+     screens do not say it), what each settings tab does (child, practice, look and sound,
      password, own words and text, surprises, tasks, keys, progress, data), with one section per
      settings tab, and what is lost without a backup.
   5. **Mentoring**, for teachers and mentors in one place: the "For mentors" page, scanning

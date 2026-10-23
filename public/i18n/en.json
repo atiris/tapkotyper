@@ -99,8 +99,7 @@
       "title": "Hello {name}! This is your character in this adventure.",
       "lines": [
         "Press “Continue”, you will learn the keys step by step, one by one.",
-        "When you are not sure what to do, click “?”.",
-        "A parent can set everything up with the gear at the top right."
+        "When you are not sure what to do, click “?”."
       ],
       "start": "Start"
     },
@@ -1014,6 +1013,8 @@
     "noDiacriticsHint": "For beginners, for a while. Accents are part of correct writing.",
     "noTimePressure": "No time pressure",
     "noTimePressureHint": "Moving things stop and wait for the typist.",
+    "kidHints": "Instructions for young typists",
+    "kidHintsHint": "Shows a few extra instructions. Good for typists up to about 10 years old.",
     "wardrobeLimit": "Wardrobe time earned by practice",
     "wardrobeLimitHint": "1 minute in the wardrobe for 5 minutes of practice, at most 7 minutes.",
     "wardrobeBalance": "Wardrobe time now: {m} min {s} s",

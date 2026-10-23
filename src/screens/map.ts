@@ -56,7 +56,7 @@ function welcomeCard(p: Profile, start: () => void): HTMLElement | null {
     h('div', { class: 'welcome-tapko' }, tapkoElement(p.companion, 'happy', 110)),
     h('div', { class: 'welcome-text' },
       h('h2', { id: 'welcome-title' }, t('map.welcome.title', { name: nickname(p) })),
-      h('ul', {}, ...tList('map.welcome.lines').map((l) => h('li', {}, l))),
+      p.settings.kidHints ? h('ul', {}, ...tList('map.welcome.lines').map((l) => h('li', {}, l))) : null,
       button(t('map.welcome.start'), () => { done(); start(); }, 'btn primary', 'play')));
   return card;
 }

@@ -99,8 +99,7 @@
       "title": "Ahoj, {name}! Toto je tvoja postava v tomto dobrodružstve.",
       "lines": [
         "Stlač „Pokračovať“, klávesy sa budeš učiť postupne, jeden po druhom.",
-        "Keď nevieš ako ďalej, klikni na „?“.",
-        "Rodič si môže všetko nastaviť cez ozubené koliesko vpravo hore."
+        "Keď nevieš ako ďalej, klikni na „?“."
       ],
       "start": "Začať"
     },
@@ -1014,6 +1013,8 @@
     "noDiacriticsHint": "Pre začiatočníkov, len na chvíľu. Diakritika patrí k správnemu písaniu.",
     "noTimePressure": "Bez časového tlaku",
     "noTimePressureHint": "Pohyblivé predmety zastanú a počkajú na pisateľa.",
+    "kidHints": "Inštrukcie pre malých pisateľov",
+    "kidHintsHint": "Zobrazí sa zopár inštrukcií navyše. Vhodné pre pisateľov asi do 10 rokov.",
     "wardrobeLimit": "Šatník za čas cvičenia",
     "wardrobeLimitHint": "1 minúta v šatníku za 5 minút cvičenia, najviac 7 minút.",
     "wardrobeBalance": "Čas v šatníku teraz: {m} min {s} s",

@@ -74,9 +74,11 @@ let box: HTMLElement | null = null;
 /** Places the tooltip over `el` (or under it without room above), inside the window. */
 function place(el: Element): void {
   const r = el.getBoundingClientRect();
+  // Measured at the left edge: near the right edge the box would shrink and wrap every word.
+  box!.style.left = '0px';
   const w = box!.offsetWidth, hh = box!.offsetHeight;
   const below = r.top - GAP - hh < GAP;
-  const left = Math.max(GAP, Math.min(innerWidth - w - GAP, r.left + r.width / 2 - w / 2));
+  const left = Math.max(GAP, Math.min(document.documentElement.clientWidth - w - GAP, r.left + r.width / 2 - w / 2));
   box!.classList.toggle('below', below);
   box!.style.left = `${left}px`;
   box!.style.top = `${below ? r.bottom + GAP : r.top - GAP - hh}px`;

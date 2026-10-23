@@ -10,6 +10,7 @@ import { paintRound, roundButton, roundTextSvg } from './hud';
 import { cornerMenu } from './menu';
 import { toast } from './toast';
 import { tip } from './tooltip';
+import { updateButton } from './update';
 
 /** Super mode is on: a round star in the top row; clicking it ends the mode. Nothing otherwise. */
 export function superStar(): HTMLButtonElement | null {
@@ -62,7 +63,8 @@ export function fullscreenButton(): HTMLButtonElement | null {
     const on = !!document.fullscreenElement;
     const label = t(on ? 'common.fullscreenExit' : 'common.fullscreen');
     b.setAttribute('aria-label', label);
-    tip(b, label);
+    // F11 is the browser's own fullscreen key, not one of the game's.
+    tip(b, `${label} (F11)`);
     paintRound(b, on ? 'fullscreenExit' : 'fullscreen');
   };
   const onChange = () => (b.isConnected ? paint() : document.removeEventListener('fullscreenchange', onChange));
@@ -115,9 +117,9 @@ export function appShortcuts(): void {
   installShortcuts();
 }
 
-/** The global round buttons, right to left: help, fullscreen, sound, the super star. A level passes its own help. */
+/** The global round buttons, right to left: a new version (hidden until there is one), help, fullscreen, sound, the super star. A level passes its own help. */
 export function globalButtons(help: HTMLButtonElement = helpButton()): (HTMLButtonElement | null)[] {
-  return [superStar(), soundButton(), fullscreenButton(), help];
+  return [superStar(), soundButton(), fullscreenButton(), help, updateButton()];
 }
 
 /**

@@ -1,11 +1,12 @@
 import './styles.css';
-import { app, go, openRoute, registerScreen, screenVisit, selectProfile, useLanguage } from './app/app';
+import { app, go, openRoute, parseRoute, registerScreen, screenVisit, useLanguage } from './app/app';
 import { loadManifest } from './gfx/assets';
-import { SUPER_ID } from './storage/schema';
+import { GUEST_ID, SUPER_ID } from './storage/schema';
 import { detectLanguage } from './i18n/i18n';
 import { appShortcuts, watchAutoFullscreen } from './ui/chrome';
 import { noteVisit } from './ui/install';
 import { installTooltips } from './ui/tooltip';
+import { installing, watchUpdates } from './ui/update';
 import { parentAccess } from './screens/parent-gate';
 import { breakScreen } from './screens/break';
 import { friendsScreen } from './screens/friends';
@@ -77,25 +78,20 @@ async function boot(): Promise<void> {
     app.openedFiles.push(...files);
     go('teacher', { tab: 'files' }, false);
   }));
-  if (location.hash.length > 2) return openRoute(location.hash);
-  // A guest session survives reloads of the same tab only.
-  if (app.store.guest) {
-    await selectProfile(app.store.guest);
-    go('map', {}, false);
-  } else go('start', {}, false);
+  // A reload never opens the guest: the start page shows the players again.
+  if (location.hash.length > 2 && parseRoute(location.hash).profileId !== GUEST_ID) return openRoute(location.hash);
+  go('start', {}, false);
 }
 
 void boot();
 
 // Leaving the whole app by accident (a stray shortcut, the back button) asks first.
 window.addEventListener('beforeunload', (e) => {
-  if (!app.profile || app.profile.id === SUPER_ID) return;
+  if (!app.profile || app.profile.id === SUPER_ID || installing) return;
   e.preventDefault();
   e.returnValue = '';
 });
 
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
-  window.addEventListener('load', () => {
-    void navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`).catch(() => undefined);
-  });
+  window.addEventListener('load', () => watchUpdates(`${import.meta.env.BASE_URL}sw.js`));
 }

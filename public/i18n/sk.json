@@ -11,6 +11,8 @@
     "nextSong": "F8 pustí inú pesničku",
     "fullscreen": "Celá obrazovka",
     "fullscreenExit": "Zrušiť celú obrazovku",
+    "update": "Nová verzia",
+    "updateTip": "Je pripravená nová verzia hry.\nKliknutím ju nainštaluješ.",
     "menu": "Menu",
     "menuClose": "Zavrieť menu",
     "song": "Hudba: {name}"
@@ -28,11 +30,10 @@
     "langNow": "Jazyk: slovenčina",
     "langNext": "Prepnúť na angličtinu",
     "gate": {
-      "title": "Pripoj klávesnicu",
-      "text": "TapkoTyper učí písať na skutočnej klávesnici. Pripoj k mobilu alebo tabletu klávesnicu (Bluetooth alebo USB) a stlač na nej ľubovoľný kláves.",
-      "none": "Klávesnica zatiaľ nie je pripojená.",
-      "press": "Stlač na klávesnici ľubovoľný kláves.",
-      "recheck": "Skontrolovať znova"
+      "title": "Chýba klávesnica",
+      "sub": "TapkoTyper potrebuje skutočnú klávesnicu",
+      "connect": "Pripoj klávesnicu",
+      "text": "TapkoTyper učí písať na skutočnej klávesnici. Pripoj k tomuto zariadeniu klávesnicu pomocou Bluetooth alebo USB a stlač na nej ľubovoľný kláves."
     },
     "teacher": {
       "title": "Pre mentorov",
@@ -1110,7 +1111,7 @@
     },
     "remove": "Odstrániť",
     "words": "Slová",
-    "wordsHint": "Napríklad slová na tento týždeň. Jedno na riadok, alebo oddelené čiarkou či medzerou. Použijú sa aj s klávesmi, ktoré pisateľ ešte nepozná; sprievodca ich ukáže.",
+    "wordsHint": "Napríklad slová na tento týždeň. Jedno na riadok, alebo oddelené čiarkou či medzerou. Použijú sa aj s klávesmi, ktoré pisateľ ešte nepozná, sprievodca ich ukáže.",
     "wordsPlaceholder": "škola\nkamarát\nslnko",
     "wordsCount": "Slov: {n} z {max}.",
     "untypableWords": "Nedá sa napísať na tejto klávesnici, vynechajú sa: {list}",
@@ -1126,7 +1127,7 @@
       "half": "Polovica",
       "most": "Väčšina"
     },
-    "mixHint": "Podiel cieľov v úrovniach a vo vlastnom cvičení; zvyšok sú bežné slová.",
+    "mixHint": "Podiel cieľov v úrovniach a vo vlastnom cvičení. Zvyšok sú bežné slová.",
     "preview": "Ukážka piatich cieľov",
     "previewMore": "Iná ukážka",
     "wordLang": "Jazyk slov vlastného cvičenia",
@@ -1220,7 +1221,7 @@
     "dataTitle": "Vaše údaje a počítadlo návštev",
     "data": [
       "Keďže všetko je len na vašom počítači, nevieme vám zistiť zabudnuté heslo k nastaveniam ani vaše nastavenia a pokrok, keď sa vám počítač pokazí. Preto si pokrok občas exportujte do súboru.",
-      "Počítame len anonymné návštevy, bez cookies a bez akýchkoľvek údajov o používateľoch (samozrejme nezapočítame nič, ak to používate offline). Počíta ich služba GoatCounter, ktorá nepoužíva cookies ani nezbiera osobné údaje."
+      "Počítame len anonymné návštevy, bez cookies a bez akýchkoľvek údajov o používateľoch (samozrejme nezapočítame nič, ak to používate offline). Počíta ich služba GoatCounter, ktorá nepoužíva cookies ani nezbiera osobné údaje. Nevýhodou je, že nedokážeme určiť, ktoré časti aplikácie sa používajú a ktoré nie."
     ],
     "visitsOne": "Doteraz sme zaznamenali {n} návštevu.",
     "visitsFew": "Doteraz sme zaznamenali {n} návštevy.",
@@ -1228,10 +1229,10 @@
     "howTitle": "Ako učí",
     "how": [
       "Klávesy sa učia postupne, od základného radu (F a J).",
-      "Každý kláves má svoj prst; klávesnica a ruky na obrazovke ukazujú ktorý.",
-      "Najprv presnosť; rýchlosť sa ukazuje len ako osobný pokrok.",
+      "Každý kláves má svoj prst a klávesnica s rukami na obrazovke ukazujú ktorý.",
+      "Najprv presnosť! Rýchlosť sa ukazuje len ako osobný pokrok.",
       "Slabšie klávesy sa objavujú častejšie a krátke prestávky chránia zdravie.",
-      "Hrá sa na skutočnej klávesnici; mobil alebo tablet potrebuje pripojenú klávesnicu. Mentor s mobilom bez klávesnice môže skenovať výsledky."
+      "Hrá sa na skutočnej klávesnici, mobil alebo tablet potrebuje pripojenú klávesnicu. Mentor s mobilom bez klávesnice môže skenovať výsledky."
     ],
     "creditsTitle": "Prepojenia",
     "credits": "Otvorený kód pod licenciou MIT. Písma: Lexend, Atkinson Hyperlegible a OpenDyslexic (SIL Open Font License).",
@@ -1267,8 +1268,9 @@
       "sound": "Zvuk: normálny, potichu alebo vypnutý. **F4** ho prepne, **F8** pustí inú pesničku.",
       "fullscreen": "Hra na celú obrazovku a zase späť.",
       "help": "Táto pomoc. Otvorí ju aj **F1**.",
+      "update": "Červené tlačidlo úplne vpravo sa ukáže, keď je pripravená nová verzia hry. Kliknutím ju nainštaluješ.",
       "timer": "Hodiny v šatníku ukazujú, koľko času ti ostáva. Kým je času dosť, usmievajú sa, potom v nich je číslo, ktoré každých 10 sekúnd klesne o jedna. Keď blikajú, čas sa končí. Čas v šatníku získaš cvičením.",
-      "pause": "Pauza. Rovnako ju zapne aj **kláves Esc**. V pauze sa dá úroveň ukončiť; keď už je niečo napísané, najprv sa opýta, lebo sa nezapočíta.",
+      "pause": "Pauza. Rovnako ju zapne aj **kláves Esc**. V pauze sa dá úroveň ukončiť. Keď už je niečo napísané, najprv sa opýta, lebo sa nezapočíta.",
       "paw": "Labka ti ukazuje, či máš pomoc pripravenú: každé slovo bez chyby zaplní kúsok kruhu, po {n} slovách je labka nabitá. Keď to nejde, stlač **Enter** a labka napíše za teba {words} slová.",
       "ring": "Krúžok s číslom ukazuje, ktorá úroveň sveta je táto. Zelené kúsky sú hotové úrovne, oranžový je táto, prázdne ťa ešte čakajú. Pavučina je veľká výzva na konci sveta.",
       "progress": "Pásik ukazuje, koľko z úrovne už máš za sebou.",
@@ -1331,7 +1333,7 @@
     "settings": {
       "settings": [
         "Pisateľ: prezývka, postavička a nepovinné meno, jazyk hry, jazyk slov a rozloženie klávesnice. Rozloženie vyberte podľa skutočnej klávesnice, sprievodca prstov sa podľa neho riadi.",
-        "Cvičenie: náročnosť a dĺžka slov. Automaticky rastú spolu s pisateľom; ručne ich nastavíte, keď chcete.",
+        "Cvičenie: náročnosť a dĺžka slov. Automaticky rastú spolu s pisateľom, ale môžete ich nastaviť aj ručne.",
         "Slová bez diakritiky pomôžu začiatočníkom na chvíľu. Bez časového tlaku veci zastanú a čakajú na pisateľa.",
         "Dĺžka hrania pred prestávkou: potom hra pozve pisateľa na krátky oddych.",
         "Sprievodca prstov: zmizne, keď sú klávesy zvládnuté, alebo je stále zapnutý či vypnutý. Môžete ho pisateľovi zamknúť.",
@@ -1378,9 +1380,9 @@
     "mentorTitle": "Výsledky a QR kódy",
     "mentor": [
       "Stránku **Pre mentorov** otvoríte ikonou grafu vpravo hore na úvodnej stránke. Výsledky sa ukladajú len v tomto prehliadači.",
-      "Najrýchlejšie je skenovať: napíšte skupinu (napríklad 5.A), stlačte **Skenovať kamerou** a obíďte miestnosť. Kamera načíta aj viac QR kódov naraz a každý nový výsledok zapíše do tejto skupiny.",
+      "Najrýchlejšie je skenovať: napíšte skupinu (napríklad 5.A), stlačte **Sken QR** a obíďte miestnosť. Kamera načíta aj viac QR kódov naraz a každý nový výsledok zapíše do tejto skupiny.",
       "Pisateľ ukáže QR kód v Môj postup alebo po odovzdaní úlohy. Bez kamery stačí vložiť alebo otvoriť **odkaz s výsledkom**.",
-      "**Sada** sú výsledky jednej skupiny, ktoré prišli spolu: jeden sken kamerou, alebo odkazy pridané do **20 minút** od prvého. Na karte **Skupiny** sú sady každej skupiny; kliknutím na deň uvidíte pisateľov sady a celé to stiahnete ako CSV.",
+      "**Sada** sú výsledky jednej skupiny, ktoré prišli spolu: jeden sken kamerou, alebo odkazy pridané do **20 minút** od prvého. Na karte **Skupiny** sú sady každej skupiny. Kliknutím na deň uvidíte pisateľov sady a celé to stiahnete ako CSV.",
       "Každé odovzdanie sa uchová. Na karte **Pisatelia** nájdete pisateľa podľa mena a uvidíte, ako sa mu zmenila presnosť a rytmus od prvého po posledné odovzdanie. Kliknutím na meno uvidíte vývoj v grafoch a všetky odovzdania.",
       "**Z telefónu do počítača:** na karte **Súbory** stlačte na telefóne **Poslať do počítača** a pošlite si súbor .tapko (napríklad e-mailom). Na počítači ho na tej istej karte načítajte alebo ho na stránku pretiahnite. Čo už máte, sa nepridá druhýkrát.",
       "Výsledky staršie ako **rok** sa pri otvorení stránky zmažú. Staré výsledky načítané zo súboru ostanú ešte **7 dní**. Skôr ich zmažete tlačidlom **Vymazať…**.",
@@ -1508,7 +1510,7 @@
   },
   "teacher": {
     "title": "Pre mentorov",
-    "intro": "Napíšte **skupinu** (napríklad 5.A) a stlačte **Skenovať kamerou**. Každý načítaný QR kód sa zapíše do tejto skupiny, takže výsledky triedy máte **pokope** a môžete ich filtrovať. Podrobnosti sú v **Pomoci** (?).",
+    "intro": "Napíšte **skupinu** (napríklad 5.A) a stlačte **Sken QR**. Každý načítaný QR kód sa zapíše do tejto skupiny, takže výsledky triedy máte **pokope** a môžete ich filtrovať. Podrobnosti sú v **Pomoci** (?).",
     "paste": "Odkaz s výsledkom",
     "pastePlaceholder": "Vložte odkaz s výsledkom",
     "add": "Pridať",
@@ -1519,7 +1521,7 @@
     "remove": "Odstrániť",
     "empty": "Zatiaľ tu nie sú žiadne výsledky. Naskenujte QR kódy alebo vložte **odkaz s výsledkom**.",
     "csv": "Stiahnuť CSV",
-    "privacy": "Výsledky sú uložené **len v tomto prehliadači**, nič sa neposiela na server.",
+    "privacy": "Obraz z kamery sa nikam neposiela a výsledky sú uložené **len v tomto prehliadači**.",
     "col": {
       "task": "Úloha",
       "child": "Pisateľ",
@@ -1545,8 +1547,7 @@
     "removeManyTitle": "Odstrániť vybrané sady?",
     "removeManyText": "Odstráni sa {sets}, spolu {results}.",
     "scan": {
-      "start": "Skenovať kamerou",
-      "privacy": "Obraz z kamery sa nikam neposiela ani neukladá.",
+      "start": "Sken QR",
       "preview": "Obraz z kamery",
       "camera": "Kamera",
       "starting": "Zapínam kameru...",
@@ -1745,7 +1746,7 @@
     "doneLine": "Úloha „{title}“ je splnená. Odovzdaj ju mentorovi.",
     "leftLine": "Úloha „{title}“: zostáva ešte {n} min.",
     "group": "Skupina (nepovinné)",
-    "intro": "Úloha je odkaz. Pošlite ho pisateľom (napríklad cez Edupage); kto ho otvorí, vyberie si hráča a na mape uvidí Úlohu na dnes. Po splnení vám pisateľ pošle odkaz s výsledkom.",
+    "intro": "Úloha je odkaz. Pošlite ho pisateľom (napríklad cez Edupage). Kto ho otvorí, vyberie si hráča a na mape uvidí Úlohu na dnes. Po splnení vám pisateľ pošle odkaz s výsledkom.",
     "title": "Názov úlohy",
     "titlePlaceholder": "Napríklad: Zvieratá na farme",
     "minutes": "Dĺžka",

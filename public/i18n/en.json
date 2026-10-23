@@ -11,6 +11,8 @@
     "nextSong": "F8 plays another song",
     "fullscreen": "Fullscreen",
     "fullscreenExit": "Exit fullscreen",
+    "update": "New version",
+    "updateTip": "A new version of the game is ready.\nClick to install it.",
     "menu": "Menu",
     "menuClose": "Close the menu",
     "song": "Music: {name}"
@@ -28,11 +30,10 @@
     "langNow": "Language: English",
     "langNext": "Switch to Slovak",
     "gate": {
-      "title": "Connect a keyboard",
-      "text": "TapkoTyper teaches typing on a real keyboard. Connect a keyboard to the phone or tablet (Bluetooth or USB) and press any key on it.",
-      "none": "No keyboard is connected yet.",
-      "press": "Press any key on the keyboard.",
-      "recheck": "Check again"
+      "title": "Keyboard missing",
+      "sub": "TapkoTyper needs a real keyboard",
+      "connect": "Connect a keyboard",
+      "text": "TapkoTyper teaches typing on a real keyboard. Connect a keyboard to this device by Bluetooth or USB and press any key on it."
     },
     "teacher": {
       "title": "For mentors",
@@ -1220,7 +1221,7 @@
     "dataTitle": "Your data and the visit counter",
     "data": [
       "Because everything is only on your computer, we cannot recover a forgotten settings password, or your settings and progress when your computer breaks. So export your progress to a file now and then.",
-      "We only count anonymous visits, without cookies and without any data about users (of course nothing is counted if you use it offline). The counting is done by GoatCounter, which uses no cookies and collects no personal data."
+      "We only count anonymous visits, without cookies and without any data about users (of course nothing is counted if you use it offline). The counting is done by GoatCounter, which uses no cookies and collects no personal data. The downside is that we cannot tell which parts of the app are used and which are not."
     ],
     "visitsOne": "So far we have recorded {n} visit.",
     "visitsFew": "So far we have recorded {n} visits.",
@@ -1267,6 +1268,7 @@
       "sound": "Sound: normal, quiet or off. **F4** switches it, **F8** plays another song.",
       "fullscreen": "Play on the whole screen and back again.",
       "help": "This help. **F1** opens it too.",
+      "update": "The red button at the far right shows up when a new version of the game is ready. Click it to install it.",
       "timer": "The clock in the wardrobe shows how much time you have left. While there is plenty, it smiles; then a number drops by one every 10 seconds. When it blinks, the time is nearly over. You earn wardrobe time by practising.",
       "pause": "Pause. The **Esc key** pauses too. In the pause you can end the level; once something is typed it asks first, because the level will not count.",
       "paw": "The paw shows whether your help is ready: every word without a mistake fills a bit of the ring, after {n} words the paw is charged. Press **Enter** when you are stuck and your paw types {words} words for you.",
@@ -1378,7 +1380,7 @@
     "mentorTitle": "Results and QR codes",
     "mentor": [
       "Open the **For mentors** page with the chart icon at the top right of the start page. Results are stored only in this browser.",
-      "Scanning is fastest: type a group (for example 5A), press **Scan with camera** and walk around the room. The camera reads several QR codes at once and puts every new result into this group.",
+      "Scanning is fastest: type a group (for example 5A), press **Scan QR** and walk around the room. The camera reads several QR codes at once and puts every new result into this group.",
       "A typist shows the QR code in My progress or after handing in a task. Without a camera, paste or open the **result link**.",
       "A **set** is the results of one group that came together: one camera scan, or links added within **20 minutes** of the first. The **Groups** tab shows each group's sets; click a day to see the set's typists, and download it all as CSV.",
       "Every hand-in is kept. On the **Typists** tab, find a typist by name and see how accuracy and rhythm changed from the first hand-in to the last. Click a name to see the progress in charts and every hand-in.",
@@ -1508,7 +1510,7 @@
   },
   "teacher": {
     "title": "For mentors",
-    "intro": "Type a **group** (for example 5A) and press **Scan with camera**. Every QR code read goes into that group, so a class's results stay **together** and can be filtered. The details are in **Help** (?).",
+    "intro": "Type a **group** (for example 5A) and press **Scan QR**. Every QR code read goes into that group, so a class's results stay **together** and can be filtered. The details are in **Help** (?).",
     "paste": "Result link",
     "pastePlaceholder": "Paste a result link",
     "add": "Add",
@@ -1519,7 +1521,7 @@
     "remove": "Remove",
     "empty": "No results yet. Scan the QR codes or paste a **result link**.",
     "csv": "Download CSV",
-    "privacy": "Results are stored **only in this browser**; nothing goes to a server.",
+    "privacy": "The camera picture goes nowhere and the results are stored **only in this browser**.",
     "col": {
       "task": "Task",
       "child": "Typist",
@@ -1545,8 +1547,7 @@
     "removeManyTitle": "Remove the selected sets?",
     "removeManyText": "{sets} are removed, {results} in all.",
     "scan": {
-      "start": "Scan with camera",
-      "privacy": "The camera picture is never sent or stored.",
+      "start": "Scan QR",
       "preview": "Camera picture",
       "camera": "Camera",
       "starting": "Starting the camera...",

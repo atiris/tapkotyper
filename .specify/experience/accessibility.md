@@ -29,7 +29,8 @@
   F4 the sound (normal, quiet, off), F8 the next song. F4 and F8 say the new sound level or song
   in a short note at the bottom. Each of these buttons' tooltips ends with its key ("Help (F1)").
   In a text field the keys type text, only F1 still opens help; the browser's own F-key actions
-  (its help, search, reload of these keys) do not happen.
+  (its help, search, reload of these keys) do not happen. The fullscreen button's tooltip names
+  the browser's own fullscreen key ("Fullscreen (F11)").
 - Every top button is explained, drawn as it looks, on the [help page](help.md).
 - **Reading aloud** (off by default, per profile): a round button left of the keyboard
   button in the level bar switches it. It reads only the targets, each when it becomes

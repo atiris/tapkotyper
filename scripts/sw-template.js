@@ -8,7 +8,11 @@ const MAX_TRACKS = 3;
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE).then((c) => c.addAll(CORE)));
-  // The new version takes over on the next start, not in the middle of a game.
+  // The new version waits: the player installs it with the red update button.
+});
+
+self.addEventListener('message', (event) => {
+  if (event.data === 'skipWaiting') self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {

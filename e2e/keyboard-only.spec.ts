@@ -115,7 +115,7 @@ test('F4 steps the sound and says so, the tooltips name the keys', async ({ page
   await expect(page.locator('.toast')).toHaveText('Sound: quiet');
   // F1 on the map opens help on its buttons; Escape goes back.
   await page.keyboard.press('F1');
-  await expect(page.locator('.help-page .tab[aria-selected="true"]')).toHaveText('Buttons');
+  await expect(page.locator('.help-page .tab[aria-selected="true"]')).toHaveText('Interface');
   await page.keyboard.press('Escape');
   await page.locator('.map-screen').waitFor();
 });

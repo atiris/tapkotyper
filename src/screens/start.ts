@@ -1,10 +1,10 @@
-import { app, applyProfileLook, go, openRoute, reduceMotion, selectProfile, useLanguage } from '../app/app';
+import { app, applyProfileLook, go, openRoute, selectProfile, useLanguage } from '../app/app';
 import { keyboardGated, onKeyboard, takeWaiting } from '../app/keyboard-gate';
 import { audio } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
 import { language, t } from '../i18n/i18n';
 import type { Lang, Profile } from '../storage/schema';
-import { KEYBOARD_ART, teacherArt, arrowFocus, button, h, icon } from '../ui/dom';
+import { arrowFocus, bigButton, button, h, icon, keyboardArt, modal, teacherArt } from '../ui/dom';
 import { cornerControls, languageControls } from '../ui/chrome';
 import { roundButton } from '../ui/hud';
 import { numberPick, profileCard } from '../ui/profile-card';
@@ -58,7 +58,7 @@ export function startScreen(root: HTMLElement): () => void {
       h('div', { class: 'hero-text' },
         h('h1', { class: 'title' }, h('span', {}, 'Tapko'), h('span', { class: 'title-b' }, 'Typer')),
         h('p', { class: 'tagline' }, t('start.tagline')))),
-    gated ? keyboardGate() : h('section', { class: 'panel' },
+    gated ? keyboardButton() : h('section', { class: 'panel' },
       h('h2', {}, t('start.whoPlays')),
       profiles,
       h('div', { class: 'row center' },
@@ -119,23 +119,12 @@ function pickByNumber(count: number, pick: (i: number) => void): () => void {
   return () => window.removeEventListener('keydown', onKey);
 }
 
-/** A phone or tablet without a keyboard: the game needs one, so the card asks for it first. */
-function keyboardGate(): HTMLElement {
-  const status = h('p', { class: 'gate-status', role: 'status' }, t('start.gate.none'));
-  const card = h('section', { class: 'panel keyboard-gate' },
-    h('span', { class: 'gate-art', html: KEYBOARD_ART }),
-    h('h2', {}, t('start.gate.title')),
-    h('p', {}, t('start.gate.text')),
-    status,
-    button(t('start.gate.recheck'), () => {
-      if (!keyboardGated()) return go('start', {}, false);
-      status.textContent = t('start.gate.press');
-      if (reduceMotion()) return;
-      card.classList.remove('shake');
-      void card.offsetWidth;
-      card.classList.add('shake');
-    }, 'btn ghost', 'recheck'));
-  return card;
+/** A phone or tablet without a keyboard: the game needs one. A tap says how to connect it, unless it is there by now. */
+function keyboardButton(): HTMLButtonElement {
+  return bigButton(keyboardArt(), t('start.gate.title'), t('start.gate.sub'), () => {
+    if (!keyboardGated()) return go('start', {}, false);
+    modal(h('div', { class: 'keyboard-gate' }, keyboardArt(), h('h2', {}, t('start.gate.connect')), h('p', {}, t('start.gate.text'))));
+  });
 }
 
 /**
@@ -160,9 +149,5 @@ function startPromise(): HTMLElement {
 
 /** The teacher needs no keyboard: straight to the scanner and the class results. */
 function teacherButton(): HTMLButtonElement {
-  return h('button', { class: 'teacher-big', type: 'button', onClick: () => go('teacher') },
-    teacherArt(),
-    h('span', { class: 'teacher-big-text' },
-      h('span', { class: 'teacher-big-title' }, t('start.teacher.title')),
-      h('span', {}, t('start.teacher.sub'))));
+  return bigButton(teacherArt(), t('start.teacher.title'), t('start.teacher.sub'), () => go('teacher'));
 }

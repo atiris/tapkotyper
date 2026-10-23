@@ -411,10 +411,10 @@ function teacherPage(root: HTMLElement, store: TeacherStore, first: Tab, code: s
     cornerControls(),
     h('main', { class: 'panel' },
       h('p', {}, ...richText(t('teacher.intro'))),
-      h('div', { class: 'row scan-start' }, scanGroup, groupNames, scanButton, h('span', { class: 'hint' }, t('teacher.scan.privacy'))),
+      h('div', { class: 'row scan-start' }, scanGroup, groupNames, scanButton),
       scanSlot,
       h('form', { class: 'row', onSubmit: (e: Event) => { e.preventDefault(); void addCode(codeFrom(paste.value, 'result')).then(() => (paste.value = '')); } },
-        paste, h('button', { class: 'btn primary', type: 'submit' }, t('teacher.add'))),
+        paste, h('button', { class: 'btn primary', type: 'submit' }, icon('plus'), h('span', {}, t('teacher.add')))),
       msg,
       h('div', { class: 'teacher-tabs' }, nav, panel),
       h('p', { class: 'hint' }, ...richText(t('teacher.privacy')))));

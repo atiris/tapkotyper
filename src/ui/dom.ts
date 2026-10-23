@@ -76,6 +76,7 @@ export const ICONS = {
   sortUp: '<path d="M6 15l6-6 6 6"/>',
   menu: '<path d="M5 7h14M5 12h14M5 17h14"/>',
   recheck: '<path d="M4 12a8 8 0 102.3-5.7"/><path d="M4 4v5h5"/>',
+  update: '<path d="M19.5 10A8 8 0 005.6 7.2"/><path d="M5 3v4.5h4.5"/><path d="M4.5 14a8 8 0 0013.9 2.8"/><path d="M19 21v-4.5h-4.5"/>',
   target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/>',
   copy: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 00-1-1H5a1 1 0 00-1 1v10a1 1 0 001 1h3"/>',
   share: '<circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.2 10.8l7.6-4.4M8.2 13.2l7.6 4.4"/>',
@@ -91,17 +92,33 @@ const TEACHER_ART = '<svg viewBox="0 0 76 64" aria-hidden="true">' +
   '<path d="M59 32q3 2.5 6 0" fill="none" stroke="#3b2a3f" stroke-width="1.8" stroke-linecap="round"/>' +
   '<rect x="52" y="10" width="20" height="4" rx="1" fill="#3b2a3f"/><path d="M62 10l-3-5h6z" fill="#3b2a3f"/></svg>';
 
-/** The teacher's turtle: its picture when there is one, else the drawn one. */
-export function teacherArt(): HTMLElement {
-  const src = imageUrl('ui-mentor');
-  return src ? h('span', { class: 'teacher-art' }, h('img', { src, alt: '' })) : h('span', { class: 'teacher-art', html: TEACHER_ART });
-}
-
-/** A keyboard drawn for the card that asks for one. */
-export const KEYBOARD_ART = '<svg viewBox="0 0 120 64" aria-hidden="true"><rect x="2" y="6" width="116" height="52" rx="10" fill="#fff6e6" stroke="#3b2a3f" stroke-width="3"/><g fill="#3b2a3f">' +
+/** A keyboard, drawn: the missing keyboard's fallback picture. */
+const KEYBOARD_ART = '<svg viewBox="0 0 120 64" aria-hidden="true"><rect x="2" y="6" width="116" height="52" rx="10" fill="#fff6e6" stroke="#3b2a3f" stroke-width="3"/><g fill="#3b2a3f">' +
   [14, 31, 48, 65, 82].map((x) => `<rect x="${x}" y="16" width="12" height="9" rx="2"/>`).join('') + '<rect x="99" y="16" width="8" height="9" rx="2"/>' +
   [20, 37, 54, 71, 88].map((x) => `<rect x="${x}" y="30" width="12" height="9" rx="2"/>`).join('') + '<rect x="32" y="44" width="56" height="8" rx="2"/></g></svg>';
 
+/** A big button's picture when there is one, else the drawn one. */
+function bigArt(name: string, drawn: string): HTMLElement {
+  const src = imageUrl(name);
+  return src ? h('span', { class: 'teacher-art' }, h('img', { src, alt: '' })) : h('span', { class: 'teacher-art', html: drawn });
+}
+
+/** The teacher's turtle. */
+export const teacherArt = (): HTMLElement => bigArt('ui-mentor', TEACHER_ART);
+
+/** The mouse with a broken keyboard: a phone without a keyboard. */
+export const keyboardArt = (): HTMLElement => bigArt('ui-missing-keyboard', KEYBOARD_ART);
+
+/** A big orange button of the start page: a picture, a title and one line under it. */
+export function bigButton(art: HTMLElement, title: string, sub: string, onClick: () => void): HTMLButtonElement {
+  return h('button', { class: 'teacher-big', type: 'button', onClick: () => onClick() },
+    art,
+    h('span', { class: 'teacher-big-text' },
+      h('span', { class: 'teacher-big-title' }, title),
+      h('span', {}, sub)));
+}
+
+/** A keyboard drawn for the card that asks for one. */
 /** Escape goes back, like the screen's Back button; a dialog over the screen closes first. Returns the cleanup. */
 export function onEscape(back: () => void): () => void {
   const onKey = (e: KeyboardEvent) => {

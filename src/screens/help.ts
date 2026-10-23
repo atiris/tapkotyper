@@ -30,6 +30,7 @@ function mapIcons(): HTMLElement[] {
     iconLine(round('sound'), t('help.icons.sound')),
     iconLine(round('fullscreen'), t('help.icons.fullscreen')),
     iconLine(round('help'), t('help.icons.help')),
+    iconLine(roundPic('update', 'update'), t('help.icons.update')),
     iconLine(round('menu'), t('help.icons.menu')),
     iconLine(timerPic(150).el, t('help.icons.timer')),
   ];
@@ -80,7 +81,7 @@ function openData(): HTMLElement {
     const n = Number(count.replace(/\D/g, ''));
     visits.textContent = ` ${t(n === 1 ? 'about.visitsOne' : n > 1 && n < 5 ? 'about.visitsFew' : 'about.visitsMany', { n: count })}`;
   });
-  return h('li', {}, t('about.open'), ' ', h('a', { href: `${COUNTER}/`, target: '_blank', rel: 'noopener' }, `${COUNTER}/`), '.', visits);
+  return h('li', {}, t('about.open'), ' ', h('a', { href: `${COUNTER}/`, target: '_blank', rel: 'noopener' }, new URL(COUNTER).host), '.', visits);
 }
 
 /** About the game and the privacy promise, for parents. */
@@ -111,10 +112,10 @@ function tabContent(tab: HelpTab, now: Child[] = []): HTMLElement[] {
     case 'typing': return [
       ...(now.length ? [section(t('level.helpNow'), ...now)] : []),
       section(t('help.typeTitle'), list('help.type')),
-      section(t('help.playTitle'), list('help.play')),
     ];
     case 'progress': return [
       section(t('help.journeyTitle'), list('help.journey')),
+      section(t('help.playTitle'), list('help.play')),
       section(t('help.progressTitle'), list('help.progress')),
       section(t('help.moreTitle'), list('help.more')),
     ];

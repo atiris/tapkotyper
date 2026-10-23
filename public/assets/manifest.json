@@ -168,13 +168,13 @@
    "w": 160,
    "h": 160
   },
-  "acc-lantern": {
-   "w": 384,
-   "h": 384
-  },
   "acc-lantern-thumb": {
    "w": 160,
    "h": 160
+  },
+  "acc-lantern": {
+   "w": 384,
+   "h": 384
   },
   "acc-medallion": {
    "w": 384,
@@ -244,13 +244,13 @@
    "w": 384,
    "h": 384
   },
-  "acc-wand": {
-   "w": 384,
-   "h": 384
-  },
   "acc-wand-thumb": {
    "w": 160,
    "h": 160
+  },
+  "acc-wand": {
+   "w": 384,
+   "h": 384
   },
   "acc-white-gloves": {
    "w": 384,
@@ -1393,6 +1393,10 @@
    "h": 384
   },
   "ui-mentor": {
+   "w": 321,
+   "h": 384
+  },
+  "ui-missing-keyboard": {
    "w": 321,
    "h": 384
   },

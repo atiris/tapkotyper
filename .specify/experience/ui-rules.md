@@ -3,8 +3,8 @@
 ## What
 One set of rules for where things sit and how they behave, so every screen feels like the same game.
 
-1. **Corner controls.** The global round buttons (help, fullscreen, sound, super star, in this
-   order, right to left as they are today) sit in the top right corner at one fixed offset from the
+1. **Corner controls.** The global round buttons (the red update button while a new version
+   waits, help, fullscreen, sound, super star, in this order, right to left) sit in the top right corner at one fixed offset from the
    window edge on every screen. There are only two placements: the **standard** one (all screens,
    windows and the map) and the **compact play bar** (inside a level, where they join the bar of
    the play controls). A button never moves between two screens of the same kind.
@@ -22,10 +22,12 @@ One set of rules for where things sit and how they behave, so every screen feels
    "Pokračovať"), never the one way out.
 3. **Scrolling.** A window scrolls inside itself: its header (title, X, tabs) stays in sight and
    the scroller is the game's own (thick, orange thumb, kept inside the rounded corners). A page
-   scrolls the whole page. The two are never mixed: a window never makes the page behind it
+   scrolls the whole page. The page never shifts sideways when its scrollbar appears: the
+   scrollbar's room is always kept, and the page's own background shows through it, so the empty
+   room is not seen. The two are never mixed: a window never makes the page behind it
    scroll, and a page never hides its header in a scrolled box. A page's top bar (Back and
    the title) stays at the top while the page scrolls, on a slightly see-through paper band,
-   its row level with the corner controls; help, the settings and the mentors' page paint the
+   its row level with the corner controls; help, the settings, the mentors' page and the wardrobe paint the
    page's own background there instead, so the bar looks like part of the page. Once a page's
    tab row has scrolled away, its bar lists the tabs after the title as links separated by dots
    ("Title · Tab · Tab", the open one in orange), only on a desktop wide enough for all of them;

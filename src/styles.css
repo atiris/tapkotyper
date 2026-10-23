@@ -43,21 +43,29 @@
 body[data-font='atkinson'] { --font-game: 'Atkinson Hyperlegible', 'Lexend', system-ui, sans-serif; }
 body[data-font='opendyslexic'] { --font-game: 'OpenDyslexic', 'Atkinson Hyperlegible', 'Lexend', system-ui, sans-serif; }
 body[data-keyfont] { --font-keys: 'Atkinson Hyperlegible', var(--font-game); }
-body.large-text { --scale: 1.25; }
+/* html sizes the rem and paints the page, so the look's switches on body reach it too. */
+:root:has(> body.large-text) { --scale: 1.25; }
+:root:has(> body.high-contrast) { --page-bg: #fff; }
 body.high-contrast {
-  --page-bg: #fff;
   --ink: #000; --ink-soft: #1d1d1d; --paper: #fff; --paper-2: #fff; --line: #000;
   --brand: #b44300; --brand-dark: #7a2d00; --green: #006b2e; --green-dark: #004d21;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
-html { font-size: calc(16px * var(--scale)); background: #d7f0c8; }
+/*
+ * The body scrolls, not the window: it keeps the scrollbar's room even without one, so the page never
+ * shifts when it appears, and the page's background shows through that room (under the window's
+ * own scrollbar a browser paints only a plain color).
+ */
+html { font-size: calc(16px * var(--scale)); height: 100%; overflow: hidden; background: var(--page-bg) fixed; }
 body {
   margin: 0;
-  min-height: 100vh;
+  height: 100%;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  scrollbar-color: rgba(90, 61, 43, 0.35) transparent;
   font-family: var(--font-game);
   color: var(--ink);
-  background: var(--page-bg) fixed;
   -webkit-font-smoothing: antialiased;
 }
 button, input, select, textarea { font: inherit; color: inherit; }
@@ -100,6 +108,7 @@ p { line-height: 1.5; }
 .round-btn.paw { --rb: #d9661f; --rb-ring: #ff8a3d; }
 .round-btn.rhythm { --rb: #2f8a4c; --rb-ring: #4fb57a; cursor: default; }
 .round-btn.super { --rb: #b07a0e; --rb-ring: #b07a0e; }
+.round-btn.update { --rb: #d63a32; --rb-ring: #d63a32; }
 .round-btn.place { --rb: #4a6fa5; --rb-ring: #4fb57a; cursor: default; }
 .round-btn.timer { --rb: #1f8a86; --rb-ring: #3cc0b8; cursor: default; }
 .round-btn.hits { --rb: #c8473d; --rb-ring: #f5c542; cursor: default; }
@@ -163,13 +172,14 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
   margin: -1.2rem calc(-1 * var(--gut)) 0.7rem; padding: 1rem calc(2rem + 5 * 52px + 4 * 0.6rem) 0.5rem var(--gut);
   background: color-mix(in srgb, var(--paper) 92%, transparent); backdrop-filter: blur(6px);
 }
+@media (min-width: 600px) { .screen:has(.update-btn:not([hidden])) > .bar { padding-right: calc(2rem + 6 * 52px + 5 * 0.6rem); } }
 @media (max-width: 599px) { .screen > .bar { padding-right: calc(2rem + 52px); } }
 /*
- * Help, the settings and the mentors' page have no visible bar: it paints the page's own fixed
+ * Help, the settings, the mentors' page and the wardrobe have no visible bar: it paints the page's own fixed
  * background, so it looks like the page, and the text scrolling under it fades out just below it.
  */
-.help-screen > .bar, .parent-screen > .bar, .teacher-screen > .bar { background: var(--page-bg) fixed; backdrop-filter: none; }
-.help-screen > .bar::after, .parent-screen > .bar::after, .teacher-screen > .bar::after {
+.help-screen > .bar, .parent-screen > .bar, .teacher-screen > .bar, .wardrobe-screen > .bar { background: var(--page-bg) fixed; backdrop-filter: none; }
+.help-screen > .bar::after, .parent-screen > .bar::after, .teacher-screen > .bar::after, .wardrobe-screen > .bar::after {
   content: ''; position: absolute; left: 0; right: 0; top: 100%; height: 1.6rem; pointer-events: none;
   background: var(--page-bg) fixed; -webkit-mask-image: linear-gradient(#000, transparent); mask-image: linear-gradient(#000, transparent);
 }
@@ -260,19 +270,17 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
   .profile-row { flex-wrap: wrap; }
 }
 @media (max-width: 599px) { .start-screen .logo { display: none; } }
-/* Touch only: the card asking for a keyboard, and the teacher's way in. */
+/* Touch only: the big buttons for the missing keyboard and the teacher's way in, and how to connect a keyboard. */
 .start-screen.gated { height: auto; min-height: 100vh; }
-.keyboard-gate { align-items: center; gap: 0.9rem; max-width: 560px; margin-block: 0; }
+.keyboard-gate { display: flex; flex-direction: column; align-items: center; gap: 0.9rem; text-align: center; }
 .keyboard-gate h2, .keyboard-gate p { margin: 0; }
-.keyboard-gate > p:not(.gate-status) { color: var(--ink-soft); line-height: 1.5; }
-.keyboard-gate.shake { animation: wobble 0.4s ease; }
-.gate-art { display: block; width: 120px; height: 64px; }
-.gate-status { color: #9b2c28; background: #fde4e3; border-radius: 12px; padding: 0.5rem 0.9rem; }
+.keyboard-gate p { color: var(--ink-soft); line-height: 1.5; }
+.keyboard-gate .teacher-art { width: 120px; height: 120px; }
 .teacher-big { display: flex; align-items: center; gap: 0.9rem; width: 100%; max-width: 560px; border: 0; border-radius: var(--radius); padding: 1rem 1.1rem; cursor: pointer; text-align: left; font: inherit; color: #fff;
   background: linear-gradient(180deg, #ffa25c, var(--brand)); box-shadow: 0 4px 0 var(--brand-dark), 0 8px 18px rgba(229, 106, 27, 0.3); }
 .teacher-big:focus-visible { outline: 3px solid var(--brand-dark); outline-offset: 3px; }
 .teacher-art { flex: none; width: 76px; height: 64px; }
-.gate-art svg, .teacher-art svg, .teacher-art img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.teacher-art svg, .teacher-art img { display: block; width: 100%; height: 100%; object-fit: contain; }
 .teacher-big-text { display: flex; flex-direction: column; gap: 2px; font-size: 0.9rem; }
 .teacher-big-title { font-size: 1.25rem; font-weight: 700; }
 
@@ -862,9 +870,10 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-dark); }
 .prose li { margin: 0.3em 0; }
 
 /* Help: the bar of every page, then the tabs in a narrower column (wider on a wide screen); the page scrolls as a whole. */
-.help-column { width: 100%; max-width: clamp(760px, 62vw, 1040px); margin: 0 auto; font-size: 1.1rem; }
+/* Wide enough for all tabs in one row (about 830 px at the normal text size); on a narrower window they wrap. */
+.help-column { width: 100%; max-width: clamp(52.5rem, 62vw, 1040px); margin: 0 auto; font-size: 1.1rem; }
 /* In a paused level: the same page over the whole level, opaque; it scrolls under its bar. No corner buttons there. */
-.level-help { position: absolute; inset: 0; z-index: 20; overflow-y: auto; background: var(--page-bg); }
+.level-help { position: absolute; inset: 0; z-index: 20; overflow-y: auto; scrollbar-gutter: stable; scrollbar-color: rgba(90, 61, 43, 0.35) transparent; background: var(--page-bg); }
 .level-help .screen > .bar { padding-right: var(--gut); }
 .help-section h2 { color: var(--brand-dark); margin: 1.2rem 0 0.4rem; }
 .help-section:first-child h2 { margin-top: 0; }
@@ -959,8 +968,8 @@ body.reduce-motion .round-btn.timer.ending { --rb: #d9661f; --rb-ring: #ff8a3d; 
 .link-screen .bar h1 { flex: 1; }
 .link-screen main { text-align: center; }
 .link-screen .profile-list { justify-content: center; }
-.teacher-screen form.row { flex-wrap: nowrap; }
-.teacher-screen form input { flex: 1; }
+.teacher-screen form.row, .teacher-screen .scan-start { flex-wrap: nowrap; }
+.teacher-screen form input, .teacher-screen .scan-start input { flex: 1; min-width: 0; }
 .teacher-table { overflow-x: auto; margin: 1rem 0; }
 .teacher-table table { width: 100%; border-collapse: collapse; }
 .teacher-table th, .teacher-table td { text-align: left; padding: 0.4rem 0.5rem; border-bottom: 1px solid var(--line); }
@@ -1041,7 +1050,6 @@ body.reduce-motion .round-btn.timer.ending { --rb: #d9661f; --rb-ring: #ff8a3d; 
   .teacher-filters { flex-direction: column; align-items: stretch; }
   .task-pick { flex-direction: column; align-items: stretch; gap: 0.2rem; }
   .task-pick select { width: 100%; }
-  .teacher-screen .scan-start input { flex: 1 1 100%; }
 }
 .teacher-empty { display: flex; gap: 1rem; align-items: center; }
 .child-head { flex: 1; display: flex; flex-direction: column; min-width: 0; }

@@ -9,11 +9,11 @@ test('help opens from the map and from a paused level and goes back', async ({ p
   // Map -> help on the buttons tab -> another tab -> close.
   await page.locator('.map-top .help-btn').click();
   const help = page.locator('.help-page');
-  await expect(help.locator('.tab[aria-selected="true"]')).toHaveText('Buttons');
+  await expect(help.locator('.tab[aria-selected="true"]')).toHaveText('Interface');
   // Five map buttons, the Menu of small screens, the wardrobe countdown and eleven level buttons (with the super star).
-  await expect(help.locator('.help-icons li')).toHaveCount(18);
+  await expect(help.locator('.help-icons li')).toHaveCount(19);
   expect(page.url()).toMatch(/\/help\/ui$/);
-  await help.getByRole('tab', { name: 'How to type' }).click();
+  await help.getByRole('tab', { name: 'Typing' }).click();
   await expect(help.locator('h2', { hasText: 'How to type' })).toBeVisible();
   expect(page.url()).toMatch(/\/help\/typing$/);
   await help.locator('.bar').getByRole('button', { name: 'Back' }).click();
@@ -48,7 +48,7 @@ test('help opens from the map and from a paused level and goes back', async ({ p
   // A whole page, not see-through, with Back at the top left and this level's part first.
   const levelHelp = page.locator('.level-help');
   await expect(levelHelp.locator('.help-page')).toBeVisible();
-  await expect(levelHelp.locator('.tab[aria-selected="true"]')).toHaveText('How to type');
+  await expect(levelHelp.locator('.tab[aria-selected="true"]')).toHaveText('Typing');
   await expect(levelHelp.locator('.help-section h2').first()).toHaveText('In this level');
   expect(await levelHelp.evaluate((el) => getComputedStyle(el).backgroundImage)).toContain('gradient');
   await page.keyboard.press('Escape');
@@ -76,11 +76,11 @@ test('help opens from the start page on the about tab, without a player', async 
   await page.goto('./');
   await page.locator('.start-screen .help-btn').click();
   const help = page.locator('.help-page');
-  await expect(help.locator('.tab[aria-selected="true"]')).toHaveText('About TapkoTyper');
+  await expect(help.locator('.tab[aria-selected="true"]')).toHaveText('About Tapko');
   await expect(help.getByRole('link', { name: 'Code on GitHub' })).toBeVisible();
   expect(page.url()).toMatch(/#\/help\/about$/);
   // Every tab renders, the settings tab with one section per settings tab.
-  for (const tab of ['Buttons', 'How to type', 'How to progress', 'Settings']) {
+  for (const tab of ['Interface', 'Typing', 'Progress', 'Settings']) {
     await help.getByRole('tab', { name: tab }).click();
     await expect(help.locator('.tab-panel h2').first()).toBeVisible();
   }
@@ -90,7 +90,7 @@ test('help opens from the start page on the about tab, without a player', async 
   await page.locator('.start-screen').waitFor();
   // A tab in the address opens that tab.
   await page.goto('./#/help/progress');
-  await expect(help.locator('.tab[aria-selected="true"]')).toHaveText('How to progress');
+  await expect(help.locator('.tab[aria-selected="true"]')).toHaveText('Progress');
   await page.keyboard.press('Escape');
   await page.locator('.start-screen').waitFor();
   expect(errors).toEqual([]);
@@ -108,7 +108,7 @@ test('help from the settings opens on their tab and goes back to them without th
   await expect(help.locator('.tab-panel strong').first()).toBeVisible();
   // The page scrolls as a whole and the bar with Back stays at the top.
   await page.mouse.wheel(0, 1500);
-  await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(0);
+  await expect.poll(() => page.evaluate(() => document.body.scrollTop)).toBeGreaterThan(0);
   expect((await help.locator('.bar').boundingBox())!.y).toBeCloseTo(0, 0);
   await help.locator('.bar').getByRole('button', { name: 'Back' }).click();
   await expect(page.locator('.parent-screen')).toBeVisible();

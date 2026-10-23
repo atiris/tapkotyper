@@ -12,20 +12,22 @@ test.describe('a phone without a keyboard', () => {
     const errors: string[] = [];
     page.on('pageerror', (e) => errors.push(e.message));
     await page.goto('./');
-    const gate = page.locator('.keyboard-gate');
-    await expect(gate).toContainText('Pripoj klávesnicu');
-    await expect(gate.locator('[role=status]')).toHaveText('Klávesnica zatiaľ nie je pripojená.');
+    const gate = page.locator('.teacher-big', { hasText: 'Chýba klávesnica' });
+    await expect(gate).toContainText('TapkoTyper potrebuje skutočnú klávesnicu');
+    // Silent until the player turns the sound on.
+    await expect(page.locator('.sound-btn')).toHaveAttribute('data-level', 'off');
     // No players, no guest, no new player or import while the gate is up.
     await expect(page.locator('.profile-card, .start-screen .row .btn')).toHaveCount(0);
-    await gate.locator('.btn').tap();
-    await expect(gate.locator('[role=status]')).toHaveText('Stlač na klávesnici ľubovoľný kláves.');
+    await gate.tap();
+    await expect(page.locator('.modal .keyboard-gate')).toContainText('Pripoj klávesnicu');
+    await page.locator('.modal-x').tap();
 
     for (const route of ['#/new', '#/p/someone/wardrobe', '#/help/typing']) {
       await page.evaluate((r) => { location.hash = r; }, route);
       await expect.poll(() => screenOf(page)).toBe(route.startsWith('#/help') ? 'help' : 'start');
     }
     await page.evaluate(() => { location.hash = '#/'; });
-    await page.locator('.teacher-big').tap();
+    await page.locator('.teacher-big', { hasText: 'Pre mentorov' }).tap();
     await expect(page.locator('.teacher-screen')).toBeVisible();
     await page.goBack();
     await expect(gate).toBeVisible();
@@ -43,7 +45,7 @@ test.describe('a phone without a keyboard', () => {
 test('a computer is never gated', async ({ page }) => {
   await page.goto('./');
   await expect(page.locator('.profile-card.new')).toBeVisible();
-  await expect(page.locator('.keyboard-gate')).toHaveCount(0);
+  await expect(page.locator('.start-screen.gated')).toHaveCount(0);
 });
 
 test('the title fits on one line under the corner buttons at every width', async ({ page }) => {

@@ -1,4 +1,5 @@
 import { assetUrl, hasMusic, musicTracks } from '../gfx/assets';
+import { keyboardGated } from '../app/keyboard-gate';
 import { nextTrack } from './tracks';
 
 export type Sfx = 'key' | 'wrong' | 'word' | 'reward' | 'click' | 'whoosh' | 'pop' | 'beat' | 'cheer' | 'bzzt' | 'note' | 'plop' | 'squeak';
@@ -29,6 +30,8 @@ class AudioEngine {
     try {
       const saved = localStorage.getItem(SOUND_KEY) as SoundLevel | null;
       if (saved && SOUND_LEVELS.includes(saved)) this.level = saved;
+      // A phone without a keyboard is often opened in class or on the way: it starts silent.
+      else if (keyboardGated()) this.level = 'off';
     } catch { /* private mode */ }
     // iOS Safari takes only a tap's end (pointerup, touchend, click) as the gesture that may start sound.
     const events = ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown'];

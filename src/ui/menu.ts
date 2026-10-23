@@ -51,7 +51,7 @@ export function cornerMenu(row: HTMLElement): HTMLElement {
       ...sources.map((b) => {
         const label = b.getAttribute('aria-label') ?? '';
         const item = h('button', { class: 'menu-item', type: 'button', role: 'menuitem', onClick: () => { close(); b.click(); } },
-          h('span', { class: `round-btn${b.classList.contains('super') ? ' super' : ''}`, 'aria-hidden': 'true', html: b.innerHTML }),
+          h('span', { class: `round-btn${['super', 'update'].filter((k) => b.classList.contains(k)).map((k) => ` ${k}`).join('')}`, 'aria-hidden': 'true', html: b.innerHTML }),
           h('span', {}, label));
         item.disabled = b.disabled;
         return item;

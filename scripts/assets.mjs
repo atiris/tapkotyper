@@ -303,10 +303,19 @@ async function processImage(name, file, manifest) {
  */
 async function writeStrip(name, data, w, h, box, manifest) {
   const stripH = Math.round(FRAME_H * STRIP_HEIGHT[name]);
-  // The 3 px bbox padding at the sides would leave gaps between the copies.
-  const crop = { ...box, left: 0, width: w };
+  // The 3 px bbox padding at the sides would leave gaps between the copies, and a dark
+  // frame column some generated strips have at an edge would show as a line at each join.
+  const dark = (x) => {
+    let s = 0;
+    for (let y = 0; y < h; y++) { const i = (y * w + x) * 4; s += Math.max(data[i], data[i + 1], data[i + 2]); }
+    return s / h < 60;
+  };
+  let left = 0, right = w;
+  while (left < 8 && dark(left)) left++;
+  while (w - right < 8 && dark(right - 1)) right--;
+  const crop = { ...box, left, width: right - left };
   // A whole number of copies side by side: the picture's left and right edges join.
-  const copies = Math.max(1, Math.round(FRAME_W / (w * stripH / crop.height)));
+  const copies = Math.max(1, Math.round(FRAME_W / (crop.width * stripH / crop.height)));
   const tileW = Math.round(FRAME_W / copies);
   const tile = await sharp(data, { raw: { width: w, height: h, channels: 4 } }).extract(crop).resize(tileW, stripH, { fit: 'fill' }).png().toBuffer();
   const row = await sharp({ create: { width: tileW * copies, height: stripH, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })

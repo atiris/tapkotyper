@@ -139,7 +139,7 @@ export function go(name: ScreenName, params: any = {}, push = true): void {
   closeModals();
   root.replaceChildren();
   root.dataset.screen = name;
-  window.scrollTo(0, 0);
+  document.body.scrollTo(0, 0);
   cleanup = screens.get(name)!(root, params);
 }
 

@@ -26,7 +26,7 @@
   form one set; later, or in another group, a new set starts. One camera scan is always one
   set, however long. A set keeps its group, start and end time, where it came from (scan, link,
   file) and its results.
-- **Tabs:** Skupiny · Pisatelia · Súbory, under the intro, the scan box and the paste field.
+- **Tabs:** Skupiny · Pisatelia · Súbory, under the intro, the scan box (the group, then "Sken QR") and below it the paste field with "Add". One line at the bottom says the camera picture goes nowhere and the results stay in this browser.
   Each tab, a set and a writer have their own address, so Back works.
   - **Skupiny:** group chips; per group a line with sets, writers, accuracy and rhythm, then one
     row per set: day, time from-to, tasks, results, "zvládli X z Y", accuracy, rhythm. On a

@@ -7,8 +7,8 @@ import { ICONS, h } from './dom';
 import { keyLabel } from './keyboard-guide';
 import { tip } from './tooltip';
 
-/** Colors of the round buttons: controls purple, paw orange, rhythm green, the super star gold, the place in the world blue, the wardrobe's time teal, a key's accuracy brown, the target range's hits red. */
-export type RoundKind = 'control' | 'paw' | 'rhythm' | 'super' | 'place' | 'timer' | 'accuracy' | 'hits';
+/** Colors of the round buttons: controls purple, paw orange, rhythm green, the super star gold, the place in the world blue, the wardrobe's time teal, a key's accuracy brown, the target range's hits red, a new version red. */
+export type RoundKind = 'control' | 'paw' | 'rhythm' | 'super' | 'place' | 'timer' | 'accuracy' | 'hits' | 'update';
 
 const RING_LEN = 2 * Math.PI * 21;
 /** Glyphs drawn filled in white; the others are white lines. */

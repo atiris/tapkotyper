@@ -4,7 +4,7 @@
 - One help page for everything, in short, big, friendly text (sk and en), in tabs like the
   settings screen (the tab row right above its panel). It is a page like the settings: "Back"
   at the top left in the same top bar that stays while the page scrolls, the same title style,
-  and the text in a narrower column (about 760 px, wider on a wide screen, up to about 1040 px);
+  and the text in a narrower column (wide enough for all tabs in one row, about 840 px, wider on a wide screen, up to about 1040 px; only a narrower window wraps the tabs);
   on a wide desktop the bar lists the tabs once they scrolled away. Escape goes back too.
   Back returns to where help was opened (settings without asking the parent question again),
   else to the map, or to the start page before a player is chosen. Opened from the settings,
@@ -13,12 +13,11 @@
      game with one line on what it does, and the player's card on the map (the companion opens
      "My progress", the side buttons, the task card).
   2. **Typing**: sitting, the home keys F and J, thumbs over the space bar, each finger
-     with its own keys, eyes on the screen, accuracy before speed, short breaks; and how a level
-     is played (type the word on the object, nothing bad happens when it gets away, stars come
-     from accuracy, Esc pauses).
-  3. **Progress**, in the child's voice: stories, worlds and levels, stars, letters that
-     open levels and stories, "My progress" with its three tabs and QR codes, rescue missions
-     and badges.
+     with its own keys, eyes on the screen, accuracy before speed, short breaks.
+  3. **Progress**, in the child's voice: stories, worlds and levels, stars, how a level is
+     played (type the word on the object, nothing bad happens when it gets away, stars come from
+     accuracy, Esc pauses) right above letters that open levels and stories, "My progress" with
+     its three tabs and QR codes, rescue missions and badges.
   4. **Settings**, for the parent: that the settings open with the gear on the map (the child's
      screens do not say it), what each settings tab does (child, practice, look and sound,
      password, own words and text, surprises, tasks, keys, progress, data), with one section per

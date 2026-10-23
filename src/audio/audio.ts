@@ -127,10 +127,11 @@ class AudioEngine {
     }
   }
 
-  /** Plays the next random track of the whole library; the next screen or level sets its own track again. */
-  shuffleTrack(): void {
+  /** Plays the next random track of the whole library and returns its name; the next screen or level sets its own track again. */
+  shuffleTrack(): string | null {
     const next = nextTrack(musicTracks(), this.track);
     if (next) this.music(next);
+    return next;
   }
 
   sfx(kind: Sfx): void {

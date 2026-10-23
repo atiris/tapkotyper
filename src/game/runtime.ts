@@ -13,13 +13,14 @@ import { type RobotMood, type RobotState, drawRobot, robotFor } from '../gfx/rob
 import { t, tList } from '../i18n/i18n';
 import { nickname } from '../storage/store';
 import { type InputHandlers, KeyInput, type TypedChar } from '../input/input';
+import { setShortcuts, withKey } from '../input/shortcuts';
 import { LAYOUTS, LayoutMismatchDetector, fingerFor, stepsFor } from '../keyboard/layouts';
 import { SHIFT_L, SHIFT_R, SPACE, activeKeys, isLetterKey, keysToIntroduce, masteryLevel, newestGroup, shiftKeyOf } from '../learning/lessons';
 import { keyWeights, recordPress, recordSession } from '../learning/stats';
 import { FINGER_KEYS, KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
-import { button, h } from '../ui/dom';
+import { button, closeModals, confirmDialog, h } from '../ui/dom';
 import { globalButtons } from '../ui/chrome';
-import { levelIcons } from '../screens/help';
+import { tip } from '../ui/tooltip';
 import { paintRound, pawRing, placeRing, rhythmPic, roundButton, worldName } from '../ui/hud';
 import { OWN_SHARE, WordSource, type WordSourceOwn } from '../words/words';
 import type { Lang, Profile, Surprise } from '../storage/schema';
@@ -115,8 +116,8 @@ export interface RuntimeOptions {
   onExit(): void;
   /** A click on Tapko during play (the level pauses first). */
   onTapko(): void;
-  /** Help from the pause card; `back` returns to the paused level. */
-  onHelp(back: () => void): void;
+  /** The help page over the paused level, with what this level asks (`now`); `back` returns to the paused level. */
+  onHelp(back: () => void, now: HTMLElement[]): void;
 }
 
 /** Runs one level: input, typing state, mode, HUD, guide, Tapko, stats. */
@@ -173,6 +174,8 @@ export class LevelRuntime {
   private mismatch: LayoutMismatchDetector;
   private mismatchShown = false;
 
+  /** Keys the child pressed for a target in this level, right or wrong; leaving after one asks first. */
+  private pressed = 0;
   /** Stats of this level. */
   chars = 0;
   errors = 0;
@@ -239,9 +242,12 @@ export class LevelRuntime {
     this.progressFill = h('div', { class: 'progress-fill' });
     const title = def.kind === 'practice' ? t(def.phrases ? 'level.ownText' : 'level.practice') : def.kind === 'freetype' ? t('level.freeType') : def.id === 'rescue' ? t('level.rescue') : worldName(def);
     const guideBtn = roundButton('control', 'keyboard', t('level.guide'), () => this.toggleGuide());
+    tip(guideBtn, withKey(t('level.guide'), 'F2'));
     if (p.settings.guideLocked) guideBtn.disabled = true;
-    const helpBtn = roundButton('control', 'help', t('level.help'), () => this.openHelpCard());
+    const helpBtn = roundButton('control', 'help', t('level.help'), () => this.openHelp());
+    tip(helpBtn, withKey(t('level.help'), 'F1'));
     this.readBtn = roundButton('control', 'read', t('level.read'), () => this.toggleRead());
+    tip(this.readBtn, withKey(t('level.read'), 'F3'));
     this.paintRead();
     this.offVoices = speech.onVoices(() => this.paintRead());
     // Free typing has nothing to pause: its X leaves.
@@ -293,8 +299,16 @@ export class LevelRuntime {
     document.addEventListener('visibilitychange', this.onVisibility);
     this.onTouch = this.onTouch.bind(this);
     window.addEventListener('pointerdown', this.onTouch);
+    // F2 and F3 work like their buttons, and only where the buttons do.
+    this.offShortcuts = setShortcuts({
+      help: () => this.openHelp(),
+      guide: () => { if (!guideBtn.disabled) this.toggleGuide(); },
+      read: () => { if (!this.readBtn.hidden) this.toggleRead(); },
+    });
     void this.prepare();
   }
+
+  private readonly offShortcuts: () => void;
 
   /** Story levels and rescue missions; free practice and drills count every key, and the main gate's code is the child's own. */
   get pawsAllowed(): boolean {
@@ -359,6 +373,8 @@ export class LevelRuntime {
       onRaw: (code, key, shift) => this.onRaw(code, key, shift),
       onEnter: () => (this.free ? this.freeSend() : this.startPaws()),
       onBackspace: () => (this.free ? this.freeErase() : this.togglePawAuto()),
+      // A pause or a dialog: the keys belong to its buttons.
+      idle: () => this.paused || !!document.querySelector('.modal-back'),
     };
   }
 
@@ -370,6 +386,7 @@ export class LevelRuntime {
     this.disposed = true;
     speech.stop();
     this.offVoices();
+    this.offShortcuts();
     this.loop.stop();
     this.input?.dispose();
     this.stage.dispose();
@@ -452,6 +469,7 @@ export class LevelRuntime {
     this.deadPending = false;
     const res = this.core.type(c.ch);
     if (res.kind === 'ignored') return this.say(t('level.memoryWait'), 2);
+    this.pressed++;
     const p = app.profile!;
     this.keyAt = this.elapsed;
     const since = Math.max(this.lastKey, this.readySince);
@@ -843,33 +861,46 @@ export class LevelRuntime {
       h('div', { class: 'row' },
         button(t('level.resume'), () => this.resume(), 'btn primary', 'play'),
         slower,
-        button(t('help.title'), () => this.opts.onHelp(() => (this.pauseEl?.querySelector('button') as HTMLButtonElement | null)?.focus()), 'btn', 'help'),
-        button(t('level.toMap'), () => this.exit(), 'btn', 'map')));
+        button(t('help.title'), () => this.openHelp(), 'btn', 'help'),
+        button(t(this.ending.label), () => void this.leave(), 'btn', 'close')));
     this.el.querySelector('.stage-wrap')!.append(this.pauseEl);
-    (this.pauseEl.querySelector('button') as HTMLButtonElement).focus();
+    this.focusPause();
   }
 
-  /** The "?" button: pauses the level and shows what to do now, how to do best, and what the buttons are. */
-  private openHelpCard(): void {
+  /** Continue on the pause card. */
+  private focusPause(): void {
+    (this.pauseEl?.querySelector('button') as HTMLButtonElement | null)?.focus();
+  }
+
+  /** What leaving is called, and what the question says is lost: a story level, an exercise or a rescue mission. */
+  private get ending(): { label: string; text: string } {
+    if (this.def.kind === 'freetype') return { label: 'level.leave', text: '' };
+    if (this.def.kind === 'practice') return { label: 'level.endPractice', text: 'level.endPracticeText' };
+    if (this.def.id === 'rescue') return { label: 'level.endRescue', text: 'level.endRescueText' };
+    return { label: 'level.endLevel', text: 'level.endLevelText' };
+  }
+
+  /** Leaving from the pause card; after a key of this level it asks first, Continue being the safe choice. */
+  private async leave(): Promise<void> {
+    if (this.pressed && !this.free) {
+      const yes = await confirmDialog({ title: t('level.endAsk'), text: t(this.ending.text), ok: t('level.end'), cancel: t('level.resume') });
+      if (!yes || this.disposed) return;
+    }
+    this.exit();
+  }
+
+  /**
+   * The "?" button, F1 and Help on the pause card: the level pauses and the help page opens
+   * over it, with what this level asks and a tip first. A dialog over the level closes.
+   */
+  private openHelp(): void {
+    if (!this.started || this.finished) return;
+    closeModals();
     this.pause();
     if (!this.pauseEl) return;
-    const p = app.profile!;
     const intro = this.mode.intro();
-    const tip = pickTip(p, this.style)?.text;
-    this.pauseEl.classList.add('help-card');
-    this.pauseEl.replaceChildren(
-      h('h2', {}, t('level.help')),
-      h('h3', {}, t('level.helpNow')),
-      ...(intro ? [h('p', {}, intro)] : []),
-      ...(tip ? [h('p', {}, tip)] : []),
-      h('h3', {}, t('level.helpBest')),
-      h('ol', {}, ...tList('level.helpSteps').map((s) => h('li', {}, s))),
-      h('h3', {}, t('level.helpButtons')),
-      h('ul', { class: 'help-icons' }, ...levelIcons()),
-      h('h3', {}, t('help.moreTitle')),
-      h('ul', {}, ...tList('help.more').map((s) => h('li', {}, s))),
-      h('div', { class: 'row' }, button(t('level.resume'), () => this.resume(), 'btn primary', 'play')));
-    (this.pauseEl.querySelector('.btn.primary') as HTMLButtonElement).focus({ preventScroll: true });
+    const tip = pickTip(app.profile!, this.style)?.text;
+    this.opts.onHelp(() => this.focusPause(), [intro, tip].filter((x): x is string => !!x).map((x) => h('p', {}, x)));
   }
 
   /** One step lower difficulty from now on; automatic growth may raise it again after accurate play. */

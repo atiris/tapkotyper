@@ -35,6 +35,8 @@
   --shadow: 0 10px 30px rgba(70, 45, 30, 0.14), 0 2px 6px rgba(70, 45, 30, 0.08);
   --scale: 1;
   /* Spacing scale */
+  /* The page behind every screen; the help page in a level takes it too. */
+  --page-bg: linear-gradient(180deg, #c9ecfa 0%, #e9f8ef 55%, #d7f0c8 100%);
   --sp-1: 0.25rem; --sp-2: 0.5rem; --sp-3: 1rem; --sp-4: 1.5rem; --sp-5: 2rem;
   color-scheme: light;
 }
@@ -43,6 +45,7 @@ body[data-font='opendyslexic'] { --font-game: 'OpenDyslexic', 'Atkinson Hyperleg
 body[data-keyfont] { --font-keys: 'Atkinson Hyperlegible', var(--font-game); }
 body.large-text { --scale: 1.25; }
 body.high-contrast {
+  --page-bg: #fff;
   --ink: #000; --ink-soft: #1d1d1d; --paper: #fff; --paper-2: #fff; --line: #000;
   --brand: #b44300; --brand-dark: #7a2d00; --green: #006b2e; --green-dark: #004d21;
 }
@@ -54,10 +57,9 @@ body {
   min-height: 100vh;
   font-family: var(--font-game);
   color: var(--ink);
-  background: linear-gradient(180deg, #c9ecfa 0%, #e9f8ef 55%, #d7f0c8 100%) fixed;
+  background: var(--page-bg) fixed;
   -webkit-font-smoothing: antialiased;
 }
-body.high-contrast { background: #fff; }
 button, input, select, textarea { font: inherit; color: inherit; }
 img { max-width: 100%; }
 h1, h2, h3 { line-height: 1.2; margin: 0 0 0.5em; }
@@ -181,6 +183,11 @@ p { line-height: 1.5; }
   transition: transform 0.15s, border-color 0.15s;
 }
 .profile-card:hover, .profile-card:focus-visible { transform: translateY(-4px) rotate(-1deg); border-color: var(--brand); }
+.profile-card { position: relative; }
+/* The number key that picks the player. */
+.profile-num { position: absolute; top: 6px; left: 8px; min-width: 1.6em; height: 1.6em; border-radius: 999px; background: var(--paper); color: var(--ink-soft); font-weight: 700; font-size: 0.85rem; line-height: 1.6em; box-shadow: inset 0 0 0 2px var(--line); }
+/* The letters typed toward a nickname, soft under the question. */
+.typed-pick { min-height: 1.4em; margin: -0.3rem 0 0.3rem; color: var(--ink-soft); letter-spacing: 0.08em; font-size: 1.05rem; }
 .profile-name { font-weight: 700; font-size: 1.1rem; }
 .profile-real { color: var(--ink-soft); font-size: 0.85rem; margin-top: -0.3rem; }
 .profile-sub { font-size: 0.85rem; color: var(--ink-soft); }
@@ -445,9 +452,6 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 /* The pause leaves the stage and the guide in sight: no dark layer, no blur. */
 .pause-card { position: absolute; top: 0.8rem; left: 50%; transform: translateX(-50%); z-index: 10; animation: fade-in 0.2s ease; width: max-content; max-width: calc(100% - 2rem); padding: 0.8rem 1.2rem; }
 .pause-card h2 { margin: 0 0 0.5rem; font-size: 1.3rem; }
-.pause-card.help-card { width: min(560px, calc(100% - 2rem)); max-height: calc(100% - 1.6rem); overflow-y: auto; text-align: left; }
-.help-card h3 { margin: 0.8rem 0 0.3rem; color: var(--brand-dark); font-size: 1.05rem; }
-.help-card p, .help-card li { margin: 0.2rem 0; }
 .about-actions { justify-content: space-between; }
 .about-actions .btn { text-decoration: none; }
 .posture-img { display: block; margin: 0 auto; width: min(340px, 70vw); max-height: 38vh; object-fit: contain; }
@@ -790,11 +794,9 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-dark); }
 
 /* Help: the bar of every page, then the tabs in a narrower column; the page scrolls as a whole. */
 .help-column { width: 100%; max-width: 760px; margin: 0 auto; font-size: 1.1rem; }
-/* Over a paused level: the bar as a card and the panel scrolling under it. */
-.help-overlay .help-page { width: 100%; max-width: 820px; margin: 0 auto; flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
-.help-overlay .help-page > .bar { background: var(--paper); border-radius: var(--radius); box-shadow: var(--shadow); padding: 0.4rem 1.2rem 0.4rem 0.4rem; margin-bottom: 0.6rem; }
-.help-overlay .help-column { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
-.help-overlay .help-column > .tab-panel { min-height: 0; overflow-y: auto; }
+/* In a paused level: the same page over the whole level, opaque; it scrolls under its bar. No corner buttons there. */
+.level-help { position: absolute; inset: 0; z-index: 20; overflow-y: auto; background: var(--page-bg); }
+.level-help .screen > .bar { padding-right: var(--gut); }
 .help-section h2 { color: var(--brand-dark); margin: 1.2rem 0 0.4rem; }
 .help-section:first-child h2 { margin-top: 0; }
 .help-icons { list-style: none; padding: 0; display: grid; gap: 0.6rem; }
@@ -802,7 +804,6 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-dark); }
 .help-pic { display: flex; justify-content: center; pointer-events: none; }
 .help-pic .round-btn, .help-pic .btn { cursor: default; }
 .help-pic .progress { flex: none; width: 8rem; min-width: 0; }
-.help-overlay { position: absolute; inset: 0; z-index: 20; display: flex; flex-direction: column; padding: 1rem; background: rgba(40, 30, 50, 0.35); backdrop-filter: blur(3px); animation: fade-in 0.2s ease; }
 
 /* Touch notice */
 .touch-notice h2 { color: var(--brand-dark); }
@@ -834,6 +835,14 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-dark); }
   .hand { display: none; }
   .kb-key { height: 28px; }
 }
+
+/* A short note of what a function key changed, at the bottom middle. */
+.toast {
+  position: fixed; z-index: 210; left: 50%; bottom: 1.5rem; transform: translate(-50%, 8px); padding: 0.55rem 1rem; border-radius: 999px;
+  background: var(--ink); color: #fff; font-weight: 600; pointer-events: none; opacity: 0; visibility: hidden;
+  transition: opacity 160ms ease-out, transform 160ms ease-out, visibility 0s linear 160ms;
+}
+.toast.show { opacity: 1; visibility: visible; transform: translate(-50%, 0); transition: opacity 160ms ease-out, transform 160ms ease-out, visibility 0s; }
 
 /* The one tooltip: over the element (under it without room), with a small arrow; above dialogs. */
 .tip {

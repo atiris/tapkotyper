@@ -1,11 +1,14 @@
 import { type ScreenName, app, go, shownScreen } from '../app/app';
 import { audio, type SoundLevel } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
+import { WORLDS } from '../game/levels';
 import { LANGS, language, t } from '../i18n/i18n';
+import { installShortcuts, setDefaultShortcuts, withKey } from '../input/shortcuts';
 import type { Lang } from '../storage/schema';
 import { type Child, ICONS, button, h } from './dom';
 import { paintRound, roundButton, roundTextSvg } from './hud';
 import { cornerMenu } from './menu';
+import { toast } from './toast';
 import { tip } from './tooltip';
 
 /** Super mode is on: a round star in the top row; clicking it ends the mode. Nothing otherwise. */
@@ -19,7 +22,9 @@ export function superStar(): HTMLButtonElement | null {
 
 const LEVEL_ICON: Record<SoundLevel, keyof typeof ICONS> = { normal: 'sound', quiet: 'soundLow', off: 'mute' };
 
-/** Quick sound switch (on every screen): normal, quiet, off. */
+const soundLabel = () => `${t('common.sound')}: ${t(`common.sound_${audio.level}`)}`;
+
+/** Quick sound switch (on every screen): normal, quiet, off; F4 too. */
 export function soundButton(): HTMLButtonElement {
   const b = roundButton('control', LEVEL_ICON[audio.level], '', () => audio.cycleLevel());
   b.classList.add('sound-btn');
@@ -29,9 +34,9 @@ export function soundButton(): HTMLButtonElement {
     audio.shuffleTrack();
   });
   const paint = () => {
-    const label = `${t('common.sound')}: ${t(`common.sound_${audio.level}`)}`;
+    const label = soundLabel();
     b.setAttribute('aria-label', label);
-    tip(b, label);
+    tip(b, withKey(label, 'F4'));
     b.dataset.level = audio.level;
     paintRound(b, LEVEL_ICON[audio.level]);
   };
@@ -67,16 +72,47 @@ export function fullscreenButton(): HTMLButtonElement | null {
 }
 
 /** The help tab that fits a screen; the others open help on its default tab. */
-const HELP_TAB: Partial<Record<ScreenName, string>> = { parent: 'settings' };
+const HELP_TAB: Partial<Record<ScreenName, string>> = { map: 'ui', parent: 'settings' };
 
-/** The round "?": the help page on the tab of this screen, else on the buttons for a player, on the about tab before a player is chosen. */
+/**
+ * The help page on the tab of the screen shown now (My progress open: how to progress), else on
+ * the buttons for a player, on the about tab before a player is chosen.
+ */
+export function openScreenHelp(): void {
+  const shown = shownScreen();
+  // The break is not skipped through the help page either.
+  if (shown === 'help' || shown === 'break') return;
+  const tab = document.querySelector('.stats-modal') ? 'progress' : HELP_TAB[shown ?? 'start'];
+  go('help', tab ? { tab } : {});
+}
+
+/** The round "?", F1 too. */
 export function helpButton(): HTMLButtonElement {
-  const b = roundButton('control', 'help', t('help.title'), () => {
-    const tab = HELP_TAB[shownScreen() ?? 'start'];
-    go('help', tab ? { tab } : {});
-  });
+  const b = roundButton('control', 'help', t('help.title'), openScreenHelp);
+  tip(b, withKey(t('help.title'), 'F1'));
   b.classList.add('help-btn');
   return b;
+}
+
+/** A track's name: its world's, or the menu's, the relaxing one's or the break's. */
+function trackName(track: string): string {
+  return t((WORLDS as string[]).includes(track) ? `worlds.${track}` : `tracks.${track}`);
+}
+
+/** The app's function keys: F1 the screen's help, F4 the sound level, F8 the next song; a level adds its own. */
+export function appShortcuts(): void {
+  setDefaultShortcuts({
+    help: openScreenHelp,
+    sound: () => {
+      audio.cycleLevel();
+      toast(soundLabel());
+    },
+    track: () => {
+      const track = audio.shuffleTrack();
+      if (track) toast(t('common.song', { name: trackName(track) }));
+    },
+  });
+  installShortcuts();
 }
 
 /** The global round buttons, right to left: help, fullscreen, sound, the super star. A level passes its own help. */

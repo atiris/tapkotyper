@@ -93,6 +93,49 @@ export const KEYBOARD_ART = '<svg viewBox="0 0 120 64" aria-hidden="true"><rect 
   [14, 31, 48, 65, 82].map((x) => `<rect x="${x}" y="16" width="12" height="9" rx="2"/>`).join('') + '<rect x="99" y="16" width="8" height="9" rx="2"/>' +
   [20, 37, 54, 71, 88].map((x) => `<rect x="${x}" y="30" width="12" height="9" rx="2"/>`).join('') + '<rect x="32" y="44" width="56" height="8" rx="2"/></g></svg>';
 
+/** Escape goes back, like the screen's Back button; a dialog over the screen closes first. Returns the cleanup. */
+export function onEscape(back: () => void): () => void {
+  const onKey = (e: KeyboardEvent) => {
+    if (e.key !== 'Escape' || document.querySelector('.modal-back')) return;
+    e.preventDefault();
+    back();
+  };
+  window.addEventListener('keydown', onKey);
+  return () => window.removeEventListener('keydown', onKey);
+}
+
+/** Arrow keys by direction, x and y. */
+const ARROWS: Record<string, [number, number]> = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] };
+
+/**
+ * Arrow keys move the focus among the `selector` items inside `container`, to the nearest one
+ * in that direction (rows and grids alike); `onMove` hears where it went.
+ */
+export function arrowFocus(container: HTMLElement, selector: string, onMove?: (el: HTMLElement) => void): void {
+  container.addEventListener('keydown', (e) => {
+    const dir = ARROWS[e.key];
+    const from = e.target instanceof HTMLElement ? e.target.closest<HTMLElement>(selector) : null;
+    if (!dir || !from || e.altKey || e.ctrlKey || e.metaKey) return;
+    const a = from.getBoundingClientRect();
+    let best: HTMLElement | null = null;
+    let bestScore = Infinity;
+    for (const el of container.querySelectorAll<HTMLElement>(selector)) {
+      if (el === from || (el as HTMLButtonElement).disabled || !el.offsetParent) continue;
+      const r = el.getBoundingClientRect();
+      const dx = r.left + r.width / 2 - (a.left + a.width / 2), dy = r.top + r.height / 2 - (a.top + a.height / 2);
+      const along = dir[0] ? dx * dir[0] : dy * dir[1];
+      if (along < 1) continue;
+      // Straight on beats a diagonal step.
+      const score = along + 2 * Math.abs(dir[0] ? dy : dx);
+      if (score < bestScore) [best, bestScore] = [el, score];
+    }
+    if (!best) return;
+    e.preventDefault();
+    best.focus();
+    onMove?.(best);
+  });
+}
+
 export function button(label: string | Node, onClick: () => void, cls = 'btn', iconName?: keyof typeof ICONS): HTMLButtonElement {
   const b = h('button', { class: cls, type: 'button', onClick: () => onClick() });
   if (iconName) b.append(icon(iconName));

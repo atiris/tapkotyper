@@ -15,7 +15,8 @@ One set of rules for where things sit and how they behave, so every screen feels
    with Escape, a click outside or after an action. The start page's title **TapkoTyper**
    always fits on one line under the buttons, from 320 px up.
 2. **Leaving.** A page you navigated to (settings, help, teacher view, wardrobe, friends) closes with
-   "Späť" at the top left, also help laid over a paused level. A window laid over a screen (dialogs, the progress panel, the
+   "Späť" at the top left, also the help page in a paused level and the custom exercise (where Back
+   ends it and shows the results). A window laid over a screen (dialogs, the progress panel, the
    new player form, level cards) closes with the round X at the top right, and with Escape. The
    only closing control at the bottom of a window is a normal action button (for example
    "Pokračovať"), never the one way out.

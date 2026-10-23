@@ -6,7 +6,7 @@ import { friendStars, grantCompanions, hasAccessory, hasCompanion, totalStars, u
 import { practiceToOpen, spendWardrobe, wardrobeLimited, wardrobeLocked } from '../game/wardrobe-time';
 import { COMPANION_KINDS, type Profile } from '../storage/schema';
 import { NICK_MAX } from '../storage/store';
-import { button, h, icon } from '../ui/dom';
+import { button, h, icon, onEscape } from '../ui/dom';
 import { cornerControls } from '../ui/chrome';
 import { levelTitleWords, timerPic } from '../ui/hud';
 
@@ -169,7 +169,10 @@ export function wardrobeScreen(root: HTMLElement): () => void {
           kinds),
         h('h2', {}, t('wardrobe.wardrobe')),
         grid))));
+  root.querySelector<HTMLElement>('.bar .btn')!.focus();
+  const offEscape = onEscape(() => go('map'));
   return () => {
+    offEscape();
     clearInterval(interval);
     if (timer) saveProfile();
   };

@@ -13,7 +13,24 @@
   contrast; a color too light or too mid-tone for it is darkened a little.
 - A reduce motion option (and `prefers-reduced-motion` is respected).
 - Fully playable with sound off; every sound cue has a visual counterpart.
-- All menus are usable with the keyboard.
+- **The whole game by keyboard, no mouse needed.** From the start page through a level, its
+  results and back to the map, every step goes on with Enter or the space bar: each screen,
+  card and dialog focuses its main action and shows a clear focus ring; Tab and the arrow keys
+  move between the choices (the map's levels, the players, the characters, the tabs). The
+  get-ready card starts with the space bar or Enter, the results and the story scenes go on by
+  both, and Escape goes back or pauses.
+- **Picking a player by keyboard.** On "Who is playing today" each of the first nine players
+  shows its number; the number keys 1-9 pick (by the key, so a Slovak keyboard's top row works
+  without Shift). Typing a nickname picks too, without minding capitals or accents, once only
+  one player fits and at least two letters (or the whole nickname) are typed; the typed
+  letters show softly under the question and are forgotten after a short pause or Escape.
+  The super password still works: its start never picks a player.
+- **Function keys** wherever they make sense: F1 the help that fits the moment (in a level the
+  help page for this level, on a screen its help tab), F2 the keyboard guide, F3 reading aloud,
+  F4 the sound (normal, quiet, off), F8 the next song. F4 and F8 say the new sound level or song
+  in a short note at the bottom. Each of these buttons' tooltips ends with its key ("Help (F1)").
+  In a text field the keys type text, only F1 still opens help; the browser's own F-key actions
+  (its help, search, reload of these keys) do not happen.
 - Every top button is explained, drawn as it looks, on the [help page](help.md).
 - **Reading aloud** (off by default, per profile): a round button left of the keyboard
   button in the level bar switches it. It reads only the targets, each when it becomes
@@ -23,6 +40,9 @@
   is not shown, nor in a dictation run, where the voice always says the targets.
 
 ## Why
+- Learners should keep their hands on the keyboard: reaching for the mouse breaks the home
+  position the game teaches. Numbers and nicknames make picking a player as fast as typing,
+  and the F-keys reach what is switched often; the tooltips teach them.
 - The voice helps a child who cannot read the word yet; encouragements spoken over the
   next word cover the task, so only the words to type are read.
 - Children with dyslexia or color vision deficiency must not be excluded

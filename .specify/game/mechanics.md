@@ -67,8 +67,15 @@
     remembering.
 - Pause anytime (Esc or a visible button); the game also pauses when the tab is hidden.
   The pause is a small card at the top: the words and the guide's next key stay in sight.
-  Besides Continue and Map it offers "Slower", one step lower difficulty (the narrator confirms);
+  Besides Continue and Help it offers "Slower", one step lower difficulty (the narrator confirms);
   automatic growth may raise it again after accurate play.
+- **Leaving a level** is said plainly on the pause card: "End level" in a story, "End exercise"
+  in practice and custom exercises, "End mission" in a rescue. Once something was typed in
+  the level (a right or a wrong key) it asks first: "Really end it? This level will not
+  count.", with "End" and "Continue", Continue focused. Ending keeps the time and keys typed in
+  the statistics. Free typing keeps its X and leaves without asking, nothing is scored there.
+- The **custom exercise** (untimed practice) has "Back" at the top left of the level bar, like
+  every other screen: it ends the exercise and shows its results. Escape still pauses.
 
 ## Why
 - A results card that fills the screen hides the game and slows the next try; the child
@@ -89,3 +96,5 @@
   key would turn both back into copying.
 - A pause that hides the game breaks the child's focus; a way to slow down without a
   parent keeps a struggling child playing instead of giving up.
+- "Map" on the pause card did not say that it throws the level away, and it did so without
+  asking. Every other screen has Back at the top left; the custom exercise was the odd one.

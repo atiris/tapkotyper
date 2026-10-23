@@ -11,7 +11,8 @@
     "fullscreen": "Fullscreen",
     "fullscreenExit": "Exit fullscreen",
     "menu": "Menu",
-    "menuClose": "Close the menu"
+    "menuClose": "Close the menu",
+    "song": "Music: {name}"
   },
   "start": {
     "tagline": "A calm typing adventure with all ten fingers",
@@ -126,16 +127,7 @@
     "titleWords": "{name} · level {level}",
     "place": "Level {n} of {total} in this world",
     "help": "Help in the level",
-    "helpNow": "Now",
-    "helpBest": "How to do your best",
-    "helpButtons": "Buttons",
-    "helpSteps": [
-      "Accuracy first: stars come from few mistakes.",
-      "Then a steady rhythm: when you type evenly, the green ring fills up.",
-      "When you are stuck, use the paw: it types a few words for you.",
-      "Repeat a level until it has three stars.",
-      "Take a break after a few levels."
-    ],
+    "helpNow": "In this level",
     "practice": "Own practice",
     "rescue": "Rescue mission",
     "guide": "Show or hide the keyboard",
@@ -153,7 +145,15 @@
     "shiftOtherHand": "Press Shift with the other hand: the little finger on the side away from the letter.",
     "memoryWait": "Wait until it hides.",
     "noVoice": "This browser cannot read aloud, so today you will see the words and copy them.",
-    "noVoiceMemory": "This browser cannot read aloud, so today every note glows first and you type it from memory."
+    "noVoiceMemory": "This browser cannot read aloud, so today every note glows first and you type it from memory.",
+    "endLevel": "End level",
+    "endPractice": "End exercise",
+    "endRescue": "End mission",
+    "endAsk": "Really end it?",
+    "end": "End",
+    "endLevelText": "This level will not count.",
+    "endPracticeText": "This exercise will not count.",
+    "endRescueText": "This mission will not count."
   },
   "guide": {
     "deadStep1": "{ch}: first the accent key, then the letter",
@@ -194,7 +194,7 @@
     "parts": "Parts: {n} of {total}",
     "left": "{s} seconds left",
     "words": "Words: {n}",
-    "finish": "Finish"
+    "backTip": "Ends the exercise and shows the results."
   },
   "practiceKeys": {
     "title": "Which keys will you practise?",
@@ -1240,19 +1240,19 @@
     "icons": {
       "players": "Go back to choosing the player.",
       "settings": "Settings. These are for parents.",
-      "sound": "Sound: normal, quiet or off.",
+      "sound": "Sound: normal, quiet or off. **F4** switches it, **F8** plays another song.",
       "fullscreen": "Play on the whole screen and back again.",
-      "help": "This help.",
+      "help": "This help. **F1** opens it too.",
       "timer": "The clock in the wardrobe shows how much time you have left. While there is plenty, it smiles; then a number drops by one every 10 seconds. When it blinks, the time is nearly over. You earn wardrobe time by practising.",
-      "pause": "Pause. The **Esc key** pauses too.",
+      "pause": "Pause. The **Esc key** pauses too. In the pause you can end the level; once something is typed it asks first, because the level will not count.",
       "paw": "The paw shows whether your help is ready: every word without a mistake fills a bit of the ring, after {n} words the paw is charged. Press **Enter** when you are stuck and your paw types {words} words for you.",
       "ring": "The ring with the number shows which level of the world this is. Green pieces are levels done, orange is this one, empty ones are still to come. The web is the big challenge at the end of the world.",
       "progress": "The bar shows how much of the level is behind you.",
       "gauge": "The green ring shows your rhythm. When you type smoothly, it fills up.",
-      "levelHelp": "Help for this level: what to do and how to improve.",
+      "levelHelp": "Help: what to do in this level and how to type. **F1** opens it too.",
       "super": "The star at the top: super mode. Click it to turn it off.",
-      "read": "Read aloud: the computer reads the words to you.",
-      "guide": "Shows or hides the keyboard that tells where the finger goes.",
+      "read": "Read aloud: the computer reads the words to you. **F3** turns it on or off.",
+      "guide": "Shows or hides the keyboard that tells where the finger goes. **F2** does it too.",
       "menu": "On a small screen these buttons hide under one Menu button."
     },
     "cardTitle": "Your card on the map",
@@ -1342,7 +1342,15 @@
         "So **export the profile** to a file now and then. Import loads it back, or on another device.",
         "Move to another computer: the whole profile is inside a link. A guest profile is forgotten when the tab closes."
       ]
-    }
+    },
+    "keysTitle": "Play with the keyboard only",
+    "keys": [
+      "You never need the mouse. **Enter** or the **space bar** presses the lit button, **Tab** and the **arrows** move between buttons.",
+      "Pick your player by its number **1 to 9**, or start typing its nickname.",
+      "**F1** opens help, **F2** shows or hides the keyboard, **F3** turns reading aloud on or off.",
+      "**F4** switches the sound: normal, quiet, off. **F8** plays another song.",
+      "**Esc** pauses a level and goes back from other screens."
+    ]
   },
   "tips": {
     "sit-straight": "Sit up straight and lean your back on the chair.",
@@ -1669,5 +1677,10 @@
     "Shine",
     "Trill",
     "Beam"
-  ]
+  ],
+  "tracks": {
+    "menu": "Menu",
+    "relaxing": "Relaxing",
+    "break": "Break"
+  }
 }

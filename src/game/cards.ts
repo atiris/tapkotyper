@@ -26,7 +26,7 @@ export function captureKeys(overlay: HTMLElement, onKey: (e: KeyboardEvent) => v
   return stop;
 }
 
-/** Overlay card over the stage; resolves when dismissed. */
+/** Overlay card over the stage; Enter, Space or Escape dismisses it, and it resolves then. */
 export function showCard(host: HTMLElement, content: HTMLElement, o: CardOpts = {}): Promise<void> {
   return new Promise((resolve) => {
     const card = h('div', { class: `card ${o.cls ?? ''}` }, content);
@@ -38,7 +38,7 @@ export function showCard(host: HTMLElement, content: HTMLElement, o: CardOpts = 
     };
     const onKey = (e: KeyboardEvent) => {
       if (e.repeat || ['Shift', 'Control', 'Alt', 'Meta', 'Tab'].includes(e.key)) return;
-      if (e.key === 'Enter' || e.key === 'Escape') {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
         e.preventDefault();
         e.stopPropagation();
         done();
@@ -97,8 +97,8 @@ export function postureContent(line?: string): HTMLElement {
 /**
  * Get-ready card before every adventure, with the session's preparation tip when one is due
  * and the question of a parent's surprise asked in this run (with what is still left when it
- * counts) and a note on the run when one is due; the space bar (or a tap on its drawing)
- * opens the adventure, Escape cancels it.
+ * counts) and a note on the run when one is due; the space bar or Enter (or a tap on the
+ * space bar's drawing) opens the adventure, Escape cancels it.
  */
 export function showPosture(host: HTMLElement, p: Profile, tip?: string, surprise?: Surprise | null, note?: string): Promise<'start' | 'cancel'> {
   return new Promise((resolve) => {
@@ -118,7 +118,7 @@ export function showPosture(host: HTMLElement, p: Profile, tip?: string, surpris
       h('p', { class: 'hint' }, t('posture.escHint')));
     const overlay = h('div', { class: 'overlay' }, card);
     const onKey = (e: KeyboardEvent) => {
-      if (e.repeat || (e.key !== ' ' && e.key !== 'Escape')) return;
+      if (e.repeat || (e.key !== ' ' && e.key !== 'Enter' && e.key !== 'Escape')) return;
       e.preventDefault();
       e.stopPropagation();
       if (e.key === 'Escape') return close('cancel');

@@ -45,14 +45,24 @@ test('help opens from the map and from a paused level and goes back', async ({ p
   await page.keyboard.press('Escape');
   const pause = page.locator('.pause-card');
   await pause.getByRole('button', { name: 'Help' }).click();
-  await expect(page.locator('.help-overlay .help-page')).toBeVisible();
-  await expect(page.locator('.help-overlay .tab[aria-selected="true"]')).toHaveText('How to type');
+  // A whole page, not see-through, with Back at the top left and this level's part first.
+  const levelHelp = page.locator('.level-help');
+  await expect(levelHelp.locator('.help-page')).toBeVisible();
+  await expect(levelHelp.locator('.tab[aria-selected="true"]')).toHaveText('How to type');
+  await expect(levelHelp.locator('.help-section h2').first()).toHaveText('In this level');
+  expect(await levelHelp.evaluate((el) => getComputedStyle(el).backgroundImage)).toContain('gradient');
   await page.keyboard.press('Escape');
-  await expect(page.locator('.help-overlay')).toHaveCount(0);
+  await expect(levelHelp).toHaveCount(0);
   await expect(pause).toBeVisible();
-  await pause.getByRole('button', { name: 'Help' }).click();
-  await page.locator('.help-overlay .bar').getByRole('button', { name: 'Back' }).click();
+  await expect(pause.getByRole('button', { name: 'Continue' })).toBeFocused();
+  // The "?" of the level opens the same page; Back returns to the paused level.
+  await page.locator('.hud').getByRole('button', { name: 'Help in the level' }).click();
+  await levelHelp.locator('.bar').getByRole('button', { name: 'Back' }).click();
   await expect(pause).toBeVisible();
+  // F1 opens it too.
+  await page.keyboard.press('F1');
+  await expect(levelHelp).toBeVisible();
+  await page.keyboard.press('Escape');
   await page.keyboard.press('Escape');
   await expect(pause).toHaveCount(0);
   expect(errors).toEqual([]);

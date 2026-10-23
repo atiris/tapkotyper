@@ -11,7 +11,8 @@
     "fullscreen": "Celá obrazovka",
     "fullscreenExit": "Zrušiť celú obrazovku",
     "menu": "Menu",
-    "menuClose": "Zavrieť menu"
+    "menuClose": "Zavrieť menu",
+    "song": "Hudba: {name}"
   },
   "start": {
     "tagline": "Pokojné dobrodružstvo písania všetkými desiatimi",
@@ -126,16 +127,7 @@
     "titleWords": "{name} · úroveň {level}",
     "place": "Úroveň {n} z {total} v tomto svete",
     "help": "Pomoc v úrovni",
-    "helpNow": "Teraz",
-    "helpBest": "Ako postupovať najlepšie",
-    "helpButtons": "Tlačidlá",
-    "helpSteps": [
-      "Najprv presne: hviezdičky dostaneš za málo chýb.",
-      "Potom plynulo: keď píšeš rovnomerne, zelený kruh sa naplní.",
-      "Keď to nejde, použi labku: napíše za teba pár slov.",
-      "Úroveň si zopakuj, kým nemáš tri hviezdičky.",
-      "Po niekoľkých úrovniach si oddýchni."
-    ],
+    "helpNow": "V tejto úrovni",
     "practice": "Vlastné cvičenie",
     "rescue": "Záchranná misia",
     "guide": "Ukázať alebo skryť klávesnicu",
@@ -153,7 +145,15 @@
     "shiftOtherHand": "Shift stlač druhou rukou: malíčkom na opačnej strane ako písmeno.",
     "memoryWait": "Počkaj, kým sa skryje.",
     "noVoice": "Tento prehliadač nevie čítať nahlas, preto dnes slová uvidíš a odpíšeš ich.",
-    "noVoiceMemory": "Tento prehliadač nevie čítať nahlas, preto dnes každá nôtka najprv zasvieti a napíšeš ju z pamäti."
+    "noVoiceMemory": "Tento prehliadač nevie čítať nahlas, preto dnes každá nôtka najprv zasvieti a napíšeš ju z pamäti.",
+    "endLevel": "Ukončiť úroveň",
+    "endPractice": "Ukončiť cvičenie",
+    "endRescue": "Ukončiť misiu",
+    "endAsk": "Naozaj ukončiť?",
+    "end": "Ukončiť",
+    "endLevelText": "Táto úroveň sa nezapočíta.",
+    "endPracticeText": "Toto cvičenie sa nezapočíta.",
+    "endRescueText": "Táto misia sa nezapočíta."
   },
   "guide": {
     "deadStep1": "{ch}: najprv kláves s mäkčeňom alebo dĺžňom, potom písmeno",
@@ -194,7 +194,7 @@
     "parts": "Časti: {n} z {total}",
     "left": "Zostáva {s} sekúnd",
     "words": "Slová: {n}",
-    "finish": "Skončiť"
+    "backTip": "Ukončí cvičenie a ukáže výsledky."
   },
   "practiceKeys": {
     "title": "Ktoré klávesy si precvičíš?",
@@ -1240,19 +1240,19 @@
     "icons": {
       "players": "Vrátiš sa k výberu hráča.",
       "settings": "Nastavenia. Tie patria rodičom.",
-      "sound": "Zvuk: normálny, potichu alebo vypnutý.",
+      "sound": "Zvuk: normálny, potichu alebo vypnutý. **F4** ho prepne, **F8** pustí inú pesničku.",
       "fullscreen": "Hra na celú obrazovku a zase späť.",
-      "help": "Táto pomoc.",
+      "help": "Táto pomoc. Otvorí ju aj **F1**.",
       "timer": "Hodiny v šatníku ukazujú, koľko času ti ostáva. Kým je času dosť, usmievajú sa, potom v nich je číslo, ktoré každých 10 sekúnd klesne o jedna. Keď blikajú, čas sa končí. Čas v šatníku získaš cvičením.",
-      "pause": "Pauza. Rovnako ju zapne aj **kláves Esc**.",
+      "pause": "Pauza. Rovnako ju zapne aj **kláves Esc**. V pauze sa dá úroveň ukončiť; keď už je niečo napísané, najprv sa opýta, lebo sa nezapočíta.",
       "paw": "Labka ti ukazuje, či máš pomoc pripravenú: každé slovo bez chyby zaplní kúsok kruhu, po {n} slovách je labka nabitá. Keď to nejde, stlač **Enter** a labka napíše za teba {words} slová.",
       "ring": "Krúžok s číslom ukazuje, ktorá úroveň sveta je táto. Zelené kúsky sú hotové úrovne, oranžový je táto, prázdne ťa ešte čakajú. Pavučina je veľká výzva na konci sveta.",
       "progress": "Pásik ukazuje, koľko z úrovne už máš za sebou.",
       "gauge": "Zelený kruh ukazuje tvoj rytmus. Keď píšeš plynulo, naplní sa.",
-      "levelHelp": "Pomoc k úrovni: čo robiť a ako sa zlepšiť.",
+      "levelHelp": "Pomoc: čo robiť v tejto úrovni a ako písať. Otvorí ju aj **F1**.",
       "super": "Hviezda hore: super režim. Kliknutím ho vypneš.",
-      "read": "Čítanie nahlas: počítač ti slová prečíta.",
-      "guide": "Ukáže alebo skryje klávesnicu, ktorá radí, kam ide prst.",
+      "read": "Čítanie nahlas: počítač ti slová prečíta. **F3** ho zapne alebo vypne.",
+      "guide": "Ukáže alebo skryje klávesnicu, ktorá radí, kam ide prst. Rovnako **F2**.",
       "menu": "Na malej obrazovke sú tieto tlačidlá schované pod jedným tlačidlom Menu."
     },
     "cardTitle": "Tvoja karta na mape",
@@ -1342,7 +1342,15 @@
         "Preto občas **exportujte profil** do súboru. Import ho načíta späť alebo na inom zariadení.",
         "Preniesť na iný počítač: celý profil je v odkaze. Hosťovský profil sa zabudne po zatvorení karty."
       ]
-    }
+    },
+    "keysTitle": "Hraj len s klávesnicou",
+    "keys": [
+      "Myš nikdy nepotrebuješ. **Enter** alebo **medzerník** stlačí zvýraznené tlačidlo, **Tab** a **šípky** prechádzajú medzi tlačidlami.",
+      "Hráča vyberieš jeho číslom **1 až 9** alebo tak, že začneš písať jeho prezývku.",
+      "**F1** otvorí pomoc, **F2** ukáže alebo skryje klávesnicu, **F3** zapne alebo vypne čítanie nahlas.",
+      "**F4** prepína zvuk: normálny, potichu, vypnutý. **F8** pustí inú pesničku.",
+      "**Esc** zastaví úroveň a z iných obrazoviek ide späť."
+    ]
   },
   "tips": {
     "sit-straight": "Seď rovno a chrbát si opri o operadlo.",
@@ -1669,5 +1677,10 @@
     "Muška",
     "Vrabčik",
     "Jasanka"
-  ]
+  ],
+  "tracks": {
+    "menu": "Menu",
+    "relaxing": "Oddych",
+    "break": "Prestávka"
+  }
 }

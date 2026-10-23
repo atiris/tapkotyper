@@ -9,7 +9,7 @@ import { GUEST_ID, type Profile, SUPER_ID } from '../storage/schema';
 import { activeKeys } from '../learning/lessons';
 import { badgeTier } from '../game/rewards';
 import { badge } from '../ui/badge';
-import { button, closeButton, h, icon } from '../ui/dom';
+import { arrowFocus, button, closeButton, h, icon } from '../ui/dom';
 import { cornerControls } from '../ui/chrome';
 import { offerInstall } from '../ui/install';
 import { ownTextPhrases } from '../game/modes/practice';
@@ -114,7 +114,10 @@ export function mapScreen(root: HTMLElement): void {
         rescue ? button(t('map.rescue'), () => go('level', { id: 'rescue' }), 'btn', 'rescue') : null,
         rescue ? button(t('map.friends'), () => go('friends'), 'btn', 'dragon') : null),
       h('div', { class: 'story-rows' }, welcome, ...STORIES.map((s) => storyRow(p, s, next?.id, keysBubble, lockBubble))))));
-  (root.querySelector('.btn.primary') as HTMLElement | null)?.focus();
+  // The arrows walk the levels and the closed worlds like a grid.
+  arrowFocus(root.querySelector('.story-rows')!, '.level-node, .island-art[tabindex]');
+  // Enter starts at once: the welcome's start (it marks the welcome seen), else Continue.
+  (welcome?.querySelector<HTMLElement>('.btn.primary') ?? play).focus();
   // One greeting at a time: the install offer waits for a map without the welcome.
   if (p.id !== SUPER_ID && !welcome) offerInstall(p.companion);
 }

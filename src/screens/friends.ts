@@ -5,7 +5,7 @@ import { robotElement } from '../gfx/robot';
 import { t } from '../i18n/i18n';
 import { STORIES, storyDone } from '../game/levels';
 import type { Friend } from '../storage/schema';
-import { button, h } from '../ui/dom';
+import { button, h, onEscape } from '../ui/dom';
 import { cornerControls } from '../ui/chrome';
 
 const LITTLE_ROBOTS = ['obj-robot-small-1', 'obj-robot-small-2', 'obj-robot-small-3'];
@@ -20,7 +20,7 @@ function picture(f: Friend, i: number): HTMLElement | null {
 }
 
 /** Little friends helped in rescue missions: the dragons of story 1, the robots of story 2 and the forest friends of story 3. */
-export function friendsScreen(root: HTMLElement): void {
+export function friendsScreen(root: HTMLElement): () => void {
   const p = app.profile!;
   const [dragonStory, robotStory, fairyStory] = STORIES;
   const group = (kind: Friend['kind'], first: HTMLElement | null) => {
@@ -56,4 +56,6 @@ export function friendsScreen(root: HTMLElement): void {
         })),
         h('p', {}, t('friends.empty'))),
       h('div', { class: 'row center' }, button(t('map.rescue'), () => go('level', { id: 'rescue' }), 'btn primary', 'rescue')))));
+  root.querySelector<HTMLElement>('.friends-board .btn.primary')!.focus();
+  return onEscape(() => go('map'));
 }

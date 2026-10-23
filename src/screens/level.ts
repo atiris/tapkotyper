@@ -60,7 +60,7 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
     style: params.style,
     onExit: exit,
     onTapko: openStats,
-    onHelp: (back) => openHelp(root.querySelector('.level-screen')!, back),
+    onHelp: (back, now) => openHelp(root.querySelector('.level-screen')!, back, now),
     onFinish: (result) => {
       if (!result) return exit();
       if (task) {
@@ -74,8 +74,10 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
     root.querySelector('.hud-title')!.after(roundButton('control', 'map', t('freeType.place'), () => openPlacePicker(def.world)));
   }
   if (def.kind === 'practice' && !params.seconds) {
-    // Untimed practice ends when the child wants.
-    root.querySelector('.hud')!.append(button(t('practice.finish'), () => rt.endPractice(), 'btn small'));
+    // Untimed practice ends when the child wants: Back, like on every other screen, shows the results.
+    const back = button(t('common.back'), () => rt.endPractice(), 'btn ghost small', 'back');
+    back.dataset.tip = t('practice.backTip');
+    root.querySelector('.hud')!.prepend(back);
   }
   return () => rt.dispose();
 }

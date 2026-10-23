@@ -3,7 +3,7 @@ import { app, go, openRoute, registerScreen, screenVisit, selectProfile, useLang
 import { loadManifest } from './gfx/assets';
 import { SUPER_ID } from './storage/schema';
 import { detectLanguage } from './i18n/i18n';
-import { watchAutoFullscreen } from './ui/chrome';
+import { appShortcuts, watchAutoFullscreen } from './ui/chrome';
 import { noteVisit } from './ui/install';
 import { installTooltips } from './ui/tooltip';
 import { parentAccess } from './screens/parent-gate';
@@ -66,6 +66,7 @@ async function boot(): Promise<void> {
   await Promise.all([loadManifest(), useLanguage(lang)]);
   document.body.classList.remove('booting');
   installTooltips();
+  appShortcuts();
   window.addEventListener('popstate', () => void openRoute(location.hash));
   watchAutoFullscreen();
   noteVisit();

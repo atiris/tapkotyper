@@ -4,7 +4,7 @@ import { language, t } from '../i18n/i18n';
 import { COMPANION_KINDS, type CompanionKind, type Lang, type LayoutId } from '../storage/schema';
 import { NICK_MAX, newProfile } from '../storage/store';
 import { addTask } from '../share/task';
-import { closeButton, h } from '../ui/dom';
+import { arrowFocus, closeButton, h, onEscape } from '../ui/dom';
 import { LAYOUT_IDS } from '../keyboard/layouts';
 import { cornerControls } from '../ui/chrome';
 
@@ -12,7 +12,7 @@ export function newProfileScreen(root: HTMLElement): () => void {
   let kind: CompanionKind = 'fox';
   // Closing the form forgets a task link that brought the child here.
   const cancel = () => { app.pendingTask = null; go('start'); };
-  const nick = h('input', { id: 'np-nick', type: 'text', maxlength: NICK_MAX, autocomplete: 'off', spellcheck: 'false', required: true, autofocus: true });
+  const nick = h('input', { id: 'np-nick', type: 'text', maxlength: NICK_MAX, autocomplete: 'off', spellcheck: 'false', required: true });
   const name = h('input', { id: 'np-name', type: 'text', maxlength: 24, autocomplete: 'off' });
   const langSelect = (id: string) => h('select', { id },
     h('option', { value: 'sk', selected: language() === 'sk' }, 'Slovenčina'),
@@ -28,14 +28,17 @@ export function newProfileScreen(root: HTMLElement): () => void {
   });
   const kinds = h('div', { class: 'kind-picker', role: 'radiogroup', 'aria-label': t('newProfile.companion') },
     ...COMPANION_KINDS.map((k) => {
-      const b = h('button', { class: `kind ${k === kind ? 'on' : ''}`, type: 'button', role: 'radio', 'aria-checked': String(k === kind), 'aria-label': t(`kinds.${k}`), onClick: () => {
+      // One stop for Tab: the chosen character; the arrows move the choice.
+      const b = h('button', { class: `kind ${k === kind ? 'on' : ''}`, type: 'button', role: 'radio', 'aria-checked': String(k === kind), tabindex: k === kind ? '0' : '-1', 'aria-label': t(`kinds.${k}`), onClick: () => {
         kind = k;
-        kinds.querySelectorAll('.kind').forEach((el) => { el.classList.remove('on'); el.setAttribute('aria-checked', 'false'); });
+        kinds.querySelectorAll('.kind').forEach((el) => { el.classList.remove('on'); el.setAttribute('aria-checked', 'false'); el.setAttribute('tabindex', '-1'); });
         b.classList.add('on');
         b.setAttribute('aria-checked', 'true');
+        b.setAttribute('tabindex', '0');
       } }, tapkoElement({ name: '', kind: k, accessories: [] }, 'idle', 84), h('span', {}, t(`kinds.${k}`)));
       return b;
     }));
+  arrowFocus(kinds, '.kind', (el) => el.click());
   const error = h('p', { class: 'error', role: 'alert' });
   const form = h('form', { class: 'panel form', onSubmit: async (e: Event) => {
     e.preventDefault();
@@ -68,12 +71,14 @@ export function newProfileScreen(root: HTMLElement): () => void {
     h('p', { class: 'hint' }, t('newProfile.parentHint')),
     error,
     h('div', { class: 'row' }, h('button', { class: 'btn primary', type: 'submit' }, t('newProfile.create'))));
+  // Enter in a list (the last fields) creates the player too, like in a text field.
+  form.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target instanceof HTMLSelectElement) {
+      e.preventDefault();
+      form.requestSubmit();
+    }
+  });
   root.append(h('div', { class: 'screen form-screen' }, cornerControls(), form));
-  const onKey = (e: KeyboardEvent) => {
-    if (e.key !== 'Escape' || document.querySelector('.modal-back')) return;
-    e.preventDefault();
-    cancel();
-  };
-  window.addEventListener('keydown', onKey);
-  return () => window.removeEventListener('keydown', onKey);
+  nick.focus();
+  return onEscape(cancel);
 }

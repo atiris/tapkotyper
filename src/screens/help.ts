@@ -35,8 +35,8 @@ function mapIcons(): HTMLElement[] {
   ];
 }
 
-/** The buttons of a level; the super star only where it can appear on screen (the help page). */
-export function levelIcons(withSuper = false): HTMLElement[] {
+/** The buttons of a level, and the super star. */
+function levelIcons(): HTMLElement[] {
   const gauge = rhythmPic();
   gauge.set(0.6);
   return [
@@ -51,7 +51,7 @@ export function levelIcons(withSuper = false): HTMLElement[] {
     iconLine(round('keyboard'), t('help.icons.guide')),
     iconLine(round('sound'), t('help.icons.sound')),
     iconLine(round('fullscreen'), t('help.icons.fullscreen')),
-    ...(withSuper ? [iconLine(roundPic('super', 'star'), t('help.icons.super'))] : []),
+    iconLine(roundPic('super', 'star'), t('help.icons.super')),
   ];
 }
 
@@ -87,14 +87,17 @@ function aboutTab(): HTMLElement[] {
   ];
 }
 
-function tabContent(tab: HelpTab): HTMLElement[] {
+/** A tab's sections; in a level the typing tab starts with what this level asks (`now`). */
+function tabContent(tab: HelpTab, now: Child[] = []): HTMLElement[] {
   switch (tab) {
     case 'ui': return [
       section(t('help.mapTitle'), h('ul', { class: 'help-icons' }, ...mapIcons())),
       section(t('help.cardTitle'), list('help.card')),
-      section(t('help.levelTitle'), h('ul', { class: 'help-icons' }, ...levelIcons(true))),
+      section(t('help.levelTitle'), h('ul', { class: 'help-icons' }, ...levelIcons())),
+      section(t('help.keysTitle'), list('help.keys')),
     ];
     case 'typing': return [
+      ...(now.length ? [section(t('level.helpNow'), ...now)] : []),
       section(t('help.typeTitle'), list('help.type')),
       section(t('help.playTitle'), list('help.play')),
     ];
@@ -116,10 +119,10 @@ function tabContent(tab: HelpTab): HTMLElement[] {
  * The one help page: the buttons, how to type, how to progress, the settings and about the
  * game, in tabs; the bar with Back like the settings' bar, then the tabs in a narrower column.
  */
-function helpPage(cls: string, tab: HelpTab, onBack: () => void, onTab: (tab: HelpTab) => void = () => {}): HTMLElement {
+function helpPage(cls: string, tab: HelpTab, onBack: () => void, onTab: (tab: HelpTab) => void = () => {}, now: Child[] = []): HTMLElement {
   const body = h('div', { class: 'tab-panel prose' });
   const nav = tabBar(TABS.map((x) => [x, t(`help.tab.${x}`)] as const), tab, (x) => {
-    body.replaceChildren(...tabContent(x));
+    body.replaceChildren(...tabContent(x, now));
     body.scrollTop = 0;
     onTab(x);
   });
@@ -152,16 +155,21 @@ export function helpScreen(root: HTMLElement, params: { tab?: string }): () => v
   return escapeBack(screen, back);
 }
 
-/** Help over a paused level, on how to type; Back (or Escape) returns to the paused level. */
-export function openHelp(host: HTMLElement, onBack: () => void): void {
-  const overlay = h('div', { class: 'help-overlay', role: 'dialog', 'aria-label': t('help.title') });
+/**
+ * Help in a paused level: the same page as the help screen over the whole level (no route
+ * change, so the level stays as it was), on how to type with what this level asks first.
+ * Back (or Escape) returns to the paused level; open already, it stays.
+ */
+export function openHelp(host: HTMLElement, onBack: () => void, now: Child[] = []): void {
+  if (host.querySelector('.level-help')) return;
+  const layer = h('div', { class: 'level-help', role: 'dialog', 'aria-label': t('help.title') });
   const close = () => {
     stop();
-    overlay.remove();
+    layer.remove();
     onBack();
   };
-  overlay.append(helpPage('', 'typing', close));
-  const stop = escapeBack(overlay, close);
-  host.append(overlay);
-  overlay.querySelector<HTMLElement>('.bar .btn')!.focus();
+  layer.append(helpPage('screen', 'typing', close, undefined, now));
+  const stop = escapeBack(layer, close);
+  host.append(layer);
+  layer.querySelector<HTMLElement>('.bar .btn')!.focus();
 }

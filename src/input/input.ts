@@ -18,6 +18,8 @@ export interface InputHandlers {
   onBackspace?(): void;
   /** Raw key events, for the layout mismatch detector. */
   onRaw?(code: string, key: string, shift: boolean): void;
+  /** True while the keys belong to buttons (a pause, a dialog): only Escape reaches the level then. */
+  idle?(): boolean;
 }
 
 const IGNORED = new Set(['Shift', 'Control', 'Alt', 'AltGraph', 'Meta', 'CapsLock', 'Tab', 'NumLock', 'ScrollLock', 'ContextMenu', 'OS']);
@@ -55,6 +57,7 @@ export class KeyInput {
       this.handlers.onEscape?.();
       return;
     }
+    if (this.handlers.idle?.()) return;
     if (key === 'Enter') {
       if (this.handlers.onEnter?.()) e.preventDefault();
       return;

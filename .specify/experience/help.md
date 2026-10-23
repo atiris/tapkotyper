@@ -27,12 +27,14 @@
 - The round "?" in the map's top buttons opens it on the interface tab. The "?" on the start
   page (and on the other screens before a player is chosen) opens it on the about tab; help
   works without a player and names no one.
-- A "Help" button in a level's pause card opens it over the paused level, on how to type; closing
-  it returns to the paused level.
-- A purple round "?" button in a level's top bar pauses the level and opens a card: what to do
-  now (the level's intro and one tip), how to do best (accuracy first, then a steady rhythm,
-  the paw when stuck, repeat for three stars, rest after a few levels) and the real buttons.
-  Escape or "Continue" closes it and resumes.
+- **Help in a level**: the purple round "?" in the level's top bar, "Help" on the pause card and
+  F1 pause the level and open the same help page over the whole level, opaque, with "Back" at
+  the top left. It opens on how to type, with "In this level" first: the level's intro and one
+  tip. Back or Escape returns to the paused level, on "Continue"; the level is not lost.
+- **F1** opens the help that fits the moment everywhere: on the map the interface tab, in the
+  settings the settings tab, with "My progress" open how to progress, on the start page about.
+  The help tab of the interface lists the keyboard keys (Enter and space, Tab and arrows, the
+  player numbers and nickname, F1-F4 and F8, Esc).
 - Works on a 1024x600 screen; the page scrolls and the bar with Back stays in sight.
 - A few key points per tab are in bold (about a dozen in all, a phrase, never a whole
   sentence): the home keys, Esc pauses, stars from accuracy, the paw's Enter, the parent's
@@ -40,7 +42,7 @@
 - Explains that on a small screen the top buttons hide under one Menu button, and (in how to
   type and in about) that a real keyboard is needed, also on a phone or tablet.
 - Explains the wardrobe's countdown (a smile, then a number that drops every 10 seconds, blinking at the end, time earned by practice) next to the map's buttons.
-- Explains the paw (what it shows, when to press), the ring with the level's number beside the pause button (levels done, this one, to come, a web for the big challenge), the rescue mission and the badge, each in one short sentence. The level help card has the same text, left-aligned and without the super star.
+- Explains the paw (what it shows, when to press), the ring with the level's number beside the pause button (levels done, this one, to come, a web for the big challenge), the rescue mission and the badge, each in one short sentence.
 
 ## Why
 - Children do not guess what symbols mean, and the parent is not always next to them.
@@ -48,6 +50,7 @@
   same "?", instead of a help page and a separate about page.
 - Parents rarely read settings hints one by one; a page that explains them all lets them set the
   game up once with confidence.
-- Opening help from a level must not end the run, so the level only waits paused.
+- Opening help from a level must not end the run, so the level only waits paused. A
+  see-through help over a busy level was hard to read, so it is a whole page.
 - Help that opens where you are and goes back there keeps the child or parent in their task;
   bold key points make plain help text easy to scan.

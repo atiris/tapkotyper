@@ -132,15 +132,15 @@ Contracts: none. No storage change, no server, no DB.
   - `help.md`: help in a level and F1.
 
 ## Steps
-- [ ] Shortcuts module with unit test; level and screen registration; tooltip key hints.
-- [ ] Help page layer in levels with Back; F1 by context.
-- [ ] Pause end labels and confirm; custom exercise Back.
-- [ ] Start screen numbers, digit and nickname pick.
-- [ ] Enter/Space and focus audit of every screen; focus rings.
-- [ ] i18n sk + en; specs as listed.
-- [ ] `npm run build`, `npm test`, `npx playwright test` pass, including
+- [x] Shortcuts module with unit test; level and screen registration; tooltip key hints.
+- [x] Help page layer in levels with Back; F1 by context.
+- [x] Pause end labels and confirm; custom exercise Back.
+- [x] Start screen numbers, digit and nickname pick.
+- [x] Enter/Space and focus audit of every screen; focus rings.
+- [x] i18n sk + en; specs as listed.
+- [x] `npm run build`, `npm test`, `npx playwright test` pass, including
       `e2e/keyboard-only.spec.ts`.
-- [ ] Drive the app with the playwright MCP using only the keyboard:
+- [x] Drive the app with the playwright MCP using only the keyboard:
   - Pick a player by 2 and by typing a nickname.
   - Play a level to the results with Space and Enter only.
   - F2, F3, F4 and F8 in a level, with their tooltips showing the keys.
@@ -148,3 +148,40 @@ Contracts: none. No storage change, no server, no DB.
   - End a level after typing and see the question.
   - Custom exercise Back shows the results.
   - Console clean.
+
+## State
+Decisions taken while implementing (nobody to ask):
+- The number keys pick by `e.code` (`Digit1-9`, `Numpad1-9`), not by the character: on a
+  Slovak keyboard the top row types "+ľšč..." without Shift. Nicknames are still matched folded,
+  so "s" finds "Šimon".
+- While the typed letters are a start of the super password ("s", "su", ...), no player is
+  picked, so a fast typist reaches super mode even with a player called "Su...".
+- The level's help card is gone; its useful part (the level's intro and one tip) is the first
+  section "In this level" of the typing tab of the help page in the level. `level.helpBest`,
+  `level.helpButtons`, `level.helpSteps` and `practice.finish` were removed.
+- F1 in a level works only once play started (before it, the get-ready card owns Escape and the
+  space bar); it closes a dialog over the level (My progress) first. F1 on the break screen does
+  nothing, like its disabled "?".
+- `KeyInput` got an `idle` handler: while paused or a dialog is open, only Escape reaches the
+  level, so Space and Enter press the focused button instead of being swallowed.
+- One `arrowFocus` helper (nearest item in the arrow's direction) serves the players, the map's
+  levels and closed worlds, the character picker (arrows also choose, one Tab stop) and every tab
+  row. A small `toast` shows what F4 and F8 changed.
+- The friends screen also focuses its main action and goes back on Escape, like the wardrobe.
+
+## Done - 2026-10-23
+Shipped: the shortcuts module (F1, F2, F3, F4, F8, with its unit test) and the key in each
+button's tooltip; the help page as an opaque layer inside a paused level with Back and
+"In this level" first, F1 by context; "End level / exercise / mission" with the question
+after a typed key; Back at the top left of the custom exercise; player numbers 1-9 and
+nickname typing on the start screen; focus on the main action and arrow-key moves on the start
+screen, new player form, map, wardrobe, friends and tab rows; Space and Enter on the cards;
+`e2e/keyboard-only.spec.ts`; sk and en texts; specs. `npm run build`, `npm test` (unit) and
+`npx playwright test` (55 tests) pass.
+The playwright MCP browser was held by another session's Chrome, so the keyboard-only drive
+ran as a Playwright script against `vite preview` in Slovak: pick by 2 and by "em", a level
+started by Enter and Space, F2, F3, F4 (toast "Zvuk: potichu"), F8 (toast "Hudba: ..."), the
+tooltips "... (F1/F2/F3/F4)", F1 to the help page and Back to "Pokračovať", ending after a key
+with the question, the custom exercise's Back to its results; console clean except the visit
+counter's "not counting on localhost" warnings.
+Left out: nothing.

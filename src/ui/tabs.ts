@@ -1,6 +1,6 @@
-import { button, h } from './dom';
+import { arrowFocus, button, h } from './dom';
 
-/** A row of tabs (`[id, label]`) that sits right above its panel; selects `current` now and calls `onChange` on every pick. */
+/** A row of tabs (`[id, label]`) that sits right above its panel; selects `current` now and calls `onChange` on every pick; the arrows pick the next one. */
 export function tabBar<T extends string>(tabs: readonly (readonly [T, string])[], current: T, onChange: (tab: T) => void): HTMLElement {
   const nav = h('nav', { class: 'tabs', role: 'tablist' });
   const show = (tab: T) => {
@@ -13,6 +13,7 @@ export function tabBar<T extends string>(tabs: readonly (readonly [T, string])[]
     b.setAttribute('role', 'tab');
     nav.append(b);
   }
+  arrowFocus(nav, '.tab', (b) => b.click());
   show(current);
   return nav;
 }

@@ -1375,7 +1375,10 @@
       "Stránku **Pre mentorov** otvoríte ikonou grafu vpravo hore na úvodnej stránke. Výsledky sa ukladajú len v tomto prehliadači.",
       "Najrýchlejšie je skenovať: napíšte skupinu (napríklad 5.A), stlačte **Skenovať kamerou** a obíďte miestnosť. Kamera načíta aj viac QR kódov naraz a každý nový výsledok zapíše do tejto skupiny.",
       "Pisateľ ukáže QR kód v Môj postup alebo po odovzdaní úlohy. Bez kamery stačí vložiť alebo otvoriť **odkaz s výsledkom**.",
-      "Tabuľku môžete filtrovať podľa skupiny a úlohy a zoradiť. Kliknutím na meno uvidíte všetky výsledky pisateľa a celú tabuľku stiahnete ako CSV.",
+      "**Sada** sú výsledky jednej skupiny, ktoré prišli spolu: jeden sken kamerou, alebo odkazy pridané do **20 minút** od prvého. Na karte **Skupiny** sú sady každej skupiny; kliknutím na deň uvidíte pisateľov sady a celé to stiahnete ako CSV.",
+      "Každé odovzdanie sa uchová. Na karte **Pisatelia** nájdete pisateľa podľa mena a uvidíte, ako sa mu zmenila presnosť a rytmus od prvého po posledné odovzdanie. Kliknutím na meno uvidíte vývoj v grafoch a všetky odovzdania.",
+      "**Z telefónu do počítača:** na karte **Súbory** stlačte na telefóne **Poslať do počítača** a pošlite si súbor .tapko (napríklad e-mailom). Na počítači ho na tej istej karte načítajte alebo ho na stránku pretiahnite. Čo už máte, sa nepridá druhýkrát.",
+      "Výsledky staršie ako **rok** sa pri otvorení stránky zmažú. Staré výsledky načítané zo súboru ostanú ešte **7 dní**. Skôr ich zmažete tlačidlom **Vymazať…**.",
       "Kontrolný súčet ukáže poškodený odkaz (výkričník pri mene), nie podvádzanie.",
       "Úlohu pre pisateľov vytvoríte v nastaveniach na karte Úloha: vznikne odkaz a QR kód, ktorý pisatelia otvoria."
     ]
@@ -1508,8 +1511,6 @@
     "already": "Tento výsledok tu už je: {name}, {title}.",
     "notKept": "Tento prehliadač nedovolí uložiť výsledky, po zatvorení stránky sa stratia.",
     "notIntact": "Kontrolný súčet nesedí, odkaz bol asi pri kopírovaní poškodený.",
-    "removeTitle": "Odstrániť výsledok?",
-    "removeText": "Výsledok {name} z úlohy {title} sa z tejto tabuľky odstráni.",
     "remove": "Odstrániť",
     "empty": "Zatiaľ tu nie sú žiadne výsledky. Naskenujte QR kódy alebo vložte **odkaz s výsledkom**.",
     "csv": "Stiahnuť CSV",
@@ -1525,19 +1526,19 @@
       "broken": "Poškodený",
       "group": "Skupina",
       "level": "Levely",
-      "status": "Stav"
+      "status": "Stav",
+      "handIns": "Odovzdania",
+      "last": "Posledné"
     },
-    "count": "{n} výsledkov",
     "all": "Všetky",
     "noGroup": "Bez skupiny",
     "groupFilter": "Filter skupiny",
     "csvAll": "Stiahnuť CSV (všetko)",
-    "pick": "Vybrať: {name}",
     "assign": "Priradiť do skupiny ({n})",
     "assignPrompt": "Názov skupiny (prázdny ho zruší). Existujúce: {groups}",
     "removePicked": "Odstrániť vybrané ({n})",
-    "removeManyTitle": "Odstrániť vybrané výsledky?",
-    "removeManyText": "Z tabuľky sa odstráni {n} výsledkov.",
+    "removeManyTitle": "Odstrániť vybrané sady?",
+    "removeManyText": "Odstráni sa {sets}, spolu {results}.",
     "scan": {
       "start": "Skenovať kamerou",
       "privacy": "Obraz z kamery sa nikam neposiela ani neukladá.",
@@ -1548,7 +1549,6 @@
       "one": "Zamier na jeden kód.",
       "done": "Hotovo",
       "collected": "Načítané",
-      "updated": "aktualizované",
       "unknown": "Neznámy kód",
       "undo": "Zrušiť tento výsledok",
       "error": {
@@ -1560,17 +1560,16 @@
       "group": "Skupina pre tento sken",
       "groupPlaceholder": "Skupina, napríklad 5.A",
       "title": "Skenovanie",
-      "count": "{n} načítaných",
-      "fresh": "{n} nových",
-      "updatedCount": "{n} aktualizované"
+      "count": {
+        "one": "{n} načítaný",
+        "few": "{n} načítané",
+        "other": "{n} načítaných"
+      }
     },
-    "summary": "zvládli {ok} z {n}, presnosť {accuracy} %, rytmus {rhythm}, dokončené levely {levels}",
     "status": {
       "ok": "Zvládnuté",
       "practice": "Precvičiť"
     },
-    "taskFilter": "Úloha",
-    "allTasks": "Všetky úlohy",
     "sortBy": "Zoradiť",
     "sort": {
       "child": "Meno",
@@ -1579,7 +1578,9 @@
       "accuracy": "Presnosť",
       "rhythm": "Rytmus",
       "levels": "Levely",
-      "status": "Stav"
+      "status": "Stav",
+      "group": "Skupina",
+      "handIns": "Odovzdania"
     },
     "unit": {
       "cpm": "{n} zn/min",
@@ -1587,16 +1588,136 @@
       "levels": "levely: {n}"
     },
     "child": {
-      "tasks": "odovzdané úlohy: {n}",
       "accuracy": "priemerná presnosť",
       "cpm": "znakov za minútu",
       "minutes": "minút cvičenia",
       "levels": "prejdených levelov",
-      "taskList": "Úlohy",
       "move": "Presunúť do skupiny",
       "remove": "Odstrániť pisateľa",
       "removeTitle": "Odstrániť pisateľa {name}?",
-      "removeText": "Z tabuľky sa odstránia všetky výsledky pisateľa {name} (počet: {n})."
+      "removeText": "Z tabuľky sa odstránia všetky výsledky pisateľa {name} (počet: {n}).",
+      "trend": "Vývoj",
+      "handIns": "Odovzdania",
+      "set": "sada {day} {time}",
+      "cpmUnit": "zn/min"
+    },
+    "pickSet": "Vybrať sadu {day} {time}",
+    "tab": {
+      "groups": "Skupiny",
+      "writers": "Pisatelia",
+      "files": "Súbory"
+    },
+    "n": {
+      "sets": {
+        "one": "{n} sada",
+        "few": "{n} sady",
+        "other": "{n} sád"
+      },
+      "writers": {
+        "one": "{n} pisateľ",
+        "few": "{n} pisatelia",
+        "other": "{n} pisateľov"
+      },
+      "results": {
+        "one": "{n} výsledok",
+        "few": "{n} výsledky",
+        "other": "{n} výsledkov"
+      },
+      "handIns": {
+        "one": "{n} odovzdanie",
+        "few": "{n} odovzdania",
+        "other": "{n} odovzdaní"
+      }
+    },
+    "groups": {
+      "accuracy": "presnosť {n} %",
+      "rhythm": "rytmus {n}"
+    },
+    "sets": {
+      "day": "Deň",
+      "time": "Čas",
+      "task": "Úlohy",
+      "results": "Výsledky",
+      "ok": "Zvládli",
+      "accuracy": "Presnosť",
+      "rhythm": "Rytmus",
+      "okOf": "zvládli {ok} z {n}"
+    },
+    "writers": {
+      "search": "Hľadať pisateľa",
+      "none": "Nikto taký sa nenašiel."
+    },
+    "file": {
+      "intro": "Súbor **.tapko** prenesie výsledky z telefónu do počítača. Stačí ho sem pretiahnuť alebo načítať.",
+      "load": "Načítať súbor",
+      "saveAll": "Uložiť všetko ako .tapko",
+      "added": {
+        "one": "pribudol {n} výsledok.",
+        "few": "pribudli {n} výsledky.",
+        "other": "pribudlo {n} výsledkov."
+      },
+      "old": {
+        "one": "{n} výsledok je starší ako rok. Bude dostupný ešte 7 dní, potom sa zmaže.",
+        "few": "{n} výsledky sú staršie ako rok. Budú dostupné ešte 7 dní, potom sa zmažú.",
+        "other": "{n} výsledkov je starších ako rok. Budú dostupné ešte 7 dní, potom sa zmažú."
+      },
+      "unknown": "toto nie je súbor TapkoTyper alebo je z novšej verzie, nič sa nenačítalo.",
+      "col": {
+        "name": "Súbor",
+        "loaded": "Načítaný",
+        "period": "Obdobie",
+        "groups": "Skupiny",
+        "results": "Výsledky",
+        "added": "Pribudlo"
+      },
+      "nothing": "nič nové",
+      "none": "Zatiaľ tu nebol načítaný žiadny súbor."
+    },
+    "send": {
+      "button": "Poslať do počítača",
+      "title": "Poslať do počítača",
+      "setTitle": "Poslať sadu",
+      "setButton": "Poslať sadu",
+      "all": "Celá história",
+      "new": "Len od posledného poslania",
+      "file": "Súbor **{name}** na počítači otvorte na stránke Pre mentorov, na karte **Súbory**.",
+      "share": "Zdieľať súbor",
+      "save": "Uložiť do telefónu"
+    },
+    "wipe": {
+      "button": "Vymazať…",
+      "title": "Vymazať výsledky",
+      "first": "Ak ich budete ešte potrebovať, najprv ich **uložte ako .tapko**.",
+      "older": "Staršie ako",
+      "age": {
+        "m6": "6 mesiacov",
+        "m3": "3 mesiace",
+        "m1": "mesiac",
+        "w2": "2 týždne",
+        "w1": "týždeň",
+        "d1": "deň",
+        "all": "Všetky údaje"
+      },
+      "nothing": "nič",
+      "goSets": {
+        "one": "Vymazať {n} sadu",
+        "few": "Vymazať {n} sady",
+        "other": "Vymazať {n} sád"
+      },
+      "goResults": {
+        "one": "Vymazať {n} výsledok",
+        "few": "Vymazať {n} výsledky",
+        "other": "Vymazať {n} výsledkov"
+      },
+      "all": "Vymazať všetko"
+    },
+    "set": {
+      "results": "výsledkov",
+      "ok": "zvládli",
+      "writers": "Pisatelia",
+      "remove": "Odstrániť sadu",
+      "removeTitle": "Odstrániť sadu?",
+      "removeText": "Odstráni sa celá sada: {n}."
     }
   },
   "task": {

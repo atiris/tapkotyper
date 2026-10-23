@@ -43,6 +43,8 @@ export const app = {
   helpReturn: null as { name: ScreenName; params: any } | null,
   /** A screen that still asks before it opens (the parent question); going to it again meanwhile is ignored. */
   asking: null as ScreenName | null,
+  /** `.tapko` files the system opened TapkoTyper with, for the mentor page to load. */
+  openedFiles: [] as File[],
 };
 
 export function layout(): Layout {
@@ -61,10 +63,14 @@ const OWN_ROUTE: ScreenName[] = ['map', 'wardrobe', 'friends', 'parent', 'help']
 const LINKS: Partial<Record<string, ScreenName>> = { task: 'taskImport', move: 'moveImport', result: 'teacher' };
 
 /** Address of a screen, so a player's map can be bookmarked or put on the desktop. */
-export function routeOf(name: ScreenName, params: { code?: string; tab?: string; child?: string } = {}): string {
+export function routeOf(name: ScreenName, params: { code?: string; tab?: string; child?: string; set?: string } = {}): string {
   if (name === 'newProfile') return '#/new';
-  // A result link is read once into the teacher's table; one child's card has its own address.
-  if (name === 'teacher') return params.child ? `#/teacher/child/${encodeURIComponent(params.child)}` : '#/teacher';
+  // A result link is read once into the teacher's page; each tab, a set and a child's card have their own address.
+  if (name === 'teacher') {
+    if (params.child) return `#/teacher/child/${encodeURIComponent(params.child)}`;
+    if (params.set) return `#/teacher/set/${encodeURIComponent(params.set)}`;
+    return params.tab && params.tab !== 'groups' ? `#/teacher/${params.tab}` : '#/teacher';
+  }
   if (name === 'taskImport') return `#/task/${params.code ?? ''}`;
   if (name === 'moveImport') return `#/move/${params.code ?? ''}`;
   const id = app.profile?.id;
@@ -76,11 +82,14 @@ export function routeOf(name: ScreenName, params: { code?: string; tab?: string;
   return `#/p/${encodeURIComponent(id)}${sub ? `/${sub}` : ''}${tab}`;
 }
 
-export function parseRoute(hash: string): { name: ScreenName; profileId: string | null; code?: string; tab?: string; child?: string } {
+export function parseRoute(hash: string): { name: ScreenName; profileId: string | null; code?: string; tab?: string; child?: string; set?: string } {
   const parts = hash.replace(/^#\/?/, '').split('/').filter(Boolean).map(decodeURIComponent);
   if (parts[0] === 'new') return { name: 'newProfile', profileId: null };
   if (parts[0] === 'help') return { name: 'help', profileId: null, tab: parts[1] };
-  if (parts[0] === 'teacher') return { name: 'teacher', profileId: null, ...(parts[1] === 'child' && parts[2] && { child: parts[2] }) };
+  if (parts[0] === 'teacher') {
+    if ((parts[1] === 'child' || parts[1] === 'set') && parts[2]) return { name: 'teacher', profileId: null, [parts[1]]: parts[2] };
+    return { name: 'teacher', profileId: null, ...(parts[1] && { tab: parts[1] }) };
+  }
   const link = LINKS[parts[0]];
   if (link && parts[1]) return { name: link, profileId: null, code: parts[1] };
   if (parts[0] !== 'p' || !parts[1]) return { name: 'start', profileId: null };
@@ -94,7 +103,7 @@ export async function openRoute(hash: string): Promise<void> {
   const p = r.profileId === SUPER_ID ? app.superPlayer : r.profileId ? app.store.get(r.profileId) : null;
   if (r.profileId && !p) return go('start', {}, false);
   if (p && app.profile?.id !== p.id) await selectProfile(p);
-  go(r.name, r.code ? { code: r.code } : r.tab ? { tab: r.tab } : r.child ? { child: r.child } : {}, false);
+  go(r.name, r.code ? { code: r.code } : r.tab ? { tab: r.tab } : r.child ? { child: r.child } : r.set ? { set: r.set } : {}, false);
 }
 
 /** Screens a touch-only device reaches before a keyboard is connected: the teacher needs none. */

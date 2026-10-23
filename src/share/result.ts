@@ -69,30 +69,36 @@ export function makeOverallResult(p: Profile, title: string): TaskResult {
 
 /** Fields in a fixed order, so the checksum does not depend on how the object was built. */
 /** The group and the levels join the sum only when set, so results without one keep verifying. */
-const sumOf = (r: TaskResult) => checksum(JSON.stringify([r.taskId, r.title, r.name, r.date, r.minutes, r.accuracy, r.cpm, r.weak, ...(r.group ? [r.group] : []), ...(r.levels === undefined ? [] : [r.levels])]));
+export const resultSum = (r: TaskResult): string => checksum(JSON.stringify([r.taskId, r.title, r.name, r.date, r.minutes, r.accuracy, r.cpm, r.weak, ...(r.group ? [r.group] : []), ...(r.levels === undefined ? [] : [r.levels])]));
 
 export function resultCode(r: TaskResult): Promise<string> {
-  return encode({ app: 'tapkotyper', type: 'result', ...r, sum: sumOf(r) });
+  return encode({ app: 'tapkotyper', type: 'result', ...r, sum: resultSum(r) });
+}
+
+/** The fields of a result from untrusted data, trimmed to their limits; null without a name or task. */
+export function cleanResult(v: any): TaskResult | null {
+  const str = (x: unknown) => (typeof x === 'string' ? x.slice(0, 80) : '');
+  const num = (x: unknown) => (typeof x === 'number' && Number.isFinite(x) ? x : 0);
+  const result: TaskResult = {
+    taskId: str(v?.taskId),
+    title: str(v?.title),
+    ...(str(v?.group).trim() && { group: str(v.group).trim().slice(0, TASK_GROUP_MAX) }),
+    name: str(v?.name),
+    date: str(v?.date),
+    minutes: num(v?.minutes),
+    accuracy: num(v?.accuracy),
+    cpm: num(v?.cpm),
+    ...(typeof v?.levels === 'number' && { levels: num(v.levels) }),
+    weak: Array.isArray(v?.weak) ? v.weak.filter((w: unknown) => Array.isArray(w) && typeof w[0] === 'string').slice(0, RESULT_WEAK_KEYS).map((w: any[]) => [w[0].slice(0, 12), num(w[1])]) : [],
+  };
+  return result.name && result.taskId ? result : null;
 }
 
 /** A handed-in result; `intact` is false when the checksum does not match (a broken copy). Throws `share.broken`. */
 export async function parseResult(code: string): Promise<{ result: TaskResult; intact: boolean }> {
   const v: any = await decode(code);
   if (v?.app !== 'tapkotyper' || v.type !== 'result') throw new Error('share.broken');
-  const str = (x: unknown) => (typeof x === 'string' ? x.slice(0, 80) : '');
-  const num = (x: unknown) => (typeof x === 'number' && Number.isFinite(x) ? x : 0);
-  const result: TaskResult = {
-    taskId: str(v.taskId),
-    title: str(v.title),
-    ...(str(v.group) && { group: str(v.group).trim().slice(0, TASK_GROUP_MAX) }),
-    name: str(v.name),
-    date: str(v.date),
-    minutes: num(v.minutes),
-    accuracy: num(v.accuracy),
-    cpm: num(v.cpm),
-    ...(typeof v.levels === 'number' && { levels: num(v.levels) }),
-    weak: Array.isArray(v.weak) ? v.weak.filter((w: unknown) => Array.isArray(w) && typeof w[0] === 'string').slice(0, RESULT_WEAK_KEYS).map((w: any[]) => [w[0].slice(0, 12), num(w[1])]) : [],
-  };
-  if (!result.name || !result.taskId) throw new Error('share.broken');
-  return { result, intact: v.sum === sumOf(result) };
+  const result = cleanResult(v);
+  if (!result) throw new Error('share.broken');
+  return { result, intact: v.sum === resultSum(result) };
 }

@@ -46,12 +46,12 @@ test('a task travels by link to a child, and the result back to the teacher\'s t
   // The teacher opens the result link: one row in the table, kept after a reload.
   const teacher = await open();
   await teacher.goto(resultLink);
-  await expect(teacher.locator('.teacher-screen [role=status]')).toContainText('Adam');
-  await expect(teacher.locator('.teacher-table tbody tr:not(.task-row):not(.group-row)')).toHaveCount(1);
-  await expect(teacher.locator('.teacher-table .task-row')).toContainText('Zvieratá');
-  await expect(teacher.locator('.teacher-table .group-row')).toContainText('5.A');
+  await expect(teacher.locator('.teacher-screen [role=status]').first()).toContainText('Adam');
+  await expect(teacher.locator('.sets-table .set-row')).toHaveCount(1);
+  await expect(teacher.locator('.sets-table .set-row')).toContainText('Zvieratá');
+  await expect(teacher.locator('.group-head')).toContainText('5.A');
   await teacher.reload();
-  await expect(teacher.locator('.teacher-table tbody tr:not(.task-row):not(.group-row)')).toHaveCount(1);
+  await expect(teacher.locator('.sets-table .set-row')).toHaveCount(1);
   // Kept in the mentor's IndexedDB, apart from the players' localStorage.
   expect(await teacher.evaluate(() => new Promise<string[]>((ok) => {
     const req = indexedDB.open('tapkotyper-mentor');

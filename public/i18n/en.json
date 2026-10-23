@@ -1375,7 +1375,10 @@
       "Open the **For mentors** page with the chart icon at the top right of the start page. Results are stored only in this browser.",
       "Scanning is fastest: type a group (for example 5A), press **Scan with camera** and walk around the room. The camera reads several QR codes at once and puts every new result into this group.",
       "A typist shows the QR code in My progress or after handing in a task. Without a camera, paste or open the **result link**.",
-      "Filter the table by group and task and sort it. Click a name to see all of a typist's results, and download the whole table as CSV.",
+      "A **set** is the results of one group that came together: one camera scan, or links added within **20 minutes** of the first. The **Groups** tab shows each group's sets; click a day to see the set's typists, and download it all as CSV.",
+      "Every hand-in is kept. On the **Typists** tab, find a typist by name and see how accuracy and rhythm changed from the first hand-in to the last. Click a name to see the progress in charts and every hand-in.",
+      "**From a phone to a computer:** on the **Files** tab, press **Send to a computer** on the phone and send yourself the .tapko file (by e-mail, for example). On the computer, load it on the same tab or drop it on the page. What you already have is not added twice.",
+      "Results older than a **year** are deleted when the page opens. Old results loaded from a file stay for **7 days** more. Delete sooner with **Delete…**.",
       "The checksum shows a damaged link (an exclamation mark by the name), not cheating.",
       "Create a task for typists in the settings, on the Task tab: you get a link and a QR code for the typists to open."
     ]
@@ -1508,8 +1511,6 @@
     "already": "This result is already here: {name}, {title}.",
     "notKept": "This browser does not allow saving the results; they are lost when the page is closed.",
     "notIntact": "The checksum does not match; the link was probably damaged when copied.",
-    "removeTitle": "Remove the result?",
-    "removeText": "The result of {name} for {title} will be removed from this table.",
     "remove": "Remove",
     "empty": "No results yet. Scan the QR codes or paste a **result link**.",
     "csv": "Download CSV",
@@ -1525,19 +1526,19 @@
       "broken": "Damaged",
       "group": "Group",
       "level": "Levels",
-      "status": "Status"
+      "status": "Status",
+      "handIns": "Hand-ins",
+      "last": "Last"
     },
-    "count": "{n} results",
     "all": "All",
     "noGroup": "No group",
     "groupFilter": "Group filter",
     "csvAll": "Download CSV (everything)",
-    "pick": "Select: {name}",
     "assign": "Assign to a group ({n})",
     "assignPrompt": "Group name (empty clears it). Existing: {groups}",
     "removePicked": "Remove selected ({n})",
-    "removeManyTitle": "Remove the selected results?",
-    "removeManyText": "{n} results will be removed from the table.",
+    "removeManyTitle": "Remove the selected sets?",
+    "removeManyText": "{sets} are removed, {results} in all.",
     "scan": {
       "start": "Scan with camera",
       "privacy": "The camera picture is never sent or stored.",
@@ -1548,7 +1549,6 @@
       "one": "Point at one code.",
       "done": "Done",
       "collected": "Collected",
-      "updated": "updated",
       "unknown": "Unknown code",
       "undo": "Undo this result",
       "error": {
@@ -1560,17 +1560,16 @@
       "group": "Group for this scan",
       "groupPlaceholder": "Group, for example 5.A",
       "title": "Scanning",
-      "count": "{n} read",
-      "fresh": "{n} new",
-      "updatedCount": "{n} updated"
+      "count": {
+        "one": "{n} read",
+        "few": "{n} read",
+        "other": "{n} read"
+      }
     },
-    "summary": "{ok} of {n} mastered, accuracy {accuracy} %, rhythm {rhythm}, levels finished {levels}",
     "status": {
       "ok": "Mastered",
       "practice": "Practice more"
     },
-    "taskFilter": "Task",
-    "allTasks": "All tasks",
     "sortBy": "Sort",
     "sort": {
       "child": "Name",
@@ -1579,7 +1578,9 @@
       "accuracy": "Accuracy",
       "rhythm": "Rhythm",
       "levels": "Levels",
-      "status": "Status"
+      "status": "Status",
+      "group": "Group",
+      "handIns": "Hand-ins"
     },
     "unit": {
       "cpm": "{n} cpm",
@@ -1587,16 +1588,136 @@
       "levels": "levels: {n}"
     },
     "child": {
-      "tasks": "tasks handed in: {n}",
       "accuracy": "average accuracy",
       "cpm": "characters a minute",
       "minutes": "minutes of practice",
       "levels": "levels done",
-      "taskList": "Tasks",
       "move": "Move to a group",
       "remove": "Remove the typist",
       "removeTitle": "Remove {name}?",
-      "removeText": "All results of {name} ({n}) are removed from the table."
+      "removeText": "All results of {name} ({n}) are removed from the table.",
+      "trend": "Progress",
+      "handIns": "Hand-ins",
+      "set": "set {day} {time}",
+      "cpmUnit": "cpm"
+    },
+    "pickSet": "Select the set {day} {time}",
+    "tab": {
+      "groups": "Groups",
+      "writers": "Typists",
+      "files": "Files"
+    },
+    "n": {
+      "sets": {
+        "one": "{n} set",
+        "few": "{n} sets",
+        "other": "{n} sets"
+      },
+      "writers": {
+        "one": "{n} typist",
+        "few": "{n} typists",
+        "other": "{n} typists"
+      },
+      "results": {
+        "one": "{n} result",
+        "few": "{n} results",
+        "other": "{n} results"
+      },
+      "handIns": {
+        "one": "{n} hand-in",
+        "few": "{n} hand-ins",
+        "other": "{n} hand-ins"
+      }
+    },
+    "groups": {
+      "accuracy": "accuracy {n} %",
+      "rhythm": "rhythm {n}"
+    },
+    "sets": {
+      "day": "Day",
+      "time": "Time",
+      "task": "Tasks",
+      "results": "Results",
+      "ok": "Mastered",
+      "accuracy": "Accuracy",
+      "rhythm": "Rhythm",
+      "okOf": "{ok} of {n} mastered"
+    },
+    "writers": {
+      "search": "Find a typist",
+      "none": "Nobody like that was found."
+    },
+    "file": {
+      "intro": "A **.tapko** file carries results from a phone to a computer. Drop it here or load it.",
+      "load": "Load a file",
+      "saveAll": "Save everything as .tapko",
+      "added": {
+        "one": "{n} result added.",
+        "few": "{n} results added.",
+        "other": "{n} results added."
+      },
+      "old": {
+        "one": "{n} result is older than a year. It stays for 7 days, then it is deleted.",
+        "few": "{n} results are older than a year. They stay for 7 days, then they are deleted.",
+        "other": "{n} results are older than a year. They stay for 7 days, then they are deleted."
+      },
+      "unknown": "this is not a TapkoTyper file, or it is from a newer version; nothing was loaded.",
+      "col": {
+        "name": "File",
+        "loaded": "Loaded",
+        "period": "Period",
+        "groups": "Groups",
+        "results": "Results",
+        "added": "Added"
+      },
+      "nothing": "nothing new",
+      "none": "No file has been loaded here yet."
+    },
+    "send": {
+      "button": "Send to a computer",
+      "title": "Send to a computer",
+      "setTitle": "Send the set",
+      "setButton": "Send the set",
+      "all": "The whole history",
+      "new": "Only since the last send",
+      "file": "On the computer, open **{name}** on the For mentors page, on the **Files** tab.",
+      "share": "Share the file",
+      "save": "Save to the phone"
+    },
+    "wipe": {
+      "button": "Delete…",
+      "title": "Delete results",
+      "first": "If you will need them again, **save them as .tapko** first.",
+      "older": "Older than",
+      "age": {
+        "m6": "6 months",
+        "m3": "3 months",
+        "m1": "a month",
+        "w2": "2 weeks",
+        "w1": "a week",
+        "d1": "a day",
+        "all": "All data"
+      },
+      "nothing": "nothing",
+      "goSets": {
+        "one": "Delete {n} set",
+        "few": "Delete {n} sets",
+        "other": "Delete {n} sets"
+      },
+      "goResults": {
+        "one": "Delete {n} result",
+        "few": "Delete {n} results",
+        "other": "Delete {n} results"
+      },
+      "all": "Delete everything"
+    },
+    "set": {
+      "results": "results",
+      "ok": "mastered",
+      "writers": "Typists",
+      "remove": "Remove the set",
+      "removeTitle": "Remove the set?",
+      "removeText": "The whole set is removed: {n}."
     }
   },
   "task": {

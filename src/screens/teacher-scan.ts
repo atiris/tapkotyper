@@ -1,5 +1,5 @@
 import { audio } from '../audio/audio';
-import { t } from '../i18n/i18n';
+import { t, tn } from '../i18n/i18n';
 import { type Camera, type CameraError, startScan } from '../ui/qr-scanner';
 import { button, h } from '../ui/dom';
 
@@ -9,8 +9,8 @@ export interface ScanCard {
   hit(): void;
   /** A short hint under the preview, for example an unknown code. */
   hint(text: string): void;
-  /** Replaces the list of what this scan collected, with its counts: new children and updated results. */
-  setList(rows: Node[], fresh: number, updated: number): void;
+  /** Replaces the list of what this scan collected; the done bar counts it. */
+  setList(rows: Node[]): void;
   /** Stops the camera for good. */
   stop(): void;
 }
@@ -27,7 +27,6 @@ export function scanCard(group: string, onText: (text: string) => void, onDone: 
   picker.hidden = true;
   const list = h('ul', { class: 'scan-list' });
   const total = h('span', { class: 'scan-total' });
-  const split = h('span', { class: 'hint' });
   const frame = h('div', { class: 'scan-frame' }, video);
   let camera: Camera | null = null;
   let closed = false;
@@ -74,7 +73,7 @@ export function scanCard(group: string, onText: (text: string) => void, onDone: 
         h('h2', { class: 'scan-title' }, group ? `${t('teacher.scan.title')} · ${group}` : t('teacher.scan.title')),
         frame,
         h('div', { class: 'scan-done' },
-          h('div', { class: 'scan-counts', 'aria-live': 'polite' }, total, split),
+          h('div', { class: 'scan-counts', 'aria-live': 'polite' }, total),
           button(t('teacher.scan.done'), onDone, 'btn primary', 'next'))),
       picker,
       status,
@@ -91,10 +90,9 @@ export function scanCard(group: string, onText: (text: string) => void, onDone: 
       clearTimeout(restore);
       restore = window.setTimeout(() => base && say(base), 1500);
     },
-    setList(rows, fresh, updated) {
+    setList(rows) {
       list.replaceChildren(...rows);
-      total.textContent = t('teacher.scan.count', { n: fresh + updated });
-      split.textContent = [t('teacher.scan.fresh', { n: fresh }), updated ? t('teacher.scan.updatedCount', { n: updated }) : ''].filter(Boolean).join(' · ');
+      total.textContent = tn('teacher.scan.count', rows.length);
     },
     stop() {
       closed = true;

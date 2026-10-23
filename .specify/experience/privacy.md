@@ -16,7 +16,8 @@
 - Nothing leaves the browser except what a person copies themselves: task, result and
   move links carry their data in the address hash, which browsers never send to the server
   ([teacher links](../profiles/teacher-links.md)). A teacher's collected results stay in this
-  browser's own database; nothing is synced anywhere.
+  browser's own database; nothing is synced anywhere. A `.tapko` file leaves the browser only
+  when the mentor saves or shares it themselves (to carry results from a phone to a computer).
 - The teacher's camera scan reads QR codes in the browser: the picture is never sent or
   stored, and the camera is off whenever the scan is not running.
 - What a child types in "Just typing" is never stored; reading it aloud uses the

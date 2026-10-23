@@ -265,7 +265,7 @@ p { line-height: 1.5; }
 .form-screen { display: grid; place-items: center; }
 .form { width: min(760px, 100%); display: flex; flex-direction: column; gap: 0.4rem; }
 .form label, .field-label { font-weight: 600; margin-top: 0.7rem; }
-input[type='text'], input[type='password'], input[type='number'], select, textarea, input:not([type]) {
+input[type='text'], input[type='search'], input[type='password'], input[type='number'], select, textarea, input:not([type]) {
   width: 100%; padding: 0.7em 0.9em; border-radius: 14px; border: 2px solid var(--line); background: #fff; min-height: 48px; font-size: 1.05rem;
 }
 input:focus, select:focus, textarea:focus { border-color: var(--brand); outline: none; }
@@ -1033,3 +1033,49 @@ body.reduce-motion .round-btn.timer.ending { --rb: #d9661f; --rb-ring: #ff8a3d; 
 .child-task-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.1rem; }
 .child-task-acc { min-width: 3.4rem; text-align: right; }
 .danger-text { color: var(--danger); }
+
+/* Mentor history: tabs, sets of a group, writers with their change, files and the dialogs. */
+.teacher-tabs { margin: 1rem 0; }
+.teacher-panel { display: flex; flex-direction: column; gap: 0.6rem; }
+.teacher-panel .chips { margin-top: 0; }
+.group-block { margin-top: 0.6rem; }
+.group-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2rem 0.8rem; margin: 0; padding: 0.5rem 0.8rem; border-radius: 14px; background: var(--brand); color: #fff; font-size: 1.1rem; }
+.group-line { font-size: 0.9rem; font-weight: 600; }
+.sets-table .set-day { border: 0; background: none; padding: 0; font: inherit; font-weight: 700; color: var(--ink); display: inline-flex; align-items: center; gap: 0.3rem; cursor: pointer; white-space: nowrap; }
+.sets-table .set-day:hover { color: var(--brand-dark); }
+.sets-table .set-tasks { max-width: 18rem; }
+.sets-table tr.open td { background: var(--paper-2); }
+.set-detail > td { background: var(--paper-2); padding: 0 0.5rem 0.6rem 2.5rem; }
+.set-writers { width: 100%; border-collapse: collapse; }
+.set-writers td { border-bottom: 1px solid var(--line); padding: 0.3rem 0.5rem; }
+.set-writers tr.broken td { color: var(--danger); }
+.delta { font-size: 0.82rem; font-weight: 700; white-space: nowrap; }
+.delta.up { color: var(--green-dark); }
+.delta.down { color: #a4471d; }
+.writer-search { max-width: 22rem; }
+.writers-table td:nth-child(4), .writers-table td:nth-child(5), .writers-table td:nth-child(6) { white-space: nowrap; }
+.child-charts { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.child-charts h3 { margin: 0 0 0.3rem; font-size: 0.9rem; color: var(--ink-soft); }
+.set-link { font-weight: 600; font-size: inherit; color: var(--ink-soft); }
+.files-table { overflow-x: auto; }
+.files-table table { width: 100%; border-collapse: collapse; }
+.files-table th, .files-table td { text-align: left; padding: 0.4rem 0.5rem; border-bottom: 1px solid var(--line); }
+.file-name { overflow-wrap: anywhere; font-weight: 600; }
+.files-table td:nth-child(2), .files-table td:nth-child(3) { white-space: nowrap; }
+.radio-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: 0.5rem; margin: 0.6rem 0 1rem; }
+.radio-card { display: flex; align-items: flex-start; gap: 0.5rem; padding: 0.6rem 0.8rem; border-radius: 14px; background: var(--paper-2); box-shadow: 0 0 0 1px var(--line); cursor: pointer; text-align: left; }
+.radio-card:has(input:checked) { box-shadow: 0 0 0 3px var(--brand); background: #fff; }
+.radio-card:has(input:disabled) { opacity: 0.55; cursor: default; }
+.radio-card input { margin-top: 0.2rem; }
+.radio-card.danger-card:has(input:checked) { box-shadow: 0 0 0 3px var(--danger); }
+.radio-text { display: flex; flex-direction: column; gap: 0.1rem; }
+.radio-text .hint { font-size: 0.82rem; margin: 0; }
+.wipe-dialog, .send-dialog { text-align: left; }
+.wipe-label { margin: 0.6rem 0 0; font-weight: 700; }
+.phone-only { display: none; }
+@media (max-width: 699px) {
+  .desk-only { display: none; }
+  .phone-only { display: inline-flex; }
+  .child-charts { grid-template-columns: 1fr; }
+  .writer-search { max-width: none; }
+}

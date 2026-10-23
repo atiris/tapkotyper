@@ -70,6 +70,13 @@ async function boot(): Promise<void> {
   window.addEventListener('popstate', () => void openRoute(location.hash));
   watchAutoFullscreen();
   noteVisit();
+  // An installed app opened with a `.tapko` file (Chrome, Edge): the mentor page loads it.
+  const queue = (window as { launchQueue?: { setConsumer(f: (p: { files: { getFile(): Promise<File> }[] }) => void): void } }).launchQueue;
+  queue?.setConsumer((p) => void Promise.all(p.files.map((f) => f.getFile())).then((files) => {
+    if (!files.length) return;
+    app.openedFiles.push(...files);
+    go('teacher', { tab: 'files' }, false);
+  }));
   if (location.hash.length > 2) return openRoute(location.hash);
   // A guest session survives reloads of the same tab only.
   if (app.store.guest) {

@@ -43,3 +43,13 @@ export function write(db: IDBDatabase, table: TeacherTable, put: unknown[], drop
     tx.onerror = tx.onabort = () => fail(tx.error);
   });
 }
+
+/** Empties the given stores in one transaction. */
+export function clear(db: IDBDatabase, tables: TeacherTable[]): Promise<void> {
+  return new Promise((ok, fail) => {
+    const tx = db.transaction(tables, 'readwrite');
+    for (const table of tables) tx.objectStore(table).clear();
+    tx.oncomplete = () => ok();
+    tx.onerror = tx.onabort = () => fail(tx.error);
+  });
+}

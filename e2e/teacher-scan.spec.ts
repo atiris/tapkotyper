@@ -1,7 +1,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { expect, test } from '@playwright/test';
+import { type Page, expect, test } from '@playwright/test';
 import qrcode from 'qrcode-generator';
 import { resultCode } from '../src/share/result';
 
@@ -42,7 +42,14 @@ test.use({
   launchOptions: { args: ['--use-fake-device-for-media-stream', '--use-fake-ui-for-media-stream', `--use-file-for-fake-video-capture=${feed}`] },
 });
 
-test('a code in front of the camera is added once', async ({ page }) => {
+/** Pastes a result link and waits for the page to answer. */
+async function paste(page: Page, link: string, name: string) {
+  await page.locator('.teacher-screen form input').fill(link);
+  await page.locator('.teacher-screen form .btn.primary').click();
+  await expect(page.locator('.teacher-screen [role=status]').first()).toContainText(name);
+}
+
+test('a code in front of the camera is added once, as one set', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await page.goto('./#/teacher');
@@ -55,42 +62,57 @@ test('a code in front of the camera is added once', async ({ page }) => {
   await expect(page.locator('.scan-list li')).toHaveCount(1);
   await page.locator('.scan-card .btn.primary').click();
   await expect(page.locator('.scan-card')).toHaveCount(0);
-  await expect(page.locator('.teacher-table tbody tr:not(.task-row):not(.group-row)')).toHaveCount(1);
-  // The scan wrote the child into the group being scanned, with a summary of the group.
-  await expect(page.locator('.teacher-table .group-row')).toContainText('6.C');
-  await expect(page.locator('.teacher-table .group-row')).toContainText('zvládli 1 z 1');
+  // The scan wrote the child into the group being scanned; its set is open with the writer.
+  await expect(page.locator('.group-head')).toContainText('6.C');
+  await expect(page.locator('.sets-table .set-row')).toHaveCount(1);
+  await expect(page.locator('.sets-table .set-row')).toContainText('zvládli 1 z 1');
+  await expect(page.locator('.set-writers tr')).toContainText('Ema');
   expect(errors).toEqual([]);
 });
 
-test('groups: filter, assign, export respect the filter', async ({ page }) => {
+test('groups: links within 20 minutes form one set; filter, assign, export respect the filter; tabs have addresses', async ({ page }) => {
   await page.goto('./#/teacher');
   await expect(page.locator('.teacher-empty')).toContainText('odkaz s výsledkom');
-  for (const link of [await linkOf('Ema', '5.A'), await linkOf('Adam', '5.B'), await linkOf('Zora'), await linkOf('Ján')]) {
-    await page.locator('.teacher-screen form input').fill(link);
-    await page.locator('.teacher-screen form .btn.primary').click();
-    await expect(page.locator('.teacher-screen [role=status]')).toContainText('Pridaný');
-  }
-  await expect(page.locator('.teacher-count')).toContainText('4 výsledkov');
+  await paste(page, await linkOf('Ema', '5.A'), 'Ema');
+  await paste(page, await linkOf('Eva', '5.A'), 'Eva');
+  await paste(page, await linkOf('Adam', '5.B'), 'Adam');
+  await paste(page, await linkOf('Zora'), 'Zora');
+  await paste(page, await linkOf('Ján'), 'Ján');
+  // The same link again adds nothing.
+  await paste(page, await linkOf('Ján'), 'Ján');
+  await expect(page.locator('.teacher-screen [role=status]').first()).toContainText('už je');
   await expect(page.locator('.chips .chip')).toHaveText(['Všetky', '5.A', '5.B', 'Bez skupiny']);
-  await expect(page.locator('.teacher-table .group-row')).toHaveText([/^5.A/, /^5.B/, /^Bez skupiny/]);
+  await expect(page.locator('.group-head > span:first-child')).toHaveText(['5.A', '5.B', 'Bez skupiny']);
+  await expect(page.locator('.group-head').first()).toContainText('1 sada · 2 pisatelia');
+  await expect(page.locator('.sets-table .set-row')).toHaveCount(3);
 
   await page.locator('.chips .chip', { hasText: '5.A' }).click();
-  await expect(page.locator('.teacher-table tbody tr:not(.task-row):not(.group-row)')).toHaveCount(1);
+  await expect(page.locator('.sets-table .set-row')).toHaveCount(1);
+  await expect(page.locator('.sets-table .set-row td').nth(4)).toHaveText('2');
   const csv = async () => {
     const [d] = await Promise.all([page.waitForEvent('download'), page.locator('.teacher-actions .btn').first().click()]);
     return (await import('node:fs/promises')).readFile((await d.path())!, 'utf8');
   };
-  expect((await csv()).trim().split('\n')).toHaveLength(2);
+  expect((await csv()).trim().split('\n')).toHaveLength(3);
+  // A click on the day opens the set's writers.
+  await page.locator('.set-day').click();
+  await expect(page.locator('.set-writers tr')).toHaveText([/Ema/, /Eva/]);
 
-  // The two without a group go to 5.B.
+  // The set without a group goes to 5.B, and moves there whole.
   await page.locator('.chips .chip', { hasText: 'Bez skupiny' }).click();
-  await page.locator('.teacher-table tbody input[type=checkbox]').first().check();
-  await page.locator('.teacher-table tbody input[type=checkbox]').last().check();
+  await page.locator('.sets-table tbody input[type=checkbox]').check();
   page.once('dialog', (d) => void d.accept('5.B'));
   await page.locator('.teacher-actions .btn', { hasText: 'Priradiť' }).click();
-  await page.locator('.chips .chip', { hasText: '5.B' }).click();
-  await expect(page.locator('.teacher-table tbody tr:not(.task-row):not(.group-row)')).toHaveCount(3);
   await expect(page.locator('.chips .chip')).toHaveText(['Všetky', '5.A', '5.B']);
+  await page.locator('.chips .chip', { hasText: '5.B' }).click();
+  await expect(page.locator('.sets-table .set-row')).toHaveCount(2);
+
+  // Each tab has its own address, so Back returns to the one before.
+  await page.locator('.tab[data-tab=writers]').click();
+  await expect(page).toHaveURL(/#\/teacher\/writers$/);
+  await page.goBack();
+  await expect(page).toHaveURL(/#\/teacher$/);
+  await expect(page.locator('.tab[aria-selected=true]')).toHaveAttribute('data-tab', 'groups');
 });
 
 test('on a phone the preview and Hotovo are in view with the counter', async ({ page }) => {
@@ -99,58 +121,100 @@ test('on a phone the preview and Hotovo are in view with the counter', async ({ 
   await page.locator('.scan-start input').fill('3.A');
   await page.locator('.scan-start .btn.primary').click();
   await expect(page.locator('.scan-title')).toHaveText('Skenovanie · 3.A');
-  await expect(page.locator('.scan-total')).toHaveText('1 načítaných', { timeout: 20_000 });
-  await expect(page.locator('.scan-counts .hint')).toHaveText('1 nových');
+  await expect(page.locator('.scan-total')).toHaveText('1 načítaný', { timeout: 20_000 });
   await expect(page.locator('.scan-frame')).toBeInViewport({ ratio: 1 });
   await expect(page.locator('.scan-done')).toBeInViewport({ ratio: 1 });
   await page.locator('.scan-done .btn.primary').click();
   await expect(page.locator('.scan-card')).toHaveCount(0);
-  await expect(page.locator('.chips .chip.on')).toHaveText('3.A');
-  await expect(page.locator('.child-row')).toHaveCount(1);
+  // The set is a card that opens its own page.
+  await page.locator('.group-block .child-row').click();
+  await expect(page).toHaveURL(/#\/teacher\/set\//);
+  await expect(page.locator('.set-screen h1')).toHaveText('3.A');
+  await expect(page.locator('.set-writer-list .child-row')).toContainText('Ema');
+  await page.goBack();
+  await expect(page.locator('.group-block .child-row')).toHaveCount(1);
 });
 
-test('sorting, the task picker and a child card, on a computer and on a phone', async ({ page }) => {
-  const add = async (r: ReturnType<typeof result>) => {
-    await page.locator('.teacher-screen form input').fill(`http://localhost:4173/tapkotyper/#/result/${await resultCode(r)}`);
-    await page.locator('.teacher-screen form .btn.primary').click();
-    await expect(page.locator('.teacher-screen [role=status]')).toContainText(r.name);
-  };
-  await page.goto('./#/teacher');
+test('writers: sorting, search and a writer\'s detail with charts, on a computer and on a phone', async ({ page }) => {
+  await page.goto('./#/teacher/writers');
+  const add = (r: ReturnType<typeof result>) => resultCode(r).then((code) => paste(page, `http://localhost:4173/tapkotyper/#/result/${code}`, r.name));
   await add({ ...result('Ema', '3.A', 'Domáce'), accuracy: 96, cpm: 74 });
   await add({ ...result('Jakub', '3.A', 'Domáce'), accuracy: 81, cpm: 80 });
   await add({ ...result('Adam', '3.A', 'Domáce'), accuracy: 70, cpm: 41 });
   await add({ ...result('Jakub', '3.A', 'Horný rad'), accuracy: 60, cpm: 50, date: '2026-10-22' });
   const names = () => page.locator('.teacher-table tbody .child-link');
-  await expect(names()).toHaveText(['Adam', 'Ema', 'Jakub', 'Jakub']);
+  await expect(names()).toHaveText(['Adam', 'Ema', 'Jakub']);
+  // Jakub's change from the first hand-in to the last.
+  await expect(page.locator('.teacher-table tbody tr', { hasText: 'Jakub' }).locator('.delta')).toHaveText(['−21', '−30']);
   await page.locator('.sort-btn', { hasText: 'Presnosť' }).click();
   await expect(page.locator('th[aria-sort=descending]')).toContainText('Presnosť');
-  await expect(names()).toHaveText(['Ema', 'Jakub', 'Adam', 'Jakub']);
+  await expect(names()).toHaveText(['Ema', 'Jakub', 'Adam']);
   await page.locator('.sort-btn', { hasText: 'Presnosť' }).click();
-  await expect(names()).toHaveText(['Adam', 'Jakub', 'Ema', 'Jakub']);
-  await page.locator('.sort-btn', { hasText: 'Rytmus' }).click();
-  await expect(names()).toHaveText(['Jakub', 'Ema', 'Adam', 'Jakub']);
-  await page.locator('.task-pick select').selectOption({ label: 'Horný rad (1)' });
+  await expect(names()).toHaveText(['Adam', 'Jakub', 'Ema']);
+  await page.locator('.writer-search').fill('jak');
   await expect(names()).toHaveText(['Jakub']);
-  await expect(page.locator('.teacher-count')).toContainText('1 výsledkov');
-  await page.locator('.task-pick select').selectOption({ label: 'Všetky úlohy' });
+  await page.locator('.writer-search').fill('');
 
-  // The child card: every task of the child, and Back returns to the same list.
-  await names().nth(0).click();
+  // The detail: every hand-in, the change, two charts; Back returns to the same list.
+  await page.locator('.teacher-table .child-link', { hasText: 'Jakub' }).click();
   const card = page.locator('.child-screen');
   await expect(card.locator('h1')).toHaveText('Jakub');
   await expect(card.locator('.child-tasks li')).toHaveCount(2);
   await expect(card.locator('.child-tile').first()).toContainText('71 %');
+  await expect(card.locator('.child-charts svg')).toHaveCount(2);
   await page.goBack();
-  await expect(names()).toHaveText(['Jakub', 'Ema', 'Adam', 'Jakub']);
+  await expect(names()).toHaveText(['Adam', 'Jakub', 'Ema']);
 
   // A phone: cards with sort chips, the sorted value big on the right.
   await page.setViewportSize({ width: 390, height: 844 });
   await expect(page.locator('.teacher-table')).toBeHidden();
   await page.locator('.sort-chips .chip', { hasText: 'Presnosť' }).click();
-  await expect(page.locator('.child-row-big')).toHaveText(['96 %', '81 %', '70 %', '60 %']);
+  await expect(page.locator('.child-row-big')).toHaveText(['96 %', '71 %', '70 %']);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.locator('.child-row', { hasText: 'Adam' }).click();
   await page.locator('.child-screen .btn', { hasText: 'Odstrániť pisateľa' }).click();
   await page.locator('.confirm .btn.danger').click();
-  await expect(page.locator('.child-row')).toHaveCount(3);
+  await expect(page.locator('.child-row')).toHaveCount(2);
+});
+
+test('files: save as .tapko, delete all, load it back, again adds nothing, old results are named', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  await page.goto('./#/teacher');
+  await paste(page, await linkOf('Ema', '5.A'), 'Ema');
+  await paste(page, await linkOf('Eva', '5.A'), 'Eva');
+  await page.locator('.tab[data-tab=files]').click();
+  const [d] = await Promise.all([page.waitForEvent('download'), page.locator('.btn', { hasText: 'Uložiť všetko ako .tapko' }).click()]);
+  expect(d.suggestedFilename()).toMatch(/^tapkotyper-\d{4}-\d{2}-\d{2}\.tapko$/);
+  const file = (await d.path())!;
+
+  // Vymazať…: every age shows what it would take; all data takes everything.
+  await page.locator('.btn', { hasText: 'Vymazať…' }).click();
+  await expect(page.locator('.wipe-dialog .radio-card')).toHaveCount(7);
+  await page.locator('.wipe-dialog .radio-card', { hasText: 'Všetky údaje' }).click();
+  await expect(page.locator('.wipe-dialog .radio-card', { hasText: 'Všetky údaje' })).toContainText('1 sada · 2 výsledky');
+  await page.locator('.wipe-dialog .btn.danger').click();
+  await expect(page.locator('.wipe-dialog')).toHaveCount(0);
+  await page.locator('.tab[data-tab=groups]').click();
+  await expect(page.locator('.teacher-empty')).toBeVisible();
+
+  await page.locator('.tab[data-tab=files]').click();
+  await page.locator('.teacher-panel input[type=file]').setInputFiles(file);
+  await expect(page.locator('.teacher-panel [role=status]')).toContainText('pribudli 2 výsledky');
+  await page.locator('.teacher-panel input[type=file]').setInputFiles(file);
+  await expect(page.locator('.teacher-panel [role=status]')).toContainText('pribudlo 0 výsledkov');
+  await expect(page.locator('.files-table tbody tr')).toHaveCount(2);
+  await expect(page.locator('.files-table tbody tr').first()).toContainText('nič nové');
+  await page.locator('.tab[data-tab=groups]').click();
+  await expect(page.locator('.sets-table .set-row')).toHaveCount(1);
+
+  // Results older than a year are named: they stay 7 days.
+  await page.locator('.tab[data-tab=files]').click();
+  const old = JSON.stringify({ format: 'tapkotyper-mentor', version: 1, exportedAt: '2025-01-01T00:00:00Z', sets: [], results: [{ ...result('Stará'), date: '2024-01-01', id: 'old1', intact: true, sum: 'x' }] });
+  await page.locator('.teacher-panel input[type=file]').setInputFiles({ name: 'old.tapko', mimeType: 'application/x-tapkotyper', buffer: Buffer.from(old) });
+  await expect(page.locator('.teacher-panel [role=status]')).toContainText('1 výsledok je starší ako rok. Bude dostupný ešte 7 dní');
+  // Another format loads nothing.
+  await page.locator('.teacher-panel input[type=file]').setInputFiles({ name: 'x.tapko', mimeType: 'application/json', buffer: Buffer.from('{"format":"other"}') });
+  await expect(page.locator('.teacher-panel [role=status]')).toContainText('nie je súbor TapkoTyper');
+  expect(errors).toEqual([]);
 });

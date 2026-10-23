@@ -22,8 +22,10 @@
      password, own words and text, surprises, tasks, keys, progress, data), with one section per
      settings tab, and what is lost without a backup.
   5. **Mentoring**, for teachers and mentors in one place: the "For mentors" page, scanning
-     QR codes by group, result links, the table (filters, one child's results, CSV), the
-     checksum, making a task, and the task from the child's side. The "?" (and F1) on the
+     QR codes by group, result links, sets (one scan, or links within 20 minutes), the kept
+     history of every hand-in and a writer's progress, sending results from a phone to a
+     computer as a `.tapko` file, the yearly cleanup (7 more days for old results loaded from a
+     file), CSV, the checksum, making a task, and the task from the child's side. The "?" (and F1) on the
      "For mentors" page opens this tab, since a mentor there needs exactly this.
   6. **About TapkoTyper**: the intro, the privacy promise, data and the visit counter with its
      live count and the open GoatCounter address (we hide nothing: anyone sees the same usage

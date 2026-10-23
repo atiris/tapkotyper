@@ -4,7 +4,8 @@ import { newProfile } from '../storage/store';
 import { CODEC_VERSION, checksum, codeFrom, decode, encode } from './codec';
 import { OVERALL_ID, makeOverallResult, makeResult, parseResult, resultCode } from './result';
 import { activeTask, addTask, parseTask, recordTaskRun, taskCode, taskOwn } from './task';
-import { type SortKey, TeacherStore, childKey, childSummary, nextSort } from './teacher';
+import { parseTapko, tapkoFile } from './tapko-file';
+import { type SortKey, TeacherStore, childKey, childSummary, dateBefore, newest, nextSort, sortWriters } from './teacher';
 import { moveCode, parseMove, trimHistory } from './transfer';
 
 const b64 = (bytes: number[]) => btoa(String.fromCharCode(...bytes)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
@@ -115,52 +116,158 @@ describe('results', () => {
     expect((await parseResult(forged)).intact).toBe(false);
   });
 
-  it('teacher store keeps one result per child and task, groups rows, and exports CSV', async () => {
+  it('teacher store keeps every hand-in once, by its fingerprint, and exports CSV', async () => {
     const idb = new IDBFactory();
     const s = await teacherStore(idb);
     const r = { taskId: 't1', title: 'Zvieratá', name: 'Ema', date: '2026-10-21', minutes: 2, accuracy: 90, cpm: 50, weak: [['ô', 70]] as [string, number][] };
-    expect(s.add(r, true)).toBe('added');
-    expect(s.add(r, true)).toBe('same');
-    expect(s.add({ ...r, accuracy: 95 }, true)).toBe('updated');
+    expect(s.add(r, true)).not.toBeNull();
+    expect(s.add(r, true)).toBeNull();
+    // A newer hand-in of the same task is kept beside the older one.
+    expect(s.add({ ...r, accuracy: 95, date: '2026-10-22' }, true)).not.toBeNull();
     s.add({ ...r, name: 'Adam, "A"' }, false);
     await s.saved();
-    expect((await teacherStore(idb)).results).toHaveLength(2);
+    expect((await teacherStore(idb)).results).toHaveLength(3);
     const head = ['group', 'task', 'child', 'date', 'min', 'acc', 'cpm', 'levels', 'status', 'weak', 'broken'];
     const names = { key: (k: string) => k, status: (ok: boolean) => (ok ? 'ok' : 'practice') };
-    expect(s.csv(head, names).split('\n')).toEqual([
+    expect(s.csv(head, names, newest(s.results)).split('\n')).toEqual([
       head.join(','),
       ',Zvieratá,"Adam, ""A""",2026-10-21,2,90,50,,ok,ô 70 %,!',
-      ',Zvieratá,Ema,2026-10-21,2,95,50,,ok,ô 70 %,',
+      ',Zvieratá,Ema,2026-10-22,2,95,50,,ok,ô 70 %,',
     ]);
-    const ema = s.results.find((x) => x.name === 'Ema')!;
-    s.assign([ema], '5.A');
+    const ema = s.results.filter((x) => x.name === 'Ema');
+    s.assign(ema, '5.A');
     expect(s.groups()).toEqual(['5.A']);
-    expect(s.sorted()[0].name).toBe('Ema');
-    // A newer hand-in without a group keeps the assigned one.
-    expect(s.add({ ...r, accuracy: 99 }, true)).toBe('updated');
-    const kept = s.results.find((x) => x.name === 'Ema')!;
-    expect(kept.group).toBe('5.A');
-    expect(s.csv(head, names, [kept]).split('\n')).toHaveLength(2);
-    s.removeMany([kept]);
+    // A newer hand-in without a group keeps the group the teacher gave that child.
+    const next = s.add({ ...r, accuracy: 99, date: '2026-10-23' }, true)!;
+    expect(next.group).toBe('5.A');
+    expect(s.childResults(childKey(next)).map((x) => x.accuracy)).toEqual([99, 95, 90]);
+    s.removeMany(s.childResults(childKey(next)));
     expect(s.results).toHaveLength(1);
     await s.saved();
-    expect((await teacherStore(idb)).results.map((x) => x.name)).toEqual(['Adam, "A"']);
+    const back = await teacherStore(idb);
+    expect(back.results.map((x) => x.name)).toEqual(['Adam, "A"']);
+    expect(back.sets.flatMap((x) => x.results)).toEqual([back.results[0].id]);
   });
 
-  it('teacher store writes only the touched records and keeps a moved child under a new fingerprint', async () => {
+  it('teacher store keeps a moved child under the same fingerprint, and a set moves with all its results', async () => {
     const idb = new IDBFactory();
     const s = await teacherStore(idb);
     const r = { taskId: 't1', title: 'Zvieratá', name: 'Ema', date: '2026-10-21', minutes: 2, accuracy: 90, cpm: 50, weak: [] as [string, number][] };
-    s.add(r, true);
-    s.add({ ...r, name: 'Adam' }, true);
-    const before = s.results[0].id;
-    s.assign([s.results[0]], '5.A');
-    expect(s.results[0].id).not.toBe(before);
+    const ema = s.add(r, true, undefined, 1000)!;
+    s.add({ ...r, name: 'Adam' }, true, undefined, 2000);
+    const before = ema.id;
+    s.assign([ema], '5.A');
+    expect(ema.id).toBe(before);
+    expect(s.sets[0].group).toBe('');
+    s.assign(s.results, '5.A');
+    expect(s.sets[0].group).toBe('5.A');
     await s.saved();
     const back = await teacherStore(idb);
-    expect(back.results).toHaveLength(2);
-    expect(back.results.find((x) => x.name === 'Ema')).toEqual(s.results[0]);
+    expect(back.results.find((x) => x.name === 'Ema')).toEqual(ema);
+    expect(back.sets[0].group).toBe('5.A');
     expect(back.childResults(childKey({ name: 'Ema', group: '5.A' }))).toHaveLength(1);
+  });
+
+  it('teacher store forms sets: links of one group within 20 minutes, a scan always one', async () => {
+    const s = await teacherStore();
+    const r = (name: string, group?: string) => ({ taskId: 't1', title: 'T', name, ...(group && { group }), date: '2026-10-21', minutes: 2, accuracy: 90, cpm: 50, weak: [] as [string, number][] });
+    const min = 60_000;
+    s.add(r('A', '5.A'), true, undefined, 0);
+    s.add(r('B', '5.A'), true, undefined, 19 * min);
+    // Another group starts its own set; 21 minutes after the first result a new one starts.
+    s.add(r('C', '5.B'), true, undefined, 19 * min);
+    s.add(r('D', '5.A'), true, undefined, 21 * min);
+    expect(s.sets.map((x) => [x.group, x.source, x.results.length])).toEqual([['5.A', 'link', 2], ['5.B', 'link', 1], ['5.A', 'link', 1]]);
+    expect(s.sets[0].end).toBe(19 * min);
+    s.beginScan();
+    s.add(r('E'), true, '6.C', 30 * min);
+    s.add(r('F'), true, '6.C', 90 * min);
+    s.endScan();
+    s.add(r('G'), true, '6.C', 91 * min);
+    const scan = s.sets.filter((x) => x.group === '6.C');
+    expect(scan.map((x) => [x.source, x.results.length])).toEqual([['scan', 2], ['link', 1]]);
+    expect(s.results.find((x) => x.name === 'E')!.group).toBe('6.C');
+    s.removeMany(s.setResults(scan[0]));
+    expect(s.sets.filter((x) => x.group === '6.C')).toHaveLength(1);
+  });
+
+  it('teacher store drops hand-ins older than a year after 7 days in this browser', async () => {
+    const idb = new IDBFactory();
+    const s = await teacherStore(idb);
+    const now = new Date(2026, 9, 23).getTime();
+    const day = 86_400_000;
+    const r = { taskId: 't1', title: 'T', name: 'Ema', minutes: 2, accuracy: 90, cpm: 50, weak: [] as [string, number][] };
+    s.add({ ...r, date: '2025-10-01' }, true, undefined, now - 8 * day);
+    s.add({ ...r, date: '2025-10-02' }, true, undefined, now - 6 * day);
+    s.add({ ...r, date: '2026-10-01' }, true, undefined, now - 30 * day);
+    await s.saved();
+    const back = new TeacherStore(idb);
+    await back.load(now);
+    expect(back.results.map((x) => x.date).sort()).toEqual(['2025-10-02', '2026-10-01']);
+    await back.saved();
+    const later = new TeacherStore(idb);
+    await later.load(now + 2 * day);
+    expect(later.results.map((x) => x.date)).toEqual(['2026-10-01']);
+    expect(later.sets).toHaveLength(1);
+  });
+
+  it('a .tapko file carries sets and results; loading it twice adds nothing, old ones are counted', async () => {
+    const phone = await teacherStore();
+    const r = { taskId: 't1', title: 'T', name: 'Ema', group: '5.A', date: '2026-10-21', minutes: 2, accuracy: 90, cpm: 50, weak: [['ô', 70]] as [string, number][] };
+    phone.add(r, true, undefined, 1000);
+    phone.add({ ...r, name: 'Adam' }, false, undefined, 2000);
+    phone.add({ ...r, name: 'Old', date: '2025-01-01' }, true, undefined, 3000);
+    const text = tapkoFile(phone.sets, phone.results);
+    const idb = new IDBFactory();
+    const pc = await teacherStore(idb);
+    const now = new Date(2026, 9, 23).getTime();
+    const file = parseTapko(text);
+    expect(pc.importFile('a.tapko', file.sets, file.results, now)).toEqual({ added: 3, old: 1 });
+    expect(pc.sets.map((x) => [x.id, x.source, x.results.length])).toEqual([[phone.sets[0].id, 'file', 3]]);
+    expect(pc.results.map((x) => [x.name, x.intact])).toEqual([['Ema', true], ['Adam', false], ['Old', true]]);
+    // The same file again: nothing new.
+    expect(pc.importFile('a.tapko', file.sets, file.results, now)).toEqual({ added: 0, old: 0 });
+    expect(pc.results).toHaveLength(3);
+    expect(pc.files.map((f) => [f.name, f.results, f.added, f.from, f.to, f.groups])).toEqual([['a.tapko', 3, 0, '2025-01-01', '2026-10-21', ['5.A']], ['a.tapko', 3, 3, '2025-01-01', '2026-10-21', ['5.A']]]);
+    // A link scanned on the phone and opened again on the computer is the same hand-in.
+    expect(pc.add(r, true)).toBeNull();
+    // A result changed in the file shows as damaged.
+    const changed = parseTapko(text.replace('"accuracy":90', '"accuracy":99'));
+    const other = await teacherStore();
+    other.importFile('b.tapko', changed.sets, changed.results, now);
+    expect(other.results.find((x) => x.name === 'Ema')!.intact).toBe(false);
+    await pc.saved();
+    const back = await teacherStore(idb);
+    expect([back.results.length, back.sets.length, back.files.length]).toEqual([3, 1, 2]);
+    expect(() => parseTapko('{"format":"tapkotyper-mentor","version":2,"sets":[],"results":[]}')).toThrow('teacher.file.unknown');
+    expect(() => parseTapko('not json')).toThrow('teacher.file.unknown');
+  });
+
+  it('teacher store counts what an age would delete, and clears everything', async () => {
+    const s = await teacherStore();
+    const now = new Date(2026, 9, 23).getTime();
+    const r = { taskId: 't1', title: 'T', minutes: 2, accuracy: 90, cpm: 50, weak: [] as [string, number][] };
+    s.add({ ...r, name: 'A', group: '5.A', date: '2026-03-01' }, true, undefined, 0);
+    s.add({ ...r, name: 'B', group: '5.A', date: '2026-10-20' }, true, undefined, 60_000);
+    s.add({ ...r, name: 'C', group: '5.B', date: '2026-03-02' }, true, undefined, 0);
+    const old = s.olderThan(dateBefore(now, 6));
+    expect([old.results.length, old.sets.length]).toEqual([2, 1]);
+    expect(s.olderThan(dateBefore(now, 0, 1)).results).toHaveLength(3);
+    s.clearAll();
+    expect([s.results.length, s.sets.length, s.files.length]).toEqual([0, 0, 0]);
+  });
+
+  it('writers sum the newest hand-in per task and show the change from the first to the last', async () => {
+    const s = await teacherStore();
+    const r = { taskId: 't1', title: 'T', name: 'Ema', group: '5.A', minutes: 2, weak: [] as [string, number][] };
+    s.add({ ...r, date: '2026-10-01', accuracy: 80, cpm: 40 }, true, undefined, 0);
+    s.add({ ...r, date: '2026-10-08', accuracy: 89, cpm: 38 }, true, undefined, 1);
+    s.add({ ...r, name: 'Adam', date: '2026-10-08', accuracy: 70, cpm: 60 }, true, undefined, 2);
+    const [ema] = s.writers().filter((w) => w.name === 'Ema');
+    expect([ema.rows.length, ema.last, ema.accuracy, ema.accuracyChange, ema.cpmChange, ema.minutes]).toEqual([2, '2026-10-08', 89, 9, -2, 2]);
+    expect(sortWriters(s.writers(), { key: 'accuracy', desc: true }).map((w) => w.name)).toEqual(['Ema', 'Adam']);
+    expect(sortWriters(s.writers(), { key: 'handIns', desc: true }).map((w) => w.name)).toEqual(['Ema', 'Adam']);
+    expect(newest(s.results)).toHaveLength(2);
   });
 
   it('teacher store without IndexedDB keeps the results for the visit only', async () => {

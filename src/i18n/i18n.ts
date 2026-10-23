@@ -77,3 +77,10 @@ export function tMap(key: string): Record<string, string> {
   const v = lookup(dict, key) ?? lookup(fallback, key);
   return v && typeof v === 'object' && !Array.isArray(v) ? (v as Record<string, string>) : {};
 }
+
+/** A count in words: `key.one`, `key.few` or `key.other` by the language's plural rules, with `{n}` filled. */
+export function tn(key: string, n: number, params: Record<string, string | number> = {}): string {
+  const form = new Intl.PluralRules(current).select(n);
+  const v = lookup(dict, `${key}.${form}`) ?? lookup(fallback, `${key}.${form}`);
+  return typeof v === 'string' ? fill(v, { n, ...params }) : t(`${key}.other`, { n, ...params });
+}

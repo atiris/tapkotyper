@@ -42,6 +42,9 @@
   buttons among the round buttons at the top right so they stay reachable with any number
   of profiles. The new-key card has its heading above Tapko, the finger guide beside Tapko and
   Esc to skip. The get-ready card has the picture beside the text and always shows its button.
+- In a level Tapko stands at the bottom left, or the scene draws him itself: walking as
+  the hero, or seated in its vehicle (the rocket's window). His shouts and bubble then point
+  to where he is.
 - The super star (super mode) and the wardrobe's star count are normal members of the layout: the star sits in the top row before the sound button on every screen; the wardrobe's count sits under the animal picture.
 - The results card's three buttons (next level, replay, map) share one style; only the next level is accented.
 - Back buttons in top bars have the same height as the round buttons beside them.
@@ -55,6 +58,7 @@
 - Children judge quality visually; a calm, cute style supports the peaceful philosophy.
 - A map that repeats itself or wastes its top area hides what matters: where to go next.
 - Cards that wrap into two rows on a common laptop break the story's path into pieces.
+- A Tapko standing on nothing below his own flying rocket did not read as one story.
 - Mixed shapes in the top bar looked untidy; fullscreen hides the browser's distractions.
 - A sun in a repeating sky showed twice on wide screens. The image generator cannot keep
   a picture to the bottom part of an image, but draws a full close-up strip well.

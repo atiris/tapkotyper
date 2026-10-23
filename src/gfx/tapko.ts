@@ -59,6 +59,8 @@ export interface TapkoMotion {
   jump?: number;
   flip?: boolean;
   alpha?: number;
+  /** false leaves out the ground shadow (Tapko off the ground, in a vehicle). */
+  shadow?: boolean;
 }
 
 /**
@@ -73,10 +75,12 @@ export function drawTapko(g: G, c: Companion, mood: Mood, x: number, y: number, 
   g.save();
   if (m.alpha !== undefined) g.globalAlpha *= m.alpha;
   // Soft shadow on the ground.
-  g.fillStyle = 'rgba(30,20,10,0.16)';
-  g.beginPath();
-  g.ellipse(x, y, size * 0.2 * (1 - jumpH / size), size * 0.04, 0, 0, Math.PI * 2);
-  g.fill();
+  if (m.shadow !== false) {
+    g.fillStyle = 'rgba(30,20,10,0.16)';
+    g.beginPath();
+    g.ellipse(x, y, size * 0.2 * (1 - jumpH / size), size * 0.04, 0, 0, Math.PI * 2);
+    g.fill();
+  }
   g.translate(x, y - jumpH);
   g.rotate(sway);
   g.scale((m.flip ? -1 : 1) * (1 - breathe) / squash, (1 + breathe) * squash);

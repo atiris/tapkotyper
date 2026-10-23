@@ -1,6 +1,10 @@
+import { app } from '../../app/app';
 import { VH } from '../../engine/loop';
+import { ease } from '../../engine/tween';
 import { blob, drawSprite, fontFamily, type G } from '../../gfx/draw';
+import { drawTapko } from '../../gfx/tapko';
 import { t } from '../../i18n/i18n';
+import { TAPKO_CSS_H, TAPKO_CSS_X } from '../mode';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
 import { ApproachMode, type Mover } from './approach';
@@ -11,8 +15,21 @@ const COLORS: Record<string, string> = {
   'obj-asteroid-small': '#8d8378', 'obj-asteroid-big': '#a39586', 'obj-rock-falling-1': '#9a8a7a',
   'obj-planet-1': '#f5b06b', 'obj-planet-2': '#8ec5f0', 'obj-planet-3': '#b79be0', 'obj-planet-4': '#c3a6ec', 'obj-planet-5': '#b6b0f0',
 };
+const ROCKET_X = 150;
+const ROCKET_H = 120;
+/** The round window of the rocket picture: its centre from the rocket's centre and the glass radius. */
+const WINDOW = { x: 39, y: -1, r: 18 };
+/** Tapko's size in the window. */
+const SEAT_SIZE = 44;
+/** Seconds of Tapko's hop into the rocket, then of the speedometer sliding up. */
+const BOARD_TIME = 1;
+const DOCK_TIME = 0.5;
+const GAUGE_R = 70;
 
-/** World 2: the rocket's soft beam pushes rocks and planets out of the path; rhythm drives the speedometer. */
+/**
+ * World 2: Tapko hops into the rocket's window, its soft beam pushes rocks and planets out of the path,
+ * and rhythm drives the speedometer docked under the rocket.
+ */
 export class SpaceMode extends ApproachMode {
   readonly world = 'space';
   protected rocketY = VH * 0.48;
@@ -79,8 +96,49 @@ export class SpaceMode extends ApproachMode {
     this.L.particles.emit(x, y, 14, 'sparkle', ['#fff6a8', '#a8f0ff', '#ffd1f5'], 180, 9);
   }
 
+  /** The rocket's centre and tilt; it bobs gently. */
+  private rocket(): { x: number; y: number; rot: number } {
+    return { x: ROCKET_X, y: this.rocketY + Math.sin(this.t * 1.8) * 10, rot: Math.sin(this.t * 1.3) * 0.04 };
+  }
+
+  /** Centre of the rocket's window, turned with the rocket. */
+  private window(): { x: number; y: number } {
+    const r = this.rocket();
+    const c = Math.cos(r.rot), s = Math.sin(r.rot);
+    return { x: r.x + WINDOW.x * c - WINDOW.y * s, y: r.y + WINDOW.x * s + WINDOW.y * c };
+  }
+
+  /** 0..1 of Tapko's hop from the DOM Tapko's place into the window; done at once with reduced motion. */
+  private get boarded(): number {
+    return this.L.reduceMotion ? 1 : Math.min(1, this.t / BOARD_TIME);
+  }
+
+  /** Tapko's feet and size: where the DOM Tapko stood, on the hop, then seated in the window. */
+  private seat(): { x: number; y: number; size: number } {
+    const k = this.L.stage.scale;
+    const w = this.window();
+    const from = { x: TAPKO_CSS_X / k, y: VH - TAPKO_CSS_H * 0.1 / k, size: TAPKO_CSS_H / k };
+    const to = { x: w.x, y: w.y + SEAT_SIZE * 0.45, size: SEAT_SIZE };
+    const b = this.boarded, e = ease.inOutQuad(b);
+    return {
+      x: from.x + (to.x - from.x) * e,
+      y: from.y + (to.y - from.y) * e - Math.sin(b * Math.PI) * 140,
+      size: from.size + (to.size - from.size) * e,
+    };
+  }
+
+  heroSpot(): { x: number; y: number } {
+    const s = this.seat();
+    return { x: s.x, y: s.y - s.size * 0.9 - 20 };
+  }
+
+  bubbleSpot(): { x: number; y: number } {
+    const s = this.seat();
+    return { x: s.x, y: s.y - s.size * 0.9 - 10 };
+  }
+
   render(g: G): void {
-    const rx = 150, ry = this.rocketY + Math.sin(this.t * 1.8) * 10;
+    const { x: rx, y: ry, rot } = this.rocket();
     if (this.beam > 0) {
       g.save();
       g.globalAlpha = this.beam;
@@ -96,7 +154,7 @@ export class SpaceMode extends ApproachMode {
       g.stroke();
       g.restore();
     }
-    drawSprite(g, 'obj-rocket', rx, ry, 120, { rot: Math.sin(this.t * 1.3) * 0.04 }, blob('#e5534b'));
+    drawSprite(g, 'obj-rocket', rx, ry, ROCKET_H, { rot }, blob('#e5534b'));
     // Flame grows with speed.
     g.save();
     g.globalAlpha = 0.5 + this.speedShown * 0.5;
@@ -105,12 +163,49 @@ export class SpaceMode extends ApproachMode {
     g.ellipse(rx - 85 - this.speedShown * 20, ry + 4, 10 + this.speedShown * 26, 8, 0, 0, Math.PI * 2);
     g.fill();
     g.restore();
+    this.drawTapko(g);
     super.render(g);
-    this.drawSpeedometer(g);
+    this.drawSpeedometer(g, rx, ry);
   }
 
-  protected drawSpeedometer(g: G): void {
-    const cx = this.L.vw - 120, cy = VH - 70, r = 70;
+  /** Empty glass over the picture's window, Tapko on his hop, then seated behind the glass. */
+  private drawTapko(g: G): void {
+    const w = this.window();
+    const s = this.seat();
+    const c = app.profile!.companion;
+    const end = this.L.endTime != null;
+    const mood = end ? 'happy' : this.boarded < 1 ? 'idle' : this.L.tapkoMood;
+    // A shadow only while he stands on the ground before the hop.
+    const motion = { t: this.t, jump: end ? this.L.endHop : 0, shadow: this.boarded === 0 };
+    // He slips behind the glass over the last fifth of the hop.
+    const inside = Math.max(0, (this.boarded - 0.8) / 0.2);
+    g.save();
+    g.beginPath();
+    g.arc(w.x, w.y, WINDOW.r, 0, Math.PI * 2);
+    const glass = g.createRadialGradient(w.x - 5, w.y - 6, 2, w.x, w.y, WINDOW.r);
+    glass.addColorStop(0, '#d9f6fa');
+    glass.addColorStop(1, '#86cbd8');
+    g.fillStyle = glass;
+    g.fill();
+    if (inside > 0) {
+      g.clip();
+      drawTapko(g, c, mood, s.x, s.y, s.size, { ...motion, alpha: inside });
+      g.fillStyle = 'rgba(255,255,255,0.45)';
+      g.beginPath();
+      g.ellipse(w.x - 7, w.y - 9, 7, 3.5, -0.6, 0, Math.PI * 2);
+      g.fill();
+    }
+    g.restore();
+    if (inside < 1) drawTapko(g, c, mood, s.x, s.y, s.size, { ...motion, alpha: 1 - inside });
+  }
+
+  /** The rocket's own instrument: after Tapko is in, it slides up from below the scene and docks under the rocket. */
+  protected drawSpeedometer(g: G, rx: number, ry: number): void {
+    const slide = this.L.reduceMotion ? 1 : Math.max(0, Math.min(1, (this.t - BOARD_TIME) / DOCK_TIME));
+    if (slide <= 0) return;
+    const r = GAUGE_R;
+    const below = VH + r + 20, dock = ry + ROCKET_H / 2 + r + 18;
+    const cx = rx, cy = below + (dock - below) * ease.outCubic(slide);
     g.save();
     g.fillStyle = 'rgba(20,16,50,0.55)';
     g.beginPath();

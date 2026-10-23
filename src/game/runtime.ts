@@ -181,6 +181,8 @@ export class LevelRuntime {
   private guide: KeyboardGuide;
   private guideOn: boolean;
   private tapko: HTMLElement;
+  /** Tapko's current mood, for modes that draw him on the canvas. */
+  tapkoMood: Mood = 'idle';
   private bubble: HTMLElement;
   private bubbleTimer = 0;
   private progressFill: HTMLElement;
@@ -355,7 +357,7 @@ export class LevelRuntime {
   }
 
   get tapkoOnStage(): boolean {
-    return ['freetype', 'aim', 'swamp', 'signs', 'boulder', 'doors', 'gate', 'rooms', 'buds', 'flower', 'owl', 'lilies', 'reflection'].includes(this.def.kind);
+    return ['freetype', 'aim', 'swamp', 'signs', 'boulder', 'doors', 'gate', 'rooms', 'buds', 'flower', 'owl', 'lilies', 'reflection', 'space', 'asteroid'].includes(this.def.kind);
   }
 
   /** Preparation: assets, new keys, the get-ready card with the tip and its password, then play. */
@@ -753,6 +755,7 @@ export class LevelRuntime {
   }
 
   setMood(mood: Mood, seconds: number): void {
+    this.tapkoMood = mood;
     renderTapkoInto(this.tapko, app.profile!.companion, mood);
     this.tapko.classList.remove('jump');
     if (mood === 'happy' && !this.reduceMotion) {
@@ -1040,7 +1043,10 @@ export class LevelRuntime {
     }
     // A line hidden behind a target waits for a free spot instead of running out.
     if (this.bubbleTimer > 0 && !this.bubble.classList.contains('covered') && (this.bubbleTimer -= dt) <= 0) this.hideBubble();
-    if (this.moodTimer > 0 && (this.moodTimer -= dt) <= 0) renderTapkoInto(this.tapko, app.profile!.companion, 'idle');
+    if (this.moodTimer > 0 && (this.moodTimer -= dt) <= 0) {
+      this.tapkoMood = 'idle';
+      renderTapkoInto(this.tapko, app.profile!.companion, 'idle');
+    }
     if (this.robotMoodT > 0 && (this.robotMoodT -= dt) <= 0) this.robotMood = 'idle';
     if (this.fairyMoodT > 0 && (this.fairyMoodT -= dt) <= 0) this.fairyMood = 'idle';
     this.fairyHop = Math.max(0, this.fairyHop - dt);
@@ -1157,6 +1163,12 @@ export class LevelRuntime {
     const b = this.bubble;
     if (b.classList.contains('hidden')) return;
     const s = this.stage.scale;
+    // The tail's tip (40 px + half of its 16 px from the left, 8 px below) points to the mode's spot.
+    const at = this.mode.bubbleSpot();
+    if (at) {
+      b.style.left = `${Math.max(8, at.x * s - 48)}px`;
+      b.style.top = `${Math.max(8, at.y * s - b.offsetHeight - 8)}px`;
+    }
     const covers = () => {
       const x0 = b.offsetLeft / s - LABEL_GAP, x1 = (b.offsetLeft + b.offsetWidth) / s + LABEL_GAP;
       const y0 = b.offsetTop / s - LABEL_GAP, y1 = (b.offsetTop + b.offsetHeight) / s + LABEL_GAP;
@@ -1238,6 +1250,7 @@ export class LevelRuntime {
     // A beaten super-obstacle finishes the world: Tapko cheers, unless the mode's last cheer is still up.
     if (this.def.isSuper && !this.shouts.length) this.hooray();
     this.moodTimer = 0;
+    this.tapkoMood = 'happy';
     renderTapkoInto(this.tapko, app.profile!.companion, 'happy');
     this.tapko.classList.remove('jump');
     if (!this.reduceMotion) {

@@ -23,7 +23,8 @@ gives you a wreath"), never about the character as someone else.
    Super-obstacle: a hedgehog throws volleys of leaves from its back.
    Reward: a secret invitation to space. Before the first level the narrator
    shows the child their character: "This is you."
-2. **Space Rocket Flight** - typing rhythm drives the rocket speedometer; a soft energy
+2. **Space Rocket Flight** - Tapko hops into the rocket and flies in its round window;
+   typing rhythm drives the speedometer, the rocket's own instrument under it; a soft energy
    beam pushes asteroids and planets out of the path. Super-obstacle: fractured asteroid.
    Reward: landing clearance.
 3. **New Planet** - typing builds stepping stones across a swamp and picks the right path

@@ -52,6 +52,10 @@ export abstract class Mode {
     const k = this.L.stage.scale;
     return { x: TAPKO_CSS_X / k, y: VH - TAPKO_CSS_H / k - 40 };
   }
+  /** Where the tail of Tapko's bubble points, or null for the bubble's corner above the DOM Tapko. */
+  bubbleSpot(): { x: number; y: number } | null {
+    return null;
+  }
   onCorrect(_t: Target): void {}
   onDone(_t: Target): void {}
   onWrong(_t: Target | null): void {}

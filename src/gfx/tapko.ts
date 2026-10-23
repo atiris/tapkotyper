@@ -5,6 +5,13 @@ import { drawFace, type G } from './draw';
 /** `surprised` is optional art, used only in story 2's meeting scene. */
 export type Mood = 'idle' | 'happy' | 'thinking' | 'surprised';
 
+/** A random mood other than `current` that has a picture for this kind (`surprised` is optional art). */
+export function otherMood(kind: CompanionKind, current: Mood): Mood {
+  const moods = (['idle', 'happy', 'thinking', 'surprised'] as Mood[])
+    .filter((m) => m !== current && (m !== 'surprised' || hasImage(`tapko-${kind}-surprised`)));
+  return moods[Math.floor(Math.random() * moods.length)];
+}
+
 /** Draw order of accessory slots around the companion image. */
 export const SLOT_ORDER: (Slot | 'companion')[] = ['back', 'companion', 'feet', 'body', 'neck', 'hand', 'eyes', 'head'];
 export const SLOTS: Slot[] = ['head', 'eyes', 'neck', 'body', 'back', 'hand', 'feet'];

@@ -1,6 +1,6 @@
 import { app, go, reduceMotion, saveProfile } from '../app/app';
-import { accessories, hasImage, imageUrl } from '../gfx/assets';
-import { type Mood, SLOTS, tapkoElement, renderTapkoInto } from '../gfx/tapko';
+import { accessories, imageUrl } from '../gfx/assets';
+import { type Mood, SLOTS, otherMood, tapkoElement, renderTapkoInto } from '../gfx/tapko';
 import { t } from '../i18n/i18n';
 import { friendStars, grantCompanions, hasAccessory, hasCompanion, totalStars, unlockRules } from '../game/rewards';
 import { practiceToOpen, spendWardrobe, wardrobeLimited, wardrobeLocked } from '../game/wardrobe-time';
@@ -42,9 +42,7 @@ export function wardrobeScreen(root: HTMLElement): () => void {
       preview.classList.add('jump');
       return;
     }
-    const moods = (['idle', 'happy', 'thinking', 'surprised'] as Mood[])
-      .filter((m) => m !== mood && (m !== 'surprised' || hasImage(`tapko-${p.companion.kind}-surprised`)));
-    mood = moods[Math.floor(Math.random() * moods.length)];
+    mood = otherMood(p.companion.kind, mood);
     renderTapkoInto(preview, p.companion, mood);
   } }, preview);
   preview.addEventListener('animationend', () => preview.classList.remove('jump'));

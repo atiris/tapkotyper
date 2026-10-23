@@ -7,5 +7,4 @@ listed here is never run. Lines whose plan has moved to `.todo/.done/` are
 skipped, and the session that finishes a plan removes its line.
 
 
-- [P3] 56-playful-progress-companion.md - small UI polish, last
 - [P3] 57-tapko-in-the-rocket.md - world 2 polish, independent of the others

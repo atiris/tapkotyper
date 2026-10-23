@@ -581,9 +581,12 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 @supports not selector(::-webkit-scrollbar) { .modal { scrollbar-width: auto; scrollbar-color: var(--brand) var(--paper-2); } }
 .modal-x { position: absolute; top: 0.7rem; right: 0.7rem; width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--paper-2); cursor: pointer; display: grid; place-items: center; }
 .stats-head { display: flex; align-items: center; gap: 1rem; }
-.stats-head h2 { margin: 0 0 0.3rem; }
+.stats-head h2 { margin: 0 0 0.9rem; }
 .stats-head > div { min-width: 0; }
-@media (max-width: 700px) { .stats-head { flex-direction: column; align-items: flex-start; } .story-head { min-width: 0; } }
+.stats-tapko { border: 0; padding: 0; background: none; border-radius: 30px; cursor: pointer; flex: none; }
+.stats-tapko:focus-visible { outline: 3px solid var(--brand); outline-offset: 4px; }
+.stats-tapko .tapko-stack.jump { animation: jump 0.6s ease; }
+@media (max-width: 700px) { .stats-head { flex-direction: column; align-items: flex-start; } .stats-tapko .tapko-stack { width: 160px; height: 160px; } .story-head { min-width: 0; } }
 .stats-body > div > h3 { margin: 1rem 0 0; }
 .stats .tabs { margin: 0 3rem 1rem 0; }
 .stats-code { margin-top: 1rem; }

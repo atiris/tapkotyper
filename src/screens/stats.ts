@@ -1,6 +1,6 @@
-import { app, go, layout } from '../app/app';
+import { app, go, layout, reduceMotion } from '../app/app';
 import { imageUrl } from '../gfx/assets';
-import { tapkoElement } from '../gfx/tapko';
+import { type Mood, otherMood, renderTapkoInto, tapkoElement } from '../gfx/tapko';
 import { STORIES, type StoryDef, WORLDS, storyDone, storyOpen } from '../game/levels';
 import { badgeTier, worldStars } from '../game/rewards';
 import { t } from '../i18n/i18n';
@@ -165,10 +165,33 @@ async function showOverallCode(p: Profile): Promise<void> {
   bigCode(link, nickname(p), t('progress.overallCaption'), 'overall');
 }
 
+/** The child's own character, big; a click makes it hop or pull another face for a moment, never the same twice in a row. */
+function playfulTapko(p: Profile): HTMLElement {
+  const fig = tapkoElement(p.companion, 'happy', 210);
+  let mood: Mood = 'happy';
+  let jumped = false;
+  let back = 0;
+  fig.addEventListener('animationend', () => fig.classList.remove('jump'));
+  return h('button', { class: 'stats-tapko', type: 'button', 'aria-label': `${p.companion.name}: ${t('wardrobe.tickle')}`, onClick: () => {
+    if (!jumped && !reduceMotion() && Math.random() < 0.5) {
+      jumped = true;
+      fig.classList.remove('jump');
+      void fig.offsetWidth;
+      fig.classList.add('jump');
+      return;
+    }
+    jumped = false;
+    mood = otherMood(p.companion.kind, mood);
+    renderTapkoInto(fig, p.companion, mood);
+    clearTimeout(back);
+    back = window.setTimeout(() => renderTapkoInto(fig, p.companion, mood = 'happy'), 2000);
+  } }, fig);
+}
+
 /** Progress: the summary rows and badges, the growth medals and the code of all statistics. */
 function progressTab(p: Profile): HTMLElement {
   return h('div', {},
-    h('div', { class: 'stats-head' }, tapkoElement(p.companion, 'happy', 170),
+    h('div', { class: 'stats-head' }, playfulTapko(p),
       h('div', {}, h('h2', {}, t('progress.title')), progressSection(p))),
     p.progress.growth ? h('div', { class: 'medals' }, h('h3', {}, t('stats.medals')),
       h('div', { class: 'medal-row' }, ...Array.from({ length: p.progress.growth }, (_, i) => medal(i + 1, true)))) : null,

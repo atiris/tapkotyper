@@ -19,10 +19,13 @@
   practice of just that key. A switch ("⇧ symbols") shows the shifted symbols of the keys
   instead (question mark, exclamation mark, colon, Slovak digits), each with its own
   statistics; capitals count for their letter and its Shift.
-- The overlay has three tabs: **Postup** (the progress above, a bigger Tapko, the growth
+- The overlay has three tabs: **Postup** (the progress above, a big Tapko, the growth
   medals and the total stars ever earned as the last chip; stories come before worlds),
   **Klávesy** (the key map and the key details) and **Cvičenia** (the history of exercises
   from a teacher or parent, newest first, each with a button for its QR code).
+- The child's character on the Postup tab is big (beside the summary, above it on a phone)
+  and plays when clicked or pressed with Enter or Space: it hops, or pulls another face for
+  a moment, never the same twice in a row; with reduced motion it only changes its face.
 - QR codes (an exercise's result, or all of the player's statistics from the Postup tab) fill
   the whole screen until clicked; the caption and frame colour tell an exercise from all
   statistics, and a button at the bottom copies the code to send to the teacher. The code for
@@ -39,6 +42,8 @@
 ## Why
 - A child asks "how am I doing?" in whole steps (stars, worlds, days), not per key; the
   progress answers that first, and the key details stay for the curious.
+- The character is the child's own figure; a friend that reacts to a click makes the
+  progress page warm instead of a report card.
 - Knowing the problem keys turns mistakes into a clear, small next step.
 - Old mistakes must not weigh on a key the child already fixed: only recent presses
   count, while the history still shows the way there.

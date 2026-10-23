@@ -79,22 +79,27 @@ export function wardrobeScreen(root: HTMLElement): () => void {
     kinds.replaceChildren(...COMPANION_KINDS.map((k) => {
       const owned = hasCompanion(p, k);
       const on = p.companion.kind === k;
-      const missing = t('wardrobe.kindLocked', { n: Math.max(1, friendStars(p, k) - stars) });
+      const name = t(`kinds.${k}`);
+      const need = owned ? '' : t('wardrobe.kindNeed', { n: Math.max(1, friendStars(p, k) - stars), name });
+      // A locked tile stays focusable and hoverable, so its tooltip can say what is missing.
       return h('button', {
         class: `kind ${on ? 'on' : ''} ${owned ? '' : 'locked'}`,
         type: 'button',
         role: 'radio',
         'aria-checked': String(on),
-        'aria-label': owned ? t(`kinds.${k}`) : `${t(`kinds.${k}`)} (${missing})`,
-        disabled: !owned || locked,
+        'aria-label': owned ? name : `${name}: ${need}`,
+        'aria-disabled': owned ? null : 'true',
+        tip: need || null,
+        disabled: locked,
         onClick: () => {
+          if (!owned) return;
           p.companion.kind = k;
           p.avatar = k;
           saveProfile();
           render();
         },
-      }, tapkoElement({ name: '', kind: k, accessories: [] }, 'idle', 72), owned ? null : h('span', { class: 'lock' }, icon('lock')),
-        h('span', {}, owned ? t(`kinds.${k}`) : missing));
+      }, tapkoElement({ name: '', kind: k, accessories: [] }, 'idle', 72), owned ? null : h('span', { class: 'lock', tip: need }, icon('lock')),
+        h('span', { class: 'kind-name' }, name));
     }));
     grid.replaceChildren(...SLOTS.flatMap((slot) => {
       const items = accessories().filter((a) => a.slot === slot);
@@ -110,15 +115,17 @@ export function wardrobeScreen(root: HTMLElement): () => void {
             type: 'button',
             'aria-pressed': String(on),
             'aria-label': `${t(`items.${a.id}`)}${owned ? '' : ` (${howTo(a.id)})`}`,
-            title: owned ? t(`items.${a.id}`) : howTo(a.id),
-            disabled: !owned || locked,
+            'aria-disabled': owned ? null : 'true',
+            tip: owned ? t(`items.${a.id}`) : howTo(a.id),
+            disabled: locked,
             onClick: () => {
+              if (!owned) return;
               const others = p.companion.accessories.filter((id) => accessories().find((x) => x.id === id)?.slot !== slot);
               p.companion.accessories = on ? others : [...others, a.id];
               saveProfile();
               render();
             },
-          }, src ? h('img', { src, alt: '' }) : null, owned ? null : h('span', { class: 'lock' }, icon('lock')));
+          }, src ? h('img', { src, alt: '' }) : null, owned ? null : h('span', { class: 'lock', tip: howTo(a.id) }, icon('lock')));
         })))];
     }));
   };

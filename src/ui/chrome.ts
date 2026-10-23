@@ -1,4 +1,4 @@
-import { app, go } from '../app/app';
+import { type ScreenName, app, go, shownScreen } from '../app/app';
 import { audio, type SoundLevel } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
 import { LANGS, language, t } from '../i18n/i18n';
@@ -6,6 +6,7 @@ import type { Lang } from '../storage/schema';
 import { type Child, ICONS, button, h } from './dom';
 import { paintRound, roundButton, roundTextSvg } from './hud';
 import { cornerMenu } from './menu';
+import { tip } from './tooltip';
 
 /** Super mode is on: a round star in the top row; clicking it ends the mode. Nothing otherwise. */
 export function superStar(): HTMLButtonElement | null {
@@ -30,7 +31,7 @@ export function soundButton(): HTMLButtonElement {
   const paint = () => {
     const label = `${t('common.sound')}: ${t(`common.sound_${audio.level}`)}`;
     b.setAttribute('aria-label', label);
-    b.title = label;
+    tip(b, label);
     b.dataset.level = audio.level;
     paintRound(b, LEVEL_ICON[audio.level]);
   };
@@ -56,7 +57,7 @@ export function fullscreenButton(): HTMLButtonElement | null {
     const on = !!document.fullscreenElement;
     const label = t(on ? 'common.fullscreenExit' : 'common.fullscreen');
     b.setAttribute('aria-label', label);
-    b.title = label;
+    tip(b, label);
     paintRound(b, on ? 'fullscreenExit' : 'fullscreen');
   };
   const onChange = () => (b.isConnected ? paint() : document.removeEventListener('fullscreenchange', onChange));
@@ -65,9 +66,15 @@ export function fullscreenButton(): HTMLButtonElement | null {
   return b;
 }
 
-/** The round "?": the help page, on the buttons for a player, on the about tab before a player is chosen. */
+/** The help tab that fits a screen; the others open help on its default tab. */
+const HELP_TAB: Partial<Record<ScreenName, string>> = { parent: 'settings' };
+
+/** The round "?": the help page on the tab of this screen, else on the buttons for a player, on the about tab before a player is chosen. */
 export function helpButton(): HTMLButtonElement {
-  const b = roundButton('control', 'help', t('help.title'), () => go('help'));
+  const b = roundButton('control', 'help', t('help.title'), () => {
+    const tab = HELP_TAB[shownScreen() ?? 'start'];
+    go('help', tab ? { tab } : {});
+  });
   b.classList.add('help-btn');
   return b;
 }
@@ -84,7 +91,7 @@ export function globalButtons(help: HTMLButtonElement = helpButton()): (HTMLButt
 export function languageControls(pick: (l: Lang) => void): HTMLElement[] {
   const now = language();
   const next = LANGS[(LANGS.indexOf(now) + 1) % LANGS.length];
-  const round = h('button', { class: 'round-btn control lang-btn', type: 'button', title: `${t('start.langNow')}. ${t('start.langNext')}`, 'aria-label': t('start.langNow'),
+  const round = h('button', { class: 'round-btn control lang-btn', type: 'button', tip: `${t('start.langNow')}. ${t('start.langNext')}`, 'aria-label': t('start.langNow'),
     onClick: () => pick(next), html: roundTextSvg(now.toUpperCase()) });
   return [
     h('div', { class: 'lang-switch', role: 'group', 'aria-label': t('start.language') },

@@ -6,6 +6,8 @@ import { Store } from '../storage/store';
 import { GUEST_ID, type Lang, type Profile, SUPER_ID } from '../storage/schema';
 import type { TaskSpec } from '../share/task';
 import { loadWords } from '../words/words';
+import { closeModals } from '../ui/dom';
+import { hideTip } from '../ui/tooltip';
 import { keyboardGated, waitForKeyboard } from './keyboard-gate';
 
 export type ScreenName = 'start' | 'newProfile' | 'map' | 'level' | 'story' | 'parent' | 'wardrobe' | 'friends' | 'break' | 'teacher' | 'taskImport' | 'moveImport' | 'help';
@@ -13,6 +15,12 @@ export type Screen = (root: HTMLElement, params: any) => (() => void) | void;
 
 const screens = new Map<ScreenName, Screen>();
 let cleanup: (() => void) | void;
+/** The screen shown now and its parameters. */
+let shown: { name: ScreenName; params: any } | null = null;
+/** Counts the screens opened, so a screen still loading knows when the player has moved on. */
+let visits = 0;
+/** Screens help never returns to: a level or a story would start over. */
+const NO_HELP_RETURN: ScreenName[] = ['level', 'story', 'break', 'help'];
 
 /** App-wide state. */
 export const app = {
@@ -30,6 +38,10 @@ export const app = {
   superPlayer: null as Profile | null,
   /** A task from a link that waits for the new player being created. */
   pendingTask: null as TaskSpec | null,
+  /** The screen the help page was opened from, for its Back (memory only, not in the address). */
+  helpReturn: null as { name: ScreenName; params: any } | null,
+  /** A screen that still asks before it opens (the parent question); going to it again meanwhile is ignored. */
+  asking: null as ScreenName | null,
 };
 
 export function layout(): Layout {
@@ -87,7 +99,19 @@ export async function openRoute(hash: string): Promise<void> {
 /** Screens a touch-only device reaches before a keyboard is connected: the teacher needs none. */
 const NO_KEYBOARD: ScreenName[] = ['start', 'teacher', 'help'];
 
+/** The number of the screen shown now; a screen that waits compares it before it goes on. */
+export function screenVisit(): number {
+  return visits;
+}
+
+/** The screen shown now; null before the first one. */
+export function shownScreen(): ScreenName | null {
+  return shown?.name ?? null;
+}
+
 export function go(name: ScreenName, params: any = {}, push = true): void {
+  if (name === app.asking) return;
+  app.asking = null;
   if (!NO_KEYBOARD.includes(name) && keyboardGated()) {
     // A task link continues once the keyboard is there; anything else starts over.
     if (name === 'taskImport') waitForKeyboard(routeOf(name, params));
@@ -97,8 +121,12 @@ export function go(name: ScreenName, params: any = {}, push = true): void {
   const route = routeOf(name, params);
   if (route !== location.hash) history[push ? 'pushState' : 'replaceState'](null, '', route);
   const root = document.querySelector<HTMLElement>('#app')!;
+  if (name === 'help' && shown?.name !== 'help') app.helpReturn = shown && !NO_HELP_RETURN.includes(shown.name) ? shown : null;
+  shown = { name, params };
+  visits++;
   try { cleanup?.(); } catch (e) { console.error(e); }
-  document.querySelectorAll('.modal-back').forEach((m) => m.remove());
+  hideTip();
+  closeModals();
   root.replaceChildren();
   root.dataset.screen = name;
   window.scrollTo(0, 0);

@@ -102,7 +102,7 @@ export function clickableHeatmap(p: Profile, detail: HTMLElement, practice?: (ke
 
 /** An icon (or a glyph) with a number; the meaning is in the tooltip and the aria-label only. */
 function chip(pic: string | null, glyph: string, text: string, label: string): HTMLElement {
-  return h('li', { class: 'sum-chip', title: label, 'aria-label': label, role: 'img' },
+  return h('li', { class: 'sum-chip', tip: label, 'aria-label': label, role: 'img' },
     pic ? h('img', { src: pic, alt: '' }) : h('span', { class: 'sum-glyph' }, glyph), h('b', {}, text));
 }
 
@@ -136,9 +136,9 @@ function storyRow(p: Profile, story: StoryDef): HTMLElement {
       const src = imageUrl(`ui-map-${WORLDS[w]}`);
       const on = p.progress.worldsDone.includes(w);
       const name = t(`worlds.${WORLDS[w]}`);
-      return src ? h('img', { class: on ? 'done' : '', src, alt: '', title: name }) : h('span', { class: `world-dot ${on ? 'done' : ''}`, title: name });
+      return src ? h('img', { class: on ? 'done' : '', src, alt: '', tip: name }) : h('span', { class: `world-dot ${on ? 'done' : ''}`, tip: name });
     })),
-    h('p', { class: 'story-stars', title: t('progress.storyStars', { n: stars }), 'aria-label': t('progress.storyStars', { n: stars }) },
+    h('p', { class: 'story-stars', tip: t('progress.storyStars', { n: stars }), 'aria-label': t('progress.storyStars', { n: stars }) },
       h('b', {}, String(stars)), star ? h('img', { src: star, alt: '' }) : '★'));
 }
 

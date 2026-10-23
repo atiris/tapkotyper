@@ -24,6 +24,18 @@ describe('i18n', () => {
     expect(t('missing.key')).toBe('missing.key');
   });
 
+  it('closes every bold mark of the help texts, the same in both languages', () => {
+    const marked = (v: unknown): string[] => (typeof v === 'string' ? [v] : v && typeof v === 'object' ? Object.values(v).flatMap(marked) : []);
+    const count = (lang: string) => {
+      const d = load(lang);
+      const texts = marked([d.help, d.about]);
+      for (const s of texts) expect(s.split('**').length % 2, s).toBe(1);
+      return texts.reduce((a, s) => a + s.split('**').length - 1, 0);
+    };
+    expect(count('sk')).toBe(count('en'));
+    expect(count('sk')).toBeGreaterThan(0);
+  });
+
   it('has the same keys in Slovak and English', () => {
     const sk = load('sk'), en = load('en');
     expect(keys(sk).sort()).toEqual(keys(en).sort());

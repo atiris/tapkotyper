@@ -1,6 +1,7 @@
 import { t } from '../i18n/i18n';
 import { h } from './dom';
 import { paintRound, roundButton } from './hud';
+import { tip } from './tooltip';
 
 /**
  * Below 600 px the corner's round buttons fold into one Menu button. Its panel lists each
@@ -40,7 +41,7 @@ export function cornerMenu(row: HTMLElement): HTMLElement {
     document.removeEventListener('pointerdown', onPointer, true);
     btn.setAttribute('aria-expanded', 'false');
     btn.setAttribute('aria-label', t('common.menu'));
-    btn.title = t('common.menu');
+    tip(btn, t('common.menu'));
     paintRound(btn, 'menu');
     if (refocus && btn.isConnected) btn.focus();
   }
@@ -60,7 +61,7 @@ export function cornerMenu(row: HTMLElement): HTMLElement {
     document.addEventListener('pointerdown', onPointer, true);
     btn.setAttribute('aria-expanded', 'true');
     btn.setAttribute('aria-label', t('common.menuClose'));
-    btn.title = t('common.menuClose');
+    tip(btn, t('common.menuClose'));
     paintRound(btn, 'close');
     items()[0]?.focus();
   }

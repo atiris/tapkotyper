@@ -3,6 +3,7 @@ import { WORLDS, type LevelDef, worldLevels } from '../game/levels';
 import { WARDROBE_MAX, countdownFace } from '../game/wardrobe-time';
 import { t } from '../i18n/i18n';
 import { ICONS, h } from './dom';
+import { tip } from './tooltip';
 
 /** Colors of the round buttons: controls purple, paw orange, rhythm green, the super star gold, the place in the world blue, the wardrobe's time teal. */
 export type RoundKind = 'control' | 'paw' | 'rhythm' | 'super' | 'place' | 'timer';
@@ -55,7 +56,7 @@ export function pawRing(charged: number, max: number): string {
 export function levelRing(done: boolean[], current: number, web: boolean): HTMLElement {
   const ring = segments(done.map((d, i) => (i === current ? 'now' : d ? 'on' : '')));
   const label = t('level.place', { n: current + 1, total: done.length });
-  return h('div', { class: 'round-btn place', role: 'img', title: label, 'aria-label': label,
+  return h('div', { class: 'round-btn place', role: 'img', tip: label, 'aria-label': label,
     html: web ? roundSvg('web', ring) : roundTextSvg(String(current + 1), ring) });
 }
 
@@ -73,7 +74,7 @@ export function rhythmRing(fraction: number): string {
 
 /** A working round button; its text lives in the tooltip and `aria-label`. */
 export function roundButton(kind: RoundKind, glyph: keyof typeof ICONS, label: string, onClick: () => void, ring = ''): HTMLButtonElement {
-  const b = h('button', { class: `round-btn ${kind}`, type: 'button', title: label, 'aria-label': label, onClick: () => onClick() });
+  const b = h('button', { class: `round-btn ${kind}`, type: 'button', tip: label, 'aria-label': label, onClick: () => onClick() });
   b.innerHTML = roundSvg(glyph, ring);
   return b;
 }
@@ -102,7 +103,7 @@ export function rhythmPic(): { el: HTMLElement; set(ratio: number): void; label(
       paintRound(el, 'wave', rhythmRing(0.25 + 0.7 * (next / 40)));
     },
     label(text) {
-      el.title = text;
+      tip(el, text);
       el.setAttribute('aria-label', text);
     },
   };
@@ -119,7 +120,7 @@ export function timerPic(left: number): { el: HTMLElement; set(left: number): vo
   const set = (secs: number) => {
     const s = Math.max(0, Math.ceil(secs));
     const label = t('wardrobe.timer', { m: Math.floor(s / 60), s: s % 60 });
-    el.title = label;
+    tip(el, label);
     el.setAttribute('aria-label', label);
     el.classList.toggle('ending', s <= 20);
     el.classList.toggle('fast', s <= 10);

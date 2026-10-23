@@ -58,3 +58,15 @@ test('with the limit off there is no countdown and no lock', async ({ page }) =>
   await expect(page.locator('.wardrobe-locked')).toBeHidden();
   await expect(page.locator('#buddy-name')).toBeEnabled();
 });
+
+test('character tiles show names on one line, a locked one says how many stars are missing', async ({ page }) => {
+  await openWardrobe(page, 0, false);
+  const kinds = page.locator('.buddy .kind');
+  await expect(kinds.first().locator('.kind-name')).not.toHaveText(/★/);
+  const lines = await kinds.locator('.kind-name').evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height));
+  expect(Math.max(...lines)).toBeLessThan(30);
+  const locked = page.locator('.buddy .kind.locked').first();
+  await expect(locked).toHaveAttribute('data-tip', /^\d+ more ★ and .+ is yours$/);
+  await expect(locked.locator('.lock')).toHaveAttribute('data-tip', /more ★/);
+  await expect(page.locator('.item.locked').first()).toHaveAttribute('data-tip', /.+/);
+});

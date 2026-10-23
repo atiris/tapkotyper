@@ -67,7 +67,7 @@ function settingsButton(): HTMLButtonElement {
 export function mapScreen(root: HTMLElement): void {
   const p = app.profile!;
   audio.music(app.menuTrack);
-  const tapko = h('button', { class: 'map-tapko', type: 'button', title: t('tapko.statsHint'), 'aria-label': t('progress.title'), onClick: () => openStats() },
+  const tapko = h('button', { class: 'map-tapko', type: 'button', tip: t('tapko.statsHint'), 'aria-label': t('progress.title'), onClick: () => openStats() },
     tapkoElement(p.companion, 'idle', 130));
   // The narrator's bubble on the map: why a level waits for more keys.
   const bubble = h('div', { class: 'bubble static map-bubble', role: 'status', 'aria-live': 'polite' });
@@ -82,9 +82,7 @@ export function mapScreen(root: HTMLElement): void {
   const lockBubble = (world: number) => {
     const lock = worldLock(p, world);
     if (!lock) return;
-    bubble.replaceChildren(h('p', {}, lock.kind === 'world'
-      ? t('map.lockWorld', { world: t(`worlds.${WORLDS[lock.prev]}`) })
-      : t('map.lockKeys', { n: lock.need, have: lock.have })),
+    bubble.replaceChildren(h('p', {}, lockText(p, world)),
     ...(lock.kind === 'keys' ? [h('div', { class: 'bubble-actions' }, button(t('map.practice'), () => openPracticeKeys(), 'btn small', 'practice'))] : []));
     bubble.hidden = false;
   };
@@ -95,7 +93,7 @@ export function mapScreen(root: HTMLElement): void {
   const play = button(t('map.continue'), start, 'btn primary big', 'play');
   const welcome = welcomeCard(p, start);
   const nextName = next ? levelTitleWords(next.world, next.index) : t('map.practice');
-  play.title = nextName;
+  play.dataset.tip = nextName;
   play.setAttribute('aria-label', `${t('map.continue')}: ${nextName}`);
   root.append(h('div', { class: 'screen map-screen' },
     h('header', { class: 'map-top' },
@@ -119,6 +117,15 @@ export function mapScreen(root: HTMLElement): void {
   (root.querySelector('.btn.primary') as HTMLElement | null)?.focus();
   // One greeting at a time: the install offer waits for a map without the welcome.
   if (p.id !== SUPER_ID && !welcome) offerInstall(p.companion);
+}
+
+/** What a closed world still needs; empty for an open one. */
+function lockText(p: Profile, world: number): string {
+  const lock = worldLock(p, world);
+  if (!lock) return '';
+  return lock.kind === 'world'
+    ? t('map.lockWorld', { world: t(`worlds.${WORLDS[lock.prev]}`) })
+    : t('map.lockKeys', { n: lock.need, have: lock.have });
 }
 
 /**
@@ -145,6 +152,7 @@ function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, keysB
       return b;
     });
     const tier = badgeTier(p, wi);
+    const lock = open ? '' : lockText(p, wi);
     return h('div', { class: `island ${open ? '' : 'locked'} island-${w}` },
       h('div', { class: 'island-art', ...(open ? {} : {
         onClick: () => lockBubble(wi),
@@ -152,7 +160,8 @@ function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, keysB
         role: 'button',
         tabindex: '0',
         'aria-label': t(`worlds.${w}`),
-      }) }, img ? h('img', { src: img, alt: '' }) : h('div', { class: 'island-fallback' }), open ? null : h('span', { class: 'lock' }, icon('lock')),
+        tip: lock || null,
+      }) }, img ? h('img', { src: img, alt: '' }) : h('div', { class: 'island-fallback' }), open ? null : h('span', { class: 'lock', tip: lock || null }, icon('lock')),
         tier ? badge(wi, tier, true) : null),
       h('h3', {}, `${wi + 1}. ${t(`worlds.${w}`)}`),
       h('div', { class: 'level-row' }, ...levels));

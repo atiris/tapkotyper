@@ -22,6 +22,8 @@
 - **Playful character**: clicking the big character (or Enter or Space on it) makes it jump
   or pull another face, at random; also while locked. With reduced motion it only changes
   its face. The face is never stored.
+- **Locks explain themselves**: hovering or focusing a locked character or item shows in
+  the tooltip what is still missing (stars for a character, the unlock rule for an item).
 - **Random outfit**: a button next to "Remove accessories" dresses the character at random:
   for each body area half the time nothing, otherwise one of the owned items of that area.
   The kind and the nickname stay.
@@ -32,3 +34,5 @@
 - A visible countdown with a smile and then numbers a young child can read avoids a sudden
   lock; the blinking warns before the end.
 - Clicking the character and a random outfit are quick fun inside the earned time.
+- A child who sees a lock wants to know what to do, not only that it is closed; the name on
+  the tile makes the goal concrete.

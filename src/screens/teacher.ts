@@ -250,7 +250,7 @@ export function teacherScreen(root: HTMLElement, params: { code?: string; child?
         trash.setAttribute('aria-label', t('teacher.remove'));
         return h('tr', { class: r.intact ? '' : 'broken' },
           h('td', {}, box),
-          h('td', {}, h('button', { type: 'button', class: 'child-link', onClick: () => openChild(r) }, r.name), r.intact ? null : h('span', { class: 'error', title: t('teacher.notIntact') }, ' !')),
+          h('td', {}, h('button', { type: 'button', class: 'child-link', onClick: () => openChild(r) }, r.name), r.intact ? null : h('span', { class: 'error', tip: t('teacher.notIntact') }, ' !')),
           h('td', {}, r.date),
           h('td', {}, String(r.minutes)),
           h('td', {}, `${r.accuracy} %`),

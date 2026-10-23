@@ -288,7 +288,14 @@
     "silver": "strieborný",
     "gold": "zlatý",
     "aria": "Odznak sveta {world}: {tier}",
-    "locked": "Prejdi svet {n}"
+    "locked": "Prejdi svet {n}",
+    "tip": {
+      "bronze": "Bronzový odznak za svet {world}: svet je prejdený.",
+      "silver": "Strieborný odznak za svet {world}: aspoň {silver} ★ v tomto svete.",
+      "gold": "Zlatý odznak za svet {world}: všetkých {gold} ★ v tomto svete.",
+      "toGold": "Zlatý odznak: všetkých {gold} ★ v tomto svete (máš {have}).",
+      "locked": "Prejdi svet {world} a získaš odznak."
+    }
   },
   "surprise": {
     "ask": "Tajomstvo:",
@@ -848,7 +855,7 @@
     "title": "Ja a môj šatník",
     "buddy": "Moja postavička",
     "name": "Prezývka",
-    "kindLocked": "ešte {n} ★",
+    "kindNeed": "Ešte {n} ★ a {name} bude s tebou",
     "wardrobe": "Šatník",
     "count": "{n} z {total} vecí",
     "clear": "Odstrániť doplnky",
@@ -1180,7 +1187,7 @@
     "privacyTitle": "Náš sľub rodičom",
     "privacy": [
       "Bez reklám, nákupov, prihlasovania či cookies. Tento web nemá na pozadí vlastný server.",
-      "Všetky pokroky sú uložené len v tomto prehliadači, ale môžete ich exportovať do súboru.",
+      "Všetky pokroky sú uložené **len v tomto prehliadači**, ale môžete ich exportovať do súboru.",
       "Po prvej návšteve funguje aj bez internetu.",
       "Dá sa nainštalovať ako desktopová webová aplikácia: otvorí sa vo vlastnom okne a netreba na to spúšťať celý prehliadač."
     ],
@@ -1215,12 +1222,12 @@
     "type": [
       "TapkoTyper potrebuje skutočnú klávesnicu. K mobilu alebo tabletu ju pripoj cez Bluetooth alebo USB.",
       "Seď rovno, chodidlá maj na zemi a ramená uvoľnené.",
-      "Nahmataj výstupky na F a J. Tam bývajú tvoje ukazováky.",
+      "Nahmataj **výstupky na F a J**. Tam bývajú tvoje ukazováky.",
       "Ostatné prsty si ľahnú vedľa nich na stredný rad: A S D F a J K L.",
       "Palce oddychujú nad medzerníkom.",
       "Každý prst má svoje klávesy. Po každom písmenku sa vráti domov.",
-      "Pozeraj na obrazovku, nie na ruky. Klávesnica dole ti ukáže, ktorý prst ide.",
-      "Najprv presne, potom rýchlo. Rýchlosť príde sama.",
+      "Pozeraj na **obrazovku, nie na ruky**. Klávesnica dole ti ukáže, ktorý prst ide.",
+      "**Najprv presne**, potom rýchlo. Rýchlosť príde sama.",
       "Po chvíľke hrania si oddýchni: vstaň, natiahni sa a napi sa vody."
     ],
     "mapTitle": "Tlačidlá na mape",
@@ -1232,8 +1239,8 @@
       "fullscreen": "Hra na celú obrazovku a zase späť.",
       "help": "Táto pomoc.",
       "timer": "Hodiny v šatníku ukazujú, koľko času ti ostáva. Kým je času dosť, usmievajú sa, potom v nich je číslo, ktoré každých 10 sekúnd klesne o jedna. Keď blikajú, čas sa končí. Čas v šatníku získaš cvičením.",
-      "pause": "Pauza. Rovnako ju zapne aj kláves Esc.",
-      "paw": "Labka ti ukazuje, či máš pomoc pripravenú: každé slovo bez chyby zaplní kúsok kruhu, po {n} slovách je labka nabitá. Keď to nejde, stlač Enter a labka napíše za teba {words} slová.",
+      "pause": "Pauza. Rovnako ju zapne aj **kláves Esc**.",
+      "paw": "Labka ti ukazuje, či máš pomoc pripravenú: každé slovo bez chyby zaplní kúsok kruhu, po {n} slovách je labka nabitá. Keď to nejde, stlač **Enter** a labka napíše za teba {words} slová.",
       "ring": "Krúžok s číslom ukazuje, ktorá úroveň sveta je táto. Zelené kúsky sú hotové úrovne, oranžový je táto, prázdne ťa ešte čakajú. Pavučina je veľká výzva na konci sveta.",
       "progress": "Pásik ukazuje, koľko z úrovne už máš za sebou.",
       "gauge": "Zelený kruh ukazuje tvoj rytmus. Keď píšeš plynulo, naplní sa.",
@@ -1261,7 +1268,7 @@
       "V každom riadku príbehu sú jeho svety: hotové sú farebné, ostatné sivé, a hviezdičky z toho príbehu.",
       "Môj postup má tri karty: Postup, Klávesy a Cvičenia.",
       "Klávesy ukazujú, ktoré ti idú a ktoré si ešte precvičiť. Odtiaľ hneď spustíš cvičenie.",
-      "QR kód ukáže tvoj postup alebo cvičenie učiteľovi či rodičovi, stačí ho odfotiť."
+      "**QR kód** ukáže tvoj postup alebo cvičenie učiteľovi či rodičovi, stačí ho odfotiť."
     ],
     "moreTitle": "Záchranná misia a odznak",
     "more": [
@@ -1272,15 +1279,15 @@
     "play": [
       "Napíš slovo, ktoré je na predmete. Potom ti uvoľní cestu.",
       "Keď ti slovo ujde, nič zlé sa nestane. Príde ďalšie.",
-      "Hviezdičky dostaneš za presnosť: čím menej chýb, tým viac hviezdičiek.",
+      "Hviezdičky dostaneš za **presnosť**: čím menej chýb, tým viac hviezdičiek.",
       "Keď píšeš dobre, prídu nové písmenká.",
-      "Esc hru zastaví a ďalší Esc ju pustí ďalej."
+      "**Esc** hru zastaví a ďalší Esc ju pustí ďalej."
     ],
     "journeyTitle": "Svety, úrovne a hviezdičky",
     "journey": [
       "Hra má príbehy. Každý príbeh má svety a každý svet má niekoľko úrovní.",
       "Úrovne hráš po poradí. Na konci sveta ťa čaká veľká výzva.",
-      "Za každú úroveň dostaneš až tri hviezdičky. Čím menej chýb, tým viac hviezdičiek.",
+      "Za každú úroveň dostaneš až **tri hviezdičky**. Čím menej chýb, tým viac hviezdičiek.",
       "Úroveň môžeš hrať znova, keď chceš viac hviezdičiek.",
       "Nové písmenká prídu, keď ti tie staré idú dobre. Niektoré úrovne a príbehy sa otvoria, až keď vieš dosť písmeniek.",
       "Keď ti chýba písmenko, precvič ho vo Vlastnom cvičení."
@@ -1289,9 +1296,9 @@
     "task": [
       "Učiteľ ti môže poslať úlohu ako odkaz. Otvor ho a vyber, kto ju bude robiť.",
       "Na mape uvidíš Úlohu na dnes. Píš, kým neuplynie čas.",
-      "Keď je hotová, stlač Odovzdať a pošli učiteľovi odkaz s výsledkom."
+      "Keď je hotová, stlač Odovzdať a pošli učiteľovi **odkaz s výsledkom**."
     ],
-    "settingsIntro": "Nastavenia sú pre rodičov. Otvoria sa ozubeným kolieskom na mape. Kým ich nezamknete heslom, otvorí ich jedna otázka.",
+    "settingsIntro": "Nastavenia sú pre rodičov. Otvoria sa ozubeným kolieskom na mape. Kým ich **nezamknete heslom**, otvorí ich jedna otázka.",
     "settings": {
       "settings": [
         "Dieťa: meno, postavička a prezývka, jazyk a rozloženie klávesnice. Rozloženie vyberte podľa skutočnej klávesnice, sprievodca prstov sa podľa neho riadi.",
@@ -1326,8 +1333,8 @@
         "Kartu s pokrokom si môžete vytlačiť."
       ],
       "data": [
-        "Všetko je uložené len v tomto prehliadači. Keď sa vymažú údaje prehliadača alebo sa pokazí počítač, pokrok sa stratí, ak nemáte zálohu.",
-        "Preto občas exportujte profil do súboru. Import ho načíta späť alebo na inom zariadení.",
+        "Všetko je uložené **len v tomto prehliadači**. Keď sa vymažú údaje prehliadača alebo sa pokazí počítač, pokrok sa stratí, ak nemáte zálohu.",
+        "Preto občas **exportujte profil** do súboru. Import ho načíta späť alebo na inom zariadení.",
         "Preniesť na iný počítač: celý profil je v odkaze. Hosťovský profil sa zabudne po zatvorení karty."
       ]
     }
@@ -1602,7 +1609,7 @@
   },
   "install": {
     "title": "Inštalácia na plochu",
-    "text": "TapkoTyper si môžeš nainštalovať ako webovú aplikáciu. Otvorí sa vo vlastnom okne, nemusíš spúšťať celý prehliadač, keď chceš chvíľu písať.",
+    "text": "TapkoTyper si môžeš nainštalovať ako webovú aplikáciu. Je to takmer okamžité, na ploche budeš mať ikonu na rýchle spustenie. TapkoTyper sa ti otvorí vo vlastnom okne a bude spoľahlivo fungovať aj bez internetu. Nemusíš spúšťať celý prehliadač, keď chceš chvíľu písať.",
     "button": "Nainštalovať",
     "later": "Nie teraz"
   },

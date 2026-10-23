@@ -2,7 +2,7 @@ import { app, go, routeOf } from '../app/app';
 import { t, tList } from '../i18n/i18n';
 import { captureKeys } from '../game/cards';
 import { PAW_MAX, PAW_STREAK, PAW_WORDS } from '../game/paw';
-import { type Child, ICONS, closeButton, h, icon } from '../ui/dom';
+import { type Child, ICONS, button, h, icon, richText } from '../ui/dom';
 import { levelRing, pawRing, rhythmPic, roundPic, timerPic } from '../ui/hud';
 import { tabBar } from '../ui/tabs';
 
@@ -16,7 +16,7 @@ const COUNTER = 'https://tapkotyper.goatcounter.com';
 
 /** A top icon as the child sees it (a picture, not a working button) with its one line. */
 function iconLine(pic: HTMLElement, text: string): HTMLElement {
-  return h('li', {}, h('span', { class: 'help-pic' }, pic), h('span', {}, text));
+  return h('li', {}, h('span', { class: 'help-pic' }, pic), h('span', {}, ...richText(text)));
 }
 
 function round(name: keyof typeof ICONS): HTMLElement {
@@ -59,7 +59,7 @@ function section(title: string, ...kids: Child[]): HTMLElement {
   return h('section', { class: 'help-section' }, h('h2', {}, title), ...kids);
 }
 
-const list = (key: string) => h('ul', {}, ...tList(key).map((l) => h('li', {}, l)));
+const list = (key: string) => h('ul', {}, ...tList(key).map((l) => h('li', {}, ...richText(l))));
 
 /** Fills `line` with the visit count the public counter reports; stays empty when offline. */
 async function showVisits(line: HTMLElement): Promise<void> {
@@ -76,7 +76,7 @@ function aboutTab(): HTMLElement[] {
   const visits = h('p', { class: 'hint' });
   void showVisits(visits);
   return [
-    h('p', {}, t('about.intro')),
+    h('p', {}, ...richText(t('about.intro'))),
     section(t('about.privacyTitle'), list('about.privacy')),
     section(t('about.dataTitle'), list('about.data'), visits),
     section(t('about.howTitle'), list('about.how')),
@@ -105,27 +105,30 @@ function tabContent(tab: HelpTab): HTMLElement[] {
       section(t('help.taskTitle'), list('help.task')),
     ];
     case 'settings': return [
-      h('p', {}, t('help.settingsIntro')),
+      h('p', {}, ...richText(t('help.settingsIntro'))),
       ...SETTINGS_TABS.map((s) => section(t(`parent.tab.${s}`), list(`help.settings.${s}`))),
     ];
     case 'about': return aboutTab();
   }
 }
 
-/** The one help page: the buttons, how to type, how to progress, the settings and about the game, in tabs. */
-function helpPage(tab: HelpTab, onBack: () => void, onTab: (tab: HelpTab) => void = () => {}): HTMLElement {
+/**
+ * The one help page: the buttons, how to type, how to progress, the settings and about the
+ * game, in tabs; the bar with Back like the settings' bar, then the tabs in a narrower column.
+ */
+function helpPage(cls: string, tab: HelpTab, onBack: () => void, onTab: (tab: HelpTab) => void = () => {}): HTMLElement {
   const body = h('div', { class: 'tab-panel prose' });
   const nav = tabBar(TABS.map((x) => [x, t(`help.tab.${x}`)] as const), tab, (x) => {
     body.replaceChildren(...tabContent(x));
     body.scrollTop = 0;
     onTab(x);
   });
-  return h('article', { class: 'help-page' },
-    h('div', { class: 'bar' }, h('h1', {}, t('help.title')), closeButton(onBack)),
-    nav, body);
+  return h('div', { class: `help-page ${cls}` },
+    h('header', { class: 'bar' }, button(t('common.back'), onBack, 'btn ghost small', 'back'), h('h1', {}, t('help.title'))),
+    h('div', { class: 'help-column' }, nav, body));
 }
 
-/** Escape goes back, like the close button; a dialog over the help closes first. */
+/** Escape goes back, like the Back button; a dialog over the help closes first. */
 function escapeBack(el: HTMLElement, onBack: () => void): () => void {
   return captureKeys(el, (e) => {
     if (e.key !== 'Escape' || document.querySelector('.modal-back')) return;
@@ -135,18 +138,21 @@ function escapeBack(el: HTMLElement, onBack: () => void): () => void {
   });
 }
 
-/** Help as its own screen: from the map (on the buttons) or from the start page (on the about tab). */
+/**
+ * Help as its own screen: Back returns where it was opened from (settings without asking
+ * again), else to the map, or to the start page before a player is chosen.
+ */
 export function helpScreen(root: HTMLElement, params: { tab?: string }): () => void {
-  const back = () => go(app.profile ? 'map' : 'start');
+  const from = app.helpReturn;
+  const back = () => (from ? go(from.name, from.name === 'parent' ? { ...from.params, granted: true } : from.params) : go(app.profile ? 'map' : 'start'));
   const tab = TABS.find((x) => x === params.tab) ?? (app.profile ? 'ui' : 'about');
-  const screen = h('div', { class: 'screen help-screen' },
-    helpPage(tab, back, (x) => history.replaceState(null, '', routeOf('help', { tab: x }))));
+  const screen = helpPage('screen help-screen', tab, back, (x) => history.replaceState(null, '', routeOf('help', { tab: x })));
   root.append(screen);
-  screen.querySelector<HTMLElement>('.modal-x')!.focus();
+  screen.querySelector<HTMLElement>('.bar .btn')!.focus();
   return escapeBack(screen, back);
 }
 
-/** Help over a paused level, on how to type; close (or Escape) returns to the paused level. */
+/** Help over a paused level, on how to type; Back (or Escape) returns to the paused level. */
 export function openHelp(host: HTMLElement, onBack: () => void): void {
   const overlay = h('div', { class: 'help-overlay', role: 'dialog', 'aria-label': t('help.title') });
   const close = () => {
@@ -154,8 +160,8 @@ export function openHelp(host: HTMLElement, onBack: () => void): void {
     overlay.remove();
     onBack();
   };
-  overlay.append(helpPage('typing', close));
+  overlay.append(helpPage('', 'typing', close));
   const stop = escapeBack(overlay, close);
   host.append(overlay);
-  overlay.querySelector<HTMLElement>('.modal-x')!.focus();
+  overlay.querySelector<HTMLElement>('.bar .btn')!.focus();
 }

@@ -171,19 +171,44 @@ No profile schema change, no server, no DB.
   - `offline.md` or the install section: three days.
   - `wardrobe.md`: names on tiles, lock tips.
 
+## Progress notes
+- Locked character and item tiles use `aria-disabled` instead of `disabled` (clicks ignored):
+  a disabled button gets no hover or focus, so its lock tooltip could never show. The
+  time-locked wardrobe keeps `disabled`.
+- Badge keys are `badge.tip.{bronze,silver,gold,toGold,locked}`: `badge.tip.gold` is the gold
+  tier's own line, `toGold` the line added short of gold. `badge()` reads the stars from
+  `app.profile` (every caller shows the current player).
+- Tab by origin: only `parent -> settings`. "My progress" is a dialog over the map, its corner
+  "?" is covered, so there is no `stats -> progress` case.
+- The parent gate moved to `src/screens/parent-gate.ts` (small, static), so the dialog never
+  waits for the settings chunk. A settings chunk that fails to load (an update replaced it,
+  the likely cause of the blank page) reloads the page after the question.
+- The double click: the second click landed on the new dialog's backdrop and cancelled it.
+  A backdrop click within 500 ms of opening is now ignored. Reproduced in e2e with a 1.5 s
+  delayed chunk (`parent.spec.ts`).
+- Pure parts of the install counting live in `src/ui/install-days.ts` (vitest runs without
+  a DOM, `install.ts` listens on `window` at load).
+- `richText` lives in `ui/dom.ts`; the help bold marks also show in the level help card.
+- sk `wardrobe.kindNeed` is "Ešte {n} ★ a {name} bude s tebou", not "... je tvoj": the kinds
+  have all three genders (Líška, Mačiatko, Levík), "je tvoj" was wrong for most of them.
+- The playwright MCP browser was held by another session; the app was driven with an own
+  Playwright script (same checks, both widths), see Done.
+- Help over a paused level got the same Back bar (no close X); the help screen has no corner
+  controls, as before.
+
 ## Steps
-- [ ] Tooltip module with unit test, `h()` `tip` prop, CSS, install in `main.ts`.
-- [ ] Replace every `title` (and chart `<title>`) with tips; `e2e/tooltip.spec.ts`.
-- [ ] Character tiles with names, pale locked look, no wrap; lock tips on characters, islands
+- [x] Tooltip module with unit test, `h()` `tip` prop, CSS, install in `main.ts`.
+- [x] Replace every `title` (and chart `<title>`) with tips; `e2e/tooltip.spec.ts`.
+- [x] Character tiles with names, pale locked look, no wrap; lock tips on characters, islands
       and items; badge tips with the gold rule; i18n sk + en.
-- [ ] Sticky `.screen > .bar`; help frame, narrow column, page scrolling, help return and tab
+- [x] Sticky `.screen > .bar`; help frame, narrow column, page scrolling, help return and tab
       by origin; bold markers and `richText` with the vitest check.
-- [ ] Install day counting with unit test and the new text.
-- [ ] Parent question: reproduce with the MCP, gate before import, loading look, re-entry
+- [x] Install day counting with unit test and the new text.
+- [x] Parent question: reproduce with the MCP, gate before import, loading look, re-entry
       guard, dialogs resolved on removal; e2e with the slow chunk.
-- [ ] Specs as listed.
-- [ ] `npm run build`, `npm test`, `npx playwright test` pass.
-- [ ] Drive the app with the playwright MCP at 1280 x 800 and 390 x 844:
+- [x] Specs as listed.
+- [x] `npm run build`, `npm test`, `npx playwright test` pass.
+- [x] Drive the app with the playwright MCP at 1280 x 800 and 390 x 844:
   - Hover a round button and see the tip only after the delay; move to the next one and see
     it at once.
   - Wardrobe: names on all tiles, nothing on two lines, the lock tip on Levík with the star
@@ -194,3 +219,21 @@ No profile schema change, no server, no DB.
   - Bold phrases readable in help.
   - Cold load into settings shows the question.
   - Console clean.
+
+## Done - 2026-10-23
+- Shipped: one app tooltip (`ui/tooltip.ts`, timing unit-tested) replacing every native
+  `title` and chart `<title>`; names on character tiles, paler locked look, lock tips on
+  characters, items and islands; badge tips with the gold rule; sticky page bar; help as a
+  page with Back, a 760 px column, return to its origin (settings without the question, on
+  the settings tab) and bold key points (`richText`, vitest check); install offer after three
+  days of use with the new text; parent question asked before the settings chunk loads, a
+  loading look under it, re-entry guard, dialogs resolved when a screen replaces them, and a
+  double click no longer cancels it. Specs updated.
+- Verified: build, 220 unit tests, 51 e2e (new `tooltip.spec.ts`, wardrobe tiles, help from
+  settings, slow-chunk double click). Driven at 1280 x 800 and 390 x 844 with an own
+  Playwright script (the MCP browser was held by another session): tip only after the delay
+  and at once for the neighbour, inside the window; island, badge and Levík-style lock tips;
+  names on one line; bar stays on wardrobe, settings and help; help from settings opens the
+  Nastavenia tab and Back returns without the question; bold phrases; settings address on a
+  fresh load shows the question; console clean apart from GoatCounter's localhost notice.
+- Left out: nothing.

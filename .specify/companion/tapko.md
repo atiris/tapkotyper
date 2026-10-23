@@ -33,7 +33,9 @@
   at random when the player is created: each next kind costs 18 to 26 stars more than the
   previous one, so the last costs 144 to 208 of the 225 possible stars; the starting kind
   is free. The screen's header shows the stars the child has now, so the missing stars
-  are easy to compare. Locked kinds show a lock and how many stars are missing; a new
+  are easy to compare. Every tile shows the kind's name on one line; a locked kind is paler,
+  with a lock, and its tooltip says how many stars are missing ("62 more ★ and Lion is
+  yours"); a new
   character is announced on the level results. Accessories stay on when the kind changes.
   A back item can have a front part (a cape's clasp, a backpack's straps) that lies over
   the body while the item itself stays behind.

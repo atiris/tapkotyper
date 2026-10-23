@@ -80,3 +80,20 @@ test('with one profile the switch button is hidden', async ({ page }) => {
   await expect(page.locator('.parent-screen')).toBeVisible();
   await expect(page.locator('.switch-btn')).toHaveCount(0);
 });
+
+test('the parent question shows once on a double click, also while the settings still load', async ({ page }) => {
+  await createProfile(page, 'Ema');
+  await page.route('**/assets/parent-*.js', async (route) => {
+    await new Promise((r) => setTimeout(r, 1500));
+    await route.continue();
+  });
+  await page.locator('.map-top .round-btn').first().dblclick();
+  const dialog = page.locator('.confirm');
+  await expect(dialog).toHaveCount(1);
+  // The page under the question is the loading look, never blank.
+  await expect(page.locator('#app .boot')).toBeVisible();
+  await page.waitForTimeout(600);
+  await expect(dialog).toHaveCount(1);
+  await dialog.getByRole('button', { name: 'Yes, open' }).click();
+  await expect(page.locator('.parent-screen')).toBeVisible();
+});

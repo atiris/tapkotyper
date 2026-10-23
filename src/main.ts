@@ -1,10 +1,12 @@
 import './styles.css';
-import { app, go, openRoute, registerScreen, selectProfile, useLanguage } from './app/app';
+import { app, go, openRoute, registerScreen, screenVisit, selectProfile, useLanguage } from './app/app';
 import { loadManifest } from './gfx/assets';
 import { SUPER_ID } from './storage/schema';
 import { detectLanguage } from './i18n/i18n';
 import { watchAutoFullscreen } from './ui/chrome';
 import { noteVisit } from './ui/install';
+import { installTooltips } from './ui/tooltip';
+import { parentAccess } from './screens/parent-gate';
 import { breakScreen } from './screens/break';
 import { friendsScreen } from './screens/friends';
 import { helpScreen } from './screens/help';
@@ -31,8 +33,28 @@ registerScreen('moveImport', moveImportScreen);
 registerScreen('map', needsProfile(mapScreen));
 registerScreen('level', needsProfile(levelScreen));
 registerScreen('story', needsProfile(storyScreen));
-// The settings screen is the biggest and rarely opened: it loads on first use.
-registerScreen('parent', needsProfile((root, params) => void import('./screens/parent').then((m) => m.parentScreen(root, params))));
+// The settings screen is the biggest and rarely opened: it loads on first use, while the
+// parent question is asked; until then the page shows the loading look.
+registerScreen('parent', needsProfile((root, params) => {
+  const visit = screenVisit();
+  root.append(Object.assign(document.createElement('div'), { className: 'boot', textContent: 'TapkoTyper' }));
+  // A chunk that will not load (an update replaced it) comes anew with the page, after the question.
+  const page = import('./screens/parent').catch(() => null);
+  void (async () => {
+    if (!params.granted) {
+      app.asking = 'parent';
+      const yes = await parentAccess();
+      if (visit !== screenVisit()) return;
+      app.asking = null;
+      if (!yes) return go('map');
+    }
+    const m = await page;
+    if (visit !== screenVisit()) return;
+    if (!m) return location.reload();
+    root.replaceChildren();
+    m.parentScreen(root, params);
+  })();
+}));
 registerScreen('wardrobe', needsProfile(wardrobeScreen));
 registerScreen('friends', needsProfile(friendsScreen));
 registerScreen('break', needsProfile(breakScreen));
@@ -43,6 +65,7 @@ async function boot(): Promise<void> {
   const lang = app.store.data.language ?? detectLanguage();
   await Promise.all([loadManifest(), useLanguage(lang)]);
   document.body.classList.remove('booting');
+  installTooltips();
   window.addEventListener('popstate', () => void openRoute(location.hash));
   watchAutoFullscreen();
   noteVisit();

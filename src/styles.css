@@ -19,6 +19,8 @@
   --ink-soft: #6b5a70;
   --paper: #fffdf7;
   --paper-2: #fff6e6;
+  /* The sticky top bar of a page: its padding and the 52 px row of round buttons. */
+  --bar-h: calc(1.5rem + 52px);
   --line: rgba(90, 61, 43, 0.18);
   --brand: #ff8a3d;
   --brand-dark: #e56a1b;
@@ -114,7 +116,7 @@ p { line-height: 1.5; }
 .two { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
 /* ---------- Screens ---------- */
-.screen { min-height: 100vh; padding: 1.2rem clamp(1rem, 3vw, 2.5rem) 2rem; position: relative; }
+.screen { --gut: clamp(1rem, 3vw, 2.5rem); min-height: 100vh; padding: 1.2rem var(--gut) 2rem; position: relative; }
 /* The corner controls of every screen but a level: one fixed offset from the window's edge. */
 .top-right { position: fixed; top: 1rem; right: 1rem; z-index: 4; }
 .corner-row { display: flex; gap: 0.6rem; align-items: center; }
@@ -138,9 +140,17 @@ p { line-height: 1.5; }
 .menu-item .round-btn { width: 44px; height: 44px; pointer-events: none; }
 .panel { background: var(--paper); border-radius: var(--radius); box-shadow: var(--shadow); padding: clamp(1rem, 3vw, 2rem); max-width: 960px; margin: 0 auto; }
 .bar { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
-/* A page's header leaves the corner controls their room: four round buttons and the super star. */
-.screen > .bar { min-height: 52px; padding-right: calc(5 * 52px + 4 * 0.6rem); }
-@media (max-width: 599px) { .screen > .bar { padding-right: calc(52px + 0.6rem); } }
+/*
+ * A page's header stays at the top while the page scrolls, so Back is always at hand. It spans
+ * the window, its row lines up with the fixed corner controls (1rem from the top), and it leaves
+ * them their room: four round buttons and the super star.
+ */
+.screen > .bar {
+  position: sticky; top: 0; z-index: 3; min-height: var(--bar-h);
+  margin: -1.2rem calc(-1 * var(--gut)) 0.7rem; padding: 1rem calc(2rem + 5 * 52px + 4 * 0.6rem) 0.5rem var(--gut);
+  background: color-mix(in srgb, var(--paper) 92%, transparent); backdrop-filter: blur(6px);
+}
+@media (max-width: 599px) { .screen > .bar { padding-right: calc(2rem + 52px); } }
 .bar h1 { flex: 1; margin: 0; font-size: 1.6rem; }
 /* Back buttons in top bars match the round 48 px buttons beside them. */
 .bar > .btn, .map-top > .btn { height: 48px; min-height: 48px; }
@@ -643,10 +653,14 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .buddy input { max-width: 20rem; }
 .buddy .kind-picker { margin-top: var(--sp-2); grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); }
 .kind { position: relative; }
-.kind.locked { cursor: default; color: var(--ink-soft); }
-.kind.locked .tapko-stack { filter: grayscale(1) opacity(0.45); }
+.kind.locked, .item.locked { cursor: default; }
+.kind.locked { color: var(--ink-soft); }
+.kind.locked .tapko-stack { opacity: 0.55; }
+/* The character's name, on one line however narrow the tile. */
+.kind-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.kind { min-width: 0; }
 .kind .lock { top: 18px; left: 50%; transform: translateX(-50%); width: 40px; height: 40px; }
-.wardrobe-preview { background: radial-gradient(circle at 50% 60%, #fff, rgba(255, 255, 255, 0.4) 70%); border-radius: 30px; display: flex; flex-direction: column; align-items: center; padding: 1rem; position: sticky; top: 1rem; align-self: start; }
+.wardrobe-preview { background: radial-gradient(circle at 50% 60%, #fff, rgba(255, 255, 255, 0.4) 70%); border-radius: 30px; display: flex; flex-direction: column; align-items: center; padding: 1rem; position: sticky; top: calc(var(--bar-h) + 1rem); align-self: start; }
 .wardrobe-grid { display: grid; gap: 1rem; align-content: start; }
 .wardrobe-tapko { border: 0; padding: 0; background: none; border-radius: 30px; cursor: pointer; }
 .wardrobe-tapko:focus-visible { outline: 3px solid var(--brand); outline-offset: 4px; }
@@ -772,12 +786,13 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-dark); }
 .prose { line-height: 1.6; }
 .prose li { margin: 0.3em 0; }
 
-/* Help: the title with the close button, the tabs, and the panel that scrolls under them. */
-.help-screen { height: 100vh; display: flex; flex-direction: column; padding-bottom: 1rem; }
-.help-page { width: 100%; max-width: 820px; margin: 0 auto; flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; font-size: 1.1rem; }
-.help-page > .bar { background: var(--paper); border-radius: var(--radius); box-shadow: var(--shadow); padding: 0.4rem 0.4rem 0.4rem 1.2rem; margin-bottom: 0.6rem; }
-.help-page .modal-x { position: static; flex: none; }
-.help-page > .tab-panel { min-height: 0; overflow-y: auto; }
+/* Help: the bar of every page, then the tabs in a narrower column; the page scrolls as a whole. */
+.help-column { width: 100%; max-width: 760px; margin: 0 auto; font-size: 1.1rem; }
+/* Over a paused level: the bar as a card and the panel scrolling under it. */
+.help-overlay .help-page { width: 100%; max-width: 820px; margin: 0 auto; flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+.help-overlay .help-page > .bar { background: var(--paper); border-radius: var(--radius); box-shadow: var(--shadow); padding: 0.4rem 1.2rem 0.4rem 0.4rem; margin-bottom: 0.6rem; }
+.help-overlay .help-column { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+.help-overlay .help-column > .tab-panel { min-height: 0; overflow-y: auto; }
 .help-section h2 { color: var(--brand-dark); margin: 1.2rem 0 0.4rem; }
 .help-section:first-child h2 { margin-top: 0; }
 .help-icons { list-style: none; padding: 0; display: grid; gap: 0.6rem; }
@@ -817,6 +832,20 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-dark); }
   .hand { display: none; }
   .kb-key { height: 28px; }
 }
+
+/* The one tooltip: over the element (under it without room), with a small arrow; above dialogs. */
+.tip {
+  position: fixed; z-index: 200; left: 0; top: 0; max-width: 280px; padding: 0.45rem 0.75rem; border-radius: 10px;
+  background: var(--ink); color: #fff; font-size: 0.9rem; font-weight: 600; line-height: 1.35; pointer-events: none;
+  opacity: 0; visibility: hidden; transform: translateY(4px) scale(0.96); transform-origin: var(--arrow, 50%) 100%;
+  transition: opacity 140ms ease-out, transform 140ms ease-out, visibility 0s linear 140ms;
+}
+.tip::after { content: ''; position: absolute; left: var(--arrow, 50%); top: 100%; margin-left: -6px; border: 6px solid transparent; border-top-color: var(--ink); }
+.tip.below { transform: translateY(-4px) scale(0.96); transform-origin: var(--arrow, 50%) 0; }
+.tip.below::after { top: auto; bottom: 100%; border-top-color: transparent; border-bottom-color: var(--ink); }
+.tip.show { opacity: 1; visibility: visible; transform: none; transition: opacity 140ms ease-out, transform 140ms ease-out, visibility 0s; }
+body.reduce-motion .tip { transform: none; }
+@media (prefers-reduced-motion: reduce) { .tip { transform: none; } }
 
 /* Reduce motion */
 body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after { animation-duration: 0.001s !important; animation-iteration-count: 1 !important; transition-duration: 0.001s !important; }
@@ -860,7 +889,7 @@ body.reduce-motion .round-btn.timer.ending { --rb: #d9661f; --rb-ring: #ff8a3d; 
 
 /* ---------- Teacher: camera scan, groups, big code ---------- */
 .scan-start { align-items: center; margin: 0.6rem 0; }
-.scan-card { background: var(--paper-2); border-radius: 18px; padding: 16px; margin: 0.8rem 0; display: flex; flex-direction: column; gap: 16px; scroll-margin-top: 0; }
+.scan-card { background: var(--paper-2); border-radius: 18px; padding: 16px; margin: 0.8rem 0; display: flex; flex-direction: column; gap: 16px; scroll-margin-top: var(--bar-h); }
 .scan-card h2 { margin: 0; font-size: 1.05rem; }
 .scan-stage { display: flex; flex-direction: column; gap: 16px; }
 .scan-card .scan-title { font-size: 1.25rem; }
@@ -872,9 +901,9 @@ body.reduce-motion .round-btn.timer.ending { --rb: #d9661f; --rb-ring: #ff8a3d; 
 .scan-counts .hint { font-size: 0.82rem; }
 .scan-total { font-size: 1.35rem; font-weight: 700; }
 .scan-camera { align-self: flex-start; width: auto; }
-/* A phone: the heading, the preview and the done bar fill the screen (less the card's 16 px above and below), the list follows. */
+/* A phone: the heading, the preview and the done bar fill the screen under the sticky bar (less the card's 16 px above and below), the list follows. */
 @media (max-width: 699px) {
-  .scan-stage { height: calc(100dvh - 2 * 16px); }
+  .scan-stage { height: calc(100dvh - var(--bar-h) - 2 * 16px); }
   .scan-frame { flex: 1; min-height: 240px; }
   .scan-video { height: 100%; max-height: none; }
 }

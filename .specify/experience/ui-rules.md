@@ -14,15 +14,17 @@ One set of rules for where things sit and how they behave, so every screen feels
    button as its round picture and its label (a screen's own buttons too). The panel closes
    with Escape, a click outside or after an action. The start page's title **TapkoTyper**
    always fits on one line under the buttons, from 320 px up.
-2. **Leaving.** A page you navigated to (settings, teacher view, wardrobe, friends) closes with
-   "Späť" at the top left. A window laid over a screen (dialogs, the progress panel, help, the
+2. **Leaving.** A page you navigated to (settings, help, teacher view, wardrobe, friends) closes with
+   "Späť" at the top left, also help laid over a paused level. A window laid over a screen (dialogs, the progress panel, the
    new player form, level cards) closes with the round X at the top right, and with Escape. The
    only closing control at the bottom of a window is a normal action button (for example
    "Pokračovať"), never the one way out.
 3. **Scrolling.** A window scrolls inside itself: its header (title, X, tabs) stays in sight and
    the scroller is the game's own (thick, orange thumb, kept inside the rounded corners). A page
    scrolls the whole page. The two are never mixed: a window never makes the page behind it
-   scroll, and a page never hides its header in a scrolled box.
+   scroll, and a page never hides its header in a scrolled box. A page's top bar (Back and
+   the title) stays at the top while the page scrolls, on a slightly see-through paper band,
+   its row level with the corner controls.
 4. **Tabs.** Tabs look and behave the same everywhere (one component) and sit directly on
    top of the panel they switch, with no gap. A window with tabs is aligned to the top so
    that switching tabs changes only its lower edge, never its position.
@@ -43,6 +45,13 @@ One set of rules for where things sit and how they behave, so every screen feels
    the title a short explanation in normal, smaller text. A title is a name ("Automatická
    náročnosť"), not a sentence with a bracket. The same layout holds for every switch in
    the parent area, including the surprises form.
+11. **Tooltips.** One tooltip for the whole game replaces the browser's native one. It appears
+   after a short hover (about half a second) or on keyboard focus; right after one was seen
+   the next shows at once. It fades and grows in softly (only fades with reduced motion), sits
+   above its element (below without room), never leaves the window, and hides on leaving,
+   scroll, click and Escape. On touch a long press shows it; a tap never does. Every lock
+   says in its tooltip what is still missing, and a badge says its world, what its tier means
+   and, short of gold, what gold needs.
 
 ## Why
 - A child learns where "sound" or "close" is once, and then it is there everywhere; buttons
@@ -53,5 +62,7 @@ One set of rules for where things sit and how they behave, so every screen feels
   scrolls as a whole is what a browser user expects.
 - The ring in the bar reuses a picture the child already reads (the rhythm ring), and frees the
   space under the title. It is one of the bar's round buttons and looks exactly like them.
+- Native titles are slow, unstyled, missing on touch and keyboard, and look foreign in a
+  children's game; one tooltip gives one look. A bar that stays keeps the way back in sight.
 - Five round buttons and a language switch do not fit beside a title on a phone; folding them
   into one Menu keeps every control one tap away and the title whole.

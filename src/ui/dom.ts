@@ -10,11 +10,18 @@ export function h<K extends keyof HTMLElementTagNameMap>(tag: K, attrs: Attrs = 
     if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2).toLowerCase(), v as EventListener);
     else if (k === 'class') el.className = String(v);
     else if (k === 'html') el.innerHTML = String(v);
+    // The app's own tooltip (`ui/tooltip`), never the native `title`.
+    else if (k === 'tip') el.dataset.tip = String(v);
     else if (v === true) el.setAttribute(k, '');
     else el.setAttribute(k, String(v));
   }
   for (const c of children.flat()) if (c != null && c !== false) el.append(c instanceof Node ? c : String(c));
   return el;
+}
+
+/** Text with `**phrase**` marks: the marked phrases in bold, built as nodes, never as markup. */
+export function richText(text: string): Child[] {
+  return text.split('**').map((part, i) => (i % 2 ? h('strong', {}, part) : part)).filter((x) => x !== '');
 }
 
 /** Inline SVG icon (24x24, stroke based). */
@@ -93,9 +100,19 @@ export function button(label: string | Node, onClick: () => void, cls = 'btn', i
   return b;
 }
 
-/** The round close button of dialogs and the help page. */
+/** The round close button of dialogs and cards. */
 export function closeButton(onClick: () => void): HTMLButtonElement {
   return h('button', { class: 'modal-x', type: 'button', 'aria-label': 'close', onClick: () => onClick() }, icon('close'));
+}
+
+/** The close function of every open dialog, by its backdrop. */
+const closers = new WeakMap<Element, () => void>();
+/** A click on the backdrop this soon after opening is the rest of the click that opened it. */
+const BACKDROP_GRACE_MS = 500;
+
+/** Closes every open dialog as cancelled (a new screen), so no dialog's promise is left waiting. */
+export function closeModals(): void {
+  document.querySelectorAll('.modal-back').forEach((m) => (closers.get(m) ?? (() => m.remove()))());
 }
 
 /** Modal dialog; returns a close function. */
@@ -121,9 +138,11 @@ export function modal(content: HTMLElement, opts: { onClose?: () => void; cls?: 
     }
   };
   if (opts.closable !== false) {
+    const opened = Date.now();
     box.prepend(closeButton(close));
-    back.addEventListener('pointerdown', (e) => { if (e.target === back) close(); });
+    back.addEventListener('pointerdown', (e) => { if (e.target === back && Date.now() - opened > BACKDROP_GRACE_MS) close(); });
   }
+  closers.set(back, close);
   document.addEventListener('keydown', onKey, true);
   document.body.append(back);
   queueMicrotask(() => (box.querySelector('[autofocus]') as HTMLElement | null ?? box.querySelector('button:not(.modal-x), input, select') as HTMLElement | null)?.focus());

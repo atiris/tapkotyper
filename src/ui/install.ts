@@ -2,12 +2,10 @@ import { tapkoElement } from '../gfx/tapko';
 import { t } from '../i18n/i18n';
 import type { Companion } from '../storage/schema';
 import { button, h, modal } from './dom';
+import { type InstallState, OFFER_DAYS, localDay, readInstall, withVisit } from './install-days';
 
-/** Install state of this browser: when the game was first opened and whether the offer was shown. */
+/** Install state of this browser: the days the game was opened on and whether the offer was shown. */
 const KEY = 'tapkotyper:install';
-/** The offer is made only in the first days of use. */
-const OFFER_DAYS = 3;
-const DAY_MS = 86_400_000;
 
 interface BeforeInstallPrompt extends Event {
   prompt(): Promise<void>;
@@ -20,31 +18,27 @@ window.addEventListener('beforeinstallprompt', (e) => {
 });
 window.addEventListener('appinstalled', () => { deferred = null; });
 
-function load(): { firstSeen: number; offered: boolean } {
-  try {
-    const raw = JSON.parse(localStorage.getItem(KEY) ?? 'null');
-    if (typeof raw?.firstSeen === 'number') return { firstSeen: raw.firstSeen, offered: !!raw.offered };
-  } catch { /* blocked storage: no offer */ }
-  return { firstSeen: Date.now(), offered: false };
+function load(): InstallState {
+  try { return readInstall(localStorage.getItem(KEY)); } catch { return { days: [], offered: true }; /* blocked storage: no offer */ }
 }
 
-function save(state: { firstSeen: number; offered: boolean }): void {
+function save(state: InstallState): void {
   try { localStorage.setItem(KEY, JSON.stringify(state)); } catch { /* blocked storage: no offer next time */ }
 }
 
-/** Remembers the first visit; call once when the game starts. */
+/** Counts today as a day of use; call once when the game starts. */
 export function noteVisit(): void {
-  try { if (localStorage.getItem(KEY) === null) save({ firstSeen: Date.now(), offered: false }); } catch { /* blocked storage */ }
+  save(withVisit(load(), localDay(new Date())));
 }
 
 /**
- * Offers the installation as a desktop web app once, in the first days of use and only when
- * the browser can install it (and the game does not already run as one).
+ * Offers the installation as a desktop web app once, after the game was opened on three
+ * different days, and only when the browser can install it (and the game does not already run as one).
  */
 export function offerInstall(companion: Companion): void {
   const state = load();
   const standalone = matchMedia('(display-mode: standalone)').matches;
-  if (!deferred || standalone || state.offered || Date.now() - state.firstSeen > OFFER_DAYS * DAY_MS) return;
+  if (!deferred || standalone || state.offered || state.days.length < OFFER_DAYS) return;
   save({ ...state, offered: true });
   const event = deferred;
   let close = () => {};

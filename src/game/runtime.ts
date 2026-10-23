@@ -255,14 +255,14 @@ export class LevelRuntime {
       this.pawBtn,
       def.kind === 'practice' || def.index < 0 ? null : placeRing(def),
       h('b', { class: 'hud-title' }, title),
-      ...(def.kind === 'freetype' ? [] : [h('div', { class: 'progress', title: t('level.progress') }, this.progressFill), this.gauge.el]),
+      ...(def.kind === 'freetype' ? [] : [h('div', { class: 'progress', tip: t('level.progress') }, this.progressFill), this.gauge.el]),
       h('span', { class: 'hud-divider', 'aria-hidden': 'true' }),
       guideBtn, this.readBtn, ...globalButtons(helpBtn));
     const stageWrap = h('div', { class: 'stage-wrap' });
     this.tapko = tapkoElement(p.companion, 'idle', 150);
     // Tapko joins the stage when play starts; the preparation cards show him themselves.
     this.tapko.classList.add('level-tapko', 'waiting');
-    this.tapko.title = t('tapko.statsHint');
+    this.tapko.dataset.tip = t('tapko.statsHint');
     this.tapko.addEventListener('click', () => {
       if (this.finished || !this.started) return;
       this.pause();

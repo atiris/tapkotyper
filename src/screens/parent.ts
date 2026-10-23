@@ -1,6 +1,6 @@
 import { app, applyProfileLook, go, loadPlayerWords, saveProfile, selectProfile, useLanguage } from '../app/app';
 import { t } from '../i18n/i18n';
-import { LAYOUTS, LAYOUT_IDS, allKeys } from '../keyboard/layouts';
+import { ENTER, LAYOUTS, LAYOUT_IDS, allKeys } from '../keyboard/layouts';
 import { LEVELS, type LevelDef, STORIES, WORLDS, worldLevels } from '../game/levels';
 import { SURPRISES_MAX, SURPRISE_LEN, SURPRISE_N_MAX, TRIGGERS, newSurprise, restartSurprise, surpriseCount } from '../game/own-content';
 import { wordSource } from '../game/runtime';
@@ -492,7 +492,8 @@ function keysTab(p: Profile): HTMLElement {
   };
   kb.onKeyClick((code) => {
     const key = lessonKeyOf(allKeys(lay).find((d) => d.code === code)!);
-    if (key) toggle(key);
+    // Enter is no key words are built from.
+    if (key && key !== ENTER) toggle(key);
   });
   paint();
   const mode = select(s.activeKeysMode, [['auto', t('parent.keysAuto')], ['manual', t('parent.keysManual')]], (v) => { s.activeKeysMode = v; if (v === 'manual') s.manualKeys = [...picked]; saveProfile(); kb.el.classList.toggle('disabled', v === 'auto'); });

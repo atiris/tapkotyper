@@ -3,7 +3,6 @@
 Everything found outside the current task, one line each, most important first:
 `- [P1|P2|P3] <title> - <one line: what is wrong and where>`.
 Search before adding; an entry is worked only when it is named.
-- [P2] Backspace turns the automatic paw on for good - a child who presses Backspace to fix a typo toggles `pawAuto` in the profile (runtime.ts `onBackspace` -> `togglePawAuto`), so later levels and missions start the paw by itself
 - [P3] Native-speaker review of the Slovak word list - public/words/sk.json was generated; rare or odd word forms may remain
 - [P2] Regenerate flagged background art - five `regenerate:` strip rows in assets-src/PROMPTS.md with the new strip prompt (planet-near flat edge, robocity mid/near busy, workshop mid/near pink outline)
 - [P3] Shadowed magenta stays inside strip springs - scripts/assets.mjs keyOut keeps dark purple key pixels between coils of bg-junkyard-near (about 200 px)

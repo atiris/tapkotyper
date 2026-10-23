@@ -113,8 +113,6 @@ export interface Progress {
   growthSeconds: number;
   /** Paw helps charged by mistake-free streaks (the paw types a few words). */
   pawHelp: number;
-  /** The child chose that the paw helps on its own in hard moments. */
-  pawAuto: boolean;
   /** Companion kinds the child may pick: the starting kind first, then the ones earned by stars. */
   companionsUnlocked: CompanionKind[];
   /** Seconds of training ever (story levels and practice), the time `recordSession` counts. */

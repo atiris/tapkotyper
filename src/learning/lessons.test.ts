@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { emptyKeyStat } from '../storage/schema';
-import { LAYOUTS } from '../keyboard/layouts';
+import { ENTER, LAYOUTS, enterAfter, fingerFor } from '../keyboard/layouts';
 import { activeKeys, advanceLesson, firstKeys, isMastered, keysToIntroduce, lessonOrder, practiceOrder, practiceSteps, punctuationKeys, reactionLimit, shiftKeyOf, stepHolding } from './lessons';
 import { STATS_WINDOW, keyMastery, keyReport, lastTraining, masterySummary, recordPress, weakKeys } from './stats';
 
@@ -76,6 +76,21 @@ describe('mastery and unlocking', () => {
     for (let i = 0; i < 12; i++) recordPress(p, ' ', ' ', 400);
     expect(advanceLesson(p)).toEqual(['d', 'k']);
     expect(p.progress.unlockedKeys).toEqual(['f', 'j', ' ', 'd', 'k']);
+  });
+
+  it('never waits for Enter: its presses count in the stats, not in the lesson', () => {
+    const p = newProfile('Ema', 'sk');
+    for (let i = 0; i < 5; i++) recordPress(p, ENTER, 'k', 400);
+    for (const k of ['f', 'j']) for (let i = 0; i < 25; i++) recordPress(p, k, k, 400);
+    for (let i = 0; i < 12; i++) recordPress(p, ' ', ' ', 400);
+    expect(p.stats.keys[ENTER].errors).toBe(5);
+    expect(advanceLesson(p)).toEqual(['d', 'k']);
+  });
+
+  it('brings Enter after the home key of the right little finger, pressed by that finger', () => {
+    expect(enterAfter(LAYOUTS['sk-qwertz'])).toBe('ô');
+    expect(enterAfter(LAYOUTS['us-qwerty'])).toBe(';');
+    expect(fingerFor(LAYOUTS['sk-qwertz'], ENTER)).toBe(9);
   });
 
   it('skips diacritics when the parent turned them off', () => {

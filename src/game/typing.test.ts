@@ -1,8 +1,19 @@
 import { describe, expect, it } from 'vitest';
 import { TypingCore, memoryFlash, memoryShow } from './typing';
 import { starsFor } from './levels';
+import { ENTER } from '../keyboard/layouts';
 
 describe('TypingCore', () => {
+  it('keeps a target with the Enter mark waiting for Enter after its letters', () => {
+    const c = new TypingCore();
+    c.add(`ja${ENTER}`);
+    c.type('j');
+    expect(c.type('a').kind).toBe('ok');
+    expect(c.expectedChar()).toBe(ENTER);
+    expect(c.type('s').kind).toBe('wrong');
+    expect(c.type(ENTER).kind).toBe('done');
+  });
+
   it('locks on the first letter and finishes the word', () => {
     const c = new TypingCore();
     const t = c.add('jas');

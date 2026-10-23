@@ -19,6 +19,13 @@
   When the newest keys are typed accurately and steadily, the next ones unlock; a key
   counts as mastered at a stricter target (more presses), which fades its guide.
   The parent can override and pick the active keys by hand.
+- Enter now and then: once the key under the right little finger on the home row (`ô`,
+  US `;`) is unlocked, about one target in 20 (a word or a phrase) ends with an Enter mark `↵`
+  (never two in a row, at most two per story level; own practice the same rate without a
+  cap). After the letters the target waits for Enter. Not in drills, levels of single
+  letters, the main gate's code or free typing; a phrase split into parts carries it on
+  its last part. Enter presses count in the key
+  statistics like any key, but Enter is no lesson key: it never holds the next keys back.
 - Adaptive practice: keys with low accuracy or slow reaction appear more often in words.
 - Story levels use the child's current key set, so the story and the lessons move together.
 - Each story level needs a number of known keys that only grows: the dragon story starts
@@ -45,7 +52,8 @@
   it away ("own choice"). own practice needs at least two letters. The parent's own words
   are not mixed in, since they bring other letters. Above the keyboard three buttons pick
   the way to type: Copy (default), Dictation (only with a voice for the language) and
-  Remember it ([mechanics](../game/mechanics.md)). Nothing is stored: the picker opens
+  Remember it ([mechanics](../game/mechanics.md)); each has a tooltip, and one line under
+  them says what the chosen one asks. Nothing is stored: the picker opens
   with the active keys and Copy each time.
 - Just typing ([free typing](../game/free-typing.md)) has no key choice: every key of the
   layout may be typed and each one counts as a correct press in the statistics, like any
@@ -54,7 +62,8 @@
 ## Why
 - Own practice is for practising exactly what the child (or parent) wants: the slider
   is quick, the lit keyboard shows what is in, single clicks fine-tune it. The way to type
-  is a choice for one run, so it is not stored.
+  is a choice for one run, so it is not stored. Children do not know what "Dictation" or
+  "Remember it" mean, so the line under the buttons says it in their words.
 - Gradual unlocking with weak-key weighting (Keybr, Typing.com) is what users praise most
   for real progress ([research](../../.research/features/lesson-progression.md)).
 - Space early is normal (Typing.com starts with "J, F and Space"); period and comma with the
@@ -67,5 +76,7 @@
   words varied, and a child who knows more is not held back. The robot story opens with ten keys and asks for more, so it grows
   with the child instead of waiting for finished worlds; the fairy story opens with
   twenty, since words heard or remembered need more letters to be worth it.
+- A typist presses Enter with the right little finger, so a little practice is worth it;
+  it is a side key that comes rarely, so it must not decide when new letters open.
 - Mirrored pairs keep the hands balanced, and a lighter unlock target keeps the first
   world from feeling like endless `f j` drills; mastery still asks for solid accuracy.

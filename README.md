@@ -40,8 +40,7 @@ explosions, no punishment, no ads, no accounts.
 - **Tapko keeps the child curious and helps out.** After a level he asks a question about
   the next one and answers it only when that level is done. Fifteen words in a row
   without a mistake charge a paw (three at most): on Enter, Tapko's paws replace the hands
-  and type the three closest words, which never count in the stats. Backspace lets Tapko
-  help by himself when the screen gets full and a word is close to its end.
+  and type the three closest words, which never count in the stats.
 - **Per-key stats** count only the last 50 presses, show what a key is mixed up with and
   how it changed day by day; click any key on the stats keyboard.
 - **Good habits:** before every adventure a "Ready, steady, type!" card with one posture

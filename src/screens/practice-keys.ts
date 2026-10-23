@@ -25,10 +25,12 @@ export function openPracticeKeys(): void {
   let shifted = false;
   let style: Style = 'copy';
   const styles: Style[] = speech.available(p.language) ? ['copy', 'dictation', 'memory'] : ['copy', 'memory'];
-  const styleBtns = styles.map((s) => h('button', { class: 'chip', type: 'button', 'data-style': s, onClick: () => {
+  const styleBtns = styles.map((s) => h('button', { class: 'chip', type: 'button', 'data-style': s, tip: t(`practiceKeys.${s}Tip`), onClick: () => {
     style = s;
     paint();
   } }, t(`practiceKeys.${s}`)));
+  // What the chosen style asks, in one line under the style row.
+  const styleHint = h('p', { class: 'hint pk-style-hint', 'aria-live': 'polite' });
   const codes = allKeys(layout()).map((d) => d.code);
   const kb = new KeyboardGuide(layout());
   kb.el.classList.add('picker', 'practice-picker');
@@ -65,6 +67,7 @@ export function openPracticeKeys(): void {
       b.classList.toggle('on', styles[i] === style);
       b.setAttribute('aria-pressed', String(styles[i] === style));
     });
+    styleHint.textContent = t(`practiceKeys.${style}Tip`);
     kb.el.classList.toggle('shifted', shifted);
     for (const code of codes) {
       const el = kb.keyEl(code)!;
@@ -100,6 +103,7 @@ export function openPracticeKeys(): void {
     h('h2', {}, t('practiceKeys.title')),
     h('p', { class: 'hint' }, t('practiceKeys.intro')),
     h('div', { class: 'pk-styles', role: 'group', 'aria-label': t('practiceKeys.style') }, ...styleBtns),
+    styleHint,
     kb.el,
     h('div', { class: 'pk-row' }, shiftChip, count),
     h('label', { class: 'pk-slider' }, h('span', {}, t('practiceKeys.slider')), slider, stepLabel),

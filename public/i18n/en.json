@@ -217,6 +217,9 @@
     "copy": "Copy",
     "dictation": "Dictation",
     "memory": "Remember it",
+    "copyTip": "You see the word and type it.",
+    "dictationTip": "You hear the word without seeing it. Type what you hear.",
+    "memoryTip": "The word shows for a moment and hides. Type it from memory.",
     "start": "Start"
   },
   "freeType": {
@@ -535,13 +538,10 @@
     }
   },
   "paw": {
-    "title": "Paw help: {n} words without a mistake charge a paw (3 at most). Enter: your paw types {words} words for you. Backspace: the paw helps on its own when it gets hard.",
+    "title": "Paw help: {n} words without a mistake charge a paw (3 at most). Enter: your paw types {words} words for you.",
     "aria": "Paw help (Enter), charged paws: {n}",
     "start": "Your paw starts typing!",
-    "charged": "{n} words without a mistake! A paw is charged. Press Enter and your paw types {words} words for you.",
-    "chargedAuto": "{n} words without a mistake! A paw is charged. When it gets hard, your paw helps on its own.",
-    "autoOn": "When it gets hard, your paw types {words} words on its own. Backspace turns it off again.",
-    "autoOff": "You start the paw yourself with Enter."
+    "charged": "{n} words without a mistake! A paw is charged. Press Enter and your paw types {words} words for you."
   },
   "story": {
     "next": "Next",
@@ -1436,6 +1436,7 @@
   },
   "keys": {
     "space": "space bar",
+    "enter": "Enter",
     "shiftL": "left Shift",
     "shiftR": "right Shift"
   },

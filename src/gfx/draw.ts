@@ -1,5 +1,6 @@
 import { sprite } from './assets';
 import { VH } from '../engine/loop';
+import { ENTER } from '../keyboard/layouts';
 
 export type G = CanvasRenderingContext2D;
 
@@ -422,7 +423,7 @@ export function drawWord(g: G, word: string, typed: number, x: number, y: number
       g.fillStyle = wobble > 0 ? '#d9534f' : '#2d2140';
     } else g.fillStyle = st.highContrast ? '#000' : '#4a3a5c';
     if (c === ' ') {
-      // A light dot shows the space to type; a hidden target keeps a plain gap.
+      // A light dot shows the space to type; a hidden target keeps a plain gap (and its Enter mark).
       if (!st.masked || i < typed) {
         g.save();
         g.globalAlpha *= i === typed ? 0.8 : 0.4;
@@ -431,7 +432,7 @@ export function drawWord(g: G, word: string, typed: number, x: number, y: number
         g.fill();
         g.restore();
       }
-    } else if (st.masked && i >= typed) {
+    } else if (st.masked && i >= typed && c !== ENTER) {
       g.beginPath();
       g.arc(cx + w / 2 - size * 0.04, y + size * 0.04, size * 0.12, 0, Math.PI * 2);
       g.fill();

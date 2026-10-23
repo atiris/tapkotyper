@@ -1,4 +1,4 @@
-import { type Finger, type Layout, type KeyStep, allKeys, fingerFor, shiftKeyFor, stepsFor } from '../keyboard/layouts';
+import { ENTER, type Finger, type Layout, type KeyStep, allKeys, fingerFor, shiftKeyFor, stepsFor } from '../keyboard/layouts';
 import { t } from '../i18n/i18n';
 import { SHIFT_L, SHIFT_R, SPACE } from '../learning/lessons';
 
@@ -51,9 +51,9 @@ export function textColorsOn(hex: string): [string, string] {
   return [bg, inkOn(bg)];
 }
 
-/** How a lesson key is named in texts: space and the Shifts by name, other keys as they are. */
+/** How a lesson key is named in texts: space, Enter and the Shifts by name, other keys as they are. */
 export function keyLabel(key: string): string {
-  return key === SPACE ? t('keys.space') : key === SHIFT_L ? t('keys.shiftL') : key === SHIFT_R ? t('keys.shiftR') : key;
+  return key === SPACE ? t('keys.space') : key === ENTER ? t('keys.enter') : key === SHIFT_L ? t('keys.shiftL') : key === SHIFT_R ? t('keys.shiftR') : key;
 }
 
 /** Finger of a lesson key; each Shift is pressed by its own hand's pinky. */

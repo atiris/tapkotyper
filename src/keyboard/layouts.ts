@@ -28,6 +28,9 @@ export interface Layout {
   dead: Record<string, Record<string, string>>;
 }
 
+/** The Enter key's character: the mark at the end of a target that waits for Enter. */
+export const ENTER = '↵';
+
 const k = (code: string, base: string, shift: string, finger: Finger, extra: Partial<KeyDef> = {}): KeyDef => ({ code, base, shift, finger, ...extra });
 
 const ACUTE: Record<string, string> = { a: 'á', e: 'é', i: 'í', o: 'ó', u: 'ú', y: 'ý', l: 'ĺ', r: 'ŕ' };
@@ -44,7 +47,7 @@ const SK: Layout = {
     [k('KeyQ', 'q', 'Q', 0, { w: 1 }), k('KeyW', 'w', 'W', 1), k('KeyE', 'e', 'E', 2), k('KeyR', 'r', 'R', 3), k('KeyT', 't', 'T', 3), k('KeyY', 'z', 'Z', 6),
       k('KeyU', 'u', 'U', 6), k('KeyI', 'i', 'I', 7), k('KeyO', 'o', 'O', 8), k('KeyP', 'p', 'P', 9), k('BracketLeft', 'ú', '/', 9), k('BracketRight', 'ä', '(', 9)],
     [k('KeyA', 'a', 'A', 0), k('KeyS', 's', 'S', 1), k('KeyD', 'd', 'D', 2), k('KeyF', 'f', 'F', 3, { bump: true }), k('KeyG', 'g', 'G', 3), k('KeyH', 'h', 'H', 6),
-      k('KeyJ', 'j', 'J', 6, { bump: true }), k('KeyK', 'k', 'K', 7), k('KeyL', 'l', 'L', 8), k('Semicolon', 'ô', '"', 9), k('Quote', '§', '!', 9), k('Backslash', 'ň', ')', 9)],
+      k('KeyJ', 'j', 'J', 6, { bump: true }), k('KeyK', 'k', 'K', 7), k('KeyL', 'l', 'L', 8), k('Semicolon', 'ô', '"', 9), k('Quote', '§', '!', 9), k('Backslash', 'ň', ')', 9), k('Enter', ENTER, ENTER, 9, { w: 1.8 })],
     [k('ShiftLeft', 'shift', 'shift', 0, { w: 1.6 }), k('KeyZ', 'y', 'Y', 0), k('KeyX', 'x', 'X', 1), k('KeyC', 'c', 'C', 2), k('KeyV', 'v', 'V', 3), k('KeyB', 'b', 'B', 3),
       k('KeyN', 'n', 'N', 6), k('KeyM', 'm', 'M', 6), k('Comma', ',', '?', 7), k('Period', '.', ':', 8), k('Slash', '-', '_', 9), k('ShiftRight', 'shift', 'shift', 9, { w: 2.2 })],
     [k('Space', ' ', ' ', 5, { w: 6 })],
@@ -68,7 +71,7 @@ const US: Layout = {
     [k('KeyQ', 'q', 'Q', 0), k('KeyW', 'w', 'W', 1), k('KeyE', 'e', 'E', 2), k('KeyR', 'r', 'R', 3), k('KeyT', 't', 'T', 3), k('KeyY', 'y', 'Y', 6),
       k('KeyU', 'u', 'U', 6), k('KeyI', 'i', 'I', 7), k('KeyO', 'o', 'O', 8), k('KeyP', 'p', 'P', 9), k('BracketLeft', '[', '{', 9), k('BracketRight', ']', '}', 9)],
     [k('KeyA', 'a', 'A', 0), k('KeyS', 's', 'S', 1), k('KeyD', 'd', 'D', 2), k('KeyF', 'f', 'F', 3, { bump: true }), k('KeyG', 'g', 'G', 3), k('KeyH', 'h', 'H', 6),
-      k('KeyJ', 'j', 'J', 6, { bump: true }), k('KeyK', 'k', 'K', 7), k('KeyL', 'l', 'L', 8), k('Semicolon', ';', ':', 9), k('Quote', "'", '"', 9), k('Backslash', '\\', '|', 9)],
+      k('KeyJ', 'j', 'J', 6, { bump: true }), k('KeyK', 'k', 'K', 7), k('KeyL', 'l', 'L', 8), k('Semicolon', ';', ':', 9), k('Quote', "'", '"', 9), k('Backslash', '\\', '|', 9), k('Enter', ENTER, ENTER, 9, { w: 1.8 })],
     [k('ShiftLeft', 'shift', 'shift', 0, { w: 1.6 }), k('KeyZ', 'z', 'Z', 0), k('KeyX', 'x', 'X', 1), k('KeyC', 'c', 'C', 2), k('KeyV', 'v', 'V', 3), k('KeyB', 'b', 'B', 3),
       k('KeyN', 'n', 'N', 6), k('KeyM', 'm', 'M', 6), k('Comma', ',', '<', 7), k('Period', '.', '>', 8), k('Slash', '/', '?', 9), k('ShiftRight', 'shift', 'shift', 9, { w: 2.2 })],
     [k('Space', ' ', ' ', 5, { w: 6 })],
@@ -85,6 +88,11 @@ export function allKeys(layout: Layout): KeyDef[] {
 
 export function keyByCode(layout: Layout, code: string): KeyDef | undefined {
   return allKeys(layout).find((d) => d.code === code);
+}
+
+/** The key under the right little finger on the home row (`ô`, `;`): targets end with Enter once it is known. */
+export function enterAfter(layout: Layout): string {
+  return layout.rows[2].find((d) => d.finger === 9)!.base;
 }
 
 /** Shift is pressed by the pinky of the other hand than the letter. */

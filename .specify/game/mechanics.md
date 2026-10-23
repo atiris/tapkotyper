@@ -63,6 +63,12 @@
     1.8 times the travel time (calm modes wait anyway).
   - *Mixed* (the fairy story's music tree): dictation and memory targets in turns, each
     with its own icon. Without a voice the run is memory only.
+  - The mark `↵` of a target waiting for Enter stays visible in all of them, and the voice
+    never says it.
+  - In own practice the child picks the way to type; each button has a tooltip and one line
+    under them says what the chosen one asks: Copy "You see the word and type it.",
+    Dictation "You hear the word without seeing it. Type what you hear.", Remember it "The
+    word shows for a moment and hides. Type it from memory."
   - In all of them, the finger guide does not light the key of a hidden letter, the paws
     show the target and type it as usual, and the end screen adds how many targets the
     child typed without the target being shown again ("by ear" / "from memory" / "by

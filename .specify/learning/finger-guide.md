@@ -19,7 +19,10 @@
 - A new key is introduced with the character on its own card, with the finger's name highlighted in
   that finger's color; game objects (the character's fan) appear only when play starts. The space
   bar is pressed by a thumb; a Shift card names its hand and asks for three capitals of the
-  other hand. For a capital the guide lights the Shift of the other hand.
+  other hand. For a capital the guide lights the Shift of the other hand. The keyboard has
+  an Enter key at the end of the home row, pressed by the right little finger; the guide
+  lights it when a target waits for its Enter
+  ([lesson progression](lesson-progression.md)), with no card of its own.
 - If the child holds the Shift on the same hand as the letter, the letter still counts and
   the narrator says once per level to use the other hand.
 - Preparation tip: at the start of every training session one short, random tip about
@@ -30,6 +33,8 @@
 - Weak finger guidance is a frequent complaint (Dance Mat); masking or fading the keyboard
   is standard teacher advice
   ([research](../../.research/features/on-screen-keyboard-finger-guide.md)).
+- Enter comes rarely and is no lesson key, so the guide alone shows its finger; a new-key
+  card for it would stop play for a key that does not open anything.
 - Good habits (posture, hand position) are easier to build at the start than to fix
   later; short varied tips remind the child without a boring lecture.
 - A list of five rules gets skipped; one reminder plus a tiny typing task gets read, and

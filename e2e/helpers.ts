@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test';
-import { LAYOUTS, stepsFor } from '../src/keyboard/layouts';
+import { ENTER, LAYOUTS, stepsFor } from '../src/keyboard/layouts';
 
 /** Plays the open level like a child reading the finger guide, until the results card; `typed` collects the characters. */
 export async function playLevel(page: Page, mistakes = true, typed: string[] = []): Promise<string> {
@@ -29,6 +29,7 @@ export async function playLevel(page: Page, mistakes = true, typed: string[] = [
 
 /** One character as a child types it: a capital with Shift held; a letter off the US layout as a real key event of the Slovak key. */
 export async function typeChar(page: Page, ch: string): Promise<void> {
+  if (ch === ENTER) return page.keyboard.press('Enter');
   const [step, ...rest] = stepsFor(LAYOUTS['sk-qwertz'], ch);
   if (step && !rest.length && !/^[ -~]$/.test(ch)) {
     await page.evaluate(({ key, code, shiftKey }) => {

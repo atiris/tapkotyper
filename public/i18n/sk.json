@@ -217,6 +217,9 @@
     "copy": "Odpis",
     "dictation": "Diktát",
     "memory": "Zapamätaj si",
+    "copyTip": "Slovo vidíš a odpíšeš ho.",
+    "dictationTip": "Slovo počuješ, ale nevidíš ho. Napíš, čo počuješ.",
+    "memoryTip": "Slovo sa na chvíľu ukáže a skryje sa. Napíš ho spamäti.",
     "start": "Začať"
   },
   "freeType": {
@@ -535,13 +538,10 @@
     }
   },
   "paw": {
-    "title": "Labková pomoc: {n} slov bez chyby nabije labku (najviac 3). Enter: labka napíše za teba {words} slová. Backspace: labka pomôže sama, keď bude ťažko.",
+    "title": "Labková pomoc: {n} slov bez chyby nabije labku (najviac 3). Enter: labka napíše za teba {words} slová.",
     "aria": "Labková pomoc (Enter), nabité labky: {n}",
     "start": "Labka sa pustila do písania!",
-    "charged": "{n} slov bez chyby! Labka je nabitá. Stlač Enter a labka napíše za teba {words} slová.",
-    "chargedAuto": "{n} slov bez chyby! Labka je nabitá. Keď bude ťažko, labka pomôže sama.",
-    "autoOn": "Keď bude ťažko, labka napíše {words} slová sama. Backspace to zase vypne.",
-    "autoOff": "Labku spustíš klávesom Enter."
+    "charged": "{n} slov bez chyby! Labka je nabitá. Stlač Enter a labka napíše za teba {words} slová."
   },
   "story": {
     "next": "Ďalej",
@@ -1436,6 +1436,7 @@
   },
   "keys": {
     "space": "medzerník",
+    "enter": "Enter",
     "shiftL": "ľavý Shift",
     "shiftR": "pravý Shift"
   },

@@ -14,7 +14,7 @@ import { t, tList } from '../i18n/i18n';
 import { nickname } from '../storage/store';
 import { type InputHandlers, KeyInput, type TypedChar } from '../input/input';
 import { setShortcuts, withKey } from '../input/shortcuts';
-import { LAYOUTS, LayoutMismatchDetector, fingerFor, stepsFor } from '../keyboard/layouts';
+import { ENTER, LAYOUTS, LayoutMismatchDetector, enterAfter, fingerFor, stepsFor } from '../keyboard/layouts';
 import { SHIFT_L, SHIFT_R, SPACE, activeKeys, isLetterKey, keysToIntroduce, masteryLevel, newestGroup, shiftKeyOf } from '../learning/lessons';
 import { keyWeights, recordPress, recordSession } from '../learning/stats';
 import { FINGER_KEYS, KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
@@ -27,7 +27,8 @@ import type { Lang, Profile, Surprise } from '../storage/schema';
 import type { LevelDef } from './levels';
 import { MIN_ACTIVE_S, WORLDS, grownCount, hasMinLength, levelOver, shownProgress, storyOf } from './levels';
 import type { Mode } from './mode';
-import { PAW_MAX, PAW_STREAK, PAW_WORDS, isHardMoment } from './paw';
+import { PAW_MAX, PAW_STREAK, PAW_WORDS } from './paw';
+import { ENTER_MAX, EnterMarks } from './enter';
 import { createMode } from './modes';
 import { FreeTypeMode } from './modes/freetype';
 import { PressureValve, perChar, sayTime } from './pace';
@@ -92,6 +93,11 @@ const RESULTS_AFTER = 1.4;
 /** Milliseconds after play begins in which Enter does nothing. */
 const ENTER_GUARD_MS = 300;
 
+/** What the voice says for a target: its words, never the Enter mark. */
+function spoken(tg: Target): string {
+  return tg.word.replace(ENTER, '');
+}
+
 /**
  * The targets of a profile: its active keys (or a drill's, or the keys chosen for free practice),
  * weak keys more often, the newest group in focus, and the parent's own words and text mixed
@@ -144,6 +150,8 @@ export class LevelRuntime {
   /** The mode of free typing ("just typing"): it takes every key itself; null in every other level. */
   readonly free: FreeTypeMode | null;
   readonly words: WordSource;
+  /** Which targets end with Enter; null where none do. */
+  private readonly enter: EnterMarks | null;
   /** The parent's surprise rule asked on the get-ready card of this run, when one waits. */
   readonly surprise: Surprise | null;
   /** The profile's difficulty; "Slower" in the pause lowers it during the level. */
@@ -224,11 +232,7 @@ export class LevelRuntime {
   private pawWords = 0;
   private pawTimer = 0;
   private pawIdle = 0;
-  /** The paw started the current help on its own (auto mode), so the button pulses. */
-  private pawSelf = false;
   private guideBeforePaws = true;
-  /** Seconds each visible word has been on screen (for the automatic help). */
-  private seen = new Map<number, number>();
 
   constructor(root: HTMLElement, readonly def: LevelDef, private opts: RuntimeOptions) {
     const p = app.profile!;
@@ -247,6 +251,9 @@ export class LevelRuntime {
     const lay = LAYOUTS[p.layout];
     // Practice (the custom exercise, key drills, tasks) has its own word language; story levels use the player's.
     this.words = wordSource(p, def.kind === 'practice' ? p.settings.ownWordLang : p.settings.wordLang, opts.keys, opts.own, opts.chosen);
+    // Enter comes with the right little finger's home key; drills, single letters and the gate's code stay without it.
+    const enterOk = !opts.keys && !def.noSpace && def.kind !== 'gate' && def.kind !== 'freetype' && (opts.chosen ?? activeKeys(p)).includes(enterAfter(lay));
+    this.enter = enterOk ? new EnterMarks(() => this.rng.next(), def.kind === 'practice' ? null : ENTER_MAX) : null;
     this.surprise = surpriseFor(p, def, !!opts.keys);
     this.count = def.count;
     // The e2e build may shorten the minimum (`?minActive=8`), so its tests finish levels in seconds.
@@ -404,9 +411,9 @@ export class LevelRuntime {
       onDead: () => { this.deadPending = true; this.updateGuide(); },
       onEscape: () => (this.paused ? this.resume() : this.free ? this.exit() : this.pause()),
       onRaw: (code, key, shift) => this.onRaw(code, key, shift),
-      // The Enter that closed a card just before play is not a call for the paw.
-      onEnter: () => (this.free ? this.freeSend() : performance.now() - this.begunAt >= ENTER_GUARD_MS && this.startPaws()),
-      onBackspace: () => (this.free ? this.freeErase() : this.togglePawAuto()),
+      // A target waiting for Enter takes it; else the Enter that closed a card just before play is not a call for the paw.
+      onEnter: () => (this.free ? this.freeSend() : this.waitsEnter ? this.typeEnter() : performance.now() - this.begunAt >= ENTER_GUARD_MS && this.startPaws()),
+      onBackspace: () => { if (this.free) this.freeErase(); },
       // A pause or a dialog: the keys belong to its buttons.
       idle: () => this.paused || !!document.querySelector('.modal-back'),
     };
@@ -434,7 +441,8 @@ export class LevelRuntime {
   /** Next target (a word, a phrase of up to `words` words, or a sentence of at least `minWords`); avoids first letters already on screen. */
   word(maxLen?: number, words = this.mode.phraseWords, minWords = this.mode.phraseMin): string {
     const avoid = new Set(this.core.active.map((t) => t.word[0].toLowerCase()));
-    return this.words.next(avoid, maxLen, this.def.noSpace ? 1 : words, minWords);
+    const w = this.words.next(avoid, maxLen, this.def.noSpace ? 1 : words, minWords);
+    return this.enter?.next() ? w + ENTER : w;
   }
 
   /**
@@ -493,6 +501,17 @@ export class LevelRuntime {
       this.mismatchShown = true;
       this.say(t('level.layoutHint', { layout: t(`layouts.${other}`) }), 7);
     }
+  }
+
+  /** The locked target has its letters and waits for Enter. */
+  private get waitsEnter(): boolean {
+    return !!this.core.locked && this.core.expectedChar() === ENTER;
+  }
+
+  /** Enter finishes a waiting target like any other key of it. */
+  private typeEnter(): boolean {
+    this.onChar({ ch: ENTER, code: 'Enter', shift: false, shiftCode: null, time: performance.now() });
+    return true;
   }
 
   private onChar(c: TypedChar): void {
@@ -675,7 +694,7 @@ export class LevelRuntime {
     if (tg.id !== this.readId) {
       this.readId = tg.id;
       if (tg.style === 'dictation') this.dictate(tg, false);
-      else if (this.reading && !this.dictating) speech.say(tg.word, app.profile!.language);
+      else if (this.reading && !this.dictating) speech.say(spoken(tg), app.profile!.language);
     } else if (tg.style === 'dictation' && tg.masked && !this.repeated && this.elapsed - Math.max(this.spokenAt, this.keyAt) >= DICTATION_REPEAT) {
       this.dictate(tg, true);
     }
@@ -689,7 +708,7 @@ export class LevelRuntime {
   /** Says a dictated target; a repeat cuts what is still being said. */
   private dictate(tg: Target, repeat: boolean): void {
     if (repeat) speech.stop();
-    speech.say(tg.word, app.profile!.language);
+    speech.say(spoken(tg), app.profile!.language);
     this.spokenAt = this.elapsed;
     this.repeated = repeat;
     this.setFairyMood('singing', 1.4);
@@ -806,7 +825,6 @@ export class LevelRuntime {
     const p = app.profile!;
     const { pawHelp } = p.progress;
     this.pawBtn.classList.toggle('empty', pawHelp === 0);
-    this.pawBtn.classList.toggle('auto-helping', this.pawSelf && this.pawWords > 0);
     this.pawBtn.dataset.charged = String(pawHelp);
     this.pawBtn.setAttribute('aria-label', t('paw.aria', { n: pawHelp }));
     paintRound(this.pawBtn, 'paw', pawRing(pawHelp, PAW_MAX));
@@ -818,24 +836,15 @@ export class LevelRuntime {
     if (p.progress.pawHelp >= PAW_MAX) return;
     p.progress.pawHelp++;
     saveProfile();
-    this.say(t(p.progress.pawAuto ? 'paw.chargedAuto' : 'paw.charged', { n: PAW_STREAK, words: PAW_WORDS }), 4);
+    this.say(t('paw.charged', { n: PAW_STREAK, words: PAW_WORDS }), 4);
     this.renderPawBtn();
     this.pawBtn?.classList.remove('charged');
     void this.pawBtn?.offsetWidth;
     this.pawBtn?.classList.add('charged');
   }
 
-  private togglePawAuto(): void {
-    if (!this.pawsAllowed || !this.started || this.paused || this.finished) return;
-    const p = app.profile!;
-    p.progress.pawAuto = !p.progress.pawAuto;
-    saveProfile();
-    this.say(t(p.progress.pawAuto ? 'paw.autoOn' : 'paw.autoOff', { words: PAW_WORDS }), 3);
-    this.renderPawBtn();
-  }
-
   /** The paws replace the hands and type the closest words for the child. */
-  private startPaws(self = false): boolean {
+  private startPaws(): boolean {
     const p = app.profile!;
     if (!this.pawsAllowed || !this.started || this.paused || this.finished || this.pawWords) return false;
     if (p.progress.pawHelp <= 0 || !this.core.focus()) return false;
@@ -844,7 +853,6 @@ export class LevelRuntime {
     this.pawWords = PAW_WORDS;
     this.pawTimer = this.reduceMotion ? 0.2 : 0.6;
     this.pawIdle = 0;
-    this.pawSelf = self;
     this.guideBeforePaws = this.guideOn;
     if (!this.guideOn) this.toggleGuide();
     this.guide.setPaws(pawColors(p.companion.kind));
@@ -856,25 +864,12 @@ export class LevelRuntime {
 
   private stopPaws(): void {
     this.pawWords = 0;
-    this.pawSelf = false;
     this.renderPawBtn();
     this.guide.setPaws(null);
     if (this.guideOn !== this.guideBeforePaws) this.toggleGuide();
     // The child's next reaction time starts now, not with the paw's last key.
     this.rhythm.ready(performance.now());
     this.updateGuide();
-  }
-
-  private updatePaws(dt: number): void {
-    const seen = new Map<number, number>();
-    for (const tg of this.core.active) if (tg.selectable) seen.set(tg.id, (this.seen.get(tg.id) ?? 0) + dt);
-    this.seen = seen;
-    if (this.pawWords) return this.tapkoTypes(dt);
-    const p = app.profile!;
-    if (p.progress.pawAuto && p.progress.pawHelp > 0 &&
-      isHardMoment(this.core.targets, this.core.locked, (tg) => this.seen.get(tg.id) ?? 0, (tg) => this.travelTime(tg.word), this.maxActive)) {
-      this.startPaws(true);
-    }
   }
 
   /** One key at a time, with Tapko's rhythm; none of it counts in the child's statistics. */
@@ -1019,7 +1014,7 @@ export class LevelRuntime {
     this.mode.update(dt);
     if (!hadFocus && this.core.focus()) this.rhythm.ready(performance.now());
     this.trackPace();
-    if (this.pawsAllowed) this.updatePaws(dt);
+    if (this.pawWords) this.tapkoTypes(dt);
     this.readFocus();
     // Free typing has no end screen: the bubble says when a break is due.
     if (this.free && !this.breakSaid && app.sessionSeconds >= app.profile!.settings.sessionMinutes * 60) {

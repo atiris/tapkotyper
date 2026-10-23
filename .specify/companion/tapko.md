@@ -50,11 +50,10 @@
   the character's color, ringed by three arcs for the charges; its label names Enter)
   sends the character's paws onto the keyboard in place of the hands, and the paw types
   the three closest words with its own rhythm. These keys never count in the child's
-  statistics, accuracy or rhythm, and the child's own keys wait meanwhile. Backspace
-  switches the paw to automatic: the paw then helps on its own in a hard moment, when the
-  screen holds three words (or as many as the level allows), the closest one has used
-  most of its time and the child is not typing it. The button pulses gently only while
-  the paw types on its own after such an automatic start.
+  statistics, accuracy or rhythm, and the child's own keys wait meanwhile. The paw comes
+  only when the child calls it: there is no automatic paw, and Backspace does nothing in a
+  level (only in [free typing](../game/free-typing.md)). A target waiting for its Enter
+  takes the Enter instead of calling the paw.
 - The speech bubble in a level has one fixed spot at the top left of the scene, slightly
   see-through, and does not move with the character's jumps. It never covers a word: when
   it would, it hides until the spot is free. The bubble and its tail pointing down to the
@@ -83,3 +82,5 @@
 - The word is the child's task, so it must always be readable.
 - Paw help is a reward for accuracy that makes play more fun and takes the edge off a
   crowded moment, without blurring what the child really typed.
+- The paw stays on Enter alone: Backspace is the key a child presses to fix a typo, so it
+  must never change a setting or start help the child did not ask for.

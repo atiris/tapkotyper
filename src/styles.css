@@ -368,8 +368,6 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .hud-title { font-size: 17px; white-space: nowrap; }
 .hud-divider { width: 2px; align-self: stretch; margin: 0.2rem 0; background: rgba(90, 61, 43, 0.15); border-radius: 2px; }
 .paw-btn.empty { opacity: 0.6; cursor: default; }
-.paw-btn.auto-helping { animation: paw-pulse 2.4s ease-in-out infinite; }
-@keyframes paw-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.07); } }
 .paw-btn.charged { animation: pop-in 0.5s ease; }
 .progress { flex: 1; min-width: 120px; height: 16px; border-radius: 999px; background: rgba(90, 61, 43, 0.12); overflow: hidden; }
 .progress-fill { height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, #8fd89f, var(--green)); transition: width 0.3s ease; }

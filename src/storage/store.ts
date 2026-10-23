@@ -140,7 +140,6 @@ export function newProfile(name: string, language: Lang, layout?: LayoutId, kind
       growth: 0,
       growthSeconds: 0,
       pawHelp: 0,
-      pawAuto: false,
       companionsUnlocked: [start],
       trainedSeconds: 0,
       levelsFinished: 0,

@@ -22,23 +22,28 @@
   with the rule in one line (1 minute in the wardrobe for 5 minutes of practice, at most 7
   minutes) and the child's current balance; turned off, the wardrobe is always open
   ([wardrobe time](../companion/wardrobe.md)).
-- The **child** section shows the character's picture (with its accessories) beside the
-  child's name, then the character kind picked from a picture list and the nickname (up to
-  16 characters; empty means the child's name). A kind picked here is granted at once.
+- The **typist** section shows the character's picture (with its accessories) beside the
+  nickname (required, up to 16 characters; a blank one is not saved and the field says so),
+  then the character kind picked from a picture list, the typist's name (optional; hint:
+  shown to the mentor in the results; blank clears it), the interface language, the **word
+  language** and the keyboard layout. A kind picked here is granted at once.
 - The **progress** tab starts with the same picture and the icon and number summary of the
-  child's "My progress", above the cards and charts.
+  typist's "My progress" (with one more chip there: letters typed in the last 14 calendar
+  days, today included), then the charts; no separate stat cards repeat the summary.
 - A button by "Back" (the child's picture and name) switches the parent area to another
   profile from a list of small profile cards, keeping the open tab and without asking for
   the password again; with one profile it is hidden. The super player is never in the list.
-- Settings per profile: child name, nickname and character kind, keyboard layout, active keys (pick by hand, with a punctuation row for the shifted `? ! :`, or "automatic"), word length range,
+- Settings per profile: nickname, character kind, optional name, word language, keyboard layout, active keys (pick by hand, with a punctuation row for the shifted `? ! :`, or "automatic"), word length range,
   difficulty 1-10, words without diacritics, no time pressure, session length, guide
   visibility, sound and music volume, reading typed words aloud in "Just typing"
-  ([free typing](../game/free-typing.md)), start in fullscreen. The help text says the start
+  ([free typing](../game/free-typing.md)), easy to tell letters on the keys
+  ([accessibility](../experience/accessibility.md)), start in fullscreen. The help text says the start
   is slow and points to "no time pressure" for a child who still cannot keep up.
 - An **own content** tab collects what the parent writes for the child:
   - own encouraging messages, mixed into the narrator's lines;
   - **own words** (up to 300) and **own text** (up to 4000 characters) with the share of
-    targets taken from them and a preview of five sample targets
+    targets taken from them, the **word language of the custom exercise** (preset to the
+    player's word language) and a preview of five sample targets
     ([words](../learning/words.md)).
 - A **surprises** tab holds the parent's surprises as rules in one table (up to 50; question
   and answer up to 200 characters each). Each rule says when the answer comes:
@@ -60,7 +65,9 @@
   narrow screen the rows become cards. Surprises never count in statistics. Free
   practice drills of chosen keys have no surprise.
 - Dashboard: per-key heat map on the keyboard, accuracy and rhythm trend, time played per
-  day, and a grid of all levels, each with its three stars (filled or empty) in a fixed place.
+  day, and the levels grouped by story (a heading with the story's picture and title) and by
+  world (one row of level cells per world), each cell with its three stars (filled or empty)
+  in a fixed place.
 - Printable progress card / certificate (browser print), instead of class codes.
 
 ## Why
@@ -71,7 +78,8 @@
   needs no encryption, and the owner keeps a way back through the super player.
 - Fixed settings either bore a growing child or overwhelm a new one; small automatic steps,
   each celebrated, make getting better visible and rewarding.
-- Parents and teachers want control and visible progress; printable cards avoid accounts
+- Parents and mentors want control and visible progress; a flat list of all levels is
+  unreadable, and cards that repeat the summary add nothing; printable cards avoid accounts
   and rosters ([research](../../.research/features/parent-dashboard.md)).
 - A real reward (a treat, a trip, a game evening) ties the game to the child's life
   ([research](../../.research/game/tapko-questions.md)). Parents use it as a real reward,

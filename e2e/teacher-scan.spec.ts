@@ -150,7 +150,7 @@ test('sorting, the task picker and a child card, on a computer and on a phone', 
   await expect(page.locator('.child-row-big')).toHaveText(['96 %', '81 %', '70 %', '60 %']);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.locator('.child-row', { hasText: 'Adam' }).click();
-  await page.locator('.child-screen .btn', { hasText: 'Odstrániť žiaka' }).click();
+  await page.locator('.child-screen .btn', { hasText: 'Odstrániť pisateľa' }).click();
   await page.locator('.confirm .btn.danger').click();
   await expect(page.locator('.child-row')).toHaveCount(3);
 });

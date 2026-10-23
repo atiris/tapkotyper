@@ -12,7 +12,7 @@ test('own words and a surprise from the parent reach the child\'s next level', a
   await page.locator('.own-words textarea').fill('lopta, ruka');
   await page.locator('.own-words textarea').blur();
   await expect(page.locator('.own-words .hint')).toContainText('2');
-  await page.locator('.own-text select').selectOption('most');
+  await page.locator('.own-text select').first().selectOption('most');
   await expect(page.locator('.own-preview li')).toHaveCount(5);
 
   await page.locator('.tab[data-tab=surprises]').click();

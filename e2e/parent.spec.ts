@@ -97,3 +97,39 @@ test('the parent question shows once on a double click, also while the settings 
   await dialog.getByRole('button', { name: 'Yes, open' }).click();
   await expect(page.locator('.parent-screen')).toBeVisible();
 });
+
+test('settings: nickname first and required, name optional, word language, key font, task legends, progress by story', async ({ page }) => {
+  await createProfile(page, 'Ema');
+  await page.locator('.top-right .round-btn').first().click();
+  await page.locator('.confirm .btn:not(.primary)').last().click();
+  const stored = () => page.evaluate(() => JSON.parse(localStorage.getItem('tapkotyper:v1')!).profiles[0]);
+  const typist = page.locator('.settings-grid fieldset').first();
+  await expect(typist.locator('.field-label').first()).toHaveText(/^(Prezývka|Nickname)$/);
+  const nick = typist.locator('.child-summary input');
+  await nick.fill(' ');
+  await nick.blur();
+  await expect(typist.locator('.child-summary .error')).not.toBeEmpty();
+  expect((await stored()).companion.name).toBe('Ema');
+  const name = page.getByLabel(/^(Meno pisateľa|Typist's name)/);
+  await name.fill('Emka');
+  await name.blur();
+  expect((await stored()).name).toBe('Emka');
+  await name.fill('');
+  await name.blur();
+  expect((await stored()).name).toBe('');
+  await page.getByLabel(/^(Jazyk slov|Word language)/).first().selectOption('en');
+  expect((await stored()).settings.wordLang).toBe('en');
+  await expect(page.locator('body')).toHaveAttribute('data-keyfont', '');
+  await page.getByRole('checkbox', { name: /\(l, I, 1\)/ }).uncheck();
+  await expect(page.locator('body')).not.toHaveAttribute('data-keyfont');
+
+  await page.locator('.tab[data-tab=task]').click();
+  await expect(page.locator('.task-tab legend')).toHaveCount(2);
+  for (const legend of await page.locator('.task-tab legend').allTextContents()) expect(legend).not.toContain('task.');
+
+  await page.locator('.tab[data-tab=dashboard]').click();
+  await expect(page.locator('.dashboard .cards')).toHaveCount(0);
+  await expect(page.locator('.dashboard .sum-chip')).toHaveCount(5);
+  await expect(page.locator('.story-levels')).toHaveCount(3);
+  await expect(page.locator('.story-levels').first().locator('.world-levels').first().locator('.level-cell')).not.toHaveCount(0);
+});

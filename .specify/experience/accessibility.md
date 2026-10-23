@@ -3,6 +3,11 @@
 ## What
 - Font choice: a default friendly font, a dyslexia-friendly option (Lexend, Atkinson
   Hyperlegible or OpenDyslexic, bundled, no external font service), and large text.
+- **Easy to tell letters on the keys (l, I, 1)**, on by default: key caps, the big key of
+  the new-key card and inline key marks use Atkinson Hyperlegible, which draws lowercase l,
+  capital I and 1 differently; the rest of the game (words on the canvas included) keeps the
+  chosen font. Lexend draws l and I alike, so on a key cap a learner could not tell which key
+  is meant.
 - Colorblind-safe finger colors with patterns or labels; a high contrast mode.
 - Text written on a finger color (the finger name in statistics, the label of the next key) reaches WCAG AA
   contrast; a color too light or too mid-tone for it is darkened a little.

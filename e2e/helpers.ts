@@ -46,7 +46,7 @@ export async function typeChar(page: Page, ch: string): Promise<void> {
 export async function createProfile(page: Page, name: string, layout?: string): Promise<void> {
   await page.goto('./');
   await page.locator('.profile-card.new').click();
-  await page.locator('#np-name').fill(name);
+  await page.locator('#np-nick').fill(name);
   if (layout) await page.locator('#np-layout').selectOption(layout);
   await page.locator('form button[type=submit]').click();
   await page.locator('.map-screen').waitFor();

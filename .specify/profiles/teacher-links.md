@@ -12,7 +12,8 @@
   shows **Úloha na dnes** as its first card until the minutes are played; a story task
   may take several levels, and leaving a level early does not count it.
 - **Hand-in:** after the task, the child gets **Odovzdať**: a result link and the short
-  instruction to send it to the teacher (Edupage, e-mail). It holds the player's name,
+  instruction to send it to the mentor (Edupage, e-mail). It holds the player's real name
+  (or the nickname when there is none),
   the task, the date, minutes played, accuracy, rhythm and the five weakest keys, plus a
   checksum. The UI says plainly that the checksum finds damaged copies, not cheating.
 - **Teacher view** (`#/teacher`, from the start page footer, or by opening a result link):

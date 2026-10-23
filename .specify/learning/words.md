@@ -3,6 +3,11 @@
 ## What
 - Per language a lightweight JSON word list (about 1000 common, child-appropriate words),
   usable by key set and word length.
+- The list comes from the player's **word language**, not the interface language: story
+  levels use the player's word language, the custom exercise (free practice, "My text", key
+  drills, practice tasks) its own word language, preset to the player's. Both lists can be
+  loaded at once. Words with keys the player does not have yet are left out as always, so
+  lessons and key unlocking do not change with the language.
 - Slovak words keep correct diacritics; with "words without diacritics" on, only words
   without diacritics are used.
 - Selection respects: active keys, word length range (for example 2-5), difficulty 1-10,

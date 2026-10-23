@@ -85,7 +85,7 @@ test('the corner by width: switch, round language button, Menu', async ({ page }
   await menu.click();
   await expect(menu).toHaveAttribute('aria-expanded', 'true');
   const items = page.locator('.corner-menu-panel [role=menuitem]');
-  await expect(items).toHaveText([/Jazyk: slovenčina/, 'Pre učiteľov', /^Zvuk/, 'Celá obrazovka', 'Pomoc']);
+  await expect(items).toHaveText([/Jazyk: slovenčina/, 'Pre mentorov', /^Zvuk/, 'Celá obrazovka', 'Pomoc']);
   await expect(items.first()).toBeFocused();
   await page.keyboard.press('Escape');
   await expect(page.locator('.corner-menu-panel')).toHaveCount(0);
@@ -95,7 +95,7 @@ test('the corner by width: switch, round language button, Menu', async ({ page }
   await page.locator('.privacy-note').click();
   await expect(page.locator('.corner-menu-panel')).toHaveCount(0);
   await menu.click();
-  await items.filter({ hasText: 'Pre učiteľov' }).click();
+  await items.filter({ hasText: 'Pre mentorov' }).click();
   await expect(page.locator('.teacher-screen')).toBeVisible();
 });
 

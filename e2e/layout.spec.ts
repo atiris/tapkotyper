@@ -12,7 +12,7 @@ async function addProfiles(page: Page, from: number, to: number): Promise<void> 
   for (let i = from; i <= to; i++) {
     await page.goto('./');
     await page.locator(i === 1 ? '.profile-card.new' : '.btn:has-text("Nový hráč"), .btn:has-text("New player"), .profile-card.new').first().click();
-    await page.locator('#np-name').fill(`Kid${i}`);
+    await page.locator('#np-nick').fill(`Kid${i}`);
     await page.locator('form button[type=submit]').click();
     await page.locator('.map-screen').waitFor();
   }
@@ -129,7 +129,7 @@ test('the new player form has a 3 x 3 picker with a side column, closes with X, 
   await page.locator('.newkey-card, .posture-card').first().waitFor();
 });
 
-test('the game calls the child by the nickname; the start tile adds the real name', async ({ page }) => {
+test('the game calls the typist by the nickname; the start tile adds the real name', async ({ page }) => {
   await page.goto('./');
   await page.locator('.profile-card.new').click();
   await page.locator('#np-name').fill('Ema');
@@ -141,7 +141,7 @@ test('the game calls the child by the nickname; the start tile adds the real nam
   const tile = page.locator('.profile-card', { hasText: 'Rýchla líška' });
   await expect(tile.locator('.profile-real')).toHaveText('Ema');
 
-  // Without a nickname the name is used, and shown once.
+  // A nickname without a real name is shown once.
   await createProfile(page, 'Jano');
   await expect(page.locator('.map-hello')).toContainText('Jano');
   await page.goto('./');

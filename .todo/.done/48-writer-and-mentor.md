@@ -149,10 +149,11 @@ Contracts: profile schema v4 (migration). The result-code payload is unchanged i
 - [x] Word language: loading per language, settings select, custom exercise select.
 - [x] Key font var, attribute and checkbox.
 - [x] Progress tab: no cards, 14-day chip, levels by story and world.
-- [ ] Specs as listed.
-- [ ] `npm run build`, `npm test`, `npx playwright test` pass (update e2e that type a name or
+- [x] Specs as listed.
+- [x] `npm run build`, `npm test`, `npx playwright test` pass (update e2e that type a name or
       read the old texts).
-- [ ] Drive the app with the playwright MCP:
+- [x] Drive the app with the playwright MCP (the MCP browser was held by another session, so a
+      standalone Playwright script drove the built app the same way):
   - Create a player with only a nickname; the map welcome shows the new sentence.
   - Settings shows the nickname first, the name optional with the mentor hint, and no raw
     keys in Úlohy.
@@ -181,3 +182,20 @@ Decisions taken while implementing:
   dictionary.
 - The 14-day chip uses the `ui-act-letters` icon.
 - The sk guard also bans `žiak` (the mentor's child card said "žiak").
+
+## Done - 2026-10-23
+Shipped: schema v4 (nickname required, name optional, `wordLang`, `ownWordLang`, `keyFont`),
+nickname-first forms in the new player form and settings, result codes that fall back to the
+nickname, the typist/mentor wording in sk and en with a vitest guard, the new welcome sentence,
+the task legends and a vitest that every literal `t`/`tList`/`pickLine` key exists, Super Tapko
+last, word language per player and per custom exercise, the key font (`--font-keys`,
+`data-keyfont`, on by default), the progress tab without cards, with the 14-day chip and levels
+by story and world; specs, unit and e2e tests.
+Verified in the browser: a player with only a nickname gets the new welcome; settings show the
+nickname first and the optional name with the mentor hint, no raw keys in Úlohy; English word
+language played a level with English targets ("fuel dice fog rat wish quiz") under the Slovak UI;
+key caps use Atkinson Hyperlegible with the setting on and Lexend with it off; Pokroky has no
+cards, the 14-day chip and three story sections with 15 world rows; the mentor view shows the
+nickname for a player without a name; console clean.
+Left out: nothing. Capital-letter names in targets still come from the interface dictionary, not
+the word language (minor, not asked for).

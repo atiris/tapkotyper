@@ -1,31 +1,40 @@
 # Profiles
 
 ## What
-- Several local child profiles on one device, picked on the start screen (the character with the
-  nickname large and, when it differs, the real name small under it, so siblings recognize
-  their own tile; "New player" is one more card up to four profiles, a button beside "Play as guest" with more), plus a **Guest** mode that keeps nothing after the browser tab closes; the
-  guest is greeted in the game's language ("Hosť" / "Guest").
+- Several local profiles on one device, picked on the start screen (the character with the
+  nickname large and, when a real name is set and differs, the real name small under it, so
+  siblings recognize their own tile; "New player" is one more card up to four profiles, a button beside "Play as guest" with more), plus a **Guest** mode that keeps nothing after the browser tab closes; the
+  guest is named in the game's language ("Hosť" / "Guest"). The super player, while on, is
+  the last card, so it never shifts the order of the real players.
 - The new player form is a window closed with the round X: "pick your character", the nine
-  animals as a 3 x 3 grid, with the name (hint: shown to the teacher and in QR codes), the
-  nickname (optional, up to 16 characters; hint: shown with the character in the game),
-  language and keyboard layout beside it (below it on a narrow screen).
+  animals as a 3 x 3 grid, with beside it (below it on a narrow screen), in this order: the
+  **nickname** (required, up to 16 characters; hint: shown with the character in the game),
+  the **typist's name** (optional; hint: shown to the mentor in the results), the interface
+  language, the word language and the keyboard layout. Without a nickname the form says so.
 - A new player lands on the map, not in a level, so a parent can set things up first. Above
-  the stories the narrator greets the child once by nickname ("This is you.") and says in a few lines what to do (Continue,
+  the stories the narrator greets the typist once by nickname ("This is your character in
+  this adventure.") and says in a few lines what to do (Continue,
   keys come step by step, "?" helps, the gear is for the parent); closing it or starting from
   it hides it for good. The intro story plays before the first level. A guest and the
   super player get no greeting.
-- Profile data: child name, nickname and character kind, a seed, custom messages, layout,
-  settings, progress, unlocked items, statistics.
-- **Real name vs nickname**: the real name is for adults; the nickname is play. An empty
-  nickname means the real name.
-  - Nickname: everything the child sees in play (map greeting and welcome, encouragement
-    lines, break, story scenes, results, wardrobe).
-  - Real name: parent screen (player switcher, fields, delete confirm, tasks), teacher
-    screen, result and QR code captions, share and move links, export file name, import
-    texts and the printed progress card (signed just "TapkoTyper").
-- The **seed** is a hash of the name when the player is created; it deals the per-player
-  character prices and accessories ([the character](../companion/tapko.md)). Renaming later
-  changes nothing; a profile recreated with the same name gets the same deal.
+- Profile data: nickname and character kind, an optional real name, a seed, custom
+  messages, layout, interface language, word language, settings, progress, unlocked items,
+  statistics.
+- **Nickname vs real name**: the nickname is required and is how the game shows the player
+  everywhere (start card, map greeting and welcome, encouragement lines, break, story scenes,
+  results, wardrobe, the settings switcher, task, delete and move texts, QR code captions,
+  export file name, import texts, the printed card). The real name is optional and only for
+  the **mentor**: a result code carries it, or the nickname when it is empty, and the
+  mentor's table shows what it receives. Older players without a nickname get one from their
+  name.
+- **Word language**: each player has a word language beside the interface language, so a
+  Slovak typist can practise English words with a Slovak interface and the other way round
+  ([words](../learning/words.md)). The start screen's language buttons change only the
+  interface.
+- The **seed** is a hash of the name (or of the nickname when there is no name) when the
+  player is created; it deals the per-player character prices and accessories
+  ([the character](../companion/tapko.md)). Renaming later changes nothing; a profile
+  recreated with the same name gets the same deal.
 - Export a profile (or all of them) to a `.json` file and import it on another device.
   Import validates the file and never silently overwrites (it asks: replace or keep both).
   A player can also move by link ([teacher-links.md](teacher-links.md)).
@@ -41,6 +50,9 @@
 
 ## Why
 - Families and classrooms share devices; export/import gives portability without accounts.
+- The nickname is short and fits next to the character; a real name is only needed by the
+  mentor, and some players do not want to give it.
+- Learners of a second language want its words without switching the whole interface.
 - The first screen after creating a player is shared by the parent and the child: the parent
   may adjust settings, the child needs one clear way to start.
 - Children should not have to pick themselves on the start screen every time, and a stray

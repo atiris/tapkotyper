@@ -73,7 +73,13 @@
   day, and the levels grouped by story (a heading with the story's picture and title) and by
   world (one row of level cells per world), each cell with its three stars (filled or empty)
   in a fixed place.
-- Printable progress card / certificate (browser print), instead of class codes.
+- **Certificate** ("Certifikát" by the dashboard's summary): a window with a sheet in the style of a
+  certificate, printed on A4 landscape (browser print): the game's frame of foxes, leaves and trees,
+  the logo, "Certifikát písania všetkými desiatimi prstami", the nickname large (the real name small
+  under it when set), the character in its outfit, the results with their pictures (keys mastered,
+  accuracy and speed of the last 14 days, stars, worlds), the stories with their worlds done, one
+  line on how it goes (by the share of keys mastered, praising accuracy when it is high), the date,
+  and the paw stamp with "Tapko a TapkoTyper". It replaces class codes and accounts.
 
 ## Why
 - A 10-year-old solves any arithmetic "adult check"; a plain question keeps settings out of

@@ -977,7 +977,7 @@
     "fists": "Make fists, then open your fingers wide. Again and again!",
     "shoulders": "Roll your shoulders slowly backwards. Then look far out of the window.",
     "big": "Big break",
-    "bigBack": "Back to the short break",
+    "bigSkip": "Skip the big break",
     "bigTitle": "Big break {n}/{total}",
     "stand": "Stand up and stretch on your tiptoes up to the ceiling.",
     "march": "March on the spot and lift your knees high.",
@@ -1072,7 +1072,6 @@
     "exportOne": "Export this profile",
     "exportAll": "Export all profiles",
     "import": "Import",
-    "print": "Print progress card",
     "guestNote": "A guest profile is forgotten when the browser tab closes.",
     "deleteTitle": "Delete",
     "delete": "Delete profile {name}",
@@ -1209,13 +1208,28 @@
     "errorJson": "This file is not a valid JSON file.",
     "errorShape": "This file does not contain TapkoTyper profiles."
   },
-  "print": {
-    "title": "Typing progress card",
-    "keys": "Keys learned: {n} ({keys})",
-    "mastered": "Keys mastered: {n}",
-    "stars": "Stars: {n} of {total}",
-    "worlds": "Worlds finished: {n} of {total}",
-    "rhythm": "Rhythm: {n} letters per minute"
+  "cert": {
+    "button": "Certificate",
+    "print": "Print",
+    "title": "Certificate",
+    "subtitle": "of typing with all ten fingers",
+    "awarded": "This certificate is proudly awarded to",
+    "keys": "keys mastered",
+    "accuracy": "accuracy",
+    "speed": "characters per minute",
+    "stars": "stars",
+    "worlds": "worlds",
+    "stories": "Stories",
+    "date": "On {date}",
+    "sign": "Tapko and TapkoTyper",
+    "precise": "Types very accurately.",
+    "careful": "Types accurately and carefully.",
+    "praise": [
+      "{name} is just starting to type with all ten fingers. The first steps matter most!",
+      "{name} is learning to type with all ten fingers, and the first keys are friends already. Keep going!",
+      "{name} types with all ten fingers more and more surely. Half of the keyboard feels at home!",
+      "{name} types with all ten fingers like an experienced writer. The keyboard has hardly any secrets left!"
+    ]
   },
   "about": {
     "code": "Code on GitHub",
@@ -1370,7 +1384,7 @@
       ],
       "dashboard": [
         "How each key goes, accuracy and rhythm over time, time per day and the levels finished.",
-        "You can print a progress card."
+        "The writer's **certificate** with the results opens with the button by the summary, ready to print."
       ],
       "data": [
         "Everything is stored **only in this browser**. When the browser's data is cleared or the computer breaks, the progress is lost unless you have a backup.",

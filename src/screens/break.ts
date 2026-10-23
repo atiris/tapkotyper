@@ -15,6 +15,7 @@ const BIG = { title: 'break.bigTitle', exercises: ['stand', 'march', 'neck', 'wr
 /**
  * Stretch break led by the narrator: three short exercises, then the posture card. During it the
  * big break can be added: six longer exercises, after which the short break goes on where it was.
+ * Anyone may skip the big break back to the short one; only a parent skips the short break.
  */
 export function breakScreen(root: HTMLElement): () => void {
   const p = app.profile!;
@@ -32,8 +33,11 @@ export function breakScreen(root: HTMLElement): () => void {
   /** Where the short break was when the big one started. */
   let paused: { i: number; left: number } | null = null;
   const bigButton = button(t('break.big'), () => startBig(), 'btn', 'play');
-  const backButton = button(t('break.bigBack'), () => backToSmall(), 'btn', 'back');
+  const backButton = button(t('break.bigSkip'), () => backToSmall(), 'btn', 'next');
   backButton.hidden = true;
+  const parentSkip = button(t('break.parentSkip'), async () => {
+    if (await confirmDialog({ title: t('break.skipTitle'), text: t('break.skipText'), ok: t('break.skipOk'), cancel: t('common.back') })) end();
+  }, 'btn ghost small', 'gear');
   const end = () => {
     clearInterval(tick);
     app.sessionSeconds = 0;
@@ -57,6 +61,7 @@ export function breakScreen(root: HTMLElement): () => void {
     left = plan.seconds;
     bigButton.hidden = true;
     backButton.hidden = false;
+    parentSkip.hidden = true;
     audio.sfx('pop');
     show();
   };
@@ -66,6 +71,7 @@ export function breakScreen(root: HTMLElement): () => void {
     paused = null;
     bigButton.hidden = false;
     backButton.hidden = true;
+    parentSkip.hidden = false;
     audio.sfx('pop');
     show();
   };
@@ -89,8 +95,6 @@ export function breakScreen(root: HTMLElement): () => void {
     corner,
     box,
     h('div', { class: 'row center' }, bigButton, backButton),
-    h('div', { class: 'row center' }, button(t('break.parentSkip'), async () => {
-      if (await confirmDialog({ title: t('break.skipTitle'), text: t('break.skipText'), ok: t('break.skipOk'), cancel: t('common.back') })) end();
-    }, 'btn ghost small', 'gear'))));
+    h('div', { class: 'row center' }, parentSkip)));
   return () => clearInterval(tick);
 }

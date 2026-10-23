@@ -12,6 +12,19 @@ const SRC = 'assets-src';
 const OUT = 'public/assets';
 const SPRITE_MAX = 384;
 const ICON_MAX = 512; // ui-icon is also the app icon (scripts/icons.mjs), ui-icon-hr the start page's large logo
+// The certificate's frame is rebuilt from its top band, the only band with plain places to cut
+// (measured on the 1024 px source): a corner of CORNER px, made symmetric across its diagonal and
+// mirrored into all four, and the edge tile between the plain columns CORNER and TILE_END, reused
+// on all four sides. The page repeats the edges (CSS border-image with the slice CORNER).
+const FRAME = 'ui-cert-frame';
+const FRAME_SRC = 1024;
+const CORNER = 247;
+const TILE_END = 709;
+/** The top band's outer and inner outline, in px from the source's top edge. */
+const BAND_OUT = 57;
+const BAND_IN = 168;
+// The certificate's stamp is printed a few centimetres wide.
+const STAMP_MAX = 640;
 const BG_WIDTH = 1920;
 // Parallax layers drawn as close-up strips are placed into a frame of this size.
 const FRAME_W = 1376;
@@ -285,6 +298,7 @@ async function processImage(name, file, manifest) {
   keyOut(data, w, h, { layer: name.startsWith('bg-') });
   // Bolt's pictures stay square, so the raincoat overlay fits every one of them; Melody's keep her size in every mood.
   if (name === 'base-template' || name.startsWith('tapko-') || name.startsWith('robot') || name.startsWith('fairy-')) return writeSquare(name, data, w, h, manifest);
+  if (name === FRAME) return writeFrame(name, data, w, h, manifest);
   if (STRIP_HEIGHT[name] && w >= h * STRIP_ASPECT) return writeStrip(name, data, w, h, bbox(data, w, h), manifest);
   if (name.startsWith('bg-')) {
     const info = await webp(sharp(data, { raw: { width: w, height: h, channels: 4 } }).resize({ width: BG_WIDTH, withoutEnlargement: true })).toFile(join(OUT, `${name}.webp`));
@@ -292,9 +306,40 @@ async function processImage(name, file, manifest) {
     return;
   }
   const box = bbox(data, w, h);
-  const max = name.startsWith('ui-icon') ? ICON_MAX : SPRITE_MAX;
+  const max = name.startsWith('ui-icon') ? ICON_MAX : name === 'ui-cert-stamp' ? STAMP_MAX : SPRITE_MAX;
   const info = await webp(sharp(data, { raw: { width: w, height: h, channels: 4 } }).extract(box).resize(max, max, { fit: 'inside', withoutEnlargement: true })).toFile(join(OUT, `${name}.webp`));
   manifest.images[name] = { w: info.width, h: info.height };
+}
+
+/** The certificate frame: four corners and four edges of one repeating tile, in one square for border-image. */
+async function writeFrame(name, data, w, h, manifest) {
+  if (w !== FRAME_SRC || h !== FRAME_SRC) throw new Error(`${name}: the cut lines are measured on a ${FRAME_SRC} px square`);
+  const tile = TILE_END - CORNER;
+  const size = 2 * CORNER + tile;
+  const out = Buffer.alloc(size * size * 4);
+  const copy = (dx, dy, sx, sy) => data.copy(out, (dy * size + dx) * 4, (sy * w + sx) * 4, (sy * w + sx) * 4 + 4);
+  const last = size - 1;
+  for (let a = 0; a < CORNER; a++) for (let b = 0; b < CORNER; b++) {
+    // The corner: its upper half across the diagonal, mirrored to the lower half.
+    const [sx, sy] = a >= b ? [a, b] : [b, a];
+    copy(a, b, sx, sy);
+    copy(last - a, b, sx, sy);
+    copy(a, last - b, sx, sy);
+    copy(last - a, last - b, sx, sy);
+  }
+  // The bottom edge is the top band moved down, so its pictures stay upright: the band lies as far
+  // from the outer edge as on top (BAND_OUT to BAND_IN px from it).
+  const shift = last - BAND_IN - BAND_OUT;
+  for (let t = 0; t < tile; t++) for (let b = 0; b < CORNER; b++) {
+    const sx = CORNER + t;
+    copy(CORNER + t, b, sx, b);
+    if (b + shift <= last) copy(CORNER + t, b + shift, sx, b);
+    // Left and right lay the band on its side.
+    copy(b, CORNER + t, sx, b);
+    copy(last - b, CORNER + t, sx, b);
+  }
+  await webp(sharp(out, { raw: { width: size, height: size, channels: 4 } })).toFile(join(OUT, `${name}.webp`));
+  manifest.images[name] = { w: size, h: size };
 }
 
 /**

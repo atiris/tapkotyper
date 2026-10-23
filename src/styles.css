@@ -888,14 +888,59 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-dark); }
 .touch-notice h2 { color: var(--brand-dark); }
 
 /* Print */
-.print-card { display: none; }
+/*
+ * The certificate: an A4 landscape sheet. Every size is a share of the sheet's width (cqw), so the
+ * window's preview and the printed page look the same. The frame is cut by border-image: corners
+ * of 247 px and edges that repeat (scripts/assets.mjs builds it so).
+ */
+.cert-modal { width: min(1100px, 100%); }
+.cert-view { display: flex; flex-direction: column; gap: 1rem; padding-top: 2.4rem; }
+/* The whole sheet fits in the window, the print button under it. */
+.cert-view > .cert-sheet { width: min(100%, calc((92vh - 10rem) * 297 / 210)); margin: 0 auto; }
+.cert-sheet { container-type: inline-size; width: 100%; aspect-ratio: 297 / 210; background: #fffaf0; color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.cert {
+  box-sizing: border-box; height: 100%; display: flex; flex-direction: column; align-items: center; text-align: center;
+  border: 10cqw solid transparent; border-image-slice: 247; border-image-repeat: round; padding: 0 1cqw;
+  background: radial-gradient(ellipse at 50% 40%, #fff, #fffaf0 75%) padding-box;
+}
+.cert.no-frame { border: 1.2cqw double var(--brand); border-radius: 2cqw; padding: 2cqw; }
+.cert-head { display: flex; align-items: center; gap: 1cqw; margin-top: -2.4cqw; }
+.cert-logo { width: 5.5cqw; height: 5.5cqw; object-fit: contain; }
+.cert-brand { font-size: 3cqw; font-weight: 700; color: var(--brand); letter-spacing: -0.02em; }
+.cert-title { margin: 0.4cqw 0 0; font-size: 5cqw; line-height: 1; letter-spacing: 0.12em; text-transform: uppercase; color: var(--brand-dark); }
+.cert-sub { margin: 0.4cqw 0 0; font-size: 1.7cqw; color: var(--ink-soft); letter-spacing: 0.04em; }
+.cert-awarded { margin: 1.4cqw 0 0; font-size: 1.5cqw; color: var(--ink-soft); }
+.cert-name { margin: 0.2cqw 0 0; padding: 0 4cqw 0.4cqw; font-size: 4.2cqw; font-weight: 700; line-height: 1.1; color: var(--green-dark); border-bottom: 0.25cqw solid #e9c79a; }
+.cert-name small { display: block; font-size: 1.6cqw; font-weight: 600; color: var(--ink-soft); }
+.cert-body { flex: 1; min-height: 0; width: 100%; display: grid; grid-template-columns: 13cqw 1fr 20cqw; align-items: center; gap: 1.5cqw; margin-top: 1cqw; }
+.cert-hero { display: grid; place-items: center; }
+.cert-hero .tapko-stack { --size: 13cqw !important; }
+/* All results in one row, so the sheet never runs over its height. */
+.cert-stats { display: flex; justify-content: center; gap: 1cqw; }
+.cert-stat { display: grid; justify-items: center; width: 7.4cqw; }
+.cert-stat img { height: 3.8cqw; width: auto; max-width: 5cqw; object-fit: contain; }
+.cert-stat b { font-size: 2.4cqw; line-height: 1.15; white-space: nowrap; }
+.cert-stat span { font-size: 1.05cqw; line-height: 1.2; color: var(--ink-soft); }
+.cert-stories { text-align: left; }
+.cert-stories h2 { margin: 0 0 0.6cqw; font-size: 1.7cqw; color: var(--brand-dark); }
+.cert-stories ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6cqw; }
+.cert-stories li { display: grid; grid-template-columns: 3.4cqw 1fr auto; align-items: center; gap: 0.8cqw; font-size: 1.35cqw; font-weight: 600; }
+.cert-stories li img { width: 3.4cqw; height: 3.4cqw; object-fit: contain; }
+.cert-stories li b { font-size: 1.5cqw; color: var(--ink-soft); }
+.cert-stories li.done b { color: var(--green-dark); }
+.cert-stories li.closed { opacity: 0.45; }
+.cert-stories li.closed img { filter: grayscale(1); }
+.cert-praise { margin: 0.8cqw 6cqw 0; font-size: 1.75cqw; font-style: italic; line-height: 1.35; }
+.cert-foot { width: 100%; display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: -2.6cqw; }
+.cert-date { font-size: 1.35cqw; color: var(--ink-soft); padding-bottom: 1cqw; }
+.cert-sign { display: grid; justify-items: center; font-size: 1.25cqw; font-weight: 600; color: var(--ink-soft); }
+.cert-stamp { width: 9cqw; height: 9cqw; object-fit: contain; transform: rotate(-8deg); }
+.print-sheet { display: none; }
 @media print {
-  body.printing > *:not(.print-card) { display: none !important; }
-  body.printing { background: #fff; }
-  body.printing .print-card { display: block; border: 6px double #e08a3c; border-radius: 24px; padding: 2.5rem; margin: 2rem; text-align: center; font-size: 1.2rem; }
-  .print-card h1 { color: #e08a3c; font-size: 2.2rem; }
-  .print-name { font-size: 2.4rem; font-weight: 700; margin: 0.5em 0; }
-  .print-sign { margin-top: 2rem; font-style: italic; }
+  @page { size: A4 landscape; margin: 0; }
+  html:has(body.printing), body.printing { height: auto; overflow: visible; background: #fff; }
+  body.printing > *:not(.print-sheet) { display: none !important; }
+  body.printing .print-sheet { display: block; width: 297mm; height: 210mm; aspect-ratio: auto; }
 }
 
 /* Responsive */

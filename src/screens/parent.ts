@@ -19,9 +19,10 @@ import { tapkoElement } from '../gfx/tapko';
 import { numberPick, profileCard } from '../ui/profile-card';
 import { cornerControls, starRow } from '../ui/chrome';
 import { barTabLinks, tabBar } from '../ui/tabs';
+import { openCertificate } from './certificate';
 import { clickableHeatmap, storyPicture, summaryRow } from './stats';
 import { barChart, lineChart } from '../ui/charts';
-import { hasCompanion, masteredCount } from '../game/rewards';
+import { hasCompanion } from '../game/rewards';
 import { OWN_TEXT_MAX, OWN_WORDS_MAX, parseOwnWords, typableText, untypableWords } from '../words/words';
 
 /** The parent area, once `parentAccess` let the parent in; `tab`: the tab to open. */
@@ -541,7 +542,8 @@ function dashboardTab(p: Profile): HTMLElement {
   const detail = h('div', { class: 'key-detail-host' }, h('p', { class: 'hint' }, t('stats.clickKey')));
   const heat = clickableHeatmap(p, detail);
   return h('div', { class: 'dashboard' },
-    h('div', { class: 'child-summary' }, tapkoElement(p.companion, 'happy', 96), summaryRow(p)),
+    h('div', { class: 'child-summary' }, tapkoElement(p.companion, 'happy', 96), summaryRow(p),
+      button(t('cert.button'), () => openCertificate(p), 'btn', 'print')),
     h('h3', {}, t('parent.heatmap')),
     h('div', { class: 'heat-split' }, heat, detail),
     h('div', { class: 'chart-grid' },
@@ -562,8 +564,7 @@ function dataTab(p: Profile): HTMLElement {
       guest ? null : button(t('parent.exportOne'), () => exportOne(p), 'btn', 'download'),
       guest ? null : button(t('move.button'), () => void moveDialog(p), 'btn', 'next'),
       button(t('parent.exportAll'), () => download('tapkotyper-profiles.json', app.store.exportJson()), 'btn', 'download'),
-      button(t('parent.import'), () => importDialog(() => go('parent', { granted: true })), 'btn', 'upload'),
-      button(t('parent.print'), () => printCard(p), 'btn', 'print')),
+      button(t('parent.import'), () => importDialog(() => go('parent', { granted: true })), 'btn', 'upload')),
     guest ? h('p', { class: 'hint' }, t('parent.guestNote')) : h('div', { class: 'danger-zone' },
       h('h3', {}, t('parent.deleteTitle')),
       button(t('parent.delete', { name: nickname(p) }), async () => {
@@ -623,26 +624,4 @@ export function importDialog(done: () => void): void {
       msg.textContent = t((e as Error).message);
     }
   });
-}
-
-/** Printable progress card through the browser's print dialog. */
-function printCard(p: Profile): void {
-  const stars = Object.values(p.progress.levels).reduce((a, b) => a + b, 0);
-  const last = p.stats.sessions[p.stats.sessions.length - 1];
-  const card = h('div', { class: 'print-card' },
-    h('h1', {}, t('print.title')),
-    h('p', { class: 'print-name' }, nickname(p)),
-    h('p', {}, t('print.keys', { n: p.progress.unlockedKeys.length, keys: p.progress.unlockedKeys.join(' ') })),
-    h('p', {}, t('print.mastered', { n: masteredCount(p) })),
-    h('p', {}, t('print.stars', { n: stars, total: LEVELS.length * 3 })),
-    h('p', {}, t('print.worlds', { n: p.progress.worldsDone.length, total: WORLDS.length })),
-    last ? h('p', {}, t('print.rhythm', { n: last.cpm })) : null,
-    h('p', { class: 'print-date' }, new Date().toLocaleDateString(p.language)),
-    h('p', { class: 'print-sign' }, 'TapkoTyper'));
-  document.body.append(card);
-  document.body.classList.add('printing');
-  const cleanup = () => { card.remove(); document.body.classList.remove('printing'); window.removeEventListener('afterprint', cleanup); };
-  window.addEventListener('afterprint', cleanup);
-  window.print();
-  setTimeout(cleanup, 1500);
 }

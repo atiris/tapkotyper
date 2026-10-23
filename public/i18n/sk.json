@@ -977,7 +977,7 @@
     "fists": "Zovri päste a potom široko roztiahni prsty. Znova a znova!",
     "shoulders": "Pomaly krúž ramenami dozadu. Potom sa pozri ďaleko z okna.",
     "big": "Veľká prestávka",
-    "bigBack": "Späť na malú prestávku",
+    "bigSkip": "Preskočiť veľkú prestávku",
     "bigTitle": "Veľká prestávka {n}/{total}",
     "stand": "Postav sa a natiahni sa na špičkách až k stropu.",
     "march": "Pochoduj na mieste a dvíhaj kolená vysoko.",
@@ -1072,7 +1072,6 @@
     "exportOne": "Exportovať tento profil",
     "exportAll": "Exportovať všetky profily",
     "import": "Importovať",
-    "print": "Vytlačiť kartu pokrokov",
     "guestNote": "Profil hosťa sa po zatvorení karty prehliadača zabudne.",
     "deleteTitle": "Vymazanie",
     "delete": "Vymazať profil {name}",
@@ -1209,13 +1208,28 @@
     "errorJson": "Tento súbor nie je platný súbor JSON.",
     "errorShape": "Tento súbor neobsahuje profily TapkoTypera."
   },
-  "print": {
-    "title": "Karta pokrokov v písaní",
-    "keys": "Naučené klávesy: {n} ({keys})",
-    "mastered": "Zvládnuté klávesy: {n}",
-    "stars": "Hviezdičky: {n} z {total}",
-    "worlds": "Dokončené svety: {n} z {total}",
-    "rhythm": "Rytmus: {n} písmen za minútu"
+  "cert": {
+    "button": "Certifikát",
+    "print": "Vytlačiť",
+    "title": "Certifikát",
+    "subtitle": "písania všetkými desiatimi prstami",
+    "awarded": "Tento certifikát s radosťou získava",
+    "keys": "zvládnuté klávesy",
+    "accuracy": "presnosť",
+    "speed": "znakov za minútu",
+    "stars": "hviezdičky",
+    "worlds": "svety",
+    "stories": "Príbehy",
+    "date": "Dňa {date}",
+    "sign": "Tapko a TapkoTyper",
+    "precise": "Píše veľmi presne.",
+    "careful": "Píše presne a pozorne.",
+    "praise": [
+      "{name} práve začína písať všetkými desiatimi. Prvé kroky sú tie najdôležitejšie!",
+      "{name} sa učí písať všetkými desiatimi a prvé klávesy sú už kamaráti. Len tak ďalej!",
+      "{name} píše všetkými desiatimi stále istejšie. Polovica klávesnice je už doma!",
+      "{name} píše všetkými desiatimi ako skúsený pisateľ. Klávesnica už nemá skoro žiadne tajomstvá!"
+    ]
   },
   "about": {
     "code": "Kód na GitHube",
@@ -1370,7 +1384,7 @@
       ],
       "dashboard": [
         "Ako ide každý kláves, presnosť a rytmus v čase, čas hrania po dňoch a hotové úrovne.",
-        "Kartu s pokrokom si môžete vytlačiť."
+        "**Certifikát** s výsledkami pisateľa si pozriete a vytlačíte tlačidlom pri súhrne."
       ],
       "data": [
         "Všetko je uložené **len v tomto prehliadači**. Keď sa vymažú údaje prehliadača alebo sa pokazí počítač, pokrok sa stratí, ak nemáte zálohu.",

@@ -130,7 +130,7 @@ export class WordSource {
   private names: string[];
   private space: boolean;
   private keys: Set<string>;
-  private focus: Set<string>;
+  readonly focus: Set<string>;
   private recent: string[] = [];
   private ownWords: string[];
   private ownText: string;

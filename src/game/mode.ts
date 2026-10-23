@@ -32,9 +32,17 @@ export abstract class Mode {
   startLine(): string | null {
     return null;
   }
+  /** Seconds the start line stays at least. */
+  startSeconds(): number {
+    return 3;
+  }
   /** Extra HUD content of the mode (next to the title), else null. */
   hud(): HTMLElement | null {
     return null;
+  }
+  /** Round pictures of the mode, before the accuracy rings and the rhythm. */
+  rings(): HTMLElement[] {
+    return [];
   }
   /** Called once after construction, when the stage size is known. */
   start(): void {}

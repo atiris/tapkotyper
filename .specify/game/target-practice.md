@@ -11,24 +11,34 @@
   the three known letters with the lowest recent accuracy.
 - Tapko stands at the left and throws something funny at a target at the right: a pebble, a
   screw, a fly, a tomato, an arrow, a rubber duck or a sock, picked at random for each throw.
+  A short word over Tapko's paw starts each throw, with no hurry; the rules said at the start
+  stay up until the first throw, so a child has time to read them.
   It flies slowly and steadily through 4 soap-bubble rings toward the target; each ring and
   the target carry a word rich in the trained letters (5 words a throw), never of those
   letters alone while another word is there. The words grow from the shortest allowed length
   to the longest (one letter longer in the second half when both are the same). Each word gets
   the time a word of its length needs at the child's pace; typing it in time lets the thing
-  pass the ring, a ring passed too late pops grey. Only a throw with every word in time and no
-  wrong key hits the middle of the target.
+  pass the ring. While a word waits, the thing drifts up off its path, back again as the word
+  gets typed; a ring passed too late pops grey and leaves it higher, so it flies over the
+  target ("Missed!") and does not count. Every word in time hits the target: the middle
+  without wrong keys, lower after them. Words not typed are no mistakes: accuracy follows
+  only the keys pressed.
 - A wrong key makes it sink a little (a lower path). After three wrong keys in one throw it
-  falls to the ground with a soft "plop"; nothing bad happens and the next throw comes.
+  falls to the ground with a soft "plop" and lies there a moment, fading; nothing bad
+  happens and the next throw comes.
 - Passing every ring hits the target with a funny effect: the tomato splats, the fly sticks
   and buzzes, the duck squeaks, the rest bounce off.
 - The target's size shows the recent accuracy on the trained letters: big at low accuracy,
   smaller as it improves. When a trained letter becomes ready during the run, the target
   shrinks with a little bounce, Tapko cheers, the narrator says so, and the letter leaves the
   list. The trained letters are said at the start, not shown in the HUD.
-- About two minutes or 12 throws, whichever comes first. No stars, no paw help, no Enter
-  marks, no surprises, no story friends. The end card shows accuracy before and after per
-  trained letter, "Again" and "To the map". The lesson may advance at the end, so a ready
+- At least two minutes: the run ends with the throw in the air after two minutes. A red ring
+  next to the accuracy rings counts the target hits of those two minutes and fills with the
+  time; the end card says the hits and how many were in the middle. No stars,
+  no paw help, no Enter marks, no surprises, no story friends. The end card shows accuracy
+  before and after per trained letter over the range, "Again", "Stay at the range" and "To the
+  map". Esc or that button keeps throwing without an end (every hit counts); Esc there ends
+  it and the card comes back. The lesson may advance at the end, so a ready
   group opens new letters right there, and the card says so; good play counts toward growth
   like a practice.
 

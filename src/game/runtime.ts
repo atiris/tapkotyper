@@ -15,13 +15,13 @@ import { nickname } from '../storage/store';
 import { type InputHandlers, KeyInput, type TypedChar } from '../input/input';
 import { setShortcuts, withKey } from '../input/shortcuts';
 import { ENTER, LAYOUTS, LayoutMismatchDetector, enterAfter, fingerFor, stepsFor } from '../keyboard/layouts';
-import { SHIFT_L, SHIFT_R, SPACE, activeKeys, isLetterKey, keysToIntroduce, masteryLevel, newestGroup, shiftKeyOf } from '../learning/lessons';
+import { SHIFT_L, SHIFT_R, SPACE, activeKeys, isKeyReady, isLetterKey, keysToIntroduce, masteryLevel, newestGroup, recentAccuracy, shiftKeyOf } from '../learning/lessons';
 import { keyWeights, recordPress, recordSession } from '../learning/stats';
 import { FINGER_KEYS, KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
 import { button, closeModals, confirmDialog, h } from '../ui/dom';
 import { globalButtons } from '../ui/chrome';
 import { tip } from '../ui/tooltip';
-import { paintRound, pawRing, placeRing, rhythmPic, roundButton, worldName } from '../ui/hud';
+import { accuracyPic, paintRound, pawRing, placeRing, rhythmPic, roundButton, worldName } from '../ui/hud';
 import { OWN_SHARE, WordSource, type WordSourceOwn } from '../words/words';
 import type { Lang, Profile, Surprise } from '../storage/schema';
 import type { LevelDef } from './levels';
@@ -187,6 +187,8 @@ export class LevelRuntime {
   private bubbleTimer = 0;
   private progressFill: HTMLElement;
   private gauge = rhythmPic();
+  /** Own practice and the target range: a ring of accuracy for each key in focus, before the rhythm. */
+  private accuracyPics: { key: string; pic: ReturnType<typeof accuracyPic> }[] = [];
   /** Seconds until the gauge's spoken label may change again. */
   private gaugeLabelIn = 0;
   private pauseEl: HTMLElement | null = null;
@@ -290,13 +292,15 @@ export class LevelRuntime {
       this.pawBtn.classList.add('paw-btn');
       this.renderPawBtn();
     }
+    if (def.kind === 'practice' || def.kind === 'aim') this.accuracyPics = [...this.words.focus].map((key) => ({ key, pic: accuracyPic(key) }));
+    this.paintAccuracy();
     const hud = h('div', { class: 'hud' },
       pauseBtn,
       this.pawBtn,
       def.kind === 'practice' || def.index < 0 ? null : placeRing(def),
       h('b', { class: 'hud-title' }, title),
-      opts.stay ? h('span', { class: 'hud-hint' }, t('level.stayHint')) : null,
-      ...(def.kind === 'freetype' ? [] : [opts.stay ? null : h('div', { class: 'progress', tip: t('level.progress') }, this.progressFill), this.gauge.el]),
+      opts.stay && def.kind !== 'aim' ? h('span', { class: 'hud-hint' }, t('level.stayHint')) : null,
+      ...(def.kind === 'freetype' ? [] : [opts.stay ? null : h('div', { class: 'progress', tip: t('level.progress') }, this.progressFill), ...this.accuracyPics.map((a) => a.pic.el), this.gauge.el]),
       h('span', { class: 'hud-divider', 'aria-hidden': 'true' }),
       guideBtn, this.readBtn, ...globalButtons(helpBtn));
     const stageWrap = h('div', { class: 'stage-wrap' });
@@ -324,6 +328,7 @@ export class LevelRuntime {
     this.free = this.mode instanceof FreeTypeMode ? this.mode : null;
     const extra = this.mode.hud();
     if (extra) hud.querySelector('.hud-title')!.after(extra);
+    (this.accuracyPics[0]?.pic.el ?? this.gauge.el).before(...this.mode.rings());
     if (this.free) {
       this.saidEl = h('p', { class: 'sr-only', role: 'status', 'aria-live': 'polite' });
       stageWrap.append(this.saidEl);
@@ -407,8 +412,8 @@ export class LevelRuntime {
     this.mode.start();
     this.started = true;
     this.begunAt = performance.now();
-    if (this.opts.stay) this.say(t('level.stayStart'), 6);
-    else if (this.storyLine) this.say(this.storyLine, 3);
+    if (this.opts.stay) this.say(t(this.def.kind === 'aim' ? 'aim.stayStart' : 'level.stayStart'), 6);
+    else if (this.storyLine) this.say(this.storyLine, this.mode.startSeconds());
     else if (this.fairy) this.say(pickLine('fairy.start'), 3);
     this.tapko.classList.remove('waiting');
     this.rhythm.ready(performance.now());
@@ -493,6 +498,16 @@ export class LevelRuntime {
     this.typedTargets++;
     if (!tg.revealed) this.cleanTargets++;
     this.valve.hit();
+  }
+
+  private paintAccuracy(): void {
+    const p = app.profile!;
+    for (const { key, pic } of this.accuracyPics) pic.set(recentAccuracy(p.stats.keys[key]), isKeyReady(p, key));
+  }
+
+  /** Staying a while: no end until the child stops. */
+  get staying(): boolean {
+    return !!this.opts.stay;
   }
 
   get vw(): number {
@@ -926,7 +941,7 @@ export class LevelRuntime {
     this.pauseEl = h('div', { class: 'card pause-card', role: 'dialog', 'aria-label': t('level.paused') },
       h('h2', {}, t('level.paused')),
       h('div', { class: 'row' },
-        button(t('level.resume'), () => this.resume(), 'btn primary', 'play'),
+        button(t(this.ending.keep), () => this.resume(), 'btn primary', 'play'),
         slower,
         button(t('help.title'), () => this.openHelp(), 'btn', 'help'),
         button(t(this.ending.label), () => void this.leave(), 'btn', 'close')));
@@ -939,12 +954,12 @@ export class LevelRuntime {
     (this.pauseEl?.querySelector('button') as HTMLButtonElement | null)?.focus();
   }
 
-  /** What leaving is called, and what the question says is lost: a story level, an exercise or a rescue mission. */
-  private get ending(): { label: string; text: string } {
-    if (this.def.kind === 'freetype') return { label: 'level.leave', text: '' };
-    if (this.def.kind === 'practice' || this.def.kind === 'aim' || this.opts.stay) return { label: 'level.endPractice', text: 'level.endPracticeText' };
-    if (this.def.rescue) return { label: 'level.endRescue', text: 'level.endRescueText' };
-    return { label: 'level.endLevel', text: 'level.endLevelText' };
+  /** What leaving and going on are called, and what the question says is lost: a story level, an exercise or a rescue mission. */
+  private get ending(): { label: string; keep: string; text: string } {
+    if (this.def.kind === 'freetype') return { label: 'level.leave', keep: 'level.keepTyping', text: '' };
+    if (this.def.kind === 'practice' || this.def.kind === 'aim' || this.opts.stay) return { label: 'level.endPractice', keep: 'level.keepPractice', text: 'level.endPracticeText' };
+    if (this.def.rescue) return { label: 'level.endRescue', keep: 'level.keepRescue', text: 'level.endRescueText' };
+    return { label: 'level.endLevel', keep: 'level.keepLevel', text: 'level.endLevelText' };
   }
 
   /**
@@ -957,7 +972,7 @@ export class LevelRuntime {
       return this.endPractice();
     }
     if (this.pressed && !this.free) {
-      const yes = await confirmDialog({ title: t('level.endAsk'), text: t(this.ending.text), ok: t('level.end'), cancel: t('level.resume') });
+      const yes = await confirmDialog({ title: t('level.endAsk'), text: t(this.ending.text), ok: t(this.ending.label), cancel: t(this.ending.keep) });
       if (!yes || this.disposed) return;
     }
     this.exit();
@@ -1061,6 +1076,7 @@ export class LevelRuntime {
     if ((this.gaugeLabelIn -= dt) <= 0) {
       this.gaugeLabelIn = 1;
       this.gauge.label(t('level.rhythm', { n: this.rhythm.cpm }));
+      this.paintAccuracy();
     }
     this.rhythm.idle(dt, performance.now());
     if (this.core.shownChar() !== this.lastExpected) {

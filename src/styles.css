@@ -102,6 +102,11 @@ p { line-height: 1.5; }
 .round-btn.super { --rb: #b07a0e; --rb-ring: #b07a0e; }
 .round-btn.place { --rb: #4a6fa5; --rb-ring: #4fb57a; cursor: default; }
 .round-btn.timer { --rb: #1f8a86; --rb-ring: #3cc0b8; cursor: default; }
+.round-btn.hits { --rb: #c8473d; --rb-ring: #f5c542; cursor: default; }
+.round-btn.accuracy { --rb: #7a5a44; --rb-ring: #e5534b; cursor: default; }
+.round-btn.accuracy.acc-mid { --rb-ring: #f0a030; }
+.round-btn.accuracy.acc-high { --rb-ring: #e8cf3a; }
+.round-btn.accuracy.acc-ready { --rb-ring: #4fb57a; }
 .round-btn.timer.ending { animation: timer-blink 1s ease-in-out infinite; }
 .round-btn.timer.ending.fast { animation-duration: 0.4s; }
 @keyframes timer-blink { 50% { opacity: 0.35; } }

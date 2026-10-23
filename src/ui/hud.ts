@@ -2,11 +2,13 @@ import { app } from '../app/app';
 import { WORLDS, type LevelDef, worldLevels } from '../game/levels';
 import { WARDROBE_MAX, countdownFace } from '../game/wardrobe-time';
 import { t } from '../i18n/i18n';
+import { SHIFT_L, SHIFT_R, SPACE } from '../learning/lessons';
 import { ICONS, h } from './dom';
+import { keyLabel } from './keyboard-guide';
 import { tip } from './tooltip';
 
-/** Colors of the round buttons: controls purple, paw orange, rhythm green, the super star gold, the place in the world blue, the wardrobe's time teal. */
-export type RoundKind = 'control' | 'paw' | 'rhythm' | 'super' | 'place' | 'timer';
+/** Colors of the round buttons: controls purple, paw orange, rhythm green, the super star gold, the place in the world blue, the wardrobe's time teal, a key's accuracy brown, the target range's hits red. */
+export type RoundKind = 'control' | 'paw' | 'rhythm' | 'super' | 'place' | 'timer' | 'accuracy' | 'hits';
 
 const RING_LEN = 2 * Math.PI * 21;
 /** Glyphs drawn filled in white; the others are white lines. */
@@ -105,6 +107,54 @@ export function rhythmPic(): { el: HTMLElement; set(ratio: number): void; label(
     label(text) {
       tip(el, text);
       el.setAttribute('aria-label', text);
+    },
+  };
+}
+
+/** Share of the ring an accuracy fills: the errors on a log scale, so 80 to 100 % takes two thirds of the ring. */
+export function accuracyFill(accuracy: number): number {
+  const errors = 1 - Math.max(0, Math.min(1, accuracy));
+  return Math.max(0, 1 - Math.log10(1 + 99 * errors) / 2);
+}
+
+/**
+ * Accuracy of one trained key (a picture): the key on the disc, the ring by `accuracyFill`;
+ * red below 80 %, orange below 90 %, yellow above, green once the key is ready.
+ */
+export function accuracyPic(key: string): { el: HTMLElement; set(accuracy: number, ready: boolean): void } {
+  const glyph = key === SPACE ? '␣' : key === SHIFT_L || key === SHIFT_R ? '⇧' : key;
+  const el = h('div', { class: 'round-btn accuracy', role: 'img' });
+  let shown = '';
+  return {
+    el,
+    set(accuracy, ready) {
+      const pct = Math.round(accuracy * 100);
+      const band = ready ? 'ready' : pct < 80 ? 'low' : pct < 90 ? 'mid' : 'high';
+      if (`${pct}${band}` === shown) return;
+      shown = `${pct}${band}`;
+      el.className = `round-btn accuracy acc-${band}`;
+      el.innerHTML = roundTextSvg(glyph, rhythmRing(accuracyFill(accuracy)));
+      const label = t('level.keyAccuracy', { key: keyLabel(key), n: pct });
+      tip(el, label);
+      el.setAttribute('aria-label', label);
+    },
+  };
+}
+
+/** Hits on the target range's target (a picture): their number on the disc, the ring filling with the base time. */
+export function hitsPic(): { el: HTMLElement; set(hits: number, time: number): void } {
+  const el = h('div', { class: 'round-btn hits', role: 'img' });
+  let shown = '';
+  return {
+    el,
+    set(hits, time) {
+      const step = `${hits}:${Math.round(Math.max(0, Math.min(1, time)) * 40)}`;
+      if (step === shown) return;
+      shown = step;
+      el.innerHTML = roundTextSvg(String(hits), rhythmRing(time));
+      const label = t('aim.hits', { n: hits });
+      tip(el, label);
+      el.setAttribute('aria-label', label);
     },
   };
 }

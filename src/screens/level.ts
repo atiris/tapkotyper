@@ -16,6 +16,7 @@ import type { Friend, Profile, Surprise, Task } from '../storage/schema';
 import { recordTaskRun, taskOwn } from '../share/task';
 import { localDate } from '../learning/stats';
 import { type Child, button, h } from '../ui/dom';
+import { tip } from '../ui/tooltip';
 import { keyLabel } from '../ui/keyboard-guide';
 import { badge } from '../ui/badge';
 import { medal } from '../ui/medal';
@@ -70,8 +71,8 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
     onHelp: (back, now) => openHelp(root.querySelector('.level-screen')!, back, now),
     onFinish: (result) => {
       if (!result) return exit();
+      if (def.kind === 'aim') return showAimDone(root, result, rt.mode as AimMode, params);
       if (params.stay) return showStayDone(root, def, result);
-      if (def.kind === 'aim') return showAimDone(root, result, (rt.mode as AimMode).report(), params);
       if (task) {
         recordTaskRun(task, result);
         saveProfile();
@@ -216,20 +217,23 @@ function showStayDone(root: HTMLElement, def: LevelDef, r: LevelResult): void {
   });
 }
 
-/** The end of the target range: accuracy before and after per weak key, new keys when the lesson advanced; no stars. */
-function showAimDone(root: HTMLElement, r: LevelResult, report: { key: string; before: number; after: number }[], params: LevelParams): void {
+/** The end of the target range over it: accuracy before and after per weak key, the hits, new keys when the lesson advanced; no stars. */
+function showAimDone(root: HTMLElement, r: LevelResult, mode: AimMode, params: LevelParams): void {
   const p = app.profile!;
   const pct = (n: number) => Math.round(n * 100);
-  const rows = report.map((k) => h('li', { class: `aim-row ${k.after > k.before ? 'good' : ''}` },
+  const rows = mode.report().map((k) => h('li', { class: `aim-row ${k.after > k.before ? 'good' : ''}` },
     h('b', { class: 'aim-row-key' }, keyLabel(k.key)),
     h('span', {}, t('aim.beforeAfter', { before: pct(k.before), after: pct(k.after) }))));
-  const facts = [h('span', { class: 'fact main' }, t('results.accuracy', { n: pct(r.accuracy) }))];
+  const facts = [h('span', { class: 'fact main' }, t('results.accuracy', { n: pct(r.accuracy) })), h('span', { class: 'fact' }, t('aim.hitsDone', { n: mode.hits, center: mode.centers }))];
   if (r.newKeys.length) facts.push(h('span', { class: 'fact new-key' }, t('aim.opened', { keys: r.newKeys.map(keyLabel).join(', ') })));
   const breakDue = app.sessionSeconds >= p.settings.sessionMinutes * 60;
   const actions = h('div', { class: 'row center' });
   if (breakDue) actions.append(button(t('results.takeBreak'), () => go('break'), 'btn primary', 'play'));
-  actions.append(button(t('aim.again'), () => go('level', params), `btn ${breakDue ? '' : 'primary'}`, 'replay'));
-  actions.append(button(t('aim.toMap'), () => go('map'), 'btn', 'map'));
+  actions.append(button(t('aim.again'), () => go('level', { ...params, stay: undefined }), `btn ${breakDue ? '' : 'primary'}`, 'replay'));
+  const stay = () => go('level', { ...params, stay: true });
+  const stayBtn = button(t('aim.stay'), stay, 'btn', 'play');
+  tip(stayBtn, t('aim.stayTip'));
+  actions.append(stayBtn, button(t('aim.toMap'), () => go('map'), 'btn', 'map'));
   const card = h('div', { class: 'card results-card aim-done' },
     h('div', { class: 'results-top' }, h('h2', {}, t('aim.done'))),
     h('div', { class: 'results-tapko' }, tapkoElement(p.companion, 'happy', 80), h('p', { class: 'bubble static side' }, breakDue ? pickLine('tapko.break') : pickLine('tapko.level_done', { name: nickname(p) }, p.customMessages))),
@@ -239,11 +243,14 @@ function showAimDone(root: HTMLElement, r: LevelResult, report: { key: string; b
   const overlay = h('div', { class: 'overlay results' }, card);
   root.querySelector('.level-screen')!.append(overlay);
   (actions.querySelector('button') as HTMLButtonElement).focus();
+  // Escape stays at the range; Escape there ends it and brings this card back.
   const stop = captureKeys(overlay, (e) => {
     if (e.key !== 'Escape' || document.querySelector('.modal-back')) return;
     e.preventDefault();
+    e.stopPropagation();
     stop();
-    go('map');
+    // After this key is done, or the new range would take the same Escape as its end.
+    setTimeout(stay);
   });
 }
 

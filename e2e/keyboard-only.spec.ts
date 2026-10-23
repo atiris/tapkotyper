@@ -60,27 +60,27 @@ test('the whole game by keyboard only: a new player, a level, the results, endin
   await page.keyboard.press('F2');
   await expect(page.locator('.kb-guide')).not.toHaveClass(/hidden/);
 
-  // F1 pauses and opens help on a whole page; Back returns to the paused level, on Continue.
+  // F1 pauses and opens help on a whole page; Back returns to the paused level, on Keep playing.
   await page.keyboard.press('F1');
   const back = page.locator('.level-help .bar').getByRole('button', { name: 'Back' });
   await expect(back).toBeFocused();
   await page.keyboard.press('Enter');
   await expect(page.locator('.level-help')).toHaveCount(0);
   const pause = page.locator('.pause-card');
-  await expect(pause.getByRole('button', { name: 'Continue' })).toBeFocused();
+  await expect(pause.getByRole('button', { name: 'Keep playing' })).toBeFocused();
 
-  // Ending after a key asks first, with Continue focused; End leaves to the map.
+  // Ending after a key asks first, with Keep playing focused; End level leaves to the map.
   await tabTo(page, 'End level');
   await page.keyboard.press('Enter');
   const ask = page.locator('.confirm-modal');
   await expect(ask).toContainText('This level will not count.');
-  await expect(ask.getByRole('button', { name: 'Continue' })).toBeFocused();
+  await expect(ask.getByRole('button', { name: 'Keep playing' })).toBeFocused();
   await page.keyboard.press('Enter');
   await expect(ask).toHaveCount(0);
   await expect(pause).toBeVisible();
   await tabTo(page, 'End level');
   await page.keyboard.press('Enter');
-  await tabTo(page, 'End');
+  await tabTo(page, 'End level');
   await page.keyboard.press('Enter');
   await page.locator('.map-screen').waitFor();
   expect(errors).toEqual([]);

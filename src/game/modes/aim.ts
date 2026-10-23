@@ -4,19 +4,21 @@ import { ease } from '../../engine/tween';
 import { drawSprite, type G, roundRect } from '../../gfx/draw';
 import { t } from '../../i18n/i18n';
 import { SHIFT_L, SHIFT_R, SPACE, isKeyReady, keysAccuracy, notReadyKeys, recentAccuracy } from '../../learning/lessons';
+import { hitsPic } from '../../ui/hud';
 import { keyLabel } from '../../ui/keyboard-guide';
 import { WORLDS } from '../levels';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
 import { HeroMode } from './planet';
 
-/** The run ends after this many throws or seconds of play, whichever comes first. */
-export const AIM_THROWS = 12;
+/** Seconds of play before the run ends with the throw in the air (staying a while has no end). */
 export const AIM_SECONDS = 120;
 /** Wrong keys in one flight before the projectile falls. */
 export const FALL_ERRORS = 3;
 /** How much lower the path runs after each wrong key. */
 const SINK = 24;
+/** How far the projectile drifts up off its path for each word not typed in time, clear of the ring. */
+const DRIFT = 100;
 /** Target radius at no accuracy and at full accuracy. */
 const BIG = 120;
 const SMALL = 48;
@@ -24,7 +26,7 @@ const SMALL = 48;
 export const RINGS = 4;
 /** Share of the path flown per second once the word of the next stop is typed, and while falling. */
 const RUSH = 0.9;
-const DRIFT = 0.09;
+const FALL_DRIFT = 0.09;
 /** Words picked for one stop; the best fitting one wins. */
 const CANDIDATES = 8;
 const PAUSE_AFTER = 1.1;
@@ -36,11 +38,6 @@ export type Projectile = typeof PROJECTILES[number];
 export function targetRadius(accuracy: number): number {
   const a = Math.max(0, Math.min(1, accuracy));
   return BIG + (SMALL - BIG) * a;
-}
-
-/** The run is over: enough throws, or enough time. */
-export function aimOver(throws: number, seconds: number): boolean {
-  return throws >= AIM_THROWS || seconds >= AIM_SECONDS;
 }
 
 /** Characters of a word that train these keys (a capital trains the Shifts, a space the space bar). */
@@ -83,6 +80,8 @@ interface Stop {
 
 interface Flight {
   kind: Projectile;
+  /** The short word that throws it while Tapko still holds it. */
+  launch: Target | null;
   stops: Stop[];
   /** 0 (Tapko's paw) .. 1 (the target), along the path. */
   s: number;
@@ -94,8 +93,14 @@ interface Flight {
   clean: boolean;
   errors: number;
   sink: number;
-  /** 'fly' along the path, 'fall' after three wrong keys, 'hit' at the target. */
-  phase: 'fly' | 'fall' | 'hit';
+  /** Where the leg to the next stop began; the drift of the words missed so far, and the drift shown now (negative = up). */
+  from: number;
+  drift: number;
+  lift: number;
+  /** 'ready' in Tapko's paw, 'fly' along the path, 'fall' after three wrong keys, 'hit' at the target, 'miss' past it (its word came too late). */
+  phase: 'ready' | 'fly' | 'fall' | 'hit' | 'miss';
+  /** Thrown within the base time (or while staying): its hit counts. */
+  counts: boolean;
   /** Falling: the drop below the path and its speed, and whether it is on the ground; seconds since the hit or the landing. */
   drop: number;
   vy: number;
@@ -113,11 +118,11 @@ interface Mark {
 }
 
 /**
- * The target range of a world: Tapko throws a funny projectile at a target through 4 rings;
- * each ring and the target carry a word rich in the weak keys, longer toward the target. The
- * projectile keeps flying; a ring passed before its word is typed spoils the bullseye. A wrong
- * key makes it sink, three make it fall softly; the target shrinks as the weak keys get more
- * accurate. No stars.
+ * The target range of a world: a short word makes Tapko throw a funny projectile at a target
+ * through 4 rings; each ring and the target carry a word rich in the weak keys, longer toward
+ * the target. The projectile keeps flying; a ring passed before its word is typed spoils the
+ * bullseye. A wrong key makes it sink, three make it fall softly; the target shrinks as the
+ * weak keys get more accurate. Hits within the base time are counted. No stars.
  */
 export class AimMode extends HeroMode {
   readonly world: string;
@@ -127,11 +132,14 @@ export class AimMode extends HeroMode {
   private held: string[];
   private readonly before: Map<string, number>;
   private flight: Flight | null = null;
-  private throws = 0;
   private time = 0;
   private radius: number;
   private shrink = 0;
   private marks: Mark[] = [];
+  /** Hits on the target and in its middle, from throws within the base time (all of them while staying). */
+  hits = 0;
+  centers = 0;
+  private hitsEl = hitsPic();
 
   constructor(L: LevelRuntime) {
     super(L);
@@ -142,10 +150,20 @@ export class AimMode extends HeroMode {
     this.before = new Map(this.keys.map((k) => [k, recentAccuracy(p.stats.keys[k])]));
     this.phraseWords = this.keys.includes(SPACE) ? 2 : 1;
     this.radius = targetRadius(this.accuracy);
+    this.hitsEl.set(0, 0);
   }
 
   startLine(): string {
     return t('aim.start', { keys: this.keys.map(keyLabel).join(' ') });
+  }
+
+  /** The rules stay up until the first throw. */
+  startSeconds(): number {
+    return 60;
+  }
+
+  rings(): HTMLElement[] {
+    return [this.hitsEl.el];
   }
 
   /** Accuracy before and now of each trained key. */
@@ -195,20 +213,43 @@ export class AimMode extends HeroMode {
       const s = i < RINGS ? (i + 1) / (RINGS + 1) : 1;
       return { ...this.point(s), s, len, tg: null, typed: false, passed: 0, missed: false };
     });
-    const f: Flight = { kind: this.L.rng.pick(PROJECTILES), stops, s: 0, speed: 0, next: 0, clean: true, errors: 0, sink: 0, phase: 'fly', drop: 0, vy: 0, landed: false, after: 0, spin: 0 };
+    const f: Flight = { kind: this.L.rng.pick(PROJECTILES), launch: null, stops, s: 0, speed: 0, next: 0, clean: true, errors: 0, sink: 0, from: 0, drift: 0, lift: 0, phase: 'ready', counts: false, drop: 0, vy: 0, landed: false, after: 0, spin: 0 };
     this.flight = f;
+    const len = stops[0].len;
+    f.launch = this.L.core.add(pickWord(Array.from({ length: CANDIDATES }, () => this.L.word(len)), this.aimed, len), {});
+  }
+
+  /** The launch word is typed: Tapko throws, the first ring gets its word; the rules leave with the first throw. */
+  private launch(f: Flight): void {
+    f.phase = 'fly';
+    f.launch = null;
+    f.counts = this.L.staying || this.time < AIM_SECONDS;
+    if (this.firstThrow) this.L.hideBubble();
+    this.firstThrow = false;
     this.happy();
     if (!this.L.reduceMotion) this.L.tweens.add(0.4, (k) => (this.jump = k * 0.6), ease.linear, () => (this.jump = 0));
     this.L.sfx('whoosh');
     this.arm(f);
   }
 
+  private firstThrow = true;
+
   /** The next stop gets its word, and the projectile the speed to reach it in the word's travel time. */
   private arm(f: Flight): void {
     const stop = f.stops[f.next];
     const words = Array.from({ length: CANDIDATES }, () => this.L.word(stop.len));
     stop.tg = this.L.core.add(pickWord(words, this.aimed, stop.len), {});
+    f.from = f.s;
     f.speed = (stop.s - f.s) / this.L.travelTime(stop.tg.word);
+  }
+
+  /** The drift it heads for: the missed words, plus a share of one more as the leg passes with its word still untyped. */
+  private liftGoal(f: Flight): number {
+    const stop = f.stops[f.next];
+    if (f.phase !== 'fly' || stop.typed || !stop.tg) return f.drift;
+    const leg = Math.min(1, (f.s - f.from) / Math.max(0.001, stop.s - f.from));
+    const left = 1 - stop.tg.typed / stop.tg.word.length;
+    return f.drift - DRIFT * leg * left;
   }
 
   /** The projectile reached its next stop: through the ring (or past it, too late), or at the target. */
@@ -217,10 +258,11 @@ export class AimMode extends HeroMode {
     if (!stop.typed) {
       stop.missed = true;
       f.clean = false;
+      f.drift -= DRIFT;
       if (stop.tg) this.L.core.release(stop.tg);
       stop.tg = null;
     }
-    if (f.next === f.stops.length - 1) return this.hit(f);
+    if (f.next === f.stops.length - 1) return f.clean ? this.hit(f) : this.miss(f);
     stop.passed = 0.0001;
     if (stop.typed) this.L.particles.emit(stop.x, stop.y, 10, 'sparkle', ['#bfe8ff', '#ffffff', '#ffd1f5'], 140, 7);
     f.next++;
@@ -232,12 +274,14 @@ export class AimMode extends HeroMode {
     this.time += dt;
     this.scroll += dt * 4;
     this.radius += (targetRadius(this.accuracy) - this.radius) * Math.min(1, dt * 3);
+    this.hitsEl.set(this.hits, this.progress());
     this.shrink = Math.max(0, this.shrink - dt);
     for (const m of this.marks) m.age += dt;
     this.marks = this.marks.filter((m) => m.kind === 'fly' || m.kind === 'tomato' ? m.age < 6 : m.age < 1.2);
     const f = this.flight;
-    if (!f) return;
-    f.spin += dt * (f.kind === 'arrow' ? 0 : 3);
+    if (!f || f.phase === 'ready') return;
+    if (!f.landed) f.spin += dt * (f.kind === 'arrow' ? 0 : 3);
+    f.lift += (this.liftGoal(f) - f.lift) * Math.min(1, dt * 4);
     for (const r of f.stops) if (r.passed) r.passed += dt;
     if (f.phase === 'fly') {
       const stop = f.stops[f.next];
@@ -245,8 +289,8 @@ export class AimMode extends HeroMode {
       if (f.s >= stop.s) this.reach(f);
     } else if (f.phase === 'fall') {
       if (!f.landed) {
-        f.s = Math.min(1, f.s + DRIFT * dt);
-        const ground = VH * 0.9 - this.point(f.s).y - f.sink;
+        f.s = Math.min(1, f.s + FALL_DRIFT * dt);
+        const ground = VH * 0.9 - this.point(f.s).y - f.sink - f.lift;
         f.vy += 900 * dt;
         f.drop = Math.min(ground, f.drop + f.vy * dt);
         if (f.drop >= ground) this.land(f);
@@ -255,18 +299,28 @@ export class AimMode extends HeroMode {
     this.L.core.prune();
   }
 
-  /** The throw is over (hit or fallen); the next one comes unless the run is over. */
+  /** The throw is over (hit or fallen); the next one comes until the time is up, or always while staying. */
   private done1(): void {
-    this.throws++;
     this.flight = null;
-    if (!this.finished) this.throw();
+    if (this.L.staying || this.time < AIM_SECONDS) this.throw();
   }
 
-  /** At the target: the middle when every word came in time, else somewhere on the rings (lower after wrong keys). */
+  /** A word came too late, so it drifted off: the projectile whizzes past behind the board; no harm, just no hit. */
+  private miss(f: Flight): void {
+    f.phase = 'miss';
+    this.L.sfx('whoosh');
+    this.L.shout(t('aim.miss'), this.target.x, this.target.y - this.radius - 40);
+  }
+
+  /** At the target (every word came in time): the middle without wrong keys, else lower on the rings. */
   private hit(f: Flight): void {
     f.phase = 'hit';
     const tg = this.target;
-    const center = f.clean && !f.sink;
+    const center = !f.sink;
+    if (f.counts) {
+      this.hits++;
+      if (center) this.centers++;
+    }
     const side = this.L.rng.chance(0.5) ? 1 : -1;
     const dx = center ? 0 : side * this.L.rng.range(0.5, 0.75) * this.radius;
     const dy = center ? 0 : (f.sink / (SINK * FALL_ERRORS)) * this.radius * 0.6;
@@ -288,6 +342,7 @@ export class AimMode extends HeroMode {
 
   onDone(tg: Target): void {
     const f = this.flight;
+    if (f?.phase === 'ready' && f.launch === tg) this.launch(f);
     if (!f || f.phase !== 'fly') return;
     const stop = f.stops[f.next];
     if (stop.tg !== tg) return;
@@ -329,13 +384,18 @@ export class AimMode extends HeroMode {
   }
 
   render(g: G): void {
-    this.drawTarget(g);
     const f = this.flight;
+    if (f?.phase === 'miss') {
+      const k = Math.min(1, f.after / PAUSE_AFTER), tg = this.target;
+      this.drawThing(g, f.kind, tg.x + k * this.L.vw * 0.3, tg.y + f.lift + k * 40, 46, f.spin, 1 - k);
+    }
+    this.drawTarget(g);
     if (f) {
       f.stops.slice(0, RINGS).forEach((r, i) => this.drawRing(g, r, i === f.next && f.phase === 'fly'));
       const last = f.stops[RINGS];
       if (last.tg) this.L.label(g, last.tg, last.x, last.y - this.radius - 34, 38);
-      if (f.phase === 'fly' || (f.phase === 'fall' && f.after < 0.3)) this.drawProjectile(g, f);
+      if (f.launch) this.L.label(g, f.launch, this.hand.x, this.hand.y - 70, 38);
+      if (f.phase !== 'hit' && f.phase !== 'miss') this.drawProjectile(g, f);
     }
     this.drawHero(g);
   }
@@ -345,12 +405,7 @@ export class AimMode extends HeroMode {
     // A little squash while it shrinks after a weak key got ready.
     const k = this.shrink > 0 && !this.L.reduceMotion ? 1 + Math.sin((0.6 - this.shrink) / 0.6 * Math.PI) * 0.12 : 1;
     const r = this.radius * k;
-    // The wooden stand.
-    g.save();
-    g.fillStyle = '#9a6a3c';
-    g.fillRect(x - 8, y, 16, VH * 0.9 - y);
-    g.fillRect(x - 40, VH * 0.9 - 10, 80, 12);
-    g.restore();
+    this.drawStand(g, x, y, r);
     drawSprite(g, 'obj-aim-target', x, y, r * 2, {}, (c, w) => {
       const rr = w / 2;
       ['#e5534b', '#fffdf6', '#e5534b', '#fffdf6', '#f5c542'].forEach((col, i) => {
@@ -366,6 +421,38 @@ export class AimMode extends HeroMode {
       c.stroke();
     });
     for (const m of this.marks) this.drawMark(g, m, x, y);
+  }
+
+  /** A wooden easel under the board: two splayed legs, a back leg and a crossbar, with a soft shadow. */
+  private drawStand(g: G, x: number, y: number, r: number): void {
+    const ground = VH * 0.9, spread = Math.max(36, r * 0.75), bar = y + (ground - y) * 0.6;
+    const along = (k: number) => spread * ((bar - y) / (ground - y)) * k;
+    const back: [number, number, number, number] = [x, y, x + spread * 0.3, ground - 6];
+    const parts: [number, number, number, number][] = [[x - 4, y, x - spread, ground], [x + 4, y, x + spread, ground], [x - along(1), bar, x + along(1), bar]];
+    g.save();
+    g.fillStyle = 'rgba(60, 40, 20, 0.15)';
+    g.beginPath();
+    g.ellipse(x, ground + 2, spread * 1.25, 9, 0, 0, Math.PI * 2);
+    g.fill();
+    g.lineCap = 'round';
+    const pass = (list: [number, number, number, number][], width: number, color: string) => {
+      g.strokeStyle = color;
+      g.lineWidth = width;
+      for (const [x1, y1, x2, y2] of list) {
+        g.beginPath();
+        g.moveTo(x1, y1);
+        g.lineTo(x2, y2);
+        g.stroke();
+      }
+    };
+    pass([back], 13, '#5a3d2b');
+    pass([back], 8, '#8a5e36');
+    pass(parts, 15, '#5a3d2b');
+    pass(parts, 10, '#b07a45');
+    // A lighter grain line along each front leg.
+    g.globalAlpha = 0.45;
+    pass(parts.slice(0, 2).map(([x1, y1, x2, y2]) => [x1 - 2, y1 + 8, x2 - 2, y2 - 6]), 2.5, '#d9a36a');
+    g.restore();
   }
 
   private drawMark(g: G, m: Mark, x: number, y: number): void {
@@ -433,10 +520,10 @@ export class AimMode extends HeroMode {
 
   private drawProjectile(g: G, f: Flight): void {
     const p = this.point(f.s);
-    // The arrow points along the path; the rest tumbles slowly.
+    // The arrow points along the path; the rest tumbles slowly. A fallen one lies on the grass and fades before the next throw.
     const next = this.point(Math.min(1, f.s + 0.01));
     const rot = f.kind === 'arrow' ? Math.atan2(next.y - p.y, next.x - p.x) : this.L.reduceMotion ? 0 : f.spin;
-    this.drawThing(g, f.kind, p.x, p.y + f.sink + f.drop, 46, rot, 1);
+    this.drawThing(g, f.kind, p.x, p.y + f.sink + f.lift + f.drop, 46, rot, f.landed ? 1 - f.after / PAUSE_AFTER : 1);
   }
 
   /** A projectile, drawn in code until its picture is there. */
@@ -446,11 +533,11 @@ export class AimMode extends HeroMode {
   }
 
   progress(): number {
-    return Math.min(1, Math.max(this.throws / AIM_THROWS, this.time / AIM_SECONDS));
+    return Math.min(1, this.time / AIM_SECONDS);
   }
 
   get finished(): boolean {
-    return aimOver(this.throws, this.time);
+    return !this.L.staying && this.time >= AIM_SECONDS && (!this.flight || this.flight.phase === 'ready');
   }
 }
 

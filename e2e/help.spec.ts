@@ -54,7 +54,7 @@ test('help opens from the map and from a paused level and goes back', async ({ p
   await page.keyboard.press('Escape');
   await expect(levelHelp).toHaveCount(0);
   await expect(pause).toBeVisible();
-  await expect(pause.getByRole('button', { name: 'Continue' })).toBeFocused();
+  await expect(pause.getByRole('button', { name: 'Keep playing' })).toBeFocused();
   // The "?" of the level opens the same page; Back returns to the paused level.
   await page.locator('.hud').getByRole('button', { name: 'Help in the level' }).click();
   await levelHelp.locator('.bar').getByRole('button', { name: 'Back' }).click();

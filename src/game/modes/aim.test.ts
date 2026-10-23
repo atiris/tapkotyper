@@ -9,11 +9,14 @@ vi.mock('../../app/app', async () => {
 });
 vi.mock('../../ui/dom', () => ({ h: () => ({ replaceChildren: () => {} }) }));
 vi.mock('../../ui/keyboard-guide', () => ({ keyLabel: (k: string) => k }));
+vi.mock('../../ui/hud', () => ({ hitsPic: () => ({ el: {}, set: () => {} }) }));
 
-const { AIM_THROWS, AimMode, FALL_ERRORS, RINGS, aimOver, pickWord, targetRadius, throwLengths, weakCount } = await import('./aim');
+const { AIM_SECONDS, AimMode, FALL_ERRORS, RINGS, pickWord, targetRadius, throwLengths, weakCount } = await import('./aim');
 
-function fakeRuntime(): LevelRuntime {
+function fakeRuntime(extra: Record<string, unknown> = {}): LevelRuntime {
   const base: Record<string, unknown> = {
+    staying: false,
+    ...extra,
     core: new TypingCore(),
     def: { id: 'aim', kind: 'aim', world: 0, index: -1, count: 0, focus: ['k'] },
     vw: 1280,
@@ -78,17 +81,13 @@ describe('target range', () => {
     expect(throwLengths([2, 6])).toHaveLength(RINGS + 1);
   });
 
-  it('ends after twelve throws or two minutes', () => {
-    expect(aimOver(AIM_THROWS, 10)).toBe(true);
-    expect(aimOver(3, 120)).toBe(true);
-    expect(aimOver(3, 60)).toBe(false);
-  });
-
   it('every word in time hits the middle of the target', () => {
     const L = fakeRuntime();
     const mode = new AimMode(L);
     mode.start();
-    // Four rings and the target, each with its word.
+    // The launch word throws; then four rings and the target, each with its word.
+    expect(L.core.focus()?.word).toBe('kdk');
+    typeRing(mode, L);
     for (let stop = 0; stop <= RINGS; stop++) {
       run(mode, L, 0.5);
       expect(L.core.focus()?.word).toBe('kdk');
@@ -96,16 +95,18 @@ describe('target range', () => {
     }
     run(mode, L, 0.5);
     expect(L.shout).toHaveBeenCalledWith(t('aim.center'), expect.any(Number), expect.any(Number));
+    expect([mode.hits, mode.centers]).toEqual([1, 1]);
     run(mode, L, 2);
-    // The next throw came with a new first ring.
+    // The next throw waits for its launch word.
     expect(L.core.focus()?.word).toBe('kdk');
-    expect(mode.progress()).toBeGreaterThanOrEqual(1 / AIM_THROWS);
+    expect(mode.progress()).toBeGreaterThan(0);
   });
 
-  it('a ring passed before its word is typed spoils the middle', () => {
+  it('a ring passed before its word is typed drifts the projectile off, past the target', () => {
     const L = fakeRuntime();
     const mode = new AimMode(L);
     mode.start();
+    typeRing(mode, L);
     const first = L.core.focus();
     // The projectile keeps flying and reaches the first ring in the word's travel time.
     run(mode, L, 2.1);
@@ -115,13 +116,27 @@ describe('target range', () => {
       run(mode, L, 0.5);
     }
     expect(L.shout).toHaveBeenCalledTimes(1);
-    expect(L.shout).not.toHaveBeenCalledWith(t('aim.center'), expect.any(Number), expect.any(Number));
+    expect(L.shout).toHaveBeenCalledWith(t('aim.miss'), expect.any(Number), expect.any(Number));
+    expect(mode.hits).toBe(0);
+  });
+
+  it('a target word too late misses the target without a mistake', () => {
+    const L = fakeRuntime();
+    const mode = new AimMode(L);
+    mode.start();
+    typeRing(mode, L);
+    // Nothing typed: every ring passes, the projectile whizzes past the target.
+    run(mode, L, 2.1 * (RINGS + 1));
+    expect(L.shout).toHaveBeenCalledWith(t('aim.miss'), expect.any(Number), expect.any(Number));
+    expect(mode.hits).toBe(0);
+    expect(mode.report()).toEqual([{ key: 'k', before: 0, after: 0 }]);
   });
 
   it('three wrong keys make the projectile fall, and the next throw comes', () => {
     const L = fakeRuntime();
     const mode = new AimMode(L);
     mode.start();
+    typeRing(mode, L);
     run(mode, L, 1);
     const first = L.core.focus();
     for (let i = 0; i < FALL_ERRORS; i++) {
@@ -136,15 +151,25 @@ describe('target range', () => {
     expect(L.core.focus()).not.toBeNull();
   });
 
-  it('twelve throws end the run with accuracy before and after per key', () => {
+  it('two minutes end the run once the throw in the air lands, with accuracy before and after per key', () => {
     const L = fakeRuntime();
     const mode = new AimMode(L);
     mode.start();
-    for (let i = 0; i < 200 && !mode.finished; i++) {
-      run(mode, L, 1);
+    for (let i = 0; i < 400 && !mode.finished; i++) {
+      run(mode, L, 0.5);
       typeRing(mode, L);
     }
     expect(mode.finished).toBe(true);
+    expect(mode.progress()).toBe(1);
     expect(mode.report()).toEqual([{ key: 'k', before: 0, after: 0 }]);
+  });
+
+  it('staying a while keeps throwing after two minutes', () => {
+    const L = fakeRuntime({ staying: true });
+    const mode = new AimMode(L);
+    mode.start();
+    run(mode, L, AIM_SECONDS + 20);
+    expect(mode.finished).toBe(false);
+    expect(L.core.focus()).not.toBeNull();
   });
 });

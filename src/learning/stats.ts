@@ -80,6 +80,12 @@ export function lastTraining(profile: Profile, now = new Date()): { daysAgo: num
   return { daysAgo: last ? Math.max(0, daysBetween(last.date, today)) : null, weekMinutes: Math.round(week / 60) };
 }
 
+/** Characters typed in the last `days` local calendar days, today included. */
+export function charsInDays(profile: Profile, days: number, now = new Date()): number {
+  const today = localDate(now);
+  return profile.stats.sessions.filter((s) => daysBetween(s.date, today) < days).reduce((a, s) => a + s.chars, 0);
+}
+
 export interface KeyReport {
   key: string;
   /** All presses ever. */

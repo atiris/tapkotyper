@@ -7,6 +7,7 @@ import { linkOf } from '../share/codec';
 import { makeResult, resultCode } from '../share/result';
 import { activeTask, taskLeft } from '../share/task';
 import type { Profile, Task } from '../storage/schema';
+import { nickname } from '../storage/store';
 import { button, h, modal } from '../ui/dom';
 import { bigCode } from '../ui/big-code';
 import { fitsQr, linkBox } from '../ui/link-box';
@@ -51,7 +52,7 @@ export async function handInDialog(p: Profile, task: Task): Promise<void> {
     tapkoElement(p.companion, 'happy', 100),
     h('h2', {}, t('task.handInTitle')),
     h('p', {}, t('task.handInText')),
-    fitsQr(link) ? button(t('task.bigCode'), () => bigCode(link, p.name, t('progress.exerciseCaption', { title: task.title || t('task.untitled') }), 'exercise'), 'btn', 'fullscreen') : null,
+    fitsQr(link) ? button(t('task.bigCode'), () => bigCode(link, nickname(p), t('progress.exerciseCaption', { title: task.title || t('task.untitled') }), 'exercise'), 'btn', 'fullscreen') : null,
     linkBox(link),
     h('p', { class: 'hint' }, t('task.checksumNote'))), { cls: 'share-modal' });
 }

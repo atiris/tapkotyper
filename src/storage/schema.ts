@@ -1,4 +1,4 @@
-// Storage schema v3. These types are the data contract of `localStorage['tapkotyper:v1']`
+// Storage schema v4. These types are the data contract of `localStorage['tapkotyper:v1']`
 // and of exported `.json` files. Older shapes are upgraded by the migrations in store.ts.
 
 export type Lang = 'sk' | 'en';
@@ -77,6 +77,12 @@ export interface Settings {
   speakTyped: boolean;
   /** Wardrobe time is earned by practice and runs out (see game/wardrobe-time.ts). */
   wardrobeLimit: boolean;
+  /** Language of the word list the targets come from; the interface language is `Profile.language`. */
+  wordLang: Lang;
+  /** Language of the word list mixed with the own words and text of the custom exercise. */
+  ownWordLang: Lang;
+  /** Key caps and key marks use a font that tells l, I and 1 apart. */
+  keyFont: boolean;
 }
 
 /** A little friend helped in a rescue mission: a dragon (story 1), a robot (story 2) or a forest friend (story 3). */
@@ -150,7 +156,7 @@ export interface Surprise {
 
 /** The character the child plays as. */
 export interface Companion {
-  /** The child's nickname in the game; empty means the player's name (see `nickname`). */
+  /** The player's nickname, shown everywhere the game shows the player; never empty. */
   name: string;
   kind: CompanionKind;
   /** Equipped accessory ids. */
@@ -184,9 +190,9 @@ export interface Task {
 
 export interface Profile {
   id: string;
-  /** The child's real name: shown to parents and teachers and in result codes. */
+  /** Optional real name, shown to the mentor only (in result codes the nickname stands in when it is empty). */
   name: string;
-  /** 32-bit hash of the name at creation; deals the per-player character prices and accessories. */
+  /** 32-bit hash of the name (or the nickname without one) at creation; deals the per-player character prices and accessories. */
   seed: number;
   avatar: CompanionKind;
   companion: Companion;
@@ -209,7 +215,7 @@ export interface ParentLock {
 }
 
 export interface StoreData {
-  version: 3;
+  version: 4;
   profiles: Profile[];
   lastProfileId: string | null;
   language: Lang | null;
@@ -221,7 +227,7 @@ export const GUEST_ID = 'guest';
 /** The temporary super player (see app/super.ts); never stored. */
 export const SUPER_ID = 'super';
 
-export function defaultSettings(): Settings {
+export function defaultSettings(wordLang: Lang): Settings {
   return {
     activeKeysMode: 'auto',
     manualKeys: [],
@@ -247,6 +253,9 @@ export function defaultSettings(): Settings {
     readAloud: false,
     speakTyped: true,
     wardrobeLimit: true,
+    wordLang,
+    ownWordLang: wordLang,
+    keyFont: true,
   };
 }
 

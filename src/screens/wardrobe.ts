@@ -48,12 +48,15 @@ export function wardrobeScreen(root: HTMLElement): () => void {
     renderTapkoInto(preview, p.companion, mood);
   } }, preview);
   preview.addEventListener('animationend', () => preview.classList.remove('jump'));
-  // An empty nickname is allowed: the game then uses the player's name.
-  const nick = h('input', { id: 'buddy-name', type: 'text', maxlength: String(NICK_MAX), value: p.companion.name, placeholder: p.name, autocomplete: 'off', spellcheck: 'false' });
+  // The nickname is required: an empty field keeps the last one and shows it again on leaving.
+  const nick = h('input', { id: 'buddy-name', type: 'text', maxlength: String(NICK_MAX), value: p.companion.name, required: true, autocomplete: 'off', spellcheck: 'false' });
   nick.addEventListener('input', () => {
-    p.companion.name = nick.value.trim();
+    const v = nick.value.trim();
+    if (!v) return;
+    p.companion.name = v;
     saveProfile();
   });
+  nick.addEventListener('blur', () => { nick.value = p.companion.name; });
   const stars = totalStars(p);
   const kinds = h('div', { class: 'kind-picker', role: 'radiogroup', 'aria-label': t('wardrobe.buddy') });
   const rules = new Map(unlockRules(p).map((r) => [r.acc, r.rule]));

@@ -1,7 +1,7 @@
-import { app, applyProfileLook, go, saveProfile, selectProfile, useLanguage } from '../app/app';
+import { app, applyProfileLook, go, loadPlayerWords, saveProfile, selectProfile, useLanguage } from '../app/app';
 import { t } from '../i18n/i18n';
 import { LAYOUTS, LAYOUT_IDS, allKeys } from '../keyboard/layouts';
-import { LEVELS, type LevelDef, WORLDS } from '../game/levels';
+import { LEVELS, type LevelDef, STORIES, WORLDS, worldLevels } from '../game/levels';
 import { SURPRISES_MAX, SURPRISE_LEN, SURPRISE_N_MAX, TRIGGERS, newSurprise, restartSurprise, surpriseCount } from '../game/own-content';
 import { wordSource } from '../game/runtime';
 import { lessonKeyOf, lessonOrder, punctuationKeys } from '../learning/lessons';
@@ -12,13 +12,13 @@ import { TASK_GROUP_MAX, TASK_MINUTES, TASK_TITLE_MAX, type TaskSpec, addTask, t
 import { moveCode } from '../share/transfer';
 import { linkBox } from '../ui/link-box';
 import { handInDialog } from './task';
-import { NICK_MAX, applyImport, parseImport, planImport } from '../storage/store';
+import { NICK_MAX, applyImport, nickname, parseImport, planImport } from '../storage/store';
 import { KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
 import { button, confirmDialog, download, h, modal } from '../ui/dom';
 import { tapkoElement } from '../gfx/tapko';
 import { cornerControls, starRow } from '../ui/chrome';
 import { tabBar } from '../ui/tabs';
-import { clickableHeatmap, summaryRow } from './stats';
+import { clickableHeatmap, storyPicture, summaryRow } from './stats';
 import { barChart, lineChart } from '../ui/charts';
 import { hasCompanion, masteredCount, totalStars } from '../game/rewards';
 import { OWN_TEXT_MAX, OWN_WORDS_MAX, parseOwnWords, typableText, untypableWords } from '../words/words';
@@ -48,13 +48,13 @@ function childSwitch(p: Profile, others: Profile[], tab: () => string): HTMLElem
     await selectProfile(q);
     go('parent', { granted: true, tab: tab() });
   };
-  const b = button(h('span', { class: 'switch-label' }, tapkoElement(p.companion, 'idle', 28), h('span', {}, p.name)), () => {
+  const b = button(h('span', { class: 'switch-label' }, tapkoElement(p.companion, 'idle', 28), h('span', {}, nickname(p))), () => {
     const close = modal(h('div', { class: 'switch-dialog' },
       h('h2', {}, t('parent.switchTitle')),
       h('div', { class: 'switch-list' }, ...others.map((q) =>
         h('button', { class: 'profile-card small', type: 'button', onClick: () => { close(); void pick(q); } },
           tapkoElement(q.companion, 'idle', 64),
-          h('span', { class: 'profile-name' }, q.name),
+          h('span', { class: 'profile-name' }, nickname(q)),
           h('span', { class: 'profile-sub' }, t('start.stars', { n: totalStars(q) })))))), { cls: 'confirm-modal' });
   }, 'btn small switch-btn');
   b.dataset.tip = t('parent.switchTitle');
@@ -107,10 +107,19 @@ function autoField(ranges: HTMLElement[], auto: boolean, onAuto: (v: boolean) =>
 function settingsTab(p: Profile): HTMLElement {
   const s = p.settings;
   const save = () => { saveProfile(); applyProfileLook(p); };
+  // The nickname is required: a blank one is not saved. A blank name clears the name.
+  const nickError = h('small', { class: 'error', role: 'alert' });
+  const nick = h('input', { type: 'text', value: p.companion.name, maxlength: NICK_MAX, required: true });
+  nick.addEventListener('change', () => {
+    const v = nick.value.trim();
+    nickError.textContent = v ? '' : t('parent.nickMissing');
+    if (!v) return;
+    p.companion.name = v;
+    save();
+  });
   const name = h('input', { type: 'text', value: p.name, maxlength: 24 });
-  name.addEventListener('change', () => { p.name = name.value.trim() || p.name; save(); });
-  const nick = h('input', { type: 'text', value: p.companion.name, maxlength: NICK_MAX, placeholder: p.name });
-  nick.addEventListener('change', () => { p.companion.name = nick.value.trim(); save(); });
+  name.addEventListener('change', () => { p.name = name.value.trim(); save(); });
+  const langs: [Lang, string][] = [['sk', 'Slovenčina'], ['en', 'English']];
   const tapko = h('span', { class: 'child-tapko' });
   const paintTapko = () => tapko.replaceChildren(tapkoElement(p.companion, 'happy', 96));
   const kinds = h('div', { class: 'kind-picker', role: 'radiogroup', 'aria-label': t('parent.companionKind') },
@@ -127,10 +136,11 @@ function settingsTab(p: Profile): HTMLElement {
   paintTapko();
   return h('div', { class: 'settings-grid' },
     h('fieldset', {}, h('legend', {}, t('parent.group.child')),
-      h('div', { class: 'child-summary' }, tapko, field(t('parent.childName'), name)),
+      h('div', { class: 'child-summary' }, tapko, h('div', {}, field(t('parent.nickname'), nick, t('parent.nicknameHint')), nickError)),
       field(t('parent.companionKind'), kinds, undefined, 'div'),
-      field(t('parent.nickname'), nick, t('parent.nicknameHint')),
-      field(t('parent.language'), select<Lang>(p.language, [['sk', 'Slovenčina'], ['en', 'English']], async (v) => { p.language = v; save(); await useLanguage(v); go('parent', { granted: true }); })),
+      field(t('parent.childName'), name, t('parent.childNameHint')),
+      field(t('parent.language'), select<Lang>(p.language, langs, async (v) => { p.language = v; save(); await useLanguage(v); go('parent', { granted: true }); })),
+      field(t('parent.wordLang'), select<Lang>(s.wordLang, langs, (v) => { s.wordLang = v; save(); void loadPlayerWords(p); }), t('parent.wordLangHint')),
       field(t('parent.layout'), select<LayoutId>(p.layout, LAYOUT_IDS.map((id) => [id, t(`layouts.${id}`)]), (v) => {
         p.layout = v;
         // Keep the progress, but only keys the new layout teaches.
@@ -158,6 +168,7 @@ function settingsTab(p: Profile): HTMLElement {
       field(t('parent.music'), range(s.musicVolume, 0, 1, 0.1, (v) => { s.musicVolume = v; save(); }, (v) => `${Math.round(v * 100)} %`)),
       switchField(t('parent.speakTyped'), check(s.speakTyped, (v) => { s.speakTyped = v; save(); }), t('parent.speakTypedHint')),
       field(t('parent.font'), select<FontChoice>(s.font, [['lexend', 'Lexend'], ['atkinson', 'Atkinson Hyperlegible'], ['opendyslexic', 'OpenDyslexic']], (v) => { s.font = v; save(); })),
+      switchField(t('parent.keyFont'), check(s.keyFont, (v) => { s.keyFont = v; save(); }), t('parent.keyFontHint')),
       switchField(t('parent.largeText'), check(s.largeText, (v) => { s.largeText = v; save(); })),
       switchField(t('parent.reduceMotion'), check(s.reduceMotion, (v) => { s.reduceMotion = v; save(); })),
       switchField(t('parent.highContrast'), check(s.highContrast, (v) => { s.highContrast = v; save(); })),
@@ -371,7 +382,7 @@ function ownWordsEditors(p: Profile): HTMLElement[] {
   const textInfo = h('p', { class: 'hint', 'aria-live': 'polite' });
   const preview = h('ul', { class: 'own-preview' });
   const paintPreview = () => {
-    const src = wordSource(p);
+    const src = wordSource(p, s.ownWordLang);
     preview.replaceChildren(...Array.from({ length: 5 }, () => h('li', {}, src.next(new Set(), undefined, 2))));
   };
   const paint = () => {
@@ -391,6 +402,7 @@ function ownWordsEditors(p: Profile): HTMLElement[] {
   });
   text.addEventListener('change', () => { s.ownText = text.value.slice(0, OWN_TEXT_MAX).trim(); saveProfile(); paint(); });
   const mix = select<OwnMix>(s.ownMix, (['off', 'some', 'half', 'most'] as const).map((m): [OwnMix, string] => [m, t(`own.mix.${m}`)]), (v) => { s.ownMix = v; saveProfile(); paintPreview(); });
+  const wordLang = select<Lang>(s.ownWordLang, [['sk', 'Slovenčina'], ['en', 'English']], async (v) => { s.ownWordLang = v; saveProfile(); await loadPlayerWords(p); paintPreview(); });
   paint();
   return [
     h('fieldset', { class: 'own-words' }, h('legend', {}, t('own.group.words')),
@@ -400,6 +412,7 @@ function ownWordsEditors(p: Profile): HTMLElement[] {
       field(t('own.text'), text, t('own.textHint')),
       textInfo,
       field(t('own.mix.label'), mix, t('own.mixHint')),
+      field(t('own.wordLang'), wordLang, t('own.wordLangHint')),
       h('div', { class: 'own-preview-box' },
         h('span', { class: 'field-label' }, t('own.preview')),
         preview,
@@ -427,7 +440,7 @@ function taskTab(p: Profile): HTMLElement {
       h('h3', {}, t('task.linkTitle')),
       h('p', { class: 'hint' }, t('task.linkHint')),
       linkBox(link),
-      button(t('task.giveHere', { name: p.name }), () => { addTask(p, spec); saveProfile(); paint(); }, 'btn small', 'plus'));
+      button(t('task.giveHere', { name: nickname(p) }), () => { addTask(p, spec); saveProfile(); paint(); }, 'btn small', 'plus'));
   };
   const paint = () => list.replaceChildren(...(p.tasks.length ? [] : [h('li', { class: 'hint' }, t('task.none'))]), ...p.tasks.map((x) => h('li', { class: x.doneAt ? 'revealed' : '' },
     h('div', {}, h('b', {}, x.title || t('task.untitled')),
@@ -436,7 +449,7 @@ function taskTab(p: Profile): HTMLElement {
     button(t('own.remove'), () => { p.tasks = p.tasks.filter((y) => y !== x); saveProfile(); paint(); }, 'btn small ghost', 'trash'))));
   paint();
   return h('div', { class: 'settings-grid task-tab' },
-    h('fieldset', { class: 'task-new' }, h('legend', {}, t('task.group.new')),
+    h('fieldset', { class: 'task-new' }, h('legend', {}, t('task.legendNew')),
       h('p', { class: 'hint' }, t('task.intro')),
       field(t('task.title'), title),
       field(t('task.group'), group, t('task.groupHint')),
@@ -448,7 +461,7 @@ function taskTab(p: Profile): HTMLElement {
       msg,
       button(t('task.make'), () => void make(), 'btn primary', 'code'),
       out),
-    h('fieldset', { class: 'task-own' }, h('legend', {}, t('task.group.list', { name: p.name })),
+    h('fieldset', { class: 'task-own' }, h('legend', {}, t('task.legendList', { name: nickname(p) })),
       list));
 }
 
@@ -503,20 +516,26 @@ function keysTab(p: Profile): HTMLElement {
       button(t('parent.preset.clear'), () => { picked.clear(); s.manualKeys = []; paint(); saveProfile(); }, 'btn small ghost')));
 }
 
+/** The levels of each story under its picture and title, one row of level cells per world. */
+function storyLevels(p: Profile): HTMLElement[] {
+  return STORIES.map((story) => {
+    const pic = storyPicture(p, story);
+    return h('section', { class: 'story-levels' },
+      h('h3', { class: 'story-head' }, pic ? h('img', { class: 'story-pic', src: pic, alt: '' }) : null, t(story.title)),
+      ...story.worlds.map((w) => h('div', { class: 'world-levels' },
+        h('h4', {}, t(`worlds.${WORLDS[w]}`)),
+        h('div', { class: 'level-grid' }, ...worldLevels(w).map((l) => h('div', { class: 'level-cell' },
+          h('span', { class: 'level-name' }, l.isSuper ? t('map.super') : String(l.index + 1)), starRow(p.progress.levels[l.id] ?? 0, 'stars cell-stars')))))));
+  });
+}
+
 function dashboardTab(p: Profile): HTMLElement {
   const sessions = p.stats.sessions.slice(-14);
   const labels = sessions.map((s) => s.date.slice(5));
   const detail = h('div', { class: 'key-detail-host' }, h('p', { class: 'hint' }, t('stats.clickKey')));
   const heat = clickableHeatmap(p, detail);
-  const levelsDone = LEVELS.filter((l) => p.progress.levels[l.id]).length;
-  const totalChars = sessions.reduce((a, s) => a + s.chars, 0);
   return h('div', { class: 'dashboard' },
     h('div', { class: 'child-summary' }, tapkoElement(p.companion, 'happy', 96), summaryRow(p)),
-    h('div', { class: 'cards' },
-      h('div', { class: 'stat' }, h('b', {}, String(levelsDone)), h('span', {}, t('parent.levelsDone', { total: LEVELS.length }))),
-      h('div', { class: 'stat' }, h('b', {}, String(p.progress.unlockedKeys.length)), h('span', {}, t('parent.keysUnlocked'))),
-      h('div', { class: 'stat' }, h('b', {}, String(masteredCount(p))), h('span', {}, t('parent.keysMastered'))),
-      h('div', { class: 'stat' }, h('b', {}, String(totalChars)), h('span', {}, t('parent.charsTyped')))),
     h('h3', {}, t('parent.heatmap')),
     h('div', { class: 'heat-split' }, heat, detail),
     h('div', { class: 'chart-grid' },
@@ -526,9 +545,7 @@ function dashboardTab(p: Profile): HTMLElement {
         lineChart(sessions.map((s) => s.cpm), labels, t('parent.cpm'), '#e08a3c')),
       h('section', {}, h('h3', {}, t('parent.timePerDay')),
         barChart(sessions.map((s) => Math.round(s.seconds / 60)), labels, 'min'))),
-    h('h3', {}, t('parent.worlds')),
-    h('div', { class: 'level-grid' }, ...LEVELS.map((l) => h('div', { class: 'level-cell' },
-      h('span', { class: 'level-name' }, levelName(l)), starRow(p.progress.levels[l.id] ?? 0, 'stars cell-stars')))));
+    ...storyLevels(p));
 }
 
 function dataTab(p: Profile): HTMLElement {
@@ -543,10 +560,10 @@ function dataTab(p: Profile): HTMLElement {
       button(t('parent.print'), () => printCard(p), 'btn', 'print')),
     guest ? h('p', { class: 'hint' }, t('parent.guestNote')) : h('div', { class: 'danger-zone' },
       h('h3', {}, t('parent.deleteTitle')),
-      button(t('parent.delete', { name: p.name }), async () => {
+      button(t('parent.delete', { name: nickname(p) }), async () => {
         const yes = await confirmDialog({
           title: t('parent.deleteTitle'),
-          text: t('parent.deleteConfirm', { name: p.name }),
+          text: t('parent.deleteConfirm', { name: nickname(p) }),
           ok: t('parent.deleteOk'),
           cancel: t('common.back'),
           danger: true,
@@ -559,7 +576,7 @@ function dataTab(p: Profile): HTMLElement {
       }, 'btn danger', 'trash')));
 }
 
-const exportOne = (p: Profile) => download(`tapkotyper-${slug(p.name)}.json`, app.store.exportJson([p.id]));
+const exportOne = (p: Profile) => download(`tapkotyper-${slug(nickname(p))}.json`, app.store.exportJson([p.id]));
 
 /** The whole player as a link for another computer; a file when the link would be too long. */
 async function moveDialog(p: Profile): Promise<void> {
@@ -568,7 +585,7 @@ async function moveDialog(p: Profile): Promise<void> {
   modal(h('div', { class: 'move' },
     h('h2', {}, t('move.title')),
     ...(code
-      ? [h('p', {}, t('move.text', { name: p.name })), linkBox(prefix + code), h('p', { class: 'hint' }, t('move.privacy'))]
+      ? [h('p', {}, t('move.text', { name: nickname(p) })), linkBox(prefix + code), h('p', { class: 'hint' }, t('move.privacy'))]
       : [h('p', {}, t('move.tooLong')), button(t('parent.exportOne'), () => exportOne(p), 'btn primary', 'download')])), { cls: 'share-modal' });
 }
 
@@ -590,9 +607,9 @@ export function importDialog(done: () => void): void {
       const plan = planImport(app.store, profiles);
       const finish = (replace: boolean) => { applyImport(app.store, plan, replace); close(); done(); };
       msg.className = 'ok';
-      msg.textContent = t('import.found', { n: profiles.length, names: profiles.map((x) => x.name).join(', ') });
+      msg.textContent = t('import.found', { n: profiles.length, names: profiles.map(nickname).join(', ') });
       if (plan.conflicts.length) {
-        msg.textContent += ` ${t('import.conflict', { names: plan.conflicts.map((x) => x.name).join(', ') })}`;
+        msg.textContent += ` ${t('import.conflict', { names: plan.conflicts.map(nickname).join(', ') })}`;
         actions.append(button(t('import.replace'), () => finish(true), 'btn'), button(t('import.keepBoth'), () => finish(false), 'btn primary'));
       } else actions.append(button(t('import.do'), () => finish(false), 'btn primary'));
     } catch (e) {
@@ -608,7 +625,7 @@ function printCard(p: Profile): void {
   const last = p.stats.sessions[p.stats.sessions.length - 1];
   const card = h('div', { class: 'print-card' },
     h('h1', {}, t('print.title')),
-    h('p', { class: 'print-name' }, p.name),
+    h('p', { class: 'print-name' }, nickname(p)),
     h('p', {}, t('print.keys', { n: p.progress.unlockedKeys.length, keys: p.progress.unlockedKeys.join(' ') })),
     h('p', {}, t('print.mastered', { n: masteredCount(p) })),
     h('p', {}, t('print.stars', { n: stars, total: LEVELS.length * 3 })),

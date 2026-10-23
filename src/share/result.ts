@@ -1,9 +1,10 @@
 import { localDate, masterySummary, weakKeys } from '../learning/stats';
 import type { Profile, Task } from '../storage/schema';
+import { nickname } from '../storage/store';
 import { checksum, decode, encode } from './codec';
 import { TASK_GROUP_MAX } from './task';
 
-/** What a child hands in after a task. */
+/** What a typist hands in after a task. */
 export interface TaskResult {
   taskId: string;
   title: string;
@@ -26,13 +27,16 @@ export interface TaskResult {
 
 export const RESULT_WEAK_KEYS = 5;
 
+/** The mentor sees the real name, or the nickname of a player without one. */
+const mentorName = (p: Profile): string => p.name || nickname(p);
+
 export function makeResult(p: Profile, task: Task): TaskResult {
   const total = task.chars + task.errors;
   return {
     taskId: task.id,
     title: task.title,
     ...(task.group && { group: task.group }),
-    name: p.name,
+    name: mentorName(p),
     date: task.doneAt ?? '',
     minutes: Math.round(task.seconds / 6) / 10,
     accuracy: total ? Math.round((task.chars / total) * 100) : 100,
@@ -53,7 +57,7 @@ export function makeOverallResult(p: Profile, title: string): TaskResult {
   return {
     taskId: OVERALL_ID,
     title,
-    name: p.name,
+    name: mentorName(p),
     date: localDate(),
     minutes: Math.round(p.progress.trainedSeconds / 6) / 10,
     accuracy: chars + errors ? Math.round((chars / (chars + errors)) * 100) : 100,

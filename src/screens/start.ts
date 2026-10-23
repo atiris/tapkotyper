@@ -27,13 +27,14 @@ export function startScreen(root: HTMLElement): () => void {
   });
   const gated = keyboardGated();
 
-  const players = [...(app.superPlayer ? [app.superPlayer] : []), ...app.store.profiles];
+  // Super Tapko comes last, so it never shifts the order of the real players.
+  const players = [...app.store.profiles, ...(app.superPlayer ? [app.superPlayer] : [])];
   const cards = players.map((p) =>
     h('button', { class: 'profile-card', type: 'button', onClick: async () => { await selectProfile(p); go('map'); } },
       tapkoElement(p.companion, 'idle', 96),
       h('span', { class: 'profile-name' }, nickname(p)),
       // Siblings recognize their own tile by the real name under the nickname.
-      nickname(p) !== p.name ? h('span', { class: 'profile-real' }, p.name) : null,
+      p.name && p.name !== nickname(p) ? h('span', { class: 'profile-real' }, p.name) : null,
       h('span', { class: 'profile-sub' }, t('start.stars', { n: totalStars(p) }))));
   // Up to four profiles the new player is one more card; with more it is a button by the guest button.
   const newAsCard = players.length < MAX_PER_ROW;
@@ -61,7 +62,7 @@ export function startScreen(root: HTMLElement): () => void {
       h('div', { class: 'row center' },
         newAsCard ? null : button(t('start.newProfile'), () => go('newProfile'), 'btn primary', 'plus'),
         button(t('start.guest'), async () => {
-          const g = app.store.startGuest(language());
+          const g = app.store.startGuest(language(), t('start.guestName'));
           await selectProfile(g);
           go('map');
         }, 'btn ghost', 'user'),

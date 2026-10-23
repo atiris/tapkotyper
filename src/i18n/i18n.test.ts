@@ -1,4 +1,5 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { detectLanguage, t, tList, useDictionaries } from './i18n';
 
@@ -7,6 +8,17 @@ const load = (lang: string) => JSON.parse(readFileSync(`public/i18n/${lang}.json
 function keys(obj: any, prefix = ''): string[] {
   return Object.entries(obj).flatMap(([k, v]) =>
     v && typeof v === 'object' && !Array.isArray(v) ? keys(v, `${prefix}${k}.`) : [`${prefix}${k}`]);
+}
+
+/** Every string of a dictionary, lists and nested groups included. */
+const values = (v: unknown): string[] => (typeof v === 'string' ? [v] : v && typeof v === 'object' ? Object.values(v).flatMap(values) : []);
+
+/** Source files of the app, tests left out. */
+function sources(dir = 'src'): string[] {
+  return readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
+    const path = join(dir, e.name);
+    return e.isDirectory() ? sources(path) : e.name.endsWith('.ts') && !e.name.endsWith('.test.ts') ? [path] : [];
+  });
 }
 
 describe('i18n', () => {
@@ -25,10 +37,9 @@ describe('i18n', () => {
   });
 
   it('closes every bold mark of the help texts, the same in both languages', () => {
-    const marked = (v: unknown): string[] => (typeof v === 'string' ? [v] : v && typeof v === 'object' ? Object.values(v).flatMap(marked) : []);
     const count = (lang: string) => {
       const d = load(lang);
-      const texts = marked([d.help, d.about]);
+      const texts = values([d.help, d.about]);
       for (const s of texts) expect(s.split('**').length % 2, s).toBe(1);
       return texts.reduce((a, s) => a + s.split('**').length - 1, 0);
     };
@@ -39,6 +50,26 @@ describe('i18n', () => {
   it('has the same keys in Slovak and English', () => {
     const sk = load('sk'), en = load('en');
     expect(keys(sk).sort()).toEqual(keys(en).sort());
+  });
+
+  it('speaks of the typist and the mentor, never of a child or a teacher', () => {
+    const banned: Record<string, RegExp> = {
+      sk: /(?<!\p{L})(dieť|deti|detí|deť|učiteľ|žiak)/iu,
+      en: /\b(child|children|kids?|teachers?)\b/i,
+    };
+    for (const lang of ['sk', 'en']) {
+      for (const v of values(load(lang))) expect(v, `${lang}: ${v}`).not.toMatch(banned[lang]);
+    }
+  });
+
+  it('has every literal key the code uses, in both languages', () => {
+    const has = (d: any, key: string) => key.split('.').reduce((o, k) => (o && typeof o === 'object' ? o[k] : undefined), d) !== undefined;
+    const used = new Set(sources().flatMap((f) => [...readFileSync(f, 'utf8').matchAll(/(?<![\w.$])(?:t|tList|pickLine)\('([^']+)'/g)].map((m) => m[1])));
+    expect(used.size).toBeGreaterThan(300);
+    for (const lang of ['sk', 'en']) {
+      const d = load(lang);
+      expect([...used].filter((k) => !has(d, k)), lang).toEqual([]);
+    }
   });
 
   it('has at least 40 preparation tips per language', () => {

@@ -15,6 +15,8 @@
 /* ---------- Tokens ---------- */
 :root {
   --font-game: 'Lexend', system-ui, sans-serif;
+  /* Key caps, the big key and key marks: Atkinson Hyperlegible under data-keyfont tells l, I and 1 apart. */
+  --font-keys: var(--font-game);
   --ink: #3b2a3f;
   --ink-soft: #6b5a70;
   --paper: #fffdf7;
@@ -38,6 +40,7 @@
 }
 body[data-font='atkinson'] { --font-game: 'Atkinson Hyperlegible', 'Lexend', system-ui, sans-serif; }
 body[data-font='opendyslexic'] { --font-game: 'OpenDyslexic', 'Atkinson Hyperlegible', 'Lexend', system-ui, sans-serif; }
+body[data-keyfont] { --font-keys: 'Atkinson Hyperlegible', var(--font-game); }
 body.large-text { --scale: 1.25; }
 body.high-contrast {
   --ink: #000; --ink-soft: #1d1d1d; --paper: #fff; --paper-2: #fff; --line: #000;
@@ -370,7 +373,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .kb-row:nth-child(3) { padding-left: 3%; }
 .kb-key {
   --w: 1; position: relative; flex: var(--w) 1 0; max-width: calc(var(--w) * 54px); height: clamp(30px, 5.2vh, 46px);
-  border-radius: 9px; background: #fff; display: grid; place-items: center; padding-bottom: 9px; font-weight: 600; font-size: clamp(0.8rem, 1.6vh, 1.05rem); line-height: 1;
+  border-radius: 9px; background: #fff; display: grid; place-items: center; padding-bottom: 9px; font-family: var(--font-keys); font-weight: 600; font-size: clamp(0.8rem, 1.6vh, 1.05rem); line-height: 1;
   box-shadow: inset 0 -5px 0 var(--finger), 0 2px 0 rgba(90, 61, 43, 0.2); border: 1px solid rgba(90, 61, 43, 0.12);
   transition: transform 0.12s, background 0.12s;
 }
@@ -472,7 +475,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .newkey-body .tapko-stack { filter: drop-shadow(0 8px 8px rgba(40, 30, 20, 0.2)); }
 .newkey-finger { font-size: 1.15rem; }
 .finger-chip { display: inline-block; padding: 0.05em 0.5em; border-radius: 10px; background: var(--finger); color: var(--finger-ink); font-weight: 700; }
-.big-key { display: inline-grid; place-items: center; min-width: 90px; height: 90px; padding: 0 1rem 14px; font-size: 3.2rem; line-height: 1; font-weight: 700; border-radius: 24px; background: #fff; box-shadow: inset 0 -10px 0 var(--brand), 0 6px 16px rgba(0, 0, 0, 0.15); margin: 0.5rem 0; }
+.big-key { display: inline-grid; place-items: center; min-width: 90px; height: 90px; padding: 0 1rem 14px; font-family: var(--font-keys); font-size: 3.2rem; line-height: 1; font-weight: 700; border-radius: 24px; background: #fff; box-shadow: inset 0 -10px 0 var(--brand), 0 6px 16px rgba(0, 0, 0, 0.15); margin: 0.5rem 0; }
 .big-key.wide { min-width: 260px; }
 .dots { display: flex; gap: 0.6rem; justify-content: center; margin: 0.6rem 0; }
 .dots span { width: 22px; height: 22px; border-radius: 50%; background: #eee3d2; transition: background 0.2s, transform 0.2s; }
@@ -611,7 +614,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .confirm { text-align: center; display: flex; flex-direction: column; align-items: center; }
 .confirm p { font-size: 1.1rem; max-width: 30em; }
 .confirm-modal { width: min(520px, 100%); }
-.kbd { display: inline-grid; place-items: center; min-width: 1.8em; padding: 0 0.3em; border-radius: 8px; background: #fff; box-shadow: inset 0 -3px 0 var(--brand); }
+.kbd { display: inline-grid; place-items: center; min-width: 1.8em; padding: 0 0.3em; font-family: var(--font-keys); border-radius: 8px; background: #fff; box-shadow: inset 0 -3px 0 var(--brand); }
 .adult-check { text-align: center; }
 .number-words { font-size: 1.6rem; font-weight: 700; color: var(--brand-dark); }
 
@@ -742,9 +745,8 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-dark); }
 }
 .own-preview { margin: 0.3rem 0 0.5rem; padding-left: 1.2rem; font-family: var(--font-game); font-size: 1.1rem; }
 .sound-btn[data-level='quiet'] { color: var(--ink-soft); }
-.dashboard .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.8rem; margin-bottom: 1rem; }
-.stat { background: var(--paper-2); border-radius: 18px; padding: 0.8rem; text-align: center; display: flex; flex-direction: column; }
-.stat b { font-size: 2rem; color: var(--brand-dark); }
+.story-levels h3.story-head { margin: 1.2rem 0 0.4rem; }
+.world-levels h4 { margin: 0.5rem 0 0.3rem; font-size: 0.95rem; color: var(--ink-soft); }
 .chart-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); margin-top: 1rem; }
 .chart-grid h3 { margin-top: 0; }
 .chart { width: 100%; max-width: 640px; height: auto; background: var(--paper-2); border-radius: 14px; }

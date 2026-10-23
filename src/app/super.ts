@@ -34,7 +34,7 @@ export function listenForSuperPassword(onUnlock: () => void): () => void {
  * memory only: it never touches real players' statistics and a reload ends it.
  */
 export function superProfile(lang: Lang): Profile {
-  const p = newProfile('Super Tapko', lang);
+  const p = newProfile('', lang, undefined, 'fox', 'Super Tapko');
   p.id = SUPER_ID;
   const keys = lessonOrder(p.layout);
   p.progress.unlockedKeys = [...keys];

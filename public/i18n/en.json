@@ -32,7 +32,7 @@
       "recheck": "Check again"
     },
     "teacher": {
-      "title": "For teachers",
+      "title": "For mentors",
       "sub": "Scan QR codes and see the class results"
     }
   },
@@ -41,16 +41,17 @@
   },
   "newProfile": {
     "title": "Hello and welcome!",
-    "name": "Your name",
-    "nameMissing": "Please write your name.",
+    "name": "Typist's name (optional)",
     "companion": "Pick your character",
     "language": "Language",
     "layout": "Keyboard",
     "parentHint": "A parent can change everything later in the settings (the gear on the map).",
     "create": "Let's go!",
-    "nameHint": "Your teacher sees it, and it is in your result QR codes.",
-    "nickname": "Nickname (optional)",
-    "nicknameHint": "Shown with your character in the game."
+    "nameHint": "Shown to your mentor in the results.",
+    "nickname": "Nickname",
+    "nicknameHint": "Shown with your character in the game.",
+    "nickMissing": "Please write your nickname.",
+    "wordLang": "Word language"
   },
   "layouts": {
     "sk-qwertz": "Slovak (QWERTZ)",
@@ -87,7 +88,7 @@
   },
   "map": {
     "welcome": {
-      "title": "Hello {name}! This is you.",
+      "title": "Hello {name}! This is your character in this adventure.",
       "lines": [
         "Press “Continue”, you will learn the keys step by step, one by one.",
         "When you are not sure what to do, click “?”.",
@@ -562,7 +563,7 @@
     ],
     "scenes": {
       "intro": [
-        "Hello {name}! This is you.",
+        "Hello {name}! This is your character in this adventure.",
         "You will learn to type with all ten fingers.",
         "Put your index fingers on the little bumps of F and J. That's home.",
         "Start on the Training Meadow!"
@@ -811,7 +812,7 @@
     "overallTitle": "All progress",
     "overallCaption": "All my statistics",
     "exerciseCaption": "Exercise statistics: {title}",
-    "exercisesEmpty": "No exercise yet. Exercises from a teacher or parent are listed here.",
+    "exercisesEmpty": "No exercise yet. Exercises from a mentor are listed here.",
     "exerciseLine": "{min} min, accuracy {acc} %, rhythm {cpm}",
     "exerciseOpen": "Not finished yet",
     "exerciseCode": "QR code",
@@ -823,7 +824,8 @@
     "lastDays": "Last training: {n} days ago.",
     "never": "No training yet.",
     "week": "Last 7 days: {n} min",
-    "badges": "Badges"
+    "badges": "Badges",
+    "chars14": "{n} letters in 14 days"
   },
   "stats": {
     "title": "My keys",
@@ -973,13 +975,13 @@
       "data": "Data"
     },
     "group": {
-      "child": "Child",
+      "child": "Typist",
       "practice": "Practice",
       "look": "Look and sound",
       "lock": "Settings password"
     },
-    "childName": "Child's name",
-    "switchTitle": "Switch to another child",
+    "childName": "Typist's name (optional)",
+    "switchTitle": "Switch to another typist",
     "companionKind": "Character",
     "messages": "Your own encouraging messages",
     "messagesHint": "One per line. The game mixes them in sometimes.",
@@ -994,7 +996,7 @@
     "noDiacritics": "Words without diacritics",
     "noDiacriticsHint": "For beginners, for a while. Accents are part of correct writing.",
     "noTimePressure": "No time pressure",
-    "noTimePressureHint": "Moving things stop and wait for the child.",
+    "noTimePressureHint": "Moving things stop and wait for the typist.",
     "wardrobeLimit": "Wardrobe time earned by practice",
     "wardrobeLimitHint": "1 minute in the wardrobe for 5 minutes of practice, at most 7 minutes.",
     "wardrobeBalance": "Wardrobe time now: {m} min {s} s",
@@ -1004,11 +1006,11 @@
     "guideAuto": "Fades when keys are mastered",
     "guideOn": "Always on",
     "guideOff": "Off",
-    "guideLocked": "The child cannot hide or show the guide",
+    "guideLocked": "The typist cannot hide or show the guide",
     "sfx": "Sound effects",
     "music": "Music",
     "speakTyped": "Read typed words aloud",
-    "speakTypedHint": "In “Just typing” the computer reads aloud what the child typed (when reading aloud is on). It is read only in this browser; nothing is stored or sent. There is no list of forbidden words: it is never complete and blocks innocent words too. Turn this off if you do not want it read.",
+    "speakTypedHint": "In “Just typing” the computer reads aloud what the typist typed (when reading aloud is on). It is read only in this browser; nothing is stored or sent. There is no list of forbidden words: it is never complete and blocks innocent words too. Turn this off if you do not want it read.",
     "font": "Font",
     "largeText": "Large text",
     "reduceMotion": "Reduce motion",
@@ -1033,11 +1035,6 @@
     "rhythmTrend": "Rhythm",
     "cpm": "letters/min",
     "timePerDay": "Time per day",
-    "worlds": "Levels",
-    "levelsDone": "of {total} levels finished",
-    "keysUnlocked": "keys learned",
-    "keysMastered": "keys mastered",
-    "charsTyped": "letters in 14 days",
     "noData": "No data yet.",
     "dataText": "All data is stored only in this browser. Export it to move it to another device.",
     "exportOne": "Export this profile",
@@ -1051,10 +1048,10 @@
     "checkOk": "Yes, open",
     "deleteOk": "Yes, delete",
     "autoDifficulty": "Automatic difficulty",
-    "autoDifficultyHint": "Grows with the child after a few minutes of accurate typing. Each step is a medal.",
+    "autoDifficultyHint": "Grows with the typist after a few minutes of accurate typing. Each step is a medal.",
     "autoWordLen": "Automatic word length",
-    "autoWordLenHint": "Grows with the child, together with difficulty.",
-    "autoHint": "The start is slow: a short word takes about 10 seconds to reach the character and at most two are on screen. If the child still cannot keep up, turn on No time pressure.",
+    "autoWordLenHint": "Grows with the typist, together with difficulty.",
+    "autoHint": "The start is slow: a short word takes about 10 seconds to reach the character and at most two are on screen. If the typist still cannot keep up, turn on No time pressure.",
     "lock": {
       "ask": "The settings are locked with a password. Please enter it.",
       "password": "Password",
@@ -1074,8 +1071,14 @@
       "saved": "The password is saved.",
       "removed": "The password is removed."
     },
-    "nickname": "Nickname in the game",
-    "nicknameHint": "Empty: the game uses the child's name."
+    "nickname": "Nickname",
+    "nicknameHint": "Shown with the character; the game calls the typist by it.",
+    "childNameHint": "Shown to the mentor in the results.",
+    "nickMissing": "The nickname cannot be empty.",
+    "wordLang": "Word language",
+    "wordLangHint": "Words in the levels. The game language stays as it is.",
+    "keyFont": "Easy to tell letters on the keys (l, I, 1)",
+    "keyFontHint": "Keys and key marks use a font where l, I and 1 cannot be confused. The rest of the game keeps the chosen font."
   },
   "own": {
     "group": {
@@ -1085,7 +1088,7 @@
     },
     "remove": "Remove",
     "words": "Words",
-    "wordsHint": "For example this week's spelling words. One per line, or separated by commas or spaces. They are used even with keys the child does not know yet; the guide shows them.",
+    "wordsHint": "For example this week's spelling words. One per line, or separated by commas or spaces. They are used even with keys the typist does not know yet; the guide shows them.",
     "wordsPlaceholder": "school\nfriend\nsunny",
     "wordsCount": "Words: {n} of {max}.",
     "untypableWords": "Cannot be typed on this keyboard, left out: {list}",
@@ -1103,7 +1106,9 @@
     },
     "mixHint": "The share of targets in levels and own practice; the rest are the usual words.",
     "preview": "Five sample targets",
-    "previewMore": "Another sample"
+    "previewMore": "Another sample",
+    "wordLang": "Word language of the custom exercise",
+    "wordLangHint": "Everyday words in the custom exercise and in the preview below."
   },
   "surprises": {
     "hint": "Hide a real reward (a treat, a trip, a game night) behind a rule. The game asks the question before a level and tells the answer together with the question once the rule is met. One level has one surprise at most.",
@@ -1183,7 +1188,7 @@
   "about": {
     "code": "Code on GitHub",
     "report": "Report a bug or an idea",
-    "intro": "TapkoTyper is a free, peaceful game that teaches children to type with all ten fingers. As an animal of their own choice they travel through worlds full of adventures. Nothing bad ever happens: obstacles are pushed away or helped, never destroyed.",
+    "intro": "TapkoTyper is a free, peaceful game that teaches typing with all ten fingers. As an animal of their own choice, typists travel through worlds full of adventures. Nothing bad ever happens: obstacles are pushed away or helped, never destroyed.",
     "privacyTitle": "Our promise to parents",
     "privacy": [
       "No ads, purchases, sign-in or cookies. This site has no server of its own in the background.",
@@ -1204,7 +1209,7 @@
       "Every key has its finger; the on-screen keyboard and hands show which one.",
       "Accuracy comes first; speed is only shown as a personal trend.",
       "Weak keys appear more often, and short breaks keep sessions healthy.",
-      "It is played on a real keyboard; a phone or tablet needs a keyboard connected. A teacher with a phone and no keyboard can still scan the results."
+      "It is played on a real keyboard; a phone or tablet needs a keyboard connected. A mentor with a phone and no keyboard can still scan the results."
     ],
     "creditsTitle": "Links",
     "credits": "Open source under the MIT license. Fonts: Lexend, Atkinson Hyperlegible and OpenDyslexic (SIL Open Font License)."
@@ -1259,7 +1264,7 @@
       "Just typing: type anything, you walk through a world you choose and see what you typed.",
       "Me and my wardrobe: pick your character and nickname and dress up in the things you unlocked.",
       "Rescue missions and Little friends: they appear after you finish your first story.",
-      "Today's task: when your teacher sends a task, you find it on the card. When it is done, you hand it in."
+      "Today's task: when your mentor sends a task, you find it on the card. When it is done, you hand it in."
     ],
     "progressTitle": "My progress",
     "progress": [
@@ -1268,7 +1273,7 @@
       "Each story row shows its worlds: finished ones in colour, the rest grey, and the stars of that story.",
       "My progress has three tabs: Progress, Keys and Exercises.",
       "Keys shows which keys go well and which to practise. You can start practice right from there.",
-      "A **QR code** shows your progress or an exercise to your teacher or parent: they just take a photo of it."
+      "A **QR code** shows your progress or an exercise to your mentor: they just take a photo of it."
     ],
     "moreTitle": "Rescue mission and badge",
     "more": [
@@ -1292,26 +1297,26 @@
       "New letters come when the old ones go well. Some levels and stories open only when you know enough letters.",
       "When you miss a letter, practise it in Own practice."
     ],
-    "taskTitle": "A task from your teacher",
+    "taskTitle": "A task from your mentor",
     "task": [
-      "Your teacher can send you a task as a link. Open it and choose who does it.",
+      "Your mentor can send you a task as a link. Open it and choose who does it.",
       "On the map you see Today's task. Type until the time is up.",
-      "When it is done, press Hand in and send your teacher the **result link**."
+      "When it is done, press Hand in and send your mentor the **result link**."
     ],
     "settingsIntro": "The settings are for parents. They open with the gear on the map. Until you **lock them with a password**, one question opens them.",
     "settings": {
       "settings": [
-        "Child: name, character and nickname, language and keyboard layout. Pick the layout of the real keyboard; the finger guide follows it.",
-        "Practice: difficulty and word length. In automatic mode they grow with the child; set them by hand when you want.",
-        "Words without diacritics help beginners for a while. No time pressure makes moving things stop and wait for the child.",
-        "Session length before a break: then the game invites the child to a short rest.",
-        "Finger guide: fades when keys are mastered, or always on or off. You can lock it for the child.",
+        "Typist: nickname, character and optional name, game language, word language and keyboard layout. Pick the layout of the real keyboard; the finger guide follows it.",
+        "Practice: difficulty and word length. In automatic mode they grow with the typist; set them by hand when you want.",
+        "Words without diacritics help beginners for a while. No time pressure makes moving things stop and wait for the typist.",
+        "Session length before a break: then the game invites the typist to a short rest.",
+        "Finger guide: fades when keys are mastered, or always on or off. You can lock it for the typist.",
         "Wardrobe time earned by practice: 1 minute in the wardrobe for 5 minutes of practice, at most 7 minutes. Turned off, the wardrobe is always open.",
         "Look and sound: font, large text, reduced motion, high contrast, volumes, fullscreen.",
         "The settings password locks the settings for every player on this device. We cannot recover a forgotten password."
       ],
       "own": [
-        "Own words: for example this week's spelling words. They are used even with keys the child does not know yet.",
+        "Own words: for example this week's spelling words. They are used even with keys the typist does not know yet.",
         "Own text: split into sentences and parts. On the map, the My text button types all of it in order.",
         "Own encouragements: the game says them now and then.",
         "How much of own words and text: the share of targets in levels."
@@ -1321,12 +1326,12 @@
         "The game asks the question before a level and tells the answer once the rule is met."
       ],
       "task": [
-        "For teachers: make a task with words or a text and a length. You get a link and a QR code.",
-        "The children open the link and, when done, send you a result link. You see the results with the For teachers button on the start page."
+        "For mentors: make a task with words or a text and a length. You get a link and a QR code.",
+        "Typists open the link and, when done, send you a result link. You see the results with the For mentors button on the start page."
       ],
       "keys": [
         "Automatic: keys come one by one, starting from the home row F and J. This is best.",
-        "By hand: pick the keys the child learns, punctuation too."
+        "By hand: pick the keys the typist learns, punctuation too."
       ],
       "dashboard": [
         "How each key goes, accuracy and rhythm over time, time per day and the levels finished.",
@@ -1457,8 +1462,8 @@
     "closeByClick": "Close by clicking anywhere"
   },
   "teacher": {
-    "title": "For teachers",
-    "intro": "The fastest way is to scan the QR codes on the children's screens: type a group (for example a class), start scanning and walk around the room. Every new code is written into that group. You can also open or paste a result link.",
+    "title": "For mentors",
+    "intro": "The fastest way is to scan the QR codes on the typists' screens: type a group (for example a class), start scanning and walk around the room. Every new code is written into that group. You can also open or paste a result link.",
     "paste": "Result link",
     "pastePlaceholder": "Paste a result link",
     "add": "Add",
@@ -1473,7 +1478,7 @@
     "privacy": "Results are stored only in this browser. There are no accounts and nothing goes to a server. The checksum finds damaged links, not cheating.",
     "col": {
       "task": "Task",
-      "child": "Child",
+      "child": "Typist",
       "date": "Date",
       "minutes": "Minutes",
       "accuracy": "Accuracy",
@@ -1496,7 +1501,7 @@
     "removeManyTitle": "Remove the selected results?",
     "removeManyText": "{n} results will be removed from the table.",
     "way": {
-      "scan": "Scan the QR codes on the children's screens with the camera.",
+      "scan": "Scan the QR codes on the typists' screens with the camera.",
       "paste": "Paste a result link into the field above.",
       "open": "Open a result link in this browser."
     },
@@ -1556,7 +1561,7 @@
       "levels": "levels done",
       "taskList": "Tasks",
       "move": "Move to a group",
-      "remove": "Remove the child",
+      "remove": "Remove the typist",
       "removeTitle": "Remove {name}?",
       "removeText": "All results of {name} ({n}) are removed from the table."
     }
@@ -1576,12 +1581,12 @@
     "doneToday": "Task done!",
     "handIn": "Hand in",
     "handInTitle": "Hand in the task",
-    "handInText": "Send this link to your teacher, for example by e-mail or your school app.",
+    "handInText": "Send this link to your mentor, for example by e-mail or your school app.",
     "checksumNote": "The link holds the name, task, time, accuracy, rhythm and the five weakest keys. The checksum finds damaged links, not cheating.",
-    "doneLine": "Task “{title}” is done. Hand it in to your teacher.",
+    "doneLine": "Task “{title}” is done. Hand it in to your mentor.",
     "leftLine": "Task “{title}”: {n} min left.",
     "group": "Group (optional)",
-    "intro": "A task is a link. Send it to the children (for example in your school app); whoever opens it picks a player and sees Today's task on the map. When it is done, the child sends you a result link.",
+    "intro": "A task is a link. Send it to the typists (for example in your school app); whoever opens it picks a player and sees Today's task on the map. When it is done, the typist sends you a result link.",
     "title": "Task name",
     "titlePlaceholder": "For example: Farm animals",
     "minutes": "Length",
@@ -1596,7 +1601,9 @@
     "none": "This player has no tasks yet.",
     "bigCode": "Show big code",
     "groupPlaceholder": "For example: 5.A",
-    "groupHint": "The teacher's table groups results by it."
+    "groupHint": "The mentor's table groups results by it.",
+    "legendNew": "New task",
+    "legendList": "Tasks of {name}"
   },
   "move": {
     "button": "Move to another computer",

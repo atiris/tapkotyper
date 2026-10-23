@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { CODEC_VERSION, checksum, codeFrom, decode, encode } from './codec';
-import { OVERALL_ID, makeResult, parseResult, resultCode } from './result';
+import { OVERALL_ID, makeOverallResult, makeResult, parseResult, resultCode } from './result';
 import { activeTask, addTask, parseTask, recordTaskRun, taskCode, taskOwn } from './task';
 import { type SortKey, TeacherStore, childKey, childSummary, nextSort } from './teacher';
 import { moveCode, parseMove, trimHistory } from './transfer';
@@ -82,6 +82,14 @@ describe('results', () => {
     expect(back).toEqual({ result: r, intact: true });
     const forged = await encode({ ...(await decode(await resultCode(r)) as object), accuracy: 100 });
     expect((await parseResult(forged)).intact).toBe(false);
+  });
+
+  it('name a player without a real name by the nickname', async () => {
+    const p = newProfile('', 'sk', undefined, 'fox', 'Blesk');
+    const task = addTask(p, { id: 't1', title: 'Zvieratá', words: ['pes'], text: '', minutes: 1, kind: 'story' });
+    recordTaskRun(task, { seconds: 60, chars: 90, errors: 10, cpm: 50 });
+    expect((await parseResult(await resultCode(makeResult(p, task)))).result.name).toBe('Blesk');
+    expect(makeOverallResult(p, 'x').name).toBe('Blesk');
   });
 
   it('carry a group, and a result without one keeps its old checksum', async () => {

@@ -4,7 +4,7 @@ import { totalStars } from '../game/rewards';
 import { t } from '../i18n/i18n';
 import { type TaskSpec, addTask, parseTask } from '../share/task';
 import { parseMove } from '../share/transfer';
-import { applyImport, planImport } from '../storage/store';
+import { applyImport, nickname, planImport } from '../storage/store';
 import { button, h, icon } from '../ui/dom';
 import { cornerControls } from '../ui/chrome';
 
@@ -42,7 +42,7 @@ export function taskImportScreen(root: HTMLElement, params: { code: string }): v
       h('div', { class: 'profile-list' },
         ...app.store.profiles.map((p) => h('button', { class: 'profile-card', type: 'button', onClick: () => void take(p.id) },
           tapkoElement(p.companion, 'idle', 110),
-          h('span', { class: 'profile-name' }, p.name),
+          h('span', { class: 'profile-name' }, nickname(p)),
           h('span', { class: 'profile-sub' }, t('start.stars', { n: totalStars(p) })))),
         h('button', { class: 'profile-card new', type: 'button', onClick: () => { app.pendingTask = spec; go('newProfile'); } },
           h('span', { class: 'plus' }, icon('plus')), h('span', { class: 'profile-name' }, t('start.newProfile')))));
@@ -70,8 +70,8 @@ export function moveImportScreen(root: HTMLElement, params: { code: string }): v
     panel.replaceChildren(
       h('h1', {}, t('move.importTitle')),
       tapkoElement(profile.companion, 'happy', 120),
-      h('p', {}, t('move.importText', { name: profile.name, n: totalStars(profile) })),
-      h('p', { class: 'error' }, plan.conflicts.length ? t('import.conflict', { names: profile.name }) : ''),
+      h('p', {}, t('move.importText', { name: nickname(profile), n: totalStars(profile) })),
+      h('p', { class: 'error' }, plan.conflicts.length ? t('import.conflict', { names: nickname(profile) }) : ''),
       h('div', { class: 'row center' }, ...actions));
   }, (e) => broken(panel, e));
 }

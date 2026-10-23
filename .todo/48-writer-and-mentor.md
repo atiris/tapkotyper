@@ -141,14 +141,14 @@ Contracts: profile schema v4 (migration). The result-code payload is unchanged i
   - `localization.md`: the terms.
 
 ## Steps
-- [ ] Schema v4, migration, `newProfile`, `nickname` callers, tests.
-- [ ] Forms in new player and settings; result code fallback with test.
-- [ ] Wording pass sk + en with the vitest guard; welcome texts; missing task keys with the
+- [x] Schema v4, migration, `newProfile`, `nickname` callers, tests.
+- [x] Forms in new player and settings; result code fallback with test.
+- [x] Wording pass sk + en with the vitest guard; welcome texts; missing task keys with the
       literal-key vitest.
-- [ ] Super Tapko last.
-- [ ] Word language: loading per language, settings select, custom exercise select.
-- [ ] Key font var, attribute and checkbox.
-- [ ] Progress tab: no cards, 14-day chip, levels by story and world.
+- [x] Super Tapko last.
+- [x] Word language: loading per language, settings select, custom exercise select.
+- [x] Key font var, attribute and checkbox.
+- [x] Progress tab: no cards, 14-day chip, levels by story and world.
 - [ ] Specs as listed.
 - [ ] `npm run build`, `npm test`, `npx playwright test` pass (update e2e that type a name or
       read the old texts).
@@ -162,3 +162,22 @@ Contracts: profile schema v4 (migration). The result-code payload is unchanged i
   - Pokroky shows no cards, the 14-day chip and levels by story.
   - The mentor view after pasting a code shows the nickname for a player without a name.
   - Console clean.
+
+## State
+Decisions taken while implementing:
+- v4 has no migration step of its own: `normalizeProfile` (run on every load and import) fills an
+  empty nickname from the name (cut to `NICK_MAX`, `?` when both are empty) and fills `wordLang`,
+  `ownWordLang` and `keyFont` from `defaultSettings(language)`, which is exactly what the step
+  would do.
+- `newProfile` takes the nickname from the name when none is given (tests, imports); the seed is
+  hashed from the name, or from the nickname when there is no name.
+- The guest is created with the localized guest nickname and no name; Super Tapko has no name.
+- The wardrobe nickname field ignores a blank value and shows the saved nickname again on blur.
+- `task.group` is already the string label of the group field, so the missing legends became
+  `task.legendNew` / `task.legendList`.
+- "Custom exercise" = every `practice` level (Vlastné cvičenie, Môj text, key drills, practice
+  tasks): it uses `ownWordLang`; story levels use `wordLang`. The own-words preview in settings
+  uses `ownWordLang`, its select sits by the mix select. Capital-letter names stay from the UI
+  dictionary.
+- The 14-day chip uses the `ui-act-letters` icon.
+- The sk guard also bans `žiak` (the mentor's child card said "žiak").

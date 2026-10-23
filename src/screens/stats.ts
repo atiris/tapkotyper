@@ -6,10 +6,11 @@ import { badgeTier, worldStars } from '../game/rewards';
 import { t } from '../i18n/i18n';
 import { allKeys } from '../keyboard/layouts';
 import { activeKeys, lessonKeyOf } from '../learning/lessons';
-import { STATS_WINDOW, keyHistory, keyReport, lastTraining, masterySummary, weakKeys } from '../learning/stats';
+import { STATS_WINDOW, charsInDays, keyHistory, keyReport, lastTraining, masterySummary, weakKeys } from '../learning/stats';
 import { linkOf } from '../share/codec';
 import { makeOverallResult, makeResult, resultCode } from '../share/result';
 import type { Profile } from '../storage/schema';
+import { nickname } from '../storage/store';
 import { lineChart } from '../ui/charts';
 import { KeyboardGuide, fingerChip, keyLabel } from '../ui/keyboard-guide';
 import { button, h, modal } from '../ui/dom';
@@ -111,17 +112,19 @@ export function summaryRow(p: Profile): HTMLElement {
   const m = masterySummary(p);
   const percent = Math.round(m.accuracy * 100);
   const stories = STORIES.filter((x) => storyDone(p, x)).length;
+  const chars = charsInDays(p, 14);
   return h('ul', { class: 'progress-sum' },
     chip(imageUrl('ui-key'), '⌨', `${m.mastered}/${m.total}`, t('progress.keys', { n: m.mastered, total: m.total })),
     chip(imageUrl('ui-level'), '▲', `${stories}/${STORIES.length}`, t('progress.stories', { n: stories, total: STORIES.length })),
     chip(imageUrl('ui-earth'), '●', `${p.progress.worldsDone.length}/${WORLDS.length}`, t('progress.worlds', { n: p.progress.worldsDone.length, total: WORLDS.length })),
     m.mastered ? chip(imageUrl('ui-accuracy'), '✓', `${percent} %`, t('progress.quality', { n: percent })) : null,
     m.mastered ? chip(imageUrl('ui-speed'), '»', String(m.cpm), t('progress.speed', { n: m.cpm })) : null,
-    chip(imageUrl('ui-star'), '★', String(p.progress.starsEarned), t('progress.stars', { n: p.progress.starsEarned })));
+    chip(imageUrl('ui-star'), '★', String(p.progress.starsEarned), t('progress.stars', { n: p.progress.starsEarned })),
+    chip(imageUrl('ui-act-letters'), 'Aa', String(chars), t('progress.chars14', { n: chars })));
 }
 
 /** Who a story is about, for its row. */
-function storyPicture(p: Profile, story: StoryDef): string | null {
+export function storyPicture(p: Profile, story: StoryDef): string | null {
   return imageUrl(story.id === 'robot' ? 'robot-happy' : story.id === 'fairy' ? 'fairy-happy' : `tapko-${p.companion.kind}-happy`);
 }
 
@@ -159,7 +162,7 @@ type StatsTab = 'progress' | 'keys' | 'exercises';
 /** The QR code of all the player's statistics, over the whole screen. */
 async function showOverallCode(p: Profile): Promise<void> {
   const link = linkOf('result', await resultCode(makeOverallResult(p, t('progress.overallTitle'))));
-  bigCode(link, p.name, t('progress.overallCaption'), 'overall');
+  bigCode(link, nickname(p), t('progress.overallCaption'), 'overall');
 }
 
 /** Progress: the summary rows and badges, the growth medals and the code of all statistics. */
@@ -206,7 +209,7 @@ function exercisesTab(p: Profile): HTMLElement {
   if (!played.length) return h('p', { class: 'hint center' }, t('progress.exercisesEmpty'));
   return h('ul', { class: 'exercise-list' }, ...played.map((task) => {
     const total = task.chars + task.errors;
-    const show = async () => bigCode(linkOf('result', await resultCode(makeResult(p, task))), p.name, t('progress.exerciseCaption', { title: task.title || t('task.untitled') }), 'exercise');
+    const show = async () => bigCode(linkOf('result', await resultCode(makeResult(p, task))), nickname(p), t('progress.exerciseCaption', { title: task.title || t('task.untitled') }), 'exercise');
     return h('li', { class: `exercise ${task.doneAt ? 'done' : ''}` },
       h('div', {},
         h('b', {}, task.title || t('task.untitled')), task.group ? h('span', { class: 'chip' }, task.group) : null,

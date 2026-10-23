@@ -16,7 +16,7 @@ import {
 export const STORE_KEY = 'tapkotyper:v1';
 const GUEST_KEY = 'tapkotyper:guest';
 
-export const STORE_VERSION = 3;
+export const STORE_VERSION = 4;
 
 /** Migrations from older stored shapes, keyed by the version they upgrade from. */
 const migrations: Record<number, (data: any) => any> = {
@@ -38,6 +38,9 @@ const migrations: Record<number, (data: any) => any> = {
       progress: { ...p.progress, wardrobeSeconds: earnedFrom(p.progress?.trainedSeconds) },
     }) : data.profiles,
   }),
+  // v4 (nickname required, name optional, word language, key font) needs no step of its own:
+  // `normalizeProfile` fills an empty nickname from the name, and the new settings from the
+  // defaults of the profile's language.
 };
 
 function earnedFrom(trained: unknown): number {
@@ -56,9 +59,14 @@ export function nameSeed(name: string): number {
 /** Longest nickname the child can type. */
 export const NICK_MAX = 16;
 
-/** The name the game calls the child: the nickname, else the real name. */
+/** The name the game calls the player. */
 export function nickname(p: Profile): string {
-  return p.companion.name.trim() || p.name;
+  return p.companion.name;
+}
+
+/** A nickname made from a name, for players created or stored without one. */
+function nickFrom(name: string): string {
+  return name.trim().slice(0, NICK_MAX).trim() || '?';
 }
 
 function emptyStore(): StoreData {
@@ -78,12 +86,12 @@ export function migrate(raw: any): StoreData {
 
 /** Fills fields that are missing in older or hand-edited profiles. */
 export function normalizeProfile(p: Profile): Profile {
-  const base = newProfile(p.name || '?', p.language === 'en' ? 'en' : 'sk', p.layout, p.avatar);
+  const base = newProfile(p.name, p.language === 'en' ? 'en' : 'sk', p.layout, p.avatar);
   return {
     ...base,
     ...p,
     seed: typeof p.seed === 'number' ? p.seed >>> 0 : base.seed,
-    companion: { ...base.companion, ...p.companion },
+    companion: { ...base.companion, ...p.companion, name: p.companion?.name?.trim() || base.companion.name },
     settings: { ...base.settings, ...p.settings },
     progress: { ...base.progress, ...p.progress },
     stats: {
@@ -102,21 +110,24 @@ export function isProfile(p: any): p is Profile {
     typeof p.progress === 'object' && typeof p.settings === 'object';
 }
 
+/** A new player; without a nickname the name gives one. */
 export function newProfile(name: string, language: Lang, layout?: LayoutId, kind: CompanionKind = 'fox', nick = ''): Profile {
   const lay: LayoutId = layout ?? (language === 'sk' ? 'sk-qwertz' : 'us-qwerty');
   const start: CompanionKind = COMPANION_KINDS.includes(kind) ? kind : 'fox';
+  const real = name.trim();
+  const nickname = nick.trim().slice(0, NICK_MAX) || nickFrom(real);
   return {
     id: Math.random().toString(36).slice(2, 10) + Date.now().toString(36),
-    name,
-    seed: nameSeed(name),
+    name: real,
+    seed: nameSeed(real || nickname),
     avatar: start,
-    companion: { name: nick.trim(), kind: start, accessories: [] },
+    companion: { name: nickname, kind: start, accessories: [] },
     customMessages: [],
     surprises: [],
     tasks: [],
     layout: lay,
     language,
-    settings: defaultSettings(),
+    settings: defaultSettings(language),
     progress: {
       unlockedKeys: firstKeys(lay),
       introducedKeys: [],
@@ -198,9 +209,10 @@ export class Store {
     this.save();
   }
 
-  startGuest(language: Lang): Profile {
+  /** The guest of this browser session, created with `nick` the first time. */
+  startGuest(language: Lang, nick: string): Profile {
     if (!this.guest) {
-      const g = newProfile('Guest', language);
+      const g = newProfile('', language, undefined, 'fox', nick);
       g.id = GUEST_ID;
       this.guest = g;
     }

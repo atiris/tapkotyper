@@ -1,6 +1,6 @@
 import { audio } from '../audio/audio';
 import { resetFontFamily } from '../gfx/draw';
-import { language, setLanguage, t, tList } from '../i18n/i18n';
+import { language, setLanguage, tList } from '../i18n/i18n';
 import { LAYOUTS, type Layout } from '../keyboard/layouts';
 import { Store } from '../storage/store';
 import { GUEST_ID, type Lang, type Profile, SUPER_ID } from '../storage/schema';
@@ -26,7 +26,8 @@ const NO_HELP_RETURN: ScreenName[] = ['level', 'story', 'break', 'help'];
 export const app = {
   store: new Store(),
   profile: null as Profile | null,
-  words: [] as string[],
+  /** Word lists by language; the chosen player's word languages are loaded (`loadPlayerWords`). */
+  words: { sk: [], en: [] } as Record<Lang, string[]>,
   /** Active play seconds since the session started (or the last break). */
   sessionSeconds: 0,
   /** A preparation tip was shown in this session. */
@@ -137,10 +138,14 @@ export function saveProfile(): void {
   if (app.profile && app.profile.id !== SUPER_ID) app.store.update(app.profile);
 }
 
-/** Switches the UI language (and the word list when no profile decides it). */
+/** Switches the UI language; the words keep the player's word language. */
 export async function useLanguage(lang: Lang): Promise<void> {
   if (language() !== lang || !tList('tips').length) await setLanguage(lang);
-  app.words = await loadWords(lang);
+}
+
+/** Loads the word lists of a player's levels and custom exercise. */
+export async function loadPlayerWords(p: Profile): Promise<void> {
+  for (const lang of new Set([p.settings.wordLang, p.settings.ownWordLang])) app.words[lang] = await loadWords(lang);
 }
 
 export async function selectProfile(p: Profile): Promise<void> {
@@ -149,17 +154,16 @@ export async function selectProfile(p: Profile): Promise<void> {
     app.store.data.lastProfileId = p.id;
     app.store.save();
   }
-  await useLanguage(p.language);
-  // The guest is greeted in the language of the game.
-  if (p.id === GUEST_ID) p.name = t('start.guestName');
+  await Promise.all([useLanguage(p.language), loadPlayerWords(p)]);
   applyProfileLook(p);
 }
 
-/** Applies per-profile look and sound: font, text size, contrast, motion, volumes. */
+/** Applies per-profile look and sound: fonts, text size, contrast, motion, volumes. */
 export function applyProfileLook(p: Profile | null): void {
   const b = document.body;
   const s = p?.settings;
   b.dataset.font = s?.font ?? 'lexend';
+  b.toggleAttribute('data-keyfont', s?.keyFont ?? true);
   b.classList.toggle('large-text', !!s?.largeText);
   b.classList.toggle('high-contrast', !!s?.highContrast);
   b.classList.toggle('reduce-motion', reduceMotion());

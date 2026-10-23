@@ -22,7 +22,7 @@ import { globalButtons } from '../ui/chrome';
 import { levelIcons } from '../screens/help';
 import { paintRound, pawRing, placeRing, rhythmPic, roundButton, worldName } from '../ui/hud';
 import { OWN_SHARE, WordSource, type WordSourceOwn } from '../words/words';
-import type { Profile, Surprise } from '../storage/schema';
+import type { Lang, Profile, Surprise } from '../storage/schema';
 import type { LevelDef } from './levels';
 import { WORLDS, storyOf } from './levels';
 import type { Mode } from './mode';
@@ -83,11 +83,11 @@ const RESULTS_AFTER = 1.4;
  * weak keys more often, the newest group in focus, and the parent's own words and text mixed
  * in (not in drills or chosen keys, their words would bring other letters), or a task's.
  */
-export function wordSource(p: Profile, drill?: string[], own?: WordSourceOwn, chosen?: string[]): WordSource {
+export function wordSource(p: Profile, lang: Lang, drill?: string[], own?: WordSourceOwn, chosen?: string[]): WordSource {
   // Practice of space, punctuation or a Shift needs letters around it: the known ones.
   const keys = chosen ?? (!drill ? activeKeys(p) : drill.every(isLetterKey) ? drill : [...new Set([...activeKeys(p), ...drill])]);
   const s = p.settings;
-  return new WordSource(app.words, {
+  return new WordSource(app.words[lang], {
     keys,
     len: s.wordLen,
     noDiacritics: s.noDiacritics,
@@ -225,7 +225,8 @@ export class LevelRuntime {
     this.mismatch = new LayoutMismatchDetector(p.layout);
 
     const lay = LAYOUTS[p.layout];
-    this.words = wordSource(p, opts.keys, opts.own, opts.chosen);
+    // Practice (the custom exercise, key drills, tasks) has its own word language; story levels use the player's.
+    this.words = wordSource(p, def.kind === 'practice' ? p.settings.ownWordLang : p.settings.wordLang, opts.keys, opts.own, opts.chosen);
     this.surprise = surpriseFor(p, def, !!opts.keys);
 
     // DOM: HUD, stage, Tapko, bubble, guide.

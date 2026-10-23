@@ -12,14 +12,18 @@ export function newProfileScreen(root: HTMLElement): () => void {
   let kind: CompanionKind = 'fox';
   // Closing the form forgets a task link that brought the child here.
   const cancel = () => { app.pendingTask = null; go('start'); };
-  const name = h('input', { id: 'np-name', type: 'text', maxlength: 24, autocomplete: 'off', required: true, autofocus: true });
-  const nick = h('input', { id: 'np-nick', type: 'text', maxlength: NICK_MAX, autocomplete: 'off', spellcheck: 'false' });
-  const lang = h('select', { id: 'np-lang' },
+  const nick = h('input', { id: 'np-nick', type: 'text', maxlength: NICK_MAX, autocomplete: 'off', spellcheck: 'false', required: true, autofocus: true });
+  const name = h('input', { id: 'np-name', type: 'text', maxlength: 24, autocomplete: 'off' });
+  const langSelect = (id: string) => h('select', { id },
     h('option', { value: 'sk', selected: language() === 'sk' }, 'Slovenčina'),
     h('option', { value: 'en', selected: language() === 'en' }, 'English'));
+  const lang = langSelect('np-lang');
+  const wordLang = langSelect('np-wordlang');
   const lay = h('select', { id: 'np-layout' },
     ...LAYOUT_IDS.map((id) => h('option', { value: id, selected: id === (language() === 'sk' ? 'sk-qwertz' : 'us-qwerty') }, t(`layouts.${id}`))));
+  // A new language brings its words and keyboard along; both can still be chosen apart after it.
   lang.addEventListener('change', () => {
+    wordLang.value = lang.value;
     lay.value = lang.value === 'sk' ? 'sk-qwertz' : 'us-qwerty';
   });
   const kinds = h('div', { class: 'kind-picker', role: 'radiogroup', 'aria-label': t('newProfile.companion') },
@@ -35,13 +39,13 @@ export function newProfileScreen(root: HTMLElement): () => void {
   const error = h('p', { class: 'error', role: 'alert' });
   const form = h('form', { class: 'panel form', onSubmit: async (e: Event) => {
     e.preventDefault();
-    const n = name.value.trim();
-    if (!n) {
-      error.textContent = t('newProfile.nameMissing');
-      name.focus();
+    if (!nick.value.trim()) {
+      error.textContent = t('newProfile.nickMissing');
+      nick.focus();
       return;
     }
-    const p = newProfile(n, lang.value as Lang, lay.value as LayoutId, kind, nick.value);
+    const p = newProfile(name.value, lang.value as Lang, lay.value as LayoutId, kind, nick.value);
+    p.settings.wordLang = p.settings.ownWordLang = wordLang.value as Lang;
     if (app.pendingTask) addTask(p, app.pendingTask);
     app.pendingTask = null;
     app.store.add(p);
@@ -54,11 +58,12 @@ export function newProfileScreen(root: HTMLElement): () => void {
     h('div', { class: 'np-pick' },
       h('div', { class: 'np-col' }, h('label', {}, t('newProfile.companion')), kinds),
       h('div', { class: 'np-col np-side' },
-        h('label', { for: 'np-name' }, t('newProfile.name')), name,
-        h('p', { class: 'hint' }, t('newProfile.nameHint')),
         h('label', { for: 'np-nick' }, t('newProfile.nickname')), nick,
         h('p', { class: 'hint' }, t('newProfile.nicknameHint')),
+        h('label', { for: 'np-name' }, t('newProfile.name')), name,
+        h('p', { class: 'hint' }, t('newProfile.nameHint')),
         h('label', { for: 'np-lang' }, t('newProfile.language')), lang,
+        h('label', { for: 'np-wordlang' }, t('newProfile.wordLang')), wordLang,
         h('label', { for: 'np-layout' }, t('newProfile.layout')), lay)),
     h('p', { class: 'hint' }, t('newProfile.parentHint')),
     error,

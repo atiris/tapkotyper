@@ -26,7 +26,7 @@ describe('Store', () => {
   it('keeps the guest only in session storage', () => {
     const local = mem(), session = mem();
     const s = new Store(local, session);
-    const g = s.startGuest('en');
+    const g = s.startGuest('en', 'Guest');
     g.progress.levels['w1-1'] = 3;
     s.update(g);
     expect(new Store(local, session).guest?.progress.levels['w1-1']).toBe(3);
@@ -58,11 +58,20 @@ describe('Store', () => {
 });
 
 describe('nickname and seed', () => {
-  it('falls back to the name when there is no nickname', () => {
+  it('makes the nickname from the name when none is given', () => {
     const p = newProfile('Ema', 'sk');
-    expect(p.companion.name).toBe('');
     expect(nickname(p)).toBe('Ema');
     expect(nickname(newProfile('Ema', 'sk', undefined, 'cat', ' Líška '))).toBe('Líška');
+  });
+
+  it('creates a player with a nickname and no name', () => {
+    const p = newProfile('  ', 'en', undefined, 'cat', 'Bolt');
+    expect(p.name).toBe('');
+    expect(nickname(p)).toBe('Bolt');
+    expect(p.seed).toBe(nameSeed('Bolt'));
+    expect(p.settings.wordLang).toBe('en');
+    expect(p.settings.ownWordLang).toBe('en');
+    expect(p.settings.keyFont).toBe(true);
   });
 
   it('hashes the normalized name and keeps the seed on rename', () => {
@@ -75,7 +84,7 @@ describe('nickname and seed', () => {
     expect(migrate({ version: STORE_VERSION, profiles: [p] }).profiles[0].seed).toBe(nameSeed('Ema'));
   });
 
-  it('migrates v1: seed from the name, old default nickname emptied, rewards kept', () => {
+  it('migrates v1: seed from the name, old default nickname replaced by the name, rewards kept', () => {
     const old: any = newProfile('Jano', 'sk');
     delete old.seed;
     old.companion = { name: 'Ťapko', kind: 'owl', accessories: ['cap'] };
@@ -85,7 +94,7 @@ describe('nickname and seed', () => {
     delete named.seed;
     const [a, b] = migrate({ version: 1, profiles: [old, named] }).profiles;
     expect(a.seed).toBe(nameSeed('Jano'));
-    expect(a.companion.name).toBe('');
+    expect(a.companion.name).toBe('Jano');
     expect(a.companion.accessories).toEqual(['cap']);
     expect(a.progress.rewards).toEqual(['acc:cap']);
     expect(a.progress.companionsUnlocked).toEqual(['owl', 'cat']);
@@ -106,6 +115,36 @@ describe('migration v3', () => {
     expect(a.progress.wardrobeSeconds).toBe(120);
     expect(b.progress.wardrobeSeconds).toBe(420);
     expect(newProfile('Nový', 'sk').progress.wardrobeSeconds).toBe(0);
+  });
+});
+
+describe('migration v4', () => {
+  const v3 = (name: string, nick: string, language: 'sk' | 'en') => {
+    const p: any = newProfile(name, language);
+    p.companion.name = nick;
+    delete p.settings.wordLang;
+    delete p.settings.ownWordLang;
+    delete p.settings.keyFont;
+    return p;
+  };
+
+  it('fills an empty nickname from the name and adds the word language and key font', () => {
+    const [a, b] = migrate({ version: 3, profiles: [v3('Alexandra Veronika', '', 'en'), v3('Jano', 'Blesk', 'sk')] }).profiles;
+    expect(a.companion.name).toBe('Alexandra Veroni');
+    expect(a.name).toBe('Alexandra Veronika');
+    expect(a.settings.wordLang).toBe('en');
+    expect(a.settings.ownWordLang).toBe('en');
+    expect(a.settings.keyFont).toBe(true);
+    expect(b.companion.name).toBe('Blesk');
+    expect(b.settings.wordLang).toBe('sk');
+  });
+
+  it('imports a v3 file', () => {
+    const json = JSON.stringify({ app: 'tapkotyper', version: 3, profiles: [v3('Ema', ' ', 'sk')] });
+    const [p] = parseImport(json);
+    expect(nickname(p)).toBe('Ema');
+    expect(p.settings.wordLang).toBe('sk');
+    expect(p.settings.keyFont).toBe(true);
   });
 });
 

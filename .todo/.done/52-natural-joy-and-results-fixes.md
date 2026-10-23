@@ -26,7 +26,7 @@ The owner played the game and found things that feel wrong:
       - Use them when a creature or Tapko is glad: a super-obstacle is beaten, a creature is
         saved or reaches home, a world is finished.
       - At most once per such moment, never on every target.
-- [ ] **Review other effects.** Check every mode's joy, end and celebration animation
+- [x] **Review other effects.** Check every mode's joy, end and celebration animation
       (`grep -n "joy\|endT\|rotate\|scale" src/game/modes/*.ts`).
       - A living creature that shrinks, grows or spins to show joy now hops, waves or tilts a little.
       - Objects (balls, leaves, stars, sparks) may keep spinning.
@@ -50,7 +50,7 @@ The owner played the game and found things that feel wrong:
       - story.md: the cheers.
       - visuals.md: creatures show joy by hopping, not by shrinking or spinning.
       - The badge spec: bronze shows the way to silver.
-- [ ] **Checks:** `npm run build`, `npm test`, and the e2e specs that touch results or friends.
+- [x] **Checks:** `npm run build`, `npm test`, and the e2e specs that touch results or friends.
       Then drive the game with the playwright MCP:
       - World 1 super level end: the hedgehog hops and shouts.
       - Results card after level 2: the teaser is readable.
@@ -67,4 +67,22 @@ Implemented (an interrupted run, committed as is; build and unit tests pass):
 - The friends teaser class is `.friend-teaser`; the sound tooltip shows the F8 line
   (`.tip` keeps line breaks); bronze badges show the way to silver.
 
-Open: the remaining review of other modes' effects (note any change here), and the checks step.
+Review of the other modes (2026-10-23): no further change needed. Creatures already show joy by
+hopping with at most a small tilt (meadow critters' joy hop, egg and robohome moles' wave, robohome
+helpers' hop, Tapko's `endHop`, dragons' hop). The meadow flyers' 4 % wing flap is a flight motion,
+not joy. Rotations left are objects (leaves, rocks, asteroids, parts, signs, clouds, the rocket).
+CSS keyframes are UI and stretch exercises, not creatures.
+
+Checks (2026-10-23): build, 278 unit tests and e2e play/tooltip/layout specs pass. The playwright
+MCP browser was locked by another session, so the game was driven with a local Playwright script
+against the dev server instead: the super level ends with the hedgehog hopping upright at full
+size under "Hurá!"; the results teasers after level 1 and 2 are full-width rounded boxes; the
+friends teasers are still 110 px dashed circles; the sound tooltip reads "Zvuk: normálny (F4)" and
+"F8 pustí inú pesničku"; a bronze meadow badge adds "Strieborný odznak: aspoň 12 ★ v tomto svete (máš 4)."
+
+## Done - 2026-10-23
+
+Shipped: the hedgehog's hopping end with cheers, `story.cheer` at glad story moments, Melody's
+hop instead of a twirl, the readable results teaser (`.friend-teaser` for the friends screen),
+the F8 line on the sound tooltip, the bronze-to-silver badge tip, and the specs. The review of
+the other modes needed no change. Nothing was left out.

@@ -7,7 +7,6 @@ listed here is never run. Lines whose plan has moved to `.todo/.done/` are
 skipped, and the session that finishes a plan removes its line.
 
 
-- [P2] 52-natural-joy-and-results-fixes.md - small fixes first; adds story.cheer that 55 reuses
 - [P2] 53-enter-paw-and-practice-styles.md - paw and typing input; before 54 and 55 touch runtime.ts
 - [P2] 54-stay-a-while.md - endless run on top of the settled runtime
 - [P2] 55-accuracy-target-practice.md - largest; reuses the cheers (52) and lock texts on the map

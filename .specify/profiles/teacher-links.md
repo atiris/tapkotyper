@@ -17,7 +17,8 @@
   the task, the date, minutes played, accuracy, rhythm and the five weakest keys, plus a
   checksum. The UI says plainly that the checksum finds damaged copies, not cheating.
 - **Teacher view** (`#/teacher`, from the start page footer, or by opening a result link):
-  results are kept in this browser only, apart from the players, one row per child and task
+  results are kept in this browser only (IndexedDB), apart from the players, so a large
+  class's history does not crowd the players' storage; one row per child and task
   (a newer hand-in replaces the older one), with delete and CSV export. No accounts.
   Results come in three ways: scanning the result QR codes on the children's screens with the
   camera, pasting a link, or opening a link.

@@ -7,6 +7,5 @@ listed here is never run. Lines whose plan has moved to `.todo/.done/` are
 skipped, and the session that finishes a plan removes its line.
 
 
-- [P2] 58-teacher-store-indexeddb.md - storage first, before launch; 59 builds on it
 - [P2] 59-mentor-history-and-tapko-files.md - needs 58's IndexedDB stores
 - [P3] 60-results-row-and-kid-hints.md - small polish, independent

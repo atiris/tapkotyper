@@ -1,11 +1,29 @@
 import { OVERALL_ID, type TaskResult } from './result';
+import { getAll, openTeacherDb, write } from './teacher-db';
 
-/** The teacher's collected results live apart from the players, in this browser only. */
-export const TEACHER_KEY = 'tapkotyper:teacher';
+/** Where the teacher's results lived before IndexedDB; removed on sight. */
+const OLD_KEY = 'tapkotyper:teacher';
 
 export interface StoredResult extends TaskResult {
+  /** The hand-in's fingerprint, its key in the database. */
+  id: string;
   /** The checksum matched when the result was added. */
   intact: boolean;
+}
+
+/** A hash of what a hand-in says: the same hand-in from any source has the same one. */
+export function fingerprint(r: TaskResult): string {
+  const text = JSON.stringify([r.taskId, r.name, r.group ?? '', r.date, r.minutes, r.accuracy, r.cpm, r.levels ?? null, r.weak]);
+  // cyrb53: 53 bits are plenty for a class's hand-ins.
+  let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
+  for (let i = 0; i < text.length; i++) {
+    const c = text.charCodeAt(i);
+    h1 = Math.imul(h1 ^ c, 2654435761);
+    h2 = Math.imul(h2 ^ c, 1597334677);
+  }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36);
 }
 
 /** Accuracy in percent from which a child has mastered the task (two stars in the game). */
@@ -59,18 +77,45 @@ export function childSummary(rows: TaskResult[]): ChildSummary {
   };
 }
 
+/**
+ * The teacher's results, kept in IndexedDB in this browser only. `load()` reads them all once;
+ * the changes then land in memory at once and are written in the background, record by record.
+ */
 export class TeacherStore {
   results: StoredResult[] = [];
+  /** False when the browser blocks IndexedDB: the results last for this visit only. */
+  kept = true;
+  private db: IDBDatabase | null = null;
+  private writes: Promise<void> = Promise.resolve();
+  private persistAsked = false;
 
-  constructor(private local: Storage | undefined = globalThis.localStorage) {
+  constructor(private idb: IDBFactory | null = globalThis.indexedDB ?? null) {}
+
+  async load(): Promise<void> {
+    try { globalThis.localStorage?.removeItem(OLD_KEY); } catch { /* blocked storage */ }
+    this.db = await openTeacherDb(this.idb);
+    this.kept = !!this.db;
+    if (!this.db) return;
     try {
-      const raw = JSON.parse(local?.getItem(TEACHER_KEY) ?? 'null');
-      if (raw?.version === 1 && Array.isArray(raw.results)) this.results = raw.results;
+      this.results = (await getAll<StoredResult & { child: string }>(this.db, 'results')).map(({ child: _, ...r }) => r);
     } catch { this.results = []; }
   }
 
-  save(): void {
-    try { this.local?.setItem(TEACHER_KEY, JSON.stringify({ version: 1, results: this.results })); } catch { /* full or blocked storage: kept for this visit */ }
+  /** Resolves once every change so far is written. */
+  saved(): Promise<void> {
+    return this.writes;
+  }
+
+  private save(put: StoredResult[], drop: string[] = []): void {
+    const db = this.db;
+    if (!db) return;
+    if (!this.persistAsked) {
+      this.persistAsked = true;
+      // So the browser does not clear the results on its own when space runs low.
+      void navigator.storage?.persist?.().catch(() => undefined);
+    }
+    const records = put.map((r) => ({ ...r, child: childKey(r) }));
+    this.writes = this.writes.then(() => write(db, 'results', records, drop)).catch(() => { /* full or blocked: kept for this visit */ });
   }
 
   /**
@@ -80,11 +125,12 @@ export class TeacherStore {
   add(r: TaskResult, intact: boolean): 'added' | 'updated' | 'same' {
     const i = this.results.findIndex((x) => x.taskId === r.taskId && x.name === r.name);
     const old = this.results[i];
-    const next: StoredResult = { ...r, intact, ...(!r.group && old?.group && { group: old.group }) };
+    const result = { ...r, ...(!r.group && old?.group && { group: old.group }) };
+    const next: StoredResult = { ...result, id: fingerprint(result), intact };
     if (old && JSON.stringify(old) === JSON.stringify(next)) return 'same';
     if (old) this.results.splice(i, 1);
     this.results.push(next);
-    this.save();
+    this.save([next], old ? [old.id] : []);
     return old ? 'updated' : 'added';
   }
 
@@ -94,16 +140,18 @@ export class TeacherStore {
 
   removeMany(rows: StoredResult[]): void {
     this.results = this.results.filter((x) => !rows.includes(x));
-    this.save();
+    this.save([], rows.map((r) => r.id));
   }
 
   /** Puts the chosen rows into a group; an empty name clears it. */
   assign(rows: StoredResult[], group: string): void {
+    const drop = rows.map((r) => r.id);
     for (const r of rows) {
       if (group) r.group = group;
       else delete r.group;
+      r.id = fingerprint(r);
     }
-    this.save();
+    this.save(rows, drop);
   }
 
   /** The group names in use, sorted. */

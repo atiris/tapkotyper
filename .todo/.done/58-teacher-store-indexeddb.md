@@ -20,7 +20,7 @@ Players' profiles stay in localStorage; they are small and read synchronously al
 
 ## What
 
-- [ ] **Database** `tapkotyper-mentor`, version 1, with the stores plan 59 needs, so 59 adds no
+- [x] **Database** `tapkotyper-mentor`, version 1, with the stores plan 59 needs, so 59 adds no
       schema step:
       - `results`: one record per hand-in, key = its fingerprint (see 59), indexes `child`
         (`childKey`), `group`, `date`.
@@ -28,22 +28,44 @@ Players' profiles stay in localStorage; they are small and read synchronously al
       - `files`: key = auto, the history of loaded `.tapko` files.
       Keep the helper small: open, get all, put, delete, a transaction for several writes. No
       wrapper library.
-- [ ] **`TeacherStore` becomes async.** `load()` reads everything once when the teacher page
+- [x] **`TeacherStore` becomes async.** `load()` reads everything once when the teacher page
       opens (a class has at most a few thousand records), keeps them in memory for sorting and
       filtering as now, and every change (`add`, `remove`, `removeMany`, `assign`) writes only the
       touched records. The page shows nothing new while loading; it paints after `load()`.
       `teacherScreen` awaits it; the camera scan keeps working without waiting for writes.
-- [ ] **Persistence:** on the first write call `navigator.storage.persist()` once (ignore the
+- [x] **Persistence:** on the first write call `navigator.storage.persist()` once (ignore the
       answer), so the browser does not clear the data on its own when space is low.
-- [ ] **Blocked or missing IndexedDB** (some private windows): keep the data in memory for the
+- [x] **Blocked or missing IndexedDB** (some private windows): keep the data in memory for the
       visit and say once, in the page's status line, that results will not be kept after closing.
-- [ ] **Behaviour stays the same as today** in this plan: one row per child and task, a newer
+- [x] **Behaviour stays the same as today** in this plan: one row per child and task, a newer
       hand-in replaces the older one (plan 59 changes that). Only the storage changes.
-- [ ] **Specs:**
+- [x] **Specs:**
       - architecture.md: players in localStorage, the mentor's data in IndexedDB, and why.
       - teacher-links.md: results are kept in this browser (IndexedDB), apart from the players.
       - privacy.md: still nothing leaves the browser.
-- [ ] **Checks:** `npm run build`, `npm test` (store tests on `fake-indexeddb`), e2e
+- [x] **Checks:** `npm run build`, `npm test` (store tests on `fake-indexeddb`), e2e
       teacher-links and teacher-scan. Then the playwright MCP: add a result by a link, reload,
       it is still there; check in DevTools Application that `tapkotyper:teacher` is gone and the
       database holds the record.
+
+## Done - 2026-10-23
+
+Shipped: `src/share/teacher-db.ts` (open with the `results`/`sets`/`files` stores and their
+indexes, get all, one write transaction of puts and deletes); `TeacherStore.load()` reads the
+database once and removes the old `tapkotyper:teacher` key; `add`/`remove`/`removeMany`/`assign`
+stay synchronous in memory and queue their record writes in the background (`saved()` waits for
+them, used by the tests); `navigator.storage.persist()` on the first write; without IndexedDB the
+page says once in its status line that results will not be kept (`teacher.notKept`, sk + en).
+The teacher page and the child card paint after `load()`, and skip painting when the teacher has
+already moved to another screen. Unit tests on `fake-indexeddb`, an e2e check that the record is
+in IndexedDB and the old key is gone, specs updated. Checked in the browser via the playwright MCP:
+a result added by a link survives a reload, the database holds it, the old key is removed.
+
+Decisions:
+- The record key is the hand-in's fingerprint (`fingerprint()`, a cyrb53 hash of taskId, name,
+  group, date, minutes, accuracy, cpm, levels, weak), kept on `StoredResult.id`; the `child`
+  index field is added only to the stored record. Moving a child to a group changes the group, so
+  `assign` deletes the old key and puts the record under its new fingerprint.
+- `teacher-scan.spec.ts` needed no change; it passes as is.
+
+Left out: nothing.

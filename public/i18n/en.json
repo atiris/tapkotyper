@@ -1506,6 +1506,7 @@
     "add": "Add",
     "added": "Result added: {name}, {title}.",
     "already": "This result is already here: {name}, {title}.",
+    "notKept": "This browser does not allow saving the results; they are lost when the page is closed.",
     "notIntact": "The checksum does not match; the link was probably damaged when copied.",
     "removeTitle": "Remove the result?",
     "removeText": "The result of {name} for {title} will be removed from this table.",

@@ -1,3 +1,4 @@
+import { IDBFactory } from 'fake-indexeddb';
 import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { CODEC_VERSION, checksum, codeFrom, decode, encode } from './codec';
@@ -9,10 +10,11 @@ import { moveCode, parseMove, trimHistory } from './transfer';
 const b64 = (bytes: number[]) => btoa(String.fromCharCode(...bytes)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 const unb64 = (code: string) => Uint8Array.from(atob(code.replace(/-/g, '+').replace(/_/g, '/')), (c) => c.charCodeAt(0));
 
-/** A storage that lives in memory only. */
-function memory(): Storage {
-  const map = new Map<string, string>();
-  return { getItem: (k: string) => map.get(k) ?? null, setItem: (k: string, v: string) => void map.set(k, v) } as unknown as Storage;
+/** A loaded teacher store on a fresh database of its own. */
+async function teacherStore(idb: IDBFactory | null = new IDBFactory()): Promise<TeacherStore> {
+  const s = new TeacherStore(idb);
+  await s.load();
+  return s;
 }
 
 describe('codec', () => {
@@ -113,16 +115,16 @@ describe('results', () => {
     expect((await parseResult(forged)).intact).toBe(false);
   });
 
-  it('teacher store keeps one result per child and task, groups rows, and exports CSV', () => {
-    const map = new Map<string, string>();
-    const local = { getItem: (k: string) => map.get(k) ?? null, setItem: (k: string, v: string) => void map.set(k, v) } as unknown as Storage;
-    const s = new TeacherStore(local);
+  it('teacher store keeps one result per child and task, groups rows, and exports CSV', async () => {
+    const idb = new IDBFactory();
+    const s = await teacherStore(idb);
     const r = { taskId: 't1', title: 'Zvieratá', name: 'Ema', date: '2026-10-21', minutes: 2, accuracy: 90, cpm: 50, weak: [['ô', 70]] as [string, number][] };
     expect(s.add(r, true)).toBe('added');
     expect(s.add(r, true)).toBe('same');
     expect(s.add({ ...r, accuracy: 95 }, true)).toBe('updated');
     s.add({ ...r, name: 'Adam, "A"' }, false);
-    expect(new TeacherStore(local).results).toHaveLength(2);
+    await s.saved();
+    expect((await teacherStore(idb)).results).toHaveLength(2);
     const head = ['group', 'task', 'child', 'date', 'min', 'acc', 'cpm', 'levels', 'status', 'weak', 'broken'];
     const names = { key: (k: string) => k, status: (ok: boolean) => (ok ? 'ok' : 'practice') };
     expect(s.csv(head, names).split('\n')).toEqual([
@@ -141,10 +143,36 @@ describe('results', () => {
     expect(s.csv(head, names, [kept]).split('\n')).toHaveLength(2);
     s.removeMany([kept]);
     expect(s.results).toHaveLength(1);
+    await s.saved();
+    expect((await teacherStore(idb)).results.map((x) => x.name)).toEqual(['Adam, "A"']);
   });
 
-  it('teacher store sorts the children inside a group and task by every key, ties by name', () => {
-    const s = new TeacherStore(memory());
+  it('teacher store writes only the touched records and keeps a moved child under a new fingerprint', async () => {
+    const idb = new IDBFactory();
+    const s = await teacherStore(idb);
+    const r = { taskId: 't1', title: 'Zvieratá', name: 'Ema', date: '2026-10-21', minutes: 2, accuracy: 90, cpm: 50, weak: [] as [string, number][] };
+    s.add(r, true);
+    s.add({ ...r, name: 'Adam' }, true);
+    const before = s.results[0].id;
+    s.assign([s.results[0]], '5.A');
+    expect(s.results[0].id).not.toBe(before);
+    await s.saved();
+    const back = await teacherStore(idb);
+    expect(back.results).toHaveLength(2);
+    expect(back.results.find((x) => x.name === 'Ema')).toEqual(s.results[0]);
+    expect(back.childResults(childKey({ name: 'Ema', group: '5.A' }))).toHaveLength(1);
+  });
+
+  it('teacher store without IndexedDB keeps the results for the visit only', async () => {
+    const s = await teacherStore(null);
+    expect(s.kept).toBe(false);
+    s.add({ taskId: 't1', title: 'T', name: 'Ema', date: '2026-10-21', minutes: 2, accuracy: 90, cpm: 50, weak: [] }, true);
+    await s.saved();
+    expect(s.results).toHaveLength(1);
+  });
+
+  it('teacher store sorts the children inside a group and task by every key, ties by name', async () => {
+    const s = await teacherStore();
     const base = { taskId: 't1', title: 'Zvieratá', date: '2026-10-21', minutes: 2, accuracy: 90, cpm: 50, weak: [] as [string, number][] };
     s.add({ ...base, name: 'Cyril', date: '2026-10-20', minutes: 5, accuracy: 70, cpm: 60, levels: 3 }, true);
     s.add({ ...base, name: 'Adam', date: '2026-10-22', minutes: 1, accuracy: 95, cpm: 40, levels: 1 }, true);
@@ -172,8 +200,8 @@ describe('results', () => {
     expect(nextSort({ key: 'accuracy', desc: true }, 'child')).toEqual({ key: 'child', desc: false });
   });
 
-  it('a child card sums one child: averages, minutes, levels of the whole statistics, weakest keys', () => {
-    const s = new TeacherStore(memory());
+  it('a child card sums one child: averages, minutes, levels of the whole statistics, weakest keys', async () => {
+    const s = await teacherStore();
     const base = { title: 'T', name: 'Jakub', minutes: 2.5, cpm: 50, weak: [] as [string, number][] };
     s.add({ ...base, taskId: 'a', date: '2026-10-06', accuracy: 80, weak: [['ď', 61], ['p', 80]] }, true);
     s.add({ ...base, taskId: OVERALL_ID, date: '2026-10-13', accuracy: 90, cpm: 60, levels: 12, weak: [['p', 72], ['ô', 68], ['ľ', 75], ['a', 90]] }, true);

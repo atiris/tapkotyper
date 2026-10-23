@@ -13,9 +13,14 @@
   paths, gradients, CSS), so the app is complete and polished with any subset of assets.
 - Audio: sound effects are always synthesized with the Web Audio API; background music
   uses the generated tracks when present, otherwise a synthesized calm loop.
-- Data: `localStorage` only, versioned schema, export/import as `.json`.
+- Data: players' profiles in `localStorage`, versioned schema, export/import as `.json`;
+  they are small and the game reads them synchronously everywhere.
   Tasks, results and moving a player travel as links with compressed data in the address
-  hash; a teacher's collected results have their own `localStorage` key.
+  hash. A mentor's collected results live in their own IndexedDB database
+  (`tapkotyper-mentor`): a year of hand-ins outgrows localStorage's few shared megabytes,
+  and IndexedDB writes one record at a time instead of one big blocking JSON on every scan.
+  The browser is asked to keep that data persistently; where IndexedDB is blocked (some
+  private windows) the results last for the visit and the page says so.
 - Language data (UI texts, word lists) are separate JSON files loaded on demand per
   language, so adding a language does not grow the main bundle.
 - Installable offline PWA (a service worker caches the app after the first visit).

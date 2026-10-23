@@ -52,5 +52,14 @@ test('a task travels by link to a child, and the result back to the teacher\'s t
   await expect(teacher.locator('.teacher-table .group-row')).toContainText('5.A');
   await teacher.reload();
   await expect(teacher.locator('.teacher-table tbody tr:not(.task-row):not(.group-row)')).toHaveCount(1);
+  // Kept in the mentor's IndexedDB, apart from the players' localStorage.
+  expect(await teacher.evaluate(() => new Promise<string[]>((ok) => {
+    const req = indexedDB.open('tapkotyper-mentor');
+    req.onsuccess = () => {
+      const all = req.result.transaction('results').objectStore('results').getAll();
+      all.onsuccess = () => ok(all.result.map((r: { name: string }) => r.name));
+    };
+  }))).toEqual(['Adam']);
+  expect(await teacher.evaluate(() => localStorage.getItem('tapkotyper:teacher'))).toBeNull();
   expect(errors).toEqual([]);
 });

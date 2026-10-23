@@ -1,4 +1,4 @@
-import { app, applyProfileLook, go, reduceMotion } from '../app/app';
+import { app, applyProfileLook, go, reduceMotion, screenVisit } from '../app/app';
 import { t } from '../i18n/i18n';
 import { codeFrom } from '../share/codec';
 import { parseResult } from '../share/result';
@@ -33,10 +33,19 @@ export function teacherScreen(root: HTMLElement, params: { code?: string; child?
   app.profile = null;
   applyProfileLook(null);
   const store = new TeacherStore();
-  if (params.child && store.childResults(params.child).length) {
-    childCard(root, store, params.child);
-    return () => undefined;
-  }
+  const visit = screenVisit();
+  let stop: () => void = () => undefined;
+  // The page paints once the results are read; a teacher who left meanwhile gets nothing.
+  void store.load().then(() => {
+    if (visit !== screenVisit()) return;
+    if (params.child && store.childResults(params.child).length) childCard(root, store, params.child);
+    else stop = teacherList(root, store, params.code);
+  });
+  return () => stop();
+}
+
+/** The table of all results; `code` is a result link's code to add on the way in. Returns the cleanup that stops the camera. */
+function teacherList(root: HTMLElement, store: TeacherStore, code: string | undefined): () => void {
   view.fromList = false;
   const msg = h('p', { role: 'status', 'aria-live': 'polite' });
   const table = h('div', { class: 'teacher-table' });
@@ -318,7 +327,8 @@ export function teacherScreen(root: HTMLElement, params: { code?: string; child?
       results,
       h('p', { class: 'hint' }, ...richText(t('teacher.privacy'))))));
   paint();
-  if (params.code) void addCode(params.code);
+  const added = code ? addCode(code) : Promise.resolve();
+  if (!store.kept) void added.then(() => { msg.textContent = [msg.textContent, t('teacher.notKept')].filter(Boolean).join(' '); });
   return stopScan;
 }
 

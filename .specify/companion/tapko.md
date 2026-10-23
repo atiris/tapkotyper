@@ -16,7 +16,8 @@
   or gendered adjectives about the child, whose gender the game does not know.
 - Accessories unlock by progress (finishing levels and worlds, mastering keys): hats,
   glasses, scarves and bows, vests and shirts, wings, capes and backpacks, shoes, things to
-  hold (wand, balloon, lantern). Story 2 adds a hard hat, safety goggles, a raincoat, an
+  hold (wand, balloon, lantern, a walking stick), gloves, necklaces (a chain, a medallion
+  on a cord), hair clips, a simple eye mask and a festive carnival mask. Story 2 adds a hard hat, safety goggles, a raincoat, an
   umbrella worn as a hat, a small jetpack and an antenna headband. Which level, world or
   mastery step gives which accessory is **random per player, fixed from the start**, and
   the wardrobe shows how to earn each one. The same name always gives the same layout;

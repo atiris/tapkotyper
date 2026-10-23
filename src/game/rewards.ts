@@ -13,7 +13,8 @@ const BY_LEVEL: Record<string, string> = {
   'w3-1': 'rain-boots', 'w3-2': 'knit-vest', 'w3-3': 'backpack', 'w3-4': 'explorer-vest',
   'w4-1': 'wand', 'w4-2': 'star-cape', 'w4-3': 'boots', 'w4-4': 'lantern',
   'w5-1': 'beanie', 'w5-2': 'neckerchief', 'w5-3': 'balloon', 'w5-4': 'hair-bow',
-  'w8-2': 'raincoat',
+  'w6-2': 'hero-cape', 'w7-2': 'chain', 'w8-2': 'raincoat', 'w9-2': 'medallion', 'w10-2': 'hair-clip',
+  'w11-2': 'walking-stick', 'w12-2': 'white-gloves', 'w13-2': 'black-gloves', 'w14-2': 'eye-mask', 'w15-2': 'carnival-mask',
 };
 /** By world index; the garden and the lake give none (the child already wears the flower wreath from the first world, the lake gives its lily). */
 const BY_WORLD: Record<number, string> = {

@@ -64,6 +64,18 @@ Notes from real Gemini runs; add new ones here.
   sleeping cat, head on its paws") and add "clearly lying, not sitting".
 - The background tone drifts (the twig got a dull 229,85,216 instead of 255,0,255). The
   script samples the key from the corners, so it still works.
+- A back item cut from an outfit (butterfly wings, backpack) keeps the hole where the body
+  was, and "complete the hidden part" alone turned the backpack into a plain slab. Dress the
+  template in the single item first, then name what the hidden part shows ("a front pocket
+  with a zipper, a flap with a buckle").
+- "A carry loop above the shoulders" put a loop on top of the head; leave it out.
+- "Walking stick with a crook handle" reads as a crutch; say "straight, a round knob on top".
+- A hand item still moves the arm. In the cut-out list every part of the character
+  ("head, face, eyes, both arms, paws, legs"), or the whole figure can stay; a cut-out in a
+  new chat with the dressed picture attached worked where a follow-up did not.
+- A thin gold chain cut out on green came out green-gold (the key mixed into the links). Cut
+  thin gold or yellow lines out on magenta and give the gold in hex. "Make it bolder" in a
+  follow-up made the chain three times larger; it was scaled back to the first size locally.
 
 ---
 
@@ -225,11 +237,28 @@ In the attached image keep only FRONT, exactly where it is, with the same size, 
 | `acc-dragon-wings.jpg` | back: ITEM = small soft orange baby-dragon wings on the back, visible on both sides | done 2026-10-21 (longer than before; drawn behind the body) |
 | `acc-star-cape.jpg` | a dark blue cape with stars hanging from the shoulders behind the body, visible on both sides | done 2026-10-21 (with `acc-star-cape-front.jpg`: clasp and collar over the body) |
 | `acc-knit-vest.jpg` | a cozy green knitted vest on the body | done 2026-10-21 |
-| `acc-backpack.jpg` | a small orange backpack on the back, its straps visible over the shoulders | done 2026-10-21 (with `acc-backpack-front.jpg`: straps over the body) |
+| `acc-backpack.jpg` | back: a small orange school backpack worn on the back; its rounded sides with small side pockets stick out a little on both sides of the body at chest height, a small carry loop shows above the shoulders behind the head, two orange shoulder straps with small buckles run over both shoulders | done 2026-10-23 (the old one looked like a gravestone in the wardrobe; with `acc-backpack-front.jpg`: straps over the body) |
+| `acc-butterfly-wings.jpg` | back: light blue (#8FC5EF) and yellow (#F5D76E) butterfly wings, on each side a big rounded upper wing and a smaller lower wing with a short rounded tail, yellow spots and dark-brown veins, not fairy wings | done 2026-10-23 (the wings cut from `outfit-b` showed the body's cut-out in the wardrobe) |
 | `acc-lantern.jpg` | a small lantern in the right hand | done 2026-10-21 (the wire handle has a small gap at the top) |
 | `acc-wand.jpg` | hand: ITEM = a small magic wand with a golden star on top, held in the right hand | done 2026-10-21 (fixed by hand in GIMP: the generator kept moving the paw) |
 | `acc-balloon.jpg` | hand: ITEM = a red balloon on a thin string, the string held in the left hand | done 2026-10-21 (fixed by hand in GIMP) |
 | `acc-boots.jpg` | feet: ITEM = brown boots on the feet | done 2026-10-21 |
+
+Wardrobe additions (all `SINGLES`; capes and other back items use the back remove prompt,
+necklaces and gloves the body clothing remove prompt, masks the glasses remove prompt without
+the lens highlight: the eye holes are only flat green):
+
+| File | ITEM / FRAME | Status |
+|---|---|---|
+| `acc-hero-cape.jpg` | back: a bright red hero cape with a golden-yellow inner lining, hanging from the shoulders behind the body down to the knees, visible on both sides with a soft wave at its lower edge, fastened at the neck by a small round golden clasp with a short red collar | first version 2026-10-23, the owner finishes it (with `acc-hero-cape-front.jpg`: clasp and collar) |
+| `acc-chain.jpg` | neck: a thin golden chain necklace with small round links, in a soft U shape on the upper chest, no pendant | done 2026-10-23 |
+| `acc-medallion.jpg` | neck: a thin dark-brown leather cord in a soft V shape with a round bronze medallion (#C98A3A, a small engraved leaf) in the middle of the chest | done 2026-10-23 |
+| `acc-hair-clip.jpg` | head: two small hair clips side by side, turquoise (#2BB5B0) and yellow (#F5C542), short flat bars with rounded ends, on the top right side of the head | done 2026-10-23 |
+| `acc-walking-stick.jpg` | hand: a simple straight wooden walking stick (#9A6A3C) with a small round knob on top, no hook (a crook looked like a crutch), in the right paw (viewer's left), standing straight down beside the leg, its tip on the ground | first version 2026-10-23, the owner fits it to the paw |
+| `acc-white-gloves.jpg` | hand: soft white gloves (#F7F7F2, light grey shading) on both paws, a small cuff at each wrist | done 2026-10-23 |
+| `acc-black-gloves.jpg` | hand: `acc-white-gloves.jpg` attached and recolored black (#2A2A2E) with dark grey highlights | done 2026-10-23 |
+| `acc-eye-mask.jpg` | eyes: a simple black eye mask like a masked hero wears, a smooth band with two almond-shaped eye holes and slightly pointed outer ends | done 2026-10-23 |
+| `acc-carnival-mask.jpg` | eyes: a festive carnival masquerade mask, deep purple (#5B2A86) with golden swirls along the edges, small gems at the outer corners and three short gold and teal feathers from its upper left corner | done 2026-10-23 |
 
 Fixed in code, no new picture needed: green spots in `heart-glasses` lenses (done 2026-10-21). Pink sneakers: their back side showed; fixed by hand in GIMP in `outfit-f.jpg` (done 2026-10-21).
 

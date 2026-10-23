@@ -79,6 +79,16 @@ const SINGLES = {
   feather: { slot: 'head' },
   harp: { slot: 'hand' },
   'fairy-wings': { slot: 'back' },
+  // Wardrobe additions.
+  'hero-cape': { slot: 'back' },
+  chain: { slot: 'neck' },
+  medallion: { slot: 'neck' },
+  'hair-clip': { slot: 'head' },
+  'walking-stick': { slot: 'hand' },
+  'white-gloves': { slot: 'hand' },
+  'black-gloves': { slot: 'hand' },
+  'eye-mask': { slot: 'eyes' },
+  'carnival-mask': { slot: 'eyes' },
 };
 
 const run = promisify(execFile);
@@ -319,7 +329,8 @@ async function processAccessory(id, data, w, h, manifest) {
   const single = SINGLES[id] && { rid: id, slot: SINGLES[id].slot, set: 'single', tint: SINGLES[id].tint };
   const entry = single ?? Object.entries(OUTFITS).flatMap(([set, rules]) => rules.map(([rid, slot]) => ({ rid, slot, set }))).find((r) => r.rid === id);
   if (!entry) { console.warn(`acc-${id}: not in an outfit table nor in SINGLES, skipped`); return; }
-  keyOut(data, w, h, { glass: true, tint: entry.tint ?? null });
+  // Only glasses have lenses; elsewhere the lens rules would eat thin key-mixed lines (a chain).
+  keyOut(data, w, h, { glass: entry.slot === 'eyes', tint: entry.tint ?? null });
   singleAccessories.add(id);
   await writeAccessory(id, entry.slot, entry.set, data, w, h, manifest);
 }

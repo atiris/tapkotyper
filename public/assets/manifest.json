@@ -28,6 +28,14 @@
    "w": 160,
    "h": 160
   },
+  "acc-black-gloves": {
+   "w": 384,
+   "h": 384
+  },
+  "acc-black-gloves-thumb": {
+   "w": 160,
+   "h": 160
+  },
   "acc-boots": {
    "w": 384,
    "h": 384
@@ -36,11 +44,43 @@
    "w": 160,
    "h": 160
   },
+  "acc-butterfly-wings": {
+   "w": 384,
+   "h": 384
+  },
+  "acc-butterfly-wings-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-carnival-mask": {
+   "w": 384,
+   "h": 384
+  },
+  "acc-carnival-mask-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-chain": {
+   "w": 384,
+   "h": 384
+  },
+  "acc-chain-thumb": {
+   "w": 160,
+   "h": 160
+  },
   "acc-dragon-wings": {
    "w": 384,
    "h": 384
   },
   "acc-dragon-wings-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-eye-mask": {
+   "w": 384,
+   "h": 384
+  },
+  "acc-eye-mask-thumb": {
    "w": 160,
    "h": 160
   },
@@ -72,6 +112,14 @@
    "w": 160,
    "h": 160
   },
+  "acc-hair-clip": {
+   "w": 384,
+   "h": 384
+  },
+  "acc-hair-clip-thumb": {
+   "w": 160,
+   "h": 160
+  },
   "acc-hard-hat": {
    "w": 384,
    "h": 384
@@ -85,6 +133,18 @@
    "h": 384
   },
   "acc-harp-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-hero-cape-front": {
+   "w": 384,
+   "h": 384
+  },
+  "acc-hero-cape": {
+   "w": 384,
+   "h": 384
+  },
+  "acc-hero-cape-thumb": {
    "w": 160,
    "h": 160
   },
@@ -113,6 +173,14 @@
    "h": 384
   },
   "acc-lantern-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-medallion": {
+   "w": 384,
+   "h": 384
+  },
+  "acc-medallion-thumb": {
    "w": 160,
    "h": 160
   },
@@ -168,11 +236,27 @@
    "w": 160,
    "h": 160
   },
+  "acc-walking-stick": {
+   "w": 384,
+   "h": 384
+  },
+  "acc-walking-stick-thumb": {
+   "w": 160,
+   "h": 160
+  },
   "acc-wand": {
    "w": 384,
    "h": 384
   },
   "acc-wand-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-white-gloves": {
+   "w": 384,
+   "h": 384
+  },
+  "acc-white-gloves-thumb": {
    "w": 160,
    "h": 160
   },
@@ -900,14 +984,6 @@
    "w": 160,
    "h": 160
   },
-  "acc-butterfly-wings": {
-   "w": 384,
-   "h": 384
-  },
-  "acc-butterfly-wings-thumb": {
-   "w": 160,
-   "h": 160
-  },
   "acc-wizard-hat": {
    "w": 384,
    "h": 384
@@ -1302,14 +1378,39 @@
    "set": "e"
   },
   {
+   "id": "black-gloves",
+   "slot": "hand",
+   "set": "single"
+  },
+  {
    "id": "boots",
    "slot": "feet",
    "set": "c"
   },
   {
+   "id": "butterfly-wings",
+   "slot": "back",
+   "set": "b"
+  },
+  {
+   "id": "carnival-mask",
+   "slot": "eyes",
+   "set": "single"
+  },
+  {
+   "id": "chain",
+   "slot": "neck",
+   "set": "single"
+  },
+  {
    "id": "dragon-wings",
    "slot": "back",
    "set": "e"
+  },
+  {
+   "id": "eye-mask",
+   "slot": "eyes",
+   "set": "single"
   },
   {
    "id": "fairy-wings",
@@ -1327,6 +1428,11 @@
    "set": "single"
   },
   {
+   "id": "hair-clip",
+   "slot": "head",
+   "set": "single"
+  },
+  {
    "id": "hard-hat",
    "slot": "head",
    "set": "single"
@@ -1334,6 +1440,11 @@
   {
    "id": "harp",
    "slot": "hand",
+   "set": "single"
+  },
+  {
+   "id": "hero-cape",
+   "slot": "back",
    "set": "single"
   },
   {
@@ -1350,6 +1461,11 @@
    "id": "lantern",
    "slot": "hand",
    "set": "g"
+  },
+  {
+   "id": "medallion",
+   "slot": "neck",
+   "set": "single"
   },
   {
    "id": "raincoat",
@@ -1382,9 +1498,19 @@
    "set": "single"
   },
   {
+   "id": "walking-stick",
+   "slot": "hand",
+   "set": "single"
+  },
+  {
    "id": "wand",
    "slot": "hand",
    "set": "c"
+  },
+  {
+   "id": "white-gloves",
+   "slot": "hand",
+   "set": "single"
   },
   {
    "id": "cap",
@@ -1409,11 +1535,6 @@
   {
    "id": "bow-tie",
    "slot": "neck",
-   "set": "b"
-  },
-  {
-   "id": "butterfly-wings",
-   "slot": "back",
    "set": "b"
   },
   {

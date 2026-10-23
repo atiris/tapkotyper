@@ -100,10 +100,11 @@ function spoken(tg: Target): string {
 
 /**
  * The targets of a profile: its active keys (or a drill's, or the keys chosen for free practice),
- * weak keys more often, the newest group in focus, and the parent's own words and text mixed
- * in (not in drills or chosen keys, their words would bring other letters), or a task's.
+ * weak keys more often, the newest group in focus (or the target range's weak keys), and the
+ * parent's own words and text mixed in (not in drills, chosen keys or the target range, their
+ * words would bring other letters), or a task's.
  */
-export function wordSource(p: Profile, lang: Lang, drill?: string[], own?: WordSourceOwn, chosen?: string[]): WordSource {
+export function wordSource(p: Profile, lang: Lang, drill?: string[], own?: WordSourceOwn, chosen?: string[], focus?: string[]): WordSource {
   // Practice of space, punctuation or a Shift needs letters around it: the known ones.
   const keys = chosen ?? (!drill ? activeKeys(p) : drill.every(isLetterKey) ? drill : [...new Set([...activeKeys(p), ...drill])]);
   const s = p.settings;
@@ -112,11 +113,11 @@ export function wordSource(p: Profile, lang: Lang, drill?: string[], own?: WordS
     len: s.wordLen,
     noDiacritics: s.noDiacritics,
     weights: keyWeights(p, keys),
-    focus: drill ?? newestGroup(p).filter((k) => keys.includes(k)),
+    focus: drill ?? (focus ?? newestGroup(p)).filter((k) => keys.includes(k)),
     layout: LAYOUTS[p.layout],
     names: tList('names'),
     shiftMastery: Object.fromEntries([SHIFT_L, SHIFT_R].map((k) => [k, masteryLevel(p.stats.keys[k], s.difficulty)])),
-    own: drill || chosen ? undefined : own ?? { words: s.ownWords, text: s.ownText, share: OWN_SHARE[s.ownMix] },
+    own: drill || chosen || focus ? undefined : own ?? { words: s.ownWords, text: s.ownText, share: OWN_SHARE[s.ownMix] },
   });
 }
 
@@ -252,11 +253,11 @@ export class LevelRuntime {
 
     const lay = LAYOUTS[p.layout];
     // Practice (the custom exercise, key drills, tasks) has its own word language; story levels use the player's.
-    this.words = wordSource(p, def.kind === 'practice' ? p.settings.ownWordLang : p.settings.wordLang, opts.keys, opts.own, opts.chosen);
+    this.words = wordSource(p, def.kind === 'practice' ? p.settings.ownWordLang : p.settings.wordLang, opts.keys, opts.own, opts.chosen, def.focus);
     // Enter comes with the right little finger's home key; drills, single letters and the gate's code stay without it.
-    const enterOk = !opts.keys && !def.noSpace && def.kind !== 'gate' && def.kind !== 'freetype' && (opts.chosen ?? activeKeys(p)).includes(enterAfter(lay));
+    const enterOk = !opts.keys && !def.noSpace && def.kind !== 'gate' && def.kind !== 'freetype' && def.kind !== 'aim' && (opts.chosen ?? activeKeys(p)).includes(enterAfter(lay));
     this.enter = enterOk ? new EnterMarks(() => this.rng.next(), def.kind === 'practice' ? null : ENTER_MAX) : null;
-    this.surprise = opts.stay ? null : surpriseFor(p, def, !!opts.keys);
+    this.surprise = opts.stay || def.kind === 'aim' ? null : surpriseFor(p, def, !!opts.keys);
     this.count = def.count;
     // The e2e build may shorten the minimum (`?minActive=8`), so its tests finish levels in seconds.
     // Staying a while never reaches its minimum: the targets keep coming until Esc.
@@ -264,13 +265,13 @@ export class LevelRuntime {
 
     // DOM: HUD, stage, Tapko, bubble, guide.
     this.el = h('div', { class: `level-screen world-${WORLDS[def.world]}${def.rescue ? ' world-rescue' : ''}` });
-    const story = def.kind !== 'practice' && def.kind !== 'freetype';
+    const story = def.kind !== 'practice' && def.kind !== 'freetype' && def.kind !== 'aim';
     this.robot = story && storyOf(def.world).id === 'robot' ? robotFor(def.rescue ? WORLDS.length - 1 : def.world) : null;
     if (this.robot) this.el.dataset.bolt = this.robot.look;
     this.fairy = story && storyOf(def.world).id === 'fairy';
     if (this.fairy) this.el.dataset.fairy = 'melody';
     this.progressFill = h('div', { class: 'progress-fill' });
-    const title = def.kind === 'practice' ? t(def.phrases ? 'level.ownText' : 'level.practice') : def.kind === 'freetype' ? t('level.freeType') : def.rescue ? t('level.rescue') : worldName(def);
+    const title = def.kind === 'practice' ? t(def.phrases ? 'level.ownText' : 'level.practice') : def.kind === 'freetype' ? t('level.freeType') : def.kind === 'aim' ? t('aim.title') : def.rescue ? t('level.rescue') : worldName(def);
     const guideBtn = roundButton('control', 'keyboard', t('level.guide'), () => this.toggleGuide());
     tip(guideBtn, withKey(t('level.guide'), 'F2'));
     if (p.settings.guideLocked) guideBtn.disabled = true;
@@ -319,6 +320,8 @@ export class LevelRuntime {
     this.stage.canvas.addEventListener('pointerdown', this.onStageClick);
     this.mode = createMode(def, this);
     this.free = this.mode instanceof FreeTypeMode ? this.mode : null;
+    const extra = this.mode.hud();
+    if (extra) hud.querySelector('.hud-title')!.after(extra);
     if (this.free) {
       this.saidEl = h('p', { class: 'sr-only', role: 'status', 'aria-live': 'polite' });
       stageWrap.append(this.saidEl);
@@ -341,9 +344,9 @@ export class LevelRuntime {
 
   private readonly offShortcuts: () => void;
 
-  /** Story levels and rescue missions; free practice and drills count every key, and the main gate's code is the child's own. */
+  /** Story levels and rescue missions; free practice, drills and the target range count every key, and the main gate's code is the child's own. */
   get pawsAllowed(): boolean {
-    return this.def.kind !== 'practice' && this.def.kind !== 'freetype' && this.def.kind !== 'gate' && !this.opts.keys;
+    return this.def.kind !== 'practice' && this.def.kind !== 'freetype' && this.def.kind !== 'gate' && this.def.kind !== 'aim' && !this.opts.keys;
   }
 
   /** The background: the rescue camp in a rescue mission, else the mode's world. */
@@ -352,7 +355,7 @@ export class LevelRuntime {
   }
 
   get tapkoOnStage(): boolean {
-    return ['freetype', 'swamp', 'signs', 'boulder', 'doors', 'gate', 'rooms', 'buds', 'flower', 'owl', 'lilies', 'reflection'].includes(this.def.kind);
+    return ['freetype', 'aim', 'swamp', 'signs', 'boulder', 'doors', 'gate', 'rooms', 'buds', 'flower', 'owl', 'lilies', 'reflection'].includes(this.def.kind);
   }
 
   /** Preparation: assets, new keys, the get-ready card with the tip and its password, then play. */
@@ -936,7 +939,7 @@ export class LevelRuntime {
   /** What leaving is called, and what the question says is lost: a story level, an exercise or a rescue mission. */
   private get ending(): { label: string; text: string } {
     if (this.def.kind === 'freetype') return { label: 'level.leave', text: '' };
-    if (this.def.kind === 'practice' || this.opts.stay) return { label: 'level.endPractice', text: 'level.endPracticeText' };
+    if (this.def.kind === 'practice' || this.def.kind === 'aim' || this.opts.stay) return { label: 'level.endPractice', text: 'level.endPracticeText' };
     if (this.def.rescue) return { label: 'level.endRescue', text: 'level.endRescueText' };
     return { label: 'level.endLevel', text: 'level.endLevelText' };
   }
@@ -1190,12 +1193,13 @@ export class LevelRuntime {
     const typedShare = resolved ? this.typedTargets / resolved : 1;
     const clean = this.cleanTargets;
     this.flushSession();
-    if ((this.opts.stay || this.def.kind === 'practice' && !this.def.count) && total === 0) {
+    const noStars = this.opts.stay || this.def.kind === 'aim';
+    if ((noStars || this.def.kind === 'practice' && !this.def.count) && total === 0) {
       this.opts.onFinish(null);
       return;
     }
     const stats = { accuracy, chars, errors, cpm, seconds };
-    const result = this.opts.stay ? completeStay(p, stats, typedShare) : completeLevel(p, this.def, stats, typedShare);
+    const result = noStars ? completeStay(p, stats, typedShare) : completeLevel(p, this.def, stats, typedShare);
     if (this.style !== 'copy') result.byStyle = { style: this.style, clean, total: resolved };
     saveProfile();
     this.sfx('reward');

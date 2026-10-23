@@ -125,8 +125,8 @@ export function rhythmTrend(p: Profile): number | null {
 
 
 /**
- * The end of staying a while in a level: like a practice, the lesson may advance and good play
- * counts toward growth, but the run gives no stars, rewards or level result.
+ * The end of staying a while in a level or of the target range: like a practice, the lesson may
+ * advance and good play counts toward growth, but the run gives no stars, rewards or level result.
  */
 export function completeStay(p: Profile, r: RunStats, typedShare: number): LevelResult {
   const newKeys = advanceLesson(p);

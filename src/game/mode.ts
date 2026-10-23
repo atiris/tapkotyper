@@ -32,6 +32,10 @@ export abstract class Mode {
   startLine(): string | null {
     return null;
   }
+  /** Extra HUD content of the mode (next to the title), else null. */
+  hud(): HTMLElement | null {
+    return null;
+  }
   /** Called once after construction, when the stage size is known. */
   start(): void {}
   abstract update(dt: number): void;

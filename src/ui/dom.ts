@@ -76,6 +76,7 @@ export const ICONS = {
   sortUp: '<path d="M6 15l6-6 6 6"/>',
   menu: '<path d="M5 7h14M5 12h14M5 17h14"/>',
   recheck: '<path d="M4 12a8 8 0 102.3-5.7"/><path d="M4 4v5h5"/>',
+  target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/>',
   copy: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 00-1-1H5a1 1 0 00-1 1v10a1 1 0 001 1h3"/>',
   fullscreenExit: '<path d="M4 9h5V4M9 9L4 4M20 9h-5V4M15 9l5-5M4 15h5v5M9 15l-5 5M20 15h-5v5M15 15l5 5"/>',
 };

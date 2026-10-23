@@ -124,6 +124,7 @@
     "keysOne": "Na túto úroveň potrebuješ ešte jedno písmeno. Nové písmenká získaš hraním alebo vo Vlastnom cvičení.",
     "keysFew": "Na túto úroveň potrebuješ ešte {n} písmená. Nové písmenká získaš hraním alebo vo Vlastnom cvičení.",
     "keysMany": "Na túto úroveň potrebuješ ešte {n} písmen. Nové písmenká získaš hraním alebo vo Vlastnom cvičení.",
+    "heldKeys": "Aby sa otvorila ďalšia úroveň, potrebuješ presnejšie písať: {keys}. Precvič ich na Strelnici.",
     "keysLocked": "potrebuješ viac písmen",
     "storyFairy": "Víla Melódia"
   },
@@ -1705,5 +1706,27 @@
     "menu": "Menu",
     "relaxing": "Oddych",
     "break": "Prestávka"
+  },
+  "aim": {
+    "title": "Strelnica",
+    "start": "Tapko hádže na terč! Napíš slovo na každom kruhu a vec preletí. Trénuješ: {keys}",
+    "keys": "Písmená na tréning",
+    "keyTip": "{key}: {n} % správne",
+    "ready": "Výborne! {keys} už píšeš presne.",
+    "plop": "Plop!",
+    "hit": {
+      "pebble": "Ťuk!",
+      "screw": "Cink!",
+      "fly": "Bzzz!",
+      "tomato": "Pľac!",
+      "arrow": "Trefa!",
+      "duck": "Pííp!",
+      "sock": "Fuj, ponožka!"
+    },
+    "done": "Strelnica hotová!",
+    "beforeAfter": "predtým {before} %, teraz {after} %",
+    "opened": "Presné písanie otvorilo nové písmená: {keys}",
+    "again": "Znova",
+    "toMap": "Na mapu"
   }
 }

@@ -894,3 +894,23 @@ Cute, soft 2D children's game icon, flat vector style with gentle gradients, sof
 | `ui-act-rhythm.jpg` | a small round drum with two soft beat marks above it (rhythm) |
 | `ui-act-hide.jpg` | a small round hole in the ground with two curious eyes peeking out (hide and seek) |
 | `ui-act-super.jpg` | a small golden crown with three round tips (super-obstacle) |
+
+## 10. Target range (training the weak letters)
+
+Plan: `.todo/.done/55-accuracy-target-practice.md`. One range for every world, on the world's
+own background; the game draws every object in code until its picture is there. Tapko throws
+one of the projectiles at the target through soap-bubble rings. Each projectile is seen from
+the side, alone and readable at a small size (it flies at about 46 px).
+
+### Game objects (section 4 prompt)
+| File | OBJECT | BG | Status |
+|---|---|---|---|
+| `obj-aim-target.jpg` | a round archery target made of soft red and cream rings with a golden center, painted on a wooden board, front view, no stand, no face | green | todo |
+| `obj-aim-ring.jpg` | a tall oval soap-bubble ring floating upright, thin shimmering rainbow edge in pink, light blue and mint, empty and see-through in the middle, front view | green | todo |
+| `obj-aim-pebble.jpg` | a single small smooth round grey pebble, no face | magenta | todo |
+| `obj-aim-screw.jpg` | a single shiny silver screw standing upright, round head on top, no face | magenta | todo |
+| `obj-aim-fly.jpg` | a funny little housefly with big red eyes and clear wings, flying, side view, happy | magenta | todo |
+| `obj-aim-tomato.jpg` | a single round ripe red tomato with a small green leafy top, no face | magenta | todo |
+| `obj-aim-arrow.jpg` | a short wooden toy arrow with a soft rounded grey tip and red feathers, pointing to the right, no face | magenta | todo |
+| `obj-aim-duck.jpg` | a yellow rubber bath duck with an orange beak, side view facing right, happy | magenta | todo |
+| `obj-aim-sock.jpg` | a single light blue striped child's sock with a white cuff, side view, no face | magenta | todo |

@@ -337,6 +337,9 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .mini-stars i.on { background: #f5b301; }
 .level-node.keys { background: #f3ece2; color: var(--ink-soft); }
 .level-key { width: 16px; height: 16px; }
+/* The target range of a finished world, under its levels. */
+.aim-btn { margin-top: var(--sp-2); }
+.map-bubble .held-keys { font-weight: 700; }
 .map-bubble { align-self: center; max-width: 100%; }
 .map-bubble[hidden] { display: none; }
 /* World cards follow the room of their row: five in one row down to 640 px, then three and two. */
@@ -370,6 +373,11 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .paw-btn.empty { opacity: 0.6; cursor: default; }
 .paw-btn.charged { animation: pop-in 0.5s ease; }
 .hud-hint { flex: 1; min-width: 120px; font-size: 14px; font-weight: 700; opacity: 0.7; white-space: nowrap; }
+/* The target range: each weak key with a small bar of its recent accuracy. */
+.aim-keys { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.aim-key { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; min-width: 34px; padding: 2px 6px; border-radius: 10px; background: #fff; box-shadow: inset 0 0 0 2px var(--line); }
+.aim-key b { font-family: var(--font-keys); font-size: 18px; line-height: 1.1; }
+.aim-key i { display: block; width: 26px; height: 5px; border-radius: 3px; background: linear-gradient(90deg, var(--green) var(--acc), rgba(90, 61, 43, 0.15) var(--acc)); }
 .progress { flex: 1; min-width: 120px; height: 16px; border-radius: 999px; background: rgba(90, 61, 43, 0.12); overflow: hidden; }
 .progress-fill { height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, #8fd89f, var(--green)); transition: width 0.3s ease; }
 /* Space shows its own speedometer on the stage. */
@@ -525,6 +533,10 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .results-facts { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem; margin-top: 0.6rem; }
 .fact { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.25em 0.75em; border-radius: 999px; background: #fff; box-shadow: inset 0 0 0 2px var(--line); font-size: 0.92rem; font-weight: 600; }
 .fact.main { font-weight: 800; font-size: 1.05rem; }
+.aim-rows { list-style: none; padding: 0; margin: 0.6rem auto 0; display: grid; gap: 0.3rem; width: fit-content; }
+.aim-row { display: flex; align-items: center; gap: 0.6rem; font-weight: 600; }
+.aim-row-key { display: inline-grid; place-items: center; min-width: 1.8em; font-family: var(--font-keys); border-radius: 8px; background: #fff; box-shadow: inset 0 -3px 0 var(--brand); }
+.aim-row.good span { color: var(--green-dark); }
 .fact.good, .fact.new-key { color: var(--green-dark); background: #e3f6e8; box-shadow: none; }
 .fact.growth { background: #fff3c9; box-shadow: none; border-radius: 16px; text-align: left; padding: 0.2em 0.75em 0.2em 0.3em; }
 .results-notes { margin-top: 0.6rem; padding: 0.5rem 0.7rem; border-radius: 16px; box-shadow: inset 0 0 0 2px var(--line); text-align: left; font-size: 0.95rem; display: grid; gap: 0.35rem; }

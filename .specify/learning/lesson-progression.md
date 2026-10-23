@@ -39,7 +39,10 @@
   unlocked keys count (space, punctuation and Shifts too);
   with the parent's own key choice, its keys count. A level reached (the one before has its
   star) but still short of keys shows a key on the map; tapping it, the narrator says how many
-  letters are missing and offers own practice. "Continue" skips such levels: it replays
+  letters are missing. When keys of the newest group are not ready yet, the key's tooltip,
+  the narrator and a story still closed for keys also name them ("type these more
+  accurately: k, l"), and the narrator offers the [target range](../game/target-practice.md)
+  once a world is done (that world's, else the last finished one), own practice before. "Continue" skips such levels: it replays
   the last open one, or starts own practice when none is open. Rescue missions and the
   super profile have no key need.
 - Own practice mode: calm typing of words from the chosen keys, no story. Every way into
@@ -60,6 +63,8 @@
   play; it has no end, so new keys still open only at the end of a level or practice.
 
 ## Why
+- New letters wait for accuracy, which a child cannot see; naming the letters and offering
+  a fun way to train them turns a silent lock into a clear goal.
 - Own practice is for practising exactly what the child (or parent) wants: the slider
   is quick, the lit keyboard shows what is in, single clicks fine-tune it. The way to type
   is a choice for one run, so it is not stored. Children do not know what "Dictation" or

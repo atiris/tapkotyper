@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { SUPER_ID } from '../storage/schema';
 import { lessonOrder } from '../learning/lessons';
-import { LEVELS, MIN_ACTIVE_S, STORIES, freeTypeLevel, grownCount, hasMinLength, isLevelUnlocked, isWorldUnlocked, keysNeeded, levelById, levelOver, nextLevel, practiceLevel, rescueLevel, rescueUnlocked, shownProgress, worldLevels, worldLock } from './levels';
+import { LEVELS, MIN_ACTIVE_S, STORIES, aimLevel, aimOpen, aimWorld, freeTypeLevel, grownCount, hasMinLength, isLevelUnlocked, isWorldUnlocked, keysNeeded, levelById, levelOver, nextLevel, practiceLevel, rescueLevel, rescueUnlocked, shownProgress, worldLevels, worldLock } from './levels';
 
 const KEYS = ['f', 'j', 'd', 'k', 's', 'l', 'a', ';', 'g', 'h', 'r', 'u', 'e', 'i', 't', 'y', 'w', 'o', 'q', 'p', 'v', 'm', 'c', ',', 'x', '.'];
 
@@ -184,10 +184,24 @@ describe('world locks', () => {
   });
 });
 
+describe('target range', () => {
+  it('opens with the world done and trains the weak keys', () => {
+    const p = newProfile('Ema', 'sk');
+    expect(aimOpen(p, 0)).toBe(false);
+    expect(aimWorld(p, 0)).toBeNull();
+    p.progress.worldsDone = [0, 1];
+    expect(aimOpen(p, 1)).toBe(true);
+    expect(aimWorld(p, 1)).toBe(1);
+    expect(aimWorld(p, 3)).toBe(1);
+    expect(aimLevel(p, 1)).toMatchObject({ id: 'aim', kind: 'aim', world: 1, index: -1, focus: ['f', 'j', ' '] });
+  });
+});
+
 describe('minimum level length', () => {
   it('practice and free typing keep their own length, every other level has the minimum', () => {
     expect(hasMinLength(practiceLevel(60))).toBe(false);
     expect(hasMinLength(freeTypeLevel(0))).toBe(false);
+    expect(hasMinLength(aimLevel(newProfile('Ema', 'sk'), 0))).toBe(false);
     expect(hasMinLength(LEVELS[4])).toBe(true);
   });
 

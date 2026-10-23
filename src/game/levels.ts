@@ -1,4 +1,4 @@
-import { activeKeys, practiceOrder } from '../learning/lessons';
+import { activeKeys, aimKeys, practiceOrder } from '../learning/lessons';
 import { type Profile, SUPER_ID } from '../storage/schema';
 import type { Style } from './typing';
 
@@ -54,7 +54,7 @@ export type LevelKind =
   | 'lilies' | 'reflection'
   | 'notes' | 'treesong'
   | 'fireflies' | 'lastsong'
-  | 'practice' | 'freetype';
+  | 'practice' | 'freetype' | 'aim';
 
 export interface LevelDef {
   id: string;
@@ -76,14 +76,16 @@ export interface LevelDef {
   noSpace?: boolean;
   /** A rescue mission: it plays its kind at the rescue camp. */
   rescue?: boolean;
+  /** The target range: the weak keys its words train. */
+  focus?: string[];
 }
 
 /** Story levels, super levels and rescue missions last at least this many seconds of active play. */
 export const MIN_ACTIVE_S = 120;
 
-/** Practice, custom exercises and free typing keep their own length; every other level has the minimum. */
+/** Practice, custom exercises, free typing and the target range keep their own length; every other level has the minimum. */
 export function hasMinLength(l: LevelDef): boolean {
-  return l.kind !== 'practice' && l.kind !== 'freetype';
+  return l.kind !== 'practice' && l.kind !== 'freetype' && l.kind !== 'aim';
 }
 
 /**
@@ -224,6 +226,22 @@ export function rescueLevel(p: Profile, seed: number): LevelDef {
 /** Free typing ("just typing") in a world the child has opened. */
 export function freeTypeLevel(world: number): LevelDef {
   return { id: 'freetype', world, index: -1, kind: 'freetype', count: 0, variant: '', isSuper: false };
+}
+
+/** The world's target range opens with its super level done. */
+export function aimOpen(p: Profile, world: number): boolean {
+  return p.progress.worldsDone.includes(world);
+}
+
+/** Where the narrator's practice offer goes: this world's range, else the last finished world's; null before any. */
+export function aimWorld(p: Profile, world: number): number | null {
+  if (aimOpen(p, world)) return world;
+  return p.progress.worldsDone.length ? Math.max(...p.progress.worldsDone) : null;
+}
+
+/** The target range of a world: throws at a target through words with the weak keys; no stars. */
+export function aimLevel(p: Profile, world: number): LevelDef {
+  return { id: 'aim', world, index: -1, kind: 'aim', count: 0, variant: '', isSuper: false, focus: aimKeys(p) };
 }
 
 export function practiceLevel(seconds: number | null, phrases?: string[]): LevelDef & { seconds: number | null } {

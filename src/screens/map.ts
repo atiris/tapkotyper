@@ -4,9 +4,10 @@ import { imageUrl } from '../gfx/assets';
 import { tapkoElement } from '../gfx/tapko';
 import { t, tList } from '../i18n/i18n';
 import { nickname } from '../storage/store';
-import { LEVELS, STORIES, type StoryDef, WORLDS, isLevelReached, isWorldUnlocked, keysMissing, nextLevel, rescueUnlocked, storyOpen, worldLevels, worldLock } from '../game/levels';
+import { LEVELS, STORIES, type StoryDef, WORLDS, aimOpen, aimWorld, isLevelReached, isWorldUnlocked, keysMissing, nextLevel, rescueUnlocked, storyOpen, worldLevels, worldLock } from '../game/levels';
 import { GUEST_ID, type Profile, SUPER_ID } from '../storage/schema';
-import { activeKeys } from '../learning/lessons';
+import { activeKeys, notReadyKeys } from '../learning/lessons';
+import { keyLabel } from '../ui/keyboard-guide';
 import { badgeTier } from '../game/rewards';
 import { badge } from '../ui/badge';
 import { arrowFocus, button, closeButton, h, icon } from '../ui/dom';
@@ -72,10 +73,19 @@ export function mapScreen(root: HTMLElement): void {
   // The narrator's bubble on the map: why a level waits for more keys.
   const bubble = h('div', { class: 'bubble static map-bubble', role: 'status', 'aria-live': 'polite' });
   bubble.hidden = true;
-  const keysBubble = (n: number) => {
+  // Letters not accurate enough yet: which ones, and the way out (the target range once a world is done, else own practice).
+  const held = heldText(p);
+  const practiceOffer = (world: number) => {
+    const aim = aimWorld(p, world);
+    return h('div', { class: 'bubble-actions' }, aim === null
+      ? button(t('map.practice'), () => openPracticeKeys(), 'btn small', 'practice')
+      : button(t('aim.title'), () => go('level', { id: 'aim', world: aim }), 'btn small', 'target'));
+  };
+  const keysBubble = (n: number, world: number) => {
     bubble.replaceChildren(
       h('p', {}, t(n === 1 ? 'map.keysOne' : n < 5 ? 'map.keysFew' : 'map.keysMany', { n })),
-      h('div', { class: 'bubble-actions' }, button(t('map.practice'), () => openPracticeKeys(), 'btn small', 'practice')));
+      ...(held ? [h('p', { class: 'held-keys' }, held)] : []),
+      practiceOffer(world));
     bubble.hidden = false;
   };
   // A closed world: what is still needed to open it.
@@ -83,7 +93,7 @@ export function mapScreen(root: HTMLElement): void {
     const lock = worldLock(p, world);
     if (!lock) return;
     bubble.replaceChildren(h('p', {}, lockText(p, world)),
-    ...(lock.kind === 'keys' ? [h('div', { class: 'bubble-actions' }, button(t('map.practice'), () => openPracticeKeys(), 'btn small', 'practice'))] : []));
+      ...(lock.kind === 'keys' ? [...(held ? [h('p', { class: 'held-keys' }, held)] : []), practiceOffer(world)] : []));
     bubble.hidden = false;
   };
   const next = nextLevel(p);
@@ -113,13 +123,19 @@ export function mapScreen(root: HTMLElement): void {
         button(t('progress.title'), () => openStats(), 'btn', 'chart'),
         rescue ? button(t('map.rescue'), () => go('level', { id: 'rescue' }), 'btn', 'rescue') : null,
         rescue ? button(t('map.friends'), () => go('friends'), 'btn', 'dragon') : null),
-      h('div', { class: 'story-rows' }, welcome, ...STORIES.map((s) => storyRow(p, s, next?.id, keysBubble, lockBubble))))));
+      h('div', { class: 'story-rows' }, welcome, ...STORIES.map((s) => storyRow(p, s, next?.id, held, keysBubble, lockBubble))))));
   // The arrows walk the levels and the closed worlds like a grid.
   arrowFocus(root.querySelector('.story-rows')!, '.level-node, .island-art[tabindex]');
   // Enter starts at once: the welcome's start (it marks the welcome seen), else Continue.
   (welcome?.querySelector<HTMLElement>('.btn.primary') ?? play).focus();
   // One greeting at a time: the install offer waits for a map without the welcome.
   if (p.id !== SUPER_ID && !welcome) offerInstall(p.companion);
+}
+
+/** Which letters still need accuracy before new ones open; empty when none holds them back. */
+function heldText(p: Profile): string {
+  const keys = notReadyKeys(p);
+  return keys.length ? t('map.heldKeys', { keys: keys.map(keyLabel).join(', ') }) : '';
 }
 
 /** What a closed world still needs; empty for an open one. */
@@ -131,11 +147,19 @@ function lockText(p: Profile, world: number): string {
     : t('map.lockKeys', { n: lock.need, have: lock.have });
 }
 
+/** The key on a level still short of letters; its tooltip names the letters that need accuracy. */
+function keyIcon(held: string): HTMLElement {
+  const k = icon('key', 'icon level-key');
+  if (held) k.dataset.tip = held;
+  return k;
+}
+
 /**
  * One story: its title and its worlds as islands; a story still closed says when it opens.
- * A level reached without enough keys shows a key and lets the bubble say how many are missing.
+ * A level reached without enough keys shows a key and lets the bubble say how many are missing
+ * and which letters need accuracy (`held`); a finished world offers its target range.
  */
-function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, keysBubble: (n: number) => void, lockBubble: (world: number) => void): HTMLElement {
+function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held: string, keysBubble: (n: number, world: number) => void, lockBubble: (world: number) => void): HTMLElement {
   const islands = story.worlds.map((wi) => {
     const w = WORLDS[wi];
     const open = isWorldUnlocked(p, wi);
@@ -149,13 +173,13 @@ function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, keysB
         type: 'button',
         disabled: !reached,
         'aria-label': `${t(`worlds.${w}`)} ${l.isSuper ? t('map.super') : l.index + 1}${stars ? `, ${t('map.starsAria', { n: stars })}` : ''}${missing ? `, ${t('map.keysLocked')}` : ''}`,
-        onClick: () => (missing ? keysBubble(missing) : playLevel(l.id)),
+        onClick: () => (missing ? keysBubble(missing, wi) : playLevel(l.id)),
       }, h('span', { class: 'num' }, l.isSuper ? '★' : String(l.index + 1)),
-        missing ? icon('key', 'icon level-key') : h('span', { class: 'mini-stars' }, ...[1, 2, 3].map((s) => h('i', { class: s <= stars ? 'on' : '' }))));
+        missing ? keyIcon(held) : h('span', { class: 'mini-stars' }, ...[1, 2, 3].map((s) => h('i', { class: s <= stars ? 'on' : '' }))));
       return b;
     });
     const tier = badgeTier(p, wi);
-    const lock = open ? '' : lockText(p, wi);
+    const lock = open ? '' : [lockText(p, wi), worldLock(p, wi)?.kind === 'keys' ? held : ''].filter(Boolean).join(' ');
     return h('div', { class: `island ${open ? '' : 'locked'} island-${w}` },
       h('div', { class: 'island-art', ...(open ? {} : {
         onClick: () => lockBubble(wi),
@@ -167,7 +191,8 @@ function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, keysB
       }) }, img ? h('img', { src: img, alt: '' }) : h('div', { class: 'island-fallback' }), open ? null : h('span', { class: 'lock', tip: lock || null }, icon('lock')),
         tier ? badge(wi, tier, true) : null),
       h('h3', {}, `${wi + 1}. ${t(`worlds.${w}`)}`),
-      h('div', { class: 'level-row' }, ...levels));
+      h('div', { class: 'level-row' }, ...levels),
+      aimOpen(p, wi) ? button(t('aim.title'), () => go('level', { id: 'aim', world: wi }), 'btn small aim-btn', 'target') : null);
   });
   const closed = !storyOpen(p, story);
   return h('section', { class: `story-row story-${story.id}` },

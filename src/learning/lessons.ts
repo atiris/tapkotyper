@@ -143,6 +143,11 @@ export function isReady(stat: KeyStat | undefined, difficulty: number, size = RE
   return ok.length / window.length >= 0.9 && median(ok) <= reactionLimit(difficulty);
 }
 
+/** The key is ready for the next one, by its own window. */
+export function isKeyReady(profile: Profile, key: string): boolean {
+  return isReady(profile.stats.keys[key], profile.settings.difficulty, readyWindow(key));
+}
+
 /**
  * Unlocks the next lesson group when every key of the newest unlocked group is
  * ready. Returns the newly unlocked keys (empty when nothing changed).
@@ -151,13 +156,37 @@ export function advanceLesson(profile: Profile): string[] {
   const groups = lessonGroups(profile.layout);
   const unlocked = profile.progress.unlockedKeys;
   const newest = [...groups].reverse().find((g) => g.some((k) => unlocked.includes(k)));
-  if (newest && !newest.every((k) => isReady(profile.stats.keys[k], profile.settings.difficulty, readyWindow(k)))) return [];
+  if (newest && !newest.every((k) => isKeyReady(profile, k))) return [];
   const skip = (k: string) => profile.settings.noDiacritics && DIACRITICS.has(k);
   const next = groups.find((g) => g.some((k) => !unlocked.includes(k) && !skip(k)));
   if (!next) return [];
   const fresh = next.filter((k) => !unlocked.includes(k) && !skip(k));
   unlocked.push(...fresh);
   return fresh;
+}
+
+/**
+ * Keys of the newest unlocked group that are not ready yet: they hold the next letters back.
+ * Empty with the parent's own key choice, where nothing unlocks by itself.
+ */
+export function notReadyKeys(profile: Profile): string[] {
+  return newestGroup(profile).filter((k) => !isKeyReady(profile, k));
+}
+
+/**
+ * The weak keys the target range trains: the ones not ready, else the three known letters with
+ * the lowest recent accuracy (named apart from the stats' `weakKeys`, which ranks any keys).
+ */
+export function aimKeys(profile: Profile): string[] {
+  const held = notReadyKeys(profile);
+  if (held.length) return held;
+  const acc = (k: string) => recentAccuracy(profile.stats.keys[k]);
+  return activeKeys(profile).filter(isLetterKey).sort((a, b) => acc(a) - acc(b)).slice(0, 3);
+}
+
+/** Recent accuracy of keys together (their mean), 0 without keys. */
+export function keysAccuracy(profile: Profile, keys: string[]): number {
+  return keys.length ? keys.reduce((s, k) => s + recentAccuracy(profile.stats.keys[k]), 0) / keys.length : 0;
 }
 
 /** The most recently unlocked lesson group (the keys being learned now). */

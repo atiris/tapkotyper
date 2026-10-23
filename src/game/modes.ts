@@ -1,5 +1,6 @@
 import type { LevelDef } from './levels';
 import type { Mode } from './mode';
+import { AimMode } from './modes/aim';
 import { WaveMode, ShieldMode } from './modes/dragons';
 import { MoleMode, SlopeMode } from './modes/egg';
 import { BirdsMode, OwlMode } from './modes/forestpath';
@@ -54,5 +55,6 @@ export function createMode(def: LevelDef & { seconds?: number | null }, L: Level
     case 'lastsong': return new LastSongMode(L);
     case 'practice': return new PracticeMode(L, def.seconds ?? null, def.phrases ?? null);
     case 'freetype': return new FreeTypeMode(L);
+    case 'aim': return new AimMode(L);
   }
 }

@@ -124,6 +124,7 @@
     "keysOne": "You need one more letter for this level. You get new letters by playing or in Own practice.",
     "keysFew": "You need {n} more letters for this level. You get new letters by playing or in Own practice.",
     "keysMany": "You need {n} more letters for this level. You get new letters by playing or in Own practice.",
+    "heldKeys": "To open the next level, type these more accurately: {keys}. Train them at the Target range.",
     "keysLocked": "needs more letters",
     "storyFairy": "Melody the Fairy"
   },
@@ -1705,5 +1706,27 @@
     "menu": "Menu",
     "relaxing": "Relaxing",
     "break": "Break"
+  },
+  "aim": {
+    "title": "Target range",
+    "start": "Tapko throws at the target! Type the word on each ring and the thing flies through. Training: {keys}",
+    "keys": "Letters to train",
+    "keyTip": "{key}: {n} % right",
+    "ready": "Great! You type {keys} accurately now.",
+    "plop": "Plop!",
+    "hit": {
+      "pebble": "Tock!",
+      "screw": "Clink!",
+      "fly": "Bzzz!",
+      "tomato": "Splat!",
+      "arrow": "Bullseye!",
+      "duck": "Squeak!",
+      "sock": "Eww, a sock!"
+    },
+    "done": "Target range done!",
+    "beforeAfter": "before {before} %, now {after} %",
+    "opened": "Accurate typing opened new letters: {keys}",
+    "again": "Again",
+    "toMap": "To the map"
   }
 }

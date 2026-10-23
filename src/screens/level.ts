@@ -3,7 +3,7 @@ import { starRow } from '../ui/chrome';
 import { tapkoElement } from '../gfx/tapko';
 import { t, tList } from '../i18n/i18n';
 import { nickname } from '../storage/store';
-import { LEVELS, type LevelDef, type StoryDef, WORLDS, freeTypeLevel, isLevelUnlocked, isWorldUnlocked, levelById, practiceLevel, rescueLevel, storyOf } from '../game/levels';
+import { LEVELS, type LevelDef, type StoryDef, WORLDS, aimLevel, aimOpen, aimWorld, freeTypeLevel, isLevelUnlocked, isWorldUnlocked, levelById, practiceLevel, rescueLevel, storyOf } from '../game/levels';
 import type { LevelResult } from '../game/progress';
 import type { Style } from '../game/typing';
 import { WORLD_REWARDS } from '../game/rewards';
@@ -11,6 +11,7 @@ import { LevelRuntime } from '../game/runtime';
 import { captureKeys, surpriseAsk, surpriseLeft } from '../game/cards';
 import { surpriseOutcome } from '../game/own-content';
 import { ownTextPhrases } from '../game/modes/practice';
+import type { AimMode } from '../game/modes/aim';
 import type { Friend, Profile, Surprise, Task } from '../storage/schema';
 import { recordTaskRun, taskOwn } from '../share/task';
 import { localDate } from '../learning/stats';
@@ -38,7 +39,7 @@ interface LevelParams {
   task?: string;
   /** Free practice: copy typing, dictation or memory, chosen in the key picker. */
   style?: Style;
-  /** Just typing: the world index chosen in the place picker. */
+  /** Just typing: the world index chosen in the place picker; the target range: its world. */
   world?: number;
   /** Staying a while in this story level: no end, no stars. */
   stay?: boolean;
@@ -49,6 +50,7 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
   let def: LevelDef;
   if (params.id === 'practice') def = practiceLevel(params.seconds ?? null, params.text ? ownTextPhrases(p) : undefined);
   else if (params.id === 'freetype') def = freeTypeLevel(params.world != null && isWorldUnlocked(p, params.world) ? params.world : 0);
+  else if (params.id === 'aim') def = aimLevel(p, params.world != null && aimOpen(p, params.world) ? params.world : aimWorld(p, 0) ?? 0);
   else if (params.id === 'rescue') def = rescueLevel(p, p.progress.friends.length * 7 + Math.floor(Math.random() * 5));
   else def = levelById(params.id) ?? LEVELS[0];
   // A super-obstacle has no endless form: staying plays the world's last regular level.
@@ -69,6 +71,7 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
     onFinish: (result) => {
       if (!result) return exit();
       if (params.stay) return showStayDone(root, def, result);
+      if (def.kind === 'aim') return showAimDone(root, result, (rt.mode as AimMode).report(), params);
       if (task) {
         recordTaskRun(task, result);
         saveProfile();
@@ -200,6 +203,37 @@ function showStayDone(root: HTMLElement, def: LevelDef, r: LevelResult): void {
   const card = h('div', { class: 'card results-card stay-done' },
     h('div', { class: 'results-top' }, h('h2', {}, t('results.practiceDone'))),
     h('div', { class: 'results-tapko' }, tapkoElement(p.companion, 'happy', 80), h('p', { class: 'bubble static side' }, breakDue ? pickLine('tapko.break') : pickLine('tapko.level_done', { name: nickname(p) }, p.customMessages))),
+    h('div', { class: 'results-facts' }, ...facts),
+    actions);
+  const overlay = h('div', { class: 'overlay results' }, card);
+  root.querySelector('.level-screen')!.append(overlay);
+  (actions.querySelector('button') as HTMLButtonElement).focus();
+  const stop = captureKeys(overlay, (e) => {
+    if (e.key !== 'Escape' || document.querySelector('.modal-back')) return;
+    e.preventDefault();
+    stop();
+    go('map');
+  });
+}
+
+/** The end of the target range: accuracy before and after per weak key, new keys when the lesson advanced; no stars. */
+function showAimDone(root: HTMLElement, r: LevelResult, report: { key: string; before: number; after: number }[], params: LevelParams): void {
+  const p = app.profile!;
+  const pct = (n: number) => Math.round(n * 100);
+  const rows = report.map((k) => h('li', { class: `aim-row ${k.after > k.before ? 'good' : ''}` },
+    h('b', { class: 'aim-row-key' }, keyLabel(k.key)),
+    h('span', {}, t('aim.beforeAfter', { before: pct(k.before), after: pct(k.after) }))));
+  const facts = [h('span', { class: 'fact main' }, t('results.accuracy', { n: pct(r.accuracy) }))];
+  if (r.newKeys.length) facts.push(h('span', { class: 'fact new-key' }, t('aim.opened', { keys: r.newKeys.map(keyLabel).join(', ') })));
+  const breakDue = app.sessionSeconds >= p.settings.sessionMinutes * 60;
+  const actions = h('div', { class: 'row center' });
+  if (breakDue) actions.append(button(t('results.takeBreak'), () => go('break'), 'btn primary', 'play'));
+  actions.append(button(t('aim.again'), () => go('level', params), `btn ${breakDue ? '' : 'primary'}`, 'replay'));
+  actions.append(button(t('aim.toMap'), () => go('map'), 'btn', 'map'));
+  const card = h('div', { class: 'card results-card aim-done' },
+    h('div', { class: 'results-top' }, h('h2', {}, t('aim.done'))),
+    h('div', { class: 'results-tapko' }, tapkoElement(p.companion, 'happy', 80), h('p', { class: 'bubble static side' }, breakDue ? pickLine('tapko.break') : pickLine('tapko.level_done', { name: nickname(p) }, p.customMessages))),
+    h('ul', { class: 'aim-rows', 'aria-label': t('aim.keys') }, ...rows),
     h('div', { class: 'results-facts' }, ...facts),
     actions);
   const overlay = h('div', { class: 'overlay results' }, card);

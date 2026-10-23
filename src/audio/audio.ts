@@ -1,7 +1,7 @@
 import { assetUrl, hasMusic, musicTracks } from '../gfx/assets';
 import { nextTrack } from './tracks';
 
-export type Sfx = 'key' | 'wrong' | 'word' | 'reward' | 'click' | 'whoosh' | 'pop' | 'beat' | 'cheer' | 'bzzt' | 'note';
+export type Sfx = 'key' | 'wrong' | 'word' | 'reward' | 'click' | 'whoosh' | 'pop' | 'beat' | 'cheer' | 'bzzt' | 'note' | 'plop' | 'squeak';
 /** Quick sound switch: normal, quiet (20 % of normal) or off. */
 export type SoundLevel = 'normal' | 'quiet' | 'off';
 
@@ -157,6 +157,8 @@ class AudioEngine {
       case 'bzzt': tone(150, 0, 0.16, 'square', 0.03, 120); tone(150, 0.08, 0.12, 'square', 0.025, 110); break;
       case 'word': tone(660, 0, 0.12, 'triangle', 0.2); tone(990, 0.08, 0.18, 'triangle', 0.18); break;
       case 'pop': tone(520, 0, 0.12, 'sine', 0.25, 1040); break;
+      case 'plop': tone(260, 0, 0.16, 'sine', 0.16, 120); break;
+      case 'squeak': tone(1100, 0, 0.09, 'triangle', 0.14, 1600); tone(1300, 0.1, 0.12, 'triangle', 0.12, 900); break;
       case 'whoosh': tone(200, 0, 0.35, 'sine', 0.12, 900); break;
       case 'beat': tone(440, 0, 0.08, 'sine', 0.12); break;
       // A bell-like note of a pentatonic scale, a little song as the notes add up.

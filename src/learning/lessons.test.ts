@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { emptyKeyStat } from '../storage/schema';
 import { ENTER, LAYOUTS, enterAfter, fingerFor } from '../keyboard/layouts';
-import { activeKeys, advanceLesson, firstKeys, isMastered, keysToIntroduce, lessonOrder, practiceOrder, practiceSteps, punctuationKeys, reactionLimit, shiftKeyOf, stepHolding } from './lessons';
+import { activeKeys, advanceLesson, aimKeys, firstKeys, keysAccuracy, notReadyKeys, isMastered, keysToIntroduce, lessonOrder, practiceOrder, practiceSteps, punctuationKeys, reactionLimit, shiftKeyOf, stepHolding } from './lessons';
 import { STATS_WINDOW, keyMastery, keyReport, lastTraining, masterySummary, recordPress, weakKeys } from './stats';
 
 describe('lesson order', () => {
@@ -237,5 +237,46 @@ describe('mastered key', () => {
     const p = withRecent(fast(30));
     expect(masterySummary(p)).toMatchObject({ mastered: 1, total: lessonOrder('sk-qwertz').length, accuracy: 1, cpm: 100 });
     expect(masterySummary(newProfile('U', 'sk'))).toMatchObject({ mastered: 0, accuracy: 0, cpm: 0 });
+  });
+});
+
+describe('keys the target range trains', () => {
+  const fast = (n: number) => Array(n).fill(600);
+  /** Unlocked f j space and d k; f, j, space and d ready, k at 80 %. */
+  const holding = () => {
+    const p = newProfile('T', 'sk');
+    p.settings.difficulty = 3;
+    p.progress.unlockedKeys = ['f', 'j', ' ', 'd', 'k'];
+    for (const k of ['f', 'j', ' ', 'd']) p.stats.keys[k] = { ...emptyKeyStat(), recent: fast(25) };
+    p.stats.keys.k = { ...emptyKeyStat(), recent: [...fast(20), 0, 0, 0, 0, 0] };
+    return p;
+  };
+
+  it('are the keys of the newest group that are not ready', () => {
+    const p = holding();
+    expect(notReadyKeys(p)).toEqual(['k']);
+    expect(aimKeys(p)).toEqual(['k']);
+  });
+
+  it('fall back to the three letters with the lowest recent accuracy', () => {
+    const p = holding();
+    p.stats.keys.k = { ...emptyKeyStat(), recent: fast(25) };
+    p.stats.keys.j = { ...emptyKeyStat(), recent: [...fast(24), 0] };
+    p.stats.keys.d = { ...emptyKeyStat(), recent: [...fast(23), 0, 0] };
+    expect(notReadyKeys(p)).toEqual([]);
+    expect(aimKeys(p)).toEqual(['d', 'j', 'f']);
+  });
+
+  it('hold nothing back with the parent\'s own key choice', () => {
+    const p = holding();
+    p.settings.activeKeysMode = 'manual';
+    p.settings.manualKeys = ['f', 'k', 'l'];
+    expect(notReadyKeys(p)).toEqual([]);
+    expect(aimKeys(p)).toHaveLength(3);
+  });
+
+  it('measure the mean recent accuracy', () => {
+    expect(keysAccuracy(holding(), ['k', 'f'])).toBeCloseTo(0.9);
+    expect(keysAccuracy(holding(), [])).toBe(0);
   });
 });

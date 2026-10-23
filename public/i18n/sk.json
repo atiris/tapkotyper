@@ -1221,7 +1221,7 @@
     "worlds": "svety",
     "stories": "Príbehy",
     "date": "Dňa {date}",
-    "sign": "Tapko a TapkoTyper",
+    "sign": "Tapko",
     "precise": "Píše veľmi presne.",
     "careful": "Píše presne a pozorne.",
     "praise": [
@@ -1295,7 +1295,7 @@
       "timer": "Hodiny v šatníku ukazujú, koľko času ti ostáva. Kým je času dosť, usmievajú sa, potom v nich je číslo, ktoré každých 10 sekúnd klesne o jedna. Keď blikajú, čas sa končí. Čas v šatníku získaš cvičením.",
       "pause": "Pauza. Rovnako ju zapne aj **kláves Esc**. V pauze sa dá úroveň ukončiť. Keď už je niečo napísané, najprv sa opýta, lebo sa nezapočíta.",
       "paw": "Labka ti ukazuje, či máš pomoc pripravenú: každé slovo bez chyby zaplní kúsok kruhu, po {n} slovách je labka nabitá. Keď to nejde, stlač **Enter** a labka napíše za teba {words} slová.",
-      "ring": "Krúžok s číslom ukazuje, ktorá úroveň sveta je táto. Zelené kúsky sú hotové úrovne, oranžový je táto, prázdne ťa ešte čakajú. Pavučina je veľká výzva na konci sveta.",
+      "ring": "Krúžok s číslom ukazuje, ktorá úroveň sveta je táto. Zelené kúsky sa plnia až po túto úroveň, prázdne ťa ešte čakajú. Pri poslednej, veľkej výzve je plný celý.",
       "progress": "Pásik ukazuje, koľko z úrovne už máš za sebou.",
       "gauge": "Zelený kruh ukazuje tvoj rytmus. Keď píšeš plynulo, naplní sa.",
       "levelHelp": "Pomoc: čo robiť v tejto úrovni a ako písať. Otvorí ju aj **F1**.",
@@ -1384,7 +1384,7 @@
       ],
       "dashboard": [
         "Ako ide každý kláves, presnosť a rytmus v čase, čas hrania po dňoch a hotové úrovne.",
-        "**Certifikát** s výsledkami pisateľa si pozriete a vytlačíte tlačidlom pri súhrne."
+        "Vpravo pri súhrne je **QR kód celého postupu** pre mentora a **Certifikát** s výsledkami pisateľa na vytlačenie."
       ],
       "data": [
         "Všetko je uložené **len v tomto prehliadači**. Keď sa vymažú údaje prehliadača alebo sa pokazí počítač, pokrok sa stratí, ak nemáte zálohu.",

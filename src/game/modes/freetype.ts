@@ -1,5 +1,7 @@
+import { app } from '../../app/app';
 import { VH } from '../../engine/loop';
 import { drawWord, fontFamily, type G, roundRect, wordBox } from '../../gfx/draw';
+import { drawTapko } from '../../gfx/tapko';
 import { t } from '../../i18n/i18n';
 import { WORLDS } from '../levels';
 import type { LevelRuntime } from '../runtime';
@@ -9,6 +11,13 @@ import { HeroMode } from './planet';
 /** Tapko's walking speed (background units per second) and the seconds of his hop at a key. */
 const WALK = 28;
 const HOP = 0.35;
+/** Seconds he stands after a hop before the next key may start another, so fast typing does not shake him. */
+const REST = 0.25;
+/** Every so many keys (between the two) he does a trick instead of a hop. */
+const TRICK_KEYS = [18, 30];
+/** The tricks: a flip, a high jump, and a surprised look with a small hop; their seconds. */
+const TRICKS = { flip: 0.9, high: 0.7, wonder: 1.1 } as const;
+type Trick = keyof typeof TRICKS;
 /** Seconds the shown text stays above Tapko, and its size. */
 const SHOW = 3.2;
 const SHOW_SIZE = 64;
@@ -16,14 +25,18 @@ const LINE_SIZE = 30;
 const SPARKS = ['#fff6a8', '#ffffff', '#ffd1f5', '#a6e3c9'];
 
 /**
- * "Just typing": Tapko walks through a chosen world, hops at every key, and the text typed
- * before a pause is shown above him (and said, when the parent allows it). No targets, no end.
+ * "Just typing": Tapko walks through a chosen world, hops with the typing (never faster than one
+ * hop and a short rest), now and then does a trick, and the text typed before a pause is shown
+ * above him (and said, when the parent allows it). No targets, no end.
  */
 export class FreeTypeMode extends HeroMode {
   readonly world: string;
   private line = new TypedLine();
   private shown: { text: string; age: number } | null = null;
-  private hopT = HOP;
+  /** Seconds since the hop or trick began. */
+  private hopT = HOP + REST;
+  private trick: Trick | null = null;
+  private keysToTrick = 0;
 
   constructor(L: LevelRuntime) {
     super(L);
@@ -32,6 +45,11 @@ export class FreeTypeMode extends HeroMode {
 
   start(): void {
     this.heroY = VH * 0.8;
+    this.keysToTrick = this.nextTrickIn();
+  }
+
+  private nextTrickIn(): number {
+    return TRICK_KEYS[0] + Math.floor(Math.random() * (TRICK_KEYS[1] - TRICK_KEYS[0] + 1));
   }
 
   key(ch: string): void {
@@ -51,9 +69,24 @@ export class FreeTypeMode extends HeroMode {
   }
 
   private cheer(): void {
-    this.happy();
-    if (!this.L.reduceMotion) this.hopT = 0;
     this.L.particles.emit(this.heroX, this.heroY - 90, 5, 'sparkle', SPARKS, 140, 7, 0.6);
+    this.keysToTrick--;
+    if (this.L.reduceMotion || this.hopT < this.length() + REST) return this.trick ? undefined : this.happy();
+    this.hopT = 0;
+    if (this.keysToTrick > 0) {
+      this.trick = null;
+      return this.happy();
+    }
+    const all = Object.keys(TRICKS) as Trick[];
+    this.trick = all[Math.floor(Math.random() * all.length)];
+    this.keysToTrick = this.nextTrickIn();
+    if (this.trick === 'wonder') this.surprised(TRICKS.wonder);
+    else this.happy();
+  }
+
+  /** Seconds of the hop or trick under way. */
+  private length(): number {
+    return this.trick ? TRICKS[this.trick] : HOP;
   }
 
   private show(text: string): void {
@@ -64,13 +97,23 @@ export class FreeTypeMode extends HeroMode {
   update(dt: number): void {
     super.update(dt);
     this.scroll += WALK * dt;
-    // He strolls a little back and forth in the left part of the stage.
+    // He strolls back and forth in the left part of the stage, a little nearer and farther too.
     this.heroX = this.L.vw * (0.3 + Math.sin(this.t * 0.25) * 0.08);
-    this.hopT = Math.min(HOP, this.hopT + dt);
-    this.jump = this.hopT < HOP ? this.hopT / HOP : 0;
+    this.heroY = VH * (0.8 + Math.sin(this.t * 0.17 + 1) * 0.025);
+    this.hopT += dt;
+    const len = this.length();
+    this.jump = this.hopT < len ? this.hopT / len : 0;
+    if (this.hopT >= len && this.trick) this.trick = null;
     const text = this.line.tick(dt);
     if (text) this.show(text);
     if (this.shown && (this.shown.age += dt) >= SHOW) this.shown = null;
+  }
+
+  /** The hop, or the trick: a flip turns him once in a higher jump, a high jump goes higher, wonder only hops a little. */
+  protected drawHero(g: G): void {
+    const height = this.trick === 'flip' ? 0.6 : this.trick === 'high' ? 0.75 : this.trick === 'wonder' ? 0.15 : 0.35;
+    const spin = this.trick === 'flip' ? this.jump : 0;
+    drawTapko(g, app.profile!.companion, this.mood, this.heroX, this.heroY, 170, { t: this.t, jump: this.jump, height, spin });
   }
 
   render(g: G): void {

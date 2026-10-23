@@ -105,14 +105,16 @@ p { line-height: 1.5; }
   background: #fff; box-shadow: 0 3px 0 rgba(90, 61, 43, 0.15); -webkit-tap-highlight-color: transparent;
 }
 .round-btn svg { width: 100%; height: 100%; display: block; }
-.round-btn.paw { --rb: #d9661f; --rb-ring: #ff8a3d; }
-.round-btn.rhythm { --rb: #2f8a4c; --rb-ring: #4fb57a; cursor: default; }
-.round-btn.super { --rb: #b07a0e; --rb-ring: #b07a0e; }
-.round-btn.update { --rb: #d63a32; --rb-ring: #d63a32; }
-.round-btn.place { --rb: #4a6fa5; --rb-ring: #4fb57a; cursor: default; }
+/*
+ * Three colors: controls purple, what belongs to the round being played green (the paw, the place
+ * in the world, the rhythm, a key's accuracy, the target's hits), and what calls for attention red
+ * (the super star, a new version). The wardrobe's time is its own teal.
+ */
+.round-btn.paw, .round-btn.rhythm, .round-btn.place, .round-btn.hits, .round-btn.accuracy { --rb: #2f8a4c; --rb-ring: #4fb57a; }
+.round-btn.rhythm, .round-btn.place, .round-btn.hits, .round-btn.accuracy { cursor: default; }
+.round-btn.super, .round-btn.update { --rb: #d63a32; --rb-ring: #d63a32; }
 .round-btn.timer { --rb: #1f8a86; --rb-ring: #3cc0b8; cursor: default; }
-.round-btn.hits { --rb: #c8473d; --rb-ring: #f5c542; cursor: default; }
-.round-btn.accuracy { --rb: #7a5a44; --rb-ring: #e5534b; cursor: default; }
+.round-btn.accuracy { --rb-ring: #e5534b; }
 .round-btn.accuracy.acc-mid { --rb-ring: #f0a030; }
 .round-btn.accuracy.acc-high { --rb-ring: #e8cf3a; }
 .round-btn.accuracy.acc-ready { --rb-ring: #4fb57a; }
@@ -123,7 +125,6 @@ p { line-height: 1.5; }
 .rb-disc { fill: var(--rb); }
 .rb-arc { fill: none; stroke: transparent; stroke-width: 4; stroke-linecap: round; transition: stroke-dasharray 0.4s ease; }
 .rb-arc.on { stroke: var(--rb-ring); }
-.rb-arc.now { stroke: var(--brand); }
 .rb-num { fill: #fff; font: 700 19px var(--font-game); text-anchor: middle; dominant-baseline: central; }
 .round-btn[aria-pressed='true'] .rb-base { stroke: var(--brand); }
 .round-btn:disabled { opacity: 0.4; cursor: default; }
@@ -672,7 +673,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .heatmap.clickable .kb-key { cursor: pointer; }
 .heatmap.clickable .kb-key:hover { transform: translateY(-2px); }
 .heat-host { display: grid; justify-items: start; gap: var(--sp-1); min-width: 0; }
-.heat-host .heatmap { width: 100%; }
+/* Out of a level the keyboard is a plain picture: it scrolls under the page bar. */
+.heat-host .heatmap { width: 100%; z-index: auto; }
 .heatmap.shifted .kb-key:has(.kb-shift:not(:empty)) .kb-label, .practice-picker.shifted .kb-key:has(.kb-shift:not(:empty)) .kb-label { opacity: 0.35; }
 .heatmap.shifted .kb-shift, .practice-picker.shifted .kb-shift { font-size: 0.9em; font-weight: 700; color: var(--ink); }
 .heatmap .kb-key.selected { outline: 3px solid var(--brand); outline-offset: 1px; z-index: 1; }
@@ -836,7 +838,9 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-dark); }
 .cell-stars { gap: 0.1rem; justify-content: center; width: 5.4rem; }
 .cell-stars .star { width: 1.7rem; animation: none; }
 .cell-stars .star-fallback { font-size: 1.5rem; width: 1.7rem; text-align: center; }
-.child-summary { display: flex; align-items: center; gap: 0.8rem; margin: 0.6rem 0; }
+.child-summary { display: flex; flex-wrap: wrap; align-items: center; gap: 0.8rem; margin: 0.6rem 0; }
+/* The progress code and the certificate, one under the other at the summary's right end. */
+.summary-actions { margin-left: auto; display: flex; flex-direction: column; align-items: stretch; gap: 0.5rem; }
 .child-tapko { flex: none; }
 /* The nickname takes the rest of the row up to a comfortable width and narrows with it. */
 .child-nick { flex: 1 1 auto; min-width: 0; max-width: 24rem; }
@@ -912,8 +916,9 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-dark); }
 .cert-awarded { margin: 1.4cqw 0 0; font-size: 1.5cqw; color: var(--ink-soft); }
 .cert-name { margin: 0.2cqw 0 0; padding: 0 4cqw 0.4cqw; font-size: 4.2cqw; font-weight: 700; line-height: 1.1; color: var(--green-dark); border-bottom: 0.25cqw solid #e9c79a; }
 .cert-name small { display: block; font-size: 1.6cqw; font-weight: 600; color: var(--ink-soft); }
-.cert-body { flex: 1; min-height: 0; width: 100%; display: grid; grid-template-columns: 13cqw 1fr 20cqw; align-items: center; gap: 1.5cqw; margin-top: 1cqw; }
-.cert-hero { display: grid; place-items: center; }
+.cert-body { flex: 1; min-height: 0; width: 100%; display: grid; grid-template-columns: 9cqw 1fr 20cqw; align-items: center; gap: 1.5cqw; margin-top: 1cqw; }
+/* The character stands at the left edge (wider than its column), so the results sit centred between it and the stories. */
+.cert-hero { display: grid; justify-items: start; margin-left: -4cqw; }
 .cert-hero .tapko-stack { --size: 13cqw !important; }
 /* All results in one row, so the sheet never runs over its height. */
 .cert-stats { display: flex; justify-content: center; gap: 1cqw; }
@@ -935,12 +940,16 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-dark); }
 .cert-date { font-size: 1.35cqw; color: var(--ink-soft); padding-bottom: 1cqw; }
 .cert-sign { display: grid; justify-items: center; font-size: 1.25cqw; font-weight: 600; color: var(--ink-soft); }
 .cert-stamp { width: 9cqw; height: 9cqw; object-fit: contain; transform: rotate(-8deg); }
-.print-sheet { display: none; }
+/* Printing (only the certificate prints): the sheet alone, without the window and its buttons. */
 @media print {
   @page { size: A4 landscape; margin: 0; }
-  html:has(body.printing), body.printing { height: auto; overflow: visible; background: #fff; }
-  body.printing > *:not(.print-sheet) { display: none !important; }
-  body.printing .print-sheet { display: block; width: 297mm; height: 210mm; aspect-ratio: auto; }
+  html:has(.cert-modal), body:has(.cert-modal) { height: auto; overflow: visible; background: #fff; }
+  body:has(.cert-modal) > *:not(.modal-back:has(.cert-modal)) { display: none !important; }
+  .modal-back:has(.cert-modal) { position: static; display: block; padding: 0; background: none; animation: none; }
+  .modal.cert-modal { width: auto; max-height: none; overflow: visible; padding: 0; border-radius: 0; box-shadow: none; background: none; animation: none; }
+  .cert-modal .modal-x, .cert-view > .row { display: none !important; }
+  .cert-view { display: block; padding: 0; }
+  .cert-view > .cert-sheet { width: 297mm; height: 210mm; aspect-ratio: auto; margin: 0; }
 }
 
 /* Responsive */

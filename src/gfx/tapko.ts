@@ -57,6 +57,10 @@ export interface TapkoMotion {
   t: number;
   /** 0..1 jump progress (0 = standing). */
   jump?: number;
+  /** The jump's height as a share of `size` (0.35 by default). */
+  height?: number;
+  /** 0..1 of a whole turn around the body's middle (a flip in the air). */
+  spin?: number;
   flip?: boolean;
   alpha?: number;
   /** false leaves out the ground shadow (Tapko off the ground, in a vehicle). */
@@ -69,7 +73,7 @@ export interface TapkoMotion {
  */
 export function drawTapko(g: G, c: Companion, mood: Mood, x: number, y: number, size: number, m: TapkoMotion): void {
   const breathe = Math.sin(m.t * 2.4) * 0.018;
-  const jumpH = m.jump ? Math.sin(m.jump * Math.PI) * size * 0.35 : 0;
+  const jumpH = m.jump ? Math.sin(m.jump * Math.PI) * size * (m.height ?? 0.35) : 0;
   const squash = m.jump ? 1 + Math.sin(m.jump * Math.PI * 2) * 0.05 : 1;
   const sway = Math.sin(m.t * 1.3) * 0.025;
   g.save();
@@ -82,6 +86,11 @@ export function drawTapko(g: G, c: Companion, mood: Mood, x: number, y: number, 
     g.fill();
   }
   g.translate(x, y - jumpH);
+  if (m.spin) {
+    g.translate(0, -size * 0.45);
+    g.rotate(m.spin * Math.PI * 2);
+    g.translate(0, size * 0.45);
+  }
   g.rotate(sway);
   g.scale((m.flip ? -1 : 1) * (1 - breathe) / squash, (1 + breathe) * squash);
   // The template's feet sit at 90 % of the image height.

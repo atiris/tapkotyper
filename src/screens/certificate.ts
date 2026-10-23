@@ -65,21 +65,11 @@ function certificate(p: Profile): HTMLElement {
         h('span', { class: 'cert-sign' }, stamp ? h('img', { class: 'cert-stamp', src: stamp, alt: '' }) : null, h('span', {}, t('cert.sign'))))));
 }
 
-/** Prints one sheet through the browser's dialog: only the sheet, on A4 landscape. */
-function printSheet(sheet: HTMLElement): void {
-  const copy = sheet.cloneNode(true) as HTMLElement;
-  copy.classList.add('print-sheet');
-  document.body.append(copy);
-  document.body.classList.add('printing');
-  const cleanup = () => { copy.remove(); document.body.classList.remove('printing'); window.removeEventListener('afterprint', cleanup); };
-  window.addEventListener('afterprint', cleanup);
-  window.print();
-  setTimeout(cleanup, 1500);
-}
-
-/** The writer's certificate in a window, with a button that prints it. */
+/**
+ * The writer's certificate in a window, with a button that prints it. Any print while it is open
+ * (the button or the browser's own) gives only the sheet, on A4 landscape (the print styles).
+ */
 export function openCertificate(p: Profile): void {
-  const sheet = certificate(p);
-  modal(h('div', { class: 'cert-view' }, sheet,
-    h('div', { class: 'row center' }, button(t('cert.print'), () => printSheet(sheet), 'btn primary', 'print'))), { cls: 'cert-modal' });
+  modal(h('div', { class: 'cert-view' }, certificate(p),
+    h('div', { class: 'row center' }, button(t('cert.print'), () => window.print(), 'btn primary', 'print'))), { cls: 'cert-modal' });
 }

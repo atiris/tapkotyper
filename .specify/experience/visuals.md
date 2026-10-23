@@ -19,8 +19,11 @@
 - Big, readable words on targets, with high contrast against the scene; practice words
   and their info line keep a minimum on-screen size in small windows.
 - One button set everywhere: every round button is the same white circle with a ring, a colored
-  disc and a white symbol (controls purple, paw orange with a ring of three charge segments and
-  no badge, rhythm green with a ring that fills from calm to excellent, the super star gold).
+  disc and a white symbol in one of three colors: controls purple; what belongs to the round
+  being played green (the paw with a ring of three charge segments and no badge, the place in
+  the world, the rhythm with a ring that fills from calm to excellent, a key's accuracy, the
+  target's hits next to the range's title); what calls for attention red (the super star at the
+  far right, the update button). The wardrobe's time stays teal.
   The rhythm is a picture, not a button. The help page shows these same buttons.
 - The level's top bar, left to right: pause, paw, title block, progress bar, rhythm, a divider,
   help, keyboard, read aloud, sound, fullscreen. The title block is the world's name as a word

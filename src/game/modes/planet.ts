@@ -39,6 +39,11 @@ export abstract class HeroMode extends Mode {
     this.moodT = 1.2;
   }
 
+  protected surprised(seconds: number): void {
+    this.mood = 'surprised';
+    this.moodT = seconds;
+  }
+
   update(dt: number): void {
     if (this.moodT > 0 && (this.moodT -= dt) <= 0) this.mood = 'idle';
   }

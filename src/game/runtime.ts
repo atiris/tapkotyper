@@ -328,7 +328,7 @@ export class LevelRuntime {
     this.free = this.mode instanceof FreeTypeMode ? this.mode : null;
     const extra = this.mode.hud();
     if (extra) hud.querySelector('.hud-title')!.after(extra);
-    (this.accuracyPics[0]?.pic.el ?? this.gauge.el).before(...this.mode.rings());
+    hud.querySelector('.hud-title')!.after(...this.mode.rings());
     if (this.free) {
       this.saidEl = h('p', { class: 'sr-only', role: 'status', 'aria-live': 'polite' });
       stageWrap.append(this.saidEl);

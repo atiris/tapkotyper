@@ -1,8 +1,5 @@
-import { describe, expect, it, vi } from 'vitest';
-
-vi.mock('../app/app', () => ({ app: {} }));
-
-const { accuracyFill } = await import('./hud');
+import { describe, expect, it } from 'vitest';
+import { accuracyFill } from './hud';
 
 describe('accuracy ring', () => {
   it('spreads 80 to 100 % over most of the ring', () => {

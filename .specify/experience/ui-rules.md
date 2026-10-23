@@ -3,8 +3,8 @@
 ## What
 One set of rules for where things sit and how they behave, so every screen feels like the same game.
 
-1. **Corner controls.** The global round buttons (the red update button while a new version
-   waits, help, fullscreen, sound, super star, in this order, right to left) sit in the top right corner at one fixed offset from the
+1. **Corner controls.** The global round buttons (the red super star, the red update button
+   while a new version waits, help, fullscreen, sound, in this order, right to left) sit in the top right corner at one fixed offset from the
    window edge on every screen. There are only two placements: the **standard** one (all screens,
    windows and the map) and the **compact play bar** (inside a level, where they join the bar of
    the play controls). A button never moves between two screens of the same kind.
@@ -37,8 +37,9 @@ One set of rules for where things sit and how they behave, so every screen feels
    top of the panel they switch, with no gap. A window with tabs is aligned to the top so
    that switching tabs changes only its lower edge, never its position.
 5. **Position in the world.** In a level, the place inside the world is a ring beside the
-   pause button, drawn like the rhythm ring: the ring fills by the levels done in the world, the
-   number of the current level (1-5, a web for the big challenge) is inside. The world's name is
+   pause button, drawn like the rhythm ring: the ring fills up to the current level (the third
+   of five fills three pieces, the last one, the big challenge, all five), the number of the
+   current level (1-5) is inside. The world's name is
    the title; there are no dots under it.
 6. **Play controls stay together.** Pause and the paw sit side by side at the start of the play
    bar; nothing from the bar is drawn over the play field.

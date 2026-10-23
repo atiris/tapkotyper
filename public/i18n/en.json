@@ -1221,7 +1221,7 @@
     "worlds": "worlds",
     "stories": "Stories",
     "date": "On {date}",
-    "sign": "Tapko and TapkoTyper",
+    "sign": "Tapko",
     "precise": "Types very accurately.",
     "careful": "Types accurately and carefully.",
     "praise": [
@@ -1295,7 +1295,7 @@
       "timer": "The clock in the wardrobe shows how much time you have left. While there is plenty, it smiles; then a number drops by one every 10 seconds. When it blinks, the time is nearly over. You earn wardrobe time by practising.",
       "pause": "Pause. The **Esc key** pauses too. In the pause you can end the level; once something is typed it asks first, because the level will not count.",
       "paw": "The paw shows whether your help is ready: every word without a mistake fills a bit of the ring, after {n} words the paw is charged. Press **Enter** when you are stuck and your paw types {words} words for you.",
-      "ring": "The ring with the number shows which level of the world this is. Green pieces are levels done, orange is this one, empty ones are still to come. The web is the big challenge at the end of the world.",
+      "ring": "The ring with the number shows which level of the world this is. Green pieces fill up to this level, empty ones are still to come. At the last one, the big challenge, it is full.",
       "progress": "The bar shows how much of the level is behind you.",
       "gauge": "The green ring shows your rhythm. When you type smoothly, it fills up.",
       "levelHelp": "Help: what to do in this level and how to type. **F1** opens it too.",
@@ -1384,7 +1384,7 @@
       ],
       "dashboard": [
         "How each key goes, accuracy and rhythm over time, time per day and the levels finished.",
-        "The writer's **certificate** with the results opens with the button by the summary, ready to print."
+        "By the summary, on the right, are the **QR code of all my progress** for the mentor and the writer's **certificate** with the results, ready to print."
       ],
       "data": [
         "Everything is stored **only in this browser**. When the browser's data is cleared or the computer breaks, the progress is lost unless you have a backup.",

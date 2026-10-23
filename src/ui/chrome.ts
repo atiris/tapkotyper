@@ -117,9 +117,9 @@ export function appShortcuts(): void {
   installShortcuts();
 }
 
-/** The global round buttons, right to left: a new version (hidden until there is one), help, fullscreen, sound, the super star. A level passes its own help. */
+/** The global round buttons, right to left: the super star, a new version (hidden until there is one), help, fullscreen, sound. A level passes its own help. */
 export function globalButtons(help: HTMLButtonElement = helpButton()): (HTMLButtonElement | null)[] {
-  return [superStar(), soundButton(), fullscreenButton(), help, updateButton()];
+  return [soundButton(), fullscreenButton(), help, updateButton(), superStar()];
 }
 
 /**

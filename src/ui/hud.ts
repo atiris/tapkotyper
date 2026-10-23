@@ -1,4 +1,3 @@
-import { app } from '../app/app';
 import { WORLDS, type LevelDef, worldLevels } from '../game/levels';
 import { WARDROBE_MAX, countdownFace } from '../game/wardrobe-time';
 import { t } from '../i18n/i18n';
@@ -7,7 +6,7 @@ import { ICONS, h } from './dom';
 import { keyLabel } from './keyboard-guide';
 import { tip } from './tooltip';
 
-/** Colors of the round buttons: controls purple, paw orange, rhythm green, the super star gold, the place in the world blue, the wardrobe's time teal, a key's accuracy brown, the target range's hits red, a new version red. */
+/** Colors of the round buttons: controls purple; the paw, rhythm, place in the world, a key's accuracy and the target's hits green (the round being played); the super star and a new version red; the wardrobe's time teal. */
 export type RoundKind = 'control' | 'paw' | 'rhythm' | 'super' | 'place' | 'timer' | 'accuracy' | 'hits' | 'update';
 
 const RING_LEN = 2 * Math.PI * 21;
@@ -37,7 +36,7 @@ export function roundTextSvg(text: string, ring = ''): string {
   return roundFrame(ring, `<text class="rb-num" x="24" y="24">${text}</text>`);
 }
 
-/** A ring of segments, one per class (`on`, `now` or none). */
+/** A ring of segments, one per class (`on` or none). */
 function segments(classes: string[]): string {
   const gap = 16, n = classes.length;
   return classes.map((cls, i) => {
@@ -52,20 +51,18 @@ export function pawRing(charged: number, max: number): string {
 }
 
 /**
- * The place in the world, drawn like the rhythm ring: one segment per level, green done,
- * orange this one; the level's number inside, a web for the big challenge.
+ * The place in the world, drawn like the rhythm ring: one segment per level, filled up to this
+ * one (the third of five fills three, the last one all); the level's number inside.
  */
-export function levelRing(done: boolean[], current: number, web: boolean): HTMLElement {
-  const ring = segments(done.map((d, i) => (i === current ? 'now' : d ? 'on' : '')));
-  const label = t('level.place', { n: current + 1, total: done.length });
-  return h('div', { class: 'round-btn place', role: 'img', tip: label, 'aria-label': label,
-    html: web ? roundSvg('web', ring) : roundTextSvg(String(current + 1), ring) });
+export function levelRing(total: number, current: number): HTMLElement {
+  const ring = segments(Array.from({ length: total }, (_, i) => (i <= current ? 'on' : '')));
+  const label = t('level.place', { n: current + 1, total });
+  return h('div', { class: 'round-btn place', role: 'img', tip: label, 'aria-label': label, html: roundTextSvg(String(current + 1), ring) });
 }
 
-/** The ring of a world level, from the player's progress. */
+/** The ring of a world level. */
 export function placeRing(def: LevelDef): HTMLElement {
-  const progress = app.profile?.progress.levels ?? {};
-  return levelRing(worldLevels(def.world).map((l) => !!progress[l.id]), def.index, def.isSuper);
+  return levelRing(worldLevels(def.world).length, def.index);
 }
 
 /** The rhythm's ring: filled from the top by `fraction`. */

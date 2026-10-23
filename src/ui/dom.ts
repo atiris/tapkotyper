@@ -71,7 +71,6 @@ export const ICONS = {
   camera: '<path d="M3 8h4l2-3h6l2 3h4v11H3z"/><circle cx="12" cy="13" r="3.5"/>',
   fullscreen: '<path d="M4 9V4h5M4 4l5 5M15 4h5v5M20 4l-5 5M4 15v5h5M4 20l5-5M20 15v5h-5M20 20l-5-5"/>',
   smile: '<path d="M6.5 13.5a6.5 6.5 0 0011 0"/><path d="M8.5 8.5v1.5M15.5 8.5v1.5"/>',
-  web: '<path d="M12 12L12 2M12 12l8.5-5M12 12l8.5 5M12 12L12 22M12 12l-8.5 5M12 12L3.5 7M5 4.5Q12 9 19 4.5M3 12Q12 16 21 12"/>',
   sortDown: '<path d="M6 9l6 6 6-6"/>',
   sortUp: '<path d="M6 15l6-6 6 6"/>',
   menu: '<path d="M5 7h14M5 12h14M5 17h14"/>',

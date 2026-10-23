@@ -44,7 +44,7 @@ function levelIcons(): HTMLElement[] {
     iconLine(round('pause'), t('help.icons.pause')),
     iconLine(roundPic('paw', 'paw', pawRing(2, PAW_MAX)),
       t('help.icons.paw', { n: PAW_STREAK, words: PAW_WORDS })),
-    iconLine(levelRing([true, true, false, false, false], 2, false), t('help.icons.ring')),
+    iconLine(levelRing(5, 2), t('help.icons.ring')),
     iconLine(h('div', { class: 'progress' }, h('div', { class: 'progress-fill', style: 'width: 60%' })), t('help.icons.progress')),
     iconLine(gauge.el, t('help.icons.gauge')),
     iconLine(round('help'), t('help.icons.levelHelp')),

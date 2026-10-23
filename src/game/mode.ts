@@ -40,7 +40,7 @@ export abstract class Mode {
   hud(): HTMLElement | null {
     return null;
   }
-  /** Round pictures of the mode, before the accuracy rings and the rhythm. */
+  /** Round pictures of the mode, right after the title. */
   rings(): HTMLElement[] {
     return [];
   }

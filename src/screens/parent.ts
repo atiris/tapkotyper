@@ -20,7 +20,7 @@ import { numberPick, profileCard } from '../ui/profile-card';
 import { cornerControls, starRow } from '../ui/chrome';
 import { barTabLinks, tabBar } from '../ui/tabs';
 import { openCertificate } from './certificate';
-import { clickableHeatmap, storyPicture, summaryRow } from './stats';
+import { clickableHeatmap, showOverallCode, storyPicture, summaryRow } from './stats';
 import { barChart, lineChart } from '../ui/charts';
 import { hasCompanion } from '../game/rewards';
 import { OWN_TEXT_MAX, OWN_WORDS_MAX, parseOwnWords, typableText, untypableWords } from '../words/words';
@@ -543,7 +543,9 @@ function dashboardTab(p: Profile): HTMLElement {
   const heat = clickableHeatmap(p, detail);
   return h('div', { class: 'dashboard' },
     h('div', { class: 'child-summary' }, tapkoElement(p.companion, 'happy', 96), summaryRow(p),
-      button(t('cert.button'), () => openCertificate(p), 'btn', 'print')),
+      h('div', { class: 'summary-actions' },
+        button(t('progress.showCode'), () => void showOverallCode(p), 'btn small', 'code'),
+        button(t('cert.button'), () => openCertificate(p), 'btn small', 'print'))),
     h('h3', {}, t('parent.heatmap')),
     h('div', { class: 'heat-split' }, heat, detail),
     h('div', { class: 'chart-grid' },

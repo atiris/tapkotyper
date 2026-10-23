@@ -51,7 +51,7 @@
 - Explains that on a small screen the top buttons hide under one Menu button, and (in how to
   type and in about) that a real keyboard is needed, also on a phone or tablet.
 - Explains the wardrobe's countdown (a smile, then a number that drops every 10 seconds, blinking at the end, time earned by practice) next to the map's buttons.
-- Explains the paw (what it shows, when to press Enter; no other key calls it, Backspace neither), the ring with the level's number beside the pause button (levels done, this one, to come, a web for the big challenge), the rescue mission and the badge, each in one short sentence.
+- Explains the paw (what it shows, when to press Enter; no other key calls it, Backspace neither), the ring with the level's number beside the pause button (filled up to this level, full at the big challenge), the rescue mission and the badge, each in one short sentence.
 
 ## Why
 - Children do not guess what symbols mean, and the parent is not always next to them.

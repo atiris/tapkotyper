@@ -160,7 +160,7 @@ function progressSection(p: Profile): HTMLElement {
 type StatsTab = 'progress' | 'keys' | 'exercises';
 
 /** The QR code of all the player's statistics, over the whole screen. */
-async function showOverallCode(p: Profile): Promise<void> {
+export async function showOverallCode(p: Profile): Promise<void> {
   const link = linkOf('result', await resultCode(makeOverallResult(p, t('progress.overallTitle'))));
   bigCode(link, nickname(p), t('progress.overallCaption'), 'overall');
 }

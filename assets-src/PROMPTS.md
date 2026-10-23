@@ -218,6 +218,9 @@ the body are completed, the game draws the body over them anyway):
 Keep only the ITEM, exactly where it is, with the same size, shape, colors and outline. Remove the whole character completely: head, fur, skin, ears, eyes, cheeks, arms, legs and body. Where the body covered the middle of the ITEM, complete the hidden part of the ITEM naturally so it is one whole, unbroken piece, in the same style and colors. Nothing else may cross or cut the ITEM: no lines, no strings, no other objects. Fill everything that is not the ITEM with one perfectly flat solid pure green color (#00FF00). No shading, no shadow, no outline where the character was, no gradient. Same square size.
 ```
 
+A worn item cut for the paw (a stick the paw closes over) shows badly alone in the
+wardrobe: save the whole item as `acc-<id>-full.jpg` and the wardrobe card uses it.
+
 A back item may have a front part (a cape's clasp, a backpack's straps): save it as
 `acc-<id>-front.jpg` at the same position. The game draws the item behind the body and
 its front part over the body. To split one generated picture, attach it in a new chat
@@ -254,11 +257,11 @@ the lens highlight: the eye holes are only flat green):
 
 | File | ITEM / FRAME | Status |
 |---|---|---|
-| `acc-hero-cape.jpg` | back: a bright red hero cape with a golden-yellow inner lining, hanging from the shoulders behind the body down to the knees, visible on both sides with a soft wave at its lower edge, fastened at the neck by a small round golden clasp with a short red collar | first version 2026-10-23, the owner finishes it (with `acc-hero-cape-front.jpg`: clasp and collar) |
+| `acc-hero-cape.jpg` | back: a bright red hero cape with a golden-yellow inner lining, hanging from the shoulders behind the body down to the knees, visible on both sides with a soft wave at its lower edge, fastened at the neck by a small round golden clasp with a short red collar | done 2026-10-23, finished by the owner (with `acc-hero-cape-front.jpg`: clasp and collar) |
 | `acc-chain.jpg` | neck: a thin golden chain necklace with small round links, in a soft U shape on the upper chest, no pendant | done 2026-10-23 |
 | `acc-medallion.jpg` | neck: a thin dark-brown leather cord in a soft V shape with a round bronze medallion (#C98A3A, a small engraved leaf) in the middle of the chest | done 2026-10-23 |
 | `acc-hair-clip.jpg` | head: two small hair clips side by side, turquoise (#2BB5B0) and yellow (#F5C542), short flat bars with rounded ends, on the top right side of the head | done 2026-10-23 |
-| `acc-walking-stick.jpg` | hand: a simple straight wooden walking stick (#9A6A3C) with a small round knob on top, no hook (a crook looked like a crutch), in the right paw (viewer's left), standing straight down beside the leg, its tip on the ground | first version 2026-10-23, the owner fits it to the paw |
+| `acc-walking-stick.jpg` | hand: a simple straight wooden walking stick (#9A6A3C) with a small round knob on top, no hook (a crook looked like a crutch), in the right paw (viewer's left), standing straight down beside the leg, its tip on the ground | done 2026-10-23, fitted to the paw by the owner (the paw is cut out of it; `acc-walking-stick-full.jpg` is the whole stick for the wardrobe) |
 | `acc-white-gloves.jpg` | hand: soft white gloves (#F7F7F2, light grey shading) on both paws, a small cuff at each wrist | done 2026-10-23 |
 | `acc-black-gloves.jpg` | hand: `acc-white-gloves.jpg` attached and recolored black (#2A2A2E) with dark grey highlights | done 2026-10-23 |
 | `acc-eye-mask.jpg` | eyes: a simple black eye mask like a masked hero wears, a smooth band with two almond-shaped eye holes and slightly pointed outer ends | done 2026-10-23 |

@@ -152,13 +152,13 @@
    "w": 384,
    "h": 384
   },
-  "acc-jetpack": {
-   "w": 384,
-   "h": 384
-  },
   "acc-jetpack-thumb": {
    "w": 160,
    "h": 160
+  },
+  "acc-jetpack": {
+   "w": 384,
+   "h": 384
   },
   "acc-knit-vest": {
    "w": 384,
@@ -236,13 +236,13 @@
    "w": 160,
    "h": 160
   },
-  "acc-walking-stick": {
-   "w": 384,
-   "h": 384
-  },
   "acc-walking-stick-thumb": {
    "w": 160,
    "h": 160
+  },
+  "acc-walking-stick": {
+   "w": 384,
+   "h": 384
   },
   "acc-wand": {
    "w": 384,

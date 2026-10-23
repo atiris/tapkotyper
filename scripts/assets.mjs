@@ -319,6 +319,8 @@ async function writeStrip(name, data, w, h, box, manifest) {
 
 /** Ids that have their own `acc-<id>` source, which replaces the item cut from its outfit. */
 const singleAccessories = new Set();
+/** Ids whose wardrobe thumbnail comes from a whole `acc-<id>-full` picture (the worn one is cut for the paw). */
+const fullThumbs = new Set();
 
 /** One accessory drawn alone on the template position (no other item can cut it). */
 async function processAccessory(id, data, w, h, manifest) {
@@ -326,6 +328,10 @@ async function processAccessory(id, data, w, h, manifest) {
   if (id.endsWith('-front')) {
     keyOut(data, w, h);
     return writeSquare(`acc-${id}`, data, w, h, manifest);
+  }
+  if (id.endsWith('-full')) {
+    keyOut(data, w, h);
+    return writeThumb(id.slice(0, -5), data, w, h, manifest);
   }
   const single = SINGLES[id] && { rid: id, slot: SINGLES[id].slot, set: 'single', tint: SINGLES[id].tint };
   const entry = single ?? Object.entries(OUTFITS).flatMap(([set, rules]) => rules.map(([rid, slot]) => ({ rid, slot, set }))).find((r) => r.rid === id);
@@ -338,11 +344,15 @@ async function processAccessory(id, data, w, h, manifest) {
 
 async function writeAccessory(id, slot, set, data, w, h, manifest) {
   await writeSquare(`acc-${id}`, data, w, h, manifest);
-  // Trimmed thumbnail for the wardrobe.
+  if (!fullThumbs.has(id)) await writeThumb(id, data, w, h, manifest);
+  manifest.accessories.push({ id, slot, set });
+}
+
+/** Trimmed thumbnail for the wardrobe. */
+async function writeThumb(id, data, w, h, manifest) {
   const box = bbox(data, w, h);
   await webp(sharp(data, { raw: { width: w, height: h, channels: 4 } }).extract(box).resize(160, 160, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })).toFile(join(OUT, `acc-${id}-thumb.webp`));
   manifest.images[`acc-${id}-thumb`] = { w: 160, h: 160 };
-  manifest.accessories.push({ id, slot, set });
 }
 
 async function processOutfit(set, data, w, h, manifest) {
@@ -374,7 +384,12 @@ async function main() {
   if (!only) await rm(OUT, { recursive: true, force: true });
   await mkdir(OUT, { recursive: true });
   const manifest = { images: {}, accessories: [], music: [] };
-  for (const entry of (await readdir(SRC)).sort()) {
+  const entries = (await readdir(SRC)).sort();
+  for (const entry of entries) {
+    const { name } = parse(entry);
+    if (name.startsWith('acc-') && name.endsWith('-full')) fullThumbs.add(name.slice(4, -5));
+  }
+  for (const entry of entries) {
     const { name, ext } = parse(entry);
     if (only && !name.startsWith(only)) continue;
     const file = join(SRC, entry);

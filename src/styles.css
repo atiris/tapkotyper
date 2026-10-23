@@ -201,10 +201,10 @@ p { line-height: 1.5; }
 /* The page focuses the first card on open: a ring that keeps the card's round corners. */
 .profile-card:focus-visible { outline-offset: 2px; border-radius: 20px; }
 .profile-card { position: relative; container-type: inline-size; }
-/* A narrowing card moves the character toward its right edge, so the number stays in sight. */
-.profile-card > .tapko-stack { align-self: flex-end; margin-right: max(0px, 100cqw - 118px); width: min(var(--size), 100cqw - 4px); height: min(var(--size), 100cqw - 4px); }
+/* A narrowing card moves the character gently toward its right edge, in front of the number behind it. */
+.profile-card > .tapko-stack { align-self: flex-end; margin-right: max(-8px, 100cqw - 118px); width: min(var(--size), 100cqw - 4px); height: min(var(--size), 100cqw - 4px); }
 /* The number key that picks the player, leaning by its card's own angle. */
-.profile-num { position: absolute; top: 6px; left: 8px; min-width: 2.1em; height: 2.1em; border-radius: 999px; background: var(--paper); color: var(--ink-soft); font-weight: 700; font-size: 1.1rem; line-height: 2.1em; box-shadow: inset 0 0 0 2px var(--line); transform: rotate(var(--tilt, 0deg)); z-index: 1; }
+.profile-num { position: absolute; top: 6px; left: 8px; min-width: 2.1em; height: 2.1em; border-radius: 999px; background: var(--paper); color: var(--ink-soft); font-weight: 700; font-size: 1.1rem; line-height: 2.1em; box-shadow: inset 0 0 0 2px var(--line); transform: rotate(var(--tilt, 0deg)); }
 .profile-name { font-weight: 700; font-size: 1.1rem; }
 .profile-real { color: var(--ink-soft); font-size: 0.85rem; margin-top: -0.3rem; }
 .profile-sub { font-size: 0.85rem; color: var(--ink-soft); }
@@ -222,6 +222,8 @@ p { line-height: 1.5; }
   .privacy-note .note-short { display: block; }
 }
 .start-screen .row { margin-top: 0.6rem; justify-content: center; }
+/* The new player is a card or a button, whichever fits. */
+.start-screen [hidden] { display: none; }
 /* The title always fits on one line under the corner buttons, from 320 px up. */
 .start-screen { padding-top: calc(1rem + 52px + 1rem); }
 .start-screen .hero { margin-top: 0; }

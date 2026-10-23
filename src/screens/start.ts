@@ -54,12 +54,13 @@ export function startScreen(root: HTMLElement): () => void {
       // Siblings recognize their own tile by the real name under the nickname.
       p.name && p.name !== nickname(p) ? h('span', { class: 'profile-real' }, p.name) : null,
       h('span', { class: 'profile-sub' }, t('start.stars', { n: totalStars(p) }))));
-  // Up to four profiles the new player is one more card; with more it is a button by the guest button.
-  const newAsCard = players.length < MAX_PER_ROW;
-  if (newAsCard) {
-    cards.push(h('button', { class: 'profile-card new', type: 'button', onClick: () => go('newProfile') },
-      h('span', { class: 'plus' }, icon('plus')), h('span', { class: 'profile-name' }, t('start.newProfile'))));
-  }
+  // Up to four profiles the new player is one more card; with more, or when the card would start a row of its own, it is a button by the incognito button.
+  const newCard = players.length < MAX_PER_ROW
+    ? h('button', { class: 'profile-card new', type: 'button', onClick: () => go('newProfile') },
+      h('span', { class: 'plus' }, icon('plus')), h('span', { class: 'profile-name' }, t('start.newProfile')))
+    : null;
+  if (newCard) cards.push(newCard);
+  const newButton = button(t('start.newProfile'), () => go('newProfile'), 'btn primary', 'plus');
   const profiles = h('div', { class: 'profile-list' });
   arrowFocus(profiles, '.profile-card');
   let at = 0;
@@ -79,7 +80,7 @@ export function startScreen(root: HTMLElement): () => void {
       h('h2', {}, t('start.whoPlays')),
       profiles,
       h('div', { class: 'row center' },
-        newAsCard ? null : button(t('start.newProfile'), () => go('newProfile'), 'btn primary', 'plus'),
+        newButton,
         button(t('start.guest'), async () => {
           const g = app.store.startGuest(language(), t('start.guestName'));
           await selectProfile(g);
@@ -94,6 +95,16 @@ export function startScreen(root: HTMLElement): () => void {
     if (waiting) void openRoute(waiting);
     else go('start', {}, false);
   }) : () => undefined;
+  const placeNew = () => {
+    if (!newCard) return;
+    newCard.hidden = false;
+    const first = cards[0];
+    const wraps = newCard !== first && newCard.offsetTop > first.offsetTop;
+    newCard.hidden = wraps;
+    newButton.hidden = !wraps;
+  };
+  placeNew();
+  window.addEventListener('resize', placeNew);
   // The first player (or the new player) waits for Enter; a number key picks one too.
   if (!gated) (root.querySelector<HTMLElement>('.profile-card') ?? root.querySelector<HTMLElement>('.panel .btn.primary'))?.focus();
   const offPick = gated ? () => undefined : pickByNumber(players.length, (i) => void play(players[i]));
@@ -103,6 +114,7 @@ export function startScreen(root: HTMLElement): () => void {
     go('map');
   });
   return () => {
+    window.removeEventListener('resize', placeNew);
     offKeyboard();
     offPick();
     offSuper();

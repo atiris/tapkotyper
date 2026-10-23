@@ -174,13 +174,22 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
   background: var(--page-bg) fixed; -webkit-mask-image: linear-gradient(#000, transparent); mask-image: linear-gradient(#000, transparent);
 }
 .bar h1 { flex: 1; margin: 0; font-size: 1.6rem; }
-/* The tabs as links after the title, once the tab row scrolled away; only on a desktop with room for all of them. */
+/*
+ * The tabs as links after the title, once the tab row scrolled away; only on a desktop with room
+ * for all of them. They fade in and out; every dot has the same room on both sides, the first one too.
+ */
 .bar-links { display: none; }
 @media (hover: hover) and (pointer: fine) {
-  .bar.show-links:not(.links-cramped) h1 { flex: none; }
-  .bar.show-links .bar-links { display: block; flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; color: var(--ink-soft); font-weight: 600; font-size: 1.1rem; }
-  .bar.show-links.links-cramped .bar-links { display: none; }
+  .bar:has(.bar-links):not(.links-cramped) h1 { flex: none; }
+  .bar-links {
+    display: block; flex: 1; min-width: 0; margin-left: -1rem; overflow: hidden; white-space: nowrap;
+    color: var(--ink-soft); font-weight: 600; font-size: 1.1rem;
+    opacity: 0; visibility: hidden; transition: opacity 0.25s ease, visibility 0s linear 0.25s;
+  }
+  .bar.show-links .bar-links { opacity: 1; visibility: visible; transition: opacity 0.25s ease; }
+  .bar.links-cramped .bar-links { display: none; }
 }
+.bar-dot { margin: 0 0.7em; }
 .bar-links a { color: inherit; text-decoration: none; }
 .bar-links a:hover, .bar-links a:focus-visible, .bar-links a.on { color: var(--brand-dark); }
 /* Back buttons in top bars match the round 48 px buttons beside them. */

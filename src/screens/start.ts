@@ -16,7 +16,7 @@ export function startScreen(root: HTMLElement): () => void {
   app.profile = null;
   applyProfileLook(null);
   audio.music(app.menuTrack);
-  const logo = imageUrl('ui-icon');
+  const logo = imageUrl('ui-icon-hr');
   const lang = languageControls(async (l: Lang) => {
     app.store.data.language = l;
     app.store.save();

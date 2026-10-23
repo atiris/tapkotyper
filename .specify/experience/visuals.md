@@ -37,7 +37,7 @@
   window they go three and two.
 - Small laptop screens (1366 x 768, 1024 x 600) never scroll on the start screen, the new-key
   card or the get-ready card: children use small screens, and a scrolling card hides the
-  button they need. The start screen has the logo beside the title (the fox head, the same picture as the browser tab icon and the installed app's icon), up to five profile cards
+  button they need. The start screen has the logo beside the title (the fox head of the browser tab icon and the installed app's icon, drawn with thinner lines for its larger size), up to five profile cards
   per row (more wrap in balanced rows, never one card alone), and the about and teacher
   buttons among the round buttons at the top right so they stay reachable with any number
   of profiles. The new-key card has its heading above Tapko, the finger guide beside Tapko and

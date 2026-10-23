@@ -11,7 +11,7 @@ import ffmpeg from 'ffmpeg-static';
 const SRC = 'assets-src';
 const OUT = 'public/assets';
 const SPRITE_MAX = 384;
-const ICON_MAX = 512; // ui-icon is also the app icon (scripts/icons.mjs)
+const ICON_MAX = 512; // ui-icon is also the app icon (scripts/icons.mjs), ui-icon-hr the start page's large logo
 const BG_WIDTH = 1920;
 // Parallax layers drawn as close-up strips are placed into a frame of this size.
 const FRAME_W = 1376;
@@ -292,7 +292,7 @@ async function processImage(name, file, manifest) {
     return;
   }
   const box = bbox(data, w, h);
-  const max = name === 'ui-icon' ? ICON_MAX : SPRITE_MAX;
+  const max = name.startsWith('ui-icon') ? ICON_MAX : SPRITE_MAX;
   const info = await webp(sharp(data, { raw: { width: w, height: h, channels: 4 } }).extract(box).resize(max, max, { fit: 'inside', withoutEnlargement: true })).toFile(join(OUT, `${name}.webp`));
   manifest.images[name] = { w: info.width, h: info.height };
 }

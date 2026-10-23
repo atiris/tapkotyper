@@ -36,7 +36,7 @@ export function barTabLinks(bar: HTMLElement, nav: HTMLElement): void {
     b.click();
     scroller(nav).scrollTo({ top: 0 });
   } }, b.textContent ?? ''));
-  const row = h('span', { class: 'bar-links' }, ...links.flatMap((a) => [' · ', a]));
+  const row = h('span', { class: 'bar-links' }, ...links.flatMap((a) => [h('span', { class: 'bar-dot', 'aria-hidden': 'true' }, '·'), a]));
   bar.querySelector('h1')!.after(row);
   let seen = false;
   const update = () => {

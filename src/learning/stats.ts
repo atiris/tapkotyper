@@ -85,10 +85,22 @@ export function lastTraining(profile: Profile, now = new Date()): { daysAgo: num
   return { daysAgo: last ? Math.max(0, daysBetween(last.date, today)) : null, weekMinutes: Math.round(week / 60) };
 }
 
-/** Characters typed in the last `days` local calendar days, today included. */
-export function charsInDays(profile: Profile, days: number, now = new Date()): number {
+/**
+ * Characters typed in the last `days` local calendar days, today included, with their accuracy
+ * (0..1) and characters per minute (weighted by the characters); both 0 without any.
+ */
+export function recentTyping(profile: Profile, days: number, now = new Date()): { chars: number; accuracy: number; cpm: number } {
   const today = localDate(now);
-  return profile.stats.sessions.filter((s) => daysBetween(s.date, today) < days).reduce((a, s) => a + s.chars, 0);
+  const recent = profile.stats.sessions.filter((s) => daysBetween(s.date, today) < days);
+  const chars = recent.reduce((a, s) => a + s.chars, 0);
+  const errors = recent.reduce((a, s) => a + s.errors, 0);
+  const timed = recent.filter((s) => s.cpm > 0);
+  const timedChars = timed.reduce((a, s) => a + s.chars, 0);
+  return {
+    chars,
+    accuracy: chars + errors ? chars / (chars + errors) : 0,
+    cpm: timedChars ? Math.round(timed.reduce((a, s) => a + s.cpm * s.chars, 0) / timedChars) : 0,
+  };
 }
 
 export interface KeyReport {
@@ -188,8 +200,7 @@ export interface MasterySummary {
   mastered: number;
   /** Keys of the layout's lessons. */
   total: number;
-  /** Average accuracy (0..1) and median characters per minute of the mastered keys; 0 without any. */
-  accuracy: number;
+  /** Median characters per minute of the mastered keys; 0 without any. */
   cpm: number;
 }
 
@@ -197,7 +208,6 @@ export interface MasterySummary {
 export function masterySummary(profile: Profile): MasterySummary {
   const keys = lessonOrder(profile.layout);
   const found = keys.flatMap((k) => keyMastery(profile, k) ?? []);
-  const accuracy = found.length ? found.reduce((a, m) => a + m.accuracy, 0) / found.length : 0;
   const cpm = found.length ? Math.round(60_000 / median(found.map((m) => m.medianMs))) : 0;
-  return { mastered: found.length, total: keys.length, accuracy, cpm };
+  return { mastered: found.length, total: keys.length, cpm };
 }

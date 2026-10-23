@@ -837,8 +837,8 @@
     "exerciseLine": "{min} min, presnosť {acc} %, rytmus {cpm}",
     "exerciseOpen": "Ešte nedokončené",
     "exerciseCode": "QR kód",
-    "quality": "Presnosť dobre zvládnutých kláves: {n} %",
-    "speed": "Rýchlosť dobre zvládnutých kláves: {n} znakov za minútu",
+    "quality": "Presnosť za posledných 14 dní: {n} %",
+    "speed": "Rýchlosť za posledných 14 dní: {n} znakov za minútu",
     "storyStars": "Hviezdičky v tomto príbehu: {n}",
     "lastToday": "Posledný tréning: dnes.",
     "lastYesterday": "Posledný tréning: včera.",
@@ -846,7 +846,7 @@
     "never": "Zatiaľ žiadny tréning.",
     "week": "Za posledných 7 dní: {n} min",
     "badges": "Odznaky",
-    "chars14": "{n} písmen za 14 dní"
+    "chars14": "{n} písmen napísaných za posledných 14 dní"
   },
   "stats": {
     "title": "Moje klávesy",
@@ -1295,7 +1295,7 @@
     "progressTitle": "Môj postup",
     "progress": [
       "Kláves, svet a príbeh: koľko kláves ti ide dobre a rýchlo (aspoň 9 z 10 stlačení správne), koľko svetov a príbehov máš hotových.",
-      "Fajka je presnosť týchto kláves v percentách, šípky sú ich rýchlosť v znakoch za minútu.",
+      "Terč je tvoja presnosť za posledných 14 dní, šípka z kláves rýchlosť v znakoch za minútu, hviezdička všetky získané hviezdičky a kôpka kláves počet písmen napísaných za posledných 14 dní.",
       "V každom riadku príbehu sú jeho svety: hotové sú farebné, ostatné sivé, a hviezdičky z toho príbehu.",
       "Môj postup má tri karty: Postup, Klávesy a Cvičenia.",
       "Klávesy ukazujú, ktoré ti idú a ktoré si ešte precvičiť. Odtiaľ hneď spustíš cvičenie.",

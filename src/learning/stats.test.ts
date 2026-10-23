@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
-import { charsInDays, recordPress, recordSession } from './stats';
+import { recentTyping, recordPress, recordSession } from './stats';
 
 describe('recordSession', () => {
   it('counts the training time and earns wardrobe time from it, also with the limit off', () => {
@@ -13,12 +13,16 @@ describe('recordSession', () => {
   });
 });
 
-describe('charsInDays', () => {
+describe('recentTyping', () => {
   it('counts the last 14 calendar days, today included, not the last 14 sessions', () => {
     const p = newProfile('Ema', 'sk');
-    const s = (date: string, chars: number) => ({ date, seconds: 60, chars, errors: 0, cpm: 40 });
-    p.stats.sessions = [s('2026-10-09', 1000), s('2026-10-10', 5), s('2026-10-23', 7), s('2026-10-23', 3)];
-    expect(charsInDays(p, 14, new Date(2026, 9, 23, 20))).toBe(15);
+    const s = (date: string, chars: number, errors = 0, cpm = 40) => ({ date, seconds: 60, chars, errors, cpm });
+    p.stats.sessions = [s('2026-10-09', 1000, 500, 10), s('2026-10-10', 5, 5, 0), s('2026-10-23', 30, 0, 60), s('2026-10-23', 10, 0, 20)];
+    expect(recentTyping(p, 14, new Date(2026, 9, 23, 20))).toEqual({ chars: 45, accuracy: 0.9, cpm: 50 });
+  });
+
+  it('has no accuracy or speed without typing', () => {
+    expect(recentTyping(newProfile('Ema', 'sk'), 14)).toEqual({ chars: 0, accuracy: 0, cpm: 0 });
   });
 });
 

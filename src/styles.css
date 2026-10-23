@@ -631,7 +631,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .exercise p { margin: 0.2rem 0 0; }
 .progress-view { display: grid; gap: 0.4rem; }
 .progress-view p { margin: 0; }
-.progress-sum { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem 0.9rem; }
+.progress-sum { list-style: none; margin: 0.4rem 0 0.7rem; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem 0.9rem; }
 .sum-chip { display: flex; align-items: center; gap: 0.35rem; font-size: 1.15rem; }
 .sum-chip img { height: 32px; width: auto; max-width: 40px; object-fit: contain; }
 .sum-glyph { font-size: 1.3rem; color: var(--ink-soft); }

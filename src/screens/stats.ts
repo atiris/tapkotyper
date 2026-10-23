@@ -6,7 +6,7 @@ import { badgeTier, worldStars } from '../game/rewards';
 import { t } from '../i18n/i18n';
 import { allKeys } from '../keyboard/layouts';
 import { activeKeys, lessonKeyOf } from '../learning/lessons';
-import { STATS_WINDOW, charsInDays, keyHistory, keyReport, lastTraining, masterySummary, weakKeys } from '../learning/stats';
+import { STATS_WINDOW, keyHistory, keyReport, lastTraining, masterySummary, recentTyping, weakKeys } from '../learning/stats';
 import { linkOf } from '../share/codec';
 import { makeOverallResult, makeResult, resultCode } from '../share/result';
 import type { Profile } from '../storage/schema';
@@ -107,20 +107,20 @@ function chip(pic: string | null, glyph: string, text: string, label: string): H
     pic ? h('img', { src: pic, alt: '' }) : h('span', { class: 'sum-glyph' }, glyph), h('b', {}, text));
 }
 
-/** The long-term picture: mastered keys, finished worlds and stories, and the quality and speed of the mastered keys. */
+/** The long-term picture: mastered keys, finished stories and worlds, stars, and the accuracy, speed and letters of the last 14 days. */
 export function summaryRow(p: Profile): HTMLElement {
   const m = masterySummary(p);
-  const percent = Math.round(m.accuracy * 100);
   const stories = STORIES.filter((x) => storyDone(p, x)).length;
-  const chars = charsInDays(p, 14);
+  const recent = recentTyping(p, 14);
+  const percent = Math.round(recent.accuracy * 100);
   return h('ul', { class: 'progress-sum' },
     chip(imageUrl('ui-key'), '⌨', `${m.mastered}/${m.total}`, t('progress.keys', { n: m.mastered, total: m.total })),
     chip(imageUrl('ui-level'), '▲', `${stories}/${STORIES.length}`, t('progress.stories', { n: stories, total: STORIES.length })),
     chip(imageUrl('ui-earth'), '●', `${p.progress.worldsDone.length}/${WORLDS.length}`, t('progress.worlds', { n: p.progress.worldsDone.length, total: WORLDS.length })),
-    m.mastered ? chip(imageUrl('ui-accuracy'), '✓', `${percent} %`, t('progress.quality', { n: percent })) : null,
-    m.mastered ? chip(imageUrl('ui-speed'), '»', String(m.cpm), t('progress.speed', { n: m.cpm })) : null,
+    recent.chars ? chip(imageUrl('ui-accuracy'), '✓', `${percent} %`, t('progress.quality', { n: percent })) : null,
+    recent.cpm ? chip(imageUrl('ui-typing-speed'), '»', String(recent.cpm), t('progress.speed', { n: recent.cpm })) : null,
     chip(imageUrl('ui-star'), '★', String(p.progress.starsEarned), t('progress.stars', { n: p.progress.starsEarned })),
-    chip(imageUrl('ui-key-star'), 'Aa', String(chars), t('progress.chars14', { n: chars })));
+    chip(imageUrl('ui-keys-typed'), 'Aa', String(recent.chars), t('progress.chars14', { n: recent.chars })));
 }
 
 /** Who a story is about, for its row. */

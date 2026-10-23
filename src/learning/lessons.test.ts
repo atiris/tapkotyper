@@ -235,8 +235,8 @@ describe('mastered key', () => {
 
   it('sums up the mastered keys of the layout', () => {
     const p = withRecent(fast(30));
-    expect(masterySummary(p)).toMatchObject({ mastered: 1, total: lessonOrder('sk-qwertz').length, accuracy: 1, cpm: 100 });
-    expect(masterySummary(newProfile('U', 'sk'))).toMatchObject({ mastered: 0, accuracy: 0, cpm: 0 });
+    expect(masterySummary(p)).toMatchObject({ mastered: 1, total: lessonOrder('sk-qwertz').length, cpm: 100 });
+    expect(masterySummary(newProfile('U', 'sk'))).toMatchObject({ mastered: 0, cpm: 0 });
   });
 });
 

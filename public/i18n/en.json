@@ -837,8 +837,8 @@
     "exerciseLine": "{min} min, accuracy {acc} %, rhythm {cpm}",
     "exerciseOpen": "Not finished yet",
     "exerciseCode": "QR code",
-    "quality": "Accuracy of the keys you know well: {n} %",
-    "speed": "Speed of the keys you know well: {n} characters per minute",
+    "quality": "Accuracy over the last 14 days: {n} %",
+    "speed": "Speed over the last 14 days: {n} characters per minute",
     "storyStars": "Stars in this story: {n}",
     "lastToday": "Last training: today.",
     "lastYesterday": "Last training: yesterday.",
@@ -846,7 +846,7 @@
     "never": "No training yet.",
     "week": "Last 7 days: {n} min",
     "badges": "Badges",
-    "chars14": "{n} letters in 14 days"
+    "chars14": "{n} letters typed in the last 14 days"
   },
   "stats": {
     "title": "My keys",
@@ -1295,7 +1295,7 @@
     "progressTitle": "My progress",
     "progress": [
       "Key, world and story: how many keys you type well and fast (at least 9 of 10 presses right), how many worlds and stories you have finished.",
-      "The tick is the accuracy of those keys in percent, the arrows are their speed in characters per minute.",
+      "The target is your accuracy over the last 14 days, the arrow of keys your speed in characters per minute, the star all the stars you have earned, and the pile of keys the letters you typed in the last 14 days.",
       "Each story row shows its worlds: finished ones in colour, the rest grey, and the stars of that story.",
       "My progress has three tabs: Progress, Keys and Exercises.",
       "Keys shows which keys go well and which to practise. You can start practice right from there.",

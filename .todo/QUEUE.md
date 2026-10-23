@@ -7,4 +7,3 @@ listed here is never run. Lines whose plan has moved to `.todo/.done/` are
 skipped, and the session that finishes a plan removes its line.
 
 
-- [P2] 51-player-pick-by-number.md - start screen only; after 50 so it does not touch a file 50 has open

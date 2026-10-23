@@ -17,6 +17,7 @@
   "start": {
     "tagline": "A calm typing adventure with all ten fingers",
     "whoPlays": "Who is playing today?",
+    "pickByNumber": "You can also pick this profile by typing the number {n}",
     "newProfile": "New player",
     "guest": "Play as guest",
     "guestName": "Guest",

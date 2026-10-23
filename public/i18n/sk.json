@@ -17,6 +17,7 @@
   "start": {
     "tagline": "Pokojné dobrodružstvo písania všetkými desiatimi",
     "whoPlays": "Kto sa dnes hrá?",
+    "pickByNumber": "Profil môžeš aktivovať aj napísaním číslice {n}",
     "newProfile": "Nový hráč",
     "guest": "Hrať ako hosť",
     "guestName": "Hosť",

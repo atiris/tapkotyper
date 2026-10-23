@@ -20,11 +20,10 @@
   get-ready card starts with the space bar or Enter, the results and the story scenes go on by
   both, and Escape goes back or pauses.
 - **Picking a player by keyboard.** On "Who is playing today" each of the first nine players
-  shows its number; the number keys 1-9 pick (by the key, so a Slovak keyboard's top row works
-  without Shift). Typing a nickname picks too, without minding capitals or accents, once only
-  one player fits and at least two letters (or the whole nickname) are typed; the typed
-  letters show softly under the question and are forgotten after a short pause or Escape.
-  The super password still works: its start never picks a player.
+  shows its number on a playfully tilted badge; the number keys 1-9 pick (by the key, so a
+  Slovak keyboard's top row works without Shift). Hovering or focusing a card says so in its
+  tooltip. Typing a nickname does not pick: it clashed with the super password, whose letters
+  started picking players before the word was complete.
 - **Function keys** wherever they make sense: F1 the help that fits the moment (in a level the
   help page for this level, on a screen its help tab), F2 the keyboard guide, F3 reading aloud,
   F4 the sound (normal, quiet, off), F8 the next song. F4 and F8 say the new sound level or song

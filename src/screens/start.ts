@@ -11,13 +11,12 @@ import { KEYBOARD_ART, TEACHER_ART, arrowFocus, button, h, icon } from '../ui/do
 import { cornerControls, languageControls } from '../ui/chrome';
 import { roundButton } from '../ui/hud';
 import { MAX_PER_ROW, rowSplit } from '../ui/rows';
-import { SUPER_PASSWORD, listenForSuperPassword, superProfile } from '../app/super';
-import { foldName, matchNick } from '../input/nick-pick';
+import { listenForSuperPassword, superProfile } from '../app/super';
 
-/** Typed letters of a nickname are forgotten after this long without a key. */
-const PICK_IDLE_MS = 1500;
 /** Players picked by the number keys. */
 const NUMBERED = 9;
+/** Each number badge leans by its own fixed angle, so the row looks placed by hand. */
+const NUM_TILT = [-12, 8, -5, 14, -9, 6, -14, 10, -7];
 
 export function startScreen(root: HTMLElement): () => void {
   app.profile = null;
@@ -43,8 +42,12 @@ export function startScreen(root: HTMLElement): () => void {
     go('map');
   };
   const cards = players.map((p, i) =>
-    h('button', { class: 'profile-card', type: 'button', 'aria-label': i < NUMBERED ? `${i + 1}: ${nickname(p)}` : null, onClick: () => void play(p) },
-      i < NUMBERED ? h('span', { class: 'profile-num', 'aria-hidden': 'true' }, String(i + 1)) : null,
+    h('button', {
+      class: 'profile-card', type: 'button', onClick: () => void play(p),
+      'aria-label': i < NUMBERED ? `${i + 1}: ${nickname(p)}` : null,
+      tip: i < NUMBERED ? t('start.pickByNumber', { n: i + 1 }) : null,
+    },
+      i < NUMBERED ? h('span', { class: 'profile-num', 'aria-hidden': 'true', style: `--tilt: ${NUM_TILT[i]}deg` }, String(i + 1)) : null,
       tapkoElement(p.companion, 'idle', 96),
       h('span', { class: 'profile-name' }, nickname(p)),
       // Siblings recognize their own tile by the real name under the nickname.
@@ -58,7 +61,6 @@ export function startScreen(root: HTMLElement): () => void {
   }
   const profiles = h('div', { class: 'profile-list' });
   arrowFocus(profiles, '.profile-card');
-  const typedLine = h('p', { class: 'typed-pick', 'aria-hidden': 'true' });
   let at = 0;
   for (const size of rowSplit(cards.length)) {
     profiles.append(h('div', { class: 'profile-row' }, ...cards.slice(at, at + size)));
@@ -74,7 +76,6 @@ export function startScreen(root: HTMLElement): () => void {
         h('p', { class: 'tagline' }, t('start.tagline')))),
     gated ? keyboardGate() : h('section', { class: 'panel' },
       h('h2', {}, t('start.whoPlays')),
-      typedLine,
       profiles,
       h('div', { class: 'row center' },
         newAsCard ? null : button(t('start.newProfile'), () => go('newProfile'), 'btn primary', 'plus'),
@@ -92,9 +93,9 @@ export function startScreen(root: HTMLElement): () => void {
     if (waiting) void openRoute(waiting);
     else go('start', {}, false);
   }) : () => undefined;
-  // The first player (or the new player) waits for Enter; a number or the nickname picks one too.
+  // The first player (or the new player) waits for Enter; a number key picks one too.
   if (!gated) (root.querySelector<HTMLElement>('.profile-card') ?? root.querySelector<HTMLElement>('.panel .btn.primary'))?.focus();
-  const offPick = gated ? () => undefined : pickByKeys(players.map(nickname), (i) => void play(players[i]), (typed) => { typedLine.textContent = typed; });
+  const offPick = gated ? () => undefined : pickByNumber(players.length, (i) => void play(players[i]));
   const offSuper = listenForSuperPassword(async () => {
     app.superPlayer = superProfile(language());
     await selectProfile(app.superPlayer);
@@ -108,47 +109,22 @@ export function startScreen(root: HTMLElement): () => void {
 }
 
 /**
- * Keys that pick a player: the number keys 1-9 by their place (the key, not its character, so a
- * Slovak keyboard's "ľ" is 2), and letters of a nickname once only one player fits. Letters are
- * forgotten after a pause or Escape; Backspace takes one back. The super password's start never
- * picks, so a fast typist still reaches super mode.
+ * The number keys 1-9 pick a player by its place: by the key, not its character, so a Slovak
+ * keyboard's "ľ" is 2. Letters are left to the super password.
  */
-function pickByKeys(names: string[], pick: (i: number) => void, show: (typed: string) => void): () => void {
-  let typed = '';
-  let timer: ReturnType<typeof setTimeout> | undefined;
-  const set = (v: string) => {
-    typed = v;
-    show(v);
-    clearTimeout(timer);
-    if (v) timer = setTimeout(() => set(''), PICK_IDLE_MS);
-  };
+function pickByNumber(count: number, pick: (i: number) => void): () => void {
   const onKey = (e: KeyboardEvent) => {
     if (e.ctrlKey || e.altKey || e.metaKey || e.target instanceof HTMLInputElement || document.querySelector('.modal-back')) return;
     const digit = /^(?:Digit|Numpad)([1-9])$/.exec(e.code);
-    if (digit) {
-      const i = Number(digit[1]) - 1;
-      if (i < names.length && i < NUMBERED) {
-        e.preventDefault();
-        pick(i);
-      }
-      return;
+    if (!digit) return;
+    const i = Number(digit[1]) - 1;
+    if (i < count && i < NUMBERED) {
+      e.preventDefault();
+      pick(i);
     }
-    if (e.key === 'Escape') return set('');
-    if (e.key === 'Backspace') {
-      if (typed) set(typed.slice(0, -1));
-      return;
-    }
-    if (e.repeat || e.key === ' ' || [...e.key].length !== 1) return;
-    set(typed + e.key);
-    if (SUPER_PASSWORD.startsWith(foldName(typed))) return;
-    const i = matchNick(names, typed);
-    if (i !== null) pick(i);
   };
   window.addEventListener('keydown', onKey);
-  return () => {
-    clearTimeout(timer);
-    window.removeEventListener('keydown', onKey);
-  };
+  return () => window.removeEventListener('keydown', onKey);
 }
 
 /** A phone or tablet without a keyboard: the game needs one, so the card asks for it first. */

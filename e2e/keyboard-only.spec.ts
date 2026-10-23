@@ -87,26 +87,21 @@ test('the whole game by keyboard only: a new player, a level, the results, endin
   await context.close();
 });
 
-test('a player is picked by a number key or by typing the nickname', async ({ page }) => {
+test('a player is picked by a number key, the super password still works', async ({ page }) => {
   await createProfile(page, 'Ema');
   await createProfile(page, 'Šimon');
   await page.goto('./');
   await expect(page.locator('.profile-card').first()).toBeFocused();
   await expect(page.locator('.profile-card').nth(1)).toHaveAttribute('aria-label', '2: Šimon');
+  await expect(page.locator('.profile-card').nth(1)).toHaveAttribute('data-tip', 'You can also pick this profile by typing the number 2');
   await expect(page.locator('.profile-card .profile-num').nth(1)).toHaveText('2');
   await page.keyboard.press('Digit2');
   await expect(page.locator('.map-hello')).toContainText('Šimon');
+  // Letters never pick a player, so the super password reaches super mode.
   await page.goto('./');
   await page.locator('.start-screen').waitFor();
-  // Without the accent and in small letters; the letters show under the question.
-  await page.keyboard.type('e');
-  await expect(page.locator('.typed-pick')).toHaveText('e');
-  await page.keyboard.type('m');
-  await expect(page.locator('.map-hello')).toContainText('Ema');
-  await page.goto('./');
-  await page.locator('.start-screen').waitFor();
-  await page.keyboard.type('si');
-  await expect(page.locator('.map-hello')).toContainText('Šimon');
+  await page.keyboard.type('supertapkotyper', { delay: 40 });
+  await expect(page.locator('.map-hello')).toContainText('Super Tapko');
 });
 
 test('F4 steps the sound and says so, the tooltips name the keys', async ({ page }) => {

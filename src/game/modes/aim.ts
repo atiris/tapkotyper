@@ -4,7 +4,6 @@ import { ease } from '../../engine/tween';
 import { drawSprite, type G, roundRect } from '../../gfx/draw';
 import { t } from '../../i18n/i18n';
 import { SHIFT_L, SHIFT_R, SPACE, isKeyReady, keysAccuracy, notReadyKeys, recentAccuracy } from '../../learning/lessons';
-import { h } from '../../ui/dom';
 import { keyLabel } from '../../ui/keyboard-guide';
 import { WORLDS } from '../levels';
 import type { LevelRuntime } from '../runtime';
@@ -21,11 +20,13 @@ const SINK = 24;
 /** Target radius at no accuracy and at full accuracy. */
 const BIG = 120;
 const SMALL = 48;
-/** Share of the path flown per second, and where it waits before a ring. */
-const FLY = 0.22;
-const WAIT_BEFORE = 0.05;
-/** Words picked for one ring; the one with the most weak keys wins. */
-const CANDIDATES = 5;
+/** Rings on the way; the target carries a word too. */
+export const RINGS = 4;
+/** Share of the path flown per second once the word of the next stop is typed, and while falling. */
+const RUSH = 0.9;
+const DRIFT = 0.09;
+/** Words picked for one stop; the best fitting one wins. */
+const CANDIDATES = 8;
 const PAUSE_AFTER = 1.1;
 
 export const PROJECTILES = ['pebble', 'screw', 'fly', 'tomato', 'arrow', 'duck', 'sock'] as const;
@@ -48,29 +49,49 @@ export function weakCount(word: string, keys: string[]): number {
   return [...word].filter((c) => set.has(c.toLowerCase()) || (c === ' ' && set.has(SPACE)) || (c !== c.toLowerCase() && (set.has(SHIFT_L) || set.has(SHIFT_R)))).length;
 }
 
-/** The word richest in the weak keys (the first one on a tie); a word of weak keys alone counts half, so mixed words win. */
-export function richestWord(words: string[], keys: string[]): string {
-  const score = (w: string) => {
-    const n = weakCount(w, keys);
-    return n === [...w].length ? n / 2 : n;
-  };
-  return words.reduce((best, w) => (score(w) > score(best) ? w : best));
+/** Word lengths of one throw, ring by ring and the target last: from the shortest allowed to the longest, or one letter longer in the second half when both are the same. */
+export function throwLengths([lo, hi]: [number, number], n = RINGS + 1): number[] {
+  return Array.from({ length: n }, (_, i) => (hi > lo ? Math.round(lo + ((hi - lo) * i) / (n - 1)) : lo + (i >= n / 2 ? 1 : 0)));
 }
 
-interface Ring {
+/**
+ * The word for a stop: never of the weak keys alone while another one is there, then the
+ * closest to the length asked (its longest word), then the richest in the weak keys (the first one on a tie).
+ */
+export function pickWord(words: string[], keys: string[], len: number): string {
+  const mixed = words.filter((w) => weakCount(w, keys) < [...w].length);
+  const pool = mixed.length ? mixed : words;
+  const off = (w: string) => Math.abs(Math.max(...w.split(' ').map((part) => part.length)) - len);
+  const near = Math.min(...pool.map(off));
+  return pool.filter((w) => off(w) === near).reduce((best, w) => (weakCount(w, keys) > weakCount(best, keys) ? w : best));
+}
+
+/** A ring on the way, or the target as the last stop. */
+interface Stop {
   x: number;
   y: number;
+  /** Where along the path it stands. */
+  s: number;
+  len: number;
   tg: Target | null;
+  /** Its word is typed: the projectile hurries there. */
+  typed: boolean;
+  /** Seconds since the projectile passed it (0 = not yet). */
   passed: number;
+  missed: boolean;
 }
 
 interface Flight {
   kind: Projectile;
-  rings: Ring[];
+  stops: Stop[];
   /** 0 (Tapko's paw) .. 1 (the target), along the path. */
   s: number;
-  /** The ring it waits for; rings.length = on its way to the target. */
+  /** Share of the path per second toward the next stop. */
+  speed: number;
+  /** The stop it flies to. */
   next: number;
+  /** Every word typed in time so far: only then the target is hit in the middle. */
+  clean: boolean;
   errors: number;
   sink: number;
   /** 'fly' along the path, 'fall' after three wrong keys, 'hit' at the target. */
@@ -92,9 +113,11 @@ interface Mark {
 }
 
 /**
- * The target range of a world: Tapko throws a funny projectile at a target through 3 to 5
- * rings, each with a word rich in the weak keys. A wrong key makes it sink, three make it fall
- * softly; the target shrinks as the weak keys get more accurate. No stars.
+ * The target range of a world: Tapko throws a funny projectile at a target through 4 rings;
+ * each ring and the target carry a word rich in the weak keys, longer toward the target. The
+ * projectile keeps flying; a ring passed before its word is typed spoils the bullseye. A wrong
+ * key makes it sink, three make it fall softly; the target shrinks as the weak keys get more
+ * accurate. No stars.
  */
 export class AimMode extends HeroMode {
   readonly world: string;
@@ -109,7 +132,6 @@ export class AimMode extends HeroMode {
   private radius: number;
   private shrink = 0;
   private marks: Mark[] = [];
-  private hudEl = h('div', { class: 'aim-keys', role: 'list', 'aria-label': t('aim.keys') });
 
   constructor(L: LevelRuntime) {
     super(L);
@@ -120,15 +142,10 @@ export class AimMode extends HeroMode {
     this.before = new Map(this.keys.map((k) => [k, recentAccuracy(p.stats.keys[k])]));
     this.phraseWords = this.keys.includes(SPACE) ? 2 : 1;
     this.radius = targetRadius(this.accuracy);
-    this.paintHud();
   }
 
   startLine(): string {
     return t('aim.start', { keys: this.keys.map(keyLabel).join(' ') });
-  }
-
-  hud(): HTMLElement {
-    return this.hudEl;
   }
 
   /** Accuracy before and now of each trained key. */
@@ -174,27 +191,40 @@ export class AimMode extends HeroMode {
   }
 
   private throw(): void {
-    const n = this.L.rng.int(3, 5);
-    const rings: Ring[] = Array.from({ length: n }, (_, i) => {
-      const s = (i + 1) / (n + 1);
-      return { ...this.point(s), tg: null, passed: 0 };
+    const stops: Stop[] = throwLengths(app.profile!.settings.wordLen).map((len, i) => {
+      const s = i < RINGS ? (i + 1) / (RINGS + 1) : 1;
+      return { ...this.point(s), s, len, tg: null, typed: false, passed: 0, missed: false };
     });
-    this.flight = { kind: this.L.rng.pick(PROJECTILES), rings, s: 0, next: 0, errors: 0, sink: 0, phase: 'fly', drop: 0, vy: 0, landed: false, after: 0, spin: 0 };
+    const f: Flight = { kind: this.L.rng.pick(PROJECTILES), stops, s: 0, speed: 0, next: 0, clean: true, errors: 0, sink: 0, phase: 'fly', drop: 0, vy: 0, landed: false, after: 0, spin: 0 };
+    this.flight = f;
     this.happy();
     if (!this.L.reduceMotion) this.L.tweens.add(0.4, (k) => (this.jump = k * 0.6), ease.linear, () => (this.jump = 0));
     this.L.sfx('whoosh');
-    this.arm(rings[0]);
+    this.arm(f);
   }
 
-  /** A ring gets its word. */
-  private arm(r: Ring): void {
-    const words = Array.from({ length: CANDIDATES }, () => this.L.word(8));
-    r.tg = this.L.core.add(richestWord(words, this.aimed), {});
+  /** The next stop gets its word, and the projectile the speed to reach it in the word's travel time. */
+  private arm(f: Flight): void {
+    const stop = f.stops[f.next];
+    const words = Array.from({ length: CANDIDATES }, () => this.L.word(stop.len));
+    stop.tg = this.L.core.add(pickWord(words, this.aimed, stop.len), {});
+    f.speed = (stop.s - f.s) / this.L.travelTime(stop.tg.word);
   }
 
-  /** Where along the path the flight stops before its next ring (1 = the target). */
-  private stopAt(f: Flight): number {
-    return f.next < f.rings.length ? (f.next + 1) / (f.rings.length + 1) - WAIT_BEFORE : 1;
+  /** The projectile reached its next stop: through the ring (or past it, too late), or at the target. */
+  private reach(f: Flight): void {
+    const stop = f.stops[f.next];
+    if (!stop.typed) {
+      stop.missed = true;
+      f.clean = false;
+      if (stop.tg) this.L.core.release(stop.tg);
+      stop.tg = null;
+    }
+    if (f.next === f.stops.length - 1) return this.hit(f);
+    stop.passed = 0.0001;
+    if (stop.typed) this.L.particles.emit(stop.x, stop.y, 10, 'sparkle', ['#bfe8ff', '#ffffff', '#ffd1f5'], 140, 7);
+    f.next++;
+    this.arm(f);
   }
 
   update(dt: number): void {
@@ -208,13 +238,14 @@ export class AimMode extends HeroMode {
     const f = this.flight;
     if (!f) return;
     f.spin += dt * (f.kind === 'arrow' ? 0 : 3);
-    for (const r of f.rings) if (r.passed) r.passed += dt;
+    for (const r of f.stops) if (r.passed) r.passed += dt;
     if (f.phase === 'fly') {
-      f.s = Math.min(this.stopAt(f), f.s + FLY * dt);
-      if (f.s >= 1) this.hit(f);
+      const stop = f.stops[f.next];
+      f.s = Math.min(stop.s, f.s + (stop.typed ? Math.max(RUSH, f.speed) : f.speed) * dt);
+      if (f.s >= stop.s) this.reach(f);
     } else if (f.phase === 'fall') {
       if (!f.landed) {
-        f.s = Math.min(1, f.s + FLY * 0.4 * dt);
+        f.s = Math.min(1, f.s + DRIFT * dt);
         const ground = VH * 0.9 - this.point(f.s).y - f.sink;
         f.vy += 900 * dt;
         f.drop = Math.min(ground, f.drop + f.vy * dt);
@@ -231,14 +262,18 @@ export class AimMode extends HeroMode {
     if (!this.finished) this.throw();
   }
 
+  /** At the target: the middle when every word came in time, else somewhere on the rings (lower after wrong keys). */
   private hit(f: Flight): void {
     f.phase = 'hit';
     const tg = this.target;
-    const dx = this.L.rng.range(-0.4, 0.4) * this.radius, dy = (f.sink / (SINK * FALL_ERRORS)) * this.radius * 0.6;
+    const center = f.clean && !f.sink;
+    const side = this.L.rng.chance(0.5) ? 1 : -1;
+    const dx = center ? 0 : side * this.L.rng.range(0.5, 0.75) * this.radius;
+    const dy = center ? 0 : (f.sink / (SINK * FALL_ERRORS)) * this.radius * 0.6;
     this.marks.push({ kind: f.kind, dx, dy, age: 0 });
     this.L.sfx(f.kind === 'fly' ? 'bzzt' : f.kind === 'duck' ? 'squeak' : f.kind === 'tomato' ? 'plop' : 'pop');
-    this.L.particles.emit(tg.x + dx, tg.y + dy, 14, f.kind === 'tomato' ? 'dot' : 'sparkle', f.kind === 'tomato' ? ['#e5534b', '#ff8a7a'] : ['#fff6a8', '#ffffff', '#ffd1f5'], 180, 8);
-    this.L.shout(t(`aim.hit.${f.kind}`), tg.x, tg.y - this.radius - 40);
+    this.L.particles.emit(tg.x + dx, tg.y + dy, center ? 28 : 14, f.kind === 'tomato' ? 'dot' : 'sparkle', f.kind === 'tomato' ? ['#e5534b', '#ff8a7a'] : ['#fff6a8', '#ffffff', '#ffd1f5'], 180, 8);
+    this.L.shout(t(center ? 'aim.center' : `aim.hit.${f.kind}`), tg.x, tg.y - this.radius - 40);
     this.happy();
     this.L.setMood('happy', 1.2);
   }
@@ -254,13 +289,10 @@ export class AimMode extends HeroMode {
   onDone(tg: Target): void {
     const f = this.flight;
     if (!f || f.phase !== 'fly') return;
-    const r = f.rings[f.next];
-    if (r?.tg !== tg) return;
-    r.passed = 0.0001;
-    r.tg = null;
-    this.L.particles.emit(r.x, r.y, 10, 'sparkle', ['#bfe8ff', '#ffffff', '#ffd1f5'], 140, 7);
-    f.next++;
-    if (f.next < f.rings.length) this.arm(f.rings[f.next]);
+    const stop = f.stops[f.next];
+    if (stop.tg !== tg) return;
+    stop.typed = true;
+    stop.tg = null;
     this.checkReady();
   }
 
@@ -276,12 +308,11 @@ export class AimMode extends HeroMode {
       f.sink += SINK;
       if (f.errors >= FALL_ERRORS) {
         f.phase = 'fall';
-        const r = f.rings[f.next];
-        if (r?.tg) this.L.core.release(r.tg, false);
-        if (r) r.tg = null;
+        const stop = f.stops[f.next];
+        if (stop.tg) this.L.core.release(stop.tg, false);
+        stop.tg = null;
       }
     }
-    this.paintHud();
   }
 
   /** A weak key that became ready leaves the list: the target shrinks and Tapko cheers. */
@@ -295,24 +326,15 @@ export class AimMode extends HeroMode {
       this.L.hooray();
       this.L.say(t('aim.ready', { keys: ready.map(keyLabel).join(', ') }), 3);
     }
-    this.paintHud();
-  }
-
-  /** The HUD: each weak key with a small bar of its recent accuracy. */
-  private paintHud(): void {
-    const p = app.profile!;
-    this.hudEl.replaceChildren(...this.listed.map((k) => {
-      const pct = Math.round(recentAccuracy(p.stats.keys[k]) * 100);
-      return h('span', { class: 'aim-key', role: 'listitem', 'aria-label': `${keyLabel(k)} ${pct} %`, tip: t('aim.keyTip', { key: keyLabel(k), n: pct }) },
-        h('b', {}, keyLabel(k)), h('i', { style: `--acc: ${pct}%` }));
-    }));
   }
 
   render(g: G): void {
     this.drawTarget(g);
     const f = this.flight;
     if (f) {
-      f.rings.forEach((r, i) => this.drawRing(g, r, i === f.next && f.phase === 'fly'));
+      f.stops.slice(0, RINGS).forEach((r, i) => this.drawRing(g, r, i === f.next && f.phase === 'fly'));
+      const last = f.stops[RINGS];
+      if (last.tg) this.L.label(g, last.tg, last.x, last.y - this.radius - 34, 38);
       if (f.phase === 'fly' || (f.phase === 'fall' && f.after < 0.3)) this.drawProjectile(g, f);
     }
     this.drawHero(g);
@@ -372,15 +394,15 @@ export class AimMode extends HeroMode {
     this.drawThing(g, m.kind, mx + k * 30, my + k * k * 140, 40, k * 4, 1 - k);
   }
 
-  private drawRing(g: G, r: Ring, current: boolean): void {
+  private drawRing(g: G, r: Stop, current: boolean): void {
     const rx = 34, ry = 70;
     if (r.passed) {
-      // A passed ring pops like a soap bubble.
+      // A passed ring pops like a soap bubble; one passed too late fades grey.
       const k = Math.min(1, r.passed / 0.4);
       if (k >= 1) return;
       g.save();
       g.globalAlpha = 1 - k;
-      g.strokeStyle = '#bfe8ff';
+      g.strokeStyle = r.missed ? '#b9b4ab' : '#bfe8ff';
       g.lineWidth = 6;
       g.beginPath();
       g.ellipse(r.x, r.y, rx * (1 + k), ry * (1 + k), 0, 0, Math.PI * 2);
@@ -411,11 +433,10 @@ export class AimMode extends HeroMode {
 
   private drawProjectile(g: G, f: Flight): void {
     const p = this.point(f.s);
-    const bob = f.phase === 'fly' && f.s >= this.stopAt(f) && !this.L.reduceMotion ? Math.sin(this.t * 5) * 4 : 0;
     // The arrow points along the path; the rest tumbles slowly.
     const next = this.point(Math.min(1, f.s + 0.01));
     const rot = f.kind === 'arrow' ? Math.atan2(next.y - p.y, next.x - p.x) : this.L.reduceMotion ? 0 : f.spin;
-    this.drawThing(g, f.kind, p.x, p.y + f.sink + f.drop + bob, 46, rot, 1);
+    this.drawThing(g, f.kind, p.x, p.y + f.sink + f.drop, 46, rot, 1);
   }
 
   /** A projectile, drawn in code until its picture is there. */

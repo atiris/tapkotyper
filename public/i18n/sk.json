@@ -112,6 +112,7 @@
     "rescue": "Záchranné misie",
     "switchProfile": "Hráči",
     "super": "veľká výzva",
+    "aimTip": "Strelnica: tu si precvičíš písmená, ktoré ešte nepíšeš dosť presne. Keď ti k ďalšiemu písmenu chýba už len presnosť, tu ju získaš.",
     "starsAria": "hviezdičky: {n}",
     "storyName": "Dračie vajíčko",
     "settings": "Nastavenia pre rodičov",
@@ -234,7 +235,7 @@
     "text": "TapkoTyper učí písať na skutočnej klávesnici. Pripoj ku tabletu klávesnicu alebo sa hraj na počítači."
   },
   "tapko": {
-    "statsHint": "Klikni na seba a pozri, ako ti to ide",
+    "statsHint": "Klikni na mňa a pozri, ako nám to ide",
     "correct_streak": [
       "Krásny rytmus, {name}!",
       "Tvoje prsty poznajú cestu!",
@@ -1832,11 +1833,11 @@
   },
   "aim": {
     "title": "Strelnica",
-    "start": "Tapko hádže na terč! Napíš slovo na každom kruhu a vec preletí. Trénuješ: {keys}",
+    "start": "Tapko hádže na terč! Napíš slovo na každom kruhu skôr, než ním vec preletí, a nakoniec slovo na terči. Keď stihneš všetky, trafíš do stredu. Trénuješ: {keys}",
     "keys": "Písmená na tréning",
-    "keyTip": "{key}: {n} % správne",
     "ready": "Výborne! {keys} už píšeš presne.",
     "plop": "Plop!",
+    "center": "Do stredu!",
     "hit": {
       "pebble": "Ťuk!",
       "screw": "Cink!",

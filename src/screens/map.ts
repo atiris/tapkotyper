@@ -154,6 +154,12 @@ function keyIcon(held: string): HTMLElement {
   return k;
 }
 
+/** The target range of a finished world: a small node next to the super level's star. */
+function aimNode(world: number): HTMLElement {
+  return h('button', { class: 'level-node aim-node', type: 'button', 'aria-label': t('aim.title'), tip: t('map.aimTip'), onClick: () => go('level', { id: 'aim', world }) },
+    icon('target', 'icon aim-icon'));
+}
+
 /**
  * One story: its title and its worlds as islands; a story still closed says when it opens.
  * A level reached without enough keys shows a key and lets the bubble say how many are missing
@@ -191,8 +197,7 @@ function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held:
       }) }, img ? h('img', { src: img, alt: '' }) : h('div', { class: 'island-fallback' }), open ? null : h('span', { class: 'lock', tip: lock || null }, icon('lock')),
         tier ? badge(wi, tier, true) : null),
       h('h3', {}, `${wi + 1}. ${t(`worlds.${w}`)}`),
-      h('div', { class: 'level-row' }, ...levels),
-      aimOpen(p, wi) ? button(t('aim.title'), () => go('level', { id: 'aim', world: wi }), 'btn small aim-btn', 'target') : null);
+      h('div', { class: 'level-row' }, ...levels, aimOpen(p, wi) ? aimNode(wi) : null));
   });
   const closed = !storyOpen(p, story);
   return h('section', { class: `story-row story-${story.id}` },

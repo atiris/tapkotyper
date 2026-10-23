@@ -112,6 +112,7 @@
     "rescue": "Rescue missions",
     "switchProfile": "Players",
     "super": "big challenge",
+    "aimTip": "Target range: practise the letters you do not type accurately enough yet. When only accuracy stands between you and the next letter, this is where you get it.",
     "starsAria": "{n} stars",
     "storyName": "The Dragon Egg",
     "settings": "Settings for parents",
@@ -234,7 +235,7 @@
     "text": "TapkoTyper teaches typing on a real keyboard. Please connect a keyboard to this tablet or play on a computer."
   },
   "tapko": {
-    "statsHint": "Click yourself to see how you are doing",
+    "statsHint": "Click me to see how we are doing",
     "correct_streak": [
       "Great rhythm, {name}!",
       "Your fingers know the way!",
@@ -1832,17 +1833,17 @@
   },
   "aim": {
     "title": "Target range",
-    "start": "Tapko throws at the target! Type the word on each ring and the thing flies through. Training: {keys}",
+    "start": "Tapko throws at the target! Type the word on each ring before the thing flies through it, and last the word on the target. Make them all in time and you hit the middle. Training: {keys}",
     "keys": "Letters to train",
-    "keyTip": "{key}: {n} % right",
     "ready": "Great! You type {keys} accurately now.",
     "plop": "Plop!",
+    "center": "Bullseye!",
     "hit": {
       "pebble": "Tock!",
       "screw": "Clink!",
       "fly": "Bzzz!",
       "tomato": "Splat!",
-      "arrow": "Bullseye!",
+      "arrow": "Thunk!",
       "duck": "Squeak!",
       "sock": "Eww, a sock!"
     },

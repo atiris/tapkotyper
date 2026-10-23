@@ -28,6 +28,9 @@ export interface LevelResult {
   byStyle?: { style: Exclude<Style, 'copy'>; clean: number; total: number };
 }
 
+/** What the runtime measured in one run. */
+export type RunStats = Pick<LevelResult, 'accuracy' | 'chars' | 'errors' | 'cpm' | 'seconds' | 'byStyle'>;
+
 export interface GrowthStep {
   kind: 'difficulty' | 'wordLen';
   /** New difficulty, or the new longest word. */
@@ -80,7 +83,7 @@ export function grow(p: Profile, seconds: number, accuracy: number, typedShare: 
  * Applies a finished level to the profile. Unlocks keys, worlds and accessories.
  * `typedShare`: targets the child typed / targets typed or let pass.
  */
-export function completeLevel(p: Profile, def: LevelDef, r: Omit<LevelResult, 'stars' | 'newKeys' | 'newAccessories' | 'newCompanions' | 'worldDone' | 'trend' | 'growth' | 'byTapko' | 'badge'>, typedShare: number): LevelResult {
+export function completeLevel(p: Profile, def: LevelDef, r: RunStats, typedShare: number): LevelResult {
   // Accuracy of a handful of keys says nothing; such a level earns one star and no growth time.
   const byTapko = def.kind !== 'practice' && r.chars + r.errors < MIN_OWN_KEYS;
   const stars = byTapko ? 1 : starsFor(r.accuracy);
@@ -120,3 +123,13 @@ export function rhythmTrend(p: Profile): number | null {
   return now.cpm / ref.cpm;
 }
 
+
+/**
+ * The end of staying a while in a level: like a practice, the lesson may advance and good play
+ * counts toward growth, but the run gives no stars, rewards or level result.
+ */
+export function completeStay(p: Profile, r: RunStats, typedShare: number): LevelResult {
+  const newKeys = advanceLesson(p);
+  const growth = grow(p, r.seconds, r.accuracy, typedShare);
+  return { ...r, stars: 0, newKeys, newAccessories: [], newCompanions: [], worldDone: null, trend: rhythmTrend(p), growth, byTapko: false, badge: null };
+}

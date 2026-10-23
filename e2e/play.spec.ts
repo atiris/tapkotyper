@@ -242,3 +242,35 @@ test('free practice with a diacritic key is played to the results card', async (
   await expect(page.locator('.results-card')).toBeVisible();
   expect(errors).toEqual([]);
 });
+
+test('staying a while after a level keeps typing until Esc and leaves the stars alone', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  await createProfile(page, 'Mia');
+  await page.locator('.map-side .btn.primary').click();
+  await skipStories(page);
+  await playLevel(page);
+  const node = page.locator('.level-node').first();
+  const stars = await page.locator('.results-card .star.on').count();
+  // The main action keeps the focus; staying is one of the other buttons.
+  await expect(page.locator('.results-card .row.center button').first()).toBeFocused();
+  await page.locator('.results-card button', { hasText: 'Stay a while' }).click();
+  await expect(page.locator('.hud-hint')).toHaveText('Esc = stop');
+  await expect(page.locator('.level-screen .bubble')).toContainText('Press Esc');
+  await expect(page.locator('.posture-card')).toHaveCount(0);
+  for (let i = 0; i < 25; i++) {
+    const next = await page.locator('.kb-guide').getAttribute('data-next');
+    if (next) await typeChar(page, next);
+    await page.waitForTimeout(90);
+  }
+  await page.keyboard.press('Escape');
+  const card = page.locator('.results-card.stay-done');
+  await expect(card).toContainText('Practice finished!');
+  await expect(card).toContainText('%');
+  await expect(card.locator('.star')).toHaveCount(0);
+  await expect(card.locator('.row.center button').first()).toBeFocused();
+  await expect(card.locator('.row.center button').first()).toContainText('Map');
+  await card.locator('.row.center button').first().click();
+  await expect(node.locator('.mini-stars i.on')).toHaveCount(stars);
+  expect(errors).toEqual([]);
+});

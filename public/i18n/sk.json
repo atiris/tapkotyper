@@ -160,6 +160,8 @@
     "end": "Ukončiť",
     "endLevelText": "Táto úroveň sa nezapočíta.",
     "endPracticeText": "Toto cvičenie sa nezapočíta.",
+    "stayHint": "Esc = koniec",
+    "stayStart": "Zostávame tu. Píš, koľko chceš. Keď budeš chcieť skončiť, stlač Esc.",
     "endRescueText": "Táto misia sa nezapočíta."
   },
   "guide": {
@@ -281,6 +283,7 @@
     "next": "Ďalšia úroveň",
     "nextRescue": "Ďalšia misia",
     "replay": "Hrať znova",
+    "stay": "Ešte chvíľu zostať",
     "reward": "Pozrieť odmenu",
     "takeBreak": "Prestávka na pretiahnutie",
     "growthTitle": "Nová medaila!",

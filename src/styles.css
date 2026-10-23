@@ -369,6 +369,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .hud-divider { width: 2px; align-self: stretch; margin: 0.2rem 0; background: rgba(90, 61, 43, 0.15); border-radius: 2px; }
 .paw-btn.empty { opacity: 0.6; cursor: default; }
 .paw-btn.charged { animation: pop-in 0.5s ease; }
+.hud-hint { flex: 1; min-width: 120px; font-size: 14px; font-weight: 700; opacity: 0.7; white-space: nowrap; }
 .progress { flex: 1; min-width: 120px; height: 16px; border-radius: 999px; background: rgba(90, 61, 43, 0.12); overflow: hidden; }
 .progress-fill { height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, #8fd89f, var(--green)); transition: width 0.3s ease; }
 /* Space shows its own speedometer on the stage. */

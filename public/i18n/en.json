@@ -160,6 +160,8 @@
     "end": "End",
     "endLevelText": "This level will not count.",
     "endPracticeText": "This exercise will not count.",
+    "stayHint": "Esc = stop",
+    "stayStart": "We stay here. Type as long as you like. Press Esc when you want to stop.",
     "endRescueText": "This mission will not count."
   },
   "guide": {
@@ -281,6 +283,7 @@
     "next": "Next level",
     "nextRescue": "Another mission",
     "replay": "Play again",
+    "stay": "Stay a while",
     "reward": "See the reward",
     "takeBreak": "Stretch break",
     "growthTitle": "A new medal!",

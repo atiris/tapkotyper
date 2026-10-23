@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { LEVELS, worldLevels } from './levels';
-import { AUTO_DIFFICULTY_MAX, GROWTH_TYPED_SHARE, MIN_OWN_KEYS, completeLevel, grow, growthNeed } from './progress';
+import { AUTO_DIFFICULTY_MAX, GROWTH_TYPED_SHARE, MIN_OWN_KEYS, completeLevel, completeStay, grow, growthNeed } from './progress';
 import { COMPANION_KINDS } from '../storage/schema';
 import { STORY_ACCESSORIES, badgeTier, friendStars, grantAccessories, grantCompanions, kindPrices, unlockRules } from './rewards';
 
@@ -140,5 +140,21 @@ describe('world badges', () => {
     for (const l of [l3, l4]) completeLevel(p, l, perfect, 1);
     expect(completeLevel(p, gate, perfect, 1).badge).toEqual({ world: 0, tier: 'gold', upgrade: true });
     expect(completeLevel(p, gate, perfect, 1).badge).toBeNull();
+  });
+});
+
+describe('staying a while', () => {
+  it('gives no stars, level result or rewards, but keeps the play time for growth', () => {
+    const p = newProfile('Ema', 'sk');
+    const before = JSON.stringify(p.progress.levels);
+    const r = completeStay(p, { accuracy: 1, chars: 400, errors: 0, cpm: 80, seconds: 300 }, 1);
+    expect(r.stars).toBe(0);
+    expect(r.worldDone).toBeNull();
+    expect(r.badge).toBeNull();
+    expect(r.newAccessories).toEqual([]);
+    expect(JSON.stringify(p.progress.levels)).toBe(before);
+    expect(p.progress.levelsFinished).toBe(0);
+    expect(p.progress.starsEarned).toBe(0);
+    expect(r.growth?.kind).toBe('difficulty');
   });
 });

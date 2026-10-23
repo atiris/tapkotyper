@@ -3,7 +3,7 @@ import { starRow } from '../ui/chrome';
 import { tapkoElement } from '../gfx/tapko';
 import { t, tList } from '../i18n/i18n';
 import { nickname } from '../storage/store';
-import { LEVELS, type LevelDef, type StoryDef, WORLDS, freeTypeLevel, isWorldUnlocked, levelById, practiceLevel, rescueLevel, storyOf } from '../game/levels';
+import { LEVELS, type LevelDef, type StoryDef, WORLDS, freeTypeLevel, isLevelUnlocked, isWorldUnlocked, levelById, practiceLevel, rescueLevel, storyOf } from '../game/levels';
 import type { LevelResult } from '../game/progress';
 import type { Style } from '../game/typing';
 import { WORLD_REWARDS } from '../game/rewards';
@@ -40,6 +40,8 @@ interface LevelParams {
   style?: Style;
   /** Just typing: the world index chosen in the place picker. */
   world?: number;
+  /** Staying a while in this story level: no end, no stars. */
+  stay?: boolean;
 }
 
 export function levelScreen(root: HTMLElement, params: LevelParams): () => void {
@@ -49,20 +51,24 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
   else if (params.id === 'freetype') def = freeTypeLevel(params.world != null && isWorldUnlocked(p, params.world) ? params.world : 0);
   else if (params.id === 'rescue') def = rescueLevel(p, p.progress.friends.length * 7 + Math.floor(Math.random() * 5));
   else def = levelById(params.id) ?? LEVELS[0];
+  // A super-obstacle has no endless form: staying plays the world's last regular level.
+  const stayDef = params.stay && def.isSuper ? LEVELS.find((l) => l.world === def.world && l.index === def.index - 1) ?? def : def;
   const task = p.tasks.find((x) => x.id === params.task && !x.doneAt) ?? null;
   let rt: LevelRuntime;
   const exit = () => go('map');
-  rt = new LevelRuntime(root, def, {
+  rt = new LevelRuntime(root, stayDef, {
     keys: params.keys,
     chosen: params.chosen,
     seconds: params.seconds ?? null,
     own: task ? taskOwn(task) : undefined,
     style: params.style,
+    stay: params.stay,
     onExit: exit,
     onTapko: openStats,
     onHelp: (back, now) => openHelp(root.querySelector('.level-screen')!, back, now),
     onFinish: (result) => {
       if (!result) return exit();
+      if (params.stay) return showStayDone(root, def, result);
       if (task) {
         recordTaskRun(task, result);
         saveProfile();
@@ -141,6 +147,7 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
   } else if (def.rescue) {
     actions.append(button(t('results.nextRescue'), () => go('level', { id: 'rescue' }), `btn ${calm ? '' : 'primary'}`, 'rescue'));
   }
+  if (def.index >= 0 && !task) actions.append(button(t('results.stay'), () => go('level', { id: def.id, stay: true }), 'btn', 'play'));
   actions.append(button(t('results.replay'), () => go('level', params), 'btn', 'replay'));
   const toMap = () => go('map');
   actions.append(button(t('level.toMap'), toMap, 'btn', 'map'));
@@ -171,6 +178,38 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
     e.preventDefault();
     stop();
     toMap();
+  });
+}
+
+/** The end of staying a while: accuracy and rhythm like after a practice, the map first. */
+function showStayDone(root: HTMLElement, def: LevelDef, r: LevelResult): void {
+  const p = app.profile!;
+  const chip = (cls: string, text: string) => h('span', { class: `fact ${cls}` }, text);
+  const facts = [chip('main', t('results.accuracy', { n: Math.round(r.accuracy * 100) }))];
+  if (r.cpm > 0) facts.push(chip('', t('results.rhythm', { n: r.cpm })));
+  if (r.newKeys.length) {
+    facts.push(chip('new-key', r.newKeys.length === 1 ? t('results.newKey', { key: keyLabel(r.newKeys[0]) }) : t('results.newKeys', { keys: r.newKeys.map(keyLabel).join(', ') })));
+  }
+  if (r.growth) facts.push(chip('good', r.growth.kind === 'difficulty' ? t('results.growthDifficulty') : t('results.growthWordLen', { n: r.growth.value })));
+  const breakDue = app.sessionSeconds >= p.settings.sessionMinutes * 60;
+  const next = LEVELS[LEVELS.indexOf(def) + 1];
+  const actions = h('div', { class: 'row center' });
+  if (breakDue) actions.append(button(t('results.takeBreak'), () => go('break'), 'btn primary', 'play'));
+  actions.append(button(t('level.toMap'), () => go('map'), `btn ${breakDue ? '' : 'primary'}`, 'map'));
+  if (next && isLevelUnlocked(p, next)) actions.append(button(t('results.next'), () => playLevel(next.id), 'btn', 'next'));
+  const card = h('div', { class: 'card results-card stay-done' },
+    h('div', { class: 'results-top' }, h('h2', {}, t('results.practiceDone'))),
+    h('div', { class: 'results-tapko' }, tapkoElement(p.companion, 'happy', 80), h('p', { class: 'bubble static side' }, breakDue ? pickLine('tapko.break') : pickLine('tapko.level_done', { name: nickname(p) }, p.customMessages))),
+    h('div', { class: 'results-facts' }, ...facts),
+    actions);
+  const overlay = h('div', { class: 'overlay results' }, card);
+  root.querySelector('.level-screen')!.append(overlay);
+  (actions.querySelector('button') as HTMLButtonElement).focus();
+  const stop = captureKeys(overlay, (e) => {
+    if (e.key !== 'Escape' || document.querySelector('.modal-back')) return;
+    e.preventDefault();
+    stop();
+    go('map');
   });
 }
 

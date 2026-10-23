@@ -85,6 +85,14 @@
   the statistics. Free typing keeps its X and leaves without asking, nothing is scored there.
 - The **custom exercise** (untimed practice) has "Back" at the top left of the level bar, like
   every other screen: it ends the exercise and shows its results. Escape still pauses.
+- **Staying a while**: the results card of a story level offers "Stay a while" after the main
+  action, which keeps the focus. The same level, mode and background run again without an
+  end: targets keep coming at the level's pace and Tapko says that Esc ends it; a small HUD
+  hint "Esc = stop" stays in place of the progress bar. Esc ends the run (it does not pause)
+  and a small card like after a practice shows accuracy and rhythm, with Map first and Next
+  level. The run gives no stars, rewards, level result or unlocks; its keys and time count in
+  the statistics and the lesson may advance, as after a practice. A super-obstacle has no
+  endless form, so staying there plays the world's last regular level.
 
 ## Why
 - A results card that fills the screen hides the game and slows the next try; the child
@@ -107,5 +115,8 @@
   to settle into a rhythm, and stars came cheap.
 - A pause that hides the game breaks the child's focus; a way to slow down without a
   parent keeps a struggling child playing instead of giving up.
+- A child who likes a level wants to keep typing there, and replaying it again and again
+  to collect stars would make stars cheap; staying a while can only improve accuracy and
+  add play time.
 - "Map" on the pause card did not say that it throws the level away, and it did so without
   asking. Every other screen has Back at the top left; the custom exercise was the odd one.

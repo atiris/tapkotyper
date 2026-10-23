@@ -33,7 +33,7 @@ import { createMode } from './modes';
 import { FreeTypeMode } from './modes/freetype';
 import { PressureValve, perChar, sayTime } from './pace';
 import { Rhythm } from './rhythm';
-import { type LevelResult, completeLevel } from './progress';
+import { type LevelResult, completeLevel, completeStay } from './progress';
 import { type Style, type Target, TypingCore } from './typing';
 import { pickTip, showCard, showNewKey, showPosture } from './cards';
 import { surpriseFor } from './own-content';
@@ -131,6 +131,8 @@ export interface RuntimeOptions {
   own?: WordSourceOwn;
   /** Free practice: the style chosen in the key picker (a level's own style wins). */
   style?: Style;
+  /** Staying a while: the level runs without an end until Esc, for no stars. */
+  stay?: boolean;
   onFinish(result: LevelResult | null): void;
   onExit(): void;
   /** A click on Tapko during play (the level pauses first). */
@@ -254,10 +256,11 @@ export class LevelRuntime {
     // Enter comes with the right little finger's home key; drills, single letters and the gate's code stay without it.
     const enterOk = !opts.keys && !def.noSpace && def.kind !== 'gate' && def.kind !== 'freetype' && (opts.chosen ?? activeKeys(p)).includes(enterAfter(lay));
     this.enter = enterOk ? new EnterMarks(() => this.rng.next(), def.kind === 'practice' ? null : ENTER_MAX) : null;
-    this.surprise = surpriseFor(p, def, !!opts.keys);
+    this.surprise = opts.stay ? null : surpriseFor(p, def, !!opts.keys);
     this.count = def.count;
     // The e2e build may shorten the minimum (`?minActive=8`), so its tests finish levels in seconds.
-    this.minActive = !hasMinLength(def) ? 0 : import.meta.env.MODE === 'e2e' ? Number(new URLSearchParams(location.search).get('minActive') ?? 0) : MIN_ACTIVE_S;
+    // Staying a while never reaches its minimum: the targets keep coming until Esc.
+    this.minActive = opts.stay ? Infinity : !hasMinLength(def) ? 0 : import.meta.env.MODE === 'e2e' ? Number(new URLSearchParams(location.search).get('minActive') ?? 0) : MIN_ACTIVE_S;
 
     // DOM: HUD, stage, Tapko, bubble, guide.
     this.el = h('div', { class: `level-screen world-${WORLDS[def.world]}${def.rescue ? ' world-rescue' : ''}` });
@@ -289,7 +292,8 @@ export class LevelRuntime {
       this.pawBtn,
       def.kind === 'practice' || def.index < 0 ? null : placeRing(def),
       h('b', { class: 'hud-title' }, title),
-      ...(def.kind === 'freetype' ? [] : [h('div', { class: 'progress', tip: t('level.progress') }, this.progressFill), this.gauge.el]),
+      opts.stay ? h('span', { class: 'hud-hint' }, t('level.stayHint')) : null,
+      ...(def.kind === 'freetype' ? [] : [opts.stay ? null : h('div', { class: 'progress', tip: t('level.progress') }, this.progressFill), this.gauge.el]),
       h('span', { class: 'hud-divider', 'aria-hidden': 'true' }),
       guideBtn, this.readBtn, ...globalButtons(helpBtn));
     const stageWrap = h('div', { class: 'stage-wrap' });
@@ -357,7 +361,8 @@ export class LevelRuntime {
     await preload([`bg-${this.backdrop}-far`, `bg-${this.backdrop}-mid`, `bg-${this.backdrop}-near`]);
     if (this.disposed) return;
     audio.music(this.def.kind === 'practice' ? app.menuTrack : this.mode.world);
-    if (this.free) return this.begin();
+    // Free typing and staying a while start at once; the child has just played this level.
+    if (this.free || this.opts.stay) return this.begin();
     const host = this.el.querySelector<HTMLElement>('.stage-wrap')!;
     let tip: string | undefined;
     if (!app.tipShown && !this.opts.keys) {
@@ -397,7 +402,8 @@ export class LevelRuntime {
     this.mode.start();
     this.started = true;
     this.begunAt = performance.now();
-    if (this.storyLine) this.say(this.storyLine, 3);
+    if (this.opts.stay) this.say(t('level.stayStart'), 6);
+    else if (this.storyLine) this.say(this.storyLine, 3);
     else if (this.fairy) this.say(pickLine('fairy.start'), 3);
     this.tapko.classList.remove('waiting');
     this.rhythm.ready(performance.now());
@@ -409,7 +415,8 @@ export class LevelRuntime {
     return {
       onChar: (c) => this.onChar(c),
       onDead: () => { this.deadPending = true; this.updateGuide(); },
-      onEscape: () => (this.paused ? this.resume() : this.free ? this.exit() : this.pause()),
+      // Staying a while ends with Esc, it never pauses.
+      onEscape: () => (this.paused ? this.resume() : this.free ? this.exit() : this.opts.stay ? this.endPractice() : this.pause()),
       onRaw: (code, key, shift) => this.onRaw(code, key, shift),
       // A target waiting for Enter takes it; else the Enter that closed a card just before play is not a call for the paw.
       onEnter: () => (this.free ? this.freeSend() : this.waitsEnter ? this.typeEnter() : performance.now() - this.begunAt >= ENTER_GUARD_MS && this.startPaws()),
@@ -929,13 +936,20 @@ export class LevelRuntime {
   /** What leaving is called, and what the question says is lost: a story level, an exercise or a rescue mission. */
   private get ending(): { label: string; text: string } {
     if (this.def.kind === 'freetype') return { label: 'level.leave', text: '' };
-    if (this.def.kind === 'practice') return { label: 'level.endPractice', text: 'level.endPracticeText' };
+    if (this.def.kind === 'practice' || this.opts.stay) return { label: 'level.endPractice', text: 'level.endPracticeText' };
     if (this.def.rescue) return { label: 'level.endRescue', text: 'level.endRescueText' };
     return { label: 'level.endLevel', text: 'level.endLevelText' };
   }
 
-  /** Leaving from the pause card; after a key of this level it asks first, Continue being the safe choice. */
+  /**
+   * Leaving from the pause card; after a key of this level it asks first, Continue being the safe choice.
+   * Staying a while loses nothing: it ends like with Esc.
+   */
   private async leave(): Promise<void> {
+    if (this.opts.stay) {
+      this.resume();
+      return this.endPractice();
+    }
     if (this.pressed && !this.free) {
       const yes = await confirmDialog({ title: t('level.endAsk'), text: t(this.ending.text), ok: t('level.end'), cancel: t('level.resume') });
       if (!yes || this.disposed) return;
@@ -1016,8 +1030,8 @@ export class LevelRuntime {
     this.trackPace();
     if (this.pawWords) this.tapkoTypes(dt);
     this.readFocus();
-    // Free typing has no end screen: the bubble says when a break is due.
-    if (this.free && !this.breakSaid && app.sessionSeconds >= app.profile!.settings.sessionMinutes * 60) {
+    // Free typing and staying a while have no end on their own: the bubble says when a break is due.
+    if ((this.free || this.opts.stay) && !this.breakSaid && app.sessionSeconds >= app.profile!.settings.sessionMinutes * 60) {
       this.breakSaid = true;
       this.say(pickLine('tapko.break'), 6);
     }
@@ -1176,11 +1190,12 @@ export class LevelRuntime {
     const typedShare = resolved ? this.typedTargets / resolved : 1;
     const clean = this.cleanTargets;
     this.flushSession();
-    if (this.def.kind === 'practice' && !this.def.count && total === 0) {
+    if ((this.opts.stay || this.def.kind === 'practice' && !this.def.count) && total === 0) {
       this.opts.onFinish(null);
       return;
     }
-    const result = completeLevel(p, this.def, { accuracy, chars, errors, cpm, seconds }, typedShare);
+    const stats = { accuracy, chars, errors, cpm, seconds };
+    const result = this.opts.stay ? completeStay(p, stats, typedShare) : completeLevel(p, this.def, stats, typedShare);
     if (this.style !== 'copy') result.byStyle = { style: this.style, clean, total: resolved };
     saveProfile();
     this.sfx('reward');
@@ -1227,7 +1242,7 @@ export class LevelRuntime {
     }
   }
 
-  /** Ends an untimed practice on request. */
+  /** Ends an untimed practice or staying a while on request. */
   endPractice(): void {
     if (!this.finished) this.finish();
   }

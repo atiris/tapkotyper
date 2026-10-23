@@ -68,7 +68,7 @@ story, while staying open to every child, and the story where listening and reme
 make sense: the forest has forgotten its songs and fell quiet, and each world brings one
 song back. **Melody** (Melódia in Slovak), a small fairy with shimmering wings, floats
 next to the child in every level, a second figure like Bolt that never replaces the child's character. She sings
-the words she dictates, looks curious at a mistake and twirls at a finished word, and has
+the words she dictates, looks curious at a mistake and hops at a finished word, and has
 a short line at the start of a level, after repeated mistakes and at its end.
 
 11. **Garden** (Záhrada) - closed buds stand along the path; a typed word opens a bud,
@@ -120,6 +120,14 @@ story stays playable in any browser ([mechanics](mechanics.md)).
   Raketa, Planéta, Údolie, Vajíčko, Dážď, Mesto, Domov, Jazero); the scenes use the longer
   names (the Lily Lake).
 
+### Cheers
+- When a creature or Tapko is glad, a short cheer pops up over the scene with a cheer
+  sound: "Hurá!", "Jupí!" or "Super!" ("Hooray!", "Yippee!", "Great!"). It comes when a
+  super-obstacle is beaten (the hedgehog shouts it while it hops, Tapko when the world is
+  done), when the owl's riddle is solved, a lake phrase is sung and the city gate opens.
+- Once per such moment, never on every target: a cheer on every word would turn into
+  noise and lose its joy.
+
 ### World badges
 - Every finished world gives a badge to collect, a round medal with the world's picture:
   meadow an invitation envelope, space a rocket, planet a glowing hand (the Force),
@@ -133,6 +141,8 @@ story stays playable in any browser ([mechanics](mechanics.md)).
   earns or improves one. The badge sits in the corner of its world card on the map, and
   the progress view has a badge shelf with a place for every world: earned ones in colour with
   their tier, the others as grey outlines that say which world to finish.
+- A badge's tooltip shows the way to the next tier: bronze names what silver needs, silver
+  what gold needs, each with the stars the child has in that world.
 
 ## Why
 - The story gives a reason to practice without competition; replayable rescue missions

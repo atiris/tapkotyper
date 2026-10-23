@@ -52,7 +52,7 @@ export function friendsScreen(root: HTMLElement): () => void {
       p.progress.friends.length ? null : h('div', { class: 'friends-empty' },
         h('div', { class: 'friends-teasers', 'aria-hidden': 'true' }, ...[...LITTLE_ROBOTS.slice(0, 1), 'obj-dragon-baby-1', ...FOREST_FRIENDS.slice(0, 1)].map((id) => {
           const src = imageUrl(id);
-          return h('span', { class: 'teaser' }, src ? h('img', { src, alt: '' }) : '?');
+          return h('span', { class: 'friend-teaser' }, src ? h('img', { src, alt: '' }) : '?');
         })),
         h('p', {}, t('friends.empty'))),
       h('div', { class: 'row center' }, button(t('map.rescue'), () => go('level', { id: 'rescue' }), 'btn primary', 'rescue')))));

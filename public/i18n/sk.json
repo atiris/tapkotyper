@@ -8,6 +8,7 @@
     "sound_normal": "normálny",
     "sound_quiet": "potichu",
     "sound_off": "vypnutý",
+    "nextSong": "F8 pustí inú pesničku",
     "fullscreen": "Celá obrazovka",
     "fullscreenExit": "Zrušiť celú obrazovku",
     "menu": "Menu",
@@ -295,6 +296,7 @@
       "bronze": "Bronzový odznak za svet {world}: svet je prejdený.",
       "silver": "Strieborný odznak za svet {world}: aspoň {silver} ★ v tomto svete.",
       "gold": "Zlatý odznak za svet {world}: všetkých {gold} ★ v tomto svete.",
+      "toSilver": "Strieborný odznak: aspoň {silver} ★ v tomto svete (máš {have}).",
       "toGold": "Zlatý odznak: všetkých {gold} ★ v tomto svete (máš {have}).",
       "locked": "Prejdi svet {world} a získaš odznak."
     }
@@ -542,6 +544,11 @@
       "Zvieratká ti chcú dať gól! Chytaj listy písmenami."
     ],
     "goalShout": "GÓÓL!",
+    "cheer": [
+      "Hurá!",
+      "Jupí!",
+      "Super!"
+    ],
     "hedgehogStart": [
       "Ježko má na chrbte kopu listov a chce ti s nimi dať gól. Chytaj ich písmenami!"
     ],

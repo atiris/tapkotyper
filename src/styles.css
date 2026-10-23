@@ -701,8 +701,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .friends-empty { display: grid; justify-items: center; gap: 0.6rem; text-align: center; }
 .friends-empty p { margin: 0; font-size: 1.15rem; max-width: 28em; }
 .friends-teasers { display: flex; gap: 1rem; }
-.teaser { display: grid; place-items: center; width: 110px; height: 110px; border-radius: 50%; background: var(--paper-2); border: 3px dashed var(--line); font-size: 2.4rem; color: var(--ink-soft); }
-.teaser img { width: 80px; height: 80px; object-fit: contain; filter: grayscale(1) brightness(0.9); opacity: 0.55; }
+.friend-teaser { display: grid; place-items: center; width: 110px; height: 110px; border-radius: 50%; background: var(--paper-2); border: 3px dashed var(--line); font-size: 2.4rem; color: var(--ink-soft); }
+.friend-teaser img { width: 80px; height: 80px; object-fit: contain; filter: grayscale(1) brightness(0.9); opacity: 0.55; }
 
 /* Parent */
 .tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
@@ -851,7 +851,7 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-dark); }
 /* The one tooltip: over the element (under it without room), with a small arrow; above dialogs. */
 .tip {
   position: fixed; z-index: 200; left: 0; top: 0; max-width: 280px; padding: 0.45rem 0.75rem; border-radius: 10px;
-  background: var(--ink); color: #fff; font-size: 0.9rem; font-weight: 600; line-height: 1.35; pointer-events: none;
+  background: var(--ink); color: #fff; font-size: 0.9rem; font-weight: 600; line-height: 1.35; white-space: pre-line; pointer-events: none;
   opacity: 0; visibility: hidden; transform: translateY(4px) scale(0.96); transform-origin: var(--arrow, 50%) 100%;
   transition: opacity 140ms ease-out, transform 140ms ease-out, visibility 0s linear 140ms;
 }

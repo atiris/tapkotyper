@@ -197,7 +197,7 @@ export class GateMode extends HeroMode {
     this.L.core.prune();
     this.group = null;
     if (this.lit < this.code.length) return this.next();
-    this.L.sfx('cheer');
+    this.L.hooray();
     if (this.groups >= this.L.count) return this.L.say(pickLine('story.gateOpen'), 3);
     this.rounds++;
     this.L.say(t('story.gateMore'), 3);

@@ -14,7 +14,9 @@ function badgeTip(world: number, tier: BadgeTier | null): string {
   if (!tier) return t('badge.tip.locked', { world: name });
   const line = t(`badge.tip.${tier}`, { world: name, silver: BADGE_SILVER, gold: BADGE_GOLD });
   const have = app.profile ? worldStars(app.profile, world) : 0;
-  return tier === 'gold' ? line : `${line} ${t('badge.tip.toGold', { gold: BADGE_GOLD, have })}`;
+  if (tier === 'gold') return line;
+  const next = tier === 'bronze' ? t('badge.tip.toSilver', { silver: BADGE_SILVER, have }) : t('badge.tip.toGold', { gold: BADGE_GOLD, have });
+  return `${line} ${next}`;
 }
 
 /**

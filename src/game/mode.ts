@@ -1,7 +1,12 @@
 import type { Sfx } from '../audio/audio';
+import { VH } from '../engine/loop';
 import type { G } from '../gfx/draw';
 import type { Target } from './typing';
 import type { LevelRuntime } from './runtime';
+
+/** Centre of `.level-tapko` in CSS pixels (left 0.6rem + half of its 150 px) and its height. */
+export const TAPKO_CSS_X = 85;
+export const TAPKO_CSS_H = 150;
 
 /** One kind of level (meadow creatures, space rocks, swamp stones...). */
 export abstract class Mode {
@@ -37,6 +42,11 @@ export abstract class Mode {
   /** Where the story friend stands (feet; Bolt in story 2, Melody floats above it in story 3), or null for the place next to Tapko. */
   friendSpot(): { x: number; y: number } | null {
     return null;
+  }
+  /** Just above Tapko's head, where his shouts pop up: above the DOM Tapko unless the mode draws him. */
+  heroSpot(): { x: number; y: number } {
+    const k = this.L.stage.scale;
+    return { x: TAPKO_CSS_X / k, y: VH - TAPKO_CSS_H / k - 40 };
   }
   onCorrect(_t: Target): void {}
   onDone(_t: Target): void {}

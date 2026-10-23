@@ -1,8 +1,9 @@
 import { pickLine } from '../../app/app';
 import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
-import { blob, drawFace, drawSprite, fontFamily, type G, lighten } from '../../gfx/draw';
+import { blob, drawFace, drawSprite, type G, lighten } from '../../gfx/draw';
 import { t } from '../../i18n/i18n';
+import { TAPKO_CSS_H, TAPKO_CSS_X } from '../mode';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
 import { ApproachMode, type Mover } from './approach';
@@ -273,18 +274,6 @@ interface Critter {
   gone: number;
 }
 
-/** The pop text after a goal. */
-interface Pop {
-  x: number;
-  y: number;
-  age: number;
-}
-
-const POP_TIME = 1.1;
-/** Centre of `.level-tapko` in CSS pixels (left 0.6rem + half of its 150 px). */
-const TAPKO_CSS_X = 85;
-const TAPKO_CSS_H = 150;
-
 /**
  * World 1: the meadow animals play with the child. The wind brings them leaves and they want
  * to score a goal with them; a typed word catches the leaf and Tapko's fan sends it back to
@@ -293,7 +282,6 @@ const TAPKO_CSS_H = 150;
 export class MeadowMode extends ApproachMode {
   readonly world = 'meadow';
   protected fan: Fan;
-  private pops: Pop[] = [];
 
   constructor(L: LevelRuntime) {
     super(L);
@@ -360,8 +348,6 @@ export class MeadowMode extends ApproachMode {
   update(dt: number): void {
     this.playerX = this.tapkoX();
     super.update(dt);
-    for (const p of this.pops) p.age += dt;
-    this.pops = this.pops.filter((p) => p.age < POP_TIME);
   }
 
   protected moveComing(m: Mover, dt: number, tg: Target): void {
@@ -484,7 +470,7 @@ export class MeadowMode extends ApproachMode {
     L.particles.emit(m.x, m.y, 14, 'leaf', [color, lighten(color, 0.4), '#ffd25a', '#9ccf7a'], 200, 7, 1.1);
     L.sfx('cheer');
     const spot = this.goalSpot(m);
-    this.pops.push({ ...spot, age: 0 });
+    L.shout(t('story.goalShout'), spot.x, spot.y);
     this.cheerGoal(m);
   }
 
@@ -528,33 +514,11 @@ export class MeadowMode extends ApproachMode {
     }
     this.drawExtras(g);
     this.fan.draw(g, this.t);
-    for (const p of this.pops) this.drawPop(g, p);
   }
 
   /** Hook for the hedgehog, drawn behind the fan. */
   protected drawExtras(_g: G): void {}
 
-  private drawPop(g: G, p: Pop): void {
-    const s = ease.outBack(Math.min(1, p.age / 0.35));
-    const a = Math.min(1, (POP_TIME - p.age) / 0.3);
-    g.save();
-    g.globalAlpha = Math.max(0, a);
-    g.font = `800 58px ${fontFamily()}`;
-    const text = t('story.goalShout');
-    const half = g.measureText(text).width / 2 + 8;
-    g.translate(Math.min(this.L.vw - half, Math.max(half, p.x)), Math.max(50, p.y - p.age * 12));
-    g.scale(s, s);
-    g.rotate(-0.06);
-    g.textAlign = 'center';
-    g.textBaseline = 'middle';
-    g.lineJoin = 'round';
-    g.lineWidth = 8;
-    g.strokeStyle = '#5a3d2b';
-    g.strokeText(text, 0, 0);
-    g.fillStyle = '#ffd25a';
-    g.fillText(text, 0, 0);
-    g.restore();
-  }
 }
 
 /** Splits `count` leaves into volleys of 2 or 3. */
@@ -562,6 +526,11 @@ export function volleys(count: number): number[] {
   const n = Math.max(1, Math.ceil(count / 3));
   return Array.from({ length: n }, (_, i) => Math.floor(count / n) + (i < count % n ? 1 : 0));
 }
+
+/** The hedgehog's happy end: hops of END_HOP_TIME seconds, and the seconds of its two shouts. */
+const END_HOPS = 4;
+const END_HOP_TIME = 0.55;
+const END_SHOUT = [0.3, 1.4];
 
 /** World 1 super-obstacle: a hedgehog shakes volleys of leaves off its back toward Tapko. */
 export class HedgehogMode extends MeadowMode {
@@ -575,8 +544,10 @@ export class HedgehogMode extends MeadowMode {
   private planned: number;
   private shake = 0;
   private hop = 0;
-  /** Seconds of the happy end (curl, roll a circle, wave); -1 before it. */
+  /** Seconds of the happy end (hops on the spot and shouts); -1 before it. */
   private endT = -1;
+  /** The cheer it shouts at the end, again on a later hop. */
+  private cheer = '';
 
   constructor(L: LevelRuntime) {
     super(L);
@@ -612,7 +583,13 @@ export class HedgehogMode extends MeadowMode {
       this.endT = 0;
       L.sfx('reward');
       L.say(pickLine('story.hedgehogDone'), 3);
-    } else if (this.endT >= 0) this.endT += dt;
+    } else if (this.endT >= 0) {
+      const e = this.endT;
+      this.endT += dt;
+      const spot = this.goalSpot();
+      if (e < END_SHOUT[0] && this.endT >= END_SHOUT[0]) this.cheer = L.hooray(spot);
+      if (e < END_SHOUT[1] && this.endT >= END_SHOUT[1]) L.shout(this.cheer, spot.x, spot.y);
+    }
   }
 
   private throwVolley(): void {
@@ -671,27 +648,20 @@ export class HedgehogMode extends MeadowMode {
 
   protected drawExtras(g: G): void {
     const e = this.endT;
-    let x = this.hx, y = this.hy, rot = 0, curl = 0;
-    if (e >= 0) {
-      // Curl into a ball, roll a happy circle, then stand up and wave.
-      curl = e < 0.3 ? e / 0.3 : e < 1.9 ? 1 : Math.max(0, 1 - (e - 1.9) / 0.3);
-      const k = Math.min(1, Math.max(0, (e - 0.3) / 1.6));
-      x += Math.sin(k * Math.PI * 2) * 90;
-      y -= (1 - Math.cos(k * Math.PI * 2)) * 30;
-      rot = -k * Math.PI * 4;
-      if (e > 2.2) rot = Math.sin((e - 2.2) * 8) * 0.15;
+    let jump = 0, tilt = 0;
+    if (e >= 0 && e < END_HOPS * END_HOP_TIME && !this.L.reduceMotion) {
+      // Happy hops on the spot, leaning a little left and right.
+      const k = (e % END_HOP_TIME) / END_HOP_TIME;
+      jump = Math.sin(k * Math.PI) * 45;
+      tilt = Math.sin(k * Math.PI) * 0.1 * (Math.floor(e / END_HOP_TIME) % 2 ? 1 : -1);
     }
     const shake = this.shake > 0 ? Math.sin(this.shake * 50) * 0.08 : 0;
     const hop = this.hop > 0 ? -Math.abs(Math.sin(this.hop * 10)) * 18 : 0;
     const size = 150;
     g.save();
-    g.translate(x, y + hop);
-    g.rotate(rot + shake);
-    g.scale(1 - curl * 0.25, 1 - curl * 0.25);
-    if (curl > 0.5) {
-      // Curled up: a round spiky ball.
-      drawSprite(g, 'obj-hedgehog', 0, 0, size * 0.8, { sx: 0.8 }, hedgehogFallback);
-    } else drawSprite(g, 'obj-hedgehog', 0, 0, size, {}, hedgehogFallback);
+    g.translate(this.hx, this.hy + hop - jump);
+    g.rotate(tilt + shake);
+    drawSprite(g, 'obj-hedgehog', 0, 0, size, {}, hedgehogFallback);
     // The pile of leaves on its back.
     const kinds: LeafKind[] = ['maple', 'birch', 'oak', 'ginkgo', 'chestnut', 'maple'];
     for (let i = 0; i < Math.min(6, Math.max(0, this.pile)); i++) {

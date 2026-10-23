@@ -7,6 +7,9 @@
   [architecture](../architecture.md)), with procedural drawings as fallback; each world
   has its own palette and mood. Motion (bob, squash, jump, fly-away) is animated in code
   and stays smooth on any screen refresh rate; layer edges are clean (no key color fringe).
+- Living creatures show joy the way a child does: they hop, wave or tilt a little. They never
+  shrink, grow or spin to be happy, which looks like pain or an object; balls, leaves, stars
+  and sparks may spin.
 - Background skies repeat across wide screens, so they are even (clouds or a gradient,
   no sun, moon or single planet). The ground layers in front are close-up strips placed
   along the bottom of the screen at a set height per world.

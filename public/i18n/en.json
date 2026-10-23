@@ -8,6 +8,7 @@
     "sound_normal": "normal",
     "sound_quiet": "quiet",
     "sound_off": "off",
+    "nextSong": "F8 plays another song",
     "fullscreen": "Fullscreen",
     "fullscreenExit": "Exit fullscreen",
     "menu": "Menu",
@@ -295,6 +296,7 @@
       "bronze": "Bronze badge for {world}: the world is done.",
       "silver": "Silver badge for {world}: at least {silver} ★ in this world.",
       "gold": "Gold badge for {world}: all {gold} ★ in this world.",
+      "toSilver": "Silver badge: at least {silver} ★ in this world (you have {have}).",
       "toGold": "Gold badge: all {gold} ★ in this world (you have {have}).",
       "locked": "Finish {world} to earn its badge."
     }
@@ -542,6 +544,11 @@
       "The animals want to score a goal on you! Catch the leaves with letters."
     ],
     "goalShout": "GOAL!",
+    "cheer": [
+      "Hooray!",
+      "Yippee!",
+      "Great!"
+    ],
     "hedgehogStart": [
       "The hedgehog has a pile of leaves on its back and wants to score a goal with them. Catch them with letters!"
     ],

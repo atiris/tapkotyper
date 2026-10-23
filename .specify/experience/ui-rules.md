@@ -52,7 +52,8 @@ One set of rules for where things sit and how they behave, so every screen feels
    above its element (below without room), never leaves the window, and hides on leaving,
    scroll, click and Escape. On touch a long press shows it; a tap never does. Every lock
    says in its tooltip what is still missing, and a badge says its world, what its tier means
-   and, short of gold, what gold needs.
+   and what the next tier needs (silver for bronze, gold for silver). The sound button names
+   the sound level with F4 and, on a second line, that F8 plays another song.
 
 ## Why
 - A child learns where "sound" or "close" is once, and then it is there everywhere; buttons

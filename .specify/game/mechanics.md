@@ -32,7 +32,7 @@
   play (pauses and cards do not count): a quick child gets more targets of the same kind
   (the gate a new code), and the progress bar never runs ahead of the time. Practice,
   custom exercises and free typing keep their own length. At the end Tapko stays where he is and jumps happily
-  three times (Bolt hops with him in story 2, Melody twirls in story 3), and any tool he held in the level (fan,
+  three times (Bolt hops with him in story 2, Melody hops in story 3; a super level adds a cheer), and any tool he held in the level (fan,
   umbrella, shield) fades away; with reduced motion he only smiles and the tool is gone
   at once. About 1.4 seconds later the end screen shows stars (accuracy), new keys, and a
   sentence from the narrator. The end screen is a compact card that fits a small laptop screen

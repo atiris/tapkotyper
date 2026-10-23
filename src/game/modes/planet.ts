@@ -53,6 +53,10 @@ export abstract class HeroMode extends Mode {
     return { x: this.heroX - 105, y: this.heroY };
   }
 
+  heroSpot(): { x: number; y: number } {
+    return { x: this.heroX, y: this.heroY - 210 };
+  }
+
   protected drawHero(g: G): void {
     // The level is done: Tapko hops happily in place.
     if (this.L.endTime != null) return drawTapko(g, app.profile!.companion, 'happy', this.heroX, this.heroY, 170, { t: this.t, jump: this.L.endHop });

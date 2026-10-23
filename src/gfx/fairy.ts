@@ -1,7 +1,7 @@
 import { hasImage, imageUrl, sprite } from './assets';
 import type { G } from './draw';
 
-/** Melody's moods: she sings the dictated words, looks curious at a mistake and twirls at a finished word. */
+/** Melody's moods: she sings the dictated words, looks curious at a mistake and hops at a finished word. */
 export type FairyMood = 'idle' | 'happy' | 'singing' | 'curious';
 
 /** The image of a mood; a missing mood falls back to the idle picture. */
@@ -13,9 +13,9 @@ export function fairyImage(mood: FairyMood): string {
 /**
  * Draws Melody floating with her feet at (x, y), `size` high. The pictures are square with
  * the feet near the bottom; without them a small fairy with shimmering wings is drawn.
- * `spin` 0..1 is a twirl (a happy word).
+ * `hop` 0..1 is a happy hop with a little tilt.
  */
-export function drawFairy(g: G, mood: FairyMood, x: number, y: number, size: number, t: number, spin = 0): void {
+export function drawFairy(g: G, mood: FairyMood, x: number, y: number, size: number, t: number, hop = 0): void {
   const bob = Math.sin(t * 2.2) * size * 0.05;
   g.save();
   // Her soft glow on the ground below.
@@ -23,8 +23,8 @@ export function drawFairy(g: G, mood: FairyMood, x: number, y: number, size: num
   g.beginPath();
   g.ellipse(x, y + size * 0.5, size * 0.2, size * 0.04, 0, 0, Math.PI * 2);
   g.fill();
-  g.translate(x, y + bob);
-  if (spin > 0) g.scale(Math.cos(spin * Math.PI * 2), 1);
+  g.translate(x, y + bob - Math.sin(hop * Math.PI) * size * 0.2);
+  if (hop > 0) g.rotate(Math.sin(hop * Math.PI * 2) * 0.1);
   if (mood === 'curious') g.rotate(-0.12);
   const img = sprite(fairyImage(mood));
   if (img) g.drawImage(img, -size / 2, -size * 0.95, size, size);

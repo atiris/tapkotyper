@@ -167,7 +167,7 @@ export class OwlMode extends HeroMode {
     if (this.typedParts.length < this.parts.length) return this.nextPart();
     this.riddles++;
     this.happy();
-    this.L.sfx('cheer');
+    this.L.hooray();
     this.L.particles.emit(this.L.vw * 0.7, VH * 0.4, 16, 'leaf', ['#a6e3c9', '#ffe27a', '#f7a8c9'], 170, 8);
     if (this.riddles >= this.L.count) this.L.say(pickLine('story.owlSolved'), 3);
     else this.L.tweens.add(0.8, () => undefined, undefined, () => this.nextRiddle());

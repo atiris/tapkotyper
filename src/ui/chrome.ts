@@ -36,7 +36,7 @@ export function soundButton(): HTMLButtonElement {
   const paint = () => {
     const label = soundLabel();
     b.setAttribute('aria-label', label);
-    tip(b, withKey(label, 'F4'));
+    tip(b, `${withKey(label, 'F4')}\n${t('common.nextSong')}`);
     b.dataset.level = audio.level;
     paintRound(b, LEVEL_ICON[audio.level]);
   };

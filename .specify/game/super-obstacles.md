@@ -6,8 +6,7 @@ Each world ends with a bigger, special challenge:
   back toward Tapko, each with its own word, a bit slower than in normal levels; the next
   volley comes when every leaf of the last one is saved or scored. Saved leaves fly back
   onto its back, goals are cheered as in the meadow. Several words at once train choosing
-  a target without any failure. At the end it curls into a ball, rolls a happy circle
-  and waves.
+  a target without any failure. At the end it hops happily on the spot and shouts a cheer.
 - **Fractured asteroid** (space): a big asteroid, when pushed, splits into smaller
   targets with shorter words.
 - **Cracking boulder / rock labyrinth** (planet): precise typing cracks it into safe

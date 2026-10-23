@@ -255,7 +255,7 @@ export class ReflectionMode extends HeroMode {
     if (this.at < this.parts.length) return;
     this.phrases++;
     this.happy();
-    this.L.sfx('cheer');
+    this.L.hooray();
     this.L.particles.emit(this.L.vw * 0.5, VH * 0.6, 18, 'sparkle', ['#ffd1e6', '#ffffff', '#bff3ff'], 180, 9);
     this.L.core.prune();
     if (this.phrases >= this.L.count) this.L.say(pickLine('story.reflectionDone'), 3);

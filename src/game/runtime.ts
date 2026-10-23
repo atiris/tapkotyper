@@ -4,8 +4,8 @@ import { speech } from '../audio/speech';
 import { Loop, Stage, VH } from '../engine/loop';
 import { Particles } from '../engine/particles';
 import { Rng } from '../engine/rng';
-import { Tweens } from '../engine/tween';
-import { drawBackground, drawWord, type G, wordBox } from '../gfx/draw';
+import { Tweens, ease } from '../engine/tween';
+import { drawBackground, drawWord, fontFamily, type G, wordBox } from '../gfx/draw';
 import { type Mood, pawColors, tapkoElement, renderTapkoInto } from '../gfx/tapko';
 import { preload } from '../gfx/assets';
 import { type FairyMood, drawFairy } from '../gfx/fairy';
@@ -36,6 +36,14 @@ import { type LevelResult, completeLevel } from './progress';
 import { type Style, type Target, TypingCore } from './typing';
 import { pickTip, showCard, showNewKey, showPosture } from './cards';
 import { surpriseFor } from './own-content';
+
+/** A short shout over the scene (a goal, a cheer) where it popped up. */
+interface Shout {
+  text: string;
+  x: number;
+  y: number;
+  age: number;
+}
 
 /** A word label a mode asked for in this frame, at its object's anchor. */
 interface PendingLabel {
@@ -70,10 +78,12 @@ const DICTATION_REPEAT = 4;
 /** Bolt's place next to the DOM Tapko, in CSS pixels from the left, and his height in game units. */
 const BOLT_CSS_X = 200;
 const BOLT_SIZE = 150;
-/** Melody's height, how high she floats above the friend's spot, and the seconds of her twirl. */
+/** Melody's height, how high she floats above the friend's spot, and the seconds of her happy hop. */
 const FAIRY_SIZE = 120;
 const FAIRY_FLOAT = 110;
-const FAIRY_SPIN = 0.6;
+const FAIRY_HOP = 0.6;
+/** Seconds a shout stays over the scene. */
+const SHOUT_TIME = 1.1;
 /** The end of a level: Tapko hops HOPS times of HOP_TIME seconds, his tool fades in TOOL_FADE, then the results open. */
 const HOPS = 3;
 const HOP_TIME = 0.4;
@@ -152,7 +162,8 @@ export class LevelRuntime {
   readonly fairy: boolean;
   private fairyMood: FairyMood = 'idle';
   private fairyMoodT = 0;
-  private fairySpin = 0;
+  private fairyHop = 0;
+  private shouts: Shout[] = [];
 
   private loop: Loop;
   private input: KeyInput | null = null;
@@ -729,11 +740,44 @@ export class LevelRuntime {
     this.robotMoodT = seconds;
   }
 
-  /** Melody looks curious, sings, or twirls once (happy). */
+  /** Melody looks curious, sings, or hops once (happy). */
   setFairyMood(mood: FairyMood, seconds: number): void {
     this.fairyMood = mood;
     this.fairyMoodT = seconds;
-    if (mood === 'happy' && !this.reduceMotion) this.fairySpin = FAIRY_SPIN;
+    if (mood === 'happy' && !this.reduceMotion) this.fairyHop = FAIRY_HOP;
+  }
+
+  /** A short text pops up over the scene at (x, y) and fades. */
+  shout(text: string, x: number, y: number): void {
+    this.shouts.push({ text, x, y, age: 0 });
+  }
+
+  /** Someone is glad: a cheer ("Hurá!") pops up above Tapko, or at `at`, with the cheer sound; returns the cheer. */
+  hooray(at = this.mode.heroSpot()): string {
+    const text = pickLine('story.cheer');
+    this.sfx('cheer');
+    this.shout(text, at.x, at.y);
+    return text;
+  }
+
+  private drawShout(g: G, s: Shout): void {
+    const k = ease.outBack(Math.min(1, s.age / 0.35));
+    g.save();
+    g.globalAlpha = Math.max(0, Math.min(1, (SHOUT_TIME - s.age) / 0.3));
+    g.font = `800 58px ${fontFamily()}`;
+    const half = g.measureText(s.text).width / 2 + 8;
+    g.translate(Math.min(this.vw - half, Math.max(half, s.x)), Math.max(50, s.y - s.age * 12));
+    g.scale(k, k);
+    g.rotate(-0.06);
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+    g.lineJoin = 'round';
+    g.lineWidth = 8;
+    g.strokeStyle = '#5a3d2b';
+    g.strokeText(s.text, 0, 0);
+    g.fillStyle = '#ffd25a';
+    g.fillText(s.text, 0, 0);
+    g.restore();
   }
 
   /** The story friend's feet (Bolt, Melody below where she floats): where the mode puts them, else next to Tapko. */
@@ -748,12 +792,11 @@ export class LevelRuntime {
     drawRobot(g, this.robot!, 'happy', x, y - Math.sin(this.endHop * Math.PI) * 24, BOLT_SIZE, this.mode.t);
   }
 
-  /** Melody floats above the friend's spot, under the mode's objects; she twirls at a word and at the end. */
+  /** Melody floats above the friend's spot, under the mode's objects; she hops at a word and at the end. */
   private drawMelody(g: G): void {
     const { x, y } = this.friendSpot();
-    const spin = this.fairySpin > 0 ? 1 - this.fairySpin / FAIRY_SPIN : 0;
-    if (this.endTime == null) return drawFairy(g, this.fairyMood, x, y - FAIRY_FLOAT, FAIRY_SIZE, this.mode.t, spin);
-    drawFairy(g, 'happy', x, y - FAIRY_FLOAT - Math.sin(this.endHop * Math.PI) * 24, FAIRY_SIZE, this.mode.t, this.endHop);
+    const hop = this.endTime == null ? (this.fairyHop > 0 ? 1 - this.fairyHop / FAIRY_HOP : 0) : this.endHop;
+    drawFairy(g, this.endTime == null ? this.fairyMood : 'happy', x, y - FAIRY_FLOAT, FAIRY_SIZE, this.mode.t, hop);
   }
 
   // ---- paw help ------------------------------------------------------------------
@@ -988,7 +1031,9 @@ export class LevelRuntime {
     if (this.moodTimer > 0 && (this.moodTimer -= dt) <= 0) renderTapkoInto(this.tapko, app.profile!.companion, 'idle');
     if (this.robotMoodT > 0 && (this.robotMoodT -= dt) <= 0) this.robotMood = 'idle';
     if (this.fairyMoodT > 0 && (this.fairyMoodT -= dt) <= 0) this.fairyMood = 'idle';
-    this.fairySpin = Math.max(0, this.fairySpin - dt);
+    this.fairyHop = Math.max(0, this.fairyHop - dt);
+    for (const s of this.shouts) s.age += dt;
+    this.shouts = this.shouts.filter((s) => s.age < SHOUT_TIME);
     const pct = Math.round(shownProgress(this.mode.progress(), this.played, this.minActive) * 100);
     if (pct !== this.progressPct) {
       this.progressPct = pct;
@@ -1022,6 +1067,7 @@ export class LevelRuntime {
     this.mode.render(g);
     this.drawLabels(g);
     this.particles.render(g);
+    for (const s of this.shouts) this.drawShout(g, s);
     this.placeBubble();
   }
 
@@ -1175,6 +1221,8 @@ export class LevelRuntime {
     // Melody thanks the child; a super-obstacle has said its own line.
     if (this.fairy && !this.def.isSuper) this.say(pickLine('fairy.done'), RESULTS_AFTER);
     else this.hideBubble();
+    // A beaten super-obstacle finishes the world: Tapko cheers, unless the mode's last cheer is still up.
+    if (this.def.isSuper && !this.shouts.length) this.hooray();
     this.moodTimer = 0;
     renderTapkoInto(this.tapko, app.profile!.companion, 'happy');
     this.tapko.classList.remove('jump');

@@ -28,9 +28,10 @@
      computer as a `.tapko` file, the yearly cleanup (7 more days for old results loaded from a
      file), CSV, the checksum, making a task, and the task from the child's side. The "?" (and F1) on the
      "For mentors" page opens this tab, since a mentor there needs exactly this.
-  6. **About TapkoTyper**: the intro, the privacy promise, data and the visit counter with its
-     live count and the open GoatCounter address (we hide nothing: anyone sees the same usage
-     data we do), how it teaches, links, the code and a bug report.
+  6. **About TapkoTyper**: the intro, the privacy promise, data and one bullet with the open
+     GoatCounter address (we hide nothing: anyone sees the same usage data we do) and the visits
+     recorded so far, how it teaches, links, the code and a bug report. Links are in the app's
+     orange, underlined only on hover.
 - The tab is part of the address (`#/p/<id>/help/<tab>`, `#/help/<tab>`), so a tab can be linked.
 - The round "?" in the map's top buttons opens it on the interface tab. The "?" on the start
   page (and on the other screens before a player is chosen) opens it on the about tab; help

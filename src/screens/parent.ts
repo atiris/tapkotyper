@@ -16,11 +16,12 @@ import { NICK_MAX, applyImport, nickname, parseImport, planImport } from '../sto
 import { KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
 import { button, confirmDialog, download, h, modal } from '../ui/dom';
 import { tapkoElement } from '../gfx/tapko';
+import { numberPick, profileCard } from '../ui/profile-card';
 import { cornerControls, starRow } from '../ui/chrome';
 import { tabBar } from '../ui/tabs';
 import { clickableHeatmap, storyPicture, summaryRow } from './stats';
 import { barChart, lineChart } from '../ui/charts';
-import { hasCompanion, masteredCount, totalStars } from '../game/rewards';
+import { hasCompanion, masteredCount } from '../game/rewards';
 import { OWN_TEXT_MAX, OWN_WORDS_MAX, parseOwnWords, typableText, untypableWords } from '../words/words';
 
 /** The parent area, once `parentAccess` let the parent in; `tab`: the tab to open. */
@@ -42,20 +43,24 @@ export function parentScreen(root: HTMLElement, params: { tab?: string }): void 
     nav, body));
 }
 
-/** The button by "Back": the child, and a card list of the other profiles to switch to without leaving the parent area. */
+/** The button by "Back": the child, and the start page's cards of the other profiles (number keys pick one) to switch to without leaving the parent area. */
 function childSwitch(p: Profile, others: Profile[], tab: () => string): HTMLElement {
   const pick = async (q: Profile) => {
     await selectProfile(q);
     go('parent', { granted: true, tab: tab() });
   };
   const b = button(h('span', { class: 'switch-label' }, tapkoElement(p.companion, 'idle', 28), h('span', {}, nickname(p))), () => {
-    const close = modal(h('div', { class: 'switch-dialog' },
+    const choose = (q: Profile) => { close(); void pick(q); };
+    const dialog = h('div', { class: 'switch-dialog' },
       h('h2', {}, t('parent.switchTitle')),
-      h('div', { class: 'switch-list' }, ...others.map((q) =>
-        h('button', { class: 'profile-card small', type: 'button', onClick: () => { close(); void pick(q); } },
-          tapkoElement(q.companion, 'idle', 64),
-          h('span', { class: 'profile-name' }, nickname(q)),
-          h('span', { class: 'profile-sub' }, t('start.stars', { n: totalStars(q) })))))), { cls: 'confirm-modal' });
+      h('div', { class: 'switch-list' }, ...others.map((q, i) => profileCard(q, i, () => choose(q)))));
+    dialog.addEventListener('keydown', (e) => {
+      const i = numberPick(e, others.length);
+      if (i === null) return;
+      e.preventDefault();
+      choose(others[i]);
+    });
+    const close = modal(dialog, { cls: 'confirm-modal' });
   }, 'btn small switch-btn');
   b.dataset.tip = t('parent.switchTitle');
   return b;
@@ -136,7 +141,7 @@ function settingsTab(p: Profile): HTMLElement {
   paintTapko();
   return h('div', { class: 'settings-grid' },
     h('fieldset', {}, h('legend', {}, t('parent.group.child')),
-      h('div', { class: 'child-summary' }, tapko, h('div', {}, field(t('parent.nickname'), nick, t('parent.nicknameHint')), nickError)),
+      h('div', { class: 'child-summary' }, tapko, h('div', { class: 'child-nick' }, field(t('parent.nickname'), nick, t('parent.nicknameHint')), nickError)),
       field(t('parent.companionKind'), kinds, undefined, 'div'),
       field(t('parent.childName'), name, t('parent.childNameHint')),
       field(t('parent.language'), select<Lang>(p.language, langs, async (v) => { p.language = v; save(); await useLanguage(v); go('parent', { granted: true }); })),

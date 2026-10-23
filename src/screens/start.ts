@@ -2,22 +2,15 @@ import { app, applyProfileLook, go, openRoute, reduceMotion, selectProfile, useL
 import { keyboardGated, onKeyboard, takeWaiting } from '../app/keyboard-gate';
 import { audio } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
-import { tapkoElement } from '../gfx/tapko';
-import { totalStars } from '../game/rewards';
 import { language, t } from '../i18n/i18n';
-import { nickname } from '../storage/store';
 import type { Lang, Profile } from '../storage/schema';
 import { KEYBOARD_ART, teacherArt, arrowFocus, button, h, icon } from '../ui/dom';
 import { cornerControls, languageControls } from '../ui/chrome';
 import { roundButton } from '../ui/hud';
+import { numberPick, profileCard } from '../ui/profile-card';
 import { MAX_PER_ROW, rowSplit } from '../ui/rows';
 import { listenForSuperPassword, superProfile } from '../app/super';
 import { COUNTER, visitCount } from './help';
-
-/** Players picked by the number keys. */
-const NUMBERED = 9;
-/** Each number badge leans by its own fixed angle, so the row looks placed by hand. */
-const NUM_TILT = [-12, 8, -5, 14, -9, 6, -14, 10, -7];
 
 export function startScreen(root: HTMLElement): () => void {
   app.profile = null;
@@ -42,18 +35,7 @@ export function startScreen(root: HTMLElement): () => void {
     await selectProfile(p);
     go('map');
   };
-  const cards = players.map((p, i) =>
-    h('button', {
-      class: 'profile-card', type: 'button', onClick: () => void play(p),
-      'aria-label': i < NUMBERED ? `${i + 1}: ${nickname(p)}` : null,
-      tip: i < NUMBERED ? t('start.pickByNumber', { n: i + 1 }) : null,
-    },
-      i < NUMBERED ? h('span', { class: 'profile-num', 'aria-hidden': 'true', style: `--tilt: ${NUM_TILT[i]}deg` }, String(i + 1)) : null,
-      tapkoElement(p.companion, 'idle', 96),
-      h('span', { class: 'profile-name' }, nickname(p)),
-      // Siblings recognize their own tile by the real name under the nickname.
-      p.name && p.name !== nickname(p) ? h('span', { class: 'profile-real' }, p.name) : null,
-      h('span', { class: 'profile-sub' }, t('start.stars', { n: totalStars(p) }))));
+  const cards = players.map((p, i) => profileCard(p, i, () => void play(p)));
   // Up to four profiles the new player is one more card; with more, or when the card would start a row of its own, it is a button by the incognito button.
   const newCard = players.length < MAX_PER_ROW
     ? h('button', { class: 'profile-card new', type: 'button', onClick: () => go('newProfile') },
@@ -127,14 +109,11 @@ export function startScreen(root: HTMLElement): () => void {
  */
 function pickByNumber(count: number, pick: (i: number) => void): () => void {
   const onKey = (e: KeyboardEvent) => {
-    if (e.ctrlKey || e.altKey || e.metaKey || e.target instanceof HTMLInputElement || document.querySelector('.modal-back')) return;
-    const digit = /^(?:Digit|Numpad)([1-9])$/.exec(e.code);
-    if (!digit) return;
-    const i = Number(digit[1]) - 1;
-    if (i < count && i < NUMBERED) {
-      e.preventDefault();
-      pick(i);
-    }
+    if (e.target instanceof HTMLInputElement || document.querySelector('.modal-back')) return;
+    const i = numberPick(e, count);
+    if (i === null) return;
+    e.preventDefault();
+    pick(i);
   };
   window.addEventListener('keydown', onKey);
   return () => window.removeEventListener('keydown', onKey);

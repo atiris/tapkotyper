@@ -1223,8 +1223,9 @@
       "Keďže všetko je len na vašom počítači, nevieme vám zistiť zabudnuté heslo k nastaveniam ani vaše nastavenia a pokrok, keď sa vám počítač pokazí. Preto si pokrok občas exportujte do súboru.",
       "Počítame len anonymné návštevy, bez cookies a bez akýchkoľvek údajov o používateľoch (samozrejme nezapočítame nič, ak to používate offline). Počíta ich služba GoatCounter, ktorá nepoužíva cookies ani nezbiera osobné údaje."
     ],
-    "visits": "Počet návštev tejto stránky doteraz: {n}",
-    "visitsLink": "Štatistiky na GoatCounter",
+    "visitsOne": "Doteraz sme zaznamenali {n} návštevu.",
+    "visitsFew": "Doteraz sme zaznamenali {n} návštevy.",
+    "visitsMany": "Doteraz sme zaznamenali {n} návštev.",
     "howTitle": "Ako učí",
     "how": [
       "Klávesy sa učia postupne, od základného radu (F a J).",

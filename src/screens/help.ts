@@ -72,22 +72,25 @@ export async function visitCount(): Promise<string | null> {
   }
 }
 
-/** Fills `line` with the visit count; stays empty when offline. */
-async function showVisits(line: HTMLElement): Promise<void> {
-  const count = await visitCount();
-  if (count !== null) line.replaceChildren(t('about.visits', { n: count }), ' ', h('a', { href: COUNTER, target: '_blank', rel: 'noopener' }, t('about.visitsLink')));
+/** The open-data bullet; the visit count joins it once the counter answers (not offline). */
+function openData(): HTMLElement {
+  const visits = h('span', {});
+  void visitCount().then((count) => {
+    if (count === null) return;
+    const n = Number(count.replace(/\D/g, ''));
+    visits.textContent = ` ${t(n === 1 ? 'about.visitsOne' : n > 1 && n < 5 ? 'about.visitsFew' : 'about.visitsMany', { n: count })}`;
+  });
+  return h('li', {}, t('about.open'), ' ', h('a', { href: `${COUNTER}/`, target: '_blank', rel: 'noopener' }, `${COUNTER}/`), '.', visits);
 }
 
 /** About the game and the privacy promise, for parents. */
 function aboutTab(): HTMLElement[] {
-  const visits = h('p', { class: 'hint' });
-  void showVisits(visits);
+  const data = list('about.data');
+  data.append(openData());
   return [
     h('p', {}, ...richText(t('about.intro'))),
     section(t('about.privacyTitle'), list('about.privacy')),
-    section(t('about.dataTitle'), list('about.data'),
-      h('p', {}, t('about.open'), ' ', h('a', { href: `${COUNTER}/`, target: '_blank', rel: 'noopener' }, `${COUNTER}/`), '.'),
-      visits),
+    section(t('about.dataTitle'), data),
     section(t('about.howTitle'), list('about.how')),
     section(t('about.creditsTitle'), h('p', {}, t('about.credits')),
       h('div', { class: 'row about-actions' },

@@ -596,14 +596,14 @@ export class LevelRuntime {
   }
 
   /**
-   * Every key of the layout counts as a correct press, so free typing never lowers accuracy;
-   * keys the layout does not type are ignored.
+   * Every key of the layout counts as a correct free press, so free typing never lowers accuracy
+   * nor makes a key ready; keys the layout does not type are ignored.
    */
   private freeChar(c: TypedChar, mode: FreeTypeMode): void {
     if (!this.freeOpen || !stepsFor(layout(), c.ch).length) return;
     this.deadPending = false;
-    const { rt, repeat } = this.rhythm.press(c.ch, c.time);
-    recordPress(app.profile!, c.ch, c.ch, rt, repeat);
+    this.rhythm.press(c.ch, c.time);
+    recordPress(app.profile!, c.ch, c.ch, 0, false, true);
     this.chars++;
     this.sfx('key');
     mode.key(c.ch);

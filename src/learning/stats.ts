@@ -18,9 +18,10 @@ export function localDate(d = new Date()): string {
 /**
  * Records one key press against the expected character; a capital also counts for its Shift.
  * A `repeat` (the same key as the correct press before it) is no move between keys, so its
- * time stays out of the day's reaction time.
+ * time stays out of the day's reaction time. A `free` press (free typing, no task) only counts
+ * as pressed: it stays out of the recent window, so it never makes a key ready or mastered.
  */
-export function recordPress(profile: Profile, expected: string, typed: string, reactionMs: number, repeat = false): void {
+export function recordPress(profile: Profile, expected: string, typed: string, reactionMs: number, repeat = false, free = false): void {
   const shift = shiftKeyOf(LAYOUTS[profile.layout], expected);
   const keys = shift ? [expected.toLowerCase(), shift] : [expected];
   const ok = typed === expected;
@@ -34,8 +35,10 @@ export function recordPress(profile: Profile, expected: string, typed: string, r
       s.recentWrong.push(typed);
       if (s.recentWrong.length > RECENT_WRONG_KEEP) s.recentWrong.splice(0, s.recentWrong.length - RECENT_WRONG_KEEP);
     }
-    s.recent.push(ok ? rt : 0);
-    if (s.recent.length > RECENT_KEEP) s.recent.splice(0, s.recent.length - RECENT_KEEP);
+    if (!free) {
+      s.recent.push(ok ? rt : 0);
+      if (s.recent.length > RECENT_KEEP) s.recent.splice(0, s.recent.length - RECENT_KEEP);
+    }
     let day = s.days[s.days.length - 1];
     if (!day || day.date !== date) {
       day = { date, presses: 0, errors: 0, rtSum: 0, rtCount: 0 };
@@ -44,7 +47,7 @@ export function recordPress(profile: Profile, expected: string, typed: string, r
     }
     day.presses++;
     if (!ok) day.errors++;
-    else if (!repeat) {
+    else if (!repeat && !free) {
       day.rtSum += rt;
       day.rtCount++;
     }

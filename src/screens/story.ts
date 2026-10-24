@@ -120,7 +120,7 @@ export function storyScreen(root: HTMLElement, params: StoryParams): () => void 
   const screen = h('div', { class: `screen story-screen world-${def.world}`, style: bg ? `--bg:url("${bg}")` : '' },
     cornerControls(),
     stage,
-    h('div', { class: 'story-box' }, text, dots, h('div', { class: 'row' }, button(t('common.skip'), finish, 'btn ghost small'), nextBtn)));
+    h('div', { class: 'story-box' }, text, dots, h('div', { class: 'row' }, button(t('common.skip'), finish), nextBtn)));
   root.append(screen);
   const onKey = (e: KeyboardEvent) => {
     if (e.key === 'Escape') { e.preventDefault(); finish(); }

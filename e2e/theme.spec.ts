@@ -100,18 +100,20 @@ test('the phone without a keyboard fits in both looks', async ({ browser }) => {
   }
 });
 
-test('MIT · Atiris stays white on the meadow, on hover and focus, in both looks', async ({ page }) => {
+test('MIT · Atiris is white on the meadow and lights up on hover and focus, never underlined', async ({ page }) => {
   await page.goto('./');
-  for (const theme of ['light', 'dark'] as const) {
+  for (const [theme, lit] of [['light', 'rgb(255, 255, 255)'], ['dark', 'rgb(255, 246, 204)']] as const) {
     await seed(page, 1, theme);
     const sig = page.locator('.start-sig');
     await expect(sig).toHaveText('MIT · Atiris');
     await expect(sig).toHaveCSS('color', 'rgb(255, 255, 255)');
     await sig.hover();
-    await expect(sig).toHaveCSS('color', 'rgb(255, 255, 255)');
+    await expect(sig).toHaveCSS('color', lit);
     await expect(sig).toHaveCSS('opacity', '1');
+    await expect(sig).toHaveCSS('text-decoration-line', 'none');
+    await page.mouse.move(1, 1);
     await sig.focus();
-    await expect(sig).toHaveCSS('color', 'rgb(255, 255, 255)');
+    await expect(sig).toHaveCSS('color', lit);
   }
 });
 

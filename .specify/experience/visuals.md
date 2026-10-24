@@ -26,9 +26,11 @@
   far right, the update button). The wardrobe's time stays teal.
   The rhythm is a picture, not a button. The help page shows these same buttons.
 - Orange buttons, chips and group headers carry the fox logo's dark outline color with a soft
-  white shine, like its eyes: white on the orange is too faint to read (WCAG AA). The big orange
-  buttons behave like keys: on hover they rise and show more edge over a wider, softer shadow,
-  pressed they sink into their base, which never moves; with reduced motion they do not move.
+  white shine, like its eyes: white on the orange is too faint to read (WCAG AA). Every raised
+  button (orange or not) behaves like a key: on hover it rises and shows more edge over a wider,
+  softer shadow, pressed it sinks into its base, which never moves; with reduced motion it does
+  not move. Flat (outlined) buttons are only for tight places such as Back at the top left; a
+  second choice beside the main one (Skip beside Next) is the same raised button, only not orange.
 - The level's top bar, left to right: pause, paw, title block, progress bar, rhythm, a divider,
   help, keyboard, read aloud, sound, fullscreen. The title block is the world's name as a word
   with one dot per level (done, this one, to come, a web for the super obstacle); no level
@@ -64,7 +66,8 @@
   cards in a row (balanced rows from six, never one card alone), with the dashed "Nový hráč" card
   while there are one to three; from four it is a button beside the other two. No footer:
   "MIT · Atiris" (the code's licence and author) sits small and white at the bottom right of the
-  meadow and stays white on hover and focus. The about and teacher ways in are round buttons at
+  meadow, never underlined: by day it brightens to full white on hover and focus; on the night
+  meadow it is a little quieter and lights up yellow-white. The about and teacher ways in are round buttons at
   the top right, so they stay reachable with any number of players.
 - A phone without a keyboard: the logo face above the title, the slogan, a short text, then the
   mentors' button as the main orange one and the keyboard button under it.

@@ -2792,7 +2792,8 @@
         "hit": [
           "Lienka mi priniesla šťastie!",
           "Bodka v strede!",
-          "Lienka, lienka, kam letíš?"
+          "Lienka, lienka, kam letíš?",
+          "Bude dneska krásne?"
         ]
       },
       "rocket": {
@@ -2839,11 +2840,12 @@
         ],
         "hit": [
           "Chrlím oheň ako drak!",
-          "Vody, rýchlo vody!",
+          "Vodu, rýchlo vodu!",
           "To páli až v ušiach!"
         ],
         "expect": [
-          "Len nič pálivé!"
+          "Nebude to pálivé?",
+          "Dúfam, že je to sladká paprika."
         ]
       },
       "nest": {
@@ -2866,7 +2868,7 @@
         "name": "Pružina",
         "launch": [
           "Pružina letí!",
-          "Boing, leť!",
+          "Leť pružne a presne!",
           "Hádžem pružinu!"
         ],
         "sound": [
@@ -2947,7 +2949,8 @@
         "launch": [
           "Kvietok pre teba!",
           "Hádžem kvietok!",
-          "Leť, kvietok!"
+          "Leť, kvietok!",
+          "K tvojmu sviatku."
         ],
         "sound": [
           "Šuch!"
@@ -2990,7 +2993,8 @@
         "hit": [
           "Glg-glg, kde je voda?",
           "Fuj, šupiny!",
-          "Tá je ale čerstvá!"
+          "Tá je ale čerstvá!",
+          "Pýta sa ma, kde je Nemo."
         ]
       },
       "bird": {
@@ -2998,15 +3002,18 @@
         "launch": [
           "Leť, vtáčik!",
           "Púšťam vtáčika!",
-          "Čvirik, k terču!"
+          "Preleť kruhy, vrabček!"
         ],
         "sound": [
           "Čvirik!"
         ],
         "hit": [
-          "Čvirik! Postavím si tu hniezdo!",
+          "Postavím si tu hniezdo!",
           "Spievaš mi z duše!",
-          "Vtáčik v strede!"
+          "Pristál priamo v strede!"
+        ],
+        "expect": [
+          "Je to holub s poštou?"
         ]
       },
       "crown": {
@@ -3021,8 +3028,9 @@
         ],
         "hit": [
           "Som kráľ plesu!",
-          "Zatancujeme si?",
-          "Vaše veličenstvo, zásah!"
+          "Korunovali ma!",
+          "Vaše veličenstvo, zásah!",
+          "Si kráľ presnosti!"
         ]
       }
     },

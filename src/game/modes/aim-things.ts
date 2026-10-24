@@ -115,7 +115,7 @@ export const THINGS: Thing[] = [
   { id: 'flower', pics: ['obj-flower-open'], story: 2, world: 10, sfx: 'whoosh', effect: 'stick', hold: 2, expect: 0.4, eyes: 'happy' },
   { id: 'pinecone', pics: ['obj-aim-pinecone'], story: 2, world: 11, sfx: 'pop', effect: 'bounce' },
   { id: 'fish', pics: ['obj-aim-fish'], story: 2, world: 12, sfx: 'plop', effect: 'hop', burst: 'splash', spin: 'none' },
-  { id: 'bird', pics: ['obj-bird'], story: 2, world: 13, sfx: 'note', effect: 'top', hold: 1.5, leave: 'fly', spin: 'none' },
+  { id: 'bird', pics: ['obj-bird'], story: 2, world: 13, sfx: 'note', effect: 'top', hold: 1.5, leave: 'fly', spin: 'none', expect: 0.4, eyes: 'wide' },
   { id: 'crown', pics: ['obj-aim-crown'], story: 2, world: 14, sfx: 'note', effect: 'top', hold: 2, burst: 'sparkle', spin: 'none' },
 ];
 

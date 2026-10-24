@@ -2777,7 +2777,8 @@
         "hit": [
           "A ladybug, that's lucky!",
           "Spot on, just like her spots!",
-          "Ladybug, ladybug, fly away home!"
+          "Ladybug, ladybug, fly away home!",
+          "Will it be a lovely day today?"
         ]
       },
       "rocket": {
@@ -2827,7 +2828,8 @@
           "My ears are on fire!"
         ],
         "expect": [
-          "Nothing spicy, please!"
+          "Is it going to be spicy?",
+          "I hope it's a sweet pepper."
         ]
       },
       "nest": {
@@ -2849,7 +2851,7 @@
         "name": "Spring",
         "launch": [
           "Spring away!",
-          "Boing, go!"
+          "Fly bouncy and true!"
         ],
         "sound": [
           "Boing!"
@@ -2926,7 +2928,8 @@
         "name": "Flower",
         "launch": [
           "A flower for you!",
-          "Flower away!"
+          "Flower away!",
+          "For your name day."
         ],
         "sound": [
           "Swish!"
@@ -2968,7 +2971,8 @@
         "hit": [
           "Glub glub, where's the water?",
           "Ew, scales!",
-          "Something smells fishy!"
+          "Something smells fishy!",
+          "It's asking me where Nemo is."
         ]
       },
       "bird": {
@@ -2976,15 +2980,18 @@
         "launch": [
           "Fly, birdie!",
           "Off you go, little bird!",
-          "Tweet, to the target!"
+          "Through the rings, little sparrow!"
         ],
         "sound": [
           "Tweet!"
         ],
         "hit": [
-          "Tweet! I'll build my nest here!",
+          "I'll build my nest here!",
           "You're music to my ears!",
-          "A bird in the middle!"
+          "Landed right in the middle!"
+        ],
+        "expect": [
+          "Is that a carrier pigeon?"
         ]
       },
       "crown": {
@@ -2998,8 +3005,9 @@
         ],
         "hit": [
           "I'm the king of the ball!",
-          "Shall we dance?",
-          "Your Majesty, a hit!"
+          "I've been crowned!",
+          "Your Majesty, a hit!",
+          "You're the king of accuracy!"
         ]
       }
     },

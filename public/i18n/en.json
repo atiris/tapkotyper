@@ -2017,7 +2017,9 @@
           "Screwed in tight!",
           "That's holding firm!",
           "Who's drilling here?",
-          "Now I've got a screw loose!"
+          "Finally, my screw!",
+          "Send the rest of the cupboard!",
+          "A screwdriver too, please."
         ]
       },
       "fly": {
@@ -2026,7 +2028,8 @@
           "Fly, forward!",
           "Fly incoming!",
           "Catch the fly!",
-          "Buzz off!"
+          "Buzz off!",
+          "Fly, little fly!"
         ],
         "sound": [
           "Bzzz!"
@@ -2035,7 +2038,8 @@
           "What am I, flypaper?",
           "Ew, bugs!",
           "There's a buzz in my ear!",
-          "Hey, get off my nose!"
+          "Hey, get off my nose!",
+          "Didn't taste good."
         ]
       },
       "tomato": {
@@ -2044,7 +2048,7 @@
           "Tomato away!",
           "Incoming tomato!",
           "Look out, tomato!",
-          "Red rocket!"
+          "Tomato missile!"
         ],
         "sound": [
           "Splat!"
@@ -2053,7 +2057,8 @@
           "100% ketchup!",
           "Ketchup!",
           "Now that's saucy!",
-          "Am I a pizza now?"
+          "I'm a pizza target!",
+          "Pizza margherita!"
         ]
       },
       "arrow": {
@@ -2095,7 +2100,8 @@
         "launch": [
           "Sock away!",
           "Incoming sock!",
-          "Smell ya later!"
+          "Smell ya later!",
+          "Stinky sock!"
         ],
         "sound": [
           "Flop!"
@@ -2104,7 +2110,8 @@
           "Ew, it stinks!",
           "Where's the other one?",
           "Did the washing machine eat its twin?",
-          "Who wore this for a week?"
+          "Who wore this for a week?",
+          "Lucky it was no underpants."
         ]
       },
       "planet": {
@@ -2113,7 +2120,9 @@
           "Planet away!",
           "Throwing a whole planet!",
           "To space and back!",
-          "Big Bang incoming!"
+          "Jupiter!",
+          "Saturn, fly!",
+          "Neptune sets off!"
         ],
         "sound": [
           "Boom!"
@@ -2122,7 +2131,8 @@
           "I got hit by a planet!",
           "I'm seeing stars!",
           "Gravity works!",
-          "Am I a moon now?"
+          "Am I a moon now?",
+          "Big Bang!"
         ]
       },
       "egg": {

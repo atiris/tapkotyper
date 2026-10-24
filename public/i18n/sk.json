@@ -2017,7 +2017,9 @@
           "Zaskrutkované!",
           "Drží to pevne!",
           "Kto mi tu vŕta?",
-          "Konečne mi nechýba skrutka!"
+          "Konečne mám skrutku!",
+          "Pošli zvyšok skrinky!",
+          "Ešte skrutkovač, prosím."
         ]
       },
       "fly": {
@@ -2027,7 +2029,8 @@
           "Hádžem muchu!",
           "Mucha!",
           "Letí mucha!",
-          "Chyť mušku!"
+          "Chyť mušku!",
+          "Leť, muška!"
         ],
         "sound": [
           "Bzzz!"
@@ -2036,7 +2039,8 @@
           "Čo som, mucholapka?",
           "Brrr, hmyz!",
           "Bzučí mi v uchu!",
-          "Nelez mi po nose!"
+          "Nelez mi po nose!",
+          "Nechutila mi."
         ]
       },
       "tomato": {
@@ -2045,7 +2049,7 @@
           "Paradajka letí!",
           "Hádžem paradajku!",
           "Pozor, paradajka!",
-          "Červená strela!"
+          "Paradajková strela!"
         ],
         "sound": [
           "Pľac!"
@@ -2054,7 +2058,8 @@
           "100-percentný kečup!",
           "Kečup!",
           "Tak toto je omáčka!",
-          "Som pizza?"
+          "Som pizza terč!",
+          "Pizza margherita!"
         ]
       },
       "arrow": {
@@ -2097,7 +2102,8 @@
           "Ponožka letí!",
           "Hádžem ponožku!",
           "Pozor, ponožka!",
-          "Voňavka letí!"
+          "Voňavka letí!",
+          "Smradľavá ponožka!"
         ],
         "sound": [
           "Plesk!"
@@ -2106,7 +2112,8 @@
           "Fuj, smrdí!",
           "Druhá zostala v práčke?",
           "Kto ju nosil týždeň?",
-          "Kde je jej dvojička?"
+          "Kde je jej dvojička?",
+          "Ešte že to neboli trenky."
         ]
       },
       "planet": {
@@ -2115,7 +2122,9 @@
           "Planéta letí!",
           "Hádžem planétu!",
           "Do vesmíru a späť!",
-          "Veľký tresk!"
+          "Jupiter!",
+          "Saturn, leť!",
+          "Neptún vyráža!"
         ],
         "sound": [
           "Bum!"
@@ -2124,7 +2133,8 @@
           "Trafila ma planéta!",
           "Vidím hviezdičky!",
           "Gravitácia funguje!",
-          "Som teraz mesiac?"
+          "Som teraz mesiac?",
+          "Veľký tresk!"
         ]
       },
       "egg": {

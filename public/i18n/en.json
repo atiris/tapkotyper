@@ -1308,7 +1308,9 @@
       "super": "The star at the top: super mode. Click it to turn it off.",
       "read": "Read aloud: the computer reads the words to you. **F3** turns it on or off.",
       "guide": "Shows or hides the keyboard that tells where the finger goes. **F2** does it too.",
-      "menu": "On a small screen these buttons hide under one Menu button."
+      "menu": "On a small screen these buttons hide under one Menu button.",
+      "theme": "Dark or light mode for the whole game. The moon turns it on, the sun brings the light back. Until someone switches it, it follows the device.",
+      "language": "The game's language, on the start page. Opens the list of languages."
     },
     "cardTitle": "Your card on the map",
     "card": [

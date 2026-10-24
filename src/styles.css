@@ -396,6 +396,7 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
   .start-wrap { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'top' 'card' 'more'; justify-items: center; text-align: center; row-gap: 16px; }
   .start-top, .start-more { width: min(640px, 100%); align-items: center; }
   .start-more { margin-top: 8px; }
+  .start-wrap { padding-bottom: calc(var(--meadow-h) * 0.75); }
   .start-card { min-width: min(600px, 100%); }
   .start-promises { text-align: left; }
 }
@@ -415,9 +416,9 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
 .sky-day { background: linear-gradient(180deg, #c9ecfa 0%, #e9f8ef 55%, #d7f0c8 100%); }
 .sky-night { background: linear-gradient(180deg, #171631 0%, #23213e 55%, #1e2830 100%); }
 .meadow { position: absolute; left: 0; right: 0; bottom: 0; height: var(--meadow-h); background-repeat: repeat-x; background-position: left bottom; background-size: calc(var(--meadow-h) * 922 / 392) 100%; filter: blur(0.6px); }
-.sky-night, .meadow-night { opacity: 0; transition: opacity 1.6s ease 0.4s; }
+.sky-night, .meadow-night { opacity: 0; transition: opacity 0.8s ease; }
 .start-sky[data-look='dark'] .sky-night, .start-sky[data-look='dark'] .meadow-night { opacity: 1; }
-.sky-band { position: absolute; overflow: hidden; }
+.sky-band { position: absolute; overflow: hidden; -webkit-mask-image: linear-gradient(to top, transparent, #000 28px); mask-image: linear-gradient(to top, transparent, #000 28px); }
 .sky-piece { position: absolute; display: block; }
 .sky-piece > img { display: block; width: 100%; }
 .sky-sun > img { filter: blur(4px); }
@@ -918,7 +919,6 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .confirm-modal { width: min(520px, 100%); }
 .kbd { display: inline-grid; place-items: center; min-width: 1.8em; padding: 0 0.3em; font-family: var(--font-keys); border-radius: 8px; background: var(--surface); box-shadow: inset 0 -3px 0 var(--brand); }
 .adult-check { text-align: center; }
-.number-words { font-size: 1.6rem; font-weight: 700; color: var(--brand-ink); }
 
 /* Story */
 .story-screen { background: var(--bg, linear-gradient(#a8dcf0, #e9f8ef)) center / cover no-repeat; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 2rem; overflow: hidden; }
@@ -1213,8 +1213,23 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-ink); }
 body.reduce-motion .tip { transform: none; }
 @media (prefers-reduced-motion: reduce) { .tip { transform: none; } }
 
-/* A theme switch fades the colors of the page (the start page's sky has its own change). */
-html.theme-fade *:not(.start-sky, .start-sky *) { transition: background-color 0.8s ease, color 0.8s ease, border-color 0.8s ease, box-shadow 0.8s ease, fill 0.8s ease, stroke 0.8s ease !important; }
+/*
+ * A theme switch fades the surfaces in 0.8 s and switches the text at the midpoint, when every
+ * background is half way, so text never fades into a background fading toward it. The start
+ * page's sky and meadow fade on the same time (their own pieces play the longer change).
+ */
+html.theme-fade *:not(.start-sky, .start-sky *) { transition: background-color 0.8s ease, border-color 0.8s ease, box-shadow 0.8s ease, fill 0.8s ease, stroke 0.8s ease !important; }
+/* The text colors are registered, so <html> alone holds them and every text inherits one switch. */
+@property --ink { syntax: '<color>'; inherits: true; initial-value: #3b2a3f; }
+@property --ink-soft { syntax: '<color>'; inherits: true; initial-value: #6b5a70; }
+@property --brand-ink { syntax: '<color>'; inherits: true; initial-value: #e56a1b; }
+@property --green-ink { syntax: '<color>'; inherits: true; initial-value: #3f8f5c; }
+@property --danger-ink { syntax: '<color>'; inherits: true; initial-value: #d9534f; }
+@property --orange-ink { syntax: '<color>'; inherits: true; initial-value: #8a4a12; }
+@property --red-ink { syntax: '<color>'; inherits: true; initial-value: #9b2c28; }
+@property --gold-ink { syntax: '<color>'; inherits: true; initial-value: #7a4b00; }
+@property --tip-ink { syntax: '<color>'; inherits: true; initial-value: #fff; }
+html.theme-fade { transition: --ink 0s linear 0.4s, --ink-soft 0s linear 0.4s, --brand-ink 0s linear 0.4s, --green-ink 0s linear 0.4s, --danger-ink 0s linear 0.4s, --orange-ink 0s linear 0.4s, --red-ink 0s linear 0.4s, --gold-ink 0s linear 0.4s, --tip-ink 0s linear 0.4s; }
 
 /* Reduce motion */
 body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after { animation-duration: 0.001s !important; animation-iteration-count: 1 !important; transition-duration: 0.001s !important; }
@@ -1315,7 +1330,6 @@ body.reduce-motion .round-btn.timer.ending { --rb: #d9661f; --rb-ring: #ff8a3d; 
 .sort-chips .chip { flex: none; display: inline-flex; align-items: center; gap: 0.2rem; min-height: 44px; background: var(--paper-2); }
 .sort-chips .chip.on { background: var(--brand); }
 .teacher-list { display: none; flex-direction: column; gap: 0.5rem; margin: 1rem 0; }
-.list-group { margin: 0.6rem 0 0; font-size: 1rem; color: var(--brand-ink); }
 .list-task { margin: 0.3rem 0 0; font-size: 0.95rem; color: var(--ink-soft); }
 .child-row { display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.75rem 0.9rem; border: 0; border-radius: 16px; background: var(--surface); box-shadow: 0 0 0 1px var(--line); font: inherit; color: var(--ink); text-align: left; cursor: pointer; }
 .child-row.broken { color: var(--danger-ink); }

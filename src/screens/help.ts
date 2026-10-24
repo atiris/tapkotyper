@@ -12,7 +12,7 @@ export type HelpTab = (typeof TABS)[number];
 /** The parent's settings tabs, in the order of the settings screen; each gets its own lines. */
 const SETTINGS_TABS = ['settings', 'own', 'surprises', 'task', 'keys', 'dashboard', 'data'] as const;
 
-export const COUNTER = 'https://tapkotyper.goatcounter.com';
+const COUNTER = 'https://tapkotyper.goatcounter.com';
 
 /** A top icon as the child sees it (a picture, not a working button) with its one line. */
 function iconLine(pic: HTMLElement, text: string): HTMLElement {
@@ -29,7 +29,9 @@ function mapIcons(): HTMLElement[] {
     iconLine(round('gear'), t('help.icons.settings')),
     iconLine(round('sound'), t('help.icons.sound')),
     iconLine(round('fullscreen'), t('help.icons.fullscreen')),
+    iconLine(round('moon'), t('help.icons.theme')),
     iconLine(round('help'), t('help.icons.help')),
+    iconLine(round('language'), t('help.icons.language')),
     iconLine(roundPic('update', 'update'), t('help.icons.update')),
     iconLine(round('menu'), t('help.icons.menu')),
     iconLine(timerPic(150).el, t('help.icons.timer')),
@@ -63,7 +65,7 @@ function section(title: string, ...kids: Child[]): HTMLElement {
 const list = (key: string) => h('ul', {}, ...tList(key).map((l) => h('li', {}, ...richText(l))));
 
 /** The visit count the public counter reports; null when offline or blocked. */
-export async function visitCount(): Promise<string | null> {
+async function visitCount(): Promise<string | null> {
   try {
     const r = await fetch(`${COUNTER}/counter/TOTAL.json`);
     const { count } = await r.json();

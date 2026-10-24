@@ -27,8 +27,10 @@ export function startScreen(root: HTMLElement): () => void {
     app.store.data.language = l;
     app.store.save();
     await useLanguage(l);
-    // Re-render only if the child is still here (the file may load slowly).
-    if (root.dataset.screen === 'start') go('start');
+    // Re-render only if the child is still here (the file may load slowly); the focus goes back to the language.
+    if (root.dataset.screen !== 'start') return;
+    go('start');
+    [...root.querySelectorAll<HTMLElement>('.top-right .lang-btn, .top-right .menu-btn')].find((e) => e.offsetParent)?.focus();
   });
   const gated = keyboardGated();
 

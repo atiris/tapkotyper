@@ -1308,7 +1308,9 @@
       "super": "Hviezda hore: super režim. Kliknutím ho vypneš.",
       "read": "Čítanie nahlas: počítač ti slová prečíta. **F3** ho zapne alebo vypne.",
       "guide": "Ukáže alebo skryje klávesnicu, ktorá radí, kam ide prst. Rovnako **F2**.",
-      "menu": "Na malej obrazovke sú tieto tlačidlá schované pod jedným tlačidlom Menu."
+      "menu": "Na malej obrazovke sú tieto tlačidlá schované pod jedným tlačidlom Menu.",
+      "theme": "Tmavý alebo svetlý režim pre celú hru. Mesiac ho zapne, slnko vráti svetlý. Kým ho nikto neprepne, riadi sa nastavením zariadenia.",
+      "language": "Jazyk hry, na úvodnej stránke. Otvorí zoznam jazykov."
     },
     "cardTitle": "Tvoja karta na mape",
     "card": [

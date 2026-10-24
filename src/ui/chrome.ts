@@ -10,7 +10,7 @@ import { type Child, ICONS, h, icon } from './dom';
 import { paintRound, roundButton } from './hud';
 import { cornerMenu } from './menu';
 import { toast } from './toast';
-import { tip } from './tooltip';
+import { hideTip, tip } from './tooltip';
 import { updateButton } from './update';
 
 /** Super mode is on: a round star in the top row; clicking it ends the mode. Nothing otherwise. */
@@ -130,38 +130,47 @@ export function globalButtons(help: HTMLButtonElement = helpButton(), theme: HTM
 export function themeButton(): HTMLButtonElement {
   const b = roundButton('control', 'moon', '', toggleTheme);
   b.classList.add('theme-btn');
-  const paint = () => {
-    const dark = shownLook() === 'dark';
-    const label = t(dark ? 'common.lightMode' : 'common.darkMode');
-    b.setAttribute('aria-label', label);
-    tip(b, label);
-    paintRound(b, dark ? 'sun' : 'moon');
-  };
-  paint();
-  const off = onThemeChange(() => (b.isConnected ? paint() : off()));
+  paintTheme(b);
   return b;
 }
 
-/** The language: the language symbol; a click opens the list of the languages by their own names. */
+function paintTheme(b: HTMLButtonElement): void {
+  const dark = shownLook() === 'dark';
+  const label = t(dark ? 'common.lightMode' : 'common.darkMode');
+  b.setAttribute('aria-label', label);
+  tip(b, label);
+  paintRound(b, dark ? 'sun' : 'moon');
+}
+
+// One listener for every theme button on the page, so leaving a screen leaves nothing behind.
+onThemeChange(() => document.querySelectorAll<HTMLButtonElement>('.theme-btn').forEach(paintTheme));
+
+/** The language: the language symbol; a click opens the list of the languages by their own names, a second click closes it. */
 export function languageButton(pick: (l: Lang) => void): HTMLButtonElement {
-  const b: HTMLButtonElement = roundButton('control', 'language', t('start.langNow', { name: LANGUAGES[language()] }), () => languageList(b, pick));
+  const b: HTMLButtonElement = roundButton('control', 'language', t('start.langNow', { name: LANGUAGES[language()] }), () => (closeLanguages && document.querySelector('.lang-list') ? closeLanguages() : languageList(b, pick)));
   b.classList.add('lang-btn');
   b.setAttribute('aria-haspopup', 'listbox');
   b.setAttribute('aria-expanded', 'false');
   return b;
 }
 
+/** Closes the open language list; null while none is open. */
+let closeLanguages: (() => void) | null = null;
+
 /**
- * The list under the corner controls, the current language marked. The arrows move, Enter picks,
- * Escape or a click outside closes; focus returns to the button (or to the Menu it was opened from).
+ * The list under the language button (under the corner controls when the button sits in the
+ * Menu), the current language marked. The arrows move, Enter picks, Escape, a click outside or
+ * Tab away closes; focus returns to the button (or to the Menu it was opened from).
  */
 function languageList(b: HTMLButtonElement, pick: (l: Lang) => void): void {
-  if (document.querySelector('.lang-list')) return;
+  const corner = b.closest<HTMLElement>('.top-right')!;
   const now = language();
   const items = LANGS.map((l) => h('button', { class: 'lang-item', type: 'button', role: 'option', lang: l, 'aria-selected': String(l === now), onClick: () => { close(); if (l !== now) pick(l); } },
     h('span', {}, LANGUAGES[l]), l === now ? icon('check') : null));
   const list = h('div', { class: 'lang-list', role: 'listbox', 'aria-label': t('start.language') }, ...items);
   const onKey = (e: KeyboardEvent) => {
+    // The screen went away with the list in it.
+    if (!list.isConnected) return close(false);
     if (e.key === 'Escape') {
       e.preventDefault();
       e.stopPropagation();
@@ -172,18 +181,32 @@ function languageList(b: HTMLButtonElement, pick: (l: Lang) => void): void {
       items[(i + (e.key === 'ArrowDown' ? 1 : items.length - 1)) % items.length].focus();
     }
   };
+  // The button's own click toggles the list, so a press on it is not "outside".
   const onPointer = (e: PointerEvent) => {
-    if (!list.contains(e.target as Node)) close();
+    if (!list.contains(e.target as Node) && !b.contains(e.target as Node)) close(false);
   };
-  function close(): void {
+  const onFocusOut = (e: FocusEvent) => {
+    const to = e.relatedTarget as Node | null;
+    if (list.isConnected && !list.contains(to) && !b.contains(to)) close(false);
+  };
+  let closed = false;
+  function close(refocus = true): void {
+    // Removing the focused list fires its focusout, which closes again.
+    if (closed) return;
+    closed = true;
+    if (closeLanguages === close) closeLanguages = null;
     list.remove();
     document.removeEventListener('keydown', onKey, true);
     document.removeEventListener('pointerdown', onPointer, true);
     b.setAttribute('aria-expanded', 'false');
     // Below 600 px the button itself is hidden in the Menu.
-    (b.offsetParent ? b : b.closest('.top-right')?.querySelector<HTMLElement>('.menu-btn'))?.focus();
+    if (refocus) (b.offsetParent ? b : corner.querySelector<HTMLElement>('.menu-btn'))?.focus();
   }
-  b.closest('.top-right')!.append(list);
+  closeLanguages = close;
+  hideTip();
+  if (b.offsetParent) list.style.right = `${corner.getBoundingClientRect().right - b.getBoundingClientRect().right}px`;
+  list.addEventListener('focusout', onFocusOut);
+  corner.append(list);
   b.setAttribute('aria-expanded', 'true');
   document.addEventListener('keydown', onKey, true);
   document.addEventListener('pointerdown', onPointer, true);

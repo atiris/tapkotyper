@@ -127,11 +127,20 @@ test('the language button lists the languages by their own names', async ({ page
   await page.keyboard.press('Escape');
   await expect(page.locator('.lang-list')).toHaveCount(0);
   await expect(button).toBeFocused();
+  // A second click on the button closes it; Tab out of it closes it too.
+  await button.click();
+  await button.click();
+  await expect(page.locator('.lang-list')).toHaveCount(0);
+  await button.click();
+  await page.keyboard.press('Tab');
+  await page.keyboard.press('Tab');
+  await expect(page.locator('.lang-list')).toHaveCount(0);
   await button.click();
   await page.keyboard.press('ArrowDown');
   await expect(items.nth(1)).toBeFocused();
   await page.keyboard.press('Enter');
   await expect(page.locator('.top-right .lang-btn')).toHaveAttribute('aria-label', 'Language: English');
+  await expect(page.locator('.top-right .lang-btn')).toBeFocused();
   await expect(page.locator('.slogan')).toContainText('Ten fingers,');
   // A click outside closes it; on a phone the same list opens from the Menu.
   await page.locator('.top-right .lang-btn').click();

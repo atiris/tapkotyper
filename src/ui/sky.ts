@@ -72,15 +72,16 @@ export function skyScene(screen: HTMLElement, under: () => (Element | null)[], b
     for (const r of rects([...beside(), ...document.querySelectorAll('.top-right .corner-row, .top-right .corner-menu')])) {
       if (r.top - box.top < bottom && r.left - box.left > 0) right = Math.min(right, r.left - box.left - CLEAR);
     }
-    const left = Math.max(8, Math.min(48, box.width * 0.04));
-    const width = Math.max(0, right - left), height = Math.max(0, bottom - top);
-    Object.assign(band.style, { left: `${left}px`, top: `${top}px`, width: `${width}px`, height: `${height}px` });
+    // The band starts at the window's edge, so a rising light comes in from beyond it; the pieces keep a margin.
+    const inset = Math.max(8, Math.min(48, box.width * 0.04));
+    const width = Math.max(0, right), height = Math.max(0, bottom - top);
+    Object.assign(band.style, { left: '0px', top: `${top}px`, width: `${width}px`, height: `${height}px` });
     const s = sunSize = Math.min(120, height * 0.72);
     below = height / 2 + s;
     for (const p of pieces) {
       const w = p.size * s, ph = w * p.ratio, drift = (p.drift ?? 0) * s;
-      const cx = p.x * s, cy = height / 2 + p.y * s;
-      const fits = s >= 36 && cx - w / 2 >= 0 && cx + w / 2 + drift <= width && cy - ph / 2 >= 0 && cy + ph / 2 <= height;
+      const cx = inset + p.x * s, cy = height / 2 + p.y * s;
+      const fits = s >= 36 && cx - w / 2 >= inset && cx + w / 2 + drift <= width && cy - ph / 2 >= 0 && cy + ph / 2 <= height;
       p.el.hidden = !fits;
       Object.assign(p.el.style, { width: `${w}px`, left: `${cx - w / 2}px`, top: `${cy - ph / 2}px` });
       if (drift) p.el.style.setProperty('--sail', `${drift}px`);
@@ -90,13 +91,15 @@ export function skyScene(screen: HTMLElement, under: () => (Element | null)[], b
   /**
    * The light's path: a turn around a pivot under the band, squeezed into an ellipse. `from` and `to`
    * are angles in units of the turn that takes it out of the band (-1 risen from the left, 1 set right).
+   * It is clear only on the upper part of its way and fades out toward the band's bottom edge.
    */
-  const arc = (target: HTMLElement, from: number, to: number, delay: number, duration: number, fade: [number, number]) => {
+  const arc = (target: HTMLElement, from: number, to: number, delay: number, duration: number) => {
     const ry = below, rx = Math.min(ry * 1.8, sunSize * 3);
     const out = Math.acos(Math.min(1, sunSize / 2 / ry)) + 0.12;
     const frames = Array.from({ length: ARC_STEPS + 1 }, (_, i) => {
       const k = i / ARC_STEPS, a = (from + (to - from) * k) * out;
-      return { transform: `translate(${(rx * Math.sin(a)).toFixed(1)}px, ${(ry * (1 - Math.cos(a))).toFixed(1)}px)`, opacity: fade[0] + (fade[1] - fade[0]) * k };
+      const away = Math.abs(from + (to - from) * k);
+      return { transform: `translate(${(rx * Math.sin(a)).toFixed(1)}px, ${(ry * (1 - Math.cos(a))).toFixed(1)}px)`, opacity: Math.min(1, Math.max(0, (1 - away) / 0.45)) };
     });
     target.animate(frames, { duration, delay, easing: 'cubic-bezier(0.45, 0, 0.35, 1)', fill: 'backwards' });
   };
@@ -106,8 +109,8 @@ export function skyScene(screen: HTMLElement, under: () => (Element | null)[], b
     if (el.classList.contains('calm') || sun.hidden) return;
     for (const a of [...sun.getAnimations(), ...moon.getAnimations()]) a.cancel();
     const [rising, setting] = look === 'dark' ? [moon, sun] : [sun, moon];
-    arc(setting, 0, 1, 0, CHANGE_MS * SET_SHARE, [1, 0.4]);
-    arc(rising, -1, 0, CHANGE_MS * (1 - SET_SHARE) * 0.7, CHANGE_MS * SET_SHARE, [0.4, 1]);
+    arc(setting, 0, 1, 0, CHANGE_MS * SET_SHARE);
+    arc(rising, -1, 0, CHANGE_MS * (1 - SET_SHARE) * 0.7, CHANGE_MS * SET_SHARE);
   };
 
   place();

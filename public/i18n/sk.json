@@ -236,6 +236,7 @@
     "start": "Začať"
   },
   "freeType": {
+    "start": "Tu si píš, čo chceš. Toto písanie sa nepočíta do štatistík.",
     "hint": "Píš, čo chceš. Keď prestaneš, napísané sa ukáže.",
     "place": "Zmeniť miesto",
     "pick": "Kde chceš dnes písať?"

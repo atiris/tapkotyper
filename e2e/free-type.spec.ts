@@ -32,7 +32,7 @@ const shown = (page: Page) => page.locator('.level-screen .sr-only[role=status]'
 /** Keys count once play has started (the world's pictures are loaded). */
 const started = (page: Page) => expect(page.locator('.level-tapko:not(.waiting)')).toHaveCount(1);
 
-test('just typing shows what was typed after a pause and counts the keys', async ({ page }) => {
+test('just typing shows what was typed after a pause and counts nothing', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await createProfile(page, 'Ema');
@@ -42,6 +42,7 @@ test('just typing shows what was typed after a pause and counts the keys', async
   await expect(page.locator('.posture-card')).toHaveCount(0);
   await expect(page.locator('.hud .progress')).toHaveCount(0);
   await started(page);
+  await expect(page.locator('.level-screen .bubble')).toHaveText('Type whatever you like here. This typing does not count in the statistics.');
   await page.keyboard.type('mama');
   await expect(shown(page)).toHaveText('mama', { timeout: 4000 });
   // Backspace edits, Enter shows at once.
@@ -52,9 +53,8 @@ test('just typing shows what was typed after a pause and counts the keys', async
   await page.keyboard.press('Escape');
   await expect(page.locator('.map-screen')).toBeVisible();
   const stats = await page.evaluate(() => JSON.parse(localStorage.getItem('tapkotyper:v1')!).profiles[0].stats);
-  expect(stats.keys.m.presses).toBe(2);
-  expect(stats.keys.x.errors).toBe(0);
-  expect(stats.sessions.at(-1).chars).toBe(8);
+  expect(stats.keys).toEqual({});
+  expect(stats.sessions).toEqual([]);
   expect(errors).toEqual([]);
 });
 

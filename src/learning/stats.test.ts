@@ -35,11 +35,4 @@ describe('recordPress', () => {
     const day = p.stats.keys.f.days[0];
     expect(day).toMatchObject({ presses: 3, errors: 1, rtSum: 600, rtCount: 1 });
   });
-
-  it('a free press counts as pressed but stays out of the recent window and reaction time', () => {
-    const p = newProfile('Ema', 'sk');
-    for (let i = 0; i < 30; i++) recordPress(p, 'f', 'f', 0, false, true);
-    expect(p.stats.keys.f).toMatchObject({ presses: 30, recent: [] });
-    expect(p.stats.keys.f.days[0]).toMatchObject({ presses: 30, rtCount: 0 });
-  });
 });

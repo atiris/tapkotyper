@@ -236,6 +236,7 @@
     "start": "Start"
   },
   "freeType": {
+    "start": "Type whatever you like here. This typing does not count in the statistics.",
     "hint": "Type anything. When you stop, it shows up.",
     "place": "Change the place",
     "pick": "Where do you want to type today?"

@@ -59,8 +59,8 @@
   them says what the chosen one asks. Nothing is stored: the picker opens
   with the active keys and Copy each time.
 - Just typing ([free typing](../game/free-typing.md)) has no key choice: every key of the
-  layout may be typed and each one counts as a correct press in the statistics, like any
-  play; it has no end, so new keys still open only at the end of a level or practice.
+  layout may be typed and nothing of it counts in the statistics, so it never makes a key
+  ready or opens new keys.
 
 ## Why
 - New letters wait for accuracy, which a child cannot see; naming the letters and offering

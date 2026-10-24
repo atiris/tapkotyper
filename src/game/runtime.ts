@@ -412,7 +412,8 @@ export class LevelRuntime {
     this.mode.start();
     this.started = true;
     this.begunAt = performance.now();
-    if (this.opts.stay) this.say(t(this.def.kind === 'aim' ? 'aim.stayStart' : 'level.stayStart'), 6);
+    if (this.free) this.say(t('freeType.start'), 6);
+    else if (this.opts.stay) this.say(t(this.def.kind === 'aim' ? 'aim.stayStart' : 'level.stayStart'), 6);
     else if (this.storyLine) this.say(this.storyLine, this.mode.startSeconds());
     else if (this.fairy) this.say(pickLine('fairy.start'), 3);
     this.tapko.classList.remove('waiting');
@@ -596,15 +597,12 @@ export class LevelRuntime {
   }
 
   /**
-   * Every key of the layout counts as a correct free press, so free typing never lowers accuracy
-   * nor makes a key ready; keys the layout does not type are ignored.
+   * Free typing has no task, so nothing it types counts in the statistics (Tapko says so at the
+   * start); keys the layout does not type are ignored.
    */
   private freeChar(c: TypedChar, mode: FreeTypeMode): void {
     if (!this.freeOpen || !stepsFor(layout(), c.ch).length) return;
     this.deadPending = false;
-    this.rhythm.press(c.ch, c.time);
-    recordPress(app.profile!, c.ch, c.ch, 0, false, true);
-    this.chars++;
     this.sfx('key');
     mode.key(c.ch);
     this.updateGuide();

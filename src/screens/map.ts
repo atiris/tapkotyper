@@ -43,16 +43,26 @@ export function playLevel(id: string, task?: string): void {
   go('level', { id, task });
 }
 
-/** The first greeting of a new player: what to do on the map; closing or starting marks it seen. */
+/** The first greeting of a new player: what to do on the map; closing (X or Escape) or starting marks it seen. */
 function welcomeCard(p: Profile, start: () => void): HTMLElement | null {
   if (p.id === GUEST_ID || p.id === SUPER_ID || p.progress.scenesSeen.includes('welcome')) return null;
   const done = () => {
+    window.removeEventListener('keydown', onKey, true);
     p.progress.scenesSeen.push('welcome');
     saveProfile();
     card.remove();
   };
+  // Escape closes the card like the X, unless a dialog lies over the map; a new screen drops the listener.
+  const onKey = (e: KeyboardEvent) => {
+    if (!card.isConnected) return window.removeEventListener('keydown', onKey, true);
+    if (e.key !== 'Escape' || document.querySelector('.modal-back')) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    done();
+  };
+  window.addEventListener('keydown', onKey, true);
   const card = h('section', { class: 'panel welcome-card', 'aria-labelledby': 'welcome-title' },
-    closeButton(done),
+    closeButton(done, t('map.welcome.close')),
     h('div', { class: 'welcome-tapko' }, tapkoElement(p.companion, 'happy', 110)),
     h('div', { class: 'welcome-text' },
       h('h2', { id: 'welcome-title' }, t('map.welcome.title', { name: nickname(p) })),

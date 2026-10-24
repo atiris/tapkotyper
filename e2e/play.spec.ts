@@ -124,6 +124,14 @@ test('guest progress is forgotten in a new browser context', async ({ page, brow
   await other.close();
 });
 
+test('Escape closes the welcome card on the map like its X', async ({ page }) => {
+  await createProfile(page, 'Ema');
+  await expect(page.locator('.welcome-card .modal-x')).toHaveAttribute('data-tip', 'Close (Esc)');
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.welcome-card')).toHaveCount(0);
+  await expect(page.locator('.map-screen')).toBeVisible();
+});
+
 test('Escape closes the get-ready card like the space bar and starts the level', async ({ page }) => {
   await page.goto('./');
   await page.locator('.start-screen').waitFor();

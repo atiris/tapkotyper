@@ -108,7 +108,8 @@
         "Stlač „Pokračovať“, klávesy sa budeš učiť postupne, jeden po druhom.",
         "Keď nevieš ako ďalej, klikni na „?“."
       ],
-      "start": "Začať"
+      "start": "Začať",
+      "close": "Zavrieť (Esc)"
     },
     "ownText": "Môj text",
     "freeType": "Len chcem písať",

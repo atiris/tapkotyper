@@ -108,7 +108,8 @@
         "Press “Continue”, you will learn the keys step by step, one by one.",
         "When you are not sure what to do, click “?”."
       ],
-      "start": "Start"
+      "start": "Start",
+      "close": "Close (Esc)"
     },
     "ownText": "My text",
     "freeType": "Just typing",

@@ -1898,7 +1898,7 @@
         "{n} points!",
         "So close!",
         "Nearly dead center!",
-        "Missed it by a whisker!",
+        "A hair off.",
         "Almost perfect!"
       ],
       "two": [
@@ -1914,24 +1914,34 @@
         "Just over my head!",
         "Phew, missed!",
         "Next one's yours!",
-        "Nearly!"
+        "Nearly!",
+        "Right past my ear!",
+        "Hey! You nearly got me!",
+        "Lucky me."
       ],
       "fall": [
         "No worries, next one!",
         "It's fine, try again.",
         "I'll wait for the next one!",
-        "Oops, it dropped."
+        "Oops, it dropped.",
+        "Fell short.",
+        "Weak one."
       ],
       "expectWorry": [
         "What's that coming?!",
         "Not a tomato, please!",
         "Help!",
-        "I hope this won't hurt."
+        "I hope this won't hurt.",
+        "I can't see it well.",
+        "A present for me?"
       ],
       "expectWonder": [
         "Hmm, what could it be?",
-        "Is it a bird? A plane?",
-        "Interesting…"
+        "Is it a bird, or a plane?",
+        "Interesting…",
+        "Let's have a look.",
+        "Surprising…",
+        "Something tasty?"
       ],
       "expectCheer": [
         "Ready when you are!",
@@ -1945,7 +1955,8 @@
         "Three bullseyes in a row!"
       ],
       "streak5": [
-        "Five in a row! Sharpshooter streak!",
+        "Five in the middle!",
+        "Sharpshooter five!",
         "Unbelievable, five straight!"
       ],
       "shrink": [

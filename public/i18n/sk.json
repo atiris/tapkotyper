@@ -1898,7 +1898,7 @@
         "{n} bodov!",
         "Chýbal len kúsok!",
         "Takmer v strede!",
-        "Za vlások!",
+        "O chlp vedľa.",
         "Skoro dokonalé!"
       ],
       "two": [
@@ -1914,24 +1914,34 @@
         "Tesne nad hlavou!",
         "Uf, vedľa.",
         "Nabudúce to vyjde!",
-        "Skoro!"
+        "Skoro!",
+        "Tesne vedľa ucha!",
+        "Hej! Skoro si ma trafil!",
+        "Mal som šťastie."
       ],
       "fall": [
         "Nevadí, ďalší!",
         "To nič, skús znova.",
         "Počkám na ďalší!",
-        "Hups, spadlo to."
+        "Hups, spadlo to.",
+        "Nedoletel.",
+        "Slabota."
       ],
       "expectWorry": [
         "Čo to letí?!",
         "Len nie paradajku!",
         "Mamííí!",
-        "Hádam to nebude bolieť."
+        "Hádam to nebude bolieť.",
+        "Nevidím to dobre.",
+        "Ide mi darček."
       ],
       "expectWonder": [
         "Hm, čo to bude?",
-        "Je to vták? Lietadlo?",
-        "Zaujímavé…"
+        "Je to vták, či lietadlo?",
+        "Zaujímavé…",
+        "Kuknem sa na to.",
+        "Prekvapujúce…",
+        "Nejaká chuťovka?"
       ],
       "expectCheer": [
         "Som pripravený!",
@@ -1945,7 +1955,8 @@
         "Tri do stredu za sebou!"
       ],
       "streak5": [
-        "Päť do stredu! Ostrostrelecká séria!",
+        "Päť do stredu!",
+        "Ostrostrelecká päťka!",
         "Neuveriteľné, päť za sebou!"
       ],
       "shrink": [

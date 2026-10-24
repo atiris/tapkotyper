@@ -26,14 +26,14 @@
   form one set; later, or in another group, a new set starts. One camera scan is always one
   set, however long. A set keeps its group, start and end time, where it came from (scan, link,
   file) and its results.
-- **Tabs:** Skupiny · Pisatelia · Súbory, under the intro, the scan box (the group, then "Sken QR") and below it the paste field with "Add". One line at the bottom says the camera picture goes nowhere and the results stay in this browser.
+- **Tabs:** Skupiny · Študenti · Súbory, under the intro, the scan box (the group, then "Sken QR") and below it the paste field with "Add". One line at the bottom says the camera picture goes nowhere and the results stay in this browser.
   Each tab, a set and a writer have their own address, so Back works.
   - **Skupiny:** group chips; per group a line with sets, writers, accuracy and rhythm, then one
     row per set: day, time from-to, tasks, results, "zvládli X z Y", accuracy, rhythm. On a
     computer a click on the day opens the set's writers inline; on a phone a set is a card that
     opens the set's page (tiles, "Poslať sadu", "Odstrániť sadu", sort chips, writers). CSV,
     assigning chosen sets to a group and removing them stay here.
-  - **Pisatelia:** a search that filters while typing, the group chips, and every writer with
+  - **Študenti:** a search that filters while typing, the group chips, and every writer with
     group, hand-ins, the last one, accuracy and rhythm with the change from the first hand-in to
     the last (green up, red-brown down), minutes, levels, weakest keys and status; sortable
     columns on a computer, cards with sort chips on a phone.
@@ -79,7 +79,7 @@
   change, minutes, levels (from the newest overall statistics), the four weakest keys, "Vývoj"
   with accuracy and rhythm over the hand-ins in two charts (side by side on a computer, stacked
   on a phone), and every hand-in with time, task, a link to its set, minutes, accuracy, rhythm,
-  levels and status; then "Presunúť do skupiny" and "Odstrániť pisateľa". Two children of one
+  levels and status; then "Presunúť do skupiny" and "Odstrániť študenta". Two children of one
   name in two groups stay apart.
 - **Groups:** a task may carry a group label (a class such as "5.A", typed in the task form).
   It travels in the task link and back in the result, with the number of levels the child has

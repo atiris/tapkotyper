@@ -19,10 +19,13 @@
      accuracy, Esc pauses) right above letters that open levels and stories, "My progress" with
      its three tabs and QR codes, rescue missions, the target range (where it opens, what it
      trains, the middle, a fall that costs nothing, the collection and Enter) and badges.
-  4. **Settings**, for the parent: that the settings open with the gear on the map (the child's
+  4. **Settings**, for the teacher or parent: that the settings open with the gear on the map (the child's
      screens do not say it), what each settings tab does (child, practice, look and sound,
      password, own words and text, surprises, tasks, keys, progress, data), with one section per
-     settings tab, and what is lost without a backup.
+     settings tab, and what is lost without a backup. By the password, plainly: it guards the
+     settings only inside the game; the data in the browser is not encrypted and anyone with
+     direct access can read or change it, and anyone using the computer can clear the site's
+     data, which removes every player, the progress, the results and the password.
   5. **For teachers and parents**, in one place: the "For teachers" page, scanning
      QR codes by group, result links, sets (one scan, or links within 20 minutes), the kept
      history of every hand-in and a writer's progress, sending results from a phone to a

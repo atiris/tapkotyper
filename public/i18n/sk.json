@@ -56,7 +56,7 @@
   },
   "newProfile": {
     "title": "Ahoj, vitaj!",
-    "name": "Meno pisateľa (nepovinné)",
+    "name": "Meno študenta (nepovinné)",
     "companion": "Vyber si svoju postavičku",
     "language": "Jazyk",
     "layout": "Klávesnica",
@@ -1014,13 +1014,13 @@
       "data": "Údaje"
     },
     "group": {
-      "child": "Pisateľ",
+      "child": "Študent",
       "practice": "Cvičenie",
       "look": "Vzhľad a zvuk",
       "lock": "Heslo na nastavenia"
     },
-    "childName": "Meno pisateľa (nepovinné)",
-    "switchTitle": "Prepnúť na iného pisateľa",
+    "childName": "Meno študenta (nepovinné)",
+    "switchTitle": "Prepnúť na iného študenta",
     "companionKind": "Postavička",
     "messages": "Vaše vlastné povzbudenia",
     "messagesHint": "Jedno na riadok. Hra ich občas použije.",
@@ -1035,9 +1035,9 @@
     "noDiacritics": "Slová bez diakritiky",
     "noDiacriticsHint": "Pre začiatočníkov, len na chvíľu. Diakritika patrí k správnemu písaniu.",
     "noTimePressure": "Bez časového tlaku",
-    "noTimePressureHint": "Pohyblivé predmety zastanú a počkajú na pisateľa.",
-    "kidHints": "Inštrukcie pre malých pisateľov",
-    "kidHintsHint": "Zobrazí sa zopár inštrukcií navyše. Vhodné pre pisateľov asi do 10 rokov.",
+    "noTimePressureHint": "Pohyblivé predmety zastanú a počkajú na študenta.",
+    "kidHints": "Inštrukcie pre malých študentov",
+    "kidHintsHint": "Zobrazí sa zopár inštrukcií navyše. Vhodné pre študentov asi do 10 rokov.",
     "wardrobeLimit": "Šatník za čas cvičenia",
     "wardrobeLimitHint": "1 minúta v šatníku za 5 minút cvičenia, najviac 7 minút.",
     "wardrobeBalance": "Čas v šatníku teraz: {m} min {s} s",
@@ -1047,11 +1047,11 @@
     "guideAuto": "Slabne pri zvládnutých klávesoch",
     "guideOn": "Vždy zapnutá",
     "guideOff": "Vypnutá",
-    "guideLocked": "Pisateľ nemôže nápovedu skryť ani zobraziť",
+    "guideLocked": "Študent nemôže nápovedu skryť ani zobraziť",
     "sfx": "Zvukové efekty",
     "music": "Hudba",
     "speakTyped": "Čítať napísané slová",
-    "speakTypedHint": "Pri „Len chcem písať“ počítač nahlas prečíta, čo pisateľ napísal (keď je zapnuté čítanie nahlas). Číta sa iba v tomto prehliadači, nič sa neukladá ani neposiela. Zoznam zakázaných slov nemáme: nikdy nie je úplný a blokuje aj nevinné slová. Ak nechcete, aby sa čítalo, vypnite to tu.",
+    "speakTypedHint": "Pri „Len chcem písať“ počítač nahlas prečíta, čo študent napísal (keď je zapnuté čítanie nahlas). Číta sa iba v tomto prehliadači, nič sa neukladá ani neposiela. Zoznam zakázaných slov nemáme: nikdy nie je úplný a blokuje aj nevinné slová. Ak nechcete, aby sa čítalo, vypnite to tu.",
     "font": "Písmo",
     "largeText": "Veľké písmo",
     "reduceMotion": "Menej pohybu",
@@ -1088,10 +1088,10 @@
     "checkOk": "Áno, otvoriť",
     "deleteOk": "Áno, vymazať",
     "autoDifficulty": "Automatická náročnosť",
-    "autoDifficultyHint": "Rastie s pokrokom pisateľa po niekoľkých minútach presného písania. Každý krok je medaila.",
+    "autoDifficultyHint": "Rastie s pokrokom študenta po niekoľkých minútach presného písania. Každý krok je medaila.",
     "autoWordLen": "Automatická dĺžka slov",
-    "autoWordLenHint": "Rastie s pokrokom pisateľa, spolu s náročnosťou.",
-    "autoHint": "Začiatok je pomalý: krátke slovo putuje k postavičke asi 10 sekúnd a na obrazovke sú najviac dve. Ak pisateľ ani tak nestíha, zapnite Bez časového tlaku.",
+    "autoWordLenHint": "Rastie s pokrokom študenta, spolu s náročnosťou.",
+    "autoHint": "Začiatok je pomalý: krátke slovo putuje k postavičke asi 10 sekúnd a na obrazovke sú najviac dve. Ak študent ani tak nestíha, zapnite Bez časového tlaku.",
     "lock": {
       "ask": "Nastavenia sú zamknuté heslom. Zadajte ho, prosím.",
       "password": "Heslo",
@@ -1112,7 +1112,7 @@
       "removed": "Heslo je odstránené."
     },
     "nickname": "Prezývka",
-    "nicknameHint": "Je pri postavičke a hra ňou pisateľa oslovuje.",
+    "nicknameHint": "Je pri postavičke a hra ňou študenta oslovuje.",
     "childNameHint": "Zobrazí sa učiteľovi vo výsledkoch.",
     "nickMissing": "Prezývka nemôže byť prázdna.",
     "wordLang": "Jazyk slov",
@@ -1128,7 +1128,7 @@
     },
     "remove": "Odstrániť",
     "words": "Slová",
-    "wordsHint": "Napríklad slová na tento týždeň. Jedno na riadok, alebo oddelené čiarkou či medzerou. Použijú sa aj s klávesmi, ktoré pisateľ ešte nepozná, sprievodca ich ukáže.",
+    "wordsHint": "Napríklad slová na tento týždeň. Jedno na riadok, alebo oddelené čiarkou či medzerou. Použijú sa aj s klávesmi, ktoré študent ešte nepozná, sprievodca ich ukáže.",
     "wordsPlaceholder": "škola\nkamarát\nslnko",
     "wordsCount": "Slov: {n} z {max}.",
     "untypableWords": "Nedá sa napísať na tejto klávesnici, vynechajú sa: {list}",
@@ -1243,7 +1243,7 @@
   "about": {
     "code": "Kód na GitHube",
     "report": "Nahlásiť chybu alebo nápad",
-    "intro": "TapkoTyper (Ťapko) je bezplatná pokojná hra, ktorá učí písať všetkými desiatimi prstami. Pisateľ ako zvieratko podľa vlastného výberu cestuje po svetoch plných dobrodružstiev. Nikdy sa nestane nič zlé: prekážky sa odsunú alebo sa im pomôže, nikdy sa neničia.",
+    "intro": "TapkoTyper (Ťapko) je bezplatná pokojná hra, ktorá učí písať všetkými desiatimi prstami. Študent písania na klávesnici cestuje ako zvieratko podľa vlastného výberu po svetoch plných dobrodružstiev. Nikdy sa nestane nič zlé: prekážky sa odsunú alebo sa im pomôže, nikdy sa neničia.",
     "privacyTitle": "Náš sľub rodičom",
     "privacy": [
       "Bez reklám, nákupov, prihlasovania či cookies. Tento web nemá na pozadí vlastný server.",
@@ -1366,20 +1366,22 @@
       "Na mape uvidíš Úlohu na dnes. Píš, kým neuplynie čas.",
       "Keď je hotová, stlač Odovzdať a pošli učiteľovi **odkaz s výsledkom**."
     ],
-    "settingsIntro": "Nastavenia sú pre rodičov. Otvoria sa ozubeným kolieskom na mape. Kým ich **nezamknete heslom**, otvorí ich jedna otázka.",
+    "settingsIntro": "Nastavenia sú pre učiteľa alebo rodiča. Otvoria sa ozubeným kolieskom na mape. Kým ich **nezamknete heslom**, otvorí ich jedna otázka.",
     "settings": {
       "settings": [
-        "Pisateľ: prezývka, postavička a nepovinné meno, jazyk hry, jazyk slov a rozloženie klávesnice. Rozloženie vyberte podľa skutočnej klávesnice, sprievodca prstov sa podľa neho riadi.",
-        "Cvičenie: náročnosť a dĺžka slov. Automaticky rastú spolu s pisateľom, ale môžete ich nastaviť aj ručne.",
-        "Slová bez diakritiky pomôžu začiatočníkom na chvíľu. Bez časového tlaku veci zastanú a čakajú na pisateľa.",
-        "Dĺžka hrania pred prestávkou: potom hra pozve pisateľa na krátky oddych.",
-        "Sprievodca prstov: zmizne, keď sú klávesy zvládnuté, alebo je stále zapnutý či vypnutý. Môžete ho pisateľovi zamknúť.",
+        "Študent: prezývka, postavička a nepovinné meno, jazyk hry, jazyk slov a rozloženie klávesnice. Rozloženie vyberte podľa skutočnej klávesnice, sprievodca prstov sa podľa neho riadi.",
+        "Cvičenie: náročnosť a dĺžka slov. Automaticky rastú spolu so študentom, ale môžete ich nastaviť aj ručne.",
+        "Slová bez diakritiky pomôžu začiatočníkom na chvíľu. Bez časového tlaku veci zastanú a čakajú na študenta.",
+        "Dĺžka hrania pred prestávkou: potom hra pozve študenta na krátky oddych.",
+        "Sprievodca prstov: zmizne, keď sú klávesy zvládnuté, alebo je stále zapnutý či vypnutý. Môžete ho študentovi zamknúť.",
         "Šatník za čas cvičenia: 1 minúta v šatníku za 5 minút cvičenia, najviac 7 minút. Po vypnutí je šatník stále otvorený.",
         "Vzhľad a zvuk: písmo, veľký text, menej pohybu, vysoký kontrast, hlasitosť, celá obrazovka.",
-        "Heslo na nastavenia zamkne nastavenia pre všetkých hráčov na tomto zariadení. Zabudnuté heslo nevieme obnoviť."
+        "Heslo na nastavenia zamkne nastavenia pre všetkých hráčov na tomto zariadení. Zabudnuté heslo nevieme obnoviť.",
+        "Heslo chráni nastavenia len v hre. Všetky údaje (hráči, pokrok aj nastavenia) sú uložené v tomto prehliadači a heslo ich nešifruje. Kto sa k nim dostane priamo, napríklad cez nástroje prehliadača, môže ich prečítať aj zmeniť.",
+        "Ktokoľvek, kto používa tento počítač, môže v prehliadači vymazať údaje stránky. Tým sa odstránia všetci hráči, ich pokrok, výsledky aj heslo. Preto si pokrok občas exportujte do súboru."
       ],
       "own": [
-        "Vlastné slová: napríklad slovíčka na tento týždeň. Použijú sa aj s klávesmi, ktoré pisateľ ešte nepozná.",
+        "Vlastné slová: napríklad slovíčka na tento týždeň. Použijú sa aj s klávesmi, ktoré študent ešte nepozná.",
         "Vlastný text: rozdelí sa na vety a časti. Na mape ho tlačidlo Môj text napíše celý po poradí.",
         "Vlastné povzbudenia: hra ich občas povie.",
         "Koľko vlastných slov a textu: aký diel cieľov v úrovniach budú tvoriť."
@@ -1390,15 +1392,15 @@
       ],
       "task": [
         "Pre učiteľa písania alebo rodiča: vytvorte úlohu so slovami alebo textom a dĺžkou. Vznikne odkaz a QR kód.",
-        "Pisatelia odkaz otvoria a po splnení vám pošlú odkaz s výsledkom. Výsledky si prezriete cez tlačidlo Pre učiteľov na úvodnej stránke."
+        "Študenti odkaz otvoria a po splnení vám pošlú odkaz s výsledkom. Výsledky si prezriete cez tlačidlo Pre učiteľov na úvodnej stránke."
       ],
       "keys": [
         "Automaticky prídu klávesy po jednom, od základného radu F a J. To je najlepšie.",
-        "Ručne vyberiete, ktoré klávesy sa pisateľ učí, aj interpunkciu."
+        "Ručne vyberiete, ktoré klávesy sa študent učí, aj interpunkciu."
       ],
       "dashboard": [
         "Ako ide každý kláves, presnosť a rytmus v čase, čas hrania po dňoch a hotové úrovne.",
-        "Vpravo pri súhrne je **QR kód celého postupu** pre učiteľa a **Certifikát** s výsledkami pisateľa na vytlačenie."
+        "Vpravo pri súhrne je **QR kód celého postupu** pre učiteľa a **Certifikát** s výsledkami študenta na vytlačenie."
       ],
       "data": [
         "Všetko je uložené **len v tomto prehliadači**. Keď sa vymažú údaje prehliadača alebo sa pokazí počítač, pokrok sa stratí, ak nemáte zálohu.",
@@ -1418,13 +1420,13 @@
     "mentor": [
       "Stránku **Pre učiteľov** otvoríte ikonou grafu vpravo hore na úvodnej stránke. Výsledky sa ukladajú len v tomto prehliadači.",
       "Najrýchlejšie je skenovať: napíšte skupinu (napríklad 5.A), stlačte **Sken QR** a obíďte miestnosť. Kamera načíta aj viac QR kódov naraz a každý nový výsledok zapíše do tejto skupiny.",
-      "Pisateľ ukáže QR kód v Môj postup alebo po odovzdaní úlohy. Bez kamery stačí vložiť alebo otvoriť **odkaz s výsledkom**.",
-      "**Sada** sú výsledky jednej skupiny, ktoré prišli spolu: jeden sken kamerou, alebo odkazy pridané do **20 minút** od prvého. Na karte **Skupiny** sú sady každej skupiny. Kliknutím na deň uvidíte pisateľov sady a celé to stiahnete ako CSV.",
-      "Každé odovzdanie sa uchová. Na karte **Pisatelia** nájdete pisateľa podľa mena a uvidíte, ako sa mu zmenila presnosť a rytmus od prvého po posledné odovzdanie. Kliknutím na meno uvidíte vývoj v grafoch a všetky odovzdania.",
+      "Študent ukáže QR kód v Môj postup alebo po odovzdaní úlohy. Bez kamery stačí vložiť alebo otvoriť **odkaz s výsledkom**.",
+      "**Sada** sú výsledky jednej skupiny, ktoré prišli spolu: jeden sken kamerou, alebo odkazy pridané do **20 minút** od prvého. Na karte **Skupiny** sú sady každej skupiny. Kliknutím na deň uvidíte študentov sady a celé to stiahnete ako CSV.",
+      "Každé odovzdanie sa uchová. Na karte **Študenti** nájdete študenta podľa mena a uvidíte, ako sa mu zmenila presnosť a rytmus od prvého po posledné odovzdanie. Kliknutím na meno uvidíte vývoj v grafoch a všetky odovzdania.",
       "**Z telefónu do počítača:** na karte **Súbory** stlačte na telefóne **Poslať do počítača** a pošlite si súbor .tapko (napríklad e-mailom). Na počítači ho na tej istej karte načítajte alebo ho na stránku pretiahnite. Čo už máte, sa nepridá druhýkrát.",
       "Výsledky staršie ako **rok** sa pri otvorení stránky zmažú. Staré výsledky načítané zo súboru ostanú ešte **7 dní**. Skôr ich zmažete tlačidlom **Vymazať…**.",
       "Kontrolný súčet ukáže poškodený odkaz (výkričník pri mene), nie podvádzanie.",
-      "Úlohu pre pisateľov vytvoríte v nastaveniach na karte Úloha: vznikne odkaz a QR kód, ktorý pisatelia otvoria."
+      "Úlohu pre študentov vytvoríte v nastaveniach na karte Úloha: vznikne odkaz a QR kód, ktorý študenti otvoria."
     ]
   },
   "tips": {
@@ -1561,7 +1563,7 @@
     "privacy": "Obraz z kamery sa nikam neposiela a výsledky sú uložené **len v tomto prehliadači**.",
     "col": {
       "task": "Úloha",
-      "child": "Pisateľ",
+      "child": "Študent",
       "date": "Dátum",
       "minutes": "Minúty",
       "accuracy": "Presnosť",
@@ -1636,9 +1638,9 @@
       "minutes": "minút cvičenia",
       "levels": "prejdených levelov",
       "move": "Presunúť do skupiny",
-      "remove": "Odstrániť pisateľa",
-      "removeTitle": "Odstrániť pisateľa {name}?",
-      "removeText": "Z tabuľky sa odstránia všetky výsledky pisateľa {name} (počet: {n}).",
+      "remove": "Odstrániť študenta",
+      "removeTitle": "Odstrániť študenta {name}?",
+      "removeText": "Z tabuľky sa odstránia všetky výsledky študenta {name} (počet: {n}).",
       "trend": "Vývoj",
       "handIns": "Odovzdania",
       "set": "sada {day} {time}",
@@ -1647,7 +1649,7 @@
     "pickSet": "Vybrať sadu {day} {time}",
     "tab": {
       "groups": "Skupiny",
-      "writers": "Pisatelia",
+      "writers": "Študenti",
       "files": "Súbory"
     },
     "n": {
@@ -1657,9 +1659,9 @@
         "other": "{n} sád"
       },
       "writers": {
-        "one": "{n} pisateľ",
-        "few": "{n} pisatelia",
-        "other": "{n} pisateľov"
+        "one": "{n} študent",
+        "few": "{n} študenti",
+        "other": "{n} študentov"
       },
       "results": {
         "one": "{n} výsledok",
@@ -1687,7 +1689,7 @@
       "okOf": "zvládli {ok} z {n}"
     },
     "writers": {
-      "search": "Hľadať pisateľa",
+      "search": "Hľadať študenta",
       "none": "Nikto taký sa nenašiel."
     },
     "file": {
@@ -1757,7 +1759,7 @@
     "set": {
       "results": "výsledkov",
       "ok": "zvládli",
-      "writers": "Pisatelia",
+      "writers": "Študenti",
       "remove": "Odstrániť sadu",
       "removeTitle": "Odstrániť sadu?",
       "removeText": "Odstráni sa celá sada: {n}."
@@ -1783,7 +1785,7 @@
     "doneLine": "Úloha „{title}“ je splnená. Odovzdaj ju učiteľovi.",
     "leftLine": "Úloha „{title}“: zostáva ešte {n} min.",
     "group": "Skupina (nepovinné)",
-    "intro": "Úloha je odkaz. Pošlite ho pisateľom (napríklad cez Edupage). Kto ho otvorí, vyberie si hráča a na mape uvidí Úlohu na dnes. Po splnení vám pisateľ pošle odkaz s výsledkom.",
+    "intro": "Úloha je odkaz. Pošlite ho študentom (napríklad cez Edupage). Kto ho otvorí, vyberie si hráča a na mape uvidí Úlohu na dnes. Po splnení vám študent pošle odkaz s výsledkom.",
     "title": "Názov úlohy",
     "titlePlaceholder": "Napríklad: Zvieratá na farme",
     "minutes": "Dĺžka",
@@ -2241,7 +2243,9 @@
         "launch": [
           "Sviečka letí!",
           "Svetielko na cestu!",
-          "Hádžem sviečku!"
+          "Hádžem sviečku!",
+          "Osvetlím to tu.",
+          "Zhor, ak mi nedáš body!"
         ],
         "sound": [
           "Pšš!"
@@ -2249,7 +2253,8 @@
         "hit": [
           "Páli, páli!",
           "Žeravé!",
-          "Sfúknem ju a niečo si zaželám!"
+          "Sfúknem ju a niečo si zaželám!",
+          "Som torta!"
         ]
       },
       "cheese": {
@@ -2264,8 +2269,9 @@
         ],
         "hit": [
           "Smradľavá bomba!",
-          "Čo na to myšky?",
-          "Som ementál!"
+          "Takto prilákam myši!",
+          "Vyzretý ementál.",
+          "Ešte pohár vína, prosím."
         ]
       },
       "boomerang": {

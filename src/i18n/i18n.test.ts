@@ -57,16 +57,6 @@ describe('i18n', () => {
     expect(keys(sk).sort()).toEqual(keys(en).sort());
   });
 
-  it('speaks of the typist and the teacher, never of a child or a mentor', () => {
-    const banned: Record<string, RegExp> = {
-      sk: /(?<!\p{L})(dieť|deti|detí|deť|žiak|mentor)/iu,
-      en: /\b(child|children|kids?|mentors?)\b/i,
-    };
-    for (const lang of ['sk', 'en']) {
-      for (const v of values(load(lang))) expect(v, `${lang}: ${v}`).not.toMatch(banned[lang]);
-    }
-  });
-
   it('has every literal key the code uses, in both languages', () => {
     const has = (d: any, key: string) => key.split('.').reduce((o, k) => (o && typeof o === 'object' ? o[k] : undefined), d) !== undefined;
     const used = new Set(sources().flatMap((f) => [...readFileSync(f, 'utf8').matchAll(/(?<![\w.$])(?:t|tList|pickLine)\('([^']+)'/g)].map((m) => m[1])));

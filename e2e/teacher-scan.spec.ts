@@ -83,7 +83,7 @@ test('groups: links within 20 minutes form one set; filter, assign, export respe
   await expect(page.locator('.teacher-screen [role=status]').first()).toContainText('už je');
   await expect(page.locator('.chips .chip')).toHaveText(['Všetky', '5.A', '5.B', 'Bez skupiny']);
   await expect(page.locator('.group-head > span:first-child')).toHaveText(['5.A', '5.B', 'Bez skupiny']);
-  await expect(page.locator('.group-head').first()).toContainText('1 sada · 2 pisatelia');
+  await expect(page.locator('.group-head').first()).toContainText('1 sada · 2 študenti');
   await expect(page.locator('.sets-table .set-row')).toHaveCount(3);
 
   await page.locator('.chips .chip', { hasText: '5.A' }).click();
@@ -172,7 +172,7 @@ test('writers: sorting, search and a writer\'s detail with charts, on a computer
   await expect(page.locator('.child-row-big')).toHaveText(['96 %', '71 %', '70 %']);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.locator('.child-row', { hasText: 'Adam' }).click();
-  await page.locator('.child-screen .btn', { hasText: 'Odstrániť pisateľa' }).click();
+  await page.locator('.child-screen .btn', { hasText: 'Odstrániť študenta' }).click();
   await page.locator('.confirm .btn.danger').click();
   await expect(page.locator('.child-row')).toHaveCount(2);
 });

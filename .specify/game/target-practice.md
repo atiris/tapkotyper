@@ -21,11 +21,12 @@
   letters alone while another word is there. The words grow from the shortest allowed length
   to the longest (one letter longer in the second half when both are the same). Each word gets
   the time a word of its length needs at the child's pace; typing it in time lets the thing
-  pass the ring. While a word waits, the thing drifts up off its path, back again as the word
-  gets typed; a ring passed too late pops grey and leaves it higher, so it flies over the
-  target ("Missed!") and does not count. Every word in time hits the target: the middle
-  without wrong keys, lower after them. Words not typed are no mistakes: accuracy follows
-  only the keys pressed.
+  pass the ring. The thing heads for the next ring; only in the second half of the way, while
+  its word still waits, it drifts up a little, back again as the word gets typed. A ring passed
+  too late pops grey and leaves it a bit higher; the throw goes on and still hits, only lower,
+  like after a wrong key, so a word left out costs little. Only the target's own word typed too
+  late sends the thing over it ("Missed!"). The middle needs every word in time and no wrong
+  key. Words not typed are no mistakes: accuracy follows only the keys pressed.
 - A wrong key makes it sink a little (a lower path). After three wrong keys in one throw it
   falls to the ground with a soft "plop" and lies there a moment, fading; nothing bad
   happens and the next throw comes.
@@ -43,17 +44,29 @@
   and a fall get a kind line, three and five bullseyes in a row a streak line, the last throw
   of the two minutes and a target that steps back (shrinks) a line of their own. Now and then
   (about one throw in four, more for a cactus or a spider) the target reacts while the thing is
-  on its way: worried, wondering or cheering. No line comes twice in a row. The bubbles never
-  cover a word; screen readers hear them, the voice never reads them.
-- Now and then, rarely, two cartoon eyes peek out over the target's rim: worried, wide or
-  happy with a line before the hit, dizzy after a planet or a bowling ball, squeezed shut and
-  then smiling at a bullseye; never two throws in a row, most of the time the target has no
-  face.
+  on its way: worried, wondering or cheering. No line comes twice in a row. Every line stays long
+  enough for a slow reader (longer lines longer); the next throw waits for the target's line a
+  little, not until it is gone. The bubbles never cover a word; screen readers hear them, the
+  voice never reads them.
+- The things come in shuffled rounds: every thing of the range once before any comes again, a
+  new order every run, never the same twice in a row.
+- Now and then two big cartoon eyes peek out over the target's rim. Coming with a line before
+  the hit (at the throw or a ring), they stay for the whole flight: they follow the thing,
+  blink, go wide as it comes close, and react to the end (squeezed shut and then smiling at a
+  bullseye, wide at a lower hit, dizzy after a planet or a bowling ball, glad after a miss or a
+  fall) before they sink a moment later. Never two throws in a row; most throws the target has
+  no face.
 - Every world has one thing of its own that no other range throws (a ladybug on the meadow, a
-  toy rocket in the rocket world, a fish at the lake, ...): the first throw of every run, then
-  about one throw in five. Hitting it in the middle the first time adds it to the child's
-  collection; the end card shows all 15, found ones in color, the rest grey with a question
-  mark whose tooltip names the world where it waits.
+  toy rocket in the rocket world, a fish at the lake, ...). It comes once a run, as the last
+  throw of the two minutes or the one before (judged by the time left), so it is a goal to
+  reach; while staying a while it comes every 6 to 10 throws. Hitting it in the middle (no
+  wrong key, every word in time) the first time makes it a find, and Tapko says it is yours if
+  you throw to the end: it joins the collection only when the run ends, not when it is left
+  early. The end card shows all 15, found ones in color, the rest grey with a question mark
+  whose tooltip names the world where it waits; the progress overview counts them too.
+- With something in the collection, Enter swaps the thing in Tapko's paw (before its throw) for
+  a random one of the collection, and Tapko names it; the rules at the start say so. The
+  world's own thing still to be found cannot be swapped away.
 - The target's size shows the recent accuracy on the trained letters: big at low accuracy,
   smaller as it improves. When a trained letter becomes ready during the run, the target
   shrinks with a little bounce, Tapko cheers, the narrator says so, and the letter leaves the

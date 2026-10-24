@@ -1611,6 +1611,10 @@
   "obj-aim-wrench": {
    "w": 384,
    "h": 370
+  },
+  "ui-chest": {
+   "w": 384,
+   "h": 362
   }
  },
  "accessories": [

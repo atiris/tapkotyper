@@ -82,6 +82,11 @@ function label(base: string, shift: string): string {
   return base;
 }
 
+/** A slashed zero, so it is never taken for the letter O. */
+function zeroDot(text: string): string {
+  return text === '0' ? '<span class="kb-zero">0</span>' : text;
+}
+
 /** On-screen keyboard with finger colors, next-key highlight and dead-key two-step hints. */
 export class KeyboardGuide {
   readonly el: HTMLElement;
@@ -110,8 +115,8 @@ export class KeyboardGuide {
         const [textBg, textInk] = textColorsOn(FINGER_COLORS[def.finger]);
         k.style.setProperty('--next-bg', textBg);
         k.style.setProperty('--next-ink', textInk);
-        k.innerHTML = `<span class="kb-label">${label(def.base, def.shift)}</span>` +
-          (def.base !== ' ' && def.base !== 'shift' ? `<span class="kb-shift">${def.base.startsWith('dead') || def.shift.toLowerCase() === def.base ? '' : def.shift}</span><span class="kb-num">${FINGER_NUMBER[def.finger]}</span>` : '');
+        k.innerHTML = `<span class="kb-label">${zeroDot(label(def.base, def.shift))}</span>` +
+          (def.base !== ' ' && def.base !== 'shift' ? `<span class="kb-shift">${def.base.startsWith('dead') || def.shift.toLowerCase() === def.base ? '' : zeroDot(def.shift)}</span><span class="kb-num">${FINGER_NUMBER[def.finger]}</span>` : '');
         r.appendChild(k);
         this.keys.set(def.code, k);
       }

@@ -1,4 +1,4 @@
-import { app, saveProfile } from '../../app/app';
+import { app } from '../../app/app';
 import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
 import type { ParticleShape } from '../../engine/particles';
@@ -11,7 +11,7 @@ import { keyLabel } from '../../ui/keyboard-guide';
 import { WORLDS } from '../levels';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
-import { BURST_COLORS, Bags, type Burst, type Effect, type Eyes, THINGS, type Thing, type Tier, nextThing, tierOf, tierPoints } from './aim-things';
+import { BURST_COLORS, Bags, type Burst, type Effect, type Eyes, STAY_WORLD_EVERY, THINGS, type Thing, type Tier, WORLD_THINGS, storyPool, tierOf, tierPoints, worldDue, worldThing } from './aim-things';
 import { HeroMode } from './planet';
 
 /** Seconds of play before the run ends with the throw in the air (staying a while has no end). */
@@ -20,8 +20,9 @@ export const AIM_SECONDS = 120;
 export const FALL_ERRORS = 3;
 /** How much lower the path runs after each wrong key. */
 const SINK = 24;
-/** How far the projectile drifts up off its path for each word not typed in time, clear of the ring. */
-const DRIFT = 100;
+/** How far the projectile drifts up off its path for each word not typed in time, and at most while the second half of a leg passes with its word untyped. */
+const DRIFT = 40;
+const LIVE_DRIFT = 30;
 /** Target radius at no accuracy and at full accuracy. */
 const BIG = 120;
 const SMALL = 48;
@@ -94,9 +95,9 @@ interface Flight {
   speed: number;
   /** The stop it flies to. */
   next: number;
-  /** Every word typed in time so far: only then the target is hit. */
-  clean: boolean;
+  /** Wrong keys, and the words of rings not typed in time: both rate the hit lower. */
   errors: number;
+  slips: number;
   sink: number;
   /** Where the leg to the next stop began; the drift of the words missed so far, and the drift shown now (negative = up). */
   from: number;
@@ -139,25 +140,29 @@ interface Mark {
   back?: boolean;
 }
 
-/** The target's eyes while they peek out. */
+/** The target's eyes while they peek out: up for the whole flight, then until `end` seconds after they came. */
 interface EyesUp {
   mood: Eyes;
   age: number;
+  end: number | null;
 }
 
 /** Chance of a line before the hit for things without lines of their own; share of bullseyes with the thing's own line. */
 const EXPECT_CHANCE = 0.25;
 const OWN_HIT = 0.7;
 /** Chances of the eyes: with a line before the hit, at a hit that wobbles the target, at a bullseye. */
-const EYES_EXPECT = 0.4;
+const EYES_EXPECT = 0.6;
 const EYES_DIZZY = 0.3;
 const EYES_SQUEEZE = 0.15;
-const EYES_TIME = 2;
-/** Seconds a line stays: per character, at least and at most (Tapko's calls are shorter). */
-const LINE_PER_CHAR = 0.06;
-const LINE_MIN = 1.6;
-const LINE_MAX = 3;
-const CALL_MAX = 2.4;
+/** Seconds the eyes stay after the flight ended (or after a hit brought them up), and to rise or sink. */
+const EYES_AFTER = 1.8;
+const EYES_RISE = 0.3;
+/** Seconds a line stays: per character, at least and at most (Tapko's calls are shorter); the next throw waits for the target's line this long at most. */
+const LINE_PER_CHAR = 0.085;
+const LINE_MIN = 2.2;
+const LINE_MAX = 4.2;
+const CALL_MAX = 3;
+const LINE_HOLD = 2.4;
 /** The common size of a thing in flight. */
 const THING_SIZE = 46;
 /** Seconds the cracked egg shows before the chick. */
@@ -184,8 +189,8 @@ function forcedThing(): string | null {
 /**
  * The target range of a world: a short word makes Tapko throw a funny thing at a target
  * through 4 rings; each ring and the target carry a word rich in the weak keys, longer toward
- * the target. The thing keeps flying; a ring passed before its word is typed spoils the
- * hit. A wrong key makes it sink, three make it fall softly; the target shrinks as the
+ * the target. The thing keeps flying; a ring passed before its word is typed rates the hit
+ * lower, the target's word typed too late misses it. A wrong key makes it sink, three make it fall softly; the target shrinks as the
  * weak keys get more accurate. Tapko names what he throws, the target talks back. Hits within
  * the base time are counted. No stars.
  */
@@ -206,8 +211,13 @@ export class AimMode extends HeroMode {
   centers = 0;
   private hitsEl = hitsPic();
   private readonly bags: Bags;
-  private prevThing: Thing | null = null;
   private throws = 0;
+  /** The world's thing comes with the last throw of the base time (1) or the one before (2); while staying, with throw `worldAt`. */
+  private readonly worldSlot: number;
+  private worldAt: number;
+  private worldThrown = false;
+  /** World things hit in the middle during this run: they join the collection only when the run ends, not when it is left early. */
+  private finds: string[] = [];
   /** Bullseyes in a row. */
   private streak = 0;
   private eyes: EyesUp | null = null;
@@ -234,10 +244,14 @@ export class AimMode extends HeroMode {
     this.radius = targetRadius(this.accuracy);
     this.hitsEl.set(0, 0);
     this.bags = new Bags(L.rng);
+    this.worldSlot = L.rng.chance(0.5) ? 1 : 2;
+    this.worldAt = L.rng.int(...STAY_WORLD_EVERY);
   }
 
+  /** The rules; with something in the collection, also how to swap the thing in the paw for one of it. */
   startLine(): string {
-    return t('aim.start', { keys: this.keys.map(keyLabel).join(' ') });
+    const rules = t('aim.start', { keys: this.keys.map(keyLabel).join(' ') });
+    return this.rare().length ? `${rules} ${t('aim.swapHint')}` : rules;
   }
 
   /** The rules stay up until the first throw. */
@@ -310,13 +324,60 @@ export class AimMode extends HeroMode {
     this.L.speak('tapko', text, this.heroX + 30, this.heroY - 225, this.heroX + 10, this.heroY - 172, Math.min(CALL_MAX, Math.max(LINE_MIN, text.length * LINE_PER_CHAR)));
   }
 
+  /**
+   * The next thing: the world's own one near the end of the base time (the last throw or the one
+   * before), every few throws while staying; else the story pool in shuffled rounds.
+   */
   private pickThing(): Thing {
     if (this.forced) {
       const ids = this.forced.split(',');
       const list = this.forced === 'all' ? THINGS.filter((th) => th.drawn || th.pics.some(hasImage)) : THINGS.filter((th) => ids.includes(th.id));
       if (list.length) return list[this.throws % list.length];
     }
-    return nextThing(this.L.def.world, this.L.rng, this.prevThing);
+    const own = worldThing(this.L.def.world);
+    if (own && this.L.staying && this.throws + 1 >= this.worldAt) {
+      this.worldAt = this.throws + 1 + this.L.rng.int(...STAY_WORLD_EVERY);
+      return own;
+    }
+    if (own && !this.L.staying && !this.worldThrown && worldDue(AIM_SECONDS - this.time, this.throwTime, this.worldSlot)) {
+      this.worldThrown = true;
+      return own;
+    }
+    return this.bags.draw('things', storyPool(this.L.def.world));
+  }
+
+  /** The collected world things that can be thrown. */
+  private rare(): Thing[] {
+    const found = app.profile!.progress.rangeFinds;
+    return WORLD_THINGS.filter((th) => found.includes(th.id) && th.pics.some(hasImage));
+  }
+
+  /** The thing of a throw: one of its pictures, and how an egg ends. */
+  private dress(f: Flight, th: Thing): void {
+    const pics = th.pics.filter(hasImage);
+    const roll = this.L.rng.next();
+    f.th = th;
+    f.pic = this.L.rng.pick(pics.length ? pics : th.pics);
+    f.egg = th.effect === 'egg' ? (roll < 0.5 ? 'splat' : roll < 0.75 ? 'hatch' : 'flight') : null;
+  }
+
+  /**
+   * Enter swaps the thing in the paw for a random one of the collection while it waits for its
+   * throw; the world's thing still to be found stays. False (the paws may take Enter) when there is
+   * nothing to swap.
+   */
+  onEnter(): boolean {
+    const f = this.flight;
+    if (f?.phase !== 'ready') return false;
+    const rare = this.rare().filter((th) => th !== f.th);
+    if (!rare.length) return false;
+    if (f.th.world != null && !app.profile!.progress.rangeFinds.includes(f.th.id)) return true;
+    this.dress(f, this.L.rng.pick(rare));
+    // The rules make room for Tapko's line.
+    if (this.firstThrow) this.L.hideBubble();
+    this.L.sfx('pop');
+    this.tapkoSays(t('aim.swap', { name: t(`aim.things.${f.th.id}.name`) }));
+    return true;
   }
 
   private throw(): void {
@@ -325,15 +386,13 @@ export class AimMode extends HeroMode {
       return { ...this.point(s), s, len, tg: null, typed: false, passed: 0, missed: false };
     });
     const th = this.pickThing();
-    this.prevThing = th;
     this.throws++;
-    const pics = th.pics.filter(hasImage);
-    const roll = this.L.rng.next();
     const f: Flight = {
-      th, pic: this.L.rng.pick(pics.length ? pics : th.pics), launch: null, stops, s: 0, speed: 0, next: 0, clean: true, errors: 0, sink: 0, from: 0, drift: 0, lift: 0,
+      th, pic: '', launch: null, stops, s: 0, speed: 0, next: 0, errors: 0, slips: 0, sink: 0, from: 0, drift: 0, lift: 0,
       phase: 'ready', counts: false, drop: 0, vy: 0, landed: false, after: 0, spin: 0,
-      egg: th.effect === 'egg' ? (roll < 0.5 ? 'splat' : roll < 0.75 ? 'hatch' : 'flight') : null, hatched: 0, expect: null, flown: 0, trail: [], smoke: 0,
+      egg: null, hatched: 0, expect: null, flown: 0, trail: [], smoke: 0,
     };
+    this.dress(f, th);
     this.flight = f;
     this.throwAt = this.time;
     const len = stops[0].len;
@@ -371,26 +430,26 @@ export class AimMode extends HeroMode {
     f.speed = (stop.s - f.s) / this.L.travelTime(stop.tg.word);
   }
 
-  /** The drift it heads for: the missed words, plus a share of one more as the leg passes with its word still untyped. */
+  /** The drift it heads for: the missed words, plus a little more as the second half of the leg passes with its word still untyped (until then it heads for the next stop). */
   private liftGoal(f: Flight): number {
     const stop = f.stops[f.next];
     if (f.phase !== 'fly' || stop.typed || !stop.tg) return f.drift;
     const leg = Math.min(1, (f.s - f.from) / Math.max(0.001, stop.s - f.from));
     const left = 1 - stop.tg.typed / stop.tg.word.length;
-    return f.drift - DRIFT * leg * left;
+    return f.drift - LIVE_DRIFT * Math.max(0, leg * 2 - 1) * left;
   }
 
-  /** The projectile reached its next stop: through the ring (or past it, too late), or at the target. */
+  /** The projectile reached its next stop: through the ring (or past it, too late: the hit gets lower), or at the target (missed when its word came too late). */
   private reach(f: Flight): void {
     const stop = f.stops[f.next];
     if (!stop.typed) {
       stop.missed = true;
-      f.clean = false;
+      f.slips++;
       f.drift -= DRIFT;
       if (stop.tg) this.L.core.release(stop.tg);
       stop.tg = null;
     }
-    if (f.next === f.stops.length - 1) return f.clean ? this.hit(f) : this.miss(f);
+    if (f.next === f.stops.length - 1) return stop.missed ? this.miss(f) : this.hit(f);
     stop.passed = 0.0001;
     if (stop.typed) this.L.particles.emit(stop.x, stop.y, 10, 'sparkle', ['#bfe8ff', '#ffffff', '#ffd1f5'], 140, 7);
     if ((f.next === 0 && f.expect === 'ring1') || (f.next === 1 && f.expect === 'ring2')) this.expectLine(f);
@@ -414,11 +473,18 @@ export class AimMode extends HeroMode {
     if (this.L.rng.chance(EYES_EXPECT)) this.eyesUp(mood);
   }
 
-  /** The eyes pop up: at most once a throw, never two throws in a row. */
+  /** The eyes pop up: at most once a throw, never two throws in a row; in flight they stay until it ends. */
   private eyesUp(mood: Eyes): void {
     if (this.eyesThrow >= this.throws - 1) return;
     this.eyesThrow = this.throws;
-    this.eyes = { mood, age: 0 };
+    this.eyes = { mood, age: 0, end: this.flight?.phase === 'fly' ? null : EYES_AFTER };
+  }
+
+  /** The flight ended: eyes that are up react to it and go a while later. */
+  private eyesReact(mood: Eyes): void {
+    if (!this.eyes) return;
+    this.eyes.mood = mood;
+    this.eyes.end = this.eyes.age + EYES_AFTER;
   }
 
   /** The egg cracks at ring 2 and the chick flies on. */
@@ -440,7 +506,7 @@ export class AimMode extends HeroMode {
     this.wobble = Math.max(0, this.wobble - dt);
     this.stars = Math.max(0, this.stars - dt);
     if (this.flash && (this.flash.t -= dt) <= 0) this.flash = null;
-    if (this.eyes && (this.eyes.age += dt) >= EYES_TIME) this.eyes = null;
+    if (this.eyes && (this.eyes.age += dt) >= (this.eyes.end ?? Infinity)) this.eyes = null;
     for (const m of this.marks) {
       m.age += dt;
       if (m.effect === 'boomerang' && !m.back && m.age >= BOOMERANG_BACK) {
@@ -470,8 +536,8 @@ export class AimMode extends HeroMode {
         f.vy += 900 * dt;
         f.drop = Math.min(ground, f.drop + f.vy * dt);
         if (f.drop >= ground) this.land(f);
-      } else if ((f.after += dt) >= PAUSE_AFTER && !this.L.speaking('target')) this.done1();
-    } else if ((f.after += dt) >= PAUSE_AFTER && !this.L.speaking('target')) this.done1();
+      } else if ((f.after += dt) >= PAUSE_AFTER && !this.L.speaking('target', LINE_HOLD)) this.done1();
+    } else if ((f.after += dt) >= PAUSE_AFTER && !this.L.speaking('target', LINE_HOLD)) this.done1();
     this.L.core.prune();
   }
 
@@ -488,7 +554,7 @@ export class AimMode extends HeroMode {
     }
   }
 
-  /** The throw is over (hit or fallen) and the target has finished its line; the next one comes until the time is up, or always while staying. */
+  /** The throw is over (hit or fallen) and the target's line has been up a while; the next one comes until the time is up, or always while staying. */
   private done1(): void {
     this.flight = null;
     this.throwTime = (this.throwTime + (this.time - this.throwAt)) / 2;
@@ -502,20 +568,21 @@ export class AimMode extends HeroMode {
     this.L.sfx('whoosh');
     this.L.shout(t('aim.miss'), this.target.x, this.target.y - this.radius - 40);
     this.targetSays(this.line('aim.lines.miss'));
+    this.eyesReact('happy');
   }
 
-  /** At the target (every word came in time): the middle without wrong keys, else lower on the rings; the target says how good it was. */
+  /** At the target (its word came in time): the middle without wrong keys or late words, else lower on the rings; the target says how good it was. */
   private hit(f: Flight): void {
     f.phase = 'hit';
     const tg = this.target, th = f.th;
-    const tier = tierOf(f.errors), center = tier === 'center';
+    const tier = tierOf(f.errors + f.slips), center = tier === 'center';
     if (f.counts) {
       this.hits++;
       if (center) this.centers++;
     }
     const side = this.L.rng.chance(0.5) ? 1 : -1;
     const dx = center ? 0 : side * this.L.rng.range(0.5, 0.75) * this.radius;
-    const dy = center ? 0 : (f.sink / (SINK * FALL_ERRORS)) * this.radius * 0.6;
+    const dy = center ? 0 : Math.max(-1, Math.min(1, (f.sink + f.lift) / (SINK * FALL_ERRORS))) * this.radius * 0.6;
     // An egg: hatched on the way, hatching on the target (only in the middle), or a splat.
     let effect = th.effect, pic = f.pic, own = `aim.things.${th.id}.hit`, sound: string | null = `aim.things.${th.id}.sound`, sfx = th.sfx;
     const mark: Mark = { th, pic, effect, dx, dy, age: 0 };
@@ -536,10 +603,11 @@ export class AimMode extends HeroMode {
     if (th.wobble) this.wobble = 1;
     if (th.stars) this.stars = 1.5;
     if (th.flash) this.flash = { color: th.flash, t: 0.8 };
-    if (th.wobble && this.L.rng.chance(EYES_DIZZY)) this.eyesUp('dizzy');
+    if (this.eyes) this.eyesReact(th.wobble ? 'dizzy' : center ? 'squeeze' : 'wide');
+    else if (th.wobble && this.L.rng.chance(EYES_DIZZY)) this.eyesUp('dizzy');
     else if (center && this.L.rng.chance(EYES_SQUEEZE)) this.eyesUp('squeeze');
     this.targetSays(this.hitLine(tier, own));
-    if (center && th.world != null) this.find(th);
+    if (center && f.counts && th.world != null) this.find(th);
     this.happy();
     this.L.setMood('happy', 1.2);
   }
@@ -556,14 +624,18 @@ export class AimMode extends HeroMode {
     return tList(own).length && this.L.rng.chance(OWN_HIT) ? this.line(own) : this.line('aim.lines.center');
   }
 
-  /** A world thing hit in the middle for the first time joins the collection. */
+  /** A world thing hit in the middle for the first time: it joins the collection when the run ends. */
   private find(th: Thing): void {
-    const p = app.profile!;
-    if (p.progress.rangeFinds.includes(th.id)) return;
-    p.progress.rangeFinds.push(th.id);
-    saveProfile();
+    if (app.profile!.progress.rangeFinds.includes(th.id) || this.finds.includes(th.id)) return;
+    this.finds.push(th.id);
     this.L.sfx('reward');
     this.tapkoSays(t('aim.collection.new'));
+  }
+
+  /** The run ended (not left early): what was found joins the collection; the runtime saves the profile. */
+  onFinish(): void {
+    app.profile!.progress.rangeFinds.push(...this.finds);
+    this.finds = [];
   }
 
   private land(f: Flight): void {
@@ -574,6 +646,7 @@ export class AimMode extends HeroMode {
     this.L.particles.emit(p.x, VH * 0.9, 8, 'puff', ['#ffffff', '#e8e2d6'], 80, 10, 0.6);
     this.L.shout(t('aim.plop'), p.x, VH * 0.9 - 60);
     this.targetSays(this.line('aim.lines.fall'));
+    this.eyesReact('happy');
   }
 
   onDone(tg: Target): void {
@@ -703,13 +776,16 @@ export class AimMode extends HeroMode {
   private drawEyes(g: G, x: number, y: number, r: number): void {
     const e = this.eyes;
     if (!e) return;
-    const rise = this.L.reduceMotion ? 1 : e.age < 0.3 ? ease.outBack(e.age / 0.3) : Math.min(1, (EYES_TIME - e.age) / 0.3);
-    const er = Math.max(10, r * 0.17);
-    const ey = y - r * 0.8 + er * 0.9 - rise * er * 1.4;
+    const rise = this.L.reduceMotion ? 1 : e.age < EYES_RISE ? ease.outBack(e.age / EYES_RISE) : Math.min(1, ((e.end ?? Infinity) - e.age) / EYES_RISE);
+    const er = Math.max(14, r * 0.24);
+    const ey = y - r * 0.8 + er * 0.9 - rise * er * 1.6;
     const f = this.flight;
-    const p = f && f.phase === 'fly' ? this.point(f.s) : null;
-    const blink = e.age > 1 && e.age < 1.12;
-    const mood = e.mood === 'squeeze' && e.age > 0.6 ? 'happy' : e.mood;
+    const p = f && (f.phase === 'fly' || f.phase === 'fall') ? this.point(f.s) : null;
+    const thing = p && f ? { x: p.x, y: p.y + f.sink + f.lift + f.drop } : null;
+    // A blink now and then; worried or glad eyes go wide as the thing comes close; squeezed ones smile after a moment.
+    const blink = e.age % 2.6 > 1 && e.age % 2.6 < 1.12;
+    const close = f?.phase === 'fly' && f.s > 0.82 && (e.mood === 'worry' || e.mood === 'happy');
+    const mood = e.mood === 'squeeze' && e.end != null && e.age > e.end - EYES_AFTER + 0.6 ? 'happy' : close ? 'wide' : e.mood;
     g.save();
     g.lineCap = 'round';
     g.strokeStyle = '#5a3d2b';
@@ -753,7 +829,7 @@ export class AimMode extends HeroMode {
         g.stroke();
       } else {
         // The pupils look at the thing in flight, else ahead to the left.
-        const dx = p ? p.x - ex : -1, dy = p ? p.y - ey : 0, d = Math.hypot(dx, dy) || 1;
+        const dx = thing ? thing.x - ex : -1, dy = thing ? thing.y - ey : 0, d = Math.hypot(dx, dy) || 1;
         const pr = er * (mood === 'wide' ? 0.3 : 0.42), reach = er * 0.35;
         g.fillStyle = '#3b2a1e';
         g.beginPath();

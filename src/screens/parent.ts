@@ -17,6 +17,7 @@ import { KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
 import { button, confirmDialog, download, h, modal } from '../ui/dom';
 import { tapkoElement } from '../gfx/tapko';
 import { numberPick, profileCard } from '../ui/profile-card';
+import { MAX_PER_ROW, rowSplit } from '../ui/rows';
 import { cornerControls, starRow } from '../ui/chrome';
 import { barTabLinks, tabBar } from '../ui/tabs';
 import { openCertificate } from './certificate';
@@ -51,16 +52,30 @@ function childSwitch(p: Profile, others: Profile[], tab: () => string): HTMLElem
   };
   const b = button(h('span', { class: 'switch-label' }, tapkoElement(p.companion, 'idle', 28), h('span', {}, nickname(p))), () => {
     const choose = (q: Profile) => { close(); void pick(q); };
-    const dialog = h('div', { class: 'switch-dialog' },
-      h('h2', {}, t('parent.switchTitle')),
-      h('div', { class: 'switch-list' }, ...others.map((q, i) => profileCard(q, i, () => choose(q)))));
+    const cards = others.map((q, i) => profileCard(q, i, () => choose(q)));
+    const list = h('div', { class: 'switch-list' });
+    const dialog = h('div', { class: 'switch-dialog' }, h('h2', {}, t('parent.switchTitle')), list);
     dialog.addEventListener('keydown', (e) => {
       const i = numberPick(e, others.length);
       if (i === null) return;
       e.preventDefault();
       choose(others[i]);
     });
-    const close = modal(dialog, { cls: 'confirm-modal' });
+    // As many cards in a row as the window has room for (at most five), in balanced rows.
+    let perRow = 0;
+    const place = () => {
+      const gap = parseFloat(getComputedStyle(list).columnGap) || 0;
+      const room = list.clientWidth - parseFloat(getComputedStyle(list).paddingLeft) * 2;
+      const per = Math.max(1, Math.min(MAX_PER_ROW, Math.floor((room + gap) / (cards[0].offsetWidth + gap))));
+      if (per === perRow) return;
+      perRow = per;
+      let at = 0;
+      list.replaceChildren(...rowSplit(cards.length, per).map((size) => h('div', { class: 'profile-row' }, ...cards.slice((at += size) - size, at))));
+    };
+    list.append(...cards);
+    const close = modal(dialog, { cls: 'switch-modal', onClose: () => removeEventListener('resize', place) });
+    place();
+    addEventListener('resize', place);
   }, 'btn small switch-btn');
   b.dataset.tip = t('parent.switchTitle');
   return b;

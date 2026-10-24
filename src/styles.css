@@ -412,10 +412,11 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
 }
 @media (min-height: 1000px) { .start-card { min-width: 640px; padding-inline: 36px; } }
 /* The logo face has a picture for each look. */
-.logo-face { display: block; }
-.logo-face > img { display: block; width: 100%; }
-.logo-face > .on-dark, :root[data-theme='dark'] .logo-face > .on-light { display: none; }
-:root[data-theme='dark'] .logo-face > .on-dark { display: block; }
+.logo-face { display: grid; }
+/* Both faces lie on each other; a theme switch cross-fades them. */
+.logo-face > img { display: block; width: 100%; grid-area: 1 / 1; transition: opacity 0.8s ease; }
+.logo-face > .on-dark, :root[data-theme='dark'] .logo-face > .on-light { opacity: 0; }
+:root[data-theme='dark'] .logo-face > .on-dark { opacity: 1; }
 .card-logo { position: absolute; left: 50%; top: calc(var(--logo) / -2); width: var(--logo); transform: translateX(-50%); filter: drop-shadow(0 8px 12px var(--soft-shadow)); }
 .start-card h2 { margin: 0; font-size: 2rem; }
 @media (max-height: 699px) {
@@ -478,11 +479,15 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
 .meadow { position: absolute; left: 0; right: 0; bottom: 0; height: var(--meadow-h); background-repeat: repeat-x; background-position: left bottom; background-size: calc(var(--meadow-h) * 922 / 392) 100%; filter: blur(0.6px); }
 .sky-night { opacity: 0; transition: opacity 0.8s ease; }
 .start-sky[data-look='dark'] .sky-night { opacity: 1; }
-/* One meadow at a time: the coming one fades in over the leaving one, which then goes. */
-.meadow-night { opacity: 0; transition: opacity 0.5s ease 0.6s; }
-.meadow-day { transition: opacity 0.8s ease; }
-.start-sky[data-look='dark'] .meadow-night { opacity: 1; transition: opacity 0.8s ease; }
-.start-sky[data-look='dark'] .meadow-day { opacity: 0; transition: opacity 0.5s ease 0.6s; }
+/*
+ * The night meadow (smaller, closed flowers) always lies under the day one: at dusk it is there
+ * first and the open flowers fade off it; at dawn the open flowers fade in over it and cover the
+ * buds, and only then it goes.
+ */
+.meadow-night { opacity: 0; transition: opacity 0.3s ease 1s; }
+.meadow-day { transition: opacity 1s ease; }
+.start-sky[data-look='dark'] .meadow-night { opacity: 1; transition: opacity 0.3s ease; }
+.start-sky[data-look='dark'] .meadow-day { opacity: 0; transition: opacity 1s ease 0.2s; }
 .sky-band { position: absolute; overflow: hidden; -webkit-mask-image: linear-gradient(to top, transparent, #000 28px); mask-image: linear-gradient(to top, transparent, #000 28px); }
 .sky-piece { position: absolute; display: block; }
 .sky-piece > img { display: block; width: 100%; }
@@ -509,7 +514,16 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
 .meadow-life { position: absolute; left: 0; right: 0; bottom: 0; height: var(--meadow-h); }
 .bfly, .ffly { position: absolute; }
 .bfly { width: var(--w); transition: transform 1.2s cubic-bezier(0.3, 0, 0.3, 1) 1.3s, opacity 0.8s ease 1.3s; }
-.bfly > img { display: block; width: 100%; animation: flutter var(--t, 6s) ease-in-out infinite; animation-delay: var(--d, 0s); }
+/* A trip: out (a little up), a turn, back the same way, another turn; the rest of the time it flutters in place. */
+.bfly-trip { display: block; animation: trip var(--trip, 30s) ease-in-out infinite; animation-delay: var(--td, 0s); }
+.bfly-trip > img { display: block; width: 100%; animation: flutter var(--t, 6s) ease-in-out infinite; animation-delay: var(--d, 0s); }
+@keyframes trip {
+  0%, 30% { translate: 0 0; scale: 1 1; }
+  48% { translate: var(--far) calc(var(--w) * -0.4); scale: 1 1; }
+  52% { translate: var(--far) calc(var(--w) * -0.4); scale: -1 1; }
+  70% { translate: 0 0; scale: -1 1; }
+  74%, 100% { translate: 0 0; scale: 1 1; }
+}
 .start-sky[data-look='dark'] .bfly { transform: translateY(calc(var(--meadow-h) * 0.5)) scale(0.6); opacity: 0; transition-delay: 0s, 0.3s; }
 @keyframes flutter {
   0%, 100% { transform: translate(0, 0) rotate(-6deg) scaleX(1); }
@@ -741,6 +755,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .kb-key.bump::after { content: ''; position: absolute; bottom: 7px; left: 50%; width: 12px; height: 3px; margin-left: -6px; border-radius: 2px; background: var(--bump); }
 .kb-shift { position: absolute; top: 2px; left: 5px; font-size: 0.62em; color: var(--ink-soft); }
 .kb-num { position: absolute; top: 2px; right: 5px; font-size: 0.55em; color: var(--ink-soft); }
+.kb-zero { position: relative; }
+.kb-zero::after { content: ''; position: absolute; left: 50%; top: 50%; width: max(1.5px, 0.11em); height: 0.8em; border-radius: 1px; background: currentColor; transform: translate(-50%, -50%) rotate(38deg); }
 .kb-key.next { background: var(--next-bg); color: var(--next-ink); transform: translateY(-3px) scale(1.08); box-shadow: 0 0 0 3px var(--surface), 0 0 0 6px var(--finger), 0 8px 14px rgba(0, 0, 0, 0.2); z-index: 1; animation: key-glow 1s ease-in-out infinite; }
 .kb-key.next .kb-shift, .kb-key.next .kb-num { color: var(--next-ink); opacity: 0.85; }
 .kb-key.next2 { box-shadow: inset 0 -5px 0 var(--finger), 0 0 0 3px var(--finger); background: var(--tint-yellow); }
@@ -1150,7 +1166,8 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-ink); }
 .child-nick > .field { margin-bottom: 0; }
 .switch-btn { height: 48px; min-height: 48px; }
 .switch-label { display: inline-flex; align-items: center; gap: 0.4rem; }
-.switch-list { display: flex; flex-wrap: wrap; gap: clamp(0.5rem, 1.5vw, 1rem); justify-content: center; max-height: 60vh; overflow-y: auto; padding: 14px 12px 20px; }
+.switch-modal { width: min(940px, 100%); }
+.switch-list { display: flex; flex-direction: column; align-items: center; gap: clamp(0.5rem, 1.5vw, 1rem); column-gap: clamp(0.5rem, 1.5vw, 1rem); max-height: 60vh; overflow-y: auto; padding: 14px 12px 20px; }
 .lock-input { max-width: 320px; text-align: center; }
 .lock-input.shake { animation: wobble 0.4s ease; }
 .lock-dialog .error { min-height: 1.4em; }
@@ -1295,11 +1312,11 @@ body.reduce-motion .tip { transform: none; }
 @media (prefers-reduced-motion: reduce) { .tip { transform: none; } }
 
 /*
- * A theme switch fades the surfaces in 0.8 s and switches the text at the midpoint, when every
- * background is half way, so text never fades into a background fading toward it. The start
- * page's sky and meadow fade on the same time (their own pieces play the longer change).
+ * A theme switch fades the surfaces and the text colors together in 0.8 s. The start page's sky
+ * and meadow fade on the same time (their own pieces play the longer change); the logo's two
+ * faces cross-fade on their own.
  */
-html.theme-fade *:not(.start-sky, .start-sky *) { transition: background-color 0.8s ease, border-color 0.8s ease, box-shadow 0.8s ease, fill 0.8s ease, stroke 0.8s ease !important; }
+html.theme-fade *:not(.start-sky, .start-sky *, .logo-face > img) { transition: background-color 0.8s ease, border-color 0.8s ease, box-shadow 0.8s ease, fill 0.8s ease, stroke 0.8s ease !important; }
 /* The text colors are registered, so <html> alone holds them and every text inherits one switch. */
 @property --ink { syntax: '<color>'; inherits: true; initial-value: #3b2a3f; }
 @property --ink-soft { syntax: '<color>'; inherits: true; initial-value: #6b5a70; }
@@ -1310,7 +1327,7 @@ html.theme-fade *:not(.start-sky, .start-sky *) { transition: background-color 0
 @property --red-ink { syntax: '<color>'; inherits: true; initial-value: #9b2c28; }
 @property --gold-ink { syntax: '<color>'; inherits: true; initial-value: #7a4b00; }
 @property --tip-ink { syntax: '<color>'; inherits: true; initial-value: #fff; }
-html.theme-fade { transition: --ink 0s linear 0.4s, --ink-soft 0s linear 0.4s, --brand-ink 0s linear 0.4s, --green-ink 0s linear 0.4s, --danger-ink 0s linear 0.4s, --orange-ink 0s linear 0.4s, --red-ink 0s linear 0.4s, --gold-ink 0s linear 0.4s, --tip-ink 0s linear 0.4s; }
+html.theme-fade { transition: --ink 0.8s ease, --ink-soft 0.8s ease, --brand-ink 0.8s ease, --green-ink 0.8s ease, --danger-ink 0.8s ease, --orange-ink 0.8s ease, --red-ink 0.8s ease, --gold-ink 0.8s ease, --tip-ink 0.8s ease; }
 
 /* Reduce motion */
 body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after { animation-duration: 0.001s !important; animation-iteration-count: 1 !important; transition-duration: 0.001s !important; }

@@ -458,7 +458,7 @@ export class LevelRuntime {
       onEscape: () => (this.paused ? this.resume() : this.free ? this.exit() : this.opts.stay ? this.endPractice() : this.pause()),
       onRaw: (code, key, shift) => this.onRaw(code, key, shift),
       // A target waiting for Enter takes it; else the Enter that closed a card just before play is not a call for the paw.
-      onEnter: () => (this.free ? this.freeSend() : this.waitsEnter ? this.typeEnter() : performance.now() - this.begunAt >= ENTER_GUARD_MS && this.startPaws()),
+      onEnter: () => (this.free ? this.freeSend() : this.waitsEnter ? this.typeEnter() : performance.now() - this.begunAt >= ENTER_GUARD_MS && (this.modeEnter() || this.startPaws())),
       onBackspace: () => { if (this.free) this.freeErase(); },
       // A pause or a dialog: the keys belong to its buttons.
       idle: () => this.paused || !!document.querySelector('.modal-back'),
@@ -562,6 +562,11 @@ export class LevelRuntime {
   /** The locked target has its letters and waits for Enter. */
   private get waitsEnter(): boolean {
     return !!this.core.locked && this.core.expectedChar() === ENTER;
+  }
+
+  /** The mode may take an Enter no word waits for, while playing. */
+  private modeEnter(): boolean {
+    return this.started && !this.paused && !this.finished && this.mode.onEnter();
   }
 
   /** Enter finishes a waiting target like any other key of it. */
@@ -836,9 +841,9 @@ export class LevelRuntime {
     if (this.saidEl) this.saidEl.textContent = text;
   }
 
-  /** The speaker's bubble is still up. */
-  speaking(who: string): boolean {
-    return this.speeches.some((s) => s.who === who);
+  /** The speaker's bubble is still up (and has been up less than `within` seconds). */
+  speaking(who: string, within = Infinity): boolean {
+    return this.speeches.some((s) => s.who === who && s.age < within);
   }
 
   /** Someone is glad: a cheer ("Hurá!") pops up above Tapko, or at `at`, with the cheer sound; returns the cheer. */
@@ -1267,6 +1272,7 @@ export class LevelRuntime {
 
   private finish(): void {
     this.finished = true;
+    this.mode.onFinish();
     if (this.pawWords) this.stopPaws();
     this.input?.dispose();
     this.input = null;

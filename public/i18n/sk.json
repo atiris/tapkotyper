@@ -831,6 +831,7 @@
     "title": "Môj postup",
     "keys": "Klávesy, ktoré ti idú dobre a rýchlo: {n} z {total}",
     "worlds": "Dokončené svety: {n} z {total}",
+    "finds": "Vzácne veci zo strelníc: {n} z {total}",
     "stories": "Dokončené príbehy: {n} z {total}",
     "stars": "Hviezdičky spolu: {n}",
     "tabProgress": "Postup",
@@ -1869,7 +1870,9 @@
   },
   "aim": {
     "title": "Strelnica",
-    "start": "Tapko hádže na terč! Napíš slovo na každom kruhu skôr, než ním vec preletí, a nakoniec slovo na terči. Keď stihneš všetky, trafíš do stredu. Trénuješ: {keys}",
+    "start": "Tapko hádže na terč! Napíš slovo na každom kruhu skôr, než ním vec preletí, a nakoniec slovo na terči. Načas a bez chyby trafíš do stredu. Trénuješ: {keys}",
+    "swapHint": "Enterom vymeníš vec v labke za vzácnu zo zbierky.",
+    "swap": "Zo zbierky: {name}!",
     "keys": "Písmená na tréning",
     "ready": "Výborne! {keys} už píšeš presne.",
     "plop": "Plop!",
@@ -1959,7 +1962,7 @@
       ]
     },
     "collection": {
-      "new": "Nová vec do zbierky!",
+      "new": "Vzácna vec! Dohádž do konca a je tvoja.",
       "count": "Zbierka: {n} z 15",
       "waiting": "Čaká v svete {world}"
     },

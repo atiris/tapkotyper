@@ -49,19 +49,21 @@ export function skyScene(screen: HTMLElement, under: () => (Element | null)[], b
     const src = imageUrl(image);
     return h('div', { class: `meadow ${cls}`, style: src ? `background-image: url("${src}")` : '' });
   };
-  // One of each butterfly by day; fireflies are glowing dots (the sprite's edge shows at this size).
-  // They stay in the meadow's lower part, where the content never reaches (its bottom 60 %).
-  const butterflies = [['obj-butterfly', 0.07, 0.5, 48, 6.2], ['obj-butterfly-2', 0.36, 0.44, 40, 7.4], ['obj-butterfly-3', 0.6, 0.52, 44, 5.6]] as const;
+  // One of each butterfly by day, up among the flower heads; each wanders off now and then, turns
+  // round and comes back (`far` px in `trip` s). Fireflies are glowing dots (the sprite's edge shows at this size)
+  // and stay in the meadow's lower part, where the content never reaches (its bottom 60 %).
+  const butterflies = [['obj-butterfly', 0.07, 0.22, 48, 6.2, 140, 30], ['obj-butterfly-2', 0.36, 0.16, 40, 7.4, 110, 34], ['obj-butterfly-3', 0.6, 0.26, 44, 5.6, 160, 27]] as const;
   const fireflies = [[0.1, 0.6, 1.2], [0.3, 0.5, 1.5], [0.52, 0.66, 1.8], [0.74, 0.52, 2.1]] as const;
   const life = h('div', { class: 'meadow-life' },
-    ...butterflies.map(([image, x, y, w, t], i) => {
+    ...butterflies.map(([image, x, y, w, t, far, trip], i) => {
       const src = imageUrl(image);
-      return h('div', { class: 'bfly', style: `left: ${x * 100}%; top: ${y * 100}%; --w: calc(${w}px * var(--meadow-h) / 190px); --t: ${t}s; --d: ${-i * 1.7}s` }, src ? h('img', { src, alt: '' }) : null);
+      return h('div', { class: 'bfly', style: `left: ${x * 100}%; top: ${y * 100}%; --w: calc(${w}px * var(--meadow-h) / 190px); --t: ${t}s; --d: ${-i * 1.7}s; --far: calc(${far}px * var(--meadow-h) / 190px); --trip: ${trip}s; --td: ${-i * 11}s` },
+        h('span', { class: 'bfly-trip' }, src ? h('img', { src, alt: '' }) : null));
     }),
     ...fireflies.map(([x, y, at], i) => h('div', { class: 'ffly', style: `left: ${x * 100}%; top: ${y * 100}%; --in: ${at}s; --d: ${-i * 1.3}s` }, h('i'))));
   const el = h('div', { class: 'start-sky still', 'aria-hidden': 'true', 'data-look': shownLook() },
     h('div', { class: 'sky-layer sky-day' }), h('div', { class: 'sky-layer sky-night' }),
-    band, meadow('meadow-day', 'ui-start-meadow'), meadow('meadow-night', 'ui-start-meadow-night'), life);
+    band, meadow('meadow-night', 'ui-start-meadow-night'), meadow('meadow-day', 'ui-start-meadow'), life);
   el.classList.toggle('calm', reduceMotion());
 
   /** The sun's size and where the sun and moon rest, for the arcs. */

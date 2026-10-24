@@ -564,6 +564,8 @@ Cute, soft 2D children's game icon, flat vector style with gentle gradients, sof
 
 ### ui-accuracy.jpg (accuracy in 14 days chip in the stats; an arrow in the middle of a target; the owner's picture)
 
+### ui-chest.jpg (range finds chip in the stats, between worlds and accuracy; a pastel treasure chest with gems and leaves; the owner's picture 2026-10-24)
+
 ### ui-typing-speed.jpg (speed in 14 days chip in the stats; an arrow made of keys; the owner's picture 2026-10-23, replaced ui-speed)
 
 ### ui-icon-hr.jpg (the same fox head with thinner lines, for the large logo on the start page; the owner's picture 2026-10-23)

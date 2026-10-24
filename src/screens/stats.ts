@@ -2,6 +2,7 @@ import { app, go, layout, reduceMotion } from '../app/app';
 import { imageUrl } from '../gfx/assets';
 import { type Mood, otherMood, renderTapkoInto, tapkoElement } from '../gfx/tapko';
 import { STORIES, type StoryDef, WORLDS, storyDone, storyOpen } from '../game/levels';
+import { WORLD_THINGS } from '../game/modes/aim-things';
 import { badgeTier, worldStars } from '../game/rewards';
 import { t } from '../i18n/i18n';
 import { allKeys } from '../keyboard/layouts';
@@ -107,7 +108,7 @@ function chip(pic: string | null, glyph: string, text: string, label: string): H
     pic ? h('img', { src: pic, alt: '' }) : h('span', { class: 'sum-glyph' }, glyph), h('b', {}, text));
 }
 
-/** The long-term picture: mastered keys, finished stories and worlds, stars, and the accuracy, speed and letters of the last 14 days. */
+/** The long-term picture: mastered keys, finished stories and worlds, range finds, stars, and the accuracy, speed and letters of the last 14 days. */
 export function summaryRow(p: Profile): HTMLElement {
   const m = masterySummary(p);
   const stories = STORIES.filter((x) => storyDone(p, x)).length;
@@ -117,6 +118,7 @@ export function summaryRow(p: Profile): HTMLElement {
     chip(imageUrl('ui-key'), '⌨', `${m.mastered}/${m.total}`, t('progress.keys', { n: m.mastered, total: m.total })),
     chip(imageUrl('ui-level'), '▲', `${stories}/${STORIES.length}`, t('progress.stories', { n: stories, total: STORIES.length })),
     chip(imageUrl('ui-earth'), '●', `${p.progress.worldsDone.length}/${WORLDS.length}`, t('progress.worlds', { n: p.progress.worldsDone.length, total: WORLDS.length })),
+    chip(imageUrl('ui-chest'), '◆', `${p.progress.rangeFinds.length}/${WORLD_THINGS.length}`, t('progress.finds', { n: p.progress.rangeFinds.length, total: WORLD_THINGS.length })),
     recent.chars ? chip(imageUrl('ui-accuracy'), '✓', `${percent} %`, t('progress.quality', { n: percent })) : null,
     recent.cpm ? chip(imageUrl('ui-typing-speed'), '»', String(recent.cpm), t('progress.speed', { n: recent.cpm })) : null,
     chip(imageUrl('ui-star'), '★', String(p.progress.starsEarned), t('progress.stars', { n: p.progress.starsEarned })),

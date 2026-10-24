@@ -74,14 +74,17 @@
 - **The start page's sky and meadow.** A repeating meadow strip along the bottom and a few sky
   pieces in the top left corner, never behind text: the sun and two clouds by day, the moon and
   three stars by night. Farther pieces are softer (blurred more). By day three butterflies (one of
-  each kind) flutter low over the meadow, by night a few fireflies glow there. Switching the theme
+  each kind) flutter up among the flower heads; now and then (about every half a minute) each
+  flies a bit farther, turns round and comes back, by night a few fireflies glow there. Switching the theme
   plays a short sped-up night and day (about 2.5 s): the old light moves to the right along an arc
   and melts away on the way (fades, softens), high in the sky, never at an edge the page does not
   show, while the new one comes out of the air from the left along the same arc, stars and fireflies fade or sink into
   the grass, butterflies settle or fly up, and the sky and meadow cross-fade. The night meadow has
   the same plants with their flowers closed for the night (daisies and buttercups in buds, the
-  dandelion without its seed ball); only one meadow shows at a time, the day one never shows
-  through the night one. With reduced motion
+  dandelion without its seed ball, smaller than the open ones). The night meadow always lies under
+  the day one: at dusk it is there first and the open flowers fade off it, at dawn the open
+  flowers fade in over the buds and cover them, so the two never look doubled. The logo face and
+  every text fade into the new look together with the surfaces, never in one jump. With reduced motion
   it is a short cross-fade and nothing moves. Only the start page has this scene.
 - **Dark theme** ("dark enough, not black"): a deep violet night sky as the page background, dark
   violet paper for panels and cards, cream text. It follows the system's setting until the

@@ -4,7 +4,7 @@ import { Rng } from '../../engine/rng';
 
 vi.mock('../../gfx/assets', () => ({ hasImage: () => true }));
 
-const { Bags, THINGS, WORLD_THINGS, nextThing, storyPool, tierOf, tierPoints, worldThing } = await import('./aim-things');
+const { Bags, THINGS, WORLD_THINGS, storyPool, tierOf, tierPoints, worldDue, worldThing } = await import('./aim-things');
 const { STORIES, WORLDS } = await import('../levels');
 
 const dicts = { sk: JSON.parse(readFileSync('public/i18n/sk.json', 'utf8')), en: JSON.parse(readFileSync('public/i18n/en.json', 'utf8')) };
@@ -45,25 +45,21 @@ describe('things to throw', () => {
     for (const w of WORLDS.keys()) expect(storyPool(w).some((th) => th.world != null)).toBe(false);
   });
 
-  it('throws the world thing first, never outside its world, never the same thing twice in a row', () => {
-    for (const w of WORLDS.keys()) {
-      const rng = new Rng(w + 1);
-      let prev = nextThing(w, rng, null);
-      expect(prev).toBe(worldThing(w));
-      let own = 0;
-      for (let i = 0; i < 400; i++) {
-        const th = nextThing(w, rng, prev);
-        expect(th).not.toBe(prev);
-        if (th.world != null) {
-          expect(th.world).toBe(w);
-          own++;
-        }
-        prev = th;
-      }
-      // About one throw of five.
-      expect(own).toBeGreaterThan(40);
-      expect(own).toBeLessThan(120);
-    }
+  it('brings the world thing with the last throw or the one before, judged by the time left', () => {
+    expect(worldDue(30, 14, 2)).toBe(false);
+    expect(worldDue(27, 14, 2)).toBe(true);
+    expect(worldDue(27, 14, 1)).toBe(false);
+    expect(worldDue(13, 14, 1)).toBe(true);
+    expect(worldDue(0, 14, 1)).toBe(false);
+    for (const w of WORLDS.keys()) expect(worldThing(w)?.world).toBe(w);
+  });
+
+  it('draws things in shuffled rounds: each once before any comes again, never twice in a row', () => {
+    const pool = storyPool(0);
+    const bags = new Bags(new Rng(5));
+    const drawn = Array.from({ length: pool.length * 3 }, () => bags.draw('things', pool));
+    for (let round = 0; round < 3; round++) expect(new Set(drawn.slice(round * pool.length, (round + 1) * pool.length)).size).toBe(pool.length);
+    drawn.slice(1).forEach((th, i) => expect(th).not.toBe(drawn[i]));
   });
 });
 

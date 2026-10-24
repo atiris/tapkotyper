@@ -129,7 +129,7 @@ test('settings: nickname first and required, name optional, word language, key f
 
   await page.locator('.tab[data-tab=dashboard]').click();
   await expect(page.locator('.dashboard .cards')).toHaveCount(0);
-  await expect(page.locator('.dashboard .sum-chip')).toHaveCount(5);
+  await expect(page.locator('.dashboard .sum-chip')).toHaveCount(6);
   await expect(page.locator('.story-levels')).toHaveCount(3);
   await expect(page.locator('.story-levels').first().locator('.world-levels').first().locator('.level-cell')).not.toHaveCount(0);
 });

@@ -64,6 +64,12 @@ export abstract class Mode {
   bubbleSpot(): { x: number; y: number } | null {
     return null;
   }
+  /** Enter that no word waits for; true when the mode took it (else it may call the paws). */
+  onEnter(): boolean {
+    return false;
+  }
+  /** The level ended on its own or on request, not left early. */
+  onFinish(): void {}
   onCorrect(_t: Target): void {}
   onDone(_t: Target): void {}
   onWrong(_t: Target | null): void {}

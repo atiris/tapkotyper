@@ -11,11 +11,15 @@ vi.mock('../../app/app', async () => {
 vi.mock('../../ui/dom', () => ({ h: () => ({ replaceChildren: () => {} }) }));
 vi.mock('../../ui/keyboard-guide', () => ({ keyLabel: (k: string) => k }));
 vi.mock('../../ui/hud', () => ({ hitsPic: () => ({ el: {}, set: () => {} }) }));
+// No pictures (only the things drawn in code fly), unless a test turns them all on.
+const pictures = vi.hoisted(() => ({ all: false }));
+vi.mock('../../gfx/assets', async (original) => ({ ...(await original<typeof import('../../gfx/assets')>()), hasImage: () => pictures.all }));
 
 const sk = JSON.parse(readFileSync('public/i18n/sk.json', 'utf8'));
 useDictionaries('sk', sk);
 
 const { AIM_SECONDS, AimMode, FALL_ERRORS, RINGS, pickWord, targetRadius, throwLengths, weakCount } = await import('./aim');
+const { app } = await import('../../app/app');
 
 function fakeRuntime(extra: Record<string, unknown> = {}): LevelRuntime {
   const base: Record<string, unknown> = {
@@ -99,10 +103,10 @@ describe('target range', () => {
       typeRing(mode, L);
     }
     run(mode, L, 0.5);
-    // Tapko named the pebble at the throw; the target says a bullseye line and the impact sound pops up.
-    expect(L.speak).toHaveBeenCalledWith('tapko', expect.toBeOneOf(tList('aim.things.pebble.launch')), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number));
-    expect(L.speak).toHaveBeenLastCalledWith('target', expect.toBeOneOf([...tList('aim.lines.center'), ...tList('aim.things.pebble.hit')]), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), true);
-    expect(L.shout).toHaveBeenCalledWith(t('aim.things.pebble.sound'), expect.any(Number), expect.any(Number));
+    // Tapko named the tomato (the first of the shuffled pool with this rng) at the throw; the target says a bullseye line and the impact sound pops up.
+    expect(L.speak).toHaveBeenCalledWith('tapko', expect.toBeOneOf(tList('aim.things.tomato.launch')), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number));
+    expect(L.speak).toHaveBeenLastCalledWith('target', expect.toBeOneOf([...tList('aim.lines.center'), ...tList('aim.things.tomato.hit')]), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), true);
+    expect(L.shout).toHaveBeenCalledWith(t('aim.things.tomato.sound'), expect.any(Number), expect.any(Number));
     expect([mode.hits, mode.centers]).toEqual([1, 1]);
     run(mode, L, 2);
     // The next throw waits for its launch word.
@@ -126,7 +130,7 @@ describe('target range', () => {
     expect([mode.hits, mode.centers]).toEqual([1, 0]);
   });
 
-  it('a ring passed before its word is typed drifts the projectile off, past the target', () => {
+  it('a ring passed before its word is typed still hits, off the middle like a wrong key', () => {
     const L = fakeRuntime();
     const mode = new AimMode(L);
     mode.start();
@@ -139,10 +143,8 @@ describe('target range', () => {
       typeRing(mode, L);
       run(mode, L, 0.5);
     }
-    expect(L.shout).toHaveBeenCalledTimes(1);
-    expect(L.shout).toHaveBeenCalledWith(t('aim.miss'), expect.any(Number), expect.any(Number));
-    expect(L.speak).toHaveBeenLastCalledWith('target', expect.toBeOneOf(tList('aim.lines.miss')), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), true);
-    expect(mode.hits).toBe(0);
+    expect(L.speak).toHaveBeenLastCalledWith('target', expect.toBeOneOf(tList('aim.lines.one', { n: 85 })), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), true);
+    expect([mode.hits, mode.centers]).toEqual([1, 0]);
   });
 
   it('a target word too late misses the target without a mistake', () => {
@@ -187,6 +189,42 @@ describe('target range', () => {
     expect(mode.finished).toBe(true);
     expect(mode.progress()).toBe(1);
     expect(mode.report()).toEqual([{ key: 'k', before: 0, after: 0 }]);
+  });
+
+  it('throws the world\'s thing once, last or one before last, and keeps a bullseye with it only when the run ends', () => {
+    pictures.all = true;
+    const L = fakeRuntime();
+    const mode = new AimMode(L);
+    mode.start();
+    const launches: string[] = [];
+    for (let i = 0; i < 400 && !mode.finished; i++) {
+      run(mode, L, 0.5);
+      typeRing(mode, L);
+    }
+    for (const [who, text] of vi.mocked(L.speak).mock.calls) if (who === 'tapko' && text !== t('aim.collection.new')) launches.push(text);
+    const own = launches.map((text) => tList('aim.things.ladybug.launch').includes(text));
+    expect(own.filter(Boolean)).toHaveLength(1);
+    expect(own.slice(-2)).toContain(true);
+    // Found in the middle, but the collection takes it only now.
+    expect(L.speak).toHaveBeenCalledWith('tapko', t('aim.collection.new'), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number));
+    expect(app.profile!.progress.rangeFinds).toEqual([]);
+    mode.onFinish();
+    expect(app.profile!.progress.rangeFinds).toEqual(['ladybug']);
+  });
+
+  it('Enter swaps the thing in the paw for one of the collection, never the world\'s thing still to find', () => {
+    pictures.all = true;
+    app.profile!.progress.rangeFinds = ['rocket'];
+    const L = fakeRuntime();
+    const mode = new AimMode(L);
+    expect(mode.startLine()).toContain(t('aim.swapHint'));
+    mode.start();
+    expect(mode.onEnter()).toBe(true);
+    expect(L.speak).toHaveBeenLastCalledWith('tapko', t('aim.swap', { name: t('aim.things.rocket.name') }), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number));
+    // Nothing else to swap to: Enter is left to the paws.
+    expect(mode.onEnter()).toBe(false);
+    app.profile!.progress.rangeFinds = [];
+    expect(mode.onEnter()).toBe(false);
   });
 
   it('staying a while keeps throwing after two minutes', () => {

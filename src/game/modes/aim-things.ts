@@ -157,15 +157,15 @@ export function worldThing(world: number): Thing | null {
   return th && ready(th) ? th : null;
 }
 
-/** About one throw of five is the world's thing. */
-const WORLD_SHARE = 0.2;
+/** Throws between two world things while staying a while (no end, so no last throw). */
+export const STAY_WORLD_EVERY: [number, number] = [6, 10];
 
-/** The next thing: the world's own one first, then now and then; else one from the story pool; never the same twice in a row. */
-export function nextThing(world: number, rng: Rng, prev: Thing | null): Thing {
-  const own = worldThing(world);
-  if (own && (!prev || (prev !== own && rng.chance(WORLD_SHARE)))) return own;
-  const pool = storyPool(world).filter((th) => th !== prev);
-  return rng.pick(pool);
+/**
+ * The world's thing is due: in the base time with the last throw or the one before (`slot` 1 or 2
+ * counted from the end), judged by the seconds left and an average throw's length.
+ */
+export function worldDue(left: number, throwTime: number, slot: number): boolean {
+  return left > 0 && left < slot * throwTime;
 }
 
 /** How good the hit was: 0 wrong keys is the middle, then one, then two. */
@@ -180,19 +180,23 @@ export function tierPoints(tier: Tier, rng: Rng): number {
   return tier === 'center' ? 100 : tier === 'one' ? rng.int(85, 95) : rng.int(75, 85);
 }
 
-/** Lines drawn from a shuffled bag per list, so no line comes twice in a row. */
+/** Lines and things drawn from a shuffled bag per list: each once before any comes again, never the same twice in a row. */
 export class Bags {
-  private bags = new Map<string, string[]>();
-  private last = new Map<string, string>();
+  private bags = new Map<string, unknown[]>();
+  private last = new Map<string, unknown>();
 
   constructor(private readonly rng: Rng) {}
 
   /** The next line of `key` (`lines` are its texts). */
   next(key: string, lines: string[]): string {
-    if (!lines.length) return '';
-    let bag = this.bags.get(key);
+    return lines.length ? this.draw(key, lines) : '';
+  }
+
+  /** The next of `items` (not empty) under `key`. */
+  draw<T>(key: string, items: T[]): T {
+    let bag = this.bags.get(key) as T[] | undefined;
     if (!bag?.length) {
-      bag = [...lines];
+      bag = [...items];
       for (let i = bag.length - 1; i > 0; i--) {
         const j = Math.floor(this.rng.next() * (i + 1));
         [bag[i], bag[j]] = [bag[j], bag[i]];
@@ -201,8 +205,8 @@ export class Bags {
       if (bag.length > 1 && bag[bag.length - 1] === this.last.get(key)) [bag[0], bag[bag.length - 1]] = [bag[bag.length - 1], bag[0]];
       this.bags.set(key, bag);
     }
-    const line = bag.pop()!;
-    this.last.set(key, line);
-    return line;
+    const item = bag.pop()!;
+    this.last.set(key, item);
+    return item;
   }
 }

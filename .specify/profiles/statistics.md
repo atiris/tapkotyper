@@ -6,7 +6,8 @@
   to press).
 - An overlay opened by clicking the child's character (on the map, or in a level, which pauses first)
   starts with "My progress": a row of icon and number chips (keys mastered of the
-  layout's total, stories finished, worlds finished, and once something was typed in the last
+  layout's total, stories finished, worlds finished, the range's rare things found (of 15, a
+  treasure chest), and once something was typed in the last
   14 days its accuracy and speed in characters per minute, the stars ever earned and the letters
   typed in the last 14 days, each with its own picture; the meaning is only in the tooltip), then one row per story (all stories, closed ones grey) with its picture and
   name, its worlds' pictures (done in colour, the rest grey) and the stars earned in it, the

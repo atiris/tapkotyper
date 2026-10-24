@@ -36,7 +36,8 @@
   typist's "My progress" (with one more chip there: letters typed in the last 14 calendar
   days, today included), then the charts; no separate stat cards repeat the summary.
 - A button by "Back" (the child's picture and name) switches the parent area to another
-  profile from the same cards as on the start page (a number key picks one), keeping the open tab and without asking for
+  profile from the same cards as on the start page (a number key picks one; as many in a row as the
+  window has room for, at most five, in balanced rows with more in the first), keeping the open tab and without asking for
   the password again; with one profile it is hidden. The super player is never in the list.
 - Settings per profile: nickname, character kind, optional name, word language, keyboard layout, active keys (pick by hand, with a punctuation row for the shifted `? ! :`, or "automatic"), word length range,
   difficulty 1-10, words without diacritics, no time pressure, session length, guide

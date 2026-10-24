@@ -831,6 +831,7 @@
     "title": "My progress",
     "keys": "Keys you type well and fast: {n} of {total}",
     "worlds": "Finished worlds: {n} of {total}",
+    "finds": "Rare things from the ranges: {n} of {total}",
     "stories": "Finished stories: {n} of {total}",
     "stars": "Stars in total: {n}",
     "tabProgress": "Progress",
@@ -1869,7 +1870,9 @@
   },
   "aim": {
     "title": "Target range",
-    "start": "Tapko throws at the target! Type the word on each ring before the thing flies through it, and last the word on the target. Make them all in time and you hit the middle. Training: {keys}",
+    "start": "Tapko throws at the target! Type the word on each ring before the thing flies through it, and last the word on the target. In time and with no wrong key, you hit the middle. Training: {keys}",
+    "swapHint": "Press Enter to swap the thing in the paw for a rare one from the collection.",
+    "swap": "From the collection: {name}!",
     "keys": "Letters to train",
     "ready": "Great! You type {keys} accurately now.",
     "plop": "Plop!",
@@ -1959,7 +1962,7 @@
       ]
     },
     "collection": {
-      "new": "New find for the collection!",
+      "new": "A rare find! Throw to the end and it's yours.",
       "count": "Collection: {n} of 15",
       "waiting": "Waiting in the {world} world"
     },

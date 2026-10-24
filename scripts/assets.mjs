@@ -50,6 +50,10 @@ const STRIP_HEIGHT = {
 // A layer at least this wide (width / height) is a strip (generated at 21:9); older
 // 16:9 layer files keep their content in the lower part and are used as they are.
 const STRIP_ASPECT = 2;
+// The start page's meadow (day and night) repeats across the window: its left and right edges are
+// blended into each other over this part of its width.
+const MEADOW = 'ui-start-meadow';
+const MEADOW_SEAM = 0.1;
 
 // Keying works on the RGB distance from the sampled background color.
 const D_FLOOD = 70; // border-connected background
@@ -122,7 +126,7 @@ function sampleKey(data, w, h) {
 }
 
 /** Removes the flat key background in place (RGBA buffer). */
-function keyOut(data, w, h, { glass = false, layer = false, tint = null } = {}) {
+function keyOut(data, w, h, { glass = false, layer = false, tint = null, pocket = 0.6 } = {}) {
   const key = sampleKey(data, w, h);
   const green = key[1] > key[0] && key[1] > key[2];
   const kKey = green ? key[1] - Math.max(key[0], key[2]) : Math.min(key[0], key[2]) - key[1];
@@ -156,7 +160,7 @@ function keyOut(data, w, h, { glass = false, layer = false, tint = null } = {}) 
   // tinted pockets of background layers).
   const enclosed = new Uint8Array(n);
   for (let p = 0; p < n; p++) {
-    if (!removed[p] && (dist[p] < D_ENCLOSED || glass && k[p] > K_LENS || layer && k[p] > kKey * 0.6)) { removed[p] = 1; enclosed[p] = 1; }
+    if (!removed[p] && (dist[p] < D_ENCLOSED || glass && k[p] > K_LENS || layer && k[p] > kKey * pocket)) { removed[p] = 1; enclosed[p] = 1; }
   }
 
   // 3. Pixels up to 2 px from removed ones form the edge feather band.
@@ -295,10 +299,12 @@ async function processImage(name, file, manifest) {
   const { data, w, h } = await loadRgba(file);
   if (name.startsWith('outfit-')) return processOutfit(name.slice(7), data, w, h, manifest);
   if (name.startsWith('acc-')) return processAccessory(name.slice(4), data, w, h, manifest);
-  keyOut(data, w, h, { layer: name.startsWith('bg-') });
+  // The meadow's grass leaves many small shaded key pockets, which the strips' threshold keeps as purple specks.
+  keyOut(data, w, h, name.startsWith(MEADOW) ? { layer: true, pocket: 0.3 } : { layer: name.startsWith('bg-') });
   // Bolt's pictures stay square, so the raincoat overlay fits every one of them; Melody's keep her size in every mood.
   if (name === 'base-template' || name.startsWith('tapko-') || name.startsWith('robot') || name.startsWith('fairy-')) return writeSquare(name, data, w, h, manifest);
   if (name === FRAME) return writeFrame(name, data, w, h, manifest);
+  if (name.startsWith(MEADOW)) return writeTile(name, data, w, h, bbox(data, w, h), manifest);
   if (STRIP_HEIGHT[name] && w >= h * STRIP_ASPECT) return writeStrip(name, data, w, h, bbox(data, w, h), manifest);
   if (name.startsWith('bg-')) {
     const info = await webp(sharp(data, { raw: { width: w, height: h, channels: 4 } }).resize({ width: BG_WIDTH, withoutEnlargement: true })).toFile(join(OUT, `${name}.webp`));
@@ -370,6 +376,34 @@ async function writeStrip(name, data, w, h, box, manifest) {
     .composite([{ input: fitted, left: 0, top: FRAME_H - stripH }]).raw().toBuffer();
   bleedColor(frame, FRAME_W, FRAME_H);
   const info = await webp(sharp(frame, { raw: { width: FRAME_W, height: FRAME_H, channels: 4 } })).toFile(join(OUT, `${name}.webp`));
+  manifest.images[name] = { w: info.width, h: info.height };
+}
+
+/**
+ * A strip that the page repeats side by side: cut from the top of the tallest piece down and
+ * shortened by the seam. In the seam the picture's right end lies over its left one, both whole
+ * (a cross-fade left see-through ghosts), each fading in only near its own cut edge.
+ */
+async function writeTile(name, data, w, h, box, manifest) {
+  const seam = Math.round(box.width * MEADOW_SEAM);
+  const tw = box.width - seam;
+  const out = Buffer.alloc(tw * box.height * 4);
+  const ramp = (v) => Math.min(1, Math.max(0, v * 3));
+  for (let y = 0; y < box.height; y++) for (let x = 0; x < tw; x++) {
+    const a = ((box.top + y) * w + box.left + x) * 4;
+    const d = (y * tw + x) * 4;
+    if (x >= seam) { data.copy(out, d, a, a + 4); continue; }
+    // Column x also continues the column tw further on, where the previous copy ends.
+    const b = a + tw * 4;
+    const t = x / seam;
+    const top = data[b + 3] / 255 * ramp(1 - t);
+    const under = data[a + 3] / 255 * ramp(t);
+    const alpha = top + under * (1 - top);
+    for (let c = 0; c < 3; c++) out[d + c] = alpha ? Math.round((data[b + c] * top + data[a + c] * under * (1 - top)) / alpha) : data[a + c];
+    out[d + 3] = Math.round(alpha * 255);
+  }
+  bleedColor(out, tw, box.height);
+  const info = await webp(sharp(out, { raw: { width: tw, height: box.height, channels: 4 } })).toFile(join(OUT, `${name}.webp`));
   manifest.images[name] = { w: info.width, h: info.height };
 }
 

@@ -80,6 +80,16 @@ Notes from real Gemini runs; add new ones here.
 - A thin gold chain cut out on green came out green-gold (the key mixed into the links). Cut
   thin gold or yellow lines out on magenta and give the gold in hex. "Make it bolder" in a
   follow-up made the chain three times larger; it was scaled back to the first size locally.
+- A strip "standing on a low ground band" came out with a flat green stripe along the bottom,
+  which does not look like a meadow. Let the plants grow out of the bottom edge ("cut by the
+  bottom edge, no ground, no soil, no horizontal line").
+- "As if the viewer lies in the grass" gave a magenta-to-grey haze behind the plants (Gemini
+  said so in its answer). A follow-up "the background one flat magenta, keep the plants" fixed it.
+- A follow-up carries the whole chat: asking for closed flowers "in the same daytime colors"
+  after an evening recolor in the same chat came out dark again. Ask from the right picture.
+- A sun with rays got uneven rays; for a calm sun ask for "a smooth perfect circle, no rays".
+- Pieces the page animates on their own (sun, clouds, moon, stars) are one picture each. A
+  picture with pieces that do not touch can be cut apart locally (the moon and its stars).
 
 ---
 
@@ -550,6 +560,48 @@ The ui-icon prompt with "thin dark-brown outline" instead of "bold dark-brown ou
 ### ui-mentor.jpg (the mentors' turtle: the start page's mentor button, the empty results table; the owner replaced it 2026-10-23 with a turtle reading a book)
 ```
 Generate an image: Cute, soft 2D children's game icon, flat vector style with gentle gradients, soft dark-brown outline (not black), warm pastel palette, bold simple shapes that stay readable when very small. A single icon: a friendly wise turtle teacher with a green shell, round glasses and a small dark graduation cap, smiling, holding a small tablet in its front flipper. Three-quarter front view, centered, the whole figure visible, wide empty margin. No text, no letters, no numbers, no watermark. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no other objects. Square image.
+```
+
+### ui-start-*.jpg (the start page's sky and meadow, each piece animated on its own)
+`npm run assets` turns `ui-start-meadow*` into one tile that the page repeats across the window
+(its ends are blended into each other); the rest are sprites.
+
+`ui-start-meadow.jpg` (2026-10-24; a first prompt in the same chat gave a grey haze, fixed with
+"the background one flat magenta, keep the plants"):
+```
+Generate an image: Start page meadow edge
+
+THE WHOLE IMAGE IS ONE FLAT SOLID PURE MAGENTA (#FF00FF) EXCEPT THE MEADOW PLANTS.
+
+Cute, soft 2D children's storybook illustration, flat vector style, rounded friendly shapes, uniform 2 px dark green-grey outline (#3F5B3A), flat fills with one soft lighter band along the top of each shape, calm and peaceful. Palette: grass greens #8CCB6A, #5FA84A and darker #3F8A45 at the bottom, accents warm yellow #F6D55C, soft pink #F2A5B8, soft lilac blue #A9C4EE, white daisies with yellow centers.
+
+Ultra-wide panoramic image, 21:9: the edge of a lush meadow seen from the side. The plants grow up out of the bottom edge of the image: their stems and the lowest part of the grass are cut by the bottom edge, so there is NO visible ground, NO soil, NO flat green band and NO horizontal line anywhere at the bottom. The lowest quarter of the image is dense overlapping grass blades of different greens, darker toward the bottom, filling the whole width with no gaps. Out of this grass rise many different plants spread across the whole width: tufts of tall grass blades, daisies, buttercups, pink clover, a dandelion seed ball, small bluebells, a curly fern, tall grass stems with seed heads, round leafy bushes. Their tops form a soft, uneven, wavy silhouette: most plants reach about 40 percent of the image height, a few tall stems reach about 75 percent, nothing is cut by the top edge.
+
+Above and between the plants there is only flat magenta: NO sky, NO hills, NO trees, NO fence, NO sun, NO clouds, NO distant objects, no grey, no gradient, no fog, nothing behind the plants except magenta. Every plant appears only once: nothing repeated or copied inside the image, one single continuous strip, not split into rows or panels. The strip must repeat side by side without a visible seam: at the very left and right edges there is only the same dense grass at the same height, no flower touches the left or right edge. No white or light outline, halo or sticker border around the plants: their dark outlines meet the magenta directly. Never pink, purple or magenta in the grass. No characters, no animals, no insects, no stones, no text, no letters, no watermark. Flat side view, no perspective, no vanishing point.
+```
+`ui-start-meadow-night.jpg`: a follow-up in the meadow's chat, so every plant stays in place:
+```
+The same image with exactly the same colors, plants, shapes, positions and outlines, only the flowers are going to sleep for the night: the daisies are closed into small white buds with the petals folded up, the buttercups are closed into round yellow buds, the clover heads are a little smaller and hanging slightly, the dandelion has lost its seed ball and is a bare stem with only two or three seeds left on top, the bluebells hang lower. The grass, the fern, the tall stems and the bushes stay exactly as they are. The background behind and between all plants stays ONE perfectly flat solid pure magenta color (#FF00FF), no gradient, no fog.
+```
+`ui-start-sun.jpg`:
+```
+Generate an image: Sun as a simple ball
+
+Cute, soft 2D children's game illustration, flat vector style with gentle gradients, soft dark-brown outline (#5A3D2B, not black), warm pastel palette, calm and peaceful. A single round sun drawn as a smooth perfect circle, NO rays, NO spikes, NO flames, NO lines around it, no face. Warm golden yellow #FFD25A, a soft lighter highlight #FFE9A8 in the upper left and a gentle deeper orange-yellow #F4A93A toward the lower right, like a soft glowing ball. Front view, centered, the whole circle visible, wide empty margin, nothing touches any edge. No glow, no halo, no sparkles, no clouds. No text, no letters, no watermark. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no sky, no other objects. Square image.
+```
+`ui-start-cloud-1.jpg` and `ui-start-cloud-2.jpg`: follow-ups in a chat that drew a sun with two
+clouds ("Now draw only one cloud alone, in exactly the same style ..."):
+```
+A wide fluffy cloud with three round bumps on top and a flat soft bottom, cream white #FFFBF2 with light blue-grey shading #DCE6F0 along the bottom. No sun, no rays, no face. Centered, wide empty margin, nothing touches any edge. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no other objects. Square image.
+```
+(cloud 2: "a small round cloud with two bumps, the left bump bigger").
+
+`ui-start-moon.png` and `ui-start-star.png` were cut locally from one picture of a crescent moon
+with three separate stars:
+```
+Generate an image: Crescent moon with three stars
+
+Cute, soft 2D children's game illustration, flat vector style with gentle gradients, rounded friendly shapes, soft dark-brown outline (#5A3D2B, not black), warm pastel palette, calm and dreamy. A chubby crescent moon in soft cream yellow #FFF1C9 with a lighter highlight on its outer curve and a few gentle round craters in #EEDFAE, the crescent opens to the right, no face. Three small chubby five-pointed stars with rounded tips in warm gold #F6D55C with a light highlight, each a different size: the largest to the upper right of the moon, two smaller ones lower right, clearly separate from the moon and from each other. Front view, everything whole and visible, centered, wide empty margin, nothing touches any edge. No glow, no halo, no sparkles. No text, no letters, no watermark. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no sky, no other objects. Square image.
 ```
 
 ### badge-*.jpg (world badges)

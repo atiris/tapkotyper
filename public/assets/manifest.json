@@ -1309,8 +1309,8 @@
    "h": 302
   },
   "ui-cert-frame": {
-   "w": 1024,
-   "h": 1024
+   "w": 956,
+   "h": 956
   },
   "ui-cert-stamp": {
    "w": 640,
@@ -1419,6 +1419,34 @@
   "ui-star": {
    "w": 384,
    "h": 368
+  },
+  "ui-start-cloud-1": {
+   "w": 384,
+   "h": 197
+  },
+  "ui-start-cloud-2": {
+   "w": 384,
+   "h": 197
+  },
+  "ui-start-meadow-night": {
+   "w": 922,
+   "h": 391
+  },
+  "ui-start-meadow": {
+   "w": 922,
+   "h": 392
+  },
+  "ui-start-moon": {
+   "w": 352,
+   "h": 384
+  },
+  "ui-start-star": {
+   "w": 295,
+   "h": 297
+  },
+  "ui-start-sun": {
+   "w": 376,
+   "h": 384
   },
   "ui-typing-speed": {
    "w": 384,

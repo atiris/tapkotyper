@@ -191,15 +191,36 @@ the new player form.
   - the section heading (base text) with its translation field under it;
   - its explanation paragraph and its translation (textarea);
   - per group: the subheading + field, the explanation + field;
-  - per item, a block: the **situation** (base) + its field, then the **variants**: each
-    base variant with the target field under it (two columns on wide screens: base left,
-    translation right). `pool` items have "add a variant" and a remove button per variant
+  - per item, a panel: the **situation** (base) + its field, then the **variants**: each
+    base variant with the target field under it (see Look). `pool` items have "add a variant" and a remove button per variant
     (hidden on the last one). `plural` items show one field per target form, labelled
     with the form and an example number.
   - Placeholder chips (`{n}`, `{name}`) under the base text; a target missing one or
     adding an unknown one gets a warning line (the text is still saved).
   - A "show only untranslated" switch and a search box (base or target text, key) at the
     top of the body.
+- **Look**: the owner's starting point is the range lines sheet
+  https://claude.ai/artifact/W88emBF3UHU4F1QGTaxNLy ("Hlášky a veci strelnice"). Keep its
+  feel: warm paper background, the game font, **section headings dark (ink), group
+  headings in the orange accent**, the explanation as a muted paragraph under the heading
+  (max 70ch), items in white rounded **panels** (1px line border, radius 14px) laid out in
+  a wrapping grid, situation labels small, uppercase and muted, variants as soft chips,
+  and per thing a card with its picture (things of the range, wardrobe items, characters
+  and worlds use their thumbnail from `public/assets/` when there is one). Both looks
+  (light, dark) from the app's own tokens.
+  The layout is our own, because every text now comes twice (base + input):
+  - the grid gets wider panels: `minmax(400px, 1fr)` (one column under 860px), not the
+    sheet's 260-330px;
+  - inside a panel, a variant is one row: the base text as a chip on top and the input
+    full width under it (no side-by-side halves, they get too narrow in a grid cell);
+    on screens wider than 1400px, `text` items with long texts (help, about, intros) take
+    the full grid width and put base and input side by side;
+  - a heading and its translation: the heading as in the sheet, the input under it in
+    the same weight but smaller, so the page still reads as a sheet with blanks to fill;
+  - the situation label sits at the top of the panel with its own small input on the
+    same line (wrapping on a phone);
+  - with "show only untranslated" on, finished panels collapse to one line (situation +
+    a check mark) instead of disappearing, so the place in the sheet stays recognisable.
 - **Field states**: untouched fields have a dashed border, muted text and a small
   "untranslated" label; touched fields a solid border. Each untouched field has a small
   keep button (and Ctrl+Enter) that touches it without retyping, for texts that stay the

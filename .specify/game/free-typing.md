@@ -6,7 +6,9 @@
 - The child picks the place among the worlds already open (their map pictures); with one
   open world it starts there at once. The place can be changed while typing, and the
   place picker only offers open worlds.
-- Tapko walks through the chosen world (its background and music). Every key makes him
+- Tapko walks through the chosen world (its background and music). He starts in the bottom
+  left corner, where he stands in other levels, so the bubble at the top left reads as his;
+  from there he strolls on the ground into the left part and back. Every key makes him
   hop happily with a small sound and a few sparkles; with reduced motion he only smiles.
 - The typed characters collect in a quiet line at the top. After about 1.5 seconds without
   a key (fixed, not a setting), or at once with Enter, the text is shown as a word or short

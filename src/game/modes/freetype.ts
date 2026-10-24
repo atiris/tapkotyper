@@ -23,6 +23,9 @@ const SHOW = 3.2;
 const SHOW_SIZE = 64;
 const LINE_SIZE = 30;
 const SPARKS = ['#fff6a8', '#ffffff', '#ffd1f5', '#a6e3c9'];
+/** Tapko's spot in the bottom left corner, where he stands in other levels, and the ground under him. */
+const HOME_X = 100;
+const GROUND = VH * 0.97;
 
 /**
  * "Just typing": Tapko walks through a chosen world, hops with the typing (never faster than one
@@ -44,7 +47,8 @@ export class FreeTypeMode extends HeroMode {
   }
 
   start(): void {
-    this.heroY = VH * 0.8;
+    this.heroX = HOME_X;
+    this.heroY = GROUND;
     this.keysToTrick = this.nextTrickIn();
   }
 
@@ -97,9 +101,10 @@ export class FreeTypeMode extends HeroMode {
   update(dt: number): void {
     super.update(dt);
     this.scroll += WALK * dt;
-    // He strolls back and forth in the left part of the stage, a little nearer and farther too.
-    this.heroX = this.L.vw * (0.3 + Math.sin(this.t * 0.25) * 0.08);
-    this.heroY = VH * (0.8 + Math.sin(this.t * 0.17 + 1) * 0.025);
+    // He starts where Tapko stands in other levels, under the bubble, and strolls from there into the left
+    // part of the stage and back, on the ground and only a little farther away.
+    this.heroX = HOME_X + (this.L.vw * 0.38 - HOME_X) * (1 - Math.cos(this.t * 0.25)) / 2;
+    this.heroY = GROUND - VH * 0.02 * (1 - Math.cos(this.t * 0.17)) / 2;
     this.hopT += dt;
     const len = this.length();
     this.jump = this.hopT < len ? this.hopT / len : 0;

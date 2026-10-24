@@ -1467,6 +1467,150 @@
   "ui-typing-speed": {
    "w": 384,
    "h": 319
+  },
+  "obj-aim-boomerang": {
+   "w": 384,
+   "h": 212
+  },
+  "obj-aim-bottle": {
+   "w": 198,
+   "h": 384
+  },
+  "obj-aim-bulb-lit": {
+   "w": 249,
+   "h": 384
+  },
+  "obj-aim-bulb": {
+   "w": 250,
+   "h": 384
+  },
+  "obj-aim-cactus": {
+   "w": 269,
+   "h": 384
+  },
+  "obj-aim-candle": {
+   "w": 225,
+   "h": 384
+  },
+  "obj-aim-cheese": {
+   "w": 384,
+   "h": 318
+  },
+  "obj-aim-chick": {
+   "w": 379,
+   "h": 384
+  },
+  "obj-aim-clock": {
+   "w": 351,
+   "h": 384
+  },
+  "obj-aim-diaper": {
+   "w": 384,
+   "h": 346
+  },
+  "obj-aim-donut": {
+   "w": 384,
+   "h": 378
+  },
+  "obj-aim-egg-cracked": {
+   "w": 286,
+   "h": 384
+  },
+  "obj-aim-egg": {
+   "w": 286,
+   "h": 384
+  },
+  "obj-aim-fried-egg": {
+   "w": 384,
+   "h": 355
+  },
+  "obj-aim-ice": {
+   "w": 353,
+   "h": 384
+  },
+  "obj-aim-pacifier": {
+   "w": 384,
+   "h": 308
+  },
+  "obj-aim-snack": {
+   "w": 352,
+   "h": 384
+  },
+  "obj-aim-teeth": {
+   "w": 384,
+   "h": 304
+  },
+  "obj-aim-toilet-paper": {
+   "w": 384,
+   "h": 299
+  },
+  "obj-aim-banana": {
+   "w": 384,
+   "h": 248
+  },
+  "obj-aim-bowling": {
+   "w": 384,
+   "h": 384
+  },
+  "obj-aim-chalk": {
+   "w": 384,
+   "h": 233
+  },
+  "obj-aim-chicken": {
+   "w": 384,
+   "h": 341
+  },
+  "obj-aim-chili": {
+   "w": 384,
+   "h": 216
+  },
+  "obj-aim-crown": {
+   "w": 384,
+   "h": 273
+  },
+  "obj-aim-fish": {
+   "w": 384,
+   "h": 328
+  },
+  "obj-aim-hockey": {
+   "w": 384,
+   "h": 373
+  },
+  "obj-aim-magnet": {
+   "w": 347,
+   "h": 384
+  },
+  "obj-aim-pillow": {
+   "w": 384,
+   "h": 330
+  },
+  "obj-aim-pinecone": {
+   "w": 275,
+   "h": 384
+  },
+  "obj-aim-pingpong": {
+   "w": 384,
+   "h": 384
+  },
+  "obj-aim-toast": {
+   "w": 363,
+   "h": 384
+  },
+  "obj-aim-wand": {
+   "w": 384,
+   "h": 351
+  },
+  "obj-aim-water-balloon": {
+   "w": 369,
+   "h": 384
+  },
+  "obj-aim-whistle": {
+   "w": 384,
+   "h": 213
+  },
+  "obj-aim-wrench": {
+   "w": 384,
+   "h": 370
   }
  },
  "accessories": [

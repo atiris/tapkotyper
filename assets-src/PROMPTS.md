@@ -95,6 +95,11 @@ Notes from real Gemini runs; add new ones here.
   in hex). Do not attach an older sprite as the model: the new one then barely differs.
 - "Silver" again failed (no picture); the screw worked with "blue-grey steel" hex shades and
   "strictly front view, symmetrical, no face".
+- Small throwables (46 px): "a bold, simple shape with a clear outline, easy to recognise as a
+  tiny icon of about 46 pixels" plus hex colors gave 36 of 36 clean pictures on the first try.
+  A second state of a thing (a cracked egg, a lit bulb) kept its size and outline when the
+  first picture was attached with "redraw the attached ... in exactly the same style, size,
+  position" and only the change named.
 
 ---
 
@@ -990,3 +995,47 @@ the side, alone and readable at a small size (it flies at about 46 px).
 | `obj-aim-arrow.jpg` | a short wooden toy arrow with a soft rounded grey tip and red feathers, pointing to the right, no face | magenta | done 2026-10-23 |
 | `obj-aim-duck.jpg` | a yellow rubber bath duck with an orange beak, side view facing right, happy | magenta | done 2026-10-23 |
 | `obj-aim-sock.jpg` | a single light blue striped child's sock with a white cuff, side view, no face | magenta | done 2026-10-23 |
+
+### Things to throw (plan `.todo/62-range-shouts-and-throws.md`, section 4 prompt)
+Each prompt also carried, after OBJECT: "No face, no eyes, no arms, no legs. A bold, simple shape
+with a clear outline, so it is easy to recognise as a tiny icon of about 46 pixels." (the chick
+and the fish keep their faces). Checked at 46 px on a light and a dark band before use.
+
+| File | OBJECT | BG | Status |
+|---|---|---|---|
+| `obj-aim-egg.jpg` | a smooth hen's egg in warm cream #FFF3DC with a light-beige shade #EBD9B8 lower right and one small white shine, slightly tilted, no face | magenta | done 2026-10-24 |
+| `obj-aim-egg-cracked.jpg` | **attach `obj-aim-egg.jpg`**, "redraw the attached egg ... hatching: a bold zigzag crack around its middle, the top half lifted a little, a tiny orange beak #F59A2E peeks out", no face | magenta | done 2026-10-24 |
+| `obj-aim-chick.jpg` | a tiny round fluffy chick, sunny yellow #FFD84D with a lighter belly, small orange beak, two tiny orange feet, both little wings spread up and flapping, big round eyes, rosy cheeks, side view facing right | magenta | done 2026-10-24 |
+| `obj-aim-fried-egg.jpg` | one fried egg seen straight from above: white #FFFDF6 with a wavy blobby edge, one round glossy yolk #FFC23D, no pan, no face | magenta | done 2026-10-24 |
+| `obj-aim-clock.jpg` | a classic round twin-bell alarm clock, red #E8504A body, white dial with dots instead of numbers, two golden bells #F2C14E, two little feet, no face, strictly front view | magenta | done 2026-10-24 |
+| `obj-aim-cactus.jpg` | a small round chubby cactus #6DBE6A with lighter ribs, tufts of pale cream spines, one pink flower #F77FB0 on top, in a terracotta pot #D97A4A, no face | magenta | done 2026-10-24 |
+| `obj-aim-toilet-paper.jpg` | one roll of toilet paper on its side, the cardboard tube hole #C89B6B visible on the left, white with light grey shade, a short loose curled end on the right, no face | magenta | done 2026-10-24 |
+| `obj-aim-candle.jpg` | a short thick candle, pastel yellow wax #FBE7A1, one wax drip, a small calm flame #F7A23B with no glow around it, no holder, no face | magenta | done 2026-10-24 |
+| `obj-aim-cheese.jpg` | one chunky wedge of cheese #F9D35B with a lighter top #FCE38A, big round holes, two holes cut into the edges, no face | magenta | done 2026-10-24 |
+| `obj-aim-boomerang.jpg` | a classic wooden boomerang, wide V with rounded arms, wood #D4955A, rows of cream and teal dots, flat, seen from above, no face | magenta | done 2026-10-24 |
+| `obj-aim-ice.jpg` | one ice cube with rounded corners, a little from above: faces #D6F1FC, #A9DDF3, #86C9E8 (solid, never pink), two white shine strokes, a tiny drop, no face | magenta | done 2026-10-24 |
+| `obj-aim-donut.jpg` | one donut, front and a little from above, dough #E0A867, pink frosting #F59AB8 with a drip edge, colorful sprinkles; the hole a clean flat oval, no inner wall, no face | magenta | done 2026-10-24 |
+| `obj-aim-bulb.jpg` | a pear-shaped light bulb, switched off: solid pale grey-blue glass #DCE6EE (not see-through, not pink), thin filament, blue-grey steel base #8FA3B8/#C9D6E3, no glow, no face, strictly front view | magenta | done 2026-10-24 |
+| `obj-aim-bulb-lit.jpg` | **attach `obj-aim-bulb.jpg`**, "the same bulb switched on: glass filled with warm light yellow #FFE680, pale #FFF6C2 around an orange filament; the light stays inside the glass, no glow outside" | magenta | done 2026-10-24 |
+| `obj-aim-teeth.jpg` | a wind-up toy of chattering teeth, side view facing right: soft pink gums #F4A3B5, big rounded white teeth (no fangs), a golden key #F2C14E at the back, two little orange feet, no eyes, no tongue | magenta | done 2026-10-24 |
+| `obj-aim-diaper.jpg` | one clean puffy baby diaper from the front, white with grey-blue shade, light-blue side tabs #9FD3F5, tiny pastel stars, no baby, strictly front view | magenta | done 2026-10-24 |
+| `obj-aim-snack.jpg` | an old squashed sandwich half wrapped in crumpled paper #E5D0A8, bread #F2D29B, lettuce and cheese peeking out, one bite missing, one small fuzzy green mould spot #9CC46B, never disgusting, no face | magenta | done 2026-10-24 |
+| `obj-aim-bottle.jpg` | a chubby baby bottle filled with white milk #FFFDF6 (solid), light-blue screw ring #8CCBF0, cream teat #F5DDB8, measuring dashes without numbers, strictly front view | magenta | done 2026-10-24 |
+| `obj-aim-pacifier.jpg` | a baby pacifier facing right: round pastel-pink shield #F7A8C4 with two holes, cream teat #F5DDB8, pink ring handle #F48FB1 | green | done 2026-10-24 |
+| `obj-aim-chalk.jpg` | one thick short stick of white chalk lying diagonally, white #FAFAF7 with grey shade #D9DCE0, the right end worn round, a small puff of chalk dust, no blackboard | magenta | done 2026-10-24 |
+| `obj-aim-whistle.jpg` | a sports referee whistle, mouthpiece to the right, blue-grey steel #8FA3B8/#C9D6E3/#5E7286 ("silver" fails), a short red cord #E5534B | magenta | done 2026-10-24 |
+| `obj-aim-pingpong.jpg` | one ping-pong ball, a perfect circle, white with a light grey-blue shade #DCE3EA, one shine, no paddle | magenta | done 2026-10-24 |
+| `obj-aim-bowling.jpg` | one glossy bowling ball, deep blue #2F5DA8 with lighter #5B86CF, a big shine, three clean round finger holes #1B2F57 with no inner wall, no pins | magenta | done 2026-10-24 |
+| `obj-aim-hockey.jpg` | a short chunky wooden ice hockey stick lying diagonally, blade bent right like an L, light wood #E3B47A, dark tape #3E4A5C on the blade, no puck | magenta | done 2026-10-24 |
+| `obj-aim-magnet.jpg` | a thick horseshoe magnet standing like a U, red #E5534B with shine, blue-grey steel tips #C9D6E3, no chain, strictly front view | green | done 2026-10-24 |
+| `obj-aim-wand.jpg` | a fairy wand lying diagonally, a chunky golden star #F6C945 on top, lavender stick #B79CE8 with a white spiral stripe, three small outlined sparkles, no glow | magenta | done 2026-10-24 |
+| `obj-aim-pillow.jpg` | one soft puffy rectangular bed pillow from the front, slightly tilted, four puffed corners, white with grey-blue shading, one wide light-blue stripe #8CCBF0 | magenta | done 2026-10-24 |
+| `obj-aim-chicken.jpg` | a classic funny rubber chicken toy, side view facing right, body stretched out: long thin neck, wide open orange beak, red comb, closed eyes as curved lines, yellow body #F9D84A, thin orange legs | magenta | done 2026-10-24 |
+| `obj-aim-water-balloon.jpg` | one round water balloon, solid sky-blue rubber #5FB7EA with a lighter area and a big shine (never pink), a small knot on top, three outlined drops #BFE6F7 | magenta | done 2026-10-24 |
+| `obj-aim-banana.jpg` | one whole ripe banana curved like a smile, yellow #F9D84A with lighter top and darker underside, brown stem and tip, unpeeled | magenta | done 2026-10-24 |
+| `obj-aim-chili.jpg` | one small plump red chili pepper on its side, gently curved, glossy red #E0453A, tip curling down on the right, dark-green stem and cap #3E8E41, no flames | magenta | done 2026-10-24 |
+| `obj-aim-wrench.jpg` | one chunky adjustable wrench lying diagonally, oval hole in the handle, open C jaw, ridged wheel, blue-grey steel #8FA3B8/#C9D6E3/#5E7286 | magenta | done 2026-10-24 |
+| `obj-aim-toast.jpg` | one slice of toast from the front, rounded puffy top, golden middle #EBB563, darker crust #B9772F, a small pat of butter #FFE9A0, strictly front view | magenta | done 2026-10-24 |
+| `obj-aim-pinecone.jpg` | one plump pine cone standing upright, rows of open rounded scales, brown #A8693A with lighter tips #D49A62, short stem, no needles | magenta | done 2026-10-24 |
+| `obj-aim-fish.jpg` | a small round chubby friendly fish facing right, orange #F7934C with a lighter belly, fan tail #FFB070, one big eye, rosy cheek, small smile, no water | magenta | done 2026-10-24 |
+| `obj-aim-crown.jpg` | a small chunky golden crown from the front, three rounded points with balls, gold #F6C945/#FFE58A/#D9A520, three pink gems #F48FB1, strictly front view (the wardrobe's `acc-crown` is too small at 46 px) | magenta | done 2026-10-24 |

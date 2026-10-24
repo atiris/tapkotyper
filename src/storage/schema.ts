@@ -127,6 +127,8 @@ export interface Progress {
   starsEarned: number;
   /** Wardrobe time left in seconds, earned by training (`0..WARDROBE_MAX`, may hold fractions). */
   wardrobeSeconds: number;
+  /** Ids of the world things hit in the middle at the target range (its collection). */
+  rangeFinds: string[];
 }
 
 /** When a surprise tells its answer. */
@@ -217,7 +219,7 @@ export interface ParentLock {
 }
 
 export interface StoreData {
-  version: 5;
+  version: 6;
   profiles: Profile[];
   lastProfileId: string | null;
   language: Lang | null;

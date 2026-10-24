@@ -866,6 +866,13 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .aim-row { display: flex; align-items: center; gap: 0.6rem; font-weight: 600; }
 .aim-row-key { display: inline-grid; place-items: center; min-width: 1.8em; font-family: var(--font-keys); border-radius: 8px; background: var(--surface); box-shadow: inset 0 -3px 0 var(--brand); }
 .aim-row.good span { color: var(--green-ink); }
+.aim-collection { margin: 0.7rem auto 0; text-align: center; }
+.aim-collection-count { margin: 0 0 0.3rem; font-weight: 700; }
+.aim-finds { list-style: none; padding: 0; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.25rem; max-width: 21.5rem; }
+.aim-find { position: relative; display: grid; place-items: center; width: 2.4rem; height: 2.4rem; border-radius: 10px; background: var(--surface); }
+.aim-find img { max-width: 2rem; max-height: 2rem; object-fit: contain; }
+.aim-find.waiting img { filter: brightness(0) invert(0.55); opacity: 0.5; }
+.aim-find-q { position: absolute; inset: 0; display: grid; place-items: center; font-weight: 800; color: var(--ink-soft); }
 .fact.good, .fact.new-key { color: var(--green-ink); background: var(--tint-green); box-shadow: none; }
 .fact.growth { background: var(--tint-yellow); box-shadow: none; border-radius: 16px; text-align: left; padding: 0.2em 0.75em 0.2em 0.3em; }
 .results-notes { margin-top: 0.6rem; padding: 0.5rem 0.7rem; border-radius: 16px; box-shadow: inset 0 0 0 2px var(--line); text-align: left; font-size: 0.95rem; display: grid; gap: 0.35rem; }

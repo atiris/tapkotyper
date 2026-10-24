@@ -1,15 +1,19 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it, vi } from 'vitest';
-import { t } from '../../i18n/i18n';
+import { t, tList, useDictionaries } from '../../i18n/i18n';
 import { TypingCore } from '../typing';
 import type { LevelRuntime } from '../runtime';
 
 vi.mock('../../app/app', async () => {
   const { newProfile } = await import('../../storage/store');
-  return { app: { profile: newProfile('Test', 'sk') }, pickLine: () => '' };
+  return { app: { profile: newProfile('Test', 'sk') }, pickLine: () => '', saveProfile: () => {} };
 });
 vi.mock('../../ui/dom', () => ({ h: () => ({ replaceChildren: () => {} }) }));
 vi.mock('../../ui/keyboard-guide', () => ({ keyLabel: (k: string) => k }));
 vi.mock('../../ui/hud', () => ({ hitsPic: () => ({ el: {}, set: () => {} }) }));
+
+const sk = JSON.parse(readFileSync('public/i18n/sk.json', 'utf8'));
+useDictionaries('sk', sk);
 
 const { AIM_SECONDS, AimMode, FALL_ERRORS, RINGS, pickWord, targetRadius, throwLengths, weakCount } = await import('./aim');
 
@@ -26,6 +30,7 @@ function fakeRuntime(extra: Record<string, unknown> = {}): LevelRuntime {
     word: () => 'kdk',
     travelTime: () => 2,
     shout: vi.fn(),
+    speak: vi.fn(),
     particles: { emit: () => {} },
     tweens: { add: () => {} },
   };
@@ -94,12 +99,31 @@ describe('target range', () => {
       typeRing(mode, L);
     }
     run(mode, L, 0.5);
-    expect(L.shout).toHaveBeenCalledWith(t('aim.center'), expect.any(Number), expect.any(Number));
+    // Tapko named the pebble at the throw; the target says a bullseye line and the impact sound pops up.
+    expect(L.speak).toHaveBeenCalledWith('tapko', expect.toBeOneOf(tList('aim.things.pebble.launch')), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number));
+    expect(L.speak).toHaveBeenLastCalledWith('target', expect.toBeOneOf([...tList('aim.lines.center'), ...tList('aim.things.pebble.hit')]), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), true);
+    expect(L.shout).toHaveBeenCalledWith(t('aim.things.pebble.sound'), expect.any(Number), expect.any(Number));
     expect([mode.hits, mode.centers]).toEqual([1, 1]);
     run(mode, L, 2);
     // The next throw waits for its launch word.
     expect(L.core.focus()?.word).toBe('kdk');
     expect(mode.progress()).toBeGreaterThan(0);
+  });
+
+  it('one wrong key hits off the middle, and the target says the points of a near miss', () => {
+    const L = fakeRuntime();
+    const mode = new AimMode(L);
+    mode.start();
+    typeRing(mode, L);
+    typeRing(mode, L, 1);
+    for (let stop = 1; stop <= RINGS; stop++) {
+      run(mode, L, 0.5);
+      typeRing(mode, L);
+    }
+    run(mode, L, 0.5);
+    // The fake rng gives the lowest points of the tier.
+    expect(L.speak).toHaveBeenLastCalledWith('target', expect.toBeOneOf(tList('aim.lines.one', { n: 85 })), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), true);
+    expect([mode.hits, mode.centers]).toEqual([1, 0]);
   });
 
   it('a ring passed before its word is typed drifts the projectile off, past the target', () => {
@@ -117,6 +141,7 @@ describe('target range', () => {
     }
     expect(L.shout).toHaveBeenCalledTimes(1);
     expect(L.shout).toHaveBeenCalledWith(t('aim.miss'), expect.any(Number), expect.any(Number));
+    expect(L.speak).toHaveBeenLastCalledWith('target', expect.toBeOneOf(tList('aim.lines.miss')), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), true);
     expect(mode.hits).toBe(0);
   });
 

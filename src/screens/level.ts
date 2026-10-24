@@ -12,6 +12,8 @@ import { captureKeys, surpriseAsk, surpriseLeft } from '../game/cards';
 import { surpriseOutcome } from '../game/own-content';
 import { ownTextPhrases } from '../game/modes/practice';
 import type { AimMode } from '../game/modes/aim';
+import { WORLD_THINGS } from '../game/modes/aim-things';
+import { imageUrl } from '../gfx/assets';
 import type { Friend, Profile, Surprise, Task } from '../storage/schema';
 import { recordTaskRun, taskOwn } from '../share/task';
 import { localDate } from '../learning/stats';
@@ -239,6 +241,7 @@ function showAimDone(root: HTMLElement, r: LevelResult, mode: AimMode, params: L
     h('div', { class: 'results-tapko' }, tapkoElement(p.companion, 'happy', 80), h('p', { class: 'bubble static side' }, breakDue ? pickLine('tapko.break') : pickLine('tapko.level_done', { name: nickname(p) }, p.customMessages))),
     h('ul', { class: 'aim-rows', 'aria-label': t('aim.keys') }, ...rows),
     h('div', { class: 'results-facts' }, ...facts),
+    aimCollection(p),
     actions);
   const overlay = h('div', { class: 'overlay results' }, card);
   root.querySelector('.level-screen')!.append(overlay);
@@ -252,6 +255,24 @@ function showAimDone(root: HTMLElement, r: LevelResult, mode: AimMode, params: L
     // After this key is done, or the new range would take the same Escape as its end.
     setTimeout(stay);
   });
+}
+
+/** The range's collection: every world's own thing, the found ones in color, the rest grey with a question mark naming the world where they wait. */
+function aimCollection(p: Profile): HTMLElement {
+  const found = WORLD_THINGS.filter((th) => p.progress.rangeFinds.includes(th.id));
+  const items = WORLD_THINGS.map((th) => {
+    const has = found.includes(th);
+    const src = imageUrl(th.pics[0]);
+    const say = has ? t(`aim.things.${th.id}.name`) : t('aim.collection.waiting', { world: t(`worlds.${WORLDS[th.world!]}`) });
+    const el = h('li', { class: `aim-find ${has ? 'found' : 'waiting'}`, role: 'img', 'aria-label': say },
+      src ? h('img', { src, alt: '' }) : null,
+      has ? null : h('span', { class: 'aim-find-q', 'aria-hidden': 'true' }, '?'));
+    tip(el, say);
+    return el;
+  });
+  return h('div', { class: 'aim-collection' },
+    h('p', { class: 'aim-collection-count' }, t('aim.collection.count', { n: found.length })),
+    h('ul', { class: 'aim-finds' }, ...items));
 }
 
 /** A surprise asked again: its answer highlighted right under it, or what is still left. */

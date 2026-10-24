@@ -1879,15 +1879,1048 @@
     "stay": "Stay at the range",
     "stayStart": "We keep throwing. Press Esc when you want to stop.",
     "hitsDone": "Target hits: {n}, in the middle: {center}",
-    "center": "Bullseye!",
-    "hit": {
-      "pebble": "Tock!",
-      "screw": "Clink!",
-      "fly": "Bzzz!",
-      "tomato": "Splat!",
-      "arrow": "Thunk!",
-      "duck": "Squeak!",
-      "sock": "Eww, a sock!"
+    "lines": {
+      "center": [
+        "Bullseye!",
+        "100 points!",
+        "Dead center!",
+        "Perfect shot!",
+        "Spot on!",
+        "Not a hair off!",
+        "A perfect ten!",
+        "Right on the money!"
+      ],
+      "one": [
+        "Just off the middle!",
+        "{n} points!",
+        "So close!",
+        "Nearly dead center!",
+        "Missed it by a whisker!",
+        "Almost perfect!"
+      ],
+      "two": [
+        "{n} points!",
+        "Good shot!",
+        "Nice hit!",
+        "That counts!",
+        "On the board!",
+        "Not bad at all!"
+      ],
+      "miss": [
+        "Whoosh, right over me!",
+        "Just over my head!",
+        "Phew, missed!",
+        "Next one's yours!",
+        "Nearly!"
+      ],
+      "fall": [
+        "No worries, next one!",
+        "It's fine, try again.",
+        "I'll wait for the next one!",
+        "Oops, it dropped."
+      ],
+      "expectWorry": [
+        "What's that coming?!",
+        "Not a tomato, please!",
+        "Help!",
+        "I hope this won't hurt."
+      ],
+      "expectWonder": [
+        "Hmm, what could it be?",
+        "Is it a bird? A plane?",
+        "Interesting…"
+      ],
+      "expectCheer": [
+        "Ready when you are!",
+        "Give it your best!",
+        "Go on!",
+        "Aim true!",
+        "Show me what you've got!"
+      ],
+      "streak3": [
+        "Hat trick!",
+        "Three bullseyes in a row!"
+      ],
+      "streak5": [
+        "Five in a row! Sharpshooter streak!",
+        "Unbelievable, five straight!"
+      ],
+      "shrink": [
+        "I'm moving back, your aim is too good!",
+        "Better step back, you hit way too well!",
+        "I'm out of here, you're too accurate!",
+        "I'm shrinking because your aim keeps getting better!"
+      ],
+      "last": [
+        "Last chance!",
+        "That's all I can take!",
+        "Just this one, then I'm going home!",
+        "This is the last thing I can handle!"
+      ]
+    },
+    "collection": {
+      "new": "New find for the collection!",
+      "count": "Collection: {n} of 15",
+      "waiting": "Waiting in the {world} world"
+    },
+    "things": {
+      "pebble": {
+        "name": "Pebble",
+        "launch": [
+          "Pebble, go!",
+          "One pebble, coming up!",
+          "Here comes a pebble!",
+          "Small but mighty!"
+        ],
+        "sound": [
+          "Tock!"
+        ],
+        "hit": [
+          "Pebble in the middle!",
+          "Knock knock! Who's there?",
+          "Little stone, big aim!",
+          "Good thing it's not a boulder."
+        ]
+      },
+      "screw": {
+        "name": "Screw",
+        "launch": [
+          "Screw away!",
+          "Sending a screw!",
+          "Give it a twist!"
+        ],
+        "sound": [
+          "Clink!"
+        ],
+        "hit": [
+          "Screwed in tight!",
+          "That's holding firm!",
+          "Who's drilling here?",
+          "Now I've got a screw loose!"
+        ]
+      },
+      "fly": {
+        "name": "Fly",
+        "launch": [
+          "Fly, forward!",
+          "Fly incoming!",
+          "Catch the fly!",
+          "Buzz off!"
+        ],
+        "sound": [
+          "Bzzz!"
+        ],
+        "hit": [
+          "What am I, flypaper?",
+          "Ew, bugs!",
+          "There's a buzz in my ear!",
+          "Hey, get off my nose!"
+        ]
+      },
+      "tomato": {
+        "name": "Tomato",
+        "launch": [
+          "Tomato away!",
+          "Incoming tomato!",
+          "Look out, tomato!",
+          "Red rocket!"
+        ],
+        "sound": [
+          "Splat!"
+        ],
+        "hit": [
+          "100% ketchup!",
+          "Ketchup!",
+          "Now that's saucy!",
+          "Am I a pizza now?"
+        ]
+      },
+      "arrow": {
+        "name": "Arrow",
+        "launch": [
+          "Arrow, fly!",
+          "Robin Hood style!",
+          "Loose!"
+        ],
+        "sound": [
+          "Thunk!"
+        ],
+        "hit": [
+          "Robin Hood would be proud!",
+          "Right where it belongs!",
+          "Arrow in the gold!",
+          "A true archer!"
+        ]
+      },
+      "duck": {
+        "name": "Rubber duck",
+        "launch": [
+          "Fly, little duck!",
+          "Duck away!",
+          "Up, up and a-quack!"
+        ],
+        "sound": [
+          "Squeak!"
+        ],
+        "hit": [
+          "Quack quack!",
+          "Bath time already?",
+          "Where's my bathtub?",
+          "Duck, duck, bullseye!"
+        ]
+      },
+      "sock": {
+        "name": "Sock",
+        "launch": [
+          "Sock away!",
+          "Incoming sock!",
+          "Smell ya later!"
+        ],
+        "sound": [
+          "Flop!"
+        ],
+        "hit": [
+          "Ew, it stinks!",
+          "Where's the other one?",
+          "Did the washing machine eat its twin?",
+          "Who wore this for a week?"
+        ]
+      },
+      "planet": {
+        "name": "Planet",
+        "launch": [
+          "Planet away!",
+          "Throwing a whole planet!",
+          "To space and back!",
+          "Big Bang incoming!"
+        ],
+        "sound": [
+          "Boom!"
+        ],
+        "hit": [
+          "I got hit by a planet!",
+          "I'm seeing stars!",
+          "Gravity works!",
+          "Am I a moon now?"
+        ]
+      },
+      "egg": {
+        "name": "Egg",
+        "launch": [
+          "Careful, egg!",
+          "Egg away!",
+          "Here goes an egg!",
+          "Don't crack it!"
+        ],
+        "sound": [
+          "Splosh!"
+        ],
+        "hit": [
+          "Scrambled!",
+          "Sunny side up!",
+          "Breakfast is served!"
+        ],
+        "hatchSound": [
+          "Crack!"
+        ],
+        "hatch": [
+          "Look, a chick!",
+          "Peep! Are you my mom?",
+          "Careful, baby on board!"
+        ],
+        "hatchedCall": [
+          "It hatched!",
+          "It's flying by itself!"
+        ],
+        "hatchFlight": [
+          "The chick flew here all by itself!",
+          "Peep peep, first flight!"
+        ]
+      },
+      "clock": {
+        "name": "Alarm clock",
+        "launch": [
+          "Alarm clock away!",
+          "Wake-up call!",
+          "Tick-tock, off you go!"
+        ],
+        "sound": [
+          "Brrring!"
+        ],
+        "hit": [
+          "Five more minutes!",
+          "Is it morning already?",
+          "Rise and shine!",
+          "I'm not going to school today!"
+        ]
+      },
+      "cactus": {
+        "name": "Cactus",
+        "launch": [
+          "Cactus away!",
+          "Watch out, it's prickly!",
+          "Prickly delivery!"
+        ],
+        "sound": [
+          "Ouch!"
+        ],
+        "hit": [
+          "Ow, prickly!",
+          "Ouchie!",
+          "Now I'm a hedgehog!",
+          "Who's going to pull out all these spines?"
+        ],
+        "expect": [
+          "Oh no, please not that!",
+          "You can't be serious!",
+          "Anything but a cactus!"
+        ]
+      },
+      "toilet-paper": {
+        "name": "Toilet paper",
+        "launch": [
+          "Toilet roll away!",
+          "Roll out!",
+          "Paper missile!"
+        ],
+        "sound": [
+          "Fwoosh!"
+        ],
+        "hit": [
+          "Flush and wash your hands!",
+          "That's a month's supply!",
+          "So soft!"
+        ]
+      },
+      "candle": {
+        "name": "Candle",
+        "launch": [
+          "Candle away!",
+          "Lighting the way!"
+        ],
+        "sound": [
+          "Fsss!"
+        ],
+        "hit": [
+          "Hot, hot, hot!",
+          "Toasty!",
+          "Let me blow it out and make a wish!"
+        ]
+      },
+      "cheese": {
+        "name": "Cheese",
+        "launch": [
+          "Cheese away!",
+          "Say cheese!",
+          "A whiff of cheese!"
+        ],
+        "sound": [
+          "Pee-yew!"
+        ],
+        "hit": [
+          "Stink bomb!",
+          "Where are the mice?",
+          "Now I'm Swiss cheese!"
+        ]
+      },
+      "boomerang": {
+        "name": "Boomerang",
+        "launch": [
+          "Boomerang away!",
+          "Go and come back!"
+        ],
+        "sound": [
+          "Whoosh!"
+        ],
+        "hit": [
+          "Just wait, that'll come back to you!",
+          "Return to sender!",
+          "Right back at you!"
+        ],
+        "caught": [
+          "Got it!",
+          "Caught it!"
+        ]
+      },
+      "ice": {
+        "name": "Ice cube",
+        "launch": [
+          "Ice cube away!",
+          "Something cool!",
+          "Chill out!"
+        ],
+        "sound": [
+          "Clink!"
+        ],
+        "hit": [
+          "Brrrr!",
+          "Send some lemonade too!",
+          "I'm frozen!"
+        ]
+      },
+      "donut": {
+        "name": "Donut",
+        "launch": [
+          "Donut away!",
+          "Sweet delivery!",
+          "Sugar rocket!"
+        ],
+        "sound": [
+          "Yum!"
+        ],
+        "hit": [
+          "Yum yum!",
+          "Send more!",
+          "More, please!",
+          "Thank you!"
+        ],
+        "expect": [
+          "Ooh, can't wait!",
+          "Mmm, smells good!"
+        ]
+      },
+      "bulb": {
+        "name": "Light bulb",
+        "launch": [
+          "Light bulb away!",
+          "Here's a bright idea!",
+          "Lights, go!"
+        ],
+        "sound": [
+          "Ding!"
+        ],
+        "hit": [
+          "I've seen the light!",
+          "I've got an idea!",
+          "Lights out for you!"
+        ]
+      },
+      "teeth": {
+        "name": "Chattering teeth",
+        "launch": [
+          "Teeth away!",
+          "Sending a smile!",
+          "Chatter chatter, go!"
+        ],
+        "sound": [
+          "Clack!"
+        ],
+        "hit": [
+          "A wisdom tooth!",
+          "Now I've got teeth!",
+          "Chomp chomp!",
+          "Don't forget to brush them!"
+        ]
+      },
+      "diaper": {
+        "name": "Diaper",
+        "launch": [
+          "Diaper away!",
+          "Incoming diaper!",
+          "Special delivery!"
+        ],
+        "sound": [
+          "Flump!"
+        ],
+        "hit": [
+          "Please tell me it's unused!",
+          "Biohazard!",
+          "Bleurgh!",
+          "Straight in the bin!"
+        ],
+        "expect": [
+          "Oh, please, no!",
+          "Tell me it's clean!"
+        ]
+      },
+      "cloud": {
+        "name": "Cloud",
+        "launch": [
+          "Cloud away!",
+          "Light as air!",
+          "Fluffy, fly!"
+        ],
+        "sound": [
+          "Poof!"
+        ],
+        "hit": [
+          "Precipitation!",
+          "Poof!",
+          "Didn't feel a thing!",
+          "Like cotton wool!"
+        ]
+      },
+      "snack": {
+        "name": "Old lunch",
+        "launch": [
+          "Old lunch away!",
+          "Found this at the bottom of my bag!",
+          "Snack attack!"
+        ],
+        "sound": [
+          "Splat!"
+        ],
+        "hit": [
+          "A living ecosystem!",
+          "I'm not eating that!",
+          "Needs more sugar!",
+          "How many weeks old is this?"
+        ],
+        "expect": [
+          "What's that smell?"
+        ]
+      },
+      "bottle": {
+        "name": "Baby bottle",
+        "launch": [
+          "Bottle away!",
+          "Milk delivery!",
+          "Baby's snack, incoming!"
+        ],
+        "sound": [
+          "Glug!"
+        ],
+        "hit": [
+          "What am I, a baby?",
+          "The Milky Way!",
+          "Yum!",
+          "Burrrp!"
+        ]
+      },
+      "pacifier": {
+        "name": "Pacifier",
+        "launch": [
+          "Pacifier away!",
+          "Shh, this one's for you!"
+        ],
+        "sound": [
+          "Smack!"
+        ],
+        "hit": [
+          "Waaah, waaah!",
+          "I'm not crying!",
+          "Now, quiet please!",
+          "Sterilize it first, please!"
+        ]
+      },
+      "chalk": {
+        "name": "Chalk",
+        "launch": [
+          "Chalk away!",
+          "Just like at the blackboard!"
+        ],
+        "sound": [
+          "Puff!"
+        ],
+        "hit": [
+          "Pop quiz time!",
+          "Up to the blackboard!",
+          "Chalk dust everywhere!",
+          "Now draw a house without lifting the chalk!",
+          "Clean the board!"
+        ]
+      },
+      "whistle": {
+        "name": "Whistle",
+        "launch": [
+          "Whistle away!",
+          "Calling the ref!"
+        ],
+        "sound": [
+          "Phweet!"
+        ],
+        "hit": [
+          "Foul!",
+          "Yellow card!",
+          "Red card!",
+          "Half time!"
+        ]
+      },
+      "pingpong": {
+        "name": "Ping-pong ball",
+        "launch": [
+          "Ping!",
+          "Serving!",
+          "Ping-pong ball away!"
+        ],
+        "sound": [
+          "Tap!"
+        ],
+        "hit": [
+          "Pong!",
+          "Featherweight!",
+          "Tap-tap-tap!"
+        ]
+      },
+      "bowling": {
+        "name": "Bowling ball",
+        "launch": [
+          "Bowling ball away!",
+          "Heavyweight incoming!",
+          "Watch out, it's heavy!"
+        ],
+        "sound": [
+          "Thud!"
+        ],
+        "hit": [
+          "Splinters everywhere!",
+          "That's heavy!",
+          "Strike!",
+          "Spare!"
+        ],
+        "expect": [
+          "Don't do this to me!",
+          "I hope I can take it!"
+        ]
+      },
+      "butterfly": {
+        "name": "Butterfly",
+        "launch": [
+          "Fly, butterfly!",
+          "Off you flutter!",
+          "Butterfly, go find the target!"
+        ],
+        "sound": [
+          "Flutter!"
+        ],
+        "hit": [
+          "It flew away!",
+          "Pretty wings!",
+          "I'm not a flower!",
+          "Ew, bugs!"
+        ]
+      },
+      "spider": {
+        "name": "Spider",
+        "launch": [
+          "Spider away!",
+          "Here comes a spider!",
+          "Eight legs, go!"
+        ],
+        "sound": [
+          "Tap!"
+        ],
+        "hit": [
+          "Spider-Man!",
+          "Superhero!",
+          "Send me a fly!",
+          "Caught in the web!",
+          "Time to dust the corners!"
+        ],
+        "expect": [
+          "Not a spider!"
+        ]
+      },
+      "hockey": {
+        "name": "Hockey stick",
+        "launch": [
+          "Hockey stick away!",
+          "Slap shot!"
+        ],
+        "sound": [
+          "Clack!"
+        ],
+        "hit": [
+          "Slashing!",
+          "Offside!",
+          "Icing!",
+          "To the penalty box!"
+        ]
+      },
+      "pillow": {
+        "name": "Pillow",
+        "launch": [
+          "Pillow fight!",
+          "Soft shot incoming!"
+        ],
+        "sound": [
+          "Fwump!"
+        ],
+        "hit": [
+          "Soft landing!",
+          "Just a little nap!",
+          "Feathers everywhere!"
+        ]
+      },
+      "chicken": {
+        "name": "Rubber chicken",
+        "launch": [
+          "Rubber chicken away!",
+          "Bawk bawk!"
+        ],
+        "sound": [
+          "Bawk!"
+        ],
+        "hit": [
+          "Which came first, the chicken or the egg?",
+          "Buk-buk-bawk!",
+          "What a silly chicken!"
+        ]
+      },
+      "water-balloon": {
+        "name": "Water balloon",
+        "launch": [
+          "Water balloon!",
+          "Watch out, it's wet!"
+        ],
+        "sound": [
+          "Splash!"
+        ],
+        "hit": [
+          "I'm soaked!",
+          "So refreshing!",
+          "Who forgot the umbrella?"
+        ]
+      },
+      "banana": {
+        "name": "Banana",
+        "launch": [
+          "Banana away!",
+          "Yellow boomerang!"
+        ],
+        "sound": [
+          "Splat!"
+        ],
+        "hit": [
+          "Careful, I'll slip!",
+          "The monkeys would love this!",
+          "Vitamin bomb!"
+        ]
+      },
+      "battery": {
+        "name": "Battery",
+        "launch": [
+          "Battery away!",
+          "Power up!",
+          "Fully charged!"
+        ],
+        "sound": [
+          "Zap!"
+        ],
+        "hit": [
+          "A charged hit!",
+          "Full power!",
+          "Short circuit!",
+          "Where's my plug?"
+        ]
+      },
+      "magnet": {
+        "name": "Magnet",
+        "launch": [
+          "Magnet away!",
+          "Attract!"
+        ],
+        "sound": [
+          "Clunk!"
+        ],
+        "hit": [
+          "I'm so attracted to you!",
+          "It stuck!",
+          "What a magnetic personality!"
+        ]
+      },
+      "gear": {
+        "name": "Gear",
+        "launch": [
+          "Gear away!",
+          "Get in gear!"
+        ],
+        "sound": [
+          "Clank!"
+        ],
+        "hit": [
+          "Everything clicks!",
+          "Now I've got a spare cog!",
+          "Running like clockwork!"
+        ]
+      },
+      "note": {
+        "name": "Music note",
+        "launch": [
+          "Note away!",
+          "Sending a tune!",
+          "Tra-la-la, fly!"
+        ],
+        "sound": [
+          "Ting!"
+        ],
+        "hit": [
+          "Right on the beat!",
+          "Out of tune!",
+          "Now I'm singing!",
+          "La-la-la!"
+        ]
+      },
+      "frog": {
+        "name": "Frog",
+        "launch": [
+          "Hop, froggy!",
+          "Frog away!",
+          "Leap, little frog!"
+        ],
+        "sound": [
+          "Ribbit!"
+        ],
+        "hit": [
+          "No kisses, sorry!",
+          "Definitely not a prince!",
+          "Ribbit! Is there a pond around here?"
+        ]
+      },
+      "wand": {
+        "name": "Magic wand",
+        "launch": [
+          "Abracadabra!",
+          "Wand away!",
+          "Hocus-pocus!"
+        ],
+        "sound": [
+          "Ting!"
+        ],
+        "hit": [
+          "I'm enchanted!",
+          "Did I turn into a frog? Phew, no!",
+          "A magic bullseye!"
+        ]
+      },
+      "ladybug": {
+        "name": "Ladybug",
+        "launch": [
+          "Fly, ladybug!",
+          "Off you go, ladybug!",
+          "Ladybug, fly to the target!"
+        ],
+        "sound": [
+          "Tap!"
+        ],
+        "hit": [
+          "A ladybug, that's lucky!",
+          "Spot on, just like her spots!",
+          "Ladybug, ladybug, fly away home!"
+        ]
+      },
+      "rocket": {
+        "name": "Toy rocket",
+        "launch": [
+          "3, 2, 1, liftoff!",
+          "Blast off!",
+          "Rocket launch!"
+        ],
+        "sound": [
+          "Zoom!"
+        ],
+        "hit": [
+          "Touchdown!",
+          "Houston, we have a hit!",
+          "One small step for you, one giant hit for me!"
+        ]
+      },
+      "asteroid": {
+        "name": "Asteroid",
+        "launch": [
+          "Asteroid incoming!",
+          "Space rock, go!",
+          "Look out, meteor!"
+        ],
+        "sound": [
+          "Kaboom!"
+        ],
+        "hit": [
+          "Impact from outer space!",
+          "Good thing I'm not a dinosaur!",
+          "Now I've got a crater!"
+        ]
+      },
+      "chili": {
+        "name": "Chili pepper",
+        "launch": [
+          "Chili away!",
+          "Hot stuff incoming!"
+        ],
+        "sound": [
+          "Sizzle!"
+        ],
+        "hit": [
+          "Now I breathe fire like a dragon!",
+          "Water, quick, water!",
+          "My ears are on fire!"
+        ],
+        "expect": [
+          "Nothing spicy, please!"
+        ]
+      },
+      "nest": {
+        "name": "Nest",
+        "launch": [
+          "Nest away!",
+          "A home for birds, coming up!"
+        ],
+        "sound": [
+          "Rustle!"
+        ],
+        "hit": [
+          "Who's moving in?",
+          "Add an egg and I'm a hen!",
+          "Cozy!"
+        ]
+      },
+      "spring": {
+        "name": "Spring",
+        "launch": [
+          "Spring away!",
+          "Boing, go!"
+        ],
+        "sound": [
+          "Boing!"
+        ],
+        "hit": [
+          "Boing boing!",
+          "I'm jumping for joy!",
+          "Now that's bouncy!"
+        ]
+      },
+      "wrench": {
+        "name": "Wrench",
+        "launch": [
+          "Wrench away!",
+          "Time to tighten something!"
+        ],
+        "sound": [
+          "Clang!"
+        ],
+        "hit": [
+          "Nice and tight!",
+          "Do I have a loose bolt somewhere?",
+          "Bolt would be proud!"
+        ]
+      },
+      "umbrella": {
+        "name": "Umbrella",
+        "launch": [
+          "Umbrella away!",
+          "Rain, rain, go away!"
+        ],
+        "sound": [
+          "Fwump!"
+        ],
+        "hit": [
+          "Finally, I'm dry!",
+          "Let it rain, I don't care!",
+          "Singing in the rain!"
+        ]
+      },
+      "robot": {
+        "name": "Little robot",
+        "launch": [
+          "Fly, little robot!",
+          "Propeller on!",
+          "Beep-boop, forward!"
+        ],
+        "sound": [
+          "Beep!"
+        ],
+        "hit": [
+          "Beep-boop, landed!",
+          "Target acquired!",
+          "Calculation correct!"
+        ]
+      },
+      "toast": {
+        "name": "Toast",
+        "launch": [
+          "Toast away!",
+          "Fresh from the toaster!",
+          "Toast incoming!"
+        ],
+        "sound": [
+          "Crunch!"
+        ],
+        "hit": [
+          "Buttered toast!",
+          "Nicely done!",
+          "Butter side up, lucky us!"
+        ]
+      },
+      "flower": {
+        "name": "Flower",
+        "launch": [
+          "A flower for you!",
+          "Flower away!"
+        ],
+        "sound": [
+          "Swish!"
+        ],
+        "hit": [
+          "Thank you, it's lovely!",
+          "How sweet of you!",
+          "Smells like spring!"
+        ],
+        "expect": [
+          "Is that for me?"
+        ]
+      },
+      "pinecone": {
+        "name": "Pine cone",
+        "launch": [
+          "Pine cone away!",
+          "Straight from the forest!"
+        ],
+        "sound": [
+          "Thock!"
+        ],
+        "hit": [
+          "Not that kind of cone!",
+          "Crunchy, not sweet!",
+          "A squirrel will come looking for it!"
+        ]
+      },
+      "fish": {
+        "name": "Fish",
+        "launch": [
+          "Fish away!",
+          "Flying fish!",
+          "Something fishy!"
+        ],
+        "sound": [
+          "Splish!"
+        ],
+        "hit": [
+          "Glub glub, where's the water?",
+          "Ew, scales!",
+          "Something smells fishy!"
+        ]
+      },
+      "bird": {
+        "name": "Songbird",
+        "launch": [
+          "Fly, birdie!",
+          "Off you go, little bird!",
+          "Tweet, to the target!"
+        ],
+        "sound": [
+          "Tweet!"
+        ],
+        "hit": [
+          "Tweet! I'll build my nest here!",
+          "You're music to my ears!",
+          "A bird in the middle!"
+        ]
+      },
+      "crown": {
+        "name": "Crown",
+        "launch": [
+          "Crown away!",
+          "For the king of the ball!"
+        ],
+        "sound": [
+          "Ting!"
+        ],
+        "hit": [
+          "I'm the king of the ball!",
+          "Shall we dance?",
+          "Your Majesty, a hit!"
+        ]
+      }
     },
     "done": "Target range done!",
     "beforeAfter": "before {before} %, now {after} %",

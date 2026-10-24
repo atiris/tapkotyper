@@ -486,3 +486,81 @@ function drawLabelIcon(g: G, icon: NonNullable<WordStyle['icon']>, cx: number, y
   }
   g.restore();
 }
+
+/** A speech bubble's text, wrapped to at most two lines, and its size. */
+export interface SpeechLayout {
+  lines: string[];
+  size: number;
+  w: number;
+  h: number;
+}
+
+/** Wraps a line for a speech bubble no wider than `maxW`; a long one shrinks to stay on two lines. */
+export function speechLayout(g: G, text: string, maxW: number, size = 30): SpeechLayout {
+  const pad = size * 0.7;
+  g.save();
+  for (let s = size; ; s -= 2) {
+    g.font = `700 ${s}px ${fontFamily()}`;
+    const lines: string[] = [];
+    for (const word of text.split(' ')) {
+      const last = lines[lines.length - 1];
+      if (last != null && g.measureText(`${last} ${word}`).width <= maxW - 2 * pad) lines[lines.length - 1] = `${last} ${word}`;
+      else lines.push(word);
+    }
+    if (lines.length <= 2 || s <= 18) {
+      const w = Math.max(...lines.map((l) => g.measureText(l).width)) + 2 * pad;
+      g.restore();
+      return { lines: lines.slice(0, 2), size: s, w, h: lines.slice(0, 2).length * s * 1.2 + pad * 1.1 };
+    }
+  }
+}
+
+const SPEECH = { plate: 'rgba(255,253,246,0.96)', edge: 'rgba(90,61,43,0.7)', ink: '#3b2a1e' };
+
+/** A speech bubble centered at (x, y) with a short tail toward (tx, ty); the light plate keeps its daylight look on a dark page too. */
+export function drawSpeech(g: G, lay: SpeechLayout, x: number, y: number, tx: number, ty: number, alpha = 1, scale = 1): void {
+  const x0 = x - lay.w / 2, y0 = y - lay.h / 2, r = Math.min(18, lay.h / 2);
+  // The tail starts on the edge nearest its target and reaches at most TAIL toward it.
+  const TAIL = 34;
+  const below = ty > y0 + lay.h, above = ty < y0;
+  const bx = below || above ? Math.max(x0 + r + 10, Math.min(x0 + lay.w - r - 10, tx)) : tx < x ? x0 : x0 + lay.w;
+  const by = below ? y0 + lay.h : above ? y0 : Math.max(y0 + r + 6, Math.min(y0 + lay.h - r - 6, ty));
+  const d = Math.hypot(tx - bx, ty - by) || 1;
+  const k = Math.min(1, TAIL / d);
+  const tipX = bx + (tx - bx) * k, tipY = by + (ty - by) * k;
+  const half = 10, along = below || above;
+  g.save();
+  g.globalAlpha *= alpha;
+  g.translate(tipX, tipY);
+  g.scale(scale, scale);
+  g.translate(-tipX, -tipY);
+  g.fillStyle = SPEECH.plate;
+  g.strokeStyle = SPEECH.edge;
+  g.lineWidth = 3;
+  g.lineJoin = 'round';
+  // The plate and the tail as one outline.
+  roundRect(g, x0, y0, lay.w, lay.h, r);
+  g.fill();
+  g.stroke();
+  g.beginPath();
+  g.moveTo(along ? bx - half : bx, along ? by : by - half);
+  g.lineTo(tipX, tipY);
+  g.lineTo(along ? bx + half : bx, along ? by : by + half);
+  g.closePath();
+  g.fill();
+  g.stroke();
+  // Cover the edge line under the tail's base.
+  g.beginPath();
+  g.moveTo(along ? bx - half + 2 : bx + (tx < x ? 2 : -2), along ? by + (below ? -2 : 2) : by - half + 2);
+  g.lineTo(along ? bx + half - 2 : bx + (tx < x ? 2 : -2), along ? by + (below ? -2 : 2) : by + half - 2);
+  g.lineWidth = 5;
+  g.strokeStyle = SPEECH.plate;
+  g.stroke();
+  g.fillStyle = SPEECH.ink;
+  g.font = `700 ${lay.size}px ${fontFamily()}`;
+  g.textAlign = 'center';
+  g.textBaseline = 'middle';
+  const lh = lay.size * 1.2;
+  lay.lines.forEach((line, i) => g.fillText(line, x, y + (i - (lay.lines.length - 1) / 2) * lh));
+  g.restore();
+}

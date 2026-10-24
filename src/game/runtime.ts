@@ -5,7 +5,7 @@ import { Loop, Stage, VH } from '../engine/loop';
 import { Particles } from '../engine/particles';
 import { Rng } from '../engine/rng';
 import { Tweens, ease } from '../engine/tween';
-import { drawBackground, drawWord, fontFamily, type G, wordBox } from '../gfx/draw';
+import { drawBackground, drawSpeech, drawWord, fontFamily, type G, type SpeechLayout, speechLayout, wordBox } from '../gfx/draw';
 import { type Mood, pawColors, tapkoElement, renderTapkoInto } from '../gfx/tapko';
 import { preload } from '../gfx/assets';
 import { type FairyMood, drawFairy } from '../gfx/fairy';
@@ -44,6 +44,23 @@ interface Shout {
   x: number;
   y: number;
   age: number;
+}
+
+/** A speech bubble in the scene: who says it, centered near (x, y) (or ending at x), its tail toward (tx, ty). */
+interface Speech {
+  who: string;
+  /** (x, y) is the middle of its right edge, not its center. */
+  right: boolean;
+  text: string;
+  x: number;
+  y: number;
+  tx: number;
+  ty: number;
+  age: number;
+  life: number;
+  /** Its vertical move clear of the word labels, kept while it stays clear. */
+  dy: number;
+  lay?: SpeechLayout;
 }
 
 /** A word label a mode asked for in this frame, at its object's anchor. */
@@ -85,6 +102,9 @@ const FAIRY_FLOAT = 110;
 const FAIRY_HOP = 0.6;
 /** Seconds a shout stays over the scene. */
 const SHOUT_TIME = 1.1;
+/** Widest speech bubble, and how far it may move up or down to stay clear of the word labels. */
+const SPEECH_W = 360;
+const SPEECH_ROOM = 160;
 /** The end of a level: Tapko hops HOPS times of HOP_TIME seconds, his tool fades in TOOL_FADE, then the results open. */
 const HOPS = 3;
 const HOP_TIME = 0.4;
@@ -142,6 +162,13 @@ export interface RuntimeOptions {
   onHelp(back: () => void, now: HTMLElement[]): void;
 }
 
+/** The e2e build counts the frames with a speech bubble and those where one covers a word label (`window.speechLog`). */
+function speechLog(b: Rect, labels: Rect[]): void {
+  const log = ((window as any).speechLog ??= { frames: 0, overlaps: 0 });
+  log.frames++;
+  if (labels.some((r) => r.x1 > b.x0 + LABEL_GAP && r.x0 < b.x1 - LABEL_GAP && r.y1 > b.y0 + LABEL_GAP && r.y0 < b.y1 - LABEL_GAP)) log.overlaps++;
+}
+
 /** Runs one level: input, typing state, mode, HUD, guide, Tapko, stats. */
 export class LevelRuntime {
   readonly core = new TypingCore();
@@ -175,6 +202,7 @@ export class LevelRuntime {
   private fairyMoodT = 0;
   private fairyHop = 0;
   private shouts: Shout[] = [];
+  private speeches: Speech[] = [];
 
   private loop: Loop;
   private input: KeyInput | null = null;
@@ -192,7 +220,7 @@ export class LevelRuntime {
   /** Seconds until the gauge's spoken label may change again. */
   private gaugeLabelIn = 0;
   private pauseEl: HTMLElement | null = null;
-  /** Free typing: the text shown above Tapko, for screen readers. */
+  /** Free typing's text shown above Tapko and the range's speech bubbles, for screen readers. */
   private saidEl: HTMLElement | null = null;
   private breakSaid = false;
   private paused = false;
@@ -329,7 +357,7 @@ export class LevelRuntime {
     const extra = this.mode.hud();
     if (extra) hud.querySelector('.hud-title')!.after(extra);
     hud.querySelector('.hud-title')!.after(...this.mode.rings());
-    if (this.free) {
+    if (this.free || def.kind === 'aim') {
       this.saidEl = h('p', { class: 'sr-only', role: 'status', 'aria-live': 'polite' });
       stageWrap.append(this.saidEl);
     }
@@ -797,12 +825,44 @@ export class LevelRuntime {
     this.shouts.push({ text, x, y, age: 0 });
   }
 
+  /**
+   * A speech bubble in the scene, centered at (x, y) (or with its right edge there) and its tail toward
+   * (tx, ty), for `seconds`; a new line of the same speaker replaces the old one. Screen readers hear it;
+   * the voice does not read it.
+   */
+  speak(who: string, text: string, x: number, y: number, tx: number, ty: number, seconds: number, right = false): void {
+    this.speeches = this.speeches.filter((s) => s.who !== who);
+    this.speeches.push({ who, right, text, x, y, tx, ty, age: 0, life: seconds, dy: 0 });
+    if (this.saidEl) this.saidEl.textContent = text;
+  }
+
+  /** The speaker's bubble is still up. */
+  speaking(who: string): boolean {
+    return this.speeches.some((s) => s.who === who);
+  }
+
   /** Someone is glad: a cheer ("Hurá!") pops up above Tapko, or at `at`, with the cheer sound; returns the cheer. */
   hooray(at = this.mode.heroSpot()): string {
     const text = pickLine('story.cheer');
     this.sfx('cheer');
     this.shout(text, at.x, at.y);
     return text;
+  }
+
+  /** A speech bubble pops in and fades out; it moves up or down while it would cover a word label. */
+  private drawSpeech(g: G, s: Speech): void {
+    const lay = (s.lay ??= speechLayout(g, s.text, SPEECH_W));
+    const x = Math.min(this.vw - lay.w / 2 - 8, Math.max(lay.w / 2 + 8, s.right ? s.x - lay.w / 2 : s.x));
+    const box = (dy: number) => ({ x0: x - lay.w / 2 - LABEL_GAP, x1: x + lay.w / 2 + LABEL_GAP, y0: s.y + dy - lay.h / 2 - LABEL_GAP, y1: s.y + dy + lay.h / 2 + LABEL_GAP });
+    const clear = (dy: number) => {
+      const b = box(dy);
+      return b.y0 >= 0 && b.y1 <= VH && this.labelRects.every((r) => r.x1 <= b.x0 || r.x0 >= b.x1 || r.y1 <= b.y0 || r.y0 >= b.y1);
+    };
+    if (!clear(s.dy)) s.dy = Array.from({ length: SPEECH_ROOM / 4 }, (_, i) => (i % 2 ? -1 : 1) * Math.ceil((i + 1) / 2) * 8).find(clear) ?? s.dy;
+    if (import.meta.env.MODE === 'e2e') speechLog(box(s.dy), this.labelRects);
+    const fade = Math.max(0, Math.min(1, (s.life - s.age) / 0.25));
+    const pop = this.reduceMotion ? 1 : ease.outBack(Math.min(1, s.age / 0.25));
+    drawSpeech(g, lay, x, s.y + s.dy, s.tx, s.ty, fade, pop);
   }
 
   private drawShout(g: G, s: Shout): void {
@@ -1065,6 +1125,8 @@ export class LevelRuntime {
     this.fairyHop = Math.max(0, this.fairyHop - dt);
     for (const s of this.shouts) s.age += dt;
     this.shouts = this.shouts.filter((s) => s.age < SHOUT_TIME);
+    for (const s of this.speeches) s.age += dt;
+    this.speeches = this.speeches.filter((s) => s.age < s.life);
     const pct = Math.round(shownProgress(this.mode.progress(), this.played, this.minActive) * 100);
     if (pct !== this.progressPct) {
       this.progressPct = pct;
@@ -1099,6 +1161,7 @@ export class LevelRuntime {
     this.mode.render(g);
     this.drawLabels(g);
     this.particles.render(g);
+    for (const s of this.speeches) this.drawSpeech(g, s);
     for (const s of this.shouts) this.drawShout(g, s);
     this.placeBubble();
   }

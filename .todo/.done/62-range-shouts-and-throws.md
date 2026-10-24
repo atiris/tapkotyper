@@ -189,35 +189,35 @@ Reused pictures (no new art): `obj-planet-1`..`5`, `obj-butterfly`, `-2`, `-3`, 
 `obj-battery`, `obj-gear`, `obj-note1`, `obj-note2`, `obj-frog`, `ui-start-cloud-1`, `-2`, and
 for world things `obj-ladybug`, `obj-rocket`, `obj-asteroid-small`, `obj-nest`, `obj-spring`,
 `obj-umbrella`, `obj-robot-small-3`, `obj-flower-open`, `obj-bird` and the wardrobe's
-`acc-crown` (if it reads well at 46 px; else a new `obj-aim-crown.jpg`, "a small golden crown
+`acc-crown` (if it reads well at 46 px; else a new `obj-aim-crown.jpg` - it did not, the new one is used, "a small golden crown
 with three points and pink gems", magenta).
 If a picture cannot be generated in the run, its thing stays out of the pool (it has no
 picture) and a backlog line names the missing pictures; everything else ships.
 
 ## Steps
-- [ ] 1. Spec: rewrite the range part of `.specify/game/target-practice.md` (the calls, the
+- [x] 1. Spec: rewrite the range part of `.specify/game/target-practice.md` (the calls, the
   target's lines and their tiers, the things per story, the effects, the eyes).
-- [ ] 2. i18n: the catalogue below into `aim.things.<id>` (`name`, `launch[]`, `sound[]`,
+- [x] 2. i18n: the catalogue below into `aim.things.<id>` (`name`, `launch[]`, `sound[]`,
   `hit[]`, optional `expect[]`, and the special lists) and `aim.lines.*`, Slovak and English;
   `aim.center` and `aim.hit.*` removed. A unit test checks both languages have every list of
   every thing and that no list is empty.
-- [ ] 3. `aim-things.ts`: the table (id, pictures, story, sound effect, effect kind, expect
+- [x] 3. `aim-things.ts`: the table (id, pictures, story, sound effect, effect kind, expect
   chance); the pool per world (story gating, picture loaded, no repeat).
-- [ ] 4. Speech bubbles (`runtime.ts`, `draw.ts`): Tapko's and the target's bubble, their
+- [x] 4. Speech bubbles (`runtime.ts`, `draw.ts`): Tapko's and the target's bubble, their
   placement and timing, screen-reader mirror; the line choice by tier, points, miss, fall,
   expect, streaks, shrink, last throw; shuffled bags. Unit tests for the tier choice and the
   point ranges.
-- [ ] 5. Effects and the new sounds.
-- [ ] 6. The target's eyes (popping up only now and then, as decided above).
-- [ ] 6b. World things and the collection: the pool rule, `rangeFinds` with its migration,
+- [x] 5. Effects and the new sounds.
+- [x] 6. The target's eyes (popping up only now and then, as decided above).
+- [x] 6b. World things and the collection: the pool rule, `rangeFinds` with its migration,
   the end card's row and its tooltips; unit tests: a world thing never comes outside its
   world, the first throw is the world's thing, the migration.
-- [ ] 7. Pictures: generate, cut (`npm run assets obj-aim-`), check each at play size on a
+- [x] 7. Pictures: generate, cut (`npm run assets obj-aim-`), check each at play size on a
   light and a dark world, rows in `PROMPTS.md` with their status.
-- [ ] 8. e2e: a range run shows Tapko's call after the launch word, the target's line after a
+- [x] 8. e2e: a range run shows Tapko's call after the launch word, the target's line after a
   hit, and no bubble ever overlaps a word label (checked every frame of one throw at
   1024x600, 1366x768 and 1920x1080).
-- [ ] 9. Quality loop: play the range with Super Tapko in a world of each story at those
+- [x] 9. Quality loop: play the range with Super Tapko in a world of each story at those
   sizes, in both looks and with reduced motion; every thing thrown at least once (a debug
   seed or a test hook that picks the thing); fix what reads badly or overlaps; build, unit,
   e2e green.
@@ -394,7 +394,7 @@ Lines are separated by " · ".
 - Hit - SK: Bééé, uááá! · Ja neplačem! · A bude ticho! · Najprv sterilizovať, prosím! - EN: Waaah, waaah! · I'm not crying! · Now, quiet please! · Sterilize it first, please!
 
 **25. Krieda / Chalk** (new; white dust)
-- Call - SK: Krieda letí! · Hádžem kriedu! · Ako pani učiteľka! - EN: Chalk away! · Just like the teacher!
+- Call - SK: Krieda letí! · Hádžem kriedu! · Ako v škole pri tabuli! - EN: Chalk away! · Just like at the blackboard!
 - Sound - SK: Prášk! - EN: Puff!
 - Hit - SK: A teraz písomka! · K tabuli! · Prach a krieda! · Domček jedným ťahom! · Zotri hubkou! - EN: Pop quiz time! · Up to the blackboard! · Chalk dust everywhere! · Now draw a house without lifting the chalk! · Clean the board!
 
@@ -577,3 +577,19 @@ Lines are separated by " · ".
 - new - SK: Nová vec do zbierky! - EN: New find for the collection!
 - count - SK: Zbierka: {n} z 15 - EN: Collection: {n} of 15
 - waiting - SK: Čaká v svete {world} - EN: Waiting in the {world} world
+
+## Done - 2026-10-24
+- Shipped: the whole catalogue in `aim.things.*` / `aim.lines.*` / `aim.collection.*` (sk, en);
+  `aim-things.ts` (56 things, story and world pools, tiers, points, shuffled bags); canvas speech
+  bubbles for Tapko and the target that move clear of word labels and go to the screen-reader
+  line; every effect, the four new sounds, the peeking eyes; world things with `rangeFinds`
+  (store v6 with its migration) and the end card's collection row; 36 new pictures (all 35 of
+  the list plus `obj-aim-crown`, since `acc-crown` is too small at 46 px), each checked at play
+  size on a light and a dark band; unit and e2e tests (no bubble over a word at 1024x600,
+  1366x768, 1920x1080).
+- Changed from the catalogue: the chalk call "Ako pani učiteľka!" / "Just like the teacher!"
+  became "Ako v škole pri tabuli!" / "Just like at the blackboard!" (the texts never name a
+  teacher; `i18n.test.ts`).
+- Small choices: a chick that arrives after hatching in flight gets no impact word (none in the
+  catalogue fits); the umbrella sits on the target's top and fades instead of opening; the
+  e2e and dev builds take `?aimThing=<id>,<id>|all` to pick the things.

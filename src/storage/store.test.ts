@@ -176,10 +176,21 @@ describe('migration v5', () => {
   it('starts an existing device on the system theme and keeps a stored one', () => {
     const v4 = { version: 4, profiles: [newProfile('Ema', 'sk')], lastProfileId: null, language: 'sk' };
     const out = migrate(v4);
-    expect(out.version).toBe(5);
+    expect(out.version).toBe(6);
     expect(out.theme).toBe('system');
     expect(out.profiles).toHaveLength(1);
     expect(migrate({ version: 5, profiles: [], theme: 'dark' }).theme).toBe('dark');
     expect(migrate({ version: 5, profiles: [], theme: 'pink' }).theme).toBe('system');
+  });
+});
+
+describe('migration v6', () => {
+  it('gives every profile an empty collection of range finds', () => {
+    const old: any = newProfile('Ema', 'sk');
+    delete old.progress.rangeFinds;
+    const out = migrate({ version: 5, profiles: [old], theme: 'light' });
+    expect(out.version).toBe(6);
+    expect(out.profiles[0].progress.rangeFinds).toEqual([]);
+    expect(newProfile('Nový', 'sk').progress.rangeFinds).toEqual([]);
   });
 });

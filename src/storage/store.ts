@@ -17,7 +17,7 @@ import {
 export const STORE_KEY = 'tapkotyper:v1';
 const GUEST_KEY = 'tapkotyper:guest';
 
-export const STORE_VERSION = 5;
+export const STORE_VERSION = 6;
 
 /** Migrations from older stored shapes, keyed by the version they upgrade from. */
 const migrations: Record<number, (data: any) => any> = {
@@ -44,6 +44,14 @@ const migrations: Record<number, (data: any) => any> = {
   // defaults of the profile's language.
   // v5: the device's theme; an existing device keeps following the system.
   4: (data) => ({ ...data, theme: 'system' }),
+  // v6: the target range's collection of world things starts empty.
+  5: (data) => ({
+    ...data,
+    profiles: Array.isArray(data.profiles) ? data.profiles.map((p: any) => !p || typeof p !== 'object' ? p : {
+      ...p,
+      progress: { ...p.progress, rangeFinds: [] },
+    }) : data.profiles,
+  }),
 };
 
 const THEMES: Theme[] = ['system', 'light', 'dark'];
@@ -151,6 +159,7 @@ export function newProfile(name: string, language: Lang, layout?: LayoutId, kind
       levelsFinished: 0,
       starsEarned: 0,
       wardrobeSeconds: 0,
+      rangeFinds: [],
     },
     stats: { keys: {}, sessions: [] },
     createdAt: Date.now(),

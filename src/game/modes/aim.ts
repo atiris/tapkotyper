@@ -566,7 +566,6 @@ export class AimMode extends HeroMode {
     f.phase = 'miss';
     this.streak = 0;
     this.L.sfx('whoosh');
-    this.L.shout(t('aim.miss'), this.target.x, this.target.y - this.radius - 40);
     this.targetSays(this.line('aim.lines.miss'));
     this.eyesReact('happy');
   }
@@ -644,7 +643,6 @@ export class AimMode extends HeroMode {
     this.L.sfx('plop');
     const p = this.point(f.s);
     this.L.particles.emit(p.x, VH * 0.9, 8, 'puff', ['#ffffff', '#e8e2d6'], 80, 10, 0.6);
-    this.L.shout(t('aim.plop'), p.x, VH * 0.9 - 60);
     this.targetSays(this.line('aim.lines.fall'));
     this.eyesReact('happy');
   }

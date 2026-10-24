@@ -1875,8 +1875,6 @@
     "swap": "From the collection: {name}!",
     "keys": "Letters to train",
     "ready": "Great! You type {keys} accurately now.",
-    "plop": "Plop!",
-    "miss": "Missed!",
     "hits": "Target hits: {n}",
     "stayTip": "Esc: keep throwing; Esc again ends the range",
     "stay": "Stay at the range",
@@ -1910,6 +1908,7 @@
         "Not bad at all!"
       ],
       "miss": [
+        "Missed!",
         "Whoosh, right over me!",
         "Just over my head!",
         "Phew, missed!",
@@ -1920,6 +1919,7 @@
         "Lucky me."
       ],
       "fall": [
+        "Plop!",
         "No worries, next one!",
         "It's fine, try again.",
         "I'll wait for the next one!",

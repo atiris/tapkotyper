@@ -41,7 +41,7 @@
   says how good the throw was in a bubble left of it, below the flight path: in the middle (no
   wrong key) a bullseye line or, more often, a funny line of the thing ("100-percentný
   kečup!"); one wrong key a near miss (85-95 points), two a decent hit (75-85 points). A miss
-  and a fall get a kind line, three and five bullseyes in a row a streak line, the last throw
+  and a fall get only a kind line of the target ("Vedľa!", "Plop!" among them, no word pops up), three and five bullseyes in a row a streak line, the last throw
   of the two minutes and a target that steps back (shrinks) a line of their own. Now and then
   (about one throw in four, more for a cactus or a spider) the target reacts while the thing is
   on its way: worried, wondering or cheering. No line comes twice in a row. Every line stays long

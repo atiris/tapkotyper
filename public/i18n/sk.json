@@ -1875,8 +1875,6 @@
     "swap": "Zo zbierky: {name}!",
     "keys": "Písmená na tréning",
     "ready": "Výborne! {keys} už píšeš presne.",
-    "plop": "Plop!",
-    "miss": "Vedľa!",
     "hits": "Zásahy do terča: {n}",
     "stayTip": "Esc: strieľaš ďalej, ďalší Esc strelnicu ukončí",
     "stay": "Zostať na strelnici",
@@ -1910,6 +1908,7 @@
         "Na terči!"
       ],
       "miss": [
+        "Vedľa!",
         "Fíha, preletelo to!",
         "Tesne nad hlavou!",
         "Uf, vedľa.",
@@ -1920,6 +1919,7 @@
         "Mal som šťastie."
       ],
       "fall": [
+        "Plop!",
         "Nevadí, ďalší!",
         "To nič, skús znova.",
         "Počkám na ďalší!",

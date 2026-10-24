@@ -154,7 +154,7 @@ describe('target range', () => {
     typeRing(mode, L);
     // Nothing typed: every ring passes, the projectile whizzes past the target.
     run(mode, L, 2.1 * (RINGS + 1));
-    expect(L.shout).toHaveBeenCalledWith(t('aim.miss'), expect.any(Number), expect.any(Number));
+    expect(L.speak).toHaveBeenLastCalledWith('target', expect.toBeOneOf(tList('aim.lines.miss')), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), true);
     expect(mode.hits).toBe(0);
     expect(mode.report()).toEqual([{ key: 'k', before: 0, after: 0 }]);
   });

@@ -1919,13 +1919,20 @@
         "Lucky me."
       ],
       "fall": [
-        "Plop!",
         "No worries, next one!",
         "It's fine, try again.",
         "I'll wait for the next one!",
         "Oops, it dropped.",
         "Fell short.",
         "Weak one."
+      ],
+      "pop": [
+        "Boom!",
+        "Plop!",
+        "Kaboom!",
+        "Zzzzzz…",
+        "Vrrrr!",
+        "Ouch!"
       ],
       "expectWorry": [
         "What's that coming?!",

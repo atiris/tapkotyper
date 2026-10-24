@@ -150,6 +150,9 @@ interface EyesUp {
 /** Chance of a line before the hit for things without lines of their own; share of bullseyes with the thing's own line. */
 const EXPECT_CHANCE = 0.25;
 const OWN_HIT = 0.7;
+/** A word pops out of the target at a hit once in this many throws, this far beyond its edge. */
+const POP_EVERY: [number, number] = [2, 4];
+const POP_OUT = 60;
 /** Chances of the eyes: with a line before the hit, at a hit that wobbles the target, at a bullseye. */
 const EYES_EXPECT = 0.6;
 const EYES_DIZZY = 0.3;
@@ -212,6 +215,8 @@ export class AimMode extends HeroMode {
   private hitsEl = hitsPic();
   private readonly bags: Bags;
   private throws = 0;
+  /** The throw from which the next hit pops a word. */
+  private popAt: number;
   /** The world's thing comes with the last throw of the base time (1) or the one before (2); while staying, with throw `worldAt`. */
   private readonly worldSlot: number;
   private worldAt: number;
@@ -246,6 +251,7 @@ export class AimMode extends HeroMode {
     this.bags = new Bags(L.rng);
     this.worldSlot = L.rng.chance(0.5) ? 1 : 2;
     this.worldAt = L.rng.int(...STAY_WORLD_EVERY);
+    this.popAt = L.rng.int(...POP_EVERY);
   }
 
   /** The rules; with something in the collection, also how to swap the thing in the paw for one of it. */
@@ -598,7 +604,7 @@ export class AimMode extends HeroMode {
     const burst = th.burst ?? 'sparkle';
     this.L.particles.emit(tg.x + dx, tg.y + dy, center ? 28 : 14, BURST_SHAPE[burst], BURST_COLORS[burst], 180, 8);
     if (effect === 'burst') this.L.particles.emit(tg.x + dx, tg.y + dy, 12, 'puff', ['#ffffff', '#f2f2f2'], 120, 16);
-    if (sound) this.L.shout(this.line(sound), tg.x, tg.y - this.radius - 40);
+    this.pop(sound);
     if (th.wobble) this.wobble = 1;
     if (th.stars) this.stars = 1.5;
     if (th.flash) this.flash = { color: th.flash, t: 0.8 };
@@ -629,6 +635,20 @@ export class AimMode extends HeroMode {
     this.finds.push(th.id);
     this.L.sfx('reward');
     this.tapkoSays(t('aim.collection.new'));
+  }
+
+  /**
+   * Once in a few throws a word pops out of the hit target (the thing's own sound or a general one), in a
+   * random direction over its top-left side: from toward the top-right corner round to toward the bottom-left one.
+   */
+  private pop(sound: string | null): void {
+    if (this.throws < this.popAt) return;
+    this.popAt = this.throws + this.L.rng.int(...POP_EVERY);
+    const { x, y } = this.target, d = this.radius + POP_OUT;
+    // Screen angles (y down): the top-right corner lies above (negative), the bottom-left one past the left (below pi).
+    const a = this.L.rng.range(Math.atan2(VH - y, -x) - 2 * Math.PI, Math.atan2(-y, this.L.vw - x));
+    const words = [...(sound ? tList(sound) : []), ...tList('aim.lines.pop')];
+    this.L.shout(this.bags.draw(`pop ${sound}`, words), x + Math.cos(a) * d, y + Math.sin(a) * d);
   }
 
   /** The run ended (not left early): what was found joins the collection; the runtime saves the profile. */

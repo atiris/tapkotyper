@@ -1919,13 +1919,20 @@
         "Mal som šťastie."
       ],
       "fall": [
-        "Plop!",
         "Nevadí, ďalší!",
         "To nič, skús znova.",
         "Počkám na ďalší!",
         "Hups, spadlo to.",
         "Nedoletel.",
         "Slabota."
+      ],
+      "pop": [
+        "Bum!",
+        "Plop!",
+        "Kaboom!",
+        "Zzzzzz…",
+        "Vrrrr!",
+        "Auuuu!"
       ],
       "expectWorry": [
         "Čo to letí?!",

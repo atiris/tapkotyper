@@ -9,8 +9,8 @@ export interface ContrastMiss { text: string; ratio: number; need: number; color
  * opaque one; a gradient counts as the average of its colors. Texts over pictures (the start
  * page's scene and its licence line on the meadow, canvases), disabled controls and keys a
  * picker cannot use are left out,
- * and so is white on the brand orange or a meaning color (a strong, mid-light color): the look
- * keeps those colors as they are.
+ * and so is white on a meaning color (a strong, mid-light color): the look keeps those colors as
+ * they are. The brand orange carries dark text, so it is checked.
  */
 export function contrastMisses(page: Page): Promise<ContrastMiss[]> {
   return page.evaluate(() => {
@@ -29,7 +29,7 @@ export function contrastMisses(page: Page): Promise<ContrastMiss[]> {
       const mix = (i: number) => (top[i] * top[3] + under[i] * under[3] * (1 - top[3])) / a;
       return [mix(0), mix(1), mix(2), a];
     };
-    /** A strong color, neither dark nor pale: the brand orange, a round button's disc, a finger color. */
+    /** A strong color, neither dark nor pale: a round button's disc, a finger color. */
     const strong = (c: C) => {
       const [r, g, b] = c.slice(0, 3).map((v) => v / 255);
       const max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;

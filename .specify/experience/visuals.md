@@ -25,6 +25,10 @@
   target's hits next to the range's title); what calls for attention red (the super star at the
   far right, the update button). The wardrobe's time stays teal.
   The rhythm is a picture, not a button. The help page shows these same buttons.
+- Orange buttons, chips and group headers carry the fox logo's dark outline color with a soft
+  white shine, like its eyes: white on the orange is too faint to read (WCAG AA). The big orange
+  buttons behave like keys: on hover they rise and show more edge over a wider, softer shadow,
+  pressed they sink into their base, which never moves; with reduced motion they do not move.
 - The level's top bar, left to right: pause, paw, title block, progress bar, rhythm, a divider,
   help, keyboard, read aloud, sound, fullscreen. The title block is the world's name as a word
   with one dot per level (done, this one, to come, a web for the super obstacle); no level

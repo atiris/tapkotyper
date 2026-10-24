@@ -69,7 +69,8 @@ translated word by word.
   60 %), else `lines.expect`.
 - **Streaks**: the third bullseye in a row adds `lines.streak3` instead of the usual line, the
   fifth `lines.streak5`.
-- **A trained letter gets ready** (the target shrinks): `lines.shrink` from the target, besides
+- **A trained letter gets ready** (the target shrinks, as if it stepped back): `lines.shrink`
+  from the target, besides
   the narrator's existing line.
 - **The last throw** of the two minutes (not while staying): the target says `lines.last` when
   its launch word appears.
@@ -114,11 +115,16 @@ translated word by word.
   `ring`, `whistle`, `crack`, `thud`.
 
 ### The target's eyes
-- Two cartoon eyes drawn in code on the target's top rim, so its lines have a face to come
-  from: they follow the thing in flight, look worried with an `expect` worry line (cactus,
-  bowling ball, diaper, spider), happy with a donut, squeeze shut at the impact, and spin
-  after the planet or the bowling ball. They blink now and then. With reduced motion they only
-  blink. (If the owner strikes this in review, the bubble's tail alone points at the target.)
+- Two cartoon eyes drawn in code that **pop up only now and then**: most of the time the
+  target has no face. They peek out over its top rim (a short pop with a bounce) in a random
+  share of the moments that fit them, stay about 2 s and sink back:
+  - with an `expect` line, 40 % of the time: worried for a worry line (and for the cactus,
+    bowling ball, diaper and spider), wide for a wonder line, happy for a cheer or the donut;
+  - at a hit by the planet or the bowling ball, 30 %: they spin, dizzy;
+  - at a bullseye, 15 %: they squeeze shut at the impact, then smile.
+  At most once a throw, never two throws in a row. While up they follow the thing in flight
+  and blink once. With reduced motion they appear and go without a bounce and do not spin.
+  The speech bubble's tail always points at the target, eyes or not.
 
 ### Pictures to generate (gemini-images skill, section 4 prompt of `assets-src/PROMPTS.md`)
 Each is a single object, side view facing right unless said, readable at about 46 px. BG
@@ -176,7 +182,7 @@ picture) and a backlog line names the missing pictures; everything else ships.
   expect, streaks, shrink, last throw; shuffled bags. Unit tests for the tier choice and the
   point ranges.
 - [ ] 5. Effects and the new sounds.
-- [ ] 6. The target's eyes.
+- [ ] 6. The target's eyes (popping up only now and then, as decided above).
 - [ ] 7. Pictures: generate, cut (`npm run assets obj-aim-`), check each at play size on a
   light and a dark world, rows in `PROMPTS.md` with their status.
 - [ ] 8. e2e: a range run shows Tapko's call after the launch word, the target's line after a
@@ -225,8 +231,10 @@ Lines are separated by " · ".
 
 **streak3** - SK: Hetrik! · Tri do stredu za sebou! - EN: Hat trick! · Three bullseyes in a row!
 **streak5** - SK: Päť do stredu! Ostrostrelecká séria! · Neuveriteľné, päť za sebou! - EN: Five in a row! Sharpshooter streak! · Unbelievable, five straight!
-**shrink** - SK: Zmenšujem sa, lebo píšeš presnejšie! · Hups, som menší. Tvoja muška sa zlepšuje! - EN: I'm shrinking because your aim is getting better! · Whoa, I got smaller. You're getting sharper!
-**last** - SK: Posledný hod! · Ešte jeden, posledný! - EN: Last throw! · One more, the last one!
+**shrink** (the smaller target stands farther away) - SK: Idem ďalej, strieľaš veľmi presne! · Musím cúvnuť, príliš dobre triafaš! · Odchádzam preč, mieriš veľmi presne! · Zmenšujem sa, lebo píšeš presnejšie! - EN: I'm moving back, your aim is too good! · Better step back, you hit way too well! · I'm out of here, you're too accurate! · I'm shrinking because your aim keeps getting better!
+**last** - SK: Posledná šanca! · Viac si neprosím! · Ešte toto a idem domov! · Toto je posledná vec, čo zvládnem! - EN: Last chance! · That's all I can take! · Just this one, then I'm going home! · This is the last thing I can handle!
+
+> Note: "si veľmi presný" became "mieriš veľmi presne" so it suits a girl too.
 
 ### Story 1 (every world)
 
@@ -386,10 +394,11 @@ Lines are separated by " · ".
 - Call - SK: Pavúčik letí! · Hádžem pavúčika! · Osem nôh, vpred! - EN: Spider away! · Here comes a spider! · Eight legs, go!
 - Before (40 %) - SK: Len nie pavúka! - EN: Not a spider!
 - Sound - SK: Ťap! - EN: Tap!
-- Hit - SK: Spiderman! · Pošli muchu! · Rovno do siete! · Brrr, povymetaj rohy! - EN: Spider-Man! · Send me a fly! · Caught in the web! · Time to dust the corners!
+- Hit - SK: Spiderman! · Superhrdina! · Pošli muchu! · Rovno do siete! · Brrr, povymetaj rohy! - EN: Spider-Man! · Superhero! · Send me a fly! · Caught in the web! · Time to dust the corners!
 
 > Note: "Vsietil si to" was changed to "Rovno do siete!" because "vsietil" is masculine and
-> the child may be a girl. "Spiderman" is a brand name; strike it if it should not be there.
+> the child may be a girl. "Spiderman" stays (the owner's decision): the word alone, no picture
+> or look of the character.
 
 **31. Hokejka / Hockey stick** (new)
 - Call - SK: Hokejka letí! · Hádžem hokejku! · Strela od modrej! - EN: Hockey stick away! · Slap shot!

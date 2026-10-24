@@ -834,9 +834,9 @@
     "title": "Môj postup",
     "keys": "Klávesy, ktoré ti idú dobre a rýchlo: {n} z {total}",
     "worlds": "Dokončené svety: {n} z {total}",
-    "finds": "Vzácne veci zo strelníc: {n} z {total}",
+    "chest": "Truhlica vzácností: {n} z {total} bodov. Bronzový odznak sveta je 1 bod, strieborný 2, zlatý 3 a každé ocenenie zo strelnice 1 bod.",
     "stories": "Dokončené príbehy: {n} z {total}",
-    "stars": "Hviezdičky spolu: {n}",
+    "stars": "Hviezdičky spolu: {n} z {total}",
     "tabProgress": "Postup",
     "tabKeys": "Klávesy",
     "tabExercises": "Cvičenia",
@@ -856,7 +856,8 @@
     "lastDays": "Posledný tréning: pred {n} dňami.",
     "never": "Zatiaľ žiadny tréning.",
     "week": "Za posledných 7 dní: {n} min",
-    "badges": "Odznaky",
+    "badges": "Odznaky svetov",
+    "rangeAwards": "Ocenenia zo strelníc",
     "chars14": "{n} písmen napísaných za posledných 14 dní"
   },
   "stats": {

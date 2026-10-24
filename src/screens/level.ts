@@ -13,7 +13,6 @@ import { surpriseOutcome } from '../game/own-content';
 import { ownTextPhrases } from '../game/modes/practice';
 import type { AimMode } from '../game/modes/aim';
 import { WORLD_THINGS } from '../game/modes/aim-things';
-import { imageUrl } from '../gfx/assets';
 import type { Friend, Profile, Surprise, Task } from '../storage/schema';
 import { recordTaskRun, taskOwn } from '../share/task';
 import { localDate } from '../learning/stats';
@@ -23,6 +22,7 @@ import { keyLabel } from '../ui/keyboard-guide';
 import { badge } from '../ui/badge';
 import { medal } from '../ui/medal';
 import { roundButton } from '../ui/hud';
+import { rangeFinds } from '../ui/finds';
 import { playLevel } from './map';
 import { openPlacePicker, openWorlds } from './free-type';
 import { openHelp } from './help';
@@ -257,22 +257,12 @@ function showAimDone(root: HTMLElement, r: LevelResult, mode: AimMode, params: L
   });
 }
 
-/** The range's collection: every world's own thing, the found ones in color, the rest grey with a question mark naming the world where they wait. */
+/** The range's collection under the run's result, with how many are found. */
 function aimCollection(p: Profile): HTMLElement {
-  const found = WORLD_THINGS.filter((th) => p.progress.rangeFinds.includes(th.id));
-  const items = WORLD_THINGS.map((th) => {
-    const has = found.includes(th);
-    const src = imageUrl(th.pics[0]);
-    const say = has ? t(`aim.things.${th.id}.name`) : t('aim.collection.waiting', { world: t(`worlds.${WORLDS[th.world!]}`) });
-    const el = h('li', { class: `aim-find ${has ? 'found' : 'waiting'}`, role: 'img', 'aria-label': say },
-      src ? h('img', { src, alt: '' }) : null,
-      has ? null : h('span', { class: 'aim-find-q', 'aria-hidden': 'true' }, '?'));
-    tip(el, say);
-    return el;
-  });
+  const found = WORLD_THINGS.filter((th) => p.progress.rangeFinds.includes(th.id)).length;
   return h('div', { class: 'aim-collection' },
-    h('p', { class: 'aim-collection-count' }, t('aim.collection.count', { n: found.length })),
-    h('ul', { class: 'aim-finds' }, ...items));
+    h('p', { class: 'aim-collection-count' }, t('aim.collection.count', { n: found })),
+    rangeFinds(p));
 }
 
 /** A surprise asked again: its answer highlighted right under it, or what is still left. */

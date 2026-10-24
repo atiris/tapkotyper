@@ -6,12 +6,16 @@
   to press).
 - An overlay opened by clicking the child's character (on the map, or in a level, which pauses first)
   starts with "My progress": a row of icon and number chips (keys mastered of the
-  layout's total, stories finished, worlds finished, the range's rare things found (of 15, a
-  treasure chest), and once something was typed in the last
-  14 days its accuracy and speed in characters per minute, the stars ever earned and the letters
+  layout's total, stories finished, worlds finished, the **treasure chest** of rarities in points
+  of its maximum (a world badge bronze 1, silver 2, gold 3; each target range award 1: 15 x 3 +
+  15 = 60), and once something was typed in the last
+  14 days its accuracy and speed in characters per minute, the stars (the best of every level)
+  of the maximum (3 in each of the 75 levels: 225) and the letters
   typed in the last 14 days, each with its own picture; the meaning is only in the tooltip), then one row per story (all stories, closed ones grey) with its picture and
   name, its worlds' pictures (done in colour, the rest grey) and the stars earned in it, the
-  shelf of world badges ([story](../game/story.md)), and when
+  shelf of world badges ("Odznaky svetov", [story](../game/story.md)) with the row of target
+  range awards under it ("Ocenenia zo strelníc": every world's rare thing, found ones in
+  colour, [target range](../game/target-practice.md)), and when
   the child last trained (today, yesterday, n days ago) with the minutes of the last 7
   days. Below it a friendly view of the keys: a keyboard colored
   by how well each key goes, the 3 keys to practice, the growth medals earned, and a
@@ -21,7 +25,7 @@
   instead (question mark, exclamation mark, colon, Slovak digits), each with its own
   statistics; capitals count for their letter and its Shift.
 - The overlay has three tabs: **Postup** (the progress above, a big Tapko, the growth
-  medals and the total stars ever earned as the last chip; stories come before worlds),
+  medals and the stars as the last chip; stories come before worlds),
   **Klávesy** (the key map and the key details) and **Cvičenia** (the history of exercises
   from a teacher or parent, newest first, each with a button for its QR code).
 - The child's character on the Postup tab is big (beside the summary, above it on a phone)
@@ -39,6 +43,10 @@
   the median reaction time is within the speed limit of the child's difficulty (the same limit
   that readies a key for the next lesson). This is long-term: it is computed from the stored
   key statistics, so it fades when the child stops typing the key well.
+
+- **Maintenance:** the maxima shown (stars 225, chest 60) follow from the levels, worlds and
+  range things; when their number changes, the new maximum must be shown and written here
+  (a unit test pins both numbers, so a change cannot slip by).
 
 ## Why
 - A child asks "how am I doing?" in whole steps (stars, worlds, days), not per key; the

@@ -2,8 +2,7 @@ import { app, go, layout, reduceMotion } from '../app/app';
 import { imageUrl } from '../gfx/assets';
 import { type Mood, otherMood, renderTapkoInto, tapkoElement } from '../gfx/tapko';
 import { STORIES, type StoryDef, WORLDS, storyDone, storyOpen } from '../game/levels';
-import { WORLD_THINGS } from '../game/modes/aim-things';
-import { badgeTier, worldStars } from '../game/rewards';
+import { MAX_CHEST, MAX_STARS, badgeTier, chestPoints, totalStars, worldStars } from '../game/rewards';
 import { t } from '../i18n/i18n';
 import { allKeys } from '../keyboard/layouts';
 import { activeKeys, lessonKeyOf } from '../learning/lessons';
@@ -19,6 +18,7 @@ import { tabBar } from '../ui/tabs';
 import { bigCode } from '../ui/big-code';
 import { badge } from '../ui/badge';
 import { medal } from '../ui/medal';
+import { rangeFinds } from '../ui/finds';
 
 /**
  * Map key code -> the key it measures: letters by their unshifted char (capitals count
@@ -108,20 +108,21 @@ function chip(pic: string | null, glyph: string, text: string, label: string): H
     pic ? h('img', { src: pic, alt: '' }) : h('span', { class: 'sum-glyph' }, glyph), h('b', {}, text));
 }
 
-/** The long-term picture: mastered keys, finished stories and worlds, range finds, stars, and the accuracy, speed and letters of the last 14 days. */
+/** The long-term picture: mastered keys, finished stories and worlds, the chest's points, the best stars of all levels, and the accuracy, speed and letters of the last 14 days. */
 export function summaryRow(p: Profile): HTMLElement {
   const m = masterySummary(p);
   const stories = STORIES.filter((x) => storyDone(p, x)).length;
   const recent = recentTyping(p, 14);
   const percent = Math.round(recent.accuracy * 100);
+  const chest = chestPoints(p), stars = totalStars(p);
   return h('ul', { class: 'progress-sum' },
     chip(imageUrl('ui-key'), '⌨', `${m.mastered}/${m.total}`, t('progress.keys', { n: m.mastered, total: m.total })),
     chip(imageUrl('ui-level'), '▲', `${stories}/${STORIES.length}`, t('progress.stories', { n: stories, total: STORIES.length })),
     chip(imageUrl('ui-earth'), '●', `${p.progress.worldsDone.length}/${WORLDS.length}`, t('progress.worlds', { n: p.progress.worldsDone.length, total: WORLDS.length })),
-    chip(imageUrl('ui-chest'), '◆', `${p.progress.rangeFinds.length}/${WORLD_THINGS.length}`, t('progress.finds', { n: p.progress.rangeFinds.length, total: WORLD_THINGS.length })),
+    chip(imageUrl('ui-chest'), '◆', `${chest}/${MAX_CHEST}`, t('progress.chest', { n: chest, total: MAX_CHEST })),
     recent.chars ? chip(imageUrl('ui-accuracy'), '✓', `${percent} %`, t('progress.quality', { n: percent })) : null,
     recent.cpm ? chip(imageUrl('ui-typing-speed'), '»', String(recent.cpm), t('progress.speed', { n: recent.cpm })) : null,
-    chip(imageUrl('ui-star'), '★', String(p.progress.starsEarned), t('progress.stars', { n: p.progress.starsEarned })),
+    chip(imageUrl('ui-star'), '★', `${stars}/${MAX_STARS}`, t('progress.stars', { n: stars, total: MAX_STARS })),
     chip(imageUrl('ui-keys-typed'), 'Aa', String(recent.chars), t('progress.chars14', { n: recent.chars })));
 }
 
@@ -147,7 +148,7 @@ function storyRow(p: Profile, story: StoryDef): HTMLElement {
       h('b', {}, String(stars)), star ? h('img', { src: star, alt: '' }) : '★'));
 }
 
-/** The summary row, a row per story, the badge shelf, and when the child last trained. */
+/** The summary row, a row per story, the badge shelf and the range awards, and when the child last trained. */
 function progressSection(p: Profile): HTMLElement {
   const { daysAgo, weekMinutes } = lastTraining(p);
   const last = daysAgo === null ? t('progress.never') : daysAgo === 0 ? t('progress.lastToday') : daysAgo === 1 ? t('progress.lastYesterday') : t('progress.lastDays', { n: daysAgo });
@@ -156,6 +157,7 @@ function progressSection(p: Profile): HTMLElement {
     ...STORIES.map((s) => storyRow(p, s)),
     h('div', { class: 'badge-shelf' }, h('h4', {}, t('progress.badges')),
       h('div', { class: 'badge-row' }, ...WORLDS.map((_, w) => badge(w, badgeTier(p, w), true)))),
+    h('div', { class: 'badge-shelf' }, h('h4', {}, t('progress.rangeAwards')), rangeFinds(p)),
     h('p', { class: 'progress-last' }, last, daysAgo === null ? null : [' ', t('progress.week', { n: weekMinutes })]));
 }
 

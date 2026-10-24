@@ -1,7 +1,8 @@
 import { Rng } from '../engine/rng';
 import { isMastered } from '../learning/lessons';
 import { COMPANION_KINDS, type CompanionKind, type Profile } from '../storage/schema';
-import { worldLevels } from './levels';
+import { LEVELS, WORLDS, worldLevels } from './levels';
+import { WORLD_THINGS } from './modes/aim-things';
 
 /**
  * Accessory unlock positions: levels, worlds and key mastery. The accessories listed here are
@@ -86,6 +87,21 @@ export const KIND_STEP: [number, number] = [18, 26];
 
 export function totalStars(p: Profile): number {
   return Object.values(p.progress.levels).reduce((a, b) => a + b, 0);
+}
+
+/** Three stars in every story level. A new level, world or range thing changes the maxima shown in "My progress". */
+export const MAX_STARS = LEVELS.length * 3;
+
+/** Points of the treasure chest: a world badge by its tier, and one for each rare thing found at a range. */
+export const BADGE_POINTS: Record<BadgeTier, number> = { bronze: 1, silver: 2, gold: 3 };
+export const MAX_CHEST = WORLDS.length * BADGE_POINTS.gold + WORLD_THINGS.length;
+
+export function chestPoints(p: Profile): number {
+  const badges = WORLDS.reduce((a, _, w) => {
+    const tier = badgeTier(p, w);
+    return a + (tier ? BADGE_POINTS[tier] : 0);
+  }, 0);
+  return badges + WORLD_THINGS.filter((th) => p.progress.rangeFinds.includes(th.id)).length;
 }
 
 /** Stars (summed over all levels) each kind needs for this player, in the order they are earned; the starting kind costs 0. */

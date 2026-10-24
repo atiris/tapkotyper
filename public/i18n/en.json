@@ -834,9 +834,9 @@
     "title": "My progress",
     "keys": "Keys you type well and fast: {n} of {total}",
     "worlds": "Finished worlds: {n} of {total}",
-    "finds": "Rare things from the ranges: {n} of {total}",
+    "chest": "Treasure chest: {n} of {total} points. A bronze world badge is 1 point, silver 2, gold 3, and every target range award 1 point.",
     "stories": "Finished stories: {n} of {total}",
-    "stars": "Stars in total: {n}",
+    "stars": "Stars in total: {n} of {total}",
     "tabProgress": "Progress",
     "tabKeys": "Keys",
     "tabExercises": "Exercises",
@@ -856,7 +856,8 @@
     "lastDays": "Last training: {n} days ago.",
     "never": "No training yet.",
     "week": "Last 7 days: {n} min",
-    "badges": "Badges",
+    "badges": "World badges",
+    "rangeAwards": "Target range awards",
     "chars14": "{n} letters typed in the last 14 days"
   },
   "stats": {

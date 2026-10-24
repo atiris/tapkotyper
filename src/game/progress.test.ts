@@ -3,7 +3,7 @@ import { newProfile } from '../storage/store';
 import { LEVELS, worldLevels } from './levels';
 import { AUTO_DIFFICULTY_MAX, GROWTH_TYPED_SHARE, MIN_OWN_KEYS, completeLevel, completeStay, grow, growthNeed } from './progress';
 import { COMPANION_KINDS } from '../storage/schema';
-import { STORY_ACCESSORIES, badgeTier, friendStars, grantAccessories, grantCompanions, kindPrices, unlockRules } from './rewards';
+import { MAX_CHEST, MAX_STARS, STORY_ACCESSORIES, badgeTier, chestPoints, friendStars, grantAccessories, grantCompanions, kindPrices, unlockRules } from './rewards';
 
 describe('automatic growth', () => {
   it('steps up after enough good play, difficulty and word length in turn', () => {
@@ -156,5 +156,23 @@ describe('staying a while', () => {
     expect(p.progress.levelsFinished).toBe(0);
     expect(p.progress.starsEarned).toBe(0);
     expect(r.growth?.kind).toBe('difficulty');
+  });
+});
+
+describe('the treasure chest and the stars of My progress', () => {
+  // These maxima are shown to the player; a new level, world or range thing changes them on purpose.
+  it('has fixed maxima', () => {
+    expect(MAX_STARS).toBe(225);
+    expect(MAX_CHEST).toBe(60);
+  });
+
+  it('counts a badge by its tier and a range find as one point', () => {
+    const p = newProfile('Ema', 'sk');
+    p.progress.worldsDone = [0, 1, 2];
+    for (const l of worldLevels(0)) p.progress.levels[l.id] = 3;
+    for (const l of worldLevels(1)) p.progress.levels[l.id] = 2;
+    p.progress.rangeFinds = ['crown'];
+    // Gold 3 + bronze 1 (10 stars) + bronze 1 (no stars) + one find.
+    expect(chestPoints(p)).toBe(6);
   });
 });

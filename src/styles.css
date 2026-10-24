@@ -999,6 +999,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .island-art .badge img { animation: none; filter: none; height: 78%; }
 .badge-shelf h4 { margin: 0.2rem 0; font-size: 0.95rem; color: var(--ink-soft); }
 .badge-row { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.badge-shelf .aim-finds { justify-content: flex-start; max-width: none; margin: 0; }
 .fact.badge-fact { background: var(--tint-yellow); box-shadow: none; padding: 0.2em 0.75em 0.2em 0.25em; }
 .legend { display: flex; gap: 0.6rem; flex-wrap: wrap; font-size: 0.9rem; }
 .lg { padding: 0.2em 0.6em; border-radius: 10px; font-weight: 600; }

@@ -586,10 +586,16 @@ Ultra-wide panoramic image, 21:9: the edge of a lush meadow seen from the side. 
 
 Above and between the plants there is only flat magenta: NO sky, NO hills, NO trees, NO fence, NO sun, NO clouds, NO distant objects, no grey, no gradient, no fog, nothing behind the plants except magenta. Every plant appears only once: nothing repeated or copied inside the image, one single continuous strip, not split into rows or panels. The strip must repeat side by side without a visible seam: at the very left and right edges there is only the same dense grass at the same height, no flower touches the left or right edge. No white or light outline, halo or sticker border around the plants: their dark outlines meet the magenta directly. Never pink, purple or magenta in the grass. No characters, no animals, no insects, no stones, no text, no letters, no watermark. Flat side view, no perspective, no vanishing point.
 ```
-`ui-start-meadow-night.jpg`: a follow-up in the meadow's chat, so every plant stays in place:
+`ui-start-meadow-closed.jpg`: a follow-up in the meadow's chat, so every plant stays in place
+(asked in daytime colors; an earlier evening recolor in the same chat kept its flowers open).
+`npm run assets` scales it to the day meadow's size, cuts it out the same way and recolors it
+into the night palette (greens to a dark blue-green, flowers a little darker and bluer), which
+gives `ui-start-meadow-night`:
 ```
 The same image with exactly the same colors, plants, shapes, positions and outlines, only the flowers are going to sleep for the night: the daisies are closed into small white buds with the petals folded up, the buttercups are closed into round yellow buds, the clover heads are a little smaller and hanging slightly, the dandelion has lost its seed ball and is a bare stem with only two or three seeds left on top, the bluebells hang lower. The grass, the fern, the tall stems and the bushes stay exactly as they are. The background behind and between all plants stays ONE perfectly flat solid pure magenta color (#FF00FF), no gradient, no fog.
 ```
+`ui-icon-hr-darkbg.jpg`: the logo face for a dark page (the start page in the dark look): a soft
+grey edge instead of the light sticker border.
 `ui-start-sun.jpg`:
 ```
 Generate an image: Sun as a simple ball

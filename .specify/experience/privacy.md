@@ -8,7 +8,7 @@
 - The help page's about tab says that, as everything is only on the device, a forgotten settings password
   or lost progress cannot be recovered by us, so progress should be exported now and then.
 - A short, plain statement of this on the start screen and the help page's about tab, for parents.
-  On the start screen it is two of its promises: "no ads and no account" and "your data stays on
+  On the start screen it is two of its promises: "no ads, no accounts" and "your data stays on
   your device" (opens the about tab). The code's licence ("MIT · Atiris", linked to the code) sits
   small at the bottom right; the visit count is only on the about tab.
 - Nothing leaves the browser except what a person copies themselves: task, result and

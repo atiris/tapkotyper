@@ -17,12 +17,13 @@ const NEW_CARD_UP_TO = 3;
 /** The narrowest player card and the gap between cards, for the number of cards a row holds. */
 const CARD_MIN = 100;
 const CARD_GAP = 12;
+/** In two columns the title's column keeps at least this share of the width; the card takes the rest. */
+const TITLE_SHARE = 0.32;
 
 export function startScreen(root: HTMLElement): () => void {
   app.profile = null;
   applyProfileLook(null);
   audio.music(app.menuTrack);
-  const logo = imageUrl('ui-icon-hr');
   const lang = languageButton(async (l: Lang) => {
     app.store.data.language = l;
     app.store.save();
@@ -35,7 +36,7 @@ export function startScreen(root: HTMLElement): () => void {
   const gated = keyboardGated();
 
   const top = h('div', { class: 'start-top' },
-    gated && logo ? h('img', { class: 'gate-logo', src: logo, alt: '' }) : null,
+    gated ? logoFace('gate-logo') : null,
     h('h1', { class: 'wordmark', 'aria-label': 'TapkoTyper' },
       h('span', { class: 'wm-halo', 'aria-hidden': 'true' }, 'TapkoTyper'),
       h('span', { class: 'wm-back', 'aria-hidden': 'true' }, 'TapkoTyper'),
@@ -69,15 +70,21 @@ export function startScreen(root: HTMLElement): () => void {
     arrowFocus(list, '.profile-card');
     let perRow = 0;
     /**
-     * As many cards in a row as the window has room for (at most five), in balanced rows. With one
-     * to three players the new player is one more card, unless it would add a row; else a button
-     * beside the other two.
+     * The card is as wide as its player cards want, up to what the title's column leaves it. As many
+     * cards in a row as that has room for (at most five), in balanced rows. With one to three
+     * players the new player is one more card, unless it would add a row; else a button beside the
+     * other two.
      */
     placeRows = () => {
       const wrap = list.closest<HTMLElement>('.start-wrap');
-      if (!wrap) return;
-      const pad = parseFloat(getComputedStyle(wrap).paddingLeft) * 2 + 56;
-      const per = Math.max(1, Math.min(MAX_PER_ROW, Math.floor((wrap.clientWidth - pad + CARD_GAP) / (CARD_MIN + CARD_GAP))));
+      if (!wrap || !card) return;
+      const ws = getComputedStyle(wrap), cs = getComputedStyle(card);
+      const inner = wrap.clientWidth - parseFloat(ws.paddingLeft) - parseFloat(ws.paddingRight);
+      const twoColumns = ws.gridTemplateColumns.split(' ').length > 1;
+      const room = twoColumns ? inner * (1 - TITLE_SHARE) - parseFloat(ws.columnGap) : inner;
+      card.style.maxWidth = `${Math.floor(room)}px`;
+      const width = room - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      const per = Math.max(1, Math.min(MAX_PER_ROW, Math.floor((width + CARD_GAP) / (CARD_MIN + CARD_GAP))));
       if (per === perRow) return;
       perRow = per;
       const rows = (n: number) => Math.ceil(n / per);
@@ -88,7 +95,7 @@ export function startScreen(root: HTMLElement): () => void {
       list.replaceChildren(...rowSplit(shown.length, per).map((size) => h('div', { class: 'profile-row' }, ...shown.slice((at += size) - size, at))));
     };
     card = h('section', { class: 'start-card', 'aria-labelledby': 'start-who' },
-      logo ? h('img', { class: 'card-logo', src: logo, alt: '' }) : null,
+      logoFace('card-logo'),
       h('h2', { id: 'start-who' }, t('start.whoPlays')),
       ...(players.length ? [
         list,
@@ -141,6 +148,13 @@ export function startScreen(root: HTMLElement): () => void {
     offPick();
     offSuper();
   };
+}
+
+/** The logo face: its picture for a light page and the one drawn for a dark page; the CSS shows one. */
+function logoFace(cls: string): HTMLElement | null {
+  const light = imageUrl('ui-icon-hr'), dark = imageUrl('ui-icon-hr-darkbg');
+  if (!light) return null;
+  return h('span', { class: `logo-face ${cls}` }, h('img', { class: 'on-light', src: light, alt: '' }), h('img', { class: 'on-dark', src: dark ?? light, alt: '' }));
 }
 
 /** The four promises, each with a green icon; "data stays on your device" opens the help's about tab. */

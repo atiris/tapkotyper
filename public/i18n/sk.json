@@ -46,10 +46,10 @@
     "intro": "Tapko ťa prevedie pokojnými svetmi plnými príbehov. S každou úrovňou pribudne pár kláves, až kým nepíšeš všetkými desiatimi bez pozerania.",
     "phoneIntro": "Pokojná hra, v ktorej sa s Tapkom naučíš písať všetkými desiatimi. Bez reklám, bez účtu, údaje ostávajú v zariadení.",
     "promises": {
-      "ads": "Bez reklám a bez účtu",
+      "ads": "Bez reklám a účtov",
       "local": "Údaje ostávajú v zariadení",
       "wardrobe": "Šatník a hviezdičky za snahu",
-      "mentors": "Pokrok vidia rodičia aj mentori"
+      "mentors": "Sledovateľný pokrok"
     },
     "first": "Stačí meno a vybrať si zvieratko.",
     "guestFirst": "Skúsiť bez profilu"

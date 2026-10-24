@@ -94,9 +94,8 @@
   /* The page behind every screen; the help page in a level takes it too. */
   --page-bg: linear-gradient(180deg, #c9ecfa 0%, #e9f8ef 55%, #d7f0c8 100%);
   --break-bg: linear-gradient(180deg, #d9f0ff, #f3ffe9);
-  /* A target's word label on the play field (drawn on the canvas). */
-  --word-plate: rgba(255, 253, 246, 0.94); --word-edge: rgba(90, 61, 43, 0.55); --word-ink: #4a3a5c;
-  --word-typed: #3fa65a; --word-next: #ffe9b0; --word-next-ink: #2d2140; --word-icon: #5a3d2b;
+  /* A wardrobe item's tile: the pictures keep their own colors, black glasses too. */
+  --item-bg: var(--surface); --item-on: var(--tint-green);
   color-scheme: light;
 }
 /* The dark look: a deep violet night, dark enough but not black; cream text. */
@@ -145,8 +144,7 @@
   --story-box: rgba(43, 39, 66, 0.94);
   --page-bg: linear-gradient(180deg, #171631 0%, #23213e 55%, #1e2830 100%);
   --break-bg: var(--page-bg);
-  --word-plate: rgba(43, 39, 66, 0.94); --word-edge: rgba(255, 240, 220, 0.4); --word-ink: #f4ecdf;
-  --word-typed: #8fd9a6; --word-next: #ffe9b0; --word-next-ink: #2d2140; --word-icon: #f4ecdf;
+  --item-bg: #d9d2e8; --item-on: #c4e9d2;
   color-scheme: dark;
 }
 body[data-font='atkinson'] { --font-game: 'Atkinson Hyperlegible', 'Lexend', system-ui, sans-serif; }
@@ -168,6 +166,7 @@ body.high-contrast {
   --shadow: 0 0 0 2px #000; --edge: rgba(0, 0, 0, 0.5); --soft-shadow: rgba(0, 0, 0, 0.2);
   --track: rgba(0, 0, 0, 0.2); --axis: #000; --dot: #bbb; --rb-base: #bbb; --bump: #000; --scroll: #000; --focus: #0047d6;
   --tip-bg: #000; --tip-ink: #fff; --hud-bg: #fff; --kb-bg: #fff; --story-box: #fff; --break-bg: #fff; --page-bg: #fff;
+  --item-bg: #fff; --item-on: #fff;
   color-scheme: light;
 }
 
@@ -341,12 +340,12 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
  * meadow's dense grass (the bottom 60 % of the strip).
  */
 .start-screen {
-  --meadow-h: 190px; --pc: 120px; --wm: 60px; --slogan-max: 44px; --logo: 116px; --top: calc(2rem + 52px);
+  --meadow-h: 190px; --pc: 168px; --wm: 60px; --slogan-max: 44px; --logo: 116px; --top: calc(2rem + 52px);
   display: flex; flex-direction: column; min-height: 100vh; min-height: 100dvh; padding: var(--top) 0 0;
 }
-@media (max-height: 699px) { .start-screen { --meadow-h: 140px; --pc: 104px; --wm: 46px; --slogan-max: 32px; --logo: 96px; } }
-@media (min-height: 1000px) { .start-screen { --meadow-h: 260px; --pc: 140px; --wm: 80px; --slogan-max: 58px; --logo: 140px; } }
-@media (max-width: 899px) { .start-screen { --meadow-h: 200px; --wm: 56px; --slogan-max: 40px; } }
+@media (max-height: 699px) { .start-screen { --meadow-h: 140px; --pc: 128px; --wm: 46px; --slogan-max: 32px; --logo: 96px; } }
+@media (min-height: 1000px) { .start-screen { --meadow-h: 260px; --pc: 196px; --wm: 80px; --slogan-max: 58px; --logo: 140px; } }
+@media (max-width: 899px) { .start-screen { --meadow-h: 200px; --pc: 148px; --wm: 56px; --slogan-max: 40px; } }
 @media (max-width: 599px) { .start-screen { --meadow-h: 130px; --wm: 46px; --slogan-max: 40px; --logo: 96px; } }
 .start-wrap {
   position: relative; z-index: 1; flex: 1; width: 100%; max-width: 1440px; margin: 0 auto;
@@ -388,21 +387,38 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
   .start-top { gap: 22px; }
   .start-more { gap: 24px; }
 }
-/* The card "Who is playing today?" with the logo face half above its top edge. */
+/*
+ * The card "Who is playing today?", the page's main panel, with the logo face half above its top
+ * edge. The player cards are large; the page narrows them (start.ts) as more players need room.
+ */
 .start-card {
-  position: relative; margin-top: calc(var(--logo) / 2); min-width: 470px; max-width: 100%; width: max-content;
-  background: var(--paper); border-radius: 28px; box-shadow: var(--shadow);
-  padding: calc(var(--logo) / 2 + 14px) 28px 26px; display: flex; flex-direction: column; gap: 14px; text-align: center;
+  position: relative; margin-top: calc(var(--logo) / 2); min-width: min(560px, 100%); width: max-content;
+  background: var(--paper); border-radius: 32px; box-shadow: var(--shadow);
+  padding: calc(var(--logo) / 2 + 16px) 32px 28px; display: flex; flex-direction: column; gap: 16px; text-align: center;
 }
 /* A small laptop: narrower player cards and margins, so five players leave the slogan its room. */
 @media (min-width: 900px) and (max-width: 1199px) {
-  .start-screen { --pc: 96px; }
+  .start-screen { --pc: 136px; }
   .start-wrap { padding-inline: 40px; column-gap: 32px; }
-  .start-card { min-width: 420px; padding-inline: 20px; }
+  .start-card { min-width: 440px; padding-inline: 20px; }
 }
-@media (min-height: 1000px) { .start-card { min-width: 540px; padding-inline: 32px; } }
+@media (min-height: 1000px) { .start-card { min-width: 640px; padding-inline: 36px; } }
+/* The logo face has a picture for each look. */
+.logo-face { display: block; }
+.logo-face > img { display: block; width: 100%; }
+.logo-face > .on-dark, :root[data-theme='dark'] .logo-face > .on-light { display: none; }
+:root[data-theme='dark'] .logo-face > .on-dark { display: block; }
 .card-logo { position: absolute; left: 50%; top: calc(var(--logo) / -2); width: var(--logo); transform: translateX(-50%); filter: drop-shadow(0 8px 12px var(--soft-shadow)); }
-.start-card h2 { margin: 0; font-size: 1.6rem; }
+.start-card h2 { margin: 0; font-size: 2rem; }
+@media (max-height: 699px) {
+  .start-screen { --av-max: 76px; }
+  .start-card { gap: 12px; padding-bottom: 22px; }
+  .start-card h2 { font-size: 1.6rem; }
+}
+@media (max-width: 599px) {
+  .start-card { padding-inline: 18px; }
+  .start-card h2 { font-size: 1.6rem; }
+}
 .start-first { margin: 0 0 4px; color: var(--ink-soft); }
 .start-card .btn.primary.big { width: 100%; }
 .start-ghosts { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
@@ -413,10 +429,16 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
   .start-card { max-height: calc(100dvh - var(--top) - var(--meadow-h) * 0.6 - var(--logo) / 2); }
   .start-card .profile-list { flex: 0 1 auto; min-height: 0; overflow-y: auto; padding: 14px 12px 20px; margin: -10px -12px -14px; }
 }
-.start-card .profile-row { gap: 12px; }
 /* A row the start page laid out for the room it has: its cards narrow a little rather than wrap. */
-.start-card .profile-card { width: auto; flex: 0 1 var(--pc); min-width: 100px; }
-.start-card .profile-sub { font-size: 0.78rem; white-space: nowrap; }
+.start-card .profile-row { gap: 12px; max-width: 100%; }
+.start-card .profile-card { width: var(--pc); flex: 0 1 auto; min-width: 100px; padding: 14px 8px 12px; border-radius: 24px; gap: 4px; }
+.start-card .profile-card:focus-visible { border-radius: 24px; }
+/* The character fills most of the card, a little right of its middle (clear of the number). */
+.start-card .profile-card > .tapko-stack { --av: min(calc(var(--pc) * 0.76), 100cqw - 4px, var(--av-max, 999px)); width: var(--av); height: var(--av); margin-right: max(-8px, (100cqw - var(--av)) / 2 - 10px); }
+.start-card .profile-name { font-size: clamp(1.05rem, 11cqw, 1.4rem); }
+.start-card .profile-sub { font-size: 0.85rem; white-space: nowrap; }
+.start-card .profile-card.new .plus { width: calc(var(--pc) * 0.44); height: calc(var(--pc) * 0.44); }
+.start-card .profile-card.new .plus .icon { width: 50%; height: 50%; }
 /* The new player is a card or a button, whichever fits. */
 .start-screen [hidden] { display: none; }
 @media (max-width: 899px) {
@@ -443,8 +465,13 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
 .sky-day { background: linear-gradient(180deg, #c9ecfa 0%, #e9f8ef 55%, #d7f0c8 100%); }
 .sky-night { background: linear-gradient(180deg, #171631 0%, #23213e 55%, #1e2830 100%); }
 .meadow { position: absolute; left: 0; right: 0; bottom: 0; height: var(--meadow-h); background-repeat: repeat-x; background-position: left bottom; background-size: calc(var(--meadow-h) * 922 / 392) 100%; filter: blur(0.6px); }
-.sky-night, .meadow-night { opacity: 0; transition: opacity 0.8s ease; }
-.start-sky[data-look='dark'] .sky-night, .start-sky[data-look='dark'] .meadow-night { opacity: 1; }
+.sky-night { opacity: 0; transition: opacity 0.8s ease; }
+.start-sky[data-look='dark'] .sky-night { opacity: 1; }
+/* One meadow at a time: the coming one fades in over the leaving one, which then goes. */
+.meadow-night { opacity: 0; transition: opacity 0.5s ease 0.6s; }
+.meadow-day { transition: opacity 0.8s ease; }
+.start-sky[data-look='dark'] .meadow-night { opacity: 1; transition: opacity 0.8s ease; }
+.start-sky[data-look='dark'] .meadow-day { opacity: 0; transition: opacity 0.5s ease 0.6s; }
 .sky-band { position: absolute; overflow: hidden; -webkit-mask-image: linear-gradient(to top, transparent, #000 28px); mask-image: linear-gradient(to top, transparent, #000 28px); }
 .sky-piece { position: absolute; display: block; }
 .sky-piece > img { display: block; width: 100%; }
@@ -656,7 +683,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .hud-title { font-size: 17px; white-space: nowrap; }
 /* The divider and the buttons after it keep to the right, also without a progress bar (just typing). */
 .hud-divider { width: 2px; align-self: stretch; margin: 0.2rem 0 0.2rem auto; background: var(--track); border-radius: 2px; }
-.paw-btn.empty { opacity: 0.6; cursor: default; }
+.paw-btn.empty { cursor: default; }
 .paw-btn.charged { animation: pop-in 0.5s ease; }
 .hud-hint { flex: 1; min-width: 120px; font-size: 14px; font-weight: 700; opacity: 0.7; white-space: nowrap; }
 /* The target range: each weak key with a small bar of its recent accuracy. */
@@ -712,10 +739,15 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .hand-l { grid-column: 1; grid-row: 2; justify-self: end; }
 .hand-r { grid-column: 3; grid-row: 2; justify-self: start; }
 .hand .palm { fill: #f8e0cb; opacity: 0.45; }
-.hand .skin { fill: #f3d2b3; stroke: #e2bc9b; stroke-width: 1.5; }
+.hand .skin { fill: #f3d2b3; stroke: #e2bc9b; stroke-width: 1.5; transition: fill 0.15s; }
 .hand .finger { opacity: 0.55; transition: opacity 0.15s, transform 0.15s; }
 .hand .finger.active { opacity: 1; transform: translateY(-3px); }
-.hand .finger.active .skin { stroke: #c9946c; stroke-width: 2; }
+.hand .finger.active .skin { fill: #f3d2b3; stroke: #c9946c; stroke-width: 2; }
+/* A see-through hand turns grey on a dark page: there the hand is solid, its resting fingers a dimmer skin. */
+:root[data-theme='dark'] body:not(.high-contrast) .hand .palm { fill: #6e5862; opacity: 1; }
+:root[data-theme='dark'] body:not(.high-contrast) .hand .skin { fill: #b39181; stroke: #7e6259; }
+:root[data-theme='dark'] body:not(.high-contrast) .hand .finger { opacity: 1; }
+:root[data-theme='dark'] body:not(.high-contrast) .hand .finger:not(.active) .tip-band { opacity: 0.75; }
 .kb-guide.hidden { display: none; }
 .kb-paws { display: contents; }
 .kb-paw { width: clamp(60px, 11vw, 150px); align-self: end; transform: translateY(130%); opacity: 0; transition: transform 0.45s ease, opacity 0.3s; pointer-events: none; }
@@ -1004,9 +1036,9 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .slot { background: var(--glass); border-radius: 20px; padding: 0.8rem 1rem; }
 .slot h3 { font-size: 1rem; margin-bottom: 0.4rem; }
 .items { display: flex; gap: 0.6rem; flex-wrap: wrap; }
-.item { width: 84px; height: 84px; border-radius: 18px; border: 3px solid transparent; background: var(--surface); cursor: pointer; position: relative; padding: 2px; overflow: hidden; }
+.item { width: 84px; height: 84px; border-radius: 18px; border: 3px solid transparent; background: var(--item-bg); cursor: pointer; position: relative; padding: 2px; overflow: hidden; }
 .item img { width: 100%; height: 100%; object-fit: contain; padding: 6px; }
-.item.on { border-color: var(--green); background: var(--tint-green); }
+.item.on { border-color: var(--green); background: var(--item-on); }
 .item.locked img { filter: grayscale(1) brightness(0.3) opacity(0.35); }
 .item .lock { top: 50%; left: 50%; transform: translate(-50%, -50%); width: 36px; height: 36px; }
 

@@ -54,6 +54,9 @@ const STRIP_ASPECT = 2;
 // blended into each other over this part of its width.
 const MEADOW = 'ui-start-meadow';
 const MEADOW_SEAM = 0.1;
+// The night meadow is the day one with its flowers closed, drawn in day colors: scaled to the day
+// picture's size (so its plants lie on the day ones) and recolored to the night palette.
+const MEADOW_CLOSED = 'ui-start-meadow-closed';
 
 // Keying works on the RGB distance from the sampled background color.
 const D_FLOOD = 70; // border-connected background
@@ -296,6 +299,7 @@ async function processImage(name, file, manifest) {
     manifest.images[name] = { w: info.width, h: info.height };
     return;
   }
+  if (name === MEADOW_CLOSED) return writeNightMeadow(file, manifest);
   const { data, w, h } = await loadRgba(file);
   if (name.startsWith('outfit-')) return processOutfit(name.slice(7), data, w, h, manifest);
   if (name.startsWith('acc-')) return processAccessory(name.slice(4), data, w, h, manifest);
@@ -405,6 +409,49 @@ async function writeTile(name, data, w, h, box, manifest) {
   bleedColor(out, tw, box.height);
   const info = await webp(sharp(out, { raw: { width: tw, height: box.height, channels: 4 } })).toFile(join(OUT, `${name}.webp`));
   manifest.images[name] = { w: info.width, h: info.height };
+}
+
+/** The night meadow: the closed flowers cut out like the day meadow, in the night's colors. */
+async function writeNightMeadow(file, manifest) {
+  const day = await sharp(join(SRC, `${MEADOW}.jpg`)).metadata();
+  const { data, info } = await sharp(file).resize(day.width, day.height, { fit: 'fill' }).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const [w, h] = [info.width, info.height];
+  keyOut(data, w, h, { layer: true, pocket: 0.3 });
+  nightColors(data);
+  return writeTile(`${MEADOW}-night`, data, w, h, bbox(data, w, h), manifest);
+}
+
+/**
+ * Moonlight: the greens turn into a dark blue-green (the night meadow's palette), the flowers keep
+ * their colors a little darker and bluer, so the daisies stay pale and the buttercups golden.
+ */
+function nightColors(data) {
+  const moon = [138, 134, 184];
+  for (let i = 0; i < data.length; i += 4) {
+    if (!data[i + 3]) continue;
+    const [hue, sat, light] = toHsl(data[i], data[i + 1], data[i + 2]);
+    // Greens fully, the rest not at all, with a soft edge between them; the key's purple left in
+    // the grass's shaded pockets and the grey of see-through edges turn into grass too.
+    const residue = (hue > 280 && (hue < 320 || (hue < 335 && sat < 0.45))) || (data[i + 3] < 255 && sat < 0.2 && light < 0.7);
+    const green = residue ? 1 : Math.min(1, Math.max(0, Math.min(hue - 50, 180 - hue) / 15)) * Math.min(1, sat / 0.12);
+    const grass = fromHsl(174, Math.min(Math.max(sat, 0.3), 0.42), 0.07 + 0.4 * light);
+    const flower = fromHsl(hue, sat * 0.9, light * 0.82).map((v, c) => v * 0.85 + moon[c] * 0.15);
+    for (let c = 0; c < 3; c++) data[i + c] = Math.round(grass[c] * green + flower[c] * (1 - green));
+  }
+}
+
+function toHsl(r, g, b) {
+  r /= 255; g /= 255; b /= 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2, d = max - min;
+  if (!d) return [0, 0, l];
+  const hue = max === r ? ((g - b) / d + 6) % 6 : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+  return [hue * 60, d / (1 - Math.abs(2 * l - 1)), l];
+}
+
+function fromHsl(hue, s, l) {
+  const c = (1 - Math.abs(2 * l - 1)) * s, x = c * (1 - Math.abs(((hue / 60) % 2) - 1)), m = l - c / 2;
+  const [r, g, b] = hue < 60 ? [c, x, 0] : hue < 120 ? [x, c, 0] : hue < 180 ? [0, c, x] : hue < 240 ? [0, x, c] : hue < 300 ? [x, 0, c] : [c, 0, x];
+  return [r, g, b].map((v) => (v + m) * 255);
 }
 
 /** Ids that have their own `acc-<id>` source, which replaces the item cut from its outfit. */

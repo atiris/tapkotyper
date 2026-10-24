@@ -6,6 +6,9 @@ import { h } from './dom';
 /** Length of the day and night change, and the share of it the setting light takes. */
 const CHANGE_MS = 2500;
 const SET_SHARE = 0.55;
+/** How much of its way out of the band the light travels before it has melted away, and how soft it gets. */
+const MELT_TURN = 0.6;
+const MELT_BLUR = 10;
 /** Points along an arc: enough for a smooth path with linear steps between them. */
 const ARC_STEPS = 24;
 /** Room kept between the sky pieces and the content or the corner controls. */
@@ -89,17 +92,21 @@ export function skyScene(screen: HTMLElement, under: () => (Element | null)[], b
   };
 
   /**
-   * The light's path: a turn around a pivot under the band, squeezed into an ellipse. `from` and `to`
-   * are angles in units of the turn that takes it out of the band (-1 risen from the left, 1 set right).
-   * It is clear only on the upper part of its way and fades out toward the band's bottom edge.
+   * The light's way: a short stretch of a turn around a pivot under the band, squeezed into an
+   * ellipse. `from` and `to` are in units of that stretch (-1 rising from the left, 1 set to the
+   * right). It melts away along its way (fades, softens, grows a little) well above the band's bottom
+   * edge, so it never sinks behind a horizon the page does not show.
    */
   const arc = (target: HTMLElement, from: number, to: number, delay: number, duration: number) => {
     const ry = below, rx = Math.min(ry * 1.8, sunSize * 3);
-    const out = Math.acos(Math.min(1, sunSize / 2 / ry)) + 0.12;
+    const span = MELT_TURN * Math.acos(Math.min(1, sunSize / 2 / ry));
     const frames = Array.from({ length: ARC_STEPS + 1 }, (_, i) => {
-      const k = i / ARC_STEPS, a = (from + (to - from) * k) * out;
-      const away = Math.abs(from + (to - from) * k);
-      return { transform: `translate(${(rx * Math.sin(a)).toFixed(1)}px, ${(ry * (1 - Math.cos(a))).toFixed(1)}px)`, opacity: Math.min(1, Math.max(0, (1 - away) / 0.45)) };
+      const at = from + (to - from) * (i / ARC_STEPS), a = at * span, away = Math.abs(at);
+      return {
+        transform: `translate(${(rx * Math.sin(a)).toFixed(1)}px, ${(ry * (1 - Math.cos(a))).toFixed(1)}px) scale(${(1 + away * 0.25).toFixed(3)})`,
+        filter: `blur(${(away * MELT_BLUR).toFixed(1)}px)`,
+        opacity: (1 - away) ** 1.5,
+      };
     });
     target.animate(frames, { duration, delay, easing: 'cubic-bezier(0.45, 0, 0.35, 1)', fill: 'backwards' });
   };

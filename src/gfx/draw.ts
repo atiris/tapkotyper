@@ -1,7 +1,6 @@
 import { sprite } from './assets';
 import { VH } from '../engine/loop';
 import { ENTER } from '../keyboard/layouts';
-import { onThemeChange } from '../app/theme';
 
 export type G = CanvasRenderingContext2D;
 
@@ -378,19 +377,11 @@ function letterWidths(g: G, word: string, size: number): number[] {
   return [...word].map((c) => (c === ' ' ? size * 0.5 : g.measureText(c).width + size * 0.08));
 }
 
-/** A word label's colors: the page's `--word-*` tokens, read once per theme. */
-type WordInk = Record<'plate' | 'edge' | 'ink' | 'typed' | 'next' | 'nextInk' | 'icon', string>;
-let wordInk: WordInk | null = null;
-onThemeChange(() => (wordInk = null));
-
-function wordColors(): WordInk {
-  if (!wordInk) {
-    const css = getComputedStyle(document.documentElement);
-    const v = (name: string) => css.getPropertyValue(`--word-${name}`).trim();
-    wordInk = { plate: v('plate'), edge: v('edge'), ink: v('ink'), typed: v('typed'), next: v('next'), nextInk: v('next-ink'), icon: v('icon') };
-  }
-  return wordInk;
-}
+/**
+ * A word label's colors. The play field keeps its daylight pictures in both looks, so the label
+ * stays a light plate with dark letters on a dark page too.
+ */
+const WORD = { plate: 'rgba(255,253,246,0.94)', edge: 'rgba(90,61,43,0.55)', ink: '#4a3a5c', typed: '#3fa65a', next: '#ffe9b0', nextInk: '#2d2140', icon: '#5a3d2b' };
 
 /** Room the icon of a label takes. */
 const ICON_W = 0.85;
@@ -406,7 +397,7 @@ export function wordBox(g: G, word: string, size = 40, icon = false): { w: numbe
 /** Word label on a target: typed letters in green, the next letter highlighted, gentle wobble on a mistake. */
 export function drawWord(g: G, word: string, typed: number, x: number, y: number, wobble: number, st: WordStyle = {}): void {
   const size = st.size ?? 40;
-  const c = wordColors();
+  const c = WORD;
   g.save();
   const chars = [...word];
   const widths = letterWidths(g, word, size);

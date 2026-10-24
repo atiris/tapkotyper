@@ -50,10 +50,12 @@
 - **The start page** says what TapkoTyper is before anything else. From 900 px wide it has two
   columns: on the left the title **TapkoTyper**, the slogan on exactly two lines ("Desať prstov, /
   jedno veľké dobrodružstvo."), one sentence about the game and four short promises with green
-  icons (no ads and no account; data stays on the device, which opens the help's about tab;
-  the wardrobe and stars for effort; parents and mentors see the progress). On the right the card
-  "Kto sa dnes hrá?" with the logo face (the fox head of the browser tab icon) half above its top
-  edge. Narrower, one column: title, slogan, the card, then the text and the promises (the card
+  icons ("Bez reklám a účtov"; data stays on the device, which opens the help's about tab;
+  the wardrobe and stars for effort; "Sledovateľný pokrok"). On the right the card
+  "Kto sa dnes hrá?" with the logo face (the fox head of the browser tab icon, on dark its picture
+  drawn for a dark background) half above its top edge. The card is the page's main panel: its
+  player cards are large, with the character filling most of each, and narrow only as more
+  players need the room (the title's column keeps about a third of the width). Narrower, one column: title, slogan, the card, then the text and the promises (the card
   comes before the text on small screens). The title is live text drawn like the logo: a
   dark-brown outline and soft gradients, orange "Tapko", green "Typer"; on dark a thin cream line
   outside the outline, never a glow.
@@ -70,16 +72,23 @@
   pieces in the top left corner, never behind text: the sun and two clouds by day, the moon and
   three stars by night. Farther pieces are softer (blurred more). By day three butterflies (one of
   each kind) flutter low over the meadow, by night a few fireflies glow there. Switching the theme
-  plays a short sped-up night and day (about 2.5 s): the old light sets to the right along an arc
-  while the new one rises from the left along the same arc, stars and fireflies fade or sink into
-  the grass, butterflies settle or fly up, and the sky and meadow cross-fade. With reduced motion
+  plays a short sped-up night and day (about 2.5 s): the old light moves to the right along an arc
+  and melts away on the way (fades, softens), high in the sky, never at an edge the page does not
+  show, while the new one comes out of the air from the left along the same arc, stars and fireflies fade or sink into
+  the grass, butterflies settle or fly up, and the sky and meadow cross-fade. The night meadow has
+  the same plants with their flowers closed for the night (daisies and buttercups in buds, the
+  dandelion without its seed ball); only one meadow shows at a time, the day one never shows
+  through the night one. With reduced motion
   it is a short cross-fade and nothing moves. Only the start page has this scene.
 - **Dark theme** ("dark enough, not black"): a deep violet night sky as the page background, dark
   violet paper for panels and cards, cream text. It follows the system's setting until the
   player picks one on the theme button, and then stays on this device. Everything around the
   game follows it: panels, cards, dialogs, tabs, tooltips, inputs, scrollbars, menus, charts, the
-  keyboard guide, a level's top bar, cards and bars. Pictures stay as drawn: the level
-  backgrounds, the sprites and characters (their dark outlines work on dark). The certificate
+  keyboard guide, a level's top bar, cards and bars. The keyboard guide's hands are solid there
+  (a see-through hand turns grey on dark), their resting fingers a dimmer skin. Pictures stay as drawn: the level
+  backgrounds, the sprites and characters (their dark outlines work on dark). As the play field
+  keeps its daylight pictures, a target's word label stays a light plate with dark letters. A
+  wardrobe item sits on a light tile, so dark items (black glasses) stay visible. The certificate
   stays light, as it is printed. The meaning colors and the brand orange stay; a shade that is
   too dark for text on dark gets a lighter variant.
 - In a level Tapko stands at the bottom left, or the scene draws him itself: walking as

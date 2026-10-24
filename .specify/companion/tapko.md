@@ -47,7 +47,8 @@
 - **Paw help**: fifteen words in a row without a mistake charge one paw (three at most,
   kept between levels). In story levels and rescue missions (not at the main gate, whose
   code must be the child's own), Enter (or the round paw button next to pause: a paw in
-  the character's color, ringed by three arcs for the charges; its label names Enter)
+  the character's color, ringed by three arcs for the charges; its label names Enter; with no
+  charge it keeps its colors, only its arcs are empty, never dimmed like a disabled button)
   sends the character's paws onto the keyboard in place of the hands, and the paw types
   the three closest words with its own rhythm. These keys never count in the child's
   statistics, accuracy or rhythm, and the child's own keys wait meanwhile. The paw comes

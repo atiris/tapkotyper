@@ -1332,6 +1332,10 @@
    "w": 383,
    "h": 384
   },
+  "ui-icon-hr-darkbg": {
+   "w": 512,
+   "h": 451
+  },
   "ui-icon-hr": {
    "w": 512,
    "h": 451
@@ -1442,7 +1446,7 @@
   },
   "ui-start-meadow-night": {
    "w": 922,
-   "h": 391
+   "h": 392
   },
   "ui-start-meadow": {
    "w": 922,

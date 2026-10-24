@@ -1246,10 +1246,12 @@
     "report": "Report a bug or an idea",
     "intro": "TapkoTyper (Tapko) is a free, peaceful game that teaches typing with all ten fingers. As an animal of their own choice, keyboard typing students travel through worlds full of adventures. Nothing bad ever happens: obstacles are pushed away or helped, never destroyed.",
     "privacyTitle": "Our promise to parents",
+    "install": "Installed",
+    "installHelp": "https://support.google.com/chrome/answer/9658361?hl=en",
     "privacy": [
       "No ads, purchases, sign-in or cookies. This site has no server of its own in the background.",
       "All progress is stored **only in this browser** and nobody else can reach it, but you can export it to a file to back it up or move it to another computer.",
-      "After the first visit, or as a desktop app, it works without the internet too. Installed as a desktop web app, it opens in its own window without the whole browser, works offline and is quick and easy to start."
+      "After the first visit, or as a desktop app, it works without the internet too. {install} as a desktop web app, it opens in its own window without the whole browser, works offline and is quick and easy to start."
     ],
     "dataTitle": "Your data and the visit counter",
     "data": [
@@ -1278,7 +1280,7 @@
       "typing": "Typing",
       "progress": "Progress",
       "settings": "Settings",
-      "mentoring": "For teachers and parents",
+      "mentoring": "Parents and teachers",
       "about": "About Tapko"
     },
     "typeTitle": "How to type",
@@ -1411,11 +1413,11 @@
     },
     "keysTitle": "Play with the keyboard only",
     "keys": [
-      "You never need the mouse. **Enter** or the **space bar** presses the lit button, **Tab** and the **arrows** move between buttons.",
-      "Pick your player by its number **1 to 9**, or start typing its nickname.",
+      "The app can be used without a mouse too. **Enter** or the **space bar** presses the lit button, **Tab** and the **arrows** move between buttons.",
+      "Pick your player by its number **1 to 9**.",
       "**F1** opens help, **F2** shows or hides the keyboard, **F3** turns reading aloud on or off.",
       "**F4** switches the sound: normal, quiet, off. **F8** plays another song.",
-      "**Esc** pauses a level and goes back from other screens."
+      "**Esc** closes the window on top. Otherwise it pauses or resumes a level, and goes back from other screens."
     ],
     "mentorTitle": "Results and QR codes",
     "mentor": [

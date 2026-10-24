@@ -31,6 +31,13 @@ export function noteVisit(): void {
   save(withVisit(load(), localDay(new Date())));
 }
 
+/** Asks the browser to install the game as a desktop web app; false when it cannot (unsupported, or already installed). */
+export function installApp(): boolean {
+  if (!deferred) return false;
+  void deferred.prompt();
+  return true;
+}
+
 /**
  * Offers the installation as a desktop web app once, after the game was opened on three
  * different days, and only when the browser can install it (and the game does not already run as one).

@@ -1246,10 +1246,12 @@
     "report": "Nahlásiť chybu alebo nápad",
     "intro": "TapkoTyper (Ťapko) je bezplatná pokojná hra, ktorá učí písať všetkými desiatimi prstami. Študent písania na klávesnici cestuje ako zvieratko podľa vlastného výberu po svetoch plných dobrodružstiev. Nikdy sa nestane nič zlé: prekážky sa odsunú alebo sa im pomôže, nikdy sa neničia.",
     "privacyTitle": "Náš sľub rodičom",
+    "install": "nainštalujete",
+    "installHelp": "https://support.google.com/chrome/answer/9658361?hl=sk",
     "privacy": [
       "Bez reklám, nákupov, prihlasovania či cookies. Tento web nemá na pozadí vlastný server.",
       "Všetky pokroky sú uložené **len v tomto prehliadači**, a nikto k nim nemá prístup, ale môžete ich exportovať do súboru a zálohovať alebo preniesť na iný počítač.",
-      "Po prvej návšteve, alebo ako desktopová aplikácia, funguje aj bez internetu. Ak ju nainštalujete ako desktopovú webovú aplikáciu, otvorí sa bez celého prehliadača vo vlastnom okne, pracuje offline, je to rýchle a jednoduché na spustenie."
+      "Po prvej návšteve, alebo ako desktopová aplikácia, funguje aj bez internetu. Ak ju {install} ako desktopovú webovú aplikáciu, otvorí sa bez celého prehliadača vo vlastnom okne, pracuje offline, je to rýchle a jednoduché na spustenie."
     ],
     "dataTitle": "Vaše údaje a počítadlo návštev",
     "data": [
@@ -1278,7 +1280,7 @@
       "typing": "Písanie",
       "progress": "Postup v hre",
       "settings": "Nastavenia",
-      "mentoring": "Pre učiteľov a rodičov",
+      "mentoring": "Rodičia a učitelia",
       "about": "O Ťapkovi"
     },
     "typeTitle": "Ako písať",
@@ -1411,11 +1413,11 @@
     },
     "keysTitle": "Hraj len s klávesnicou",
     "keys": [
-      "Myš nikdy nepotrebuješ. **Enter** alebo **medzerník** stlačí zvýraznené tlačidlo, **Tab** a **šípky** prechádzajú medzi tlačidlami.",
-      "Hráča vyberieš jeho číslom **1 až 9** alebo tak, že začneš písať jeho prezývku.",
+      "Aplikácia podporuje aj navigáciu bez myši. **Enter** alebo **medzerník** stlačí zvýraznené tlačidlo, **Tab** a **šípky** prechádzajú medzi tlačidlami.",
+      "Hráča vyberieš jeho číslom **1 až 9**.",
       "**F1** otvorí pomoc, **F2** ukáže alebo skryje klávesnicu, **F3** zapne alebo vypne čítanie nahlas.",
       "**F4** prepína zvuk: normálny, potichu, vypnutý. **F8** pustí inú pesničku.",
-      "**Esc** zastaví úroveň a z iných obrazoviek ide späť."
+      "**Esc** zatvorí okno, ktoré je navrchu. Inak úroveň zastaví alebo pustí ďalej a z ostatných obrazoviek ide späť."
     ],
     "mentorTitle": "Výsledky a QR kódy",
     "mentor": [

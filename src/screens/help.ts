@@ -5,6 +5,7 @@ import { PAW_MAX, PAW_STREAK, PAW_WORDS } from '../game/paw';
 import { type Child, ICONS, button, h, icon, richText } from '../ui/dom';
 import { levelRing, pawRing, rhythmPic, roundPic, timerPic } from '../ui/hud';
 import { barTabLinks, tabBar } from '../ui/tabs';
+import { installApp } from '../ui/install';
 
 const TABS = ['ui', 'typing', 'progress', 'settings', 'mentoring', 'about'] as const;
 export type HelpTab = (typeof TABS)[number];
@@ -64,6 +65,16 @@ function section(title: string, ...kids: Child[]): HTMLElement {
 
 const list = (key: string) => h('ul', {}, ...tList(key).map((l) => h('li', {}, ...richText(l))));
 
+/** The privacy promise; "{install}" is a link that installs the web app, or opens the browser's guide when the browser cannot. */
+function privacyList(): HTMLElement {
+  return h('ul', {}, ...tList('about.privacy').map((l) => {
+    const [before, after] = l.split('{install}');
+    if (after === undefined) return h('li', {}, ...richText(l));
+    const link = h('a', { href: t('about.installHelp'), target: '_blank', rel: 'noopener', onClick: (e: MouseEvent) => { if (installApp()) e.preventDefault(); } }, t('about.install'));
+    return h('li', {}, ...richText(before), link, ...richText(after));
+  }));
+}
+
 /** The visit count the public counter reports; null when offline or blocked. */
 async function visitCount(): Promise<string | null> {
   try {
@@ -92,7 +103,7 @@ function aboutTab(): HTMLElement[] {
   data.append(openData());
   return [
     h('p', {}, ...richText(t('about.intro'))),
-    section(t('about.privacyTitle'), list('about.privacy')),
+    section(t('about.privacyTitle'), privacyList()),
     section(t('about.dataTitle'), data),
     section(t('about.howTitle'), list('about.how')),
     section(t('about.creditsTitle'), h('p', {}, t('about.credits')),

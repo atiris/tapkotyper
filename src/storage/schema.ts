@@ -1,7 +1,9 @@
-// Storage schema v4. These types are the data contract of `localStorage['tapkotyper:v1']`
+// Storage schema v5. These types are the data contract of `localStorage['tapkotyper:v1']`
 // and of exported `.json` files. Older shapes are upgraded by the migrations in store.ts.
 
 export type Lang = 'sk' | 'en';
+/** The look of the whole device: `system` follows the browser's color scheme. */
+export type Theme = 'system' | 'light' | 'dark';
 export type LayoutId = 'sk-qwertz' | 'sk-qwerty' | 'us-qwerty';
 export type CompanionKind = 'fox' | 'cat' | 'bunny' | 'owl' | 'dog' | 'bear' | 'panda' | 'penguin' | 'lion';
 export type FontChoice = 'lexend' | 'atkinson' | 'opendyslexic';
@@ -215,10 +217,11 @@ export interface ParentLock {
 }
 
 export interface StoreData {
-  version: 4;
+  version: 5;
   profiles: Profile[];
   lastProfileId: string | null;
   language: Lang | null;
+  theme: Theme;
   /** One password for the whole device; the super player is never asked. */
   parentLock?: ParentLock;
 }

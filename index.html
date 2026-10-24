@@ -9,6 +9,15 @@
     <link rel="icon" href="icons/tapko-48.png" type="image/png" sizes="48x48" />
     <link rel="apple-touch-icon" href="icons/tapko-180.png" />
     <link rel="manifest" href="manifest.webmanifest" />
+    <script>
+      // The theme before the first paint, so a dark reload never flashes light; src/app/theme.ts keeps it after.
+      (function () {
+        var theme;
+        try { theme = JSON.parse(localStorage.getItem('tapkotyper:v1') || '{}').theme; } catch (e) {}
+        document.documentElement.dataset.theme = theme === 'dark' || (theme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+      })();
+    </script>
+    <style>html[data-theme='dark'] { background: #171631; color-scheme: dark; }</style>
   </head>
   <body class="booting">
     <main id="app"><div class="boot">TapkoTyper</div></main>

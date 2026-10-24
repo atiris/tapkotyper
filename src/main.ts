@@ -1,5 +1,6 @@
 import './styles.css';
 import { app, go, openRoute, parseRoute, registerScreen, screenVisit, useLanguage } from './app/app';
+import { installTheme } from './app/theme';
 import { loadManifest } from './gfx/assets';
 import { GUEST_ID, SUPER_ID } from './storage/schema';
 import { detectLanguage } from './i18n/i18n';
@@ -63,6 +64,7 @@ registerScreen('break', needsProfile(breakScreen));
 registerScreen('help', helpScreen);
 
 async function boot(): Promise<void> {
+  installTheme(app.store);
   const lang = app.store.data.language ?? detectLanguage();
   await Promise.all([loadManifest(), useLanguage(lang)]);
   document.body.classList.remove('booting');

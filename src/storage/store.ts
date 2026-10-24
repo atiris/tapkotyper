@@ -7,6 +7,7 @@ import {
   type ParentLock,
   type Profile,
   type StoreData,
+  type Theme,
   COMPANION_KINDS,
   GUEST_ID,
   defaultSettings,
@@ -16,7 +17,7 @@ import {
 export const STORE_KEY = 'tapkotyper:v1';
 const GUEST_KEY = 'tapkotyper:guest';
 
-export const STORE_VERSION = 4;
+export const STORE_VERSION = 5;
 
 /** Migrations from older stored shapes, keyed by the version they upgrade from. */
 const migrations: Record<number, (data: any) => any> = {
@@ -41,7 +42,11 @@ const migrations: Record<number, (data: any) => any> = {
   // v4 (nickname required, name optional, word language, key font) needs no step of its own:
   // `normalizeProfile` fills an empty nickname from the name, and the new settings from the
   // defaults of the profile's language.
+  // v5: the device's theme; an existing device keeps following the system.
+  4: (data) => ({ ...data, theme: 'system' }),
 };
+
+const THEMES: Theme[] = ['system', 'light', 'dark'];
 
 function earnedFrom(trained: unknown): number {
   return typeof trained === 'number' && trained > 0 ? Math.min(WARDROBE_MAX, trained * WARDROBE_SHARE) : 0;
@@ -70,7 +75,7 @@ function nickFrom(name: string): string {
 }
 
 function emptyStore(): StoreData {
-  return { version: STORE_VERSION, profiles: [], lastProfileId: null, language: null };
+  return { version: STORE_VERSION, profiles: [], lastProfileId: null, language: null, theme: 'system' };
 }
 
 export function migrate(raw: any): StoreData {
@@ -81,6 +86,7 @@ export function migrate(raw: any): StoreData {
   const store: StoreData = { ...emptyStore(), ...data, version: STORE_VERSION };
   store.profiles = Array.isArray(store.profiles) ? store.profiles.filter(isProfile).map(normalizeProfile) : [];
   if (!isParentLock(store.parentLock)) delete store.parentLock;
+  if (!THEMES.includes(store.theme)) store.theme = 'system';
   return store;
 }
 

@@ -27,6 +27,11 @@ describe('i18n', () => {
     expect(detectLanguage(['cs'])).toBe('sk');
     expect(detectLanguage(['de', 'en-GB'])).toBe('en');
     expect(detectLanguage(['fr'])).toBe('en');
+    expect(detectLanguage(['de', 'cs'])).toBe('sk');
+    expect(detectLanguage(['de', 'fr'])).toBe('en');
+    expect(detectLanguage(['en-GB', 'sk'])).toBe('en');
+    // A supported language anywhere in the list wins over a close one before it.
+    expect(detectLanguage(['cs', 'en'])).toBe('en');
   });
 
   it('fills placeholders and falls back to English', () => {

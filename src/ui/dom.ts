@@ -74,6 +74,12 @@ export const ICONS = {
   sortDown: '<path d="M6 9l6 6 6-6"/>',
   sortUp: '<path d="M6 15l6-6 6 6"/>',
   menu: '<path d="M5 7h14M5 12h14M5 17h14"/>',
+  noAds: '<circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/>',
+  check: '<path d="M5 12.5l4.5 4.5L19 7"/>',
+  moon: '<path d="M20 14.5A8 8 0 019.5 4a8 8 0 1010.5 10.5z"/>',
+  sun: '<circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/>',
+  // The international language symbol: the glyph pair "文A".
+  language: '<path d="M7 2.5v2M2.5 5h9M4.5 7.5c1.4 3.6 3.8 6 7 7M9.6 7.5c-1.1 3.5-3.5 5.9-7.1 7M12.5 21.5l4-10.5 4 10.5M14 18h5"/>',
   recheck: '<path d="M4 12a8 8 0 102.3-5.7"/><path d="M4 4v5h5"/>',
   update: '<path d="M19.5 10A8 8 0 005.6 7.2"/><path d="M5 3v4.5h4.5"/><path d="M4.5 14a8 8 0 0013.9 2.8"/><path d="M19 21v-4.5h-4.5"/>',
   target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/>',

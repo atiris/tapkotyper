@@ -15,20 +15,20 @@
     "updateTip": "A new version of the game is ready.\nClick to install it.",
     "menu": "Menu",
     "menuClose": "Close the menu",
-    "song": "Music: {name}"
+    "song": "Music: {name}",
+    "darkMode": "Dark mode",
+    "lightMode": "Light mode"
   },
   "start": {
-    "tagline": "A calm typing adventure with all ten fingers",
     "whoPlays": "Who is playing today?",
     "pickByNumber": "You can also pick this profile by typing the number {n}",
     "newProfile": "New player",
-    "guest": "Incognito",
+    "guest": "No profile",
     "guestName": "Guest",
     "import": "Import profiles",
     "language": "Language",
     "stars": "{n} stars",
-    "langNow": "Language: English",
-    "langNext": "Switch to Slovak",
+    "langNow": "Language: {name}",
     "gate": {
       "title": "Keyboard missing",
       "sub": "TapkoTyper needs a real keyboard",
@@ -38,15 +38,21 @@
     "teacher": {
       "title": "For mentors",
       "sub": "Scan QR codes and see the class results"
-    }
-  },
-  "privacy": {
-    "short": "No ads and no tracking of your data",
-    "local": "Your data stays on your device",
-    "tiny": "No ads, only on your device",
-    "visitsOne": "{n} visit",
-    "visitsFew": "{n} visits",
-    "visitsMany": "{n} visits"
+    },
+    "slogan": [
+      "Ten fingers,",
+      "one big adventure."
+    ],
+    "intro": "Tapko guides you through calm worlds full of stories. Each level adds a few keys, until you type with all ten fingers without looking.",
+    "phoneIntro": "A calm game in which Tapko teaches you to type with all ten fingers. No ads, no account, your data stays on your device.",
+    "promises": {
+      "ads": "No ads and no account",
+      "local": "Your data stays on your device",
+      "wardrobe": "A wardrobe and stars for effort",
+      "mentors": "Parents and mentors see the progress"
+    },
+    "first": "Just a name and an animal to pick.",
+    "guestFirst": "Try without a profile"
   },
   "newProfile": {
     "title": "Hello and welcome!",

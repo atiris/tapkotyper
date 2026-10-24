@@ -1,12 +1,13 @@
 import { type ScreenName, app, go, shownScreen } from '../app/app';
+import { onThemeChange, shownLook, toggleTheme } from '../app/theme';
 import { audio, type SoundLevel } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
 import { WORLDS } from '../game/levels';
-import { LANGS, language, t } from '../i18n/i18n';
+import { LANGS, LANGUAGES, language, t } from '../i18n/i18n';
 import { installShortcuts, setDefaultShortcuts, withKey } from '../input/shortcuts';
 import type { Lang } from '../storage/schema';
-import { type Child, ICONS, button, h } from './dom';
-import { paintRound, roundButton, roundTextSvg } from './hud';
+import { type Child, ICONS, h, icon } from './dom';
+import { paintRound, roundButton } from './hud';
 import { cornerMenu } from './menu';
 import { toast } from './toast';
 import { tip } from './tooltip';
@@ -117,33 +118,84 @@ export function appShortcuts(): void {
   installShortcuts();
 }
 
-/** The global round buttons, right to left: the super star, a new version (hidden until there is one), help, fullscreen, sound. A level passes its own help. */
-export function globalButtons(help: HTMLButtonElement = helpButton()): (HTMLButtonElement | null)[] {
-  return [soundButton(), fullscreenButton(), help, updateButton(), superStar()];
+/**
+ * The global round buttons, right to left: the super star, a new version (hidden until there is
+ * one), help, the theme (outside a level), fullscreen, sound. A level passes its own help.
+ */
+export function globalButtons(help: HTMLButtonElement = helpButton(), theme: HTMLButtonElement | null = null): (HTMLButtonElement | null)[] {
+  return [soundButton(), fullscreenButton(), theme, help, updateButton(), superStar()];
+}
+
+/** Dark or light: a moon in the light look, a sun in the dark one. */
+export function themeButton(): HTMLButtonElement {
+  const b = roundButton('control', 'moon', '', toggleTheme);
+  b.classList.add('theme-btn');
+  const paint = () => {
+    const dark = shownLook() === 'dark';
+    const label = t(dark ? 'common.lightMode' : 'common.darkMode');
+    b.setAttribute('aria-label', label);
+    tip(b, label);
+    paintRound(b, dark ? 'sun' : 'moon');
+  };
+  paint();
+  const off = onThemeChange(() => (b.isConnected ? paint() : off()));
+  return b;
+}
+
+/** The language: the language symbol; a click opens the list of the languages by their own names. */
+export function languageButton(pick: (l: Lang) => void): HTMLButtonElement {
+  const b: HTMLButtonElement = roundButton('control', 'language', t('start.langNow', { name: LANGUAGES[language()] }), () => languageList(b, pick));
+  b.classList.add('lang-btn');
+  b.setAttribute('aria-haspopup', 'listbox');
+  b.setAttribute('aria-expanded', 'false');
+  return b;
 }
 
 /**
- * The language: the SK/EN switch on a wide window, one round button showing the language on
- * a narrower one (a click goes to the next language). CSS shows one of the two.
+ * The list under the corner controls, the current language marked. The arrows move, Enter picks,
+ * Escape or a click outside closes; focus returns to the button (or to the Menu it was opened from).
  */
-export function languageControls(pick: (l: Lang) => void): HTMLElement[] {
+function languageList(b: HTMLButtonElement, pick: (l: Lang) => void): void {
+  if (document.querySelector('.lang-list')) return;
   const now = language();
-  const next = LANGS[(LANGS.indexOf(now) + 1) % LANGS.length];
-  const round = h('button', { class: 'round-btn control lang-btn', type: 'button', tip: `${t('start.langNow')}. ${t('start.langNext')}`, 'aria-label': t('start.langNow'),
-    onClick: () => pick(next), html: roundTextSvg(now.toUpperCase()) });
-  return [
-    h('div', { class: 'lang-switch', role: 'group', 'aria-label': t('start.language') },
-      ...LANGS.map((l) => button(l.toUpperCase(), () => pick(l), `chip ${now === l ? 'on' : ''}`))),
-    round,
-  ];
+  const items = LANGS.map((l) => h('button', { class: 'lang-item', type: 'button', role: 'option', lang: l, 'aria-selected': String(l === now), onClick: () => { close(); if (l !== now) pick(l); } },
+    h('span', {}, LANGUAGES[l]), l === now ? icon('check') : null));
+  const list = h('div', { class: 'lang-list', role: 'listbox', 'aria-label': t('start.language') }, ...items);
+  const onKey = (e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      e.stopPropagation();
+      close();
+    } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const i = items.indexOf(document.activeElement as HTMLButtonElement);
+      items[(i + (e.key === 'ArrowDown' ? 1 : items.length - 1)) % items.length].focus();
+    }
+  };
+  const onPointer = (e: PointerEvent) => {
+    if (!list.contains(e.target as Node)) close();
+  };
+  function close(): void {
+    list.remove();
+    document.removeEventListener('keydown', onKey, true);
+    document.removeEventListener('pointerdown', onPointer, true);
+    b.setAttribute('aria-expanded', 'false');
+    // Below 600 px the button itself is hidden in the Menu.
+    (b.offsetParent ? b : b.closest('.top-right')?.querySelector<HTMLElement>('.menu-btn'))?.focus();
+  }
+  b.closest('.top-right')!.append(list);
+  b.setAttribute('aria-expanded', 'true');
+  document.addEventListener('keydown', onKey, true);
+  document.addEventListener('pointerdown', onPointer, true);
+  items[LANGS.indexOf(now)].focus();
 }
 
 /**
  * The top right corner of every screen but a level, at one fixed offset: the screen's own
- * buttons (`lead`), then the global ones; below 600 px all of them fold into the Menu button.
+ * buttons (`lead`), then the global ones with the theme; below 600 px all of them fold into the Menu button.
  */
 export function cornerControls(...lead: Child[]): HTMLElement {
-  const row = h('div', { class: 'corner-row' }, ...lead, ...globalButtons());
+  const row = h('div', { class: 'corner-row' }, ...lead, ...globalButtons(helpButton(), themeButton()));
   return h('div', { class: 'top-right' }, row, cornerMenu(row));
 }
 

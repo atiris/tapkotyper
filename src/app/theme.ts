@@ -10,6 +10,7 @@ const BAR_COLOR: Record<Look, string> = { light: '#7cc79a', dark: '#171631' };
 const listeners = new Set<(look: Look) => void>();
 /** The device's store, where the chosen theme lives. */
 let store: Store;
+let fadeTimer: ReturnType<typeof setTimeout> | undefined;
 
 /** The look a stored theme shows: `system` follows the browser. */
 export function resolveTheme(theme: Theme, prefersDark: boolean): Look {
@@ -47,6 +48,13 @@ export function toggleTheme(): void {
   const look: Look = shownLook() === 'dark' ? 'light' : 'dark';
   store.data.theme = look;
   store.save();
+  // The page's colors fade into the new look, unless motion is reduced.
+  const root = document.documentElement;
+  if (!document.body.classList.contains('reduce-motion')) {
+    root.classList.add('theme-fade');
+    clearTimeout(fadeTimer);
+    fadeTimer = setTimeout(() => root.classList.remove('theme-fade'), 900);
+  }
   show(look);
 }
 

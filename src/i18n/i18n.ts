@@ -1,6 +1,15 @@
 import type { Lang } from '../storage/schema';
 
-export const LANGS: Lang[] = ['sk', 'en'];
+/** The supported languages, each by its own name. A new language is its text file, one row here, its word list and layout. */
+export const LANGUAGES: Record<Lang, string> = { sk: 'Slovenčina', en: 'English' };
+export const LANGS = Object.keys(LANGUAGES) as Lang[];
+/** The choices of a language select: every supported language by its own name. */
+export function langOptions(): [Lang, string][] {
+  return LANGS.map((l) => [l, LANGUAGES[l]]);
+}
+
+/** Languages whose readers read a supported one well. */
+const CLOSE: Partial<Record<string, Lang>> = { cs: 'sk' };
 
 type Dict = { [key: string]: string | string[] | Dict };
 
@@ -8,13 +17,10 @@ let dict: Dict = {};
 let fallback: Dict = {};
 let current: Lang = 'en';
 
+/** The browser's first supported language, else the first close one, else English. */
 export function detectLanguage(navLangs: readonly string[] = globalThis.navigator?.languages ?? []): Lang {
-  for (const l of navLangs) {
-    const code = l.toLowerCase().slice(0, 2);
-    if (code === 'sk' || code === 'cs') return 'sk';
-    if (code === 'en') return 'en';
-  }
-  return 'en';
+  const codes = navLangs.map((l) => l.toLowerCase().split('-')[0]);
+  return codes.find((c): c is Lang => LANGS.includes(c as Lang)) ?? codes.map((c) => CLOSE[c]).find((l) => l) ?? 'en';
 }
 
 async function fetchDict(lang: Lang): Promise<Dict> {

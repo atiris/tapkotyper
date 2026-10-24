@@ -8,11 +8,11 @@ One set of rules for where things sit and how they behave, so every screen feels
    window edge on every screen. There are only two placements: the **standard** one (all screens,
    windows and the map) and the **compact play bar** (inside a level, where they join the bar of
    the play controls). A button never moves between two screens of the same kind.
-   Every screen with the standard placement also has the **language** button and the **theme**
-   button (purple, controls), the theme one between the language and help. The language button
-   shows the international language symbol and opens a short list of the languages by their own
-   names, the current one marked (arrows move, Enter picks, Escape or a click outside closes).
-   The theme button shows a moon in light and a sun in dark. Neither is in a level's play bar.
+   Every screen with the standard placement also has the **theme** button (purple, controls)
+   just before help: a moon in light, a sun in dark; it is not in a level's play bar. The start
+   page adds the **language** button first in its row: the international language symbol, which
+   opens a short list of the languages by their own names, the current one marked (arrows move,
+   Enter picks, Escape or a click outside closes); a player's language is in the settings.
    **By width** (every screen but a level): from 600 px all buttons in the row; below 600 px one
    round **Menu** button opens a panel with each button as its round picture and its label (a
    screen's own buttons too, the language as an item that opens the same list). The panel closes

@@ -1,6 +1,6 @@
 import { app, go, selectProfile } from '../app/app';
 import { tapkoElement } from '../gfx/tapko';
-import { language, t } from '../i18n/i18n';
+import { langOptions, language, t } from '../i18n/i18n';
 import { COMPANION_KINDS, type CompanionKind, type Lang, type LayoutId } from '../storage/schema';
 import { NICK_MAX, newProfile } from '../storage/store';
 import { addTask } from '../share/task';
@@ -15,8 +15,7 @@ export function newProfileScreen(root: HTMLElement): () => void {
   const nick = h('input', { id: 'np-nick', type: 'text', maxlength: NICK_MAX, autocomplete: 'off', spellcheck: 'false', required: true });
   const name = h('input', { id: 'np-name', type: 'text', maxlength: 24, autocomplete: 'off' });
   const langSelect = (id: string) => h('select', { id },
-    h('option', { value: 'sk', selected: language() === 'sk' }, 'Slovenčina'),
-    h('option', { value: 'en', selected: language() === 'en' }, 'English'));
+    ...langOptions().map(([l, name]) => h('option', { value: l, selected: language() === l }, name)));
   const lang = langSelect('np-lang');
   const wordLang = langSelect('np-wordlang');
   const lay = h('select', { id: 'np-layout' },

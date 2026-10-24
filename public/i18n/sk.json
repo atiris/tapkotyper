@@ -15,20 +15,20 @@
     "updateTip": "Je pripravená nová verzia hry.\nKliknutím ju nainštaluješ.",
     "menu": "Menu",
     "menuClose": "Zavrieť menu",
-    "song": "Hudba: {name}"
+    "song": "Hudba: {name}",
+    "darkMode": "Tmavý režim",
+    "lightMode": "Svetlý režim"
   },
   "start": {
-    "tagline": "Pokojné dobrodružstvo písania všetkými desiatimi",
     "whoPlays": "Kto sa dnes hrá?",
     "pickByNumber": "Profil môžeš aktivovať aj napísaním číslice {n}",
     "newProfile": "Nový hráč",
-    "guest": "Inkognito",
+    "guest": "Bez profilu",
     "guestName": "Hosť",
     "import": "Načítať profily",
     "language": "Jazyk",
     "stars": "Hviezdičky: {n}",
-    "langNow": "Jazyk: slovenčina",
-    "langNext": "Prepnúť na angličtinu",
+    "langNow": "Jazyk: {name}",
     "gate": {
       "title": "Chýba klávesnica",
       "sub": "TapkoTyper potrebuje skutočnú klávesnicu",
@@ -38,15 +38,21 @@
     "teacher": {
       "title": "Pre mentorov",
       "sub": "Skenovať QR kódy a pozrieť výsledky triedy"
-    }
-  },
-  "privacy": {
-    "short": "Žiadne reklamy ani sledovanie vašich dát",
-    "local": "Údaje len vo vašom zariadení",
-    "tiny": "Bez reklám, len vo vašom zariadení",
-    "visitsOne": "{n} návšteva",
-    "visitsFew": "{n} návštevy",
-    "visitsMany": "{n} návštev"
+    },
+    "slogan": [
+      "Desať prstov,",
+      "jedno veľké dobrodružstvo."
+    ],
+    "intro": "Tapko ťa prevedie pokojnými svetmi plnými príbehov. S každou úrovňou pribudne pár kláves, až kým nepíšeš všetkými desiatimi bez pozerania.",
+    "phoneIntro": "Pokojná hra, v ktorej sa s Tapkom naučíš písať všetkými desiatimi. Bez reklám, bez účtu, údaje ostávajú v zariadení.",
+    "promises": {
+      "ads": "Bez reklám a bez účtu",
+      "local": "Údaje ostávajú v zariadení",
+      "wardrobe": "Šatník a hviezdičky za snahu",
+      "mentors": "Pokrok vidia rodičia aj mentori"
+    },
+    "first": "Stačí meno a vybrať si zvieratko.",
+    "guestFirst": "Skúsiť bez profilu"
   },
   "newProfile": {
     "title": "Ahoj, vitaj!",

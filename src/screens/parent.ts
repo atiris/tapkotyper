@@ -1,5 +1,5 @@
 import { app, applyProfileLook, go, loadPlayerWords, saveProfile, selectProfile, useLanguage } from '../app/app';
-import { t } from '../i18n/i18n';
+import { langOptions, t } from '../i18n/i18n';
 import { ENTER, LAYOUTS, LAYOUT_IDS, allKeys } from '../keyboard/layouts';
 import { LEVELS, type LevelDef, STORIES, WORLDS, worldLevels } from '../game/levels';
 import { SURPRISES_MAX, SURPRISE_LEN, SURPRISE_N_MAX, TRIGGERS, newSurprise, restartSurprise, surpriseCount } from '../game/own-content';
@@ -124,7 +124,7 @@ function settingsTab(p: Profile): HTMLElement {
   });
   const name = h('input', { type: 'text', value: p.name, maxlength: 24 });
   name.addEventListener('change', () => { p.name = name.value.trim(); save(); });
-  const langs: [Lang, string][] = [['sk', 'Slovenčina'], ['en', 'English']];
+  const langs = langOptions();
   const tapko = h('span', { class: 'child-tapko' });
   const paintTapko = () => tapko.replaceChildren(tapkoElement(p.companion, 'happy', 96));
   const kinds = h('div', { class: 'kind-picker', role: 'radiogroup', 'aria-label': t('parent.companionKind') },
@@ -408,7 +408,7 @@ function ownWordsEditors(p: Profile): HTMLElement[] {
   });
   text.addEventListener('change', () => { s.ownText = text.value.slice(0, OWN_TEXT_MAX).trim(); saveProfile(); paint(); });
   const mix = select<OwnMix>(s.ownMix, (['off', 'some', 'half', 'most'] as const).map((m): [OwnMix, string] => [m, t(`own.mix.${m}`)]), (v) => { s.ownMix = v; saveProfile(); paintPreview(); });
-  const wordLang = select<Lang>(s.ownWordLang, [['sk', 'Slovenčina'], ['en', 'English']], async (v) => { s.ownWordLang = v; saveProfile(); await loadPlayerWords(p); paintPreview(); });
+  const wordLang = select<Lang>(s.ownWordLang, langOptions(), async (v) => { s.ownWordLang = v; saveProfile(); await loadPlayerWords(p); paintPreview(); });
   paint();
   return [
     h('fieldset', { class: 'own-words' }, h('legend', {}, t('own.group.words')),

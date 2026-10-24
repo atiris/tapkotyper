@@ -198,18 +198,19 @@
     "wrists": "Zápästia uvoľnené vo vzduchu, nie opreté o stôl.",
     "home": "Ukazováky na výstupkoch klávesov F a J, ostatné prsty vedľa nich.",
     "eyes": "Oči na obrazovke, nie na klávesnici.",
-    "space": "Polož prsty na domov a stlač medzerník.",
+    "space": "Prsty polož na základné miesta a stlač medzerník.",
     "spaceKey": "medzerník",
     "close": "Zavrieť a začať (Esc)"
   },
   "newKey": {
     "title": "Nový kláves",
     "skip": "Preskočiť tréning klávesu (Esc)",
-    "finger": "Stláčaj ho {finger} a potom sa vráť domov.",
+    "finger": "Stláčaj ho {finger}.",
+    "fingerBack": "Stláčaj ho {finger} a potom vráť prst na {home}.",
     "typeIt": "Napíš {key} trikrát.",
     "shiftL": "Ľavý Shift drž ľavým malíčkom a pravou rukou napíš veľké písmeno. Napíš trikrát veľké {sample}.",
     "shiftR": "Pravý Shift drž pravým malíčkom a ľavou rukou napíš veľké písmeno. Napíš trikrát veľké {sample}.",
-    "space": "Ostatné prsty ostanú doma. Stlač ho trikrát."
+    "space": "Ostatné prsty ostanú na základných miestach. Stlač ho trikrát."
   },
   "practice": {
     "parts": "Časti: {n} z {total}",
@@ -263,7 +264,7 @@
     ],
     "hint": [
       "Kláves {key} skús {finger}.",
-      "{key} patrí pod prst: stláčaj ho {finger}. Potom späť domov!",
+      "{key} patrí pod prst: stláčaj ho {finger}. Potom prst späť na základné miesto!",
       "Pomaly: {key} stláčaš {finger}."
     ],
     "level_done": [
@@ -593,7 +594,7 @@
       "intro": [
         "Ahoj, {name}! Toto je tvoja postava v tomto dobrodružstve.",
         "Naučíš sa písať všetkými desiatimi prstami.",
-        "Polož ukazováky na malé výstupky na klávesoch F a J. To je tvoj domov.",
+        "Polož ukazováky na malé výstupky na klávesoch F a J. Tu sú základné miesta tvojich prstov.",
         "Začni na Cvičnej lúke!"
       ],
       "world1": [
@@ -1287,7 +1288,7 @@
       "Nahmataj **výstupky na F a J**. Tam bývajú tvoje ukazováky.",
       "Ostatné prsty si ľahnú vedľa nich na stredný rad: A S D F a J K L.",
       "Palce oddychujú nad medzerníkom.",
-      "Každý prst má svoje klávesy. Po každom písmenku sa vráti domov.",
+      "Každý prst má svoje klávesy. Po každom písmenku sa vráti na svoje základné miesto.",
       "Pozeraj na **obrazovku, nie na ruky**. Klávesnica dole ti ukáže, ktorý prst ide.",
       "**Najprv presne**, potom rýchlo. Rýchlosť príde sama.",
       "Po chvíľke hrania si oddýchni: vstaň, natiahni sa a napi sa vody."
@@ -1443,8 +1444,8 @@
     "soft-touch": "Kláves stačí stlačiť jemne, nemusíš búchať.",
     "thumbs-rest": "Palce nechaj voľne nad medzerníkom.",
     "fj-bumps": "Nahmataj si výstupky na F a J, tam ležia ukazováky.",
-    "home-row": "Domov je stredný rad: A S D F a J K L.",
-    "return-home": "Po každom písmenku pošli prst domov.",
+    "home-row": "Základné miesta sú v strednom rade: A S D F a J K L.",
+    "return-home": "Po každom písmenku vráť prst na základné miesto.",
     "one-finger": "Každé písmenko má svoj prst, vždy ten istý.",
     "index-two": "Ukazováky majú najviac práce, každý zvládne dva stĺpce.",
     "middle-ei": "Na E a I siahne prostredník a hneď sa vráti.",

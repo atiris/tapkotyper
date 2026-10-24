@@ -205,7 +205,8 @@
   "newKey": {
     "title": "New key",
     "skip": "Skip the key practice (Esc)",
-    "finger": "Press it with your {finger}, then go back home.",
+    "finger": "Press it with your {finger}.",
+    "fingerBack": "Press it with your {finger}, then put the finger back on {home}.",
     "typeIt": "Type {key} three times.",
     "shiftL": "Hold the left Shift with your left little finger and type the capital with your right hand. Type a capital {sample} three times.",
     "shiftR": "Hold the right Shift with your right little finger and type the capital with your left hand. Type a capital {sample} three times.",

@@ -130,6 +130,15 @@ export function fingerFor(layout: Layout, ch: string): Finger | null {
   return keyByCode(layout, steps[steps.length - 1].code)?.finger ?? null;
 }
 
+/** The home row keys under the fingers at rest (the thumbs rest on the space bar). */
+const HOME_CODES: Partial<Record<Finger, string>> = { 0: 'KeyA', 1: 'KeyS', 2: 'KeyD', 3: 'KeyF', 6: 'KeyJ', 7: 'KeyK', 8: 'KeyL', 9: 'Semicolon' };
+
+/** The key a finger rests on, or null for the thumbs. */
+export function homeKey(layout: Layout, finger: Finger): string | null {
+  const code = HOME_CODES[finger];
+  return code ? keyByCode(layout, code)?.base ?? null : null;
+}
+
 export function canType(layout: Layout, ch: string): boolean {
   return stepsFor(layout, ch).length > 0;
 }

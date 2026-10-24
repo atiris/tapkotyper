@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { LAYOUTS, LayoutMismatchDetector, fingerFor, stepsFor } from './layouts';
+import { LAYOUTS, LayoutMismatchDetector, fingerFor, homeKey, stepsFor } from './layouts';
 
 const sk = LAYOUTS['sk-qwertz'];
 const us = LAYOUTS['us-qwerty'];
@@ -11,6 +11,12 @@ describe('layouts', () => {
     expect(fingerFor(sk, 'a')).toBe(0);
     expect(fingerFor(sk, 'ô')).toBe(9);
     expect(fingerFor(us, ';')).toBe(9);
+  });
+
+  it('knows the key each finger rests on', () => {
+    const sk = LAYOUTS['sk-qwertz'];
+    expect([0, 1, 2, 3, 6, 7, 8, 9].map((f) => homeKey(sk, f as 0))).toEqual(['a', 's', 'd', 'f', 'j', 'k', 'l', 'ô']);
+    expect(homeKey(sk, 4)).toBeNull();
   });
 
   it('swaps y and z on the Slovak layout', () => {

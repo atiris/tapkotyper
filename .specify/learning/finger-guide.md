@@ -17,9 +17,15 @@
   space bar, Esc, a tap on the drawing or the round X (its tip says so) closes it and starts:
   the card is only a reminder, so every way out of it is the start. It is the only card
   before a level, apart from new keys.
-- A new key is introduced with the character on its own card, compact enough to keep the keyboard
-  in sight: the key and "Nový kláves" in one heading line, the finger's name highlighted in
-  that finger's color; the round X (its tip: skip the key practice, Esc) or Esc skips it; game objects (the character's fan) appear only when play starts. The space
+- A new key is introduced on its own card, compact enough to keep the keyboard in sight: the
+  character large in a column of its own on the left, the key and "Nový kláves" in one heading
+  line on the right, the finger's name highlighted in that finger's color. The finger line says
+  to put the finger back on its resting key only when the key is not that one ("Stláčaj ho
+  ľavým prostredníkom a potom vráť prst na D." for E, no return for D). Every key typed leaves a
+  green check or a red cross after "Napíš d trikrát." (at most 10, the oldest make room) and jumps
+  off the character's head in a random direction, fading after about a second and a half. The round X (its tip:
+  skip the key practice, Esc) or Esc skips it. Texts say "základné miesta" for the home keys,
+  never "domov"; game objects (the character's fan) appear only when play starts. The space
   bar is pressed by a thumb; a Shift card names its hand and asks for three capitals of the
   other hand. For a capital the guide lights the Shift of the other hand. The keyboard has
   an Enter key at the end of the home row, pressed by the right little finger; the guide

@@ -848,14 +848,24 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .space-label { margin: 0.8rem 0 0.3rem; color: var(--ink-soft); font-weight: 600; }
 .space-key { justify-self: center; display: block; margin: 0 auto; width: min(320px, 100%); height: 64px; font: inherit; font-size: 1.1rem; font-weight: 700; color: var(--ink-soft); border: 0; border-radius: 18px; background: var(--surface); box-shadow: inset 0 -7px 0 var(--brand), 0 4px 10px rgba(0, 0, 0, 0.12); cursor: pointer; }
 .space-key:active { transform: translateY(3px); }
-.newkey-card { max-width: 720px; }
-.newkey-card h2 { margin: 0 3rem 0.6rem; display: flex; align-items: center; justify-content: center; gap: 0.8rem; }
-.newkey-body { display: flex; gap: 1.2rem; align-items: center; justify-content: center; text-align: left; }
-.newkey-how { display: flex; flex-direction: column; align-items: flex-start; }
-.newkey-how .hint, .newkey-how p { margin: 0.2rem 0; }
-.newkey-how .dots { justify-content: flex-start; }
-.newkey-body .tapko-stack { filter: drop-shadow(0 8px 8px var(--soft-shadow)); }
+.newkey-card { max-width: 760px; display: grid; grid-template-columns: auto 1fr; gap: 1.4rem; align-items: center; text-align: left; }
+.newkey-card h2 { margin: 0 3rem 0.6rem 0; display: flex; align-items: center; gap: 0.8rem; }
+/* Tapko gets a column of his own, as tall as the card allows on a low screen. */
+.newkey-tapko { position: relative; }
+.newkey-tapko .tapko-stack { --size: clamp(130px, 34vh, 220px); filter: drop-shadow(0 8px 8px var(--soft-shadow)); }
+.newkey-how p { margin: 0.2rem 0; }
 .newkey-finger { font-size: 1.15rem; }
+.newkey-how .newkey-type { margin-top: 0.9rem; }
+.newkey-type { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 0.6rem; }
+.newkey-marks { display: inline-flex; gap: 0.2rem; }
+.newkey-mark { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; color: #fff; animation: pop-in 0.2s ease; }
+.newkey-mark .icon { width: 18px; height: 18px; }
+.newkey-mark svg { stroke-width: 3.2; }
+.newkey-mark.ok { background: var(--green-dark); }
+.newkey-mark.bad { background: var(--danger); }
+/* A typed character jumps off Tapko's head and fades. */
+.newkey-jump { position: absolute; left: 50%; top: 18%; font-family: var(--font-keys); font-size: 2rem; font-weight: 700; color: var(--brand); pointer-events: none; animation: newkey-jump 1.6s ease-out forwards; }
+@keyframes newkey-jump { from { transform: translate(-50%, -50%) scale(0.6); opacity: 1; } 60% { opacity: 1; } to { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.2); opacity: 0; } }
 .finger-chip { display: inline-block; padding: 0.05em 0.5em; border-radius: 10px; background: var(--finger); color: var(--finger-ink); font-weight: 700; }
 .big-key { display: inline-grid; place-items: center; min-width: 90px; height: 90px; padding: 0 1rem 14px; font-family: var(--font-keys); font-size: 3.2rem; line-height: 1; font-weight: 700; border-radius: 24px; background: var(--surface); box-shadow: inset 0 -10px 0 var(--brand), 0 6px 16px rgba(0, 0, 0, 0.15); margin: 0.5rem 0; }
 .big-key.wide { min-width: 260px; }
@@ -1282,8 +1292,9 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-ink); }
   .story-row { width: min(100%, 639px); justify-self: center; }
   .wardrobe-body { grid-template-columns: 1fr; }
   .wardrobe-preview { position: static; }
-  .newkey-body { flex-direction: column; text-align: center; }
-  .newkey-how { align-items: center; }
+  .newkey-card { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+  .newkey-card h2 { margin-right: 0; justify-content: center; }
+  .newkey-type { justify-content: center; }
 }
 @media (max-height: 640px) {
   .hand { display: none; }

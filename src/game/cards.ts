@@ -1,11 +1,11 @@
 import { audio } from '../audio/audio';
 import { t, tMap } from '../i18n/i18n';
-import type { Layout } from '../keyboard/layouts';
+import { type Layout, homeKey } from '../keyboard/layouts';
 import type { Profile, Surprise } from '../storage/schema';
 import { surpriseCount } from './own-content';
 import type { Style } from './typing';
-import { type KeyboardGuide, fingerChip } from '../ui/keyboard-guide';
-import { button, closeButton, h } from '../ui/dom';
+import { type KeyboardGuide, fingerChip, lessonFinger } from '../ui/keyboard-guide';
+import { button, closeButton, h, icon } from '../ui/dom';
 import { tapkoElement } from '../gfx/tapko';
 import { imageUrl } from '../gfx/assets';
 import { SHIFT_L, SHIFT_R, SPACE } from '../learning/lessons';
@@ -164,30 +164,57 @@ function cardHint(key: string): string {
   return t('newKey.typeIt', { key });
 }
 
-/** Introduces a new key alone: where it is and which finger, typed three times; Tapko shows it. */
+/** How to press the key: its finger, and the key to go back to when the finger does not rest on it. */
+function fingerLine(layout: Layout, key: string): HTMLElement | null {
+  const finger = lessonFinger(layout, key), chip = fingerChip(layout, key);
+  if (finger == null || !chip) return null;
+  const home = homeKey(layout, finger);
+  const back = home != null && home !== key;
+  // The finger name sits inside the sentence, highlighted in the finger's color.
+  const [before, after] = t(back ? 'newKey.fingerBack' : 'newKey.finger', { finger: '\u0000', home: home?.toUpperCase() ?? '' }).split('\u0000');
+  return h('p', { class: 'newkey-finger' }, before, chip, after ?? '');
+}
+
+/** Most marks of right and wrong keys in the card's row; older ones make room. */
+const MARKS_MAX = 10;
+
+/**
+ * Introduces a new key alone: where it is and which finger, typed three times; Tapko shows it, and every
+ * typed character jumps off his head. Each key leaves a green check or a red cross in the line.
+ */
 export function showNewKey(host: HTMLElement, key: string, layout: Layout, guide: KeyboardGuide, p: Profile): Promise<void> {
   return new Promise((resolve) => {
-    const chip = fingerChip(layout, key);
-    const dots = h('div', { class: 'dots' }, h('span'), h('span'), h('span'));
+    const marks = h('span', { class: 'newkey-marks', 'aria-hidden': 'true' });
     const big = h('span', { class: `big-key small ${key === SPACE ? 'wide' : ''}` }, bigKeyText(key));
     const sample = cardSample(key);
     const shift = key === SHIFT_L ? 'ShiftLeft' : key === SHIFT_R ? 'ShiftRight' : null;
-    // The finger name sits inside the sentence, highlighted in the finger's color.
-    const [before, after] = t('newKey.finger', { finger: '\u0000' }).split('\u0000');
+    const tapko = h('div', { class: 'newkey-tapko' }, tapkoElement(p.companion, 'happy', 220));
+    const hint = h('span', {}, cardHint(key));
     const card = h('div', { class: 'card newkey-card', 'data-sample': sample },
       closeButton(() => done(), t('newKey.skip')),
-      h('h2', {}, big, t('newKey.title')),
-      h('div', { class: 'newkey-body' },
-        tapkoElement(p.companion, 'happy', 120),
-        h('div', { class: 'newkey-how' },
-          chip ? h('p', { class: 'newkey-finger' }, before, chip, after ?? '') : null,
-          h('p', { class: 'hint' }, cardHint(key)),
-          dots)));
+      tapko,
+      h('div', { class: 'newkey-how' },
+        h('h2', {}, big, t('newKey.title')),
+        fingerLine(layout, key),
+        h('p', { class: 'hint newkey-type' }, hint, ' ', marks)));
     const overlay = h('div', { class: 'overlay' }, card);
     host.append(overlay);
     guide.show(sample);
     let n = 0;
     let shiftCode: string | null = null;
+    const mark = (ok: boolean) => {
+      if (marks.children.length >= MARKS_MAX) marks.firstElementChild!.remove();
+      marks.append(h('span', { class: `newkey-mark ${ok ? 'ok' : 'bad'}` }, icon(ok ? 'check' : 'close')));
+    };
+    // The typed character jumps off Tapko's head in a random direction upward and fades.
+    const jump = (ch: string) => {
+      const a = (Math.random() * 0.8 + 0.1) * Math.PI, d = 70 + Math.random() * 40;
+      const el = h('span', { class: 'newkey-jump', 'aria-hidden': 'true' }, ch === ' ' ? '␣' : ch);
+      el.style.setProperty('--dx', `${Math.round(Math.cos(a) * d)}px`);
+      el.style.setProperty('--dy', `${Math.round(-Math.sin(a) * d)}px`);
+      el.addEventListener('animationend', () => el.remove());
+      tapko.append(el);
+    };
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault();
@@ -195,13 +222,14 @@ export function showNewKey(host: HTMLElement, key: string, layout: Layout, guide
         return done();
       }
       if (e.key === 'Shift') shiftCode = e.code;
-      if (e.repeat || [...e.key].length !== 1) return;
+      if (e.repeat || [...e.key].length !== 1 || n >= 3) return;
       e.preventDefault();
       // Shift cards count the capital with either Shift, but say once when it was the wrong one.
       const ok = e.key.normalize('NFC') === sample;
       if (ok && shift && shiftCode && shiftCode !== shift) hint.textContent = t('level.shiftOtherHand');
+      jump(e.key);
+      mark(ok);
       if (ok) {
-        dots.children[n]?.classList.add('on');
         n++;
         audio.sfx('pop');
         if (n >= 3) setTimeout(done, 350);
@@ -212,7 +240,6 @@ export function showNewKey(host: HTMLElement, key: string, layout: Layout, guide
         audio.sfx('wrong');
       }
     };
-    const hint = card.querySelector<HTMLElement>('.hint')!;
     let finished = false;
     const done = () => {
       if (finished) return;

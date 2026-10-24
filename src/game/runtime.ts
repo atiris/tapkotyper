@@ -422,7 +422,7 @@ export class LevelRuntime {
     this.core.style = this.style;
     this.paintRead();
     this.storyLine = this.mode.startLine();
-    if (!this.opts.keys && await showPosture(host, p, tip, this.surprise, voiceNote, this.storyLine) === 'cancel') return this.exit();
+    if (!this.opts.keys) await showPosture(host, p, tip, this.surprise, voiceNote, this.storyLine);
     if (this.disposed) return;
     const intro = this.mode.intro();
     if (intro) await showCard(host, h('p', {}, intro), { button: t('common.ok'), cls: 'mode-intro' });

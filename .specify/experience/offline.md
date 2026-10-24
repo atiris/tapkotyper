@@ -9,7 +9,7 @@
   tooltip says a new version is ready and a click installs it, and the page reloads at once
   (without the leave question). Without the click it takes over once every tab of the game is
   closed. Music is not installed up front: the tracks
-  of the worlds played are kept as they play. The mentor's page works offline too: scanning,
+  of the worlds played are kept as they play. The teacher's page works offline too: scanning,
   links, history and `.tapko` files need no connection.
 
 - **Install offer:** once, never on the first day: only after the game was opened on three

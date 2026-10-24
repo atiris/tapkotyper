@@ -17,17 +17,18 @@
   3. **Progress**, in the child's voice: stories, worlds and levels, stars, how a level is
      played (type the word on the object, nothing bad happens when it gets away, stars come from
      accuracy, Esc pauses) right above letters that open levels and stories, "My progress" with
-     its three tabs and QR codes, rescue missions and badges.
+     its three tabs and QR codes, rescue missions, the target range (where it opens, what it
+     trains, the middle, a fall that costs nothing, the collection and Enter) and badges.
   4. **Settings**, for the parent: that the settings open with the gear on the map (the child's
      screens do not say it), what each settings tab does (child, practice, look and sound,
      password, own words and text, surprises, tasks, keys, progress, data), with one section per
      settings tab, and what is lost without a backup.
-  5. **Mentoring**, for teachers and mentors in one place: the "For mentors" page, scanning
+  5. **For teachers and parents**, in one place: the "For teachers" page, scanning
      QR codes by group, result links, sets (one scan, or links within 20 minutes), the kept
      history of every hand-in and a writer's progress, sending results from a phone to a
      computer as a `.tapko` file, the yearly cleanup (7 more days for old results loaded from a
      file), CSV, the checksum, making a task, and the task from the child's side. The "?" (and F1) on the
-     "For mentors" page opens this tab, since a mentor there needs exactly this.
+     "For teachers" page opens this tab, since a teacher there needs exactly this.
   6. **About Tapko**: the intro, the privacy promise, data and one bullet with the open
      GoatCounter address (we hide nothing: anyone sees the same usage data we do) and the visits
      recorded so far, how it teaches, links, the code and a bug report. Links are in the app's

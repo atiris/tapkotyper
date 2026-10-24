@@ -27,7 +27,7 @@ test.describe('a phone without a keyboard', () => {
       await expect.poll(() => screenOf(page)).toBe(route.startsWith('#/help') ? 'help' : 'start');
     }
     await page.evaluate(() => { location.hash = '#/'; });
-    await page.locator('.teacher-big', { hasText: 'Pre mentorov' }).tap();
+    await page.locator('.teacher-big', { hasText: 'Pre učiteľov' }).tap();
     await expect(page.locator('.teacher-screen')).toBeVisible();
     await page.goBack();
     await expect(gate).toBeVisible();
@@ -81,7 +81,7 @@ test('the corner by width: the round buttons, then the Menu', async ({ page }) =
   await menu.click();
   await expect(menu).toHaveAttribute('aria-expanded', 'true');
   const items = page.locator('.corner-menu-panel [role=menuitem]');
-  await expect(items).toHaveText(['Jazyk: Slovenčina', 'Pre mentorov', /^Zvuk/, 'Celá obrazovka', /režim$/, 'Pomoc']);
+  await expect(items).toHaveText(['Jazyk: Slovenčina', 'Pre učiteľov', /^Zvuk/, 'Celá obrazovka', /režim$/, 'Pomoc']);
   await expect(items.first()).toBeFocused();
   await page.keyboard.press('Escape');
   await expect(page.locator('.corner-menu-panel')).toHaveCount(0);
@@ -91,7 +91,7 @@ test('the corner by width: the round buttons, then the Menu', async ({ page }) =
   await page.mouse.click(8, 600);
   await expect(page.locator('.corner-menu-panel')).toHaveCount(0);
   await menu.click();
-  await items.filter({ hasText: 'Pre mentorov' }).click();
+  await items.filter({ hasText: 'Pre učiteľov' }).click();
   await expect(page.locator('.teacher-screen')).toBeVisible();
 });
 

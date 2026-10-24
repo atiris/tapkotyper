@@ -175,8 +175,8 @@ export function button(label: string | Node, onClick: () => void, cls = 'btn', i
 }
 
 /** The round close button of dialogs and cards. */
-export function closeButton(onClick: () => void): HTMLButtonElement {
-  return h('button', { class: 'modal-x', type: 'button', 'aria-label': 'close', onClick: () => onClick() }, icon('close'));
+export function closeButton(onClick: () => void, label?: string): HTMLButtonElement {
+  return h('button', { class: 'modal-x', type: 'button', 'aria-label': label ?? 'close', tip: label, onClick: () => onClick() }, icon('close'));
 }
 
 /** The close function of every open dialog, by its backdrop. */

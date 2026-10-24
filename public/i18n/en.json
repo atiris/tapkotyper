@@ -36,7 +36,7 @@
       "text": "TapkoTyper teaches typing on a real keyboard. Connect a keyboard to this device by Bluetooth or USB and press any key on it."
     },
     "teacher": {
-      "title": "For mentors",
+      "title": "For teachers",
       "sub": "Scan QR codes and see the class results"
     },
     "slogan": [
@@ -62,7 +62,7 @@
     "layout": "Keyboard",
     "parentHint": "A parent can change everything later in the settings (the gear on the map).",
     "create": "Let's go!",
-    "nameHint": "Shown to your mentor in the results.",
+    "nameHint": "Shown to your teacher in the results.",
     "nickname": "Nickname",
     "nicknameHint": "Shown with your character in the game.",
     "nickMissing": "Please write your nickname.",
@@ -200,10 +200,11 @@
     "eyes": "Eyes on the screen, not on the keyboard.",
     "space": "Fingers on home keys, then press the space bar.",
     "spaceKey": "space bar",
-    "escHint": "Esc: back to the map"
+    "close": "Close and start (Esc)"
   },
   "newKey": {
-    "title": "New key “{key}”",
+    "title": "New key",
+    "skip": "Skip the key practice (Esc)",
     "finger": "Press it with your {finger}, then go back home.",
     "typeIt": "Type {key} three times.",
     "shiftL": "Hold the left Shift with your left little finger and type the capital with your right hand. Type a capital {sample} three times.",
@@ -841,7 +842,7 @@
     "overallTitle": "All progress",
     "overallCaption": "All my statistics",
     "exerciseCaption": "Exercise statistics: {title}",
-    "exercisesEmpty": "No exercise yet. Exercises from a mentor are listed here.",
+    "exercisesEmpty": "No exercise yet. Exercises from a teacher are listed here.",
     "exerciseLine": "{min} min, accuracy {acc} %, rhythm {cpm}",
     "exerciseOpen": "Not finished yet",
     "exerciseCode": "QR code",
@@ -1112,7 +1113,7 @@
     },
     "nickname": "Nickname",
     "nicknameHint": "Shown with the character; the game calls the typist by it.",
-    "childNameHint": "Shown to the mentor in the results.",
+    "childNameHint": "Shown to the teacher in the results.",
     "nickMissing": "The nickname cannot be empty.",
     "wordLang": "Word language",
     "wordLangHint": "Words in the levels. The game language stays as it is.",
@@ -1263,7 +1264,7 @@
       "Every key has its finger; the on-screen keyboard and hands show which one.",
       "Accuracy comes first; speed is only shown as a personal trend.",
       "Weak keys appear more often, and short breaks keep sessions healthy.",
-      "It is played on a real keyboard; a phone or tablet needs a keyboard connected. A mentor with a phone and no keyboard can still scan the results."
+      "It is played on a real keyboard; a phone or tablet needs a keyboard connected. A typing teacher or a parent with a phone and no keyboard can still scan the results."
     ],
     "creditsTitle": "Links",
     "credits": "Open source under the MIT license. Fonts: Lexend, Atkinson Hyperlegible and OpenDyslexic (SIL Open Font License).",
@@ -1276,7 +1277,7 @@
       "typing": "Typing",
       "progress": "Progress",
       "settings": "Settings",
-      "mentoring": "Mentoring",
+      "mentoring": "For teachers and parents",
       "about": "About Tapko"
     },
     "typeTitle": "How to type",
@@ -1323,7 +1324,7 @@
       "Just typing: type anything, you walk through a world you choose and see what you typed.",
       "Me and my wardrobe: pick your character and nickname and dress up in the things you unlocked.",
       "Rescue missions and Little friends: they appear after you finish your first story.",
-      "Today's task: when your mentor sends a task, you find it on the card. When it is done, you hand it in."
+      "Today's task: when your teacher sends a task, you find it on the card. When it is done, you hand it in."
     ],
     "progressTitle": "My progress",
     "progress": [
@@ -1332,12 +1333,15 @@
       "Each story row shows its worlds: finished ones in colour, the rest grey, and the stars of that story.",
       "My progress has three tabs: Progress, Keys and Exercises.",
       "Keys shows which keys go well and which to practise. You can start practice right from there.",
-      "A **QR code** shows your progress or an exercise to your mentor: they just take a photo of it."
+      "A **QR code** shows your progress or an exercise to your teacher: they just take a photo of it."
     ],
-    "moreTitle": "Rescue mission and badge",
+    "moreTitle": "Rescue mission, target range and badge",
     "more": [
       "Rescue mission: a short task where you help a little friend. It opens when you finish the first story, and you find it on the map.",
-      "Badge: you get one for every finished world. The more stars you collect in that world, the nicer it is: bronze, silver, gold."
+      "Badge: you get one for every finished world. The more stars you collect in that world, the nicer it is: bronze, silver, gold.",
+      "Target range: when you finish a world, a target appears on the map next to its big challenge. Tapko throws funny things at the target and you type the words on the rings they fly through. You practise the letters you do not type accurately enough yet.",
+      "Type every word in time and without a mistake and you hit the middle. A mistake makes the thing fly a little lower, and after three it falls to the ground. Nothing bad happens, the next one comes.",
+      "Every world has a rare thing of its own at the range. Hit it in the middle and throw to the end, and it joins your collection. Then **Enter** puts it in Tapko's paw instead of the thing that is there."
     ],
     "playTitle": "How to play",
     "play": [
@@ -1356,11 +1360,11 @@
       "New letters come when the old ones go well. Some levels and stories open only when you know enough letters.",
       "When you miss a letter, practise it in Own practice."
     ],
-    "taskTitle": "A task from your mentor",
+    "taskTitle": "A task from your teacher",
     "task": [
-      "Your mentor can send you a task as a link. Open it and choose who does it.",
+      "Your teacher can send you a task as a link. Open it and choose who does it.",
       "On the map you see Today's task. Type until the time is up.",
-      "When it is done, press Hand in and send your mentor the **result link**."
+      "When it is done, press Hand in and send your teacher the **result link**."
     ],
     "settingsIntro": "The settings are for parents. They open with the gear on the map. Until you **lock them with a password**, one question opens them.",
     "settings": {
@@ -1385,8 +1389,8 @@
         "The game asks the question before a level and tells the answer once the rule is met."
       ],
       "task": [
-        "For mentors: make a task with words or a text and a length. You get a link and a QR code.",
-        "Typists open the link and, when done, send you a result link. You see the results with the For mentors button on the start page."
+        "For typing teachers and parents: make a task with words or a text and a length. You get a link and a QR code.",
+        "Typists open the link and, when done, send you a result link. You see the results with the For teachers button on the start page."
       ],
       "keys": [
         "Automatic: keys come one by one, starting from the home row F and J. This is best.",
@@ -1394,7 +1398,7 @@
       ],
       "dashboard": [
         "How each key goes, accuracy and rhythm over time, time per day and the levels finished.",
-        "By the summary, on the right, are the **QR code of all my progress** for the mentor and the writer's **certificate** with the results, ready to print."
+        "By the summary, on the right, are the **QR code of all my progress** for the teacher and the writer's **certificate** with the results, ready to print."
       ],
       "data": [
         "Everything is stored **only in this browser**. When the browser's data is cleared or the computer breaks, the progress is lost unless you have a backup.",
@@ -1412,7 +1416,7 @@
     ],
     "mentorTitle": "Results and QR codes",
     "mentor": [
-      "Open the **For mentors** page with the chart icon at the top right of the start page. Results are stored only in this browser.",
+      "Open the **For teachers** page with the chart icon at the top right of the start page. Results are stored only in this browser.",
       "Scanning is fastest: type a group (for example 5A), press **Scan QR** and walk around the room. The camera reads several QR codes at once and puts every new result into this group.",
       "A typist shows the QR code in My progress or after handing in a task. Without a camera, paste or open the **result link**.",
       "A **set** is the results of one group that came together: one camera scan, or links added within **20 minutes** of the first. The **Groups** tab shows each group's sets; click a day to see the set's typists, and download it all as CSV.",
@@ -1542,7 +1546,7 @@
     "closeByClick": "Close by clicking anywhere"
   },
   "teacher": {
-    "title": "For mentors",
+    "title": "For teachers",
     "intro": "Type a **group** (for example 5A) and press **Scan QR**. Every QR code read goes into that group, so a class's results stay **together** and can be filtered. The details are in **Help** (?).",
     "paste": "Result link",
     "pastePlaceholder": "Paste a result link",
@@ -1719,7 +1723,7 @@
       "setButton": "Send the set",
       "all": "The whole history",
       "new": "Only since the last send",
-      "file": "On the computer, open **{name}** on the For mentors page, on the **Files** tab.",
+      "file": "On the computer, open **{name}** on the For teachers page, on the **Files** tab.",
       "share": "Share the file",
       "save": "Save to the phone"
     },
@@ -1774,9 +1778,9 @@
     "doneToday": "Task done!",
     "handIn": "Hand in",
     "handInTitle": "Hand in the task",
-    "handInText": "Send this link to your mentor, for example by e-mail or your school app.",
+    "handInText": "Send this link to your teacher, for example by e-mail or your school app.",
     "checksumNote": "The link holds the name, task, time, accuracy, rhythm and the five weakest keys. The checksum finds damaged links, not cheating.",
-    "doneLine": "Task “{title}” is done. Hand it in to your mentor.",
+    "doneLine": "Task “{title}” is done. Hand it in to your teacher.",
     "leftLine": "Task “{title}”: {n} min left.",
     "group": "Group (optional)",
     "intro": "A task is a link. Send it to the typists (for example in your school app); whoever opens it picks a player and sees Today's task on the map. When it is done, the typist sends you a result link.",
@@ -1794,7 +1798,7 @@
     "none": "This player has no tasks yet.",
     "bigCode": "Show big code",
     "groupPlaceholder": "For example: 5.A",
-    "groupHint": "The mentor's table groups results by it.",
+    "groupHint": "The teacher's table groups results by it.",
     "legendNew": "New task",
     "legendList": "Tasks of {name}"
   },
@@ -2214,15 +2218,18 @@
         "launch": [
           "Toilet roll away!",
           "Roll out!",
-          "Paper missile!"
+          "Paper missile!",
+          "This paper is not for writing."
         ],
         "sound": [
           "Fwoosh!"
         ],
         "hit": [
           "Flush and wash your hands!",
-          "That's a month's supply!",
-          "So soft!"
+          "Where's the toilet?",
+          "So soft!",
+          "I don't need to do a number two!",
+          "Thanks, but I only had a wee."
         ]
       },
       "candle": {

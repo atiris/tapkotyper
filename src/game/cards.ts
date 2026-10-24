@@ -5,7 +5,7 @@ import type { Profile, Surprise } from '../storage/schema';
 import { surpriseCount } from './own-content';
 import type { Style } from './typing';
 import { type KeyboardGuide, fingerChip } from '../ui/keyboard-guide';
-import { button, h } from '../ui/dom';
+import { button, closeButton, h } from '../ui/dom';
 import { tapkoElement } from '../gfx/tapko';
 import { imageUrl } from '../gfx/assets';
 import { SHIFT_L, SHIFT_R, SPACE } from '../learning/lessons';
@@ -99,33 +99,32 @@ export function postureContent(line?: string, story?: string | null): HTMLElemen
 /**
  * Get-ready card before every adventure, with the level's story line when it has one, the session's preparation tip when one is due
  * and the question of a parent's surprise asked in this run (with what is still left when it
- * counts) and a note on the run when one is due; the space bar or Enter (or a tap on the
- * space bar's drawing) opens the adventure, Escape cancels it.
+ * counts) and a note on the run when one is due; the space bar, Enter or Escape (or a tap on the
+ * space bar's drawing or the close button) closes it and opens the adventure.
  */
-export function showPosture(host: HTMLElement, p: Profile, tip?: string, surprise?: Surprise | null, note?: string, story?: string | null): Promise<'start' | 'cancel'> {
+export function showPosture(host: HTMLElement, p: Profile, tip?: string, surprise?: Surprise | null, note?: string, story?: string | null): Promise<void> {
   return new Promise((resolve) => {
-    const close = (how: 'start' | 'cancel') => {
+    const close = () => {
       stop();
       overlay.remove();
-      resolve(how);
+      resolve();
     };
-    const space = h('button', { class: 'space-key', type: 'button', 'aria-label': t('posture.space'), onClick: () => close('start') }, t('posture.spaceKey'));
+    const space = h('button', { class: 'space-key', type: 'button', 'aria-label': t('posture.space'), onClick: close }, t('posture.spaceKey'));
     const card = h('div', { class: 'card posture-card' },
+      closeButton(close, t('posture.close')),
       postureContent(tip, story),
       surprise ? surpriseAsk(surprise.q) : null,
       surprise ? surpriseLeft(p, surprise) : null,
       note ? h('p', { class: 'hint style-note' }, note) : null,
       h('p', { class: 'space-label' }, t('posture.space')),
-      space,
-      h('p', { class: 'hint' }, t('posture.escHint')));
+      space);
     const overlay = h('div', { class: 'overlay' }, card);
     const onKey = (e: KeyboardEvent) => {
       if (e.repeat || (e.key !== ' ' && e.key !== 'Enter' && e.key !== 'Escape')) return;
       e.preventDefault();
       e.stopPropagation();
-      if (e.key === 'Escape') return close('cancel');
       audio.sfx('pop');
-      close('start');
+      close();
     };
     const stop = captureKeys(overlay, onKey);
     host.append(overlay);
@@ -170,21 +169,20 @@ export function showNewKey(host: HTMLElement, key: string, layout: Layout, guide
   return new Promise((resolve) => {
     const chip = fingerChip(layout, key);
     const dots = h('div', { class: 'dots' }, h('span'), h('span'), h('span'));
-    const big = h('div', { class: `big-key ${key === SPACE ? 'wide' : ''}` }, bigKeyText(key));
+    const big = h('span', { class: `big-key small ${key === SPACE ? 'wide' : ''}` }, bigKeyText(key));
     const sample = cardSample(key);
     const shift = key === SHIFT_L ? 'ShiftLeft' : key === SHIFT_R ? 'ShiftRight' : null;
     // The finger name sits inside the sentence, highlighted in the finger's color.
     const [before, after] = t('newKey.finger', { finger: '\u0000' }).split('\u0000');
     const card = h('div', { class: 'card newkey-card', 'data-sample': sample },
-      h('h2', {}, t('newKey.title', { key: bigKeyText(key) })),
+      closeButton(() => done(), t('newKey.skip')),
+      h('h2', {}, big, t('newKey.title')),
       h('div', { class: 'newkey-body' },
         tapkoElement(p.companion, 'happy', 120),
         h('div', { class: 'newkey-how' },
-          big,
           chip ? h('p', { class: 'newkey-finger' }, before, chip, after ?? '') : null,
           h('p', { class: 'hint' }, cardHint(key)),
-          dots)),
-      button(`${t('common.skip')} (Esc)`, () => done(), 'btn small ghost'));
+          dots)));
     const overlay = h('div', { class: 'overlay' }, card);
     host.append(overlay);
     guide.show(sample);

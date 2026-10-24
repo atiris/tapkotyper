@@ -124,15 +124,17 @@ test('guest progress is forgotten in a new browser context', async ({ page, brow
   await other.close();
 });
 
-test('Escape on the get-ready card goes back to the map', async ({ page }) => {
+test('Escape closes the get-ready card like the space bar and starts the level', async ({ page }) => {
   await page.goto('./');
   await page.locator('.start-screen').waitFor();
   await page.keyboard.type('supertapkotyper', { delay: 40 });
   await page.locator('.map-side .btn.primary').click();
   await skipStories(page);
   await page.locator('.posture-card').waitFor();
+  await expect(page.locator('.posture-card .modal-x')).toHaveAttribute('data-tip', 'Close and start (Esc)');
   await page.keyboard.press('Escape');
-  await expect(page.locator('.map-screen')).toBeVisible();
+  await expect(page.locator('.posture-card')).toHaveCount(0);
+  await expect(page.locator('.level-screen')).toBeVisible();
 });
 
 test('the main gate wants its whole code without a mistake and starts again after one', async ({ page }) => {

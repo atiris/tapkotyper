@@ -15,8 +15,10 @@
 - The word list language is chosen per player, apart from the interface language
   ([words](../learning/words.md)).
 - **Terms**: the one who types is the **pisateľ** / **typist**; the one who receives results
-  (a teacher, a parent, a coach) is the **mentor** ("Pre mentorov" / "For mentors"). No text
-  says "dieťa", "deti", "žiak" or "učiteľ", nor "child", "kid" or "teacher"; a sentence is
+  is the **učiteľ** / **teacher** ("Pre učiteľov" / "For teachers"); where the parent matters
+  too (who makes tasks, who scans results, the help section) it says "učiteľ písania alebo
+  rodič" / "a typing teacher or a parent". No text says "dieťa", "deti", "žiak" or "mentor",
+  nor "child", "kid" or "mentor"; a sentence is
   rephrased ("tvoje", "hráč") where it reads better. Slovak never uses a gendered
   second-person past tense. A unit test guards both dictionaries. Code names and addresses
   (`teacher`, `#/teacher/child/<id>`) stay, nobody reads them.
@@ -26,4 +28,6 @@
 - Walking the browser's whole list respects a visitor who prefers a language we do not have
   but reads a second one we do.
 - "Dieťa" talks about the player instead of to them, and older players, adults included, use
-  the game; "učiteľ" leaves out the parent or coach who receives results.
+  the game.
+- "Mentor" is a word nobody uses at school or at home; everyone understands "učiteľ", and the
+  parent is named where a parent really does the same job.

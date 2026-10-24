@@ -16,7 +16,7 @@
 - Data: players' profiles in `localStorage`, versioned schema, export/import as `.json`;
   they are small and the game reads them synchronously everywhere.
   Tasks, results and moving a player travel as links with compressed data in the address
-  hash. A mentor's collected results live in their own IndexedDB database
+  hash. A teacher's collected results live in their own IndexedDB database
   (`tapkotyper-mentor`): a year of hand-ins outgrows localStorage's few shared megabytes,
   and IndexedDB writes one record at a time instead of one big blocking JSON on every scan.
   The browser is asked to keep that data persistently; where IndexedDB is blocked (some

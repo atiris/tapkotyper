@@ -14,10 +14,12 @@
   tip when one is due, else one random reminder (sit straight, feet on the floor, wrists
   relaxed, index fingers on the `F` and `J` bumps, eyes on the screen). It asks the child
   to put the fingers on the home keys and press the space bar, shown as a drawn key; the
-  space bar (or a tap on the drawing) starts, Esc goes back to the map. It is the only card
+  space bar, Esc, a tap on the drawing or the round X (its tip says so) closes it and starts:
+  the card is only a reminder, so every way out of it is the start. It is the only card
   before a level, apart from new keys.
-- A new key is introduced with the character on its own card, with the finger's name highlighted in
-  that finger's color; game objects (the character's fan) appear only when play starts. The space
+- A new key is introduced with the character on its own card, compact enough to keep the keyboard
+  in sight: the key and "Nový kláves" in one heading line, the finger's name highlighted in
+  that finger's color; the round X (its tip: skip the key practice, Esc) or Esc skips it; game objects (the character's fan) appear only when play starts. The space
   bar is pressed by a thumb; a Shift card names its hand and asks for three capitals of the
   other hand. For a capital the guide lights the Shift of the other hand. The keyboard has
   an Enter key at the end of the home row, pressed by the right little finger; the guide

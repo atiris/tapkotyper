@@ -4,13 +4,13 @@
 - **A real keyboard is needed.** A phone or tablet without a mouse, trackpad or keyboard
   (touch only) shows the start page with a big orange button **"Chýba klávesnica"** ("TapkoTyper
   potrebuje skutočnú klávesnicu", with a worried mouse holding a broken keyboard) instead of the
-  players, like the mentors' button. A tap with a keyboard there by now opens the players; else
+  players, like the teachers' button. A tap with a keyboard there by now opens the players; else
   a window "Pripoj klávesnicu" says the game teaches typing on a real keyboard and to connect one
   to this device by Bluetooth or USB and press any key. Players, the guest, a new player and
   import stay hidden.
 - Pressing any key of a connected keyboard lifts the card at once and for the rest of the
   session (the card has no text field, so an on-screen keyboard cannot lift it).
-- Under it a big orange **"Pre mentorov"** button with the teacher's own animal (a
+- Under it a big orange **"Pre učiteľov"** button with the teacher's own animal (a
   turtle with glasses and a mortar board, not one of the players' animals) opens the teacher
   view; the same turtle greets an empty teacher view.
 - Until a key is seen only the start page, the teacher view (also from a result link) and

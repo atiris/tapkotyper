@@ -9,7 +9,7 @@
 - The new player form is a window closed with the round X: "pick your character", the nine
   animals as a 3 x 3 grid, with beside it (below it on a narrow screen), in this order: the
   **nickname** (required, up to 16 characters; hint: shown with the character in the game),
-  the **typist's name** (optional; hint: shown to the mentor in the results), the interface
+  the **typist's name** (optional; hint: shown to the teacher in the results), the interface
   language, the word language and the keyboard layout. Without a nickname the form says so.
 - A new player lands on the map, not in a level, so a parent can set things up first. Above
   the stories the narrator greets the typist once by nickname ("This is your character in
@@ -24,8 +24,8 @@
   everywhere (start card, map greeting and welcome, encouragement lines, break, story scenes,
   results, wardrobe, the settings switcher, task, delete and move texts, QR code captions,
   export file name, import texts, the printed card). The real name is optional and only for
-  the **mentor**: a result code carries it, or the nickname when it is empty, and the
-  mentor's table shows what it receives. Older players without a nickname get one from their
+  the **teacher**: a result code carries it, or the nickname when it is empty, and the
+  teacher's table shows what it receives. Older players without a nickname get one from their
   name.
 - **Word language**: each player has a word language beside the interface language, so a
   Slovak typist can practise English words with a Slovak interface and the other way round
@@ -51,7 +51,7 @@
 ## Why
 - Families and classrooms share devices; export/import gives portability without accounts.
 - The nickname is short and fits next to the character; a real name is only needed by the
-  mentor, and some players do not want to give it.
+  teacher, and some players do not want to give it.
 - Learners of a second language want its words without switching the whole interface.
 - The first screen after creating a player is shared by the parent and the child: the parent
   may adjust settings, the child needs one clear way to start.

@@ -12,7 +12,7 @@
   shows **Úloha na dnes** as its first card until the minutes are played; a story task
   may take several levels, and leaving a level early does not count it.
 - **Hand-in:** after the task, the child gets **Odovzdať**: a result link and the short
-  instruction to send it to the mentor (Edupage, e-mail). It holds the player's real name
+  instruction to send it to the teacher (Edupage, e-mail). It holds the player's real name
   (or the nickname when there is none),
   the task, the date, minutes played, accuracy, rhythm and the five weakest keys, plus a
   checksum. The UI says plainly that the checksum finds damaged copies, not cheating.
@@ -55,7 +55,7 @@
   Results come in three ways: scanning the result QR codes on the children's screens with the
   camera, pasting a link, or opening a link.
 - The page itself stays short: one line on why to type a group (a class's results stay
-  together and can be filtered), the key words in bold, and a pointer to the help's Mentoring
+  together and can be filtered), the key words in bold, and a pointer to the help's teachers and parents
   tab, where everything else is explained; a teacher in a classroom reads the page at a glance.
 - **Camera scan:** the teacher types the group being scanned (a class), one tap starts a
   continuous scan, and every new valid code is written into that group at once
@@ -92,11 +92,11 @@
   Opening the link imports the player and asks before replacing one with the same id.
 
 ## Why
-- A mentor wants to go back to a class's scan from last week and see how each child is getting
+- A teacher wants to go back to a class's scan from last week and see how each child is getting
   on over time; keeping every hand-in in sets keeps that progress.
-- A mentor scans with a phone in the classroom and reads the statistics on a computer at home;
+- A teacher scans with a phone in the classroom and reads the statistics on a computer at home;
   one file carries the results without a server, and duplicates never pile up.
-- A year of history is enough for a school year; the 7 days let a mentor look at old results
+- A year of history is enough for a school year; the 7 days let a teacher look at old results
   just loaded before they go.
 - A teacher scans walking through a classroom with a phone in one hand: the camera and the way
   out must be on screen without scrolling. A nine-column table is unreadable on a phone;

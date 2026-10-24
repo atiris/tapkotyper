@@ -30,7 +30,7 @@
 - The **typist** section shows the character's picture (with its accessories) beside the
   nickname (required, up to 16 characters; a blank one is not saved and the field says so),
   then the character kind picked from a picture list, the typist's name (optional; hint:
-  shown to the mentor in the results; blank clears it), the interface language, the **word
+  shown to the teacher in the results; blank clears it), the interface language, the **word
   language** and the keyboard layout. A kind picked here is granted at once.
 - The **progress** tab starts with the same picture and the icon and number summary of the
   typist's "My progress" (with one more chip there: letters typed in the last 14 calendar
@@ -94,7 +94,7 @@
 - Small children (up to about 10) need a few words on how to go on; older ones find them in
   the way, so the parent decides per profile. A sentence for the parent ("the gear is for
   you") does not belong on a child's screen; help says it.
-- Parents and mentors want control and visible progress; a flat list of all levels is
+- Parents and teachers want control and visible progress; a flat list of all levels is
   unreadable, and cards that repeat the summary add nothing; printable cards avoid accounts
   and rosters ([research](../../.research/features/parent-dashboard.md)).
 - A real reward (a treat, a trip, a game evening) ties the game to the child's life

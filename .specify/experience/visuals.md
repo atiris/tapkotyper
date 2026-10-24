@@ -70,7 +70,7 @@
   meadow it is a little quieter and lights up yellow-white. The about and teacher ways in are round buttons at
   the top right, so they stay reachable with any number of players.
 - A phone without a keyboard: the logo face above the title, the slogan, a short text, then the
-  mentors' button as the main orange one and the keyboard button under it.
+  teachers' button as the main orange one and the keyboard button under it.
 - **The start page's sky and meadow.** A repeating meadow strip along the bottom and a few sky
   pieces in the top left corner, never behind text: the sun and two clouds by day, the moon and
   three stars by night. Farther pieces are softer (blurred more). By day three butterflies (one of

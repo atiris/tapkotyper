@@ -8,10 +8,14 @@ One set of rules for where things sit and how they behave, so every screen feels
    window edge on every screen. There are only two placements: the **standard** one (all screens,
    windows and the map) and the **compact play bar** (inside a level, where they join the bar of
    the play controls). A button never moves between two screens of the same kind.
-   **By width** (every screen but a level): from 900 px all buttons and the SK/EN switch;
-   from 600 px to 899 px the language becomes one round button showing SK or EN (a click goes
-   to the next language); below 600 px one round **Menu** button opens a panel with each
-   button as its round picture and its label (a screen's own buttons too). The panel closes
+   Every screen with the standard placement also has the **language** button and the **theme**
+   button (purple, controls), the theme one between the language and help. The language button
+   shows the international language symbol and opens a short list of the languages by their own
+   names, the current one marked (arrows move, Enter picks, Escape or a click outside closes).
+   The theme button shows a moon in light and a sun in dark. Neither is in a level's play bar.
+   **By width** (every screen but a level): from 600 px all buttons in the row; below 600 px one
+   round **Menu** button opens a panel with each button as its round picture and its label (a
+   screen's own buttons too, the language as an item that opens the same list). The panel closes
    with Escape, a click outside or after an action. The start page's title **TapkoTyper**
    always fits on one line under the buttons, from 320 px up.
 2. **Leaving.** A page you navigated to (settings, help, teacher view, wardrobe, friends) closes with
@@ -76,3 +80,6 @@ One set of rules for where things sit and how they behave, so every screen feels
   children's game; one tooltip gives one look. A bar that stays keeps the way back in sight.
 - Five round buttons and a language switch do not fit beside a title on a phone; folding them
   into one Menu keeps every control one tap away and the title whole.
+- A language switch with two letter chips does not grow past two languages; one button with the
+  common language symbol and a list of native names does, and a visitor who reads neither
+  language still finds it.

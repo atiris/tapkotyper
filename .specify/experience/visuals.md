@@ -38,13 +38,46 @@
 - The world cards of a story stay in one row while the window is at least about 1000 px
   wide (they shrink with the space, the side column narrows below 1300 px); in a narrower
   window they go three and two.
-- Small laptop screens (1366 x 768, 1024 x 600) never scroll on the start screen, the new-key
-  card or the get-ready card: children use small screens, and a scrolling card hides the
-  button they need. The start screen has the logo beside the title (the fox head of the browser tab icon and the installed app's icon, drawn with thinner lines for its larger size), up to five profile cards
-  per row (more wrap in balanced rows, never one card alone), and the about and teacher
-  buttons among the round buttons at the top right so they stay reachable with any number
-  of profiles. The new-key card has its heading above Tapko, the finger guide beside Tapko and
-  Esc to skip. The get-ready card has the picture beside the text and always shows its button.
+- Small laptop screens (1366 x 768, 1024 x 600) never scroll on the start screen (up to five
+  players), the new-key card or the get-ready card: children use small screens, and a
+  scrolling card hides the button they need. The new-key card has its heading above Tapko, the
+  finger guide beside Tapko and Esc to skip. The get-ready card has the picture beside the text
+  and always shows its button.
+- **The start page** says what TapkoTyper is before anything else. From 900 px wide it has two
+  columns: on the left the title **TapkoTyper**, the slogan on exactly two lines ("Desať prstov, /
+  jedno veľké dobrodružstvo."), one sentence about the game and four short promises with green
+  icons (no ads and no account; data stays on the device, which opens the help's about tab;
+  the wardrobe and stars for effort; parents and mentors see the progress). On the right the card
+  "Kto sa dnes hrá?" with the logo face (the fox head of the browser tab icon) half above its top
+  edge. Narrower, one column: title, slogan, the card, then the text and the promises (the card
+  comes before the text on small screens). The title is live text drawn like the logo: a
+  dark-brown outline and soft gradients, orange "Tapko", green "Typer"; on dark a thin cream line
+  outside the outline, never a glow.
+- The card with no players: one line ("Stačí meno a vybrať si zvieratko."), the big orange
+  "Nový hráč", then trying without a profile and loading profiles. With players: the player
+  cards in a row (balanced rows from six, never one card alone), with the dashed "Nový hráč" card
+  while there are one to three; from four it is a button beside the other two. No footer:
+  "MIT · Atiris" (the code's licence and author) sits small and white at the bottom right of the
+  meadow and stays white on hover and focus. The about and teacher ways in are round buttons at
+  the top right, so they stay reachable with any number of players.
+- A phone without a keyboard: the logo face above the title, the slogan, a short text, then the
+  mentors' button as the main orange one and the keyboard button under it.
+- **The start page's sky and meadow.** A repeating meadow strip along the bottom and a few sky
+  pieces in the top left corner, never behind text: the sun and two clouds by day, the moon and
+  three stars by night. Farther pieces are softer (blurred more). By day three butterflies (one of
+  each kind) flutter low over the meadow, by night a few fireflies glow there. Switching the theme
+  plays a short sped-up night and day (about 2.5 s): the old light sets to the right along an arc
+  while the new one rises from the left along the same arc, stars and fireflies fade or sink into
+  the grass, butterflies settle or fly up, and the sky and meadow cross-fade. With reduced motion
+  it is a short cross-fade and nothing moves. Only the start page has this scene.
+- **Dark theme** ("dark enough, not black"): a deep violet night sky as the page background, dark
+  violet paper for panels and cards, cream text. It follows the system's setting until the
+  player picks one on the theme button, and then stays on this device. Everything around the
+  game follows it: panels, cards, dialogs, tabs, tooltips, inputs, scrollbars, menus, charts, the
+  keyboard guide, a level's top bar, cards and bars. Pictures stay as drawn: the level
+  backgrounds, the sprites and characters (their dark outlines work on dark). The certificate
+  stays light, as it is printed. The meaning colors and the brand orange stay; a shade that is
+  too dark for text on dark gets a lighter variant.
 - In a level Tapko stands at the bottom left, or the scene draws him itself: walking as
   the hero, or seated in its vehicle (the rocket's window). His shouts and bubble then point
   to where he is.
@@ -67,3 +100,7 @@
   a picture to the bottom part of an image, but draws a full close-up strip well.
 - A strip whose ground filled most of the picture showed an empty plane behind its objects;
   objects standing on a low ground band with nothing behind them read as a real foreground.
+- The old start page was plain: it did not say what the game is, lost its logo on small screens,
+  and its title did not look like the logo. A first visitor decides there whether to stay.
+- Children and parents often play in the evening; a light page then glares. A short animated
+  night and day makes the switch a small joy instead of a setting.

@@ -9,9 +9,13 @@
   chosen font. Lexend draws l and I alike, so on a key cap a learner could not tell which key
   is meant.
 - Colorblind-safe finger colors with patterns or labels; a high contrast mode.
+- **A dark theme** for every screen: every text reaches WCAG AA contrast on its background in
+  dark as in light. It follows the system's setting until a choice is stored. The high contrast
+  mode keeps its own black on white and wins over the theme.
 - Text written on a finger color (the finger name in statistics, the label of the next key) reaches WCAG AA
   contrast; a color too light or too mid-tone for it is darkened a little.
-- A reduce motion option (and `prefers-reduced-motion` is respected).
+- A reduce motion option (and `prefers-reduced-motion` is respected): the start page's sky then
+  only cross-fades between day and night, and its pieces stay still.
 - Fully playable with sound off; every sound cue has a visual counterpart.
 - **The whole game by keyboard, no mouse needed.** From the start page through a level, its
   results and back to the map, every step goes on with Enter or the space bar: each screen,

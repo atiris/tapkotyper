@@ -8,11 +8,9 @@
 - The help page's about tab says that, as everything is only on the device, a forgotten settings password
   or lost progress cannot be recovered by us, so progress should be exported now and then.
 - A short, plain statement of this on the start screen and the help page's about tab, for parents.
-  On the start screen it is one quiet line, never underlined: "no ads and no tracking of your
-  data" (the visit counter does count visits), "your data stays on your device" (opens the about
-  tab), the open visit count (linked to the public GoatCounter page) and "MIT Atiris" (linked to
-  the code). A narrow screen shows only "no ads, only on your device", which opens the about
-  tab, so it always stays one line.
+  On the start screen it is two of its promises: "no ads and no account" and "your data stays on
+  your device" (opens the about tab). The code's licence ("MIT · Atiris", linked to the code) sits
+  small at the bottom right; the visit count is only on the about tab.
 - Nothing leaves the browser except what a person copies themselves: task, result and
   move links carry their data in the address hash, which browsers never send to the server
   ([teacher links](../profiles/teacher-links.md)). A teacher's collected results stay in this

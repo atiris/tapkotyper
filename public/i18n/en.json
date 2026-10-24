@@ -2157,7 +2157,9 @@
         "hatch": [
           "Look, a chick!",
           "Peep! Are you my mom?",
-          "Careful, baby on board!"
+          "Can I be its mommy?",
+          "A miracle!",
+          "Tiny, cute and yellow."
         ],
         "hatchedCall": [
           "It hatched!",
@@ -2176,7 +2178,7 @@
           "Tick-tock, off you go!"
         ],
         "sound": [
-          "Brrring!"
+          "Brrrrring!"
         ],
         "hit": [
           "Five more minutes!",
@@ -2198,7 +2200,7 @@
         "hit": [
           "Ow, prickly!",
           "Ouchie!",
-          "Now I'm a hedgehog!",
+          "Did I catch a hedgehog?",
           "Who's going to pull out all these spines?"
         ],
         "expect": [

@@ -2159,7 +2159,9 @@
         "hatch": [
           "Aha, kuriatko!",
           "Píp! Ty si moja mama?",
-          "Pozor, mláďatko!"
+          "Môžem byť jeho mamička?",
+          "Zázrak!",
+          "Maličké, milučké, žltučké."
         ],
         "hatchedCall": [
           "Vyliahlo sa!",
@@ -2179,7 +2181,7 @@
           "Tik-tak, leť!"
         ],
         "sound": [
-          "Crrrn!"
+          "Cŕŕŕŕn!"
         ],
         "hit": [
           "Ešte 5 minút!",
@@ -2202,7 +2204,7 @@
         "hit": [
           "Jaj, pichá!",
           "Auvajs!",
-          "Som ako ježko!",
+          "Chytil som ježka?",
           "Kto mi povyťahuje pichliače?"
         ],
         "expect": [

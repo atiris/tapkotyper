@@ -134,6 +134,23 @@ describe('target range', () => {
     expect(x < L.vw * 0.86 || y < VH * 0.46).toBe(true);
   });
 
+  it('the third bullseye in a row adds a streak line after the hit line', () => {
+    const L = fakeRuntime();
+    const mode = new AimMode(L);
+    mode.start();
+    for (let n = 0; n < 3; n++) {
+      typeRing(mode, L);
+      for (let stop = 0; stop <= RINGS; stop++) {
+        run(mode, L, 0.5);
+        typeRing(mode, L);
+      }
+      run(mode, L, n < 2 ? 2.5 : 0.5);
+    }
+    const said = vi.mocked(L.speak).mock.calls.filter(([who]) => who === 'target').map(([, text]) => text);
+    expect(tList('aim.lines.center')).toContain(said.at(-2));
+    expect(tList('aim.lines.streak3')).toContain(said.at(-1));
+  });
+
   it('one wrong key hits off the middle, and the target says the points of a near miss', () => {
     const L = fakeRuntime();
     const mode = new AimMode(L);

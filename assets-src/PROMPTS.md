@@ -90,6 +90,11 @@ Notes from real Gemini runs; add new ones here.
 - A sun with rays got uneven rays; for a calm sun ask for "a smooth perfect circle, no rays".
 - Pieces the page animates on their own (sun, clouds, moon, stars) are one picture each. A
   picture with pieces that do not touch can be cut apart locally (the moon and its stars).
+- A short sprite prompt ("a butterfly with pink wings and round spots") gives a plain, simple
+  picture. For a richer one describe the details (veins, cells, edge band, eye-spots, colors
+  in hex). Do not attach an older sprite as the model: the new one then barely differs.
+- "Silver" again failed (no picture); the screw worked with "blue-grey steel" hex shades and
+  "strictly front view, symmetrical, no face".
 
 ---
 
@@ -474,6 +479,8 @@ BG is `magenta color (#FF00FF)` unless the table says `green`, then use `green c
 | **Meadow** | | |
 | `obj-bee.jpg` | a chubby friendly bumblebee flying, smiling | magenta |
 | `obj-butterfly.jpg` | a friendly butterfly with blue and yellow wings, flying | magenta |
+| `obj-butterfly-2.jpg` | (start page, 2026-10-24) a friendly butterfly flying, seen from the side and slightly from the front, facing right: two big rounded upper wings and two smaller lower wings with soft scalloped tails, the far wings peeking out behind the near ones. Richly detailed wings: dark-brown veins divide each wing into many rounded cells; the cells are coral pink #F4A6A0 near the body, warm apricot #F8C79A in the middle and cream #FFF1D6 at the tips, each cell with a lighter soft highlight; a darker coral border along the wing edge with a row of small round cream dots; a small round eye-spot on each lower wing. A plump soft peach body with gentle stripes, a round head with big shiny friendly eyes, a small smile and rosy cheeks, two long curly antennae with round tips | green |
+| `obj-butterfly-3.jpg` | (start page, 2026-10-24) a cheerful, colorful peacock butterfly flying, seen from the side and slightly from the front, facing right: two big rounded upper wings and two rounded lower wings, the far wings peeking out behind the near ones. Bright, rich wings in warm red-orange #E8643C with a soft darker rim, and on every wing one big round eye-spot like a peacock feather: a deep blue #3F6FD1 ring around a sky-blue #9FD3F5 center with a yellow #F6D55C crescent and a small white highlight, outlined by a thin cream ring; small cream dots along the upper wing edge; a few dark-brown veins. A plump soft brown body with gentle stripes, a round head with big shiny friendly eyes, a small smile and rosy cheeks, two long curly antennae with round tips | green |
 | `obj-ladybug.jpg` | a round friendly ladybug with a happy face, flying with small wings | green |
 | `obj-fly.jpg` | a funny little housefly with big eyes and a smile, flying | magenta |
 | `obj-mouse.jpg` | a small grey mouse with big ears, running happily | magenta |
@@ -971,7 +978,7 @@ the side, alone and readable at a small size (it flies at about 46 px).
 | `obj-aim-target.jpg` | a round archery target made of soft red and cream rings with a golden center, painted on a wooden board, front view, no stand, no face | green | done 2026-10-23 |
 | `obj-aim-ring.jpg` | a tall oval soap-bubble ring floating upright, thin shimmering rainbow edge in pink, light blue and mint, empty and see-through in the middle, front view | green | done 2026-10-23 |
 | `obj-aim-pebble.jpg` | a single small smooth round grey pebble, no face | magenta | done 2026-10-23 |
-| `obj-aim-screw.jpg` | a single shiny silver screw standing upright, round head on top, no face | magenta | todo (2026-10-23: Gemini answered without a picture) |
+| `obj-aim-screw.jpg` | one big chunky screw standing upright, a round dome head with a single straight slot on top, below it a short thick shank with a few clear diagonal thread ridges and a blunt rounded tip. Blue-grey steel colors: base #8FA3B8, lighter highlights #C9D6E3 on the left, darker shade #5E7286 on the right. No face, no eyes, no arms, no legs. Strictly front view, symmetrical, not tilted | magenta | done 2026-10-24 ("silver" gave no picture on 2026-10-23) |
 | `obj-aim-fly.jpg` | a funny little housefly with big red eyes and clear wings, flying, side view, happy | magenta | done 2026-10-23 |
 | `obj-aim-tomato.jpg` | a single round ripe red tomato with a small green leafy top, no face | magenta | done 2026-10-23 |
 | `obj-aim-arrow.jpg` | a short wooden toy arrow with a soft rounded grey tip and red feathers, pointing to the right, no face | magenta | done 2026-10-23 |

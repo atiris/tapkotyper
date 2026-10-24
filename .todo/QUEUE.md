@@ -7,3 +7,4 @@ listed here is never run. Lines whose plan has moved to `.todo/.done/` are
 skipped, and the session that finishes a plan removes its line.
 
 
+- [P1] 61-start-page-and-dark-theme.md - first impression for every visitor; dark theme and the language button touch every screen, so it goes before other UI work

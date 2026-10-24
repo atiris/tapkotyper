@@ -2273,7 +2273,8 @@
         "name": "Boomerang",
         "launch": [
           "Boomerang away!",
-          "Go and come back!"
+          "Go and come back!",
+          "Off you go, far away!"
         ],
         "sound": [
           "Whoosh!"
@@ -2285,15 +2286,18 @@
         ],
         "caught": [
           "Got it!",
-          "Caught it!"
+          "Caught it!",
+          "You again?",
+          "Oh no, not again!"
         ]
       },
       "ice": {
         "name": "Ice cube",
         "launch": [
           "Ice cube away!",
-          "Something cool!",
-          "Chill out!"
+          "A cube for your drink!",
+          "Chill out!",
+          "Straight from the freezer."
         ],
         "sound": [
           "Clink!"
@@ -2329,7 +2333,7 @@
         "name": "Light bulb",
         "launch": [
           "Light bulb away!",
-          "Here's a bright idea!",
+          "An E27 screw-in bulb.",
           "Lights, go!"
         ],
         "sound": [
@@ -2369,14 +2373,14 @@
           "Flump!"
         ],
         "hit": [
-          "Please tell me it's unused!",
           "Biohazard!",
           "Bleurgh!",
           "Straight in the bin!"
         ],
         "expect": [
           "Oh, please, no!",
-          "Tell me it's clean!"
+          "Tell me it's clean!",
+          "I hope it is unused."
         ]
       },
       "cloud": {
@@ -2391,7 +2395,7 @@
         ],
         "hit": [
           "Precipitation!",
-          "Poof!",
+          "Soft as candy floss.",
           "Didn't feel a thing!",
           "Like cotton wool!"
         ]
@@ -2410,10 +2414,14 @@
           "A living ecosystem!",
           "I'm not eating that!",
           "Needs more sugar!",
-          "How many weeks old is this?"
+          "How many weeks old is this?",
+          "Mould!",
+          "I bet it was tasty a hundred years ago!"
         ],
         "expect": [
-          "What's that smell?"
+          "What's that smell?",
+          "That's from Queen Victoria's time.",
+          "A museum piece."
         ]
       },
       "bottle": {
@@ -2428,16 +2436,19 @@
         ],
         "hit": [
           "What am I, a baby?",
-          "The Milky Way!",
           "Yum!",
           "Burrrp!"
+        ],
+        "expect": [
+          "The Milky Way!"
         ]
       },
       "pacifier": {
         "name": "Pacifier",
         "launch": [
           "Pacifier away!",
-          "Shh, this one's for you!"
+          "Quiet, please!",
+          "No more crying!"
         ],
         "sound": [
           "Smack!"
@@ -2524,7 +2535,7 @@
         "launch": [
           "Fly, butterfly!",
           "Off you flutter!",
-          "Butterfly, go find the target!"
+          "Butterfly, fly to the target!"
         ],
         "sound": [
           "Flutter!"
@@ -2554,7 +2565,9 @@
           "Time to dust the corners!"
         ],
         "expect": [
-          "Not a spider!"
+          "Not a spider!",
+          "Is it Indian summer already?",
+          "Is that a tarantula?"
         ]
       },
       "hockey": {
@@ -2568,9 +2581,10 @@
         ],
         "hit": [
           "Slashing!",
-          "Offside!",
+          "High-sticking!",
           "Icing!",
-          "To the penalty box!"
+          "To the penalty box!",
+          "You're supposed to shoot the puck!"
         ]
       },
       "pillow": {
@@ -2585,14 +2599,21 @@
         "hit": [
           "Soft landing!",
           "Just a little nap!",
-          "Feathers everywhere!"
+          "Feathers everywhere!",
+          "Good night.",
+          "Sweet dreams."
+        ],
+        "expect": [
+          "Finally something for me.",
+          "I need a rest."
         ]
       },
       "chicken": {
         "name": "Rubber chicken",
         "launch": [
           "Rubber chicken away!",
-          "Bawk bawk!"
+          "Bawk bawk!",
+          "Fly, little hen!"
         ],
         "sound": [
           "Bawk!"
@@ -2600,7 +2621,8 @@
         "hit": [
           "Which came first, the chicken or the egg?",
           "Buk-buk-bawk!",
-          "What a silly chicken!"
+          "What a silly chicken!",
+          "This one won't lay me an egg."
         ]
       },
       "water-balloon": {
@@ -2615,7 +2637,8 @@
         "hit": [
           "I'm soaked!",
           "So refreshing!",
-          "Who forgot the umbrella?"
+          "Who forgot the umbrella?",
+          "No bath for me tonight."
         ]
       },
       "banana": {
@@ -2628,8 +2651,8 @@
           "Splat!"
         ],
         "hit": [
-          "Careful, I'll slip!",
-          "The monkeys would love this!",
+          "Peel it for me, please!",
+          "Will you throw a monkey next?",
           "Vitamin bomb!"
         ]
       },
@@ -2644,17 +2667,17 @@
           "Zap!"
         ],
         "hit": [
-          "A charged hit!",
+          "That charged me up!",
           "Full power!",
           "Short circuit!",
-          "Where's my plug?"
+          "I don't run on batteries!"
         ]
       },
       "magnet": {
         "name": "Magnet",
         "launch": [
           "Magnet away!",
-          "Attract!"
+          "Magnetic force!"
         ],
         "sound": [
           "Clunk!"
@@ -2684,7 +2707,7 @@
         "name": "Music note",
         "launch": [
           "Note away!",
-          "Sending a tune!",
+          "High C!",
           "Tra-la-la, fly!"
         ],
         "sound": [
@@ -2694,7 +2717,12 @@
           "Right on the beat!",
           "Out of tune!",
           "Now I'm singing!",
-          "La-la-la!"
+          "La-la-la!",
+          "An eighth note!"
+        ],
+        "expect": [
+          "Turn that radio down!",
+          "Do re mi fa!"
         ]
       },
       "frog": {
@@ -2725,8 +2753,9 @@
         ],
         "hit": [
           "I'm enchanted!",
-          "Did I turn into a frog? Phew, no!",
-          "A magic bullseye!"
+          "I'm magical!",
+          "A magic bullseye!",
+          "A magic moment!"
         ]
       },
       "ladybug": {

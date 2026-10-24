@@ -2279,7 +2279,8 @@
         "launch": [
           "Bumerang letí!",
           "Hádžem bumerang!",
-          "Leť a vráť sa!"
+          "Leť a vráť sa!",
+          "Odhadzujem ťa preč!"
         ],
         "sound": [
           "Švih!"
@@ -2291,15 +2292,18 @@
         ],
         "caught": [
           "Mám ho!",
-          "Chytené!"
+          "Chytené!",
+          "Znova si tu?",
+          "To snáď nie, zasa!"
         ]
       },
       "ice": {
         "name": "Kocka ľadu",
         "launch": [
           "Ľadová kocka letí!",
-          "Hádžem ľad!",
-          "Osvieženie letí!"
+          "Kocka do nápoja!",
+          "Osvieženie letí!",
+          "Toto mám z mrazáku."
         ],
         "sound": [
           "Cink!"
@@ -2335,7 +2339,7 @@
         "name": "Žiarovka",
         "launch": [
           "Žiarovka letí!",
-          "Hádžem nápad!",
+          "Žiarovka so závitom E27.",
           "Svetlo, leť!"
         ],
         "sound": [
@@ -2375,14 +2379,14 @@
           "Plesk!"
         ],
         "hit": [
-          "Hádam je nepoužitá!",
           "Biohazard!",
           "Bleee!",
           "Okamžite do koša!"
         ],
         "expect": [
           "To snáď nie!",
-          "Hádam je čistá!"
+          "Hádam je čistá!",
+          "Dúfam, že je nepoužitá."
         ]
       },
       "cloud": {
@@ -2397,7 +2401,7 @@
         ],
         "hit": [
           "To sú zrážky!",
-          "Puff!",
+          "Ako z bavlnky.",
           "Nič som necítil!",
           "Vatička!"
         ]
@@ -2416,10 +2420,14 @@
           "Živý ekosystém!",
           "To jesť nebudem!",
           "Málo sladké!",
-          "Koľko týždňov to má?"
+          "Koľko týždňov to má?",
+          "Pleseň!",
+          "Pred sto rokmi bola určite chutná!"
         ],
         "expect": [
-          "Čo je to za vôňu?"
+          "Čo je to za vôňu?",
+          "Tá je z čias Márie Terézie.",
+          "Archívny kúsok."
         ]
       },
       "bottle": {
@@ -2434,9 +2442,11 @@
         ],
         "hit": [
           "Čo som, bábätko?",
-          "Mliečna cesta!",
           "Mňam!",
           "Grrrgg!"
+        ],
+        "expect": [
+          "Mliečna cesta!"
         ]
       },
       "pacifier": {
@@ -2444,7 +2454,8 @@
         "launch": [
           "Cumlík letí!",
           "Hádžem cumlík!",
-          "Pre tichučko!"
+          "Ticho, prosím!",
+          "Neplač už!"
         ],
         "sound": [
           "Cmuk!"
@@ -2533,7 +2544,7 @@
         "launch": [
           "Púšťam motýlika!",
           "Leť, motýlik!",
-          "Motýlik, za terčom!"
+          "Motýlik, leť na terč!"
         ],
         "sound": [
           "Šuch!"
@@ -2563,7 +2574,9 @@
           "Brrr, povymetaj rohy!"
         ],
         "expect": [
-          "Len nie pavúka!"
+          "Len nie pavúka!",
+          "Máme babie leto?",
+          "Je to tarantula?"
         ]
       },
       "hockey": {
@@ -2578,9 +2591,10 @@
         ],
         "hit": [
           "Sekera!",
-          "Mimo hru!",
+          "Hra vysokou hokejkou!",
           "Zakázané uvoľnenie!",
-          "Na trestnú lavičku!"
+          "Na trestnú lavičku!",
+          "Strieľa sa predsa puk!"
         ]
       },
       "pillow": {
@@ -2596,14 +2610,21 @@
         "hit": [
           "Mäkké pristátie!",
           "Ešte si zdriemnem!",
-          "Perie všade!"
+          "Perie všade!",
+          "Dobrú noc.",
+          "Sladké sníčky."
+        ],
+        "expect": [
+          "Konečne niečo pre mňa.",
+          "Potrebujem oddych."
         ]
       },
       "chicken": {
         "name": "Gumená sliepka",
         "launch": [
           "Gumená sliepka letí!",
-          "Kot-kot-kodák!"
+          "Kot-kot-kodák!",
+          "Sliepočka, leť!"
         ],
         "sound": [
           "Kodák!"
@@ -2611,7 +2632,8 @@
         "hit": [
           "Čo bolo prvé, sliepka či vajce?",
           "Kot-kodák!",
-          "Tá je ale smiešna!"
+          "Tá je ale smiešna!",
+          "Táto mi vajíčko neznesie."
         ]
       },
       "water-balloon": {
@@ -2627,7 +2649,8 @@
         "hit": [
           "Som celý mokrý!",
           "Osvieženie!",
-          "Kto zabudol dáždnik?"
+          "Kto zabudol dáždnik?",
+          "Už sa nemusím kúpať."
         ]
       },
       "banana": {
@@ -2641,8 +2664,8 @@
           "Plesk!"
         ],
         "hit": [
-          "Pozor, pošmyknem sa!",
-          "Opičky by sa tešili!",
+          "Ošúp mi ho, prosím!",
+          "Teraz hodíš opicu?",
           "Vitamínová bomba!"
         ]
       },
@@ -2657,10 +2680,10 @@
           "Bzz!"
         ],
         "hit": [
-          "Nabitý zásah!",
+          "Toto ma nabilo!",
           "Mám plnú energiu!",
           "Skrat!",
-          "Kde mám zásuvku?"
+          "Ja nie som na baterky!"
         ]
       },
       "magnet": {
@@ -2668,7 +2691,7 @@
         "launch": [
           "Magnet letí!",
           "Hádžem magnet!",
-          "Priťahuj!"
+          "Magnetická sila!"
         ],
         "sound": [
           "Cvak!"
@@ -2699,7 +2722,7 @@
         "name": "Nota",
         "launch": [
           "Nota letí!",
-          "Hádžem melódiu!",
+          "Vysoké cé!",
           "Tralala, leť!"
         ],
         "sound": [
@@ -2709,7 +2732,12 @@
           "Do rytmu!",
           "Falošný tón!",
           "Spievam si!",
-          "La-la-lá!"
+          "La-la-lá!",
+          "Osminová!"
+        ],
+        "expect": [
+          "Stíš to rádio!",
+          "Do re mi fa!"
         ]
       },
       "frog": {
@@ -2717,7 +2745,7 @@
         "launch": [
           "Hop, žabka!",
           "Letí žabka!",
-          "Žabka skáče!"
+          "Žabka, skoč!"
         ],
         "sound": [
           "Kvák!"
@@ -2740,8 +2768,9 @@
         ],
         "hit": [
           "Som začarovaný!",
-          "Zmenil som sa na žabu? Uf, nie!",
-          "Čarovná desiatka!"
+          "Som čarovný!",
+          "Čarovná desiatka!",
+          "Magický moment!"
         ]
       },
       "ladybug": {

@@ -105,7 +105,7 @@ describe('target range', () => {
       typeRing(mode, L);
     }
     run(mode, L, 0.5);
-    // Tapko named the tomato (the first of the shuffled pool with this rng) at the throw; the target says a bullseye line; no word pops up at the first throw.
+    // Tapko named the tomato (the first of the shuffled pool with this rng) at the throw; the target says a bullseye line; no word pops up while the chance says no.
     expect(L.speak).toHaveBeenCalledWith('tapko', expect.toBeOneOf(tList('aim.things.tomato.launch')), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number));
     expect(L.speak).toHaveBeenLastCalledWith('target', expect.toBeOneOf([...tList('aim.lines.center'), ...tList('aim.things.tomato.hit')]), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), true);
     expect(L.shout).not.toHaveBeenCalled();
@@ -116,18 +116,18 @@ describe('target range', () => {
     expect(mode.progress()).toBeGreaterThan(0);
   });
 
-  it('a word pops out of the target at a hit once in a few throws, above or left of it', () => {
+  it('a word pops out of the target at a hit when its chance comes, above or left of it', () => {
     const L = fakeRuntime();
+    // Only the even chances (the pop's among them) come true.
+    L.rng.chance = (p: number) => p === 0.5;
     const mode = new AimMode(L);
     mode.start();
-    for (let n = 0; n < 2; n++) {
+    typeRing(mode, L);
+    for (let stop = 0; stop <= RINGS; stop++) {
+      run(mode, L, 0.5);
       typeRing(mode, L);
-      for (let stop = 0; stop <= RINGS; stop++) {
-        run(mode, L, 0.5);
-        typeRing(mode, L);
-      }
-      run(mode, L, 2.5);
     }
+    run(mode, L, 0.5);
     expect(L.shout).toHaveBeenCalledTimes(1);
     const [word, x, y] = vi.mocked(L.shout).mock.calls[0];
     expect([...tList('aim.lines.pop'), ...THINGS.flatMap((th) => tList(`aim.things.${th.id}.sound`))]).toContain(word);

@@ -149,12 +149,11 @@ interface EyesUp {
   end: number | null;
 }
 
-/** Chance of a line before the hit for things without lines of their own; share of bullseyes, and of near misses, with the thing's own line. */
+/** Chance of a line before the hit for things without lines of their own; share of bullseyes with the thing's own line. */
 const EXPECT_CHANCE = 0.25;
 const OWN_HIT = 0.8;
-const OWN_NEAR = 0.3;
-/** A word pops out of the target at a hit once in this many throws, this far beyond its edge. */
-const POP_EVERY: [number, number] = [2, 4];
+/** Chance of a word popping out of the target at a hit, this far beyond its edge. */
+const POP_CHANCE = 0.5;
 const POP_OUT = 60;
 /** Chances of the eyes: with a line before the hit, at a hit that wobbles the target, at a bullseye. */
 const EYES_EXPECT = 0.6;
@@ -218,8 +217,6 @@ export class AimMode extends HeroMode {
   private hitsEl = hitsPic();
   private readonly bags: Bags;
   private throws = 0;
-  /** The throw from which the next hit pops a word. */
-  private popAt: number;
   /** The world's thing comes with the last throw of the base time (1) or the one before (2); while staying, with throw `worldAt`. */
   private readonly worldSlot: number;
   private worldAt: number;
@@ -254,7 +251,6 @@ export class AimMode extends HeroMode {
     this.bags = new Bags(L.rng);
     this.worldSlot = L.rng.chance(0.5) ? 1 : 2;
     this.worldAt = L.rng.int(...STAY_WORLD_EVERY);
-    this.popAt = L.rng.int(...POP_EVERY);
   }
 
   /** The rules; with something in the collection, also how to swap the thing in the paw for one of it. */
@@ -624,15 +620,16 @@ export class AimMode extends HeroMode {
   }
 
   /**
-   * The target's line for a hit: mostly the thing's own line in the middle, now and then one a near miss, else a common
-   * one with the points; a third and a fifth bullseye in a row add a streak line after it.
+   * The target's line for a hit: in the middle mostly the thing's own line, else a common one; off it the points.
+   * A third and a fifth bullseye in a row add a streak line after it.
    */
   private hitLine(f: Flight, tier: Tier, own: string): string {
-    if (tier !== 'center') this.streak = 0;
-    else if (++this.streak === 3 || this.streak === 5) f.then = this.line(`aim.lines.streak${this.streak}`);
-    const ownChance = tier === 'center' ? OWN_HIT : tier === 'one' ? OWN_NEAR : 0;
-    if (tList(own).length && this.L.rng.chance(ownChance)) return this.line(own);
-    return tier === 'center' ? this.line('aim.lines.center') : this.line(`aim.lines.${tier}`, tierPoints(tier, this.L.rng));
+    if (tier !== 'center') {
+      this.streak = 0;
+      return this.line(`aim.lines.${tier}`, tierPoints(tier, this.L.rng));
+    }
+    if (++this.streak === 3 || this.streak === 5) f.then = this.line(`aim.lines.streak${this.streak}`);
+    return tList(own).length && this.L.rng.chance(OWN_HIT) ? this.line(own) : this.line('aim.lines.center');
   }
 
   /** A world thing hit in the middle for the first time: it joins the collection when the run ends. */
@@ -644,12 +641,11 @@ export class AimMode extends HeroMode {
   }
 
   /**
-   * Once in a few throws a word pops out of the hit target (the thing's own sound or a general one), in a
+   * At every other hit or so a word pops out of the target (the thing's own sound or a general one), in a
    * random direction over its top-left side: from toward the top-right corner round to toward the bottom-left one.
    */
   private pop(sound: string | null): void {
-    if (this.throws < this.popAt) return;
-    this.popAt = this.throws + this.L.rng.int(...POP_EVERY);
+    if (!this.L.rng.chance(POP_CHANCE)) return;
     const { x, y } = this.target, d = this.radius + POP_OUT;
     // Screen angles (y down): the top-right corner lies above (negative), the bottom-left one past the left (below pi).
     const a = this.L.rng.range(Math.atan2(VH - y, -x) - 2 * Math.PI, Math.atan2(-y, this.L.vw - x));

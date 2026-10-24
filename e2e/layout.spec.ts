@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { createProfile, skipStories } from './helpers';
+import { createProfile, skipStories, NEW_PLAYER } from './helpers';
 
 const SIZES = [{ width: 1366, height: 768 }, { width: 1024, height: 600 }];
 
@@ -95,7 +95,7 @@ test('the corner buttons sit at one offset and a level shows its place in the wo
 
 test('the new player form has a 3 x 3 picker with a side column, closes with X, and the map welcomes once', async ({ page }) => {
   await page.goto('./');
-  await page.locator('.profile-card.new').click();
+  await page.locator(NEW_PLAYER).first().click();
   const kinds = page.locator('.np-pick .kind');
   await expect(kinds).toHaveCount(9);
   const [a, b, c, d] = await Promise.all([0, 1, 2, 3].map(async (i) => (await kinds.nth(i).boundingBox())!));
@@ -133,7 +133,7 @@ test('the new player form has a 3 x 3 picker with a side column, closes with X, 
 
 test('the game calls the typist by the nickname; the start tile adds the real name', async ({ page }) => {
   await page.goto('./');
-  await page.locator('.profile-card.new').click();
+  await page.locator(NEW_PLAYER).first().click();
   await page.locator('#np-name').fill('Ema');
   await page.locator('#np-nick').fill('Rýchla líška');
   await page.locator('form button[type=submit]').click();

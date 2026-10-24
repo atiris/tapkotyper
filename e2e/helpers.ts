@@ -44,9 +44,12 @@ export async function typeChar(page: Page, ch: string): Promise<void> {
   if (capital) await page.keyboard.up('Shift');
 }
 
+/** The start page's way to a new player: the big button before the first player, then the dashed card. */
+export const NEW_PLAYER = '.start-card .btn.primary, .profile-card.new';
+
 export async function createProfile(page: Page, name: string, layout?: string): Promise<void> {
   await page.goto('./');
-  await page.locator('.profile-card.new').click();
+  await page.locator(NEW_PLAYER).first().click();
   await page.locator('#np-nick').fill(name);
   if (layout) await page.locator('#np-layout').selectOption(layout);
   await page.locator('form button[type=submit]').click();

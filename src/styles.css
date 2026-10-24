@@ -314,8 +314,8 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
  * meadow's dense grass (the bottom 60 % of the strip).
  */
 .start-screen {
-  --meadow-h: 190px; --pc: 120px; --wm: 60px; --slogan-max: 44px; --logo: 116px;
-  display: flex; flex-direction: column; min-height: 100vh; min-height: 100dvh; padding: calc(1rem + 52px + 1rem) 0 0;
+  --meadow-h: 190px; --pc: 120px; --wm: 60px; --slogan-max: 44px; --logo: 116px; --top: calc(2rem + 52px);
+  display: flex; flex-direction: column; min-height: 100vh; min-height: 100dvh; padding: var(--top) 0 0;
 }
 @media (max-height: 699px) { .start-screen { --meadow-h: 140px; --pc: 104px; --wm: 46px; --slogan-max: 32px; --logo: 96px; } }
 @media (min-height: 1000px) { .start-screen { --meadow-h: 260px; --pc: 140px; --wm: 80px; --slogan-max: 58px; --logo: 140px; } }
@@ -331,7 +331,7 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
 .start-more { grid-area: more; align-self: start; container-type: inline-size; display: flex; flex-direction: column; gap: 18px; }
 .start-card { grid-area: card; align-self: center; }
 /* The title in the logo's style: a dark-brown outline under soft gradients, on dark a thin cream line outside it. */
-.wordmark { display: grid; margin: 0; font-size: min(var(--wm), calc((100vw - 2rem) / 6.4)); font-weight: 800; line-height: 1.05; letter-spacing: 0.015em; white-space: nowrap; font-family: 'Lexend', system-ui, sans-serif; }
+.wordmark { display: grid; margin: 0; font-size: min(var(--wm), 100cqw / 6.4); font-weight: 800; line-height: 1.05; letter-spacing: 0.015em; white-space: nowrap; font-family: 'Lexend', system-ui, sans-serif; }
 .wordmark > span { grid-area: 1 / 1; }
 .wm-halo { color: transparent; -webkit-text-stroke: 0.085em transparent; }
 :root[data-theme='dark'] .wm-halo { color: rgba(255, 240, 222, 0.85); -webkit-text-stroke-color: rgba(255, 240, 222, 0.85); }
@@ -381,6 +381,11 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
 .start-ghosts { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
 .start-ghosts .btn { flex: 1 1 auto; white-space: nowrap; }
 .start-card .profile-list { padding: 4px 0 6px; }
+/* Two columns: the card never runs past the window; more rows than fit scroll inside the list, the buttons stay. */
+@media (min-width: 900px) {
+  .start-card { max-height: calc(100dvh - var(--top) - var(--meadow-h) * 0.6 - var(--logo) / 2); }
+  .start-card .profile-list { flex: 0 1 auto; min-height: 0; overflow-y: auto; padding: 14px 12px 20px; margin: -10px -12px -14px; }
+}
 .start-card .profile-row { gap: 12px; }
 /* A row the start page laid out for the room it has: its cards narrow a little rather than wrap. */
 .start-card .profile-card { width: auto; flex: 0 1 var(--pc); min-width: 100px; }
@@ -703,7 +708,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .picker .kb-key { cursor: pointer; }
 .picker .kb-key.picked { background: var(--green); color: #fff; }
 .picker.disabled { opacity: 0.5; pointer-events: none; }
-.practice-picker .kb-key { opacity: 0.45; }
+/* A key not picked is a plain outline with soft text, still readable; one that cannot be picked fades. */
+.practice-picker .kb-key:not(.picked) { background: transparent; box-shadow: inset 0 0 0 1px var(--line); color: var(--ink-soft); }
 .practice-picker .kb-key.picked { background: var(--finger); color: var(--finger-ink); opacity: 1; }
 .practice-picker .kb-key.picked .kb-shift, .practice-picker .kb-key.picked .kb-num { color: var(--finger-ink); }
 .practice-picker .kb-key.off { opacity: 0.25; cursor: default; }

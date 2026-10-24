@@ -1,5 +1,5 @@
 import { type Page, expect, test } from '@playwright/test';
-import { createProfile, playLevel, typeChar } from './helpers';
+import { createProfile, playLevel, typeChar, NEW_PLAYER } from './helpers';
 
 /** Presses Tab until the focused element has `text`; fails after a few tries. */
 async function tabTo(page: Page, text: string): Promise<void> {
@@ -28,7 +28,7 @@ test('the whole game by keyboard only: a new player, a level, the results, endin
   page.on('pageerror', (e) => errors.push(e.message));
   await page.goto('./');
   // No players yet: the new player waits for Enter; the nickname field is ready to type into.
-  await expect(page.locator('.profile-card.new')).toBeFocused();
+  await expect(page.locator(NEW_PLAYER).first()).toBeFocused();
   await page.keyboard.press('Enter');
   await expect(page.locator('#np-nick')).toBeFocused();
   await page.keyboard.type('Kiko');

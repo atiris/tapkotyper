@@ -1,5 +1,5 @@
 import { type Page, expect, test } from '@playwright/test';
-import { createProfile } from './helpers';
+import { createProfile, NEW_PLAYER } from './helpers';
 
 test.use({ locale: 'sk-SK' });
 
@@ -17,7 +17,7 @@ test.describe('a phone without a keyboard', () => {
     // Silent until the player turns the sound on.
     await expect(page.locator('.sound-btn')).toHaveAttribute('data-level', 'off');
     // No players, no guest, no new player or import while the gate is up.
-    await expect(page.locator('.profile-card, .start-screen .row .btn')).toHaveCount(0);
+    await expect(page.locator('.profile-card, .start-card')).toHaveCount(0);
     await gate.tap();
     await expect(page.locator('.modal .keyboard-gate')).toContainText('Pripoj klávesnicu');
     await page.locator('.modal-x').tap();
@@ -34,29 +34,29 @@ test.describe('a phone without a keyboard', () => {
 
     await page.keyboard.press('a');
     await expect(gate).toHaveCount(0);
-    await expect(page.locator('.profile-card.new')).toBeVisible();
+    await expect(page.locator(NEW_PLAYER).first()).toBeVisible();
     // Remembered for the session.
     await page.reload();
-    await expect(page.locator('.profile-card.new')).toBeVisible();
+    await expect(page.locator(NEW_PLAYER).first()).toBeVisible();
     expect(errors).toEqual([]);
   });
 });
 
 test('a computer is never gated', async ({ page }) => {
   await page.goto('./');
-  await expect(page.locator('.profile-card.new')).toBeVisible();
+  await expect(page.locator(NEW_PLAYER).first()).toBeVisible();
   await expect(page.locator('.start-screen.gated')).toHaveCount(0);
 });
 
 test('the title fits on one line under the corner buttons at every width', async ({ page }) => {
   await page.goto('./');
-  await page.locator('.start-screen .title').waitFor();
+  await page.locator('.start-screen .wordmark').waitFor();
   for (const width of [320, 390, 600, 899, 900, 1280]) {
     await page.setViewportSize({ width, height: 800 });
     const r = await page.evaluate(() => {
-      const title = document.querySelector<HTMLElement>('.start-screen .title')!;
-      const t = title.getBoundingClientRect();
-      const hit = [...document.querySelectorAll('.top-right button, .top-right .lang-switch')].filter((e) => e.getClientRects().length).some((e) => {
+      const title = document.querySelector<HTMLElement>('.start-screen .wordmark')!;
+      const t = title.querySelector('.wm-back')!.getBoundingClientRect();
+      const hit = [...document.querySelectorAll('.top-right button')].filter((e) => e.getClientRects().length).some((e) => {
         const b = e.getBoundingClientRect();
         return b.bottom > t.top && b.top < t.bottom && b.right > t.left && b.left < t.right;
       });
@@ -66,20 +66,14 @@ test('the title fits on one line under the corner buttons at every width', async
   }
 });
 
-test('the corner by width: switch, round language button, Menu', async ({ page }) => {
+test('the corner by width: the round buttons, then the Menu', async ({ page }) => {
   await page.goto('./');
-  await page.setViewportSize({ width: 1280, height: 800 });
-  await expect(page.locator('.top-right .lang-switch')).toBeVisible();
-  await expect(page.locator('.top-right .menu-btn')).toBeHidden();
-
-  await page.setViewportSize({ width: 760, height: 800 });
-  await expect(page.locator('.top-right .lang-switch')).toBeHidden();
-  const lang = page.locator('.top-right .lang-btn');
-  await expect(lang).toHaveAttribute('aria-label', 'Jazyk: slovenčina');
-  await lang.click();
-  await expect(page.locator('.top-right .lang-btn')).toHaveAttribute('aria-label', 'Language: English');
-  await page.locator('.top-right .lang-btn').click();
-  await expect(page.locator('.top-right .lang-btn')).toHaveAttribute('aria-label', 'Jazyk: slovenčina');
+  for (const width of [1280, 760]) {
+    await page.setViewportSize({ width, height: 800 });
+    await expect(page.locator('.top-right .lang-btn')).toHaveAttribute('aria-label', 'Jazyk: Slovenčina');
+    await expect(page.locator('.top-right .theme-btn')).toBeVisible();
+    await expect(page.locator('.top-right .menu-btn')).toBeHidden();
+  }
 
   await page.setViewportSize({ width: 390, height: 844 });
   await expect(page.locator('.top-right .corner-row')).toBeHidden();
@@ -87,7 +81,7 @@ test('the corner by width: switch, round language button, Menu', async ({ page }
   await menu.click();
   await expect(menu).toHaveAttribute('aria-expanded', 'true');
   const items = page.locator('.corner-menu-panel [role=menuitem]');
-  await expect(items).toHaveText([/Jazyk: slovenčina/, 'Pre mentorov', /^Zvuk/, 'Celá obrazovka', 'Pomoc']);
+  await expect(items).toHaveText(['Jazyk: Slovenčina', 'Pre mentorov', /^Zvuk/, 'Celá obrazovka', /režim$/, 'Pomoc']);
   await expect(items.first()).toBeFocused();
   await page.keyboard.press('Escape');
   await expect(page.locator('.corner-menu-panel')).toHaveCount(0);

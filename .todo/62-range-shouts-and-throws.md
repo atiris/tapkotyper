@@ -13,7 +13,9 @@ not feel how good a throw was, and seven things to throw get old fast. The owner
 - now and then the target to react while something is on its way: worry, wonder, joy or a
   cheer (rarely, at the throw or at the first or second ring);
 - many new things to throw, some with their own little story (an egg that splats or hatches,
-  a boomerang that comes back), and three more in story 2 and three more in story 3.
+  a boomerang that comes back), and three more in story 2 and three more in story 3;
+- every world to have one thing of its own that no other world's range throws, so a child
+  wants to play the range in other worlds too.
 
 The catalogue at the end holds every thing and every line in Slovak and English. **The owner
 reviews it before the plan runs**; whatever is in the catalogue when the plan runs is what
@@ -34,7 +36,11 @@ translated word by word.
 - Specs: `.specify/game/target-practice.md`.
 - Tests: `src/game/modes/aim.test.ts`, a new `src/game/modes/aim-things.test.ts`,
   `e2e/play.spec.ts` (or the range's existing e2e test).
-- No storage change, no migration: nothing new is saved.
+- Storage: `Progress.rangeFinds: string[]` (the world things already hit in the middle) in
+  `src/storage/schema.ts`; `src/storage/store.ts`: `STORE_VERSION` 5 -> 6, a migration that
+  gives every profile `rangeFinds: []`, `newProfile`; a unit test of the migration. Profile
+  export files and the mentors' import carry it like the rest of `progress`.
+- The range's end card: the world things' collection row.
 
 ## Decisions (taken; nobody to ask)
 
@@ -86,6 +92,17 @@ translated word by word.
 - A thing may use several pictures (planets 1-5, the three butterflies, two clouds, two
   notes): one is picked per throw.
 - The thing in Tapko's paw before the throw is drawn as today; its name comes with the call.
+
+### World things
+- Every world has one thing of its own (catalogue: "World things"), thrown only at that world's
+  range. The first throw of every run is the world's thing; after that it comes in about one
+  throw of five (never twice in a row), the rest from the story pool.
+- **Collection**: hitting a world thing in the middle for the first time adds it to the
+  profile's `rangeFinds`, and Tapko cheers with `collection.new`. The range's end card shows a
+  row of all 15 world things: the found ones in color, the rest as grey silhouettes with a
+  question mark, and `collection.count` ("Zbierka: 4 z 15"). A silhouette's tooltip names the
+  world where it waits (`collection.waiting`), never the thing. Super Tapko's finds are not
+  saved (it lives in memory only).
 
 ### Effects (code, small; a thing without one bounces off as today)
 - **egg**: on any hit one of three endings: 50 % it splats (the fried egg picture stays on the
@@ -162,9 +179,18 @@ magenta unless said green.
 | `obj-aim-chicken.jpg` | a yellow rubber chicken toy with a long neck, an open orange beak and a red comb | magenta |
 | `obj-aim-water-balloon.jpg` | a round blue balloon filled with water, a small knot on top, a few drops | magenta |
 | `obj-aim-banana.jpg` | one ripe yellow banana | magenta |
+| `obj-aim-chili.jpg` | one small red chili pepper with a green stem, slightly curved | green |
+| `obj-aim-wrench.jpg` | a chunky silver adjustable wrench, lying diagonally | magenta |
+| `obj-aim-toast.jpg` | a slice of golden toast with a pat of butter on top, front view | magenta |
+| `obj-aim-pinecone.jpg` | one brown pine cone with open scales | magenta |
+| `obj-aim-fish.jpg` | a small round friendly orange fish, side view facing right, happy | magenta |
 
 Reused pictures (no new art): `obj-planet-1`..`5`, `obj-butterfly`, `-2`, `-3`, `obj-spider`,
-`obj-battery`, `obj-gear`, `obj-note1`, `obj-note2`, `obj-frog`, `ui-start-cloud-1`, `-2`.
+`obj-battery`, `obj-gear`, `obj-note1`, `obj-note2`, `obj-frog`, `ui-start-cloud-1`, `-2`, and
+for world things `obj-ladybug`, `obj-rocket`, `obj-asteroid-small`, `obj-nest`, `obj-spring`,
+`obj-umbrella`, `obj-robot-small-3`, `obj-flower-open`, `obj-bird` and the wardrobe's
+`acc-crown` (if it reads well at 46 px; else a new `obj-aim-crown.jpg`, "a small golden crown
+with three points and pink gems", magenta).
 If a picture cannot be generated in the run, its thing stays out of the pool (it has no
 picture) and a backlog line names the missing pictures; everything else ships.
 
@@ -183,6 +209,9 @@ picture) and a backlog line names the missing pictures; everything else ships.
   point ranges.
 - [ ] 5. Effects and the new sounds.
 - [ ] 6. The target's eyes (popping up only now and then, as decided above).
+- [ ] 6b. World things and the collection: the pool rule, `rangeFinds` with its migration,
+  the end card's row and its tooltips; unit tests: a world thing never comes outside its
+  world, the first throw is the world's thing, the migration.
 - [ ] 7. Pictures: generate, cut (`npm run assets obj-aim-`), check each at play size on a
   light and a dark world, rows in `PROMPTS.md` with their status.
 - [ ] 8. e2e: a range run shows Tapko's call after the launch word, the target's line after a
@@ -371,7 +400,7 @@ Lines are separated by " · ".
 
 **26. Píšťalka / Whistle** (new; `whistle` sound)
 - Call - SK: Píšťalka letí! · Hádžem píšťalku! · Rozhodca, pozor! - EN: Whistle away! · Calling the ref!
-- Sound - SK: Fííí! - EN: Tweet!
+- Sound - SK: Fííí! - EN: Phweet!
 - Hit - SK: Faul! · Žltá karta! · Červená karta! · Polčas! - EN: Foul! · Yellow card! · Red card! · Half time!
 
 **27. Pingpongová loptička / Ping-pong ball** (new; bounces off three times)
@@ -464,3 +493,87 @@ Lines are separated by " · ".
 > If the owner meant three of the things listed above to wait for story 2 and three for
 > story 3 instead of new ones: move light bulb, alarm clock and chalk to story 2 and candle,
 > butterfly and whistle to story 3, and leave out 36-41.
+
+### World things (each only at its own world's range; effects in brackets)
+
+**W1. Lúka / Meadow - Lienka / Ladybug** (`obj-ladybug`; flies away like the butterfly)
+- Call - SK: Lienka, leť! · Leť, lienka, k terču! · Púšťam lienku! - EN: Fly, ladybug! · Off you go, ladybug! · Ladybug, fly to the target!
+- Sound - SK: Ťap! - EN: Tap!
+- Hit - SK: Lienka mi priniesla šťastie! · Bodka v strede! · Lienka, lienka, kam letíš? - EN: A ladybug, that's lucky! · Spot on, just like her spots! · Ladybug, ladybug, fly away home!
+
+**W2. Raketa / Rocket - Raketka / Toy rocket** (`obj-rocket`; a smoke trail)
+- Call - SK: 3, 2, 1, štart! · Raketa štartuje! · Do vesmíru! - EN: 3, 2, 1, liftoff! · Blast off! · Rocket launch!
+- Sound - SK: Vžum! - EN: Zoom!
+- Hit - SK: Pristátie úspešné! · Houston, máme zásah! · Malý krok pre teba, veľký zásah pre terč! - EN: Touchdown! · Houston, we have a hit! · One small step for you, one giant hit for me!
+
+**W3. Planéta / Planet - Asteroid** (`obj-asteroid-small`; the target wobbles, dust)
+- Call - SK: Asteroid letí! · Pozor, kameň z vesmíru! · Hádžem asteroid! - EN: Asteroid incoming! · Space rock, go! · Look out, meteor!
+- Sound - SK: Buch! - EN: Kaboom!
+- Hit - SK: Dopad z vesmíru! · Ešte že nie som dinosaurus! · Mám kráter! - EN: Impact from outer space! · Good thing I'm not a dinosaur! · Now I've got a crater!
+
+**W4. Údolie / Valley - Čili paprička / Chili pepper** (new; the target flashes red, steam)
+- Call - SK: Paprička letí! · Hádžem čili! · Pozor, pálivé! - EN: Chili away! · Hot stuff incoming!
+- Before (40 %) - SK: Len nič pálivé! - EN: Nothing spicy, please!
+- Sound - SK: Pšš! - EN: Sizzle!
+- Hit - SK: Chrlím oheň ako drak! · Vody, rýchlo vody! · To páli až v ušiach! - EN: Now I breathe fire like a dragon! · Water, quick, water! · My ears are on fire!
+
+**W5. Vajíčko / Egg - Hniezdo / Nest** (`obj-nest`; sits on top of the target)
+- Call - SK: Hniezdo letí! · Hádžem hniezdočko! · Domček pre vtáčiky! - EN: Nest away! · A home for birds, coming up!
+- Sound - SK: Šuch! - EN: Rustle!
+- Hit - SK: Kto tu bude bývať? · Ešte vajíčko a som sliepka! · Útulné! - EN: Who's moving in? · Add an egg and I'm a hen! · Cozy!
+
+**W6. Šrotisko / Junkyard - Pružina / Spring** (`obj-spring`; bounces off high three times)
+- Call - SK: Pružina letí! · Boing, leť! · Hádžem pružinu! - EN: Spring away! · Boing, go!
+- Sound - SK: Boing! - EN: Boing!
+- Hit - SK: Boing-boing! · Skáčem od radosti! · Pérovanie funguje! - EN: Boing boing! · I'm jumping for joy! · Now that's bouncy!
+
+**W7. Dielňa / Workshop - Francúzsky kľúč / Wrench** (new)
+- Call - SK: Kľúč letí! · Hádžem francúzsky kľúč! · Treba niečo dotiahnuť! - EN: Wrench away! · Time to tighten something!
+- Sound - SK: Cink! - EN: Clang!
+- Hit - SK: Dotiahnuté! · Nemám niekde uvoľnenú skrutku? · Šróbik by sa tešil! - EN: Nice and tight! · Do I have a loose bolt somewhere? · Bolt would be proud!
+
+**W8. Dážď / Rain - Dáždnik / Umbrella** (`obj-umbrella`; opens and sinks slowly over the target)
+- Call - SK: Dáždnik letí! · Hádžem dáždnik! · Prší, prší! - EN: Umbrella away! · Rain, rain, go away!
+- Sound - SK: Fup! - EN: Fwump!
+- Hit - SK: Konečne som v suchu! · Nech si prší! · Pod dáždnikom je mi fajn! - EN: Finally, I'm dry! · Let it rain, I don't care! · Singing in the rain!
+
+**W9. Mesto / City - Robotík / Little robot** (`obj-robot-small-3`; hovers, then flies up and away)
+- Call - SK: Robotík, leť! · Vrtuľka, štart! · Bip-bup, vpred! - EN: Fly, little robot! · Propeller on! · Beep-boop, forward!
+- Sound - SK: Bip! - EN: Beep!
+- Hit - SK: Bip-bup, pristátie! · Cieľ nájdený! · Výpočet presný! - EN: Beep-boop, landed! · Target acquired! · Calculation correct!
+
+**W10. Domov / Home - Hrianka / Toast** (new)
+- Call - SK: Hrianka letí! · Hádžem hrianku! · Čerstvo opečená! - EN: Toast away! · Fresh from the toaster! · Toast incoming!
+- Sound - SK: Chrum! - EN: Crunch!
+- Hit - SK: Hrianka s maslom! · Dobre opečené! · Maslom nahor, máme šťastie! - EN: Buttered toast! · Nicely done! · Butter side up, lucky us!
+
+**W11. Záhrada / Garden - Kvietok / Flower** (`obj-flower-open`; stays on the target a moment)
+- Call - SK: Kvietok pre teba! · Hádžem kvietok! · Leť, kvietok! - EN: A flower for you! · Flower away!
+- Before (40 %) - SK: To je pre mňa? - EN: Is that for me?
+- Sound - SK: Šuch! - EN: Swish!
+- Hit - SK: Ďakujem, je krásny! · To je ale milé! · Vonia ako jar! - EN: Thank you, it's lovely! · How sweet of you! · Smells like spring!
+
+**W12. Cestička / Path - Lesná šiška / Pine cone** (new; in Slovak a pun on the donut "šiška")
+- Call - SK: Šiška letí! · Hádžem lesnú šišku! · Z lesa rovno na terč! - EN: Pine cone away! · Straight from the forest!
+- Sound - SK: Ťuk! - EN: Thock!
+- Hit - SK: Táto šiška sa jesť nedá! · Pichľavá, nie sladká! · Veverička ju bude hľadať! - EN: Not that kind of cone! · Crunchy, not sweet! · A squirrel will come looking for it!
+
+**W13. Jazero / Lake - Rybka / Fish** (new; flops, then jumps down with a splash)
+- Call - SK: Rybka letí! · Hádžem rybku! · Lietajúca ryba! - EN: Fish away! · Flying fish! · Something fishy!
+- Sound - SK: Čľup! - EN: Splish!
+- Hit - SK: Glg-glg, kde je voda? · Fuj, šupiny! · Tá je ale čerstvá! - EN: Glub glub, where's the water? · Ew, scales! · Something smells fishy!
+
+**W14. Strom / Tree - Vtáčik / Songbird** (`obj-bird`; sits on the rim, sings, flies off)
+- Call - SK: Leť, vtáčik! · Púšťam vtáčika! · Čvirik, k terču! - EN: Fly, birdie! · Off you go, little bird! · Tweet, to the target!
+- Sound - SK: Čvirik! - EN: Tweet!
+- Hit - SK: Čvirik! Postavím si tu hniezdo! · Spievaš mi z duše! · Vtáčik v strede! - EN: Tweet! I'll build my nest here! · You're music to my ears! · A bird in the middle!
+
+**W15. Ples / Ball - Korunka / Crown** (`acc-crown` or new; sits on top of the target for 2 s)
+- Call - SK: Korunka letí! · Pre kráľa plesu! · Hádžem korunku! - EN: Crown away! · For the king of the ball!
+- Sound - SK: Cing! - EN: Ting!
+- Hit - SK: Som kráľ plesu! · Zatancujeme si? · Vaše veličenstvo, zásah! - EN: I'm the king of the ball! · Shall we dance? · Your Majesty, a hit!
+
+**Collection** (`aim.collection`)
+- new - SK: Nová vec do zbierky! - EN: New find for the collection!
+- count - SK: Zbierka: {n} z 15 - EN: Collection: {n} of 15
+- waiting - SK: Čaká v svete {world} - EN: Waiting in the {world} world

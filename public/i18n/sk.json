@@ -563,7 +563,7 @@
   "story": {
     "next": "Ďalej",
     "meadowStart": [
-      "Zvieratká ti chcú dať gól! Chytaj listy písmenami."
+      "Zvieratká na lúke kopú listy ako loptu a chcú ti dať gól. Napíš slovo na liste a chytíš ho!"
     ],
     "goalShout": "GÓÓL!",
     "cheer": [
@@ -1474,10 +1474,10 @@
     "mistakes-ok": "Chyba nevadí, z každej sa niečo naučíš.",
     "patience": "Zdá sa ti, že sa nezlepšuješ? To je normálne, vydrž.",
     "short-sessions": "Viac krátkych cvičení je lepších ako jedno dlhé.",
-    "stretch-fingers": "Roztiahni prsty, zovri päste a znova ich otvor.",
-    "stretch-wrist": "Ohni zápästie a druhou rukou ho jemne potlač.",
+    "stretch-fingers": "Pri krátkej prestávke roztiahni prsty, zovri päste a znova ich otvor.",
+    "stretch-wrist": "Pri krátkej prestávke ohni zápästie a druhou rukou ho jemne potlač.",
     "take-break": "Po pár minútach vstaň, natiahni sa a napi sa vody.",
-    "celebrate": "Dobrá práca! Môžeš mať zo seba radosť.",
+    "celebrate": "Keď sa ti darí, môžeš mať zo seba radosť.",
     "listen-whole": "Najprv si vypočuj celé slovo, potom ho napíš.",
     "listen-again": "Chceš to počuť ešte raz? Ťukni na slovo a zaznie znova.",
     "listen-sounds": "Potichu si slovo povedz, písmenko po písmenku.",

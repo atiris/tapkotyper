@@ -91,9 +91,9 @@ export function postureContent(line?: string, story?: string | null): HTMLElemen
   const tip = POSTURE_TIPS[Math.floor(Math.random() * POSTURE_TIPS.length)];
   return h('div', { class: 'posture' },
     h('h2', {}, t('posture.title')),
-    story ? h('p', { class: 'posture-story' }, story) : null,
     src ? h('img', { class: 'posture-img', src, alt: '' }) : h('div', { class: 'posture-img', html: postureSvg() }),
-    h('p', { class: 'posture-tip' }, line ?? t(`posture.${tip}`)));
+    // The story and the tip read as one paragraph, apart from the title and from what to press.
+    h('p', { class: 'posture-text' }, story ? `${story} ` : null, line ?? t(`posture.${tip}`)));
 }
 
 /**

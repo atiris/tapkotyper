@@ -10,9 +10,14 @@
 - The guide fades as the child improves (per-key mastery) and can be shown or hidden by
   the child, or locked by the parent. Colors also carry a pattern or label (colorblind-safe).
 - "Ready, steady, type!" card before every adventure (story level, rescue, own practice)
-  and at breaks: a picture of good posture and **one** line - the session's preparation
+  and at breaks: a picture of good posture on the left and **one** line - the session's preparation
   tip when one is due, else one random reminder (sit straight, feet on the floor, wrists
-  relaxed, index fingers on the `F` and `J` bumps, eyes on the screen). It asks the child
+  relaxed, index fingers on the `F` and `J` bumps, eyes on the screen). The level's story line
+  (what happens and what to type, in two short sentences) and the tip form one paragraph, set
+  apart from the title and centred in the room above what to press, which always sits at the
+  bottom; no part of it is highlighted, and every tip reads as a sentence of its own after the
+  story (a stretching tip says it is for a short break). The card is wide enough that a
+  sentence does not leave a single word on its last line. It asks the child
   to put the fingers on the home keys and press the space bar, shown as a drawn key; the
   space bar, Esc, a tap on the drawing or the round X (its tip says so) closes it and starts:
   the card is only a reminder, so every way out of it is the start. It is the only card

@@ -563,7 +563,7 @@
   "story": {
     "next": "Next",
     "meadowStart": [
-      "The animals want to score a goal on you! Catch the leaves with letters."
+      "The meadow animals kick leaves like a ball and want to score a goal on you. Type the word on a leaf to catch it!"
     ],
     "goalShout": "GOAL!",
     "cheer": [
@@ -1474,10 +1474,10 @@
     "mistakes-ok": "Mistakes are fine, you learn something from each one.",
     "patience": "Feel like you're not improving? That's normal, keep going.",
     "short-sessions": "A few short practices beat one long one.",
-    "stretch-fingers": "Spread your fingers, make fists, then open them again.",
-    "stretch-wrist": "Bend your wrist and gently press it with the other hand.",
+    "stretch-fingers": "On a short break, spread your fingers, make fists, then open them again.",
+    "stretch-wrist": "On a short break, bend your wrist and gently press it with the other hand.",
     "take-break": "After a few minutes, stand up, stretch and drink some water.",
-    "celebrate": "Great job! You can be proud of yourself.",
+    "celebrate": "When it goes well, you can be proud of yourself.",
     "listen-whole": "Listen to the whole word first, then type it.",
     "listen-again": "Did not catch it? Tap the word and you will hear it again.",
     "listen-sounds": "Say the word quietly to yourself, letter by letter.",

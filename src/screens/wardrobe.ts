@@ -71,12 +71,9 @@ export function wardrobeScreen(root: HTMLElement): () => void {
   const grid = h('div', { class: 'wardrobe-grid' });
   const clear = button(t('wardrobe.clear'), () => { p.companion.accessories = []; saveProfile(); render(); }, 'btn ghost small');
   const random = button(t('wardrobe.random'), () => { p.companion.accessories = randomOutfit(p); saveProfile(); render(); }, 'btn ghost small');
-  const lockLine = h('p', { class: 'wardrobe-locked', role: 'status' });
   const render = () => {
     renderTapkoInto(preview, p.companion, mood);
     nick.disabled = clear.disabled = random.disabled = locked;
-    lockLine.hidden = !locked;
-    lockLine.textContent = locked ? t('wardrobe.locked', { n: practiceToOpen(p) }) : '';
     kinds.replaceChildren(...COMPANION_KINDS.map((k) => {
       const owned = hasCompanion(p, k);
       const on = p.companion.kind === k;
@@ -131,8 +128,11 @@ export function wardrobeScreen(root: HTMLElement): () => void {
     }));
   };
   render();
-  // The countdown runs only while the wardrobe is shown and the page is visible; at 0 it locks in place.
-  const timer = wardrobeLimited(p) && !locked ? timerPic(p.progress.wardrobeSeconds) : null;
+  // The countdown runs only while the wardrobe is shown and the page is visible; at 0 it locks in place
+  // and the clock turns into a lock that says how to open the wardrobe again.
+  const timer = wardrobeLimited(p) ? timerPic(p.progress.wardrobeSeconds, t('wardrobe.timerNote')) : null;
+  const lockTimer = () => timer!.lock(t('wardrobe.locked', { n: practiceToOpen(p) }));
+  if (timer && locked) lockTimer();
   let ticks = 0;
   const tick = () => {
     if (document.hidden) return;
@@ -143,23 +143,22 @@ export function wardrobeScreen(root: HTMLElement): () => void {
       return;
     }
     clearInterval(interval);
-    timer!.el.remove();
+    lockTimer();
     locked = true;
     saveProfile();
     render();
   };
-  const interval = timer ? setInterval(tick, 1000) : undefined;
+  const interval = timer && !locked ? setInterval(tick, 1000) : undefined;
   const owned = accessories().filter((a) => hasAccessory(p, a.id)).length;
   const star = imageUrl('ui-star');
   root.append(h('div', { class: 'screen wardrobe-screen' },
-    h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'), h('h1', {}, t('wardrobe.title')), timer?.el),
+    h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'), h('h1', {}, t('wardrobe.title'))),
     cornerControls(),
     h('div', { class: 'wardrobe-body' },
-      h('div', { class: 'wardrobe-preview' }, tickle,
+      h('div', { class: 'wardrobe-preview' }, timer?.el, tickle,
         h('span', { class: 'star-count', role: 'img', 'aria-label': t('wardrobe.stars', { n: stars }) }, star ? h('img', { src: star, alt: '' }) : '★', String(stars)),
         h('p', {}, t('wardrobe.count', { n: owned, total: accessories().length })),
-        h('div', { class: 'row' }, clear, random),
-        lockLine),
+        h('div', { class: 'row' }, clear, random)),
       h('div', { class: 'wardrobe-main' },
         h('section', { class: 'buddy' },
           h('h2', {}, t('wardrobe.buddy')),

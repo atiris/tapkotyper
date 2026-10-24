@@ -160,14 +160,15 @@ export function hitsPic(): { el: HTMLElement; set(hits: number, time: number): v
  * The wardrobe's countdown (a picture, not a button): the ring shows the time left; inside a
  * smile, then a number a young child can read; it blinks the last 20 s, faster the last 10 s.
  */
-export function timerPic(left: number): { el: HTMLElement; set(left: number): void } {
-  const el = h('div', { class: 'round-btn timer', role: 'timer' });
+export function timerPic(left: number, note = ''): { el: HTMLElement; set(left: number): void; lock(text: string): void } {
+  // Focusable, so its tip (the time and `note`) also shows from the keyboard.
+  const el = h('div', { class: 'round-btn timer', role: 'timer', tabindex: '0' });
   // The picture changes only with the 10 s step; the label follows every second.
   let step = -1;
   const set = (secs: number) => {
     const s = Math.max(0, Math.ceil(secs));
     const label = t('wardrobe.timer', { m: Math.floor(s / 60), s: s % 60 });
-    tip(el, label);
+    tip(el, note ? `${label}. ${note}` : label);
     el.setAttribute('aria-label', label);
     el.classList.toggle('ending', s <= 20);
     el.classList.toggle('fast', s <= 10);
@@ -178,8 +179,15 @@ export function timerPic(left: number): { el: HTMLElement; set(left: number): vo
     const ring = rhythmRing(s / WARDROBE_MAX);
     el.innerHTML = face === 'smile' ? roundSvg('smile', ring) : roundTextSvg(String(face), ring);
   };
+  /** The time is up: a lock in the ring, and its tip says how to open it again. */
+  const lock = (text: string) => {
+    el.classList.remove('ending', 'fast');
+    el.innerHTML = roundSvg('lock');
+    tip(el, text);
+    el.setAttribute('aria-label', text);
+  };
   set(left);
-  return { el, set };
+  return { el, set, lock };
 }
 
 /** "Meadow · level 3": a level named without a world number. */

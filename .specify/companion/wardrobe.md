@@ -9,15 +9,17 @@
 - The wardrobe opens only with at least 1 minute on the balance, that is after at least 5
   minutes of practice; a smaller rest waits for more practice. Players who trained before
   the limit existed start with what their training so far earns.
-- While open, a teal **round countdown** sits in the wardrobe's header: its ring shows the
+- While open, a teal **round countdown** sits in the top right corner of the character's panel
+  (the character a little lower to make room): its ring shows the
   time left, inside a **smile** while more than 90 seconds are left, then a **number that
   drops by one every 10 seconds** (9 down to 1). The last 20 seconds it blinks slowly, the
   last 10 seconds fast; with reduced motion it turns orange instead. The time runs only
   while the wardrobe is on screen and the page is visible.
 - At zero the wardrobe **locks** in place: the character with its look stays visible, but
-  nothing can be changed (kind, nickname, items, remove, random), and a line says that
-  longer practice gives longer wardrobe time and how many minutes of practice open it again.
-  Entering with too little time shows the same locked screen.
+  nothing can be changed (kind, nickname, items, remove, random), and the countdown stays
+  where it was with a **lock** in its ring. Its tip (hover, focus or a long press), also while
+  counting, says that longer practice gives longer wardrobe time; locked, also how many
+  minutes of practice open it again. Entering with too little time shows the same locked screen.
 - With the limit off, and for the super player, there is no countdown and no lock.
 - **Playful character**: clicking the big character (or Enter or Space on it) makes it jump
   or pull another face, at random; also while locked. With reduced motion it only changes

@@ -22,8 +22,9 @@ test.beforeEach(async ({ page }) => {
 
 test('too little wardrobe time keeps the wardrobe locked, the character still plays', async ({ page }) => {
   await openWardrobe(page, 25);
-  await expect(page.locator('.round-btn.timer')).toHaveCount(0);
-  await expect(page.locator('.wardrobe-locked')).toContainText('3');
+  // The clock by the character turns into a lock whose tip says how to open the wardrobe.
+  const timer = page.locator('.wardrobe-preview > .round-btn.timer');
+  await expect(timer).toHaveAttribute('data-tip', /3 more minutes/);
   await expect(page.locator('#buddy-name')).toBeDisabled();
   await expect(page.getByRole('button', { name: /náhodné oblečenie|random outfit/i })).toBeDisabled();
   await page.locator('.wardrobe-tapko').click();
@@ -35,6 +36,7 @@ test('the countdown runs out and locks the wardrobe in place', async ({ page }) 
   const timer = page.locator('.round-btn.timer');
   await expect(timer).toHaveAttribute('role', 'timer');
   await expect(timer).toHaveText('');
+  await expect(timer).toHaveAttribute('data-tip', /Practice longer/);
   await expect(page.locator('#buddy-name')).toBeEnabled();
   await page.clock.runFor(5_000);
   await expect(timer).toHaveText('9');
@@ -45,8 +47,8 @@ test('the countdown runs out and locks the wardrobe in place', async ({ page }) 
   await page.clock.runFor(10_000);
   await expect(timer).toHaveClass(/fast/);
   await page.clock.runFor(10_000);
-  await expect(timer).toHaveCount(0);
-  await expect(page.locator('.wardrobe-locked')).toBeVisible();
+  await expect(timer).toHaveAttribute('data-tip', /opens after \d+ more minutes/);
+  await expect(timer).not.toHaveClass(/ending/);
   await expect(page.locator('#buddy-name')).toBeDisabled();
   const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('tapkotyper:v1')!).profiles[0].progress.wardrobeSeconds);
   expect(stored).toBe(0);
@@ -55,7 +57,6 @@ test('the countdown runs out and locks the wardrobe in place', async ({ page }) 
 test('with the limit off there is no countdown and no lock', async ({ page }) => {
   await openWardrobe(page, 0, false);
   await expect(page.locator('.round-btn.timer')).toHaveCount(0);
-  await expect(page.locator('.wardrobe-locked')).toBeHidden();
   await expect(page.locator('#buddy-name')).toBeEnabled();
 });
 

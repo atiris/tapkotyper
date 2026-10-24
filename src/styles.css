@@ -1085,7 +1085,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .wardrobe-tapko:focus-visible { outline: 3px solid var(--brand); outline-offset: 4px; }
 .wardrobe-tapko .tapko-stack.jump { animation: jump 0.6s ease; }
 .wardrobe-preview .row { justify-content: center; }
-.wardrobe-locked { max-width: 300px; text-align: center; font-weight: 600; color: var(--ink-soft); }
+.wardrobe-preview > .timer { position: absolute; top: 0.8rem; right: 0.8rem; }
+.wardrobe-preview > .timer + .wardrobe-tapko { margin-top: 2.4rem; }
 @media (min-width: 1100px) { .wardrobe-grid { grid-template-columns: 1fr 1fr; } }
 .slot { background: var(--glass); border-radius: 20px; padding: 0.8rem 1rem; }
 .slot h3 { font-size: 1rem; margin-bottom: 0.4rem; }
@@ -1297,7 +1298,7 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-ink); }
   /* One column: the worlds keep the three and two cards of a narrow row. */
   .story-row { width: min(100%, 639px); justify-self: center; }
   .wardrobe-body { grid-template-columns: 1fr; }
-  .wardrobe-preview { position: static; }
+  .wardrobe-preview { position: relative; top: 0; }
   .newkey-card { grid-template-columns: 1fr; justify-items: center; text-align: center; }
   .newkey-card h2 { margin-right: 0; justify-content: center; }
   .newkey-type { justify-content: center; }

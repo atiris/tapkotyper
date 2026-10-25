@@ -8,7 +8,7 @@ import { type RobotMood, type RobotState, robotElement } from '../gfx/robot';
 import { t, tList } from '../i18n/i18n';
 import { nickname } from '../storage/store';
 import { cornerControls } from '../ui/chrome';
-import { button, h } from '../ui/dom';
+import { button, closeButton, h } from '../ui/dom';
 
 interface SceneDef {
   world: string;
@@ -98,13 +98,25 @@ export function storyScreen(root: HTMLElement, params: StoryParams): () => void 
     def.fairy ? h('div', { class: 'story-melody' }, fairyElement(def.fairy, 160)) : null,
     def.gloves ? gloves() : null,
     def.sparkles ? h('div', { class: 'sparkles', 'aria-hidden': 'true' }, ...Array.from({ length: 14 }, (_, k) => h('i', { style: `--k:${k}` }))) : null);
+  const seen = (scene: string) => {
+    if (p.progress.scenesSeen.includes(scene)) return;
+    p.progress.scenesSeen.push(scene);
+    if (!p.progress.rewards.includes(scene) && !scene.startsWith('world') && scene !== 'intro') p.progress.rewards.push(scene);
+    saveProfile();
+  };
   const finish = () => {
-    if (!p.progress.scenesSeen.includes(params.scene)) {
-      p.progress.scenesSeen.push(params.scene);
-      if (!p.progress.rewards.includes(params.scene) && !params.scene.startsWith('world') && params.scene !== 'intro') p.progress.rewards.push(params.scene);
-      saveProfile();
-    }
+    seen(params.scene);
     go(params.next, params.nextParams ?? {});
+  };
+  /** Skipping skips the scenes chained after this one too (the intro, then the first world's scene). */
+  const skip = () => {
+    let at: StoryParams = params;
+    seen(at.scene);
+    while (at.next === 'story' && at.nextParams) {
+      at = at.nextParams;
+      seen(at.scene);
+    }
+    go(at.next, at.nextParams ?? {});
   };
   const show = () => {
     if (i >= lines.length) return finish();
@@ -119,10 +131,10 @@ export function storyScreen(root: HTMLElement, params: StoryParams): () => void 
   const screen = h('div', { class: `screen story-screen world-${def.world}`, style: bg ? `--bg:url("${bg}")` : '' },
     cornerControls(),
     stage,
-    h('div', { class: 'story-box' }, text, dots, h('div', { class: 'row' }, button(t('common.skip'), finish), nextBtn)));
+    h('div', { class: 'story-box' }, closeButton(skip, t('common.skip')), text, dots, h('div', { class: 'row' }, button(t('common.skip'), skip), nextBtn)));
   root.append(screen);
   const onKey = (e: KeyboardEvent) => {
-    if (e.key === 'Escape') { e.preventDefault(); finish(); }
+    if (e.key === 'Escape') { e.preventDefault(); skip(); }
     else if ((e.key === ' ' || e.key === 'Enter') && document.activeElement !== nextBtn) { e.preventDefault(); i++; show(); }
   };
   window.addEventListener('keydown', onKey);

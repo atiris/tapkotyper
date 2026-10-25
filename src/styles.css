@@ -1066,11 +1066,13 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .sparkles { position: absolute; inset: 0; pointer-events: none; }
 .sparkles i { position: absolute; left: calc(10% + var(--k) * 6%); top: calc(20% + (var(--k) * 37 % 50) * 1%); width: 14px; height: 14px; background: #fff6a8; clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%); animation: twinkle 2s ease-in-out infinite; animation-delay: calc(var(--k) * -0.3s); }
 @keyframes twinkle { 0%, 100% { opacity: 0.2; transform: scale(0.6); } 50% { opacity: 1; transform: scale(1.2); } }
-.story-box { background: var(--story-box); border-radius: 26px; padding: 1.4rem 1.8rem; max-width: 820px; margin: 0 auto; width: 100%; box-shadow: var(--shadow); text-align: center; }
+.story-box { position: relative; background: var(--story-box); border-radius: 26px; padding: 1.4rem 3.8rem; max-width: 1000px; margin: 0 auto; width: 100%; box-shadow: var(--shadow); text-align: center; }
 .story-text { font-size: clamp(1.2rem, 2.6vw, 1.6rem); font-weight: 600; min-height: 2.6em; margin: 0; }
 .story-text.in { animation: text-in 0.4s ease; }
 @keyframes text-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 .story-box .row { justify-content: center; }
+/* On a phone the X sits above the text instead of beside it. */
+@media (max-width: 599px) { .story-box { padding: 3.6rem 1.2rem 1.2rem; } }
 /* A raised button stands out from the box it sits on. */
 .story-box .btn:not(.primary) { background: var(--paper-2); }
 .story-dots { display: flex; gap: 0.4rem; justify-content: center; margin-top: 0.6rem; }

@@ -4,6 +4,9 @@
 The child travels through worlds grouped into stories. Each world has several short
 levels and ends with a super-obstacle and a reward that opens the next world. Short,
 skippable intro scenes (a few lines of text and a simple animation) tell the story.
+The scene's text panel has the round X of every panel in its top right corner; the X, Skip
+and Esc skip the whole scene, and the scenes chained after it (the intro and the first world's
+scene) too.
 The child plays as their character ([the character](../companion/tapko.md)); a narrator
 tells the story to the child in the second person ("you catch the leaf", "Melody
 gives you a wreath"), never about the character as someone else.

@@ -67,6 +67,7 @@ export const ICONS = {
   rescue: '<path d="M12 21s-7-4.5-7-10a4 4 0 017-2.6A4 4 0 0119 11c0 5.5-7 10-7 10z"/>',
   next: '<path d="M9 5l7 7-7 7"/>',
   code: '<path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/>',
+  lifebuoy: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M5.6 5.6l3.6 3.6M14.8 14.8l3.6 3.6M18.4 5.6l-3.6 3.6M9.2 14.8l-3.6 3.6"/>',
   paw: '<ellipse cx="12" cy="16" rx="5" ry="4"/><circle cx="5.5" cy="10" r="2"/><circle cx="9.5" cy="6" r="2"/><circle cx="14.5" cy="6" r="2"/><circle cx="18.5" cy="10" r="2"/>',
   wave: '<path d="M2 12c2.5-7 4.5-7 7 0s4.5 7 7 0 3.5-5 6-3"/>',
   replay: '<path d="M4 12a8 8 0 108-8H7"/><path d="M8 1L5 4l3 3"/>',

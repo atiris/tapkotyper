@@ -779,6 +779,7 @@
     "cert.precise": "Pridá sa za pochvalu na certifikáte, ak je presnosť aspoň 95 %.",
     "cert.careful": "Pridá sa za pochvalu na certifikáte, ak je presnosť aspoň 85 %.",
     "cert.praise": "Pochvala na certifikáte. Vyberie sa jedna veta podľa počtu zvládnutých klávesov (od najmenej po najviac). {name} je prezývka dieťaťa.",
+    "super.help.*": "Super pomoc v úrovni, len pre super účet: tlačidlo so záchranným kruhom a jeho menu. Hra potom píše za hráča ako skutočný hráč, s daným počtom chýb (zlý kláves) a zaváhaní (slovo nestihne dopísať).",
     "super.badge": "Popis hviezdy super účtu a nadpis servisného menu.",
     "super.companionName": "Meno postavičky super účtu.",
     "service.end": "Položka servisného menu: ukončí super režim.",

@@ -779,6 +779,7 @@
     "cert.precise": "Added after the praise on the certificate when accuracy is at least 95 %.",
     "cert.careful": "Added after the praise on the certificate when accuracy is at least 85 %.",
     "cert.praise": "Praise on the certificate. One sentence is chosen by how many keys are mastered (from fewest to most). {name} is the child's nickname.",
+    "super.help.*": "Super help in a level, only for the super account: the lifebuoy button and its menu. The game then types like a real player, with the chosen number of mistakes (a wrong key) and hesitations (a word not finished in time).",
     "super.badge": "Label of the super account star and heading of the service menu.",
     "super.companionName": "Name of the super account character.",
     "service.end": "Service menu item: ends super mode.",

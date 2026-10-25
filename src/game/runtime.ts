@@ -21,9 +21,10 @@ import { FINGER_KEYS, KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
 import { button, closeModals, confirmDialog, h } from '../ui/dom';
 import { globalButtons } from '../ui/chrome';
 import { tip } from '../ui/tooltip';
-import { accuracyPic, paintRound, pawRing, placeRing, rhythmPic, roundButton, worldName } from '../ui/hud';
+import { accuracyPic, paintRound, pawRing, placeRing, rhythmPic, roundButton, roundPic, worldName } from '../ui/hud';
+import { type MenuEntry, menuPanel } from '../ui/menu';
 import { OWN_SHARE, WordSource, type WordSourceOwn } from '../words/words';
-import type { LangRef, Profile, Surprise } from '../storage/schema';
+import { type LangRef, type Profile, SUPER_ID, type Surprise } from '../storage/schema';
 import type { LevelDef } from './levels';
 import { WORLDS, grownCount, hasMinLength, levelOver, minActiveS, shownProgress, storyOf } from './levels';
 import type { Mode } from './mode';
@@ -37,6 +38,7 @@ import { type LevelResult, completeLevel, completeStay } from './progress';
 import { type Style, type Target, TypingCore } from './typing';
 import { pickTip, showCard, showNewKey, showPosture } from './cards';
 import { surpriseFor } from './own-content';
+import { HELP_PLANS, type HelpHost, type HelpPlan, SuperHelper } from './super-help';
 
 /** A short shout over the scene (a goal, a cheer) where it popped up. */
 interface Shout {
@@ -266,6 +268,10 @@ export class LevelRuntime {
 
   /** Paw help: the HUD button, words the paw still types, seconds to its next key. */
   private pawBtn: HTMLButtonElement | null = null;
+  /** The super player's help: the button, its open menu and the helper while it types. */
+  private superBtn: HTMLButtonElement | null = null;
+  private closeHelpMenu: ((refocus?: boolean) => void) | null = null;
+  private helper: SuperHelper | null = null;
   private pawWords = 0;
   private pawTimer = 0;
   private pawIdle = 0;
@@ -322,11 +328,17 @@ export class LevelRuntime {
       this.pawBtn.classList.add('paw-btn');
       this.renderPawBtn();
     }
+    if (p.id === SUPER_ID && def.kind !== 'freetype') {
+      this.superBtn = roundButton('super', 'lifebuoy', t('super.help.title'), () => this.toggleHelpMenu());
+      this.superBtn.classList.add('super-help');
+      this.superBtn.setAttribute('aria-haspopup', 'menu');
+    }
     if (def.kind === 'practice' || def.kind === 'aim') this.accuracyPics = [...this.words.focus].map((key) => ({ key, pic: accuracyPic(key) }));
     this.paintAccuracy();
     const hud = h('div', { class: 'hud' },
       pauseBtn,
       this.pawBtn,
+      this.superBtn,
       def.kind === 'practice' || def.index < 0 ? null : placeRing(def),
       h('b', { class: 'hud-title' }, title),
       opts.stay && def.kind !== 'aim' ? h('span', { class: 'hud-hint' }, t('level.stayHint')) : null,
@@ -918,6 +930,58 @@ export class LevelRuntime {
     drawFairy(g, this.endTime == null ? this.fairyMood : 'happy', x, y - FAIRY_FLOAT, FAIRY_SIZE, this.mode.t, hop);
   }
 
+  // ---- super help ----------------------------------------------------------------
+
+  /** The super help's menu: how the game types for the super player, or stop it. */
+  private toggleHelpMenu(): void {
+    if (this.closeHelpMenu) return this.closeHelpMenu();
+    const btn = this.superBtn!;
+    const entries: MenuEntry[] = (Object.keys(HELP_PLANS) as HelpPlan[]).map((plan) => ({ label: t(`super.help.${plan}`), art: roundPic('super', 'lifebuoy'), pick: () => this.startHelp(plan) }));
+    if (this.helper) entries.push({ label: t('super.help.stop'), art: roundPic('super', 'close'), pick: () => this.stopHelp() });
+    this.closeHelpMenu = menuPanel(btn, t('super.help.title'), entries, (panel) => {
+      const r = btn.getBoundingClientRect();
+      panel.classList.add('service-menu');
+      panel.style.top = `${r.bottom + 10}px`;
+      panel.style.left = `${r.left}px`;
+      panel.style.right = 'auto';
+      document.querySelector('#app')!.append(panel);
+    }, (refocus) => {
+      this.closeHelpMenu = null;
+      if (refocus) btn.focus();
+    });
+  }
+
+  private startHelp(plan: HelpPlan): void {
+    this.helper = new SuperHelper(plan, () => this.rng.next());
+    this.superBtn?.classList.add('helping');
+  }
+
+  private stopHelp(): void {
+    this.helper = null;
+    this.superBtn?.classList.remove('helping');
+  }
+
+  /** The super help types through the same key handler as the child, so everything counts as typed. */
+  private readonly helpHost: HelpHost = {
+    progress: () => shownProgress(this.mode.progress(), this.played, this.minActive),
+    next: () => {
+      const tg = this.core.focus();
+      if (!tg || !this.core.typable(tg)) return null;
+      return { ch: tg.word[tg.typed], last: tg.typed === tg.word.length - 1 };
+    },
+    press: (ch) => {
+      const shift = shiftKeyOf(layout(), ch);
+      this.onChar({ ch, code: '', shift: !!shift, shiftCode: shift ? (shift === SHIFT_L ? 'ShiftLeft' : 'ShiftRight') : null, time: performance.now() });
+    },
+    wrongKey: () => {
+      const expected = this.core.expectedChar();
+      const keys = activeKeys(app.profile!).filter((k) => isLetterKey(k) && k !== expected);
+      return keys.length ? this.rng.pick(keys) : expected === 'x' ? 'q' : 'x';
+    },
+    missed: () => this.core.missed,
+    canMiss: () => !this.noPressure,
+  };
+
   // ---- paw help ------------------------------------------------------------------
 
   private renderPawBtn(): void {
@@ -1122,6 +1186,7 @@ export class LevelRuntime {
     if (!hadFocus && this.core.focus()) this.rhythm.ready(performance.now());
     this.trackPace();
     if (this.pawWords) this.tapkoTypes(dt);
+    else if (this.helper && !this.finished) this.helper.tick(dt, this.helpHost);
     this.readFocus();
     // Free typing and staying a while have no end on their own: the bubble says when a break is due.
     if ((this.free || this.opts.stay) && !this.breakSaid && app.sessionSeconds >= app.profile!.settings.sessionMinutes * 60) {

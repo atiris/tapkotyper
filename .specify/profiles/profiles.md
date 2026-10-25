@@ -55,6 +55,17 @@
     range finds. The keys and the finished worlds are set exactly; the stars, the range finds
     and each key's accuracy are spread at random over the finished worlds (every finished level
     keeps at least one star), so the map, badges and statistics look like a real child's.
+- In a level, the temporary player has a **super help** button (a red lifebuoy) right of the
+  paw help. Its menu starts the game typing like a real player at about 200 characters a
+  minute: without a mistake, with 1 or 2 mistakes, with 1 mistake and 1 hesitation, or with 2
+  mistakes and 2 hesitations. The slips are spread evenly over the level: the level is cut
+  into one part more than there are slips, and a slip comes at each cut, in the listed order.
+  A mistake is a random wrong key. A hesitation lets one word fly by unfinished; in a level
+  where nothing flies by, it is skipped. Two more choices aim at an accuracy instead, about
+  90 % (2 stars) and about 75 % (1 star), with wrong keys at random all through the level.
+  Everything counts as the player's own typing:
+  statistics, stars and paw charges. The same menu stops it. Only the temporary player has
+  it, so a stored player's statistics are always typed by the child.
 - Stored players' progress is never changed by the service menu: there is no simulated or
   opened level, so a parent or teacher always sees progress that was typed.
 - A password removed or changed by the super player (whose settings ask for no password) is
@@ -63,6 +74,9 @@
   ([teacher links](teacher-links.md)).
 
 ## Why
+- The owner tests levels, results and paw charges many times; the super help plays a level
+  like a child with a known number of slips, so the results can be checked without typing
+  every word by hand.
 - Families and classrooms share devices; export/import gives portability without accounts.
 - The owner tests and demonstrates the game: a temporary player with a chosen, realistic
   progress shows the map, badges and statistics at any stage without playing. A forgotten

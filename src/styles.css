@@ -299,6 +299,15 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
 .menu-item:hover, .menu-item:focus-visible { background: var(--paper-2); outline: none; }
 .menu-item:disabled { opacity: 0.4; cursor: default; }
 .menu-item .round-btn { width: 44px; height: 44px; pointer-events: none; }
+/* The star's service menu (super mode) hangs under the star, or under the Menu it is folded in. */
+.corner-menu-panel.service-menu { position: fixed; top: auto; z-index: 40; }
+.service-dialog { display: flex; flex-direction: column; gap: var(--sp-3); max-width: 560px; }
+.service-levels { display: flex; flex-wrap: wrap; gap: 0.4rem; max-height: 60vh; overflow-y: auto; }
+/* The "!" of a serviced account or a simulated level: the attention red, for good. */
+.service-mark { display: inline-grid; place-items: center; width: 1.2em; height: 1.2em; margin-left: 0.3em; border-radius: 50%; background: #d63a32; color: #fff; font-size: 0.8em; font-weight: 800; line-height: 1; vertical-align: middle; }
+.level-node { position: relative; }
+.level-node .service-mark { position: absolute; top: -6px; right: -6px; margin: 0; font-size: 12px; }
+.sim-tag { padding: 0.1rem 0.6rem; border-radius: 999px; background: #d63a32; color: #fff; font-size: 13px; font-weight: 800; white-space: nowrap; }
 .panel { background: var(--paper); border-radius: var(--radius); box-shadow: var(--shadow); padding: clamp(1rem, 3vw, 2rem); max-width: 960px; margin: 0 auto; }
 .bar { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
 /*

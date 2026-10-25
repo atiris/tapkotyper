@@ -1314,7 +1314,7 @@
       "progress": "The bar shows how much of the level is behind you.",
       "gauge": "The green ring shows your rhythm. When you type smoothly, it fills up.",
       "levelHelp": "Help: what to do in this level and how to type. **F1** opens it too.",
-      "super": "The star at the top: super mode. Click it to turn it off.",
+      "super": "The star at the top: super mode. It opens the service menu.",
       "read": "Read aloud: the computer reads the words to you. **F3** turns it on or off.",
       "guide": "Shows or hides the keyboard that tells where the finger goes. **F2** does it too.",
       "menu": "On a small screen these buttons hide under one Menu button.",
@@ -1491,7 +1491,19 @@
     "remember-slip": "Forgot a letter? A mistake shows the word for a moment again."
   },
   "super": {
-    "badge": "Super mode: everything unlocked. Click to end it."
+    "badge": "Super mode: service menu"
+  },
+  "service": {
+    "end": "End super mode",
+    "removeLock": "Remove the settings password",
+    "lockRemoved": "The settings password is removed.",
+    "pass0": "Pass without a mistake",
+    "pass1": "Pass with 1 mistake",
+    "pass2": "Pass with 2 mistakes",
+    "openLevel": "Open a level...",
+    "simTag": "Simulation",
+    "accountMark": "The account has simulated levels",
+    "levelMark": "The level was simulated"
   },
   "keys": {
     "space": "space bar",

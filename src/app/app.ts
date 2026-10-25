@@ -35,6 +35,8 @@ export const app = {
   /** Menu music for this visit: the menu track or the extra relaxing one. */
   menuTrack: Math.random() < 0.5 ? 'menu' : 'relaxing',
   breakCount: 0,
+  /** Super mode: the star's service menu works for any player until a reload or its end (memory only). */
+  superMode: false,
   /** The super player while super mode is on (memory only). */
   superPlayer: null as Profile | null,
   /** A task from a link that waits for the new player being created. */

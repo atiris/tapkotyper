@@ -16,8 +16,9 @@ One set of rules for where things sit and how they behave, so every screen feels
    **By width** (every screen but a level): from 600 px all buttons in the row; below 600 px one
    round **Menu** button opens a panel with each button as its round picture and its label (a
    screen's own buttons too, the language as an item that opens the same list). The panel closes
-   with Escape, a click outside or after an action. The start page's title **TapkoTyper**
-   always fits on one line under the buttons, from 320 px up.
+   with Escape, a click outside or after an action. The red super star opens its own service
+   menu panel of the same look and keys, under the star (or under the Menu it is folded in).
+   The start page's title **TapkoTyper** always fits on one line under the buttons, from 320 px up.
 2. **Leaving.** A page you navigated to (settings, help, teacher view, wardrobe, friends) closes with
    "Späť" at the top left, also the help page in a paused level. A level that is not paused but
    left (just typing, the custom exercise) has the round X at the start of its play bar; in the

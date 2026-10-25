@@ -176,7 +176,7 @@ describe('migration v5', () => {
   it('starts an existing device on the system theme and keeps a stored one', () => {
     const v4 = { version: 4, profiles: [newProfile('Ema', 'sk')], lastProfileId: null, language: 'sk' };
     const out = migrate(v4);
-    expect(out.version).toBe(6);
+    expect(out.version).toBe(STORE_VERSION);
     expect(out.theme).toBe('system');
     expect(out.profiles).toHaveLength(1);
     expect(migrate({ version: 5, profiles: [], theme: 'dark' }).theme).toBe('dark');
@@ -189,8 +189,34 @@ describe('migration v6', () => {
     const old: any = newProfile('Ema', 'sk');
     delete old.progress.rangeFinds;
     const out = migrate({ version: 5, profiles: [old], theme: 'light' });
-    expect(out.version).toBe(6);
+    expect(out.version).toBe(STORE_VERSION);
     expect(out.profiles[0].progress.rangeFinds).toEqual([]);
     expect(newProfile('Nový', 'sk').progress.rangeFinds).toEqual([]);
+  });
+});
+
+describe('migration v7', () => {
+  it('gives every profile an empty list of simulated levels and no service mark', () => {
+    const old: any = newProfile('Ema', 'sk');
+    delete old.progress.simulated;
+    const out = migrate({ version: 6, profiles: [old], theme: 'light' });
+    expect(out.version).toBe(7);
+    expect(out.profiles[0].progress.simulated).toEqual([]);
+    expect(out.profiles[0].serviced).toBeUndefined();
+  });
+
+  it('keeps the service mark through export and import, even over an older copy', () => {
+    const s = new Store(mem(), mem());
+    const p = s.add(newProfile('Ema', 'sk'));
+    const before = s.exportJson([p.id]);
+    p.serviced = true;
+    p.progress.simulated = ['w1-1'];
+    s.update(p);
+    const back = parseImport(s.exportJson([p.id]))[0];
+    expect(back.serviced).toBe(true);
+    expect(back.progress.simulated).toEqual(['w1-1']);
+    applyImport(s, planImport(s, parseImport(before)), true);
+    expect(s.get(p.id)!.serviced).toBe(true);
+    expect(s.get(p.id)!.progress.simulated).toEqual(['w1-1']);
   });
 });

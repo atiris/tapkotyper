@@ -23,6 +23,8 @@ export interface TaskResult {
   levels?: number;
   /** The weakest keys now, with their recent accuracy in percent, weakest first. */
   weak: [string, number][];
+  /** The account has levels simulated or opened by the service menu (super mode). */
+  serviced?: true;
 }
 
 export const RESULT_WEAK_KEYS = 5;
@@ -43,6 +45,7 @@ export function makeResult(p: Profile, task: Task): TaskResult {
     cpm: task.cpm,
     levels: Object.keys(p.progress.levels).length,
     weak: weakKeys(p, Object.keys(p.stats.keys), RESULT_WEAK_KEYS).map((k) => [k.key, Math.round(k.accuracy * 100)]),
+    ...(p.serviced && { serviced: true }),
   };
 }
 
@@ -64,12 +67,13 @@ export function makeOverallResult(p: Profile, title: string): TaskResult {
     cpm: masterySummary(p).cpm || (sessions[sessions.length - 1]?.cpm ?? 0),
     levels: Object.keys(p.progress.levels).length,
     weak: weakKeys(p, Object.keys(p.stats.keys), RESULT_WEAK_KEYS).map((k) => [k.key, Math.round(k.accuracy * 100)]),
+    ...(p.serviced && { serviced: true }),
   };
 }
 
 /** Fields in a fixed order, so the checksum does not depend on how the object was built. */
-/** The group and the levels join the sum only when set, so results without one keep verifying. */
-export const resultSum = (r: TaskResult): string => checksum(JSON.stringify([r.taskId, r.title, r.name, r.date, r.minutes, r.accuracy, r.cpm, r.weak, ...(r.group ? [r.group] : []), ...(r.levels === undefined ? [] : [r.levels])]));
+/** The group, the levels and the service mark join the sum only when set, so results without one keep verifying. */
+export const resultSum = (r: TaskResult): string => checksum(JSON.stringify([r.taskId, r.title, r.name, r.date, r.minutes, r.accuracy, r.cpm, r.weak, ...(r.group ? [r.group] : []), ...(r.levels === undefined ? [] : [r.levels]), ...(r.serviced ? ['serviced'] : [])]));
 
 export function resultCode(r: TaskResult): Promise<string> {
   return encode({ app: 'tapkotyper', type: 'result', ...r, sum: resultSum(r) });
@@ -90,6 +94,7 @@ export function cleanResult(v: any): TaskResult | null {
     cpm: num(v?.cpm),
     ...(typeof v?.levels === 'number' && { levels: num(v.levels) }),
     weak: Array.isArray(v?.weak) ? v.weak.filter((w: unknown) => Array.isArray(w) && typeof w[0] === 'string').slice(0, RESULT_WEAK_KEYS).map((w: any[]) => [w[0].slice(0, 12), num(w[1])]) : [],
+    ...(v?.serviced === true && { serviced: true }),
   };
   return result.name && result.taskId ? result : null;
 }

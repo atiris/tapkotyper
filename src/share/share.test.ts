@@ -5,7 +5,7 @@ import { CODEC_VERSION, checksum, codeFrom, decode, encode } from './codec';
 import { OVERALL_ID, makeOverallResult, makeResult, parseResult, resultCode } from './result';
 import { activeTask, addTask, parseTask, recordTaskRun, taskCode, taskOwn } from './task';
 import { parseTapko, tapkoFile } from './tapko-file';
-import { type SortKey, TeacherStore, childKey, childSummary, dateBefore, newest, nextSort, sortWriters } from './teacher';
+import { type SortKey, TeacherStore, childKey, childSummary, dateBefore, fingerprint, newest, nextSort, sortWriters } from './teacher';
 import { moveCode, parseMove, trimHistory } from './transfer';
 
 const b64 = (bytes: number[]) => btoa(String.fromCharCode(...bytes)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
@@ -114,6 +114,22 @@ describe('results', () => {
     expect(back.result.group).toBeUndefined();
     const forged = await encode({ app: 'tapkotyper', type: 'result', ...old, group: '5.B', sum });
     expect((await parseResult(forged)).intact).toBe(false);
+  });
+
+  it('carry the service mark of a serviced account, and it cannot be dropped unseen', async () => {
+    const p = newProfile('Ema', 'sk');
+    const task = addTask(p, { id: 't1', title: 'Zvieratá', words: ['pes'], text: '', minutes: 1, kind: 'story' });
+    recordTaskRun(task, { seconds: 60, chars: 90, errors: 10, cpm: 50 });
+    const plain = makeResult(p, task);
+    expect('serviced' in plain).toBe(false);
+    p.serviced = true;
+    const r = makeResult(p, task);
+    expect(r.serviced).toBe(true);
+    expect(makeOverallResult(p, 'x').serviced).toBe(true);
+    expect(await parseResult(await resultCode(r))).toEqual({ result: r, intact: true });
+    const { serviced: _, ...dropped } = await decode(await resultCode(r)) as any;
+    expect((await parseResult(await encode(dropped))).intact).toBe(false);
+    expect(fingerprint(plain)).not.toBe(fingerprint(r));
   });
 
   it('teacher store keeps every hand-in once, by its fingerprint, and exports CSV', async () => {

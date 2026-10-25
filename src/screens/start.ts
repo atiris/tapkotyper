@@ -137,6 +137,7 @@ export function startScreen(root: HTMLElement): () => void {
   // The first player (or the new player) waits for Enter; a number key picks one too.
   if (!gated) (root.querySelector<HTMLElement>('.profile-card') ?? root.querySelector<HTMLElement>('.start-card .btn.primary'))?.focus();
   const offSuper = listenForSuperPassword(async () => {
+    app.superMode = true;
     app.superPlayer = superProfile(language());
     await selectProfile(app.superPlayer);
     go('map');

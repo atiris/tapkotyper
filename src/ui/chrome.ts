@@ -9,18 +9,10 @@ import type { Lang } from '../storage/schema';
 import { type Child, ICONS, h, icon } from './dom';
 import { paintRound, roundButton } from './hud';
 import { cornerMenu } from './menu';
+import { superStar } from './service';
 import { toast } from './toast';
 import { hideTip, tip } from './tooltip';
 import { updateButton } from './update';
-
-/** Super mode is on: a round star in the top row; clicking it ends the mode. Nothing otherwise. */
-export function superStar(): HTMLButtonElement | null {
-  if (!app.superPlayer) return null;
-  return roundButton('super', 'star', t('super.badge'), () => {
-    app.superPlayer = null;
-    go('start');
-  });
-}
 
 const LEVEL_ICON: Record<SoundLevel, keyof typeof ICONS> = { normal: 'sound', quiet: 'soundLow', off: 'mute' };
 

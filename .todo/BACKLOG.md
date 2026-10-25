@@ -8,3 +8,4 @@ Search before adding; an entry is worked only when it is named.
 - [P3] Check .tapko sharing and opening on real devices - src/screens/teacher.ts sendDialog uses Web Share with files (Android, iPhone) and main.ts launchQueue opens a double-clicked .tapko in installed Chrome/Edge (plan 59); neither is testable here
 - [P2] Mole and molehill are one picture - assets-src/obj-mole.jpg draws the mole inside its hill; the mole level (src/game/modes/egg.ts) needs the mole and the molehill as separate pictures
 - [P3] Robohome floor strip shows its seam joins - public/assets/bg-robohome-near.webp: quilt cut the regular planks diagonally (V lines every screen width); repaint that seam or regenerate the floor strips
+- [P3] Tooltip e2e fails on a new player's map - e2e/tooltip.spec.ts:28 Escape no longer hides the tooltip: the welcome card's capture Escape handler (src/screens/map.ts welcomeCard, stopImmediatePropagation) eats it before src/ui/tooltip.ts sees it

@@ -19,6 +19,7 @@ import { bigCode } from '../ui/big-code';
 import { badge } from '../ui/badge';
 import { medal } from '../ui/medal';
 import { rangeFinds } from '../ui/finds';
+import { serviceMark } from '../ui/service';
 
 /**
  * Map key code -> the key it measures: letters by their unshifted char (capitals count
@@ -196,7 +197,7 @@ function playfulTapko(p: Profile): HTMLElement {
 function progressTab(p: Profile): HTMLElement {
   return h('div', {},
     h('div', { class: 'stats-head' }, playfulTapko(p),
-      h('div', {}, h('h2', {}, t('progress.title')), progressSection(p))),
+      h('div', {}, h('h2', {}, t('progress.title'), serviceMark(p)), progressSection(p))),
     p.progress.growth ? h('div', { class: 'medals' }, h('h3', {}, t('stats.medals')),
       h('div', { class: 'medal-row' }, ...Array.from({ length: p.progress.growth }, (_, i) => medal(i + 1, true)))) : null,
     h('div', { class: 'row stats-code' }, button(t('progress.showCode'), () => void showOverallCode(p), 'btn', 'code')));

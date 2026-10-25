@@ -12,6 +12,7 @@ import { badgeTier } from '../game/rewards';
 import { badge } from '../ui/badge';
 import { arrowFocus, button, closeButton, h, icon } from '../ui/dom';
 import { cornerControls } from '../ui/chrome';
+import { markEl, serviceMark } from '../ui/service';
 import { offerInstall } from '../ui/install';
 import { ownTextPhrases } from '../game/modes/practice';
 import { levelTitleWords, roundButton } from '../ui/hud';
@@ -121,7 +122,7 @@ export function mapScreen(root: HTMLElement): void {
       cornerControls(settingsButton())),
     h('main', { class: 'map-body' },
       h('aside', { class: 'map-side' },
-        h('h1', { class: 'map-hello' }, t('map.hello', { name: nickname(p) })),
+        h('h1', { class: 'map-hello' }, t('map.hello', { name: nickname(p) }), serviceMark(p)),
         tapko,
         bubble,
         taskCard(p),
@@ -184,14 +185,16 @@ function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held:
       const reached = isLevelReached(p, l);
       const missing = reached ? keysMissing(p, l) : 0;
       const stars = p.progress.levels[l.id] ?? 0;
+      const simulated = p.progress.simulated.includes(l.id);
       const b = h('button', {
         class: `level-node ${l.isSuper ? 'super' : ''} ${stars ? 'done' : ''} ${l.id === nextId ? 'current' : ''} ${missing ? 'keys' : ''}`,
         type: 'button',
         disabled: !reached,
-        'aria-label': `${t(`worlds.${w}`)} ${l.isSuper ? t('map.super') : l.index + 1}${stars ? `, ${t('map.starsAria', { n: stars })}` : ''}${missing ? `, ${t('map.keysLocked')}` : ''}`,
+        'aria-label': `${t(`worlds.${w}`)} ${l.isSuper ? t('map.super') : l.index + 1}${stars ? `, ${t('map.starsAria', { n: stars })}` : ''}${missing ? `, ${t('map.keysLocked')}` : ''}${simulated ? `, ${t('service.levelMark')}` : ''}`,
         onClick: () => (missing ? keysBubble(missing, wi) : playLevel(l.id)),
       }, h('span', { class: 'num' }, l.isSuper ? '★' : String(l.index + 1)),
-        missing ? keyIcon(held) : h('span', { class: 'mini-stars' }, ...[1, 2, 3].map((s) => h('i', { class: s <= stars ? 'on' : '' }))));
+        missing ? keyIcon(held) : h('span', { class: 'mini-stars' }, ...[1, 2, 3].map((s) => h('i', { class: s <= stars ? 'on' : '' }))),
+        simulated ? markEl(t('service.levelMark')) : null);
       return b;
     });
     const tier = badgeTier(p, wi);

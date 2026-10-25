@@ -55,6 +55,7 @@ test('the super password typed fast on the start page opens everything', async (
   await expect(page.locator('.top-right .round-btn.super')).toBeVisible();
   await expect(page.locator('.level-node:disabled')).toHaveCount(0);
   await page.locator('.top-right .round-btn.super').click();
+  await page.locator('.service-menu .menu-item', { hasText: 'End super mode' }).click();
   await expect(page.locator('.start-screen')).toBeVisible();
   await expect(page.locator('.top-right .round-btn.super')).toHaveCount(0);
 });

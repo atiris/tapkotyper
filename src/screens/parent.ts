@@ -24,6 +24,7 @@ import { openCertificate } from './certificate';
 import { clickableHeatmap, showOverallCode, storyPicture, summaryRow } from './stats';
 import { barChart, lineChart } from '../ui/charts';
 import { hasCompanion } from '../game/rewards';
+import { serviceMark } from '../ui/service';
 import { OWN_TEXT_MAX, OWN_WORDS_MAX, parseOwnWords, typableText, untypableWords } from '../words/words';
 
 /** The parent area, once `parentAccess` let the parent in; `tab`: the tab to open. */
@@ -50,7 +51,7 @@ function childSwitch(p: Profile, others: Profile[], tab: () => string): HTMLElem
     await selectProfile(q);
     go('parent', { granted: true, tab: tab() });
   };
-  const b = button(h('span', { class: 'switch-label' }, tapkoElement(p.companion, 'idle', 28), h('span', {}, nickname(p))), () => {
+  const b = button(h('span', { class: 'switch-label' }, tapkoElement(p.companion, 'idle', 28), h('span', {}, nickname(p), serviceMark(p))), () => {
     const choose = (q: Profile) => { close(); void pick(q); };
     const cards = others.map((q, i) => profileCard(q, i, () => choose(q)));
     const list = h('div', { class: 'switch-list' });

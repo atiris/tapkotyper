@@ -17,7 +17,7 @@ import {
 export const STORE_KEY = 'tapkotyper:v1';
 const GUEST_KEY = 'tapkotyper:guest';
 
-export const STORE_VERSION = 6;
+export const STORE_VERSION = 7;
 
 /** Migrations from older stored shapes, keyed by the version they upgrade from. */
 const migrations: Record<number, (data: any) => any> = {
@@ -50,6 +50,14 @@ const migrations: Record<number, (data: any) => any> = {
     profiles: Array.isArray(data.profiles) ? data.profiles.map((p: any) => !p || typeof p !== 'object' ? p : {
       ...p,
       progress: { ...p.progress, rangeFinds: [] },
+    }) : data.profiles,
+  }),
+  // v7: no level was passed or opened by the service menu yet.
+  6: (data) => ({
+    ...data,
+    profiles: Array.isArray(data.profiles) ? data.profiles.map((p: any) => !p || typeof p !== 'object' ? p : {
+      ...p,
+      progress: { ...p.progress, simulated: [] },
     }) : data.profiles,
   }),
 };
@@ -160,6 +168,7 @@ export function newProfile(name: string, language: Lang, layout?: LayoutId, kind
       starsEarned: 0,
       wardrobeSeconds: 0,
       rangeFinds: [],
+      simulated: [],
     },
     stats: { keys: {}, sessions: [] },
     createdAt: Date.now(),
@@ -266,9 +275,16 @@ export function planImport(store: Store, profiles: Profile[]): ImportPlan {
 export function applyImport(store: Store, plan: ImportPlan, replace: boolean): void {
   for (const p of plan.profiles) {
     const i = store.data.profiles.findIndex((x) => x.id === p.id);
-    if (i >= 0 && replace) store.data.profiles[i] = p;
+    // The service mark stays for good: an older copy of the player does not lift it.
+    if (i >= 0 && replace) store.data.profiles[i] = keepServiced(store.data.profiles[i], p);
     else if (i >= 0) store.data.profiles.push({ ...p, id: newProfile(p.name, p.language).id });
     else store.data.profiles.push(p);
   }
   store.save();
+}
+
+/** `next` with the service mark and the simulated levels of `was` kept. */
+function keepServiced(was: Profile, next: Profile): Profile {
+  if (!was.serviced) return next;
+  return { ...next, serviced: true, progress: { ...next.progress, simulated: [...new Set([...was.progress.simulated, ...next.progress.simulated])] } };
 }

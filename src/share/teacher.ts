@@ -48,7 +48,8 @@ export interface LoadedFile {
 
 /** A hash of what a hand-in says: the same hand-in from any source has the same one. */
 export function fingerprint(r: TaskResult): string {
-  const text = JSON.stringify([r.taskId, r.name, r.group ?? '', r.date, r.minutes, r.accuracy, r.cpm, r.levels ?? null, r.weak]);
+  // The service mark joins only when set, so earlier hand-ins keep their fingerprint.
+  const text = JSON.stringify([r.taskId, r.name, r.group ?? '', r.date, r.minutes, r.accuracy, r.cpm, r.levels ?? null, r.weak, ...(r.serviced ? ['serviced'] : [])]);
   // cyrb53: 53 bits are plenty for a class's hand-ins.
   let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
   for (let i = 0; i < text.length; i++) {
@@ -150,6 +151,8 @@ export interface Writer extends ChildSummary {
   cpmChange: number;
   mastered: boolean;
   intact: boolean;
+  /** One of the hand-ins comes from an account with simulated levels. */
+  serviced: boolean;
 }
 
 export function writer(rows: StoredResult[]): Writer {
@@ -167,6 +170,7 @@ export function writer(rows: StoredResult[]): Writer {
     cpmChange: last.cpm - first.cpm,
     mastered: mastered(sum),
     intact: all.every((r) => r.intact),
+    serviced: all.some((r) => r.serviced),
   };
 }
 

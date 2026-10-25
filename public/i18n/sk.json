@@ -1314,7 +1314,7 @@
       "progress": "Pásik ukazuje, koľko z úrovne už máš za sebou.",
       "gauge": "Zelený kruh ukazuje tvoj rytmus. Keď píšeš plynulo, naplní sa.",
       "levelHelp": "Pomoc: čo robiť v tejto úrovni a ako písať. Otvorí ju aj **F1**.",
-      "super": "Hviezda hore: super režim. Kliknutím ho vypneš.",
+      "super": "Hviezda hore: super režim. Otvorí servisné menu.",
       "read": "Čítanie nahlas: počítač ti slová prečíta. **F3** ho zapne alebo vypne.",
       "guide": "Ukáže alebo skryje klávesnicu, ktorá radí, kam ide prst. Rovnako **F2**.",
       "menu": "Na malej obrazovke sú tieto tlačidlá schované pod jedným tlačidlom Menu.",
@@ -1491,7 +1491,19 @@
     "remember-slip": "Nevieš si spomenúť? Po chybe sa slovo na chvíľu ukáže znova."
   },
   "super": {
-    "badge": "Superrežim: všetko odomknuté. Kliknutím ho ukončíš."
+    "badge": "Super režim: servisné menu"
+  },
+  "service": {
+    "end": "Koniec super režimu",
+    "removeLock": "Zrušiť heslo nastavení",
+    "lockRemoved": "Heslo nastavení je zrušené.",
+    "pass0": "Prejsť bez chyby",
+    "pass1": "Prejsť s 1 chybou",
+    "pass2": "Prejsť s 2 chybami",
+    "openLevel": "Odomknúť úroveň...",
+    "simTag": "Simulácia",
+    "accountMark": "Účet obsahuje simulované úrovne",
+    "levelMark": "Úroveň bola simulovaná"
   },
   "keys": {
     "space": "medzerník",

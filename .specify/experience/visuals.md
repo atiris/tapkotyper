@@ -58,7 +58,7 @@
   jedno veľké dobrodružstvo."), one sentence about the game and four short promises with green
   icons ("Bez reklám a účtov"; data stays on the device, which opens the help's about tab;
   the wardrobe and stars for effort; "Sledovateľný pokrok"). On the right the card
-  "Kto sa dnes hrá?" with the logo face (the fox head of the browser tab icon, on dark its picture
+  "Kto mi dnes napíše?" with the logo face (the fox head of the browser tab icon, on dark its picture
   drawn for a dark background) half above its top edge. The card is the page's main panel: its
   player cards are large, with the character filling most of each, and narrow only as more
   players need the room (the title's column keeps about a third of the width). Narrower, one column: title, slogan, the card, then the text and the promises (the card

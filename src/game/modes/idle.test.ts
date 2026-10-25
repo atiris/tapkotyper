@@ -14,6 +14,7 @@ const { MoleMode, SlopeMode } = await import('./egg');
 const { BirdsMode } = await import('./forestpath');
 const { JunkMode, KnotMode } = await import('./junkyard');
 const { HedgehogMode, MeadowMode } = await import('./meadow');
+const { DewdropsMode, InvitationMode } = await import('./meadow-calm');
 const { FirefliesMode, LastSongMode } = await import('./moonball');
 const { NotesMode, TreeSongMode } = await import('./musictree');
 const { RainMode, StormMode } = await import('./raintown');
@@ -43,6 +44,7 @@ function fakeRuntime(count = 4): LevelRuntime {
     toolAlpha: 1,
     rng: { pick: <T>(a: T[]) => a[0], range: (a: number) => a, chance: () => false, int: (a: number) => a, next: () => 0.5 },
     word: () => 'ab',
+    letter: () => 'a',
     travelTime: () => 3,
     friendSpot: () => ({ x: 120, y: 600 }),
     particles: { emit: () => {} },
@@ -53,7 +55,7 @@ function fakeRuntime(count = 4): LevelRuntime {
 }
 
 const MODES: [string, new (L: LevelRuntime) => Mode][] = [
-  ['meadow', MeadowMode], ['hedgehog', HedgehogMode], ['space', SpaceMode], ['asteroid', AsteroidMode],
+  ['meadow', MeadowMode], ['dewdrops', DewdropsMode], ['invitation', InvitationMode], ['hedgehog', HedgehogMode], ['space', SpaceMode], ['asteroid', AsteroidMode],
   ['swamp', SwampMode], ['signs', SignsMode], ['boulder', BoulderMode], ['shield', ShieldMode], ['wave', WaveMode],
   ['slope', SlopeMode], ['mole', MoleMode], ['junk', JunkMode], ['knot', KnotMode], ['belt', BeltMode],
   ['battery', BatteryMode], ['rain', RainMode], ['storm', StormMode], ['doors', DoorsMode], ['gate', GateMode],
@@ -99,6 +101,30 @@ describe('a level shorter than its minimum', () => {
     }
     expect(time).toBeGreaterThanOrEqual(MIN_ACTIVE_S);
     expect(time).toBeLessThan(MIN_ACTIVE_S + 60);
+  });
+});
+
+describe('invitation', () => {
+  it('a slip adds two words until the story ceiling of (1 + story order) x 3', async () => {
+    const { slipWords } = await import('./meadow-calm');
+    expect(slipWords(1, 0)).toBe(2);
+    expect(slipWords(1, 4)).toBe(2);
+    expect(slipWords(1, 6)).toBe(0);
+    expect(slipWords(2, 8)).toBe(1);
+    expect(slipWords(3, 12)).toBe(0);
+  });
+
+  it('a slip fades the word, the next one is typed and the level grows by two', () => {
+    const L = fakeRuntime(6);
+    const mode = new InvitationMode(L);
+    mode.start();
+    const first = L.core.focus()!;
+    const res = L.core.type('x');
+    expect(res.kind).toBe('wrong');
+    mode.onWrong(first);
+    expect(first.gone).toBe(true);
+    expect(L.count).toBe(8);
+    expect(L.core.focus()).not.toBe(first);
   });
 });
 

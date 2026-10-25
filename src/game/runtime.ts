@@ -25,7 +25,7 @@ import { accuracyPic, paintRound, pawRing, placeRing, rhythmPic, roundButton, wo
 import { OWN_SHARE, WordSource, type WordSourceOwn } from '../words/words';
 import type { LangRef, Profile, Surprise } from '../storage/schema';
 import type { LevelDef } from './levels';
-import { MIN_ACTIVE_S, WORLDS, grownCount, hasMinLength, levelOver, shownProgress, storyOf } from './levels';
+import { WORLDS, grownCount, hasMinLength, levelOver, minActiveS, shownProgress, storyOf } from './levels';
 import type { Mode } from './mode';
 import { PAW_MAX, PAW_STREAK, PAW_WORDS } from './paw';
 import { ENTER_MAX, EnterMarks } from './enter';
@@ -295,7 +295,7 @@ export class LevelRuntime {
     this.count = def.count;
     // The e2e build may shorten the minimum (`?minActive=8`), so its tests finish levels in seconds.
     // Staying a while never reaches its minimum: the targets keep coming until Esc.
-    this.minActive = opts.stay ? Infinity : !hasMinLength(def) ? 0 : import.meta.env.MODE === 'e2e' ? Number(new URLSearchParams(location.search).get('minActive') ?? 0) : MIN_ACTIVE_S;
+    this.minActive = opts.stay ? Infinity : !hasMinLength(def) ? 0 : import.meta.env.MODE === 'e2e' ? Number(new URLSearchParams(location.search).get('minActive') ?? 0) : minActiveS(def);
 
     // DOM: HUD, stage, Tapko, bubble, guide.
     this.el = h('div', { class: `level-screen world-${WORLDS[def.world]}${def.rescue ? ' world-rescue' : ''}` });
@@ -493,6 +493,11 @@ export class LevelRuntime {
     const avoid = new Set(this.core.active.map((t) => t.word[0].toLowerCase()));
     const w = this.words.next(avoid, maxLen, this.def.noSpace ? 1 : words, minWords);
     return this.enter?.next() ? w + ENTER : w;
+  }
+
+  /** Next single letter (letter catch), never one already on screen. */
+  letter(): string {
+    return this.words.letter(new Set(this.core.active.map((t) => t.word)));
   }
 
   /**

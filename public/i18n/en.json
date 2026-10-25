@@ -103,6 +103,15 @@
     "moonball": "Ball"
   },
   "map": {
+    "act": {
+      "chase": "Main game",
+      "catch": "Letter catch",
+      "clean": "No slips",
+      "crossroads": "Crossroads",
+      "listen": "Listen and type",
+      "remember": "Remember",
+      "super": "Big challenge"
+    },
     "welcome": {
       "title": "Hello {name}! This is your character in this adventure.",
       "lines": [
@@ -566,6 +575,13 @@
     "next": "Next",
     "meadowStart": [
       "The meadow animals kick leaves like a ball and want to score a goal on you. Type the word on a leaf to catch it!"
+    ],
+    "dewStart": [
+      "Morning dew is on the grass. Type the letter on a drop and a flower grows from it!"
+    ],
+    "gustStart": "A gust of wind! Lots of small leaves at once.",
+    "invitationStart": [
+      "There is a party on the meadow! Write the invitation word by word, with no slip."
     ],
     "goalShout": "GOAL!",
     "cheer": [

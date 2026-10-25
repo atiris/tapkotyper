@@ -682,6 +682,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .mini-stars i.on { background: #f5b301; }
 .level-node.keys { background: var(--tint-neutral); color: var(--ink-soft); }
 .level-key { width: 16px; height: 16px; }
+/* The activity of a level, in place of its number. */
+.level-act { width: 28px; height: 28px; object-fit: contain; }
 /* The target range of a finished world, next to the super level's star. */
 .level-node.aim-node { background: var(--tint-red); color: var(--danger-ink); }
 .aim-icon { width: 22px; height: 22px; }
@@ -696,6 +698,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
   .island h3 { font-size: 0.95rem; }
   .level-row { gap: 0.2rem; }
   .level-node { flex: 0 1 34px; min-width: 22px; height: 44px; border-radius: 11px; font-size: 1rem; }
+  .level-act { width: min(24px, 100%); height: 24px; }
   .mini-stars { gap: 1px; }
   .mini-stars i { width: 9px; height: 9px; }
 }

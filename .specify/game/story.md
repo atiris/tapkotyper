@@ -24,6 +24,11 @@ gives you a wreath"), never about the character as someone else.
    a laugh, not a failure. The leaf size shows the word length at a glance. Animals are
    never the target of anything (no webs, nets or swatters): even soft hitting or catching
    is the wrong message for small children; playing with them is better.
+   The meadow plays the world rhythm (see [mechanics](mechanics.md)): level 1 is the leaf
+   game with single chunks; level 2 is the calm step, dew drops on the grass with one letter
+   each, and a typed letter opens a flower; level 3 is the leaf game again with a gust of
+   wind half way; level 4 is the twist, the invitation to the meadow party written word by
+   word without a slip, and every finished card flies as an envelope to a meadow friend.
    Super-obstacle: a hedgehog throws volleys of leaves from its back.
    Reward: a secret invitation to space. Before the first level the narrator
    shows the child their character: "This is you."

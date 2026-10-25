@@ -48,15 +48,30 @@ export abstract class ApproachMode extends Mode {
     return undefined;
   }
 
+  /** The word of the next target. */
+  protected nextWord(): string {
+    return this.L.word(this.maxLen());
+  }
+
+  /** How many targets may be on screen at once. */
+  protected maxOnScreen(): number {
+    return this.L.maxActive;
+  }
+
+  /** Seconds between spawns. */
+  protected spawnGap(): number {
+    return this.L.spawnGap;
+  }
+
   update(dt: number): void {
     this.spawnTimer -= dt;
     const core = this.L.core;
-    if (this.autoSpawn && this.spawned < this.total && this.spawnTimer <= 0 && core.active.length < this.L.maxActive) {
-      const word = this.L.word(this.maxLen());
+    if (this.autoSpawn && this.spawned < this.total && this.spawnTimer <= 0 && core.active.length < this.maxOnScreen()) {
+      const word = this.nextWord();
       const m = this.makeMover(word);
       core.add(word, m);
       this.spawned++;
-      this.spawnTimer = this.L.spawnGap;
+      this.spawnTimer = this.spawnGap();
     }
     for (const tg of core.targets) {
       const m = tg.data as Mover;

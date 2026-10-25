@@ -1,6 +1,6 @@
 # World rhythm: five different steps inside one world
 
-**Status:** decided (2026-10-22); meadow pilot planned in `.todo/66-meadow-world-rhythm.md`. **Prio:** P1. **Effort:** L
+**Status:** decided (2026-10-22); meadow pilot done in `.todo/.done/66-meadow-world-rhythm.md`. **Prio:** P1. **Effort:** L
 (new level engines plus light art per world), can ship world by world.
 
 ## The problem

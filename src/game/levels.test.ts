@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { SUPER_ID } from '../storage/schema';
 import { lessonOrder } from '../learning/lessons';
-import { LEVELS, MIN_ACTIVE_S, STORIES, aimLevel, aimOpen, aimWorld, freeTypeLevel, grownCount, hasMinLength, isLevelUnlocked, isWorldUnlocked, keysNeeded, levelById, levelOver, nextLevel, practiceLevel, rescueLevel, rescueUnlocked, shownProgress, worldLevels, worldLock } from './levels';
+import { LEVELS, MIN_ACTIVE_S, STORIES, activityOf, minActiveS, aimLevel, aimOpen, aimWorld, freeTypeLevel, grownCount, hasMinLength, isLevelUnlocked, isWorldUnlocked, keysNeeded, levelById, levelOver, nextLevel, practiceLevel, rescueLevel, rescueUnlocked, shownProgress, worldLevels, worldLock } from './levels';
 
 const KEYS = ['f', 'j', 'd', 'k', 's', 'l', 'a', ';', 'g', 'h', 'r', 'u', 'e', 'i', 't', 'y', 'w', 'o', 'q', 'p', 'v', 'm', 'c', ',', 'x', '.'];
 
@@ -163,6 +163,21 @@ describe('first level', () => {
   it('asks for single chunks; only the second level may need the space bar', () => {
     expect(levelById('w1-1')?.noSpace).toBe(true);
     expect(LEVELS.filter((l) => l.noSpace).map((l) => l.id)).toEqual(['w1-1']);
+  });
+
+  it('the meadow plays the world rhythm: main game, calm step, gust, twist, super-obstacle', () => {
+    expect(['w1-1', 'w1-2', 'w1-3', 'w1-4', 'w1-5'].map((id) => levelById(id)?.kind)).toEqual(['meadow', 'dewdrops', 'meadow', 'invitation', 'hedgehog']);
+    expect(['w1-1', 'w1-2', 'w1-3', 'w1-4', 'w1-5'].map((id) => activityOf(levelById(id)!))).toEqual(['chase', 'catch', 'chase', 'clean', 'super']);
+    expect(levelById('w1-3')?.variant).toBe('gust');
+    expect(minActiveS(levelById('w1-2')!)).toBe(60);
+    expect(minActiveS(levelById('w1-4')!)).toBe(MIN_ACTIVE_S);
+  });
+
+  it('every level has an activity for its map dot', () => {
+    expect(activityOf(levelById('w3-2')!)).toBe('crossroads');
+    expect(activityOf(levelById('w12-2')!)).toBe('listen');
+    expect(activityOf(levelById('w13-2')!)).toBe('remember');
+    expect(LEVELS.filter((l) => l.isSuper).every((l) => activityOf(l) === 'super')).toBe(true);
   });
 });
 

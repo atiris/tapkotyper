@@ -9,6 +9,7 @@ import { JunkMode, KnotMode } from './modes/junkyard';
 import { LiliesMode, ReflectionMode } from './modes/lilylake';
 import { FreeTypeMode } from './modes/freetype';
 import { HedgehogMode, MeadowMode } from './modes/meadow';
+import { DewdropsMode, InvitationMode } from './modes/meadow-calm';
 import { FirefliesMode, LastSongMode } from './modes/moonball';
 import { NotesMode, TreeSongMode } from './modes/musictree';
 import { BoulderMode, SignsMode, SwampMode } from './modes/planet';
@@ -23,6 +24,8 @@ import type { LevelRuntime } from './runtime';
 export function createMode(def: LevelDef & { seconds?: number | null }, L: LevelRuntime): Mode {
   switch (def.kind) {
     case 'meadow': return new MeadowMode(L);
+    case 'dewdrops': return new DewdropsMode(L);
+    case 'invitation': return new InvitationMode(L);
     case 'hedgehog': return new HedgehogMode(L);
     case 'space': return new SpaceMode(L);
     case 'asteroid': return new AsteroidMode(L);

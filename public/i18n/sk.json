@@ -103,6 +103,15 @@
     "moonball": "Ples"
   },
   "map": {
+    "act": {
+      "chase": "Hlavná hra",
+      "catch": "Chytanie písmen",
+      "clean": "Bez chyby",
+      "crossroads": "Rázcestie",
+      "listen": "Počúvaj a píš",
+      "remember": "Zapamätaj si",
+      "super": "Veľká výzva"
+    },
     "welcome": {
       "title": "Ahoj, {name}! Toto je tvoja postava v tomto dobrodružstve.",
       "lines": [
@@ -566,6 +575,13 @@
     "next": "Ďalej",
     "meadowStart": [
       "Zvieratká na lúke kopú listy ako loptu a chcú ti dať gól. Napíš slovo na liste a chytíš ho!"
+    ],
+    "dewStart": [
+      "Ráno je na tráve rosa. Napíš písmenko na kvapke a vyrastie z nej kvietok!"
+    ],
+    "gustStart": "Fúka vietor! Letí viac malých listov naraz.",
+    "invitationStart": [
+      "Na lúke bude oslava! Napíš pozvánku slovo po slove, pekne bez chyby."
     ],
     "goalShout": "GÓÓL!",
     "cheer": [

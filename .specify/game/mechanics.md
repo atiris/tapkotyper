@@ -45,6 +45,22 @@
   typed fewer than 5 keys (the paw did the rest) says so, gives one star, never
   lowers a better result and adds no time toward automatic growth. Esc on the end screen
   goes back to the map, like closing any other card.
+- **World rhythm** (the meadow so far): the levels of a world have fixed roles, so one
+  session (about one world) goes up and down instead of repeating one game: 1 the world's
+  main game, gently; 2 a calm step; 3 the main game, harder, with one short surprise; 4 a
+  twist; 5 the super-obstacle. Each level dot on the map shows the icon of its activity
+  (the number stays in its tooltip and for screen readers).
+  - *Letter catch* (calm step): still objects carry one letter each, never two the same on
+    screen; about half are the newest keys, the rest weighted toward weak keys. Nothing
+    moves toward the child and nothing is missed. A calm step lasts at least 1 minute of
+    active play, not 2.
+  - *Clean line* (twist): a row of 3 to 4 words typed from left to right. A slip turns the
+    word red, it fades away and the next word is the one to type; the level gets 2 more
+    words, at most (1 + story order) x 3 in all (6 in the dragon story).
+  - *Gust* (surprise of the meadow's level 3): half way through, the character says that
+    the wind blows, and for about 25 seconds up to 3 small leaves (words of at most 3
+    letters) come at once and fly slower. Once per run; a leaf flying by is a goal as
+    always.
 - **Ways to type** (a style per run, the same movement and story in every mode):
   - *Copy* (default, stories 1 and 2 and the fairy story's garden): the child types the
     word shown.
@@ -111,6 +127,11 @@
   ([research](../../.research/learning/exercise-types.md)). The style changes only how a
   target is shown, so every mode gets it without its own rules. A guide that lit the next
   key would turn both back into copying.
+- Four levels of the same game in one session lose their novelty after the second;
+  boredom is the mood that stays. Alternating action and calm steps (saw-tooth difficulty)
+  and mixed practice keep children involved and help them keep the skill
+  ([research](../../.research/game/world-rhythm.md)). A slip in the clean line costs a
+  little more practice, never the row, so accuracy matters without fear.
 - Some levels ended in under a minute, super levels with a few words in seconds: too short
   to settle into a rhythm, and stars came cheap.
 - A pause that hides the game breaks the child's focus; a way to slow down without a

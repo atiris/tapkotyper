@@ -206,6 +206,14 @@ function hedgehogFallback(g: G, w: number, h: number): void {
   g.restore();
 }
 
+/** The gust in the third meadow level: its seconds, the leaves it brings at once, their longest word and how much slower they fly. */
+const GUST_TIME = 25;
+const GUST_LEAVES = 3;
+const GUST_LEN = 3;
+const GUST_SLOW = 1.3;
+/** Seconds between gust leaves, so their creatures do not crowd at the edge. */
+const GUST_GAP = 0.7;
+
 /** Seconds of a kick that lifts a leaf to the catching height, and of a caught leaf held in the gloves. */
 const KICK_TIME = 0.6;
 const HOLD_TIME = 0.35;
@@ -279,6 +287,8 @@ interface Critter {
 export class MeadowMode extends ApproachMode {
   readonly world = 'meadow';
   protected gloves: Gloves;
+  /** Seconds left of the gust: null before it, 0 after it (it comes once, in the `gust` variant only). */
+  private gustLeft: number | null = null;
 
   constructor(L: LevelRuntime) {
     super(L);
@@ -318,8 +328,6 @@ export class MeadowMode extends ApproachMode {
     const v = this.L.def.variant;
     const r = this.L.rng;
     if (v === 'flyers') return r.pick(FLYERS);
-    if (v === 'bugs') return r.pick(BUGS);
-    if (v === 'runners') return r.chance(0.75) ? 'obj-mouse' : r.pick(FLYERS);
     return r.pick([...FLYERS, ...BUGS, 'obj-mouse']);
   }
 
@@ -338,7 +346,7 @@ export class MeadowMode extends ApproachMode {
     const ground = sprite === 'obj-mouse';
     const L = this.L;
     const x = L.vw + 110;
-    const m = this.makeLeaf(word, x, 0);
+    const m = this.makeLeaf(word, x, 0, this.gusting ? 1 / GUST_SLOW : 1);
     // Mouse leaves roll in the grass; the others fly at the height of Tapko's body.
     m.by = ground ? VH - m.size / 2 - 6 : L.rng.range(Math.max(170, this.tapkoTop() - 30), VH - 80);
     m.y = m.by;
@@ -356,7 +364,37 @@ export class MeadowMode extends ApproachMode {
     c.y = c.ground ? VH - c.size / 2 - 4 : m.y - m.size * 0.3;
   }
 
+  private get gusting(): boolean {
+    return !!this.gustLeft;
+  }
+
+  /** A gust leaf carries one short word. */
+  protected nextWord(): string {
+    return this.gusting ? this.L.word(GUST_LEN, 1) : super.nextWord();
+  }
+
+  protected maxOnScreen(): number {
+    return this.gusting ? Math.max(GUST_LEAVES, this.L.maxActive) : this.L.maxActive;
+  }
+
+  protected spawnGap(): number {
+    return this.gusting ? GUST_GAP : this.L.spawnGap;
+  }
+
+  /** Half way through the planned words the wind brings small leaves in threes for a while. */
+  private gust(dt: number): void {
+    if (this.L.def.variant !== 'gust') return;
+    if (this.gustLeft === null && this.resolved >= this.L.def.count / 2) {
+      this.gustLeft = GUST_TIME;
+      this.L.say(t('story.gustStart'), 3);
+    }
+    if (!this.gustLeft) return;
+    this.gustLeft = Math.max(0, this.gustLeft - dt);
+    if (this.L.rng.chance(dt * 4)) this.L.particles.emit(this.L.vw - 20, this.L.rng.range(120, VH - 120), 3, 'leaf', ['#9ccf7a', '#ffd25a', '#c8793a'], 220, 6, 1.2);
+  }
+
   update(dt: number): void {
+    this.gust(dt);
     this.playerX = this.tapkoX();
     const gl = this.gloves;
     gl.x = this.glovesX();

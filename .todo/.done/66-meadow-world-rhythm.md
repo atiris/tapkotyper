@@ -97,41 +97,41 @@ a separate plan takes the rhythm to the other worlds.
 
 ## Steps
 
-- [ ] **Levels and activities:** `LevelKind` gets `dewdrops` and `invitation`.
+- [x] **Levels and activities:** `LevelKind` gets `dewdrops` and `invitation`.
       `LevelDef` gets `activity`, and `def()` takes it. Change the meadow row as in the
       table, and set the activity of every other level by the rule above. `hasMinLength`
       stays; add `minActiveS(l)` that returns 60 for `dewdrops` and `MIN_ACTIVE_S`
       otherwise, and use it in the runtime constructor. Tests in `levels.test.ts`: every
       level has an activity, `w1-2` / `w1-4` kinds, and the meadow ids are unchanged.
-- [ ] **Single letters:** `WordSource.letter(avoid: Set<string>)`: one letter key, about
+- [x] **Single letters:** `WordSource.letter(avoid: Set<string>)`: one letter key, about
       half from the focus group, the rest weighted. Never space, Enter, digits or a
       character in `avoid`. `LevelRuntime` gets `letter()`, which passes the characters on
       screen. Unit test for focus share, weights and avoid.
-- [ ] **Dew drops mode** (`DewdropsMode` in `meadow-calm.ts`) as decided:
+- [x] **Dew drops mode** (`DewdropsMode` in `meadow-calm.ts`) as decided:
       - fixed blade spots that scale with `vw`;
       - the flower opening uses particles that respect reduced motion;
       - a start line and Tapko lines in i18n.
       Register it in `modes.ts`.
-- [ ] **Invitation mode** (`InvitationMode`) as decided: the row, left-to-right lock
+- [x] **Invitation mode** (`InvitationMode`) as decided: the row, left-to-right lock
       (other words `selectable = false`), and slip handling in `onWrong` (release the
       word, fade it red, `L.count += 2` up to the ceiling). Card fold and fly-away, start
       line and Tapko lines. A slip on the first key of a word also counts. Unit test of
       the extra-word ceiling as a pure function (`extraWords(storyOrder, slips)`).
-- [ ] **Gust in `MeadowMode`:** a `gust` flag only for `w1-3` (variant `mix` with
+- [x] **Gust in `MeadowMode`:** a `gust` flag only for `w1-3` (variant `mix` with
       `def.index === 2`, not the rescue mission). Its start at half of `total`, its 25 s
       length, up to 3 leaves together, `maxLen` 3 and slower travel during it. One Tapko
       line. With reduced motion, the extra wind particles are left out.
-- [ ] **Map icons:** `level-node` shows `ui-act-<activity>` and falls back to the number.
+- [x] **Map icons:** `level-node` shows `ui-act-<activity>` and falls back to the number.
       Super nodes use `ui-act-super` instead of `★`. Check the icon size in the dot at
       phone width and on the 1024x600 laptop. Add the `ui-act-catch` prompt row.
-- [ ] **Specs:**
+- [x] **Specs:**
       - `story.md`: the meadow's five levels and their roles.
       - `mechanics.md`: the level roles, letter catch, clean line, the gust and the 60 s
         calm minimum.
       - `lesson-progression.md`: letter catch trains the newest and weakest keys.
       - `visuals.md`: activity icons in the level dots.
       - `world-rhythm.md` status: the meadow pilot is in plan 66.
-- [ ] **Checks:** `npm run build`, `npm test`, `npm run test:e2e` (fix `play.spec.ts` if it
+- [x] **Checks:** `npm run build`, `npm test`, `npm run test:e2e` (fix `play.spec.ts` if it
       expects meadow creatures in `w1-2` to `w1-4`). Then use the playwright MCP to play
       `w1-2`, `w1-3` and `w1-4` as a child, with the e2e minimum or the super profile:
       - dew drops: a letter typed opens a flower and a new drop comes;
@@ -139,5 +139,26 @@ a separate plan takes the rhythm to the other worlds.
       - invitation: a slip fades the word and adds 2 words, and the row flies away;
       - map: icons show in the dots;
       - no console errors.
-- [ ] **Hand-off:** this plan does not write the plan for the other worlds. The owner plays
+- [x] **Hand-off:** this plan does not write the plan for the other worlds. The owner plays
       the meadow with a child first and then asks for that plan.
+
+## Done - 2026-10-25
+
+Shipped:
+- The meadow plays the five roles: `w1-2` dew drops (letter catch, minimum 60 s), `w1-3`
+  the leaf game with the gust, and `w1-4` the invitation (clean line).
+- Every level dot on the map shows its activity icon.
+- Specs are updated.
+
+Changed from the plan:
+- `activity` is a function (`activityOf`), not a field. It is derived from kind, style and
+  super, so the level table stays as it was.
+- The gust is the level variant `gust`, which also picks the mixed creatures.
+- During the gust, a leaf carries one short word (two-word phrases were too long), and the
+  leaves come 0.7 s apart, so their creatures do not crowd.
+- In the invitation, the mouse waits on the grass. The flying creatures hover.
+
+Left out on purpose (as decided): the key ceiling, the fairy-story flip, rescue missions
+with the new activities, and the other worlds. These wait for the owner's playtest. The
+`ui-act-catch` picture is still to be generated (prompt in `assets-src/PROMPTS.md` section
+9); until then, the catch dot shows its number.

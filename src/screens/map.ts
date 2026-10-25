@@ -4,7 +4,7 @@ import { imageUrl } from '../gfx/assets';
 import { tapkoElement } from '../gfx/tapko';
 import { t, tList } from '../i18n/i18n';
 import { nickname } from '../storage/store';
-import { LEVELS, STORIES, type StoryDef, WORLDS, aimOpen, aimWorld, isLevelReached, isWorldUnlocked, keysMissing, nextLevel, rescueUnlocked, storyOpen, worldLevels, worldLock } from '../game/levels';
+import { LEVELS, STORIES, type StoryDef, WORLDS, activityOf, aimOpen, aimWorld, isLevelReached, isWorldUnlocked, keysMissing, nextLevel, rescueUnlocked, storyOpen, worldLevels, worldLock } from '../game/levels';
 import { GUEST_ID, type Profile, SUPER_ID } from '../storage/schema';
 import { activeKeys, notReadyKeys } from '../learning/lessons';
 import { keyLabel } from '../ui/keyboard-guide';
@@ -184,13 +184,17 @@ function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held:
       const reached = isLevelReached(p, l);
       const missing = reached ? keysMissing(p, l) : 0;
       const stars = p.progress.levels[l.id] ?? 0;
+      const num = l.isSuper ? '★' : String(l.index + 1);
+      const act = activityOf(l);
+      const actImg = imageUrl(`ui-act-${act}`);
       const b = h('button', {
         class: `level-node ${l.isSuper ? 'super' : ''} ${stars ? 'done' : ''} ${l.id === nextId ? 'current' : ''} ${missing ? 'keys' : ''}`,
         type: 'button',
         disabled: !reached,
-        'aria-label': `${t(`worlds.${w}`)} ${l.isSuper ? t('map.super') : l.index + 1}${stars ? `, ${t('map.starsAria', { n: stars })}` : ''}${missing ? `, ${t('map.keysLocked')}` : ''}`,
+        'aria-label': `${t(`worlds.${w}`)} ${l.isSuper ? t('map.super') : `${l.index + 1}, ${t(`map.act.${act}`)}`}${stars ? `, ${t('map.starsAria', { n: stars })}` : ''}${missing ? `, ${t('map.keysLocked')}` : ''}`,
+        tip: l.isSuper ? t('map.act.super') : `${l.index + 1}. ${t(`map.act.${act}`)}`,
         onClick: () => (missing ? keysBubble(missing, wi) : playLevel(l.id)),
-      }, h('span', { class: 'num' }, l.isSuper ? '★' : String(l.index + 1)),
+      }, actImg ? h('img', { class: 'level-act', src: actImg, alt: '' }) : h('span', { class: 'num' }, num),
         missing ? keyIcon(held) : h('span', { class: 'mini-stars' }, ...[1, 2, 3].map((s) => h('i', { class: s <= stars ? 'on' : '' }))));
       return b;
     });

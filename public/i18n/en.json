@@ -21,7 +21,7 @@
     "close": "Close (Esc)"
   },
   "start": {
-    "whoPlays": "Who is playing today?",
+    "whoPlays": "Who will type to me today?",
     "pickByNumber": "You can also pick this profile by typing the number {n}",
     "newProfile": "New player",
     "guest": "No profile",

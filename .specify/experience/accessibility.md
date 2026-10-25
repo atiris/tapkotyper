@@ -24,7 +24,7 @@
   move between the choices (the map's levels, the players, the characters, the tabs). The
   get-ready card starts with the space bar or Enter, the results and the story scenes go on by
   both, and Escape goes back or pauses.
-- **Picking a player by keyboard.** On "Who is playing today" each of the first nine players
+- **Picking a player by keyboard.** On "Who will type to me today?" each of the first nine players
   shows its number on a playfully tilted badge; the number keys 1-9 pick (by the key, so a
   Slovak keyboard's top row works without Shift). Hovering or focusing a card says so in its
   tooltip. Typing a nickname does not pick: it clashed with the super password, whose letters

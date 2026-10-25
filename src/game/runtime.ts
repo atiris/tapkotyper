@@ -1168,6 +1168,7 @@ export class LevelRuntime {
     this.particles.render(g);
     for (const s of this.speeches) this.drawSpeech(g, s);
     for (const s of this.shouts) this.drawShout(g, s);
+    this.mode.renderFront(this.stage.beginFront());
     this.placeBubble();
   }
 

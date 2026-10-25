@@ -206,20 +206,20 @@ function hedgehogFallback(g: G, w: number, h: number): void {
   g.restore();
 }
 
-/** Seconds of a kick that lifts a leaf to the gloves' height, and of a caught leaf held before the throw back. */
+/** Seconds of a kick that lifts a leaf to the catching height, and of a caught leaf held in the gloves. */
 const KICK_TIME = 0.6;
 const HOLD_TIME = 0.35;
 /** Speed of a typed leaf on its way into the gloves. */
 const SAVE_SPEED = 950;
 
-/** Tapko's goalkeeper gloves above him; on a finished word they reach for the leaf and catch it. */
+/** Tapko's goalkeeper gloves in front of his body; on a finished word they reach for the leaf and catch it. */
 class Gloves {
-  private static readonly H = 90;
+  private static readonly H = 72;
   /** The picture's palms face the viewer; leaning right they reach for leaves coming from the right. */
-  private static readonly LEAN = 0.3;
+  private static readonly LEAN = 0.55;
   /** Height the gloves reach for; their rest height when nothing flies at them. */
   aimY: number;
-  private y: number;
+  y: number;
   private bob = 0;
   private squeeze = 0;
   constructor(private L: LevelRuntime, public x: number, public restY: number) {
@@ -253,7 +253,7 @@ class Gloves {
   }
 }
 
-/** A creature that brings a leaf, watches it fly and takes it home. */
+/** A creature that brings a leaf, kicks it on, watches it fly and goes home. */
 interface Critter {
   sprite: string;
   x: number;
@@ -272,9 +272,9 @@ interface Critter {
 
 /**
  * World 1: the meadow animals play with the child. The wind brings them leaves and they want
- * to score a goal with them. At the penalty area they kick it up to Tapko's gloves; a typed
- * word sends the leaf into the gloves, which throw it back to its creature, a missed one is a
- * goal everybody cheers.
+ * to score a goal with them. At the penalty area they kick it up above Tapko; a typed word
+ * sends the leaf into his gloves, where it fades away and its creature goes home; a missed one
+ * is a goal everybody cheers.
  */
 export class MeadowMode extends ApproachMode {
   readonly world = 'meadow';
@@ -283,7 +283,7 @@ export class MeadowMode extends ApproachMode {
   constructor(L: LevelRuntime) {
     super(L);
     this.playerX = this.tapkoX();
-    this.gloves = new Gloves(L, this.playerX, this.gloveY());
+    this.gloves = new Gloves(L, this.glovesX(), this.glovesRest());
   }
 
   startLine(): string {
@@ -300,9 +300,18 @@ export class MeadowMode extends ApproachMode {
     return VH - TAPKO_CSS_H / this.L.stage.scale;
   }
 
-  /** The gloves' rest height above Tapko's head, where kicked leaves fly. */
-  private gloveY(): number {
+  /** The middle band above Tapko's head, where kicked leaves fly and typed ones are caught. */
+  private bandY(): number {
     return Math.max(150, this.tapkoTop() - 50);
+  }
+
+  /** The gloves rest in front of Tapko's body, a little toward the leaves. */
+  private glovesX(): number {
+    return this.playerX + TAPKO_CSS_H * 0.14 / this.L.stage.scale;
+  }
+
+  private glovesRest(): number {
+    return VH - TAPKO_CSS_H * 0.36 / this.L.stage.scale;
   }
 
   private pickSprite(): string {
@@ -320,7 +329,7 @@ export class MeadowMode extends ApproachMode {
     return {
       x, y, vx: this.speedFor(word, x) * speed, vy: 0, rot: 0, vr: 0, age: 0, state: 'come', fade: 0,
       sprite: `obj-leaf-${kind}`, size, kind, by: y, phase: this.L.rng.range(0, 6), lf: 0,
-      critter: null, style: 'toss', thrown: -1, throwX: 0, arc: null, caught: false, scored: false, kickFrom: y, kickTo: null, hold: -1,
+      critter: null, style: 'toss', thrown: -1, throwX: 0, arc: null, caught: false, scored: false, kickFrom: y, kickTo: null, hold: -1, saveY: y,
     };
   }
 
@@ -350,17 +359,18 @@ export class MeadowMode extends ApproachMode {
   update(dt: number): void {
     this.playerX = this.tapkoX();
     const gl = this.gloves;
-    gl.x = this.playerX;
-    gl.restY = this.gloveY();
+    gl.x = this.glovesX();
+    gl.restY = this.glovesRest();
     super.update(dt);
-    // The gloves reach for the closest leaf on its way to them, else rest above Tapko.
+    // The gloves reach for the closest leaf on its way to them and hold a caught one, else rest in front of Tapko.
     let aim: Mover | null = null;
     for (const tg of this.L.core.targets) {
       const m = tg.data as Mover;
       if (m.state === 'leave' && m.hold < 0 && (!aim || m.x < aim.x)) aim = m;
     }
-    if (aim) gl.aimY = Math.max(110, Math.min(VH - 60, aim.y));
-    else if (!this.L.core.targets.some((tg) => (tg.data as Mover).hold >= 0 && !(tg.data as Mover).arc)) gl.aimY = gl.restY;
+    const holding = this.L.core.targets.some((tg) => (tg.data as Mover).hold >= 0 && (tg.data as Mover).hold < HOLD_TIME);
+    if (aim) gl.aimY = aim.saveY;
+    else if (!holding) gl.aimY = gl.restY;
     gl.update(dt, this.t);
   }
 
@@ -378,7 +388,7 @@ export class MeadowMode extends ApproachMode {
     m.thrown = 0;
     c.state = 'watch';
     c.st = 0;
-    const band = this.gloves.restY, near = (y: number) => Math.abs(y - band) < 60;
+    const band = this.bandY(), near = (y: number) => Math.abs(y - band) < 60;
     const taken = this.L.core.targets.some((tg) => {
       const o = tg.data as Mover;
       return o !== m && o.state === 'come' && near(o.kickTo ?? o.by);
@@ -430,9 +440,13 @@ export class MeadowMode extends ApproachMode {
     }
   }
 
-  /** A typed leaf speeds up into the gloves (see moveGone). */
+  /**
+   * A typed leaf speeds up into the gloves (see moveGone): in the middle band when it was typed
+   * before the kick or kicked up there, else at its own height.
+   */
   protected onLeave(m: Mover): void {
     m.vx = 0;
+    m.saveY = m.thrown < 0 || m.kickTo != null ? this.bandY() : Math.max(110, Math.min(VH - 60, m.y));
     this.L.sfx('whoosh');
     const c = m.critter as Critter | null;
     if (c && c.state === 'carry') {
@@ -441,12 +455,17 @@ export class MeadowMode extends ApproachMode {
     }
   }
 
-  /** The typed leaf flies into the gloves, they hold it a moment and throw it back. */
+  /**
+   * The typed leaf flies into the gloves, which hold it a moment: it fades away there and its
+   * creature goes home, or it is thrown back where catchPoint says.
+   */
   private save(m: Mover, dt: number): void {
     const L = this.L;
     const [gx, gy] = this.gloves.catchPoint();
     if (m.hold < 0) {
-      const dx = gx - m.x, dy = gy - m.y, d = Math.hypot(dx, dy), step = SAVE_SPEED * dt;
+      // Toward where the gloves are going, so the leaf meets them there.
+      const ty = m.saveY + gy - this.gloves.y;
+      const dx = gx - m.x, dy = ty - m.y, d = Math.hypot(dx, dy), step = SAVE_SPEED * dt;
       m.rot += dt * 8;
       if (d > step) {
         m.x += (dx / d) * step;
@@ -457,31 +476,34 @@ export class MeadowMode extends ApproachMode {
       this.gloves.catch();
       L.sfx('pop');
       L.particles.emit(gx, gy, 6, 'sparkle', ['#fff6a8', '#ffd25a'], 110, 7);
+      const c = m.critter as Critter | null;
+      if (c) {
+        c.state = 'home';
+        c.st = 0;
+      }
     }
     m.hold += dt;
     m.x = gx;
     m.y = gy;
+    const back = this.catchPoint();
+    if (!back) {
+      m.lf = Math.min(1, m.hold / HOLD_TIME);
+      return;
+    }
     if (m.hold < HOLD_TIME) return;
     L.sfx('whoosh');
-    const [x1, y1] = this.catchPoint(m);
-    m.arc = { x0: m.x, y0: m.y, x1, y1, k: 0, dur: Math.max(0.8, Math.min(1.8, (x1 - m.x) / 520)) };
+    m.arc = { x0: m.x, y0: m.y, x1: back[0], y1: back[1], k: 0, dur: Math.max(0.8, Math.min(1.8, (back[0] - m.x) / 520)) };
   }
 
-  /** Where a saved leaf flies back to: its creature. */
-  protected catchPoint(m: Mover): [number, number] {
-    const c = m.critter as Critter;
-    return [c.x - c.size * 0.35, c.ground ? VH - m.size / 2 - 6 : c.y + c.size * 0.25];
+  /** Where the gloves throw a caught leaf, or null when it fades away in them. */
+  protected catchPoint(): [number, number] | null {
+    return null;
   }
 
-  /** The saved leaf is home: the creature hops, catches it and both leave to the right. */
-  protected onCaught(m: Mover): void {
-    const c = m.critter as Critter;
-    this.L.particles.emit(c.x, c.y - 30, 5, 'heart', ['#ff8fab', '#ffb3c6'], 90, 9, 1.2);
-    c.state = 'joy';
-    c.st = 0.45;
-  }
+  /** A thrown-back leaf has landed. */
+  protected onCaught(_m: Mover): void {}
 
-  /** A saved leaf goes into the gloves and arcs high back to its creature; a goal flutters on to the left edge. */
+  /** A saved leaf goes into the gloves (and may be thrown back); a goal flutters on to the left edge. */
   protected moveGone(m: Mover, dt: number): void {
     const c = m.critter as Critter | null;
     if (c) this.moveCritter(m, c, dt);
@@ -489,25 +511,14 @@ export class MeadowMode extends ApproachMode {
       m.x += m.vx * dt;
       this.flutter(m);
       m.lf = Math.min(1, m.lf + dt * Math.max(0.6, -m.vx / Math.max(60, m.x + 60)));
-    } else {
+    } else if (!m.arc) this.save(m, dt);
+    else if (m.arc.k < 1) {
       const a = m.arc;
-      if (!a) {
-        this.save(m, dt);
-        return;
-      }
-      if (a.k < 1) {
-        a.k = Math.min(1, a.k + dt / a.dur);
-        const [x1, y1] = this.catchPoint(m);
-        m.x = a.x0 + (x1 - a.x0) * ease.inOutQuad(a.k);
-        m.y = a.y0 + (y1 - a.y0) * a.k - Math.sin(a.k * Math.PI) * 160;
-        m.rot += dt * 6;
-        if (a.k >= 1) this.onCaught(m);
-      } else if (c) {
-        // The creature takes its leaf home.
-        m.x = c.x - c.size * 0.35;
-        m.y = c.ground ? VH - m.size / 2 - 6 : c.y + c.hop + c.size * 0.25;
-        m.lf = c.gone;
-      }
+      a.k = Math.min(1, a.k + dt / a.dur);
+      m.x = a.x0 + (a.x1 - a.x0) * ease.inOutQuad(a.k);
+      m.y = a.y0 + (a.y1 - a.y0) * a.k - Math.sin(a.k * Math.PI) * 160;
+      m.rot += dt * 6;
+      if (a.k >= 1) this.onCaught(m);
     }
     m.fade = Math.min(m.lf, c ? c.gone : 1);
   }
@@ -563,10 +574,13 @@ export class MeadowMode extends ApproachMode {
       if (m.state === 'come') this.L.label(g, tg, m.x, Math.max(40, m.y - m.size * 0.55 - 26));
     }
     this.drawExtras(g);
+  }
+
+  renderFront(g: G): void {
     this.gloves.draw(g);
   }
 
-  /** Hook for the hedgehog, drawn behind the gloves. */
+  /** Hook for the hedgehog. */
   protected drawExtras(_g: G): void {}
 
 }

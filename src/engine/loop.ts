@@ -43,6 +43,9 @@ export const VH = 600;
 export class Stage {
   readonly canvas: HTMLCanvasElement;
   readonly g: CanvasRenderingContext2D;
+  /** A layer over the DOM Tapko, for what the scene holds in front of him. */
+  private readonly front: HTMLCanvasElement;
+  private readonly fg: CanvasRenderingContext2D;
   /** Virtual width. */
   vw = 1280;
   scale = 1;
@@ -55,6 +58,10 @@ export class Stage {
     this.canvas.className = 'stage';
     parent.appendChild(this.canvas);
     this.g = this.canvas.getContext('2d')!;
+    this.front = document.createElement('canvas');
+    this.front.className = 'stage stage-front';
+    parent.appendChild(this.front);
+    this.fg = this.front.getContext('2d')!;
     this.observer = new ResizeObserver(() => this.resize());
     this.observer.observe(parent);
     this.resize();
@@ -65,10 +72,12 @@ export class Stage {
     const dpr = Math.min(2, window.devicePixelRatio || 1);
     const w = Math.max(1, Math.round(r.width));
     const h = Math.max(1, Math.round(r.height));
-    this.canvas.width = Math.round(w * dpr);
-    this.canvas.height = Math.round(h * dpr);
-    this.canvas.style.width = `${w}px`;
-    this.canvas.style.height = `${h}px`;
+    for (const c of [this.canvas, this.front]) {
+      c.width = Math.round(w * dpr);
+      c.height = Math.round(h * dpr);
+      c.style.width = `${w}px`;
+      c.style.height = `${h}px`;
+    }
     this.scale = h / VH;
     this.vw = w / this.scale;
     this.dirty = true;
@@ -76,15 +85,25 @@ export class Stage {
 
   /** Prepares the context for drawing in virtual units. */
   begin(): CanvasRenderingContext2D {
-    const dpr = this.canvas.width / Math.max(1, this.canvas.clientWidth || 1);
-    this.g.setTransform(this.scale * dpr, 0, 0, this.scale * dpr, 0, 0);
-    this.g.clearRect(0, 0, this.vw, VH);
     this.dirty = false;
-    return this.g;
+    return this.clear(this.g);
+  }
+
+  /** The front layer's context, cleared and in virtual units. */
+  beginFront(): CanvasRenderingContext2D {
+    return this.clear(this.fg);
+  }
+
+  private clear(g: CanvasRenderingContext2D): CanvasRenderingContext2D {
+    const dpr = this.canvas.width / Math.max(1, this.canvas.clientWidth || 1);
+    g.setTransform(this.scale * dpr, 0, 0, this.scale * dpr, 0, 0);
+    g.clearRect(0, 0, this.vw, VH);
+    return g;
   }
 
   dispose(): void {
     this.observer.disconnect();
     this.canvas.remove();
+    this.front.remove();
   }
 }

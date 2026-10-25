@@ -719,6 +719,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .world-space .round-btn.rhythm { visibility: hidden; }
 .stage-wrap { position: relative; flex: 1; min-height: 0; }
 .stage { position: absolute; inset: 0; display: block; }
+/* Over the DOM Tapko (same level, later in the page), under his bubble. */
+.stage-front { z-index: 2; pointer-events: none; }
 .level-tapko { position: absolute; left: 0.6rem; bottom: 0; z-index: 2; cursor: pointer; filter: drop-shadow(0 6px 8px rgba(40, 30, 20, 0.25)); }
 .level-tapko.waiting { visibility: hidden; }
 .level-tapko.jump { animation: jump 0.6s ease; }

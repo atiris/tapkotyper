@@ -13,10 +13,12 @@ gives you a wreath"), never about the character as someone else.
 1. **Training Meadow** - the meadow animals play with the child: the wind brings them leaves
    and they want to score a goal with them. A bee, butterfly, ladybug, fly or mouse brings a
    leaf with a word toward the child's character, who keeps goal with a pair of goalkeeper
-   gloves above their head. At the penalty area the creature kicks the leaf on; when the
-   gloves' height is free and the leaf flies elsewhere, the kick lifts it in an arc up there.
-   Typing the word sends the leaf faster into the gloves, which always catch it and throw it
-   back to its creature, which catches it and goes home. The intro scene and the level's start line tell exactly this, and the get-ready
+   gloves held in front of their body. At the penalty area the creature kicks the leaf on;
+   when the middle band above the character is free and the leaf flies elsewhere, the kick
+   lifts it in an arc up there. Typing the word sends the leaf faster into the gloves, which
+   always catch it: in the middle band when it was typed before the kick or kicked up there,
+   else at its own height. The caught leaf fades away in the gloves, and its creature turns
+   and goes home. The intro scene and the level's start line tell exactly this, and the get-ready
    card of every story level shows the level's one-line story under its title. A leaf not typed in time flies past: a goal, everybody cheers (a "GOAL!" pop,
    confetti and the creature's joy before it leaves, but no words from the narrator, which would nag), so a miss is
    a laugh, not a failure. The leaf size shows the word length at a glance. Animals are

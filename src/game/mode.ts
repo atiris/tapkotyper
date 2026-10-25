@@ -48,6 +48,8 @@ export abstract class Mode {
   start(): void {}
   abstract update(dt: number): void;
   abstract render(g: G): void;
+  /** Drawn over the DOM Tapko: what he holds in front of him. */
+  renderFront(_g: G): void {}
   /** Words typed so far / needed, for the progress bar. */
   abstract progress(): number;
   abstract get finished(): boolean;

@@ -1,7 +1,7 @@
 # World rhythm: five different steps inside one world
 
 **Status:** decided (2026-10-22); meadow pilot done in `.todo/.done/66-meadow-world-rhythm.md`. **Prio:** P1. **Effort:** L
-(new level engines plus light art per world), can ship world by world.
+(new level engines plus light art per world), can ship world by world. Activity names and the spread over all worlds: [activities.md](activities.md).
 
 ## The problem
 - A child usually plays one world per session: a session is about 15 minutes, a level 1-3

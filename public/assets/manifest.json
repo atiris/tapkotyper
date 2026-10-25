@@ -1000,6 +1000,10 @@
    "w": 319,
    "h": 384
   },
+  "obj-parrot-flying": {
+   "w": 377,
+   "h": 384
+  },
   "obj-photo-frame": {
    "w": 320,
    "h": 384

@@ -1,7 +1,7 @@
 import './styles.css';
 import { app, go, openRoute, parseRoute, registerScreen, screenVisit, useLanguage } from './app/app';
 import { installTheme } from './app/theme';
-import { loadManifest } from './gfx/assets';
+import { loadManifest, preloadPlay } from './gfx/assets';
 import { GUEST_ID, SUPER_ID } from './storage/schema';
 import { detectLanguage } from './i18n/i18n';
 import { appShortcuts, watchAutoFullscreen } from './ui/chrome';
@@ -63,6 +63,9 @@ registerScreen('break', needsProfile(breakScreen));
 // Help works without a player too: the start page opens it on the about tab.
 registerScreen('help', helpScreen);
 
+/** Milliseconds after the start before the level pictures begin to load. */
+const PRELOAD_AFTER_MS = 1500;
+
 async function boot(): Promise<void> {
   installTheme(app.store);
   const lang = app.store.data.language ?? detectLanguage();
@@ -73,6 +76,8 @@ async function boot(): Promise<void> {
   window.addEventListener('popstate', () => void openRoute(location.hash));
   watchAutoFullscreen();
   noteVisit();
+  // The level pictures load while the child picks a player; the first screen's own pictures go first.
+  setTimeout(() => void preloadPlay(), PRELOAD_AFTER_MS);
   // An installed app opened with a `.tapko` file (Chrome, Edge): the mentor page loads it.
   const queue = (window as { launchQueue?: { setConsumer(f: (p: { files: { getFile(): Promise<File> }[] }) => void): void } }).launchQueue;
   queue?.setConsumer((p) => void Promise.all(p.files.map((f) => f.getFile())).then((files) => {

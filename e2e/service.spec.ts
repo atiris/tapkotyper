@@ -9,7 +9,6 @@ test('the star menu fills in the super player\'s progress', async ({ page }) => 
   await page.keyboard.type('supertapkotyper', { delay: 40 });
   await expect(page.locator('.map-hello')).toContainText('Super Tapko');
   await page.locator('.top-right .round-btn.super').click();
-  await expect(page.locator('.service-menu .menu-item', { hasText: 'Remove the settings password' })).toHaveCount(0);
   await page.locator('.service-menu .menu-item', { hasText: 'Fill in progress' }).click();
   const dialog = page.locator('.service-dialog');
   await dialog.locator('input[type=number]').fill('15');
@@ -25,7 +24,7 @@ test('the star menu fills in the super player\'s progress', async ({ page }) => 
   expect(errors).toEqual([]);
 });
 
-test('the star menu removes the settings password, and the settings say when for a month', async ({ page }) => {
+test('the super player removes the settings password without it, and the settings say when for a month', async ({ page }) => {
   await createProfile(page, 'Lea');
   await page.evaluate(() => {
     const data = JSON.parse(localStorage.getItem('tapkotyper:v1')!);
@@ -37,20 +36,25 @@ test('the star menu removes the settings password, and the settings say when for
   await page.locator('.start-screen').waitFor();
   await page.keyboard.type('supertapkotyper', { delay: 40 });
   await page.locator('.top-right .round-btn.super').click();
-  await page.locator('.service-menu .menu-item', { hasText: 'Remove the settings password' }).click();
-  await expect(page.locator('.toast')).toHaveText('The settings password is removed.');
+  await expect(page.locator('.service-menu .menu-item')).toHaveCount(2);
+  await page.keyboard.press('Escape');
+  // The super player's settings ask nothing and offer the removal.
+  await page.locator('.top-right .round-btn').first().click();
+  const group = page.locator('.lock-group');
+  await expect(group.locator('.lock-note')).toHaveCount(0);
+  await group.locator('.btn.danger').click();
+  await expect(group.locator('.lock-note')).toHaveAttribute('aria-label', /The super account removed or changed the settings password on/);
   const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('tapkotyper:v1')!));
   expect('parentLock' in stored).toBe(false);
   expect(Date.now() - stored.lockRemovedAt).toBeLessThan(60_000);
-  await page.locator('.top-right .round-btn.super').click();
-  await page.locator('.service-menu .menu-item', { hasText: 'End super mode' }).click();
-  await expect(page.locator('.start-screen')).toBeVisible();
-  await expect(page.locator('.round-btn.super')).toHaveCount(0);
 
+  // Lea's settings show the note too.
+  await page.goto('./');
+  await page.reload();
   await page.locator('.profile-card', { hasText: 'Lea' }).click();
   await page.locator('.top-right .round-btn').first().click();
   await page.locator('.confirm .btn:not(.primary)').last().click();
-  await expect(page.locator('.lock-group .lock-note')).toHaveAttribute('aria-label', /The super account removed the settings password on/);
+  await expect(page.locator('.lock-group .lock-note')).toBeVisible();
 
   // A month later the warning is gone.
   await page.evaluate(() => {

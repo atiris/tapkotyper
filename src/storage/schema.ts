@@ -226,7 +226,7 @@ export interface StoreData {
   theme: Theme;
   /** One password for the whole device; the super player is never asked. */
   parentLock?: ParentLock;
-  /** When the service menu of super mode last removed the password (ms since epoch). */
+  /** When the super player last removed or changed the password without the current one (ms since epoch). */
   lockRemovedAt?: number;
 }
 

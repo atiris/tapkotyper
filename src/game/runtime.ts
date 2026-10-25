@@ -7,7 +7,7 @@ import { Rng } from '../engine/rng';
 import { Tweens, ease } from '../engine/tween';
 import { drawBackground, drawSpeech, drawWord, fontFamily, type G, type SpeechLayout, speechLayout, wordBox } from '../gfx/draw';
 import { type Mood, pawColors, tapkoElement, renderTapkoInto } from '../gfx/tapko';
-import { preload } from '../gfx/assets';
+import { preload, preloadPlay } from '../gfx/assets';
 import { type FairyMood, drawFairy } from '../gfx/fairy';
 import { type RobotMood, type RobotState, drawRobot, robotFor } from '../gfx/robot';
 import { t, tList } from '../i18n/i18n';
@@ -110,6 +110,8 @@ const HOPS = 3;
 const HOP_TIME = 0.4;
 const TOOL_FADE = 0.4;
 const RESULTS_AFTER = 1.4;
+/** Seconds a level waits at most for its pictures before it starts with the fallbacks. */
+const PLAY_WAIT_S = 5;
 /** Milliseconds after play begins in which Enter does nothing. */
 const ENTER_GUARD_MS = 300;
 
@@ -396,7 +398,9 @@ export class LevelRuntime {
   /** Preparation: assets, new keys, the get-ready card with the tip and its password, then play. */
   private async prepare(): Promise<void> {
     const p = app.profile!;
-    await preload([`bg-${this.backdrop}-far`, `bg-${this.backdrop}-mid`, `bg-${this.backdrop}-near`]);
+    // The things of the level are ready when it opens; a slow connection waits PLAY_WAIT_S at most.
+    await Promise.all([preload([`bg-${this.backdrop}-far`, `bg-${this.backdrop}-mid`, `bg-${this.backdrop}-near`]),
+      Promise.race([preloadPlay(), new Promise((r) => setTimeout(r, PLAY_WAIT_S * 1000))])]);
     if (this.disposed) return;
     audio.music(this.def.kind === 'practice' ? app.menuTrack : this.mode.world);
     // Free typing and staying a while start at once; the child has just played this level.

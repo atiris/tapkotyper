@@ -49,7 +49,7 @@
   picked on the start page; a reload or "Koniec super režimu" turns it off and drops the
   temporary player. While it is on, a red star in the top right corner (it never pushes the
   screen down) opens the **service menu**:
-  - everywhere: end super mode; remove the settings password (only when one is set);
+  - everywhere: end super mode;
   - on the temporary player's map: "Vyplniť postup..." opens a dialog with the number of
     mastered keys, the last finished world, and the shares of earned stars, accuracy and earned
     range finds. The keys and the finished worlds are set exactly; the stars, the range finds
@@ -57,7 +57,8 @@
     keeps at least one star), so the map, badges and statistics look like a real child's.
 - Stored players' progress is never changed by the service menu: there is no simulated or
   opened level, so a parent or teacher always sees progress that was typed.
-- A password removed by the service menu is recorded with its time: the settings show it for a
+- A password removed or changed by the super player (whose settings ask for no password) is
+  recorded with its time: the settings show it for a
   month ([parent controls](parent-controls.md)) and the results a teacher receives say so
   ([teacher links](teacher-links.md)).
 

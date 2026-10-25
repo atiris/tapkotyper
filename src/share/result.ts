@@ -23,7 +23,7 @@ export interface TaskResult {
   levels?: number;
   /** The weakest keys now, with their recent accuracy in percent, weakest first. */
   weak: [string, number][];
-  /** The service menu of super mode removed the settings password on the child's device. */
+  /** The super player removed or changed the settings password on the child's device without the current one. */
   lockRemoved?: true;
 }
 
@@ -32,7 +32,7 @@ export const RESULT_WEAK_KEYS = 5;
 /** The mentor sees the real name, or the nickname of a player without one. */
 const mentorName = (p: Profile): string => p.name || nickname(p);
 
-/** `lockRemoved`: the service menu removed the device's settings password (`StoreData.lockRemovedAt`). */
+/** `lockRemoved`: the super player removed or changed the device's settings password (`StoreData.lockRemovedAt`). */
 export function makeResult(p: Profile, task: Task, lockRemoved = false): TaskResult {
   const total = task.chars + task.errors;
   return {

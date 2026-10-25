@@ -303,10 +303,10 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
 .corner-menu-panel.service-menu { position: fixed; top: auto; z-index: 40; }
 .service-dialog { display: flex; flex-direction: column; gap: var(--sp-3); max-width: 560px; }
 .service-dialog .field { display: grid; gap: 0.3rem; }
-/* For a month after the service menu removed the settings password: a round warning in the password panel's corner. */
+/* For a month after the super player removed or changed the settings password: a round warning centred on the arc of the panel's top right corner. */
 .lock-group { position: relative; }
-.lock-group .lock-note { position: absolute; top: -20px; right: 0.6rem; width: 36px; height: 36px; }
-/* The teacher's sign that the service menu removed a child's settings password. */
+.lock-group .lock-note { position: absolute; top: -17px; right: -11px; width: 36px; height: 36px; z-index: 1; }
+/* The teacher's sign that the super player removed or changed a child's settings password. */
 .lock-mark { display: inline-grid; place-items: center; margin-left: 0.3em; color: var(--danger-ink); vertical-align: middle; }
 .lock-mark .icon svg { width: 1em; height: 1em; }
 .panel { background: var(--paper); border-radius: var(--radius); box-shadow: var(--shadow); padding: clamp(1rem, 3vw, 2rem); max-width: 960px; margin: 0 auto; }

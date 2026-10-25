@@ -27,20 +27,12 @@ function endSuperMode(): void {
 }
 
 /**
- * The service menu under the star: the end of super mode and the removal of the settings password
- * everywhere, the progress filling on the super player's map.
+ * The service menu under the star: the end of super mode everywhere, the progress filling on the
+ * super player's map. The settings password is removed in the settings, which ask the super player nothing.
  */
 function openServiceMenu(star: HTMLButtonElement, onClosed: () => void): (refocus?: boolean) => void {
   const entry = (glyph: keyof typeof ICONS, label: string, pick: () => void): MenuEntry => ({ label, art: roundPic('super', glyph), pick });
   const entries = [entry('close', t('service.end'), endSuperMode)];
-  if (app.store.data.parentLock) {
-    entries.push(entry('lock', t('service.removeLock'), () => {
-      delete app.store.data.parentLock;
-      app.store.data.lockRemovedAt = Date.now();
-      app.store.save();
-      toast(t('service.lockRemoved'));
-    }));
-  }
   const p = app.profile;
   if (p?.id === SUPER_ID && shownScreen() === 'map') entries.push(entry('chart', t('service.fill'), () => fillDialog(p)));
   return menuPanel(star, t('super.badge'), entries, (panel) => {
@@ -95,10 +87,10 @@ function fillDialog(p: Profile): void {
     h('div', { class: 'row center' }, button(t('common.back'), () => close(), 'btn'), button(t('service.fillApply'), apply, 'btn primary', 'check'))));
 }
 
-/** Days the settings show that the service menu removed the password. */
+/** Days the settings show that the password was removed or changed without the current one. */
 const LOCK_NOTE_DAYS = 30;
 
-/** The round warning by the settings password for a month after the service menu removed it; null otherwise. */
+/** The round warning on the settings password panel for a month after the super player removed or changed it; null otherwise. */
 export function lockRemovedNote(now = Date.now()): HTMLElement | null {
   const at = app.store.data.lockRemovedAt;
   if (at === undefined || now - at > LOCK_NOTE_DAYS * 86_400_000) return null;

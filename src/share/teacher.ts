@@ -151,7 +151,7 @@ export interface Writer extends ChildSummary {
   cpmChange: number;
   mastered: boolean;
   intact: boolean;
-  /** One of the hand-ins says the service menu removed the settings password. */
+  /** One of the hand-ins says the super player removed or changed the settings password. */
   lockRemoved: boolean;
 }
 

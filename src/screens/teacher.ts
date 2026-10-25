@@ -12,7 +12,7 @@ import { cornerControls } from '../ui/chrome';
 import { tabBar } from '../ui/tabs';
 import { type ScanCard, scanCard } from './teacher-scan';
 
-/** The lock sign by a child whose device had its settings password removed by the service menu (super mode). */
+/** The lock sign by a child whose device had its settings password removed or changed by the super player. */
 function lockMark(r: { lockRemoved?: boolean }): HTMLElement | null {
   if (!r.lockRemoved) return null;
   return h('span', { class: 'lock-mark', tip: t('teacher.lockRemoved'), 'aria-label': t('teacher.lockRemoved'), role: 'img' }, icon('lock'));

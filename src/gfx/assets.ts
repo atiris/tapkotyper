@@ -55,12 +55,21 @@ export function preload(names: string[]): Promise<void> {
   return Promise.all(names.filter(hasImage).map(load)).then(() => undefined);
 }
 
+/** Pictures a level draws only when their thing comes: objects, Bolt, Melody and the astronaut. */
+const PLAY_PICTURES = /^(obj|robot|fairy|tapko-astronaut)/;
+
+/** Loads every picture a level may draw (once per visit), so a thing never shows its fallback first. */
+export function preloadPlay(): Promise<void> {
+  return preload(Object.keys(manifest.images).filter((n) => PLAY_PICTURES.test(n)));
+}
+
 function load(name: string): Promise<void> {
   if (!loading.has(name)) {
     loading.set(name, new Promise<void>((resolve) => {
       const img = new Image();
       img.decoding = 'async';
-      img.onload = () => { images.set(name, img); resolve(); };
+      // Decoded before its first draw, so the frame that shows it does not stall.
+      img.onload = () => void img.decode().catch(() => undefined).then(() => { images.set(name, img); resolve(); });
       img.onerror = () => resolve();
       img.src = assetUrl(`${name}.webp`);
     }));

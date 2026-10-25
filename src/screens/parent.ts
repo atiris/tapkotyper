@@ -200,7 +200,7 @@ function settingsTab(p: Profile): HTMLElement {
 
 /**
  * The device-wide password on this screen: set, change or remove. The super player needs no current one.
- * For a month after the service menu removed it, a round warning in the corner says when.
+ * For a month after it was removed or changed without the current one, a round warning on the panel's corner says when.
  */
 function lockGroup(): HTMLElement {
   const box = h('fieldset', { class: 'lock-group' });
@@ -214,6 +214,8 @@ function lockGroup(): HTMLElement {
     const fail = (key: string) => { msg.className = 'error lock-msg'; msg.textContent = t(key); };
     const allowed = async () => !lock || !current || (await checkLock(lock, current.value));
     const keep = (l: ParentLock | null, doneKey: string) => {
+      // Removed or changed without the current password (the super player): recorded for the parent and the teacher.
+      if (lock && !current) app.store.data.lockRemovedAt = Date.now();
       if (l) app.store.data.parentLock = l;
       else delete app.store.data.parentLock;
       app.store.save();

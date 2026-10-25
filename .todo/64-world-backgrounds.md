@@ -33,11 +33,11 @@ far as a night sky scene, mid and near as sparse star layers on magenta, no stri
 - [x] No cross-fade in the game (`src/gfx/draw.ts`)
 - [x] meadow (far, mid lifted 130 px, near), checked in the game
 - [x] space (far with nebula, mid: a star field drawn on black turned into coverage, stars at the side edges removed; near: asteroids and a planet; the game no longer draws them at 40 %)
-- [ ] planet
-- [ ] dragons
-- [ ] egg
-- [ ] junkyard
-- [ ] workshop
+- [x] planet
+- [x] dragons
+- [x] egg
+- [x] junkyard
+- [x] workshop (far seam repainted over 50 % with new things in the middle: the wall repeated a motif)
 - [ ] raintown
 - [ ] robocity
 - [ ] robohome

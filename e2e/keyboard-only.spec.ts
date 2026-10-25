@@ -1,5 +1,5 @@
 import { type Page, expect, test } from '@playwright/test';
-import { createProfile, playLevel, typeChar, NEW_PLAYER } from './helpers';
+import { createProfile, playLevel, typeChar, untilPlay, NEW_PLAYER } from './helpers';
 
 /** Presses Tab until the focused element has `text`; fails after a few tries. */
 async function tabTo(page: Page, text: string): Promise<void> {
@@ -10,18 +10,9 @@ async function tabTo(page: Page, text: string): Promise<void> {
   throw new Error(`no focus on "${text}"`);
 }
 
-/** Goes on until the get-ready card of a level shows: story scenes by Enter, a new key's card by typing it. */
-async function untilReady(page: Page): Promise<void> {
-  for (let i = 0; i < 60 && !(await page.locator('.posture-card').count()); i++) {
-    const sample = await page.locator('.newkey-card').getAttribute('data-sample', { timeout: 100 }).catch(() => null);
-    if (sample) await typeChar(page, sample);
-    else if (await page.locator('.story-screen').count()) await page.keyboard.press('Enter');
-    await page.waitForTimeout(150);
-  }
-  await page.locator('.posture-card').waitFor();
-}
-
 test('the whole game by keyboard only: a new player, a level, the results, ending a level, F-keys, help', async ({ browser }) => {
+  // A whole level and a second one by keyboard: longer than one test's usual budget on a loaded machine.
+  test.setTimeout(300_000);
   const context = await browser.newContext();
   const page = await context.newPage();
   const errors: string[] = [];
@@ -38,7 +29,7 @@ test('the whole game by keyboard only: a new player, a level, the results, endin
   // The welcome's start is focused; the intro stories go on by Enter.
   await expect(page.locator('.welcome-card .btn.primary')).toBeFocused();
   await page.keyboard.press('Enter');
-  await untilReady(page);
+  await untilPlay(page, 'ready');
   await playLevel(page);
   await expect(page.locator('.results-card .row.center button').first()).toBeFocused();
   await page.keyboard.press('Escape');
@@ -47,7 +38,7 @@ test('the whole game by keyboard only: a new player, a level, the results, endin
   // Back on the map Continue is focused: the second level starts by Enter, its card too.
   await expect(page.locator('.map-side .btn.primary')).toBeFocused();
   await page.keyboard.press('Enter');
-  await untilReady(page);
+  await untilPlay(page, 'ready');
   await page.keyboard.press('Enter');
   await expect(page.locator('.posture-card')).toHaveCount(0);
   if (await page.locator('.mode-intro').count()) await page.keyboard.press('Enter');

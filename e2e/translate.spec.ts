@@ -52,7 +52,8 @@ test('a parent starts a language, translates, exports, imports and plays it', as
   // A pool gets a variant and loses it again.
   await page.locator('#tr-s-aim').scrollIntoViewIfNeeded();
   const pool = page.locator('.tr-item[data-key="aim.lines.center"]');
-  await expect(pool.locator('.tr-add')).toBeVisible();
+  // The section fills in once it comes near the view: thousands of fields, slow on a loaded machine.
+  await expect(pool.locator('.tr-add')).toBeVisible({ timeout: 30_000 });
   const variants = await pool.locator('.tr-var').count();
   await pool.locator('.tr-add').click();
   await expect(pool.locator('.tr-var')).toHaveCount(variants + 1);

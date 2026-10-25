@@ -73,7 +73,7 @@ test('the robot story is a second row on the map, and Bolt walks with the child 
   await page.locator('.posture-card').waitFor();
   await page.keyboard.press('Space');
   await expect(page.locator('.level-screen.world-junkyard[data-bolt="broken"]')).toBeVisible();
-  await expect(page.locator('.level-tapko.waiting')).toHaveCount(0);
+  await page.locator('.level-tapko:not(.waiting)').waitFor();
   await expect.poll(() => page.locator('.kb-guide').getAttribute('data-next')).not.toBe('');
   expect(errors).toEqual([]);
 });
@@ -87,7 +87,7 @@ test('Enter sends the paws to type a few words', async ({ page }) => {
   await page.locator('.posture-card').waitFor();
   await page.keyboard.press('Space');
   await expect(page.locator('.paw-btn')).toHaveAttribute('data-charged', '3');
-  await expect(page.locator('.level-tapko.waiting')).toHaveCount(0);
+  await page.locator('.level-tapko:not(.waiting)').waitFor();
   await expect.poll(() => page.locator('.kb-guide').getAttribute('data-next')).not.toBe('');
   await page.keyboard.press('Enter');
   await expect(page.locator('.kb-guide.paws-on')).toBeVisible();
@@ -107,7 +107,7 @@ test('a level left during its get-ready card does not swallow the next level\'s 
   await page.locator('.map-side .btn.primary').click();
   await page.locator('.posture-card').waitFor();
   await page.keyboard.press('Space');
-  await expect(page.locator('.level-tapko.waiting')).toHaveCount(0);
+  await page.locator('.level-tapko:not(.waiting)').waitFor();
   // The level listens on the window after all capturing cards; a key must get that far.
   await page.evaluate(() => window.addEventListener('keydown', () => document.body.dataset.reached = '1'));
   await page.keyboard.type('a');

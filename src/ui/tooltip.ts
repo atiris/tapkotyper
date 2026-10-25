@@ -110,6 +110,11 @@ export function tip(el: Element, text: string): void {
   }
 }
 
+/** Whether a tooltip shows now: its Esc comes before any other. */
+export function tipShown(): boolean {
+  return !!machine?.shown;
+}
+
 /** Hides the tooltip at once (a new screen). */
 export function hideTip(): void {
   machine?.close();

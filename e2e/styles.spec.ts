@@ -1,22 +1,5 @@
 import { type Page, expect, test } from '@playwright/test';
-import { createProfile, skipStories, typeChar } from './helpers';
-
-/** Goes through the new-key cards and the get-ready card until play starts. */
-async function startRun(page: Page): Promise<void> {
-  for (let i = 0; i < 40; i++) {
-    const state = await page.evaluate(() => {
-      const nk = document.querySelector<HTMLElement>('.newkey-card');
-      if (nk) return { kind: 'newkey', key: nk.dataset.sample ?? '' };
-      if (document.querySelector('.posture-card')) return { kind: 'ready', key: '' };
-      return { kind: document.querySelector('.level-tapko:not(.waiting)') ? 'play' : 'wait', key: '' };
-    });
-    if (state.kind === 'play') return;
-    if (state.kind === 'ready') await page.keyboard.press('Space');
-    else if (state.kind === 'newkey') await typeChar(page, state.key);
-    await page.waitForTimeout(200);
-  }
-  throw new Error('play did not start');
-}
+import { createProfile, skipStories, typeChar, untilPlay } from './helpers';
 
 async function openPicker(page: Page, style: string): Promise<void> {
   await page.locator('.map-side .btn', { hasText: 'Own practice' }).click();
@@ -44,7 +27,7 @@ test('dictation: the voice says the target, a wrong key reveals it', async ({ pa
   await createProfile(page, 'Ema');
   await openPicker(page, 'Dictation');
   await page.locator('.practice-keys-modal').getByRole('button', { name: 'Start' }).click();
-  await startRun(page);
+  await untilPlay(page);
   const heard = async (n: number) => {
     await expect.poll(() => page.evaluate(() => (window as any).__spoken.length)).toBeGreaterThanOrEqual(n);
     return page.evaluate((i) => (window as any).__spoken[i - 1] as string, n);
@@ -90,7 +73,7 @@ test('memory: keys wait while the target shows, a mistake shows it again', async
   // Letters only, so every target is one word.
   await page.locator('.practice-keys-modal .kb-key[aria-label="space bar"]').click();
   await page.locator('.practice-keys-modal').getByRole('button', { name: 'Start' }).click();
-  await startRun(page);
+  await untilPlay(page);
   const letters = () => page.evaluate(() => (window as any).__letters as string);
   await expect.poll(letters).not.toBe('');
   const word = await letters();

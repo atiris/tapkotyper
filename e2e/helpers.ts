@@ -27,6 +27,31 @@ export async function playLevel(page: Page, mistakes = true, typed: string[] = [
   throw new Error('level did not finish');
 }
 
+/**
+ * Goes through a level's story scenes (Enter), new-key cards (typing the key) and intro card
+ * until its get-ready card shows (`ready`) or, after Space on it, play has started (`play`).
+ * No step budget: a loaded machine only takes longer, the test's timeout bounds it.
+ */
+export async function untilPlay(page: Page, until: 'ready' | 'play' = 'play'): Promise<void> {
+  for (;;) {
+    await page.locator('.story-screen, .newkey-card, .posture-card, .mode-intro, .level-tapko:not(.waiting)').first().waitFor({ state: 'attached' });
+    const state = await page.evaluate(() => {
+      const nk = document.querySelector<HTMLElement>('.newkey-card');
+      if (nk) return { kind: 'newkey', key: nk.dataset.sample ?? '' };
+      if (document.querySelector('.posture-card')) return { kind: 'ready', key: '' };
+      if (document.querySelector('.mode-intro')) return { kind: 'intro', key: '' };
+      if (document.querySelector('.story-screen')) return { kind: 'story', key: '' };
+      return { kind: 'play', key: '' };
+    });
+    if (state.kind === until) return;
+    if (state.kind === 'play') throw new Error('play started without a get-ready card');
+    if (state.kind === 'ready') await page.keyboard.press('Space');
+    else if (state.kind === 'newkey') await typeChar(page, state.key);
+    else await page.keyboard.press('Enter');
+    await page.waitForTimeout(150);
+  }
+}
+
 /** One character as a child types it: a capital with Shift held; a letter off the US layout as a real key event of the Slovak key. */
 export async function typeChar(page: Page, ch: string): Promise<void> {
   if (ch === ENTER) return page.keyboard.press('Enter');

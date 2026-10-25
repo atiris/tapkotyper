@@ -30,7 +30,7 @@ async function editProfile(page: Page, change: string): Promise<void> {
 const shown = (page: Page) => page.locator('.level-screen .sr-only[role=status]');
 
 /** Keys count once play has started (the world's pictures are loaded). */
-const started = (page: Page) => expect(page.locator('.level-tapko:not(.waiting)')).toHaveCount(1);
+const started = (page: Page) => page.locator('.level-tapko:not(.waiting)').waitFor({ state: 'attached' });
 
 test('just typing shows what was typed after a pause and counts nothing', async ({ page }) => {
   const errors: string[] = [];

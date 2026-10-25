@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { createProfile, typeChar, skipStories } from './helpers';
+import { createProfile, skipStories, untilPlay } from './helpers';
 
 test('help opens from the map and from a paused level and goes back', async ({ page }) => {
   const errors: string[] = [];
@@ -27,21 +27,7 @@ test('help opens from the map and from a paused level and goes back', async ({ p
   // Level -> pause -> help -> back to the paused level.
   await page.locator('.map-side .btn.primary').click();
   await skipStories(page);
-  for (let i = 0; i < 100; i++) {
-    const state = await page.evaluate(() => {
-      const nk = document.querySelector<HTMLElement>('.newkey-card');
-      if (nk) return { kind: 'newkey', key: nk.dataset.sample ?? '' };
-      if (document.querySelector('.posture-card')) return { kind: 'ready', key: '' };
-      if (document.querySelector('.mode-intro')) return { kind: 'intro', key: '' };
-      // Play has started once the character stops waiting.
-      return { kind: document.querySelector('.level-tapko.waiting') ? 'wait' : 'play', key: '' };
-    });
-    if (state.kind === 'play') break;
-    if (state.kind === 'ready') await page.keyboard.press('Space');
-    else if (state.kind === 'intro') await page.keyboard.press('Enter');
-    else if (state.kind === 'newkey') await typeChar(page, state.key);
-    await page.waitForTimeout(200);
-  }
+  await untilPlay(page);
   await page.keyboard.press('Escape');
   const pause = page.locator('.pause-card');
   await pause.getByRole('button', { name: 'Help' }).click();

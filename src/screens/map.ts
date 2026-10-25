@@ -13,6 +13,7 @@ import { badge } from '../ui/badge';
 import { arrowFocus, button, closeButton, h, icon } from '../ui/dom';
 import { cornerControls } from '../ui/chrome';
 import { offerInstall } from '../ui/install';
+import { tipShown } from '../ui/tooltip';
 import { ownTextPhrases } from '../game/modes/practice';
 import { levelTitleWords, roundButton } from '../ui/hud';
 import { startFreeType } from './free-type';
@@ -52,10 +53,10 @@ function welcomeCard(p: Profile, start: () => void): HTMLElement | null {
     saveProfile();
     card.remove();
   };
-  // Escape closes the card like the X, unless a dialog lies over the map; a new screen drops the listener.
+  // Escape closes the card like the X, unless a dialog lies over the map or a tooltip shows (that Escape hides the tooltip); a new screen drops the listener.
   const onKey = (e: KeyboardEvent) => {
     if (!card.isConnected) return window.removeEventListener('keydown', onKey, true);
-    if (e.key !== 'Escape' || document.querySelector('.modal-back')) return;
+    if (e.key !== 'Escape' || document.querySelector('.modal-back') || tipShown()) return;
     e.preventDefault();
     e.stopImmediatePropagation();
     done();

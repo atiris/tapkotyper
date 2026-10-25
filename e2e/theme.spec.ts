@@ -1,6 +1,6 @@
 import { type Page, expect, test } from '@playwright/test';
 import { contrastMisses } from './contrast';
-import { playLevel, skipStories, typeChar } from './helpers';
+import { playLevel, skipStories, untilPlay } from './helpers';
 
 test.use({ locale: 'sk-SK' });
 
@@ -156,9 +156,11 @@ test('the language button lists the languages by their own names', async ({ page
   await expect(page.locator('.top-right .menu-btn')).toBeFocused();
 });
 
-/** Every visible text of the screen reaches WCAG AA in the dark look. */
+/** Every visible text of the screen reaches WCAG AA in the dark look, once its pop-ins and fades end. */
 async function readable(page: Page, where: string): Promise<void> {
-  await page.waitForTimeout(400);
+  await page.evaluate(() => Promise.all(document.getAnimations()
+    .filter((a) => a.effect?.getComputedTiming().iterations !== Infinity)
+    .map((a) => a.finished.catch(() => undefined))));
   expect(await contrastMisses(page), where).toEqual([]);
 }
 
@@ -207,7 +209,7 @@ test('in the dark look every screen reads well', async ({ page }) => {
   await readable(page, 'practice keys');
   await page.keyboard.press('Escape');
   await page.locator('.map-side .btn', { hasText: 'Len chcem písať' }).click();
-  await page.locator('.level-screen').waitFor();
+  await page.locator('.level-screen .bubble:not(.hidden)').waitFor();
   await readable(page, 'free typing');
   await page.goto('./');
   await page.locator('.profile-card').first().click();
@@ -215,11 +217,7 @@ test('in the dark look every screen reads well', async ({ page }) => {
   await page.locator('.story-screen').waitFor();
   await readable(page, 'story');
   await skipStories(page);
-  for (let i = 0; i < 20 && !(await page.locator('.posture-card').count()); i++) {
-    const sample = await page.locator('.newkey-card').getAttribute('data-sample').catch(() => null);
-    if (sample) await typeChar(page, sample);
-    await page.waitForTimeout(200);
-  }
+  await untilPlay(page, 'ready');
   await readable(page, 'get ready');
   await page.keyboard.press('Space');
   await page.locator('.level-tapko:not(.waiting)').waitFor();

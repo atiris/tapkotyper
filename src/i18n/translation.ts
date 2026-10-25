@@ -86,12 +86,15 @@ export function formExample(code: string, form: string): number | null {
 
 const SITUATIONS = 'situations.';
 
-/** The situation guide key of an item, from the guide of the shown base (patterns allowed). */
-export function situationOf(baseGuide: Record<string, string>, key: string): string | null {
-  const sits: Record<string, string> = {};
-  for (const k of Object.keys(baseGuide)) if (k.startsWith(SITUATIONS)) sits[k.slice(SITUATIONS.length)] = baseGuide[k];
-  const s = situationKey(sits, key);
-  return s ? SITUATIONS + s : null;
+/** Finds the situation guide key of an item in a guide (patterns allowed). */
+export function situationFinder(guide: Record<string, string>): (key: string) => string | null {
+  const exact: Record<string, string> = {};
+  const patterns: Record<string, string> = {};
+  for (const k of Object.keys(guide)) if (k.startsWith(SITUATIONS)) (k.includes('*') ? patterns : exact)[k.slice(SITUATIONS.length)] = guide[k];
+  return (key) => {
+    const s = key in exact ? key : situationKey(patterns, key);
+    return s ? SITUATIONS + s : null;
+  };
 }
 
 /** How many variants of an array item the target has: its own count, else the base's. */
@@ -107,6 +110,7 @@ export function fieldsOf(catalog: Section[], l: OwnLang, base: Dict, baseGuide: 
   const out: Field[] = [];
   const forms = pluralForms(l.code);
   const guides = new Set<string>();
+  const situationOf = situationFinder(baseGuide);
   const guideField = (section: string, key: string) => {
     if (guides.has(key)) return;
     guides.add(key);
@@ -119,7 +123,7 @@ export function fieldsOf(catalog: Section[], l: OwnLang, base: Dict, baseGuide: 
       guideField(s.id, `groups.${g.guide}.title`);
       guideField(s.id, `groups.${g.guide}.about`);
       for (const item of g.items) {
-        const sit = situationOf(baseGuide, item.key);
+        const sit = situationOf(item.key);
         if (sit) guideField(s.id, sit);
         const f = { section: s.id, key: item.key, item };
         if (item.kind === 'text') out.push({ ...f, id: item.key, kind: 'text' });
@@ -246,13 +250,14 @@ export function guideText(guide: Record<string, string>, key: string, itemName =
   return (guide[key] ?? '').replace(/\{item\}/g, itemName);
 }
 
-/** The base text of the name that fills `{item}` for an item: its group's name key. */
-export function itemName(catalog: Section[], base: Dict, key: string): string {
-  for (const s of catalog) for (const g of s.groups) if (g.name && g.items.some((i) => i.key === key)) {
+/** The base text of the name that fills `{item}`, by item key: the name of the item's group. */
+export function itemNames(catalog: Section[], base: Dict): Map<string, string> {
+  const out = new Map<string, string>();
+  for (const s of catalog) for (const g of s.groups) if (g.name) {
     const v = lookup(base, g.name);
-    return typeof v === 'string' ? v : '';
+    for (const i of g.items) out.set(i.key, typeof v === 'string' ? v : '');
   }
-  return '';
+  return out;
 }
 
 /** Fields that differ from the corrected official language; a pool that differs goes whole. */
@@ -270,6 +275,8 @@ export function exportPairs(l: OwnLang, fields: Field[], ctx: Context, mode: Exp
   let section = '';
   let group = '';
   const groupOf = new Map<string, string>();
+  const situationOf = situationFinder(g);
+  const names = itemNames(ctx.catalog, ctx.base.dict);
   for (const s of ctx.catalog) for (const gr of s.groups) for (const i of gr.items) groupOf.set(i.key, gr.guide);
   const entries: PairEntry[] = shown.map((f) => {
     const comments: string[] = [];
@@ -283,8 +290,8 @@ export function exportPairs(l: OwnLang, fields: Field[], ctx: Context, mode: Exp
       if (gr) comments.push(`-- ${guideText(g, `groups.${gr}.title`)} --`);
     }
     if (f.item) {
-      const sit = situationOf(g, f.key);
-      if (sit) comments.push(`Situation: ${guideText(g, sit, itemName(ctx.catalog, ctx.base.dict, f.key))}`);
+      const sit = situationOf(f.key);
+      if (sit) comments.push(`Situation: ${guideText(g, sit, names.get(f.key))}`);
     }
     return { comments, id: f.id, base: sourceValue(ctx.base, f), target: fieldValue(l, f) };
   });

@@ -178,7 +178,7 @@ function settingsTab(p: Profile): HTMLElement {
         p.progress.unlockedKeys = order.slice(0, Math.max(2, p.progress.unlockedKeys.filter((k) => order.includes(k)).length));
         save();
       }), t('parent.layoutHint')),
-      field(t('parent.translate'), button(t('parent.translateGo'), () => go('translate'), 'btn small', 'language'), t('parent.translateHint'), 'div')),
+      field(t('parent.translate'), button(t('parent.translateGo'), () => go('translate', { granted: true }), 'btn small', 'language'), t('parent.translateHint'), 'div')),
     h('fieldset', {}, h('legend', {}, t('parent.group.practice')),
       field(t('parent.difficulty'), autoField(
         [range(s.difficulty, 1, 10, 1, (v) => { s.difficulty = v; save(); })],

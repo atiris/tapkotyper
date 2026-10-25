@@ -1,5 +1,5 @@
 import './styles.css';
-import { app, go, openRoute, parseRoute, registerScreen, screenVisit, useLanguage } from './app/app';
+import { type Screen, app, go, openRoute, parseRoute, registerScreen, screenVisit, useLanguage } from './app/app';
 import { installTheme } from './app/theme';
 import { loadManifest, preloadPlay } from './gfx/assets';
 import { GUEST_ID, SUPER_ID } from './storage/schema';
@@ -35,28 +35,36 @@ registerScreen('moveImport', moveImportScreen);
 registerScreen('map', needsProfile(mapScreen));
 registerScreen('level', needsProfile(levelScreen));
 registerScreen('story', needsProfile(storyScreen));
-// The settings screen is the biggest and rarely opened: it loads on first use, while the
-// parent question is asked; until then the page shows the loading look.
-registerScreen('parent', needsProfile((root, params) => {
+/**
+ * A parent's page behind the parent question. It is big and rarely opened: it loads on first
+ * use, while the question is asked; until then the page shows the loading look. `no` runs when
+ * the parent says no.
+ */
+const parentPage = (name: 'parent' | 'translate', load: () => Promise<Screen>, no: () => void) => (root: HTMLElement, params: any) => {
   const visit = screenVisit();
   root.append(Object.assign(document.createElement('div'), { className: 'boot', textContent: 'TapkoTyper' }));
   // A chunk that will not load (an update replaced it) comes anew with the page, after the question.
-  const page = import('./screens/parent').catch(() => null);
+  const page = load().catch(() => null);
+  let stop: ReturnType<Screen>;
   void (async () => {
     if (!params.granted) {
-      app.asking = 'parent';
+      app.asking = name;
       const yes = await parentAccess();
       if (visit !== screenVisit()) return;
       app.asking = null;
-      if (!yes) return go('map');
+      if (!yes) return no();
     }
-    const m = await page;
+    const screen = await page;
     if (visit !== screenVisit()) return;
-    if (!m) return location.reload();
+    if (!screen) return location.reload();
     root.replaceChildren();
-    m.parentScreen(root, params);
+    stop = screen(root, params);
   })();
-}));
+  return () => stop?.();
+};
+
+registerScreen('parent', needsProfile(parentPage('parent', () => import('./screens/parent').then((m) => m.parentScreen), () => go('map'))));
+registerScreen('translate', parentPage('translate', () => import('./screens/translate').then((m) => m.translateScreen), () => go(app.profile ? 'map' : 'start')));
 registerScreen('wardrobe', needsProfile(wardrobeScreen));
 registerScreen('friends', needsProfile(friendsScreen));
 registerScreen('break', needsProfile(breakScreen));

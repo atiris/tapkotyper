@@ -6,7 +6,8 @@
   is counted offline. The help page's about tab names it and shows the count it reports.
 - The help page's about tab also links to reporting a bug or an idea (a GitHub issue).
 - The help page's about tab says that, as everything is only on the device, a forgotten settings password
-  or lost progress cannot be recovered by us, so progress should be exported now and then.
+  or lost progress cannot be recovered by us, so progress should be exported now and then; for a
+  forgotten password it points to the readme on GitHub, which tells how the super player removes it.
 - A short, plain statement of this on the start screen and the help page's about tab, for parents.
   On the start screen it is two of its promises: "no ads, no accounts" and "your data stays on
   your device" (opens the about tab). The code's licence ("MIT · Atiris", linked to the code) sits

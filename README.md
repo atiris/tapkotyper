@@ -121,6 +121,8 @@ Tapko can be one of nine animals and wears 47 accessories earned by progress (ne
   (within 4 seconds, no text field needed). A temporary "Super Tapko" player opens with
   every world, level, key and accessory unlocked, to look around or test. Nothing it does
   is saved or counted in anyone's statistics; end it with the star in the top right corner or a reload.
+  It can also remove or change the settings password set before, without knowing it (for a
+  forgotten password); the settings then show a warning for a month.
 - **Offline:** installable PWA; works without internet after the first visit.
 - **Move to another computer:** the data tab makes a link (and a QR code) with the whole
   player; open it on the other computer. Very large profiles go by file export instead.

@@ -1256,6 +1256,7 @@
     "privacyTitle": "Náš sľub rodičom",
     "install": "nainštalujete",
     "installHelp": "https://support.google.com/chrome/answer/9658361?hl=sk",
+    "readme": "readme",
     "privacy": [
       "Bez reklám, nákupov, prihlasovania či cookies. Tento web nemá na pozadí vlastný server.",
       "Všetky pokroky sú uložené **len v tomto prehliadači**, a nikto k nim nemá prístup, ale môžete ich exportovať do súboru a zálohovať alebo preniesť na iný počítač.",
@@ -1263,7 +1264,7 @@
     ],
     "dataTitle": "Vaše údaje a počítadlo návštev",
     "data": [
-      "Keďže všetko je len na vašom počítači, nevieme vám zistiť zabudnuté heslo k nastaveniam ani vaše nastavenia a pokrok, keď sa vám počítač pokazí. Preto si pokrok občas exportujte do súboru.",
+      "Keďže všetko je len na vašom počítači, nevieme vám zistiť zabudnuté heslo k nastaveniam ani vaše nastavenia a pokrok, keď sa vám počítač pokazí. Preto si pokrok občas exportujte do súboru. Ak predsa len zabudnete heslo, prečítajte si {readme} súbor na GitHube.",
       "Počítame len anonymné návštevy, bez cookies a bez akýchkoľvek údajov o používateľoch (samozrejme nezapočítame nič, ak to používate offline). Počíta ich služba GoatCounter, ktorá nepoužíva cookies ani nezbiera osobné údaje. Nevýhodou je, že nedokážeme určiť, ktoré časti aplikácie sa používajú a ktoré nie."
     ],
     "visitsOne": "Doteraz sme zaznamenali {n} návštevu.",

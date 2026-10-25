@@ -106,7 +106,7 @@
   to where he is.
 - A level opens with all its pictures: they load in the background from the start, and a level waits a few seconds at most for them, so no thing shows its drawn stand-in first.
 - The super star (super mode) and the wardrobe's star count are normal members of the layout: the star sits in the top row before the sound button on every screen; the wardrobe's count sits under the animal picture.
-- A password removed or changed by the super player shows as a round red "!" button on the arc of the password panel's top right corner for a month, and as a small red lock by the child's name in the teacher's views.
+- A password removed or changed by the super player shows as a round red "!" button inside the password panel's top right corner (the text beside it kept clear) for a month, and as a small red lock by the child's name in the teacher's views.
 - The results card's three buttons (next level, replay, map) share one style; only the next level is accented.
 - Back buttons in top bars have the same height as the round buttons beside them.
 - Fullscreen: a round button on the map and in levels; a parent can set a profile to

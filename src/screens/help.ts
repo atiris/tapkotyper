@@ -65,14 +65,16 @@ function section(title: string, ...kids: Child[]): HTMLElement {
 
 const list = (key: string) => h('ul', {}, ...tList(key).map((l) => h('li', {}, ...richText(l))));
 
+/** A list item of `line` with `{mark}` replaced by `link`. */
+function linkedItem(line: string, mark: string, link: () => HTMLElement): HTMLElement {
+  const [before, after] = line.split(`{${mark}}`);
+  return after === undefined ? h('li', {}, ...richText(line)) : h('li', {}, ...richText(before), link(), ...richText(after));
+}
+
 /** The privacy promise; "{install}" is a link that installs the web app, or opens the browser's guide when the browser cannot. */
 function privacyList(): HTMLElement {
-  return h('ul', {}, ...tList('about.privacy').map((l) => {
-    const [before, after] = l.split('{install}');
-    if (after === undefined) return h('li', {}, ...richText(l));
-    const link = h('a', { href: t('about.installHelp'), target: '_blank', rel: 'noopener', onClick: (e: MouseEvent) => { if (installApp()) e.preventDefault(); } }, t('about.install'));
-    return h('li', {}, ...richText(before), link, ...richText(after));
-  }));
+  return h('ul', {}, ...tList('about.privacy').map((l) => linkedItem(l, 'install', () =>
+    h('a', { href: t('about.installHelp'), target: '_blank', rel: 'noopener', onClick: (e: MouseEvent) => { if (installApp()) e.preventDefault(); } }, t('about.install')))));
 }
 
 /** The visit count the public counter reports; null when offline or blocked. */
@@ -99,7 +101,8 @@ function openData(): HTMLElement {
 
 /** About the game and the privacy promise, for parents. */
 function aboutTab(): HTMLElement[] {
-  const data = list('about.data');
+  const data = h('ul', {}, ...tList('about.data').map((l) => linkedItem(l, 'readme', () =>
+    h('a', { href: 'https://github.com/atiris/tapkotyper#readme', target: '_blank', rel: 'noopener' }, t('about.readme')))));
   data.append(openData());
   return [
     h('p', {}, ...richText(t('about.intro'))),

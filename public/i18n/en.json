@@ -1256,6 +1256,7 @@
     "privacyTitle": "Our promise to parents",
     "install": "Installed",
     "installHelp": "https://support.google.com/chrome/answer/9658361?hl=en",
+    "readme": "readme",
     "privacy": [
       "No ads, purchases, sign-in or cookies. This site has no server of its own in the background.",
       "All progress is stored **only in this browser** and nobody else can reach it, but you can export it to a file to back it up or move it to another computer.",
@@ -1263,7 +1264,7 @@
     ],
     "dataTitle": "Your data and the visit counter",
     "data": [
-      "Because everything is only on your computer, we cannot recover a forgotten settings password, or your settings and progress when your computer breaks. So export your progress to a file now and then.",
+      "Because everything is only on your computer, we cannot recover a forgotten settings password, or your settings and progress when your computer breaks. So export your progress to a file now and then. If you forget the password anyway, read the {readme} file on GitHub.",
       "We only count anonymous visits, without cookies and without any data about users (of course nothing is counted if you use it offline). The counting is done by GoatCounter, which uses no cookies and collects no personal data. The downside is that we cannot tell which parts of the app are used and which are not."
     ],
     "visitsOne": "So far we have recorded {n} visit.",

@@ -41,12 +41,12 @@ far as a night sky scene, mid and near as sparse star layers on magenta, no stri
 - [x] raintown
 - [x] robocity
 - [ ] robohome
-- [ ] garden
+- [x] garden
 - [ ] forestpath
 - [ ] lilylake
-- [ ] musictree
-- [ ] moonball
-- [ ] rescue
+- [x] musictree
+- [x] moonball
+- [x] rescue
 - [ ] When every world is redrawn: drop `STRIP_HEIGHT`, `writeStrip` and the 21:9 strip path from
       `scripts/assets.mjs` (no layer uses them any more) and the old table and world blocks from
       PROMPTS.md that the new prompts replaced

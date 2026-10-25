@@ -101,19 +101,18 @@ minutes (the fairy story: 5 words x 8 times x 6 letters is about 240 keys).
   done until the child plays it again (it can be an easy meadow or a hard fairy world).
 - The **Papagáj** badge on the profile needs the parrot of every world the child has opened;
   a parrot flying away takes the badge away until it is won back.
+- The badge is worth 7 points in the treasure chest of rarities (the chest's maximum grows
+  from 60 to 67). It is the one badge shown next to the player's name: on the start page's
+  player card, just under the character on "Môj postup", and on the player's map.
+- The world card carries a parrot icon next to the target (`ui-act-parrot`): grey while that
+  world's parrot is not won (or flew away), in full colour when it is won and counted.
 
 Is it too complicated? For the child it is simple: "a parrot flew away, go get it back". The
 rules underneath are only the daily roll, the floor and the 21-day drop, all in one place.
 
-## New ideas outside the groups above (not decided)
+## Ideas dropped
 
-- **Atramentová hmla** / Ink fog (blind copy): typed letters hide under ink at once; only a
-  soft sound says right or wrong. The ink clears at the end of the line. Trains trust in the
-  fingers.
-- **Poskladaj vetu** / Sentence puzzle: words of a short sentence in a mixed order; typed in
-  the order that makes sense. Trains reading for meaning.
-- **Pomenuj** / Name it: was a picture to name; dropped with the decision against pictures of
-  words.
+Ink fog (blind copy), sentence puzzle and name it (owner, 2026-10-25).
 
 ## Difficulty knobs
 
@@ -149,7 +148,7 @@ range and the parrot cards.
 | Path | Waiting words, build (nest) | Secret words (falling feathers) |
 | Lake | Copy (lily stones) | Dictation (frog choir) |
 | Tree | Copy, text page (song sheet) | Jumble (tangled song) |
-| Ball | Growing copy (invitations) | Jumble or ink fog (magic letters) |
+| Ball | Growing copy (invitations) | Jumble (magic letters) |
 
 The fairy story keeps level 4 flipping the world's style (world-rhythm decision 5).
 
@@ -172,3 +171,6 @@ section 9). Missing: waiting words, memory pairs, jumble, the parrot card.
 8. Parrot: a side card in each world after the range, no stars, flies away as described,
    badge for all parrots; speed is not judged.
 9. No pictures of words.
+10. Parrot badge: 7 chest points, the one badge next to the player's name (start card,
+    "Môj postup", map); a grey or coloured parrot icon on each world card.
+11. Ink fog, sentence puzzle and name it are dropped.

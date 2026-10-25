@@ -32,7 +32,7 @@ far as a night sky scene, mid and near as sparse star layers on magenta, no stri
 - [x] Tool `scripts/bg-seam.mjs`, prompts and procedure in PROMPTS.md
 - [x] No cross-fade in the game (`src/gfx/draw.ts`)
 - [x] meadow (far, mid lifted 130 px, near), checked in the game
-- [ ] space
+- [x] space (far with nebula, mid: a star field drawn on black turned into coverage, stars at the side edges removed; near: asteroids and a planet; the game no longer draws them at 40 %)
 - [ ] planet
 - [ ] dragons
 - [ ] egg

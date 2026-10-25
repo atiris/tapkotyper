@@ -6,6 +6,7 @@
 //   node scripts/bg-seam.mjs prep <img> <dir>            rolled.png and seam-in.png for Gemini
 //   node scripts/bg-seam.mjs merge <dir> <gemini> <out>  the repainted middle joined to the exact sides
 //   node scripts/bg-seam.mjs quilt <dir> <donor> <out>   the middle filled from another strip, no Gemini
+//   node scripts/bg-seam.mjs black <img> <out> [floor]   stars on black moved onto magenta, by brightness
 //   node scripts/bg-seam.mjs lift <img> <px> <out>       a strip moved up; the near layer hides its bottom
 //   node scripts/bg-seam.mjs preview <world> <out>       the three processed layers repeated side by side
 //
@@ -29,6 +30,11 @@ const GAP = 0.3;
 const PAD = 3;
 // strips: how many rows at a strip's bottom may be its dark baseline.
 const LINE_ROWS = 12;
+// black: darker than the floor is empty sky (a higher floor keeps only the brighter stars),
+// brighter than BLACK_FULL is a solid star.
+const BLACK_FLOOR = 24;
+const BLACK_FULL = 200;
+const EDGE_CLEAR = 6;
 // check: a strip's drawing may rise this part of the height above its band.
 const BAND_SLACK = 0.05;
 const MAGENTA = [255, 0, 255];
@@ -402,6 +408,43 @@ async function quilt(dir, donorFile, out) {
   return true;
 }
 
+/**
+ * Stars painted on black, put on the magenta key: brightness is coverage. On magenta Gemini lays
+ * small things out like a sticker sheet (neat groups); on black it scatters them like a real sky.
+ */
+async function black(file, out, floor = BLACK_FLOOR) {
+  const img = await load(file);
+  if (!sizeOk(img, file)) return false;
+  const { w, h, data } = img;
+  const res = Buffer.alloc(data.length);
+  for (let i = 0; i < data.length; i += 3) {
+    const a = Math.min(1, Math.max(0, (Math.max(data[i], data[i + 1], data[i + 2]) - floor) / (BLACK_FULL - floor)));
+    for (let c = 0; c < 3; c++) {
+      const color = a > 0 ? Math.min(255, data[i + c] / Math.max(a, 0.05)) : 0;
+      res[i + c] = Math.round(MAGENTA[c] * (1 - a) + color * a);
+    }
+  }
+  // A star cut by the left or right edge would show half at each join: every star that comes
+  // within EDGE_CLEAR px of those edges is taken out whole, so the layer repeats as it is.
+  const seen = new Uint8Array(w * h);
+  const stack = [];
+  for (let y = 0; y < h; y++) for (const x0 of [0, w - EDGE_CLEAR]) for (let x = x0; x < x0 + EDGE_CLEAR; x++) {
+    const p = y * w + x;
+    if (!seen[p] && !isKey(res, p * 3)) { seen[p] = 1; stack.push(p); }
+  }
+  while (stack.length) {
+    const p = stack.pop();
+    res.set(MAGENTA, p * 3);
+    const x = p % w, y = (p - x) / w;
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+      const xx = x + dx, yy = y + dy, q = yy * w + xx;
+      if (xx >= 0 && xx < w && yy >= 0 && yy < h && !seen[q] && !isKey(res, q * 3)) { seen[q] = 1; stack.push(q); }
+    }
+  }
+  await save({ data: res, w, h }, out);
+  return true;
+}
+
 /** The strip moved up by px; the rows freed at the bottom are key (the near layer covers them). */
 async function lift(file, px, out) {
   const img = await load(file);
@@ -446,7 +489,8 @@ const ok = cmd === 'check' ? await check(args[0], band, floor)
   : cmd === 'prep' ? await prep(args[0], args[1])
   : cmd === 'merge' ? await merge(args[0], args[1], args[2])
   : cmd === 'quilt' ? await quilt(args[0], args[1], args[2])
+  : cmd === 'black' ? await black(args[0], args[1], args[2] ? Number(args[2]) : undefined)
   : cmd === 'lift' ? await lift(args[0], Number(args[1]), args[2])
   : cmd === 'preview' ? await preview(args[0], args[1])
-  : (console.log('usage: check <img> [--band f] [--floor f] | strips <img> <dir> | prep <img> <dir> | merge <dir> <gemini> <out> | quilt <dir> <donor> <out> | lift <img> <px> <out> | preview <world> <out>'), false);
+  : (console.log('usage: check <img> [--band f] [--floor f] | strips <img> <dir> | prep <img> <dir> | merge <dir> <gemini> <out> | quilt <dir> <donor> <out> | black <img> <out> [floor] | lift <img> <px> <out> | preview <world> <out>'), false);
 process.exitCode = ok ? 0 : 1;

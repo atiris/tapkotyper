@@ -188,8 +188,6 @@ export function drawBackground(g: G, world: string, vw: number, scroll: number, 
     g.fillStyle = 'rgba(24,18,60,0.35)';
     g.fillRect(0, 0, vw, VH);
   }
-  g.save();
-  if (world === 'space') g.globalAlpha = 0.4;
   const mid = sprite(`bg-${world}-mid`);
   if (mid) tiled(g, mid, vw, motion ? scroll * 0.35 : 0);
   else {
@@ -202,7 +200,6 @@ export function drawBackground(g: G, world: string, vw: number, scroll: number, 
     hills(g, vw, scroll, VH * 0.82, 30, pal.hills[1]);
     if (world === 'rescue') lookoutFlag(g, vw, motion ? scroll : 0, pal.hills[1], pal.accent);
   }
-  g.restore();
 }
 
 /** `x` of each copy of a scene element that repeats every `every` units, shifted by `offset`, on the stage. */

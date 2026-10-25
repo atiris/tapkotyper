@@ -326,6 +326,10 @@ saved as `assets-src/bg-<world>-<layer>.png` and processed by `npm run assets`.
    Pick the best, `prep` it, then join the middle without Gemini: `quilt <dir> <donor> <out>`
    fills the gap with the best fitting piece of another strip of the same sheet. Gemini's
    seam repaint (as for far) is the fallback; on strips it often redrew the whole picture.
+   Stars and other small scattered things come out in neat groups on magenta (a sticker
+   sheet). Ask for them on black ("a natural star field like a real photograph"); `black <img>
+   <out> [floor]` turns brightness into coverage on magenta and takes out stars at the side
+   edges, so the layer repeats as it is (space mid: floor 120 keeps the brighter stars).
 3. `lift <img> <px> <out>` moves the mid strip up when the near layer hides too much of it
    (meadow: 130 px); its bottom must stay below the top of the near layer's solid grass.
 4. Copy the three layers to `assets-src/bg-<world>-{far,mid,near}.png`, run

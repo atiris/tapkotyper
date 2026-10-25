@@ -223,15 +223,13 @@ p { line-height: 1.5; }
  */
 .btn.primary, .teacher-big:not(.alt) { box-shadow: 0 4px 0 var(--brand-dark), 0 7px 10px -2px var(--key-shadow); will-change: transform; }
 @media (hover: hover) {
-  .btn:not(.ghost, .primary):hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 7px 0 var(--edge), 0 12px 18px -3px var(--soft-shadow); }
+  .btn:not(.primary):hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 7px 0 var(--edge), 0 12px 18px -3px var(--soft-shadow); }
   .btn.primary:hover:not(:disabled), .teacher-big:not(.alt):hover { transform: translateY(-3px); box-shadow: 0 7px 0 var(--brand-dark), 0 13px 18px -3px var(--key-shadow-up); }
 }
-.btn:not(.ghost, .primary):active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 var(--edge), 0 2px 3px var(--soft-shadow); }
+.btn:not(.primary):active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 var(--edge), 0 2px 3px var(--soft-shadow); }
 .btn.primary:active:not(:disabled), .teacher-big:not(.alt):active { transform: translateY(3px); box-shadow: 0 1px 0 var(--brand-dark), 0 2px 3px var(--key-shadow-down); }
-/* A flat (ghost) button has no edge: it lifts and presses whole. */
-.btn.ghost { background: var(--glass); box-shadow: inset 0 0 0 2px var(--line); }
-@media (hover: hover) { .btn.ghost:hover:not(:disabled) { transform: translateY(-2px); } }
-.btn.ghost:active:not(:disabled) { transform: translateY(2px); }
+/* A ghost button is a lighter raised key: see-through face, the same edge, lift and press. */
+.btn.ghost { background: var(--glass); }
 body.reduce-motion :is(.btn, .teacher-big):is(:hover, :active) { transform: none; }
 .btn.danger { background: var(--tint-red); color: var(--red-ink); }
 .btn.small { min-height: 40px; padding: 0.4em 0.9em; font-size: 0.9rem; }

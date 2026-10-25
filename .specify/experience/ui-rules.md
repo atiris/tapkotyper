@@ -55,7 +55,8 @@ One set of rules for where things sit and how they behave, so every screen feels
    left of the play field, slightly see-through, and never moves with the character's jumps. It never
    covers a word to type.
 8. **Buttons.** The one main action of a view is the orange button ("primary"); everything
-   else is plain or ghost. A view never has two orange buttons.
+   else is plain or ghost. A view never has two orange buttons. Every button looks pressable
+   (a raised key that lifts and sinks); a ghost one is only lighter, never flat.
 9. **Panels.** Content sits on paper-coloured panels of one maximum width with the same
    padding and heading style; the page background is the world's sky gradient.
 10. **Switches.** A checkbox is always on the left; to its right the title in bold, and under

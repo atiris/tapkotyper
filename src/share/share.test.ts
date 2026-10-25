@@ -116,18 +116,17 @@ describe('results', () => {
     expect((await parseResult(forged)).intact).toBe(false);
   });
 
-  it('carry the service mark of a serviced account, and it cannot be dropped unseen', async () => {
+  it('say when the service menu removed the settings password, and the flag cannot be dropped unseen', async () => {
     const p = newProfile('Ema', 'sk');
     const task = addTask(p, { id: 't1', title: 'Zvieratá', words: ['pes'], text: '', minutes: 1, kind: 'story' });
     recordTaskRun(task, { seconds: 60, chars: 90, errors: 10, cpm: 50 });
     const plain = makeResult(p, task);
-    expect('serviced' in plain).toBe(false);
-    p.serviced = true;
-    const r = makeResult(p, task);
-    expect(r.serviced).toBe(true);
-    expect(makeOverallResult(p, 'x').serviced).toBe(true);
+    expect('lockRemoved' in plain).toBe(false);
+    const r = makeResult(p, task, true);
+    expect(r.lockRemoved).toBe(true);
+    expect(makeOverallResult(p, 'x', true).lockRemoved).toBe(true);
     expect(await parseResult(await resultCode(r))).toEqual({ result: r, intact: true });
-    const { serviced: _, ...dropped } = await decode(await resultCode(r)) as any;
+    const { lockRemoved: _, ...dropped } = await decode(await resultCode(r)) as any;
     expect((await parseResult(await encode(dropped))).intact).toBe(false);
     expect(fingerprint(plain)).not.toBe(fingerprint(r));
   });

@@ -195,28 +195,20 @@ describe('migration v6', () => {
   });
 });
 
-describe('migration v7', () => {
-  it('gives every profile an empty list of simulated levels and no service mark', () => {
+describe('migration v8', () => {
+  it('drops the simulated levels and the account mark of the old service menu', () => {
     const old: any = newProfile('Ema', 'sk');
-    delete old.progress.simulated;
-    const out = migrate({ version: 6, profiles: [old], theme: 'light' });
-    expect(out.version).toBe(7);
-    expect(out.profiles[0].progress.simulated).toEqual([]);
-    expect(out.profiles[0].serviced).toBeUndefined();
+    old.progress.simulated = ['w1-1'];
+    old.serviced = true;
+    const out = migrate({ version: 7, profiles: [old], theme: 'light' });
+    expect(out.version).toBe(8);
+    expect('simulated' in out.profiles[0].progress).toBe(false);
+    expect('serviced' in out.profiles[0]).toBe(false);
+    expect(migrate({ version: 6, profiles: [newProfile('Lea', 'sk')], theme: 'light' }).profiles).toHaveLength(1);
   });
 
-  it('keeps the service mark through export and import, even over an older copy', () => {
-    const s = new Store(mem(), mem());
-    const p = s.add(newProfile('Ema', 'sk'));
-    const before = s.exportJson([p.id]);
-    p.serviced = true;
-    p.progress.simulated = ['w1-1'];
-    s.update(p);
-    const back = parseImport(s.exportJson([p.id]))[0];
-    expect(back.serviced).toBe(true);
-    expect(back.progress.simulated).toEqual(['w1-1']);
-    applyImport(s, planImport(s, parseImport(before)), true);
-    expect(s.get(p.id)!.serviced).toBe(true);
-    expect(s.get(p.id)!.progress.simulated).toEqual(['w1-1']);
+  it('keeps when the password was removed, and only as a number', () => {
+    expect(migrate({ version: 8, profiles: [], theme: 'light', lockRemovedAt: 5 }).lockRemovedAt).toBe(5);
+    expect('lockRemovedAt' in migrate({ version: 8, profiles: [], theme: 'light', lockRemovedAt: 'x' })).toBe(false);
   });
 });

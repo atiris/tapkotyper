@@ -1,10 +1,11 @@
-import { app, go, saveProfile, shownScreen } from '../app/app';
-import { openLevelFor, service } from '../app/super';
-import { LEVELS } from '../game/levels';
-import { t } from '../i18n/i18n';
+import { app, go, shownScreen } from '../app/app';
+import { fillProgress } from '../app/super';
+import { LEVELS, WORLDS } from '../game/levels';
+import { lessonOrder } from '../learning/lessons';
+import { language, t } from '../i18n/i18n';
 import { type Profile, SUPER_ID } from '../storage/schema';
 import { type ICONS, button, h, modal } from './dom';
-import { levelTitleWords, roundPic, roundButton } from './hud';
+import { roundPic, roundButton } from './hud';
 import { type MenuEntry, menuPanel } from './menu';
 import { toast } from './toast';
 
@@ -27,7 +28,7 @@ function endSuperMode(): void {
 
 /**
  * The service menu under the star: the end of super mode and the removal of the settings password
- * everywhere, the simulated passes in a running level, opening a level on a stored player's map.
+ * everywhere, the progress filling on the super player's map.
  */
 function openServiceMenu(star: HTMLButtonElement, onClosed: () => void): (refocus?: boolean) => void {
   const entry = (glyph: keyof typeof ICONS, label: string, pick: () => void): MenuEntry => ({ label, art: roundPic('super', glyph), pick });
@@ -35,18 +36,13 @@ function openServiceMenu(star: HTMLButtonElement, onClosed: () => void): (refocu
   if (app.store.data.parentLock) {
     entries.push(entry('lock', t('service.removeLock'), () => {
       delete app.store.data.parentLock;
+      app.store.data.lockRemovedAt = Date.now();
       app.store.save();
       toast(t('service.lockRemoved'));
     }));
   }
-  const level = service.level;
-  if (level?.canSimulate()) {
-    entries.push(entry('play', t('service.pass0'), () => level.simulate(0)),
-      entry('next', t('service.pass1'), () => level.simulate(1)),
-      entry('next', t('service.pass2'), () => level.simulate(2)));
-  }
   const p = app.profile;
-  if (p && p.id !== SUPER_ID && shownScreen() === 'map') entries.push(entry('map', t('service.openLevel'), () => openLevelDialog(p)));
+  if (p?.id === SUPER_ID && shownScreen() === 'map') entries.push(entry('chart', t('service.fill'), () => fillDialog(p)));
   return menuPanel(star, t('super.badge'), entries, (panel) => {
     // The star may sit folded in the corner's Menu: the panel hangs under what is in sight.
     const anchor = star.offsetParent ? star : star.closest('.top-right')?.querySelector<HTMLElement>('.menu-btn') ?? star;
@@ -61,27 +57,53 @@ function openServiceMenu(star: HTMLButtonElement, onClosed: () => void): (refocu
   });
 }
 
-/** The levels of a stored player not passed yet; the one picked opens with everything before it. */
-function openLevelDialog(p: Profile): void {
-  const open = (id: string) => {
+/** A labelled control of the progress dialog. */
+const fillField = (label: string, control: HTMLElement): HTMLElement => h('label', { class: 'field' }, h('span', { class: 'field-label' }, label), control);
+
+/** A 0-100 % slider with its value; `get` reads it as a share. */
+function percent(value: number): { el: HTMLElement; get: () => number } {
+  const input = h('input', { type: 'range', min: 0, max: 100, step: 5, value: Math.round(value * 100) });
+  const out = h('output', {}, `${input.value} %`);
+  input.addEventListener('input', () => (out.textContent = `${input.value} %`));
+  return { el: h('span', { class: 'range' }, input, out), get: () => Number(input.value) / 100 };
+}
+
+/** The super player's progress, set by hand: keys and the last finished world exactly, the rest spread at random. */
+function fillDialog(p: Profile): void {
+  const pr = p.progress;
+  const most = lessonOrder(p.layout).length;
+  const keys = h('input', { type: 'number', min: 0, max: most, step: 1, value: pr.unlockedKeys.length });
+  const world = h('select', {}, h('option', { value: '-1' }, t('service.noWorld')),
+    ...WORLDS.map((_, i) => h('option', { value: String(i), selected: i === Math.max(-1, ...pr.worldsDone) }, `${i + 1}. ${t(`worlds.${WORLDS[i]}`)}`)));
+  const done = LEVELS.filter((l) => pr.worldsDone.includes(l.world));
+  const stars = percent(done.length ? done.reduce((a, l) => a + (pr.levels[l.id] ?? 0), 0) / (3 * done.length) : 1);
+  const accuracy = percent(0.9);
+  const ranges = percent(0.5);
+  const apply = () => {
+    fillProgress(p, { keys: Math.min(most, Math.max(0, Number(keys.value) || 0)), lastWorld: Number(world.value), stars: stars.get(), accuracy: accuracy.get(), ranges: ranges.get() });
     close();
-    openLevelFor(p, id);
-    saveProfile();
     go('map', {}, false);
+    toast(t('service.filled'));
   };
-  const list = h('div', { class: 'service-levels' },
-    ...LEVELS.filter((l) => !p.progress.levels[l.id]).map((l) => button(levelTitleWords(l.world, l.index), () => open(l.id), 'btn small')));
-  const close = modal(h('div', { class: 'service-dialog' }, h('h2', {}, t('service.openLevel')), list,
-    h('div', { class: 'row center' }, button(t('common.back'), () => close(), 'btn'))));
-  list.querySelector<HTMLElement>('button')?.focus();
+  const close = modal(h('div', { class: 'service-dialog' }, h('h2', {}, t('service.fill')),
+    h('p', { class: 'hint' }, t('service.fillHint')),
+    fillField(t('service.fillKeys', { n: most }), keys),
+    fillField(t('service.fillWorld'), world),
+    fillField(t('service.fillStars'), stars.el),
+    fillField(t('service.fillAccuracy'), accuracy.el),
+    fillField(t('service.fillRanges'), ranges.el),
+    h('div', { class: 'row center' }, button(t('common.back'), () => close(), 'btn'), button(t('service.fillApply'), apply, 'btn primary', 'check'))));
 }
 
-/** The "!" by a serviced account's name: something in it was simulated or opened by the service menu. */
-export function serviceMark(p: { serviced?: boolean }): HTMLElement | null {
-  return p.serviced ? markEl(t('service.accountMark')) : null;
-}
+/** Days the settings show that the service menu removed the password. */
+const LOCK_NOTE_DAYS = 30;
 
-/** The red "!" with its tooltip. */
-export function markEl(text: string): HTMLElement {
-  return h('span', { class: 'service-mark', tip: text, 'aria-label': text, role: 'img' }, '!');
+/** The round warning by the settings password for a month after the service menu removed it; null otherwise. */
+export function lockRemovedNote(now = Date.now()): HTMLElement | null {
+  const at = app.store.data.lockRemovedAt;
+  if (at === undefined || now - at > LOCK_NOTE_DAYS * 86_400_000) return null;
+  const text = t('service.lockRemovedAt', { date: new Date(at).toLocaleString(language()) });
+  const b = roundButton('super', 'warn', text, () => toast(text));
+  b.classList.add('lock-note');
+  return b;
 }

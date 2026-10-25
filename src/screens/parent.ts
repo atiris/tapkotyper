@@ -24,7 +24,7 @@ import { openCertificate } from './certificate';
 import { clickableHeatmap, showOverallCode, storyPicture, summaryRow } from './stats';
 import { barChart, lineChart } from '../ui/charts';
 import { hasCompanion } from '../game/rewards';
-import { serviceMark } from '../ui/service';
+import { lockRemovedNote } from '../ui/service';
 import { OWN_TEXT_MAX, OWN_WORDS_MAX, parseOwnWords, typableText, untypableWords } from '../words/words';
 
 /** The parent area, once `parentAccess` let the parent in; `tab`: the tab to open. */
@@ -51,7 +51,7 @@ function childSwitch(p: Profile, others: Profile[], tab: () => string): HTMLElem
     await selectProfile(q);
     go('parent', { granted: true, tab: tab() });
   };
-  const b = button(h('span', { class: 'switch-label' }, tapkoElement(p.companion, 'idle', 28), h('span', {}, nickname(p), serviceMark(p))), () => {
+  const b = button(h('span', { class: 'switch-label' }, tapkoElement(p.companion, 'idle', 28), h('span', {}, nickname(p))), () => {
     const choose = (q: Profile) => { close(); void pick(q); };
     const cards = others.map((q, i) => profileCard(q, i, () => choose(q)));
     const list = h('div', { class: 'switch-list' });
@@ -198,7 +198,10 @@ function settingsTab(p: Profile): HTMLElement {
     lockGroup());
 }
 
-/** The device-wide password on this screen: set, change or remove. The super player needs no current one. */
+/**
+ * The device-wide password on this screen: set, change or remove. The super player needs no current one.
+ * For a month after the service menu removed it, a round warning in the corner says when.
+ */
 function lockGroup(): HTMLElement {
   const box = h('fieldset', { class: 'lock-group' });
   const render = (done = '') => {
@@ -226,7 +229,7 @@ function lockGroup(): HTMLElement {
       if (!(await allowed())) return fail('parent.lock.wrong');
       keep(null, 'parent.lock.removed');
     };
-    box.replaceChildren(h('legend', {}, t('parent.group.lock')),
+    box.replaceChildren(h('legend', {}, t('parent.group.lock')), lockRemovedNote() ?? '',
       h('p', { class: 'hint' }, t(lock ? 'parent.lock.on' : 'parent.lock.off')),
       ...(current ? [field(t('parent.lock.current'), current)] : []),
       field(t(lock ? 'parent.lock.new' : 'parent.lock.password'), next),

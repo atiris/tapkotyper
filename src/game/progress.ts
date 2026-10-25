@@ -1,5 +1,5 @@
 import { advanceLesson } from '../learning/lessons';
-import { type CompanionKind, type Profile, SUPER_ID } from '../storage/schema';
+import type { CompanionKind, Profile } from '../storage/schema';
 import { type LevelDef, starsFor } from './levels';
 import { type BadgeTier, badgeTier, grantAccessories, grantCompanions } from './rewards';
 import type { Style } from './typing';
@@ -132,30 +132,4 @@ export function completeStay(p: Profile, r: RunStats, typedShare: number): Level
   const newKeys = advanceLesson(p);
   const growth = grow(p, r.seconds, r.accuracy, typedShare);
   return { ...r, stars: 0, newKeys, newAccessories: [], newCompanions: [], worldDone: null, trend: rhythmTrend(p), growth, byTapko: false, badge: null };
-}
-
-/** Marks levels as passed or opened by the service menu, and the account for good; the super player is never stored, so it keeps no mark. */
-export function markSimulated(p: Profile, ...ids: string[]): void {
-  if (p.id === SUPER_ID) return;
-  p.serviced = true;
-  for (const id of ids) if (!p.progress.simulated.includes(id)) p.progress.simulated.push(id);
-}
-
-/**
- * A level the service menu played: only progression counts. The level keeps its stars (so the
- * next one opens) and a beaten super-obstacle finishes the world; no key, time, growth, reward
- * or total changes.
- */
-export function completeSimulated(p: Profile, def: LevelDef, r: RunStats): LevelResult {
-  const stars = starsFor(r.accuracy);
-  let worldDone: number | null = null;
-  if (def.index >= 0) {
-    p.progress.levels[def.id] = Math.max(p.progress.levels[def.id] ?? 0, stars);
-    if (def.isSuper && !p.progress.worldsDone.includes(def.world)) {
-      p.progress.worldsDone.push(def.world);
-      worldDone = def.world;
-    }
-    markSimulated(p, def.id);
-  } else markSimulated(p);
-  return { ...r, stars, newKeys: [], newAccessories: [], newCompanions: [], worldDone, trend: null, growth: null, byTapko: false, badge: null };
 }

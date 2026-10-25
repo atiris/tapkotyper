@@ -302,12 +302,13 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
 /* The star's service menu (super mode) hangs under the star, or under the Menu it is folded in. */
 .corner-menu-panel.service-menu { position: fixed; top: auto; z-index: 40; }
 .service-dialog { display: flex; flex-direction: column; gap: var(--sp-3); max-width: 560px; }
-.service-levels { display: flex; flex-wrap: wrap; gap: 0.4rem; max-height: 60vh; overflow-y: auto; }
-/* The "!" of a serviced account or a simulated level: the attention red, for good. */
-.service-mark { display: inline-grid; place-items: center; width: 1.2em; height: 1.2em; margin-left: 0.3em; border-radius: 50%; background: #d63a32; color: #fff; font-size: 0.8em; font-weight: 800; line-height: 1; vertical-align: middle; }
-.level-node { position: relative; }
-.level-node .service-mark { position: absolute; top: -6px; right: -6px; margin: 0; font-size: 12px; }
-.sim-tag { padding: 0.1rem 0.6rem; border-radius: 999px; background: #d63a32; color: #fff; font-size: 13px; font-weight: 800; white-space: nowrap; }
+.service-dialog .field { display: grid; gap: 0.3rem; }
+/* For a month after the service menu removed the settings password: a round warning in the password panel's corner. */
+.lock-group { position: relative; }
+.lock-group .lock-note { position: absolute; top: -20px; right: 0.6rem; width: 36px; height: 36px; }
+/* The teacher's sign that the service menu removed a child's settings password. */
+.lock-mark { display: inline-grid; place-items: center; margin-left: 0.3em; color: var(--danger-ink); vertical-align: middle; }
+.lock-mark .icon svg { width: 1em; height: 1em; }
 .panel { background: var(--paper); border-radius: var(--radius); box-shadow: var(--shadow); padding: clamp(1rem, 3vw, 2rem); max-width: 960px; margin: 0 auto; }
 .bar { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
 /*

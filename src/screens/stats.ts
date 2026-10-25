@@ -19,7 +19,6 @@ import { bigCode } from '../ui/big-code';
 import { badge } from '../ui/badge';
 import { medal } from '../ui/medal';
 import { rangeFinds } from '../ui/finds';
-import { serviceMark } from '../ui/service';
 
 /**
  * Map key code -> the key it measures: letters by their unshifted char (capitals count
@@ -166,7 +165,7 @@ type StatsTab = 'progress' | 'keys' | 'exercises';
 
 /** The QR code of all the player's statistics, over the whole screen. */
 export async function showOverallCode(p: Profile): Promise<void> {
-  const link = linkOf('result', await resultCode(makeOverallResult(p, t('progress.overallTitle'))));
+  const link = linkOf('result', await resultCode(makeOverallResult(p, t('progress.overallTitle'), app.store.data.lockRemovedAt !== undefined)));
   bigCode(link, nickname(p), t('progress.overallCaption'), 'overall');
 }
 
@@ -197,7 +196,7 @@ function playfulTapko(p: Profile): HTMLElement {
 function progressTab(p: Profile): HTMLElement {
   return h('div', {},
     h('div', { class: 'stats-head' }, playfulTapko(p),
-      h('div', {}, h('h2', {}, t('progress.title'), serviceMark(p)), progressSection(p))),
+      h('div', {}, h('h2', {}, t('progress.title')), progressSection(p))),
     p.progress.growth ? h('div', { class: 'medals' }, h('h3', {}, t('stats.medals')),
       h('div', { class: 'medal-row' }, ...Array.from({ length: p.progress.growth }, (_, i) => medal(i + 1, true)))) : null,
     h('div', { class: 'row stats-code' }, button(t('progress.showCode'), () => void showOverallCode(p), 'btn', 'code')));
@@ -237,7 +236,7 @@ function exercisesTab(p: Profile): HTMLElement {
   if (!played.length) return h('p', { class: 'hint center' }, t('progress.exercisesEmpty'));
   return h('ul', { class: 'exercise-list' }, ...played.map((task) => {
     const total = task.chars + task.errors;
-    const show = async () => bigCode(linkOf('result', await resultCode(makeResult(p, task))), nickname(p), t('progress.exerciseCaption', { title: task.title || t('task.untitled') }), 'exercise');
+    const show = async () => bigCode(linkOf('result', await resultCode(makeResult(p, task, app.store.data.lockRemovedAt !== undefined))), nickname(p), t('progress.exerciseCaption', { title: task.title || t('task.untitled') }), 'exercise');
     return h('li', { class: `exercise ${task.doneAt ? 'done' : ''}` },
       h('div', {},
         h('b', {}, task.title || t('task.untitled')), task.group ? h('span', { class: 'chip' }, task.group) : null,

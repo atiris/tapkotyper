@@ -23,8 +23,8 @@ export interface TaskResult {
   levels?: number;
   /** The weakest keys now, with their recent accuracy in percent, weakest first. */
   weak: [string, number][];
-  /** The account has levels simulated or opened by the service menu (super mode). */
-  serviced?: true;
+  /** The service menu of super mode removed the settings password on the child's device. */
+  lockRemoved?: true;
 }
 
 export const RESULT_WEAK_KEYS = 5;
@@ -32,7 +32,8 @@ export const RESULT_WEAK_KEYS = 5;
 /** The mentor sees the real name, or the nickname of a player without one. */
 const mentorName = (p: Profile): string => p.name || nickname(p);
 
-export function makeResult(p: Profile, task: Task): TaskResult {
+/** `lockRemoved`: the service menu removed the device's settings password (`StoreData.lockRemovedAt`). */
+export function makeResult(p: Profile, task: Task, lockRemoved = false): TaskResult {
   const total = task.chars + task.errors;
   return {
     taskId: task.id,
@@ -45,7 +46,7 @@ export function makeResult(p: Profile, task: Task): TaskResult {
     cpm: task.cpm,
     levels: Object.keys(p.progress.levels).length,
     weak: weakKeys(p, Object.keys(p.stats.keys), RESULT_WEAK_KEYS).map((k) => [k.key, Math.round(k.accuracy * 100)]),
-    ...(p.serviced && { serviced: true }),
+    ...(lockRemoved && { lockRemoved: true }),
   };
 }
 
@@ -53,7 +54,7 @@ export function makeResult(p: Profile, task: Task): TaskResult {
 export const OVERALL_ID = '_overall';
 
 /** All of a player's training in the shape of a task result: all minutes and the accuracy over all recorded sessions. */
-export function makeOverallResult(p: Profile, title: string): TaskResult {
+export function makeOverallResult(p: Profile, title: string, lockRemoved = false): TaskResult {
   const sessions = p.stats.sessions;
   const chars = sessions.reduce((a, s) => a + s.chars, 0);
   const errors = sessions.reduce((a, s) => a + s.errors, 0);
@@ -67,13 +68,13 @@ export function makeOverallResult(p: Profile, title: string): TaskResult {
     cpm: masterySummary(p).cpm || (sessions[sessions.length - 1]?.cpm ?? 0),
     levels: Object.keys(p.progress.levels).length,
     weak: weakKeys(p, Object.keys(p.stats.keys), RESULT_WEAK_KEYS).map((k) => [k.key, Math.round(k.accuracy * 100)]),
-    ...(p.serviced && { serviced: true }),
+    ...(lockRemoved && { lockRemoved: true }),
   };
 }
 
 /** Fields in a fixed order, so the checksum does not depend on how the object was built. */
-/** The group, the levels and the service mark join the sum only when set, so results without one keep verifying. */
-export const resultSum = (r: TaskResult): string => checksum(JSON.stringify([r.taskId, r.title, r.name, r.date, r.minutes, r.accuracy, r.cpm, r.weak, ...(r.group ? [r.group] : []), ...(r.levels === undefined ? [] : [r.levels]), ...(r.serviced ? ['serviced'] : [])]));
+/** The group, the levels and the removed password join the sum only when set, so results without one keep verifying. */
+export const resultSum = (r: TaskResult): string => checksum(JSON.stringify([r.taskId, r.title, r.name, r.date, r.minutes, r.accuracy, r.cpm, r.weak, ...(r.group ? [r.group] : []), ...(r.levels === undefined ? [] : [r.levels]), ...(r.lockRemoved ? ['lockRemoved'] : [])]));
 
 export function resultCode(r: TaskResult): Promise<string> {
   return encode({ app: 'tapkotyper', type: 'result', ...r, sum: resultSum(r) });
@@ -94,7 +95,7 @@ export function cleanResult(v: any): TaskResult | null {
     cpm: num(v?.cpm),
     ...(typeof v?.levels === 'number' && { levels: num(v.levels) }),
     weak: Array.isArray(v?.weak) ? v.weak.filter((w: unknown) => Array.isArray(w) && typeof w[0] === 'string').slice(0, RESULT_WEAK_KEYS).map((w: any[]) => [w[0].slice(0, 12), num(w[1])]) : [],
-    ...(v?.serviced === true && { serviced: true }),
+    ...(v?.lockRemoved === true && { lockRemoved: true }),
   };
   return result.name && result.taskId ? result : null;
 }

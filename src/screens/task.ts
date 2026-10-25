@@ -1,4 +1,4 @@
-import { go } from '../app/app';
+import { app, go } from '../app/app';
 import { tapkoElement } from '../gfx/tapko';
 import { t } from '../i18n/i18n';
 import { nextLevel } from '../game/levels';
@@ -47,7 +47,7 @@ export function taskCard(p: Profile): HTMLElement | null {
 
 /** The result as a link for the teacher, with a short how-to. */
 export async function handInDialog(p: Profile, task: Task): Promise<void> {
-  const link = linkOf('result', await resultCode(makeResult(p, task)));
+  const link = linkOf('result', await resultCode(makeResult(p, task, app.store.data.lockRemovedAt !== undefined)));
   modal(h('div', { class: 'hand-in' },
     tapkoElement(p.companion, 'happy', 100),
     h('h2', {}, t('task.handInTitle')),

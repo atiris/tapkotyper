@@ -14,9 +14,10 @@
 - **Hand-in:** after the task, the child gets **Odovzdať**: a result link and the short
   instruction to send it to the teacher (Edupage, e-mail). It holds the player's real name
   (or the nickname when there is none),
-  the task, the date, minutes played, accuracy, rhythm and the five weakest keys, the service
-  mark when the account has simulated levels ([profiles](profiles.md)), plus a checksum; the
-  teacher's views show a red "!" by that child's name. The UI says plainly that the checksum finds damaged copies, not cheating.
+  the task, the date, minutes played, accuracy, rhythm and the five weakest keys, a yes/no
+  flag that the service menu removed the settings password on the child's device
+  ([profiles](profiles.md)), plus a checksum; the teacher's views and the QR scan show a red
+  lock by that child's name. The UI says plainly that the checksum finds damaged copies, not cheating.
 - **Teacher view** (`#/teacher`, from the start page footer, or by opening a result link):
   results are kept in this browser only (IndexedDB), apart from the players, so a large
   class's history does not crowd the players' storage. No accounts.

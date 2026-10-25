@@ -10,8 +10,13 @@ import { teacherArt, button, confirmDialog, download, h, icon, modal, richText }
 import { keyLabel } from '../ui/keyboard-guide';
 import { cornerControls } from '../ui/chrome';
 import { tabBar } from '../ui/tabs';
-import { serviceMark } from '../ui/service';
 import { type ScanCard, scanCard } from './teacher-scan';
+
+/** The lock sign by a child whose device had its settings password removed by the service menu (super mode). */
+function lockMark(r: { lockRemoved?: boolean }): HTMLElement | null {
+  if (!r.lockRemoved) return null;
+  return h('span', { class: 'lock-mark', tip: t('teacher.lockRemoved'), 'aria-label': t('teacher.lockRemoved'), role: 'img' }, icon('lock'));
+}
 
 const TABS = ['groups', 'writers', 'files'] as const;
 type Tab = (typeof TABS)[number];
@@ -255,7 +260,7 @@ function teacherPage(root: HTMLElement, store: TeacherStore, first: Tab, code: s
           if (!open) return [row];
           return [row, h('tr', { class: 'set-detail' }, h('td', { colspan: 8 }, h('table', { class: 'set-writers' },
             h('tbody', {}, ...store.sorted(rs).map((r) => h('tr', { class: r.intact ? '' : 'broken' },
-              h('td', {}, h('button', { type: 'button', class: 'child-link', onClick: () => openChild(childKey(r)) }, r.name), r.intact ? null : h('span', { class: 'error', tip: t('teacher.notIntact') }, ' !'), serviceMark(r)),
+              h('td', {}, h('button', { type: 'button', class: 'child-link', onClick: () => openChild(childKey(r)) }, r.name), r.intact ? null : h('span', { class: 'error', tip: t('teacher.notIntact') }, ' !'), lockMark(r)),
               h('td', {}, r.title),
               h('td', {}, t('teacher.unit.min', { n: r.minutes })),
               h('td', {}, statusPill(mastered(r))),
@@ -313,7 +318,7 @@ function teacherPage(root: HTMLElement, store: TeacherStore, first: Tab, code: s
           h('tbody', {}, ...list.map((w) => {
             const more = w.rows.length > 1;
             return h('tr', { class: w.intact ? '' : 'broken' },
-              h('td', {}, h('button', { type: 'button', class: 'child-link', onClick: () => openChild(w.key) }, w.name), w.intact ? null : h('span', { class: 'error', tip: t('teacher.notIntact') }, ' !'), serviceMark(w)),
+              h('td', {}, h('button', { type: 'button', class: 'child-link', onClick: () => openChild(w.key) }, w.name), w.intact ? null : h('span', { class: 'error', tip: t('teacher.notIntact') }, ' !'), lockMark(w)),
               h('td', {}, groupName(w.group)),
               h('td', {}, String(w.rows.length)),
               h('td', {}, w.last),
@@ -326,7 +331,7 @@ function teacherPage(root: HTMLElement, store: TeacherStore, first: Tab, code: s
           })))),
         h('div', { class: 'teacher-list' }, ...list.map((w) => h('button', { type: 'button', class: `child-row${w.intact ? '' : ' broken'}`, onClick: () => openChild(w.key) },
           h('span', { class: 'child-row-main' },
-            h('span', { class: 'child-row-name' }, w.name, w.intact ? '' : ' !', serviceMark(w)),
+            h('span', { class: 'child-row-name' }, w.name, w.intact ? '' : ' !', lockMark(w)),
             h('span', { class: 'child-row-sub' }, [groupName(w.group), tn('teacher.n.handIns', w.rows.length), w.last, t('teacher.unit.cpm', { n: w.cpm })].join(' · '), ' ', statusPill(w.mastered))),
           h('span', { class: 'child-row-big' }, bigValue(w))))));
     };
@@ -364,7 +369,7 @@ function teacherPage(root: HTMLElement, store: TeacherStore, first: Tab, code: s
     const undo = button('', () => { store.remove(r); session = session.filter((x) => x !== r); paint(); }, 'btn small ghost', 'trash');
     undo.setAttribute('aria-label', t('teacher.scan.undo'));
     return h('li', {},
-      h('span', { class: 'scan-name' }, r.name, serviceMark(r)),
+      h('span', { class: 'scan-name' }, r.name, lockMark(r)),
       h('span', { class: 'hint' }, `${r.title} · ${r.accuracy} % · ${r.cpm}${r.intact ? '' : ' !'}`),
       undo);
   }).reverse());
@@ -561,7 +566,7 @@ function setPage(root: HTMLElement, store: TeacherStore, set: ResultSet): void {
       chips,
       h('div', { class: 'teacher-list set-writer-list' }, ...store.sorted(rows, sort).map((r) => h('button', { type: 'button', class: `child-row${r.intact ? '' : ' broken'}`, onClick: () => openChild(childKey(r)) },
         h('span', { class: 'child-row-main' },
-          h('span', { class: 'child-row-name' }, r.name, r.intact ? '' : ' !', serviceMark(r)),
+          h('span', { class: 'child-row-name' }, r.name, r.intact ? '' : ' !', lockMark(r)),
           h('span', { class: 'child-row-sub' }, [r.title, t('teacher.unit.min', { n: r.minutes }), t('teacher.unit.cpm', { n: r.cpm })].join(' · '), ' ', statusPill(mastered(r)))),
         h('span', { class: 'child-row-big' }, big(r))))));
   };
@@ -594,7 +599,7 @@ function childCard(root: HTMLElement, store: TeacherStore, key: string): void {
   const labels = oldest.map((r) => r.date);
   root.append(h('div', { class: 'screen teacher-screen child-screen' },
     h('header', { class: 'bar' }, button(t('common.back'), back, 'btn ghost small', 'back'),
-      h('div', { class: 'child-head' }, h('h1', {}, w.name, serviceMark(w)),
+      h('div', { class: 'child-head' }, h('h1', {}, w.name, lockMark(w)),
         h('span', { class: 'hint' }, [groupName(w.group), tn('teacher.n.handIns', rows.length)].join(' · ')))),
     cornerControls(),
     h('main', { class: 'panel' },

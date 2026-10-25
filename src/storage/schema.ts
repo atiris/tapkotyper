@@ -1,4 +1,4 @@
-// Storage schema v7. These types are the data contract of `localStorage['tapkotyper:v1']`
+// Storage schema v8. These types are the data contract of `localStorage['tapkotyper:v1']`
 // and of exported `.json` files. Older shapes are upgraded by the migrations in store.ts.
 
 export type Lang = 'sk' | 'en';
@@ -129,8 +129,6 @@ export interface Progress {
   wardrobeSeconds: number;
   /** Ids of the world things hit in the middle at the target range (its collection). */
   rangeFinds: string[];
-  /** Level ids passed or opened by the service menu (super mode); the mark stays for good. */
-  simulated: string[];
 }
 
 /** When a surprise tells its answer. */
@@ -212,8 +210,6 @@ export interface Profile {
   progress: Progress;
   stats: { keys: Record<string, KeyStat>; sessions: SessionRecord[] };
   createdAt: number;
-  /** Something in the account was simulated or opened by the service menu (super mode): its "!" mark for good. */
-  serviced?: true;
 }
 
 /** The password on the parent screen: SHA-256 of salt + password, both hex. A lock on the page, not encryption. */
@@ -223,13 +219,15 @@ export interface ParentLock {
 }
 
 export interface StoreData {
-  version: 7;
+  version: 8;
   profiles: Profile[];
   lastProfileId: string | null;
   language: Lang | null;
   theme: Theme;
   /** One password for the whole device; the super player is never asked. */
   parentLock?: ParentLock;
+  /** When the service menu of super mode last removed the password (ms since epoch). */
+  lockRemovedAt?: number;
 }
 
 export const GUEST_ID = 'guest';

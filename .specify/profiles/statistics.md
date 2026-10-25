@@ -48,12 +48,6 @@
   range things; when their number changes, the new maximum must be shown and written here
   (a unit test pins both numbers, so a change cannot slip by).
 
-- **A simulated run never counts** (a level passed by the service menu of super mode,
-  [profiles](profiles.md)): no key statistics, no session or played time, no history, no
-  growth, rhythm trend, wardrobe time, paw charge, task time or surprise, and no total of
-  finished levels or earned stars. Only the level's own stars are saved for progression,
-  marked simulated; the account's "!" shows next to the "My progress" heading.
-
 ## Why
 - Statistics a parent or teacher reads must be the child's own typing; a level passed by a
   tester would make them lie.

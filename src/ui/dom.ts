@@ -56,6 +56,7 @@ export const ICONS = {
   plus: '<path d="M12 5v14M5 12h14"/>',
   help: '<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 113.6 2.2c-.7.4-1.1 1-1.1 1.8v.5M12 17v.01"/>',
   info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/>',
+  warn: '<path d="M12 6.5v7M12 17.5v.01"/>',
   close: '<path d="M6 6l12 12M18 6L6 18"/>',
   download: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',
   upload: '<path d="M12 20V9M7 14l5-5 5 5M5 4h14"/>',

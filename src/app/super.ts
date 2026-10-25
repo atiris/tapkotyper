@@ -1,9 +1,10 @@
 import { accessories } from '../gfx/assets';
-import { LEVELS, WORLDS, keysNeeded, levelById, storyOf } from '../game/levels';
+import { LEVELS, WORLDS } from '../game/levels';
+import { WORLD_THINGS } from '../game/modes/aim-things';
 import { PAW_MAX } from '../game/paw';
-import { markSimulated } from '../game/progress';
 import { WORLD_REWARDS } from '../game/rewards';
-import { lessonGroups, lessonOrder, practiceOrder } from '../learning/lessons';
+import { lessonOrder } from '../learning/lessons';
+import { STATS_WINDOW, recordPress, recordSession } from '../learning/stats';
 import { COMPANION_KINDS, type Lang, SUPER_ID, type Profile } from '../storage/schema';
 import { newProfile } from '../storage/store';
 
@@ -49,37 +50,72 @@ export function superProfile(lang: Lang): Profile {
   return p;
 }
 
-/** What a running level offers the service menu. */
-export interface ServiceLevel {
-  /** The level plays (not paused, not on a card, not finished) and ends by itself with a result. */
-  canSimulate(): boolean;
-  /** Plays the rest of the level by itself with `mistakes` wrong keys; nothing of the run counts in the statistics. */
-  simulate(mistakes: number): void;
+/** What the service menu's progress filling sets; the shares are 0..1. */
+export interface ProgressFill {
+  /** Keys of the lesson path the player knows. */
+  keys: number;
+  /** The last finished world (index); -1 = none. */
+  lastWorld: number;
+  /** Share of the finished worlds' stars. */
+  stars: number;
+  /** Accuracy of every known key, give or take a little. */
+  accuracy: number;
+  /** Share of the finished worlds' range finds. */
+  ranges: number;
 }
 
-/** The level running now, for the service menu; null outside a level. */
-export const service = { level: null as ServiceLevel | null };
+/** Presses written for each known key: a full statistics window. */
+const FILL_PRESSES = STATS_WINDOW;
+/** A key's accuracy may differ from the asked one by up to this much either way. */
+const FILL_SPREAD = 0.05;
+/** The rhythm of the filled session, correct characters per minute. */
+const FILL_CPM = 100;
+
+/** `n` items of `list` picked at random. */
+function pick<T>(list: T[], n: number, rand: () => number): T[] {
+  const rest = [...list];
+  return Array.from({ length: Math.min(n, rest.length) }, () => rest.splice(Math.floor(rand() * rest.length), 1)[0]);
+}
 
 /**
- * Opens a level for a stored player from the service menu: every earlier level of its story
- * without stars gets one (marked simulated), the earlier worlds of the story are done, and the
- * keys the level and its story need are unlocked and introduced. Key statistics stay untouched;
- * the account gets its mark for good.
+ * Fills the super player's progress for a test or a demonstration: exactly the asked keys and
+ * finished worlds; the stars, the range finds and each key's accuracy spread at random to give
+ * the asked shares. Every finished level keeps at least one star. Only for the super player,
+ * which is never stored.
  */
-export function openLevelFor(p: Profile, id: string): void {
-  const def = levelById(id);
-  if (!def) return;
-  const story = storyOf(def.world);
-  const filled = LEVELS.filter((l) => story.worlds.includes(l.world) && (l.world < def.world || (l.world === def.world && l.index < def.index)) && !p.progress.levels[l.id]);
-  for (const l of filled) p.progress.levels[l.id] = 1;
-  for (const w of story.worlds) if (w < def.world && !p.progress.worldsDone.includes(w)) p.progress.worldsDone.push(w);
-  const order = practiceOrder(p);
-  const need = Math.min(order.length, Math.max(keysNeeded(p, def), story.opensAtKeys ?? 0));
-  const unlocked = p.progress.unlockedKeys;
-  for (const group of lessonGroups(p.layout)) {
-    if (unlocked.filter((k) => order.includes(k)).length >= need) break;
-    for (const k of group) if (order.includes(k) && !unlocked.includes(k)) unlocked.push(k);
+export function fillProgress(p: Profile, f: ProgressFill, rand: () => number = Math.random): void {
+  const pr = p.progress;
+  const order = lessonOrder(p.layout);
+  const keys = order.slice(0, Math.max(0, Math.min(order.length, Math.round(f.keys))));
+  pr.unlockedKeys = [...keys];
+  pr.introducedKeys = [...keys];
+  pr.worldsDone = WORLDS.map((_, i) => i).filter((i) => i <= f.lastWorld);
+  const done = LEVELS.filter((l) => pr.worldsDone.includes(l.world));
+  const stars = new Map(done.map((l) => [l.id, 1]));
+  let extra = Math.round(f.stars * 3 * done.length) - done.length;
+  while (extra > 0) {
+    const room = done.filter((l) => stars.get(l.id)! < 3);
+    const l = room[Math.floor(rand() * room.length)];
+    stars.set(l.id, stars.get(l.id)! + 1);
+    extra--;
   }
-  for (const k of unlocked) if (!p.progress.introducedKeys.includes(k)) p.progress.introducedKeys.push(k);
-  markSimulated(p, ...filled.map((l) => l.id));
+  pr.levels = Object.fromEntries(LEVELS.map((l) => [l.id, stars.get(l.id) ?? 0]));
+  pr.levelsFinished = done.length;
+  pr.starsEarned = [...stars.values()].reduce((a, b) => a + b, 0);
+  pr.rewards = [...accessories().map((a) => `acc:${a.id}`), ...WORLD_REWARDS.filter((_, i) => pr.worldsDone.includes(i))];
+  const things = WORLD_THINGS.filter((th) => pr.worldsDone.includes(th.world!));
+  pr.rangeFinds = pick(things, Math.round(f.ranges * things.length), rand).map((th) => th.id);
+  p.stats = { keys: {}, sessions: [] };
+  pr.trainedSeconds = 0;
+  let chars = 0;
+  let errors = 0;
+  for (const key of keys) {
+    const acc = Math.max(0, Math.min(1, f.accuracy + (rand() * 2 - 1) * FILL_SPREAD));
+    const wrong = new Set(pick([...Array(FILL_PRESSES).keys()], Math.round(FILL_PRESSES * (1 - acc)), rand));
+    const other = order.find((k) => k !== key) ?? key;
+    for (let i = 0; i < FILL_PRESSES; i++) recordPress(p, key, wrong.has(i) ? other : key, 250 + rand() * 200);
+    chars += FILL_PRESSES - wrong.size;
+    errors += wrong.size;
+  }
+  if (chars + errors) recordSession(p, ((chars + errors) / FILL_CPM) * 60, chars, errors, FILL_CPM);
 }

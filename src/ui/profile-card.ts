@@ -4,7 +4,6 @@ import { t } from '../i18n/i18n';
 import { nickname } from '../storage/store';
 import type { Profile } from '../storage/schema';
 import { h } from './dom';
-import { serviceMark } from './service';
 
 /** Players picked by the number keys. */
 export const NUMBERED = 9;
@@ -20,7 +19,7 @@ export function profileCard(p: Profile, i: number, onPick: () => void): HTMLElem
   },
     i < NUMBERED ? h('span', { class: 'profile-num', 'aria-hidden': 'true', style: `--tilt: ${NUM_TILT[i]}deg` }, String(i + 1)) : null,
     tapkoElement(p.companion, 'idle', 96),
-    h('span', { class: 'profile-name' }, nickname(p), serviceMark(p)),
+    h('span', { class: 'profile-name' }, nickname(p)),
     // Siblings recognize their own tile by the real name under the nickname.
     p.name && p.name !== nickname(p) ? h('span', { class: 'profile-real' }, p.name) : null,
     h('span', { class: 'profile-sub' }, t('start.stars', { n: totalStars(p) })));

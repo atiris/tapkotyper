@@ -75,12 +75,11 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
       if (!result) return exit();
       if (def.kind === 'aim') return showAimDone(root, result, rt.mode as AimMode, params);
       if (params.stay) return showStayDone(root, def, result);
-      // A simulated run counts for no task and asks no surprise.
-      if (task && !rt.simulated) {
+      if (task) {
         recordTaskRun(task, result);
         saveProfile();
       }
-      showResults(root, def, result, params, rt.simulated ? null : rt.surprise, task, rt.simulated);
+      showResults(root, def, result, params, rt.surprise, task);
     },
   });
   if (def.kind === 'freetype' && openWorlds(p).length > 1) {
@@ -100,7 +99,7 @@ const NAMES_FALLBACK: Record<Friend['kind'], string[]> = { dragon: ['Iskra', 'MÃ
 const FRIEND_OF: Record<StoryDef['id'], Friend['kind']> = { dragon: 'dragon', robot: 'robot', fairy: 'forest' };
 const RESCUED_LINE: Record<Friend['kind'], string> = { dragon: 'results.rescued', robot: 'results.repaired', forest: 'results.guided' };
 
-function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: LevelParams, surprise: Surprise | null, task: Task | null, simulated: boolean): void {
+function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: LevelParams, surprise: Surprise | null, task: Task | null): void {
   const p = app.profile!;
   let rescued: Friend | null = null;
   if (def.rescue) {
@@ -171,7 +170,6 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
   const card = h('div', { class: 'card results-card' },
     h('div', { class: 'results-top' },
       h('h2', {}, def.kind === 'practice' ? t('results.practiceDone') : t('results.title')),
-      simulated ? h('span', { class: 'sim-tag' }, t('service.simTag')) : null,
       def.kind === 'practice' ? null : stars),
     h('div', { class: 'results-tapko' }, tapkoElement(p.companion, 'happy', 80), h('p', { class: 'bubble static side' }, breakDue ? pickLine('tapko.break') : sentence)),
     h('div', { class: 'results-facts' }, ...facts),

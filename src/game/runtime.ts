@@ -1,5 +1,4 @@
 import { app, layout, pickLine, reduceMotion, saveProfile } from '../app/app';
-import { type ServiceLevel, service } from '../app/super';
 import { audio, type Sfx } from '../audio/audio';
 import { speech } from '../audio/speech';
 import { Loop, Stage, VH } from '../engine/loop';
@@ -34,7 +33,7 @@ import { createMode } from './modes';
 import { FreeTypeMode } from './modes/freetype';
 import { PressureValve, perChar, sayTime } from './pace';
 import { Rhythm } from './rhythm';
-import { type LevelResult, completeLevel, completeSimulated, completeStay, markSimulated } from './progress';
+import { type LevelResult, completeLevel, completeStay } from './progress';
 import { type Style, type Target, TypingCore } from './typing';
 import { pickTip, showCard, showNewKey, showPosture } from './cards';
 import { surpriseFor } from './own-content';
@@ -113,8 +112,6 @@ const TOOL_FADE = 0.4;
 const RESULTS_AFTER = 1.4;
 /** Milliseconds after play begins in which Enter does nothing. */
 const ENTER_GUARD_MS = 300;
-/** Seconds between the keys of a simulated run. */
-const SIM_KEY_S = 0.06;
 
 /** What the voice says for a target: its words, never the Enter mark. */
 function spoken(tg: Target): string {
@@ -173,7 +170,7 @@ function speechLog(b: Rect, labels: Rect[]): void {
 }
 
 /** Runs one level: input, typing state, mode, HUD, guide, Tapko, stats. */
-export class LevelRuntime implements ServiceLevel {
+export class LevelRuntime {
   readonly core = new TypingCore();
   readonly tweens = new Tweens();
   readonly particles = new Particles();
@@ -244,7 +241,7 @@ export class LevelRuntime implements ServiceLevel {
   count: number;
   /** Seconds of active play (no pause, no card) and the minimum before the level may end; 0 = no minimum. */
   private played = 0;
-  private minActive: number;
+  private readonly minActive: number;
   /** The child's rhythm; it also measures each press's reaction time. */
   readonly rhythm: Rhythm;
   private wrongStreak = { ch: '', n: 0 };
@@ -271,12 +268,6 @@ export class LevelRuntime implements ServiceLevel {
   private pawTimer = 0;
   private pawIdle = 0;
   private guideBeforePaws = true;
-
-  /** The service menu plays the rest of this run (super mode): nothing of it counts in the statistics. */
-  simulated = false;
-  /** Wrong keys the simulation still makes, and seconds to its next key. */
-  private simMistakes = 0;
-  private simTimer = 0;
 
   constructor(root: HTMLElement, readonly def: LevelDef, private opts: RuntimeOptions) {
     const p = app.profile!;
@@ -383,7 +374,6 @@ export class LevelRuntime implements ServiceLevel {
       guide: () => { if (!guideBtn.disabled) this.toggleGuide(); },
       read: () => { if (!this.readBtn.hidden) this.toggleRead(); },
     });
-    service.level = this;
     void this.prepare();
   }
 
@@ -470,8 +460,8 @@ export class LevelRuntime implements ServiceLevel {
       // A target waiting for Enter takes it; else the Enter that closed a card just before play is not a call for the paw.
       onEnter: () => (this.free ? this.freeSend() : this.waitsEnter ? this.typeEnter() : performance.now() - this.begunAt >= ENTER_GUARD_MS && (this.modeEnter() || this.startPaws())),
       onBackspace: () => { if (this.free) this.freeErase(); },
-      // A pause, a dialog or the service menu: the keys belong to its buttons; a simulated run takes no keys.
-      idle: () => this.paused || this.simulated || !!document.querySelector('.modal-back, .service-menu'),
+      // A pause or a dialog: the keys belong to its buttons.
+      idle: () => this.paused || !!document.querySelector('.modal-back'),
     };
   }
 
@@ -481,7 +471,6 @@ export class LevelRuntime implements ServiceLevel {
     // Leaving by the browser's back button still keeps the time and keys typed.
     if (this.started && !this.finished) this.flushSession();
     this.disposed = true;
-    if (service.level === this) service.level = null;
     speech.stop();
     this.offVoices();
     this.offShortcuts();
@@ -600,7 +589,7 @@ export class LevelRuntime implements ServiceLevel {
     if (res.kind === 'wrong') {
       const { rt } = this.rhythm.press(null, c.time);
       if (res.expected) {
-        if (!this.simulated) recordPress(p, res.expected, c.ch, rt);
+        recordPress(p, res.expected, c.ch, rt);
         this.errors++;
         this.trackWrong(res.expected);
       }
@@ -611,7 +600,7 @@ export class LevelRuntime implements ServiceLevel {
       this.mode.onWrong(res.target);
     } else {
       const { rt, repeat } = this.rhythm.press(res.expected, c.time);
-      if (!this.simulated) recordPress(p, res.expected, c.ch, rt, repeat);
+      recordPress(p, res.expected, c.ch, rt, repeat);
       this.checkShiftHand(res.expected, c.shiftCode);
       this.chars++;
       this.wrongStreak.n = 0;
@@ -624,7 +613,7 @@ export class LevelRuntime implements ServiceLevel {
         this.setFairyMood('happy', 1.2);
         this.mode.onDone(res.target);
         this.cheer();
-        if (this.pawsAllowed && !this.simulated && this.wordStreak % PAW_STREAK === 0) this.chargePaw();
+        if (this.pawsAllowed && this.wordStreak % PAW_STREAK === 0) this.chargePaw();
       } else {
         this.sfx('key');
         this.mode.onCorrect(res.target);
@@ -948,7 +937,7 @@ export class LevelRuntime implements ServiceLevel {
   /** The paws replace the hands and type the closest words for the child. */
   private startPaws(): boolean {
     const p = app.profile!;
-    if (!this.pawsAllowed || !this.started || this.paused || this.finished || this.pawWords || this.simulated) return false;
+    if (!this.pawsAllowed || !this.started || this.paused || this.finished || this.pawWords) return false;
     if (p.progress.pawHelp <= 0 || !this.core.focus()) return false;
     p.progress.pawHelp--;
     saveProfile();
@@ -1111,7 +1100,7 @@ export class LevelRuntime implements ServiceLevel {
     }
     this.elapsed += dt;
     if (!this.finished) {
-      if (!this.simulated) app.sessionSeconds += dt;
+      app.sessionSeconds += dt;
       this.played += dt;
     }
     this.core.update(dt);
@@ -1124,7 +1113,6 @@ export class LevelRuntime implements ServiceLevel {
     if (!hadFocus && this.core.focus()) this.rhythm.ready(performance.now());
     this.trackPace();
     if (this.pawWords) this.tapkoTypes(dt);
-    if (this.simulated && !this.finished) this.simType(dt);
     this.readFocus();
     // Free typing and staying a while have no end on their own: the bubble says when a break is due.
     if ((this.free || this.opts.stay) && !this.breakSaid && app.sessionSeconds >= app.profile!.settings.sessionMinutes * 60) {
@@ -1276,7 +1264,7 @@ export class LevelRuntime implements ServiceLevel {
 
   private flushSession(): void {
     const p = app.profile!;
-    if (this.chars + this.errors > 0 && !this.simulated) recordSession(p, this.elapsed, this.chars, this.errors, this.rhythm.cpm);
+    if (this.chars + this.errors > 0) recordSession(p, this.elapsed, this.chars, this.errors, this.rhythm.cpm);
     this.elapsed = 0;
     this.chars = 0;
     this.errors = 0;
@@ -1307,7 +1295,7 @@ export class LevelRuntime implements ServiceLevel {
       return;
     }
     const stats = { accuracy, chars, errors, cpm, seconds };
-    const result = this.simulated ? completeSimulated(p, this.def, stats) : noStars ? completeStay(p, stats, typedShare) : completeLevel(p, this.def, stats, typedShare);
+    const result = noStars ? completeStay(p, stats, typedShare) : completeLevel(p, this.def, stats, typedShare);
     if (this.style !== 'copy') result.byStyle = { style: this.style, clean, total: resolved };
     saveProfile();
     this.sfx('reward');
@@ -1353,58 +1341,6 @@ export class LevelRuntime implements ServiceLevel {
       void this.tapko.offsetWidth;
       this.tapko.classList.add('celebrate');
     }
-  }
-
-  // ---- simulation (super mode's service menu) -------------------------------------
-
-  /** A story level or a rescue mission that plays now; the others have no stars to pass for. */
-  canSimulate(): boolean {
-    const kind = this.def.kind;
-    return this.started && !this.paused && !this.finished && !this.simulated && !this.opts.stay && kind !== 'practice' && kind !== 'freetype' && kind !== 'aim';
-  }
-
-  /**
-   * The rest of the run plays by itself through the same key handler as the child's keys, with
-   * `mistakes` wrong keys at random moments. The run and the level are marked simulated at once;
-   * no key, time or growth of it counts. The minimum play time is a learning rule, so it is dropped.
-   */
-  simulate(mistakes: number): void {
-    if (!this.canSimulate()) return;
-    const p = app.profile!;
-    this.simulated = true;
-    this.simMistakes = mistakes;
-    this.minActive = 0;
-    if (this.pawWords) this.stopPaws();
-    if (this.def.index >= 0) markSimulated(p, this.def.id);
-    else markSimulated(p);
-    saveProfile();
-    this.el.querySelector('.hud-title')!.after(h('span', { class: 'sim-tag' }, t('service.simTag')));
-  }
-
-  /** One simulated key every SIM_KEY_S; a target that cannot be typed yet is waited for, like a child would. */
-  private simType(dt: number): void {
-    if ((this.simTimer -= dt) > 0) return;
-    this.simTimer = SIM_KEY_S;
-    const tg = this.core.focus();
-    if (!tg || !this.core.typable(tg)) return;
-    this.core.locked = tg;
-    const ch = tg.word[tg.typed];
-    const wrong = this.simMistakes > 0 && this.simWrongNow(tg) ? this.wrongKey(ch) : null;
-    if (wrong) this.simMistakes--;
-    this.onChar({ ch: wrong ?? ch, code: '', shift: false, shiftCode: null, time: performance.now() });
-  }
-
-  /** A wrong key now: by chance over the keys left, and surely on the last target. */
-  private simWrongNow(tg: Target): boolean {
-    const targetsLeft = Math.max(1, Math.round(this.count * (1 - this.mode.progress())));
-    if (targetsLeft <= 1) return true;
-    return this.rng.next() < this.simMistakes / (targetsLeft * tg.word.length);
-  }
-
-  /** A key of the child's letters that is not the expected one. */
-  private wrongKey(ch: string): string {
-    const keys = activeKeys(app.profile!).filter((k) => isLetterKey(k) && k !== ch && k !== ch.toLowerCase());
-    return keys.length ? keys[Math.floor(this.rng.next() * keys.length)] : ch === 'x' ? 'q' : 'x';
   }
 
   /** Ends an untimed practice or staying a while on request. */

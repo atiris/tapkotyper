@@ -50,26 +50,24 @@
   temporary player. While it is on, a red star in the top right corner (it never pushes the
   screen down) opens the **service menu**:
   - everywhere: end super mode; remove the settings password (only when one is set);
-  - in a running level: pass it without a mistake, with 1 or with 2 random mistakes: the rest
-    of the level plays by itself (one key about every 60 ms through the normal key path,
-    waiting like a child for a target that cannot be typed yet) up to the results card,
-    tagged "Simulácia"; the level's stars count for progression, nothing else of the run
-    counts ([statistics](statistics.md)); the minimum play time of a level does not apply;
-  - on a stored player's map: "Odomknúť úroveň..." lists the levels not passed yet; the one
-    picked becomes playable: the earlier levels of its story without stars get one star, the
-    earlier worlds of the story are done, the keys it and its story need are unlocked, its
-    key statistics stay untouched.
-- **The service marks are for good.** A level passed or opened by the service menu shows a
-  red "!" on its map node; an account with any of them shows a red "!" by its name (start
-  page card, map greeting, the parent's player switch, the statistics heading) and in
-  the results its teacher receives ([teacher links](teacher-links.md)). No menu, setting,
-  export or import removes them; the temporary super player never gets them.
+  - on the temporary player's map: "Vyplniť postup..." opens a dialog with the number of
+    mastered keys, the last finished world, and the shares of earned stars, accuracy and earned
+    range finds. The keys and the finished worlds are set exactly; the stars, the range finds
+    and each key's accuracy are spread at random over the finished worlds (every finished level
+    keeps at least one star), so the map, badges and statistics look like a real child's.
+- Stored players' progress is never changed by the service menu: there is no simulated or
+  opened level, so a parent or teacher always sees progress that was typed.
+- A password removed by the service menu is recorded with its time: the settings show it for a
+  month ([parent controls](parent-controls.md)) and the results a teacher receives say so
+  ([teacher links](teacher-links.md)).
 
 ## Why
 - Families and classrooms share devices; export/import gives portability without accounts.
-- The owner tests and services the game: passing levels by hand takes long, a child sometimes
-  needs a level opened, and a forgotten settings password needs a quick way back. The marks
-  keep such help honest: a parent or teacher always sees that progress was not typed.
+- The owner tests and demonstrates the game: a temporary player with a chosen, realistic
+  progress shows the map, badges and statistics at any stage without playing. A forgotten
+  settings password needs a quick way back, and the record keeps that help visible to the
+  parent and the teacher. Changing a real child's progress would make it dishonest, so the
+  menu does not offer it.
 - The nickname is short and fits next to the character; a real name is only needed by the
   teacher, and some players do not want to give it.
 - Learners of a second language want its words without switching the whole interface.

@@ -13,6 +13,8 @@
 - The super player is never asked and can change or remove the password without the
   current one, and in super mode the star's service menu removes it at once for any player
   ([profiles](profiles.md)); these are the only ways back from a forgotten password.
+- For a month after the service menu removed the password, a round red warning sits on the
+  corner of the password panel; its tooltip says when the super account removed it.
 - Difficulty and word length each have an **automatic** mode (on by default): after a few
   minutes of accurate play (90 %+) one of them goes up by one step, taking turns, up to a
   ceiling (difficulty 8, words of 9 letters); each step gives the child a numbered medal.

@@ -61,7 +61,6 @@
     "companion": "Vyber si svoju postavičku",
     "language": "Jazyk",
     "layout": "Klávesnica",
-    "parentHint": "Rodič môže všetko neskôr zmeniť v nastaveniach (ozubené koliesko na mape).",
     "create": "Poďme na to!",
     "nameHint": "Zobrazí sa učiteľovi vo výsledkoch.",
     "nickname": "Prezývka",
@@ -114,6 +113,7 @@
     },
     "welcome": {
       "title": "Ahoj, {name}! Toto je tvoja postava v tomto dobrodružstve.",
+      "home": "Základné miesta prstov: ukazováky polož na klávesy F a J, nahmatáš na nich malé výstupky. Ostatné prsty ležia vedľa nich v jednom rade, palce nad medzerníkom. Po každom písmenku sa prst vráti na svoje základné miesto.",
       "lines": [
         "Stlač „Pokračovať“, klávesy sa budeš učiť postupne, jeden po druhom.",
         "Keď nevieš ako ďalej, klikni na „?“."

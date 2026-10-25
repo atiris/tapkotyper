@@ -67,7 +67,6 @@ export function newProfileScreen(root: HTMLElement): () => void {
         h('label', { for: 'np-lang' }, t('newProfile.language')), lang,
         h('label', { for: 'np-wordlang' }, t('newProfile.wordLang')), wordLang,
         h('label', { for: 'np-layout' }, t('newProfile.layout')), lay)),
-    h('p', { class: 'hint' }, t('newProfile.parentHint')),
     error,
     h('div', { class: 'row' }, h('button', { class: 'btn primary', type: 'submit' }, t('newProfile.create'))));
   // Enter in a list (the last fields) creates the player too, like in a text field.

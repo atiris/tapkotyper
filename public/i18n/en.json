@@ -61,7 +61,6 @@
     "companion": "Pick your character",
     "language": "Language",
     "layout": "Keyboard",
-    "parentHint": "A parent can change everything later in the settings (the gear on the map).",
     "create": "Let's go!",
     "nameHint": "Shown to your teacher in the results.",
     "nickname": "Nickname",
@@ -114,6 +113,7 @@
     },
     "welcome": {
       "title": "Hello {name}! This is your character in this adventure.",
+      "home": "Home keys: put your index fingers on F and J, you can feel little bumps on them. The other fingers rest next to them in one row, thumbs over the space bar. After each letter the finger goes back to its home key.",
       "lines": [
         "Press “Continue”, you will learn the keys step by step, one by one.",
         "When you are not sure what to do, click “?”."

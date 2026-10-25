@@ -13,8 +13,12 @@
   language, the word language and the keyboard layout. Without a nickname the form says so.
 - A new player lands on the map, not in a level, so a parent can set things up first. Above
   the stories the narrator greets the typist once by nickname ("This is your character in
-  this adventure."); with "Instructions for young typists" on it also says in a few lines what to
-  do (Continue, keys come step by step, "?" helps); closing it or starting from
+  this adventure.") and says what the home keys are (index fingers on the bumps of F and J,
+  the other fingers beside them in one row, thumbs over the space bar, each finger back home
+  after a letter): every typist needs it before the first key. With "Instructions for young
+  typists" on it also says in a few lines what to do (Continue, keys come step by step, "?"
+  helps). The form and the welcome speak to the child
+  only: a note for the parent about the settings is no use to a child who reads it; closing it or starting from
   it hides it for good. The intro story plays before the first level. A guest and the
   super player get no greeting.
 - Profile data: nickname and character kind, an optional real name, a seed, custom

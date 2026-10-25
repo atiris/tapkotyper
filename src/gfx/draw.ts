@@ -139,56 +139,18 @@ export const PALETTES: Record<string, Palette> = {
   rescue: { sky: ['#3d3566', '#f2a97e'], hills: ['#4f4468', '#2f2a45'], ground: '#2a2540', accent: '#ffc861' },
 };
 
-const seamless = new Map<HTMLImageElement, HTMLCanvasElement>();
+const fitted = new Map<HTMLImageElement, { px: number; c: HTMLCanvasElement }>();
 
 /**
- * A copy of a background that repeats without a visible seam: its last part is
- * cross-faded into its beginning, and the copy is shorter by that part.
+ * The layer scaled once to the pixel height it is drawn at, so each frame is a plain 1:1 copy.
+ * Its left and right edges join exactly (scripts/bg-seam.mjs), so copies sit side by side.
  */
-function seamlessCopy(img: HTMLImageElement): HTMLCanvasElement {
-  let c = seamless.get(img);
-  if (c) return c;
-  const w = img.naturalWidth, h = img.naturalHeight;
-  const overlap = Math.round(w * 0.15);
-  c = document.createElement('canvas');
-  c.width = w - overlap;
-  c.height = h;
-  const g = c.getContext('2d')!;
-  g.drawImage(img, 0, 0);
-  // Fade the start of the image out and add its end faded in: a linear cross-fade
-  // that also works for layers with transparency.
-  g.globalCompositeOperation = 'destination-out';
-  const fade = g.createLinearGradient(0, 0, overlap, 0);
-  fade.addColorStop(0, 'rgba(0,0,0,1)');
-  fade.addColorStop(1, 'rgba(0,0,0,0)');
-  g.fillStyle = fade;
-  g.fillRect(0, 0, overlap, h);
-  g.globalCompositeOperation = 'lighter';
-  const strip = document.createElement('canvas');
-  strip.width = overlap;
-  strip.height = h;
-  const sg = strip.getContext('2d')!;
-  sg.drawImage(img, w - overlap, 0, overlap, h, 0, 0, overlap, h);
-  sg.globalCompositeOperation = 'destination-in';
-  const grad = sg.createLinearGradient(0, 0, overlap, 0);
-  grad.addColorStop(0, 'rgba(0,0,0,1)');
-  grad.addColorStop(1, 'rgba(0,0,0,0)');
-  sg.fillStyle = grad;
-  sg.fillRect(0, 0, overlap, h);
-  g.drawImage(strip, 0, 0);
-  seamless.set(img, c);
-  return c;
-}
-
-const fitted = new Map<HTMLCanvasElement, { px: number; c: HTMLCanvasElement }>();
-
-/** The tile scaled once to the pixel height it is drawn at, so each frame is a plain 1:1 copy. */
-function fittedTile(tile: HTMLCanvasElement, px: number): HTMLCanvasElement {
-  if (px >= tile.height) return tile;
+function fittedTile(tile: HTMLImageElement, px: number): HTMLCanvasElement | HTMLImageElement {
+  if (px >= tile.naturalHeight) return tile;
   const hit = fitted.get(tile);
   if (hit && hit.px === px) return hit.c;
   const c = document.createElement('canvas');
-  c.width = Math.round(tile.width * px / tile.height);
+  c.width = Math.round(tile.naturalWidth * px / tile.naturalHeight);
   c.height = px;
   const cg = c.getContext('2d')!;
   cg.imageSmoothingQuality = 'high';
@@ -199,10 +161,9 @@ function fittedTile(tile: HTMLCanvasElement, px: number): HTMLCanvasElement {
 
 /** Draws a background layer at full screen height, repeated horizontally by `offset`. */
 function tiled(g: G, img: HTMLImageElement, vw: number, offset: number): void {
-  const full = seamlessCopy(img);
-  const s = VH / full.height;
-  const tile = fittedTile(full, Math.round(VH * g.getTransform().d));
-  const w = full.width * s, h = full.height * s;
+  const s = VH / img.naturalHeight;
+  const tile = fittedTile(img, Math.round(VH * g.getTransform().d));
+  const w = img.naturalWidth * s, h = img.naturalHeight * s;
   const y = VH - h;
   // Sub-pixel positions: rounding made slow layers move in visible jumps.
   for (let x = -(((offset % w) + w) % w); x < vw; x += w) g.drawImage(tile, x, y, w + 1, h);

@@ -13,6 +13,10 @@
 - Background skies repeat across wide screens, so they are even (clouds or a gradient,
   no sun, moon or single planet). The ground layers in front are close-up strips placed
   along the bottom of the screen at a set height per world.
+- World backgrounds are being redrawn as hand-drawn Japanese anime background art, rich in
+  detail: a small sky, the far scene without near objects, then a middle band and a low
+  closest band. Each layer joins its own left and right edge exactly, so it repeats with no
+  visible seam and no ghosting; a cross-fade at the joins showed doubled flowers and hills.
 - Every background layer is generated from a standalone prompt: each world has a written style
   spec (palette, outline weight, light, ground line, what never appears) pasted into its far,
   mid and near prompts, so a strip needs no attached picture and still matches.

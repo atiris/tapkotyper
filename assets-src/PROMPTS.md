@@ -95,6 +95,14 @@ Notes from real Gemini runs; add new ones here.
   in hex). Do not attach an older sprite as the model: the new one then barely differs.
 - "Silver" again failed (no picture); the screw worked with "blue-grey steel" hex shades and
   "strictly front view, symmetrical, no face".
+- A single strip on magenta always came out about half the picture tall, whatever the pixel
+  heights in the prompt; an attached layout (magenta with a white band to fill) was ignored too.
+  A "sheet of three low strips stacked above each other" came at the asked scale (190 px each).
+- A colored fill (blue) in a seam repaint tinted the sky painted into it; white "empty paper"
+  did not. An inpainting prompt that starts with "Generate an image" gets a new picture.
+- A follow-up "less sky" stacked the landscape twice in one picture; ask again from scratch.
+- Attached style samples are copied almost one to one (composition too) and cost the limit;
+  describe the style in words.
 - Small throwables (46 px): "a bold, simple shape with a clear outline, easy to recognise as a
   tiny icon of about 46 pixels" plus hex colors gave 36 of 36 clean pictures on the first try.
   A second state of a thing (a cracked egg, a lit bulb) kept its size and outline when the
@@ -291,39 +299,76 @@ Fixed in code, no new picture needed: green spots in `heart-glasses` lenses (don
 
 ## 3. World backgrounds
 
-Every prompt is one self-contained text: paste the world's block from "World style" below in place of `WORLD STYLE`; never attach another picture.
+Each world has 3 parallax layers, all 1376 x 768 (16:9) and laid over each other pixel for
+pixel: `far` (the whole scene with a small sky), `mid` (a band of middle distance, about the
+lower 45 %) and `near` (the closest band, about the lower 20 to 25 %), the two bands on flat
+magenta. Every layer repeats horizontally with its left and right edges joining exactly, so
+the game draws the copies side by side with no blending. Style: hand-drawn Japanese anime
+background art, detailed like `temp/background-redesign/style-sample-*.jpg` (local only),
+described in words: attaching the samples costs the daily limit and makes Gemini copy their
+composition.
 
-Each world needs 3 layers for a gentle parallax effect: `far` (full picture, 16:9) and
-`mid` and `near` (a close-up strip, 21:9). The far layer repeats horizontally, so its sky
-must be even: no sun, no moon, no single big planet (on a wide screen it would be seen
-twice). `mid` and `near` ask for big pieces standing on a low ground band along the bottom
-edge, with flat magenta everywhere above and between them (a taller ground area turned
-into an empty plane behind the pieces). `npm run assets` cuts the strip from the top of
-the tallest piece down, shrinks it to the target height in the table, repeats it across
-the width and places it at the bottom. Older 16:9 `mid`/`near` files with the layer
-already in the lower part still work as they are.
+Work files live in `assets-src/bg-work/<world>/` (not committed); the finished layers are
+saved as `assets-src/bg-<world>-<layer>.png` and processed by `npm run assets`.
 
-### Common prompt for `*-far.jpg` (replace SCENE and WORLD STYLE)
+### Procedure per world (`scripts/bg-seam.mjs`)
+1. **far**: generate with the far prompt; `check <img>` wants 1376 x 768 and a sky of at most
+   30 % (judge sunset or night skies by eye). Then `prep <img> <dir>`: the picture is rolled
+   by half its width (the old middle becomes the edges, which therefore join) and the middle
+   30 % is painted white like empty paper. Send `<dir>/seam-in.png` with the seam prompt and
+   `merge <dir> <gemini> <out>`: the sides come back pixel for pixel, only Gemini's middle is
+   kept, joined along the cheapest path. `merge` fails when Gemini redrew the sides or left
+   white; look at `<out>-joins.png` for a stripe of another tone (the sky).
+2. **mid and near**: Gemini draws a single strip as tall as half its picture whatever the
+   prompt or an attached layout says. Ask for a **sheet of strips stacked above each other**
+   (near: three of about 190 px, mid: two of about 330 px); they come at the right scale.
+   `strips <img> <dir>` cuts them apart and puts each at the bottom of a magenta frame.
+   Pick the best, `prep` it, then join the middle without Gemini: `quilt <dir> <donor> <out>`
+   fills the gap with the best fitting piece of another strip of the same sheet. Gemini's
+   seam repaint (as for far) is the fallback; on strips it often redrew the whole picture.
+3. `lift <img> <px> <out>` moves the mid strip up when the near layer hides too much of it
+   (meadow: 130 px); its bottom must stay below the top of the near layer's solid grass.
+4. Copy the three layers to `assets-src/bg-<world>-{far,mid,near}.png`, run
+   `npm run assets bg-<world>`, then `preview <world> <out>` (the layers repeated 2.5 times,
+   a red tick above each seam) and look at the world in the game.
+
+### Prompt for `far` (replace SCENE)
 ```
-Cute, soft 2D children's storybook illustration, flat vector style with gentle gradients, rounded friendly shapes, warm pastel palette, calm and peaceful mood, suitable for children and young teens aged 10 to 15. No text, no letters, no watermark, no characters, no animals.
+Generate an image: <title>
 
-WORLD STYLE.
+Hand-drawn Japanese anime background art with clean thin dark ink line art, fresh saturated natural colors, light watercolor shading and a lot of fine detail (single trees with drawn leaves, grass strokes, small flowers, stones, paths); not blurry, not pale, not washed out.
 
-Wide game background, landscape 16:9: SCENE. The sky is a small part of the image (about the top fifth); most of the picture is scenery. Rich and inviting for young teens, not primitive: several layers of depth and small details to discover (paths, little buildings, plants, rocks, water), but soft colors and low contrast so that big letters can be read on top of it. The left and right edges should continue smoothly so the image can repeat horizontally. No sun, no moon and no single big object in the sky: the image repeats horizontally, so the sky must be even (soft clouds or gradient only).
+Landscape image, 1376 x 768 pixels (16:9), background for a 2D side-scrolling platformer game for children and young teens aged 12 to 15: SCENE. One single continuous scene filling the whole image, not split into rows or panels. The sky is only a thin band at the top, about 15 % of the image height, with a few small clouds, no sun and no moon (the image repeats horizontally). The lower half is middle distance full of detail but with NO large objects close to the viewer (no big flowers, tall grass, rocks, fences, steps or bridges in front), because closer layers are drawn over it. Balanced composition across the whole width, no single dominant object. No text, no letters, no watermark, no characters, no people, no animals.
 ```
 
-### Common prompt for `*-mid.jpg` and `*-near.jpg` (replace LAYER and WORLD STYLE)
+### Prompt for the seam (attach `seam-in.png`)
 ```
-WORLD STYLE. Ultra-wide panoramic image, 21:9, on a flat solid pure magenta (#FF00FF) background. Along the bottom edge a low band of ground in the ground color of the world, about the lowest fifth of the image. Standing on that ground band: LAYER, 6 to 12 large whole pieces of different kinds and shapes that overlap a little, no tiny pieces, soft muted colors, each piece with a few interesting details (texture, a small flower, a stone, a crack) so the strip is never just a plain hill or a row of grass. The pieces reach up to different heights (the tallest almost to the top edge), so their tops form an uneven silhouette, never a straight or flat top edge. Between and above the pieces there is only the flat magenta: no ground, no wall, no sky, no distant objects, no silhouettes in the background, nothing behind the pieces except magenta. Strong contrast: pieces clearly darker or more saturated than the ground band. Every piece appears only once: do not repeat or copy any part of the image inside it. The left and right edges continue seamlessly into each other so the strip can repeat side by side. No white or light outline, halo or sticker border around the pieces: their dark outlines meet the magenta directly. No characters, no text. Flat side view like a 2D platformer, no perspective and no vanishing point: the ground band is a straight horizontal band seen from the side, nothing runs toward a point in the distance.
+Inpainting task on the attached image (1376 x 768 pixels), do not create a new picture. The attached drawing is unfinished: the white area in the middle is empty paper. Draw only into that white area. Everything outside it must stay pixel for pixel identical, with exactly the same colors: do not move, redraw, recolor or recompose anything. Inside the white area, draw the missing part of the same landscape so that everything from the left side continues smoothly into the right side, in exactly the same drawing style and colors: the sky in the middle has exactly the same color as on both sides, no lighter or darker stripe, no visible border. No white left anywhere. Output the whole image at exactly 1376 x 768 pixels.
 ```
-The height column is where the script places the strip (part of the screen height,
-counted from the bottom); it lives in `STRIP_HEIGHT` in `scripts/assets.mjs`.
+Do not start it with "Generate an image": Gemini then draws a new picture.
+
+### Prompt for `near` (a sheet of three strips; replace PLANTS)
+```
+Generate an image: Three <world> strips
+
+Image 1376 x 768 pixels (16:9) on a flat solid pure magenta (#FF00FF) background. The image is a sheet with THREE separate long, low horizontal strips stacked above each other, with a clear band of flat magenta between the strips and above the top strip. Each strip runs all the way from the left edge to the right edge of the image, cut by both edges, no margin at the sides; the bottom strip continues down to the bottom edge. Each strip is about 190 pixels tall: a side view of the closest foreground of the world for a 2D side-scrolling platformer game, seen from a few metres away: PLANTS. The bottom of each strip is cut straight, with no line, no outline and no ground drawn under it. The top of each strip is uneven. The three strips are different from each other. The magenta touches the drawing directly, no halo, no glow, no white rim.
+
+Hand-drawn Japanese anime background art, clearly a drawing and not a photo: thin soft dark green outlines (not black), simple color areas with light watercolor shading, fresh natural colors, moderate detail. No pink, purple or violet. No text, no characters, no animals. Flat side view, no vanishing point.
+```
+
+### Prompt for `mid` (a sheet of two strips; replace BAND)
+Like the near prompt, with TWO strips of about 330 pixels, "a side view of a band of the world
+seen from some distance: BAND", "rich small details" and "clean thin dark ink outlines".
+
+The table and the world blocks below come from the earlier flat storybook style: from a world
+block keep only the palette and the "Never" line as hints; the scene texts still say what each
+world shows.
 
 | File | SCENE / LAYER | Height | Status |
 |---|---|---|---|
-| `bg-meadow-far.jpg` | a training meadow in soft daylight with soft blue sky, a few fluffy clouds, gentle green hills far away and a small wooden fence | full | done 2026-10-23 |
-| `bg-meadow-mid.jpg` | a round grassy hill with a small tree, a bush with yellow flowers, an apple tree, a short wooden fence piece, a haystack, a tall birch, a bush with pink flowers and a beehive on a stand | 45 % | done 2026-10-23 |
-| `bg-meadow-near.jpg` | tall grass blades, clover with a pink flower, daisies, a dandelion seed ball, a smooth stone, a tall buttercup, a small wooden stake and a curled leaf | 25 % | done 2026-10-23 |
+| `bg-meadow-far.jpg` | a training meadow in soft daylight with soft blue sky, a few fluffy clouds, gentle green hills far away and a small wooden fence | full | redone 2026-10-25 (anime style, far prompt above) |
+| `bg-meadow-mid.jpg` | a round grassy hill with a small tree, a bush with yellow flowers, an apple tree, a short wooden fence piece, a haystack, a tall birch, a bush with pink flowers and a beehive on a stand | 45 % | redone 2026-10-25 (sheet of two strips, quilted, lifted 130 px) |
+| `bg-meadow-near.jpg` | tall grass blades, clover with a pink flower, daisies, a dandelion seed ball, a smooth stone, a tall buttercup, a small wooden stake and a curled leaf | 25 % | redone 2026-10-25 (sheet of three strips, seam by Gemini) |
 | `bg-space-far.jpg` | deep friendly space in dark blue and violet with soft glowing stars, a pastel nebula and the curve of a blue-green Earth at the bottom left | full | |
 | `bg-space-mid.jpg` | **use the far prompt instead**, SCENE: "only scattered soft glowing stars and tiny distant pastel planets on a flat pure magenta (#FF00FF) background" | full | not a strip |
 | `bg-space-near.jpg` | **use the far prompt instead**, SCENE: "only a few small soft star sparkles and tiny space dust on a flat pure magenta (#FF00FF) background" | full | not a strip |

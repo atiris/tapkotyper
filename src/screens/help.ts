@@ -132,6 +132,7 @@ function tabContent(tab: HelpTab, now: Child[] = []): HTMLElement[] {
     case 'progress': return [
       section(t('help.journeyTitle'), list('help.journey')),
       section(t('help.playTitle'), list('help.play')),
+      section(t('help.gamesTitle'), list('help.games')),
       section(t('help.progressTitle'), list('help.progress')),
       section(t('help.moreTitle'), list('help.more')),
     ];

@@ -1379,6 +1379,16 @@
       "Keď píšeš dobre, prídu nové písmenká.",
       "**Esc** hru zastaví a ďalší Esc ju pustí ďalej."
     ],
+    "gamesTitle": "Druhy hier",
+    "games": [
+      "Ikonka na kruhu úrovne na mape ukazuje, aká hra ťa v nej čaká.",
+      "**Prúd slov**: slová letia alebo sa kotúľajú k tebe. Napíš ich skôr, než dorazia.",
+      "**Čakajúce slová**: slová pokojne čakajú, napríklad na kvapkách rosy. Každé začína iným písmenom, tak si vyber, ktoré napíšeš. Na rázcestí slovom vyberieš cestu.",
+      "**Odpis**: slová stoja v riadku a píšeš ich zľava doprava. Pri pozvánke za chybu slovo zmizne a pribudnú dve nové, je to viac cvičenia, nie trest.",
+      "**Odposluch**: slovo nevidíš, iba počuješ. Napíš, čo počuješ. Keď chvíľu nepíšeš, zopakuje sa.",
+      "**Tajné slová**: slovo sa ukáže len na chvíľu a schová sa. Zapamätaj si ho a napíš ho spamäti.",
+      "**Veľká výzva**: posledná úroveň sveta. Každý svet ju má inú."
+    ],
     "journeyTitle": "Svety, úrovne a hviezdičky",
     "journey": [
       "Hra má príbehy. Každý príbeh má svety a každý svet má niekoľko úrovní.",

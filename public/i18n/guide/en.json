@@ -1221,6 +1221,8 @@
     "help.more": "Help, Progress tab: bullet points about the rescue mission, target range and badge.",
     "help.playTitle": "Help, Progress tab: the heading of the list on how a level is played.",
     "help.play": "Help, Progress tab: bullet points on typing words, stars and accuracy.",
+    "help.gamesTitle": "Help, Progress tab: the heading of the list of game kinds (the level activities).",
+    "help.games": "Help, Progress tab: one bullet per kind of game with its standard name in bold and a short explanation; the names match map.act.*.",
     "help.journeyTitle": "Help, Progress tab: the heading about worlds, levels and stars.",
     "help.journey": "Help, Progress tab: bullet points about stories, worlds, levels and stars.",
     "help.taskTitle": "Help, Parents and teachers tab: the heading about a task from the teacher.",

@@ -1221,6 +1221,8 @@
     "help.more": "Pomoc, karta Postup v hre: odrážky o záchrannej misii, strelnici a odznaku.",
     "help.playTitle": "Pomoc, karta Postup v hre: nadpis zoznamu o tom, ako sa hrá úroveň.",
     "help.play": "Pomoc, karta Postup v hre: odrážky o písaní slov, hviezdičkách a presnosti.",
+    "help.gamesTitle": "Pomoc, karta Postup v hre: nadpis zoznamu druhov hier (aktivít v úrovniach).",
+    "help.games": "Pomoc, karta Postup v hre: jedna odrážka na každý druh hry, tučný štandardný názov a krátke vysvetlenie; názvy sedia s map.act.*.",
     "help.journeyTitle": "Pomoc, karta Postup v hre: nadpis o svetoch, úrovniach a hviezdičkách.",
     "help.journey": "Pomoc, karta Postup v hre: odrážky o príbehoch, svetoch, úrovniach a hviezdičkách.",
     "help.taskTitle": "Pomoc, karta Rodičia a učitelia: nadpis o úlohe od učiteľa.",

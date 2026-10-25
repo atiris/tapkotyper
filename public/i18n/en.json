@@ -1379,6 +1379,16 @@
       "When you type well, new letters come.",
       "**Esc** stops the game and another Esc lets it go on."
     ],
+    "gamesTitle": "Kinds of games",
+    "games": [
+      "The small picture on a level's circle on the map shows which game waits there.",
+      "**Word stream**: words fly or roll toward you. Type them before they arrive.",
+      "**Waiting words**: words wait calmly, for example on dew drops. Each starts with a different letter, so pick the one you type. At a crossroads the word you type picks the way.",
+      "**Copy**: words stand in a row and you type them from left to right. On the invitation a mistake makes the word fade and two new ones come: more practice, not a punishment.",
+      "**Dictation**: you do not see the word, you only hear it. Type what you hear. When you wait a while, it is said again.",
+      "**Secret words**: a word shows only for a moment and hides. Remember it and type it from memory.",
+      "**Big challenge**: the last level of a world. Every world has its own."
+    ],
     "journeyTitle": "Worlds, levels and stars",
     "journey": [
       "The game has stories. Each story has worlds, and each world has a few levels.",

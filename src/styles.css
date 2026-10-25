@@ -1230,9 +1230,9 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-ink); }
 .prose { line-height: 1.6; }
 .prose li { margin: 0.3em 0; }
 
-/* Help: the bar of every page, then the tabs in a narrower column (wider on a wide screen); the page scrolls as a whole. */
-/* Wide enough for all tabs in one row (about 830 px at the normal text size); on a narrower window they wrap. */
-.help-column { width: 100%; max-width: clamp(52.5rem, 62vw, 1040px); margin: 0 auto; font-size: 1.1rem; }
+/* Help: the bar of every page, then the tabs in a column as wide as the page's gutter allows (the back button's
+   distance from the edge), up to a readable line length; the page scrolls as a whole. */
+.help-column { width: 100%; max-width: 1200px; margin: 0 auto; font-size: 1.1rem; }
 /* In a paused level: the same page over the whole level, opaque; it scrolls under its bar. No corner buttons there. */
 .level-help { position: absolute; inset: 0; z-index: 20; overflow-y: auto; scrollbar-gutter: stable; scrollbar-color: var(--scroll) transparent; background: var(--page-bg); }
 .level-help .screen > .bar { padding-right: var(--gut); }

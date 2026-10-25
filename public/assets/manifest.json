@@ -1473,7 +1473,7 @@
    "h": 287
   },
   "ui-act-parrot": {
-   "w": 356,
+   "w": 242,
    "h": 384
   },
   "ui-act-remember": {
@@ -1491,6 +1491,10 @@
   "ui-act-text": {
    "w": 384,
    "h": 302
+  },
+  "ui-badge-parrot": {
+   "w": 356,
+   "h": 384
   },
   "ui-cert-frame": {
    "w": 956,

@@ -38,8 +38,8 @@ far as a night sky scene, mid and near as sparse star layers on magenta, no stri
 - [x] egg
 - [x] junkyard
 - [x] workshop (far seam repainted over 50 % with new things in the middle: the wall repeated a motif)
-- [ ] raintown
-- [ ] robocity
+- [x] raintown
+- [x] robocity
 - [ ] robohome
 - [ ] garden
 - [ ] forestpath

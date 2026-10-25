@@ -31,6 +31,7 @@ const GAP = 0.3;
 const PAD = 3;
 // strips: how many rows at a strip's bottom may be its dark baseline.
 const LINE_ROWS = 12;
+const BOTTOM_FILL = 16;
 // black: darker than the floor is empty sky (a higher floor keeps only the brighter stars),
 // brighter than BLACK_FULL is a solid star.
 const BLACK_FLOOR = 24;
@@ -202,6 +203,12 @@ async function strips(file, dir) {
     for (let p = 0; p < w * h; p++) frame.set(MAGENTA, p * 3);
     const height = bottom - y0;
     data.copy(frame, (h - height) * w * 3, y0 * w * 3, bottom * w * 3);
+    // Gaps left in the last rows (by the cut baseline) take the color above them: at the screen's
+    // bottom edge they would show the layer behind.
+    for (let x = 0; x < w; x++) for (let y = h - BOTTOM_FILL; y < h; y++) {
+      const i = (y * w + x) * 3;
+      if (isKey(frame, i)) frame.copy(frame, i, i - w * 3, i - w * 3 + 3);
+    }
     const out = join(dir, `strip-${n + 1}.png`);
     await save({ data: frame, w, h }, out);
     console.log(`${out}: ${height} px tall (${(height / h * 100).toFixed(0)} % of the frame)`);
@@ -460,8 +467,11 @@ async function lift(file, by, out) {
   let px = Number(by);
   if (Number.isNaN(px)) {
     const near = await load(by);
+    // The solid band: the rows drawn almost all across above the bottom edge (a few last rows may have gaps).
+    const solidRow = (y) => 1 - keyShare(near, y, y + 1) > 0.98;
     let solid = h;
-    while (solid > 0 && 1 - keyShare(near, solid - 1, solid) > 0.98) solid--;
+    while (solid > h - BOTTOM_FILL && !solidRow(solid - 1)) solid--;
+    while (solid > 0 && solidRow(solid - 1)) solid--;
     let bottom = h;
     while (bottom > 0 && keyShare(img, bottom - 1, bottom) > 0.995) bottom--;
     px = Math.max(0, bottom - solid - LIFT_HIDDEN);

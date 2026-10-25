@@ -21,13 +21,13 @@ import { FINGER_KEYS, KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
 import { button, closeModals, confirmDialog, h } from '../ui/dom';
 import { globalButtons } from '../ui/chrome';
 import { tip } from '../ui/tooltip';
-import { accuracyPic, paintRound, pawRing, placeRing, rhythmPic, roundButton, roundPic, worldName } from '../ui/hud';
+import { accuracyPic, paintRound, pawRing, placeRing, rhythmPic, rhythmRing, roundButton, roundPic, worldName } from '../ui/hud';
 import { type MenuEntry, menuPanel } from '../ui/menu';
 import { OWN_SHARE, WordSource, type WordSourceOwn } from '../words/words';
 import { type LangRef, type Profile, SUPER_ID, type Surprise } from '../storage/schema';
 import type { LevelDef } from './levels';
 import { WORLDS, grownCount, hasMinLength, levelOver, minActiveS, shownProgress, storyOf } from './levels';
-import type { Mode } from './mode';
+import { type Mode, TAPKO_H, TAPKO_X } from './mode';
 import { PAW_MAX, PAW_STREAK, PAW_WORDS } from './paw';
 import { ENTER_MAX, EnterMarks } from './enter';
 import { createMode } from './modes';
@@ -95,8 +95,8 @@ const CAPITAL_EXTRA = 1.5;
 const STYLE_PACE: Record<Style, number> = { copy: 1, dictation: 1.5, memory: 1.8, mixed: 1.8 };
 /** Seconds without a key after which a dictated target is said once more. */
 const DICTATION_REPEAT = 4;
-/** Bolt's place next to the DOM Tapko, in CSS pixels from the left, and his height in game units. */
-const BOLT_CSS_X = 200;
+/** Bolt's place next to the DOM Tapko and his height, in game units. */
+const BOLT_X = 350;
 const BOLT_SIZE = 150;
 /** Melody's height, how high she floats above the friend's spot, and the seconds of her happy hop. */
 const FAIRY_SIZE = 120;
@@ -332,6 +332,7 @@ export class LevelRuntime {
       this.superBtn = roundButton('super', 'lifebuoy', t('super.help.title'), () => this.toggleHelpMenu());
       this.superBtn.classList.add('super-help');
       this.superBtn.setAttribute('aria-haspopup', 'menu');
+      this.paintHelpBtn();
     }
     if (def.kind === 'practice' || def.kind === 'aim') this.accuracyPics = [...this.words.focus].map((key) => ({ key, pic: accuracyPic(key) }));
     this.paintAccuracy();
@@ -346,7 +347,7 @@ export class LevelRuntime {
       h('span', { class: 'hud-divider', 'aria-hidden': 'true' }),
       guideBtn, this.readBtn, ...globalButtons(helpBtn));
     const stageWrap = h('div', { class: 'stage-wrap' });
-    this.tapko = tapkoElement(p.companion, 'idle', 150);
+    this.tapko = tapkoElement(p.companion, 'idle');
     // Tapko joins the stage when play starts; the preparation cards show him themselves.
     this.tapko.classList.add('level-tapko', 'waiting');
     this.tapko.dataset.tip = t('tapko.statsHint');
@@ -913,7 +914,7 @@ export class LevelRuntime {
 
   /** The story friend's feet (Bolt, Melody below where she floats): where the mode puts them, else next to Tapko. */
   friendSpot(): { x: number; y: number } {
-    return this.mode.friendSpot() ?? { x: BOLT_CSS_X / this.stage.scale, y: VH - 6 };
+    return this.mode.friendSpot() ?? { x: BOLT_X, y: VH - 6 };
   }
 
   /** Bolt on the canvas, under the mode's objects; he hops with Tapko at the end. */
@@ -953,12 +954,19 @@ export class LevelRuntime {
 
   private startHelp(plan: HelpPlan): void {
     this.helper = new SuperHelper(plan, () => this.rng.next());
-    this.superBtn?.classList.add('helping');
+    this.paintHelpBtn();
   }
 
   private stopHelp(): void {
     this.helper = null;
-    this.superBtn?.classList.remove('helping');
+    this.paintHelpBtn();
+  }
+
+  /** A full ring around the button while the super help types, like the other round buttons show their state. */
+  private paintHelpBtn(): void {
+    if (!this.superBtn) return;
+    paintRound(this.superBtn, 'lifebuoy', this.helper ? rhythmRing(1) : '');
+    this.superBtn.setAttribute('aria-pressed', String(!!this.helper));
   }
 
   /** The super help types through the same key handler as the child, so everything counts as typed. */
@@ -1228,7 +1236,20 @@ export class LevelRuntime {
   private lastExpected: string | null = null;
   private progressPct = -1;
 
+  /** The DOM Tapko keeps his size in game units, so he grows and shrinks with the scene. */
+  private sizeTapko(): void {
+    const k = this.stage.scale;
+    const px = Math.round(TAPKO_H * k);
+    if (px === this.tapkoPx) return;
+    this.tapkoPx = px;
+    this.tapko.style.setProperty('--size', `${px}px`);
+    this.tapko.style.left = `${Math.round((TAPKO_X - TAPKO_H / 2) * k)}px`;
+  }
+
+  private tapkoPx = 0;
+
   private render(): void {
+    this.sizeTapko();
     // A paused level does not move: the last frame stays unless a resize cleared it.
     if (this.paused && !this.stage.dirty) return;
     const g = this.stage.begin();

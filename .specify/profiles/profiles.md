@@ -64,7 +64,8 @@
   where nothing flies by, it is skipped. Two more choices aim at an accuracy instead, about
   90 % (2 stars) and about 75 % (1 star), with wrong keys at random all through the level.
   Everything counts as the player's own typing:
-  statistics, stars and paw charges. The same menu stops it. Only the temporary player has
+  statistics, stars and paw charges. While it types, the button has a full red ring, like
+  the other round buttons show their state; the same menu stops it. Only the temporary player has
   it, so a stored player's statistics are always typed by the child.
 - Stored players' progress is never changed by the service menu: there is no simulated or
   opened level, so a parent or teacher always sees progress that was typed.

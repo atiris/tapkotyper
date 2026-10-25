@@ -5,7 +5,7 @@ import { sprite } from '../../gfx/assets';
 import { blob, drawSprite, fontFamily, type G } from '../../gfx/draw';
 import { drawTapko } from '../../gfx/tapko';
 import { t } from '../../i18n/i18n';
-import { TAPKO_CSS_H, TAPKO_CSS_X } from '../mode';
+import { TAPKO_H, TAPKO_X } from '../mode';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
 import { ApproachMode, type Mover } from './approach';
@@ -169,9 +169,8 @@ export class SpaceMode extends ApproachMode {
 
   /** Tapko's feet and size: where the DOM Tapko stood, on the hop, then seated in the window. */
   private seat(): { x: number; y: number; size: number } {
-    const k = this.L.stage.scale;
     const w = this.window();
-    const from = { x: TAPKO_CSS_X / k, y: VH - TAPKO_CSS_H * 0.1 / k, size: TAPKO_CSS_H / k };
+    const from = { x: TAPKO_X, y: VH - TAPKO_H * 0.1, size: TAPKO_H };
     const to = { x: w.x, y: w.y + SEAT_SIZE * 0.45, size: SEAT_SIZE };
     const b = this.boarded, e = ease.inOutQuad(b);
     return {

@@ -3,7 +3,7 @@ import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
 import { blob, drawFace, drawSprite, type G, lighten } from '../../gfx/draw';
 import { t } from '../../i18n/i18n';
-import { TAPKO_CSS_H, TAPKO_CSS_X } from '../mode';
+import { TAPKO_H, TAPKO_X } from '../mode';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
 import { ApproachMode, type Mover } from './approach';
@@ -300,14 +300,14 @@ export class MeadowMode extends ApproachMode {
     return pickLine('story.meadowStart');
   }
 
-  /** Tapko's x on the stage in game units; the DOM Tapko keeps his CSS size while the stage scales. */
+  /** Tapko's x on the stage. */
   protected tapkoX(): number {
-    return TAPKO_CSS_X / this.L.stage.scale;
+    return TAPKO_X;
   }
 
   /** Top of Tapko in game units. */
   protected tapkoTop(): number {
-    return VH - TAPKO_CSS_H / this.L.stage.scale;
+    return VH - TAPKO_H;
   }
 
   /** The middle band above Tapko's head, where kicked leaves fly and typed ones are caught. */
@@ -317,11 +317,11 @@ export class MeadowMode extends ApproachMode {
 
   /** The gloves rest just right of Tapko, toward the leaves, never over him. */
   private glovesX(): number {
-    return this.playerX + TAPKO_CSS_H * 0.75 / this.L.stage.scale;
+    return this.playerX + TAPKO_H * 0.75;
   }
 
   private glovesRest(): number {
-    return VH - TAPKO_CSS_H * 0.36 / this.L.stage.scale;
+    return VH - TAPKO_H * 0.36;
   }
 
   private pickSprite(): string {

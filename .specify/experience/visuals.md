@@ -45,6 +45,9 @@
   statistics) and the buttons, all of one height; the first and biggest one just says
   "Continue" and names the level it starts only on hover. The right column holds the
   stories. One spacing scale and a clear heading order (greeting, story name, world names).
+- In a level the character keeps its size relative to the scene: it grows and shrinks with
+  the stage like the gloves, the creatures and the background, so a tall window does not make
+  it small next to them.
 - A level dot on the map shows the icon of its activity (main game, letter catch, clean
   line, crossroads, listening, remembering, big challenge) with the stars under it; its
   tooltip says the number and the activity. A dot without its picture shows the number.

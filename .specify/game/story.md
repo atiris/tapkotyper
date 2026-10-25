@@ -13,7 +13,7 @@ gives you a wreath"), never about the character as someone else.
 1. **Training Meadow** - the meadow animals play with the child: the wind brings them leaves
    and they want to score a goal with them. A bee, butterfly, ladybug, fly or mouse brings a
    leaf with a word toward the child's character, who keeps goal with a pair of goalkeeper
-   gloves held in front of their body. At the penalty area the creature kicks the leaf on;
+   gloves held just beside it, toward the leaves, never covering the character. At the penalty area the creature kicks the leaf on;
    when the middle band above the character is free and the leaf flies elsewhere, the kick
    lifts it in an arc up there. Typing the word sends the leaf faster into the gloves, which
    always catch it: in the middle band when it was typed before the kick or kicked up there,

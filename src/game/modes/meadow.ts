@@ -212,7 +212,7 @@ const HOLD_TIME = 0.35;
 /** Speed of a typed leaf on its way into the gloves. */
 const SAVE_SPEED = 950;
 
-/** Tapko's goalkeeper gloves in front of his body; on a finished word they reach for the leaf and catch it. */
+/** Tapko's goalkeeper gloves just right of him; on a finished word they reach for the leaf and catch it. */
 class Gloves {
   private static readonly H = 72;
   /** The picture's palms face the viewer; leaning right they reach for leaves coming from the right. */
@@ -305,9 +305,9 @@ export class MeadowMode extends ApproachMode {
     return Math.max(150, this.tapkoTop() - 50);
   }
 
-  /** The gloves rest in front of Tapko's body, a little toward the leaves. */
+  /** The gloves rest just right of Tapko, toward the leaves, never over him. */
   private glovesX(): number {
-    return this.playerX + TAPKO_CSS_H * 0.14 / this.L.stage.scale;
+    return this.playerX + TAPKO_CSS_H * 0.75 / this.L.stage.scale;
   }
 
   private glovesRest(): number {
@@ -362,7 +362,7 @@ export class MeadowMode extends ApproachMode {
     gl.x = this.glovesX();
     gl.restY = this.glovesRest();
     super.update(dt);
-    // The gloves reach for the closest leaf on its way to them and hold a caught one, else rest in front of Tapko.
+    // The gloves reach for the closest leaf on its way to them and hold a caught one, else rest beside Tapko.
     let aim: Mover | null = null;
     for (const tg of this.L.core.targets) {
       const m = tg.data as Mover;

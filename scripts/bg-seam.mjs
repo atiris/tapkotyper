@@ -3,11 +3,11 @@
 //
 //   node scripts/bg-seam.mjs check <img> [--band 0.45] [--floor 0.85]   size, sky or band, seam score
 //   node scripts/bg-seam.mjs strips <img> <dir>          the strips of a sheet, each at the bottom of a frame
-//   node scripts/bg-seam.mjs prep <img> <dir>            rolled.png and seam-in.png for Gemini
+//   node scripts/bg-seam.mjs prep <img> <dir> [gap]      rolled.png and seam-in.png for Gemini
 //   node scripts/bg-seam.mjs merge <dir> <gemini> <out>  the repainted middle joined to the exact sides
 //   node scripts/bg-seam.mjs quilt <dir> <donor> <out>   the middle filled from another strip, no Gemini
 //   node scripts/bg-seam.mjs black <img> <out> [floor]   stars on black moved onto magenta, by brightness
-//   node scripts/bg-seam.mjs lift <img> <px> <out>       a strip moved up; the near layer hides its bottom
+//   node scripts/bg-seam.mjs lift <img> <px|near> <out>  a strip moved up; the near layer hides its bottom
 //   node scripts/bg-seam.mjs preview <world> <out>       the three processed layers repeated side by side
 //
 // Gemini draws a strip as tall as half its picture, whatever the prompt says; asked for a sheet of
@@ -17,7 +17,8 @@
 // prep and are repainted with it.
 // prep rolls the picture by half its width: the old middle (one continuous piece) becomes
 // the left and right edges, so they join exactly, and the old edges meet in the middle.
-// The middle GAP of the width is painted one flat color for Gemini to repaint. merge keeps
+// The middle GAP of the width (or the given part, when a picture repeats a motif and its middle
+// needs a bigger repaint) is painted one flat color for Gemini to repaint. merge keeps
 // Gemini's middle only: the sides come back pixel for pixel from rolled.png, joined along
 // the path where both pictures agree best, so the edges still join exactly.
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
@@ -35,6 +36,8 @@ const LINE_ROWS = 12;
 const BLACK_FLOOR = 24;
 const BLACK_FULL = 200;
 const EDGE_CLEAR = 6;
+// lift: how far the mid strip's bottom reaches down into the near layer's solid band.
+const LIFT_HIDDEN = 12;
 // check: a strip's drawing may rise this part of the height above its band.
 const BAND_SLACK = 0.05;
 const MAGENTA = [255, 0, 255];
@@ -126,9 +129,9 @@ async function check(file, band, floor) {
   return ok;
 }
 
-const gapRange = (w) => [Math.round(w * (0.5 - GAP / 2)), Math.round(w * (0.5 + GAP / 2))];
+const gapRange = (w, gap = GAP) => [Math.round(w * (0.5 - gap / 2)), Math.round(w * (0.5 + gap / 2))];
 
-async function prep(file, dir) {
+async function prep(file, dir, gap = GAP) {
   const img = await load(file);
   if (!sizeOk(img, file)) return false;
   await mkdir(dir, { recursive: true });
@@ -139,7 +142,7 @@ async function prep(file, dir) {
     data.copy(rolled, (y * w) * 3, (y * w + half) * 3, (y * w + w) * 3);
     data.copy(rolled, (y * w + w - half) * 3, (y * w) * 3, (y * w + half) * 3);
   }
-  const [g0, g1] = gapRange(w);
+  const [g0, g1] = gapRange(w, gap);
   // Above the highest drawing of a strip the key stays: Gemini keeps the empty sky empty.
   let top = 0;
   while (top < h && keyShare({ data: rolled, w }, top, top + 1) > 0.995) top++;
@@ -313,9 +316,9 @@ async function merge(dir, file, out) {
     console.log(`repaint was ${g.w} x ${g.h}, fitted to ${W} x ${H}`);
     g = { data, w: info.width, h: info.height };
   }
-  const { top } = JSON.parse(await readFile(join(dir, 'seam.json'), 'utf8'));
+  const { top, gap } = JSON.parse(await readFile(join(dir, 'seam.json'), 'utf8'));
   const { w, h } = a;
-  const [g0, g1] = gapRange(w);
+  const [g0, g1] = gapRange(w, gap);
   const [dx, dy] = align(a, g, g0, g1);
   const b = shifted(g, dx, dy);
   const zones = [[g0 - ZONE, g0], [g1, g1 + ZONE]];
@@ -375,8 +378,9 @@ async function quilt(dir, donorFile, out) {
   const a = await load(join(dir, 'rolled.png'));
   const d = await load(donorFile);
   if (!sizeOk(d, donorFile)) return false;
+  const { gap } = JSON.parse(await readFile(join(dir, 'seam.json'), 'utf8'));
   const { w, h } = a;
-  const [g0, g1] = gapRange(w);
+  const [g0, g1] = gapRange(w, gap);
   const span = g1 - g0 + 2 * ZONE;
   // The donor's x where its piece (zones included) starts, by the difference in both zones.
   const zoneCost = (dx) => {
@@ -445,11 +449,23 @@ async function black(file, out, floor = BLACK_FLOOR) {
   return true;
 }
 
-/** The strip moved up by px; the rows freed at the bottom are key (the near layer covers them). */
-async function lift(file, px, out) {
+/**
+ * The strip moved up by px, or, given the near layer, as high as its bottom stays LIFT_HIDDEN px
+ * behind the near layer's solid band. The rows freed at the bottom are key.
+ */
+async function lift(file, by, out) {
   const img = await load(file);
   if (!sizeOk(img, file)) return false;
   const { w, h, data } = img;
+  let px = Number(by);
+  if (Number.isNaN(px)) {
+    const near = await load(by);
+    let solid = h;
+    while (solid > 0 && 1 - keyShare(near, solid - 1, solid) > 0.98) solid--;
+    let bottom = h;
+    while (bottom > 0 && keyShare(img, bottom - 1, bottom) > 0.995) bottom--;
+    px = Math.max(0, bottom - solid - LIFT_HIDDEN);
+  }
   const res = Buffer.alloc(data.length);
   for (let p = 0; p < w * h; p++) res.set(MAGENTA, p * 3);
   data.copy(res, 0, px * w * 3);
@@ -486,11 +502,11 @@ const floorAt = args.indexOf('--floor');
 const floor = floorAt >= 0 ? Number(args.splice(floorAt, 2)[1]) : 1;
 const ok = cmd === 'check' ? await check(args[0], band, floor)
   : cmd === 'strips' ? await strips(args[0], args[1])
-  : cmd === 'prep' ? await prep(args[0], args[1])
+  : cmd === 'prep' ? await prep(args[0], args[1], args[2] ? Number(args[2]) : undefined)
   : cmd === 'merge' ? await merge(args[0], args[1], args[2])
   : cmd === 'quilt' ? await quilt(args[0], args[1], args[2])
   : cmd === 'black' ? await black(args[0], args[1], args[2] ? Number(args[2]) : undefined)
-  : cmd === 'lift' ? await lift(args[0], Number(args[1]), args[2])
+  : cmd === 'lift' ? await lift(args[0], args[1], args[2])
   : cmd === 'preview' ? await preview(args[0], args[1])
-  : (console.log('usage: check <img> [--band f] [--floor f] | strips <img> <dir> | prep <img> <dir> | merge <dir> <gemini> <out> | quilt <dir> <donor> <out> | black <img> <out> [floor] | lift <img> <px> <out> | preview <world> <out>'), false);
+  : (console.log('usage: check <img> [--band f] [--floor f] | strips <img> <dir> | prep <img> <dir> [gap] | merge <dir> <gemini> <out> | quilt <dir> <donor> <out> | black <img> <out> [floor] | lift <img> <px|near> <out> | preview <world> <out>'), false);
 process.exitCode = ok ? 0 : 1;

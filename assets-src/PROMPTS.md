@@ -103,6 +103,23 @@ Notes from real Gemini runs; add new ones here.
 - A follow-up "less sky" stacked the landscape twice in one picture; ask again from scratch.
 - Attached style samples are copied almost one to one (composition too) and cost the limit;
   describe the style in words.
+- Small scattered things (stars, sparkles) on flat magenta came out as a sticker sheet: neat
+  groups of the same shape at even spacing. On black ("a natural star field like a real
+  photograph") Gemini scatters them at random; see `black` in section 3.
+- Saying that a landscape "repeats horizontally" made Gemini draw the scene twice side by side
+  in one picture (dragon valley), as with the room before. The seam is made by the tool: the
+  far prompt does not mention repeating at all.
+- "The sky is only a thin band at the top" gave a sky band cut off by a hard line (planet).
+  "The horizon is high: only a little sky shows above the hills" does not.
+- "The sun hidden behind the mountains" still paints one bright glow, which repeats along the
+  layer; ask for "evenly lit sky, the same brightness across the whole width, no bright spot".
+- "Nothing touches the image edges" makes a layer of scattered things repeat without any seam fix.
+- A layer repeats every screen width: one big object in it (a planet 200 px wide) shows twice
+  side by side on a wide screen. Keep things in the mid and near layers small and many.
+- The space layers looked like ghosts when the game drew them at 40 %; designed layers are drawn
+  opaque.
+- Black outlines on soft space objects looked like stickers; "soft gentle shading, no dark
+  outlines" fits painted space.
 - Small throwables (46 px): "a bold, simple shape with a clear outline, easy to recognise as a
   tiny icon of about 46 pixels" plus hex colors gave 36 of 36 clean pictures on the first try.
   A second state of a thing (a cracked egg, a lit bulb) kept its size and outline when the
@@ -330,8 +347,8 @@ saved as `assets-src/bg-<world>-<layer>.png` and processed by `npm run assets`.
    sheet). Ask for them on black ("a natural star field like a real photograph"); `black <img>
    <out> [floor]` turns brightness into coverage on magenta and takes out stars at the side
    edges, so the layer repeats as it is (space mid: floor 120 keeps the brighter stars).
-3. `lift <img> <px> <out>` moves the mid strip up when the near layer hides too much of it
-   (meadow: 130 px); its bottom must stay below the top of the near layer's solid grass.
+3. `lift <img> <near> <out>` moves the mid strip up as high as its bottom still stays 12 px
+   behind the near layer's solid band (meadow 140 px, planet 44 px); a number lifts by that.
 4. Copy the three layers to `assets-src/bg-<world>-{far,mid,near}.png`, run
    `npm run assets bg-<world>`, then `preview <world> <out>` (the layers repeated 2.5 times,
    a red tick above each seam) and look at the world in the game.
@@ -342,7 +359,7 @@ Generate an image: <title>
 
 Hand-drawn Japanese anime background art with clean thin dark ink line art, fresh saturated natural colors, light watercolor shading and a lot of fine detail (single trees with drawn leaves, grass strokes, small flowers, stones, paths); not blurry, not pale, not washed out.
 
-Landscape image, 1376 x 768 pixels (16:9), background for a 2D side-scrolling platformer game for children and young teens aged 12 to 15: SCENE. One single continuous scene filling the whole image, not split into rows or panels. The sky is only a thin band at the top, about 15 % of the image height, with a few small clouds, no sun and no moon (the image repeats horizontally). The lower half is middle distance full of detail but with NO large objects close to the viewer (no big flowers, tall grass, rocks, fences, steps or bridges in front), because closer layers are drawn over it. Balanced composition across the whole width, no single dominant object. No text, no letters, no watermark, no characters, no people, no animals.
+Landscape image, 1376 x 768 pixels (16:9), background for a 2D side-scrolling platformer game for children and young teens aged 12 to 15: SCENE. One single continuous scene filling the whole image, not split into rows or panels, every part of it different. The horizon is high: only a little sky with a few small clouds shows above the scenery, about 15 % of the image height, flowing straight into it with no line, frame or border; the sky has the same brightness across the whole width, no bright spot, no sun, no sun glow, no moon. The lower half is middle distance full of detail but with NO large objects close to the viewer (no big flowers, tall grass, rocks, fences, steps or bridges in front), because closer layers are drawn over it. Balanced composition across the whole width, no single dominant object. No text, no letters, no watermark, no characters, no people, no animals.
 ```
 
 ### Prompt for the seam (attach `seam-in.png`)

@@ -1,6 +1,7 @@
 import { app } from '../../app/app';
 import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
+import { sprite } from '../../gfx/assets';
 import { blob, drawSprite, fontFamily, type G } from '../../gfx/draw';
 import { drawTapko } from '../../gfx/tapko';
 import { t } from '../../i18n/i18n';
@@ -21,13 +22,60 @@ const ROCKET_H = 120;
 const WINDOW = { x: 39, y: -1, r: 18 };
 /** Tapko's size in the window. */
 const SEAT_SIZE = 44;
-/** Seconds of Tapko's hop into the rocket, then of the speedometer sliding up. */
-const BOARD_TIME = 1;
+/** Seconds of the suit-up: his things fade away, the suit grows up from the boots, the helmet comes down. */
+const UNDRESS = 0.5;
+const SUIT_UP = 0.7;
+const HELMET = 0.5;
+const SUITED = UNDRESS + SUIT_UP + HELMET;
+/** Seconds when the hop into the rocket ends, then of the speedometer sliding up. */
+const BOARD_TIME = SUITED + 0.9;
 const DOCK_TIME = 0.5;
+/** The suit picture's collar as a share of its height: without the helmet only the suit below it is drawn. */
+const SUIT_NECK = 0.52;
 const GAUGE_R = 70;
 
+/** Code-drawn suit (and helmet) in the companion template's square, until the owner's art is there. */
+function astronautFallback(g: G, s: number, helmet: boolean): void {
+  g.strokeStyle = '#5a3d2b';
+  g.lineWidth = s * 0.012;
+  g.fillStyle = '#f4f6fa';
+  for (const [cx, cy, rx, ry] of [[0.4, 0.86, 0.08, 0.05], [0.6, 0.86, 0.08, 0.05], [0.28, 0.64, 0.07, 0.07], [0.72, 0.64, 0.07, 0.07], [0.5, 0.67, 0.21, 0.2]]) {
+    g.beginPath();
+    g.ellipse(cx * s, cy * s, rx * s, ry * s, 0, 0, Math.PI * 2);
+    g.fill();
+    g.stroke();
+  }
+  if (!helmet) return;
+  g.beginPath();
+  g.arc(0.5 * s, 0.36 * s, 0.27 * s, 0, Math.PI * 2);
+  g.fill();
+  g.stroke();
+  g.fillStyle = '#2b3f7a';
+  g.beginPath();
+  g.ellipse(0.5 * s, 0.38 * s, 0.2 * s, 0.15 * s, 0, 0, Math.PI * 2);
+  g.fill();
+}
+
 /**
- * World 2: Tapko hops into the rocket's window, its soft beam pushes rocks and planets out of the path,
+ * Draws the astronaut in the companion template's square, like drawTapko: (x, y) between the feet.
+ * Only the rows `from`..`to` (shares of the height) are drawn, for the suit growing and the helmet coming down.
+ */
+function drawAstronaut(g: G, helmet: boolean, x: number, y: number, size: number, from = 0, to = 1, alpha = 1): void {
+  if (alpha <= 0 || to <= from) return;
+  g.save();
+  g.globalAlpha *= alpha;
+  g.translate(x - size / 2, y - size * 0.9);
+  g.beginPath();
+  g.rect(0, from * size, size, (to - from) * size);
+  g.clip();
+  const img = sprite(helmet ? 'tapko-astronaut' : 'tapko-astronaut-suit');
+  if (img) g.drawImage(img, 0, 0, size, size);
+  else astronautFallback(g, size, helmet);
+  g.restore();
+}
+
+/**
+ * World 2: Tapko puts on a space suit and hops into the rocket's window, its soft beam pushes rocks and planets out of the path,
  * and rhythm drives the speedometer docked under the rocket.
  */
 export class SpaceMode extends ApproachMode {
@@ -96,9 +144,10 @@ export class SpaceMode extends ApproachMode {
     this.L.particles.emit(x, y, 14, 'sparkle', ['#fff6a8', '#a8f0ff', '#ffd1f5'], 180, 9);
   }
 
-  /** The rocket's centre and tilt; it bobs gently. */
+  /** The rocket's centre and tilt; it bobs gently and hops with joy at the end. */
   private rocket(): { x: number; y: number; rot: number } {
-    return { x: ROCKET_X, y: this.rocketY + Math.sin(this.t * 1.8) * 10, rot: Math.sin(this.t * 1.3) * 0.04 };
+    const hop = Math.sin(this.L.endHop * Math.PI) * 24;
+    return { x: ROCKET_X, y: this.rocketY + Math.sin(this.t * 1.8) * 10 - hop, rot: Math.sin(this.t * 1.3) * 0.04 };
   }
 
   /** Centre of the rocket's window, turned with the rocket. */
@@ -108,9 +157,14 @@ export class SpaceMode extends ApproachMode {
     return { x: r.x + WINDOW.x * c - WINDOW.y * s, y: r.y + WINDOW.x * s + WINDOW.y * c };
   }
 
-  /** 0..1 of Tapko's hop from the DOM Tapko's place into the window; done at once with reduced motion. */
+  /** 0..1 of the astronaut's hop from the DOM Tapko's place into the window; done at once with reduced motion. */
   private get boarded(): number {
-    return this.L.reduceMotion ? 1 : Math.min(1, this.t / BOARD_TIME);
+    return this.L.reduceMotion ? 1 : Math.max(0, Math.min(1, (this.t - SUITED) / (BOARD_TIME - SUITED)));
+  }
+
+  /** 0..1 of a suit-up phase that starts at `start` seconds and lasts `time`; done with reduced motion. */
+  private phase(start: number, time: number): number {
+    return this.L.reduceMotion ? 1 : Math.max(0, Math.min(1, (this.t - start) / time));
   }
 
   /** Tapko's feet and size: where the DOM Tapko stood, on the hop, then seated in the window. */
@@ -154,7 +208,7 @@ export class SpaceMode extends ApproachMode {
       g.stroke();
       g.restore();
     }
-    drawSprite(g, 'obj-rocket', rx, ry, ROCKET_H, { rot }, blob('#e5534b'));
+    this.drawRocket(g, rx, ry, rot);
     // Flame grows with speed.
     g.save();
     g.globalAlpha = 0.5 + this.speedShown * 0.5;
@@ -168,35 +222,62 @@ export class SpaceMode extends ApproachMode {
     this.drawSpeedometer(g);
   }
 
-  /** Empty glass over the picture's window, Tapko on his hop, then seated behind the glass. */
-  private drawTapko(g: G): void {
-    const w = this.window();
-    const s = this.seat();
-    const c = app.profile!.companion;
-    const end = this.L.endTime != null;
-    const mood = end ? 'happy' : this.boarded < 1 ? 'idle' : this.L.tapkoMood;
-    // A shadow only while he stands on the ground before the hop.
-    const motion = { t: this.t, jump: end ? this.L.endHop : 0, shadow: this.boarded === 0 };
-    // He slips behind the glass over the last fifth of the hop.
+  /**
+   * The empty rocket (glass over the picture's window) until the astronaut is in, then the rocket
+   * with its pilot; the two cross-fade while the astronaut slips in.
+   */
+  private drawRocket(g: G, rx: number, ry: number, rot: number): void {
     const inside = Math.max(0, (this.boarded - 0.8) / 0.2);
-    g.save();
-    g.beginPath();
-    g.arc(w.x, w.y, WINDOW.r, 0, Math.PI * 2);
-    const glass = g.createRadialGradient(w.x - 5, w.y - 6, 2, w.x, w.y, WINDOW.r);
-    glass.addColorStop(0, '#d9f6fa');
-    glass.addColorStop(1, '#86cbd8');
-    g.fillStyle = glass;
-    g.fill();
-    if (inside > 0) {
-      g.clip();
-      drawTapko(g, c, mood, s.x, s.y, s.size, { ...motion, alpha: inside });
-      g.fillStyle = 'rgba(255,255,255,0.45)';
+    if (inside < 1) {
+      g.save();
+      g.globalAlpha *= 1 - inside;
+      drawSprite(g, 'obj-rocket', rx, ry, ROCKET_H, { rot }, blob('#e5534b'));
+      const w = this.window();
       g.beginPath();
-      g.ellipse(w.x - 7, w.y - 9, 7, 3.5, -0.6, 0, Math.PI * 2);
+      g.arc(w.x, w.y, WINDOW.r, 0, Math.PI * 2);
+      const glass = g.createRadialGradient(w.x - 5, w.y - 6, 2, w.x, w.y, WINDOW.r);
+      glass.addColorStop(0, '#d9f6fa');
+      glass.addColorStop(1, '#86cbd8');
+      g.fillStyle = glass;
       g.fill();
+      g.restore();
+    }
+    if (inside <= 0) return;
+    g.save();
+    g.globalAlpha *= inside;
+    if (sprite('obj-rocket-pilot')) drawSprite(g, 'obj-rocket-pilot', rx, ry, ROCKET_H, { rot });
+    else {
+      drawSprite(g, 'obj-rocket', rx, ry, ROCKET_H, { rot }, blob('#e5534b'));
+      const w = this.window();
+      drawAstronaut(g, true, w.x, w.y + SEAT_SIZE * 0.45, SEAT_SIZE);
     }
     g.restore();
-    if (inside < 1) drawTapko(g, c, mood, s.x, s.y, s.size, { ...motion, alpha: 1 - inside });
+  }
+
+  /**
+   * The suit-up where Tapko stands (his things fade away, the suit grows up from the boots, the
+   * helmet comes down over his head), then the astronaut's hop into the window.
+   */
+  private drawTapko(g: G): void {
+    const b = this.boarded;
+    if (b >= 1) return;
+    const s = this.seat();
+    const c = app.profile!.companion;
+    const undress = this.phase(0, UNDRESS), suit = this.phase(UNDRESS, SUIT_UP), helmet = this.phase(UNDRESS + SUIT_UP, HELMET);
+    if (helmet < 1) {
+      const motion = { t: this.t, shadow: true };
+      const bare = { ...c, accessories: [] };
+      // His things fade away, then he hides under the helmet.
+      if (undress < 1) drawTapko(g, c, 'idle', s.x, s.y, s.size, { ...motion, alpha: 1 - undress });
+      drawTapko(g, bare, 'idle', s.x, s.y, s.size, { ...motion, alpha: undress * (1 - helmet) });
+      drawAstronaut(g, false, s.x, s.y, s.size, 1 - (1 - SUIT_NECK) * ease.outQuad(suit), 1);
+      // The helmet comes down from above onto the collar.
+      const drop = (1 - ease.outCubic(helmet)) * s.size * 0.25;
+      drawAstronaut(g, true, s.x, s.y - drop, s.size, 0, SUIT_NECK + 0.04, helmet);
+      return;
+    }
+    // He slips into the window over the last fifth of the hop.
+    drawAstronaut(g, true, s.x, s.y, s.size, 0, 1, 1 - Math.max(0, (b - 0.8) / 0.2));
   }
 
   /** The rocket's own instrument: after Tapko is in, it slides up and sits on the bottom edge under the rocket, still while the rocket bobs. */

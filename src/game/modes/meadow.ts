@@ -124,44 +124,39 @@ function leafFallback(kind: LeafKind) {
   };
 }
 
-/** Code-drawn hand fan: a folded half circle of pastel green paper on a wooden handle. */
-function fanFallback(g: G, w: number, h: number): void {
-  const cx = 0, cy = h * 0.08, r = w * 0.48;
-  const folds = 10;
+/** Code-drawn goalkeeper gloves: two padded palms side by side, fingers up. */
+export function glovesFallback(g: G, w: number, h: number): void {
   g.save();
   g.lineJoin = 'round';
-  for (let i = 0; i < folds; i++) {
-    const a0 = Math.PI + (i / folds) * Math.PI, a1 = Math.PI + ((i + 1) / folds) * Math.PI;
-    g.fillStyle = i % 2 ? '#b9e4c0' : '#a2d6ab';
-    g.beginPath();
-    g.moveTo(cx, cy);
-    g.arc(cx, cy, r, a0, a1);
-    g.closePath();
-    g.fill();
-  }
   g.strokeStyle = '#6d5040';
   g.lineWidth = 2.5;
-  g.beginPath();
-  g.moveTo(cx - r, cy);
-  g.arc(cx, cy, r, Math.PI, Math.PI * 2);
-  g.closePath();
-  g.stroke();
-  g.strokeStyle = 'rgba(80,130,90,0.55)';
-  g.lineWidth = 1.2;
-  g.beginPath();
-  for (let i = 1; i < folds; i++) {
-    const a = Math.PI + (i / folds) * Math.PI;
-    g.moveTo(cx, cy);
-    g.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r);
+  for (const side of [-1, 1]) {
+    g.save();
+    g.translate(side * w * 0.2, h * 0.08);
+    // Fingers, then the padded palm over their roots, then the wrist strap.
+    for (let i = 0; i < 4; i++) {
+      g.fillStyle = '#f59a3c';
+      g.beginPath();
+      g.roundRect(-w * 0.17 + i * w * 0.088, -h * 0.4 + Math.abs(i - 1.5) * h * 0.04, w * 0.08, h * 0.3, w * 0.04);
+      g.fill();
+      g.stroke();
+    }
+    g.fillStyle = '#f59a3c';
+    g.beginPath();
+    g.roundRect(-w * 0.19, -h * 0.18, w * 0.38, h * 0.32, w * 0.1);
+    g.fill();
+    g.stroke();
+    g.fillStyle = '#fff4dc';
+    g.beginPath();
+    g.roundRect(-w * 0.14, -h * 0.14, w * 0.28, h * 0.24, w * 0.08);
+    g.fill();
+    g.fillStyle = '#fff4dc';
+    g.beginPath();
+    g.roundRect(-w * 0.15, h * 0.12, w * 0.3, h * 0.12, w * 0.03);
+    g.fill();
+    g.stroke();
+    g.restore();
   }
-  g.stroke();
-  g.fillStyle = '#d29a62';
-  g.strokeStyle = '#6d5040';
-  g.lineWidth = 2;
-  g.beginPath();
-  g.roundRect(-w * 0.05, cy - h * 0.12, w * 0.1, h * 0.52, w * 0.05);
-  g.fill();
-  g.stroke();
   g.restore();
 }
 
@@ -211,48 +206,49 @@ function hedgehogFallback(g: G, w: number, h: number): void {
   g.restore();
 }
 
-/** Tapko's fan; on a finished word it swings toward the leaf and sends a gust at it. */
-class Fan {
-  private tilt = 0;
+/** Seconds of a kick that lifts a leaf to the gloves' height, and of a caught leaf held before the throw back. */
+const KICK_TIME = 0.6;
+const HOLD_TIME = 0.35;
+/** Speed of a typed leaf on its way into the gloves. */
+const SAVE_SPEED = 950;
+
+/** Tapko's goalkeeper gloves above him; on a finished word they reach for the leaf and catch it. */
+class Gloves {
+  private static readonly H = 90;
+  /** The picture's palms face the viewer; leaning right they reach for leaves coming from the right. */
+  private static readonly LEAN = 0.3;
+  /** Height the gloves reach for; their rest height when nothing flies at them. */
+  aimY: number;
+  private y: number;
   private bob = 0;
-  private static readonly H = 110;
-  constructor(private L: LevelRuntime, private x: number, private y: number) {}
-
-  /** The middle of the fan, where the gust starts. */
-  private middle(): [number, number] {
-    const r = Fan.H * 0.62;
-    return [this.x + Math.sin(this.tilt) * r, this.y + this.bob - Math.cos(this.tilt) * r];
+  private squeeze = 0;
+  constructor(private L: LevelRuntime, public x: number, public restY: number) {
+    this.aimY = this.y = restY;
   }
 
-  swing(tx: number, ty: number, done: () => void): void {
-    const L = this.L;
-    const [mx, my] = this.middle();
-    const to = Math.max(-0.4, Math.min(0.8, (Math.atan2(ty - my, tx - mx) + Math.PI / 2) * 0.6 + 0.25));
-    const from = this.tilt;
-    L.tweens.add(0.15, (k) => (this.tilt = from + (to - from) * k), ease.outQuad, () => {
-      const [sx, sy] = this.middle();
-      let next = 0;
-      L.tweens.add(0.25, (k) => {
-        // A gust of puffs from the fan to the leaf.
-        for (; next <= k; next += 0.1) {
-          const x = sx + (tx - sx) * next, y = sy + (ty - sy) * next;
-          L.particles.emit(x, y, 2, 'puff', ['#ffffff', '#eef8ee'], 50, 10, 0.5);
-        }
-      }, ease.linear, () => {
-        done();
-        L.tweens.add(0.3, (k) => (this.tilt = to * (1 - k)), ease.inOutQuad);
-      });
-    });
+  /** Where a leaf sits when caught: in front of the palms. */
+  catchPoint(): [number, number] {
+    return [this.x + Gloves.H * 0.3, this.y + this.bob];
   }
 
-  draw(g: G, t: number): void {
-    // It joins Tapko when the game starts, not during the preparation cards, and fades out at the end.
+  catch(): void {
+    this.squeeze = 1;
+  }
+
+  update(dt: number, t: number): void {
+    this.y += (this.aimY - this.y) * Math.min(1, dt * 10);
+    this.bob = Math.sin(t * 2) * 4;
+    this.squeeze = Math.max(0, this.squeeze - dt * 3);
+  }
+
+  draw(g: G): void {
+    // They join Tapko when the game starts, not during the preparation cards, and fade out at the end.
     const alpha = this.L.toolAlpha;
     if (!this.L.started || alpha <= 0) return;
-    this.bob = Math.sin(t * 2) * 4;
+    const sq = Math.sin(this.squeeze * Math.PI) * 0.12;
     g.save();
     g.globalAlpha *= alpha;
-    drawSprite(g, 'obj-fan', this.x, this.y + this.bob, Fan.H, { rot: this.tilt, ay: 1 }, fanFallback);
+    drawSprite(g, 'obj-gloves', this.x, this.y + this.bob, Gloves.H, { rot: Gloves.LEAN, sx: 1 - sq, sy: 1 + sq }, glovesFallback);
     g.restore();
   }
 }
@@ -276,17 +272,18 @@ interface Critter {
 
 /**
  * World 1: the meadow animals play with the child. The wind brings them leaves and they want
- * to score a goal with them; a typed word catches the leaf and Tapko's fan sends it back to
- * its creature, a missed one is a goal everybody cheers.
+ * to score a goal with them. At the penalty area they kick it up to Tapko's gloves; a typed
+ * word sends the leaf into the gloves, which throw it back to its creature, a missed one is a
+ * goal everybody cheers.
  */
 export class MeadowMode extends ApproachMode {
   readonly world = 'meadow';
-  protected fan: Fan;
+  protected gloves: Gloves;
 
   constructor(L: LevelRuntime) {
     super(L);
-    this.fan = new Fan(L, 185, VH - 75);
     this.playerX = this.tapkoX();
+    this.gloves = new Gloves(L, this.playerX, this.gloveY());
   }
 
   startLine(): string {
@@ -301,6 +298,11 @@ export class MeadowMode extends ApproachMode {
   /** Top of Tapko in game units. */
   protected tapkoTop(): number {
     return VH - TAPKO_CSS_H / this.L.stage.scale;
+  }
+
+  /** The gloves' rest height above Tapko's head, where kicked leaves fly. */
+  private gloveY(): number {
+    return Math.max(150, this.tapkoTop() - 50);
   }
 
   private pickSprite(): string {
@@ -318,7 +320,7 @@ export class MeadowMode extends ApproachMode {
     return {
       x, y, vx: this.speedFor(word, x) * speed, vy: 0, rot: 0, vr: 0, age: 0, state: 'come', fade: 0,
       sprite: `obj-leaf-${kind}`, size, kind, by: y, phase: this.L.rng.range(0, 6), lf: 0,
-      critter: null, style: 'toss', thrown: -1, throwX: 0, arc: null, caught: false, scored: false,
+      critter: null, style: 'toss', thrown: -1, throwX: 0, arc: null, caught: false, scored: false, kickFrom: y, kickTo: null, hold: -1,
     };
   }
 
@@ -347,7 +349,19 @@ export class MeadowMode extends ApproachMode {
 
   update(dt: number): void {
     this.playerX = this.tapkoX();
+    const gl = this.gloves;
+    gl.x = this.playerX;
+    gl.restY = this.gloveY();
     super.update(dt);
+    // The gloves reach for the closest leaf on its way to them, else rest above Tapko.
+    let aim: Mover | null = null;
+    for (const tg of this.L.core.targets) {
+      const m = tg.data as Mover;
+      if (m.state === 'leave' && m.hold < 0 && (!aim || m.x < aim.x)) aim = m;
+    }
+    if (aim) gl.aimY = Math.max(110, Math.min(VH - 60, aim.y));
+    else if (!this.L.core.targets.some((tg) => (tg.data as Mover).hold >= 0 && !(tg.data as Mover).arc)) gl.aimY = gl.restY;
+    gl.update(dt, this.t);
   }
 
   protected moveComing(m: Mover, dt: number, tg: Target): void {
@@ -359,10 +373,21 @@ export class MeadowMode extends ApproachMode {
     if (c) this.moveCritter(m, c, dt);
   }
 
+  /** At the penalty area the creature sends its leaf on; when the gloves' height is free and the leaf flies elsewhere, it kicks it up there. */
   private throwLeaf(m: Mover, c: Critter): void {
     m.thrown = 0;
     c.state = 'watch';
     c.st = 0;
+    const band = this.gloves.restY, near = (y: number) => Math.abs(y - band) < 60;
+    const taken = this.L.core.targets.some((tg) => {
+      const o = tg.data as Mover;
+      return o !== m && o.state === 'come' && near(o.kickTo ?? o.by);
+    });
+    if (!near(m.by) && !taken) {
+      m.kickFrom = m.by;
+      m.kickTo = band;
+      m.style = 'kick';
+    }
     if (m.style === 'flap') this.L.particles.emit(m.x + 20, m.y - 10, 4, 'puff', ['#ffffff', '#f4f8ff'], 60, 9, 0.6);
   }
 
@@ -374,9 +399,11 @@ export class MeadowMode extends ApproachMode {
       m.rot = m.thrown >= 0 ? m.x / (m.size * 0.45) : sway * 0.1;
       return;
     }
-    const k = m.thrown >= 0 ? Math.min(1, m.thrown / 0.5) : 0;
+    const k = m.thrown >= 0 ? Math.min(1, m.thrown / KICK_TIME) : 0;
     const lift = m.style === 'kick' ? 55 : m.style === 'toss' ? 35 : 20;
     const toss = k > 0 && k < 1 ? -Math.sin(k * Math.PI) * lift : 0;
+    // A kick to the gloves' height carries the leaf there along its arc.
+    if (m.kickTo != null) m.by = m.kickFrom + (m.kickTo - m.kickFrom) * ease.inOutQuad(k);
     m.y = m.by + toss + sway * (m.thrown >= 0 ? 10 : 4);
     m.rot = (m.style === 'kick' && k < 1 ? -k * Math.PI * 2 : 0) + Math.sin(m.age * 2.5 + m.phase) * 0.3;
   }
@@ -403,20 +430,41 @@ export class MeadowMode extends ApproachMode {
     }
   }
 
+  /** A typed leaf speeds up into the gloves (see moveGone). */
   protected onLeave(m: Mover): void {
-    const L = this.L;
     m.vx = 0;
+    this.L.sfx('whoosh');
     const c = m.critter as Critter | null;
     if (c && c.state === 'carry') {
       c.state = 'watch';
       c.st = 0;
     }
-    this.fan.swing(m.x - m.size * 0.4, m.y, () => {
-      L.sfx('whoosh');
-      L.particles.emit(m.x, m.y, 5, 'puff', ['#ffffff', '#eef8ee'], 80, 10, 0.6);
-      const [x1, y1] = this.catchPoint(m);
-      m.arc = { x0: m.x, y0: m.y, x1, y1, k: 0, dur: Math.max(0.8, Math.min(1.8, (x1 - m.x) / 520)) };
-    });
+  }
+
+  /** The typed leaf flies into the gloves, they hold it a moment and throw it back. */
+  private save(m: Mover, dt: number): void {
+    const L = this.L;
+    const [gx, gy] = this.gloves.catchPoint();
+    if (m.hold < 0) {
+      const dx = gx - m.x, dy = gy - m.y, d = Math.hypot(dx, dy), step = SAVE_SPEED * dt;
+      m.rot += dt * 8;
+      if (d > step) {
+        m.x += (dx / d) * step;
+        m.y += (dy / d) * step;
+        return;
+      }
+      m.hold = 0;
+      this.gloves.catch();
+      L.sfx('pop');
+      L.particles.emit(gx, gy, 6, 'sparkle', ['#fff6a8', '#ffd25a'], 110, 7);
+    }
+    m.hold += dt;
+    m.x = gx;
+    m.y = gy;
+    if (m.hold < HOLD_TIME) return;
+    L.sfx('whoosh');
+    const [x1, y1] = this.catchPoint(m);
+    m.arc = { x0: m.x, y0: m.y, x1, y1, k: 0, dur: Math.max(0.8, Math.min(1.8, (x1 - m.x) / 520)) };
   }
 
   /** Where a saved leaf flies back to: its creature. */
@@ -433,7 +481,7 @@ export class MeadowMode extends ApproachMode {
     c.st = 0.45;
   }
 
-  /** A saved leaf arcs high back to its creature; a goal flutters on to the left edge. */
+  /** A saved leaf goes into the gloves and arcs high back to its creature; a goal flutters on to the left edge. */
   protected moveGone(m: Mover, dt: number): void {
     const c = m.critter as Critter | null;
     if (c) this.moveCritter(m, c, dt);
@@ -443,8 +491,10 @@ export class MeadowMode extends ApproachMode {
       m.lf = Math.min(1, m.lf + dt * Math.max(0.6, -m.vx / Math.max(60, m.x + 60)));
     } else {
       const a = m.arc;
-      // Still waiting for the gust.
-      if (!a) return;
+      if (!a) {
+        this.save(m, dt);
+        return;
+      }
       if (a.k < 1) {
         a.k = Math.min(1, a.k + dt / a.dur);
         const [x1, y1] = this.catchPoint(m);
@@ -513,10 +563,10 @@ export class MeadowMode extends ApproachMode {
       if (m.state === 'come') this.L.label(g, tg, m.x, Math.max(40, m.y - m.size * 0.55 - 26));
     }
     this.drawExtras(g);
-    this.fan.draw(g, this.t);
+    this.gloves.draw(g);
   }
 
-  /** Hook for the hedgehog, drawn behind the fan. */
+  /** Hook for the hedgehog, drawn behind the gloves. */
   protected drawExtras(_g: G): void {}
 
 }

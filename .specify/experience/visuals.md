@@ -102,7 +102,7 @@
   stays light, as it is printed. The meaning colors and the brand orange stay; a shade that is
   too dark for text on dark gets a lighter variant.
 - In a level Tapko stands at the bottom left, or the scene draws him itself: walking as
-  the hero, or seated in its vehicle (the rocket's window). His shouts and bubble then point
+  the hero, or seated in its vehicle (the suited astronaut in the rocket's window). His shouts and bubble then point
   to where he is.
 - The super star (super mode) and the wardrobe's star count are normal members of the layout: the star sits in the top row before the sound button on every screen; the wardrobe's count sits under the animal picture.
 - The results card's three buttons (next level, replay, map) share one style; only the next level is accented.

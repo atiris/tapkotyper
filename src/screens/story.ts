@@ -1,5 +1,6 @@
 import { app, go, saveProfile, type ScreenName } from '../app/app';
 import { audio } from '../audio/audio';
+import { glovesFallback } from '../game/modes/meadow';
 import { hasImage, imageUrl } from '../gfx/assets';
 import { type FairyMood, fairyElement } from '../gfx/fairy';
 import { type Mood, tapkoElement } from '../gfx/tapko';
@@ -15,7 +16,7 @@ interface SceneDef {
   tapko?: boolean;
   envelope?: boolean;
   sparkles?: boolean;
-  fan?: boolean;
+  gloves?: boolean;
   /** Tapko's mood; a mood without pictures for the kind falls back to happy. */
   mood?: Mood;
   /** Bolt in story 2. */
@@ -24,22 +25,20 @@ interface SceneDef {
   fairy?: FairyMood;
 }
 
-/** Tapko's fan, the same look as the code-drawn one in the meadow levels. */
-const FAN = `<svg viewBox="0 0 110 120" aria-hidden="true">${
-  Array.from({ length: 10 }, (_, i) => {
-    const a0 = Math.PI + (i / 10) * Math.PI, a1 = Math.PI + ((i + 1) / 10) * Math.PI;
-    const p = (a: number) => `${(55 + Math.cos(a) * 52).toFixed(1)} ${(62 + Math.sin(a) * 52).toFixed(1)}`;
-    return `<path d="M55 62 L${p(a0)} A52 52 0 0 1 ${p(a1)} Z" fill="${i % 2 ? '#b9e4c0' : '#a2d6ab'}" stroke="rgba(80,130,90,0.55)" stroke-width="1.2"/>`;
-  }).join('')}<path d="M3 62 A52 52 0 0 1 107 62 Z" fill="none" stroke="#6d5040" stroke-width="2.5" stroke-linejoin="round"/><rect x="50" y="50" width="10" height="66" rx="5" fill="#d29a62" stroke="#6d5040" stroke-width="2"/></svg>`;
-
-/** The owner's fan art when it is there, else the code-drawn one. */
-function fan(): HTMLElement {
-  const src = imageUrl('obj-fan');
-  return src ? h('div', { class: 'story-fan' }, h('img', { src, alt: '' })) : h('div', { class: 'story-fan', html: FAN });
+/** Tapko's goalkeeper gloves: the owner's art when it is there, else the code-drawn ones of the meadow levels. */
+function gloves(): HTMLElement {
+  const src = imageUrl('obj-gloves');
+  if (src) return h('div', { class: 'story-gloves' }, h('img', { src, alt: '' }));
+  const cv = document.createElement('canvas');
+  cv.width = cv.height = 180;
+  const g = cv.getContext('2d')!;
+  g.translate(90, 90);
+  glovesFallback(g, 180, 180);
+  return h('div', { class: 'story-gloves' }, cv);
 }
 
 const SCENES: Record<string, SceneDef> = {
-  intro: { world: 'meadow', sprites: [], tapko: true, fan: true },
+  intro: { world: 'meadow', sprites: [], tapko: true, gloves: true },
   world1: { world: 'meadow', sprites: ['obj-bee', 'obj-butterfly', 'obj-ladybug'] },
   invitation: { world: 'meadow', sprites: ['obj-rocket'], tapko: true, envelope: true },
   world2: { world: 'space', sprites: ['obj-rocket', 'obj-planet-2'] },
@@ -97,7 +96,7 @@ export function storyScreen(root: HTMLElement, params: StoryParams): () => void 
     def.tapko ? h('div', { class: 'story-tapko' }, tapkoElement(p.companion, def.mood && hasImage(`tapko-${p.companion.kind}-${def.mood}`) ? def.mood : 'happy', 220)) : null,
     def.bolt ? h('div', { class: 'story-bolt' }, robotElement(def.bolt, def.bolt.mood, 180)) : null,
     def.fairy ? h('div', { class: 'story-melody' }, fairyElement(def.fairy, 160)) : null,
-    def.fan ? fan() : null,
+    def.gloves ? gloves() : null,
     def.sparkles ? h('div', { class: 'sparkles', 'aria-hidden': 'true' }, ...Array.from({ length: 14 }, (_, k) => h('i', { style: `--k:${k}` }))) : null);
   const finish = () => {
     if (!p.progress.scenesSeen.includes(params.scene)) {

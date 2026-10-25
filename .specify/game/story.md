@@ -5,26 +5,31 @@ The child travels through worlds grouped into stories. Each world has several sh
 levels and ends with a super-obstacle and a reward that opens the next world. Short,
 skippable intro scenes (a few lines of text and a simple animation) tell the story.
 The child plays as their character ([the character](../companion/tapko.md)); a narrator
-tells the story to the child in the second person ("you fan the leaf back", "Melody
+tells the story to the child in the second person ("you catch the leaf", "Melody
 gives you a wreath"), never about the character as someone else.
 
 ### Story 1: The Dragon Egg
 
 1. **Training Meadow** - the meadow animals play with the child: the wind brings them leaves
    and they want to score a goal with them. A bee, butterfly, ladybug, fly or mouse brings a
-   leaf with a word and sends it toward the child's character; the child catches the leaf by
-   typing its word, and the leaf flies back to its creature, which catches it and goes
-   home. The intro scene and the level's start line tell exactly this, and the get-ready
+   leaf with a word toward the child's character, who keeps goal with a pair of goalkeeper
+   gloves above their head. At the penalty area the creature kicks the leaf on; when the
+   gloves' height is free and the leaf flies elsewhere, the kick lifts it in an arc up there.
+   Typing the word sends the leaf faster into the gloves, which always catch it and throw it
+   back to its creature, which catches it and goes home. The intro scene and the level's start line tell exactly this, and the get-ready
    card of every story level shows the level's one-line story under its title. A leaf not typed in time flies past: a goal, everybody cheers (a "GOAL!" pop,
-   confetti and the creature's joy, but no words from the narrator, which would nag), so a miss is
+   confetti and the creature's joy before it leaves, but no words from the narrator, which would nag), so a miss is
    a laugh, not a failure. The leaf size shows the word length at a glance. Animals are
    never the target of anything (no webs, nets or swatters): even soft hitting or catching
    is the wrong message for small children; playing with them is better.
    Super-obstacle: a hedgehog throws volleys of leaves from its back.
    Reward: a secret invitation to space. Before the first level the narrator
    shows the child their character: "This is you."
-2. **Space Rocket Flight** - Tapko hops into the rocket and flies in its round window;
-   typing rhythm drives the speedometer, the rocket's own instrument under it; a soft energy
+2. **Space Rocket Flight** - Tapko suits up where he stands: his things fade away, a white
+   space suit grows up from the boots and a helmet with an opaque visor comes down over his
+   head. The astronaut hops into the rocket, which from then on shows him in its round window.
+   Typing rhythm drives the speedometer, the rocket's own instrument, which sits still on the
+   bottom edge under the rocket while the rocket bobs; a soft energy
    beam pushes asteroids and planets out of the path. Super-obstacle: fractured asteroid.
    Reward: landing clearance.
 3. **New Planet** - typing builds stepping stones across a swamp and picks the right path
@@ -151,7 +156,11 @@ story stays playable in any browser ([mechanics](mechanics.md)).
 - A rescue is a special event and should feel like one; a paw that types by itself takes
   the mission away from the child.
 - The old meadow text (goals as the happy outcome, a fan) described something else than the
-  play and confused children.
+  play and confused children. Goalkeeper gloves fit the animals' football game; a leaf kicked
+  up to them is caught where the child looks, above their character.
+- Tapko drawn small inside the rocket's window flickered; one picture of the suited pilot
+  stays steady and looks the same for every companion. A speedometer bobbing with the rocket
+  was hard to read.
 - More stories keep older children playing; typing passwords at locked doors fits a
   typing game, and machines appeal to children whom dragons do not.
 - A gentle, musical story speaks to children whom machines do not, and a forest that has

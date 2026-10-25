@@ -1037,8 +1037,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .story-screen { background: var(--bg, linear-gradient(#a8dcf0, #e9f8ef)) center / cover no-repeat; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 2rem; overflow: hidden; }
 .story-stage { flex: 1; position: relative; display: flex; align-items: flex-end; justify-content: center; gap: 2rem; padding-bottom: 1rem; }
 .story-sprite { width: clamp(110px, 16vw, 200px); animation: float 3.5s ease-in-out infinite; animation-delay: calc(var(--k) * -0.8s); filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.2)); }
-.story-fan img { display: block; width: 100%; }
-.story-fan { width: clamp(60px, 7vw, 90px); margin-left: -2.5rem; animation: float 3.5s ease-in-out infinite; filter: drop-shadow(0 2px 3px rgba(60, 80, 60, 0.45)); }
+.story-gloves img, .story-gloves canvas { display: block; width: 100%; transform: rotate(17deg); }
+.story-gloves { width: clamp(60px, 7vw, 90px); margin-left: -2.5rem; animation: float 3.5s ease-in-out infinite; filter: drop-shadow(0 2px 3px rgba(60, 80, 60, 0.45)); }
 .story-tapko .tapko-stack { filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.2)); }
 .robot-stack { position: relative; width: var(--size); height: var(--size); flex: none; animation: breathe 3.2s ease-in-out infinite; transform-origin: 50% 95%; }
 .robot-stack img, .robot-stack canvas { position: absolute; inset: 0; width: 100%; height: 100%; user-select: none; pointer-events: none; }

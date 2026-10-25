@@ -481,8 +481,8 @@
    "h": 768
   },
   "bg-robohome-far": {
-   "w": 1024,
-   "h": 572
+   "w": 1376,
+   "h": 768
   },
   "bg-robohome-mid": {
    "w": 1376,
@@ -536,17 +536,129 @@
    "w": 384,
    "h": 128
   },
+  "obj-aim-banana": {
+   "w": 384,
+   "h": 248
+  },
+  "obj-aim-boomerang": {
+   "w": 384,
+   "h": 212
+  },
+  "obj-aim-bottle": {
+   "w": 198,
+   "h": 384
+  },
+  "obj-aim-bowling": {
+   "w": 384,
+   "h": 384
+  },
+  "obj-aim-bulb-lit": {
+   "w": 249,
+   "h": 384
+  },
+  "obj-aim-bulb": {
+   "w": 250,
+   "h": 384
+  },
+  "obj-aim-cactus": {
+   "w": 269,
+   "h": 384
+  },
+  "obj-aim-candle": {
+   "w": 225,
+   "h": 384
+  },
+  "obj-aim-chalk": {
+   "w": 384,
+   "h": 233
+  },
+  "obj-aim-cheese": {
+   "w": 384,
+   "h": 318
+  },
+  "obj-aim-chick": {
+   "w": 379,
+   "h": 384
+  },
+  "obj-aim-chicken": {
+   "w": 384,
+   "h": 341
+  },
+  "obj-aim-chili": {
+   "w": 384,
+   "h": 216
+  },
+  "obj-aim-clock": {
+   "w": 351,
+   "h": 384
+  },
+  "obj-aim-crown": {
+   "w": 384,
+   "h": 273
+  },
+  "obj-aim-diaper": {
+   "w": 384,
+   "h": 346
+  },
+  "obj-aim-donut": {
+   "w": 384,
+   "h": 378
+  },
   "obj-aim-duck": {
    "w": 384,
    "h": 357
+  },
+  "obj-aim-egg-cracked": {
+   "w": 286,
+   "h": 384
+  },
+  "obj-aim-egg": {
+   "w": 286,
+   "h": 384
+  },
+  "obj-aim-fish": {
+   "w": 384,
+   "h": 328
   },
   "obj-aim-fly": {
    "w": 384,
    "h": 291
   },
+  "obj-aim-fried-egg": {
+   "w": 384,
+   "h": 355
+  },
+  "obj-aim-hockey": {
+   "w": 384,
+   "h": 373
+  },
+  "obj-aim-ice": {
+   "w": 353,
+   "h": 384
+  },
+  "obj-aim-magnet": {
+   "w": 347,
+   "h": 384
+  },
+  "obj-aim-pacifier": {
+   "w": 384,
+   "h": 308
+  },
   "obj-aim-pebble": {
    "w": 384,
    "h": 302
+  },
+  "obj-aim-pillow": {
+   "w": 384,
+   "h": 330
+  },
+  "obj-aim-pinecone": {
+   "w": 275,
+   "h": 384
+  },
+  "obj-aim-pingpong": {
+   "w": 384,
+   "h": 384
   },
   "obj-aim-ring": {
    "w": 291,
@@ -554,6 +666,10 @@
   },
   "obj-aim-screw": {
    "w": 243,
+   "h": 384
+  },
+  "obj-aim-snack": {
+   "w": 352,
    "h": 384
   },
   "obj-aim-sock": {
@@ -564,9 +680,37 @@
    "w": 366,
    "h": 384
   },
+  "obj-aim-teeth": {
+   "w": 384,
+   "h": 304
+  },
+  "obj-aim-toast": {
+   "w": 363,
+   "h": 384
+  },
+  "obj-aim-toilet-paper": {
+   "w": 384,
+   "h": 299
+  },
   "obj-aim-tomato": {
    "w": 379,
    "h": 384
+  },
+  "obj-aim-wand": {
+   "w": 384,
+   "h": 351
+  },
+  "obj-aim-water-balloon": {
+   "w": 369,
+   "h": 384
+  },
+  "obj-aim-whistle": {
+   "w": 384,
+   "h": 213
+  },
+  "obj-aim-wrench": {
+   "w": 384,
+   "h": 370
   },
   "obj-antenna": {
    "w": 170,
@@ -720,10 +864,6 @@
    "w": 300,
    "h": 384
   },
-  "obj-fan": {
-   "w": 384,
-   "h": 347
-  },
   "obj-feather-falling": {
    "w": 298,
    "h": 384
@@ -759,6 +899,10 @@
   "obj-gear": {
    "w": 339,
    "h": 384
+  },
+  "obj-gloves": {
+   "w": 384,
+   "h": 271
   },
   "obj-hedgehog": {
    "w": 384,
@@ -915,6 +1059,10 @@
   "obj-rock-round": {
    "w": 384,
    "h": 376
+  },
+  "obj-rocket-pilot": {
+   "w": 384,
+   "h": 204
   },
   "obj-rocket": {
    "w": 384,
@@ -1168,6 +1316,14 @@
    "w": 384,
    "h": 384
   },
+  "tapko-astronaut-suit": {
+   "w": 384,
+   "h": 384
+  },
+  "tapko-astronaut": {
+   "w": 384,
+   "h": 384
+  },
   "tapko-bear-happy": {
    "w": 384,
    "h": 384
@@ -1328,6 +1484,10 @@
    "w": 640,
    "h": 615
   },
+  "ui-chest": {
+   "w": 384,
+   "h": 362
+  },
   "ui-earth": {
    "w": 383,
    "h": 384
@@ -1467,154 +1627,6 @@
   "ui-typing-speed": {
    "w": 384,
    "h": 319
-  },
-  "obj-aim-boomerang": {
-   "w": 384,
-   "h": 212
-  },
-  "obj-aim-bottle": {
-   "w": 198,
-   "h": 384
-  },
-  "obj-aim-bulb-lit": {
-   "w": 249,
-   "h": 384
-  },
-  "obj-aim-bulb": {
-   "w": 250,
-   "h": 384
-  },
-  "obj-aim-cactus": {
-   "w": 269,
-   "h": 384
-  },
-  "obj-aim-candle": {
-   "w": 225,
-   "h": 384
-  },
-  "obj-aim-cheese": {
-   "w": 384,
-   "h": 318
-  },
-  "obj-aim-chick": {
-   "w": 379,
-   "h": 384
-  },
-  "obj-aim-clock": {
-   "w": 351,
-   "h": 384
-  },
-  "obj-aim-diaper": {
-   "w": 384,
-   "h": 346
-  },
-  "obj-aim-donut": {
-   "w": 384,
-   "h": 378
-  },
-  "obj-aim-egg-cracked": {
-   "w": 286,
-   "h": 384
-  },
-  "obj-aim-egg": {
-   "w": 286,
-   "h": 384
-  },
-  "obj-aim-fried-egg": {
-   "w": 384,
-   "h": 355
-  },
-  "obj-aim-ice": {
-   "w": 353,
-   "h": 384
-  },
-  "obj-aim-pacifier": {
-   "w": 384,
-   "h": 308
-  },
-  "obj-aim-snack": {
-   "w": 352,
-   "h": 384
-  },
-  "obj-aim-teeth": {
-   "w": 384,
-   "h": 304
-  },
-  "obj-aim-toilet-paper": {
-   "w": 384,
-   "h": 299
-  },
-  "obj-aim-banana": {
-   "w": 384,
-   "h": 248
-  },
-  "obj-aim-bowling": {
-   "w": 384,
-   "h": 384
-  },
-  "obj-aim-chalk": {
-   "w": 384,
-   "h": 233
-  },
-  "obj-aim-chicken": {
-   "w": 384,
-   "h": 341
-  },
-  "obj-aim-chili": {
-   "w": 384,
-   "h": 216
-  },
-  "obj-aim-crown": {
-   "w": 384,
-   "h": 273
-  },
-  "obj-aim-fish": {
-   "w": 384,
-   "h": 328
-  },
-  "obj-aim-hockey": {
-   "w": 384,
-   "h": 373
-  },
-  "obj-aim-magnet": {
-   "w": 347,
-   "h": 384
-  },
-  "obj-aim-pillow": {
-   "w": 384,
-   "h": 330
-  },
-  "obj-aim-pinecone": {
-   "w": 275,
-   "h": 384
-  },
-  "obj-aim-pingpong": {
-   "w": 384,
-   "h": 384
-  },
-  "obj-aim-toast": {
-   "w": 363,
-   "h": 384
-  },
-  "obj-aim-wand": {
-   "w": 384,
-   "h": 351
-  },
-  "obj-aim-water-balloon": {
-   "w": 369,
-   "h": 384
-  },
-  "obj-aim-whistle": {
-   "w": 384,
-   "h": 213
-  },
-  "obj-aim-wrench": {
-   "w": 384,
-   "h": 370
-  },
-  "ui-chest": {
-   "w": 384,
-   "h": 362
   }
  },
  "accessories": [

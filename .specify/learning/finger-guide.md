@@ -30,7 +30,7 @@
   green check or a red cross after "Napíš d trikrát." (at most 10, the oldest make room) and jumps
   off the character's head in a random direction, fading after about a second and a half. The round X (its tip:
   skip the key practice, Esc) or Esc skips it. Texts say "základné miesta" for the home keys,
-  never "domov"; game objects (the character's fan) appear only when play starts. The space
+  never "domov"; game objects (the character's gloves) appear only when play starts. The space
   bar is pressed by a thumb; a Shift card names its hand and asks for three capitals of the
   other hand. For a capital the guide lights the Shift of the other hand. The keyboard has
   an Enter key at the end of the home row, pressed by the right little finger; the guide

@@ -125,6 +125,14 @@ Notes from real Gemini runs; add new ones here.
   A second state of a thing (a cracked egg, a lit bulb) kept its size and outline when the
   first picture was attached with "redraw the attached ... in exactly the same style, size,
   position" and only the change named.
+- "Palms facing the right side, three-quarter view" (goalkeeper gloves) gave palms toward the
+  viewer every time; the game leans the picture to the right instead of asking again.
+- Layers of one figure (the space suit, then the suit with its helmet): make the first on the
+  template, then a follow-up in the same chat that adds only the next part, saved to another
+  file. Both stayed within 2 px of the template, so the game can stack and cut them.
+- Editing a sprite with two attachments ("replace the figure in the window of the first picture
+  with the astronaut of the second, keep everything else exactly the same") kept the rocket's
+  size and position to the pixel: the two pictures swap without a jump.
 
 ---
 
@@ -173,6 +181,20 @@ Same style: cute, soft 2D children's storybook illustration, flat vector style w
 | `tapko-panda-idle.jpg` | a baby panda: white fur with black round ears, black eye patches around the (still big and shiny) eyes, black arms and legs |
 | `tapko-penguin-idle.jpg` | a baby penguin: dark blue-grey back and head, white face and belly, small orange beak and orange feet, flippers instead of hands, no ears |
 | `tapko-lion-idle.jpg` | a lion cub: golden fur, small round ears, a short fluffy light-brown mane that stays close around the head, cream muzzle, tail with a brown tuft |
+
+### The astronaut: tapko-astronaut-suit.jpg, then tapko-astronaut.jpg
+The space world's suit-up: the game draws the suit below its collar over the companion, then
+the whole astronaut. Attach `base-template.jpg`:
+```
+Generate an image: Astronaut suit on the template
+
+Dress the attached character template in this one item, and nothing else: a puffy white children's astronaut space suit without a helmet. The suit covers the whole body, both arms and both legs completely, so no grey skin is visible below the neck: white padded fabric with soft light-grey folds, white gloves on the paws, chunky white boots on the feet, a round light-grey collar ring at the neck where a helmet would attach, a small square control panel with two tiny colored buttons on the chest. No helmet: the head stays exactly as in the template, uncovered. Keep exactly the same front view, symmetry, pose, size, position and outline of the character. Both arms stay exactly as in the template, hanging down with the paws at hip height: never raise, bend or move an arm or paw. The suit must fit the figure closely, be symmetrical and be complete (no part cut off). Same style: cute, soft 2D children's storybook illustration, flat vector style with gentle gradients, soft dark-brown outlines. No text, no letters, no flags, no logos. Background: one perfectly flat solid pure magenta color (#FF00FF), no shadow. Same square size, 1024 x 1024 pixels.
+```
+Then a follow-up in the same chat, saved as `tapko-astronaut.jpg`:
+```
+Same picture, and now add a round astronaut helmet on the head, attached to the collar ring. The helmet is a big white rounded shell that fully covers the whole head, slightly larger than the head, with a large opaque visor in front: the visor is glossy deep blue (#2B3F7A) with one soft white highlight stroke, completely opaque, so the face and the head are not visible at all through it. Keep the suit, the pose, the size, the position and everything else exactly the same. Background: one perfectly flat solid pure magenta color (#FF00FF), no shadow. Same square size, 1024 x 1024 pixels.
+```
+The collar's top edge (52 % of the height) is `SUIT_NECK` in `src/game/modes/space.ts`.
 
 ### Faces: tapko-KIND-happy.jpg and tapko-KIND-thinking.jpg
 Attach that animal's `tapko-KIND-idle.jpg` and use one of these. The body must not move;
@@ -432,10 +454,11 @@ BG is `magenta color (#FF00FF)` unless the table says `green`, then use `green c
 | `obj-leaf-oak.jpg` | a single oak leaf with soft rounded lobes, orange-brown autumn color, short stem, lying flat seen from above, no face | green |
 | `obj-leaf-maple.jpg` | a single big maple leaf with five pointed lobes, bright red-orange autumn color, stem, lying flat seen from above, no face | green |
 | `obj-leaf-chestnut.jpg` | a single big horse chestnut leaf made of five long fingers spreading from the stem, green turning yellow-brown at the edges, lying flat seen from above, no face | magenta |
-| `obj-fan.jpg` | a pastel green folded paper hand fan, opened into a half circle, with a short wooden handle at the bottom, front view, no face | magenta |
+| `obj-gloves.jpg` | a pair of thick padded football goalkeeper gloves, chunky and puffy like a toy, with thick padded fingers and a wide wrist strap. Both gloves show their palms to the viewer: cream white padding (#FFF4DC) with an orange rim (#F59A3C), mirror images of each other, thumbs touching in the middle. Empty gloves: no hands, no arms, no body, no face, no eyes | magenta |
 | `obj-hedgehog.jpg` | a chubby friendly hedgehog standing on the ground, soft brown rounded spikes with a few colorful autumn leaves stuck on its back, big eyes, happy smile, small pink nose | magenta |
 | **Space** | | |
 | `obj-rocket.jpg` | a round cute red and white children's rocket with a round window and small fins, flying to the right, small soft flame | green |
+| `obj-rocket-pilot.jpg` | **not the common prompt:** attach `obj-rocket.jpg` and `tapko-astronaut.jpg`: "Edit the first attached picture (the red rocket): replace the little figure in its round window with the astronaut from the second attached picture. In the window we see the astronaut from the chest up, sitting inside behind the glass and looking forward to the right: the same white round helmet with the same opaque glossy deep blue visor (#2B3F7A) and white highlight, the same white suit with the light-grey collar ring. The astronaut fits inside the round window, a bit smaller than the glass, not cut by the frame except at the bottom of the chest. The glass stays light and clear around the helmet. Keep everything else in the first picture exactly the same: the rocket's shape, size, position, colors, stripes, fins, flame, the little stars and the flat green background. Same style: ... No text. Same square size, 1024 x 1024 pixels." | green |
 | `obj-asteroid-small.jpg` | a small round grey-brown space rock with soft craters, sleepy face | magenta |
 | `obj-asteroid-big.jpg` | a big round space rock with visible soft crack lines, calm face | magenta |
 | `obj-planet-1.jpg` | a small round pastel orange planet with a ring, front view | green |

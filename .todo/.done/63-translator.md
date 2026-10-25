@@ -312,7 +312,7 @@ the new player form.
   field; keep button touches; pool add/remove; export pairs, edit the file, import it back;
   pick the own language in the settings and see a translated text on the map; the round
   language button does not list it. Phone width: no horizontal scroll.
-- [ ] 10. Build, lint, unit and e2e tests; drive the page with the playwright MCP in both
+- [x] 10. Build, lint, unit and e2e tests; drive the page with the playwright MCP in both
   looks and at phone width (console clean), fix what shows up.
 
 ## State
@@ -344,3 +344,20 @@ Decisions taken while implementing:
   is imported into the translator by the owner and exported as `.json`.
 - Audit finds: the modal close button's English-only "close" name (now `common.close`), the super
   player's companion name (`super.companionName`).
+
+## Done - 2026-10-25
+Shipped: the text catalog (every text in a section, group and item with its kind, guarded by
+unit tests), guide texts in Slovak and English for every section, group and item (996
+situations, patterns for repeated things), own languages in IndexedDB with the fallback chain
+own -> base -> English and the own language's locale for dates, plurals and the voice, the
+selects in the parent settings (official languages only on the language button and the new
+player form), the pair format and JSON export/import, the translator page `#/translate`
+(lazy chunk behind the parent question; prefill, keep, progress ring, contents, search and
+filter, pools, plural forms, placeholder warnings, word list checks, new/edit language, about
+panel, send for approval as a GitHub issue), `scripts/i18n-accept.mjs`, specs and
+`e2e/translate.spec.ts`. Checked in the browser in both looks and at phone width, console clean.
+
+Left out on purpose: an ordered list with an empty line in an own language falls back whole to
+its base (no partial lists in the game); the accept script reads only `.json`.
+Two e2e tests failed before this plan and still do (tooltip Escape on a new player's map,
+already in the backlog; dark-look contrast of free typing, added to the backlog).

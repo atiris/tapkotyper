@@ -9,3 +9,4 @@ Search before adding; an entry is worked only when it is named.
 - [P2] Mole and molehill are one picture - assets-src/obj-mole.jpg draws the mole inside its hill; the mole level (src/game/modes/egg.ts) needs the mole and the molehill as separate pictures
 - [P3] Robohome floor strip shows its seam joins - public/assets/bg-robohome-near.webp: quilt cut the regular planks diagonally (V lines every screen width); repaint that seam or regenerate the floor strips
 - [P3] Tooltip e2e fails on a new player's map - e2e/tooltip.spec.ts:28 Escape no longer hides the tooltip: the welcome card's capture Escape handler (src/screens/map.ts welcomeCard, stopImmediatePropagation) eats it before src/ui/tooltip.ts sees it
+- [P2] Free typing intro unreadable in the dark look - e2e/theme.spec.ts:165 fails: freeType.start drawn at contrast 2.26 (needs 4.5) on rgb(58,52,86) on the free typing screen (fails before plan 63 too)

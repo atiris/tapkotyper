@@ -928,7 +928,10 @@ Cute, soft 2D children's game icon, flat vector style with gentle gradients, sof
 | File | ACTIVITY |
 |---|---|
 | `ui-act-chase.jpg` | a small leaf flying to the right with three short soft speed lines behind it (main game) |
-| `ui-act-catch.jpg` | a single round shiny water drop with a tiny sparkle next to it (letter catch) |
+| `ui-act-catch.jpg` | three small round shiny water drops sitting still in a row on a short green blade, one a little bigger (waiting words) |
+| `ui-act-pairs.jpg` | two small rounded playing cards side by side, the left one face down with a soft dot pattern, the right one turned over showing a tiny red heart (memory pairs) |
+| `ui-act-jumble.jpg` | two small rounded square tiles side by side with a curved arrow above them going from one to the other, swapping places, tiles blank (jumble) |
+| `ui-act-parrot.jpg` | the head and shoulders of a cute round green parrot with a small orange beak and a happy eye, beak a little open as if repeating a word (parrot) |
 | `ui-act-clean.jpg` | a short straight ribbon with a small round green check mark at its end (a clean line) |
 | `ui-act-build.jpg` | three small rounded building blocks stacked, the top one just landing (building) |
 | `ui-act-text.jpg` | an open book with a few soft grey lines on its pages, no letters (text page) |

@@ -303,9 +303,10 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
 .corner-menu-panel.service-menu { position: fixed; top: auto; z-index: 40; }
 .service-dialog { display: flex; flex-direction: column; gap: var(--sp-3); max-width: 560px; }
 .service-dialog .field { display: grid; gap: 0.3rem; }
-/* For a month after the super player removed or changed the settings password: a round warning centred on the arc of the panel's top right corner. */
+/* For a month after the super player removed or changed the settings password: a round warning tucked inside the panel's top right corner, the hint beside it kept clear. */
 .lock-group { position: relative; }
-.lock-group .lock-note { position: absolute; top: -17px; right: -11px; width: 36px; height: 36px; z-index: 1; }
+.lock-group .lock-note { position: absolute; top: 8px; right: 8px; width: 36px; height: 36px; z-index: 1; }
+.lock-group .lock-note + .hint { padding-right: 40px; }
 /* The teacher's sign that the super player removed or changed a child's settings password. */
 .lock-mark { display: inline-grid; place-items: center; margin-left: 0.3em; color: var(--danger-ink); vertical-align: middle; }
 .lock-mark .icon svg { width: 1em; height: 1em; }
@@ -1131,6 +1132,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .tabs:has(+ .tab-panel) { margin-bottom: 0; }
 .tab { border: 0; border-radius: 14px 14px 0 0; padding: 0.7em 1.2em; background: var(--glass); cursor: pointer; font-weight: 600; min-height: 46px; }
 .tab[aria-selected='true'] { background: var(--paper); box-shadow: 0 -3px 0 var(--brand) inset; }
+@media (hover: hover) { .tab:not([aria-selected='true']):hover { background: var(--paper-2); color: var(--brand-ink); box-shadow: 0 -3px 0 color-mix(in srgb, var(--brand) 50%, transparent) inset; } }
 .tab-panel { background: var(--paper); border-radius: 0 var(--radius) var(--radius) var(--radius); padding: 1.4rem; box-shadow: var(--shadow); }
 .settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
 fieldset { border: 2px solid var(--line); border-radius: 18px; padding: 0.8rem 1rem 1rem; margin: 0; min-width: 0; }

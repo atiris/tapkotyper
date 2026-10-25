@@ -1,5 +1,5 @@
 import { app, applyProfileLook, go, reduceMotion, routeOf, screenVisit } from '../app/app';
-import { language, t, tn } from '../i18n/i18n';
+import { locale, t, tn } from '../i18n/i18n';
 import { codeFrom } from '../share/codec';
 import { parseResult } from '../share/result';
 import { TASK_GROUP_MAX } from '../share/task';
@@ -50,8 +50,8 @@ const view = {
 
 const statusPill = (ok: boolean) => h('span', { class: `status-pill ${ok ? 'mastered' : 'practice'}` }, t(ok ? 'teacher.status.ok' : 'teacher.status.practice'));
 const weakLine = (weak: [string, number][]) => weak.map(([k, a]) => `${keyLabel(k)} ${a} %`).join(', ');
-const day = (ms: number) => new Date(ms).toLocaleDateString(language(), { weekday: 'short', day: 'numeric', month: 'numeric' });
-const clock = (ms: number) => new Date(ms).toLocaleTimeString(language(), { hour: '2-digit', minute: '2-digit' });
+const day = (ms: number) => new Date(ms).toLocaleDateString(locale(), { weekday: 'short', day: 'numeric', month: 'numeric' });
+const clock = (ms: number) => new Date(ms).toLocaleTimeString(locale(), { hour: '2-digit', minute: '2-digit' });
 const span = (s: ResultSet) => (clock(s.start) === clock(s.end) ? clock(s.start) : `${clock(s.start)}–${clock(s.end)}`);
 const average = (rows: StoredResult[], pick: (r: StoredResult) => number | undefined): number | '-' => {
   const v = rows.map(pick).filter((x): x is number => x !== undefined);
@@ -343,7 +343,7 @@ function teacherPage(root: HTMLElement, store: TeacherStore, first: Tab, code: s
   const filesTab = (): (Node | null)[] => {
     const status = view.fileMsg ? h('p', { class: view.fileMsg.ok ? 'ok' : 'error', role: 'status' }, view.fileMsg.text) : null;
     const has = store.results.length > 0;
-    const when = (ms: number) => `${new Date(ms).toLocaleDateString(language())} ${clock(ms)}`;
+    const when = (ms: number) => `${new Date(ms).toLocaleDateString(locale())} ${clock(ms)}`;
     return [
       status,
       h('p', { class: 'hint' }, ...richText(t('teacher.file.intro'))),

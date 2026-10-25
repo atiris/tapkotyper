@@ -17,7 +17,8 @@
     "menuClose": "Zavrieť menu",
     "song": "Hudba: {name}",
     "darkMode": "Tmavý režim",
-    "lightMode": "Svetlý režim"
+    "lightMode": "Svetlý režim",
+    "close": "Zavrieť (Esc)"
   },
   "start": {
     "whoPlays": "Kto sa dnes hrá?",
@@ -1122,7 +1123,11 @@
     "wordLang": "Jazyk slov",
     "wordLangHint": "Slová v úrovniach. Jazyk hry sa nemení.",
     "keyFont": "Ľahko rozlíšiteľné písmená na klávesoch (l, I, 1)",
-    "keyFontHint": "Klávesy a znaky kláves majú písmo, v ktorom sa l, I a 1 nedajú zameniť. Zvyšok hry ostáva v zvolenom písme."
+    "keyFontHint": "Klávesy a znaky kláves majú písmo, v ktorom sa l, I a 1 nedajú zameniť. Zvyšok hry ostáva v zvolenom písme.",
+    "translate": "Preklad",
+    "translateGo": "Preložiť hru",
+    "translateHint": "Všetky texty hry na jednom mieste: nový jazyk alebo vlastné texty.",
+    "ownLangs": "Vlastné jazyky"
   },
   "own": {
     "group": {
@@ -1491,7 +1496,8 @@
     "remember-slip": "Nevieš si spomenúť? Po chybe sa slovo na chvíľu ukáže znova."
   },
   "super": {
-    "badge": "Super režim: servisné menu"
+    "badge": "Super režim: servisné menu",
+    "companionName": "Super Tapko"
   },
   "service": {
     "end": "Koniec super režimu",
@@ -3054,5 +3060,93 @@
     "opened": "Presné písanie otvorilo nové písmená: {keys}",
     "again": "Znova",
     "toMap": "Na mapu"
+  },
+  "translate": {
+    "title": "Preklad hry",
+    "base": "Základný jazyk",
+    "target": "Preklad",
+    "none": "– žiadny –",
+    "new": "Nový jazyk",
+    "edit": "Upraviť jazyk",
+    "prefill": "Predvyplniť z",
+    "prefillGo": "Predvyplniť",
+    "progress": "Preložené {n} %. Klikni a prejdi na ďalšie nepreložené pole.",
+    "progressDone": "Preložené 100 %. Všetko je hotové.",
+    "aboutButton": "O preklade",
+    "export": "Export",
+    "import": "Import",
+    "send": "Poslať na schválenie",
+    "toc": "Obsah",
+    "untranslated": "nepreložené",
+    "keep": "Ponechať",
+    "keepHint": "Text ostane rovnaký a pole sa počíta ako preložené (Ctrl+Enter).",
+    "addVariant": "Pridať variant",
+    "removeVariant": "Odstrániť variant",
+    "onlyOpen": "Len nepreložené",
+    "search": "Hľadať text alebo kľúč",
+    "situation": "Kde a kedy",
+    "form": "Tvar „{form}“, napríklad {n}",
+    "baseForms": "Tvary v základnom jazyku",
+    "missingPlaceholder": "Chýba {name} zo základného textu.",
+    "extraPlaceholder": "{name} v základnom texte nie je.",
+    "empty": "Nič sa nenašlo.",
+    "noStore": "Tento prehliadač neukladá údaje stránky. Preklad vydrží, kým je stránka otvorená. Pred odchodom ho exportuj.",
+    "startHint": "Začni nový jazyk alebo uprav existujúci. Nižšie sú všetky texty hry aj s tým, kde a kedy sa ukážu.",
+    "fieldLabel": "Preklad: {text}",
+    "done": "preložené",
+    "words": {
+      "hint": "Slová oddeľ medzerou alebo novým riadkom. Hra z nich skladá úlohy na písanie.",
+      "count": "Počet slov: {n}",
+      "untypable": "Na klávesnici {layout} sa nedajú napísať, hra ich vynechá:",
+      "lessons": "Slová pre prvé lekcie",
+      "lesson": "Lekcia {n} ({keys}): {count}",
+      "few": "málo, hra by opakovala tých istých pár slov"
+    },
+    "newTitle": "Nový jazyk",
+    "name": "Názov jazyka (v tom jazyku)",
+    "code": "Kód jazyka",
+    "codeHint": "Napríklad de, fr alebo de-AT. Riadia sa ním dátumy a tvary pri číslach.",
+    "codeBad": "Toto nie je kód jazyka.",
+    "needName": "Napíš názov jazyka.",
+    "fallback": "Nepreložené texty sa ukážu v jazyku",
+    "layout": "Klávesnica",
+    "create": "Vytvoriť",
+    "cancel": "Zrušiť",
+    "editTitle": "Upraviť jazyk",
+    "editText": "Vznikne kópia so všetkými textami vybraného jazyka. Uprav, čo treba: zmeny môžeš nechať len na tomto zariadení alebo ich poslať ako opravu.",
+    "editPick": "Jazyk",
+    "correctionName": "{name} (vlastné texty)",
+    "aboutTitle": "O preklade",
+    "author": "Meno autora",
+    "contact": "Kontakt (e-mail alebo web)",
+    "contactHint": "Kontakt bude verejný, keď preklad pošleš na schválenie.",
+    "delete": "Vymazať tento jazyk",
+    "deleteTitle": "Vymazať jazyk {name}?",
+    "deleteText": "Preklad zmizne z tohto zariadenia. Hráči s týmto jazykom budú hrať v jazyku prehliadača.",
+    "deleteOk": "Vymazať",
+    "exportAll": "Páry .txt: všetko",
+    "exportOpen": "Páry .txt: len nepreložené (pre AI)",
+    "exportChanges": "Páry .txt: len zmeny oproti jazyku {name}",
+    "exportJson": "Súbor .json",
+    "importTitle": "Import prekladu",
+    "importSummary": "Použije sa textov: {applied}. Prázdnych (ostanú nepreložené): {empty}. Preskočených: {skipped}.",
+    "importUnknown": "neznáme pole",
+    "importOutside": "riadok navyše",
+    "importDo": "Importovať",
+    "importBad": "Tento súbor sa nedá prečítať ako preklad.",
+    "sendTitle": "Poslať na schválenie",
+    "sendText": "Otvorí sa nový záznam (issue) na GitHube. Je verejný: uvidí ho každý, aj tvoj kontakt. Potrebuješ účet na GitHube.",
+    "sendGo": "Otvoriť GitHub",
+    "sendAttach": "Do záznamu prilož stiahnutý súbor {file}.",
+    "issue": {
+      "new": "Preklad: {name} ({code})",
+      "fix": "Oprava: {name}",
+      "author": "Autor: {name}",
+      "contact": "Kontakt: {contact}",
+      "base": "Základný jazyk: {name}",
+      "progress": "Preložené: {n} % ({touched} z {total} polí)",
+      "attach": "Prilož stiahnutý súbor {file}.",
+      "changes": "Zmeny:"
+    }
   }
 }

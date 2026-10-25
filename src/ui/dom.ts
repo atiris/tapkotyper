@@ -1,5 +1,6 @@
 /** Tiny DOM helpers. */
 import { imageUrl } from '../gfx/assets';
+import { t } from '../i18n/i18n';
 
 type Attrs = Record<string, string | number | boolean | ((e: any) => void) | undefined | null>;
 export type Child = Node | string | number | null | undefined | false;
@@ -177,7 +178,8 @@ export function button(label: string | Node, onClick: () => void, cls = 'btn', i
 
 /** The round close button of dialogs and cards. */
 export function closeButton(onClick: () => void, label?: string): HTMLButtonElement {
-  return h('button', { class: 'modal-x', type: 'button', 'aria-label': label ?? 'close', tip: label, onClick: () => onClick() }, icon('close'));
+  const name = label ?? t('common.close');
+  return h('button', { class: 'modal-x', type: 'button', 'aria-label': name, tip: name, onClick: () => onClick() }, icon('close'));
 }
 
 /** The close function of every open dialog, by its backdrop. */

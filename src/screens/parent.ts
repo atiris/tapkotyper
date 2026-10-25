@@ -1,11 +1,12 @@
 import { app, applyProfileLook, go, loadPlayerWords, saveProfile, selectProfile, useLanguage } from '../app/app';
-import { langOptions, t } from '../i18n/i18n';
+import { langOptions, locale, t } from '../i18n/i18n';
+import { ownLangs, ownRef } from '../i18n/own-langs';
 import { ENTER, LAYOUTS, LAYOUT_IDS, allKeys } from '../keyboard/layouts';
 import { LEVELS, type LevelDef, STORIES, WORLDS, worldLevels } from '../game/levels';
 import { SURPRISES_MAX, SURPRISE_LEN, SURPRISE_N_MAX, TRIGGERS, newSurprise, restartSurprise, surpriseCount } from '../game/own-content';
 import { wordSource } from '../game/runtime';
 import { lessonKeyOf, lessonOrder, punctuationKeys } from '../learning/lessons';
-import { COMPANION_KINDS, GUEST_ID, SUPER_ID, type FontChoice, type Lang, type LayoutId, type OwnMix, type ParentLock, type Profile, type Surprise, type SurpriseTrigger, type TaskKind } from '../storage/schema';
+import { COMPANION_KINDS, GUEST_ID, SUPER_ID, type FontChoice, type LangRef, type LayoutId, type OwnMix, type ParentLock, type Profile, type Surprise, type SurpriseTrigger, type TaskKind } from '../storage/schema';
 import { checkLock, makeLock } from '../storage/lock';
 import { linkOf } from '../share/codec';
 import { TASK_GROUP_MAX, TASK_MINUTES, TASK_TITLE_MAX, type TaskSpec, addTask, taskCode } from '../share/task';
@@ -111,6 +112,15 @@ function switchField(title: string, box: HTMLInputElement, hint?: string): HTMLE
     hint ? h('small', { id }, hint) : null);
 }
 
+/** The official languages, then the own ones made in the translator on this device. */
+function langSelect(value: LangRef, onChange: (v: LangRef) => void): HTMLSelectElement {
+  const s = select<LangRef>(value, langOptions(), onChange);
+  void ownLangs().then((list) => {
+    if (list.length) s.append(h('optgroup', { label: t('parent.ownLangs') }, ...list.map((l) => h('option', { value: ownRef(l.id), selected: ownRef(l.id) === value }, l.name))));
+  });
+  return s;
+}
+
 function select<T extends string>(value: T, options: [T, string][], onChange: (v: T) => void): HTMLSelectElement {
   const s = h('select', {}, ...options.map(([v, l]) => h('option', { value: v, selected: v === value }, l)));
   s.addEventListener('change', () => onChange(s.value as T));
@@ -140,7 +150,6 @@ function settingsTab(p: Profile): HTMLElement {
   });
   const name = h('input', { type: 'text', value: p.name, maxlength: 24 });
   name.addEventListener('change', () => { p.name = name.value.trim(); save(); });
-  const langs = langOptions();
   const tapko = h('span', { class: 'child-tapko' });
   const paintTapko = () => tapko.replaceChildren(tapkoElement(p.companion, 'happy', 96));
   const kinds = h('div', { class: 'kind-picker', role: 'radiogroup', 'aria-label': t('parent.companionKind') },
@@ -160,15 +169,16 @@ function settingsTab(p: Profile): HTMLElement {
       h('div', { class: 'child-summary' }, tapko, h('div', { class: 'child-nick' }, field(t('parent.nickname'), nick, t('parent.nicknameHint')), nickError)),
       field(t('parent.companionKind'), kinds, undefined, 'div'),
       field(t('parent.childName'), name, t('parent.childNameHint')),
-      field(t('parent.language'), select<Lang>(p.language, langs, async (v) => { p.language = v; save(); await useLanguage(v); go('parent', { granted: true }); })),
-      field(t('parent.wordLang'), select<Lang>(s.wordLang, langs, (v) => { s.wordLang = v; save(); void loadPlayerWords(p); }), t('parent.wordLangHint')),
+      field(t('parent.language'), langSelect(p.language, async (v) => { p.language = v; save(); await useLanguage(v); go('parent', { granted: true }); })),
+      field(t('parent.wordLang'), langSelect(s.wordLang, (v) => { s.wordLang = v; save(); void loadPlayerWords(p); }), t('parent.wordLangHint')),
       field(t('parent.layout'), select<LayoutId>(p.layout, LAYOUT_IDS.map((id) => [id, t(`layouts.${id}`)]), (v) => {
         p.layout = v;
         // Keep the progress, but only keys the new layout teaches.
         const order = lessonOrder(v);
         p.progress.unlockedKeys = order.slice(0, Math.max(2, p.progress.unlockedKeys.filter((k) => order.includes(k)).length));
         save();
-      }), t('parent.layoutHint'))),
+      }), t('parent.layoutHint')),
+      field(t('parent.translate'), button(t('parent.translateGo'), () => go('translate'), 'btn small', 'language'), t('parent.translateHint'), 'div')),
     h('fieldset', {}, h('legend', {}, t('parent.group.practice')),
       field(t('parent.difficulty'), autoField(
         [range(s.difficulty, 1, 10, 1, (v) => { s.difficulty = v; save(); })],
@@ -275,7 +285,7 @@ function whenText(s: Surprise): string {
 
 /** Where a rule stands: done, its count, or waiting; with the last reveal of a repeating one. */
 function stateText(p: Profile, s: Surprise): string {
-  const date = (d: string) => new Date(d).toLocaleDateString(p.language, { day: 'numeric', month: 'numeric' });
+  const date = (d: string) => new Date(d).toLocaleDateString(locale(), { day: 'numeric', month: 'numeric' });
   if (s.doneAt) return t('surprises.state.done', { date: date(s.doneAt) });
   const { have, need } = surpriseCount(p, s);
   const now = s.trigger === 'minutes' ? t('surprises.state.minutes', { have, need })
@@ -429,7 +439,7 @@ function ownWordsEditors(p: Profile): HTMLElement[] {
   });
   text.addEventListener('change', () => { s.ownText = text.value.slice(0, OWN_TEXT_MAX).trim(); saveProfile(); paint(); });
   const mix = select<OwnMix>(s.ownMix, (['off', 'some', 'half', 'most'] as const).map((m): [OwnMix, string] => [m, t(`own.mix.${m}`)]), (v) => { s.ownMix = v; saveProfile(); paintPreview(); });
-  const wordLang = select<Lang>(s.ownWordLang, langOptions(), async (v) => { s.ownWordLang = v; saveProfile(); await loadPlayerWords(p); paintPreview(); });
+  const wordLang = langSelect(s.ownWordLang, async (v) => { s.ownWordLang = v; saveProfile(); await loadPlayerWords(p); paintPreview(); });
   paint();
   return [
     h('fieldset', { class: 'own-words' }, h('legend', {}, t('own.group.words')),
@@ -471,7 +481,7 @@ function taskTab(p: Profile): HTMLElement {
   };
   const paint = () => list.replaceChildren(...(p.tasks.length ? [] : [h('li', { class: 'hint' }, t('task.none'))]), ...p.tasks.map((x) => h('li', { class: x.doneAt ? 'revealed' : '' },
     h('div', {}, h('b', {}, x.title || t('task.untitled')),
-      h('small', {}, `${t(`task.kind.${x.kind}`)} · ${x.doneAt ? t('task.doneAt', { date: new Date(x.doneAt).toLocaleDateString(p.language) }) : t('task.played', { n: Math.floor(x.seconds / 60), total: x.minutes })}`)),
+      h('small', {}, `${t(`task.kind.${x.kind}`)} · ${x.doneAt ? t('task.doneAt', { date: new Date(x.doneAt).toLocaleDateString(locale()) }) : t('task.played', { n: Math.floor(x.seconds / 60), total: x.minutes })}`)),
     x.doneAt ? button(t('task.handIn'), () => void handInDialog(p, x), 'btn small', 'upload') : null,
     button(t('own.remove'), () => { p.tasks = p.tasks.filter((y) => y !== x); saveProfile(); paint(); }, 'btn small ghost', 'trash'))));
   paint();

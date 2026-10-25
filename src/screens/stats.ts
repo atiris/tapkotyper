@@ -3,7 +3,7 @@ import { imageUrl } from '../gfx/assets';
 import { type Mood, otherMood, renderTapkoInto, tapkoElement } from '../gfx/tapko';
 import { STORIES, type StoryDef, WORLDS, storyDone, storyOpen } from '../game/levels';
 import { MAX_CHEST, MAX_STARS, badgeTier, chestPoints, totalStars, worldStars } from '../game/rewards';
-import { t } from '../i18n/i18n';
+import { locale, t } from '../i18n/i18n';
 import { allKeys } from '../keyboard/layouts';
 import { activeKeys, lessonKeyOf } from '../learning/lessons';
 import { STATS_WINDOW, keyHistory, keyReport, lastTraining, masterySummary, recentTyping, weakKeys } from '../learning/stats';
@@ -60,7 +60,7 @@ export function keyDetail(p: Profile, key: string, practice?: () => void): HTMLE
     head,
     h('ul', { class: 'key-facts' },
       h('li', {}, t('stats.keyAccuracy', { n: r.window, acc: Math.round(r.accuracy * 100) })),
-      r.avgMs ? h('li', {}, t('stats.keySpeed', { s: (r.avgMs / 1000).toLocaleString(p.language, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) })) : null,
+      r.avgMs ? h('li', {}, t('stats.keySpeed', { s: (r.avgMs / 1000).toLocaleString(locale(), { minimumFractionDigits: 1, maximumFractionDigits: 1 }) })) : null,
       h('li', {}, t('stats.keyTotal', { n: r.presses })),
       h('li', {}, r.confusions.length
         ? [t('stats.keyConfused'), ' ', ...r.confusions.slice(0, 3).flatMap((c) => [h('b', { class: 'kbd' }, c.ch), ` ${c.n}× `])]

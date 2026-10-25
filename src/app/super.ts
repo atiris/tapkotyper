@@ -3,9 +3,10 @@ import { LEVELS, WORLDS } from '../game/levels';
 import { WORLD_THINGS } from '../game/modes/aim-things';
 import { PAW_MAX } from '../game/paw';
 import { WORLD_REWARDS } from '../game/rewards';
+import { t } from '../i18n/i18n';
 import { lessonOrder } from '../learning/lessons';
 import { STATS_WINDOW, recordPress, recordSession } from '../learning/stats';
-import { COMPANION_KINDS, type Lang, SUPER_ID, type Profile } from '../storage/schema';
+import { COMPANION_KINDS, type LangRef, SUPER_ID, type Profile } from '../storage/schema';
 import { newProfile } from '../storage/store';
 
 /** Typed on the start screen (no field) fast enough to prove it is not a learner. */
@@ -35,8 +36,8 @@ export function listenForSuperPassword(onUnlock: () => void): () => void {
  * A temporary player with every world, level, key and accessory open. It lives in
  * memory only: it never touches real players' statistics and a reload ends it.
  */
-export function superProfile(lang: Lang): Profile {
-  const p = newProfile('', lang, undefined, 'fox', 'Super Tapko');
+export function superProfile(lang: LangRef): Profile {
+  const p = newProfile('', lang, undefined, 'fox', t('super.companionName'));
   p.id = SUPER_ID;
   const keys = lessonOrder(p.layout);
   p.progress.unlockedKeys = [...keys];

@@ -2,9 +2,9 @@
 
 const RATE = 0.9;
 
-/** The voice for a language: a local one whose language starts with it, else any such voice. */
+/** The voice for a language (its primary subtag, `de` of `de-AT`): a local one, else any such voice. */
 export function pickVoice<V extends { lang: string; localService: boolean }>(voices: V[], lang: string): V | null {
-  const fits = voices.filter((v) => v.lang.toLowerCase().replace('_', '-').startsWith(lang.toLowerCase()));
+  const fits = voices.filter((v) => v.lang.toLowerCase().replace('_', '-').startsWith(lang.toLowerCase().split('-')[0]));
   return fits.find((v) => v.localService) ?? fits[0] ?? null;
 }
 

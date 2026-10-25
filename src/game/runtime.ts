@@ -10,7 +10,7 @@ import { type Mood, pawColors, tapkoElement, renderTapkoInto } from '../gfx/tapk
 import { preload, preloadPlay } from '../gfx/assets';
 import { type FairyMood, drawFairy } from '../gfx/fairy';
 import { type RobotMood, type RobotState, drawRobot, robotFor } from '../gfx/robot';
-import { t, tList } from '../i18n/i18n';
+import { locale, t, tList } from '../i18n/i18n';
 import { nickname } from '../storage/store';
 import { type InputHandlers, KeyInput, type TypedChar } from '../input/input';
 import { setShortcuts, withKey } from '../input/shortcuts';
@@ -23,7 +23,7 @@ import { globalButtons } from '../ui/chrome';
 import { tip } from '../ui/tooltip';
 import { accuracyPic, paintRound, pawRing, placeRing, rhythmPic, roundButton, worldName } from '../ui/hud';
 import { OWN_SHARE, WordSource, type WordSourceOwn } from '../words/words';
-import type { Lang, Profile, Surprise } from '../storage/schema';
+import type { LangRef, Profile, Surprise } from '../storage/schema';
 import type { LevelDef } from './levels';
 import { MIN_ACTIVE_S, WORLDS, grownCount, hasMinLength, levelOver, shownProgress, storyOf } from './levels';
 import type { Mode } from './mode';
@@ -126,7 +126,7 @@ function spoken(tg: Target): string {
  * parent's own words and text mixed in (not in drills, chosen keys or the target range, their
  * words would bring other letters), or a task's.
  */
-export function wordSource(p: Profile, lang: Lang, drill?: string[], own?: WordSourceOwn, chosen?: string[], focus?: string[]): WordSource {
+export function wordSource(p: Profile, lang: LangRef, drill?: string[], own?: WordSourceOwn, chosen?: string[], focus?: string[]): WordSource {
   // Practice of space, punctuation or a Shift needs letters around it: the known ones.
   const keys = chosen ?? (!drill ? activeKeys(p) : drill.every(isLetterKey) ? drill : [...new Set([...activeKeys(p), ...drill])]);
   const s = p.settings;
@@ -420,7 +420,7 @@ export class LevelRuntime {
     }
     if (this.disposed) return;
     // Without a voice of the language a dictation runs as copy typing (a mixed run as memory), and the card says so.
-    const noVoice = this.dictating && !speech.available(p.language);
+    const noVoice = this.dictating && !speech.available(locale());
     const voiceNote = noVoice ? t(this.style === 'mixed' ? 'level.noVoiceMemory' : 'level.noVoice') : undefined;
     if (noVoice) this.style = this.style === 'mixed' ? 'memory' : 'copy';
     this.core.style = this.style;
@@ -660,7 +660,7 @@ export class LevelRuntime {
   speakTyped(text: string): void {
     if (this.saidEl) this.saidEl.textContent = text;
     const p = app.profile!;
-    if (this.reading && p.settings.speakTyped) speech.say(text, p.language);
+    if (this.reading && p.settings.speakTyped) speech.say(text, locale());
   }
 
   /** Once per level: a capital typed with the Shift of its own hand gets a short tip. */
@@ -725,7 +725,7 @@ export class LevelRuntime {
 
   private get reading(): boolean {
     const p = app.profile!;
-    return p.settings.readAloud && speech.available(p.language);
+    return p.settings.readAloud && speech.available(locale());
   }
 
   /** The run has dictated targets. */
@@ -736,7 +736,7 @@ export class LevelRuntime {
   /** The button shows only when the browser has a voice of the profile's language; in a dictation the voice is the task. */
   private paintRead(): void {
     const p = app.profile!;
-    this.readBtn.hidden = this.dictating || !speech.available(p.language) || (this.def.kind === 'freetype' && !p.settings.speakTyped);
+    this.readBtn.hidden = this.dictating || !speech.available(locale()) || (this.def.kind === 'freetype' && !p.settings.speakTyped);
     this.readBtn.setAttribute('aria-pressed', String(p.settings.readAloud));
   }
 
@@ -756,7 +756,7 @@ export class LevelRuntime {
     if (tg.id !== this.readId) {
       this.readId = tg.id;
       if (tg.style === 'dictation') this.dictate(tg, false);
-      else if (this.reading && !this.dictating) speech.say(spoken(tg), app.profile!.language);
+      else if (this.reading && !this.dictating) speech.say(spoken(tg), locale());
     } else if (tg.style === 'dictation' && tg.masked && !this.repeated && this.elapsed - Math.max(this.spokenAt, this.keyAt) >= DICTATION_REPEAT) {
       this.dictate(tg, true);
     }
@@ -770,7 +770,7 @@ export class LevelRuntime {
   /** Says a dictated target; a repeat cuts what is still being said. */
   private dictate(tg: Target, repeat: boolean): void {
     if (repeat) speech.stop();
-    speech.say(spoken(tg), app.profile!.language);
+    speech.say(spoken(tg), locale());
     this.spokenAt = this.elapsed;
     this.repeated = repeat;
     this.setFairyMood('singing', 1.4);

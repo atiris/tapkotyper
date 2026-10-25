@@ -1,7 +1,9 @@
 import { Rng } from '../engine/rng';
-import { type Layout, canType } from '../keyboard/layouts';
+import { detectLanguage, isLang } from '../i18n/i18n';
+import { isOwnRef, ownId, ownLang } from '../i18n/own-langs';
+import { LAYOUTS, type Layout, canType } from '../keyboard/layouts';
 import { DIACRITICS, SHIFT_L, SHIFT_R, SPACE, isLetterKey, shiftKeyOf } from '../learning/lessons';
-import type { OwnMix } from '../storage/schema';
+import type { LangRef, OwnMix } from '../storage/schema';
 
 const VOWELS = new Set([...'aeiouyáéíóúýäô']);
 export const DIGITS = new Set([...'0123456789']);
@@ -20,6 +22,20 @@ export function loadWords(lang: string): Promise<string[]> {
     cache.set(lang, p);
   }
   return cache.get(lang)!;
+}
+
+/** The word list of a language as players point to it: an own language's typeable words (its base's list when it has none). */
+export async function loadWordsOf(ref: LangRef): Promise<string[]> {
+  if (!isOwnRef(ref)) return loadWords(isLang(ref) ? ref : detectLanguage());
+  const own = await ownLang(ownId(ref)).catch(() => null);
+  if (!own) return loadWords(detectLanguage());
+  const words = gameWords(own.words, LAYOUTS[own.layout]);
+  return words.length ? words : loadWords(own.base);
+}
+
+/** An own word list as the game takes it: lower case, each once, only words the layout can type. */
+export function gameWords(words: string[], layout: Layout): string[] {
+  return [...new Set(words.map((w) => w.normalize('NFC').toLowerCase()))].filter((w) => w && [...w].every((c) => canType(layout, c)));
 }
 
 export function isBlocked(word: string): boolean {

@@ -1,16 +1,16 @@
 import { audio } from '../audio/audio';
 import { resetFontFamily } from '../gfx/draw';
-import { language, setLanguage, tList } from '../i18n/i18n';
+import { askedLanguage, setLanguage, tList } from '../i18n/i18n';
 import { LAYOUTS, type Layout } from '../keyboard/layouts';
 import { Store } from '../storage/store';
-import { GUEST_ID, type Lang, type Profile, SUPER_ID } from '../storage/schema';
+import { GUEST_ID, type LangRef, type Profile, SUPER_ID } from '../storage/schema';
 import type { TaskSpec } from '../share/task';
-import { loadWords } from '../words/words';
+import { loadWordsOf } from '../words/words';
 import { closeModals } from '../ui/dom';
 import { hideTip } from '../ui/tooltip';
 import { keyboardGated, waitForKeyboard } from './keyboard-gate';
 
-export type ScreenName = 'start' | 'newProfile' | 'map' | 'level' | 'story' | 'parent' | 'wardrobe' | 'friends' | 'break' | 'teacher' | 'taskImport' | 'moveImport' | 'help';
+export type ScreenName = 'start' | 'newProfile' | 'map' | 'level' | 'story' | 'parent' | 'wardrobe' | 'friends' | 'break' | 'teacher' | 'taskImport' | 'moveImport' | 'help' | 'translate';
 export type Screen = (root: HTMLElement, params: any) => (() => void) | void;
 
 const screens = new Map<ScreenName, Screen>();
@@ -27,7 +27,7 @@ export const app = {
   store: new Store(),
   profile: null as Profile | null,
   /** Word lists by language; the chosen player's word languages are loaded (`loadPlayerWords`). */
-  words: { sk: [], en: [] } as Record<Lang, string[]>,
+  words: { sk: [], en: [] } as Record<LangRef, string[]>,
   /** Active play seconds since the session started (or the last break). */
   sessionSeconds: 0,
   /** A preparation tip was shown in this session. */
@@ -67,6 +67,7 @@ const LINKS: Partial<Record<string, ScreenName>> = { task: 'taskImport', move: '
 /** Address of a screen, so a player's map can be bookmarked or put on the desktop. */
 export function routeOf(name: ScreenName, params: { code?: string; tab?: string; child?: string; set?: string } = {}): string {
   if (name === 'newProfile') return '#/new';
+  if (name === 'translate') return '#/translate';
   // A result link is read once into the teacher's page; each tab, a set and a child's card have their own address.
   if (name === 'teacher') {
     if (params.child) return `#/teacher/child/${encodeURIComponent(params.child)}`;
@@ -87,6 +88,7 @@ export function routeOf(name: ScreenName, params: { code?: string; tab?: string;
 export function parseRoute(hash: string): { name: ScreenName; profileId: string | null; code?: string; tab?: string; child?: string; set?: string } {
   const parts = hash.replace(/^#\/?/, '').split('/').filter(Boolean).map(decodeURIComponent);
   if (parts[0] === 'new') return { name: 'newProfile', profileId: null };
+  if (parts[0] === 'translate') return { name: 'translate', profileId: null };
   if (parts[0] === 'help') return { name: 'help', profileId: null, tab: parts[1] };
   if (parts[0] === 'teacher') {
     if ((parts[1] === 'child' || parts[1] === 'set') && parts[2]) return { name: 'teacher', profileId: null, [parts[1]]: parts[2] };
@@ -108,8 +110,8 @@ export async function openRoute(hash: string): Promise<void> {
   go(r.name, r.code ? { code: r.code } : r.tab ? { tab: r.tab } : r.child ? { child: r.child } : r.set ? { set: r.set } : {}, false);
 }
 
-/** Screens a touch-only device reaches before a keyboard is connected: the teacher needs none. */
-const NO_KEYBOARD: ScreenName[] = ['start', 'teacher', 'help'];
+/** Screens a touch-only device reaches before a keyboard is connected: the teacher and the translator need none. */
+const NO_KEYBOARD: ScreenName[] = ['start', 'teacher', 'help', 'translate'];
 
 /** The number of the screen shown now; a screen that waits compares it before it goes on. */
 export function screenVisit(): number {
@@ -150,13 +152,13 @@ export function saveProfile(): void {
 }
 
 /** Switches the UI language; the words keep the player's word language. */
-export async function useLanguage(lang: Lang): Promise<void> {
-  if (language() !== lang || !tList('tips').length) await setLanguage(lang);
+export async function useLanguage(lang: LangRef): Promise<void> {
+  if (askedLanguage() !== lang || !tList('tips').length) await setLanguage(lang);
 }
 
 /** Loads the word lists of a player's levels and custom exercise. */
 export async function loadPlayerWords(p: Profile): Promise<void> {
-  for (const lang of new Set([p.settings.wordLang, p.settings.ownWordLang])) app.words[lang] = await loadWords(lang);
+  for (const lang of new Set([p.settings.wordLang, p.settings.ownWordLang])) app.words[lang] = await loadWordsOf(lang);
 }
 
 export async function selectProfile(p: Profile): Promise<void> {

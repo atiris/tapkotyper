@@ -2,7 +2,7 @@ import { app, go, shownScreen } from '../app/app';
 import { fillProgress } from '../app/super';
 import { LEVELS, WORLDS } from '../game/levels';
 import { lessonOrder } from '../learning/lessons';
-import { language, t } from '../i18n/i18n';
+import { locale, t } from '../i18n/i18n';
 import { type Profile, SUPER_ID } from '../storage/schema';
 import { type ICONS, button, h, modal } from './dom';
 import { roundPic, roundButton } from './hud';
@@ -94,7 +94,7 @@ const LOCK_NOTE_DAYS = 30;
 export function lockRemovedNote(now = Date.now()): HTMLElement | null {
   const at = app.store.data.lockRemovedAt;
   if (at === undefined || now - at > LOCK_NOTE_DAYS * 86_400_000) return null;
-  const text = t('service.lockRemovedAt', { date: new Date(at).toLocaleString(language()) });
+  const text = t('service.lockRemovedAt', { date: new Date(at).toLocaleString(locale()) });
   const b = roundButton('super', 'warn', text, () => toast(text));
   b.classList.add('lock-note');
   return b;

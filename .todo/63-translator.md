@@ -284,18 +284,18 @@ the new player form.
   language to `Lang` stays a code change by the owner.
 
 ## Steps
-- [ ] 1. `catalog.ts` with all sections, groups, item kinds; `catalog.test.ts` (full
+- [x] 1. `catalog.ts` with all sections, groups, item kinds; `catalog.test.ts` (full
   coverage, kinds). The guide-keys test is added with step 2.
 - [ ] 2. Guide texts: `public/i18n/guide/sk.json` and `en.json` for every section, group
   and item (patterns where a structure repeats). English written for English readers.
   The work can be split by section across subagents (Haiku for the texts, the main
   session reviews every section against where the text really appears in `src/`).
-- [ ] 3. Hard-coded text audit; move the finds into the dictionaries and the catalog.
-- [ ] 4. `LangRef`, the fallback chain, `locale()`, `own-langs.ts`; boot and
+- [x] 3. Hard-coded text audit; move the finds into the dictionaries and the catalog.
+- [x] 4. `LangRef`, the fallback chain, `locale()`, `own-langs.ts`; boot and
   `useLanguage` load own languages; word lists of own languages; the selects in the parent
   settings (official ones only elsewhere); unit tests for the chain, plurals of a foreign
   locale and a missing own language.
-- [ ] 5. `pairs.ts` + tests (format above), JSON export/import.
+- [x] 5. `pairs.ts` + tests (format above), JSON export/import.
 - [ ] 6. The page `translate.ts`: top bar, table of contents, sections, fields and states,
   progress ring and jump, prefill, new / edit language dialogs, about panel, search and
   filter, words section with layout checks, import/export, send for approval. Styles in
@@ -314,3 +314,22 @@ the new player form.
   language button does not list it. Phone width: no horizontal scroll.
 - [ ] 10. Build, lint, unit and e2e tests; drive the page with the playwright MCP in both
   looks and at phone width (console clean), fix what shows up.
+
+## State
+Order of work: 1, 3, 4, 5, 6, then 2 (the guide needs every key, the page's own ones too), 7-10.
+
+Decisions taken while implementing:
+- The catalog lists groups by keys and `prefix.*` patterns; the first group that names a key takes
+  it, so a catch-all group (`parent.*`) at the end of a top-level key holds the rest. Kinds: the
+  plural keys are listed (`PLURAL_KEYS`), ordered lists by patterns (`LINES`), every other array
+  is a pool. `service.*` (plan 65, after this plan was written) sits with `super` in Results.
+- The field model (fields, progress, prefill, import/export plans) is `src/i18n/translation.ts`;
+  `pairs.ts` is only the text format. Both pure, tested in `pairs.test.ts`.
+- Pair files carry one `@meta key=value` per line (values may hold spaces) and
+  `@meta reference=<code>` for the code of the base lines, so it never clashes with the own
+  language's `base`. An own correction of Slovak with Slovak shown as base has the same prefix on
+  both lines; the reader takes the first as base, the last as target.
+- The translator has its own device-level address `#/translate` (no player in it); Back goes to
+  the settings when a player is chosen, else to the start page.
+- Audit finds: the modal close button's English-only "close" name (now `common.close`), the super
+  player's companion name (`super.companionName`).

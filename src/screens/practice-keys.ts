@@ -1,7 +1,7 @@
 import { app, go, layout } from '../app/app';
 import { speech } from '../audio/speech';
 import type { Style } from '../game/typing';
-import { t } from '../i18n/i18n';
+import { locale, t } from '../i18n/i18n';
 import { allKeys } from '../keyboard/layouts';
 import { activeKeys, isLetterKey, practiceOrder, practiceSteps, stepHolding } from '../learning/lessons';
 import { KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
@@ -24,7 +24,7 @@ export function openPracticeKeys(): void {
   let step = stepHolding(steps, [...chosen]);
   let shifted = false;
   let style: Style = 'copy';
-  const styles: Style[] = speech.available(p.language) ? ['copy', 'dictation', 'memory'] : ['copy', 'memory'];
+  const styles: Style[] = speech.available(locale()) ? ['copy', 'dictation', 'memory'] : ['copy', 'memory'];
   const styleBtns = styles.map((s) => h('button', { class: 'chip', type: 'button', 'data-style': s, tip: t(`practiceKeys.${s}Tip`), onClick: () => {
     style = s;
     paint();

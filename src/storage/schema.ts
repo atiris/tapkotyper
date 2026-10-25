@@ -2,6 +2,8 @@
 // and of exported `.json` files. Older shapes are upgraded by the migrations in store.ts.
 
 export type Lang = 'sk' | 'en';
+/** A language as players and settings point to it: an official one, or an own one made in the translator (`own:<id>`). */
+export type LangRef = Lang | `own:${string}`;
 /** The look of the whole device: `system` follows the browser's color scheme. */
 export type Theme = 'system' | 'light' | 'dark';
 export type LayoutId = 'sk-qwertz' | 'sk-qwerty' | 'us-qwerty';
@@ -82,9 +84,9 @@ export interface Settings {
   /** Wardrobe time is earned by practice and runs out (see game/wardrobe-time.ts). */
   wardrobeLimit: boolean;
   /** Language of the word list the targets come from; the interface language is `Profile.language`. */
-  wordLang: Lang;
+  wordLang: LangRef;
   /** Language of the word list mixed with the own words and text of the custom exercise. */
-  ownWordLang: Lang;
+  ownWordLang: LangRef;
   /** Key caps and key marks use a font that tells l, I and 1 apart. */
   keyFont: boolean;
 }
@@ -205,7 +207,7 @@ export interface Profile {
   /** Tasks from links, newest first. */
   tasks: Task[];
   layout: LayoutId;
-  language: Lang;
+  language: LangRef;
   settings: Settings;
   progress: Progress;
   stats: { keys: Record<string, KeyStat>; sessions: SessionRecord[] };
@@ -222,7 +224,7 @@ export interface StoreData {
   version: 8;
   profiles: Profile[];
   lastProfileId: string | null;
-  language: Lang | null;
+  language: LangRef | null;
   theme: Theme;
   /** One password for the whole device; the super player is never asked. */
   parentLock?: ParentLock;
@@ -234,7 +236,7 @@ export const GUEST_ID = 'guest';
 /** The temporary super player (see app/super.ts); never stored. */
 export const SUPER_ID = 'super';
 
-export function defaultSettings(wordLang: Lang): Settings {
+export function defaultSettings(wordLang: LangRef): Settings {
   return {
     activeKeysMode: 'auto',
     manualKeys: [],

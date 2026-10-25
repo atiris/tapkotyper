@@ -1,0 +1,62 @@
+import { readFileSync } from 'node:fs';
+import { describe, expect, it } from 'vitest';
+import { PLURAL_FORMS, PLURAL_KEYS, WORDS, buildCatalog, itemKeys, lookup, matches, namedKeys, situationKey } from './catalog';
+
+const load = (lang: string) => JSON.parse(readFileSync(`public/i18n/${lang}.json`, 'utf8'));
+const sk = load('sk');
+const en = load('en');
+
+describe('catalog', () => {
+  const catalog = buildCatalog(en);
+  const items = catalog.flatMap((s) => s.groups.flatMap((g) => g.items));
+
+  it('places every text of both dictionaries in exactly one item', () => {
+    const keys = items.map((i) => i.key).filter((k) => k !== WORDS);
+    expect(new Set(keys).size).toBe(keys.length);
+    expect(keys.sort()).toEqual(itemKeys(en).sort());
+    expect(itemKeys(sk).sort()).toEqual(itemKeys(en).sort());
+  });
+
+  it('names only keys that exist in both dictionaries', () => {
+    for (const k of namedKeys()) {
+      expect(lookup(sk, k), k).toBeDefined();
+      expect(lookup(en, k), k).toBeDefined();
+    }
+  });
+
+  it('gives each item the kind its value has', () => {
+    for (const { key, kind } of items) {
+      for (const d of [sk, en]) {
+        const v = lookup(d, key);
+        if (kind === 'text') expect(typeof v, key).toBe('string');
+        if (kind === 'pool' || kind === 'lines') expect(Array.isArray(v), key).toBe(true);
+        if (kind === 'plural') expect(Object.keys(v as object).every((f) => (PLURAL_FORMS as readonly string[]).includes(f)), key).toBe(true);
+      }
+    }
+    expect(items.filter((i) => i.kind === 'plural').map((i) => i.key).sort()).toEqual([...PLURAL_KEYS].sort());
+    expect(items.filter((i) => i.kind === 'words')).toHaveLength(1);
+  });
+
+  it('keeps ordered lists the same length in both languages', () => {
+    for (const { key } of items.filter((i) => i.kind === 'lines')) expect((lookup(sk, key) as string[]).length, key).toBe((lookup(en, key) as string[]).length);
+  });
+
+  it('has groups of 1 to 40 items with unique ids', () => {
+    const groups = catalog.flatMap((s) => s.groups);
+    expect(new Set(groups.map((g) => g.id)).size).toBe(groups.length);
+    for (const g of groups) {
+      expect(g.items.length, g.id).toBeGreaterThan(0);
+      expect(g.items.length, g.id).toBeLessThanOrEqual(40);
+    }
+  });
+
+  it('matches keys and patterns', () => {
+    expect(matches('aim.*', 'aim.things.egg.hit')).toBe(true);
+    expect(matches('aim.things.*.hit', 'aim.things.egg.hit')).toBe(true);
+    expect(matches('aim.things.*.hit', 'aim.things.egg.hatch')).toBe(false);
+    expect(matches('names', 'names')).toBe(true);
+    expect(matches('names', 'namesX')).toBe(false);
+    expect(situationKey({ 'aim.*': 'a', 'aim.things.*.hit': 'b' }, 'aim.things.egg.hit')).toBe('aim.things.*.hit');
+    expect(situationKey({ 'aim.things.egg.hit': 'c', 'aim.things.*.hit': 'b' }, 'aim.things.egg.hit')).toBe('aim.things.egg.hit');
+  });
+});

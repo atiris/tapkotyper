@@ -1,7 +1,9 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { detectLanguage, t, tList, useDictionaries } from './i18n';
+import { IDBFactory } from 'fake-indexeddb';
+import { askedLanguage, detectLanguage, language, locale, ownDict, setLanguage, t, tList, tMap, tn, useDictionaries } from './i18n';
+import { newOwnLang, ownRef, saveOwnLang } from './own-langs';
 
 const load = (lang: string) => JSON.parse(readFileSync(`public/i18n/${lang}.json`, 'utf8'));
 
@@ -74,5 +76,40 @@ describe('i18n', () => {
       expect(Object.keys(d.tips).length).toBeGreaterThanOrEqual(40);
       expect(tList('tapko.level_done').length).toBeGreaterThan(2);
     }
+  });
+
+  it('walks an own language, then its base, then English', async () => {
+    (globalThis as any).indexedDB = new IDBFactory();
+    (globalThis as any).document = { documentElement: {} };
+    const dicts: Record<string, unknown> = {
+      sk: { a: 'Ahoj', b: 'Len po slovensky', tips: { x: 'Tip x', y: 'Tip y' }, n: { one: '{n} slovo', few: '{n} slová', other: '{n} slov' } },
+      en: { a: 'Hi', b: 'Only English', c: 'English only', tips: { x: 'Tip x', y: 'Tip y', z: 'Tip z' }, n: { one: '{n} word', other: '{n} words' } },
+    };
+    globalThis.fetch = (async (url: string) => ({ ok: true, json: async () => dicts[/(\w+)\.json$/.exec(url)![1]] })) as any;
+    const de = newOwnLang({ code: 'de', name: 'Deutsch', base: 'sk', layout: 'sk-qwertz' });
+    de.texts = { a: 'Hallo', b: '', 'tips.x': 'Tipp x', n: { one: '{n} Wort', other: '{n} Wörter' } };
+    await saveOwnLang(de);
+    await setLanguage(ownRef(de.id));
+    expect(language()).toBe(ownRef(de.id));
+    expect(locale()).toBe('de');
+    expect(t('a')).toBe('Hallo');
+    // An empty text is untranslated: the base fills it, English what the base lacks.
+    expect(t('b')).toBe('Len po slovensky');
+    expect(t('c')).toBe('English only');
+    expect(tMap('tips')).toEqual({ x: 'Tipp x', y: 'Tip y', z: 'Tip z' });
+    // German plural rules, not Slovak ones.
+    expect(tn('n', 1)).toBe('1 Wort');
+    expect(tn('n', 3)).toBe('3 Wörter');
+  });
+
+  it('plays a missing own language in the browser language and keeps asking for it', async () => {
+    await setLanguage('own:gone');
+    expect(askedLanguage()).toBe('own:gone');
+    expect(['sk', 'en']).toContain(language());
+  });
+
+  it('keeps only whole ordered lists and the filled variants of a pool', () => {
+    expect(ownDict({ texts: { 'start.slogan': ['a', ''], 'tapko.hint': ['', 'b'], 'x.y': { one: '', other: 'z' } } }))
+      .toEqual({ tapko: { hint: ['b'] }, x: { y: { other: 'z' } } });
   });
 });

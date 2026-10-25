@@ -2,7 +2,7 @@ import { WARDROBE_MAX, WARDROBE_SHARE } from '../game/wardrobe-time';
 import { firstKeys } from '../learning/lessons';
 import {
   type CompanionKind,
-  type Lang,
+  type LangRef,
   type LayoutId,
   type ParentLock,
   type Profile,
@@ -139,7 +139,7 @@ export function isProfile(p: any): p is Profile {
 }
 
 /** A new player; without a nickname the name gives one. */
-export function newProfile(name: string, language: Lang, layout?: LayoutId, kind: CompanionKind = 'fox', nick = ''): Profile {
+export function newProfile(name: string, language: LangRef, layout?: LayoutId, kind: CompanionKind = 'fox', nick = ''): Profile {
   const lay: LayoutId = layout ?? (language === 'sk' ? 'sk-qwertz' : 'us-qwerty');
   const start: CompanionKind = COMPANION_KINDS.includes(kind) ? kind : 'fox';
   const real = name.trim();
@@ -238,7 +238,7 @@ export class Store {
   }
 
   /** The guest of this browser session, created with `nick` the first time. */
-  startGuest(language: Lang, nick: string): Profile {
+  startGuest(language: LangRef, nick: string): Profile {
     if (!this.guest) {
       const g = newProfile('', language, undefined, 'fox', nick);
       g.id = GUEST_ID;

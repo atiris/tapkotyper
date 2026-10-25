@@ -1,7 +1,7 @@
 import { imageUrl } from '../gfx/assets';
 import { tapkoElement } from '../gfx/tapko';
 import { STORIES, WORLDS, storyDone, storyOpen } from '../game/levels';
-import { t, tList } from '../i18n/i18n';
+import { locale, t, tList } from '../i18n/i18n';
 import { masterySummary, recentTyping } from '../learning/stats';
 import type { Profile } from '../storage/schema';
 import { nickname } from '../storage/store';
@@ -61,7 +61,7 @@ function certificate(p: Profile): HTMLElement {
         h('div', { class: 'cert-stories' }, h('h2', {}, t('cert.stories')), h('ul', {}, ...stories))),
       h('p', { class: 'cert-praise' }, praise(p, m.mastered, m.total, recent.accuracy, recent.chars > 0)),
       h('footer', { class: 'cert-foot' },
-        h('span', { class: 'cert-date' }, t('cert.date', { date: new Date().toLocaleDateString(p.language) })),
+        h('span', { class: 'cert-date' }, t('cert.date', { date: new Date().toLocaleDateString(locale()) })),
         h('span', { class: 'cert-sign' }, stamp ? h('img', { class: 'cert-stamp', src: stamp, alt: '' }) : null, h('span', {}, t('cert.sign'))))));
 }
 

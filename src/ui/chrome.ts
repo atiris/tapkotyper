@@ -3,7 +3,7 @@ import { onThemeChange, shownLook, toggleTheme } from '../app/theme';
 import { audio, type SoundLevel } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
 import { WORLDS } from '../game/levels';
-import { LANGS, LANGUAGES, language, t } from '../i18n/i18n';
+import { LANGS, LANGUAGES, language, languageName, t } from '../i18n/i18n';
 import { installShortcuts, setDefaultShortcuts, withKey } from '../input/shortcuts';
 import type { Lang } from '../storage/schema';
 import { type Child, ICONS, h, icon } from './dom';
@@ -137,9 +137,9 @@ function paintTheme(b: HTMLButtonElement): void {
 // One listener for every theme button on the page, so leaving a screen leaves nothing behind.
 onThemeChange(() => document.querySelectorAll<HTMLButtonElement>('.theme-btn').forEach(paintTheme));
 
-/** The language: the language symbol; a click opens the list of the languages by their own names, a second click closes it. */
+/** The language: the language symbol; a click opens the list of the official languages by their own names (own ones are picked in the settings), a second click closes it. */
 export function languageButton(pick: (l: Lang) => void): HTMLButtonElement {
-  const b: HTMLButtonElement = roundButton('control', 'language', t('start.langNow', { name: LANGUAGES[language()] }), () => (closeLanguages && document.querySelector('.lang-list') ? closeLanguages() : languageList(b, pick)));
+  const b: HTMLButtonElement = roundButton('control', 'language', t('start.langNow', { name: languageName() }), () => (closeLanguages && document.querySelector('.lang-list') ? closeLanguages() : languageList(b, pick)));
   b.classList.add('lang-btn');
   b.setAttribute('aria-haspopup', 'listbox');
   b.setAttribute('aria-expanded', 'false');
@@ -202,7 +202,7 @@ function languageList(b: HTMLButtonElement, pick: (l: Lang) => void): void {
   b.setAttribute('aria-expanded', 'true');
   document.addEventListener('keydown', onKey, true);
   document.addEventListener('pointerdown', onPointer, true);
-  items[LANGS.indexOf(now)].focus();
+  items[Math.max(0, LANGS.indexOf(now as Lang))].focus();
 }
 
 /**

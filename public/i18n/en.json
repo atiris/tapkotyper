@@ -17,7 +17,8 @@
     "menuClose": "Close the menu",
     "song": "Music: {name}",
     "darkMode": "Dark mode",
-    "lightMode": "Light mode"
+    "lightMode": "Light mode",
+    "close": "Close (Esc)"
   },
   "start": {
     "whoPlays": "Who is playing today?",
@@ -1122,7 +1123,11 @@
     "wordLang": "Word language",
     "wordLangHint": "Words in the levels. The game language stays as it is.",
     "keyFont": "Easy to tell letters on the keys (l, I, 1)",
-    "keyFontHint": "Keys and key marks use a font where l, I and 1 cannot be confused. The rest of the game keeps the chosen font."
+    "keyFontHint": "Keys and key marks use a font where l, I and 1 cannot be confused. The rest of the game keeps the chosen font.",
+    "translate": "Translation",
+    "translateGo": "Translate the game",
+    "translateHint": "Every text of the game in one place: a new language or your own texts.",
+    "ownLangs": "Own languages"
   },
   "own": {
     "group": {
@@ -1491,7 +1496,8 @@
     "remember-slip": "Forgot a letter? A mistake shows the word for a moment again."
   },
   "super": {
-    "badge": "Super mode: service menu"
+    "badge": "Super mode: service menu",
+    "companionName": "Super Tapko"
   },
   "service": {
     "end": "End super mode",
@@ -3031,5 +3037,93 @@
     "opened": "Accurate typing opened new letters: {keys}",
     "again": "Again",
     "toMap": "To the map"
+  },
+  "translate": {
+    "title": "Translate the game",
+    "base": "Base language",
+    "target": "Translation",
+    "none": "– none –",
+    "new": "New language",
+    "edit": "Edit a language",
+    "prefill": "Prefill from",
+    "prefillGo": "Prefill",
+    "progress": "{n} % translated. Click to go to the next untranslated field.",
+    "progressDone": "100 % translated. Everything is done.",
+    "aboutButton": "About the translation",
+    "export": "Export",
+    "import": "Import",
+    "send": "Send for approval",
+    "toc": "Contents",
+    "untranslated": "untranslated",
+    "keep": "Keep",
+    "keepHint": "The text stays the same and the field counts as translated (Ctrl+Enter).",
+    "addVariant": "Add a variant",
+    "removeVariant": "Remove this variant",
+    "onlyOpen": "Only untranslated",
+    "search": "Search text or key",
+    "situation": "Where and when",
+    "form": "Form “{form}”, e.g. {n}",
+    "baseForms": "Forms in the base language",
+    "missingPlaceholder": "{name} from the base text is missing.",
+    "extraPlaceholder": "{name} is not in the base text.",
+    "empty": "Nothing found.",
+    "noStore": "This browser does not keep page data. The translation lasts while the page is open. Export it before you leave.",
+    "startHint": "Start a new language or edit an existing one. Below are all the texts of the game, with where and when each one appears.",
+    "fieldLabel": "Translation: {text}",
+    "done": "translated",
+    "words": {
+      "hint": "Separate the words with spaces or new lines. The game builds the typing targets from them.",
+      "count": "Words: {n}",
+      "untypable": "These cannot be typed on the {layout} keyboard; the game leaves them out:",
+      "lessons": "Words for the first lessons",
+      "lesson": "Lesson {n} ({keys}): {count}",
+      "few": "too few, the game would repeat the same few words"
+    },
+    "newTitle": "New language",
+    "name": "Name of the language (in that language)",
+    "code": "Language code",
+    "codeHint": "For example de, fr or de-AT. Dates and plural forms follow it.",
+    "codeBad": "This is not a language code.",
+    "needName": "Write the name of the language.",
+    "fallback": "Untranslated texts show in",
+    "layout": "Keyboard",
+    "create": "Create",
+    "cancel": "Cancel",
+    "editTitle": "Edit a language",
+    "editText": "This makes a copy with every text of the chosen language. Change what you need: keep the changes on this device, or send them as a correction.",
+    "editPick": "Language",
+    "correctionName": "{name} (own texts)",
+    "aboutTitle": "About the translation",
+    "author": "Author's name",
+    "contact": "Contact (e-mail or website)",
+    "contactHint": "The contact becomes public when you send the translation for approval.",
+    "delete": "Delete this language",
+    "deleteTitle": "Delete {name}?",
+    "deleteText": "The translation disappears from this device. Players with this language will play in the browser’s language.",
+    "deleteOk": "Delete",
+    "exportAll": "Pairs .txt: everything",
+    "exportOpen": "Pairs .txt: only untranslated (for AI)",
+    "exportChanges": "Pairs .txt: only the changes against {name}",
+    "exportJson": ".json file",
+    "importTitle": "Import a translation",
+    "importSummary": "Texts to apply: {applied}. Empty (stay untranslated): {empty}. Skipped: {skipped}.",
+    "importUnknown": "unknown field",
+    "importOutside": "extra line",
+    "importDo": "Import",
+    "importBad": "This file cannot be read as a translation.",
+    "sendTitle": "Send for approval",
+    "sendText": "A new issue opens on GitHub. It is public: everyone can see it, your contact too. You need a GitHub account.",
+    "sendGo": "Open GitHub",
+    "sendAttach": "Attach the downloaded file {file} to the issue.",
+    "issue": {
+      "new": "Translation: {name} ({code})",
+      "fix": "Correction: {name}",
+      "author": "Author: {name}",
+      "contact": "Contact: {contact}",
+      "base": "Base language: {name}",
+      "progress": "Translated: {n} % ({touched} of {total} fields)",
+      "attach": "Attach the downloaded file {file}.",
+      "changes": "Changes:"
+    }
   }
 }

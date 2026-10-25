@@ -42,8 +42,8 @@ far as a night sky scene, mid and near as sparse star layers on magenta, no stri
 - [x] robocity
 - [ ] robohome
 - [x] garden
-- [ ] forestpath
-- [ ] lilylake
+- [x] forestpath
+- [x] lilylake
 - [x] musictree
 - [x] moonball
 - [x] rescue

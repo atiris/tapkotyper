@@ -7,4 +7,3 @@ listed here is never run. Lines whose plan has moved to `.todo/.done/` are
 skipped, and the session that finishes a plan removes its line.
 
 - [P2] 63-translator.md - parent translator page for every text and own languages; no other plan open
-- [P2] 64-world-backgrounds.md - world backgrounds one by one; needs the Gemini bridge and the free limit, independent of 63

@@ -26,30 +26,6 @@ const BAND_IN = 168;
 // The certificate's stamp is printed a few centimetres wide.
 const STAMP_MAX = 640;
 const BG_WIDTH = 1920;
-// Parallax layers drawn as close-up strips are placed into a frame of this size.
-const FRAME_W = 1376;
-const FRAME_H = 768;
-// Height of each strip layer as a fraction of the frame (the values in PROMPTS.md).
-const STRIP_HEIGHT = {
-  'bg-meadow-mid': 0.45, 'bg-meadow-near': 0.25,
-  'bg-planet-mid': 0.5, 'bg-planet-near': 0.3,
-  'bg-dragons-mid': 0.45, 'bg-dragons-near': 0.25,
-  'bg-egg-mid': 0.5, 'bg-egg-near': 0.2,
-  'bg-junkyard-mid': 0.45, 'bg-junkyard-near': 0.25,
-  'bg-workshop-mid': 0.45, 'bg-workshop-near': 0.25,
-  'bg-raintown-mid': 0.4, 'bg-raintown-near': 0.2,
-  'bg-robocity-mid': 0.4, 'bg-robocity-near': 0.2,
-  'bg-robohome-mid': 0.4, 'bg-robohome-near': 0.2,
-  'bg-garden-mid': 0.45, 'bg-garden-near': 0.25,
-  'bg-forestpath-mid': 0.5, 'bg-forestpath-near': 0.25,
-  'bg-lilylake-mid': 0.4, 'bg-lilylake-near': 0.2,
-  'bg-musictree-mid': 0.45, 'bg-musictree-near': 0.2,
-  'bg-moonball-mid': 0.4, 'bg-moonball-near': 0.2,
-  'bg-rescue-mid': 0.45, 'bg-rescue-near': 0.25,
-};
-// A layer at least this wide (width / height) is a strip (generated at 21:9); older
-// 16:9 layer files keep their content in the lower part and are used as they are.
-const STRIP_ASPECT = 2;
 // The start page's meadow (day and night) repeats across the window: its left and right edges are
 // blended into each other over this part of its width.
 const MEADOW = 'ui-start-meadow';
@@ -309,8 +285,10 @@ async function processImage(name, file, manifest) {
   if (name === 'base-template' || name.startsWith('tapko-') || name.startsWith('robot') || name.startsWith('fairy-')) return writeSquare(name, data, w, h, manifest);
   if (name === FRAME) return writeFrame(name, data, w, h, manifest);
   if (name.startsWith(MEADOW)) return writeTile(name, data, w, h, bbox(data, w, h), manifest);
-  if (STRIP_HEIGHT[name] && w >= h * STRIP_ASPECT) return writeStrip(name, data, w, h, bbox(data, w, h), manifest);
   if (name.startsWith('bg-')) {
+    // A mid or near layer (1376 x 768, its band on the key; see scripts/bg-seam.mjs): the colors
+    // bleed into the cleared key, so scaling in the game shows no key fringe.
+    bleedColor(data, w, h);
     const info = await webp(sharp(data, { raw: { width: w, height: h, channels: 4 } }).resize({ width: BG_WIDTH, withoutEnlargement: true })).toFile(join(OUT, `${name}.webp`));
     manifest.images[name] = { w: info.width, h: info.height };
     return;
@@ -350,37 +328,6 @@ async function writeFrame(name, data, w, h, manifest) {
   }
   await webp(sharp(out, { raw: { width: size, height: size, channels: 4 } })).toFile(join(OUT, `${name}.webp`));
   manifest.images[name] = { w: size, h: size };
-}
-
-/**
- * A close-up strip: scaled to its target height, repeated across the frame (a whole
- * number of copies is fitted in) and placed at the bottom of a transparent frame.
- */
-async function writeStrip(name, data, w, h, box, manifest) {
-  const stripH = Math.round(FRAME_H * STRIP_HEIGHT[name]);
-  // The 3 px bbox padding at the sides would leave gaps between the copies, and a dark
-  // frame column some generated strips have at an edge would show as a line at each join.
-  const dark = (x) => {
-    let s = 0;
-    for (let y = 0; y < h; y++) { const i = (y * w + x) * 4; s += Math.max(data[i], data[i + 1], data[i + 2]); }
-    return s / h < 60;
-  };
-  let left = 0, right = w;
-  while (left < 8 && dark(left)) left++;
-  while (w - right < 8 && dark(right - 1)) right--;
-  const crop = { ...box, left, width: right - left };
-  // A whole number of copies side by side: the picture's left and right edges join.
-  const copies = Math.max(1, Math.round(FRAME_W / (crop.width * stripH / crop.height)));
-  const tileW = Math.round(FRAME_W / copies);
-  const tile = await sharp(data, { raw: { width: w, height: h, channels: 4 } }).extract(crop).resize(tileW, stripH, { fit: 'fill' }).png().toBuffer();
-  const row = await sharp({ create: { width: tileW * copies, height: stripH, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
-    .composite(Array.from({ length: copies }, (_, i) => ({ input: tile, left: i * tileW, top: 0 }))).png().toBuffer();
-  const fitted = await sharp(row).resize(FRAME_W, stripH, { fit: 'fill' }).png().toBuffer();
-  const frame = await sharp({ create: { width: FRAME_W, height: FRAME_H, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
-    .composite([{ input: fitted, left: 0, top: FRAME_H - stripH }]).raw().toBuffer();
-  bleedColor(frame, FRAME_W, FRAME_H);
-  const info = await webp(sharp(frame, { raw: { width: FRAME_W, height: FRAME_H, channels: 4 } })).toFile(join(OUT, `${name}.webp`));
-  manifest.images[name] = { w: info.width, h: info.height };
 }
 
 /**

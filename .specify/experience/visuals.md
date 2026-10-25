@@ -11,15 +11,15 @@
   shrink, grow or spin to be happy, which looks like pain or an object; balls, leaves, stars
   and sparks may spin.
 - Background skies repeat across wide screens, so they are even (clouds or a gradient,
-  no sun, moon or single planet). The ground layers in front are close-up strips placed
-  along the bottom of the screen at a set height per world.
-- World backgrounds are being redrawn as hand-drawn Japanese anime background art, rich in
-  detail: a small sky, the far scene without near objects, then a middle band and a low
-  closest band. Each layer joins its own left and right edge exactly, so it repeats with no
-  visible seam and no ghosting; a cross-fade at the joins showed doubled flowers and hills.
-- Every background layer is generated from a standalone prompt: each world has a written style
-  spec (palette, outline weight, light, ground line, what never appears) pasted into its far,
-  mid and near prompts, so a strip needs no attached picture and still matches.
+  no sun, moon or single planet).
+- World backgrounds are hand-drawn Japanese anime background art, rich in detail but calm
+  enough for big words on top: a small sky, the far scene without near objects, then a middle
+  band and a low closest band (in space: distant stars and small asteroids instead). Each layer
+  joins its own left and right edge exactly, so it repeats with no visible seam and no
+  ghosting; a cross-fade at the joins showed doubled flowers and hills. Things in the front
+  layers stay small, as a big one shows twice on a wide screen.
+- Every background picture is generated from a written prompt with the style described in
+  words; attached sample pictures were copied too closely and cost the free daily limit.
 - Big, readable words on targets, with high contrast against the scene; practice words
   and their info line keep a minimum on-screen size in small windows.
 - One button set everywhere: every round button is the same white circle with a ring, a colored

@@ -40,13 +40,19 @@ far as a night sky scene, mid and near as sparse star layers on magenta, no stri
 - [x] workshop (far seam repainted over 50 % with new things in the middle: the wall repeated a motif)
 - [x] raintown
 - [x] robocity
-- [ ] robohome
+- [x] robohome (a new far with an even plank wall; its seam repainted over 40 %)
 - [x] garden
 - [x] forestpath
 - [x] lilylake
 - [x] musictree
 - [x] moonball
 - [x] rescue
-- [ ] When every world is redrawn: drop `STRIP_HEIGHT`, `writeStrip` and the 21:9 strip path from
+- [x] When every world is redrawn: drop `STRIP_HEIGHT`, `writeStrip` and the 21:9 strip path from
       `scripts/assets.mjs` (no layer uses them any more) and the old table and world blocks from
       PROMPTS.md that the new prompts replaced
+
+## Done - 2026-10-25
+All 16 worlds redrawn (far, mid, near at 1376 x 768) and checked as previews; meadow, space and
+the portrait layout also in the game. Left out: per-world fine tuning of the mid lift and the
+strip heights (the owner reviews the worlds in the game); the robohome floor strip shows its
+quilt joins (backlog).

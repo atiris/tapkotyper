@@ -381,9 +381,9 @@ Hand-drawn Japanese anime background art, clearly a drawing and not a photo: thi
 Like the near prompt, with TWO strips of about 330 pixels, "a side view of a band of the world
 seen from some distance: BAND", "rich small details" and "clean thin dark ink outlines".
 
-The table and the world blocks below come from the earlier flat storybook style: from a world
-block keep only the palette and the "Never" line as hints; the scene texts still say what each
-world shows.
+The tables below (here and in the later sections) say what each world shows; all 16 worlds were
+redrawn on 2026-10-25 with the prompts above, so the Height and Status columns are from the earlier
+flat storybook style and no longer apply.
 
 | File | SCENE / LAYER | Height | Status |
 |---|---|---|---|
@@ -405,135 +405,6 @@ world shows.
 | `bg-rescue-far.jpg` | a cozy rescue camp in a calm evening: a few small tents and wooden huts with warm glowing lanterns on poles, soft hills far away, an evening sky from violet to warm peach with a few soft clouds | full | done 2026-10-23 |
 | `bg-rescue-mid.jpg` | a wooden rope bridge between two posts, a lookout tower with a small flag, a tent with a glowing lantern, a stack of crates, a round bush, a signpost with empty boards, a pine and a campfire ring of stones (no fire) | 45 % | done 2026-10-23 (ground gap under the bridge, magenta left between the tower ladder rungs) |
 | `bg-rescue-near.jpg` | evening grass tufts, a small lantern on a stake, a coil of rope, a smooth stone, a short wooden post with a small flag, a fern and a small backpack | 25 % | done 2026-10-23 (the lantern floats beside its stake) |
-
-### World style (fills `WORLD STYLE` in the far and strip prompts)
-Paste the block of the world into every prompt of that world (far, mid, near) in place of
-`WORLD STYLE`, so each picture is generated alone, with no attachment, and still lines up.
-The Ground line is for the far picture; the strip prompt sets its own low ground band.
-Common to all blocks: uniform outline about 2 px (stated per world), flat fills with at most
-one soft lighter band along the top of each shape, no gradients to white, no pale, white or
-pink rim around objects. The far picture keeps its sky small (about the top fifth: most of
-the picture is scenery), because the strips do not use the sky.
-
-What makes `bg-junkyard-near` the reference: one even dark brown-grey outline of the same
-weight on everything; 6 to 12 big whole objects, each drawn once, overlapping a little;
-warm rust, tan and teal fills clearly darker than the beige ground; a low ground band with
-only magenta behind the objects; an uneven top silhouette (a spring, a bolt, a grass tuft
-sticks up here and there, never a straight line); the dark outline meets the magenta
-directly. The flagged pictures fail on one of these: a flat top edge (planet-near), too
-many small pieces and pale fills on a pale ground (robocity), a light pink rim (workshop).
-
-**meadow**
-- Palette: sky #BFE3F5, grass #8CCB6A and #5FA84A, accents warm yellow #F6D55C and pink #F2A5B8, outline #3F5B3A.
-- Outline: 2 px dark green-grey, uniform.
-- Light and shading: flat fills, one soft lighter band on top of hills and bushes.
-- Ground line: grass fills the lower two thirds, hills start at about the middle.
-- Never: sun, moon, white outline, perspective.
-
-**space**
-- Palette: space #1B1F4B and #3A2E7A, glow #F6E7A8, nebula #B58AE6 and #6EC9D8, outline none for glows, #2A2A55 for solid shapes.
-- Outline: 2 px dark indigo on solid shapes only, stars and glows are soft.
-- Light and shading: soft glows, flat planet fills, no gradients to white.
-- Ground line: none, the Earth curve sits at the bottom left only.
-- Never: sun, moon, one big planet in the middle, perspective, white outline.
-
-**planet**
-- Palette: sky #CFF3E4, ground #7FC9A0 and #4E9E8A, accents turquoise #3CC7C0 and lilac #B79CE8, outline #3C5560.
-- Outline: 2 px dark blue-grey, uniform.
-- Light and shading: flat fills, one lighter band on top, glow only on flowers.
-- Ground line: ground and swamp fill the lower half, mushroom trees stand on it.
-- Never: sun, any moon, white outline, pink rim, perspective.
-
-**dragons**
-- Palette: sky #F8C9A0 and #F4A7A0, rock #B98B6E and #8C6A58, moss #8FBF7A, accent #F28C4B, outline #5A3E36.
-- Outline: 2 px dark warm brown, uniform.
-- Light and shading: flat fills, one soft lighter band on top, warm light from the left.
-- Ground line: hills and grass fill the lower two thirds, mountains behind at the middle.
-- Never: visible sun, white outline, pink rim, perspective.
-
-**egg**
-- Palette: sky #CDE9F7, grass #9AD36F and #6DB552, river #6DB8E8, accents #FFD966 and #F7A8C4, outline #44613F.
-- Outline: 2 px dark green, uniform.
-- Light and shading: flat fills, one soft lighter band on top.
-- Ground line: one gentle slope going down from left to right in the lower two thirds.
-- Never: sun, moon, white outline, perspective.
-
-**junkyard**
-- Palette: sky #BFD8E6, ground #CDB48F and #A88C68, rust #B5653A and #D98A52, steel #7FA3AA and #7A7F86, crate #E0B878, outline #4A4038.
-- Outline: 2 px dark brown-grey, uniform (the reference look).
-- Light and shading: flat fills with small rust speckles, one soft lighter band on top.
-- Ground line: beige dusty ground in the lower third, piles rise from it.
-- Never: sun, white or pink outline, perspective, sharp rust-red glare.
-
-**workshop**
-- Palette: wall #D9A66B and #B9814E, wood floor #E7B982, accents mint #9CCFB4, coral #F08F78, steel #A9B0B8, outline #5A3A25.
-- Outline: 2 px dark brown, uniform, also against the magenta.
-- Light and shading: flat warm fills, one soft lighter band on top, warm lamp light only.
-- Ground line: a wooden bench or floor band across the lower quarter.
-- Never: window sun, pale pink or white rim around objects, perspective.
-
-**raintown**
-- Palette: sky #B7C6D6, wet street #8E9AAE and #6F7C93, houses #F2B6A0, #A9D1C2 and #F6D98C, lit windows #FFE9A8, outline #3B4560.
-- Outline: 2 px dark blue-grey, uniform.
-- Light and shading: flat fills, thin lighter reflections on wet ground, soft grey rain lines only in the far picture.
-- Ground line: a wet street band in the lower third.
-- Never: sun, rainbow, white outline, perspective.
-
-**robocity**
-- Palette: sky #CDB8E8 and #E8C9E0, metal #8E97AE and #B9C0D4, ground #6B7391, glow accents #7FE0E8, #F59BC8 and #FFD97A, outline #2F3550.
-- Outline: 2 px dark navy, uniform, thick enough to read against pale fills.
-- Light and shading: flat metal fills clearly darker than light panels, glow only on lights and lines.
-- Ground line: a dark flat ground band in the lower fifth; pieces stand on it with air between them.
-- Never: sun, moon, busy small parts, white outline, perspective.
-
-**robohome**
-- Palette: wall #F3DDB8 and #E2C092, floor #C98F5B, accents teal #6FBDB5, coral #F08A7A, lamp #FFE29A, outline #5A3F33.
-- Outline: 2 px dark brown, uniform.
-- Light and shading: flat warm fills, one soft lighter band on top, glow only around lamps.
-- Ground line: a wooden floor band across the lower quarter.
-- Never: outdoor sun, white or pink rim, perspective.
-
-**garden**
-- Palette: sky #C9E8F7, grass #9AD27A and #6FB65A, flowers pink #F5A3C0, lilac #C3A5E8, yellow #FFE08A, outline #4A6340.
-- Outline: 2 px dark green, uniform.
-- Light and shading: flat fills, one soft lighter band on top of bushes.
-- Ground line: grass in the lower third, flower beds above it.
-- Never: sun, open bright blooms in the strips (buds only), white outline, perspective.
-
-**forestpath**
-- Palette: sky #DDEFD9, trunks #8B6B52 and #6E5441, leaves #7DBE7A and #4F9A63, path #D9BE8F, moss #A7D18B, outline #3E4A38.
-- Outline: 2 px dark green-brown, uniform.
-- Light and shading: flat fills, soft green light only from above, no light beams.
-- Ground line: forest floor in the lower quarter, trunks rise from it.
-- Never: sun disc, white outline, pink rim, perspective.
-
-**lilylake**
-- Palette: sky #D6ECF7, water #8FC9DD and #6BB0CC, reeds #7DB56A, lily pads #5FA86A, lilies #F5B5CC, pebbles #B9B4A8, outline #3F5760.
-- Outline: 2 px dark blue-green, uniform.
-- Light and shading: flat fills, ripples as thin lighter lines, no mirror reflections.
-- Ground line: the shore or water band in the lower third.
-- Never: sun, moon, white outline, perspective.
-
-**musictree**
-- Palette: sky #D9C6F0 and #F2C9DC, trees #8E7CC8 and #6C9E8A, grass #86B38A, glow accents #FFD97A and #9AE0E8, outline #4A3F6B.
-- Outline: 2 px dark violet, uniform.
-- Light and shading: flat fills, one soft lighter band on top, glow only on bells and flowers.
-- Ground line: grass in the lower quarter, round trees behind.
-- Never: sun, moon, white outline, perspective.
-
-**rescue** (the rescue camp of every rescue mission, not a world of its own)
-- Palette: sky #4A3F7A and #F2B08A, hills #5A4E78 and #3A3354, wood #8A6248, lanterns #FFC861 with glow #FFE3A8, tents #E89B6A and #6FA8A0, outline #2A2440.
-- Outline: 2 px dark violet-grey, uniform.
-- Light and shading: flat evening fills, one soft lighter band on top, warm glow only around lanterns.
-- Ground line: dusky grass in the lower quarter, the camp stands on it.
-- Never: sun, moon, fire flames, white outline, pink rim, perspective.
-
-**moonball**
-- Palette: sky #1E2556 and #3D2F7A, bushes #2E4A6B and #3F6E7A, grass #3C6A63, glow accents #FFE9A0 and #9AF0D8, outline #141B3D.
-- Outline: 2 px very dark navy, uniform.
-- Light and shading: flat dark fills, glow only on lanterns, mushrooms and fireflies, soft stars in the far sky.
-- Ground line: dark grass in the lower quarter.
-- Never: any moon, sun, white outline, pink rim, perspective.
 
 ## 4. Game objects (sprites)
 

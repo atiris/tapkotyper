@@ -27,8 +27,8 @@
   its last part. Enter presses count in the key
   statistics like any key, but Enter is no lesson key: it never holds the next keys back.
 - Adaptive practice: keys with low accuracy or slow reaction appear more often in words.
-  A letter catch (the calm step of a world) trains single keys: about half are the newest
-  group, the rest the weakest known keys.
+  Waiting words (the calm step of a world) are short words with different first letters,
+  built like other words from the newest group and the weakest known keys.
 - Story levels use the child's current key set, so the story and the lessons move together.
 - Each story level needs a number of known keys that only grows: the dragon story starts
   gently (Honey Meadow 3, 3, 4, 5; Rocket 7, 8, 9, 10; New Planet 12, 13, 14, 15; Dragon

@@ -104,12 +104,12 @@
   },
   "map": {
     "act": {
-      "chase": "Main game",
-      "catch": "Letter catch",
-      "clean": "No slips",
+      "chase": "Word stream",
+      "catch": "Waiting words",
+      "clean": "Copy",
       "crossroads": "Crossroads",
-      "listen": "Listen and type",
-      "remember": "Remember",
+      "listen": "Dictation",
+      "remember": "Secret words",
       "super": "Big challenge"
     },
     "welcome": {
@@ -577,7 +577,7 @@
       "The meadow animals kick leaves like a ball and want to score a goal on you. Type the word on a leaf to catch it!"
     ],
     "dewStart": [
-      "Morning dew is on the grass. Type the letter on a drop and a flower grows from it!"
+      "Morning dew is on the grass. Type the letters on a drop and a flower grows from it!"
     ],
     "gustStart": "A gust of wind! Lots of small leaves at once.",
     "invitationStart": [

@@ -16,15 +16,6 @@ describe('word filter', () => {
 });
 
 describe('WordSource', () => {
-  it('picks single letters for a letter catch: the focus often, weak keys more, never space or one on screen', () => {
-    const src = new WordSource(WORDS, { keys: ['f', 'j', ' ', 'd', 'k'], len: [2, 6], noDiacritics: false, seed: 5, focus: ['d', 'k'], weights: { f: 6, j: 1 } });
-    const got = Array.from({ length: 400 }, () => src.letter(new Set(['k'])));
-    const n = (c: string) => got.filter((x) => x === c).length;
-    expect(got.every((c) => ['f', 'j', 'd'].includes(c))).toBe(true);
-    expect(n('d')).toBeGreaterThan(150);
-    expect(n('f')).toBeGreaterThan(n('j') * 2);
-  });
-
   it('uses letter drills for tiny key sets', () => {
     const src = new WordSource(WORDS, { keys: ['f', 'j'], len: [2, 6], noDiacritics: false, seed: 1 });
     for (let i = 0; i < 50; i++) expect(src.next()).toMatch(/^[fj]+$/);

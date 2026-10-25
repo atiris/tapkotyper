@@ -8,8 +8,8 @@ import type { Target } from '../typing';
 
 /** Blade tips where dew drops sit, as shares of the stage width and of its height. */
 const SPOTS: [number, number][] = [[0.3, 0.6], [0.4, 0.48], [0.5, 0.64], [0.6, 0.5], [0.7, 0.62], [0.8, 0.46], [0.9, 0.6]];
-/** Drops on the grass at once, and the pause before a new one comes. */
-const DROPS = 5;
+/** Drops on the grass at once (each starts with another letter), and the pause before a new one comes. */
+const DROPS = 3;
 const DROP_PAUSE = 0.8;
 const DROP_SIZE = 90;
 /** A flower opens, stays and fades, then its blade is free again. */
@@ -99,8 +99,14 @@ export class DewdropsMode extends Mode {
     const onGrass = this.spots.filter((s) => s.drop).length;
     const free = this.free();
     if (this.wait <= 0 && onGrass < DROPS && this.spawned < this.L.count && free.length) {
+      const word = this.L.word(2, 1);
+      // Every waiting word starts with its own letter, so the first key picks the word.
+      if (this.L.core.active.some((t) => t.word[0] === word[0])) {
+        this.wait = 0.2;
+        return;
+      }
       const s = this.spots[this.L.rng.pick(free)];
-      s.drop = this.L.core.add(this.L.letter(), {});
+      s.drop = this.L.core.add(word, {});
       s.dropT = 0;
       this.spawned++;
       this.wait = 0.4;

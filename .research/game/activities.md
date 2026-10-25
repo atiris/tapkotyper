@@ -1,7 +1,7 @@
 # Activity catalog: the kinds of games a level can be
 
-**Status:** brainstorm with the owner's list (2026-10-25), not decided. **Prio:** P1 (feeds the
-world plan after the meadow playtest). **Effort:** L, engine by engine.
+**Status:** owner's decisions 2026-10-25 (see Decisions); spread over worlds still a draft.
+**Prio:** P1 (feeds the world plan after the meadow playtest). **Effort:** L, engine by engine.
 
 [world-rhythm.md](world-rhythm.md) fixed the five roles of a world (main game, calm step,
 harder main game, twist, super-obstacle). This file names the activities that fill the roles,
@@ -13,149 +13,162 @@ standard name, used in the map tooltip and Tapko's lines, instead of "main game"
 | Name (sk / en) | What the child does | Today | Role |
 |---|---|---|---|
 | **Prúd slov** / Word stream | words fly or roll toward Tapko, typed before they arrive | every world's main game | 1, 3 |
-| **Čakajúce slová** / Waiting words | still words of 2+ letters wait on objects; each starts with a different letter, every letter is typed | dew drops (single letters) | 2 |
-| **Odpis** / Copy | a still line or a short text, typed in order; a slip clears one word | invitation (one line) | 2, 4 |
-| **Odposluch** / Dictation | a voice says a word, later a phrase or a sentence; nothing written | dictation style of the main game | 4 |
-| **Tajné slová** / Secret words | a word shows for a moment and hides; typing starts only after it hides | memory style, mole | 4 |
-| **Pexeso** / Memory pairs | cards with words on the back; typing a word flips its card; two equal pictures are won | new | 4 |
-| **Skladačka** / Jumble | a longer word with swapped letters; the child types the right word | new | 4 |
-| **Strelnica** / Target range | special: a thrown thing passes rings, each with a word | yes, after the super level | special |
-| **Papagáj** / Parrot | special: repeating the same few words until they get faster | new, see below | special |
+| **Čakajúce slová** / Waiting words | still words of 2+ letters wait on objects; each starts with a different letter | dew drops (2 letters) | 2 |
+| **Odpis** / Copy | a still line or a short text, typed in order | - | 2, 4 |
+| **Odpis pribúdajúci** / Growing copy | copy, but each slip adds words | invitation | 2, 4 |
+| **Odposluch** / Dictation | a voice says a word or several words in a row; nothing written | dictation style of the main game | 4 |
+| **Tajné slová** / Secret words | a word shows for a moment and hides; typing starts after it hides | memory style, mole | 4 |
+| **Pexeso** / Memory pairs | cards with words; typing a word flips its card; two equal objects are won | new | 4 |
+| **Skladačka** / Jumble | a longer word with swapped letters; the child types the right word | new | 4, 2-3 times only |
+| **Strelnica** / Target range | side card: a thrown thing passes rings, each with a word | yes | side |
+| **Papagáj** / Parrot | side card: the same few words repeated until the fingers know them | new, see below | side |
 
 Engines already in [world-rhythm.md](world-rhythm.md) fold into these names: crossroads
 (planet signs) is a waiting-words variant where the typed word picks the way; build (nest,
 star map) is waiting words where each word adds a piece; text page is a longer copy; rhythm
 and hide-and-seek are word-stream variants (beat, pop-up).
 
-### Notes on each
+### Rules of each
 
 - **Word stream:** stays as is; the level-3 surprise (gust) is its harder form.
 - **Waiting words:** the different first letters are the point. Before the first letter the
-  game cannot know which key the child meant, so a key that starts no word counts only in
-  the level's accuracy (a round error), not in a key's statistics. After the first letter the
-  word is chosen and each wrong key counts against the expected key. So the number of waiting
-  words is at most the number of different first letters the level's keys allow (in the
-  meadow 3 to 4 words). Single letters (today's dew drops) remain only where the level has too
-  few keys for words.
-- **Copy:** grows from one line (invitation) to 2-5 lines with spaces and punctuation (story
-  pages).
-- **Dictation:** needs the voice for phrases and sentences, today only words. Show the text
-  after it is typed, never before.
-- **Secret words:** must not punish a slow reader: the word stays until the child has looked
-  at it (at least the reading time of its length), and the voice can repeat it once on request.
-- **Memory pairs:** good as a twist, but it has less typing per minute than other activities
-  (looking and remembering take time). Keep the grid small (6-12 cards) and the level short.
-  A word won once is not typed again; a wrong pair turns back after a moment.
-- **Jumble:** trains reading and spelling more than fingers, and swapped letters are hard for
-  a young reader. Easy: one swap of two neighbour letters, medium: two swaps, hard: three swaps
-  (from words of 6+ letters). Only words from the child's word list; a picture hint under the
-  word. Accept only the original word, even if the swap makes another real word. Place it in
-  the robot and fairy story, not in the dragon story.
-- **Target range:** stays special as specified in `.specify/game/target-practice.md`.
+  game cannot know which key the child meant, so a key that starts no word counts only in the
+  level's accuracy (a round error), not in a key's statistics. After the first letter the word
+  is chosen and each wrong key counts against the expected key. So there are at most as many
+  words at once as different first letters: 3 in the meadow, which is fine for the very first
+  level. New words keep coming until the level's minimum time is played. Done in the meadow
+  (2026-10-25); the dew drops will still be reworked.
+- **Copy:** the standard form, one line to a few lines, a slip only counts.
+- **Growing copy:** a slip turns the word red, it fades, and 2 new words come (3 in a
+  super-obstacle), up to the ceiling (1 + story order) x 3 of extra words.
+- **Dictation:** several words in a row instead of sentences. **The text must be fully
+  audible:** only lowercase, no commas, question marks, dashes or other marks, only words from
+  the dictionary (no pseudo-words, drills or names), and words long enough not to blur in
+  speech. Slovak also writes some sounds two ways, so skip words where the hearing does not
+  decide the spelling: a voiced consonant that sounds voiceless at the word's end or before
+  another consonant (dub sounds like "dup", vták like "vtak"), and i/y, í/ý after consonants
+  where both are possible (bili/bily). The same applies to the dictation style of the main
+  game already in the code.
+- **Secret words:** the show time follows the child's typing pace (a slower typist reads
+  slower). A wrong key shows the word again for a moment and hides it; a second wrong key in
+  the same word leaves it fully visible.
+- **Memory pairs:** a calm level, speed does not matter. 6, 8, 10 or 12 cards. Each card shows a
+  word; typing it flips the card and shows the world's object behind it (a bee, a flower, a
+  screw); two equal objects are won, two different turn back after a moment. A won card is not
+  typed again. Objects are the world's existing sprites, not pictures of the words.
+- **Jumble:** not a standard level, 2 to 3 places in the robot and fairy story, no time limit,
+  a calm level. A longer word comes with swapped letters (easy 1 swap, medium 2, hard 3). Each
+  wrong key undoes one swap (first slip the first swap back, second slip the second), so the
+  word repairs itself as the child struggles. No pictures. Only the original word counts.
+- **Target range:** stays as specified in `.specify/game/target-practice.md`.
 
-## The parrot: repeat until it is faster
+## The parrot
 
-The aim is muscle memory: the same words again and again, until the fingers know them.
-The owner's form: learning (3-5 words, each about 3 times in turn: dom strom časy dom strom
-časy ...), then testing (each word up to 5 tries to be faster than in learning; a wrong key
-voids the try).
+**Owner's decision:** slow typing is not cheating here, the point is the practice. So the
+parrot does not judge speed. A world's parrot is done when every word was repeated as asked.
 
-**The cheat:** typing slowly while the parrot learns makes every test easy. Four rules close it.
+**Place:** the last card of each world, after the target range, with a parrot symbol instead
+of stars. It never starts by itself, only when the child picks it.
 
-1. **The parrot also knows the child's usual pace.** The game already keeps the reaction time
-   of the last presses of every key (`profile.stats.keys[key].recent`). The usual time of a
-   word is the sum of the median times of its keys. The parrot's goal for a word is the
-   *faster* of the learning time and the usual time. Slow learning cannot push the goal past
-   the child's normal pace, so it gains nothing.
-2. **The clock runs from the first key to the last.** Reading time and waiting before the
-   first key do not count, so waiting cannot be used to look slow or fast.
-3. **The best of the learning repetitions counts, not the first.** The third repetition is
-   usually the fastest; taking the best of the three means the child has to improve over
-   their own best, not over a cold start.
-4. **The parrot remembers.** It keeps the best time of each of its words from earlier visits
-   (per world, its words stay the same). On a later visit the goal is the fastest of
-   learning, usual pace and the record, so the child sees real progress over days, and the
-   first visit's slowness never helps again.
+**Round:**
+1. *Learning:* the words come in turn, each 3 times (dom strom časy dom strom časy dom strom
+   časy). The parrot repeats each typed word.
+2. *Repeating:* each word on its own, several times in a row (dom dom dom dom, strom ...).
+   A wrong key adds 2 more repetitions of that word instead of an error; at most +6 per word,
+   so a round always ends.
 
-**Goal for a try:** at least 5 % faster than the goal time, and no wrong key. Five percent is
-small enough to reach by repetition alone, large enough not to happen by chance.
+**Size by story and world** (proposal; story order s = 1 dragon, 2 robot, 3 fairy; world in the
+story w = 1 to 5):
 
-**What the child sees:** the parrot repeats each word in its own voice after the child types it
-in learning; in testing it nods for a faster try and shows a feather; a word passed is "learned"
-and the parrot says it proudly. Up to 5 tries per word; a word not passed is "still learning",
-no failure.
+| | Dragon story | Robot story | Fairy story |
+|---|---|---|---|
+| Words | 3 | 4 | 5 |
+| Word length | 2-4 (worlds 1-2), 3-5 (worlds 3-5) | 4-5, then 4-6 | 5-6, then 5-7 |
+| Repeats per word in phase 2 | 3 | 4 | 5 |
 
-**Evaluation:** stars come from accuracy, as everywhere (no new star rule). Beside the stars the
-end screen shows, per word, how much faster it got than the goal (for example "strom o 12 %
-rýchlejšie") and the parrot's feathers (one per learned word). The per-word records are what
-the parents' statistics can show as fluency progress.
+Words come from the world's own keys, real words where the keys allow it, preferring the
+child's weakest keys; new words each time the parrot is played. A round takes about 1 to 3
+minutes (the fairy story: 5 words x 8 times x 6 letters is about 240 keys).
 
-**Where:** a second optional node next to the target range, opened with the world's super level
-like the range. The range trains accuracy of weak letters, the parrot trains fluency of whole
-words, so the two side nodes have different jobs. Words: 3 words in the dragon story (3, 4 and
-5 letters), 4 in the robot story, 5 in the fairy story, from the world's own keys.
+**Parrots fly away:** so the parrots are practised again now and then.
+- Each day the child plays, one roll per day since the last check: 20 % chance that one
+  parrot flies away (picked at random among the done ones). A child back after 13 days gets 13
+  rolls.
+- The count never drops below the highest count ever reached minus 3, and the last parrot
+  never flies (so the floor is max(1, best - 3)).
+- 21 days after the last parrot was won, the count drops straight to that floor.
+- The child gets a message when a parrot flew away; its world card shows the parrot as not
+  done until the child plays it again (it can be an easy meadow or a hard fairy world).
+- The **Papagáj** badge on the profile needs the parrot of every world the child has opened;
+  a parrot flying away takes the badge away until it is won back.
 
-## New ideas outside the groups above
+Is it too complicated? For the child it is simple: "a parrot flew away, go get it back". The
+rules underneath are only the daily roll, the floor and the 21-day drop, all in one place.
 
-- **Atramentová hmla** / Ink fog (blind copy): the child copies a line, but the typed letters
-  hide under ink at once; only a soft tick or a soft buzz says right or wrong. At the end of the
-  line the ink clears and shows what was typed. It trains trust in the fingers instead of
-  watching each letter appear. Fits the fairy story twist (night, magic ink).
-- **Poskladaj vetu** / Sentence puzzle: the words of a short sentence lie in a mixed order; the
-  child types them in the order that makes sense, and the sentence comes alive as a picture
-  ("drak spí v jaskyni"). It trains reading for meaning and spaces between words, not new
-  keys. Robot and fairy story.
-- **Pomenuj** / Name it: a picture without a word (a cup, a ball); the child types its name. A
-  short hint shows the first letter after a few seconds, the whole word after more. It trains
-  writing a word from memory, the step between copying and free writing. Only words from the
-  child's keys; good for the robot story onward.
+## New ideas outside the groups above (not decided)
+
+- **Atramentová hmla** / Ink fog (blind copy): typed letters hide under ink at once; only a
+  soft sound says right or wrong. The ink clears at the end of the line. Trains trust in the
+  fingers.
+- **Poskladaj vetu** / Sentence puzzle: words of a short sentence in a mixed order; typed in
+  the order that makes sense. Trains reading for meaning.
+- **Pomenuj** / Name it: was a picture to name; dropped with the decision against pictures of
+  words.
 
 ## Difficulty knobs
 
 | Activity | Easier | Harder |
 |---|---|---|
 | Word stream | slower, shorter words, fewer at once | faster, longer words, surprise in the middle |
-| Waiting words | 2-3 letters, 3 words | 4-6 letters, 5 words, similar starts |
-| Copy | one line of short words | several lines, punctuation, capitals |
-| Dictation | single words, repeat allowed | phrases, then sentences, one repeat |
-| Secret words | long show time, short words | short show time, longer words, two at once |
-| Memory pairs | 6 cards, short words | 12 cards, longer words |
-| Jumble | 1 swap of neighbours | 2-3 swaps, longer words |
-| Parrot | 3 short words | 5 words up to 5 letters, record from earlier visits |
+| Waiting words | 2-3 letters, 3 words | 4-6 letters, 5 words |
+| Copy, growing copy | one line of short words | several lines, punctuation, capitals |
+| Dictation | 1-2 words, repeat allowed | 3-5 words in a row, longer words |
+| Secret words | longer show, short words | shorter show, longer words, two at once |
+| Memory pairs | 6 cards | 8, 10, 12 cards |
+| Jumble | 1 swap | 2-3 swaps, longer words |
+| Parrot | see the parrot table | |
 
 ## Spread over the worlds (draft)
 
-Level 1 and 3 stay word stream, level 5 the super-obstacle. Level 2 is a calm activity,
-level 4 a twist. Difficulty grows story by story; the activity mix widens.
+Level 1 and 3 stay word stream, level 5 the super-obstacle; each world also has the target
+range and the parrot cards.
 
 | World | Level 2 (calm) | Level 4 (twist) |
 |---|---|---|
-| Meadow | Waiting words (dew drops, 2 letters) | Copy (invitation) |
-| Space | Waiting words, build (star map) | Dictation, words (radio from base) |
+| Meadow | Waiting words (dew drops) | Growing copy (invitation) |
+| Space | Waiting words, build (star map) | Dictation (radio from base) |
 | Planet | Waiting words, crossroads (signs) | Secret words (crystal cave) |
 | Dragons | Waiting words, build (nest) | Copy, text page (lullaby) |
 | Egg | Waiting words, crossroads (which way) | Secret words (night roll) |
-| Junkyard | Waiting words (sorting screws) | Copy (Bolt's manual) |
-| Workshop | Waiting words, build (blueprint) | Memory pairs (spare parts) |
-| Rain | Copy (puddle stones) | Jumble, 1 swap (washed-out signs) |
-| City | Copy, text page (timetable) | Dictation, phrases (voice door) |
-| Home | Copy (box labels) | Sentence puzzle (photo album captions) |
-| Garden | Waiting words (seeds) | Name it (what grew) |
+| Junkyard | Waiting words (sorting screws) | Growing copy (Bolt's manual) |
+| Workshop | Waiting words, build (blueprint) | Memory pairs, 6-8 cards (spare parts) |
+| Rain | Copy (puddle stones) | Jumble (washed-out signs) |
+| City | Copy, text page (timetable) | Dictation (voice door) |
+| Home | Copy (box labels) | Memory pairs, 8-10 cards (photo album) |
+| Garden | Waiting words (seeds) | Memory pairs, 10-12 cards (seed packets) |
 | Path | Waiting words, build (nest) | Secret words (falling feathers) |
-| Lake | Copy (lily stones) | Dictation, sentences (frog choir) |
-| Tree | Copy, text page (song sheet) | Jumble, 2-3 swaps (tangled song) |
-| Ball | Copy (invitations) | Ink fog (magic letters) |
+| Lake | Copy (lily stones) | Dictation (frog choir) |
+| Tree | Copy, text page (song sheet) | Jumble (tangled song) |
+| Ball | Growing copy (invitations) | Jumble or ink fog (magic letters) |
 
-The fairy story keeps its rule that level 4 flips the world's style (see world-rhythm
-decision 5); the table respects it where the world is a dictation world. Memory pairs, jumble,
-sentence puzzle, name it and ink fog appear only from the robot story on, when the child has
-enough keys for real words.
+The fairy story keeps level 4 flipping the world's style (world-rhythm decision 5).
 
-## Open questions for the owner
+## Map icons
 
-1. Waiting words in the meadow: change dew drops from letters to 2-letter words now, or keep
-   letters there and start words in space?
-2. Parrot as a side node next to the range (proposal), or as level 2 of some worlds?
-3. Of the three new ideas, which to keep?
-4. Jumble and memory pairs need pictures for words (hint and card face): new art per word, or
-   text only?
+Each activity has an icon on its level dot (`ui-act-*`, prompts in `assets-src/PROMPTS.md`
+section 9). Missing: waiting words, memory pairs, jumble, the parrot card.
+
+## Decisions (owner, 2026-10-25)
+
+1. Waiting words: 3 at once in the meadow is fine; words come again until the time is played;
+   dew drops are 2-letter words now.
+2. Memory pairs: 6, 8, 10, 12 cards, a calm level.
+3. Jumble: 2-3 places in the robot and fairy stories, no time limit, each slip undoes a swap.
+4. Secret words: a slip shows the word again briefly, a second slip shows it fully; show time
+   follows the typing pace.
+5. Copy in two forms: standard and growing (+2 words a slip, +3 in a super-obstacle, capped).
+6. Dictation: several words instead of sentences; only audible text (see its rules).
+7. Target range unchanged.
+8. Parrot: a side card in each world after the range, no stars, flies away as described,
+   badge for all parrots; speed is not judged.
+9. No pictures of words.

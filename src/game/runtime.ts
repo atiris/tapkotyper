@@ -508,11 +508,6 @@ export class LevelRuntime {
     return this.enter?.next() ? w + ENTER : w;
   }
 
-  /** Next single letter (letter catch), never one already on screen. */
-  letter(): string {
-    return this.words.letter(new Set(this.core.active.map((t) => t.word)));
-  }
-
   /**
    * Seconds a target takes to reach the player: difficulty, the child's word pace (reading
    * included) and time to read it; a capital gets more, and the pressure valve slows it down.

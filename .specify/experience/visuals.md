@@ -48,8 +48,8 @@
 - In a level the character keeps its size relative to the scene: it grows and shrinks with
   the stage like the gloves, the creatures and the background, so a tall window does not make
   it small next to them.
-- A level dot on the map shows the icon of its activity (main game, letter catch, clean
-  line, crossroads, listening, remembering, big challenge) with the stars under it; its
+- A level dot on the map shows the icon of its activity (word stream, waiting words, copy,
+  crossroads, dictation, secret words, big challenge) with the stars under it; its
   tooltip says the number and the activity. A dot without its picture shows the number.
 - The world cards of a story stay in one row while the window is at least about 1000 px
   wide (they shrink with the space, the side column narrows below 1300 px); in a narrower

@@ -189,15 +189,6 @@ export class WordSource {
     return this.remember(target);
   }
 
-  /** One letter key for a letter catch: the focus group about half of the time, else weighted toward weak keys; none from `avoid`. */
-  letter(avoid: Set<string> = new Set()): string {
-    const free = this.letters.filter((c) => !avoid.has(c));
-    const list = free.length ? free : this.letters;
-    const focus = list.filter((c) => this.focus.has(c));
-    if (focus.length && this.rng.chance(0.5)) return this.rng.pick(focus);
-    return this.weightedFrom(list);
-  }
-
   private remember(target: string): string {
     this.recent.push(target);
     if (this.recent.length > 12) this.recent.shift();

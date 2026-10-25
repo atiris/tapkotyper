@@ -50,11 +50,13 @@
   main game, gently; 2 a calm step; 3 the main game, harder, with one short surprise; 4 a
   twist; 5 the super-obstacle. Each level dot on the map shows the icon of its activity
   (the number stays in its tooltip and for screen readers).
-  - *Letter catch* (calm step): still objects carry one letter each, never two the same on
-    screen; about half are the newest keys, the rest weighted toward weak keys. Nothing
-    moves toward the child and nothing is missed. A calm step lasts at least 1 minute of
+  - *Waiting words* (calm step): still objects carry short words (2 letters in the meadow),
+    each starting with another letter, so the first key picks the word and every later key
+    is measured against the key it should be; a key that starts no word counts only in the
+    level's accuracy. New words keep coming until the minimum time is played. Nothing moves
+    toward the child and nothing is missed. A calm step lasts at least 1 minute of
     active play, not 2.
-  - *Clean line* (twist): a row of 3 to 4 words typed from left to right. A slip turns the
+  - *Copy* (twist, a clean line): a row of 3 to 4 words typed from left to right. A slip turns the
     word red, it fades away and the next word is the one to type; the level gets 2 more
     words, at most (1 + story order) x 3 in all (6 in the dragon story).
   - *Gust* (surprise of the meadow's level 3): half way through, the character says that

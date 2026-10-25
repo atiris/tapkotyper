@@ -90,6 +90,7 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
       'aim.hitsDone', 'aim.done', 'aim.beforeAfter', 'aim.opened', 'aim.again', 'aim.toMap', 'aim.collection.*'),
     g('aim-lines', 'aim.lines.*'),
     { id: 'aim-thing', keys: [], each: 'aim.things' },
+    g('parrot', 'parrot.*'),
   ] },
   { id: 'results', groups: [
     g('results', 'results.*'),

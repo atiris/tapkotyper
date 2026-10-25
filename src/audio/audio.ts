@@ -2,7 +2,7 @@ import { assetUrl, hasMusic, musicTracks } from '../gfx/assets';
 import { keyboardGated } from '../app/keyboard-gate';
 import { nextTrack } from './tracks';
 
-export type Sfx = 'key' | 'wrong' | 'word' | 'reward' | 'click' | 'whoosh' | 'pop' | 'beat' | 'cheer' | 'bzzt' | 'note' | 'plop' | 'squeak' | 'ring' | 'whistle' | 'crack' | 'thud';
+export type Sfx = 'key' | 'wrong' | 'word' | 'reward' | 'click' | 'whoosh' | 'pop' | 'beat' | 'cheer' | 'bzzt' | 'note' | 'plop' | 'squeak' | 'ring' | 'whistle' | 'crack' | 'thud' | 'squawk';
 /** Quick sound switch: normal, quiet (20 % of normal) or off. */
 export type SoundLevel = 'normal' | 'quiet' | 'off';
 
@@ -186,6 +186,7 @@ class AudioEngine {
       case 'ring': for (let i = 0; i < 8; i++) tone(i % 2 ? 1480 : 1320, i * 0.07, 0.06, 'square', 0.03); break;
       case 'whistle': tone(2100, 0, 0.18, 'sine', 0.12, 2300); tone(2100, 0.2, 0.32, 'sine', 0.12, 1900); break;
       case 'crack': tone(1800, 0, 0.03, 'square', 0.05, 900); tone(1400, 0.05, 0.03, 'square', 0.04, 700); break;
+      case 'squawk': tone(950, 0, 0.11, 'sawtooth', 0.06, 1500); tone(1250, 0.12, 0.14, 'sawtooth', 0.05, 750); break;
       case 'thud': tone(110, 0, 0.3, 'sine', 0.3, 50); tone(70, 0.02, 0.25, 'triangle', 0.15, 40); break;
       case 'beat': tone(440, 0, 0.08, 'sine', 0.12); break;
       // A bell-like note of a pentatonic scale, a little song as the notes add up.

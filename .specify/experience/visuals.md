@@ -51,6 +51,11 @@
 - A level dot on the map shows the icon of its activity (word stream, waiting words, copy,
   crossroads, dictation, secret words, big challenge) with the stars under it; its
   tooltip says the number and the activity. A dot without its picture shows the number.
+- A finished world adds two side cards after its super star: the target range (a red target)
+  and the parrot (the macaw `ui-act-parrot`, grey until won or after it flew away, in colour on
+  green while it is at home). The Parrot badge (`ui-badge-parrot`, the macaw on a round branch)
+  is a small picture of about 28 px right of the player's name, with a tooltip; the parrot
+  flying away is `obj-parrot-flying`.
 - The world cards of a story stay in one row while the window is at least about 1000 px
   wide (they shrink with the space, the side column narrows below 1300 px); in a narrower
   window they go three and two.

@@ -3,6 +3,7 @@ import { isMastered } from '../learning/lessons';
 import { COMPANION_KINDS, type CompanionKind, type Profile } from '../storage/schema';
 import { LEVELS, WORLDS, worldLevels } from './levels';
 import { WORLD_THINGS } from './modes/aim-things';
+import { PARROT_POINTS, hasParrotBadge } from './parrots';
 
 /**
  * Accessory unlock positions: levels, worlds and key mastery. The accessories listed here are
@@ -92,16 +93,16 @@ export function totalStars(p: Profile): number {
 /** Three stars in every story level. A new level, world or range thing changes the maxima shown in "My progress". */
 export const MAX_STARS = LEVELS.length * 3;
 
-/** Points of the treasure chest: a world badge by its tier, and one for each rare thing found at a range. */
+/** Points of the treasure chest: a world badge by its tier, one for each rare thing found at a range, and the Parrot badge. */
 export const BADGE_POINTS: Record<BadgeTier, number> = { bronze: 1, silver: 2, gold: 3 };
-export const MAX_CHEST = WORLDS.length * BADGE_POINTS.gold + WORLD_THINGS.length;
+export const MAX_CHEST = WORLDS.length * BADGE_POINTS.gold + WORLD_THINGS.length + PARROT_POINTS;
 
 export function chestPoints(p: Profile): number {
   const badges = WORLDS.reduce((a, _, w) => {
     const tier = badgeTier(p, w);
     return a + (tier ? BADGE_POINTS[tier] : 0);
   }, 0);
-  return badges + WORLD_THINGS.filter((th) => p.progress.rangeFinds.includes(th.id)).length;
+  return badges + WORLD_THINGS.filter((th) => p.progress.rangeFinds.includes(th.id)).length + (hasParrotBadge(p) ? PARROT_POINTS : 0);
 }
 
 /** Stars (summed over all levels) each kind needs for this player, in the order they are earned; the starting kind costs 0. */

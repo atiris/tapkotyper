@@ -150,6 +150,10 @@
       "title": "Thing: {item}",
       "about": "Lines and sounds for one thing Tapko throws. This group shows once for every thing."
     },
+    "parrot": {
+      "title": "Parrot",
+      "about": "The parrot game next to every finished world: a few words many times in a row until the fingers know them, and the Parrot badge."
+    },
     "results": {
       "title": "Results screen",
       "about": "The card after a level or exercise: facts, new rewards and buttons."
@@ -421,6 +425,10 @@
     "map.act.*": "Name of a level's activity in the tooltip over its map dot and for screen readers, for example \"2. Waiting words\". Short, 1 to 3 words.",
     "map.super": "Label of a world's last, big level instead of a number, for example \"Meadow big challenge\".",
     "map.aimTip": "Tooltip on the Target range node on the map; explains what the range is for.",
+    "map.parrotTip": "Tooltip of the Parrot node on the map; says what it is for.",
+    "map.parrotHome": "Hidden addition to the Parrot node label (screen reader) when the parrot is won.",
+    "map.parrotFlown": "Narrator on the map when one parrot flew away. {worlds} is the world name.",
+    "map.parrotsFlown": "Narrator on the map when several parrots flew away. {worlds} are world names separated by commas.",
     "map.starsAria": "Level description for screen readers. {n} is the number of stars earned.",
     "map.storyName": "Heading of the first story on the map.",
     "map.settings": "Tooltip of the gear on the map that leads to the settings.",
@@ -670,6 +678,14 @@
     "aim.things.egg.hatchedCall": "Tapko, when the egg hatches in flight at ring 2. One line at random.",
     "aim.things.egg.hatchFlight": "The target, when the chick that hatched in flight arrives. One line at random.",
     "aim.things.boomerang.caught": "Tapko, when he catches the returning boomerang. One line at random.",
+    "parrot.title": "Name of the game: the node on the map and the level title at the top while playing.",
+    "parrot.start": "Tapko explains the game on the card before it starts and in a bubble at the start.",
+    "parrot.phase2": "Tapko in a bubble when the second part starts: each word a few times in a row.",
+    "parrot.done": "Title of the card after the parrot round.",
+    "parrot.learned": "End card: the words learned. {words} are the words separated by commas.",
+    "parrot.again": "Button on the end card: a new round with new words.",
+    "parrot.badge": "Tooltip and label of the small Parrot badge next to the player name.",
+    "parrot.badgeNew": "End card, when this win just brought the Parrot badge.",
     "results.title": "Heading of the card after a level is finished.",
     "results.practiceDone": "Heading of the card after an exercise (free typing, own text).",
     "results.dictationClean": "Fact on the results card for dictation. {n} is the words with no mistake out of {total}.",

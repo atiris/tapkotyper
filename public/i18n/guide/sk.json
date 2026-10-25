@@ -150,6 +150,10 @@
       "title": "Vec: {item}",
       "about": "Hlášky a zvuky jednej veci, ktorú Tapko hádže. Pri každej veci sa ukáže táto skupina zvlášť."
     },
+    "parrot": {
+      "title": "Papagáj",
+      "about": "Hra s papagájom pri každom hotovom svete: pár slov veľakrát za sebou, kým ich prsty nevedia samy, a odznak Papagáj."
+    },
     "results": {
       "title": "Obrazovka výsledkov",
       "about": "Karta, ktorá sa ukáže po dokončení úrovne alebo cvičenia: fakty, nové odmeny a tlačidlá."
@@ -421,6 +425,10 @@
     "map.act.*": "Názov aktivity úrovne v bublinke nad jej bodkou na mape a pre čítače obrazovky, napríklad \"2. Čakajúce slová\". Krátko, 1 až 3 slová.",
     "map.super": "Označenie poslednej, veľkej úrovne sveta namiesto čísla, napríklad \"Lúka veľká výzva\".",
     "map.aimTip": "Bublina pri uzle Strelnice na mape; vysvetľuje, na čo Strelnica je.",
+    "map.parrotTip": "Bublina pri uzle Papagája na mape; vysvetľuje, na čo je.",
+    "map.parrotHome": "Skrytý doplnok popisu uzla Papagája (čítač obrazovky), keď je papagáj vyhraný.",
+    "map.parrotFlown": "Rozprávač na mape, keď uletel jeden papagáj. {worlds} je názov sveta.",
+    "map.parrotsFlown": "Rozprávač na mape, keď uletelo viac papagájov. {worlds} sú názvy svetov oddelené čiarkou.",
     "map.starsAria": "Popis úrovne pre čítače obrazovky. {n} je počet získaných hviezdičiek.",
     "map.storyName": "Nadpis prvého príbehu na mape.",
     "map.settings": "Bublina ozubeného kolieska na mape, ktoré vedie do nastavení.",
@@ -670,6 +678,14 @@
     "aim.things.egg.hatchedCall": "Tapko, keď sa vajíčko vyliahne za letu pri druhom kruhu. Jedna hláška náhodne.",
     "aim.things.egg.hatchFlight": "Terč, keď doletí kuriatko vyliahnuté za letu. Jedna hláška náhodne.",
     "aim.things.boomerang.caught": "Tapko, keď chytí vrátený bumerang. Jedna hláška náhodne.",
+    "parrot.title": "Názov hry: uzol na mape a názov úrovne hore počas hry.",
+    "parrot.start": "Tapko vysvetlí hru na karte pred začiatkom a v bubline na začiatku.",
+    "parrot.phase2": "Tapko v bubline, keď sa začne druhá časť: každé slovo niekoľkokrát za sebou.",
+    "parrot.done": "Nadpis záverečnej karty po papagájovi.",
+    "parrot.learned": "Záverečná karta: naučené slová. {words} sú slová oddelené čiarkou.",
+    "parrot.again": "Tlačidlo na záverečnej karte: nové kolo s novými slovami.",
+    "parrot.badge": "Bublina a popis malého odznaku Papagáj pri mene hráča.",
+    "parrot.badgeNew": "Záverečná karta, keď výhra práve priniesla odznak Papagáj.",
     "results.title": "Nadpis karty po dokončení úrovne.",
     "results.practiceDone": "Nadpis karty po dokončení cvičenia (voľné cvičenie, vlastný text).",
     "results.dictationClean": "Fakt na karte výsledkov pri diktáte. {n} je počet slov bez chyby z {total}.",

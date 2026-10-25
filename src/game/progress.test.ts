@@ -163,7 +163,7 @@ describe('the treasure chest and the stars of My progress', () => {
   // These maxima are shown to the player; a new level, world or range thing changes them on purpose.
   it('has fixed maxima', () => {
     expect(MAX_STARS).toBe(225);
-    expect(MAX_CHEST).toBe(60);
+    expect(MAX_CHEST).toBe(67);
   });
 
   it('counts a badge by its tier and a range find as one point', () => {
@@ -174,5 +174,15 @@ describe('the treasure chest and the stars of My progress', () => {
     p.progress.rangeFinds = ['crown'];
     // Gold 3 + bronze 1 (10 stars) + bronze 1 (no stars) + one find.
     expect(chestPoints(p)).toBe(6);
+  });
+
+  it('adds seven points while every finished world has its parrot', () => {
+    const p = newProfile('Ema', 'sk');
+    p.progress.worldsDone = [0];
+    p.progress.parrots = [0];
+    // Bronze 1 + the Parrot badge 7.
+    expect(chestPoints(p)).toBe(8);
+    p.progress.worldsDone.push(1);
+    expect(chestPoints(p)).toBe(2);
   });
 });

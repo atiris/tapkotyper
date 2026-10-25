@@ -31,3 +31,10 @@ export function badge(world: number, tier: BadgeTier | null, small = false): HTM
   return h('span', { class: `badge ${tier ?? 'none'} ${small ? 'small' : ''}`, role: 'img', 'aria-label': label, tip: badgeTip(world, tier), style: `--c:${COLORS[world]}` },
     src ? h('img', { src, alt: '' }) : h('span', { class: 'badge-num' }, String(world + 1)));
 }
+
+/** The Parrot badge (every finished world's parrot at home): its picture, about 28 px, with what it is for. */
+export function parrotBadge(): HTMLElement {
+  const src = imageUrl('ui-badge-parrot');
+  return h('span', { class: 'parrot-badge', role: 'img', 'aria-label': t('parrot.badge'), tip: t('parrot.badge') },
+    src ? h('img', { src, alt: '' }) : h('span', { class: 'parrot-badge-fallback' }, 'P'));
+}

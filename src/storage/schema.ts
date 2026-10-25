@@ -131,6 +131,16 @@ export interface Progress {
   wardrobeSeconds: number;
   /** Ids of the world things hit in the middle at the target range (its collection). */
   rangeFinds: string[];
+  /** Worlds whose parrot is won (at home). */
+  parrots: number[];
+  /** Most parrots ever at home at once. */
+  parrotBest: number;
+  /** Local date of the last parrot round won, null before any. */
+  parrotWonAt: string | null;
+  /** Local date the fly-away was rolled last, null before the first roll. */
+  parrotCheckedAt: string | null;
+  /** Worlds whose parrot flew away and the map has not told yet. */
+  parrotFlown: number[];
 }
 
 /** When a surprise tells its answer. */

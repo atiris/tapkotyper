@@ -85,27 +85,38 @@ the macaw on a round branch) and `obj-parrot-flying` (the fly-away), all in `pub
   hello title; on "Môj postup" just under the character. Nothing when the badge is not held.
 
 ## Steps
-- [ ] 1. Data: new progress fields with defaults in `newProfile` (no migration).
-- [ ] 2. `src/game/parrots.ts`: floor, daily rolls with catch-up, 21-day drop, win, badge;
+- [x] 1. Data: new progress fields with defaults in `newProfile` (no migration).
+- [x] 2. `src/game/parrots.ts`: floor, daily rolls with catch-up, 21-day drop, win, badge;
       unit tests (13 missed days = 13 rolls, floor kept, last parrot stays, 21-day drop, badge
       lost when a world is added).
-- [ ] 3. Level kind `parrot` and `parrotLevel(p, world)` like `aimLevel`, with the round size
+- [x] 3. Level kind `parrot` and `parrotLevel(p, world)` like `aimLevel`, with the round size
       table; route `id: 'parrot'` in `src/screens/level.ts`.
-- [ ] 4. `ParrotMode`: phases, +2 repeats per slip (cap 6), parrot repeat bubble and sound,
+- [x] 4. `ParrotMode`: phases, +2 repeats per slip (cap 6), parrot repeat bubble and sound,
       progress bar, finished state; test the word plan (counts, repeats, cap) as pure code.
-- [ ] 5. End screen and winning (step 2's win), no stars.
-- [ ] 6. Map: parrot node after the range node (grey or colour picture, tooltip), fly-away run
+- [x] 5. End screen and winning (step 2's win), no stars.
+- [x] 6. Map: parrot node after the range node (grey or colour picture, tooltip), fly-away run
       on map open, narrator line and the fly-away animation (badge fading when lost).
-- [ ] 7. Badge: chest +7 (`MAX_CHEST` 67), badge picture on the start card, map title and
+- [x] 7. Badge: chest +7 (`MAX_CHEST` 67), badge picture on the start card, map title and
       "Môj postup".
-- [ ] 8. i18n sk/en + guide (`parrot.*`, `map.parrotTip`, badge line, help lines in
+- [x] 8. i18n sk/en + guide (`parrot.*`, `map.parrotTip`, badge line, help lines in
       `help.more` and a `help.games` line for the parrot).
-- [ ] 9. Specs: `.specify/game/parrot.md` (+ index), statistics (chest 67), help, visuals;
+- [x] 9. Specs: `.specify/game/parrot.md` (+ index), statistics (chest 67), help, visuals;
       research status in `.research/game/activities.md`.
 - [ ] 10. Verify: build, unit tests, e2e touched specs; playwright: open a parrot from the map
       (super player), play a round with slips (super help 2 mistakes), see the card turn colour,
       the badge next to the name, and a fly-away (set `parrotCheckedAt` back in the store) with
       the map line.
+
+## Decisions taken while implementing
+- The end card shows the badge whenever this win turns it from not held to held (also when it is
+  won back after a flight), not only the very first time: winning it back is the goal.
+- The parrot's repeat is not voiced: with reading aloud on the voice already reads every target,
+  and a second line would cut off the next word.
+- The parrot's HUD has no rhythm gauge (speed is not judged); paws, Enter marks and surprises
+  stay out as at the range; leaving early asks like a practice and wins nothing.
+- Word letters: the lesson order up to the world's last level key count, letters only (no
+  capitals, punctuation or digits), so the parrot's words stay plain words.
+- A slip's two repetitions come right after the current word, in both phases.
 
 ## Out of scope
 - The other activities (memory pairs, jumble, secret words rules, dictation word filter):

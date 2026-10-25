@@ -1,5 +1,6 @@
-import { activeKeys, aimKeys, practiceOrder } from '../learning/lessons';
+import { activeKeys, aimKeys, isLetterKey, practiceOrder } from '../learning/lessons';
 import { type Profile, SUPER_ID } from '../storage/schema';
+import { type ParrotSize, parrotSize } from './parrots';
 import type { Style } from './typing';
 
 export type WorldId = 'meadow' | 'space' | 'planet' | 'dragons' | 'egg' | 'junkyard' | 'workshop' | 'raintown' | 'robocity' | 'robohome'
@@ -54,7 +55,7 @@ export type LevelKind =
   | 'lilies' | 'reflection'
   | 'notes' | 'treesong'
   | 'fireflies' | 'lastsong'
-  | 'practice' | 'freetype' | 'aim';
+  | 'practice' | 'freetype' | 'aim' | 'parrot';
 
 export interface LevelDef {
   id: string;
@@ -104,9 +105,9 @@ export function activityOf(l: LevelDef): Activity {
   return 'chase';
 }
 
-/** Practice, custom exercises, free typing and the target range keep their own length; every other level has the minimum. */
+/** Practice, custom exercises, free typing, the target range and the parrot keep their own length; every other level has the minimum. */
 export function hasMinLength(l: LevelDef): boolean {
-  return l.kind !== 'practice' && l.kind !== 'freetype' && l.kind !== 'aim';
+  return l.kind !== 'practice' && l.kind !== 'freetype' && l.kind !== 'aim' && l.kind !== 'parrot';
 }
 
 /**
@@ -264,6 +265,23 @@ export function aimWorld(p: Profile, world: number): number | null {
 /** The target range of a world: throws at a target through words with the weak keys; no stars. */
 export function aimLevel(p: Profile, world: number): LevelDef {
   return { id: 'aim', world, index: -1, kind: 'aim', count: 0, variant: '', isSuper: false, focus: aimKeys(p) };
+}
+
+/** The parrot of a world: the same few words many times over, until the fingers know them; no stars. Opens with the target range. */
+export function parrotLevel(world: number): LevelDef {
+  return { id: 'parrot', world, index: -1, kind: 'parrot', count: 0, variant: '', isSuper: false };
+}
+
+/** The parrot round's size by the world's story and its place in it. */
+export function parrotSizeOf(world: number): ParrotSize {
+  const story = storyOf(world);
+  return parrotSize(STORIES.indexOf(story), story.worlds.indexOf(world));
+}
+
+/** Letters of the parrot's words: the keys of the world's last level. */
+export function parrotKeys(p: Profile, world: number): string[] {
+  const last = worldLevels(world)[4];
+  return practiceOrder(p).slice(0, keysNeeded(p, last)).filter(isLetterKey);
 }
 
 export function practiceLevel(seconds: number | null, phrases?: string[]): LevelDef & { seconds: number | null } {

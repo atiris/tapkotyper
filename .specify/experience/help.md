@@ -19,7 +19,8 @@
      accuracy, Esc pauses), the kinds of games by their standard names with one line each (the
      same names as the map dots' tooltips; a new kind joins the list when it is in the game) right above letters that open levels and stories, "My progress" with
      its three tabs and QR codes, rescue missions, the target range (where it opens, what it
-     trains, the middle, a fall that costs nothing, the collection and Enter) and badges.
+     trains, the middle, a fall that costs nothing, the collection and Enter), the parrot (where it
+     opens, why it repeats words, parrots that fly away and the Parrot badge) and badges.
   4. **Settings**, for the teacher or parent: that the settings open with the gear on the map (the child's
      screens do not say it), what each settings tab does (child, practice, look and sound,
      password, own words and text, surprises, tasks, keys, progress, data), with one section per

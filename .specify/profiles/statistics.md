@@ -7,8 +7,8 @@
 - An overlay opened by clicking the child's character (on the map, or in a level, which pauses first)
   starts with "My progress": a row of icon and number chips (keys mastered of the
   layout's total, stories finished, worlds finished, the **treasure chest** of rarities in points
-  of its maximum (a world badge bronze 1, silver 2, gold 3; each target range award 1: 15 x 3 +
-  15 = 60), and once something was typed in the last
+  of its maximum (a world badge bronze 1, silver 2, gold 3; each target range award 1; the
+  [Parrot badge](../game/parrot.md) 7: 15 x 3 + 15 + 7 = 67), and once something was typed in the last
   14 days its accuracy and speed in characters per minute, the stars (the best of every level)
   of the maximum (3 in each of the 75 levels: 225) and the letters
   typed in the last 14 days, each with its own picture; the meaning is only in the tooltip), then one row per story (all stories, closed ones grey) with its picture and
@@ -28,6 +28,7 @@
   medals and the stars as the last chip; stories come before worlds),
   **Klávesy** (the key map and the key details) and **Cvičenia** (the history of exercises
   from a teacher or parent, newest first, each with a button for its QR code).
+- The Parrot badge, when held, sits just under the child's character on the Postup tab.
 - The child's character on the Postup tab is big (beside the summary, above it on a phone)
   and plays when clicked or pressed with Enter or Space: it hops, or pulls another face for
   a moment, never the same twice in a row; with reduced motion it only changes its face.
@@ -44,7 +45,7 @@
   that readies a key for the next lesson). This is long-term: it is computed from the stored
   key statistics, so it fades when the child stops typing the key well.
 
-- **Maintenance:** the maxima shown (stars 225, chest 60) follow from the levels, worlds and
+- **Maintenance:** the maxima shown (stars 225, chest 67) follow from the levels, worlds and
   range things; when their number changes, the new maximum must be shown and written here
   (a unit test pins both numbers, so a change cannot slip by).
 

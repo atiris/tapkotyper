@@ -3,7 +3,7 @@ import { starRow } from '../ui/chrome';
 import { tapkoElement } from '../gfx/tapko';
 import { t, tList } from '../i18n/i18n';
 import { nickname } from '../storage/store';
-import { LEVELS, type LevelDef, type StoryDef, WORLDS, aimLevel, aimOpen, aimWorld, freeTypeLevel, isLevelUnlocked, isWorldUnlocked, levelById, practiceLevel, rescueLevel, storyOf } from '../game/levels';
+import { LEVELS, type LevelDef, type StoryDef, WORLDS, aimLevel, aimOpen, aimWorld, freeTypeLevel, isLevelUnlocked, isWorldUnlocked, levelById, parrotLevel, practiceLevel, rescueLevel, storyOf } from '../game/levels';
 import type { LevelResult } from '../game/progress';
 import type { Style } from '../game/typing';
 import { WORLD_REWARDS } from '../game/rewards';
@@ -12,6 +12,9 @@ import { captureKeys, surpriseAsk, surpriseLeft } from '../game/cards';
 import { surpriseOutcome } from '../game/own-content';
 import { ownTextPhrases } from '../game/modes/practice';
 import type { AimMode } from '../game/modes/aim';
+import type { ParrotMode } from '../game/modes/parrot';
+import { winParrot } from '../game/parrots';
+import { imageUrl } from '../gfx/assets';
 import { WORLD_THINGS } from '../game/modes/aim-things';
 import type { Friend, Profile, Surprise, Task } from '../storage/schema';
 import { recordTaskRun, taskOwn } from '../share/task';
@@ -19,7 +22,7 @@ import { localDate } from '../learning/stats';
 import { type Child, button, h } from '../ui/dom';
 import { tip } from '../ui/tooltip';
 import { keyLabel } from '../ui/keyboard-guide';
-import { badge } from '../ui/badge';
+import { badge, parrotBadge } from '../ui/badge';
 import { medal } from '../ui/medal';
 import { roundButton } from '../ui/hud';
 import { rangeFinds } from '../ui/finds';
@@ -42,7 +45,7 @@ interface LevelParams {
   task?: string;
   /** Free practice: copy typing, dictation or memory, chosen in the key picker. */
   style?: Style;
-  /** Just typing: the world index chosen in the place picker; the target range: its world. */
+  /** Just typing: the world index chosen in the place picker; the target range and the parrot: its world. */
   world?: number;
   /** Staying a while in this story level: no end, no stars. */
   stay?: boolean;
@@ -54,6 +57,7 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
   if (params.id === 'practice') def = practiceLevel(params.seconds ?? null, params.text ? ownTextPhrases(p) : undefined);
   else if (params.id === 'freetype') def = freeTypeLevel(params.world != null && isWorldUnlocked(p, params.world) ? params.world : 0);
   else if (params.id === 'aim') def = aimLevel(p, params.world != null && aimOpen(p, params.world) ? params.world : aimWorld(p, 0) ?? 0);
+  else if (params.id === 'parrot') def = parrotLevel(params.world != null && aimOpen(p, params.world) ? params.world : aimWorld(p, 0) ?? 0);
   else if (params.id === 'rescue') def = rescueLevel(p, p.progress.friends.length * 7 + Math.floor(Math.random() * 5));
   else def = levelById(params.id) ?? LEVELS[0];
   // A super-obstacle has no endless form: staying plays the world's last regular level.
@@ -74,6 +78,7 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
     onFinish: (result) => {
       if (!result) return exit();
       if (def.kind === 'aim') return showAimDone(root, result, rt.mode as AimMode, params);
+      if (def.kind === 'parrot') return showParrotDone(root, def, result, rt.mode as ParrotMode, params);
       if (params.stay) return showStayDone(root, def, result);
       if (task) {
         recordTaskRun(task, result);
@@ -254,6 +259,37 @@ function showAimDone(root: HTMLElement, r: LevelResult, mode: AimMode, params: L
     stop();
     // After this key is done, or the new range would take the same Escape as its end.
     setTimeout(stay);
+  });
+}
+
+/** The end of a parrot round: the parrot is at home, the words it learned, the badge when this win brought it; no stars. */
+function showParrotDone(root: HTMLElement, def: LevelDef, r: LevelResult, mode: ParrotMode, params: LevelParams): void {
+  const p = app.profile!;
+  const badgeNew = winParrot(p, def.world, localDate());
+  saveProfile();
+  const pic = imageUrl('ui-act-parrot');
+  const facts: HTMLElement[] = [h('span', { class: 'fact main' }, t('parrot.learned', { words: mode.round.words.join(', ') }))];
+  if (r.newKeys.length) facts.push(h('span', { class: 'fact new-key' }, t('aim.opened', { keys: r.newKeys.map(keyLabel).join(', ') })));
+  if (badgeNew) facts.push(h('span', { class: 'fact badge-fact' }, parrotBadge(), h('b', {}, t('parrot.badgeNew'))));
+  const breakDue = app.sessionSeconds >= p.settings.sessionMinutes * 60;
+  const actions = h('div', { class: 'row center' });
+  if (breakDue) actions.append(button(t('results.takeBreak'), () => go('break'), 'btn primary', 'play'));
+  actions.append(button(t('parrot.again'), () => go('level', params), `btn ${breakDue ? '' : 'primary'}`, 'replay'),
+    button(t('level.toMap'), () => go('map'), 'btn', 'map'));
+  const card = h('div', { class: 'card results-card parrot-done' },
+    h('div', { class: 'results-top' }, h('h2', {}, t('parrot.done'))),
+    h('div', { class: 'results-tapko' }, pic ? h('img', { class: 'parrot-done-pic', src: pic, alt: '' }) : tapkoElement(p.companion, 'happy', 80),
+      h('p', { class: 'bubble static side' }, breakDue ? pickLine('tapko.break') : pickLine('tapko.level_done', { name: nickname(p) }, p.customMessages))),
+    h('div', { class: 'results-facts' }, ...facts),
+    actions);
+  const overlay = h('div', { class: 'overlay results' }, card);
+  root.querySelector('.level-screen')!.append(overlay);
+  (actions.querySelector('button') as HTMLButtonElement).focus();
+  const stop = captureKeys(overlay, (e) => {
+    if (e.key !== 'Escape' || document.querySelector('.modal-back')) return;
+    e.preventDefault();
+    stop();
+    go('map');
   });
 }
 

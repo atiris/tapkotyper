@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { SUPER_ID } from '../storage/schema';
 import { lessonOrder } from '../learning/lessons';
-import { LEVELS, MIN_ACTIVE_S, STORIES, activityOf, minActiveS, aimLevel, aimOpen, aimWorld, freeTypeLevel, grownCount, hasMinLength, isLevelUnlocked, isWorldUnlocked, keysNeeded, levelById, levelOver, nextLevel, practiceLevel, rescueLevel, rescueUnlocked, shownProgress, worldLevels, worldLock } from './levels';
+import { LEVELS, MIN_ACTIVE_S, STORIES, activityOf, minActiveS, aimLevel, aimOpen, aimWorld, freeTypeLevel, grownCount, hasMinLength, isLevelUnlocked, isWorldUnlocked, keysNeeded, levelById, levelOver, nextLevel, parrotKeys, parrotLevel, parrotSizeOf, practiceLevel, rescueLevel, rescueUnlocked, shownProgress, worldLevels, worldLock } from './levels';
 
 const KEYS = ['f', 'j', 'd', 'k', 's', 'l', 'a', ';', 'g', 'h', 'r', 'u', 'e', 'i', 't', 'y', 'w', 'o', 'q', 'p', 'v', 'm', 'c', ',', 'x', '.'];
 
@@ -241,5 +241,16 @@ describe('minimum level length', () => {
     expect(shownProgress(1, 60, MIN_ACTIVE_S)).toBe(0.5);
     expect(shownProgress(0.3, 60, MIN_ACTIVE_S)).toBe(0.3);
     expect(shownProgress(0.3, 5, 0)).toBe(0.3);
+  });
+});
+
+describe('parrot', () => {
+  it('sizes the round by story and place, and takes the letters of the world\'s last level', () => {
+    expect(parrotSizeOf(0).words).toBe(3);
+    expect(parrotSizeOf(7)).toEqual({ words: 4, len: [4, 6], repeats: 4 });
+    const p = newProfile('Ema', 'sk');
+    expect(parrotKeys(p, 0)).toEqual(['f', 'j', 'd', 'k']);
+    expect(parrotLevel(3)).toMatchObject({ id: 'parrot', kind: 'parrot', world: 3, index: -1 });
+    expect(hasMinLength(parrotLevel(3))).toBe(false);
   });
 });

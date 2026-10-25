@@ -131,6 +131,10 @@
     "switchProfile": "Hráči",
     "super": "veľká výzva",
     "aimTip": "Strelnica: tu si precvičíš písmená, ktoré ešte nepíšeš dosť presne. Keď ti k ďalšiemu písmenu chýba už len presnosť, tu ju získaš.",
+    "parrotTip": "Papagáj: napíšeš pár slov veľakrát za sebou, kým ich prsty nebudú vedieť samy. Na rýchlosti nezáleží.",
+    "parrotHome": "papagáj je doma",
+    "parrotFlown": "Uletel ti papagáj zo sveta {worlds}. Choď poň!",
+    "parrotsFlown": "Uleteli ti papagáje zo svetov {worlds}. Choď po ne!",
     "starsAria": "hviezdičky: {n}",
     "storyName": "Dračie vajíčko",
     "settings": "Nastavenia pre rodičov",
@@ -851,7 +855,7 @@
     "title": "Môj postup",
     "keys": "Klávesy, ktoré ti idú dobre a rýchlo: {n} z {total}",
     "worlds": "Dokončené svety: {n} z {total}",
-    "chest": "Truhlica vzácností: {n} z {total} bodov. Bronzový odznak sveta je 1 bod, strieborný 2, zlatý 3 a každé ocenenie zo strelnice 1 bod.",
+    "chest": "Truhlica vzácností: {n} z {total} bodov. Bronzový odznak sveta je 1 bod, strieborný 2, zlatý 3, každé ocenenie zo strelnice 1 bod a odznak Papagáj 7 bodov.",
     "stories": "Dokončené príbehy: {n} z {total}",
     "stars": "Hviezdičky spolu: {n} z {total}",
     "tabProgress": "Postup",
@@ -1363,13 +1367,15 @@
       "Klávesy ukazujú, ktoré ti idú a ktoré si ešte precvičiť. Odtiaľ hneď spustíš cvičenie.",
       "**QR kód** ukáže tvoj postup alebo cvičenie učiteľovi, stačí ho odfotiť."
     ],
-    "moreTitle": "Záchranná misia, strelnica a odznak",
+    "moreTitle": "Záchranná misia, strelnica, papagáj a odznak",
     "more": [
       "Záchranná misia: krátka úloha, v ktorej pomôžeš malému kamarátovi. Otvorí sa, keď dokončíš prvý príbeh, a nájdeš ju na mape.",
       "Odznak: dostaneš ho za dokončený svet. Čím viac hviezdičiek v svete zbieraš, tým je krajší: bronzový, strieborný, zlatý.",
       "Strelnica: keď dokončíš svet, pri jeho veľkej výzve na mape pribudne terč. Tapko hádže na terč vtipné veci a ty píšeš slová na kruhoch, ktorými vec preletí. Trénuješ písmená, ktoré ešte nepíšeš dosť presne.",
       "Keď napíšeš každé slovo načas a bez chyby, trafíš do stredu. Chyba vec trochu zníži, po troch chybách spadne na zem. Nič zlé sa nestane, príde ďalšia.",
-      "Každý svet má na strelnici svoju vzácnu vec. Keď ju trafíš do stredu a dohádžeš do konca, pribudne do tvojej zbierky. Potom si ju môžeš **Enterom** vziať do labky namiesto veci, ktorú Tapko práve drží."
+      "Každý svet má na strelnici svoju vzácnu vec. Keď ju trafíš do stredu a dohádžeš do konca, pribudne do tvojej zbierky. Potom si ju môžeš **Enterom** vziať do labky namiesto veci, ktorú Tapko práve drží.",
+      "Papagáj: keď dokončíš svet, pri terči pribudne papagáj. Napíšeš pár slov veľakrát za sebou a papagáj ich po tebe opakuje, kým ich prsty nebudú vedieť samy. Na rýchlosti nezáleží.",
+      "Papagáje časom uletia, tak sa za nimi vráť a zahraj si znova. Keď sú doma papagáje zo všetkých tvojich hotových svetov, máš **odznak Papagáj** pri svojom mene."
     ],
     "playTitle": "Ako hrať",
     "play": [
@@ -1387,6 +1393,7 @@
       "**Odpis**: slová stoja v riadku a píšeš ich zľava doprava. Pri pozvánke za chybu slovo zmizne a pribudnú dve nové, je to viac cvičenia, nie trest.",
       "**Odposluch**: slovo nevidíš, iba počuješ. Napíš, čo počuješ. Keď chvíľu nepíšeš, zopakuje sa.",
       "**Tajné slová**: slovo sa ukáže len na chvíľu a schová sa. Zapamätaj si ho a napíš ho spamäti.",
+      "**Papagáj**: pár slov veľakrát za sebou. Papagáj každé zopakuje. Za chybu príde slovo ešte dvakrát.",
       "**Veľká výzva**: posledná úroveň sveta. Každý svet ju má inú."
     ],
     "journeyTitle": "Svety, úrovne a hviezdičky",
@@ -3098,6 +3105,16 @@
     "opened": "Presné písanie otvorilo nové písmená: {keys}",
     "again": "Znova",
     "toMap": "Na mapu"
+  },
+  "parrot": {
+    "title": "Papagáj",
+    "start": "Papagáj sa chce naučiť tvoje slová. Napíš slovo a on ho po tebe zopakuje. Ponáhľať sa netreba.",
+    "phase2": "Teraz každé slovo niekoľkokrát za sebou.",
+    "done": "Papagáj sa naučil tvoje slová!",
+    "learned": "Slová: {words}",
+    "again": "Nové slová",
+    "badge": "Odznak Papagáj: všetky papagáje sú doma",
+    "badgeNew": "Odznak Papagáj: všetky papagáje sú doma!"
   },
   "translate": {
     "title": "Preklad hry",

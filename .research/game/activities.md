@@ -21,7 +21,7 @@ standard name, used in the map tooltip and Tapko's lines, instead of "main game"
 | **Pexeso** / Memory pairs | cards with words; typing a word flips its card; two equal objects are won | new | 4 |
 | **Skladačka** / Jumble | a longer word with swapped letters; the child types the right word | new | 4, 2-3 times only |
 | **Strelnica** / Target range | side card: a thrown thing passes rings, each with a word | yes | side |
-| **Papagáj** / Parrot | side card: the same few words repeated until the fingers know them | new, see below | side |
+| **Papagáj** / Parrot | side card: the same few words repeated until the fingers know them | yes ([parrot](../../.specify/game/parrot.md)) | side |
 
 Engines already in [world-rhythm.md](world-rhythm.md) fold into these names: crossroads
 (planet signs) is a waiting-words variant where the typed word picks the way; build (nest,
@@ -104,7 +104,7 @@ minutes (the fairy story: 5 words x 8 times x 6 letters is about 240 keys).
 - The badge is worth 7 points in the treasure chest of rarities (the chest's maximum grows
   from 60 to 67). It is the one badge shown next to the player's name: on the start page's
   player card, just under the character on "Môj postup", and on the player's map.
-- The badge picture is `ui-badge-parrot` (the macaw on a round branch). Implementation plan: `.todo/67-parrot.md`.
+- The badge picture is `ui-badge-parrot` (the macaw on a round branch). Implemented: `.specify/game/parrot.md` (plan `.todo/.done/67-parrot.md`).
 - The world card carries a parrot icon next to the target (`ui-act-parrot`, a macaw): grey while that
   world's parrot is not won (or flew away), in full colour when it is won and counted.
 
@@ -156,7 +156,7 @@ The fairy story keeps level 4 flipping the world's style (world-rhythm decision 
 ## Map icons
 
 Each activity has an icon on its level dot (`ui-act-*`, prompts in `assets-src/PROMPTS.md`
-section 9). Missing: waiting words, memory pairs, jumble, the parrot card.
+section 9). Missing: waiting words, memory pairs, jumble.
 
 ## Decisions (owner, 2026-10-25)
 

@@ -16,7 +16,8 @@ import { KeyboardGuide, fingerChip, keyLabel } from '../ui/keyboard-guide';
 import { button, h, modal } from '../ui/dom';
 import { tabBar } from '../ui/tabs';
 import { bigCode } from '../ui/big-code';
-import { badge } from '../ui/badge';
+import { badge, parrotBadge } from '../ui/badge';
+import { hasParrotBadge } from '../game/parrots';
 import { medal } from '../ui/medal';
 import { rangeFinds } from '../ui/finds';
 
@@ -195,7 +196,7 @@ function playfulTapko(p: Profile): HTMLElement {
 /** Progress: the summary rows and badges, the growth medals and the code of all statistics. */
 function progressTab(p: Profile): HTMLElement {
   return h('div', {},
-    h('div', { class: 'stats-head' }, playfulTapko(p),
+    h('div', { class: 'stats-head' }, h('div', { class: 'stats-hero' }, playfulTapko(p), hasParrotBadge(p) ? parrotBadge() : null),
       h('div', {}, h('h2', {}, t('progress.title')), progressSection(p))),
     p.progress.growth ? h('div', { class: 'medals' }, h('h3', {}, t('stats.medals')),
       h('div', { class: 'medal-row' }, ...Array.from({ length: p.progress.growth }, (_, i) => medal(i + 1, true)))) : null,

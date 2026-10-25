@@ -1,4 +1,4 @@
-import { app, go, saveProfile } from '../app/app';
+import { app, go, reduceMotion, saveProfile } from '../app/app';
 import { audio } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
 import { tapkoElement } from '../gfx/tapko';
@@ -9,7 +9,9 @@ import { GUEST_ID, type Profile, SUPER_ID } from '../storage/schema';
 import { activeKeys, notReadyKeys } from '../learning/lessons';
 import { keyLabel } from '../ui/keyboard-guide';
 import { badgeTier } from '../game/rewards';
-import { badge } from '../ui/badge';
+import { badge, parrotBadge } from '../ui/badge';
+import { flyAway, hasParrotBadge } from '../game/parrots';
+import { localDate } from '../learning/stats';
 import { arrowFocus, button, closeButton, h, icon } from '../ui/dom';
 import { cornerControls } from '../ui/chrome';
 import { offerInstall } from '../ui/install';
@@ -80,6 +82,13 @@ function settingsButton(): HTMLButtonElement {
 export function mapScreen(root: HTMLElement): void {
   const p = app.profile!;
   audio.music(app.menuTrack);
+  // Won parrots may fly away over the days; the map tells it once.
+  const hadBadge = hasParrotBadge(p);
+  flyAway(p, localDate());
+  const flown = [...p.progress.parrotFlown].sort((a, b) => a - b);
+  p.progress.parrotFlown = [];
+  saveProfile();
+  const badgeLost = flown.length > 0 && hadBadge && !hasParrotBadge(p);
   const tapko = h('button', { class: 'map-tapko', type: 'button', tip: t('tapko.statsHint'), 'aria-label': t('progress.title'), onClick: () => openStats() },
     tapkoElement(p.companion, 'idle', 130));
   // The narrator's bubble on the map: why a level waits for more keys.
@@ -123,7 +132,7 @@ export function mapScreen(root: HTMLElement): void {
       cornerControls(settingsButton())),
     h('main', { class: 'map-body' },
       h('aside', { class: 'map-side' },
-        h('h1', { class: 'map-hello' }, t('map.hello', { name: nickname(p) })),
+        h('h1', { class: 'map-hello' }, t('map.hello', { name: nickname(p) }), hasParrotBadge(p) || badgeLost ? parrotBadge() : null),
         tapko,
         bubble,
         taskCard(p),
@@ -135,11 +144,17 @@ export function mapScreen(root: HTMLElement): void {
         button(t('progress.title'), () => openStats(), 'btn', 'chart'),
         rescue ? button(t('map.rescue'), () => go('level', { id: 'rescue' }), 'btn', 'rescue') : null,
         rescue ? button(t('map.friends'), () => go('friends'), 'btn', 'dragon') : null),
-      h('div', { class: 'story-rows' }, welcome, ...STORIES.map((s) => storyRow(p, s, next?.id, held, keysBubble, lockBubble))))));
+      h('div', { class: 'story-rows' }, welcome, ...STORIES.map((s) => storyRow(p, s, next?.id, held, keysBubble, lockBubble, flown))))));
   // The arrows walk the levels and the closed worlds like a grid.
   arrowFocus(root.querySelector('.story-rows')!, '.level-node, .island-art[tabindex]');
   // Enter starts at once: the welcome's start (it marks the welcome seen), else Continue.
   (welcome?.querySelector<HTMLElement>('.btn.primary') ?? play).focus();
+  if (flown.length) {
+    const worlds = flown.map((w) => t(`worlds.${WORLDS[w]}`)).join(', ');
+    bubble.replaceChildren(h('p', {}, t(flown.length === 1 ? 'map.parrotFlown' : 'map.parrotsFlown', { worlds })));
+    bubble.hidden = false;
+    flyOff(root, flown, badgeLost);
+  }
   // One greeting at a time: the install offer waits for a map without the welcome.
   if (p.id !== SUPER_ID && !welcome) offerInstall(p.companion);
 }
@@ -172,12 +187,45 @@ function aimNode(world: number): HTMLElement {
     icon('target', 'icon aim-icon'));
 }
 
+/** The parrot of a finished world: in colour while it is at home, grey until it is won (or after it flew away). */
+function parrotNode(p: Profile, world: number, flying: boolean): HTMLElement {
+  const home = flying || p.progress.parrots.includes(world);
+  const pic = imageUrl('ui-act-parrot');
+  return h('button', {
+    class: `level-node parrot-node ${home ? 'home' : ''}`, type: 'button', 'data-world': String(world),
+    'aria-label': `${t('parrot.title')}${home ? `, ${t('map.parrotHome')}` : ''}`, tip: t('map.parrotTip'),
+    onClick: () => go('level', { id: 'parrot', world }),
+  }, pic ? h('img', { class: 'level-act', src: pic, alt: '' }) : icon('star', 'icon'));
+}
+
+/** Parrots that flew away leave their nodes on the map: up and out of the window, the node turning grey; a lost badge fades with them. */
+function flyOff(root: HTMLElement, worlds: number[], badgeLost: boolean): void {
+  const nodes = worlds.map((w) => root.querySelector<HTMLElement>(`.parrot-node[data-world="${w}"]`)).filter((n) => n !== null);
+  const leave = () => {
+    for (const n of nodes) n.classList.remove('home');
+    if (badgeLost) root.querySelector('.map-hello .parrot-badge')?.remove();
+  };
+  const pic = imageUrl('obj-parrot-flying');
+  if (reduceMotion() || !pic) return leave();
+  requestAnimationFrame(() => {
+    for (const n of nodes) {
+      const r = n.getBoundingClientRect();
+      const bird = h('img', { class: 'parrot-fly', src: pic, alt: '', style: `left:${r.left + r.width / 2}px;top:${r.top + r.height / 2}px` });
+      bird.addEventListener('animationend', () => bird.remove());
+      root.append(bird);
+    }
+    root.querySelector('.map-hello .parrot-badge')?.classList.toggle('leaving', badgeLost);
+    setTimeout(leave, 600);
+  });
+}
+
 /**
  * One story: its title and its worlds as islands; a story still closed says when it opens.
  * A level reached without enough keys shows a key and lets the bubble say how many are missing
- * and which letters need accuracy (`held`); a finished world offers its target range.
+ * and which letters need accuracy (`held`); a finished world offers its target range and its parrot
+ * (in colour while the parrots in `flying` leave).
  */
-function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held: string, keysBubble: (n: number, world: number) => void, lockBubble: (world: number) => void): HTMLElement {
+function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held: string, keysBubble: (n: number, world: number) => void, lockBubble: (world: number) => void, flying: number[]): HTMLElement {
   const islands = story.worlds.map((wi) => {
     const w = WORLDS[wi];
     const open = isWorldUnlocked(p, wi);
@@ -213,7 +261,7 @@ function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held:
       }) }, img ? h('img', { src: img, alt: '' }) : h('div', { class: 'island-fallback' }), open ? null : h('span', { class: 'lock', tip: lock || null }, icon('lock')),
         tier ? badge(wi, tier, true) : null),
       h('h3', {}, `${wi + 1}. ${t(`worlds.${w}`)}`),
-      h('div', { class: 'level-row' }, ...levels, aimOpen(p, wi) ? aimNode(wi) : null));
+      h('div', { class: 'level-row' }, ...levels, ...(aimOpen(p, wi) ? [aimNode(wi), parrotNode(p, wi, flying.includes(wi))] : [])));
   });
   const closed = !storyOpen(p, story);
   return h('section', { class: `story-row story-${story.id}` },

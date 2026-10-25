@@ -13,6 +13,7 @@ import { DewdropsMode, InvitationMode } from './modes/meadow-calm';
 import { FirefliesMode, LastSongMode } from './modes/moonball';
 import { NotesMode, TreeSongMode } from './modes/musictree';
 import { BoulderMode, SignsMode, SwampMode } from './modes/planet';
+import { ParrotMode } from './modes/parrot';
 import { PracticeMode } from './modes/practice';
 import { RainMode, StormMode } from './modes/raintown';
 import { DoorsMode, GateMode } from './modes/robocity';
@@ -59,5 +60,6 @@ export function createMode(def: LevelDef & { seconds?: number | null }, L: Level
     case 'practice': return new PracticeMode(L, def.seconds ?? null, def.phrases ?? null);
     case 'freetype': return new FreeTypeMode(L);
     case 'aim': return new AimMode(L);
+    case 'parrot': return new ParrotMode(L);
   }
 }

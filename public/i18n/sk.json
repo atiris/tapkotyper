@@ -3084,7 +3084,6 @@
     "removeVariant": "Odstrániť variant",
     "onlyOpen": "Len nepreložené",
     "search": "Hľadať text alebo kľúč",
-    "situation": "Kde a kedy",
     "form": "Tvar „{form}“, napríklad {n}",
     "baseForms": "Tvary v základnom jazyku",
     "missingPlaceholder": "Chýba {name} zo základného textu.",
@@ -3137,7 +3136,6 @@
     "sendTitle": "Poslať na schválenie",
     "sendText": "Otvorí sa nový záznam (issue) na GitHube. Je verejný: uvidí ho každý, aj tvoj kontakt. Potrebuješ účet na GitHube.",
     "sendGo": "Otvoriť GitHub",
-    "sendAttach": "Do záznamu prilož stiahnutý súbor {file}.",
     "issue": {
       "new": "Preklad: {name} ({code})",
       "fix": "Oprava: {name}",

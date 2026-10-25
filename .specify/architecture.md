@@ -20,13 +20,17 @@
   (`tapkotyper-mentor`): a year of hand-ins outgrows localStorage's few shared megabytes,
   and IndexedDB writes one record at a time instead of one big blocking JSON on every scan.
   The browser is asked to keep that data persistently; where IndexedDB is blocked (some
-  private windows) the results last for the visit and the page says so.
+  private windows) the results last for the visit and the page says so. Own languages made in
+  the translator live the same way in a second database (`tapkotyper-translate`).
 - Language data (UI texts, word lists) are separate JSON files loaded on demand per
-  language, so adding a language does not grow the main bundle.
+  language, so adding a language does not grow the main bundle. The texts about the texts
+  (headings, explanations, situations: `public/i18n/guide/<lang>.json`) are loaded only by the
+  translator. A catalog in code places every text in a section and group with its kind; a
+  unit test fails when a text has no place or no situation, so the translator stays complete.
 - Installable offline PWA (a service worker caches the app after the first visit).
 - Weight budget for weak school devices: music at most 1.4 MB per track (mono, 60 kbps),
   sprites at most 384 px, the install cache (everything except music) under about 10 MB,
-  the settings screen loaded on first use, and the QR decoder fallback (`jsqr`, about 130 KB,
+  the settings screen and the translator loaded on first use, and the QR decoder fallback (`jsqr`, about 130 KB,
   48 KB gzip) loaded only when the teacher opens the camera scan and only in browsers without
   `BarcodeDetector`; the install cache is about 6.8 MB. A scaled copy of each background tile is cached
   at the drawn pixel size, and the HUD is written only when a value changes.

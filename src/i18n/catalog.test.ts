@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { PLURAL_FORMS, PLURAL_KEYS, WORDS, buildCatalog, itemKeys, lookup, matches, namedKeys, situationKey } from './catalog';
+import { flatGuide, situationFinder } from './translation';
 
 const load = (lang: string) => JSON.parse(readFileSync(`public/i18n/${lang}.json`, 'utf8'));
 const sk = load('sk');
@@ -58,5 +59,26 @@ describe('catalog', () => {
     expect(matches('names', 'namesX')).toBe(false);
     expect(situationKey({ 'aim.*': 'a', 'aim.things.*.hit': 'b' }, 'aim.things.egg.hit')).toBe('aim.things.*.hit');
     expect(situationKey({ 'aim.things.egg.hit': 'c', 'aim.things.*.hit': 'b' }, 'aim.things.egg.hit')).toBe('aim.things.egg.hit');
+  });
+
+  it('has a guide for every section, group and item, the same keys in both languages', () => {
+    const guides = ['sk', 'en'].map((l) => flatGuide(JSON.parse(readFileSync(`public/i18n/guide/${l}.json`, 'utf8'))));
+    expect(Object.keys(guides[0]).sort()).toEqual(Object.keys(guides[1]).sort());
+    for (const g of guides) {
+      for (const [k, v] of Object.entries(g)) expect(v.trim(), k).not.toBe('');
+      for (const s of catalog) {
+        expect(g[`sections.${s.id}.title`], s.id).toBeTruthy();
+        expect(g[`sections.${s.id}.about`], s.id).toBeTruthy();
+        for (const gr of s.groups) {
+          expect(g[`groups.${gr.guide}.title`], gr.guide).toBeTruthy();
+          expect(g[`groups.${gr.guide}.about`], gr.guide).toBeTruthy();
+        }
+      }
+      const find = situationFinder(g);
+      expect(items.filter((i) => !find(i.key)).map((i) => i.key)).toEqual([]);
+      // No situation is left over from a text that is gone.
+      const used = new Set(items.map((i) => find(i.key)));
+      expect(Object.keys(g).filter((k) => k.startsWith('situations.') && !used.has(k))).toEqual([]);
+    }
   });
 });

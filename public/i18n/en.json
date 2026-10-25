@@ -3061,7 +3061,6 @@
     "removeVariant": "Remove this variant",
     "onlyOpen": "Only untranslated",
     "search": "Search text or key",
-    "situation": "Where and when",
     "form": "Form “{form}”, e.g. {n}",
     "baseForms": "Forms in the base language",
     "missingPlaceholder": "{name} from the base text is missing.",
@@ -3114,7 +3113,6 @@
     "sendTitle": "Send for approval",
     "sendText": "A new issue opens on GitHub. It is public: everyone can see it, your contact too. You need a GitHub account.",
     "sendGo": "Open GitHub",
-    "sendAttach": "Attach the downloaded file {file} to the issue.",
     "issue": {
       "new": "Translation: {name} ({code})",
       "fix": "Correction: {name}",

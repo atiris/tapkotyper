@@ -1,5 +1,5 @@
 // The translation as fields: what the translator page shows, counts, prefills, exports and imports. No DOM.
-import { type Dict, type Item, PLURAL_FORMS, type Section, type Value, WORDS, lookup, situationKey } from './catalog';
+import { type Dict, type Group, type Item, PLURAL_FORMS, type Section, type Value, WORDS, lookup, situationKey } from './catalog';
 import { ownDict } from './i18n';
 import type { OwnLang } from './own-langs';
 import { type ExportMode, type PairEntry, readPairs, writePairs } from './pairs';
@@ -273,21 +273,24 @@ export function exportPairs(l: OwnLang, fields: Field[], ctx: Context, mode: Exp
   const shown = mode === 'open' ? fields.filter((f) => !touched.has(f.id)) : mode === 'changes' && official ? changedFields(l, fields, official) : fields;
   const g = ctx.base.guide;
   let section = '';
-  let group = '';
-  const groupOf = new Map<string, string>();
+  /** Item key -> its group; a guide field of a group heads the group's first items. */
+  const groupOf = new Map<string, Group>();
   const situationOf = situationFinder(g);
   const names = itemNames(ctx.catalog, ctx.base.dict);
-  for (const s of ctx.catalog) for (const gr of s.groups) for (const i of gr.items) groupOf.set(i.key, gr.guide);
+  for (const s of ctx.catalog) for (const gr of s.groups) for (const i of gr.items) groupOf.set(i.key, gr);
+  let group: Group | undefined;
   const entries: PairEntry[] = shown.map((f) => {
     const comments: string[] = [];
     if (f.section !== section) {
       section = f.section;
-      comments.push(`== ${guideText(g, `sections.${f.section}.title`)} ==`);
+      const title = guideText(g, `sections.${f.section}.title`);
+      if (title) comments.push(`== ${title} ==`);
     }
-    const gr = f.kind === 'guide' ? (f.key.startsWith('groups.') ? f.key.split('.')[1] : group) : groupOf.get(f.key) ?? group;
-    if (gr !== group) {
+    const gr = f.item ? groupOf.get(f.key) : group;
+    if (gr && gr !== group) {
       group = gr;
-      if (gr) comments.push(`-- ${guideText(g, `groups.${gr}.title`)} --`);
+      const title = guideText(g, `groups.${gr.guide}.title`, names.get(f.key));
+      if (title) comments.push(`-- ${title} --`);
     }
     if (f.item) {
       const sit = situationOf(f.key);

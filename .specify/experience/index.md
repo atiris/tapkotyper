@@ -1,6 +1,7 @@
 # Experience
 
 - [localization.md](localization.md) - languages
+- [translation.md](translation.md) - the parent's translator: every text, own languages, sending a translation
 - [visuals.md](visuals.md) - visual style and animations
 - [audio.md](audio.md) - music and sounds
 - [accessibility.md](accessibility.md) - fonts, colors, motion, sound off

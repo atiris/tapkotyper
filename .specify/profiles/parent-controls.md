@@ -35,7 +35,9 @@
   nickname (required, up to 16 characters; a blank one is not saved and the field says so),
   then the character kind picked from a picture list, the typist's name (optional; hint:
   shown to the teacher in the results; blank clears it), the interface language, the **word
-  language** and the keyboard layout. A kind picked here is granted at once.
+  language** and the keyboard layout (own languages from the [translator](../experience/translation.md)
+  are offered after the official ones), then a button **Translate the game** that opens the
+  translator. A kind picked here is granted at once.
 - The **progress** tab starts with the same picture and the icon and number summary of the
   typist's "My progress" (with one more chip there: letters typed in the last 14 calendar
   days, today included), then the charts; no separate stat cards repeat the summary.

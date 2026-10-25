@@ -25,6 +25,8 @@ const LESSONS_SHOWN = 8;
 const LESSON_WORDS_MIN = 20;
 /** A text longer than this takes a whole row on a wide screen, base and translation side by side. */
 const LONG_TEXT = 160;
+/** A field's accessible name quotes at most this much of its base text. */
+const LABEL_MAX = 80;
 /** The last base and translation, a convenience of this browser only. */
 const REMEMBER = 'tapkotyper:translate';
 
@@ -33,6 +35,8 @@ const icons = new Map<string, HTMLElement>();
 const icon1 = (name: Parameters<typeof icon>[0]) => (icons.get(name) ?? icons.set(name, icon(name)).get(name)!).cloneNode(true) as HTMLElement;
 
 const defaultLayout = (lang: Lang): LayoutId => (lang === 'sk' ? 'sk-qwertz' : 'us-qwerty');
+/** A share as a whole percentage: the first field done shows 1 %, only everything done shows 100 %. */
+const pct = (p: number) => (p > 0 && p < 0.01 ? 1 : Math.floor(p * 100));
 const placeholders = (s: string) => [...new Set([...s.matchAll(/\{(\w+)\}/g)].map((m) => `{${m[1]}}`))];
 
 const guides = new Map<Lang, Promise<Record<string, string>>>();
@@ -122,8 +126,9 @@ export function translateScreen(root: HTMLElement): () => void {
   const tocSelect = h('select', { class: 'tr-toc-select', 'aria-label': t('translate.toc') });
   tocSelect.addEventListener('change', () => document.getElementById(`tr-s-${tocSelect.value}`)?.scrollIntoView({ block: 'start' }));
   const main = h('main', { class: 'tr-main' });
-  /** The field focused last: the ring goes on after it (a click on the ring takes the focus). */
+  /** The field focused last, and the one the ring went to last (a click on the ring takes the focus). */
   let lastField: string | undefined;
+  let ringAt: string | undefined;
   main.addEventListener('focusin', (e) => { lastField = (e.target as HTMLElement).dataset.field ?? lastField; });
   const note = h('p', { class: 'tr-note hint', role: 'status' });
   const needTarget: HTMLButtonElement[] = [];
@@ -338,7 +343,7 @@ export function translateScreen(root: HTMLElement): () => void {
   /** One field: the input, its state, the keep button and the placeholder warning. */
   function fieldEl(f: Field, baseText: string, cls = ''): HTMLElement {
     const value = fieldValue(target!, f);
-    const area = h('textarea', { class: `tr-field ${cls}`, rows: Math.max(1, value.split('\n').length), 'data-field': f.id, 'aria-label': t('translate.fieldLabel', { text: baseText }), spellcheck: 'true', lang: target!.code });
+    const area = h('textarea', { class: `tr-field ${cls}`, rows: Math.max(1, value.split('\n').length), 'data-field': f.id, 'aria-label': t('translate.fieldLabel', { text: baseText.length > LABEL_MAX ? `${baseText.slice(0, LABEL_MAX)}…` : baseText }), spellcheck: 'true', lang: target!.code });
     area.value = value;
     inputs.set(f.id, area);
     const warn = h('small', { class: 'tr-warn', role: 'status' });
@@ -422,7 +427,7 @@ export function translateScreen(root: HTMLElement): () => void {
   // ---- progress, contents, filter ----
   function paintProgress(): void {
     const p = target ? progressOf(target, fields) : 0;
-    const n = Math.floor(p * 100);
+    const n = pct(p);
     ring.innerHTML = roundTextSvg(String(n), rhythmRing(p));
     const label = p >= 1 ? t('translate.progressDone') : t('translate.progress', { n });
     ring.dataset.tip = label;
@@ -430,11 +435,11 @@ export function translateScreen(root: HTMLElement): () => void {
     ring.disabled = !target;
     for (const s of catalog) {
       const mine = fields.filter((f) => f.section === s.id);
-      const pct = mine.length ? Math.floor(progressOf(target!, mine) * 100) : 0;
+      const n = mine.length ? pct(progressOf(target!, mine)) : 0;
       const el = toc.querySelector(`[data-section="${s.id}"] .tr-pct`);
-      if (el) el.textContent = target ? `${pct} %` : '';
+      if (el) el.textContent = target ? `${n} %` : '';
       const opt = tocSelect.querySelector<HTMLOptionElement>(`option[value="${s.id}"]`);
-      if (opt) opt.textContent = `${sectionTitle(s)}${target ? ` · ${pct} %` : ''}`;
+      if (opt) opt.textContent = `${sectionTitle(s)}${target ? ` · ${n} %` : ''}`;
     }
   }
 
@@ -460,13 +465,14 @@ export function translateScreen(root: HTMLElement): () => void {
     }
     for (const g of main.querySelectorAll<HTMLElement>('.tr-group')) g.hidden = !g.querySelector('.tr-item:not([hidden])');
     for (const s of main.querySelectorAll<HTMLElement>('.tr-section')) s.hidden = !!query && !s.querySelector('.tr-group:not([hidden])');
-    empty.hidden = any;
+    empty.hidden = !query || any;
   }
 
   /** Focuses the first untouched field after `after` (or after the focused one), from the top when none is after it. */
   function jump(after?: string): void {
     if (!target) return;
-    const from = after ?? lastField;
+    // The first click starts at the top; the next ones go on while the focus stays where the ring left it.
+    const from = after ?? (lastField && lastField === ringAt ? ringAt : undefined);
     const start = from ? fields.findIndex((f) => f.id === from) + 1 : 0;
     const open = (f: Field) => !target!.touched.includes(f.id);
     const next = fields.slice(start).find(open) ?? fields.find(open);
@@ -479,6 +485,7 @@ export function translateScreen(root: HTMLElement): () => void {
       search.value = query = '';
       applyFilter();
     }
+    ringAt = next.id;
     area.scrollIntoView({ block: 'center' });
     area.focus({ preventScroll: true });
   }

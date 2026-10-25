@@ -286,7 +286,7 @@ the new player form.
 ## Steps
 - [x] 1. `catalog.ts` with all sections, groups, item kinds; `catalog.test.ts` (full
   coverage, kinds). The guide-keys test is added with step 2.
-- [ ] 2. Guide texts: `public/i18n/guide/sk.json` and `en.json` for every section, group
+- [x] 2. Guide texts: `public/i18n/guide/sk.json` and `en.json` for every section, group
   and item (patterns where a structure repeats). English written for English readers.
   The work can be split by section across subagents (Haiku for the texts, the main
   session reviews every section against where the text really appears in `src/`).
@@ -296,17 +296,17 @@ the new player form.
   settings (official ones only elsewhere); unit tests for the chain, plurals of a foreign
   locale and a missing own language.
 - [x] 5. `pairs.ts` + tests (format above), JSON export/import.
-- [ ] 6. The page `translate.ts`: top bar, table of contents, sections, fields and states,
+- [x] 6. The page `translate.ts`: top bar, table of contents, sections, fields and states,
   progress ring and jump, prefill, new / edit language dialogs, about panel, search and
   filter, words section with layout checks, import/export, send for approval. Styles in
   `src/styles.css` in both looks (light, dark), phone layout without horizontal scroll.
   The link in the parent settings; the route behind `parentAccess`.
-- [ ] 7. `scripts/i18n-accept.mjs`.
-- [ ] 8. Specs: `.specify/experience/translation.md` (WHAT and WHY of this page),
+- [x] 7. `scripts/i18n-accept.mjs`.
+- [x] 8. Specs: `.specify/experience/translation.md` (WHAT and WHY of this page),
   `localization.md` (own languages, the chain, where they can be picked),
   `parent-controls.md` (the link), `architecture.md` (the second IndexedDB database, the
   lazy chunk, the guide files loaded only by the translator), `experience/index.md`.
-- [ ] 9. `e2e/translate.spec.ts`: the direct address asks the parent question; from the
+- [x] 9. `e2e/translate.spec.ts`: the direct address asks the parent question; from the
   settings: new language "Deutsch"/`de`, prefill from English shows 0 % and untranslated
   fields; typing one field raises the percentage; the ring focuses the first untouched
   field; keep button touches; pool add/remove; export pairs, edit the file, import it back;
@@ -331,5 +331,16 @@ Decisions taken while implementing:
   both lines; the reader takes the first as base, the last as target.
 - The translator has its own device-level address `#/translate` (no player in it); Back goes to
   the settings when a player is chosen, else to the start page.
+- The sheet renders a section when it comes near the view (IntersectionObserver), and every
+  section at once for a search or the filter: building all ~2300 fields took 640-850 ms on the
+  dev machine, over the plan's 200 ms; with it the page opens in about 120 ms.
+- The progress ring's first click goes to the first untranslated field; further clicks go on
+  from where the ring left the focus (a click on the ring takes the focus away from the field).
+  Any started share shows at least 1 %, only all fields done show 100 %.
+- Guide texts were written per section by subagents from the code, merged and reviewed; notes
+  that leaned on a neighbour ("as above") were rewritten to stand alone.
+- `translate.situation` and `translate.sendAttach` were dropped: the page never shows them.
+- The accept script takes only the `.json` file; a correction sent as pairs in the issue body
+  is imported into the translator by the owner and exported as `.json`.
 - Audit finds: the modal close button's English-only "close" name (now `common.close`), the super
   player's companion name (`super.companionName`).

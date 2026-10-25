@@ -1,8 +1,8 @@
 # 67 - Parrot: a side card in every world that trains the same words until the fingers know them
 
 Source: `.research/game/activities.md`, section "The parrot" and decisions 8 and 10 (owner,
-2026-10-25). Pictures are ready: `ui-act-parrot` (card, a macaw) and `ui-badge-parrot` (badge,
-the macaw on a round branch), both in `public/assets/`.
+2026-10-25). Pictures are ready: `ui-act-parrot` (card, a macaw), `ui-badge-parrot` (badge,
+the macaw on a round branch) and `obj-parrot-flying` (the fly-away), all in `public/assets/`.
 
 ## What and why
 - Every world gets a **parrot card** next to its target range card. The parrot round repeats a
@@ -14,8 +14,8 @@ the macaw on a round branch), both in `public/assets/`.
   the one badge shown next to the player's name.
 
 ## Affected
-- Data: profile progress (`src/storage/schema.ts`), a migration in `src/storage/store.ts`
-  (version 8 -> 9). Export files carry the new fields (old files migrate).
+- Data: profile progress (`src/storage/schema.ts`), defaults in `newProfile`
+  (`src/storage/store.ts`). No migration: the game is in alpha, missing fields get defaults.
 - Game: new level kind `parrot` (`src/game/levels.ts`), new mode `src/game/modes/parrot.ts`,
   `src/game/modes.ts`, end screen in `src/screens/level.ts`.
 - New pure logic `src/game/parrots.ts` (fly-away, badge) with tests.
@@ -38,7 +38,7 @@ the macaw on a round branch), both in `public/assets/`.
   `parrotBest: number` (highest count ever), `parrotWonAt: string | null` (ISO day of the last
   win), `parrotCheckedAt: string | null` (last day the fly-away was rolled), `parrotFlown:
   number[]` (worlds that flew away and are not yet told; cleared when the map shows the line).
-  Migration: empty lists, 0, null.
+  Defaults: empty lists, 0, null.
 - **Fly-away** (`src/game/parrots.ts`, pure, takes the profile, today's ISO day and an rng):
   - floor = max(1, parrotBest - 3); nothing flies while count <= floor.
   - for each day after `parrotCheckedAt` up to today (first ever check: only today): 20 %
@@ -75,12 +75,17 @@ the macaw on a round branch), both in `public/assets/`.
   and, the first time the badge is reached, the badge picture with its line.
 - **Map line when parrots flew away:** the narrator bubble on the map: "Uletel ti papagáj zo
   sveta {world}. Choď poň!" (several: "Uleteli ti papagáje zo svetov ..."). Shown once.
+- **Fly-away animation** (on the map, once, together with the line): the flying parrot
+  (`obj-parrot-flying`, a macaw with spread wings, side view) starts from the world card's
+  parrot node, flaps up and away out of the window in about 2 s; the node turns grey as it
+  leaves. When the badge is lost with it, the badge next to the name shrinks and fades at
+  the same moment. With "less motion" on: no flight, the node and badge simply change.
 - **Badge places:** a small badge picture (about 28 px, tooltip "Odznak Papagáj: všetky
   papagáje sú doma") right of the name on the start page's player card and on the map's
   hello title; on "Môj postup" just under the character. Nothing when the badge is not held.
 
 ## Steps
-- [ ] 1. Data: new progress fields, migration 8 -> 9 with a store test (old export imports).
+- [ ] 1. Data: new progress fields with defaults in `newProfile` (no migration).
 - [ ] 2. `src/game/parrots.ts`: floor, daily rolls with catch-up, 21-day drop, win, badge;
       unit tests (13 missed days = 13 rolls, floor kept, last parrot stays, 21-day drop, badge
       lost when a world is added).
@@ -90,7 +95,7 @@ the macaw on a round branch), both in `public/assets/`.
       progress bar, finished state; test the word plan (counts, repeats, cap) as pure code.
 - [ ] 5. End screen and winning (step 2's win), no stars.
 - [ ] 6. Map: parrot node after the range node (grey or colour picture, tooltip), fly-away run
-      on map open, narrator line for flown parrots.
+      on map open, narrator line and the fly-away animation (badge fading when lost).
 - [ ] 7. Badge: chest +7 (`MAX_CHEST` 67), badge picture on the start card, map title and
       "Môj postup".
 - [ ] 8. i18n sk/en + guide (`parrot.*`, `map.parrotTip`, badge line, help lines in

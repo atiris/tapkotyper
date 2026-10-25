@@ -933,6 +933,7 @@ Cute, soft 2D children's game icon, flat vector style with gentle gradients, sof
 | `ui-act-jumble.jpg` | two small rounded square tiles side by side with a curved arrow above them going from one to the other, swapping places, tiles blank (jumble) |
 | `ui-act-parrot.jpg` | a cute scarlet macaw parrot standing in three-quarter view, red body, cream face patch with a round eye, yellow and black beak a little open, red-yellow-green-blue wings, long colorful tail, grey feet (parrot card on the world, grey until won; the owner's own pick from Gemini) |
 | `ui-badge-parrot.jpg` | the same macaw sitting on a branch that curves around it in a round frame, green and colorful leaves and small berries along the branch (the Parrot badge; the owner's own pick from Gemini) |
+| `obj-parrot-flying.jpg` | the card's macaw (attach `ui-act-parrot.jpg` as reference) flying away: side view facing right and a little up, wings spread wide mid flap, long tail streaming, feet tucked in, happy face (the parrot that flies away on the map) |
 | `ui-act-clean.jpg` | a short straight ribbon with a small round green check mark at its end (a clean line) |
 | `ui-act-build.jpg` | three small rounded building blocks stacked, the top one just landing (building) |
 | `ui-act-text.jpg` | an open book with a few soft grey lines on its pages, no letters (text page) |

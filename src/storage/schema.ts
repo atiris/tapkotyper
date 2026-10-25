@@ -1,5 +1,5 @@
-// Storage schema v8. These types are the data contract of `localStorage['tapkotyper:v1']`
-// and of exported `.json` files. Older shapes are upgraded by the migrations in store.ts.
+// Storage schema. These types are the data contract of `localStorage['tapkotyper:v1']`
+// and of exported `.json` files. No migrations while the game is in alpha: missing fields get defaults.
 
 export type Lang = 'sk' | 'en';
 /** A language as players and settings point to it: an official one, or an own one made in the translator (`own:<id>`). */
@@ -221,7 +221,6 @@ export interface ParentLock {
 }
 
 export interface StoreData {
-  version: 8;
   profiles: Profile[];
   lastProfileId: string | null;
   language: LangRef | null;

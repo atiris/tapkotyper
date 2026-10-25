@@ -1,4 +1,3 @@
-import { WARDROBE_MAX, WARDROBE_SHARE } from '../game/wardrobe-time';
 import { firstKeys } from '../learning/lessons';
 import {
   type CompanionKind,
@@ -17,61 +16,7 @@ import {
 export const STORE_KEY = 'tapkotyper:v1';
 const GUEST_KEY = 'tapkotyper:guest';
 
-export const STORE_VERSION = 8;
-
-/** Migrations from older stored shapes, keyed by the version they upgrade from. */
-const migrations: Record<number, (data: any) => any> = {
-  // v2: the character is the player; its old default name becomes an empty nickname, and a seed is added.
-  1: (data) => ({
-    ...data,
-    profiles: Array.isArray(data.profiles) ? data.profiles.map((p: any) => !p || typeof p !== 'object' ? p : {
-      ...p,
-      seed: typeof p.name === 'string' ? nameSeed(p.name) : p.seed,
-      companion: p.companion && ['Ťapko', 'Tapko'].includes(p.companion.name) ? { ...p.companion, name: '' } : p.companion,
-    }) : data.profiles,
-  }),
-  // v3: wardrobe time is earned by practice; existing players start with what their training so far gives.
-  2: (data) => ({
-    ...data,
-    profiles: Array.isArray(data.profiles) ? data.profiles.map((p: any) => !p || typeof p !== 'object' ? p : {
-      ...p,
-      settings: { ...p.settings, wardrobeLimit: true },
-      progress: { ...p.progress, wardrobeSeconds: earnedFrom(p.progress?.trainedSeconds) },
-    }) : data.profiles,
-  }),
-  // v4 (nickname required, name optional, word language, key font) needs no step of its own:
-  // `normalizeProfile` fills an empty nickname from the name, and the new settings from the
-  // defaults of the profile's language.
-  // v5: the device's theme; an existing device keeps following the system.
-  4: (data) => ({ ...data, theme: 'system' }),
-  // v6: the target range's collection of world things starts empty.
-  5: (data) => ({
-    ...data,
-    profiles: Array.isArray(data.profiles) ? data.profiles.map((p: any) => !p || typeof p !== 'object' ? p : {
-      ...p,
-      progress: { ...p.progress, rangeFinds: [] },
-    }) : data.profiles,
-  }),
-  // v7 listed the levels and marked the accounts the service menu simulated; nothing to add from v6.
-  6: (data) => data,
-  // v8: the service menu no longer simulates, so the simulated levels and the account mark go.
-  7: (data) => ({
-    ...data,
-    profiles: Array.isArray(data.profiles) ? data.profiles.map((p: any) => {
-      if (!p || typeof p !== 'object') return p;
-      const { serviced: _, ...rest } = p;
-      if (!p.progress || typeof p.progress !== 'object') return rest;
-      const { simulated: __, ...progress } = p.progress;
-      return { ...rest, progress };
-    }) : data.profiles,
-  }),
-};
-
 const THEMES: Theme[] = ['system', 'light', 'dark'];
-
-function earnedFrom(trained: unknown): number {
-  return typeof trained === 'number' && trained > 0 ? Math.min(WARDROBE_MAX, trained * WARDROBE_SHARE) : 0;
-}
 
 /** FNV-1a 32-bit hash of the normalized name: the same name always deals the same rewards. */
 export function nameSeed(name: string): number {
@@ -96,15 +41,17 @@ function nickFrom(name: string): string {
 }
 
 function emptyStore(): StoreData {
-  return { version: STORE_VERSION, profiles: [], lastProfileId: null, language: null, theme: 'system' };
+  return { profiles: [], lastProfileId: null, language: null, theme: 'system' };
 }
 
-export function migrate(raw: any): StoreData {
+/**
+ * The stored data, checked: broken parts are dropped and missing fields get their defaults
+ * (see `normalizeProfile`). There are no migrations while the game is in alpha.
+ */
+export function readStore(raw: any): StoreData {
   if (!raw || typeof raw !== 'object') return emptyStore();
-  let data = raw;
-  let version = typeof data.version === 'number' ? data.version : 1;
-  while (migrations[version]) data = migrations[version](data), version++;
-  const store: StoreData = { ...emptyStore(), ...data, version: STORE_VERSION };
+  const { version: _, ...data } = raw;
+  const store: StoreData = { ...emptyStore(), ...data };
   store.profiles = Array.isArray(store.profiles) ? store.profiles.filter(isProfile).map(normalizeProfile) : [];
   if (!isParentLock(store.parentLock)) delete store.parentLock;
   if (typeof store.lockRemovedAt !== 'number' || !Number.isFinite(store.lockRemovedAt)) delete store.lockRemovedAt;
@@ -112,7 +59,7 @@ export function migrate(raw: any): StoreData {
   return store;
 }
 
-/** Fills fields that are missing in older or hand-edited profiles. */
+/** Fills fields that are missing in a stored or hand-edited profile from the defaults. */
 export function normalizeProfile(p: Profile): Profile {
   const base = newProfile(p.name, p.language === 'en' ? 'en' : 'sk', p.layout, p.avatar);
   return {
@@ -195,7 +142,7 @@ export class Store {
   constructor(private local: Storage | undefined = globalThis.localStorage, private session: Storage | undefined = globalThis.sessionStorage) {
     let raw: any = null;
     try { raw = JSON.parse(safeGet(local, STORE_KEY) ?? 'null'); } catch { raw = null; }
-    this.data = migrate(raw);
+    this.data = readStore(raw);
     try {
       const g = JSON.parse(safeGet(session, GUEST_KEY) ?? 'null');
       if (isProfile(g)) this.guest = normalizeProfile(g);
@@ -251,7 +198,7 @@ export class Store {
   /** JSON for the export file: one profile or all of them. */
   exportJson(ids?: string[]): string {
     const profiles = ids ? this.data.profiles.filter((p) => ids.includes(p.id)) : this.data.profiles;
-    return JSON.stringify({ app: 'tapkotyper', version: STORE_VERSION, exportedAt: new Date().toISOString(), profiles }, null, 2);
+    return JSON.stringify({ app: 'tapkotyper', exportedAt: new Date().toISOString(), profiles }, null, 2);
   }
 }
 
@@ -265,9 +212,9 @@ export interface ImportPlan {
 export function parseImport(text: string): Profile[] {
   let raw: any;
   try { raw = JSON.parse(text); } catch { throw new Error('import.errorJson'); }
-  const file = raw?.app === 'tapkotyper' && Array.isArray(raw.profiles) ? raw : isProfile(raw) ? { version: STORE_VERSION, profiles: [raw] } : null;
+  const file = raw?.app === 'tapkotyper' && Array.isArray(raw.profiles) ? raw : isProfile(raw) ? { profiles: [raw] } : null;
   if (!file) throw new Error('import.errorShape');
-  const profiles = migrate({ version: file.version, profiles: file.profiles }).profiles;
+  const profiles = readStore({ profiles: file.profiles }).profiles;
   if (!profiles.length) throw new Error('import.errorShape');
   return profiles;
 }

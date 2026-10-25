@@ -1,5 +1,5 @@
 import type { Profile } from '../storage/schema';
-import { STORE_VERSION, parseImport } from '../storage/store';
+import { parseImport } from '../storage/store';
 import { decode, encode } from './codec';
 
 /** Longest move link offered; a longer profile goes by file. */
@@ -22,15 +22,15 @@ export function trimHistory(p: Profile, days: number, now = new Date()): Profile
  */
 export async function moveCode(p: Profile, prefix: string, max = MOVE_LINK_MAX): Promise<string | null> {
   for (const profile of [p, trimHistory(p, MOVE_DAYS_KEEP)]) {
-    const code = await encode({ app: 'tapkotyper', type: 'move', version: STORE_VERSION, profile });
+    const code = await encode({ app: 'tapkotyper', type: 'move', profile });
     if (prefix.length + code.length <= max) return code;
   }
   return null;
 }
 
-/** The profile of a move link, upgraded like an imported file. Throws `share.broken` or an import error key. */
+/** The profile of a move link, checked like an imported file. Throws `share.broken` or an import error key. */
 export async function parseMove(code: string): Promise<Profile> {
   const v: any = await decode(code);
   if (v?.app !== 'tapkotyper' || v.type !== 'move') throw new Error('share.broken');
-  return parseImport(JSON.stringify({ app: 'tapkotyper', version: v.version, profiles: [v.profile] }))[0];
+  return parseImport(JSON.stringify({ app: 'tapkotyper', profiles: [v.profile] }))[0];
 }

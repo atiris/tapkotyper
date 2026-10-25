@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { STORE_KEY, STORE_VERSION, Store, applyImport, migrate, nameSeed, newProfile, nickname, parseImport, planImport } from './store';
+import { STORE_KEY, Store, applyImport, readStore, nameSeed, newProfile, nickname, parseImport, planImport } from './store';
 
 class MemStorage {
   map = new Map<string, string>();
@@ -20,7 +20,6 @@ describe('Store', () => {
     s.add(newProfile('Ema', 'sk'));
     const again = new Store(local, mem());
     expect(again.profiles.map((p) => p.name)).toEqual(['Ema']);
-    expect(JSON.parse(local.getItem(STORE_KEY)!).version).toBe(STORE_VERSION);
   });
 
   it('keeps the guest only in session storage', () => {
@@ -38,22 +37,22 @@ describe('Store', () => {
     const local = mem();
     local.setItem(STORE_KEY, '{oops');
     expect(new Store(local, mem()).profiles).toEqual([]);
-    expect(migrate({ version: 1, profiles: [{ nope: true }] }).profiles).toEqual([]);
+    expect(readStore({ profiles: [{ nope: true }] }).profiles).toEqual([]);
   });
 
   it('fills missing fields of older profiles', () => {
     const p: any = newProfile('Ema', 'sk');
     delete p.settings.font;
     delete p.progress.friends;
-    const out = migrate({ version: 1, profiles: [p] }).profiles[0];
+    const out = readStore({ profiles: [p] }).profiles[0];
     expect(out.settings.font).toBe('lexend');
     expect(out.progress.friends).toEqual([]);
   });
 
   it('keeps a parent lock and drops a broken one', () => {
     const lock = { salt: 'ab', hash: 'cd' };
-    expect(migrate({ version: 1, profiles: [], parentLock: lock }).parentLock).toEqual(lock);
-    expect('parentLock' in migrate({ version: 1, profiles: [], parentLock: { salt: 1 } })).toBe(false);
+    expect(readStore({ profiles: [], parentLock: lock }).parentLock).toEqual(lock);
+    expect('parentLock' in readStore({ profiles: [], parentLock: { salt: 1 } })).toBe(false);
   });
 });
 
@@ -81,71 +80,9 @@ describe('nickname and seed', () => {
     const p = newProfile('Ema', 'sk');
     expect(p.seed).toBe(nameSeed('Ema'));
     p.name = 'Emka';
-    expect(migrate({ version: STORE_VERSION, profiles: [p] }).profiles[0].seed).toBe(nameSeed('Ema'));
+    expect(readStore({ profiles: [p] }).profiles[0].seed).toBe(nameSeed('Ema'));
   });
 
-  it('migrates v1: seed from the name, old default nickname replaced by the name, rewards kept', () => {
-    const old: any = newProfile('Jano', 'sk');
-    delete old.seed;
-    old.companion = { name: 'Ťapko', kind: 'owl', accessories: ['cap'] };
-    old.progress.rewards = ['acc:cap'];
-    old.progress.companionsUnlocked = ['owl', 'cat'];
-    const named: any = { ...newProfile('Ema', 'en'), companion: { name: 'Foxy', kind: 'fox', accessories: [] } };
-    delete named.seed;
-    const [a, b] = migrate({ version: 1, profiles: [old, named] }).profiles;
-    expect(a.seed).toBe(nameSeed('Jano'));
-    expect(a.companion.name).toBe('Jano');
-    expect(a.companion.accessories).toEqual(['cap']);
-    expect(a.progress.rewards).toEqual(['acc:cap']);
-    expect(a.progress.companionsUnlocked).toEqual(['owl', 'cat']);
-    expect(b.companion.name).toBe('Foxy');
-    expect(b.seed).toBe(nameSeed('Ema'));
-  });
-});
-
-describe('migration v3', () => {
-  it('turns the wardrobe limit on and gives the time the training so far earns', () => {
-    const old: any = newProfile('Jano', 'sk');
-    delete old.settings.wardrobeLimit;
-    delete old.progress.wardrobeSeconds;
-    old.progress.trainedSeconds = 600;
-    const long: any = { ...newProfile('Ema', 'sk'), progress: { ...old.progress, trainedSeconds: 36000 } };
-    const [a, b] = migrate({ version: 2, profiles: [old, long] }).profiles;
-    expect(a.settings.wardrobeLimit).toBe(true);
-    expect(a.progress.wardrobeSeconds).toBe(120);
-    expect(b.progress.wardrobeSeconds).toBe(420);
-    expect(newProfile('Nový', 'sk').progress.wardrobeSeconds).toBe(0);
-  });
-});
-
-describe('migration v4', () => {
-  const v3 = (name: string, nick: string, language: 'sk' | 'en') => {
-    const p: any = newProfile(name, language);
-    p.companion.name = nick;
-    delete p.settings.wordLang;
-    delete p.settings.ownWordLang;
-    delete p.settings.keyFont;
-    return p;
-  };
-
-  it('fills an empty nickname from the name and adds the word language and key font', () => {
-    const [a, b] = migrate({ version: 3, profiles: [v3('Alexandra Veronika', '', 'en'), v3('Jano', 'Blesk', 'sk')] }).profiles;
-    expect(a.companion.name).toBe('Alexandra Veroni');
-    expect(a.name).toBe('Alexandra Veronika');
-    expect(a.settings.wordLang).toBe('en');
-    expect(a.settings.ownWordLang).toBe('en');
-    expect(a.settings.keyFont).toBe(true);
-    expect(b.companion.name).toBe('Blesk');
-    expect(b.settings.wordLang).toBe('sk');
-  });
-
-  it('imports a v3 file', () => {
-    const json = JSON.stringify({ app: 'tapkotyper', version: 3, profiles: [v3('Ema', ' ', 'sk')] });
-    const [p] = parseImport(json);
-    expect(nickname(p)).toBe('Ema');
-    expect(p.settings.wordLang).toBe('sk');
-    expect(p.settings.keyFont).toBe(true);
-  });
 });
 
 describe('export and import', () => {
@@ -172,43 +109,9 @@ describe('export and import', () => {
   });
 });
 
-describe('migration v5', () => {
-  it('starts an existing device on the system theme and keeps a stored one', () => {
-    const v4 = { version: 4, profiles: [newProfile('Ema', 'sk')], lastProfileId: null, language: 'sk' };
-    const out = migrate(v4);
-    expect(out.version).toBe(STORE_VERSION);
-    expect(out.theme).toBe('system');
-    expect(out.profiles).toHaveLength(1);
-    expect(migrate({ version: 5, profiles: [], theme: 'dark' }).theme).toBe('dark');
-    expect(migrate({ version: 5, profiles: [], theme: 'pink' }).theme).toBe('system');
-  });
-});
-
-describe('migration v6', () => {
-  it('gives every profile an empty collection of range finds', () => {
-    const old: any = newProfile('Ema', 'sk');
-    delete old.progress.rangeFinds;
-    const out = migrate({ version: 5, profiles: [old], theme: 'light' });
-    expect(out.version).toBe(STORE_VERSION);
-    expect(out.profiles[0].progress.rangeFinds).toEqual([]);
-    expect(newProfile('Nový', 'sk').progress.rangeFinds).toEqual([]);
-  });
-});
-
-describe('migration v8', () => {
-  it('drops the simulated levels and the account mark of the old service menu', () => {
-    const old: any = newProfile('Ema', 'sk');
-    old.progress.simulated = ['w1-1'];
-    old.serviced = true;
-    const out = migrate({ version: 7, profiles: [old], theme: 'light' });
-    expect(out.version).toBe(8);
-    expect('simulated' in out.profiles[0].progress).toBe(false);
-    expect('serviced' in out.profiles[0]).toBe(false);
-    expect(migrate({ version: 6, profiles: [newProfile('Lea', 'sk')], theme: 'light' }).profiles).toHaveLength(1);
-  });
-
+describe('stored data', () => {
   it('keeps when the password was removed, and only as a number', () => {
-    expect(migrate({ version: 8, profiles: [], theme: 'light', lockRemovedAt: 5 }).lockRemovedAt).toBe(5);
-    expect('lockRemovedAt' in migrate({ version: 8, profiles: [], theme: 'light', lockRemovedAt: 'x' })).toBe(false);
+    expect(readStore({ profiles: [], theme: 'light', lockRemovedAt: 5 }).lockRemovedAt).toBe(5);
+    expect('lockRemovedAt' in readStore({ profiles: [], theme: 'light', lockRemovedAt: 'x' })).toBe(false);
   });
 });

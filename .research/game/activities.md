@@ -104,8 +104,8 @@ minutes (the fairy story: 5 words x 8 times x 6 letters is about 240 keys).
 - The badge is worth 7 points in the treasure chest of rarities (the chest's maximum grows
   from 60 to 67). It is the one badge shown next to the player's name: on the start page's
   player card, just under the character on "Môj postup", and on the player's map.
-- The badge picture is `ui-badge-parrot` (green parrot head).
-- The world card carries a parrot icon next to the target (`ui-act-parrot`, a red macaw): grey while that
+- The badge picture is `ui-badge-parrot` (the macaw on a round branch). Implementation plan: `.todo/67-parrot.md`.
+- The world card carries a parrot icon next to the target (`ui-act-parrot`, a macaw): grey while that
   world's parrot is not won (or flew away), in full colour when it is won and counted.
 
 Is it too complicated? For the child it is simple: "a parrot flew away, go get it back". The

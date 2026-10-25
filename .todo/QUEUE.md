@@ -6,3 +6,4 @@ each in its own clean session. One line per plan in `.todo/`:
 listed here is never run. Lines whose plan has moved to `.todo/.done/` are
 skipped, and the session that finishes a plan removes its line.
 
+- [P2] 67-parrot.md - parrot side card, fly-away and badge; decided and pictures ready, independent of the meadow playtest

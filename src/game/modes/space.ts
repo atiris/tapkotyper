@@ -165,7 +165,7 @@ export class SpaceMode extends ApproachMode {
     g.restore();
     this.drawTapko(g);
     super.render(g);
-    this.drawSpeedometer(g, rx, ry);
+    this.drawSpeedometer(g);
   }
 
   /** Empty glass over the picture's window, Tapko on his hop, then seated behind the glass. */
@@ -199,13 +199,13 @@ export class SpaceMode extends ApproachMode {
     if (inside < 1) drawTapko(g, c, mood, s.x, s.y, s.size, { ...motion, alpha: 1 - inside });
   }
 
-  /** The rocket's own instrument: after Tapko is in, it slides up from below the scene and docks under the rocket. */
-  protected drawSpeedometer(g: G, rx: number, ry: number): void {
+  /** The rocket's own instrument: after Tapko is in, it slides up and sits on the bottom edge under the rocket, still while the rocket bobs. */
+  protected drawSpeedometer(g: G): void {
     const slide = this.L.reduceMotion ? 1 : Math.max(0, Math.min(1, (this.t - BOARD_TIME) / DOCK_TIME));
     if (slide <= 0) return;
     const r = GAUGE_R;
-    const below = VH + r + 20, dock = ry + ROCKET_H / 2 + r + 18;
-    const cx = rx, cy = below + (dock - below) * ease.outCubic(slide);
+    const below = VH + r + 20;
+    const cx = ROCKET_X, cy = below + (VH - below) * ease.outCubic(slide);
     g.save();
     g.fillStyle = 'rgba(20,16,50,0.55)';
     g.beginPath();

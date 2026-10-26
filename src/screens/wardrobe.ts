@@ -1,10 +1,10 @@
 import { app, go, reduceMotion, saveProfile } from '../app/app';
 import { accessories, imageUrl } from '../gfx/assets';
-import { type Mood, SLOTS, otherMood, tapkoElement, renderTapkoInto } from '../gfx/tapko';
+import { type Mood, SLOTS, otherMood, randomOutfit, tapkoElement, renderTapkoInto } from '../gfx/tapko';
 import { t } from '../i18n/i18n';
 import { friendStars, grantCompanions, hasAccessory, hasCompanion, totalStars, unlockRules } from '../game/rewards';
 import { practiceToOpen, spendWardrobe, wardrobeLimited, wardrobeLocked } from '../game/wardrobe-time';
-import { COMPANION_KINDS, type Profile } from '../storage/schema';
+import { COMPANION_KINDS } from '../storage/schema';
 import { NICK_MAX } from '../storage/store';
 import { button, h, icon, onEscape } from '../ui/dom';
 import { cornerControls } from '../ui/chrome';
@@ -12,15 +12,6 @@ import { levelTitleWords, timerPic } from '../ui/hud';
 
 /** The balance is saved this often (seconds) while the wardrobe is open, and on leaving it. */
 const SAVE_EVERY = 10;
-
-/** For every body area: half the time nothing, else one of the owned items of that area. */
-function randomOutfit(p: Profile): string[] {
-  return SLOTS.flatMap((slot) => {
-    const owned = accessories().filter((a) => a.slot === slot && hasAccessory(p, a.id));
-    if (!owned.length || Math.random() < 0.5) return [];
-    return [owned[Math.floor(Math.random() * owned.length)].id];
-  });
-}
 
 /**
  * The child's character and wardrobe: the nickname and a kind earned by stars; then one
@@ -70,7 +61,7 @@ export function wardrobeScreen(root: HTMLElement): () => void {
   };
   const grid = h('div', { class: 'wardrobe-grid' });
   const clear = button(t('wardrobe.clear'), () => { p.companion.accessories = []; saveProfile(); render(); }, 'btn ghost small');
-  const random = button(t('wardrobe.random'), () => { p.companion.accessories = randomOutfit(p); saveProfile(); render(); }, 'btn ghost small');
+  const random = button(t('wardrobe.random'), () => { p.companion.accessories = randomOutfit((id) => hasAccessory(p, id)); saveProfile(); render(); }, 'btn ghost small');
   const render = () => {
     renderTapkoInto(preview, p.companion, mood);
     nick.disabled = clear.disabled = random.disabled = locked;

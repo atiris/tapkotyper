@@ -16,6 +16,15 @@ export function otherMood(kind: CompanionKind, current: Mood): Mood {
 export const SLOT_ORDER: (Slot | 'companion')[] = ['back', 'companion', 'feet', 'body', 'neck', 'hand', 'eyes', 'head'];
 export const SLOTS: Slot[] = ['head', 'eyes', 'neck', 'body', 'back', 'hand', 'feet'];
 
+/** For every body area: half the time nothing, else one of the items of that area that `has` allows. */
+export function randomOutfit(has: (id: string) => boolean): string[] {
+  return SLOTS.flatMap((slot) => {
+    const owned = accessories().filter((a) => a.slot === slot && has(a.id));
+    if (!owned.length || Math.random() < 0.5) return [];
+    return [owned[Math.floor(Math.random() * owned.length)].id];
+  });
+}
+
 const KIND_COLORS: Record<CompanionKind, [string, string]> = {
   fox: ['#f28a3c', '#fbe6c8'], cat: ['#b7bcc4', '#ffffff'], bunny: ['#f6e4cc', '#ffffff'], owl: ['#6fb5ad', '#f4ead2'],
   dog: ['#e3b46c', '#ffffff'], bear: ['#a8703f', '#e5c49a'], panda: ['#f5f5f5', '#2f2f35'], penguin: ['#4a5878', '#ffffff'], lion: ['#e8b544', '#f5e3b3'],

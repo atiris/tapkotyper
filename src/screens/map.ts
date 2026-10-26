@@ -16,6 +16,8 @@ import { arrowFocus, button, closeButton, h, icon } from '../ui/dom';
 import { cornerControls, settingsButton } from '../ui/chrome';
 import { offerInstall } from '../ui/install';
 import { tipShown } from '../ui/tooltip';
+import { onTypedWord } from '../ui/typed-word';
+import { flyingParrot, parrotVisit } from '../ui/parrot-visit';
 import { ownTextPhrases } from '../game/modes/practice';
 import { levelTitleWords } from '../ui/hud';
 import { startFreeType } from './free-type';
@@ -75,7 +77,7 @@ function welcomeCard(p: Profile, start: () => void): HTMLElement | null {
   return card;
 }
 
-export function mapScreen(root: HTMLElement): void {
+export function mapScreen(root: HTMLElement): () => void {
   const p = app.profile!;
   audio.music(app.menuTrack);
   // Won parrots may fly away over the days; the map tells it once.
@@ -154,6 +156,8 @@ export function mapScreen(root: HTMLElement): void {
   }
   // One greeting at a time: the install offer waits for a map without the welcome.
   if (p.id !== SUPER_ID && !welcome) offerInstall(p.companion);
+  // The word "parrot" typed on the map calls a parrot over the page.
+  return onTypedWord([t('parrot.title')], parrotVisit);
 }
 
 /** Which letters still need accuracy before new ones open; empty when none holds them back. */
@@ -178,19 +182,22 @@ function keyIcon(held: string): HTMLElement {
   return k;
 }
 
-/** The target range of a finished world: a small node next to the super level's star. */
-function aimNode(world: number): HTMLElement {
-  return h('button', { class: 'level-node aim-node', type: 'button', 'aria-label': t('aim.title'), tip: t('map.aimTip'), onClick: () => go('level', { id: 'aim', world }) },
+/** A node's tooltip; before the world is finished it also says when the node opens. */
+const sideTip = (open: boolean, key: string) => (open ? t(key) : `${t(key)} ${t('map.sideOpens')}`);
+
+/** The target range of a world: a small node next to the super level's star, grey and closed until the world is finished. */
+function aimNode(open: boolean, world: number): HTMLElement {
+  return h('button', { class: 'level-node aim-node', type: 'button', disabled: !open, 'aria-label': t('aim.title'), tip: sideTip(open, 'map.aimTip'), onClick: () => go('level', { id: 'aim', world }) },
     icon('target', 'icon aim-icon'));
 }
 
-/** The parrot of a finished world: in colour while it is at home, grey until it is won (or after it flew away). */
-function parrotNode(p: Profile, world: number, flying: boolean): HTMLElement {
+/** The parrot of a world: in colour while it is at home, grey until it is won (or after it flew away), closed until the world is finished. */
+function parrotNode(p: Profile, open: boolean, world: number, flying: boolean): HTMLElement {
   const home = flying || p.progress.parrots.includes(world);
   const pic = imageUrl('ui-act-parrot');
   return h('button', {
-    class: `level-node parrot-node ${home ? 'home' : ''}`, type: 'button', 'data-world': String(world),
-    'aria-label': `${t('parrot.title')}${home ? `, ${t('map.parrotHome')}` : ''}`, tip: t('map.parrotTip'),
+    class: `level-node parrot-node ${home ? 'home' : ''}`, type: 'button', disabled: !open, 'data-world': String(world),
+    'aria-label': `${t('parrot.title')}${home ? `, ${t('map.parrotHome')}` : ''}`, tip: sideTip(open, 'map.parrotTip'),
     onClick: () => go('level', { id: 'parrot', world }),
   }, pic ? h('img', { class: 'level-act', src: pic, alt: '' }) : icon('star', 'icon'));
 }
@@ -202,13 +209,12 @@ function flyOff(root: HTMLElement, worlds: number[], badgeLost: boolean): void {
     for (const n of nodes) n.classList.remove('home');
     if (badgeLost) root.querySelector('.map-hello .parrot-badge')?.remove();
   };
-  const pic = imageUrl('obj-parrot-flying');
-  if (reduceMotion() || !pic) return leave();
+  if (reduceMotion() || !imageUrl('obj-parrot-flying')) return leave();
   requestAnimationFrame(() => {
     for (const n of nodes) {
       const r = n.getBoundingClientRect();
-      const bird = h('img', { class: 'parrot-fly', src: pic, alt: '', style: `left:${r.left + r.width / 2}px;top:${r.top + r.height / 2}px` });
-      bird.addEventListener('animationend', () => bird.remove());
+      const bird = flyingParrot('parrot-fly', `left:${r.left + r.width / 2}px;top:${r.top + r.height / 2}px`)!;
+      bird.addEventListener('animationend', (e) => e.target === bird && bird.remove());
       root.append(bird);
     }
     root.querySelector('.map-hello .parrot-badge')?.classList.toggle('leaving', badgeLost);
@@ -219,7 +225,7 @@ function flyOff(root: HTMLElement, worlds: number[], badgeLost: boolean): void {
 /**
  * One story: its title and its worlds as islands; a story still closed says when it opens.
  * A level reached without enough keys shows a key and lets the bubble say how many are missing
- * and which letters need accuracy (`held`); a finished world offers its target range and its parrot
+ * and which letters need accuracy (`held`); every world shows its target range and its parrot, open once the world is finished
  * (in colour while the parrots in `flying` leave).
  */
 function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held: string, keysBubble: (n: number, world: number) => void, lockBubble: (world: number) => void, flying: number[]): HTMLElement {
@@ -258,7 +264,7 @@ function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held:
       }) }, img ? h('img', { src: img, alt: '' }) : h('div', { class: 'island-fallback' }), open ? null : h('span', { class: 'lock', tip: lock || null }, icon('lock')),
         tier ? badge(wi, tier, true) : null),
       h('h3', {}, `${wi + 1}. ${t(`worlds.${w}`)}`),
-      h('div', { class: 'level-row' }, ...levels, ...(aimOpen(p, wi) ? [aimNode(wi), parrotNode(p, wi, flying.includes(wi))] : [])));
+      h('div', { class: 'level-row' }, ...levels, aimNode(aimOpen(p, wi), wi), parrotNode(p, aimOpen(p, wi), wi, flying.includes(wi))));
   });
   const closed = !storyOpen(p, story);
   return h('section', { class: `story-row story-${story.id}` },

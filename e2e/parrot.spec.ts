@@ -55,4 +55,7 @@ test('a parrot left alone too long flies away and the map says so', async ({ pag
   await page.reload();
   await page.locator('.map-screen').waitFor();
   await expect(page.locator('.map-bubble')).toBeHidden();
+  // My progress counts the parrots at home against the most at once.
+  await page.locator('.map-side .btn', { hasText: 'My progress' }).click();
+  await expect(page.locator('.progress-screen .sum-chip', { hasText: 'max' })).toHaveText('1 max 2');
 });

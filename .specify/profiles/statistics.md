@@ -31,9 +31,10 @@
   story's picture and title, and by world, one row of level cells per world, each cell with
   its three stars, filled or empty, in a fixed place) and **Cvičenia**. Under the progress sit
   "QR kód celého postupu" and "Certifikát" ([parent controls](parent-controls.md)).
-- Under the range awards a shelf of **parrots** ("Papagáje"): every world's parrot, in colour
-  while it is at home, grey after it flew away (its tooltip says so) and grey with a question
-  mark while its world is not finished ([parrot](../game/parrot.md)).
+- Once a parrot was ever won, the summary row has a **parrot** chip: the parrot's picture and
+  "2 max 5", the parrots at home now and the most that were home at once; the tooltip says it
+  in words ([parrot](../game/parrot.md)). Secret words on the page start the badge show
+  ([easter eggs](../experience/easter-eggs.md)).
 - The overlay (a quick look, only by a click on the character) has three tabs: **Postup** (the progress above, a big Tapko, the growth
   medals and the stars as the last chip; stories come before worlds),
   **Klávesy** (the key map and the key details) and **Cvičenia** (the history of exercises

@@ -19,7 +19,7 @@ import { bigCode } from '../ui/big-code';
 import { badge, parrotBadge } from '../ui/badge';
 import { hasParrotBadge } from '../game/parrots';
 import { medal } from '../ui/medal';
-import { parrotShelf, rangeFinds } from '../ui/finds';
+import { rangeFinds } from '../ui/finds';
 import { openCertificate } from './certificate';
 
 /**
@@ -110,18 +110,20 @@ function chip(pic: string | null, glyph: string, text: string, label: string): H
     pic ? h('img', { src: pic, alt: '' }) : h('span', { class: 'sum-glyph' }, glyph), h('b', {}, text));
 }
 
-/** The long-term picture: mastered keys, finished stories and worlds, the chest's points, the best stars of all levels, and the accuracy, speed and letters of the last 14 days. */
+/** The long-term picture: mastered keys, finished stories and worlds, the chest's points, the parrots at home against their best count, the best stars of all levels, and the accuracy, speed and letters of the last 14 days. */
 export function summaryRow(p: Profile): HTMLElement {
   const m = masterySummary(p);
   const stories = STORIES.filter((x) => storyDone(p, x)).length;
   const recent = recentTyping(p, 14);
   const percent = Math.round(recent.accuracy * 100);
   const chest = chestPoints(p), stars = totalStars(p);
+  const parrots = { n: p.progress.parrots.length, best: p.progress.parrotBest };
   return h('ul', { class: 'progress-sum' },
     chip(imageUrl('ui-key'), '⌨', `${m.mastered}/${m.total}`, t('progress.keys', { n: m.mastered, total: m.total })),
     chip(imageUrl('ui-level'), '▲', `${stories}/${STORIES.length}`, t('progress.stories', { n: stories, total: STORIES.length })),
     chip(imageUrl('ui-earth'), '●', `${p.progress.worldsDone.length}/${WORLDS.length}`, t('progress.worlds', { n: p.progress.worldsDone.length, total: WORLDS.length })),
     chip(imageUrl('ui-chest'), '◆', `${chest}/${MAX_CHEST}`, t('progress.chest', { n: chest, total: MAX_CHEST })),
+    parrots.best ? chip(imageUrl('ui-act-parrot'), 'P', t('progress.parrotCount', parrots), t('progress.parrots', parrots)) : null,
     recent.chars ? chip(imageUrl('ui-accuracy'), '✓', `${percent} %`, t('progress.quality', { n: percent })) : null,
     recent.cpm ? chip(imageUrl('ui-typing-speed'), '»', String(recent.cpm), t('progress.speed', { n: recent.cpm })) : null,
     chip(imageUrl('ui-star'), '★', `${stars}/${MAX_STARS}`, t('progress.stars', { n: stars, total: MAX_STARS })),
@@ -150,7 +152,7 @@ function storyRow(p: Profile, story: StoryDef): HTMLElement {
       h('b', {}, String(stars)), star ? h('img', { src: star, alt: '' }) : '★'));
 }
 
-/** The summary row, a row per story, the badge shelf, the range awards and the parrots, and when the child last trained. */
+/** The summary row, a row per story, the badge shelf and the range awards, and when the child last trained. */
 function progressSection(p: Profile): HTMLElement {
   const { daysAgo, weekMinutes } = lastTraining(p);
   const last = daysAgo === null ? t('progress.never') : daysAgo === 0 ? t('progress.lastToday') : daysAgo === 1 ? t('progress.lastYesterday') : t('progress.lastDays', { n: daysAgo });
@@ -160,7 +162,6 @@ function progressSection(p: Profile): HTMLElement {
     h('div', { class: 'badge-shelf' }, h('h4', {}, t('progress.badges')),
       h('div', { class: 'badge-row' }, ...WORLDS.map((_, w) => badge(w, badgeTier(p, w), true)))),
     h('div', { class: 'badge-shelf' }, h('h4', {}, t('progress.rangeAwards')), rangeFinds(p)),
-    h('div', { class: 'badge-shelf' }, h('h4', {}, t('progress.parrots')), parrotShelf(p)),
     h('p', { class: 'progress-last' }, last, daysAgo === null ? null : [' ', t('progress.week', { n: weekMinutes })]));
 }
 

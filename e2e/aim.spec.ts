@@ -16,8 +16,9 @@ async function editProfile(page: Page, change: string): Promise<void> {
 test('a level waiting for letters names the ones that need accuracy', async ({ page }) => {
   await createProfile(page, 'Ema');
   await editProfile(page, 'p.progress.levels = { "w1-1": 3, "w1-2": 3 }; p.progress.scenesSeen.push("welcome");');
-  // No world is done yet: no target range, the bubble offers own practice.
-  await expect(page.locator('.aim-node')).toHaveCount(0);
+  // No world is done yet: every target range is grey and closed, the bubble offers own practice.
+  await expect(page.locator('.aim-node:not(:disabled)')).toHaveCount(0);
+  await expect(page.locator('.island-meadow .aim-node')).toBeDisabled();
   const locked = page.locator('.level-node.keys').first();
   await expect(locked.locator('.level-key')).toHaveAttribute('data-tip', /type these more accurately: f, j/);
   await locked.click();

@@ -21,6 +21,12 @@
     "close": "Close (Esc)"
   },
   "start": {
+    "visit": {
+      "words": ["hi", "hello", "hey", "hiya", "howdy", "greetings", "good morning", "good afternoon", "good evening", "good day"],
+      "hello": "Hi there!",
+      "intro": "I am Tapko. Nice to see you!",
+      "invite": "Pick a player and let's practise typing together for a little while."
+    },
     "whoPlays": "Who will type to me today?",
     "pickByNumber": "You can also pick this profile by typing the number {n}",
     "newProfile": "New player",
@@ -134,6 +140,7 @@
     "aimTip": "Target range: practise the letters you do not type accurately enough yet. When only accuracy stands between you and the next letter, this is where you get it.",
     "parrotTip": "Parrot: type a few words many times in a row, until your fingers know them by themselves. Speed does not matter.",
     "parrotHome": "the parrot is at home",
+    "sideOpens": "Opens when you finish this world.",
     "parrotFlown": "Your parrot flew away from {worlds}. Go and get it!",
     "parrotsFlown": "Your parrots flew away from {worlds}. Go and get them!",
     "starsAria": "{n} stars",
@@ -885,8 +892,8 @@
     "week": "Last 7 days: {n} min",
     "badges": "World badges",
     "rangeAwards": "Target range awards",
-    "parrots": "Parrots",
-    "parrotAway": "{world}: the parrot flew away, go get it",
+    "parrots": "Parrots at home: {n}, most at once: {best}",
+    "parrotCount": "{n} max {best}",
     "chars14": "{n} letters typed in the last 14 days"
   },
   "stats": {
@@ -1373,7 +1380,7 @@
       "Key, world and story: how many keys you type well and fast (at least 9 of 10 presses right), how many worlds and stories you have finished.",
       "The target is your accuracy over the last 14 days, the arrow of keys your speed in characters per minute, the star all the stars you have earned, and the pile of keys the letters you typed in the last 14 days.",
       "Each story row shows its worlds: finished ones in colour, the rest grey, and the stars of that story.",
-      "Parrots: a coloured one is at home, a grey one flew away or its world is not finished yet.",
+      "Parrot: how many parrots are at home now and the most there were at once. Flown ones come back when you play with them again.",
       "Open My progress with its button on the map. It has four tabs: Progress, Keys, Levels and Exercises. A click on your character shows a quick look.",
       "Keys shows which keys go well and which to practise. You can start practice right from there.",
       "A **QR code** shows your progress or an exercise to your teacher: they just take a photo of it. You can print a **Certificate** with your results."

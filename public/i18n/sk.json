@@ -21,6 +21,12 @@
     "close": "Zavrieť (Esc)"
   },
   "start": {
+    "visit": {
+      "words": ["ahoj", "ahojte", "čau", "čaute", "čauko", "nazdar", "servus", "zdravím", "zdravíčko", "dobrý deň", "dobré ráno", "dobrý večer", "dobré popoludnie", "hello", "hi"],
+      "hello": "Ahoj!",
+      "intro": "Ja som Tapko. Teším sa na teba!",
+      "invite": "Vyber si hráča a poďme si chvíľku spolu zatrénovať písanie."
+    },
     "whoPlays": "Kto mi dnes napíše?",
     "pickByNumber": "Profil môžeš aktivovať aj napísaním číslice {n}",
     "newProfile": "Nový hráč",
@@ -134,6 +140,7 @@
     "aimTip": "Strelnica: tu si precvičíš písmená, ktoré ešte nepíšeš dosť presne. Keď ti k ďalšiemu písmenu chýba už len presnosť, tu ju získaš.",
     "parrotTip": "Papagáj: napíšeš pár slov veľakrát za sebou, kým ich prsty nebudú vedieť samy. Na rýchlosti nezáleží.",
     "parrotHome": "papagáj je doma",
+    "sideOpens": "Otvorí sa, keď dokončíš tento svet.",
     "parrotFlown": "Uletel ti papagáj zo sveta {worlds}. Choď poň!",
     "parrotsFlown": "Uleteli ti papagáje zo svetov {worlds}. Choď po ne!",
     "starsAria": "hviezdičky: {n}",
@@ -885,8 +892,8 @@
     "week": "Za posledných 7 dní: {n} min",
     "badges": "Odznaky svetov",
     "rangeAwards": "Ocenenia zo strelníc",
-    "parrots": "Papagáje",
-    "parrotAway": "{world}: papagáj uletel, choď poň",
+    "parrots": "Papagáje doma: {n}, najviac naraz: {best}",
+    "parrotCount": "{n} max {best}",
     "chars14": "{n} písmen napísaných za posledných 14 dní"
   },
   "stats": {
@@ -1373,7 +1380,7 @@
       "Kláves, svet a príbeh: koľko kláves ti ide dobre a rýchlo (aspoň 9 z 10 stlačení správne), koľko svetov a príbehov máš hotových.",
       "Terč je tvoja presnosť za posledných 14 dní, šípka z kláves rýchlosť v znakoch za minútu, hviezdička všetky získané hviezdičky a kôpka kláves počet písmen napísaných za posledných 14 dní.",
       "V každom riadku príbehu sú jeho svety: hotové sú farebné, ostatné sivé, a hviezdičky z toho príbehu.",
-      "Papagáje: farebný je doma, sivý uletel alebo jeho svet ešte nie je hotový.",
+      "Papagáj: koľko papagájov je teraz doma a koľko ich tam bolo najviac naraz. Uletené sa vrátia, keď si s nimi znova zahráš.",
       "Môj postup otvoríš tlačidlom na mape. Má štyri karty: Postup, Klávesy, Úrovne a Cvičenia. Klik na postavičku ukáže rýchly prehľad.",
       "Klávesy ukazujú, ktoré ti idú a ktoré si ešte precvičiť. Odtiaľ hneď spustíš cvičenie.",
       "**QR kód** ukáže tvoj postup alebo cvičenie učiteľovi, stačí ho odfotiť. **Certifikát** s tvojimi výsledkami si môžeš vytlačiť."

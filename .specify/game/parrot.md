@@ -7,7 +7,9 @@
 - It opens with the world's super level, like the [target range](target-practice.md): a small
   parrot node after the range's target on the map. The node is grey while the world's parrot is
   not won (or after it flew away) and in full colour while it is at home; its tooltip says what
-  it trains. It starts only when the child picks it, never by "Continue".
+  it trains. Before the world is finished the node is already there, grey and closed like a
+  level not reached yet (the tooltip adds when it opens). It starts only when the child picks
+  it, never by "Continue".
 - **Scene:** the world's own background. Tapko stands at the left, the parrot sits on a perch at
   the right. The word to type is Tapko's bubble between them; the next word waits greyed after
   it. When a word is typed, the parrot repeats it in its own bubble with a short squawk.

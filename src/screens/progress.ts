@@ -5,7 +5,9 @@ import type { Profile } from '../storage/schema';
 import { barChart, lineChart } from '../ui/charts';
 import { cornerControls, starRow } from '../ui/chrome';
 import { button, h } from '../ui/dom';
+import { badgeShow } from '../ui/badge-show';
 import { barTabLinks, tabBar } from '../ui/tabs';
+import { onTypedWord } from '../ui/typed-word';
 import { exercisesTab, keysTab, progressTab, storyPicture } from './stats';
 
 const TABS = ['progress', 'keys', 'levels', 'exercises'] as const;
@@ -37,8 +39,13 @@ function storyLevels(p: Profile): HTMLElement {
   }));
 }
 
-/** "My progress" as a page of its own, opened from the map: progress, keys with the trends, levels and exercises. */
-export function progressScreen(root: HTMLElement): void {
+/** The secret words of the page: every longer word of the story titles and of the badges' heading. */
+function showWords(): string[] {
+  return [...STORIES.map((s) => t(s.title)), t('progress.badges')].flatMap((s) => s.split(/\s+/)).filter((w) => w.length >= 4);
+}
+
+/** "My progress" as a page of its own, opened from the map: progress, keys with the trends, levels and exercises; one of its words typed brings the badge show. */
+export function progressScreen(root: HTMLElement): () => void {
   const p = app.profile!;
   const body = h('div', { class: 'tab-panel stats-body' });
   const nav = tabBar(TABS.map((tab) => [tab, t(`progress.tab${tab[0].toUpperCase()}${tab.slice(1)}`)] as const), 'progress', (tab: Tab) => body.replaceChildren(
@@ -48,4 +55,5 @@ export function progressScreen(root: HTMLElement): void {
   const bar = h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'), h('h1', {}, t('progress.title')));
   barTabLinks(bar, nav);
   root.append(h('div', { class: 'screen progress-screen' }, bar, cornerControls(), nav, body));
+  return onTypedWord(showWords(), badgeShow);
 }

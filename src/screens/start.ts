@@ -10,6 +10,8 @@ import { roundButton } from '../ui/hud';
 import { numberPick, profileCard } from '../ui/profile-card';
 import { MAX_PER_ROW, rowSplit } from '../ui/rows';
 import { skyScene } from '../ui/sky';
+import { tapkoVisit } from '../ui/tapko-visit';
+import { onTypedWord } from '../ui/typed-word';
 import { listenForSuperPassword, superProfile } from '../app/super';
 
 /** The narrowest player card (its four counts still in one line) and the gap between cards, for the number of cards a row holds. */
@@ -132,7 +134,10 @@ export function startScreen(root: HTMLElement): () => void {
     await selectProfile(app.superPlayer);
     go('map');
   });
+  // A greeting typed brings a Tapko to say hello.
+  const offGreet = gated ? () => undefined : onTypedWord(tList('start.visit.words'), () => tapkoVisit(screen));
   return () => {
+    offGreet();
     window.removeEventListener('resize', placeRows);
     sky.destroy();
     offKeyboard();

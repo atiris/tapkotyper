@@ -102,7 +102,7 @@ the macaw on a round branch) and `obj-parrot-flying` (the fly-away), all in `pub
       `help.more` and a `help.games` line for the parrot).
 - [x] 9. Specs: `.specify/game/parrot.md` (+ index), statistics (chest 67), help, visuals;
       research status in `.research/game/activities.md`.
-- [ ] 10. Verify: build, unit tests, e2e touched specs; playwright: open a parrot from the map
+- [x] 10. Verify: build, unit tests, e2e touched specs; playwright: open a parrot from the map
       (super player), play a round with slips (super help 2 mistakes), see the card turn colour,
       the badge next to the name, and a fly-away (set `parrotCheckedAt` back in the store) with
       the map line.
@@ -121,3 +121,15 @@ the macaw on a round branch) and `obj-parrot-flying` (the fly-away), all in `pub
 ## Out of scope
 - The other activities (memory pairs, jumble, secret words rules, dictation word filter):
   later plans after the meadow playtest.
+
+## Done - 2026-10-26
+- Shipped: the parrot card in every finished world (word plan, slips, squawk and repeat bubble,
+  phase-2 line, no stars and no rhythm gauge), the end card (words, usual speed and the speeds of
+  both parts, X and Esc), winning, the daily fly-away with catch-up, floor and 21-day drop, the
+  map line and flight, the Parrot badge (chest 67) on the map greeting and "Môj postup", and on
+  the start page's player card the parrot itself at the character's feet; sk/en texts, guide,
+  help and specs; unit and e2e tests (full e2e run green).
+- Owner's requests during the run, done here: the start page's player cards show keys, worlds,
+  accuracy and stars as small pictures with plain counts in one line at the card's bottom (cards
+  keep at least 140 px, so narrower rows take three).
+- Left out: the X on the other results cards (backlog, P2).

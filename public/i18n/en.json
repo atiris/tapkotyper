@@ -22,8 +22,8 @@
     "close": "Close (Esc)"
   },
   "start": {
+    "logoTip": "Hi, I'm Tapko.",
     "visit": {
-      "words": ["hi", "hello", "hey", "hiya", "howdy", "greetings", "good morning", "good afternoon", "good evening", "good day"],
       "hello": "Hi there!",
       "intro": "I am Tapko. Nice to see you!",
       "invite": "Pick a player and let's practise typing together for a little while."

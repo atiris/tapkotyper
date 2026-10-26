@@ -41,9 +41,11 @@
   **Klávesy** (the key map and the key details) and **Cvičenia** (the history of exercises
   from a teacher or parent, newest first, each with a button for its QR code).
 - The Parrot badge, when held, sits just under the child's character on the Postup tab.
-- The child's character on the Postup tab is big (beside the summary, above it on a phone)
-  and plays when clicked or pressed with Enter or Space: it hops, or pulls another face for
-  a moment, never the same twice in a row; with reduced motion it only changes its face.
+- The child's character on the Postup tab is big (beside the summary, above it on a phone), in
+  its outfit, and lively: every 5 to 20 seconds its big smile turns into the usual one and back.
+  Clicked or pressed with Enter or Space it pulls another face at once (wondering too, never the
+  same twice in a row), half the time with a hop; the smiles then go on. With reduced motion it
+  only changes its face.
 - QR codes (an exercise's result, or all of the player's statistics from the Postup tab) fill
   the whole screen until clicked; the caption and frame colour tell an exercise from all
   statistics, and a button at the bottom copies the code to send to the teacher. The code for

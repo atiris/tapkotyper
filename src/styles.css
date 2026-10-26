@@ -726,6 +726,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 @keyframes visit-out { to { transform: translateX(-120vw); } }
 /* The parrot called by its name typed on the map: flies across the page, above everything, clicks pass through. */
 .parrot-visit { position: fixed; left: 0; top: 0; z-index: 90; width: 110px; margin: -55px 0 0 -55px; pointer-events: none; filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.25)); }
+/* A thing of the target range drifting across the page (its word typed on the map), above everything, clicks pass through. */
+.range-visit { position: fixed; left: 0; top: 0; z-index: 90; width: 90px; height: 90px; margin: -45px 0 0 -45px; object-fit: contain; pointer-events: none; filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.25)); }
 /* A flying parrot beating its wings: its four pictures in one place, each shown for a quarter of the beat; the body lifts on the downstroke and sinks while the wings rise. */
 .flying-parrot { display: grid; animation: flap-lift var(--beat) ease-in-out infinite; }
 .flying-parrot img { grid-area: 1 / 1; display: block; width: 100%; height: auto; animation: flap var(--beat) steps(1, end) infinite; animation-delay: calc(var(--beat) * (var(--i) / 4 - 1)); }

@@ -16,8 +16,9 @@ import { arrowFocus, button, closeButton, h, icon } from '../ui/dom';
 import { cornerControls, settingsButton } from '../ui/chrome';
 import { offerInstall } from '../ui/install';
 import { tipShown } from '../ui/tooltip';
-import { onTypedWord } from '../ui/typed-word';
+import { firstWord, onTypedWord } from '../ui/typed-word';
 import { parrotVisit } from '../ui/parrot-visit';
+import { rangeVisit } from '../ui/range-visit';
 import { aroPerch } from '../ui/aro';
 import { ownTextPhrases } from '../game/modes/practice';
 import { levelTitleWords } from '../ui/hud';
@@ -167,10 +168,12 @@ export function mapScreen(root: HTMLElement): () => void {
   if (aroArrives) aro?.arrive(tList('parrot.arrive'));
   // One greeting at a time: the install offer waits for a map without the welcome.
   if (p.id !== SUPER_ID && !welcome) offerInstall(p.companion);
-  // The word "parrot" typed on the map calls a parrot over the page.
-  const offWord = onTypedWord([t('parrot.title')], parrotVisit);
+  // The first word of the parrot's hint typed on the map calls a parrot over the page, the range's sends one of its things across.
+  const offParrot = onTypedWord([firstWord(t('map.parrotTip'))], parrotVisit);
+  const offRange = onTypedWord([firstWord(t('map.aimTip'))], rangeVisit);
   return () => {
-    offWord();
+    offParrot();
+    offRange();
     aro?.stop();
   };
 }

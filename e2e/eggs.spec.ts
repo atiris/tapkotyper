@@ -1,11 +1,13 @@
 import { expect, test } from '@playwright/test';
 import { createProfile } from './helpers';
 
-test('secret words: a greeting brings Tapko, "parrot" a flying parrot, a story word the badge show', async ({ page }) => {
+test('secret words: the logo hint brings Tapko, the range hint a flying thing, the parrot hint a parrot, a story word the badge show', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await createProfile(page, 'Ema');
 
+  await page.keyboard.type('target');
+  await expect(page.locator('.range-visit')).toHaveCount(1);
   await page.keyboard.type('parrot');
   await expect(page.locator('.parrot-visit')).toHaveCount(1);
 
@@ -23,8 +25,9 @@ test('secret words: a greeting brings Tapko, "parrot" a flying parrot, a story w
   await page.locator('.map-screen').waitFor();
   await page.locator('.bar .btn').first().click();
   await page.locator('.start-screen').waitFor();
-  // The space inside the greeting does not start the focused player.
-  await page.keyboard.type('good morning');
+  // The first word of the logo's hint ("Hi, I'm Tapko.").
+  await expect(page.locator('.card-logo')).toHaveAttribute('data-tip', "Hi, I'm Tapko.");
+  await page.keyboard.type('hi');
   await expect(page.locator('.tapko-visit')).toContainText('I am Tapko');
   await expect(page.locator('.start-screen')).toBeVisible();
   expect(errors).toEqual([]);

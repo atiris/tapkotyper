@@ -11,7 +11,7 @@ import { numberPick, profileCard } from '../ui/profile-card';
 import { MAX_PER_ROW, rowSplit } from '../ui/rows';
 import { skyScene } from '../ui/sky';
 import { tapkoVisit } from '../ui/tapko-visit';
-import { onTypedWord } from '../ui/typed-word';
+import { firstWord, onTypedWord } from '../ui/typed-word';
 import { listenForSuperPassword, superProfile } from '../app/super';
 
 /** The narrowest player card (its four counts still in one line) and the gap between cards, for the number of cards a row holds. */
@@ -85,7 +85,7 @@ export function startScreen(root: HTMLElement): () => void {
       list.replaceChildren(...rowSplit(cards.length, per).map((size) => h('div', { class: 'profile-row' }, ...cards.slice((at += size) - size, at))));
     };
     card = h('section', { class: 'start-card', 'aria-labelledby': 'start-who' },
-      logoFace('card-logo'),
+      logoFace('card-logo', t('start.logoTip')),
       h('h2', { id: 'start-who' }, t('start.whoPlays')),
       // Profiles are loaded on the start page only before the first player; later in the settings.
       ...(players.length ? [
@@ -135,7 +135,7 @@ export function startScreen(root: HTMLElement): () => void {
     go('map');
   });
   // A greeting typed brings a Tapko to say hello.
-  const offGreet = gated ? () => undefined : onTypedWord(tList('start.visit.words'), () => tapkoVisit(screen));
+  const offGreet = gated ? () => undefined : onTypedWord([firstWord(t('start.logoTip'))], () => tapkoVisit(screen));
   return () => {
     offGreet();
     window.removeEventListener('resize', placeRows);
@@ -146,11 +146,11 @@ export function startScreen(root: HTMLElement): () => void {
   };
 }
 
-/** The logo face: its picture for a light page and the one drawn for a dark page; the CSS shows one. */
-function logoFace(cls: string): HTMLElement | null {
+/** The logo face: its picture for a light page and the one drawn for a dark page (the CSS shows one), with `tip` on hover. */
+function logoFace(cls: string, tip?: string): HTMLElement | null {
   const light = imageUrl('ui-icon-hr'), dark = imageUrl('ui-icon-hr-darkbg');
   if (!light) return null;
-  return h('span', { class: `logo-face ${cls}` }, h('img', { class: 'on-light', src: light, alt: '' }), h('img', { class: 'on-dark', src: dark ?? light, alt: '' }));
+  return h('span', { class: `logo-face ${cls}`, tip: tip ?? null }, h('img', { class: 'on-light', src: light, alt: '' }), h('img', { class: 'on-dark', src: dark ?? light, alt: '' }));
 }
 
 /** The four promises, each with a green icon; "data stays on your device" opens the help's about tab. */

@@ -175,26 +175,37 @@ export async function showOverallCode(p: Profile): Promise<void> {
   bigCode(link, nickname(p), t('progress.overallCaption'), 'overall');
 }
 
-/** The child's own character, big; a click makes it hop or pull another face for a moment, never the same twice in a row. */
+/** Milliseconds between the character's changes of smile on My progress, at least and at most. */
+const SMILE_MS = [5000, 20000];
+
+/**
+ * The child's own character, big, in its outfit: now and then (every 5-20 s) its big smile turns
+ * into the usual one and back. A click pulls another face at once (surprise too, never the same
+ * twice in a row), now and then with a hop; the smiles go on from there.
+ */
 function playfulTapko(p: Profile): HTMLElement {
   const fig = tapkoElement(p.companion, 'happy', 210);
   let mood: Mood = 'happy';
-  let jumped = false;
-  let back = 0;
+  let timer = 0;
+  const show = (m: Mood) => renderTapkoInto(fig, p.companion, mood = m);
+  const smile = () => {
+    clearTimeout(timer);
+    timer = window.setTimeout(() => {
+      if (!fig.isConnected) return;
+      show(mood === 'happy' ? 'idle' : 'happy');
+      smile();
+    }, SMILE_MS[0] + Math.random() * (SMILE_MS[1] - SMILE_MS[0]));
+  };
+  smile();
   fig.addEventListener('animationend', () => fig.classList.remove('jump'));
   return h('button', { class: 'stats-tapko', type: 'button', 'aria-label': `${p.companion.name}: ${t('wardrobe.tickle')}`, onClick: () => {
-    if (!jumped && !reduceMotion() && Math.random() < 0.5) {
-      jumped = true;
+    show(otherMood(p.companion.kind, mood));
+    if (!reduceMotion() && Math.random() < 0.5) {
       fig.classList.remove('jump');
       void fig.offsetWidth;
       fig.classList.add('jump');
-      return;
     }
-    jumped = false;
-    mood = otherMood(p.companion.kind, mood);
-    renderTapkoInto(fig, p.companion, mood);
-    clearTimeout(back);
-    back = window.setTimeout(() => renderTapkoInto(fig, p.companion, mood = 'happy'), 2000);
+    smile();
   } }, fig);
 }
 

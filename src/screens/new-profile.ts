@@ -4,7 +4,7 @@ import { langOptions, language, t } from '../i18n/i18n';
 import { COMPANION_KINDS, type CompanionKind, type Lang, type LayoutId } from '../storage/schema';
 import { NICK_MAX, newProfile } from '../storage/store';
 import { addTask } from '../share/task';
-import { arrowFocus, closeButton, h, onEscape } from '../ui/dom';
+import { arrowFocus, button, closeButton, h, onEscape } from '../ui/dom';
 import { LAYOUT_IDS } from '../keyboard/layouts';
 import { cornerControls } from '../ui/chrome';
 
@@ -76,7 +76,9 @@ export function newProfileScreen(root: HTMLElement): () => void {
       form.requestSubmit();
     }
   });
-  root.append(h('div', { class: 'screen form-screen' }, cornerControls(), form));
+  root.append(h('div', { class: 'screen form-screen' },
+    h('header', { class: 'bar' }, button(t('common.back'), cancel, 'btn ghost small', 'back')),
+    cornerControls(), form));
   nick.focus();
   return onEscape(cancel);
 }

@@ -78,6 +78,10 @@
       "title": "World names",
       "about": "Short names of the 15 worlds, shown on the map, in lock hints and as music titles."
     },
+    "map-welcome": {
+      "title": "Welcome on the map",
+      "about": "The card that welcomes a new player on the map the first time."
+    },
     "map-page": {
       "title": "The map",
       "about": "Texts of the main map: the welcome, the buttons, story names and hints about unlocking levels."
@@ -97,6 +101,10 @@
     "tracks": {
       "title": "Music titles",
       "about": "Titles of music tracks that belong to no world."
+    },
+    "level-pause": {
+      "title": "Pause",
+      "about": "The pause card in a level: a stretch tip, slower and the quick exercise."
     },
     "level": {
       "title": "Level screen",
@@ -353,8 +361,9 @@
     "common.close": "Label of the cross that closes a window; Esc is a keyboard key.",
     "start.whoPlays": "Heading above the list of players on the start screen.",
     "start.pickByNumber": "Tooltip on a player in the list. {n} is the digit that picks that player.",
-    "start.newProfile": "Button that creates a new player, also the label in the profile list.",
-    "start.guest": "Button for playing without a profile when a player already exists.",
+    "start.newProfile": "Button that creates another player, beside Try it once there is a player; also the label in the profile list.",
+    "start.newFirst": "Big main button that creates the first player, while there is none yet.",
+    "start.guest": "Button to try the game without a profile (a guest).",
     "start.guestName": "The name given to a player without a profile.",
     "start.import": "Button that loads profiles from a file.",
     "start.language": "Name of the language list opened by the language button (for screen readers).",
@@ -373,8 +382,7 @@
     "start.promises.local": "Second promise in the icon row; clicking it explains data storage.",
     "start.promises.wardrobe": "Third promise in the icon row.",
     "start.promises.mentors": "Fourth promise in the icon row.",
-    "start.first": "Line above the New player button when there is no player yet.",
-    "start.guestFirst": "Button for playing without a profile when there is no player yet.",
+    "start.first": "Short line above the button for the first player: a nickname, a helper, and start training.",
     "newProfile.title": "Heading of the new player form.",
     "newProfile.name": "Label of the field for the child's real name.",
     "newProfile.companion": "Label of the character picker.",
@@ -417,6 +425,7 @@
     "map.ownText": "Map button for typing the own text; shown only when a parent entered one.",
     "map.freeType": "Map button for free typing with no task.",
     "map.hello": "Heading of the map. {name} is the player's nickname.",
+    "map.title": "Title of the map in the top bar, right of the Players button.",
     "map.continue": "Big map button that starts the next level.",
     "map.practice": "Button for practising chosen letters; also used in bubbles and in the Continue button's description.",
     "map.wardrobe": "Map button that opens the wardrobe.",
@@ -483,7 +492,10 @@
     "level.guide": "Tooltip of the button (F2) that shows or hides the on-screen keyboard.",
     "level.pause": "Tooltip of the pause button in the level's top bar.",
     "level.paused": "Heading of the small card shown when the level is paused.",
+    "level.pauseClose": "Name of the X on the pause card; goes on playing, like Esc.",
     "level.slower": "Button on the pause card that lowers the difficulty so the game goes slower.",
+    "level.stretch": "Button on the pause card, and the title of the short stretch with a countdown.",
+    "level.stretchDone": "Button that ends the short stretch and brings the pause card back.",
     "level.slowerSaid": "Tapko, right after the child presses Slower on the pause card.",
     "level.toMap": "Button on the results screen that goes back to the map.",
     "level.leave": "Tooltip of the X button in free typing that leaves the game.",
@@ -500,7 +512,7 @@
     "level.endPractice": "Button on the pause card, and the round X button, that ends an exercise and shows the results.",
     "level.endRescue": "Button on the pause card and in the confirm question that ends a rescue mission.",
     "level.keepPractice": "Button on the pause card and in the confirm question that continues an exercise.",
-    "level.keepLevel": "Button on the pause card and in the confirm question that continues a story level.",
+    "level.keepLevel": "Button on the pause card and in the confirm question that continues a story level (Continue).",
     "level.keepRescue": "Button on the pause card and in the confirm question that continues a rescue mission.",
     "level.keepTyping": "Button on the pause card in free typing that keeps typing.",
     "level.endAsk": "Heading of the question asked when leaving a level after at least one key was pressed.",
@@ -691,6 +703,7 @@
     "parrot.badgeNew": "End card, when this win just brought the Parrot badge.",
     "results.title": "Heading of the card after a level is finished.",
     "results.practiceDone": "Heading of the card after an exercise (free typing, own text).",
+    "results.close": "Name of the X on a results card; closes it and goes to the map, like Esc.",
     "results.dictationClean": "Fact on the results card for dictation. {n} is the words with no mistake out of {total}.",
     "results.memoryClean": "Fact on the results card for typing from memory. {n} is the words with no mistake out of {total}.",
     "results.mixedClean": "Fact on the results card for mixed typing. {n} is the words with no mistake out of {total}.",
@@ -871,12 +884,15 @@
     "parent.group.practice": "Settings, Settings tab: the heading of the group about difficulty, words and practice time.",
     "parent.group.look": "Settings, Settings tab: the heading of the group about sound and looks.",
     "parent.group.lock": "Settings, Settings tab: the heading of the password group.",
+    "parent.group.device": "Settings without a player: title of the group of the whole device's settings.",
     "parent.childName": "Settings, Settings tab: the label of the student's name field.",
     "parent.childNameHint": "Settings, Settings tab: the note under the student's name field.",
     "parent.nickname": "Settings, Settings tab: the label of the nickname field.",
     "parent.nicknameHint": "Settings, Settings tab: the note under the nickname field.",
     "parent.nickMissing": "Settings, Settings tab: the error under the nickname when the field is empty.",
     "parent.switchTitle": "Settings: the heading of the window and the tooltip of the button for switching to another student.",
+    "parent.pickChild": "Settings without a player: the top button that opens the student picker.",
+    "parent.noChild": "Settings without a player: says only the whole device's settings are here.",
     "parent.companionKind": "Settings, Settings tab: the label of the character picker (also its accessible name).",
     "parent.messages": "Settings, Own content tab: the label of the field for own encouraging messages.",
     "parent.messagesHint": "Settings, Own content tab: the note under the encouraging messages field.",

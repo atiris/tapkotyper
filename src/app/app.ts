@@ -80,6 +80,8 @@ export function routeOf(name: ScreenName, params: { code?: string; tab?: string;
   const tab = name === 'help' && params.tab ? `/${params.tab}` : '';
   // Help works before a player is chosen too.
   if (name === 'help' && !id) return `#/help${tab}`;
+  // The settings without a profile: the device's own, opened from the start page.
+  if (name === 'parent' && !id) return '#/settings';
   if (name === 'start' || !id) return '#/';
   const sub = ROUTES[name];
   return `#/p/${encodeURIComponent(id)}${sub ? `/${sub}` : ''}${tab}`;
@@ -89,6 +91,7 @@ export function parseRoute(hash: string): { name: ScreenName; profileId: string 
   const parts = hash.replace(/^#\/?/, '').split('/').filter(Boolean).map(decodeURIComponent);
   if (parts[0] === 'new') return { name: 'newProfile', profileId: null };
   if (parts[0] === 'translate') return { name: 'translate', profileId: null };
+  if (parts[0] === 'settings') return { name: 'parent', profileId: null };
   if (parts[0] === 'help') return { name: 'help', profileId: null, tab: parts[1] };
   if (parts[0] === 'teacher') {
     if ((parts[1] === 'child' || parts[1] === 'set') && parts[2]) return { name: 'teacher', profileId: null, [parts[1]]: parts[2] };

@@ -348,7 +348,7 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
 .bar-links a { color: inherit; text-decoration: none; }
 .bar-links a:hover, .bar-links a:focus-visible, .bar-links a.on { color: var(--brand-ink); }
 /* Back buttons in top bars match the round 48 px buttons beside them. */
-.bar > .btn, .map-top > .btn { height: 48px; min-height: 48px; }
+.bar > .btn { height: 48px; min-height: 48px; }
 
 /* Start */
 /*
@@ -570,7 +570,7 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
 .profile-card > .tapko-stack { align-self: flex-end; margin-right: max(-8px, 100cqw - 118px); width: min(var(--size), 100cqw - 4px); height: min(var(--size), 100cqw - 4px); }
 /* The number key that picks the player, leaning by its card's own angle. */
 .profile-num { position: absolute; top: 6px; left: 8px; min-width: 2.1em; height: 2.1em; border-radius: 999px; background: var(--paper); color: var(--ink-soft); font-weight: 700; font-size: 1.1rem; line-height: 2.1em; box-shadow: inset 0 0 0 2px var(--line); transform: rotate(var(--tilt, 0deg)); }
-.profile-name { font-weight: 700; font-size: 1.1rem; }
+.profile-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 0.65rem; }
 /* The Parrot badge on the card: the parrot under the number, left of the character. */
 .profile-parrot { --pp: clamp(28px, 26cqw, 42px); position: absolute; top: calc(6px + 2.4 * 1.1rem); left: 6px; width: var(--pp); aspect-ratio: 1; }
 /* On the start page it stands at the character's feet, close by its left side (the character placed as .tapko-stack places it, its picture a quarter narrower than its box). */
@@ -619,7 +619,8 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
 .wobble { animation: wobble 0.4s ease; }
 
 /* Forms */
-.form-screen { display: grid; place-items: center; }
+.form-screen { display: grid; justify-items: center; align-content: start; }
+.form-screen > .bar { justify-self: stretch; }
 .form { width: min(760px, 100%); display: flex; flex-direction: column; gap: 0.4rem; }
 .form label, .field-label { font-weight: 600; margin-top: 0.7rem; }
 input[type='text'], input[type='search'], input[type='password'], input[type='number'], select, textarea, input:not([type]) {
@@ -632,8 +633,6 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .kind .tapko-stack { animation: none; }
 .form-screen .form { position: relative; }
 .form .error:empty { display: none; }
-/* The corner buttons would cover the form's X: the form starts below them. */
-@media (max-width: 1279px) { .form-screen { padding-top: calc(1rem + 52px + 0.8rem); } }
 .form > h1 { margin-right: 52px; }
 .np-pick { display: grid; grid-template-columns: auto minmax(220px, 1fr); gap: 0 var(--sp-5); align-items: start; }
 .np-pick .kind-picker { grid-template-columns: repeat(3, 108px); }
@@ -644,8 +643,6 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 }
 
 /* ---------- Map ---------- */
-.map-screen { padding-top: var(--sp-3); }
-.map-top { display: flex; align-items: center; min-height: 52px; }
 .map-body { display: grid; grid-template-columns: 260px 1fr; gap: var(--sp-5); margin-top: var(--sp-3); }
 @media (max-width: 1299px) { .map-body { grid-template-columns: 200px 1fr; } }
 .map-side { display: flex; flex-direction: column; gap: var(--sp-3); align-items: stretch; }
@@ -727,8 +724,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .stats-hero .parrot-badge { width: 40px; height: 40px; margin: 0; }
 .results-card .parrot-done-pic { width: 110px; height: 110px; object-fit: contain; }
 .results-card .badge-fact .parrot-badge { margin: 0 0.3em 0 0; }
-.parrot-done { position: relative; }
-.parrot-done .results-top { padding-inline: 3rem; }
+.results-card { position: relative; }
+.results-card .results-top { padding-inline: 3rem; }
 .results-card.parrot-done .row { margin-top: 1.1rem; }
 .map-bubble .held-keys { font-weight: 700; }
 .map-bubble { align-self: center; max-width: 100%; }
@@ -884,7 +881,9 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .card .row { justify-content: center; }
 /* The pause leaves the stage and the guide in sight: no dark layer, no blur. */
 .pause-card { position: absolute; top: 0.8rem; left: 50%; transform: translateX(-50%); z-index: 10; animation: fade-in 0.2s ease; width: max-content; max-width: calc(100% - 2rem); padding: 0.8rem 1.2rem; }
-.pause-card h2 { margin: 0 0 0.5rem; font-size: 1.3rem; }
+.pause-card h2 { margin: 0 52px 0.5rem 0; font-size: 1.3rem; }
+.pause-tip { margin: 0 52px 0.7rem 0; max-width: 34rem; }
+.pause-card .break-timer { margin-bottom: 0.5rem; text-align: center; }
 .about-actions { justify-content: space-between; }
 .about-actions .btn { text-decoration: none; }
 .posture-img { display: block; margin: 0 auto; width: min(340px, 70vw); max-height: 38vh; object-fit: contain; }

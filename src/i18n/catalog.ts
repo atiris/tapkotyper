@@ -65,6 +65,7 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
   ] },
   { id: 'map', groups: [
     g('worlds', 'worlds.*'),
+    g('map-welcome', 'map.welcome.*'),
     g('map-page', 'map.*'),
     g('teaser', 'teaser.*'),
     g('surprise', 'surprise.*'),
@@ -72,6 +73,7 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
     g('tracks', 'tracks.*'),
   ] },
   { id: 'typing', groups: [
+    g('level-pause', 'level.pause', 'level.paused', 'level.pauseClose', 'level.slower', 'level.slowerSaid', 'level.stretch', 'level.stretchDone'),
     g('level', 'level.*'),
     g('keyboard', 'keys.*', 'layouts.*', 'fingers.*', 'guide.*'),
     g('posture', 'posture.*'),

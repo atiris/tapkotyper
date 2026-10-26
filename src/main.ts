@@ -63,7 +63,7 @@ const parentPage = (name: 'parent' | 'translate', load: () => Promise<Screen>, n
   return () => stop?.();
 };
 
-registerScreen('parent', needsProfile(parentPage('parent', () => import('./screens/parent').then((m) => m.parentScreen), () => go('map'))));
+registerScreen('parent', parentPage('parent', () => import('./screens/parent').then((m) => m.parentScreen), () => go(app.profile ? 'map' : 'start')));
 registerScreen('translate', parentPage('translate', () => import('./screens/translate').then((m) => m.translateScreen), () => go(app.profile ? 'map' : 'start')));
 registerScreen('wardrobe', needsProfile(wardrobeScreen));
 registerScreen('friends', needsProfile(friendsScreen));

@@ -24,7 +24,8 @@
     "whoPlays": "Kto mi dnes napíše?",
     "pickByNumber": "Profil môžeš aktivovať aj napísaním číslice {n}",
     "newProfile": "Nový hráč",
-    "guest": "Bez profilu",
+    "newFirst": "Nový študent písania",
+    "guest": "Vyskúšať",
     "guestName": "Hosť",
     "import": "Načítať profily",
     "language": "Jazyk",
@@ -52,8 +53,7 @@
       "wardrobe": "Šatník a hviezdičky za snahu",
       "mentors": "Sledovateľný pokrok"
     },
-    "first": "Stačí meno a vybrať si zvieratko.",
-    "guestFirst": "Skúsiť bez profilu"
+    "first": "Zvoľ si prezývku, vyber si pomocníka a môžeš trénovať."
   },
   "newProfile": {
     "title": "Ahoj, vitaj!",
@@ -124,6 +124,7 @@
     "ownText": "Môj text",
     "freeType": "Len chcem písať",
     "hello": "Ahoj, {name}!",
+    "title": "Mapa svetov",
     "continue": "Pokračovať",
     "practice": "Vlastné cvičenie",
     "wardrobe": "Ja a môj šatník",
@@ -163,7 +164,10 @@
     "guide": "Ukázať alebo skryť klávesnicu",
     "pause": "Pauza",
     "paused": "Malá prestávka",
+    "pauseClose": "Pokračovať (Esc)",
     "slower": "Pomalšie",
+    "stretch": "Krátke cvičenie",
+    "stretchDone": "Hotovo",
     "slowerSaid": "Dobre, pôjdeme pomalšie.",
     "toMap": "Mapa",
     "leave": "Späť na mapu",
@@ -180,7 +184,7 @@
     "endPractice": "Ukončiť cvičenie",
     "endRescue": "Ukončiť misiu",
     "keepPractice": "Cvičiť ďalej",
-    "keepLevel": "Hrať ďalej",
+    "keepLevel": "Pokračovať",
     "keepRescue": "Pokračovať v misii",
     "keepTyping": "Písať ďalej",
     "endAsk": "Naozaj ukončiť?",
@@ -297,6 +301,7 @@
   "results": {
     "title": "Úroveň hotová!",
     "practiceDone": "Cvičenie hotové!",
+    "close": "Ukončiť a ísť na mapu (Esc)",
     "dictationClean": "Podľa sluchu bez chyby: {n} z {total}",
     "memoryClean": "Z pamäti bez chyby: {n} z {total}",
     "starsAria": "{n} z 3 hviezdičiek",
@@ -1042,10 +1047,13 @@
       "child": "Študent",
       "practice": "Cvičenie",
       "look": "Vzhľad a zvuk",
-      "lock": "Heslo na nastavenia"
+      "lock": "Heslo na nastavenia",
+      "device": "Toto zariadenie"
     },
     "childName": "Meno študenta (nepovinné)",
     "switchTitle": "Prepnúť na iného študenta",
+    "pickChild": "Vybrať študenta",
+    "noChild": "Bez vybraného študenta sú tu len nastavenia celého zariadenia. Študenta vyberiete tlačidlom hore.",
     "companionKind": "Postavička",
     "messages": "Vaše vlastné povzbudenia",
     "messagesHint": "Jedno na riadok. Hra ich občas použije.",
@@ -1411,7 +1419,7 @@
       "Na mape uvidíš Úlohu na dnes. Píš, kým neuplynie čas.",
       "Keď je hotová, stlač Odovzdať a pošli učiteľovi **odkaz s výsledkom**."
     ],
-    "settingsIntro": "Nastavenia sú pre učiteľa alebo rodiča. Otvoria sa ozubeným kolieskom na mape. Kým ich **nezamknete heslom**, otvorí ich jedna otázka.",
+    "settingsIntro": "Nastavenia sú pre učiteľa alebo rodiča. Otvoria sa ozubeným kolieskom. Kým ich **nezamknete heslom**, otvorí ich ktokoľvek, kliknutím na jednoduché potvrdzovacie tlačidlo.",
     "settings": {
       "settings": [
         "Študent: prezývka, postavička a nepovinné meno, jazyk hry, jazyk slov a rozloženie klávesnice. Rozloženie vyberte podľa skutočnej klávesnice, sprievodca prstov sa podľa neho riadi.",

@@ -136,6 +136,8 @@ const CAPITAL_FOCUS = 0.6;
 /** Story targets that fly or fall stay short: words of at most 5 letters, 12 characters in all. */
 const SHORT_WORD = 5;
 const SHORT_TOTAL = 12;
+/** Dictionary words the known letters must make before real words are picked over made-up ones. */
+const REAL_MIN = 8;
 
 /** Endless supply of practice targets for a key set: words, and phrases once space is known. */
 export class WordSource {
@@ -152,6 +154,11 @@ export class WordSource {
   private ownText: string;
   /** Own text cut for each target size, with the place reached in it. */
   private ownPhrases = new Map<string, { list: string[]; at: number }>();
+  /**
+   * The targets are heard (dictation), so only what a voice says clearly: dictionary words, and
+   * single letters while the known letters make too few of them; no digits, capitals or marks.
+   */
+  heard = false;
 
   constructor(words: string[], private opts: WordOptions) {
     this.rng = new Rng(opts.seed);
@@ -225,7 +232,7 @@ export class WordSource {
   private candidate(maxLen: number, words: number, minWords: number): string {
     const r = this.rng;
     // A sentence stays words; other targets are now and then a digit group.
-    if (this.digits.length && minWords <= 2 && r.chance(0.15)) {
+    if (this.digits.length && !this.heard && minWords <= 2 && r.chance(0.15)) {
       return Array.from({ length: r.int(1, Math.min(3, maxLen)) }, () => r.pick(this.digits)).join('');
     }
     const focusList = [...this.focus].filter((k) => this.letters.includes(k));
@@ -235,6 +242,7 @@ export class WordSource {
     const perWord = n === 1 ? maxLen : Math.min(maxLen, short ? SHORT_WORD : this.opts.len[1]);
     let list = Array.from({ length: n }, () => this.word(perWord, focus, n > 1));
     if (short && n > 1 && list.join(' ').length > SHORT_TOTAL) list = list.slice(0, 1);
+    if (this.heard) return list.join(' ');
     list[0] = this.capitalize(list[0], perWord, focus, n > 1);
     if (words <= 1) return list[0];
     return this.punctuate(list);
@@ -252,13 +260,14 @@ export class WordSource {
 
   private word(maxLen: number, focus: string | null, inPhrase: boolean): string {
     const r = this.rng;
+    if (this.heard) return this.pool.length >= REAL_MIN ? this.pickReal(maxLen, focus) : this.weightedLetter(focus);
     // Chunk pairs like `fj jf` for the first keys.
     if (this.letters.length <= 4) return this.drill(inPhrase ? Math.min(2, maxLen) : maxLen, focus);
     if (this.focus.has("'") && this.keys.has("'") && r.chance(0.5)) {
       const own = this.pool.filter((w) => w.includes("'") && w.length <= maxLen);
       if (own.length) return r.pick(own);
     }
-    if (this.pool.length >= 8 && r.chance(this.pool.length >= 40 ? 0.9 : 0.6)) return this.pickReal(maxLen, focus);
+    if (this.pool.length >= REAL_MIN && r.chance(this.pool.length >= 40 ? 0.9 : 0.6)) return this.pickReal(maxLen, focus);
     return this.pseudo(maxLen, focus);
   }
 
@@ -314,7 +323,7 @@ export class WordSource {
       const w = this.rng.pick(this.pool);
       if (fits(w)) sample.push(w);
     }
-    if (!sample.length) return this.pseudo(maxLen, focus);
+    if (!sample.length) return this.heard ? this.weightedLetter(focus) : this.pseudo(maxLen, focus);
     const weights = sample.map((w) => {
       let s = 0;
       for (const c of w) s += this.opts.weights?.[c] ?? 1;

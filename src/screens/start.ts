@@ -5,15 +5,13 @@ import { imageUrl } from '../gfx/assets';
 import { language, t, tList } from '../i18n/i18n';
 import type { Lang, Profile } from '../storage/schema';
 import { type ICONS, arrowFocus, bigButton, button, h, icon, keyboardArt, modal, teacherArt } from '../ui/dom';
-import { cornerControls, languageButton } from '../ui/chrome';
+import { cornerControls, languageButton, settingsButton } from '../ui/chrome';
 import { roundButton } from '../ui/hud';
 import { numberPick, profileCard } from '../ui/profile-card';
 import { MAX_PER_ROW, rowSplit } from '../ui/rows';
 import { skyScene } from '../ui/sky';
 import { listenForSuperPassword, superProfile } from '../app/super';
 
-/** Up to this many players the new player is one more (dashed) card; with more, a button. */
-const NEW_CARD_UP_TO = 3;
 /** The narrowest player card (its four counts still in one line) and the gap between cards, for the number of cards a row holds. */
 const CARD_MIN = 140;
 const CARD_GAP = 12;
@@ -56,24 +54,18 @@ export function startScreen(root: HTMLElement): () => void {
       await selectProfile(p);
       go('map');
     };
-    const guest = (label: string) => button(label, async () => {
+    const guest = button(t('start.guest'), async () => {
       const g = app.store.startGuest(language(), t('start.guestName'));
       await selectProfile(g);
       go('map');
-    }, 'btn ghost', 'user');
-    const load = () => button(t('start.import'), () => void import('./parent').then((m) => m.importDialog(() => go('start'))), 'btn ghost', 'upload');
+    }, 'btn ghost', 'play');
     const cards = players.map((p, i) => profileCard(p, i, () => void play(p)));
-    const newCard = h('button', { class: 'profile-card new', type: 'button', onClick: () => go('newProfile') },
-      h('span', { class: 'plus' }, icon('plus')), h('span', { class: 'profile-name' }, t('start.newProfile')));
-    const newButton = button(t('start.newProfile'), () => go('newProfile'), 'btn ghost', 'plus');
     const list = h('div', { class: 'profile-list' });
     arrowFocus(list, '.profile-card');
     let perRow = 0;
     /**
      * The card is as wide as its player cards want, up to what the title's column leaves it. As many
-     * cards in a row as that has room for (at most five), in balanced rows. With one to three
-     * players the new player is one more card, unless it would add a row; else a button beside the
-     * other two.
+     * cards in a row as that has room for (at most five), in balanced rows.
      */
     placeRows = () => {
       const wrap = list.closest<HTMLElement>('.start-wrap');
@@ -87,23 +79,21 @@ export function startScreen(root: HTMLElement): () => void {
       const per = Math.max(1, Math.min(MAX_PER_ROW, Math.floor((width + CARD_GAP) / (CARD_MIN + CARD_GAP))));
       if (per === perRow) return;
       perRow = per;
-      const rows = (n: number) => Math.ceil(n / per);
-      const withNew = players.length <= NEW_CARD_UP_TO && rows(players.length + 1) === rows(players.length);
-      newButton.hidden = withNew;
-      const shown = withNew ? [...cards, newCard] : cards;
       let at = 0;
-      list.replaceChildren(...rowSplit(shown.length, per).map((size) => h('div', { class: 'profile-row' }, ...shown.slice((at += size) - size, at))));
+      list.replaceChildren(...rowSplit(cards.length, per).map((size) => h('div', { class: 'profile-row' }, ...cards.slice((at += size) - size, at))));
     };
     card = h('section', { class: 'start-card', 'aria-labelledby': 'start-who' },
       logoFace('card-logo'),
       h('h2', { id: 'start-who' }, t('start.whoPlays')),
+      // Profiles are loaded on the start page only before the first player; later in the settings.
       ...(players.length ? [
         list,
-        h('div', { class: 'start-ghosts' }, newButton, guest(t('start.guest')), load()),
+        h('div', { class: 'start-ghosts' }, guest, button(t('start.newProfile'), () => go('newProfile'), 'btn ghost new-player', 'plus')),
       ] : [
         h('p', { class: 'start-first' }, t('start.first')),
-        button(t('start.newProfile'), () => go('newProfile'), 'btn primary big', 'plus'),
-        h('div', { class: 'start-ghosts' }, guest(t('start.guestFirst')), load()),
+        button(t('start.newFirst'), () => go('newProfile'), 'btn primary big new-player', 'plus'),
+        h('div', { class: 'start-ghosts' }, guest,
+          button(t('start.import'), () => void import('./parent').then((m) => m.importDialog(() => go('start'))), 'btn ghost', 'upload')),
       ]));
     offPick = pickByNumber(players.length, (i) => void play(players[i]));
   }
@@ -121,7 +111,7 @@ export function startScreen(root: HTMLElement): () => void {
   const screen = h('div', { class: `screen start-screen${gated ? ' gated' : ''}` });
   const sky = skyScene(screen, () => [top], () => [card, card?.querySelector('.card-logo') ?? null]);
   screen.append(sky.el,
-    cornerControls(lang, roundButton('control', 'chart', t('teacher.title'), () => go('teacher'))),
+    cornerControls(lang, gated ? null : settingsButton(), roundButton('control', 'chart', t('teacher.title'), () => go('teacher'))),
     h('div', { class: 'start-wrap' }, top, card, more),
     h('a', { class: 'start-sig', href: 'https://github.com/atiris/tapkotyper', target: '_blank', rel: 'noopener' }, 'MIT · Atiris'));
   root.append(screen);

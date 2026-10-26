@@ -2,10 +2,14 @@
 
 ## What
 - Several local profiles on one device, picked on the start screen (the character with the
-  nickname only, never the real name, which belongs to the teacher; "New player" is one more card with one to three profiles, a button beside "No profile" with more or when the card would add a row), plus a **No profile** button ("Try without a profile" before the first player): a guest that keeps nothing after the browser tab closes and that a reload never opens (it shows the start page); the
+  nickname only, never the real name, which belongs to the teacher, with room between the nickname and the counts).
+  Before the first player the card says "Pick a nickname, choose your helper and start training." with one big
+  **New typing student** button, and under it **Try it** and **Import profiles**; once there is a player, the cards
+  and under them only **Try it** with **New player** to its right (importing moves to the settings, it is rare
+  once someone plays). **Try it** is a guest that keeps nothing after the browser tab closes and that a reload never opens (it shows the start page); the
   guest is named in the game's language ("Hosť" / "Guest"). The super player, while on, is
   the last card, so it never shifts the order of the real players.
-- The new player form is a window closed with the round X: "pick your character", the nine
+- The new player form has Back at the top left like every page, and closes with the round X too: "pick your character", the nine
   animals as a 3 x 3 grid, with beside it (below it on a narrow screen), in this order: the
   **nickname** (required, up to 16 characters; hint: shown with the character in the game),
   the **typist's name** (optional; hint: shown to the teacher in the results), the interface

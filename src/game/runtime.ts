@@ -18,7 +18,7 @@ import { ENTER, LAYOUTS, LayoutMismatchDetector, enterAfter, fingerFor, stepsFor
 import { SHIFT_L, SHIFT_R, SPACE, activeKeys, isKeyReady, isLetterKey, keysToIntroduce, masteryLevel, newestGroup, recentAccuracy, shiftKeyOf } from '../learning/lessons';
 import { keyWeights, recordPress, recordSession } from '../learning/stats';
 import { FINGER_KEYS, KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
-import { button, closeModals, confirmDialog, h } from '../ui/dom';
+import { button, closeButton, closeModals, confirmDialog, h } from '../ui/dom';
 import { globalButtons } from '../ui/chrome';
 import { tip } from '../ui/tooltip';
 import { accuracyPic, paintRound, pawRing, placeRing, rhythmPic, rhythmRing, roundButton, roundPic, worldName } from '../ui/hud';
@@ -116,6 +116,9 @@ const RESULTS_AFTER = 1.4;
 const PICTURES_WAIT_S = 30;
 /** Milliseconds after play begins in which Enter does nothing. */
 const ENTER_GUARD_MS = 300;
+/** Stretches done sitting, one of them shown on the pause card; its short exercise lasts STRETCH_S seconds. */
+const STRETCHES = ['arms', 'fists', 'shoulders', 'neck', 'wrists', 'eyes'];
+const STRETCH_S = 20;
 
 /** What the voice says for a target: its words, never the Enter mark. */
 function spoken(tg: Target): string {
@@ -224,6 +227,10 @@ export class LevelRuntime {
   /** Seconds until the gauge's spoken label may change again. */
   private gaugeLabelIn = 0;
   private pauseEl: HTMLElement | null = null;
+  private pauseBtn: HTMLButtonElement | null = null;
+  private guideBtn: HTMLButtonElement;
+  /** The countdown of the short exercise on the pause card; 0 when none runs. */
+  private stretchTimer = 0;
   /** Free typing's text shown above Tapko and the range's speech bubbles, for screen readers. */
   private saidEl: HTMLElement | null = null;
   private breakSaid = false;
@@ -312,7 +319,8 @@ export class LevelRuntime {
     if (this.fairy) this.el.dataset.fairy = 'melody';
     this.progressFill = h('div', { class: 'progress-fill' });
     const title = def.kind === 'practice' ? t(def.phrases ? 'level.ownText' : 'level.practice') : def.kind === 'freetype' ? t('level.freeType') : def.kind === 'aim' ? t('aim.title') : def.kind === 'parrot' ? t('parrot.title') : def.rescue ? t('level.rescue') : worldName(def);
-    const guideBtn = roundButton('control', 'keyboard', t('level.guide'), () => this.toggleGuide());
+    // Hiding the guide is the switch: the crossed keyboard, with the orange ring while the guide is hidden.
+    const guideBtn = this.guideBtn = roundButton('control', 'keyboardOff', t('level.guide'), () => this.toggleGuide());
     tip(guideBtn, withKey(t('level.guide'), 'F2'));
     if (p.settings.guideLocked) guideBtn.disabled = true;
     const helpBtn = roundButton('control', 'help', t('level.help'), () => this.openHelp());
@@ -322,7 +330,7 @@ export class LevelRuntime {
     this.paintRead();
     this.offVoices = speech.onVoices(() => this.paintRead());
     // Free typing has nothing to pause: its X leaves.
-    const pauseBtn = def.kind === 'freetype' ? roundButton('control', 'close', t('level.leave'), () => this.exit()) : roundButton('control', 'pause', t('level.pause'), () => this.pause());
+    const pauseBtn = def.kind === 'freetype' ? roundButton('control', 'close', t('level.leave'), () => this.exit()) : this.pauseBtn = roundButton('control', 'pause', t('level.pause'), () => (this.paused ? this.resume() : this.pause()));
     if (this.pawsAllowed) {
       this.pawBtn = roundButton('paw', 'paw', t('paw.title', { n: PAW_STREAK, words: PAW_WORDS }), () => this.startPaws());
       this.pawBtn.classList.add('paw-btn');
@@ -361,6 +369,7 @@ export class LevelRuntime {
     this.guide = new KeyboardGuide(lay);
     this.guideOn = p.settings.guide !== 'off';
     this.guide.setVisible(this.guideOn);
+    guideBtn.setAttribute('aria-pressed', String(!this.guideOn));
     this.el.append(hud, stageWrap, this.guide.el);
     root.append(this.el);
 
@@ -438,6 +447,7 @@ export class LevelRuntime {
     const voiceNote = noVoice ? t(this.style === 'mixed' ? 'level.noVoiceMemory' : 'level.noVoice') : undefined;
     if (noVoice) this.style = this.style === 'mixed' ? 'memory' : 'copy';
     this.core.style = this.style;
+    this.words.heard = this.dictating;
     this.paintRead();
     this.storyLine = this.mode.startLine();
     if (!this.opts.keys) await showPosture(host, p, tip, this.surprise, voiceNote, this.storyLine);
@@ -489,6 +499,7 @@ export class LevelRuntime {
     // Leaving by the browser's back button still keeps the time and keys typed.
     if (this.started && !this.finished) this.flushSession();
     this.disposed = true;
+    clearInterval(this.stretchTimer);
     speech.stop();
     this.offVoices();
     this.offShortcuts();
@@ -727,6 +738,7 @@ export class LevelRuntime {
   private toggleGuide(): void {
     this.guideOn = !this.guideOn;
     this.guide.setVisible(this.guideOn);
+    this.guideBtn.setAttribute('aria-pressed', String(!this.guideOn));
     this.stage.resize();
   }
 
@@ -1075,23 +1087,68 @@ export class LevelRuntime {
     if (this.paused || this.finished || !this.started) return;
     this.paused = true;
     speech.stop();
-    // A small card at the top: the words and the guide's next key stay in sight.
-    const slower = button(t('level.slower'), () => this.slowDown(), 'btn');
-    slower.disabled = this.difficulty <= 1;
-    this.pauseEl = h('div', { class: 'card pause-card', role: 'dialog', 'aria-label': t('level.paused') },
-      h('h2', {}, t('level.paused')),
-      h('div', { class: 'row' },
-        button(t(this.ending.keep), () => this.resume(), 'btn primary', 'play'),
-        slower,
-        button(t('help.title'), () => this.openHelp(), 'btn', 'help'),
-        button(t(this.ending.label), () => void this.leave(), 'btn', 'close')));
+    this.paintPause();
+    this.pauseEl = h('div', { class: 'card pause-card', role: 'dialog', 'aria-label': t('level.paused') });
+    this.pauseCard();
     this.el.querySelector('.stage-wrap')!.append(this.pauseEl);
     this.focusPause();
   }
 
+  /**
+   * A small card at the top (the words and the guide's next key stay in sight): a stretch to try,
+   * the X (Esc too) to go on, and Continue, Slower, the short exercise of that stretch and the end.
+   */
+  private pauseCard(): void {
+    const stretch = STRETCHES[Math.floor(Math.random() * STRETCHES.length)];
+    const slower = button(t('level.slower'), () => this.slowDown(), 'btn');
+    slower.disabled = this.difficulty <= 1;
+    this.pauseEl!.replaceChildren(
+      closeButton(() => this.resume(), t('level.pauseClose')),
+      h('h2', {}, t('level.paused')),
+      h('p', { class: 'pause-tip' }, t(`break.${stretch}`)),
+      h('div', { class: 'row' },
+        button(t(this.ending.keep), () => this.resume(), 'btn primary', 'play'),
+        slower,
+        button(t('level.stretch'), () => this.stretch(stretch), 'btn', 'smile'),
+        button(t(this.ending.label), () => void this.leave(), 'btn', 'close')));
+  }
+
+  /** The short exercise on the pause card: the stretch with a countdown, then the pause again. */
+  private stretch(name: string): void {
+    let left = STRETCH_S;
+    const count = h('div', { class: 'break-timer' }, String(left));
+    const back = () => {
+      clearInterval(this.stretchTimer);
+      this.stretchTimer = 0;
+      if (!this.pauseEl) return;
+      this.pauseCard();
+      this.focusPause();
+    };
+    this.pauseEl!.replaceChildren(
+      closeButton(() => this.resume(), t('level.pauseClose')),
+      h('h2', {}, t('level.stretch')),
+      h('p', { class: 'pause-tip' }, t(`break.${name}`)),
+      count,
+      h('div', { class: 'row' }, button(t('level.stretchDone'), back, 'btn primary', 'check')));
+    this.focusPause();
+    this.stretchTimer = window.setInterval(() => {
+      count.textContent = String(--left);
+      if (left <= 0) back();
+    }, 1000);
+  }
+
+  /** The pause button shows what it does: pause while playing, play while paused. */
+  private paintPause(): void {
+    if (!this.pauseBtn) return;
+    const label = t(this.paused ? this.ending.keep : 'level.pause');
+    paintRound(this.pauseBtn, this.paused ? 'play' : 'pause');
+    this.pauseBtn.setAttribute('aria-label', label);
+    tip(this.pauseBtn, label);
+  }
+
   /** Continue on the pause card. */
   private focusPause(): void {
-    (this.pauseEl?.querySelector('button') as HTMLButtonElement | null)?.focus();
+    this.pauseEl?.querySelector<HTMLButtonElement>('.btn.primary')?.focus();
   }
 
   /** What leaving and going on are called, and what the question says is lost: a story level, an exercise or a rescue mission. */
@@ -1145,9 +1202,12 @@ export class LevelRuntime {
 
   resume(): void {
     if (!this.paused || !this.pauseEl) return;
+    clearInterval(this.stretchTimer);
+    this.stretchTimer = 0;
     this.pauseEl.remove();
     this.pauseEl = null;
     this.paused = false;
+    this.paintPause();
     this.rhythm.ready(performance.now());
     // The pause cut the voice: a dictated target is said again.
     if (this.dictating) this.readId = 0;

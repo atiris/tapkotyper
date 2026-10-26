@@ -51,21 +51,21 @@ test('the whole game by keyboard only: a new player, a level, the results, endin
   await page.keyboard.press('F2');
   await expect(page.locator('.kb-guide')).not.toHaveClass(/hidden/);
 
-  // F1 pauses and opens help on a whole page; Back returns to the paused level, on Keep playing.
+  // F1 pauses and opens help on a whole page; Back returns to the paused level, on Continue.
   await page.keyboard.press('F1');
   const back = page.locator('.level-help .bar').getByRole('button', { name: 'Back' });
   await expect(back).toBeFocused();
   await page.keyboard.press('Enter');
   await expect(page.locator('.level-help')).toHaveCount(0);
   const pause = page.locator('.pause-card');
-  await expect(pause.getByRole('button', { name: 'Keep playing' })).toBeFocused();
+  await expect(pause.getByRole('button', { name: 'Continue', exact: true })).toBeFocused();
 
-  // Ending after a key asks first, with Keep playing focused; End level leaves to the map.
+  // Ending after a key asks first, with Continue focused; End level leaves to the map.
   await tabTo(page, 'End level');
   await page.keyboard.press('Enter');
   const ask = page.locator('.confirm-modal');
   await expect(ask).toContainText('This level will not count.');
-  await expect(ask.getByRole('button', { name: 'Keep playing' })).toBeFocused();
+  await expect(ask.getByRole('button', { name: 'Continue', exact: true })).toBeFocused();
   await page.keyboard.press('Enter');
   await expect(ask).toHaveCount(0);
   await expect(pause).toBeVisible();
@@ -97,10 +97,10 @@ test('a player is picked by a number key, the super password still works', async
 
 test('F4 steps the sound and says so, the tooltips name the keys', async ({ page }) => {
   await createProfile(page, 'Lea');
-  const sound = page.locator('.map-top .sound-btn');
+  const sound = page.locator('.map-screen .top-right .sound-btn');
   await expect(sound).toHaveAttribute('data-level', 'normal');
   await expect(sound).toHaveAttribute('data-tip', 'Sound: normal (F4)\nF8 plays another song');
-  await expect(page.locator('.map-top .help-btn')).toHaveAttribute('data-tip', 'Help (F1)');
+  await expect(page.locator('.map-screen .top-right .help-btn')).toHaveAttribute('data-tip', 'Help (F1)');
   await page.keyboard.press('F4');
   await expect(sound).toHaveAttribute('data-level', 'quiet');
   await expect(page.locator('.toast')).toHaveText('Sound: quiet');

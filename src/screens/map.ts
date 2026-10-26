@@ -13,11 +13,11 @@ import { badge, parrotBadge } from '../ui/badge';
 import { flyAway, hasParrotBadge } from '../game/parrots';
 import { localDate } from '../learning/stats';
 import { arrowFocus, button, closeButton, h, icon } from '../ui/dom';
-import { cornerControls } from '../ui/chrome';
+import { cornerControls, settingsButton } from '../ui/chrome';
 import { offerInstall } from '../ui/install';
 import { tipShown } from '../ui/tooltip';
 import { ownTextPhrases } from '../game/modes/practice';
-import { levelTitleWords, roundButton } from '../ui/hud';
+import { levelTitleWords } from '../ui/hud';
 import { startFreeType } from './free-type';
 import { openPracticeKeys } from './practice-keys';
 import { openStats } from './stats';
@@ -75,10 +75,6 @@ function welcomeCard(p: Profile, start: () => void): HTMLElement | null {
   return card;
 }
 
-function settingsButton(): HTMLButtonElement {
-  return roundButton('control', 'gear', t('map.settings'), () => go('parent'));
-}
-
 export function mapScreen(root: HTMLElement): void {
   const p = app.profile!;
   audio.music(app.menuTrack);
@@ -127,12 +123,13 @@ export function mapScreen(root: HTMLElement): void {
   play.dataset.tip = nextName;
   play.setAttribute('aria-label', `${t('map.continue')}: ${nextName}`);
   root.append(h('div', { class: 'screen map-screen' },
-    h('header', { class: 'map-top' },
+    h('header', { class: 'bar' },
       button(t('map.switchProfile'), () => go('start'), 'btn ghost small', 'back'),
-      cornerControls(settingsButton())),
+      h('h1', {}, t('map.title'))),
+    cornerControls(settingsButton()),
     h('main', { class: 'map-body' },
       h('aside', { class: 'map-side' },
-        h('h1', { class: 'map-hello' }, t('map.hello', { name: nickname(p) }), hasParrotBadge(p) || badgeLost ? parrotBadge() : null),
+        h('h2', { class: 'map-hello' }, t('map.hello', { name: nickname(p) }), hasParrotBadge(p) || badgeLost ? parrotBadge() : null),
         tapko,
         bubble,
         taskCard(p),

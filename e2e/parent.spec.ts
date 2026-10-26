@@ -87,7 +87,7 @@ test('the parent question shows once on a double click, also while the settings 
     await new Promise((r) => setTimeout(r, 1500));
     await route.continue();
   });
-  await page.locator('.map-top .round-btn').first().dblclick();
+  await page.locator('.map-screen .top-right .round-btn').first().dblclick();
   const dialog = page.locator('.confirm');
   await expect(dialog).toHaveCount(1);
   // The page under the question is the loading look, never blank.
@@ -132,4 +132,17 @@ test('settings: nickname first and required, name optional, word language, key f
   await expect(page.locator('.dashboard .sum-chip')).toHaveCount(6);
   await expect(page.locator('.story-levels')).toHaveCount(3);
   await expect(page.locator('.story-levels').first().locator('.world-levels').first().locator('.level-cell')).not.toHaveCount(0);
+});
+
+test('the gear on the start page opens the settings without a profile; a student picked there opens the rest', async ({ page }) => {
+  await createProfile(page, 'Nina');
+  await page.goto('./');
+  await page.locator('.start-screen .top-right').getByRole('button', { name: 'Settings for parents' }).click();
+  await page.locator('.confirm .btn:not(.primary)').last().click();
+  await expect(page).toHaveURL(/#\/settings$/);
+  await expect(page.locator('.parent-screen .tabs .tab')).toHaveCount(2);
+  await expect(page.locator('.lock-group')).toBeVisible();
+  await page.locator('.switch-btn').click();
+  await page.locator('.switch-dialog .profile-card', { hasText: 'Nina' }).click();
+  await expect(page.locator('.parent-screen .tabs .tab')).toHaveCount(7);
 });

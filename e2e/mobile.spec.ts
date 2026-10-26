@@ -81,7 +81,7 @@ test('the corner by width: the round buttons, then the Menu', async ({ page }) =
   await menu.click();
   await expect(menu).toHaveAttribute('aria-expanded', 'true');
   const items = page.locator('.corner-menu-panel [role=menuitem]');
-  await expect(items).toHaveText(['Jazyk: Slovenčina', 'Pre učiteľov', /^Zvuk/, 'Celá obrazovka', /režim$/, 'Pomoc']);
+  await expect(items).toHaveText(['Jazyk: Slovenčina', 'Nastavenia pre rodičov', 'Pre učiteľov', /^Zvuk/, 'Celá obrazovka', /režim$/, 'Pomoc']);
   await expect(items.first()).toBeFocused();
   await page.keyboard.press('Escape');
   await expect(page.locator('.corner-menu-panel')).toHaveCount(0);

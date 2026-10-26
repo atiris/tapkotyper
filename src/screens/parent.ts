@@ -28,31 +28,41 @@ import { hasCompanion } from '../game/rewards';
 import { lockRemovedNote } from '../ui/service';
 import { OWN_TEXT_MAX, OWN_WORDS_MAX, parseOwnWords, typableText, untypableWords } from '../words/words';
 
-/** The parent area, once `parentAccess` let the parent in; `tab`: the tab to open. */
+const TABS = ['settings', 'own', 'surprises', 'task', 'keys', 'dashboard', 'data'] as const;
+type Tab = (typeof TABS)[number];
+
+/**
+ * The parent area, once `parentAccess` let the parent in; `tab`: the tab to open. Without a
+ * player (opened from the start page) only what needs no profile: the device's settings and the data.
+ */
 export function parentScreen(root: HTMLElement, params: { tab?: string }): void {
-  const p = app.profile!;
-  const others = app.store.profiles.filter((q) => q.id !== p.id);
-  const tabs = ['settings', 'own', 'surprises', 'task', 'keys', 'dashboard', 'data'] as const;
-  type Tab = (typeof tabs)[number];
+  const p = app.profile;
+  const others = app.store.profiles.filter((q) => q.id !== p?.id);
+  const tabs: readonly Tab[] = p ? TABS : ['settings', 'data'];
   const body = h('div', { class: 'tab-panel' });
   let current: Tab = tabs.find((x) => x === params.tab) ?? 'settings';
+  const panel = (tab: Tab): HTMLElement => {
+    if (tab === 'data') return dataTab(p);
+    if (!p) return deviceTab();
+    return tab === 'settings' ? settingsTab(p) : tab === 'own' ? ownTab(p) : tab === 'surprises' ? surprisesTab(p) : tab === 'task' ? taskTab(p) : tab === 'keys' ? keysTab(p) : dashboardTab(p);
+  };
   const nav = tabBar(tabs.map((tab) => [tab, t(`parent.tab.${tab}`)] as const), current, (tab) => {
     current = tab;
-    body.replaceChildren(tab === 'settings' ? settingsTab(p) : tab === 'own' ? ownTab(p) : tab === 'surprises' ? surprisesTab(p) : tab === 'task' ? taskTab(p) : tab === 'keys' ? keysTab(p) : tab === 'dashboard' ? dashboardTab(p) : dataTab(p));
+    body.replaceChildren(panel(tab));
   });
-  const bar = h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'),
-    others.length ? childSwitch(p, others, () => current) : null, h('h1', {}, t('parent.title')));
+  const bar = h('header', { class: 'bar' }, button(t('common.back'), () => go(p ? 'map' : 'start'), 'btn ghost small', 'back'),
+    others.length ? childSwitch(p, others, () => current) : null, h('h1', {}, t(p ? 'parent.title' : 'map.settings')));
   barTabLinks(bar, nav);
   root.append(h('div', { class: 'screen parent-screen' }, bar, cornerControls(), nav, body));
 }
 
-/** The button by "Back": the child, and the start page's cards of the other profiles (number keys pick one) to switch to without leaving the parent area. */
-function childSwitch(p: Profile, others: Profile[], tab: () => string): HTMLElement {
+/** The button by "Back": the child (or, without one, a call to pick one), and the start page's cards of the other profiles (number keys pick one) to switch to without leaving the parent area. */
+function childSwitch(p: Profile | null, others: Profile[], tab: () => string): HTMLElement {
   const pick = async (q: Profile) => {
     await selectProfile(q);
     go('parent', { granted: true, tab: tab() });
   };
-  const b = button(h('span', { class: 'switch-label' }, tapkoElement(p.companion, 'idle', 28), h('span', {}, nickname(p))), () => {
+  const b = button(h('span', { class: 'switch-label' }, p ? tapkoElement(p.companion, 'idle', 28) : null, h('span', {}, p ? nickname(p) : t('parent.pickChild'))), () => {
     const choose = (q: Profile) => { close(); void pick(q); };
     const cards = others.map((q, i) => profileCard(q, i, () => choose(q)));
     const list = h('div', { class: 'switch-list' });
@@ -589,28 +599,39 @@ function dashboardTab(p: Profile): HTMLElement {
     ...storyLevels(p));
 }
 
-function dataTab(p: Profile): HTMLElement {
-  const guest = p.id === GUEST_ID;
+/** The settings without a player: the device's own (the translator, the password); a player is picked by the button at the top. */
+function deviceTab(): HTMLElement {
+  return h('div', { class: 'settings-grid' },
+    h('fieldset', {}, h('legend', {}, t('parent.group.device')),
+      h('p', { class: 'hint' }, t('parent.noChild')),
+      field(t('parent.translate'), button(t('parent.translateGo'), () => go('translate', { granted: true }), 'btn small', 'language'), t('parent.translateHint'), 'div')),
+    lockGroup());
+}
+
+/** Export, move, import and delete; without a player only all profiles out and in. */
+function dataTab(p: Profile | null): HTMLElement {
+  const guest = p?.id === GUEST_ID;
+  const own = p && !guest ? p : null;
   return h('div', { class: 'data-tab' },
     h('p', {}, t('parent.dataText')),
     h('div', { class: 'row' },
-      guest ? null : button(t('parent.exportOne'), () => exportOne(p), 'btn', 'download'),
-      guest ? null : button(t('move.button'), () => void moveDialog(p), 'btn', 'next'),
+      own ? button(t('parent.exportOne'), () => exportOne(own), 'btn', 'download') : null,
+      own ? button(t('move.button'), () => void moveDialog(own), 'btn', 'next') : null,
       button(t('parent.exportAll'), () => download('tapkotyper-profiles.json', app.store.exportJson()), 'btn', 'download'),
       button(t('parent.import'), () => importDialog(() => go('parent', { granted: true })), 'btn', 'upload')),
-    guest ? h('p', { class: 'hint' }, t('parent.guestNote')) : h('div', { class: 'danger-zone' },
+    guest ? h('p', { class: 'hint' }, t('parent.guestNote')) : !own ? null : h('div', { class: 'danger-zone' },
       h('h3', {}, t('parent.deleteTitle')),
-      button(t('parent.delete', { name: nickname(p) }), async () => {
+      button(t('parent.delete', { name: nickname(own) }), async () => {
         const yes = await confirmDialog({
           title: t('parent.deleteTitle'),
-          text: t('parent.deleteConfirm', { name: nickname(p) }),
+          text: t('parent.deleteConfirm', { name: nickname(own) }),
           ok: t('parent.deleteOk'),
           cancel: t('common.back'),
           danger: true,
-          art: tapkoElement(p.companion, 'thinking', 110),
+          art: tapkoElement(own.companion, 'thinking', 110),
         });
         if (!yes) return;
-        app.store.remove(p.id);
+        app.store.remove(own.id);
         app.profile = null;
         go('start');
       }, 'btn danger', 'trash')));

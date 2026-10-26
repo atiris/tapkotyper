@@ -94,8 +94,11 @@
     remembering.
 - Pause anytime (Esc or a visible button); the game also pauses when the tab is hidden.
   The pause is a small card at the top: the words and the guide's next key stay in sight.
-  Besides Continue and Help it offers "Slower", one step lower difficulty (the narrator confirms);
-  automatic growth may raise it again after accurate play.
+  "Small break" with one stretch to try, the round X (Escape too) to go on, and Continue,
+  "Slower" (one step lower difficulty, the narrator confirms; automatic growth may raise it
+  again after accurate play), "Quick exercise" (that stretch with a 20 s countdown on the card,
+  then the pause again, the level waiting where it was) and the end of the level. Help is the
+  level's "?", not a button here.
 - **Leaving a level** is said plainly on the pause card: "End level" in a story, "End exercise"
   in practice and custom exercises, "End mission" in a rescue. Once something was typed in
   the level (a right or a wrong key) it asks first: "Really end it? This level will not

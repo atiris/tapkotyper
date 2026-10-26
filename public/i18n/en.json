@@ -24,7 +24,8 @@
     "whoPlays": "Who will type to me today?",
     "pickByNumber": "You can also pick this profile by typing the number {n}",
     "newProfile": "New player",
-    "guest": "No profile",
+    "newFirst": "New typing student",
+    "guest": "Try it",
     "guestName": "Guest",
     "import": "Import profiles",
     "language": "Language",
@@ -52,8 +53,7 @@
       "wardrobe": "A wardrobe and stars for effort",
       "mentors": "Trackable progress"
     },
-    "first": "Just a name and an animal to pick.",
-    "guestFirst": "Try without a profile"
+    "first": "Pick a nickname, choose your helper and start training."
   },
   "newProfile": {
     "title": "Hello and welcome!",
@@ -124,6 +124,7 @@
     "ownText": "My text",
     "freeType": "Just typing",
     "hello": "Hi, {name}!",
+    "title": "World map",
     "continue": "Continue",
     "practice": "Own practice",
     "wardrobe": "Me and my wardrobe",
@@ -163,7 +164,10 @@
     "guide": "Show or hide the keyboard",
     "pause": "Pause",
     "paused": "Little pause",
+    "pauseClose": "Continue (Esc)",
     "slower": "Slower",
+    "stretch": "Quick exercise",
+    "stretchDone": "Done",
     "slowerSaid": "Okay, we will go slower.",
     "toMap": "Map",
     "leave": "Back to the map",
@@ -180,7 +184,7 @@
     "endPractice": "End exercise",
     "endRescue": "End mission",
     "keepPractice": "Keep practising",
-    "keepLevel": "Keep playing",
+    "keepLevel": "Continue",
     "keepRescue": "Continue the mission",
     "keepTyping": "Keep typing",
     "endAsk": "Really end it?",
@@ -297,6 +301,7 @@
   "results": {
     "title": "Level finished!",
     "practiceDone": "Practice finished!",
+    "close": "Close and go to the map (Esc)",
     "dictationClean": "By ear without a mistake: {n} of {total}",
     "memoryClean": "From memory without a mistake: {n} of {total}",
     "starsAria": "{n} of 3 stars",
@@ -1042,10 +1047,13 @@
       "child": "Student",
       "practice": "Practice",
       "look": "Look and sound",
-      "lock": "Settings password"
+      "lock": "Settings password",
+      "device": "This device"
     },
     "childName": "Student's name (optional)",
     "switchTitle": "Switch to another student",
+    "pickChild": "Pick a student",
+    "noChild": "With no student picked, only the settings of the whole device are here. Pick a student with the button at the top.",
     "companionKind": "Character",
     "messages": "Your own encouraging messages",
     "messagesHint": "One per line. The game mixes them in sometimes.",
@@ -1411,7 +1419,7 @@
       "On the map you see Today's task. Type until the time is up.",
       "When it is done, press Hand in and send your teacher the **result link**."
     ],
-    "settingsIntro": "The settings are for the teacher or parent. They open with the gear on the map. Until you **lock them with a password**, one question opens them.",
+    "settingsIntro": "The settings are for the teacher or parent. They open with the gear. Until you **lock them with a password**, anyone opens them by clicking a simple confirm button.",
     "settings": {
       "settings": [
         "Student: nickname, character and optional name, game language, word language and keyboard layout. Pick the layout of the real keyboard; the finger guide follows it.",

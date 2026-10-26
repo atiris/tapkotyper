@@ -78,6 +78,10 @@
       "title": "Názvy svetov",
       "about": "Krátke názvy 15 svetov; ukazujú sa na mape, v hláseniach o zamknutí a pri názve hudby."
     },
+    "map-welcome": {
+      "title": "Uvítanie na mape",
+      "about": "Karta, ktorá nového hráča privíta na mape pri prvom vstupe."
+    },
     "map-page": {
       "title": "Mapa",
       "about": "Texty hlavnej mapy: privítanie, tlačidlá, názvy príbehov a rady o odomykaní úrovní."
@@ -97,6 +101,10 @@
     "tracks": {
       "title": "Názvy hudby",
       "about": "Názvy skladieb, ktoré nepatria k žiadnemu svetu."
+    },
+    "level-pause": {
+      "title": "Pauza",
+      "about": "Kartička pauzy v úrovni: tip na pretiahnutie, pomalšie a krátky cvik."
     },
     "level": {
       "title": "Obrazovka úrovne",
@@ -353,8 +361,9 @@
     "common.close": "Názov krížika na zatvorenie okna; Esc je kláves.",
     "start.whoPlays": "Nadpis nad zoznamom hráčov na úvodnej obrazovke.",
     "start.pickByNumber": "Bublina pri hráčovi v zozname. {n} je číslica, ktorou sa dá vybrať.",
-    "start.newProfile": "Tlačidlo na vytvorenie nového hráča, aj štítok v zozname profilov.",
-    "start.guest": "Tlačidlo na hru bez profilu, keď už nejaký hráč existuje.",
+    "start.newProfile": "Tlačidlo na vytvorenie ďalšieho hráča vedľa Vyskúšať, keď už nejaký hráč existuje; aj štítok v zozname profilov.",
+    "start.newFirst": "Veľké hlavné tlačidlo na vytvorenie prvého hráča, keď ešte nie je žiadny hráč.",
+    "start.guest": "Tlačidlo na vyskúšanie hry bez profilu (hosť).",
     "start.guestName": "Meno, ktoré dostane hráč bez profilu.",
     "start.import": "Tlačidlo na načítanie profilov zo súboru.",
     "start.language": "Názov zoznamu jazykov, ktorý sa otvorí tlačidlom jazyka (pre čítače obrazovky).",
@@ -373,8 +382,7 @@
     "start.promises.local": "Druhý sľub v rade ikon; po kliknutí vysvetľuje ukladanie údajov.",
     "start.promises.wardrobe": "Tretí sľub v rade ikon.",
     "start.promises.mentors": "Štvrtý sľub v rade ikon.",
-    "start.first": "Vetička nad tlačidlom Nový hráč, keď ešte nie je žiadny hráč.",
-    "start.guestFirst": "Tlačidlo na hru bez profilu, keď ešte nie je žiadny hráč.",
+    "start.first": "Vetička nad tlačidlom na vytvorenie prvého hráča: prezývka, pomocník a môže trénovať.",
     "newProfile.title": "Nadpis formulára nového hráča.",
     "newProfile.name": "Štítok poľa na skutočné meno dieťaťa.",
     "newProfile.companion": "Štítok výberu postavičky.",
@@ -417,6 +425,7 @@
     "map.ownText": "Tlačidlo na mape na písanie vlastného textu; vidno ho, len keď rodič vlastný text zadal.",
     "map.freeType": "Tlačidlo na mape pre voľné písanie bez úlohy.",
     "map.hello": "Nadpis mapy. {name} je prezývka hráča.",
+    "map.title": "Nadpis mapy v hornej lište, vpravo od tlačidla Hráči.",
     "map.continue": "Veľké tlačidlo na mape, ktoré spustí ďalšiu úroveň.",
     "map.practice": "Tlačidlo na cvičenie vybraných písmen; použité aj v bublinách a v popise tlačidla Pokračovať.",
     "map.wardrobe": "Tlačidlo na mape, ktoré otvorí šatník.",
@@ -483,7 +492,10 @@
     "level.guide": "Popis tlačidla (F2) v úrovni, ktoré ukáže alebo skryje klávesnicu.",
     "level.pause": "Popis tlačidla pauzy v hornej lište úrovne.",
     "level.paused": "Nadpis malej kartičky, ktorá sa ukáže po stlačení pauzy.",
+    "level.pauseClose": "Názov krížika na kartičke pauzy; pokračuje v hre, rovnako ako Esc.",
     "level.slower": "Tlačidlo na kartičke pauzy; zníži náročnosť, aby hra išla pomalšie.",
+    "level.stretch": "Tlačidlo na kartičke pauzy a nadpis krátkeho cviku na pretiahnutie s odpočtom.",
+    "level.stretchDone": "Tlačidlo, ktoré ukončí krátky cvik a vráti kartičku pauzy.",
     "level.slowerSaid": "Tapko, hneď po stlačení Pomalšie na kartičke pauzy.",
     "level.toMap": "Tlačidlo na obrazovke výsledkov, ktoré vráti dieťa na mapu.",
     "level.leave": "Popis tlačidla X v hre Len písanie, ktoré hru opustí.",
@@ -500,7 +512,7 @@
     "level.endPractice": "Tlačidlo na kartičke pauzy a okrúhle tlačidlo X, ktoré ukončí cvičenie a ukáže výsledky.",
     "level.endRescue": "Tlačidlo na kartičke pauzy a v otázke, ktoré ukončí záchrannú misiu.",
     "level.keepPractice": "Tlačidlo na kartičke pauzy a v otázke, ktoré pokračuje v cvičení.",
-    "level.keepLevel": "Tlačidlo na kartičke pauzy a v otázke, ktoré pokračuje v príbehovej úrovni.",
+    "level.keepLevel": "Tlačidlo na kartičke pauzy a v otázke, ktoré pokračuje v príbehovej úrovni (Pokračovať).",
     "level.keepRescue": "Tlačidlo na kartičke pauzy a v otázke, ktoré pokračuje v záchrannej misii.",
     "level.keepTyping": "Tlačidlo na kartičke pauzy v hre Len písanie, ktoré pokračuje v písaní.",
     "level.endAsk": "Nadpis otázky pri ukončení úrovne, ak dieťa už stlačilo aspoň jeden kláves.",
@@ -691,6 +703,7 @@
     "parrot.badgeNew": "Záverečná karta, keď výhra práve priniesla odznak Papagáj.",
     "results.title": "Nadpis karty po dokončení úrovne.",
     "results.practiceDone": "Nadpis karty po dokončení cvičenia (voľné cvičenie, vlastný text).",
+    "results.close": "Názov krížika na karte výsledkov; zavrie ju a prejde na mapu, rovnako ako Esc.",
     "results.dictationClean": "Fakt na karte výsledkov pri diktáte. {n} je počet slov bez chyby z {total}.",
     "results.memoryClean": "Fakt na karte výsledkov pri písaní z pamäti. {n} je počet slov bez chyby z {total}.",
     "results.mixedClean": "Fakt na karte výsledkov pri zmiešanom písaní. {n} je počet slov bez chyby z {total}.",
@@ -871,12 +884,15 @@
     "parent.group.practice": "Nastavenia, karta Nastavenia: nadpis skupiny o náročnosti, slovách a čase cvičenia.",
     "parent.group.look": "Nastavenia, karta Nastavenia: nadpis skupiny o zvuku a vzhľade.",
     "parent.group.lock": "Nastavenia, karta Nastavenia: nadpis skupiny na zámok heslom.",
+    "parent.group.device": "Nastavenia bez vybraného hráča: nadpis skupiny s nastaveniami celého zariadenia.",
     "parent.childName": "Nastavenia, karta Nastavenia: popisok poľa na meno študenta.",
     "parent.childNameHint": "Nastavenia, karta Nastavenia: poznámka pod poľom s menom študenta.",
     "parent.nickname": "Nastavenia, karta Nastavenia: popisok poľa s prezývkou.",
     "parent.nicknameHint": "Nastavenia, karta Nastavenia: poznámka pod poľom s prezývkou.",
     "parent.nickMissing": "Nastavenia, karta Nastavenia: chyba pod prezývkou, keď je pole prázdne.",
     "parent.switchTitle": "Nastavenia: nadpis okna a tip na tlačidle na prepnutie na iného študenta.",
+    "parent.pickChild": "Nastavenia bez vybraného hráča: tlačidlo hore, ktoré otvorí výber študenta.",
+    "parent.noChild": "Nastavenia bez vybraného hráča: vysvetlenie, že sú tu len nastavenia celého zariadenia.",
     "parent.companionKind": "Nastavenia, karta Nastavenia: popisok výberu postavičky (a jeho prístupný názov).",
     "parent.messages": "Nastavenia, karta Vlastné: popisok poľa s vlastnými povzbudeniami.",
     "parent.messagesHint": "Nastavenia, karta Vlastné: poznámka pod poľom s povzbudeniami.",

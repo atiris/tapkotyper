@@ -173,6 +173,7 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
     ...(outcome ? [] : teaser(def, !!nextDef && r.worldDone === null)),
   ].filter((x) => x !== null);
   const card = h('div', { class: 'card results-card' },
+    closeButton(toMap, t('results.close')),
     h('div', { class: 'results-top' },
       h('h2', {}, def.kind === 'practice' ? t('results.practiceDone') : t('results.title')),
       def.kind === 'practice' ? null : stars),
@@ -209,6 +210,7 @@ function showStayDone(root: HTMLElement, def: LevelDef, r: LevelResult): void {
   actions.append(button(t('level.toMap'), () => go('map'), `btn ${breakDue ? '' : 'primary'}`, 'map'));
   if (next && isLevelUnlocked(p, next)) actions.append(button(t('results.next'), () => playLevel(next.id), 'btn', 'next'));
   const card = h('div', { class: 'card results-card stay-done' },
+    closeButton(() => go('map'), t('results.close')),
     h('div', { class: 'results-top' }, h('h2', {}, t('results.practiceDone'))),
     h('div', { class: 'results-tapko' }, tapkoElement(p.companion, 'happy', 80), h('p', { class: 'bubble static side' }, breakDue ? pickLine('tapko.break') : pickLine('tapko.level_done', { name: nickname(p) }, p.customMessages))),
     h('div', { class: 'results-facts' }, ...facts),
@@ -242,6 +244,7 @@ function showAimDone(root: HTMLElement, r: LevelResult, mode: AimMode, params: L
   tip(stayBtn, t('aim.stayTip'));
   actions.append(stayBtn, button(t('aim.toMap'), () => go('map'), 'btn', 'map'));
   const card = h('div', { class: 'card results-card aim-done' },
+    closeButton(stay, `${t('aim.stay')} (Esc)`),
     h('div', { class: 'results-top' }, h('h2', {}, t('aim.done'))),
     h('div', { class: 'results-tapko' }, tapkoElement(p.companion, 'happy', 80), h('p', { class: 'bubble static side' }, breakDue ? pickLine('tapko.break') : pickLine('tapko.level_done', { name: nickname(p) }, p.customMessages))),
     h('ul', { class: 'aim-rows', 'aria-label': t('aim.keys') }, ...rows),
@@ -282,7 +285,7 @@ function showParrotDone(root: HTMLElement, def: LevelDef, r: LevelResult, mode: 
   actions.append(button(t('parrot.again'), () => go('level', params), `btn ${breakDue ? '' : 'primary'}`, 'replay'),
     button(t('level.toMap'), () => go('map'), 'btn', 'map'));
   const card = h('div', { class: 'card results-card parrot-done' },
-    closeButton(() => go('map'), t('level.toMap')),
+    closeButton(() => go('map'), t('results.close')),
     h('div', { class: 'results-top' }, h('h2', {}, t('parrot.done'))),
     h('div', { class: 'results-tapko' }, pic ? h('img', { class: 'parrot-done-pic', src: pic, alt: '' }) : tapkoElement(p.companion, 'happy', 80),
       h('p', { class: 'bubble static side' }, breakDue ? pickLine('tapko.break') : pickLine('tapko.level_done', { name: nickname(p) }, p.customMessages))),

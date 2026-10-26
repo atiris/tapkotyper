@@ -3,6 +3,9 @@
 ## What
 - A parent area behind a gear button and one calm question ("do you really want to open
   the settings?"). Deleting a profile asks in the app's own style.
+- The gear is on the start page too. Before a player is chosen the settings hold only what
+  needs no profile: the translator, the settings password, and on the data tab exporting all
+  profiles and importing them. "Pick a student" at the top opens a player's whole settings.
 - An optional **settings password**, one for the whole device (every profile and the
   guest). While it is set, every way into the parent area (the gear, the settings address)
   asks for it instead of the question; a wrong one says so, and after five wrong tries in a

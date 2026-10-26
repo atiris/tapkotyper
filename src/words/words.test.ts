@@ -21,6 +21,17 @@ describe('WordSource', () => {
     for (let i = 0; i < 50; i++) expect(src.next()).toMatch(/^[fj]+$/);
   });
 
+  it('dictates single letters until the known letters make enough dictionary words, then only those', () => {
+    const few = new WordSource(WORDS, { keys: [...'fjdksla '], len: [2, 6], noDiacritics: false, seed: 5 });
+    few.heard = true;
+    for (let i = 0; i < 50; i++) expect(few.next(new Set(), undefined, 2)).toMatch(/^[fjdksla]( [fjdksla])?$/);
+    const keys = [...'fjdkslaeiruotnhšôň'];
+    const many = new WordSource(WORDS, { keys, len: [2, 6], noDiacritics: false, seed: 6 });
+    many.heard = true;
+    const known = filterWords(WORDS, new Set(keys), [2, 6]);
+    for (let i = 0; i < 50; i++) expect(known).toContain(many.next());
+  });
+
   it('never uses keys outside the set', () => {
     const keys = [...'fjdksla'];
     const src = new WordSource(WORDS, { keys, len: [2, 5], noDiacritics: false, seed: 2 });

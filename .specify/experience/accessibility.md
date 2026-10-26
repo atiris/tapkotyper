@@ -35,7 +35,8 @@
   in a short note at the bottom. Each of these buttons' tooltips ends with its key ("Help (F1)").
   In a text field the keys type text, only F1 still opens help; the browser's own F-key actions
   (its help, search, reload of these keys) do not happen. The fullscreen button's tooltip names
-  the browser's own fullscreen key ("Fullscreen (F11)").
+  "Fullscreen (F11)": F11 takes the game's own fullscreen instead of the browser's, so the
+  button can always leave it again.
 - Every top button is explained, drawn as it looks, on the [help page](help.md).
 - **Reading aloud** (off by default, per profile): a round button left of the keyboard
   button in the level bar switches it. It reads only the targets, each when it becomes

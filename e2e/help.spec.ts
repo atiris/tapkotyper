@@ -7,7 +7,7 @@ test('help opens from the map and from a paused level and goes back', async ({ p
   await createProfile(page, 'Ema');
 
   // Map -> help on the buttons tab -> another tab -> close.
-  await page.locator('.map-top .help-btn').click();
+  await page.locator('.map-screen .top-right .help-btn').click();
   const help = page.locator('.help-page');
   await expect(help.locator('.tab[aria-selected="true"]')).toHaveText('Interface');
   // Six map buttons, the start page's language, the Menu of small screens, the wardrobe countdown and eleven level buttons (with the super star).
@@ -19,7 +19,7 @@ test('help opens from the map and from a paused level and goes back', async ({ p
   await help.locator('.bar').getByRole('button', { name: 'Back' }).click();
   await page.locator('.map-screen').waitFor();
   // Map -> help -> Escape.
-  await page.locator('.map-top .help-btn').click();
+  await page.locator('.map-screen .top-right .help-btn').click();
   await help.waitFor();
   await page.keyboard.press('Escape');
   await page.locator('.map-screen').waitFor();
@@ -30,7 +30,8 @@ test('help opens from the map and from a paused level and goes back', async ({ p
   await untilPlay(page);
   await page.keyboard.press('Escape');
   const pause = page.locator('.pause-card');
-  await pause.getByRole('button', { name: 'Help' }).click();
+  await expect(pause.getByRole('button', { name: 'Help' })).toHaveCount(0);
+  await page.locator('.hud').getByRole('button', { name: 'Help in the level' }).click();
   // A whole page, not see-through, with Back at the top left and this level's part first.
   const levelHelp = page.locator('.level-help');
   await expect(levelHelp.locator('.help-page')).toBeVisible();
@@ -40,7 +41,7 @@ test('help opens from the map and from a paused level and goes back', async ({ p
   await page.keyboard.press('Escape');
   await expect(levelHelp).toHaveCount(0);
   await expect(pause).toBeVisible();
-  await expect(pause.getByRole('button', { name: 'Keep playing' })).toBeFocused();
+  await expect(pause.getByRole('button', { name: 'Continue', exact: true })).toBeFocused();
   // The "?" of the level opens the same page; Back returns to the paused level.
   await page.locator('.hud').getByRole('button', { name: 'Help in the level' }).click();
   await levelHelp.locator('.bar').getByRole('button', { name: 'Back' }).click();
@@ -84,7 +85,7 @@ test('help opens from the start page on the about tab, without a player', async 
 
 test('help from the settings opens on their tab and goes back to them without the question', async ({ page }) => {
   await createProfile(page, 'Ema');
-  await page.locator('.map-top .round-btn').first().click();
+  await page.locator('.map-screen .top-right .round-btn').first().click();
   await page.locator('.confirm .btn:not(.primary)').last().click();
   await page.locator('.parent-screen').waitFor();
   await page.locator('.parent-screen .help-btn').click();

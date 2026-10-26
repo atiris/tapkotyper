@@ -21,8 +21,8 @@
      its three tabs and QR codes, rescue missions, the target range (where it opens, what it
      trains, the middle, a fall that costs nothing, the collection and Enter), the parrot (where it
      opens, why it repeats words, parrots that fly away and the Parrot badge) and badges.
-  4. **Settings**, for the teacher or parent: that the settings open with the gear on the map (the child's
-     screens do not say it), what each settings tab does (child, practice, look and sound,
+  4. **Settings**, for the teacher or parent: under the Settings heading, that they are for the teacher or
+     parent, open with the gear, and until locked with a password open for anyone by one confirm button, what each settings tab does (child, practice, look and sound,
      password, own words and text, surprises, tasks, keys, progress, data), with one section per
      settings tab, and what is lost without a backup. By the password, plainly: it guards the
      settings only inside the game; the data in the browser is not encrypted and anyone with
@@ -43,7 +43,7 @@
 - The round "?" in the map's top buttons opens it on the interface tab. The "?" on the start
   page (and on the other screens before a player is chosen) opens it on the about tab; help
   works without a player and names no one.
-- **Help in a level**: the purple round "?" in the level's top bar, "Help" on the pause card and
+- **Help in a level**: the purple round "?" in the level's top bar and
   F1 pause the level and open the same help page over the whole level, opaque, with "Back" at
   the top left. It opens on how to type, with "In this level" first: the level's intro and one
   tip. Back or Escape returns to the paused level, on "Continue"; the level is not lost.

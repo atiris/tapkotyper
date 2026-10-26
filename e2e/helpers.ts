@@ -69,8 +69,8 @@ export async function typeChar(page: Page, ch: string): Promise<void> {
   if (capital) await page.keyboard.up('Shift');
 }
 
-/** The start page's way to a new player: the big button before the first player, then the dashed card. */
-export const NEW_PLAYER = '.start-card .btn.primary, .profile-card.new';
+/** The start page's way to a new player: the big button before the first player, then the button beside Try it. */
+export const NEW_PLAYER = '.start-card .new-player';
 
 export async function createProfile(page: Page, name: string, layout?: string): Promise<void> {
   await page.goto('./');

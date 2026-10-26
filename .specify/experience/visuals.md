@@ -36,12 +36,15 @@
   not move. Flat (outlined) buttons are only for tight places such as Back at the top left; a
   second choice beside the main one (Skip beside Next) is the same raised button, only not orange.
 - The level's top bar, left to right: pause, paw, title block, progress bar, rhythm, a divider,
-  help, keyboard, read aloud, sound, fullscreen. The title block is the world's name as a word
+  help, keyboard, read aloud, sound, fullscreen. The pause button turns into play while paused. A round
+  switch that is on has an orange ring: hidden keyboard (its button is a crossed keyboard), reading
+  aloud, full sound and fullscreen; help is no switch and has none. The title block is the world's name as a word
   with one dot per level (done, this one, to come, a web for the super obstacle); no level
   numbers anywhere, a level is named "Meadow · level 3".
 - The hands are the soft-palm kind: rounded fingers with the finger-color band, idle ones faint.
-- The map: a slim top bar ("Players" on the left; settings, sound and fullscreen as round
-  buttons on the right). The left column holds the greeting, the companion (opens the
+- The map: the page's top bar like on other pages, staying on top while the map scrolls
+  ("Players" on the left, the title "World map" right of it; settings, sound and fullscreen as
+  round buttons on the right). The left column holds the greeting, the companion (opens the
   statistics) and the buttons, all of one height; the first and biggest one just says
   "Continue" and names the level it starts only on hover. The right column holds the
   stories. One spacing scale and a clear heading order (greeting, story name, world names).

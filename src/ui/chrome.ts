@@ -18,7 +18,7 @@ const LEVEL_ICON: Record<SoundLevel, keyof typeof ICONS> = { normal: 'sound', qu
 
 const soundLabel = () => `${t('common.sound')}: ${t(`common.sound_${audio.level}`)}`;
 
-/** Quick sound switch (on every screen): normal, quiet, off; F4 too. */
+/** Quick sound switch (on every screen): normal, quiet, off; F4 too. Full sound has the orange ring. */
 export function soundButton(): HTMLButtonElement {
   const b = roundButton('control', LEVEL_ICON[audio.level], '', () => audio.cycleLevel());
   b.classList.add('sound-btn');
@@ -32,6 +32,7 @@ export function soundButton(): HTMLButtonElement {
     b.setAttribute('aria-label', label);
     tip(b, `${withKey(label, 'F4')}\n${t('common.nextSong')}`);
     b.dataset.level = audio.level;
+    b.setAttribute('aria-pressed', String(audio.level === 'normal'));
     paintRound(b, LEVEL_ICON[audio.level]);
   };
   paint();
@@ -47,7 +48,7 @@ function toggleFullscreen(): void {
   void req.catch(() => undefined);
 }
 
-/** Fullscreen switch; null where the browser has no fullscreen. */
+/** Fullscreen switch, with the orange ring while on; null where the browser has no fullscreen. */
 export function fullscreenButton(): HTMLButtonElement | null {
   if (!document.fullscreenEnabled) return null;
   const b = roundButton('control', 'fullscreen', '', toggleFullscreen);
@@ -56,7 +57,7 @@ export function fullscreenButton(): HTMLButtonElement | null {
     const on = !!document.fullscreenElement;
     const label = t(on ? 'common.fullscreenExit' : 'common.fullscreen');
     b.setAttribute('aria-label', label);
-    // F11 is the browser's own fullscreen key, not one of the game's.
+    b.setAttribute('aria-pressed', String(on));
     tip(b, `${label} (F11)`);
     paintRound(b, on ? 'fullscreenExit' : 'fullscreen');
   };
@@ -94,8 +95,14 @@ function trackName(track: string): string {
   return t((WORLDS as string[]).includes(track) ? `worlds.${track}` : `tracks.${track}`);
 }
 
-/** The app's function keys: F1 the screen's help, F4 the sound level, F8 the next song; a level adds its own. */
+/** The app's function keys: F1 the screen's help, F4 the sound level, F8 the next song, F11 fullscreen; a level adds its own. */
 export function appShortcuts(): void {
+  // F11 takes the page's fullscreen instead of the browser's own, so the fullscreen button can leave it again.
+  window.addEventListener('keydown', (e) => {
+    if (e.key !== 'F11' || e.ctrlKey || e.altKey || e.metaKey || !document.fullscreenEnabled) return;
+    e.preventDefault();
+    toggleFullscreen();
+  }, true);
   setDefaultShortcuts({
     help: openScreenHelp,
     sound: () => {
@@ -116,6 +123,11 @@ export function appShortcuts(): void {
  */
 export function globalButtons(help: HTMLButtonElement = helpButton(), theme: HTMLButtonElement | null = null): (HTMLButtonElement | null)[] {
   return [soundButton(), fullscreenButton(), theme, help, updateButton(), superStar()];
+}
+
+/** The settings gear: the player's settings, or before a player is chosen the ones without a profile. */
+export function settingsButton(): HTMLButtonElement {
+  return roundButton('control', 'gear', t('map.settings'), () => go('parent'));
 }
 
 /** Dark or light: a moon in the light look, a sun in the dark one. */

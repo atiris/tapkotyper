@@ -16,6 +16,9 @@
   from the allowed keys (alternating consonants and vowels, rhythmic syllables). With very
   small key sets (for example only `f j`), short letter patterns like `fff jjj fj jf` are
   used. Practice never stops for lack of words.
+- Dictation is only what a voice says clearly: dictionary words, and single letters while the
+  known letters make too few of them (a spoken "jjfjf" cannot be followed); no digits,
+  capitals or punctuation.
 - No word may be offensive or scary; pseudo-words are checked against a small block list.
 - The first level asks one chunk per target, never two with a space; the second level is the
   first that asks for the space bar.

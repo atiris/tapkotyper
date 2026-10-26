@@ -6,7 +6,7 @@ test('one tooltip: after a hover delay, at once for the next one, on Tab focus, 
   page.on('pageerror', (e) => errors.push(e.message));
   await createProfile(page, 'Ema');
   const tip = page.locator('#app-tip');
-  const corner = page.locator('.map-top .corner-row .round-btn');
+  const corner = page.locator('.map-screen .top-right .corner-row .round-btn');
 
   await page.mouse.move(5, 400);
   await corner.nth(1).hover();
@@ -52,7 +52,7 @@ test('no element keeps a native title', async ({ page }) => {
   await page.locator('.modal').waitFor();
   expect(await noTitles()).toEqual([]);
   await page.keyboard.press('Escape');
-  await page.locator('.map-top .round-btn').first().click();
+  await page.locator('.map-screen .top-right .round-btn').first().click();
   await page.locator('.confirm .btn:not(.primary)').last().click();
   await page.locator('.parent-screen').waitFor();
   for (const tab of ['settings', 'dashboard']) {

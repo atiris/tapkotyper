@@ -1,4 +1,4 @@
-import { app, go } from '../app/app';
+import { go } from '../app/app';
 import { imageUrl } from '../gfx/assets';
 import { type Dict, type Group, type Item, type Section, WORDS, buildCatalog, lookup, thumbs } from '../i18n/catalog';
 import { LANGS, LANGUAGES, askedLanguage, isLang, language, officialDict, ownDict, setLanguage, t } from '../i18n/i18n';
@@ -103,7 +103,7 @@ export function translateScreen(root: HTMLElement): () => void {
   let query = '';
   const inputs = new Map<string, HTMLTextAreaElement>();
 
-  const back = () => (app.profile ? go('parent', { granted: true }) : go('start'));
+  const back = () => go('parent', { granted: true });
   const save = () => {
     clearTimeout(saveTimer);
     saveTimer = 0;

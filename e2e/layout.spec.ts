@@ -11,7 +11,7 @@ async function noScroll(page: Page): Promise<void> {
 async function addProfiles(page: Page, from: number, to: number): Promise<void> {
   for (let i = from; i <= to; i++) {
     await page.goto('./');
-    await page.locator(i === 1 ? '.profile-card.new' : '.btn:has-text("Nový hráč"), .btn:has-text("New player"), .profile-card.new').first().click();
+    await page.locator(NEW_PLAYER).click();
     await page.locator('#np-nick').fill(`Kid${i}`);
     await page.locator('form button[type=submit]').click();
     await page.locator('.map-screen').waitFor();
@@ -33,8 +33,9 @@ test('the start screen does not scroll with 1, 5 and 7 profiles', async ({ page 
       // The teacher, sound and help buttons are in the first viewport whatever the number of profiles.
       await expect(page.locator('.top-right .help-btn, .top-right .sound-btn')).toHaveCount(2);
       for (const b of await page.locator('.top-right .round-btn:visible').all()) await expect(b).toBeInViewport();
-      const newAsCard = count < 5;
-      await expect(page.locator('.profile-card.new')).toHaveCount(newAsCard ? 1 : 0);
+      // New player is a button beside Try it; profiles are loaded in the settings, not here.
+      await expect(page.locator('.start-ghosts .new-player')).toBeVisible();
+      await expect(page.locator('.start-ghosts .btn')).toHaveCount(2);
     }
   }
 });

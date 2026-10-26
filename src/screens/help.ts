@@ -52,7 +52,7 @@ function levelIcons(): HTMLElement[] {
     iconLine(gauge.el, t('help.icons.gauge')),
     iconLine(round('help'), t('help.icons.levelHelp')),
     iconLine(round('read'), t('help.icons.read')),
-    iconLine(round('keyboard'), t('help.icons.guide')),
+    iconLine(round('keyboardOff'), t('help.icons.guide')),
     iconLine(round('sound'), t('help.icons.sound')),
     iconLine(round('fullscreen'), t('help.icons.fullscreen')),
     iconLine(roundPic('super', 'star'), t('help.icons.super')),
@@ -136,10 +136,9 @@ function tabContent(tab: HelpTab, now: Child[] = []): HTMLElement[] {
       section(t('help.progressTitle'), list('help.progress')),
       section(t('help.moreTitle'), list('help.more')),
     ];
-    case 'settings': return [
-      h('p', {}, ...richText(t('help.settingsIntro'))),
-      ...SETTINGS_TABS.map((s) => section(t(`parent.tab.${s}`), list(`help.settings.${s}`))),
-    ];
+    // Who the settings are for and how they open, under their first heading.
+    case 'settings': return SETTINGS_TABS.map((s) => section(t(`parent.tab.${s}`),
+      s === 'settings' ? h('p', {}, ...richText(t('help.settingsIntro'))) : null, list(`help.settings.${s}`)));
     case 'mentoring': return [
       section(t('help.mentorTitle'), list('help.mentor')),
       section(t('help.taskTitle'), list('help.task')),

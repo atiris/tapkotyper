@@ -185,10 +185,11 @@ function keyIcon(held: string): HTMLElement {
 /** A node's tooltip; before the world is finished it also says when the node opens. */
 const sideTip = (open: boolean, key: string) => (open ? t(key) : `${t(key)} ${t('map.sideOpens')}`);
 
-/** The target range of a world: a small node next to the super level's star, grey and closed until the world is finished. */
+/** The target range of a world: a small node with the range's target next to the super level's star, faded and closed until the world is finished. */
 function aimNode(open: boolean, world: number): HTMLElement {
+  const pic = imageUrl('obj-aim-target');
   return h('button', { class: 'level-node aim-node', type: 'button', disabled: !open, 'aria-label': t('aim.title'), tip: sideTip(open, 'map.aimTip'), onClick: () => go('level', { id: 'aim', world }) },
-    icon('target', 'icon aim-icon'));
+    pic ? h('img', { class: 'level-act', src: pic, alt: '' }) : icon('target', 'icon aim-icon'));
 }
 
 /** The parrot of a world: in colour while it is at home, grey until it is won (or after it flew away), closed until the world is finished. */

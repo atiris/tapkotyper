@@ -49,7 +49,10 @@
   session (about one world) goes up and down instead of repeating one game: 1 the world's
   main game, gently; 2 a calm step; 3 the main game, harder, with one short surprise; 4 a
   twist; 5 the super-obstacle. Each level dot on the map shows the icon of its activity
-  (the number stays in its tooltip and for screen readers).
+  (the number stays in its tooltip and for screen readers). The super level's crown, the
+  target range's target and the parrot sit on white cards, done or not; their pictures are in
+  colour and faded like any level not reached yet; only the parrot is grey while it is not at
+  home, and only the crown has stars under it.
   - *Waiting words* (calm step): still objects carry short words (2 letters in the meadow),
     each starting with another letter, so the first key picks the word and every later key
     is measured against the key it should be; a key that starts no word counts only in the

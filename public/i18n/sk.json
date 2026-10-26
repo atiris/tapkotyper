@@ -3112,6 +3112,9 @@
     "phase2": "Teraz každé slovo niekoľkokrát za sebou.",
     "done": "Papagáj sa naučil tvoje slová!",
     "learned": "Slová: {words}",
+    "speedUsual": "Tvoja zvyčajná rýchlosť: {n} znakov za minútu",
+    "speedLearn": "Na začiatku: {n} znakov za minútu",
+    "speedRepeat": "Pri opakovaní: {n} znakov za minútu",
     "again": "Nové slová",
     "badge": "Odznak Papagáj: všetky papagáje sú doma",
     "badgeNew": "Odznak Papagáj: všetky papagáje sú doma!"

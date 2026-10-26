@@ -54,8 +54,13 @@
 - A finished world adds two side cards after its super star: the target range (a red target)
   and the parrot (the macaw `ui-act-parrot`, grey until won or after it flew away, in colour on
   green while it is at home). The Parrot badge (`ui-badge-parrot`, the macaw on a round branch)
-  is a small picture of about 28 px right of the player's name, with a tooltip; the parrot
-  flying away is `obj-parrot-flying`.
+  is a small picture of about 28 px right of the name on the map, with a tooltip; on the start
+  page's player card the parrot itself stands at the character's feet, by its left side; the
+  parrot flying away is `obj-parrot-flying`.
+- A player's card on the start page ends with the progress in small pictures and plain counts
+  (keys mastered, worlds done, accuracy of the last 14 days, stars; the maxima only in the
+  tooltips; the accuracy without its percent sign), in one row (two rows in a very narrow card),
+  always on the card's bottom edge.
 - The world cards of a story stay in one row while the window is at least about 1000 px
   wide (they shrink with the space, the side column narrows below 1300 px); in a narrower
   window they go three and two.

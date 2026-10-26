@@ -3089,6 +3089,9 @@
     "phase2": "Now each word a few times in a row.",
     "done": "The parrot learned your words!",
     "learned": "Words: {words}",
+    "speedUsual": "Your usual speed: {n} characters per minute",
+    "speedLearn": "At the start: {n} characters per minute",
+    "speedRepeat": "While repeating: {n} characters per minute",
     "again": "New words",
     "badge": "Parrot badge: all parrots are at home",
     "badgeNew": "Parrot badge: all parrots are at home!"

@@ -18,8 +18,8 @@ import { imageUrl } from '../gfx/assets';
 import { WORLD_THINGS } from '../game/modes/aim-things';
 import type { Friend, Profile, Surprise, Task } from '../storage/schema';
 import { recordTaskRun, taskOwn } from '../share/task';
-import { localDate } from '../learning/stats';
-import { type Child, button, h } from '../ui/dom';
+import { localDate, recentTyping } from '../learning/stats';
+import { type Child, button, closeButton, h } from '../ui/dom';
 import { tip } from '../ui/tooltip';
 import { keyLabel } from '../ui/keyboard-guide';
 import { badge, parrotBadge } from '../ui/badge';
@@ -269,6 +269,11 @@ function showParrotDone(root: HTMLElement, def: LevelDef, r: LevelResult, mode: 
   saveProfile();
   const pic = imageUrl('ui-act-parrot');
   const facts: HTMLElement[] = [h('span', { class: 'fact main' }, t('parrot.learned', { words: mode.round.words.join(', ') }))];
+  // How fast the fingers got: the usual speed of the last 14 days, the learning part and the repeating part.
+  const usual = recentTyping(p, 14).cpm, learn = mode.speed(1), repeat = mode.speed(2);
+  if (usual) facts.push(h('span', { class: 'fact' }, t('parrot.speedUsual', { n: usual })));
+  if (learn) facts.push(h('span', { class: 'fact' }, t('parrot.speedLearn', { n: learn })));
+  if (repeat) facts.push(h('span', { class: `fact ${repeat > learn ? 'good' : ''}` }, t('parrot.speedRepeat', { n: repeat })));
   if (r.newKeys.length) facts.push(h('span', { class: 'fact new-key' }, t('aim.opened', { keys: r.newKeys.map(keyLabel).join(', ') })));
   if (badgeNew) facts.push(h('span', { class: 'fact badge-fact' }, parrotBadge(), h('b', {}, t('parrot.badgeNew'))));
   const breakDue = app.sessionSeconds >= p.settings.sessionMinutes * 60;
@@ -277,6 +282,7 @@ function showParrotDone(root: HTMLElement, def: LevelDef, r: LevelResult, mode: 
   actions.append(button(t('parrot.again'), () => go('level', params), `btn ${breakDue ? '' : 'primary'}`, 'replay'),
     button(t('level.toMap'), () => go('map'), 'btn', 'map'));
   const card = h('div', { class: 'card results-card parrot-done' },
+    closeButton(() => go('map'), t('level.toMap')),
     h('div', { class: 'results-top' }, h('h2', {}, t('parrot.done'))),
     h('div', { class: 'results-tapko' }, pic ? h('img', { class: 'parrot-done-pic', src: pic, alt: '' }) : tapkoElement(p.companion, 'happy', 80),
       h('p', { class: 'bubble static side' }, breakDue ? pickLine('tapko.break') : pickLine('tapko.level_done', { name: nickname(p) }, p.customMessages))),

@@ -20,15 +20,16 @@ async function addProfiles(page: Page, from: number, to: number): Promise<void> 
 
 test('the start screen does not scroll with 1, 5 and 7 profiles', async ({ page }) => {
   await createProfile(page, 'Kid1');
-  for (const [count, rows] of [[1, 1], [5, 1], [7, 2]]) {
+  // Rows at 1366 and 1024 px: a card never narrows below its four counts in one line, so a row takes three or four.
+  for (const [count, rows] of [[1, [1, 1]], [5, [2, 2]], [7, [2, 3]]] as const) {
     await addProfiles(page, count === 1 ? 2 : count === 5 ? 2 : 6, count);
     if (count === 1) { /* already created */ }
-    for (const size of SIZES) {
+    for (const [i, size] of SIZES.entries()) {
       await page.setViewportSize(size);
       await page.goto('./');
       await page.locator('.start-screen').waitFor();
       await noScroll(page);
-      await expect(page.locator('.profile-row')).toHaveCount(rows);
+      await expect(page.locator('.profile-row')).toHaveCount(rows[i]);
       // The teacher, sound and help buttons are in the first viewport whatever the number of profiles.
       await expect(page.locator('.top-right .help-btn, .top-right .sound-btn')).toHaveCount(2);
       for (const b of await page.locator('.top-right .round-btn:visible').all()) await expect(b).toBeInViewport();

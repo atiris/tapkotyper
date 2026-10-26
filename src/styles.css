@@ -449,12 +449,11 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
 }
 /* A row the start page laid out for the room it has: its cards narrow a little rather than wrap. */
 .start-card .profile-row { gap: 12px; max-width: 100%; }
-.start-card .profile-card { width: var(--pc); flex: 0 1 auto; min-width: 100px; padding: 14px 8px 12px; border-radius: 24px; gap: 4px; }
+.start-card .profile-card { width: var(--pc); flex: 0 1 auto; min-width: min(140px, 100%); padding: 14px 8px 12px; border-radius: 24px; gap: 4px; }
 .start-card .profile-card:focus-visible { border-radius: 24px; }
-/* The character fills most of the card, a little right of its middle (clear of the number). */
-.start-card .profile-card > .tapko-stack { --av: min(calc(var(--pc) * 0.76), 100cqw - 4px, var(--av-max, 999px)); width: var(--av); height: var(--av); margin-right: max(-8px, (100cqw - var(--av)) / 2 - 10px); }
+/* The character fills much of the card, a little right of its middle (clear of the number), leaving room for the stats under the name. */
+.start-card .profile-card > .tapko-stack { --av: min(calc(var(--pc) * 0.6), 100cqw - 4px, var(--av-max, 999px)); width: var(--av); height: var(--av); margin-right: max(-8px, (100cqw - var(--av)) / 2 - 10px); }
 .start-card .profile-name { font-size: clamp(1.05rem, 11cqw, 1.4rem); }
-.start-card .profile-sub { font-size: 0.85rem; white-space: nowrap; }
 .start-card .profile-card.new .plus { width: calc(var(--pc) * 0.44); height: calc(var(--pc) * 0.44); }
 .start-card .profile-card.new .plus .icon { width: 50%; height: 50%; }
 /* The new player is a card or a button, whichever fits. */
@@ -572,8 +571,24 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
 /* The number key that picks the player, leaning by its card's own angle. */
 .profile-num { position: absolute; top: 6px; left: 8px; min-width: 2.1em; height: 2.1em; border-radius: 999px; background: var(--paper); color: var(--ink-soft); font-weight: 700; font-size: 1.1rem; line-height: 2.1em; box-shadow: inset 0 0 0 2px var(--line); transform: rotate(var(--tilt, 0deg)); }
 .profile-name { font-weight: 700; font-size: 1.1rem; }
+/* The Parrot badge on the card: the parrot under the number, left of the character. */
+.profile-parrot { --pp: clamp(28px, 26cqw, 42px); position: absolute; top: calc(6px + 2.4 * 1.1rem); left: 6px; width: var(--pp); aspect-ratio: 1; }
+/* On the start page it stands at the character's feet, close by its left side (the character placed as .tapko-stack places it, its picture a quarter narrower than its box). */
+.start-card .profile-parrot {
+  --av: min(calc(var(--pc) * 0.6), 100cqw - 4px, var(--av-max, 999px));
+  top: calc(14px + var(--av) - var(--pp));
+  left: max(4px, 8px + 100cqw - max(-8px, (100cqw - var(--av)) / 2 - 10px) - var(--av) * 0.75 - var(--pp));
+}
+.profile-parrot img { width: 100%; height: 100%; object-fit: contain; }
 .profile-real { color: var(--ink-soft); font-size: 0.85rem; margin-top: -0.3rem; }
 .profile-sub { font-size: 0.85rem; color: var(--ink-soft); }
+/* The player's progress in small pictures with numbers, always on the card's bottom edge: one row, two in a very narrow card. */
+.profile-stats { margin-top: auto; width: 100%; display: grid; grid-template-columns: repeat(4, auto); justify-content: space-evenly; gap: 0.1rem 0.2rem; line-height: 1.2; font-size: clamp(0.56rem, 7cqw, 0.78rem); color: var(--ink-soft); }
+.profile-stat { display: flex; align-items: center; justify-content: center; gap: 0.12em; min-width: 0; white-space: nowrap; }
+.profile-stat img { width: 1.3em; height: 1.3em; object-fit: contain; flex: none; }
+.profile-stat i { font-style: normal; }
+.profile-stat b { font-weight: 700; overflow: hidden; text-overflow: ellipsis; }
+@container (max-width: 108px) { .profile-stats { grid-template-columns: repeat(2, auto); } }
 .profile-card.new { justify-content: center; border: 3px dashed var(--line); background: transparent; box-shadow: none; }
 .plus { width: clamp(48px, 9vh, 64px); height: clamp(48px, 9vh, 64px); border-radius: 50%; background: var(--green); color: #fff; display: grid; place-items: center; }
 .plus .icon { width: 34px; height: 34px; }
@@ -713,6 +728,9 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .stats-hero .parrot-badge { width: 40px; height: 40px; margin: 0; }
 .results-card .parrot-done-pic { width: 110px; height: 110px; object-fit: contain; }
 .results-card .badge-fact .parrot-badge { margin: 0 0.3em 0 0; }
+.parrot-done { position: relative; }
+.parrot-done .results-top { padding-inline: 3rem; }
+.results-card.parrot-done .row { margin-top: 1.1rem; }
 .map-bubble .held-keys { font-weight: 700; }
 .map-bubble { align-self: center; max-width: 100%; }
 .map-bubble[hidden] { display: none; }

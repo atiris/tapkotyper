@@ -75,13 +75,32 @@ for (const theme of ['light', 'dark'] as const) {
             sun: !!document.querySelector('.sky-sun:not([hidden])'),
           };
         });
-        // A tablet's one column may scroll with seven players.
-        const scroll = size.width < 900 && players === 7 ? r.scroll : false;
+        // A tablet's one column may scroll with five or seven players (two rows of cards).
+        const scroll = size.width < 900 && players >= 5 ? r.scroll : false;
         expect(r, `${size.width}x${size.height}, ${players} players`).toEqual({ scroll, lines: [1, 1], hit: false, sun: true });
       }
     }
   });
 }
+
+test('a player card keeps its four counts in one line at every width, even the largest numbers', async ({ page }) => {
+  await page.goto('./');
+  for (const width of [320, 390, 760, 900, 1024, 1100, 1180, 1280, 1366, 1920]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const players of [1, 3, 5, 7]) {
+      await seed(page, players, 'light');
+      const r = await page.evaluate(() => [...document.querySelectorAll('.start-card .profile-stats')].map((s) => {
+        // The largest counts: every key, world and star, full accuracy.
+        s.querySelectorAll('b').forEach((b, i) => (b.textContent = ['62', '15', '100', '225'][i]));
+        const card = s.closest('.profile-card')!.getBoundingClientRect(), box = s.getBoundingClientRect();
+        const line = parseFloat(getComputedStyle(s).fontSize) * 2;
+        return { cut: [...s.querySelectorAll('b')].some((b) => b.scrollWidth > b.clientWidth), out: box.left < card.left || box.right > card.right, bottom: card.bottom - box.bottom < 20, oneLine: box.height < line };
+      }));
+      expect(r).toHaveLength(players);
+      for (const x of r) expect(x, `${width} px, ${players} players`).toEqual({ cut: false, out: false, bottom: true, oneLine: true });
+    }
+  }
+});
 
 test('the phone without a keyboard fits in both looks', async ({ browser }) => {
   for (const colorScheme of ['light', 'dark'] as const) {

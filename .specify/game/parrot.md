@@ -27,9 +27,12 @@
   where possible, new ones each round.
 - The typing counts in the statistics and in the lesson like at the target range; paws, Enter
   marks and the parent's surprises stay out.
-- **End card:** the parrot in colour, "Papagáj sa naučil tvoje slová!", the words learned, new
-  letters when the lesson moved on, and the Parrot badge with its line when this win brought it.
-  "Nové slová" plays again with new words. Finishing the round wins the world's parrot.
+- **End card:** the parrot in colour, "Papagáj sa naučil tvoje slová!", the words learned, how
+  fast the fingers were (the child's usual speed of the last 14 days, the learning part and the
+  repeating part, the last one green when it was faster), new letters when the lesson moved on,
+  and the Parrot badge with its line when this win brought it. "Nové slová" plays again with new
+  words; the X at the top right and Esc go to the map. Finishing the round wins the world's
+  parrot.
 - **Parrots fly away**, so the child comes back and practises again:
   - one roll for each day since the last check (only today the first time): a 20 % chance that
     one random parrot at home flies away; a child back after 13 days gets 13 rolls;
@@ -44,8 +47,9 @@
   (at least one). A newly finished world without its parrot takes it away until that parrot is
   won, and so does a parrot flying away (the badge next to the name shrinks and fades with the
   flight). It is worth 7 points in the treasure chest ([statistics](../profiles/statistics.md))
-  and it is the one badge shown next to the player's name: on the start page's player card, on
-  the map's greeting and just under the character on "Môj postup".
+  and it is the one badge shown with the player: on the start page's player card as the parrot
+  itself at the character's feet, by its left side; the badge picture on the map's greeting
+  and just under the character on "Môj postup".
 
 ## Why
 - Word streams and the range train reading and reacting; a few words typed many times train the

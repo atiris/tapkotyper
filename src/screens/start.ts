@@ -14,8 +14,8 @@ import { listenForSuperPassword, superProfile } from '../app/super';
 
 /** Up to this many players the new player is one more (dashed) card; with more, a button. */
 const NEW_CARD_UP_TO = 3;
-/** The narrowest player card and the gap between cards, for the number of cards a row holds. */
-const CARD_MIN = 100;
+/** The narrowest player card (its four counts still in one line) and the gap between cards, for the number of cards a row holds. */
+const CARD_MIN = 140;
 const CARD_GAP = 12;
 /** In two columns the title's column keeps at least this share of the width; the card takes the rest. */
 const TITLE_SHARE = 0.32;

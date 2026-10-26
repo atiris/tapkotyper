@@ -36,7 +36,10 @@ test('a finished world\'s parrot learns the words and brings the badge', async (
   }
   await expect(page.locator('.parrot-done h2')).toHaveText('The parrot learned your words!');
   await expect(page.locator('.parrot-done .badge-fact')).toContainText('Parrot badge');
-  await page.locator('.parrot-done .btn', { hasText: 'Map' }).click();
+  await expect(page.locator('.parrot-done .fact', { hasText: 'While repeating' })).toHaveCount(1);
+  await expect(page.locator('.parrot-done .modal-x')).toBeVisible();
+  // Escape closes the card like its X: back to the map.
+  await page.keyboard.press('Escape');
   await expect(node).toHaveClass(/home/);
   await expect(page.locator('.map-hello .parrot-badge')).toHaveCount(1);
   expect(errors).toEqual([]);

@@ -54,6 +54,9 @@ export class ParrotMode extends Mode {
   private pop = 0;
   private hop = 0;
   private told2 = false;
+  /** Right keys and seconds of play in each part, from the first key on: the speed of the learning and of the repeating. */
+  private keys = [0, 0];
+  private seconds = [0, 0];
 
   constructor(L: LevelRuntime) {
     super(L);
@@ -88,12 +91,29 @@ export class ParrotMode extends Mode {
   }
 
   update(dt: number): void {
-    this.t += dt;
+    const step = this.round.current;
+    if (step && this.keys[0] + this.keys[1] > 0) this.seconds[step.phase - 1] += dt;
     this.pop = Math.min(1, this.pop + dt * 4);
     this.hop = Math.max(0, this.hop - dt);
   }
 
+  /** Correct characters per minute in part 1 (learning) or 2 (repeating); 0 before any. */
+  speed(phase: 1 | 2): number {
+    const s = this.seconds[phase - 1];
+    return s > 0 ? Math.round((this.keys[phase - 1] / s) * 60) : 0;
+  }
+
+  onCorrect(): void {
+    this.countKey();
+  }
+
+  private countKey(): void {
+    const step = this.round.current;
+    if (step) this.keys[step.phase - 1]++;
+  }
+
   onDone(tg: Target): void {
+    this.countKey();
     this.round.advance();
     this.L.core.prune();
     // The parrot says the word after the child: a bubble by its beak and a squawk.

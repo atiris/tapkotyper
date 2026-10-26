@@ -132,7 +132,7 @@ test('the new player form has a 3 x 3 picker with a side column, closes with X, 
   await page.locator('.newkey-card, .posture-card').first().waitFor();
 });
 
-test('the game calls the typist by the nickname; the start tile adds the real name', async ({ page }) => {
+test('the game calls the typist by the nickname; the start tile never shows the real name', async ({ page }) => {
   await page.goto('./');
   await page.locator(NEW_PLAYER).first().click();
   await page.locator('#np-name').fill('Ema');
@@ -142,13 +142,8 @@ test('the game calls the typist by the nickname; the start tile adds the real na
   await expect(page.locator('.map-hello')).toContainText('Rýchla líška');
   await page.goto('./');
   const tile = page.locator('.profile-card', { hasText: 'Rýchla líška' });
-  await expect(tile.locator('.profile-real')).toHaveText('Ema');
-
-  // A nickname without a real name is shown once.
-  await createProfile(page, 'Jano');
-  await expect(page.locator('.map-hello')).toContainText('Jano');
-  await page.goto('./');
-  await expect(page.locator('.profile-card', { hasText: 'Jano' }).locator('.profile-real')).toHaveCount(0);
+  await expect(tile).toBeVisible();
+  await expect(tile).not.toContainText('Ema');
 });
 
 async function noScrollX(page: Page): Promise<void> {

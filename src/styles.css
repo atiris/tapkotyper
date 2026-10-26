@@ -580,7 +580,6 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
   left: max(4px, 8px + 100cqw - max(-8px, (100cqw - var(--av)) / 2 - 10px) - var(--av) * 0.75 - var(--pp));
 }
 .profile-parrot img { width: 100%; height: 100%; object-fit: contain; }
-.profile-real { color: var(--ink-soft); font-size: 0.85rem; margin-top: -0.3rem; }
 .profile-sub { font-size: 0.85rem; color: var(--ink-soft); }
 /* The player's progress in small pictures with numbers, always on the card's bottom edge: one row, two in a very narrow card. */
 .profile-stats { margin-top: auto; width: 100%; display: grid; grid-template-columns: repeat(4, auto); justify-content: space-evenly; gap: 0.1rem 0.2rem; line-height: 1.2; font-size: clamp(0.56rem, 7cqw, 0.78rem); color: var(--ink-soft); }

@@ -2,8 +2,7 @@
 
 ## What
 - Several local profiles on one device, picked on the start screen (the character with the
-  nickname large and, when a real name is set and differs, the real name small under it, so
-  siblings recognize their own tile; "New player" is one more card with one to three profiles, a button beside "No profile" with more or when the card would add a row), plus a **No profile** button ("Try without a profile" before the first player): a guest that keeps nothing after the browser tab closes and that a reload never opens (it shows the start page); the
+  nickname only, never the real name, which belongs to the teacher; "New player" is one more card with one to three profiles, a button beside "No profile" with more or when the card would add a row), plus a **No profile** button ("Try without a profile" before the first player): a guest that keeps nothing after the browser tab closes and that a reload never opens (it shows the start page); the
   guest is named in the game's language ("Hosť" / "Guest"). The super player, while on, is
   the last card, so it never shifts the order of the real players.
 - The new player form is a window closed with the round X: "pick your character", the nine

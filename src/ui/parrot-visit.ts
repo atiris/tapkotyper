@@ -3,8 +3,8 @@ import { audio } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
 import { h } from './dom';
 
-/** The flying parrot's pictures in the order of one wing beat: up, level, down, rising. */
-const FLAP = ['obj-parrot-flying', 'obj-parrot-flying-2', 'obj-parrot-flying-3', 'obj-parrot-flying-4'];
+/** The flying parrot's pictures over one wing beat, there and back: up, middle, down, middle. */
+const FLAP = ['obj-parrot-flying', 'obj-parrot-flying-2', 'obj-parrot-flying-3', 'obj-parrot-flying-2'];
 /** Seconds of one wing beat. */
 const BEAT_S = 0.44;
 /** Places the parrot flies by on its way across the window. */
@@ -12,7 +12,7 @@ const STOPS = 5;
 /** Milliseconds of one leg between two places. */
 const LEG_MS = 1300;
 
-/** A flying parrot facing right that beats its wings (the beat's pictures in turn, all four or just the first); null without a picture. */
+/** A flying parrot facing right that beats its wings (the beat's pictures in turn, or just the first when one is missing) and lifts a little on each downstroke; null without a picture. */
 export function flyingParrot(cls: string, style = ''): HTMLElement | null {
   const all = FLAP.map(imageUrl);
   const pics = (all.every((s) => s !== null) ? all : all.slice(0, 1)).filter((s) => s !== null);

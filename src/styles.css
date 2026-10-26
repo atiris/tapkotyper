@@ -730,12 +730,13 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 @keyframes visit-out { to { transform: translateX(-120vw); } }
 /* The parrot called by its name typed on the map: flies across the page, above everything, clicks pass through. */
 .parrot-visit { position: fixed; left: 0; top: 0; z-index: 90; width: 110px; margin: -55px 0 0 -55px; pointer-events: none; filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.25)); }
-/* A flying parrot beating its wings: its four pictures in one place, each shown for a quarter of the beat. */
-.flying-parrot { display: grid; }
+/* A flying parrot beating its wings: its four pictures in one place, each shown for a quarter of the beat; the body lifts on the downstroke and sinks while the wings rise. */
+.flying-parrot { display: grid; animation: flap-lift var(--beat) ease-in-out infinite; }
 .flying-parrot img { grid-area: 1 / 1; display: block; width: 100%; height: auto; animation: flap var(--beat) steps(1, end) infinite; animation-delay: calc(var(--beat) * (var(--i) / 4 - 1)); }
 .flying-parrot img + img { opacity: 0; }
 .flying-parrot img:only-child { animation: none; }
 @keyframes flap { 0% { opacity: 1; } 25%, 100% { opacity: 0; } }
+@keyframes flap-lift { 0%, 100% { translate: 0 4%; } 50% { translate: 0 -4%; } }
 /* The badge show (a secret word on My progress): a dark screen, the badge rising in rotating rays and a pulsing glow, a range award landing on its rim. */
 .badge-show { position: fixed; inset: 0; z-index: 100; display: grid; place-content: center; justify-items: center; gap: 0.6rem; padding: 1rem; overflow: hidden; cursor: pointer; color: #fff;
   background: radial-gradient(circle at 50% 42%, rgba(52, 38, 92, 0.86), rgba(8, 6, 20, 0.95) 70%); animation: fade-in 0.5s; transition: opacity 0.3s; }

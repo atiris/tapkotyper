@@ -15,7 +15,8 @@ on its own, not inside another word. Not mentioned in the help: finding them is 
   the focused player card.
 - **Map: the parrot.** Typing the parrot's name ("papagáj" / "parrot") calls a parrot that
   flies in from one side, flutters through a few random places over the page beating its
-  wings, always facing where it flies, squawks and leaves on the other side. With reduced
+  wings (three pictures, wings up, middle and down, played there and back, the body lifting a
+  little on each downstroke), always facing where it flies, squawks and leaves on the other side. With reduced
   motion it does not come.
 - **My progress: the badge show.** Typing one of the longer words of the story titles or of
   the badges' heading ("Dračie", "Robot", "Víla", "odznaky", ... / "Dragon", "Robot",

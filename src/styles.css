@@ -182,7 +182,7 @@ body.high-contrast {
  * still scrolls the start page).
  */
 html { font-size: calc(16px * var(--scale)); height: 100%; overflow: hidden; background: var(--page-bg) fixed; }
-body:has(.parent-screen, .help-screen) { scrollbar-gutter: stable; }
+body:has(.parent-screen, .help-screen, .progress-screen) { scrollbar-gutter: stable; }
 body:has(.start-screen, .level-screen, .story-screen, .break-screen) { scrollbar-width: none; }
 body {
   margin: 0;
@@ -1070,9 +1070,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .heatmap.shifted .kb-key:has(.kb-shift:not(:empty)) .kb-label, .practice-picker.shifted .kb-key:has(.kb-shift:not(:empty)) .kb-label { opacity: 0.35; }
 .heatmap.shifted .kb-shift, .practice-picker.shifted .kb-shift { font-size: 0.9em; font-weight: 700; color: var(--ink); }
 .heatmap .kb-key.selected { outline: 3px solid var(--brand); outline-offset: 1px; z-index: 1; }
-.stats-split, .heat-split { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); align-items: start; }
-.heat-split { grid-template-columns: minmax(0, 3fr) minmax(min(100%, 300px), 2fr); }
-@media (max-width: 900px) { .heat-split { grid-template-columns: 1fr; } }
+.stats-split { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); align-items: start; }
 .key-detail { background: var(--paper-2); border-radius: 18px; padding: 0.8rem 1rem; }
 .key-detail-head { display: flex; align-items: center; gap: 0.8rem; }
 .key-detail-head p { margin: 0; }
@@ -1185,6 +1183,7 @@ fieldset { border: 2px solid var(--line); border-radius: 18px; padding: 0.8rem 1
 legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-ink); }
 .field { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.6rem; }
 .field small { color: var(--ink-soft); }
+.field > .btn { align-self: flex-start; }
 .switch-field { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 0.6rem; align-items: center; margin-bottom: 0.6rem; }
 .switch-field label { display: contents; cursor: pointer; }
 .switch-field input { width: 26px; height: 26px; margin: 0; accent-color: var(--green); cursor: pointer; }
@@ -1205,6 +1204,7 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-ink); }
 .surprises-tab [hidden] { display: none; }
 .surprises-tab .row { align-items: flex-end; flex-wrap: wrap; gap: 0.6rem 1rem; }
 .surprises-tab .switch-field { min-height: 44px; }
+.surprise-actions { display: flex; gap: 0.6rem; margin: 0 0 0.6rem auto; }
 .surprises-tab input[type='number'] { width: 7em; }
 .surprise-table { overflow-x: auto; margin: 0.6rem 0 1rem; }
 .surprise-table table { width: 100%; border-collapse: collapse; }
@@ -1236,8 +1236,6 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-ink); }
 .cell-stars .star { width: 1.7rem; animation: none; }
 .cell-stars .star-fallback { font-size: 1.5rem; width: 1.7rem; text-align: center; }
 .child-summary { display: flex; flex-wrap: wrap; align-items: center; gap: 0.8rem; margin: 0.6rem 0; }
-/* The progress code and the certificate, one under the other at the summary's right end. */
-.summary-actions { margin-left: auto; display: flex; flex-direction: column; align-items: stretch; gap: 0.5rem; }
 .child-tapko { flex: none; }
 /* The nickname takes the rest of the row up to a comfortable width and narrows with it. */
 .child-nick { flex: 1 1 auto; min-width: 0; max-width: 24rem; }

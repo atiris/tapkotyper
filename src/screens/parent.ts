@@ -2,7 +2,7 @@ import { app, applyProfileLook, go, loadPlayerWords, saveProfile, selectProfile,
 import { langOptions, locale, t } from '../i18n/i18n';
 import { ownLangs, ownRef } from '../i18n/own-langs';
 import { ENTER, LAYOUTS, LAYOUT_IDS, allKeys } from '../keyboard/layouts';
-import { LEVELS, type LevelDef, STORIES, WORLDS, worldLevels } from '../game/levels';
+import { LEVELS, type LevelDef, WORLDS } from '../game/levels';
 import { SURPRISES_MAX, SURPRISE_LEN, SURPRISE_N_MAX, TRIGGERS, newSurprise, restartSurprise, surpriseCount } from '../game/own-content';
 import { wordSource } from '../game/runtime';
 import { lessonKeyOf, lessonOrder, punctuationKeys } from '../learning/lessons';
@@ -19,16 +19,13 @@ import { button, confirmDialog, download, h, modal } from '../ui/dom';
 import { tapkoElement } from '../gfx/tapko';
 import { numberPick, profileCard } from '../ui/profile-card';
 import { MAX_PER_ROW, rowSplit } from '../ui/rows';
-import { cornerControls, starRow } from '../ui/chrome';
+import { cornerControls } from '../ui/chrome';
 import { barTabLinks, tabBar } from '../ui/tabs';
-import { openCertificate } from './certificate';
-import { clickableHeatmap, showOverallCode, storyPicture, summaryRow } from './stats';
-import { barChart, lineChart } from '../ui/charts';
 import { hasCompanion } from '../game/rewards';
 import { lockRemovedNote } from '../ui/service';
 import { OWN_TEXT_MAX, OWN_WORDS_MAX, parseOwnWords, typableText, untypableWords } from '../words/words';
 
-const TABS = ['settings', 'own', 'surprises', 'task', 'keys', 'dashboard', 'data'] as const;
+const TABS = ['settings', 'own', 'surprises', 'task', 'keys', 'data'] as const;
 type Tab = (typeof TABS)[number];
 
 /**
@@ -44,7 +41,7 @@ export function parentScreen(root: HTMLElement, params: { tab?: string }): void 
   const panel = (tab: Tab): HTMLElement => {
     if (tab === 'data') return dataTab(p);
     if (!p) return deviceTab();
-    return tab === 'settings' ? settingsTab(p) : tab === 'own' ? ownTab(p) : tab === 'surprises' ? surprisesTab(p) : tab === 'task' ? taskTab(p) : tab === 'keys' ? keysTab(p) : dashboardTab(p);
+    return tab === 'settings' ? settingsTab(p) : tab === 'own' ? ownTab(p) : tab === 'surprises' ? surprisesTab(p) : tab === 'task' ? taskTab(p) : keysTab(p);
   };
   const nav = tabBar(tabs.map((tab) => [tab, t(`parent.tab.${tab}`)] as const), current, (tab) => {
     current = tab;
@@ -187,8 +184,7 @@ function settingsTab(p: Profile): HTMLElement {
         const order = lessonOrder(v);
         p.progress.unlockedKeys = order.slice(0, Math.max(2, p.progress.unlockedKeys.filter((k) => order.includes(k)).length));
         save();
-      }), t('parent.layoutHint')),
-      field(t('parent.translate'), button(t('parent.translateGo'), () => go('translate', { granted: true }), 'btn small', 'language'), t('parent.translateHint'), 'div')),
+      }), t('parent.layoutHint'))),
     h('fieldset', {}, h('legend', {}, t('parent.group.practice')),
       field(t('parent.difficulty'), autoField(
         [range(s.difficulty, 1, 10, 1, (v) => { s.difficulty = v; save(); })],
@@ -412,9 +408,9 @@ function surprisesTab(p: Profile): HTMLElement {
       field(t('surprises.q'), q),
       field(t('surprises.a'), a),
       h('div', { class: 'row' }, field(t('surprises.whenLabel'), trigger), levelField, nField,
-        switchField(t('surprises.repeat'), repeat)),
-      msg,
-      h('div', { class: 'row' }, save, cancel)));
+        switchField(t('surprises.repeat'), repeat),
+        h('div', { class: 'surprise-actions' }, save, cancel)),
+      msg));
 }
 
 /** Own words and own text, how much of them comes into the levels, and five sample targets. */
@@ -564,77 +560,41 @@ function keysTab(p: Profile): HTMLElement {
       button(t('parent.preset.clear'), () => { picked.clear(); s.manualKeys = []; paint(); saveProfile(); }, 'btn small ghost')));
 }
 
-/** The levels of each story under its picture and title, one row of level cells per world. */
-function storyLevels(p: Profile): HTMLElement[] {
-  return STORIES.map((story) => {
-    const pic = storyPicture(story);
-    return h('section', { class: 'story-levels' },
-      h('h3', { class: 'story-head' }, pic ? h('img', { class: 'story-pic', src: pic, alt: '' }) : null, t(story.title)),
-      ...story.worlds.map((w) => h('div', { class: 'world-levels' },
-        h('h4', {}, t(`worlds.${WORLDS[w]}`)),
-        h('div', { class: 'level-grid' }, ...worldLevels(w).map((l) => h('div', { class: 'level-cell' },
-          h('span', { class: 'level-name' }, l.isSuper ? t('map.super') : String(l.index + 1)), starRow(p.progress.levels[l.id] ?? 0, 'stars cell-stars')))))));
-  });
-}
-
-function dashboardTab(p: Profile): HTMLElement {
-  const sessions = p.stats.sessions.slice(-14);
-  const labels = sessions.map((s) => s.date.slice(5));
-  const detail = h('div', { class: 'key-detail-host' }, h('p', { class: 'hint' }, t('stats.clickKey')));
-  const heat = clickableHeatmap(p, detail);
-  return h('div', { class: 'dashboard' },
-    h('div', { class: 'child-summary' }, tapkoElement(p.companion, 'happy', 96), summaryRow(p),
-      h('div', { class: 'summary-actions' },
-        button(t('progress.showCode'), () => void showOverallCode(p), 'btn small', 'code'),
-        button(t('cert.button'), () => openCertificate(p), 'btn small', 'print'))),
-    h('h3', {}, t('parent.heatmap')),
-    h('div', { class: 'heat-split' }, heat, detail),
-    h('div', { class: 'chart-grid' },
-      h('section', {}, h('h3', {}, t('parent.accuracyTrend')),
-        lineChart(sessions.map((s) => Math.round((s.chars / Math.max(1, s.chars + s.errors)) * 100)), labels, '%', '#3f8fd6')),
-      h('section', {}, h('h3', {}, t('parent.rhythmTrend')),
-        lineChart(sessions.map((s) => s.cpm), labels, t('parent.cpm'), '#e08a3c')),
-      h('section', {}, h('h3', {}, t('parent.timePerDay')),
-        barChart(sessions.map((s) => Math.round(s.seconds / 60)), labels, 'min'))),
-    ...storyLevels(p));
-}
-
-/** The settings without a player: the device's own (the translator, the password); a player is picked by the button at the top. */
+/** The settings without a player: the device's password; a player is picked by the button at the top. */
 function deviceTab(): HTMLElement {
-  return h('div', { class: 'settings-grid' },
-    h('fieldset', {}, h('legend', {}, t('parent.group.device')),
-      h('p', { class: 'hint' }, t('parent.noChild')),
-      field(t('parent.translate'), button(t('parent.translateGo'), () => go('translate', { granted: true }), 'btn small', 'language'), t('parent.translateHint'), 'div')),
-    lockGroup());
+  return h('div', {}, h('p', { class: 'hint' }, t('parent.noChild')), h('div', { class: 'settings-grid' }, lockGroup()));
 }
 
-/** Export, move, import and delete; without a player only all profiles out and in. */
+/** The profiles (export, move, import and delete; without a player only all profiles out and in) and the tools (the translator). */
 function dataTab(p: Profile | null): HTMLElement {
   const guest = p?.id === GUEST_ID;
   const own = p && !guest ? p : null;
-  return h('div', { class: 'data-tab' },
-    h('p', {}, t('parent.dataText')),
-    h('div', { class: 'row' },
-      own ? button(t('parent.exportOne'), () => exportOne(own), 'btn', 'download') : null,
-      own ? button(t('move.button'), () => void moveDialog(own), 'btn', 'next') : null,
-      button(t('parent.exportAll'), () => download('tapkotyper-profiles.json', app.store.exportJson()), 'btn', 'download'),
-      button(t('parent.import'), () => importDialog(() => go('parent', { granted: true })), 'btn', 'upload')),
-    guest ? h('p', { class: 'hint' }, t('parent.guestNote')) : !own ? null : h('div', { class: 'danger-zone' },
-      h('h3', {}, t('parent.deleteTitle')),
-      button(t('parent.delete', { name: nickname(own) }), async () => {
-        const yes = await confirmDialog({
-          title: t('parent.deleteTitle'),
-          text: t('parent.deleteConfirm', { name: nickname(own) }),
-          ok: t('parent.deleteOk'),
-          cancel: t('common.back'),
-          danger: true,
-          art: tapkoElement(own.companion, 'thinking', 110),
-        });
-        if (!yes) return;
-        app.store.remove(own.id);
-        app.profile = null;
-        go('start');
-      }, 'btn danger', 'trash')));
+  return h('div', { class: 'settings-grid data-tab' },
+    h('fieldset', {}, h('legend', {}, t('parent.group.profiles')),
+      h('p', {}, t('parent.dataText')),
+      h('div', { class: 'row' },
+        own ? button(t('parent.exportOne'), () => exportOne(own), 'btn', 'download') : null,
+        own ? button(t('move.button'), () => void moveDialog(own), 'btn', 'next') : null,
+        button(t('parent.exportAll'), () => download('tapkotyper-profiles.json', app.store.exportJson()), 'btn', 'download'),
+        button(t('parent.import'), () => importDialog(() => go('parent', { granted: true })), 'btn', 'upload')),
+      guest ? h('p', { class: 'hint' }, t('parent.guestNote')) : !own ? null : h('div', { class: 'danger-zone' },
+        h('h3', {}, t('parent.deleteTitle')),
+        button(t('parent.delete', { name: nickname(own) }), async () => {
+          const yes = await confirmDialog({
+            title: t('parent.deleteTitle'),
+            text: t('parent.deleteConfirm', { name: nickname(own) }),
+            ok: t('parent.deleteOk'),
+            cancel: t('common.back'),
+            danger: true,
+            art: tapkoElement(own.companion, 'thinking', 110),
+          });
+          if (!yes) return;
+          app.store.remove(own.id);
+          app.profile = null;
+          go('start');
+        }, 'btn danger', 'trash'))),
+    h('fieldset', {}, h('legend', {}, t('parent.group.tools')),
+      field(t('parent.translate'), button(t('parent.translateGo'), () => go('translate', { granted: true }), 'btn small', 'language'), t('parent.translateHint'), 'div')));
 }
 
 const exportOne = (p: Profile) => download(`tapkotyper-${slug(nickname(p))}.json`, app.store.exportJson([p.id]));

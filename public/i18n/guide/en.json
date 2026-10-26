@@ -172,7 +172,7 @@
     },
     "progress": {
       "title": "My progress",
-      "about": "The progress screen opened by tapping Tapko on the map, and its tabs."
+      "about": "The My progress page the child opens with the button on the map (a quick look by tapping Tapko too), and its tabs."
     },
     "stats": {
       "title": "My keys",
@@ -247,8 +247,8 @@
       "about": "Choosing active keys, automatically or by hand, with row buttons and punctuation."
     },
     "parent-data": {
-      "title": "Progress and data",
-      "about": "Charts on the Progress tab and export, import and deleting a profile on the Data tab; also the translate button label and the own languages group."
+      "title": "Data and charts",
+      "about": "Export, import and deleting a profile on the Data tab, the translate button and the own languages group; also the charts on the My progress page."
     },
     "own": {
       "title": "Own words and text",
@@ -751,6 +751,7 @@
     "progress.stars": "Tooltip of the stars counter in the progress. {n} of {total}.",
     "progress.tabProgress": "Tab on the progress screen.",
     "progress.tabKeys": "Tab on the progress screen.",
+    "progress.tabLevels": "Tab on the My progress page: the stars of every level by world.",
     "progress.tabExercises": "Tab on the progress screen: exercises from a teacher.",
     "progress.showCode": "Button that shows the QR code of all progress.",
     "progress.overallTitle": "Title of the result stored in the QR code of all progress.",
@@ -770,6 +771,8 @@
     "progress.week": "Line under the progress. {n} is the minutes in the last 7 days.",
     "progress.badges": "Heading of the world badges shelf in the progress.",
     "progress.rangeAwards": "Heading of the shelf with things from the target ranges.",
+    "progress.parrots": "Heading of the shelf with the parrots of all worlds in the progress.",
+    "progress.parrotAway": "Tooltip over a grey parrot in the progress: the parrot of a finished world flew away; {world} is the world's name.",
     "progress.chars14": "Tooltip of the letters counter. {n} is the letters in 14 days.",
     "stats.title": "Heading of the Keys tab: the keyboard map with coloured keys.",
     "stats.intro": "Intro of the Keys tab. {n} is how many of the latest presses count.",
@@ -884,7 +887,8 @@
     "parent.group.practice": "Settings, Settings tab: the heading of the group about difficulty, words and practice time.",
     "parent.group.look": "Settings, Settings tab: the heading of the group about sound and looks.",
     "parent.group.lock": "Settings, Settings tab: the heading of the password group.",
-    "parent.group.device": "Settings without a player: title of the group of the whole device's settings.",
+    "parent.group.profiles": "Settings, Data tab: title of the group with export, import, move and delete of profiles.",
+    "parent.group.tools": "Settings, Data tab: title of the group with tools, such as translating the game.",
     "parent.childName": "Settings, Settings tab: the label of the student's name field.",
     "parent.childNameHint": "Settings, Settings tab: the note under the student's name field.",
     "parent.nickname": "Settings, Settings tab: the label of the nickname field.",
@@ -902,9 +906,9 @@
     "parent.layoutHint": "Settings, Settings tab: the note under the keyboard layout select.",
     "parent.wordLang": "Settings, Settings tab: the label of the word language select.",
     "parent.wordLangHint": "Settings, Settings tab: the note under the word language select.",
-    "parent.translate": "Settings, Settings tab: the label of the field whose button opens the translator.",
-    "parent.translateHint": "Settings, Settings tab: the note under the translate button.",
-    "parent.translateGo": "Settings, Settings tab: the button that opens the translator page.",
+    "parent.translate": "Settings, Data tab: the label of the field whose button opens the translator.",
+    "parent.translateHint": "Settings, Data tab: the note under the translate button.",
+    "parent.translateGo": "Settings, Data tab: the button that opens the translator page.",
     "parent.ownLangs": "Settings: the group heading of own languages (made in the translator) in the game language and word language selects.",
     "parent.difficulty": "Settings, Settings tab: the label of the difficulty slider.",
     "parent.autoHint": "Settings, Settings tab: the note under the difficulty slider about the slow start.",
@@ -971,12 +975,11 @@
     "parent.preset.top": "Settings, Keys tab: the button that adds the top row.",
     "parent.preset.bottom": "Settings, Keys tab: the button that adds the bottom row.",
     "parent.preset.clear": "Settings, Keys tab: the button that clears all picked keys.",
-    "parent.heatmap": "Settings, Progress tab: the heading above the key map coloured by success.",
-    "parent.accuracyTrend": "Settings, Progress tab: the heading of the accuracy chart.",
-    "parent.rhythmTrend": "Settings, Progress tab: the heading of the rhythm chart.",
-    "parent.cpm": "Settings, Progress tab: the axis caption of the rhythm chart (letters per minute).",
-    "parent.timePerDay": "Settings, Progress tab: the heading of the time per day chart.",
-    "parent.noData": "Settings, Progress tab: the text in place of a chart that has no data yet.",
+    "parent.accuracyTrend": "My progress, Keys tab: the heading of the accuracy chart.",
+    "parent.rhythmTrend": "My progress, Keys tab: the heading of the rhythm chart.",
+    "parent.cpm": "My progress, Keys tab: the axis caption of the rhythm chart (letters per minute).",
+    "parent.timePerDay": "My progress, Keys tab: the heading of the time per day chart.",
+    "parent.noData": "My progress, Keys tab: the text in place of a chart that has no data yet.",
     "parent.dataText": "Settings, Data tab: the opening paragraph about where data is stored and exporting.",
     "parent.exportOne": "Settings, Data tab: the button that exports this profile (also in the move window when the profile is too large).",
     "parent.exportAll": "Settings, Data tab: the button that exports all profiles.",

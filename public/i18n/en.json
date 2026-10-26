@@ -865,6 +865,7 @@
     "stars": "Stars in total: {n} of {total}",
     "tabProgress": "Progress",
     "tabKeys": "Keys",
+    "tabLevels": "Levels",
     "tabExercises": "Exercises",
     "showCode": "QR code of all my progress",
     "overallTitle": "All progress",
@@ -884,6 +885,8 @@
     "week": "Last 7 days: {n} min",
     "badges": "World badges",
     "rangeAwards": "Target range awards",
+    "parrots": "Parrots",
+    "parrotAway": "{world}: the parrot flew away, go get it",
     "chars14": "{n} letters typed in the last 14 days"
   },
   "stats": {
@@ -1040,7 +1043,6 @@
       "surprises": "Surprises",
       "task": "Task",
       "keys": "Keys",
-      "dashboard": "Progress",
       "data": "Data"
     },
     "group": {
@@ -1048,7 +1050,8 @@
       "practice": "Practice",
       "look": "Look and sound",
       "lock": "Settings password",
-      "device": "This device"
+      "profiles": "Profiles",
+      "tools": "Tools"
     },
     "childName": "Student's name (optional)",
     "switchTitle": "Switch to another student",
@@ -1104,7 +1107,6 @@
       "bottom": "+ bottom row",
       "clear": "Clear"
     },
-    "heatmap": "How each key goes",
     "accuracyTrend": "Accuracy",
     "rhythmTrend": "Rhythm",
     "cpm": "letters/min",
@@ -1371,9 +1373,10 @@
       "Key, world and story: how many keys you type well and fast (at least 9 of 10 presses right), how many worlds and stories you have finished.",
       "The target is your accuracy over the last 14 days, the arrow of keys your speed in characters per minute, the star all the stars you have earned, and the pile of keys the letters you typed in the last 14 days.",
       "Each story row shows its worlds: finished ones in colour, the rest grey, and the stars of that story.",
-      "My progress has three tabs: Progress, Keys and Exercises.",
+      "Parrots: a coloured one is at home, a grey one flew away or its world is not finished yet.",
+      "Open My progress with its button on the map. It has four tabs: Progress, Keys, Levels and Exercises. A click on your character shows a quick look.",
       "Keys shows which keys go well and which to practise. You can start practice right from there.",
-      "A **QR code** shows your progress or an exercise to your teacher: they just take a photo of it."
+      "A **QR code** shows your progress or an exercise to your teacher: they just take a photo of it. You can print a **Certificate** with your results."
     ],
     "moreTitle": "Rescue mission, target range, parrot and badge",
     "more": [
@@ -1451,14 +1454,11 @@
         "Automatic: keys come one by one, starting from the home row F and J. This is best.",
         "By hand: pick the keys the student learns, punctuation too."
       ],
-      "dashboard": [
-        "How each key goes, accuracy and rhythm over time, time per day and the levels finished.",
-        "By the summary, on the right, are the **QR code of all my progress** for the teacher and the student's **certificate** with the results, ready to print."
-      ],
       "data": [
         "Everything is stored **only in this browser**. When the browser's data is cleared or the computer breaks, the progress is lost unless you have a backup.",
         "So **export the profile** to a file now and then. Import loads it back, or on another device.",
-        "Move to another computer: the whole profile is inside a link. A guest profile is forgotten when the tab closes."
+        "Move to another computer: the whole profile is inside a link. A guest profile is forgotten when the tab closes.",
+        "Tools: **Translate the game** opens the translator page. Translate the game into a new language there, or change its texts to your own."
       ]
     },
     "keysTitle": "Play with the keyboard only",

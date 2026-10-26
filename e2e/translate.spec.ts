@@ -16,6 +16,7 @@ test('a parent starts a language, translates, exports, imports and plays it', as
   await createProfile(page, 'Ema');
   await page.locator('.top-right .round-btn').first().click();
   await page.locator('.confirm .btn:not(.primary)').last().click();
+  await page.locator('.tab[data-tab=data]').click();
   await page.getByRole('button', { name: /^(Preložiť hru|Translate the game)$/ }).click();
   await expect(page.locator('.translate-screen')).toBeVisible();
 

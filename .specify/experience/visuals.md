@@ -131,7 +131,7 @@
 - Fullscreen: a round button on the map and in levels; a parent can set a profile to
   start in fullscreen (browsers allow it only after the first key press or click).
 - Responsive layout for laptop and desktop screens; wide screens use the space (wardrobe
-  in two columns, dashboard charts side by side). A physical keyboard is required;
+  in two columns, progress charts side by side). A physical keyboard is required;
   tablets without a keyboard get a friendly notice.
 
 ## Why

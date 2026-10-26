@@ -110,8 +110,8 @@ test('the QR screen: the name first, one size for the padding and the gaps, clos
   if (await welcome.count()) await welcome.click();
   for (const size of [{ width: 1280, height: 800 }, { width: 390, height: 844 }]) {
     await page.setViewportSize(size);
-    await page.locator('.map-side .btn', { hasText: 'Môj postup' }).click();
-    await page.locator('.stats-code .btn').click();
+    await page.locator('.map-tapko').click();
+    await page.locator('.stats-code .btn').first().click();
     const view = page.locator('.big-code');
     await expect(view.locator('.big-code-caption')).toHaveText(/^Ema\s*·\s*Celé moje štatistiky$/);
     const m = await page.evaluate(() => {
@@ -131,7 +131,7 @@ test('the QR screen: the name first, one size for the padding and the gaps, clos
     await expect(view).toBeVisible();
     await view.locator('.big-code-close').click();
     await expect(view).toHaveCount(0);
-    await page.locator('.stats-code .btn').click();
+    await page.locator('.stats-code .btn').first().click();
     await view.click({ position: { x: 30, y: 30 } });
     await expect(view).toHaveCount(0);
     await page.keyboard.press('Escape');

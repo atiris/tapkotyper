@@ -63,13 +63,12 @@ test('the parent area switches to another child and keeps the tab', async ({ pag
   await page.locator('.top-right .round-btn').first().click();
   await page.locator('.confirm .btn:not(.primary)').last().click();
   await expect(page.locator('.switch-btn')).toContainText('Boris');
-  await page.locator('.tab[data-tab=dashboard]').click();
-  await expect(page.locator('.level-cell').first().locator('.star')).toHaveCount(3);
+  await page.locator('.tab[data-tab=data]').click();
   await page.locator('.switch-btn').click();
   await expect(page.locator('.switch-list .profile-card')).toHaveCount(1);
   await page.locator('.switch-list .profile-card', { hasText: 'Anna' }).click();
   await expect(page.locator('.switch-btn')).toContainText('Anna');
-  await expect(page.locator('.tab[data-tab=dashboard]')).toHaveAttribute('aria-selected', 'true');
+  await expect(page.locator('.tab[data-tab=data]')).toHaveAttribute('aria-selected', 'true');
   await expect(page.locator('.lock-dialog, .confirm')).toHaveCount(0);
 });
 
@@ -127,11 +126,9 @@ test('settings: nickname first and required, name optional, word language, key f
   await expect(page.locator('.task-tab legend')).toHaveCount(2);
   for (const legend of await page.locator('.task-tab legend').allTextContents()) expect(legend).not.toContain('task.');
 
-  await page.locator('.tab[data-tab=dashboard]').click();
-  await expect(page.locator('.dashboard .cards')).toHaveCount(0);
-  await expect(page.locator('.dashboard .sum-chip')).toHaveCount(6);
-  await expect(page.locator('.story-levels')).toHaveCount(3);
-  await expect(page.locator('.story-levels').first().locator('.world-levels').first().locator('.level-cell')).not.toHaveCount(0);
+  await page.locator('.tab[data-tab=data]').click();
+  await expect(page.locator('.data-tab legend')).toHaveText(['Profiles', 'Tools']);
+  await expect(page.locator('.data-tab').getByRole('button', { name: 'Translate the game' })).toBeVisible();
 });
 
 test('the gear on the start page opens the settings without a profile; a student picked there opens the rest', async ({ page }) => {
@@ -144,5 +141,5 @@ test('the gear on the start page opens the settings without a profile; a student
   await expect(page.locator('.lock-group')).toBeVisible();
   await page.locator('.switch-btn').click();
   await page.locator('.switch-dialog .profile-card', { hasText: 'Nina' }).click();
-  await expect(page.locator('.parent-screen .tabs .tab')).toHaveCount(7);
+  await expect(page.locator('.parent-screen .tabs .tab')).toHaveCount(6);
 });

@@ -172,7 +172,7 @@
     },
     "progress": {
       "title": "Môj postup",
-      "about": "Obrazovka s postupom, ktorú otvorí dieťa klepnutím na Tapka na mape, a jej záložky."
+      "about": "Stránka Môj postup, ktorú dieťa otvorí tlačidlom na mape (rýchly prehľad aj klepnutím na Tapka), a jej záložky."
     },
     "stats": {
       "title": "Moje klávesy",
@@ -247,8 +247,8 @@
       "about": "Výber aktívnych kláves: automaticky alebo ručne, s tlačidlami pre rady a interpunkciou."
     },
     "parent-data": {
-      "title": "Pokroky a údaje",
-      "about": "Grafy na karte Pokroky a export, import a vymazanie profilu na karte Údaje; tiež tlačidlo prekladu a skupina vlastných jazykov."
+      "title": "Údaje a grafy",
+      "about": "Export, import a vymazanie profilu na karte Údaje, tlačidlo prekladu a skupina vlastných jazykov; aj grafy na stránke Môj postup."
     },
     "own": {
       "title": "Vlastné slová a text",
@@ -751,6 +751,7 @@
     "progress.stars": "Bublina nad počítadlom hviezdičiek v postupe. {n} z {total}.",
     "progress.tabProgress": "Záložka na obrazovke postupu.",
     "progress.tabKeys": "Záložka na obrazovke postupu.",
+    "progress.tabLevels": "Záložka na stránke Môj postup: hviezdičky všetkých úrovní po svetoch.",
     "progress.tabExercises": "Záložka na obrazovke postupu: cvičenia od učiteľa.",
     "progress.showCode": "Tlačidlo na zobrazenie QR kódu s celým postupom.",
     "progress.overallTitle": "Názov výsledku, ktorý je v QR kóde s celým postupom.",
@@ -770,6 +771,8 @@
     "progress.week": "Riadok pod postupom. {n} je počet minút za posledných 7 dní.",
     "progress.badges": "Nadpis polička s odznakmi svetov v postupe.",
     "progress.rangeAwards": "Nadpis polička so zbierkou vecí zo strelníc v postupe.",
+    "progress.parrots": "Nadpis polička s papagájmi všetkých svetov v postupe.",
+    "progress.parrotAway": "Bublina nad sivým papagájom v postupe: papagáj hotového sveta uletel; {world} je meno sveta.",
     "progress.chars14": "Bublina nad počítadlom písmen. {n} je počet písmen za 14 dní.",
     "stats.title": "Nadpis záložky Klávesy: mapa klávesnice s farebnými klávesmi.",
     "stats.intro": "Úvodný text záložky Klávesy. {n} je počet posledných stlačení, ktoré sa počítajú.",
@@ -884,7 +887,8 @@
     "parent.group.practice": "Nastavenia, karta Nastavenia: nadpis skupiny o náročnosti, slovách a čase cvičenia.",
     "parent.group.look": "Nastavenia, karta Nastavenia: nadpis skupiny o zvuku a vzhľade.",
     "parent.group.lock": "Nastavenia, karta Nastavenia: nadpis skupiny na zámok heslom.",
-    "parent.group.device": "Nastavenia bez vybraného hráča: nadpis skupiny s nastaveniami celého zariadenia.",
+    "parent.group.profiles": "Nastavenia, karta Údaje: nadpis skupiny s exportom, importom, prenosom a vymazaním profilov.",
+    "parent.group.tools": "Nastavenia, karta Údaje: nadpis skupiny s nástrojmi, napríklad prekladom hry.",
     "parent.childName": "Nastavenia, karta Nastavenia: popisok poľa na meno študenta.",
     "parent.childNameHint": "Nastavenia, karta Nastavenia: poznámka pod poľom s menom študenta.",
     "parent.nickname": "Nastavenia, karta Nastavenia: popisok poľa s prezývkou.",
@@ -902,9 +906,9 @@
     "parent.layoutHint": "Nastavenia, karta Nastavenia: poznámka pod výberom rozloženia klávesnice.",
     "parent.wordLang": "Nastavenia, karta Nastavenia: popisok výberu jazyka slov.",
     "parent.wordLangHint": "Nastavenia, karta Nastavenia: poznámka pod výberom jazyka slov.",
-    "parent.translate": "Nastavenia, karta Nastavenia: popisok poľa s tlačidlom, ktoré otvára stránku prekladu.",
-    "parent.translateHint": "Nastavenia, karta Nastavenia: poznámka pod tlačidlom prekladu.",
-    "parent.translateGo": "Nastavenia, karta Nastavenia: tlačidlo, ktoré otvorí stránku prekladu hry.",
+    "parent.translate": "Nastavenia, karta Údaje: popisok poľa s tlačidlom, ktoré otvára stránku prekladu.",
+    "parent.translateHint": "Nastavenia, karta Údaje: poznámka pod tlačidlom prekladu.",
+    "parent.translateGo": "Nastavenia, karta Údaje: tlačidlo, ktoré otvorí stránku prekladu hry.",
     "parent.ownLangs": "Nastavenia: nadpis skupiny vlastných jazykov (vytvorených v preklade) vo výbere jazyka hry a slov.",
     "parent.difficulty": "Nastavenia, karta Nastavenia: popisok posuvníka náročnosti.",
     "parent.autoHint": "Nastavenia, karta Nastavenia: poznámka pod náročnosťou o pomalom začiatku.",
@@ -971,12 +975,11 @@
     "parent.preset.top": "Nastavenia, karta Klávesy: tlačidlo, ktoré pridá horný rad.",
     "parent.preset.bottom": "Nastavenia, karta Klávesy: tlačidlo, ktoré pridá dolný rad.",
     "parent.preset.clear": "Nastavenia, karta Klávesy: tlačidlo, ktoré zruší všetky vybrané klávesy.",
-    "parent.heatmap": "Nastavenia, karta Pokroky: nadpis nad mapou kláves podľa úspešnosti.",
-    "parent.accuracyTrend": "Nastavenia, karta Pokroky: nadpis grafu presnosti.",
-    "parent.rhythmTrend": "Nastavenia, karta Pokroky: nadpis grafu rytmu.",
-    "parent.cpm": "Nastavenia, karta Pokroky: popis osi grafu rytmu (písmená za minútu).",
-    "parent.timePerDay": "Nastavenia, karta Pokroky: nadpis grafu času za deň.",
-    "parent.noData": "Nastavenia, karta Pokroky: text na mieste grafu, ktorý ešte nemá údaje.",
+    "parent.accuracyTrend": "Môj postup, karta Klávesy: nadpis grafu presnosti.",
+    "parent.rhythmTrend": "Môj postup, karta Klávesy: nadpis grafu rytmu.",
+    "parent.cpm": "Môj postup, karta Klávesy: popis osi grafu rytmu (písmená za minútu).",
+    "parent.timePerDay": "Môj postup, karta Klávesy: nadpis grafu času za deň.",
+    "parent.noData": "Môj postup, karta Klávesy: text na mieste grafu, ktorý ešte nemá údaje.",
     "parent.dataText": "Nastavenia, karta Údaje: úvodný odsek o ukladaní a exporte údajov.",
     "parent.exportOne": "Nastavenia, karta Údaje: tlačidlo na export profilu (aj v okne prenosu, ak je profil príliš veľký).",
     "parent.exportAll": "Nastavenia, karta Údaje: tlačidlo na export všetkých profilov.",

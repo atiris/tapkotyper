@@ -24,7 +24,17 @@
   practice of just that key. A switch ("⇧ symbols") shows the shifted symbols of the keys
   instead (question mark, exclamation mark, colon, Slovak digits), each with its own
   statistics; capitals count for their letter and its Shift.
-- The overlay has three tabs: **Postup** (the progress above, a big Tapko, the growth
+- **My progress** ("Môj postup") is a page of its own, opened by the map's button, with a top
+  bar ("Back" to the map and the title) like the other pages, and four tabs: **Postup**,
+  **Klávesy** (with the trends over the last sessions: accuracy, rhythm and time per day,
+  side by side on wide screens), **Úrovne** (the levels grouped by story, a heading with the
+  story's picture and title, and by world, one row of level cells per world, each cell with
+  its three stars, filled or empty, in a fixed place) and **Cvičenia**. Under the progress sit
+  "QR kód celého postupu" and "Certifikát" ([parent controls](parent-controls.md)).
+- Under the range awards a shelf of **parrots** ("Papagáje"): every world's parrot, in colour
+  while it is at home, grey after it flew away (its tooltip says so) and grey with a question
+  mark while its world is not finished ([parrot](../game/parrot.md)).
+- The overlay (a quick look, only by a click on the character) has three tabs: **Postup** (the progress above, a big Tapko, the growth
   medals and the stars as the last chip; stories come before worlds),
   **Klávesy** (the key map and the key details) and **Cvičenia** (the history of exercises
   from a teacher or parent, newest first, each with a button for its QR code).
@@ -37,8 +47,6 @@
   statistics, and a button at the bottom copies the code to send to the teacher. The code for
   all statistics is a result link like any other, so the teacher's table takes it as one row
   per child.
-- The parent dashboard has the same clickable key map, and the trends over sessions
-  (accuracy, rhythm, time per day) as charts side by side on wide screens.
 
 - A key is **mastered** when, over its last 30 recorded presses, at least 90 % are right and
   the median reaction time is within the speed limit of the child's difficulty (the same limit

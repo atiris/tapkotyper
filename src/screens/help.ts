@@ -11,7 +11,7 @@ const TABS = ['ui', 'typing', 'progress', 'settings', 'mentoring', 'about'] as c
 export type HelpTab = (typeof TABS)[number];
 
 /** The parent's settings tabs, in the order of the settings screen; each gets its own lines. */
-const SETTINGS_TABS = ['settings', 'own', 'surprises', 'task', 'keys', 'dashboard', 'data'] as const;
+const SETTINGS_TABS = ['settings', 'own', 'surprises', 'task', 'keys', 'data'] as const;
 
 const COUNTER = 'https://tapkotyper.goatcounter.com';
 

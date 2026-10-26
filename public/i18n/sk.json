@@ -865,6 +865,7 @@
     "stars": "Hviezdičky spolu: {n} z {total}",
     "tabProgress": "Postup",
     "tabKeys": "Klávesy",
+    "tabLevels": "Úrovne",
     "tabExercises": "Cvičenia",
     "showCode": "QR kód celého postupu",
     "overallTitle": "Celý postup",
@@ -884,6 +885,8 @@
     "week": "Za posledných 7 dní: {n} min",
     "badges": "Odznaky svetov",
     "rangeAwards": "Ocenenia zo strelníc",
+    "parrots": "Papagáje",
+    "parrotAway": "{world}: papagáj uletel, choď poň",
     "chars14": "{n} písmen napísaných za posledných 14 dní"
   },
   "stats": {
@@ -1040,7 +1043,6 @@
       "surprises": "Prekvapenia",
       "task": "Úloha",
       "keys": "Klávesy",
-      "dashboard": "Pokroky",
       "data": "Údaje"
     },
     "group": {
@@ -1048,7 +1050,8 @@
       "practice": "Cvičenie",
       "look": "Vzhľad a zvuk",
       "lock": "Heslo na nastavenia",
-      "device": "Toto zariadenie"
+      "profiles": "Profily",
+      "tools": "Nástroje"
     },
     "childName": "Meno študenta (nepovinné)",
     "switchTitle": "Prepnúť na iného študenta",
@@ -1104,7 +1107,6 @@
       "bottom": "+ dolný rad",
       "clear": "Vymazať"
     },
-    "heatmap": "Ako ide ktorý kláves",
     "accuracyTrend": "Presnosť",
     "rhythmTrend": "Rytmus",
     "cpm": "písmen/min",
@@ -1371,9 +1373,10 @@
       "Kláves, svet a príbeh: koľko kláves ti ide dobre a rýchlo (aspoň 9 z 10 stlačení správne), koľko svetov a príbehov máš hotových.",
       "Terč je tvoja presnosť za posledných 14 dní, šípka z kláves rýchlosť v znakoch za minútu, hviezdička všetky získané hviezdičky a kôpka kláves počet písmen napísaných za posledných 14 dní.",
       "V každom riadku príbehu sú jeho svety: hotové sú farebné, ostatné sivé, a hviezdičky z toho príbehu.",
-      "Môj postup má tri karty: Postup, Klávesy a Cvičenia.",
+      "Papagáje: farebný je doma, sivý uletel alebo jeho svet ešte nie je hotový.",
+      "Môj postup otvoríš tlačidlom na mape. Má štyri karty: Postup, Klávesy, Úrovne a Cvičenia. Klik na postavičku ukáže rýchly prehľad.",
       "Klávesy ukazujú, ktoré ti idú a ktoré si ešte precvičiť. Odtiaľ hneď spustíš cvičenie.",
-      "**QR kód** ukáže tvoj postup alebo cvičenie učiteľovi, stačí ho odfotiť."
+      "**QR kód** ukáže tvoj postup alebo cvičenie učiteľovi, stačí ho odfotiť. **Certifikát** s tvojimi výsledkami si môžeš vytlačiť."
     ],
     "moreTitle": "Záchranná misia, strelnica, papagáj a odznak",
     "more": [
@@ -1451,14 +1454,11 @@
         "Automaticky prídu klávesy po jednom, od základného radu F a J. To je najlepšie.",
         "Ručne vyberiete, ktoré klávesy sa študent učí, aj interpunkciu."
       ],
-      "dashboard": [
-        "Ako ide každý kláves, presnosť a rytmus v čase, čas hrania po dňoch a hotové úrovne.",
-        "Vpravo pri súhrne je **QR kód celého postupu** pre učiteľa a **Certifikát** s výsledkami študenta na vytlačenie."
-      ],
       "data": [
         "Všetko je uložené **len v tomto prehliadači**. Keď sa vymažú údaje prehliadača alebo sa pokazí počítač, pokrok sa stratí, ak nemáte zálohu.",
         "Preto občas **exportujte profil** do súboru. Import ho načíta späť alebo na inom zariadení.",
-        "Preniesť na iný počítač: celý profil je v odkaze. Hosťovský profil sa zabudne po zatvorení karty."
+        "Preniesť na iný počítač: celý profil je v odkaze. Hosťovský profil sa zabudne po zatvorení karty.",
+        "Nástroje: **Preložiť hru** otvorí stránku prekladu. Preložíte v nej hru do nového jazyka alebo si upravíte vlastné texty."
       ]
     },
     "keysTitle": "Hraj len s klávesnicou",

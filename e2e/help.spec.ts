@@ -71,7 +71,7 @@ test('help opens from the start page on the about tab, without a player', async 
     await help.getByRole('tab', { name: tab }).click();
     await expect(help.locator('.tab-panel h2').first()).toBeVisible();
   }
-  await expect(help.locator('.help-section')).toHaveCount(7);
+  await expect(help.locator('.help-section')).toHaveCount(6);
   expect(page.url()).toMatch(/#\/help\/settings$/);
   await help.locator('.bar').getByRole('button', { name: 'Back' }).click();
   await page.locator('.start-screen').waitFor();

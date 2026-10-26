@@ -138,7 +138,7 @@ export function mapScreen(root: HTMLElement): void {
         ownTextPhrases(p).length ? button(t('map.ownText'), () => go('level', { id: 'practice', text: true }), 'btn', 'read') : null,
         button(t('map.freeType'), startFreeType, 'btn', 'keyboard'),
         button(t('map.wardrobe'), () => go('wardrobe'), 'btn', 'shirt'),
-        button(t('progress.title'), () => openStats(), 'btn', 'chart'),
+        button(t('progress.title'), () => go('progress'), 'btn', 'chart'),
         rescue ? button(t('map.rescue'), () => go('level', { id: 'rescue' }), 'btn', 'rescue') : null,
         rescue ? button(t('map.friends'), () => go('friends'), 'btn', 'dragon') : null),
       h('div', { class: 'story-rows' }, welcome, ...STORIES.map((s) => storyRow(p, s, next?.id, held, keysBubble, lockBubble, flown))))));

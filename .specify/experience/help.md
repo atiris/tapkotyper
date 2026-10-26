@@ -17,13 +17,14 @@
   3. **Progress**, in the child's voice: stories, worlds and levels, stars, how a level is
      played (type the word on the object, nothing bad happens when it gets away, stars come from
      accuracy, Esc pauses), the kinds of games by their standard names with one line each (the
-     same names as the map dots' tooltips; a new kind joins the list when it is in the game) right above letters that open levels and stories, "My progress" with
-     its three tabs and QR codes, rescue missions, the target range (where it opens, what it
+     same names as the map dots' tooltips; a new kind joins the list when it is in the game) right above letters that open levels and stories, "My progress" (a page from the map's
+     button with four tabs, a quick look by a click on the character, the parrots, QR codes and
+     the certificate), rescue missions, the target range (where it opens, what it
      trains, the middle, a fall that costs nothing, the collection and Enter), the parrot (where it
      opens, why it repeats words, parrots that fly away and the Parrot badge) and badges.
   4. **Settings**, for the teacher or parent: under the Settings heading, that they are for the teacher or
      parent, open with the gear, and until locked with a password open for anyone by one confirm button, what each settings tab does (child, practice, look and sound,
-     password, own words and text, surprises, tasks, keys, progress, data), with one section per
+     password, own words and text, surprises, tasks, keys, data and the translator), with one section per
      settings tab, and what is lost without a backup. By the password, plainly: it guards the
      settings only inside the game; the data in the browser is not encrypted and anyone with
      direct access can read or change it, and anyone using the computer can clear the site's
@@ -48,7 +49,7 @@
   the top left. It opens on how to type, with "In this level" first: the level's intro and one
   tip. Back or Escape returns to the paused level, on "Continue"; the level is not lost.
 - **F1** opens the help that fits the moment everywhere: on the map the interface tab, in the
-  settings the settings tab, with "My progress" open how to progress, on the start page about.
+  settings the settings tab, on "My progress" (the page or the quick look) how to progress, on the start page about.
   The help tab of the interface lists the keyboard keys (Enter and space, Tab and arrows, the
   player numbers and nickname, F1-F4 and F8, Esc).
 - Works on a 1024x600 screen; the page scrolls and the bar with Back stays in sight.

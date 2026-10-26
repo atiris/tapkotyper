@@ -48,14 +48,20 @@ test('no element keeps a native title', async ({ page }) => {
   await page.locator('.wardrobe-screen').waitFor();
   expect(await noTitles()).toEqual([]);
   await page.locator('.bar .btn').first().click();
-  await page.locator('.map-side .btn', { hasText: 'My progress' }).click();
+  await page.locator('.map-tapko').click();
   await page.locator('.modal').waitFor();
   expect(await noTitles()).toEqual([]);
   await page.keyboard.press('Escape');
+  await page.locator('.map-side .btn', { hasText: 'My progress' }).click();
+  for (const tab of ['progress', 'keys', 'levels', 'exercises']) {
+    await page.locator(`.progress-screen .tab[data-tab=${tab}]`).click();
+    expect(await noTitles()).toEqual([]);
+  }
+  await page.locator('.bar .btn').first().click();
   await page.locator('.map-screen .top-right .round-btn').first().click();
   await page.locator('.confirm .btn:not(.primary)').last().click();
   await page.locator('.parent-screen').waitFor();
-  for (const tab of ['settings', 'dashboard']) {
+  for (const tab of ['settings', 'data']) {
     await page.locator(`.tab[data-tab=${tab}]`).click();
     expect(await noTitles()).toEqual([]);
   }

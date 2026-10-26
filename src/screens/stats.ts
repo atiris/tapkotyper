@@ -19,7 +19,8 @@ import { bigCode } from '../ui/big-code';
 import { badge, parrotBadge } from '../ui/badge';
 import { hasParrotBadge } from '../game/parrots';
 import { medal } from '../ui/medal';
-import { rangeFinds } from '../ui/finds';
+import { parrotShelf, rangeFinds } from '../ui/finds';
+import { openCertificate } from './certificate';
 
 /**
  * Map key code -> the key it measures: letters by their unshifted char (capitals count
@@ -149,7 +150,7 @@ function storyRow(p: Profile, story: StoryDef): HTMLElement {
       h('b', {}, String(stars)), star ? h('img', { src: star, alt: '' }) : '★'));
 }
 
-/** The summary row, a row per story, the badge shelf and the range awards, and when the child last trained. */
+/** The summary row, a row per story, the badge shelf, the range awards and the parrots, and when the child last trained. */
 function progressSection(p: Profile): HTMLElement {
   const { daysAgo, weekMinutes } = lastTraining(p);
   const last = daysAgo === null ? t('progress.never') : daysAgo === 0 ? t('progress.lastToday') : daysAgo === 1 ? t('progress.lastYesterday') : t('progress.lastDays', { n: daysAgo });
@@ -159,6 +160,7 @@ function progressSection(p: Profile): HTMLElement {
     h('div', { class: 'badge-shelf' }, h('h4', {}, t('progress.badges')),
       h('div', { class: 'badge-row' }, ...WORLDS.map((_, w) => badge(w, badgeTier(p, w), true)))),
     h('div', { class: 'badge-shelf' }, h('h4', {}, t('progress.rangeAwards')), rangeFinds(p)),
+    h('div', { class: 'badge-shelf' }, h('h4', {}, t('progress.parrots')), parrotShelf(p)),
     h('p', { class: 'progress-last' }, last, daysAgo === null ? null : [' ', t('progress.week', { n: weekMinutes })]));
 }
 
@@ -193,18 +195,19 @@ function playfulTapko(p: Profile): HTMLElement {
   } }, fig);
 }
 
-/** Progress: the summary rows and badges, the growth medals and the code of all statistics. */
-function progressTab(p: Profile): HTMLElement {
+/** Progress: the summary rows and badges, the growth medals, the code of all statistics and the certificate; `title` off where the page already says it. */
+export function progressTab(p: Profile, title = true): HTMLElement {
   return h('div', {},
     h('div', { class: 'stats-head' }, h('div', { class: 'stats-hero' }, playfulTapko(p), hasParrotBadge(p) ? parrotBadge() : null),
-      h('div', {}, h('h2', {}, t('progress.title')), progressSection(p))),
+      h('div', {}, title ? h('h2', {}, t('progress.title')) : null, progressSection(p))),
     p.progress.growth ? h('div', { class: 'medals' }, h('h3', {}, t('stats.medals')),
       h('div', { class: 'medal-row' }, ...Array.from({ length: p.progress.growth }, (_, i) => medal(i + 1, true)))) : null,
-    h('div', { class: 'row stats-code' }, button(t('progress.showCode'), () => void showOverallCode(p), 'btn', 'code')));
+    h('div', { class: 'row stats-code' }, button(t('progress.showCode'), () => void showOverallCode(p), 'btn', 'code'),
+      button(t('cert.button'), () => openCertificate(p), 'btn', 'print')));
 }
 
 /** The keyboard heat map, the keys to practice and the details of one key. */
-function keysTab(p: Profile, close: () => void): HTMLElement {
+export function keysTab(p: Profile, close: () => void): HTMLElement {
   const practice = (keys: string[]) => { close(); go('level', { id: 'practice', keys, seconds: 60 }); };
   const detail = h('div', { class: 'key-detail-host' }, h('p', { class: 'hint' }, t('stats.clickKey')));
   const heat = clickableHeatmap(p, detail, (key) => practice([key]));
@@ -232,7 +235,7 @@ function keysTab(p: Profile, close: () => void): HTMLElement {
 }
 
 /** The exercises given by a teacher or parent, newest first, each with the code of its result. */
-function exercisesTab(p: Profile): HTMLElement {
+export function exercisesTab(p: Profile): HTMLElement {
   const played = p.tasks.filter((x) => x.seconds > 0 || x.doneAt);
   if (!played.length) return h('p', { class: 'hint center' }, t('progress.exercisesEmpty'));
   return h('ul', { class: 'exercise-list' }, ...played.map((task) => {
@@ -247,7 +250,7 @@ function exercisesTab(p: Profile): HTMLElement {
   }));
 }
 
-/** The child's friendly progress and statistics overlay (click on the character), in tabs: progress, keys, exercises. */
+/** The child's quick look at the progress (click on the character), in tabs: progress, keys, exercises; the map's button opens the whole page. */
 export function openStats(): void {
   const p = app.profile!;
   let close = () => {};

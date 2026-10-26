@@ -4,8 +4,8 @@
 - A parent area behind a gear button and one calm question ("do you really want to open
   the settings?"). Deleting a profile asks in the app's own style.
 - The gear is on the start page too. Before a player is chosen the settings hold only what
-  needs no profile: the translator, the settings password, and on the data tab exporting all
-  profiles and importing them. "Pick a student" at the top opens a player's whole settings.
+  needs no profile: the settings password, and on the data tab exporting all profiles,
+  importing them and the translator. "Pick a student" at the top opens a player's whole settings.
 - An optional **settings password**, one for the whole device (every profile and the
   guest). While it is set, every way into the parent area (the gear, the settings address)
   asks for it instead of the question; a wrong one says so, and after five wrong tries in a
@@ -39,11 +39,12 @@
   then the character kind picked from a picture list, the typist's name (optional; hint:
   shown to the teacher in the results; blank clears it), the interface language, the **word
   language** and the keyboard layout (own languages from the [translator](../experience/translation.md)
-  are offered after the official ones), then a button **Translate the game** that opens the
-  translator. A kind picked here is granted at once.
-- The **progress** tab starts with the same picture and the icon and number summary of the
-  typist's "My progress" (with one more chip there: letters typed in the last 14 calendar
-  days, today included), then the charts; no separate stat cards repeat the summary.
+  are offered after the official ones). A kind picked here is granted at once.
+- The **data** tab has two framed groups like the settings tab: **Profiles** (export,
+  move, import, and deleting the profile) and **Tools** with **Translate the game**, a
+  button that opens the translator.
+- The settings have no progress tab: the progress, the charts and the levels are on the
+  typist's own "My progress" page ([statistics](statistics.md)).
 - A button by "Back" (the child's picture and name) switches the parent area to another
   profile from the same cards as on the start page (a number key picks one; as many in a row as the
   window has room for, at most five, in balanced rows with more in the first), keeping the open tab and without asking for
@@ -76,14 +77,11 @@
   teaser waits in such a run. The answer always comes right under its question,
   highlighted. The table shows the question, the answer, when (in words), repeat, the
   state (waiting, "12 / 20 min", done with its date) and edit and delete; a form under it
-  adds or edits a rule. Changing when a rule fires makes it wait again from now. On a
+  adds or edits a rule; its add (or save) button sits at the right end of the "when" row, and
+  on its own line right under the fields when the row has no room. Changing when a rule fires makes it wait again from now. On a
   narrow screen the rows become cards. Surprises never count in statistics. Free
   practice drills of chosen keys have no surprise.
-- Dashboard: per-key heat map on the keyboard, accuracy and rhythm trend, time played per
-  day, and the levels grouped by story (a heading with the story's picture and title) and by
-  world (one row of level cells per world), each cell with its three stars (filled or empty)
-  in a fixed place.
-- **Certificate** ("Certifikát", at the right end of the dashboard's summary under "QR kód celého postupu"): a window with a sheet in the style of a
+- **Certificate** ("Certifikát", next to "QR kód celého postupu" under the progress): a window with a sheet in the style of a
   certificate, printed on A4 landscape (browser print): the game's frame of foxes, leaves and trees,
   the logo, "Certifikát písania všetkými desiatimi prstami", the nickname large (the real name small
   under it when set), the character in its outfit, the results with their pictures (keys mastered,

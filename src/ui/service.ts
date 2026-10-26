@@ -1,6 +1,6 @@
 import { app, go, saveProfile, shownScreen } from '../app/app';
-import { fillProgress } from '../app/super';
-import { LEVELS, WORLDS } from '../game/levels';
+import { fillProgress, randomFill } from '../app/super';
+import { WORLDS } from '../game/levels';
 import { bringParrotHome, sendParrotAway } from '../game/parrots';
 import { localDate } from '../learning/stats';
 import { lessonOrder } from '../learning/lessons';
@@ -62,41 +62,45 @@ function parrotChange(changed: boolean, none: string): void {
   go('map', {}, false);
 }
 
-/** A labelled control of the progress dialog. */
-const fillField = (label: string, control: HTMLElement): HTMLElement => h('label', { class: 'field' }, h('span', { class: 'field-label' }, label), control);
+/** A labelled control of the progress dialog with a short line on what it sets. */
+const fillField = (label: string, control: HTMLElement, hint: string): HTMLElement =>
+  h('label', { class: 'field' }, h('span', { class: 'field-label' }, label), control, h('small', { class: 'hint' }, hint));
 
-/** A 0-100 % slider with its value; `get` reads it as a share. */
-function percent(value: number): { el: HTMLElement; get: () => number } {
-  const input = h('input', { type: 'range', min: 0, max: 100, step: 5, value: Math.round(value * 100) });
+/** A whole-percent slider from `min` to 100 with its value; `get` reads it as a share. */
+function percent(value: number, min = 0): { el: HTMLElement; get: () => number } {
+  const input = h('input', { type: 'range', min, max: 100, step: 1, value: Math.round(value * 100) });
   const out = h('output', {}, `${input.value} %`);
   input.addEventListener('input', () => (out.textContent = `${input.value} %`));
   return { el: h('span', { class: 'range' }, input, out), get: () => Number(input.value) / 100 };
 }
 
-/** The super player's progress, set by hand: keys and the last finished world exactly, the rest spread at random. */
+/** The super player's progress, set by hand: keys and the last finished world exactly, the rest spread at random; it opens on a fresh random fill. */
 function fillDialog(p: Profile): void {
-  const pr = p.progress;
+  const f = randomFill(p);
   const most = lessonOrder(p.layout).length;
-  const keys = h('input', { type: 'number', min: 0, max: most, step: 1, value: pr.unlockedKeys.length });
+  const keys = h('input', { type: 'number', min: 0, max: most, step: 1, value: f.keys });
   const world = h('select', {}, h('option', { value: '-1' }, t('service.noWorld')),
-    ...WORLDS.map((_, i) => h('option', { value: String(i), selected: i === Math.max(-1, ...pr.worldsDone) }, `${i + 1}. ${t(`worlds.${WORLDS[i]}`)}`)));
-  const done = LEVELS.filter((l) => pr.worldsDone.includes(l.world));
-  const stars = percent(done.length ? done.reduce((a, l) => a + (pr.levels[l.id] ?? 0), 0) / (3 * done.length) : 1);
-  const accuracy = percent(0.9);
-  const ranges = percent(0.5);
+    ...WORLDS.map((_, i) => h('option', { value: String(i), selected: i === f.lastWorld }, `${i + 1}. ${t(`worlds.${WORLDS[i]}`)}`)));
+  const stars = percent(f.stars);
+  const accuracy = percent(f.accuracy, 70);
+  const ranges = percent(f.ranges);
+  const parrots = h('input', { type: 'checkbox' });
+  parrots.checked = f.allParrots;
   const apply = () => {
-    fillProgress(p, { keys: Math.min(most, Math.max(0, Number(keys.value) || 0)), lastWorld: Number(world.value), stars: stars.get(), accuracy: accuracy.get(), ranges: ranges.get() });
+    fillProgress(p, { keys: Math.min(most, Math.max(0, Number(keys.value) || 0)), lastWorld: Number(world.value), stars: stars.get(), accuracy: accuracy.get(), ranges: ranges.get(), allParrots: parrots.checked });
     close();
     go('map', {}, false);
     toast(t('service.filled'));
   };
   const close = modal(h('div', { class: 'service-dialog' }, h('h2', {}, t('service.fill')),
     h('p', { class: 'hint' }, t('service.fillHint')),
-    fillField(t('service.fillKeys', { n: most }), keys),
-    fillField(t('service.fillWorld'), world),
-    fillField(t('service.fillStars'), stars.el),
-    fillField(t('service.fillAccuracy'), accuracy.el),
-    fillField(t('service.fillRanges'), ranges.el),
+    h('div', { class: 'fill-grid' },
+      fillField(t('service.fillKeys', { n: most }), keys, t('service.fillKeysHint')),
+      fillField(t('service.fillWorld'), world, t('service.fillWorldHint')),
+      fillField(t('service.fillStars'), stars.el, t('service.fillStarsHint')),
+      fillField(t('service.fillAccuracy'), accuracy.el, t('service.fillAccuracyHint')),
+      fillField(t('service.fillRanges'), ranges.el, t('service.fillRangesHint')),
+      h('div', { class: 'switch-field' }, h('label', {}, parrots, h('span', { class: 'switch-title' }, t('service.fillParrots'))), h('small', {}, t('service.fillParrotsHint')))),
     h('div', { class: 'row center' }, button(t('common.back'), () => close(), 'btn'), button(t('service.fillApply'), apply, 'btn primary', 'check'))));
 }
 

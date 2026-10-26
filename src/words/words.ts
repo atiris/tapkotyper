@@ -152,15 +152,18 @@ export class WordSource {
   private recent: string[] = [];
   private ownWords: string[];
   private ownText: string;
+  /** Own words found in the dictionary, the only ones a dictation says; made when first needed. */
+  private dictOwn: string[] | null = null;
   /** Own text cut for each target size, with the place reached in it. */
   private ownPhrases = new Map<string, { list: string[]; at: number }>();
   /**
-   * The targets are heard (dictation), so only what a voice says clearly: dictionary words, and
-   * single letters while the known letters make too few of them; no digits, capitals or marks.
+   * The targets are heard (dictation), so only what a voice says clearly: dictionary words (own
+   * ones only when the dictionary has them), and single letters while the known letters make too
+   * few of them; no own text, digits, capitals or marks.
    */
   heard = false;
 
-  constructor(words: string[], private opts: WordOptions) {
+  constructor(private readonly dict: string[], private opts: WordOptions) {
     this.rng = new Rng(opts.seed);
     this.letters = letterKeys(opts.keys, opts.noDiacritics);
     if (!this.letters.length) this.letters = ['f', 'j'];
@@ -170,7 +173,7 @@ export class WordSource {
     const len: [number, number] = [Math.max(1, opts.len[0]), Math.max(opts.len[0], opts.len[1])];
     this.names = (opts.names ?? []).map((n) => n.normalize('NFC').toLowerCase()).filter((n) => [...n].every((c) => set.has(c)));
     if (this.keys.has("'")) set.add("'");
-    this.pool = filterWords(words, set, len);
+    this.pool = filterWords(dict, set, len);
     this.digits = opts.keys.filter((k) => DIGITS.has(k));
     this.space = this.keys.has(SPACE);
     const lay = opts.layout;
@@ -185,7 +188,7 @@ export class WordSource {
    * `minWords` above 2 asks for a sentence of `minWords` to `words` words.
    */
   next(avoidFirst: Set<string> = new Set(), maxLen?: number, words = 1, minWords = 2): string {
-    const own = this.opts.own && this.rng.chance(this.opts.own.share) ? this.ownTarget(avoidFirst, maxLen, words) : null;
+    const own = this.opts.own && this.rng.chance(this.opts.own.share) ? (this.heard ? this.heardOwn(avoidFirst, maxLen) : this.ownTarget(avoidFirst, maxLen, words)) : null;
     if (own) return this.remember(own);
     maxLen ??= this.opts.len[1];
     let target = '';
@@ -227,6 +230,15 @@ export class WordSource {
     if (!list.length) return null;
     const fresh = list.filter((w) => !this.recent.includes(w) && !avoidFirst.has(w[0].toLowerCase()));
     return r.pick(fresh.length ? fresh : list);
+  }
+
+  /** An own word a voice can say for a dictation: one of the dictionary as it is written there (no own text, capitals or marks); null when none fits. */
+  private heardOwn(avoidFirst: Set<string>, limit: number | undefined): string | null {
+    this.dictOwn ??= this.ownWords.filter((w) => this.dict.includes(w));
+    const list = this.dictOwn.filter((w) => limit === undefined || w.length <= limit);
+    if (!list.length) return null;
+    const fresh = list.filter((w) => !this.recent.includes(w) && !avoidFirst.has(w[0]));
+    return this.rng.pick(fresh.length ? fresh : list);
   }
 
   private candidate(maxLen: number, words: number, minWords: number): string {
@@ -317,7 +329,8 @@ export class WordSource {
 
   /** Weighted pick from a random sample of real words. */
   private pickReal(maxLen: number, focus: string | null): string {
-    const fits = (w: string) => w.length <= maxLen;
+    // A dictation says no apostrophe.
+    const fits = (w: string) => w.length <= maxLen && !(this.heard && w.includes("'"));
     const sample: string[] = [];
     for (let i = 0; i < 16; i++) {
       const w = this.rng.pick(this.pool);

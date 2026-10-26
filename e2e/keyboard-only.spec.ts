@@ -99,7 +99,7 @@ test('F4 steps the sound and says so, the tooltips name the keys', async ({ page
   await createProfile(page, 'Lea');
   const sound = page.locator('.map-screen .top-right .sound-btn');
   await expect(sound).toHaveAttribute('data-level', 'normal');
-  await expect(sound).toHaveAttribute('data-tip', 'Sound: normal (F4)\nF8 plays another song');
+  await expect(sound).toHaveAttribute('data-tip', /^Sound: normal \(F4\)\nMusic: \S.*\nF8 plays another song$/);
   await expect(page.locator('.map-screen .top-right .help-btn')).toHaveAttribute('data-tip', 'Help (F1)');
   await page.keyboard.press('F4');
   await expect(sound).toHaveAttribute('data-level', 'quiet');

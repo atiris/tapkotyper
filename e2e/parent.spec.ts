@@ -127,8 +127,10 @@ test('settings: nickname first and required, name optional, word language, key f
   for (const legend of await page.locator('.task-tab legend').allTextContents()) expect(legend).not.toContain('task.');
 
   await page.locator('.tab[data-tab=data]').click();
-  await expect(page.locator('.data-tab legend')).toHaveText(['Profiles', 'Tools']);
-  await expect(page.locator('.data-tab').getByRole('button', { name: 'Translate the game' })).toBeVisible();
+  await expect(page.locator('.data-tab legend')).toHaveText(['Profiles']);
+  await page.locator('.tab[data-tab=settings]').click();
+  const look = page.locator('fieldset', { has: page.locator('legend', { hasText: 'Sounds and interface' }) });
+  await expect(look.getByRole('button', { name: 'Translate the game' })).toBeVisible();
 });
 
 test('the gear on the start page opens the settings without a profile; a student picked there opens the rest', async ({ page }) => {

@@ -4,8 +4,8 @@
 - A parent area behind a gear button and one calm question ("do you really want to open
   the settings?"). Deleting a profile asks in the app's own style.
 - The gear is on the start page too. Before a player is chosen the settings hold only what
-  needs no profile: the settings password, and on the data tab exporting all profiles,
-  importing them and the translator. "Pick a student" at the top opens a player's whole settings.
+  needs no profile: the translator, the settings password, and on the data tab exporting all
+  profiles and importing them. "Pick a student" at the top opens a player's whole settings.
 - An optional **settings password**, one for the whole device (every profile and the
   guest). While it is set, every way into the parent area (the gear, the settings address)
   asks for it instead of the question; a wrong one says so, and after five wrong tries in a
@@ -40,9 +40,12 @@
   shown to the teacher in the results; blank clears it), the interface language, the **word
   language** and the keyboard layout (own languages from the [translator](../experience/translation.md)
   are offered after the official ones). A kind picked here is granted at once.
-- The **data** tab has two framed groups like the settings tab: **Profiles** (export,
-  move, import, and deleting the profile) and **Tools** with **Translate the game**: its
-  heading, what it is for, then a button of the usual size that opens the translator.
+- The **data** tab has one framed group like the settings tab: **Profiles** (export,
+  move, import, and deleting the profile).
+- The settings group **Sounds and interface** ("Zvuky a rozhranie": volumes, reading aloud,
+  fonts, large text, motion, contrast, fullscreen) ends with **Translate the game**: its
+  heading, what it is for, then a button of the usual size that opens the translator. The
+  translator changes the interface, so it sits with the interface settings.
 - The settings have no progress tab: the progress, the charts and the levels are on the
   typist's own "My progress" page ([statistics](statistics.md)).
 - A button by "Back" (the child's picture and name) switches the parent area to another

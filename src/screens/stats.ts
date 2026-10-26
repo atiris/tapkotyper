@@ -214,7 +214,7 @@ export function progressTab(p: Profile, title = true): HTMLElement {
   return h('div', {},
     h('div', { class: 'stats-head' }, h('div', { class: 'stats-hero' }, playfulTapko(p), hasParrotBadge(p) ? aroPerch(true, (aro) => aro.hop())?.el ?? null : null),
       h('div', {}, title ? h('h2', {}, t('progress.title')) : null, progressSection(p))),
-    p.progress.growth ? h('div', { class: 'medals' }, h('h3', {}, t('stats.medals')),
+    p.progress.growth ? h('div', { class: 'medals' }, h('h3', {}, t('stats.medals')), h('p', { class: 'hint' }, t('stats.medalsHint')),
       h('div', { class: 'medal-row' }, ...Array.from({ length: p.progress.growth }, (_, i) => medal(i + 1, true)))) : null,
     h('div', { class: 'row stats-code' }, button(t('progress.showCode'), () => void showOverallCode(p), 'btn', 'code'),
       button(t('cert.button'), () => openCertificate(p), 'btn', 'print')));

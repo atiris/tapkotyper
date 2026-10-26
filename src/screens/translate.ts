@@ -5,7 +5,7 @@ import { LANGS, LANGUAGES, askedLanguage, isLang, language, officialDict, ownDic
 import { type OwnLang, canonicalCode, deleteOwnLang, isOwnRef, newOwnLang, ownId, ownLangs, ownRef, ownStoreWorks, saveOwnLang } from '../i18n/own-langs';
 import {
   type Field, type ImportPlan, type Source, addVariant, exportJson, exportPairs, fieldValue, fieldsOf, flatGuide, formExample, guideText, itemNames,
-  planJson, planPairs, prefill, progressOf, removeVariant, setFieldValue, situationFinder, sourceValue, splitWords, touch,
+  planJson, planPairs, prefill, progressOf, removeVariant, setFieldValue, situationFinder, sourceValue, splitWords, touch, untouch,
 } from '../i18n/translation';
 import { LAYOUTS, LAYOUT_IDS, canType } from '../keyboard/layouts';
 import { lessonGroups } from '../learning/lessons';
@@ -340,7 +340,7 @@ export function translateScreen(root: HTMLElement): () => void {
     return ph.length ? h('span', { class: 'tr-ph' }, ...ph.map((p) => h('code', {}, p))) : null;
   }
 
-  /** One field: the input, its state, the keep button and the placeholder warning. */
+  /** One field: the input, its state, the keep button (the untranslated one once done) and the placeholder warning. */
   function fieldEl(f: Field, baseText: string, cls = ''): HTMLElement {
     const value = fieldValue(target!, f);
     const area = h('textarea', { class: `tr-field ${cls}`, rows: Math.max(1, value.split('\n').length), 'data-field': f.id, 'aria-label': t('translate.fieldLabel', { text: baseText.length > LABEL_MAX ? `${baseText.slice(0, LABEL_MAX)}…` : baseText }), spellcheck: 'true', lang: target!.code });
@@ -348,7 +348,12 @@ export function translateScreen(root: HTMLElement): () => void {
     inputs.set(f.id, area);
     const warn = h('small', { class: 'tr-warn', role: 'status' });
     const keep = h('button', { class: 'tr-keep', type: 'button', tip: t('translate.keepHint'), onClick: () => mark() }, t('translate.keep'));
-    const wrap = h('div', { class: 'tr-input' }, area, h('span', { class: 'tr-open-tag' }, t('translate.untranslated')), keep, warn);
+    const unkeep = h('button', { class: 'tr-unkeep', type: 'button', tip: t('translate.unkeepHint'), onClick: () => {
+      untouch(target!, f.id);
+      state();
+      changed(f);
+    } }, t('translate.unkeep'));
+    const wrap = h('div', { class: 'tr-input' }, area, h('span', { class: 'tr-open-tag' }, t('translate.untranslated')), keep, unkeep, warn);
     const isTouched = () => target!.touched.includes(f.id);
     const state = () => wrap.classList.toggle('open', !isTouched());
     const check = () => {

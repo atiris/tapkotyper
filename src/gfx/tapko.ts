@@ -17,11 +17,11 @@ export const SLOT_ORDER: (Slot | 'companion')[] = ['back', 'companion', 'feet', 
 export const SLOTS: Slot[] = ['head', 'eyes', 'neck', 'body', 'back', 'hand', 'feet'];
 
 /** For every body area: half the time nothing, else one of the items of that area that `has` allows. */
-export function randomOutfit(has: (id: string) => boolean): string[] {
+export function randomOutfit(has: (id: string) => boolean, rand: () => number = Math.random): string[] {
   return SLOTS.flatMap((slot) => {
     const owned = accessories().filter((a) => a.slot === slot && has(a.id));
-    if (!owned.length || Math.random() < 0.5) return [];
-    return [owned[Math.floor(Math.random() * owned.length)].id];
+    if (!owned.length || rand() < 0.5) return [];
+    return [owned[Math.floor(rand() * owned.length)].id];
   });
 }
 

@@ -210,7 +210,8 @@ function settingsTab(p: Profile): HTMLElement {
       switchField(t('parent.largeText'), check(s.largeText, (v) => { s.largeText = v; save(); })),
       switchField(t('parent.reduceMotion'), check(s.reduceMotion, (v) => { s.reduceMotion = v; save(); })),
       switchField(t('parent.highContrast'), check(s.highContrast, (v) => { s.highContrast = v; save(); })),
-      switchField(t('parent.autoFullscreen'), check(s.autoFullscreen, (v) => { s.autoFullscreen = v; save(); }), t('parent.autoFullscreenHint'))),
+      switchField(t('parent.autoFullscreen'), check(s.autoFullscreen, (v) => { s.autoFullscreen = v; save(); }), t('parent.autoFullscreenHint')),
+      ...translateTool()),
     lockGroup());
 }
 
@@ -560,12 +561,20 @@ function keysTab(p: Profile): HTMLElement {
       button(t('parent.preset.clear'), () => { picked.clear(); s.manualKeys = []; paint(); saveProfile(); }, 'btn small ghost')));
 }
 
-/** The settings without a player: the device's password; a player is picked by the button at the top. */
+/** The way to the translator, at the end of the sounds and interface group. */
+const translateTool = (): HTMLElement[] => [
+  h('h3', {}, t('parent.translate')),
+  h('p', { class: 'hint' }, t('parent.translateHint')),
+  h('div', { class: 'row' }, button(t('parent.translateGo'), () => go('translate', { granted: true }), 'btn', 'language')),
+];
+
+/** The settings without a player: the translator and the device's password; a player is picked by the button at the top. */
 function deviceTab(): HTMLElement {
-  return h('div', {}, h('p', { class: 'hint' }, t('parent.noChild')), h('div', { class: 'settings-grid' }, lockGroup()));
+  return h('div', {}, h('p', { class: 'hint' }, t('parent.noChild')), h('div', { class: 'settings-grid' },
+    h('fieldset', {}, h('legend', {}, t('parent.group.look')), ...translateTool()), lockGroup()));
 }
 
-/** The profiles (export, move, import and delete; without a player only all profiles out and in) and the tools (the translator). */
+/** The profiles: export, move, import and delete; without a player only all profiles out and in. */
 function dataTab(p: Profile | null): HTMLElement {
   const guest = p?.id === GUEST_ID;
   const own = p && !guest ? p : null;
@@ -592,11 +601,7 @@ function dataTab(p: Profile | null): HTMLElement {
           app.store.remove(own.id);
           app.profile = null;
           go('start');
-        }, 'btn danger', 'trash'))),
-    h('fieldset', {}, h('legend', {}, t('parent.group.tools')),
-      h('h3', {}, t('parent.translate')),
-      h('p', {}, t('parent.translateHint')),
-      h('div', { class: 'row' }, button(t('parent.translateGo'), () => go('translate', { granted: true }), 'btn', 'language'))));
+        }, 'btn danger', 'trash'))));
 }
 
 const exportOne = (p: Profile) => download(`tapkotyper-${slug(nickname(p))}.json`, app.store.exportJson([p.id]));

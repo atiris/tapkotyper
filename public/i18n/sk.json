@@ -895,6 +895,10 @@
     "rangeAwards": "Ocenenia zo strelníc",
     "parrots": "Papagáje doma: {n}, najviac naraz: {best}",
     "parrotCount": "{n} max {best}",
+    "parrotHome": "Papagáj tohto sveta je doma",
+    "parrotAway": "Papagáj tohto sveta ešte nie je doma",
+    "rareFound": "Vzácna vec zo strelnice: {name}",
+    "rareWaiting": "Vzácna vec zo strelnice tu ešte čaká",
     "chars14": "{n} písmen napísaných za posledných 14 dní"
   },
   "stats": {
@@ -921,6 +925,7 @@
     "keyHistorySoon": "Vývoj po dňoch uvidíš, keď budeš hrať aspoň dva dni.",
     "practiceKey": "Precvičiť {key} (1 min)",
     "medals": "Moje medaily",
+    "medalsHint": "Medailu dostaneš vždy, keď už píšeš presne a hra sama pridá: veci sa hýbu o kúsok rýchlejšie alebo prídu dlhšie slová.",
     "shifted": "⇧ znaky"
   },
   "wardrobe": {
@@ -1056,10 +1061,9 @@
     "group": {
       "child": "Študent",
       "practice": "Cvičenie",
-      "look": "Vzhľad a zvuk",
+      "look": "Zvuky a rozhranie",
       "lock": "Heslo na nastavenia",
-      "profiles": "Profily",
-      "tools": "Nástroje"
+      "profiles": "Profily"
     },
     "childName": "Meno študenta (nepovinné)",
     "switchTitle": "Prepnúť na iného študenta",
@@ -1440,7 +1444,7 @@
         "Dĺžka hrania pred prestávkou: potom hra pozve študenta na krátky oddych.",
         "Sprievodca prstov: zmizne, keď sú klávesy zvládnuté, alebo je stále zapnutý či vypnutý. Môžete ho študentovi zamknúť.",
         "Šatník za čas cvičenia: 1 minúta v šatníku za 5 minút cvičenia, najviac 7 minút. Po vypnutí je šatník stále otvorený.",
-        "Vzhľad a zvuk: písmo, veľký text, menej pohybu, vysoký kontrast, hlasitosť, celá obrazovka.",
+        "Zvuky a rozhranie: hlasitosť, písmo, veľký text, menej pohybu, vysoký kontrast, celá obrazovka. **Preložiť hru** otvorí stránku prekladu, kde preložíte hru do nového jazyka alebo si upravíte vlastné texty.",
         "Heslo na nastavenia zamkne nastavenia pre všetkých hráčov na tomto zariadení. Zabudnuté heslo nevieme obnoviť.",
         "Heslo chráni nastavenia len v hre. Všetky údaje (hráči, pokrok aj nastavenia) sú uložené v tomto prehliadači a heslo ich nešifruje. Kto sa k nim dostane priamo, napríklad cez nástroje prehliadača, môže ich prečítať aj zmeniť.",
         "Ktokoľvek, kto používa tento počítač, môže v prehliadači vymazať údaje stránky. Tým sa odstránia všetci hráči, ich pokrok, výsledky aj heslo. Preto si pokrok občas exportujte do súboru."
@@ -1466,8 +1470,7 @@
       "data": [
         "Všetko je uložené **len v tomto prehliadači**. Keď sa vymažú údaje prehliadača alebo sa pokazí počítač, pokrok sa stratí, ak nemáte zálohu.",
         "Preto občas **exportujte profil** do súboru. Import ho načíta späť alebo na inom zariadení.",
-        "Preniesť na iný počítač: celý profil je v odkaze. Hosťovský profil sa zabudne po zatvorení karty.",
-        "Nástroje: **Preložiť hru** otvorí stránku prekladu. Preložíte v nej hru do nového jazyka alebo si upravíte vlastné texty."
+        "Preniesť na iný počítač: celý profil je v odkaze. Hosťovský profil sa zabudne po zatvorení karty."
       ]
     },
     "keysTitle": "Hraj len s klávesnicou",
@@ -1565,13 +1568,20 @@
     "end": "Koniec super režimu",
     "lockRemovedAt": "Heslo nastavení zrušil alebo zmenil super účet {date}.",
     "fill": "Vyplniť postup...",
-    "fillHint": "Kláves a svetov bude presne toľko, hviezdy, presnosť a strelnice sa náhodne rozhodia na prejdené svety.",
+    "fillHint": "Testovací postup super hráča. Kláves a svetov bude presne toľko, ostatné sa náhodne rozhodí na prejdené svety.",
     "fillKeys": "Zvládnuté klávesy (0 až {n})",
     "fillWorld": "Posledný zvládnutý svet",
     "noWorld": "Žiadny",
     "fillStars": "Získané hviezdy",
     "fillAccuracy": "Presnosť",
-    "fillRanges": "Získané strelnice",
+    "fillRanges": "Vzácne veci zo strelníc",
+    "fillKeysHint": "Klávesy v poradí lekcií, ktoré hráč už pozná.",
+    "fillWorldHint": "Tento svet a všetky pred ním sú prejdené.",
+    "fillStarsHint": "Podiel z 3 hviezd v každej úrovni prejdených svetov.",
+    "fillAccuracyHint": "Presnosť každej známej klávesy, o kúsok viac či menej.",
+    "fillRangesHint": "Podiel nájdených vzácnych vecí zo strelníc prejdených svetov.",
+    "fillParrots": "Všetky papagáje",
+    "fillParrotsHint": "Papagáje prejdených svetov sú doma; bez zaškrtnutia jeden chýba.",
     "fillApply": "Vyplniť",
     "filled": "Postup je vyplnený.",
     "parrotAway": "Uletí papagáj",
@@ -3198,6 +3208,8 @@
     "untranslated": "nepreložené",
     "keep": "Ponechať",
     "keepHint": "Text ostane rovnaký a pole sa počíta ako preložené (Ctrl+Enter).",
+    "unkeep": "Nepreložené",
+    "unkeepHint": "Pole sa znova počíta ako nepreložené, text ostane.",
     "addVariant": "Pridať variant",
     "removeVariant": "Odstrániť variant",
     "onlyOpen": "Len nepreložené",

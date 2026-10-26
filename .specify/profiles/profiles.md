@@ -52,15 +52,21 @@
   buttons move between screens. Leaving the whole app asks first while a player is active.
 - **Super mode** for parents and testers: typing `supertapkotyper` fast (within 4 seconds,
   no field) on the start screen turns on a switch for the session and opens a temporary
-  player with every world, level, key and accessory open. That player lives in memory only
+  player with every world, level, key and accessory open, in a random outfit, and with the
+  progress filled at random just as the fill dialog first offers it, so it looks like a
+  real child's from the first moment. That player lives in memory only
   and never touches real players' statistics. The switch stays on when a stored player is
   picked on the start page; a reload or "Koniec super režimu" turns it off and drops the
   temporary player. While it is on, a red star in the top right corner (it never pushes the
   screen down) opens the **service menu**:
   - everywhere: end super mode;
-  - on the temporary player's map: "Vyplniť postup..." opens a dialog with the number of
-    mastered keys, the last finished world, and the shares of earned stars, accuracy and earned
-    range finds. The keys and the finished worlds are set exactly; the stars, the range finds
+  - on the temporary player's map: "Vyplniť postup..." opens a compact dialog in two columns
+    on a wide screen, each field with one line on what it sets: the number of mastered keys,
+    the last finished world, the shares of earned stars, accuracy (70-100 % in whole percents)
+    and rare things found at the target ranges, and "Všetky papagáje" (unchecked, one finished
+    world's parrot is missing). It opens on the player's keys and last world and a fresh random
+    pick of the rest: stars 70-95 %, accuracy 90-100 %, range finds 40-100 %, all parrots or all
+    but one. The keys and the finished worlds are set exactly; the stars, the range finds
     and each key's accuracy are spread at random over the finished worlds (every finished level
     keeps at least one star), so the map, badges and statistics look like a real child's;
     "Uletí papagáj" sends a random parrot at home away and "Priletí papagáj" brings home the

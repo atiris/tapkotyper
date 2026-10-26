@@ -37,15 +37,21 @@ explosions, no punishment, no ads, no accounts.
 - **Levels open with keys.** Each level needs a few more known keys than the one before
   (the first story starts at 3 and ends at 20), so every new key opens new levels with
   varied words.
+- **Side activities per world.** When a world's big challenge is done, two voluntary cards
+  open on the map. The **target range** throws funny things through rings of words that train
+  exactly the letters holding the next ones back. The **parrot** makes the fingers learn a few
+  words by typing them many times over; keep the Parrot badge and Aro the parrot joins Tapko.
+  **Just typing** is a free sandbox: type anything, Tapko shows and says it, nothing is counted.
 - **Tapko keeps the child curious and helps out.** After a level he asks a question about
   the next one and answers it only when that level is done. Fifteen words in a row
   without a mistake charge a paw (three at most): on Enter, Tapko's paws replace the hands
   and type the three closest words, which never count in the stats.
 - **Per-key stats** count only the last 50 presses, show what a key is mixed up with and
-  how it changed day by day; click any key on the stats keyboard.
+  how it changed day by day; click any key on the stats keyboard. "My progress" is its own
+  page with badges, the treasure chest and range awards.
 - **Good habits:** before every adventure a "Ready, steady, type!" card with one posture
   reminder and a two-letter password to start, a short preparation tip each session
-  (47 tips), and a stretch break after the session length the parent chose.
+  (over 50 tips), and a stretch break after the session length the parent chose.
 - **Slovak keyboards done right:** QWERTZ and QWERTY variants, `ľ š č ť ž ý á í é` on the
   number row, `ú ä ô ň`, dead keys for `ó ĺ ŕ ď` and accented capitals, and a hint when
   the real keyboard looks different.
@@ -86,7 +92,9 @@ Every finished world gives a badge that turns silver and gold with more stars.
 Rescued dragons, repaired robots and forest friends guided home collect on the Little friends screen.
 
 Tapko can be one of nine animals and wears 47 accessories earned by progress (never by chance).
-Keep the Parrot badge and Aro the parrot sits next to Tapko on the map.
+Time in the wardrobe is earned by practice: a fifth of the training time, with a calm countdown.
+A printable certificate (portrait, with a fox frame; Aro signs it with the badge) comes with the
+progress card.
 A few secret words do something too: try saying hello on the start page, or typing a word you
 see on the map or in My progress.
 
@@ -100,9 +108,9 @@ see on the map or in My progress.
   `localStorage` and can be exported / imported as a `.json` file. Guest mode keeps nothing.
   Links (tasks, results, moving a player) carry their data in the address hash, which never
   reaches a server.
-- **Parent area** (gear button, one confirm question): child and companion names, keyboard layout, active keys (automatic or picked by hand), word
+- **Parent area** (gear button, one confirm question; the settings also work without a player): child and companion names, keyboard layout, active keys (automatic or picked by hand), word
   length and difficulty 1-10 (automatic or fixed), words without diacritics, no time pressure, session length,
-  guide visibility, volumes, fonts (Lexend, Atkinson Hyperlegible, OpenDyslexic), large
+  guide visibility, read typed words aloud, wardrobe time, volumes, fonts (Lexend, Atkinson Hyperlegible, OpenDyslexic), large
   text, reduced motion, high contrast. A dashboard shows a per-key heat map, accuracy and
   rhythm trends, time per day, and a printable progress card.
 - **Own content** (its own tab): encouraging messages, own words (for example this week's
@@ -115,6 +123,9 @@ see on the map or in My progress.
   the question before the level (with what is still left) and shows the answer right under
   it when the time comes, once or again and again. One table shows every surprise and its
   state.
+- **Translate the game:** a parent page (its button ends the "Sounds and interface" settings) shows every text of
+  the game with its situation, and makes a new language or a corrected copy of one. Export and
+  import as pair files (handy for an AI translator) or `.json`; progress is shown per section.
 - **Reading aloud:** a button in the level bar reads the word to type and the companion's
   lines with the browser's own voice (shown when the browser has one for the language).
 - **Direct links:** each child's map has its own address (`.../tapkotyper/#/p/<id>`), so you
@@ -122,7 +133,8 @@ see on the map or in My progress.
 - **Quick sound button:** normal, quiet (20 %) or off.
 - **Super mode (secret password):** on the start screen, type `supertapkotyper` quickly
   (within 4 seconds, no text field needed). A temporary "Super Tapko" player opens with
-  every world, level, key and accessory unlocked, to look around or test. Nothing it does
+  every world, level, key and accessory unlocked, to look around or test; a service menu under
+  the star can fill its progress, and "super help" can type a level like a player. Nothing it does
   is saved or counted in anyone's statistics; end it with the star in the top right corner or a reload.
   It can also remove or change the settings password set before, without knowing it (for a
   forgotten password); the settings then show a warning for a month.
@@ -140,12 +152,14 @@ e-mail), with the data inside the link.
 - **The child** opens the link, picks their player (or makes a new one) and sees
   "Today's task" first on the map. When the minutes are played, "Hand in" gives a result
   link to send back.
-- **Your table:** "For mentors", the chart button at the top right of the start page (no
+- **Your table:** "For teachers", the chart button at the top right of the start page (no
   keyboard needed, so a phone works). Type a group (for example 5A) and scan the QR codes on
   the children's screens with the camera, several at once, or open or paste result links.
   Each result (minutes, accuracy, rhythm, five weakest keys) is kept in your browser only;
   filter by group and task, sort, open one child's results, and export CSV. A checksum
-  shows damaged links; it does not stop cheating. The help's "Mentoring" tab explains it all.
+  shows damaged links; it does not stop cheating. Results can also be saved and loaded as
+  `.tapko` files (double-click opens one in Chrome or Edge), so a class's history stays on one
+  computer. The help's "Parents and teachers" tab explains it all.
 
 ## Development
 

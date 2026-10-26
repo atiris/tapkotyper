@@ -32,6 +32,15 @@ describe('WordSource', () => {
     for (let i = 0; i < 50; i++) expect(known).toContain(many.next());
   });
 
+  it('dictates only own words of the dictionary, never own text, capitals or marks', () => {
+    const keys = [...'fjdkslaeiruotnhšôň ,.?'];
+    const own = { words: ['Kôň', 'snehuliak', WORDS.find((w) => w.length >= 3 && [...w].every((c) => keys.includes(c)))!], text: 'Kto to je? Ja, Tapko.', share: 1 };
+    const src = new WordSource(WORDS, { keys, len: [2, 6], noDiacritics: false, seed: 7, own });
+    src.heard = true;
+    const known = new Set(WORDS);
+    for (let i = 0; i < 80; i++) for (const w of src.next(new Set(), undefined, 3).split(' ')) expect(known.has(w)).toBe(true);
+  });
+
   it('never uses keys outside the set', () => {
     const keys = [...'fjdksla'];
     const src = new WordSource(WORDS, { keys, len: [2, 5], noDiacritics: false, seed: 2 });

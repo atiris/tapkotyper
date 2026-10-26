@@ -87,6 +87,10 @@ Notes from real Gemini runs; add new ones here.
   said so in its answer). A follow-up "the background one flat magenta, keep the plants" fixed it.
 - A follow-up carries the whole chat: asking for closed flowers "in the same daytime colors"
   after an evening recolor in the same chat came out dark again. Ask from the right picture.
+- A plank floor in a near strip comes out with planks fanning out from the middle (perspective),
+  so every join of the repeated strip shows a V. Even "ALL PLANKS PERFECTLY VERTICAL AND PARALLEL,
+  NO perspective, NO fanning" fixed only one strip of the three (robohome near, 2026-10-26: the
+  bottom strip, squashed to 150 px and quilted with itself as the donor).
 - A sun with rays got uneven rays; for a calm sun ask for "a smooth perfect circle, no rays".
 - Pieces the page animates on their own (sun, clouds, moon, stars) are one picture each. A
   picture with pieces that do not touch can be cut apart locally (the moon and its stars).
@@ -699,7 +703,7 @@ first, then attach it to the other prompts ("the same robot as in the attached i
 | `bg-robocity-near.jpg` | low chunky pieces on a thin dark ground band: round ground lights, a cable loop, a leaning manhole cover, a dome lamp, a bollard, a coiled cable and a vent box | 20 % | done 2026-10-23 |
 | `bg-robohome-far.jpg` | the inside of a cozy robot home: round windows, warm lamps, soft sofa, shelves with little gadgets, pastel colors | full | |
 | `bg-robohome-mid.jpg` | a row of cozy furniture: a low cabinet, a plant in a pot, a round rug | 40 % | |
-| `bg-robohome-near.jpg` | a warm wooden floor with a soft round rug edge | 20 % | |
+| `bg-robohome-near.jpg` | a warm wooden floor of vertical parallel planks, a book, a ball and a slipper | 20 % | redone 2026-10-26 (planks parallel, no V at the joins) |
 
 ### Game objects (section 4 prompt)
 | File | OBJECT | BG |

@@ -1,5 +1,7 @@
 import { app, go } from '../app/app';
+import { imageUrl } from '../gfx/assets';
 import { STORIES, WORLDS, worldLevels } from '../game/levels';
+import { worldThing } from '../game/modes/aim-things';
 import { t } from '../i18n/i18n';
 import type { Profile } from '../storage/schema';
 import { barChart, lineChart } from '../ui/charts';
@@ -7,6 +9,7 @@ import { cornerControls, starRow } from '../ui/chrome';
 import { button, h } from '../ui/dom';
 import { badgeShow } from '../ui/badge-show';
 import { barTabLinks, tabBar } from '../ui/tabs';
+import { tip } from '../ui/tooltip';
 import { onTypedWord } from '../ui/typed-word';
 import { exercisesTab, keysTab, progressTab, storyPicture } from './stats';
 
@@ -26,6 +29,21 @@ function trendCharts(p: Profile): HTMLElement {
       barChart(sessions.map((s) => Math.round(s.seconds / 60)), labels, 'min')));
 }
 
+/** What a world gave besides stars, beside its name: its parrot at home and its rare range thing, in color once won, grey until then. */
+function worldExtras(p: Profile, w: number): HTMLElement {
+  const th = worldThing(w);
+  const mark = (pic: string | null, has: boolean, say: string): HTMLElement => {
+    const el = h('span', { class: `world-extra ${has ? 'found' : 'waiting'}`, role: 'img', 'aria-label': say }, pic ? h('img', { src: pic, alt: '' }) : null);
+    tip(el, say);
+    return el;
+  };
+  const parrot = p.progress.parrots.includes(w);
+  const found = !!th && p.progress.rangeFinds.includes(th.id);
+  return h('span', { class: 'world-extras' },
+    mark(imageUrl('ui-act-parrot-head'), parrot, t(parrot ? 'progress.parrotHome' : 'progress.parrotAway')),
+    th ? mark(imageUrl(th.pics[0]), found, found ? t('progress.rareFound', { name: t(`aim.things.${th.id}.name`) }) : t('progress.rareWaiting')) : null);
+}
+
 /** The levels of each story under its picture and title, one row of level cells per world. */
 function storyLevels(p: Profile): HTMLElement {
   return h('div', {}, ...STORIES.map((story) => {
@@ -33,7 +51,7 @@ function storyLevels(p: Profile): HTMLElement {
     return h('section', { class: 'story-levels' },
       h('h3', { class: 'story-head' }, pic ? h('img', { class: 'story-pic', src: pic, alt: '' }) : null, t(story.title)),
       ...story.worlds.map((w) => h('div', { class: 'world-levels' },
-        h('h4', {}, t(`worlds.${WORLDS[w]}`)),
+        h('h4', {}, t(`worlds.${WORLDS[w]}`), worldExtras(p, w)),
         h('div', { class: 'level-grid' }, ...worldLevels(w).map((l) => h('div', { class: 'level-cell' },
           h('span', { class: 'level-name' }, l.isSuper ? t('map.super') : String(l.index + 1)), starRow(p.progress.levels[l.id] ?? 0, 'stars cell-stars')))))));
   }));

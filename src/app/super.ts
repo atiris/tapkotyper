@@ -1,11 +1,12 @@
 import { accessories } from '../gfx/assets';
+import { randomOutfit } from '../gfx/tapko';
 import { LEVELS, WORLDS } from '../game/levels';
 import { WORLD_THINGS } from '../game/modes/aim-things';
 import { PAW_MAX } from '../game/paw';
 import { WORLD_REWARDS } from '../game/rewards';
 import { t } from '../i18n/i18n';
 import { lessonOrder } from '../learning/lessons';
-import { STATS_WINDOW, recordPress, recordSession } from '../learning/stats';
+import { STATS_WINDOW, localDate, recordPress, recordSession } from '../learning/stats';
 import { COMPANION_KINDS, type LangRef, SUPER_ID, type Profile } from '../storage/schema';
 import { newProfile } from '../storage/store';
 
@@ -33,10 +34,11 @@ export function listenForSuperPassword(onUnlock: () => void): () => void {
 }
 
 /**
- * A temporary player with every world, level, key and accessory open. It lives in
- * memory only: it never touches real players' statistics and a reload ends it.
+ * A temporary player with every world, key and accessory open, a random outfit and progress
+ * filled at random as the service menu's dialog first offers it. It lives in memory only: it
+ * never touches real players' statistics and a reload ends it.
  */
-export function superProfile(lang: LangRef): Profile {
+export function superProfile(lang: LangRef, rand: () => number = Math.random): Profile {
   const p = newProfile('', lang, undefined, 'fox', t('super.companionName'));
   p.id = SUPER_ID;
   const keys = lessonOrder(p.layout);
@@ -48,6 +50,8 @@ export function superProfile(lang: LangRef): Profile {
   p.progress.pawHelp = PAW_MAX;
   p.progress.companionsUnlocked = [...COMPANION_KINDS];
   p.settings.wardrobeLimit = false;
+  p.companion.accessories = randomOutfit(() => true, rand);
+  fillProgress(p, randomFill(p, rand), rand);
   return p;
 }
 
@@ -63,6 +67,27 @@ export interface ProgressFill {
   accuracy: number;
   /** Share of the finished worlds' range finds. */
   ranges: number;
+  /** Every finished world's parrot at home; else one of them is missing. */
+  allParrots: boolean;
+}
+
+/** Whole percents from `lo` to `hi` at random, as a share. */
+const between = (lo: number, hi: number, rand: () => number) => Math.round(lo + rand() * (hi - lo)) / 100;
+
+/**
+ * What the progress dialog offers when it opens, and what a new super player gets: the keys and
+ * the finished worlds it has, 70-95 % of the stars, 90-100 % accuracy, 40-100 % of the range
+ * finds and every parrot or all but one.
+ */
+export function randomFill(p: Profile, rand: () => number = Math.random): ProgressFill {
+  return {
+    keys: p.progress.unlockedKeys.length,
+    lastWorld: Math.max(-1, ...p.progress.worldsDone),
+    stars: between(70, 95, rand),
+    accuracy: between(90, 100, rand),
+    ranges: between(40, 100, rand),
+    allParrots: rand() < 0.5,
+  };
 }
 
 /** Presses written for each known key: a full statistics window. */
@@ -81,7 +106,7 @@ function pick<T>(list: T[], n: number, rand: () => number): T[] {
 /**
  * Fills the super player's progress for a test or a demonstration: exactly the asked keys and
  * finished worlds; the stars, the range finds and each key's accuracy spread at random to give
- * the asked shares. Every finished level keeps at least one star. Only for the super player,
+ * the asked shares; the finished worlds' parrots at home, all or all but a random one. Every finished level keeps at least one star. Only for the super player,
  * which is never stored.
  */
 export function fillProgress(p: Profile, f: ProgressFill, rand: () => number = Math.random): void {
@@ -106,6 +131,12 @@ export function fillProgress(p: Profile, f: ProgressFill, rand: () => number = M
   pr.rewards = [...accessories().map((a) => `acc:${a.id}`), ...WORLD_REWARDS.filter((_, i) => pr.worldsDone.includes(i))];
   const things = WORLD_THINGS.filter((th) => pr.worldsDone.includes(th.world!));
   pr.rangeFinds = pick(things, Math.round(f.ranges * things.length), rand).map((th) => th.id);
+  // Won today, so none flies away before the map is even seen.
+  const today = localDate();
+  pr.parrots = f.allParrots ? [...pr.worldsDone] : pick(pr.worldsDone, pr.worldsDone.length - 1, rand).sort((a, b) => a - b);
+  pr.parrotBest = pr.parrots.length;
+  pr.parrotWonAt = pr.parrotCheckedAt = pr.parrots.length ? today : null;
+  pr.parrotFlown = [];
   p.stats = { keys: {}, sessions: [] };
   pr.trainedSeconds = 0;
   let chars = 0;

@@ -36,7 +36,7 @@ const CANDIDATES = 8;
 const PAUSE_AFTER = 1.1;
 /** Speed of the background's middle strip. */
 const SWAY = 2;
-/** The world's thing comes as this throw at the earliest, and only after a throw without a mistake. */
+/** The world's thing comes as this throw at the earliest, and only while every throw before went without a mistake. */
 const RARE_FROM = 4;
 
 /** The target's radius: big at low accuracy on the weak keys, smaller as it improves. */
@@ -229,8 +229,8 @@ export class AimMode extends HeroMode {
   private readonly worldSlot: number;
   private worldAt: number;
   private worldThrown = false;
-  /** The last throw went without a wrong key or a late word. */
-  private cleanBefore = false;
+  /** Every throw so far went without a wrong key or a late word. */
+  private cleanSoFar = true;
   /** World things hit in the middle during this run: they join the collection only when the run ends, not when it is left early. */
   private finds: string[] = [];
   /** Bullseyes in a row. */
@@ -341,7 +341,7 @@ export class AimMode extends HeroMode {
 
   /**
    * The next thing: the world's own one near the end of the base time (the last throw or the one
-   * before), every few throws while staying, never before throw RARE_FROM nor after a throw with a
+   * before), every few throws while staying, never before throw RARE_FROM nor once any throw had a
    * mistake; else the story pool in shuffled rounds.
    */
   private pickThing(): Thing {
@@ -350,7 +350,7 @@ export class AimMode extends HeroMode {
       const list = this.forced === 'all' ? THINGS.filter((th) => th.drawn || th.pics.some(hasImage)) : THINGS.filter((th) => ids.includes(th.id));
       if (list.length) return list[this.throws % list.length];
     }
-    const own = this.throws + 1 >= RARE_FROM && this.cleanBefore ? worldThing(this.L.def.world) : null;
+    const own = this.throws + 1 >= RARE_FROM && this.cleanSoFar ? worldThing(this.L.def.world) : null;
     if (own && this.L.staying && this.throws + 1 >= this.worldAt) {
       this.worldAt = this.throws + 1 + this.L.rng.int(...STAY_WORLD_EVERY);
       return own;
@@ -576,7 +576,7 @@ export class AimMode extends HeroMode {
 
   /** The throw is over (hit or fallen) and the target's line has been up a while; the next one comes until the time is up, or always while staying. */
   private done1(): void {
-    this.cleanBefore = !!this.flight && this.flight.errors + this.flight.slips === 0;
+    if (this.flight && this.flight.errors + this.flight.slips > 0) this.cleanSoFar = false;
     this.flight = null;
     this.throwTime = (this.throwTime + (this.time - this.throwAt)) / 2;
     if (this.L.staying || this.time < AIM_SECONDS) this.throw();

@@ -30,7 +30,9 @@
   **Klávesy** (with the trends over the last sessions: accuracy, rhythm and time per day,
   side by side on wide screens), **Úrovne** (the levels grouped by story, a heading with the
   story's picture and title, and by world, one row of level cells per world, each cell with
-  its three stars, filled or empty, in a fixed place) and **Cvičenia**. Under the progress sit
+  its three stars, filled or empty, in a fixed place; beside each world's name its parrot and
+  its rare range thing, in color once won, grey until then, so nothing a world gives is missing
+  from the list) and **Cvičenia**. Under the progress sit
   "QR kód celého postupu" and "Certifikát" ([parent controls](parent-controls.md)).
 - Once a parrot was ever won, the summary row has a **parrot** chip: the parrot's picture and
   "2 max 5", the parrots at home now and the most that were home at once; the tooltip says it

@@ -8,7 +8,8 @@
   first user interaction (on phones the first tap; see [devices.md](devices.md)). Off is real
   silence: nothing plays at all, not even at zero volume.
 - A right click on the sound button plays another random track from the whole library; the
-  next screen or level sets its own track again.
+  next screen or level sets its own track again. The sound button's tooltip names the song
+  playing now (its world's name, or menu, relaxing, break), unless the sound is off.
 
 ## Why
 - Sound supports rhythm and reward; noisy or forced audio is a common classroom complaint.

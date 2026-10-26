@@ -18,7 +18,7 @@ const LEVEL_ICON: Record<SoundLevel, keyof typeof ICONS> = { normal: 'sound', qu
 
 const soundLabel = () => `${t('common.sound')}: ${t(`common.sound_${audio.level}`)}`;
 
-/** Quick sound switch (on every screen): normal, quiet, off; F4 too. Full sound has the orange ring. */
+/** Quick sound switch (on every screen): normal, quiet, off; F4 too. Full sound has the orange ring; the tooltip names the song playing. */
 export function soundButton(): HTMLButtonElement {
   const b = roundButton('control', LEVEL_ICON[audio.level], '', () => audio.cycleLevel());
   b.classList.add('sound-btn');
@@ -30,13 +30,14 @@ export function soundButton(): HTMLButtonElement {
   const paint = () => {
     const label = soundLabel();
     b.setAttribute('aria-label', label);
-    tip(b, `${withKey(label, 'F4')}\n${t('common.nextSong')}`);
+    const song = audio.playing && audio.level !== 'off' ? `\n${t('common.song', { name: trackName(audio.playing) })}` : '';
+    tip(b, `${withKey(label, 'F4')}${song}\n${t('common.nextSong')}`);
     b.dataset.level = audio.level;
     b.setAttribute('aria-pressed', String(audio.level === 'normal'));
     paintRound(b, LEVEL_ICON[audio.level]);
   };
   paint();
-  const off = audio.onLevelChange(() => {
+  const off = audio.onChange(() => {
     if (!b.isConnected) return off();
     paint();
   });

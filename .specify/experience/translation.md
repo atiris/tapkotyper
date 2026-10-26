@@ -28,7 +28,10 @@
   a copy of an official language with every text filled, for own texts or a correction.
 - **Prefill** from any language fills the fields not yet translated; a prefilled field still
   counts as untranslated until it is rewritten (even to the same text) or kept with the keep
-  button (or Ctrl+Enter).
+  button (or Ctrl+Enter). A done field shows an "untranslated" button on hover or focus that
+  makes it count as untranslated again, so a keep by mistake can be taken back.
+- The base texts show exactly as the translation should be written (no capitals added by the
+  page), so a translator copies their case and punctuation.
 - **Progress**: a round button with the percentage of translated fields, per section in the
   contents too; a click goes to the next untranslated field. "Only untranslated" folds finished
   panels to one line; a search finds a text by base text, translation or key.

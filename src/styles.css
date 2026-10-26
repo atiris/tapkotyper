@@ -299,8 +299,11 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
 .menu-item .round-btn { width: 44px; height: 44px; pointer-events: none; }
 /* The star's service menu (super mode) hangs under the star, or under the Menu it is folded in. */
 .corner-menu-panel.service-menu { position: fixed; top: auto; z-index: 40; }
-.service-dialog { display: flex; flex-direction: column; gap: var(--sp-3); max-width: 560px; }
-.service-dialog .field { display: grid; gap: 0.3rem; }
+.service-dialog { display: flex; flex-direction: column; gap: var(--sp-2); max-width: 720px; }
+.service-dialog h2, .service-dialog > .hint { margin: 0; }
+.fill-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: 0.6rem 1.2rem; align-items: start; }
+.service-dialog .field { display: grid; gap: 0.15rem; margin: 0; }
+.service-dialog .field .hint { margin: 0; font-size: 0.8rem; }
 /* For a month after the super player removed or changed the settings password: a round warning tucked inside the panel's top right corner, the hint beside it kept clear. */
 .lock-group { position: relative; }
 .lock-group .lock-note { position: absolute; top: 8px; right: 8px; width: 36px; height: 36px; z-index: 1; }
@@ -1258,7 +1261,11 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-ink); }
 .own-preview { margin: 0.3rem 0 0.5rem; padding-left: 1.2rem; font-family: var(--font-game); font-size: 1.1rem; }
 .sound-btn[data-level='quiet'] { color: var(--ink-soft); }
 .story-levels h3.story-head { margin: 1.2rem 0 0.4rem; }
-.world-levels h4 { margin: 0.5rem 0 0.3rem; font-size: 0.95rem; color: var(--ink-soft); }
+.world-levels h4 { display: flex; align-items: center; gap: 0.6rem; margin: 0.5rem 0 0.3rem; font-size: 0.95rem; color: var(--ink-soft); }
+.world-extras { display: inline-flex; gap: 0.3rem; }
+.world-extra { display: grid; place-items: center; width: 1.8rem; height: 1.8rem; border-radius: 8px; background: var(--paper-2); }
+.world-extra img { max-width: 1.5rem; max-height: 1.5rem; object-fit: contain; }
+.world-extra.waiting img { filter: grayscale(1); opacity: 0.35; }
 .chart-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); margin-top: 1rem; }
 .chart-grid h3 { margin-top: 0; }
 .chart { width: 100%; max-width: 640px; height: auto; background: var(--paper-2); border-radius: 14px; }
@@ -1680,7 +1687,7 @@ body:has(.translate-screen) { scrollbar-gutter: stable; }
 .tr-item { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 0.7rem 0.8rem; display: flex; flex-direction: column; gap: 0.5rem; min-width: 0; }
 .tr-item[hidden], .tr-group[hidden], .tr-section[hidden] { display: none; }
 .tr-sit { display: flex; flex-wrap: wrap; gap: 0.3rem 0.6rem; align-items: baseline; }
-.tr-sit-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-soft); flex: 1 1 12rem; }
+.tr-sit-label { font-size: 0.8rem; font-weight: 700; color: var(--ink-soft); flex: 1 1 12rem; }
 .tr-sit .tr-input { flex: 1 1 14rem; }
 .tr-sit .tr-field { font-size: 0.85rem; }
 .tr-item-pic { display: flex; gap: 0.6rem; align-items: flex-start; }
@@ -1698,13 +1705,14 @@ body:has(.translate-screen) { scrollbar-gutter: stable; }
   font-size: 1rem; line-height: 1.4; resize: vertical; field-sizing: content; overflow-wrap: anywhere;
 }
 .tr-input.open .tr-field { border-style: dashed; color: var(--ink-soft); background: var(--paper); }
-.tr-open-tag, .tr-keep { display: none; }
+.tr-open-tag, .tr-keep, .tr-unkeep { display: none; }
 .tr-input.open .tr-open-tag { display: inline; position: absolute; top: -0.55rem; right: 4.6rem; font-size: 0.7rem; font-weight: 700; padding: 0 0.4em; border-radius: 6px; background: var(--paper); color: var(--ink-soft); }
-.tr-input.open .tr-keep {
+/* A done field offers the way back on hover or focus. */
+.tr-input.open .tr-keep, .tr-input:not(.open):is(:hover, :focus-within) .tr-unkeep {
   display: inline-flex; position: absolute; top: -0.65rem; right: 0.4rem; border: 1px solid var(--line); border-radius: 999px; background: var(--surface);
   font: inherit; font-size: 0.72rem; font-weight: 700; padding: 0.05em 0.6em; cursor: pointer; color: var(--ink);
 }
-.tr-input.open .tr-keep:hover { border-color: var(--brand); color: var(--brand-ink); }
+.tr-input.open .tr-keep:hover, .tr-unkeep:hover { border-color: var(--brand); color: var(--brand-ink); }
 .tr-warn { color: var(--danger-ink); font-size: 0.82rem; }
 .tr-warn:empty { display: none; }
 .tr-remove { align-self: flex-end; border: 0; background: none; color: var(--ink-soft); cursor: pointer; padding: 0.2rem; border-radius: 8px; margin-top: -0.2rem; }

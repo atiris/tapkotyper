@@ -82,7 +82,8 @@ test('Enter sends the paws to type a few words', async ({ page }) => {
   await page.goto('./');
   await page.locator('.start-screen').waitFor();
   await page.keyboard.type('supertapkotyper', { delay: 40 });
-  await page.locator('.map-side .btn.primary').click();
+  // The super player's progress is filled: Continue would go on, the first level brings its story.
+  await page.locator('.level-node').first().click();
   await skipStories(page);
   await page.locator('.posture-card').waitFor();
   await page.keyboard.press('Space');
@@ -99,12 +100,13 @@ test('a level left during its get-ready card does not swallow the next level\'s 
   await page.goto('./');
   await page.locator('.start-screen').waitFor();
   await page.keyboard.type('supertapkotyper', { delay: 40 });
-  await page.locator('.map-side .btn.primary').click();
+  // The super player's progress is filled: Continue would go on, the first level brings its story.
+  await page.locator('.level-node').first().click();
   await skipStories(page);
   await page.locator('.posture-card').waitFor();
   await page.goBack();
   await page.locator('.map-screen').waitFor();
-  await page.locator('.map-side .btn.primary').click();
+  await page.locator('.level-node').first().click();
   await page.locator('.posture-card').waitFor();
   await page.keyboard.press('Space');
   await page.locator('.level-tapko:not(.waiting)').waitFor();
@@ -137,7 +139,8 @@ test('Escape closes the get-ready card like the space bar and starts the level',
   await page.goto('./');
   await page.locator('.start-screen').waitFor();
   await page.keyboard.type('supertapkotyper', { delay: 40 });
-  await page.locator('.map-side .btn.primary').click();
+  // The super player's progress is filled: Continue would go on, the first level brings its story.
+  await page.locator('.level-node').first().click();
   await skipStories(page);
   await page.locator('.posture-card').waitFor();
   await expect(page.locator('.posture-card .modal-x')).toHaveAttribute('data-tip', 'Close and start (Esc)');

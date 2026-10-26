@@ -114,15 +114,22 @@ class AudioEngine {
     }
   }
 
-  onLevelChange(fn: () => void): () => void {
+  /** Calls `fn` when the sound level or the music track changes; returns the cleanup. */
+  onChange(fn: () => void): () => void {
     this.listeners.push(fn);
     return () => (this.listeners = this.listeners.filter((l) => l !== fn));
+  }
+
+  /** The music track set now (`music-<name>` without the prefix), null in silence. */
+  get playing(): string | null {
+    return this.track;
   }
 
   /** Crossfades to a music track (`music-<name>`); null stops the music. */
   music(name: string | null): void {
     if (name === this.track) return;
     this.track = name;
+    this.listeners.forEach((l) => l());
     const ctx = this.ctx;
     if (!ctx) return;
     const old = this.current;

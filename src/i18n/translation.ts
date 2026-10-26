@@ -183,6 +183,11 @@ export function touch(l: OwnLang, id: string): void {
   if (!l.touched.includes(id)) l.touched.push(id);
 }
 
+/** The field counts as untranslated again; its text stays. */
+export function untouch(l: OwnLang, id: string): void {
+  l.touched = l.touched.filter((x) => x !== id);
+}
+
 /** Adds an empty variant at the end of a pool. */
 export function addVariant(l: OwnLang, key: string, base: Dict): void {
   const n = variantCount(l, key, base);

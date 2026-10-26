@@ -18,7 +18,9 @@
   used. Practice never stops for lack of words.
 - Dictation is only what a voice says clearly: dictionary words, and single letters while the
   known letters make too few of them (a spoken "jjfjf" cannot be followed); no digits,
-  capitals or punctuation.
+  capitals, apostrophes or punctuation, and no made-up words. Own words of a parent or a task
+  join a dictation only when the dictionary has them as written; own text never does: a child
+  cannot hear where a capital or a comma goes.
 - No word may be offensive or scary; pseudo-words are checked against a small block list.
 - The first level asks one chunk per target, never two with a space; the second level is the
   first that asks for the space bar.

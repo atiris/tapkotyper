@@ -23,7 +23,7 @@
      trains, the middle, a fall that costs nothing, the collection and Enter), the parrot (where it
      opens, why it repeats words, parrots that fly away and the Parrot badge) and badges.
   4. **Settings**, for the teacher or parent: under the Settings heading, that they are for the teacher or
-     parent, open with the gear, and until locked with a password open for anyone by one confirm button, what each settings tab does (child, practice, look and sound,
+     parent, open with the gear, and until locked with a password open for anyone by one confirm button, what each settings tab does (child, practice, sounds and interface,
      password, own words and text, surprises, tasks, keys, data and the translator), with one section per
      settings tab, and what is lost without a backup. By the password, plainly: it guards the
      settings only inside the game; the data in the browser is not encrypted and anyone with

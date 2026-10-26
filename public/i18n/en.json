@@ -895,6 +895,10 @@
     "rangeAwards": "Target range awards",
     "parrots": "Parrots at home: {n}, most at once: {best}",
     "parrotCount": "{n} max {best}",
+    "parrotHome": "This world's parrot is at home",
+    "parrotAway": "This world's parrot is not at home yet",
+    "rareFound": "Rare thing from the range: {name}",
+    "rareWaiting": "The rare thing of this range still waits",
     "chars14": "{n} letters typed in the last 14 days"
   },
   "stats": {
@@ -921,6 +925,7 @@
     "keyHistorySoon": "Play on at least two days to see how it changes.",
     "practiceKey": "Practice {key} (1 min)",
     "medals": "My medals",
+    "medalsHint": "You get a medal each time you type accurately enough that the game steps up on its own: things move a bit faster or longer words come.",
     "shifted": "⇧ symbols"
   },
   "wardrobe": {
@@ -1056,10 +1061,9 @@
     "group": {
       "child": "Student",
       "practice": "Practice",
-      "look": "Look and sound",
+      "look": "Sounds and interface",
       "lock": "Settings password",
-      "profiles": "Profiles",
-      "tools": "Tools"
+      "profiles": "Profiles"
     },
     "childName": "Student's name (optional)",
     "switchTitle": "Switch to another student",
@@ -1440,7 +1444,7 @@
         "Session length before a break: then the game invites the student to a short rest.",
         "Finger guide: fades when keys are mastered, or always on or off. You can lock it for the student.",
         "Wardrobe time earned by practice: 1 minute in the wardrobe for 5 minutes of practice, at most 7 minutes. Turned off, the wardrobe is always open.",
-        "Look and sound: font, large text, reduced motion, high contrast, volumes, fullscreen.",
+        "Sounds and interface: volumes, font, large text, reduced motion, high contrast, fullscreen. **Translate the game** opens the translator page: translate the game into a new language there, or change its texts to your own.",
         "The settings password locks the settings for every player on this device. We cannot recover a forgotten password.",
         "The password protects the settings only inside the game. All data (players, progress and settings) is stored in this browser and the password does not encrypt it. Anyone who gets to it directly, for example with the browser's developer tools, can read and change it.",
         "Anyone who uses this computer can clear the site's data in the browser. That removes every player, their progress, the results and the password. So export your progress to a file now and then."
@@ -1466,8 +1470,7 @@
       "data": [
         "Everything is stored **only in this browser**. When the browser's data is cleared or the computer breaks, the progress is lost unless you have a backup.",
         "So **export the profile** to a file now and then. Import loads it back, or on another device.",
-        "Move to another computer: the whole profile is inside a link. A guest profile is forgotten when the tab closes.",
-        "Tools: **Translate the game** opens the translator page. Translate the game into a new language there, or change its texts to your own."
+        "Move to another computer: the whole profile is inside a link. A guest profile is forgotten when the tab closes."
       ]
     },
     "keysTitle": "Play with the keyboard only",
@@ -1565,13 +1568,20 @@
     "end": "End super mode",
     "lockRemovedAt": "The super account removed or changed the settings password on {date}.",
     "fill": "Fill in progress...",
-    "fillHint": "Keys and worlds are set exactly; stars, accuracy and ranges are spread at random over the finished worlds.",
+    "fillHint": "Test progress of the super player. Keys and worlds are set exactly; the rest is spread at random over the finished worlds.",
     "fillKeys": "Mastered keys (0 to {n})",
     "fillWorld": "Last finished world",
     "noWorld": "None",
     "fillStars": "Stars earned",
     "fillAccuracy": "Accuracy",
-    "fillRanges": "Ranges earned",
+    "fillRanges": "Rare things from target ranges",
+    "fillKeysHint": "Keys in lesson order the player already knows.",
+    "fillWorldHint": "This world and every one before it are finished.",
+    "fillStarsHint": "Share of the 3 stars in each level of the finished worlds.",
+    "fillAccuracyHint": "Accuracy of every known key, give or take a little.",
+    "fillRangesHint": "Share of the rare things found at the target ranges of the finished worlds.",
+    "fillParrots": "All parrots",
+    "fillParrotsHint": "The finished worlds' parrots are at home; unchecked, one is missing.",
     "fillApply": "Fill in",
     "filled": "The progress is filled in.",
     "parrotAway": "A parrot flies away",
@@ -3175,6 +3185,8 @@
     "untranslated": "untranslated",
     "keep": "Keep",
     "keepHint": "The text stays the same and the field counts as translated (Ctrl+Enter).",
+    "unkeep": "Untranslated",
+    "unkeepHint": "The field counts as untranslated again; the text stays.",
     "addVariant": "Add a variant",
     "removeVariant": "Remove this variant",
     "onlyOpen": "Only untranslated",

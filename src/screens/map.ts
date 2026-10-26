@@ -1,4 +1,4 @@
-import { app, go, reduceMotion, saveProfile } from '../app/app';
+import { app, go, saveProfile } from '../app/app';
 import { audio } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
 import { tapkoElement } from '../gfx/tapko';
@@ -17,7 +17,7 @@ import { cornerControls, settingsButton } from '../ui/chrome';
 import { offerInstall } from '../ui/install';
 import { tipShown } from '../ui/tooltip';
 import { onTypedWord } from '../ui/typed-word';
-import { flyingParrot, parrotVisit } from '../ui/parrot-visit';
+import { parrotVisit } from '../ui/parrot-visit';
 import { aroPerch } from '../ui/aro';
 import { ownTextPhrases } from '../game/modes/practice';
 import { levelTitleWords } from '../ui/hud';
@@ -77,6 +77,9 @@ function welcomeCard(p: Profile, start: () => void): HTMLElement | null {
       button(t('map.welcome.start'), () => { done(); start(); }, 'btn primary', 'play')));
   return card;
 }
+
+/** Milliseconds Aro waits after Tapko's line about flown parrots before he says goodbye. */
+const ARO_AFTER_MS = 1800;
 
 export function mapScreen(root: HTMLElement): () => void {
   const p = app.profile!;
@@ -149,7 +152,7 @@ export function mapScreen(root: HTMLElement): () => void {
         button(t('progress.title'), () => go('progress'), 'btn', 'chart'),
         rescue ? button(t('map.rescue'), () => go('level', { id: 'rescue' }), 'btn', 'rescue') : null,
         rescue ? button(t('map.friends'), () => go('friends'), 'btn', 'dragon') : null),
-      h('div', { class: 'story-rows' }, welcome, ...STORIES.map((s) => storyRow(p, s, next?.id, held, keysBubble, lockBubble, flown))))));
+      h('div', { class: 'story-rows' }, welcome, ...STORIES.map((s) => storyRow(p, s, next?.id, held, keysBubble, lockBubble))))));
   // The arrows walk the levels and the closed worlds like a grid.
   arrowFocus(root.querySelector('.story-rows')!, '.level-node, .island-art[tabindex]');
   // Enter starts at once: the welcome's start (it marks the welcome seen), else Continue.
@@ -158,9 +161,9 @@ export function mapScreen(root: HTMLElement): () => void {
     const worlds = flown.map((w) => t(`worlds.${WORLDS[w]}`)).join(', ');
     bubble.replaceChildren(h('p', {}, t(flown.length === 1 ? 'map.parrotFlown' : 'map.parrotsFlown', { worlds })));
     bubble.hidden = false;
-    flyOff(root, flown);
   }
-  if (aroLeaves) aro?.flyOff(tList('parrot.goodbye'), false);
+  // Tapko tells which parrots flew away first, then Aro says goodbye and leaves.
+  if (aroLeaves) aro?.flyOff(tList('parrot.goodbye'), false, flown.length ? ARO_AFTER_MS : 0);
   if (aroArrives) aro?.arrive(tList('parrot.arrive'));
   // One greeting at a time: the install offer waits for a map without the welcome.
   if (p.id !== SUPER_ID && !welcome) offerInstall(p.companion);
@@ -204,50 +207,23 @@ function aimNode(open: boolean, world: number): HTMLElement {
     pic ? h('img', { class: 'level-act', src: pic, alt: '' }) : icon('target', 'icon aim-icon'));
 }
 
-/** The parrot node's picture: its head while the parrot is at home, else its empty short perch. */
-const parrotPic = (home: boolean) => imageUrl(home ? 'ui-act-parrot-head' : 'obj-parrot-perch-short');
-
-/** The parrot of a world (its picture by `parrotPic`), faded and closed until the world is finished. */
-function parrotNode(p: Profile, open: boolean, world: number, flying: boolean): HTMLElement {
-  const home = flying || p.progress.parrots.includes(world);
-  const pic = parrotPic(home);
+/** The parrot of a world: its head while it is at home, else its empty short perch; faded and closed until the world is finished. */
+function parrotNode(p: Profile, open: boolean, world: number): HTMLElement {
+  const home = p.progress.parrots.includes(world);
+  const pic = imageUrl(home ? 'ui-act-parrot-head' : 'obj-parrot-perch-short');
   return h('button', {
-    class: `level-node parrot-node ${home ? 'home' : ''}`, type: 'button', disabled: !open, 'data-world': String(world),
+    class: `level-node parrot-node ${home ? 'home' : ''}`, type: 'button', disabled: !open,
     'aria-label': `${t('parrot.title')}${home ? `, ${t('map.parrotHome')}` : ''}`, tip: sideTip(open, 'map.parrotTip'),
     onClick: () => go('level', { id: 'parrot', world }),
   }, pic ? h('img', { class: 'level-act', src: pic, alt: '' }) : icon('star', 'icon'));
 }
 
-/** Parrots that flew away leave their nodes on the map: a small parrot flies up and out of the window, the node showing the empty perch. */
-function flyOff(root: HTMLElement, worlds: number[]): void {
-  const nodes = worlds.map((w) => root.querySelector<HTMLElement>(`.parrot-node[data-world="${w}"]`)).filter((n) => n !== null);
-  const perch = parrotPic(false);
-  const leave = () => {
-    for (const n of nodes) {
-      n.classList.remove('home');
-      const img = n.querySelector('img');
-      if (img && perch) img.src = perch;
-    }
-  };
-  if (reduceMotion() || !imageUrl('obj-parrot-flying')) return leave();
-  requestAnimationFrame(() => {
-    for (const n of nodes) {
-      const r = n.getBoundingClientRect();
-      const bird = flyingParrot('parrot-fly', `left:${r.left + r.width / 2}px;top:${r.top + r.height / 2}px`)!;
-      bird.addEventListener('animationend', (e) => e.target === bird && bird.remove());
-      root.append(bird);
-    }
-    setTimeout(leave, 600);
-  });
-}
-
 /**
  * One story: its title and its worlds as islands; a story still closed says when it opens.
  * A level reached without enough keys shows a key and lets the bubble say how many are missing
- * and which letters need accuracy (`held`); every world shows its target range and its parrot, open once the world is finished
- * (in colour while the parrots in `flying` leave).
+ * and which letters need accuracy (`held`); every world shows its target range and its parrot, open once the world is finished.
  */
-function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held: string, keysBubble: (n: number, world: number) => void, lockBubble: (world: number) => void, flying: number[]): HTMLElement {
+function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held: string, keysBubble: (n: number, world: number) => void, lockBubble: (world: number) => void): HTMLElement {
   const islands = story.worlds.map((wi) => {
     const w = WORLDS[wi];
     const open = isWorldUnlocked(p, wi);
@@ -283,7 +259,7 @@ function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held:
       }) }, img ? h('img', { src: img, alt: '' }) : h('div', { class: 'island-fallback' }), open ? null : h('span', { class: 'lock', tip: lock || null }, icon('lock')),
         tier ? badge(wi, tier, true) : null),
       h('h3', {}, `${wi + 1}. ${t(`worlds.${w}`)}`),
-      h('div', { class: 'level-row' }, ...levels, aimNode(aimOpen(p, wi), wi), parrotNode(p, aimOpen(p, wi), wi, flying.includes(wi))));
+      h('div', { class: 'level-row' }, ...levels, aimNode(aimOpen(p, wi), wi), parrotNode(p, aimOpen(p, wi), wi)));
   });
   const closed = !storyOpen(p, story);
   return h('section', { class: `story-row story-${story.id}` },

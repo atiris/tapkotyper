@@ -12,27 +12,25 @@ const SRC = 'assets-src';
 const OUT = 'public/assets';
 const SPRITE_MAX = 384;
 const ICON_MAX = 512; // ui-icon is also the app icon (scripts/icons.mjs), ui-icon-hr the start page's large logo
-// The certificate's frame is cut from one top-left corner (the fox) with a band of paw prints running
-// right and down (measured on the 1024 px source). The top corners are the fox, mirrored on the right;
-// the bottom corners are the plain bands joined on the diagonal. One pair of paw prints of each band
-// is the edge tile the page repeats (CSS border-image, round), so the prints stay upright on all sides.
+// The certificate's frame comes from one top-left corner (measured on the 1024 px source): a band with
+// a sleeping fox in the corner and pairs of paw prints along both arms. The page draws the band itself
+// (CSS, its colors and widths measured here) and lays on it the fox, cut out and turned into every
+// corner, and the paw pairs, repeated with even gaps so they always walk round clockwise.
 const FRAME = 'ui-cert-frame';
 const FRAME_SRC = 1024;
-/** Width of the fox corner (the top band's paw pairs repeat from here) and its height (the left band's). */
-const FOX_W = 372;
-const FOX_H = 449;
-/** One pair of paw prints: along the top band from FOX_W, along the left band from FOX_H. */
-const PAWS_X = 87;
-const PAWS_Y = 84;
-/** The top band's outer and inner edge (rows) and the left band's (columns). */
-const BAND_TOP = [90, 234];
-const BAND_LEFT = [87, 233];
-/** Where the bands run plain, without prints: the top band from this column, the left band from this row. */
-const PLAIN_X = 520;
-const PLAIN_Y = 600;
-/** Height of the bottom corners and edge; the bottom band lies as far from the edge as the top one. */
-const FRAME_BOTTOM = 300;
-// The certificate's stamp and the parrot's signature are printed a few centimetres wide.
+/** The fox's square from the corner (shifted FOX_X px right, so the band's outer edge lies 88.5 px in from its top and its left). */
+const FOX_SIZE = 372;
+const FOX_X = 2;
+/** A point inside the fox, and the row under its tail (a paw print touches the tail from below). */
+const FOX_SEED = [160, 180];
+const FOX_BOTTOM = 355;
+/** One pair of paw prints on the left arm, toes up: its rows, and the arm's columns. */
+const PAWS_ROWS = [452, 534];
+const PAWS_COLS = [90, 232];
+/** Plain places of the arms (no fox, no prints), to tell them from the band: a column of the top arm, a row of the left arm. */
+const PLAIN_COL = 800;
+const PLAIN_ROW = 800;
+// The parrot's signature on the certificate is printed a few centimetres wide.
 const STAMP_MAX = 640;
 const BG_WIDTH = 1920;
 // The flying parrot's wing-beat pictures (obj-parrot-flying, -2, -3, -4) take one shared crop, so they lie on each other.
@@ -341,7 +339,7 @@ async function processImage(name, file, manifest) {
   keyOut(data, w, h, name.startsWith(MEADOW) ? { layer: true, pocket: 0.3 } : { layer: name.startsWith('bg-') });
   // Bolt's pictures stay square, so the raincoat overlay fits every one of them; Melody's keep her size in every mood.
   if (name === 'base-template' || name.startsWith('tapko-') || name.startsWith('robot') || name.startsWith('fairy-')) return writeSquare(name, data, w, h, manifest);
-  if (name === FRAME) return writeFrame(name, data, w, h, manifest);
+  if (name === FRAME) return writeFrame(file, data, w, h, manifest);
   if (name.startsWith(MEADOW)) return writeTile(name, data, w, h, bbox(data, w, h), manifest);
   if (name.startsWith('bg-')) {
     // A mid or near layer (1376 x 768, its band on the key; see scripts/bg-seam.mjs): the colors
@@ -352,48 +350,78 @@ async function processImage(name, file, manifest) {
     return;
   }
   const box = bbox(data, w, h);
-  const max = name.startsWith('ui-icon') ? ICON_MAX : name === 'ui-cert-stamp' || name === 'ui-cert-parrot' ? STAMP_MAX : SPRITE_MAX;
+  const max = name.startsWith('ui-icon') ? ICON_MAX : name === 'ui-cert-parrot' ? STAMP_MAX : SPRITE_MAX;
   const info = await webp(sharp(data, { raw: { width: w, height: h, channels: 4 } }).extract(box).resize(max, max, { fit: 'inside', withoutEnlargement: true })).toFile(join(OUT, `${name}.webp`));
   manifest.images[name] = { w: info.width, h: info.height };
 }
 
 /**
- * The certificate frame for border-image (slice FOX_H FOX_W FRAME_BOTTOM FOX_W): the fox corners on
- * top, the plain corners at the bottom, and one pair of paw prints as each edge. The right side is
- * the left one mirrored; the bottom band is the top one moved down, so its prints stay upright.
+ * The certificate frame's pictures from its keyed source `data`: `ui-cert-fox` (the fox alone, the page
+ * turns it into each corner) and one pair of paw prints alone, `ui-cert-paws-up` and `ui-cert-paws-right`.
+ * They are told from the band by comparing every pixel of the raw source with the plain band at its place.
  */
-async function writeFrame(name, data, w, h, manifest) {
-  if (w !== FRAME_SRC || h !== FRAME_SRC) throw new Error(`${name}: the cut lines are measured on a ${FRAME_SRC} px square`);
-  const W = 2 * FOX_W + PAWS_X, H = FOX_H + PAWS_Y + FRAME_BOTTOM;
-  const out = Buffer.alloc(W * H * 4);
-  const at = (x, y) => (y * w + x) * 4;
-  // Writes the source pixel (sx, sy) at (x, y) and, left of the edge tiles, at its mirror on the right.
-  const put = (x, y, sx, sy) => {
-    data.copy(out, (y * W + x) * 4, at(sx, sy), at(sx, sy) + 4);
-    if (x < FOX_W) data.copy(out, (y * W + W - 1 - x) * 4, at(sx, sy), at(sx, sy) + 4);
+async function writeFrame(file, data, w, h, manifest) {
+  if (w !== FRAME_SRC || h !== FRAME_SRC) throw new Error(`${file}: the cut lines are measured on a ${FRAME_SRC} px square`);
+  const raw = await sharp(file).removeAlpha().raw().toBuffer();
+  const rgb = (x, y) => raw.subarray((y * w + x) * 3, (y * w + x) * 3 + 3);
+  // The plain band (or the key outside it) at (x, y): the top arm's profile above the corner's diagonal, the left arm's below it.
+  const plain = (x, y) => (y - 88 <= x - 90 ? rgb(PLAIN_COL, y) : rgb(x, PLAIN_ROW));
+  const differs = (x, y, limit) => {
+    const a = rgb(x, y), b = plain(x, y);
+    return Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]) > limit;
   };
-  // The bottom band is the top band moved up by `shift` rows of the source.
-  const shift = BAND_TOP[0] - (FRAME_BOTTOM - BAND_TOP[1]);
-  const bottom = H - FRAME_BOTTOM;
-  for (let x = 0; x < FOX_W; x++) {
-    for (let y = 0; y < FOX_H; y++) put(x, y, x, y);
-    for (let t = 0; t < PAWS_Y; t++) put(x, FOX_H + t, x, FOX_H + t);
-    // The bottom corner: the plain left band coming down and the plain bottom band going right, joined
-    // on the diagonal from the outer corner to the inner one; nothing below the bottom band.
-    for (let r = 0; r < FRAME_BOTTOM; r++) {
-      const sy = r + shift;
-      if (sy >= BAND_TOP[1]) continue;
-      const fromLeft = x < BAND_LEFT[1] && (r < BAND_TOP[0] - shift || x - BAND_LEFT[0] < BAND_TOP[1] - sy);
-      if (fromLeft) put(x, bottom + r, x, PLAIN_Y + r);
-      else put(x, bottom + r, PLAIN_X + x, sy);
+  // Pixels of the box x0..x1, y0..y1 picked by `keep`, grown by one pixel for the soft edge, cut out of the keyed picture.
+  const cut = (x0, y0, x1, y1, keep) => {
+    const bw = x1 - x0, bh = y1 - y0;
+    const out = Buffer.alloc(bw * bh * 4);
+    for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) {
+      let near = false;
+      for (let dy = -1; dy <= 1 && !near; dy++) for (let dx = -1; dx <= 1 && !near; dx++) near = keep(x + dx, y + dy);
+      if (near) data.copy(out, (y * bw + x) * 4, ((y + y0) * w + x + x0) * 4, ((y + y0) * w + x + x0) * 4 + 4);
     }
-  }
-  for (let t = 0; t < PAWS_X; t++) {
-    for (let y = 0; y < FOX_H; y++) put(FOX_W + t, y, FOX_W + t, y);
-    for (let r = 0; r < FRAME_BOTTOM; r++) if (r + shift < BAND_TOP[1]) put(FOX_W + t, bottom + r, FOX_W + t, r + shift);
-  }
-  await webp(sharp(out, { raw: { width: W, height: H, channels: 4 } })).toFile(join(OUT, `${name}.webp`));
-  manifest.images[name] = { w: W, h: H };
+    return { out, bw, bh };
+  };
+  // The fox: everything unlike the band joined to its middle, with the holes inside it filled (band lines it covers).
+  const n = FOX_SIZE * FOX_SIZE;
+  const fox = new Uint8Array(n);
+  const flood = (mark, start, ok) => {
+    const queue = [...start];
+    for (const p of queue) mark[p] = 1;
+    while (queue.length) {
+      const p = queue.pop();
+      const x = p % FOX_SIZE, y = (p / FOX_SIZE) | 0;
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+        const xx = x + dx, yy = y + dy, q = yy * FOX_SIZE + xx;
+        if (xx < 0 || yy < 0 || xx >= FOX_SIZE || yy >= FOX_SIZE || mark[q] || !ok(xx, yy)) continue;
+        mark[q] = 1;
+        queue.push(q);
+      }
+    }
+  };
+  flood(fox, [FOX_SEED[1] * FOX_SIZE + FOX_SEED[0]], (x, y) => y < FOX_BOTTOM && differs(x + FOX_X, y, 70));
+  // Where the fox's outline lay on a band line it looked like the band: dark pixels close to the fox are its outline.
+  const dark = (x, y) => { const c = rgb(x + FOX_X, y); return c[0] < 140 && c[1] < 110 && c[2] < 100; };
+  const near = (x, y, r) => { for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) if (fox[(y + dy) * FOX_SIZE + x + dx]) return true; return false; };
+  const outline = [];
+  for (let y = 3; y < FOX_BOTTOM; y++) for (let x = 3; x < FOX_SIZE - 3; x++) if (!fox[y * FOX_SIZE + x] && dark(x, y) && near(x, y, 3)) outline.push(y * FOX_SIZE + x);
+  for (const q of outline) fox[q] = 1;
+  const outside = new Uint8Array(n);
+  const edge = [];
+  for (let i = 0; i < FOX_SIZE; i++) edge.push(i, (FOX_SIZE - 1) * FOX_SIZE + i, i * FOX_SIZE, i * FOX_SIZE + FOX_SIZE - 1);
+  flood(outside, edge.filter((p) => !fox[p]), (x, y) => !fox[y * FOX_SIZE + x]);
+  const inFox = (x, y) => x >= 0 && y >= 0 && x < FOX_SIZE && y < FOX_SIZE && !outside[y * FOX_SIZE + x];
+  const f = cut(FOX_X, 0, FOX_X + FOX_SIZE, FOX_SIZE, inFox);
+  await webp(sharp(f.out, { raw: { width: f.bw, height: f.bh, channels: 4 } })).toFile(join(OUT, 'ui-cert-fox.webp'));
+  manifest.images['ui-cert-fox'] = { w: f.bw, h: f.bh };
+  // The paw pair: everything unlike the band in one stretch of the left arm.
+  const [c0, c1] = PAWS_COLS, [r0, r1] = PAWS_ROWS;
+  const paw = (x, y) => x >= 0 && y >= 0 && x < c1 - c0 && y < r1 - r0 && differs(x + c0, y + r0, 50);
+  const t = cut(c0, r0, c1, r1, paw);
+  const tile = sharp(t.out, { raw: { width: t.bw, height: t.bh, channels: 4 } });
+  await webp(tile.clone()).toFile(join(OUT, 'ui-cert-paws-up.webp'));
+  await webp(tile.clone().rotate(90)).toFile(join(OUT, 'ui-cert-paws-right.webp'));
+  manifest.images['ui-cert-paws-up'] = { w: t.bw, h: t.bh };
+  manifest.images['ui-cert-paws-right'] = { w: t.bh, h: t.bw };
 }
 
 /**

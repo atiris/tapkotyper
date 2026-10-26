@@ -1,6 +1,7 @@
 import { imageUrl } from '../gfx/assets';
 import { tapkoElement } from '../gfx/tapko';
 import { STORIES, WORLDS } from '../game/levels';
+import { hasParrotBadge } from '../game/parrots';
 import { locale, t, tList } from '../i18n/i18n';
 import { masterySummary, recentTyping } from '../learning/stats';
 import type { Profile } from '../storage/schema';
@@ -29,12 +30,26 @@ function signature(pic: string, name: string, cls: string): HTMLElement {
   return h('span', { class: 'cert-sign' }, src ? h('img', { class: cls, src, alt: '' }) : null, h('span', {}, name));
 }
 
-/** The certificate: the logo, the writer and their character, the results, the progress in the stories, a line on how it goes, the date and the signatures of Aro and Tapko. */
+/**
+ * The frame: a band drawn by the page, the same fox in every corner (turned round with the band) and
+ * pairs of paw prints along each side, walking round clockwise; null without its pictures.
+ */
+function frame(): HTMLElement | null {
+  const fox = imageUrl('ui-cert-fox');
+  const right = imageUrl('ui-cert-paws-right');
+  const up = imageUrl('ui-cert-paws-up');
+  if (!fox || !right || !up) return null;
+  return h('div', { class: 'cert-frame', 'aria-hidden': 'true', style: `--paws-right:url(${right});--paws-up:url(${up})` },
+    h('div', { class: 'cert-band' }),
+    ...['top', 'right', 'bottom', 'left'].map((side) => h('div', { class: `cert-paws ${side}` })),
+    ...['tl', 'tr', 'br', 'bl'].map((corner) => h('img', { class: `cert-fox ${corner}`, src: fox, alt: '' })));
+}
+
+/** The certificate: the brand, the writer and their character, the results, the progress in the stories, a line on how it goes, the date and the signatures (Aro's while the Parrot badge is held, and Tapko's). */
 function certificate(p: Profile): HTMLElement {
   const m = masterySummary(p);
   const recent = recentTyping(p, 14);
-  const frame = imageUrl('ui-cert-frame');
-  const logo = imageUrl('ui-icon-hr');
+  const border = frame();
   const realName = p.name && p.name !== nickname(p) ? p.name : '';
   const stats = [
     stat('ui-key', `${m.mastered}/${m.total}`, t('cert.keys')),
@@ -48,11 +63,9 @@ function certificate(p: Profile): HTMLElement {
     const pic = storyPicture(s);
     return h('li', {}, pic ? h('img', { src: pic, alt: '' }) : null, h('span', {}, t(s.title)), h('b', {}, `${done}/${s.worlds.length}`));
   });
-  return h('div', { class: 'cert-sheet' },
-    h('div', { class: `cert${frame ? '' : ' no-frame'}`, style: frame ? `border-image-source: url(${frame})` : '' },
-      h('header', { class: 'cert-head' },
-        logo ? h('img', { class: 'cert-logo', src: logo, alt: '' }) : null,
-        h('span', { class: 'cert-brand' }, h('span', {}, 'Tapko'), h('span', { class: 'title-b' }, 'Typer'))),
+  return h('div', { class: 'cert-sheet' }, border,
+    h('div', { class: `cert${border ? '' : ' no-frame'}` },
+      h('header', { class: 'cert-brand' }, h('span', {}, 'Tapko'), h('span', { class: 'title-b' }, 'Typer')),
       h('h1', { class: 'cert-title' }, t('cert.title')),
       h('p', { class: 'cert-sub' }, t('cert.subtitle')),
       h('p', { class: 'cert-awarded' }, t('cert.awarded')),
@@ -63,7 +76,9 @@ function certificate(p: Profile): HTMLElement {
       h('p', { class: 'cert-praise' }, praise(p, m.mastered, m.total, recent.accuracy, recent.chars > 0)),
       h('footer', { class: 'cert-foot' },
         h('span', { class: 'cert-date' }, t('cert.date', { date: new Date().toLocaleDateString(locale()) })),
-        h('span', { class: 'cert-signs' }, signature('ui-cert-parrot', t('cert.signParrot'), 'cert-parrot'), signature('ui-cert-stamp', t('cert.sign'), 'cert-stamp')))));
+        h('span', { class: 'cert-signs' },
+          hasParrotBadge(p) ? signature('ui-cert-parrot', t('cert.signParrot'), 'cert-parrot') : null,
+          signature('ui-icon-hr', t('cert.sign'), 'cert-tapko')))));
 }
 
 /**

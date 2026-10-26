@@ -55,9 +55,8 @@
     stays);
   - 21 days after the last win the parrots drop straight to the floor.
   The roll runs when a player's map opens. The map then says it once in the narrator's bubble
-  ("Uletel ti papagáj zo sveta Lúka. Choď poň!", several worlds in one line), and a small
-  parrot flies up and out of the window from each node in about two seconds while the node turns
-  into the empty perch. With less motion the nodes simply change.
+  ("Uletel ti papagáj zo sveta Lúka. Choď poň!", several worlds in one line); the nodes already
+  show their empty perches, no parrot flies from them.
 - **Parrot badge** (Odznak Papagáj): held while the parrot of every finished world is at home
   (at least one). A newly finished world without its parrot takes it away until that parrot is
   won, and so does a parrot flying away. It is worth 7 points in the treasure chest
@@ -72,8 +71,8 @@
     "Vzzlieétam!"), spreads his wings and flies off to the right across the page with beating
     wings, flies round and lands on the perch again.
   - When the badge is lost (a parrot flew away or a round was lost) the next map shows him on the
-    perch once more: he says goodbye ("Frrčiíím prreč!", "Odlieétam!", "Zdrrhaáám!",
-    "Mizznemm!", "Guúúd baáj") and flies off to the right. The empty perch stays while that map
+    perch once more: after Tapko's line about the flown parrots he says goodbye ("Frrčiíím
+    prreč!", "Odlieétam!", "Zdrrhaáám!", "Mizznemm!", "Guúúd baáj") and flies off to the right. The empty perch stays while that map
     is shown; the next map has no perch.
   - When the badge is won the first map after it shows the empty perch; Aro flies in from the
     right, lands and says hello ("Somm domma.", "Aro prrilieéta!", "Aro je dommaá!", "Dobrryý

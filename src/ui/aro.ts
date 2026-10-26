@@ -18,8 +18,8 @@ export interface AroPerch {
   el: HTMLElement;
   /** A small hop on the perch. */
   hop(): void;
-  /** Says one of `lines`, spreads his wings and flies off to the right across the window; `back`: he flies round and lands again. */
-  flyOff(lines: string[], back: boolean): void;
+  /** After `wait` ms says one of `lines`, spreads his wings and flies off to the right across the window; `back`: he flies round and lands again. */
+  flyOff(lines: string[], back: boolean, wait?: number): void;
   /** Flies in from the right onto the empty perch and says one of `lines`. */
   arrive(lines: string[]): void;
   /** Ends every flight and timer (the page is left). */
@@ -76,11 +76,11 @@ export function aroPerch(seated: boolean, onClick: (aro: AroPerch) => void): Aro
       void bird.offsetWidth;
       bird.classList.add('hop');
     },
-    flyOff: (lines, back) => {
+    flyOff: (lines, back, wait = 0) => {
       if (busy) return;
       busy = true;
-      say(lines, SAY_MS + 400);
-      later(SAY_MS, () => {
+      later(wait, () => say(lines, SAY_MS + 400));
+      later(wait + SAY_MS, () => {
         const from = seat();
         bird.classList.add('away');
         const landed = () => (busy = false);

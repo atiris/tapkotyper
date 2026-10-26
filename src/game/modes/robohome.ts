@@ -6,6 +6,9 @@ import { Mode } from '../mode';
 import type { Target } from '../typing';
 import { HeroMode } from './planet';
 
+/** The pictures this world's levels draw; a level opens when they are loaded. */
+const PICTURES = ['obj-box', 'obj-lamp', 'obj-lamp-on', 'obj-robot-small-1', 'obj-robot-small-2', 'obj-robot-small-3', 'obj-toaster-robot', 'obj-vacuum-robot'];
+
 /** Home robots that wake up when their lamp is switched on, in turn. */
 const HELPERS = ['obj-vacuum-robot', 'obj-toaster-robot'];
 const HELPER_COLORS: Record<string, string> = { 'obj-vacuum-robot': '#9fb4cc', 'obj-toaster-robot': '#e8b98a' };
@@ -50,6 +53,7 @@ interface Lamp {
  * switches on a lamp, and a home robot wakes up to wave hello.
  */
 export class RoomsMode extends HeroMode {
+  readonly pictures = PICTURES;
   readonly world = 'robohome';
   readonly phraseWords = 4;
   private lamps: Lamp[] = [];
@@ -137,6 +141,7 @@ interface Pop {
  * a typed one hops with hearts, a missed one waves and hides again.
  */
 export class WelcomeMode extends Mode {
+  readonly pictures = PICTURES;
   readonly world = 'robohome';
   private spawned = 0;
   private resolved = 0;

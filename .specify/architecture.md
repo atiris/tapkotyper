@@ -27,7 +27,7 @@
   (headings, explanations, situations: `public/i18n/guide/<lang>.json`) are loaded only by the
   translator. A catalog in code places every text in a section and group with its kind; a
   unit test fails when a text has no place or no situation, so the translator stays complete.
-- Installable offline PWA (a service worker caches the app after the first visit).
+- Installable offline PWA (a service worker caches the app after the first visit). An update downloads only the files that changed: on a slow or metered connection (school, phone hotspot) a release with one new picture costs that picture, not the whole app again.
 - Weight budget for weak school devices: music at most 1.4 MB per track (mono, 60 kbps),
   sprites at most 384 px, the install cache (everything except music) under about 10 MB,
   the settings screen and the translator loaded on first use, and the QR decoder fallback (`jsqr`, about 130 KB,

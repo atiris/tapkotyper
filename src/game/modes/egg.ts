@@ -5,6 +5,9 @@ import { Mode } from '../mode';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
 
+/** The pictures this world's levels draw; a level opens when they are loaded. */
+const PICTURES = ['obj-egg', 'obj-egg-cracking', 'obj-mole', 'obj-rock-round', 'obj-stump'];
+
 const GROUND = () => VH * 0.8;
 const EGG_X = 250;
 
@@ -29,6 +32,7 @@ interface Mole {
 
 /** World 5: the egg rolls downhill; finished words make it jump over rocks and stumps. */
 export class SlopeMode extends Mode {
+  readonly pictures = PICTURES;
   readonly world = 'egg';
   protected spawned = 0;
   protected resolved = 0;

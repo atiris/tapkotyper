@@ -4,6 +4,9 @@ import { Mode } from '../mode';
 import type { Target } from '../typing';
 import { BeatMode } from './workshop';
 
+/** The pictures this world's levels draw; a level opens when they are loaded. */
+const PICTURES = ['obj-music-tree', 'obj-note1', 'obj-note2'];
+
 /** Where notes hang on the tree, as parts of its size from the crown's middle. */
 const SPOTS: [number, number][] = [[-0.62, 0.05], [-0.36, -0.32], [0, -0.48], [0.36, -0.32], [0.62, 0.05], [-0.22, 0.2], [0.24, 0.22]];
 const NOTE_COLORS = ['#ffd25a', '#f7a8c9', '#9fd8f5', '#b79be8', '#a6e3c9'];
@@ -69,6 +72,7 @@ interface Note {
  * in turns. A typed note flies up and the tree plays a little more; notes wait in place.
  */
 export class NotesMode extends Mode {
+  readonly pictures = PICTURES;
   readonly world = 'musictree';
   private spawned = 0;
   private played = 0;
@@ -145,6 +149,7 @@ export class NotesMode extends Mode {
 
 /** Super-obstacle of the music tree: its song, short dictated words to a calm steady beat; every word lights a note. */
 export class TreeSongMode extends BeatMode {
+  readonly pictures = PICTURES;
   readonly world = 'musictree';
   protected readonly doneLine = 'story.treeSong';
   protected ringX = 0.3;

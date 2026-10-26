@@ -7,6 +7,9 @@ import { Mode } from '../mode';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
 
+/** The pictures this world's levels draw; a level opens when they are loaded. */
+const PICTURES = ['obj-boulder-1', 'obj-boulder-2', 'obj-boulder-3', 'obj-sign', 'obj-stone'];
+
 /** Tapko as the hero walking and hopping through the planet (and Bolt's robot city and home, Melody's garden and lake). */
 export abstract class HeroMode extends Mode {
   readonly world: string = 'planet';
@@ -71,6 +74,7 @@ export abstract class HeroMode extends Mode {
 
 /** Swamp: every finished word places a stepping stone and Tapko hops onto it. */
 export class SwampMode extends HeroMode {
+  readonly pictures = PICTURES;
   readonly phraseWords = 4;
   private stones: { x: number; y: number; pop: number }[] = [];
   private current: Target | null = null;
@@ -155,6 +159,7 @@ export class SwampMode extends HeroMode {
 
 /** Road signs: the typed sign is the path taken; every path leads forward. */
 export class SignsMode extends HeroMode {
+  readonly pictures = PICTURES;
   readonly phraseWords = 4;
   private signs: Target[] = [];
   private postX = 0;
@@ -243,6 +248,7 @@ export class SignsMode extends HeroMode {
 
 /** Super-obstacle: the boulder cracks with precise chunks; errors only slow the cracking. */
 export class BoulderMode extends HeroMode {
+  readonly pictures = PICTURES;
   private crack = 0;
   private chunk: Target | null = null;
   private shake = 0;

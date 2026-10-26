@@ -8,6 +8,9 @@ import { gateCode } from '../gate';
 import type { Target } from '../typing';
 import { HeroMode } from './planet';
 
+/** The pictures this world's levels draw; a level opens when they are loaded. */
+const PICTURES = ['obj-door', 'obj-gate', 'obj-panel'];
+
 /** A door: the picture, else a rounded metal door that slides open. */
 function drawDoor(g: G, name: string, x: number, y: number, h: number, open: number): void {
   drawSprite(g, open >= 1 ? `${name}-open` : name, x, y, h, { ay: 1 }, (g2, w, hh) => {
@@ -55,6 +58,7 @@ interface Door {
  * a password; when all panels of a door are typed it opens with a chime and the friends walk on.
  */
 export class DoorsMode extends HeroMode {
+  readonly pictures = PICTURES;
   readonly world = 'robocity';
   private door: Door | null = null;
   private doorX = 0;
@@ -146,6 +150,7 @@ export class DoorsMode extends HeroMode {
  * A gate opened too soon has another lock: a new code of the same length.
  */
 export class GateMode extends HeroMode {
+  readonly pictures = PICTURES;
   readonly world = 'robocity';
   readonly wrongSfx = 'bzzt';
   private code: string[] = [];

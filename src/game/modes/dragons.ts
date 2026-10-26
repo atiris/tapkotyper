@@ -6,6 +6,9 @@ import { t } from '../../i18n/i18n';
 import { Mode } from '../mode';
 import type { Target } from '../typing';
 
+/** The pictures this world's levels draw; a level opens when they are loaded. */
+const PICTURES = ['obj-dragon-baby-1', 'obj-dragon-baby-2', 'obj-dragon-baby-3', 'obj-rock-falling-1', 'obj-rock-falling-2'];
+
 const DRAGON_COLORS = ['#7fd6a8', '#8ec5f0', '#f5d36b'];
 
 interface Dragon {
@@ -18,6 +21,7 @@ interface Dragon {
 
 /** World 4: rocks fall toward baby dragons; a finished word makes a shield bubble that bounces the rock away. */
 export class ShieldMode extends Mode {
+  readonly pictures = PICTURES;
   readonly world = 'dragons';
   private dragons: Dragon[] = [];
   private spawned = 0;
@@ -130,6 +134,7 @@ export class ShieldMode extends Mode {
 
 /** Super-obstacle: a rolling energy wave calmed by short letter groups typed to a steady beat. */
 export class WaveMode extends Mode {
+  readonly pictures = PICTURES;
   readonly world = 'dragons';
   private beat = 0;
   private period = 1;

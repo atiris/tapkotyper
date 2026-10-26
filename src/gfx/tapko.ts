@@ -52,6 +52,11 @@ export function tapkoStack(c: Companion, mood: Mood): { name: string; slot: Slot
   });
 }
 
+/** Every picture of the companion in a level: each mood and everything it wears. */
+export function tapkoPictures(c: Companion): string[] {
+  return (['idle', 'happy', 'thinking', 'surprised'] as Mood[]).flatMap((mood) => tapkoStack(c, mood).map((l) => l.name));
+}
+
 export interface TapkoMotion {
   /** Seconds, drives breathing and sway. */
   t: number;

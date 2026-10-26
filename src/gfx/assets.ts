@@ -58,9 +58,14 @@ export function preload(names: string[]): Promise<void> {
 /** Pictures a level draws only when their thing comes: objects, Bolt, Melody and the astronaut. */
 const PLAY_PICTURES = /^(obj|robot|fairy|tapko-astronaut)/;
 
-/** Loads every picture a level may draw (once per visit), so a thing never shows its fallback first. */
+/** Loads every picture a level may draw (once per visit), in the background while the child picks a player. */
 export function preloadPlay(): Promise<void> {
   return preload(Object.keys(manifest.images).filter((n) => PLAY_PICTURES.test(n)));
+}
+
+/** Bolt and Melody in every look and mood: the story friend may join any level. */
+export function friendPictures(): string[] {
+  return Object.keys(manifest.images).filter((n) => /^(robot|fairy)/.test(n));
 }
 
 function load(name: string): Promise<void> {

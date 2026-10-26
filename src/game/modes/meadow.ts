@@ -8,6 +8,9 @@ import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
 import { ApproachMode, type Mover } from './approach';
 
+/** The pictures this world's levels draw; a level opens when they are loaded. */
+const PICTURES = ['obj-bee', 'obj-butterfly', 'obj-fly', 'obj-gloves', 'obj-hedgehog', 'obj-ladybug', 'obj-mouse', 'obj-leaf-birch', 'obj-leaf-card', 'obj-leaf-chestnut', 'obj-leaf-ginkgo', 'obj-leaf-maple', 'obj-leaf-oak'];
+
 const FLYERS = ['obj-bee', 'obj-butterfly'];
 const BUGS = ['obj-ladybug', 'obj-fly'];
 const COLORS: Record<string, string> = {
@@ -285,6 +288,7 @@ interface Critter {
  * is a goal everybody cheers.
  */
 export class MeadowMode extends ApproachMode {
+  readonly pictures = PICTURES;
   readonly world = 'meadow';
   protected gloves: Gloves;
   /** Seconds left of the gust: null before it, 0 after it (it comes once, in the `gust` variant only). */

@@ -6,6 +6,9 @@ import { STORIES, storyOf } from '../levels';
 import { Mode } from '../mode';
 import type { Target } from '../typing';
 
+/** The pictures this world's levels draw; a level opens when they are loaded. */
+const PICTURES = ['obj-bee', 'obj-butterfly', 'obj-dewdrop', 'obj-invitation', 'obj-ladybug', 'obj-mouse'];
+
 /** Blade tips where dew drops sit, as shares of the stage width and of its height. */
 const SPOTS: [number, number][] = [[0.3, 0.6], [0.4, 0.48], [0.5, 0.64], [0.6, 0.5], [0.7, 0.62], [0.8, 0.46], [0.9, 0.6]];
 /** Drops on the grass at once (each starts with another letter), and the pause before a new one comes. */
@@ -66,6 +69,7 @@ function flower(g: G, x: number, y: number, r: number, petal: string): void {
  * opens a flower where its drop was, and a new drop comes on another free blade.
  */
 export class DewdropsMode extends Mode {
+  readonly pictures = PICTURES;
   readonly world = 'meadow';
   private spots: Spot[] = [];
   private spawned = 0;
@@ -188,6 +192,7 @@ const FRIENDS = ['obj-bee', 'obj-butterfly', 'obj-ladybug', 'obj-mouse'];
  * two more words. A finished card flies as an envelope to a meadow friend.
  */
 export class InvitationMode extends Mode {
+  readonly pictures = PICTURES;
   readonly world = 'meadow';
   readonly phraseWords = 1;
   private row: Slot[] = [];

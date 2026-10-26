@@ -6,6 +6,9 @@ import { t } from '../../i18n/i18n';
 import { type Target, memoryShow } from '../typing';
 import { HeroMode } from './planet';
 
+/** The pictures this world's levels draw; a level opens when they are loaded. */
+const PICTURES = ['obj-frog', 'obj-lily', 'obj-lily-pad'];
+
 /** Pads of one stretch of the lake, as parts of the stage width. */
 const PADS = [0.4, 0.54, 0.68, 0.82];
 const WATER_Y = VH * 0.8;
@@ -91,6 +94,7 @@ interface Frog {
  * hops across; after four lilies the friends walk on along the shore.
  */
 export class LiliesMode extends HeroMode {
+  readonly pictures = PICTURES;
   readonly world = 'lilylake';
   /** Level 1 starts with single short words. */
   readonly phraseWords: number = this.L.def.variant === 'short' ? 1 : 2;
@@ -185,6 +189,7 @@ interface Part {
  * then it fades and is typed part by part from memory; a slip shows that part again.
  */
 export class ReflectionMode extends HeroMode {
+  readonly pictures = PICTURES;
   readonly world = 'lilylake';
   private parts: Part[] = [];
   private at = 0;

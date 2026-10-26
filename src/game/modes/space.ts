@@ -10,6 +10,9 @@ import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
 import { ApproachMode, type Mover } from './approach';
 
+/** The pictures this world's levels draw; a level opens when they are loaded. */
+const PICTURES = ['obj-asteroid-big', 'obj-asteroid-small', 'obj-planet-1', 'obj-planet-2', 'obj-planet-3', 'obj-planet-4', 'obj-planet-5', 'obj-rock-falling-1', 'obj-rocket', 'obj-rocket-pilot', 'tapko-astronaut', 'tapko-astronaut-suit'];
+
 const ASTEROIDS = ['obj-asteroid-small', 'obj-rock-falling-1'];
 const PLANETS = ['obj-planet-1', 'obj-planet-2', 'obj-planet-3', 'obj-planet-4', 'obj-planet-5'];
 const COLORS: Record<string, string> = {
@@ -79,6 +82,7 @@ function drawAstronaut(g: G, helmet: boolean, x: number, y: number, size: number
  * and rhythm drives the speedometer docked under the rocket.
  */
 export class SpaceMode extends ApproachMode {
+  readonly pictures = PICTURES;
   readonly world = 'space';
   protected rocketY = VH * 0.48;
   protected beam = 0;

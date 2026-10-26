@@ -47,6 +47,7 @@ export function parrotWords(p: Profile, world: number, seed?: number): string[] 
  * twice more. Speed does not matter; no stars.
  */
 export class ParrotMode extends Mode {
+  readonly pictures = ['ui-act-parrot'];
   readonly world: string;
   readonly phraseWords = 1;
   readonly round: ParrotRound;

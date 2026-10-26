@@ -6,6 +6,9 @@ import { Mode } from '../mode';
 import type { Target } from '../typing';
 import { BeatMode } from './workshop';
 
+/** The pictures this world's levels draw; a level opens when they are loaded. */
+const PICTURES = ['obj-raindrop', 'obj-storm-cloud', 'obj-umbrella'];
+
 /** Bolt's head, where a drop that was not caught lands. */
 const HEAD = VH - 120;
 /** Seconds between two "that tickles" lines. */
@@ -44,6 +47,7 @@ export function rainWalkX(vw: number, walk: number): number {
  * Tapko's umbrella; a missed one lands on Bolt, who shakes like a dog and giggles.
  */
 export class RainMode extends Mode {
+  readonly pictures = PICTURES;
   readonly world = 'raintown';
   private spawned = 0;
   private resolved = 0;
@@ -173,6 +177,7 @@ export class RainMode extends Mode {
 
 /** Super-obstacle of the rainy town: a grumpy storm cloud calmed by a steady rhythm. */
 export class StormMode extends BeatMode {
+  readonly pictures = PICTURES;
   readonly world = 'raintown';
   protected readonly doneLine = 'story.stormCalm';
 

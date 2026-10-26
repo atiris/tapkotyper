@@ -7,6 +7,9 @@ import type { Target } from '../typing';
 import { ApproachMode, type Mover } from './approach';
 import { HeroMode } from './planet';
 
+/** The pictures this world's levels draw; a level opens when they are loaded. */
+const PICTURES = ['obj-bird', 'obj-owl'];
+
 const BIRD_COLORS = ['#7fb2f0', '#f3a46b', '#f7d154', '#a6d98a', '#f4a6b8'];
 /** Most birds drawn flying along with Tapko. */
 const FLOCK_MAX = 6;
@@ -59,6 +62,7 @@ function drawBranch(g: G, x: number, y: number): void {
  * fly along with Tapko; a missed one just keeps singing in its tree as the path goes on.
  */
 export class BirdsMode extends ApproachMode {
+  readonly pictures = PICTURES;
   readonly world = 'forestpath';
   /** Level 1 starts with single short words. */
   readonly phraseWords: number = this.L.def.variant === 'short' ? 1 : 2;
@@ -128,6 +132,7 @@ export class BirdsMode extends ApproachMode {
  * dictated part by part; the parts typed so far stand in the owl's speech bubble.
  */
 export class OwlMode extends HeroMode {
+  readonly pictures = PICTURES;
   readonly world = 'forestpath';
   private parts: string[] = [];
   private typedParts: string[] = [];

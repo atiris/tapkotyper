@@ -6,6 +6,9 @@ import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
 import { ApproachMode, type Mover } from './approach';
 
+/** The pictures this world's levels draw; a level opens when they are loaded. */
+const PICTURES = ['obj-cable-knot', 'obj-can', 'obj-crate', 'obj-magnet', 'obj-spring', 'obj-tire'];
+
 const JUNK: Record<string, string[]> = {
   tires: ['obj-tire'],
   crates: ['obj-crate', 'obj-can'],
@@ -25,6 +28,7 @@ function drawJunk(g: G, sprite: string, x: number, y: number, size: number, rot 
  * the soft magnet crane lift the piece away; untyped junk just slides aside.
  */
 export class JunkMode extends ApproachMode {
+  readonly pictures = PICTURES;
   readonly world = 'junkyard';
 
   constructor(L: LevelRuntime) {
@@ -115,6 +119,7 @@ function magnetFallback(g: G, w: number, h: number): void {
 
 /** Super-obstacle: a big tangled cable knot holds Bolt; every short word unties one piece. */
 export class KnotMode extends Mode {
+  readonly pictures = PICTURES;
   readonly world = 'junkyard';
   private untied = 0;
   private piece: Target | null = null;

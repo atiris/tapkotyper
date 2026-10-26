@@ -201,6 +201,8 @@ function forcedThing(): string | null {
  */
 export class AimMode extends HeroMode {
   readonly world: string;
+  /** Any thing can be thrown here: every world's own thing joins the found ones. */
+  readonly pictures = [...THINGS.flatMap((th) => th.pics), 'obj-aim-target', 'obj-aim-ring', CHICK, CRACKED, FRIED, BULB_LIT];
   readonly phraseWords: number;
   /** The keys trained, the ones still holding the next letters back, and their accuracy at the start. */
   readonly keys: string[];

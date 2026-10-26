@@ -5,6 +5,9 @@ import { t } from '../../i18n/i18n';
 import { Mode } from '../mode';
 import type { Target } from '../typing';
 
+/** The pictures this world's levels draw; a level opens when they are loaded. */
+const PICTURES = ['obj-firefly'];
+
 /** The dance floor, where fireflies land. */
 const FLOOR_Y = VH * 0.84;
 
@@ -65,6 +68,7 @@ interface Fly {
  * (dictation). A typed one lights the dance floor more; one that lands just dances on it.
  */
 export class FirefliesMode extends Mode {
+  readonly pictures = PICTURES;
   readonly world = 'moonball';
   readonly phraseWords = 6;
   readonly phraseMin = 3;
@@ -143,6 +147,7 @@ export class FirefliesMode extends Mode {
  * each one brings more fireflies to the dance, and at the end the whole forest sings.
  */
 export class LastSongMode extends Mode {
+  readonly pictures = PICTURES;
   readonly world = 'moonball';
   readonly phraseWords = 4;
   readonly phraseMin = 3;

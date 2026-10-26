@@ -7,6 +7,9 @@ import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
 import { ApproachMode, type Mover } from './approach';
 
+/** The pictures this world's levels draw; a level opens when they are loaded. */
+const PICTURES = ['obj-antenna', 'obj-basket', 'obj-battery', 'obj-bolt', 'obj-gear', 'obj-spring', 'obj-wheel'];
+
 const PARTS: Record<string, string[]> = {
   gears: ['obj-gear', 'obj-wheel'],
   bolts: ['obj-bolt', 'obj-spring'],
@@ -24,6 +27,7 @@ const GRAVITY = 1400;
  * basket; other parts just ride on.
  */
 export class BeltMode extends ApproachMode {
+  readonly pictures = PICTURES;
   readonly world = 'workshop';
   private caught = 0;
 
@@ -241,6 +245,7 @@ export abstract class BeatMode extends Mode {
 
 /** Super-obstacle of the workshop: a steady rhythm charges Bolt's new battery bar by bar. */
 export class BatteryMode extends BeatMode {
+  readonly pictures = PICTURES;
   readonly world = 'workshop';
   protected readonly doneLine = 'story.batteryFull';
 

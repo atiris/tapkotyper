@@ -6,6 +6,9 @@ import { t } from '../../i18n/i18n';
 import type { Target } from '../typing';
 import { HeroMode } from './planet';
 
+/** The pictures this world's levels draw; a level opens when they are loaded. */
+const PICTURES = ['obj-big-flower', 'obj-big-flower-open', 'obj-bud', 'obj-flower-open'];
+
 const PETALS = ['#f7a8c9', '#ffd25a', '#b79be8', '#ff9f8a', '#9fd8f5'];
 
 /** A flower bud that opens: the pictures, else petals that spread out of a green bud. */
@@ -56,6 +59,7 @@ interface Bud {
  * one note, and Tapko and Melody walk on to the next one.
  */
 export class BudsMode extends HeroMode {
+  readonly pictures = PICTURES;
   readonly world = 'garden';
   readonly phraseWords = 3;
   private buds: Bud[] = [];
@@ -123,6 +127,7 @@ export class BudsMode extends HeroMode {
  * one (dictation); each typed word opens it a little, a word with a slip a little less.
  */
 export class FlowerMode extends HeroMode {
+  readonly pictures = PICTURES;
   readonly world = 'garden';
   private open = 0;
   private word: Target | null = null;

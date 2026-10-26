@@ -1,15 +1,44 @@
 // TapkoTyper service worker. Generated at build time by vite.config.ts.
 // Build: __BUILD__
 const VERSION = '__VERSION__';
-const CORE = __FILES__;
+/** Every offline file and its own version: an update fetches only the files whose version changed. */
+const FILES = __FILES__;
 const CACHE = `tapkotyper-${VERSION}`;
 const MUSIC = 'tapkotyper-music';
+/** Where a cache keeps the versions of its files; written last, so a cache without it is incomplete. */
+const VERSIONS = 'sw-versions.json';
 const MAX_TRACKS = 3;
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE).then((c) => c.addAll(CORE)));
+  event.waitUntil(install());
   // The new version waits: the player installs it with the red update button.
 });
+
+/** Copies the unchanged files from the newest complete cache and downloads the rest; any failed download fails the install. */
+async function install() {
+  const cache = await caches.open(CACHE);
+  const old = await previous();
+  await Promise.all(Object.entries(FILES).map(async ([path, version]) => {
+    const hit = old && old.versions[path] === version ? await old.cache.match(path, { ignoreVary: true }) : null;
+    if (hit && hit.ok) return cache.put(path, hit);
+    // Revalidated: the HTTP cache may still hold the old bytes of a file that keeps its name.
+    const res = await fetch(path, { cache: 'no-cache' });
+    if (!res.ok) throw new Error(`${path}: ${res.status}`);
+    return cache.put(path, res);
+  }));
+  await cache.put(VERSIONS, new Response(JSON.stringify(FILES)));
+}
+
+/** The newest other app cache with its file versions, or null. */
+async function previous() {
+  const keys = (await caches.keys()).filter((k) => k.startsWith('tapkotyper-') && k !== CACHE && k !== MUSIC);
+  for (const key of keys.reverse()) {
+    const cache = await caches.open(key);
+    const res = await cache.match(VERSIONS);
+    if (res) return { cache, versions: await res.json() };
+  }
+  return null;
+}
 
 self.addEventListener('message', (event) => {
   if (event.data === 'skipWaiting') self.skipWaiting();

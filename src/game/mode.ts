@@ -15,6 +15,8 @@ export const TAPKO_H = 265;
 export abstract class Mode {
   /** World background name. */
   abstract readonly world: string;
+  /** The pictures the mode draws; the level opens when they are loaded. */
+  readonly pictures: readonly string[] = [];
   /** Background scroll position (parallax). */
   scroll = 0;
   t = 0;

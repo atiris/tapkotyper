@@ -15,18 +15,19 @@ function publicFiles(dir: string): string[] {
 /** Which build a browser runs: the commit and the build time, in the page's meta and at the top of sw.js. */
 const BUILD = `${execSync('git rev-parse --short HEAD').toString().trim()} ${new Date().toISOString().slice(0, 16).replace('T', ' ')} UTC`;
 
-/** Writes sw.js with the list of files to keep offline (music is cached as it plays) and stamps both with BUILD. */
+/** Writes sw.js with the files to keep offline and their versions (music is cached as it plays) and stamps both with BUILD. */
 function serviceWorker(): Plugin {
   return {
     name: 'tapkotyper-sw',
     apply: 'build',
     transformIndexHtml: () => [{ tag: 'meta', attrs: { name: 'build', content: BUILD }, injectTo: 'head' }],
     generateBundle(_options, bundle) {
-      const files = ['./', ...Object.keys(bundle), ...publicFiles('public').filter((f) => !f.endsWith('.mp3') && !f.endsWith('.txt'))];
-      // Bundle names carry their content hash; public files keep their names, so their bytes go into the version.
-      const hash = createHash('sha256').update(files.join('\n'));
-      for (const f of publicFiles('public')) hash.update(readFileSync(join('public', f)));
-      const version = hash.digest('hex').slice(0, 12);
+      // Each file's own version lets an update fetch only what changed; the page always changes (its BUILD meta).
+      const short = (data: string | Uint8Array) => createHash('sha256').update(data).digest('hex').slice(0, 12);
+      const files: Record<string, string> = { './': short(BUILD) };
+      for (const [name, out] of Object.entries(bundle)) files[name] = short(out.type === 'chunk' ? out.code : out.source);
+      for (const f of publicFiles('public').filter((f) => !f.endsWith('.mp3') && !f.endsWith('.txt'))) files[f] = short(readFileSync(join('public', f)));
+      const version = short(JSON.stringify(files));
       const source = readFileSync('scripts/sw-template.js', 'utf8')
         .replace('__BUILD__', BUILD)
         .replace('__VERSION__', version)

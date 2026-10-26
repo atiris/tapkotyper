@@ -1012,6 +1012,10 @@
    "w": 378,
    "h": 384
   },
+  "obj-parrot-perch-short": {
+   "w": 384,
+   "h": 339
+  },
   "obj-parrot-perch": {
    "w": 254,
    "h": 384
@@ -1516,13 +1520,13 @@
    "w": 384,
    "h": 302
   },
-  "ui-badge-parrot": {
-   "w": 384,
-   "h": 381
-  },
   "ui-cert-frame": {
-   "w": 956,
-   "h": 956
+   "w": 831,
+   "h": 833
+  },
+  "ui-cert-parrot": {
+   "w": 640,
+   "h": 636
   },
   "ui-cert-stamp": {
    "w": 640,

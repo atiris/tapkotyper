@@ -1275,9 +1275,10 @@
     "speed": "znakov za minútu",
     "stars": "hviezdičky",
     "worlds": "svety",
-    "stories": "Príbehy",
+    "stories": "Postup v príbehoch",
     "date": "Dňa {date}",
     "sign": "Tapko",
+    "signParrot": "Aro",
     "precise": "Píše veľmi presne.",
     "careful": "Píše presne a pozorne.",
     "praise": [
@@ -1572,7 +1573,11 @@
     "fillAccuracy": "Presnosť",
     "fillRanges": "Získané strelnice",
     "fillApply": "Vyplniť",
-    "filled": "Postup je vyplnený."
+    "filled": "Postup je vyplnený.",
+    "parrotAway": "Uletí papagáj",
+    "parrotHome": "Priletí papagáj",
+    "parrotNoneHome": "Doma nie je žiadny papagáj, ktorý by mohol uletieť.",
+    "parrotNoneMissing": "Žiadnemu dokončenému svetu nechýba papagáj."
   },
   "keys": {
     "space": "medzerník",
@@ -3146,7 +3151,33 @@
     "speedRepeat": "Pri opakovaní: {n} znakov za minútu",
     "again": "Nové slová",
     "badge": "Odznak Papagáj: všetky papagáje sú doma",
-    "badgeNew": "Odznak Papagáj: všetky papagáje sú doma!"
+    "badgeNew": "Odznak Papagáj: všetky papagáje sú doma!",
+    "name": "Aro",
+    "takeoff": [
+      "Zalieétamme si!",
+      "Prrevetraáme krriídla!",
+      "Štaárrtujem!",
+      "Koóntrrola strraáánky!",
+      "Inššpekčnyý let!",
+      "Vzzlieétam!"
+    ],
+    "goodbye": [
+      "Frrčiíím prreč!",
+      "Odlieétam!",
+      "Zdrrhaáám!",
+      "Mizznemm!",
+      "Guúúd baáj"
+    ],
+    "arrive": [
+      "Somm domma.",
+      "Aro prrilieéta!",
+      "Aro je dommaá!",
+      "Dobrryý deň!",
+      "Čaááuko.",
+      "Ahhojj.",
+      "Prristaávam!",
+      "Maááš krrekrry?"
+    ]
   },
   "translate": {
     "title": "Preklad hry",

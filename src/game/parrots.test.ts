@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
-import { DROP_DAYS, LEARN_ROUNDS, ParrotRound, SLIP_MAX, daysBetween, flyAway, hasParrotBadge, loseParrot, parrotFloor, parrotPatience, parrotSize, winParrot } from './parrots';
+import { DROP_DAYS, LEARN_ROUNDS, ParrotRound, SLIP_MAX, bringParrotHome, daysBetween, flyAway, hasParrotBadge, loseParrot, parrotFloor, parrotPatience, parrotSize, sendParrotAway, winParrot } from './parrots';
 
 /** A profile with these worlds done and their parrots at home, won on `day`. */
 function withParrots(worlds: number[], day = '2026-10-01') {
@@ -142,11 +142,29 @@ describe('parrot flies off', () => {
     expect([0, 1, 2].map(parrotPatience)).toEqual([5, 6, 7]);
   });
 
-  it('leaves home and its perch shows empty', () => {
+  it('leaves home', () => {
     const p = withParrots([0, 1]);
     loseParrot(p, 1);
     loseParrot(p, 2);
     expect(p.progress.parrots).toEqual([0]);
-    expect(p.progress.parrotsMet).toEqual([0, 1, 2]);
+  });
+});
+
+describe('parrot service', () => {
+  it('sends a random parrot away, told on the map', () => {
+    const p = withParrots([0, 1, 2]);
+    expect(sendParrotAway(p, () => 0.5)).toBe(1);
+    expect(p.progress.parrots).toEqual([0, 2]);
+    expect(p.progress.parrotFlown).toEqual([1]);
+    expect(sendParrotAway(newProfile('Ema', 'sk'))).toBeNull();
+  });
+
+  it('brings home the parrot of a finished world that misses it', () => {
+    const p = withParrots([0, 1, 2]);
+    loseParrot(p, 2);
+    expect(hasParrotBadge(p)).toBe(false);
+    expect(bringParrotHome(p, '2026-10-05', () => 0)).toBe(2);
+    expect(hasParrotBadge(p)).toBe(true);
+    expect(bringParrotHome(p, '2026-10-05')).toBeNull();
   });
 });

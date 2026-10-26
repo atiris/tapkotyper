@@ -36,7 +36,8 @@ test('the super player removes the settings password without it, and the setting
   await page.locator('.start-screen').waitFor();
   await page.keyboard.type('supertapkotyper', { delay: 40 });
   await page.locator('.top-right .round-btn.super').click();
-  await expect(page.locator('.service-menu .menu-item')).toHaveCount(2);
+  // On the map: end super mode, fill in progress, a parrot flies away, a parrot comes home.
+  await expect(page.locator('.service-menu .menu-item')).toHaveCount(4);
   await page.keyboard.press('Escape');
   // The super player's settings ask nothing and offer the removal.
   await page.locator('.top-right .round-btn').first().click();

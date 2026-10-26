@@ -19,7 +19,7 @@ test('a finished world\'s parrot learns the words and brings the badge', async (
   await editProfile(page, 'p.progress.levels = { "w1-1": 3, "w1-2": 3 }; p.progress.worldsDone = [0]; p.progress.introducedKeys = ["f", "j", " "]; p.progress.scenesSeen.push("welcome");');
   const node = page.locator('.island-meadow .parrot-node');
   await expect(node).not.toHaveClass(/home/);
-  await expect(page.locator('.map-hello .parrot-badge')).toHaveCount(0);
+  await expect(page.locator('.map-hero .aro-perch')).toHaveCount(0);
   await node.click();
   await expect(page.locator('.level-screen.world-meadow .hud-title')).toHaveText('Parrot');
   await page.locator('.posture-card').waitFor();
@@ -41,7 +41,9 @@ test('a finished world\'s parrot learns the words and brings the badge', async (
   // Escape closes the card like its X: back to the map.
   await page.keyboard.press('Escape');
   await expect(node).toHaveClass(/home/);
-  await expect(page.locator('.map-hello .parrot-badge')).toHaveCount(1);
+  // Aro, the badge's parrot, lands on his perch left of Tapko and says hello.
+  await expect(page.locator('.map-hero .aro-perch')).toHaveCount(1);
+  await expect(page.locator('.aro-say')).toBeVisible({ timeout: 10000 });
   expect(errors).toEqual([]);
 });
 
@@ -63,20 +65,23 @@ test('too many mistakes send the parrot away: the round ends with its empty perc
   await expect(page.locator('.parrot-done .btn.primary')).toContainText('Play again');
   await page.keyboard.press('Escape');
   await expect(node).not.toHaveClass(/home/);
-  await expect(node.locator('img')).toHaveAttribute('src', /ui-act-parrot-perch/);
+  await expect(node.locator('img')).toHaveAttribute('src', /obj-parrot-perch-short/);
   expect(errors).toEqual([]);
 });
 
 test('a parrot left alone too long flies away and the map says so', async ({ page }) => {
   await createProfile(page, 'Ema');
-  await editProfile(page, 'p.progress.worldsDone = [0, 1]; p.progress.parrots = [0, 1]; p.progress.parrotBest = 2; p.progress.parrotWonAt = "2026-01-01"; p.progress.parrotCheckedAt = "2026-01-01"; p.progress.scenesSeen.push("welcome");');
+  await editProfile(page, 'p.progress.worldsDone = [0, 1]; p.progress.parrots = [0, 1]; p.progress.parrotBest = 2; p.progress.parrotWonAt = "2026-01-01"; p.progress.parrotCheckedAt = "2026-01-01"; p.progress.parrotPerched = true; p.progress.scenesSeen.push("welcome");');
   await expect(page.locator('.map-bubble')).toContainText('Your parrot flew away from');
   await expect(page.locator('.parrot-node.home')).toHaveCount(1);
-  await expect(page.locator('.map-hello .parrot-badge')).toHaveCount(0);
-  // Told once.
+  // Aro says goodbye and flies off; his empty perch stays while this map is shown.
+  await expect(page.locator('.aro-say')).toBeVisible();
+  await expect(page.locator('.aro.away')).toHaveCount(1, { timeout: 5000 });
+  // Told once, and the next map has no perch.
   await page.reload();
   await page.locator('.map-screen').waitFor();
   await expect(page.locator('.map-bubble')).toBeHidden();
+  await expect(page.locator('.map-hero .aro-perch')).toHaveCount(0);
   // My progress counts the parrots at home against the most at once.
   await page.locator('.map-side .btn', { hasText: 'My progress' }).click();
   await expect(page.locator('.progress-screen .sum-chip', { hasText: 'max' })).toHaveText('1 max 2');

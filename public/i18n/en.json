@@ -1275,9 +1275,10 @@
     "speed": "characters per minute",
     "stars": "stars",
     "worlds": "worlds",
-    "stories": "Stories",
+    "stories": "Progress in the stories",
     "date": "On {date}",
     "sign": "Tapko",
+    "signParrot": "Aro",
     "precise": "Types very accurately.",
     "careful": "Types accurately and carefully.",
     "praise": [
@@ -1572,7 +1573,11 @@
     "fillAccuracy": "Accuracy",
     "fillRanges": "Ranges earned",
     "fillApply": "Fill in",
-    "filled": "The progress is filled in."
+    "filled": "The progress is filled in.",
+    "parrotAway": "A parrot flies away",
+    "parrotHome": "A parrot comes home",
+    "parrotNoneHome": "No parrot is at home to fly away.",
+    "parrotNoneMissing": "No finished world misses its parrot."
   },
   "keys": {
     "space": "space bar",
@@ -3123,7 +3128,33 @@
     "speedRepeat": "While repeating: {n} characters per minute",
     "again": "New words",
     "badge": "Parrot badge: all parrots are at home",
-    "badgeNew": "Parrot badge: all parrots are at home!"
+    "badgeNew": "Parrot badge: all parrots are at home!",
+    "name": "Aro",
+    "takeoff": [
+      "Let's fly a rrround!",
+      "Wing strrretch!",
+      "Taking offf!",
+      "Page inspecshun!",
+      "Patrrrol flight!",
+      "Up I gooo!"
+    ],
+    "goodbye": [
+      "I'm offf!",
+      "Flying awaaay!",
+      "Rrrunning awaaay!",
+      "Gone in a flash!",
+      "Goood byeee"
+    ],
+    "arrive": [
+      "I'm hommme.",
+      "Aro is arrriving!",
+      "Aro is hommme!",
+      "Good daaay!",
+      "Hellooo.",
+      "Hiii.",
+      "Landing!",
+      "Got crrrackers?"
+    ]
   },
   "translate": {
     "title": "Translate the game",

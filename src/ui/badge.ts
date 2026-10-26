@@ -32,9 +32,9 @@ export function badge(world: number, tier: BadgeTier | null, small = false): HTM
     src ? h('img', { src, alt: '' }) : h('span', { class: 'badge-num' }, String(world + 1)));
 }
 
-/** The Parrot badge (every finished world's parrot at home): its picture, about 28 px, with what it is for. */
+/** The Parrot badge (every finished world's parrot at home) as a small mark: Aro's head, about 28 px, with what it is for. */
 export function parrotBadge(): HTMLElement {
-  const src = imageUrl('ui-badge-parrot');
+  const src = imageUrl('ui-act-parrot-head');
   return h('span', { class: 'parrot-badge', role: 'img', 'aria-label': t('parrot.badge'), tip: t('parrot.badge') },
     src ? h('img', { src, alt: '' }) : h('span', { class: 'parrot-badge-fallback' }, 'P'));
 }

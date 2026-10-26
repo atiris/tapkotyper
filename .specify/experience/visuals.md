@@ -55,11 +55,12 @@
   crossroads, dictation, secret words, big challenge) with the stars under it; its
   tooltip says the number and the activity. A dot without its picture shows the number.
 - A finished world adds two side cards after its super star: the target range (a red target)
-  and the parrot (the macaw `ui-act-parrot`, grey until won or after it flew away, in colour on
-  green while it is at home). The Parrot badge (`ui-badge-parrot`, the macaw on a round branch)
-  is a small picture of about 28 px right of the name on the map, with a tooltip; on the start
-  page's player card the parrot itself stands at the character's feet, by its left side; the
-  parrot flying away is `obj-parrot-flying`.
+  and the parrot (its head `ui-act-parrot-head` while it is at home, else the empty short perch
+  `obj-parrot-perch-short`, grey while closed). The Parrot badge is Aro, the sitting macaw
+  `ui-act-parrot` on the short perch, about 70 px wide on the map and 90 px on "Môj postup"; on
+  the start page's player card the parrot itself stands at the character's feet, by its left
+  side; the parrot flying is `obj-parrot-flying` with its wing-beat frames. The macaw on its
+  round branch (`ui-cert-parrot`) is only Aro's signature on the certificate.
 - A player's card on the start page ends with the progress in small pictures and plain counts
   (keys mastered, worlds done, accuracy of the last 14 days, stars; the maxima only in the
   tooltips; the accuracy without its percent sign), in one row (two rows in a very narrow card),

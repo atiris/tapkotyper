@@ -5,13 +5,14 @@
   typed instead of it lately, total presses, and a day-by-day history (accuracy and time
   to press).
 - An overlay opened by clicking the child's character (on the map, or in a level, which pauses first)
-  starts with "My progress": a row of icon and number chips (keys mastered of the
-  layout's total, stories finished, worlds finished, the **treasure chest** of rarities in points
-  of its maximum (a world badge bronze 1, silver 2, gold 3; each target range award 1; the
-  [Parrot badge](../game/parrot.md) 7: 15 x 3 + 15 + 7 = 67), and once something was typed in the last
-  14 days its accuracy and speed in characters per minute, the stars (the best of every level)
-  of the maximum (3 in each of the 75 levels: 225) and the letters
-  typed in the last 14 days, each with its own picture; the meaning is only in the tooltip), then one row per story (all stories, closed ones grey) with its picture and
+  starts with "My progress": two rows of icon and number chips, each with its own picture and
+  the meaning only in the tooltip. The first row is the long run: keys mastered of the layout's
+  total, stories finished, worlds finished, the **treasure chest** of rarities in points of its
+  maximum (a world badge bronze 1, silver 2, gold 3; each target range award 1; the
+  [Parrot badge](../game/parrot.md) 7: 15 x 3 + 15 + 7 = 67), the parrots at home against the most
+  ever at home (the parrot's head), and the stars (the best of every level) of the maximum (3 in
+  each of the 75 levels: 225). The second row is the last 14 days: accuracy and speed in
+  characters per minute once something was typed, and the letters typed. Then one row per story (all stories, closed ones grey) with its picture and
   name, its worlds' pictures (done in colour, the rest grey) and the stars earned in it, the
   shelf of world badges ("Odznaky svetov", [story](../game/story.md)) with the row of target
   range awards under it ("Ocenenia zo strelníc": every world's rare thing, found ones in

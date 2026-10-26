@@ -62,7 +62,10 @@
     mastered keys, the last finished world, and the shares of earned stars, accuracy and earned
     range finds. The keys and the finished worlds are set exactly; the stars, the range finds
     and each key's accuracy are spread at random over the finished worlds (every finished level
-    keeps at least one star), so the map, badges and statistics look like a real child's.
+    keeps at least one star), so the map, badges and statistics look like a real child's;
+    "Uletí papagáj" sends a random parrot at home away and "Priletí papagáj" brings home the
+    parrot of a random finished world that misses it, so Aro's flights on the map can be seen
+    without waiting for days.
 - In a level, the temporary player has a **super help** button (a red lifebuoy) right of the
   paw help. Its menu starts the game typing like a real player at about 200 characters a
   minute: without a mistake, with 1 or 2 mistakes, with 1 mistake and 1 hesitation, or with 2

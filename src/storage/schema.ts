@@ -133,8 +133,6 @@ export interface Progress {
   rangeFinds: string[];
   /** Worlds whose parrot is won (at home). */
   parrots: number[];
-  /** Worlds whose parrot round was ever played to its end (won, or the parrot flew off): their perch shows empty while the parrot is away. */
-  parrotsMet: number[];
   /** Most parrots ever at home at once. */
   parrotBest: number;
   /** Local date of the last parrot round won, null before any. */
@@ -143,6 +141,8 @@ export interface Progress {
   parrotCheckedAt: string | null;
   /** Worlds whose parrot flew away and the map has not told yet. */
   parrotFlown: number[];
+  /** Aro (the Parrot badge) sits on the map's perch: he landed there and has not flown off since. */
+  parrotPerched: boolean;
 }
 
 /** When a surprise tells its answer. */

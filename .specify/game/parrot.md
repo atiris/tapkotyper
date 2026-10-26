@@ -6,8 +6,8 @@
   Speed is not judged and there are no stars; slow typing is fine, the point is the practice.
 - It opens with the world's super level, like the [target range](target-practice.md): a small
   parrot node after the range's target on the map. Its picture tells the parrot's state: its
-  head before its round was ever played to the end, the parrot sitting while it is at home, and
-  an empty wooden perch after it flew away (from home, or off a lost round); its tooltip says what it trains. Before the world is finished the node is already there, grey and closed like a
+  head while it is at home, else an empty short wooden perch (closed, not won yet, or flown
+  away); its tooltip says what it trains. Before the world is finished the node is already there, grey and closed like a
   level not reached yet (the tooltip adds when it opens). It starts only when the child picks
   it, never by "Continue".
 - **Scene:** the world's own background, only its middle strip drifting very slowly. Tapko
@@ -55,16 +55,30 @@
     stays);
   - 21 days after the last win the parrots drop straight to the floor.
   The roll runs when a player's map opens. The map then says it once in the narrator's bubble
-  ("Uletel ti papagáj zo sveta Lúka. Choď poň!", several worlds in one line), and each parrot
-  flies up and out of the window from its node in about two seconds while the node turns grey.
-  With less motion the nodes simply turn grey.
+  ("Uletel ti papagáj zo sveta Lúka. Choď poň!", several worlds in one line), and a small
+  parrot flies up and out of the window from each node in about two seconds while the node turns
+  into the empty perch. With less motion the nodes simply change.
 - **Parrot badge** (Odznak Papagáj): held while the parrot of every finished world is at home
   (at least one). A newly finished world without its parrot takes it away until that parrot is
-  won, and so does a parrot flying away (the badge next to the name shrinks and fades with the
-  flight). It is worth 7 points in the treasure chest ([statistics](../profiles/statistics.md))
-  and it is the one badge shown with the player: on the start page's player card as the parrot
-  itself at the character's feet, by its left side; the badge picture on the map's greeting
-  and just under the character on "Môj postup".
+  won, and so does a parrot flying away. It is worth 7 points in the treasure chest
+  ([statistics](../profiles/statistics.md)) and it is the one badge shown with the player: on the
+  start page's player card as the parrot itself at the character's feet, by its left side; on
+  the map and on "Môj postup" as **Aro**, the badge's parrot, sitting on a short wooden perch.
+- **Aro** is the parrot's name; he says it when it fits ("Aro je dommaá!").
+  - On "Môj postup" he sits under the character with a gap between them; a click makes him hop.
+  - On the map (the character there a quarter larger than before) his perch stands left of the
+    character, which moves a little right. A click: he says a takeoff line ("Zalieétamme si!",
+    "Prrevetraáme krriídla!", "Štaárrtujem!", "Koóntrrola strraáánky!", "Inššpekčnyý let!",
+    "Vzzlieétam!"), spreads his wings and flies off to the right across the page with beating
+    wings, flies round and lands on the perch again.
+  - When the badge is lost (a parrot flew away or a round was lost) the next map shows him on the
+    perch once more: he says goodbye ("Frrčiíím prreč!", "Odlieétam!", "Zdrrhaáám!",
+    "Mizznemm!", "Guúúd baáj") and flies off to the right. The empty perch stays while that map
+    is shown; the next map has no perch.
+  - When the badge is won the first map after it shows the empty perch; Aro flies in from the
+    right, lands and says hello ("Somm domma.", "Aro prrilieéta!", "Aro je dommaá!", "Dobrryý
+    deň!", "Čaááuko.", "Ahhojj.", "Prristaávam!", "Maááš krrekrry?"); from then on he sits there.
+  - With less motion he leaves and lands without the flight.
 
 ## Why
 - Word streams and the range train reading and reacting; a few words typed many times train the

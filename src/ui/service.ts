@@ -1,6 +1,8 @@
-import { app, go, shownScreen } from '../app/app';
+import { app, go, saveProfile, shownScreen } from '../app/app';
 import { fillProgress } from '../app/super';
 import { LEVELS, WORLDS } from '../game/levels';
+import { bringParrotHome, sendParrotAway } from '../game/parrots';
+import { localDate } from '../learning/stats';
 import { lessonOrder } from '../learning/lessons';
 import { locale, t } from '../i18n/i18n';
 import { type Profile, SUPER_ID } from '../storage/schema';
@@ -27,14 +29,18 @@ function endSuperMode(): void {
 }
 
 /**
- * The service menu under the star: the end of super mode everywhere, the progress filling on the
- * super player's map. The settings password is removed in the settings, which ask the super player nothing.
+ * The service menu under the star: the end of super mode everywhere; on the super player's map the
+ * progress filling, a random parrot flying away and a missing one coming home. The settings password is removed in the settings, which ask the super player nothing.
  */
 function openServiceMenu(star: HTMLButtonElement, onClosed: () => void): (refocus?: boolean) => void {
   const entry = (glyph: keyof typeof ICONS, label: string, pick: () => void): MenuEntry => ({ label, art: roundPic('super', glyph), pick });
   const entries = [entry('close', t('service.end'), endSuperMode)];
   const p = app.profile;
-  if (p?.id === SUPER_ID && shownScreen() === 'map') entries.push(entry('chart', t('service.fill'), () => fillDialog(p)));
+  if (p?.id === SUPER_ID && shownScreen() === 'map') {
+    entries.push(entry('chart', t('service.fill'), () => fillDialog(p)),
+      entry('upload', t('service.parrotAway'), () => parrotChange(sendParrotAway(p) !== null, 'service.parrotNoneHome')),
+      entry('download', t('service.parrotHome'), () => parrotChange(bringParrotHome(p, localDate()) !== null, 'service.parrotNoneMissing')));
+  }
   return menuPanel(star, t('super.badge'), entries, (panel) => {
     // The star may sit folded in the corner's Menu: the panel hangs under what is in sight.
     const anchor = star.offsetParent ? star : star.closest('.top-right')?.querySelector<HTMLElement>('.menu-btn') ?? star;
@@ -47,6 +53,13 @@ function openServiceMenu(star: HTMLButtonElement, onClosed: () => void): (refocu
     onClosed();
     if (refocus && star.isConnected) star.focus();
   });
+}
+
+/** A parrot sent away or brought home by the service menu: the map shows it as it would happen in play; `none` says why nothing changed. */
+function parrotChange(changed: boolean, none: string): void {
+  if (!changed) return toast(t(none));
+  saveProfile();
+  go('map', {}, false);
 }
 
 /** A labelled control of the progress dialog. */

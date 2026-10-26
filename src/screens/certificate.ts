@@ -1,6 +1,6 @@
 import { imageUrl } from '../gfx/assets';
 import { tapkoElement } from '../gfx/tapko';
-import { STORIES, WORLDS, storyDone, storyOpen } from '../game/levels';
+import { STORIES, WORLDS } from '../game/levels';
 import { locale, t, tList } from '../i18n/i18n';
 import { masterySummary, recentTyping } from '../learning/stats';
 import type { Profile } from '../storage/schema';
@@ -23,13 +23,18 @@ function stat(pic: string, value: string, label: string): HTMLElement {
   return h('div', { class: 'cert-stat' }, src ? h('img', { src, alt: '' }) : null, h('b', {}, value), h('span', {}, label));
 }
 
-/** The certificate: the logo, the writer and their character, the results, the stories, a line on how it goes, the date and the stamp. */
+/** One signature at the bottom: its picture over the signer's name. */
+function signature(pic: string, name: string, cls: string): HTMLElement {
+  const src = imageUrl(pic);
+  return h('span', { class: 'cert-sign' }, src ? h('img', { class: cls, src, alt: '' }) : null, h('span', {}, name));
+}
+
+/** The certificate: the logo, the writer and their character, the results, the progress in the stories, a line on how it goes, the date and the signatures of Aro and Tapko. */
 function certificate(p: Profile): HTMLElement {
   const m = masterySummary(p);
   const recent = recentTyping(p, 14);
   const frame = imageUrl('ui-cert-frame');
   const logo = imageUrl('ui-icon-hr');
-  const stamp = imageUrl('ui-cert-stamp');
   const realName = p.name && p.name !== nickname(p) ? p.name : '';
   const stats = [
     stat('ui-key', `${m.mastered}/${m.total}`, t('cert.keys')),
@@ -41,10 +46,7 @@ function certificate(p: Profile): HTMLElement {
   const stories = STORIES.map((s) => {
     const done = s.worlds.filter((w) => p.progress.worldsDone.includes(w)).length;
     const pic = storyPicture(s);
-    return h('li', { class: `${storyDone(p, s) ? 'done' : ''} ${storyOpen(p, s) ? '' : 'closed'}` },
-      pic ? h('img', { src: pic, alt: '' }) : null,
-      h('span', {}, t(s.title)),
-      h('b', {}, storyDone(p, s) ? '✓' : `${done}/${s.worlds.length}`));
+    return h('li', {}, pic ? h('img', { src: pic, alt: '' }) : null, h('span', {}, t(s.title)), h('b', {}, `${done}/${s.worlds.length}`));
   });
   return h('div', { class: 'cert-sheet' },
     h('div', { class: `cert${frame ? '' : ' no-frame'}`, style: frame ? `border-image-source: url(${frame})` : '' },
@@ -55,19 +57,18 @@ function certificate(p: Profile): HTMLElement {
       h('p', { class: 'cert-sub' }, t('cert.subtitle')),
       h('p', { class: 'cert-awarded' }, t('cert.awarded')),
       h('p', { class: 'cert-name' }, nickname(p), realName ? h('small', {}, realName) : null),
-      h('div', { class: 'cert-body' },
-        h('div', { class: 'cert-hero' }, tapkoElement(p.companion, 'happy', 200)),
-        h('div', { class: 'cert-stats' }, ...stats),
-        h('div', { class: 'cert-stories' }, h('h2', {}, t('cert.stories')), h('ul', {}, ...stories))),
+      h('div', { class: 'cert-hero' }, tapkoElement(p.companion, 'happy', 200)),
+      h('div', { class: 'cert-stats' }, ...stats),
+      h('div', { class: 'cert-stories' }, h('h2', {}, t('cert.stories')), h('ul', {}, ...stories)),
       h('p', { class: 'cert-praise' }, praise(p, m.mastered, m.total, recent.accuracy, recent.chars > 0)),
       h('footer', { class: 'cert-foot' },
         h('span', { class: 'cert-date' }, t('cert.date', { date: new Date().toLocaleDateString(locale()) })),
-        h('span', { class: 'cert-sign' }, stamp ? h('img', { class: 'cert-stamp', src: stamp, alt: '' }) : null, h('span', {}, t('cert.sign'))))));
+        h('span', { class: 'cert-signs' }, signature('ui-cert-parrot', t('cert.signParrot'), 'cert-parrot'), signature('ui-cert-stamp', t('cert.sign'), 'cert-stamp')))));
 }
 
 /**
  * The writer's certificate in a window, with a button that prints it. Any print while it is open
- * (the button or the browser's own) gives only the sheet, on A4 landscape (the print styles).
+ * (the button or the browser's own) gives only the sheet, on A4 portrait (the print styles).
  */
 export function openCertificate(p: Profile): void {
   modal(h('div', { class: 'cert-view' }, certificate(p),

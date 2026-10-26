@@ -82,12 +82,14 @@
   narrow screen the rows become cards. Surprises never count in statistics. Free
   practice drills of chosen keys have no surprise.
 - **Certificate** ("Certifikát", next to "QR kód celého postupu" under the progress): a window with a sheet in the style of a
-  certificate, printed on A4 landscape (browser print): the game's frame of foxes, leaves and trees,
-  the logo, "Certifikát písania všetkými desiatimi prstami", the nickname large (the real name small
-  under it when set), the character in its outfit, the results with their pictures (keys mastered,
-  accuracy and speed of the last 14 days, stars, worlds), the stories with their worlds done, one
-  line on how it goes (by the share of keys mastered, praising accuracy when it is high), the date,
-  and the paw stamp signed by Tapko. Any print while it is open (its button or the browser's own)
+  certificate, printed on A4 portrait (browser print): a frame with a sleeping fox in both top
+  corners and pairs of paw prints along all sides, the logo, "Certifikát písania všetkými desiatimi
+  prstami", the nickname large (the real name small under it when set), the character in its
+  outfit, the results with their pictures in one row (keys mastered, accuracy and speed of the last
+  14 days, stars, worlds), "Postup v príbehoch" with each story's picture, name and worlds done
+  (Dračie vajíčko 5/5, all alike), one line on how it goes (by the share of keys mastered, praising
+  accuracy when it is high), the date at the left, and at the right two signatures inside the
+  frame: Aro the parrot (the macaw on its round branch) and the paw stamp of Tapko. Any print while it is open (its button or the browser's own)
   gives only the sheet. It replaces class codes and accounts.
 
 ## Why

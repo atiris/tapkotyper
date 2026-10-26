@@ -86,6 +86,9 @@ Every finished world gives a badge that turns silver and gold with more stars.
 Rescued dragons, repaired robots and forest friends guided home collect on the Little friends screen.
 
 Tapko can be one of nine animals and wears 47 accessories earned by progress (never by chance).
+Keep the Parrot badge and Aro the parrot sits next to Tapko on the map.
+A few secret words do something too: try saying hello on the start page, or typing a word you
+see on the map or in My progress.
 
 ![The map](docs/map.png)
 ![Meadow level](docs/meadow.png)

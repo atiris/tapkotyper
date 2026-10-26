@@ -649,6 +649,9 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .map-hello { margin: 0; font-size: 2rem; overflow-wrap: anywhere; }
 .map-side .btn { min-height: 56px; }
 .map-side .btn.big { font-size: 1.2rem; }
+/* Tapko on the map; with the Parrot badge Aro's perch stands left of him, so Tapko moves a little right. */
+.map-hero { display: flex; align-items: flex-end; justify-content: center; }
+.map-hero .aro-perch { --p: 70px; margin: 0 -18px 12px 0; z-index: 1; }
 .map-tapko { border: 0; background: radial-gradient(circle at 50% 70%, var(--glow), transparent 70%); cursor: pointer; align-self: center; border-radius: 50%; padding: 0; }
 .map-tapko:hover .tapko-stack { animation: jump-small 0.6s ease; }
 .story-rows { display: grid; gap: var(--sp-5); align-content: start; }
@@ -710,12 +713,20 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
   75% { transform: translate(32vw, -40vh) scale(1) rotate(-6deg); }
   100% { transform: translate(55vw, -80vh) scale(0.9) rotate(2deg); opacity: 1; }
 }
-/* The Parrot badge next to the player's name. */
+/* The Parrot badge as a small mark (Aro's head) on the end card of the round that brought it. */
 .parrot-badge { display: inline-flex; width: 28px; height: 28px; vertical-align: middle; margin-left: 0.3em; flex: none; }
 .parrot-badge img { width: 100%; height: 100%; object-fit: contain; }
 .parrot-badge-fallback { width: 100%; height: 100%; border-radius: 50%; background: #e0412f; color: #fff; font: 700 0.9rem/28px inherit; text-align: center; }
-.parrot-badge.leaving { animation: badge-leave 0.6s ease-in forwards; }
-@keyframes badge-leave { to { transform: scale(0); opacity: 0; } }
+/* Aro (the Parrot badge) on his short perch: --p is the perch's width, his claws hold its bar. */
+.aro-perch { --p: 90px; position: relative; flex: none; width: var(--p); margin-top: calc(var(--p) * 0.82); }
+/* The perch picture leans left; Aro faces right, so it is mirrored to face with him. */
+.aro-wood { display: block; width: 100%; height: auto; transform: scaleX(-1); }
+.aro { position: absolute; left: calc(var(--p) * -0.016); top: calc(var(--p) * -0.817); width: calc(var(--p) * 0.89); padding: 0; border: 0; background: none; cursor: pointer; }
+.aro img { display: block; width: 100%; height: auto; }
+.aro:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; border-radius: 12px; }
+.aro.away { visibility: hidden; }
+.aro.hop { animation: jump 0.6s ease; }
+.aro-perch .aro-say { top: auto; left: -0.6rem; bottom: calc(100% + var(--p) * 0.82 + 6px); z-index: 5; width: max-content; max-width: 220px; }
 /* The Tapko greeting back on the start page: walks in from the left with its bubble, hops, walks away. */
 .tapko-visit { position: fixed; left: 2vw; bottom: 3vh; z-index: 40; display: flex; align-items: center; gap: 0.6rem; max-width: calc(100vw - 4vw); cursor: pointer; animation: visit-in 1.1s cubic-bezier(0.3, 1.2, 0.5, 1) both; }
 .tapko-visit .tapko-stack { flex: none; animation: jump 0.6s ease 1.1s 2; }
@@ -751,7 +762,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 @keyframes halo-pulse { 0%, 100% { scale: 1; opacity: 0.85; } 50% { scale: 1.15; opacity: 1; } }
 @keyframes badge-rise { 0% { transform: translateY(40%) scale(0.2) rotate(-200deg); opacity: 0; } 70% { transform: scale(1.12) rotate(8deg); opacity: 1; } 100% { transform: none; } }
 .stats-hero { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; flex: none; }
-.stats-hero .parrot-badge { width: 40px; height: 40px; margin: 0; }
+.stats-hero .aro-perch { margin-top: calc(var(--p) * 0.82 + 1.4rem); }
 .results-card .parrot-done-pic { width: 110px; height: 110px; object-fit: contain; }
 .results-card .badge-fact .parrot-badge { margin: 0 0.3em 0 0; }
 .results-card { position: relative; }
@@ -1321,63 +1332,61 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-ink); }
 
 /* Print */
 /*
- * The certificate: an A4 landscape sheet. Every size is a share of the sheet's width (cqw), so the
- * window's preview and the printed page look the same. The frame is cut by border-image: corners
- * of 247 px and edges that repeat (scripts/assets.mjs builds it so).
+ * The certificate: an A4 portrait sheet. Every size is a share of the sheet's width (cqw), so the
+ * window's preview and the printed page look the same. The frame is cut by border-image: the fox
+ * corners on top, plain corners at the bottom, and pairs of paw prints repeating between them
+ * (scripts/assets.mjs builds it; 1 px of it is 0.035cqw here).
  */
-.cert-modal { width: min(1100px, 100%); }
+.cert-modal { width: min(820px, 100%); }
 .cert-view { display: flex; flex-direction: column; gap: 1rem; padding-top: 2.4rem; }
 /* The whole sheet fits in the window, the print button under it. */
-.cert-view > .cert-sheet { width: min(100%, calc((92vh - 10rem) * 297 / 210)); margin: 0 auto; }
-.cert-sheet { container-type: inline-size; width: 100%; aspect-ratio: 297 / 210; background: #fffaf0; color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.cert-view > .cert-sheet { width: min(100%, calc((92vh - 10rem) * 210 / 297)); margin: 0 auto; }
+.cert-sheet { container-type: inline-size; width: 100%; aspect-ratio: 210 / 297; background: #fffaf0; color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 .cert {
   box-sizing: border-box; height: 100%; display: flex; flex-direction: column; align-items: center; text-align: center;
-  border: 10cqw solid transparent; border-image-slice: 247; border-image-repeat: round; padding: 0 1cqw;
+  border-style: solid; border-color: transparent; border-width: 15.7cqw 13cqw 10.5cqw; border-image-slice: 449 372 300 372; border-image-repeat: round;
   background: radial-gradient(ellipse at 50% 40%, #fff, #fffaf0 75%) padding-box;
 }
-.cert.no-frame { border: 1.2cqw double var(--brand); border-radius: 2cqw; padding: 2cqw; }
-.cert-head { display: flex; align-items: center; gap: 1cqw; margin-top: -2.4cqw; }
-.cert-logo { width: 5.5cqw; height: 5.5cqw; object-fit: contain; }
-.cert-brand { font-size: 3cqw; font-weight: 700; color: var(--brand); letter-spacing: -0.02em; }
-.cert-title { margin: 0.4cqw 0 0; font-size: 5cqw; line-height: 1; letter-spacing: 0.12em; text-transform: uppercase; color: var(--brand-ink); }
-.cert-sub { margin: 0.4cqw 0 0; font-size: 1.7cqw; color: var(--ink-soft); letter-spacing: 0.04em; }
-.cert-awarded { margin: 1.4cqw 0 0; font-size: 1.5cqw; color: var(--ink-soft); }
-.cert-name { margin: 0.2cqw 0 0; padding: 0 4cqw 0.4cqw; font-size: 4.2cqw; font-weight: 700; line-height: 1.1; color: var(--green-ink); border-bottom: 0.25cqw solid #e9c79a; }
-.cert-name small { display: block; font-size: 1.6cqw; font-weight: 600; color: var(--ink-soft); }
-.cert-body { flex: 1; min-height: 0; width: 100%; display: grid; grid-template-columns: 9cqw 1fr 20cqw; align-items: center; gap: 1.5cqw; margin-top: 1cqw; }
-/* The character stands at the left edge (wider than its column), so the results sit centred between it and the stories. */
-.cert-hero { display: grid; justify-items: start; margin-left: -4cqw; }
-.cert-hero .tapko-stack { --size: 13cqw !important; }
-/* All results in one row, so the sheet never runs over its height. */
-.cert-stats { display: flex; justify-content: center; gap: 1cqw; }
-.cert-stat { display: grid; justify-items: center; width: 7.4cqw; }
-.cert-stat img { height: 3.8cqw; width: auto; max-width: 5cqw; object-fit: contain; }
-.cert-stat b { font-size: 2.4cqw; line-height: 1.15; white-space: nowrap; }
-.cert-stat span { font-size: 1.05cqw; line-height: 1.2; color: var(--ink-soft); }
-.cert-stories { text-align: left; }
-.cert-stories h2 { margin: 0 0 0.6cqw; font-size: 1.7cqw; color: var(--brand-ink); }
-.cert-stories ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6cqw; }
-.cert-stories li { display: grid; grid-template-columns: 3.4cqw 1fr auto; align-items: center; gap: 0.8cqw; font-size: 1.35cqw; font-weight: 600; }
-.cert-stories li img { width: 3.4cqw; height: 3.4cqw; object-fit: contain; }
-.cert-stories li b { font-size: 1.5cqw; color: var(--ink-soft); }
-.cert-stories li.done b { color: var(--green-ink); }
-.cert-stories li.closed { opacity: 0.45; }
-.cert-stories li.closed img { filter: grayscale(1); }
-.cert-praise { margin: 0.8cqw 6cqw 0; font-size: 1.75cqw; font-style: italic; line-height: 1.35; }
-.cert-foot { width: 100%; display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: -2.6cqw; }
-.cert-date { font-size: 1.35cqw; color: var(--ink-soft); padding-bottom: 1cqw; }
-.cert-sign { display: grid; justify-items: center; font-size: 1.25cqw; font-weight: 600; color: var(--ink-soft); }
-.cert-stamp { width: 9cqw; height: 9cqw; object-fit: contain; transform: rotate(-8deg); }
+.cert.no-frame { border: 1.2cqw double var(--brand); border-radius: 2cqw; padding: 3cqw; }
+.cert-head { display: flex; align-items: center; gap: 1.2cqw; margin-top: -6cqw; }
+.cert-logo { width: 6.5cqw; height: 6.5cqw; object-fit: contain; }
+.cert-brand { font-size: 3.6cqw; font-weight: 700; color: var(--brand); letter-spacing: -0.02em; }
+.cert-title { margin: 1.5cqw 0 0; font-size: 7.2cqw; line-height: 1; letter-spacing: 0.12em; text-transform: uppercase; color: var(--brand-ink); }
+.cert-sub { margin: 0.8cqw 0 0; font-size: 2.4cqw; color: var(--ink-soft); letter-spacing: 0.04em; }
+.cert-awarded { margin: 3.2cqw 0 0; font-size: 2.1cqw; color: var(--ink-soft); }
+.cert-name { margin: 0.4cqw 0 0; padding: 0 5cqw 0.6cqw; font-size: 6cqw; font-weight: 700; line-height: 1.1; color: var(--green-ink); border-bottom: 0.35cqw solid #e9c79a; }
+.cert-name small { display: block; font-size: 2.2cqw; font-weight: 600; color: var(--ink-soft); }
+.cert-hero { margin-top: 1.5cqw; }
+.cert-hero .tapko-stack { --size: 32cqw !important; }
+.cert-stats { display: flex; justify-content: center; gap: 1.5cqw; margin-top: 0.5cqw; }
+.cert-stat { display: grid; justify-items: center; width: 14cqw; }
+.cert-stat img { height: 5.2cqw; width: auto; max-width: 7cqw; object-fit: contain; }
+.cert-stat b { font-size: 3.4cqw; line-height: 1.15; white-space: nowrap; }
+.cert-stat span { font-size: 1.6cqw; line-height: 1.2; color: var(--ink-soft); }
+.cert-stories { width: 100%; margin-top: 3cqw; }
+.cert-stories h2 { margin: 0 0 1.2cqw; font-size: 2.4cqw; color: var(--brand-ink); }
+.cert-stories ul { list-style: none; margin: 0 -3cqw; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2cqw; }
+.cert-stories li { display: flex; align-items: center; justify-content: center; gap: 1cqw; font-size: 1.9cqw; font-weight: 600; text-align: left; }
+.cert-stories li img { width: 5.2cqw; height: 5.2cqw; object-fit: contain; flex: none; }
+.cert-stories li b { font-size: 2cqw; color: var(--ink-soft); white-space: nowrap; }
+.cert-praise { margin: 3cqw 3cqw 0; font-size: 2.4cqw; font-style: italic; line-height: 1.4; }
+/* The date on the left, Aro's and Tapko's signatures on the right, all inside the frame. */
+.cert-foot { margin-top: auto; width: 100%; display: flex; justify-content: space-between; align-items: flex-end; }
+.cert-date { font-size: 1.8cqw; color: var(--ink-soft); padding-bottom: 1.5cqw; }
+.cert-signs { display: flex; align-items: flex-end; gap: 2cqw; }
+.cert-sign { display: grid; justify-items: center; font-size: 1.7cqw; font-weight: 600; color: var(--ink-soft); }
+.cert-parrot { width: 12cqw; height: 12cqw; object-fit: contain; transform: rotate(6deg); }
+.cert-stamp { width: 13cqw; height: 13cqw; object-fit: contain; transform: rotate(-8deg); }
 /* Printing (only the certificate prints): the sheet alone, without the window and its buttons. */
 @media print {
-  @page { size: A4 landscape; margin: 0; }
+  @page { size: A4 portrait; margin: 0; }
   html:has(.cert-modal), body:has(.cert-modal) { height: auto; overflow: visible; background: #fff; }
   body:has(.cert-modal) > *:not(.modal-back:has(.cert-modal)) { display: none !important; }
   .modal-back:has(.cert-modal) { position: static; display: block; padding: 0; background: none; animation: none; }
   .modal.cert-modal { width: auto; max-height: none; overflow: visible; padding: 0; border-radius: 0; box-shadow: none; background: none; animation: none; }
   .cert-modal .modal-x, .cert-view > .row { display: none !important; }
   .cert-view { display: block; padding: 0; }
-  .cert-view > .cert-sheet { width: 297mm; height: 210mm; aspect-ratio: auto; margin: 0; }
+  .cert-view > .cert-sheet { width: 210mm; height: 297mm; aspect-ratio: auto; margin: 0; }
 }
 
 /* Responsive */

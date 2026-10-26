@@ -57,11 +57,28 @@ export function winParrot(p: Profile, world: number, today: string): boolean {
   const pr = p.progress;
   const had = hasParrotBadge(p);
   if (!pr.parrots.includes(world)) pr.parrots.push(world);
-  if (!pr.parrotsMet.includes(world)) pr.parrotsMet.push(world);
   pr.parrotBest = Math.max(pr.parrotBest, pr.parrots.length);
   pr.parrotWonAt = today;
   pr.parrotFlown = pr.parrotFlown.filter((w) => w !== world);
   return !had && hasParrotBadge(p);
+}
+
+/** Service: a random parrot at home flies away, told on the map like a rolled one; returns its world, null when none is home. */
+export function sendParrotAway(p: Profile, rand: () => number = Math.random): number | null {
+  const pr = p.progress;
+  if (!pr.parrots.length) return null;
+  const w = pr.parrots.splice(Math.floor(rand() * pr.parrots.length), 1)[0];
+  pr.parrotFlown = [...new Set([...pr.parrotFlown, w])];
+  return w;
+}
+
+/** Service: the parrot of a random finished world without it comes home, as if its round was won; returns the world, null when none misses it. */
+export function bringParrotHome(p: Profile, today: string, rand: () => number = Math.random): number | null {
+  const missing = p.progress.worldsDone.filter((w) => !p.progress.parrots.includes(w));
+  if (!missing.length) return null;
+  const w = missing[Math.floor(rand() * missing.length)];
+  winParrot(p, w, today);
+  return w;
 }
 
 /** Mistakes a parrot round bears, 4 plus the story's number (1-3) for its index `story` (0-2); one more and the parrot flies off. */
@@ -69,11 +86,9 @@ export function parrotPatience(story: number): number {
   return 5 + story;
 }
 
-/** The parrot flew off after too many mistakes: it leaves its perch (and home, if it lived there). */
+/** The parrot flew off after too many mistakes: it leaves home, if it lived there. */
 export function loseParrot(p: Profile, world: number): void {
-  const pr = p.progress;
-  pr.parrots = pr.parrots.filter((w) => w !== world);
-  if (!pr.parrotsMet.includes(world)) pr.parrotsMet.push(world);
+  p.progress.parrots = p.progress.parrots.filter((w) => w !== world);
 }
 
 /** Size of a parrot round: how many words, their letters and the repetitions of each in phase 2. */

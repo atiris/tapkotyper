@@ -16,7 +16,8 @@ import { KeyboardGuide, fingerChip, keyLabel } from '../ui/keyboard-guide';
 import { button, h, modal } from '../ui/dom';
 import { tabBar } from '../ui/tabs';
 import { bigCode } from '../ui/big-code';
-import { badge, parrotBadge } from '../ui/badge';
+import { badge } from '../ui/badge';
+import { aroPerch } from '../ui/aro';
 import { hasParrotBadge } from '../game/parrots';
 import { medal } from '../ui/medal';
 import { rangeFinds } from '../ui/finds';
@@ -110,7 +111,7 @@ function chip(pic: string | null, glyph: string, text: string, label: string): H
     pic ? h('img', { src: pic, alt: '' }) : h('span', { class: 'sum-glyph' }, glyph), h('b', {}, text));
 }
 
-/** The long-term picture: mastered keys, finished stories and worlds, the chest's points, the parrots at home against their best count, the best stars of all levels, and the accuracy, speed and letters of the last 14 days. */
+/** The long-term picture in one row (mastered keys, finished stories and worlds, the chest's points, the parrots at home against their best count, the best stars of all levels), the last 14 days in the next (accuracy, speed, letters). */
 export function summaryRow(p: Profile): HTMLElement {
   const m = masterySummary(p);
   const stories = STORIES.filter((x) => storyDone(p, x)).length;
@@ -118,16 +119,17 @@ export function summaryRow(p: Profile): HTMLElement {
   const percent = Math.round(recent.accuracy * 100);
   const chest = chestPoints(p), stars = totalStars(p);
   const parrots = { n: p.progress.parrots.length, best: p.progress.parrotBest };
-  return h('ul', { class: 'progress-sum' },
+  return h('div', { class: 'progress-sums' }, h('ul', { class: 'progress-sum' },
     chip(imageUrl('ui-key'), '⌨', `${m.mastered}/${m.total}`, t('progress.keys', { n: m.mastered, total: m.total })),
     chip(imageUrl('ui-level'), '▲', `${stories}/${STORIES.length}`, t('progress.stories', { n: stories, total: STORIES.length })),
     chip(imageUrl('ui-earth'), '●', `${p.progress.worldsDone.length}/${WORLDS.length}`, t('progress.worlds', { n: p.progress.worldsDone.length, total: WORLDS.length })),
     chip(imageUrl('ui-chest'), '◆', `${chest}/${MAX_CHEST}`, t('progress.chest', { n: chest, total: MAX_CHEST })),
-    parrots.best ? chip(imageUrl('ui-act-parrot'), 'P', t('progress.parrotCount', parrots), t('progress.parrots', parrots)) : null,
+    parrots.best ? chip(imageUrl('ui-act-parrot-head'), 'P', t('progress.parrotCount', parrots), t('progress.parrots', parrots)) : null,
+    chip(imageUrl('ui-star'), '★', `${stars}/${MAX_STARS}`, t('progress.stars', { n: stars, total: MAX_STARS }))),
+  h('ul', { class: 'progress-sum' },
     recent.chars ? chip(imageUrl('ui-accuracy'), '✓', `${percent} %`, t('progress.quality', { n: percent })) : null,
     recent.cpm ? chip(imageUrl('ui-typing-speed'), '»', String(recent.cpm), t('progress.speed', { n: recent.cpm })) : null,
-    chip(imageUrl('ui-star'), '★', `${stars}/${MAX_STARS}`, t('progress.stars', { n: stars, total: MAX_STARS })),
-    chip(imageUrl('ui-keys-typed'), 'Aa', String(recent.chars), t('progress.chars14', { n: recent.chars })));
+    chip(imageUrl('ui-keys-typed'), 'Aa', String(recent.chars), t('progress.chars14', { n: recent.chars }))));
 }
 
 /** Who a story is about, for its row. */
@@ -199,7 +201,7 @@ function playfulTapko(p: Profile): HTMLElement {
 /** Progress: the summary rows and badges, the growth medals, the code of all statistics and the certificate; `title` off where the page already says it. */
 export function progressTab(p: Profile, title = true): HTMLElement {
   return h('div', {},
-    h('div', { class: 'stats-head' }, h('div', { class: 'stats-hero' }, playfulTapko(p), hasParrotBadge(p) ? parrotBadge() : null),
+    h('div', { class: 'stats-head' }, h('div', { class: 'stats-hero' }, playfulTapko(p), hasParrotBadge(p) ? aroPerch(true, (aro) => aro.hop())?.el ?? null : null),
       h('div', {}, title ? h('h2', {}, t('progress.title')) : null, progressSection(p))),
     p.progress.growth ? h('div', { class: 'medals' }, h('h3', {}, t('stats.medals')),
       h('div', { class: 'medal-row' }, ...Array.from({ length: p.progress.growth }, (_, i) => medal(i + 1, true)))) : null,

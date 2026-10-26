@@ -12,18 +12,27 @@ const SRC = 'assets-src';
 const OUT = 'public/assets';
 const SPRITE_MAX = 384;
 const ICON_MAX = 512; // ui-icon is also the app icon (scripts/icons.mjs), ui-icon-hr the start page's large logo
-// The certificate's frame is rebuilt from its top band, the only band with plain places to cut
-// (measured on the 1024 px source): a corner of CORNER px, made symmetric across its diagonal and
-// mirrored into all four, and the edge tile between the plain columns CORNER and TILE_END, reused
-// on all four sides. The page repeats the edges (CSS border-image with the slice CORNER).
+// The certificate's frame is cut from one top-left corner (the fox) with a band of paw prints running
+// right and down (measured on the 1024 px source). The top corners are the fox, mirrored on the right;
+// the bottom corners are the plain bands joined on the diagonal. One pair of paw prints of each band
+// is the edge tile the page repeats (CSS border-image, round), so the prints stay upright on all sides.
 const FRAME = 'ui-cert-frame';
 const FRAME_SRC = 1024;
-const CORNER = 247;
-const TILE_END = 709;
-/** The top band's outer and inner outline, in px from the source's top edge. */
-const BAND_OUT = 57;
-const BAND_IN = 168;
-// The certificate's stamp is printed a few centimetres wide.
+/** Width of the fox corner (the top band's paw pairs repeat from here) and its height (the left band's). */
+const FOX_W = 372;
+const FOX_H = 449;
+/** One pair of paw prints: along the top band from FOX_W, along the left band from FOX_H. */
+const PAWS_X = 87;
+const PAWS_Y = 84;
+/** The top band's outer and inner edge (rows) and the left band's (columns). */
+const BAND_TOP = [90, 234];
+const BAND_LEFT = [87, 233];
+/** Where the bands run plain, without prints: the top band from this column, the left band from this row. */
+const PLAIN_X = 520;
+const PLAIN_Y = 600;
+/** Height of the bottom corners and edge; the bottom band lies as far from the edge as the top one. */
+const FRAME_BOTTOM = 300;
+// The certificate's stamp and the parrot's signature are printed a few centimetres wide.
 const STAMP_MAX = 640;
 const BG_WIDTH = 1920;
 // The flying parrot's wing-beat pictures (obj-parrot-flying, -2, -3, -4) take one shared crop, so they lie on each other.
@@ -343,40 +352,48 @@ async function processImage(name, file, manifest) {
     return;
   }
   const box = bbox(data, w, h);
-  const max = name.startsWith('ui-icon') ? ICON_MAX : name === 'ui-cert-stamp' ? STAMP_MAX : SPRITE_MAX;
+  const max = name.startsWith('ui-icon') ? ICON_MAX : name === 'ui-cert-stamp' || name === 'ui-cert-parrot' ? STAMP_MAX : SPRITE_MAX;
   const info = await webp(sharp(data, { raw: { width: w, height: h, channels: 4 } }).extract(box).resize(max, max, { fit: 'inside', withoutEnlargement: true })).toFile(join(OUT, `${name}.webp`));
   manifest.images[name] = { w: info.width, h: info.height };
 }
 
-/** The certificate frame: four corners and four edges of one repeating tile, in one square for border-image. */
+/**
+ * The certificate frame for border-image (slice FOX_H FOX_W FRAME_BOTTOM FOX_W): the fox corners on
+ * top, the plain corners at the bottom, and one pair of paw prints as each edge. The right side is
+ * the left one mirrored; the bottom band is the top one moved down, so its prints stay upright.
+ */
 async function writeFrame(name, data, w, h, manifest) {
   if (w !== FRAME_SRC || h !== FRAME_SRC) throw new Error(`${name}: the cut lines are measured on a ${FRAME_SRC} px square`);
-  const tile = TILE_END - CORNER;
-  const size = 2 * CORNER + tile;
-  const out = Buffer.alloc(size * size * 4);
-  const copy = (dx, dy, sx, sy) => data.copy(out, (dy * size + dx) * 4, (sy * w + sx) * 4, (sy * w + sx) * 4 + 4);
-  const last = size - 1;
-  for (let a = 0; a < CORNER; a++) for (let b = 0; b < CORNER; b++) {
-    // The corner: its upper half across the diagonal, mirrored to the lower half.
-    const [sx, sy] = a >= b ? [a, b] : [b, a];
-    copy(a, b, sx, sy);
-    copy(last - a, b, sx, sy);
-    copy(a, last - b, sx, sy);
-    copy(last - a, last - b, sx, sy);
+  const W = 2 * FOX_W + PAWS_X, H = FOX_H + PAWS_Y + FRAME_BOTTOM;
+  const out = Buffer.alloc(W * H * 4);
+  const at = (x, y) => (y * w + x) * 4;
+  // Writes the source pixel (sx, sy) at (x, y) and, left of the edge tiles, at its mirror on the right.
+  const put = (x, y, sx, sy) => {
+    data.copy(out, (y * W + x) * 4, at(sx, sy), at(sx, sy) + 4);
+    if (x < FOX_W) data.copy(out, (y * W + W - 1 - x) * 4, at(sx, sy), at(sx, sy) + 4);
+  };
+  // The bottom band is the top band moved up by `shift` rows of the source.
+  const shift = BAND_TOP[0] - (FRAME_BOTTOM - BAND_TOP[1]);
+  const bottom = H - FRAME_BOTTOM;
+  for (let x = 0; x < FOX_W; x++) {
+    for (let y = 0; y < FOX_H; y++) put(x, y, x, y);
+    for (let t = 0; t < PAWS_Y; t++) put(x, FOX_H + t, x, FOX_H + t);
+    // The bottom corner: the plain left band coming down and the plain bottom band going right, joined
+    // on the diagonal from the outer corner to the inner one; nothing below the bottom band.
+    for (let r = 0; r < FRAME_BOTTOM; r++) {
+      const sy = r + shift;
+      if (sy >= BAND_TOP[1]) continue;
+      const fromLeft = x < BAND_LEFT[1] && (r < BAND_TOP[0] - shift || x - BAND_LEFT[0] < BAND_TOP[1] - sy);
+      if (fromLeft) put(x, bottom + r, x, PLAIN_Y + r);
+      else put(x, bottom + r, PLAIN_X + x, sy);
+    }
   }
-  // The bottom edge is the top band moved down, so its pictures stay upright: the band lies as far
-  // from the outer edge as on top (BAND_OUT to BAND_IN px from it).
-  const shift = last - BAND_IN - BAND_OUT;
-  for (let t = 0; t < tile; t++) for (let b = 0; b < CORNER; b++) {
-    const sx = CORNER + t;
-    copy(CORNER + t, b, sx, b);
-    if (b + shift <= last) copy(CORNER + t, b + shift, sx, b);
-    // Left and right lay the band on its side.
-    copy(b, CORNER + t, sx, b);
-    copy(last - b, CORNER + t, sx, b);
+  for (let t = 0; t < PAWS_X; t++) {
+    for (let y = 0; y < FOX_H; y++) put(FOX_W + t, y, FOX_W + t, y);
+    for (let r = 0; r < FRAME_BOTTOM; r++) if (r + shift < BAND_TOP[1]) put(FOX_W + t, bottom + r, FOX_W + t, r + shift);
   }
-  await webp(sharp(out, { raw: { width: size, height: size, channels: 4 } })).toFile(join(OUT, `${name}.webp`));
-  manifest.images[name] = { w: size, h: size };
+  await webp(sharp(out, { raw: { width: W, height: H, channels: 4 } })).toFile(join(OUT, `${name}.webp`));
+  manifest.images[name] = { w: W, h: H };
 }
 
 /**

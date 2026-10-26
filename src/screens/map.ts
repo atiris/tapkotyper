@@ -9,7 +9,7 @@ import { GUEST_ID, type Profile, SUPER_ID } from '../storage/schema';
 import { activeKeys, notReadyKeys } from '../learning/lessons';
 import { keyLabel } from '../ui/keyboard-guide';
 import { badgeTier } from '../game/rewards';
-import { badge, parrotBadge } from '../ui/badge';
+import { badge } from '../ui/badge';
 import { flyAway, hasParrotBadge } from '../game/parrots';
 import { localDate } from '../learning/stats';
 import { arrowFocus, button, closeButton, h, icon } from '../ui/dom';
@@ -18,6 +18,7 @@ import { offerInstall } from '../ui/install';
 import { tipShown } from '../ui/tooltip';
 import { onTypedWord } from '../ui/typed-word';
 import { flyingParrot, parrotVisit } from '../ui/parrot-visit';
+import { aroPerch } from '../ui/aro';
 import { ownTextPhrases } from '../game/modes/practice';
 import { levelTitleWords } from '../ui/hud';
 import { startFreeType } from './free-type';
@@ -81,14 +82,19 @@ export function mapScreen(root: HTMLElement): () => void {
   const p = app.profile!;
   audio.music(app.menuTrack);
   // Won parrots may fly away over the days; the map tells it once.
-  const hadBadge = hasParrotBadge(p);
   flyAway(p, localDate());
   const flown = [...p.progress.parrotFlown].sort((a, b) => a - b);
   p.progress.parrotFlown = [];
+  // Aro (the Parrot badge) sits on his perch left of Tapko: he flies off once when the badge is lost,
+  // and lands on the empty perch the first time the map opens with it won.
+  const hasBadge = hasParrotBadge(p);
+  const aroLeaves = !hasBadge && p.progress.parrotPerched;
+  const aroArrives = hasBadge && !p.progress.parrotPerched;
+  p.progress.parrotPerched = hasBadge;
   saveProfile();
-  const badgeLost = flown.length > 0 && hadBadge && !hasParrotBadge(p);
+  const aro = hasBadge || aroLeaves ? aroPerch(!aroArrives, (a) => a.flyOff(tList('parrot.takeoff'), true)) : null;
   const tapko = h('button', { class: 'map-tapko', type: 'button', tip: t('tapko.statsHint'), 'aria-label': t('progress.title'), onClick: () => openStats() },
-    tapkoElement(p.companion, 'idle', 130));
+    tapkoElement(p.companion, 'idle', 163));
   // The narrator's bubble on the map: why a level waits for more keys.
   const bubble = h('div', { class: 'bubble static map-bubble', role: 'status', 'aria-live': 'polite' });
   bubble.hidden = true;
@@ -131,8 +137,8 @@ export function mapScreen(root: HTMLElement): () => void {
     cornerControls(settingsButton()),
     h('main', { class: 'map-body' },
       h('aside', { class: 'map-side' },
-        h('h2', { class: 'map-hello' }, t('map.hello', { name: nickname(p) }), hasParrotBadge(p) || badgeLost ? parrotBadge() : null),
-        tapko,
+        h('h2', { class: 'map-hello' }, t('map.hello', { name: nickname(p) })),
+        h('div', { class: `map-hero ${aro ? 'with-aro' : ''}` }, aro?.el ?? null, tapko),
         bubble,
         taskCard(p),
         play,
@@ -152,12 +158,18 @@ export function mapScreen(root: HTMLElement): () => void {
     const worlds = flown.map((w) => t(`worlds.${WORLDS[w]}`)).join(', ');
     bubble.replaceChildren(h('p', {}, t(flown.length === 1 ? 'map.parrotFlown' : 'map.parrotsFlown', { worlds })));
     bubble.hidden = false;
-    flyOff(root, flown, badgeLost);
+    flyOff(root, flown);
   }
+  if (aroLeaves) aro?.flyOff(tList('parrot.goodbye'), false);
+  if (aroArrives) aro?.arrive(tList('parrot.arrive'));
   // One greeting at a time: the install offer waits for a map without the welcome.
   if (p.id !== SUPER_ID && !welcome) offerInstall(p.companion);
   // The word "parrot" typed on the map calls a parrot over the page.
-  return onTypedWord([t('parrot.title')], parrotVisit);
+  const offWord = onTypedWord([t('parrot.title')], parrotVisit);
+  return () => {
+    offWord();
+    aro?.stop();
+  };
 }
 
 /** Which letters still need accuracy before new ones open; empty when none holds them back. */
@@ -192,13 +204,13 @@ function aimNode(open: boolean, world: number): HTMLElement {
     pic ? h('img', { class: 'level-act', src: pic, alt: '' }) : icon('target', 'icon aim-icon'));
 }
 
-/** The parrot node's picture: the parrot sitting while it is at home, its empty perch after it flew away, else its head. */
-const parrotPic = (home: boolean, won: boolean) => imageUrl(home ? 'ui-act-parrot' : won ? 'ui-act-parrot-perch' : 'ui-act-parrot-head');
+/** The parrot node's picture: its head while the parrot is at home, else its empty short perch. */
+const parrotPic = (home: boolean) => imageUrl(home ? 'ui-act-parrot-head' : 'obj-parrot-perch-short');
 
 /** The parrot of a world (its picture by `parrotPic`), faded and closed until the world is finished. */
 function parrotNode(p: Profile, open: boolean, world: number, flying: boolean): HTMLElement {
   const home = flying || p.progress.parrots.includes(world);
-  const pic = parrotPic(home, p.progress.parrotsMet.includes(world));
+  const pic = parrotPic(home);
   return h('button', {
     class: `level-node parrot-node ${home ? 'home' : ''}`, type: 'button', disabled: !open, 'data-world': String(world),
     'aria-label': `${t('parrot.title')}${home ? `, ${t('map.parrotHome')}` : ''}`, tip: sideTip(open, 'map.parrotTip'),
@@ -206,17 +218,16 @@ function parrotNode(p: Profile, open: boolean, world: number, flying: boolean): 
   }, pic ? h('img', { class: 'level-act', src: pic, alt: '' }) : icon('star', 'icon'));
 }
 
-/** Parrots that flew away leave their nodes on the map: up and out of the window, the node showing the empty perch; a lost badge fades with them. */
-function flyOff(root: HTMLElement, worlds: number[], badgeLost: boolean): void {
+/** Parrots that flew away leave their nodes on the map: a small parrot flies up and out of the window, the node showing the empty perch. */
+function flyOff(root: HTMLElement, worlds: number[]): void {
   const nodes = worlds.map((w) => root.querySelector<HTMLElement>(`.parrot-node[data-world="${w}"]`)).filter((n) => n !== null);
-  const perch = parrotPic(false, true);
+  const perch = parrotPic(false);
   const leave = () => {
     for (const n of nodes) {
       n.classList.remove('home');
       const img = n.querySelector('img');
       if (img && perch) img.src = perch;
     }
-    if (badgeLost) root.querySelector('.map-hello .parrot-badge')?.remove();
   };
   if (reduceMotion() || !imageUrl('obj-parrot-flying')) return leave();
   requestAnimationFrame(() => {
@@ -226,7 +237,6 @@ function flyOff(root: HTMLElement, worlds: number[], badgeLost: boolean): void {
       bird.addEventListener('animationend', (e) => e.target === bird && bird.remove());
       root.append(bird);
     }
-    root.querySelector('.map-hello .parrot-badge')?.classList.toggle('leaving', badgeLost);
     setTimeout(leave, 600);
   });
 }

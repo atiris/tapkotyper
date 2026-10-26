@@ -1335,7 +1335,7 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-ink); }
  * from one row, the same fox in every corner turned with the band (the band starts behind it), and the
  * paw pairs repeated with even gaps between the foxes, walking round clockwise.
  */
-.cert-frame { --fs: 0.03cqw; --fe: 2.8cqw; --band: calc(var(--fs) * 142); --clear: calc(var(--fe) + var(--fs) * 268); position: absolute; inset: 0; pointer-events: none; }
+.cert-frame { --fs: 0.03cqw; --fe: 2.8cqw; --band: calc(var(--fs) * 142); --from: calc(var(--fe) + var(--fs) * 268); --to: calc(var(--fe) + var(--fs) * 309); position: absolute; inset: 0; pointer-events: none; }
 .cert-band { position: absolute; }
 .cert-band:is(.top, .bottom) { left: calc(var(--fe) + var(--band)); right: calc(var(--fe) + var(--band)); height: var(--band); background: var(--band-right) 0 0 / auto 100% repeat-x; }
 .cert-band:is(.left, .right) { top: calc(var(--fe) + var(--band)); bottom: calc(var(--fe) + var(--band)); width: var(--band); background: var(--band-up) 0 0 / 100% auto repeat-y; }
@@ -1343,13 +1343,17 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-ink); }
 .cert-band.bottom { bottom: var(--fe); transform: rotate(180deg); }
 .cert-band.left { left: var(--fe); }
 .cert-band.right { right: var(--fe); transform: rotate(180deg); }
+/*
+ * Each side's prints run clockwise from one fox (--from) to the next; the end at the next fox (--to) stops
+ * half a pair earlier, so the gaps at both foxes look alike.
+ */
 .cert-paws { position: absolute; }
-.cert-paws:is(.top, .bottom) { left: var(--clear); right: var(--clear); height: var(--band); background: var(--paws-right) 0 0 / auto 100% space no-repeat; }
-.cert-paws:is(.left, .right) { top: var(--clear); bottom: var(--clear); width: var(--band); background: var(--paws-up) 0 0 / 100% auto no-repeat space; }
-.cert-paws.top { top: var(--fe); }
-.cert-paws.bottom { bottom: var(--fe); transform: rotate(180deg); }
-.cert-paws.left { left: var(--fe); }
-.cert-paws.right { right: var(--fe); transform: rotate(180deg); }
+.cert-paws:is(.top, .bottom) { height: var(--band); background: var(--paws-right) 0 0 / auto 100% space no-repeat; }
+.cert-paws:is(.left, .right) { width: var(--band); background: var(--paws-up) 0 0 / 100% auto no-repeat space; }
+.cert-paws.top { top: var(--fe); left: var(--from); right: var(--to); }
+.cert-paws.right { right: var(--fe); top: var(--from); bottom: var(--to); transform: rotate(180deg); }
+.cert-paws.bottom { bottom: var(--fe); right: var(--from); left: var(--to); transform: rotate(180deg); }
+.cert-paws.left { left: var(--fe); bottom: var(--from); top: var(--to); }
 /* The fox's band corner lies 88.5 px in from its picture's top and left; turned about its middle it fits every corner. */
 .cert-fox { --at: calc(var(--fe) - var(--fs) * 88.5); position: absolute; width: calc(var(--fs) * 372); height: calc(var(--fs) * 372); }
 .cert-fox.tl { top: var(--at); left: var(--at); }

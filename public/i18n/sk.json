@@ -26,7 +26,7 @@
       "words": ["ahoj", "ahojte", "čau", "čaute", "čauko", "nazdar", "servus", "zdravím", "zdravíčko", "dobrý deň", "dobré ráno", "dobrý večer", "dobré popoludnie", "hello", "hi"],
       "hello": "Ahoj!",
       "intro": "Ja som Tapko. Teším sa na teba!",
-      "invite": "Vyber si hráča a poďme si chvíľku spolu zatrénovať písanie."
+      "invite": "Vyber si hráča a poďme si chvíľku spolu trénovať písanie."
     },
     "whoPlays": "Kto mi dnes napíše?",
     "pickByNumber": "Profil môžeš aktivovať aj napísaním číslice {n}",

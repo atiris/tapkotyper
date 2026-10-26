@@ -31,16 +31,14 @@ function signature(pic: string, name: string, cls: string): HTMLElement {
 }
 
 /**
- * The frame: a band drawn by the page, the same fox in every corner (turned round with the band) and
+ * The frame: the band along each side, the same fox in every corner (turned round with the band) and
  * pairs of paw prints along each side, walking round clockwise; null without its pictures.
  */
 function frame(): HTMLElement | null {
-  const fox = imageUrl('ui-cert-fox');
-  const right = imageUrl('ui-cert-paws-right');
-  const up = imageUrl('ui-cert-paws-up');
-  if (!fox || !right || !up) return null;
-  return h('div', { class: 'cert-frame', 'aria-hidden': 'true', style: `--paws-right:url(${right});--paws-up:url(${up})` },
-    h('div', { class: 'cert-band' }),
+  const [fox, bandRight, bandUp, pawsRight, pawsUp] = ['ui-cert-fox', 'ui-cert-band-right', 'ui-cert-band-up', 'ui-cert-paws-right', 'ui-cert-paws-up'].map(imageUrl);
+  if (!fox || !bandRight || !bandUp || !pawsRight || !pawsUp) return null;
+  return h('div', { class: 'cert-frame', 'aria-hidden': 'true', style: `--band-right:url(${bandRight});--band-up:url(${bandUp});--paws-right:url(${pawsRight});--paws-up:url(${pawsUp})` },
+    ...['top', 'right', 'bottom', 'left'].map((side) => h('div', { class: `cert-band ${side}` })),
     ...['top', 'right', 'bottom', 'left'].map((side) => h('div', { class: `cert-paws ${side}` })),
     ...['tl', 'tr', 'br', 'bl'].map((corner) => h('img', { class: `cert-fox ${corner}`, src: fox, alt: '' })));
 }

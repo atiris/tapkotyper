@@ -1331,20 +1331,18 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-ink); }
 .cert-view > .cert-sheet { width: min(100%, calc((92vh - 10rem) * 210 / 297)); margin: 0 auto; }
 .cert-sheet { position: relative; container-type: inline-size; width: 100%; aspect-ratio: 210 / 297; background: radial-gradient(ellipse at 50% 40%, #fff, #fffaf0 75%); color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 /*
- * The frame (its pictures cut by scripts/assets.mjs, --fs = one pixel of them): the band is drawn here in
- * the picture's colors and widths (141 px: dark line, cream, orange line, cream, orange line, cream, dark
- * line), the same fox lies in every corner turned with the band, and the paw pairs repeat with even gaps
- * between the foxes, walking round clockwise.
+ * The frame, from its parts in assets-src (--fs = one pixel of them): the band repeated along each side
+ * from one row, the same fox in every corner turned with the band (the band starts behind it), and the
+ * paw pairs repeated with even gaps between the foxes, walking round clockwise.
  */
-.cert-frame { --fs: 0.03cqw; --fe: 2.8cqw; --band: calc(var(--fs) * 141); --clear: calc(var(--fe) + var(--fs) * 268); position: absolute; inset: 0; pointer-events: none; }
-.cert-band {
-  position: absolute; inset: var(--fe); border: calc(var(--fs) * 5) solid #563023;
-  box-shadow: inset 0 0 0 calc(var(--fs) * 11) #fdf2d6, inset 0 0 0 calc(var(--fs) * 17) #ef9e5c, inset 0 0 0 calc(var(--fs) * 114) #fdf2d6,
-    inset 0 0 0 calc(var(--fs) * 120) #ef9e5c, inset 0 0 0 calc(var(--fs) * 131) #fdf2d6, inset 0 0 0 calc(var(--fs) * 136) #563023;
-  /* As in the picture the band starts behind the fox: its corner squares are cut away. */
-  clip-path: polygon(var(--band) 0, calc(100% - var(--band)) 0, calc(100% - var(--band)) var(--band), 100% var(--band), 100% calc(100% - var(--band)), calc(100% - var(--band)) calc(100% - var(--band)),
-    calc(100% - var(--band)) 100%, var(--band) 100%, var(--band) calc(100% - var(--band)), 0 calc(100% - var(--band)), 0 var(--band), var(--band) var(--band));
-}
+.cert-frame { --fs: 0.03cqw; --fe: 2.8cqw; --band: calc(var(--fs) * 142); --clear: calc(var(--fe) + var(--fs) * 268); position: absolute; inset: 0; pointer-events: none; }
+.cert-band { position: absolute; }
+.cert-band:is(.top, .bottom) { left: calc(var(--fe) + var(--band)); right: calc(var(--fe) + var(--band)); height: var(--band); background: var(--band-right) 0 0 / auto 100% repeat-x; }
+.cert-band:is(.left, .right) { top: calc(var(--fe) + var(--band)); bottom: calc(var(--fe) + var(--band)); width: var(--band); background: var(--band-up) 0 0 / 100% auto repeat-y; }
+.cert-band.top { top: var(--fe); }
+.cert-band.bottom { bottom: var(--fe); transform: rotate(180deg); }
+.cert-band.left { left: var(--fe); }
+.cert-band.right { right: var(--fe); transform: rotate(180deg); }
 .cert-paws { position: absolute; }
 .cert-paws:is(.top, .bottom) { left: var(--clear); right: var(--clear); height: var(--band); background: var(--paws-right) 0 0 / auto 100% space no-repeat; }
 .cert-paws:is(.left, .right) { top: var(--clear); bottom: var(--clear); width: var(--band); background: var(--paws-up) 0 0 / 100% auto no-repeat space; }
@@ -1375,18 +1373,19 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-ink); }
 .cert-stat span { font-size: 1.6cqw; line-height: 1.2; color: var(--ink-soft); }
 .cert-stories { width: 100%; margin-top: 3cqw; }
 .cert-stories h2 { margin: 0 0 1.2cqw; font-size: 2.4cqw; color: var(--brand-ink); }
-.cert-stories ul { list-style: none; margin: 0 -3cqw; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2cqw; }
+.cert-stories ul { list-style: none; margin: 0 2cqw; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2cqw; }
 .cert-stories li { display: flex; align-items: center; justify-content: center; gap: 1cqw; font-size: 1.9cqw; font-weight: 600; text-align: left; }
 .cert-stories li img { width: 5.2cqw; height: 5.2cqw; object-fit: contain; flex: none; }
 .cert-stories li b { font-size: 2cqw; color: var(--ink-soft); white-space: nowrap; }
 .cert-praise { margin: 3cqw 3cqw 0; font-size: 2.4cqw; font-style: italic; line-height: 1.4; }
-/* The date on the left, Aro's and Tapko's signatures on the right, clear of the foxes in the corners. */
-.cert-foot { margin-top: auto; box-sizing: border-box; width: 100%; padding: 0 2cqw; display: flex; justify-content: space-between; align-items: flex-end; }
-.cert-date { font-size: 1.8cqw; color: var(--ink-soft); padding-bottom: 1.5cqw; }
+/* The date on the left, Aro's and Tapko's signatures on the right, clear of the foxes in the corners; the names on the date's line, in its font. */
+.cert-foot { margin: auto 0 1.5cqw; box-sizing: border-box; width: 100%; padding: 0 2cqw; display: flex; justify-content: space-between; align-items: flex-end; }
+.cert-date, .cert-sign { font-size: 1.8cqw; color: var(--ink-soft); }
 .cert-signs { display: flex; align-items: flex-end; gap: 2cqw; }
-.cert-sign { display: grid; justify-items: center; font-size: 1.7cqw; font-weight: 600; color: var(--ink-soft); }
-.cert-parrot { width: 12cqw; height: 12cqw; object-fit: contain; transform: translateY(-1.2cqw) rotate(6deg); }
-.cert-tapko { width: 11cqw; height: 11cqw; object-fit: contain; }
+.cert-sign { display: grid; justify-items: center; }
+/* Aro reaches as high as the top of the fox head. */
+.cert-parrot { width: 9.6cqw; height: 9.6cqw; object-fit: contain; transform: rotate(6deg); }
+.cert-tapko { width: 11cqw; height: auto; }
 /* Printing (only the certificate prints): the sheet alone, without the window and its buttons. */
 @media print {
   @page { size: A4 portrait; margin: 0; }

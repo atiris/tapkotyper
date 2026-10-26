@@ -1520,9 +1520,21 @@
    "w": 384,
    "h": 302
   },
+  "ui-cert-band-up": {
+   "w": 142,
+   "h": 8
+  },
+  "ui-cert-band-right": {
+   "w": 8,
+   "h": 142
+  },
   "ui-cert-fox": {
    "w": 372,
    "h": 372
+  },
+  "ui-cert-parrot": {
+   "w": 640,
+   "h": 636
   },
   "ui-cert-paws-up": {
    "w": 142,
@@ -1531,10 +1543,6 @@
   "ui-cert-paws-right": {
    "w": 82,
    "h": 142
-  },
-  "ui-cert-parrot": {
-   "w": 640,
-   "h": 636
   },
   "ui-chest": {
    "w": 384,

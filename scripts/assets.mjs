@@ -7,29 +7,18 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import sharp from 'sharp';
 import ffmpeg from 'ffmpeg-static';
+import { bleedColor, keyOut } from './key.mjs';
 
 const SRC = 'assets-src';
 const OUT = 'public/assets';
 const SPRITE_MAX = 384;
 const ICON_MAX = 512; // ui-icon is also the app icon (scripts/icons.mjs), ui-icon-hr the start page's large logo
-// The certificate's frame comes from one top-left corner (measured on the 1024 px source): a band with
-// a sleeping fox in the corner and pairs of paw prints along both arms. The page draws the band itself
-// (CSS, its colors and widths measured here) and lays on it the fox, cut out and turned into every
-// corner, and the paw pairs, repeated with even gaps so they always walk round clockwise.
-const FRAME = 'ui-cert-frame';
-const FRAME_SRC = 1024;
-/** The fox's square from the corner (shifted FOX_X px right, so the band's outer edge lies 88.5 px in from its top and its left). */
-const FOX_SIZE = 372;
-const FOX_X = 2;
-/** A point inside the fox, and the row under its tail (a paw print touches the tail from below). */
-const FOX_SEED = [160, 180];
-const FOX_BOTTOM = 355;
-/** One pair of paw prints on the left arm, toes up: its rows, and the arm's columns. */
-const PAWS_ROWS = [452, 534];
-const PAWS_COLS = [90, 232];
-/** Plain places of the arms (no fox, no prints), to tell them from the band: a column of the top arm, a row of the left arm. */
-const PLAIN_COL = 800;
-const PLAIN_ROW = 800;
+// The certificate frame's parts, kept in assets-src as transparent PNGs to edit by hand (cut first by
+// scripts/cert-frame.mjs): the fox of a corner, one pair of paw prints toes up, and one row of the band
+// (outer edge on the left). They stay lossless; the page turns the prints and the band for each side.
+const CERT_PARTS = ['ui-cert-fox', 'ui-cert-paws', 'ui-cert-band'];
+/** The band's row is repeated to this many rows, so the page never tiles a picture thinner than a pixel. */
+const BAND_ROWS = 8;
 // The parrot's signature on the certificate is printed a few centimetres wide.
 const STAMP_MAX = 640;
 const BG_WIDTH = 1920;
@@ -42,15 +31,6 @@ const MEADOW_SEAM = 0.1;
 // The night meadow is the day one with its flowers closed, drawn in day colors: scaled to the day
 // picture's size (so its plants lie on the day ones) and recolored to the night palette.
 const MEADOW_CLOSED = 'ui-start-meadow-closed';
-
-// Keying works on the RGB distance from the sampled background color.
-const D_FLOOD = 70; // border-connected background
-const D_ENCLOSED = 38; // enclosed gaps (between arm and body)
-const D_SOFT = 120; // edge feather: fully opaque above this distance
-// Glass lenses on outfits: how much the key channel dominates the others.
-const K_LENS = 150;
-const K_GLASS = 70; // light key-tinted reflections at a lens edge become white glass
-const K_SHINE = 20; // inside a lens even a pale key tint is a painted highlight
 
 // Outfit sets: item ids, slots and a pixel classifier (normalized x, y in 0..1).
 // The first rule that matches wins; the last rule is the fallback.
@@ -99,160 +79,6 @@ const SINGLES = {
 };
 
 const run = promisify(execFile);
-
-function sampleKey(data, w, h) {
-  // The most saturated corner is the key; corners covered by artwork (the ground
-  // of a background layer) are left out of the average.
-  const corners = [[2, 2], [w - 3, 2], [2, h - 3], [w - 3, h - 3]].map(([x, y]) => {
-    const i = (y * w + x) * 4;
-    return [data[i], data[i + 1], data[i + 2]];
-  });
-  const chroma = (c) => Math.max(...c) - Math.min(...c);
-  const ref = corners.reduce((a, b) => (chroma(b) > chroma(a) ? b : a));
-  const same = corners.filter((c) => Math.hypot(c[0] - ref[0], c[1] - ref[1], c[2] - ref[2]) < 60);
-  return [0, 1, 2].map((ch) => same.reduce((a, c) => a + c[ch], 0) / same.length);
-}
-
-/** Removes the flat key background in place (RGBA buffer). */
-function keyOut(data, w, h, { glass = false, layer = false, tint = null, pocket = 0.6 } = {}) {
-  const key = sampleKey(data, w, h);
-  const green = key[1] > key[0] && key[1] > key[2];
-  const kKey = green ? key[1] - Math.max(key[0], key[2]) : Math.min(key[0], key[2]) - key[1];
-  const n = w * h;
-  const dist = new Float32Array(n);
-  const k = new Int16Array(n);
-  for (let p = 0; p < n; p++) {
-    const r = data[p * 4], g = data[p * 4 + 1], b = data[p * 4 + 2];
-    dist[p] = Math.hypot(r - key[0], g - key[1], b - key[2]);
-    k[p] = green ? g - Math.max(r, b) : Math.min(r, b) - g;
-  }
-
-  // 1. Flood fill from the border.
-  const removed = new Uint8Array(n);
-  const queue = new Int32Array(n);
-  let head = 0, tail = 0;
-  // Background layers have shaded key pockets between grass blades: the flood
-  // follows the key tint into them.
-  const seed = (p) => { if (!removed[p] && (dist[p] < D_FLOOD || layer && k[p] > kKey * 0.3)) { removed[p] = 1; queue[tail++] = p; } };
-  for (let x = 0; x < w; x++) { seed(x); seed((h - 1) * w + x); }
-  for (let y = 0; y < h; y++) { seed(y * w); seed(y * w + w - 1); }
-  while (head < tail) {
-    const p = queue[head++];
-    const x = p % w, y = (p / w) | 0;
-    if (x > 0) seed(p - 1);
-    if (x < w - 1) seed(p + 1);
-    if (y > 0) seed(p - w);
-    if (y < h - 1) seed(p + w);
-  }
-  // 2. Enclosed gaps that match the key closely (and glass lenses, and strongly
-  // tinted pockets of background layers).
-  const enclosed = new Uint8Array(n);
-  for (let p = 0; p < n; p++) {
-    if (!removed[p] && (dist[p] < D_ENCLOSED || glass && k[p] > K_LENS || layer && k[p] > kKey * pocket)) { removed[p] = 1; enclosed[p] = 1; }
-  }
-
-  // 3. Pixels up to 2 px from removed ones form the edge feather band.
-  const band = new Uint8Array(n);
-  const nearEnclosed = new Uint8Array(n);
-  const shine = new Uint8Array(n);
-  for (let p = 0; p < n; p++) {
-    if (removed[p]) continue;
-    const x = p % w, y = (p / w) | 0;
-    search: for (let dy = -2; dy <= 2; dy++) {
-      for (let dx = -2; dx <= 2; dx++) {
-        const xx = x + dx, yy = y + dy;
-        if (xx < 0 || yy < 0 || xx >= w || yy >= h) continue;
-        const q = yy * w + xx;
-        if (removed[q]) { band[p] = 1; if (enclosed[q]) nearEnclosed[p] = 1; break search; }
-      }
-    }
-  }
-  for (let p = 0; p < n; p++) {
-    const i = p * 4;
-    if (removed[p]) {
-      if (tint && enclosed[p]) { data[i] = tint[0]; data[i + 1] = tint[1]; data[i + 2] = tint[2]; data[i + 3] = Math.round(tint[3] * 255); }
-      else data[i + 3] = 0;
-      continue;
-    }
-    // A painted highlight is light; a darker green item (vest, boots) never is.
-    const light = Math.min(data[i], data[i + 1], data[i + 2]) > 140;
-    if (glass && (k[p] > K_GLASS || light && k[p] > K_SHINE) && (nearEnclosed[p] && k[p] > K_GLASS || isInsideEnclosed(p, enclosed, w))) {
-      // Light reflection on a glass lens: semi-transparent white.
-      data[i] = 255; data[i + 1] = 255; data[i + 2] = 255; data[i + 3] = 110;
-      shine[p] = 1;
-      continue;
-    }
-    if (!band[p]) continue;
-    // Edge alpha from the color distance, and from the key tint: a pixel mixed with
-    // the key keeps some of its dominance, though far from the key in RGB.
-    const aDist = Math.min(1, (dist[p] - D_ENCLOSED) / (D_SOFT - D_ENCLOSED));
-    const aTint = 1 - Math.max(0, k[p]) / kKey;
-    const a = Math.max(0.05, Math.min(aDist, aTint));
-    if (a >= 1) continue;
-    // Unmix the edge pixel: observed = a * color + (1 - a) * key.
-    for (let c = 0; c < 3; c++) data[i + c] = Math.max(0, Math.min(255, Math.round((data[i + c] - (1 - a) * key[c]) / a)));
-    // Despill: a shadowed key tint survives the unmix; take it out of the key
-    // channels, and on background layers fade such pixels out.
-    const r = data[i], g = data[i + 1], b = data[i + 2];
-    const spill = green ? g - Math.max(r, b) : Math.min(r, b) - g;
-    let fade = 1;
-    if (spill > 0) {
-      if (green) data[i + 1] = g - spill;
-      else { data[i] = r - spill; data[i + 2] = b - spill; }
-      if (layer) fade = Math.max(0, 1 - spill / 40);
-    }
-    data[i + 3] = Math.round(data[i + 3] * a * fade);
-  }
-  if (glass) growShine(data, w, h, k, shine, removed);
-  bleedColor(data, w, h);
-}
-
-/**
- * The ends of a reflection stripe touch the lens frame, so they are not found
- * inside the lens; key-tinted pixels touching a reflection join it.
- */
-function growShine(data, w, h, k, shine, removed) {
-  const queue = [];
-  for (let p = 0; p < w * h; p++) if (shine[p]) queue.push(p);
-  while (queue.length) {
-    const p = queue.pop();
-    const x = p % w;
-    for (const q of [x > 0 ? p - 1 : -1, x < w - 1 ? p + 1 : -1, p - w, p + w]) {
-      if (q < 0 || q >= w * h || shine[q] || removed[q] || k[q] <= K_SHINE) continue;
-      shine[q] = 1;
-      data.fill(255, q * 4, q * 4 + 3);
-      data[q * 4 + 3] = 110;
-      queue.push(q);
-    }
-  }
-}
-
-// Lossy WebP mixes the color of transparent pixels into their visible neighbors,
-// so transparent pixels take the color of the nearest visible pixel in their row.
-function bleedColor(data, w, h) {
-  for (let y = 0; y < h; y++) {
-    const row = y * w;
-    let last = -1;
-    for (let x = 0; x < w; x++) {
-      const i = (row + x) * 4;
-      if (data[i + 3] > 0) {
-        if (last < 0) for (let j = row * 4; j < i; j += 4) data.copy(data, j, i, i + 3);
-        last = i;
-      } else if (last >= 0) data.copy(data, i, last, last + 3);
-    }
-  }
-}
-
-// A reflection stripe inside a lens: enclosed key pixels on both sides along a row.
-function isInsideEnclosed(p, enclosed, w) {
-  const x = p % w, row = p - x;
-  let left = false, right = false;
-  for (let d = 1; d < 40 && !(left && right); d++) {
-    if (!left && x - d >= 0 && enclosed[row + x - d]) left = true;
-    if (!right && x + d < w && enclosed[row + x + d]) right = true;
-  }
-  return left && right;
-}
 
 async function loadRgba(file) {
   const { data, info } = await sharp(file).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
@@ -332,6 +158,7 @@ async function processImage(name, file, manifest) {
     manifest.images[name] = { w: info.width, h: info.height };
     return;
   }
+  if (CERT_PARTS.includes(name)) return writeCertPart(name, file, manifest);
   const { data, w, h } = await loadRgba(file);
   if (name.startsWith('outfit-')) return processOutfit(name.slice(7), data, w, h, manifest);
   if (name.startsWith('acc-')) return processAccessory(name.slice(4), data, w, h, manifest);
@@ -339,7 +166,6 @@ async function processImage(name, file, manifest) {
   keyOut(data, w, h, name.startsWith(MEADOW) ? { layer: true, pocket: 0.3 } : { layer: name.startsWith('bg-') });
   // Bolt's pictures stay square, so the raincoat overlay fits every one of them; Melody's keep her size in every mood.
   if (name === 'base-template' || name.startsWith('tapko-') || name.startsWith('robot') || name.startsWith('fairy-')) return writeSquare(name, data, w, h, manifest);
-  if (name === FRAME) return writeFrame(file, data, w, h, manifest);
   if (name.startsWith(MEADOW)) return writeTile(name, data, w, h, bbox(data, w, h), manifest);
   if (name.startsWith('bg-')) {
     // A mid or near layer (1376 x 768, its band on the key; see scripts/bg-seam.mjs): the colors
@@ -355,73 +181,21 @@ async function processImage(name, file, manifest) {
   manifest.images[name] = { w: info.width, h: info.height };
 }
 
-/**
- * The certificate frame's pictures from its keyed source `data`: `ui-cert-fox` (the fox alone, the page
- * turns it into each corner) and one pair of paw prints alone, `ui-cert-paws-up` and `ui-cert-paws-right`.
- * They are told from the band by comparing every pixel of the raw source with the plain band at its place.
- */
-async function writeFrame(file, data, w, h, manifest) {
-  if (w !== FRAME_SRC || h !== FRAME_SRC) throw new Error(`${file}: the cut lines are measured on a ${FRAME_SRC} px square`);
-  const raw = await sharp(file).removeAlpha().raw().toBuffer();
-  const rgb = (x, y) => raw.subarray((y * w + x) * 3, (y * w + x) * 3 + 3);
-  // The plain band (or the key outside it) at (x, y): the top arm's profile above the corner's diagonal, the left arm's below it.
-  const plain = (x, y) => (y - 88 <= x - 90 ? rgb(PLAIN_COL, y) : rgb(x, PLAIN_ROW));
-  const differs = (x, y, limit) => {
-    const a = rgb(x, y), b = plain(x, y);
-    return Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]) > limit;
-  };
-  // Pixels of the box x0..x1, y0..y1 picked by `keep`, grown by one pixel for the soft edge, cut out of the keyed picture.
-  const cut = (x0, y0, x1, y1, keep) => {
-    const bw = x1 - x0, bh = y1 - y0;
-    const out = Buffer.alloc(bw * bh * 4);
-    for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) {
-      let near = false;
-      for (let dy = -1; dy <= 1 && !near; dy++) for (let dx = -1; dx <= 1 && !near; dx++) near = keep(x + dx, y + dy);
-      if (near) data.copy(out, (y * bw + x) * 4, ((y + y0) * w + x + x0) * 4, ((y + y0) * w + x + x0) * 4 + 4);
-    }
-    return { out, bw, bh };
-  };
-  // The fox: everything unlike the band joined to its middle, with the holes inside it filled (band lines it covers).
-  const n = FOX_SIZE * FOX_SIZE;
-  const fox = new Uint8Array(n);
-  const flood = (mark, start, ok) => {
-    const queue = [...start];
-    for (const p of queue) mark[p] = 1;
-    while (queue.length) {
-      const p = queue.pop();
-      const x = p % FOX_SIZE, y = (p / FOX_SIZE) | 0;
-      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
-        const xx = x + dx, yy = y + dy, q = yy * FOX_SIZE + xx;
-        if (xx < 0 || yy < 0 || xx >= FOX_SIZE || yy >= FOX_SIZE || mark[q] || !ok(xx, yy)) continue;
-        mark[q] = 1;
-        queue.push(q);
-      }
-    }
-  };
-  flood(fox, [FOX_SEED[1] * FOX_SIZE + FOX_SEED[0]], (x, y) => y < FOX_BOTTOM && differs(x + FOX_X, y, 70));
-  // Where the fox's outline lay on a band line it looked like the band: dark pixels close to the fox are its outline.
-  const dark = (x, y) => { const c = rgb(x + FOX_X, y); return c[0] < 140 && c[1] < 110 && c[2] < 100; };
-  const near = (x, y, r) => { for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) if (fox[(y + dy) * FOX_SIZE + x + dx]) return true; return false; };
-  const outline = [];
-  for (let y = 3; y < FOX_BOTTOM; y++) for (let x = 3; x < FOX_SIZE - 3; x++) if (!fox[y * FOX_SIZE + x] && dark(x, y) && near(x, y, 3)) outline.push(y * FOX_SIZE + x);
-  for (const q of outline) fox[q] = 1;
-  const outside = new Uint8Array(n);
-  const edge = [];
-  for (let i = 0; i < FOX_SIZE; i++) edge.push(i, (FOX_SIZE - 1) * FOX_SIZE + i, i * FOX_SIZE, i * FOX_SIZE + FOX_SIZE - 1);
-  flood(outside, edge.filter((p) => !fox[p]), (x, y) => !fox[y * FOX_SIZE + x]);
-  const inFox = (x, y) => x >= 0 && y >= 0 && x < FOX_SIZE && y < FOX_SIZE && !outside[y * FOX_SIZE + x];
-  const f = cut(FOX_X, 0, FOX_X + FOX_SIZE, FOX_SIZE, inFox);
-  await webp(sharp(f.out, { raw: { width: f.bw, height: f.bh, channels: 4 } })).toFile(join(OUT, 'ui-cert-fox.webp'));
-  manifest.images['ui-cert-fox'] = { w: f.bw, h: f.bh };
-  // The paw pair: everything unlike the band in one stretch of the left arm.
-  const [c0, c1] = PAWS_COLS, [r0, r1] = PAWS_ROWS;
-  const paw = (x, y) => x >= 0 && y >= 0 && x < c1 - c0 && y < r1 - r0 && differs(x + c0, y + r0, 50);
-  const t = cut(c0, r0, c1, r1, paw);
-  const tile = sharp(t.out, { raw: { width: t.bw, height: t.bh, channels: 4 } });
-  await webp(tile.clone()).toFile(join(OUT, 'ui-cert-paws-up.webp'));
-  await webp(tile.clone().rotate(90)).toFile(join(OUT, 'ui-cert-paws-right.webp'));
-  manifest.images['ui-cert-paws-up'] = { w: t.bw, h: t.bh };
-  manifest.images['ui-cert-paws-right'] = { w: t.bh, h: t.bw };
+/** A certificate frame part, as drawn (no key): the fox as it is, the prints and the band also turned right for the top and bottom. */
+async function writeCertPart(name, file, manifest) {
+  const lossless = (img, out) => img.webp({ lossless: true }).toFile(join(OUT, `${out}.webp`));
+  const meta = await sharp(file).metadata();
+  if (name === 'ui-cert-fox') {
+    await lossless(sharp(file), name);
+    manifest.images[name] = { w: meta.width, h: meta.height };
+    return;
+  }
+  const rows = name === 'ui-cert-band' ? BAND_ROWS : meta.height;
+  const up = await sharp(file).resize(meta.width, rows, { fit: 'fill', kernel: 'nearest' }).png().toBuffer();
+  await lossless(sharp(up), `${name}-up`);
+  await lossless(sharp(up).rotate(90), `${name}-right`);
+  manifest.images[`${name}-up`] = { w: meta.width, h: rows };
+  manifest.images[`${name}-right`] = { w: rows, h: meta.width };
 }
 
 /**

@@ -11,6 +11,7 @@
     "nextSong": "F8 plays another song",
     "fullscreen": "Fullscreen",
     "fullscreenExit": "Exit fullscreen",
+    "fullscreenBlocked": "The browser did not allow fullscreen here.",
     "update": "New version",
     "updateTip": "A new version of the game is ready.\nClick to install it.",
     "menu": "Menu",
@@ -302,7 +303,7 @@
     ],
     "break": [
       "Time for a little stretch break. Your hands deserve it!",
-      "Stretch a little and rest your eyes."
+      "Stretch a little and close your eyes for a moment."
     ]
   },
   "results": {
@@ -3092,7 +3093,7 @@
         ]
       }
     },
-    "done": "Target range done!",
+    "done": "Our target sent us your results!",
     "beforeAfter": "before {before} %, now {after} %",
     "opened": "Accurate typing opened new letters: {keys}",
     "again": "Again",
@@ -3102,7 +3103,20 @@
     "title": "Parrot",
     "start": "The parrot wants to learn your words. Type a word and it says it after you. No need to hurry.",
     "phase2": "Now each word a few times in a row.",
-    "done": "The parrot learned your words!",
+    "slip": [
+      "Take a shorrrt brrreak.",
+      "Slow dowwwn!",
+      "Attenshuuun!",
+      "Practice makes perrrfect.",
+      "Thirrrd try"
+    ],
+    "leave": [
+      "Too many mistaaakes!",
+      "Trry more carrrefully!",
+      "Waaay too inaccurrrate!"
+    ],
+    "done": "Repeating with the parrot!",
+    "flown": "Your parrot flew away. Try again, slowly and carefully.",
     "learned": "Words: {words}",
     "speedUsual": "Your usual speed: {n} characters per minute",
     "speedLearn": "At the start: {n} characters per minute",

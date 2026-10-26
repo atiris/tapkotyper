@@ -11,6 +11,7 @@
     "nextSong": "F8 pustí inú pesničku",
     "fullscreen": "Celá obrazovka",
     "fullscreenExit": "Zrušiť celú obrazovku",
+    "fullscreenBlocked": "Celú obrazovku tu prehliadač nedovolil.",
     "update": "Nová verzia",
     "updateTip": "Je pripravená nová verzia hry.\nKliknutím ju nainštaluješ.",
     "menu": "Menu",
@@ -302,7 +303,7 @@
     ],
     "break": [
       "Je čas na malú prestávku na pretiahnutie. Ruky si ju zaslúžia!",
-      "Natiahni sa a oddýchni si oči."
+      "Natiahni sa a na chvíľku zatvor oči."
     ]
   },
   "results": {
@@ -3115,7 +3116,7 @@
         ]
       }
     },
-    "done": "Strelnica hotová!",
+    "done": "Náš terč nám poslal tvoje výsledky!",
     "beforeAfter": "predtým {before} %, teraz {after} %",
     "opened": "Presné písanie otvorilo nové písmená: {keys}",
     "again": "Znova",
@@ -3125,7 +3126,20 @@
     "title": "Papagáj",
     "start": "Papagáj sa chce naučiť tvoje slová. Napíš slovo a on ho po tebe zopakuje. Ponáhľať sa netreba.",
     "phase2": "Teraz každé slovo niekoľkokrát za sebou.",
-    "done": "Papagáj sa naučil tvoje slová!",
+    "slip": [
+      "Daj si kráátku prestáávku.",
+      "Brrrzdi!",
+      "Pozooórr.",
+      "Opakovanie, matka múdrrosti.",
+      "Trretií pokus"
+    ],
+    "leave": [
+      "Veeéľa chýb!",
+      "Skúús prresnejššie!",
+      "Prrriíliš neprresneé"
+    ],
+    "done": "Opakovanie s papagájom!",
+    "flown": "Papagáj ti uletel. Skús to znova, pomaly a presne.",
     "learned": "Slová: {words}",
     "speedUsual": "Tvoja zvyčajná rýchlosť: {n} znakov za minútu",
     "speedLearn": "Na začiatku: {n} znakov za minútu",

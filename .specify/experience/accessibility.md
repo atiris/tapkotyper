@@ -36,7 +36,9 @@
   In a text field the keys type text, only F1 still opens help; the browser's own F-key actions
   (its help, search, reload of these keys) do not happen. The fullscreen button's tooltip names
   "Fullscreen (F11)": F11 takes the game's own fullscreen instead of the browser's, so the
-  button can always leave it again.
+  button can always leave it again. Where the browser refuses fullscreen (inside another app's
+  window), a short note says so instead of nothing happening. The profile's automatic fullscreen
+  leaves the button and F11 alone, so they are not switched twice.
 - Every top button is explained, drawn as it looks, on the [help page](help.md).
 - **Reading aloud** (off by default, per profile): a round button left of the keyboard
   button in the level bar switches it. It reads only the targets, each when it becomes

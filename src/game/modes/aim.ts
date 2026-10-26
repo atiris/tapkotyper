@@ -34,6 +34,10 @@ const FALL_DRIFT = 0.09;
 /** Words picked for one stop; the best fitting one wins. */
 const CANDIDATES = 8;
 const PAUSE_AFTER = 1.1;
+/** Speed of the background's middle strip. */
+const SWAY = 2;
+/** The world's thing comes as this throw at the earliest, and only after a throw without a mistake. */
+const RARE_FROM = 4;
 
 /** The target's radius: big at low accuracy on the weak keys, smaller as it improves. */
 export function targetRadius(accuracy: number): number {
@@ -204,6 +208,8 @@ export class AimMode extends HeroMode {
   /** Any thing can be thrown here: every world's own thing joins the found ones. */
   readonly pictures = [...THINGS.flatMap((th) => th.pics), 'obj-aim-target', 'obj-aim-ring', CHICK, CRACKED, FRIED, BULB_LIT];
   readonly phraseWords: number;
+  readonly midOnly = true;
+  protected readonly shadow = false;
   /** The keys trained, the ones still holding the next letters back, and their accuracy at the start. */
   readonly keys: string[];
   private held: string[];
@@ -223,6 +229,8 @@ export class AimMode extends HeroMode {
   private readonly worldSlot: number;
   private worldAt: number;
   private worldThrown = false;
+  /** The last throw went without a wrong key or a late word. */
+  private cleanBefore = false;
   /** World things hit in the middle during this run: they join the collection only when the run ends, not when it is left early. */
   private finds: string[] = [];
   /** Bullseyes in a row. */
@@ -293,7 +301,7 @@ export class AimMode extends HeroMode {
   }
 
   private get target(): { x: number; y: number } {
-    return { x: this.L.vw * 0.86, y: VH * 0.46 };
+    return { x: this.L.vw * 0.87, y: VH * 0.46 };
   }
 
   private get hand(): { x: number; y: number } {
@@ -307,8 +315,8 @@ export class AimMode extends HeroMode {
   }
 
   start(): void {
-    this.heroX = Math.max(110, this.L.vw * 0.12);
-    this.heroY = VH * 0.82;
+    this.heroX = Math.max(80, this.L.vw * 0.08);
+    this.heroY = VH * 0.92;
     this.throw();
   }
 
@@ -333,7 +341,8 @@ export class AimMode extends HeroMode {
 
   /**
    * The next thing: the world's own one near the end of the base time (the last throw or the one
-   * before), every few throws while staying; else the story pool in shuffled rounds.
+   * before), every few throws while staying, never before throw RARE_FROM nor after a throw with a
+   * mistake; else the story pool in shuffled rounds.
    */
   private pickThing(): Thing {
     if (this.forced) {
@@ -341,7 +350,7 @@ export class AimMode extends HeroMode {
       const list = this.forced === 'all' ? THINGS.filter((th) => th.drawn || th.pics.some(hasImage)) : THINGS.filter((th) => ids.includes(th.id));
       if (list.length) return list[this.throws % list.length];
     }
-    const own = worldThing(this.L.def.world);
+    const own = this.throws + 1 >= RARE_FROM && this.cleanBefore ? worldThing(this.L.def.world) : null;
     if (own && this.L.staying && this.throws + 1 >= this.worldAt) {
       this.worldAt = this.throws + 1 + this.L.rng.int(...STAY_WORLD_EVERY);
       return own;
@@ -505,8 +514,9 @@ export class AimMode extends HeroMode {
 
   update(dt: number): void {
     super.update(dt);
-    this.time += dt;
-    this.scroll += dt * 4;
+    // The time runs from the first throw on.
+    if (!this.firstThrow) this.time += dt;
+    this.scroll += dt * SWAY;
     this.radius += (targetRadius(this.accuracy) - this.radius) * Math.min(1, dt * 3);
     this.hitsEl.set(this.hits, this.progress());
     this.shrink = Math.max(0, this.shrink - dt);
@@ -566,6 +576,7 @@ export class AimMode extends HeroMode {
 
   /** The throw is over (hit or fallen) and the target's line has been up a while; the next one comes until the time is up, or always while staying. */
   private done1(): void {
+    this.cleanBefore = !!this.flight && this.flight.errors + this.flight.slips === 0;
     this.flight = null;
     this.throwTime = (this.throwTime + (this.time - this.throwAt)) / 2;
     if (this.L.staying || this.time < AIM_SECONDS) this.throw();
@@ -870,17 +881,13 @@ export class AimMode extends HeroMode {
     g.restore();
   }
 
-  /** A wooden easel under the board: two splayed legs, a back leg and a crossbar, with a soft shadow. */
+  /** A wooden easel under the board: two splayed legs, a back leg and a crossbar. */
   private drawStand(g: G, x: number, y: number, r: number): void {
     const ground = VH * 0.9, spread = Math.max(36, r * 0.75), bar = y + (ground - y) * 0.6;
     const along = (k: number) => spread * ((bar - y) / (ground - y)) * k;
     const back: [number, number, number, number] = [x, y, x + spread * 0.3, ground - 6];
     const parts: [number, number, number, number][] = [[x - 4, y, x - spread, ground], [x + 4, y, x + spread, ground], [x - along(1), bar, x + along(1), bar]];
     g.save();
-    g.fillStyle = 'rgba(60, 40, 20, 0.15)';
-    g.beginPath();
-    g.ellipse(x, ground + 2, spread * 1.25, 9, 0, 0, Math.PI * 2);
-    g.fill();
     g.lineCap = 'round';
     const pass = (list: [number, number, number, number][], width: number, color: string) => {
       g.strokeStyle = color;

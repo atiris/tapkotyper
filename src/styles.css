@@ -757,6 +757,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .results-card { position: relative; }
 .results-card .results-top { padding-inline: 3rem; }
 .results-card.parrot-done .row { margin-top: 1.1rem; }
+.results-card .parrot-words { margin: 1rem 0 1.1rem; }
 .map-bubble .held-keys { font-weight: 700; }
 .map-bubble { align-self: center; max-width: 100%; }
 .map-bubble[hidden] { display: none; }
@@ -986,13 +987,15 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .aim-row-key { display: inline-grid; place-items: center; min-width: 1.8em; font-family: var(--font-keys); border-radius: 8px; background: var(--surface); box-shadow: inset 0 -3px 0 var(--brand); }
 .aim-row.good span { color: var(--green-ink); }
 .aim-collection { margin: 0.7rem auto 0; text-align: center; }
+/* The whole collection in one row while the card can grow to hold it. */
+.results-card > .aim-collection { max-width: none; }
 .aim-collection-count { margin: 0 0 0.3rem; font-weight: 700; }
-.aim-finds { list-style: none; padding: 0; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.25rem; max-width: 21.5rem; }
+.aim-finds { list-style: none; padding: 0; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.25rem; }
 .aim-find { position: relative; display: grid; place-items: center; width: 2.4rem; height: 2.4rem; border-radius: 10px; background: var(--surface); }
 .aim-find img { max-width: 2rem; max-height: 2rem; object-fit: contain; }
 .aim-find.waiting img { filter: brightness(0) invert(0.55); opacity: 0.5; }
 .aim-find-q { position: absolute; inset: 0; display: grid; place-items: center; font-weight: 800; color: var(--ink-soft); }
-.fact.good, .fact.new-key { color: var(--green-ink); background: var(--tint-green); box-shadow: none; }
+.fact.good, .fact.new-key { color: var(--green-ink); background: var(--tint-green); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--green-ink) 30%, transparent); }
 .fact.growth { background: var(--tint-yellow); box-shadow: none; border-radius: 16px; text-align: left; padding: 0.2em 0.75em 0.2em 0.3em; }
 .results-notes { margin-top: 0.6rem; padding: 0.5rem 0.7rem; border-radius: 16px; box-shadow: inset 0 0 0 2px var(--line); text-align: left; font-size: 0.95rem; display: grid; gap: 0.35rem; }
 .results-notes p, .results-notes .surprise, .results-notes .teaser { margin: 0; padding: 0.3rem 0.6rem; max-width: none; font-size: inherit; }
@@ -1085,7 +1088,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .island-art .badge img { animation: none; filter: none; height: 78%; }
 .badge-shelf h4 { margin: 0.2rem 0; font-size: 0.95rem; color: var(--ink-soft); }
 .badge-row { display: flex; flex-wrap: wrap; gap: 0.35rem; }
-.badge-shelf .aim-finds { justify-content: flex-start; max-width: none; margin: 0; }
+.badge-shelf .aim-finds { justify-content: flex-start; margin: 0; }
 .fact.badge-fact { background: var(--tint-yellow); box-shadow: none; padding: 0.2em 0.75em 0.2em 0.25em; }
 .legend { display: flex; gap: 0.6rem; flex-wrap: wrap; font-size: 0.9rem; }
 .lg { padding: 0.2em 0.6em; border-radius: 10px; font-weight: 600; }

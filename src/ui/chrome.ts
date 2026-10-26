@@ -43,9 +43,10 @@ export function soundButton(): HTMLButtonElement {
   return b;
 }
 
+/** Fullscreen on or off; a refused request says so instead of doing nothing. */
 function toggleFullscreen(): void {
-  const req = document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
-  void req.catch(() => undefined);
+  if (document.fullscreenElement) return void document.exitFullscreen().catch(() => undefined);
+  void document.documentElement.requestFullscreen().catch(() => toast(t('common.fullscreenBlocked')));
 }
 
 /** Fullscreen switch, with the orange ring while on; null where the browser has no fullscreen. */
@@ -234,9 +235,11 @@ export function watchAutoFullscreen(): void {
   const ask = (e: Event) => {
     // Escape is no gesture for fullscreen; wait for the next key.
     if (!app.profile?.settings.autoFullscreen || (e instanceof KeyboardEvent && e.key === 'Escape')) return;
+    // F11 and the fullscreen button switch it themselves: asking too would switch it right back.
+    const own = e instanceof KeyboardEvent ? e.key === 'F11' : (e.target as Element | null)?.closest?.('.fullscreen-btn');
     window.removeEventListener('keydown', ask, true);
     window.removeEventListener('pointerdown', ask, true);
-    if (document.fullscreenEnabled && !document.fullscreenElement) toggleFullscreen();
+    if (!own && document.fullscreenEnabled && !document.fullscreenElement) toggleFullscreen();
   };
   window.addEventListener('keydown', ask, true);
   window.addEventListener('pointerdown', ask, true);

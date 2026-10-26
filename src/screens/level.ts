@@ -13,7 +13,7 @@ import { surpriseOutcome } from '../game/own-content';
 import { ownTextPhrases } from '../game/modes/practice';
 import type { AimMode } from '../game/modes/aim';
 import type { ParrotMode } from '../game/modes/parrot';
-import { winParrot } from '../game/parrots';
+import { loseParrot, winParrot } from '../game/parrots';
 import { imageUrl } from '../gfx/assets';
 import { WORLD_THINGS } from '../game/modes/aim-things';
 import type { Friend, Profile, Surprise, Task } from '../storage/schema';
@@ -265,13 +265,19 @@ function showAimDone(root: HTMLElement, r: LevelResult, mode: AimMode, params: L
   });
 }
 
-/** The end of a parrot round: the parrot is at home, the words it learned, the badge when this win brought it; no stars. */
+/**
+ * The end of a parrot round: the parrot is at home, the words it learned, the speeds, the badge when
+ * this win brought it; or its empty perch when it flew off, and a new try. No stars.
+ */
 function showParrotDone(root: HTMLElement, def: LevelDef, r: LevelResult, mode: ParrotMode, params: LevelParams): void {
   const p = app.profile!;
-  const badgeNew = winParrot(p, def.world, localDate());
+  const lost = mode.flewOff;
+  const badgeNew = !lost && winParrot(p, def.world, localDate());
+  if (lost) loseParrot(p, def.world);
   saveProfile();
-  const pic = imageUrl('ui-act-parrot');
-  const facts: HTMLElement[] = [h('span', { class: 'fact main' }, t('parrot.learned', { words: mode.round.words.join(', ') }))];
+  const pic = imageUrl(lost ? 'ui-act-parrot-perch' : 'ui-act-parrot');
+  const words = h('div', { class: 'results-facts parrot-words' }, h('span', { class: 'fact main' }, t('parrot.learned', { words: mode.round.words.join(', ') })));
+  const facts: HTMLElement[] = [];
   // How fast the fingers got: the usual speed of the last 14 days, the learning part and the repeating part.
   const usual = recentTyping(p, 14).cpm, learn = mode.speed(1), repeat = mode.speed(2);
   if (usual) facts.push(h('span', { class: 'fact' }, t('parrot.speedUsual', { n: usual })));
@@ -282,13 +288,14 @@ function showParrotDone(root: HTMLElement, def: LevelDef, r: LevelResult, mode: 
   const breakDue = app.sessionSeconds >= p.settings.sessionMinutes * 60;
   const actions = h('div', { class: 'row center' });
   if (breakDue) actions.append(button(t('results.takeBreak'), () => go('break'), 'btn primary', 'play'));
-  actions.append(button(t('parrot.again'), () => go('level', params), `btn ${breakDue ? '' : 'primary'}`, 'replay'),
+  actions.append(button(t(lost ? 'results.replay' : 'parrot.again'), () => go('level', params), `btn ${breakDue ? '' : 'primary'}`, 'replay'),
     button(t('level.toMap'), () => go('map'), 'btn', 'map'));
   const card = h('div', { class: 'card results-card parrot-done' },
     closeButton(() => go('map'), t('results.close')),
     h('div', { class: 'results-top' }, h('h2', {}, t('parrot.done'))),
     h('div', { class: 'results-tapko' }, pic ? h('img', { class: 'parrot-done-pic', src: pic, alt: '' }) : tapkoElement(p.companion, 'happy', 80),
-      h('p', { class: 'bubble static side' }, breakDue ? pickLine('tapko.break') : pickLine('tapko.level_done', { name: nickname(p) }, p.customMessages))),
+      h('p', { class: 'bubble static side' }, lost ? t('parrot.flown') : breakDue ? pickLine('tapko.break') : pickLine('tapko.level_done', { name: nickname(p) }, p.customMessages))),
+    words,
     h('div', { class: 'results-facts' }, ...facts),
     actions);
   const overlay = h('div', { class: 'overlay results' }, card);

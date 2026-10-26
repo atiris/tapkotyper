@@ -24,6 +24,8 @@ export abstract class Mode {
   readonly phraseWords: number = 2;
   /** Fewest words in one target; above 2 the targets are sentences. */
   readonly phraseMin: number = 2;
+  /** Only the background's middle strip moves with the scroll (calm scenes: the target range, the parrot). */
+  readonly midOnly: boolean = false;
   /** The sound of a wrong key. */
   readonly wrongSfx: Sfx = 'wrong';
 
@@ -58,6 +60,10 @@ export abstract class Mode {
   /** Words typed so far / needed, for the progress bar. */
   abstract progress(): number;
   abstract get finished(): boolean;
+  /** The level ended lost (the parrot flew off): no celebration before the results. */
+  get lost(): boolean {
+    return false;
+  }
   /** Where the story friend stands (feet; Bolt in story 2, Melody floats above it in story 3), or null for the place next to Tapko. */
   friendSpot(): { x: number; y: number } | null {
     return null;

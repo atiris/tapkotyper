@@ -198,7 +198,7 @@ const parrotPic = (home: boolean, won: boolean) => imageUrl(home ? 'ui-act-parro
 /** The parrot of a world (its picture by `parrotPic`), faded and closed until the world is finished. */
 function parrotNode(p: Profile, open: boolean, world: number, flying: boolean): HTMLElement {
   const home = flying || p.progress.parrots.includes(world);
-  const pic = parrotPic(home, p.progress.parrotsWon.includes(world));
+  const pic = parrotPic(home, p.progress.parrotsMet.includes(world));
   return h('button', {
     class: `level-node parrot-node ${home ? 'home' : ''}`, type: 'button', disabled: !open, 'data-world': String(world),
     'aria-label': `${t('parrot.title')}${home ? `, ${t('map.parrotHome')}` : ''}`, tip: sideTip(open, 'map.parrotTip'),

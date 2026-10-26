@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
-import { DROP_DAYS, LEARN_ROUNDS, ParrotRound, SLIP_MAX, daysBetween, flyAway, hasParrotBadge, parrotFloor, parrotSize, winParrot } from './parrots';
+import { DROP_DAYS, LEARN_ROUNDS, ParrotRound, SLIP_MAX, daysBetween, flyAway, hasParrotBadge, loseParrot, parrotFloor, parrotPatience, parrotSize, winParrot } from './parrots';
 
 /** A profile with these worlds done and their parrots at home, won on `day`. */
 function withParrots(worlds: number[], day = '2026-10-01') {
@@ -134,5 +134,19 @@ describe('parrot round', () => {
     expect(r.done).toBe(true);
     expect(r.progress()).toBe(1);
     expect(r.current).toBeNull();
+  });
+});
+
+describe('parrot flies off', () => {
+  it('bears 4 plus the story number of mistakes', () => {
+    expect([0, 1, 2].map(parrotPatience)).toEqual([5, 6, 7]);
+  });
+
+  it('leaves home and its perch shows empty', () => {
+    const p = withParrots([0, 1]);
+    loseParrot(p, 1);
+    loseParrot(p, 2);
+    expect(p.progress.parrots).toEqual([0]);
+    expect(p.progress.parrotsMet).toEqual([0, 1, 2]);
   });
 });

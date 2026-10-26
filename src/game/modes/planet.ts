@@ -17,6 +17,8 @@ export abstract class HeroMode extends Mode {
   protected heroY = VH * 0.78;
   protected jump = 0;
   protected mood: Mood = 'idle';
+  /** Tapko's soft shadow on the ground. */
+  protected readonly shadow: boolean = true;
   private moodT = 0;
   protected done = 0;
 
@@ -67,8 +69,8 @@ export abstract class HeroMode extends Mode {
 
   protected drawHero(g: G): void {
     // The level is done: Tapko hops happily in place.
-    if (this.L.endTime != null) return drawTapko(g, app.profile!.companion, 'happy', this.heroX, this.heroY, 170, { t: this.t, jump: this.L.endHop });
-    drawTapko(g, app.profile!.companion, this.mood, this.heroX, this.heroY, 170, { t: this.t, jump: this.jump });
+    if (this.L.endTime != null) return drawTapko(g, app.profile!.companion, 'happy', this.heroX, this.heroY, 170, { t: this.t, jump: this.L.endHop, shadow: this.shadow });
+    drawTapko(g, app.profile!.companion, this.mood, this.heroX, this.heroY, 170, { t: this.t, jump: this.jump, shadow: this.shadow });
   }
 }
 

@@ -169,19 +169,20 @@ function tiled(g: G, img: HTMLImageElement, vw: number, offset: number): void {
   for (let x = -(((offset % w) + w) % w); x < vw; x += w) g.drawImage(tile, x, y, w + 1, h);
 }
 
-/** Three-layer parallax background of a world; `scroll` grows as the scene moves forward. */
-export function drawBackground(g: G, world: string, vw: number, scroll: number, motion = true): void {
+/** Three-layer parallax background of a world; `scroll` grows as the scene moves forward; with `midOnly` just the middle strip follows it. */
+export function drawBackground(g: G, world: string, vw: number, scroll: number, motion = true, midOnly = false): void {
+  const still = midOnly || !motion;
   const pal = PALETTES[world] ?? PALETTES.meadow;
   const far = sprite(`bg-${world}-far`);
-  if (far) tiled(g, far, vw, motion ? scroll * 0.1 : 0);
+  if (far) tiled(g, far, vw, still ? 0 : scroll * 0.1);
   else {
     const grad = g.createLinearGradient(0, 0, 0, VH);
     grad.addColorStop(0, pal.sky[0]);
     grad.addColorStop(1, pal.sky[1]);
     g.fillStyle = grad;
     g.fillRect(0, 0, vw, VH);
-    if (world === 'space') starField(g, vw, scroll * 0.1);
-    if (world === 'rescue') lanterns(g, vw, motion ? scroll * 0.1 : 0);
+    if (world === 'space') starField(g, vw, midOnly ? 0 : scroll * 0.1);
+    if (world === 'rescue') lanterns(g, vw, still ? 0 : scroll * 0.1);
   }
   if (world === 'space') {
     // Calm the busy sky so words stay readable.
@@ -195,10 +196,10 @@ export function drawBackground(g: G, world: string, vw: number, scroll: number, 
     if (world === 'rescue') ropeBridge(g, vw, motion ? scroll * 0.35 : 0, pal.hills[1]);
   }
   const near = sprite(`bg-${world}-near`);
-  if (near) tiled(g, near, vw, motion ? scroll : 0);
+  if (near) tiled(g, near, vw, still ? 0 : scroll);
   else if (world !== 'space') {
-    hills(g, vw, scroll, VH * 0.82, 30, pal.hills[1]);
-    if (world === 'rescue') lookoutFlag(g, vw, motion ? scroll : 0, pal.hills[1], pal.accent);
+    hills(g, vw, midOnly ? 0 : scroll, VH * 0.82, 30, pal.hills[1]);
+    if (world === 'rescue') lookoutFlag(g, vw, still ? 0 : scroll, pal.hills[1], pal.accent);
   }
 }
 

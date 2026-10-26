@@ -11,6 +11,8 @@
 - The letters trained are the keys of the newest lesson group that are not ready yet
   ([lesson progression](../learning/lesson-progression.md)); when none holds the lesson back,
   the three known letters with the lowest recent accuracy.
+- The scene is the world's background with only its middle strip drifting very slowly; nothing
+  casts a shadow. Tapko stands at the far left, his feet level with the target's legs.
 - Tapko stands at the left and throws something funny at a target at the right, picked at
   random for each throw (never the same twice in a row) from about 35 things open in every
   world (a pebble, a tomato, an egg, an alarm clock, a cactus, a boomerang, a planet, ...),
@@ -61,7 +63,9 @@
 - Every world has one thing of its own that no other range throws (a ladybug on the meadow, a
   toy rocket in the rocket world, a fish at the lake, ...). It comes once a run, as the last
   throw of the two minutes or the one before (judged by the time left), so it is a goal to
-  reach; while staying a while it comes every 6 to 10 throws. Hitting it in the middle (no
+  reach; while staying a while it comes every 6 to 10 throws. It never comes before the fourth
+  throw nor right after a throw with a wrong key or a late word: a careless or too early run
+  goes without it. Hitting it in the middle (no
   wrong key, every word in time) the first time makes it a find, and Tapko says it is yours if
   you throw to the end: it joins the collection only when the run ends, not when it is left
   early. The end card shows all 15, found ones in color, the rest grey with a question mark
@@ -73,9 +77,11 @@
   smaller as it improves. When a trained letter becomes ready during the run, the target
   shrinks with a little bounce, Tapko cheers, the narrator says so, and the letter leaves the
   list. The trained letters are said at the start, not shown in the HUD.
-- At least two minutes: the run ends with the throw in the air after two minutes. A red ring
+- At least two minutes, counted from the first throw (reading the rules takes none of them): the
+  run ends with the throw in the air after two minutes. A red ring
   next to the accuracy rings counts the target hits of those two minutes and fills with the
-  time; the end card says the hits and how many were in the middle. No stars,
+  time; the end card ("Náš terč nám poslal tvoje výsledky!") says the hits and how many were in
+  the middle; its collection stays in one row while the window is wide enough. No stars,
   no paw help, no Enter marks, no surprises, no story friends. The end card shows accuracy
   before and after per trained letter over the range, "Again", "Stay at the range" and "To the
   map". Esc or that button keeps throwing without an end (every hit counts); Esc there ends

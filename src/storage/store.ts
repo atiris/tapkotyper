@@ -122,7 +122,7 @@ export function newProfile(name: string, language: LangRef, layout?: LayoutId, k
       wardrobeSeconds: 0,
       rangeFinds: [],
       parrots: [],
-      parrotsWon: [],
+      parrotsMet: [],
       parrotBest: 0,
       parrotWonAt: null,
       parrotCheckedAt: null,

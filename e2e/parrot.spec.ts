@@ -34,7 +34,7 @@ test('a finished world\'s parrot learns the words and brings the badge', async (
     }
     await page.waitForTimeout(60);
   }
-  await expect(page.locator('.parrot-done h2')).toHaveText('The parrot learned your words!');
+  await expect(page.locator('.parrot-done h2')).toHaveText('Repeating with the parrot!');
   await expect(page.locator('.parrot-done .badge-fact')).toContainText('Parrot badge');
   await expect(page.locator('.parrot-done .fact', { hasText: 'While repeating' })).toHaveCount(1);
   await expect(page.locator('.parrot-done .modal-x')).toBeVisible();
@@ -42,6 +42,28 @@ test('a finished world\'s parrot learns the words and brings the badge', async (
   await page.keyboard.press('Escape');
   await expect(node).toHaveClass(/home/);
   await expect(page.locator('.map-hello .parrot-badge')).toHaveCount(1);
+  expect(errors).toEqual([]);
+});
+
+test('too many mistakes send the parrot away: the round ends with its empty perch', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  await createProfile(page, 'Ema');
+  await editProfile(page, 'p.progress.worldsDone = [0]; p.progress.parrots = [0]; p.progress.parrotBest = 1; p.progress.introducedKeys = ["f", "j", " "]; p.progress.scenesSeen.push("welcome");');
+  const node = page.locator('.island-meadow .parrot-node');
+  await expect(node).toHaveClass(/home/);
+  await node.click();
+  await page.locator('.posture-card').waitFor();
+  await page.keyboard.press('Space');
+  await page.waitForFunction(() => !!document.querySelector<HTMLElement>('.kb-guide')?.dataset.next);
+  // The story's first world bears five mistakes; the sixth sends the parrot off.
+  for (let i = 0; i < 6; i++) await typeChar(page, 'k');
+  await expect(page.locator('.parrot-done .bubble')).toHaveText('Your parrot flew away. Try again, slowly and carefully.');
+  await expect(page.locator('.parrot-done .parrot-done-pic')).toHaveAttribute('src', /ui-act-parrot-perch/);
+  await expect(page.locator('.parrot-done .btn.primary')).toContainText('Play again');
+  await page.keyboard.press('Escape');
+  await expect(node).not.toHaveClass(/home/);
+  await expect(node.locator('img')).toHaveAttribute('src', /ui-act-parrot-perch/);
   expect(errors).toEqual([]);
 });
 

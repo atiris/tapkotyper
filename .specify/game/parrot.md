@@ -6,13 +6,22 @@
   Speed is not judged and there are no stars; slow typing is fine, the point is the practice.
 - It opens with the world's super level, like the [target range](target-practice.md): a small
   parrot node after the range's target on the map. Its picture tells the parrot's state: its
-  head before the round was ever won, the parrot sitting while it is at home, and an empty
-  wooden perch after it flew away; its tooltip says what it trains. Before the world is finished the node is already there, grey and closed like a
+  head before its round was ever played to the end, the parrot sitting while it is at home, and
+  an empty wooden perch after it flew away (from home, or off a lost round); its tooltip says what it trains. Before the world is finished the node is already there, grey and closed like a
   level not reached yet (the tooltip adds when it opens). It starts only when the child picks
   it, never by "Continue".
-- **Scene:** the world's own background. Tapko stands at the left, the parrot sits on a perch at
-  the right. The word to type is Tapko's bubble between them; the next word waits greyed after
-  it. When a word is typed, the parrot repeats it in its own bubble with a short squawk.
+- **Scene:** the world's own background, only its middle strip drifting very slowly. Tapko
+  stands at the left; at the right a wooden T-perch stands on the ground at the level of Tapko's
+  feet, the parrot in front of it with its claws on the bar. The word to type is Tapko's bubble
+  between them; the next word waits greyed after it. When a word is typed, the parrot repeats it
+  in its own bubble with a short squawk, and every third word with a small hop.
+- **Mistakes:** the third wrong key of a round sends the parrot up on a short flight round the
+  scene (its wings beating, facing where it goes) with a parrot line ("Daj si kráátku
+  prestáávku.", "Brrrzdi!", "Pozooórr.", "Opakovanie, matka múdrrosti.", "Trretií pokus"); it
+  lands back and the round goes on. More wrong keys than 4 plus the story's number (5 in the
+  dragon story, 6 in the robot's, 7 in the fairy's) and the parrot says "Veeéľa chýb!", "Skúús
+  prresnejššie!" or "Prrriíliš neprresneé" and flies off: the word goes, nothing more is shown,
+  and the round ends lost.
 - **Round:** first the words in turn, three rounds (dom strom časy dom strom časy dom strom
   časy), then each word several times in a row; Tapko says when the second part starts. A wrong
   key brings the current word twice more, at most six more per word, so a round always ends.
@@ -29,12 +38,16 @@
   where possible, new ones each round.
 - The typing counts in the statistics and in the lesson like at the target range; paws, Enter
   marks and the parent's surprises stay out.
-- **End card:** the parrot in colour, "Papagáj sa naučil tvoje slová!", the words learned, how
-  fast the fingers were (the child's usual speed of the last 14 days, the learning part and the
-  repeating part, the last one green when it was faster), new letters when the lesson moved on,
-  and the Parrot badge with its line when this win brought it. "Nové slová" plays again with new
-  words; the X at the top right and Esc go to the map. Finishing the round wins the world's
-  parrot.
+- **End:** a learned round ends with the parrot flying off the scene, and it is back on the end
+  card: the parrot in colour, "Opakovanie s papagájom!", the words learned set apart in their own
+  row, how fast the fingers were (the child's usual speed of the last 14 days, the learning part
+  and the repeating part, the last one green when it was faster), new letters when the lesson
+  moved on, and the Parrot badge with its line when this win brought it. "Nové slová" plays again
+  with new words; the X at the top right and Esc go to the map. Finishing the round wins the
+  world's parrot.
+- **Lost round:** no celebration; the end card shows the empty perch and says the parrot flew
+  away and to try again slowly; "Hrať znova" is the main button. The world's parrot leaves home
+  (the badge may go with it) and its map node shows the empty perch.
 - **Parrots fly away**, so the child comes back and practises again:
   - one roll for each day since the last check (only today the first time): a 20 % chance that
     one random parrot at home flies away; a child back after 13 days gets 13 rolls;
@@ -60,3 +73,6 @@
   penalty: "a parrot flew away, go get it back". The floor and the last parrot keep it from
   feeling like losing everything.
 - One badge next to the name gives a visible, regainable goal that rewards regular practice.
+- The point is accuracy through repetition: a parrot flight after a few mistakes is a funny nudge
+  to slow down, and a parrot that leaves after many makes careless rushing cost the round
+  without any scolding.

@@ -1309,7 +1309,7 @@ export class LevelRuntime {
     // A paused level does not move: the last frame stays unless a resize cleared it.
     if (this.paused && !this.stage.dirty) return;
     const g = this.stage.begin();
-    drawBackground(g, this.backdrop, this.stage.vw, this.mode.scroll, !this.reduceMotion);
+    drawBackground(g, this.backdrop, this.stage.vw, this.mode.scroll, !this.reduceMotion, this.mode.midOnly);
     if (this.robot) this.drawBolt(g);
     if (this.fairy) this.drawMelody(g);
     this.labels = [];
@@ -1449,8 +1449,10 @@ export class LevelRuntime {
     const result = noStars ? completeStay(p, stats, typedShare) : completeLevel(p, this.def, stats, typedShare);
     if (this.style !== 'copy') result.byStyle = { style: this.style, clean, total: resolved };
     saveProfile();
-    this.sfx('reward');
-    this.celebrate();
+    if (!this.mode.lost) {
+      this.sfx('reward');
+      this.celebrate();
+    }
     // Leaving during the celebration (back button, map) must not open the results.
     setTimeout(() => { if (!this.disposed) this.opts.onFinish(result); }, RESULTS_AFTER * 1000);
   }

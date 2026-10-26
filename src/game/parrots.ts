@@ -57,11 +57,23 @@ export function winParrot(p: Profile, world: number, today: string): boolean {
   const pr = p.progress;
   const had = hasParrotBadge(p);
   if (!pr.parrots.includes(world)) pr.parrots.push(world);
-  if (!pr.parrotsWon.includes(world)) pr.parrotsWon.push(world);
+  if (!pr.parrotsMet.includes(world)) pr.parrotsMet.push(world);
   pr.parrotBest = Math.max(pr.parrotBest, pr.parrots.length);
   pr.parrotWonAt = today;
   pr.parrotFlown = pr.parrotFlown.filter((w) => w !== world);
   return !had && hasParrotBadge(p);
+}
+
+/** Mistakes a parrot round bears, 4 plus the story's number (1-3) for its index `story` (0-2); one more and the parrot flies off. */
+export function parrotPatience(story: number): number {
+  return 5 + story;
+}
+
+/** The parrot flew off after too many mistakes: it leaves its perch (and home, if it lived there). */
+export function loseParrot(p: Profile, world: number): void {
+  const pr = p.progress;
+  pr.parrots = pr.parrots.filter((w) => w !== world);
+  if (!pr.parrotsMet.includes(world)) pr.parrotsMet.push(world);
 }
 
 /** Size of a parrot round: how many words, their letters and the repetitions of each in phase 2. */

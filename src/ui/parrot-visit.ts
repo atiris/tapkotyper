@@ -4,9 +4,9 @@ import { imageUrl } from '../gfx/assets';
 import { h } from './dom';
 
 /** The flying parrot's pictures over one wing beat, there and back: up, middle, down, middle. */
-const FLAP = ['obj-parrot-flying', 'obj-parrot-flying-2', 'obj-parrot-flying-3', 'obj-parrot-flying-2'];
+export const FLAP = ['obj-parrot-flying', 'obj-parrot-flying-2', 'obj-parrot-flying-3', 'obj-parrot-flying-2'];
 /** Seconds of one wing beat. */
-const BEAT_S = 0.44;
+export const BEAT_S = 0.44;
 /** Places the parrot flies by on its way across the window. */
 const STOPS = 5;
 /** Milliseconds of one leg between two places. */

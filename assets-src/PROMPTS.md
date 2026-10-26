@@ -140,6 +140,11 @@ Notes from real Gemini runs; add new ones here.
   to horizontal" only cut the wings' top edge flat; to move a part, ask to turn it "as one rigid
   piece around the shoulder by about 30 degrees, not squashed or trimmed" and say where its tip
   ends.
+- A certificate frame that scales: ask for sides that are "completely plain, so it can be
+  stretched" and put all ornaments in the corners; or ask for parts (one L-shaped corner whose
+  arms run plain to the image edges, and a "sheet of three border bands" cut by both side
+  edges). All five such prompts came out clean and symmetrical on the first try; the page joins
+  the parts with CSS border-image (bands repeat, cut between two motifs).
 
 ---
 

@@ -700,11 +700,6 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 /* The target range of a world, next to the super level's star. */
 .level-node.aim-node { color: var(--danger-ink); }
 .aim-icon { width: 22px; height: 22px; }
-/* The parrot of a world: grey until won, in colour while it is at home. */
-.level-node.parrot-node .level-act { filter: grayscale(1); opacity: 0.4; transition: filter 0.6s, opacity 0.6s; }
-.level-node.parrot-node.home .level-act { filter: none; opacity: 1; }
-/* A closed node fades as a whole already. */
-.level-node.parrot-node:disabled .level-act { opacity: 1; }
 /* A parrot flying away from its node, up and out of the window. */
 .parrot-fly { position: fixed; z-index: 30; width: 90px; margin: -45px 0 0 -45px; pointer-events: none; animation: parrot-fly 2s ease-in forwards; }
 @keyframes parrot-fly {
@@ -1218,7 +1213,6 @@ fieldset { border: 2px solid var(--line); border-radius: 18px; padding: 0.8rem 1
 legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-ink); }
 .field { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.6rem; }
 .field small { color: var(--ink-soft); }
-.field > .btn { align-self: flex-start; }
 .switch-field { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 0.6rem; align-items: center; margin-bottom: 0.6rem; }
 .switch-field label { display: contents; cursor: pointer; }
 .switch-field input { width: 26px; height: 26px; margin: 0; accent-color: var(--green); cursor: pointer; }

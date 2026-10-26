@@ -594,7 +594,9 @@ function dataTab(p: Profile | null): HTMLElement {
           go('start');
         }, 'btn danger', 'trash'))),
     h('fieldset', {}, h('legend', {}, t('parent.group.tools')),
-      field(t('parent.translate'), button(t('parent.translateGo'), () => go('translate', { granted: true }), 'btn small', 'language'), t('parent.translateHint'), 'div')));
+      h('h3', {}, t('parent.translate')),
+      h('p', {}, t('parent.translateHint')),
+      h('div', { class: 'row' }, button(t('parent.translateGo'), () => go('translate', { granted: true }), 'btn', 'language'))));
 }
 
 const exportOne = (p: Profile) => download(`tapkotyper-${slug(nickname(p))}.json`, app.store.exportJson([p.id]));

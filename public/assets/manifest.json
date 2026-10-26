@@ -1484,6 +1484,14 @@
    "w": 384,
    "h": 287
   },
+  "ui-act-parrot-head": {
+   "w": 384,
+   "h": 359
+  },
+  "ui-act-parrot-perch": {
+   "w": 384,
+   "h": 341
+  },
   "ui-act-parrot": {
    "w": 259,
    "h": 384

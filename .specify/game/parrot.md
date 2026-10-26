@@ -5,9 +5,9 @@
   child types the same few words many times over, so the fingers learn them (muscle memory).
   Speed is not judged and there are no stars; slow typing is fine, the point is the practice.
 - It opens with the world's super level, like the [target range](target-practice.md): a small
-  parrot node after the range's target on the map. The node is grey while the world's parrot is
-  not won (or after it flew away) and in full colour while it is at home; its tooltip says what
-  it trains. Before the world is finished the node is already there, grey and closed like a
+  parrot node after the range's target on the map. Its picture tells the parrot's state: its
+  head before the round was ever won, the parrot sitting while it is at home, and an empty
+  wooden perch after it flew away; its tooltip says what it trains. Before the world is finished the node is already there, grey and closed like a
   level not reached yet (the tooltip adds when it opens). It starts only when the child picks
   it, never by "Continue".
 - **Scene:** the world's own background. Tapko stands at the left, the parrot sits on a perch at

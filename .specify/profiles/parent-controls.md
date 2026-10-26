@@ -41,8 +41,8 @@
   language** and the keyboard layout (own languages from the [translator](../experience/translation.md)
   are offered after the official ones). A kind picked here is granted at once.
 - The **data** tab has two framed groups like the settings tab: **Profiles** (export,
-  move, import, and deleting the profile) and **Tools** with **Translate the game**, a
-  button that opens the translator.
+  move, import, and deleting the profile) and **Tools** with **Translate the game**: its
+  heading, what it is for, then a button of the usual size that opens the translator.
 - The settings have no progress tab: the progress, the charts and the levels are on the
   typist's own "My progress" page ([statistics](statistics.md)).
 - A button by "Back" (the child's picture and name) switches the parent area to another

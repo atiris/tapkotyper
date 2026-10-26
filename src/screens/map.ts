@@ -192,10 +192,13 @@ function aimNode(open: boolean, world: number): HTMLElement {
     pic ? h('img', { class: 'level-act', src: pic, alt: '' }) : icon('target', 'icon aim-icon'));
 }
 
-/** The parrot of a world: in colour while it is at home, grey until it is won (or after it flew away), closed until the world is finished. */
+/** The parrot node's picture: the parrot sitting while it is at home, its empty perch after it flew away, else its head. */
+const parrotPic = (home: boolean, won: boolean) => imageUrl(home ? 'ui-act-parrot' : won ? 'ui-act-parrot-perch' : 'ui-act-parrot-head');
+
+/** The parrot of a world (its picture by `parrotPic`), faded and closed until the world is finished. */
 function parrotNode(p: Profile, open: boolean, world: number, flying: boolean): HTMLElement {
   const home = flying || p.progress.parrots.includes(world);
-  const pic = imageUrl('ui-act-parrot');
+  const pic = parrotPic(home, p.progress.parrotsWon.includes(world));
   return h('button', {
     class: `level-node parrot-node ${home ? 'home' : ''}`, type: 'button', disabled: !open, 'data-world': String(world),
     'aria-label': `${t('parrot.title')}${home ? `, ${t('map.parrotHome')}` : ''}`, tip: sideTip(open, 'map.parrotTip'),
@@ -203,11 +206,16 @@ function parrotNode(p: Profile, open: boolean, world: number, flying: boolean): 
   }, pic ? h('img', { class: 'level-act', src: pic, alt: '' }) : icon('star', 'icon'));
 }
 
-/** Parrots that flew away leave their nodes on the map: up and out of the window, the node turning grey; a lost badge fades with them. */
+/** Parrots that flew away leave their nodes on the map: up and out of the window, the node showing the empty perch; a lost badge fades with them. */
 function flyOff(root: HTMLElement, worlds: number[], badgeLost: boolean): void {
   const nodes = worlds.map((w) => root.querySelector<HTMLElement>(`.parrot-node[data-world="${w}"]`)).filter((n) => n !== null);
+  const perch = parrotPic(false, true);
   const leave = () => {
-    for (const n of nodes) n.classList.remove('home');
+    for (const n of nodes) {
+      n.classList.remove('home');
+      const img = n.querySelector('img');
+      if (img && perch) img.src = perch;
+    }
     if (badgeLost) root.querySelector('.map-hello .parrot-badge')?.remove();
   };
   if (reduceMotion() || !imageUrl('obj-parrot-flying')) return leave();

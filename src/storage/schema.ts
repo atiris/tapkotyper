@@ -133,6 +133,8 @@ export interface Progress {
   rangeFinds: string[];
   /** Worlds whose parrot is won (at home). */
   parrots: number[];
+  /** Worlds whose parrot was ever won, at home now or flown away. */
+  parrotsWon: number[];
   /** Most parrots ever at home at once. */
   parrotBest: number;
   /** Local date of the last parrot round won, null before any. */

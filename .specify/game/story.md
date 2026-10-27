@@ -44,13 +44,18 @@ gives you a wreath"), never about the character as someone else.
    Typing rhythm drives the speedometer, the rocket's own instrument, which sits still near the
    bottom edge (half its height above it) under the rocket while the rocket bobs; a soft energy
    beam pushes asteroids and planets out of the path, some of them mirrored so they do not all
-   look alike. The space keeps the child's pace: a second after the last key (longer than a
-   pause between words) everything eases down within about half a second (the things flying in
-   take longer to arrive, the speedometer sinks with them) and speeds up gently with the next
-   keys; no change jumps. The levels follow the world rhythm: 1 the stream of rocks; 2 the calm
+   look alike. The stream flies as one: all things in it keep one speed, the one its slowest
+   word needs, so none overtakes another, and a new speed comes gradually over a few seconds.
+   The space keeps the child's pace: a moment after the last key (longer than a pause between
+   words) everything slows down gently over about two seconds (the things flying in take longer
+   to arrive, the speedometer sinks with them) and speeds up just as gently with the next keys;
+   no change jumps. The levels follow the world rhythm: 1 the stream of rocks; 2 the calm
    step, the astronaut hops from meteor to meteor (each with a short word) and the view glides
-   after him, meteors left behind drift away, and at the end the rocket comes for him, he jumps
-   into its window and it flies off; 3 a faster stream where about every fourth meteor is
+   after him, meteors left behind drift away; he jumps onto the next meteor or over one, never
+   over two: then he says "Jaj, tam nedoskočím." and the word stays on that meteor. The level
+   counts jumps, whether over one meteor or none, and at the end the rocket, empty with clear
+   glass in its window, comes for him from the left, he jumps into its window and it flies on to
+   the right; 3 a faster stream where about every fourth meteor is
    stronger: it glows, and when its word is typed it shouts ("Au!", "Zásah!", "Trefa!"), says
    "Ja som silnejší, musíš napísať slovo znova." and comes again a bit further back with the
    same word, counting once (the opening line explains it); 4 the copy twist: the astronaut on a

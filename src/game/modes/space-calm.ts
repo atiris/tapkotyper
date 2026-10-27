@@ -6,9 +6,9 @@ import { t } from '../../i18n/i18n';
 import { Mode } from '../mode';
 import type { Target } from '../typing';
 import { CopyRow } from './copy-row';
-import { ROCKET_H, WINDOW, drawAstronaut, windowGlass } from './space';
+import { ROCKET_H, WINDOW, drawAstronaut } from './space';
 
-const PICTURES = ['obj-asteroid-big', 'obj-asteroid-small', 'obj-rocket', 'obj-rocket-pilot', 'tapko-astronaut'];
+const PICTURES = ['obj-asteroid-big', 'obj-asteroid-small', 'obj-rocket-empty', 'obj-rocket-pilot', 'tapko-astronaut'];
 /** Round meteors to stand on (the falling rock with its tail is no place to stand). */
 const ROCKS = ['obj-asteroid-big', 'obj-asteroid-small'];
 /** Where the astronaut stands on the screen, and his size. */
@@ -23,7 +23,7 @@ const SLOTS = [0.48, 0.67, 0.86];
 const DRIFT = 0.8;
 const JUMP = 0.7;
 const GLIDE = 0.9;
-/** Seconds of the end: the rocket comes, he jumps into its window, it flies away. */
+/** Seconds of the end: the rocket comes from the left, he jumps into its window, it flies on to the right. */
 const ROCKET_COME = 1.4;
 const ROCKET_BOARD = 0.8;
 const ROCKET_AWAY = 1.2;
@@ -43,8 +43,8 @@ interface Rock {
 /**
  * The rocket world's calm step: still meteors carry short words, each starting with another
  * letter. A typed word sends the suited astronaut jumping onto its meteor, and the view glides
- * after him; meteors left behind drift away. At the end the rocket comes for him, he jumps into
- * its window and it flies off.
+ * after him; meteors left behind drift away. At the end the rocket comes for him from the left,
+ * he jumps into its window and it flies on to the right.
  */
 export class HopMode extends Mode {
   readonly pictures = PICTURES;
@@ -85,7 +85,8 @@ export class HopMode extends Mode {
       if (r.off >= 0) r.off += dt;
       if (r.tg) {
         r.tg.selectable = r.age >= DRIFT;
-        r.tg.urgency = r.age;
+        // The finger guide points to a meteor he can reach.
+        r.tg.urgency = r.age - (this.over(r) > 1 ? 1000 : 0);
       }
     }
     this.rocks = this.rocks.filter((r) => r.off < 1.5 && r.x - this.view > -300);
@@ -123,11 +124,26 @@ export class HopMode extends Mode {
   onDone(tg: Target): void {
     const to = this.rocks.find((r) => r.tg === tg);
     if (!to) return;
+    // A word typed while he is in the air: he lands first, so no meteor is left without a word ahead of him.
+    if (this.jump) this.land(this.jump.to);
+    if (to.off >= 0) return;
+    // He hops onto the next meteor or over one, never over two: the word comes back on the far one.
+    if (this.over(to) > 1) {
+      this.L.core.prune();
+      to.tg = this.L.core.add(tg.word, {}, false);
+      this.L.say(t('story.hopTooFar'), 2.5);
+      return;
+    }
     to.tg = null;
     this.done++;
     this.L.core.prune();
     this.L.sfx('whoosh');
     this.jump = { from: this.stand, to, k: 0 };
+  }
+
+  /** How many meteors lie between his and `to`. */
+  private over(to: Rock): number {
+    return this.rocks.filter((r) => r !== to && r.off < 0 && r.x > this.stand.x && r.x < to.x).length;
   }
 
   /** He stands on the meteor; the view glides so it is back on the left, and the meteors left behind drift away. */
@@ -166,14 +182,15 @@ export class HopMode extends Mode {
     this.L.sfx('whoosh');
   }
 
-  /** The rocket at the end: comes from the right to beside him, waits while he boards, then flies off; null before the end. */
+  /** The rocket at the end: comes from the left edge to just past him, waits while he boards, then flies on to the right; null before the end. */
   private rocket(): { x: number; y: number } | null {
     if (this.end === null) return null;
     const feet = this.top(this.stand);
-    const stop = feet.x + 230, y = feet.y - 70;
+    const stop = feet.x + 160, y = feet.y - 70;
     const come = ease.outCubic(Math.min(1, this.end / ROCKET_COME));
     const away = Math.max(0, this.end - ROCKET_COME - ROCKET_BOARD) / ROCKET_AWAY;
-    return { x: this.L.vw + 160 + (stop - this.L.vw - 160) * come + ease.inQuad(Math.min(1, away)) * (this.L.vw + 400), y: y - away * 120 };
+    // It passes over his head and sinks beside him.
+    return { x: -160 + (stop + 160) * come + ease.inQuad(Math.min(1, away)) * (this.L.vw + 400), y: y - (1 - come) * 160 - away * 120 };
   }
 
   /** 0..1 of his jump from the meteor into the rocket's window. */
@@ -191,8 +208,8 @@ export class HopMode extends Mode {
     const rocket = this.rocket();
     const b = this.boarding;
     if (!rocket || b <= 0) return { ...feet, size: ASTRONAUT };
-    // The rocket faces him (mirrored), so its window is on its left side.
-    const wx = rocket.x - WINDOW.x, wy = rocket.y + WINDOW.y + 20;
+    // The rocket flies to the right, its window on its right side.
+    const wx = rocket.x + WINDOW.x, wy = rocket.y + WINDOW.y + 20;
     const e = ease.inOutQuad(b);
     return { x: feet.x + (wx - feet.x) * e, y: feet.y + (wy - feet.y) * e - Math.sin(b * Math.PI) * 100, size: ASTRONAUT + (40 - ASTRONAUT) * e };
   }
@@ -225,10 +242,8 @@ export class HopMode extends Mode {
       drawAstronaut(g, true, s.x, s.y, s.size);
     }
     if (!rocket) return;
-    // Mirrored to face him; its window empty (under glass) until he is in.
-    const inside = b >= 0.85;
-    drawSprite(g, inside ? 'obj-rocket-pilot' : 'obj-rocket', rocket.x, rocket.y, ROCKET_H, { flip: true }, blob('#e5534b'));
-    if (!inside) windowGlass(g, rocket.x - WINDOW.x, rocket.y + WINDOW.y);
+    // Its window empty until he is in.
+    drawSprite(g, b >= 0.85 ? 'obj-rocket-pilot' : 'obj-rocket-empty', rocket.x, rocket.y, ROCKET_H, {}, blob('#e5534b'));
   }
 
   progress(): number {
@@ -372,9 +387,8 @@ export class CommandMode extends Mode {
     g.fill();
     g.restore();
     const inside = b >= 0.85;
-    drawSprite(g, inside ? 'obj-rocket-pilot' : 'obj-rocket', r.x, r.y, ROCKET_H, { flip: true }, blob('#e5534b'));
+    drawSprite(g, inside ? 'obj-rocket-pilot' : 'obj-rocket-empty', r.x, r.y, ROCKET_H, { flip: true }, blob('#e5534b'));
     if (!inside) {
-      windowGlass(g, r.x - WINDOW.x, r.y + WINDOW.y);
       const s = this.hero();
       drawAstronaut(g, true, s.x, s.y, s.size);
     }

@@ -647,6 +647,7 @@
     "story.strongHit": "Short shouts over a strong meteor when its word is typed the first time; one is picked at random.",
     "story.strongSay": "What a strong meteor says after its first hit, in its own speech bubble.",
     "story.hopStart": "Opening line of the calm rocket level: the astronaut hops from meteor to meteor (short words) to reach the rocket.",
+    "story.hopTooFar": "The astronaut's line in the calm rocket level when the typed word is on a meteor he would reach only by jumping over more than one; the word stays on that meteor.",
     "story.dewStart": "Opening line of the calm meadow level: dew drops carry two-letter words, a typed word opens a flower.",
     "story.gustStart": "The character's line when the wind blows in the third meadow level and more small leaves come at once.",
     "story.invitationStart": "Opening line of the meadow level where the child writes a party invitation word by word with no slip.",

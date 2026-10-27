@@ -37,7 +37,7 @@ export function aroPerch(seated: boolean, onClick: (aro: AroPerch) => void): Aro
   const bird = h('button', { class: `aro ${seated ? '' : 'away'}`, type: 'button', 'aria-label': `${t('parrot.name')}: ${t('parrot.badge')}`, tip: t('parrot.badge'), onClick: () => onClick(aro) },
     h('img', { src: sitting, alt: '' }));
   bird.addEventListener('animationend', () => bird.classList.remove('hop'));
-  const line = h('p', { class: 'bubble aro-say' });
+  const line = h('p', { class: 'tip show aro-say' });
   line.hidden = true;
   const timers: number[] = [];
   const flights: (() => void)[] = [];

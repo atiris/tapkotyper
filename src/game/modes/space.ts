@@ -11,7 +11,7 @@ import type { Target } from '../typing';
 import { ApproachMode, type Mover } from './approach';
 
 /** The pictures this world's levels draw; a level opens when they are loaded. */
-const PICTURES = ['obj-asteroid-big', 'obj-asteroid-small', 'obj-planet-1', 'obj-planet-2', 'obj-planet-3', 'obj-planet-4', 'obj-planet-5', 'obj-rock-falling-1', 'obj-rocket', 'obj-rocket-pilot', 'tapko-astronaut', 'tapko-astronaut-suit'];
+const PICTURES = ['obj-asteroid-big', 'obj-asteroid-small', 'obj-planet-1', 'obj-planet-2', 'obj-planet-3', 'obj-planet-4', 'obj-planet-5', 'obj-rock-falling-1', 'obj-rocket-empty', 'obj-rocket-pilot', 'tapko-astronaut', 'tapko-astronaut-suit'];
 
 const ASTEROIDS = ['obj-asteroid-small', 'obj-rock-falling-1'];
 const PLANETS = ['obj-planet-1', 'obj-planet-2', 'obj-planet-3', 'obj-planet-4', 'obj-planet-5'];
@@ -21,8 +21,8 @@ const COLORS: Record<string, string> = {
 };
 const ROCKET_X = 150;
 export const ROCKET_H = 120;
-/** The round window of the rocket picture: its centre from the rocket's centre and the glass radius. */
-export const WINDOW = { x: 39, y: -1, r: 18 };
+/** The round window of the rocket picture: its centre from the rocket's centre. */
+export const WINDOW = { x: 39, y: -1 };
 /** Tapko's size in the window. */
 const SEAT_SIZE = 44;
 /** Seconds of the suit-up: his things fade away, the suit grows up from the boots, the helmet comes down. */
@@ -37,12 +37,6 @@ const DOCK_TIME = 0.5;
 const SUIT_NECK = 0.52;
 const GAUGE_R = 70;
 /**
- * The pace of the space: things fly at full speed while the child types; this many seconds after
- * the last key (longer than a usual pause between words) they start to slow down to SLOW, within
- * about half a second (their time to arrive stretches at once, the speedometer sinks with them),
- * and with the next keys they speed up again gently. Both changes ease, so nothing jumps.
- */
-/**
  * The `strong` variant (level 3): the stream flows this much faster, and this share of the
  * meteors (never the first two) is stronger, glowing, with two lives: its word is typed twice.
  */
@@ -51,10 +45,18 @@ const STRONG_SHARE = 0.25;
 const STRONG_SIZE = 135;
 /** How far a hit strong meteor is pushed back. */
 const STRONG_PUSH = 120;
-const IDLE_GRACE = 1;
-const SLOW = 0.4;
-const PACE_FALL = 3;
-const PACE_RISE = 1;
+/**
+ * The pace of the space: all coming things fly together at one stream speed, the speed the slowest
+ * of their words needs, and it glides to a new one over a few seconds (FLOW_EASE per second), so no
+ * meteor overtakes another and nothing jumps. This many seconds after the last key (longer than a
+ * usual pause between words) the stream slows down to SLOW and with the next keys it speeds up
+ * again, both gently over about two seconds; the sky and the speedometer follow just as slowly.
+ */
+const IDLE_GRACE = 1.5;
+const SLOW = 0.5;
+const PACE_EASE = 0.6;
+const FLOW_EASE = 0.5;
+const SKY_EASE = 0.8;
 
 /** Code-drawn suit (and helmet) in the companion template's square, until the owner's art is there. */
 function astronautFallback(g: G, s: number, helmet: boolean): void {
@@ -96,17 +98,6 @@ export function drawAstronaut(g: G, helmet: boolean, x: number, y: number, size:
   g.restore();
 }
 
-/** Glass over the empty rocket picture's window, centred at (x, y). */
-export function windowGlass(g: G, x: number, y: number): void {
-  g.beginPath();
-  g.arc(x, y, WINDOW.r, 0, Math.PI * 2);
-  const glass = g.createRadialGradient(x - 5, y - 6, 2, x, y, WINDOW.r);
-  glass.addColorStop(0, '#d9f6fa');
-  glass.addColorStop(1, '#86cbd8');
-  g.fillStyle = glass;
-  g.fill();
-}
-
 /**
  * World 2: Tapko puts on a space suit and hops into the rocket's window, its soft beam pushes rocks and planets out of the path,
  * and rhythm drives the speedometer docked under the rocket.
@@ -120,6 +111,8 @@ export class SpaceMode extends ApproachMode {
   protected speedShown = 0;
   /** Share of full speed the space moves at now (see IDLE_GRACE). */
   protected pace = 1;
+  /** The stream's speed (px/s, negative: to the left), eased toward the speed its slowest word needs; 0 before the first one. */
+  private flow = 0;
   /** Meteors made so far (the first ones of a strong run are never strong). */
   private made = 0;
   /** The background's speed, eased: the rhythm changes in steps with each key, and a step jerked the whole sky. */
@@ -181,8 +174,10 @@ export class SpaceMode extends ApproachMode {
     this.L.speak('meteor', t('story.strongSay'), again.x, again.y - again.size - 70, again.x, again.y - again.size * 0.5, 3);
   }
 
-  /** A coming thing moves in the space's time: slower while the child is not typing. */
+  /** A coming thing moves with the stream, in the space's time: slower while the child is not typing. */
   protected moveComing(m: Mover, dt: number, tg: Target): void {
+    m.need ??= m.vx;
+    m.vx = this.flow;
     const step = dt * this.pace;
     super.moveComing(m, step, tg);
     m.y = Math.max(110, Math.min(VH * 0.78, m.y + m.vy * step));
@@ -195,11 +190,16 @@ export class SpaceMode extends ApproachMode {
 
   update(dt: number): void {
     const target = this.L.idleFor < IDLE_GRACE ? 1 : SLOW;
-    this.pace += (target - this.pace) * Math.min(1, dt * (target < this.pace ? PACE_FALL : PACE_RISE));
-    this.scrollV += ((40 + this.L.rhythm.ema * 70) * this.pace - this.scrollV) * Math.min(1, dt * 4);
+    this.pace += (target - this.pace) * Math.min(1, dt * PACE_EASE);
+    const needs = this.L.core.targets.map((tg) => tg.data as Mover).filter((m) => m.state === 'come').map((m) => m.need ?? m.vx);
+    if (needs.length) {
+      const need = Math.max(...needs);
+      this.flow = this.flow ? this.flow + (need - this.flow) * Math.min(1, dt * FLOW_EASE) : need;
+    }
+    this.scrollV += ((40 + this.L.rhythm.ema * 70) * this.pace - this.scrollV) * Math.min(1, dt * SKY_EASE);
     super.update(dt);
     this.beam = Math.max(0, this.beam - dt * 3);
-    this.speedShown += (this.speedPct() * this.pace - this.speedShown) * Math.min(1, dt * 3);
+    this.speedShown += (this.speedPct() * this.pace - this.speedShown) * Math.min(1, dt * SKY_EASE);
   }
 
   protected speedPct(): number {
@@ -312,17 +312,15 @@ export class SpaceMode extends ApproachMode {
   }
 
   /**
-   * The empty rocket (glass over the picture's window) until the astronaut is in, then the rocket
-   * with its pilot; the two cross-fade while the astronaut slips in.
+   * The empty rocket (only glass in its window) until the astronaut is in, then the rocket with
+   * its pilot; the two cross-fade while the astronaut slips in.
    */
   private drawRocket(g: G, rx: number, ry: number, rot: number): void {
     const inside = Math.max(0, (this.boarded - 0.8) / 0.2);
     if (inside < 1) {
       g.save();
       g.globalAlpha *= 1 - inside;
-      drawSprite(g, 'obj-rocket', rx, ry, ROCKET_H, { rot }, blob('#e5534b'));
-      const w = this.window();
-      windowGlass(g, w.x, w.y);
+      drawSprite(g, 'obj-rocket-empty', rx, ry, ROCKET_H, { rot }, blob('#e5534b'));
       g.restore();
     }
     if (inside <= 0) return;
@@ -330,7 +328,7 @@ export class SpaceMode extends ApproachMode {
     g.globalAlpha *= inside;
     if (sprite('obj-rocket-pilot')) drawSprite(g, 'obj-rocket-pilot', rx, ry, ROCKET_H, { rot });
     else {
-      drawSprite(g, 'obj-rocket', rx, ry, ROCKET_H, { rot }, blob('#e5534b'));
+      drawSprite(g, 'obj-rocket-empty', rx, ry, ROCKET_H, { rot }, blob('#e5534b'));
       const w = this.window();
       drawAstronaut(g, true, w.x, w.y + SEAT_SIZE * 0.45, SEAT_SIZE);
     }

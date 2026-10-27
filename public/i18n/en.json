@@ -420,6 +420,7 @@
     "hopStart": [
       "The rocket drifted a bit away. Hop across the meteors until you reach it!"
     ],
+    "hopTooFar": "Oh, I can't jump that far.",
     "dewStart": [
       "Morning dew is on the grass. Type the letters on a drop and a flower grows from it!"
     ],

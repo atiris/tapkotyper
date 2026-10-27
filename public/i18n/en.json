@@ -604,6 +604,9 @@
     "invitationStart": [
       "There is a party on the meadow! Write the invitation word by word, with no slip."
     ],
+    "invitationPartyOne": "{n} animal got an invitation\nand came to the party!",
+    "invitationPartyFew": "{n} animals got an invitation\nand came to the party!",
+    "invitationPartyMany": "{n} animals got an invitation\nand came to the party!",
     "goalShout": "GOAL!",
     "cheer": [
       "Hooray!",

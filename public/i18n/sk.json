@@ -604,6 +604,9 @@
     "invitationStart": [
       "Na lúke bude oslava! Napíš pozvánku slovo po slove, pekne bez chyby."
     ],
+    "invitationPartyOne": "{n} zvieratko dostalo pozvánku\na prišlo na oslavu!",
+    "invitationPartyFew": "{n} zvieratká dostali pozvánku\na prišli na oslavu!",
+    "invitationPartyMany": "{n} zvieratiek dostalo pozvánku\na prišlo na oslavu!",
     "goalShout": "GÓÓL!",
     "cheer": [
       "Hurá!",

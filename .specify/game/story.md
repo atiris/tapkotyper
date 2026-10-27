@@ -31,7 +31,10 @@ gives you a wreath"), never about the character as someone else.
    game with single chunks; level 2 is the calm step, dew drops on the grass with one letter
    each, and a typed letter opens a flower; level 3 is the leaf game again with a gust of
    wind half way; level 4 is the twist, the invitation to the meadow party written word by
-   word without a slip, and every finished card flies as an envelope to a meadow friend.
+   word without a slip, and every finished card flies as an envelope to a meadow friend. At
+   the end one animal of each kind that got a card comes to the middle, under the line how many
+   animals got an invitation (one per word typed right) and came to the party. On the meadow a
+   leaf's word shows only once the animal carrying it is wholly in sight.
    Super-obstacle: a hedgehog throws volleys of leaves from its back.
    Reward: a secret invitation to space. Before the first level the narrator
    shows the child their character: "This is you."

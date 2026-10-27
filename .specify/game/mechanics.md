@@ -63,7 +63,7 @@
     toward the child and nothing is missed. A calm step lasts at least 1 minute of
     active play, not 2.
   - *Copy* (twist, a clean line): a row of 3 to 4 words typed from left to right. A slip turns the
-    word red, it fades away and the next word is the one to type; the level gets 2 more
+    word red, it fades to a faint trace (about a fifth) where it stood and the next word is the one to type; the level gets 2 more
     words, at most (1 + story order) x 3 in all (6 in the dragon story).
   - *Gust* (surprise of the meadow's level 3): half way through, the character says that
     the wind blows, and for about 25 seconds up to 3 small leaves (words of at most 3

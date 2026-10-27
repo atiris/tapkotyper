@@ -2,6 +2,7 @@ import { pickLine } from '../../app/app';
 import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
 import { blob, drawSprite, fontFamily, type G, wordBox } from '../../gfx/draw';
+import { t } from '../../i18n/i18n';
 import { STORIES, storyOf } from '../levels';
 import { Mode } from '../mode';
 import type { Target } from '../typing';
@@ -180,16 +181,26 @@ interface Slot {
 const CARD_INK = '#4a3a5c';
 const SLIP_INK = '#d9482b';
 const SLIP_FADE = 0.6;
+/** What stays of a slipped word: a faint trace where it stood. */
+const SLIP_TRACE = 0.2;
 const WORD_SIZE = 40;
 const WORD_GAP = 26;
 /** Seconds the finished card takes to fold, fly to its friend and leave with it. */
 const FLY_TIME = 1.6;
+/** Seconds the next card's friend takes to come in from the right (it popped up at its place before). */
+const FRIEND_COME = 0.6;
 const FRIENDS = ['obj-bee', 'obj-butterfly', 'obj-ladybug', 'obj-mouse'];
+/** Seconds the guests take to come to the party, when the line about them shows, and when the level ends. */
+const PARTY_COME = 1.4;
+const PARTY_LINE = 1.2;
+const PARTY_TIME = 4.2;
 
 /**
  * The meadow's twist: you write the invitation to the meadow party. The words of a row are
- * typed from left to right; a slip turns the word red and it fades away, and the level gets
- * two more words. A finished card flies as an envelope to a meadow friend.
+ * typed from left to right; a slip turns the word red and it fades to a faint trace, and the level
+ * gets two more words. A finished card flies as an envelope to a meadow friend. At the end one
+ * animal of each kind that got a card comes to the middle, under the line how many were invited
+ * (one per word typed right) and came to the party.
  */
 export class InvitationMode extends Mode {
   readonly pictures = PICTURES;
@@ -204,8 +215,13 @@ export class InvitationMode extends Mode {
   /** The card's flight: 0 on the table, up to 1 gone with the friend; null while writing. */
   private fly: number | null = null;
   private friend = FRIENDS[0];
+  /** Seconds since this card's friend started coming in. */
+  private friendT = FRIEND_COME;
   private cards = 0;
-  private finishT = 0;
+  /** Words typed right: each one invited an animal. */
+  private invited = 0;
+  /** Seconds of the party at the end; null before it. */
+  private party: number | null = null;
 
   startLine(): string {
     return pickLine('story.invitationStart');
@@ -225,9 +241,15 @@ export class InvitationMode extends Mode {
 
   private newCard(): void {
     const left = this.L.count - this.resolved;
-    if (left <= 0) return;
+    if (left <= 0) {
+      this.row = [];
+      this.party = 0;
+      this.L.sfx('cheer');
+      return;
+    }
     const n = Math.min(this.L.rng.int(3, 4), left);
     this.friend = FRIENDS[this.cards++ % FRIENDS.length];
+    if (this.cards > 1) this.friendT = 0;
     this.at = 0;
     this.row = Array.from({ length: n }, (_, i) => {
       const word = this.L.word(6, 1);
@@ -254,12 +276,17 @@ export class InvitationMode extends Mode {
 
   update(dt: number): void {
     for (const s of this.row) if (s.slip >= 0) s.slip += dt;
-    if (this.resolved >= this.L.count && this.fly === null) this.finishT += dt;
+    this.friendT += dt;
+    if (this.party === null) return;
+    const before = this.party;
+    this.party += dt;
+    if (before < PARTY_COME && this.party >= PARTY_COME) this.L.particles.emit(this.L.vw / 2, VH * 0.4, 40, 'sparkle', ['#ffd25a', '#ff8fb1', '#9ccf7a', '#8ec5f0'], 320, 9);
   }
 
   onDone(tg: Target): void {
     if (this.row[this.at]?.tg !== tg) return;
     this.L.sfx('pop');
+    this.invited++;
     this.next();
   }
 
@@ -293,11 +320,44 @@ export class InvitationMode extends Mode {
     return { xs, size };
   }
 
+  /** The guests: one of each kind that got a card, walking or flying in to the middle; above them how many came. */
+  private renderParty(g: G, time: number): void {
+    const kinds = FRIENDS.slice(0, Math.min(this.cards, FRIENDS.length));
+    const k = ease.outCubic(Math.min(1, time / PARTY_COME));
+    kinds.forEach((kind, i) => {
+      const from = this.L.vw + 120 + i * 90;
+      const to = this.L.vw / 2 + (i - (kinds.length - 1) / 2) * 150;
+      const ground = kind === 'obj-mouse';
+      const y = ground ? VH - 55 - Math.abs(Math.sin(this.t * 4 + i)) * 10 : VH * 0.55 + Math.sin(this.t * 2.5 + i) * 10;
+      drawSprite(g, kind, from + (to - from) * k, y, 100, { flip: true }, blob('#f5c542'));
+    });
+    const a = Math.min(1, Math.max(0, (time - PARTY_LINE) / 0.4));
+    if (a <= 0) return;
+    const n = this.invited;
+    const lines = t(n === 1 ? 'story.invitationPartyOne' : n > 1 && n < 5 ? 'story.invitationPartyFew' : 'story.invitationPartyMany', { n }).split('\n');
+    g.save();
+    g.globalAlpha = a;
+    g.font = `700 44px ${fontFamily()}`;
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+    g.lineJoin = 'round';
+    g.lineWidth = 8;
+    g.strokeStyle = '#fff';
+    g.fillStyle = CARD_INK;
+    lines.forEach((line, i) => {
+      g.strokeText(line, this.L.vw / 2, VH * 0.22 + i * 56);
+      g.fillText(line, this.L.vw / 2, VH * 0.22 + i * 56);
+    });
+    g.restore();
+  }
+
   render(g: G): void {
+    if (this.party !== null) return this.renderParty(g, this.party);
     const y = VH * 0.5;
     const k = this.fly ?? 0;
     // The friend waits on the right and leaves with the envelope.
-    const fx = this.L.vw * 0.9 + (k > 0.6 ? ((k - 0.6) / 0.4) * 300 : 0);
+    const come = (1 - ease.outCubic(Math.min(1, this.friendT / FRIEND_COME))) * 300;
+    const fx = this.L.vw * 0.9 + (k > 0.6 ? ((k - 0.6) / 0.4) * 300 : 0) + come;
     // The mouse waits in the grass and hops; the flyers hover.
     const ground = this.friend === 'obj-mouse';
     const fy = ground ? VH - 55 - Math.abs(Math.sin(this.t * 3)) * 6 : VH * 0.3 + Math.sin(this.t * 2) * 8;
@@ -322,13 +382,12 @@ export class InvitationMode extends Mode {
     const { xs, size } = this.layout(g);
     this.row.forEach((s, i) => {
       if (i === this.at) return this.L.label(g, s.tg, xs[i], y, size);
-      if (s.slip > SLIP_FADE) return;
       g.save();
       g.font = `600 ${size}px ${fontFamily()}`;
       g.textAlign = 'center';
       g.textBaseline = 'middle';
       g.fillStyle = s.slip >= 0 ? SLIP_INK : CARD_INK;
-      g.globalAlpha = s.slip >= 0 ? 1 - s.slip / SLIP_FADE : i < this.at ? 1 : 0.35;
+      g.globalAlpha = s.slip >= 0 ? Math.max(SLIP_TRACE, 1 - (1 - SLIP_TRACE) * s.slip / SLIP_FADE) : i < this.at ? 1 : 0.35;
       g.fillText(s.word, xs[i], y);
       g.restore();
     });
@@ -339,6 +398,6 @@ export class InvitationMode extends Mode {
   }
 
   get finished(): boolean {
-    return this.finishT > 0.6;
+    return (this.party ?? 0) > PARTY_TIME;
   }
 }

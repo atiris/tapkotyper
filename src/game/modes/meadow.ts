@@ -1,6 +1,7 @@
 import { pickLine } from '../../app/app';
 import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
+import { sprite } from '../../gfx/assets';
 import { blob, drawFace, drawSprite, type G, lighten } from '../../gfx/draw';
 import { t } from '../../i18n/i18n';
 import { TAPKO_H, TAPKO_X } from '../mode';
@@ -404,6 +405,15 @@ export class MeadowMode extends ApproachMode {
     gl.x = this.glovesX();
     gl.restY = this.glovesRest();
     super.update(dt);
+    // A leaf's word shows once the leaf and the animal carrying it are wholly in sight.
+    for (const tg of this.L.core.active) {
+      const m = tg.data as Mover, c = m.critter as Critter | null;
+      if (m.state !== 'come' || !tg.selectable) continue;
+      const carrier = c?.state === 'carry' ? c : null;
+      const img = carrier ? sprite(carrier.sprite) : null;
+      const half = carrier ? (carrier.size * (img ? img.naturalWidth / img.naturalHeight : 1)) / 2 : 0;
+      tg.selectable = m.x + m.size / 2 <= this.L.vw && (!carrier || carrier.x + half <= this.L.vw);
+    }
     // The gloves reach for the closest leaf on its way to them and hold a caught one, else rest beside Tapko.
     let aim: Mover | null = null;
     for (const tg of this.L.core.targets) {

@@ -115,6 +115,41 @@ function breakAction(actions: HTMLElement, bubble: HTMLElement, line: string): v
   actions.append(b);
 }
 
+const MODIFIERS = ['Shift', 'Alt', 'Control', 'Meta', 'AltGraph'];
+
+/**
+ * A results card the child can look under: Esc or the round X hides the card and its dimming over
+ * the last frame of the game; any other key or a click brings it back with the same focus, and Esc
+ * while peeking does `esc` (what Esc on the card did before). A dialog over the card goes first.
+ */
+function peekable(overlay: HTMLElement, card: HTMLElement, esc: () => void): void {
+  let focused: HTMLElement | null = null;
+  const peek = (on: boolean) => {
+    if (on) focused = document.activeElement as HTMLElement | null;
+    overlay.classList.toggle('peek', on);
+    if (!on) focused?.focus();
+  };
+  card.prepend(closeButton(() => peek(true), t('results.peek')));
+  // Peeking, the hidden card lets every click through to the overlay.
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay && overlay.classList.contains('peek')) peek(false);
+  });
+  const stop = captureKeys(overlay, (e) => {
+    if (document.querySelector('.modal-back') || MODIFIERS.includes(e.key)) return;
+    const peeking = overlay.classList.contains('peek');
+    if (e.key !== 'Escape' && !peeking) return;
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.repeat) return;
+    if (e.key !== 'Escape') peek(false);
+    else if (!peeking) peek(true);
+    else {
+      stop();
+      esc();
+    }
+  });
+}
+
 function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: LevelParams, surprise: Surprise | null, task: Task | null): void {
   const p = app.profile!;
   let rescued: Friend | null = null;
@@ -186,7 +221,6 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
     task ? h('p', { class: `task-line ${task.doneAt ? 'good' : ''}` }, task.doneAt ? t('task.doneLine', { title: task.title }) : t('task.leftLine', { title: task.title, n: minutesLeft(task) })) : null,
   ].filter((x) => x !== null);
   const card = h('div', { class: 'card results-card' },
-    closeButton(toMap, t('results.close')),
     h('div', { class: 'results-top' },
       h('h2', {}, def.kind === 'practice' ? t('results.practiceDone') : t('results.title')),
       def.kind === 'practice' ? null : stars),
@@ -197,13 +231,7 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
   const overlay = h('div', { class: 'overlay results' }, card);
   root.querySelector('.level-screen')!.append(overlay);
   (actions.querySelector('button') as HTMLButtonElement).focus();
-  // Escape closes the results like every other card (back to the map); a dialog over them closes first.
-  const stop = captureKeys(overlay, (e) => {
-    if (e.key !== 'Escape' || document.querySelector('.modal-back')) return;
-    e.preventDefault();
-    stop();
-    toMap();
-  });
+  peekable(overlay, card, toMap);
 }
 
 /** The end of staying a while: accuracy and rhythm like after a practice, the map first. */
@@ -225,7 +253,6 @@ function showStayDone(root: HTMLElement, def: LevelDef, r: LevelResult): void {
   actions.append(button(t('level.toMap'), () => go('map'), `btn ${breakDue ? '' : 'primary'}`, 'map'));
   if (next && isLevelUnlocked(p, next)) actions.append(button(t('results.next'), () => playLevel(next.id), 'btn', 'next'));
   const card = h('div', { class: 'card results-card stay-done' },
-    closeButton(() => go('map'), t('results.close')),
     h('div', { class: 'results-top' }, h('h2', {}, t('results.practiceDone'))),
     h('div', { class: 'results-tapko' }, tapkoElement(p.companion, 'happy', 80), bubble),
     h('div', { class: 'results-facts' }, ...facts),
@@ -233,12 +260,7 @@ function showStayDone(root: HTMLElement, def: LevelDef, r: LevelResult): void {
   const overlay = h('div', { class: 'overlay results' }, card);
   root.querySelector('.level-screen')!.append(overlay);
   (actions.querySelector('button') as HTMLButtonElement).focus();
-  const stop = captureKeys(overlay, (e) => {
-    if (e.key !== 'Escape' || document.querySelector('.modal-back')) return;
-    e.preventDefault();
-    stop();
-    go('map');
-  });
+  peekable(overlay, card, () => go('map'));
 }
 
 /** The end of the target range over it: accuracy before and after per weak key, the hits, new keys when the lesson advanced; no stars. */
@@ -261,7 +283,6 @@ function showAimDone(root: HTMLElement, r: LevelResult, mode: AimMode, params: L
   tip(stayBtn, t('aim.stayTip'));
   actions.append(stayBtn, button(t('aim.toMap'), () => go('map'), 'btn', 'map'));
   const card = h('div', { class: 'card results-card aim-done' },
-    closeButton(stay, `${t('aim.stay')} (Esc)`),
     h('div', { class: 'results-top' }, h('h2', {}, t('aim.done'))),
     h('div', { class: 'results-tapko' }, tapkoElement(p.companion, 'happy', 80), bubble),
     h('ul', { class: 'aim-rows', 'aria-label': t('aim.keys') }, ...rows),
@@ -271,15 +292,9 @@ function showAimDone(root: HTMLElement, r: LevelResult, mode: AimMode, params: L
   const overlay = h('div', { class: 'overlay results' }, card);
   root.querySelector('.level-screen')!.append(overlay);
   (actions.querySelector('button') as HTMLButtonElement).focus();
-  // Escape stays at the range; Escape there ends it and brings this card back.
-  const stop = captureKeys(overlay, (e) => {
-    if (e.key !== 'Escape' || document.querySelector('.modal-back')) return;
-    e.preventDefault();
-    e.stopPropagation();
-    stop();
-    // After this key is done, or the new range would take the same Escape as its end.
-    setTimeout(stay);
-  });
+  // Escape stays at the range; Escape there ends it and brings this card back. After this key is
+  // done, or the new range would take the same Escape as its end.
+  peekable(overlay, card, () => setTimeout(stay));
 }
 
 /**
@@ -310,7 +325,6 @@ function showParrotDone(root: HTMLElement, def: LevelDef, r: LevelResult, mode: 
   actions.append(button(t(lost ? 'results.replay' : 'parrot.again'), () => go('level', params), `btn ${breakDue ? '' : 'primary'}`, 'replay'),
     button(t('level.toMap'), () => go('map'), 'btn', 'map'));
   const card = h('div', { class: 'card results-card parrot-done' },
-    closeButton(() => go('map'), t('results.close')),
     h('div', { class: 'results-top' }, h('h2', {}, t('parrot.done'))),
     h('div', { class: 'results-tapko' }, pic ? h('img', { class: 'parrot-done-pic', src: pic, alt: '' }) : tapkoElement(p.companion, 'happy', 80), bubble),
     words,
@@ -319,12 +333,7 @@ function showParrotDone(root: HTMLElement, def: LevelDef, r: LevelResult, mode: 
   const overlay = h('div', { class: 'overlay results' }, card);
   root.querySelector('.level-screen')!.append(overlay);
   (actions.querySelector('button') as HTMLButtonElement).focus();
-  const stop = captureKeys(overlay, (e) => {
-    if (e.key !== 'Escape' || document.querySelector('.modal-back')) return;
-    e.preventDefault();
-    stop();
-    go('map');
-  });
+  peekable(overlay, card, () => go('map'));
 }
 
 /** The range's collection under the run's result, with how many are found. */

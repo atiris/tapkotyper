@@ -313,7 +313,7 @@
   "results": {
     "title": "Úroveň hotová!",
     "practiceDone": "Cvičenie hotové!",
-    "close": "Ukončiť a ísť na mapu (Esc)",
+    "peek": "Pozrieť sa na hru (Esc)",
     "dictationClean": "Podľa sluchu bez chyby: {n} z {total}",
     "memoryClean": "Z pamäti bez chyby: {n} z {total}",
     "starsAria": "{n} z 3 hviezdičiek",

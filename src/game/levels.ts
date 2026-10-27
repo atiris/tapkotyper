@@ -125,18 +125,13 @@ export function levelOver(modeFinished: boolean, active: number, min: number): b
   return modeFinished && active >= min;
 }
 
-/** Share of the bar the minimum time fills on its own; the rest waits for the last targets. */
-const TIME_SHARE = 0.95;
-
 /**
- * The progress bar: the share of targets, never ahead of the share of the minimum time, and
- * at least that time share (up to TIME_SHARE), so new targets after the minimum grew the level
- * do not stall it. The runtime keeps the bar from going back.
+ * The progress bar: the slower of the targets done and the minimum time played, so it never runs
+ * ahead of either and ends exactly when `levelOver` does. The runtime keeps the bar from going back.
  */
 export function shownProgress(modeProgress: number, active: number, min: number): number {
   if (min <= 0) return modeProgress;
-  const time = Math.min(1, active / min);
-  return Math.max(Math.min(modeProgress, time), time * TIME_SHARE);
+  return Math.min(modeProgress, active / min);
 }
 
 const def = (world: number, index: number, kind: LevelKind, count: number, variant = '', style?: Style, noSpace = false): LevelDef =>

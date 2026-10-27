@@ -12,6 +12,24 @@ test('a new child plays the first level by typing and sees stars', async ({ page
   // The character celebrated in place, not running off.
   await expect(page.locator('.level-tapko.celebrate')).toHaveCount(1);
   await expect(page.locator('.results-card .star.on').first()).toBeVisible();
+  // Esc peeks at the last frame of the game under the card; a letter brings the card back with its focus.
+  const overlay = page.locator('.overlay.results');
+  const first = page.locator('.results-card .row.center button').first();
+  await expect(first).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(overlay).toHaveClass(/peek/);
+  await expect(page.locator('.results-card')).toBeHidden();
+  await expect(page.locator('.level-screen canvas').first()).toBeVisible();
+  await page.keyboard.press('k');
+  await expect(page.locator('.results-card')).toBeVisible();
+  await expect(first).toBeFocused();
+  // The round X peeks too, a click on the stage brings the card back.
+  await page.locator('.results-card .modal-x').click();
+  await expect(page.locator('.results-card')).toBeHidden();
+  await overlay.click({ position: { x: 20, y: 20 } });
+  await expect(page.locator('.results-card')).toBeVisible();
+  // Esc twice goes to the map.
+  await page.keyboard.press('Escape');
   await page.keyboard.press('Escape');
   await expect(page.locator('.level-node.done')).toHaveCount(1);
   await page.locator('.map-tapko').click();
@@ -195,6 +213,7 @@ test('world badges sit on the map, grow with stars and line up on the progress s
   await page.locator('.island-meadow .level-node').first().click();
   await skipStories(page);
   expect(await playLevel(page, false)).toContain('Your badge is gold now!');
+  await page.keyboard.press('Escape');
   await page.keyboard.press('Escape');
   await expect(page.locator('.island-meadow .badge.gold')).toBeVisible();
   await page.locator('.map-tapko').click();

@@ -38,7 +38,8 @@ test('a finished world\'s parrot learns the words and brings the badge', async (
   await expect(page.locator('.parrot-done .badge-fact')).toContainText('Parrot badge');
   await expect(page.locator('.parrot-done .fact', { hasText: 'While repeating' })).toHaveCount(1);
   await expect(page.locator('.parrot-done .modal-x')).toBeVisible();
-  // Escape closes the card like its X: back to the map.
+  // Escape peeks under the card, a second Escape goes to the map.
+  await page.keyboard.press('Escape');
   await page.keyboard.press('Escape');
   await expect(node).toHaveClass(/home/);
   // Aro, the badge's parrot, lands on his perch left of Tapko and says hello.
@@ -63,6 +64,7 @@ test('too many mistakes send the parrot away: the round ends with its empty perc
   await expect(page.locator('.parrot-done .bubble')).toHaveText('Your parrot flew away. Try again, slowly and carefully.');
   await expect(page.locator('.parrot-done .parrot-done-pic')).toHaveAttribute('src', /ui-act-parrot-perch/);
   await expect(page.locator('.parrot-done .btn.primary')).toContainText('Play again');
+  await page.keyboard.press('Escape');
   await page.keyboard.press('Escape');
   await expect(node).not.toHaveClass(/home/);
   await expect(node.locator('img')).toHaveAttribute('src', /obj-parrot-perch-short/);

@@ -30,8 +30,9 @@
   and one word is on screen at a time.
 - Every story level, super level and rescue mission lasts at least 2 minutes of active
   play (pauses and cards do not count): a quick child gets more targets of the same kind
-  (the gate a new code). The progress bar never runs ahead of the time, moves at least as
-  fast as the time does (up to nearly full) and never goes back when more targets come. Practice,
+  (the gate a new code). The progress bar shows the slower of the two shares, the targets done
+  and the minimum time played, so it never runs ahead of either, ends exactly when the level
+  ends and never goes back when more targets come. Practice,
   custom exercises and free typing keep their own length. At the end Tapko stays where he is and jumps happily
   three times (Bolt hops with him in story 2, Melody hops in story 3; a super level adds a cheer), and any tool he held in the level (gloves,
   umbrella, shield) fades away; with reduced motion he only smiles and the tool is gone
@@ -123,10 +124,22 @@
   level. The run gives no stars, rewards, level result or unlocks; its keys and time count in
   the statistics and the lesson may advance, as after a practice. A super-obstacle has no
   endless form, so staying there plays the world's last regular level.
+- **Peeking under the results**: on every results card (level, practice, staying a while,
+  target range, parrot) Esc or the round X hides the card and its dimming; the last frame of
+  the game stays in sight as it ended. Any other key or a click brings the card back as it was,
+  with the same focus, and the key does nothing else. Esc while peeking does what Esc on the
+  card did before (the map; at the target range: stay there).
+- **Calm scenes breathe**: a scene that stands still (the calm steps of a world) lets one
+  background band drift slowly on its own; with reduced motion nothing drifts.
 
 ## Why
 - A results card that fills the screen hides the game and slows the next try; the child
-  reads the stars and one or two facts, so those must be visible at a glance.
+  reads the stars and one or two facts, so those must be visible at a glance. A child also
+  wants to see the scene they finished; peeking keeps the card one key away, and a second Esc
+  never leaves a keyboard-only child stuck.
+- A bar that filled on time alone and then waited for the last words, or waited for the time
+  after the last word, looked broken; following the slower share makes it honest.
+- A frozen background in a calm level feels like the game stopped.
 - Arcade-style typing (ZType, Typer Shark, Epistory) is praised as motivating; the peaceful
   variant keeps the fun without destruction or stress.
 - Overlapping words cannot be read, and a child who cannot read the word cannot type it.

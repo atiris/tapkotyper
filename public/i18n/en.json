@@ -313,7 +313,7 @@
   "results": {
     "title": "Level finished!",
     "practiceDone": "Practice finished!",
-    "close": "Close and go to the map (Esc)",
+    "peek": "Look at the game (Esc)",
     "dictationClean": "By ear without a mistake: {n} of {total}",
     "memoryClean": "From memory without a mistake: {n} of {total}",
     "starsAria": "{n} of 3 stars",

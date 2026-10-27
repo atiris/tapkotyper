@@ -43,7 +43,8 @@
   row, how fast the fingers were (the child's usual speed of the last 14 days, the learning part
   and the repeating part, the last one green when it was faster), new letters when the lesson
   moved on, and the Parrot badge with its line when this win brought it. "Nové slová" plays again
-  with new words; the X at the top right and Esc go to the map. Finishing the round wins the
+  with new words; the X at the top right and Esc show the game under the card, a second Esc goes
+  to the map. Finishing the round wins the
   world's parrot.
 - **Lost round:** no celebration; the end card shows the empty perch and says the parrot flew
   away and to try again slowly; "Hrať znova" is the main button. The world's parrot leaves home

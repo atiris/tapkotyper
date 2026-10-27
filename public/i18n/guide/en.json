@@ -743,7 +743,7 @@
     "parrot.arrive": "Aro says one of these when he lands on his perch on the map the first time after the Parrot badge is won. Some use his name. Drawn-out sounds like a parrot.",
     "results.title": "Heading of the card after a level is finished.",
     "results.practiceDone": "Heading of the card after an exercise (free typing, own text).",
-    "results.close": "Name of the X on a results card; closes it and goes to the map, like Esc.",
+    "results.peek": "Name of the X on a results card; hides the card to look at the game under it, like Esc. Any key brings the card back.",
     "results.dictationClean": "Fact on the results card for dictation. {n} is the words with no mistake out of {total}.",
     "results.memoryClean": "Fact on the results card for typing from memory. {n} is the words with no mistake out of {total}.",
     "results.mixedClean": "Fact on the results card for mixed typing. {n} is the words with no mistake out of {total}.",

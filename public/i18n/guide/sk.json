@@ -743,7 +743,7 @@
     "parrot.arrive": "Aro povie jednu z viet, keď prvý raz po získaní odznaku Papagáj pristane na bidielku na mape. Niektoré obsahujú jeho meno. Naťahuje hlásky ako papagáj.",
     "results.title": "Nadpis karty po dokončení úrovne.",
     "results.practiceDone": "Nadpis karty po dokončení cvičenia (voľné cvičenie, vlastný text).",
-    "results.close": "Názov krížika na karte výsledkov; zavrie ju a prejde na mapu, rovnako ako Esc.",
+    "results.peek": "Názov krížika na karte výsledkov; skryje kartu, aby bolo vidieť hru pod ňou, rovnako ako Esc. Ktorákoľvek klávesa kartu vráti.",
     "results.dictationClean": "Fakt na karte výsledkov pri diktáte. {n} je počet slov bez chyby z {total}.",
     "results.memoryClean": "Fakt na karte výsledkov pri písaní z pamäti. {n} je počet slov bez chyby z {total}.",
     "results.mixedClean": "Fakt na karte výsledkov pri zmiešanom písaní. {n} je počet slov bez chyby z {total}.",

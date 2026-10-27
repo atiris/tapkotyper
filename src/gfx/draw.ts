@@ -170,8 +170,10 @@ function tiled(g: G, img: HTMLImageElement, vw: number, offset: number): void {
 }
 
 /** Three-layer parallax background of a world; `scroll` grows as the scene moves forward; with `midOnly` just the middle strip follows it. */
-export function drawBackground(g: G, world: string, vw: number, scroll: number, motion = true, midOnly = false): void {
+/** `drift` moves one band on its own by `offset` on top of the scroll. */
+export function drawBackground(g: G, world: string, vw: number, scroll: number, motion = true, midOnly = false, drift: { layer: 'mid' | 'near'; offset: number } | null = null): void {
   const still = midOnly || !motion;
+  const midDrift = drift?.layer === 'mid' ? drift.offset : 0, nearDrift = drift?.layer === 'near' ? drift.offset : 0;
   const pal = PALETTES[world] ?? PALETTES.meadow;
   const far = sprite(`bg-${world}-far`);
   if (far) tiled(g, far, vw, still ? 0 : scroll * 0.1);
@@ -190,17 +192,17 @@ export function drawBackground(g: G, world: string, vw: number, scroll: number, 
     g.fillRect(0, 0, vw, VH);
   }
   const mid = sprite(`bg-${world}-mid`);
-  if (mid) tiled(g, mid, vw, motion ? scroll * 0.35 : 0);
+  if (mid) tiled(g, mid, vw, (motion ? scroll * 0.35 : 0) + midDrift);
   else {
-    hills(g, vw, scroll * 0.35, VH * 0.62, 70, pal.hills[0]);
-    if (world === 'rescue') ropeBridge(g, vw, motion ? scroll * 0.35 : 0, pal.hills[1]);
+    hills(g, vw, scroll * 0.35 + midDrift, VH * 0.62, 70, pal.hills[0]);
+    if (world === 'rescue') ropeBridge(g, vw, (motion ? scroll * 0.35 : 0) + midDrift, pal.hills[1]);
   }
   const near = sprite(`bg-${world}-near`);
   // The space's near rocks drift at half speed, calmer behind the words.
-  if (near) tiled(g, near, vw, still ? 0 : scroll * (world === 'space' ? 0.5 : 1));
+  if (near) tiled(g, near, vw, (still ? 0 : scroll * (world === 'space' ? 0.5 : 1)) + nearDrift);
   else if (world !== 'space') {
-    hills(g, vw, midOnly ? 0 : scroll, VH * 0.82, 30, pal.hills[1]);
-    if (world === 'rescue') lookoutFlag(g, vw, still ? 0 : scroll, pal.hills[1], pal.accent);
+    hills(g, vw, (midOnly ? 0 : scroll) + nearDrift, VH * 0.82, 30, pal.hills[1]);
+    if (world === 'rescue') lookoutFlag(g, vw, (still ? 0 : scroll) + nearDrift, pal.hills[1], pal.accent);
   }
 }
 
@@ -479,16 +481,17 @@ const SPEECH = { plate: 'rgba(255,253,246,0.96)', edge: 'rgba(90,61,43,0.7)', in
 
 /** A speech bubble centered at (x, y) with a short tail toward (tx, ty); the light plate keeps its daylight look on a dark page too. */
 export function drawSpeech(g: G, lay: SpeechLayout, x: number, y: number, tx: number, ty: number, alpha = 1, scale = 1): void {
-  const x0 = x - lay.w / 2, y0 = y - lay.h / 2, r = Math.min(18, lay.h / 2);
   // The tail starts on the edge nearest its target and reaches at most TAIL toward it.
-  const TAIL = 34;
-  const below = ty > y0 + lay.h, above = ty < y0;
-  const bx = below || above ? Math.max(x0 + r + 10, Math.min(x0 + lay.w - r - 10, tx)) : tx < x ? x0 : x0 + lay.w;
-  const by = below ? y0 + lay.h : above ? y0 : Math.max(y0 + r + 6, Math.min(y0 + lay.h - r - 6, ty));
+  const TAIL = 34, half = 10;
+  const x0 = x - lay.w / 2, y0 = y - lay.h / 2, x1 = x0 + lay.w, y1 = y0 + lay.h;
+  const below = ty > y1, above = ty < y0, along = below || above, left = !along && tx < x;
+  // A tail on a side leaves the corner arcs a straight stretch for its base.
+  const r = Math.max(0, Math.min(18, lay.h / 2 - (along ? 0 : half)));
+  const bx = along ? Math.max(x0 + r + half, Math.min(x1 - r - half, tx)) : left ? x0 : x1;
+  const by = below ? y1 : above ? y0 : Math.max(y0 + r + half, Math.min(y1 - r - half, ty));
   const d = Math.hypot(tx - bx, ty - by) || 1;
   const k = Math.min(1, TAIL / d);
   const tipX = bx + (tx - bx) * k, tipY = by + (ty - by) * k;
-  const half = 10, along = below || above;
   g.save();
   g.globalAlpha *= alpha;
   g.translate(tipX, tipY);
@@ -498,23 +501,24 @@ export function drawSpeech(g: G, lay: SpeechLayout, x: number, y: number, tx: nu
   g.strokeStyle = SPEECH.edge;
   g.lineWidth = 3;
   g.lineJoin = 'round';
-  // The plate and the tail as one outline.
-  roundRect(g, x0, y0, lay.w, lay.h, r);
-  g.fill();
-  g.stroke();
+  // The plate and the tail as one outline, clockwise: the tail leaves its edge and comes back to it.
+  const tail = (fromX: number, fromY: number, toX: number, toY: number): void => {
+    g.lineTo(fromX, fromY);
+    g.lineTo(tipX, tipY);
+    g.lineTo(toX, toY);
+  };
   g.beginPath();
-  g.moveTo(along ? bx - half : bx, along ? by : by - half);
-  g.lineTo(tipX, tipY);
-  g.lineTo(along ? bx + half : bx, along ? by : by + half);
+  g.moveTo(x0 + r, y0);
+  if (above) tail(bx - half, y0, bx + half, y0);
+  g.arcTo(x1, y0, x1, y0 + r, r);
+  if (!along && !left) tail(x1, by - half, x1, by + half);
+  g.arcTo(x1, y1, x1 - r, y1, r);
+  if (below) tail(bx + half, y1, bx - half, y1);
+  g.arcTo(x0, y1, x0, y1 - r, r);
+  if (left) tail(x0, by + half, x0, by - half);
+  g.arcTo(x0, y0, x0 + r, y0, r);
   g.closePath();
   g.fill();
-  g.stroke();
-  // Cover the edge line under the tail's base.
-  g.beginPath();
-  g.moveTo(along ? bx - half + 2 : bx + (tx < x ? 2 : -2), along ? by + (below ? -2 : 2) : by - half + 2);
-  g.lineTo(along ? bx + half - 2 : bx + (tx < x ? 2 : -2), along ? by + (below ? -2 : 2) : by + half - 2);
-  g.lineWidth = 5;
-  g.strokeStyle = SPEECH.plate;
   g.stroke();
   g.fillStyle = SPEECH.ink;
   g.font = `700 ${lay.size}px ${fontFamily()}`;

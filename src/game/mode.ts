@@ -11,6 +11,18 @@ import type { LevelRuntime } from './runtime';
 export const TAPKO_X = 150;
 export const TAPKO_H = 265;
 
+/** A background band that moves slowly on its own, so a scene that stands still feels alive. */
+export interface Drift {
+  layer: 'mid' | 'near';
+  /** Game units per second at that layer. */
+  speed: number;
+}
+
+/** How far the drifting band moved on its own after `elapsed` seconds; nothing drifts with reduced motion. */
+export function driftOffset(drift: Drift | null, elapsed: number, motion: boolean): number {
+  return drift && motion ? elapsed * drift.speed : 0;
+}
+
 /** One kind of level (meadow creatures, space rocks, swamp stones...). */
 export abstract class Mode {
   /** World background name. */
@@ -26,6 +38,8 @@ export abstract class Mode {
   readonly phraseMin: number = 2;
   /** Only the background's middle strip moves with the scroll (calm scenes: the target range, the parrot). */
   readonly midOnly: boolean = false;
+  /** The band that drifts on its own while the scene stands still, also where `midOnly` holds the others. */
+  readonly drift: Drift | null = null;
   /** The sound of a wrong key. */
   readonly wrongSfx: Sfx = 'wrong';
 

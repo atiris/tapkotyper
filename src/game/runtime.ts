@@ -28,7 +28,7 @@ import { OWN_SHARE, WordSource, type WordSourceOwn } from '../words/words';
 import { type LangRef, type Profile, SUPER_ID, type Surprise } from '../storage/schema';
 import type { LevelDef } from './levels';
 import { WORLDS, grownCount, hasMinLength, levelOver, minActiveS, shownProgress, storyOf } from './levels';
-import { type Mode, TAPKO_H, TAPKO_X } from './mode';
+import { type Mode, TAPKO_H, TAPKO_X, driftOffset } from './mode';
 import { PAW_MAX, PAW_STREAK, PAW_WORDS } from './paw';
 import { ENTER_MAX, EnterMarks } from './enter';
 import { createMode } from './modes';
@@ -947,6 +947,11 @@ export class LevelRuntime {
     drawFairy(g, this.endTime == null ? this.fairyMood : 'happy', x, y - FAIRY_FLOAT, FAIRY_SIZE, this.mode.t, hop);
   }
 
+  /** The fair share of the level done, as the bar shows it before it is kept from going back: the slower of the targets and the minimum time. */
+  share(): number {
+    return shownProgress(this.mode.progress(), this.played, this.minActive);
+  }
+
   // ---- super help ----------------------------------------------------------------
 
   /** The super help's menu: how the game types for the super player, or stop it. */
@@ -987,7 +992,7 @@ export class LevelRuntime {
 
   /** The super help types through the same key handler as the child, so everything counts as typed. */
   private readonly helpHost: HelpHost = {
-    progress: () => shownProgress(this.mode.progress(), this.played, this.minActive),
+    progress: () => this.share(),
     next: () => {
       const tg = this.core.focus();
       if (!tg || !this.core.typable(tg)) return null;
@@ -1279,7 +1284,7 @@ export class LevelRuntime {
     for (const s of this.speeches) s.age += dt;
     this.speeches = this.speeches.filter((s) => s.age < s.life);
     // More targets after the minimum grew the level lower the mode's share; the bar never goes back.
-    const pct = Math.max(this.progressPct, Math.round(shownProgress(this.mode.progress(), this.played, this.minActive) * 100));
+    const pct = Math.max(this.progressPct, Math.round(this.share() * 100));
     if (pct !== this.progressPct) {
       this.progressPct = pct;
       this.progressFill.style.width = `${pct}%`;
@@ -1315,7 +1320,8 @@ export class LevelRuntime {
     // A paused level does not move: the last frame stays unless a resize cleared it.
     if (this.paused && !this.stage.dirty) return;
     const g = this.stage.begin();
-    drawBackground(g, this.backdrop, this.stage.vw, this.mode.scroll, !this.reduceMotion, this.mode.midOnly);
+    const drift = this.mode.drift;
+    drawBackground(g, this.backdrop, this.stage.vw, this.mode.scroll, !this.reduceMotion, this.mode.midOnly, drift && { layer: drift.layer, offset: driftOffset(drift, this.elapsed, !this.reduceMotion) });
     if (this.robot) this.drawBolt(g);
     if (this.fairy) this.drawMelody(g);
     this.labels = [];

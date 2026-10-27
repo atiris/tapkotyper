@@ -243,11 +243,11 @@ describe('minimum level length', () => {
     expect(grownCount(12, 10, 130, 3, MIN_ACTIVE_S)).toBe(12);
   });
 
-  it('the bar is never ahead of the time and moves at least with it', () => {
+  it('the bar shows the slower of the targets and the time', () => {
     expect(shownProgress(1, 60, MIN_ACTIVE_S)).toBe(0.5);
-    expect(shownProgress(0.3, 60, MIN_ACTIVE_S)).toBeCloseTo(0.475);
-    expect(shownProgress(0.6, 240, MIN_ACTIVE_S)).toBeCloseTo(0.95);
-    expect(shownProgress(0.98, 240, MIN_ACTIVE_S)).toBe(0.98);
+    expect(shownProgress(0.3, 60, MIN_ACTIVE_S)).toBeCloseTo(0.3);
+    expect(shownProgress(0.6, 240, MIN_ACTIVE_S)).toBeCloseTo(0.6);
+    expect(shownProgress(1, 240, MIN_ACTIVE_S)).toBe(1);
     expect(shownProgress(0.3, 5, 0)).toBe(0.3);
   });
 });

@@ -41,9 +41,10 @@ gives you a wreath"), never about the character as someone else.
    Typing rhythm drives the speedometer, the rocket's own instrument, which sits still near the
    bottom edge (half its height above it) under the rocket while the rocket bobs; a soft energy
    beam pushes asteroids and planets out of the path, some of them mirrored so they do not all
-   look alike. The space keeps the child's pace: soon after the last key everything slows down
-   at once (the things flying in take longer to arrive, the speedometer drops with them) and
-   speeds up gently with the next keys. The near rocks drift at half the usual near-layer speed.
+   look alike. The space keeps the child's pace: a second after the last key (longer than a
+   pause between words) everything eases down within about half a second (the things flying in
+   take longer to arrive, the speedometer sinks with them) and speeds up gently with the next
+   keys; no change jumps. The near rocks drift at half the usual near-layer speed.
    Super-obstacle: fractured asteroid.
    Reward: landing clearance.
 3. **New Planet** - typing builds stepping stones across a swamp and picks the right path

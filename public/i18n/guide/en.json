@@ -10,7 +10,7 @@
     },
     "typing": {
       "title": "Typing on the keyboard",
-      "about": "Everything the child sees and reads while typing: the level screen, the cards before play, a new key, own practice, free typing and the paw help."
+      "about": "Everything the child sees and reads while typing: the level screen, the cards before play, a new key, own typing, free typing and the paw help."
     },
     "story": {
       "title": "Story and storytellers",
@@ -82,9 +82,13 @@
       "title": "Welcome on the map",
       "about": "The card that welcomes a new player on the map the first time."
     },
+    "map-buttons": {
+      "title": "Map buttons",
+      "about": "The greeting and the buttons in the player's column on the main map."
+    },
     "map-page": {
       "title": "The map",
-      "about": "Texts of the main map: the welcome, the buttons, story names and hints about unlocking levels."
+      "about": "Texts of the main map: story names, level hints and hints about unlocking levels."
     },
     "teaser": {
       "title": "Questions after a level",
@@ -123,7 +127,7 @@
       "about": "The card that introduces a new key and says which finger presses it."
     },
     "practice": {
-      "title": "Own practice",
+      "title": "Own typing",
       "about": "Choosing keys and the way of typing for practice, and the texts shown during an exercise."
     },
     "free-type": {
@@ -432,6 +436,7 @@
     "map.hello": "Heading of the map. {name} is the player's nickname.",
     "map.title": "Title of the map in the top bar, right of the Players button.",
     "map.continue": "Big map button that starts the next level.",
+    "map.warmUp": "Map button above Continue that starts the short stretch break (the big one can be added); after it the next level starts.",
     "map.practice": "Button for practising chosen letters; also used in bubbles and in the Continue button's description.",
     "map.wardrobe": "Map button that opens the wardrobe.",
     "map.rescue": "Map button for rescue missions (once unlocked), also on the friends screen.",
@@ -496,7 +501,7 @@
     "level.place": "Tooltip of the level-number ring in the top bar; {n} is this level, {total} the number of levels in the world.",
     "level.help": "Tooltip of the question-mark button (F1) in a level that opens help.",
     "level.helpNow": "Heading in the help page for what the current level asks, shown when help is opened from a level.",
-    "level.practice": "Title of the own practice screen.",
+    "level.practice": "Title of the own typing screen.",
     "level.rescue": "Title of a rescue mission, the endless kind of level.",
     "level.guide": "Tooltip of the button (F2) that shows or hides the on-screen keyboard.",
     "level.pause": "Tooltip of the pause button in the level's top bar.",
@@ -556,7 +561,7 @@
     "practice.left": "Counter in timed practice; {s} is the number of seconds left.",
     "practice.words": "Counter in untimed practice; {n} is the number of words typed.",
     "practice.backTip": "Tooltip of the round X button in untimed practice.",
-    "practiceKeys.title": "Heading of the window for choosing keys before own practice.",
+    "practiceKeys.title": "Heading of the window for choosing keys before own typing.",
     "practiceKeys.intro": "Explanation under the heading of the key-choosing window.",
     "practiceKeys.slider": "Label and tooltip of the slider that adds keys in lesson order.",
     "practiceKeys.step": "Counter next to the slider; {n} is the step, {total} the number of steps.",
@@ -1284,7 +1289,7 @@
     "help.mapTitle": "Help, Interface tab: the heading of the list of icons on the map.",
     "help.levelTitle": "Help, Interface tab: the heading of the list of icons in a level.",
     "help.cardTitle": "Help, Interface tab: the heading about the player card on the map.",
-    "help.card": "Help, Interface tab: bullet points about the player card on the map (My progress, Continue, own practice).",
+    "help.card": "Help, Interface tab: bullet points about the player card on the map (My progress, Continue, own typing).",
     "help.progressTitle": "Help, Progress tab: the heading that describes the My progress screen.",
     "help.progress": "Help, Progress tab: bullet points on what the My progress screen shows.",
     "help.moreTitle": "Help, Progress tab: the heading about the rescue mission, target range and badge.",

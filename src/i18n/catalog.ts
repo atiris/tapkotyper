@@ -66,6 +66,7 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
   { id: 'map', groups: [
     g('worlds', 'worlds.*'),
     g('map-welcome', 'map.welcome.*'),
+    g('map-buttons', 'map.hello', 'map.title', 'map.switchProfile', 'map.settings', 'map.warmUp', 'map.continue', 'map.practice', 'map.ownText', 'map.freeType', 'map.wardrobe', 'map.rescue', 'map.friends'),
     g('map-page', 'map.*'),
     g('teaser', 'teaser.*'),
     g('surprise', 'surprise.*'),

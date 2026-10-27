@@ -133,7 +133,8 @@
     "hello": "Ahoj, {name}!",
     "title": "Mapa svetov",
     "continue": "Pokračovať",
-    "practice": "Vlastné cvičenie",
+    "warmUp": "Rozcvička",
+    "practice": "Vlastné písanie",
     "wardrobe": "Ja a môj šatník",
     "rescue": "Záchranné misie",
     "switchProfile": "Hráči",
@@ -155,9 +156,9 @@
     "lockWorld": "Najprv dokonči svet {world}.",
     "lockKeys": "Tento príbeh sa otvorí, keď budeš vedieť {n} písmen. Teraz vieš {have}.",
     "friends": "Malí priatelia",
-    "keysOne": "Na túto úroveň potrebuješ ešte jedno písmeno. Nové písmenká získaš hraním alebo vo Vlastnom cvičení.",
-    "keysFew": "Na túto úroveň potrebuješ ešte {n} písmená. Nové písmenká získaš hraním alebo vo Vlastnom cvičení.",
-    "keysMany": "Na túto úroveň potrebuješ ešte {n} písmen. Nové písmenká získaš hraním alebo vo Vlastnom cvičení.",
+    "keysOne": "Na túto úroveň potrebuješ ešte jedno písmeno. Nové písmenká získaš hraním alebo vo Vlastnom písaní.",
+    "keysFew": "Na túto úroveň potrebuješ ešte {n} písmená. Nové písmenká získaš hraním alebo vo Vlastnom písaní.",
+    "keysMany": "Na túto úroveň potrebuješ ešte {n} písmen. Nové písmenká získaš hraním alebo vo Vlastnom písaní.",
     "heldKeys": "Aby sa otvorila ďalšia úroveň, potrebuješ presnejšie písať: {keys}. Precvič ich na Strelnici.",
     "keysLocked": "potrebuješ viac písmen",
     "storyFairy": "Víla Melódia"
@@ -170,7 +171,7 @@
     "place": "Úroveň {n} z {total} v tomto svete",
     "help": "Pomoc v úrovni",
     "helpNow": "V tejto úrovni",
-    "practice": "Vlastné cvičenie",
+    "practice": "Vlastné písanie",
     "rescue": "Záchranná misia",
     "guide": "Ukázať alebo skryť klávesnicu",
     "pause": "Pauza",
@@ -1186,7 +1187,7 @@
     "wordsCount": "Slov: {n} z {max}.",
     "untypableWords": "Nedá sa napísať na tejto klávesnici, vynechajú sa: {list}",
     "text": "Text",
-    "textHint": "Delí sa po vetách a čiarkach. V príbehu prichádza po kúskoch, vo Vlastnom cvičení je na mape tlačidlo Môj text, ktoré ho napíše celý po poradí.",
+    "textHint": "Delí sa po vetách a čiarkach. V príbehu prichádza po kúskoch, vo Vlastnom písaní je na mape tlačidlo Môj text, ktoré ho napíše celý po poradí.",
     "textPlaceholder": "Bol raz jeden malý drak. Rád lietal nad lúkou.",
     "textCount": "Znakov: {n} z {max}.",
     "untypableChars": "Nedá sa napísať na tejto klávesnici, vynechá sa: {list}",
@@ -1197,11 +1198,11 @@
       "half": "Polovica",
       "most": "Väčšina"
     },
-    "mixHint": "Podiel cieľov v úrovniach a vo vlastnom cvičení. Zvyšok sú bežné slová.",
+    "mixHint": "Podiel cieľov v úrovniach a vo vlastnom písaní. Zvyšok sú bežné slová.",
     "preview": "Ukážka piatich cieľov",
     "previewMore": "Iná ukážka",
-    "wordLang": "Jazyk slov vlastného cvičenia",
-    "wordLangHint": "Bežné slová vo Vlastnom cvičení a v ukážke nižšie."
+    "wordLang": "Jazyk slov vlastného písania",
+    "wordLangHint": "Bežné slová vo Vlastnom písaní a v ukážke nižšie."
   },
   "surprises": {
     "hint": "Schovajte skutočnú odmenu (sladkosť, výlet, herný večer) za pravidlo. Hra položí otázku pred úrovňou a odpoveď prezradí spolu s otázkou, keď sa pravidlo splní. V jednej úrovni je najviac jedno prekvapenie.",
@@ -1376,8 +1377,9 @@
     "cardTitle": "Tvoja karta na mape",
     "card": [
       "Klikni na seba, na svoju postavičku, a otvorí sa Môj postup: čo ti už ide a čo si ešte precvičiť.",
+      "Rozcvička: krátke pretiahnutie (môžeš pridať veľkú rozcvičku), potom sa spustí ďalšia úroveň.",
       "Pokračovať spustí ďalšiu úroveň príbehu.",
-      "Vlastné cvičenie: krátke cvičenie na klávesy, ktoré si vyberieš.",
+      "Vlastné písanie: krátke cvičenie na klávesy, ktoré si vyberieš.",
       "Môj text: keď ti rodič pridá vlastný text, napíšeš ho celý po poradí.",
       "Len chcem písať: píš, čo chceš, prechádzaš sa po svete, ktorý si vyberieš, a tvoj text sa tam ukáže.",
       "Ja a môj šatník: vyber si postavičku, prezývku a obleč sa do odomknutých vecí.",
@@ -1430,7 +1432,7 @@
       "Za každú úroveň dostaneš až **tri hviezdičky**. Čím menej chýb, tým viac hviezdičiek.",
       "Úroveň môžeš hrať znova, keď chceš viac hviezdičiek.",
       "Nové písmenká prídu, keď ti tie staré idú dobre. Niektoré úrovne a príbehy sa otvoria, až keď vieš dosť písmeniek.",
-      "Keď ti chýba písmenko, precvič ho vo Vlastnom cvičení."
+      "Keď ti chýba písmenko, precvič ho vo Vlastnom písaní."
     ],
     "taskTitle": "Úloha od učiteľa",
     "task": [
@@ -1876,7 +1878,7 @@
     "whoTakes": "Kto bude úlohu robiť?",
     "untitled": "Úloha",
     "kind": {
-      "practice": "Vlastné cvičenie so slovami úlohy",
+      "practice": "Vlastné písanie so slovami úlohy",
       "story": "Príbeh so slovami úlohy"
     },
     "today": "Úloha na dnes",

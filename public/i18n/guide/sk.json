@@ -10,7 +10,7 @@
     },
     "typing": {
       "title": "Písanie na klávesnici",
-      "about": "Všetko, čo dieťa vidí a číta počas písania: obrazovka úrovne, kartičky pred hrou, nový kláves, vlastné cvičenie, písanie bez cieľa a labková pomoc."
+      "about": "Všetko, čo dieťa vidí a číta počas písania: obrazovka úrovne, kartičky pred hrou, nový kláves, vlastné písanie, písanie bez cieľa a labková pomoc."
     },
     "story": {
       "title": "Príbeh a rozprávači",
@@ -82,9 +82,13 @@
       "title": "Uvítanie na mape",
       "about": "Karta, ktorá nového hráča privíta na mape pri prvom vstupe."
     },
+    "map-buttons": {
+      "title": "Tlačidlá mapy",
+      "about": "Pozdrav a tlačidlá v stĺpci hráča na hlavnej mape."
+    },
     "map-page": {
       "title": "Mapa",
-      "about": "Texty hlavnej mapy: privítanie, tlačidlá, názvy príbehov a rady o odomykaní úrovní."
+      "about": "Texty hlavnej mapy: názvy príbehov, rady k úrovniam a rady o odomykaní úrovní."
     },
     "teaser": {
       "title": "Otázky po úrovni",
@@ -123,7 +127,7 @@
       "about": "Kartička, ktorá dieťaťu predstaví nový kláves a povie, ktorým prstom ho stláčať."
     },
     "practice": {
-      "title": "Vlastné cvičenie",
+      "title": "Vlastné písanie",
       "about": "Výber klávesov a spôsobu písania pre cvičenie a texty, ktoré sa ukazujú počas cvičenia."
     },
     "free-type": {
@@ -432,6 +436,7 @@
     "map.hello": "Nadpis mapy. {name} je prezývka hráča.",
     "map.title": "Nadpis mapy v hornej lište, vpravo od tlačidla Hráči.",
     "map.continue": "Veľké tlačidlo na mape, ktoré spustí ďalšiu úroveň.",
+    "map.warmUp": "Tlačidlo na mape nad Pokračovať, ktoré spustí krátku rozcvičku (dá sa pridať veľká); po nej sa spustí ďalšia úroveň.",
     "map.practice": "Tlačidlo na cvičenie vybraných písmen; použité aj v bublinách a v popise tlačidla Pokračovať.",
     "map.wardrobe": "Tlačidlo na mape, ktoré otvorí šatník.",
     "map.rescue": "Tlačidlo na mape pre záchranné misie (po odomknutí) aj na obrazovke priateľov.",
@@ -496,7 +501,7 @@
     "level.place": "Popis kruhu s číslom úrovne v hornej lište; {n} je číslo úrovne, {total} počet úrovní vo svete.",
     "level.help": "Popis tlačidla s otáznikom (F1) v úrovni, ktoré otvorí pomoc.",
     "level.helpNow": "Nadpis časti pomoci o tom, čo sa pýta práve hraná úroveň; ukáže sa pri otvorení pomoci z úrovne.",
-    "level.practice": "Nadpis obrazovky vlastného cvičenia.",
+    "level.practice": "Nadpis obrazovky vlastného písania.",
     "level.rescue": "Nadpis záchrannej misie, ktorá sa hrá bez konca.",
     "level.guide": "Popis tlačidla (F2) v úrovni, ktoré ukáže alebo skryje klávesnicu.",
     "level.pause": "Popis tlačidla pauzy v hornej lište úrovne.",
@@ -556,7 +561,7 @@
     "practice.left": "Údaj v časovanom cvičení; {s} je počet zostávajúcich sekúnd.",
     "practice.words": "Údaj v cvičení bez časovača; {n} je počet napísaných slov.",
     "practice.backTip": "Popis okrúhleho tlačidla X v cvičení bez časovača.",
-    "practiceKeys.title": "Nadpis okna na výber klávesov pred vlastným cvičením.",
+    "practiceKeys.title": "Nadpis okna na výber klávesov pred vlastným písaním.",
     "practiceKeys.intro": "Vysvetlenie pod nadpisom okna na výber klávesov.",
     "practiceKeys.slider": "Nadpis a popis jazdca, ktorý pridáva klávesy v poradí lekcií.",
     "practiceKeys.step": "Údaj vedľa jazdca; {n} je krok, {total} počet krokov.",
@@ -1039,8 +1044,8 @@
     "own.mixHint": "Nastavenia, karta Vlastné: poznámka pod výberom podielu.",
     "own.preview": "Nastavenia, karta Vlastné: štítok nad päticou ukážkových cieľov.",
     "own.previewMore": "Nastavenia, karta Vlastné: tlačidlo, ktoré ukáže iných päť ukážkových cieľov.",
-    "own.wordLang": "Nastavenia, karta Vlastné: popisok výberu jazyka bežných slov vlastného cvičenia.",
-    "own.wordLangHint": "Nastavenia, karta Vlastné: poznámka pod výberom jazyka slov vlastného cvičenia.",
+    "own.wordLang": "Nastavenia, karta Vlastné: popisok výberu jazyka bežných slov vlastného písania.",
+    "own.wordLangHint": "Nastavenia, karta Vlastné: poznámka pod výberom jazyka slov vlastného písania.",
     "surprises.hint": "Nastavenia, karta Prekvapenia: úvodný text nad tabuľkou a formulárom.",
     "surprises.empty": "Nastavenia, karta Prekvapenia: text, keď ešte nie je žiadne prekvapenie.",
     "surprises.formTitle": "Nastavenia, karta Prekvapenia: nadpis formulára na nové prekvapenie.",
@@ -1284,7 +1289,7 @@
     "help.mapTitle": "Pomoc, karta Rozhranie: nadpis zoznamu ikon na mape.",
     "help.levelTitle": "Pomoc, karta Rozhranie: nadpis zoznamu ikon v úrovni.",
     "help.cardTitle": "Pomoc, karta Rozhranie: nadpis opisu karty hráča na mape.",
-    "help.card": "Pomoc, karta Rozhranie: odrážky o karte hráča na mape (Môj postup, Pokračovať, vlastné cvičenie).",
+    "help.card": "Pomoc, karta Rozhranie: odrážky o karte hráča na mape (Môj postup, Pokračovať, vlastné písanie).",
     "help.progressTitle": "Pomoc, karta Postup v hre: nadpis opisu obrazovky Môj postup.",
     "help.progress": "Pomoc, karta Postup v hre: odrážky o tom, čo ukazuje obrazovka Môj postup.",
     "help.moreTitle": "Pomoc, karta Postup v hre: nadpis o záchrannej misii, strelnici a odznaku.",

@@ -26,6 +26,7 @@ import { WORLD_THINGS } from '../game/modes/aim-things';
 import { ownTextPhrases } from '../game/modes/practice';
 import { levelTitleWords } from '../ui/hud';
 import { startFreeType } from './free-type';
+import { openBreak } from './break';
 import { openPracticeKeys } from './practice-keys';
 import { openStats } from './stats';
 import { taskCard } from './task';
@@ -148,6 +149,7 @@ export function mapScreen(root: HTMLElement): () => void {
         h('div', { class: `map-hero ${aro ? 'with-aro' : ''}` }, aro?.el ?? null, tapko),
         bubble,
         taskCard(p),
+        button(t('map.warmUp'), () => openBreak(start), 'btn', 'wave'),
         play,
         button(t('map.practice'), () => openPracticeKeys(), 'btn', 'practice'),
         ownTextPhrases(p).length ? button(t('map.ownText'), () => go('level', { id: 'practice', text: true }), 'btn', 'read') : null,

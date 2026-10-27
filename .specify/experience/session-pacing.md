@@ -13,6 +13,9 @@
   neither the button nor Esc skips it (the big break may still end early).
 - The break opens over the screen it was taken from and always returns there: from a level's
   results the child is back on the same results, with the reward still to look at.
+- The map has a **Rozcvička** (warm-up) button above Continue (which stays the map's main
+  button): the same short break with the big one to add, and its Continue starts the next level
+  straight away.
 - Runs without an end of their own (free typing, staying a while in a level) say the break in
   Tapko's bubble when it is due; the card after staying a while offers the break first.
 - No daily streaks, no "come back or lose" messages, no random loot.

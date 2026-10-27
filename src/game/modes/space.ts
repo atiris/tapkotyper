@@ -38,13 +38,14 @@ const SUIT_NECK = 0.52;
 const GAUGE_R = 70;
 /**
  * The pace of the space: things fly at full speed while the child types; this many seconds after
- * the last key they slow down to SLOW within a blink (their time to arrive stretches at once, the
- * speedometer drops with them), and with the next keys they speed up again gently.
+ * the last key (longer than a usual pause between words) they start to slow down to SLOW, within
+ * about half a second (their time to arrive stretches at once, the speedometer sinks with them),
+ * and with the next keys they speed up again gently. Both changes ease, so nothing jumps.
  */
-const IDLE_GRACE = 0.4;
+const IDLE_GRACE = 1;
 const SLOW = 0.4;
-const PACE_FALL = 8;
-const PACE_RISE = 1.5;
+const PACE_FALL = 3;
+const PACE_RISE = 1;
 
 /** Code-drawn suit (and helmet) in the companion template's square, until the owner's art is there. */
 function astronautFallback(g: G, s: number, helmet: boolean): void {
@@ -141,8 +142,7 @@ export class SpaceMode extends ApproachMode {
     this.scrollV += ((40 + this.L.rhythm.ema * 70) * this.pace - this.scrollV) * Math.min(1, dt * 4);
     super.update(dt);
     this.beam = Math.max(0, this.beam - dt * 3);
-    const speed = this.speedPct() * this.pace;
-    this.speedShown += (speed - this.speedShown) * Math.min(1, dt * (speed < this.speedShown ? PACE_FALL : 3));
+    this.speedShown += (this.speedPct() * this.pace - this.speedShown) * Math.min(1, dt * 3);
   }
 
   protected speedPct(): number {

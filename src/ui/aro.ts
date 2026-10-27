@@ -6,8 +6,8 @@ import { h } from './dom';
 import { type FlightPoint, flyAlong, somewhere } from './parrot-visit';
 
 /** Milliseconds Aro's line shows before he takes off, and after he lands. */
-const SAY_MS = 1400;
-const SAID_MS = 2600;
+const SAY_MS = 2100;
+const SAID_MS = 3900;
 /** Milliseconds Aro stays out of the window on a round flight before he comes back. */
 const AWAY_MS = 1500;
 /** The flying parrot's width against the sitting one's (its wings are spread). */
@@ -63,7 +63,7 @@ export function aroPerch(seated: boolean, onClick: (aro: AroPerch) => void): Aro
   // In from the right edge, round the window, down onto the perch.
   const comeBack = (then: () => void) => {
     const to = seat();
-    fly([{ x: innerWidth + 120, y: innerHeight * (0.15 + Math.random() * 0.3) }, somewhere(0.55, 0.85, 0.1, 0.5), somewhere(0.3, 0.6, 0.15, 0.6), to], () => {
+    fly([{ x: innerWidth + 120, y: innerHeight * (0.15 + Math.random() * 0.3) }, somewhere(0.55, 0.85, 0.1, 0.85), somewhere(0.3, 0.6, 0.15, 0.85), to], () => {
       bird.classList.remove('away');
       then();
     });
@@ -85,8 +85,8 @@ export function aroPerch(seated: boolean, onClick: (aro: AroPerch) => void): Aro
         bird.classList.add('away');
         const landed = () => (busy = false);
         if (reduceMotion()) return back ? later(AWAY_MS, () => { bird.classList.remove('away'); landed(); }) : undefined;
-        // Up and to the right, over the page, out of the right edge.
-        fly([from, { x: from.x + innerWidth * 0.12, y: from.y - innerHeight * 0.25 }, somewhere(0.35, 0.6, 0.1, 0.6), somewhere(0.6, 0.85, 0.15, 0.7), { x: innerWidth + 120, y: innerHeight * (0.1 + Math.random() * 0.3) }],
+        // Up and to the right, over the page down to its bottom part, out of the right edge.
+        fly([from, { x: from.x + innerWidth * 0.12, y: from.y - innerHeight * 0.25 }, somewhere(0.35, 0.6, 0.1, 0.85), somewhere(0.6, 0.85, 0.15, 0.88), { x: innerWidth + 120, y: innerHeight * (0.1 + Math.random() * 0.3) }],
           () => back && later(AWAY_MS, () => comeBack(landed)));
       });
     },

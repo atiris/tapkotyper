@@ -965,6 +965,8 @@ Cute, soft 2D children's game icon, flat vector style with gentle gradients, sof
 | `ui-act-rhythm.jpg` | a small round drum with two soft beat marks above it (rhythm) |
 | `ui-act-hide.jpg` | a small round hole in the ground with two curious eyes peeking out (hide and seek) |
 | `ui-act-super.jpg` | a small golden crown with three round tips (super-obstacle) |
+| `ui-surprise.jpg` | a small closed golden gift box, a cube seen slightly from above in three-quarter view, shiny warm gold (#F2C14E with lighter #FFE08A highlights and deeper #D99A2B shading), tied with a cream-white ribbon (#FFF6E0) crossing over the lid on all sides and a big round soft bow on top, two tiny sparkles near the corner. No face, no eyes (a level with a surprise the parent announced; done 2026-10-27) |
+| `ui-surprise-open.jpg` | a small opened golden gift box, the same gold and ribbon; the lid with the round soft bow is lifted off and tilted, floating just above the right back corner; the box is empty inside with a soft warm cream glow (#FFF3C4) and a few small golden stars and sparkles rising out of it. No face, no eyes; "nothing pink around the glow" after the background line (the surprises won in a world, top left of its island; done 2026-10-27) |
 
 ## 10. Target range (training the weak letters)
 

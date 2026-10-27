@@ -25,16 +25,16 @@ const HOP = 0.45;
 const HOP_UP = 12;
 const HOP_EVERY = 3;
 /** Seconds the parrot's repeat stays up. */
-const REPEAT_S = 1.8;
+const REPEAT_S = 2.7;
 const WORD_SIZE = 64;
 const NEXT_SIZE = 34;
 /** The mistake that sends the parrot on a short flight round the scene, the seconds of that flight and how high it rises. */
 const SLIP_FLIGHT_AT = 3;
-const ROUND_S = 3.4;
+const ROUND_S = 5.1;
 const ROUND_UP = 110;
 /** Seconds the parrot waits after its last line before it flies off, and of its flight off the scene. */
-const OFF_WAIT = 1.1;
-const OFF_S = 1.8;
+const OFF_WAIT = 1.65;
+const OFF_S = 2.7;
 /** Height of the flying parrot. */
 const FLY_H = 170;
 /** Speed of the background's middle strip. */
@@ -194,7 +194,7 @@ export class ParrotMode extends Mode {
     this.current = null;
     this.flight = { kind: 'off', t: -OFF_WAIT };
     this.L.sfx('squawk');
-    this.parrotSays(pickLine('parrot.leave'), OFF_WAIT + 1);
+    this.parrotSays(pickLine('parrot.leave'), OFF_WAIT + 1.5);
   }
 
   get lost(): boolean {

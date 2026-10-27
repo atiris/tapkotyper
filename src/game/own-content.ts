@@ -23,7 +23,7 @@ export function counterOf(p: Profile, trigger: SurpriseTrigger): number {
 }
 
 /** A new rule, counting from now. */
-export function newSurprise(p: Profile, rule: Pick<Surprise, 'q' | 'a' | 'trigger' | 'n' | 'level' | 'repeat'>): Surprise {
+export function newSurprise(p: Profile, rule: Pick<Surprise, 'q' | 'a' | 'trigger' | 'n' | 'level' | 'repeat' | 'announce'>): Surprise {
   const id = Math.random().toString(36).slice(2, 8) + Date.now().toString(36);
   return { id, ...rule, createdAt: Date.now(), progressFrom: counterOf(p, rule.trigger) };
 }
@@ -61,6 +61,21 @@ export function surpriseFor(p: Profile, def: LevelDef, drill: boolean): Surprise
   if (level) return level;
   const open = countingOpen(p);
   return open.find((s) => reached(p, s)) ?? open[0] ?? null;
+}
+
+/** The level waits with a surprise the map shows ahead. */
+export function surpriseAnnounced(p: Profile, levelId: string): boolean {
+  return p.surprises.some((s) => s.announce && s.trigger === 'level' && s.level === levelId && !s.doneAt);
+}
+
+/** Surprises told in a story level of the world (deleted ones are gone). */
+export function surprisesWonIn(p: Profile, world: number): Surprise[] {
+  return p.surprises.filter((s) => s.worlds?.includes(world));
+}
+
+/** A story level of the world told the answer. */
+export function surpriseWonIn(s: Surprise, world: number): void {
+  if (!s.worlds?.includes(world)) s.worlds = [...(s.worlds ?? []), world];
 }
 
 /** The answer was told: done, or counting again from now. */

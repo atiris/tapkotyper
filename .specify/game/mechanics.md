@@ -30,7 +30,8 @@
   and one word is on screen at a time.
 - Every story level, super level and rescue mission lasts at least 2 minutes of active
   play (pauses and cards do not count): a quick child gets more targets of the same kind
-  (the gate a new code), and the progress bar never runs ahead of the time. Practice,
+  (the gate a new code). The progress bar never runs ahead of the time, moves at least as
+  fast as the time does (up to nearly full) and never goes back when more targets come. Practice,
   custom exercises and free typing keep their own length. At the end Tapko stays where he is and jumps happily
   three times (Bolt hops with him in story 2, Melody hops in story 3; a super level adds a cheer), and any tool he held in the level (gloves,
   umbrella, shield) fades away; with reduced motion he only smiles and the tool is gone
@@ -50,9 +51,11 @@
   main game, gently; 2 a calm step; 3 the main game, harder, with one short surprise; 4 a
   twist; 5 the super-obstacle. Each level dot on the map shows the icon of its activity
   (the number stays in its tooltip and for screen readers). The super level's crown, the
-  target range's target and the parrot sit on white cards, done or not; their pictures are in
-  colour and faded like any level not reached yet; only the parrot is grey while it is not at
-  home, and only the crown has stars under it.
+  target range's target and the parrot sit on white cards until they are mastered, then turn
+  green like every played level: the crown once the super level is done, the target once the
+  world's own thing is found at the range, the parrot once its round was won (it stays green
+  with the empty perch after the parrot flew away). Their pictures are in colour and faded like
+  any level not reached yet, and only the crown has stars under it.
   - *Waiting words* (calm step): still objects carry short words (2 letters in the meadow),
     each starting with another letter, so the first key picks the word and every later key
     is measured against the key it should be; a key that starts no word counts only in the

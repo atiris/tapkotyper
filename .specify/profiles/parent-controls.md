@@ -67,7 +67,10 @@
 - A **surprises** tab holds the parent's surprises as rules in one table (up to 50; question
   and answer up to 200 characters each). Each rule says when the answer comes:
   - **after a level** (a story level picked by world and level): the game asks on that
-    level's get-ready card and tells the answer on its results when it is finished;
+    level's get-ready card and tells the answer on its results when it is finished. A
+    switch "show on the map ahead" puts a closed golden gift box in place of that level's
+    game picture on the map (its tooltip says a surprise waits there) until the answer is told,
+    so the child sees where to go;
   - **after minutes of training** (story levels and practice together), **after more
     levels** or **after more stars**, counted from when the rule was made: the game
     asks on every get-ready card while it waits, with what is still left ("3 more
@@ -82,7 +85,12 @@
   state (waiting, "12 / 20 min", done with its date) and edit and delete; a form under it
   adds or edits a rule; its add (or save) button sits at the right end of the "when" row, and
   on its own line right under the fields when the row has no room. Changing when a rule fires makes it wait again from now. On a
-  narrow screen the rows become cards. Surprises never count in statistics. Free
+  narrow screen the rows become cards. Surprises never count in statistics.
+- **Surprises won stay on the map**: a world where a story level told a surprise's answer shows
+  a small gold-rimmed circle with an open golden box at the top left of its island (the world's
+  badge sits top right). A click opens a window with every surprise told in that world, each
+  question with its answer under it; a surprise the parent deleted is gone from it. Answers told
+  in practice or a rescue mission belong to no world and stay only on their results card. Free
   practice drills of chosen keys have no surprise.
 - **Certificate** ("Certifikát", next to "QR kód celého postupu" under the progress): a window with a sheet in the style of a
   certificate, printed on A4 portrait (browser print): a cream band with the same sleeping fox in
@@ -118,3 +126,5 @@
   every rule and what is done.
 - After a level a child may not remember the question any more, so the answer always
   comes together with it.
+- A box shown ahead on the map is a goal the child can head for; an open box kept in the
+  world lets the child read a won answer again later, away from the one results card.

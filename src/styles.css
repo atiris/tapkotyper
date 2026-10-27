@@ -691,8 +691,6 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
   box-shadow: 0 3px 0 var(--edge);
 }
 .level-node.done { background: var(--tint-green); }
-/* The super level, the target range and the parrot keep a white card, done or not. */
-.level-node:is(.super, .aim-node, .parrot-node) { background: var(--surface); }
 .level-node.current { box-shadow: 0 0 0 4px var(--brand), 0 3px 0 var(--edge); animation: pulse 1.6s ease-in-out infinite; }
 .level-node:disabled { opacity: 0.4; cursor: default; }
 @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
@@ -1092,6 +1090,17 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .badge.small .badge-num { font-size: 1rem; }
 .island-art .badge { position: absolute; top: 0; right: 0; }
 .island-art .badge img { animation: none; filter: none; height: 78%; }
+/* The surprises won in a world: an open golden box on a round gold-rimmed disc at the island's top left (the badge sits top right). */
+.surprises-mark { position: absolute; top: 0; left: 0; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%; cursor: pointer; display: grid; place-items: center;
+  background: radial-gradient(circle at 35% 30%, #fff, #ffe7a3 75%); box-shadow: inset 0 0 0 3px #e0a92e, 0 0 8px rgba(245, 179, 1, 0.6); }
+.surprises-mark img { width: 80%; height: 80%; object-fit: contain; animation: none; filter: none; }
+.surprises-mark:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
+.surprises-won { display: grid; gap: 0.8rem; max-width: 34em; }
+.surprises-won h2 { margin: 0 2.5rem 0 0; }
+.surprises-won .surprise { margin: 0; }
+.surprises-won .surprise-result { display: grid; gap: 0.35rem; }
+/* A level with a surprise the parent announced: the golden box glows a little. */
+.level-node.gift .level-act { filter: drop-shadow(0 0 3px rgba(245, 179, 1, 0.9)); }
 .badge-shelf h4 { margin: 0.2rem 0; font-size: 0.95rem; color: var(--ink-soft); }
 .badge-row { display: flex; flex-wrap: wrap; gap: 0.35rem; }
 .badge-shelf .aim-finds { justify-content: flex-start; margin: 0; }

@@ -9,7 +9,7 @@ import type { Style } from '../game/typing';
 import { WORLD_REWARDS } from '../game/rewards';
 import { LevelRuntime } from '../game/runtime';
 import { captureKeys, surpriseAsk, surpriseLeft } from '../game/cards';
-import { surpriseOutcome } from '../game/own-content';
+import { surpriseOutcome, surpriseWonIn } from '../game/own-content';
 import { ownTextPhrases } from '../game/modes/practice';
 import type { AimMode } from '../game/modes/aim';
 import type { ParrotMode } from '../game/modes/parrot';
@@ -166,6 +166,8 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
   // The task, the surprise and the narrator's question share one small framed block; a run with a
   // surprise has no built-in teaser.
   const outcome = surpriseOutcome(p, surprise, !!params.keys);
+  // A story level keeps the told surprise in its world on the map.
+  if (outcome?.revealed && def.index >= 0 && !def.rescue) surpriseWonIn(outcome.rule, def.world);
   if (outcome) saveProfile();
   const notes = [
     outcome ? surpriseResult(p, outcome.rule, outcome.revealed) : null,

@@ -134,6 +134,7 @@ export function fillProgress(p: Profile, f: ProgressFill, rand: () => number = M
   // Won today, so none flies away before the map is even seen.
   const today = localDate();
   pr.parrots = f.allParrots ? [...pr.worldsDone] : pick(pr.worldsDone, pr.worldsDone.length - 1, rand).sort((a, b) => a - b);
+  pr.parrotsWon = [...pr.parrots];
   pr.parrotBest = pr.parrots.length;
   pr.parrotWonAt = pr.parrotCheckedAt = pr.parrots.length ? today : null;
   pr.parrotFlown = [];

@@ -12,7 +12,9 @@ import { badgeTier } from '../game/rewards';
 import { badge } from '../ui/badge';
 import { flyAway, hasParrotBadge } from '../game/parrots';
 import { localDate } from '../learning/stats';
-import { arrowFocus, button, closeButton, h, icon } from '../ui/dom';
+import { arrowFocus, button, closeButton, h, icon, modal } from '../ui/dom';
+import { surpriseAsk } from '../game/cards';
+import { surpriseAnnounced, surprisesWonIn } from '../game/own-content';
 import { cornerControls, settingsButton } from '../ui/chrome';
 import { offerInstall } from '../ui/install';
 import { tipShown } from '../ui/tooltip';
@@ -20,6 +22,7 @@ import { firstWord, onTypedWord } from '../ui/typed-word';
 import { parrotVisit } from '../ui/parrot-visit';
 import { rangeVisit } from '../ui/range-visit';
 import { aroPerch } from '../ui/aro';
+import { WORLD_THINGS } from '../game/modes/aim-things';
 import { ownTextPhrases } from '../game/modes/practice';
 import { levelTitleWords } from '../ui/hud';
 import { startFreeType } from './free-type';
@@ -203,22 +206,36 @@ function keyIcon(held: string): HTMLElement {
 /** A node's tooltip; before the world is finished it also says when the node opens. */
 const sideTip = (open: boolean, key: string) => (open ? t(key) : `${t(key)} ${t('map.sideOpens')}`);
 
-/** The target range of a world: a small node with the range's target next to the super level's star, faded and closed until the world is finished. */
-function aimNode(open: boolean, world: number): HTMLElement {
+/** The target range of a world: a small node with the range's target next to the super level's star, faded and closed until the world is finished; green once the world's own thing is found there. */
+function aimNode(p: Profile, open: boolean, world: number): HTMLElement {
   const pic = imageUrl('obj-aim-target');
-  return h('button', { class: 'level-node aim-node', type: 'button', disabled: !open, 'aria-label': t('aim.title'), tip: sideTip(open, 'map.aimTip'), onClick: () => go('level', { id: 'aim', world }) },
+  const found = WORLD_THINGS.some((th) => th.world === world && p.progress.rangeFinds.includes(th.id));
+  return h('button', { class: `level-node aim-node ${found ? 'done' : ''}`, type: 'button', disabled: !open, 'aria-label': t('aim.title'), tip: sideTip(open, 'map.aimTip'), onClick: () => go('level', { id: 'aim', world }) },
     pic ? h('img', { class: 'level-act', src: pic, alt: '' }) : icon('target', 'icon aim-icon'));
 }
 
-/** The parrot of a world: its head while it is at home, else its empty short perch; faded and closed until the world is finished. */
+/** The parrot of a world: its head while it is at home, else its empty short perch; faded and closed until the world is finished; green once its round was ever won. */
 function parrotNode(p: Profile, open: boolean, world: number): HTMLElement {
   const home = p.progress.parrots.includes(world);
   const pic = imageUrl(home ? 'ui-act-parrot-head' : 'obj-parrot-perch-short');
   return h('button', {
-    class: `level-node parrot-node ${home ? 'home' : ''}`, type: 'button', disabled: !open,
+    class: `level-node parrot-node ${home ? 'home' : ''} ${p.progress.parrotsWon.includes(world) ? 'done' : ''}`, type: 'button', disabled: !open,
     'aria-label': `${t('parrot.title')}${home ? `, ${t('map.parrotHome')}` : ''}`, tip: sideTip(open, 'map.parrotTip'),
     onClick: () => go('level', { id: 'parrot', world }),
   }, pic ? h('img', { class: 'level-act', src: pic, alt: '' }) : icon('star', 'icon'));
+}
+
+/** The surprises told in the world's story levels: an open golden box at the island's top left; a click lists them. Null without any. */
+function surprisesMark(p: Profile, world: number): HTMLElement | null {
+  const won = surprisesWonIn(p, world);
+  if (!won.length) return null;
+  const pic = imageUrl('ui-surprise-open');
+  const title = t('map.surprisesTitle', { world: t(`worlds.${WORLDS[world]}`) });
+  const show = () => modal(h('div', { class: 'surprises-won' },
+    h('h2', {}, title),
+    ...won.map((s) => h('div', { class: 'surprise-result' }, surpriseAsk(s.q), h('p', { class: 'surprise answer' }, s.a)))), { cls: 'surprises-modal' });
+  return h('button', { class: 'surprises-mark', type: 'button', 'aria-label': title, tip: t('map.surprisesWon'), onClick: show },
+    pic ? h('img', { src: pic, alt: '' }) : icon('star'));
 }
 
 /**
@@ -237,13 +254,15 @@ function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held:
       const stars = p.progress.levels[l.id] ?? 0;
       const num = l.isSuper ? '★' : String(l.index + 1);
       const act = activityOf(l);
-      const actImg = imageUrl(`ui-act-${act}`);
+      // A surprise the parent announced shows its golden box in place of the game's picture.
+      const gift = surpriseAnnounced(p, l.id);
+      const actImg = imageUrl(gift ? 'ui-surprise' : `ui-act-${act}`);
       const b = h('button', {
-        class: `level-node ${l.isSuper ? 'super' : ''} ${stars ? 'done' : ''} ${l.id === nextId ? 'current' : ''} ${missing ? 'keys' : ''}`,
+        class: `level-node ${l.isSuper ? 'super' : ''} ${stars ? 'done' : ''} ${l.id === nextId ? 'current' : ''} ${missing ? 'keys' : ''} ${gift ? 'gift' : ''}`,
         type: 'button',
         disabled: !reached,
-        'aria-label': `${t(`worlds.${w}`)} ${l.isSuper ? t('map.super') : `${l.index + 1}, ${t(`map.act.${act}`)}`}${stars ? `, ${t('map.starsAria', { n: stars })}` : ''}${missing ? `, ${t('map.keysLocked')}` : ''}`,
-        tip: l.isSuper ? t('map.act.super') : `${l.index + 1}. ${t(`map.act.${act}`)}`,
+        'aria-label': `${t(`worlds.${w}`)} ${l.isSuper ? t('map.super') : `${l.index + 1}, ${t(`map.act.${act}`)}`}${stars ? `, ${t('map.starsAria', { n: stars })}` : ''}${missing ? `, ${t('map.keysLocked')}` : ''}${gift ? `, ${t('map.surpriseHere')}` : ''}`,
+        tip: `${l.isSuper ? t('map.act.super') : `${l.index + 1}. ${t(`map.act.${act}`)}`}${gift ? `\n${t('map.surpriseHere')}` : ''}`,
         onClick: () => (missing ? keysBubble(missing, wi) : playLevel(l.id)),
       }, actImg ? h('img', { class: 'level-act', src: actImg, alt: '' }) : h('span', { class: 'num' }, num),
         missing ? keyIcon(held) : h('span', { class: 'mini-stars' }, ...[1, 2, 3].map((s) => h('i', { class: s <= stars ? 'on' : '' }))));
@@ -260,9 +279,9 @@ function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held:
         'aria-label': t(`worlds.${w}`),
         tip: lock || null,
       }) }, img ? h('img', { src: img, alt: '' }) : h('div', { class: 'island-fallback' }), open ? null : h('span', { class: 'lock', tip: lock || null }, icon('lock')),
-        tier ? badge(wi, tier, true) : null),
+        tier ? badge(wi, tier, true) : null, surprisesMark(p, wi)),
       h('h3', {}, `${wi + 1}. ${t(`worlds.${w}`)}`),
-      h('div', { class: 'level-row' }, ...levels, aimNode(aimOpen(p, wi), wi), parrotNode(p, aimOpen(p, wi), wi)));
+      h('div', { class: 'level-row' }, ...levels, aimNode(p, aimOpen(p, wi), wi), parrotNode(p, aimOpen(p, wi), wi)));
   });
   const closed = !storyOpen(p, story);
   return h('section', { class: `story-row story-${story.id}` },

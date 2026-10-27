@@ -1270,7 +1270,8 @@ export class LevelRuntime {
     this.shouts = this.shouts.filter((s) => s.age < SHOUT_TIME);
     for (const s of this.speeches) s.age += dt;
     this.speeches = this.speeches.filter((s) => s.age < s.life);
-    const pct = Math.round(shownProgress(this.mode.progress(), this.played, this.minActive) * 100);
+    // More targets after the minimum grew the level lower the mode's share; the bar never goes back.
+    const pct = Math.max(this.progressPct, Math.round(shownProgress(this.mode.progress(), this.played, this.minActive) * 100));
     if (pct !== this.progressPct) {
       this.progressPct = pct;
       this.progressFill.style.width = `${pct}%`;

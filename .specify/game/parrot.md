@@ -69,7 +69,9 @@
     character, which moves a little right. A click: he says a takeoff line ("Zalieétamme si!",
     "Prrevetraáme krriídla!", "Štaárrtujem!", "Koóntrrola strraáánky!", "Inššpekčnyý let!",
     "Vzzlieétam!"), spreads his wings and flies off to the right across the page with beating
-    wings, flies round and lands on the perch again.
+    wings, on one smooth curve that reaches down to its bottom part too, flies round and lands
+    on the perch again. His lines stay long enough to read before he takes off, and he flies
+    at a leisurely pace.
   - When the badge is lost (a parrot flew away or a round was lost) the next map shows him on the
     perch once more: after Tapko's line about the flown parrots he says goodbye ("Frrčiíím
     prreč!", "Odlieétam!", "Zdrrhaáám!", "Mizznemm!", "Guúúd baáj") and flies off to the right. The empty perch stays while that map

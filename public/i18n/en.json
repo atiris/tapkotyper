@@ -142,6 +142,9 @@
     "parrotTip": "Parrot: type a few words many times in a row, until your fingers know them by themselves. Speed does not matter.",
     "parrotHome": "the parrot is at home",
     "sideOpens": "Opens when you finish this world.",
+    "surpriseHere": "A surprise waits for you here!",
+    "surprisesWon": "The surprises that waited for you in this world",
+    "surprisesTitle": "Surprises from {world}",
     "parrotFlown": "Your parrot flew away from {worlds}. Go and get it!",
     "parrotsFlown": "Your parrots flew away from {worlds}. Go and get them!",
     "starsAria": "{n} stars",
@@ -1224,6 +1227,7 @@
       "random": "At random, now and then"
     },
     "repeat": "Repeat",
+    "announce": "Show on the map ahead",
     "add": "Add",
     "save": "Save",
     "cancel": "Cancel",

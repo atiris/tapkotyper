@@ -133,7 +133,7 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
     g('parent-data', 'parent.*'),
     g('own', 'own.*'),
     g('surprises-form', 'surprises.hint', 'surprises.empty', 'surprises.formTitle', 'surprises.q', 'surprises.a', 'surprises.qPlaceholder', 'surprises.aPlaceholder',
-      'surprises.whenLabel', 'surprises.level', 'surprises.n.*', 'surprises.trigger.*', 'surprises.repeat', 'surprises.add', 'surprises.save', 'surprises.cancel',
+      'surprises.whenLabel', 'surprises.level', 'surprises.n.*', 'surprises.trigger.*', 'surprises.repeat', 'surprises.announce', 'surprises.add', 'surprises.save', 'surprises.cancel',
       'surprises.edit', 'surprises.remove', 'surprises.needBoth', 'surprises.badN', 'surprises.tooMany'),
     g('surprises-table', 'surprises.*'),
   ] },

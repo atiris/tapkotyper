@@ -57,6 +57,7 @@ export function winParrot(p: Profile, world: number, today: string): boolean {
   const pr = p.progress;
   const had = hasParrotBadge(p);
   if (!pr.parrots.includes(world)) pr.parrots.push(world);
+  if (!pr.parrotsWon.includes(world)) pr.parrotsWon.push(world);
   pr.parrotBest = Math.max(pr.parrotBest, pr.parrots.length);
   pr.parrotWonAt = today;
   pr.parrotFlown = pr.parrotFlown.filter((w) => w !== world);

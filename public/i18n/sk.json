@@ -142,6 +142,9 @@
     "parrotTip": "Papagáj: napíšeš pár slov veľakrát za sebou, kým ich prsty nebudú vedieť samy. Na rýchlosti nezáleží.",
     "parrotHome": "papagáj je doma",
     "sideOpens": "Otvorí sa, keď dokončíš tento svet.",
+    "surpriseHere": "Tu na teba čaká prekvapenie!",
+    "surprisesWon": "Prekvapenia, ktoré na teba čakali v tomto svete",
+    "surprisesTitle": "Prekvapenia zo sveta {world}",
     "parrotFlown": "Uletel ti papagáj zo sveta {worlds}. Choď poň!",
     "parrotsFlown": "Uleteli ti papagáje zo svetov {worlds}. Choď po ne!",
     "starsAria": "hviezdičky: {n}",
@@ -1224,6 +1227,7 @@
       "random": "Náhodne, raz za čas"
     },
     "repeat": "Opakovať",
+    "announce": "Ukázať na mape vopred",
     "add": "Pridať",
     "save": "Uložiť",
     "cancel": "Zrušiť",

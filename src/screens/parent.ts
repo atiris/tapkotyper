@@ -313,12 +313,14 @@ function surprisesTab(p: Profile): HTMLElement {
     ...LEVELS.filter((l) => l.world === i).map((l) => h('option', { value: l.id }, levelName(l))))));
   const n = h('input', { type: 'number', min: 1, max: SURPRISE_N_MAX, step: 1, value: 10, inputmode: 'numeric' });
   const repeat = check(false, () => undefined);
+  const announce = check(false, () => undefined);
+  const announceField = switchField(t('surprises.announce'), announce);
   const levelField = field(t('surprises.level'), level);
   const nLabel = h('span', { class: 'field-label' });
   const nField = h('label', { class: 'field' }, nLabel, n);
   const sync = () => {
     const tr = trigger.value as SurpriseTrigger;
-    levelField.hidden = tr !== 'level';
+    levelField.hidden = announceField.hidden = tr !== 'level';
     nField.hidden = tr === 'level' || tr === 'random';
     if (!nField.hidden) nLabel.textContent = t(`surprises.n.${tr}`);
   };
@@ -337,6 +339,7 @@ function surprisesTab(p: Profile): HTMLElement {
     trigger.value = 'level';
     n.value = '10';
     repeat.checked = false;
+    announce.checked = false;
     saveLabel.textContent = t('surprises.add');
     cancel.hidden = true;
     msg.textContent = '';
@@ -350,6 +353,7 @@ function surprisesTab(p: Profile): HTMLElement {
     if (s.level) level.value = s.level;
     n.value = String(s.n ?? 10);
     repeat.checked = s.repeat;
+    announce.checked = !!s.announce;
     saveLabel.textContent = t('surprises.save');
     cancel.hidden = false;
     msg.textContent = '';
@@ -368,6 +372,7 @@ function surprisesTab(p: Profile): HTMLElement {
       q: q.value.trim(), a: a.value.trim(), trigger: tr, repeat: repeat.checked,
       n: counts ? count : undefined,
       level: tr === 'level' ? level.value : undefined,
+      announce: tr === 'level' ? announce.checked : undefined,
     };
     if (editing) {
       const s = editing;
@@ -410,6 +415,7 @@ function surprisesTab(p: Profile): HTMLElement {
       field(t('surprises.a'), a),
       h('div', { class: 'row' }, field(t('surprises.whenLabel'), trigger), levelField, nField,
         switchField(t('surprises.repeat'), repeat),
+        announceField,
         h('div', { class: 'surprise-actions' }, save, cancel)),
       msg));
 }

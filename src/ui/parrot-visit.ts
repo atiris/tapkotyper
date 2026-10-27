@@ -10,7 +10,9 @@ export const BEAT_S = 0.44;
 /** Places the parrot flies by on its way across the window. */
 const STOPS = 5;
 /** Milliseconds of one leg between two places. */
-export const LEG_MS = 1300;
+export const LEG_MS = 1950;
+/** Steps of the smooth curve on each leg. */
+const LEG_STEPS = 12;
 
 /** A flying parrot facing right that beats its wings (the beat's pictures in turn, or just the first when one is missing) and lifts a little on each downstroke; null without a picture. */
 export function flyingParrot(cls: string, style = ''): HTMLElement | null {
@@ -26,10 +28,15 @@ export interface FlightPoint {
   y: number;
 }
 
+/** The point `k` (0-1) of the way from `b` to `c` on a smooth curve through `a`, `b`, `c` and `d` (Catmull-Rom). */
+const curve = (a: number, b: number, c: number, d: number, k: number) =>
+  b + 0.5 * k * (c - a + k * (2 * a - 5 * b + 4 * c - d + k * (3 * (b - c) + d - a)));
+
 /**
- * A flapping parrot flies over the page through `points` (LEG_MS between two), facing where it goes,
- * above everything with clicks passing through, `width` px wide (else 110); resolves when it reaches
- * the last point (and is removed), null without its picture. `stop` removes it on the way.
+ * A flapping parrot flies over the page through `points` (LEG_MS between two) on one smooth curve,
+ * slowing only at the start and the end, facing where it goes, above everything with clicks passing
+ * through, `width` px wide (else 110); resolves when it reaches the last point (and is removed), null
+ * without its picture. `stop` removes it on the way.
  */
 export function flyAlong(points: FlightPoint[], width?: number): { done: Promise<void>; stop: () => void } | null {
   const parrot = flyingParrot('');
@@ -37,7 +44,22 @@ export function flyAlong(points: FlightPoint[], width?: number): { done: Promise
   const duration = LEG_MS * (points.length - 1);
   const bird = h('div', { class: 'parrot-visit', style: width ? `width:${width}px;margin:${-width / 2}px 0 0 ${-width / 2}px` : '' }, parrot);
   document.body.append(bird);
-  const flight = bird.animate(points.map((pt) => ({ transform: `translate(${pt.x}px, ${pt.y}px) rotate(${(Math.random() - 0.5) * 16}deg)` })), { duration, easing: 'ease-in-out' });
+  // A small tilt at each place, eased along the curve like the way itself.
+  const tilts = points.map(() => (Math.random() - 0.5) * 16);
+  const at = (i: number) => Math.max(0, Math.min(points.length - 1, i));
+  const frames: Keyframe[] = [];
+  for (let i = 0; i < points.length - 1; i++) {
+    const [a, b, c, d] = [i - 1, i, i + 1, i + 2].map(at);
+    for (let s = 0; s < LEG_STEPS; s++) {
+      const k = s / LEG_STEPS;
+      const x = curve(points[a].x, points[b].x, points[c].x, points[d].x, k);
+      const y = curve(points[a].y, points[b].y, points[c].y, points[d].y, k);
+      frames.push({ transform: `translate(${x}px, ${y}px) rotate(${curve(tilts[a], tilts[b], tilts[c], tilts[d], k)}deg)` });
+    }
+  }
+  const last = points[points.length - 1];
+  frames.push({ transform: `translate(${last.x}px, ${last.y}px) rotate(${tilts[tilts.length - 1]}deg)` });
+  const flight = bird.animate(frames, { duration, easing: 'ease-in-out' });
   // The picture faces right; it turns at once (no squeeze) at each place where its way goes left.
   parrot.animate(points.map((pt, i) => ({ transform: `scaleX(${points[Math.min(i + 1, points.length - 1)].x < pt.x ? -1 : 1})`, easing: 'steps(1, end)' })), { duration });
   const done = flight.finished.then(() => bird.remove(), () => bird.remove());

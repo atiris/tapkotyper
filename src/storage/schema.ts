@@ -133,6 +133,8 @@ export interface Progress {
   rangeFinds: string[];
   /** Worlds whose parrot is won (at home). */
   parrots: number[];
+  /** Worlds whose parrot round was ever won, the parrot at home or flown away since. */
+  parrotsWon: number[];
   /** Most parrots ever at home at once. */
   parrotBest: number;
   /** Local date of the last parrot round won, null before any. */
@@ -161,6 +163,10 @@ export interface Surprise {
   n?: number;
   /** The story level id (trigger `level`). */
   level?: string;
+  /** The map shows a golden box on the level ahead (trigger `level`). */
+  announce?: boolean;
+  /** Worlds whose story levels told the answer; the map keeps it there under an open box. */
+  worlds?: number[];
   /** Count again after the reveal (or fire on every finish of the level, or go back to the pool). */
   repeat: boolean;
   createdAt: number;

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import type { Profile, Surprise } from '../storage/schema';
 import { levelById, practiceLevel } from './levels';
-import { newSurprise, restartSurprise, surpriseCount, surpriseFor, surpriseOutcome } from './own-content';
+import { newSurprise, restartSurprise, surpriseAnnounced, surpriseCount, surpriseFor, surpriseOutcome, surpriseWonIn, surprisesWonIn } from './own-content';
 
 const w11 = levelById('w1-1')!;
 const w12 = levelById('w1-2')!;
@@ -117,5 +117,21 @@ describe('surprise rules', () => {
     restartSurprise(p, s);
     expect(s.doneAt).toBeUndefined();
     expect(surpriseCount(p, s)).toEqual({ have: 0, need: 1 });
+  });
+
+  it('an announced level rule shows on the map until told, and a told one stays in its world', () => {
+    const p = newProfile('Ema', 'sk');
+    const s = rule(p, 'level', { level: 'w1-2', announce: true });
+    rule(p, 'level', { level: 'w1-1' });
+    expect(surpriseAnnounced(p, 'w1-2')).toBe(true);
+    expect(surpriseAnnounced(p, 'w1-1')).toBe(false);
+    surpriseOutcome(p, s, false, never);
+    surpriseWonIn(s, 0);
+    surpriseWonIn(s, 0);
+    expect(surpriseAnnounced(p, 'w1-2')).toBe(false);
+    expect(s.worlds).toEqual([0]);
+    expect(surprisesWonIn(p, 0)).toEqual([s]);
+    p.surprises = [];
+    expect(surprisesWonIn(p, 0)).toEqual([]);
   });
 });

@@ -1687,6 +1687,14 @@
   "ui-typing-speed": {
    "w": 384,
    "h": 319
+  },
+  "ui-surprise": {
+   "w": 353,
+   "h": 384
+  },
+  "ui-surprise-open": {
+   "w": 344,
+   "h": 384
   }
  },
  "accessories": [

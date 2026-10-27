@@ -726,6 +726,8 @@ export class LevelRuntime {
   /** The guide lights the next key only when the child can see it: a hidden target keeps it secret. */
   updateGuide(): void {
     const ch = this.core.shownChar();
+    // The frame loop redraws only on a change, so it must know what a key press already showed.
+    this.lastExpected = ch;
     const p = app.profile!;
     let fade = 0;
     if (ch && p.settings.guide === 'auto') {
@@ -1283,10 +1285,7 @@ export class LevelRuntime {
       this.paintAccuracy();
     }
     this.rhythm.idle(dt, performance.now());
-    if (this.core.shownChar() !== this.lastExpected) {
-      this.lastExpected = this.core.shownChar();
-      this.updateGuide();
-    }
+    if (this.core.shownChar() !== this.lastExpected) this.updateGuide();
     if (!this.finished && levelOver(this.mode.finished, this.played, this.minActive)) this.finish();
   }
 

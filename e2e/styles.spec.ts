@@ -2,7 +2,7 @@ import { type Page, expect, test } from '@playwright/test';
 import { createProfile, skipStories, typeChar, untilPlay } from './helpers';
 
 async function openPicker(page: Page, style: string): Promise<void> {
-  await page.locator('.map-side .btn', { hasText: 'Own practice' }).click();
+  await page.locator('.map-side .btn', { hasText: 'Own typing' }).click();
   const picker = page.locator('.practice-keys-modal');
   await expect(picker.locator('.pk-styles .chip.on')).toHaveText('Copy');
   await picker.locator('.pk-styles .chip', { hasText: style }).click();

@@ -232,7 +232,7 @@ test('free practice with a diacritic key is played to the results card', async (
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await createProfile(page, 'Ema', 'sk-qwertz');
-  await page.locator('.map-side .btn', { hasText: 'Own practice' }).click();
+  await page.locator('.map-side .btn', { hasText: 'Own typing' }).click();
   const picker = page.locator('.practice-keys-modal');
   await picker.locator('input[type=range]').fill('4');
   await expect(picker.locator('.kb-key[aria-label="ô"]')).toHaveAttribute('aria-pressed', 'true');

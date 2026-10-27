@@ -5,7 +5,7 @@ test('free practice starts with a key picker and uses only the chosen keys', asy
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await createProfile(page, 'Ema');
-  await page.locator('.map-side .btn', { hasText: 'Own practice' }).click();
+  await page.locator('.map-side .btn', { hasText: 'Own typing' }).click();
   const picker = page.locator('.practice-keys-modal');
   // Opens with the child's active keys: f, j and space, the first step.
   await expect(picker.locator('.pk-step')).toHaveText(/^step 1 of \d+$/);
@@ -49,7 +49,7 @@ test('free practice starts with a key picker and uses only the chosen keys', asy
 
 test('Escape closes the key picker', async ({ page }) => {
   await createProfile(page, 'Lea');
-  await page.locator('.map-side .btn', { hasText: 'Own practice' }).click();
+  await page.locator('.map-side .btn', { hasText: 'Own typing' }).click();
   await expect(page.locator('.practice-keys-modal')).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(page.locator('.practice-keys-modal')).toHaveCount(0);

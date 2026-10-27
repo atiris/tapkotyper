@@ -23,7 +23,7 @@ test('a level waiting for letters names the ones that need accuracy', async ({ p
   await expect(locked.locator('.level-key')).toHaveAttribute('data-tip', /type these more accurately: f, j/);
   await locked.click();
   await expect(page.locator('.map-bubble .held-keys')).toContainText('type these more accurately: f, j');
-  await expect(page.locator('.map-bubble .bubble-actions .btn')).toHaveText('Own practice');
+  await expect(page.locator('.map-bubble .bubble-actions .btn')).toHaveText('Own typing');
 });
 
 test('a finished world opens its target range from the map', async ({ page }) => {

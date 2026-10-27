@@ -223,7 +223,7 @@ test('in the dark look every screen reads well', async ({ page }) => {
   await readable(page, 'mentors');
   await page.goto('./');
   await page.locator('.profile-card').first().click();
-  await page.locator('.map-side .btn', { hasText: 'Vlastné cvičenie' }).click();
+  await page.locator('.map-side .btn', { hasText: 'Vlastné písanie' }).click();
   await page.locator('.practice-keys-modal').waitFor();
   await readable(page, 'practice keys');
   await page.keyboard.press('Escape');

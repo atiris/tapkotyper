@@ -12,7 +12,9 @@
   [Parrot badge](../game/parrot.md) 7: 15 x 3 + 15 + 7 = 67), the parrots at home against the most
   ever at home (the parrot's head), and the stars (the best of every level) of the maximum (3 in
   each of the 75 levels: 225). The second row is the last 14 days: accuracy and speed in
-  characters per minute once something was typed, and the letters typed. Then one row per story (all stories, closed ones grey) with its picture and
+  characters per minute once something was typed, and the letters typed. The third row is the totals
+  since the start, so a replay never takes anything away: every parrot round won (two parrot heads)
+  and every star earned, replays included (a stack of stars). Under the heading "Príbehy" one row per story (all stories, closed ones grey) with its picture and
   name, its worlds' pictures (done in colour, the rest grey) and the stars earned in it, the
   shelf of world badges ("Odznaky svetov", [story](../game/story.md)) with the row of target
   range awards under it ("Ocenenia zo strelníc": every world's rare thing, found ones in

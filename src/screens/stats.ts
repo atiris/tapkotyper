@@ -111,7 +111,7 @@ function chip(pic: string | null, glyph: string, text: string, label: string): H
     pic ? h('img', { src: pic, alt: '' }) : h('span', { class: 'sum-glyph' }, glyph), h('b', {}, text));
 }
 
-/** The long-term picture in one row (mastered keys, finished stories and worlds, the chest's points, the parrots at home against their best count, the best stars of all levels), the last 14 days in the next (accuracy, speed, letters). */
+/** The long-term picture in one row (mastered keys, finished stories and worlds, the chest's points, the parrots at home against their best count, the best stars of all levels), the last 14 days in the next (accuracy, speed, letters), the totals ever in the third (parrot rounds won, stars earned). */
 export function summaryRow(p: Profile): HTMLElement {
   const m = masterySummary(p);
   const stories = STORIES.filter((x) => storyDone(p, x)).length;
@@ -129,7 +129,10 @@ export function summaryRow(p: Profile): HTMLElement {
   h('ul', { class: 'progress-sum' },
     recent.chars ? chip(imageUrl('ui-accuracy'), '✓', `${percent} %`, t('progress.quality', { n: percent })) : null,
     recent.cpm ? chip(imageUrl('ui-typing-speed'), '»', String(recent.cpm), t('progress.speed', { n: recent.cpm })) : null,
-    chip(imageUrl('ui-keys-typed'), 'Aa', String(recent.chars), t('progress.chars14', { n: recent.chars }))));
+    chip(imageUrl('ui-keys-typed'), 'Aa', String(recent.chars), t('progress.chars14', { n: recent.chars }))),
+  h('ul', { class: 'progress-sum' },
+    chip(imageUrl('ui-parrots-earned'), 'P', String(p.progress.parrotsEarned), t('progress.parrotsEarned', { n: p.progress.parrotsEarned })),
+    chip(imageUrl('ui-stars-earned'), '★', String(p.progress.starsEarned), t('progress.starsEarned', { n: p.progress.starsEarned }))));
 }
 
 /** Who a story is about, for its row. */
@@ -154,12 +157,13 @@ function storyRow(p: Profile, story: StoryDef): HTMLElement {
       h('b', {}, String(stars)), star ? h('img', { src: star, alt: '' }) : '★'));
 }
 
-/** The summary row, a row per story, the badge shelf and the range awards, and when the child last trained. */
+/** The summary rows, a row per story under their heading, the badge shelf and the range awards, and when the child last trained. */
 function progressSection(p: Profile): HTMLElement {
   const { daysAgo, weekMinutes } = lastTraining(p);
   const last = daysAgo === null ? t('progress.never') : daysAgo === 0 ? t('progress.lastToday') : daysAgo === 1 ? t('progress.lastYesterday') : t('progress.lastDays', { n: daysAgo });
   return h('section', { class: 'progress-view' },
     summaryRow(p),
+    h('div', { class: 'badge-shelf' }, h('h4', {}, t('progress.storiesTitle'))),
     ...STORIES.map((s) => storyRow(p, s)),
     h('div', { class: 'badge-shelf' }, h('h4', {}, t('progress.badges')),
       h('div', { class: 'badge-row' }, ...WORLDS.map((_, w) => badge(w, badgeTier(p, w), true)))),

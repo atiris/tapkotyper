@@ -137,6 +137,8 @@ export interface Progress {
   parrots: number[];
   /** Worlds whose parrot round was ever won, the parrot at home or flown away since. */
   parrotsWon: number[];
+  /** Parrot rounds won ever, every win counts (the parrot already at home too). */
+  parrotsEarned: number;
   /** Most parrots ever at home at once. */
   parrotBest: number;
   /** Local date of the last parrot round won, null before any. */

@@ -76,6 +76,7 @@ describe('parrot fly-away', () => {
     expect(p.progress.parrots).toContain(back);
     expect(p.progress.parrotFlown).not.toContain(back);
     expect(p.progress.parrotBest).toBe(5);
+    expect(p.progress.parrotsEarned).toBe(6);
     expect(p.progress.parrotWonAt).toBe('2026-10-23');
   });
 });

@@ -123,6 +123,7 @@ export function newProfile(name: string, language: LangRef, layout?: LayoutId, k
       rangeFinds: [],
       parrots: [],
       parrotsWon: [],
+      parrotsEarned: 0,
       parrotBest: 0,
       parrotWonAt: null,
       parrotCheckedAt: null,

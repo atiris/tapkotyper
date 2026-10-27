@@ -540,6 +540,11 @@ The same star with exactly the same shape, size, position and outline, but empty
 The left half of `ui-star.jpg` and the right half of `ui-star-empty.jpg` (same shape and outline, cut
 at the middle column), so it matches both to the pixel.
 
+### ui-stars-earned.png and ui-parrots-earned.png (the totals ever on My progress; made locally 2026-10-27, not by Gemini)
+Stacks of `ui-star.jpg` (three stars stepping back up right) and `ui-act-parrot-head.jpg` (two heads,
+the back one up right with its beak showing): each copy behind is smaller and a little darker, and a
+key-colored gap is cut around the copy in front of it, so the stack still reads at 32 px.
+
 ### ui-key.jpg (mastered keys chip in the stats; the owner replaced it 2026-10-23)
 ```
 Cute, soft 2D children's game icon, flat vector style with gentle gradients, soft dark-brown outline (not black), warm pastel palette, bold simple shapes that stay readable when very small. A single icon: one computer keyboard key, clearly recognizable as a key: a square key with rounded corners seen a little from above, a lighter cream square top surface with a slight dip, and darker peach sloping sides below it. The key top is completely empty: no letter, no symbol, no pattern. Centered, the whole icon visible, wide empty margin. No text, no letters, no numbers, no symbols, no watermark. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no other objects. Square image.

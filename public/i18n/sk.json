@@ -360,6 +360,20 @@
   },
   "surprise": {
     "ask": "Tajomstvo:",
+    "waitingTitle": "Prekvapenia, ktoré na teba čakajú",
+    "waitingTip": "Čakajú na teba prekvapenia",
+    "need": {
+      "minutesOne": "Potrebuješ {n} minútu tréningu (zatiaľ máš: {have}).",
+      "minutesFew": "Potrebuješ {n} minúty tréningu (zatiaľ máš: {have}).",
+      "minutesMany": "Potrebuješ {n} minút tréningu (zatiaľ máš: {have}).",
+      "levelsOne": "Potrebuješ {n} novú úroveň (už hotové: {have}).",
+      "levelsFew": "Potrebuješ {n} nové úrovne (už hotové: {have}).",
+      "levelsMany": "Potrebuješ {n} nových úrovní (už hotové: {have}).",
+      "starsOne": "Potrebuješ {n} novú hviezdičku (zatiaľ máš: {have}).",
+      "starsFew": "Potrebuješ {n} nové hviezdičky (zatiaľ máš: {have}).",
+      "starsMany": "Potrebuješ {n} nových hviezdičiek (zatiaľ máš: {have}).",
+      "level": "Potrebuješ zvládnuť úroveň {level} (ešte ti chýba: {left})."
+    },
     "left": {
       "minutes": "Ešte {n} min tréningu a tajomstvo sa dozvieš.",
       "levelsOne": "Ešte {n} úroveň a tajomstvo sa dozvieš.",

@@ -5,7 +5,7 @@ import { tapkoElement } from '../gfx/tapko';
 import { t, tList } from '../i18n/i18n';
 import { nickname } from '../storage/store';
 import { LEVELS, STORIES, type StoryDef, WORLDS, activityOf, aimOpen, aimWorld, isLevelReached, isWorldUnlocked, keysMissing, nextLevel, rescueUnlocked, storyOpen, worldLevels, worldLock } from '../game/levels';
-import { GUEST_ID, type Profile, SUPER_ID } from '../storage/schema';
+import { GUEST_ID, type Profile, SUPER_ID, type Surprise } from '../storage/schema';
 import { activeKeys, notReadyKeys } from '../learning/lessons';
 import { keyLabel } from '../ui/keyboard-guide';
 import { badgeTier } from '../game/rewards';
@@ -14,7 +14,7 @@ import { flyAway, hasParrotBadge } from '../game/parrots';
 import { localDate } from '../learning/stats';
 import { arrowFocus, button, closeButton, h, icon, modal } from '../ui/dom';
 import { surpriseAsk } from '../game/cards';
-import { surpriseAnnounced, surprisesWonIn } from '../game/own-content';
+import { TRIGGERS, surpriseAnnounced, surpriseCount, surprisesWonIn } from '../game/own-content';
 import { cornerControls, settingsButton } from '../ui/chrome';
 import { offerInstall } from '../ui/install';
 import { tipShown } from '../ui/tooltip';
@@ -146,7 +146,7 @@ export function mapScreen(root: HTMLElement): () => void {
     h('main', { class: 'map-body' },
       h('aside', { class: 'map-side' },
         h('h2', { class: 'map-hello' }, t('map.hello', { name: nickname(p) })),
-        h('div', { class: `map-hero ${aro ? 'with-aro' : ''}` }, aro?.el ?? null, tapko),
+        h('div', { class: `map-hero ${aro ? 'with-aro' : ''}` }, aro?.el ?? null, tapko, surprisesWaiting(p)),
         bubble,
         taskCard(p),
         button(t('map.warmUp'), () => openBreak(start), 'btn', 'wave'),
@@ -225,6 +225,37 @@ function parrotNode(p: Profile, open: boolean, world: number): HTMLElement {
     'aria-label': `${t('parrot.title')}${home ? `, ${t('map.parrotHome')}` : ''}`, tip: sideTip(open, 'map.parrotTip'),
     onClick: () => go('level', { id: 'parrot', world }),
   }, pic ? h('img', { class: 'level-act', src: pic, alt: '' }) : icon('star', 'icon'));
+}
+
+/** Story levels still to finish up to the level `id`, counted from the next one (at least that level itself). */
+function levelsToGo(p: Profile, id: string): number {
+  const next = nextLevel(p);
+  return Math.max(1, next ? LEVELS.findIndex((l) => l.id === id) - LEVELS.indexOf(next) + 1 : 1);
+}
+
+/** What a waiting surprise still needs, with what the child has so far. */
+function surpriseNeed(p: Profile, s: Surprise): string {
+  if (s.trigger === 'level') {
+    const l = LEVELS.find((x) => x.id === s.level);
+    return t('surprise.need.level', { level: l ? levelTitleWords(l.world, l.index) : '', left: levelsToGo(p, s.level ?? '') });
+  }
+  const { have, need } = surpriseCount(p, s);
+  return t(`surprise.need.${s.trigger}${need === 1 ? 'One' : need < 5 ? 'Few' : 'Many'}`, { n: need, have });
+}
+
+/**
+ * A closed golden box beside Tapko while surprises wait (also those not tied to a level, which
+ * the map shows nowhere else); a click lists their questions with what each still needs. Null without any.
+ */
+function surprisesWaiting(p: Profile): HTMLElement | null {
+  const waiting = p.surprises.filter((s) => !s.doneAt).sort((a, b) => TRIGGERS.indexOf(a.trigger) - TRIGGERS.indexOf(b.trigger));
+  if (!waiting.length) return null;
+  const pic = imageUrl('ui-surprise');
+  const show = () => modal(h('div', { class: 'surprises-won' },
+    h('h2', {}, t('surprise.waitingTitle')),
+    ...waiting.map((s) => h('div', { class: 'surprise-result' }, surpriseAsk(s.q), h('p', { class: 'surprise left' }, surpriseNeed(p, s))))), { cls: 'surprises-modal' });
+  return h('button', { class: 'surprises-waiting', type: 'button', 'aria-label': t('surprise.waitingTitle'), tip: t('surprise.waitingTip'), onClick: show },
+    pic ? h('img', { src: pic, alt: '' }) : icon('star'));
 }
 
 /** The surprises told in the world's story levels: an open golden box at the island's top left; a click lists them. Null without any. */

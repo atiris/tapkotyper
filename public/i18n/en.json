@@ -359,6 +359,20 @@
     }
   },
   "surprise": {
+    "waitingTitle": "Surprises waiting for you",
+    "waitingTip": "Surprises are waiting for you",
+    "need": {
+      "minutesOne": "You need {n} minute of training (so far: {have}).",
+      "minutesFew": "You need {n} minutes of training (so far: {have}).",
+      "minutesMany": "You need {n} minutes of training (so far: {have}).",
+      "levelsOne": "You need {n} new level (done: {have}).",
+      "levelsFew": "You need {n} new levels (done: {have}).",
+      "levelsMany": "You need {n} new levels (done: {have}).",
+      "starsOne": "You need {n} new star (so far: {have}).",
+      "starsFew": "You need {n} new stars (so far: {have}).",
+      "starsMany": "You need {n} new stars (so far: {have}).",
+      "level": "You need to finish the level {level} (still to go: {left})."
+    },
     "ask": "A secret:",
     "left": {
       "minutes": "{n} more min of training and you will find out.",

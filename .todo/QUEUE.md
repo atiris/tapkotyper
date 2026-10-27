@@ -9,3 +9,4 @@ skipped, and the session that finishes a plan removes its line.
 - [P1] 73-progress-bubbles-results-peek.md - global fixes (fair progress share, background drift) that 74 and 75 use
 - [P2] 74-space-world-polish.md - after 73: the rocket approaches by its fair share and the belts drift
 - [P2] 75-meadow-poppies-and-polish.md - after 73: uses the background drift; pictures already made
+- [P3] 76-half-stars-in-results.md - independent and small; results card only

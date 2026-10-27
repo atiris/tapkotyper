@@ -1231,6 +1231,15 @@
     },
     "repeat": "Repeat",
     "announce": "Show on the map ahead",
+    "showDays": "On the map after it is won",
+    "showDaysHint": "How long a won surprise stays on the map by the world where it was won: the day it is won and this many days more. With 1 day, a child who wins it on Wednesday evening still sees it all Thursday. After that the map no longer shows it.",
+    "days": {
+      "today": "only the day it is won",
+      "one": "the day it is won and {n} more day",
+      "few": "the day it is won and {n} more days",
+      "many": "the day it is won and {n} more days",
+      "forever": "for ever"
+    },
     "add": "Add",
     "save": "Save",
     "cancel": "Cancel",

@@ -23,7 +23,11 @@ export function counterOf(p: Profile, trigger: SurpriseTrigger): number {
 }
 
 /** A new rule, counting from now. */
-export function newSurprise(p: Profile, rule: Pick<Surprise, 'q' | 'a' | 'trigger' | 'n' | 'level' | 'repeat' | 'announce'>): Surprise {
+/** How long a told surprise stays on the map by default, and at most when not for ever: days after the day it was told. */
+export const SHOW_DAYS = 1;
+export const SHOW_DAYS_MAX = 15;
+
+export function newSurprise(p: Profile, rule: Pick<Surprise, 'q' | 'a' | 'trigger' | 'n' | 'level' | 'repeat' | 'announce' | 'showDays'>): Surprise {
   const id = Math.random().toString(36).slice(2, 8) + Date.now().toString(36);
   return { id, ...rule, createdAt: Date.now(), progressFrom: counterOf(p, rule.trigger) };
 }
@@ -68,9 +72,22 @@ export function surpriseAnnounced(p: Profile, levelId: string): boolean {
   return p.surprises.some((s) => s.announce && s.trigger === 'level' && s.level === levelId && !s.doneAt);
 }
 
-/** Surprises told in a story level of the world (deleted ones are gone). */
-export function surprisesWonIn(p: Profile, world: number): Surprise[] {
-  return p.surprises.filter((s) => s.worlds?.includes(world));
+/** Whole days from one local date (YYYY-MM-DD) to another. */
+function daysBetween(from: string, to: string): number {
+  const day = (d: string) => Date.UTC(+d.slice(0, 4), +d.slice(5, 7) - 1, +d.slice(8, 10));
+  return Math.round((day(to) - day(from)) / 86_400_000);
+}
+
+/**
+ * Surprises told in a story level of the world that the map still shows `today`: on the day of the
+ * last telling and the surprise's days after it (deleted ones are gone).
+ */
+export function surprisesWonIn(p: Profile, world: number, today = localDate()): Surprise[] {
+  return p.surprises.filter((s) => {
+    if (!s.worlds?.includes(world)) return false;
+    const days = s.showDays ?? SHOW_DAYS;
+    return days === 'forever' || !s.lastShownAt || daysBetween(s.lastShownAt, today) <= days;
+  });
 }
 
 /** A story level of the world told the answer. */

@@ -134,4 +134,14 @@ describe('surprise rules', () => {
     p.surprises = [];
     expect(surprisesWonIn(p, 0)).toEqual([]);
   });
+
+  it('a told surprise stays on the map the day it was told and its days after, or for ever', () => {
+    const p = newProfile('Ema', 'sk');
+    const told = (showDays?: Surprise['showDays']) => rule(p, 'level', { worlds: [0], lastShownAt: '2026-10-28', showDays });
+    const byDefault = told(), sameDay = told(0), always = told('forever'), week = told(7);
+    expect(surprisesWonIn(p, 0, '2026-10-28')).toEqual([byDefault, sameDay, always, week]);
+    expect(surprisesWonIn(p, 0, '2026-10-29')).toEqual([byDefault, always, week]);
+    expect(surprisesWonIn(p, 0, '2026-10-30')).toEqual([always, week]);
+    expect(surprisesWonIn(p, 0, '2026-11-05')).toEqual([always]);
+  });
 });

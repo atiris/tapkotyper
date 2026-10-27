@@ -169,6 +169,8 @@ export interface Surprise {
   announce?: boolean;
   /** Worlds whose story levels told the answer; the map keeps it there under an open box. */
   worlds?: number[];
+  /** Days after the day it was told that the map still shows it there (0: that day only); missing: 1. */
+  showDays?: number | 'forever';
   /** Count again after the reveal (or fire on every finish of the level, or go back to the pool). */
   repeat: boolean;
   createdAt: number;

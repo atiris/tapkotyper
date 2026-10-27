@@ -3,7 +3,7 @@ import { langOptions, locale, t } from '../i18n/i18n';
 import { ownLangs, ownRef } from '../i18n/own-langs';
 import { ENTER, LAYOUTS, LAYOUT_IDS, allKeys } from '../keyboard/layouts';
 import { LEVELS, type LevelDef, WORLDS } from '../game/levels';
-import { SURPRISES_MAX, SURPRISE_LEN, SURPRISE_N_MAX, TRIGGERS, newSurprise, restartSurprise, surpriseCount } from '../game/own-content';
+import { SHOW_DAYS, SHOW_DAYS_MAX, SURPRISES_MAX, SURPRISE_LEN, SURPRISE_N_MAX, TRIGGERS, newSurprise, restartSurprise, surpriseCount } from '../game/own-content';
 import { wordSource } from '../game/runtime';
 import { lessonKeyOf, lessonOrder, punctuationKeys } from '../learning/lessons';
 import { COMPANION_KINDS, GUEST_ID, SUPER_ID, type FontChoice, type LangRef, type LayoutId, type OwnMix, type ParentLock, type Profile, type Surprise, type SurpriseTrigger, type TaskKind } from '../storage/schema';
@@ -316,6 +316,10 @@ function surprisesTab(p: Profile): HTMLElement {
   const repeat = check(false, () => undefined);
   const announce = check(false, () => undefined);
   const announceField = switchField(t('surprises.announce'), announce);
+  const dayName = (d: number) => (d === 0 ? t('surprises.days.today') : t(d === 1 ? 'surprises.days.one' : d < 5 ? 'surprises.days.few' : 'surprises.days.many', { n: d }));
+  const showDays = select<string>(String(SHOW_DAYS), [
+    ...Array.from({ length: SHOW_DAYS_MAX + 1 }, (_, d): [string, string] => [String(d), dayName(d)]),
+    ['forever', t('surprises.days.forever')]], () => undefined);
   const levelField = field(t('surprises.level'), level);
   const nLabel = h('span', { class: 'field-label' });
   const nField = h('label', { class: 'field' }, nLabel, n);
@@ -341,6 +345,7 @@ function surprisesTab(p: Profile): HTMLElement {
     n.value = '10';
     repeat.checked = false;
     announce.checked = false;
+    showDays.value = String(SHOW_DAYS);
     saveLabel.textContent = t('surprises.add');
     cancel.hidden = true;
     msg.textContent = '';
@@ -355,6 +360,7 @@ function surprisesTab(p: Profile): HTMLElement {
     n.value = String(s.n ?? 10);
     repeat.checked = s.repeat;
     announce.checked = !!s.announce;
+    showDays.value = String(s.showDays ?? SHOW_DAYS);
     saveLabel.textContent = t('surprises.save');
     cancel.hidden = false;
     msg.textContent = '';
@@ -374,6 +380,7 @@ function surprisesTab(p: Profile): HTMLElement {
       n: counts ? count : undefined,
       level: tr === 'level' ? level.value : undefined,
       announce: tr === 'level' ? announce.checked : undefined,
+      showDays: showDays.value === 'forever' ? 'forever' as const : Number(showDays.value),
     };
     if (editing) {
       const s = editing;
@@ -417,6 +424,7 @@ function surprisesTab(p: Profile): HTMLElement {
       h('div', { class: 'row' }, field(t('surprises.whenLabel'), trigger), levelField, nField,
         switchField(t('surprises.repeat'), repeat),
         announceField,
+        field(t('surprises.showDays'), showDays, t('surprises.showDaysHint')),
         h('div', { class: 'surprise-actions' }, save, cancel)),
       msg));
 }

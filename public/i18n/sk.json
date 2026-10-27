@@ -1231,6 +1231,15 @@
     },
     "repeat": "Opakovať",
     "announce": "Ukázať na mape vopred",
+    "showDays": "Na mape po získaní",
+    "showDaysHint": "Ako dlho ostane získané prekvapenie na mape pri svete, kde sa získalo: v deň získania a ešte toľko ďalších dní. Pri 1 dni ho dieťa, ktoré ho získa v stredu večer, vidí ešte celý štvrtok. Potom sa na mape už neukáže.",
+    "days": {
+      "today": "len v deň získania",
+      "one": "v deň získania a ešte {n} deň",
+      "few": "v deň získania a ešte {n} dni",
+      "many": "v deň získania a ešte {n} dní",
+      "forever": "navždy"
+    },
     "add": "Pridať",
     "save": "Uložiť",
     "cancel": "Zrušiť",

@@ -1263,6 +1263,7 @@
     "play": [
       "Type the word on the object. Then it clears the way.",
       "When a word gets away, nothing bad happens. Another one comes.",
+      "Started typing a word you did not want? **Backspace** wipes it and you can start any word again.",
       "Stars come from **accuracy**: the fewer mistakes, the more stars.",
       "When you type well, new letters come.",
       "**Esc** stops the game and another Esc lets it go on."

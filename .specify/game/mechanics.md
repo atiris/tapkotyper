@@ -4,6 +4,8 @@
 - Targets (creatures, rocks, signs) carry a word. Typing its first letter locks onto it,
   further letters fill it in, and completing the word resolves the target peacefully.
 - A wrong letter never unlocks the target or resets progress on the word.
+- Backspace wipes the started word and lets go of it, so the child who started the wrong one
+  of several words can start any of them again. It is no mistake and costs nothing.
 - Target speed and count follow difficulty (1-10) and the child's word pace, so the game
   stays calm for slow typists. The word pace is the time from a word appearing to its last
   letter, per letter, over the last five words the child typed: reading the word and

@@ -1263,6 +1263,7 @@
     "play": [
       "Napíš slovo, ktoré je na predmete. Potom ti uvoľní cestu.",
       "Keď ti slovo ujde, nič zlé sa nestane. Príde ďalšie.",
+      "Začal si písať iné slovo, než si chcel? **Backspace** ho zmaže a môžeš začať písať ktorékoľvek slovo odznova.",
       "Hviezdičky dostaneš za **presnosť**: čím menej chýb, tým viac hviezdičiek.",
       "Keď píšeš dobre, prídu nové písmenká.",
       "**Esc** hru zastaví a ďalší Esc ju pustí ďalej."

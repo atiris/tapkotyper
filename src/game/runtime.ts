@@ -487,7 +487,7 @@ export class LevelRuntime {
       onRaw: (code, key, shift) => this.onRaw(code, key, shift),
       // A target waiting for Enter takes it; else the Enter that closed a card just before play is not a call for the paw.
       onEnter: () => (this.free ? this.freeSend() : this.waitsEnter ? this.typeEnter() : performance.now() - this.begunAt >= ENTER_GUARD_MS && (this.modeEnter() || this.startPaws())),
-      onBackspace: () => { if (this.free) this.freeErase(); },
+      onBackspace: () => (this.free ? this.freeErase() : this.restartTarget()),
       // A pause or a dialog: the keys belong to its buttons.
       idle: () => this.paused || !!document.querySelector('.modal-back'),
     };
@@ -648,6 +648,12 @@ export class LevelRuntime {
         this.mode.onCorrect(res.target);
       }
     }
+    this.updateGuide();
+  }
+
+  /** Backspace in a level: the started word is wiped and the child may start any word again. */
+  private restartTarget(): void {
+    if (!this.started || this.paused || this.finished || this.pawWords || !this.core.restart()) return;
     this.updateGuide();
   }
 

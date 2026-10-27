@@ -36,6 +36,20 @@ describe('TypingCore', () => {
     expect(t.errors).toBe(1);
   });
 
+  it('backspace wipes the started word and lets another one start', () => {
+    const c = new TypingCore();
+    const ja = c.add('ja');
+    const dom = c.add('dom');
+    c.type('j');
+    expect(c.restart()).toBe(true);
+    expect(ja.typed).toBe(0);
+    expect(c.locked).toBeNull();
+    expect(c.type('d').kind).toBe('ok');
+    expect(c.locked).toBe(dom);
+    expect(c.restart()).toBe(true);
+    expect(c.restart()).toBe(false);
+  });
+
   it('picks the most urgent target when first letters match', () => {
     const c = new TypingCore();
     const far = c.add('ja');

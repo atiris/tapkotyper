@@ -119,6 +119,15 @@ export class TypingCore {
     if (this.locked === t) this.locked = null;
   }
 
+  /** Backspace: the started target forgets its letters and lets go, so any target can be started again. */
+  restart(): boolean {
+    const t = this.locked;
+    if (!t) return false;
+    t.typed = 0;
+    this.locked = null;
+    return true;
+  }
+
   /** Removes finished and gone targets from the list. */
   prune(keep: (t: Target) => boolean = () => false): void {
     this.targets = this.targets.filter((t) => (!t.done && !t.gone) || keep(t));

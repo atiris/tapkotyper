@@ -1,6 +1,7 @@
 import { audio } from '../audio/audio';
 import { t, tMap } from '../i18n/i18n';
-import { type Layout, homeKey } from '../keyboard/layouts';
+import { type Layout, enterAfter, homeKey } from '../keyboard/layouts';
+import { layout } from '../app/app';
 import type { Profile, Surprise } from '../storage/schema';
 import { surpriseCount } from './own-content';
 import type { Style } from './typing';
@@ -71,6 +72,11 @@ function fitsStyle(id: string, style: Style): boolean {
   return style === 'copy' ? !own : style === 'mixed' ? !!own : own === style;
 }
 
+/** The right little finger's home key of the player's layout, as printed on it (Ô, or ; on US keyboards). */
+export function homePinky(): string {
+  return enterAfter(layout()).toUpperCase();
+}
+
 /** One random preparation tip for a run of this style, never one of the last five shown. */
 export function pickTip(p: Profile, style: Style = 'copy'): { id: string; text: string } | null {
   const tips = tMap('tips');
@@ -79,7 +85,7 @@ export function pickTip(p: Profile, style: Style = 'copy'): { id: string; text: 
   const fresh = ids.filter((id) => !p.progress.lastTips.includes(id));
   const id = (fresh.length ? fresh : ids)[Math.floor(Math.random() * (fresh.length || ids.length))];
   p.progress.lastTips = [...p.progress.lastTips, id].slice(-5);
-  return { id, text: tips[id] };
+  return { id, text: t(`tips.${id}`, { pinky: homePinky() }) };
 }
 
 const POSTURE_TIPS = ['back', 'feet', 'wrists', 'home', 'eyes'];

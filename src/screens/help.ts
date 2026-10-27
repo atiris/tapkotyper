@@ -1,6 +1,6 @@
 import { app, go, routeOf } from '../app/app';
 import { t, tList } from '../i18n/i18n';
-import { captureKeys } from '../game/cards';
+import { captureKeys, homePinky } from '../game/cards';
 import { PAW_MAX, PAW_STREAK, PAW_WORDS } from '../game/paw';
 import { type Child, ICONS, button, h, icon, richText } from '../ui/dom';
 import { levelRing, pawRing, rhythmPic, roundPic, timerPic } from '../ui/hud';
@@ -77,7 +77,7 @@ function section(title: string, ...kids: Child[]): HTMLElement {
   return h('section', { class: 'help-section' }, h('h2', {}, title), ...kids);
 }
 
-const list = (key: string) => h('ul', {}, ...tList(key).map((l) => h('li', {}, ...richText(l))));
+const list = (key: string, params?: Record<string, string>) => h('ul', {}, ...tList(key, params).map((l) => h('li', {}, ...richText(l))));
 
 /** A list item of `line` with `{mark}` replaced by `link`. */
 function linkedItem(line: string, mark: string, link: () => HTMLElement): HTMLElement {
@@ -141,7 +141,7 @@ function tabContent(tab: HelpTab, now: Child[] = []): HTMLElement[] {
     ];
     case 'typing': return [
       ...(now.length ? [section(t('level.helpNow'), ...now)] : []),
-      section(t('help.typeTitle'), list('help.type')),
+      section(t('help.typeTitle'), list('help.type', { pinky: homePinky() })),
     ];
     case 'progress': return [
       section(t('help.journeyTitle'), list('help.journey')),

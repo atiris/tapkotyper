@@ -38,21 +38,28 @@ Source: owner request 2026-10-27 ("svet Raketa nemá odporúčané rozdelenie le
   (`obj-rocket`, mirrored to face him) glides in from the right and stops beside his
   meteor; he jumps into its window (reuse the window position from `space.ts`), the rocket
   shows `obj-rocket-pilot` and flies off to the right; `finished` after that (about 2.5 s).
-- Meteor pictures: `obj-asteroid-big` / `obj-asteroid-small` / `obj-rock-falling-1`,
-  random, some mirrored, a slow wobble (rot ±0.05). Size about 150 so a boot fits on top.
+- Meteor pictures: `obj-asteroid-big` / `obj-asteroid-small` (the falling rock's tail is no
+  place to stand), some mirrored, a slow wobble (rot ±0.05). Size about 150 so a boot fits on top.
 - Opening line `story.hopStart`: "Raketa odletela kúsok ďalej. Skáč po meteoritoch, kým k
   nej nedoskáčeš!" / "The rocket drifted a bit away. Hop across the meteors until you reach
   it!"
 - Reduced motion: the jump and the glide are instant.
 
 ## Steps
-- [ ] 1. Levels: new kinds `hop` and `command` in `LevelKind`, the world 1 list above (3 and 4
+- [x] 1. Levels: new kinds `hop` and `command` in `LevelKind`, the world 1 list above (3 and 4
       on `'mix'` until 71 and 72), calm and copy kind lists for `activityOf` and `minActiveS`;
       update `levels.test.ts` where it pins kinds.
-- [ ] 2. `HopMode` in `src/game/modes/space-calm.ts` with the mechanics and the end above,
+- [x] 2. `HopMode` in `src/game/modes/space-calm.ts` with the mechanics and the end above,
       registered in `modes.ts`; `idle.test.ts` lists it.
-- [ ] 3. Strings `story.hopStart` (sk, en, guide).
-- [ ] 4. Spec: story.md (the five levels of the rocket world), mechanics.md (world rhythm for
+- [x] 3. Strings `story.hopStart` (sk, en, guide).
+- [x] 4. Spec: story.md (the five levels of the rocket world), mechanics.md (world rhythm for
       the meadow and the rocket world).
-- [ ] 5. Play `w2-2` with `?fast` in the browser: the jump, the glide, the end with the rocket;
+- [x] 5. Play `w2-2` with `?fast` in the browser: the jump, the glide, the end with the rocket;
       check there is no fallback flash and no word on a meteor still sliding in.
+
+## Done - 2026-10-27
+- Shipped: world 1 levels `space`, `hop`, `space` (mix), `space` (mix), `asteroid`; calm kinds
+  share the calm length and the waiting-words icon; `HopMode` in `space-calm.ts` with the jump,
+  the gliding view, meteors left behind drifting away and the rocket's arrival (glass over its
+  empty window, shared as `windowGlass`), boarding and flight; `story.hopStart`; spec.
+- Levels 3 and 4 stay on `mix` until plans 71 and 72.

@@ -20,9 +20,9 @@ const COLORS: Record<string, string> = {
   'obj-planet-1': '#f5b06b', 'obj-planet-2': '#8ec5f0', 'obj-planet-3': '#b79be0', 'obj-planet-4': '#c3a6ec', 'obj-planet-5': '#b6b0f0',
 };
 const ROCKET_X = 150;
-const ROCKET_H = 120;
+export const ROCKET_H = 120;
 /** The round window of the rocket picture: its centre from the rocket's centre and the glass radius. */
-const WINDOW = { x: 39, y: -1, r: 18 };
+export const WINDOW = { x: 39, y: -1, r: 18 };
 /** Tapko's size in the window. */
 const SEAT_SIZE = 44;
 /** Seconds of the suit-up: his things fade away, the suit grows up from the boots, the helmet comes down. */
@@ -73,7 +73,7 @@ function astronautFallback(g: G, s: number, helmet: boolean): void {
  * Draws the astronaut in the companion template's square, like drawTapko: (x, y) between the feet.
  * Only the rows `from`..`to` (shares of the height) are drawn, for the suit growing and the helmet coming down.
  */
-function drawAstronaut(g: G, helmet: boolean, x: number, y: number, size: number, from = 0, to = 1, alpha = 1): void {
+export function drawAstronaut(g: G, helmet: boolean, x: number, y: number, size: number, from = 0, to = 1, alpha = 1): void {
   if (alpha <= 0 || to <= from) return;
   g.save();
   g.globalAlpha *= alpha;
@@ -85,6 +85,17 @@ function drawAstronaut(g: G, helmet: boolean, x: number, y: number, size: number
   if (img) g.drawImage(img, 0, 0, size, size);
   else astronautFallback(g, size, helmet);
   g.restore();
+}
+
+/** Glass over the empty rocket picture's window, centred at (x, y). */
+export function windowGlass(g: G, x: number, y: number): void {
+  g.beginPath();
+  g.arc(x, y, WINDOW.r, 0, Math.PI * 2);
+  const glass = g.createRadialGradient(x - 5, y - 6, 2, x, y, WINDOW.r);
+  glass.addColorStop(0, '#d9f6fa');
+  glass.addColorStop(1, '#86cbd8');
+  g.fillStyle = glass;
+  g.fill();
 }
 
 /**
@@ -255,13 +266,7 @@ export class SpaceMode extends ApproachMode {
       g.globalAlpha *= 1 - inside;
       drawSprite(g, 'obj-rocket', rx, ry, ROCKET_H, { rot }, blob('#e5534b'));
       const w = this.window();
-      g.beginPath();
-      g.arc(w.x, w.y, WINDOW.r, 0, Math.PI * 2);
-      const glass = g.createRadialGradient(w.x - 5, w.y - 6, 2, w.x, w.y, WINDOW.r);
-      glass.addColorStop(0, '#d9f6fa');
-      glass.addColorStop(1, '#86cbd8');
-      g.fillStyle = glass;
-      g.fill();
+      windowGlass(g, w.x, w.y);
       g.restore();
     }
     if (inside <= 0) return;

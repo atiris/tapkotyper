@@ -46,7 +46,7 @@
   typed fewer than 5 keys (the paw did the rest) says so, gives one star, never
   lowers a better result and adds no time toward automatic growth. Esc on the end screen
   goes back to the map, like closing any other card.
-- **World rhythm** (the meadow so far): the levels of a world have fixed roles, so one
+- **World rhythm** (the meadow and the rocket world so far): the levels of a world have fixed roles, so one
   session (about one world) goes up and down instead of repeating one game: 1 the world's
   main game, gently; 2 a calm step; 3 the main game, harder, with one short surprise; 4 a
   twist; 5 the super-obstacle. Each level dot on the map shows the icon of its activity
@@ -61,7 +61,8 @@
   - *Waiting words* (calm step): still objects carry short words (2 letters in the meadow),
     each starting with another letter, so the first key picks the word and every later key
     is measured against the key it should be; a key that starts no word counts only in the
-    level's accuracy. New words keep coming until the minimum time is played. Nothing moves
+    level's accuracy (in the rocket world the meteors the astronaut hops across carry words of
+    up to 4 letters). New words keep coming until the minimum time is played. Nothing moves
     toward the child and nothing is missed. A calm step lasts at least 1 minute of
     active play, not 2.
   - *Copy* (twist, a clean line): a row of 3 to 4 words typed from left to right. A slip turns the

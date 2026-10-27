@@ -47,7 +47,11 @@ gives you a wreath"), never about the character as someone else.
    look alike. The space keeps the child's pace: a second after the last key (longer than a
    pause between words) everything eases down within about half a second (the things flying in
    take longer to arrive, the speedometer sinks with them) and speeds up gently with the next
-   keys; no change jumps. The near rocks drift at half the usual near-layer speed.
+   keys; no change jumps. The levels follow the world rhythm: 1 the stream of rocks; 2 the calm
+   step, the astronaut hops from meteor to meteor (each with a short word) and the view glides
+   after him, meteors left behind drift away, and at the end the rocket comes for him, he jumps
+   into its window and it flies off; 3 and 4 the stream again; 5 the super-obstacle. The near
+   rocks drift at half the usual near-layer speed.
    Super-obstacle: fractured asteroid.
    Reward: landing clearance.
 3. **New Planet** - typing builds stepping stones across a swamp and picks the right path

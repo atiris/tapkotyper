@@ -20,6 +20,7 @@ const { NotesMode, TreeSongMode } = await import('./musictree');
 const { RainMode, StormMode } = await import('./raintown');
 const { RoomsMode, WelcomeMode } = await import('./robohome');
 const { AsteroidMode, SpaceMode } = await import('./space');
+const { HopMode } = await import('./space-calm');
 const { BatteryMode, BeltMode } = await import('./workshop');
 const { BoulderMode, SignsMode, SwampMode } = await import('./planet');
 const { DoorsMode, GateMode } = await import('./robocity');
@@ -56,7 +57,7 @@ function fakeRuntime(count = 4): LevelRuntime {
 }
 
 const MODES: [string, new (L: LevelRuntime) => Mode][] = [
-  ['meadow', MeadowMode], ['dewdrops', DewdropsMode], ['invitation', InvitationMode], ['hedgehog', HedgehogMode], ['space', SpaceMode], ['asteroid', AsteroidMode],
+  ['meadow', MeadowMode], ['dewdrops', DewdropsMode], ['invitation', InvitationMode], ['hedgehog', HedgehogMode], ['space', SpaceMode], ['hop', HopMode], ['asteroid', AsteroidMode],
   ['swamp', SwampMode], ['signs', SignsMode], ['boulder', BoulderMode], ['shield', ShieldMode], ['wave', WaveMode],
   ['slope', SlopeMode], ['mole', MoleMode], ['junk', JunkMode], ['knot', KnotMode], ['belt', BeltMode],
   ['battery', BatteryMode], ['rain', RainMode], ['storm', StormMode], ['doors', DoorsMode], ['gate', GateMode],

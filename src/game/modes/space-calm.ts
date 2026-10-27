@@ -1,0 +1,239 @@
+import { pickLine } from '../../app/app';
+import { VH } from '../../engine/loop';
+import { ease } from '../../engine/tween';
+import { blob, drawSprite, type G } from '../../gfx/draw';
+import { Mode } from '../mode';
+import type { Target } from '../typing';
+import { ROCKET_H, WINDOW, drawAstronaut, windowGlass } from './space';
+
+const PICTURES = ['obj-asteroid-big', 'obj-asteroid-small', 'obj-rocket', 'obj-rocket-pilot', 'tapko-astronaut'];
+/** Round meteors to stand on (the falling rock with its tail is no place to stand). */
+const ROCKS = ['obj-asteroid-big', 'obj-asteroid-small'];
+/** Where the astronaut stands on the screen, and his size. */
+const HOME_X = 260;
+const ASTRONAUT = 150;
+const ROCK_SIZE = 150;
+/** Meteors with a word at once (each starts with another letter), the pause before a new one, and the screen shares they come to. */
+const ROCKS_AT_ONCE = 3;
+const ROCK_PAUSE = 0.6;
+const SLOTS = [0.48, 0.67, 0.86];
+/** Seconds of a meteor drifting in from the right edge, of a jump and of the view gliding after it. */
+const DRIFT = 0.8;
+const JUMP = 0.7;
+const GLIDE = 0.9;
+/** Seconds of the end: the rocket comes, he jumps into its window, it flies away. */
+const ROCKET_COME = 1.4;
+const ROCKET_BOARD = 0.8;
+const ROCKET_AWAY = 1.2;
+
+interface Rock {
+  /** Place in the scene; the screen shows it at x - view. */
+  x: number;
+  y: number;
+  sprite: string;
+  flip: boolean;
+  /** Seconds since it came, and since it drifted off (-1: still here). */
+  age: number;
+  off: number;
+  tg: Target | null;
+}
+
+/**
+ * The rocket world's calm step: still meteors carry short words, each starting with another
+ * letter. A typed word sends the suited astronaut jumping onto its meteor, and the view glides
+ * after him; meteors left behind drift away. At the end the rocket comes for him, he jumps into
+ * its window and it flies off.
+ */
+export class HopMode extends Mode {
+  readonly pictures = PICTURES;
+  readonly world = 'space';
+  private rocks: Rock[] = [];
+  /** The meteor he stands on (from the first frame on, also before play), and the jump from it to the next one. */
+  private stand: Rock = this.rock(HOME_X, VH * 0.66, null, DRIFT);
+  private jump: { from: Rock; to: Rock; k: number } | null = null;
+  /** The scene's left edge on the screen, and where it glides to. */
+  private view = 0;
+  private viewFrom = 0;
+  private viewTo = 0;
+  private glide = 1;
+  private spawned = 0;
+  private done = 0;
+  private wait = 0.5;
+  /** Seconds of the end; null before it. */
+  private end: number | null = null;
+
+  startLine(): string {
+    return pickLine('story.hopStart');
+  }
+
+  private rock(x: number, y: number, tg: Target | null, age = 0): Rock {
+    const r: Rock = { x, y, sprite: this.L.rng.pick(ROCKS), flip: this.L.rng.chance(0.5), age, off: -1, tg };
+    this.rocks.push(r);
+    return r;
+  }
+
+  /** Feet of the astronaut on a meteor, on the screen. */
+  private top(r: Rock): { x: number; y: number } {
+    return { x: r.x - this.view, y: r.y - ROCK_SIZE * 0.32 + Math.sin(this.t * 1.4 + r.x) * 4 };
+  }
+
+  update(dt: number): void {
+    for (const r of this.rocks) {
+      r.age += dt;
+      if (r.off >= 0) r.off += dt;
+      if (r.tg) {
+        r.tg.selectable = r.age >= DRIFT;
+        r.tg.urgency = r.age;
+      }
+    }
+    this.rocks = this.rocks.filter((r) => r.off < 1.5 && r.x - this.view > -300);
+    if (this.glide < 1) {
+      this.glide = this.L.reduceMotion ? 1 : Math.min(1, this.glide + dt / GLIDE);
+      this.view = this.viewFrom + (this.viewTo - this.viewFrom) * ease.inOutQuad(this.glide);
+      this.scroll = this.view;
+    }
+    if (this.jump) {
+      const j = this.jump;
+      j.k = this.L.reduceMotion ? 1 : Math.min(1, j.k + dt / JUMP);
+      if (j.k >= 1) this.land(j.to);
+    }
+    if (this.end !== null) {
+      this.end += dt;
+      return;
+    }
+    if (this.done >= this.L.count && !this.jump && this.glide >= 1) return this.finish();
+    this.wait -= dt;
+    const waiting = this.rocks.filter((r) => r.tg && r.off < 0);
+    if (this.wait > 0 || this.jump || this.glide < 1 || waiting.length >= ROCKS_AT_ONCE || this.spawned >= this.L.count) return;
+    const free = SLOTS.map((s) => this.view + this.L.vw * s).filter((x) => !this.rocks.some((r) => r.off < 0 && Math.abs(r.x - x) < 120));
+    if (!free.length) return;
+    const word = this.L.word(4, 1);
+    // Every waiting word starts with its own letter, so the first key picks the meteor.
+    if (this.L.core.active.some((t) => t.word[0] === word[0])) {
+      this.wait = 0.2;
+      return;
+    }
+    this.rock(this.L.rng.pick(free), this.L.rng.range(VH * 0.38, VH * 0.72), this.L.core.add(word, {}, false));
+    this.spawned++;
+    this.wait = 0.4;
+  }
+
+  onDone(tg: Target): void {
+    const to = this.rocks.find((r) => r.tg === tg);
+    if (!to) return;
+    to.tg = null;
+    this.done++;
+    this.L.core.prune();
+    this.L.sfx('whoosh');
+    this.jump = { from: this.stand, to, k: 0 };
+  }
+
+  /** He stands on the meteor; the view glides so it is back on the left, and the meteors left behind drift away. */
+  private land(r: Rock): void {
+    this.jump = null;
+    this.stand = r;
+    this.L.sfx('pop');
+    const feet = this.top(r);
+    this.L.particles.emit(feet.x, feet.y, 10, 'sparkle', ['#fff6a8', '#a8f0ff', '#ffd1f5'], 120, 7);
+    for (const o of this.rocks) {
+      if (o === r || o.x >= r.x || o.off >= 0) continue;
+      o.off = 0;
+      if (o.tg) {
+        this.L.core.release(o.tg, false);
+        o.tg = null;
+        this.spawned--;
+      }
+    }
+    this.L.core.prune();
+    this.viewFrom = this.view;
+    this.viewTo = r.x - HOME_X;
+    this.glide = 0;
+    this.wait = Math.max(this.wait, ROCK_PAUSE);
+  }
+
+  /** The words are done: the meteors still waiting drift away and the rocket comes. */
+  private finish(): void {
+    for (const r of this.rocks) {
+      if (r === this.stand || r.off >= 0) continue;
+      r.off = 0;
+      if (r.tg) this.L.core.release(r.tg, false);
+      r.tg = null;
+    }
+    this.L.core.prune();
+    this.end = 0;
+    this.L.sfx('whoosh');
+  }
+
+  /** The rocket at the end: comes from the right to beside him, waits while he boards, then flies off; null before the end. */
+  private rocket(): { x: number; y: number } | null {
+    if (this.end === null) return null;
+    const feet = this.top(this.stand);
+    const stop = feet.x + 230, y = feet.y - 70;
+    const come = ease.outCubic(Math.min(1, this.end / ROCKET_COME));
+    const away = Math.max(0, this.end - ROCKET_COME - ROCKET_BOARD) / ROCKET_AWAY;
+    return { x: this.L.vw + 160 + (stop - this.L.vw - 160) * come + ease.inQuad(Math.min(1, away)) * (this.L.vw + 400), y: y - away * 120 };
+  }
+
+  /** 0..1 of his jump from the meteor into the rocket's window. */
+  private get boarding(): number {
+    return this.end === null ? 0 : Math.max(0, Math.min(1, (this.end - ROCKET_COME) / ROCKET_BOARD));
+  }
+
+  /** The astronaut's feet and size now: on his meteor, mid-jump, or on the way into the window. */
+  private hero(): { x: number; y: number; size: number } {
+    if (this.jump) {
+      const a = this.top(this.jump.from), b = this.top(this.jump.to), k = ease.inOutQuad(this.jump.k);
+      return { x: a.x + (b.x - a.x) * k, y: a.y + (b.y - a.y) * k - Math.sin(this.jump.k * Math.PI) * 120, size: ASTRONAUT };
+    }
+    const feet = this.top(this.stand);
+    const rocket = this.rocket();
+    const b = this.boarding;
+    if (!rocket || b <= 0) return { ...feet, size: ASTRONAUT };
+    // The rocket faces him (mirrored), so its window is on its left side.
+    const wx = rocket.x - WINDOW.x, wy = rocket.y + WINDOW.y + 20;
+    const e = ease.inOutQuad(b);
+    return { x: feet.x + (wx - feet.x) * e, y: feet.y + (wy - feet.y) * e - Math.sin(b * Math.PI) * 100, size: ASTRONAUT + (40 - ASTRONAUT) * e };
+  }
+
+  heroSpot(): { x: number; y: number } {
+    const s = this.hero();
+    return { x: s.x, y: s.y - s.size * 0.9 - 20 };
+  }
+
+  bubbleSpot(): { x: number; y: number } {
+    const s = this.hero();
+    return { x: s.x, y: s.y - s.size * 0.9 - 10 };
+  }
+
+  render(g: G): void {
+    for (const r of this.rocks) {
+      const drift = (1 - ease.outCubic(Math.min(1, r.age / DRIFT))) * 260;
+      const fall = r.off >= 0 ? r.off * r.off * 160 : 0;
+      g.save();
+      g.globalAlpha = Math.min(1, r.age / 0.3) * (r.off >= 0 ? Math.max(0, 1 - r.off / 1.5) : 1);
+      const at = this.top(r);
+      drawSprite(g, r.sprite, at.x + drift, at.y + ROCK_SIZE * 0.32 + fall, ROCK_SIZE, { flip: r.flip, rot: Math.sin(this.t + r.x) * 0.05 + r.off * 0.8 }, blob('#9a8a7a', false));
+      g.restore();
+      if (r.tg && r.off < 0) this.L.label(g, r.tg, at.x + drift, at.y - ROCK_SIZE * 0.3);
+    }
+    const rocket = this.rocket();
+    const b = this.boarding;
+    if (b < 0.85) {
+      const s = this.hero();
+      drawAstronaut(g, true, s.x, s.y, s.size);
+    }
+    if (!rocket) return;
+    // Mirrored to face him; its window empty (under glass) until he is in.
+    const inside = b >= 0.85;
+    drawSprite(g, inside ? 'obj-rocket-pilot' : 'obj-rocket', rocket.x, rocket.y, ROCKET_H, { flip: true }, blob('#e5534b'));
+    if (!inside) windowGlass(g, rocket.x - WINDOW.x, rocket.y + WINDOW.y);
+  }
+
+  progress(): number {
+    return this.done / this.L.count;
+  }
+
+  get finished(): boolean {
+    return (this.end ?? 0) > ROCKET_COME + ROCKET_BOARD + ROCKET_AWAY;
+  }
+}

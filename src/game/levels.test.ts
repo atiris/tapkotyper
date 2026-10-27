@@ -173,6 +173,12 @@ describe('first level', () => {
     expect(minActiveS(levelById('w1-4')!)).toBe(MIN_ACTIVE_S);
   });
 
+  it('the rocket world plays the world rhythm too: its second level is the calm hop', () => {
+    expect(levelById('w2-2')?.kind).toBe('hop');
+    expect(activityOf(levelById('w2-2')!)).toBe('catch');
+    expect(minActiveS(levelById('w2-2')!)).toBe(60);
+  });
+
   it('every level has an activity for its map dot', () => {
     expect(activityOf(levelById('w3-2')!)).toBe('crossroads');
     expect(activityOf(levelById('w12-2')!)).toBe('listen');

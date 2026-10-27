@@ -1068,6 +1068,7 @@
     "surprises.days.few": "The same for {n} from 2 to 4.",
     "surprises.days.many": "The same for {n} of 5 and more.",
     "surprises.days.forever": "Settings, Surprises tab: option that keeps a won surprise on the map for ever.",
+    "surprises.announceHint": "Settings, Surprises tab: tooltip of the Show on the map ahead switch.",
     "surprises.announce": "Settings, Surprises tab: switch for a surprise after a level; on, the map shows a golden box on that level.",
     "surprises.add": "Settings, Surprises tab: the form button that adds a new surprise.",
     "surprises.save": "Settings, Surprises tab: the form button that saves an edited surprise.",

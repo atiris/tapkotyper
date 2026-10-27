@@ -1231,6 +1231,7 @@
     },
     "repeat": "Repeat",
     "announce": "Show on the map ahead",
+    "announceHint": "The map shows a golden box on that level ahead, in place of the game's picture, so the child knows where the surprise waits.",
     "showDays": "On the map",
     "showDaysHint": "How long a won surprise stays on the map by the world where it was won: the day it is won and this many days more. With 1 day, a child who wins it on Wednesday evening still sees it all Thursday. After that the map no longer shows it.",
     "days": {

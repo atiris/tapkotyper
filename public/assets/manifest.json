@@ -1461,8 +1461,8 @@
    "h": 384
   },
   "ui-act-catch": {
-   "w": 384,
-   "h": 144
+   "w": 268,
+   "h": 384
   },
   "ui-act-chase": {
    "w": 384,
@@ -1470,7 +1470,7 @@
   },
   "ui-act-clean": {
    "w": 384,
-   "h": 145
+   "h": 273
   },
   "ui-act-crossroads": {
    "w": 346,
@@ -1485,8 +1485,8 @@
    "h": 312
   },
   "ui-act-listen": {
-   "w": 384,
-   "h": 333
+   "w": 273,
+   "h": 384
   },
   "ui-act-pairs": {
    "w": 384,
@@ -1505,8 +1505,8 @@
    "h": 384
   },
   "ui-act-remember": {
-   "w": 384,
-   "h": 352
+   "w": 345,
+   "h": 384
   },
   "ui-act-rhythm": {
    "w": 339,
@@ -1684,17 +1684,17 @@
    "w": 376,
    "h": 384
   },
-  "ui-typing-speed": {
-   "w": 384,
-   "h": 319
+  "ui-surprise-open": {
+   "w": 344,
+   "h": 384
   },
   "ui-surprise": {
    "w": 353,
    "h": 384
   },
-  "ui-surprise-open": {
-   "w": 344,
-   "h": 384
+  "ui-typing-speed": {
+   "w": 384,
+   "h": 319
   }
  },
  "accessories": [

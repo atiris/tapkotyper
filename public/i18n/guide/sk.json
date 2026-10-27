@@ -1068,6 +1068,7 @@
     "surprises.days.few": "To isté pre {n} od 2 do 4.",
     "surprises.days.many": "To isté pre {n} od 5 vyššie.",
     "surprises.days.forever": "Nastavenia, karta Prekvapenia: voľba, pri ktorej ostane získané prekvapenie na mape navždy.",
+    "surprises.announceHint": "Nastavenia, karta Prekvapenia: bublina prepínača Ukázať na mape vopred.",
     "surprises.announce": "Nastavenia, karta Prekvapenia: prepínač pri prekvapení po úrovni; zapnutý ukáže na mape na tej úrovni zlatú krabičku.",
     "surprises.add": "Nastavenia, karta Prekvapenia: tlačidlo formulára na pridanie nového prekvapenia.",
     "surprises.save": "Nastavenia, karta Prekvapenia: tlačidlo formulára na uloženie upraveného prekvapenia.",

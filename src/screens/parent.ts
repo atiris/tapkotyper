@@ -317,6 +317,7 @@ function surprisesTab(p: Profile): HTMLElement {
   const repeat = check(false, () => undefined);
   const announce = check(false, () => undefined);
   const announceField = switchField(t('surprises.announce'), announce);
+  tip(announceField, t('surprises.announceHint'));
   const dayName = (d: number) => (d === 0 ? t('surprises.days.today') : t(d === 1 ? 'surprises.days.one' : d < 5 ? 'surprises.days.few' : 'surprises.days.many', { n: d }));
   const showDays = select<string>(String(SHOW_DAYS), [
     ...Array.from({ length: SHOW_DAYS_MAX + 1 }, (_, d): [string, string] => [String(d), dayName(d)]),

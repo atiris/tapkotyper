@@ -944,7 +944,7 @@ Cute, soft 2D children's game icon, flat vector style with gentle gradients, sof
 | File | ACTIVITY |
 |---|---|
 | `ui-act-chase.jpg` | a small leaf flying to the right with three short soft speed lines behind it (main game) |
-| `ui-act-catch.jpg` | three small round shiny water drops sitting still in a row on a short green blade, one a little bigger (waiting words) |
+| `ui-act-catch.jpg` | a small simple wooden chair, warm light wood (#E2B27A), a straight back with one cross bar, a square seat and four straight legs, seen from the front and a little from the side, standing still, no face, no eyes, no arms, no cushion; "no floor" after the background line (waiting words; done 2026-10-27) |
 | `ui-act-pairs.jpg` | two small rounded playing cards side by side, the left one face down with a soft dot pattern, the right one turned over showing a tiny red heart (memory pairs) |
 | `ui-act-jumble.jpg` | two small rounded square tiles side by side with a curved arrow above them going from one to the other, swapping places, tiles blank (jumble) |
 | `ui-act-parrot.jpg` | a cute scarlet macaw parrot standing in three-quarter view, red body, cream face patch with a round eye, yellow and black beak a little open, red-yellow-green-blue wings, long colorful tail, grey feet (parrot card on the world, grey until won; the owner's own pick from Gemini) |
@@ -956,12 +956,12 @@ Cute, soft 2D children's game icon, flat vector style with gentle gradients, sof
 | `obj-parrot-perch-short.jpg` | a short wooden T-perch, the same wood as `obj-parrot-perch.jpg` (Aro's perch on the map and on My progress, and the parrot node while its parrot is away; the owner's own pick from Gemini) |
 | `cert-src/ui-cert-frame.jpg` | the top-left corner of a certificate frame: a cream band with a dark-brown outline and thin orange inner lines runs right and down to the image edges, a sleeping fox curled in the corner, pairs of small brown paw prints along both arms (the owner's own pick from Gemini). `node scripts/cert-frame.mjs` cuts it into the parts kept in assets-src to touch up by hand: `ui-cert-fox.png` (the fox alone, the band's outer edge 88.5 px in from its top and left), `ui-cert-paws.png` (one pair of prints toes up, as wide as the band) and `ui-cert-band.png` (one row of the band, outer edge left); `npm run assets` keeps them lossless |
 | `obj-parrot-flying-2.jpg`, `obj-parrot-flying-3.jpg` | the same flying macaw (attach `obj-parrot-flying.jpg`), only the wings moved: `-2` halfway down, `-3` turned down around the shoulder, tips at belly height; body, head, tail and feet in exactly the same place (wing-beat frames played up, middle, down, middle; `npm run assets` crops all three with one box; see the lesson on animation frames) |
-| `ui-act-clean.jpg` | a short straight ribbon with a small round green check mark at its end (a clean line) |
+| `ui-act-clean.jpg` | a small closed paper envelope, cream-white paper (#FFF6E0) with a soft brown outline, the triangular flap closed with a little round red heart seal in its middle, strictly front view, not tilted, no face, no eyes (copy; done 2026-10-27) |
 | `ui-act-build.jpg` | three small rounded building blocks stacked, the top one just landing (building) |
 | `ui-act-text.jpg` | an open book with a few soft grey lines on its pages, no letters (text page) |
 | `ui-act-crossroads.jpg` | a wooden signpost with two empty arrow boards pointing left and right (crossroads) |
-| `ui-act-listen.jpg` | a round soft ear with two small curved sound waves next to it (listening) |
-| `ui-act-remember.jpg` | a small round eye half closed with a tiny sparkle above it, like remembering (memory) |
+| `ui-act-listen.jpg` | one round soft human ear seen from the side, warm peach skin color (#F6C9A8) with a soft rose inner curl (#E89A8C), nothing else around it: no sound waves, no curved lines, no marks, no dots next to it, no face, no head (dictation; done 2026-10-27) |
+| `ui-act-remember.jpg` | a keyhole plate - a rounded shiny golden metal plate (#F2C14E with lighter #FFE08A highlights) with one big classic keyhole cut in its middle, a dark brown circle on top that narrows into a slot below, the hole is a clean flat dark shape with no inner wall and no depth; strictly front view, symmetrical, not tilted, no key, no face, no eyes, no screws (secret words; done 2026-10-27) |
 | `ui-act-rhythm.jpg` | a small round drum with two soft beat marks above it (rhythm) |
 | `ui-act-hide.jpg` | a small round hole in the ground with two curious eyes peeking out (hide and seek) |
 | `ui-act-super.jpg` | a small golden crown with three round tips (super-obstacle) |

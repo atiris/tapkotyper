@@ -36,6 +36,15 @@ const DOCK_TIME = 0.5;
 /** The suit picture's collar as a share of its height: without the helmet only the suit below it is drawn. */
 const SUIT_NECK = 0.52;
 const GAUGE_R = 70;
+/**
+ * The pace of the space: things fly at full speed while the child types; this many seconds after
+ * the last key they slow down to SLOW within a blink (their time to arrive stretches at once, the
+ * speedometer drops with them), and with the next keys they speed up again gently.
+ */
+const IDLE_GRACE = 0.4;
+const SLOW = 0.4;
+const PACE_FALL = 8;
+const PACE_RISE = 1.5;
 
 /** Code-drawn suit (and helmet) in the companion template's square, until the owner's art is there. */
 function astronautFallback(g: G, s: number, helmet: boolean): void {
@@ -88,6 +97,10 @@ export class SpaceMode extends ApproachMode {
   protected beam = 0;
   protected beamTo = { x: 0, y: 0 };
   protected speedShown = 0;
+  /** Share of full speed the space moves at now (see IDLE_GRACE). */
+  protected pace = 1;
+  /** The background's speed, eased: the rhythm changes in steps with each key, and a step jerked the whole sky. */
+  private scrollV = 40;
 
   constructor(L: LevelRuntime) {
     super(L);
@@ -107,23 +120,29 @@ export class SpaceMode extends ApproachMode {
     const x = this.L.vw + 100;
     const y = this.L.rng.range(130, VH * 0.72);
     const planet = sprite.includes('planet');
-    return { x, y, vx: this.speedFor(word, x), vy: this.L.rng.range(-12, 12), rot: 0, vr: this.L.rng.range(-0.3, 0.3), age: 0, state: 'come', fade: 0, sprite, size: planet ? 130 : 105 };
+    return { x, y, vx: this.speedFor(word, x), vy: this.L.rng.range(-12, 12), rot: 0, vr: this.L.rng.range(-0.3, 0.3), age: 0, state: 'come', fade: 0, sprite, size: planet ? 130 : 105, flip: this.L.rng.chance(0.5) };
   }
 
+  /** A coming thing moves in the space's time: slower while the child is not typing. */
   protected moveComing(m: Mover, dt: number, tg: Target): void {
-    super.moveComing(m, dt, tg);
-    m.y = Math.max(110, Math.min(VH * 0.78, m.y + m.vy * dt));
-    m.rot += m.vr * dt;
+    const step = dt * this.pace;
+    super.moveComing(m, step, tg);
+    m.y = Math.max(110, Math.min(VH * 0.78, m.y + m.vy * step));
+    m.rot += m.vr * step;
   }
 
   protected scrollSpeed(): number {
-    return 40 + this.L.rhythm.ema * 70;
+    return this.scrollV;
   }
 
   update(dt: number): void {
+    const target = this.L.idleFor < IDLE_GRACE ? 1 : SLOW;
+    this.pace += (target - this.pace) * Math.min(1, dt * (target < this.pace ? PACE_FALL : PACE_RISE));
+    this.scrollV += ((40 + this.L.rhythm.ema * 70) * this.pace - this.scrollV) * Math.min(1, dt * 4);
     super.update(dt);
     this.beam = Math.max(0, this.beam - dt * 3);
-    this.speedShown += (this.speedPct() - this.speedShown) * Math.min(1, dt * 3);
+    const speed = this.speedPct() * this.pace;
+    this.speedShown += (speed - this.speedShown) * Math.min(1, dt * (speed < this.speedShown ? PACE_FALL : 3));
   }
 
   protected speedPct(): number {
@@ -131,7 +150,7 @@ export class SpaceMode extends ApproachMode {
   }
 
   drawMover(g: G, m: Mover): void {
-    drawSprite(g, m.sprite, m.x, m.y, m.size, { rot: m.rot }, blob(COLORS[m.sprite] ?? '#9a8a7a', true, 'rgba(0,0,0,0.12)'));
+    drawSprite(g, m.sprite, m.x, m.y, m.size, { rot: m.rot, flip: m.flip }, blob(COLORS[m.sprite] ?? '#9a8a7a', true, 'rgba(0,0,0,0.12)'));
   }
 
   protected onLeave(m: Mover): void {
@@ -283,13 +302,15 @@ export class SpaceMode extends ApproachMode {
     drawAstronaut(g, true, s.x, s.y, s.size, 0, 1, 1 - Math.max(0, (b - 0.8) / 0.2));
   }
 
-  /** The rocket's own instrument: after Tapko is in, it slides up and sits on the bottom edge under the rocket, still while the rocket bobs. */
+  /** The rocket's own instrument: after Tapko is in, it slides up and sits near the bottom edge under the rocket, still while the rocket bobs. */
   protected drawSpeedometer(g: G): void {
     const slide = this.L.reduceMotion ? 1 : Math.max(0, Math.min(1, (this.t - BOARD_TIME) / DOCK_TIME));
     if (slide <= 0) return;
     const r = GAUGE_R;
     const below = VH + r + 20;
-    const cx = ROCKET_X, cy = below + (VH - below) * ease.outCubic(slide);
+    // Docked half its height above the bottom edge.
+    const docked = VH - (r + 14) / 2;
+    const cx = ROCKET_X, cy = below + (docked - below) * ease.outCubic(slide);
     g.save();
     g.fillStyle = 'rgba(20,16,50,0.55)';
     g.beginPath();
@@ -371,7 +392,7 @@ export class AsteroidMode extends SpaceMode {
     const word = this.L.word(4, 1);
     const piece: Mover = {
       x, y, vx: this.speedFor(word, x) * 0.8, vy, rot: 0, vr: this.L.rng.range(-1, 1),
-      age: 0, state: 'come', fade: 0, sprite: 'obj-asteroid-small', size: 95,
+      age: 0, state: 'come', fade: 0, sprite: 'obj-asteroid-small', size: 95, flip: this.L.rng.chance(0.5),
     };
     this.L.core.add(word, piece);
   }

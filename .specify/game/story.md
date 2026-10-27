@@ -38,9 +38,13 @@ gives you a wreath"), never about the character as someone else.
 2. **Space Rocket Flight** - Tapko suits up where he stands: his things fade away, a white
    space suit grows up from the boots and a helmet with an opaque visor comes down over his
    head. The astronaut hops into the rocket, which from then on shows him in its round window.
-   Typing rhythm drives the speedometer, the rocket's own instrument, which sits still on the
-   bottom edge under the rocket while the rocket bobs; a soft energy
-   beam pushes asteroids and planets out of the path. Super-obstacle: fractured asteroid.
+   Typing rhythm drives the speedometer, the rocket's own instrument, which sits still near the
+   bottom edge (half its height above it) under the rocket while the rocket bobs; a soft energy
+   beam pushes asteroids and planets out of the path, some of them mirrored so they do not all
+   look alike. The space keeps the child's pace: soon after the last key everything slows down
+   at once (the things flying in take longer to arrive, the speedometer drops with them) and
+   speeds up gently with the next keys. The near rocks drift at half the usual near-layer speed.
+   Super-obstacle: fractured asteroid.
    Reward: landing clearance.
 3. **New Planet** - typing builds stepping stones across a swamp and picks the right path
    at road signs (each sign shows a word). Super-obstacle: cracking boulder / rock
@@ -171,6 +175,8 @@ story stays playable in any browser ([mechanics](mechanics.md)).
 - Tapko drawn small inside the rocket's window flickered; one picture of the suited pilot
   stays steady and looks the same for every companion. A speedometer bobbing with the rocket
   was hard to read.
+- Things kept flying at full speed while the child stopped to think, and the speedometer
+  sank only slowly; the time limit has to stretch the moment the typing stops.
 - More stories keep older children playing; typing passwords at locked doors fits a
   typing game, and machines appeal to children whom dragons do not.
 - A gentle, musical story speaks to children whom machines do not, and a forest that has

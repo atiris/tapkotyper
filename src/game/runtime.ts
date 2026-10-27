@@ -792,6 +792,11 @@ export class LevelRuntime {
 
   /** Level time of the child's last counted key, and of the last dictated target said; it is said again once by itself. */
   private keyAt = 0;
+
+  /** Seconds of play since the child's last key (since play started before the first one). */
+  get idleFor(): number {
+    return this.elapsed - this.keyAt;
+  }
   private spokenAt = 0;
   private repeated = false;
 

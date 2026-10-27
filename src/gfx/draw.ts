@@ -196,7 +196,8 @@ export function drawBackground(g: G, world: string, vw: number, scroll: number, 
     if (world === 'rescue') ropeBridge(g, vw, motion ? scroll * 0.35 : 0, pal.hills[1]);
   }
   const near = sprite(`bg-${world}-near`);
-  if (near) tiled(g, near, vw, still ? 0 : scroll);
+  // The space's near rocks drift at half speed, calmer behind the words.
+  if (near) tiled(g, near, vw, still ? 0 : scroll * (world === 'space' ? 0.5 : 1));
   else if (world !== 'space') {
     hills(g, vw, midOnly ? 0 : scroll, VH * 0.82, 30, pal.hills[1]);
     if (world === 'rescue') lookoutFlag(g, vw, still ? 0 : scroll, pal.hills[1], pal.accent);

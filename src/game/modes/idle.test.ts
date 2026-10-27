@@ -39,6 +39,7 @@ function fakeRuntime(count = 4): LevelRuntime {
     spawnGap: 0.5,
     noPressure: false,
     difficulty: 5,
+    idleFor: 99,
     rhythm: { ema: 0.5, ratio: () => 0.3 },
     robot: null,
     toolAlpha: 1,

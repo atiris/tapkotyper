@@ -13,7 +13,8 @@
 - **Scene:** the world's own background, only its middle strip drifting very slowly. Tapko
   stands at the left; at the right a wooden T-perch stands on the ground at the level of Tapko's
   feet, the parrot in front of it with its claws on the bar. The word to type is Tapko's bubble
-  between them; the next word waits greyed after it. When a word is typed, the parrot repeats it
+  between them, without a tail; the next word waits faintly above it and the one after it even
+  fainter above that. The perch is about as tall as the parrot. When a word is typed, the parrot repeats it
   in its own bubble with a short squawk, and every third word with a small hop.
 - **Mistakes:** the third wrong key of a round sends the parrot up on a short flight round the
   scene (its wings beating, facing where it goes) with a parrot line ("Daj si kráátku

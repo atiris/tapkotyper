@@ -1,6 +1,6 @@
 import { app, pickLine } from '../../app/app';
 import { VH } from '../../engine/loop';
-import { drawSprite, fontFamily, type G, wordBox } from '../../gfx/draw';
+import { drawSprite, fontFamily, type G } from '../../gfx/draw';
 import { t } from '../../i18n/i18n';
 import { LAYOUTS } from '../../keyboard/layouts';
 import type { Profile } from '../../storage/schema';
@@ -14,7 +14,7 @@ import type { Target } from '../typing';
 
 /** Height of the parrot on its perch and of the perch; the perch stands on the ground where Tapko's feet are. */
 const PARROT_H = 190;
-const PERCH_H = 330;
+const PERCH_H = 165;
 const GROUND_Y = VH * 0.953;
 /** The parrot's claws in its picture (it faces right there, it is drawn mirrored), and the top of the perch's bar above the post, as shares of the pictures. */
 const CLAW_X = 0.64;
@@ -27,7 +27,9 @@ const HOP_EVERY = 3;
 /** Seconds the parrot's repeat stays up. */
 const REPEAT_S = 2.7;
 const WORD_SIZE = 64;
+/** The next words wait above the word, smaller and fainter the later they come. */
 const NEXT_SIZE = 34;
+const NEXT_ALPHA = [0.4, 0.18];
 /** The mistake that sends the parrot on a short flight round the scene, the seconds of that flight and how high it rises. */
 const SLIP_FLIGHT_AT = 3;
 const ROUND_S = 5.1;
@@ -206,34 +208,19 @@ export class ParrotMode extends Mode {
     const size = Math.max(WORD_SIZE, 44 / s);
     const x = (TAPKO_X + this.parrotX) / 2, y = VH * 0.36;
     if (this.current) {
-      const box = wordBox(g, this.current.word, size);
-      // The word's label is Tapko's bubble: a short tail from its lower left toward him.
-      const x0 = x - box.w / 2, yb = y + box.h / 2;
-      g.save();
-      g.globalAlpha = this.pop;
-      g.fillStyle = 'rgba(255,253,246,0.94)';
-      g.strokeStyle = '#5a3d2b';
-      g.lineWidth = 3;
-      g.beginPath();
-      g.moveTo(x0 + 18, yb - 4);
-      g.lineTo(x0 - 26, yb + 44);
-      g.lineTo(x0 + 52, yb - 4);
-      g.fill();
-      g.stroke();
-      g.restore();
       this.L.label(g, this.current, x, y + (1 - this.pop) * 12, size);
-      // What comes next, greyed after the word.
-      const up = this.round.upcoming;
-      if (up) {
-        g.save();
-        g.globalAlpha = 0.55;
-        g.fillStyle = '#2d3b33';
-        g.font = `600 ${Math.max(NEXT_SIZE, 20 / s)}px ${fontFamily()}`;
-        g.textAlign = 'left';
-        g.textBaseline = 'middle';
-        g.fillText(up.word, x + box.w / 2 + size, y);
-        g.restore();
-      }
+      // What comes next, fainter and fainter above the word.
+      const next = Math.max(NEXT_SIZE, 20 / s);
+      g.save();
+      g.fillStyle = '#2d3b33';
+      g.font = `600 ${next}px ${fontFamily()}`;
+      g.textAlign = 'center';
+      g.textBaseline = 'middle';
+      this.round.ahead(NEXT_ALPHA.length).forEach((step, i) => {
+        g.globalAlpha = NEXT_ALPHA[i] * this.pop;
+        g.fillText(step.word, x, y - size * 0.75 - next * (0.9 + 1.25 * i));
+      });
+      g.restore();
     }
     drawSprite(g, 'obj-parrot-perch', this.parrotX, GROUND_Y, PERCH_H, { ax: 0.5, ay: 1 });
     this.drawParrot(g);

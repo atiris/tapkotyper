@@ -650,6 +650,7 @@
     "story.hopStart": "Úvodná veta pokojnej úrovne v rakete: astronaut skáče z meteoritu na meteorit (krátke slová), až doskáče k rakete.",
     "story.hopTooFar": "Veta astronauta v pokojnej úrovni v rakete, keď dieťa napíše slovo na meteorite, ku ktorému by musel preskočiť viac ako jeden meteorit; slovo ostane na meteorite.",
     "story.poppyStart": "Úvodné vety pokojnej úrovne na lúke (vyberie sa jedna): rastú púčiky vlčích makov s krátkym slovom nad sebou, napísané slovo púčik rozvinie a pridá mak do kytice na konci.",
+    "story.poppyDone": "Pochvala na konci pokojnej úrovne na lúke, keď sa z napísaných makov poskladá kytica (vyberie sa jedna).",
     "story.gustStart": "Veta postavičky, keď v tretej úrovni lúky zafúka vietor a príde viac malých listov naraz.",
     "story.invitationStart": "Úvodná veta úrovne na lúke, kde dieťa píše pozvánku na oslavu slovo po slove bez preklepu.",
     "story.invitationPartyOne": "Koniec úrovne s pozvánkou, nad hosťami: {n} (1) správne napísaných slov pozvalo toľko zvieratiek; zalomenie riadka ju delí na dva riadky.",

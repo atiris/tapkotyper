@@ -432,6 +432,11 @@
       "Let's grow a bunch of poppies! Type the letter above a bud and it blooms.",
       "Poppies grow on the meadow. Every letter you type adds one to the bunch!"
     ],
+    "poppyDone": [
+      "What a lovely bunch of poppies!",
+      "A beautiful bouquet of corn poppies!",
+      "A bouquet fit for a queen!"
+    ],
     "gustStart": "A gust of wind! Lots of small leaves at once.",
     "invitationStart": [
       "There is a party on the meadow! Write the invitation word by word, with no slip."

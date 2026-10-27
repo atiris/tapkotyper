@@ -650,6 +650,7 @@
     "story.hopStart": "Opening line of the calm rocket level: the astronaut hops from meteor to meteor (short words) to reach the rocket.",
     "story.hopTooFar": "The astronaut's line in the calm rocket level when the typed word is on a meteor he would reach only by jumping over more than one; the word stays on that meteor.",
     "story.poppyStart": "Opening lines of the calm meadow level (one is picked): poppy buds grow with a short word above them, a typed word makes the bud bloom and adds a poppy to the bouquet shown at the end.",
+    "story.poppyDone": "Praise at the end of the calm meadow level, when the typed poppies gather into a bouquet (one is picked).",
     "story.gustStart": "The character's line when the wind blows in the third meadow level and more small leaves come at once.",
     "story.invitationStart": "Opening line of the meadow level where the child writes a party invitation word by word with no slip.",
     "story.invitationPartyOne": "End of the invitation level, over the guests: {n} (1) words typed right invited that many animals; the line break splits it into two lines.",

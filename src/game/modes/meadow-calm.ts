@@ -21,8 +21,8 @@ const PHASE: Record<Phase, { pic: string; h: number; color: string }> = {
   faded: { pic: POPPY[3], h: 1, color: '#c98a6a' },
   seed: { pic: POPPY[4], h: 0.96, color: '#9cae7a' },
 };
-/** About as tall as Tapko. */
-const FLOWER_H = 250;
+/** Three quarters of Tapko's height. */
+const FLOWER_H = 188;
 /** Poppies growing at once (each waits with another letter), and the pause before a new bud. */
 const BUDS = 3;
 const BUD_PAUSE = 0.8;
@@ -35,7 +35,7 @@ const SEED = 1;
 /** Stem bottoms lie in the near grass band, at least this far apart. */
 const GAP = 130;
 const PETALS = ['#e5402e', '#f05a3c', '#c9301f'];
-/** Most stems in the bouquet at the end; its seconds to gather, when the shout comes and when the level ends. */
+/** Most stems in the bouquet at the end (it gathers once the last poppy is gone); its seconds to gather, when the praise comes and when the level ends. */
 const BOUQUET = 9;
 const GATHER = 0.9;
 const BOUQUET_SHOUT = 0.8;
@@ -120,10 +120,13 @@ export class PoppyMode extends Mode {
     this.poppies = this.poppies.filter((p) => p.phase !== 'seed' || p.t < SEED);
     this.wait -= dt;
     if (this.wait <= 0 && this.poppies.filter((p) => p.tg).length < BUDS && this.spawned < this.L.count) this.grow();
-    if (this.done < this.L.count) return;
+    if (this.done < this.L.count || this.poppies.length) return;
     const before = this.bouquetT;
     this.bouquetT = Math.max(0, before) + dt;
-    if (before < BOUQUET_SHOUT && this.bouquetT >= BOUQUET_SHOUT) this.L.hooray({ x: this.L.vw / 2, y: VH * 0.3 });
+    if (before < BOUQUET_SHOUT && this.bouquetT >= BOUQUET_SHOUT) {
+      this.L.sfx('cheer');
+      this.L.shout(pickLine('story.poppyDone'), this.L.vw / 2, VH * 0.3);
+    }
   }
 
   private grow(): void {

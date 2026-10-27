@@ -33,7 +33,9 @@ gives you a wreath"), never about the character as someone else.
    first letter); the typed letter makes it bloom (half of the buds open slowly first), the
    flower stays a while, fades and drops its petals, and its seed head goes, while a new bud
    grows elsewhere; some poppies grow mirrored so they do not all look alike; every typed letter
-   adds a poppy to the bouquet that gathers in the middle at the end, with a happy shout. In the
+   adds a poppy to the bouquet that gathers in the middle at the end, once the last poppy is gone,
+   with praise for the bouquet ("Krásna kytica vlčích makov!"). The poppies stand about three
+   quarters of Tapko's height. In the
    calm meadow levels the middle band of the background drifts slowly; level 3 is the leaf game again with a gust of
    wind half way; level 4 is the twist, the invitation to the meadow party written word by
    word without a slip, and every finished card flies as an envelope to a meadow friend. At

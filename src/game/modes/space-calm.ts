@@ -271,7 +271,7 @@ const END_TIME = BOARD + REST + FLY_OFF + 0.2;
 /** The command panel: its middle's height share, its height, and the onboard computer's height on its left edge. */
 const PANEL_Y = 0.24;
 const PANEL_H = 120;
-const CONSOLE_H = 150;
+const CONSOLE_H = 75;
 const PANEL_INK = '#e8f6ff';
 
 /**

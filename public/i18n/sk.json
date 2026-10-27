@@ -432,6 +432,11 @@
       "Vypestujme kyticu vlčích makov! Napíš písmenko nad púčikom a rozkvitne.",
       "Na lúke rastú vlčie maky. Každé napísané písmenko pridá jeden do kytice!"
     ],
+    "poppyDone": [
+      "Krásna kytica vlčích makov!",
+      "Nádherná kytica makov!",
+      "Kytica ako pre kráľovnú!"
+    ],
     "gustStart": "Fúka vietor! Letí viac malých listov naraz.",
     "invitationStart": [
       "Na lúke bude oslava! Napíš pozvánku slovo po slove, pekne bez chyby."

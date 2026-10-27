@@ -1249,8 +1249,7 @@
       "level": "After a level",
       "minutes": "After minutes of training",
       "levels": "After more levels",
-      "stars": "After more stars",
-      "random": "At random, now and then"
+      "stars": "After more stars"
     },
     "repeat": "Repeat",
     "announce": "Show on the map ahead",
@@ -1283,7 +1282,6 @@
       "actions": "Actions"
     },
     "when": {
-      "random": "at random",
       "minutes": "after {n} min of training",
       "levelsOne": "after {n} more level",
       "levelsMany": "after {n} more levels",

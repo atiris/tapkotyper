@@ -1092,7 +1092,6 @@
     "surprises.yes": "Settings, Surprises tab: the Repeat column cell in the table when the surprise repeats.",
     "surprises.no": "Settings, Surprises tab: the Repeat column cell in the table when the surprise does not repeat.",
     "surprises.col.*": "Settings, Surprises tab: the header of one column of the surprises table (a cell caption on phones).",
-    "surprises.when.random": "Settings, Surprises tab: the When column cell for a random surprise.",
     "surprises.when.minutes": "Settings, Surprises tab: the When column cell. {n} is the minutes of training.",
     "surprises.when.levelsOne": "Settings, Surprises tab: the When column cell for one more level. {n} is the number (1).",
     "surprises.when.levelsMany": "Settings, Surprises tab: the When column cell for several more levels. {n} is how many.",

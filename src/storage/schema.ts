@@ -150,7 +150,7 @@ export interface Progress {
 }
 
 /** When a surprise tells its answer. */
-export type SurpriseTrigger = 'level' | 'minutes' | 'levels' | 'stars' | 'random';
+export type SurpriseTrigger = 'level' | 'minutes' | 'levels' | 'stars';
 
 /**
  * A rule for a real reward a parent hid: the game asks `q` and tells `a` when the trigger is met,

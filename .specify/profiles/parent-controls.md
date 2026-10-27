@@ -74,12 +74,10 @@
   - **after minutes of training** (story levels and practice together), **after more
     levels** or **after more stars**, counted from when the rule was made: the game
     asks on every get-ready card while it waits, with what is still left ("3 more
-    levels"), and tells the answer on the results of the level that reaches it;
-  - **at random**: a pool of free questions; after a finished level, now and then (one in
-    three) and never twice a day, one of them comes with its answer at once.
-  A rule either repeats (counts again from the reveal, fires on every finish of its level,
-  or goes back to the pool) or is done after its reveal and never shown again. A level run
-  has one surprise at most, in the order level, minutes, levels, stars, random; the narrator's own
+    levels"), and tells the answer on the results of the level that reaches it.
+  A rule either repeats (counts again from the reveal, or fires on every finish of its level)
+  or is done after its reveal and never shown again. A level run
+  has one surprise at most, in the order level, minutes, levels, stars; the narrator's own
   teaser waits in such a run. The answer always comes right under its question,
   highlighted. The table shows the question, the answer, when (in words), repeat, the
   state (waiting, "12 / 20 min", done with its date) and edit and delete; a form under it
@@ -125,7 +123,8 @@
 - A real reward (a treat, a trip, a game evening) ties the game to the child's life
   ([research](../../.research/game/tapko-questions.md)). Parents use it as a real reward,
   so they want to say exactly when it comes: after a given level, after some training
-  time, after more levels or stars, or now and then over a long time. One table shows
+  time, after more levels or stars. A random surprise now and then was dropped: a reward
+  the child cannot work toward is no goal. One table shows
   every rule and what is done.
 - After a level a child may not remember the question any more, so the answer always
   comes together with it.

@@ -6,8 +6,6 @@ import { newSurprise, restartSurprise, surpriseAnnounced, surpriseCount, surpris
 
 const w11 = levelById('w1-1')!;
 const w12 = levelById('w1-2')!;
-const never = () => 0.99;
-const always = () => 0;
 
 function rule(p: Profile, trigger: Surprise['trigger'], extra: Partial<Surprise> = {}): Surprise {
   const s = { ...newSurprise(p, { q: `q-${trigger}`, a: `a-${trigger}`, trigger, repeat: false, ...extra }), ...extra };
@@ -28,7 +26,7 @@ describe('surprise rules', () => {
     const s = rule(p, 'level', { level: 'w1-2' });
     expect(surpriseFor(p, w11, false)).toBeNull();
     expect(surpriseFor(p, w12, false)).toBe(s);
-    expect(surpriseOutcome(p, s, false, never, '2026-10-21')).toEqual({ rule: s, revealed: true });
+    expect(surpriseOutcome(p, s, false, '2026-10-21')).toEqual({ rule: s, revealed: true });
     expect(s.doneAt).toBe('2026-10-21');
     expect(surpriseFor(p, w12, false)).toBeNull();
   });
@@ -36,9 +34,9 @@ describe('surprise rules', () => {
   it('a repeating level rule fires on every finish of its level', () => {
     const p = newProfile('Ema', 'sk');
     const s = rule(p, 'level', { level: 'w1-2', repeat: true });
-    surpriseOutcome(p, surpriseFor(p, w12, false), false, never, '2026-10-21');
+    surpriseOutcome(p, surpriseFor(p, w12, false), false, '2026-10-21');
     expect(s.doneAt).toBeUndefined();
-    expect(surpriseOutcome(p, surpriseFor(p, w12, false), false, never, '2026-10-21')?.revealed).toBe(true);
+    expect(surpriseOutcome(p, surpriseFor(p, w12, false), false, '2026-10-21')?.revealed).toBe(true);
   });
 
   it('a minutes rule waits on every card and fires in the run that reaches the time', () => {
@@ -48,9 +46,9 @@ describe('surprise rules', () => {
     expect(surpriseFor(p, practiceLevel(null), false)).toBe(s);
     play(p, 3, 90);
     expect(surpriseCount(p, s)).toEqual({ have: 1, need: 2 });
-    expect(surpriseOutcome(p, s, false, never)).toEqual({ rule: s, revealed: false });
+    expect(surpriseOutcome(p, s, false)).toEqual({ rule: s, revealed: false });
     play(p, 3, 30);
-    expect(surpriseOutcome(p, s, false, never)?.revealed).toBe(true);
+    expect(surpriseOutcome(p, s, false)?.revealed).toBe(true);
     expect(s.doneAt).toBeDefined();
   });
 
@@ -61,7 +59,7 @@ describe('surprise rules', () => {
     play(p, 3);
     expect(surpriseCount(p, levels)).toEqual({ have: 1, need: 2 });
     play(p, 3);
-    expect(surpriseOutcome(p, levels, false, never)?.revealed).toBe(true);
+    expect(surpriseOutcome(p, levels, false)?.revealed).toBe(true);
     expect(surpriseCount(p, levels)).toEqual({ have: 0, need: 2 });
     const stars = rule(p, 'stars', { n: 4 });
     play(p, 2);
@@ -79,31 +77,11 @@ describe('surprise rules', () => {
     expect(surpriseFor(p, w11, false)).toBe(minutes);
     play(p, 3);
     expect(surpriseFor(p, w11, false)).toBe(stars);
-    expect(surpriseOutcome(p, level, false, never)?.rule).toBe(level);
+    expect(surpriseOutcome(p, level, false)?.rule).toBe(level);
     expect(stars.doneAt).toBeUndefined();
     // A rule reached during the run fires even when the card asked another one.
-    expect(surpriseOutcome(p, minutes, false, never)?.rule).toBe(stars);
+    expect(surpriseOutcome(p, minutes, false)?.rule).toBe(stars);
     expect(surpriseFor(p, w12, false)).toBe(minutes);
-  });
-
-  it('random questions come now and then, never twice a day, and not with another surprise', () => {
-    const p = newProfile('Ema', 'sk');
-    const a = rule(p, 'random', { repeat: true });
-    expect(surpriseOutcome(p, null, false, never, '2026-10-21')).toBeNull();
-    expect(surpriseOutcome(p, null, false, always, '2026-10-21')).toEqual({ rule: a, revealed: true });
-    expect(surpriseOutcome(p, null, false, always, '2026-10-21')).toBeNull();
-    expect(surpriseOutcome(p, null, false, always, '2026-10-22')?.rule).toBe(a);
-    const level = rule(p, 'level', { level: 'w1-1' });
-    expect(surpriseOutcome(p, level, false, always, '2026-10-23')?.rule).toBe(level);
-    expect(a.lastShownAt).toBe('2026-10-22');
-  });
-
-  it('a random question that does not repeat is asked once', () => {
-    const p = newProfile('Ema', 'sk');
-    const a = rule(p, 'random');
-    surpriseOutcome(p, null, false, always, '2026-10-21');
-    expect(a.doneAt).toBe('2026-10-21');
-    expect(surpriseOutcome(p, null, false, always, '2026-10-22')).toBeNull();
   });
 
   it('drills have none, and a changed rule waits again', () => {
@@ -111,8 +89,8 @@ describe('surprise rules', () => {
     const s = rule(p, 'levels', { n: 1 });
     play(p);
     expect(surpriseFor(p, practiceLevel(60), true)).toBeNull();
-    expect(surpriseOutcome(p, null, true, always)).toBeNull();
-    surpriseOutcome(p, s, false, never);
+    expect(surpriseOutcome(p, null, true)).toBeNull();
+    surpriseOutcome(p, s, false);
     expect(s.doneAt).toBeDefined();
     restartSurprise(p, s);
     expect(s.doneAt).toBeUndefined();
@@ -125,7 +103,7 @@ describe('surprise rules', () => {
     rule(p, 'level', { level: 'w1-1' });
     expect(surpriseAnnounced(p, 'w1-2')).toBe(true);
     expect(surpriseAnnounced(p, 'w1-1')).toBe(false);
-    surpriseOutcome(p, s, false, never);
+    surpriseOutcome(p, s, false);
     surpriseWonIn(s, 0);
     surpriseWonIn(s, 0);
     expect(surpriseAnnounced(p, 'w1-2')).toBe(false);

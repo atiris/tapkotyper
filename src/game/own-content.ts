@@ -6,11 +6,9 @@ export const SURPRISES_MAX = 50;
 export const SURPRISE_LEN = 200;
 /** Highest minutes, levels or stars a counting rule may wait for. */
 export const SURPRISE_N_MAX = 999;
-/** Chance that a free question from the pool is asked after a level. */
-export const RANDOM_CHANCE = 1 / 3;
 
 /** Order in which rules take the one surprise of a level run. */
-export const TRIGGERS: SurpriseTrigger[] = ['level', 'minutes', 'levels', 'stars', 'random'];
+export const TRIGGERS: SurpriseTrigger[] = ['level', 'minutes', 'levels', 'stars'];
 
 type Counting = 'minutes' | 'levels' | 'stars';
 
@@ -22,11 +20,11 @@ export function counterOf(p: Profile, trigger: SurpriseTrigger): number {
   return trigger === 'minutes' ? pr.trainedSeconds : trigger === 'levels' ? pr.levelsFinished : trigger === 'stars' ? pr.starsEarned : 0;
 }
 
-/** A new rule, counting from now. */
 /** How long a told surprise stays on the map by default, and at most when not for ever: days after the day it was told. */
 export const SHOW_DAYS = 1;
 export const SHOW_DAYS_MAX = 15;
 
+/** A new rule, counting from now. */
 export function newSurprise(p: Profile, rule: Pick<Surprise, 'q' | 'a' | 'trigger' | 'n' | 'level' | 'repeat' | 'announce' | 'showDays'>): Surprise {
   const id = Math.random().toString(36).slice(2, 8) + Date.now().toString(36);
   return { id, ...rule, createdAt: Date.now(), progressFrom: counterOf(p, rule.trigger) };
@@ -104,22 +102,14 @@ function reveal(p: Profile, s: Surprise, today: string): void {
 
 /**
  * The one surprise on the results of a finished run, `asked` being the rule from `surpriseFor`:
- * a rule that fired (its answer is told and recorded), else now and then a free question from
- * the pool (never twice a day), else the asked rule still waiting.
+ * a rule that fired (its answer is told and recorded), else the asked rule still waiting.
  */
-export function surpriseOutcome(p: Profile, asked: Surprise | null, drill: boolean, rnd = Math.random, today = localDate()): { rule: Surprise; revealed: boolean } | null {
+export function surpriseOutcome(p: Profile, asked: Surprise | null, drill: boolean, today = localDate()): { rule: Surprise; revealed: boolean } | null {
   if (drill) return null;
   const fired = asked?.trigger === 'level' ? asked : countingOpen(p).find((s) => reached(p, s));
   if (fired) {
     reveal(p, fired, today);
     return { rule: fired, revealed: true };
-  }
-  const pool = p.surprises.filter((s) => s.trigger === 'random');
-  const open = pool.filter((s) => !s.doneAt);
-  if (open.length && !pool.some((s) => s.lastShownAt === today) && rnd() < RANDOM_CHANCE) {
-    const rule = open[Math.floor(rnd() * open.length)];
-    reveal(p, rule, today);
-    return { rule, revealed: true };
   }
   return asked ? { rule: asked, revealed: false } : null;
 }

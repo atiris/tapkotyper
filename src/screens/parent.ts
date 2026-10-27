@@ -287,7 +287,6 @@ function whenText(s: Surprise): string {
     const l = LEVELS.find((x) => x.id === s.level);
     return l ? levelName(l) : '?';
   }
-  if (s.trigger === 'random') return t('surprises.when.random');
   const n = s.n ?? 1;
   return t(`surprises.when.${s.trigger}${s.trigger === 'minutes' ? '' : n === 1 ? 'One' : 'Many'}`, { n });
 }
@@ -329,7 +328,7 @@ function surprisesTab(p: Profile): HTMLElement {
   const sync = () => {
     const tr = trigger.value as SurpriseTrigger;
     levelField.hidden = announceField.hidden = tr !== 'level';
-    nField.hidden = tr === 'level' || tr === 'random';
+    nField.hidden = tr === 'level';
     if (!nField.hidden) nLabel.textContent = t(`surprises.n.${tr}`);
   };
   const msg = h('p', { class: 'error', role: 'alert' });

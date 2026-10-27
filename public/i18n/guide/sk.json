@@ -1092,7 +1092,6 @@
     "surprises.yes": "Nastavenia, karta Prekvapenia: bunka stĺpca Opakovať v tabuľke, keď sa prekvapenie opakuje.",
     "surprises.no": "Nastavenia, karta Prekvapenia: bunka stĺpca Opakovať v tabuľke, keď sa prekvapenie neopakuje.",
     "surprises.col.*": "Nastavenia, karta Prekvapenia: hlavička jedného stĺpca tabuľky prekvapení (na telefóne popis bunky).",
-    "surprises.when.random": "Nastavenia, karta Prekvapenia: bunka stĺpca Kedy pre náhodné prekvapenie.",
     "surprises.when.minutes": "Nastavenia, karta Prekvapenia: bunka stĺpca Kedy; {n} je počet minút tréningu.",
     "surprises.when.levelsOne": "Nastavenia, karta Prekvapenia: bunka stĺpca Kedy pre jednu ďalšiu úroveň; {n} je počet (1).",
     "surprises.when.levelsMany": "Nastavenia, karta Prekvapenia: bunka stĺpca Kedy pre viac ďalších úrovní; {n} je ich počet.",

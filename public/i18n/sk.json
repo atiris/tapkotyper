@@ -1249,8 +1249,7 @@
       "level": "Po úrovni",
       "minutes": "Po minútach tréningu",
       "levels": "Po ďalších úrovniach",
-      "stars": "Po ďalších hviezdičkách",
-      "random": "Náhodne, raz za čas"
+      "stars": "Po ďalších hviezdičkách"
     },
     "repeat": "Opakovať",
     "announce": "Ukázať na mape vopred",
@@ -1283,7 +1282,6 @@
       "actions": "Akcie"
     },
     "when": {
-      "random": "náhodne",
       "minutes": "po {n} min tréningu",
       "levelsOne": "po {n} ďalšej úrovni",
       "levelsMany": "po {n} ďalších úrovniach",

@@ -146,6 +146,10 @@
       "title": "Story scenes",
       "about": "Short scenes of a few lines, shown before a world and after it is finished."
     },
+    "story-space": {
+      "title": "Lines in the rocket world",
+      "about": "Opening lines and speech bubbles of the rocket world's levels: hopping across meteors, strong meteors and commands to the rocket."
+    },
     "story-play": {
       "title": "Lines during play",
       "about": "Lines of animals, robots and the fairy shown in speech bubbles while playing the worlds."
@@ -632,6 +636,9 @@
     "story.scenes.world15": "Scene before the first level of the moonlit ball (world 15).",
     "story.scenes.wings": "Scene after finishing the moonlit ball (world 15), the end of the fairy story. {name} is the player's nickname.",
     "story.meadowStart": "Opening line of a meadow level, shown when play begins.",
+    "story.commandStart": "Opening line of rocket level 4: the astronaut writes commands, each one sent brings the rocket closer.",
+    "story.commandReply": "The rocket's short answers in its speech bubble after each sent command; one is picked at random.",
+    "story.boarded": "Shout over the rocket when the astronaut has jumped into it at the end of rocket level 4.",
     "story.strongStart": "Opening line of rocket level 3: explains the glowing strong meteors whose word is typed twice.",
     "story.strongHit": "Short shouts over a strong meteor when its word is typed the first time; one is picked at random.",
     "story.strongSay": "What a strong meteor says after its first hit, in its own speech bubble.",

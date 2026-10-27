@@ -5,4 +5,3 @@ each in its own clean session. One line per plan in `.todo/`:
 `- [P1|P2|P3] <plan>.md - <why it sits at this position>`. A plan that is not
 listed here is never run. Lines whose plan has moved to `.todo/.done/` are
 skipped, and the session that finishes a plan removes its line.
-- [P2] 72-space-commands-and-boulders.md - level 4 and 5 of the new order, needs 70's space-calm.ts

@@ -86,6 +86,7 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
   { id: 'story', groups: [
     g('tapko', 'tapko.*', 'fairy.*'),
     g('story-scenes', 'story.scenes.*', 'story.next'),
+    g('story-space', 'story.hopStart', 'story.strongStart', 'story.strongHit', 'story.strongSay', 'story.commandStart', 'story.commandReply', 'story.boarded'),
     g('story-play', 'story.*'),
   ] },
   { id: 'aim', groups: [

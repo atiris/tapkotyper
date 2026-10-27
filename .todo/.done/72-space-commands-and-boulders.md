@@ -43,10 +43,17 @@ Source: owner request 2026-10-27.
   straight at the rocket's height instead of the middle. Pieces stay as they are.
 
 ## Steps
-- [ ] 1. Extract the copy-row helper from `InvitationMode`; the invitation still plays the
+- [x] 1. Extract the copy-row helper from `InvitationMode`; the invitation still plays the
       same (its unit and idle tests pass).
-- [ ] 2. `CommandMode` with the panel, the sending, the replies and the boarding end;
+- [x] 2. `CommandMode` with the panel, the sending, the replies and the boarding end;
       registered; `idle.test.ts` lists it; `def(1, 3, 'command', 12)`.
-- [ ] 3. `AsteroidMode`: turning and mirrored big asteroids, the last one at the rocket.
-- [ ] 4. Strings (sk, en, guide); spec story.md and super-obstacles.md.
-- [ ] 5. Play `w2-4` and `w2-5` with `?fast` in the browser, with one slip in `w2-4`.
+- [x] 3. `AsteroidMode`: turning and mirrored big asteroids, the last one at the rocket.
+- [x] 4. Strings (sk, en, guide); spec story.md and super-obstacles.md.
+- [x] 5. Play `w2-4` and `w2-5` with `?fast` in the browser, with one slip in `w2-4`.
+
+## Done - 2026-10-27
+- Shipped: `CopyRow` (copy-row.ts) shared by the invitation and the new `CommandMode`
+  (console panel, sent rows as dots, engine burst, the rocket's answers in its own bubble, the
+  rocket closing in by the level's share, boarding with a shout); `w2-4` is `command`; the
+  rocket lines have their own translator group; big asteroids turn and mirror at random, the
+  last one bigger at the rocket's height; spec story.md and super-obstacles.md.

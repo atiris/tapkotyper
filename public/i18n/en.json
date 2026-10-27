@@ -597,6 +597,16 @@
     "meadowStart": [
       "The meadow animals kick leaves like a ball and want to score a goal on you. Type the word on a leaf to catch it!"
     ],
+    "commandStart": [
+      "Write commands to the rocket so it comes to you. Each command you send brings it closer."
+    ],
+    "commandReply": [
+      "Instruction received.",
+      "Understood.",
+      "A short engine burn.",
+      "Coming closer."
+    ],
+    "boarded": "Hooray, you are on board!",
     "strongStart": [
       "Careful, some meteors are stronger and glow around the edge. When you type their word, you type it once more."
     ],

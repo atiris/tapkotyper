@@ -8,7 +8,8 @@ Each world ends with a bigger, special challenge:
   onto its back, goals are cheered as in the meadow. Several words at once train choosing
   a target without any failure. At the end it hops happily on the spot and shouts a cheer.
 - **Fractured asteroid** (space): a big asteroid, when pushed, splits into smaller
-  targets with shorter words.
+  targets with shorter words. The big ones turn, each its own way (some mirrored), and the
+  last one, bigger, flies straight at the rocket.
 - **Cracking boulder / rock labyrinth** (planet): precise typing cracks it into safe
   stepping stones; accuracy matters more than speed here.
 - **Rolling energy wave** (dragons): countered by a rhythm sequence - short letter groups

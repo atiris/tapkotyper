@@ -19,7 +19,7 @@ import { RainMode, StormMode } from './modes/raintown';
 import { DoorsMode, GateMode } from './modes/robocity';
 import { RoomsMode, WelcomeMode } from './modes/robohome';
 import { AsteroidMode, SpaceMode } from './modes/space';
-import { HopMode } from './modes/space-calm';
+import { CommandMode, HopMode } from './modes/space-calm';
 import { BatteryMode, BeltMode } from './modes/workshop';
 import type { LevelRuntime } from './runtime';
 
@@ -32,6 +32,7 @@ export function createMode(def: LevelDef & { seconds?: number | null }, L: Level
     case 'space': return new SpaceMode(L);
     case 'asteroid': return new AsteroidMode(L);
     case 'hop': return new HopMode(L);
+    case 'command': return new CommandMode(L);
     case 'swamp': return new SwampMode(L);
     case 'signs': return new SignsMode(L);
     case 'boulder': return new BoulderMode(L);

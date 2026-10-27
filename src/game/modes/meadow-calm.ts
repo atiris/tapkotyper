@@ -1,11 +1,11 @@
 import { pickLine } from '../../app/app';
 import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
-import { blob, drawSprite, fontFamily, type G, wordBox } from '../../gfx/draw';
+import { blob, drawSprite, fontFamily, type G } from '../../gfx/draw';
 import { t } from '../../i18n/i18n';
-import { STORIES, storyOf } from '../levels';
 import { Mode } from '../mode';
 import type { Target } from '../typing';
+import { CopyRow } from './copy-row';
 
 /** The pictures this world's levels draw; a level opens when they are loaded. */
 const PICTURES = ['obj-bee', 'obj-butterfly', 'obj-dewdrop', 'obj-invitation', 'obj-ladybug', 'obj-mouse'];
@@ -165,26 +165,7 @@ export class DewdropsMode extends Mode {
   }
 }
 
-/** Extra words a slip may still add: 2 each, up to (1 + story order) x 3 in all. */
-export function slipWords(storyOrder: number, added: number): number {
-  return Math.max(0, Math.min(2, (1 + storyOrder) * 3 - added));
-}
-
-/** A word of the invitation card: the one to type is a target, the others are ink on the paper. */
-interface Slot {
-  word: string;
-  tg: Target;
-  /** Seconds since a slip faded it (-1: no slip). */
-  slip: number;
-}
-
 const CARD_INK = '#4a3a5c';
-const SLIP_INK = '#d9482b';
-const SLIP_FADE = 0.6;
-/** What stays of a slipped word: a faint trace where it stood. */
-const SLIP_TRACE = 0.2;
-const WORD_SIZE = 40;
-const WORD_GAP = 26;
 /** Seconds the finished card takes to fold, fly to its friend and leave with it. */
 const FLY_TIME = 1.6;
 /** Seconds the next card's friend takes to come in from the right (it popped up at its place before). */
@@ -196,30 +177,22 @@ const PARTY_LINE = 1.2;
 const PARTY_TIME = 4.2;
 
 /**
- * The meadow's twist: you write the invitation to the meadow party. The words of a row are
- * typed from left to right; a slip turns the word red and it fades to a faint trace, and the level
- * gets two more words. A finished card flies as an envelope to a meadow friend. At the end one
- * animal of each kind that got a card comes to the middle, under the line how many were invited
- * (one per word typed right) and came to the party.
+ * The meadow's twist: you write the invitation to the meadow party, one copy row per card
+ * (`CopyRow`). A finished card flies as an envelope to a meadow friend. At the end one animal of
+ * each kind that got a card comes to the middle, under the line how many were invited (one per
+ * word typed right) and came to the party.
  */
 export class InvitationMode extends Mode {
   readonly pictures = PICTURES;
   readonly world = 'meadow';
   readonly phraseWords = 1;
-  private row: Slot[] = [];
-  private at = 0;
-  /** Words typed or faded. */
-  private resolved = 0;
-  /** Words added by slips. */
-  private added = 0;
+  private row = new CopyRow(this.L);
   /** The card's flight: 0 on the table, up to 1 gone with the friend; null while writing. */
   private fly: number | null = null;
   private friend = FRIENDS[0];
   /** Seconds since this card's friend started coming in. */
   private friendT = FRIEND_COME;
   private cards = 0;
-  /** Words typed right: each one invited an animal. */
-  private invited = 0;
   /** Seconds of the party at the end; null before it. */
   private party: number | null = null;
 
@@ -240,31 +213,19 @@ export class InvitationMode extends Mode {
   }
 
   private newCard(): void {
-    const left = this.L.count - this.resolved;
-    if (left <= 0) {
-      this.row = [];
+    if (this.row.left <= 0) {
       this.party = 0;
       this.L.sfx('cheer');
       return;
     }
-    const n = Math.min(this.L.rng.int(3, 4), left);
+    this.row.fill();
     this.friend = FRIENDS[this.cards++ % FRIENDS.length];
     if (this.cards > 1) this.friendT = 0;
-    this.at = 0;
-    this.row = Array.from({ length: n }, (_, i) => {
-      const word = this.L.word(6, 1);
-      return { word, tg: this.L.core.add(word, {}, i === 0), slip: -1 };
-    });
   }
 
+  /** After a word: a finished card flies to its friend, then the next card comes. */
   private next(): void {
-    this.resolved++;
-    this.at++;
-    const s = this.row[this.at];
-    if (s) {
-      s.tg.selectable = true;
-      return;
-    }
+    if (!this.row.complete) return;
     this.fly = 0;
     this.L.sfx('whoosh');
     this.L.tweens.add(FLY_TIME, (k) => (this.fly = k), ease.linear, () => {
@@ -275,7 +236,7 @@ export class InvitationMode extends Mode {
   }
 
   update(dt: number): void {
-    for (const s of this.row) if (s.slip >= 0) s.slip += dt;
+    this.row.update(dt);
     this.friendT += dt;
     if (this.party === null) return;
     const before = this.party;
@@ -284,40 +245,13 @@ export class InvitationMode extends Mode {
   }
 
   onDone(tg: Target): void {
-    if (this.row[this.at]?.tg !== tg) return;
+    if (!this.row.onDone(tg)) return;
     this.L.sfx('pop');
-    this.invited++;
     this.next();
   }
 
-  /** A slip: the word fades away red and the level gets two more words (up to the story's ceiling). */
   onWrong(tg: Target | null): void {
-    const s = this.row[this.at];
-    if (!s || s.tg !== tg) return;
-    s.slip = 0;
-    this.L.core.release(tg, false);
-    const story = STORIES.indexOf(storyOf(this.L.def.world)) + 1;
-    const more = slipWords(story, this.added);
-    this.added += more;
-    this.L.count += more;
-    this.next();
-  }
-
-  /** The row laid out on the card: each word's centre and the size that fits the card. */
-  private layout(g: G): { xs: number[]; size: number } {
-    const widths = (size: number) => this.row.map((s) => wordBox(g, s.word, size).w);
-    let size = WORD_SIZE;
-    const total = (sz: number) => widths(sz).reduce((a, b) => a + b, 0) + WORD_GAP * (this.row.length - 1);
-    const room = this.cardW - 60;
-    if (total(size) > room) size = Math.max(24, (size * room) / total(size));
-    const ws = widths(size);
-    let x = this.cardX - total(size) / 2;
-    const xs = ws.map((w) => {
-      const c = x + w / 2;
-      x += w + WORD_GAP;
-      return c;
-    });
-    return { xs, size };
+    if (this.row.onWrong(tg)) this.next();
   }
 
   /** The guests: one of each kind that got a card, walking or flying in to the middle; above them how many came. */
@@ -333,7 +267,7 @@ export class InvitationMode extends Mode {
     });
     const a = Math.min(1, Math.max(0, (time - PARTY_LINE) / 0.4));
     if (a <= 0) return;
-    const n = this.invited;
+    const n = this.row.typed;
     const lines = t(n === 1 ? 'story.invitationPartyOne' : n > 1 && n < 5 ? 'story.invitationPartyFew' : 'story.invitationPartyMany', { n }).split('\n');
     g.save();
     g.globalAlpha = a;
@@ -379,22 +313,11 @@ export class InvitationMode extends Mode {
     g.stroke();
     g.restore();
     drawSprite(g, 'obj-invitation', this.cardX + this.cardW / 2 - 20, y - 80, 70, { rot: 0.2 }, blob('#f4e4c8', false));
-    const { xs, size } = this.layout(g);
-    this.row.forEach((s, i) => {
-      if (i === this.at) return this.L.label(g, s.tg, xs[i], y, size);
-      g.save();
-      g.font = `600 ${size}px ${fontFamily()}`;
-      g.textAlign = 'center';
-      g.textBaseline = 'middle';
-      g.fillStyle = s.slip >= 0 ? SLIP_INK : CARD_INK;
-      g.globalAlpha = s.slip >= 0 ? Math.max(SLIP_TRACE, 1 - (1 - SLIP_TRACE) * s.slip / SLIP_FADE) : i < this.at ? 1 : 0.35;
-      g.fillText(s.word, xs[i], y);
-      g.restore();
-    });
+    this.row.draw(g, this.cardX, y, this.cardW - 60, CARD_INK);
   }
 
   progress(): number {
-    return this.resolved / this.L.count;
+    return this.row.resolved / this.L.count;
   }
 
   get finished(): boolean {

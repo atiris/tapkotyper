@@ -146,6 +146,10 @@
       "title": "Scény príbehu",
       "about": "Krátke scény s niekoľkými vetami, ktoré sa ukazujú pred svetom a po jeho dokončení."
     },
+    "story-space": {
+      "title": "Vety vo svete Raketa",
+      "about": "Úvodné vety a bubliny úrovní sveta Raketa: skákanie po meteoritoch, silnejšie meteority a príkazy rakete."
+    },
     "story-play": {
       "title": "Vety počas hier",
       "about": "Vety zvierat, robotov a víly, ktoré sa ukazujú v bublinách počas hier v jednotlivých svetoch."
@@ -632,6 +636,9 @@
     "story.scenes.world15": "Scéna pred prvou úrovňou mesačného plesu (svet 15).",
     "story.scenes.wings": "Scéna po dokončení mesačného plesu (svet 15), konca príbehu s vílou. {name} je prezývka dieťaťa.",
     "story.meadowStart": "Úvodná veta úrovne na lúke, ukáže sa na začiatku hry.",
+    "story.commandStart": "Úvodná veta 4. úrovne v rakete: astronaut píše príkazy, každý odoslaný privedie raketu bližšie.",
+    "story.commandReply": "Krátke odpovede rakety v jej bubline po každom odoslanom príkaze; vyberie sa jedna náhodne.",
+    "story.boarded": "Zvolanie nad raketou, keď do nej astronaut na konci 4. úrovne v rakete naskočí.",
     "story.strongStart": "Úvodná veta 3. úrovne v rakete: vysvetlí žiariace silnejšie meteority, ktorých slovo sa píše dvakrát.",
     "story.strongHit": "Krátke zvolania nad silnejším meteoritom, keď sa jeho slovo napíše prvý raz; vyberie sa jedno náhodne.",
     "story.strongSay": "Čo povie silnejší meteorit po prvom zásahu, vo vlastnej bubline.",

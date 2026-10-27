@@ -20,7 +20,7 @@ const { NotesMode, TreeSongMode } = await import('./musictree');
 const { RainMode, StormMode } = await import('./raintown');
 const { RoomsMode, WelcomeMode } = await import('./robohome');
 const { AsteroidMode, SpaceMode } = await import('./space');
-const { HopMode } = await import('./space-calm');
+const { CommandMode, HopMode } = await import('./space-calm');
 const { BatteryMode, BeltMode } = await import('./workshop');
 const { BoulderMode, SignsMode, SwampMode } = await import('./planet');
 const { DoorsMode, GateMode } = await import('./robocity');
@@ -57,7 +57,7 @@ function fakeRuntime(count = 4): LevelRuntime {
 }
 
 const MODES: [string, new (L: LevelRuntime) => Mode][] = [
-  ['meadow', MeadowMode], ['dewdrops', DewdropsMode], ['invitation', InvitationMode], ['hedgehog', HedgehogMode], ['space', SpaceMode], ['hop', HopMode], ['asteroid', AsteroidMode],
+  ['meadow', MeadowMode], ['dewdrops', DewdropsMode], ['invitation', InvitationMode], ['hedgehog', HedgehogMode], ['space', SpaceMode], ['hop', HopMode], ['command', CommandMode], ['asteroid', AsteroidMode],
   ['swamp', SwampMode], ['signs', SignsMode], ['boulder', BoulderMode], ['shield', ShieldMode], ['wave', WaveMode],
   ['slope', SlopeMode], ['mole', MoleMode], ['junk', JunkMode], ['knot', KnotMode], ['belt', BeltMode],
   ['battery', BatteryMode], ['rain', RainMode], ['storm', StormMode], ['doors', DoorsMode], ['gate', GateMode],
@@ -108,7 +108,7 @@ describe('a level shorter than its minimum', () => {
 
 describe('invitation', () => {
   it('a slip adds two words until the story ceiling of (1 + story order) x 3', async () => {
-    const { slipWords } = await import('./meadow-calm');
+    const { slipWords } = await import('./copy-row');
     expect(slipWords(1, 0)).toBe(2);
     expect(slipWords(1, 4)).toBe(2);
     expect(slipWords(1, 6)).toBe(0);

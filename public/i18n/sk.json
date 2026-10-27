@@ -597,6 +597,16 @@
     "meadowStart": [
       "Zvieratká na lúke kopú listy ako loptu a chcú ti dať gól. Napíš slovo na liste a chytíš ho!"
     ],
+    "commandStart": [
+      "Napíš rakete príkazy, nech priletí k tebe. Každý odoslaný príkaz ju privedie bližšie."
+    ],
+    "commandReply": [
+      "Inštrukcia prijatá.",
+      "Rozumiem.",
+      "Krátky zážih motorov.",
+      "Približujem sa."
+    ],
+    "boarded": "Hurá, si na palube!",
     "strongStart": [
       "Pozor, niektoré meteority sú silnejšie, majú okolo seba žiaru. Keď napíšeš ich slovo, musíš ho napísať ešte raz."
     ],

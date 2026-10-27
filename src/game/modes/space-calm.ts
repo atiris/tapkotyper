@@ -2,8 +2,10 @@ import { pickLine } from '../../app/app';
 import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
 import { blob, drawSprite, type G } from '../../gfx/draw';
+import { t } from '../../i18n/i18n';
 import { Mode } from '../mode';
 import type { Target } from '../typing';
+import { CopyRow } from './copy-row';
 import { ROCKET_H, WINDOW, drawAstronaut, windowGlass } from './space';
 
 const PICTURES = ['obj-asteroid-big', 'obj-asteroid-small', 'obj-rocket', 'obj-rocket-pilot', 'tapko-astronaut'];
@@ -235,5 +237,167 @@ export class HopMode extends Mode {
 
   get finished(): boolean {
     return (this.end ?? 0) > ROCKET_COME + ROCKET_BOARD + ROCKET_AWAY;
+  }
+}
+
+/** Where the astronaut stands in the command level, and the rocket's start and stop beside him. */
+const COMMAND_X = 230;
+const COMMAND_Y = 0.7;
+const ROCKET_START = 0.86;
+const ROCKET_STOP = 230;
+/** Seconds from a sent command to the next row (the rocket answers meanwhile), and of the boarding end. */
+const REPLY_TIME = 1.2;
+const BOARD = 0.9;
+const END_TIME = 2.6;
+const PANEL_INK = '#e8f6ff';
+
+/**
+ * The rocket world's twist: the astronaut on a meteor on the left writes commands to the rocket on
+ * the right, one copy row each (`CopyRow`). A sent command flies to the rocket as a trail of dots;
+ * the rocket fires its engine, comes closer by its share of the level and answers. When all is
+ * written it is beside him: he jumps into its window and is glad.
+ */
+export class CommandMode extends Mode {
+  readonly pictures = PICTURES;
+  readonly world = 'space';
+  readonly phraseWords = 1;
+  private row = new CopyRow(this.L);
+  /** Seconds until the next row comes after a sent one (-1: writing). */
+  private reply = -1;
+  /** The rocket's share of the way to him, eased; it never goes back. */
+  private shown = 0;
+  private flame = 0;
+  /** Seconds of the end; null before it. */
+  private end: number | null = null;
+
+  startLine(): string {
+    return pickLine('story.commandStart');
+  }
+
+  start(): void {
+    this.row.fill();
+  }
+
+  private get feet(): { x: number; y: number } {
+    return { x: COMMAND_X, y: VH * COMMAND_Y - ROCK_SIZE * 0.32 + Math.sin(this.t * 1.4) * 4 };
+  }
+
+  /** The rocket, mirrored to face him: from the right third to beside him as the commands are sent, bobbing. */
+  private rocket(): { x: number; y: number } {
+    const from = this.L.vw * ROCKET_START, to = COMMAND_X + ROCKET_STOP;
+    return { x: from + (to - from) * ease.inOutQuad(this.shown), y: VH * 0.5 + Math.sin(this.t * 1.8) * 8 };
+  }
+
+  /** 0..1 of his jump into the window at the end. */
+  private get boarding(): number {
+    return this.end === null ? 0 : Math.min(1, this.end / BOARD);
+  }
+
+  private hero(): { x: number; y: number; size: number } {
+    const b = this.boarding, f = this.feet;
+    if (b <= 0) return { ...f, size: ASTRONAUT };
+    const r = this.rocket(), e = ease.inOutQuad(b);
+    const wx = r.x - WINDOW.x, wy = r.y + WINDOW.y + 20;
+    return { x: f.x + (wx - f.x) * e, y: f.y + (wy - f.y) * e - Math.sin(b * Math.PI) * 100, size: ASTRONAUT + (40 - ASTRONAUT) * e };
+  }
+
+  heroSpot(): { x: number; y: number } {
+    const s = this.hero();
+    return { x: s.x, y: s.y - s.size * 0.9 - 20 };
+  }
+
+  bubbleSpot(): { x: number; y: number } {
+    const s = this.hero();
+    return { x: s.x, y: s.y - s.size * 0.9 - 10 };
+  }
+
+  update(dt: number): void {
+    this.row.update(dt);
+    this.flame = Math.max(0, this.flame - dt * 1.5);
+    const goal = Math.min(1, this.row.resolved / this.L.count);
+    this.shown = Math.max(this.shown, this.shown + (goal - this.shown) * Math.min(1, dt * 1.5));
+    if (this.end !== null) {
+      const before = this.end;
+      this.end += dt;
+      if (before < BOARD && this.end >= BOARD) {
+        const r = this.rocket();
+        this.L.particles.emit(r.x, r.y, 30, 'sparkle', ['#fff6a8', '#ffd1f5', '#a8f0ff'], 260, 9);
+        this.L.shout(t('story.boarded'), r.x, r.y - 110);
+        this.L.sfx('cheer');
+      }
+      return;
+    }
+    if (this.reply < 0) return;
+    this.reply -= dt;
+    if (this.reply > 0) return;
+    this.reply = -1;
+    this.L.core.prune();
+    if (this.row.left > 0) this.row.fill();
+    else this.end = 0;
+  }
+
+  onDone(tg: Target): void {
+    if (!this.row.onDone(tg)) return;
+    this.L.sfx('pop');
+    this.send();
+  }
+
+  onWrong(tg: Target | null): void {
+    if (this.row.onWrong(tg)) this.send();
+  }
+
+  /** A finished row is sent: dots fly to the rocket, its engine fires and it answers. */
+  private send(): void {
+    if (!this.row.complete) return;
+    const r = this.rocket(), f = this.feet;
+    for (let i = 0; i < 6; i++) {
+      const k = i / 5;
+      this.L.particles.emit(f.x + (r.x - f.x) * k, f.y - 120 + (r.y - f.y + 120) * k, 2, 'sparkle', ['#a8f0ff', '#fff6a8'], 40, 6, 0.6 + k * 0.5);
+    }
+    this.L.sfx('whoosh');
+    this.flame = 1;
+    this.L.speak('rocket', pickLine('story.commandReply'), r.x, r.y - 110, r.x, r.y - 50, REPLY_TIME + 1);
+    this.reply = REPLY_TIME;
+  }
+
+  render(g: G): void {
+    const f = this.feet, r = this.rocket(), b = this.boarding;
+    drawSprite(g, 'obj-asteroid-big', f.x, f.y + ROCK_SIZE * 0.32, ROCK_SIZE, {}, blob('#9a8a7a', false));
+    // The engine's flame on its right, the rocket facing him.
+    g.save();
+    g.globalAlpha = 0.45 + this.flame * 0.55;
+    g.fillStyle = '#ffcf5a';
+    g.beginPath();
+    g.ellipse(r.x + 85 + this.flame * 18, r.y + 4, 10 + this.flame * 26, 8, 0, 0, Math.PI * 2);
+    g.fill();
+    g.restore();
+    const inside = b >= 0.85;
+    drawSprite(g, inside ? 'obj-rocket-pilot' : 'obj-rocket', r.x, r.y, ROCKET_H, { flip: true }, blob('#e5534b'));
+    if (!inside) {
+      windowGlass(g, r.x - WINDOW.x, r.y + WINDOW.y);
+      const s = this.hero();
+      drawAstronaut(g, true, s.x, s.y, s.size);
+    }
+    if (this.end !== null || this.reply >= 0) return;
+    // The console the commands are written on, above between him and the rocket.
+    const cx = (f.x + r.x) / 2 + 40, cy = VH * 0.24, w = Math.min(this.L.vw * 0.56, 700);
+    g.save();
+    g.fillStyle = 'rgba(18, 30, 70, 0.88)';
+    g.strokeStyle = '#7fd1ff';
+    g.lineWidth = 3;
+    g.beginPath();
+    g.roundRect(cx - w / 2, cy - 60, w, 120, 16);
+    g.fill();
+    g.stroke();
+    g.restore();
+    this.row.draw(g, cx, cy, w - 50, PANEL_INK);
+  }
+
+  progress(): number {
+    return this.row.resolved / this.L.count;
+  }
+
+  get finished(): boolean {
+    return (this.end ?? 0) > END_TIME;
   }
 }

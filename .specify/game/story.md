@@ -53,8 +53,12 @@ gives you a wreath"), never about the character as someone else.
    into its window and it flies off; 3 a faster stream where about every fourth meteor is
    stronger: it glows, and when its word is typed it shouts ("Au!", "Zásah!", "Trefa!"), says
    "Ja som silnejší, musíš napísať slovo znova." and comes again a bit further back with the
-   same word, counting once (the opening line explains it); 4 the stream again; 5 the
-   super-obstacle. The near
+   same word, counting once (the opening line explains it); 4 the copy twist: the astronaut on a
+   meteor writes commands to the rocket, which faces him on the right, on a console panel (the
+   meadow invitation's copy rules); each sent command brings the rocket closer and it answers
+   ("Inštrukcia prijatá.", "Rozumiem.", "Krátky zážih motorov."), and when all is written it is
+   beside him, he jumps in and is glad; 5 the super-obstacle, whose big asteroids turn each
+   their own way and whose last one flies at the rocket. The near
    rocks drift at half the usual near-layer speed.
    Super-obstacle: fractured asteroid.
    Reward: landing clearance.

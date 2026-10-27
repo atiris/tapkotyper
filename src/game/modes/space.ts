@@ -407,7 +407,7 @@ export class SpaceMode extends ApproachMode {
   }
 }
 
-/** World 2 super-obstacle: a big asteroid splits into smaller rocks with shorter words. */
+/** World 2 super-obstacle: big turning asteroids split into smaller rocks with shorter words; the last one flies at the rocket. */
 export class AsteroidMode extends SpaceMode {
   private bigs = 0;
   protected autoSpawn = false;
@@ -420,7 +420,13 @@ export class AsteroidMode extends SpaceMode {
       if (this.spawnTimer <= 0) {
         const word = this.L.word();
         const x = this.L.vw + 140;
-        const m: Mover = { x, y: VH * 0.45, vx: this.speedFor(word, x) * 0.7, vy: 0, rot: 0, vr: 0.1, age: 0, state: 'come', fade: 0, sprite: 'obj-asteroid-big', size: 220, big: true };
+        // Each one turns its own way; the last one heads straight for the rocket, bigger.
+        const last = this.bigs === this.L.count - 1;
+        const spin = this.L.rng.range(0.25, 0.6) * (this.L.rng.chance(0.5) ? 1 : -1);
+        const m: Mover = {
+          x, y: last ? this.rocketY : VH * 0.45, vx: this.speedFor(word, x) * 0.7, vy: 0, rot: 0, vr: spin, age: 0, state: 'come', fade: 0,
+          sprite: 'obj-asteroid-big', size: last ? 250 : 220, big: true, flip: this.L.rng.chance(0.5),
+        };
         core.add(word, m);
         this.bigs++;
         this.spawnTimer = 1;

@@ -41,7 +41,7 @@ export function storyDone(p: Profile, story: StoryDef): boolean {
 
 export type LevelKind =
   | 'meadow' | 'dewdrops' | 'invitation' | 'hedgehog'
-  | 'space' | 'hop' | 'asteroid'
+  | 'space' | 'hop' | 'command' | 'asteroid'
   | 'swamp' | 'signs' | 'boulder'
   | 'shield' | 'wave'
   | 'slope' | 'mole'
@@ -100,7 +100,7 @@ export type Activity = 'chase' | 'catch' | 'clean' | 'crossroads' | 'listen' | '
 export function activityOf(l: LevelDef): Activity {
   if (l.isSuper) return 'super';
   if (CALM_KINDS.includes(l.kind)) return 'catch';
-  if (l.kind === 'invitation') return 'clean';
+  if (l.kind === 'invitation' || l.kind === 'command') return 'clean';
   if (l.kind === 'signs') return 'crossroads';
   if (l.style === 'dictation' || l.style === 'mixed') return 'listen';
   if (l.style === 'memory') return 'remember';
@@ -145,7 +145,7 @@ const def = (world: number, index: number, kind: LevelKind, count: number, varia
 export const LEVELS: LevelDef[] = [
   // The meadow plays the world rhythm: main game, calm step, main game with a gust, twist, super-obstacle.
   def(0, 0, 'meadow', 12, 'flyers', undefined, true), def(0, 1, 'dewdrops', 20), def(0, 2, 'meadow', 16, 'gust'), def(0, 3, 'invitation', 14), def(0, 4, 'hedgehog', 6),
-  def(1, 0, 'space', 12, 'asteroids'), def(1, 1, 'hop', 16), def(1, 2, 'space', 16, 'strong'), def(1, 3, 'space', 18, 'mix'), def(1, 4, 'asteroid', 4),
+  def(1, 0, 'space', 12, 'asteroids'), def(1, 1, 'hop', 16), def(1, 2, 'space', 16, 'strong'), def(1, 3, 'command', 12), def(1, 4, 'asteroid', 4),
   def(2, 0, 'swamp', 12), def(2, 1, 'signs', 10), def(2, 2, 'swamp', 14), def(2, 3, 'signs', 12), def(2, 4, 'boulder', 6),
   def(3, 0, 'shield', 12, '1'), def(3, 1, 'shield', 14, '2'), def(3, 2, 'shield', 16, '3'), def(3, 3, 'shield', 18, '3'), def(3, 4, 'wave', 14),
   def(4, 0, 'slope', 12, 'rocks'), def(4, 1, 'slope', 14, 'stumps'), def(4, 2, 'slope', 16, 'mix'), def(4, 3, 'slope', 18, 'mix'), def(4, 4, 'mole', 14),

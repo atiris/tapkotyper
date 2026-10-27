@@ -428,8 +428,9 @@
       "Raketa odletela kúsok ďalej. Skáč po meteoritoch, kým k nej nedoskáčeš!"
     ],
     "hopTooFar": "Jaj, tam nedoskočím.",
-    "dewStart": [
-      "Ráno je na tráve rosa. Napíš písmenká na kvapke a vyrastie z nej kvietok!"
+    "poppyStart": [
+      "Vypestujme kyticu vlčích makov! Napíš písmenko nad púčikom a rozkvitne.",
+      "Na lúke rastú vlčie maky. Každé napísané písmenko pridá jeden do kytice!"
     ],
     "gustStart": "Fúka vietor! Letí viac malých listov naraz.",
     "invitationStart": [
@@ -1265,7 +1266,7 @@
     "games": {
       "intro": "Obrázok na kruhu úrovne na mape ukazuje, aká hra ťa v nej čaká.",
       "chase": "**Prúd slov**: slová letia alebo sa kotúľajú k tebe. Napíš ich skôr, než dorazia.",
-      "catch": "**Čakajúce slová**: slová pokojne čakajú, napríklad na kvapkách rosy. Každé začína iným písmenom, tak si vyber, ktoré napíšeš.",
+      "catch": "**Čakajúce slová**: slová pokojne čakajú, napríklad nad púčikmi vlčích makov. Každé začína iným písmenom, tak si vyber, ktoré napíšeš.",
       "crossroads": "**Rázcestie**: na rázcestí slovom vyberieš cestu.",
       "clean": "**Odpis**: slová stoja v riadku a píšeš ich zľava doprava. Pri pozvánke za chybu slovo zbledne a pribudnú dve nové, je to viac cvičenia, nie trest.",
       "listen": "**Odposluch**: slovo nevidíš, iba počuješ. Napíš, čo počuješ. Keď chvíľu nepíšeš, zopakuje sa.",

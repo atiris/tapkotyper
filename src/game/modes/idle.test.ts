@@ -14,7 +14,7 @@ const { MoleMode, SlopeMode } = await import('./egg');
 const { BirdsMode } = await import('./forestpath');
 const { JunkMode, KnotMode } = await import('./junkyard');
 const { HedgehogMode, MeadowMode } = await import('./meadow');
-const { DewdropsMode, InvitationMode } = await import('./meadow-calm');
+const { PoppyMode, InvitationMode } = await import('./meadow-calm');
 const { FirefliesMode, LastSongMode } = await import('./moonball');
 const { NotesMode, TreeSongMode } = await import('./musictree');
 const { RainMode, StormMode } = await import('./raintown');
@@ -57,7 +57,7 @@ function fakeRuntime(count = 4): LevelRuntime {
 }
 
 const MODES: [string, new (L: LevelRuntime) => Mode][] = [
-  ['meadow', MeadowMode], ['dewdrops', DewdropsMode], ['invitation', InvitationMode], ['hedgehog', HedgehogMode], ['space', SpaceMode], ['hop', HopMode], ['command', CommandMode], ['asteroid', AsteroidMode],
+  ['meadow', MeadowMode], ['poppies', PoppyMode], ['invitation', InvitationMode], ['hedgehog', HedgehogMode], ['space', SpaceMode], ['hop', HopMode], ['command', CommandMode], ['asteroid', AsteroidMode],
   ['swamp', SwampMode], ['signs', SignsMode], ['boulder', BoulderMode], ['shield', ShieldMode], ['wave', WaveMode],
   ['slope', SlopeMode], ['mole', MoleMode], ['junk', JunkMode], ['knot', KnotMode], ['belt', BeltMode],
   ['battery', BatteryMode], ['rain', RainMode], ['storm', StormMode], ['doors', DoorsMode], ['gate', GateMode],

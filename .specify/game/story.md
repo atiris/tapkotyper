@@ -19,7 +19,7 @@ gives you a wreath"), never about the character as someone else.
    gloves held just beside it, toward the leaves, never covering the character. At the penalty area the creature kicks the leaf on;
    when the middle band above the character is free and the leaf flies elsewhere, the kick
    lifts it in an arc up there. Typing the word sends the leaf faster into the gloves, which
-   always catch it: in the middle band when it was typed before the kick or kicked up there,
+   rise with it step by step and reach its height just as it arrives, so they always catch it: in the middle band when it was typed before the kick or kicked up there,
    else at its own height. The caught leaf fades away in the gloves, and its creature turns
    and goes home. The intro scene and the level's start line tell exactly this, and the get-ready
    card of every story level shows the level's one-line story under its title. A leaf not typed in time flies past: a goal, everybody cheers (a "GOAL!" pop,
@@ -28,14 +28,21 @@ gives you a wreath"), never about the character as someone else.
    never the target of anything (no webs, nets or swatters): even soft hitting or catching
    is the wrong message for small children; playing with them is better.
    The meadow plays the world rhythm (see [mechanics](mechanics.md)): level 1 is the leaf
-   game with single chunks; level 2 is the calm step, dew drops on the grass with one letter
-   each, and a typed letter opens a flower; level 3 is the leaf game again with a gust of
+   game with single chunks; level 2 is the calm step, growing a bouquet of corn poppies: a bud
+   grows out of the near grass with a letter above it (up to three at once, each with another
+   first letter); the typed letter makes it bloom (half of the buds open slowly first), the
+   flower stays a while, fades and drops its petals, and its seed head goes, while a new bud
+   grows elsewhere; some poppies grow mirrored so they do not all look alike; every typed letter
+   adds a poppy to the bouquet that gathers in the middle at the end, with a happy shout. In the
+   calm meadow levels the middle band of the background drifts slowly; level 3 is the leaf game again with a gust of
    wind half way; level 4 is the twist, the invitation to the meadow party written word by
    word without a slip, and every finished card flies as an envelope to a meadow friend. At
    the end one animal of each kind that got a card comes to the middle, under the line how many
    animals got an invitation (one per word typed right) and came to the party. On the meadow a
    leaf's word shows only once the animal carrying it is wholly in sight.
-   Super-obstacle: a hedgehog throws volleys of leaves from its back.
+   Super-obstacle: a hedgehog shakes volleys of leaves off its back; they scatter around him,
+   some forward, some behind him, and fly on toward Tapko from there, each word showing once
+   its leaf has landed from the toss.
    Reward: a secret invitation to space. Before the first level the narrator
    shows the child their character: "This is you."
 2. **Space Rocket Flight** - Tapko suits up where he stands: his things fade away, a white

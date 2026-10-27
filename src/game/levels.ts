@@ -40,7 +40,7 @@ export function storyDone(p: Profile, story: StoryDef): boolean {
 }
 
 export type LevelKind =
-  | 'meadow' | 'dewdrops' | 'invitation' | 'hedgehog'
+  | 'meadow' | 'poppies' | 'invitation' | 'hedgehog'
   | 'space' | 'hop' | 'command' | 'asteroid'
   | 'swamp' | 'signs' | 'boulder'
   | 'shield' | 'wave'
@@ -86,8 +86,8 @@ export const MIN_ACTIVE_S = 120;
 
 /** A calm step is a short valley between two action levels. */
 const CALM_ACTIVE_S = 60;
-/** The calm steps of the world rhythm: waiting words (the meadow's dew drops, the rocket world's meteors to hop on). */
-const CALM_KINDS: LevelKind[] = ['dewdrops', 'hop'];
+/** The calm steps of the world rhythm: waiting words (the meadow's poppies, the rocket world's meteors to hop on). */
+const CALM_KINDS: LevelKind[] = ['poppies', 'hop'];
 
 /** Seconds of active play the level lasts at least (when it has a minimum length). */
 export function minActiveS(l: LevelDef): number {
@@ -139,7 +139,7 @@ const def = (world: number, index: number, kind: LevelKind, count: number, varia
 
 export const LEVELS: LevelDef[] = [
   // The meadow plays the world rhythm: main game, calm step, main game with a gust, twist, super-obstacle.
-  def(0, 0, 'meadow', 12, 'flyers', undefined, true), def(0, 1, 'dewdrops', 20), def(0, 2, 'meadow', 16, 'gust'), def(0, 3, 'invitation', 14), def(0, 4, 'hedgehog', 6),
+  def(0, 0, 'meadow', 12, 'flyers', undefined, true), def(0, 1, 'poppies', 20), def(0, 2, 'meadow', 16, 'gust'), def(0, 3, 'invitation', 14), def(0, 4, 'hedgehog', 6),
   def(1, 0, 'space', 12, 'asteroids'), def(1, 1, 'hop', 16), def(1, 2, 'space', 16, 'strong'), def(1, 3, 'command', 12), def(1, 4, 'asteroid', 4),
   def(2, 0, 'swamp', 12), def(2, 1, 'signs', 10), def(2, 2, 'swamp', 14), def(2, 3, 'signs', 12), def(2, 4, 'boulder', 6),
   def(3, 0, 'shield', 12, '1'), def(3, 1, 'shield', 14, '2'), def(3, 2, 'shield', 16, '3'), def(3, 3, 'shield', 18, '3'), def(3, 4, 'wave', 14),

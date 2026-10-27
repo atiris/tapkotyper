@@ -73,6 +73,9 @@ Notes from real Gemini runs; add new ones here.
   template in the single item first, then name what the hidden part shows ("a front pocket
   with a zipper, a flap with a buckle").
 - "A carry loop above the shoulders" put a loop on top of the head; leave it out.
+- Phase pictures edited from one base (the poppy's bud to seed head) keep the stem, its leaves
+  and its bottom end. Gemini hardly changes the height on request ("one fifth lower"), so the
+  game scales the phases.
 - "Walking stick with a crook handle" reads as a crutch; say "straight, a round knob on top".
 - A hand item still moves the arm. In the cut-out list every part of the character
   ("head, face, eyes, both arms, paws, legs"), or the whole figure can stay; a cut-out in a
@@ -896,7 +899,6 @@ at a small size, since many of them stand still on screen with a word next to th
 | File | OBJECT | BG |
 |---|---|---|
 | **Meadow** | | |
-| `obj-dewdrop.jpg` | a single round shiny dew drop resting on the tip of a small grass blade, soft light reflection, no face | magenta |
 | `obj-poppy-flower.jpg` | (2026-10-27, base of the poppy set, tall portrait 2 : 3) one common wild red poppy (corn poppy, Papaver rhoeas) in full bloom on its own single stem, seen from the side and slightly from the front. Four wide rounded, softly crinkled petals in warm scarlet red #E63B2E with a lighter coral highlight #F27A5E, never pink, purple or magenta; a small dark spot at the base of each petal, a small dark green-black seed head in the middle with a ring of short dark stamens. One thin, gently curved, slightly hairy green stem (#5FA84A) going straight down, with two small narrow toothed leaves low on the stem. No face, no eyes. The flower is at the top of the picture, the stem ends well above the bottom edge, nothing touches any edge | magenta |
 | `obj-poppy-bud.jpg` | **not the common prompt:** attach `obj-poppy-flower.jpg`: "Edit the attached picture (a red poppy flower on a green stem). Replace the open flower with a closed poppy bud: an oval, slightly drooping green bud (#7DBF5A with lighter #A8D98A highlights), softly hairy, with only a thin line of red petal peeking at its tip. Keep the stem, its curve, its little hairs and both toothed leaves exactly the same, same style, same colors, same position and the same bottom end of the stem; only make the whole plant a bit shorter: the stem is cut shorter at its top so the bud sits about one fifth lower than the flower did. Keep the same flat magenta background (#FF00FF), no shadow, no grass, no other objects. No face, no eyes, no text. Same image size and same tall portrait shape as the attached picture." | magenta |
 | `obj-poppy-opening.jpg` | **not the common prompt:** attach `obj-poppy-flower.jpg`: as the bud, but "Replace the open flower with a poppy that is just starting to open: the green hairy bud (#7DBF5A) has split into two halves that sit like a little cap, and crumpled scarlet red petals (#E63B2E with lighter coral #F27A5E highlights, never pink, purple or magenta) push out between them, still folded and closed, about half the size of the open flower." and "the bud sits about one tenth lower than the flower did" | magenta |

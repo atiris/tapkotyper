@@ -3,157 +3,209 @@ import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
 import { blob, drawSprite, fontFamily, type G } from '../../gfx/draw';
 import { t } from '../../i18n/i18n';
-import { Mode } from '../mode';
+import { type Drift, Mode, TAPKO_X } from '../mode';
 import type { Target } from '../typing';
 import { CopyRow } from './copy-row';
 
 /** The pictures this world's levels draw; a level opens when they are loaded. */
-const PICTURES = ['obj-bee', 'obj-butterfly', 'obj-dewdrop', 'obj-invitation', 'obj-ladybug', 'obj-mouse'];
+const PICTURES = ['obj-bee', 'obj-butterfly', 'obj-invitation', 'obj-ladybug', 'obj-mouse', 'obj-poppy-bud', 'obj-poppy-faded', 'obj-poppy-flower', 'obj-poppy-opening', 'obj-poppy-seedhead'];
 
-/** Blade tips where dew drops sit, as shares of the stage width and of its height. */
-const SPOTS: [number, number][] = [[0.3, 0.6], [0.4, 0.48], [0.5, 0.64], [0.6, 0.5], [0.7, 0.62], [0.8, 0.46], [0.9, 0.6]];
-/** Drops on the grass at once (each starts with another letter), and the pause before a new one comes. */
-const DROPS = 3;
-const DROP_PAUSE = 0.8;
-const DROP_SIZE = 90;
-/** A flower opens, stays and fades, then its blade is free again. */
-const FLOWER_OPEN = 0.5;
-const FLOWER_STAY = 3;
-const FLOWER_FADE = 1;
-const PETALS = ['#f5a3d3', '#ffd25a', '#a6c8ff', '#ff9f7a', '#c7a6ff'];
+/** The poppy's phase pictures, from bud to seed head (one stem, drawn at growing heights). */
+const POPPY = ['obj-poppy-bud', 'obj-poppy-opening', 'obj-poppy-flower', 'obj-poppy-faded', 'obj-poppy-seedhead'];
+type Phase = 'bud' | 'opening' | 'flower' | 'faded' | 'seed';
+/** Each phase's picture, its height as a share of the flower's, and its color while the picture is missing. */
+const PHASE: Record<Phase, { pic: string; h: number; color: string }> = {
+  bud: { pic: POPPY[0], h: 0.82, color: '#8fc76a' },
+  opening: { pic: POPPY[1], h: 0.9, color: '#e8604a' },
+  flower: { pic: POPPY[2], h: 1, color: '#e5402e' },
+  faded: { pic: POPPY[3], h: 1, color: '#c98a6a' },
+  seed: { pic: POPPY[4], h: 0.96, color: '#9cae7a' },
+};
+/** About as tall as Tapko. */
+const FLOWER_H = 250;
+/** Poppies growing at once (each waits with another letter), and the pause before a new bud. */
+const BUDS = 3;
+const BUD_PAUSE = 0.8;
+/** Seconds of each phase: the bud grows, opens (in half of the cases), flowers, fades and leaves its seed head. */
+const GROW = 0.6;
+const OPEN = 0.7;
+const STAY = 3;
+const FADED = 1.2;
+const SEED = 1;
+/** Stem bottoms lie in the near grass band, at least this far apart. */
+const GAP = 130;
+const PETALS = ['#e5402e', '#f05a3c', '#c9301f'];
+/** Most stems in the bouquet at the end; its seconds to gather, when the shout comes and when the level ends. */
+const BOUQUET = 9;
+const GATHER = 0.9;
+const BOUQUET_SHOUT = 0.8;
+const BOUQUET_TIME = 3.4;
 
-interface Spot {
+interface Poppy {
+  /** Stem bottom. */
   x: number;
   y: number;
-  drop: Target | null;
-  /** Seconds since the drop came (its pop), and since its flower opened (-1: none). */
-  dropT: number;
-  flowerT: number;
-  petal: string;
-}
-
-/** Code-drawn dew drop on a leaf, until the picture is there. */
-function dropFallback(g: G, w: number, h: number): void {
-  g.save();
-  g.fillStyle = '#8fc76a';
-  g.beginPath();
-  g.ellipse(0, h * 0.32, w * 0.46, h * 0.1, -0.2, 0, Math.PI * 2);
-  g.fill();
-  blob('#a6d4f5', false)(g, w * 0.8, h * 0.8);
-  g.restore();
-}
-
-/** A five-petal flower of radius `r`. */
-function flower(g: G, x: number, y: number, r: number, petal: string): void {
-  g.save();
-  g.translate(x, y);
-  g.strokeStyle = 'rgba(90,61,43,0.5)';
-  g.lineWidth = 2;
-  for (let i = 0; i < 5; i++) {
-    const a = (i / 5) * Math.PI * 2;
-    g.fillStyle = petal;
-    g.beginPath();
-    g.ellipse(Math.sin(a) * r * 0.55, -Math.cos(a) * r * 0.55, r * 0.42, r * 0.42, 0, 0, Math.PI * 2);
-    g.fill();
-    g.stroke();
-  }
-  g.fillStyle = '#ffcf3a';
-  g.beginPath();
-  g.arc(0, 0, r * 0.35, 0, Math.PI * 2);
-  g.fill();
-  g.stroke();
-  g.restore();
+  flip: boolean;
+  phase: Phase;
+  /** Seconds in the phase. */
+  t: number;
+  /** Its letter while it is a bud, then null. */
+  tg: Target | null;
+  /** The bud opens before it flowers. */
+  opens: boolean;
 }
 
 /**
- * The meadow's calm step: still dew drops on the grass, one letter each. A typed letter
- * opens a flower where its drop was, and a new drop comes on another free blade.
+ * The meadow's calm step: grow a bouquet of corn poppies. A bud grows in the near grass with a
+ * letter above it; the typed letter makes it bloom, later it fades and drops its petals, and a new
+ * bud grows elsewhere. Every typed letter adds a poppy to the bouquet shown at the end.
  */
-export class DewdropsMode extends Mode {
+export class PoppyMode extends Mode {
   readonly pictures = PICTURES;
   readonly world = 'meadow';
-  private spots: Spot[] = [];
+  readonly drift: Drift = { layer: 'mid', speed: 8 };
+  private poppies: Poppy[] = [];
   private spawned = 0;
   private done = 0;
-  /** Seconds until the next drop may come. */
+  /** Seconds until the next bud may grow. */
   private wait = 0;
-  /** The blade whose drop was typed last; the next drop goes elsewhere. */
-  private last = -1;
-  private finishT = 0;
+  /** Where the last typed poppy grows; the next bud goes elsewhere. */
+  private last: [number, number] | null = null;
+  /** Seconds of the bouquet at the end; -1 before it. */
+  private bouquetT = -1;
 
   startLine(): string {
-    return pickLine('story.dewStart');
+    return pickLine('story.poppyStart');
   }
 
-  start(): void {
-    this.spots = SPOTS.map(([fx, fy]) => ({ x: this.L.vw * fx, y: VH * fy, drop: null, dropT: 0, flowerT: -1, petal: PETALS[0] }));
+  /** A free stem bottom in the near grass, right of Tapko, away from the others; null when none is found. */
+  private spot(): [number, number] | null {
+    const r = this.L.rng;
+    const taken = this.poppies.map((p): [number, number] => [p.x, p.y]);
+    if (this.last) taken.push(this.last);
+    const left = TAPKO_X + 170, right = this.L.vw - 70;
+    const free = (x: number, y: number) => taken.every(([tx, ty]) => Math.hypot(x - tx, y - ty) >= GAP);
+    for (let i = 0; i < 12; i++) {
+      const x = r.range(left, right), y = r.range(VH * 0.8, VH * 0.92);
+      if (free(x, y)) return [x, y];
+    }
+    // Chance found no room: the first free place from a random start along the band.
+    const y = r.range(VH * 0.8, VH * 0.92), start = r.range(0, right - left);
+    for (let d = 0; d < right - left; d += 20) {
+      const x = left + ((start + d) % (right - left));
+      if (free(x, y)) return [x, y];
+    }
+    return null;
   }
 
-  private free(): number[] {
-    return this.spots.map((s, i) => (!s.drop && s.flowerT < 0 && i !== this.last ? i : -1)).filter((i) => i >= 0);
+  private setPhase(p: Poppy, phase: Phase): void {
+    p.phase = phase;
+    p.t = 0;
+    const head = p.y - FLOWER_H * 0.85;
+    if (phase === 'flower') this.L.particles.emit(p.x, head, 8, 'leaf', PETALS, 120, 8, 0.8);
+    // The faded flower keeps one petal; two or three more flutter down.
+    if (phase === 'faded') this.L.particles.emit(p.x, head, this.L.rng.chance(0.5) ? 2 : 3, 'leaf', PETALS, 50, 12, 1.6);
   }
 
   update(dt: number): void {
-    this.spots.forEach((s, i) => {
-      s.x = this.L.vw * SPOTS[i][0];
-      s.dropT += dt;
-      if (s.drop) s.drop.urgency = s.dropT;
-      if (s.flowerT >= 0 && (s.flowerT += dt) > FLOWER_OPEN + FLOWER_STAY + FLOWER_FADE) s.flowerT = -1;
-    });
-    this.wait -= dt;
-    const onGrass = this.spots.filter((s) => s.drop).length;
-    const free = this.free();
-    if (this.wait <= 0 && onGrass < DROPS && this.spawned < this.L.count && free.length) {
-      const word = this.L.word(2, 1);
-      // Every waiting word starts with its own letter, so the first key picks the word.
-      if (this.L.core.active.some((t) => t.word[0] === word[0])) {
-        this.wait = 0.2;
-        return;
-      }
-      const s = this.spots[this.L.rng.pick(free)];
-      s.drop = this.L.core.add(word, {});
-      s.dropT = 0;
-      this.spawned++;
-      this.wait = 0.4;
+    for (const p of this.poppies) {
+      p.t += dt;
+      if (p.tg) {
+        p.tg.selectable = p.t >= GROW;
+        p.tg.urgency = p.t;
+      } else if (p.phase === 'opening' && p.t >= OPEN) this.setPhase(p, 'flower');
+      else if (p.phase === 'flower' && p.t >= STAY) this.setPhase(p, 'faded');
+      else if (p.phase === 'faded' && p.t >= FADED) this.setPhase(p, 'seed');
     }
-    if (this.done >= this.L.count) this.finishT += dt;
+    this.poppies = this.poppies.filter((p) => p.phase !== 'seed' || p.t < SEED);
+    this.wait -= dt;
+    if (this.wait <= 0 && this.poppies.filter((p) => p.tg).length < BUDS && this.spawned < this.L.count) this.grow();
+    if (this.done < this.L.count) return;
+    const before = this.bouquetT;
+    this.bouquetT = Math.max(0, before) + dt;
+    if (before < BOUQUET_SHOUT && this.bouquetT >= BOUQUET_SHOUT) this.L.hooray({ x: this.L.vw / 2, y: VH * 0.3 });
+  }
+
+  private grow(): void {
+    const word = this.L.word(2, 1);
+    const at = this.spot();
+    // Every waiting word starts with its own letter, so the first key picks the word.
+    if (!at || this.L.core.active.some((t) => t.word[0] === word[0])) {
+      this.wait = 0.2;
+      return;
+    }
+    const tg = this.L.core.add(word, {}, false);
+    this.poppies.push({ x: at[0], y: at[1], flip: this.L.rng.chance(0.33), phase: 'bud', t: 0, tg, opens: this.L.rng.chance(0.5) });
+    this.spawned++;
+    this.wait = 0.4;
   }
 
   onDone(tg: Target): void {
-    const i = this.spots.findIndex((s) => s.drop === tg);
-    if (i < 0) return;
-    const s = this.spots[i];
-    s.drop = null;
-    s.flowerT = 0;
-    s.petal = this.L.rng.pick(PETALS);
-    this.last = i;
+    const p = this.poppies.find((p) => p.tg === tg);
+    if (!p) return;
+    p.tg = null;
+    this.last = [p.x, p.y];
     this.done++;
-    this.wait = Math.max(this.wait, DROP_PAUSE);
+    this.wait = Math.max(this.wait, BUD_PAUSE);
     this.L.core.prune();
     this.L.sfx('pop');
-    this.L.particles.emit(s.x, s.y, 8, 'sparkle', ['#e6f6ff', '#a6d4f5', '#fff6a8'], 90, 6);
+    this.setPhase(p, p.opens ? 'opening' : 'flower');
+  }
+
+  private drawPoppy(g: G, p: Poppy): void {
+    const ph = PHASE[p.phase];
+    // The bud grows out of the grass; a new phase pops a little; the seed head fades out.
+    const grow = p.phase === 'bud' ? ease.outBack(Math.min(1, p.t / GROW)) : 1;
+    const pop = p.phase !== 'bud' && p.t < 0.25 ? Math.sin((p.t / 0.25) * Math.PI) * 0.06 : 0;
+    const alpha = p.phase === 'seed' ? Math.max(0, 1 - p.t / SEED) : 1;
+    const sway = Math.sin(this.t * 1.3 + p.x * 0.01) * 0.03;
+    drawSprite(g, ph.pic, p.x, p.y, FLOWER_H * ph.h * grow, { ay: 1, flip: p.flip, rot: sway, sx: 1 - pop, sy: 1 + pop, alpha }, blob(ph.color, false));
+    if (p.tg && p.t >= GROW) this.L.label(g, p.tg, p.x, p.y - FLOWER_H * ph.h - 30);
+  }
+
+  /** The typed poppies fanned around one stem bottom in the middle, tied with a ribbon. */
+  private drawBouquet(g: G): void {
+    const n = Math.min(BOUQUET, this.done);
+    const x = this.L.vw / 2, y = VH * 0.88;
+    for (let i = 0; i < n; i++) {
+      const k = ease.outBack(Math.min(1, Math.max(0, (this.bouquetT - i * 0.06) / GATHER)));
+      const rot = n > 1 ? -0.5 + i / (n - 1) : 0;
+      drawSprite(g, PHASE.flower.pic, x, y, FLOWER_H * k, { ay: 1, rot, flip: i % 2 === 1 }, blob(PHASE.flower.color, false));
+    }
+    const k = Math.min(1, this.bouquetT / GATHER);
+    g.save();
+    g.translate(x, y - FLOWER_H * 0.22);
+    g.scale(k, k);
+    g.fillStyle = '#f5c542';
+    g.strokeStyle = 'rgba(90,61,43,0.6)';
+    g.lineWidth = 2;
+    for (const s of [-1, 1]) {
+      // A loop of the bow and a ribbon end on each side.
+      g.beginPath();
+      g.moveTo(0, 0);
+      g.quadraticCurveTo(s * 34, -26, s * 30, 4);
+      g.quadraticCurveTo(s * 24, 14, 0, 0);
+      g.fill();
+      g.stroke();
+      g.beginPath();
+      g.moveTo(0, 2);
+      g.lineTo(s * 16, 34);
+      g.lineTo(s * 8, 32);
+      g.closePath();
+      g.fill();
+      g.stroke();
+    }
+    g.beginPath();
+    g.arc(0, 0, 7, 0, Math.PI * 2);
+    g.fill();
+    g.stroke();
+    g.restore();
   }
 
   render(g: G): void {
-    for (const s of this.spots) {
-      if (s.flowerT >= 0) {
-        const open = ease.outBack(Math.min(1, s.flowerT / FLOWER_OPEN));
-        g.save();
-        g.globalAlpha = 1 - Math.max(0, s.flowerT - FLOWER_OPEN - FLOWER_STAY) / FLOWER_FADE;
-        g.strokeStyle = '#5fa84a';
-        g.lineWidth = 5;
-        g.beginPath();
-        g.moveTo(s.x, VH);
-        g.quadraticCurveTo(s.x - 12, (s.y + VH) / 2, s.x, s.y);
-        g.stroke();
-        flower(g, s.x, s.y, 34 * open, s.petal);
-        g.restore();
-      }
-      if (!s.drop) continue;
-      const pop = ease.outBack(Math.min(1, s.dropT * 2.5));
-      drawSprite(g, 'obj-dewdrop', s.x, s.y + Math.sin(this.t * 1.5 + s.x) * 3, DROP_SIZE * pop, {}, dropFallback);
-      if (pop > 0.6) this.L.label(g, s.drop, s.x, s.y - DROP_SIZE * 0.5 - 30, 46);
-    }
+    // Lower poppies are nearer: they draw last.
+    for (const p of [...this.poppies].sort((a, b) => a.y - b.y)) this.drawPoppy(g, p);
+    if (this.bouquetT >= 0) this.drawBouquet(g);
   }
 
   progress(): number {
@@ -161,7 +213,7 @@ export class DewdropsMode extends Mode {
   }
 
   get finished(): boolean {
-    return this.finishT > 0.8;
+    return this.bouquetT > BOUQUET_TIME;
   }
 }
 
@@ -185,6 +237,7 @@ const PARTY_TIME = 4.2;
 export class InvitationMode extends Mode {
   readonly pictures = PICTURES;
   readonly world = 'meadow';
+  readonly drift: Drift = { layer: 'mid', speed: 8 };
   readonly phraseWords = 1;
   private row = new CopyRow(this.L);
   /** The card's flight: 0 on the table, up to 1 gone with the friend; null while writing. */

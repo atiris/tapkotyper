@@ -224,13 +224,15 @@ const HOLD_TIME = 0.35;
 /** Speed of a typed leaf on its way into the gloves. */
 const SAVE_SPEED = 950;
 
-/** Tapko's goalkeeper gloves just right of him; on a finished word they reach for the leaf and catch it. */
+/** Tapko's goalkeeper gloves just right of him; on a finished word they rise with the leaf and catch it. */
 class Gloves {
   private static readonly H = 72;
   /** The picture's palms face the viewer; leaning right they reach for leaves coming from the right. */
   private static readonly LEAN = 0.55;
   /** Height the gloves reach for; their rest height when nothing flies at them. */
   aimY: number;
+  /** A typed leaf leads them: they keep pace with it instead of easing slowly. */
+  follow = false;
   y: number;
   private bob = 0;
   private squeeze = 0;
@@ -248,7 +250,7 @@ class Gloves {
   }
 
   update(dt: number, t: number): void {
-    this.y += (this.aimY - this.y) * Math.min(1, dt * 10);
+    this.y += (this.aimY - this.y) * Math.min(1, dt * (this.follow ? 30 : 10));
     this.bob = Math.sin(t * 2) * 4;
     this.squeeze = Math.max(0, this.squeeze - dt * 3);
   }
@@ -342,7 +344,7 @@ export class MeadowMode extends ApproachMode {
     return {
       x, y, vx: this.speedFor(word, x) * speed, vy: 0, rot: 0, vr: 0, age: 0, state: 'come', fade: 0,
       sprite: `obj-leaf-${kind}`, size, kind, by: y, phase: this.L.rng.range(0, 6), lf: 0,
-      critter: null, style: 'toss', thrown: -1, throwX: 0, arc: null, caught: false, scored: false, kickFrom: y, kickTo: null, hold: -1, saveY: y,
+      critter: null, style: 'toss', thrown: -1, throwX: 0, arc: null, caught: false, scored: false, kickFrom: y, kickTo: null, hold: -1, saveY: y, saveDist: 0, saveFrom: y,
     };
   }
 
@@ -414,15 +416,19 @@ export class MeadowMode extends ApproachMode {
       const half = carrier ? (carrier.size * (img ? img.naturalWidth / img.naturalHeight : 1)) / 2 : 0;
       tg.selectable = m.x + m.size / 2 <= this.L.vw && (!carrier || carrier.x + half <= this.L.vw);
     }
-    // The gloves reach for the closest leaf on its way to them and hold a caught one, else rest beside Tapko.
+    // The gloves rise with the closest leaf on its way to them, reaching its height as it arrives,
+    // and hold a caught one, else rest beside Tapko.
     let aim: Mover | null = null;
     for (const tg of this.L.core.targets) {
       const m = tg.data as Mover;
       if (m.state === 'leave' && m.hold < 0 && (!aim || m.x < aim.x)) aim = m;
     }
     const holding = this.L.core.targets.some((tg) => (tg.data as Mover).hold >= 0 && (tg.data as Mover).hold < HOLD_TIME);
-    if (aim) gl.aimY = aim.saveY;
-    else if (!holding) gl.aimY = gl.restY;
+    gl.follow = !!aim;
+    if (aim) {
+      const k = aim.saveDist > 0 ? Math.min(1, Math.max(0, 1 - (aim.x - gl.catchPoint()[0]) / aim.saveDist)) : 1;
+      gl.aimY = aim.saveFrom + (aim.saveY - aim.saveFrom) * ease.inOutQuad(k);
+    } else if (!holding) gl.aimY = gl.restY;
     gl.update(dt, this.t);
   }
 
@@ -499,6 +505,9 @@ export class MeadowMode extends ApproachMode {
   protected onLeave(m: Mover): void {
     m.vx = 0;
     m.saveY = m.thrown < 0 || m.kickTo != null ? this.bandY() : Math.max(110, Math.min(VH - 60, m.y));
+    // Its way to the gloves, along which they rise from where they are now.
+    m.saveDist = m.x - this.gloves.catchPoint()[0];
+    m.saveFrom = this.gloves.y;
     this.L.sfx('whoosh');
     const c = m.critter as Critter | null;
     if (c && c.state === 'carry') {
@@ -653,7 +662,7 @@ export class HedgehogMode extends MeadowMode {
   protected autoSpawn = false;
   private sizes: number[];
   private volley = 0;
-  private hy = VH - 82;
+  private hy = VH - 102;
   /** Leaves on the hedgehog's back. */
   private pile: number;
   /** Leaves planned in volleys so far; a level still too short asks for more. */
@@ -695,6 +704,8 @@ export class HedgehogMode extends MeadowMode {
     this.shake = Math.max(0, this.shake - dt);
     this.hop = Math.max(0, this.hop - dt);
     super.update(dt);
+    // A leaf's word shows when its toss ends.
+    for (const tg of L.core.active) if ((tg.data as Mover).launch?.k < 1) tg.selectable = false;
     if (this.endT < 0 && this.spawned >= this.total && L.core.targets.length === 0) {
       this.endT = 0;
       L.sfx('reward');
@@ -719,10 +730,13 @@ export class HedgehogMode extends MeadowMode {
     for (let i = 0; i < n; i++) {
       const word = L.word();
       const y = top + ((lanes[i] + L.rng.range(-0.2, 0.2)) / 2) * (bottom - top);
-      const m = this.makeLeaf(word, this.hx - 30, y, 0.75);
-      m.launch = { y0: this.hy - 60, k: 0, peak: L.rng.range(60, 140) };
+      // Tossed off his back in its own direction: forward toward Tapko or behind him, still on the stage.
+      const x0 = this.hx - 30, x1 = Math.min(L.vw - 60, this.hx + L.rng.range(-260, 120));
+      const m = this.makeLeaf(word, x1, y, 0.75);
+      m.launch = { x0, x1, y0: this.hy - 60, k: 0, peak: L.rng.range(60, 140) };
       // Already past the toss: it only flutters.
       m.thrown = 1;
+      m.x = x0;
       m.y = this.hy - 60;
       L.core.add(word, m);
       this.spawned++;
@@ -734,8 +748,9 @@ export class HedgehogMode extends MeadowMode {
     super.moveComing(m, dt, tg);
     const l = m.launch;
     if (!l || l.k >= 1) return;
-    // Off the back in an arc, then on at its own height.
+    // Off the back in an arc to its toss spot, then on at its own height.
     l.k = Math.min(1, l.k + dt / 0.9);
+    m.x = l.x0 + (l.x1 - l.x0) * ease.outQuad(l.k);
     m.y = l.y0 + (m.y - l.y0) * ease.outQuad(l.k) - Math.sin(l.k * Math.PI) * l.peak;
   }
 

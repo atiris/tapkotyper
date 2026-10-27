@@ -816,10 +816,6 @@
    "w": 274,
    "h": 384
   },
-  "obj-dewdrop": {
-   "w": 384,
-   "h": 342
-  },
   "obj-door-open": {
    "w": 357,
    "h": 384
@@ -1088,7 +1084,7 @@
    "w": 241,
    "h": 384
   },
- "obj-rocket-pilot": {
+  "obj-rocket-pilot": {
    "w": 384,
    "h": 204
   },
@@ -1735,6 +1731,26 @@
   "ui-cert-band-left": {
    "w": 142,
    "h": 8
+  },
+  "obj-poppy-bud": {
+   "w": 177,
+   "h": 384
+  },
+  "obj-poppy-faded": {
+   "w": 177,
+   "h": 384
+  },
+  "obj-poppy-flower": {
+   "w": 177,
+   "h": 384
+  },
+  "obj-poppy-opening": {
+   "w": 177,
+   "h": 384
+  },
+  "obj-poppy-seedhead": {
+   "w": 177,
+   "h": 384
   }
  },
  "accessories": [

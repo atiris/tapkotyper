@@ -166,7 +166,7 @@ describe('first level', () => {
   });
 
   it('the meadow plays the world rhythm: main game, calm step, gust, twist, super-obstacle', () => {
-    expect(['w1-1', 'w1-2', 'w1-3', 'w1-4', 'w1-5'].map((id) => levelById(id)?.kind)).toEqual(['meadow', 'dewdrops', 'meadow', 'invitation', 'hedgehog']);
+    expect(['w1-1', 'w1-2', 'w1-3', 'w1-4', 'w1-5'].map((id) => levelById(id)?.kind)).toEqual(['meadow', 'poppies', 'meadow', 'invitation', 'hedgehog']);
     expect(['w1-1', 'w1-2', 'w1-3', 'w1-4', 'w1-5'].map((id) => activityOf(levelById(id)!))).toEqual(['chase', 'catch', 'chase', 'clean', 'super']);
     expect(levelById('w1-3')?.variant).toBe('gust');
     expect(minActiveS(levelById('w1-2')!)).toBe(60);

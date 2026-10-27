@@ -24,8 +24,11 @@ const BAND_ROWS = 8;
 // The parrot's signature on the certificate is printed a few centimetres wide.
 const STAMP_MAX = 640;
 const BG_WIDTH = 1920;
-// The flying parrot's wing-beat pictures (obj-parrot-flying, -2, -3, -4) take one shared crop, so they lie on each other.
-const FLAP = 'obj-parrot-flying';
+// Picture sets that take one shared size and crop, so their frames lie on each other: the flying
+// parrot's wing beats (obj-parrot-flying, -2, -3, -4) and the poppy's phases (the stem stays put).
+// `tone`: Gemini drew the frames apart, so they get one tone; the poppy's phases are edited from one
+// base and fade on purpose, and toning them would dull the flower's red.
+const SETS = [{ prefix: 'obj-parrot-flying', tone: true }, { prefix: 'obj-poppy-', tone: false }];
 // The start page's meadow (day and night) repeats across the window: its left and right edges are
 // blended into each other over this part of its width.
 const MEADOW = 'ui-start-meadow';
@@ -98,11 +101,11 @@ function bbox(data, w, h) {
   return { left: Math.max(0, x0 - pad), top: Math.max(0, y0 - pad), width: Math.min(w, x1 + pad + 1) - Math.max(0, x0 - pad), height: Math.min(h, y1 + pad + 1) - Math.max(0, y0 - pad) };
 }
 
-// The flap pictures at the first one's size, keyed out, toned like the first one, and the box around all of them.
-let flapCache = null;
-function flapFrames() {
-  flapCache ??= (async () => {
-    const files = (await readdir(SRC)).filter((f) => parse(f).name.startsWith(FLAP)).sort().map((f) => join(SRC, f));
+// A set's pictures at the first one's size, keyed out, toned like the first one, and the box around all of them.
+const setCache = new Map();
+function setFrames(set) {
+  if (!setCache.has(set)) setCache.set(set, (async () => {
+    const files = (await readdir(SRC)).filter((f) => parse(f).name.startsWith(set.prefix)).sort().map((f) => join(SRC, f));
     const base = await sharp(files[0]).metadata();
     const frames = new Map();
     for (const file of files) {
@@ -110,13 +113,13 @@ function flapFrames() {
       keyOut(data, info.width, info.height, { layer: false });
       frames.set(file, data);
     }
-    matchTone([...frames.values()], base.width * base.height);
+    if (set.tone) matchTone([...frames.values()], base.width * base.height);
     const boxes = [...frames.values()].map((d) => bbox(d, base.width, base.height));
     const left = Math.min(...boxes.map((b) => b.left)), top = Math.min(...boxes.map((b) => b.top));
     const box = { left, top, width: Math.max(...boxes.map((b) => b.left + b.width)) - left, height: Math.max(...boxes.map((b) => b.top + b.height)) - top };
     return { frames, box, w: base.width, h: base.height };
-  })();
-  return flapCache;
+  })());
+  return setCache.get(set);
 }
 
 // Gemini draws each frame a little lighter or darker: every frame gets the first one's mean color, per channel,
@@ -154,8 +157,9 @@ async function processImage(name, file, manifest) {
     return;
   }
   if (name === MEADOW_CLOSED) return writeNightMeadow(file, manifest);
-  if (name.startsWith(FLAP)) {
-    const { frames, box, w, h } = await flapFrames();
+  const set = SETS.find((s) => name.startsWith(s.prefix));
+  if (set) {
+    const { frames, box, w, h } = await setFrames(set);
     const info = await webp(sharp(frames.get(file), { raw: { width: w, height: h, channels: 4 } }).extract(box).resize(SPRITE_MAX, SPRITE_MAX, { fit: 'inside', withoutEnlargement: true })).toFile(join(OUT, `${name}.webp`));
     manifest.images[name] = { w: info.width, h: info.height };
     return;

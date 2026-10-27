@@ -428,8 +428,9 @@
       "The rocket drifted a bit away. Hop across the meteors until you reach it!"
     ],
     "hopTooFar": "Oh, I can't jump that far.",
-    "dewStart": [
-      "Morning dew is on the grass. Type the letters on a drop and a flower grows from it!"
+    "poppyStart": [
+      "Let's grow a bunch of poppies! Type the letter above a bud and it blooms.",
+      "Poppies grow on the meadow. Every letter you type adds one to the bunch!"
     ],
     "gustStart": "A gust of wind! Lots of small leaves at once.",
     "invitationStart": [
@@ -1265,7 +1266,7 @@
     "games": {
       "intro": "The small picture on a level's circle on the map shows which game waits there.",
       "chase": "**Word stream**: words fly or roll toward you. Type them before they arrive.",
-      "catch": "**Waiting words**: words wait calmly, for example on dew drops. Each starts with a different letter, so pick the one you type.",
+      "catch": "**Waiting words**: words wait calmly, for example above poppy buds. Each starts with a different letter, so pick the one you type.",
       "crossroads": "**Crossroads**: at a crossroads the word you type picks the way.",
       "clean": "**Copy**: words stand in a row and you type them from left to right. On the invitation a mistake makes the word fade and two new ones come: more practice, not a punishment.",
       "listen": "**Dictation**: you do not see the word, you only hear it. Type what you hear. When you wait a while, it is said again.",

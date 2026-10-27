@@ -1,6 +1,6 @@
 import { app, pickLine } from '../../app/app';
 import { VH } from '../../engine/loop';
-import { drawSprite, fontFamily, type G } from '../../gfx/draw';
+import { drawSprite, type G } from '../../gfx/draw';
 import { t } from '../../i18n/i18n';
 import { LAYOUTS } from '../../keyboard/layouts';
 import type { Profile } from '../../storage/schema';
@@ -27,9 +27,6 @@ const HOP_EVERY = 3;
 /** Seconds the parrot's repeat stays up. */
 const REPEAT_S = 2.7;
 const WORD_SIZE = 64;
-/** The next words wait above the word, smaller and fainter the later they come. */
-const NEXT_SIZE = 34;
-const NEXT_ALPHA = [0.4, 0.18];
 /** The mistake that sends the parrot on a short flight round the scene, the seconds of that flight and how high it rises. */
 const SLIP_FLIGHT_AT = 3;
 const ROUND_S = 5.1;
@@ -204,24 +201,9 @@ export class ParrotMode extends Mode {
   }
 
   render(g: G): void {
-    const s = this.L.stage.scale;
-    const size = Math.max(WORD_SIZE, 44 / s);
+    const size = Math.max(WORD_SIZE, 44 / this.L.stage.scale);
     const x = (TAPKO_X + this.parrotX) / 2, y = VH * 0.36;
-    if (this.current) {
-      this.L.label(g, this.current, x, y + (1 - this.pop) * 12, size);
-      // What comes next, fainter and fainter above the word.
-      const next = Math.max(NEXT_SIZE, 20 / s);
-      g.save();
-      g.fillStyle = '#2d3b33';
-      g.font = `600 ${next}px ${fontFamily()}`;
-      g.textAlign = 'center';
-      g.textBaseline = 'middle';
-      this.round.ahead(NEXT_ALPHA.length).forEach((step, i) => {
-        g.globalAlpha = NEXT_ALPHA[i] * this.pop;
-        g.fillText(step.word, x, y - size * 0.75 - next * (0.9 + 1.25 * i));
-      });
-      g.restore();
-    }
+    if (this.current) this.L.label(g, this.current, x, y + (1 - this.pop) * 12, size);
     drawSprite(g, 'obj-parrot-perch', this.parrotX, GROUND_Y, PERCH_H, { ax: 0.5, ay: 1 });
     this.drawParrot(g);
   }

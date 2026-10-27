@@ -134,11 +134,6 @@ export class ParrotRound {
     return this.steps[this.at] ?? null;
   }
 
-  /** The next `n` steps after the current one (fewer near the end). */
-  ahead(n: number): ParrotStep[] {
-    return this.steps.slice(this.at + 1, this.at + 1 + n);
-  }
-
   get done(): boolean {
     return this.at >= this.steps.length;
   }

@@ -3,7 +3,7 @@ import { onThemeChange, shownLook, toggleTheme } from '../app/theme';
 import { audio, type SoundLevel } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
 import { WORLDS } from '../game/levels';
-import { LANGS, LANGUAGES, language, languageName, t } from '../i18n/i18n';
+import { LANGS, LANGUAGES, language, languageName, locale, t } from '../i18n/i18n';
 import { installShortcuts, setDefaultShortcuts, withKey } from '../input/shortcuts';
 import type { Lang } from '../storage/schema';
 import { type Child, ICONS, h, icon } from './dom';
@@ -246,13 +246,14 @@ export function watchAutoFullscreen(): void {
   window.addEventListener('pointerdown', ask, true);
 }
 
-/** Three stars, `n` of them filled: the same pictures as on the results card. */
+/** Three stars, `n` of them filled; a half (`2.5`) only on the results card. */
 export function starRow(n: number, cls = 'stars'): HTMLElement {
-  const star = imageUrl('ui-star'), empty = imageUrl('ui-star-empty');
-  return h('div', { class: cls, role: 'img', 'aria-label': t('results.starsAria', { n }) },
+  const star = imageUrl('ui-star'), half = imageUrl('ui-star-half'), empty = imageUrl('ui-star-empty');
+  const label = n.toLocaleString(locale(), { maximumFractionDigits: 1 });
+  return h('div', { class: cls, role: 'img', 'aria-label': t('results.starsAria', { n: label }) },
     ...[1, 2, 3].map((i) => {
-      const on = i <= n;
-      const src = on ? star : empty;
-      return src ? h('img', { class: `star ${on ? 'on' : ''}`, src, alt: '', style: `--i:${i}` }) : h('span', { class: `star-fallback ${on ? 'on' : ''}`, style: `--i:${i}` }, '★');
+      const isHalf = i - 0.5 === n, on = i <= n || isHalf;
+      const src = isHalf ? half : on ? star : empty;
+      return src ? h('img', { class: `star ${on ? 'on' : ''}`, src, alt: '', style: `--i:${i}` }) : h('span', { class: `star-fallback ${on ? 'on' : ''} ${isHalf ? 'half' : ''}`, style: `--i:${i}` }, '★');
     }));
 }

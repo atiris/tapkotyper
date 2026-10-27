@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { TypingCore, memoryFlash, memoryShow } from './typing';
-import { starsFor } from './levels';
+import { halfStarsFor, starsFor } from './levels';
 import { ENTER } from '../keyboard/layouts';
 
 describe('TypingCore', () => {
@@ -147,5 +147,17 @@ describe('stars', () => {
     expect(starsFor(1)).toBe(3);
     expect(starsFor(0.9)).toBe(2);
     expect(starsFor(0.2)).toBe(1);
+  });
+
+  it('shows a half star from 80 % and from 90 % on the results card', () => {
+    expect(halfStarsFor(0.7999)).toBe(1);
+    expect(halfStarsFor(0.8)).toBe(1.5);
+    expect(halfStarsFor(0.85)).toBe(2);
+    expect(halfStarsFor(0.9)).toBe(2.5);
+    expect(halfStarsFor(0.95)).toBe(3);
+  });
+
+  it('saves the shown stars rounded down', () => {
+    for (let a = 0; a <= 1; a += 0.001) expect(Math.floor(halfStarsFor(a))).toBe(starsFor(a));
   });
 });

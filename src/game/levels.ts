@@ -235,6 +235,11 @@ export function starsFor(accuracy: number): number {
   return accuracy >= 0.95 ? 3 : accuracy >= 0.85 ? 2 : 1;
 }
 
+/** Stars shown on the results card: `starsFor` with a half more from 80 % and from 90 %; never saved. */
+export function halfStarsFor(accuracy: number): number {
+  return accuracy >= 0.95 ? 3 : accuracy >= 0.9 ? 2.5 : accuracy >= 0.85 ? 2 : accuracy >= 0.8 ? 1.5 : 1;
+}
+
 const RESCUE_KINDS: { kind: LevelKind; world: number; variant: string; style?: Style }[] = [
   { kind: 'meadow', world: 0, variant: 'mix' }, { kind: 'space', world: 1, variant: 'mix' }, { kind: 'swamp', world: 2, variant: '' },
   { kind: 'signs', world: 2, variant: '' }, { kind: 'shield', world: 3, variant: '3' }, { kind: 'slope', world: 4, variant: 'mix' },

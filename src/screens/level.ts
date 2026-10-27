@@ -163,7 +163,7 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
     p.progress.friends.push(rescued);
     saveProfile();
   }
-  const stars = starRow(r.stars);
+  const stars = starRow(r.shownStars);
   // The facts as small chips in one wrapping row, accuracy first.
   const chip = (cls: string, ...kids: Child[]) => h('span', { class: `fact ${cls}` }, ...kids);
   const facts: HTMLElement[] = [

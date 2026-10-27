@@ -1,11 +1,14 @@
 import { advanceLesson } from '../learning/lessons';
 import type { CompanionKind, Profile } from '../storage/schema';
-import { type LevelDef, starsFor } from './levels';
+import { type LevelDef, halfStarsFor, starsFor } from './levels';
 import { type BadgeTier, badgeTier, grantAccessories, grantCompanions } from './rewards';
 import type { Style } from './typing';
 
 export interface LevelResult {
+  /** Whole stars, saved and counted. */
   stars: number;
+  /** Stars shown on the results card, with halves (`halfStarsFor`). */
+  shownStars: number;
   accuracy: number;
   chars: number;
   errors: number;
@@ -87,6 +90,7 @@ export function completeLevel(p: Profile, def: LevelDef, r: RunStats, typedShare
   // Accuracy of a handful of keys says nothing; such a level earns one star and no growth time.
   const byTapko = def.kind !== 'practice' && r.chars + r.errors < MIN_OWN_KEYS;
   const stars = byTapko ? 1 : starsFor(r.accuracy);
+  const shownStars = byTapko ? 1 : halfStarsFor(r.accuracy);
   let worldDone: number | null = null;
   let badge: LevelResult['badge'] = null;
   if (def.kind !== 'practice') {
@@ -107,7 +111,7 @@ export function completeLevel(p: Profile, def: LevelDef, r: RunStats, typedShare
   const newAccessories = grantAccessories(p);
   const newCompanions = grantCompanions(p);
   const growth = byTapko ? null : grow(p, r.seconds, r.accuracy, typedShare);
-  return { ...r, stars, newKeys, newAccessories, newCompanions, worldDone, trend: rhythmTrend(p), growth, byTapko, badge };
+  return { ...r, stars, shownStars, newKeys, newAccessories, newCompanions, worldDone, trend: rhythmTrend(p), growth, byTapko, badge };
 }
 
 /** Current rhythm vs. a week ago (only positive framing is shown). */
@@ -131,5 +135,5 @@ export function rhythmTrend(p: Profile): number | null {
 export function completeStay(p: Profile, r: RunStats, typedShare: number): LevelResult {
   const newKeys = advanceLesson(p);
   const growth = grow(p, r.seconds, r.accuracy, typedShare);
-  return { ...r, stars: 0, newKeys, newAccessories: [], newCompanions: [], worldDone: null, trend: rhythmTrend(p), growth, byTapko: false, badge: null };
+  return { ...r, stars: 0, shownStars: 0, newKeys, newAccessories: [], newCompanions: [], worldDone: null, trend: rhythmTrend(p), growth, byTapko: false, badge: null };
 }

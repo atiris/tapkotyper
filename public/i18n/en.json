@@ -181,7 +181,6 @@
     "stretch": "Quick exercise",
     "stretchDone": "Done",
     "slowerSaid": "Okay, we will go slower.",
-    "toMap": "Map",
     "leave": "Back to the map",
     "progress": "Progress",
     "rhythm": "Rhythm: {n} letters per minute",
@@ -192,9 +191,7 @@
     "memoryWait": "Wait until it hides.",
     "noVoice": "This browser cannot read aloud, so today you will see the words and copy them.",
     "noVoiceMemory": "This browser cannot read aloud, so today every note glows first and you type it from memory.",
-    "endLevel": "End level",
-    "endPractice": "End exercise",
-    "endRescue": "End mission",
+    "end": "Stop typing",
     "keepPractice": "Keep practising",
     "keepLevel": "Continue",
     "keepRescue": "Continue the mission",
@@ -2974,8 +2971,7 @@
     "done": "Our target sent us your results!",
     "beforeAfter": "before {before} %, now {after} %",
     "opened": "Accurate typing opened new letters: {keys}",
-    "again": "Again",
-    "toMap": "To the map"
+    "again": "Again"
   },
   "parrot": {
     "title": "Parrot",

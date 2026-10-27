@@ -923,9 +923,10 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .card { background: var(--paper); border-radius: 28px; padding: clamp(1.2rem, 3vw, 2.2rem); box-shadow: var(--shadow); max-width: 640px; width: 100%; text-align: center; animation: pop-in 0.3s ease; max-height: 100%; overflow: auto; }
 .card .row { justify-content: center; }
 /* The pause leaves the stage and the guide in sight: no dark layer, no blur. */
-.pause-card { position: absolute; top: 0.8rem; left: 50%; transform: translateX(-50%); z-index: 10; animation: fade-in 0.2s ease; width: max-content; max-width: calc(100% - 2rem); padding: 0.8rem 1.2rem; }
-.pause-card h2 { margin: 0 52px 0.5rem 0; font-size: 1.3rem; }
-.pause-tip { margin: 0 52px 0.7rem 0; max-width: 34rem; }
+.pause-card { position: absolute; top: 0.8rem; left: 50%; transform: translateX(-50%); z-index: 10; animation: fade-in 0.2s ease; width: max-content; max-width: calc(100% - 2rem); padding: 1.1rem 1.2rem 1.6rem; }
+/* Only the title makes room for the X; the tip below it runs under the X. */
+.pause-card h2 { margin: 0.2rem 52px 0.6rem 0; font-size: 1.3rem; }
+.pause-tip { margin: 0 0 0.9rem; max-width: 34rem; }
 .pause-card .break-timer { margin-bottom: 0.5rem; text-align: center; }
 .about-actions { justify-content: space-between; }
 .about-actions .btn { text-decoration: none; }

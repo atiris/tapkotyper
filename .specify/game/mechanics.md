@@ -113,10 +113,10 @@
   again after accurate play), "Quick exercise" (that stretch with a 20 s countdown on the card,
   then the pause again, the level waiting where it was) and the end of the level. Help is the
   level's "?", not a button here.
-- **Leaving a level** is said plainly on the pause card: "End level" in a story, "End exercise"
-  in practice and custom exercises, "End mission" in a rescue. Once something was typed in
+- **Leaving a level** is said the same everywhere: "Stop typing" on the pause card of a story,
+  an exercise or a rescue, and on every end card back to the map, so the child learns one button. Once something was typed in
   the level (a right or a wrong key) it asks first: "Really end it? This level will not
-  count.", with "End" and "Continue", Continue focused. Ending keeps the time and keys typed in
+  count.", with "Stop typing" and "Continue", Continue focused. Ending keeps the time and keys typed in
   the statistics. Free typing keeps its X and leaves without asking, nothing is scored there.
 - The **custom exercise** (untimed practice) has "Back" at the top left of the level bar, like
   every other screen: it ends the exercise and shows its results. Escape still pauses.

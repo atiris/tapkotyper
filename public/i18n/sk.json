@@ -181,7 +181,6 @@
     "stretch": "Krátke cvičenie",
     "stretchDone": "Hotovo",
     "slowerSaid": "Dobre, pôjdeme pomalšie.",
-    "toMap": "Mapa",
     "leave": "Späť na mapu",
     "progress": "Postup",
     "rhythm": "Rytmus: {n} písmen za minútu",
@@ -192,9 +191,7 @@
     "memoryWait": "Počkaj, kým sa skryje.",
     "noVoice": "Tento prehliadač nevie čítať nahlas, preto dnes slová uvidíš a odpíšeš ich.",
     "noVoiceMemory": "Tento prehliadač nevie čítať nahlas, preto dnes každá nôtka najprv zasvieti a napíšeš ju z pamäti.",
-    "endLevel": "Ukončiť úroveň",
-    "endPractice": "Ukončiť písanie",
-    "endRescue": "Ukončiť misiu",
+    "end": "Ukončiť písanie",
     "keepPractice": "Písať ďalej",
     "keepLevel": "Pokračovať",
     "keepRescue": "Pokračovať v misii",
@@ -2997,8 +2994,7 @@
     "done": "Náš terč nám poslal tvoje výsledky!",
     "beforeAfter": "predtým {before} %, teraz {after} %",
     "opened": "Presné písanie otvorilo nové písmená: {keys}",
-    "again": "Znova",
-    "toMap": "Na mapu"
+    "again": "Znova"
   },
   "parrot": {
     "title": "Papagáj",

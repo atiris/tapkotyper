@@ -1166,9 +1166,9 @@ export class LevelRuntime {
   /** What leaving and going on are called, and what the question says is lost: a story level, an exercise or a rescue mission. */
   private get ending(): { label: string; keep: string; text: string } {
     if (this.def.kind === 'freetype') return { label: 'level.leave', keep: 'level.keepTyping', text: '' };
-    if (this.def.kind === 'practice' || this.def.kind === 'aim' || this.def.kind === 'parrot' || this.opts.stay) return { label: 'level.endPractice', keep: 'level.keepPractice', text: 'level.endPracticeText' };
-    if (this.def.rescue) return { label: 'level.endRescue', keep: 'level.keepRescue', text: 'level.endRescueText' };
-    return { label: 'level.endLevel', keep: 'level.keepLevel', text: 'level.endLevelText' };
+    if (this.def.kind === 'practice' || this.def.kind === 'aim' || this.def.kind === 'parrot' || this.opts.stay) return { label: 'level.end', keep: 'level.keepPractice', text: 'level.endPracticeText' };
+    if (this.def.rescue) return { label: 'level.end', keep: 'level.keepRescue', text: 'level.endRescueText' };
+    return { label: 'level.end', keep: 'level.keepLevel', text: 'level.endLevelText' };
   }
 
   /**

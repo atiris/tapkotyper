@@ -138,3 +138,23 @@ describe('rain walk', () => {
     expect(rainWalkX(1000, 2)).toBe(rainWalkX(1000, 1));
   });
 });
+
+describe('strong meteors', () => {
+  it('a strong meteor needs its word twice and counts once', () => {
+    const L = fakeRuntime(6);
+    Object.assign(L, { def: { ...L.def, variant: 'strong' }, rng: { ...L.rng, chance: () => true } });
+    const mode = new SpaceMode(L);
+    mode.start();
+    for (let i = 0; i < 200 && !L.core.targets.some((tg) => tg.data.lives === 2); i++) mode.update(0.05);
+    const strong = L.core.targets.find((tg) => tg.data.lives === 2)!;
+    expect(strong).toBeDefined();
+    strong.done = true;
+    mode.onDone(strong);
+    const again = L.core.targets.find((tg) => !tg.done && tg.word === strong.word && tg.data.lives === 1)!;
+    expect(again.data.state).toBe('come');
+    expect(mode.progress()).toBe(0);
+    again.done = true;
+    mode.onDone(again);
+    expect(mode.progress()).toBeCloseTo(1 / 6);
+  });
+});

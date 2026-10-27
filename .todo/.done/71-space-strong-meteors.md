@@ -32,8 +32,14 @@ Source: owner request 2026-10-27.
 - A strong meteor that floats by is a miss like any other (no second life then).
 
 ## Steps
-- [ ] 1. `strong` variant in `SpaceMode`: speed, spawn gap, strong meteors with the ring and
+- [x] 1. `strong` variant in `SpaceMode`: speed, spawn gap, strong meteors with the ring and
       two lives, the shout and the bubble, the second word; progress counts it once.
-- [ ] 2. Level list: `def(1, 2, 'space', 16, 'strong')`; strings (sk, en, guide).
-- [ ] 3. Spec story.md; a unit test that a strong meteor needs its word twice and counts once.
-- [ ] 4. Play `w2-3` with `?fast`: the start line, a strong meteor typed twice, the shout.
+- [x] 2. Level list: `def(1, 2, 'space', 16, 'strong')`; strings (sk, en, guide).
+- [x] 3. Spec story.md; a unit test that a strong meteor needs its word twice and counts once.
+- [x] 4. Play `w2-3` with `?fast`: the start line, a strong meteor typed twice, the shout.
+
+## Done - 2026-10-27
+- Shipped: the `strong` variant of `SpaceMode` (15 % faster stream and spawns, a quarter of the
+  meteors after the first two strong: glowing ring, two lives, shout, the meteor's own speech
+  bubble, pushed back with the same word, counted once), `story.strongStart/strongHit/strongSay`,
+  `w2-3` uses it, unit test in `idle.test.ts`, spec story.md.

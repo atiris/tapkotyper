@@ -50,7 +50,11 @@ gives you a wreath"), never about the character as someone else.
    keys; no change jumps. The levels follow the world rhythm: 1 the stream of rocks; 2 the calm
    step, the astronaut hops from meteor to meteor (each with a short word) and the view glides
    after him, meteors left behind drift away, and at the end the rocket comes for him, he jumps
-   into its window and it flies off; 3 and 4 the stream again; 5 the super-obstacle. The near
+   into its window and it flies off; 3 a faster stream where about every fourth meteor is
+   stronger: it glows, and when its word is typed it shouts ("Au!", "Zásah!", "Trefa!"), says
+   "Ja som silnejší, musíš napísať slovo znova." and comes again a bit further back with the
+   same word, counting once (the opening line explains it); 4 the stream again; 5 the
+   super-obstacle. The near
    rocks drift at half the usual near-layer speed.
    Super-obstacle: fractured asteroid.
    Reward: landing clearance.

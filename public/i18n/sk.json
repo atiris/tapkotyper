@@ -597,6 +597,16 @@
     "meadowStart": [
       "Zvieratká na lúke kopú listy ako loptu a chcú ti dať gól. Napíš slovo na liste a chytíš ho!"
     ],
+    "strongStart": [
+      "Pozor, niektoré meteority sú silnejšie, majú okolo seba žiaru. Keď napíšeš ich slovo, musíš ho napísať ešte raz."
+    ],
+    "strongHit": [
+      "Au!",
+      "Zásah!",
+      "Trefa!",
+      "Ouha!"
+    ],
+    "strongSay": "Ja som silnejší, musíš napísať slovo znova.",
     "hopStart": [
       "Raketa odletela kúsok ďalej. Skáč po meteoritoch, kým k nej nedoskáčeš!"
     ],

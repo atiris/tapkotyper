@@ -1,4 +1,4 @@
-import { app } from '../../app/app';
+import { app, pickLine } from '../../app/app';
 import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
 import { sprite } from '../../gfx/assets';
@@ -42,6 +42,15 @@ const GAUGE_R = 70;
  * about half a second (their time to arrive stretches at once, the speedometer sinks with them),
  * and with the next keys they speed up again gently. Both changes ease, so nothing jumps.
  */
+/**
+ * The `strong` variant (level 3): the stream flows this much faster, and this share of the
+ * meteors (never the first two) is stronger, glowing, with two lives: its word is typed twice.
+ */
+const STRONG_PACE = 1.15;
+const STRONG_SHARE = 0.25;
+const STRONG_SIZE = 135;
+/** How far a hit strong meteor is pushed back. */
+const STRONG_PUSH = 120;
 const IDLE_GRACE = 1;
 const SLOW = 0.4;
 const PACE_FALL = 3;
@@ -111,12 +120,34 @@ export class SpaceMode extends ApproachMode {
   protected speedShown = 0;
   /** Share of full speed the space moves at now (see IDLE_GRACE). */
   protected pace = 1;
+  /** Meteors made so far (the first ones of a strong run are never strong). */
+  private made = 0;
   /** The background's speed, eased: the rhythm changes in steps with each key, and a step jerked the whole sky. */
   private scrollV = 40;
 
   constructor(L: LevelRuntime) {
     super(L);
     this.playerX = 260;
+  }
+
+  private get strong(): boolean {
+    return this.L.def.variant === 'strong';
+  }
+
+  startLine(): string | null {
+    return this.strong ? pickLine('story.strongStart') : null;
+  }
+
+  startSeconds(): number {
+    return this.strong ? 6 : 3;
+  }
+
+  protected speedFor(word: string, startX: number): number {
+    return super.speedFor(word, startX) * (this.strong ? STRONG_PACE : 1);
+  }
+
+  protected spawnGap(): number {
+    return super.spawnGap() / (this.strong ? STRONG_PACE : 1);
   }
 
   protected pickSprite(): string {
@@ -128,11 +159,26 @@ export class SpaceMode extends ApproachMode {
   }
 
   makeMover(word: string): Mover {
-    const sprite = this.pickSprite();
+    const tough = this.strong && this.made++ >= 2 && this.L.rng.chance(STRONG_SHARE);
+    const sprite = tough ? 'obj-asteroid-big' : this.pickSprite();
     const x = this.L.vw + 100;
     const y = this.L.rng.range(130, VH * 0.72);
-    const planet = sprite.includes('planet');
-    return { x, y, vx: this.speedFor(word, x), vy: this.L.rng.range(-12, 12), rot: 0, vr: this.L.rng.range(-0.3, 0.3), age: 0, state: 'come', fade: 0, sprite, size: planet ? 130 : 105, flip: this.L.rng.chance(0.5) };
+    const size = tough ? STRONG_SIZE : sprite.includes('planet') ? 130 : 105;
+    return { x, y, vx: this.speedFor(word, x), vy: this.L.rng.range(-12, 12), rot: 0, vr: this.L.rng.range(-0.3, 0.3), age: 0, state: 'come', fade: 0, sprite, size, flip: this.L.rng.chance(0.5), lives: tough ? 2 : 1 };
+  }
+
+  /** A strong meteor's first hit: it shouts, says it is stronger and comes again a bit further back with the same word; it counts once. */
+  onDone(tg: Target): void {
+    const m = tg.data as Mover;
+    if ((m.lives ?? 1) < 2) return super.onDone(tg);
+    const again: Mover = { ...m, x: Math.min(this.L.vw - 60, m.x + STRONG_PUSH), lives: 1 };
+    m.state = 'leave';
+    m.fade = 1;
+    this.L.core.add(tg.word, again);
+    this.L.sfx('pop');
+    this.L.particles.emit(m.x, m.y, 16, 'sparkle', ['#ffd36b', '#fff6a8', '#ffb07a'], 200, 8);
+    this.L.shout(pickLine('story.strongHit'), m.x, m.y - m.size * 0.7);
+    this.L.speak('meteor', t('story.strongSay'), again.x, again.y - again.size - 70, again.x, again.y - again.size * 0.5, 3);
   }
 
   /** A coming thing moves in the space's time: slower while the child is not typing. */
@@ -161,6 +207,16 @@ export class SpaceMode extends ApproachMode {
   }
 
   drawMover(g: G, m: Mover): void {
+    if ((m.lives ?? 1) > 1) {
+      // The strong meteor's glow, pulsing.
+      g.save();
+      g.strokeStyle = `rgba(255, 200, 110, ${0.55 + Math.sin(this.t * 5) * 0.25})`;
+      g.lineWidth = 7;
+      g.beginPath();
+      g.arc(m.x, m.y, m.size * 0.56, 0, Math.PI * 2);
+      g.stroke();
+      g.restore();
+    }
     drawSprite(g, m.sprite, m.x, m.y, m.size, { rot: m.rot, flip: m.flip }, blob(COLORS[m.sprite] ?? '#9a8a7a', true, 'rgba(0,0,0,0.12)'));
   }
 

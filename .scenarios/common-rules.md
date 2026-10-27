@@ -10,6 +10,7 @@ this file wins, and a scenario wins over this file.
 | Id | File | The question it answers | Destructive? |
 |---|---|---|---|
 | S1 | [full-playthrough.md](full-playthrough.md) | Can a new child learn the first keys, finish World 1, and can a parent manage and move the profile? | no |
+| S2 | [cross-section.md](cross-section.md) | Does the whole product hold together, from a new account to moving it to another device? | no |
 
 ## 2. Environment
 

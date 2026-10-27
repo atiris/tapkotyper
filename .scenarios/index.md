@@ -22,3 +22,7 @@ come only from the gitignored `*.protect.md` files and are never written down.
 - [full-playthrough.md](full-playthrough.md) - S1: a new child learns the first keys
   one by one, plays all of World 1, meets their character and sees the stats; a parent tunes
   settings, exports and imports the profile; offline reload. Not destructive.
+- [cross-section.md](cross-section.md) - S2: the whole product in one run: a new account,
+  typing through World 1 and into World 2, target range and parrot, surprises (announced on
+  the map, kept in their world), badges and parrots won and lost, a teacher's task and its
+  result, settings and statistics, export and moving the player. Not destructive.

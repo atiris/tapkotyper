@@ -208,7 +208,7 @@
     },
     "break": {
       "title": "Pretiahnutie a veľká prestávka",
-      "about": "Obrazovka prestávky s krátkymi cvičeniami, nepovinnou veľkou prestávkou a možnosťou, aby ju rodič preskočil."
+      "about": "Obrazovka prestávky s krátkymi cvičeniami, nepovinnou veľkou prestávkou a tlačidlom na preskočenie."
     },
     "tips-body": {
       "title": "Tipy o držaní tela",
@@ -884,11 +884,8 @@
     "break.bigTitle": "Veľká prestávka: nadpis nad jedným z šiestich dlhších cvičení; {n} je poradie cvičenia, {total} ich počet (6).",
     "break.big": "Prestávka: tlačidlo, ktorým si dieťa pridá veľkú prestávku s dlhšími cvičeniami.",
     "break.bigSkip": "Prestávka: tlačidlo počas veľkej prestávky, ktoré sa vráti ku krátkej prestávke.",
+    "break.skip": "Prestávka: tlačidlo pod odpočtom, ktoré preskočí krátku prestávku (to isté robí Esc).",
     "break.done": "Prestávka: veta po skončení cvičení pod obrázkom správneho sedenia; {name} je prezývka študenta.",
-    "break.parentSkip": "Prestávka: malé tlačidlo pre rodiča, ktoré preskočí krátku prestávku.",
-    "break.skipTitle": "Prestávka: nadpis potvrdzovacieho okna po stlačení rodičovského tlačidla na preskočenie.",
-    "break.skipText": "Prestávka: text v potvrdzovacom okne pred preskočením krátkej prestávky.",
-    "break.skipOk": "Prestávka: potvrdzujúce tlačidlo v okne na preskočenie.",
     "break.*": "Prestávka: pokyn k jednému pohybovému cvičeniu, ukáže sa pod obrázkom postavičky, kým beží odpočet sekúnd.",
     "tips.*": "Tip pred úrovňou: jedna rada na karte „priprav sa“, raz za hranie; ukáže sa aj v pomoci počas úrovne.",
     "tips.listen-whole": "Tip len pred diktátom (slová sa počúvajú): ukáže sa na karte pred úrovňou alebo v pomoci.",
@@ -961,6 +958,8 @@
     "parent.wardrobeLimitHint": "Nastavenia, karta Nastavenia: poznámka pod prepínačom času v šatníku.",
     "parent.wardrobeBalance": "Nastavenia, karta Nastavenia: riadok pod prepínačom šatníka; {m} sú minúty a {s} sekundy zostávajúceho času.",
     "parent.sessionMinutes": "Nastavenia, karta Nastavenia: popisok posuvníka dĺžky hrania pred prestávkou.",
+    "parent.breaksLocked": "Nastavenia, karta Nastavenia: názov prepínača, ktorý dieťaťu nedovolí preskočiť prestávku.",
+    "parent.breaksLockedHint": "Nastavenia, karta Nastavenia: poznámka pod prepínačom Nepreskočiteľné prestávky.",
     "parent.minutes": "Nastavenia: hodnota posuvníka v minútach (dĺžka hrania, minúty úlohy); {n} je počet minút.",
     "parent.guide": "Nastavenia, karta Nastavenia: popisok výberu nápovedy prstov.",
     "parent.guideAuto": "Nastavenia, karta Nastavenia: možnosť vo výbere nápovedy prstov.",

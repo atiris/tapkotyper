@@ -208,7 +208,7 @@
     },
     "break": {
       "title": "Stretch and big break",
-      "about": "The break screen with short exercises, an optional big break and a way for a parent to skip it."
+      "about": "The break screen with short exercises, an optional big break and the skip button."
     },
     "tips-body": {
       "title": "Posture tips",
@@ -884,11 +884,8 @@
     "break.bigTitle": "Big break: the heading above one of the six longer exercises. {n} is the exercise number, {total} how many there are (6).",
     "break.big": "Break screen: the button that adds the big break with longer exercises.",
     "break.bigSkip": "Break screen: the button shown during the big break that goes back to the short break.",
+    "break.skip": "Break screen: the button under the countdown that skips the short break (Esc does the same).",
     "break.done": "Break screen: the line under the sitting-posture picture once the exercises end. {name} is the student's nickname.",
-    "break.parentSkip": "Break screen: the small button for a parent to skip the short break.",
-    "break.skipTitle": "Break screen: the heading of the confirmation window after the parent skip button is pressed.",
-    "break.skipText": "Break screen: the text of the confirmation window before the short break is skipped.",
-    "break.skipOk": "Break screen: the confirm button in the skip window.",
     "break.*": "Break screen: the instruction for one movement exercise, shown under the character while the seconds count down.",
     "tips.*": "Tip before a level: one piece of advice on the get-ready card, once per session; also shown in the help during a level.",
     "tips.listen-whole": "Tip only for dictation runs (words are heard): shown on the get-ready card before a level or in its help.",
@@ -961,6 +958,8 @@
     "parent.wardrobeLimitHint": "Settings, Settings tab: the note under the wardrobe time switch.",
     "parent.wardrobeBalance": "Settings, Settings tab: the line under the wardrobe switch. {m} is the minutes and {s} the seconds of time left.",
     "parent.sessionMinutes": "Settings, Settings tab: the label of the slider for play time before a break.",
+    "parent.breaksLocked": "Settings, Settings tab: the title of the switch that stops the child skipping the break.",
+    "parent.breaksLockedHint": "Settings, Settings tab: the note under the switch that stops the child skipping the break.",
     "parent.minutes": "Settings: the value of a slider in minutes (play time, task minutes). {n} is the number of minutes.",
     "parent.guide": "Settings, Settings tab: the label of the finger guide select.",
     "parent.guideAuto": "Settings, Settings tab: an option in the finger guide select.",

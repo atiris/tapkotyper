@@ -62,6 +62,8 @@ export interface Settings {
   /** A few extra how-to lines for small children (the welcome card's instructions). */
   kidHints: boolean;
   sessionMinutes: number;
+  /** The parent's choice: the child cannot skip the stretch break (the big one added to it may still end early). */
+  breaksLocked: boolean;
   guide: 'auto' | 'on' | 'off';
   /** The parent locked the guide visibility; the child cannot toggle it. */
   guideLocked: boolean;
@@ -265,6 +267,7 @@ export function defaultSettings(wordLang: LangRef): Settings {
     noTimePressure: false,
     kidHints: false,
     sessionMinutes: 15,
+    breaksLocked: false,
     guide: 'auto',
     guideLocked: false,
     sfxVolume: 0.7,

@@ -199,6 +199,7 @@ function settingsTab(p: Profile): HTMLElement {
       switchField(t('parent.wardrobeLimit'), check(s.wardrobeLimit, (v) => { s.wardrobeLimit = v; save(); }), t('parent.wardrobeLimitHint')),
       h('p', { class: 'hint' }, t('parent.wardrobeBalance', { m: Math.floor(p.progress.wardrobeSeconds / 60), s: Math.floor(p.progress.wardrobeSeconds % 60) })),
       field(t('parent.sessionMinutes'), range(s.sessionMinutes, 5, 30, 5, (v) => { s.sessionMinutes = v; save(); }, (v) => t('parent.minutes', { n: v }))),
+      switchField(t('parent.breaksLocked'), check(s.breaksLocked, (v) => { s.breaksLocked = v; save(); }), t('parent.breaksLockedHint')),
       field(t('parent.guide'), select(s.guide, [['auto', t('parent.guideAuto')], ['on', t('parent.guideOn')], ['off', t('parent.guideOff')]], (v) => { s.guide = v; save(); })),
       switchField(t('parent.guideLocked'), check(s.guideLocked, (v) => { s.guideLocked = v; save(); }))),
     h('fieldset', {}, h('legend', {}, t('parent.group.look')),

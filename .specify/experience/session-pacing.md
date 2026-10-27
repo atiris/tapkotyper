@@ -6,10 +6,13 @@
   current level first.
 - The short break is three stretches of 20 seconds. During it the child may add the **big
   break** ("Veľká prestávka"): six longer exercises of 30 seconds (standing up, marching on the
-  spot, the neck, the wrists, the eyes far and near, a drink of water and deep breaths). Anyone
-  may skip it with a normal button ("Preskočiť veľkú prestávku"); the parent's skip is not shown
-  there. After it, or skipped, the short break goes on where it was and ends as usual; only a
-  parent skips the short break.
+  spot, the neck, the wrists, the eyes far and near, a drink of water and deep breaths). Under the
+  countdown sit the big break's button and "Preskočiť" (Esc does the same); during the big break the skip
+  ("Preskočiť veľkú prestávku", Esc too) goes back to the short break where it was. Anyone may skip
+  the short break, unless the parent switched on **unskippable breaks** for the profile: then
+  neither the button nor Esc skips it (the big break may still end early).
+- The break opens over the screen it was taken from and always returns there: from a level's
+  results the child is back on the same results, with the reward still to look at.
 - Runs without an end of their own (free typing, staying a while in a level) say the break in
   Tapko's bubble when it is due; the card after staying a while offers the break first.
 - No daily streaks, no "come back or lose" messages, no random loot.

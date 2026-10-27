@@ -124,7 +124,7 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
       'parent.wordLang', 'parent.wordLangHint'),
     g('parent-practice', 'parent.difficulty', 'parent.wordLen', 'parent.min', 'parent.max', 'parent.autoDifficulty', 'parent.autoDifficultyHint', 'parent.autoWordLen',
       'parent.autoWordLenHint', 'parent.autoHint', 'parent.noDiacritics', 'parent.noDiacriticsHint', 'parent.noTimePressure', 'parent.noTimePressureHint', 'parent.kidHints',
-      'parent.kidHintsHint', 'parent.wardrobeLimit', 'parent.wardrobeLimitHint', 'parent.wardrobeBalance', 'parent.sessionMinutes', 'parent.minutes', 'parent.guide',
+      'parent.kidHintsHint', 'parent.wardrobeLimit', 'parent.wardrobeLimitHint', 'parent.wardrobeBalance', 'parent.sessionMinutes', 'parent.breaksLocked', 'parent.breaksLockedHint', 'parent.minutes', 'parent.guide',
       'parent.guideAuto', 'parent.guideOn', 'parent.guideOff', 'parent.guideLocked'),
     g('parent-look', 'parent.sfx', 'parent.music', 'parent.speakTyped', 'parent.speakTypedHint', 'parent.font', 'parent.largeText', 'parent.reduceMotion',
       'parent.highContrast', 'parent.autoFullscreen', 'parent.autoFullscreenHint', 'parent.keyFont', 'parent.keyFontHint'),

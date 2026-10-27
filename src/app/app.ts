@@ -10,7 +10,7 @@ import { closeModals } from '../ui/dom';
 import { hideTip } from '../ui/tooltip';
 import { keyboardGated, waitForKeyboard } from './keyboard-gate';
 
-export type ScreenName = 'start' | 'newProfile' | 'map' | 'level' | 'story' | 'parent' | 'wardrobe' | 'friends' | 'break' | 'teacher' | 'taskImport' | 'moveImport' | 'help' | 'translate' | 'progress';
+export type ScreenName = 'start' | 'newProfile' | 'map' | 'level' | 'story' | 'parent' | 'wardrobe' | 'friends' | 'teacher' | 'taskImport' | 'moveImport' | 'help' | 'translate' | 'progress';
 export type Screen = (root: HTMLElement, params: any) => (() => void) | void;
 
 const screens = new Map<ScreenName, Screen>();
@@ -20,7 +20,7 @@ let shown: { name: ScreenName; params: any } | null = null;
 /** Counts the screens opened, so a screen still loading knows when the player has moved on. */
 let visits = 0;
 /** Screens help never returns to: a level or a story would start over. */
-const NO_HELP_RETURN: ScreenName[] = ['level', 'story', 'break', 'help'];
+const NO_HELP_RETURN: ScreenName[] = ['level', 'story', 'help'];
 
 /** App-wide state. */
 export const app = {
@@ -58,7 +58,7 @@ export function registerScreen(name: ScreenName, s: Screen): void {
 }
 
 /** Screens with their own address; the others belong to the player's map. */
-const ROUTES: Partial<Record<ScreenName, string>> = { wardrobe: 'wardrobe', friends: 'friends', progress: 'progress', parent: 'settings', help: 'help', level: 'play', story: 'play', break: 'play' };
+const ROUTES: Partial<Record<ScreenName, string>> = { wardrobe: 'wardrobe', friends: 'friends', progress: 'progress', parent: 'settings', help: 'help', level: 'play', story: 'play' };
 const OWN_ROUTE: ScreenName[] = ['map', 'wardrobe', 'friends', 'progress', 'parent', 'help'];
 
 /** Screens of a link with data in it, by the link's first part. */

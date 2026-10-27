@@ -79,7 +79,7 @@ const HELP_TAB: Partial<Record<ScreenName, string>> = { map: 'ui', progress: 'pr
 export function openScreenHelp(): void {
   const shown = shownScreen();
   // The break is not skipped through the help page either.
-  if (shown === 'help' || shown === 'break') return;
+  if (shown === 'help' || document.querySelector('.break-modal')) return;
   const tab = document.querySelector('.stats-modal') ? 'progress' : HELP_TAB[shown ?? 'start'];
   go('help', tab ? { tab } : {});
 }

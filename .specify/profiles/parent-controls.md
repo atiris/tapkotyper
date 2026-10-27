@@ -53,7 +53,7 @@
   window has room for, at most five, in balanced rows with more in the first), keeping the open tab and without asking for
   the password again; with one profile it is hidden. The super player is never in the list.
 - Settings per profile: nickname, character kind, optional name, word language, keyboard layout, active keys (pick by hand, with a punctuation row for the shifted `? ! :`, or "automatic"), word length range,
-  difficulty 1-10, words without diacritics, no time pressure, session length, guide
+  difficulty 1-10, words without diacritics, no time pressure, session length, unskippable breaks, guide
   visibility, sound and music volume, reading typed words aloud in "Just typing"
   ([free typing](../game/free-typing.md)), easy to tell letters on the keys
   ([accessibility](../experience/accessibility.md)), start in fullscreen. The help text says the start

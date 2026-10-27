@@ -1231,13 +1231,13 @@
     },
     "repeat": "Repeat",
     "announce": "Show on the map ahead",
-    "showDays": "On the map after it is won",
+    "showDays": "On the map",
     "showDaysHint": "How long a won surprise stays on the map by the world where it was won: the day it is won and this many days more. With 1 day, a child who wins it on Wednesday evening still sees it all Thursday. After that the map no longer shows it.",
     "days": {
-      "today": "only the day it is won",
-      "one": "the day it is won and {n} more day",
-      "few": "the day it is won and {n} more days",
-      "many": "the day it is won and {n} more days",
+      "today": "that day only",
+      "one": "+{n} day",
+      "few": "+{n} days",
+      "many": "+{n} days",
       "forever": "for ever"
     },
     "add": "Add",
@@ -1427,16 +1427,18 @@
       "**Esc** stops the game and another Esc lets it go on."
     ],
     "gamesTitle": "Kinds of games",
-    "games": [
-      "The small picture on a level's circle on the map shows which game waits there.",
-      "**Word stream**: words fly or roll toward you. Type them before they arrive.",
-      "**Waiting words**: words wait calmly, for example on dew drops. Each starts with a different letter, so pick the one you type. At a crossroads the word you type picks the way.",
-      "**Copy**: words stand in a row and you type them from left to right. On the invitation a mistake makes the word fade and two new ones come: more practice, not a punishment.",
-      "**Dictation**: you do not see the word, you only hear it. Type what you hear. When you wait a while, it is said again.",
-      "**Secret words**: a word shows only for a moment and hides. Remember it and type it from memory.",
-      "**Parrot**: a few words many times in a row. The parrot repeats each one. A slip brings the word twice more.",
-      "**Big challenge**: the last level of a world. Every world has its own."
-    ],
+    "games": {
+      "intro": "The small picture on a level's circle on the map shows which game waits there.",
+      "chase": "**Word stream**: words fly or roll toward you. Type them before they arrive.",
+      "catch": "**Waiting words**: words wait calmly, for example on dew drops. Each starts with a different letter, so pick the one you type.",
+      "crossroads": "**Crossroads**: at a crossroads the word you type picks the way.",
+      "clean": "**Copy**: words stand in a row and you type them from left to right. On the invitation a mistake makes the word fade and two new ones come: more practice, not a punishment.",
+      "listen": "**Dictation**: you do not see the word, you only hear it. Type what you hear. When you wait a while, it is said again.",
+      "remember": "**Secret words**: a word shows only for a moment and hides. Remember it and type it from memory.",
+      "aim": "**Target range**: words full of the letters you still miss. Each word throws a thing through the rings into the target.",
+      "parrot": "**Parrot**: a few words many times in a row. The parrot repeats each one. A slip brings the word twice more.",
+      "super": "**Big challenge**: the last level of a world. Every world has its own."
+    },
     "journeyTitle": "Worlds, levels and stars",
     "journey": [
       "The game has stories. Each story has worlds, and each world has a few levels.",

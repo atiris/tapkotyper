@@ -16,6 +16,7 @@ import { handInDialog } from './task';
 import { NICK_MAX, applyImport, nickname, parseImport, planImport } from '../storage/store';
 import { KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
 import { button, confirmDialog, download, h, modal } from '../ui/dom';
+import { tip } from '../ui/tooltip';
 import { tapkoElement } from '../gfx/tapko';
 import { numberPick, profileCard } from '../ui/profile-card';
 import { MAX_PER_ROW, rowSplit } from '../ui/rows';
@@ -320,6 +321,7 @@ function surprisesTab(p: Profile): HTMLElement {
   const showDays = select<string>(String(SHOW_DAYS), [
     ...Array.from({ length: SHOW_DAYS_MAX + 1 }, (_, d): [string, string] => [String(d), dayName(d)]),
     ['forever', t('surprises.days.forever')]], () => undefined);
+  tip(showDays, t('surprises.showDaysHint'));
   const levelField = field(t('surprises.level'), level);
   const nLabel = h('span', { class: 'field-label' });
   const nField = h('label', { class: 'field' }, nLabel, n);
@@ -424,7 +426,7 @@ function surprisesTab(p: Profile): HTMLElement {
       h('div', { class: 'row' }, field(t('surprises.whenLabel'), trigger), levelField, nField,
         switchField(t('surprises.repeat'), repeat),
         announceField,
-        field(t('surprises.showDays'), showDays, t('surprises.showDaysHint')),
+        field(t('surprises.showDays'), showDays),
         h('div', { class: 'surprise-actions' }, save, cancel)),
       msg));
 }

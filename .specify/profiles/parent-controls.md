@@ -90,7 +90,7 @@
   a small gold-rimmed circle with an open golden box at the top left of its island (the world's
   badge sits top right). A click opens a window with every surprise told in that world, each
   question with its answer under it; a surprise the parent deleted is gone from it. Each surprise
-  says how long it stays there ("Na mape po získaní", with a hint and an example): the day it was
+  says how long it stays there ("Na mape", short choices like "+1 deň", the explanation with an example in its tooltip): the day it was
   told and 0 to 15 more days (default 1: told on Wednesday evening, still there all Thursday), or
   for ever; after that the map no longer shows it (a repeating one comes back with its next
   telling). Answers told in practice or a rescue mission belong to no world and stay only on their

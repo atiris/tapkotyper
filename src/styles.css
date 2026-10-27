@@ -1336,6 +1336,7 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-ink); }
 .help-pic { display: flex; justify-content: center; pointer-events: none; }
 .help-pic .round-btn, .help-pic .btn { cursor: default; }
 .help-pic .progress { flex: none; width: 8rem; min-width: 0; }
+.help-act { width: 44px; height: 44px; object-fit: contain; }
 
 /* Touch notice */
 .touch-notice h2 { color: var(--brand-ink); }

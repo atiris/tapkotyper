@@ -1231,13 +1231,13 @@
     },
     "repeat": "Opakovať",
     "announce": "Ukázať na mape vopred",
-    "showDays": "Na mape po získaní",
+    "showDays": "Na mape",
     "showDaysHint": "Ako dlho ostane získané prekvapenie na mape pri svete, kde sa získalo: v deň získania a ešte toľko ďalších dní. Pri 1 dni ho dieťa, ktoré ho získa v stredu večer, vidí ešte celý štvrtok. Potom sa na mape už neukáže.",
     "days": {
-      "today": "len v deň získania",
-      "one": "v deň získania a ešte {n} deň",
-      "few": "v deň získania a ešte {n} dni",
-      "many": "v deň získania a ešte {n} dní",
+      "today": "len v ten deň",
+      "one": "+{n} deň",
+      "few": "+{n} dni",
+      "many": "+{n} dní",
       "forever": "navždy"
     },
     "add": "Pridať",
@@ -1427,16 +1427,18 @@
       "**Esc** hru zastaví a ďalší Esc ju pustí ďalej."
     ],
     "gamesTitle": "Druhy hier",
-    "games": [
-      "Ikonka na kruhu úrovne na mape ukazuje, aká hra ťa v nej čaká.",
-      "**Prúd slov**: slová letia alebo sa kotúľajú k tebe. Napíš ich skôr, než dorazia.",
-      "**Čakajúce slová**: slová pokojne čakajú, napríklad na kvapkách rosy. Každé začína iným písmenom, tak si vyber, ktoré napíšeš. Na rázcestí slovom vyberieš cestu.",
-      "**Odpis**: slová stoja v riadku a píšeš ich zľava doprava. Pri pozvánke za chybu slovo zmizne a pribudnú dve nové, je to viac cvičenia, nie trest.",
-      "**Odposluch**: slovo nevidíš, iba počuješ. Napíš, čo počuješ. Keď chvíľu nepíšeš, zopakuje sa.",
-      "**Tajné slová**: slovo sa ukáže len na chvíľu a schová sa. Zapamätaj si ho a napíš ho spamäti.",
-      "**Papagáj**: pár slov veľakrát za sebou. Papagáj každé zopakuje. Za chybu príde slovo ešte dvakrát.",
-      "**Veľká výzva**: posledná úroveň sveta. Každý svet ju má inú."
-    ],
+    "games": {
+      "intro": "Obrázok na kruhu úrovne na mape ukazuje, aká hra ťa v nej čaká.",
+      "chase": "**Prúd slov**: slová letia alebo sa kotúľajú k tebe. Napíš ich skôr, než dorazia.",
+      "catch": "**Čakajúce slová**: slová pokojne čakajú, napríklad na kvapkách rosy. Každé začína iným písmenom, tak si vyber, ktoré napíšeš.",
+      "crossroads": "**Rázcestie**: na rázcestí slovom vyberieš cestu.",
+      "clean": "**Odpis**: slová stoja v riadku a píšeš ich zľava doprava. Pri pozvánke za chybu slovo zbledne a pribudnú dve nové, je to viac cvičenia, nie trest.",
+      "listen": "**Odposluch**: slovo nevidíš, iba počuješ. Napíš, čo počuješ. Keď chvíľu nepíšeš, zopakuje sa.",
+      "remember": "**Tajné slová**: slovo sa ukáže len na chvíľu a schová sa. Zapamätaj si ho a napíš ho spamäti.",
+      "aim": "**Strelnica**: slová plné písmen, ktoré ti ešte nejdú. Každé slovo hodí vec cez krúžky až do terča.",
+      "parrot": "**Papagáj**: pár slov veľakrát za sebou. Papagáj každé zopakuje. Za chybu príde slovo ešte dvakrát.",
+      "super": "**Veľká výzva**: posledná úroveň sveta. Každý svet ju má inú."
+    },
     "journeyTitle": "Svety, úrovne a hviezdičky",
     "journey": [
       "Hra má príbehy. Každý príbeh má svety a každý svet má niekoľko úrovní.",

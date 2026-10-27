@@ -6,6 +6,7 @@ import { type Child, ICONS, button, h, icon, richText } from '../ui/dom';
 import { levelRing, pawRing, rhythmPic, roundPic, timerPic } from '../ui/hud';
 import { barTabLinks, tabBar } from '../ui/tabs';
 import { installApp } from '../ui/install';
+import { imageUrl } from '../gfx/assets';
 
 const TABS = ['ui', 'typing', 'progress', 'settings', 'mentoring', 'about'] as const;
 export type HelpTab = (typeof TABS)[number];
@@ -37,6 +38,19 @@ function mapIcons(): HTMLElement[] {
     iconLine(round('menu'), t('help.icons.menu')),
     iconLine(timerPic(150).el, t('help.icons.timer')),
   ];
+}
+
+/** The game types, each with the picture the map shows for it. */
+const GAMES: [string, string][] = [
+  ['chase', 'ui-act-chase'], ['catch', 'ui-act-catch'], ['crossroads', 'ui-act-crossroads'], ['clean', 'ui-act-clean'], ['listen', 'ui-act-listen'],
+  ['remember', 'ui-act-remember'], ['aim', 'obj-aim-target'], ['parrot', 'ui-act-parrot'], ['super', 'ui-act-super'],
+];
+
+function gameIcons(): HTMLElement[] {
+  return GAMES.map(([game, pic]) => {
+    const src = imageUrl(pic);
+    return iconLine(src ? h('img', { class: 'help-act', src, alt: '' }) : h('span', {}), t(`help.games.${game}`));
+  });
 }
 
 /** The buttons of a level, and the super star. */
@@ -132,7 +146,7 @@ function tabContent(tab: HelpTab, now: Child[] = []): HTMLElement[] {
     case 'progress': return [
       section(t('help.journeyTitle'), list('help.journey')),
       section(t('help.playTitle'), list('help.play')),
-      section(t('help.gamesTitle'), list('help.games')),
+      section(t('help.gamesTitle'), h('p', {}, t('help.games.intro')), h('ul', { class: 'help-icons' }, ...gameIcons())),
       section(t('help.progressTitle'), list('help.progress')),
       section(t('help.moreTitle'), list('help.more')),
     ];

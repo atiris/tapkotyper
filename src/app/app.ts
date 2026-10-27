@@ -8,6 +8,7 @@ import type { TaskSpec } from '../share/task';
 import { loadWordsOf } from '../words/words';
 import { closeModals } from '../ui/dom';
 import { hideTip } from '../ui/tooltip';
+import { fast } from './fast';
 import { keyboardGated, waitForKeyboard } from './keyboard-gate';
 
 export type ScreenName = 'start' | 'newProfile' | 'map' | 'level' | 'story' | 'parent' | 'wardrobe' | 'friends' | 'teacher' | 'taskImport' | 'moveImport' | 'help' | 'translate' | 'progress';
@@ -48,6 +49,11 @@ export const app = {
   /** `.tapko` files the system opened TapkoTyper with, for the mentor page to load. */
   openedFiles: [] as File[],
 };
+
+/** The play time before a stretch break is used up. */
+export function isBreakDue(): boolean {
+  return app.sessionSeconds >= fast(app.profile!.settings.sessionMinutes * 60);
+}
 
 export function layout(): Layout {
   return LAYOUTS[app.profile?.layout ?? 'sk-qwertz'];

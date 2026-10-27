@@ -1,4 +1,5 @@
 import { app } from '../app/app';
+import { fast } from '../app/fast';
 import { audio } from '../audio/audio';
 import { tapkoElement } from '../gfx/tapko';
 import { t } from '../i18n/i18n';
@@ -31,7 +32,9 @@ export function openBreak(onDone: () => void): void {
   const stage = h('div', { class: 'break-stage' }, tapko);
   let plan = SMALL;
   let i = 0;
-  let left = plan.seconds;
+  /** Seconds of one exercise of the plan now. */
+  const length = () => Math.ceil(fast(plan.seconds));
+  let left = length();
   /** Where the short break was when the big one started. */
   let paused: { i: number; left: number } | null = null;
   let finished = false;
@@ -76,7 +79,7 @@ export function openBreak(onDone: () => void): void {
     paused = { i, left };
     plan = BIG;
     i = 0;
-    left = plan.seconds;
+    left = length();
     audio.sfx('pop');
     show();
   };
@@ -105,7 +108,7 @@ export function openBreak(onDone: () => void): void {
     timer.textContent = String(left);
     if (left > 0) return;
     i++;
-    left = plan.seconds;
+    left = length();
     if (i < plan.exercises.length) {
       audio.sfx('pop');
       show();

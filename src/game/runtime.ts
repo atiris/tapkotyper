@@ -1,4 +1,5 @@
-import { app, layout, pickLine, reduceMotion, saveProfile } from '../app/app';
+import { app, isBreakDue, layout, pickLine, reduceMotion, saveProfile } from '../app/app';
+import { fast } from '../app/fast';
 import { audio, type Sfx } from '../audio/audio';
 import { speech } from '../audio/speech';
 import { Loop, Stage, VH } from '../engine/loop';
@@ -308,7 +309,7 @@ export class LevelRuntime {
     this.count = def.count;
     // The e2e build may shorten the minimum (`?minActive=8`), so its tests finish levels in seconds.
     // Staying a while never reaches its minimum: the targets keep coming until Esc.
-    this.minActive = opts.stay ? Infinity : !hasMinLength(def) ? 0 : import.meta.env.MODE === 'e2e' ? Number(new URLSearchParams(location.search).get('minActive') ?? 0) : minActiveS(def);
+    this.minActive = opts.stay ? Infinity : !hasMinLength(def) ? 0 : import.meta.env.MODE === 'e2e' ? Number(new URLSearchParams(location.search).get('minActive') ?? 0) : fast(minActiveS(def));
 
     // DOM: HUD, stage, Tapko, bubble, guide.
     this.el = h('div', { class: `level-screen world-${WORLDS[def.world]}${def.rescue ? ' world-rescue' : ''}` });
@@ -1260,7 +1261,7 @@ export class LevelRuntime {
     else if (this.helper && !this.finished) this.helper.tick(dt, this.helpHost);
     this.readFocus();
     // Free typing and staying a while have no end on their own: the bubble says when a break is due.
-    if ((this.free || this.opts.stay) && !this.breakSaid && app.sessionSeconds >= app.profile!.settings.sessionMinutes * 60) {
+    if ((this.free || this.opts.stay) && !this.breakSaid && isBreakDue()) {
       this.breakSaid = true;
       this.say(pickLine('tapko.break'), 6);
     }

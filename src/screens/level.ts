@@ -1,4 +1,4 @@
-import { app, go, pickLine, saveProfile } from '../app/app';
+import { app, go, isBreakDue, pickLine, saveProfile } from '../app/app';
 import { starRow } from '../ui/chrome';
 import { tapkoElement } from '../gfx/tapko';
 import { t, tList } from '../i18n/i18n';
@@ -157,7 +157,7 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
   const taskOn = task && !task.doneAt ? task : null;
   if (task?.doneAt) actions.append(button(t('task.handIn'), () => void handInDialog(p, task), 'btn primary', 'upload'));
   else if (taskOn && def.kind === 'practice') actions.append(button(t('task.continue'), () => startTask(p, taskOn), 'btn primary', 'play'));
-  const breakDue = app.sessionSeconds >= p.settings.sessionMinutes * 60;
+  const breakDue = isBreakDue();
   // A break or a finished task's hand-in is the main action then.
   const calm = breakDue || !!task?.doneAt;
   const nextDef = def.index >= 0 && !def.isSuper ? LEVELS.find((l) => l.world === def.world && l.index === def.index + 1) : undefined;
@@ -217,7 +217,7 @@ function showStayDone(root: HTMLElement, def: LevelDef, r: LevelResult): void {
     facts.push(chip('new-key', r.newKeys.length === 1 ? t('results.newKey', { key: keyLabel(r.newKeys[0]) }) : t('results.newKeys', { keys: r.newKeys.map(keyLabel).join(', ') })));
   }
   if (r.growth) facts.push(chip('good', r.growth.kind === 'difficulty' ? t('results.growthDifficulty') : t('results.growthWordLen', { n: r.growth.value })));
-  const breakDue = app.sessionSeconds >= p.settings.sessionMinutes * 60;
+  const breakDue = isBreakDue();
   const next = LEVELS[LEVELS.indexOf(def) + 1];
   const actions = h('div', { class: 'row center' });
   const line = pickLine('tapko.level_done', { name: nickname(p) }, p.customMessages);
@@ -251,7 +251,7 @@ function showAimDone(root: HTMLElement, r: LevelResult, mode: AimMode, params: L
     h('span', {}, t('aim.beforeAfter', { before: pct(k.before), after: pct(k.after) }))));
   const facts = [h('span', { class: 'fact main' }, t('results.accuracy', { n: pct(r.accuracy) })), h('span', { class: 'fact' }, t('aim.hitsDone', { n: mode.hits, center: mode.centers }))];
   if (r.newKeys.length) facts.push(h('span', { class: 'fact new-key' }, t('aim.opened', { keys: r.newKeys.map(keyLabel).join(', ') })));
-  const breakDue = app.sessionSeconds >= p.settings.sessionMinutes * 60;
+  const breakDue = isBreakDue();
   const actions = h('div', { class: 'row center' });
   const line = pickLine('tapko.level_done', { name: nickname(p) }, p.customMessages);
   const bubble = h('p', { class: 'bubble static side' }, breakDue ? pickLine('tapko.break') : line);
@@ -303,7 +303,7 @@ function showParrotDone(root: HTMLElement, def: LevelDef, r: LevelResult, mode: 
   if (repeat) facts.push(h('span', { class: `fact ${repeat > learn ? 'good' : ''}` }, t('parrot.speedRepeat', { n: repeat })));
   if (r.newKeys.length) facts.push(h('span', { class: 'fact new-key' }, t('aim.opened', { keys: r.newKeys.map(keyLabel).join(', ') })));
   if (badgeNew) facts.push(h('span', { class: 'fact badge-fact' }, parrotBadge(), h('b', {}, t('parrot.badgeNew'))));
-  const breakDue = app.sessionSeconds >= p.settings.sessionMinutes * 60;
+  const breakDue = isBreakDue();
   const actions = h('div', { class: 'row center' });
   const line = lost ? t('parrot.flown') : pickLine('tapko.level_done', { name: nickname(p) }, p.customMessages);
   const bubble = h('p', { class: 'bubble static side' }, breakDue && !lost ? pickLine('tapko.break') : line);

@@ -8,6 +8,12 @@ const D_SOFT = 120; // edge feather: fully opaque above this distance
 const K_LENS = 150;
 const K_GLASS = 70; // light key-tinted reflections at a lens edge become white glass
 const K_SHINE = 20; // inside a lens even a pale key tint is a painted highlight
+// Background layers: the key haze in the rim up to HAZE_REACH px from the key, compared with
+// the inside of the object up to HAZE_AROUND px away.
+const HAZE_REACH = 4;
+const HAZE_AROUND = 32;
+const HAZE_MARGIN = 10; // a rim this much pinker than the inside is still drawn so
+const HAZE = 30; // the most key tint taken out
 
 function sampleKey(data, w, h) {
   // The most saturated corner is the key; corners covered by artwork (the ground
@@ -113,7 +119,61 @@ export function keyOut(data, w, h, { glass = false, layer = false, tint = null, 
     data[i + 3] = Math.round(data[i + 3] * a * fade);
   }
   if (glass) growShine(data, w, h, k, shine, removed);
+  if (layer) clearHaze(data, w, h, removed, green);
   bleedColor(data, w, h);
+}
+
+/**
+ * The key mixed into the light tips and outlines of grass leaves a pale grey-pink rim, too
+ * weak for the despill. A rim pixel loses the key tint by which it leans to the key more than
+ * the inside of the objects around it (a pink stone or a red poppy stays as it is), but never
+ * more than it has (a white flower beside the grass stays white).
+ */
+function clearHaze(data, w, h, removed, green) {
+  const n = w * h;
+  // Chessboard distance from the removed key, up to HAZE_REACH + 1 (the inside).
+  const depth = new Uint8Array(n).fill(HAZE_REACH + 1);
+  let front = [];
+  for (let p = 0; p < n; p++) if (removed[p]) { depth[p] = 0; front.push(p); }
+  for (let d = 1; d <= HAZE_REACH; d++) {
+    const next = [];
+    for (const p of front) {
+      const x = p % w, y = (p / w) | 0;
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+        const xx = x + dx, yy = y + dy;
+        if (xx < 0 || yy < 0 || xx >= w || yy >= h) continue;
+        const q = yy * w + xx;
+        if (depth[q] > d) { depth[q] = d; next.push(q); }
+      }
+    }
+    front = next;
+  }
+  // How much a pixel leans to the key; the inside's lean summed over boxes (integral image).
+  const lean = (i) => green ? data[i + 1] - (data[i] + data[i + 2]) / 2 : (data[i] + data[i + 2]) / 2 - data[i + 1];
+  const W = w + 1;
+  const sum = new Float64Array(W * (h + 1));
+  const cnt = new Float64Array(W * (h + 1));
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const p = y * w + x, inside = depth[p] > HAZE_REACH;
+    const o = (y + 1) * W + x + 1;
+    sum[o] = (inside ? lean(p * 4) : 0) + sum[o - 1] + sum[o - W] - sum[o - W - 1];
+    cnt[o] = (inside ? 1 : 0) + cnt[o - 1] + cnt[o - W] - cnt[o - W - 1];
+  }
+  const box = (a, x0, y0, x1, y1) => a[(y1 + 1) * W + x1 + 1] - a[y0 * W + x1 + 1] - a[(y1 + 1) * W + x0] + a[y0 * W + x0];
+  for (let p = 0; p < n; p++) {
+    if (!depth[p] || depth[p] > HAZE_REACH) continue;
+    const i = p * 4;
+    if (!data[i + 3]) continue;
+    const x = p % w, y = (p / w) | 0;
+    const x0 = Math.max(0, x - HAZE_AROUND), y0 = Math.max(0, y - HAZE_AROUND);
+    const x1 = Math.min(w - 1, x + HAZE_AROUND), y1 = Math.min(h - 1, y + HAZE_AROUND);
+    const c = box(cnt, x0, y0, x1, y1);
+    if (!c) continue;
+    const shift = Math.min(HAZE, lean(i), Math.max(0, lean(i) - box(sum, x0, y0, x1, y1) / c - HAZE_MARGIN));
+    if (shift <= 0) continue;
+    if (green) data[i + 1] = Math.max(0, data[i + 1] - shift);
+    else { data[i] = Math.max(0, data[i] - shift); data[i + 2] = Math.max(0, data[i + 2] - shift); }
+  }
 }
 
 /**

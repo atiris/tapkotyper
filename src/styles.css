@@ -1307,7 +1307,10 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-ink); }
 .modal-back:has(.break-modal) { padding: 0; background: var(--break-bg); }
 .modal.break-modal { width: 100%; height: 100%; max-height: none; padding: 0; border-radius: 0; background: none; box-shadow: none; }
 .break-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; min-height: 100%; padding: 1rem; }
-.break-card { max-width: 560px; }
+.break-card { position: relative; max-width: 860px; }
+/* The buttons stay in one row while the screen is wide enough. */
+.break-actions { flex-wrap: nowrap; }
+@media (max-width: 760px) { .break-actions { flex-wrap: wrap; } }
 .break-stage { display: flex; justify-content: center; }
 .break-stage[data-ex='arms'] .tapko-stack { animation: stretch-up 4s ease-in-out infinite; }
 .break-stage[data-ex='fists'] .tapko-stack { animation: squeeze 1.4s ease-in-out infinite; }
@@ -1392,7 +1395,6 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-ink); }
 .cert-sub { margin: 0.8cqw 0 0; font-size: 2.4cqw; color: var(--ink-soft); letter-spacing: 0.04em; }
 .cert-awarded { margin: 3.2cqw 0 0; font-size: 2.1cqw; color: var(--ink-soft); }
 .cert-name { margin: 0.4cqw 0 0; padding: 0 5cqw 0.6cqw; font-size: 6cqw; font-weight: 700; line-height: 1.1; color: var(--green-ink); border-bottom: 0.35cqw solid #e9c79a; }
-.cert-name small { display: block; font-size: 2.2cqw; font-weight: 600; color: var(--ink-soft); }
 .cert-hero { margin-top: 1.5cqw; }
 .cert-hero .tapko-stack { --size: 32cqw !important; }
 .cert-stats { display: flex; justify-content: center; gap: 1.5cqw; margin-top: 0.5cqw; }

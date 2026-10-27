@@ -9,11 +9,16 @@ import { nickname } from '../storage/store';
 import { button, h, modal } from '../ui/dom';
 import { storyPicture } from './stats';
 
+/** The name on the certificate: the full name when the profile has one, else the nickname. */
+function certName(p: Profile): string {
+  return p.name?.trim() || nickname(p);
+}
+
 /** How far the writer is, as one of the praise lines: by the share of the layout's keys mastered. */
 function praise(p: Profile, mastered: number, total: number, accuracy: number, typed: boolean): string {
   const share = total ? mastered / total : 0;
   const lines = tList('cert.praise');
-  const line = lines[share < 0.1 ? 0 : share < 0.4 ? 1 : share < 0.75 ? 2 : 3].replace('{name}', nickname(p));
+  const line = lines[share < 0.1 ? 0 : share < 0.4 ? 1 : share < 0.75 ? 2 : 3].replace('{name}', certName(p));
   if (!typed) return line;
   return accuracy >= 0.95 ? `${line} ${t('cert.precise')}` : accuracy >= 0.85 ? `${line} ${t('cert.careful')}` : line;
 }
@@ -53,7 +58,6 @@ function certificate(p: Profile): HTMLElement {
   const m = masterySummary(p);
   const recent = recentTyping(p, 14);
   const border = frame();
-  const realName = p.name && p.name !== nickname(p) ? p.name : '';
   const stats = [
     stat('ui-key', `${m.mastered}/${m.total}`, t('cert.keys')),
     recent.chars ? stat('ui-accuracy', `${Math.round(recent.accuracy * 100)} %`, t('cert.accuracy')) : null,
@@ -72,7 +76,7 @@ function certificate(p: Profile): HTMLElement {
       h('h1', { class: 'cert-title' }, t('cert.title')),
       h('p', { class: 'cert-sub' }, t('cert.subtitle')),
       h('p', { class: 'cert-awarded' }, t('cert.awarded')),
-      h('p', { class: 'cert-name' }, nickname(p), realName ? h('small', {}, realName) : null),
+      h('p', { class: 'cert-name' }, certName(p)),
       h('div', { class: 'cert-hero' }, tapkoElement(p.companion, 'happy', 200)),
       h('div', { class: 'cert-stats' }, ...stats),
       h('div', { class: 'cert-stories' }, h('h2', {}, t('cert.stories')), h('ul', {}, ...stories)),

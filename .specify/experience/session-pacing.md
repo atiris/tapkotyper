@@ -13,11 +13,16 @@
   neither the button nor Esc skips it (the big break may still end early).
 - The break opens over the screen it was taken from and always returns there: from a level's
   results the child is back on the same results, with the reward still to look at.
+- Any short exercise can be swapped for another one ("Iné cvičenie": a different exercise, its
+  full 20 seconds again).
 - The map has a **Rozcvička** (warm-up) button above Continue (which stays the map's main
   button): the same short break with the big one to add, the child's own choice, so never
-  locked. "Pokračovať v písaní" starts the next level at any moment (also at its end) and
-  "Zrušiť" (Esc) goes back to the map. A break ends with a short "well rested" and no posture
-  card of its own: the level's get-ready card shows it anyway.
+  locked. Its buttons sit in one row: "Veľká prestávka", "Iné cvičenie", "Pokračovať v písaní"
+  (starts the next level at any moment) and "Zrušiť"; a round X top right (its tooltip says it
+  closes the warm-up and goes back, Esc does the same) goes back to the map. It ends with "To
+  bola dobrá rozcvička, {name}!" and "Pokračovať v písaní", "Ešte sa rozcvičiť" (the short
+  warm-up once more), "Zrušiť" and the round X (Esc). A break ends the same way, with Continue,
+  and no posture card of its own: the level's get-ready card shows it anyway.
 - Runs without an end of their own (free typing, staying a while in a level) say the break in
   Tapko's bubble when it is due; the card after staying a while offers the break first.
 - No daily streaks, no "come back or lose" messages, no random loot.

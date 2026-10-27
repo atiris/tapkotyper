@@ -866,6 +866,9 @@
     "skip": "Skip",
     "play": "Continue typing",
     "cancel": "Cancel",
+    "other": "Another exercise",
+    "again": "Warm up again",
+    "closeTip": "Close the warm-up and go back (Esc)",
     "bigTitle": "Big break {n}/{total}",
     "stand": "Stand up and stretch on your tiptoes up to the ceiling.",
     "march": "March on the spot and lift your knees high.",
@@ -873,7 +876,7 @@
     "wrists": "Circle your wrists one way and then the other.",
     "eyes": "Look far out of the window, then at your nose and far again. Then blink.",
     "water": "Drink some water and take three slow, deep breaths.",
-    "done": "Well rested, {name}!"
+    "done": "That was a good warm-up, {name}!"
   },
   "parent": {
     "title": "Local profile settings",

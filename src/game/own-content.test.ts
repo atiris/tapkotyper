@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import type { Profile, Surprise } from '../storage/schema';
 import { levelById, practiceLevel } from './levels';
-import { newSurprise, restartSurprise, surpriseAnnounced, surpriseCount, surpriseFor, surpriseOutcome, surpriseWonIn, surprisesWonIn } from './own-content';
+import { newSurprise, restartSurprise, surpriseAnnounced, surpriseCount, surpriseFor, surpriseOutcome, surpriseWonIn, surprisesToldOn, surprisesWonIn } from './own-content';
 
 const w11 = levelById('w1-1')!;
 const w12 = levelById('w1-2')!;
@@ -26,7 +26,7 @@ describe('surprise rules', () => {
     const s = rule(p, 'level', { level: 'w1-2' });
     expect(surpriseFor(p, w11, false)).toBeNull();
     expect(surpriseFor(p, w12, false)).toBe(s);
-    expect(surpriseOutcome(p, s, false, '2026-10-21')).toEqual({ rule: s, revealed: true });
+    expect(surpriseOutcome(p, s, false, '2026-10-21')).toEqual({ revealed: [s], waiting: null });
     expect(s.doneAt).toBe('2026-10-21');
     expect(surpriseFor(p, w12, false)).toBeNull();
   });
@@ -36,7 +36,7 @@ describe('surprise rules', () => {
     const s = rule(p, 'level', { level: 'w1-2', repeat: true });
     surpriseOutcome(p, surpriseFor(p, w12, false), false, '2026-10-21');
     expect(s.doneAt).toBeUndefined();
-    expect(surpriseOutcome(p, surpriseFor(p, w12, false), false, '2026-10-21')?.revealed).toBe(true);
+    expect(surpriseOutcome(p, surpriseFor(p, w12, false), false, '2026-10-21').revealed).toEqual([s]);
   });
 
   it('a minutes rule waits on every card and fires in the run that reaches the time', () => {
@@ -46,9 +46,9 @@ describe('surprise rules', () => {
     expect(surpriseFor(p, practiceLevel(null), false)).toBe(s);
     play(p, 3, 90);
     expect(surpriseCount(p, s)).toEqual({ have: 1, need: 2 });
-    expect(surpriseOutcome(p, s, false)).toEqual({ rule: s, revealed: false });
+    expect(surpriseOutcome(p, s, false)).toEqual({ revealed: [], waiting: s });
     play(p, 3, 30);
-    expect(surpriseOutcome(p, s, false)?.revealed).toBe(true);
+    expect(surpriseOutcome(p, s, false).revealed).toEqual([s]);
     expect(s.doneAt).toBeDefined();
   });
 
@@ -59,7 +59,7 @@ describe('surprise rules', () => {
     play(p, 3);
     expect(surpriseCount(p, levels)).toEqual({ have: 1, need: 2 });
     play(p, 3);
-    expect(surpriseOutcome(p, levels, false)?.revealed).toBe(true);
+    expect(surpriseOutcome(p, levels, false).revealed).toEqual([levels]);
     expect(surpriseCount(p, levels)).toEqual({ have: 0, need: 2 });
     const stars = rule(p, 'stars', { n: 4 });
     play(p, 2);
@@ -68,7 +68,7 @@ describe('surprise rules', () => {
     expect(surpriseCount(p, stars)).toEqual({ have: 4, need: 4 });
   });
 
-  it('one surprise per run: level, then minutes, levels, stars; a reached one first on the card', () => {
+  it('the card asks one rule; every rule reached in the run is told on its results', () => {
     const p = newProfile('Ema', 'sk');
     const stars = rule(p, 'stars', { n: 1 });
     const minutes = rule(p, 'minutes', { n: 10 });
@@ -77,11 +77,9 @@ describe('surprise rules', () => {
     expect(surpriseFor(p, w11, false)).toBe(minutes);
     play(p, 3);
     expect(surpriseFor(p, w11, false)).toBe(stars);
-    expect(surpriseOutcome(p, level, false)?.rule).toBe(level);
-    expect(stars.doneAt).toBeUndefined();
-    // A rule reached during the run fires even when the card asked another one.
-    expect(surpriseOutcome(p, minutes, false)?.rule).toBe(stars);
-    expect(surpriseFor(p, w12, false)).toBe(minutes);
+    expect(surpriseOutcome(p, level, false, '2026-10-27')).toEqual({ revealed: [level, stars], waiting: null });
+    expect(surprisesToldOn(p, '2026-10-27')).toEqual([stars, level]);
+    expect(surpriseOutcome(p, minutes, false)).toEqual({ revealed: [], waiting: minutes });
   });
 
   it('drills have none, and a changed rule waits again', () => {
@@ -89,7 +87,7 @@ describe('surprise rules', () => {
     const s = rule(p, 'levels', { n: 1 });
     play(p);
     expect(surpriseFor(p, practiceLevel(60), true)).toBeNull();
-    expect(surpriseOutcome(p, null, true)).toBeNull();
+    expect(surpriseOutcome(p, null, true)).toEqual({ revealed: [], waiting: null });
     surpriseOutcome(p, s, false);
     expect(s.doneAt).toBeDefined();
     restartSurprise(p, s);

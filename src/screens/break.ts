@@ -4,7 +4,6 @@ import { audio } from '../audio/audio';
 import { tapkoElement } from '../gfx/tapko';
 import { t } from '../i18n/i18n';
 import { nickname } from '../storage/store';
-import { postureContent } from '../game/cards';
 import { button, h, modal } from '../ui/dom';
 import { cornerControls } from '../ui/chrome';
 
@@ -15,13 +14,15 @@ const BIG = { title: 'break.bigTitle', exercises: ['stand', 'march', 'neck', 'wr
 
 /**
  * Stretch break led by the narrator over the screen it was opened from: three short exercises,
- * then the posture card, and `onDone` back on that screen. Under the countdown the big break can
- * be added: six longer exercises, after which the short break goes on where it was. Anyone may skip
- * either (Esc too), unless the profile's breaks cannot be skipped: then only the big one can.
+ * then a short "well rested", and `onDone` back on that screen. Under the countdown the big break
+ * can be added: six longer exercises, after which the short break goes on where it was. Anyone may
+ * skip either (Esc too), unless the profile's breaks cannot be skipped: then only the big one can.
+ * With `play` it is the map's warm-up, the child's own choice: "Continue typing" (`play`) is there
+ * all along and at its end, and "Cancel" (Esc) goes back to the map; it is never locked.
  */
-export function openBreak(onDone: () => void): void {
+export function openBreak(onDone: () => void, play?: () => void): void {
   const p = app.profile!;
-  const locked = p.settings.breaksLocked;
+  const locked = p.settings.breaksLocked && !play;
   const track = audio.playing;
   app.breakCount++;
   audio.music(app.breakCount % 2 ? 'break' : 'relaxing');
@@ -41,8 +42,9 @@ export function openBreak(onDone: () => void): void {
   const bigButton = button(t('break.big'), () => startBig(), 'btn', 'play');
   bigButton.autofocus = true;
   const skipLabel = h('span', {});
-  const skipButton = button(skipLabel, () => skip(), 'btn', 'next');
-  const actions = h('div', { class: 'row center' }, bigButton, skipButton);
+  const skipButton = button(skipLabel, () => skip(), 'btn', play ? 'close' : 'next');
+  const playButton = play ? button(t('break.play'), () => leave(play), 'btn primary', 'play') : null;
+  const actions = h('div', { class: 'row center' }, bigButton, playButton, skipButton);
   const box = h('div', { class: 'card break-card' }, title, stage, text, timer, actions);
   const close = modal(h('div', { class: 'break-screen' }, cornerControls(), box), {
     cls: 'break-modal',
@@ -52,17 +54,20 @@ export function openBreak(onDone: () => void): void {
       document.removeEventListener('keydown', onKey, true);
     },
   });
-  const leave = () => {
+  /** Back to the screen it came from, then `then` (the warm-up's next level). */
+  const leave = (then = onDone) => {
     close();
     audio.music(track);
-    onDone();
+    then();
   };
   const end = () => {
     clearInterval(tick);
     finished = true;
     app.sessionSeconds = 0;
-    box.replaceChildren(postureContent(), h('p', {}, t('break.done', { name: nickname(p) })),
-      h('div', { class: 'row center' }, button(t('common.continue'), leave, 'btn primary', 'next')));
+    box.replaceChildren(h('h2', {}, t('break.done', { name: nickname(p) })),
+      h('div', { class: 'row center' }, ...(play
+        ? [button(t('break.play'), () => leave(play), 'btn primary', 'play'), button(t('break.cancel'), () => leave(), 'btn', 'close')]
+        : [button(t('common.continue'), () => leave(), 'btn primary', 'next')])));
     (box.querySelector('.btn.primary') as HTMLElement).focus();
   };
   const show = () => {
@@ -73,7 +78,7 @@ export function openBreak(onDone: () => void): void {
     timer.textContent = String(left);
     bigButton.hidden = !!paused;
     skipButton.hidden = locked && !paused;
-    skipLabel.textContent = t(paused ? 'break.bigSkip' : 'break.skip');
+    skipLabel.textContent = t(paused ? 'break.bigSkip' : play ? 'break.cancel' : 'break.skip');
   };
   const startBig = () => {
     paused = { i, left };
@@ -92,9 +97,10 @@ export function openBreak(onDone: () => void): void {
   };
   const skip = () => {
     if (paused) backToSmall();
+    else if (play) leave();
     else if (!locked) end();
   };
-  // Escape skips like the button; on the posture card it goes on.
+  // Escape skips (the warm-up: cancels) like the button; on the last card it goes back.
   const onKey = (e: KeyboardEvent) => {
     if (e.key !== 'Escape') return;
     e.preventDefault();

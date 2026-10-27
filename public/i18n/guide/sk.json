@@ -90,10 +90,6 @@
       "title": "Mapa",
       "about": "Texty hlavnej mapy: názvy príbehov, rady k úrovniam a rady o odomykaní úrovní."
     },
-    "teaser": {
-      "title": "Otázky po úrovni",
-      "about": "Zvedavé otázky a odpovede, ktoré sa ukážu na konci úrovne príbehu."
-    },
     "surprise": {
       "title": "Tajomstvo od rodiča",
       "about": "Texty o tajomstve, ktoré rodič pripravil ako odmenu."
@@ -470,13 +466,9 @@
     "map.heldKeys": "Doplnok v bubline, keď treba písať presnejšie. {keys} sú tie písmená.",
     "map.keysLocked": "Súčasť popisu uzla úrovne pre čítače obrazovky, keď chýbajú písmená.",
     "map.storyFairy": "Nadpis tretieho príbehu na mape. Jeho dlhšie slová (aspoň 4 písmená) sú aj tajné slová: napísané na stránke Môj postup spustia prehliadku odznaku.",
-    "teaser.ask": "Tučný začiatok otázky na konci úrovne príbehu; za ním je otázka.",
-    "teaser.later": "Malý riadok pod otázkou; sľubuje odpoveď po ďalšej úrovni.",
-    "teaser.answer": "Tučný začiatok odpovede, ktorá sa ukáže po dokončení úrovne.",
-    "teaser.asked": "Tučný začiatok pripomenutia predošlej otázky pred odpoveďou.",
-    "teaser.*.q": "Otázky sveta; každá patrí jednej úrovni a ukáže sa na konci úrovne pred ňou. Poradie sedí s odpoveďami.",
-    "teaser.*.a": "Odpovede na otázky toho istého sveta, v rovnakom poradí; ukážu sa po dokončení úrovne.",
     "surprise.waitingTitle": "Mapa: nadpis okna so zoznamom prekvapení, ktoré ešte čakajú (otvorí ho zatvorená krabička pri Tapkovi).",
+    "surprise.toldTitle": "Mapa: nadpis okna prekvapení, keď sa dnes nejaké získalo (získané sú prvé aj s odpoveďou, potom čakajúce).",
+    "surprise.toldTip": "Mapa: bublina otvorenej zlatej krabičky pri Tapkovi v deň, keď sa získalo prekvapenie.",
     "surprise.waitingTip": "Mapa: bublina zatvorenej zlatej krabičky pri Tapkovi, kým čakajú prekvapenia.",
     "surprise.need.minutesOne": "Mapa, čakajúce prekvapenia: čo ešte treba k prekvapeniu po čase tréningu; {n} (1) minút spolu, {have} zatiaľ natrénovaných.",
     "surprise.need.minutesFew": "To isté pre {n} od 2 do 4.",
@@ -915,8 +907,10 @@
     "break.bigTitle": "Veľká prestávka: nadpis nad jedným z šiestich dlhších cvičení; {n} je poradie cvičenia, {total} ich počet (6).",
     "break.big": "Prestávka: tlačidlo, ktorým si dieťa pridá veľkú prestávku s dlhšími cvičeniami.",
     "break.bigSkip": "Prestávka: tlačidlo počas veľkej prestávky, ktoré sa vráti ku krátkej prestávke.",
+    "break.play": "Rozcvička z mapy: tlačidlo, ktoré hneď spustí ďalšiu úroveň, počas rozcvičky aj na jej konci.",
+    "break.cancel": "Rozcvička z mapy: tlačidlo, ktoré rozcvičku zavrie a vráti sa na mapu (to isté robí Esc).",
     "break.skip": "Prestávka: tlačidlo pod odpočtom, ktoré preskočí krátku prestávku (to isté robí Esc).",
-    "break.done": "Prestávka: veta po skončení cvičení pod obrázkom správneho sedenia; {name} je prezývka študenta.",
+    "break.done": "Prestávka: nadpis po cvičeniach; {name} je prezývka študenta.",
     "break.*": "Prestávka: pokyn k jednému pohybovému cvičeniu, ukáže sa pod obrázkom postavičky, kým beží odpočet sekúnd.",
     "tips.*": "Tip pred úrovňou: jedna rada na karte „priprav sa“, raz za hranie; ukáže sa aj v pomoci počas úrovne.",
     "tips.listen-whole": "Tip len pred diktátom (slová sa počúvajú): ukáže sa na karte pred úrovňou alebo v pomoci.",

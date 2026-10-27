@@ -13,8 +13,8 @@ import { badge } from '../ui/badge';
 import { flyAway, hasParrotBadge } from '../game/parrots';
 import { localDate } from '../learning/stats';
 import { arrowFocus, button, closeButton, h, icon, modal } from '../ui/dom';
-import { surpriseAsk } from '../game/cards';
-import { TRIGGERS, surpriseAnnounced, surpriseCount, surprisesWonIn } from '../game/own-content';
+import { surpriseAsk, surpriseTold } from '../game/cards';
+import { TRIGGERS, surpriseAnnounced, surpriseCount, surprisesToldOn, surprisesWonIn } from '../game/own-content';
 import { cornerControls, settingsButton } from '../ui/chrome';
 import { offerInstall } from '../ui/install';
 import { tipShown } from '../ui/tooltip';
@@ -146,10 +146,10 @@ export function mapScreen(root: HTMLElement): () => void {
     h('main', { class: 'map-body' },
       h('aside', { class: 'map-side' },
         h('h2', { class: 'map-hello' }, t('map.hello', { name: nickname(p) })),
-        h('div', { class: `map-hero ${aro ? 'with-aro' : ''}` }, aro?.el ?? null, tapko, surprisesWaiting(p)),
+        h('div', { class: `map-hero ${aro ? 'with-aro' : ''}` }, aro?.el ?? null, tapko, surprisesBox(p)),
         bubble,
         taskCard(p),
-        button(t('map.warmUp'), () => openBreak(start), 'btn', 'wave'),
+        button(t('map.warmUp'), () => openBreak(() => undefined, start), 'btn', 'wave'),
         play,
         button(t('map.practice'), () => openPracticeKeys(), 'btn', 'practice'),
         ownTextPhrases(p).length ? button(t('map.ownText'), () => go('level', { id: 'practice', text: true }), 'btn', 'read') : null,
@@ -244,17 +244,22 @@ function surpriseNeed(p: Profile, s: Surprise): string {
 }
 
 /**
- * A closed golden box beside Tapko while surprises wait (also those not tied to a level, which
- * the map shows nowhere else); a click lists their questions with what each still needs. Null without any.
+ * A golden box beside Tapko while surprises wait (also those not tied to a level, which the map
+ * shows nowhere else) or one was told today: open after a telling today, else closed. A click
+ * lists today's told ones first with their answers, then the waiting ones with what each still
+ * needs. Null without any.
  */
-function surprisesWaiting(p: Profile): HTMLElement | null {
-  const waiting = p.surprises.filter((s) => !s.doneAt).sort((a, b) => TRIGGERS.indexOf(a.trigger) - TRIGGERS.indexOf(b.trigger));
-  if (!waiting.length) return null;
-  const pic = imageUrl('ui-surprise');
+function surprisesBox(p: Profile): HTMLElement | null {
+  const told = surprisesToldOn(p);
+  const waiting = p.surprises.filter((s) => !s.doneAt && !told.includes(s)).sort((a, b) => TRIGGERS.indexOf(a.trigger) - TRIGGERS.indexOf(b.trigger));
+  if (!told.length && !waiting.length) return null;
+  const title = t(told.length ? 'surprise.toldTitle' : 'surprise.waitingTitle');
+  const pic = imageUrl(told.length ? 'ui-surprise-open' : 'ui-surprise');
   const show = () => modal(h('div', { class: 'surprises-won' },
-    h('h2', {}, t('surprise.waitingTitle')),
+    h('h2', {}, title),
+    ...told.map(surpriseTold),
     ...waiting.map((s) => h('div', { class: 'surprise-result' }, surpriseAsk(s.q), h('p', { class: 'surprise left' }, surpriseNeed(p, s))))), { cls: 'surprises-modal' });
-  return h('button', { class: 'surprises-waiting', type: 'button', 'aria-label': t('surprise.waitingTitle'), tip: t('surprise.waitingTip'), onClick: show },
+  return h('button', { class: 'surprises-box', type: 'button', 'aria-label': title, tip: t(told.length ? 'surprise.toldTip' : 'surprise.waitingTip'), onClick: show },
     pic ? h('img', { src: pic, alt: '' }) : icon('star'));
 }
 

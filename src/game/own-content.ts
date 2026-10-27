@@ -101,15 +101,18 @@ function reveal(p: Profile, s: Surprise, today: string): void {
 }
 
 /**
- * The one surprise on the results of a finished run, `asked` being the rule from `surpriseFor`:
- * a rule that fired (its answer is told and recorded), else the asked rule still waiting.
+ * The surprises on the results of a finished run, `asked` being the rule from `surpriseFor`:
+ * every rule that fired (the level's and each counting one reached; their answers are told and
+ * recorded), and the asked rule when it still waits.
  */
-export function surpriseOutcome(p: Profile, asked: Surprise | null, drill: boolean, today = localDate()): { rule: Surprise; revealed: boolean } | null {
-  if (drill) return null;
-  const fired = asked?.trigger === 'level' ? asked : countingOpen(p).find((s) => reached(p, s));
-  if (fired) {
-    reveal(p, fired, today);
-    return { rule: fired, revealed: true };
-  }
-  return asked ? { rule: asked, revealed: false } : null;
+export function surpriseOutcome(p: Profile, asked: Surprise | null, drill: boolean, today = localDate()): { revealed: Surprise[]; waiting: Surprise | null } {
+  if (drill) return { revealed: [], waiting: null };
+  const revealed = [...(asked?.trigger === 'level' ? [asked] : []), ...countingOpen(p).filter((s) => reached(p, s))];
+  for (const s of revealed) reveal(p, s, today);
+  return { revealed, waiting: asked && !revealed.includes(asked) ? asked : null };
+}
+
+/** Surprises whose answer was told `today` (deleted ones are gone). */
+export function surprisesToldOn(p: Profile, today = localDate()): Surprise[] {
+  return p.surprises.filter((s) => s.lastShownAt === today);
 }

@@ -39,11 +39,9 @@
   character is announced on the level results. Accessories stay on when the kind changes.
   A back item can have a front part (a cape's clasp, a backpack's straps) that lies over
   the body while the item itself stays behind.
-- After each story level that has a next one, the narrator asks a curious question about
-  the world's theme (real facts about animals, space, eggs, recycling, machines, rain,
-  locks and codes, robots, flowers, birds, frogs, music, the night) and gives the answer
-  only after the next level is finished, with the question shown again above it. A run
-  with a parent's surprise has no teaser ([parent controls](../profiles/parent-controls.md)).
+- No fixed curious questions lure the child to the next level: children did not care, playing
+  is reason enough. Only a parent's surprises ([parent controls](../profiles/parent-controls.md))
+  ask a question and tell its answer.
 - **Paw help**: fifteen words in a row without a mistake charge one paw (three at most,
   kept between levels). In story levels and rescue missions (not at the main gate, whose
   code must be the child's own), Enter (or the round paw button next to pause: a paw in

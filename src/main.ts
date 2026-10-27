@@ -1,6 +1,7 @@
 import './styles.css';
 import { type Screen, app, go, openRoute, parseRoute, registerScreen, screenVisit, useLanguage } from './app/app';
 import { installTheme } from './app/theme';
+import { installTestTyping } from './app/test-typing';
 import { loadManifest, preloadPlay } from './gfx/assets';
 import { GUEST_ID, SUPER_ID } from './storage/schema';
 import { detectLanguage } from './i18n/i18n';
@@ -80,6 +81,7 @@ async function boot(): Promise<void> {
   await Promise.all([loadManifest(), useLanguage(lang)]);
   document.body.classList.remove('booting');
   installTooltips();
+  installTestTyping();
   appShortcuts();
   window.addEventListener('popstate', () => void openRoute(location.hash));
   watchAutoFullscreen();

@@ -654,10 +654,10 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .map-side .btn.big { font-size: 1.2rem; }
 /* Tapko on the map; with the Parrot badge Aro's perch stands left of him, so Tapko moves a little right. */
 .map-hero { position: relative; display: flex; align-items: flex-end; justify-content: center; }
-.surprises-waiting { position: absolute; top: 0; right: 4%; width: 60px; height: 60px; padding: 0; border: 0; background: none; cursor: pointer; animation: jump-small 2.4s ease-in-out infinite; }
-.surprises-waiting img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(150, 100, 0, 0.35)); }
-.surprises-waiting:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; border-radius: 12px; }
-@media (prefers-reduced-motion: reduce) { .surprises-waiting { animation: none; } }
+.surprises-box { position: absolute; top: 0; right: 4%; width: 54px; height: 54px; padding: 0; border: 0; background: none; cursor: pointer; animation: jump-small 2.4s ease-in-out infinite; }
+.surprises-box img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(150, 100, 0, 0.35)); }
+.surprises-box:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; border-radius: 12px; }
+@media (prefers-reduced-motion: reduce) { .surprises-box { animation: none; } }
 .map-hero .aro-perch { --p: 70px; margin: 0 -18px 12px 0; z-index: 1; }
 .map-tapko { border: 0; background: radial-gradient(circle at 50% 70%, var(--glow), transparent 70%); cursor: pointer; align-self: center; border-radius: 50%; padding: 0; }
 .map-tapko:hover .tapko-stack { animation: jump-small 0.6s ease; }
@@ -1006,9 +1006,11 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .fact.good, .fact.new-key { color: var(--green-ink); background: var(--tint-green); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--green-ink) 30%, transparent); }
 .fact.growth { background: var(--tint-yellow); box-shadow: none; border-radius: 16px; text-align: left; padding: 0.2em 0.75em 0.2em 0.3em; }
 .results-notes { margin-top: 0.6rem; padding: 0.5rem 0.7rem; border-radius: 16px; box-shadow: inset 0 0 0 2px var(--line); text-align: left; font-size: 0.95rem; display: grid; gap: 0.35rem; }
-.results-notes p, .results-notes .surprise, .results-notes .teaser { margin: 0; padding: 0.3rem 0.6rem; max-width: none; font-size: inherit; }
+.results-notes p, .results-notes .surprise { margin: 0; padding: 0.3rem 0.6rem; max-width: none; font-size: inherit; }
 .results-notes .surprise.answer { font-size: 1.02rem; }
-.results-notes .surprise-result, .results-notes .teaser-result { display: grid; gap: 0.35rem; }
+.results-notes .surprise-result { display: grid; gap: 0.35rem; }
+.surprise-told { display: grid; grid-template-columns: auto 1fr; gap: 0.6rem; align-items: center; }
+.surprise-told .surprise-box { width: 52px; height: 52px; object-fit: contain; }
 .fact .medal { zoom: 0.7; }
 .results-card .row { margin-top: 0.7rem; }
 @media (max-height: 700px) {
@@ -1019,12 +1021,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
   .fact { font-size: 0.85rem; }
   .fact.main { font-size: 0.98rem; }
   .results-notes { font-size: 0.86rem; gap: 0.25rem; padding: 0.35rem 0.5rem; }
-  .results-notes p, .results-notes .surprise, .results-notes .teaser { padding: 0.2rem 0.5rem; }
+  .results-notes p, .results-notes .surprise { padding: 0.2rem 0.5rem; }
 }
-.teaser { text-align: left; margin: 0.8rem auto 0; max-width: 34em; padding: 0.6rem 0.9rem; border-radius: 16px; font-size: 1.05rem; }
-.teaser.answer { background: var(--tint-green); }
-.teaser.ask, .teaser.asked { background: var(--tint-orange); }
-.teaser small { color: var(--ink-soft); }
 .surprise { text-align: left; margin: 0.6rem auto 0; max-width: 34em; padding: 0.6rem 0.9rem; border-radius: 16px; font-size: 1.05rem; background: var(--tint-purple); }
 .surprise.answer { background: var(--tint-yellow); box-shadow: 0 0 0 3px #ffb23e inset; font-weight: 700; font-size: 1.2rem; }
 .surprise.left { background: var(--tint-blue); }
@@ -1099,9 +1097,9 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
   background: radial-gradient(circle at 35% 30%, #fff, #ffe7a3 75%); box-shadow: inset 0 0 0 3px #e0a92e, 0 0 8px rgba(245, 179, 1, 0.6); }
 .surprises-mark img { width: 80%; height: 80%; object-fit: contain; animation: none; filter: none; }
 .surprises-mark:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
-.surprises-won { display: grid; gap: 0.8rem; max-width: 34em; }
+.surprises-won { display: grid; gap: 0.8rem; }
 .surprises-won h2 { margin: 0 2.5rem 0 0; }
-.surprises-won .surprise { margin: 0; }
+.surprises-won .surprise { margin: 0; max-width: none; }
 .surprises-won .surprise-result { display: grid; gap: 0.35rem; }
 /* A level with a surprise the parent announced: the golden box glows a little. */
 .level-node.gift .level-act { filter: drop-shadow(0 0 3px rgba(245, 179, 1, 0.9)); }

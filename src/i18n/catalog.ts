@@ -48,7 +48,7 @@ export const PLURAL_KEYS = new Set([
 ]);
 
 /** Arrays whose order and count matter; every other array is a pool read at random. */
-const LINES = ['start.slogan', 'map.welcome.lines', 'story.scenes.*', 'teaser.*', 'cert.praise', 'about.*', 'help.*'];
+const LINES = ['start.slogan', 'map.welcome.lines', 'story.scenes.*', 'cert.praise', 'about.*', 'help.*'];
 
 /** The id of the word list item and of its field. */
 export const WORDS = 'words';
@@ -68,7 +68,6 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
     g('map-welcome', 'map.welcome.*'),
     g('map-buttons', 'map.hello', 'map.title', 'map.switchProfile', 'map.settings', 'map.warmUp', 'map.continue', 'map.practice', 'map.ownText', 'map.freeType', 'map.wardrobe', 'map.rescue', 'map.friends'),
     g('map-page', 'map.*'),
-    g('teaser', 'teaser.*'),
     g('surprise', 'surprise.*'),
     g('friends', 'friends.*', 'dragonNames', 'robotNames', 'forestNames'),
     g('tracks', 'tracks.*'),

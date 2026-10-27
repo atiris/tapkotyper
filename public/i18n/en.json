@@ -360,6 +360,8 @@
   },
   "surprise": {
     "waitingTitle": "Surprises waiting for you",
+    "toldTitle": "Your surprises",
+    "toldTip": "You won a surprise today",
     "waitingTip": "Surprises are waiting for you",
     "need": {
       "minutesOne": "You need {n} minute of training (so far: {have}).",
@@ -382,222 +384,6 @@
       "starsOne": "{n} more star and you will find out.",
       "starsFew": "{n} more stars and you will find out.",
       "starsMany": "{n} more stars and you will find out."
-    }
-  },
-  "teaser": {
-    "ask": "A question for you:",
-    "later": "You will hear the answer when you finish the next level.",
-    "answer": "The promised answer:",
-    "meadow": {
-      "q": [
-        "Do you know how many eyes a spider has?",
-        "Why do ladybirds have spots?",
-        "Can you guess how many times a bee flaps its wings in one second?",
-        "Do you know what a butterfly tastes food with?"
-      ],
-      "a": [
-        "Most spiders have eight eyes! Still, many see badly and feel the world mostly with their legs.",
-        "Red with spots tells birds: careful, I taste awful! So birds leave ladybirds alone.",
-        "More than two hundred times a second! That is why you hear the buzz.",
-        "Its feet! A butterfly tastes a flower as soon as it lands on it."
-      ]
-    },
-    "space": {
-      "q": [
-        "Do you know what happens to an astronaut's tear in space?",
-        "How many sunrises a day do astronauts on the space station see?",
-        "Do you know why space is completely silent?",
-        "Can you guess how many Earths would fit inside Jupiter?"
-      ],
-      "a": [
-        "It does not run down! Without gravity it stays by the eye like a little ball of water.",
-        "About sixteen! The station flies around the Earth in about an hour and a half.",
-        "Sound needs air to travel. Space has no air, so you would not hear even a big bang.",
-        "More than a thousand! Jupiter is the biggest planet in our solar system."
-      ]
-    },
-    "planet": {
-      "q": [
-        "On which planet is a day longer than a whole year?",
-        "Do you know what colour a sunset on Mars is?",
-        "Can you guess which planet would float in water?",
-        "Do you know where in space it may rain diamonds?"
-      ],
-      "a": [
-        "On Venus! It turns around itself more slowly than it goes around the Sun.",
-        "Blue! The Martian sky is pinkish by day, but it turns blue around the setting Sun.",
-        "Saturn! For its size it is so light that it would float in a giant bathtub.",
-        "Scientists think diamonds may fall deep inside Neptune and Uranus!"
-      ]
-    },
-    "dragons": {
-      "q": [
-        "Do you know which real animal is called a dragon?",
-        "Can you guess which lizard can run on water?",
-        "Do you know which little dragon really flies?",
-        "Which animals lived in the time of the dinosaurs and still live today?"
-      ],
-      "a": [
-        "The Komodo dragon! It is the biggest lizard in the world, up to three metres long.",
-        "The basilisk! It runs on the water so fast that it has no time to sink.",
-        "The flying dragon! This small lizard spreads the skin on its sides like wings and glides from tree to tree.",
-        "Crocodiles! Their ancestors lived alongside the dinosaurs."
-      ]
-    },
-    "egg": {
-      "q": [
-        "Do you know how a baby bird gets out of its egg?",
-        "Can you guess which egg is the biggest in the world?",
-        "Do you know how a chick inside a closed egg can breathe?",
-        "Do you know which mammal lays eggs?"
-      ],
-      "a": [
-        "It has a tiny sharp bump on its beak, the egg tooth. It scratches the shell until it breaks through.",
-        "The ostrich egg! It is about as big as twenty hen eggs.",
-        "The shell has thousands of tiny holes that let air through.",
-        "The platypus! It is a mammal, but its babies hatch from eggs."
-      ]
-    },
-    "junkyard": {
-      "q": [
-        "Do you know how many times a glass bottle can be recycled?",
-        "Can you guess what a new park bench can be made of?",
-        "Do you know why iron rusts?",
-        "Do you know how a big magnet can lift a car?"
-      ],
-      "a": [
-        "Again and again! Glass can be melted into a new bottle forever.",
-        "Old plastic bottles and caps! Recycling turns them into boards for benches.",
-        "When water and air touch iron for a long time, it gets covered with brown rust.",
-        "Junkyards have electromagnets that lift a whole car. When the power goes off, they let it go."
-      ]
-    },
-    "workshop": {
-      "q": [
-        "Do you know why gears have teeth?",
-        "Can you guess how many parts a bicycle has?",
-        "Do you know what a spring does in a watch?",
-        "Do you know what is inside a battery?"
-      ],
-      "a": [
-        "The teeth fit into each other, so when one gear turns, the other turns too.",
-        "About a thousand, if you count every screw, ball and chain link!",
-        "A wound-up spring slowly unwinds and that moves the hands.",
-        "Materials that react together and make electricity. When they are used up, the battery is flat."
-      ]
-    },
-    "raintown": {
-      "q": [
-        "Do you know what color a raindrop is?",
-        "Can you guess where a rainbow comes from?",
-        "Do you know why the air smells nice after a storm?",
-        "Do you know why you hear thunder after the lightning?"
-      ],
-      "a": [
-        "None! It is clear, we just draw it blue.",
-        "Sunlight goes through raindrops and splits into colors.",
-        "Rain lets out the smell of soil and plants, and lightning makes a little fresh ozone.",
-        "Light is much faster than sound, so you see the flash before you hear the thunder."
-      ]
-    },
-    "robocity": {
-      "q": [
-        "Do you know what makes a good password?",
-        "Can you guess how long people have used locks?",
-        "Do you know what a secret code is?",
-        "Do you know why you never tell anyone your password?"
-      ],
-      "a": [
-        "Long and hard to guess, for example three words that have nothing to do with each other.",
-        "Thousands of years! The ancient Egyptians had wooden locks with pins.",
-        "A message written so that only someone who knows the key can read it.",
-        "Whoever knows it can open your things. Only your parents may know it."
-      ]
-    },
-    "robohome": {
-      "q": [
-        "Do you know how a robot vacuum finds its way?",
-        "Can you guess where most robots work?",
-        "Do you know if a robot can feel a touch?",
-        "Do you know who made up the word robot?"
-      ],
-      "a": [
-        "It has sensors that feel walls and stairs, and some draw a map of the home.",
-        "In factories! They build cars, pack parcels and never get tired.",
-        "Some can! Sensitive sensors in their fingers let them gently hold even an egg.",
-        "The Czech writer Karel Čapek, about a hundred years ago."
-      ]
-    },
-    "asked": "Remember the question?",
-    "garden": {
-      "q": [
-        "Do you know why flowers smell nice?",
-        "Can you guess which flower turns to follow the sun?",
-        "Do you know how bees tell each other where flowers are?",
-        "Do you know which flower is the biggest in the world?"
-      ],
-      "a": [
-        "The smell calls bees and butterflies, who carry pollen from flower to flower.",
-        "The sunflower! Young sunflowers turn their heads from east to west during the day.",
-        "They dance! A little waggle dance shows the other bees which way to fly and how far.",
-        "The rafflesia. Its flower can be as wide as a car tyre, and it smells bad on purpose to call flies."
-      ]
-    },
-    "forestpath": {
-      "q": [
-        "Do you know why birds sing in the morning?",
-        "Can you guess how an owl can turn its head?",
-        "Do you know which bird can fly backwards?",
-        "Do you know how young birds learn to sing?"
-      ],
-      "a": [
-        "The morning air is calm, so their song travels far. They say: this is my tree!",
-        "Almost all the way round to its back! Its eyes cannot move, so the whole head turns.",
-        "The hummingbird! It can also stay still in the air like a tiny helicopter.",
-        "They listen to their parents and practise, just like you practise typing."
-      ]
-    },
-    "lilylake": {
-      "q": [
-        "Do you know how a frog drinks water?",
-        "Can you guess why water lilies do not sink?",
-        "Do you know what a tadpole turns into?",
-        "Do you know why a lake looks like a mirror?"
-      ],
-      "a": [
-        "Through its skin! Frogs do not drink with their mouth.",
-        "Their leaves have tiny air pockets, so they float like little boats.",
-        "Into a frog! First its legs grow, then its tail disappears.",
-        "Calm water reflects light, so you see the sky and the trees upside down in it."
-      ]
-    },
-    "musictree": {
-      "q": [
-        "Do you know what makes a sound?",
-        "Can you guess how many strings a big harp has?",
-        "Do you know why music can make us happy?",
-        "Do you know which instrument is made from a hollow tree branch?"
-      ],
-      "a": [
-        "Things that shake very fast, like a string or the air in a flute. Our ears feel the shaking.",
-        "About forty-seven! Each string plays a different note.",
-        "Our brain loves patterns, and a happy tune makes it feel good.",
-        "The didgeridoo! Termites eat the inside of a branch and people make it into a long pipe."
-      ]
-    },
-    "moonball": {
-      "q": [
-        "Do you know why fireflies glow?",
-        "Can you guess why the moon changes its shape?",
-        "Do you know which animals are awake at night?",
-        "Do you know if the moon makes its own light?"
-      ],
-      "a": [
-        "They talk with light! Each kind of firefly blinks its own pattern.",
-        "It does not really change. We just see more or less of its sunny side.",
-        "Owls, bats, hedgehogs and moths. They are called nocturnal animals.",
-        "No! The moon shines because the sun lights it up, like a big mirror."
-      ]
     }
   },
   "paw": {
@@ -1078,6 +864,8 @@
     "big": "Big break",
     "bigSkip": "Skip the big break",
     "skip": "Skip",
+    "play": "Continue typing",
+    "cancel": "Cancel",
     "bigTitle": "Big break {n}/{total}",
     "stand": "Stand up and stretch on your tiptoes up to the ceiling.",
     "march": "March on the spot and lift your knees high.",
@@ -1085,7 +873,7 @@
     "wrists": "Circle your wrists one way and then the other.",
     "eyes": "Look far out of the window, then at your nose and far again. Then blink.",
     "water": "Drink some water and take three slow, deep breaths.",
-    "done": "Well rested, {name}! Remember how to sit:"
+    "done": "Well rested, {name}!"
   },
   "parent": {
     "title": "Local profile settings",

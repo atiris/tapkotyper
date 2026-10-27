@@ -361,6 +361,8 @@
   "surprise": {
     "ask": "Tajomstvo:",
     "waitingTitle": "Prekvapenia, ktoré na teba čakajú",
+    "toldTitle": "Tvoje prekvapenia",
+    "toldTip": "Dnes si získal prekvapenie",
     "waitingTip": "Čakajú na teba prekvapenia",
     "need": {
       "minutesOne": "Potrebuješ {n} minútu tréningu (zatiaľ máš: {have}).",
@@ -382,222 +384,6 @@
       "starsOne": "Ešte {n} hviezdičku a tajomstvo sa dozvieš.",
       "starsFew": "Ešte {n} hviezdičky a tajomstvo sa dozvieš.",
       "starsMany": "Ešte {n} hviezdičiek a tajomstvo sa dozvieš."
-    }
-  },
-  "teaser": {
-    "ask": "Otázka pre teba:",
-    "later": "Odpoveď sa dozvieš, keď dokončíš ďalšiu úroveň.",
-    "answer": "Sľúbená odpoveď:",
-    "meadow": {
-      "q": [
-        "Vieš, koľko očí má pavúk?",
-        "Prečo majú lienky bodky?",
-        "Uhádneš, koľkokrát za sekundu mávne včela krídlami?",
-        "Vieš, čím motýľ ochutnáva jedlo?"
-      ],
-      "a": [
-        "Väčšina pavúkov má osem očí! Aj tak mnohé vidia zle a svet spoznávajú hlavne nohami.",
-        "Červená farba s bodkami hovorí vtákom: Pozor, chutím hnusne! Tak lienku radšej nechajú tak.",
-        "Vyše dvestokrát za sekundu! Preto počuješ to bzučanie.",
-        "Nohami! Motýľ ochutná kvet hneď, ako si naň sadne."
-      ]
-    },
-    "space": {
-      "q": [
-        "Vieš, čo sa stane so slzou astronauta vo vesmíre?",
-        "Koľkokrát za deň vidia astronauti na vesmírnej stanici východ Slnka?",
-        "Vieš, prečo je vo vesmíre úplné ticho?",
-        "Uhádneš, koľko Zemí by sa zmestilo do Jupitera?"
-      ],
-      "a": [
-        "Nesteká dole! V beztiaži ostane pri oku ako malá vodná guľôčka.",
-        "Asi šestnásťkrát! Stanica obletí Zem približne za hodinu a pol.",
-        "Zvuk potrebuje vzduch. Vo vesmíre vzduch nie je, takže ani veľký výbuch by si nepočul.",
-        "Vyše tisíc! Jupiter je najväčšia planéta našej slnečnej sústavy."
-      ]
-    },
-    "planet": {
-      "q": [
-        "Na ktorej planéte trvá deň dlhšie ako celý rok?",
-        "Vieš, akú farbu má západ slnka na Marse?",
-        "Uhádneš, ktorá planéta by plávala vo vode?",
-        "Vieš, kde vo vesmíre možno pršia diamanty?"
-      ],
-      "a": [
-        "Na Venuši! Otočí sa okolo seba pomalšie, ako obehne Slnko.",
-        "Modrú! Cez deň je obloha na Marse ružovkastá, ale pri západe slnka zmodrie.",
-        "Saturn! Na svoju veľkosť je taký ľahký, že by v obrovskej vani plával.",
-        "Vedci si myslia, že hlboko vo vnútri Neptúna a Uránu môžu padať diamanty!"
-      ]
-    },
-    "dragons": {
-      "q": [
-        "Vieš, ktoré skutočné zviera sa volá drak?",
-        "Uhádneš, ktorá jašterica vie behať po vode?",
-        "Vieš, ktorý malý drak naozaj lieta?",
-        "Ktoré zvieratá žili už v čase dinosaurov a žijú aj dnes?"
-      ],
-      "a": [
-        "Komodský drak! Je to najväčšia jašterica na svete, dlhá až tri metre.",
-        "Bazilišek! Beží po hladine tak rýchlo, že sa nestihne potopiť.",
-        "Drak lietavý! Je to malá jašterica, ktorá roztiahne kožu na bokoch ako krídla a plachtí zo stromu na strom.",
-        "Krokodíly! Ich predkovia žili spolu s dinosaurami."
-      ]
-    },
-    "egg": {
-      "q": [
-        "Vieš, ako sa vtáčatko dostane von z vajíčka?",
-        "Uhádneš, ktoré vajce je najväčšie na svete?",
-        "Vieš, ako môže mláďa vo vajíčku dýchať, keď je vajce zatvorené?",
-        "Vieš, ktorý cicavec znáša vajíčka?"
-      ],
-      "a": [
-        "Na zobáčiku má malý ostrý hrbolček, vajcový zub. Ním škrabe škrupinu, kým ju neprerazí.",
-        "Pštrosie! Je veľké asi ako dvadsať slepačích vajec.",
-        "Škrupina má tisíce maličkých dierok, cez ktoré prechádza vzduch.",
-        "Vtákopysk! Je to cicavec, ale mláďatá sa mu liahnu z vajíčok."
-      ]
-    },
-    "junkyard": {
-      "q": [
-        "Vieš, koľkokrát sa dá recyklovať sklenená fľaša?",
-        "Uhádneš, z čoho sa dá vyrobiť nová lavička?",
-        "Vieš, prečo železo hrdzavie?",
-        "Vieš, ako veľký magnet dokáže zdvihnúť auto?"
-      ],
-      "a": [
-        "Stále znova! Sklo sa dá roztaviť a vyrobiť z neho nová fľaša, a to donekonečna.",
-        "Zo starých plastových fliaš a vrchnákov! Recykláciou z nich vznikajú dosky na lavičky.",
-        "Keď sa železa dlho dotýka voda a vzduch, pokryje sa hnedou hrdzou.",
-        "Na šrotiskách sú elektromagnety, ktoré zdvihnú celé auto. Keď vypnú prúd, auto pustia."
-      ]
-    },
-    "workshop": {
-      "q": [
-        "Vieš, prečo majú ozubené kolieska zúbky?",
-        "Uhádneš, koľko súčiastok má bicykel?",
-        "Vieš, čo robí v hodinkách pružina?",
-        "Vieš, čo je vo vnútri batérie?"
-      ],
-      "a": [
-        "Zúbky do seba zapadnú, takže keď sa točí jedno koliesko, točí sa aj druhé.",
-        "Okolo tisíc, keď spočítaš každú skrutku, guličku a článok reťaze!",
-        "Natiahnutá pružina pomaly povoľuje a tým poháňa ručičky.",
-        "Látky, ktoré spolu reagujú a vyrábajú elektrinu. Keď sa minú, batéria je vybitá."
-      ]
-    },
-    "raintown": {
-      "q": [
-        "Vieš, akú farbu má kvapka dažďa?",
-        "Uhádneš, odkiaľ sa berie dúha?",
-        "Vieš, prečo po búrke voňia vzduch?",
-        "Vieš, prečo je hrom počuť až po blesku?"
-      ],
-      "a": [
-        "Žiadnu! Je priehľadná a na obrázkoch ju kreslíme modrou.",
-        "Slnečné svetlo prejde cez kvapky dažďa a rozloží sa na farby.",
-        "Dážď uvoľní vôňu zeme a rastlín a blesk vyrobí trochu čerstvého ozónu.",
-        "Svetlo je oveľa rýchlejšie ako zvuk, preto blesk vidíš skôr, ako hrom počuješ."
-      ]
-    },
-    "robocity": {
-      "q": [
-        "Vieš, aké heslo je dobré?",
-        "Uhádneš, ako dlho sa používajú zámky?",
-        "Vieš, čo je to tajná šifra?",
-        "Vieš, prečo sa heslo nikomu nehovorí?"
-      ],
-      "a": [
-        "Dlhé a ťažké na uhádnutie, napríklad tri slová, ktoré spolu nesúvisia.",
-        "Tisíce rokov! Už starí Egypťania mali drevené zámky s kolíkmi.",
-        "Správa napísaná tak, že ju prečíta len ten, kto pozná kľúč.",
-        "Kto pozná heslo, môže otvoriť tvoje veci. Povedať ho môžeš len rodičom."
-      ]
-    },
-    "robohome": {
-      "q": [
-        "Vieš, ako robotický vysávač nájde cestu?",
-        "Uhádneš, kde pracuje najviac robotov?",
-        "Vieš, či môže robot cítiť dotyk?",
-        "Vieš, kto vymyslel slovo robot?"
-      ],
-      "a": [
-        "Má senzory, ktoré cítia steny a schody, a niektoré si kreslia mapu bytu.",
-        "V továrňach! Skladajú autá, balia balíky a nikdy sa neunavia.",
-        "Niektoré áno! Majú citlivé senzory v prstoch a vedia jemne chytiť aj vajíčko.",
-        "Slovo robot vymyslel pred sto rokmi český spisovateľ Karel Čapek."
-      ]
-    },
-    "asked": "Pamätáš si otázku?",
-    "garden": {
-      "q": [
-        "Vieš, prečo kvety voňajú?",
-        "Uhádneš, ktorý kvet sa otáča za slnkom?",
-        "Vieš, ako si včely povedia, kde sú kvety?",
-        "Vieš, ktorý kvet je najväčší na svete?"
-      ],
-      "a": [
-        "Vôňa láka včely a motýle a tie nosia peľ z kvetu na kvet.",
-        "Slnečnica! Mladé slnečnice cez deň otáčajú hlavičku od východu na západ.",
-        "Tancujú! Malý tanec ukáže ostatným včelám, ktorým smerom a ako ďaleko majú letieť.",
-        "Raflézia. Jej kvet je široký ako pneumatika auta a schválne smrdí, aby prilákal muchy."
-      ]
-    },
-    "forestpath": {
-      "q": [
-        "Vieš, prečo vtáky spievajú ráno?",
-        "Uhádneš, ako ďaleko otočí sova hlavu?",
-        "Vieš, ktorý vták vie lietať dozadu?",
-        "Vieš, ako sa mláďatá naučia spievať?"
-      ],
-      "a": [
-        "Ráno je vzduch pokojný, tak ich pieseň doletí ďaleko. Hovoria: toto je môj strom!",
-        "Skoro až dozadu! Oči jej nehýbu, preto otáča celú hlavu.",
-        "Kolibrík! Vie aj stáť vo vzduchu ako malá helikoptéra.",
-        "Počúvajú rodičov a cvičia, presne ako ty cvičíš písanie."
-      ]
-    },
-    "lilylake": {
-      "q": [
-        "Vieš, ako pije žaba vodu?",
-        "Uhádneš, prečo sa lekná nepotopia?",
-        "Vieš, na čo sa zmení žubrienka?",
-        "Vieš, prečo vyzerá jazero ako zrkadlo?"
-      ],
-      "a": [
-        "Kožou! Žaby nepijú ústami.",
-        "Ich listy majú drobné vzduchové komôrky, tak plávajú ako lodičky.",
-        "Na žabu! Najprv jej narastú nohy, potom zmizne chvost.",
-        "Pokojná voda odráža svetlo, preto v nej vidíš oblohu a stromy hore nohami."
-      ]
-    },
-    "musictree": {
-      "q": [
-        "Vieš, čo robí zvuk?",
-        "Uhádneš, koľko strún má veľká harfa?",
-        "Vieš, prečo nás hudba poteší?",
-        "Vieš, ktorý nástroj je z dutého konára?"
-      ],
-      "a": [
-        "Veci, ktoré sa veľmi rýchlo chvejú, napríklad struna alebo vzduch vo flaute. Naše uši to chvenie cítia.",
-        "Asi štyridsaťsedem! Každá struna hrá iný tón.",
-        "Mozog má rád opakujúce sa vzory a veselá melódia mu robí dobre.",
-        "Didžeridu! Termity vyžerú konár zvnútra a ľudia z neho urobia dlhú trúbu."
-      ]
-    },
-    "moonball": {
-      "q": [
-        "Vieš, prečo svetlušky svietia?",
-        "Uhádneš, prečo mesiac mení tvar?",
-        "Vieš, ktoré zvieratá sú hore v noci?",
-        "Vieš, či mesiac svieti sám?"
-      ],
-      "a": [
-        "Rozprávajú sa svetlom! Každý druh svetlušky bliká inak.",
-        "V skutočnosti sa nemení. Len vidíme viac alebo menej z jeho strany, na ktorú svieti slnko.",
-        "Sovy, netopiere, ježkovia a nočné motýle. Volajú sa nočné zvieratá.",
-        "Nie! Mesiac svieti, lebo ho osvetľuje slnko, ako veľké zrkadlo."
-      ]
     }
   },
   "paw": {
@@ -1078,6 +864,8 @@
     "big": "Veľká prestávka",
     "bigSkip": "Preskočiť veľkú prestávku",
     "skip": "Preskočiť",
+    "play": "Pokračovať v písaní",
+    "cancel": "Zrušiť",
     "bigTitle": "Veľká prestávka {n}/{total}",
     "stand": "Postav sa a natiahni sa na špičkách až k stropu.",
     "march": "Pochoduj na mieste a dvíhaj kolená vysoko.",
@@ -1085,7 +873,7 @@
     "wrists": "Krúž zápästiami jedným smerom a potom druhým.",
     "eyes": "Pozri sa ďaleko z okna, potom na svoj nos a znova ďaleko. Nakoniec zažmurkaj.",
     "water": "Napi sa vody a trikrát sa pomaly a zhlboka nadýchni.",
-    "done": "Pekne oddýchnuté, {name}! Pamätaj si, ako sedieť:"
+    "done": "Pekne oddýchnuté, {name}!"
   },
   "parent": {
     "title": "Nastavenia lokálneho profilu",

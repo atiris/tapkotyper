@@ -12,7 +12,6 @@ test('a new child plays the first level by typing and sees stars', async ({ page
   // The character celebrated in place, not running off.
   await expect(page.locator('.level-tapko.celebrate')).toHaveCount(1);
   await expect(page.locator('.results-card .star.on').first()).toBeVisible();
-  await expect(page.locator('.results-card .teaser.ask')).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(page.locator('.level-node.done')).toHaveCount(1);
   await page.locator('.map-tapko').click();

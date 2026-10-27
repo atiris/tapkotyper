@@ -136,6 +136,14 @@ export function surpriseAsk(question: string): HTMLElement {
   return h('p', { class: 'surprise ask' }, h('b', {}, t('surprise.ask')), ' ', question);
 }
 
+/** A told surprise: the open golden box beside its question with the answer highlighted under it. */
+export function surpriseTold(s: Surprise): HTMLElement {
+  const pic = imageUrl('ui-surprise-open');
+  return h('div', { class: 'surprise-told' },
+    pic ? h('img', { class: 'surprise-box', src: pic, alt: '' }) : null,
+    h('div', { class: 'surprise-result' }, surpriseAsk(s.q), h('p', { class: 'surprise answer' }, s.a)));
+}
+
 /** What a counting surprise still needs ("2 more levels"), or null when it is reached or does not count. */
 export function surpriseLeft(p: Profile, s: Surprise): HTMLElement | null {
   if (s.trigger !== 'minutes' && s.trigger !== 'levels' && s.trigger !== 'stars') return null;

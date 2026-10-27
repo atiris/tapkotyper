@@ -90,10 +90,6 @@
       "title": "The map",
       "about": "Texts of the main map: story names, level hints and hints about unlocking levels."
     },
-    "teaser": {
-      "title": "Questions after a level",
-      "about": "Curious questions and answers shown at the end of a story level."
-    },
     "surprise": {
       "title": "Parent's secret",
       "about": "Texts about a secret that a parent prepared as a reward."
@@ -470,13 +466,9 @@
     "map.heldKeys": "Extra line in the bubble when letters must be typed more accurately. {keys} are those letters.",
     "map.keysLocked": "Part of a level node's description for screen readers when letters are missing.",
     "map.storyFairy": "Heading of the third story on the map. Its longer words (4 letters or more) are secret words too: typed on the My progress page they start the badge show.",
-    "teaser.ask": "Bold start of a question at the end of a story level; the question follows.",
-    "teaser.later": "Small line under the question; promises the answer after the next level.",
-    "teaser.answer": "Bold start of the answer shown after the level is finished.",
-    "teaser.asked": "Bold start of the reminder of the earlier question, shown before the answer.",
-    "teaser.*.q": "Questions of a world, one per level, each shown at the end of the level before it. The order matches the answers.",
-    "teaser.*.a": "Answers to the questions of the same world, in the same order, shown after the level is finished.",
     "surprise.waitingTitle": "Map: heading of the window that lists the surprises still waiting (opened from the closed box beside Tapko).",
+    "surprise.toldTitle": "Map: heading of the surprises window when a surprise was won today (the won ones come first with their answers, then the waiting ones).",
+    "surprise.toldTip": "Map: tooltip of the open golden box beside Tapko on a day a surprise was won.",
     "surprise.waitingTip": "Map: tooltip of the closed golden box beside Tapko while surprises wait.",
     "surprise.need.minutesOne": "Map, waiting surprises: what a surprise after training time still needs; {n} (1) minutes in all, {have} trained so far.",
     "surprise.need.minutesFew": "The same for {n} from 2 to 4.",
@@ -915,8 +907,10 @@
     "break.bigTitle": "Big break: the heading above one of the six longer exercises. {n} is the exercise number, {total} how many there are (6).",
     "break.big": "Break screen: the button that adds the big break with longer exercises.",
     "break.bigSkip": "Break screen: the button shown during the big break that goes back to the short break.",
+    "break.play": "Map warm-up: the button that starts the next level at once, during the warm-up and at its end.",
+    "break.cancel": "Map warm-up: the button that closes the warm-up and goes back to the map (Esc does the same).",
     "break.skip": "Break screen: the button under the countdown that skips the short break (Esc does the same).",
-    "break.done": "Break screen: the line under the sitting-posture picture once the exercises end. {name} is the student's nickname.",
+    "break.done": "Break screen: the heading after the exercises; {name} is the nickname.",
     "break.*": "Break screen: the instruction for one movement exercise, shown under the character while the seconds count down.",
     "tips.*": "Tip before a level: one piece of advice on the get-ready card, once per session; also shown in the help during a level.",
     "tips.listen-whole": "Tip only for dictation runs (words are heard): shown on the get-ready card before a level or in its help.",

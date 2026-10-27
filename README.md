@@ -177,7 +177,9 @@ npm run icons    # render the favicon and the PWA icons from ui-icon (after npm 
 
 For quick manual testing, open the dev server with `?fast` before the hash
 (`http://localhost:5173/tapkotyper/?fast#/`): level minimums, the stretch break and
-the play time before a break all take a sixth of their time.
+the play time before a break all take a sixth of their time. A browser driver types through
+`window.tapkoType('text')` (dev and e2e builds): it sends the player's layout's real keys, with
+Shift and dead keys, so `ô`, `ä` or `Ľ` work where a driver's own typing sends US keys.
 
 Every push to `main` builds the site and deploys it to GitHub Pages
 (`.github/workflows/deploy.yml`).

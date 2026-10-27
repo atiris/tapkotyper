@@ -77,17 +77,19 @@
     levels"), and tells the answer on the results of the level that reaches it.
   A rule either repeats (counts again from the reveal, or fires on every finish of its level)
   or is done after its reveal and never shown again. A level run
-  has one surprise at most, in the order level, minutes, levels, stars; the narrator's own
-  teaser waits in such a run. The answer always comes right under its question,
+  asks one surprise at most on its get-ready card, in the order level, minutes, levels, stars, but
+  its results tell every surprise reached in it, each with an open golden box beside its question.
+  The answer always comes right under its question,
   highlighted. The table shows the question, the answer, when (in words), repeat, the
   state (waiting, "12 / 20 min", done with its date) and edit and delete; a form under it
   adds or edits a rule; its add (or save) button sits at the right end of the "when" row, and
   on its own line right under the fields when the row has no room. Changing when a rule fires makes it wait again from now. On a
   narrow screen the rows become cards. Surprises never count in statistics.
-- **Surprises waiting show on the map**: while any surprise waits, a closed golden box bobs
-  beside the child's character on the map (the map shows a level's box only for rules tied to
-  that level). A click opens a window (round X, Esc closes it) with every waiting surprise: its
-  question and what it still needs with what the child has so far ("Potrebuješ 20 minút
+- **Surprises waiting show on the map**: while any surprise waits, a small closed golden box
+  bobs beside the child's character on the map (the map shows a level's box only for rules tied
+  to that level); on a day a surprise was won the box is open. A click opens a window (round X,
+  Esc closes it, the rows use its whole width): first the surprises won today with their answers,
+  then every waiting surprise: its question and what it still needs with what the child has so far ("Potrebuješ 20 minút
   tréningu (zatiaľ máš: 7).", "Potrebuješ 10 nových úrovní (už hotové: 4).", "Potrebuješ 12
   nových hviezdičiek (zatiaľ máš: 5).", "Potrebuješ zvládnuť úroveň Lúka · úroveň 4 (ešte ti
   chýba: 1)."). The wording has no gender, since the game does not know it.

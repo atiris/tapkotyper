@@ -1520,29 +1520,9 @@
    "w": 384,
    "h": 302
   },
-  "ui-cert-band-up": {
-   "w": 142,
-   "h": 8
-  },
-  "ui-cert-band-right": {
-   "w": 8,
-   "h": 142
-  },
-  "ui-cert-fox": {
-   "w": 372,
-   "h": 372
-  },
   "ui-cert-parrot": {
    "w": 640,
    "h": 636
-  },
-  "ui-cert-paws-up": {
-   "w": 142,
-   "h": 82
-  },
-  "ui-cert-paws-right": {
-   "w": 82,
-   "h": 142
   },
   "ui-chest": {
    "w": 384,
@@ -1695,6 +1675,54 @@
   "ui-typing-speed": {
    "w": 384,
    "h": 319
+  },
+  "ui-cert-fox-tl": {
+   "w": 372,
+   "h": 372
+  },
+  "ui-cert-fox-tr": {
+   "w": 372,
+   "h": 372
+  },
+  "ui-cert-fox-br": {
+   "w": 372,
+   "h": 372
+  },
+  "ui-cert-fox-bl": {
+   "w": 372,
+   "h": 372
+  },
+  "ui-cert-paws-top": {
+   "w": 82,
+   "h": 142
+  },
+  "ui-cert-band-top": {
+   "w": 8,
+   "h": 142
+  },
+  "ui-cert-paws-right": {
+   "w": 142,
+   "h": 82
+  },
+  "ui-cert-band-right": {
+   "w": 142,
+   "h": 8
+  },
+  "ui-cert-paws-bottom": {
+   "w": 82,
+   "h": 142
+  },
+  "ui-cert-band-bottom": {
+   "w": 8,
+   "h": 142
+  },
+  "ui-cert-paws-left": {
+   "w": 142,
+   "h": 82
+  },
+  "ui-cert-band-left": {
+   "w": 142,
+   "h": 8
   }
  },
  "accessories": [

@@ -30,17 +30,22 @@ function signature(pic: string, name: string, cls: string): HTMLElement {
   return h('span', { class: 'cert-sign' }, src ? h('img', { class: cls, src, alt: '' }) : null, h('span', {}, name));
 }
 
+const SIDES = ['top', 'right', 'bottom', 'left'];
+const CORNERS = ['tl', 'tr', 'br', 'bl'];
+
 /**
- * The frame: the band along each side, the same fox in every corner (turned round with the band) and
- * pairs of paw prints along each side, walking round clockwise; null without its pictures.
+ * The frame: the band along each side, the fox in every corner and pairs of paw prints along each
+ * side, walking round clockwise; every piece is already turned for its place, so nothing is turned
+ * on the page. Null without its pictures.
  */
 function frame(): HTMLElement | null {
-  const [fox, bandRight, bandUp, pawsRight, pawsUp] = ['ui-cert-fox', 'ui-cert-band-right', 'ui-cert-band-up', 'ui-cert-paws-right', 'ui-cert-paws-up'].map(imageUrl);
-  if (!fox || !bandRight || !bandUp || !pawsRight || !pawsUp) return null;
-  return h('div', { class: 'cert-frame', 'aria-hidden': 'true', style: `--band-right:url(${bandRight});--band-up:url(${bandUp});--paws-right:url(${pawsRight});--paws-up:url(${pawsUp})` },
-    ...['top', 'right', 'bottom', 'left'].map((side) => h('div', { class: `cert-band ${side}` })),
-    ...['top', 'right', 'bottom', 'left'].map((side) => h('div', { class: `cert-paws ${side}` })),
-    ...['tl', 'tr', 'br', 'bl'].map((corner) => h('img', { class: `cert-fox ${corner}`, src: fox, alt: '' })));
+  const pics = [...SIDES.flatMap((s) => [`ui-cert-band-${s}`, `ui-cert-paws-${s}`]), ...CORNERS.map((c) => `ui-cert-fox-${c}`)];
+  const urls = Object.fromEntries(pics.map((name) => [name, imageUrl(name)]));
+  if (pics.some((name) => !urls[name])) return null;
+  return h('div', { class: 'cert-frame', 'aria-hidden': 'true' },
+    ...SIDES.map((s) => h('div', { class: `cert-band ${s}`, style: `background-image:url(${urls[`ui-cert-band-${s}`]})` })),
+    ...SIDES.map((s) => h('div', { class: `cert-paws ${s}`, style: `background-image:url(${urls[`ui-cert-paws-${s}`]})` })),
+    ...CORNERS.map((c) => h('img', { class: `cert-fox ${c}`, src: urls[`ui-cert-fox-${c}`], alt: '' })));
 }
 
 /** The certificate: the brand, the writer and their character, the results, the progress in the stories, a line on how it goes, the date and the signatures (Aro's while the Parrot badge is held, and Tapko's). */

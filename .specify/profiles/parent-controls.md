@@ -105,7 +105,9 @@
 - **Certificate** ("Certifikát", next to "QR kód celého postupu" under the progress): a window with a sheet in the style of a
   certificate, printed on A4 portrait (browser print): a cream band with the same sleeping fox in
   every corner (turned a quarter round from corner to corner) and pairs of paw prints between them,
-  evenly spaced and always walking round clockwise, without any visible seam; "TapkoTyper" centred
+  evenly spaced and always walking round clockwise, without any visible seam; each band runs from
+  under one fox's head (no notch by the ears) to just under the next fox's tail (nothing peeking
+  out by the cheek), and every side is equally sharp (the pieces come turned for their place); "TapkoTyper" centred
   at the top, "Certifikát písania všetkými desiatimi prstami", the nickname large (the real name small under it when set), the character in its
   outfit, the results with their pictures in one row (keys mastered, accuracy and speed of the last
   14 days, stars, worlds), "Postup v príbehoch" with each story's picture, name and worlds done

@@ -13,10 +13,12 @@ const SRC = 'assets-src';
 const OUT = 'public/assets';
 const SPRITE_MAX = 384;
 const ICON_MAX = 512; // ui-icon is also the app icon (scripts/icons.mjs), ui-icon-hr the start page's large logo
-// The certificate frame's parts, kept in assets-src as transparent PNGs to edit by hand (cut first by
-// scripts/cert-frame.mjs): the fox of a corner, one pair of paw prints toes up, and one row of the band
-// (outer edge on the left). They stay lossless; the page turns the prints and the band for each side.
-const CERT_PARTS = ['ui-cert-fox', 'ui-cert-paws', 'ui-cert-band'];
+// The certificate frame's pieces, in assets-src/cert-src as lossless PNGs already turned for their
+// corner or side (made by scripts/cert-frame.mjs, checked by hand): a fox per corner, a pair of paw
+// prints and a one-pixel row of the band per side. They stay lossless and the page turns nothing.
+const CERT_SRC = join(SRC, 'cert-src');
+const CERT_CORNERS = ['tl', 'tr', 'br', 'bl'];
+const CERT_SIDES = ['top', 'right', 'bottom', 'left'];
 /** The band's row is repeated to this many rows, so the page never tiles a picture thinner than a pixel. */
 const BAND_ROWS = 8;
 // The parrot's signature on the certificate is printed a few centimetres wide.
@@ -158,7 +160,6 @@ async function processImage(name, file, manifest) {
     manifest.images[name] = { w: info.width, h: info.height };
     return;
   }
-  if (CERT_PARTS.includes(name)) return writeCertPart(name, file, manifest);
   const { data, w, h } = await loadRgba(file);
   if (name.startsWith('outfit-')) return processOutfit(name.slice(7), data, w, h, manifest);
   if (name.startsWith('acc-')) return processAccessory(name.slice(4), data, w, h, manifest);
@@ -181,21 +182,22 @@ async function processImage(name, file, manifest) {
   manifest.images[name] = { w: info.width, h: info.height };
 }
 
-/** A certificate frame part, as drawn (no key): the fox as it is, the prints and the band also turned right for the top and bottom. */
-async function writeCertPart(name, file, manifest) {
-  const lossless = (img, out) => img.webp({ lossless: true }).toFile(join(OUT, `${out}.webp`));
-  const meta = await sharp(file).metadata();
-  if (name === 'ui-cert-fox') {
-    await lossless(sharp(file), name);
-    manifest.images[name] = { w: meta.width, h: meta.height };
-    return;
+/** The certificate frame's pieces as drawn (no key): `ui-cert-fox-<corner>`, `ui-cert-paws-<side>` and `ui-cert-band-<side>`. */
+async function processCertFrame(manifest) {
+  const lossless = async (img, name) => {
+    const info = await img.webp({ lossless: true }).toFile(join(OUT, `${name}.webp`));
+    manifest.images[name] = { w: info.width, h: info.height };
+    console.log('ok', name);
+  };
+  for (const corner of CERT_CORNERS) await lossless(sharp(join(CERT_SRC, `cert-fox-${corner}.png`)), `ui-cert-fox-${corner}`);
+  for (const side of CERT_SIDES) {
+    await lossless(sharp(join(CERT_SRC, `cert-paws-${side}.png`)), `ui-cert-paws-${side}`);
+    const file = join(CERT_SRC, `cert-band-${side}.png`);
+    const { width, height } = await sharp(file).metadata();
+    // The row runs across the side: top and bottom repeat it sideways, left and right downwards.
+    const across = side === 'top' || side === 'bottom';
+    await lossless(sharp(file).resize(across ? BAND_ROWS : width, across ? height : BAND_ROWS, { fit: 'fill', kernel: 'nearest' }), `ui-cert-band-${side}`);
   }
-  const rows = name === 'ui-cert-band' ? BAND_ROWS : meta.height;
-  const up = await sharp(file).resize(meta.width, rows, { fit: 'fill', kernel: 'nearest' }).png().toBuffer();
-  await lossless(sharp(up), `${name}-up`);
-  await lossless(sharp(up).rotate(90), `${name}-right`);
-  manifest.images[`${name}-up`] = { w: meta.width, h: rows };
-  manifest.images[`${name}-right`] = { w: rows, h: meta.width };
 }
 
 /**
@@ -351,6 +353,7 @@ async function main() {
     else continue;
     console.log('ok', name);
   }
+  if (!only || only.startsWith('ui-cert')) await processCertFrame(manifest);
   if (!only) await writeFile(join(OUT, 'manifest.json'), JSON.stringify(manifest, null, 1) + '\n');
 }
 

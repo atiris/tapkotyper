@@ -37,11 +37,17 @@ function signature(pic: string, name: string, cls: string): HTMLElement {
 
 const SIDES = ['top', 'right', 'bottom', 'left'];
 const CORNERS = ['tl', 'tr', 'br', 'bl'];
+/**
+ * Paw pairs per side: as many as fit between the foxes (styles.css .cert-frame, in frame pixels: the
+ * sheet is 3333 across and 4714 down, both ends together take 764, a pair is 82 long).
+ */
+const PAWS = { across: Math.floor((3333 - 764) / 82), down: Math.floor((4714 - 764) / 82) };
 
 /**
  * The frame: the band along each side, the fox in every corner and pairs of paw prints along each
  * side, walking round clockwise; every piece is already turned for its place, so nothing is turned
- * on the page. Null without its pictures.
+ * on the page. The pairs are pictures of their own, not a spaced background: Chrome prints such a
+ * background as one blurry page-sized bitmap. Null without its pictures.
  */
 function frame(): HTMLElement | null {
   const pics = [...SIDES.flatMap((s) => [`ui-cert-band-${s}`, `ui-cert-paws-${s}`]), ...CORNERS.map((c) => `ui-cert-fox-${c}`)];
@@ -49,7 +55,8 @@ function frame(): HTMLElement | null {
   if (pics.some((name) => !urls[name])) return null;
   return h('div', { class: 'cert-frame', 'aria-hidden': 'true' },
     ...SIDES.map((s) => h('div', { class: `cert-band ${s}`, style: `background-image:url(${urls[`ui-cert-band-${s}`]})` })),
-    ...SIDES.map((s) => h('div', { class: `cert-paws ${s}`, style: `background-image:url(${urls[`ui-cert-paws-${s}`]})` })),
+    ...SIDES.map((s) => h('div', { class: `cert-paws ${s}` },
+      ...Array.from({ length: s === 'top' || s === 'bottom' ? PAWS.across : PAWS.down }, () => h('img', { src: urls[`ui-cert-paws-${s}`], alt: '' })))),
     ...CORNERS.map((c) => h('img', { class: `cert-fox ${c}`, src: urls[`ui-cert-fox-${c}`], alt: '' })));
 }
 

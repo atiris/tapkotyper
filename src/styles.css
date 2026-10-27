@@ -1375,9 +1375,11 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-ink); }
  * Each side's prints run clockwise from one fox (--from) to the next; the end at the next fox (--to) stops
  * half a pair earlier, so the gaps at both foxes look alike.
  */
-.cert-paws { position: absolute; }
-.cert-paws:is(.top, .bottom) { height: var(--band); background-size: auto 100%; background-repeat: space no-repeat; }
-.cert-paws:is(.left, .right) { width: var(--band); background-size: 100% auto; background-repeat: no-repeat space; }
+.cert-paws { position: absolute; display: flex; justify-content: space-between; }
+.cert-paws:is(.top, .bottom) { height: var(--band); }
+.cert-paws:is(.left, .right) { width: var(--band); flex-direction: column; }
+.cert-paws img { flex: none; width: calc(var(--fs) * 82); height: var(--band); }
+.cert-paws:is(.left, .right) img { width: var(--band); height: calc(var(--fs) * 82); }
 .cert-paws.top { top: var(--fe); left: var(--from); right: var(--to); }
 .cert-paws.right { right: var(--fe); top: var(--from); bottom: var(--to); }
 .cert-paws.bottom { bottom: var(--fe); right: var(--from); left: var(--to); }

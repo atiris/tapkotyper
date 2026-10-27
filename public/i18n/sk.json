@@ -406,6 +406,14 @@
       "Krátky zážih motorov.",
       "Približujem sa."
     ],
+    "commandRejected": [
+      "Príkaz neprijatý!",
+      "Nerozumiem, skús znova.",
+      "Signál sa stratil."
+    ],
+    "asteroidStart": [
+      "Veľké asteroidy sa rozpadnú na menšie kamene. Dva kamene majú štít, ich slovo napíšeš dvakrát."
+    ],
     "boarded": "Hurá, si na palube!",
     "strongStart": [
       "Pozor, niektoré meteority sú silnejšie, majú okolo seba žiaru. Keď napíšeš ich slovo, musíš ho napísať ešte raz."
@@ -416,7 +424,6 @@
       "Trefa!",
       "Ouha!"
     ],
-    "strongSay": "Ja som silnejší, musíš napísať slovo znova.",
     "hopStart": [
       "Raketa odletela kúsok ďalej. Skáč po meteoritoch, kým k nej nedoskáčeš!"
     ],

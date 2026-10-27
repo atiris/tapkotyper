@@ -457,6 +457,9 @@ export interface SpeechLayout {
   h: number;
 }
 
+/** The widest a speech bubble gets. */
+export const SPEECH_W = 360;
+
 /** Wraps a line for a speech bubble no wider than `maxW`; a long one shrinks to stay on two lines. */
 export function speechLayout(g: G, text: string, maxW: number, size = 30): SpeechLayout {
   const pad = size * 0.7;

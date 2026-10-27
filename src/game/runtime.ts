@@ -6,7 +6,7 @@ import { Loop, Stage, VH } from '../engine/loop';
 import { Particles } from '../engine/particles';
 import { Rng } from '../engine/rng';
 import { Tweens, ease } from '../engine/tween';
-import { drawBackground, drawSpeech, drawWord, fontFamily, type G, type SpeechLayout, speechLayout, wordBox } from '../gfx/draw';
+import { SPEECH_W, drawBackground, drawSpeech, drawWord, fontFamily, type G, type SpeechLayout, speechLayout, wordBox } from '../gfx/draw';
 import { type Mood, pawColors, tapkoElement, tapkoPictures, renderTapkoInto } from '../gfx/tapko';
 import { friendPictures, preload } from '../gfx/assets';
 import { type FairyMood, drawFairy } from '../gfx/fairy';
@@ -105,8 +105,7 @@ const FAIRY_FLOAT = 110;
 const FAIRY_HOP = 0.6;
 /** Seconds a shout stays over the scene. */
 const SHOUT_TIME = 1.1;
-/** Widest speech bubble, and how far it may move up or down to stay clear of the word labels. */
-const SPEECH_W = 360;
+/** How far a speech bubble may move up or down to stay clear of the word labels. */
 const SPEECH_ROOM = 160;
 /** The end of a level: Tapko hops HOPS times of HOP_TIME seconds, his tool fades in TOOL_FADE, then the results open. */
 const HOPS = 3;

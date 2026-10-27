@@ -43,8 +43,11 @@ const GAUGE_R = 70;
 const STRONG_PACE = 1.15;
 const STRONG_SHARE = 0.25;
 const STRONG_SIZE = 135;
-/** How far a hit strong meteor is pushed back. */
-const STRONG_PUSH = 120;
+/** Seconds a hit strong meteor (or a piece whose shield popped) shakes in place, and how far at first. */
+const SHAKE = 0.4;
+const SHAKE_PX = 9;
+/** How many pieces of the boss carry a shield: their word is typed twice. */
+const SHIELDS = 2;
 /**
  * The pace of the space: all coming things fly together at one stream speed, the speed the slowest
  * of their words needs, and it glides to a new one over a few seconds (FLOW_EASE per second), so no
@@ -157,21 +160,23 @@ export class SpaceMode extends ApproachMode {
     const x = this.L.vw + 100;
     const y = this.L.rng.range(130, VH * 0.72);
     const size = tough ? STRONG_SIZE : sprite.includes('planet') ? 130 : 105;
-    return { x, y, vx: this.speedFor(word, x), vy: this.L.rng.range(-12, 12), rot: 0, vr: this.L.rng.range(-0.3, 0.3), age: 0, state: 'come', fade: 0, sprite, size, flip: this.L.rng.chance(0.5), lives: tough ? 2 : 1 };
+    return { x, y, vx: this.speedFor(word, x), vy: this.L.rng.range(-12, 12), rot: this.L.rng.range(0, Math.PI * 2), vr: this.L.rng.range(-0.3, 0.3), age: 0, state: 'come', fade: 0, sprite, size, flip: this.L.rng.chance(0.5), lives: tough ? 2 : 1 };
   }
 
-  /** A strong meteor's first hit: it shouts, says it is stronger and comes again a bit further back with the same word; it counts once. */
+  /**
+   * The first hit of a strong meteor (it loses its glow and shouts) or of a shielded piece (its
+   * shield pops): it shakes in place and keeps its word for the second hit; it counts once.
+   */
   onDone(tg: Target): void {
     const m = tg.data as Mover;
     if ((m.lives ?? 1) < 2) return super.onDone(tg);
-    const again: Mover = { ...m, x: Math.min(this.L.vw - 60, m.x + STRONG_PUSH), lives: 1 };
+    const again: Mover = { ...m, lives: 1, hitAt: this.t };
     m.state = 'leave';
     m.fade = 1;
     this.L.core.add(tg.word, again);
     this.L.sfx('pop');
-    this.L.particles.emit(m.x, m.y, 16, 'sparkle', ['#ffd36b', '#fff6a8', '#ffb07a'], 200, 8);
-    this.L.shout(pickLine('story.strongHit'), m.x, m.y - m.size * 0.7);
-    this.L.speak('meteor', t('story.strongSay'), again.x, again.y - again.size - 70, again.x, again.y - again.size * 0.5, 3);
+    this.L.particles.emit(m.x, m.y, 16, 'sparkle', m.shield ? ['#a8f0ff', '#e8fbff', '#7fd1ff'] : ['#ffd36b', '#fff6a8', '#ffb07a'], 200, 8);
+    if (!m.shield) this.L.shout(pickLine('story.strongHit'), m.x, m.y - m.size * 0.7);
   }
 
   /** A coming thing moves with the stream, in the space's time: slower while the child is not typing. */
@@ -207,17 +212,31 @@ export class SpaceMode extends ApproachMode {
   }
 
   drawMover(g: G, m: Mover): void {
-    if ((m.lives ?? 1) > 1) {
+    // A hit one shakes in place, less and less.
+    const shake = m.hitAt === undefined || this.L.reduceMotion ? 0 : Math.max(0, 1 - (this.t - m.hitAt) / SHAKE) * SHAKE_PX;
+    const x = m.x + Math.sin(this.t * 70) * shake, y = m.y + Math.cos(this.t * 55) * shake;
+    if (m.shield && (m.lives ?? 1) > 1) {
+      // The shield: a soft cyan bubble with a pulsing ring.
+      g.save();
+      g.fillStyle = 'rgba(168, 240, 255, 0.22)';
+      g.strokeStyle = `rgba(127, 209, 255, ${0.6 + Math.sin(this.t * 4) * 0.25})`;
+      g.lineWidth = 4;
+      g.beginPath();
+      g.arc(x, y, m.size * (0.66 + Math.sin(this.t * 4) * 0.03), 0, Math.PI * 2);
+      g.fill();
+      g.stroke();
+      g.restore();
+    } else if ((m.lives ?? 1) > 1) {
       // The strong meteor's glow, pulsing.
       g.save();
       g.strokeStyle = `rgba(255, 200, 110, ${0.55 + Math.sin(this.t * 5) * 0.25})`;
       g.lineWidth = 7;
       g.beginPath();
-      g.arc(m.x, m.y, m.size * 0.56, 0, Math.PI * 2);
+      g.arc(x, y, m.size * 0.56, 0, Math.PI * 2);
       g.stroke();
       g.restore();
     }
-    drawSprite(g, m.sprite, m.x, m.y, m.size, { rot: m.rot, flip: m.flip }, blob(COLORS[m.sprite] ?? '#9a8a7a', true, 'rgba(0,0,0,0.12)'));
+    drawSprite(g, m.sprite, x, y, m.size, { rot: m.rot, flip: m.flip }, blob(COLORS[m.sprite] ?? '#9a8a7a', true, 'rgba(0,0,0,0.12)'));
   }
 
   protected onLeave(m: Mover): void {
@@ -405,10 +424,23 @@ export class SpaceMode extends ApproachMode {
   }
 }
 
-/** World 2 super-obstacle: big turning asteroids split into smaller rocks with shorter words; the last one flies at the rocket. */
+/**
+ * World 2 super-obstacle: big turning asteroids split into smaller rocks with shorter words; the
+ * last one flies at the rocket. The first piece of two splits, spread over the level, has a shield.
+ */
 export class AsteroidMode extends SpaceMode {
   private bigs = 0;
+  /** Big asteroids split so far. */
+  private splits = 0;
   protected autoSpawn = false;
+
+  startLine(): string {
+    return pickLine('story.asteroidStart');
+  }
+
+  startSeconds(): number {
+    return 5;
+  }
 
   update(dt: number): void {
     const core = this.L.core;
@@ -422,7 +454,7 @@ export class AsteroidMode extends SpaceMode {
         const last = this.bigs === this.L.count - 1;
         const spin = this.L.rng.range(0.25, 0.6) * (this.L.rng.chance(0.5) ? 1 : -1);
         const m: Mover = {
-          x, y: last ? this.rocketY : VH * 0.45, vx: this.speedFor(word, x) * 0.7, vy: 0, rot: 0, vr: spin, age: 0, state: 'come', fade: 0,
+          x, y: last ? this.rocketY : VH * 0.45, vx: this.speedFor(word, x) * 0.7, vy: 0, rot: this.L.rng.range(0, Math.PI * 2), vr: spin, age: 0, state: 'come', fade: 0,
           sprite: 'obj-asteroid-big', size: last ? 250 : 220, big: true, flip: this.L.rng.chance(0.5),
         };
         core.add(word, m);
@@ -438,26 +470,34 @@ export class AsteroidMode extends SpaceMode {
     this.fireBeam(m.x, m.y);
     m.fade = 1;
     this.L.sfx('pop');
+    this.splits++;
+    const shield = this.shieldSplits().includes(this.splits);
     const pieces = this.L.rng.int(3, 4);
     for (let i = 0; i < pieces; i++) {
       const a = (i / pieces) * Math.PI * 2;
-      this.addPiece(m.x + Math.cos(a) * 60, m.y + Math.sin(a) * 60, Math.sin(a) * 40);
+      this.addPiece(m.x + Math.cos(a) * 60, m.y + Math.sin(a) * 60, Math.sin(a) * 40, shield && i === 0);
     }
     this.L.particles.emit(m.x, m.y, 24, 'sparkle', ['#fff6a8', '#ffd1f5', '#a8f0ff'], 260, 10);
   }
 
-  /** A passed rock does not count: a big one comes again, a piece returns from the right. */
+  /** The splits whose first piece has a shield: the first one and one about three quarters in (the first and the third of four). */
+  private shieldSplits(): number[] {
+    return [1, Math.max(2, Math.ceil(this.L.count * 0.75))].slice(0, SHIELDS);
+  }
+
+  /** A passed rock does not count: a big one comes again, a piece returns from the right, still shielded while its shield is whole. */
   protected onPass(m: Mover, tg: Target): void {
     super.onPass(m, tg);
     if (m.big) this.bigs--;
-    else this.addPiece(this.L.vw + 100, this.L.rng.range(130, VH * 0.72), 0);
+    else this.addPiece(this.L.vw + 100, this.L.rng.range(130, VH * 0.72), 0, !!m.shield && (m.lives ?? 1) > 1);
   }
 
-  private addPiece(x: number, y: number, vy: number): void {
+  private addPiece(x: number, y: number, vy: number, shield = false): void {
     const word = this.L.word(4, 1);
     const piece: Mover = {
-      x, y, vx: this.speedFor(word, x) * 0.8, vy, rot: 0, vr: this.L.rng.range(-1, 1),
+      x, y, vx: this.speedFor(word, x) * 0.8, vy, rot: this.L.rng.range(0, Math.PI * 2), vr: this.L.rng.range(-1, 1),
       age: 0, state: 'come', fade: 0, sprite: 'obj-asteroid-small', size: 95, flip: this.L.rng.chance(0.5),
+      ...(shield && { shield: true, lives: 2 }),
     };
     this.L.core.add(word, piece);
   }

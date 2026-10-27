@@ -51,19 +51,31 @@ gives you a wreath"), never about the character as someone else.
    to arrive, the speedometer sinks with them) and speeds up just as gently with the next keys;
    no change jumps. The levels follow the world rhythm: 1 the stream of rocks; 2 the calm
    step, the astronaut hops from meteor to meteor (each with a short word) and the view glides
-   after him, meteors left behind drift away; he jumps onto the next meteor or over one, never
-   over two: then he says "Jaj, tam nedoskočím." and the word stays on that meteor. The level
-   counts jumps, whether over one meteor or none, and at the end the rocket, empty with clear
-   glass in its window, comes for him from the left, he jumps into its window and it flies on to
-   the right; 3 a faster stream where about every fourth meteor is
-   stronger: it glows, and when its word is typed it shouts ("Au!", "Zásah!", "Trefa!"), says
-   "Ja som silnejší, musíš napísať slovo znova." and comes again a bit further back with the
-   same word, counting once (the opening line explains it); 4 the copy twist: the astronaut on a
-   meteor writes commands to the rocket, which faces him on the right, on a console panel (the
-   meadow invitation's copy rules); each sent command brings the rocket closer and it answers
-   ("Inštrukcia prijatá.", "Rozumiem.", "Krátky zážih motorov."), and when all is written it is
-   beside him, he jumps in and is glad; 5 the super-obstacle, whose big asteroids turn each
-   their own way and whose last one flies at the rocket. The near
+   after him; a new meteor appears at its place, fading in and growing, and its word shows once
+   it is full size; meteors left behind stay where they are and leave the screen as the view
+   glides on; every meteor is turned its own way (so are the things of the streams); he jumps
+   onto the next meteor or over one, never over two: then he says "Jaj, tam nedoskočím." and
+   the word stays on that meteor. The level counts jumps, whether over one meteor or none, and
+   at the end the rocket, empty with clear glass in its window, comes for him from the left
+   behind him, he jumps into its window and it flies on to the right; 3 a faster stream where
+   about every fourth meteor is stronger: it glows, and when its word is typed it shouts ("Au!",
+   "Zásah!", "Trefa!"), loses its glow and shakes in place, keeping the same word for a second
+   hit and counting once (the opening line explains it); 4 the copy twist: the astronaut on a
+   meteor writes commands to the rocket, which faces him on the right, on a command panel fixed
+   in the middle above, with the onboard computer standing on its left edge (the meadow
+   invitation's copy rules). A command with every word right is accepted, one with no word
+   right rejected, one with both either way, half of the time each, so slips matter without
+   ending the level. Accepted, the rocket fires its engine, comes closer by the level's fair
+   share and back toward the middle line, and answers ("Inštrukcia prijatá.", "Rozumiem.",
+   "Krátky zážih motorov."); rejected, it answers ("Príkaz neprijatý!", "Nerozumiem, skús
+   znova.", "Signál sa stratil.") and veers up or down instead. The rocket moves only on a
+   command, and the last command always brings it beside him. Its answer is above it, or below
+   when it would cover the console. He jumps in, is glad, and the rocket flies away to the
+   left; 5 the super-obstacle, whose big asteroids turn each their own way and whose last one
+   flies at the rocket; twice in the level a small piece has a shield (a soft cyan bubble): its
+   word is typed twice, the first time the shield pops and the piece stays with the same word
+   (the opening line says so). The near band drifts slowly on its own in the hop and command
+   levels, where the scene stands still. The near
    rocks drift at half the usual near-layer speed.
    Super-obstacle: fractured asteroid.
    Reward: landing clearance.

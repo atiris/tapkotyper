@@ -36,6 +36,9 @@ export class CopyRow {
   typed = 0;
   /** Words added by slips. */
   private added = 0;
+  /** Words of this row typed right, and slipped. */
+  rowTyped = 0;
+  rowSlips = 0;
 
   constructor(private L: LevelRuntime) {}
 
@@ -53,6 +56,8 @@ export class CopyRow {
   fill(): void {
     const n = Math.min(this.L.rng.int(3, 4), Math.max(0, this.left));
     this.at = 0;
+    this.rowTyped = 0;
+    this.rowSlips = 0;
     this.row = Array.from({ length: n }, (_, i) => {
       const word = this.L.word(6, 1);
       return { word, tg: this.L.core.add(word, {}, i === 0), slip: -1 };
@@ -70,6 +75,7 @@ export class CopyRow {
   onDone(tg: Target): boolean {
     if (this.row[this.at]?.tg !== tg) return false;
     this.typed++;
+    this.rowTyped++;
     this.next();
     return true;
   }
@@ -79,6 +85,7 @@ export class CopyRow {
     const s = this.row[this.at];
     if (!s || s.tg !== tg) return false;
     s.slip = 0;
+    this.rowSlips++;
     this.L.core.release(tg, false);
     const more = slipWords(STORIES.indexOf(storyOf(this.L.def.world)) + 1, this.added);
     this.added += more;

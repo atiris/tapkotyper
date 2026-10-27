@@ -406,6 +406,14 @@
       "A short engine burn.",
       "Coming closer."
     ],
+    "commandRejected": [
+      "Command not accepted!",
+      "I don't understand, try again.",
+      "The signal got lost."
+    ],
+    "asteroidStart": [
+      "Big asteroids break into smaller rocks. Two rocks have a shield: type their word twice."
+    ],
     "boarded": "Hooray, you are on board!",
     "strongStart": [
       "Careful, some meteors are stronger and glow around the edge. When you type their word, you type it once more."
@@ -416,7 +424,6 @@
       "Got me!",
       "Oof!"
     ],
-    "strongSay": "I am stronger, type the word again.",
     "hopStart": [
       "The rocket drifted a bit away. Hop across the meteors until you reach it!"
     ],

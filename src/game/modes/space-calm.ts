@@ -1,9 +1,10 @@
 import { pickLine } from '../../app/app';
 import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
-import { blob, drawSprite, type G } from '../../gfx/draw';
+import { sprite } from '../../gfx/assets';
+import { SPEECH_W, blob, drawSprite, type G, speechLayout } from '../../gfx/draw';
 import { t } from '../../i18n/i18n';
-import { Mode } from '../mode';
+import { type Drift, Mode } from '../mode';
 import type { Target } from '../typing';
 import { CopyRow } from './copy-row';
 import { ROCKET_H, WINDOW, drawAstronaut } from './space';
@@ -19,8 +20,8 @@ const ROCK_SIZE = 150;
 const ROCKS_AT_ONCE = 3;
 const ROCK_PAUSE = 0.6;
 const SLOTS = [0.48, 0.67, 0.86];
-/** Seconds of a meteor drifting in from the right edge, of a jump and of the view gliding after it. */
-const DRIFT = 0.8;
+/** Seconds of a meteor growing in at its place, of a jump and of the view gliding after it. */
+const GROW = 0.5;
 const JUMP = 0.7;
 const GLIDE = 0.9;
 /** Seconds of the end: the rocket comes from the left, he jumps into its window, it flies on to the right. */
@@ -34,24 +35,26 @@ interface Rock {
   y: number;
   sprite: string;
   flip: boolean;
-  /** Seconds since it came, and since it drifted off (-1: still here). */
+  /** Its own turn, under the gentle sway. */
+  rot: number;
+  /** Seconds since it came. */
   age: number;
-  off: number;
   tg: Target | null;
 }
 
 /**
  * The rocket world's calm step: still meteors carry short words, each starting with another
  * letter. A typed word sends the suited astronaut jumping onto its meteor, and the view glides
- * after him; meteors left behind drift away. At the end the rocket comes for him from the left,
+ * after him; meteors left behind stay and leave the screen. At the end the rocket comes for him from the left,
  * he jumps into its window and it flies on to the right.
  */
 export class HopMode extends Mode {
   readonly pictures = PICTURES;
   readonly world = 'space';
+  readonly drift: Drift = { layer: 'near', speed: 12 };
   private rocks: Rock[] = [];
   /** The meteor he stands on (from the first frame on, also before play), and the jump from it to the next one. */
-  private stand: Rock = this.rock(HOME_X, VH * 0.66, null, DRIFT);
+  private stand: Rock = this.rock(HOME_X, VH * 0.66, null, GROW);
   private jump: { from: Rock; to: Rock; k: number } | null = null;
   /** The scene's left edge on the screen, and where it glides to. */
   private view = 0;
@@ -69,7 +72,7 @@ export class HopMode extends Mode {
   }
 
   private rock(x: number, y: number, tg: Target | null, age = 0): Rock {
-    const r: Rock = { x, y, sprite: this.L.rng.pick(ROCKS), flip: this.L.rng.chance(0.5), age, off: -1, tg };
+    const r: Rock = { x, y, sprite: this.L.rng.pick(ROCKS), flip: this.L.rng.chance(0.5), rot: this.L.rng.range(0, Math.PI * 2), age, tg };
     this.rocks.push(r);
     return r;
   }
@@ -82,14 +85,13 @@ export class HopMode extends Mode {
   update(dt: number): void {
     for (const r of this.rocks) {
       r.age += dt;
-      if (r.off >= 0) r.off += dt;
       if (r.tg) {
-        r.tg.selectable = r.age >= DRIFT;
+        r.tg.selectable = r.age >= GROW;
         // The finger guide points to a meteor he can reach.
         r.tg.urgency = r.age - (this.over(r) > 1 ? 1000 : 0);
       }
     }
-    this.rocks = this.rocks.filter((r) => r.off < 1.5 && r.x - this.view > -300);
+    this.rocks = this.rocks.filter((r) => r.x - this.view > -300);
     if (this.glide < 1) {
       this.glide = this.L.reduceMotion ? 1 : Math.min(1, this.glide + dt / GLIDE);
       this.view = this.viewFrom + (this.viewTo - this.viewFrom) * ease.inOutQuad(this.glide);
@@ -106,9 +108,9 @@ export class HopMode extends Mode {
     }
     if (this.done >= this.L.count && !this.jump && this.glide >= 1) return this.finish();
     this.wait -= dt;
-    const waiting = this.rocks.filter((r) => r.tg && r.off < 0);
+    const waiting = this.rocks.filter((r) => r.tg);
     if (this.wait > 0 || this.jump || this.glide < 1 || waiting.length >= ROCKS_AT_ONCE || this.spawned >= this.L.count) return;
-    const free = SLOTS.map((s) => this.view + this.L.vw * s).filter((x) => !this.rocks.some((r) => r.off < 0 && Math.abs(r.x - x) < 120));
+    const free = SLOTS.map((s) => this.view + this.L.vw * s).filter((x) => !this.rocks.some((r) => Math.abs(r.x - x) < 120));
     if (!free.length) return;
     const word = this.L.word(4, 1);
     // Every waiting word starts with its own letter, so the first key picks the meteor.
@@ -126,7 +128,6 @@ export class HopMode extends Mode {
     if (!to) return;
     // A word typed while he is in the air: he lands first, so no meteor is left without a word ahead of him.
     if (this.jump) this.land(this.jump.to);
-    if (to.off >= 0) return;
     // He hops onto the next meteor or over one, never over two: the word comes back on the far one.
     if (this.over(to) > 1) {
       this.L.core.prune();
@@ -143,10 +144,10 @@ export class HopMode extends Mode {
 
   /** How many meteors lie between his and `to`. */
   private over(to: Rock): number {
-    return this.rocks.filter((r) => r !== to && r.off < 0 && r.x > this.stand.x && r.x < to.x).length;
+    return this.rocks.filter((r) => r !== to && r.x > this.stand.x && r.x < to.x).length;
   }
 
-  /** He stands on the meteor; the view glides so it is back on the left, and the meteors left behind drift away. */
+  /** He stands on the meteor; the view glides so it is back on the left, and the words of the meteors left behind go. */
   private land(r: Rock): void {
     this.jump = null;
     this.stand = r;
@@ -154,8 +155,7 @@ export class HopMode extends Mode {
     const feet = this.top(r);
     this.L.particles.emit(feet.x, feet.y, 10, 'sparkle', ['#fff6a8', '#a8f0ff', '#ffd1f5'], 120, 7);
     for (const o of this.rocks) {
-      if (o === r || o.x >= r.x || o.off >= 0) continue;
-      o.off = 0;
+      if (o === r || o.x >= r.x) continue;
       if (o.tg) {
         this.L.core.release(o.tg, false);
         o.tg = null;
@@ -169,11 +169,9 @@ export class HopMode extends Mode {
     this.wait = Math.max(this.wait, ROCK_PAUSE);
   }
 
-  /** The words are done: the meteors still waiting drift away and the rocket comes. */
+  /** The words are done: the meteors still waiting lose theirs and the rocket comes. */
   private finish(): void {
     for (const r of this.rocks) {
-      if (r === this.stand || r.off >= 0) continue;
-      r.off = 0;
       if (r.tg) this.L.core.release(r.tg, false);
       r.tg = null;
     }
@@ -226,24 +224,24 @@ export class HopMode extends Mode {
 
   render(g: G): void {
     for (const r of this.rocks) {
-      const drift = (1 - ease.outCubic(Math.min(1, r.age / DRIFT))) * 260;
-      const fall = r.off >= 0 ? r.off * r.off * 160 : 0;
+      // A new meteor fades in and grows at its place.
+      const k = Math.min(1, r.age / GROW);
+      const grow = this.L.reduceMotion ? 1 : 0.4 + 0.6 * ease.outBack(k);
       g.save();
-      g.globalAlpha = Math.min(1, r.age / 0.3) * (r.off >= 0 ? Math.max(0, 1 - r.off / 1.5) : 1);
+      g.globalAlpha = Math.min(1, r.age / 0.3);
       const at = this.top(r);
-      drawSprite(g, r.sprite, at.x + drift, at.y + ROCK_SIZE * 0.32 + fall, ROCK_SIZE, { flip: r.flip, rot: Math.sin(this.t + r.x) * 0.05 + r.off * 0.8 }, blob('#9a8a7a', false));
+      drawSprite(g, r.sprite, at.x, at.y + ROCK_SIZE * 0.32, ROCK_SIZE * grow, { flip: r.flip, rot: r.rot + Math.sin(this.t + r.x) * 0.05 }, blob('#9a8a7a', false));
       g.restore();
-      if (r.tg && r.off < 0) this.L.label(g, r.tg, at.x + drift, at.y - ROCK_SIZE * 0.3);
+      if (r.tg) this.L.label(g, r.tg, at.x, at.y - ROCK_SIZE * 0.3);
     }
     const rocket = this.rocket();
     const b = this.boarding;
+    // The rocket behind him; its window empty until he is in.
+    if (rocket) drawSprite(g, b >= 0.85 ? 'obj-rocket-pilot' : 'obj-rocket-empty', rocket.x, rocket.y, ROCKET_H, {}, blob('#e5534b'));
     if (b < 0.85) {
       const s = this.hero();
       drawAstronaut(g, true, s.x, s.y, s.size);
     }
-    if (!rocket) return;
-    // Its window empty until he is in.
-    drawSprite(g, b >= 0.85 ? 'obj-rocket-pilot' : 'obj-rocket-empty', rocket.x, rocket.y, ROCKET_H, {}, blob('#e5534b'));
   }
 
   progress(): number {
@@ -260,27 +258,46 @@ const COMMAND_X = 230;
 const COMMAND_Y = 0.7;
 const ROCKET_START = 0.86;
 const ROCKET_STOP = 230;
-/** Seconds from a sent command to the next row (the rocket answers meanwhile), and of the boarding end. */
+/** A rejected command turns the rocket up or down by this much, within this band of the height. */
+const VEER_MIN = 40;
+const VEER_MAX = 70;
+const VEER_BAND = [0.3, 0.7];
+/** Seconds from a sent command to the next row (the rocket answers meanwhile), of the boarding, of the rest before it flies off, and of it flying off to the left. */
 const REPLY_TIME = 1.2;
 const BOARD = 0.9;
-const END_TIME = 2.6;
+const REST = 0.4;
+const FLY_OFF = 2.5;
+const END_TIME = BOARD + REST + FLY_OFF + 0.2;
+/** The command panel: its middle's height share, its height, and the onboard computer's height on its left edge. */
+const PANEL_Y = 0.24;
+const PANEL_H = 120;
+const CONSOLE_H = 150;
 const PANEL_INK = '#e8f6ff';
 
 /**
  * The rocket world's twist: the astronaut on a meteor on the left writes commands to the rocket on
- * the right, one copy row each (`CopyRow`). A sent command flies to the rocket as a trail of dots;
- * the rocket fires its engine, comes closer by its share of the level and answers. When all is
- * written it is beside him: he jumps into its window and is glad.
+ * the right, one copy row each (`CopyRow`) on the panel with the onboard computer. A sent command
+ * flies to the rocket as a trail of dots. A row with every word right is accepted, one with none
+ * rejected, a mixed one either; an accepted command fires the engine and brings the rocket closer
+ * by the level's fair share, a rejected one turns it up or down. When all is written it is beside
+ * him: he jumps into its window and it flies away to the left.
  */
 export class CommandMode extends Mode {
-  readonly pictures = PICTURES;
+  readonly pictures = [...PICTURES, 'obj-console'];
   readonly world = 'space';
   readonly phraseWords = 1;
+  readonly drift: Drift = { layer: 'near', speed: 12 };
   private row = new CopyRow(this.L);
   /** Seconds until the next row comes after a sent one (-1: writing). */
   private reply = -1;
-  /** The rocket's share of the way to him, eased; it never goes back. */
+  /** The rocket's share of the way to him, set by accepted commands, and shown eased; it never goes back. */
+  private goal = 0;
   private shown = 0;
+  /** The rocket's height off the middle line, set by the commands, and shown eased. */
+  private dy = 0;
+  private dyShown = 0;
+  /** The rocket's answer, said on the next frame once its bubble can be measured. */
+  private answer: string | null = null;
   private flame = 0;
   /** Seconds of the end; null before it. */
   private end: number | null = null;
@@ -297,10 +314,19 @@ export class CommandMode extends Mode {
     return { x: COMMAND_X, y: VH * COMMAND_Y - ROCK_SIZE * 0.32 + Math.sin(this.t * 1.4) * 4 };
   }
 
-  /** The rocket, mirrored to face him: from the right third to beside him as the commands are sent, bobbing. */
-  private rocket(): { x: number; y: number } {
+  /**
+   * The rocket, mirrored to face him: from the right third to beside him as commands are accepted
+   * (`share`), `dy` off the middle line, bobbing; at the end it flies off to the left.
+   */
+  private rocket(share = this.shown, dy = this.dyShown): { x: number; y: number } {
     const from = this.L.vw * ROCKET_START, to = COMMAND_X + ROCKET_STOP;
-    return { x: from + (to - from) * ease.inOutQuad(this.shown), y: VH * 0.5 + Math.sin(this.t * 1.8) * 8 };
+    const x = from + (to - from) * ease.inOutQuad(share);
+    return { x: x - ease.inQuad(this.away) * (x + 300), y: VH * 0.5 + dy + Math.sin(this.t * 1.8) * 8 };
+  }
+
+  /** 0..1 of the rocket flying off to the left after he is in. */
+  private get away(): number {
+    return this.end === null ? 0 : Math.max(0, Math.min(1, (this.end - BOARD - REST) / FLY_OFF));
   }
 
   /** 0..1 of his jump into the window at the end. */
@@ -329,8 +355,8 @@ export class CommandMode extends Mode {
   update(dt: number): void {
     this.row.update(dt);
     this.flame = Math.max(0, this.flame - dt * 1.5);
-    const goal = Math.min(1, this.row.resolved / this.L.count);
-    this.shown = Math.max(this.shown, this.shown + (goal - this.shown) * Math.min(1, dt * 1.5));
+    this.shown = Math.max(this.shown, this.shown + (this.goal - this.shown) * Math.min(1, dt * 2));
+    this.dyShown += (this.dy - this.dyShown) * Math.min(1, dt * 2);
     if (this.end !== null) {
       const before = this.end;
       this.end += dt;
@@ -340,6 +366,7 @@ export class CommandMode extends Mode {
         this.L.shout(t('story.boarded'), r.x, r.y - 110);
         this.L.sfx('cheer');
       }
+      if (before < BOARD + REST && this.end >= BOARD + REST) this.L.sfx('whoosh');
       return;
     }
     if (this.reply < 0) return;
@@ -361,7 +388,12 @@ export class CommandMode extends Mode {
     if (this.row.onWrong(tg)) this.send();
   }
 
-  /** A finished row is sent: dots fly to the rocket, its engine fires and it answers. */
+  /**
+   * A finished row is sent: dots fly to the rocket. Every word right: accepted; none right:
+   * rejected; some right: either, half of the cases each. Accepted, the engine fires and the
+   * rocket comes to the level's fair share, halfway back to the middle line; rejected, it turns
+   * up or down. The last row is always accepted: the rocket comes all the way.
+   */
   private send(): void {
     if (!this.row.complete) return;
     const r = this.rocket(), f = this.feet;
@@ -370,20 +402,62 @@ export class CommandMode extends Mode {
       this.L.particles.emit(f.x + (r.x - f.x) * k, f.y - 120 + (r.y - f.y + 120) * k, 2, 'sparkle', ['#a8f0ff', '#fff6a8'], 40, 6, 0.6 + k * 0.5);
     }
     this.L.sfx('whoosh');
-    this.flame = 1;
-    this.L.speak('rocket', pickLine('story.commandReply'), r.x, r.y - 110, r.x, r.y - 50, REPLY_TIME + 1);
+    const { rowTyped: right, rowSlips: slips } = this.row;
+    const last = this.row.left <= 0;
+    const accepted = last || slips === 0 || (right > 0 && !this.L.rng.chance(0.5));
+    if (last) {
+      this.goal = 1;
+      this.dy = 0;
+    } else if (accepted) {
+      this.goal = Math.max(this.goal, Math.min(1, this.L.share()));
+      this.dy /= 2;
+    } else this.veer();
+    if (accepted) this.flame = 1;
+    this.answer = pickLine(accepted ? 'story.commandReply' : 'story.commandRejected');
     this.reply = REPLY_TIME;
   }
 
+  /** A rejected command turns the rocket up or down, staying within the band. */
+  private veer(): void {
+    const by = this.L.rng.range(VEER_MIN, VEER_MAX);
+    const [lo, hi] = VEER_BAND.map((k) => VH * (k - 0.5));
+    const fits = [this.dy - by, this.dy + by].filter((y) => y >= lo && y <= hi);
+    this.dy = fits.length ? this.L.rng.pick(fits) : Math.max(lo, Math.min(hi, this.dy - by));
+  }
+
+  /** The command panel fixed in the middle of the stage, and the onboard computer standing on its left edge with a third of it over the panel. */
+  private panel(): { x0: number; x1: number; y: number; console: { x: number; w: number } } {
+    const w = Math.min(this.L.vw * 0.56, 700), x0 = this.L.vw / 2 - w / 2;
+    const img = sprite('obj-console');
+    const cw = CONSOLE_H * (img ? img.naturalWidth / img.naturalHeight : 2 / 3);
+    return { x0, x1: x0 + w, y: VH * PANEL_Y, console: { x: x0 + cw / 6, w: cw } };
+  }
+
+  /** The rocket answers above the place it heads for, or below when that bubble would cover the console. */
+  private answerWith(g: G, text: string): void {
+    const r = this.rocket(this.goal, this.dy), p = this.panel();
+    const lay = speechLayout(g, text, SPEECH_W);
+    const x = Math.min(this.L.vw - lay.w / 2 - 8, Math.max(lay.w / 2 + 8, r.x));
+    const above = r.y - 110, half = Math.max(PANEL_H, CONSOLE_H) / 2;
+    const covers = x + lay.w / 2 > p.console.x - p.console.w / 2 && x - lay.w / 2 < p.x1 && above - lay.h / 2 < p.y + half && above + lay.h / 2 > p.y - half;
+    if (covers) this.L.speak('rocket', text, x, r.y + 70 + lay.h / 2, r.x, r.y + 40, REPLY_TIME + 1);
+    else this.L.speak('rocket', text, x, above, r.x, r.y - 50, REPLY_TIME + 1);
+  }
+
   render(g: G): void {
+    if (this.answer) {
+      this.answerWith(g, this.answer);
+      this.answer = null;
+    }
     const f = this.feet, r = this.rocket(), b = this.boarding;
     drawSprite(g, 'obj-asteroid-big', f.x, f.y + ROCK_SIZE * 0.32, ROCK_SIZE, {}, blob('#9a8a7a', false));
-    // The engine's flame on its right, the rocket facing him.
+    // The engine's flame on its right, away from where it flies; it burns hard as it flies off.
+    const burn = this.away > 0 ? 1 : this.flame;
     g.save();
-    g.globalAlpha = 0.45 + this.flame * 0.55;
+    g.globalAlpha = 0.45 + burn * 0.55;
     g.fillStyle = '#ffcf5a';
     g.beginPath();
-    g.ellipse(r.x + 85 + this.flame * 18, r.y + 4, 10 + this.flame * 26, 8, 0, 0, Math.PI * 2);
+    g.ellipse(r.x + 85 + burn * 18, r.y + 4, 10 + burn * 26, 8, 0, 0, Math.PI * 2);
     g.fill();
     g.restore();
     const inside = b >= 0.85;
@@ -392,19 +466,22 @@ export class CommandMode extends Mode {
       const s = this.hero();
       drawAstronaut(g, true, s.x, s.y, s.size);
     }
-    if (this.end !== null || this.reply >= 0) return;
-    // The console the commands are written on, above between him and the rocket.
-    const cx = (f.x + r.x) / 2 + 40, cy = VH * 0.24, w = Math.min(this.L.vw * 0.56, 700);
+    if (this.end !== null) return;
+    const p = this.panel();
     g.save();
     g.fillStyle = 'rgba(18, 30, 70, 0.88)';
     g.strokeStyle = '#7fd1ff';
     g.lineWidth = 3;
     g.beginPath();
-    g.roundRect(cx - w / 2, cy - 60, w, 120, 16);
+    g.roundRect(p.x0, p.y - PANEL_H / 2, p.x1 - p.x0, PANEL_H, 16);
     g.fill();
     g.stroke();
     g.restore();
-    this.row.draw(g, cx, cy, w - 50, PANEL_INK);
+    drawSprite(g, 'obj-console', p.console.x, p.y, CONSOLE_H, {}, blob('#e8eef5'));
+    if (this.reply >= 0) return;
+    // The row starts right of the computer.
+    const x0 = p.console.x + p.console.w / 2 + 16, x1 = p.x1 - 25;
+    this.row.draw(g, (x0 + x1) / 2, p.y, x1 - x0, PANEL_INK);
   }
 
   progress(): number {

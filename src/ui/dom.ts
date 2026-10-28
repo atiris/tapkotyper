@@ -72,6 +72,8 @@ export const ICONS = {
   paw: '<ellipse cx="12" cy="16" rx="5" ry="4"/><circle cx="5.5" cy="10" r="2"/><circle cx="9.5" cy="6" r="2"/><circle cx="14.5" cy="6" r="2"/><circle cx="18.5" cy="10" r="2"/>',
   wave: '<path d="M2 12c2.5-7 4.5-7 7 0s4.5 7 7 0 3.5-5 6-3"/>',
   replay: '<path d="M4 12a8 8 0 108-8H7"/><path d="M8 1L5 4l3 3"/>',
+  undo: '<path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 010 10h-3"/>',
+  redo: '<path d="M15 14l5-5-5-5"/><path d="M20 9H9a5 5 0 000 10h3"/>',
   camera: '<path d="M3 8h4l2-3h6l2 3h4v11H3z"/><circle cx="12" cy="13" r="3.5"/>',
   fullscreen: '<path d="M4 9V4h5M4 4l5 5M15 4h5v5M20 4l-5 5M4 15v5h5M4 20l5-5M20 15v5h-5M20 20l-5-5"/>',
   smile: '<path d="M6.5 13.5a6.5 6.5 0 0011 0"/><path d="M8.5 8.5v1.5M15.5 8.5v1.5"/>',

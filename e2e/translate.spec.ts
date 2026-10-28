@@ -27,6 +27,9 @@ test('a parent starts a language, translates, exports, imports and plays it', as
   await form.locator('select').first().selectOption('en');
   await form.locator('button[type=submit]').click();
   await expect(page.locator('.tr-target')).toHaveValue(/.+/);
+  // English above the fields, Slovak as the second sample.
+  await page.locator('.tr-sample').selectOption('en');
+  await page.locator('.tr-sample2').selectOption('sk');
   await page.locator('.tr-prefill').selectOption('en');
   await page.getByRole('button', { name: /^Prefill$/ }).click();
   await expect(page.locator('textarea[data-field="common.ok"]')).toHaveValue('OK');
@@ -40,21 +43,41 @@ test('a parent starts a language, translates, exports, imports and plays it', as
   expect(await ringValue(page)).toBeGreaterThan(0);
   await expect(hello.locator('xpath=..')).not.toHaveClass(/open/);
 
-  // The ring goes to the first untranslated field; its info box shows the shadow language,
-  // copies from it (still untranslated) and marks it done.
+  // The ring goes to the first untranslated field; reached by the keyboard it shows its samples.
   await page.locator('.tr-ring').click();
   const firstId = await page.locator('textarea.tr-field:focus').getAttribute('data-field');
   const first = page.locator('.tr-input', { has: page.locator(`textarea[data-field="${firstId}"]`) });
-  await page.locator('.tr-shadow').selectOption('sk');
-  await first.locator('.tr-info').click();
-  await expect(first.locator('.tr-info-box')).toContainText('Slovenčina');
-  await expect(first.locator('.tr-info-box a')).toHaveAttribute('href', /github\.com\/search/);
-  await first.locator('.tr-copy').click();
+  const area = first.locator('textarea');
+  await area.press('Alt+I');
+  await expect(page.locator('#tr-pop')).toContainText('English');
+  await expect(page.locator('#tr-pop')).toContainText('Slovenčina');
+  await expect(page.locator('#tr-pop')).toContainText(firstId!);
+  await expect(first.locator('a.tr-act')).toHaveAttribute('href', /github\.com\/search/);
+
+  // Copy from the second sample keeps it untranslated; marking it done, undo and redo.
+  await area.press('Alt+Shift+C');
   await expect(first).toHaveClass(/open/);
+  const copied = await area.inputValue();
+  expect(copied).not.toBe('');
   await first.locator('.tr-mark').click();
   await expect(first).not.toHaveClass(/open/);
-  await page.locator('.tr-ring').click();
+  await first.locator('.tr-undo').click();
+  await expect(first).toHaveClass(/open/);
+  await first.locator('.tr-redo').click();
+  await expect(first).not.toHaveClass(/open/);
+  await area.fill('Okay');
+  await area.press('Control+Z');
+  await expect(area).toHaveValue(copied);
+  await area.press('Control+Y');
+  await expect(area).toHaveValue('Okay');
+
+  // Alt+N goes on to the next untranslated field; Tab skips the buttons to the next field.
+  await area.press('Alt+N');
   await expect(page.locator('textarea.tr-field:focus')).not.toHaveAttribute('data-field', firstId!);
+  await area.focus();
+  await area.press('Tab');
+  await expect(page.locator(':focus')).toHaveClass(/tr-field/);
+  await expect(page.locator('#tr-pop')).toBeVisible();
 
   // A pool gets a variant and loses it again.
   await page.locator('#tr-s-aim').scrollIntoViewIfNeeded();

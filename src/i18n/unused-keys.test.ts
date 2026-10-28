@@ -78,7 +78,9 @@ describe('dictionaries', () => {
   it('have no translator text the translator page no longer reads', () => {
     const code = readFileSync('src/screens/translate.ts', 'utf8');
     const named = new Set([...code.matchAll(/'([\w.]+)'/g)].map((m) => m[1]));
+    // tr(`keys.${id}`): every key under the prefix.
+    const prefixes = [...code.matchAll(/tr\(`([\w.]+\.)\$\{/g)].map((m) => m[1]);
     const ui = JSON.parse(readFileSync('public/i18n/translator/en.json', 'utf8')).ui;
-    expect(leaves(ui).filter((k) => !named.has(k))).toEqual([]);
+    expect(leaves(ui).filter((k) => !named.has(k) && !prefixes.some((p) => k.startsWith(p)))).toEqual([]);
   });
 });

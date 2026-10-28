@@ -12,6 +12,7 @@ import { lessonGroups } from '../learning/lessons';
 import type { Lang, LangRef, LayoutId } from '../storage/schema';
 import { cornerControls } from '../ui/chrome';
 import { button, confirmDialog, download, h, icon, modal } from '../ui/dom';
+import { tipMachine } from '../ui/tooltip';
 import { rhythmRing, roundButton, roundTextSvg } from '../ui/hud';
 import { loadWords } from '../words/words';
 
@@ -25,11 +26,21 @@ const SAVE_MS = 500;
 /** First lessons whose typeable words the words section counts, and the count that is enough. */
 const LESSONS_SHOWN = 8;
 const LESSON_WORDS_MIN = 20;
-/** A text longer than this takes a whole row on a wide screen, base and translation side by side. */
+/** A text longer than this takes a whole row on a wide screen, sample and translation side by side. */
 const LONG_TEXT = 160;
-/** A field's accessible name quotes at most this much of its base text. */
+/** A field's accessible name quotes at most this much of its sample text. */
 const LABEL_MAX = 80;
-/** The last shadow language and translation, a convenience of this browser only. */
+/** Typing without a pause this long is one change for undo. */
+const TYPING_MS = 1500;
+/** The page's keys, in the order of their list; the text of each is `keys.<id>` of the translator file. */
+const KEYS: [id: string, keys: string][] = [
+  ['tab', 'Tab / Shift+Tab'], ['move', 'Alt+↓ / Alt+↑'], ['next', 'Alt+N'], ['doneNext', 'Ctrl+Enter'], ['copy', 'Alt+C'], ['copy2', 'Alt+Shift+C'],
+  ['mark', 'Alt+M'], ['info', 'Alt+I'], ['code', 'Alt+G'], ['undo', 'Ctrl+Z'], ['redo', 'Ctrl+Y / Ctrl+Shift+Z'], ['all', 'Ctrl+A'],
+  ['search', 'Alt+S'], ['close', 'Esc'], ['list', 'Alt+K'],
+];
+/** A button's tooltip with its key. */
+const keyed = (label: string, id: string) => `${label} (${KEYS.find(([k]) => k === id)![1]})`;
+/** The last sample languages and translation, a convenience of this browser only. */
 const REMEMBER = 'tapkotyper:translate';
 
 const icons = new Map<string, HTMLElement>();
@@ -86,7 +97,9 @@ async function ownSource(l: OwnLang): Promise<Source> {
   return { code: l.code, name: l.name, dict: merged(base.dict, ownDict(l)), words: l.words.length ? l.words : base.words };
 }
 
-function remembered(): { target?: string; shadow?: string } {
+interface Remembered { target?: string; sample?: string; sample2?: string }
+
+function remembered(): Remembered {
   try {
     return JSON.parse(localStorage.getItem(REMEMBER) ?? '{}');
   } catch {
@@ -94,7 +107,7 @@ function remembered(): { target?: string; shadow?: string } {
   }
 }
 
-function remember(v: { target?: string; shadow?: string }): void {
+function remember(v: Remembered): void {
   try {
     localStorage.setItem(REMEMBER, JSON.stringify({ ...remembered(), ...v }));
   } catch {
@@ -102,15 +115,20 @@ function remember(v: { target?: string; shadow?: string }): void {
   }
 }
 
-/** The translator: every text of the game, English above each field and the translation under it. */
+/** The translator: every text of the game, the sample language above each field and the translation under it. */
 export function translateScreen(root: HTMLElement): () => void {
   const screen = h('div', { class: 'screen translate-screen', lang: 'en' });
   root.append(screen);
   let leave: (() => void) | null = null;
   let alive = true;
+  // English for the browser too: its translation (Google Translate) offers to translate the page.
+  const html = document.documentElement;
+  const lang = html.lang;
+  html.lang = 'en';
   void loadTranslator().then(() => { if (alive) leave = translatorPage(screen); });
   return () => {
     alive = false;
+    html.lang = lang;
     leave?.();
   };
 }
@@ -119,10 +137,13 @@ function translatorPage(screen: HTMLElement): () => void {
   let alive = true;
   let owns: OwnLang[] = [];
   let target: OwnLang | null = null;
-  let shadowRef: LangRef = 'sk';
-  /** English, above every field; the shadow language, in the info box of a field. */
-  let base!: Source;
-  let shadow!: Source;
+  let sampleRef: LangRef = 'en';
+  let sample2Ref: LangRef | '' = '';
+  /** English, the language of the page and the guide (names, keyboards). */
+  let english!: Source;
+  /** The sample language above every field; both samples in a field's info pop-up. */
+  let sample!: Source;
+  let sample2: Source | null = null;
   let catalog: Section[] = [];
   let fields: Field[] = [];
   let structure: Dict = {};
@@ -145,9 +166,10 @@ function translatorPage(screen: HTMLElement): () => void {
   document.addEventListener('visibilitychange', onHide);
 
   // ---- top bar ----
-  const shadowSelect = h('select', { class: 'tr-shadow', 'aria-label': tr('shadow') });
-  const targetSelect = h('select', { class: 'tr-target', 'aria-label': tr('target') });
-  const prefillSelect = h('select', { class: 'tr-prefill', 'aria-label': tr('prefill') });
+  const sampleSelect = h('select', { class: 'tr-sample', 'aria-label': tr('sample'), translate: 'no' });
+  const sample2Select = h('select', { class: 'tr-sample2', 'aria-label': tr('sample2'), translate: 'no' });
+  const targetSelect = h('select', { class: 'tr-target', 'aria-label': tr('target'), translate: 'no' });
+  const prefillSelect = h('select', { class: 'tr-prefill', 'aria-label': tr('prefill'), translate: 'no' });
   const ring = roundButton('control', 'check', tr('progress', { n: 0 }), () => jump());
   ring.classList.add('tr-ring');
   const toc = h('nav', { class: 'tr-toc', 'aria-label': tr('toc') });
@@ -166,7 +188,8 @@ function translatorPage(screen: HTMLElement): () => void {
     return b;
   };
   const tools = h('div', { class: 'tr-tools' },
-    h('label', { class: 'tr-pick', tip: tr('shadowHint') }, icon('language'), h('span', { class: 'tr-pick-label' }, tr('shadow')), shadowSelect),
+    h('span', { class: 'tr-pick', tip: tr('sampleHint') }, icon('language'), h('label', { class: 'tr-pick-label' }, tr('sample'), sampleSelect),
+      h('label', { class: 'tr-pick-label' }, tr('sample2'), sample2Select)),
     h('span', { class: 'tr-pick' }, h('label', { class: 'tr-pick-label' }, tr('target'), targetSelect),
       button(tr('new'), () => void newLanguage(), 'btn small', 'plus'), button(tr('edit'), () => void editLanguage(), 'btn small', 'edit')),
     h('span', { class: 'tr-pick' }, h('label', { class: 'tr-pick-label' }, tr('prefill'), prefillSelect), targetButton(tr('prefillGo'), () => void doPrefill())),
@@ -174,6 +197,7 @@ function translatorPage(screen: HTMLElement): () => void {
     targetButton(tr('aboutButton'), () => aboutPanel(), 'info'),
     targetButton(tr('export'), () => exportMenu(), 'download'),
     button(tr('import'), () => pickImport(), 'btn small', 'upload'),
+    button(tr('keys.button'), () => keysList(), 'btn small', 'keyboard'),
     targetButton(tr('send'), () => void send(), 'share'));
   const onlyBox = h('input', { type: 'checkbox', class: 'tr-only' });
   onlyBox.addEventListener('change', () => { onlyOpen = onlyBox.checked; applyFilter(); });
@@ -183,7 +207,8 @@ function translatorPage(screen: HTMLElement): () => void {
   const filter = h('div', { class: 'tr-filter' }, h('label', { class: 'tr-only-label' }, onlyBox, h('span', {}, tr('onlyOpen'))), search);
 
   screen.append(
-    h('header', { class: 'bar' }, button(tr('back'), back, 'btn ghost small', 'back'), h('h1', {}, tr('title'))),
+    h('header', { class: 'bar' }, button(tr('back'), back, 'btn ghost small', 'back'), h('h1', {}, tr('title')),
+      h('span', { class: 'tr-page-tip', tabindex: 0, role: 'note', 'aria-label': tr('pageTip'), tip: tr('pageTip') }, icon('language'))),
     cornerControls(), tools,
     h('div', { class: 'tr-body' }, h('aside', { class: 'tr-side' }, toc), h('div', { class: 'tr-content' }, tocSelect, note, filter, empty, main)));
 
@@ -196,7 +221,8 @@ function translatorPage(screen: HTMLElement): () => void {
     target = owns.find((l) => l.id === was.target) ?? null;
     const known = (ref?: string) => !!ref && (isLang(ref) || owns.some((l) => ownRef(l.id) === ref));
     const asked = language();
-    shadowRef = known(was.shadow) ? (was.shadow as LangRef) : asked !== 'en' && known(asked) ? asked : LANGS.find((l) => l !== 'en') ?? 'en';
+    sampleRef = known(was.sample) ? (was.sample as LangRef) : known(asked) ? asked : 'en';
+    sample2Ref = was.sample2 !== undefined ? (known(was.sample2) ? (was.sample2 as LangRef) : '') : sampleRef !== 'en' ? 'en' : '';
     if (!works) note.textContent = tr('noStore');
     catalog = buildCatalog(await officialDict('en'));
     await paint();
@@ -210,15 +236,18 @@ function translatorPage(screen: HTMLElement): () => void {
   function fillSelects(): void {
     const official = LANGS.map((l) => h('option', { value: l }, LANGUAGES[l]));
     const own = (skip?: string) => owns.filter((l) => l.id !== skip).map((l) => h('option', { value: ownRef(l.id) }, l.name));
-    shadowSelect.replaceChildren(...official, ...own());
-    shadowSelect.value = shadowRef;
+    sampleSelect.replaceChildren(...official, ...own(target?.id));
+    sampleSelect.value = sampleRef;
+    sample2Select.replaceChildren(h('option', { value: '' }, tr('none')), ...LANGS.map((l) => h('option', { value: l }, LANGUAGES[l])), ...own(target?.id));
+    sample2Select.value = sample2Ref;
     targetSelect.replaceChildren(h('option', { value: '' }, tr('none')), ...owns.map((l) => h('option', { value: l.id }, l.name)));
     targetSelect.value = target?.id ?? '';
     prefillSelect.replaceChildren(...LANGS.map((l) => h('option', { value: l }, LANGUAGES[l])), ...own(target?.id));
     if (target) prefillSelect.value = target.correctionOf ?? target.base;
     for (const b of needTarget) b.disabled = !target;
   }
-  shadowSelect.addEventListener('change', () => { shadowRef = shadowSelect.value as LangRef; remember({ shadow: shadowRef }); void paint(); });
+  sampleSelect.addEventListener('change', () => { sampleRef = sampleSelect.value as LangRef; remember({ sample: sampleRef }); void paint(); });
+  sample2Select.addEventListener('change', () => { sample2Ref = sample2Select.value as LangRef | ''; remember({ sample2: sample2Ref }); void paint(); });
   targetSelect.addEventListener('change', () => {
     save();
     target = owns.find((l) => l.id === targetSelect.value) ?? null;
@@ -226,18 +255,24 @@ function translatorPage(screen: HTMLElement): () => void {
     void paint();
   });
 
-  /** Builds the whole sheet for the chosen translation and shadow language. */
+  /** Builds the whole sheet for the chosen translation and sample languages. */
   async function paint(): Promise<void> {
-    const [b, sh, s] = await Promise.all([officialSource('en'), sourceOf(shadowRef), officialDict(target?.base ?? 'en')]);
+    // A translation is never its own sample.
+    const self = target ? ownRef(target.id) : '';
+    if (sampleRef === self) sampleRef = 'en';
+    if (sample2Ref === self) sample2Ref = '';
+    const [en, s1, s2, s] = await Promise.all([officialSource('en'), sourceOf(sampleRef), sample2Ref ? sourceOf(sample2Ref) : null, officialDict(target?.base ?? 'en')]);
     if (!alive) return;
-    base = b;
-    shadow = sh;
+    english = en;
+    sample = s1;
+    sample2 = s2;
     structure = s;
+    hidePop();
     fillSelects();
     setFields(target ? fieldsOf(catalog, target, structure) : []);
     lastField = undefined;
     situationOf = situationFinder(guide);
-    names = itemNames(catalog, base.dict);
+    names = itemNames(catalog, english.dict);
     inputs.clear();
     observer.disconnect();
     pending.clear();
@@ -290,7 +325,7 @@ function translatorPage(screen: HTMLElement): () => void {
   const guideBlock = (key: string, tag: 'h2' | 'h3' | 'p', name = '') => h('div', { class: 'tr-guide' }, h(tag, {}, guideText(guide, key, name) || key));
 
   function groupEl(g: Group, withGuide: boolean): HTMLElement {
-    const name = g.name ? String(lookup(base.dict, g.name) ?? '') : '';
+    const name = g.name ? String(lookup(english.dict, g.name) ?? '') : '';
     const pic = g.name ? thumb(g.name) : null;
     return h('div', { class: 'tr-group', 'data-group': g.id },
       h('div', { class: 'tr-group-head' }, pic, h('div', {}, guideBlock(`groups.${g.guide}.title`, 'h3', name), withGuide ? guideBlock(`groups.${g.guide}.about`, 'p', name) : null)),
@@ -315,20 +350,20 @@ function translatorPage(screen: HTMLElement): () => void {
     const rows: (HTMLElement | null)[] = [];
     if (item.kind === 'words') rows.push(wordsEl());
     else if (item.kind === 'plural') {
-      const forms = lookup(base.dict, item.key) as Record<string, string> | undefined;
-      rows.push(h('div', { class: 'tr-forms' }, h('span', { class: 'tr-forms-label hint' }, tr('baseForms')),
-        ...Object.values(forms ?? {}).map((s) => h('span', { class: 'tr-chip' }, s))));
+      const forms = lookup(sample.dict, item.key) as Record<string, string> | undefined;
+      rows.push(h('div', { class: 'tr-forms' }, h('span', { class: 'tr-forms-label hint' }, tr('sampleForms', { name: sample.name })),
+        ...Object.values(forms ?? {}).map((s) => h('span', { class: 'tr-chip', lang: sample.code, translate: 'no' }, s))));
       for (const f of mine) {
         const n = formExample(target!.code, f.form!);
-        rows.push(h('div', { class: 'tr-var' }, h('span', { class: 'tr-form hint' }, tr('form', { form: f.form!, n: n ?? '' })), fieldEl(f, sourceValue(base, f) || sourceValue(base, { ...f, form: 'other' }))));
+        rows.push(h('div', { class: 'tr-var' }, h('span', { class: 'tr-form hint' }, tr('form', { form: f.form!, n: n ?? '' })), fieldEl(f, textIn(sample, f))));
       }
     } else if (!target) {
-      const v = lookup(base.dict, item.key);
-      rows.push(...(Array.isArray(v) ? v : [String(v ?? '')]).map((s) => h('div', { class: 'tr-var' }, h('span', { class: 'tr-chip' }, s))));
+      const v = lookup(sample.dict, item.key);
+      rows.push(...(Array.isArray(v) ? v : [String(v ?? '')]).map((s) => h('div', { class: 'tr-var' }, h('span', { class: 'tr-chip', lang: sample.code, translate: 'no' }, s))));
     } else {
       for (const f of mine) {
-        const text = sourceValue(base, f);
-        rows.push(h('div', { class: 'tr-var' }, text ? h('span', { class: 'tr-chip' }, text) : null, chipsOf(text), fieldEl(f, text),
+        const text = sourceValue(sample, f);
+        rows.push(h('div', { class: 'tr-var' }, text ? h('span', { class: 'tr-chip', lang: sample.code, translate: 'no' }, text) : null, chipsOf(text), fieldEl(f, text),
           item.kind === 'pool' && mine.length > 1 ? h('button', { class: 'tr-remove', type: 'button', 'aria-label': tr('removeVariant'), tip: tr('removeVariant'), onClick: () => {
             removeVariant(target!, item.key, f.index!, structure);
             refreshItem(box, item);
@@ -340,7 +375,7 @@ function translatorPage(screen: HTMLElement): () => void {
       } }, icon1('plus'), h('span', {}, tr('addVariant'))));
     }
     const pic = item.key.split('.').length === 2 ? thumb(item.key) : null;
-    box.classList.toggle('tr-long', mine.some((f) => sourceValue(base, f).length > LONG_TEXT));
+    box.classList.toggle('tr-long', mine.some((f) => sourceValue(sample, f).length > LONG_TEXT));
     box.replaceChildren(pic ? h('div', { class: 'tr-item-pic' }, pic, head) : head, ...rows.filter((r): r is HTMLElement => !!r),
       h('span', { class: 'tr-done', 'aria-label': tr('done') }, icon1('check')));
   }
@@ -355,31 +390,91 @@ function translatorPage(screen: HTMLElement): () => void {
     if (focusLast) [...box.querySelectorAll<HTMLTextAreaElement>('.tr-field')].at(-1)?.focus();
   }
 
-  /** The placeholders of the base text, as chips. */
+  /** The placeholders of the sample text, as chips. */
   function chipsOf(text: string): HTMLElement | null {
     const ph = placeholders(text);
-    return ph.length ? h('span', { class: 'tr-ph' }, ...ph.map((p) => h('code', {}, p))) : null;
+    return ph.length ? h('span', { class: 'tr-ph', translate: 'no' }, ...ph.map((p) => h('code', {}, p))) : null;
   }
 
-  /** One field: the input, its state, its info button with the box under it, and the placeholder warning. */
-  function fieldEl(f: Field, baseText: string, cls = ''): HTMLElement {
+  /** A field's text in a language; a plural form the language lacks shows its "other". */
+  const textIn = (src: Source, f: Field) => sourceValue(src, f) || (f.kind === 'form' ? sourceValue(src, { ...f, form: 'other' }) : '');
+
+  /** One field: its round buttons above it (info, copy, done, undo, redo, the key in the code), the input and the placeholder warning. */
+  function fieldEl(f: Field, sampleText: string, cls = ''): HTMLElement {
     const value = fieldValue(target!, f);
-    const area = h('textarea', { class: `tr-field ${cls}`, rows: Math.max(1, value.split('\n').length), 'data-field': f.id, 'aria-label': tr('fieldLabel', { text: baseText.length > LABEL_MAX ? `${baseText.slice(0, LABEL_MAX)}…` : baseText }), spellcheck: 'true', lang: target!.code });
+    const area = h('textarea', { class: `tr-field ${cls}`, rows: Math.max(1, value.split('\n').length), 'data-field': f.id, 'aria-label': tr('fieldLabel', { text: sampleText.length > LABEL_MAX ? `${sampleText.slice(0, LABEL_MAX)}…` : sampleText }), spellcheck: 'true', lang: target!.code, translate: 'no' });
     area.value = value;
     inputs.set(f.id, area);
     const warn = h('small', { class: 'tr-warn', role: 'status' });
-    const info = h('button', { class: 'tr-info', type: 'button', 'aria-label': tr('info'), 'aria-expanded': 'false', tip: tr('info'), onClick: () => toggleInfo() }, icon1('info'));
-    const wrap = h('div', { class: 'tr-input' }, area, h('span', { class: 'tr-open-tag' }, tr('untranslated')), info, warn);
-    let box: HTMLElement | null = null;
-    let doneButton: HTMLButtonElement | null = null;
+    const act = (glyph: Parameters<typeof icon>[0], label: string, onClick: () => void, cls2 = '') =>
+      h('button', { class: `tr-act ${cls2}`, type: 'button', tabindex: -1, 'aria-label': label, tip: label, onClick }, icon1(glyph));
+    // The buttons are out of the Tab order (Tab goes from field to field); their keys work in the field.
+    const info = h('button', { class: 'tr-act tr-act-info', type: 'button', tabindex: -1, 'aria-label': keyed(tr('info'), 'info'), 'aria-controls': 'tr-pop' }, icon1('info'));
+    popFields.set(info, f);
+    /** The field takes a sample's text; it still counts as untranslated. */
+    const copyFrom = (src: Source | null) => {
+      const text = src ? textIn(src, f) : '';
+      if (!text) return;
+      area.value = text;
+      write(text);
+      changed(f);
+      record(false);
+      area.focus();
+    };
+    const copy = act('copy', keyed(tr('copy', { name: sample.name }), 'copy'), () => copyFrom(sample), 'tr-copy');
+    copy.disabled = !textIn(sample, f);
+    const toggleDone = () => {
+      mark(!isTouched());
+      record(false);
+    };
+    const done = act('check', '', toggleDone, 'tr-mark');
+    const undo = act('undo', keyed(tr('undo'), 'undo'), () => step(undos, redos), 'tr-undo');
+    const redo = act('redo', keyed(tr('redo'), 'redo'), () => step(redos, undos), 'tr-redo');
+    const codeUrl = f.kind === 'words' ? null : codeSearch(f.key);
+    const code = codeUrl ? h('a', { class: 'tr-act', href: codeUrl, target: '_blank', rel: 'noopener', tabindex: -1, 'aria-label': keyed(tr('findCode'), 'code'), tip: keyed(tr('findCode'), 'code') }, icon1('code')) : null;
+    const wrap = h('div', { class: 'tr-input' },
+      h('div', { class: 'tr-bar' }, h('span', { class: 'tr-open-tag' }, tr('untranslated')), h('span', { class: 'tr-acts' }, info, copy, done, undo, redo, code)),
+      area, warn);
     const isTouched = () => target!.touched.includes(f.id);
+    type Snap = { value: string; done: boolean };
+    const snap = (): Snap => ({ value: area.value, done: isTouched() });
+    const undos: Snap[] = [];
+    const redos: Snap[] = [];
+    let last = snap();
+    let typedAt = 0;
     const state = () => {
-      wrap.classList.toggle('open', !isTouched());
-      doneButton?.replaceChildren(icon1(isTouched() ? 'close' : 'check'), h('span', {}, tr(isTouched() ? 'markOpen' : 'markDone')));
+      const on = isTouched();
+      wrap.classList.toggle('open', !on);
+      done.classList.toggle('on', on);
+      done.setAttribute('aria-pressed', String(on));
+      done.setAttribute('aria-label', keyed(tr(on ? 'markOpen' : 'markDone'), 'mark'));
+      done.dataset.tip = keyed(tr(on ? 'markOpen' : 'markDone'), 'mark');
+      undo.disabled = !undos.length;
+      redo.disabled = !redos.length;
+    };
+    /** After a change the state before it can be undone; typing without a pause is one change. */
+    const record = (typing: boolean) => {
+      if (!typing || Date.now() - typedAt > TYPING_MS) undos.push(last);
+      typedAt = typing ? Date.now() : 0;
+      redos.length = 0;
+      last = snap();
+      state();
+    };
+    /** Undo or redo: back to the state on top of `from`, the present goes to `into`. */
+    const step = (from: Snap[], into: Snap[]) => {
+      const to = from.pop();
+      if (!to) return;
+      into.push(snap());
+      area.value = to.value;
+      write(to.value);
+      mark(to.done);
+      last = snap();
+      typedAt = 0;
+      state();
     };
     const check = () => {
       if (f.kind === 'words' || !area.value) return void (warn.textContent = '');
-      const want = placeholders(baseText);
+      const want = placeholders(sampleText);
       const got = placeholders(area.value);
       warn.textContent = [...want.filter((p) => !got.includes(p)).map((name) => tr('missingPlaceholder', { name })),
         ...got.filter((p) => !want.includes(p)).map((name) => tr('extraPlaceholder', { name }))].join(' ');
@@ -389,53 +484,127 @@ function translatorPage(screen: HTMLElement): () => void {
       setFieldValue(target!, f, f.kind === 'words' ? splitWords(text).join(' ') : text, count);
       check();
     };
-    const mark = (done = true) => {
-      if (done) touch(target!, f.id);
+    const mark = (on = true) => {
+      if (on) touch(target!, f.id);
       else untouch(target!, f.id);
       state();
       changed(f);
     };
-    /** The shadow language's text, a copy of it (still not done), done or not done, and the key in the code. */
-    function toggleInfo(): void {
-      if (box) {
-        box.remove();
-        box = doneButton = null;
-        info.setAttribute('aria-expanded', 'false');
-        return;
-      }
-      const text = sourceValue(shadow, f) || (f.kind === 'form' ? sourceValue(shadow, { ...f, form: 'other' }) : '');
-      doneButton = button('', () => mark(!isTouched()), 'btn small tr-mark');
-      box = h('div', { class: 'tr-info-box' },
-        h('p', { class: 'tr-shadow-text' }, h('strong', {}, `${shadow.name}: `), text ? h('span', { lang: shadow.code }, text) : h('em', {}, tr('shadowEmpty', { name: shadow.name }))),
-        h('div', { class: 'row' },
-          text ? button(tr('copy', { name: shadow.name }), () => {
-            area.value = text;
-            write(text);
-            changed(f);
-            area.focus();
-          }, 'btn small tr-copy', 'copy') : null,
-          doneButton,
-          f.kind === 'words' ? null : h('a', { class: 'btn small ghost', href: codeSearch(f.key), target: '_blank', rel: 'noopener' }, icon1('code'), h('span', {}, tr('findCode')))),
-        h('small', { class: 'hint' }, `${tr('key')}: `, h('code', {}, f.id)));
-      wrap.append(box);
-      info.setAttribute('aria-expanded', 'true');
-      state();
-    }
     area.addEventListener('input', () => {
       write(area.value);
       mark();
+      record(true);
     });
+    // Keys by their place on the keyboard (`code`): Alt with a letter types other letters on some systems.
+    const keys: Record<string, () => void> = {
+      'Ctrl+Enter': () => { mark(); record(false); jump(f.id); },
+      'Alt+ArrowDown': () => move(f.id, 1),
+      'Alt+ArrowUp': () => move(f.id, -1),
+      'Alt+KeyN': () => jump(f.id),
+      'Alt+KeyC': () => copyFrom(sample),
+      'Alt+Shift+KeyC': () => copyFrom(sample2),
+      'Alt+KeyM': toggleDone,
+      'Alt+KeyI': () => info.click(),
+      'Alt+KeyG': () => { if (codeUrl) window.open(codeUrl, '_blank', 'noopener'); },
+      'Ctrl+KeyZ': () => step(undos, redos),
+      'Ctrl+KeyY': () => step(redos, undos),
+      'Ctrl+Shift+KeyZ': () => step(redos, undos),
+    };
     area.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && e.ctrlKey) {
-        e.preventDefault();
-        mark();
-        jump(f.id);
-      }
+      const name = `${e.ctrlKey || e.metaKey ? 'Ctrl+' : ''}${e.altKey ? 'Alt+' : ''}${e.shiftKey ? 'Shift+' : ''}${e.code}`;
+      const run = keys[name.replace('NumpadEnter', 'Enter')];
+      if (!run) return;
+      e.preventDefault();
+      run();
     });
+    // Come by the keyboard, the field shows its samples at once.
+    area.addEventListener('focus', () => { if (byKeys && !pinned) popper.open(info); });
+    area.addEventListener('blur', () => { if (!pinned && popper.shown === info) hidePop(); });
     state();
     check();
     return wrap;
   }
+
+  // ---- the info pop-up: the field's name and its text in the samples ----
+  const pop = h('div', { class: 'tr-pop', id: 'tr-pop', role: 'tooltip', hidden: true });
+  screen.append(pop);
+  const popFields = new WeakMap<Element, Field>();
+  /** A click keeps the pop-up open until the next click, Escape or a scroll. */
+  let pinned = false;
+  const popper = tipMachine<HTMLElement>(showPop, () => {
+    pop.hidden = true;
+    pinned = false;
+  });
+  const hidePop = () => popper.close();
+  function showPop(el: HTMLElement): void {
+    const f = popFields.get(el);
+    if (!f) return;
+    const row = (src: Source) => {
+      const text = textIn(src, f);
+      return h('div', { class: 'tr-pop-lang' }, h('strong', {}, src.name),
+        h('p', { lang: src.code, translate: 'no' }, text || h('em', {}, tr('sampleEmpty'))));
+    };
+    pop.replaceChildren(h('p', { class: 'tr-pop-key' }, `${tr('field')}: `, h('code', { translate: 'no' }, f.id)), row(sample), ...(sample2 ? [row(sample2)] : []));
+    pop.hidden = false;
+    // Above the button (the field under it stays free to type in), its right edges in line; under it when there is no room above.
+    const r = el.getBoundingClientRect();
+    const w = pop.offsetWidth, ph = pop.offsetHeight, gap = 6;
+    pop.style.left = `${Math.max(gap, Math.min(innerWidth - w - gap, r.right - w))}px`;
+    pop.style.top = `${r.top - gap - ph >= gap ? r.top - gap - ph : r.bottom + gap}px`;
+  }
+  const infoOf = (e: Event) => (e.target as Element | null)?.closest?.<HTMLElement>('.tr-act-info') ?? null;
+  main.addEventListener('pointerover', (e) => { const el = infoOf(e); if (el && !pinned) popper.enter(el); });
+  main.addEventListener('pointerout', (e) => { const el = infoOf(e); if (el && !pinned) popper.leave(el); });
+  main.addEventListener('focusin', (e) => { const el = infoOf(e); if (el && !pinned) popper.enter(el); });
+  main.addEventListener('focusout', (e) => { const el = infoOf(e); if (el && !pinned) popper.leave(el); });
+  main.addEventListener('click', (e) => {
+    const el = infoOf(e);
+    if (!el) return;
+    if (pinned && popper.shown === el) return hidePop();
+    popper.open(el);
+    pinned = true;
+  });
+  /** Was the last thing done with the keyboard (a field reached by Tab shows its samples). */
+  let byKeys = false;
+  const onDown = (e: PointerEvent) => {
+    byKeys = false;
+    if (pinned && !pop.contains(e.target as Node) && !infoOf(e)) hidePop();
+  };
+  const onKey = (e: KeyboardEvent) => {
+    byKeys = true;
+    if (e.altKey && !e.ctrlKey && !e.shiftKey && (e.code === 'KeyS' || e.code === 'KeyK')) {
+      e.preventDefault();
+      if (e.code === 'KeyS') search.focus();
+      else keysList();
+      return;
+    }
+    if (e.key !== 'Escape' || pop.hidden) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    hidePop();
+  };
+
+  /** Focuses the next (or previous) field that can be seen from `from`. */
+  function move(from: string, dir: 1 | -1): void {
+    for (let i = fields.findIndex((f) => f.id === from) + dir; i >= 0 && i < fields.length; i += dir) {
+      const section = document.getElementById(`tr-s-${fields[i].section}`);
+      if (section) pending.get(section)?.();
+      const area = inputs.get(fields[i].id);
+      if (area?.offsetParent) {
+        area.scrollIntoView({ block: 'center' });
+        area.focus({ preventScroll: true });
+        return;
+      }
+    }
+  }
+
+  function keysList(): void {
+    modal(h('div', { class: 'tr-dialog tr-keys' }, h('h2', {}, tr('keys.title')),
+      h('dl', {}, ...KEYS.flatMap(([id, keys]) => [h('dt', {}, h('kbd', {}, keys)), h('dd', {}, tr(`keys.${id}`))]))), { cls: 'tr-modal' });
+  }
+  document.addEventListener('pointerdown', onDown);
+  document.addEventListener('keydown', onKey, true);
+  window.addEventListener('scroll', hidePop, { passive: true });
 
   /** A field changed: save soon, the counts and the item's finished look. */
   function changed(f: Field): void {
@@ -456,7 +625,7 @@ function translatorPage(screen: HTMLElement): () => void {
   function wordsEl(): HTMLElement {
     const f = fieldById(WORDS);
     wordsInfo = h('div', { class: 'tr-words-info' });
-    const baseWords = h('details', { class: 'tr-words-base' }, h('summary', {}, tr('words.count', { n: base.words.length })), h('p', {}, base.words.join(' ')));
+    const baseWords = h('details', { class: 'tr-words-base' }, h('summary', {}, tr('words.count', { n: sample.words.length })), h('p', { lang: sample.code, translate: 'no' }, sample.words.join(' ')));
     const box = h('div', { class: 'tr-words' }, h('p', { class: 'hint' }, tr('words.hint')), baseWords, f && target ? fieldEl(f, '', 'tr-words-field') : null, wordsInfo);
     queueMicrotask(paintWords);
     return box;
@@ -500,7 +669,7 @@ function translatorPage(screen: HTMLElement): () => void {
   }
 
   const sectionTitle = (s: Section) => guideText(guide, `sections.${s.id}.title`) || s.id;
-  const layoutName = (id: LayoutId) => String(lookup(base.dict, `layouts.${id}`) ?? id);
+  const layoutName = (id: LayoutId) => String(lookup(english.dict, `layouts.${id}`) ?? id);
 
   function paintToc(): void {
     toc.replaceChildren(h('h2', {}, tr('toc')), h('ol', {}, ...catalog.map((s) => h('li', { 'data-section': s.id },
@@ -663,7 +832,7 @@ function translatorPage(screen: HTMLElement): () => void {
     const pairs = (mode: 'full' | 'open' | 'changes') => async () => {
       close();
       const official = mode === 'changes' && l.correctionOf ? await officialSource(l.correctionOf) : undefined;
-      const ctx = { base: official ?? base, catalog, guide };
+      const ctx = { base: official ?? sample, catalog, guide };
       download(fileName(l, 'txt').replace('.txt', mode === 'full' ? '.txt' : `-${mode}.txt`), exportPairs(l, fields, ctx, mode, official), 'text/plain;charset=utf-8');
     };
     const close = modal(h('div', { class: 'tr-dialog tr-menu' }, h('h2', {}, tr('export')),
@@ -758,6 +927,9 @@ function translatorPage(screen: HTMLElement): () => void {
     alive = false;
     observer.disconnect();
     document.removeEventListener('visibilitychange', onHide);
+    document.removeEventListener('pointerdown', onDown);
+    document.removeEventListener('keydown', onKey, true);
+    window.removeEventListener('scroll', hidePop);
     save();
     // The own language being played reads its new texts.
     const asked = askedLanguage();

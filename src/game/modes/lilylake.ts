@@ -111,7 +111,7 @@ export class LiliesMode extends HeroMode {
   }
 
   private padX(i: number): number {
-    return i < 0 ? this.heroX + 110 : this.L.vw * PADS[i] + this.offset;
+    return i < 0 ? this.heroX + this.heroSize * 0.75 : this.L.vw * PADS[i] + this.offset;
   }
 
   private next(): void {

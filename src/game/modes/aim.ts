@@ -266,9 +266,9 @@ export class AimMode extends HeroMode {
     this.pictures = [...[...things].flatMap((th) => th?.pics ?? []), 'obj-aim-target', 'obj-aim-ring', CHICK, CRACKED, FRIED, BULB_LIT];
   }
 
-  /** The rules; with something in the collection, also how to swap the thing in the paw for one of it. */
+  /** What the range is for; with something in the collection, also how to swap the thing in the paw for one of it. */
   startLine(): string {
-    const rules = t('aim.start', { keys: this.keys.map(keyLabel).join(' ') });
+    const rules = t('aim.start');
     return this.rare().length ? `${rules} ${t('aim.swapHint')}` : rules;
   }
 
@@ -303,7 +303,7 @@ export class AimMode extends HeroMode {
   }
 
   private get hand(): { x: number; y: number } {
-    return { x: this.heroX + 60, y: this.heroY - 120 };
+    return { x: this.heroX + this.heroSize * 0.35, y: this.heroY - this.heroSize * 0.7 };
   }
 
   /** The path from Tapko's paw to the target: a gentle arc. */
@@ -334,7 +334,7 @@ export class AimMode extends HeroMode {
   /** Tapko's line in a small bubble above him. */
   private tapkoSays(text: string): void {
     if (!text) return;
-    this.L.speak('tapko', text, this.heroX + 30, this.heroY - 225, this.heroX + 10, this.heroY - 172, Math.min(CALL_MAX, Math.max(LINE_MIN, text.length * LINE_PER_CHAR)));
+    this.L.speak('tapko', text, this.heroX + 30, this.heroY - this.heroSize - 55, this.heroX + 10, this.heroY - this.heroSize, Math.min(CALL_MAX, Math.max(LINE_MIN, text.length * LINE_PER_CHAR)));
   }
 
   /**

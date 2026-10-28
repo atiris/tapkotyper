@@ -15,8 +15,8 @@ export abstract class HeroMode extends Mode {
   readonly world: string = 'planet';
   protected heroX = 220;
   protected heroY = VH * 0.78;
-  /** Height of his picture; the planet's levels draw him as big as the meadow's Tapko. */
-  protected readonly heroSize: number = 170;
+  /** Height of his picture: as big as the meadow's Tapko in every world. */
+  protected readonly heroSize: number = TAPKO_H;
   protected jump = 0;
   protected mood: Mood = 'idle';
   /** Tapko's soft shadow on the ground. */
@@ -66,7 +66,7 @@ export abstract class HeroMode extends Mode {
   }
 
   heroSpot(): { x: number; y: number } {
-    return { x: this.heroX, y: this.heroY - 210 };
+    return { x: this.heroX, y: this.heroY - this.heroSize * 0.85 - 20 };
   }
 
   protected drawHero(g: G): void {
@@ -183,7 +183,6 @@ interface Jump {
  */
 abstract class SwampHero extends HeroMode {
   readonly ground = '-swamp';
-  protected readonly heroSize = TAPKO_H;
   protected stones: Stone[] = [];
   /** The stone he stands on, or null on the shore. */
   protected stand: Stone | null = null;
@@ -312,10 +311,6 @@ abstract class SwampHero extends HeroMode {
     this.heroX = f.x - this.scroll;
     this.heroY = f.y;
     this.jump = this.jumpTo ? this.jumpTo.k : 0;
-  }
-
-  heroSpot(): { x: number; y: number } {
-    return { x: this.heroX, y: this.heroY - TAPKO_H * 0.85 - 20 };
   }
 
   protected drawStones(g: G): void {

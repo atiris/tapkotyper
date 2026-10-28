@@ -76,7 +76,7 @@ export class FreeTypeMode extends HeroMode {
   }
 
   private cheer(): void {
-    this.L.particles.emit(this.heroX, this.heroY - 90, 5, 'sparkle', SPARKS, 140, 7, 0.6);
+    this.L.particles.emit(this.heroX, this.heroY - this.heroSize * 0.53, 5, 'sparkle', SPARKS, 140, 7, 0.6);
     this.keysToTrick--;
     if (this.L.reduceMotion || this.hopT < this.length() + REST) return this.trick ? undefined : this.happy();
     this.hopT = 0;
@@ -121,7 +121,7 @@ export class FreeTypeMode extends HeroMode {
   protected drawHero(g: G): void {
     const height = this.trick === 'flip' ? 0.6 : this.trick === 'high' ? 0.75 : this.trick === 'wonder' ? 0.15 : 0.35;
     const spin = this.trick === 'flip' ? this.jump : 0;
-    drawTapko(g, app.profile!.companion, this.mood, this.heroX, this.heroY, 170, { t: this.t, jump: this.jump, height, spin });
+    drawTapko(g, app.profile!.companion, this.mood, this.heroX, this.heroY, this.heroSize, { t: this.t, jump: this.jump, height, spin });
   }
 
   render(g: G): void {
@@ -137,7 +137,7 @@ export class FreeTypeMode extends HeroMode {
     const x = Math.max(w / 2 + 10, Math.min(this.L.vw - w / 2 - 10, this.heroX));
     g.save();
     g.globalAlpha = fade;
-    drawWord(g, this.shown.text, [...this.shown.text].length, x, this.heroY - 230 + (1 - pop) * 20, 0, { size, highContrast: this.L.highContrast });
+    drawWord(g, this.shown.text, [...this.shown.text].length, x, this.heroY - this.heroSize - 60 + (1 - pop) * 20, 0, { size, highContrast: this.L.highContrast });
     g.restore();
   }
 

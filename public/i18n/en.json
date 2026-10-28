@@ -495,7 +495,7 @@
     "crystalsDoneFew": "{n} crystals\nare in your pocket!",
     "crystalsDoneMany": "{n} crystals\nare in your pocket!",
     "crossroadsStart": [
-      "The way to the crystals of life is full of **crossroads and shortcuts.** A shortcut is easier to walk, but not everyone manages to pick the short way. **The words** you type **go with you** on the roads, and the roads you choose decide which words you get. Will you pick **easy directions** with hard words, or **hard signposts** with easy, short words? If you change your mind, press **Backspace** (the key with the arrow at the top right, above Enter). Elsewhere it deletes the last letter, but in this game it deletes the whole choice you started, and you can choose again. Go on and decide!"
+      "The way to the crystals of life is full of **crossroads and shortcuts.** A shortcut is easier to walk, but not everyone manages to pick the short way. **The words** you type **go with you** on the roads, and the roads you choose decide which words you get. Will you pick **easy directions** with hard words, or **hard signposts** with easy, short words? If you change your mind, press **Backspace** (the key with the arrow at the top right, above Enter), which usually deletes a letter, but in this game deletes the whole choice you started, and you can choose again. Go on and decide!"
     ],
     "roadEnd": [
       "The end of the road! We are here.",

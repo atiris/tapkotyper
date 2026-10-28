@@ -5,7 +5,7 @@ import { layout } from '../app/app';
 import type { Profile, Surprise } from '../storage/schema';
 import { surpriseCount } from './own-content';
 import type { Style } from './typing';
-import { type KeyboardGuide, fingerChip, lessonFinger } from '../ui/keyboard-guide';
+import { FINGER_COLORS, type KeyboardGuide, fingerChip, lessonFinger, textColorsOn } from '../ui/keyboard-guide';
 import { button, closeButton, h, icon } from '../ui/dom';
 import { tapkoElement } from '../gfx/tapko';
 import { imageUrl } from '../gfx/assets';
@@ -88,7 +88,7 @@ export function pickTip(p: Profile, style: Style = 'copy'): { id: string; text: 
   return { id, text: t(`tips.${id}`, { pinky: homePinky() }) };
 }
 
-const POSTURE_TIPS = ['back', 'feet', 'wrists', 'home', 'eyes'];
+const POSTURE_TIPS = ['back', 'feet', 'wrists', 'eyes'];
 
 /** Seconds without the space bar before the card says where the fingers go. */
 const FINGERS_AFTER_S = 10;
@@ -99,15 +99,19 @@ function homeKeys(lay: Layout): string {
   return `${keys([0, 1, 2, 3])} ${keys([6, 7, 8, 9])}`;
 }
 
-/** The posture picture with one line under it (the given tip, else a random posture reminder), and beside them the level's story when it has one. */
-function postureContent(line?: string, story?: string | null): HTMLElement {
+/**
+ * The posture picture with one line under it (the given tip, else a random posture reminder) and
+ * where the fingers go (`fingers`, shown later), and beside them the level's story when it has one.
+ */
+function postureContent(fingers: HTMLElement, line?: string, story?: string | null): HTMLElement {
   const src = imageUrl('ui-posture');
   const tip = POSTURE_TIPS[Math.floor(Math.random() * POSTURE_TIPS.length)];
   return h('div', { class: 'posture' },
     h('h2', {}, t('posture.title')),
     h('figure', { class: 'posture-pic' },
       src ? h('img', { class: 'posture-img', src, alt: '' }) : h('div', { class: 'posture-img', html: postureSvg() }),
-      h('figcaption', { class: 'posture-tip' }, line ?? t(`posture.${tip}`))),
+      h('figcaption', { class: 'posture-tip' }, line ?? t(`posture.${tip}`)),
+      fingers),
     story ? h('p', { class: 'posture-text' }, story) : null);
 }
 
@@ -128,14 +132,13 @@ export function showPosture(host: HTMLElement, p: Profile, tip?: string, surpris
       resolve();
     };
     const space = h('button', { class: 'space-key', type: 'button', 'aria-label': t('posture.spaceKey'), onClick: close }, t('posture.spaceKey'));
-    const fingers = h('p', { class: 'space-label later' }, t('posture.space', { keys: homeKeys(LAYOUTS[p.layout]) }));
+    const fingers = h('p', { class: 'posture-fingers later' }, t('posture.space', { keys: homeKeys(LAYOUTS[p.layout]) }));
     const card = h('div', { class: 'card posture-card' },
       closeButton(close, t('posture.close')),
-      postureContent(tip, story),
+      postureContent(fingers, tip, story),
       surprise ? surpriseAsk(surprise.q) : null,
       surprise ? surpriseLeft(p, surprise) : null,
       note ? h('p', { class: 'hint style-note' }, note) : null,
-      fingers,
       space);
     const overlay = h('div', { class: 'overlay' }, card);
     const timer = setTimeout(() => fingers.classList.remove('later'), FINGERS_AFTER_S * 1000);
@@ -282,6 +285,78 @@ export function showNewKey(host: HTMLElement, key: string, layout: Layout, guide
 }
 
 /** Simple friendly posture illustration. */
+/** The home row's fingers, left pinky to right pinky. */
+const HOME_FINGERS: Finger[] = [0, 1, 2, 3, 6, 7, 8, 9];
+/** What the child types on the home-row card: F and J by turns. */
+const HOME_TYPE = 'fjfjfj';
+
+/** The home row's keys as small keys in their fingers' colors, a gap between the hands. */
+function homeRow(lay: Layout): HTMLElement {
+  return h('div', { class: 'home-row', 'aria-hidden': 'true' }, ...HOME_FINGERS.map((f) => {
+    const [bg, ink] = textColorsOn(FINGER_COLORS[f]);
+    const key = h('span', { class: `home-key ${f === 3 || f === 6 ? 'bump' : ''}` }, (homeKey(lay, f) ?? '').toUpperCase());
+    key.style.setProperty('--finger', bg);
+    key.style.setProperty('--finger-ink', ink);
+    return key;
+  }));
+}
+
+/**
+ * The home row, taught once right after the new-key cards of F and J: where all eight fingers
+ * rest (the keys of the child's layout, in the fingers' colors), the bumps on F and J, the thumbs
+ * over the space bar; the child confirms it by typing F and J by turns three times. Escape skips
+ * it, as on a new-key card.
+ */
+export function showHomeRow(host: HTMLElement, lay: Layout, guide: KeyboardGuide, p: Profile): Promise<void> {
+  return new Promise((resolve) => {
+    const f = homeKey(lay, 3) ?? 'f', j = homeKey(lay, 6) ?? 'j';
+    const target = HOME_TYPE.replace(/f/g, f).replace(/j/g, j);
+    const marks = h('span', { class: 'newkey-marks', 'aria-hidden': 'true' });
+    const row = homeRow(lay);
+    const card = h('div', { class: 'card newkey-card homerow-card', 'data-sample': target },
+      closeButton(() => done(), t('newKey.skip')),
+      h('div', { class: 'newkey-tapko' }, tapkoElement(p.companion, 'happy', 220)),
+      h('div', { class: 'newkey-how' },
+        h('h2', {}, t('homeRow.title')),
+        row,
+        h('p', {}, t('homeRow.text', { left: homeKeys(lay).split(' ')[0], right: homeKeys(lay).split(' ')[1], f: f.toUpperCase(), j: j.toUpperCase() })),
+        h('p', { class: 'hint newkey-type' }, h('span', {}, t('homeRow.type', { keys: `${f}${j} ${f}${j} ${f}${j}` })), ' ', marks)));
+    const overlay = h('div', { class: 'overlay' }, card);
+    host.append(overlay);
+    let n = 0;
+    guide.show(target[0]);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        e.stopPropagation();
+        return done();
+      }
+      if (e.repeat || [...e.key].length !== 1 || n >= target.length) return;
+      e.preventDefault();
+      // A space between the pairs is fine, it neither counts nor costs.
+      if (e.key === ' ') return;
+      const ok = e.key.normalize('NFC') === target[n];
+      if (marks.children.length >= MARKS_MAX) marks.firstElementChild!.remove();
+      marks.append(h('span', { class: `newkey-mark ${ok ? 'ok' : 'bad'}` }, icon(ok ? 'check' : 'close')));
+      if (!ok) return audio.sfx('wrong');
+      n++;
+      audio.sfx('pop');
+      guide.show(target[n] ?? null);
+      if (n >= target.length) setTimeout(done, 350);
+    };
+    let finished = false;
+    const done = () => {
+      if (finished) return;
+      finished = true;
+      stop();
+      overlay.remove();
+      guide.show(null);
+      resolve();
+    };
+    const stop = captureKeys(overlay, onKey);
+  });
+}
+
 function postureSvg(): string {
   return `<svg viewBox="0 0 220 150" role="img" aria-hidden="true">
   <rect x="120" y="20" width="80" height="55" rx="8" fill="#cfe8ff" stroke="#5a3d2b" stroke-width="3"/>

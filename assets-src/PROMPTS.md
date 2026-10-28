@@ -598,6 +598,14 @@ The ui-icon prompt with "thin dark-brown outline" instead of "bold dark-brown ou
 Generate an image: Cute, soft 2D children's game icon, flat vector style with gentle gradients, soft dark-brown outline (not black), warm pastel palette, bold simple shapes that stay readable when very small. A single icon: a friendly wise turtle teacher with a green shell, round glasses and a small dark graduation cap, smiling, holding a small tablet in its front flipper. Three-quarter front view, centered, the whole figure visible, wide empty margin. No text, no letters, no numbers, no watermark. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no other objects. Square image.
 ```
 
+### ui-teacher.jpg (Ms Turtle the teacher: her tips above the worlds on the map; 2026-10-28)
+**Attach `ui-mentor.jpg`:**
+```
+Generate an image: The same turtle teaching
+
+Draw the turtle from the attached picture as the same character, in exactly the same drawing style, colors, shell pattern, face and outline weight, but in a new pose: she is a kind teacher explaining something. She stands upright on her hind legs, turned three quarters toward the viewer, a friendly smile, eyes open and looking at the viewer. Her right front leg is raised with one finger pointing up, as when a teacher explains a rule; her left front leg holds a short thin wooden pointer stick that points diagonally up and away from her. No book, no speech bubble, no text, no letters, no chalkboard, no desk, no other objects. The whole turtle visible, centered, wide empty margin. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no floor. Square image.
+```
+
 ### ui-start-*.jpg (the start page's sky and meadow, each piece animated on its own)
 `npm run assets` turns `ui-start-meadow*` into one tile that the page repeats across the window
 (its ends are blended into each other); the rest are sprites.

@@ -48,7 +48,7 @@ export const PLURAL_KEYS = new Set([
 ]);
 
 /** Arrays whose order and count matter; every other array is a pool read at random. */
-const LINES = ['start.slogan', 'map.welcome.lines', 'story.scenes.*', 'cert.praise', 'about.*', 'help.*'];
+const LINES = ['start.slogan', 'story.scenes.*', 'cert.praise', 'about.*', 'help.*'];
 
 /** The id of the word list item and of its field. */
 export const WORDS = 'words';
@@ -66,6 +66,7 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
   { id: 'map', groups: [
     g('worlds', 'worlds.*'),
     g('map-welcome', 'map.welcome.*'),
+    g('map-teacher', 'map.teacher.*'),
     g('map-buttons', 'map.hello', 'map.title', 'map.switchProfile', 'map.settings', 'map.warmUp', 'map.continue', 'map.practice', 'map.ownText', 'map.freeType', 'map.wardrobe', 'map.rescue', 'map.friends'),
     g('map-page', 'map.*'),
     g('surprise', 'surprise.*'),
@@ -77,7 +78,7 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
     g('level', 'level.*'),
     g('keyboard', 'keys.*', 'layouts.*', 'fingers.*', 'guide.*'),
     g('posture', 'posture.*'),
-    g('new-key', 'newKey.*'),
+    g('new-key', 'newKey.*', 'homeRow.*'),
     g('practice', 'practice.*', 'practiceKeys.*'),
     g('free-type', 'freeType.*', 'touch.*'),
     g('helpers', 'paw.*', 'wave.*'),
@@ -126,8 +127,8 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
       'parent.companionKind', 'parent.messages', 'parent.messagesHint', 'parent.messagesPlaceholder', 'parent.language', 'parent.layout', 'parent.layoutHint',
       'parent.wordLang', 'parent.wordLangHint'),
     g('parent-practice', 'parent.difficulty', 'parent.wordLen', 'parent.min', 'parent.max', 'parent.autoDifficulty', 'parent.autoDifficultyHint', 'parent.autoWordLen',
-      'parent.autoWordLenHint', 'parent.autoHint', 'parent.noDiacritics', 'parent.noDiacriticsHint', 'parent.noTimePressure', 'parent.noTimePressureHint', 'parent.kidHints',
-      'parent.kidHintsHint', 'parent.wardrobeLimit', 'parent.wardrobeLimitHint', 'parent.wardrobeBalance', 'parent.sessionMinutes', 'parent.breaksLocked', 'parent.breaksLockedHint', 'parent.minutes', 'parent.guide',
+      'parent.autoWordLenHint', 'parent.autoHint', 'parent.noDiacritics', 'parent.noDiacriticsHint', 'parent.noTimePressure', 'parent.noTimePressureHint', 'parent.appTips',
+      'parent.appTipsHint', 'parent.wardrobeLimit', 'parent.wardrobeLimitHint', 'parent.wardrobeBalance', 'parent.sessionMinutes', 'parent.breaksLocked', 'parent.breaksLockedHint', 'parent.minutes', 'parent.guide',
       'parent.guideAuto', 'parent.guideOn', 'parent.guideOff', 'parent.guideLocked'),
     g('parent-look', 'parent.sfx', 'parent.music', 'parent.speakTyped', 'parent.speakTypedHint', 'parent.font', 'parent.largeText', 'parent.reduceMotion',
       'parent.highContrast', 'parent.autoFullscreen', 'parent.autoFullscreenHint', 'parent.keyFont', 'parent.keyFontHint'),

@@ -196,7 +196,7 @@ function settingsTab(p: Profile): HTMLElement {
         s.autoWordLen, (v) => { s.autoWordLen = v; save(); }, t('parent.autoWordLen'), t('parent.autoWordLenHint')), undefined, 'div'),
       switchField(t('parent.noDiacritics'), check(s.noDiacritics, (v) => { s.noDiacritics = v; save(); }), t('parent.noDiacriticsHint')),
       switchField(t('parent.noTimePressure'), check(s.noTimePressure, (v) => { s.noTimePressure = v; save(); }), t('parent.noTimePressureHint')),
-      switchField(t('parent.kidHints'), check(s.kidHints, (v) => { s.kidHints = v; save(); }), t('parent.kidHintsHint')),
+      switchField(t('parent.appTips'), check(s.appTips, (v) => { s.appTips = v; save(); }), t('parent.appTipsHint')),
       switchField(t('parent.wardrobeLimit'), check(s.wardrobeLimit, (v) => { s.wardrobeLimit = v; save(); }), t('parent.wardrobeLimitHint')),
       h('p', { class: 'hint' }, t('parent.wardrobeBalance', { m: Math.floor(p.progress.wardrobeSeconds / 60), s: Math.floor(p.progress.wardrobeSeconds % 60) })),
       field(t('parent.sessionMinutes'), range(s.sessionMinutes, 5, 30, 5, (v) => { s.sessionMinutes = v; save(); }, (v) => t('parent.minutes', { n: v }))),

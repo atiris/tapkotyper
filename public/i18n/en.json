@@ -120,11 +120,6 @@
     },
     "welcome": {
       "title": "Hello {name}! This is your character in this adventure.",
-      "home": "Home keys: put your index fingers on F and J, you can feel little bumps on them. The other fingers rest next to them in one row, thumbs over the space bar. After each letter the finger goes back to its home key.",
-      "lines": [
-        "Press “Continue”, you will learn the keys step by step, one by one.",
-        "When you are not sure what to do, click “?”."
-      ],
       "start": "Start",
       "close": "Close (Esc)"
     },
@@ -161,7 +156,26 @@
     "keysMany": "You need {n} more letters for this level. You get new letters by playing or in Own typing.",
     "heldKeys": "To open the next level, type these more accurately: {keys}. Train them at the Target range.",
     "keysLocked": "needs more letters",
-    "storyFairy": "Melody the Fairy"
+    "storyFairy": "Melody the Fairy",
+    "teacher": {
+      "name": "Ms Turtle the teacher",
+      "ok": "OK",
+      "tips": {
+        "hello": "Hello, I am Ms Turtle the teacher. This game is called Tapko, and it teaches you to type with all ten fingers. Now and then I will tell you here what Tapko can do.",
+        "help": "When you are not sure what to do, click the question mark at the top right or press F1. Help shows what each button does.",
+        "helpButton": "Open help",
+        "keyboard": "You can use all of Tapko without a mouse: Tab and the arrows move between buttons, Enter confirms, Esc closes a window, and in a level F2 hides the keyboard on the screen.",
+        "keyboardButton": "More about keys",
+        "progress": "Click Tapko or My progress. You will see which keys you know, your badges and how you are getting better.",
+        "progressButton": "My progress",
+        "task": "You have a task from your teacher! You will find it on the map. When you finish it, Tapko gives you a link with the result: send it back to your teacher.",
+        "taskButton": "How tasks work",
+        "share": "You can show your results to your teacher or parents: in My progress you send them as a link or a QR code.",
+        "shareButton": "How to do it",
+        "range": "Every world you finish opens the Target range and the Parrot on the map. At the range you practise the letters that are not easy yet.",
+        "rangeButton": "More about the games"
+      }
+    }
   },
   "level": {
     "ownText": "My text",
@@ -223,7 +237,6 @@
     "back": "Sit up straight, your back against the chair.",
     "feet": "Both feet flat on the floor.",
     "wrists": "Wrists relaxed and floating, not resting on the desk.",
-    "home": "Index fingers on the bumps of F and J, the other fingers next to them.",
     "eyes": "Eyes on the screen, not on the keyboard.",
     "space": "Put your fingers on the home keys {keys} and press the space bar.",
     "spaceKey": "space bar",
@@ -238,6 +251,11 @@
     "shiftL": "Hold the left Shift with your left little finger and type the capital with your right hand. Type a capital {sample} three times.",
     "shiftR": "Hold the right Shift with your right little finger and type the capital with your left hand. Type a capital {sample} three times.",
     "space": "The other fingers stay at home. Press it three times."
+  },
+  "homeRow": {
+    "title": "The home row",
+    "text": "This is the home row. Your left hand rests on {left}, your right hand on {right}, your thumbs over the space bar. You can feel little bumps on {f} and {j}: that is where your index fingers go. From here your fingers reach every key and always come back.",
+    "type": "Put your fingers on the home row and type {keys}."
   },
   "practice": {
     "parts": "Parts: {n} of {total}",
@@ -621,7 +639,6 @@
       "intro": [
         "Hello {name}! This is your character in this adventure.",
         "You will learn to type with all ten fingers.",
-        "Put your index fingers on the little bumps of F and J. That's home.",
         "Start on the Training Meadow!"
       ],
       "world1": [
@@ -1081,8 +1098,8 @@
     "noDiacriticsHint": "For beginners, for a while. Accents are part of correct writing.",
     "noTimePressure": "No time pressure",
     "noTimePressureHint": "Moving things stop and wait for the student.",
-    "kidHints": "Instructions for young students",
-    "kidHintsHint": "Shows a few extra instructions. Good for students up to about 10 years old.",
+    "appTips": "Introduce the app's features",
+    "appTipsHint": "Ms Turtle the teacher now and then tells on the map what Tapko can do and where to find it.",
     "wardrobeLimit": "Wardrobe time earned by practice",
     "wardrobeLimitHint": "1 minute in the wardrobe for 5 minutes of practice, at most 7 minutes.",
     "wardrobeBalance": "Wardrobe time now: {m} min {s} s",

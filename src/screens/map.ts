@@ -28,6 +28,7 @@ import { levelTitleWords } from '../ui/hud';
 import { startFreeType } from './free-type';
 import { openBreak } from './break';
 import { openPracticeKeys } from './practice-keys';
+import { type TeacherTip, dueTip, tipSeen } from '../app/teacher-tips';
 import { openStats } from './stats';
 import { taskCard } from './task';
 
@@ -77,10 +78,48 @@ function welcomeCard(p: Profile, start: () => void): HTMLElement | null {
     h('div', { class: 'welcome-tapko' }, tapkoElement(p.companion, 'happy', 110)),
     h('div', { class: 'welcome-text' },
       h('h2', { id: 'welcome-title' }, t('map.welcome.title', { name: nickname(p) })),
-      h('p', {}, t('map.welcome.home')),
-      p.settings.kidHints ? h('ul', {}, ...tList('map.welcome.lines').map((l) => h('li', {}, l))) : null,
       button(t('map.welcome.start'), () => { done(); start(); }, 'btn primary', 'play')));
   return card;
+}
+
+/**
+ * The teacher turtle's tip above the worlds, when one is due: one thing about the app, read with
+ * OK, the X or Escape, or with its second button, which leads to where it is told more. Any of
+ * them marks it read.
+ */
+function teacherPanel(p: Profile): HTMLElement | null {
+  if (p.id === GUEST_ID || p.id === SUPER_ID) return null;
+  const tip: TeacherTip | null = dueTip(p);
+  if (!tip) return null;
+  const done = () => {
+    window.removeEventListener('keydown', onKey, true);
+    tipSeen(p, tip.id);
+    saveProfile();
+    panel.remove();
+  };
+  const onKey = (e: KeyboardEvent) => {
+    if (!panel.isConnected) return window.removeEventListener('keydown', onKey, true);
+    if (e.key !== 'Escape' || document.querySelector('.modal-back') || tipShown()) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    done();
+  };
+  window.addEventListener('keydown', onKey, true);
+  const link = tip.link;
+  const follow = link && button(t(`map.teacher.tips.${tip.id}Button`), () => {
+    done();
+    if ('help' in link) go('help', { tab: link.help });
+    else go(link.screen);
+  }, 'btn', 'help');
+  const src = imageUrl('ui-teacher') ?? imageUrl('ui-mentor');
+  const panel = h('section', { class: 'panel teacher-tip', 'aria-labelledby': 'teacher-name' },
+    closeButton(done, t('map.welcome.close')),
+    src ? h('img', { class: 'teacher-img', src, alt: '' }) : null,
+    h('div', { class: 'teacher-text' },
+      h('h2', { id: 'teacher-name' }, t('map.teacher.name')),
+      h('p', {}, t(`map.teacher.tips.${tip.id}`)),
+      h('div', { class: 'row' }, button(t('map.teacher.ok'), done, 'btn primary', 'check'), follow || null)));
+  return panel;
 }
 
 /** Milliseconds Aro waits after Tapko's line about flown parrots before he says goodbye. */
@@ -135,6 +174,8 @@ export function mapScreen(root: HTMLElement): () => void {
   const start = () => (next ? playLevel(next.id) : openPracticeKeys());
   const play = button(t('map.continue'), start, 'btn primary big', 'play');
   const welcome = welcomeCard(p, start);
+  // One greeting at a time: the teacher's tip waits for a map without the welcome.
+  const teacher = welcome ? null : teacherPanel(p);
   const nextName = next ? levelTitleWords(next.world, next.index) : t('map.practice');
   play.dataset.tip = nextName;
   play.setAttribute('aria-label', `${t('map.continue')}: ${nextName}`);
@@ -158,7 +199,7 @@ export function mapScreen(root: HTMLElement): () => void {
         button(t('progress.title'), () => go('progress'), 'btn', 'chart'),
         rescue ? button(t('map.rescue'), () => go('level', { id: 'rescue' }), 'btn', 'rescue') : null,
         rescue ? button(t('map.friends'), () => go('friends'), 'btn', 'dragon') : null),
-      h('div', { class: 'story-rows' }, welcome, ...STORIES.map((s) => storyRow(p, s, next?.id, held, keysBubble, lockBubble))))));
+      h('div', { class: 'story-rows' }, welcome, teacher, ...STORIES.map((s) => storyRow(p, s, next?.id, held, keysBubble, lockBubble))))));
   // The arrows walk the levels and the closed worlds like a grid.
   arrowFocus(root.querySelector('.story-rows')!, '.level-node, .island-art[tabindex]');
   // Enter starts at once: the welcome's start (it marks the welcome seen), else Continue.
@@ -172,7 +213,7 @@ export function mapScreen(root: HTMLElement): () => void {
   if (aroLeaves) aro?.flyOff(tList('parrot.goodbye'), false, flown.length ? ARO_AFTER_MS : 0);
   if (aroArrives) aro?.arrive(tList('parrot.arrive'));
   // One greeting at a time: the install offer waits for a map without the welcome.
-  if (p.id !== SUPER_ID && !welcome) offerInstall(p.companion);
+  if (p.id !== SUPER_ID && !welcome && !teacher) offerInstall(p.companion);
   // The first word of the parrot's hint typed on the map calls a parrot over the page, the range's sends one of its things across.
   const offParrot = onTypedWord([firstWord(t('map.parrotTip'))], parrotVisit);
   const offRange = onTypedWord([firstWord(t('map.aimTip'))], rangeVisit);

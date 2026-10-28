@@ -129,6 +129,7 @@ export function newProfile(name: string, language: LangRef, layout?: LayoutId, k
       parrotCheckedAt: null,
       parrotFlown: [],
       parrotPerched: false,
+      appTips: { seen: [], lastAt: 0 },
     },
     stats: { keys: {}, sessions: [] },
     createdAt: Date.now(),

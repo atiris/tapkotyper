@@ -17,11 +17,20 @@
   right under the title the level's story in a larger paragraph (what happens and what to
   type, with what the level asks in particular, such as the main gate's whole code without a
   mistake), no instructions in it; the story is not said again in a bubble when play starts.
-  At the bottom the space bar, a drawn key. The line above it ("Put your fingers on the home
-  keys ASDF JKLÔ and press the space bar", with the keys of the child's layout) shows only when
-  the space bar has not been pressed for 10 seconds, so a child who reads the story is not
-  told twice. The space bar, Esc, a tap on the drawing or the round X (its tip says so) closes
+  At the bottom the space bar, a drawn key. Under the picture, below its line, "Put your
+  fingers on the home keys ASDF JKLÔ and press the space bar" (the keys of the child's layout)
+  shows only when the space bar has not been pressed for 10 seconds, so a child who reads the
+  story is not told twice; it keeps its room meanwhile, so nothing jumps. The space bar, Esc, a tap on the drawing or the round X (its tip says so) closes
   it and starts: the card is only a reminder, so every way out of it is the start.
+- **The home row** is taught once, right after the new-key cards of F and J, before they are
+  used in play: a card shows the home row of the child's layout (ASDF JKLÔ) as keys in their
+  fingers' colors with the bumps on F and J, says that the left hand rests on the left four,
+  the right on the right four and the thumbs over the space bar, and that the fingers go out
+  from there and come back; the child confirms it by typing F and J by turns three times, a
+  mark per key as on a new-key card (a space between them is fine). Esc skips it like a
+  new-key card; no setting turns it off. Nowhere else does the game tell where the fingers go
+  (not in the story scenes, the map's welcome or the posture reminders), except the line
+  under the picture of the get-ready card.
 - A new key is introduced on its own card, compact enough to keep the keyboard in sight: the
   character large in a column of its own on the left, the key and "Nový kláves" in one heading
   line on the right, the finger's name highlighted in that finger's color. The finger line says
@@ -48,6 +57,9 @@
   ([research](../../.research/features/on-screen-keyboard-finger-guide.md)).
 - Enter comes rarely and is no lesson key, so the guide alone shows its finger; a new-key
   card for it would stop play for a key that does not open anything.
+- Where the fingers go was told in the intro scene, the welcome, the posture tips and the
+  card at once, and long before the keys were met; taught once with the first keys and
+  confirmed by typing, it is learned instead of read past.
 - Several cards and the same story in a bubble right after the card were too many pop-ups
   before play; one card says it all, and the finger line comes only to a child who waits.
 - Good habits (posture, hand position) are easier to build at the start than to fix

@@ -63,8 +63,22 @@
 - Explains the wardrobe's countdown (a smile, then a number that drops every 10 seconds, blinking at the end, a lock when the time is up, time earned by practice) next to the map's buttons.
 - Explains the paw (what it shows, when to press Enter; no other key calls it, Backspace neither), the ring with the level's number beside the pause button (filled up to this level, full at the big challenge), the rescue mission and the badge, each in one short sentence.
 
+- **Ms Turtle's tips**: with "Introduce the app's features" on (the default), a panel above the
+  worlds on the map now and then shows one thing about the app, from Ms Turtle the teacher (her
+  own picture: the mentors' turtle with a raised finger and a pointer, no speech bubble): what
+  Tapko is, where help is, that the whole app works by keyboard, My progress, a task from the
+  teacher and sending its result back, sharing results, the target range and the parrot. Each
+  tip comes once and only when it fits (the task tip only with a task, sharing after a few
+  levels); the first four at most one an hour, the rest one every day and a half; none with the
+  welcome card or the install offer, never in a level. OK, the round X or Esc read it; a tip may
+  have a second button that leads to where it is told more (a help tab, My progress), which
+  reads it too.
+
 ## Why
 - Children do not guess what symbols mean, and the parent is not always next to them.
+- Much of the app is out of sight (My progress behind Tapko, sharing, tasks and their result
+  links, the keyboard shortcuts); one short tip at a time, when it fits and rarely, shows it
+  without a manual and without nagging.
 - One place to look: the child, the parent and the teacher find every explanation behind the
   same "?", instead of a help page and a separate about page.
 - Parents rarely read settings hints one by one; a page that explains them all lets them set the

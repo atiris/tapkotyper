@@ -59,8 +59,8 @@ export interface Settings {
   autoWordLen: boolean;
   noDiacritics: boolean;
   noTimePressure: boolean;
-  /** A few extra how-to lines for small children (the welcome card's instructions). */
-  kidHints: boolean;
+  /** The teacher turtle now and then tells one thing about the app on the map. */
+  appTips: boolean;
   sessionMinutes: number;
   /** The parent's choice: the child cannot skip the stretch break (the big one added to it may still end early). */
   breaksLocked: boolean;
@@ -149,6 +149,8 @@ export interface Progress {
   parrotFlown: number[];
   /** Aro (the Parrot badge) sits on the map's perch: he landed there and has not flown off since. */
   parrotPerched: boolean;
+  /** The teacher turtle's tips read (ids) and when the last one was read (ms, 0 before any). */
+  appTips: { seen: string[]; lastAt: number };
 }
 
 /** When a surprise tells its answer. */
@@ -269,7 +271,7 @@ export function defaultSettings(wordLang: LangRef): Settings {
     autoWordLen: true,
     noDiacritics: false,
     noTimePressure: false,
-    kidHints: false,
+    appTips: true,
     sessionMinutes: 15,
     breaksLocked: false,
     guide: 'auto',

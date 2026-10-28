@@ -15,7 +15,7 @@ import { locale, t, tList } from '../i18n/i18n';
 import { nickname } from '../storage/store';
 import { type InputHandlers, KeyInput, type TypedChar } from '../input/input';
 import { setShortcuts, withKey } from '../input/shortcuts';
-import { ENTER, LAYOUTS, LayoutMismatchDetector, enterAfter, fingerFor, stepsFor } from '../keyboard/layouts';
+import { ENTER, LAYOUTS, LayoutMismatchDetector, enterAfter, fingerFor, homeKey, stepsFor } from '../keyboard/layouts';
 import { SHIFT_L, SHIFT_R, SPACE, activeKeys, aimKeys, isKeyReady, isLetterKey, keysToIntroduce, masteryLevel, newestGroup, recentAccuracy, shiftKeyOf } from '../learning/lessons';
 import { keyWeights, recordPress, recordSession } from '../learning/stats';
 import { FINGER_KEYS, KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
@@ -37,7 +37,7 @@ import { PressureValve, perChar, sayTime } from './pace';
 import { Rhythm } from './rhythm';
 import { type LevelResult, completeLevel, completeStay } from './progress';
 import { type Style, type Target, TypingCore } from './typing';
-import { pickTip, showCard, showNewKey, showPosture } from './cards';
+import { pickTip, showCard, showHomeRow, showNewKey, showPosture } from './cards';
 import { surpriseFor } from './own-content';
 import { HELP_PLANS, type HelpHost, type HelpPlan, SuperHelper } from './super-help';
 
@@ -442,11 +442,15 @@ export class LevelRuntime {
       tip = pickTip(p, this.style)?.text;
       saveProfile();
     }
+    const lay = layout();
+    const homeKeys = [homeKey(lay, 3), homeKey(lay, 6)];
     for (const key of this.opts.keys ? [] : keysToIntroduce(p)) {
       if (this.disposed) return;
-      await showNewKey(host, key, layout(), this.guide, p);
+      await showNewKey(host, key, lay, this.guide, p);
       p.progress.introducedKeys.push(key);
       saveProfile();
+      // Once F and J are both known, the home row is taught, before they are used in play.
+      if (homeKeys.includes(key) && homeKeys.every((k) => k && p.progress.introducedKeys.includes(k))) await showHomeRow(host, lay, this.guide, p);
     }
     if (this.disposed) return;
     // Without a voice of the language a dictation runs as copy typing (a mixed run as memory), and the card says so.

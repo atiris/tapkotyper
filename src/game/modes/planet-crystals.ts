@@ -12,8 +12,8 @@ import { lifeCrystalFallback } from './planet';
 const CRYSTALS = ['obj-crystal-amber', 'obj-crystal-rose', 'obj-crystal-aqua'];
 const CRYSTAL_COLOR: Record<string, string> = { 'obj-crystal-amber': '#f2b65a', 'obj-crystal-rose': '#f3b3be', 'obj-crystal-aqua': '#9ed8e2' };
 const MOUNDS = ['obj-mound-1', 'obj-mound-2'];
-/** A big crystal is about 30 % of Tapko's height; a mound's height. */
-const CRYSTAL_H = 80;
+/** A big crystal shows about 30 % of Tapko's height above its mound; a mound's height. */
+const CRYSTAL_H = 88;
 const MOUND_H = 58;
 /** Seconds a crystal grows, flies into the pocket, lies cracked before it is gone, and a mound rests after. */
 const GROW = 1.4;
@@ -122,7 +122,7 @@ export class CrystalsMode extends Mode {
     const n = Math.max(3, Math.min(5, Math.floor((right - left) / 190) + 1));
     for (let i = 0; i < n; i++) {
       const x = left + ((right - left) * i) / (n - 1) + r.range(-18, 18);
-      this.mounds.push({ x, y: VH * r.range(0.9, 0.96), pic: r.pick(MOUNDS), flip: r.chance(0.5), crystal: null, rest: r.range(0, 1.5) });
+      this.mounds.push({ x, y: VH * r.range(0.95, 0.99), pic: r.pick(MOUNDS), flip: r.chance(0.5), crystal: null, rest: r.range(0, 1.5) });
     }
   }
 
@@ -216,6 +216,18 @@ export class CrystalsMode extends Mode {
     }
     const cracked = c.state === 'cracked';
     const alpha = cracked ? Math.max(0, 1 - Math.max(0, c.t - 0.4) / (CRACKED - 0.4)) : 1;
+    // A soft glow of its own color sets a game crystal apart from the ones painted in the background.
+    if (!cracked) {
+      const h = this.size(c), cy = this.foot(m) + 10 - h * 0.5, r = h * 1.1;
+      g.save();
+      const glow = g.createRadialGradient(m.x, cy, 2, m.x, cy, r);
+      glow.addColorStop(0, 'rgba(255,255,240,0.9)');
+      glow.addColorStop(0.35, `${CRYSTAL_COLOR[c.pic]}cc`);
+      glow.addColorStop(1, `${CRYSTAL_COLOR[c.pic]}00`);
+      g.fillStyle = glow;
+      g.fillRect(m.x - r, cy - r, r * 2, r * 2);
+      g.restore();
+    }
     const sh = cracked && c.t < 0.3 ? Math.sin(c.t * 70) * 3 : 0;
     drawSprite(g, cracked ? `${c.pic}-cracked` : c.pic, m.x + sh, this.foot(m) + 10, this.size(c), { ay: 1, rot: c.rot, flip: c.flip, alpha }, fall);
   }
@@ -351,6 +363,7 @@ export class SpellMode extends Mode {
     this.current = null;
     this.fizzle = FIZZLE;
     this.L.sfx('whoosh');
+    this.L.hideBubble();
     this.L.say(pickLine('story.spellBroken'), 2.5);
     const p = this.panel();
     this.L.particles.emit((p.x0 + p.x1) / 2, p.y, 24, 'puff', ['#d8d0e8', '#bfb6d6', '#efeaf7'], 200, 12, 1);
@@ -377,7 +390,7 @@ export class SpellMode extends Mode {
 
   /** The spell panel between Tapko and the crystals. */
   private panel(): { x0: number; x1: number; y: number } {
-    return { x0: TAPKO_X + 150, x1: this.L.vw - 290, y: VH * 0.36 };
+    return { x0: TAPKO_X + 150, x1: this.L.vw - 290, y: VH * 0.46 };
   }
 
   /** The spell's words in lines that fit the panel: each word's center and line. */

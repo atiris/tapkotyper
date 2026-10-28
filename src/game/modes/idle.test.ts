@@ -234,6 +234,11 @@ describe('crossroads', () => {
     mode.onWrong(last);
     expect(signs()).toHaveLength(1);
     expect(last.typed).toBe(0);
+    const slot = signs()[0].slot;
+    typeWord(L, mode);
+    run(L, mode, 2);
+    expect((mode as any).slot).toBe(slot);
+    expect((mode as any).heroX).toBeCloseTo((mode as any).slotX(slot));
   });
 
   it('a path changes the rest of the level', async () => {

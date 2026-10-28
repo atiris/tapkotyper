@@ -95,6 +95,10 @@ Notes from real Gemini runs; add new ones here.
   NO perspective, NO fanning" fixed only one strip of the three (robohome near, 2026-10-26: the
   bottom strip, squashed to 150 px and quilted with itself as the donor).
 - A sun with rays got uneven rays; for a calm sun ask for "a smooth perfect circle, no rays".
+- A detailed near and mid layer (grass with crystals, mushrooms, bulbs and ferns) swallowed the game's
+  own crystals, signposts and words on the planet's meadow (2026-10-28). Where objects with words
+  stand on a layer, ask for "LOW detail, calm and simple", "mostly plain grass, lots of calm empty
+  green" and name what must not be in it (the things the game draws).
 - Pieces the page animates on their own (sun, clouds, moon, stars) are one picture each. A
   picture with pieces that do not touch can be cut apart locally (the moon and its stars).
 - A short sprite prompt ("a butterfly with pink wings and round spots") gives a plain, simple
@@ -434,9 +438,11 @@ flat storybook style and no longer apply.
 | `bg-space-far.jpg` | deep friendly space in dark blue and violet with soft glowing stars, a pastel nebula and the curve of a blue-green Earth at the bottom left | full | |
 | `bg-space-mid.jpg` | **use the far prompt instead**, SCENE: "only scattered soft glowing stars and tiny distant pastel planets on a flat pure magenta (#FF00FF) background" | full | not a strip |
 | `bg-space-near.jpg` | **use the far prompt instead**, SCENE: "only a few small soft star sparkles and tiny space dust on a flat pure magenta (#FF00FF) background" | full | not a strip |
-| `bg-planet-far.jpg` | a magical alien planet with a pastel mint sky with soft glowing clouds, purple and turquoise mushroom-shaped trees far away | full | done 2026-10-23 |
-| `bg-planet-mid.jpg` | a magical forest edge with round turquoise and lilac trees and glowing flowers | 50 % | |
-| `bg-planet-near.jpg` | a swamp band with an uneven top (tufts, humps, puddles) and on it turquoise reeds, a lily pad on a curly stem, a purple mushroom tree, a mossy hump with glowing flowers, a curly fern, lilac bulb plants, a glowing cattail and a small crystal | 30 % | done 2026-10-23 |
+| `bg-planet-far.jpg` | (redone 2026-10-28) the dragons' planet, almost like the Earth in natural greens, blues and earthy browns (not mint, purple or turquoise): rolling green hills, a blue river, a small waterfall, dark green forests, a few giant mushroom trees with red-brown, ochre or cream caps, groups of big pale crystals (amber, rose quartz, aquamarine) in the hillsides, a light blue sky with a few small jagged sawtooth clouds tinted soft orange | full | done 2026-10-28 (seam by Gemini) |
+| `bg-planet-swamp-mid.jpg` | (levels 1 and 5) swamp pools between mossy grassy humps, reeds and cattails, a willow with hanging moss, small mushroom trees on the humps, a fallen mossy log, pale amber and rose crystals in shallow water, bulb plants with glowing yellow buds | 45 % | done 2026-10-28 (sheet of two, quilted, lifted 136 px) |
+| `bg-planet-swamp-near.jpg` | mostly calm dark green-brown swamp water (#4E6B4A) with ripples and lily pads, low and almost flat, with a few small clumps far apart: reeds, a cattail, a mossy hump, small orange mushrooms, a little amber crystal, a glowing bulb flower | 30 % | done 2026-10-28 (sheet of three, quilted) |
+| `bg-planet-mid.jpg` | (levels 2-4 and the side activities) wide soft rolling grassy humps in light green (#9CCF7A, #86BF66) with only a few things far apart: two or three round trees, one or two giant mushroom trees with a red-brown cap, a low bush; LOW detail, no crystals, no flowers | 40 % | done 2026-10-28 (sheet of two, quilted, lifted 72 px; the first, detailed version swallowed the game's crystals and signs) |
+| `bg-planet-near.jpg` | a soft low band of short green grass (#7DBF5A) with a gently wavy top and only here and there a tiny tuft, a few small wildflowers or one small stone; LOW detail, no crystals, no mushrooms | 16 % | done 2026-10-28 (sheet of three, about 150 px each, quilted) |
 | `bg-dragons-far.jpg` | a peaceful dragon valley at sunset, warm orange and pink colours in the sky, the sun hidden behind the mountains, soft rounded mountains and a waterfall | full | done 2026-10-23 |
 | `bg-dragons-mid.jpg` | rounded rocky hills with cozy cave entrances and soft moss | 45 % | |
 | `bg-dragons-near.jpg` | grass with orange tips, round pebbles, a big fern, a broken eggshell with orange spots, a mossy log, a small glowing crystal, a dry reed and a curled leaf plant | 25 % | done 2026-10-23 |
@@ -486,11 +492,23 @@ BG is `magenta color (#FF00FF)` unless the table says `green`, then use `green c
 | `obj-planet-2.jpg` | a small round pastel blue planet with soft stripes, front view | magenta |
 | `obj-planet-3.jpg` | a small round pastel purple planet with spots, front view | green |
 | **New planet** | | |
-| `obj-stone.jpg` | a flat round mossy stepping stone seen slightly from above | magenta |
-| `obj-sign.jpg` | a wooden road sign on a post with an empty rectangular board (no text), front view | magenta |
 | `obj-boulder-1.jpg` | a huge round boulder, whole, calm sleepy face | magenta |
 | `obj-boulder-2.jpg` | the same huge round boulder with a few cracks, surprised face | magenta |
-| `obj-boulder-3.jpg` | the same boulder split into several flat stepping stones, with a happy face on the middle one | magenta |
+| `obj-swamp-stone.jpg` | (2026-10-28) one wide flat round stepping stone sticking a little out of calm swamp water, seen from the side and slightly from above: smooth grey-brown stone (#8F857A, lighter #B5ADA2 top) with two soft moss patches (#7DA85A) on its flat top, a thin oval ring of dark green water (#4E6B4A) with two small ripples; about three times wider than tall, no face | magenta |
+| `obj-swamp-stone-cracked.jpg` | **attach `obj-swamp-stone.jpg`**: "redraw the attached stepping stone ... in exactly the same style, size, position and shape ... Only change: three or four clear dark-brown zigzag cracks run across its top and down its side, splitting it into big pieces that still hold together, a few tiny chips in the water" | magenta |
+| `obj-swamp-stone-broken.jpg` | **attach `obj-swamp-stone.jpg`**: as above, "the stone has crumbled: five or six separate chunks, tilted and half sunk into the water ring, splash ripples; lower than the whole stone, nothing to stand on" | magenta |
+| `obj-planet-bank.jpg` | (2026-10-28) the edge of a grassy bank seen from the side: a low wide piece of land with a flat top of short green grass (#7DBF5A), a few small wildflowers, a small red-brown mushroom and a little amber crystal; its left side slopes into a thin band of dark green swamp water with reeds; right side and bottom cut straight; about three times wider than tall, no face. Its grass line is at a quarter of its height from 40 % of its width on | magenta |
+| `obj-crystal-amber.jpg` | (2026-10-28, tall portrait) one big six-sided crystal standing upright with two smaller points low at its sides, translucent amber (#F2B65A, facets #FFD98A, edges #C98A2E), one soft white highlight; the base cut straight, no rock or ground; no face, no glow (the game draws its glow) | magenta |
+| `obj-crystal-rose.jpg` | (2026-10-28, tall portrait) two tall six-sided points of different height from one base, leaning slightly apart, rose quartz (#F3B3BE, facets #FCD9DE, edges #D07A8C); as amber otherwise | green |
+| `obj-crystal-aqua.jpg` | (2026-10-28) three short thick points fanning out from one base, the middle one tallest, light aquamarine (#9ED8E2, facets #D2F1F5, edges #5FA9B8); as amber otherwise | magenta |
+| `obj-crystal-*-cracked.jpg` | **attach the crystal**: "redraw the attached ... crystal in exactly the same style, size, position and shape ... Only change: several clear dark-brown zigzag crack lines across its points, one small chip broken off a tip, the color a bit duller (amber #D9A85E, rose #DDA9B2, aqua #A9C9CE), no white highlight, no pieces lying around" | as the crystal |
+| `obj-mound-1.jpg`, `obj-mound-2.jpg` | (2026-10-28) a low rounded mound, about three times wider than tall, with a slight dip in the middle of its top as if something grows out of it, bottom cut flat, no face: 1 brown soil (#8A6A4A) with short green grass and moss on top, tiny amber crystal chips and a small mushroom at its foot; 2 grey-brown pebbly earth (#9A8670) with moss and clover, two small rose crystal chips and a glowing bulb flower | magenta |
+| `obj-signpost-1.jpg` | (2026-10-28, the crossroads' posts, no board: the game draws the word bubble on top) a short sturdy round wooden post (#A8774A) with grain and knots, a small red-brown mushroom-cap top with cream spots, a tuft of grass and a tiny crystal at its foot; about three times taller than wide | magenta |
+| `obj-signpost-2.jpg` | a tall slim pole of light honey wood (#C99A62) with three carved rings, a green vine with small leaves on its lower half, a small amber crystal in a wooden cup on top; about seven times taller than wide | magenta |
+| `obj-signpost-3.jpg` | a very tall thin straight pole of dark brown wood (#7A5434), a moss patch at its foot, two leafy twigs halfway up, a round bulb plant with a softly glowing yellow bud on top; about twelve times taller than wide | magenta |
+| `obj-life-crystal.jpg` | (2026-10-28) three big six-sided crystals side by side on one small round grey stone base (#8E8A86): the left leans left, the middle is tallest and upright, the right leans right, their upper parts clearly apart; asleep: dull smoky grey-lilac (#9C94A8, facets #B9B3C4, edges #6F6880), matte, no glow; strictly front view, symmetrical. The game lights it a third at a time | green |
+| `obj-life-crystal-lit.jpg` | **attach `obj-life-crystal.jpg`**: "redraw ... in exactly the same style, size, position and shape ... Only change: the three crystals shine from inside: a warm golden-white core (#FFF3C4), facets warm gold (#FFD978) with soft rose (#FFC2CF) and light aqua (#BDEFF2) reflections, white highlights; the light stays inside the outlines, no glow, no halo" | green |
+| `obj-cradle.jpg` | (2026-10-28, the Cradle of Life, not an altar) an old round carved stone pedestal on two low round steps, warm light grey stone (#B8B0A4) with moss and a few small glowing yellow flowers at its foot, carved crystal shapes and curling leaf lines on its sides, a wide shallow empty hollow on its flat top; about as wide as tall, no face, no crystal on it; strictly front view, symmetrical | magenta |
 | **Dragons** | | |
 | `obj-dragon-baby-1.jpg` | a chubby baby dragon, mint green, tiny wings, sitting, big eyes, happy | magenta |
 | `obj-dragon-baby-2.jpg` | a chubby baby dragon, sky blue, tiny wings, sitting, big eyes, happy | magenta |
@@ -523,7 +541,7 @@ A single game map icon: ISLAND. The island floats in the air, with a rounded roc
 |---|---|
 | `ui-map-meadow.jpg` | a small floating island with a green meadow, flowers and a fence |
 | `ui-map-space.jpg` | a small floating island with a launch pad and a cute rocket |
-| `ui-map-planet.jpg` | a small floating island with turquoise mushroom trees and a little swamp |
+| `ui-map-planet.jpg` | (redone 2026-10-28) a small floating island with fresh green grass, one big mushroom tree with a wide red-brown cap with cream spots, a group of three pale amber and rose crystals, a tiny dark green swamp pond with two stepping stones and reeds, and a small round stone pedestal |
 | `ui-map-dragons.jpg` | a small floating island with rounded hills and a cozy dragon cave |
 | `ui-map-egg.jpg` | a small floating island with a grassy slope and a big spotted egg on top |
 

@@ -121,5 +121,13 @@ make life flourish again (5). Reward stays the Force: the crystal thanks him wit
 - [x] The planet's own range thing is a crystal.
 - [x] `.specify/game/story-1-scenario.md` in Slovak; story.md, mechanics.md, super-obstacles.md.
 - [x] tsc, vitest (396), build.
-- [~] Browser play-through: level 1 played to the end (bank fixed after it); levels 2-5 still to be
-      played in the browser (`?fast`, super mode) and compared with worlds 1 and 2.
+- [x] Browser play-through (`?fast`, tester profile): all five levels played to the end, with slips
+      on a sign, the last sign, a spell (fourth slip) and a stone away from the firm one.
+
+## Done - 2026-10-28
+Shipped every step above. Found while playing and fixed: the meadow's first near and mid layers
+were so detailed that the game's crystals and signs got lost (the owner noticed); they were
+redrawn with low detail and no crystals. Tapko stands on the bank's grass line, the game's crystals
+glow in their own color, the path's line replaces a line still shown, the word sits higher above
+his helmet. `obj-sign`, `obj-stone` and `obj-boulder-3` are gone. e2e: play.spec.ts passes for the
+planet; three older failures are in the backlog (renamed buttons, the gate's progress).

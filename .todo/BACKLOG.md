@@ -7,3 +7,4 @@ Search before adding; an entry is worked only when it is named.
 - [P2] Mole and molehill are one picture - assets-src/obj-mole.jpg draws the mole inside its hill; the mole level (src/game/modes/egg.ts) needs the mole and the molehill as separate pictures
 - [P2] Dictation words not all audible — src/words/words.ts WordSource.heard still lets through words whose spelling hearing does not decide (voicing at the end or before a consonant, i/y after consonants); see .research/game/activities.md Dictation rules
 - [P2] Three e2e tests fail already on abb8420 - e2e/parrot.spec.ts:50 (no results card after the parrot flies off), e2e/play.spec.ts:152 (gate progress stays 13 % after a slip, expects 0 %), e2e/service.spec.ts:4 (13 done level nodes instead of 10 after the green side cards)
+- [P2] Two e2e tests still name the old buttons - e2e/play.spec.ts:278 expects "Map" first on the stay-a-while card and :249 clicks "End exercise"; commit 279bab3 made both "Stop typing"

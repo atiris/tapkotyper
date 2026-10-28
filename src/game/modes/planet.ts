@@ -79,7 +79,7 @@ export const FEET = VH - TAPKO_H * 0.1;
 /** His feet on a stepping stone in the swamp, a bit higher, so the stone fits under them. */
 const SWAMP_FEET = VH * 0.9;
 /** The word to type is above his head. */
-export const wordAbove = (feet: number): number => feet - TAPKO_H * 0.8 - 45;
+export const wordAbove = (feet: number): number => feet - TAPKO_H * 0.8 - 60;
 
 /** A stepping stone: its picture's height, and how far above its middle his feet stand. */
 const STONE_H = 74;
@@ -188,8 +188,8 @@ abstract class SwampHero extends HeroMode {
   }
 
   protected bankTop(): { x: number; y: number } {
-    // The picture's grass line is at the place it is drawn.
-    return { x: this.bank!.x + BANK_H * BANK_LAND, y: SWAMP_FEET + 10 };
+    // The picture's grass line is at the place it is drawn; his feet sink a little into the grass.
+    return { x: this.bank!.x + BANK_H * BANK_LAND, y: SWAMP_FEET + 24 };
   }
 
   /** Jumps him to a place in the scene; `then` runs when he lands. */

@@ -260,6 +260,8 @@ export class CrossroadsMode extends HeroMode {
     this.L.stretchMin(scale.time);
     this.legLeft = this.road.leg;
     this.extremeAt = this.road.echo ? this.L.rng.int(1, this.road.leg) : -1;
+    // What the path changes matters more than a line still shown.
+    this.L.hideBubble();
     this.L.say(unknown
       ? t('story.path.unknownSaid', { len: t(`story.path.unknown.${unknown.len}`), time: t(`story.path.unknown.${unknown.time}`), diff: t(`story.path.unknown.${unknown.diff}`) })
       : pickLine(`story.path.${sign.kind}.said`), 3);
@@ -353,7 +355,7 @@ export class CrossroadsMode extends HeroMode {
       g.fillText(s.name, lx, top - 75);
       g.restore();
     }
-    if (this.current && !this.busy) this.L.label(g, this.current, this.fit(g, this.current.word, this.heroX), wordAbove(FEET));
+    if (this.current && !this.current.done && !this.busy) this.L.label(g, this.current, this.fit(g, this.current.word, this.heroX), wordAbove(FEET));
     this.drawHero(g);
   }
 

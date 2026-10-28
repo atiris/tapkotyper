@@ -470,7 +470,7 @@ export class LevelRuntime {
     const opening = LEVELS.find((l) => l.id === this.def.id)?.index === 0 ? `world-${WORLDS[this.def.world]}` : null;
     const worldStory = opening && !p.progress.scenesSeen.includes(opening) ? t(`story.world.${WORLDS[this.def.world]}`) : null;
     const story = [worldStory ?? this.mode.startLine(), this.mode.intro()].filter(Boolean).join(' ') || null;
-    if (!this.opts.keys) await showPosture(host, p, t(`worlds.${WORLDS[this.def.world]}`), tip, this.surprise, voiceNote, story);
+    if (!this.opts.keys) await showPosture(host, p, tip, this.surprise, voiceNote, story);
     if (this.disposed) return;
     if (opening && worldStory) {
       p.progress.scenesSeen.push(opening);

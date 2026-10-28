@@ -652,7 +652,7 @@
     "fingers.*": "A finger's name used inside a sentence, for example in Tapko's hint or on the new key card.",
     "guide.deadStep1": "Hint above the on-screen keyboard for an accented letter; {ch} is the letter, the accent key comes first.",
     "guide.deadStep2": "Hint above the on-screen keyboard after the accent key; {ch} is the letter to type now.",
-    "posture.title": "Heading of the get-ready card shown before a level. {world} is the name of the level's world.",
+    "posture.title": "Heading of the get-ready card shown before a level.",
     "posture.back": "One of the sitting tips on the card before a level; one is picked at random.",
     "posture.feet": "One of the sitting tips on the card before a level; one is picked at random.",
     "posture.wrists": "One of the sitting tips on the card before a level; one is picked at random.",

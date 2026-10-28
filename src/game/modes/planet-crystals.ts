@@ -276,7 +276,7 @@ export class CrystalsMode extends Mode {
   }
 }
 
-/** Slips a spell takes; one more breaks it. */
+/** Slips that break a spell; each takes one of its mushrooms. */
 export const SPELL_SLIPS = 3;
 const SPELLS = 3;
 /** The longest spell, the size of its words and the gap between them. */
@@ -361,7 +361,7 @@ const SHAKE_TIME = 0.4;
 /**
  * Planet 4, the spells (copy twist): three sleeping crystals of life peek out of a molehill on the
  * right. A spell is a row of words on the panel in the middle, typed left to right; three small
- * mushrooms on the panel are the slips it takes, one goes at each slip, and at the fourth slip the
+ * mushrooms on the panel are the slips it takes, one goes at each slip, and with the third one the
  * spell breaks and a new spell comes. A spell cast lights the next crystal with a shout; when all
  * three glow, they fly to Tapko and the level ends.
  */
@@ -444,9 +444,9 @@ export class SpellMode extends Mode {
   onWrong(tg: Target | null): void {
     if (!this.current || tg !== this.current) return;
     // Each slip takes a mushroom, from the left.
-    if (this.slips < SPELL_SLIPS) this.shroomGone[SPELL_SLIPS - 1 - this.slips] = 0;
-    if (++this.slips <= SPELL_SLIPS) return;
-    // The fourth slip: the spell fizzles and starts again from its first word.
+    this.shroomGone[SPELL_SLIPS - 1 - this.slips] = 0;
+    if (++this.slips < SPELL_SLIPS) return;
+    // The third slip took the last mushroom: the spell fizzles and a new one comes.
     this.L.core.release(this.current, false);
     this.L.core.prune();
     this.current = null;

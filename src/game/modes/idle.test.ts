@@ -275,13 +275,13 @@ describe('crossroads', () => {
 });
 
 describe('spells', () => {
-  it('the fourth slip breaks the spell and it starts again from its first word', () => {
+  it('the third slip breaks the spell and a new one starts', () => {
     const L = fakeRuntime(18);
     const mode = new SpellMode(L);
     mode.start();
     typeWord(L, mode);
     expect(mode.progress()).toBeGreaterThan(0);
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 2; i++) {
       const f = L.core.focus()!;
       L.core.type('x');
       mode.onWrong(f);

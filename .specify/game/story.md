@@ -133,6 +133,8 @@ gives you a wreath"), never about the character as someone else.
    three heights, alternated so that no two within two places share one, each with its
    activation word on top. A slip inside a sign's word makes that
    sign vanish; the last one left must be typed without a slip (a slip starts its word again).
+   Backspace wipes the started sign's word so another can be chosen; the level's opening card
+   teaches it here, saying that elsewhere it deletes the last letter.
    Each post carries a long wooden arrow board (two kinds) pinned by its middle, with the path's
    name written along it, as long as the name needs, turned around its middle its own way (never
    straight up or down, the name always upright). The paws never type a sign: at a crossroads
@@ -150,9 +152,9 @@ gives you a wreath"), never about the character as someone else.
    (its words train the keys the child still practises, as the target range does).
    4 spells (copy twist): three crystals of life of three kinds, asleep (grey), peek out of a
    big molehill on the right, and now and then one of them gives a little shake. A spell of
-   several words is written on a panel in the middle, word by word. It takes three slips: three
-   different small mushrooms grow from the top edge of the panel (high in the scene) and one goes at each slip; the fourth slip
-   breaks the spell and a new spell comes. Each spell cast lights the next crystal with a shout
+   several words is written on a panel in the middle, word by word. Three slips break it: three
+   different small mushrooms grow from the top edge of the panel (high in the scene) and one goes at each slip; when the third
+   goes, the spell breaks and a new spell comes. Each spell cast lights the next crystal with a shout
    ("Jupí!", "Zipp!", "Juchú!"); all three lit, the crystals fly to Tapko. The spells are long enough to fill the level's
    minimum time at the child's pace.
    5 the great swamp (super level): from a firm stone Tapko jumps three stones on, the fourth

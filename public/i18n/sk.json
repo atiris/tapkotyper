@@ -482,20 +482,20 @@
       "Dokázalo to tvoje presné písanie!"
     ],
     "swampStart": [
-      "Raketa pristála v močiari na planéte drakov. Napíš slovo nad sebou a objaví sa kameň, na ktorý skočíš."
+      "**Vitaj** na planéte drakov, na ktorej existujú kúzla a život poháňajú kryštály! **Posledný kryštál** života však už **vyhasol.** Hrozí, že planéta stratí svetlo. Našťastie **máš mapu**, podľa ktorej treba prejsť močiar a lúku, **nájsť** aspoň tri **kryštály života** a prebudiť ich kúzlom. Keď sa ti ich podarí **odniesť** až **ku kamennému monolitu**, život na planéte drakov **bude zachránený.** **Presnosť** je stále dôležitejšia ako rýchlosť."
     ],
     "swampDone": [
       "Už vidím lúku! Teším sa na ňu.",
       "Hurá, breh! Za ním je lúka, už sa teším."
     ],
     "crystalsStart": [
-      "Na lúke rastú kryštály, z ktorých má táto planéta energiu. Raketa ich bude potrebovať na cestu domov. Napíš slovo, kým kryštál nepraskne, a skončí v tvojom vrecku!"
+      "Tvoja raketa bude potrebovať na cestu z tejto planéty **zopár žiarivých kryštálov.** Na tejto lúke také **skutočne rastú**, treba ich však pozbierať. **Vzácne kryštály** plné energie sú veľmi krehké a ty ich musíš vybrať skôr, než kryštál na vzduchu praskne. **Slovo nad každým** kryštálom ti prezradí **kúzlo**, ktoré je potrebné **na jeho získanie.**"
     ],
     "crystalsDoneOne": "{n} kryštál\nje v tvojom vrecku!",
     "crystalsDoneFew": "{n} kryštály\nsú v tvojom vrecku!",
     "crystalsDoneMany": "{n} kryštálov\nje v tvojom vrecku!",
     "crossroadsStart": [
-      "Hľadáš cestu ku kryštálom života. Píš slová na ceste. Na rázcestí napíš slovo smerovníka, kam chceš ísť. Pri chybe smerovník zmizne."
+      "Cesta ku kryštálom života je plná rôznych **križovatiek a skratiek.** Skratka je síce ľahšia na prejdenie, ale nie každý zvládne zvoliť si práve krátku cestu. **Slová**, ktoré píšeš, **ťa sprevádzajú** na cestách a od ciest, ktoré si vyberieš, záleží, aké slová dostávaš. Vyberieš si **jednoduché smery**, na ktorých sú ťažké slová, alebo **ťažké smerovníky**, na ktorých budú slová ľahké a krátke? Ak si to rozmyslíš, stlač **Backspace** (kláves so šípkou vpravo hore nad Enterom). Inde zmaže posledné písmeno, v tejto hre však zmaže celú rozpísanú možnosť a môžeš si vybrať znova. Pokračuj a rozhodni sa!"
     ],
     "roadEnd": [
       "Koniec cesty! Sme tu.",
@@ -609,7 +609,7 @@
       "unknownSaid": "Neznáma cesta: {len}, {time} a {diff}."
     },
     "spellStart": [
-      "Tri kryštály života spia. Prebuď ich kúzlom: napíš ho slovo po slove. Pri viac ako troch chybách sa kúzlo pokazí a príde nové."
+      "Našiel si to! Tri **kryštály života** je ešte potrebné **prebudiť.** **Kúzlo**, ktoré je na to určené, **musíš zopakovať slovo po slove** pred kryštálmi, inak ich nebude možné rozžiariť. Potom si ich odlož, aby si ich mohol postaviť na kamenný monolit, odkiaľ posilnia život na tejto planéte. Daj si pozor na správne odpísanie kúzla: ak by si spravil vo formulke **tri chyby**, tak sa **kúzlo zruší** a musíš začať znova."
     ],
     "spellCast": [
       "Jupí!",
@@ -623,7 +623,7 @@
       "Fuu, kúzlo zhaslo. Tu je nové, pekne pomaly."
     ],
     "greatSwampStart": [
-      "Práve si dorazil k **Veľkému močiaru**. Voda je tu hlboká a kamene krehké. Vo vrecku máš našťastie kryštál života. Z pevného kameňa musíš **bez chyby preskočiť tri** ďalšie kamene, aby si sa znova dostal na pevný kameň. Ak sa pomýliš, môžeš to skúsiť znova. Všetci na planéte drakov dúfajú, že sa ti podarí umiestniť kryštály na monolit a rozžiariť planétu životom."
+      "Práve si dorazil k **Veľkému močiaru**, za ktorým sa nachádza **kamenný monolit.** Voda je tu hlboká a **kamene krehké.** Vo vrecku máš našťastie kryštály života. Z pevného kameňa musíš **bez chyby preskočiť tri ďalšie** kamene, aby si sa znova dostal na pevný kameň. Ak sa pomýliš, môžeš to skúsiť znova. Všetci na planéte drakov dúfajú, že sa ti podarí správne umiestniť kryštály a rozžiariť planétu životom."
     ],
     "greatSwampSlip": "Kameň praská! Späť na pevný kameň.",
     "boulderStart": [
@@ -645,7 +645,7 @@
     "world": {
       "meadow": "Na lúke je krásne popoludnie a poobede bude **futbalový zápas**! Zvieratká s tebou trénujú: kopú listy ako loptu a **ty si brankár**. Chytaj listy písmenami: **napíš slovo na liste** a list je tvoj.",
       "space": "Tri, dva, jeden... **štart!** Letíš preskúmať zopár planét až k **planéte drakov**. **Rytmus tvojho písania** poháňa raketu a jemný lúč odsúva meteority z cesty.",
-      "planet": "Vitaj na **planéte drakov**! Jej kryštál života stratil svetlo. Prejdi močiar a lúku, nájdi **kryštály života** a prebuď ich kúzlom. Potom ich odnes k monolitu. Tu je **presnosť dôležitejšia ako rýchlosť**.",
+      "planet": "**Vitaj** na planéte drakov, na ktorej existujú kúzla a život poháňajú kryštály! **Posledný kryštál** života však už **vyhasol.** Hrozí, že planéta stratí svetlo. Našťastie **máš mapu**, podľa ktorej treba prejsť močiar a lúku, **nájsť** aspoň tri **kryštály života** a prebudiť ich kúzlom. Keď sa ti ich podarí **odniesť** až **ku kamennému monolitu**, život na planéte drakov **bude zachránený.** **Presnosť** je stále dôležitejšia ako rýchlosť.",
       "dragons": "Do Dračieho údolia padajú **vesmírne kamene**. Každé slovo vytvorí pre dráčika **ochrannú bublinu**. Kamene sa len odrazia, nikomu sa nič nestane.",
       "egg": "Ojoj! **Vajíčko sa začína hýbať** a kotúľa sa dolu kopcom. Pomôž mu **preskočiť kamene a pníky**. Pozor na priateľského krtka!",
       "junkyard": "Ideš okolo starého šrotiska. **Pod kopou starých vecí niekto smutne pípa.** Napíš slovo a **jemný magnet** zdvihne haraburdu z kopy.",

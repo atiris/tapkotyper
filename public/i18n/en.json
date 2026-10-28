@@ -482,20 +482,20 @@
       "Your careful typing did it!"
     ],
     "swampStart": [
-      "The rocket landed in a swamp on the dragons' planet. Type the word above you and a stone appears for you to jump on."
+      "**Welcome** to the dragons' planet, where spells are real and crystals power life! But the **last crystal** of life has **gone dark.** The planet may lose its light. Luckily you **have a map**: cross the swamp and the meadow, **find** at least three **crystals of life** and wake them with a spell. When you **carry** them all the way **to the stone monolith**, life on the dragons' planet **will be saved.** **Accuracy** still matters more than speed."
     ],
     "swampDone": [
       "I can see the meadow! I can't wait.",
       "Hooray, the bank! The meadow is right behind it."
     ],
     "crystalsStart": [
-      "Crystals grow on the meadow; they give this planet its energy. The rocket will need them for the way home. Type the word before the crystal cracks and it goes into your pocket!"
+      "For the way off this planet your rocket will need **a few shining crystals.** On this meadow they **really grow**, but they have to be picked. **Rare crystals** full of energy are very fragile, and you must take each one before it cracks in the air. **The word above each** crystal tells you the **spell** you need **to get it.**"
     ],
     "crystalsDoneOne": "{n} crystal\nis in your pocket!",
     "crystalsDoneFew": "{n} crystals\nare in your pocket!",
     "crystalsDoneMany": "{n} crystals\nare in your pocket!",
     "crossroadsStart": [
-      "You are looking for the way to the crystals of life. Type the words on the road. At a crossroads, type the word of the signpost you want to follow. A slip makes that sign vanish."
+      "The way to the crystals of life is full of **crossroads and shortcuts.** A shortcut is easier to walk, but not everyone manages to pick the short way. **The words** you type **go with you** on the roads, and the roads you choose decide which words you get. Will you pick **easy directions** with hard words, or **hard signposts** with easy, short words? If you change your mind, press **Backspace** (the key with the arrow at the top right, above Enter). Elsewhere it deletes the last letter, but in this game it deletes the whole choice you started, and you can choose again. Go on and decide!"
     ],
     "roadEnd": [
       "The end of the road! We are here.",
@@ -609,7 +609,7 @@
       "unknownSaid": "The unknown road: {len}, {time} and {diff}."
     },
     "spellStart": [
-      "Three crystals of life are asleep. Wake them with a spell: type it word by word. With more than three slips the spell breaks and a new one comes."
+      "You found it! The three **crystals of life** still have to be **woken up.** You **must repeat** the **spell** for it **word by word** in front of the crystals, or they will not light up. Then put them away, so you can set them on the stone monolith, where they will strengthen life on this planet. Copy the spell carefully: with **three mistakes** in it, **the spell breaks** and you have to start again."
     ],
     "spellCast": [
       "Yippee!",
@@ -623,7 +623,7 @@
       "Phew, the spell fizzled. Here is a new one, nice and slow."
     ],
     "greatSwampStart": [
-      "You have just reached the **Great Swamp**. The water is deep here and the stones are fragile. Luckily you have a crystal of life in your pocket. From a firm stone you must **jump three more stones without a slip** to reach a firm stone again. If you slip, you can try again. Everyone on the dragons' planet hopes you will set the crystals on the monolith and light the planet up with life."
+      "You have just reached the **Great Swamp**, with the **stone monolith** behind it. The water is deep here and **the stones are fragile.** Luckily you have the crystals of life in your pocket. From a firm stone you must **jump three more stones without a slip** to reach a firm stone again. If you slip, you can try again. Everyone on the dragons' planet hopes you will set the crystals right and light the planet up with life."
     ],
     "greatSwampSlip": "The stone is cracking! Back to the firm one.",
     "boulderStart": [
@@ -645,7 +645,7 @@
     "world": {
       "meadow": "It is a lovely afternoon on the meadow and there is a **football match** later! The animals train with you: they kick leaves like a ball and **you keep goal**. Catch the leaves with letters: **type the word on a leaf** and the leaf is yours.",
       "space": "Three, two, one... **lift off!** You fly off to explore a few planets, all the way to the **dragons' planet**. **Your typing rhythm** drives the rocket and a soft beam pushes meteors out of the way.",
-      "planet": "Welcome to the **dragons' planet**! Its crystal of life has lost its light. Cross the swamp and the meadow, find the **crystals of life** and wake them with a spell. Then carry them to the monolith. Here **careful typing matters more than speed**.",
+      "planet": "**Welcome** to the dragons' planet, where spells are real and crystals power life! But the **last crystal** of life has **gone dark.** The planet may lose its light. Luckily you **have a map**: cross the swamp and the meadow, **find** at least three **crystals of life** and wake them with a spell. When you **carry** them all the way **to the stone monolith**, life on the dragons' planet **will be saved.** **Accuracy** still matters more than speed.",
       "dragons": "**Space rocks** are falling into the Dragon Valley. Every word makes a **shield bubble** for a baby dragon. The rocks just bounce away, nobody gets hurt.",
       "egg": "Oh! **The egg starts to wiggle** and roll down the hill. Help it **jump over rocks and stumps**. Watch out for a friendly mole!",
       "junkyard": "You walk past an old junkyard. **Someone is beeping sadly under a pile of old things.** Type a word and a **soft magnet** lifts the junk off the pile.",

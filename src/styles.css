@@ -1687,7 +1687,9 @@ body.reduce-motion .round-btn.timer.ending { --rb: #d9661f; --rb-ring: #ff8a3d; 
 
 /* ---------- Translator ---------- */
 /* A warm paper sheet with blanks to fill: the base text above, the translation under it. */
-.translate-screen { --page-bg: var(--paper-2); background: var(--page-bg); }
+/* The paper is the page's background, under the scrollbar too (not the sky of the game). */
+:root:has(.translate-screen) { --page-bg: var(--paper-2); }
+.translate-screen { background: var(--page-bg); }
 body:has(.translate-screen) { scrollbar-gutter: stable; }
 .tr-tools {
   position: sticky; top: var(--bar-h); z-index: 2; display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.8rem;
@@ -1730,7 +1732,8 @@ body:has(.translate-screen) { scrollbar-gutter: stable; }
 .tr-thumb { width: 56px; height: 56px; object-fit: contain; flex: none; }
 .tr-var { display: flex; flex-direction: column; gap: 0.25rem; }
 .tr-chip { align-self: flex-start; max-width: 100%; white-space: pre-wrap; overflow-wrap: anywhere; background: var(--tint-orange); border-radius: 10px; padding: 0.25em 0.6em; font-size: 0.95rem; }
-.tr-ph { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+.tr-ph { display: flex; gap: 0.3rem; flex-wrap: wrap; align-items: baseline; }
+.tr-ph .hint { font-size: 0.75rem; margin: 0; }
 .tr-ph code { font-size: 0.8rem; background: var(--tint-blue); border-radius: 6px; padding: 0 0.35em; }
 .tr-forms { display: flex; flex-wrap: wrap; gap: 0.3rem; align-items: center; }
 .tr-forms-label, .tr-form { font-size: 0.8rem; margin: 0; }
@@ -1749,6 +1752,7 @@ body:has(.translate-screen) { scrollbar-gutter: stable; }
   border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink-soft); cursor: pointer; text-decoration: none;
 }
 .tr-act .icon { width: 0.95rem; height: 0.95rem; }
+.tr-act.tr-code { width: auto; min-width: 1.75rem; padding: 0 0.4rem; font: inherit; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.02em; }
 .tr-act:hover:not(:disabled), .tr-act:focus-visible { text-decoration: none; border-color: var(--brand); color: var(--brand-ink); }
 .tr-act:disabled { opacity: 0.35; cursor: default; }
 .tr-act.on { background: var(--green-ink); border-color: var(--green-ink); color: var(--surface); }
@@ -1761,7 +1765,8 @@ body:has(.translate-screen) { scrollbar-gutter: stable; }
 .tr-pop-key { font-size: 0.8rem; color: var(--ink-soft); }
 .tr-pop-key code { font-size: 0.8rem; }
 .tr-pop-lang strong { display: block; font-size: 0.75rem; color: var(--brand-ink); }
-.tr-page-tip { display: inline-flex; color: var(--ink-soft); cursor: help; border-radius: 999px; padding: 0.2rem; }
+.translate-screen .bar h1 { flex: 0 1 auto; min-width: 0; }
+.tr-page-tip { display: inline-flex; align-items: center; gap: 0.3rem; margin-right: auto; color: var(--ink-soft); font-weight: 700; font-size: 0.9rem; cursor: help; border-radius: 999px; padding: 0.2rem 0.5rem; border: 1px dashed var(--line); }
 .tr-page-tip:focus-visible { outline: 2px solid var(--brand); }
 .tr-keys dl { display: grid; grid-template-columns: auto 1fr; gap: 0.35rem 1rem; margin: 0; }
 .tr-keys dt { white-space: nowrap; }

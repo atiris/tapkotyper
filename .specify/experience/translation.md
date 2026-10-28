@@ -23,7 +23,8 @@
   pop-up.
 - Each field has small round buttons on the right above it: **info** (a pop-up with the
   field's name, its key, and its text in both samples; it shows on hover, stays open after a
-  click), **copy** from the sample (the field still counts as untranslated), **done / not
+  click), **copy** from a sample, one button per sample named by its language code (SK, CZ;
+  the field still counts as untranslated), **done / not
   done**, **undo** and **redo** of the field's last changes (typing without a pause is one
   change, a copy or a mark is one too), and **find the key in the code** (the project's
   GitHub code search with the key, so the translator sees every place it is used).
@@ -35,10 +36,11 @@
   redo, Ctrl+A the whole text, Alt+S search, Esc closes the pop-up, Alt+K the list of keys
   (also a button). Each button's tooltip names its key. Keys go by their place on the
   keyboard, so they work with any layout.
-- **Translating the page itself**: a tip at the title recommends the browser's translation
+- **Translating the page itself**: a "Tip" right after the title recommends the browser's translation
   (Google Translate). The page says it is English, so the browser offers it; the samples, the
   keys, the placeholders, the language names and every field are marked not to translate, so
   only the headings, explanations, situations and buttons change.
+- The page's own paper is its background, under the scrollbar too.
 - Kinds of texts: one text; a **pool** (lines picked at random: variants may be added or
   removed, never below one, the count may differ from the base); **ordered lines** (story
   scenes, lists: exactly the base count); a **count** (one field per plural form the
@@ -55,7 +57,8 @@
 - **Progress**: a round button with the percentage of translated fields, per section in the
   contents too; a click goes to the next untranslated field. "Only untranslated" folds finished
   panels to one line; a search finds a text by base text, translation or key.
-- Placeholders (`{name}`) of the sample text show as chips; a translation missing one or adding
+- Placeholders (`{name}`) of the sample text show as chips under it, "keep in the translation,
+  the game fills them in"; a translation missing one or adding
   an unknown one gets a warning (it is still saved).
 - **Export**: a pair file (`.txt`, the sample language beside the translation) of everything, of only the untranslated fields (for an AI
   translator), or of only the changes against the corrected language; or a `.json` file.

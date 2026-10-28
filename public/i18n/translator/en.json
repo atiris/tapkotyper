@@ -114,7 +114,9 @@
       "search": "Search",
       "close": "Close the pop-up",
       "list": "This list"
-    }
+    },
+    "placeholders": "Keep in the translation, the game fills them in:",
+    "tip": "Tip"
   },
   "sections": {
     "start": {

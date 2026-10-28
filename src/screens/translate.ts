@@ -208,7 +208,7 @@ function translatorPage(screen: HTMLElement): () => void {
 
   screen.append(
     h('header', { class: 'bar' }, button(tr('back'), back, 'btn ghost small', 'back'), h('h1', {}, tr('title')),
-      h('span', { class: 'tr-page-tip', tabindex: 0, role: 'note', 'aria-label': tr('pageTip'), tip: tr('pageTip') }, icon('language'))),
+      h('span', { class: 'tr-page-tip', tabindex: 0, role: 'note', 'aria-label': tr('pageTip'), tip: tr('pageTip') }, icon('language'), h('span', {}, tr('tip')))),
     cornerControls(), tools,
     h('div', { class: 'tr-body' }, h('aside', { class: 'tr-side' }, toc), h('div', { class: 'tr-content' }, tocSelect, note, filter, empty, main)));
 
@@ -393,13 +393,13 @@ function translatorPage(screen: HTMLElement): () => void {
   /** The placeholders of the sample text, as chips. */
   function chipsOf(text: string): HTMLElement | null {
     const ph = placeholders(text);
-    return ph.length ? h('span', { class: 'tr-ph', translate: 'no' }, ...ph.map((p) => h('code', {}, p))) : null;
+    return ph.length ? h('span', { class: 'tr-ph' }, h('span', { class: 'hint' }, tr('placeholders')), ...ph.map((p) => h('code', { translate: 'no' }, p))) : null;
   }
 
   /** A field's text in a language; a plural form the language lacks shows its "other". */
   const textIn = (src: Source, f: Field) => sourceValue(src, f) || (f.kind === 'form' ? sourceValue(src, { ...f, form: 'other' }) : '');
 
-  /** One field: its round buttons above it (info, copy, done, undo, redo, the key in the code), the input and the placeholder warning. */
+  /** One field: its round buttons above it (info, copy per sample, done, undo, redo, the key in the code), the input and the placeholder warning. */
   function fieldEl(f: Field, sampleText: string, cls = ''): HTMLElement {
     const value = fieldValue(target!, f);
     const area = h('textarea', { class: `tr-field ${cls}`, rows: Math.max(1, value.split('\n').length), 'data-field': f.id, 'aria-label': tr('fieldLabel', { text: sampleText.length > LABEL_MAX ? `${sampleText.slice(0, LABEL_MAX)}…` : sampleText }), spellcheck: 'true', lang: target!.code, translate: 'no' });
@@ -421,8 +421,14 @@ function translatorPage(screen: HTMLElement): () => void {
       record(false);
       area.focus();
     };
-    const copy = act('copy', keyed(tr('copy', { name: sample.name }), 'copy'), () => copyFrom(sample), 'tr-copy');
-    copy.disabled = !textIn(sample, f);
+    /** A copy button per sample, named by the sample's language code (SK, CZ). */
+    const copyButton = (src: Source, key: string, cls2: string) => {
+      const label = keyed(tr('copy', { name: src.name }), key);
+      return h('button', { class: `tr-act tr-code ${cls2}`, type: 'button', tabindex: -1, 'aria-label': label, tip: label, translate: 'no', disabled: !textIn(src, f), onClick: () => copyFrom(src) },
+        src.code.toUpperCase());
+    };
+    const copy = copyButton(sample, 'copy', 'tr-copy');
+    const copy2 = sample2 ? copyButton(sample2, 'copy2', 'tr-copy2') : null;
     const toggleDone = () => {
       mark(!isTouched());
       record(false);
@@ -433,7 +439,7 @@ function translatorPage(screen: HTMLElement): () => void {
     const codeUrl = f.kind === 'words' ? null : codeSearch(f.key);
     const code = codeUrl ? h('a', { class: 'tr-act', href: codeUrl, target: '_blank', rel: 'noopener', tabindex: -1, 'aria-label': keyed(tr('findCode'), 'code'), tip: keyed(tr('findCode'), 'code') }, icon1('code')) : null;
     const wrap = h('div', { class: 'tr-input' },
-      h('div', { class: 'tr-bar' }, h('span', { class: 'tr-open-tag' }, tr('untranslated')), h('span', { class: 'tr-acts' }, info, copy, done, undo, redo, code)),
+      h('div', { class: 'tr-bar' }, h('span', { class: 'tr-open-tag' }, tr('untranslated')), h('span', { class: 'tr-acts' }, info, copy, copy2, done, undo, redo, code)),
       area, warn);
     const isTouched = () => target!.touched.includes(f.id);
     type Snap = { value: string; done: boolean };

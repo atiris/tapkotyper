@@ -685,7 +685,13 @@ export function importDialog(done: () => void): void {
     try {
       const profiles = parseImport(await f.text());
       const plan = planImport(app.store, profiles);
-      const finish = (replace: boolean) => { applyImport(app.store, plan, replace); close(); done(); };
+      const finish = (replace: boolean) => {
+        applyImport(app.store, plan, replace);
+        // A replaced current player plays on as the imported one, so the next save does not bring the old one back.
+        if (app.profile) app.profile = app.store.get(app.profile.id) ?? app.profile;
+        close();
+        done();
+      };
       msg.className = 'ok';
       msg.textContent = t('import.found', { n: profiles.length, names: profiles.map(nickname).join(', ') });
       if (plan.conflicts.length) {

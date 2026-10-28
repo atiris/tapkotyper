@@ -139,7 +139,9 @@ export const PALETTES: Record<string, Palette> = {
   rescue: { sky: ['#3d3566', '#f2a97e'], hills: ['#4f4468', '#2f2a45'], ground: '#2a2540', accent: '#ffc861' },
 };
 
+/** Scaled layers, least recently drawn first; only the current scene's few are kept, so memory does not grow with every world played. */
 const fitted = new Map<HTMLImageElement, { px: number; c: HTMLCanvasElement }>();
+const FITTED_KEEP = 4;
 
 /**
  * The layer scaled once to the pixel height it is drawn at, so each frame is a plain 1:1 copy.
@@ -148,7 +150,12 @@ const fitted = new Map<HTMLImageElement, { px: number; c: HTMLCanvasElement }>()
 function fittedTile(tile: HTMLImageElement, px: number): HTMLCanvasElement | HTMLImageElement {
   if (px >= tile.naturalHeight) return tile;
   const hit = fitted.get(tile);
-  if (hit && hit.px === px) return hit.c;
+  fitted.delete(tile);
+  if (hit && hit.px === px) {
+    fitted.set(tile, hit);
+    return hit.c;
+  }
+  if (fitted.size >= FITTED_KEEP) fitted.delete(fitted.keys().next().value!);
   const c = document.createElement('canvas');
   c.width = Math.round(tile.naturalWidth * px / tile.naturalHeight);
   c.height = px;

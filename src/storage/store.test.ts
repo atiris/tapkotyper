@@ -116,6 +116,15 @@ describe('export and import', () => {
     expect(() => parseImport('nope')).toThrow('import.errorJson');
     expect(() => parseImport('{"hello":1}')).toThrow('import.errorShape');
   });
+
+  it('never imports the guest or super ids, nor an unknown layout', () => {
+    const guest = { ...newProfile('Ema', 'sk'), id: 'guest', layout: 'dvorak' };
+    const superP = { ...newProfile('Bo', 'en'), id: 'super' };
+    const [a, b] = parseImport(JSON.stringify({ app: 'tapkotyper', profiles: [guest, superP] }));
+    expect(a.id).not.toBe('guest');
+    expect(b.id).not.toBe('super');
+    expect(a.layout).toBe('sk-qwertz');
+  });
 });
 
 describe('stored data', () => {

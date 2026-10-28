@@ -126,8 +126,12 @@ export class HopMode extends Mode {
   onDone(tg: Target): void {
     const to = this.rocks.find((r) => r.tg === tg);
     if (!to) return;
-    // A word typed while he is in the air: he lands first, so no meteor is left without a word ahead of him.
-    if (this.jump) this.land(this.jump.to);
+    // A word typed while he is in the air: he lands first, so no meteor is left without a word ahead of him;
+    // a meteor he left behind lost its word with the landing and stays where it is.
+    if (this.jump) {
+      this.land(this.jump.to);
+      if (to.tg !== tg) return;
+    }
     // He hops onto the next meteor or over one, never over two: the word comes back on the far one.
     if (this.over(to) > 1) {
       this.L.core.prune();

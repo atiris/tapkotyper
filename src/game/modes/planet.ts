@@ -402,6 +402,8 @@ export class SwampMode extends SwampHero {
     this.happy();
     this.L.core.prune();
     if (this.toLand) return this.stepAshore(() => this.ashore());
+    // Stones a whole stage behind go, so staying a while does not pile them up.
+    this.stones = this.stones.filter((o) => o.x > this.scroll - this.L.vw || o === this.stand);
     const s = this.stone(this.nextX);
     this.L.particles.emit(s.x - this.scroll, s.y, 10, 'dot', ['#cfe8c0', '#ffffff'], 110, 6);
     this.leap(this.top(s), () => {

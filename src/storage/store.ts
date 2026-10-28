@@ -1,3 +1,4 @@
+import { LAYOUT_IDS } from '../keyboard/layouts';
 import { firstKeys } from '../learning/lessons';
 import {
   type CompanionKind,
@@ -9,6 +10,7 @@ import {
   type Theme,
   COMPANION_KINDS,
   GUEST_ID,
+  SUPER_ID,
   defaultSettings,
   emptyKeyStat,
 } from './schema';
@@ -61,10 +63,12 @@ export function readStore(raw: any): StoreData {
 
 /** Fills fields that are missing in a stored or hand-edited profile from the defaults. */
 export function normalizeProfile(p: Profile): Profile {
-  const base = newProfile(p.name, p.language === 'en' ? 'en' : 'sk', p.layout, p.avatar);
+  const layout = LAYOUT_IDS.includes(p.layout) ? p.layout : undefined;
+  const base = newProfile(p.name, p.language === 'en' ? 'en' : 'sk', layout, p.avatar);
   return {
     ...base,
     ...p,
+    layout: base.layout,
     seed: typeof p.seed === 'number' ? p.seed >>> 0 : base.seed,
     companion: { ...base.companion, ...p.companion, name: p.companion?.name?.trim() || base.companion.name },
     settings: { ...base.settings, ...p.settings },
@@ -232,7 +236,8 @@ export function parseImport(text: string): Profile[] {
   if (!file) throw new Error('import.errorShape');
   const profiles = readStore({ profiles: file.profiles }).profiles;
   if (!profiles.length) throw new Error('import.errorShape');
-  return profiles;
+  // The guest's and the super player's ids belong to this browser's own players, never to a file.
+  return profiles.map((p) => (p.id === GUEST_ID || p.id === SUPER_ID ? { ...p, id: newProfile(p.name, p.language).id } : p));
 }
 
 export function planImport(store: Store, profiles: Profile[]): ImportPlan {

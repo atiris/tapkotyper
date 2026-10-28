@@ -75,6 +75,8 @@ export class BudsMode extends HeroMode {
 
   private next(): void {
     if (this.done >= this.L.count) return;
+    // Buds a whole stage behind go, so staying a while does not pile them up.
+    this.buds = this.buds.filter((b) => b.x > this.scroll - this.L.vw);
     this.buds.push({ x: this.heroX + this.gap + this.scroll, open: 0, color: PETALS[this.done % PETALS.length] });
     this.current = this.L.core.add(this.L.word(), {});
   }

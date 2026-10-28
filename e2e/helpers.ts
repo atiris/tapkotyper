@@ -9,6 +9,8 @@ export async function playLevel(page: Page, mistakes = true, typed: string[] = [
       if (res) return { kind: 'results', text: res.innerText };
       if (document.querySelector('.keys-intro')) return { kind: 'ready' };
       const nk = document.querySelector<HTMLElement>('.newkey-card');
+      // A key card typed right three times closes a moment later; a key meanwhile would land on the next card.
+      if (nk && !nk.matches('.homerow-card') && nk.querySelectorAll('.newkey-mark.ok').length >= 3) return { kind: 'closing', key: '' };
       if (nk) return { kind: 'newkey', key: nk.dataset.sample ?? '' };
       if (document.querySelector('.posture-card')) return { kind: 'ready' };
       return { kind: 'play', next: document.querySelector<HTMLElement>('.kb-guide')?.dataset.next ?? '' };
@@ -37,13 +39,16 @@ export async function untilPlay(page: Page, until: 'ready' | 'play' = 'play'): P
     const state = await page.evaluate(() => {
       if (document.querySelector('.keys-intro')) return { kind: 'intro', key: '' };
       const nk = document.querySelector<HTMLElement>('.newkey-card');
+      // A key card typed right three times closes a moment later; a key meanwhile would land on the next card.
+      if (nk && !nk.matches('.homerow-card') && nk.querySelectorAll('.newkey-mark.ok').length >= 3) return { kind: 'closing', key: '' };
       if (nk) return { kind: 'newkey', key: nk.dataset.sample ?? '' };
       if (document.querySelector('.posture-card')) return { kind: 'ready', key: '' };
       return { kind: 'play', key: '' };
     });
     if (state.kind === until) return;
     if (state.kind === 'play') throw new Error('play started without a get-ready card');
-    if (state.kind === 'newkey') await typeChar(page, state.key);
+    if (state.kind === 'closing') await page.waitForFunction(() => ![...document.querySelectorAll('.newkey-card:not(.homerow-card)')].some((c) => c.querySelectorAll('.newkey-mark.ok').length >= 3));
+    else if (state.kind === 'newkey') await typeChar(page, state.key);
     else await page.keyboard.press('Space');
     await page.waitForTimeout(150);
   }

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { SUPER_ID } from '../storage/schema';
 import { lessonOrder } from '../learning/lessons';
-import { LEVELS, MIN_ACTIVE_S, STORIES, activityOf, minActiveS, aimLevel, aimOpen, aimWorld, freeTypeLevel, grownCount, hasMinLength, isLevelUnlocked, isWorldUnlocked, keysNeeded, levelById, levelOver, nextLevel, parrotKeys, parrotLevel, parrotSizeOf, practiceLevel, rescueLevel, rescueUnlocked, shownProgress, worldLevels, worldLock } from './levels';
+import { LEVELS, MIN_ACTIVE_S, STORIES, WORLDS, activityOf, minActiveS, aimLevel, aimOpen, aimWorld, freeTypeLevel, grownCount, hasMinLength, isLevelUnlocked, isWorldUnlocked, keysNeeded, levelById, levelOver, nextLevel, parrotKeys, parrotLevel, parrotSizeOf, practiceLevel, rescueLevel, rescueUnlocked, shownProgress, worldLevels, worldLock } from './levels';
 
 const KEYS = ['f', 'j', 'd', 'k', 's', 'l', 'a', ';', 'g', 'h', 'r', 'u', 'e', 'i', 't', 'y', 'w', 'o', 'q', 'p', 'v', 'm', 'c', ',', 'x', '.'];
 
@@ -55,6 +55,16 @@ describe('story unlocks', () => {
       expect(levelById(`w${w + 1}-5`)?.isSuper).toBe(true);
       expect(LEVELS.filter((l) => l.world === w)).toHaveLength(5);
     }
+  });
+
+  it('puts every world in one story, in a row, with the keys of each of its levels', () => {
+    // A world added later must keep these, or its levels stay locked (`keysNeeded` reads the keys by place, unlocking the world before).
+    expect(STORIES.flatMap((s) => s.worlds).sort((a, b) => a - b)).toEqual(WORLDS.map((_, i) => i));
+    for (const s of STORIES) {
+      expect(s.worlds).toEqual(s.worlds.map((_, i) => s.worlds[0] + i));
+      expect(s.keys).toHaveLength(s.worlds.length * 5);
+    }
+    expect(new Set(LEVELS.map((l) => l.id)).size).toBe(LEVELS.length);
   });
 });
 

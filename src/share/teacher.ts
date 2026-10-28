@@ -423,7 +423,11 @@ export class TeacherStore {
 
   /** CSV for a spreadsheet of `rows` (all by default); `head` are the translated column names, `names` the key and status words. */
   csv(head: string[], names: { key: (k: string) => string; status: (ok: boolean) => string }, rows: StoredResult[] = this.results, sort?: Sort): string {
-    const cell = (v: string | number) => (/[",;\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : String(v));
+    // A text from a child's link that starts like a formula stays text in a spreadsheet.
+    const cell = (v: string | number) => {
+      const s = typeof v === 'string' && /^[=+\-@\t\r]/.test(v) ? `'${v}` : String(v);
+      return /[",;\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+    };
     const body = this.sorted(rows, sort).map((r) => [r.group ?? '', r.title, r.name, r.date, r.minutes, r.accuracy, r.cpm, r.levels ?? '', names.status(mastered(r)), r.weak.map(([k, a]) => `${names.key(k)} ${a} %`).join(', '), r.intact ? '' : '!']);
     return [head, ...body].map((row) => row.map(cell).join(',')).join('\n');
   }

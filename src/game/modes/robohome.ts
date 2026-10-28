@@ -69,6 +69,8 @@ export class RoomsMode extends HeroMode {
 
   private next(): void {
     if (this.done >= this.L.count) return;
+    // Lamps a whole stage behind go, so staying a while does not pile them up.
+    this.lamps = this.lamps.filter((l) => l.x > this.scroll - this.L.vw);
     this.lamps.push({ x: this.heroX + this.gap + this.scroll, on: 0, helper: HELPERS[this.done % HELPERS.length], wave: 0 });
     this.current = this.L.core.add(this.L.word(), {});
   }

@@ -58,9 +58,14 @@ export function preload(names: string[]): Promise<void> {
 /** Pictures a level draws only when their thing comes: objects, Bolt, Melody and the astronaut. */
 const PLAY_PICTURES = /^(obj|robot|fairy|tapko-astronaut)/;
 
-/** Loads every picture a level may draw (once per visit), in the background while the child picks a player. */
+/**
+ * Downloads every picture a level may draw (once per visit), in the background while the child picks
+ * a player. Only the files come: a level decodes its own pictures when it opens (`preload`), so the
+ * memory and the work at the start do not grow with every world added.
+ */
 export function preloadPlay(): Promise<void> {
-  return preload(Object.keys(manifest.images).filter((n) => PLAY_PICTURES.test(n)));
+  const names = Object.keys(manifest.images).filter((n) => PLAY_PICTURES.test(n) && !loading.has(n));
+  return Promise.all(names.map((n) => fetch(assetUrl(`${n}.webp`), { priority: 'low' }).then((r) => r.blob()).catch(() => undefined))).then(() => undefined);
 }
 
 /** Bolt and Melody in every look and mood: the story friend may join any level. */

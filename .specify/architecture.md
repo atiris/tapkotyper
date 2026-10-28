@@ -32,8 +32,11 @@
   sprites at most 384 px, the install cache (everything except music) under about 10 MB,
   the settings screen and the translator loaded on first use, and the QR decoder fallback (`jsqr`, about 130 KB,
   48 KB gzip) loaded only when the teacher opens the camera scan and only in browsers without
-  `BarcodeDetector`; the install cache is about 6.8 MB. A scaled copy of each background tile is cached
-  at the drawn pixel size, and the HUD is written only when a value changes.
+  `BarcodeDetector`; the install cache is about 6.8 MB. A scaled copy of the current scene's background
+  tiles is cached at the drawn pixel size, and the HUD is written only when a value changes.
+- Adding worlds must not slow the game: memory and work at the start stay flat. A level decodes
+  only its own pictures when it opens; the other worlds' pictures are just downloaded in the
+  background, and only the last scene's scaled backgrounds stay in memory.
 
 ## Why
 - GitHub Pages is free and needs no server, which also guarantees privacy.

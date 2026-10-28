@@ -9,7 +9,7 @@ import type { Target } from '../typing';
 import { HeroMode } from './planet';
 
 /** The pictures this world's levels draw; a level opens when they are loaded. */
-const PICTURES = ['obj-door', 'obj-gate', 'obj-panel'];
+const PICTURES = ['obj-door', 'obj-door-open', 'obj-gate', 'obj-panel'];
 
 /** A door: the picture, else a rounded metal door that slides open. */
 function drawDoor(g: G, name: string, x: number, y: number, h: number, open: number): void {

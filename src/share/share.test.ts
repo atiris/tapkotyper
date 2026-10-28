@@ -140,10 +140,14 @@ describe('results', () => {
     // A newer hand-in of the same task is kept beside the older one.
     expect(s.add({ ...r, accuracy: 95, date: '2026-10-22' }, true)).not.toBeNull();
     s.add({ ...r, name: 'Adam, "A"' }, false);
+    s.add({ ...r, name: '=HYPERLINK("x")', date: '2026-10-20' }, true);
     await s.saved();
-    expect((await teacherStore(idb)).results).toHaveLength(3);
+    expect((await teacherStore(idb)).results).toHaveLength(4);
     const head = ['group', 'task', 'child', 'date', 'min', 'acc', 'cpm', 'levels', 'status', 'weak', 'broken'];
     const names = { key: (k: string) => k, status: (ok: boolean) => (ok ? 'ok' : 'practice') };
+    // A name that looks like a formula stays text.
+    expect(s.csv(head, names, s.results.filter((x) => x.name.startsWith('='))).split('\n')[1]).toBe(`,Zvieratá,"'=HYPERLINK(""x"")",2026-10-20,2,90,50,,ok,ô 70 %,`);
+    s.removeMany(s.results.filter((x) => x.name.startsWith('=')));
     expect(s.csv(head, names, newest(s.results)).split('\n')).toEqual([
       head.join(','),
       ',Zvieratá,"Adam, ""A""",2026-10-21,2,90,50,,ok,ô 70 %,!',

@@ -205,8 +205,8 @@ function forcedThing(): string | null {
  */
 export class AimMode extends HeroMode {
   readonly world: string;
-  /** Any thing can be thrown here: every world's own thing joins the found ones. */
-  readonly pictures = [...THINGS.flatMap((th) => th.pics), 'obj-aim-target', 'obj-aim-ring', CHICK, CRACKED, FRIED, BULB_LIT];
+  /** The pictures of the things this run can throw: the story pool, the world's own thing, the collection (or the forced ones). */
+  readonly pictures: string[];
   readonly phraseWords: number;
   readonly midOnly = true;
   protected readonly shadow = false;
@@ -261,6 +261,8 @@ export class AimMode extends HeroMode {
     this.bags = new Bags(L.rng);
     this.worldSlot = L.rng.chance(0.5) ? 1 : 2;
     this.worldAt = L.rng.int(...STAY_WORLD_EVERY);
+    const things = new Set([...storyPool(L.def.world), worldThing(L.def.world), ...this.rare(), ...this.forcedList()]);
+    this.pictures = [...[...things].flatMap((th) => th?.pics ?? []), 'obj-aim-target', 'obj-aim-ring', CHICK, CRACKED, FRIED, BULB_LIT];
   }
 
   /** The rules; with something in the collection, also how to swap the thing in the paw for one of it. */
@@ -340,11 +342,8 @@ export class AimMode extends HeroMode {
    * mistake; else the story pool in shuffled rounds.
    */
   private pickThing(): Thing {
-    if (this.forced) {
-      const ids = this.forced.split(',');
-      const list = this.forced === 'all' ? THINGS.filter((th) => th.drawn || th.pics.some(hasImage)) : THINGS.filter((th) => ids.includes(th.id));
-      if (list.length) return list[this.throws % list.length];
-    }
+    const list = this.forcedList();
+    if (list.length) return list[this.throws % list.length];
     const own = this.throws + 1 >= RARE_FROM && this.cleanSoFar ? worldThing(this.L.def.world) : null;
     if (own && this.L.staying && this.throws + 1 >= this.worldAt) {
       this.worldAt = this.throws + 1 + this.L.rng.int(...STAY_WORLD_EVERY);
@@ -355,6 +354,13 @@ export class AimMode extends HeroMode {
       return own;
     }
     return this.bags.draw('things', storyPool(this.L.def.world));
+  }
+
+  /** The things the e2e or dev build asked for, in turn. */
+  private forcedList(): Thing[] {
+    if (!this.forced) return [];
+    const ids = this.forced.split(',');
+    return this.forced === 'all' ? THINGS.filter((th) => th.drawn || th.pics.some(hasImage)) : THINGS.filter((th) => ids.includes(th.id));
   }
 
   /** The collected world things that can be thrown. */

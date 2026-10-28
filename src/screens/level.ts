@@ -8,6 +8,7 @@ import type { LevelResult } from '../game/progress';
 import type { Style } from '../game/typing';
 import { WORLD_REWARDS } from '../game/rewards';
 import { LevelRuntime } from '../game/runtime';
+import { loadMode } from '../game/modes';
 import { captureKeys, surpriseAsk, surpriseLeft, surpriseTold } from '../game/cards';
 import { surpriseOutcome, surpriseWonIn } from '../game/own-content';
 import { ownTextPhrases } from '../game/modes/practice';
@@ -63,41 +64,49 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
   // A super-obstacle has no endless form: staying plays the world's last regular level.
   const stayDef = params.stay && def.isSuper ? LEVELS.find((l) => l.world === def.world && l.index === def.index - 1) ?? def : def;
   const task = p.tasks.find((x) => x.id === params.task && !x.doneAt) ?? null;
-  let rt: LevelRuntime;
+  let rt: LevelRuntime | null = null;
+  let left = false;
   const exit = () => go('map');
-  rt = new LevelRuntime(root, stayDef, {
-    keys: params.keys,
-    chosen: params.chosen,
-    seconds: params.seconds ?? null,
-    own: task ? taskOwn(task) : undefined,
-    style: params.style,
-    stay: params.stay,
-    onExit: exit,
-    onTapko: openStats,
-    onHelp: (back, now) => openHelp(root.querySelector('.level-screen')!, back, now),
-    onBreak: (back, play) => openBreak(back, play),
-    onFinish: (result) => {
-      if (!result) return exit();
-      if (def.kind === 'aim') return showAimDone(root, result, rt.mode as AimMode, params);
-      if (def.kind === 'parrot') return showParrotDone(root, def, result, rt.mode as ParrotMode, params);
-      if (params.stay) return showStayDone(root, def, result);
-      if (task) {
-        recordTaskRun(task, result);
-        saveProfile();
-      }
-      showResults(root, def, result, params, rt.surprise, task);
-    },
+  // The level's mode comes with its own code; leaving before it is there opens nothing.
+  void loadMode(stayDef).then((makeMode) => {
+    if (left) return;
+    const runtime = rt = new LevelRuntime(root, stayDef, makeMode, {
+      keys: params.keys,
+      chosen: params.chosen,
+      seconds: params.seconds ?? null,
+      own: task ? taskOwn(task) : undefined,
+      style: params.style,
+      stay: params.stay,
+      onExit: exit,
+      onTapko: openStats,
+      onHelp: (back, now) => openHelp(root.querySelector('.level-screen')!, back, now),
+      onBreak: (back, play) => openBreak(back, play),
+      onFinish: (result) => {
+        if (!result) return exit();
+        if (def.kind === 'aim') return showAimDone(root, result, runtime.mode as AimMode, params);
+        if (def.kind === 'parrot') return showParrotDone(root, def, result, runtime.mode as ParrotMode, params);
+        if (params.stay) return showStayDone(root, def, result);
+        if (task) {
+          recordTaskRun(task, result);
+          saveProfile();
+        }
+        showResults(root, def, result, params, runtime.surprise, task);
+      },
+    });
+    if (def.kind === 'freetype' && openWorlds(p).length > 1) {
+      root.querySelector('.hud-title')!.after(roundButton('control', 'map', t('freeType.place'), () => openPlacePicker(def.world)));
+    }
+    if (def.kind === 'practice' && !params.seconds) {
+      // Untimed practice ends when the child wants: the round X, like in just typing, shows the results.
+      const end = roundButton('control', 'close', t('level.end'), () => runtime.endPractice());
+      end.dataset.tip = t('practice.backTip');
+      root.querySelector('.hud')!.prepend(end);
+    }
   });
-  if (def.kind === 'freetype' && openWorlds(p).length > 1) {
-    root.querySelector('.hud-title')!.after(roundButton('control', 'map', t('freeType.place'), () => openPlacePicker(def.world)));
-  }
-  if (def.kind === 'practice' && !params.seconds) {
-    // Untimed practice ends when the child wants: the round X, like in just typing, shows the results.
-    const end = roundButton('control', 'close', t('level.end'), () => rt.endPractice());
-    end.dataset.tip = t('practice.backTip');
-    root.querySelector('.hud')!.prepend(end);
-  }
-  return () => rt.dispose();
+  return () => {
+    left = true;
+    rt?.dispose();
+  };
 }
 
 const NAMES_FALLBACK: Record<Friend['kind'], string[]> = { dragon: ['Iskra', 'Mäta', 'Luna', 'Bubu'], robot: ['Bip', 'Zip', 'Kolík', 'Dioda'], forest: ['Pipi', 'Iskrička', 'Perko', 'Lúčik'] };

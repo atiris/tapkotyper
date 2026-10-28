@@ -31,8 +31,8 @@ import { LEVELS, WORLDS, grownCount, hasMinLength, levelOver, minActiveS, shownP
 import { type Mode, TAPKO_FEET, TAPKO_H, TAPKO_X, driftOffset } from './mode';
 import { PAW_MAX, PAW_STREAK, PAW_WORDS } from './paw';
 import { ENTER_MAX, EnterMarks } from './enter';
-import { createMode } from './modes';
-import { FreeTypeMode } from './modes/freetype';
+import type { ModeMaker } from './modes';
+import type { FreeTypeMode } from './modes/freetype';
 import { PressureValve, perChar, sayTime } from './pace';
 import { Rhythm } from './rhythm';
 import { type LevelResult, completeLevel, completeStay } from './progress';
@@ -288,7 +288,7 @@ export class LevelRuntime {
   private pawIdle = 0;
   private guideBeforePaws = true;
 
-  constructor(root: HTMLElement, readonly def: LevelDef, private opts: RuntimeOptions) {
+  constructor(root: HTMLElement, readonly def: LevelDef, makeMode: ModeMaker, private opts: RuntimeOptions) {
     const p = app.profile!;
     this.difficulty = this.core.difficulty = p.settings.difficulty;
     this.noPressure = p.settings.noTimePressure;
@@ -380,8 +380,8 @@ export class LevelRuntime {
     this.stage = new Stage(stageWrap);
     this.onStageClick = this.onStageClick.bind(this);
     this.stage.canvas.addEventListener('pointerdown', this.onStageClick);
-    this.mode = createMode(def, this);
-    this.free = this.mode instanceof FreeTypeMode ? this.mode : null;
+    this.mode = makeMode(this);
+    this.free = def.kind === 'freetype' ? this.mode as FreeTypeMode : null;
     const extra = this.mode.hud();
     if (extra) hud.querySelector('.hud-title')!.after(extra);
     hud.querySelector('.hud-title')!.after(...this.mode.rings());

@@ -164,6 +164,7 @@ test('the main gate wants its whole code without a mistake and starts again afte
   await expect(page.locator('.paw-btn')).toHaveCount(0);
   const next = () => page.locator('.kb-guide').getAttribute('data-next');
   await expect.poll(next).not.toBe('');
+  const first = (await next())!;
   for (let i = 0; i < 7; i++) {
     await typeChar(page, (await next())!);
     await page.waitForTimeout(60);
@@ -171,7 +172,9 @@ test('the main gate wants its whole code without a mistake and starts again afte
   await expect.poll(() => page.locator('.progress-fill').evaluate((e) => e.style.width)).toBe('13%');
   const expected = (await next())!;
   await page.keyboard.type(expected === 'a' ? 's' : 'a');
-  await expect.poll(() => page.locator('.progress-fill').evaluate((e) => e.style.width)).toBe('0%');
+  // The code starts again from its first key; the progress bar never goes back.
+  await expect.poll(next).toBe(first);
+  expect(await page.locator('.progress-fill').evaluate((e) => e.style.width)).toBe('13%');
   expect(await playLevel(page, false)).toMatch(/%/);
   expect(errors).toEqual([]);
 });
@@ -251,7 +254,7 @@ test('free practice with a diacritic key is played to the results card', async (
     await page.waitForTimeout(90);
   }
   expect(typed).toContain('ô');
-  await page.locator('.hud').getByRole('button', { name: 'End exercise' }).click();
+  await page.locator('.hud').getByRole('button', { name: 'Stop typing' }).click();
   await expect(page.locator('.results-card')).toBeVisible();
   expect(errors).toEqual([]);
 });
@@ -263,7 +266,8 @@ test('staying a while after a level keeps typing until Esc and leaves the stars 
   await page.locator('.map-side .btn.primary').click();
   await playLevel(page);
   const node = page.locator('.level-node').first();
-  const stars = await page.locator('.results-card .star.on').count();
+  // Whole stars only: the card shows a half star too, which is never saved.
+  const stars = await page.locator('.results-card .star.on:not([src*="half"])').count();
   // The main action keeps the focus; staying is one of the other buttons.
   await expect(page.locator('.results-card .row.center button').first()).toBeFocused();
   await page.locator('.results-card button', { hasText: 'Stay a while' }).click();
@@ -281,7 +285,7 @@ test('staying a while after a level keeps typing until Esc and leaves the stars 
   await expect(card).toContainText('%');
   await expect(card.locator('.star')).toHaveCount(0);
   await expect(card.locator('.row.center button').first()).toBeFocused();
-  await expect(card.locator('.row.center button').first()).toContainText('Map');
+  await expect(card.locator('.row.center button').first()).toContainText('Stop typing');
   await card.locator('.row.center button').first().click();
   await expect(node.locator('.mini-stars i.on')).toHaveCount(stars);
   expect(errors).toEqual([]);

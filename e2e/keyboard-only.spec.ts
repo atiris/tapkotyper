@@ -60,8 +60,8 @@ test('the whole game by keyboard only: a new player, a level, the results, endin
   const pause = page.locator('.pause-card');
   await expect(pause.getByRole('button', { name: 'Continue', exact: true })).toBeFocused();
 
-  // Ending after a key asks first, with Continue focused; End level leaves to the map.
-  await tabTo(page, 'End level');
+  // Ending after a key asks first, with Continue focused; Stop typing leaves to the map.
+  await tabTo(page, 'Stop typing');
   await page.keyboard.press('Enter');
   const ask = page.locator('.confirm-modal');
   await expect(ask).toContainText('This level will not count.');
@@ -69,9 +69,9 @@ test('the whole game by keyboard only: a new player, a level, the results, endin
   await page.keyboard.press('Enter');
   await expect(ask).toHaveCount(0);
   await expect(pause).toBeVisible();
-  await tabTo(page, 'End level');
+  await tabTo(page, 'Stop typing');
   await page.keyboard.press('Enter');
-  await tabTo(page, 'End level');
+  await tabTo(page, 'Stop typing');
   await page.keyboard.press('Enter');
   await page.locator('.map-screen').waitFor();
   expect(errors).toEqual([]);

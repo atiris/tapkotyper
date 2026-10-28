@@ -18,8 +18,10 @@ test('the star menu fills in the super player\'s progress', async ({ page }) => 
   await dialog.locator('.btn.primary').click();
   await expect(page.locator('.toast')).toHaveText('The progress is filled in.');
   // Meadow and Rocket are finished: every level has a star, 60 % of their 30 stars in all.
-  await expect(page.locator('.level-node.done')).toHaveCount(10);
-  const stars = await page.locator('.level-node.done .mini-stars i.on').count();
+  // The story levels only: the range and the parrot beside a finished world are level nodes too.
+  const levels = page.locator('.level-node.done:not(.aim-node, .parrot-node)');
+  await expect(levels).toHaveCount(10);
+  const stars = await levels.locator('.mini-stars i.on').count();
   expect(stars).toBe(18);
   expect(errors).toEqual([]);
 });

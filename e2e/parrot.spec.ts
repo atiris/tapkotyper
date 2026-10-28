@@ -60,8 +60,16 @@ test('too many mistakes send the parrot away: the round ends with its empty perc
   await page.keyboard.press('Space');
   await page.waitForFunction(() => !!document.querySelector<HTMLElement>('.kb-guide')?.dataset.next);
   // The story's first world bears five mistakes; the sixth sends the parrot off.
-  for (let i = 0; i < 6; i++) await typeChar(page, 'k');
-  await expect(page.locator('.parrot-done .bubble')).toHaveText('Your parrot flew away. Try again, slowly and carefully.');
+  // Each slip waits for a word to type (the third one sends the parrot on a short flight) and is
+  // a key other than the expected one: the words may contain k.
+  const nextKey = () => page.evaluate(() => document.querySelector<HTMLElement>('.kb-guide')?.dataset.next ?? '');
+  for (let i = 0; i < 6; i++) {
+    await expect.poll(nextKey).not.toBe('');
+    await typeChar(page, (await nextKey()) === 'k' ? 'l' : 'k');
+    await page.waitForTimeout(150);
+  }
+  // The results wait until the parrot has flown off the scene.
+  await expect(page.locator('.parrot-done .bubble')).toHaveText('Your parrot flew away. Try again, slowly and carefully.', { timeout: 15_000 });
   await expect(page.locator('.parrot-done .parrot-done-pic')).toHaveAttribute('src', /ui-act-parrot-perch/);
   await expect(page.locator('.parrot-done .btn.primary')).toContainText('Play again');
   await page.keyboard.press('Escape');

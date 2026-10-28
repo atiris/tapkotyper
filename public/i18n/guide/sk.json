@@ -523,7 +523,6 @@
     "level.progress": "Popis ukazovateľa postupu v hornej lište úrovne.",
     "level.rhythm": "Popis meradla rytmu v úrovni; {n} je počet písmen za minútu.",
     "level.keyAccuracy": "Popis okrúhleho tlačidla presnosti klávesu v cvičení; {key} je kláves, {n} percentá správne.",
-    "level.speed": "Nápis na rýchlomere vo vesmírnej hre.",
     "level.layoutHint": "Tapko, keď si hra všimne, že dieťa píše na inej klávesnici; {layout} je názov rozloženia.",
     "level.shiftOtherHand": "Tapko alebo karta nového klávesu, keď dieťa stlačilo Shift tou istou rukou ako písmeno.",
     "level.memoryWait": "Tapko, keď dieťa píše, kým slovo ešte nezmizlo, pri písaní spamäti.",

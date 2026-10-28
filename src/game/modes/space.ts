@@ -2,9 +2,8 @@ import { app, pickLine } from '../../app/app';
 import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
 import { sprite } from '../../gfx/assets';
-import { blob, drawSprite, fontFamily, type G } from '../../gfx/draw';
+import { blob, drawSprite, type G } from '../../gfx/draw';
 import { drawTapko } from '../../gfx/tapko';
-import { t } from '../../i18n/i18n';
 import { TAPKO_H, TAPKO_X } from '../mode';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
@@ -416,10 +415,6 @@ export class SpaceMode extends ApproachMode {
     g.moveTo(cx, cy);
     g.lineTo(cx + Math.cos(a) * (r - 18), cy + Math.sin(a) * (r - 18));
     g.stroke();
-    g.fillStyle = '#fff';
-    g.font = `600 15px ${fontFamily()}`;
-    g.textAlign = 'center';
-    g.fillText(t('level.speed'), cx, cy - 22);
     g.restore();
   }
 }

@@ -523,7 +523,6 @@
     "level.progress": "Tooltip of the progress bar in the level's top bar.",
     "level.rhythm": "Label of the rhythm gauge in a level; {n} is the number of letters per minute.",
     "level.keyAccuracy": "Tooltip of a key's accuracy button in practice; {key} is the key, {n} the percent typed right.",
-    "level.speed": "Label on the speedometer in the space game.",
     "level.layoutHint": "Tapko, when the game notices a different keyboard than the chosen one; {layout} is the layout's name.",
     "level.shiftOtherHand": "Tapko or the new key card, when the child pressed Shift with the same hand as the letter.",
     "level.memoryWait": "Tapko, when the child types while the word is still showing in remember-it typing.",

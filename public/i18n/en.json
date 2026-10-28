@@ -185,7 +185,6 @@
     "progress": "Progress",
     "rhythm": "Rhythm: {n} letters per minute",
     "keyAccuracy": "{key}: {n} % right",
-    "speed": "Speed",
     "layoutHint": "Your keyboard looks like {layout}. Ask a parent to switch it in the parent area.",
     "shiftOtherHand": "Press Shift with the other hand: the little finger on the side away from the letter.",
     "memoryWait": "Wait until it hides.",

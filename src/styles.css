@@ -810,8 +810,6 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 /* The target range: each weak key with a small bar of its recent accuracy. */
 .progress { flex: 1; min-width: 120px; height: 16px; border-radius: 999px; background: var(--track); overflow: hidden; }
 .progress-fill { height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, #8fd89f, var(--green)); transition: width 0.3s ease; }
-/* Space shows its own speedometer on the stage. */
-.world-space .round-btn.rhythm { visibility: hidden; }
 .stage-wrap { position: relative; flex: 1; min-height: 0; }
 .stage { position: absolute; inset: 0; display: block; }
 /* Over the DOM Tapko (same level, later in the page), under his bubble. */

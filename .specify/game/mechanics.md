@@ -22,8 +22,8 @@
 - Rain street: Bolt walks toward the sun as the rain thins.
 - Automatic growth counts only levels where the child typed at least 85 % of the targets
   (and typed accurately); a level where many targets floated by unread adds no time.
-- The speedometer (space world; elsewhere a small round rhythm gauge, calm blue to green,
-  never red) shows the current smooth typing rhythm, not raw WPM.
+- A small round rhythm gauge in the top bar (calm blue to green, never red; in the space world
+  also the rocket's speedometer, without a caption) shows the current smooth typing rhythm, not raw WPM.
 - A word the child can see can be typed at once; a target that cannot be typed yet shows
   no word.
 - Word labels never overlap: the most urgent word keeps its place, the others glide aside

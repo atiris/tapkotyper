@@ -185,7 +185,6 @@
     "progress": "Postup",
     "rhythm": "Rytmus: {n} písmen za minútu",
     "keyAccuracy": "{key}: {n} % správne",
-    "speed": "Rýchlosť",
     "layoutHint": "Tvoja klávesnica vyzerá ako {layout}. Popros rodiča, nech ju prepne v rodičovskej časti.",
     "shiftOtherHand": "Shift stlač druhou rukou: malíčkom na opačnej strane ako písmeno.",
     "memoryWait": "Počkaj, kým sa skryje.",

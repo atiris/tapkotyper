@@ -131,3 +131,12 @@ redrawn with low detail and no crystals. Tapko stands on the bank's grass line, 
 glow in their own color, the path's line replaces a line still shown, the word sits higher above
 his helmet. `obj-sign`, `obj-stone` and `obj-boulder-3` are gone. e2e: play.spec.ts passes for the
 planet; three older failures are in the backlog (renamed buttons, the gate's progress).
+
+## Follow-up - 2026-10-28
+The owner's review in the browser: calmer bands (open meadow, a path with a few crystals and
+mushrooms, the owner's own swamp bands with seams joined and placed lower), the swamp ending in an
+end piece of the near band (the owner's shore picture, cut and joined to the band) reached over
+ordinary stones, smiling stones that crack ticklishly, molehills, larger and slower crystals,
+long wooden arrows with the path names that spin up when chosen, paws that leave the crossroads
+to the child, crystals of life peeking out of a molehill with mushrooms for the slips, and the
+cradle's glow with the crystals floating above it. Word labels stay wholly on the stage everywhere.

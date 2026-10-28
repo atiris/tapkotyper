@@ -241,6 +241,29 @@ describe('crossroads', () => {
     expect((mode as any).heroX).toBeCloseTo((mode as any).slotX(slot));
   });
 
+  it('the chosen sign spins and goes last; he walks there only after it', async () => {
+    const { Tweens } = await import('../../engine/tween');
+    const L = fakeRuntime(16);
+    Object.assign(L, { tweens: new Tweens(), reduceMotion: false });
+    const mode = new CrossroadsMode(L);
+    mode.start();
+    const tick = (s: number) => { for (let i = 0; i < s / 0.05; i++) { L.tweens.update(0.05); mode.update(0.05); } };
+    for (let i = 0; i < 3; i++) {
+      typeWord(L, mode);
+      tick(1);
+    }
+    const sign = (mode as any).signs[0];
+    const from = (mode as any).heroX;
+    typeWord(L, mode);
+    tick(1.2);
+    expect((mode as any).signs).toContain(sign);
+    expect(sign.spin).toBeGreaterThan(1);
+    expect((mode as any).heroX).toBe(from);
+    tick(3);
+    expect((mode as any).signs).not.toContain(sign);
+    expect((mode as any).heroX).toBeCloseTo((mode as any).slotX(sign.slot));
+  });
+
   it('a path changes the rest of the level', async () => {
     const { roadAfter, scaleAfter } = await import('./planet-roads');
     expect(roadAfter('short').len).toBe('short');

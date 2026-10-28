@@ -1,9 +1,11 @@
 import { pickLine } from '../../app/app';
+import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
-import { drawSprite, fontFamily, type G, wordBox } from '../../gfx/draw';
+import { sprite } from '../../gfx/assets';
+import { drawSprite, fontFamily, type G } from '../../gfx/draw';
 import { t, tList } from '../../i18n/i18n';
 import type { Target } from '../typing';
-import { FEET, HeroMode, wordAbove } from './planet';
+import { HeroMode, wordAbove } from './planet';
 import { TAPKO_H } from '../mode';
 
 /**
@@ -83,18 +85,37 @@ const DIFF_WORDS: Record<Diff, number> = { easy: 1, normal: 2, hard: 3 };
 /** Five places from left to right; signposts of three heights (short, tall, middle by place), each its own picture. */
 const SLOTS = 5;
 const POSTS = [{ pic: 'obj-signpost-1', h: 170 }, { pic: 'obj-signpost-3', h: 370 }, { pic: 'obj-signpost-2', h: 270 }];
+/**
+ * Two long arrow boards (pointing right) carry the path's name: their height, where on the post they
+ * are pinned by their middle (a share of its height from the foot), how far the name sits from the
+ * middle toward the tail (the tip takes some of the board), and the room the tip and tail take.
+ */
+const ARROWS = ['obj-arrow-1', 'obj-arrow-2'];
+const ARROW_H = 44;
+const ARROW_AT = 0.6;
+const ARROW_TEXT = 0.05;
+const ARROW_ROOM = 1.6;
+/** An arrow points anywhere but straight up or down, and its name stays easy to read: up to this far (radians) from the horizontal, to the right or the left. */
+const ARROW_TURN = 0.6;
 /** Seconds a post grows, the gap between posts coming (almost together), and of a vanishing one. */
 const POST_GROW = 0.4;
 const POST_STAGGER = 0.12;
 const POST_GONE = 0.5;
+/** The chosen sign's arrow spins this long and stops pointing up, then the sign waits a moment and goes last. */
+const SPIN = 1;
+const SPIN_HOLD = 0.35;
 /** A step forward after a typed word: how far the view moves and its seconds. */
 const STEP = 150;
 const STEP_TIME = 0.6;
 /** Seconds of his walk to the chosen sign per place, and the end. */
 const WALK_PER_SLOT = 0.35;
 const END_TIME = 1.8;
-const NAME_SIZE = 24;
-const NAME_INK = '#3d3355';
+const NAME_SIZE = 22;
+/** On a road his word floats well above his head, clear of the signposts' arrows. */
+const ROAD_WORD_UP = 30;
+/** He and the posts stand in the middle of the path, not at its lower edge. */
+const FEET = VH * 0.8;
+const NAME_INK = '#3a2614';
 /** Most signs at once (five places, one is his); the first crossroads has three. */
 const SIGNS_MAX = 4;
 const SIGNS_FIRST = 3;
@@ -108,6 +129,23 @@ interface Sign {
   age: number;
   /** Seconds since it started vanishing; null while it stands. */
   gone: number | null;
+  /** Its arrow: which board, its turn off the horizontal, and whether it points left. */
+  arrow: { pic: string; rot: number; left: boolean };
+  /** Seconds since it was chosen (its arrow spins); null for the others. */
+  spin: number | null;
+}
+
+/** An arrow board while its picture is missing. */
+function arrowFallback(g: G, w: number, h: number): void {
+  g.fillStyle = '#d8a86a';
+  g.beginPath();
+  g.moveTo(-w / 2, -h / 3);
+  g.lineTo(w / 4, -h / 3);
+  g.lineTo(w / 2, 0);
+  g.lineTo(w / 4, h / 3);
+  g.lineTo(-w / 2, h / 3);
+  g.closePath();
+  g.fill();
 }
 
 /** A post while its picture is missing. */
@@ -123,7 +161,7 @@ function postFallback(g: G, w: number, h: number): void {
  * one. The typed path sets the road: word length and difficulty, more or fewer words and time.
  */
 export class CrossroadsMode extends HeroMode {
-  readonly pictures = POSTS.map((p) => p.pic);
+  readonly pictures = [...POSTS.map((p) => p.pic), ...ARROWS];
   protected readonly heroSize = TAPKO_H;
   private slot = 0;
   private road: Road = roadAfter('plain');
@@ -207,7 +245,8 @@ export class CrossroadsMode extends HeroMode {
       const kind = kinds[i];
       let word = this.askWord(PATHS[kind].ask);
       for (let k = 0; k < 8 && this.L.core.active.some((o) => o.word[0] === word[0]); k++) word = this.askWord(PATHS[kind].ask);
-      return { slot, kind, name: r.pick(tList(`story.path.${kind}.names`)), tg: this.L.core.add(word, {}), age: -i * POST_STAGGER, gone: null };
+      const arrow = { pic: r.pick(ARROWS), rot: r.range(-ARROW_TURN, ARROW_TURN), left: r.chance(0.5) };
+      return { slot, kind, name: r.pick(tList(`story.path.${kind}.names`)), tg: this.L.core.add(word, {}), age: -i * POST_STAGGER, gone: null, arrow, spin: null };
     });
     for (const s of this.signs) s.tg.selectable = false;
     this.crossings++;
@@ -248,7 +287,7 @@ export class CrossroadsMode extends HeroMode {
       if (s.gone === null) s.gone = 0;
       this.L.core.release(s.tg, false);
     }
-    sign.gone = 0;
+    sign.spin = 0;
     this.L.core.prune();
     this.L.particles.emit(this.slotX(sign.slot), FEET - POSTS[sign.slot % 3].h, 14, 'sparkle', ['#fff6a8', '#a6e3c9', '#f5a3d3'], 150, 8);
     const unknown: Unknown | undefined = sign.kind === 'unknown'
@@ -265,10 +304,9 @@ export class CrossroadsMode extends HeroMode {
     this.L.say(unknown
       ? t('story.path.unknownSaid', { len: t(`story.path.unknown.${unknown.len}`), time: t(`story.path.unknown.${unknown.time}`), diff: t(`story.path.unknown.${unknown.diff}`) })
       : pickLine(`story.path.${sign.kind}.said`), 3);
-    this.walkTo(sign.slot, () => {
-      this.signs = [];
-      this.nextWord();
-    });
+    // He watches the arrow spin and the sign go, then walks to its place.
+    this.busy = true;
+    this.L.tweens.add(this.L.reduceMotion ? 0.01 : SPIN + SPIN_HOLD + POST_GONE, () => {}, ease.linear, () => this.walkTo(sign.slot, () => this.nextWord()));
   }
 
   private walkTo(slot: number, then: () => void): void {
@@ -284,6 +322,11 @@ export class CrossroadsMode extends HeroMode {
       this.busy = false;
       then();
     });
+  }
+
+  /** The child chooses the path: the paws never type a sign. */
+  pawMay(tg: Target): boolean {
+    return !this.signs.some((s) => s.tg === tg);
   }
 
   onWrong(tg: Target | null): void {
@@ -315,9 +358,11 @@ export class CrossroadsMode extends HeroMode {
     super.update(dt);
     for (const s of this.signs) {
       s.age += dt;
+      if (s.spin !== null && s.gone === null && (s.spin += dt) >= SPIN + SPIN_HOLD) s.gone = 0;
       if (s.gone === null) s.tg.selectable = s.age >= POST_GROW;
       else s.gone += dt;
     }
+    this.signs = this.signs.filter((s) => s.gone === null || s.gone < POST_GONE);
     if (this.endT !== null) this.endT += dt;
   }
 
@@ -325,10 +370,44 @@ export class CrossroadsMode extends HeroMode {
     return { x: this.heroX, y: this.heroY - TAPKO_H * 0.85 - 20 };
   }
 
-  /** A label's x so the whole word stays on the stage. */
-  private fit(g: G, word: string, x: number): number {
-    const w = Math.min(wordBox(g, word, 40).w, this.L.vw * 0.5);
-    return Math.max(w / 2 + 10, Math.min(this.L.vw - w / 2 - 10, x));
+  /** The arrow's turn now: its own, or, once chosen, two whole turns that end pointing straight up. */
+  private arrowTurn(s: Sign): number {
+    const a = s.arrow;
+    if (s.spin === null) return a.rot;
+    // A mirrored arrow points up at a quarter turn the other way.
+    const up = a.left ? Math.PI / 2 : -Math.PI / 2;
+    const k = this.L.reduceMotion ? 1 : ease.outCubic(Math.min(1, s.spin / SPIN));
+    return a.rot + (up + Math.PI * 4 - a.rot) * k;
+  }
+
+  /**
+   * The arrow, as long as its name needs, pinned to the post by its middle and turned around it;
+   * one pointing left is mirrored, never upside down. The name runs along it and always reads upright.
+   */
+  private drawArrow(g: G, s: Sign, x: number, y: number, grow: number, alpha: number): void {
+    const a = s.arrow, rot = this.arrowTurn(s);
+    g.save();
+    g.font = `700 ${NAME_SIZE}px ${fontFamily()}`;
+    const len = Math.max(ARROW_H * 4, g.measureText(s.name).width * ARROW_ROOM) * grow;
+    g.restore();
+    const img = sprite(a.pic);
+    const natural = ARROW_H * grow * (img ? img.naturalWidth / img.naturalHeight : 4);
+    // Pinned to the post by its middle, it turns around it.
+    drawSprite(g, a.pic, x, y, ARROW_H * grow, { flip: a.left, rot, sx: len / natural, alpha }, arrowFallback);
+    if (s.spin !== null || grow < 1) return;
+    // The way the arrow points: to the right, or mirrored to the left; the name sits a little toward its tail.
+    const dx = (a.left ? -1 : 1) * Math.cos(rot), dy = (a.left ? -1 : 1) * Math.sin(rot);
+    const along = -len * ARROW_TEXT;
+    g.save();
+    g.globalAlpha *= alpha;
+    g.translate(x + dx * along, y + dy * along);
+    g.rotate(Math.atan2(dy, dx) + (dx < 0 ? Math.PI : 0));
+    g.font = `700 ${NAME_SIZE}px ${fontFamily()}`;
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+    g.fillStyle = NAME_INK;
+    g.fillText(s.name, 0, 1);
+    g.restore();
   }
 
   render(g: G): void {
@@ -340,22 +419,11 @@ export class CrossroadsMode extends HeroMode {
       if (alpha <= 0) continue;
       const x = this.slotX(s.slot), top = FEET - post.h;
       drawSprite(g, post.pic, x, FEET + 6, post.h, { ay: 1, sy: grow, alpha }, postFallback);
-      if (s.gone !== null || grow < 1) continue;
-      const lx = this.fit(g, s.tg.word, x);
-      this.L.label(g, s.tg, lx, top - 28);
-      g.save();
-      g.font = `700 ${NAME_SIZE}px ${fontFamily()}`;
-      g.textAlign = 'center';
-      g.textBaseline = 'middle';
-      g.lineJoin = 'round';
-      g.lineWidth = 5;
-      g.strokeStyle = '#fff';
-      g.strokeText(s.name, lx, top - 75);
-      g.fillStyle = NAME_INK;
-      g.fillText(s.name, lx, top - 75);
-      g.restore();
+      this.drawArrow(g, s, x, FEET + 6 - post.h * ARROW_AT * grow, grow, alpha);
+      if (s.gone !== null || s.spin !== null || grow < 1) continue;
+      this.L.label(g, s.tg, x, top - 28);
     }
-    if (this.current && !this.current.done && !this.busy) this.L.label(g, this.current, this.fit(g, this.current.word, this.heroX), wordAbove(FEET));
+    if (this.current && !this.current.done && !this.busy) this.L.label(g, this.current, this.heroX, wordAbove(FEET) - ROAD_WORD_UP);
     this.drawHero(g);
   }
 

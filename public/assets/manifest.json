@@ -588,6 +588,10 @@
    "w": 1376,
    "h": 768
   },
+  "bg-planet-swamp-near-end": {
+   "w": 1920,
+   "h": 714
+  },
   "bg-raintown-far": {
    "w": 1376,
    "h": 768
@@ -860,6 +864,14 @@
    "w": 170,
    "h": 384
   },
+  "obj-arrow-1": {
+   "w": 384,
+   "h": 105
+  },
+  "obj-arrow-2": {
+   "w": 384,
+   "h": 130
+  },
   "obj-asteroid-big": {
    "w": 384,
    "h": 376
@@ -1116,14 +1128,6 @@
    "w": 337,
    "h": 384
   },
-  "obj-life-crystal": {
-   "w": 384,
-   "h": 383
-  },
-  "obj-life-crystal-lit": {
-   "w": 384,
-   "h": 383
-  },
   "obj-lily": {
    "w": 384,
    "h": 312
@@ -1146,11 +1150,11 @@
   },
   "obj-mound-1": {
    "w": 384,
-   "h": 131
+   "h": 209
   },
   "obj-mound-2": {
    "w": 384,
-   "h": 125
+   "h": 195
   },
   "obj-mouse": {
    "w": 357,
@@ -1227,10 +1231,6 @@
   "obj-planet-5": {
    "w": 384,
    "h": 384
-  },
-  "obj-planet-bank": {
-   "w": 384,
-   "h": 135
   },
   "obj-poppy-bud": {
    "w": 177,
@@ -1350,15 +1350,15 @@
   },
   "obj-swamp-stone": {
    "w": 384,
-   "h": 157
+   "h": 291
   },
   "obj-swamp-stone-broken": {
-   "w": 384,
-   "h": 155
+   "w": 345,
+   "h": 384
   },
   "obj-swamp-stone-cracked": {
    "w": 384,
-   "h": 157
+   "h": 291
   },
   "obj-timetable": {
    "w": 249,
@@ -1733,8 +1733,8 @@
    "h": 384
   },
   "ui-map-planet": {
-   "w": 341,
-   "h": 384
+   "w": 384,
+   "h": 380
   },
   "ui-map-raintown": {
    "w": 326,

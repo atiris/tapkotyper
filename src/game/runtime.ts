@@ -86,6 +86,8 @@ interface Rect {
 /** Space kept between two labels, and the move from which a line points back to the object. */
 const LABEL_GAP = 6;
 const LABEL_LINE_FROM = 30;
+/** A label keeps at least this far from the stage's edges, so the whole word and its bubble stay in sight. */
+const LABEL_EDGE = 8;
 /** A long label shrinks to fit, down to this font size. */
 const LABEL_MIN_SIZE = 28;
 /** Seconds every target gets to be read. */
@@ -427,7 +429,7 @@ export class LevelRuntime {
     const p = app.profile!;
     // The level opens with every picture its mode, Tapko and the friends draw, so none shows its fallback first;
     // the other worlds' pictures keep loading in the background (main.ts).
-    const own = [`bg-${this.backdrop}-far`, `bg-${this.backdrop}${this.ground}-mid`, `bg-${this.backdrop}${this.ground}-near`, ...this.mode.pictures, ...tapkoPictures(p.companion), ...friendPictures()];
+    const own = [`bg-${this.backdrop}-far`, `bg-${this.backdrop}${this.ground}-mid`, `bg-${this.backdrop}${this.ground}-near`, `bg-${this.backdrop}${this.ground}-near-end`, ...this.mode.pictures, ...tapkoPictures(p.companion), ...friendPictures()];
     await Promise.race([preload(own), new Promise((r) => setTimeout(r, PICTURES_WAIT_S * 1000))]);
     if (this.disposed) return;
     audio.music(this.def.kind === 'practice' ? app.menuTrack : this.mode.world);
@@ -1075,7 +1077,8 @@ export class LevelRuntime {
   private startPaws(): boolean {
     const p = app.profile!;
     if (!this.pawsAllowed || !this.started || this.paused || this.finished || this.pawWords) return false;
-    if (p.progress.pawHelp <= 0 || !this.core.focus()) return false;
+    const focus = this.core.focus();
+    if (p.progress.pawHelp <= 0 || !focus || !this.mode.pawMay(focus)) return false;
     p.progress.pawHelp--;
     saveProfile();
     this.pawWords = PAW_WORDS;
@@ -1110,6 +1113,8 @@ export class LevelRuntime {
       if ((this.pawIdle += 0.2) > 4) this.stopPaws();
       return;
     }
+    // A decision waits: the paws stop and the child chooses.
+    if (!this.mode.pawMay(tg)) return this.stopPaws();
     this.pawIdle = 0;
     const ch = tg.word[tg.typed];
     if (tg.masked) this.core.reveal(tg);
@@ -1356,7 +1361,7 @@ export class LevelRuntime {
     if (this.paused && !this.stage.dirty) return;
     const g = this.stage.begin();
     const drift = this.mode.drift;
-    drawBackground(g, this.backdrop, this.stage.vw, this.mode.scroll, !this.reduceMotion, this.mode.midOnly, drift && { layer: drift.layer, offset: driftOffset(drift, this.elapsed, !this.reduceMotion) }, this.ground);
+    drawBackground(g, this.backdrop, this.stage.vw, this.mode.scroll, !this.reduceMotion, this.mode.midOnly, drift && { layer: drift.layer, offset: driftOffset(drift, this.elapsed, !this.reduceMotion) }, this.ground, this.def.rescue ? null : this.mode.nearEnd);
     if (this.robot) this.drawBolt(g);
     if (this.fairy) this.drawMelody(g);
     this.labels = [];
@@ -1405,6 +1410,9 @@ export class LevelRuntime {
       const full = wordBox(g, l.tg.word, l.size, icon).w;
       if (full > room) l.size = Math.max(LABEL_MIN_SIZE, Math.min(l.size, l.size * room / full));
       const { w, h } = wordBox(g, l.tg.word, l.size, icon);
+      // A word near an edge moves inward: the whole word is always in sight.
+      l.x = Math.max(w / 2 + LABEL_EDGE, Math.min(this.vw - w / 2 - LABEL_EDGE, l.x));
+      l.y = Math.max(h / 2 + LABEL_EDGE, Math.min(VH - h / 2 - LABEL_EDGE, l.y));
       const x0 = l.x - w / 2 - LABEL_GAP, x1 = l.x + w / 2 + LABEL_GAP;
       const clear = (dy: number) => placed.every((b) => x1 <= b.x0 || x0 >= b.x1 || l.y + dy + h / 2 + LABEL_GAP <= b.y0 || l.y + dy - h / 2 - LABEL_GAP >= b.y1);
       let want = 0;

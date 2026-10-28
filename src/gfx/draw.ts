@@ -159,20 +159,51 @@ function fittedTile(tile: HTMLImageElement, px: number): HTMLCanvasElement | HTM
   return c;
 }
 
-/** Draws a background layer at full screen height, repeated horizontally by `offset`. */
-function tiled(g: G, img: HTMLImageElement, vw: number, offset: number): void {
+/** Draws a background layer at full screen height, repeated horizontally by `offset`; up to the layer's x `end` only, when given. */
+function tiled(g: G, img: HTMLImageElement, vw: number, offset: number, end = Infinity): void {
   const s = VH / img.naturalHeight;
   const tile = fittedTile(img, Math.round(VH * g.getTransform().d));
   const w = img.naturalWidth * s, h = img.naturalHeight * s;
   const y = VH - h;
   // Sub-pixel positions: rounding made slow layers move in visible jumps.
-  for (let x = -(((offset % w) + w) % w); x < vw; x += w) g.drawImage(tile, x, y, w + 1, h);
+  for (let x = -(((offset % w) + w) % w); x < Math.min(vw, end - offset); x += w) g.drawImage(tile, x, y, w + 1, h);
+}
+
+/** Where the end piece's flat part starts (a share of its width); it repeats from there, every other copy mirrored. */
+const END_FLAT = 0.78;
+
+/**
+ * The near band's end piece (`bg-<world><ground>-near-end`) from the layer's x `at` on (a tile
+ * boundary, its first columns are the band's own), then its flat part again and again to the stage's
+ * right edge, every other copy mirrored so each edge meets its own mirror image.
+ */
+function nearEnd(g: G, img: HTMLImageElement, vw: number, offset: number, at: number): void {
+  const s = VH / img.naturalHeight;
+  const w = img.naturalWidth * s, h = img.naturalHeight * s, x0 = at - offset;
+  if (x0 >= vw) return;
+  g.drawImage(img, x0, VH - h, w + 1, h);
+  const sx = img.naturalWidth * END_FLAT, sw = img.naturalWidth - sx, dw = w * (1 - END_FLAT);
+  for (let x = x0 + w - 1, i = 0; x < vw; x += dw - 1, i++) {
+    g.save();
+    g.translate(x, VH - h);
+    // The first copy is mirrored: its left edge is the piece's own right edge.
+    if (i % 2 === 0) {
+      g.translate(dw, 0);
+      g.scale(-1, 1);
+    }
+    g.drawImage(img, sx, 0, sw, img.naturalHeight, 0, 0, dw, h);
+    g.restore();
+  }
 }
 
 /** Three-layer parallax background of a world; `scroll` grows as the scene moves forward; with `midOnly` just the middle strip follows it. */
 /** `drift` moves one band on its own by `offset` on top of the scroll. */
-/** The world's layers; `ground` picks another middle and near band of the world (the planet's swamp: `-swamp`), the far one stays. */
-export function drawBackground(g: G, world: string, vw: number, scroll: number, motion = true, midOnly = false, drift: { layer: 'mid' | 'near'; offset: number } | null = null, ground = ''): void {
+/**
+ * The world's layers; `ground` picks another middle and near band of the world (the planet's swamp:
+ * `-swamp`), the far one stays; `end` is the near layer's x where the band ends in its end piece (the
+ * swamp's bank), null where it goes on.
+ */
+export function drawBackground(g: G, world: string, vw: number, scroll: number, motion = true, midOnly = false, drift: { layer: 'mid' | 'near'; offset: number } | null = null, ground = '', end: number | null = null): void {
   const still = midOnly || !motion;
   const midDrift = drift?.layer === 'mid' ? drift.offset : 0, nearDrift = drift?.layer === 'near' ? drift.offset : 0;
   const pal = PALETTES[world] ?? PALETTES.meadow;
@@ -200,8 +231,12 @@ export function drawBackground(g: G, world: string, vw: number, scroll: number, 
   }
   const near = sprite(`bg-${world}${ground}-near`);
   // The space's near rocks drift at half speed, calmer behind the words.
-  if (near) tiled(g, near, vw, (still ? 0 : scroll * (world === 'space' ? 0.5 : 1)) + nearDrift);
-  else if (world !== 'space') {
+  const nearAt = (still ? 0 : scroll * (world === 'space' ? 0.5 : 1)) + nearDrift;
+  const endPiece = end === null ? null : sprite(`bg-${world}${ground}-near-end`);
+  if (near) {
+    tiled(g, near, vw, nearAt, endPiece ? end! : Infinity);
+    if (endPiece) nearEnd(g, endPiece, vw, nearAt, end!);
+  } else if (world !== 'space') {
     hills(g, vw, (midOnly ? 0 : scroll) + nearDrift, VH * 0.82, 30, pal.hills[1]);
     if (world === 'rescue') lookoutFlag(g, vw, (still ? 0 : scroll) + nearDrift, pal.hills[1], pal.accent);
   }

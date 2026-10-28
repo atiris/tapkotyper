@@ -1,24 +1,22 @@
 import { pickLine } from '../../app/app';
 import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
-import { sprite } from '../../gfx/assets';
 import { drawSprite, fontFamily, type G, wordBox } from '../../gfx/draw';
 import { t } from '../../i18n/i18n';
 import { Mode, TAPKO_H, TAPKO_X } from '../mode';
 import type { Target } from '../typing';
-import { lifeCrystalFallback } from './planet';
 
 /** The three kinds of crystal, each with its cracked picture, and their colors while the pictures are missing. */
-const CRYSTALS = ['obj-crystal-amber', 'obj-crystal-rose', 'obj-crystal-aqua'];
+export const CRYSTALS = ['obj-crystal-amber', 'obj-crystal-rose', 'obj-crystal-aqua'];
 const CRYSTAL_COLOR: Record<string, string> = { 'obj-crystal-amber': '#f2b65a', 'obj-crystal-rose': '#f3b3be', 'obj-crystal-aqua': '#9ed8e2' };
 const MOUNDS = ['obj-mound-1', 'obj-mound-2'];
 /** A big crystal shows about 30 % of Tapko's height above its mound; a mound's height. */
-const CRYSTAL_H = 88;
-const MOUND_H = 58;
+const CRYSTAL_H = 114;
+const MOUND_H = 72;
 /** Seconds a crystal grows, flies into the pocket, lies cracked before it is gone, and a mound rests after. */
-const GROW = 1.4;
+const GROW = 2.6;
 const FLY = 0.7;
-const CRACKED = 1.4;
+const CRACKED = 2.4;
 const REST = 1;
 /** Where a word starts above its crystal, as a share of the height. */
 const WORD_START = 0.1;
@@ -122,13 +120,13 @@ export class CrystalsMode extends Mode {
     const n = Math.max(3, Math.min(5, Math.floor((right - left) / 190) + 1));
     for (let i = 0; i < n; i++) {
       const x = left + ((right - left) * i) / (n - 1) + r.range(-18, 18);
-      this.mounds.push({ x, y: VH * r.range(0.95, 0.99), pic: r.pick(MOUNDS), flip: r.chance(0.5), crystal: null, rest: r.range(0, 1.5) });
+      this.mounds.push({ x, y: VH * r.range(0.9, 0.98), pic: r.pick(MOUNDS), flip: r.chance(0.5), crystal: null, rest: r.range(0, 1.5) });
     }
   }
 
-  /** Where the crystal's foot is: in the mound's dip, a bit inside, so the mound covers it. */
+  /** Where the crystal's foot is: in the molehill's hollow near its top, so the heap covers it. */
   private foot(m: Mound): number {
-    return m.y - MOUND_H * 0.62;
+    return m.y - MOUND_H * 0.86;
   }
 
   private size(c: Crystal): number {
@@ -277,17 +275,92 @@ const FIZZLE = 1.3;
 const LIGHT = 0.8;
 const NEXT_SPELL = 1.3;
 const TAKE = 1.2;
-const LIFE_SIZE = 230;
 const SPELL_INK = '#4a3a6c';
+/** The slips left: small mushrooms on the panel's top edge, their height, and seconds a lost one takes to go. */
+const SHROOM_H = 26;
+const SHROOM_GONE = 0.5;
+
+/** The three crystals of life: each kind, its place beside the middle one, its height and its lean (heights of the middle one: 1). */
+const LIFE = [
+  { pic: CRYSTALS[0], dx: -0.36, h: 0.78, rot: -0.2 },
+  { pic: CRYSTALS[1], dx: 0, h: 1, rot: 0 },
+  { pic: CRYSTALS[2], dx: 0.36, h: 0.78, rot: 0.2 },
+];
+/** A crystal still asleep: grey and dull. */
+const ASLEEP = 'saturate(0.15) brightness(0.8)';
 
 /**
- * Planet 4, the spells (copy twist): three dark crystals of life stand on the right. A spell is a row
- * of words on the panel in the middle, typed left to right; at its fourth slip it breaks and starts
- * again from its first word. A spell cast lights the next third of the crystals with a shout; when
- * all three glow, they fly to Tapko and the level ends.
+ * The three crystals of life at (x, y), the middle one `size` tall, their feet at y: each asleep (grey)
+ * or glowing as `lit` says (0..1), each turned a little more while it shakes (`shake`, radians).
+ */
+export function drawLifeCrystals(g: G, x: number, y: number, size: number, lit: number[], shake: number[] = [0, 0, 0]): void {
+  LIFE.forEach((c, i) => {
+    const cx = x + c.dx * size, h = c.h * size, k = lit[i];
+    if (k > 0) {
+      const r = h * 0.9, cy = y - h * 0.55;
+      g.save();
+      const glow = g.createRadialGradient(cx, cy, 2, cx, cy, r);
+      glow.addColorStop(0, `rgba(255,244,190,${0.8 * k})`);
+      glow.addColorStop(1, 'rgba(255,244,190,0)');
+      g.fillStyle = glow;
+      g.fillRect(cx - r, cy - r, r * 2, r * 2);
+      g.restore();
+    }
+    const fall = crystalFallback(CRYSTAL_COLOR[c.pic]);
+    const o = { ay: 1, rot: c.rot + shake[i] };
+    if (k < 1) {
+      g.save();
+      g.filter = ASLEEP;
+      drawSprite(g, c.pic, cx, y, h, { ...o, alpha: 1 - k }, fall);
+      g.restore();
+    }
+    if (k > 0) drawSprite(g, c.pic, cx, y, h, { ...o, alpha: k }, fall);
+  });
+}
+
+/** A small mushroom for the slips left, its foot at (x, y). */
+function drawShroom(g: G, x: number, y: number, h: number, alpha: number): void {
+  if (alpha <= 0 || h <= 0) return;
+  g.save();
+  g.globalAlpha *= alpha;
+  g.lineWidth = 2;
+  g.strokeStyle = '#5a3d2b';
+  g.fillStyle = '#fff1d6';
+  g.beginPath();
+  g.roundRect(x - h * 0.14, y - h * 0.62, h * 0.28, h * 0.62, h * 0.1);
+  g.fill();
+  g.stroke();
+  g.fillStyle = '#c8553a';
+  g.beginPath();
+  g.ellipse(x, y - h * 0.62, h * 0.48, h * 0.38, 0, Math.PI, 0);
+  g.closePath();
+  g.fill();
+  g.stroke();
+  g.fillStyle = '#fff1d6';
+  for (const [dx, dy, r] of [[-0.2, -0.78, 0.08], [0.16, -0.84, 0.07], [0.02, -0.7, 0.05]]) {
+    g.beginPath();
+    g.arc(x + dx * h, y + dy * h, r * h, 0, Math.PI * 2);
+    g.fill();
+  }
+  g.restore();
+}
+
+/** The crystals of life peek out of a big molehill on the right: its height, and the middle crystal's. */
+const LIFE_MOUND_H = 120;
+const LIFE_SIZE = 150;
+/** Now and then one crystal shakes: the pause between, and its seconds. */
+const SHAKE_EVERY = [2, 5];
+const SHAKE_TIME = 0.4;
+
+/**
+ * Planet 4, the spells (copy twist): three sleeping crystals of life peek out of a molehill on the
+ * right. A spell is a row of words on the panel in the middle, typed left to right; three small
+ * mushrooms on the panel are the slips it takes, one goes at each slip, and at the fourth slip the
+ * spell breaks and a new spell comes. A spell cast lights the next crystal with a shout; when all
+ * three glow, they fly to Tapko and the level ends.
  */
 export class SpellMode extends Mode {
-  readonly pictures = ['obj-life-crystal', 'obj-life-crystal-lit'];
+  readonly pictures = [...CRYSTALS, 'obj-mound-2'];
   readonly world = 'planet';
   readonly phraseWords = 1;
   private words: string[] = [];
@@ -297,7 +370,13 @@ export class SpellMode extends Mode {
   /** Words of the cast spells, and the spells cast. */
   private doneWords = 0;
   private cast = 0;
-  /** Seconds since each third started glowing (-1: dark). */
+  /** Seconds since each slip took a mushroom (-1: still there). */
+  private shroomGone = [-1, -1, -1];
+  /** Which crystal shakes, its seconds left, and the seconds until the next one does. */
+  private shaking = -1;
+  private shakeT = 0;
+  private shakeIn = 3;
+  /** Seconds since each crystal started glowing (-1: dark). */
   private light = [-1, -1, -1];
   /** Seconds until the broken spell starts again, or the next one comes; -1: none. */
   private fizzle = -1;
@@ -331,6 +410,7 @@ export class SpellMode extends Mode {
   private begin(): void {
     this.at = 0;
     this.slips = 0;
+    this.shroomGone = [-1, -1, -1];
     this.current = this.L.core.add(this.words[0], {});
   }
 
@@ -356,6 +436,8 @@ export class SpellMode extends Mode {
 
   onWrong(tg: Target | null): void {
     if (!this.current || tg !== this.current) return;
+    // Each slip takes a mushroom, from the left.
+    if (this.slips < SPELL_SLIPS) this.shroomGone[SPELL_SLIPS - 1 - this.slips] = 0;
     if (++this.slips <= SPELL_SLIPS) return;
     // The fourth slip: the spell fizzles and starts again from its first word.
     this.L.core.release(this.current, false);
@@ -371,7 +453,19 @@ export class SpellMode extends Mode {
 
   update(dt: number): void {
     for (let i = 0; i < SPELLS; i++) if (this.light[i] >= 0) this.light[i] += dt;
-    if (this.fizzle >= 0 && (this.fizzle -= dt) < 0) this.begin();
+    for (let i = 0; i < SPELL_SLIPS; i++) if (this.shroomGone[i] >= 0) this.shroomGone[i] += dt;
+    // Now and then one of the crystals gives a little shake.
+    if (this.shaking >= 0 && (this.shakeT -= dt) <= 0) this.shaking = -1;
+    if (this.shaking < 0 && (this.shakeIn -= dt) <= 0) {
+      this.shaking = this.L.rng.int(0, SPELLS - 1);
+      this.shakeT = SHAKE_TIME;
+      this.shakeIn = this.L.rng.range(SHAKE_EVERY[0], SHAKE_EVERY[1]);
+    }
+    // A broken spell is gone: a new one of the same length comes.
+    if (this.fizzle >= 0 && (this.fizzle -= dt) < 0) {
+      this.words = this.words.map(() => this.L.word(6, 1));
+      this.begin();
+    }
     if (this.pause >= 0 && (this.pause -= dt) < 0) {
       if (this.cast < SPELLS) this.spell();
       else {
@@ -383,7 +477,7 @@ export class SpellMode extends Mode {
     if (this.take !== null) this.take += dt;
   }
 
-  /** The crystals' foot on the right. */
+  /** The molehill's foot on the right. */
   private crystal(): { x: number; y: number } {
     return { x: this.L.vw - 150, y: VH * 0.95 };
   }
@@ -426,10 +520,10 @@ export class SpellMode extends Mode {
     g.fill();
     g.stroke();
     g.restore();
-    // The slips the spell still takes: small sparks in the panel's top right corner.
+    // The slips the spell still takes: small mushrooms growing from the panel's top edge; a lost one shrinks away.
     for (let i = 0; i < SPELL_SLIPS; i++) {
-      const on = i < SPELL_SLIPS - this.slips;
-      rimmed(g, '✦', p.x1 - 30 - i * 30, p.y - h / 2 + 24, 26, on ? '#e0a92e' : '#cfc8dc');
+      const k = this.shroomGone[i] < 0 ? 0 : Math.min(1, this.shroomGone[i] / SHROOM_GONE);
+      drawShroom(g, p.x1 - 40 - i * 34, p.y - h / 2 + 3, SHROOM_H * (1 - k * 0.6), 1 - k);
     }
     if (this.fizzle >= 0 || this.pause >= 0) return;
     // Each line is centred in the panel.
@@ -452,42 +546,23 @@ export class SpellMode extends Mode {
     });
   }
 
-  /** The dark crystals, each lit third glowing over them; at the end they fly to Tapko. */
+  /** The crystals peeking out of their molehill, each lit one glowing; at the end they fly to Tapko. */
   private drawCrystals(g: G): void {
     const c = this.crystal();
-    let x = c.x, y = c.y, size = LIFE_SIZE;
-    if (this.take !== null) {
-      const k = ease.inOutQuad(Math.min(1, this.take / TAKE));
-      const tx = TAPKO_X + 30, ty = VH - TAPKO_H * 0.35;
-      x = c.x + (tx - c.x) * k;
-      y = c.y + (ty - c.y) * k - Math.sin(k * Math.PI) * 120;
-      size = LIFE_SIZE * (1 - 0.8 * k);
-      if (k >= 1) return;
+    const lit = this.light.map((t) => (t < 0 ? 0 : Math.min(1, t / LIGHT)));
+    const shake = [0, 1, 2].map((i) => (i === this.shaking ? Math.sin(this.t * 40) * 0.06 * (this.shakeT / SHAKE_TIME) : 0));
+    if (this.take === null) {
+      drawLifeCrystals(g, c.x, c.y - LIFE_MOUND_H * 0.55, LIFE_SIZE, lit, shake);
+      drawSprite(g, 'obj-mound-2', c.x, c.y, LIFE_MOUND_H, { ay: 1 }, moundFallback);
+      return;
     }
-    const img = sprite('obj-life-crystal');
-    const w = size * (img ? img.naturalWidth / img.naturalHeight : 1);
-    for (let i = 0; i < SPELLS; i++) {
-      if (this.light[i] < 0) continue;
-      const a = Math.min(1, this.light[i] / LIGHT);
-      const gx = x - w / 2 + (w * (i + 0.5)) / SPELLS, gy = y - size * (i === 1 ? 0.6 : 0.45);
-      g.save();
-      const glow = g.createRadialGradient(gx, gy, 4, gx, gy, size * 0.45);
-      glow.addColorStop(0, `rgba(255,240,170,${0.7 * a})`);
-      glow.addColorStop(1, 'rgba(255,240,170,0)');
-      g.fillStyle = glow;
-      g.fillRect(gx - size * 0.45, gy - size * 0.45, size * 0.9, size * 0.9);
-      g.restore();
+    // They rise out of the molehill and fly to Tapko, shrinking.
+    const k = ease.inOutQuad(Math.min(1, this.take / TAKE));
+    if (k < 1) {
+      const fx = c.x, fy = c.y - LIFE_MOUND_H * 0.55, tx = TAPKO_X + 30, ty = VH - TAPKO_H * 0.35;
+      drawLifeCrystals(g, fx + (tx - fx) * k, fy + (ty - fy) * k - Math.sin(k * Math.PI) * 120, LIFE_SIZE * (1 - 0.8 * k), lit);
     }
-    drawSprite(g, 'obj-life-crystal', x, y, size, { ay: 0.95 }, lifeCrystalFallback(false));
-    for (let i = 0; i < SPELLS; i++) {
-      if (this.light[i] < 0) continue;
-      g.save();
-      g.beginPath();
-      g.rect(x - w / 2 + (w * i) / SPELLS, y - size * 1.2, w / SPELLS, size * 1.4);
-      g.clip();
-      drawSprite(g, 'obj-life-crystal-lit', x, y, size, { ay: 0.95, alpha: Math.min(1, this.light[i] / LIGHT) }, lifeCrystalFallback(true));
-      g.restore();
-    }
+    drawSprite(g, 'obj-mound-2', c.x, c.y, LIFE_MOUND_H, { ay: 1 }, moundFallback);
   }
 
   progress(): number {

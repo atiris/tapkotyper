@@ -98,26 +98,43 @@ gives you a wreath"), never about the character as someone else.
 3. **New Planet** (the dragons' planet) - its Crystal of Life lost its light, and Tapko brings
    it back. The planet looks almost like the Earth (green hills, a river), with giant mushroom
    trees, big pale crystals and small orange sawtooth clouds; one far background for the world
-   and two sets of closer bands: a swamp (levels 1 and 5) and a meadow with mushroom forest,
-   glowing bulb plants and crystals (levels 2 to 4 and the side activities). Tapko is as big
-   as on the meadow and stands as low; the word he types is above his head, never over him.
+   and two sets of closer bands with little detail, so the game's things stand out: a swamp of
+   calm blue-green water with mossy islands, reeds and a willow (levels 1 and 5), and a meadow of
+   open grass with a few trees and mushroom trees and a sandy path in front with about five small
+   crystals and mushrooms along its upper edge per screen (levels 2 to 4 and the side
+   activities). The closer bands sit high enough that much of them shows, with plain ground under
+   the path. Tapko is as big as on the meadow; the word he types is well above his head, never
+   over him or touching it.
    1 the swamp after the landing (waiting words, a calm minute): one word at a time above him,
    a ring on the water where the next stone comes; typed, the stone is there and he jumps onto
-   it, the view glides after him. After the last stone the grassy bank comes, he jumps onto it
-   and says he can see the meadow and looks forward to it.
-   2 the meadow's crystals (a stream): five mounds (fewer on a narrow screen); a crystal of one
-   of three kinds, turned a little its own way, grows out from behind a mound, stays big (about
-   30 % of Tapko's height) and cracks. Its word shows high above it as it starts and sinks to
+   it, the view glides after him. The stones are round mossy stones with a smiling face and
+   nothing under them, and they lie at a little different heights; he lands two thirds up a
+   stone. He moves toward the right edge as the level goes on. When about nine tenths of the
+   level are done (or its words are, with fewer than ten seconds left), the swamp band ends in
+   its end piece just past the right edge (its water turns into a meadow shore, which runs on past
+   the edge); the words go on stone by stone and the last one leads onto the grass, where he walks
+   a little way in and says he can see the meadow and looks forward to it.
+   2 the meadow's crystals (a stream): five molehills (fewer on a narrow screen), lumpy heaps
+   with pebbles at their foot that sit anywhere low on the ground; a crystal of one of three kinds,
+   turned a little its own way and glowing softly in its own color, grows slowly out from
+   behind a molehill, stays big (about 40 % of Tapko's height) and cracks; a cracked one stays
+   a moment longer before it fades. Its word shows high above it as it starts and sinks to
    its tip; typed in time, the crystal flies into Tapko's pocket (the rocket needs this energy
    for the way home); not typed, it cracks, its word goes, it fades and later a new one grows
    there. Only collected crystals count; the end says how many he has.
-   3 crossroads: five places from left to right; Tapko's words come one at a time above him
+   3 crossroads: five places from left to right on the path, he and the posts in the middle of
+   it; Tapko's words come one at a time above him
    and none can be skipped, each typed word a step on. At a crossroads his word goes and up to
    four signposts (three at the first one) grow almost together in the other places: posts of
    three heights, alternated so that no two within two places share one, each with its
-   activation word on top and the path's name above it. A slip inside a sign's word makes that
+   activation word on top. A slip inside a sign's word makes that
    sign vanish; the last one left must be typed without a slip (a slip starts its word again).
-   He walks to the typed sign's place and the road goes on there. The paths: an ordinary path
+   Each post carries a long wooden arrow board (two kinds) pinned by its middle, with the path's
+   name written along it, as long as the name needs, turned around its middle its own way (never
+   straight up or down, the name always upright). The paws never type a sign: at a crossroads
+   they stop and the child chooses. The chosen sign's arrow spins and stops pointing up, the
+   other signs go and that one vanishes last; then he walks to its place and the road goes on
+   there. The paths: an ordinary path
    (cesta, chodník, alej...; ordinary words), a shortcut (a harder word; shorter words, a bit
    less time and fewer words), a fast path (harder still; short words, the next crossroads
    sooner, less time), a teleport (an extreme word; far fewer words and much less time), a
@@ -127,20 +144,22 @@ gives you a wreath"), never about the character as someone else.
    twice in a row, and one is extreme), the unknown road (word length, road length and word
    difficulty each drawn at random, and Tapko says what happened) and the stony practice path
    (its words train the keys the child still practises, as the target range does).
-   4 spells (copy twist): three dark crystals of life stand on the right; a spell of several
-   words is written on a panel in the middle, word by word. It takes three slips (sparks on the
-   panel show what is left); the fourth breaks it and it starts again from its first word. Each
-   spell cast lights the next third of the crystals with a shout ("Jupí!", "Zipp!", "Juchú!");
-   all three lit, the crystals fly to Tapko. The spells are long enough to fill the level's
+   4 spells (copy twist): three crystals of life of three kinds, asleep (grey), peek out of a
+   big molehill on the right, and now and then one of them gives a little shake. A spell of
+   several words is written on a panel in the middle, word by word. It takes three slips: three
+   small mushrooms grow from the panel's top edge and one goes at each slip; the fourth slip
+   breaks the spell and a new spell comes. Each spell cast lights the next crystal with a shout
+   ("Jupí!", "Zipp!", "Juchú!"); all three lit, the crystals fly to Tapko. The spells are long enough to fill the level's
    minimum time at the child's pace.
    5 the great swamp (super level): from a firm stone Tapko jumps three stones on, the fourth
    jump reaches the next firm stone and the view moves on. A slip on the firm stone is only a
-   slip; a slip on any other stone cracks it, he jumps back stone by stone (each one left
-   crumbles, the next one cracks) and on the firm stone a new word comes. At the end a boulder
+   slip; a slip on any other stone cracks it (the stone squeezes its eyes shut as if tickled),
+   he jumps back stone by stone (each one left crumbles, half broken and without a face, and the
+   next one cracks) and on the firm stone a new word comes. At the end a boulder
    blocks the way; slightly harder words crack it (a word with a slip counts half), it bursts,
-   stones come by themselves, he crosses to the bank, the **Cradle of Life** (a carved stone
-   pedestal, not an altar) rises, he puts the crystals of life on it, they glow and the planet
-   blooms. Super-obstacle: the great swamp and the boulder. Reward: **the Force**, the crystals'
+   and as in level 1 stones come by themselves to the shore where the swamp ends. There the
+   **Cradle of Life** (a carved stone pedestal, not an altar) rises with a soft light above it;
+   he puts the crystals of life on it, they float above it, glowing, and the planet blooms. Super-obstacle: the great swamp and the boulder. Reward: **the Force**, the crystals'
    thanks. The planet's own thing at the target range is a crystal.
 4. **Dragon Domain** - the Force and gentle shield fields divert falling space rocks away
    from baby dragons. Super-obstacle: rolling energy wave. Reward: a **Dragon Egg**.

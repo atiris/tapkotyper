@@ -29,6 +29,8 @@ export abstract class Mode {
   abstract readonly world: string;
   /** Another set of the world's middle and near bands (`bg-<world><ground>-mid`), '' for the usual one. */
   readonly ground: string = '';
+  /** The near layer's x where its band ends in the end piece (`bg-<world><ground>-near-end`), null where it goes on. */
+  nearEnd: number | null = null;
   /** The pictures the mode draws; the level opens when they are loaded. */
   readonly pictures: readonly string[] = [];
   /** Background scroll position (parallax). */
@@ -91,6 +93,10 @@ export abstract class Mode {
   /** Where the tail of Tapko's bubble points, or null for the bubble's corner above the DOM Tapko. */
   bubbleSpot(): { x: number; y: number } | null {
     return null;
+  }
+  /** The paws may type this target; a decision (a crossroads' sign) is the child's. */
+  pawMay(_t: Target): boolean {
+    return true;
   }
   /** Enter that no word waits for; true when the mode took it (else it may call the paws). */
   onEnter(): boolean {

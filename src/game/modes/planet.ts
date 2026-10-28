@@ -1,10 +1,12 @@
 import { app, pickLine } from '../../app/app';
 import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
+import { sprite } from '../../gfx/assets';
 import { blob, drawSprite, type G } from '../../gfx/draw';
 import { drawTapko, type Mood } from '../../gfx/tapko';
 import { t } from '../../i18n/i18n';
-import { type Drift, Mode, TAPKO_H } from '../mode';
+import { Mode, TAPKO_H } from '../mode';
+import { CRYSTALS, drawLifeCrystals } from './planet-crystals';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
 
@@ -77,18 +79,42 @@ export abstract class HeroMode extends Mode {
 /** Where the meadow's DOM Tapko has his feet; the planet's Tapko on the canvas stands there too. */
 export const FEET = VH - TAPKO_H * 0.1;
 /** His feet on a stepping stone in the swamp, a bit higher, so the stone fits under them. */
-const SWAMP_FEET = VH * 0.9;
+const SWAMP_FEET = VH * 0.85;
 /** The word to type is above his head. */
-export const wordAbove = (feet: number): number => feet - TAPKO_H * 0.8 - 60;
+export const wordAbove = (feet: number): number => feet - TAPKO_H * 0.8 - 100;
 
-/** A stepping stone: its picture's height, and how far above its middle his feet stand. */
-const STONE_H = 74;
-const STONE_TOP = 0.2;
-/** The grassy far bank: its height, where its grass line is (a share of the height, flat from 40 % of its width on), where he lands and where the cradle stands (from its middle, in heights). */
-const BANK_H = 200;
-const BANK_TOP = 0.25;
-const BANK_LAND = -0.085;
-const BANK_CRADLE = 1.08;
+/**
+ * A stepping stone (a round mossy stone with a face): its picture's height, how far above its middle
+ * his feet stand (two thirds up from its bottom, on the moss), and how much higher or lower than the
+ * swamp line a stone may lie.
+ */
+const STONE_H = 92;
+const STONE_TOP = 1 / 6;
+const STONE_RISE = 26;
+const STONE_DROP = 6;
+/**
+ * The swamp ends in the near band's end piece (`bg-planet-swamp-near-end`, one and a half tiles):
+ * the band, then the meadow coming in and running on past the right edge. In tiles from the piece's
+ * start: where its grass begins (he lands there from the last stone), where he ends and where the
+ * cradle stands; his feet on the grass, and the share of the stage he moves to through the swamp.
+ */
+const SHORE_LAND = 1.06;
+/** Up to here (in tiles) the end piece is the band itself. */
+const SHORE_SAME = 0.8;
+const SHORE_MEADOW = 1.22;
+const SHORE_CRADLE = 1.45;
+const SHORE_FEET = SWAMP_FEET - 6;
+const SHORE_VIEW = 0.6;
+/** He ends on the meadow at least this far from the right edge. */
+const SHORE_MARGIN = 160;
+/** In the first level the shore comes once this share of the level is done, or when the words are done and fewer seconds than this are left. */
+const SHORE_AT = 0.9;
+const SHORE_LAST_S = 10;
+/** The swamp band's tile width on the stage (1376 x 768 until its picture is there). */
+function tileW(): number {
+  const img = sprite('bg-planet-swamp-near');
+  return img ? (img.naturalWidth * VH) / img.naturalHeight : (1376 * VH) / 768;
+}
 /** Seconds of a jump between stones and of the view gliding after him. */
 const JUMP = 0.55;
 const GLIDE = 0.8;
@@ -109,16 +135,6 @@ function stoneFallback(g: G, w: number, h: number): void {
   g.fill();
 }
 
-/** The far bank while its picture is missing: a green hump with a darker side. */
-function bankFallback(g: G, w: number, h: number): void {
-  g.fillStyle = '#5f9c48';
-  g.beginPath();
-  g.ellipse(w * 0.1, h * 0.2, w * 0.5, h * 0.42, 0, Math.PI, 0);
-  g.fill();
-  g.fillStyle = '#7dbf5a';
-  g.fillRect(-w * 0.35, -h * 0.25, w * 0.85, h * 0.12);
-}
-
 /** A ring on the water where the next stone comes. */
 function drawRing(g: G, x: number, y: number, t: number): void {
   g.save();
@@ -134,7 +150,7 @@ function drawRing(g: G, x: number, y: number, t: number): void {
   g.restore();
 }
 
-const SWAMP_PICTURES = ['obj-swamp-stone', 'obj-planet-bank'];
+const SWAMP_PICTURES = ['obj-swamp-stone'];
 
 /** A stone in the scene: the screen shows it at x - scroll. */
 interface Stone {
@@ -147,7 +163,7 @@ interface Stone {
   crackT: number;
 }
 
-/** His jump from one place in the scene to another (a stone, the bank). */
+/** His jump from one place in the scene to another (a stone, the shore). */
 interface Jump {
   fx: number;
   fy: number;
@@ -165,18 +181,18 @@ abstract class SwampHero extends HeroMode {
   readonly ground = '-swamp';
   protected readonly heroSize = TAPKO_H;
   protected stones: Stone[] = [];
-  /** The stone he stands on, or null on the bank. */
+  /** The stone he stands on, or null on the shore. */
   protected stand: Stone | null = null;
-  protected onBank = false;
+  /** Where he stands on the shore, once there. */
+  protected onShore: { x: number; y: number } | null = null;
   protected jumpTo: Jump | null = null;
   /** The view glides after him: from, to and its share done. */
   private glideFrom = 0;
   private glideTo = 0;
   private glideK = 1;
   private afterGlide: (() => void) | null = null;
-  protected bank: { x: number; age: number } | null = null;
 
-  protected stone(x: number, y = SWAMP_FEET + STONE_H * STONE_TOP): Stone {
+  protected stone(x: number, y = SWAMP_FEET + this.L.rng.range(-STONE_RISE, STONE_DROP) + STONE_H * STONE_TOP): Stone {
     const s: Stone = { x, y, age: 0, state: 'ok', crackT: 0 };
     this.stones.push(s);
     return s;
@@ -187,10 +203,52 @@ abstract class SwampHero extends HeroMode {
     return { x: s.x, y: s.y - STONE_H * STONE_TOP };
   }
 
-  protected bankTop(): { x: number; y: number } {
-    // The picture's grass line is at the place it is drawn; his feet sink a little into the grass.
-    return { x: this.bank!.x + BANK_H * BANK_LAND, y: SWAMP_FEET + 24 };
+  /** A place on the shore, in tiles from the end piece's start, his feet on the grass. */
+  protected shoreAt(tiles: number): { x: number; y: number } {
+    return { x: this.nearEnd! + tileW() * tiles, y: SHORE_FEET };
   }
+
+  /** The swamp ends: the band's end piece comes as near as it can, its first differing part just past the stage's right edge. */
+  protected placeShore(): void {
+    const t = tileW();
+    this.nearEnd = Math.ceil((this.scroll + this.L.vw - SHORE_SAME * t) / t) * t;
+  }
+
+  /** From his stone onto the shore's grass, the view moving on if needed, and a little way up onto the meadow. */
+  protected stepAshore(then: () => void): void {
+    const land = this.shoreAt(SHORE_LAND), meadow = this.shoreAt(SHORE_MEADOW);
+    this.leap(land, () => {
+      this.stand = null;
+      this.onShore = land;
+      const up = () => this.leap(meadow, () => {
+        this.onShore = meadow;
+        then();
+      });
+      if (meadow.x - this.scroll <= this.L.vw - SHORE_MARGIN) return up();
+      this.glide(meadow.x, this.L.vw - SHORE_MARGIN, up);
+    });
+  }
+
+  /** The shore's grass is one jump (`gap`) or less from the stone at `x`. */
+  protected nearShore(x: number, gap: number): boolean {
+    return x + gap >= this.shoreAt(SHORE_LAND).x - gap * 0.6;
+  }
+
+  /** The shore comes, stones come by themselves `gap` apart after `from`, and he jumps across them ashore. */
+  protected toShore(from: number, gap: number, then: () => void): void {
+    this.placeShore();
+    const hop = (x: number): void => {
+      if (this.nearShore(x - gap, gap)) return this.stepAshore(then);
+      const s = this.stone(x);
+      this.L.sfx('pop');
+      this.L.tweens.add(0.35, () => {}, ease.linear, () => this.leap(this.top(s), () => {
+        this.stand = s;
+        this.glide(s.x, this.L.vw * SHORE_VIEW, () => hop(x + gap));
+      }));
+    };
+    hop(from + gap);
+  }
+
 
   /** Jumps him to a place in the scene; `then` runs when he lands. */
   protected leap(to: { x: number; y: number }, then: () => void): void {
@@ -218,7 +276,7 @@ abstract class SwampHero extends HeroMode {
       const k = ease.inOutQuad(j.k);
       return { x: j.fx + (j.tx - j.fx) * k, y: j.fy + (j.ty - j.fy) * k };
     }
-    if (this.onBank && this.bank) return this.bankTop();
+    if (this.onShore) return this.onShore;
     return this.stand ? this.top(this.stand) : { x: 200, y: SWAMP_FEET };
   }
 
@@ -228,7 +286,6 @@ abstract class SwampHero extends HeroMode {
       s.age += dt;
       if (s.state === 'cracked') s.crackT += dt;
     }
-    if (this.bank) this.bank.age += dt;
     const j = this.jumpTo;
     if (j) {
       j.k = this.L.reduceMotion ? 1 : Math.min(1, j.k + dt / JUMP);
@@ -266,31 +323,28 @@ abstract class SwampHero extends HeroMode {
     }
   }
 
-  protected drawBank(g: G): void {
-    if (!this.bank) return;
-    const k = this.L.reduceMotion ? 1 : ease.outCubic(Math.min(1, this.bank.age / 0.6));
-    drawSprite(g, 'obj-planet-bank', this.bank.x - this.scroll, SWAMP_FEET + 10 + (1 - k) * 40, BANK_H, { ay: BANK_TOP, ax: 0.5, alpha: k }, bankFallback);
-  }
-
   protected drawNextRing(g: G, x: number): void {
-    drawRing(g, x - this.scroll, SWAMP_FEET + STONE_H * STONE_TOP, this.t);
+    drawRing(g, x - this.scroll, SWAMP_FEET + 6, this.t);
   }
 }
 
-/** Gap between stones of the first level. */
+/** Gap between stones of the first level, and where he starts; as the level goes on he moves to `SHORE_VIEW`. */
 const SWAMP_GAP = 240;
 const SWAMP_HOME = 210;
 
 /**
  * Planet 1, the swamp after the landing (waiting words): one word at a time above Tapko; typed,
  * a stone comes where the ring was and he jumps onto it, the view glides after him. After the last
- * stone the grassy bank shows, he jumps onto it and sees the meadow.
+ * word the swamp ends: stones come until the meadow is in sight, he jumps onto it and sees the meadow.
  */
 export class SwampMode extends SwampHero {
   readonly pictures = SWAMP_PICTURES;
-  readonly drift: Drift = { layer: 'mid', speed: 6 };
   private current: Target | null = null;
   private nextX = 0;
+  /** The next word leads onto the shore, not to a stone. */
+  private toLand = false;
+  /** Where his stone is on the stage after the view glided. */
+  private shown = SWAMP_HOME;
   private endT: number | null = null;
 
   startLine(): string {
@@ -303,23 +357,33 @@ export class SwampMode extends SwampHero {
     this.next();
   }
 
+  /** About the end of the level: the shore comes next. */
+  private get shoreDue(): boolean {
+    return this.L.share() >= SHORE_AT || (this.progress() >= 1 && this.L.minLeft < SHORE_LAST_S);
+  }
+
+  /**
+   * The next word. Near the end the shore comes: the words go on stone by stone, the last one
+   * leads onto the grass, and the level counts them so it ends there.
+   */
   private next(): void {
     const from = this.stand!;
-    if (this.done >= this.L.count) {
-      this.bank = { x: from.x + SWAMP_GAP + BANK_H * 0.6, age: 0 };
-      this.L.tweens.add(0.7, () => {}, ease.linear, () => this.leap(this.bankTop(), () => this.ashore()));
-      return;
+    if (this.nearEnd === null && this.shoreDue) {
+      this.placeShore();
+      let left = 1;
+      for (let x = from.x; !this.nearShore(x, SWAMP_GAP); x += SWAMP_GAP) left++;
+      this.L.count = this.done + left;
     }
+    this.toLand = this.nearEnd !== null && this.nearShore(from.x, SWAMP_GAP);
     this.nextX = from.x + SWAMP_GAP;
     this.current = this.L.core.add(this.L.word(6, 2), {});
   }
 
   private ashore(): void {
-    this.onBank = true;
     this.happy();
     this.L.say(pickLine('story.swampDone'), 3);
     this.L.particles.emit(this.heroX, this.heroY - 20, 14, 'leaf', ['#9ccf7a', '#ffe27a', '#f5a3d3'], 140, 8);
-    this.glide(this.bankTop().x, this.L.vw * 0.4, () => (this.endT = 0));
+    this.endT = 0;
   }
 
   update(dt: number): void {
@@ -333,19 +397,21 @@ export class SwampMode extends SwampHero {
     this.done++;
     this.happy();
     this.L.core.prune();
-    const s = this.stone(this.nextX, SWAMP_FEET + STONE_H * STONE_TOP + (this.done % 2 ? 6 : -6));
+    if (this.toLand) return this.stepAshore(() => this.ashore());
+    const s = this.stone(this.nextX);
     this.L.particles.emit(s.x - this.scroll, s.y, 10, 'dot', ['#cfe8c0', '#ffffff'], 110, 6);
     this.leap(this.top(s), () => {
       this.stand = s;
-      this.glide(s.x, SWAMP_HOME, () => this.next());
+      // He moves toward the right edge as the level goes on, never back.
+      this.shown = Math.max(this.shown, SWAMP_HOME + (this.L.vw * SHORE_VIEW - SWAMP_HOME) * Math.min(1, this.done / this.L.count));
+      this.glide(s.x, this.shown, () => this.next());
     });
   }
 
   render(g: G): void {
     this.drawStones(g);
-    this.drawBank(g);
     if (this.current) {
-      this.drawNextRing(g, this.nextX);
+      if (!this.toLand) this.drawNextRing(g, this.nextX);
       this.L.label(g, this.current, this.heroX, wordAbove(SWAMP_FEET));
     }
     this.drawHero(g);
@@ -367,13 +433,15 @@ const BOULDER_H = 300;
 /** Seconds of a cracked stone before he jumps back, and of a crumbled stone sinking away. */
 const CRACK_WAIT = 0.45;
 const CRUMBLE = 0.9;
-/** Seconds of the end: the boulder bursts, the stones come one by one, the cradle rises, the crystals fly onto it. */
+/** Seconds of the end: the boulder bursts, the cradle rises, the crystals fly onto it. */
 const BURST = 0.8;
-const STONE_EVERY = 0.35;
 const RISE = 1;
 const PLACE = 1.2;
 const CRADLE_H = 190;
-const LIFE_H = 120;
+const LIFE_H = 100;
+/** Above the cradle they float this high, bobbing a little. */
+const FLOAT = 26;
+const BOB = 6;
 
 /** The Cradle of Life while its picture is missing. */
 function cradleFallback(g: G, w: number, h: number): void {
@@ -384,26 +452,6 @@ function cradleFallback(g: G, w: number, h: number): void {
   g.beginPath();
   g.ellipse(0, -h * 0.3, w * 0.34, h * 0.08, 0, 0, Math.PI * 2);
   g.fill();
-}
-
-/** The three crystals of life while their pictures are missing: three dull or glowing points on a stone. */
-export function lifeCrystalFallback(lit: boolean) {
-  return (g: G, w: number, h: number) => {
-    g.fillStyle = '#8e8a86';
-    g.beginPath();
-    g.ellipse(0, h * 0.4, w * 0.36, h * 0.1, 0, 0, Math.PI * 2);
-    g.fill();
-    g.fillStyle = lit ? '#ffe9a8' : '#9c94a8';
-    for (const [x, top, lean] of [[-0.22, -0.2, -0.2], [0, -0.48, 0], [0.22, -0.2, 0.2]]) {
-      g.beginPath();
-      g.moveTo((x - 0.08) * w, h * 0.38);
-      g.lineTo((x + lean * 0.3 - 0.02) * w, top * h);
-      g.lineTo((x + lean * 0.3 + 0.02) * w, (top - 0.06) * h);
-      g.lineTo((x + 0.08) * w, h * 0.38);
-      g.closePath();
-      g.fill();
-    }
-  };
 }
 
 /** A crumbled stone sinking away. */
@@ -418,10 +466,10 @@ interface Crumb {
  * reaches the next firm one, where the view moves on. A slip on stone +1 to +3 cracks it: he jumps
  * back stone by stone, each stone behind him crumbles and the next one cracks, and on the firm stone
  * a new word comes. At the end a boulder blocks the way; precise words crack it, it bursts, stones
- * come by themselves, he crosses to the bank and puts the crystals of life on the Cradle of Life.
+ * come by themselves, he crosses to the shore and puts the crystals of life on the Cradle of Life.
  */
 export class GreatSwampMode extends SwampHero {
-  readonly pictures = [...SWAMP_PICTURES, 'obj-swamp-stone-cracked', 'obj-swamp-stone-broken', 'obj-boulder-1', 'obj-boulder-2', 'obj-cradle', 'obj-life-crystal-lit'];
+  readonly pictures = [...SWAMP_PICTURES, 'obj-swamp-stone-cracked', 'obj-swamp-stone-broken', 'obj-boulder-1', 'obj-boulder-2', 'obj-cradle', ...CRYSTALS];
   private gap = 200;
   private home = 130;
   /** The firm stone of this set, and how many jumps are behind him for good. */
@@ -433,9 +481,8 @@ export class GreatSwampMode extends SwampHero {
   private back: number | null = null;
   private slipSaid = false;
   private boulder: { x: number; crack: number; shake: number; burst: number | null; tg: Target | null } | null = null;
-  /** Seconds of the crossing after the boulder: stones come, he crosses; null before it. */
-  private cross: number | null = null;
-  private crossStones = 0;
+  /** He is on his way to the shore after the boulder. */
+  private crossing = false;
   private cradle: { x: number; rise: number } | null = null;
   /** 0..1 of the crystals flying onto the cradle, then seconds after; null before. */
   private place: number | null = null;
@@ -473,7 +520,7 @@ export class GreatSwampMode extends SwampHero {
     this.current = null;
     this.happy();
     this.L.core.prune();
-    const s = this.stone(this.stand!.x + this.gap, this.stand!.y + (this.stones.length % 2 ? 5 : -5));
+    const s = this.stone(this.stand!.x + this.gap);
     this.L.particles.emit(s.x - this.scroll, s.y, 10, 'dot', ['#cfe8c0', '#ffffff'], 110, 6);
     this.leap(this.top(s), () => this.land(s));
   }
@@ -570,9 +617,8 @@ export class GreatSwampMode extends SwampHero {
     const b = this.boulder;
     if (b) {
       b.shake = Math.max(0, b.shake - dt * 3);
-      if (b.burst !== null && (b.burst += dt) >= BURST && this.cross === null) this.cross = 0;
+      if (b.burst !== null && (b.burst += dt) >= BURST && !this.crossing) this.cross();
     }
-    if (this.cross !== null) this.crossing(dt);
     if (this.cradle) this.cradle.rise = Math.min(1, this.cradle.rise + dt / RISE);
     if (this.place !== null) {
       const before = this.place;
@@ -581,35 +627,13 @@ export class GreatSwampMode extends SwampHero {
     }
   }
 
-  /** After the boulder: the stones come one by one up to the last but one, the bank last, then he jumps across. */
-  private crossing(dt: number): void {
-    const before = this.cross!;
-    this.cross! += dt;
-    const from = this.base!.x;
-    const n = Math.floor(this.cross! / STONE_EVERY);
-    if (n > Math.floor(before / STONE_EVERY) && this.crossStones < 2) {
-      this.crossStones++;
-      this.stone(from + this.gap * this.crossStones);
-      this.L.sfx('pop');
-    } else if (n > Math.floor(before / STONE_EVERY) && this.crossStones === 2 && !this.bank) {
-      this.bank = { x: from + this.gap * 3 + BANK_H * 0.6, age: 0 };
-      this.L.tweens.add(0.5, () => {}, ease.linear, () => this.hopAcross(1));
-    }
-  }
-
-  private hopAcross(i: number): void {
-    if (i <= 2) {
-      const s = this.stones.find((o) => Math.abs(o.x - (this.base!.x + this.gap * i)) < 1)!;
-      return this.leap(this.top(s), () => {
-        this.stand = s;
-        this.hopAcross(i + 1);
-      });
-    }
-    this.leap(this.bankTop(), () => {
-      this.onBank = true;
-      this.stand = null;
-      this.cradle = { x: this.bank!.x + BANK_H * BANK_CRADLE, rise: 0 };
-      this.glide((this.bankTop().x + this.cradle.x) / 2, this.L.vw / 2, () => (this.place = 0));
+  /** After the boulder stones come over its place to the shore; there the Cradle of Life rises beside him. */
+  private cross(): void {
+    this.crossing = true;
+    this.toShore(this.base!.x, this.gap, () => {
+      this.cradle = { x: this.shoreAt(SHORE_CRADLE).x, rise: 0 };
+      // He and the cradle in the middle; the meadow goes on past the edge.
+      this.glide((this.onShore!.x + this.cradle.x) / 2, this.L.vw / 2, () => (this.place = 0));
     });
   }
 
@@ -626,7 +650,7 @@ export class GreatSwampMode extends SwampHero {
 
   private cradleTop(): number {
     const k = ease.outCubic(this.cradle!.rise);
-    return SWAMP_FEET + 6 - CRADLE_H * 0.86 + (1 - k) * CRADLE_H;
+    return SHORE_FEET + 16 - CRADLE_H * 0.86 + (1 - k) * CRADLE_H;
   }
 
   render(g: G): void {
@@ -635,7 +659,6 @@ export class GreatSwampMode extends SwampHero {
       drawSprite(g, 'obj-swamp-stone-broken', c.x - this.scroll, c.y + k * 26, STONE_H, { alpha: 1 - k }, stoneFallback);
     }
     this.drawStones(g);
-    this.drawBank(g);
     const b = this.boulder;
     if (b && (b.burst ?? 0) < BURST) {
       const fade = b.burst === null ? 1 : 1 - b.burst / BURST;
@@ -648,10 +671,11 @@ export class GreatSwampMode extends SwampHero {
       const c = this.cradle;
       g.save();
       g.beginPath();
-      g.rect(0, 0, this.L.vw, SWAMP_FEET + 10);
+      g.rect(0, 0, this.L.vw, SHORE_FEET + 20);
       g.clip();
       drawSprite(g, 'obj-cradle', c.x - this.scroll, this.cradleTop(), CRADLE_H, { ay: 0.14 }, cradleFallback);
       g.restore();
+      this.drawCradleGlow(g);
     }
     if (this.current) {
       this.drawNextRing(g, this.stand!.x + this.gap);
@@ -665,20 +689,25 @@ export class GreatSwampMode extends SwampHero {
   private drawLife(g: G): void {
     const k = ease.inOutQuad(Math.min(1, this.place!));
     const fx = this.heroX, fy = this.heroY - TAPKO_H * 0.45;
-    const tx = this.cradle!.x - this.scroll, ty = this.cradleTop() + 8;
+    const tx = this.cradle!.x - this.scroll, ty = this.cradleTop() - FLOAT * k + Math.sin(this.t * 2) * BOB * k;
     const x = fx + (tx - fx) * k, y = fy + (ty - fy) * k - Math.sin(k * Math.PI) * 90;
-    const h = LIFE_H * (0.5 + 0.5 * k);
-    if (this.place! >= 1) {
-      g.save();
-      const glow = g.createRadialGradient(x, y - h * 0.5, 4, x, y - h * 0.5, h * 1.3);
-      glow.addColorStop(0, 'rgba(255,240,170,0.8)');
-      glow.addColorStop(1, 'rgba(255,240,170,0)');
-      g.fillStyle = glow;
-      g.fillRect(x - h * 1.3, y - h * 1.8, h * 2.6, h * 2.6);
-      g.restore();
-    }
-    drawSprite(g, 'obj-life-crystal-lit', x, y, h, { ay: 0.95 }, lifeCrystalFallback(true));
+    drawLifeCrystals(g, x, y, LIFE_H * (0.5 + 0.5 * k), [1, 1, 1]);
   }
+
+  /** A soft light above the cradle, waiting for the crystals; brighter once they float there. */
+  private drawCradleGlow(g: G): void {
+    const c = this.cradle!, x = c.x - this.scroll, y = this.cradleTop() - LIFE_H * 0.6;
+    const k = ease.outCubic(c.rise) * (this.place !== null && this.place >= 1 ? 1 : 0.55);
+    const r = LIFE_H * 1.4;
+    g.save();
+    const glow = g.createRadialGradient(x, y, 4, x, y, r);
+    glow.addColorStop(0, `rgba(255,240,170,${0.75 * k})`);
+    glow.addColorStop(1, 'rgba(255,240,170,0)');
+    g.fillStyle = glow;
+    g.fillRect(x - r, y - r, r * 2, r * 2);
+    g.restore();
+  }
+
 
   progress(): number {
     const cracked = this.boulder ? Math.min(BOULDER, this.boulder.crack) : 0;

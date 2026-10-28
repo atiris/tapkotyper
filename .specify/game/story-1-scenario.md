@@ -52,7 +52,8 @@ miesto. Planéta vyzerá skoro ako Zem: zelené kopce, rieka, lesy, ale aj obrov
 veľké svetlé kryštály a malé zúbkované oranžové oblaky. Kryštály sú tu zdrojom energie.
 
 1. **Močiar** - Tapko pristál v močiari. Nad ním je slovo, a keď ho napíše, na vode sa objaví
-   kameň, na ktorý skočí. Po poslednom kameni je breh: Tapko povie, že už vidí lúku a teší sa.
+   kameň, na ktorý skočí. Keď sú slová napísané, močiar sa končí: po pár ďalších kameňoch
+   doskáče na trávnatý breh, povie, že už vidí lúku, a teší sa.
 2. **Kryštály na lúke** - na lúke z kopčekov rastú kryštály. Chvíľu rastú, chvíľu sú pekné
    veľké, a potom prasknú. Tapko ich chce nazbierať čo najviac, lebo ich raketa bude
    potrebovať na cestu domov: napísaný kryštál mu skončí vo vrecku, nenapísaný praskne a
@@ -63,17 +64,18 @@ veľké svetlé kryštály a malé zúbkované oranžové oblaky. Kryštály sú
    obchádzka, zarastená cesta, široká cesta, temný les s ozvenou, neznáma cesta s prekvapením
    a kamenistý chodník, na ktorom sa cvičia písmená, ktoré ešte nejdú. Pri chybe smerovník
    zmizne, posledný treba napísať bez chyby. Na konci cesty sa Tapko teší.
-4. **Kúzla pre kryštály života** - Tapko našiel tri kryštály života, ale spia. Prebudí ich tromi
-   kúzlami: každé kúzlo je dlhší text, ktorý vydrží tri chyby; pri štvrtej sa pokazí a píše sa
-   odznova. Každé podarené kúzlo rozžiari ďalšiu tretinu kryštálov so zvolaním (Jupí, Zipp,
-   Juchú). Keď svietia všetky tri, Tapko si ich vezme.
+4. **Kúzla pre kryštály života** - Tapko našiel tri kryštály života, ako vykúkajú z kopčeka,
+   ale spia a sem tam sa niektorý zatrasie. Prebudí ich tromi kúzlami: každé kúzlo je dlhší
+   text, ktorý vydrží tri chyby (na paneli rastú tri hríbiky a pri každej chybe jeden zmizne);
+   pri štvrtej sa kúzlo pokazí a príde iné. Každé podarené kúzlo rozžiari ďalší kryštál so
+   zvolaním (Jupí, Zipp, Juchú). Keď svietia všetky tri, Tapko si ich vezme.
 5. **Veľký močiar a Kolíska života** - kryštály treba doniesť do **Kolísky života**, kamenného
    podstavca, kde majú svoje miesto. Cesta vedie cez veľký močiar s krehkými kameňmi: z
    pevného kameňa Tapko skáče tri kamene a štvrtým skokom dosiahne ďalší pevný. Keď sa
    pomýli, kameň pod ním praskne a Tapko ustupuje späť kameň po kameni, kým nie je na pevnom.
    Na konci cestu zatarasí balvan, ktorý rozbije presnými slovami. Potom sa samé objavia
-   kamene na druhý breh, kde sa zdvihne Kolíska života. Tapko do nej položí kryštály života,
-   rozžiaria sa a planéta zase kvitne.
+   kamene na breh, kde sa zdvihne Kolíska života a nad ňou jemné svetlo. Tapko do nej položí
+   kryštály života, tie sa nad ňou vznášajú a žiaria, a planéta zase kvitne.
 
 Koniec sveta: kryštály života Tapkovi ako poďakovanie darujú Silu (jemne pohybuje vecami,
 len písaním) a dráčiky v susednom údolí potrebujú pomoc.

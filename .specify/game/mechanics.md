@@ -26,6 +26,8 @@
   also the rocket's speedometer, without a caption) shows the current smooth typing rhythm, not raw WPM.
 - A word the child can see can be typed at once; a target that cannot be typed yet shows
   no word.
+- A word label is always wholly in sight with its bubble: a word near an edge of the stage moves
+  inward (an object coming in from the right shows its word only once it is in sight).
 - Word labels never overlap: the most urgent word keeps its place, the others glide aside
   (up, or down near the top), and a far-moved word gets a thin line to its object.
 - The start is slow: at difficulty 3 a short word needs about 10 seconds to reach Tapko
@@ -136,7 +138,9 @@
   with the same focus, and the key does nothing else. Esc while peeking does what Esc on the
   card did before (the map; at the target range: stay there).
 - **Calm scenes breathe**: a scene that stands still (the calm steps of a world) lets one
-  background band drift slowly on its own; with reduced motion nothing drifts.
+  background band drift slowly on its own; with reduced motion nothing drifts. In a scene that
+  moves with Tapko (its near band scrolls as he goes), the middle band never drifts: it moves
+  only when he does.
 
 ## Why
 - A results card that fills the screen hides the game and slows the next try; the child

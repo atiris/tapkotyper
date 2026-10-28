@@ -12,6 +12,8 @@ import { bleedColor, keyOut } from './key.mjs';
 const SRC = 'assets-src';
 const OUT = 'public/assets';
 const SPRITE_MAX = 384;
+// The planet's far bank is a long strip drawn at the swamp band's scale, as wide as the stage.
+const WIDE_MAX = 1376;
 const ICON_MAX = 512; // ui-icon is also the app icon (scripts/icons.mjs), ui-icon-hr the start page's large logo
 // The certificate frame's pieces, in assets-src/cert-src as lossless PNGs already turned for their
 // corner or side (made by scripts/cert-frame.mjs, checked by hand): a fox per corner, a pair of paw
@@ -181,7 +183,7 @@ async function processImage(name, file, manifest) {
     return;
   }
   const box = bbox(data, w, h);
-  const max = name.startsWith('ui-icon') ? ICON_MAX : name === 'ui-cert-parrot' ? STAMP_MAX : SPRITE_MAX;
+  const max = name.startsWith('ui-icon') ? ICON_MAX : name === 'ui-cert-parrot' ? STAMP_MAX : name === 'obj-planet-bank' ? WIDE_MAX : SPRITE_MAX;
   const info = await webp(sharp(data, { raw: { width: w, height: h, channels: 4 } }).extract(box).resize(max, max, { fit: 'inside', withoutEnlargement: true })).toFile(join(OUT, `${name}.webp`));
   manifest.images[name] = { w: info.width, h: info.height };
 }

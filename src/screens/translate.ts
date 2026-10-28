@@ -397,13 +397,14 @@ function translatorPage(screen: HTMLElement): () => void {
   /** A field's text in a language; a plural form the language lacks shows its "other". */
   const textIn = (src: Source, f: Field) => sourceValue(src, f) || (f.kind === 'form' ? sourceValue(src, { ...f, form: 'other' }) : '');
 
-  /** One field: its round buttons above it (info, copy per sample, done, undo, redo, the key in the code), the input and the placeholder warning. */
+  /** One field: its round buttons above it (a placeholder warning, info, copy per sample, done, undo, redo, the key in the code) and the input. */
   function fieldEl(f: Field, sampleText: string, cls = ''): HTMLElement {
     const value = fieldValue(target!, f);
     const area = h('textarea', { class: `tr-field ${cls}`, rows: Math.max(1, value.split('\n').length), 'data-field': f.id, 'aria-label': tr('fieldLabel', { text: sampleText.length > LABEL_MAX ? `${sampleText.slice(0, LABEL_MAX)}…` : sampleText }), spellcheck: 'true', lang: target!.code, translate: 'no' });
     area.value = value;
     inputs.set(f.id, area);
-    const warn = h('small', { class: 'tr-warn', role: 'status' });
+    // Shows only while the translation lacks a placeholder of the sample or has one the sample has not; its tooltip says why.
+    const warn = h('span', { class: 'tr-act tr-warn-act', role: 'img', hidden: true }, icon1('warn'));
     const act = (glyph: Parameters<typeof icon>[0], label: string, onClick: () => void, cls2 = '') =>
       h('button', { class: `tr-act ${cls2}`, type: 'button', tabindex: -1, 'aria-label': label, tip: label, onClick }, icon1(glyph));
     // The buttons are out of the Tab order (Tab goes from field to field); their keys work in the field.
@@ -437,8 +438,8 @@ function translatorPage(screen: HTMLElement): () => void {
     const codeUrl = f.kind === 'words' ? null : codeSearch(f.key);
     const code = codeUrl ? h('a', { class: 'tr-act', href: codeUrl, target: '_blank', rel: 'noopener', tabindex: -1, 'aria-label': keyed(tr('findCode'), 'code'), tip: keyed(tr('findCode'), 'code') }, icon1('code')) : null;
     const wrap = h('div', { class: 'tr-input' },
-      h('div', { class: 'tr-bar' }, h('span', { class: 'tr-open-tag' }, tr('untranslated')), h('span', { class: 'tr-acts' }, info, copy, copy2, done, undo, redo, code)),
-      area, warn);
+      h('div', { class: 'tr-bar' }, h('span', { class: 'tr-open-tag' }, tr('untranslated')), h('span', { class: 'tr-acts' }, warn, info, copy, copy2, done, undo, redo, code)),
+      area);
     const isTouched = () => target!.touched.includes(f.id);
     type Snap = { value: string; done: boolean };
     const snap = (): Snap => ({ value: area.value, done: isTouched() });
@@ -477,11 +478,15 @@ function translatorPage(screen: HTMLElement): () => void {
       state();
     };
     const check = () => {
-      if (f.kind === 'words' || !area.value) return void (warn.textContent = '');
       const want = placeholders(sampleText);
-      const got = placeholders(area.value);
-      warn.textContent = [...want.filter((p) => !got.includes(p)).map((name) => tr('missingPlaceholder', { name })),
-        ...got.filter((p) => !want.includes(p)).map((name) => tr('extraPlaceholder', { name }))].join(' ');
+      const got = f.kind === 'words' ? want : placeholders(area.value);
+      const why = area.value ? [...want.filter((p) => !got.includes(p)).map((name) => tr('missingPlaceholder', { name })),
+        ...got.filter((p) => !want.includes(p)).map((name) => tr('extraPlaceholder', { name }))].join(' ') : '';
+      const text = why && `${tr('warning')}: ${why} ${tr('placeholderWhy')}`;
+      warn.hidden = !text;
+      warn.dataset.tip = text;
+      warn.setAttribute('aria-label', text);
+      if (popper.shown === info) showPop(info);
     };
     const write = (text: string) => {
       const count = f.kind === 'variant' || f.kind === 'line' ? fieldsOfItem(f.key).length : 1;
@@ -548,7 +553,9 @@ function translatorPage(screen: HTMLElement): () => void {
       return h('div', { class: 'tr-pop-lang' }, h('strong', {}, src.name),
         h('p', { lang: src.code, translate: 'no' }, text || h('em', {}, tr('sampleEmpty'))));
     };
-    pop.replaceChildren(h('p', { class: 'tr-pop-key' }, `${tr('field')}: `, h('code', { translate: 'no' }, f.id)), row(sample), ...(sample2 ? [row(sample2)] : []));
+    const warning = el.closest('.tr-input')?.querySelector<HTMLElement>('.tr-warn-act:not([hidden])')?.dataset.tip;
+    pop.replaceChildren(h('p', { class: 'tr-pop-key' }, `${tr('field')}: `, h('code', { translate: 'no' }, f.id)), row(sample), ...(sample2 ? [row(sample2)] : []),
+      ...(warning ? [h('p', { class: 'tr-pop-warn' }, warning)] : []));
     pop.hidden = false;
     // Above the button (the field under it stays free to type in), its right edges in line; under it when there is no room above.
     const r = el.getBoundingClientRect();

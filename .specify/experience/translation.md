@@ -57,8 +57,10 @@
 - **Progress**: a round button with the percentage of translated fields, per section in the
   contents too; a click goes to the next untranslated field. "Only untranslated" folds finished
   panels to one line; a search finds a text by base text, translation or key.
-- Placeholders (`{name}`) are marked inside the sample text; a translation missing one or adding
-  an unknown one gets a warning (it is still saved).
+- Placeholders (`{name}`) are marked inside the sample text. A translation missing one or adding
+  an unknown one gets a round warning button first among the field's buttons; its tooltip (and
+  the field's info pop-up) says which one and why it matters (the game puts a name or a number
+  there). The translation is still saved; the button goes when the placeholders match.
 - **Export**: a pair file (`.txt`, the sample language beside the translation) of everything, of
   only the untranslated fields (for an AI translator), or of only the changes against the
   corrected language; or a `.json` file. **Import** of both shows what will be applied and what

@@ -39,7 +39,13 @@ test('a parent starts a language, translates, exports, imports and plays it', as
   // Typing one field raises the percentage.
   await page.locator('#tr-s-map').scrollIntoViewIfNeeded();
   const hello = page.locator('textarea[data-field="map.hello"]');
+  // A placeholder left out raises the warning button; put back, it goes.
+  const helloWarn = page.locator('.tr-item[data-key="map.hello"] .tr-warn-act');
+  await hello.fill('Hallo!');
+  await expect(helloWarn).toBeVisible();
+  await expect(helloWarn).toHaveAttribute('data-tip', /\{name\}/);
   await hello.fill('Hallo, {name}!');
+  await expect(helloWarn).toBeHidden();
   expect(await ringValue(page)).toBeGreaterThan(0);
   await expect(hello.locator('xpath=..')).not.toHaveClass(/open/);
 

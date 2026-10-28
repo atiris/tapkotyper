@@ -115,7 +115,9 @@
       "close": "Close the pop-up",
       "list": "This list"
     },
-    "tip": "Tip"
+    "tip": "Tip",
+    "placeholderWhy": "The game puts a value in its place when it shows the text (a name, a number); without it the value is missing or shows as written.",
+    "warning": "Warning"
   },
   "sections": {
     "start": {

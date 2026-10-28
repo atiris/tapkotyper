@@ -1750,6 +1750,9 @@ body:has(.translate-screen) { scrollbar-gutter: stable; }
   border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink-soft); cursor: pointer; text-decoration: none;
 }
 .tr-act .icon { width: 0.95rem; height: 0.95rem; }
+.tr-act[hidden] { display: none; }
+.tr-act.tr-warn-act { border-color: var(--danger-ink); color: var(--danger-ink); background: var(--surface); cursor: help; }
+.tr-pop-warn { color: var(--danger-ink); font-size: 0.85rem; }
 .tr-act.tr-code { width: auto; min-width: 1.75rem; padding: 0 0.4rem; font: inherit; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.02em; }
 .tr-act:hover:not(:disabled), .tr-act:focus-visible { text-decoration: none; border-color: var(--brand); color: var(--brand-ink); }
 .tr-act:disabled { opacity: 0.35; cursor: default; }
@@ -1771,7 +1774,6 @@ body:has(.translate-screen) { scrollbar-gutter: stable; }
 .tr-keys dd { margin: 0; }
 .tr-keys kbd { font: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.05em 0.45em; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 6px; background: var(--paper); }
 .tr-warn { color: var(--danger-ink); font-size: 0.82rem; }
-.tr-warn:empty { display: none; }
 .tr-remove { align-self: flex-end; border: 0; background: none; color: var(--ink-soft); cursor: pointer; padding: 0.2rem; border-radius: 8px; margin-top: -0.2rem; }
 .tr-remove:hover { color: var(--danger-ink); }
 .tr-add { align-self: flex-start; }

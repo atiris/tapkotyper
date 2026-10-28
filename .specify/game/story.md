@@ -117,7 +117,8 @@ gives you a wreath"), never about the character as someone else.
    2 the meadow's crystals (a stream): five molehills (fewer on a narrow screen), lumpy heaps
    with pebbles at their foot that sit anywhere low on the ground; a crystal of one of three kinds,
    turned a little its own way and glowing softly in its own color, grows slowly out from
-   behind a molehill, stays big (about 40 % of Tapko's height) and cracks; a cracked one stays
+   behind a heap (three kinds, each also mirrored) while its word sinks two thirds of the way
+   down, stays big (about 30 % of Tapko's height) and cracks; a cracked one stays
    a moment longer before it fades. Its word shows high above it as it starts and sinks to
    its tip; typed in time, the crystal flies into Tapko's pocket (the rocket needs this energy
    for the way home); not typed, it cracks, its word goes, it fades and later a new one grows

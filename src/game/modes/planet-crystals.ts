@@ -10,14 +10,15 @@ import type { Target } from '../typing';
 /** The three kinds of crystal, each with its cracked picture, and their colors while the pictures are missing. */
 export const CRYSTALS = ['obj-crystal-amber', 'obj-crystal-rose', 'obj-crystal-aqua'];
 const CRYSTAL_COLOR: Record<string, string> = { 'obj-crystal-amber': '#f2b65a', 'obj-crystal-rose': '#f3b3be', 'obj-crystal-aqua': '#9ed8e2' };
-const MOUNDS = ['obj-mound-1', 'obj-mound-2'];
-/** A big crystal shows about 30 % of Tapko's height above its mound; a mound's height. */
-const CRYSTAL_H = 114;
+/** The heaps crystals grow out of; each also mirrored at random. */
+const MOUNDS = ['obj-mound-1', 'obj-mound-2', 'obj-mound-3'];
+/** A full-grown crystal is about 30 % of Tapko's height; a heap's height. */
+const CRYSTAL_H = 84;
 const MOUND_H = 72;
 /** The molehills start this far from the stage's left edge, right of Tapko. */
 const MOUND_LEFT = TAPKO_X + 200;
-/** Seconds a crystal grows, flies into the pocket, lies cracked before it is gone, and a mound rests after. */
-const GROW = 2.6;
+/** A crystal grows while its word sinks two thirds of the way down; seconds it flies into the pocket, lies cracked before it is gone, and a heap rests after. */
+const GROW_SHARE = 2 / 3;
 const FLY = 0.7;
 const CRACKED = 2.4;
 const REST = 1;
@@ -136,13 +137,13 @@ export class CrystalsMode extends Mode {
     for (const m of this.mounds) m.x = MOUND_LEFT + (right - MOUND_LEFT) * m.share + m.jitter;
   }
 
-  /** Where the crystal's foot is: in the molehill's hollow near its top, so the heap covers it. */
+  /** Where the crystal's foot is: a quarter of the heap below its crown, so the heap covers it. */
   private foot(m: Mound): number {
-    return m.y - MOUND_H * 0.86;
+    return m.y - MOUND_H * 0.68;
   }
 
   private size(c: Crystal): number {
-    const k = Math.min(1, c.age / GROW);
+    const k = Math.min(1, c.age / (c.travel * GROW_SHARE));
     return CRYSTAL_H * (this.L.reduceMotion ? 1 : 0.25 + 0.75 * ease.outBack(k));
   }
 

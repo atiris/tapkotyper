@@ -814,7 +814,7 @@
     "story.lastSongIntro": "Line at the moonlit ball at the start of the last song level.",
     "story.lastSongDone": "Line at the moonlit ball when the last song is finished; one is picked at random.",
     "aim.title": "Name of the game: the button and tooltip on the map, and the level title at the top while playing.",
-    "aim.start": "Tapko explains the rules when the range begins. {keys} are the letters being trained.",
+    "aim.start": "Story on the card before the range: what the range is for and the rare thing of each range.",
     "aim.swapHint": "Added to the rules at the start once the child has found a rare thing.",
     "aim.swap": "Tapko, when the child presses Enter to swap for a rare thing. {name} is the thing's name.",
     "aim.keys": "Hidden label of the letter list on the range end card (read by screen readers).",

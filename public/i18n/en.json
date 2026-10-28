@@ -460,7 +460,7 @@
     ],
     "gustStart": "A gust of wind! Lots of small leaves at once.",
     "invitationStart": [
-      "After the match there is a treat! Write the invitation word by word, with no slip."
+      "After the match there is a party with treats. You are in charge of **writing the party letters** for everyone who lives on the meadow. Try to invite as many animals as you can, so you can all celebrate the great football match together. **Watch out for mistakes**: if you slip many times, an animal does not get its invitation. **Accuracy matters more than speed!**"
     ],
     "invitationPartyOne": "{n} animal got an invitation\nand came for the treat!",
     "invitationPartyFew": "{n} animals got an invitation\nand came for the treat!",
@@ -472,7 +472,7 @@
       "Great!"
     ],
     "hedgehogStart": [
-      "The hedgehog is here. It missed the match but wants to play too, and it is a good player! It has a pile of leaves on its back. Catch them with letters!"
+      "Your friend the **hedgehog** is back from a trip. It did not make it to the match, though it wanted to very much. You want to make it happy, so you play a game just with it. But watch out, **it is a very good player!** Its back carries **several shots at the goal at once!** Can you catch every shot of the hedgehog, the best striker of the meadow team?"
     ],
     "hedgehogDone": [
       "All the leaves are back on the hedgehog. Well done!"
@@ -633,7 +633,7 @@
       "The crystals of life are on the monolith. The planet blooms again!"
     ],
     "matchStart": [
-      "The stag beetle's whistle has started the football match. **You are the goalkeeper** for the meadow team! I hope you trained well this morning. How many shots you catch depends **on the speed and above all the accuracy of your fingers**. Watch out above all for the **final attacks**, when **several animals rush at you at once**. **Stay calm** and you will surely make it."
+      "The stag beetle's whistle has started the football match. **You are the goalkeeper for the meadow team!** I hope you trained well this morning. How many shots you catch depends **on the speed and above all the accuracy of your fingers**. Watch out above all for the **final attacks**, when **several animals rush at you at once**. **Stay calm** and you will surely make it."
     ],
     "spaceStart": [
       "Fly off to explore the first planet! Your typing rhythm drives the rocket and the beam pushes meteors out of the way."
@@ -1959,7 +1959,7 @@
   },
   "aim": {
     "title": "Target range",
-    "start": "Tapko throws at the target! Type the word on each ring before the thing flies through it, and last the word on the target. In time and with no wrong key, you hit the middle. Training: {keys}",
+    "start": "**This is the target range.** It is here **to make you more accurate**, and there is one in every world you pass through on this adventure. To train accuracy, make **as few mistakes as you can.** When your accuracy is good enough, you unlock more letters and more worlds. In every range you finish without a mistake, a **rare thing** appears that no range in any other world has. **Can you collect all** the rare things of the ranges? You can check on the **My progress** card.",
     "swapHint": "Press Enter to swap the thing in the paw for a rare one from the collection.",
     "swap": "From the collection: {name}!",
     "keys": "Letters to train",
@@ -3111,7 +3111,7 @@
   },
   "parrot": {
     "title": "Parrot",
-    "start": "The parrot wants to learn your words. Type a word and it says it after you. No need to hurry.",
+    "start": "In every world your **buddy Aro** watches you from afar. When he spots you, he usually **flies off fast**, but a parrot **loves biscuits and repeating**, so if you start repeating words to him, he stays. **When you win** the parrot **in every world**, **Aro sits down by you** on the World map, where you can play with him. But **watch out, parrots fly away now and then** anyway. Nothing is easier than winning them back, though! So try to catch him here too.",
     "phase2": "Now each word a few times in a row.",
     "slip": [
       "Take a shorrrt brrreak.",

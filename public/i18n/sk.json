@@ -460,7 +460,7 @@
     ],
     "gustStart": "Fúka vietor! Letí viac malých listov naraz.",
     "invitationStart": [
-      "Po zápase bude pohostenie! Napíš pozvánku slovo po slove, pekne bez chyby."
+      "Po zápase je prichystané pohostenie. Dostal si na starosti **písanie listov na oslavu** pre všetkých obyvateľov lúky. Skús pozvať čo najviac zvieratiek, s ktorými spoločne oslávite skvelý futbalový zápas. **Pozor na chyby**, ak sa veľakrát pomýliš, zvieratko správnu pozvánku nedostane. **Presnosť je dôležitejšia ako rýchlosť!**"
     ],
     "invitationPartyOne": "{n} zvieratko dostalo pozvánku\na prišlo na pohostenie!",
     "invitationPartyFew": "{n} zvieratká dostali pozvánku\na prišli na pohostenie!",
@@ -472,7 +472,7 @@
       "Super!"
     ],
     "hedgehogStart": [
-      "Prišiel ježko. Zápas nestihol, ale chce si tiež zahrať a je to dobrý hráč! Má na chrbte kopu listov. Chytaj ich písmenami!"
+      "Kamarát **ježko** sa vrátil z výletu. Zápas sa mu stihnúť nepodarilo, aj keď po tom veľmi túžil. Chceš mu spraviť radosť a zahráš sa špeciálne len s ním. Ale pozor, **je to veľmi dobrý hráč!** Jeho chrbát unesie **viacero striel na bránku naraz!** Podarí sa ti chytiť všetky strely ježka, najlepšieho futbalového strelca, ktorý tím lúka má?"
     ],
     "hedgehogDone": [
       "Všetky listy sú späť u ježka. Výborne!"
@@ -633,7 +633,7 @@
       "Kryštály života sú na monolite. Planéta zase kvitne!"
     ],
     "matchStart": [
-      "Hvizd roháča odštartoval futbalový zápas. Za tím lúky **chytáš práve ty**! Dúfam, že si dobre trénoval ráno. Koľko striel chytíš, závisí **od rýchlosti a najmä presnosti tvojich prstov**. Daj si pozor najmä na **finálne nájazdy**, pri ktorých proti tebe vyštartuje **viac zvieratiek naraz**. **V pokoji** to však určite zvládneš."
+      "Hvizd roháča odštartoval futbalový zápas. Za tím lúky **chytáš práve ty!** Dúfam, že si si ráno dobre zatrénoval. Koľko striel chytíš, závisí **od rýchlosti a najmä presnosti tvojich prstov**. Daj si pozor najmä na **finálne nájazdy**, pri ktorých proti tebe vyštartuje **viac zvieratiek naraz**. **V pokoji** to však určite zvládneš."
     ],
     "spaceStart": [
       "Leť preskúmať prvú planétu! Rytmus písania poháňa raketu a lúč odsúva meteority z cesty."
@@ -1959,7 +1959,7 @@
   },
   "aim": {
     "title": "Strelnica",
-    "start": "Tapko hádže na terč! Napíš slovo na každom kruhu skôr, než ním vec preletí, a nakoniec slovo na terči. Načas a bez chyby trafíš do stredu. Trénuješ: {keys}",
+    "start": "**Toto je strelnica.** Je určená **na zlepšenie presnosti** a nachádza sa v každom svete, cez ktorý počas tohto dobrodružstva pôjdeš. Na trénovanie presnosti je potrebné spraviť **čo najmenej chýb.** Ak je tvoja presnosť dostatočná, odomkneš si prístup k ďalším písmenám a do ďalších svetov. V každej strelnici, ktorú dokážeš prejsť bez chyby, sa ti objaví **vzácny predmet**, ktorý sa nenachádza v žiadnej inej strelnici v iných svetoch. **Dokážeš získať všetky** vzácne predmety strelníc? Skontroluješ si to na karte **Môj postup.**",
     "swapHint": "Enterom vymeníš vec v labke za vzácnu zo zbierky.",
     "swap": "Zo zbierky: {name}!",
     "keys": "Písmená na tréning",
@@ -3134,7 +3134,7 @@
   },
   "parrot": {
     "title": "Papagáj",
-    "start": "Papagáj sa chce naučiť tvoje slová. Napíš slovo a on ho po tebe zopakuje. Ponáhľať sa netreba.",
+    "start": "Z diaľky ťa v každom svete sleduje aj **kamoš Aro.** Ak si ťa všimne, zvyčajne **rýchlo odletí**, ale keďže papagáj **má rád keksy a opakovanie**, ak mu začneš opakovať slová, zostane. **Keď získaš** papagája **v každom svete**, **Aro si sadne k tebe** na Mape svetov, kde sa s ním môžeš zahrať. Ale **pozor, papagáje raz za čas uletia** aj tak. No nie je nič jednoduchšie, než ich získať znovu! Skús ho chytiť teda aj tu.",
     "phase2": "Teraz každé slovo niekoľkokrát za sebou.",
     "slip": [
       "Daj si kráátku prestáávku.",

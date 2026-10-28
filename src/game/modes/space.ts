@@ -46,8 +46,8 @@ const STRONG_SIZE = 135;
 /** Seconds a hit strong meteor (or a piece whose shield popped) shakes in place, and how far at first. */
 const SHAKE = 0.4;
 const SHAKE_PX = 9;
-/** How many pieces of the boss carry a shield: their word is typed twice. */
-const SHIELDS = 2;
+/** How many pieces of the boss carry a shield in each round of its big asteroids (their word is typed twice): at least, at most. */
+const SHIELDS: [number, number] = [2, 4];
 /**
  * The pace of the space: all coming things fly together at one stream speed, the speed the slowest
  * of their words needs, and it glides to a new one over a few seconds (FLOW_EASE per second), so no
@@ -427,12 +427,16 @@ export class SpaceMode extends ApproachMode {
 
 /**
  * World 2 super-obstacle: big turning asteroids split into smaller rocks with shorter words; the
- * last one flies at the rocket. The first piece of two splits, spread over the level, has a shield.
+ * last one flies at the rocket. The first piece of two to four random splits of each round of big
+ * asteroids has a shield, so staying a while keeps bringing them.
  */
 export class AsteroidMode extends SpaceMode {
   private bigs = 0;
   /** Big asteroids split so far. */
   private splits = 0;
+  /** The splits whose first piece has a shield, planned a round of big asteroids ahead. */
+  private shielded = new Set<number>();
+  private planned = 0;
   protected autoSpawn = false;
 
   startLine(): string {
@@ -468,7 +472,7 @@ export class AsteroidMode extends SpaceMode {
     m.fade = 1;
     this.L.sfx('pop');
     this.splits++;
-    const shield = this.shieldSplits().includes(this.splits);
+    const shield = this.shieldAt(this.splits);
     const pieces = this.L.rng.int(3, 4);
     for (let i = 0; i < pieces; i++) {
       const a = (i / pieces) * Math.PI * 2;
@@ -477,9 +481,16 @@ export class AsteroidMode extends SpaceMode {
     this.L.particles.emit(m.x, m.y, 24, 'sparkle', ['#fff6a8', '#ffd1f5', '#a8f0ff'], 260, 10);
   }
 
-  /** The splits whose first piece has a shield: the first one and one about three quarters in (the first and the third of four). */
-  private shieldSplits(): number[] {
-    return [1, Math.max(2, Math.ceil(this.L.count * 0.75))].slice(0, SHIELDS);
+  /** Whether this split's first piece has a shield; each round of the level's big asteroids gets its own random ones. */
+  private shieldAt(split: number): boolean {
+    const round = this.L.def.count;
+    while (split > this.planned) {
+      const splits = Array.from({ length: round }, (_, i) => this.planned + 1 + i);
+      const n = Math.min(round, this.L.rng.int(...SHIELDS));
+      for (const s of this.L.rng.shuffle(splits).slice(0, n)) this.shielded.add(s);
+      this.planned += round;
+    }
+    return this.shielded.has(split);
   }
 
   /** A passed rock does not count: a big one comes again, a piece returns from the right, still shielded while its shield is whole. */

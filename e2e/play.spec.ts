@@ -11,7 +11,7 @@ test('a new child plays the first level by typing and sees stars', async ({ page
   // The character celebrated in place, not running off.
   await expect(page.locator('.level-tapko.celebrate')).toHaveCount(1);
   await expect(page.locator('.results-card .star.on').first()).toBeVisible();
-  // Esc peeks at the last frame of the game under the card; a letter brings the card back with its focus.
+  // Esc peeks at the last frame of the game under the card; a key that types nothing brings the card back with its focus (a letter would stay a while).
   const overlay = page.locator('.overlay.results');
   const first = page.locator('.results-card .row.center button').first();
   await expect(first).toBeFocused();
@@ -19,7 +19,7 @@ test('a new child plays the first level by typing and sees stars', async ({ page
   await expect(overlay).toHaveClass(/peek/);
   await expect(page.locator('.results-card')).toBeHidden();
   await expect(page.locator('.level-screen canvas').first()).toBeVisible();
-  await page.keyboard.press('k');
+  await page.keyboard.press('ArrowDown');
   await expect(page.locator('.results-card')).toBeVisible();
   await expect(first).toBeFocused();
   // The round X peeks too, a click on the stage brings the card back.

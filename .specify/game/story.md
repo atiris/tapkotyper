@@ -90,7 +90,8 @@ gives you a wreath"), never about the character as someone else.
    command, and the last command always brings it beside him. Its answer is above it, or below
    when it would cover the console. He jumps in, is glad, and the rocket flies away to the
    left; 5 the super-obstacle, whose big asteroids turn each their own way and whose last one
-   flies at the rocket; twice in the level a small piece has a shield (a soft cyan bubble): its
+   flies at the rocket; two to four small pieces at random have a shield (a soft cyan bubble), and
+   staying a while keeps bringing them: a shielded piece's
    word is typed twice, the first time the shield pops and the piece stays with the same word
    (the opening line says so). The near band drifts slowly on its own in the hop and command
    levels, where the scene stands still. The near

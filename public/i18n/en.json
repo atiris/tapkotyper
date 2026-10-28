@@ -420,7 +420,7 @@
       "This afternoon there is a football match on the meadow. The animals would like to warm up first, so they decided to **train with you**. You catch every leaf they kick when you **type the word above it**. If some slip into the goal, never mind."
     ],
     "commandStart": [
-      "The second planet is explored too. Call the rocket: write commands to it. Each command you send brings it closer."
+      "This planet is explored too, but it is not the dragons' planet, where they need your help. You can go on, you just **have to call the rocket.** Luckily you have a radio linked to the ship's computer: just **send a few commands without a mistake** and the ship will surely come closer. **There is no need to hurry**, what matters is to **type the commands exactly.**"
     ],
     "commandReply": [
       "Instruction received.",
@@ -434,11 +434,11 @@
       "The signal got lost."
     ],
     "asteroidStart": [
-      "The last part of the journey, the dragons' planet is in sight! Big asteroids break into smaller rocks. Two rocks have a shield: type their word twice."
+      "This looks like the last part of the journey. The dragons' planet is in sight! Oh, these asteroids are too big to push away. But you found out great news: your **laser can break** the **big rocks**, and then you can push the smaller asteroids out of the way. Some rocks here may even have a shield! **Luckily you have** practised enough **before**, so you **can do this too!**"
     ],
     "boarded": "Hooray, you are on board!",
     "strongStart": [
-      "On to the second planet. Careful, some meteors are stronger and glow around the edge. When you type their word, you type it once more."
+      "On your way into deep space you have run into asteroids with a **force field** around them! That makes your journey a bit harder, because you have to **shoot at them twice.** But your **fingers are** already **fast**, so you will surely make it. Behind this belt of asteroids another planet waits for you. Will it be the dragons' planet at last?"
     ],
     "strongHit": [
       "Ouch!",
@@ -447,7 +447,7 @@
       "Oof!"
     ],
     "hopStart": [
-      "The first planet is explored! The rocket waits a bit further on. Hop back to it across the meteors!"
+      "On your journey you have explored the first planet, but it is not the dragons' planet! **You parked the rocket behind a belt of asteroids**, so nothing would happen to it. To get to the rocket, you have to **hop across.** But you noticed something useful! **Some asteroids can be skipped**, so if the nearest meteor is a bit hard, just type the name of the second one. Do not hop any further than that!"
     ],
     "hopTooFar": "Oh, I can't jump that far.",
     "poppyStart": [
@@ -636,7 +636,7 @@
       "The stag beetle's whistle has started the football match. **You are the goalkeeper for the meadow team!** I hope you trained well this morning. How many shots you catch depends **on the speed and above all the accuracy of your fingers**. Watch out above all for the **final attacks**, when **several animals rush at you at once**. **Stay calm** and you will surely make it."
     ],
     "spaceStart": [
-      "Fly off to explore the first planet! Your typing rhythm drives the rocket and the beam pushes meteors out of the way."
+      "You have a special mission: explore a few planets, all the way to the dragons' planet, where they need your help. Your **typing in the right rhythm drives** the **spaceship** on this journey. When there is danger, **give** the right **command** to the ship's computer. If you enter the **right code** of the asteroid that crossed your way, you **switch on the laser**, which bounces the coming rock away like a billiard ball. But the dragons' planet is far away. What waits for you on this journey?"
     ],
     "waveCalm": [
       "The wave calmed down. Look, a rainbow!",

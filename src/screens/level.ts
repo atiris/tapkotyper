@@ -61,8 +61,8 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
   else if (params.id === 'parrot') def = parrotLevel(params.world != null && aimOpen(p, params.world) ? params.world : aimWorld(p, 0) ?? 0);
   else if (params.id === 'rescue') def = rescueLevel(p, p.progress.friends.length * 7 + Math.floor(Math.random() * 5));
   else def = levelById(params.id) ?? LEVELS[0];
-  // A super-obstacle has no endless form: staying plays the world's last regular level.
-  const stayDef = params.stay && def.isSuper ? LEVELS.find((l) => l.world === def.world && l.index === def.index - 1) ?? def : def;
+  // A super-obstacle has no endless form (the asteroids' has): staying plays the world's last regular level.
+  const stayDef = params.stay && def.isSuper && def.kind !== 'asteroid' ? LEVELS.find((l) => l.world === def.world && l.index === def.index - 1) ?? def : def;
   const task = p.tasks.find((x) => x.id === params.task && !x.doneAt) ?? null;
   let rt: LevelRuntime | null = null;
   let left = false;
@@ -128,10 +128,11 @@ const MODIFIERS = ['Shift', 'Alt', 'Control', 'Meta', 'AltGraph'];
 
 /**
  * A results card the child can look under: Esc or the round X hides the card and its dimming over
- * the last frame of the game; any other key or a click brings it back with the same focus, and Esc
- * while peeking does `esc` (what Esc on the card did before). A dialog over the card goes first.
+ * the last frame of the game; a typed character while peeking does `type` when given (play on in
+ * the same level without an end), any other key or a click brings the card back with the same
+ * focus, and Esc while peeking does `esc` (what Esc on the card did before). A dialog over the card goes first.
  */
-function peekable(overlay: HTMLElement, card: HTMLElement, esc: () => void): void {
+function peekable(overlay: HTMLElement, card: HTMLElement, esc: () => void, type?: () => void): void {
   let focused: HTMLElement | null = null;
   const peek = (on: boolean) => {
     if (on) focused = document.activeElement as HTMLElement | null;
@@ -150,7 +151,11 @@ function peekable(overlay: HTMLElement, card: HTMLElement, esc: () => void): voi
     e.preventDefault();
     e.stopPropagation();
     if (e.repeat) return;
-    if (e.key !== 'Escape') peek(false);
+    if (e.key !== 'Escape' && type && e.key.length === 1) {
+      stop();
+      // After this key is done, or the new run would take it as its first.
+      setTimeout(type);
+    } else if (e.key !== 'Escape') peek(false);
     else if (!peeking) peek(true);
     else {
       stop();
@@ -214,7 +219,8 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
   } else if (def.rescue) {
     actions.append(button(t('results.nextRescue'), () => go('level', { id: 'rescue' }), `btn ${calm ? '' : 'primary'}`, 'rescue'));
   }
-  if (def.index >= 0 && !task) actions.append(button(t('results.stay'), () => go('level', { id: def.id, stay: true }), 'btn', 'play'));
+  const stay = def.index >= 0 && !task ? () => go('level', { id: def.id, stay: true }) : undefined;
+  if (stay) actions.append(button(t('results.stay'), stay, 'btn', 'play'));
   actions.append(button(t('results.replay'), () => go('level', params), 'btn', 'replay'));
   const toMap = () => go('map');
   actions.append(button(t('level.end'), toMap, 'btn', 'close'));
@@ -240,7 +246,7 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
   const overlay = h('div', { class: 'overlay results' }, card);
   root.querySelector('.level-screen')!.append(overlay);
   (actions.querySelector('button') as HTMLButtonElement).focus();
-  peekable(overlay, card, toMap);
+  peekable(overlay, card, toMap, stay);
 }
 
 /** The end of staying a while: accuracy and rhythm like after a practice, the map first. */
@@ -269,7 +275,7 @@ function showStayDone(root: HTMLElement, def: LevelDef, r: LevelResult): void {
   const overlay = h('div', { class: 'overlay results' }, card);
   root.querySelector('.level-screen')!.append(overlay);
   (actions.querySelector('button') as HTMLButtonElement).focus();
-  peekable(overlay, card, () => go('map'));
+  peekable(overlay, card, () => go('map'), () => go('level', { id: def.id, stay: true }));
 }
 
 /** The end of the target range over it: accuracy before and after per weak key, the hits, new keys when the lesson advanced; no stars. */
@@ -303,7 +309,7 @@ function showAimDone(root: HTMLElement, r: LevelResult, mode: AimMode, params: L
   (actions.querySelector('button') as HTMLButtonElement).focus();
   // Escape stays at the range; Escape there ends it and brings this card back. After this key is
   // done, or the new range would take the same Escape as its end.
-  peekable(overlay, card, () => setTimeout(stay));
+  peekable(overlay, card, () => setTimeout(stay), stay);
 }
 
 /**

@@ -420,7 +420,7 @@
       "Popoludní bude na lúke futbalový zápas. Zvieratká by sa však chceli rozcvičiť a rozhodli sa, že si s tebou **zatrénujú**. Každý vykopnutý list môžeš chytiť tak, že **napíšeš slovo nad ním**. Ak ti niektoré prekĺznu až do brány, nevadí."
     ],
     "commandStart": [
-      "Aj druhá planéta je preskúmaná. Privolaj si raketu: napíš jej príkazy. Každý odoslaný príkaz ju privedie bližšie."
+      "Aj táto planéta je preskúmaná, nie je to však planéta drakov, kde potrebujú tvoju pomoc. Môžeš pokračovať, len **si musíš privolať raketu.** Našťastie máš so sebou vysielač spojený s palubným počítačom, ktorému stačí **odoslať zopár bezchybných príkazov**, a loď sa ti určite priblíži. **Nemusíš sa nikam ponáhľať**, dôležité je **zadať príkazy presne.**"
     ],
     "commandReply": [
       "Inštrukcia prijatá.",
@@ -434,11 +434,11 @@
       "Signál sa stratil."
     ],
     "asteroidStart": [
-      "Posledný úsek cesty, planéta drakov je už na dohľad! Veľké asteroidy sa rozpadnú na menšie kamene. Dva kamene majú štít, ich slovo napíšeš dvakrát."
+      "Toto vyzerá na posledný úsek cesty. Planéta drakov je už na dohľad! Ach, tieto asteroidy sú na odsunutie príliš veľké. Zistil si však skvelú správu: Tvoj **laser dokáže** veľké **balvany rozbiť** a potom môžeš menšie asteroidy odsunúť preč z dráhy. Dokonca tu niektoré balvany môžu mať aj štít! **Našťastie si** predtým dosť **trénoval**, takže aj toto **dokážeš zvládnuť!**"
     ],
     "boarded": "Hurá, si na palube!",
     "strongStart": [
-      "Letíme k druhej planéte. Pozor, niektoré meteority sú silnejšie, majú okolo seba žiaru. Keď napíšeš ich slovo, musíš ho napísať ešte raz."
+      "Pri ceste do hlbín vesmíru si narazil na asteroidy, ktoré majú okolo seba **ochranné pole!** To robí tvoju cestu trocha ťažšou, pretože musíš na ne **vystreliť dvakrát.** Tvoje **prsty sú** už však **rýchle**, a preto to určite zvládneš. Za týmto pásom asteroidov ťa čaká ďalšia planéta. Bude to už planéta drakov?"
     ],
     "strongHit": [
       "Au!",
@@ -447,7 +447,7 @@
       "Ouha!"
     ],
     "hopStart": [
-      "Prvá planéta je preskúmaná! Raketa čaká kúsok ďalej. Skáč po meteoritoch späť k nej!"
+      "Na svojej ceste si preskúmal prvú planétu, nie je to však planéta drakov! **Raketu si zaparkoval za pásom asteroidov**, aby sa jej nič nestalo. Aby si sa dostal k rakete, musíš k nej **preskákať.** Ale všimol si si užitočnú vec! **Niektoré asteroidy sa dajú preskočiť**, tak ak je najbližší meteorit trocha ťažký, stačí napísať meno druhého v poradí. Ďalej radšej neskáč!"
     ],
     "hopTooFar": "Jaj, tam nedoskočím.",
     "poppyStart": [
@@ -636,7 +636,7 @@
       "Hvizd roháča odštartoval futbalový zápas. Za tím lúky **chytáš práve ty!** Dúfam, že si si ráno dobre zatrénoval. Koľko striel chytíš, závisí **od rýchlosti a najmä presnosti tvojich prstov**. Daj si pozor najmä na **finálne nájazdy**, pri ktorých proti tebe vyštartuje **viac zvieratiek naraz**. **V pokoji** to však určite zvládneš."
     ],
     "spaceStart": [
-      "Leť preskúmať prvú planétu! Rytmus písania poháňa raketu a lúč odsúva meteority z cesty."
+      "Dostal si špeciálnu úlohu: preskúmať zopár planét až k planéte drakov, kde potrebujú tvoju pomoc. Tvoje **písanie v správnom rytme poháňa** vesmírnu **loď** na tejto ceste. V prípade nebezpečenstva **zadaj** správny **príkaz** palubnému počítaču. Ak uvedieš **správny kód** asteroidu, ktorý ti skrížil cestu, **aktivuješ laser**, ktorý blížiaci sa balvan odrazí ako biliardovú guľu. Planéta drakov je však ďaleko. Čo ťa na tejto ceste čaká?"
     ],
     "waveCalm": [
       "Vlna sa upokojila. Pozri, dúha!",

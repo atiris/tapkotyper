@@ -134,12 +134,15 @@
   and a small card like after a practice shows accuracy and rhythm, with Map first and Next
   level. The run gives no stars, rewards, level result or unlocks; its keys and time count in
   the statistics and the lesson may advance, as after a practice. A super-obstacle has no
-  endless form, so staying there plays the world's last regular level.
+  endless form, so staying there plays the world's last regular level; the rocket's asteroids
+  are the exception and keep coming, shielded pieces among them.
 - **Peeking under the results**: on every results card (level, practice, staying a while,
   target range, parrot) Esc or the round X hides the card and its dimming; the last frame of
-  the game stays in sight as it ended. Any other key or a click brings the card back as it was,
-  with the same focus, and the key does nothing else. Esc while peeking does what Esc on the
-  card did before (the map; at the target range: stay there).
+  the game stays in sight as it ended. A typed letter while peeking plays the same level again
+  from its start without an end (staying a while; at the target range: staying there), where
+  staying is offered. Any other key or a click brings the card back as it was, with the same
+  focus, and the key does nothing else. Esc while peeking does what Esc on the card did before
+  (the map; at the target range: stay there).
 - **Calm scenes breathe**: a scene that stands still (the calm steps of a world) lets one
   background band drift slowly on its own; with reduced motion nothing drifts. In a scene that
   moves with Tapko (its near band scrolls as he goes), the middle band never drifts: it moves

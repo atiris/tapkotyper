@@ -417,7 +417,7 @@
   "story": {
     "next": "Ďalej",
     "meadowStart": [
-      "Poobede je zápas! Zvieratká s tebou trénujú a kopú listy ako loptu. Napíš slovo na liste a chytíš ho!"
+      "Popoludní bude na lúke futbalový zápas. Zvieratká by sa však chceli rozcvičiť a rozhodli sa, že si s tebou **zatrénujú**. Každý vykopnutý list môžeš chytiť tak, že **napíšeš slovo nad ním**. Ak ti niektoré prekĺznu až do brány, nevadí."
     ],
     "commandStart": [
       "Aj druhá planéta je preskúmaná. Privolaj si raketu: napíš jej príkazy. Každý odoslaný príkaz ju privedie bližšie."
@@ -451,8 +451,7 @@
     ],
     "hopTooFar": "Jaj, tam nedoskočím.",
     "poppyStart": [
-      "Po tréningu natrháme kyticu vlčích makov! Napíš písmenko nad púčikom a rozkvitne.",
-      "Na lúke rastú vlčie maky. Každé napísané písmenko pridá jeden do kytice!"
+      "Je krásny deň a pred popoludňajším zápasom by sme si mohli skrášliť domov. Čo tak krásna **kytica vlčích makov**, ktoré rastú tu neďaleko? Áno, je to skvelý nápad! **Nazbieraj si ich**, kým neodkvitnú."
     ],
     "poppyDone": [
       "Krásna kytica vlčích makov!",

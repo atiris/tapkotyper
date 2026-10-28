@@ -417,7 +417,7 @@
   "story": {
     "next": "Next",
     "meadowStart": [
-      "There is a match this afternoon! The animals train with you and kick leaves like a ball. Type the word on a leaf to catch it!"
+      "This afternoon there is a football match on the meadow. The animals would like to warm up first, so they decided to **train with you**. You catch every leaf they kick when you **type the word above it**. If some slip into the goal, never mind."
     ],
     "commandStart": [
       "The second planet is explored too. Call the rocket: write commands to it. Each command you send brings it closer."
@@ -451,8 +451,7 @@
     ],
     "hopTooFar": "Oh, I can't jump that far.",
     "poppyStart": [
-      "After training, let's pick a bunch of poppies! Type the letter above a bud and it blooms.",
-      "Poppies grow on the meadow. Every letter you type adds one to the bunch!"
+      "It is a lovely day, and before the afternoon match we could make our home prettier. How about a lovely **bunch of poppies** that grow near here? Yes, what a great idea! **Pick them** before they wilt."
     ],
     "poppyDone": [
       "What a lovely bunch of poppies!",

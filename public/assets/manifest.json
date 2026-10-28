@@ -1164,6 +1164,18 @@
    "w": 357,
    "h": 384
   },
+  "obj-mushroom-aqua": {
+   "w": 195,
+   "h": 384
+  },
+  "obj-mushroom-gold": {
+   "w": 305,
+   "h": 384
+  },
+  "obj-mushroom-red": {
+   "w": 337,
+   "h": 384
+  },
   "obj-music-tree": {
    "w": 373,
    "h": 384

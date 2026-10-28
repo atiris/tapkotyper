@@ -99,6 +99,9 @@ Notes from real Gemini runs; add new ones here.
   key kept it, and dark violet rim pixels along the band's top were left as a purple fringe. Run
   `node scripts/defringe.mjs <layer.png> <layer.png>` before `npm run assets`: tinted pixels touching
   the key become the key, things inside keep their colors (planet, 2026-10-28).
+- "A few little grass blades at its foot" or "a tiny second mushroom" in a small object's prompt gave
+  a sprite that cannot be reused; for one object say "ONE single ..." and "NOTHING else: no grass,
+  no leaves, no ground, no second ..." (mushrooms, 2026-10-28).
 - A detailed near and mid layer (grass with crystals, mushrooms, bulbs and ferns) swallowed the game's
   own crystals, signposts and words on the planet's meadow (2026-10-28). Where objects with words
   stand on a layer, ask for "LOW detail, calm and simple", "mostly plain grass, lots of calm empty
@@ -515,6 +518,9 @@ BG is `magenta color (#FF00FF)` unless the table says `green`, then use `green c
 | `obj-arrow-1.jpg` | (2026-10-28) a long flat wooden arrow board pointing right, about seven times wider than tall: light natural wood (#D8A86A) with a pointed tip, a straight cut tail with one nail head, the long middle smooth and plain for a word; nothing on it | magenta |
 | `obj-arrow-2.jpg` | (2026-10-28) the same long arrow in warm walnut wood (#9A6A44) with a swallow-tail end, a carved groove along its border, a plain lighter middle; no paint, nothing growing on it (a sprout looked wrong when turned) | magenta |
 | `obj-cradle.jpg` | (2026-10-28, the Cradle of Life, not an altar) an old round carved stone pedestal on two low round steps, warm light grey stone (#B8B0A4) with moss and a few small glowing yellow flowers at its foot, carved crystal shapes and curling leaf lines on its sides, a wide shallow empty hollow on its flat top; about as wide as tall, no face, no crystal on it; strictly front view, symmetrical | magenta |
+| `obj-mushroom-red.jpg` | (2026-10-28, the spell's slips, usable anywhere) ONE single fly agaric: a round half-sphere red cap (#D9543A) with five cream spots, a short thick cream stem with a small frill; NOTHING else: no grass, no leaves, no ground, no second mushroom; strictly front view | green |
+| `obj-mushroom-gold.jpg` | ONE single slender parasol mushroom: a wide flat slightly pointed golden ochre cap (#E2A93B) with fine scales, a long thin cream stem with a ring halfway up; nothing else (as above) | magenta |
+| `obj-mushroom-aqua.jpg` | ONE single small magical mushroom: a tall narrow bell cap in light aqua (#8FE0D8) with white dots and a lighter core, a short thin curved pale stem; nothing else, no glow outside it (as above) | magenta |
 | **Dragons** | | |
 | `obj-dragon-baby-1.jpg` | a chubby baby dragon, mint green, tiny wings, sitting, big eyes, happy | magenta |
 | `obj-dragon-baby-2.jpg` | a chubby baby dragon, sky blue, tiny wings, sitting, big eyes, happy | magenta |

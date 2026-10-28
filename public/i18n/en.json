@@ -584,7 +584,7 @@
       "unknownSaid": "The unknown road: {len}, {time} and {diff}."
     },
     "spellStart": [
-      "Three crystals of life are asleep. Wake them with a spell: type it word by word. With more than three slips the spell breaks and starts over."
+      "Three crystals of life are asleep. Wake them with a spell: type it word by word. With more than three slips the spell breaks and a new one comes."
     ],
     "spellCast": [
       "Yippee!",
@@ -594,8 +594,8 @@
       "Woo-hoo!"
     ],
     "spellBroken": [
-      "Pssst... the spell broke. Let's try it again from the start.",
-      "Phew, the spell fizzled. Once more, nice and slow."
+      "Pssst... the spell broke. Let's try another one.",
+      "Phew, the spell fizzled. Here is a new one, nice and slow."
     ],
     "greatSwampStart": [
       "The Cradle of Life is behind the great swamp. The stones are fragile: from a firm stone you jump four stones. A slip cracks them and you go back."

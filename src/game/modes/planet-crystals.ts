@@ -290,8 +290,11 @@ const LIGHT = 0.8;
 const NEXT_SPELL = 1.3;
 const TAKE = 1.2;
 const SPELL_INK = '#4a3a6c';
-/** The slips left: small mushrooms on the panel's top edge, their height, and seconds a lost one takes to go. */
-const SHROOM_H = 26;
+/** The slips left: three different small mushrooms on the panel's top edge, their height, and seconds a lost one takes to go. */
+const SHROOMS = ['obj-mushroom-red', 'obj-mushroom-gold', 'obj-mushroom-aqua'];
+const SHROOM_H = 46;
+/** The parasol is slim: drawn a bit taller so it reads as big as the others. */
+const SHROOM_SCALE = [1, 1.3, 1];
 const SHROOM_GONE = 0.5;
 
 /** The three crystals of life: each kind, its place beside the middle one, its height and its lean (heights of the middle one: 1). */
@@ -332,31 +335,17 @@ export function drawLifeCrystals(g: G, x: number, y: number, size: number, lit: 
   });
 }
 
-/** A small mushroom for the slips left, its foot at (x, y). */
-function drawShroom(g: G, x: number, y: number, h: number, alpha: number): void {
+/** A small mushroom for the slips left (one of three kinds), its foot at (x, y); code-drawn while its picture is missing. */
+function drawShroom(g: G, kind: number, x: number, y: number, h: number, alpha: number): void {
   if (alpha <= 0 || h <= 0) return;
-  g.save();
-  g.globalAlpha *= alpha;
-  g.lineWidth = 2;
-  g.strokeStyle = '#5a3d2b';
-  g.fillStyle = '#fff1d6';
-  g.beginPath();
-  g.roundRect(x - h * 0.14, y - h * 0.62, h * 0.28, h * 0.62, h * 0.1);
-  g.fill();
-  g.stroke();
-  g.fillStyle = '#c8553a';
-  g.beginPath();
-  g.ellipse(x, y - h * 0.62, h * 0.48, h * 0.38, 0, Math.PI, 0);
-  g.closePath();
-  g.fill();
-  g.stroke();
-  g.fillStyle = '#fff1d6';
-  for (const [dx, dy, r] of [[-0.2, -0.78, 0.08], [0.16, -0.84, 0.07], [0.02, -0.7, 0.05]]) {
-    g.beginPath();
-    g.arc(x + dx * h, y + dy * h, r * h, 0, Math.PI * 2);
-    g.fill();
-  }
-  g.restore();
+  drawSprite(g, SHROOMS[kind], x, y, h * SHROOM_SCALE[kind], { ay: 0.95, alpha }, (g2, w, hh) => {
+    g2.fillStyle = '#fff1d6';
+    g2.fillRect(-w * 0.12, -hh * 0.1, w * 0.24, hh * 0.55);
+    g2.fillStyle = '#c8553a';
+    g2.beginPath();
+    g2.ellipse(0, -hh * 0.1, w * 0.45, hh * 0.32, 0, Math.PI, 0);
+    g2.fill();
+  });
 }
 
 /** The crystals of life peek out of a big molehill on the right: its height, and the middle crystal's. */
@@ -375,7 +364,7 @@ const SHAKE_TIME = 0.4;
  */
 export class SpellMode extends Mode {
   readonly tapkoFeet = PATH_FEET;
-  readonly pictures = [...CRYSTALS, 'obj-mound-2'];
+  readonly pictures = [...CRYSTALS, 'obj-mound-2', ...SHROOMS];
   readonly world = 'planet';
   readonly phraseWords = 1;
   private words: string[] = [];
@@ -499,7 +488,7 @@ export class SpellMode extends Mode {
 
   /** The spell panel between Tapko and the crystals. */
   private panel(): { x0: number; x1: number; y: number } {
-    return { x0: TAPKO_X + 150, x1: this.L.vw - 290, y: VH * 0.46 };
+    return { x0: TAPKO_X + 150, x1: this.L.vw - 290, y: VH * 0.32 };
   }
 
   /** The spell's words in lines that fit the panel: each word's center and line. */
@@ -538,7 +527,7 @@ export class SpellMode extends Mode {
     // The slips the spell still takes: small mushrooms growing from the panel's top edge; a lost one shrinks away.
     for (let i = 0; i < SPELL_SLIPS; i++) {
       const k = this.shroomGone[i] < 0 ? 0 : Math.min(1, this.shroomGone[i] / SHROOM_GONE);
-      drawShroom(g, p.x1 - 40 - i * 34, p.y - h / 2 + 3, SHROOM_H * (1 - k * 0.6), 1 - k);
+      drawShroom(g, i, p.x1 - 46 - i * 46, p.y - h / 2 + 6, SHROOM_H * (1 - k * 0.6), 1 - k);
     }
     if (this.fizzle >= 0 || this.pause >= 0) return;
     // Each line is centred in the panel.

@@ -584,7 +584,7 @@
       "unknownSaid": "Neznáma cesta: {len}, {time} a {diff}."
     },
     "spellStart": [
-      "Tri kryštály života spia. Prebuď ich kúzlom: napíš ho slovo po slove. Pri viac ako troch chybách sa kúzlo pokazí a začne sa odznova."
+      "Tri kryštály života spia. Prebuď ich kúzlom: napíš ho slovo po slove. Pri viac ako troch chybách sa kúzlo pokazí a príde nové."
     ],
     "spellCast": [
       "Jupí!",
@@ -594,8 +594,8 @@
       "Juchú!"
     ],
     "spellBroken": [
-      "Pššš... kúzlo sa pokazilo. Skúsime ho znova od začiatku.",
-      "Fuu, kúzlo zhaslo. Ešte raz, pekne pomaly."
+      "Pššš... kúzlo sa pokazilo. Skúsime iné.",
+      "Fuu, kúzlo zhaslo. Tu je nové, pekne pomaly."
     ],
     "greatSwampStart": [
       "Kolíska života je za veľkým močiarom. Kamene sú tu krehké: z pevného kameňa skáčeš štyri kamene. Keď sa pomýliš, kamene prasknú a vrátiš sa späť."

@@ -148,7 +148,7 @@ gives you a wreath"), never about the character as someone else.
    4 spells (copy twist): three crystals of life of three kinds, asleep (grey), peek out of a
    big molehill on the right, and now and then one of them gives a little shake. A spell of
    several words is written on a panel in the middle, word by word. It takes three slips: three
-   small mushrooms grow from the panel's top edge and one goes at each slip; the fourth slip
+   different small mushrooms grow from the top edge of the panel (high in the scene) and one goes at each slip; the fourth slip
    breaks the spell and a new spell comes. Each spell cast lights the next crystal with a shout
    ("Jupí!", "Zipp!", "Juchú!"); all three lit, the crystals fly to Tapko. The spells are long enough to fill the level's
    minimum time at the child's pace.

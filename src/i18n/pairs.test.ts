@@ -18,12 +18,12 @@ const guide = {
 const catalog: Section[] = [{ id: 's', groups: [{ id: 'g', guide: 'g', items: [
   { key: 'hello', kind: 'text' }, { key: 'story', kind: 'lines' }, { key: 'calls', kind: 'pool' }, { key: 'count', kind: 'plural' },
 ] }, { id: 'words', guide: 'words', items: [{ key: 'words', kind: 'words' }] }] }];
-const sk: Source = { code: 'sk', name: 'Slovenčina', dict: base, guide, words: ['mama', 'tata'] };
-const ctx = { base: sk, catalog };
+const sk: Source = { code: 'sk', name: 'Slovenčina', dict: base, words: ['mama', 'tata'] };
+const ctx = { base: sk, catalog, guide };
 
 const german = () => {
   const l = newOwnLang({ code: 'de', name: 'Deutsch', base: 'sk', layout: 'sk-qwertz' });
-  return { l, fields: () => fieldsOf(catalog, l, base, guide) };
+  return { l, fields: () => fieldsOf(catalog, l, base) };
 };
 
 describe('pairs', () => {
@@ -39,7 +39,6 @@ describe('pairs', () => {
     expect(ids).toContain('calls.3');
     // German has one and other, not the Slovak few.
     expect(ids.filter((i) => i.startsWith('count.'))).toEqual(['count.one', 'count.other']);
-    expect(ids).toContain('guide:situations.hello');
     expect(ids).toContain('words');
   });
 
@@ -118,10 +117,9 @@ describe('pairs', () => {
 
     l.words = ['Haus', 'Maus'];
     const json = JSON.parse(exportJson(l));
-    expect(json.guide.sections.s.title).toBe('Abschnitt');
     const back = german();
     planJson(back.l, back.fields(), json).apply();
-    expect(back.l.guide['sections.s.title']).toBe('Abschnitt');
+    expect(back.l.texts.hello).toBe('Abschnitt');
     expect(back.l.words).toEqual(['Haus', 'Maus']);
     expect(back.l.touched).toEqual([fields()[0].id]);
   });

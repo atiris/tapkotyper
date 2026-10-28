@@ -7,7 +7,7 @@ import { describe, expect, it } from 'vitest';
  * with it. A key counts as read when the code names it (or a key above it, read as a whole: a list,
  * plural forms, a group), or when a template or a concatenation in the code can build it
  * (`story.path.${kind}.names`, 'tips.' + id). The translator's catalog names every key by pattern
- * and does not count.
+ * and does not count. The translator's own texts are read by name on its page.
  */
 
 const load = (lang: string) => JSON.parse(readFileSync(`public/i18n/${lang}.json`, 'utf8'));
@@ -73,5 +73,12 @@ describe('dictionaries', () => {
     };
     const unused = leaves(load('sk')).filter((k) => !read(k));
     expect(unused).toEqual([]);
+  });
+
+  it('have no translator text the translator page no longer reads', () => {
+    const code = readFileSync('src/screens/translate.ts', 'utf8');
+    const named = new Set([...code.matchAll(/'([\w.]+)'/g)].map((m) => m[1]));
+    const ui = JSON.parse(readFileSync('public/i18n/translator/en.json', 'utf8')).ui;
+    expect(leaves(ui).filter((k) => !named.has(k))).toEqual([]);
   });
 });

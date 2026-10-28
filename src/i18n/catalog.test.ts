@@ -61,24 +61,21 @@ describe('catalog', () => {
     expect(situationKey({ 'aim.things.egg.hit': 'c', 'aim.things.*.hit': 'b' }, 'aim.things.egg.hit')).toBe('aim.things.egg.hit');
   });
 
-  it('has a guide for every section, group and item, the same keys in both languages', () => {
-    const guides = ['sk', 'en'].map((l) => flatGuide(JSON.parse(readFileSync(`public/i18n/guide/${l}.json`, 'utf8'))));
-    expect(Object.keys(guides[0]).sort()).toEqual(Object.keys(guides[1]).sort());
-    for (const g of guides) {
-      for (const [k, v] of Object.entries(g)) expect(v.trim(), k).not.toBe('');
-      for (const s of catalog) {
-        expect(g[`sections.${s.id}.title`], s.id).toBeTruthy();
-        expect(g[`sections.${s.id}.about`], s.id).toBeTruthy();
-        for (const gr of s.groups) {
-          expect(g[`groups.${gr.guide}.title`], gr.guide).toBeTruthy();
-          expect(g[`groups.${gr.guide}.about`], gr.guide).toBeTruthy();
-        }
+  it('has a guide for every section, group and item in the translator file', () => {
+    const g = flatGuide(JSON.parse(readFileSync('public/i18n/translator/en.json', 'utf8')));
+    for (const [k, v] of Object.entries(g)) expect(v.trim(), k).not.toBe('');
+    for (const s of catalog) {
+      expect(g[`sections.${s.id}.title`], s.id).toBeTruthy();
+      expect(g[`sections.${s.id}.about`], s.id).toBeTruthy();
+      for (const gr of s.groups) {
+        expect(g[`groups.${gr.guide}.title`], gr.guide).toBeTruthy();
+        expect(g[`groups.${gr.guide}.about`], gr.guide).toBeTruthy();
       }
-      const find = situationFinder(g);
-      expect(items.filter((i) => !find(i.key)).map((i) => i.key)).toEqual([]);
-      // No situation is left over from a text that is gone.
-      const used = new Set(items.map((i) => find(i.key)));
-      expect(Object.keys(g).filter((k) => k.startsWith('situations.') && !used.has(k))).toEqual([]);
     }
+    const find = situationFinder(g);
+    expect(items.filter((i) => !find(i.key)).map((i) => i.key)).toEqual([]);
+    // No situation is left over from a text that is gone.
+    const used = new Set(items.map((i) => find(i.key)));
+    expect(Object.keys(g).filter((k) => k.startsWith('situations.') && !used.has(k))).toEqual([]);
   });
 });

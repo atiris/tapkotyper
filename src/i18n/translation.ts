@@ -4,7 +4,7 @@ import { ownDict } from './i18n';
 import type { OwnLang } from './own-langs';
 import { type ExportMode, type PairEntry, readPairs, writePairs } from './pairs';
 
-/** The texts about the texts of one language, as in `public/i18n/guide/<lang>.json`. */
+/** The texts about the texts, as in the translator's file `public/i18n/translator/<lang>.json`. */
 export interface GuideFile {
   sections: Record<string, { title: string; about: string }>;
   groups: Record<string, { title: string; about: string }>;
@@ -16,27 +16,23 @@ export interface Source {
   code: string;
   name: string;
   dict: Dict;
-  /** Guide texts by guide key (`sections.aim.title`, `situations.aim.lines.*`). */
-  guide: Record<string, string>;
   words: string[];
 }
 
-export type FieldKind = 'guide' | 'text' | 'variant' | 'line' | 'form' | 'words';
+export type FieldKind = 'text' | 'variant' | 'line' | 'form' | 'words';
 
 /** One input of the page. */
 export interface Field {
   id: string;
   kind: FieldKind;
   section: string;
-  /** The item key, or the guide key of a guide field. */
+  /** The item key. */
   key: string;
   /** 0-based variant or line. */
   index?: number;
   form?: string;
   item?: Item;
 }
-
-export const guideId = (guideKey: string): string => `guide:${guideKey}`;
 
 /** A guide file as flat guide keys. */
 export function flatGuide(g: GuideFile): Record<string, string> {
@@ -49,21 +45,6 @@ export function flatGuide(g: GuideFile): Record<string, string> {
   }
   for (const [k, v] of Object.entries(g.situations ?? {})) out[`situations.${k}`] = v;
   return out;
-}
-
-/** Flat guide keys back as a guide file (empty texts left out). */
-export function guideTree(flat: Record<string, string>): GuideFile {
-  const g: GuideFile = { sections: {}, groups: {}, situations: {} };
-  for (const [k, v] of Object.entries(flat)) {
-    if (!v) continue;
-    if (k.startsWith('situations.')) g.situations[k.slice(11)] = v;
-    else {
-      const [part, id, field] = k.split('.') as ['sections' | 'groups', string, 'title' | 'about'];
-      if (part !== 'sections' && part !== 'groups') continue;
-      (g[part][id] ??= { title: '', about: '' })[field] = v;
-    }
-  }
-  return g;
 }
 
 /** The plural forms a language needs, in the usual order. */
@@ -106,25 +87,12 @@ export function variantCount(l: OwnLang, key: string, base: Dict): number {
 }
 
 /** Every field of a translation in page order. */
-export function fieldsOf(catalog: Section[], l: OwnLang, base: Dict, baseGuide: Record<string, string>): Field[] {
+export function fieldsOf(catalog: Section[], l: OwnLang, base: Dict): Field[] {
   const out: Field[] = [];
   const forms = pluralForms(l.code);
-  const guides = new Set<string>();
-  const situationOf = situationFinder(baseGuide);
-  const guideField = (section: string, key: string) => {
-    if (guides.has(key)) return;
-    guides.add(key);
-    out.push({ id: guideId(key), kind: 'guide', section, key });
-  };
   for (const s of catalog) {
-    guideField(s.id, `sections.${s.id}.title`);
-    guideField(s.id, `sections.${s.id}.about`);
     for (const g of s.groups) {
-      guideField(s.id, `groups.${g.guide}.title`);
-      guideField(s.id, `groups.${g.guide}.about`);
       for (const item of g.items) {
-        const sit = situationOf(item.key);
-        if (sit) guideField(s.id, sit);
         const f = { section: s.id, key: item.key, item };
         if (item.kind === 'text') out.push({ ...f, id: item.key, kind: 'text' });
         else if (item.kind === 'words') out.push({ ...f, id: WORDS, kind: 'words' });
@@ -141,7 +109,6 @@ export function fieldsOf(catalog: Section[], l: OwnLang, base: Dict, baseGuide: 
 
 /** The text of a field in a language source (official or own, as a dictionary). */
 export function sourceValue(src: Source, f: Field): string {
-  if (f.kind === 'guide') return src.guide[f.key] ?? '';
   if (f.kind === 'words') return src.words.join(' ');
   const v = lookup(src.dict, f.key);
   if (f.kind === 'text') return typeof v === 'string' ? v : '';
@@ -150,7 +117,6 @@ export function sourceValue(src: Source, f: Field): string {
 }
 
 export function fieldValue(l: OwnLang, f: Field): string {
-  if (f.kind === 'guide') return l.guide[f.key] ?? '';
   if (f.kind === 'words') return l.words.join(' ');
   const v = l.texts[f.key];
   if (f.kind === 'text') return typeof v === 'string' ? v : '';
@@ -163,8 +129,7 @@ export const splitWords = (text: string): string[] => text.split(/\s+/).filter(B
 
 /** Writes a field; `count` is the number of variants an array item has on the page. */
 export function setFieldValue(l: OwnLang, f: Field, value: string, count = 1): void {
-  if (f.kind === 'guide') l.guide[f.key] = value;
-  else if (f.kind === 'words') l.words = splitWords(value);
+  if (f.kind === 'words') l.words = splitWords(value);
   else if (f.kind === 'text') l.texts[f.key] = value;
   else if (f.kind === 'form') {
     const v = l.texts[f.key];
@@ -248,9 +213,11 @@ export function prefill(l: OwnLang, fields: Field[], src: Source): void {
 export interface Context {
   base: Source;
   catalog: Section[];
+  /** The translator's guide, flat (`sections.aim.title`, `situations.aim.lines.*`). */
+  guide: Record<string, string>;
 }
 
-/** The base text of a guide field, `{item}` filled with the name of the item's group. */
+/** A guide text, `{item}` filled with the name of the item's group. */
 export function guideText(guide: Record<string, string>, key: string, itemName = ''): string {
   return (guide[key] ?? '').replace(/\{item\}/g, itemName);
 }
@@ -276,9 +243,9 @@ export function changedFields(l: OwnLang, fields: Field[], official: Source): Fi
 export function exportPairs(l: OwnLang, fields: Field[], ctx: Context, mode: ExportMode, official?: Source): string {
   const touched = new Set(l.touched);
   const shown = mode === 'open' ? fields.filter((f) => !touched.has(f.id)) : mode === 'changes' && official ? changedFields(l, fields, official) : fields;
-  const g = ctx.base.guide;
+  const g = ctx.guide;
   let section = '';
-  /** Item key -> its group; a guide field of a group heads the group's first items. */
+  /** Item key -> its group. */
   const groupOf = new Map<string, Group>();
   const situationOf = situationFinder(g);
   const names = itemNames(ctx.catalog, ctx.base.dict);
@@ -291,16 +258,14 @@ export function exportPairs(l: OwnLang, fields: Field[], ctx: Context, mode: Exp
       const title = guideText(g, `sections.${f.section}.title`);
       if (title) comments.push(`== ${title} ==`);
     }
-    const gr = f.item ? groupOf.get(f.key) : group;
+    const gr = groupOf.get(f.key);
     if (gr && gr !== group) {
       group = gr;
       const title = guideText(g, `groups.${gr.guide}.title`, names.get(f.key));
       if (title) comments.push(`-- ${title} --`);
     }
-    if (f.item) {
-      const sit = situationOf(f.key);
-      if (sit) comments.push(`Situation: ${guideText(g, sit, names.get(f.key))}`);
-    }
+    const sit = situationOf(f.key);
+    if (sit) comments.push(`Situation: ${guideText(g, sit, names.get(f.key))}`);
     return { comments, id: f.id, base: sourceValue(ctx.base, f), target: fieldValue(l, f) };
   });
   return writePairs({ meta: metaOf(l), mode, baseCode: ctx.base.code, entries });
@@ -371,11 +336,10 @@ export function planPairs(l: OwnLang, fields: Field[], text: string): ImportPlan
   };
 }
 
-/** The JSON of a translation: `texts` and `guide` shaped like the official files. */
+/** The JSON of a translation: `texts` shaped like the official files. */
 export interface TranslationJson {
   meta: Record<string, string>;
   texts: Dict;
-  guide: GuideFile;
   words: string[];
   touched: string[];
 }
@@ -395,17 +359,13 @@ export function flatTexts(d: Dict, fields: Field[]): Record<string, Value> {
 /** What an import of a JSON would do: every text in it, touched as the file says (else every text it has). */
 export function planJson(l: OwnLang, fields: Field[], json: TranslationJson): ImportPlan {
   const texts = flatTexts(json.texts ?? {}, fields);
-  const guide = flatGuide(json.guide ?? { sections: {}, groups: {}, situations: {} });
-  const known = new Set(fields.map((f) => f.key));
-  const skipped: ImportPlan['skipped'] = [...Object.keys(guide).filter((k) => !known.has(k)).map((k) => ({ id: guideId(k), why: 'unknown' as const }))];
   return {
-    applied: Object.keys(texts).length + Object.keys(guide).length - skipped.length + (json.words?.length ? 1 : 0),
+    applied: Object.keys(texts).length + (json.words?.length ? 1 : 0),
     empty: 0,
-    skipped,
+    skipped: [],
     meta: json.meta ?? {},
     apply() {
       Object.assign(l.texts, texts);
-      for (const [k, v] of Object.entries(guide)) if (known.has(k)) l.guide[k] = v;
       if (json.words?.length) l.words = [...json.words];
       const now = withPoolCounts(fields, l);
       const ids = new Set(Array.isArray(json.touched) ? json.touched : now.filter((f) => fieldValue(l, f)).map((f) => f.id));
@@ -433,6 +393,6 @@ function withPoolCounts(fields: Field[], l: OwnLang): Field[] {
 }
 
 export function exportJson(l: OwnLang): string {
-  const json: TranslationJson = { meta: metaOf(l), texts: ownDict(l), guide: guideTree(l.guide), words: l.words, touched: l.touched };
+  const json: TranslationJson = { meta: metaOf(l), texts: ownDict(l), words: l.words, touched: l.touched };
   return `${JSON.stringify(json, null, 2)}\n`;
 }

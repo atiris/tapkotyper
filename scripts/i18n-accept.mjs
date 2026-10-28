@@ -1,9 +1,8 @@
 // The owner's side of "Send for approval": takes a translation exported from the translator page
 // (`.json`) and writes it into the game's files.
 //   node scripts/i18n-accept.mjs <file.json>
-// A new language writes public/i18n/<code>.json, public/i18n/guide/<code>.json and
-// public/words/<code>.json, untranslated texts filled from its base language, and prints the line
-// for LANGUAGES. A correction (meta.correctionOf) merges its texts into that language's files.
+// A new language writes public/i18n/<code>.json and public/words/<code>.json, untranslated texts
+// filled from its base language, and prints the line for LANGUAGES. A correction (meta.correctionOf) merges its texts into that language's files.
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 
 const PLURAL = new Set(['zero', 'one', 'two', 'few', 'many', 'other']);
@@ -65,14 +64,6 @@ const texts = { taken: [], kept: [] };
 const baseTexts = read(`public/i18n/${base}.json`);
 write(`public/i18n/${code}.json`, lay(baseTexts, t.texts ?? {}, texts));
 report(`public/i18n/${code}.json`, texts, unknown(baseTexts, t.texts));
-
-const guidePath = `public/i18n/guide/${base}.json`;
-if (existsSync(guidePath)) {
-  const guide = { taken: [], kept: [] };
-  const baseGuide = read(guidePath);
-  write(`public/i18n/guide/${code}.json`, lay(baseGuide, t.guide ?? {}, guide));
-  report(`public/i18n/guide/${code}.json`, guide, unknown(baseGuide, t.guide));
-}
 
 if (Array.isArray(t.words) && t.words.length) {
   write(`public/words/${code}.json`, { words: t.words });

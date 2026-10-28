@@ -20,8 +20,6 @@ export interface OwnLang {
   contact: string;
   /** Texts by item key: a string, the variants, or the plural forms. */
   texts: Record<string, Value>;
-  /** Headings, explanations and situations by guide key (`sections.aim.title`). */
-  guide: Record<string, string>;
   words: string[];
   /** Field ids the translator wrote, kept or imported. */
   touched: string[];
@@ -98,7 +96,7 @@ export function newOwnLang(o: { code: string; name: string; base: Lang; layout: 
   const now = Date.now();
   return {
     id: Math.random().toString(36).slice(2, 10), code: o.code, name: o.name, base: o.base, correctionOf: o.correctionOf ?? null, layout: o.layout,
-    author: '', contact: '', texts: {}, guide: {}, words: [], touched: [], createdAt: now, updatedAt: now,
+    author: '', contact: '', texts: {}, words: [], touched: [], createdAt: now, updatedAt: now,
   };
 }
 

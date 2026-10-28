@@ -20,7 +20,7 @@ test('a parent starts a language, translates, exports, imports and plays it', as
   await expect(page.locator('.translate-screen')).toBeVisible();
 
   // A new language, prefilled from English: every field still untranslated.
-  await page.getByRole('button', { name: /^(Nový jazyk|New language)$/ }).click();
+  await page.getByRole('button', { name: /^New language$/ }).click();
   const form = page.locator('.tr-dialog');
   await form.locator('input').nth(0).fill('Deutsch');
   await form.locator('input').nth(1).fill('de');
@@ -28,7 +28,7 @@ test('a parent starts a language, translates, exports, imports and plays it', as
   await form.locator('button[type=submit]').click();
   await expect(page.locator('.tr-target')).toHaveValue(/.+/);
   await page.locator('.tr-prefill').selectOption('en');
-  await page.getByRole('button', { name: /^(Predvyplniť|Prefill)$/ }).click();
+  await page.getByRole('button', { name: /^Prefill$/ }).click();
   await expect(page.locator('textarea[data-field="common.ok"]')).toHaveValue('OK');
   expect(await ringValue(page)).toBe(0);
   await expect(page.locator('.tr-input.open').first()).toBeVisible();
@@ -40,14 +40,21 @@ test('a parent starts a language, translates, exports, imports and plays it', as
   expect(await ringValue(page)).toBeGreaterThan(0);
   await expect(hello.locator('xpath=..')).not.toHaveClass(/open/);
 
-  // The ring goes to the first untranslated field; keep translates it as it is.
+  // The ring goes to the first untranslated field; its info box shows the shadow language,
+  // copies from it (still untranslated) and marks it done.
   await page.locator('.tr-ring').click();
-  await expect(page.locator('textarea.tr-field:focus')).toHaveAttribute('data-field', 'guide:sections.start.title');
-  const first = page.locator('.tr-input', { has: page.locator('textarea[data-field="guide:sections.start.title"]') });
-  await first.locator('.tr-keep').click();
+  const firstId = await page.locator('textarea.tr-field:focus').getAttribute('data-field');
+  const first = page.locator('.tr-input', { has: page.locator(`textarea[data-field="${firstId}"]`) });
+  await page.locator('.tr-shadow').selectOption('sk');
+  await first.locator('.tr-info').click();
+  await expect(first.locator('.tr-info-box')).toContainText('Slovenčina');
+  await expect(first.locator('.tr-info-box a')).toHaveAttribute('href', /github\.com\/search/);
+  await first.locator('.tr-copy').click();
+  await expect(first).toHaveClass(/open/);
+  await first.locator('.tr-mark').click();
   await expect(first).not.toHaveClass(/open/);
   await page.locator('.tr-ring').click();
-  await expect(page.locator('textarea.tr-field:focus')).toHaveAttribute('data-field', 'guide:sections.start.about');
+  await expect(page.locator('textarea.tr-field:focus')).not.toHaveAttribute('data-field', firstId!);
 
   // A pool gets a variant and loses it again.
   await page.locator('#tr-s-aim').scrollIntoViewIfNeeded();

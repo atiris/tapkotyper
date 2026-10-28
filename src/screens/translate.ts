@@ -1,10 +1,10 @@
 import { go } from '../app/app';
 import { imageUrl } from '../gfx/assets';
 import { type Dict, type Group, type Item, type Section, WORDS, buildCatalog, lookup, thumbs } from '../i18n/catalog';
-import { LANGS, LANGUAGES, askedLanguage, isLang, language, officialDict, ownDict, setLanguage, t } from '../i18n/i18n';
+import { LANGS, LANGUAGES, askedLanguage, isLang, language, officialDict, ownDict, setLanguage } from '../i18n/i18n';
 import { type OwnLang, canonicalCode, deleteOwnLang, isOwnRef, newOwnLang, ownId, ownLangs, ownRef, ownStoreWorks, saveOwnLang } from '../i18n/own-langs';
 import {
-  type Field, type ImportPlan, type Source, addVariant, exportJson, exportPairs, fieldValue, fieldsOf, flatGuide, formExample, guideText, itemNames,
+  type Field, type GuideFile, type ImportPlan, type Source, addVariant, exportJson, exportPairs, fieldValue, fieldsOf, flatGuide, formExample, guideText, itemNames,
   planJson, planPairs, prefill, progressOf, removeVariant, setFieldValue, situationFinder, sourceValue, splitWords, touch, untouch,
 } from '../i18n/translation';
 import { LAYOUTS, LAYOUT_IDS, canType } from '../keyboard/layouts';
@@ -17,6 +17,8 @@ import { loadWords } from '../words/words';
 
 /** Where approved translations are asked for: a new issue of the project. */
 const ISSUES = 'https://github.com/atiris/tapkotyper/issues/new';
+/** The project's code search: every place a key is read or written. */
+const codeSearch = (key: string) => `https://github.com/search?${new URLSearchParams({ q: `repo:atiris/tapkotyper "${key}"`, type: 'code' })}`;
 /** A prefilled issue address longer than this is cut by browsers or GitHub: the file goes as an attachment. */
 const ISSUE_URL_MAX = 7000;
 const SAVE_MS = 500;
@@ -27,7 +29,7 @@ const LESSON_WORDS_MIN = 20;
 const LONG_TEXT = 160;
 /** A field's accessible name quotes at most this much of its base text. */
 const LABEL_MAX = 80;
-/** The last base and translation, a convenience of this browser only. */
+/** The last shadow language and translation, a convenience of this browser only. */
 const REMEMBER = 'tapkotyper:translate';
 
 const icons = new Map<string, HTMLElement>();
@@ -39,18 +41,33 @@ const defaultLayout = (lang: Lang): LayoutId => (lang === 'sk' ? 'sk-qwertz' : '
 const pct = (p: number) => (p > 0 && p < 0.01 ? 1 : Math.floor(p * 100));
 const placeholders = (s: string) => [...new Set([...s.matchAll(/\{(\w+)\}/g)].map((m) => `{${m[1]}}`))];
 
-const guides = new Map<Lang, Promise<Record<string, string>>>();
-/** The guide of an official language (`public/i18n/guide/<lang>.json`), flat; empty when it cannot load. */
-function officialGuide(lang: Lang): Promise<Record<string, string>> {
-  if (!guides.has(lang)) {
-    guides.set(lang, fetch(`${import.meta.env.BASE_URL}i18n/guide/${lang}.json`).then((r) => (r.ok ? r.json() : null)).then((g) => (g ? flatGuide(g) : {})).catch(() => ({})));
-  }
-  return guides.get(lang)!;
+/** The translator's own file: its texts (`ui`) and the guide. */
+type TranslatorFile = GuideFile & { ui: Dict };
+const translatorFile = (lang: string): Promise<Partial<TranslatorFile> | null> =>
+  fetch(`${import.meta.env.BASE_URL}i18n/translator/${lang}.json`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+
+/** The page's texts and the guide (flat), read when the page opens. */
+let ui: Dict = {};
+let guide: Record<string, string> = {};
+
+/** A text of the page; `{name}` placeholders filled from params. */
+function tr(key: string, params: Record<string, string | number> = {}): string {
+  const v = lookup(ui, key);
+  return (typeof v === 'string' ? v : key).replace(/\{(\w+)\}/g, (m, name: string) => (name in params ? String(params[name]) : m));
+}
+
+/** The page is in English; a file of the game's language, added by hand, translates it, English for what it lacks. */
+async function loadTranslator(): Promise<void> {
+  const lang = language();
+  const [en, own] = await Promise.all([translatorFile('en'), isLang(lang) && lang !== 'en' ? translatorFile(lang) : null]);
+  const file = merged((en ?? {}) as Dict, (own ?? {}) as Dict) as unknown as TranslatorFile;
+  ui = file.ui ?? {};
+  guide = flatGuide(file);
 }
 
 async function officialSource(lang: Lang): Promise<Source> {
-  const [dict, guide, words] = await Promise.all([officialDict(lang), officialGuide(lang), loadWords(lang)]);
-  return { code: lang, name: LANGUAGES[lang], dict, guide, words };
+  const [dict, words] = await Promise.all([officialDict(lang), loadWords(lang)]);
+  return { code: lang, name: LANGUAGES[lang], dict, words };
 }
 
 /** Deep copy of `base` with `over` laid on top. */
@@ -66,11 +83,10 @@ function merged(base: Dict, over: Dict): Dict {
 /** An own language as a source: its texts over its base, so nothing shows empty. */
 async function ownSource(l: OwnLang): Promise<Source> {
   const base = await officialSource(l.base);
-  const guide = { ...base.guide, ...Object.fromEntries(Object.entries(l.guide).filter(([, v]) => v)) };
-  return { code: l.code, name: l.name, dict: merged(base.dict, ownDict(l)), guide, words: l.words.length ? l.words : base.words };
+  return { code: l.code, name: l.name, dict: merged(base.dict, ownDict(l)), words: l.words.length ? l.words : base.words };
 }
 
-function remembered(): { target?: string; base?: string } {
+function remembered(): { target?: string; shadow?: string } {
   try {
     return JSON.parse(localStorage.getItem(REMEMBER) ?? '{}');
   } catch {
@@ -78,7 +94,7 @@ function remembered(): { target?: string; base?: string } {
   }
 }
 
-function remember(v: { target?: string; base?: string }): void {
+function remember(v: { target?: string; shadow?: string }): void {
   try {
     localStorage.setItem(REMEMBER, JSON.stringify({ ...remembered(), ...v }));
   } catch {
@@ -86,15 +102,27 @@ function remember(v: { target?: string; base?: string }): void {
   }
 }
 
-/** The translator: every text of the game, a base language above each field and the translation under it. */
+/** The translator: every text of the game, English above each field and the translation under it. */
 export function translateScreen(root: HTMLElement): () => void {
-  const screen = h('div', { class: 'screen translate-screen' });
+  const screen = h('div', { class: 'screen translate-screen', lang: 'en' });
   root.append(screen);
+  let leave: (() => void) | null = null;
+  let alive = true;
+  void loadTranslator().then(() => { if (alive) leave = translatorPage(screen); });
+  return () => {
+    alive = false;
+    leave?.();
+  };
+}
+
+function translatorPage(screen: HTMLElement): () => void {
   let alive = true;
   let owns: OwnLang[] = [];
   let target: OwnLang | null = null;
-  let baseRef: LangRef = 'en';
+  let shadowRef: LangRef = 'sk';
+  /** English, above every field; the shadow language, in the info box of a field. */
   let base!: Source;
+  let shadow!: Source;
   let catalog: Section[] = [];
   let fields: Field[] = [];
   let structure: Dict = {};
@@ -117,13 +145,13 @@ export function translateScreen(root: HTMLElement): () => void {
   document.addEventListener('visibilitychange', onHide);
 
   // ---- top bar ----
-  const baseSelect = h('select', { class: 'tr-base', 'aria-label': t('translate.base') });
-  const targetSelect = h('select', { class: 'tr-target', 'aria-label': t('translate.target') });
-  const prefillSelect = h('select', { class: 'tr-prefill', 'aria-label': t('translate.prefill') });
-  const ring = roundButton('control', 'check', t('translate.progress', { n: 0 }), () => jump());
+  const shadowSelect = h('select', { class: 'tr-shadow', 'aria-label': tr('shadow') });
+  const targetSelect = h('select', { class: 'tr-target', 'aria-label': tr('target') });
+  const prefillSelect = h('select', { class: 'tr-prefill', 'aria-label': tr('prefill') });
+  const ring = roundButton('control', 'check', tr('progress', { n: 0 }), () => jump());
   ring.classList.add('tr-ring');
-  const toc = h('nav', { class: 'tr-toc', 'aria-label': t('translate.toc') });
-  const tocSelect = h('select', { class: 'tr-toc-select', 'aria-label': t('translate.toc') });
+  const toc = h('nav', { class: 'tr-toc', 'aria-label': tr('toc') });
+  const tocSelect = h('select', { class: 'tr-toc-select', 'aria-label': tr('toc') });
   tocSelect.addEventListener('change', () => document.getElementById(`tr-s-${tocSelect.value}`)?.scrollIntoView({ block: 'start' }));
   const main = h('main', { class: 'tr-main' });
   /** The field focused last, and the one the ring went to last (a click on the ring takes the focus). */
@@ -138,24 +166,24 @@ export function translateScreen(root: HTMLElement): () => void {
     return b;
   };
   const tools = h('div', { class: 'tr-tools' },
-    h('label', { class: 'tr-pick' }, icon('language'), h('span', { class: 'tr-pick-label' }, t('translate.base')), baseSelect),
-    h('span', { class: 'tr-pick' }, h('label', { class: 'tr-pick-label' }, t('translate.target'), targetSelect),
-      button(t('translate.new'), () => void newLanguage(), 'btn small', 'plus'), button(t('translate.edit'), () => void editLanguage(), 'btn small', 'edit')),
-    h('span', { class: 'tr-pick' }, h('label', { class: 'tr-pick-label' }, t('translate.prefill'), prefillSelect), targetButton(t('translate.prefillGo'), () => void doPrefill())),
+    h('label', { class: 'tr-pick', tip: tr('shadowHint') }, icon('language'), h('span', { class: 'tr-pick-label' }, tr('shadow')), shadowSelect),
+    h('span', { class: 'tr-pick' }, h('label', { class: 'tr-pick-label' }, tr('target'), targetSelect),
+      button(tr('new'), () => void newLanguage(), 'btn small', 'plus'), button(tr('edit'), () => void editLanguage(), 'btn small', 'edit')),
+    h('span', { class: 'tr-pick' }, h('label', { class: 'tr-pick-label' }, tr('prefill'), prefillSelect), targetButton(tr('prefillGo'), () => void doPrefill())),
     ring,
-    targetButton(t('translate.aboutButton'), () => aboutPanel(), 'info'),
-    targetButton(t('translate.export'), () => exportMenu(), 'download'),
-    button(t('translate.import'), () => pickImport(), 'btn small', 'upload'),
-    targetButton(t('translate.send'), () => void send(), 'share'));
+    targetButton(tr('aboutButton'), () => aboutPanel(), 'info'),
+    targetButton(tr('export'), () => exportMenu(), 'download'),
+    button(tr('import'), () => pickImport(), 'btn small', 'upload'),
+    targetButton(tr('send'), () => void send(), 'share'));
   const onlyBox = h('input', { type: 'checkbox', class: 'tr-only' });
   onlyBox.addEventListener('change', () => { onlyOpen = onlyBox.checked; applyFilter(); });
-  const search = h('input', { type: 'search', class: 'tr-search', placeholder: t('translate.search'), 'aria-label': t('translate.search') });
+  const search = h('input', { type: 'search', class: 'tr-search', placeholder: tr('search'), 'aria-label': tr('search') });
   search.addEventListener('input', () => { query = search.value.trim().toLowerCase(); applyFilter(); });
-  const empty = h('p', { class: 'hint tr-empty', hidden: true }, t('translate.empty'));
-  const filter = h('div', { class: 'tr-filter' }, h('label', { class: 'tr-only-label' }, onlyBox, h('span', {}, t('translate.onlyOpen'))), search);
+  const empty = h('p', { class: 'hint tr-empty', hidden: true }, tr('empty'));
+  const filter = h('div', { class: 'tr-filter' }, h('label', { class: 'tr-only-label' }, onlyBox, h('span', {}, tr('onlyOpen'))), search);
 
   screen.append(
-    h('header', { class: 'bar' }, button(t('common.back'), back, 'btn ghost small', 'back'), h('h1', {}, t('translate.title'))),
+    h('header', { class: 'bar' }, button(tr('back'), back, 'btn ghost small', 'back'), h('h1', {}, tr('title'))),
     cornerControls(), tools,
     h('div', { class: 'tr-body' }, h('aside', { class: 'tr-side' }, toc), h('div', { class: 'tr-content' }, tocSelect, note, filter, empty, main)));
 
@@ -166,8 +194,10 @@ export function translateScreen(root: HTMLElement): () => void {
     owns = list;
     const was = remembered();
     target = owns.find((l) => l.id === was.target) ?? null;
-    baseRef = was.base && (isLang(was.base) || owns.some((l) => ownRef(l.id) === was.base)) ? (was.base as LangRef) : isLang(language()) ? language() : 'en';
-    if (!works) note.textContent = t('translate.noStore');
+    const known = (ref?: string) => !!ref && (isLang(ref) || owns.some((l) => ownRef(l.id) === ref));
+    const asked = language();
+    shadowRef = known(was.shadow) ? (was.shadow as LangRef) : asked !== 'en' && known(asked) ? asked : LANGS.find((l) => l !== 'en') ?? 'en';
+    if (!works) note.textContent = tr('noStore');
     catalog = buildCatalog(await officialDict('en'));
     await paint();
   })();
@@ -180,15 +210,15 @@ export function translateScreen(root: HTMLElement): () => void {
   function fillSelects(): void {
     const official = LANGS.map((l) => h('option', { value: l }, LANGUAGES[l]));
     const own = (skip?: string) => owns.filter((l) => l.id !== skip).map((l) => h('option', { value: ownRef(l.id) }, l.name));
-    baseSelect.replaceChildren(...official, ...own());
-    baseSelect.value = baseRef;
-    targetSelect.replaceChildren(h('option', { value: '' }, t('translate.none')), ...owns.map((l) => h('option', { value: l.id }, l.name)));
+    shadowSelect.replaceChildren(...official, ...own());
+    shadowSelect.value = shadowRef;
+    targetSelect.replaceChildren(h('option', { value: '' }, tr('none')), ...owns.map((l) => h('option', { value: l.id }, l.name)));
     targetSelect.value = target?.id ?? '';
     prefillSelect.replaceChildren(...LANGS.map((l) => h('option', { value: l }, LANGUAGES[l])), ...own(target?.id));
     if (target) prefillSelect.value = target.correctionOf ?? target.base;
     for (const b of needTarget) b.disabled = !target;
   }
-  baseSelect.addEventListener('change', () => { baseRef = baseSelect.value as LangRef; remember({ base: baseRef }); void paint(); });
+  shadowSelect.addEventListener('change', () => { shadowRef = shadowSelect.value as LangRef; remember({ shadow: shadowRef }); void paint(); });
   targetSelect.addEventListener('change', () => {
     save();
     target = owns.find((l) => l.id === targetSelect.value) ?? null;
@@ -196,22 +226,22 @@ export function translateScreen(root: HTMLElement): () => void {
     void paint();
   });
 
-  /** Builds the whole sheet for the chosen base and translation. */
+  /** Builds the whole sheet for the chosen translation and shadow language. */
   async function paint(): Promise<void> {
-    const [b, s] = await Promise.all([sourceOf(baseRef), officialDict(target?.base ?? 'en')]);
+    const [b, sh, s] = await Promise.all([officialSource('en'), sourceOf(shadowRef), officialDict(target?.base ?? 'en')]);
     if (!alive) return;
     base = b;
+    shadow = sh;
     structure = s;
     fillSelects();
-    setFields(target ? fieldsOf(catalog, target, structure, base.guide) : []);
+    setFields(target ? fieldsOf(catalog, target, structure) : []);
     lastField = undefined;
-    situationOf = situationFinder(base.guide);
+    situationOf = situationFinder(guide);
     names = itemNames(catalog, base.dict);
     inputs.clear();
-    main.lang = base.code;
     observer.disconnect();
     pending.clear();
-    main.replaceChildren(...(target ? [] : [h('p', { class: 'tr-start panel' }, t('translate.startHint'))]), ...catalog.map(sectionEl));
+    main.replaceChildren(...(target ? [] : [h('p', { class: 'tr-start panel' }, tr('startHint'))]), ...catalog.map(sectionEl));
     paintToc();
     paintProgress();
     applyFilter();
@@ -256,14 +286,8 @@ export function translateScreen(root: HTMLElement): () => void {
     for (const fill of [...pending.values()]) fill();
   }
 
-  /** A heading or an explanation in the base language and its field under it. */
-  function guideBlock(key: string, tag: 'h2' | 'h3' | 'p', name = ''): HTMLElement {
-    const text = guideText(base.guide, key, name) || key;
-    const f = fieldById(`guide:${key}`);
-    return h('div', { class: `tr-guide tr-${tag}` }, h(tag, {}, text), f && target && isFirst(f) ? fieldEl(f, text) : null);
-  }
-  /** A shared guide field (a pattern situation, the heading of every thing) gets its input once, at its first place. */
-  const isFirst = (f: Field) => !inputs.has(f.id);
+  /** A heading or an explanation of the guide. */
+  const guideBlock = (key: string, tag: 'h2' | 'h3' | 'p', name = '') => h('div', { class: 'tr-guide' }, h(tag, {}, guideText(guide, key, name) || key));
 
   function groupEl(g: Group, withGuide: boolean): HTMLElement {
     const name = g.name ? String(lookup(base.dict, g.name) ?? '') : '';
@@ -286,20 +310,17 @@ export function translateScreen(root: HTMLElement): () => void {
 
   function paintItem(box: HTMLElement, item: Item): void {
     const sit = situationOf(item.key);
-    const sitField = sit ? fieldById(`guide:${sit}`) : undefined;
-    const sitText = sit ? guideText(base.guide, sit, names.get(item.key)) : '';
-    const head = h('div', { class: 'tr-sit' }, h('span', { class: 'tr-sit-label' }, sitText || item.key),
-      sitField && target && isFirst(sitField) ? fieldEl(sitField, sitText, 'tr-sit-field') : null);
+    const head = h('div', { class: 'tr-sit' }, h('span', { class: 'tr-sit-label' }, (sit && guideText(guide, sit, names.get(item.key))) || item.key));
     const mine = target ? fieldsOfItem(item.key) : [];
     const rows: (HTMLElement | null)[] = [];
     if (item.kind === 'words') rows.push(wordsEl());
     else if (item.kind === 'plural') {
       const forms = lookup(base.dict, item.key) as Record<string, string> | undefined;
-      rows.push(h('div', { class: 'tr-forms' }, h('span', { class: 'tr-forms-label hint' }, t('translate.baseForms')),
+      rows.push(h('div', { class: 'tr-forms' }, h('span', { class: 'tr-forms-label hint' }, tr('baseForms')),
         ...Object.values(forms ?? {}).map((s) => h('span', { class: 'tr-chip' }, s))));
       for (const f of mine) {
         const n = formExample(target!.code, f.form!);
-        rows.push(h('div', { class: 'tr-var' }, h('span', { class: 'tr-form hint' }, t('translate.form', { form: f.form!, n: n ?? '' })), fieldEl(f, sourceValue(base, f) || sourceValue(base, { ...f, form: 'other' }))));
+        rows.push(h('div', { class: 'tr-var' }, h('span', { class: 'tr-form hint' }, tr('form', { form: f.form!, n: n ?? '' })), fieldEl(f, sourceValue(base, f) || sourceValue(base, { ...f, form: 'other' }))));
       }
     } else if (!target) {
       const v = lookup(base.dict, item.key);
@@ -308,7 +329,7 @@ export function translateScreen(root: HTMLElement): () => void {
       for (const f of mine) {
         const text = sourceValue(base, f);
         rows.push(h('div', { class: 'tr-var' }, text ? h('span', { class: 'tr-chip' }, text) : null, chipsOf(text), fieldEl(f, text),
-          item.kind === 'pool' && mine.length > 1 ? h('button', { class: 'tr-remove', type: 'button', 'aria-label': t('translate.removeVariant'), tip: t('translate.removeVariant'), onClick: () => {
+          item.kind === 'pool' && mine.length > 1 ? h('button', { class: 'tr-remove', type: 'button', 'aria-label': tr('removeVariant'), tip: tr('removeVariant'), onClick: () => {
             removeVariant(target!, item.key, f.index!, structure);
             refreshItem(box, item);
           } }, icon1('trash')) : null));
@@ -316,17 +337,17 @@ export function translateScreen(root: HTMLElement): () => void {
       if (item.kind === 'pool') rows.push(h('button', { class: 'btn small ghost tr-add', type: 'button', onClick: () => {
         addVariant(target!, item.key, structure);
         refreshItem(box, item, true);
-      } }, icon1('plus'), h('span', {}, t('translate.addVariant'))));
+      } }, icon1('plus'), h('span', {}, tr('addVariant'))));
     }
     const pic = item.key.split('.').length === 2 ? thumb(item.key) : null;
     box.classList.toggle('tr-long', mine.some((f) => sourceValue(base, f).length > LONG_TEXT));
     box.replaceChildren(pic ? h('div', { class: 'tr-item-pic' }, pic, head) : head, ...rows.filter((r): r is HTMLElement => !!r),
-      h('span', { class: 'tr-done', 'aria-label': t('translate.done') }, icon1('check')));
+      h('span', { class: 'tr-done', 'aria-label': tr('done') }, icon1('check')));
   }
 
   /** After a variant came or went: the fields again, the item, the counts. */
   function refreshItem(box: HTMLElement, item: Item, focusLast = false): void {
-    setFields(fieldsOf(catalog, target!, structure, base.guide));
+    setFields(fieldsOf(catalog, target!, structure));
     for (const [id, el] of inputs) if (box.contains(el)) inputs.delete(id);
     paintItem(box, item);
     saveSoon();
@@ -340,38 +361,68 @@ export function translateScreen(root: HTMLElement): () => void {
     return ph.length ? h('span', { class: 'tr-ph' }, ...ph.map((p) => h('code', {}, p))) : null;
   }
 
-  /** One field: the input, its state, the keep button (the untranslated one once done) and the placeholder warning. */
+  /** One field: the input, its state, its info button with the box under it, and the placeholder warning. */
   function fieldEl(f: Field, baseText: string, cls = ''): HTMLElement {
     const value = fieldValue(target!, f);
-    const area = h('textarea', { class: `tr-field ${cls}`, rows: Math.max(1, value.split('\n').length), 'data-field': f.id, 'aria-label': t('translate.fieldLabel', { text: baseText.length > LABEL_MAX ? `${baseText.slice(0, LABEL_MAX)}…` : baseText }), spellcheck: 'true', lang: target!.code });
+    const area = h('textarea', { class: `tr-field ${cls}`, rows: Math.max(1, value.split('\n').length), 'data-field': f.id, 'aria-label': tr('fieldLabel', { text: baseText.length > LABEL_MAX ? `${baseText.slice(0, LABEL_MAX)}…` : baseText }), spellcheck: 'true', lang: target!.code });
     area.value = value;
     inputs.set(f.id, area);
     const warn = h('small', { class: 'tr-warn', role: 'status' });
-    const keep = h('button', { class: 'tr-keep', type: 'button', tip: t('translate.keepHint'), onClick: () => mark() }, t('translate.keep'));
-    const unkeep = h('button', { class: 'tr-unkeep', type: 'button', tip: t('translate.unkeepHint'), onClick: () => {
-      untouch(target!, f.id);
-      state();
-      changed(f);
-    } }, t('translate.unkeep'));
-    const wrap = h('div', { class: 'tr-input' }, area, h('span', { class: 'tr-open-tag' }, t('translate.untranslated')), keep, unkeep, warn);
+    const info = h('button', { class: 'tr-info', type: 'button', 'aria-label': tr('info'), 'aria-expanded': 'false', tip: tr('info'), onClick: () => toggleInfo() }, icon1('info'));
+    const wrap = h('div', { class: 'tr-input' }, area, h('span', { class: 'tr-open-tag' }, tr('untranslated')), info, warn);
+    let box: HTMLElement | null = null;
+    let doneButton: HTMLButtonElement | null = null;
     const isTouched = () => target!.touched.includes(f.id);
-    const state = () => wrap.classList.toggle('open', !isTouched());
+    const state = () => {
+      wrap.classList.toggle('open', !isTouched());
+      doneButton?.replaceChildren(icon1(isTouched() ? 'close' : 'check'), h('span', {}, tr(isTouched() ? 'markOpen' : 'markDone')));
+    };
     const check = () => {
-      if (f.kind === 'guide' || f.kind === 'words' || !area.value) return void (warn.textContent = '');
+      if (f.kind === 'words' || !area.value) return void (warn.textContent = '');
       const want = placeholders(baseText);
       const got = placeholders(area.value);
-      warn.textContent = [...want.filter((p) => !got.includes(p)).map((name) => t('translate.missingPlaceholder', { name })),
-        ...got.filter((p) => !want.includes(p)).map((name) => t('translate.extraPlaceholder', { name }))].join(' ');
+      warn.textContent = [...want.filter((p) => !got.includes(p)).map((name) => tr('missingPlaceholder', { name })),
+        ...got.filter((p) => !want.includes(p)).map((name) => tr('extraPlaceholder', { name }))].join(' ');
     };
-    const mark = () => {
-      touch(target!, f.id);
+    const write = (text: string) => {
+      const count = f.kind === 'variant' || f.kind === 'line' ? fieldsOfItem(f.key).length : 1;
+      setFieldValue(target!, f, f.kind === 'words' ? splitWords(text).join(' ') : text, count);
+      check();
+    };
+    const mark = (done = true) => {
+      if (done) touch(target!, f.id);
+      else untouch(target!, f.id);
       state();
       changed(f);
     };
+    /** The shadow language's text, a copy of it (still not done), done or not done, and the key in the code. */
+    function toggleInfo(): void {
+      if (box) {
+        box.remove();
+        box = doneButton = null;
+        info.setAttribute('aria-expanded', 'false');
+        return;
+      }
+      const text = sourceValue(shadow, f) || (f.kind === 'form' ? sourceValue(shadow, { ...f, form: 'other' }) : '');
+      doneButton = button('', () => mark(!isTouched()), 'btn small tr-mark');
+      box = h('div', { class: 'tr-info-box' },
+        h('p', { class: 'tr-shadow-text' }, h('strong', {}, `${shadow.name}: `), text ? h('span', { lang: shadow.code }, text) : h('em', {}, tr('shadowEmpty', { name: shadow.name }))),
+        h('div', { class: 'row' },
+          text ? button(tr('copy', { name: shadow.name }), () => {
+            area.value = text;
+            write(text);
+            changed(f);
+            area.focus();
+          }, 'btn small tr-copy', 'copy') : null,
+          doneButton,
+          f.kind === 'words' ? null : h('a', { class: 'btn small ghost', href: codeSearch(f.key), target: '_blank', rel: 'noopener' }, icon1('code'), h('span', {}, tr('findCode')))),
+        h('small', { class: 'hint' }, `${tr('key')}: `, h('code', {}, f.id)));
+      wrap.append(box);
+      info.setAttribute('aria-expanded', 'true');
+      state();
+    }
     area.addEventListener('input', () => {
-      const count = f.kind === 'variant' || f.kind === 'line' ? fieldsOfItem(f.key).length : 1;
-      setFieldValue(target!, f, f.kind === 'words' ? splitWords(area.value).join(' ') : area.value, count);
-      check();
+      write(area.value);
       mark();
     });
     area.addEventListener('keydown', (e) => {
@@ -405,8 +456,8 @@ export function translateScreen(root: HTMLElement): () => void {
   function wordsEl(): HTMLElement {
     const f = fieldById(WORDS);
     wordsInfo = h('div', { class: 'tr-words-info' });
-    const baseWords = h('details', { class: 'tr-words-base' }, h('summary', {}, t('translate.words.count', { n: base.words.length })), h('p', {}, base.words.join(' ')));
-    const box = h('div', { class: 'tr-words' }, h('p', { class: 'hint' }, t('translate.words.hint')), baseWords, f && target ? fieldEl(f, '', 'tr-words-field') : null, wordsInfo);
+    const baseWords = h('details', { class: 'tr-words-base' }, h('summary', {}, tr('words.count', { n: base.words.length })), h('p', {}, base.words.join(' ')));
+    const box = h('div', { class: 'tr-words' }, h('p', { class: 'hint' }, tr('words.hint')), baseWords, f && target ? fieldEl(f, '', 'tr-words-field') : null, wordsInfo);
     queueMicrotask(paintWords);
     return box;
   }
@@ -421,12 +472,12 @@ export function translateScreen(root: HTMLElement): () => void {
     const lessons = groups.slice(0, LESSONS_SHOWN).map((g, i) => {
       g.forEach((k) => keys.add(k));
       const n = words.filter((w) => [...w].every((c) => keys.has(c))).length;
-      return h('li', { class: n < LESSON_WORDS_MIN ? 'tr-few' : '' }, t('translate.words.lesson', { n: i + 1, keys: g.filter((k) => k.trim()).join(' '), count: n }),
-        n < LESSON_WORDS_MIN ? h('span', { class: 'tr-warn' }, ` · ${t('translate.words.few')}`) : null);
+      return h('li', { class: n < LESSON_WORDS_MIN ? 'tr-few' : '' }, tr('words.lesson', { n: i + 1, keys: g.filter((k) => k.trim()).join(' '), count: n }),
+        n < LESSON_WORDS_MIN ? h('span', { class: 'tr-warn' }, ` · ${tr('words.few')}`) : null);
     });
-    wordsInfo.replaceChildren(h('div', {}, h('p', { class: 'hint' }, t('translate.words.count', { n: words.length })),
-      bad.length ? h('p', { class: 'tr-warn' }, t('translate.words.untypable', { layout: t(`layouts.${target.layout}`) }), ' ', bad.join(' ')) : null,
-      h('h4', {}, t('translate.words.lessons')), h('ul', { class: 'tr-lessons' }, ...lessons)));
+    wordsInfo.replaceChildren(h('div', {}, h('p', { class: 'hint' }, tr('words.count', { n: words.length })),
+      bad.length ? h('p', { class: 'tr-warn' }, tr('words.untypable', { layout: layoutName(target.layout) }), ' ', bad.join(' ')) : null,
+      h('h4', {}, tr('words.lessons')), h('ul', { class: 'tr-lessons' }, ...lessons)));
   }
 
   // ---- progress, contents, filter ----
@@ -434,7 +485,7 @@ export function translateScreen(root: HTMLElement): () => void {
     const p = target ? progressOf(target, fields) : 0;
     const n = pct(p);
     ring.innerHTML = roundTextSvg(String(n), rhythmRing(p));
-    const label = p >= 1 ? t('translate.progressDone') : t('translate.progress', { n });
+    const label = p >= 1 ? tr('progressDone') : tr('progress', { n });
     ring.dataset.tip = label;
     ring.setAttribute('aria-label', label);
     ring.disabled = !target;
@@ -448,10 +499,11 @@ export function translateScreen(root: HTMLElement): () => void {
     }
   }
 
-  const sectionTitle = (s: Section) => guideText(base.guide, `sections.${s.id}.title`) || s.id;
+  const sectionTitle = (s: Section) => guideText(guide, `sections.${s.id}.title`) || s.id;
+  const layoutName = (id: LayoutId) => String(lookup(base.dict, `layouts.${id}`) ?? id);
 
   function paintToc(): void {
-    toc.replaceChildren(h('h2', {}, t('translate.toc')), h('ol', {}, ...catalog.map((s) => h('li', { 'data-section': s.id },
+    toc.replaceChildren(h('h2', {}, tr('toc')), h('ol', {}, ...catalog.map((s) => h('li', { 'data-section': s.id },
       h('a', { href: `#tr-s-${s.id}`, onClick: (e: Event) => { e.preventDefault(); document.getElementById(`tr-s-${s.id}`)?.scrollIntoView({ block: 'start' }); } },
         h('span', {}, sectionTitle(s)), h('span', { class: 'tr-pct' }))))));
     tocSelect.replaceChildren(...catalog.map((s) => h('option', { value: s.id }, sectionTitle(s))));
@@ -502,32 +554,33 @@ export function translateScreen(root: HTMLElement): () => void {
       const name = h('input', { type: 'text', maxlength: 40, autofocus: true });
       const code = h('input', { type: 'text', maxlength: 20, spellcheck: 'false', autocomplete: 'off' });
       const fallback = h('select', {}, ...LANGS.map((l) => h('option', { value: l }, LANGUAGES[l])));
-      const layout = h('select', {}, ...LAYOUT_IDS.map((id) => h('option', { value: id }, t(`layouts.${id}`))));
-      fallback.value = isLang(baseRef) ? baseRef : 'en';
+      const layout = h('select', {}, ...LAYOUT_IDS.map((id) => h('option', { value: id }, layoutName(id))));
+      const asked = language();
+      fallback.value = isLang(asked) ? asked : 'en';
       layout.value = defaultLayout(fallback.value as Lang);
       fallback.addEventListener('change', () => { layout.value = defaultLayout(fallback.value as Lang); });
       const error = h('p', { class: 'error', role: 'alert' });
       const create = () => {
         const lang = fallback.value as Lang;
         if (o.pick) {
-          made = newOwnLang({ code: lang, name: t('translate.correctionName', { name: LANGUAGES[lang] }), base: lang, layout: layout.value as LayoutId, correctionOf: lang });
+          made = newOwnLang({ code: lang, name: tr('correctionName', { name: LANGUAGES[lang] }), base: lang, layout: layout.value as LayoutId, correctionOf: lang });
           return close();
         }
         const c = canonicalCode(code.value);
-        if (!name.value.trim()) return void (error.textContent = t('translate.needName'));
-        if (!c) return void (error.textContent = t('translate.codeBad'));
+        if (!name.value.trim()) return void (error.textContent = tr('needName'));
+        if (!c) return void (error.textContent = tr('codeBad'));
         made = newOwnLang({ code: c, name: name.value.trim(), base: lang, layout: layout.value as LayoutId });
         close();
       };
       const lab = (text: string, control: HTMLElement, hint?: string) => h('label', { class: 'field' }, h('span', { class: 'field-label' }, text), control, hint ? h('small', { class: 'hint' }, hint) : null);
       const close = modal(h('form', { class: 'tr-dialog', onSubmit: (e: Event) => { e.preventDefault(); create(); } },
         h('h2', {}, o.title), o.text ? h('p', {}, o.text) : null,
-        o.pick ? null : lab(t('translate.name'), name),
-        o.pick ? null : lab(t('translate.code'), code, t('translate.codeHint')),
-        lab(o.pick ? t('translate.editPick') : t('translate.fallback'), fallback),
-        lab(t('translate.layout'), layout),
+        o.pick ? null : lab(tr('name'), name),
+        o.pick ? null : lab(tr('code'), code, tr('codeHint')),
+        lab(o.pick ? tr('editPick') : tr('fallback'), fallback),
+        lab(tr('layout'), layout),
         error,
-        h('div', { class: 'row center' }, button(t('translate.cancel'), () => close(), 'btn'), h('button', { class: 'btn primary', type: 'submit' }, t('translate.create')))),
+        h('div', { class: 'row center' }, button(tr('cancel'), () => close(), 'btn'), h('button', { class: 'btn primary', type: 'submit' }, tr('create')))),
       { cls: 'tr-modal', onClose: () => resolve(made) });
     });
   }
@@ -542,15 +595,15 @@ export function translateScreen(root: HTMLElement): () => void {
   }
 
   async function newLanguage(): Promise<void> {
-    const l = await languageForm({ title: t('translate.newTitle') });
+    const l = await languageForm({ title: tr('newTitle') });
     if (l) await adopt(l);
   }
 
   async function editLanguage(): Promise<void> {
-    const l = await languageForm({ title: t('translate.editTitle'), text: t('translate.editText'), pick: true });
+    const l = await languageForm({ title: tr('editTitle'), text: tr('editText'), pick: true });
     if (!l) return;
     const src = await officialSource(l.correctionOf!);
-    prefill(l, fieldsOf(catalog, l, src.dict, src.guide), src);
+    prefill(l, fieldsOf(catalog, l, src.dict), src);
     await adopt(l);
   }
 
@@ -571,25 +624,25 @@ export function translateScreen(root: HTMLElement): () => void {
     };
     const lab = (label: string, control: HTMLElement, hint?: string) => h('label', { class: 'field' }, h('span', { class: 'field-label' }, label), control, hint ? h('small', { class: 'hint' }, hint) : null);
     const error = h('p', { class: 'error', role: 'alert' });
-    const layout = h('select', {}, ...LAYOUT_IDS.map((id) => h('option', { value: id, selected: id === l.layout }, t(`layouts.${id}`))));
+    const layout = h('select', {}, ...LAYOUT_IDS.map((id) => h('option', { value: id, selected: id === l.layout }, layoutName(id))));
     layout.addEventListener('change', () => { l.layout = layout.value as LayoutId; saveSoon(); paintWords(); });
     let repaint = false;
-    const close = modal(h('div', { class: 'tr-dialog' }, h('h2', {}, t('translate.aboutTitle')),
-      lab(t('translate.author'), text(l.author, (v) => { l.author = v; }, { maxlength: 80 })),
-      lab(t('translate.contact'), text(l.contact, (v) => { l.contact = v; }, { maxlength: 120 }), t('translate.contactHint')),
-      lab(t('translate.name'), text(l.name, (v) => { if (v) { l.name = v; repaint = true; } }, { maxlength: 40 })),
-      lab(t('translate.code'), text(l.code, (v) => {
+    const close = modal(h('div', { class: 'tr-dialog' }, h('h2', {}, tr('aboutTitle')),
+      lab(tr('author'), text(l.author, (v) => { l.author = v; }, { maxlength: 80 })),
+      lab(tr('contact'), text(l.contact, (v) => { l.contact = v; }, { maxlength: 120 }), tr('contactHint')),
+      lab(tr('name'), text(l.name, (v) => { if (v) { l.name = v; repaint = true; } }, { maxlength: 40 })),
+      lab(tr('code'), text(l.code, (v) => {
         const c = canonicalCode(v);
-        error.textContent = c ? '' : t('translate.codeBad');
+        error.textContent = c ? '' : tr('codeBad');
         if (c && c !== l.code) { l.code = c; repaint = true; }
-      }, { maxlength: 20, spellcheck: 'false' }), t('translate.codeHint')),
+      }, { maxlength: 20, spellcheck: 'false' }), tr('codeHint')),
       error,
-      lab(t('translate.layout'), layout),
-      h('div', { class: 'row center' }, button(t('translate.delete'), () => void remove(), 'btn danger', 'trash'))),
+      lab(tr('layout'), layout),
+      h('div', { class: 'row center' }, button(tr('delete'), () => void remove(), 'btn danger', 'trash'))),
     { cls: 'tr-modal', onClose: () => { save(); if (repaint) void adopt(l); } });
     async function remove(): Promise<void> {
       close();
-      const yes = await confirmDialog({ title: t('translate.deleteTitle', { name: l.name }), text: t('translate.deleteText'), ok: t('translate.deleteOk'), cancel: t('translate.cancel'), danger: true });
+      const yes = await confirmDialog({ title: tr('deleteTitle', { name: l.name }), text: tr('deleteText'), ok: tr('deleteOk'), cancel: tr('cancel'), danger: true });
       if (!yes) return;
       clearTimeout(saveTimer);
       saveTimer = 0;
@@ -610,14 +663,14 @@ export function translateScreen(root: HTMLElement): () => void {
     const pairs = (mode: 'full' | 'open' | 'changes') => async () => {
       close();
       const official = mode === 'changes' && l.correctionOf ? await officialSource(l.correctionOf) : undefined;
-      const ctx = { base: official ?? base, catalog };
+      const ctx = { base: official ?? base, catalog, guide };
       download(fileName(l, 'txt').replace('.txt', mode === 'full' ? '.txt' : `-${mode}.txt`), exportPairs(l, fields, ctx, mode, official), 'text/plain;charset=utf-8');
     };
-    const close = modal(h('div', { class: 'tr-dialog tr-menu' }, h('h2', {}, t('translate.export')),
-      button(t('translate.exportAll'), pairs('full'), 'btn', 'download'),
-      button(t('translate.exportOpen'), pairs('open'), 'btn', 'download'),
-      l.correctionOf ? button(t('translate.exportChanges', { name: LANGUAGES[l.correctionOf] }), pairs('changes'), 'btn', 'download') : null,
-      button(t('translate.exportJson'), () => { close(); download(fileName(l, 'json'), exportJson(l)); }, 'btn', 'download')), { cls: 'tr-modal' });
+    const close = modal(h('div', { class: 'tr-dialog tr-menu' }, h('h2', {}, tr('export')),
+      button(tr('exportAll'), pairs('full'), 'btn', 'download'),
+      button(tr('exportOpen'), pairs('open'), 'btn', 'download'),
+      l.correctionOf ? button(tr('exportChanges', { name: LANGUAGES[l.correctionOf] }), pairs('changes'), 'btn', 'download') : null,
+      button(tr('exportJson'), () => { close(); download(fileName(l, 'json'), exportJson(l)); }, 'btn', 'download')), { cls: 'tr-modal' });
   }
 
   function pickImport(): void {
@@ -644,26 +697,26 @@ export function translateScreen(root: HTMLElement): () => void {
     if (!l) {
       const code = canonicalCode(meta.code ?? '');
       const fallback = isLang(meta.base ?? '') ? (meta.base as Lang) : null;
-      if (!code || !fallback || !meta.name) return void confirmDialog({ title: t('translate.importTitle'), text: t('translate.importBad'), ok: t('common.ok'), cancel: t('translate.cancel') });
+      if (!code || !fallback || !meta.name) return void confirmDialog({ title: tr('importTitle'), text: tr('importBad'), ok: tr('ok'), cancel: tr('cancel') });
       l = newOwnLang({ code, name: meta.name, base: fallback, layout: (LAYOUT_IDS as string[]).includes(meta.layout) ? (meta.layout as LayoutId) : defaultLayout(fallback),
         correctionOf: isLang(meta.correctionOf ?? '') ? (meta.correctionOf as Lang) : null });
     }
     const struct = await officialDict(l.base);
-    const all = fieldsOf(catalog, l, struct, base.guide);
+    const all = fieldsOf(catalog, l, struct);
     let plan: ImportPlan;
     try {
       plan = json ? planJson(l, all, json) : planPairs(l, all, text);
     } catch {
       plan = { applied: 0, empty: 0, skipped: [], meta: {}, apply() {} };
     }
-    if (!plan.applied) return void confirmDialog({ title: t('translate.importTitle'), text: t('translate.importBad'), ok: t('common.ok'), cancel: t('translate.cancel') });
-    const why = { unknown: t('translate.importUnknown'), outside: t('translate.importOutside') };
+    if (!plan.applied) return void confirmDialog({ title: tr('importTitle'), text: tr('importBad'), ok: tr('ok'), cancel: tr('cancel') });
+    const why = { unknown: tr('importUnknown'), outside: tr('importOutside') };
     const yes = await new Promise<boolean>((resolve) => {
       let ok = false;
-      const close = modal(h('div', { class: 'tr-dialog' }, h('h2', {}, t('translate.importTitle')),
-        h('p', {}, t('translate.importSummary', { applied: plan.applied, empty: plan.empty, skipped: plan.skipped.length })),
+      const close = modal(h('div', { class: 'tr-dialog' }, h('h2', {}, tr('importTitle')),
+        h('p', {}, tr('importSummary', { applied: plan.applied, empty: plan.empty, skipped: plan.skipped.length })),
         plan.skipped.length ? h('ul', { class: 'tr-skipped hint' }, ...plan.skipped.slice(0, 12).map((s) => h('li', {}, h('code', {}, s.id), ` · ${why[s.why]}`)), plan.skipped.length > 12 ? h('li', {}, '…') : null) : null,
-        h('div', { class: 'row center' }, button(t('translate.cancel'), () => close(), 'btn'), button(t('translate.importDo'), () => { ok = true; close(); }, 'btn primary'))),
+        h('div', { class: 'row center' }, button(tr('cancel'), () => close(), 'btn'), button(tr('importDo'), () => { ok = true; close(); }, 'btn primary'))),
       { cls: 'tr-modal', onClose: () => resolve(ok) });
     });
     if (!yes) return;
@@ -676,27 +729,27 @@ export function translateScreen(root: HTMLElement): () => void {
   async function send(): Promise<void> {
     if (!target) return;
     const l = target;
-    const ok = await confirmDialog({ title: t('translate.sendTitle'), text: t('translate.sendText'), ok: t('translate.sendGo'), cancel: t('translate.cancel') });
+    const ok = await confirmDialog({ title: tr('sendTitle'), text: tr('sendText'), ok: tr('sendGo'), cancel: tr('cancel') });
     if (!ok) return;
     save();
     const touched = fields.filter((f) => l.touched.includes(f.id)).length;
     const lines = [
-      t('translate.issue.author', { name: l.author || '?' }), t('translate.issue.contact', { contact: l.contact || '?' }),
-      t('translate.issue.base', { name: LANGUAGES[l.base] }),
-      t('translate.issue.progress', { n: Math.floor(progressOf(l, fields) * 100), touched, total: fields.length }), '',
+      tr('issue.author', { name: l.author || '?' }), tr('issue.contact', { contact: l.contact || '?' }),
+      tr('issue.base', { name: LANGUAGES[l.base] }),
+      tr('issue.progress', { n: Math.floor(progressOf(l, fields) * 100), touched, total: fields.length }), '',
     ];
-    const title = l.correctionOf ? t('translate.issue.fix', { name: LANGUAGES[l.correctionOf] }) : t('translate.issue.new', { name: l.name, code: l.code });
+    const title = l.correctionOf ? tr('issue.fix', { name: LANGUAGES[l.correctionOf] }) : tr('issue.new', { name: l.name, code: l.code });
     const url = (body: string) => `${ISSUES}?${new URLSearchParams({ title, body })}`;
     let address = '';
     if (l.correctionOf) {
       const official = await officialSource(l.correctionOf);
-      const changes = exportPairs(l, fields, { base: official, catalog }, 'changes', official);
-      address = url([...lines, t('translate.issue.changes'), '```text', changes.trimEnd(), '```'].join('\n'));
+      const changes = exportPairs(l, fields, { base: official, catalog, guide }, 'changes', official);
+      address = url([...lines, tr('issue.changes'), '```text', changes.trimEnd(), '```'].join('\n'));
     }
     if (!address || address.length > ISSUE_URL_MAX) {
       const file = fileName(l, 'json');
       download(file, exportJson(l));
-      address = url([...lines, t('translate.issue.attach', { file })].join('\n'));
+      address = url([...lines, tr('issue.attach', { file })].join('\n'));
     }
     window.open(address, '_blank', 'noopener');
   }

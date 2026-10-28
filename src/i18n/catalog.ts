@@ -1,6 +1,7 @@
 // The structure of every text of the game, as the translator page shows it: sections, groups
 // and items in page order. The texts about the texts (headings, explanations, situations) are in
-// `public/i18n/guide/<lang>.json`; the texts themselves in `public/i18n/<lang>.json`.
+// the translator's own file `public/i18n/translator/en.json`; the texts themselves in
+// `public/i18n/<lang>.json`.
 
 /**
  * How an item is translated: one string, a random pool (variants may be added or removed), an
@@ -160,18 +161,6 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
     g('help-tabs', 'help.title', 'help.tab.*', 'help.icons.*'),
     g('help-texts', 'help.*'),
     g('about', 'about.*'),
-  ] },
-  { id: 'translate', groups: [
-    g('translate-bar', 'translate.title', 'translate.startHint', 'translate.noStore', 'translate.base', 'translate.target', 'translate.none', 'translate.new', 'translate.edit', 'translate.prefill',
-      'translate.prefillGo', 'translate.progress', 'translate.progressDone', 'translate.aboutButton', 'translate.export', 'translate.import', 'translate.send', 'translate.toc'),
-    g('translate-fields', 'translate.untranslated', 'translate.keep', 'translate.keepHint', 'translate.addVariant', 'translate.removeVariant', 'translate.onlyOpen',
-      'translate.search', 'translate.empty', 'translate.fieldLabel', 'translate.done', 'translate.form', 'translate.baseForms',
-      'translate.missingPlaceholder', 'translate.extraPlaceholder'),
-    g('translate-words', 'translate.words.*'),
-    g('translate-files', 'translate.exportAll', 'translate.exportOpen', 'translate.exportChanges', 'translate.exportJson', 'translate.importTitle', 'translate.importSummary',
-      'translate.importUnknown', 'translate.importOutside', 'translate.importDo', 'translate.importBad', 'translate.sendTitle', 'translate.sendText', 'translate.sendGo',
-      'translate.issue.*'),
-    g('translate-dialogs', 'translate.*'),
   ] },
   { id: 'words', groups: [g('words', WORDS)] },
 ];

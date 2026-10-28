@@ -146,6 +146,14 @@
       "title": "Lines in the rocket world",
       "about": "Opening lines and speech bubbles of the rocket world's levels: hopping across meteors, strong meteors and commands to the rocket."
     },
+    "story-planet": {
+      "title": "Lines of the Planet world",
+      "about": "Opening lines and bubbles of the Planet world's levels: the swamp, crystals on the meadow, crossroads with signposts, spells for the crystals of life and the great swamp with the Cradle of Life."
+    },
+    "story-paths": {
+      "title": "Paths at the planet's crossroads",
+      "about": "Names of the paths on the signposts, Tapko's lines when the child takes one, and the parts of the line about the unknown road."
+    },
     "story-play": {
       "title": "Lines during play",
       "about": "Lines of animals, robots and the fairy shown in speech bubbles while playing the worlds."
@@ -656,8 +664,30 @@
     "story.cheer": "A happy shout above Tapko at a success in play (meadow, forest, lake, gate); one is picked at random.",
     "story.hedgehogStart": "Opening line of the hedgehog level on the meadow, shown when play begins.",
     "story.hedgehogDone": "Line on the meadow when the child has caught all of the hedgehog's leaves.",
-    "story.signView": "A line at a signpost on the new planet when the child picks a path; shown only now and then, one is picked at random.",
-    "story.boulderOpen": "Line on the planet when the boulder turns into stepping stones; one is picked at random.",
+    "story.swampStart": "Opening line of the planet's first level: Tapko landed in a swamp and jumps on stones that appear when a word is typed.",
+    "story.swampDone": "Tapko when he reaches the bank of the swamp and sees the meadow; one is picked at random.",
+    "story.crystalsStart": "Opening line of the planet's second level: crystals grow on the meadow; type the word above one before it cracks.",
+    "story.crystalsDoneOne": "Text in the middle at the end of the crystal level when Tapko collected one crystal; {n} is the number.",
+    "story.crystalsDoneFew": "Text in the middle at the end of the crystal level for a few crystals (2 to 4 in Slovak); {n} is the number.",
+    "story.crystalsDoneMany": "Text in the middle at the end of the crystal level for many crystals (also 0); {n} is the number.",
+    "story.crossroadsStart": "Opening line of the crossroads level: words on the road and signposts with paths at a crossroads.",
+    "story.roadEnd": "Tapko at the end of the road in the crossroads level; one is picked at random.",
+    "story.signGone": "Line when the child first slips in a sign's word and the sign vanishes.",
+    "story.signLast": "Line when the child slips in the last sign's word: the word starts again.",
+    "story.path.*.names": "Names of the path on the signpost above its word; one is picked at random. Short, two words at most.",
+    "story.path.*.said": "Tapko when the child takes this path; says what the path changes. One is picked at random.",
+    "story.path.unknown.*": "A part of the line about the unknown road ({len}, {time} or {diff} in story.path.unknownSaid).",
+    "story.path.unknownSaid": "Tapko after taking the unknown road says what happened: {len} word length, {time} road length, {diff} word difficulty.",
+    "story.spellStart": "Opening line of the spell level: three sleeping crystals of life; a spell breaks with more than three slips.",
+    "story.spellCast": "A short shout over the crystals when a spell works and the next third lights up; one is picked at random.",
+    "story.spellBroken": "Line when a spell breaks (more than three slips) and starts over; one is picked at random.",
+    "story.greatSwampStart": "Opening line of the planet's last level: from a firm stone the child jumps four stones; a slip cracks them.",
+    "story.greatSwampSlip": "Line when the child first slips away from the firm stone and the stones start to crack.",
+    "story.boulderStart": "Line when a boulder blocks the way at the end of the great swamp; one is picked at random.",
+    "story.boulderOpen": "Line on the planet when the boulder falls apart and the way is clear; one is picked at random.",
+    "story.cradleDone": "Line at the end of the Planet world when Tapko puts the crystals of life into the Cradle of Life; one is picked at random.",
+    "story.matchStart": "Opening line of the meadow's third level: the real football match begins.",
+    "story.spaceStart": "Opening line of the rocket's first level: the flight to the first planet.",
     "story.waveCalm": "Line in Dragon Valley when the wave has calmed after all the words; one is picked at random.",
     "story.junkStart": "Line at the junkyard at the start of a level where Bolt beeps under the pile; one is picked at random.",
     "story.knotOpen": "Line at the junkyard when the knot is untied; one is picked at random.",

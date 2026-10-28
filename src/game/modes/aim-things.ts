@@ -95,6 +95,7 @@ export const THINGS: Thing[] = [
   { id: 'chicken', pics: ['obj-aim-chicken'], story: 0, sfx: 'squeak', effect: 'bounce' },
   { id: 'water-balloon', pics: ['obj-aim-water-balloon'], story: 0, sfx: 'plop', effect: 'burst', burst: 'splash' },
   { id: 'banana', pics: ['obj-aim-banana'], story: 0, sfx: 'plop', effect: 'bounce' },
+  { id: 'asteroid', pics: ['obj-asteroid-small'], story: 0, sfx: 'thud', effect: 'bounce', wobble: true, burst: 'dust' },
   { id: 'battery', pics: ['obj-battery'], story: 1, sfx: 'bzzt', effect: 'bounce', burst: 'sparks' },
   { id: 'magnet', pics: ['obj-aim-magnet'], story: 1, sfx: 'pop', effect: 'stick', hold: 1.5 },
   { id: 'gear', pics: ['obj-gear'], story: 1, sfx: 'pop', effect: 'bounce' },
@@ -104,7 +105,7 @@ export const THINGS: Thing[] = [
   // One thing of its own for every world.
   { id: 'ladybug', pics: ['obj-ladybug'], story: 0, world: 0, sfx: 'pop', effect: 'away', spin: 'none' },
   { id: 'rocket', pics: ['obj-rocket'], story: 0, world: 1, sfx: 'whoosh', effect: 'bounce', trail: 'smoke', spin: 'point', scale: 1.15 },
-  { id: 'asteroid', pics: ['obj-asteroid-small'], story: 0, world: 2, sfx: 'thud', effect: 'bounce', wobble: true, burst: 'dust' },
+  { id: 'crystal', pics: ['obj-crystal-amber', 'obj-crystal-rose', 'obj-crystal-aqua'], story: 0, world: 2, sfx: 'note', effect: 'bounce', burst: 'magic', flash: '#fff1b8' },
   { id: 'chili', pics: ['obj-aim-chili'], story: 0, world: 3, sfx: 'whoosh', effect: 'bounce', burst: 'steam', flash: '#ff8a7a', expect: 0.4, eyes: 'worry' },
   { id: 'nest', pics: ['obj-nest'], story: 0, world: 4, sfx: 'plop', effect: 'top', hold: 2, spin: 'none' },
   { id: 'spring', pics: ['obj-spring'], story: 1, world: 5, sfx: 'squeak', effect: 'bounces', hold: 3, high: true },

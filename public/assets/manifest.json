@@ -8,11 +8,11 @@
    "w": 160,
    "h": 160
   },
-  "acc-backpack-front": {
+  "acc-backpack": {
    "w": 384,
    "h": 384
   },
-  "acc-backpack": {
+  "acc-backpack-front": {
    "w": 384,
    "h": 384
   },
@@ -25,6 +25,14 @@
    "h": 384
   },
   "acc-balloon-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-beanie": {
+   "w": 384,
+   "h": 384
+  },
+  "acc-beanie-thumb": {
    "w": 160,
    "h": 160
   },
@@ -44,11 +52,27 @@
    "w": 160,
    "h": 160
   },
+  "acc-bow-tie": {
+   "w": 384,
+   "h": 384
+  },
+  "acc-bow-tie-thumb": {
+   "w": 160,
+   "h": 160
+  },
   "acc-butterfly-wings": {
    "w": 384,
    "h": 384
   },
   "acc-butterfly-wings-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-cap": {
+   "w": 384,
+   "h": 384
+  },
+  "acc-cap-thumb": {
    "w": 160,
    "h": 160
   },
@@ -68,11 +92,35 @@
    "w": 160,
    "h": 160
   },
+  "acc-crown": {
+   "w": 384,
+   "h": 384
+  },
+  "acc-crown-thumb": {
+   "w": 160,
+   "h": 160
+  },
   "acc-dragon-wings": {
    "w": 384,
    "h": 384
   },
   "acc-dragon-wings-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-explorer-hat": {
+   "w": 384,
+   "h": 384
+  },
+  "acc-explorer-hat-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-explorer-vest": {
+   "w": 384,
+   "h": 384
+  },
+  "acc-explorer-vest-thumb": {
    "w": 160,
    "h": 160
   },
@@ -84,11 +132,11 @@
    "w": 160,
    "h": 160
   },
-  "acc-fairy-wings-front": {
+  "acc-fairy-wings": {
    "w": 384,
    "h": 384
   },
-  "acc-fairy-wings": {
+  "acc-fairy-wings-front": {
    "w": 384,
    "h": 384
   },
@@ -104,11 +152,35 @@
    "w": 160,
    "h": 160
   },
+  "acc-flower-wreath": {
+   "w": 384,
+   "h": 384
+  },
+  "acc-flower-wreath-thumb": {
+   "w": 160,
+   "h": 160
+  },
   "acc-goggles": {
    "w": 384,
    "h": 384
   },
   "acc-goggles-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-green-boots": {
+   "w": 384,
+   "h": 384
+  },
+  "acc-green-boots-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-hair-bow": {
+   "w": 384,
+   "h": 384
+  },
+  "acc-hair-bow-thumb": {
    "w": 160,
    "h": 160
   },
@@ -136,17 +208,29 @@
    "w": 160,
    "h": 160
   },
-  "acc-hero-cape-front": {
+  "acc-heart-glasses": {
    "w": 384,
    "h": 384
   },
+  "acc-heart-glasses-thumb": {
+   "w": 160,
+   "h": 160
+  },
   "acc-hero-cape": {
+   "w": 384,
+   "h": 384
+  },
+  "acc-hero-cape-front": {
    "w": 384,
    "h": 384
   },
   "acc-hero-cape-thumb": {
    "w": 160,
    "h": 160
+  },
+  "acc-jetpack": {
+   "w": 384,
+   "h": 384
   },
   "acc-jetpack-front": {
    "w": 384,
@@ -156,10 +240,6 @@
    "w": 160,
    "h": 160
   },
-  "acc-jetpack": {
-   "w": 384,
-   "h": 384
-  },
   "acc-knit-vest": {
    "w": 384,
    "h": 384
@@ -168,19 +248,43 @@
    "w": 160,
    "h": 160
   },
-  "acc-lantern-thumb": {
-   "w": 160,
-   "h": 160
-  },
   "acc-lantern": {
    "w": 384,
    "h": 384
+  },
+  "acc-lantern-thumb": {
+   "w": 160,
+   "h": 160
   },
   "acc-medallion": {
    "w": 384,
    "h": 384
   },
   "acc-medallion-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-neckerchief": {
+   "w": 384,
+   "h": 384
+  },
+  "acc-neckerchief-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-pink-sneakers": {
+   "w": 384,
+   "h": 384
+  },
+  "acc-pink-sneakers-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-rain-boots": {
+   "w": 384,
+   "h": 384
+  },
+  "acc-rain-boots-thumb": {
    "w": 160,
    "h": 160
   },
@@ -200,11 +304,27 @@
    "w": 160,
    "h": 160
   },
-  "acc-star-cape-front": {
+  "acc-scarf": {
    "w": 384,
    "h": 384
   },
+  "acc-scarf-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-sneakers": {
+   "w": 384,
+   "h": 384
+  },
+  "acc-sneakers-thumb": {
+   "w": 160,
+   "h": 160
+  },
   "acc-star-cape": {
+   "w": 384,
+   "h": 384
+  },
+  "acc-star-cape-front": {
    "w": 384,
    "h": 384
   },
@@ -217,6 +337,14 @@
    "h": 384
   },
   "acc-star-glasses-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-star-shirt": {
+   "w": 384,
+   "h": 384
+  },
+  "acc-star-shirt-thumb": {
    "w": 160,
    "h": 160
   },
@@ -236,15 +364,11 @@
    "w": 160,
    "h": 160
   },
-  "acc-walking-stick-thumb": {
-   "w": 160,
-   "h": 160
-  },
   "acc-walking-stick": {
    "w": 384,
    "h": 384
   },
-  "acc-wand-thumb": {
+  "acc-walking-stick-thumb": {
    "w": 160,
    "h": 160
   },
@@ -252,11 +376,23 @@
    "w": 384,
    "h": 384
   },
+  "acc-wand-thumb": {
+   "w": 160,
+   "h": 160
+  },
   "acc-white-gloves": {
    "w": 384,
    "h": 384
   },
   "acc-white-gloves-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-wizard-hat": {
+   "w": 384,
+   "h": 384
+  },
+  "acc-wizard-hat-thumb": {
    "w": 160,
    "h": 160
   },
@@ -444,6 +580,14 @@
    "w": 1376,
    "h": 768
   },
+  "bg-planet-swamp-mid": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-planet-swamp-near": {
+   "w": 1376,
+   "h": 768
+  },
   "bg-raintown-far": {
    "w": 1376,
    "h": 768
@@ -552,12 +696,12 @@
    "w": 384,
    "h": 384
   },
-  "obj-aim-bulb-lit": {
-   "w": 249,
-   "h": 384
-  },
   "obj-aim-bulb": {
    "w": 250,
+   "h": 384
+  },
+  "obj-aim-bulb-lit": {
+   "w": 249,
    "h": 384
   },
   "obj-aim-cactus": {
@@ -608,11 +752,11 @@
    "w": 384,
    "h": 357
   },
-  "obj-aim-egg-cracked": {
+  "obj-aim-egg": {
    "w": 286,
    "h": 384
   },
-  "obj-aim-egg": {
+  "obj-aim-egg-cracked": {
    "w": 286,
    "h": 384
   },
@@ -740,12 +884,12 @@
    "w": 372,
    "h": 384
   },
-  "obj-big-flower-open": {
-   "w": 271,
-   "h": 384
-  },
   "obj-big-flower": {
    "w": 261,
+   "h": 384
+  },
+  "obj-big-flower-open": {
+   "w": 271,
    "h": 384
   },
   "obj-bird": {
@@ -780,6 +924,10 @@
    "w": 244,
    "h": 384
   },
+  "obj-butterfly": {
+   "w": 348,
+   "h": 384
+  },
   "obj-butterfly-2": {
    "w": 383,
    "h": 384
@@ -787,10 +935,6 @@
   "obj-butterfly-3": {
    "w": 384,
    "h": 367
-  },
-  "obj-butterfly": {
-   "w": 348,
-   "h": 384
   },
   "obj-cable-knot": {
    "w": 384,
@@ -800,20 +944,56 @@
    "w": 384,
    "h": 299
   },
+  "obj-console": {
+   "w": 241,
+   "h": 384
+  },
+  "obj-cradle": {
+   "w": 384,
+   "h": 382
+  },
   "obj-crate": {
    "w": 384,
    "h": 235
-  },
-  "obj-crystal-glow": {
-   "w": 304,
-   "h": 384
   },
   "obj-crystal": {
    "w": 297,
    "h": 384
   },
+  "obj-crystal-amber": {
+   "w": 258,
+   "h": 384
+  },
+  "obj-crystal-amber-cracked": {
+   "w": 257,
+   "h": 384
+  },
+  "obj-crystal-aqua": {
+   "w": 384,
+   "h": 353
+  },
+  "obj-crystal-aqua-cracked": {
+   "w": 384,
+   "h": 353
+  },
+  "obj-crystal-glow": {
+   "w": 304,
+   "h": 384
+  },
+  "obj-crystal-rose": {
+   "w": 296,
+   "h": 384
+  },
+  "obj-crystal-rose-cracked": {
+   "w": 297,
+   "h": 384
+  },
   "obj-dance-step": {
    "w": 274,
+   "h": 384
+  },
+  "obj-door": {
+   "w": 357,
    "h": 384
   },
   "obj-door-open": {
@@ -823,10 +1003,6 @@
   "obj-door-speaker": {
    "w": 384,
    "h": 379
-  },
-  "obj-door": {
-   "w": 357,
-   "h": 384
   },
   "obj-dragon-baby-1": {
    "w": 320,
@@ -848,16 +1024,16 @@
    "w": 384,
    "h": 297
   },
+  "obj-egg": {
+   "w": 300,
+   "h": 384
+  },
   "obj-egg-cracking": {
    "w": 300,
    "h": 384
   },
   "obj-egg-glow": {
    "w": 310,
-   "h": 384
-  },
-  "obj-egg": {
-   "w": 300,
    "h": 384
   },
   "obj-feather-falling": {
@@ -880,13 +1056,13 @@
    "w": 384,
    "h": 359
   },
-  "obj-frog-singing": {
-   "w": 384,
-   "h": 374
-  },
   "obj-frog": {
    "w": 384,
    "h": 373
+  },
+  "obj-frog-singing": {
+   "w": 384,
+   "h": 374
   },
   "obj-gate": {
    "w": 384,
@@ -912,11 +1088,11 @@
    "w": 384,
    "h": 341
   },
-  "obj-lamp-on": {
+  "obj-lamp": {
    "w": 240,
    "h": 384
   },
-  "obj-lamp": {
+  "obj-lamp-on": {
    "w": 240,
    "h": 384
   },
@@ -944,13 +1120,21 @@
    "w": 337,
    "h": 384
   },
-  "obj-lily-pad": {
+  "obj-life-crystal": {
    "w": 384,
-   "h": 255
+   "h": 383
+  },
+  "obj-life-crystal-lit": {
+   "w": 384,
+   "h": 383
   },
   "obj-lily": {
    "w": 384,
    "h": 312
+  },
+  "obj-lily-pad": {
+   "w": 384,
+   "h": 255
   },
   "obj-magnet": {
    "w": 204,
@@ -963,6 +1147,14 @@
   "obj-mole": {
    "w": 384,
    "h": 331
+  },
+  "obj-mound-1": {
+   "w": 384,
+   "h": 131
+  },
+  "obj-mound-2": {
+   "w": 384,
+   "h": 125
   },
   "obj-mouse": {
    "w": 357,
@@ -996,6 +1188,10 @@
    "w": 319,
    "h": 384
   },
+  "obj-parrot-flying": {
+   "w": 378,
+   "h": 384
+  },
   "obj-parrot-flying-2": {
    "w": 378,
    "h": 384
@@ -1004,17 +1200,13 @@
    "w": 378,
    "h": 384
   },
-  "obj-parrot-flying": {
-   "w": 378,
+  "obj-parrot-perch": {
+   "w": 254,
    "h": 384
   },
   "obj-parrot-perch-short": {
    "w": 384,
    "h": 339
-  },
-  "obj-parrot-perch": {
-   "w": 254,
-   "h": 384
   },
   "obj-photo-frame": {
    "w": 320,
@@ -1038,6 +1230,30 @@
   },
   "obj-planet-5": {
    "w": 384,
+   "h": 384
+  },
+  "obj-planet-bank": {
+   "w": 384,
+   "h": 135
+  },
+  "obj-poppy-bud": {
+   "w": 177,
+   "h": 384
+  },
+  "obj-poppy-faded": {
+   "w": 177,
+   "h": 384
+  },
+  "obj-poppy-flower": {
+   "w": 177,
+   "h": 384
+  },
+  "obj-poppy-opening": {
+   "w": 177,
+   "h": 384
+  },
+  "obj-poppy-seedhead": {
+   "w": 177,
    "h": 384
   },
   "obj-puddle-stone": {
@@ -1076,19 +1292,15 @@
    "w": 384,
    "h": 376
   },
+  "obj-rocket": {
+   "w": 384,
+   "h": 204
+  },
   "obj-rocket-empty": {
    "w": 384,
    "h": 204
   },
-  "obj-console": {
-   "w": 241,
-   "h": 384
-  },
   "obj-rocket-pilot": {
-   "w": 384,
-   "h": 204
-  },
-  "obj-rocket": {
    "w": 384,
    "h": 204
   },
@@ -1100,8 +1312,16 @@
    "w": 222,
    "h": 384
   },
-  "obj-sign": {
-   "w": 314,
+  "obj-signpost-1": {
+   "w": 125,
+   "h": 384
+  },
+  "obj-signpost-2": {
+   "w": 67,
+   "h": 384
+  },
+  "obj-signpost-3": {
+   "w": 63,
    "h": 384
   },
   "obj-song-sheet": {
@@ -1124,10 +1344,6 @@
    "w": 384,
    "h": 375
   },
-  "obj-stone": {
-   "w": 384,
-   "h": 291
-  },
   "obj-storm-cloud": {
    "w": 384,
    "h": 244
@@ -1135,6 +1351,18 @@
   "obj-stump": {
    "w": 371,
    "h": 384
+  },
+  "obj-swamp-stone": {
+   "w": 384,
+   "h": 157
+  },
+  "obj-swamp-stone-broken": {
+   "w": 384,
+   "h": 155
+  },
+  "obj-swamp-stone-cracked": {
+   "w": 384,
+   "h": 157
   },
   "obj-timetable": {
    "w": 249,
@@ -1172,142 +1400,6 @@
    "w": 384,
    "h": 384
   },
-  "acc-cap": {
-   "w": 384,
-   "h": 384
-  },
-  "acc-cap-thumb": {
-   "w": 160,
-   "h": 160
-  },
-  "acc-scarf": {
-   "w": 384,
-   "h": 384
-  },
-  "acc-scarf-thumb": {
-   "w": 160,
-   "h": 160
-  },
-  "acc-sneakers": {
-   "w": 384,
-   "h": 384
-  },
-  "acc-sneakers-thumb": {
-   "w": 160,
-   "h": 160
-  },
-  "acc-crown": {
-   "w": 384,
-   "h": 384
-  },
-  "acc-crown-thumb": {
-   "w": 160,
-   "h": 160
-  },
-  "acc-bow-tie": {
-   "w": 384,
-   "h": 384
-  },
-  "acc-bow-tie-thumb": {
-   "w": 160,
-   "h": 160
-  },
-  "acc-wizard-hat": {
-   "w": 384,
-   "h": 384
-  },
-  "acc-wizard-hat-thumb": {
-   "w": 160,
-   "h": 160
-  },
-  "acc-flower-wreath": {
-   "w": 384,
-   "h": 384
-  },
-  "acc-flower-wreath-thumb": {
-   "w": 160,
-   "h": 160
-  },
-  "acc-rain-boots": {
-   "w": 384,
-   "h": 384
-  },
-  "acc-rain-boots-thumb": {
-   "w": 160,
-   "h": 160
-  },
-  "acc-beanie": {
-   "w": 384,
-   "h": 384
-  },
-  "acc-beanie-thumb": {
-   "w": 160,
-   "h": 160
-  },
-  "acc-neckerchief": {
-   "w": 384,
-   "h": 384
-  },
-  "acc-neckerchief-thumb": {
-   "w": 160,
-   "h": 160
-  },
-  "acc-hair-bow": {
-   "w": 384,
-   "h": 384
-  },
-  "acc-hair-bow-thumb": {
-   "w": 160,
-   "h": 160
-  },
-  "acc-heart-glasses": {
-   "w": 384,
-   "h": 384
-  },
-  "acc-heart-glasses-thumb": {
-   "w": 160,
-   "h": 160
-  },
-  "acc-star-shirt": {
-   "w": 384,
-   "h": 384
-  },
-  "acc-star-shirt-thumb": {
-   "w": 160,
-   "h": 160
-  },
-  "acc-pink-sneakers": {
-   "w": 384,
-   "h": 384
-  },
-  "acc-pink-sneakers-thumb": {
-   "w": 160,
-   "h": 160
-  },
-  "acc-explorer-hat": {
-   "w": 384,
-   "h": 384
-  },
-  "acc-explorer-hat-thumb": {
-   "w": 160,
-   "h": 160
-  },
-  "acc-explorer-vest": {
-   "w": 384,
-   "h": 384
-  },
-  "acc-explorer-vest-thumb": {
-   "w": 160,
-   "h": 160
-  },
-  "acc-green-boots": {
-   "w": 384,
-   "h": 384
-  },
-  "acc-green-boots-thumb": {
-   "w": 160,
-   "h": 160
-  },
   "robot-broken": {
    "w": 384,
    "h": 384
@@ -1340,11 +1432,11 @@
    "w": 384,
    "h": 384
   },
-  "tapko-astronaut-suit": {
+  "tapko-astronaut": {
    "w": 384,
    "h": 384
   },
-  "tapko-astronaut": {
+  "tapko-astronaut-suit": {
    "w": 384,
    "h": 384
   },
@@ -1496,6 +1588,10 @@
    "w": 384,
    "h": 287
   },
+  "ui-act-parrot": {
+   "w": 259,
+   "h": 384
+  },
   "ui-act-parrot-head": {
    "w": 384,
    "h": 359
@@ -1503,10 +1599,6 @@
   "ui-act-parrot-perch": {
    "w": 384,
    "h": 341
-  },
-  "ui-act-parrot": {
-   "w": 259,
-   "h": 384
   },
   "ui-act-remember": {
    "w": 345,
@@ -1524,9 +1616,57 @@
    "w": 384,
    "h": 302
   },
+  "ui-cert-band-bottom": {
+   "w": 8,
+   "h": 142
+  },
+  "ui-cert-band-left": {
+   "w": 142,
+   "h": 8
+  },
+  "ui-cert-band-right": {
+   "w": 142,
+   "h": 8
+  },
+  "ui-cert-band-top": {
+   "w": 8,
+   "h": 142
+  },
+  "ui-cert-fox-bl": {
+   "w": 372,
+   "h": 372
+  },
+  "ui-cert-fox-br": {
+   "w": 372,
+   "h": 372
+  },
+  "ui-cert-fox-tl": {
+   "w": 372,
+   "h": 372
+  },
+  "ui-cert-fox-tr": {
+   "w": 372,
+   "h": 372
+  },
   "ui-cert-parrot": {
    "w": 640,
    "h": 636
+  },
+  "ui-cert-paws-bottom": {
+   "w": 82,
+   "h": 142
+  },
+  "ui-cert-paws-left": {
+   "w": 142,
+   "h": 82
+  },
+  "ui-cert-paws-right": {
+   "w": 142,
+   "h": 82
+  },
+  "ui-cert-paws-top": {
+   "w": 82,
+   "h": 142
   },
   "ui-chest": {
    "w": 384,
@@ -1536,7 +1676,7 @@
    "w": 383,
    "h": 384
   },
-  "ui-icon-hr-darkbg": {
+  "ui-icon": {
    "w": 512,
    "h": 451
   },
@@ -1544,7 +1684,7 @@
    "w": 512,
    "h": 451
   },
-  "ui-icon": {
+  "ui-icon-hr-darkbg": {
    "w": 512,
    "h": 451
   },
@@ -1597,7 +1737,7 @@
    "h": 384
   },
   "ui-map-planet": {
-   "w": 345,
+   "w": 341,
    "h": 384
   },
   "ui-map-raintown": {
@@ -1636,7 +1776,7 @@
    "w": 349,
    "h": 384
   },
-  "ui-star-half": {
+  "ui-star": {
    "w": 384,
    "h": 368
   },
@@ -1644,7 +1784,7 @@
    "w": 384,
    "h": 368
   },
-  "ui-star": {
+  "ui-star-half": {
    "w": 384,
    "h": 368
   },
@@ -1660,11 +1800,11 @@
    "w": 384,
    "h": 197
   },
-  "ui-start-meadow-night": {
+  "ui-start-meadow": {
    "w": 922,
    "h": 392
   },
-  "ui-start-meadow": {
+  "ui-start-meadow-night": {
    "w": 922,
    "h": 392
   },
@@ -1680,85 +1820,17 @@
    "w": 376,
    "h": 384
   },
-  "ui-surprise-open": {
-   "w": 344,
-   "h": 384
-  },
   "ui-surprise": {
    "w": 353,
+   "h": 384
+  },
+  "ui-surprise-open": {
+   "w": 344,
    "h": 384
   },
   "ui-typing-speed": {
    "w": 384,
    "h": 319
-  },
-  "ui-cert-fox-tl": {
-   "w": 372,
-   "h": 372
-  },
-  "ui-cert-fox-tr": {
-   "w": 372,
-   "h": 372
-  },
-  "ui-cert-fox-br": {
-   "w": 372,
-   "h": 372
-  },
-  "ui-cert-fox-bl": {
-   "w": 372,
-   "h": 372
-  },
-  "ui-cert-paws-top": {
-   "w": 82,
-   "h": 142
-  },
-  "ui-cert-band-top": {
-   "w": 8,
-   "h": 142
-  },
-  "ui-cert-paws-right": {
-   "w": 142,
-   "h": 82
-  },
-  "ui-cert-band-right": {
-   "w": 142,
-   "h": 8
-  },
-  "ui-cert-paws-bottom": {
-   "w": 82,
-   "h": 142
-  },
-  "ui-cert-band-bottom": {
-   "w": 8,
-   "h": 142
-  },
-  "ui-cert-paws-left": {
-   "w": 142,
-   "h": 82
-  },
-  "ui-cert-band-left": {
-   "w": 142,
-   "h": 8
-  },
-  "obj-poppy-bud": {
-   "w": 177,
-   "h": 384
-  },
-  "obj-poppy-faded": {
-   "w": 177,
-   "h": 384
-  },
-  "obj-poppy-flower": {
-   "w": 177,
-   "h": 384
-  },
-  "obj-poppy-opening": {
-   "w": 177,
-   "h": 384
-  },
-  "obj-poppy-seedhead": {
-   "w": 177,
-   "h": 384
   }
  },
  "accessories": [

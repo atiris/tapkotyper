@@ -16,7 +16,7 @@ import { nickname } from '../storage/store';
 import { type InputHandlers, KeyInput, type TypedChar } from '../input/input';
 import { setShortcuts, withKey } from '../input/shortcuts';
 import { ENTER, LAYOUTS, LayoutMismatchDetector, enterAfter, fingerFor, stepsFor } from '../keyboard/layouts';
-import { SHIFT_L, SHIFT_R, SPACE, activeKeys, isKeyReady, isLetterKey, keysToIntroduce, masteryLevel, newestGroup, recentAccuracy, shiftKeyOf } from '../learning/lessons';
+import { SHIFT_L, SHIFT_R, SPACE, activeKeys, aimKeys, isKeyReady, isLetterKey, keysToIntroduce, masteryLevel, newestGroup, recentAccuracy, shiftKeyOf } from '../learning/lessons';
 import { keyWeights, recordPress, recordSession } from '../learning/stats';
 import { FINGER_KEYS, KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
 import { button, closeButton, closeModals, confirmDialog, h } from '../ui/dom';
@@ -252,7 +252,7 @@ export class LevelRuntime {
   count: number;
   /** Seconds of active play (no pause, no card) and the minimum before the level may end; 0 = no minimum. */
   private played = 0;
-  private readonly minActive: number;
+  private minActive: number;
   /** The child's rhythm; it also measures each press's reaction time. */
   readonly rhythm: Rhythm;
   private wrongStreak = { ch: '', n: 0 };
@@ -413,8 +413,13 @@ export class LevelRuntime {
     return this.def.rescue ? 'rescue' : this.mode.world;
   }
 
+  /** The mode's own middle and near bands of its world (the rescue camp has one set). */
+  get ground(): string {
+    return this.def.rescue ? '' : this.mode.ground;
+  }
+
   get tapkoOnStage(): boolean {
-    return ['freetype', 'aim', 'swamp', 'signs', 'boulder', 'doors', 'gate', 'rooms', 'buds', 'flower', 'owl', 'lilies', 'reflection', 'space', 'hop', 'command', 'asteroid'].includes(this.def.kind);
+    return ['freetype', 'aim', 'swamp', 'crossroads', 'greatswamp', 'doors', 'gate', 'rooms', 'buds', 'flower', 'owl', 'lilies', 'reflection', 'space', 'hop', 'command', 'asteroid'].includes(this.def.kind);
   }
 
   /** Preparation: assets, new keys, the get-ready card with the tip and its password, then play. */
@@ -422,7 +427,7 @@ export class LevelRuntime {
     const p = app.profile!;
     // The level opens with every picture its mode, Tapko and the friends draw, so none shows its fallback first;
     // the other worlds' pictures keep loading in the background (main.ts).
-    const own = [`bg-${this.backdrop}-far`, `bg-${this.backdrop}-mid`, `bg-${this.backdrop}-near`, ...this.mode.pictures, ...tapkoPictures(p.companion), ...friendPictures()];
+    const own = [`bg-${this.backdrop}-far`, `bg-${this.backdrop}${this.ground}-mid`, `bg-${this.backdrop}${this.ground}-near`, ...this.mode.pictures, ...tapkoPictures(p.companion), ...friendPictures()];
     await Promise.race([preload(own), new Promise((r) => setTimeout(r, PICTURES_WAIT_S * 1000))]);
     if (this.disposed) return;
     audio.music(this.def.kind === 'practice' ? app.menuTrack : this.mode.world);
@@ -540,6 +545,16 @@ export class LevelRuntime {
   get spawnGap(): number {
     return Math.max(1.2, 3.6 - this.difficulty * 0.25);
   }
+
+  /** A word that trains the child's weak keys (the target range's), for the planet's practice path. */
+  weakWord(maxLen?: number): string {
+    const p = app.profile!;
+    this.weakWords ??= wordSource(p, p.settings.wordLang, undefined, undefined, undefined, aimKeys(p));
+    const avoid = new Set(this.core.active.map((t) => t.word[0].toLowerCase()));
+    return this.weakWords.next(avoid, maxLen, 1);
+  }
+
+  private weakWords: WordSource | null = null;
 
   /** Word pace and valve: visible targets get their start time, misses slow the level down. */
   private trackPace(): void {
@@ -952,6 +967,21 @@ export class LevelRuntime {
     drawFairy(g, this.endTime == null ? this.fairyMood : 'happy', x, y - FAIRY_FLOAT, FAIRY_SIZE, this.mode.t, hop);
   }
 
+  /** A path taken at a crossroads makes the rest of the level shorter or longer: the minimum time, scaled by `k`. */
+  stretchMin(k: number): void {
+    if (Number.isFinite(this.minActive)) this.minActive *= k;
+  }
+
+  /** Seconds of active play the level still needs before it may end (0 without a minimum). */
+  get minLeft(): number {
+    return Number.isFinite(this.minActive) ? Math.max(0, this.minActive - this.played) : 0;
+  }
+
+  /** Seconds of active play so far. */
+  get playedS(): number {
+    return this.played;
+  }
+
   /** The fair share of the level done, as the bar shows it before it is kept from going back: the slower of the targets and the minimum time. */
   share(): number {
     return shownProgress(this.mode.progress(), this.played, this.minActive);
@@ -1326,7 +1356,7 @@ export class LevelRuntime {
     if (this.paused && !this.stage.dirty) return;
     const g = this.stage.begin();
     const drift = this.mode.drift;
-    drawBackground(g, this.backdrop, this.stage.vw, this.mode.scroll, !this.reduceMotion, this.mode.midOnly, drift && { layer: drift.layer, offset: driftOffset(drift, this.elapsed, !this.reduceMotion) });
+    drawBackground(g, this.backdrop, this.stage.vw, this.mode.scroll, !this.reduceMotion, this.mode.midOnly, drift && { layer: drift.layer, offset: driftOffset(drift, this.elapsed, !this.reduceMotion) }, this.ground);
     if (this.robot) this.drawBolt(g);
     if (this.fairy) this.drawMelody(g);
     this.labels = [];

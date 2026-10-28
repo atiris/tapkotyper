@@ -27,6 +27,8 @@ export function driftOffset(drift: Drift | null, elapsed: number, motion: boolea
 export abstract class Mode {
   /** World background name. */
   abstract readonly world: string;
+  /** Another set of the world's middle and near bands (`bg-<world><ground>-mid`), '' for the usual one. */
+  readonly ground: string = '';
   /** The pictures the mode draws; the level opens when they are loaded. */
   readonly pictures: readonly string[] = [];
   /** Background scroll position (parallax). */

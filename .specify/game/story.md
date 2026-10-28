@@ -18,7 +18,10 @@ gives you a wreath"), never about the character as someone else.
    leaf with a word toward the child's character, who keeps goal with a pair of goalkeeper
    gloves held just beside it, toward the leaves, never covering the character. At the penalty area the creature kicks the leaf on;
    when the middle band above the character is free and the leaf flies elsewhere, the kick
-   lifts it in an arc up there. Typing the word sends the leaf faster into the gloves, which
+   lifts it in an arc up there.
+   The meadow world is one afternoon: training for the afternoon's football match (level 1), a
+   bunch of poppies (2), the match itself (3), invitations to a treat after the match (4), and
+   the hedgehog who missed the match and wants to play too, a good player, so it is harder (5). Typing the word sends the leaf faster into the gloves, which
    rise with it step by step and reach its height just as it arrives, so they always catch it: in the middle band when it was typed before the kick or kicked up there,
    else at its own height. The caught leaf fades away in the gloves, and its creature turns
    and goes home. The intro scene and the level's start line tell exactly this, and the get-ready
@@ -40,14 +43,18 @@ gives you a wreath"), never about the character as someone else.
    wind half way; level 4 is the twist, the invitation to the meadow party written word by
    word without a slip, and every finished card flies as an envelope to a meadow friend. At
    the end one animal of each kind that got a card comes to the middle, under the line how many
-   animals got an invitation (one per word typed right) and came to the party. On the meadow a
+   animals got an invitation (one per word typed right) and came for the treat after the match. On the meadow a
    leaf's word shows only once the animal carrying it is wholly in sight.
    Super-obstacle: a hedgehog shakes volleys of leaves off its back; they scatter around him,
    some forward, some behind him, and fly on toward Tapko from there, each word showing once
    its leaf has landed from the toss.
    Reward: a secret invitation to space. Before the first level the narrator
    shows the child their character: "This is you."
-2. **Space Rocket Flight** - Tapko suits up where he stands: his things fade away, a white
+2. **Space Rocket Flight** - Tapko is sent to explore a few planets and reach the dragons' planet,
+   avoiding every danger on the way: a long flight fast enough between the meteors (level 1),
+   back to the rocket across the meteors after exploring the first planet (2), the flight to the
+   second planet (3), calling the rocket with commands after exploring it (4), and the last part
+   of the journey with the dragons' planet in sight (5). Tapko suits up where he stands: his things fade away, a white
    space suit grows up from the boots and a helmet with an opaque visor comes down over his
    head. The astronaut hops into the rocket, which from then on shows him in its round window.
    Typing rhythm drives the speedometer, the rocket's own instrument, which sits still near the
@@ -88,9 +95,53 @@ gives you a wreath"), never about the character as someone else.
    rocks drift at half the usual near-layer speed.
    Super-obstacle: fractured asteroid.
    Reward: landing clearance.
-3. **New Planet** - typing builds stepping stones across a swamp and picks the right path
-   at road signs (each sign shows a word). Super-obstacle: cracking boulder / rock
-   labyrinth. Reward: **Telekinesis (the Force)**.
+3. **New Planet** (the dragons' planet) - its Crystal of Life lost its light, and Tapko brings
+   it back. The planet looks almost like the Earth (green hills, a river), with giant mushroom
+   trees, big pale crystals and small orange sawtooth clouds; one far background for the world
+   and two sets of closer bands: a swamp (levels 1 and 5) and a meadow with mushroom forest,
+   glowing bulb plants and crystals (levels 2 to 4 and the side activities). Tapko is as big
+   as on the meadow and stands as low; the word he types is above his head, never over him.
+   1 the swamp after the landing (waiting words, a calm minute): one word at a time above him,
+   a ring on the water where the next stone comes; typed, the stone is there and he jumps onto
+   it, the view glides after him. After the last stone the grassy bank comes, he jumps onto it
+   and says he can see the meadow and looks forward to it.
+   2 the meadow's crystals (a stream): five mounds (fewer on a narrow screen); a crystal of one
+   of three kinds, turned a little its own way, grows out from behind a mound, stays big (about
+   30 % of Tapko's height) and cracks. Its word shows high above it as it starts and sinks to
+   its tip; typed in time, the crystal flies into Tapko's pocket (the rocket needs this energy
+   for the way home); not typed, it cracks, its word goes, it fades and later a new one grows
+   there. Only collected crystals count; the end says how many he has.
+   3 crossroads: five places from left to right; Tapko's words come one at a time above him
+   and none can be skipped, each typed word a step on. At a crossroads his word goes and up to
+   four signposts (three at the first one) grow almost together in the other places: posts of
+   three heights, alternated so that no two within two places share one, each with its
+   activation word on top and the path's name above it. A slip inside a sign's word makes that
+   sign vanish; the last one left must be typed without a slip (a slip starts its word again).
+   He walks to the typed sign's place and the road goes on there. The paths: an ordinary path
+   (cesta, chodník, alej...; ordinary words), a shortcut (a harder word; shorter words, a bit
+   less time and fewer words), a fast path (harder still; short words, the next crossroads
+   sooner, less time), a teleport (an extreme word; far fewer words and much less time), a
+   detour (an easy word; more words and time), a hard overgrown path (a very easy word; harder
+   words, more words and time), a wide easy road (a harder word; easier words, a few more of
+   them, fewer crossroads), the dark forest (less time; some words echo, coming again up to
+   twice in a row, and one is extreme), the unknown road (word length, road length and word
+   difficulty each drawn at random, and Tapko says what happened) and the stony practice path
+   (its words train the keys the child still practises, as the target range does).
+   4 spells (copy twist): three dark crystals of life stand on the right; a spell of several
+   words is written on a panel in the middle, word by word. It takes three slips (sparks on the
+   panel show what is left); the fourth breaks it and it starts again from its first word. Each
+   spell cast lights the next third of the crystals with a shout ("Jupí!", "Zipp!", "Juchú!");
+   all three lit, the crystals fly to Tapko. The spells are long enough to fill the level's
+   minimum time at the child's pace.
+   5 the great swamp (super level): from a firm stone Tapko jumps three stones on, the fourth
+   jump reaches the next firm stone and the view moves on. A slip on the firm stone is only a
+   slip; a slip on any other stone cracks it, he jumps back stone by stone (each one left
+   crumbles, the next one cracks) and on the firm stone a new word comes. At the end a boulder
+   blocks the way; slightly harder words crack it (a word with a slip counts half), it bursts,
+   stones come by themselves, he crosses to the bank, the **Cradle of Life** (a carved stone
+   pedestal, not an altar) rises, he puts the crystals of life on it, they glow and the planet
+   blooms. Super-obstacle: the great swamp and the boulder. Reward: **the Force**, the crystals'
+   thanks. The planet's own thing at the target range is a crystal.
 4. **Dragon Domain** - the Force and gentle shield fields divert falling space rocks away
    from baby dragons. Super-obstacle: rolling energy wave. Reward: a **Dragon Egg**.
 5. **Egg Journey** - the hatching egg rolls downhill; typing makes it jump over rocks and
@@ -211,6 +262,13 @@ story stays playable in any browser ([mechanics](mechanics.md)).
   give long-term variety without streak pressure.
 - A rescue is a special event and should feel like one; a paw that types by itself takes
   the mission away from the child.
+- The planet's levels were the same swamp twice with signs and a boulder in a mint and purple
+  world; Tapko was smaller than in the worlds before and his word covered him. One story per
+  level, the rules of the first two worlds and paths that change the level make each level
+  its own; a slip that sends him back stone by stone makes the super level's accuracy visible.
+  The stony practice path was added to the owner's paths: no other path trains the keys the
+  child still needs. The whole story of the first three worlds is in
+  [the scenario](story-1-scenario.md).
 - The old meadow text (goals as the happy outcome, a fan) described something else than the
   play and confused children. Goalkeeper gloves fit the animals' football game; a leaf kicked
   up to them is caught where the child looks, above their character.

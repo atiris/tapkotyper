@@ -179,8 +179,18 @@ describe('first level', () => {
     expect(minActiveS(levelById('w2-2')!)).toBe(60);
   });
 
+  it('the planet: the swamp waits (a calm minute), crystals stream, crossroads, spells to copy', () => {
+    expect(levelById('w3-1')?.kind).toBe('swamp');
+    expect(activityOf(levelById('w3-1')!)).toBe('catch');
+    expect(minActiveS(levelById('w3-1')!)).toBe(60);
+    expect(minActiveS({ ...levelById('w3-1')!, rescue: true })).toBe(MIN_ACTIVE_S);
+    expect(activityOf(levelById('w3-2')!)).toBe('chase');
+    expect(activityOf(levelById('w3-4')!)).toBe('clean');
+    expect(levelById('w3-5')?.kind).toBe('greatswamp');
+  });
+
   it('every level has an activity for its map dot', () => {
-    expect(activityOf(levelById('w3-2')!)).toBe('crossroads');
+    expect(activityOf(levelById('w3-3')!)).toBe('crossroads');
     expect(activityOf(levelById('w12-2')!)).toBe('listen');
     expect(activityOf(levelById('w13-2')!)).toBe('remember');
     expect(LEVELS.filter((l) => l.isSuper).every((l) => activityOf(l) === 'super')).toBe(true);

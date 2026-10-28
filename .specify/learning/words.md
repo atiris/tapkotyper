@@ -25,8 +25,8 @@
 - The first level asks one chunk per target, never two with a space; the second level is the
   first that asks for the space bar.
 - Once space is known, a target can be a phrase of known words: at most two (short words)
-  for targets that fly, fall or approach, two to four in calm modes (own practice, stepping
-  stones, road signs). Right after space comes in, phrases are chunk pairs like `fj jf`.
+  for targets that fly, fall or approach, two to four in calm modes (own practice; the planet's
+  stones and signposts set their own, see [story](../game/story.md)). Right after space comes in, phrases are chunk pairs like `fj jf`.
   Small targets (boulder chunks, moles, shield groups) stay single words.
 - Punctuation only once its key is known: a period ends about one phrase in three, a comma
   joins two parts in about one in five, `?` ends about one in eight, `!` `:` `-` are rarer.

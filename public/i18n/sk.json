@@ -391,10 +391,10 @@
   "story": {
     "next": "Ďalej",
     "meadowStart": [
-      "Zvieratká na lúke kopú listy ako loptu a chcú ti dať gól. Napíš slovo na liste a chytíš ho!"
+      "Poobede je zápas! Zvieratká s tebou trénujú a kopú listy ako loptu. Napíš slovo na liste a chytíš ho!"
     ],
     "commandStart": [
-      "Napíš rakete príkazy, nech priletí k tebe. Každý odoslaný príkaz ju privedie bližšie."
+      "Aj druhá planéta je preskúmaná. Privolaj si raketu: napíš jej príkazy. Každý odoslaný príkaz ju privedie bližšie."
     ],
     "commandReply": [
       "Inštrukcia prijatá.",
@@ -408,11 +408,11 @@
       "Signál sa stratil."
     ],
     "asteroidStart": [
-      "Veľké asteroidy sa rozpadnú na menšie kamene. Dva kamene majú štít, ich slovo napíšeš dvakrát."
+      "Posledný úsek cesty, planéta drakov je už na dohľad! Veľké asteroidy sa rozpadnú na menšie kamene. Dva kamene majú štít, ich slovo napíšeš dvakrát."
     ],
     "boarded": "Hurá, si na palube!",
     "strongStart": [
-      "Pozor, niektoré meteority sú silnejšie, majú okolo seba žiaru. Keď napíšeš ich slovo, musíš ho napísať ešte raz."
+      "Letíme k druhej planéte. Pozor, niektoré meteority sú silnejšie, majú okolo seba žiaru. Keď napíšeš ich slovo, musíš ho napísať ešte raz."
     ],
     "strongHit": [
       "Au!",
@@ -421,11 +421,11 @@
       "Ouha!"
     ],
     "hopStart": [
-      "Raketa odletela kúsok ďalej. Skáč po meteoritoch, kým k nej nedoskáčeš!"
+      "Prvá planéta je preskúmaná! Raketa čaká kúsok ďalej. Skáč po meteoritoch späť k nej!"
     ],
     "hopTooFar": "Jaj, tam nedoskočím.",
     "poppyStart": [
-      "Vypestujme kyticu vlčích makov! Napíš písmenko nad púčikom a rozkvitne.",
+      "Po tréningu natrháme kyticu vlčích makov! Napíš písmenko nad púčikom a rozkvitne.",
       "Na lúke rastú vlčie maky. Každé napísané písmenko pridá jeden do kytice!"
     ],
     "poppyDone": [
@@ -435,11 +435,11 @@
     ],
     "gustStart": "Fúka vietor! Letí viac malých listov naraz.",
     "invitationStart": [
-      "Na lúke bude oslava! Napíš pozvánku slovo po slove, pekne bez chyby."
+      "Po zápase bude pohostenie! Napíš pozvánku slovo po slove, pekne bez chyby."
     ],
-    "invitationPartyOne": "{n} zvieratko dostalo pozvánku\na prišlo na oslavu!",
-    "invitationPartyFew": "{n} zvieratká dostali pozvánku\na prišli na oslavu!",
-    "invitationPartyMany": "{n} zvieratiek dostalo pozvánku\na prišlo na oslavu!",
+    "invitationPartyOne": "{n} zvieratko dostalo pozvánku\na prišlo na pohostenie!",
+    "invitationPartyFew": "{n} zvieratká dostali pozvánku\na prišli na pohostenie!",
+    "invitationPartyMany": "{n} zvieratiek dostalo pozvánku\na prišlo na pohostenie!",
     "goalShout": "GÓÓL!",
     "cheer": [
       "Hurá!",
@@ -447,19 +447,171 @@
       "Super!"
     ],
     "hedgehogStart": [
-      "Ježko má na chrbte kopu listov a chce ti s nimi dať gól. Chytaj ich písmenami!"
+      "Prišiel ježko. Zápas nestihol, ale chce si tiež zahrať a je to dobrý hráč! Má na chrbte kopu listov. Chytaj ich písmenami!"
     ],
     "hedgehogDone": [
       "Všetky listy sú späť u ježka. Výborne!"
     ],
-    "signView": [
-      "Tadiaľto je krásny výhľad!",
-      "Pozri na tie kvietky!",
-      "Tento chodník vonia ako cukríky!"
-    ],
     "boulderOpen": [
-      "Z balvana sú kamene na prechod!",
+      "Balvan sa rozpadol! Cesta je voľná.",
       "Dokázalo to tvoje presné písanie!"
+    ],
+    "swampStart": [
+      "Raketa pristála v močiari na planéte drakov. Napíš slovo nad sebou a objaví sa kameň, na ktorý skočíš."
+    ],
+    "swampDone": [
+      "Už vidím lúku! Teším sa na ňu.",
+      "Hurá, breh! Za ním je lúka, už sa teším."
+    ],
+    "crystalsStart": [
+      "Na lúke rastú kryštály, z ktorých má táto planéta energiu. Raketa ich bude potrebovať na cestu domov. Napíš slovo, kým kryštál nepraskne, a skončí v tvojom vrecku!"
+    ],
+    "crystalsDoneOne": "{n} kryštál\nje v tvojom vrecku!",
+    "crystalsDoneFew": "{n} kryštály\nsú v tvojom vrecku!",
+    "crystalsDoneMany": "{n} kryštálov\nje v tvojom vrecku!",
+    "crossroadsStart": [
+      "Hľadáš cestu ku kryštálom života. Píš slová na ceste. Na rázcestí napíš slovo smerovníka, kam chceš ísť. Pri chybe smerovník zmizne."
+    ],
+    "roadEnd": [
+      "Koniec cesty! Sme tu.",
+      "Došli sme! To bola pekná cesta."
+    ],
+    "signGone": "Chybička! Tento smerovník zmizol, vyber si iný.",
+    "signLast": "Posledný smerovník napíš bez chyby.",
+    "path": {
+      "plain": {
+        "names": [
+          "cesta",
+          "chodník",
+          "chodníček",
+          "cestička",
+          "alej"
+        ],
+        "said": [
+          "Pekná obyčajná cesta.",
+          "Ideme po chodníčku."
+        ]
+      },
+      "short": {
+        "names": [
+          "skratka",
+          "krátka cesta",
+          "krátky chodník"
+        ],
+        "said": [
+          "Skratka! Slová budú kratšie."
+        ]
+      },
+      "fast": {
+        "names": [
+          "rýchla cestička",
+          "rýchla cesta",
+          "rezký chodník"
+        ],
+        "said": [
+          "Rýchla cesta: krátke slová a rázcestie čoskoro."
+        ]
+      },
+      "teleport": {
+        "names": [
+          "teleport",
+          "superskratka"
+        ],
+        "said": [
+          "Fíí! Teleport nás posunul ďaleko dopredu."
+        ]
+      },
+      "detour": {
+        "names": [
+          "obchádzka",
+          "dlhá cesta",
+          "okľuka"
+        ],
+        "said": [
+          "Obchádzka. Bude to trochu dlhšie."
+        ]
+      },
+      "hard": {
+        "names": [
+          "náročná cesta",
+          "ťažká cesta",
+          "zarastená cestička"
+        ],
+        "said": [
+          "Zarastená cesta. Slová budú ťažšie."
+        ]
+      },
+      "wide": {
+        "names": [
+          "široká cesta",
+          "jednoduchá cesta",
+          "ľahká cesta"
+        ],
+        "said": [
+          "Široká cesta: ľahšie slová a menej rázcestí."
+        ]
+      },
+      "dark": {
+        "names": [
+          "temný les",
+          "záhadná cesta"
+        ],
+        "said": [
+          "V temnom lese sa slová ozývajú ako ozvena. Niektoré prídu znova."
+        ]
+      },
+      "unknown": {
+        "names": [
+          "nepreskúmaný chodník",
+          "neznáma cesta"
+        ],
+        "short": "slová sú kratšie",
+        "long": "slová sú dlhšie",
+        "quick": "cesta je kratšia",
+        "slow": "cesta je dlhšia",
+        "easy": "píše sa ľahko",
+        "hard": "píše sa ťažšie"
+      },
+      "practice": {
+        "names": [
+          "kamenistý chodník",
+          "cvičná cestička"
+        ],
+        "said": [
+          "Kamenistý chodník: slová s písmenami, ktoré ešte cvičíš."
+        ]
+      },
+      "unknownSaid": "Neznáma cesta: {len}, {time} a {diff}."
+    },
+    "spellStart": [
+      "Tri kryštály života spia. Prebuď ich kúzlom: napíš ho slovo po slove. Pri viac ako troch chybách sa kúzlo pokazí a začne sa odznova."
+    ],
+    "spellCast": [
+      "Jupí!",
+      "Hurá!",
+      "Zipp!",
+      "Whizz!",
+      "Juchú!"
+    ],
+    "spellBroken": [
+      "Pššš... kúzlo sa pokazilo. Skúsime ho znova od začiatku.",
+      "Fuu, kúzlo zhaslo. Ešte raz, pekne pomaly."
+    ],
+    "greatSwampStart": [
+      "Kolíska života je za veľkým močiarom. Kamene sú tu krehké: z pevného kameňa skáčeš štyri kamene. Keď sa pomýliš, kamene prasknú a vrátiš sa späť."
+    ],
+    "greatSwampSlip": "Kameň praská! Späť na pevný kameň.",
+    "boulderStart": [
+      "Cestu zatarasil balvan. Rozbi ho presnými slovami!"
+    ],
+    "cradleDone": [
+      "Kryštály života sú v Kolíske života. Planéta zase kvitne!"
+    ],
+    "matchStart": [
+      "Začína sa futbalový zápas! Zvieratká kopú listy ako loptu. Chytaj ich písmenami!"
+    ],
+    "spaceStart": [
+      "Leť preskúmať prvú planétu! Rytmus písania poháňa raketu a lúč odsúva meteority z cesty."
     ],
     "waveCalm": [
       "Vlna sa upokojila. Pozri, dúha!",
@@ -473,32 +625,32 @@
         "Začni na Cvičnej lúke!"
       ],
       "world1": [
-        "Zvieratká na lúke sa s tebou hrajú.",
-        "Vietor im nosí listy a chcú ti s nimi dať gól.",
+        "Na lúke je krásne popoludnie. Poobede bude futbalový zápas!",
+        "Zvieratká s tebou trénujú: kopú listy ako loptu a ty si brankár.",
         "Chytaj listy písmenami: napíš slovo na liste a list je tvoj."
       ],
       "invitation": [
-        "Pozri, čo sa našlo v tráve!",
+        "Popoludnie na lúke sa končí. Pozri, čo sa našlo v tráve!",
         "Tajná pozvánka... do VESMÍRU!",
         "Tvoje prsty sú pripravené na let raketou."
       ],
       "world2": [
         "Tri, dva, jeden... štart!",
-        "Rytmus tvojho písania poháňa raketu.",
-        "Jemným energetickým lúčom odsúvaj ospalé asteroidy z cesty."
+        "Letíš preskúmať zopár planét až k planéte drakov.",
+        "Rytmus tvojho písania poháňa raketu a jemný lúč odsúva meteority z cesty."
       ],
       "landing": [
-        "Riadiaca veža hlási: povolenie na pristátie!",
-        "Pristávame na čarovnej novej planéte."
+        "Planéta drakov je na dohľad. Riadiaca veža hlási: povolenie na pristátie!",
+        "Pristávame... ojoj, rovno v močiari!"
       ],
       "world3": [
-        "Vitaj na novej planéte!",
-        "Postav kamene cez močiar a pri smerovníkoch vyber cestu.",
-        "Tu je presnosť dôležitejšia ako rýchlosť."
+        "Vitaj na planéte drakov! Jej kryštál života stratil svetlo.",
+        "Prejdi močiar a lúku, nájdi kryštály života a prebuď ich kúzlom.",
+        "Potom ich odnes do Kolísky života. Tu je presnosť dôležitejšia ako rýchlosť."
       ],
       "force": [
-        "Objavili sme niečo úžasné: Silu!",
-        "Teraz dokážeš jemne pohybovať vecami, len písaním.",
+        "Kryštály života svietia a celá planéta zase kvitne!",
+        "Ako poďakovanie ti darovali Silu: jemne pohybuješ vecami, len písaním.",
         "Dráčiky v susednom údolí potrebujú pomoc."
       ],
       "world4": [
@@ -2783,6 +2935,22 @@
           "Dopad z vesmíru!",
           "Ešte že nie som dinosaurus!",
           "Mám kráter!"
+        ]
+      },
+      "crystal": {
+        "name": "Kryštál",
+        "launch": [
+          "Kryštál letí!",
+          "Ligotavý hod!",
+          "Trblietky, leťte!"
+        ],
+        "sound": [
+          "Cink!"
+        ],
+        "hit": [
+          "Ligoce sa to!",
+          "Som celý trblietavý!",
+          "Cink! To bol drahokam."
         ]
       },
       "chili": {

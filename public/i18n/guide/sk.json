@@ -146,6 +146,14 @@
       "title": "Vety vo svete Raketa",
       "about": "Úvodné vety a bubliny úrovní sveta Raketa: skákanie po meteoritoch, silnejšie meteority a príkazy rakete."
     },
+    "story-planet": {
+      "title": "Vety vo svete Planéta",
+      "about": "Úvodné vety a bubliny úrovní sveta Planéta: močiar, kryštály na lúke, rázcestia so smerovníkmi, kúzla pre kryštály života a veľký močiar s Kolískou života."
+    },
+    "story-paths": {
+      "title": "Cesty na rázcestí planéty",
+      "about": "Názvy ciest na smerovníkoch a Tapkove vety, keď si dieťa cestu vyberie, aj časti vety o neznámej ceste."
+    },
     "story-play": {
       "title": "Vety počas hier",
       "about": "Vety zvierat, robotov a víly, ktoré sa ukazujú v bublinách počas hier v jednotlivých svetoch."
@@ -656,8 +664,30 @@
     "story.cheer": "Výkrik radosti nad Tapkom pri úspechu v hre (lúka, les, jazero, brána); vyberie sa jedna náhodne.",
     "story.hedgehogStart": "Úvodná veta úrovne s ježkom na lúke, ukáže sa na začiatku hry.",
     "story.hedgehogDone": "Veta na lúke, keď dieťa chytilo všetky ježkove listy.",
-    "story.signView": "Veta pri smerovníku na planéte, keď dieťa vyberie cestu; ukáže sa len niekedy, vyberie sa jedna náhodne.",
-    "story.boulderOpen": "Veta na planéte, keď sa balvan zmení na kamene na prechod; vyberie sa jedna náhodne.",
+    "story.swampStart": "Úvodná veta prvej úrovne planéty: Tapko pristál v močiari a skáče po kameňoch, ktoré sa objavia po napísaní slova.",
+    "story.swampDone": "Tapko, keď doskáče na breh močiara a uvidí lúku; vyberie sa jedna náhodne.",
+    "story.crystalsStart": "Úvodná veta druhej úrovne planéty: na lúke rastú kryštály, kým nepraskne, treba napísať slovo nad ním.",
+    "story.crystalsDoneOne": "Text v strede na konci úrovne s kryštálmi, keď Tapko nazbieral jeden kryštál; {n} je počet.",
+    "story.crystalsDoneFew": "Text v strede na konci úrovne s kryštálmi pre 2 až 4 kryštály; {n} je počet.",
+    "story.crystalsDoneMany": "Text v strede na konci úrovne s kryštálmi pre 5 a viac kryštálov (aj 0); {n} je počet.",
+    "story.crossroadsStart": "Úvodná veta úrovne s rázcestiami: slová na ceste a na rázcestí smerovníky s cestami.",
+    "story.roadEnd": "Tapko na konci cesty v úrovni s rázcestiami; vyberie sa jedna náhodne.",
+    "story.signGone": "Veta, keď sa dieťa prvýkrát pomýli v slove smerovníka a ten zmizne.",
+    "story.signLast": "Veta, keď sa dieťa pomýli v slove posledného smerovníka: slovo začína znova.",
+    "story.path.*.names": "Názvy cesty na smerovníku nad jeho slovom; vyberie sa jeden náhodne. Krátke, najviac dve slová.",
+    "story.path.*.said": "Tapko, keď si dieťa vyberie túto cestu; povie, čo cesta zmení. Vyberie sa jedna náhodne.",
+    "story.path.unknown.*": "Časť vety o neznámej ceste ({len}, {time} alebo {diff} vo vete story.path.unknownSaid).",
+    "story.path.unknownSaid": "Tapko po výbere neznámej cesty povie, čo sa stalo: {len} dĺžka slov, {time} dĺžka cesty, {diff} náročnosť slov.",
+    "story.spellStart": "Úvodná veta úrovne s kúzlami: tri spiace kryštály života, kúzlo sa pokazí pri viac ako troch chybách.",
+    "story.spellCast": "Krátky výkrik nad kryštálmi, keď sa kúzlo podarí a rozžiari sa ďalšia tretina; vyberie sa jeden náhodne.",
+    "story.spellBroken": "Veta, keď sa kúzlo pokazí (viac ako tri chyby) a začne sa odznova; vyberie sa jedna náhodne.",
+    "story.greatSwampStart": "Úvodná veta poslednej úrovne planéty: z pevného kameňa sa skáče štyri kamene, chyba ich rozbije.",
+    "story.greatSwampSlip": "Veta, keď sa dieťa prvýkrát pomýli mimo pevného kameňa a kamene začnú praskať.",
+    "story.boulderStart": "Veta, keď na konci veľkého močiara cestu zatarasí balvan; vyberie sa jedna náhodne.",
+    "story.boulderOpen": "Veta na planéte, keď sa balvan rozpadne a cesta je voľná; vyberie sa jedna náhodne.",
+    "story.cradleDone": "Veta na konci sveta Planéta, keď Tapko položí kryštály života do Kolísky života; vyberie sa jedna náhodne.",
+    "story.matchStart": "Úvodná veta tretej úrovne lúky: začína sa skutočný futbalový zápas.",
+    "story.spaceStart": "Úvodná veta prvej úrovne v rakete: let k prvej planéte.",
     "story.waveCalm": "Veta v Dračom údolí, keď sa vlna upokojí po všetkých slovách; vyberie sa jedna náhodne.",
     "story.junkStart": "Veta na šrotisku na začiatku úrovne, kde Šróbik pípa pod kopou; vyberie sa jedna náhodne.",
     "story.knotOpen": "Veta na šrotisku, keď sa uzol rozmotá; vyberie sa jedna náhodne.",

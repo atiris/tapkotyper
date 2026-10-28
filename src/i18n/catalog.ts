@@ -85,7 +85,9 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
   { id: 'story', groups: [
     g('tapko', 'tapko.*', 'fairy.*'),
     g('story-scenes', 'story.scenes.*', 'story.next'),
-    g('story-space', 'story.hopStart', 'story.hopTooFar', 'story.strongStart', 'story.strongHit', 'story.commandStart', 'story.commandReply', 'story.commandRejected', 'story.boarded', 'story.asteroidStart'),
+    g('story-space', 'story.spaceStart', 'story.hopStart', 'story.hopTooFar', 'story.strongStart', 'story.strongHit', 'story.commandStart', 'story.commandReply', 'story.commandRejected', 'story.boarded', 'story.asteroidStart'),
+    g('story-planet', 'story.swampStart', 'story.swampDone', 'story.crystalsStart', 'story.crystalsDoneOne', 'story.crystalsDoneFew', 'story.crystalsDoneMany', 'story.crossroadsStart', 'story.roadEnd', 'story.signGone', 'story.signLast', 'story.spellStart', 'story.spellCast', 'story.spellBroken', 'story.greatSwampStart', 'story.greatSwampSlip', 'story.boulderStart', 'story.boulderOpen', 'story.cradleDone'),
+    g('story-paths', 'story.path.*'),
     g('story-play', 'story.*'),
   ] },
   { id: 'aim', groups: [

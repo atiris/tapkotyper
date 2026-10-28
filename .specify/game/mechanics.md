@@ -53,7 +53,7 @@
   screen also shows half stars, 1.5 from 80 % and 2.5 from 90 %, so a child sees a small gain
   before the next whole star; the map, the progress table and every count keep whole stars
   only, the shown stars rounded down.
-- **World rhythm** (the meadow and the rocket world so far): the levels of a world have fixed roles, so one
+- **World rhythm** (the meadow and the rocket world; the planet starts with its calm step, see [story](story.md)): the levels of a world have fixed roles, so one
   session (about one world) goes up and down instead of repeating one game: 1 the world's
   main game, gently; 2 a calm step; 3 the main game, harder, with one short surprise; 4 a
   twist; 5 the super-obstacle. Each level dot on the map shows the icon of its activity

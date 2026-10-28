@@ -131,7 +131,8 @@ export class SpaceMode extends ApproachMode {
   }
 
   startLine(): string | null {
-    return this.strong ? pickLine('story.strongStart') : null;
+    if (this.strong) return pickLine('story.strongStart');
+    return this.L.def.variant === 'asteroids' ? pickLine('story.spaceStart') : null;
   }
 
   startSeconds(): number {

@@ -391,10 +391,10 @@
   "story": {
     "next": "Next",
     "meadowStart": [
-      "The meadow animals kick leaves like a ball and want to score a goal on you. Type the word on a leaf to catch it!"
+      "There is a match this afternoon! The animals train with you and kick leaves like a ball. Type the word on a leaf to catch it!"
     ],
     "commandStart": [
-      "Write commands to the rocket so it comes to you. Each command you send brings it closer."
+      "The second planet is explored too. Call the rocket: write commands to it. Each command you send brings it closer."
     ],
     "commandReply": [
       "Instruction received.",
@@ -408,11 +408,11 @@
       "The signal got lost."
     ],
     "asteroidStart": [
-      "Big asteroids break into smaller rocks. Two rocks have a shield: type their word twice."
+      "The last part of the journey, the dragons' planet is in sight! Big asteroids break into smaller rocks. Two rocks have a shield: type their word twice."
     ],
     "boarded": "Hooray, you are on board!",
     "strongStart": [
-      "Careful, some meteors are stronger and glow around the edge. When you type their word, you type it once more."
+      "On to the second planet. Careful, some meteors are stronger and glow around the edge. When you type their word, you type it once more."
     ],
     "strongHit": [
       "Ouch!",
@@ -421,11 +421,11 @@
       "Oof!"
     ],
     "hopStart": [
-      "The rocket drifted a bit away. Hop across the meteors until you reach it!"
+      "The first planet is explored! The rocket waits a bit further on. Hop back to it across the meteors!"
     ],
     "hopTooFar": "Oh, I can't jump that far.",
     "poppyStart": [
-      "Let's grow a bunch of poppies! Type the letter above a bud and it blooms.",
+      "After training, let's pick a bunch of poppies! Type the letter above a bud and it blooms.",
       "Poppies grow on the meadow. Every letter you type adds one to the bunch!"
     ],
     "poppyDone": [
@@ -435,11 +435,11 @@
     ],
     "gustStart": "A gust of wind! Lots of small leaves at once.",
     "invitationStart": [
-      "There is a party on the meadow! Write the invitation word by word, with no slip."
+      "After the match there is a treat! Write the invitation word by word, with no slip."
     ],
-    "invitationPartyOne": "{n} animal got an invitation\nand came to the party!",
-    "invitationPartyFew": "{n} animals got an invitation\nand came to the party!",
-    "invitationPartyMany": "{n} animals got an invitation\nand came to the party!",
+    "invitationPartyOne": "{n} animal got an invitation\nand came for the treat!",
+    "invitationPartyFew": "{n} animals got an invitation\nand came for the treat!",
+    "invitationPartyMany": "{n} animals got an invitation\nand came for the treat!",
     "goalShout": "GOAL!",
     "cheer": [
       "Hooray!",
@@ -447,19 +447,171 @@
       "Great!"
     ],
     "hedgehogStart": [
-      "The hedgehog has a pile of leaves on its back and wants to score a goal with them. Catch them with letters!"
+      "The hedgehog is here. It missed the match but wants to play too, and it is a good player! It has a pile of leaves on its back. Catch them with letters!"
     ],
     "hedgehogDone": [
       "All the leaves are back on the hedgehog. Well done!"
     ],
-    "signView": [
-      "What a lovely view this way!",
-      "Look at those flowers!",
-      "This path smells like candy!"
-    ],
     "boulderOpen": [
-      "The boulder became stepping stones!",
+      "The boulder fell apart! The way is clear.",
       "Your careful typing did it!"
+    ],
+    "swampStart": [
+      "The rocket landed in a swamp on the dragons' planet. Type the word above you and a stone appears for you to jump on."
+    ],
+    "swampDone": [
+      "I can see the meadow! I can't wait.",
+      "Hooray, the bank! The meadow is right behind it."
+    ],
+    "crystalsStart": [
+      "Crystals grow on the meadow; they give this planet its energy. The rocket will need them for the way home. Type the word before the crystal cracks and it goes into your pocket!"
+    ],
+    "crystalsDoneOne": "{n} crystal\nis in your pocket!",
+    "crystalsDoneFew": "{n} crystals\nare in your pocket!",
+    "crystalsDoneMany": "{n} crystals\nare in your pocket!",
+    "crossroadsStart": [
+      "You are looking for the way to the crystals of life. Type the words on the road. At a crossroads, type the word of the signpost you want to follow. A slip makes that sign vanish."
+    ],
+    "roadEnd": [
+      "The end of the road! We are here.",
+      "We made it! What a nice walk."
+    ],
+    "signGone": "Oops! This sign vanished, pick another one.",
+    "signLast": "Type the last sign without a slip.",
+    "path": {
+      "plain": {
+        "names": [
+          "road",
+          "path",
+          "trail",
+          "lane",
+          "avenue"
+        ],
+        "said": [
+          "A nice ordinary path.",
+          "Off we go along the path."
+        ]
+      },
+      "short": {
+        "names": [
+          "shortcut",
+          "short road",
+          "short path"
+        ],
+        "said": [
+          "A shortcut! The words get shorter."
+        ]
+      },
+      "fast": {
+        "names": [
+          "quick trail",
+          "fast road",
+          "brisk path"
+        ],
+        "said": [
+          "A fast road: short words and a crossroads soon."
+        ]
+      },
+      "teleport": {
+        "names": [
+          "teleport",
+          "super shortcut"
+        ],
+        "said": [
+          "Whoosh! The teleport took us far ahead."
+        ]
+      },
+      "detour": {
+        "names": [
+          "detour",
+          "long road",
+          "roundabout way"
+        ],
+        "said": [
+          "A detour. It will take a bit longer."
+        ]
+      },
+      "hard": {
+        "names": [
+          "tough road",
+          "hard road",
+          "overgrown path"
+        ],
+        "said": [
+          "An overgrown path. The words get harder."
+        ]
+      },
+      "wide": {
+        "names": [
+          "wide road",
+          "simple road",
+          "easy road"
+        ],
+        "said": [
+          "A wide road: easier words and fewer crossroads."
+        ]
+      },
+      "dark": {
+        "names": [
+          "dark forest",
+          "mystery path"
+        ],
+        "said": [
+          "In the dark forest words echo. Some come back again."
+        ]
+      },
+      "unknown": {
+        "names": [
+          "unexplored trail",
+          "unknown road"
+        ],
+        "short": "the words are shorter",
+        "long": "the words are longer",
+        "quick": "the road is shorter",
+        "slow": "the road is longer",
+        "easy": "it is easy to type",
+        "hard": "it is harder to type"
+      },
+      "practice": {
+        "names": [
+          "stony path",
+          "practice trail"
+        ],
+        "said": [
+          "A stony path: words with the letters you are still practising."
+        ]
+      },
+      "unknownSaid": "The unknown road: {len}, {time} and {diff}."
+    },
+    "spellStart": [
+      "Three crystals of life are asleep. Wake them with a spell: type it word by word. With more than three slips the spell breaks and starts over."
+    ],
+    "spellCast": [
+      "Yippee!",
+      "Hooray!",
+      "Zipp!",
+      "Whizz!",
+      "Woo-hoo!"
+    ],
+    "spellBroken": [
+      "Pssst... the spell broke. Let's try it again from the start.",
+      "Phew, the spell fizzled. Once more, nice and slow."
+    ],
+    "greatSwampStart": [
+      "The Cradle of Life is behind the great swamp. The stones are fragile: from a firm stone you jump four stones. A slip cracks them and you go back."
+    ],
+    "greatSwampSlip": "The stone is cracking! Back to the firm one.",
+    "boulderStart": [
+      "A boulder blocks the way. Crack it with careful words!"
+    ],
+    "cradleDone": [
+      "The crystals of life are in the Cradle of Life. The planet blooms again!"
+    ],
+    "matchStart": [
+      "The football match begins! The animals kick leaves like a ball. Catch them with letters!"
+    ],
+    "spaceStart": [
+      "Fly off to explore the first planet! Your typing rhythm drives the rocket and the beam pushes meteors out of the way."
     ],
     "waveCalm": [
       "The wave calmed down. Look, a rainbow!",
@@ -473,32 +625,32 @@
         "Start on the Training Meadow!"
       ],
       "world1": [
-        "The meadow animals are playing with you.",
-        "The wind brings them leaves, and they want to score a goal on you with them.",
+        "It is a lovely afternoon on the meadow. There is a football match later!",
+        "The animals train with you: they kick leaves like a ball and you keep goal.",
         "Catch the leaves with letters: type the word on a leaf and the leaf is yours."
       ],
       "invitation": [
-        "Look what you found in the grass!",
+        "The afternoon on the meadow is over. Look what you found in the grass!",
         "A secret invitation... to SPACE!",
         "Your fingers are ready for a rocket flight."
       ],
       "world2": [
         "Three, two, one... lift off!",
-        "Your typing rhythm drives the rocket.",
-        "Push sleepy asteroids out of the way with a soft energy beam."
+        "You fly off to explore a few planets, all the way to the dragons' planet.",
+        "Your typing rhythm drives the rocket and a soft beam pushes meteors out of the way."
       ],
       "landing": [
-        "The control tower says: landing clearance granted!",
-        "We are landing on a magical new planet."
+        "The dragons' planet is in sight. The control tower says: landing clearance granted!",
+        "We are landing... oh no, right in a swamp!"
       ],
       "world3": [
-        "Welcome to the new planet!",
-        "Build stepping stones across the swamp and choose paths at the signs.",
-        "Careful typing matters more than speed here."
+        "Welcome to the dragons' planet! Its crystal of life has lost its light.",
+        "Cross the swamp and the meadow, find the crystals of life and wake them with a spell.",
+        "Then carry them to the Cradle of Life. Careful typing matters more than speed here."
       ],
       "force": [
-        "You found something amazing: the Force!",
-        "Now you can move things gently, just by typing.",
+        "The crystals of life shine and the whole planet blooms again!",
+        "To thank you, they gave you the Force: you move things gently, just by typing.",
         "The dragons in the next valley need help."
       ],
       "world4": [
@@ -2768,6 +2920,22 @@
           "Impact from outer space!",
           "Good thing I'm not a dinosaur!",
           "Now I've got a crater!"
+        ]
+      },
+      "crystal": {
+        "name": "Crystal",
+        "launch": [
+          "A crystal flies!",
+          "A sparkly throw!",
+          "Fly, sparkles!"
+        ],
+        "sound": [
+          "Clink!"
+        ],
+        "hit": [
+          "Look at it sparkle!",
+          "I'm all glittery!",
+          "Clink! What a gem."
         ]
       },
       "chili": {

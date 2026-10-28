@@ -19,6 +19,15 @@ export class Rng {
   pick<T>(list: readonly T[]): T {
     return list[Math.floor(this.next() * list.length)];
   }
+  /** A shuffled copy of the list. */
+  shuffle<T>(list: readonly T[]): T[] {
+    const out = [...list];
+    for (let i = out.length - 1; i > 0; i--) {
+      const j = Math.floor(this.next() * (i + 1));
+      [out[i], out[j]] = [out[j], out[i]];
+    }
+    return out;
+  }
   chance(p: number): boolean {
     return this.next() < p;
   }

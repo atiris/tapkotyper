@@ -303,8 +303,9 @@ export class MeadowMode extends ApproachMode {
     this.gloves = new Gloves(L, this.glovesX(), this.glovesRest());
   }
 
+  /** The training in level 1, the real match in level 3 (the gust's level). */
   startLine(): string {
-    return pickLine('story.meadowStart');
+    return pickLine(this.L.def.variant === 'gust' ? 'story.matchStart' : 'story.meadowStart');
   }
 
   /** Tapko's x on the stage. */

@@ -171,7 +171,8 @@ function tiled(g: G, img: HTMLImageElement, vw: number, offset: number): void {
 
 /** Three-layer parallax background of a world; `scroll` grows as the scene moves forward; with `midOnly` just the middle strip follows it. */
 /** `drift` moves one band on its own by `offset` on top of the scroll. */
-export function drawBackground(g: G, world: string, vw: number, scroll: number, motion = true, midOnly = false, drift: { layer: 'mid' | 'near'; offset: number } | null = null): void {
+/** The world's layers; `ground` picks another middle and near band of the world (the planet's swamp: `-swamp`), the far one stays. */
+export function drawBackground(g: G, world: string, vw: number, scroll: number, motion = true, midOnly = false, drift: { layer: 'mid' | 'near'; offset: number } | null = null, ground = ''): void {
   const still = midOnly || !motion;
   const midDrift = drift?.layer === 'mid' ? drift.offset : 0, nearDrift = drift?.layer === 'near' ? drift.offset : 0;
   const pal = PALETTES[world] ?? PALETTES.meadow;
@@ -191,13 +192,13 @@ export function drawBackground(g: G, world: string, vw: number, scroll: number, 
     g.fillStyle = 'rgba(24,18,60,0.35)';
     g.fillRect(0, 0, vw, VH);
   }
-  const mid = sprite(`bg-${world}-mid`);
+  const mid = sprite(`bg-${world}${ground}-mid`);
   if (mid) tiled(g, mid, vw, (motion ? scroll * 0.35 : 0) + midDrift);
   else {
     hills(g, vw, scroll * 0.35 + midDrift, VH * 0.62, 70, pal.hills[0]);
     if (world === 'rescue') ropeBridge(g, vw, (motion ? scroll * 0.35 : 0) + midDrift, pal.hills[1]);
   }
-  const near = sprite(`bg-${world}-near`);
+  const near = sprite(`bg-${world}${ground}-near`);
   // The space's near rocks drift at half speed, calmer behind the words.
   if (near) tiled(g, near, vw, (still ? 0 : scroll * (world === 'space' ? 0.5 : 1)) + nearDrift);
   else if (world !== 'space') {

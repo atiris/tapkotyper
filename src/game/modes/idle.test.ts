@@ -22,7 +22,9 @@ const { RoomsMode, WelcomeMode } = await import('./robohome');
 const { AsteroidMode, SpaceMode } = await import('./space');
 const { CommandMode, HopMode } = await import('./space-calm');
 const { BatteryMode, BeltMode } = await import('./workshop');
-const { BoulderMode, SignsMode, SwampMode } = await import('./planet');
+const { GreatSwampMode, SwampMode } = await import('./planet');
+const { CrystalsMode, SpellMode } = await import('./planet-crystals');
+const { CrossroadsMode } = await import('./planet-roads');
 const { DoorsMode, GateMode } = await import('./robocity');
 const { BudsMode, FlowerMode } = await import('./garden');
 const { LiliesMode, ReflectionMode } = await import('./lilylake');
@@ -44,8 +46,11 @@ function fakeRuntime(count = 4): LevelRuntime {
     rhythm: { ema: 0.5, ratio: () => 0.3 },
     robot: null,
     toolAlpha: 1,
-    rng: { pick: <T>(a: T[]) => a[0], range: (a: number) => a, chance: () => false, int: (a: number) => a, next: () => 0.5 },
+    rng: { pick: <T>(a: T[]) => a[0], range: (a: number) => a, chance: () => false, int: (a: number) => a, next: () => 0.5, shuffle: <T>(a: T[]) => [...a] },
     word: () => 'ab',
+    weakWord: () => 'ab',
+    playedS: 0,
+    minLeft: 0,
     letter: () => 'a',
     travelTime: () => 3,
     friendSpot: () => ({ x: 120, y: 600 }),
@@ -58,7 +63,7 @@ function fakeRuntime(count = 4): LevelRuntime {
 
 const MODES: [string, new (L: LevelRuntime) => Mode][] = [
   ['meadow', MeadowMode], ['poppies', PoppyMode], ['invitation', InvitationMode], ['hedgehog', HedgehogMode], ['space', SpaceMode], ['hop', HopMode], ['command', CommandMode], ['asteroid', AsteroidMode],
-  ['swamp', SwampMode], ['signs', SignsMode], ['boulder', BoulderMode], ['shield', ShieldMode], ['wave', WaveMode],
+  ['swamp', SwampMode], ['crystals', CrystalsMode], ['crossroads', CrossroadsMode], ['spells', SpellMode], ['greatswamp', GreatSwampMode], ['shield', ShieldMode], ['wave', WaveMode],
   ['slope', SlopeMode], ['mole', MoleMode], ['junk', JunkMode], ['knot', KnotMode], ['belt', BeltMode],
   ['battery', BatteryMode], ['rain', RainMode], ['storm', StormMode], ['doors', DoorsMode], ['gate', GateMode],
   ['rooms', RoomsMode], ['welcome', WelcomeMode], ['buds', BudsMode], ['flower', FlowerMode], ['birds', BirdsMode],
@@ -156,5 +161,110 @@ describe('strong meteors', () => {
     again.done = true;
     mode.onDone(again);
     expect(mode.progress()).toBeCloseTo(1 / 6);
+  });
+});
+
+/** Types the focused target's word to the end and tells the mode. */
+function typeWord(L: LevelRuntime, mode: Mode): void {
+  const f = L.core.focus()!;
+  for (const ch of f.word.slice(f.typed)) {
+    const res = L.core.type(ch);
+    if (res.kind === 'done') mode.onDone(res.target);
+  }
+}
+
+function run(L: LevelRuntime, mode: Mode, seconds: number): void {
+  for (let i = 0; i < seconds / 0.05; i++) {
+    L.core.update(0.05);
+    mode.update(0.05);
+    mode.t += 0.05;
+  }
+}
+
+describe('the great swamp', () => {
+  it('a slip away from the firm stone cracks the stones back to it, where a new word comes', () => {
+    const L = fakeRuntime(21);
+    const mode = new GreatSwampMode(L);
+    mode.start();
+    typeWord(L, mode);
+    run(L, mode, 1);
+    typeWord(L, mode);
+    run(L, mode, 1);
+    expect((mode as any).stones).toHaveLength(3);
+    const f = L.core.focus()!;
+    expect(L.core.type('x').kind).toBe('wrong');
+    mode.onWrong(f);
+    expect(L.core.focus()).toBeNull();
+    run(L, mode, 4);
+    expect((mode as any).stones).toHaveLength(1);
+    expect(L.core.focus()).not.toBeNull();
+    expect(mode.progress()).toBe(0);
+  });
+
+  it('a slip on the firm stone is only a slip', () => {
+    const L = fakeRuntime(21);
+    const mode = new GreatSwampMode(L);
+    mode.start();
+    const f = L.core.focus()!;
+    L.core.type('x');
+    mode.onWrong(f);
+    expect(L.core.focus()).toBe(f);
+  });
+});
+
+describe('crossroads', () => {
+  it('after a leg signs grow; a slip inside a sign word makes it vanish, the last one starts again', () => {
+    const L = fakeRuntime(16);
+    const mode = new CrossroadsMode(L);
+    mode.start();
+    for (let i = 0; i < 3; i++) typeWord(L, mode);
+    run(L, mode, 1);
+    const signs = () => (mode as any).signs.filter((s: any) => s.gone === null);
+    expect(signs()).toHaveLength(3);
+    for (let left = 3; left > 1; left--) {
+      const res = L.core.type('a');
+      expect(res.kind).toBe('ok');
+      L.core.type('x');
+      mode.onWrong(L.core.locked);
+      expect(signs()).toHaveLength(left - 1);
+    }
+    const last = signs()[0].tg;
+    L.core.type('a');
+    L.core.type('x');
+    mode.onWrong(last);
+    expect(signs()).toHaveLength(1);
+    expect(last.typed).toBe(0);
+  });
+
+  it('a path changes the rest of the level', async () => {
+    const { roadAfter, scaleAfter } = await import('./planet-roads');
+    expect(roadAfter('short').len).toBe('short');
+    expect(roadAfter('wide')).toMatchObject({ diff: 'easy', leg: 6 });
+    expect(scaleAfter('teleport').words).toBeLessThan(scaleAfter('detour').words);
+    expect(roadAfter('unknown', { len: 'long', time: 'slow', diff: 'hard' })).toMatchObject({ len: 'long', diff: 'hard' });
+    expect(scaleAfter('unknown', { len: 'long', time: 'quick', diff: 'hard' }).time).toBeLessThan(1);
+  });
+});
+
+describe('spells', () => {
+  it('the fourth slip breaks the spell and it starts again from its first word', () => {
+    const L = fakeRuntime(18);
+    const mode = new SpellMode(L);
+    mode.start();
+    typeWord(L, mode);
+    expect(mode.progress()).toBeGreaterThan(0);
+    for (let i = 0; i < 3; i++) {
+      const f = L.core.focus()!;
+      L.core.type('x');
+      mode.onWrong(f);
+      expect(L.core.focus()).toBe(f);
+    }
+    const f = L.core.focus()!;
+    L.core.type('x');
+    mode.onWrong(f);
+    expect(L.core.focus()).toBeNull();
+    run(L, mode, 2);
+    expect(mode.progress()).toBe(0);
+    expect(L.core.focus()).not.toBeNull();
   });
 });

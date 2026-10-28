@@ -42,7 +42,7 @@ export function storyDone(p: Profile, story: StoryDef): boolean {
 export type LevelKind =
   | 'meadow' | 'poppies' | 'invitation' | 'hedgehog'
   | 'space' | 'hop' | 'command' | 'asteroid'
-  | 'swamp' | 'signs' | 'boulder'
+  | 'swamp' | 'crystals' | 'crossroads' | 'spells' | 'greatswamp'
   | 'shield' | 'wave'
   | 'slope' | 'mole'
   | 'junk' | 'knot'
@@ -86,12 +86,12 @@ export const MIN_ACTIVE_S = 120;
 
 /** A calm step is a short valley between two action levels. */
 const CALM_ACTIVE_S = 60;
-/** The calm steps of the world rhythm: waiting words (the meadow's poppies, the rocket world's meteors to hop on). */
-const CALM_KINDS: LevelKind[] = ['poppies', 'hop'];
+/** The calm steps of the world rhythm: waiting words (the meadow's poppies, the rocket world's meteors to hop on, the planet's swamp). */
+const CALM_KINDS: LevelKind[] = ['poppies', 'hop', 'swamp'];
 
-/** Seconds of active play the level lasts at least (when it has a minimum length). */
+/** Seconds of active play the level lasts at least (when it has a minimum length); a rescue mission always the full minimum. */
 export function minActiveS(l: LevelDef): number {
-  return CALM_KINDS.includes(l.kind) ? CALM_ACTIVE_S : MIN_ACTIVE_S;
+  return CALM_KINDS.includes(l.kind) && !l.rescue ? CALM_ACTIVE_S : MIN_ACTIVE_S;
 }
 
 /** What the child does in a level; the map shows it as the icon of the level's dot. */
@@ -100,8 +100,8 @@ export type Activity = 'chase' | 'catch' | 'clean' | 'crossroads' | 'listen' | '
 export function activityOf(l: LevelDef): Activity {
   if (l.isSuper) return 'super';
   if (CALM_KINDS.includes(l.kind)) return 'catch';
-  if (l.kind === 'invitation' || l.kind === 'command') return 'clean';
-  if (l.kind === 'signs') return 'crossroads';
+  if (l.kind === 'invitation' || l.kind === 'command' || l.kind === 'spells') return 'clean';
+  if (l.kind === 'crossroads') return 'crossroads';
   if (l.style === 'dictation' || l.style === 'mixed') return 'listen';
   if (l.style === 'memory') return 'remember';
   return 'chase';
@@ -141,7 +141,8 @@ export const LEVELS: LevelDef[] = [
   // The meadow plays the world rhythm: main game, calm step, main game with a gust, twist, super-obstacle.
   def(0, 0, 'meadow', 12, 'flyers', undefined, true), def(0, 1, 'poppies', 20), def(0, 2, 'meadow', 16, 'gust'), def(0, 3, 'invitation', 14), def(0, 4, 'hedgehog', 6),
   def(1, 0, 'space', 12, 'asteroids'), def(1, 1, 'hop', 16), def(1, 2, 'space', 16, 'strong'), def(1, 3, 'command', 12), def(1, 4, 'asteroid', 4),
-  def(2, 0, 'swamp', 12), def(2, 1, 'signs', 10), def(2, 2, 'swamp', 14), def(2, 3, 'signs', 12), def(2, 4, 'boulder', 6),
+  // The planet: the swamp after the landing (waiting words), the meadow's crystals (a stream), crossroads, spells (copy), the great swamp.
+  def(2, 0, 'swamp', 12), def(2, 1, 'crystals', 16), def(2, 2, 'crossroads', 16), def(2, 3, 'spells', 18), def(2, 4, 'greatswamp', 21),
   def(3, 0, 'shield', 12, '1'), def(3, 1, 'shield', 14, '2'), def(3, 2, 'shield', 16, '3'), def(3, 3, 'shield', 18, '3'), def(3, 4, 'wave', 14),
   def(4, 0, 'slope', 12, 'rocks'), def(4, 1, 'slope', 14, 'stumps'), def(4, 2, 'slope', 16, 'mix'), def(4, 3, 'slope', 18, 'mix'), def(4, 4, 'mole', 14),
   def(5, 0, 'junk', 12, 'tires'), def(5, 1, 'junk', 14, 'crates'), def(5, 2, 'junk', 14, 'mix'), def(5, 3, 'junk', 16, 'mix'), def(5, 4, 'knot', 6),
@@ -242,7 +243,7 @@ export function halfStarsFor(accuracy: number): number {
 
 const RESCUE_KINDS: { kind: LevelKind; world: number; variant: string; style?: Style }[] = [
   { kind: 'meadow', world: 0, variant: 'mix' }, { kind: 'space', world: 1, variant: 'mix' }, { kind: 'swamp', world: 2, variant: '' },
-  { kind: 'signs', world: 2, variant: '' }, { kind: 'shield', world: 3, variant: '3' }, { kind: 'slope', world: 4, variant: 'mix' },
+  { kind: 'crystals', world: 2, variant: '' }, { kind: 'shield', world: 3, variant: '3' }, { kind: 'slope', world: 4, variant: 'mix' },
   { kind: 'junk', world: 5, variant: 'mix' }, { kind: 'belt', world: 6, variant: 'mix' }, { kind: 'rain', world: 7, variant: '' },
   { kind: 'doors', world: 8, variant: '2' }, { kind: 'rooms', world: 9, variant: '' },
   { kind: 'buds', world: 10, variant: '' }, { kind: 'birds', world: 11, variant: '', style: 'dictation' }, { kind: 'lilies', world: 12, variant: '', style: 'memory' },

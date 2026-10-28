@@ -64,7 +64,7 @@ explosions, no punishment, no ads, no accounts.
 |---|---|---|---|
 | 1. Training Meadow | goalkeeper Tapko fans back the leaves bees, ladybugs and mice send him; a miss is a cheered goal | hedgehog throwing leaf volleys | invitation to space, meet Tapko |
 | 2. Rocket Flight | typing rhythm drives the speedometer, a beam pushes rocks away | splitting asteroid | landing clearance |
-| 3. New Planet | stepping stones across a swamp, road signs | cracking boulder | the Force |
+| 3. New Planet | stones across a swamp, crystals on the meadow, crossroads that change the road, spells for the crystals of life | the great swamp and a boulder | the Force |
 | 4. Dragon Valley | shield bubbles protect baby dragons | rhythm wave | a dragon egg |
 | 5. Egg Journey | the egg jumps over rocks and stumps | friendly mole | a baby dragon, endless rescue missions |
 

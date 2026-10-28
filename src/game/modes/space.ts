@@ -35,6 +35,7 @@ const DOCK_TIME = 0.5;
 /** The suit picture's collar as a share of its height: without the helmet only the suit below it is drawn. */
 const SUIT_NECK = 0.52;
 const GAUGE_R = 70;
+const HUB_R = 8;
 /**
  * The `strong` variant (level 3): the stream flows this much faster, and this share of the
  * meteors (never the first two) is stronger, glowing, with two lives: its word is typed twice.
@@ -389,9 +390,13 @@ export class SpaceMode extends ApproachMode {
     const docked = VH - (r + 14) / 2;
     const cx = ROCKET_X, cy = below + (docked - below) * ease.outCubic(slide);
     g.save();
+    // The dark half-disc, and under its flat edge small half-discs behind what reaches below it: the arc's round ends and the hub.
     g.fillStyle = 'rgba(20,16,50,0.55)';
     g.beginPath();
     g.arc(cx, cy, r + 14, Math.PI, 0);
+    g.arc(cx + r, cy, 14, 0, Math.PI);
+    g.arc(cx, cy, HUB_R + 4, 0, Math.PI);
+    g.arc(cx - r, cy, 14, 0, Math.PI);
     g.closePath();
     g.fill();
     const grad = g.createLinearGradient(cx - r, cy, cx + r, cy);
@@ -409,12 +414,16 @@ export class SpaceMode extends ApproachMode {
     g.arc(cx, cy, r, Math.PI, Math.PI + Math.PI * Math.max(0.02, this.speedShown));
     g.stroke();
     const a = Math.PI + Math.PI * this.speedShown;
-    g.strokeStyle = '#fff';
+    // A soft grey needle on a round hub, quieter than the arc.
+    g.strokeStyle = g.fillStyle = '#d3d6e2';
     g.lineWidth = 5;
     g.beginPath();
     g.moveTo(cx, cy);
     g.lineTo(cx + Math.cos(a) * (r - 18), cy + Math.sin(a) * (r - 18));
     g.stroke();
+    g.beginPath();
+    g.arc(cx, cy, HUB_R, 0, Math.PI * 2);
+    g.fill();
     g.restore();
   }
 }

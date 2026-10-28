@@ -231,7 +231,7 @@
     "rightPinky": "pravým malíčkom"
   },
   "posture": {
-    "title": "Pripraviť sa, pozor, píšeme!",
+    "title": "Dobrodružstvo v svete {world} pokračuje!",
     "back": "Seď rovno, chrbtom sa opri o stoličku.",
     "feet": "Obe chodidlá polož na zem.",
     "wrists": "Zápästia uvoľnené vo vzduchu, nie opreté o stôl.",
@@ -624,14 +624,14 @@
       "Fuu, kúzlo zhaslo. Tu je nové, pekne pomaly."
     ],
     "greatSwampStart": [
-      "Kolíska života je za veľkým močiarom. Kamene sú tu krehké: z pevného kameňa skáčeš štyri kamene. Keď sa pomýliš, kamene prasknú a vrátiš sa späť."
+      "Práve si dorazil k **Veľkému močiaru**. Voda je tu hlboká a kamene krehké. Vo vrecku máš našťastie kryštál života. Z pevného kameňa musíš **bez chyby preskočiť tri** ďalšie kamene, aby si sa znova dostal na pevný kameň. Ak sa pomýliš, môžeš to skúsiť znova. Všetci na planéte drakov dúfajú, že sa ti podarí umiestniť kryštály na monolit a rozžiariť planétu životom."
     ],
     "greatSwampSlip": "Kameň praská! Späť na pevný kameň.",
     "boulderStart": [
       "Cestu zatarasil balvan. Rozbi ho presnými slovami!"
     ],
     "cradleDone": [
-      "Kryštály života sú v Kolíske života. Planéta zase kvitne!"
+      "Kryštály života sú na monolite. Planéta zase kvitne!"
     ],
     "matchStart": [
       "Začína sa futbalový zápas! Zvieratká kopú listy ako loptu. Chytaj ich písmenami!"
@@ -646,7 +646,7 @@
     "world": {
       "meadow": "Na lúke je krásne popoludnie a poobede bude **futbalový zápas**! Zvieratká s tebou trénujú: kopú listy ako loptu a **ty si brankár**. Chytaj listy písmenami: **napíš slovo na liste** a list je tvoj.",
       "space": "Tri, dva, jeden... **štart!** Letíš preskúmať zopár planét až k **planéte drakov**. **Rytmus tvojho písania** poháňa raketu a jemný lúč odsúva meteority z cesty.",
-      "planet": "Vitaj na **planéte drakov**! Jej kryštál života stratil svetlo. Prejdi močiar a lúku, nájdi **kryštály života** a prebuď ich kúzlom. Potom ich odnes do Kolísky života. Tu je **presnosť dôležitejšia ako rýchlosť**.",
+      "planet": "Vitaj na **planéte drakov**! Jej kryštál života stratil svetlo. Prejdi močiar a lúku, nájdi **kryštály života** a prebuď ich kúzlom. Potom ich odnes k monolitu. Tu je **presnosť dôležitejšia ako rýchlosť**.",
       "dragons": "Do Dračieho údolia padajú **vesmírne kamene**. Každé slovo vytvorí pre dráčika **ochrannú bublinu**. Kamene sa len odrazia, nikomu sa nič nestane.",
       "egg": "Ojoj! **Vajíčko sa začína hýbať** a kotúľa sa dolu kopcom. Pomôž mu **preskočiť kamene a pníky**. Pozor na priateľského krtka!",
       "junkyard": "Ideš okolo starého šrotiska. **Pod kopou starých vecí niekto smutne pípa.** Napíš slovo a **jemný magnet** zdvihne haraburdu z kopy.",

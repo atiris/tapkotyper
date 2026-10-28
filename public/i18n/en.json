@@ -231,7 +231,7 @@
     "rightPinky": "right little finger"
   },
   "posture": {
-    "title": "Ready, steady, type!",
+    "title": "The adventure in {world} goes on!",
     "back": "Sit up straight, your back against the chair.",
     "feet": "Both feet flat on the floor.",
     "wrists": "Wrists relaxed and floating, not resting on the desk.",
@@ -624,14 +624,14 @@
       "Phew, the spell fizzled. Here is a new one, nice and slow."
     ],
     "greatSwampStart": [
-      "The Cradle of Life is behind the great swamp. The stones are fragile: from a firm stone you jump four stones. A slip cracks them and you go back."
+      "You have just reached the **Great Swamp**. The water is deep here and the stones are fragile. Luckily you have a crystal of life in your pocket. From a firm stone you must **jump three more stones without a slip** to reach a firm stone again. If you slip, you can try again. Everyone on the dragons' planet hopes you will set the crystals on the monolith and light the planet up with life."
     ],
     "greatSwampSlip": "The stone is cracking! Back to the firm one.",
     "boulderStart": [
       "A boulder blocks the way. Crack it with careful words!"
     ],
     "cradleDone": [
-      "The crystals of life are in the Cradle of Life. The planet blooms again!"
+      "The crystals of life are on the monolith. The planet blooms again!"
     ],
     "matchStart": [
       "The football match begins! The animals kick leaves like a ball. Catch them with letters!"
@@ -646,7 +646,7 @@
     "world": {
       "meadow": "It is a lovely afternoon on the meadow and there is a **football match** later! The animals train with you: they kick leaves like a ball and **you keep goal**. Catch the leaves with letters: **type the word on a leaf** and the leaf is yours.",
       "space": "Three, two, one... **lift off!** You fly off to explore a few planets, all the way to the **dragons' planet**. **Your typing rhythm** drives the rocket and a soft beam pushes meteors out of the way.",
-      "planet": "Welcome to the **dragons' planet**! Its crystal of life has lost its light. Cross the swamp and the meadow, find the **crystals of life** and wake them with a spell. Then carry them to the Cradle of Life. Here **careful typing matters more than speed**.",
+      "planet": "Welcome to the **dragons' planet**! Its crystal of life has lost its light. Cross the swamp and the meadow, find the **crystals of life** and wake them with a spell. Then carry them to the monolith. Here **careful typing matters more than speed**.",
       "dragons": "**Space rocks** are falling into the Dragon Valley. Every word makes a **shield bubble** for a baby dragon. The rocks just bounce away, nobody gets hurt.",
       "egg": "Oh! **The egg starts to wiggle** and roll down the hill. Help it **jump over rocks and stumps**. Watch out for a friendly mole!",
       "junkyard": "You walk past an old junkyard. **Someone is beeping sadly under a pile of old things.** Type a word and a **soft magnet** lifts the junk off the pile.",

@@ -161,7 +161,7 @@ gives you a wreath"), never about the character as someone else.
    next one cracks) and on the firm stone a new word comes. At the end a boulder
    blocks the way; slightly harder words crack it (a word with a slip counts half), it bursts,
    and as in level 1 stones come by themselves to the shore where the swamp ends. There the
-   **Cradle of Life** (a carved stone pedestal, not an altar) rises with a soft light above it;
+   **monolith** (a carved stone pedestal, not an altar) rises with a soft light above it;
    he puts the crystals of life on it, they float above it, glowing, and the planet blooms. Super-obstacle: the great swamp and the boulder. Reward: **the Force**, the crystals'
    thanks. The planet's own thing at the target range is a crystal.
 4. **Dragon Domain** - the Force and gentle shield fields divert falling space rocks away

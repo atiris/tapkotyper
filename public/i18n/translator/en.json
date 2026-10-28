@@ -268,7 +268,7 @@
     },
     "story-planet": {
       "title": "Lines of the Planet world",
-      "about": "Opening lines and bubbles of the Planet world's levels: the swamp, crystals on the meadow, crossroads with signposts, spells for the crystals of life and the great swamp with the Cradle of Life."
+      "about": "Opening lines and bubbles of the Planet world's levels: the swamp, crystals on the meadow, crossroads with signposts, spells for the crystals of life and the great swamp with the monolith."
     },
     "story-paths": {
       "title": "Paths at the planet's crossroads",
@@ -652,7 +652,7 @@
     "fingers.*": "A finger's name used inside a sentence, for example in Tapko's hint or on the new key card.",
     "guide.deadStep1": "Hint above the on-screen keyboard for an accented letter; {ch} is the letter, the accent key comes first.",
     "guide.deadStep2": "Hint above the on-screen keyboard after the accent key; {ch} is the letter to type now.",
-    "posture.title": "Heading of the sitting card shown before a level.",
+    "posture.title": "Heading of the get-ready card shown before a level. {world} is the name of the level's world.",
     "posture.back": "One of the sitting tips on the card before a level; one is picked at random.",
     "posture.feet": "One of the sitting tips on the card before a level; one is picked at random.",
     "posture.wrists": "One of the sitting tips on the card before a level; one is picked at random.",
@@ -789,7 +789,7 @@
     "story.greatSwampSlip": "Line when the child first slips away from the firm stone and the stones start to crack.",
     "story.boulderStart": "Line when a boulder blocks the way at the end of the great swamp; one is picked at random.",
     "story.boulderOpen": "Line on the planet when the boulder falls apart and the way is clear; one is picked at random.",
-    "story.cradleDone": "Line at the end of the Planet world when Tapko puts the crystals of life into the Cradle of Life; one is picked at random.",
+    "story.cradleDone": "Line at the end of the Planet world when Tapko puts the crystals of life on the monolith; one is picked at random.",
     "story.matchStart": "Opening line of the meadow's third level: the real football match begins.",
     "story.spaceStart": "Opening line of the rocket's first level: the flight to the first planet.",
     "story.waveCalm": "Line in Dragon Valley when the wave has calmed after all the words; one is picked at random.",

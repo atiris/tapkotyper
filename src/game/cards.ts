@@ -109,11 +109,12 @@ const POSTURE_PICTURES = ['ui-posture-boy', 'ui-posture-girl'];
  * panels side by side on a wide enough screen: on the left the technical part, a posture picture with
  * the session's preparation tip when one is due (else a posture reminder) under it, where the fingers
  * go (shown only after a while without the space bar) and a note on the run when one is due; on the
- * right under the title the story (`**phrase**` marks highlight) and the question of a parent's surprise asked in this
- * run (with what is still left when it counts), the space bar's drawing under them. The space bar, Enter or Escape (or a tap on the space
+ * right the title naming the `world` level with the close button, in the middle the story (`**phrase**` marks highlight)
+ * and the question of a parent's surprise asked in this run (with what is still left when it counts), the space bar's
+ * drawing always at the bottom. The space bar, Enter or Escape (or a tap on the space
  * bar's drawing or the close button) closes it and opens the adventure.
  */
-export function showPosture(host: HTMLElement, p: Profile, tip?: string, surprise?: Surprise | null, note?: string, story?: string | null): Promise<void> {
+export function showPosture(host: HTMLElement, p: Profile, world: string, tip?: string, surprise?: Surprise | null, note?: string, story?: string | null): Promise<void> {
   return new Promise((resolve) => {
     const close = () => {
       stop();
@@ -133,10 +134,11 @@ export function showPosture(host: HTMLElement, p: Profile, tip?: string, surpris
       note ? h('p', { class: 'hint style-note' }, note) : null);
     const card = h('div', { class: 'card posture-card' },
       closeButton(close, t('posture.close')),
-      h('h2', {}, t('posture.title')),
-      story ? h('p', { class: 'posture-text' }, ...richText(story)) : null,
-      surprise ? surpriseAsk(surprise.q) : null,
-      surprise ? surpriseLeft(p, surprise) : null,
+      h('h2', {}, t('posture.title', { world })),
+      h('div', { class: 'posture-body' },
+        story ? h('p', { class: 'posture-text' }, ...richText(story)) : null,
+        surprise ? surpriseAsk(surprise.q) : null,
+        surprise ? surpriseLeft(p, surprise) : null),
       space);
     const overlay = h('div', { class: 'overlay' }, h('div', { class: 'posture-cards' }, side, card));
     const timer = setTimeout(() => fingers.classList.remove('later'), FINGERS_AFTER_S * 1000);

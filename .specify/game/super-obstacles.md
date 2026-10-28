@@ -13,7 +13,7 @@ Each world ends with a bigger, special challenge:
 - **Great swamp and boulder** (planet): from a firm stone four jumps reach the next firm one;
   a slip on the way cracks the stones back to the firm stone, so accuracy is what moves him on.
   At the end a boulder cracks with precise words (a word with a slip counts half), and the
-  crystals of life go onto the Cradle of Life.
+  crystals of life go onto the monolith.
 - **Rolling energy wave** (dragons): countered by a rhythm sequence - short letter groups
   typed to a steady beat. Off-beat typing still counts, only less smoothly.
 - **Friendly mole** (egg journey): pops up unexpectedly with a short word that rewards a

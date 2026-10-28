@@ -9,18 +9,18 @@
   color, idle fingers faint); the finger that presses the key lifts and is fully opaque.
 - The guide fades as the child improves (per-key mastery) and can be shown or hidden by
   the child, or locked by the parent. Colors also carry a pattern or label (colorblind-safe).
-- "Ready, steady, type!" card before every adventure (story level, rescue, own practice)
+- "The adventure in <world> goes on!" card before every adventure (story level, rescue, own practice)
   and at breaks, the only card before a level apart from the key cards. Two panels side by side
   with a gap (one above the other on a narrow screen), no frames inside them: on the left a
   picture of good posture, a boy's or a girl's at random, with **one** line under it - the
   session's preparation tip when one is due, else one random reminder (sit straight, feet on
   the floor, wrists relaxed, index fingers on the `F` and `J` bumps, eyes on the screen); a
-  stretching tip says it is for a short break. On the right the title, under it the story in a
-  larger paragraph with its key phrases highlighted (the world's story the first time in a
+  stretching tip says it is for a short break. On the right the title on the line of the close
+  button, under it the story in a larger paragraph centered in the room left, with its key phrases highlighted (the world's story the first time in a
   world, else the level's: what happens and what to type, with what the level asks in
   particular, such as the main gate's whole code without a mistake), no instructions in it;
-  the story is not said again in a bubble when play starts. Under the story the space bar, a
-  drawn key. Under the picture, below its line, "Put your
+  the story is not said again in a bubble when play starts. At the bottom, however short the
+  story, the space bar, a drawn key. Under the picture, below its line, "Put your
   fingers on the home keys ASDF JKLÔ and press the space bar" (the keys of the child's layout)
   shows only when the space bar has not been pressed for 10 seconds, so a child who reads the
   story is not told twice; it keeps its room meanwhile, so nothing jumps. The space bar, Esc, a tap on the drawing or the round X (its tip says so) closes

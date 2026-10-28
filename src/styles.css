@@ -938,9 +938,11 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 /* Get-ready card: two panels side by side with a gap, how to sit on the left, the story and the space bar on the right. */
 .posture-cards { display: flex; gap: 1.2rem; align-items: stretch; width: 100%; max-width: 1080px; max-height: 100%; }
 .posture-side { flex: 0 1 400px; display: flex; flex-direction: column; justify-content: center; }
-.posture-card { flex: 1 1 0; max-width: none; display: flex; flex-direction: column; justify-content: center; gap: 1.6rem; }
-.posture-card h2 { margin: 0 48px; }
-.posture-text { font-size: 1.4rem; line-height: 1.5; margin: 0; text-align: left; text-wrap: pretty; }
+/* The title on the close button's line, the story in the middle of the room left, the space bar always at the bottom. */
+.posture-card { flex: 1 1 0; max-width: none; display: flex; flex-direction: column; gap: 1.6rem; padding-top: 0.7rem; }
+.posture-card h2 { margin: 0 48px; min-height: 44px; display: flex; align-items: center; justify-content: center; }
+.posture-body { flex: 1 0 auto; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 1.6rem; }
+.posture-text { font-size: 1.4rem; line-height: 1.5; margin: 0; text-align: center; text-wrap: pretty; }
 .posture-text strong { color: var(--brand-ink); }
 .posture-card .surprise { margin: 0; }
 .posture-side .hint { margin: 0.6rem 0 0; }

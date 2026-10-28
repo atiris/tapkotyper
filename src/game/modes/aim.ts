@@ -1,4 +1,5 @@
 import { app } from '../../app/app';
+import { fast } from '../../app/fast';
 import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
 import type { ParticleShape } from '../../engine/particles';
@@ -15,7 +16,7 @@ import { BURST_COLORS, Bags, type Burst, type Effect, type Eyes, STAY_WORLD_EVER
 import { HeroMode, sideFeet } from './planet';
 
 /** Seconds of play before the run ends with the throw in the air (staying a while has no end). */
-export const AIM_SECONDS = 120;
+export const AIM_SECONDS = fast(120);
 /** Wrong keys in one flight before the projectile falls. */
 export const FALL_ERRORS = 3;
 /** How much lower the path runs after each wrong key. */

@@ -449,7 +449,7 @@ const LIFE_H = 100;
 const FLOAT = 26;
 const BOB = 6;
 
-/** The Cradle of Life while its picture is missing. */
+/** The monolith while its picture is missing. */
 function cradleFallback(g: G, w: number, h: number): void {
   g.fillStyle = '#b8b0a4';
   g.fillRect(-w * 0.45, h * 0.3, w * 0.9, h * 0.18);
@@ -472,7 +472,7 @@ interface Crumb {
  * reaches the next firm one, where the view moves on. A slip on stone +1 to +3 cracks it: he jumps
  * back stone by stone, each stone behind him crumbles and the next one cracks, and on the firm stone
  * a new word comes. At the end a boulder blocks the way; precise words crack it, it bursts, stones
- * come by themselves, he crosses to the shore and puts the crystals of life on the Cradle of Life.
+ * come by themselves, he crosses to the shore and puts the crystals of life on the monolith.
  */
 export class GreatSwampMode extends SwampHero {
   readonly pictures = [...SWAMP_PICTURES, 'obj-swamp-stone-cracked', 'obj-swamp-stone-broken', 'obj-boulder-1', 'obj-boulder-2', 'obj-cradle', ...LIFE_CRYSTALS];
@@ -633,7 +633,7 @@ export class GreatSwampMode extends SwampHero {
     }
   }
 
-  /** After the boulder stones come over its place to the shore; there the Cradle of Life rises beside him. */
+  /** After the boulder stones come over its place to the shore; there the monolith rises beside him. */
   private cross(): void {
     this.crossing = true;
     this.toShore(this.base!.x, this.gap, () => {

@@ -69,13 +69,13 @@ veľké svetlé kryštály a malé zúbkované oranžové oblaky. Kryštály sú
    text, ktorý vydrží tri chyby (na paneli rastú tri hríbiky a pri každej chybe jeden zmizne);
    pri štvrtej sa kúzlo pokazí a príde iné. Každé podarené kúzlo rozžiari ďalší kryštál so
    zvolaním (Jupí, Zipp, Juchú). Keď svietia všetky tri, Tapko si ich vezme.
-5. **Veľký močiar a Kolíska života** - kryštály treba doniesť do **Kolísky života**, kamenného
-   podstavca, kde majú svoje miesto. Cesta vedie cez veľký močiar s krehkými kameňmi: z
+5. **Veľký močiar a monolit** - kryštály treba doniesť k **monolitu**, kamennému
+   podstavcu, kde majú svoje miesto. Cesta vedie cez veľký močiar s krehkými kameňmi: z
    pevného kameňa Tapko skáče tri kamene a štvrtým skokom dosiahne ďalší pevný. Keď sa
    pomýli, kameň pod ním praskne a Tapko ustupuje späť kameň po kameni, kým nie je na pevnom.
    Na konci cestu zatarasí balvan, ktorý rozbije presnými slovami. Potom sa samé objavia
-   kamene na breh, kde sa zdvihne Kolíska života a nad ňou jemné svetlo. Tapko do nej položí
-   kryštály života, tie sa nad ňou vznášajú a žiaria, a planéta zase kvitne.
+   kamene na breh, kde sa zdvihne monolit a nad ním jemné svetlo. Tapko naň položí
+   kryštály života, tie sa nad ním vznášajú a žiaria, a planéta zase kvitne.
 
 Koniec sveta: kryštály života Tapkovi ako poďakovanie darujú Silu (jemne pohybuje vecami,
 len písaním) a dráčiky v susednom údolí potrebujú pomoc.

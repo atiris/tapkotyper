@@ -10,6 +10,8 @@ import type { LevelRuntime } from './runtime';
  */
 export const TAPKO_X = 150;
 export const TAPKO_H = 265;
+/** Where the DOM Tapko's feet are when he stands on the stage's bottom edge (the template's feet are at 90 % of its height). */
+export const TAPKO_FEET = VH - TAPKO_H * 0.1;
 
 /** A background band that moves slowly on its own, so a scene that stands still feels alive. */
 export interface Drift {
@@ -27,6 +29,8 @@ export function driftOffset(drift: Drift | null, elapsed: number, motion: boolea
 export abstract class Mode {
   /** World background name. */
   abstract readonly world: string;
+  /** Where the DOM Tapko's feet are: on a path drawn higher than the bottom edge he stands on it. */
+  readonly tapkoFeet: number = TAPKO_FEET;
   /** Another set of the world's middle and near bands (`bg-<world><ground>-mid`), '' for the usual one. */
   readonly ground: string = '';
   /** The near layer's x where its band ends in the end piece (`bg-<world><ground>-near-end`), null where it goes on. */
@@ -88,7 +92,7 @@ export abstract class Mode {
   }
   /** Just above Tapko's head, where his shouts pop up: above the DOM Tapko unless the mode draws him. */
   heroSpot(): { x: number; y: number } {
-    return { x: TAPKO_X, y: VH - TAPKO_H - 40 };
+    return { x: TAPKO_X, y: this.tapkoFeet - TAPKO_H * 0.9 - 40 };
   }
   /** Where the tail of Tapko's bubble points, or null for the bubble's corner above the DOM Tapko. */
   bubbleSpot(): { x: number; y: number } | null {

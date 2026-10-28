@@ -28,7 +28,7 @@ import { OWN_SHARE, WordSource, type WordSourceOwn } from '../words/words';
 import { type LangRef, type Profile, SUPER_ID, type Surprise } from '../storage/schema';
 import type { LevelDef } from './levels';
 import { WORLDS, grownCount, hasMinLength, levelOver, minActiveS, shownProgress, storyOf } from './levels';
-import { type Mode, TAPKO_H, TAPKO_X, driftOffset } from './mode';
+import { type Mode, TAPKO_FEET, TAPKO_H, TAPKO_X, driftOffset } from './mode';
 import { PAW_MAX, PAW_STREAK, PAW_WORDS } from './paw';
 import { ENTER_MAX, EnterMarks } from './enter';
 import { createMode } from './modes';
@@ -1351,6 +1351,7 @@ export class LevelRuntime {
     this.tapkoPx = px;
     this.tapko.style.setProperty('--size', `${px}px`);
     this.tapko.style.left = `${Math.round((TAPKO_X - TAPKO_H / 2) * k)}px`;
+    this.tapko.style.bottom = `${Math.round((TAPKO_FEET - this.mode.tapkoFeet) * k)}px`;
   }
 
   private tapkoPx = 0;

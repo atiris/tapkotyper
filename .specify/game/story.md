@@ -102,8 +102,8 @@ gives you a wreath"), never about the character as someone else.
    calm blue-green water with mossy islands, reeds and a willow (levels 1 and 5), and a meadow of
    open grass with a few trees and mushroom trees and a sandy path in front with about five small
    crystals and mushrooms along its upper edge per screen (levels 2 to 4 and the side
-   activities). The closer bands sit high enough that much of them shows, with plain ground under
-   the path. Tapko is as big as on the meadow; the word he types is well above his head, never
+   activities). On the meadow Tapko stands in the middle of the path in every level and side
+   activity; the molehills stand on the path too. Tapko is as big as on the meadow; the word he types is well above his head, never
    over him or touching it.
    1 the swamp after the landing (waiting words, a calm minute): one word at a time above him,
    a ring on the water where the next stone comes; typed, the stone is there and he jumps onto

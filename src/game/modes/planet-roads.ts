@@ -1,11 +1,10 @@
 import { pickLine } from '../../app/app';
-import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
 import { sprite } from '../../gfx/assets';
 import { drawSprite, fontFamily, type G } from '../../gfx/draw';
 import { t, tList } from '../../i18n/i18n';
 import type { Target } from '../typing';
-import { HeroMode, wordAbove } from './planet';
+import { HeroMode, PATH_FEET, wordAbove } from './planet';
 import { TAPKO_H } from '../mode';
 
 /**
@@ -113,8 +112,8 @@ const END_TIME = 1.8;
 const NAME_SIZE = 22;
 /** On a road his word floats well above his head, clear of the signposts' arrows. */
 const ROAD_WORD_UP = 30;
-/** He and the posts stand in the middle of the path, not at its lower edge. */
-const FEET = VH * 0.8;
+/** He and the posts stand in the middle of the path. */
+const FEET = PATH_FEET;
 const NAME_INK = '#3a2614';
 /** Most signs at once (five places, one is his); the first crossroads has three. */
 const SIGNS_MAX = 4;

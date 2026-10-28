@@ -6,7 +6,7 @@ import { t } from '../../i18n/i18n';
 import { WORLDS } from '../levels';
 import type { LevelRuntime } from '../runtime';
 import { TypedLine } from '../typed-line';
-import { HeroMode } from './planet';
+import { HeroMode, sideFeet } from './planet';
 
 /** Tapko's walking speed (background units per second) and the seconds of his hop at a key. */
 const WALK = 28;
@@ -34,6 +34,8 @@ const GROUND = VH * 0.97;
  */
 export class FreeTypeMode extends HeroMode {
   readonly world: string;
+  /** Where he stands in this world. */
+  private readonly ground0: number;
   private line = new TypedLine();
   private shown: { text: string; age: number } | null = null;
   /** Seconds since the hop or trick began. */
@@ -44,11 +46,12 @@ export class FreeTypeMode extends HeroMode {
   constructor(L: LevelRuntime) {
     super(L);
     this.world = WORLDS[L.def.world];
+    this.ground0 = sideFeet(this.world, GROUND);
   }
 
   start(): void {
     this.heroX = HOME_X;
-    this.heroY = GROUND;
+    this.heroY = this.ground0;
     this.keysToTrick = this.nextTrickIn();
   }
 
@@ -104,7 +107,7 @@ export class FreeTypeMode extends HeroMode {
     // He starts where Tapko stands in other levels, under the bubble, and strolls from there into the left
     // part of the stage and back, on the ground and only a little farther away.
     this.heroX = HOME_X + (this.L.vw * 0.38 - HOME_X) * (1 - Math.cos(this.t * 0.25)) / 2;
-    this.heroY = GROUND - VH * 0.02 * (1 - Math.cos(this.t * 0.17)) / 2;
+    this.heroY = this.ground0 - VH * 0.02 * (1 - Math.cos(this.t * 0.17)) / 2;
     this.hopT += dt;
     const len = this.length();
     this.jump = this.hopT < len ? this.hopT / len : 0;

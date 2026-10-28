@@ -7,7 +7,8 @@ import type { Profile } from '../../storage/schema';
 import { WordSource } from '../../words/words';
 import { BEAT_S, FLAP } from '../../ui/parrot-visit';
 import { STORIES, WORLDS, parrotKeys, parrotSizeOf, storyOf } from '../levels';
-import { Mode, TAPKO_X } from '../mode';
+import { Mode, TAPKO_FEET, TAPKO_X } from '../mode';
+import { sideFeet } from './planet';
 import { ParrotRound, parrotPatience } from '../parrots';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
@@ -77,6 +78,7 @@ interface Flight {
 export class ParrotMode extends Mode {
   readonly pictures = ['ui-act-parrot', 'obj-parrot-perch', ...new Set(FLAP)];
   readonly world: string;
+  readonly tapkoFeet: number;
   readonly phraseWords = 1;
   readonly midOnly = true;
   readonly round: ParrotRound;
@@ -97,6 +99,7 @@ export class ParrotMode extends Mode {
   constructor(L: LevelRuntime) {
     super(L);
     this.world = WORLDS[L.def.world];
+    this.tapkoFeet = sideFeet(this.world, TAPKO_FEET);
     this.round = new ParrotRound(parrotWords(app.profile!, L.def.world), parrotSizeOf(L.def.world).repeats);
     this.patience = parrotPatience(STORIES.indexOf(storyOf(L.def.world)));
   }
@@ -113,9 +116,14 @@ export class ParrotMode extends Mode {
     return this.L.vw - Math.max(130, this.L.vw * 0.14);
   }
 
+  /** The perch's foot: on the ground beside Tapko, as high as his feet. */
+  private get perchFoot(): number {
+    return GROUND_Y + this.tapkoFeet - TAPKO_FEET;
+  }
+
   /** Where the parrot's claws hold the perch's bar. */
   private get clawY(): number {
-    return GROUND_Y - PERCH_H * (1 - BAR_Y);
+    return this.perchFoot - PERCH_H * (1 - BAR_Y);
   }
 
   private next(): void {
@@ -204,7 +212,7 @@ export class ParrotMode extends Mode {
     const size = Math.max(WORD_SIZE, 44 / this.L.stage.scale);
     const x = (TAPKO_X + this.parrotX) / 2, y = VH * 0.36;
     if (this.current) this.L.label(g, this.current, x, y + (1 - this.pop) * 12, size);
-    drawSprite(g, 'obj-parrot-perch', this.parrotX, GROUND_Y, PERCH_H, { ax: 0.5, ay: 1 });
+    drawSprite(g, 'obj-parrot-perch', this.parrotX, this.perchFoot, PERCH_H, { ax: 0.5, ay: 1 });
     this.drawParrot(g);
   }
 

@@ -76,8 +76,12 @@ export abstract class HeroMode extends Mode {
   }
 }
 
-/** Where the meadow's DOM Tapko has his feet; the planet's Tapko on the canvas stands there too. */
+/** Where the meadow's DOM Tapko has his feet. */
 export const FEET = VH - TAPKO_H * 0.1;
+/** On the planet's meadow he walks in the middle of the path, which the near band draws at this height. */
+export const PATH_FEET = VH * 0.89;
+/** Where Tapko stands in a world's side activity (the target range, the parrot, free typing): on the planet's path, else at `ground`. */
+export const sideFeet = (world: string, ground: number): number => (world === 'planet' ? PATH_FEET : ground);
 /** His feet on a stepping stone in the swamp, a bit higher, so the stone fits under them. */
 const SWAMP_FEET = VH * 0.85;
 /** The word to type is above his head. */

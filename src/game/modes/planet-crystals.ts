@@ -4,6 +4,7 @@ import { ease } from '../../engine/tween';
 import { drawSprite, fontFamily, type G, wordBox } from '../../gfx/draw';
 import { t } from '../../i18n/i18n';
 import { Mode, TAPKO_H, TAPKO_X } from '../mode';
+import { PATH_FEET } from './planet';
 import type { Target } from '../typing';
 
 /** The three kinds of crystal, each with its cracked picture, and their colors while the pictures are missing. */
@@ -13,6 +14,8 @@ const MOUNDS = ['obj-mound-1', 'obj-mound-2'];
 /** A big crystal shows about 30 % of Tapko's height above its mound; a mound's height. */
 const CRYSTAL_H = 114;
 const MOUND_H = 72;
+/** The molehills start this far from the stage's left edge, right of Tapko. */
+const MOUND_LEFT = TAPKO_X + 200;
 /** Seconds a crystal grows, flies into the pocket, lies cracked before it is gone, and a mound rests after. */
 const GROW = 2.6;
 const FLY = 0.7;
@@ -86,7 +89,10 @@ interface Crystal {
 }
 
 interface Mound {
+  /** Its place on the stage, from its share of the room right of Tapko (kept when the stage is resized) and a little jitter. */
   x: number;
+  share: number;
+  jitter: number;
   /** Its bottom. */
   y: number;
   pic: string;
@@ -103,6 +109,7 @@ interface Mound {
  * one grows there. Tapko wants as many as he can get: the end says how many he has.
  */
 export class CrystalsMode extends Mode {
+  readonly tapkoFeet = PATH_FEET;
   readonly pictures = [...CRYSTALS, ...CRYSTALS.map((c) => `${c}-cracked`), ...MOUNDS];
   readonly world = 'planet';
   private mounds: Mound[] = [];
@@ -116,12 +123,17 @@ export class CrystalsMode extends Mode {
 
   start(): void {
     const r = this.L.rng;
-    const left = TAPKO_X + 200, right = this.L.vw - 90;
-    const n = Math.max(3, Math.min(5, Math.floor((right - left) / 190) + 1));
+    const n = Math.max(3, Math.min(5, Math.floor((this.L.vw - 90 - MOUND_LEFT) / 190) + 1));
     for (let i = 0; i < n; i++) {
-      const x = left + ((right - left) * i) / (n - 1) + r.range(-18, 18);
-      this.mounds.push({ x, y: VH * r.range(0.9, 0.98), pic: r.pick(MOUNDS), flip: r.chance(0.5), crystal: null, rest: r.range(0, 1.5) });
+      this.mounds.push({ x: 0, share: i / (n - 1), jitter: r.range(-18, 18), y: PATH_FEET + r.range(4, 24), pic: r.pick(MOUNDS), flip: r.chance(0.5), crystal: null, rest: r.range(0, 1.5) });
     }
+    this.place();
+  }
+
+  /** The molehills spread over the room right of Tapko as the stage is now. */
+  private place(): void {
+    const right = this.L.vw - 90;
+    for (const m of this.mounds) m.x = MOUND_LEFT + (right - MOUND_LEFT) * m.share + m.jitter;
   }
 
   /** Where the crystal's foot is: in the molehill's hollow near its top, so the heap covers it. */
@@ -135,6 +147,7 @@ export class CrystalsMode extends Mode {
   }
 
   update(dt: number): void {
+    this.place();
     for (const m of this.mounds) {
       m.rest = Math.max(0, m.rest - dt);
       const c = m.crystal;
@@ -147,7 +160,7 @@ export class CrystalsMode extends Mode {
       } else if ((c.t += dt) >= (c.state === 'fly' ? FLY : CRACKED)) {
         m.crystal = null;
         m.rest = REST;
-        if (c.state === 'fly') this.L.particles.emit(TAPKO_X + 30, VH - TAPKO_H * 0.4, 8, 'sparkle', ['#fff6a8', CRYSTAL_COLOR[c.pic]], 90, 6);
+        if (c.state === 'fly') this.L.particles.emit(TAPKO_X + 30, this.tapkoFeet - TAPKO_H * 0.3, 8, 'sparkle', ['#fff6a8', CRYSTAL_COLOR[c.pic]], 90, 6);
       }
     }
     this.L.core.prune();
@@ -208,7 +221,7 @@ export class CrystalsMode extends Mode {
     if (c.state === 'fly') {
       // In an arc into Tapko's pocket, shrinking.
       const k = ease.inOutQuad(Math.min(1, c.t / FLY));
-      const tx = TAPKO_X + 30, ty = VH - TAPKO_H * 0.4;
+      const tx = TAPKO_X + 30, ty = this.tapkoFeet - TAPKO_H * 0.3;
       const x = c.from!.x + (tx - c.from!.x) * k, y = c.from!.y + (ty - c.from!.y) * k - Math.sin(k * Math.PI) * 140;
       return drawSprite(g, c.pic, x, y, CRYSTAL_H * (1 - 0.7 * k), { rot: c.rot + k * 3, flip: c.flip }, fall);
     }
@@ -360,6 +373,7 @@ const SHAKE_TIME = 0.4;
  * three glow, they fly to Tapko and the level ends.
  */
 export class SpellMode extends Mode {
+  readonly tapkoFeet = PATH_FEET;
   readonly pictures = [...CRYSTALS, 'obj-mound-2'];
   readonly world = 'planet';
   readonly phraseWords = 1;
@@ -479,7 +493,7 @@ export class SpellMode extends Mode {
 
   /** The molehill's foot on the right. */
   private crystal(): { x: number; y: number } {
-    return { x: this.L.vw - 150, y: VH * 0.95 };
+    return { x: this.L.vw - 150, y: PATH_FEET + 14 };
   }
 
   /** The spell panel between Tapko and the crystals. */
@@ -559,7 +573,7 @@ export class SpellMode extends Mode {
     // They rise out of the molehill and fly to Tapko, shrinking.
     const k = ease.inOutQuad(Math.min(1, this.take / TAKE));
     if (k < 1) {
-      const fx = c.x, fy = c.y - LIFE_MOUND_H * 0.55, tx = TAPKO_X + 30, ty = VH - TAPKO_H * 0.35;
+      const fx = c.x, fy = c.y - LIFE_MOUND_H * 0.55, tx = TAPKO_X + 30, ty = this.tapkoFeet - TAPKO_H * 0.25;
       drawLifeCrystals(g, fx + (tx - fx) * k, fy + (ty - fy) * k - Math.sin(k * Math.PI) * 120, LIFE_SIZE * (1 - 0.8 * k), lit);
     }
     drawSprite(g, 'obj-mound-2', c.x, c.y, LIFE_MOUND_H, { ay: 1 }, moundFallback);

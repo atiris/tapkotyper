@@ -352,18 +352,18 @@ function translatorPage(screen: HTMLElement): () => void {
     else if (item.kind === 'plural') {
       const forms = lookup(sample.dict, item.key) as Record<string, string> | undefined;
       rows.push(h('div', { class: 'tr-forms' }, h('span', { class: 'tr-forms-label hint' }, tr('sampleForms', { name: sample.name })),
-        ...Object.values(forms ?? {}).map((s) => h('span', { class: 'tr-chip', lang: sample.code, translate: 'no' }, s))));
+        ...Object.values(forms ?? {}).map(chip)));
       for (const f of mine) {
         const n = formExample(target!.code, f.form!);
         rows.push(h('div', { class: 'tr-var' }, h('span', { class: 'tr-form hint' }, tr('form', { form: f.form!, n: n ?? '' })), fieldEl(f, textIn(sample, f))));
       }
     } else if (!target) {
       const v = lookup(sample.dict, item.key);
-      rows.push(...(Array.isArray(v) ? v : [String(v ?? '')]).map((s) => h('div', { class: 'tr-var' }, h('span', { class: 'tr-chip', lang: sample.code, translate: 'no' }, s))));
+      rows.push(...(Array.isArray(v) ? v : [String(v ?? '')]).map((s) => h('div', { class: 'tr-var' }, chip(s))));
     } else {
       for (const f of mine) {
         const text = sourceValue(sample, f);
-        rows.push(h('div', { class: 'tr-var' }, text ? h('span', { class: 'tr-chip', lang: sample.code, translate: 'no' }, text) : null, chipsOf(text), fieldEl(f, text),
+        rows.push(h('div', { class: 'tr-var' }, text ? chip(text) : null, fieldEl(f, text),
           item.kind === 'pool' && mine.length > 1 ? h('button', { class: 'tr-remove', type: 'button', 'aria-label': tr('removeVariant'), tip: tr('removeVariant'), onClick: () => {
             removeVariant(target!, item.key, f.index!, structure);
             refreshItem(box, item);
@@ -390,11 +390,9 @@ function translatorPage(screen: HTMLElement): () => void {
     if (focusLast) [...box.querySelectorAll<HTMLTextAreaElement>('.tr-field')].at(-1)?.focus();
   }
 
-  /** The placeholders of the sample text, as chips. */
-  function chipsOf(text: string): HTMLElement | null {
-    const ph = placeholders(text);
-    return ph.length ? h('span', { class: 'tr-ph' }, h('span', { class: 'hint' }, tr('placeholders')), ...ph.map((p) => h('code', { translate: 'no' }, p))) : null;
-  }
+  /** A sample text, its placeholders (`{name}`, kept as they are in the translation) marked in it. */
+  const chip = (text: string) => h('span', { class: 'tr-chip', lang: sample.code, translate: 'no' },
+    ...text.split(/(\{\w+\})/).map((part, i) => (i % 2 ? h('code', { class: 'tr-ph' }, part) : part)).filter((x) => x !== ''));
 
   /** A field's text in a language; a plural form the language lacks shows its "other". */
   const textIn = (src: Source, f: Field) => sourceValue(src, f) || (f.kind === 'form' ? sourceValue(src, { ...f, form: 'other' }) : '');

@@ -57,13 +57,13 @@
 - **Progress**: a round button with the percentage of translated fields, per section in the
   contents too; a click goes to the next untranslated field. "Only untranslated" folds finished
   panels to one line; a search finds a text by base text, translation or key.
-- Placeholders (`{name}`) of the sample text show as chips under it, "keep in the translation,
-  the game fills them in"; a translation missing one or adding
+- Placeholders (`{name}`) are marked inside the sample text; a translation missing one or adding
   an unknown one gets a warning (it is still saved).
-- **Export**: a pair file (`.txt`, the sample language beside the translation) of everything, of only the untranslated fields (for an AI
-  translator), or of only the changes against the corrected language; or a `.json` file.
-  **Import** of both shows what will be applied and what is skipped, and why, before it
-  applies. Importing without a translation chosen starts the language from the file.
+- **Export**: a pair file (`.txt`, the sample language beside the translation) of everything, of
+  only the untranslated fields (for an AI translator), or of only the changes against the
+  corrected language; or a `.json` file. **Import** of both shows what will be applied and what
+  is skipped, and why, before it applies. Importing without a translation chosen starts the
+  language from the file.
 - **About the translation**: the author's name and contact (the contact becomes public when
   sent), name, code, keyboard, delete.
 - **Send for approval**: after a note that the issue is public, needs a GitHub account and

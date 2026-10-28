@@ -25,7 +25,7 @@ gives you a wreath"), never about the character as someone else.
    rise with it step by step and reach its height just as it arrives, so they always catch it: in the middle band when it was typed before the kick or kicked up there,
    else at its own height. The caught leaf fades away in the gloves, and its creature turns
    and goes home. The intro scene and the level's start line tell exactly this, and the get-ready
-   card of every story level shows the level's one-line story under its title. A leaf not typed in time flies past: a goal, everybody cheers (a "GOAL!" pop,
+   card of every story level shows the level's story under its title. A leaf not typed in time flies past: a goal, everybody cheers (a "GOAL!" pop,
    confetti and the creature's joy before it leaves, but no words from the narrator, which would nag), so a miss is
    a laugh, not a failure. The leaf size shows the word length at a glance. Animals are
    never the target of anything (no webs, nets or swatters): even soft hitting or catching

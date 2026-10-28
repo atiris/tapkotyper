@@ -558,7 +558,7 @@
     "posture.wrists": "One of the sitting tips on the card before a level; one is picked at random.",
     "posture.home": "One of the sitting tips on the card before a level; one is picked at random.",
     "posture.eyes": "One of the sitting tips on the card before a level; one is picked at random.",
-    "posture.space": "Line on the card before a level and the label of the big space bar that starts the game.",
+    "posture.space": "Line above the big space bar on the card before a level; it shows only after 10 seconds without the space bar. {keys} are the home row keys of the keyboard (ASDF JKL;).",
     "posture.spaceKey": "Text on the drawn space bar on the card before a level.",
     "posture.close": "Tooltip of the close button on the card before a level; closes it and starts play.",
     "newKey.title": "Heading of the new key card, next to the big key.",

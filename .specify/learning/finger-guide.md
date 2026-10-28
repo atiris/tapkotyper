@@ -10,18 +10,18 @@
 - The guide fades as the child improves (per-key mastery) and can be shown or hidden by
   the child, or locked by the parent. Colors also carry a pattern or label (colorblind-safe).
 - "Ready, steady, type!" card before every adventure (story level, rescue, own practice)
-  and at breaks: a picture of good posture on the left and **one** line - the session's preparation
-  tip when one is due, else one random reminder (sit straight, feet on the floor, wrists
-  relaxed, index fingers on the `F` and `J` bumps, eyes on the screen). The level's story line
-  (what happens and what to type, in two short sentences) and the tip form one paragraph, set
-  apart from the title and centred in the room above what to press, which always sits at the
-  bottom; no part of it is highlighted, and every tip reads as a sentence of its own after the
-  story (a stretching tip says it is for a short break). The card is wide enough that a
-  sentence does not leave a single word on its last line. It asks the child
-  to put the fingers on the home keys and press the space bar, shown as a drawn key; the
-  space bar, Esc, a tap on the drawing or the round X (its tip says so) closes it and starts:
-  the card is only a reminder, so every way out of it is the start. It is the only card
-  before a level, apart from new keys.
+  and at breaks, the only card before a level apart from new keys: a picture of good posture
+  on the left with **one** line under it - the session's preparation tip when one is due, else
+  one random reminder (sit straight, feet on the floor, wrists relaxed, index fingers on the
+  `F` and `J` bumps, eyes on the screen); a stretching tip says it is for a short break. On the
+  right under the title the level's story in a larger paragraph (what happens and what to
+  type, with what the level asks in particular, such as the main gate's whole code without a
+  mistake), no instructions in it; the story is not said again in a bubble when play starts.
+  At the bottom the space bar, a drawn key. The line above it ("Put your fingers on the home
+  keys ASDF JKLÔ and press the space bar", with the keys of the child's layout) shows only when
+  the space bar has not been pressed for 10 seconds, so a child who reads the story is not
+  told twice. The space bar, Esc, a tap on the drawing or the round X (its tip says so) closes
+  it and starts: the card is only a reminder, so every way out of it is the start.
 - A new key is introduced on its own card, compact enough to keep the keyboard in sight: the
   character large in a column of its own on the left, the key and "Nový kláves" in one heading
   line on the right, the finger's name highlighted in that finger's color. The finger line says
@@ -48,6 +48,8 @@
   ([research](../../.research/features/on-screen-keyboard-finger-guide.md)).
 - Enter comes rarely and is no lesson key, so the guide alone shows its finger; a new-key
   card for it would stop play for a key that does not open anything.
+- Several cards and the same story in a bubble right after the card were too many pop-ups
+  before play; one card says it all, and the finger line comes only to a child who waits.
 - Good habits (posture, hand position) are easier to build at the start than to fix
   later; short varied tips remind the child without a boring lecture.
 - A list of five rules gets skipped; one reminder plus a tiny typing task gets read, and

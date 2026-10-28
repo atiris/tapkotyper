@@ -558,7 +558,7 @@
     "posture.wrists": "Jedna z rád o sedení na kartičke pred úrovňou; vyberie sa náhodne.",
     "posture.home": "Jedna z rád o sedení na kartičke pred úrovňou; vyberie sa náhodne.",
     "posture.eyes": "Jedna z rád o sedení na kartičke pred úrovňou; vyberie sa náhodne.",
-    "posture.space": "Veta pod obrázkom na kartičke pred úrovňou a popis veľkého medzerníka, ktorým sa hra začne.",
+    "posture.space": "Veta nad veľkým medzerníkom na kartičke pred úrovňou; ukáže sa až po 10 sekundách bez medzerníka. {keys} sú klávesy základného radu podľa klávesnice (ASDF JKLÔ).",
     "posture.spaceKey": "Nápis na nakreslenom medzerníku na kartičke pred úrovňou.",
     "posture.close": "Popis tlačidla zavrieť na kartičke pred úrovňou; zavrie ju a začne hru.",
     "newKey.title": "Nadpis karty s novým klávesom, vedľa veľkého písmena klávesu.",

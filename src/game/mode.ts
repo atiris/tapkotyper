@@ -53,17 +53,13 @@ export abstract class Mode {
 
   constructor(protected L: LevelRuntime) {}
 
-  /** A card shown once before play starts, else null. */
+  /** What the level asks in particular, after its story on the get-ready card, else null. */
   intro(): string | null {
     return null;
   }
-  /** The level's story in one line, said when play starts and shown on the get-ready card; null without one. */
+  /** The level's story in one line, shown on the get-ready card; null without one. */
   startLine(): string | null {
     return null;
-  }
-  /** Seconds the start line stays at least. */
-  startSeconds(): number {
-    return 3;
   }
   /** Extra HUD content of the mode (next to the title), else null. */
   hud(): HTMLElement | null {

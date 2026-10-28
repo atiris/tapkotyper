@@ -135,10 +135,6 @@ export class SpaceMode extends ApproachMode {
     return this.L.def.variant === 'asteroids' ? pickLine('story.spaceStart') : null;
   }
 
-  startSeconds(): number {
-    return this.strong ? 6 : 3;
-  }
-
   protected speedFor(word: string, startX: number): number {
     return super.speedFor(word, startX) * (this.strong ? STRONG_PACE : 1);
   }
@@ -441,10 +437,6 @@ export class AsteroidMode extends SpaceMode {
 
   startLine(): string {
     return pickLine('story.asteroidStart');
-  }
-
-  startSeconds(): number {
-    return 5;
   }
 
   update(dt: number): void {

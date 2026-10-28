@@ -1128,6 +1128,18 @@
    "w": 337,
    "h": 384
   },
+  "obj-life-crystal-amber": {
+   "w": 118,
+   "h": 384
+  },
+  "obj-life-crystal-aqua": {
+   "w": 125,
+   "h": 384
+  },
+  "obj-life-crystal-rose": {
+   "w": 147,
+   "h": 384
+  },
   "obj-lily": {
    "w": 384,
    "h": 312
@@ -1166,6 +1178,10 @@
   },
   "obj-mushroom-aqua": {
    "w": 195,
+   "h": 384
+  },
+  "obj-mushroom-brown": {
+   "w": 288,
    "h": 384
   },
   "obj-mushroom-gold": {

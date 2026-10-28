@@ -1,6 +1,6 @@
 import { audio } from '../audio/audio';
 import { t, tMap } from '../i18n/i18n';
-import { type Layout, enterAfter, homeKey } from '../keyboard/layouts';
+import { type Finger, LAYOUTS, type Layout, enterAfter, homeKey } from '../keyboard/layouts';
 import { layout } from '../app/app';
 import type { Profile, Surprise } from '../storage/schema';
 import { surpriseCount } from './own-content';
@@ -90,41 +90,55 @@ export function pickTip(p: Profile, style: Style = 'copy'): { id: string; text: 
 
 const POSTURE_TIPS = ['back', 'feet', 'wrists', 'home', 'eyes'];
 
-/** Good posture picture with one line: the given tip, else one random posture reminder (one is read, a list is skipped). */
-/** The posture picture and a tip (or `line`); before a story level `story` tells what the level is about. */
-export function postureContent(line?: string, story?: string | null): HTMLElement {
+/** Seconds without the space bar before the card says where the fingers go. */
+const FINGERS_AFTER_S = 10;
+
+/** The home keys of the layout as the child sees them on the keyboard: `ASDF JKLÔ`. */
+function homeKeys(lay: Layout): string {
+  const keys = (fingers: Finger[]) => fingers.map((f) => homeKey(lay, f) ?? '').join('').toUpperCase();
+  return `${keys([0, 1, 2, 3])} ${keys([6, 7, 8, 9])}`;
+}
+
+/** The posture picture with one line under it (the given tip, else a random posture reminder), and beside them the level's story when it has one. */
+function postureContent(line?: string, story?: string | null): HTMLElement {
   const src = imageUrl('ui-posture');
   const tip = POSTURE_TIPS[Math.floor(Math.random() * POSTURE_TIPS.length)];
   return h('div', { class: 'posture' },
     h('h2', {}, t('posture.title')),
-    src ? h('img', { class: 'posture-img', src, alt: '' }) : h('div', { class: 'posture-img', html: postureSvg() }),
-    // The story and the tip read as one paragraph, apart from the title and from what to press.
-    h('p', { class: 'posture-text' }, story ? `${story} ` : null, line ?? t(`posture.${tip}`)));
+    h('figure', { class: 'posture-pic' },
+      src ? h('img', { class: 'posture-img', src, alt: '' }) : h('div', { class: 'posture-img', html: postureSvg() }),
+      h('figcaption', { class: 'posture-tip' }, line ?? t(`posture.${tip}`))),
+    story ? h('p', { class: 'posture-text' }, story) : null);
 }
 
 /**
- * Get-ready card before every adventure, with the level's story line when it has one, the session's preparation tip when one is due
- * and the question of a parent's surprise asked in this run (with what is still left when it
- * counts) and a note on the run when one is due; the space bar, Enter or Escape (or a tap on the
- * space bar's drawing or the close button) closes it and opens the adventure.
+ * Get-ready card before every adventure, the only one before a level apart from new keys: the
+ * level's story when it has one, the session's preparation tip when one is due (else a posture
+ * reminder) under the picture, the question of a parent's surprise asked in this run (with what
+ * is still left when it counts) and a note on the run when one is due. Where the fingers go shows
+ * above the space bar only after a while without it. The space bar, Enter or Escape (or a tap on
+ * the space bar's drawing or the close button) closes it and opens the adventure.
  */
 export function showPosture(host: HTMLElement, p: Profile, tip?: string, surprise?: Surprise | null, note?: string, story?: string | null): Promise<void> {
   return new Promise((resolve) => {
     const close = () => {
       stop();
+      clearTimeout(timer);
       overlay.remove();
       resolve();
     };
-    const space = h('button', { class: 'space-key', type: 'button', 'aria-label': t('posture.space'), onClick: close }, t('posture.spaceKey'));
+    const space = h('button', { class: 'space-key', type: 'button', 'aria-label': t('posture.spaceKey'), onClick: close }, t('posture.spaceKey'));
+    const fingers = h('p', { class: 'space-label later' }, t('posture.space', { keys: homeKeys(LAYOUTS[p.layout]) }));
     const card = h('div', { class: 'card posture-card' },
       closeButton(close, t('posture.close')),
       postureContent(tip, story),
       surprise ? surpriseAsk(surprise.q) : null,
       surprise ? surpriseLeft(p, surprise) : null,
       note ? h('p', { class: 'hint style-note' }, note) : null,
-      h('p', { class: 'space-label' }, t('posture.space')),
+      fingers,
       space);
     const overlay = h('div', { class: 'overlay' }, card);
+    const timer = setTimeout(() => fingers.classList.remove('later'), FINGERS_AFTER_S * 1000);
     const onKey = (e: KeyboardEvent) => {
       if (e.repeat || (e.key !== ' ' && e.key !== 'Enter' && e.key !== 'Escape')) return;
       e.preventDefault();

@@ -456,17 +456,13 @@ export class LevelRuntime {
     this.core.style = this.style;
     this.words.heard = this.dictating;
     this.paintRead();
-    this.storyLine = this.mode.startLine();
-    if (!this.opts.keys) await showPosture(host, p, tip, this.surprise, voiceNote, this.storyLine);
-    if (this.disposed) return;
-    const intro = this.mode.intro();
-    if (intro) await showCard(host, h('p', {}, intro), { button: t('common.ok'), cls: 'mode-intro' });
+    // The level's story and what it asks in particular, both on the one get-ready card.
+    const story = [this.mode.startLine(), this.mode.intro()].filter(Boolean).join(' ') || null;
+    if (!this.opts.keys) await showPosture(host, p, tip, this.surprise, voiceNote, story);
     if (this.disposed) return;
     this.begin();
   }
 
-  /** The level's story line, picked once for the get-ready card and the first bubble. */
-  private storyLine: string | null = null;
   /** When play began (`performance.now()`). */
   private begunAt = 0;
 
@@ -477,7 +473,6 @@ export class LevelRuntime {
     this.begunAt = performance.now();
     if (this.free) this.say(t('freeType.start'), 6);
     else if (this.opts.stay) this.say(t(this.def.kind === 'aim' ? 'aim.stayStart' : 'level.stayStart'), 6);
-    else if (this.storyLine) this.say(this.storyLine, this.mode.startSeconds());
     else if (this.fairy) this.say(pickLine('fairy.start'), 3);
     this.tapko.classList.remove('waiting');
     this.rhythm.ready(performance.now());

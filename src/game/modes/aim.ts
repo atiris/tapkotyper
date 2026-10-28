@@ -269,11 +269,6 @@ export class AimMode extends HeroMode {
     return this.rare().length ? `${rules} ${t('aim.swapHint')}` : rules;
   }
 
-  /** The rules stay up until the first throw. */
-  startSeconds(): number {
-    return 60;
-  }
-
   rings(): HTMLElement[] {
     return [this.hitsEl.el];
   }

@@ -42,7 +42,6 @@ test('the whole game by keyboard only: a new player, a level, the results, endin
   await untilPlay(page, 'ready');
   await page.keyboard.press('Enter');
   await expect(page.locator('.posture-card')).toHaveCount(0);
-  if (await page.locator('.mode-intro').count()) await page.keyboard.press('Enter');
   await expect.poll(() => page.locator('.kb-guide').getAttribute('data-next'), { timeout: 15_000 }).not.toBe('');
   await typeChar(page, (await page.locator('.kb-guide').getAttribute('data-next'))!);
 

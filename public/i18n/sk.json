@@ -225,7 +225,7 @@
     "wrists": "Zápästia uvoľnené vo vzduchu, nie opreté o stôl.",
     "home": "Ukazováky na výstupkoch klávesov F a J, ostatné prsty vedľa nich.",
     "eyes": "Oči na obrazovke, nie na klávesnici.",
-    "space": "Prsty polož na základné miesta a stlač medzerník.",
+    "space": "Prsty polož na základné miesta {keys} a stlač medzerník.",
     "spaceKey": "medzerník",
     "close": "Zavrieť a začať (Esc)"
   },

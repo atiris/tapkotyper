@@ -291,17 +291,18 @@ const NEXT_SPELL = 1.3;
 const TAKE = 1.2;
 const SPELL_INK = '#4a3a6c';
 /** The slips left: three different small mushrooms on the panel's top edge, their height, and seconds a lost one takes to go. */
-const SHROOMS = ['obj-mushroom-red', 'obj-mushroom-gold', 'obj-mushroom-aqua'];
+const SHROOMS = ['obj-mushroom-red', 'obj-mushroom-gold', 'obj-mushroom-brown'];
 const SHROOM_H = 46;
 /** The parasol is slim: drawn a bit taller so it reads as big as the others. */
 const SHROOM_SCALE = [1, 1.3, 1];
 const SHROOM_GONE = 0.5;
 
 /** The three crystals of life: each kind, its place beside the middle one, its height and its lean (heights of the middle one: 1). */
+export const LIFE_CRYSTALS = ['obj-life-crystal-amber', 'obj-life-crystal-rose', 'obj-life-crystal-aqua'];
 const LIFE = [
-  { pic: CRYSTALS[0], dx: -0.36, h: 0.78, rot: -0.2 },
-  { pic: CRYSTALS[1], dx: 0, h: 1, rot: 0 },
-  { pic: CRYSTALS[2], dx: 0.36, h: 0.78, rot: 0.2 },
+  { pic: LIFE_CRYSTALS[0], color: CRYSTAL_COLOR[CRYSTALS[0]], dx: -0.17, h: 0.82, rot: -0.16 },
+  { pic: LIFE_CRYSTALS[1], color: CRYSTAL_COLOR[CRYSTALS[1]], dx: 0, h: 1, rot: 0 },
+  { pic: LIFE_CRYSTALS[2], color: CRYSTAL_COLOR[CRYSTALS[2]], dx: 0.17, h: 0.82, rot: 0.16 },
 ];
 /** A crystal still asleep: grey and dull. */
 const ASLEEP = 'saturate(0.15) brightness(0.8)';
@@ -311,7 +312,9 @@ const ASLEEP = 'saturate(0.15) brightness(0.8)';
  * or glowing as `lit` says (0..1), each turned a little more while it shakes (`shake`, radians).
  */
 export function drawLifeCrystals(g: G, x: number, y: number, size: number, lit: number[], shake: number[] = [0, 0, 0]): void {
-  LIFE.forEach((c, i) => {
+  // The side ones first: the middle, tallest one overlaps them.
+  [0, 2, 1].forEach((i) => {
+    const c = LIFE[i];
     const cx = x + c.dx * size, h = c.h * size, k = lit[i];
     if (k > 0) {
       const r = h * 0.9, cy = y - h * 0.55;
@@ -323,7 +326,7 @@ export function drawLifeCrystals(g: G, x: number, y: number, size: number, lit: 
       g.fillRect(cx - r, cy - r, r * 2, r * 2);
       g.restore();
     }
-    const fall = crystalFallback(CRYSTAL_COLOR[c.pic]);
+    const fall = crystalFallback(c.color);
     const o = { ay: 1, rot: c.rot + shake[i] };
     if (k < 1) {
       g.save();
@@ -364,7 +367,7 @@ const SHAKE_TIME = 0.4;
  */
 export class SpellMode extends Mode {
   readonly tapkoFeet = PATH_FEET;
-  readonly pictures = [...CRYSTALS, 'obj-mound-2', ...SHROOMS];
+  readonly pictures = [...LIFE_CRYSTALS, 'obj-mound-2', ...SHROOMS];
   readonly world = 'planet';
   readonly phraseWords = 1;
   private words: string[] = [];

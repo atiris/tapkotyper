@@ -10,12 +10,10 @@ export async function playLevel(page: Page, mistakes = true, typed: string[] = [
       const nk = document.querySelector<HTMLElement>('.newkey-card');
       if (nk) return { kind: 'newkey', key: nk.dataset.sample ?? '' };
       if (document.querySelector('.posture-card')) return { kind: 'ready' };
-      if (document.querySelector('.mode-intro')) return { kind: 'intro' };
       return { kind: 'play', next: document.querySelector<HTMLElement>('.kb-guide')?.dataset.next ?? '' };
     });
     if (state.kind === 'results') return state.text!;
     if (state.kind === 'ready') await page.keyboard.press('Space');
-    else if (state.kind === 'intro') await page.keyboard.press('Enter');
     else if (state.kind === 'newkey') await typeChar(page, state.key!);
     else if (state.next) {
       if (mistakes && typed.length % 13 === 4) await page.keyboard.type('q');
@@ -28,18 +26,17 @@ export async function playLevel(page: Page, mistakes = true, typed: string[] = [
 }
 
 /**
- * Goes through a level's story scenes (Enter), new-key cards (typing the key) and intro card
+ * Goes through a level's story scenes (Enter) and new-key cards (typing the key)
  * until its get-ready card shows (`ready`) or, after Space on it, play has started (`play`).
  * No step budget: a loaded machine only takes longer, the test's timeout bounds it.
  */
 export async function untilPlay(page: Page, until: 'ready' | 'play' = 'play'): Promise<void> {
   for (;;) {
-    await page.locator('.story-screen, .newkey-card, .posture-card, .mode-intro, .level-tapko:not(.waiting)').first().waitFor({ state: 'attached' });
+    await page.locator('.story-screen, .newkey-card, .posture-card, .level-tapko:not(.waiting)').first().waitFor({ state: 'attached' });
     const state = await page.evaluate(() => {
       const nk = document.querySelector<HTMLElement>('.newkey-card');
       if (nk) return { kind: 'newkey', key: nk.dataset.sample ?? '' };
       if (document.querySelector('.posture-card')) return { kind: 'ready', key: '' };
-      if (document.querySelector('.mode-intro')) return { kind: 'intro', key: '' };
       if (document.querySelector('.story-screen')) return { kind: 'story', key: '' };
       return { kind: 'play', key: '' };
     });

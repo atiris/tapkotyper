@@ -6,7 +6,7 @@ import { blob, drawSprite, type G } from '../../gfx/draw';
 import { drawTapko, type Mood } from '../../gfx/tapko';
 import { t } from '../../i18n/i18n';
 import { Mode, TAPKO_H } from '../mode';
-import { CRYSTALS, drawLifeCrystals } from './planet-crystals';
+import { LIFE_CRYSTALS, drawLifeCrystals } from './planet-crystals';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
 
@@ -473,7 +473,7 @@ interface Crumb {
  * come by themselves, he crosses to the shore and puts the crystals of life on the Cradle of Life.
  */
 export class GreatSwampMode extends SwampHero {
-  readonly pictures = [...SWAMP_PICTURES, 'obj-swamp-stone-cracked', 'obj-swamp-stone-broken', 'obj-boulder-1', 'obj-boulder-2', 'obj-cradle', ...CRYSTALS];
+  readonly pictures = [...SWAMP_PICTURES, 'obj-swamp-stone-cracked', 'obj-swamp-stone-broken', 'obj-boulder-1', 'obj-boulder-2', 'obj-cradle', ...LIFE_CRYSTALS];
   private gap = 200;
   private home = 130;
   /** The firm stone of this set, and how many jumps are behind him for good. */

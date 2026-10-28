@@ -173,10 +173,8 @@ test('the main gate wants its whole code without a mistake and starts again afte
   await page.locator('.start-screen').waitFor();
   await page.keyboard.type('supertapkotyper', { delay: 40 });
   await page.locator('.story-robot .island-robocity .level-node.super').click();
-  await page.locator('.posture-card').waitFor();
+  await expect(page.locator('.posture-card')).toContainText('without a mistake');
   await page.keyboard.press('Space');
-  await expect(page.locator('.mode-intro')).toContainText('without a mistake');
-  await page.keyboard.press('Enter');
   await expect(page.locator('.paw-btn')).toHaveCount(0);
   const next = () => page.locator('.kb-guide').getAttribute('data-next');
   await expect.poll(next).not.toBe('');

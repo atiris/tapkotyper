@@ -1,7 +1,7 @@
 # Words
 
 ## What
-- Per language a lightweight JSON word list (about 1000 common, child-appropriate words),
+- Per language a lightweight JSON word list (about 6000 common, child-appropriate words and word forms),
   usable by key set and word length.
 - The list comes from the player's **word language**, not the interface language: story
   levels use the player's word language, the custom exercise (free practice, "My text", key

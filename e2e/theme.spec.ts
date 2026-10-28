@@ -1,6 +1,6 @@
 import { type Page, expect, test } from '@playwright/test';
 import { contrastMisses } from './contrast';
-import { playLevel, skipStories, untilPlay } from './helpers';
+import { playLevel, untilPlay } from './helpers';
 
 test.use({ locale: 'sk-SK' });
 
@@ -233,9 +233,8 @@ test('in the dark look every screen reads well', async ({ page }) => {
   await page.goto('./');
   await page.locator('.profile-card').first().click();
   await page.locator('.map-side .btn.primary').click();
-  await page.locator('.story-screen').waitFor();
-  await readable(page, 'story');
-  await skipStories(page);
+  await page.locator('.keys-intro').waitFor();
+  await readable(page, 'keys intro');
   await untilPlay(page, 'ready');
   await readable(page, 'get ready');
   await page.keyboard.press('Space');

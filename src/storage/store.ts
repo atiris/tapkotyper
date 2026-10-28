@@ -193,6 +193,13 @@ export class Store {
     this.save();
   }
 
+  /** Every player of this browser goes. */
+  removeAll(): void {
+    this.data.profiles = [];
+    this.data.lastProfileId = null;
+    this.save();
+  }
+
   /** The guest of this browser session, created with `nick` the first time. */
   startGuest(language: LangRef, nick: string): Profile {
     if (!this.guest) {

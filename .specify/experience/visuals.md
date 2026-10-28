@@ -71,8 +71,10 @@
 - Small laptop screens (1366 x 768, 1024 x 600) never scroll on the start screen (up to five
   players), the new-key card or the get-ready card: children use small screens, and a
   scrolling card hides the button they need. The new-key card has its heading above Tapko, the
-  finger guide beside Tapko and Esc to skip. The get-ready card has the picture beside the text
-  and always shows its button.
+  finger guide beside Tapko and Esc to skip. The get-ready card has the picture's panel beside
+  the story's panel and always shows its space bar; the card before the first key fits too.
+- Keys drawn on screen (the keyboard guide, the big key and the space bar of the cards) have an
+  outline that stands apart from the paper on every side, in the light and the dark look.
 - **The start page** says what TapkoTyper is before anything else. From 900 px wide it has two
   columns: on the left the title **TapkoTyper**, the slogan on exactly two lines ("Desať prstov, /
   jedno veľké dobrodružstvo."), one sentence about the game and four short promises with green

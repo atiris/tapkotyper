@@ -601,11 +601,12 @@ function dataTab(p: Profile | null): HTMLElement {
       h('div', { class: 'row' },
         own ? button(t('parent.exportOne'), () => exportOne(own), 'btn', 'download') : null,
         own ? button(t('move.button'), () => void moveDialog(own), 'btn', 'next') : null,
-        button(t('parent.exportAll'), () => download('tapkotyper-profiles.json', app.store.exportJson()), 'btn', 'download'),
+        button(t('parent.exportAll'), exportAll, 'btn', 'download'),
         button(t('parent.import'), () => importDialog(() => go('parent', { granted: true })), 'btn', 'upload')),
-      guest ? h('p', { class: 'hint' }, t('parent.guestNote')) : !own ? null : h('div', { class: 'danger-zone' },
+      guest ? h('p', { class: 'hint' }, t('parent.guestNote')) : null,
+      own || app.store.profiles.length ? h('div', { class: 'danger-zone' },
         h('h3', {}, t('parent.deleteTitle')),
-        button(t('parent.delete', { name: nickname(own) }), async () => {
+        h('div', { class: 'row' }, own ? button(t('parent.delete', { name: nickname(own) }), async () => {
           const yes = await confirmDialog({
             title: t('parent.deleteTitle'),
             text: t('parent.deleteConfirm', { name: nickname(own) }),
@@ -618,7 +619,41 @@ function dataTab(p: Profile | null): HTMLElement {
           app.store.remove(own.id);
           app.profile = null;
           go('start');
-        }, 'btn danger', 'trash'))));
+        }, 'btn danger', 'trash') : null,
+        app.store.profiles.length ? button(t('parent.deleteAll'), () => void deleteAll(), 'btn danger', 'trash') : null)) : null));
+}
+
+const exportAll = () => download('tapkotyper-profiles.json', app.store.exportJson());
+
+/**
+ * Every player goes, after two questions: the first says that whoever typed here starts again
+ * without a backup and offers the backup instead; the second hides its one "Delete all" among
+ * four Back buttons, so it is never pressed by habit; there the backup is the default button.
+ */
+async function deleteAll(): Promise<void> {
+  const ask = (title: string, choices: [string, string, string][]) => new Promise<string | null>((resolve) => {
+    let picked: string | null = null;
+    const buttons = choices.map(([id, label, cls]) => button(label, () => { picked = id; close(); }, cls));
+    // The primary button is the default, focused when the question opens.
+    buttons.find((b) => b.classList.contains('primary'))?.setAttribute('autofocus', '');
+    const close = modal(h('div', { class: 'confirm delete-all' },
+      h('h2', {}, title),
+      h('p', {}, t('parent.deleteAllText')),
+      h('div', { class: 'row center' }, ...buttons)),
+    { cls: 'confirm-modal', onClose: () => resolve(picked) });
+  });
+  const backup: [string, string, string] = ['backup', t('parent.deleteAllBackup'), 'btn'];
+  const first = await ask(t('parent.deleteAllTitle'), [['back', t('common.back'), 'btn primary'], backup, ['next', t('parent.deleteAllNext'), 'btn danger']]);
+  if (first === 'backup') return exportAll();
+  if (first !== 'next') return;
+  const backs: [string, string, string][] = Array.from({ length: 4 }, () => ['back', t('common.back'), 'btn']);
+  backs.splice(1 + Math.floor(Math.random() * 4), 0, ['delete', t('parent.deleteAllOk'), 'btn danger']);
+  const second = await ask(t('parent.deleteAllSure'), [...backs, ['backup', t('parent.deleteAllBackup'), 'btn primary']]);
+  if (second === 'backup') return exportAll();
+  if (second !== 'delete') return;
+  app.store.removeAll();
+  app.profile = null;
+  go('start');
 }
 
 const exportOne = (p: Profile) => download(`tapkotyper-${slug(nickname(p))}.json`, app.store.exportJson([p.id]));

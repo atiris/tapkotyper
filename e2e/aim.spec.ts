@@ -15,7 +15,7 @@ async function editProfile(page: Page, change: string): Promise<void> {
 
 test('a level waiting for letters names the ones that need accuracy', async ({ page }) => {
   await createProfile(page, 'Ema');
-  await editProfile(page, 'p.progress.levels = { "w1-1": 3, "w1-2": 3 }; p.progress.scenesSeen.push("welcome");');
+  await editProfile(page, 'p.progress.levels = { "w1-1": 3, "w1-2": 3 };');
   // No world is done yet: every target range is grey and closed, the bubble offers own practice.
   await expect(page.locator('.aim-node:not(:disabled)')).toHaveCount(0);
   await expect(page.locator('.island-meadow .aim-node')).toBeDisabled();
@@ -30,7 +30,7 @@ test('a finished world opens its target range from the map', async ({ page }) =>
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await createProfile(page, 'Ema');
-  await editProfile(page, 'p.progress.levels = { "w1-1": 3, "w1-2": 3 }; p.progress.worldsDone = [0]; p.progress.introducedKeys = ["f", "j", " "]; p.progress.scenesSeen.push("welcome");');
+  await editProfile(page, 'p.progress.levels = { "w1-1": 3, "w1-2": 3 }; p.progress.worldsDone = [0]; p.progress.introducedKeys = ["f", "j", " "];');
   // The bubble of a waiting level now offers the range.
   await page.locator('.level-node.keys').first().click();
   await expect(page.locator('.map-bubble .bubble-actions .btn')).toHaveText('Target range');
@@ -59,7 +59,7 @@ for (const [width, height] of [[1024, 600], [1366, 768], [1920, 1080]]) {
     page.on('pageerror', (e) => errors.push(e.message));
     await page.setViewportSize({ width, height });
     await createProfile(page, 'Ema');
-    await editProfile(page, 'p.progress.levels = { "w1-1": 3, "w1-2": 3 }; p.progress.worldsDone = [0]; p.progress.introducedKeys = ["f", "j", " "]; p.progress.scenesSeen.push("welcome");');
+    await editProfile(page, 'p.progress.levels = { "w1-1": 3, "w1-2": 3 }; p.progress.worldsDone = [0]; p.progress.introducedKeys = ["f", "j", " "];');
     // The pebble every throw, so the lines are known.
     await page.evaluate(() => history.replaceState(null, '', `${location.pathname}?aimThing=pebble${location.hash}`));
     await page.locator('.island-meadow .aim-node').click();

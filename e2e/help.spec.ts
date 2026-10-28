@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { createProfile, skipStories, untilPlay } from './helpers';
+import { createProfile, untilPlay } from './helpers';
 
 test('help opens from the map and from a paused level and goes back', async ({ page }) => {
   const errors: string[] = [];
@@ -26,7 +26,6 @@ test('help opens from the map and from a paused level and goes back', async ({ p
 
   // Level -> pause -> help -> back to the paused level.
   await page.locator('.map-side .btn.primary').click();
-  await skipStories(page);
   await untilPlay(page);
   await page.keyboard.press('Escape');
   const pause = page.locator('.pause-card');

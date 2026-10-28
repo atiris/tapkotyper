@@ -14,19 +14,16 @@
   **nickname** (required, up to 16 characters; hint: shown with the character in the game),
   the **typist's name** (optional; hint: shown to the teacher in the results), the interface
   language, the word language and the keyboard layout. Without a nickname the form says so.
-- A new player lands on the map, not in a level, so a parent can set things up first. Above
-  the stories the narrator greets the typist once by nickname ("This is your character in
-  this adventure.") with the start button; where the fingers go is taught by the home-row card
-  when F and J are learned ([finger guide](../learning/finger-guide.md)). The form and the
-  welcome speak to the child
-  only: a note for the parent about the settings is no use to a child who reads it; closing it or starting from
-  it hides it for good. The intro story plays before the first level. A guest and the
-  super player get no greeting.
+- A new player lands on the map, not in a level, so a parent can set things up first; the map
+  greets by nickname in its side column and has no welcome card. The first level starts with
+  the card before the first key ([finger guide](../learning/finger-guide.md)); where the
+  fingers go is taught by the home-row card when F and J are learned. The form speaks to the
+  child only: a note for the parent about the settings is no use to a child who reads it.
 - Profile data: nickname and character kind, an optional real name, a seed, custom
   messages, layout, interface language, word language, settings, progress, unlocked items,
   statistics.
 - **Nickname vs real name**: the nickname is required and is how the game shows the player
-  everywhere (start card, map greeting and welcome, encouragement lines, break, story scenes,
+  everywhere (start card, map greeting, encouragement lines, break, story scenes,
   results, wardrobe, the settings switcher, task, delete and move texts, QR code captions,
   export file name, import texts, the printed card). The real name is optional and only for
   the **teacher**: a result code carries it, or the nickname when it is empty, and the

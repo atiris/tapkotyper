@@ -22,6 +22,15 @@ describe('Store', () => {
     expect(again.profiles.map((p) => p.name)).toEqual(['Ema']);
   });
 
+  it('deletes every player at once', () => {
+    const local = mem();
+    const s = new Store(local, mem());
+    s.add(newProfile('Ema', 'sk'));
+    s.add(newProfile('Adam', 'sk'));
+    s.removeAll();
+    expect(new Store(local, mem()).profiles).toHaveLength(0);
+  });
+
   it('keeps the guest only in session storage', () => {
     const local = mem(), session = mem();
     const s = new Store(local, session);

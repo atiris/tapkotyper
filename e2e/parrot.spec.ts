@@ -16,7 +16,7 @@ test('a finished world\'s parrot learns the words and brings the badge', async (
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await createProfile(page, 'Ema');
-  await editProfile(page, 'p.progress.levels = { "w1-1": 3, "w1-2": 3 }; p.progress.worldsDone = [0]; p.progress.introducedKeys = ["f", "j", " "]; p.progress.scenesSeen.push("welcome");');
+  await editProfile(page, 'p.progress.levels = { "w1-1": 3, "w1-2": 3 }; p.progress.worldsDone = [0]; p.progress.introducedKeys = ["f", "j", " "];');
   const node = page.locator('.island-meadow .parrot-node');
   await expect(node).not.toHaveClass(/home/);
   await expect(page.locator('.map-hero .aro-perch')).toHaveCount(0);
@@ -52,7 +52,7 @@ test('too many mistakes send the parrot away: the round ends with its empty perc
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await createProfile(page, 'Ema');
-  await editProfile(page, 'p.progress.worldsDone = [0]; p.progress.parrots = [0]; p.progress.parrotBest = 1; p.progress.introducedKeys = ["f", "j", " "]; p.progress.scenesSeen.push("welcome");');
+  await editProfile(page, 'p.progress.worldsDone = [0]; p.progress.parrots = [0]; p.progress.parrotBest = 1; p.progress.introducedKeys = ["f", "j", " "];');
   const node = page.locator('.island-meadow .parrot-node');
   await expect(node).toHaveClass(/home/);
   await node.click();
@@ -73,7 +73,7 @@ test('too many mistakes send the parrot away: the round ends with its empty perc
 
 test('a parrot left alone too long flies away and the map says so', async ({ page }) => {
   await createProfile(page, 'Ema');
-  await editProfile(page, 'p.progress.worldsDone = [0, 1]; p.progress.parrots = [0, 1]; p.progress.parrotBest = 2; p.progress.parrotWonAt = "2026-01-01"; p.progress.parrotCheckedAt = "2026-01-01"; p.progress.parrotPerched = true; p.progress.scenesSeen.push("welcome");');
+  await editProfile(page, 'p.progress.worldsDone = [0, 1]; p.progress.parrots = [0, 1]; p.progress.parrotBest = 2; p.progress.parrotWonAt = "2026-01-01"; p.progress.parrotCheckedAt = "2026-01-01"; p.progress.parrotPerched = true;');
   await expect(page.locator('.map-bubble')).toContainText('Your parrot flew away from');
   await expect(page.locator('.parrot-node.home')).toHaveCount(1);
   // Aro says goodbye and flies off; his empty perch stays while this map is shown.

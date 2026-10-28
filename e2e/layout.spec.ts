@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { createProfile, skipStories, NEW_PLAYER } from './helpers';
+import { closeKeysIntro, createProfile, NEW_PLAYER } from './helpers';
 
 const SIZES = [{ width: 1366, height: 768 }, { width: 1024, height: 600 }];
 
@@ -47,7 +47,7 @@ test('the new key card and the get-ready card fit and Esc skips the key', async 
     await page.evaluate(() => localStorage.clear());
     await createProfile(page, 'Fit');
     await page.locator('.level-node.current').first().click({ force: true });
-    await skipStories(page);
+    await closeKeysIntro(page);
     const nk = page.locator('.newkey-card');
     await nk.waitFor();
     const box = (await nk.boundingBox())!;
@@ -89,13 +89,12 @@ test('the corner buttons sit at one offset and a level shows its place in the wo
 
   await page.evaluate((pid) => { location.hash = `#/p/${pid}`; }, id);
   await page.locator('.level-node.current').first().click({ force: true });
-  await skipStories(page);
   const ring = page.locator('.hud .round-btn.place');
   await expect(ring).toHaveText('1');
   await expect(page.locator('.hud .level-dots')).toHaveCount(0);
 });
 
-test('the new player form has a 3 x 3 picker with a side column, closes with X, and the map welcomes once', async ({ page }) => {
+test('the new player form has a 3 x 3 picker with a side column and closes with X', async ({ page }) => {
   await page.goto('./');
   await page.locator(NEW_PLAYER).first().click();
   const kinds = page.locator('.np-pick .kind');
@@ -113,24 +112,6 @@ test('the new player form has a 3 x 3 picker with a side column, closes with X, 
   await expect(page.locator('.form .btn.ghost')).toHaveCount(0);
   await page.locator('.form .modal-x').click();
   await page.locator('.start-screen').waitFor();
-
-  await createProfile(page, 'Ema');
-  const welcome = page.locator('.welcome-card');
-  await expect(welcome).toContainText('Ema');
-  // The how-to lines are behind "Instructions for young typists", off by default.
-  await expect(welcome.locator('li')).toHaveCount(0);
-  await welcome.locator('.modal-x').click();
-  await expect(welcome).toHaveCount(0);
-  await page.reload();
-  await page.locator('.map-screen').waitFor();
-  await expect(welcome).toHaveCount(0);
-
-  // Start on the welcome plays the intro before the first level.
-  await createProfile(page, 'Adam');
-  await welcome.locator('.btn.primary').click();
-  await expect(page.locator('.story-screen.world-meadow')).toBeVisible();
-  await skipStories(page);
-  await page.locator('.newkey-card, .posture-card').first().waitFor();
 });
 
 test('the game calls the typist by the nickname; the start tile never shows the real name', async ({ page }) => {
@@ -139,7 +120,6 @@ test('the game calls the typist by the nickname; the start tile never shows the 
   await page.locator('#np-name').fill('Ema');
   await page.locator('#np-nick').fill('Rýchla líška');
   await page.locator('form button[type=submit]').click();
-  await expect(page.locator('.welcome-card h2')).toContainText('Rýchla líška');
   await expect(page.locator('.map-hello')).toContainText('Rýchla líška');
   await page.goto('./');
   const tile = page.locator('.profile-card', { hasText: 'Rýchla líška' });

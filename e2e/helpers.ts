@@ -7,6 +7,7 @@ export async function playLevel(page: Page, mistakes = true, typed: string[] = [
     const state = await page.evaluate(() => {
       const res = document.querySelector<HTMLElement>('.results-card');
       if (res) return { kind: 'results', text: res.innerText };
+      if (document.querySelector('.keys-intro')) return { kind: 'ready' };
       const nk = document.querySelector<HTMLElement>('.newkey-card');
       if (nk) return { kind: 'newkey', key: nk.dataset.sample ?? '' };
       if (document.querySelector('.posture-card')) return { kind: 'ready' };
@@ -26,25 +27,24 @@ export async function playLevel(page: Page, mistakes = true, typed: string[] = [
 }
 
 /**
- * Goes through a level's story scenes (Enter) and new-key cards (typing the key)
+ * Goes through a level's key cards (Space on the one before the first key, typing the key on a new-key card)
  * until its get-ready card shows (`ready`) or, after Space on it, play has started (`play`).
  * No step budget: a loaded machine only takes longer, the test's timeout bounds it.
  */
 export async function untilPlay(page: Page, until: 'ready' | 'play' = 'play'): Promise<void> {
   for (;;) {
-    await page.locator('.story-screen, .newkey-card, .posture-card, .level-tapko:not(.waiting)').first().waitFor({ state: 'attached' });
+    await page.locator('.newkey-card, .posture-card, .level-tapko:not(.waiting)').first().waitFor({ state: 'attached' });
     const state = await page.evaluate(() => {
+      if (document.querySelector('.keys-intro')) return { kind: 'intro', key: '' };
       const nk = document.querySelector<HTMLElement>('.newkey-card');
       if (nk) return { kind: 'newkey', key: nk.dataset.sample ?? '' };
       if (document.querySelector('.posture-card')) return { kind: 'ready', key: '' };
-      if (document.querySelector('.story-screen')) return { kind: 'story', key: '' };
       return { kind: 'play', key: '' };
     });
     if (state.kind === until) return;
     if (state.kind === 'play') throw new Error('play started without a get-ready card');
-    if (state.kind === 'ready') await page.keyboard.press('Space');
-    else if (state.kind === 'newkey') await typeChar(page, state.key);
-    else await page.keyboard.press('Enter');
+    if (state.kind === 'newkey') await typeChar(page, state.key);
+    else await page.keyboard.press('Space');
     await page.waitForTimeout(150);
   }
 }
@@ -78,11 +78,9 @@ export async function createProfile(page: Page, name: string, layout?: string): 
   await page.locator('.map-screen').waitFor();
 }
 
-/** Skips the story scenes before a level (the very first level has the intro and the world's scene). */
-export async function skipStories(page: Page): Promise<void> {
-  await page.locator('.story-screen').waitFor();
-  while (await page.locator('.story-screen').count()) {
-    await page.keyboard.press('Escape');
-    await page.waitForTimeout(150);
-  }
+/** Closes the card told before the very first key card (a new player's first level) with the space bar. */
+export async function closeKeysIntro(page: Page): Promise<void> {
+  await page.locator('.keys-intro').waitFor();
+  await page.keyboard.press('Space');
+  await page.locator('.keys-intro').waitFor({ state: 'detached' });
 }

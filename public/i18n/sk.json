@@ -118,11 +118,6 @@
       "remember": "Tajné slová",
       "super": "Veľká výzva"
     },
-    "welcome": {
-      "title": "Ahoj, {name}! Toto je tvoja postava v tomto dobrodružstve.",
-      "start": "Začať",
-      "close": "Zavrieť (Esc)"
-    },
     "ownText": "Môj text",
     "freeType": "Len chcem písať",
     "hello": "Ahoj, {name}!",
@@ -160,8 +155,10 @@
     "teacher": {
       "name": "Pani učiteľka Korytnačka",
       "ok": "Dobre",
+      "close": "Zavrieť (Esc)",
       "tips": {
-        "hello": "Ahoj, ja som pani učiteľka Korytnačka. Táto hra sa volá Ťapko a naučí ťa písať všetkými desiatimi prstami. Občas ti tu poviem, čo všetko Ťapko vie.",
+        "hello": "Ahoj, {name}! Ja som pani učiteľka Korytnačka. Vľavo je tvoj Ťapko, postavička, ktorú si si vybral pre toto pisateľské dobrodružstvo. Spolu prejdete viacero príbehov a budete cestovať mnohými svetmi. Občas ti tu poviem, čo všetko Ťapko vie.",
+        "character": "Keď klikneš na svoju postavičku vľavo, ukáže ti, ako sa ti darí: koľko si toho napísal, ako presne a rýchlo píšeš, ktoré klávesy ti už idú a ktoré ešte potrebujú cvik, a tvoje cvičenia od učiteľa.",
         "help": "Keď nevieš ako ďalej, klikni na otáznik vpravo hore alebo stlač F1. Pomoc ti ukáže, čo ktoré tlačidlo robí.",
         "helpButton": "Otvoriť pomoc",
         "keyboard": "Celého Ťapka ovládaš aj bez myši: Tab a šípky prechádzajú po tlačidlách, Enter potvrdí, Esc zavrie okno a v úrovni F2 skryje klávesnicu na obrazovke.",
@@ -193,6 +190,7 @@
     "pauseClose": "Pokračovať (Esc)",
     "slower": "Pomalšie",
     "stretch": "Krátke cvičenie",
+    "stretchLong": "Dlhšie cvičenie",
     "stretchDone": "Hotovo",
     "slowerSaid": "Dobre, pôjdeme pomalšie.",
     "leave": "Späť na mapu",
@@ -251,6 +249,16 @@
     "shiftL": "Ľavý Shift drž ľavým malíčkom a pravou rukou napíš veľké písmeno. Napíš trikrát veľké {sample}.",
     "shiftR": "Pravý Shift drž pravým malíčkom a ľavou rukou napíš veľké písmeno. Napíš trikrát veľké {sample}.",
     "space": "Ostatné prsty ostanú na základných miestach. Stlač ho trikrát."
+  },
+  "keysIntro": {
+    "title": "Vitaj v Ťapkovi!",
+    "close": "Zavrieť (Esc)",
+    "text": [
+      "Naučíš sa tu písať **všetkými desiatimi prstami** a bez pozerania na klávesnicu.",
+      "Začneš len s pár klávesmi. Keď už nimi píšeš **dosť presne**, alebo keď je čas na ďalšie písmeno, ukáže sa okienko **Nový kláves**. Povie ti, kde kláves je a **ktorým prstom** ho stláčať, a klávesnica dole ti ho ukáže.",
+      "Okienko s novým klávesom zatvoríš, keď kláves **trikrát správne napíšeš** (preklepy sa nepočítajú), alebo klávesom **Esc**. Klávesom Esc sa zatvárajú aj ostatné okienka.",
+      "Toto okienko potvrď **medzerníkom**, najdlhším klávesom na klávesnici."
+    ]
   },
   "homeRow": {
     "title": "Základný rad",
@@ -635,154 +643,91 @@
       "Vlna sa upokojila. Pozri, dúha!",
       "Pokojný rytmus vyhráva!"
     ],
+    "world": {
+      "meadow": "Na lúke je krásne popoludnie a poobede bude **futbalový zápas**! Zvieratká s tebou trénujú: kopú listy ako loptu a **ty si brankár**. Chytaj listy písmenami: **napíš slovo na liste** a list je tvoj.",
+      "space": "Tri, dva, jeden... **štart!** Letíš preskúmať zopár planét až k **planéte drakov**. **Rytmus tvojho písania** poháňa raketu a jemný lúč odsúva meteority z cesty.",
+      "planet": "Vitaj na **planéte drakov**! Jej kryštál života stratil svetlo. Prejdi močiar a lúku, nájdi **kryštály života** a prebuď ich kúzlom. Potom ich odnes do Kolísky života. Tu je **presnosť dôležitejšia ako rýchlosť**.",
+      "dragons": "Do Dračieho údolia padajú **vesmírne kamene**. Každé slovo vytvorí pre dráčika **ochrannú bublinu**. Kamene sa len odrazia, nikomu sa nič nestane.",
+      "egg": "Ojoj! **Vajíčko sa začína hýbať** a kotúľa sa dolu kopcom. Pomôž mu **preskočiť kamene a pníky**. Pozor na priateľského krtka!",
+      "junkyard": "Ideš okolo starého šrotiska. **Pod kopou starých vecí niekto smutne pípa.** Napíš slovo a **jemný magnet** zdvihne haraburdu z kopy.",
+      "workshop": "Šróbik chce ísť domov, ale **chýbajú mu súčiastky**. Po páse sa vezú kolieska, skrutky a pružiny. **Napíš slovo súčiastky** a hodíš ju do košíka.",
+      "raintown": "Ojoj, začína pršať! Roboti nesmú zmoknúť, inak **zhrdzavejú**. **Napíš slovo na kvapke** a tvoj dáždnik ju zachytí.",
+      "robocity": "Cesta domov vedie cez **Robotické mesto**. Všetky dvere sú zamknuté a na paneloch sú heslá. **Napíš heslo** a dvere sa so zvonením otvoria.",
+      "robohome": "Šróbikov dom je tmavý a všetci roboti spia. **Napíš slovo** a rozsvieti sa lampa. Pomocní roboti sa zobudia a zamávajú.",
+      "garden": "Les stíchol. Nespieva ani vtáčik, nezašumí ani lístok. Priletí malá víla s trblietavými krídlami: „Som **Melódia**. Les zabudol svoje piesne!“ **Napíš slovo** a spiaci púčik sa otvorí. Každý kvet zabzučí jeden tón.",
+      "forestpath": "Vtáčiky na lesnej cestičke zabudli svoje slová. Každý vtáčik potichu zaspieva slovo. **Dobre počúvaj a napíš, čo počuješ.** Ťukni na slovo vtáčika, keď ho chceš počuť znova.",
+      "lilylake": "Jazero je tiché ako zrkadlo. Na hladine sa ukáže slovo a malá vlnka ho zmyje. **Zapamätaj si ho a napíš ho** a rozkvitne lekno.",
+      "musictree": "Uprostred lesa stojí **Hudobný strom**. Na konároch visia nôtky: niektoré spievajú, iné zasvietia a zhasnú. **Počúvaj alebo si zapamätaj**, napíš a nôtka vyletí.",
+      "moonball": "Vychádza mesiac a svetlušky prichádzajú na **ples**. Melódia každej svetluške zaspieva krátku vetu. **Napíš ju** a tanečný parket sa rozžiari."
+    },
     "scenes": {
-      "intro": [
-        "Ahoj, {name}! Toto je tvoja postava v tomto dobrodružstve.",
-        "Naučíš sa písať všetkými desiatimi prstami.",
-        "Začni na Cvičnej lúke!"
-      ],
-      "world1": [
-        "Na lúke je krásne popoludnie. Poobede bude futbalový zápas!",
-        "Zvieratká s tebou trénujú: kopú listy ako loptu a ty si brankár.",
-        "Chytaj listy písmenami: napíš slovo na liste a list je tvoj."
-      ],
       "invitation": [
         "Popoludnie na lúke sa končí. Pozri, čo sa našlo v tráve!",
         "Tajná pozvánka... do VESMÍRU!",
         "Tvoje prsty sú pripravené na let raketou."
       ],
-      "world2": [
-        "Tri, dva, jeden... štart!",
-        "Letíš preskúmať zopár planét až k planéte drakov.",
-        "Rytmus tvojho písania poháňa raketu a jemný lúč odsúva meteority z cesty."
-      ],
       "landing": [
         "Planéta drakov je na dohľad. Riadiaca veža hlási: povolenie na pristátie!",
         "Pristávame... ojoj, rovno v močiari!"
-      ],
-      "world3": [
-        "Vitaj na planéte drakov! Jej kryštál života stratil svetlo.",
-        "Prejdi močiar a lúku, nájdi kryštály života a prebuď ich kúzlom.",
-        "Potom ich odnes do Kolísky života. Tu je presnosť dôležitejšia ako rýchlosť."
       ],
       "force": [
         "Kryštály života svietia a celá planéta zase kvitne!",
         "Ako poďakovanie ti darovali Silu: jemne pohybuješ vecami, len písaním.",
         "Dráčiky v susednom údolí potrebujú pomoc."
       ],
-      "world4": [
-        "Do Dračieho údolia padajú vesmírne kamene.",
-        "Každé slovo vytvorí pre dráčika ochrannú bublinu.",
-        "Kamene sa len odrazia, nikomu sa nič nestane."
-      ],
       "egg": [
         "Dráčiky sú v bezpečí a šťastné.",
         "Ako poďakovanie ti darujú čarovné dračie vajíčko!"
-      ],
-      "world5": [
-        "Ojoj! Vajíčko sa začína hýbať a kotúľa sa dolu kopcom.",
-        "Pomôž mu preskočiť kamene a pníky.",
-        "Pozor na priateľského krtka!"
       ],
       "hatched": [
         "Krak... krak... vajíčko sa liahne!",
         "Malý dráčik sa na teba pozerá. Máš nového kamaráta!",
         "Teraz môžeš chodiť na záchranné misie a pomáhať ďalším dráčikom."
       ],
-      "world6": [
-        "Ideš okolo starého šrotiska. Čo to tam pípa?",
-        "Pod kopou starých vecí niekto smutne pípa.",
-        "Napíš slovo a jemný magnet zdvihne haraburdu z kopy."
-      ],
       "friends": [
         "Z kopy vylieza malý hrdzavý robot.",
         "Chce povedať ďakujem, ale vie len pípať: Píp píp!",
         "Daruje ti malé ozubené koliesko. Volá sa Šróbik a odteraz ste kamaráti!"
-      ],
-      "world7": [
-        "Šróbik chce ísť domov, ale chýbajú mu súčiastky.",
-        "Po páse sa vezú kolieska, skrutky a pružiny.",
-        "Napíš slovo súčiastky a hodíš ju do košíka."
       ],
       "legs": [
         "Hotovo! Šróbik má nové dlhé nohy.",
         "A na hlave mu svieti nová žltá anténa.",
         "Teraz zvládne aj dlhú cestu domov."
       ],
-      "world8": [
-        "Ojoj, začína pršať!",
-        "Roboti nesmú zmoknúť, inak zhrdzavejú.",
-        "Napíš slovo na kvapke a tvoj dáždnik ju zachytí."
-      ],
       "raincoat": [
         "Dážď prestal a nad mestom svieti dúha.",
         "Šróbik má žltú pláštenku a ty nový dáždnik.",
         "Teraz vám žiadny dážď neublíži."
-      ],
-      "world9": [
-        "Cesta domov vedie cez Robotické mesto.",
-        "Všetky dvere sú zamknuté a na paneloch sú heslá.",
-        "Napíš heslo a dvere sa so zvonením otvoria."
       ],
       "key": [
         "Veľká brána je otvorená!",
         "Šróbik našiel svoju kľúčovú kartu od domu.",
         "Už sme skoro doma!"
       ],
-      "world10": [
-        "Šróbikov dom je tmavý a všetci roboti spia.",
-        "Napíš slovo a rozsvieti sa lampa.",
-        "Pomocní roboti sa zobudia a zamávajú."
-      ],
       "home": [
         "Šróbikova rodina je šťastná, že je doma.",
         "Ďakujú ti, {name}, za pomoc Šróbikovi.",
         "Teraz môžeš na záchranných misiách opravovať aj malých robotov."
-      ],
-      "world11": [
-        "Les stíchol. Nespieva ani vtáčik, nezašumí ani lístok.",
-        "Priletí malá víla s trblietavými krídlami. „Som Melódia. Les zabudol svoje piesne!“",
-        "Napíš slovo a spiaci púčik sa otvorí. Každý kvet zabzučí jeden tón."
       ],
       "wreath": [
         "Veľký kvet sa zobudil a celá záhrada si pobzukuje!",
         "Melódia ti uviaže kvetinový venček.",
         "Záhrada má svoju pieseň späť. Jedna pieseň je doma, ešte štyri."
       ],
-      "world12": [
-        "Vtáčiky na lesnej cestičke zabudli svoje slová.",
-        "Každý vtáčik potichu zaspieva slovo. Dobre počúvaj a napíš, čo počuješ.",
-        "Ťukni na slovo vtáčika, keď ho chceš počuť znova."
-      ],
       "feather": [
         "Hú, hú! Sove sa tvoje odpovede páčili.",
         "Od sovy dostaneš mäkké pierko za klobúk.",
         "Vtáčiky zase spievajú!"
-      ],
-      "world13": [
-        "Jazero je tiché ako zrkadlo.",
-        "Na hladine sa ukáže slovo a malá vlnka ho zmyje.",
-        "Zapamätaj si ho a napíš ho, a rozkvitne lekno."
       ],
       "lily": [
         "Dlhý odraz je späť na hladine!",
         "Melódia ti daruje žiarivé lekno.",
         "Žabky kvákajú pieseň jazera."
       ],
-      "world14": [
-        "Uprostred lesa stojí Hudobný strom.",
-        "Na konároch visia nôtky. Niektoré spievajú, iné zasvietia a zhasnú.",
-        "Počúvaj alebo si zapamätaj, napíš a nôtka vyletí."
-      ],
       "harp": [
         "Hudobný strom zase hrá svoju pieseň!",
         "Melódia ti daruje malú harfu.",
         "Chýba už len jedna pieseň, pieseň noci."
-      ],
-      "world15": [
-        "Vychádza mesiac a svetlušky prichádzajú na ples.",
-        "Melódia každej svetluške zaspieva krátku vetu.",
-        "Napíš ju a tanečný parket sa rozžiari."
       ],
       "wings": [
         "Spieva celý les! Každý vtáčik, každá žabka, každý strom.",
@@ -1148,6 +1093,13 @@
     "deleteTitle": "Vymazanie",
     "delete": "Vymazať profil {name}",
     "deleteConfirm": "Naozaj vymazať profil {name} aj so všetkými pokrokmi?",
+    "deleteAll": "Vymazať všetky profily",
+    "deleteAllTitle": "Vymazať všetky profily?",
+    "deleteAllSure": "Naozaj vymazať všetko?",
+    "deleteAllText": "Vymažú sa všetci hráči v tomto prehliadači aj so všetkými pokrokmi. Každý, kto tu písal, bude musieť začať od začiatku, ak nemá zálohu.",
+    "deleteAllBackup": "Radšej stiahnuť zálohu",
+    "deleteAllNext": "Pokračovať",
+    "deleteAllOk": "Vymazať všetko",
     "checkOk": "Áno, otvoriť",
     "deleteOk": "Áno, vymazať",
     "autoDifficulty": "Automatická náročnosť",

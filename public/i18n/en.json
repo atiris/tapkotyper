@@ -118,11 +118,6 @@
       "remember": "Secret words",
       "super": "Big challenge"
     },
-    "welcome": {
-      "title": "Hello {name}! This is your character in this adventure.",
-      "start": "Start",
-      "close": "Close (Esc)"
-    },
     "ownText": "My text",
     "freeType": "Just typing",
     "hello": "Hi, {name}!",
@@ -160,8 +155,10 @@
     "teacher": {
       "name": "Ms Turtle the teacher",
       "ok": "OK",
+      "close": "Close (Esc)",
       "tips": {
-        "hello": "Hello, I am Ms Turtle the teacher. This game is called Tapko, and it teaches you to type with all ten fingers. Now and then I will tell you here what Tapko can do.",
+        "hello": "Hi, {name}! I am Ms Turtle the teacher. On the left is your Tapko, the character you picked for this typing adventure. Together you will go through several stories and travel through many worlds. Now and then I will tell you here what Tapko can do.",
+        "character": "When you click your character on the left, it shows you how you are doing: how much you have typed, how accurately and fast you type, which keys you know well and which still need practice, and your exercises from the teacher.",
         "help": "When you are not sure what to do, click the question mark at the top right or press F1. Help shows what each button does.",
         "helpButton": "Open help",
         "keyboard": "You can use all of Tapko without a mouse: Tab and the arrows move between buttons, Enter confirms, Esc closes a window, and in a level F2 hides the keyboard on the screen.",
@@ -193,6 +190,7 @@
     "pauseClose": "Continue (Esc)",
     "slower": "Slower",
     "stretch": "Quick exercise",
+    "stretchLong": "Longer exercise",
     "stretchDone": "Done",
     "slowerSaid": "Okay, we will go slower.",
     "leave": "Back to the map",
@@ -251,6 +249,16 @@
     "shiftL": "Hold the left Shift with your left little finger and type the capital with your right hand. Type a capital {sample} three times.",
     "shiftR": "Hold the right Shift with your right little finger and type the capital with your left hand. Type a capital {sample} three times.",
     "space": "The other fingers stay at home. Press it three times."
+  },
+  "keysIntro": {
+    "title": "Welcome to Tapko!",
+    "close": "Close (Esc)",
+    "text": [
+      "Here you learn to type with **all ten fingers**, without looking at the keyboard.",
+      "You start with just a few keys. Once you type them **accurately enough**, or when it is time for another letter, a **New key** card shows up. It tells you where the key is and **which finger** presses it, and the keyboard below shows it to you.",
+      "You close a new key card by **typing the key right three times** (typos do not count), or with **Esc**. Esc closes the other cards too.",
+      "Confirm this card with the **space bar**, the longest key on the keyboard."
+    ]
   },
   "homeRow": {
     "title": "The home row",
@@ -635,154 +643,91 @@
       "The wave calmed down. Look, a rainbow!",
       "Steady rhythm wins!"
     ],
+    "world": {
+      "meadow": "It is a lovely afternoon on the meadow and there is a **football match** later! The animals train with you: they kick leaves like a ball and **you keep goal**. Catch the leaves with letters: **type the word on a leaf** and the leaf is yours.",
+      "space": "Three, two, one... **lift off!** You fly off to explore a few planets, all the way to the **dragons' planet**. **Your typing rhythm** drives the rocket and a soft beam pushes meteors out of the way.",
+      "planet": "Welcome to the **dragons' planet**! Its crystal of life has lost its light. Cross the swamp and the meadow, find the **crystals of life** and wake them with a spell. Then carry them to the Cradle of Life. Here **careful typing matters more than speed**.",
+      "dragons": "**Space rocks** are falling into the Dragon Valley. Every word makes a **shield bubble** for a baby dragon. The rocks just bounce away, nobody gets hurt.",
+      "egg": "Oh! **The egg starts to wiggle** and roll down the hill. Help it **jump over rocks and stumps**. Watch out for a friendly mole!",
+      "junkyard": "You walk past an old junkyard. **Someone is beeping sadly under a pile of old things.** Type a word and a **soft magnet** lifts the junk off the pile.",
+      "workshop": "Bolt wants to go home, but **he is missing some parts**. Gears, bolts and springs ride along the conveyor belt. **Type a part's word** and toss it into the basket.",
+      "raintown": "Oh no, it starts to rain! Robots must not get wet, or they **rust**. **Type the word on a raindrop** and your umbrella catches it.",
+      "robocity": "The way home leads through **Robot City**. All doors are locked and the panels show passwords. **Type a password** and the door opens with a chime.",
+      "robohome": "Bolt's home is dark and all the robots are asleep. **Type a word** and a lamp switches on. The helper robots wake up and wave hello.",
+      "garden": "The forest has gone quiet. Not a bird sings, not a leaf rustles. A tiny fairy with shimmering wings flies up to you: \"I am **Melody**. The forest forgot its songs!\" **Type a word** and a sleeping bud opens. Each flower hums one note.",
+      "forestpath": "The birds on the forest path forgot their words. Each bird sings a word quietly. **Listen well and type what you hear.** Tap a bird's word if you want to hear it again.",
+      "lilylake": "The lake is still as a mirror. A word shows on the water, then a little wave washes it away. **Remember it and type it**, and a lily blooms.",
+      "musictree": "In the middle of the forest stands the **Music Tree**. Its notes hang on the branches: some sing, some glow and then fade. **Listen or remember**, then type, and the note flies up.",
+      "moonball": "The moon rises and the fireflies come to the **ball**. Melody sings a short sentence for each firefly. **Type it** and the dance floor lights up."
+    },
     "scenes": {
-      "intro": [
-        "Hello {name}! This is your character in this adventure.",
-        "You will learn to type with all ten fingers.",
-        "Start on the Training Meadow!"
-      ],
-      "world1": [
-        "It is a lovely afternoon on the meadow. There is a football match later!",
-        "The animals train with you: they kick leaves like a ball and you keep goal.",
-        "Catch the leaves with letters: type the word on a leaf and the leaf is yours."
-      ],
       "invitation": [
         "The afternoon on the meadow is over. Look what you found in the grass!",
         "A secret invitation... to SPACE!",
         "Your fingers are ready for a rocket flight."
       ],
-      "world2": [
-        "Three, two, one... lift off!",
-        "You fly off to explore a few planets, all the way to the dragons' planet.",
-        "Your typing rhythm drives the rocket and a soft beam pushes meteors out of the way."
-      ],
       "landing": [
         "The dragons' planet is in sight. The control tower says: landing clearance granted!",
         "We are landing... oh no, right in a swamp!"
-      ],
-      "world3": [
-        "Welcome to the dragons' planet! Its crystal of life has lost its light.",
-        "Cross the swamp and the meadow, find the crystals of life and wake them with a spell.",
-        "Then carry them to the Cradle of Life. Careful typing matters more than speed here."
       ],
       "force": [
         "The crystals of life shine and the whole planet blooms again!",
         "To thank you, they gave you the Force: you move things gently, just by typing.",
         "The dragons in the next valley need help."
       ],
-      "world4": [
-        "Space rocks are falling into the Dragon Valley.",
-        "Every word makes a shield bubble for a baby dragon.",
-        "The rocks just bounce away, nobody gets hurt."
-      ],
       "egg": [
         "The dragons are safe and happy.",
         "As a thank you, they give you a magical Dragon Egg!"
-      ],
-      "world5": [
-        "Oh! The egg starts to wiggle and roll down the hill.",
-        "Help it jump over rocks and stumps.",
-        "Watch out for a friendly mole!"
       ],
       "hatched": [
         "Crack... crack... the egg hatches!",
         "A tiny baby dragon looks at you. You have a new friend!",
         "Now you can go on rescue missions and help more dragons."
       ],
-      "world6": [
-        "You walk past an old junkyard. What is that beeping?",
-        "Someone is beeping sadly under a pile of old things.",
-        "Type a word and a soft magnet lifts the junk off the pile."
-      ],
       "friends": [
         "A small rusty robot climbs out of the pile.",
         "He wants to say thank you, but he can only beep: Beep beep!",
         "He gives you a tiny gear. His name is Bolt, and now you are friends!"
-      ],
-      "world7": [
-        "Bolt wants to go home, but he is missing some parts.",
-        "Gears, bolts and springs ride along the conveyor belt.",
-        "Type a part's word and toss it into the basket."
       ],
       "legs": [
         "Done! Bolt has new long legs.",
         "And a bright new yellow antenna on his head.",
         "Now he can walk the long way home."
       ],
-      "world8": [
-        "Oh no, it starts to rain!",
-        "Robots must not get wet, or they rust.",
-        "Type the word on a raindrop and your umbrella catches it."
-      ],
       "raincoat": [
         "The rain stopped and a rainbow shines over the town.",
         "Bolt gets a yellow raincoat and you a new umbrella.",
         "Now no rain can hurt you two."
-      ],
-      "world9": [
-        "The way home leads through Robot City.",
-        "All doors are locked and the panels show passwords.",
-        "Type a password and the door opens with a chime."
       ],
       "key": [
         "The big gate is open!",
         "Bolt found the key card to his home.",
         "We are almost home!"
       ],
-      "world10": [
-        "Bolt's home is dark and all the robots are asleep.",
-        "Type a word and a lamp switches on.",
-        "The helper robots wake up and wave hello."
-      ],
       "home": [
         "Bolt's family is so happy he is home.",
         "They thank you, {name}, for helping Bolt.",
         "Now you can repair little robots on rescue missions too."
-      ],
-      "world11": [
-        "The forest has gone quiet. Not a bird sings, not a leaf rustles.",
-        "A tiny fairy with shimmering wings flies up to you. \"I am Melody. The forest forgot its songs!\"",
-        "Type a word and a sleeping bud opens. Each flower hums one note."
       ],
       "wreath": [
         "The big flower is awake and the whole garden hums!",
         "Melody weaves you a flower wreath.",
         "The garden has its song back. One song is home, four more to go."
       ],
-      "world12": [
-        "The birds on the forest path forgot their words.",
-        "Each bird sings a word quietly. Listen well and type what you hear.",
-        "Tap a bird's word if you want to hear it again."
-      ],
       "feather": [
         "Who, who? The owl liked your answers.",
         "She gives you a soft feather for your hat.",
         "The birds are singing again!"
-      ],
-      "world13": [
-        "The lake is still as a mirror.",
-        "A word shows on the water, then a little wave washes it away.",
-        "Remember it and type it, and a lily blooms."
       ],
       "lily": [
         "The long reflection is back in the water!",
         "Melody gives you a shining water lily.",
         "The frogs croak the lake's song."
       ],
-      "world14": [
-        "In the middle of the forest stands the Music Tree.",
-        "Its notes hang on the branches. Some sing, some glow and then fade.",
-        "Listen or remember, then type, and the note flies up."
-      ],
       "harp": [
         "The Music Tree plays its song again!",
         "Melody gives you a little harp.",
         "Only one song is missing, the song of the night."
-      ],
-      "world15": [
-        "The moon rises and the fireflies come to the ball.",
-        "Melody sings a short sentence for each firefly.",
-        "Type it and the dance floor lights up."
       ],
       "wings": [
         "The whole forest sings! Every bird, every frog, every tree.",
@@ -1148,6 +1093,13 @@
     "deleteTitle": "Delete",
     "delete": "Delete profile {name}",
     "deleteConfirm": "Really delete the profile {name} with all its progress?",
+    "deleteAll": "Delete all profiles",
+    "deleteAllTitle": "Delete all profiles?",
+    "deleteAllSure": "Really delete everything?",
+    "deleteAllText": "All players in this browser are deleted with all their progress. Everyone who typed here will have to start from the beginning unless they have a backup.",
+    "deleteAllBackup": "Download a backup instead",
+    "deleteAllNext": "Continue",
+    "deleteAllOk": "Delete everything",
     "checkOk": "Yes, open",
     "deleteOk": "Yes, delete",
     "autoDifficulty": "Automatic difficulty",

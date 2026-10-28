@@ -30,6 +30,12 @@ them in any order, skip some, or redo one later with the same name.
 
 ### Lessons from generating
 Notes from real Gemini runs; add new ones here.
+- A soft glow or halo (a light bulb) blends into the magenta and leaves a pink fringe after
+  keying. Ask for light as "a few short thin ray lines with dark outlines, no soft glow, no halo".
+- With an attached character picture, "a new pose" keeps its stance and only changes the arms
+  (Ms Turtle came back standing the same way twice). Say "the body pose must be completely
+  different from the attached picture" and describe the legs and the view concretely (sits
+  with the hind legs stretched forward, walks on all four legs seen from the side).
 - A motion word on an object ("bouncing", "running") makes Gemini add arms and legs. Say
   "no arms, no legs" when the object should stay an object.
 - A vague technical object ("a round gate with three panels") turns into a character with a
@@ -606,6 +612,20 @@ Generate an image: The same turtle teaching
 Draw the turtle from the attached picture as the same character, in exactly the same drawing style, colors, shell pattern, face and outline weight, but in a new pose: she is a kind teacher explaining something. She stands upright on her hind legs, turned three quarters toward the viewer, a friendly smile, eyes open and looking at the viewer. Her right front leg is raised with one finger pointing up, as when a teacher explains a rule; her left front leg holds a short thin wooden pointer stick that points diagonally up and away from her. No book, no speech bubble, no text, no letters, no chalkboard, no desk, no other objects. The whole turtle visible, centered, wide empty margin. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no floor. Square image.
 ```
 
+### ui-teacher-2.jpg and ui-teacher-3.jpg (Ms Turtle in two more poses, taking turns with ui-teacher.jpg above the worlds; 2026-10-28)
+**Attach `ui-teacher.jpg`** to each:
+```
+Generate an image: The same turtle teacher sitting and waving
+
+Draw the turtle from the attached picture as the same character, in exactly the same drawing style, colors, shell pattern with golden leaves, round glasses, graduation cap with tassel, face and outline weight. But the body pose must be completely different from the attached picture: she SITS on the ground on her bottom with both hind legs stretched forward toward the viewer, strictly front view, her shell behind her. An open red book lies on her lap and she holds it with one front leg; the other front leg is raised beside her head and waves hello. Big friendly smile, eyes open, looking at the viewer. No pointer stick, no speech bubble, no text, no letters, no numbers, no desk, no chair, no other objects. The whole turtle visible, centered, wide empty margin. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow under her, no floor, no marks anywhere in the background. Square image.
+```
+```
+Generate an image: The same turtle teacher with a glowing light bulb
+
+Draw the turtle from the attached picture as the same character, in exactly the same drawing style, colors, shell pattern with golden leaves, round glasses, graduation cap with tassel, face and outline weight. But the body pose must be completely different from the attached picture: she stands on her hind legs, front view, slightly leaning forward. In one front leg she holds a big glowing yellow light bulb in front of her chest, with soft warm light rays around the bulb, as when someone has a good idea. Her other front leg is stretched out to the right side of the image and points to the right with one finger. A happy smile, eyes open, looking at the viewer. No pointer stick, no clipboard, no book, no speech bubble, no text, no letters, no numbers, no desk, no other objects. The whole turtle visible, centered, wide empty margin. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow under her, no floor. Square image.
+```
+Follow-up in the same chat (the soft glow left a pink fringe after keying): "Same picture, keep everything, but the light of the bulb is drawn only as a few short thin yellow ray lines with dark outlines around the bulb: no soft glow, no halo, no blurred light anywhere, so the magenta background stays perfectly flat right up to every outline."
+
 ### ui-start-*.jpg (the start page's sky and meadow, each piece animated on its own)
 `npm run assets` turns `ui-start-meadow*` into one tile that the page repeats across the window
 (its ends are blended into each other); the rest are sprites.
@@ -675,7 +695,10 @@ Beautiful, richly detailed 2D game achievement icon for teenagers aged 10 to 15,
 | `badge-robocity.jpg` | a blue key card with a small chip and a key symbol | new |
 | `badge-robohome.jpg` | a cozy little house with a big red heart on the door | new |
 
-### ui-posture.jpg ("Ready, steady, type!" card before every adventure)
+### ui-posture-boy.jpg and ui-posture-girl.jpg ("Ready, steady, type!" card before every adventure, one at random)
+
+The girl's picture is the same prompt with "a cheerful girl (about 10 years old, shoulder-length wavy hair, a simple t-shirt, jeans and sneakers)" for the child. The owner replaced both on 2026-10-28 with their own versions (the boy in a striped t-shirt on an office chair, the girl with a flower clip).
+
 ```
 Cute, soft 2D children's storybook illustration, flat vector style with gentle gradients, rounded friendly shapes, soft dark-brown outlines (not black), warm pastel palette, light soft shading. Calm and friendly, suitable for children aged 8 to 12. No text, no letters, no numbers, no watermark.
 

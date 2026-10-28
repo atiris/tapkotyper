@@ -32,60 +32,13 @@ import { type TeacherTip, dueTip, tipSeen } from '../app/teacher-tips';
 import { openStats } from './stats';
 import { taskCard } from './task';
 
-/**
- * Starts a level (for a task, with its words), showing the world's intro scene the first time;
- * the very first level is introduced by the intro story before it.
- */
-export function playLevel(id: string, task?: string): void {
-  const p = app.profile!;
-  const l = LEVELS.find((x) => x.id === id);
-  if (l && l.index === 0) {
-    const scene = `world${l.world + 1}`;
-    const level = { next: 'level', nextParams: { id, task } };
-    const world = p.progress.scenesSeen.includes(scene) ? null : { scene, ...level };
-    if (l.world === 0 && !p.progress.scenesSeen.includes('intro')) {
-      go('story', { scene: 'intro', ...(world ? { next: 'story', nextParams: world } : level) });
-      return;
-    }
-    if (world) {
-      go('story', world);
-      return;
-    }
-  }
-  go('level', { id, task });
-}
-
-/** The first greeting of a new player: what to do on the map; closing (X or Escape) or starting marks it seen. */
-function welcomeCard(p: Profile, start: () => void): HTMLElement | null {
-  if (p.id === GUEST_ID || p.id === SUPER_ID || p.progress.scenesSeen.includes('welcome')) return null;
-  const done = () => {
-    window.removeEventListener('keydown', onKey, true);
-    p.progress.scenesSeen.push('welcome');
-    saveProfile();
-    card.remove();
-  };
-  // Escape closes the card like the X, unless a dialog lies over the map or a tooltip shows (that Escape hides the tooltip); a new screen drops the listener.
-  const onKey = (e: KeyboardEvent) => {
-    if (!card.isConnected) return window.removeEventListener('keydown', onKey, true);
-    if (e.key !== 'Escape' || document.querySelector('.modal-back') || tipShown()) return;
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    done();
-  };
-  window.addEventListener('keydown', onKey, true);
-  const card = h('section', { class: 'panel welcome-card', 'aria-labelledby': 'welcome-title' },
-    closeButton(done, t('map.welcome.close')),
-    h('div', { class: 'welcome-tapko' }, tapkoElement(p.companion, 'happy', 110)),
-    h('div', { class: 'welcome-text' },
-      h('h2', { id: 'welcome-title' }, t('map.welcome.title', { name: nickname(p) })),
-      button(t('map.welcome.start'), () => { done(); start(); }, 'btn primary', 'play')));
-  return card;
-}
+/** Ms Turtle's pictures, one after another with her tips. */
+const TEACHER_PICTURES = ['ui-teacher', 'ui-teacher-2', 'ui-teacher-3'];
 
 /**
  * The teacher turtle's tip above the worlds, when one is due: one thing about the app, read with
  * OK, the X or Escape, or with its second button, which leads to where it is told more. Any of
- * them marks it read.
+ * them marks it read; a tip that follows it takes its place at once.
  */
 function teacherPanel(p: Profile): HTMLElement | null {
   if (p.id === GUEST_ID || p.id === SUPER_ID) return null;
@@ -95,7 +48,10 @@ function teacherPanel(p: Profile): HTMLElement | null {
     window.removeEventListener('keydown', onKey, true);
     tipSeen(p, tip.id);
     saveProfile();
-    panel.remove();
+    const next = teacherPanel(p);
+    if (!next) return panel.remove();
+    panel.replaceWith(next);
+    next.querySelector<HTMLElement>('.btn.primary')?.focus();
   };
   const onKey = (e: KeyboardEvent) => {
     if (!panel.isConnected) return window.removeEventListener('keydown', onKey, true);
@@ -111,13 +67,13 @@ function teacherPanel(p: Profile): HTMLElement | null {
     if ('help' in link) go('help', { tab: link.help });
     else go(link.screen);
   }, 'btn', 'help');
-  const src = imageUrl('ui-teacher') ?? imageUrl('ui-mentor');
+  const src = imageUrl(TEACHER_PICTURES[p.progress.appTips.seen.length % TEACHER_PICTURES.length]) ?? imageUrl('ui-mentor');
   const panel = h('section', { class: 'panel teacher-tip', 'aria-labelledby': 'teacher-name' },
-    closeButton(done, t('map.welcome.close')),
+    closeButton(done, t('map.teacher.close')),
     src ? h('img', { class: 'teacher-img', src, alt: '' }) : null,
     h('div', { class: 'teacher-text' },
       h('h2', { id: 'teacher-name' }, t('map.teacher.name')),
-      h('p', {}, t(`map.teacher.tips.${tip.id}`)),
+      h('p', {}, t(`map.teacher.tips.${tip.id}`, { name: nickname(p) })),
       h('div', { class: 'row' }, button(t('map.teacher.ok'), done, 'btn primary', 'check'), follow || null)));
   return panel;
 }
@@ -171,11 +127,9 @@ export function mapScreen(root: HTMLElement): () => void {
   const next = nextLevel(p);
   const rescue = rescueUnlocked(p);
   // Nothing open for the child's keys: continue means practice, which brings new keys.
-  const start = () => (next ? playLevel(next.id) : openPracticeKeys());
+  const start = () => (next ? go('level', { id: next.id }) : openPracticeKeys());
   const play = button(t('map.continue'), start, 'btn primary big', 'play');
-  const welcome = welcomeCard(p, start);
-  // One greeting at a time: the teacher's tip waits for a map without the welcome.
-  const teacher = welcome ? null : teacherPanel(p);
+  const teacher = teacherPanel(p);
   const nextName = next ? levelTitleWords(next.world, next.index) : t('map.practice');
   play.dataset.tip = nextName;
   play.setAttribute('aria-label', `${t('map.continue')}: ${nextName}`);
@@ -199,11 +153,11 @@ export function mapScreen(root: HTMLElement): () => void {
         button(t('progress.title'), () => go('progress'), 'btn', 'chart'),
         rescue ? button(t('map.rescue'), () => go('level', { id: 'rescue' }), 'btn', 'rescue') : null,
         rescue ? button(t('map.friends'), () => go('friends'), 'btn', 'dragon') : null),
-      h('div', { class: 'story-rows' }, welcome, teacher, ...STORIES.map((s) => storyRow(p, s, next?.id, held, keysBubble, lockBubble))))));
+      h('div', { class: 'story-rows' }, teacher, ...STORIES.map((s) => storyRow(p, s, next?.id, held, keysBubble, lockBubble))))));
   // The arrows walk the levels and the closed worlds like a grid.
   arrowFocus(root.querySelector('.story-rows')!, '.level-node, .island-art[tabindex]');
-  // Enter starts at once: the welcome's start (it marks the welcome seen), else Continue.
-  (welcome?.querySelector<HTMLElement>('.btn.primary') ?? play).focus();
+  // Enter starts at once.
+  play.focus();
   if (flown.length) {
     const worlds = flown.map((w) => t(`worlds.${WORLDS[w]}`)).join(', ');
     bubble.replaceChildren(h('p', {}, t(flown.length === 1 ? 'map.parrotFlown' : 'map.parrotsFlown', { worlds })));
@@ -212,8 +166,8 @@ export function mapScreen(root: HTMLElement): () => void {
   // Tapko tells which parrots flew away first, then Aro says goodbye and leaves.
   if (aroLeaves) aro?.flyOff(tList('parrot.goodbye'), false, flown.length ? ARO_AFTER_MS : 0);
   if (aroArrives) aro?.arrive(tList('parrot.arrive'));
-  // One greeting at a time: the install offer waits for a map without the welcome.
-  if (p.id !== SUPER_ID && !welcome && !teacher) offerInstall(p.companion);
+  // One greeting at a time: the install offer waits for a map without the teacher's tip.
+  if (p.id !== SUPER_ID && !teacher) offerInstall(p.companion);
   // The first word of the parrot's hint typed on the map calls a parrot over the page, the range's sends one of its things across.
   const offParrot = onTypedWord([firstWord(t('map.parrotTip'))], parrotVisit);
   const offRange = onTypedWord([firstWord(t('map.aimTip'))], rangeVisit);
@@ -342,7 +296,7 @@ function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held:
         disabled: !reached,
         'aria-label': `${t(`worlds.${w}`)} ${l.isSuper ? t('map.super') : `${l.index + 1}, ${t(`map.act.${act}`)}`}${stars ? `, ${t('map.starsAria', { n: stars })}` : ''}${missing ? `, ${t('map.keysLocked')}` : ''}${gift ? `, ${t('map.surpriseHere')}` : ''}`,
         tip: `${l.isSuper ? t('map.act.super') : `${l.index + 1}. ${t(`map.act.${act}`)}`}${gift ? `\n${t('map.surpriseHere')}` : ''}`,
-        onClick: () => (missing ? keysBubble(missing, wi) : playLevel(l.id)),
+        onClick: () => (missing ? keysBubble(missing, wi) : go('level', { id: l.id })),
       }, actImg ? h('img', { class: 'level-act', src: actImg, alt: '' }) : h('span', { class: 'num' }, num),
         missing ? keyIcon(held) : h('span', { class: 'mini-stars' }, ...[1, 2, 3].map((s) => h('i', { class: s <= stars ? 'on' : '' }))));
       return b;

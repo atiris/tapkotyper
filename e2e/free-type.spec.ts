@@ -60,7 +60,7 @@ test('just typing shows what was typed after a pause and counts nothing', async 
 
 test('the place is picked from the open worlds and changed while typing', async ({ page }) => {
   await createProfile(page, 'Lea');
-  await editProfile(page, 'p.progress.worldsDone = [0]; p.progress.scenesSeen.push("welcome");');
+  await editProfile(page, 'p.progress.worldsDone = [0];');
   await page.locator('.map-side .btn', { hasText: 'Just typing' }).click();
   const picker = page.locator('.place-picker-modal');
   await expect(picker.locator('.place-tile')).toHaveText(['Meadow', 'Rocket']);

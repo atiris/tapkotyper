@@ -26,7 +26,6 @@ import { badge, parrotBadge } from '../ui/badge';
 import { medal } from '../ui/medal';
 import { roundButton } from '../ui/hud';
 import { rangeFinds } from '../ui/finds';
-import { playLevel } from './map';
 import { openPlacePicker, openWorlds } from './free-type';
 import { openHelp } from './help';
 import { openStats } from './stats';
@@ -76,6 +75,7 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
     onExit: exit,
     onTapko: openStats,
     onHelp: (back, now) => openHelp(root.querySelector('.level-screen')!, back, now),
+    onBreak: (back, play) => openBreak(back, play),
     onFinish: (result) => {
       if (!result) return exit();
       if (def.kind === 'aim') return showAimDone(root, result, rt.mode as AimMode, params);
@@ -201,7 +201,7 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
   if (r.worldDone !== null) {
     actions.append(button(t('results.reward'), () => go('story', { scene: WORLD_REWARDS[r.worldDone!], next: 'map' }), `btn ${calm ? '' : 'primary'}`, 'star'));
   } else if (nextDef) {
-    actions.append(button(t('results.next'), () => playLevel(nextDef.id, taskOn?.id), `btn ${calm ? '' : 'primary'}`, 'next'));
+    actions.append(button(t('results.next'), () => go('level', { id: nextDef.id, task: taskOn?.id }), `btn ${calm ? '' : 'primary'}`, 'next'));
   } else if (def.rescue) {
     actions.append(button(t('results.nextRescue'), () => go('level', { id: 'rescue' }), `btn ${calm ? '' : 'primary'}`, 'rescue'));
   }
@@ -251,7 +251,7 @@ function showStayDone(root: HTMLElement, def: LevelDef, r: LevelResult): void {
   const bubble = h('p', { class: 'bubble static side' }, breakDue ? pickLine('tapko.break') : line);
   if (breakDue) breakAction(actions, bubble, line);
   actions.append(button(t('level.end'), () => go('map'), `btn ${breakDue ? '' : 'primary'}`, 'close'));
-  if (next && isLevelUnlocked(p, next)) actions.append(button(t('results.next'), () => playLevel(next.id), 'btn', 'next'));
+  if (next && isLevelUnlocked(p, next)) actions.append(button(t('results.next'), () => go('level', { id: next.id }), 'btn', 'next'));
   const card = h('div', { class: 'card results-card stay-done' },
     h('div', { class: 'results-top' }, h('h2', {}, t('results.practiceDone'))),
     h('div', { class: 'results-tapko' }, tapkoElement(p.companion, 'happy', 80), bubble),

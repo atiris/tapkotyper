@@ -64,13 +64,18 @@
 - Explains the paw (what it shows, when to press Enter; no other key calls it, Backspace neither), the ring with the level's number beside the pause button (filled up to this level, full at the big challenge), the rescue mission and the badge, each in one short sentence.
 
 - **Ms Turtle's tips**: with "Introduce the app's features" on (the default), a panel above the
-  worlds on the map now and then shows one thing about the app, from Ms Turtle the teacher (her
-  own picture: the mentors' turtle with a raised finger and a pointer, no speech bubble): what
-  Tapko is, where help is, that the whole app works by keyboard, My progress, a task from the
+  worlds on the map now and then shows one thing about the app, from Ms Turtle the teacher (three
+  pictures of her taking turns from tip to tip: with a raised finger and a pointer, sitting with
+  a book and waving, holding a glowing light bulb and pointing to the right; no speech bubble). It is the only panel
+  above the worlds. The first two come one right after the other and introduce the app: hello
+  by nickname, the character on the left is the one the child picked for this typing adventure,
+  with whom they go through several stories and many worlds; then what a click on the character
+  shows (how much was typed, accuracy and speed, which keys go well and which need practice,
+  the exercises from the teacher). Then where help is, that the whole app works by keyboard, My progress, a task from the
   teacher and sending its result back, sharing results, the target range and the parrot. Each
   tip comes once and only when it fits (the task tip only with a task, sharing after a few
-  levels); the first four at most one an hour, the rest one every day and a half; none with the
-  welcome card or the install offer, never in a level. OK, the round X or Esc read it; a tip may
+  levels); the first four at most one an hour, the rest one every day and a half; none with
+  the install offer, never in a level. OK, the round X or Esc read it; a tip may
   have a second button that leads to where it is told more (a help tab, My progress), which
   reads it too.
 

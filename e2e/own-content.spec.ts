@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { createProfile, playLevel, skipStories } from './helpers';
+import { closeKeysIntro, createProfile, playLevel } from './helpers';
 
 test('own words and a surprise from the parent reach the child\'s next level', async ({ page }) => {
   const errors: string[] = [];
@@ -24,7 +24,7 @@ test('own words and a surprise from the parent reach the child\'s next level', a
 
   await page.locator('.bar .btn').first().click();
   await page.locator('.map-side .btn.primary').click();
-  await skipStories(page);
+  await closeKeysIntro(page);
   // The first keys are introduced before the get-ready card.
   while (!(await page.locator('.posture-card').count())) {
     const sample = await page.locator('.newkey-card').getAttribute('data-sample', { timeout: 5000 }).catch(() => null);

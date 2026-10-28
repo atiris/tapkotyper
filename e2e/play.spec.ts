@@ -1,12 +1,11 @@
 import { expect, test } from '@playwright/test';
-import { createProfile, playLevel, typeChar, skipStories } from './helpers';
+import { createProfile, playLevel, typeChar } from './helpers';
 
 test('a new child plays the first level by typing and sees stars', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await createProfile(page, 'Ema');
   await page.locator('.map-side .btn.primary').click();
-  await skipStories(page);
   const text = await playLevel(page);
   expect(text).toMatch(/%/);
   // The character celebrated in place, not running off.
@@ -47,7 +46,6 @@ test('a quick child plays the first level until its minimum length, and the bar 
   url.search = '?minActive=60';
   await page.goto(url.toString());
   await page.locator('.map-side .btn.primary').click();
-  await skipStories(page);
   const start = Date.now();
   const played = playLevel(page, false);
   await page.waitForTimeout(25_000);
@@ -85,9 +83,8 @@ test('the robot story is a second row on the map, and Bolt walks with the child 
   await page.keyboard.type('supertapkotyper', { delay: 40 });
   await expect(page.locator('.story-row')).toHaveCount(3);
   await page.locator('.story-robot .level-node').first().click();
-  await expect(page.locator('.story-screen.world-junkyard')).toBeVisible();
-  await page.keyboard.press('Escape');
-  await page.locator('.posture-card').waitFor();
+  // The world's story is on the get-ready card, highlighted.
+  await expect(page.locator('.posture-text strong').first()).toBeVisible();
   await page.keyboard.press('Space');
   await expect(page.locator('.level-screen.world-junkyard[data-bolt="broken"]')).toBeVisible();
   await page.locator('.level-tapko:not(.waiting)').waitFor();
@@ -99,9 +96,8 @@ test('Enter sends the paws to type a few words', async ({ page }) => {
   await page.goto('./');
   await page.locator('.start-screen').waitFor();
   await page.keyboard.type('supertapkotyper', { delay: 40 });
-  // The super player's progress is filled: Continue would go on, the first level brings its story.
+  // The super player's progress is filled: Continue would go on.
   await page.locator('.level-node').first().click();
-  await skipStories(page);
   await page.locator('.posture-card').waitFor();
   await page.keyboard.press('Space');
   await expect(page.locator('.paw-btn')).toHaveAttribute('data-charged', '3');
@@ -117,9 +113,8 @@ test('a level left during its get-ready card does not swallow the next level\'s 
   await page.goto('./');
   await page.locator('.start-screen').waitFor();
   await page.keyboard.type('supertapkotyper', { delay: 40 });
-  // The super player's progress is filled: Continue would go on, the first level brings its story.
+  // The super player's progress is filled: Continue would go on.
   await page.locator('.level-node').first().click();
-  await skipStories(page);
   await page.locator('.posture-card').waitFor();
   await page.goBack();
   await page.locator('.map-screen').waitFor();
@@ -144,21 +139,12 @@ test('guest progress is forgotten in a new browser context', async ({ page, brow
   await other.close();
 });
 
-test('Escape closes the welcome card on the map like its X', async ({ page }) => {
-  await createProfile(page, 'Ema');
-  await expect(page.locator('.welcome-card .modal-x')).toHaveAttribute('data-tip', 'Close (Esc)');
-  await page.keyboard.press('Escape');
-  await expect(page.locator('.welcome-card')).toHaveCount(0);
-  await expect(page.locator('.map-screen')).toBeVisible();
-});
-
 test('Escape closes the get-ready card like the space bar and starts the level', async ({ page }) => {
   await page.goto('./');
   await page.locator('.start-screen').waitFor();
   await page.keyboard.type('supertapkotyper', { delay: 40 });
-  // The super player's progress is filled: Continue would go on, the first level brings its story.
+  // The super player's progress is filled: Continue would go on.
   await page.locator('.level-node').first().click();
-  await skipStories(page);
   await page.locator('.posture-card').waitFor();
   await expect(page.locator('.posture-card .modal-x')).toHaveAttribute('data-tip', 'Close and start (Esc)');
   await page.keyboard.press('Escape');
@@ -209,7 +195,6 @@ test('world badges sit on the map, grow with stars and line up on the progress s
   await expect(page.locator('.island-planet .badge.bronze')).toBeVisible();
   await expect(page.locator('.island-dragons .badge')).toHaveCount(0);
   await page.locator('.island-meadow .level-node').first().click();
-  await skipStories(page);
   expect(await playLevel(page, false)).toContain('Your badge is gold now!');
   await page.keyboard.press('Escape');
   await page.keyboard.press('Escape');
@@ -235,9 +220,7 @@ test('the fairy story is a third row; Melody floats with the child, and dictatio
   await expect(row.locator('.island')).toHaveCount(5);
   // The forest path: dictation, here without a voice.
   await row.locator('.island-forestpath .level-node').first().click();
-  await expect(page.locator('.story-screen.world-forestpath')).toBeVisible();
-  await page.keyboard.press('Escape');
-  await expect(page.locator('.posture-card')).toContainText('cannot read aloud');
+  await expect(page.locator('.posture-cards')).toContainText('cannot read aloud');
   await expect(page.locator('.level-screen.world-forestpath[data-fairy="melody"]')).toBeVisible();
   const text = await playLevel(page, false);
   expect(text).not.toContain('By ear');
@@ -257,7 +240,7 @@ test('free practice with a diacritic key is played to the results card', async (
   for (let i = 0; i < 600 && !typed.includes('ô'); i++) {
     const state = await page.evaluate(() => ({
       newkey: document.querySelector<HTMLElement>('.newkey-card')?.dataset.sample ?? '',
-      ready: !!document.querySelector('.posture-card'),
+      ready: !!document.querySelector('.posture-card, .keys-intro'),
       next: document.querySelector<HTMLElement>('.kb-guide')?.dataset.next ?? '',
     }));
     if (state.ready) await page.keyboard.press('Space');
@@ -278,7 +261,6 @@ test('staying a while after a level keeps typing until Esc and leaves the stars 
   page.on('pageerror', (e) => errors.push(e.message));
   await createProfile(page, 'Mia');
   await page.locator('.map-side .btn.primary').click();
-  await skipStories(page);
   await playLevel(page);
   const node = page.locator('.level-node').first();
   const stars = await page.locator('.results-card .star.on').count();

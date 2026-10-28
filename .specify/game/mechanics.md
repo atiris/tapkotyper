@@ -114,9 +114,12 @@
   The pause is a small card at the top: the words and the guide's next key stay in sight.
   "Small break" with one stretch to try, the round X (Escape too) to go on, and Continue,
   "Slower" (one step lower difficulty, the narrator confirms; automatic growth may raise it
-  again after accurate play), "Quick exercise" (that stretch with a 20 s countdown on the card,
-  then the pause again, the level waiting where it was) and the end of the level. Help is the
-  level's "?", not a button here.
+  again after accurate play; not before play), "Quick exercise" (that stretch with a 20 s
+  countdown on the card, then the pause again, the level waiting where it was; "Longer
+  exercise" there opens the map's warm-up, where going on typing continues the level and
+  cancelling returns to the pause) and the end of the level. The title and the stretch center on
+  the whole card, with room above and below the stretch. Help is the level's "?", not a button
+  here.
 - **Leaving a level** is said the same everywhere: "Stop typing" on the pause card of a story,
   an exercise or a rescue, and on every end card back to the map, so the child learns one button. Once something was typed in
   the level (a right or a wrong key) it asks first: "Really end it? This level will not

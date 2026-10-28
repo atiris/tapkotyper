@@ -11,7 +11,6 @@ import { nickname } from '../storage/store';
 import { button, h, modal } from '../ui/dom';
 import { bigCode } from '../ui/big-code';
 import { fitsQr, linkBox } from '../ui/link-box';
-import { playLevel } from './map';
 
 /** Plays the task: a timed practice of what is left, or the next story level. */
 export function startTask(p: Profile, task: Task): void {
@@ -19,7 +18,7 @@ export function startTask(p: Profile, task: Task): void {
   else {
     const next = nextLevel(p);
     // No level open for the child's keys: practice the task's minutes instead.
-    if (next) playLevel(next.id, task.id);
+    if (next) go('level', { id: next.id, task: task.id });
     else go('level', { id: 'practice', seconds: taskLeft(task), task: task.id });
   }
 }

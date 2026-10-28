@@ -106,8 +106,6 @@ test('the menu carries a screen\'s own buttons on a phone', async ({ page }) => 
 
 test('the QR screen: the name first, one size for the padding and the gaps, closes by the button and by a click', async ({ page }) => {
   await createProfile(page, 'Ema');
-  const welcome = page.locator('.welcome-card .modal-x');
-  if (await welcome.count()) await welcome.click();
   for (const size of [{ width: 1280, height: 800 }, { width: 390, height: 844 }]) {
     await page.setViewportSize(size);
     await page.locator('.map-tapko').click();

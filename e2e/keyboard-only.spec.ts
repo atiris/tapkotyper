@@ -26,8 +26,8 @@ test('the whole game by keyboard only: a new player, a level, the results, endin
   await page.keyboard.press('Enter');
   await page.locator('.map-screen').waitFor();
 
-  // The welcome's start is focused; the intro stories go on by Enter.
-  await expect(page.locator('.welcome-card .btn.primary')).toBeFocused();
+  // Continue is focused; the card before the first key closes with the space bar.
+  await expect(page.locator('.map-side .btn.primary')).toBeFocused();
   await page.keyboard.press('Enter');
   await untilPlay(page, 'ready');
   await playLevel(page);

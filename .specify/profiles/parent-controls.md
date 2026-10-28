@@ -40,7 +40,12 @@
   language** and the keyboard layout (own languages from the [translator](../experience/translation.md)
   are offered after the official ones). A kind picked here is granted at once.
 - The **data** tab has one framed group like the settings tab: **Profiles** (export,
-  move, import, and deleting the profile).
+  move, import, and deleting the profile), and **Delete all profiles** (also without a player).
+  It asks twice, both times saying that everyone who typed here starts from the beginning
+  without a backup and offering "Download a backup instead"; the second question has four Back
+  buttons and only one "Delete everything" among them, at a random place, so it is never pressed
+  by habit; there the backup is the default (focused) button. Deleting everything leads to the
+  start page.
 - The settings group **Sounds and interface** ("Zvuky a rozhranie": volumes, reading aloud,
   fonts, large text, motion, contrast, fullscreen) ends with **Translate the game**: its
   heading, what it is for, then a button of the usual size that opens the translator. The

@@ -2,11 +2,13 @@
 
 ## What
 The child travels through worlds grouped into stories. Each world has several short
-levels and ends with a super-obstacle and a reward that opens the next world. Short,
-skippable intro scenes (a few lines of text and a simple animation) tell the story.
-The scene's text panel has the round X of every panel in its top right corner; the X, Skip
-and Esc skip the whole scene, and the scenes chained after it (the intro and the first world's
-scene) too.
+levels and ends with a super-obstacle and a reward that opens the next world. The story
+is told on the get-ready card before each level, never in a scene of its own before play:
+the first time the first level of a world is played, the card tells the world's story (what
+happened, where the child is and what to type, the key phrases in bold); every other time the
+level's own story line. Only the reward of a finished world is a short scene (a few lines of
+text and a simple animation), opened from the results; the round X of its text panel, Skip
+and Esc end it.
 The child plays as their character ([the character](../companion/tapko.md)); a narrator
 tells the story to the child in the second person ("you catch the leaf", "Melody
 gives you a wreath"), never about the character as someone else.
@@ -24,8 +26,8 @@ gives you a wreath"), never about the character as someone else.
    the hedgehog who missed the match and wants to play too, a good player, so it is harder (5). Typing the word sends the leaf faster into the gloves, which
    rise with it step by step and reach its height just as it arrives, so they always catch it: in the middle band when it was typed before the kick or kicked up there,
    else at its own height. The caught leaf fades away in the gloves, and its creature turns
-   and goes home. The intro scene and the level's start line tell exactly this, and the get-ready
-   card of every story level shows the level's story under its title. A leaf not typed in time flies past: a goal, everybody cheers (a "GOAL!" pop,
+   and goes home. The world's story and the level's start line tell exactly this, on the get-ready
+   card of every story level under its title. A leaf not typed in time flies past: a goal, everybody cheers (a "GOAL!" pop,
    confetti and the creature's joy before it leaves, but no words from the narrator, which would nag), so a miss is
    a laugh, not a failure. The leaf size shows the word length at a glance. Animals are
    never the target of anything (no webs, nets or swatters): even soft hitting or catching

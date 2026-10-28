@@ -49,7 +49,7 @@ export const PLURAL_KEYS = new Set([
 ]);
 
 /** Arrays whose order and count matter; every other array is a pool read at random. */
-const LINES = ['start.slogan', 'story.scenes.*', 'cert.praise', 'about.*', 'help.*'];
+const LINES = ['start.slogan', 'story.scenes.*', 'keysIntro.text', 'cert.praise', 'about.*', 'help.*'];
 
 /** The id of the word list item and of its field. */
 export const WORDS = 'words';
@@ -66,7 +66,6 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
   ] },
   { id: 'map', groups: [
     g('worlds', 'worlds.*'),
-    g('map-welcome', 'map.welcome.*'),
     g('map-teacher', 'map.teacher.*'),
     g('map-buttons', 'map.hello', 'map.title', 'map.switchProfile', 'map.settings', 'map.warmUp', 'map.continue', 'map.practice', 'map.ownText', 'map.freeType', 'map.wardrobe', 'map.rescue', 'map.friends'),
     g('map-page', 'map.*'),
@@ -75,17 +74,18 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
     g('tracks', 'tracks.*'),
   ] },
   { id: 'typing', groups: [
-    g('level-pause', 'level.pause', 'level.paused', 'level.pauseClose', 'level.slower', 'level.slowerSaid', 'level.stretch', 'level.stretchDone'),
+    g('level-pause', 'level.pause', 'level.paused', 'level.pauseClose', 'level.slower', 'level.slowerSaid', 'level.stretch', 'level.stretchLong', 'level.stretchDone'),
     g('level', 'level.*'),
     g('keyboard', 'keys.*', 'layouts.*', 'fingers.*', 'guide.*'),
     g('posture', 'posture.*'),
-    g('new-key', 'newKey.*', 'homeRow.*'),
+    g('new-key', 'keysIntro.*', 'newKey.*', 'homeRow.*'),
     g('practice', 'practice.*', 'practiceKeys.*'),
     g('free-type', 'freeType.*', 'touch.*'),
     g('helpers', 'paw.*', 'wave.*'),
   ] },
   { id: 'story', groups: [
     g('tapko', 'tapko.*', 'fairy.*'),
+    g('story-worlds', 'story.world.*'),
     g('story-scenes', 'story.scenes.*', 'story.next'),
     g('story-space', 'story.spaceStart', 'story.hopStart', 'story.hopTooFar', 'story.strongStart', 'story.strongHit', 'story.commandStart', 'story.commandReply', 'story.commandRejected', 'story.boarded', 'story.asteroidStart'),
     g('story-planet', 'story.swampStart', 'story.swampDone', 'story.crystalsStart', 'story.crystalsDoneOne', 'story.crystalsDoneFew', 'story.crystalsDoneMany', 'story.crossroadsStart', 'story.roadEnd', 'story.signGone', 'story.signLast', 'story.spellStart', 'story.spellCast', 'story.spellBroken', 'story.greatSwampStart', 'story.greatSwampSlip', 'story.boulderStart', 'story.boulderOpen', 'story.cradleDone'),

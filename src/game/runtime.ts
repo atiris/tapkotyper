@@ -27,7 +27,7 @@ import { type MenuEntry, menuPanel } from '../ui/menu';
 import { OWN_SHARE, WordSource, type WordSourceOwn } from '../words/words';
 import { type LangRef, type Profile, SUPER_ID, type Surprise } from '../storage/schema';
 import type { LevelDef } from './levels';
-import { WORLDS, grownCount, hasMinLength, levelOver, minActiveS, shownProgress, storyOf } from './levels';
+import { LEVELS, WORLDS, grownCount, hasMinLength, levelOver, minActiveS, shownProgress, storyOf } from './levels';
 import { type Mode, TAPKO_FEET, TAPKO_H, TAPKO_X, driftOffset } from './mode';
 import { PAW_MAX, PAW_STREAK, PAW_WORDS } from './paw';
 import { ENTER_MAX, EnterMarks } from './enter';
@@ -37,7 +37,7 @@ import { PressureValve, perChar, sayTime } from './pace';
 import { Rhythm } from './rhythm';
 import { type LevelResult, completeLevel, completeStay } from './progress';
 import { type Style, type Target, TypingCore } from './typing';
-import { pickTip, showCard, showHomeRow, showNewKey, showPosture } from './cards';
+import { pickTip, showCard, showHomeRow, showKeysIntro, showNewKey, showPosture } from './cards';
 import { surpriseFor } from './own-content';
 import { HELP_PLANS, type HelpHost, type HelpPlan, SuperHelper } from './super-help';
 
@@ -169,6 +169,8 @@ export interface RuntimeOptions {
   onTapko(): void;
   /** The help page over the paused level, with what this level asks (`now`); `back` returns to the paused level. */
   onHelp(back: () => void, now: HTMLElement[]): void;
+  /** The map's warm-up over the paused level: `back` returns to the pause card, `play` goes on typing. */
+  onBreak(back: () => void, play: () => void): void;
 }
 
 /** The e2e build counts the frames with a speech bubble and those where one covers a word label (`window.speechLog`). */
@@ -444,13 +446,16 @@ export class LevelRuntime {
     }
     const lay = layout();
     const homeKeys = [homeKey(lay, 3), homeKey(lay, 6)];
+    const known = (k: string | null) => !!k && (p.progress.introducedKeys.includes(k) || this.shownKeys.includes(k));
     for (const key of this.opts.keys ? [] : keysToIntroduce(p)) {
       if (this.disposed) return;
+      // The very first key card is preceded by why key cards come and how they close.
+      if (!p.progress.introducedKeys.length && !this.shownKeys.length) await showKeysIntro(host, p);
+      if (this.disposed) return;
       await showNewKey(host, key, lay, this.guide, p);
-      p.progress.introducedKeys.push(key);
-      saveProfile();
+      this.shownKeys.push(key);
       // Once F and J are both known, the home row is taught, before they are used in play.
-      if (homeKeys.includes(key) && homeKeys.every((k) => k && p.progress.introducedKeys.includes(k))) await showHomeRow(host, lay, this.guide, p);
+      if (homeKeys.includes(key) && homeKeys.every(known)) await showHomeRow(host, lay, this.guide, p);
     }
     if (this.disposed) return;
     // Without a voice of the language a dictation runs as copy typing (a mixed run as memory), and the card says so.
@@ -460,21 +465,34 @@ export class LevelRuntime {
     this.core.style = this.style;
     this.words.heard = this.dictating;
     this.paintRead();
-    // The level's story and what it asks in particular, both on the one get-ready card.
-    const story = [this.mode.startLine(), this.mode.intro()].filter(Boolean).join(' ') || null;
+    // The level's story and what it asks in particular, both on the one get-ready card; the first
+    // level of a world tells the world's story instead of its own the first time.
+    const opening = LEVELS.find((l) => l.id === this.def.id)?.index === 0 ? `world-${WORLDS[this.def.world]}` : null;
+    const worldStory = opening && !p.progress.scenesSeen.includes(opening) ? t(`story.world.${WORLDS[this.def.world]}`) : null;
+    const story = [worldStory ?? this.mode.startLine(), this.mode.intro()].filter(Boolean).join(' ') || null;
     if (!this.opts.keys) await showPosture(host, p, tip, this.surprise, voiceNote, story);
     if (this.disposed) return;
+    if (opening && worldStory) {
+      p.progress.scenesSeen.push(opening);
+      saveProfile();
+    }
     this.begin();
   }
 
   /** When play began (`performance.now()`). */
   private begunAt = 0;
+  /** Keys whose cards were shown before this level; they count as introduced only once play begins. */
+  private shownKeys: string[] = [];
 
   /** Play starts: the mode, the story line or the friend's first line, the keys. */
   private begin(): void {
     this.mode.start();
     this.started = true;
     this.begunAt = performance.now();
+    if (this.shownKeys.length) {
+      app.profile!.progress.introducedKeys.push(...this.shownKeys);
+      saveProfile();
+    }
     if (this.free) this.say(t('freeType.start'), 6);
     else if (this.opts.stay) this.say(t(this.def.kind === 'aim' ? 'aim.stayStart' : 'level.stayStart'), 6);
     else if (this.fairy) this.say(pickLine('fairy.start'), 3);
@@ -1135,12 +1153,15 @@ export class LevelRuntime {
 
   // ---- pause -------------------------------------------------------------------
 
+  /** Also while the cards before play are open: their keys wait, and the pause card has no Slower then. */
   pause(): void {
-    if (this.paused || this.finished || !this.started) return;
+    if (this.paused || this.finished) return;
     this.paused = true;
     speech.stop();
     this.paintPause();
     this.pauseEl = h('div', { class: 'card pause-card', role: 'dialog', 'aria-label': t('level.paused') });
+    // Before play there is no key input yet: Esc on the card goes on to the cards.
+    if (!this.started) this.pauseEl.addEventListener('keydown', (e) => { if (e.key === 'Escape') this.resume(); });
     this.pauseCard();
     this.el.querySelector('.stage-wrap')!.append(this.pauseEl);
     this.focusPause();
@@ -1148,12 +1169,12 @@ export class LevelRuntime {
 
   /**
    * A small card at the top (the words and the guide's next key stay in sight): a stretch to try,
-   * the X (Esc too) to go on, and Continue, Slower, the short exercise of that stretch and the end.
+   * the X (Esc too) to go on, and Continue, Slower (only in play), the short exercise of that stretch and the end.
    */
   private pauseCard(): void {
     const stretch = STRETCHES[Math.floor(Math.random() * STRETCHES.length)];
-    const slower = button(t('level.slower'), () => this.slowDown(), 'btn');
-    slower.disabled = this.difficulty <= 1;
+    const slower = this.started ? button(t('level.slower'), () => this.slowDown(), 'btn') : null;
+    if (slower) slower.disabled = this.difficulty <= 1;
     this.pauseEl!.replaceChildren(
       closeButton(() => this.resume(), t('level.pauseClose')),
       h('h2', {}, t('level.paused')),
@@ -1165,7 +1186,7 @@ export class LevelRuntime {
         button(t(this.ending.label), () => void this.leave(), 'btn', 'close')));
   }
 
-  /** The short exercise on the pause card: the stretch with a countdown, then the pause again. */
+  /** The short exercise on the pause card: the stretch with a countdown, then the pause again; or the longer break instead. */
   private stretch(name: string): void {
     let left = STRETCH_S;
     const count = h('div', { class: 'break-timer' }, String(left));
@@ -1181,7 +1202,13 @@ export class LevelRuntime {
       h('h2', {}, t('level.stretch')),
       h('p', { class: 'pause-tip' }, t(`break.${name}`)),
       count,
-      h('div', { class: 'row' }, button(t('level.stretchDone'), back, 'btn primary', 'check')));
+      h('div', { class: 'row' },
+        button(t('level.stretchDone'), back, 'btn primary', 'check'),
+        button(t('level.stretchLong'), () => {
+          clearInterval(this.stretchTimer);
+          this.stretchTimer = 0;
+          this.opts.onBreak(back, () => this.resume());
+        }, 'btn', 'wave')));
     this.focusPause();
     this.stretchTimer = window.setInterval(() => {
       count.textContent = String(--left);

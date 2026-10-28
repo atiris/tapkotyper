@@ -1,12 +1,12 @@
 import { audio } from '../audio/audio';
-import { t, tMap } from '../i18n/i18n';
+import { t, tList, tMap } from '../i18n/i18n';
 import { type Finger, LAYOUTS, type Layout, enterAfter, homeKey } from '../keyboard/layouts';
 import { layout } from '../app/app';
 import type { Profile, Surprise } from '../storage/schema';
 import { surpriseCount } from './own-content';
 import type { Style } from './typing';
 import { FINGER_COLORS, type KeyboardGuide, fingerChip, lessonFinger, textColorsOn } from '../ui/keyboard-guide';
-import { button, closeButton, h, icon } from '../ui/dom';
+import { button, closeButton, h, icon, richText } from '../ui/dom';
 import { tapkoElement } from '../gfx/tapko';
 import { imageUrl } from '../gfx/assets';
 import { SHIFT_L, SHIFT_R, SPACE } from '../learning/lessons';
@@ -19,10 +19,12 @@ interface CardOpts {
 /**
  * Captures keys for a card while it is on screen. A card that leaves together with its
  * screen (back button, map) lets go by itself, so it never swallows the next level's keys.
+ * While the level's pause card lies over the card (beside it on the stage) the keys are the pause's.
  */
 export function captureKeys(overlay: HTMLElement, onKey: (e: KeyboardEvent) => void): () => void {
   const stop = () => window.removeEventListener('keydown', listener, true);
-  const listener = (e: KeyboardEvent) => (overlay.isConnected ? onKey(e) : stop());
+  const paused = () => overlay.parentElement?.querySelector(':scope > .pause-card');
+  const listener = (e: KeyboardEvent) => (!overlay.isConnected ? stop() : paused() ? undefined : onKey(e));
   window.addEventListener('keydown', listener, true);
   return stop;
 }
@@ -99,29 +101,17 @@ function homeKeys(lay: Layout): string {
   return `${keys([0, 1, 2, 3])} ${keys([6, 7, 8, 9])}`;
 }
 
-/**
- * The posture picture with one line under it (the given tip, else a random posture reminder) and
- * where the fingers go (`fingers`, shown later), and beside them the level's story when it has one.
- */
-function postureContent(fingers: HTMLElement, line?: string, story?: string | null): HTMLElement {
-  const src = imageUrl('ui-posture');
-  const tip = POSTURE_TIPS[Math.floor(Math.random() * POSTURE_TIPS.length)];
-  return h('div', { class: 'posture' },
-    h('h2', {}, t('posture.title')),
-    h('figure', { class: 'posture-pic' },
-      src ? h('img', { class: 'posture-img', src, alt: '' }) : h('div', { class: 'posture-img', html: postureSvg() }),
-      h('figcaption', { class: 'posture-tip' }, line ?? t(`posture.${tip}`)),
-      fingers),
-    story ? h('p', { class: 'posture-text' }, story) : null);
-}
+/** The posture pictures, a boy's and a girl's; the card takes one at random. */
+const POSTURE_PICTURES = ['ui-posture-boy', 'ui-posture-girl'];
 
 /**
- * Get-ready card before every adventure, the only one before a level apart from new keys: the
- * level's story when it has one, the session's preparation tip when one is due (else a posture
- * reminder) under the picture, the question of a parent's surprise asked in this run (with what
- * is still left when it counts) and a note on the run when one is due. Where the fingers go shows
- * above the space bar only after a while without it. The space bar, Enter or Escape (or a tap on
- * the space bar's drawing or the close button) closes it and opens the adventure.
+ * Get-ready card before every adventure, the only one before a level apart from the key cards. Two
+ * panels side by side on a wide enough screen: on the left the technical part, a posture picture with
+ * the session's preparation tip when one is due (else a posture reminder) under it, where the fingers
+ * go (shown only after a while without the space bar) and a note on the run when one is due; on the
+ * right under the title the story (`**phrase**` marks highlight) and the question of a parent's surprise asked in this
+ * run (with what is still left when it counts), the space bar's drawing under them. The space bar, Enter or Escape (or a tap on the space
+ * bar's drawing or the close button) closes it and opens the adventure.
  */
 export function showPosture(host: HTMLElement, p: Profile, tip?: string, surprise?: Surprise | null, note?: string, story?: string | null): Promise<void> {
   return new Promise((resolve) => {
@@ -133,15 +123,55 @@ export function showPosture(host: HTMLElement, p: Profile, tip?: string, surpris
     };
     const space = h('button', { class: 'space-key', type: 'button', 'aria-label': t('posture.spaceKey'), onClick: close }, t('posture.spaceKey'));
     const fingers = h('p', { class: 'posture-fingers later' }, t('posture.space', { keys: homeKeys(LAYOUTS[p.layout]) }));
+    const src = imageUrl(POSTURE_PICTURES[Math.floor(Math.random() * POSTURE_PICTURES.length)]);
+    const reminder = POSTURE_TIPS[Math.floor(Math.random() * POSTURE_TIPS.length)];
+    const side = h('div', { class: 'card posture-side' },
+      h('figure', { class: 'posture-pic' },
+        src ? h('img', { class: 'posture-img', src, alt: '' }) : h('div', { class: 'posture-img', html: postureSvg() }),
+        h('figcaption', { class: 'posture-tip' }, tip ?? t(`posture.${reminder}`)),
+        fingers),
+      note ? h('p', { class: 'hint style-note' }, note) : null);
     const card = h('div', { class: 'card posture-card' },
       closeButton(close, t('posture.close')),
-      postureContent(fingers, tip, story),
+      h('h2', {}, t('posture.title')),
+      story ? h('p', { class: 'posture-text' }, ...richText(story)) : null,
       surprise ? surpriseAsk(surprise.q) : null,
       surprise ? surpriseLeft(p, surprise) : null,
-      note ? h('p', { class: 'hint style-note' }, note) : null,
       space);
-    const overlay = h('div', { class: 'overlay' }, card);
+    const overlay = h('div', { class: 'overlay' }, h('div', { class: 'posture-cards' }, side, card));
     const timer = setTimeout(() => fingers.classList.remove('later'), FINGERS_AFTER_S * 1000);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.repeat || (e.key !== ' ' && e.key !== 'Enter' && e.key !== 'Escape')) return;
+      e.preventDefault();
+      e.stopPropagation();
+      audio.sfx('pop');
+      close();
+    };
+    const stop = captureKeys(overlay, onKey);
+    host.append(overlay);
+  });
+}
+
+/**
+ * Told once, before the very first new key: why new keys come, how a key card is closed (the key
+ * typed right three times, or Esc) and that this card closes with the space bar. The space bar,
+ * Enter, Escape, the drawn space bar or the X closes it.
+ */
+export function showKeysIntro(host: HTMLElement, p: Profile): Promise<void> {
+  return new Promise((resolve) => {
+    const close = () => {
+      stop();
+      overlay.remove();
+      resolve();
+    };
+    const card = h('div', { class: 'card newkey-card keys-intro' },
+      closeButton(close, t('keysIntro.close')),
+      h('div', { class: 'newkey-tapko' }, tapkoElement(p.companion, 'happy', 220)),
+      h('div', { class: 'newkey-how' },
+        h('h2', {}, t('keysIntro.title')),
+        ...tList('keysIntro.text').map((line) => h('p', {}, ...richText(line))),
+        h('button', { class: 'space-key', type: 'button', 'aria-label': t('posture.spaceKey'), onClick: close }, t('posture.spaceKey'))));
+    const overlay = h('div', { class: 'overlay' }, card);
     const onKey = (e: KeyboardEvent) => {
       if (e.repeat || (e.key !== ' ' && e.key !== 'Enter' && e.key !== 'Escape')) return;
       e.preventDefault();
@@ -284,7 +314,6 @@ export function showNewKey(host: HTMLElement, key: string, layout: Layout, guide
   });
 }
 
-/** Simple friendly posture illustration. */
 /** The home row's fingers, left pinky to right pinky. */
 const HOME_FINGERS: Finger[] = [0, 1, 2, 3, 6, 7, 8, 9];
 /** What the child types on the home-row card: F and J by turns. */
@@ -357,6 +386,7 @@ export function showHomeRow(host: HTMLElement, lay: Layout, guide: KeyboardGuide
   });
 }
 
+/** Simple friendly posture illustration, when the pictures are missing. */
 function postureSvg(): string {
   return `<svg viewBox="0 0 220 150" role="img" aria-hidden="true">
   <rect x="120" y="20" width="80" height="55" rx="8" fill="#cfe8ff" stroke="#5a3d2b" stroke-width="3"/>

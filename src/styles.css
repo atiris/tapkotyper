@@ -1016,8 +1016,9 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .aim-row-key { display: inline-grid; place-items: center; min-width: 1.8em; font-family: var(--font-keys); border-radius: 8px; background: var(--surface); box-shadow: inset 0 -3px 0 var(--brand); }
 .aim-row.good span { color: var(--green-ink); }
 .aim-collection { margin: 0.7rem auto 0; text-align: center; }
-/* The whole collection in one row while the card can grow to hold it. */
-.results-card > .aim-collection { max-width: none; }
+/* The title and the whole collection in one row while the card can grow to hold them. */
+.results-card > .aim-collection, .results-card > .results-top { max-width: none; }
+.results-card.aim-done .aim-collection, .results-card.aim-done .row { margin-top: 1.2rem; }
 .aim-collection-count { margin: 0 0 0.3rem; font-weight: 700; }
 .aim-finds { list-style: none; padding: 0; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.25rem; }
 .aim-find { position: relative; display: grid; place-items: center; width: 2.4rem; height: 2.4rem; border-radius: 10px; background: var(--surface); }

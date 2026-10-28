@@ -96,7 +96,9 @@ Notes from real Gemini runs; add new ones here.
   bottom strip, squashed to 150 px and quilted with itself as the donor).
 - A sun with rays got uneven rays; for a calm sun ask for "a smooth perfect circle, no rays".
 - A Gemini seam repaint of a band on magenta tinted the magenta in the repainted middle pink, and the
-  key kept it. Turn pinkish pixels back to pure magenta before `npm run assets` (planet, 2026-10-28).
+  key kept it, and dark violet rim pixels along the band's top were left as a purple fringe. Run
+  `node scripts/defringe.mjs <layer.png> <layer.png>` before `npm run assets`: tinted pixels touching
+  the key become the key, things inside keep their colors (planet, 2026-10-28).
 - A detailed near and mid layer (grass with crystals, mushrooms, bulbs and ferns) swallowed the game's
   own crystals, signposts and words on the planet's meadow (2026-10-28). Where objects with words
   stand on a layer, ask for "LOW detail, calm and simple", "mostly plain grass, lots of calm empty

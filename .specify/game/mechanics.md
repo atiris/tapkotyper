@@ -33,12 +33,14 @@
   and one word is on screen at a time.
 - Every story level, super level and rescue mission lasts at least 2 minutes of active
   play (pauses and cards do not count): a quick child gets more targets of the same kind.
+  The valley's flight levels count dragons (three, one more while the minimum is not played,
+  at most five) and the fifth ends the level even below the minimum ([story](story.md)).
   The progress bar shows the slower of the two shares, the targets done
   and the minimum time played, so it never runs ahead of either, ends exactly when the level
   ends and never goes back when more targets come. Practice,
   custom exercises and free typing keep their own length. At the end Tapko stays where he is and jumps happily
   three times (Bolt hops with him in story 2, Melody hops in story 3; a super level adds a cheer), and any tool he held in the level (gloves,
-  umbrella, shield) fades away; with reduced motion he only smiles and the tool is gone
+  torch, umbrella) fades away; with reduced motion he only smiles and the tool is gone
   at once. About 1.4 seconds later the end screen shows stars (accuracy), new keys, and a
   sentence from the narrator. The end screen is a compact card that fits a small laptop screen
   (1024x600) without scrolling, also with a new key, a medal and a surprise: title and
@@ -54,7 +56,7 @@
   screen also shows half stars, 1.5 from 80 % and 2.5 from 90 %, so a child sees a small gain
   before the next whole star; the map, the progress table and every count keep whole stars
   only, the shown stars rounded down.
-- **World rhythm** (the meadow and the rocket world; the planet starts with its calm step, see [story](story.md)): the levels of a world have fixed roles, so one
+- **World rhythm** (the meadow, the rocket world and the valley; the planet starts with its calm step, see [story](story.md)): the levels of a world have fixed roles, so one
   session (about one world) goes up and down instead of repeating one game: 1 the world's
   main game, gently; 2 a calm step; 3 the main game, harder, with one short surprise; 4 a
   twist; 5 the super-obstacle. Each level dot on the map shows the icon of its activity

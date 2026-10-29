@@ -640,7 +640,7 @@
       "meadow": "Na lúke je krásne popoludnie a poobede bude **futbalový zápas**! Zvieratká s tebou trénujú: kopú listy ako loptu a **ty si brankár**. Chytaj listy písmenami: **napíš slovo na liste** a list je tvoj.",
       "space": "Tri, dva, jeden... **štart!** Letíš preskúmať zopár planét až k **planéte drakov**. **Rytmus tvojho písania** poháňa raketu a jemný lúč odsúva meteority z cesty.",
       "planet": "**Vitaj** na planéte drakov, na ktorej existujú kúzla a život poháňajú kryštály! **Posledný kryštál** života však už **vyhasol.** Hrozí, že planéta stratí svetlo. Našťastie **máš mapu**, podľa ktorej treba prejsť močiar a lúku, **nájsť** aspoň tri **kryštály života** a prebudiť ich kúzlom. Keď sa ti ich podarí **odniesť** až **ku kamennému monolitu**, život na planéte drakov **bude zachránený.** **Presnosť** je stále dôležitejšia ako rýchlosť.",
-      "dragons": "Do Dračieho údolia padajú **vesmírne kamene**. Každé slovo vytvorí pre dráčika **ochrannú bublinu**. Kamene sa len odrazia, nikomu sa nič nestane.",
+      "dragons": "V Dračom údolí **zhasol oheň** a dráčiky sa rozutekali. Malé **ohníky** poletujú po údolí. **Napíš slovo** na ohníku a chytíš ho do fakle; z nich sa rozhorí oheň v ohnisku.",
       "egg": "Ojoj! **Vajíčko sa začína hýbať** a kotúľa sa dolu kopcom. Pomôž mu **preskočiť kamene a pníky**. Pozor na priateľského krtka!",
       "junkyard": "Ideš okolo starého šrotiska. **Pod kopou starých vecí niekto smutne pípa.** Napíš slovo a **jemný magnet** zdvihne haraburdu z kopy.",
       "workshop": "Šróbik chce ísť domov, ale **chýbajú mu súčiastky**. Po páse sa vezú kolieska, skrutky a pružiny. **Napíš slovo súčiastky** a hodíš ju do košíka.",
@@ -669,8 +669,9 @@
         "Dráčiky v susednom údolí potrebujú pomoc."
       ],
       "egg": [
-        "Dráčiky sú v bezpečí a šťastné.",
-        "Ako poďakovanie ti darujú čarovné dračie vajíčko!"
+        "Dráčiky odleteli na lúku kryštálov a oheň dohorel.",
+        "V popole za ohniskom niečo svieti... je to dračie vajíčko!",
+        "Dráčiky ho tu nechali. Teraz ho opatruješ ty."
       ],
       "hatched": [
         "Krak... krak... vajíčko sa liahne!",
@@ -728,6 +729,51 @@
         "Teraz môžeš na záchranných misiách odprevadiť domov aj malé vtáčatá a svetlušky."
       ]
     },
+    "flamesStart": [
+      "Chytaj ohníky do fakle, nech oheň v ohnisku znova horí."
+    ],
+    "flamesDone": [
+      "Oheň v ohnisku horí! Dráčiky ho uvidia z celého údolia."
+    ],
+    "thicketStart": [
+      "Cesta k dráčikom je zarastená. Každý krík zmizne, keď napíšeš jeho **kúzlo bez chyby**. Pri chybe vyrastú dva nové konáre."
+    ],
+    "thicketDone": [
+      "Cesta je voľná! Na jej konci vykúkajú dráčiky."
+    ],
+    "flightStart": [
+      "Dráčiky sa musia naučiť lietať. Píš **pekne v rytme**, nech preletia ponad kríky k ohnisku."
+    ],
+    "flightBush": [
+      "Júj, to šteklí!",
+      "Šteklivé!",
+      "Chrumkavé!",
+      "Kríčky!"
+    ],
+    "flightDone": {
+      "one": "{n} z {m} dráčikov\nsa naučil lietať.",
+      "few": "{n} z {m} dráčikov\nsa naučili lietať.",
+      "other": "{n} z {m} dráčikov\nsa naučilo lietať."
+    },
+    "lullabyStart": [
+      "Dráčiky krúžia a nemôžu zaspať. Opíš im uspávanku, každý riadok končí **bodkou**."
+    ],
+    "lullabyDone": [
+      "Pst... všetky dráčiky spia pri ohni."
+    ],
+    "takeoffStart": [
+      "Ráno chcú dráčiky odletieť na lúku kryštálov. Každý potrebuje niekoľko skupín slov **bez chyby a v rytme**, inak sa vráti a skúsi to znova."
+    ],
+    "takeoffBack": [
+      "Skúsime to znova!",
+      "Nevadí, ešte raz!",
+      "Takmer! Skúsime to znova."
+    ],
+    "takeoffGone": [
+      "Letí! Dovidenia na lúke kryštálov!",
+      "Hurá, odletel!",
+      "Pápá, dráčik!"
+    ],
     "copyLoopStart": "Táto úroveň sa ešte pripravuje. Zatiaľ si tu precvičíš odpis: píš slová zo stredu, kým neuplynie čas.",
     "copyLoopSoon": "Pripravuje sa",
     "copyLoopCount": "napísané: {n}",
@@ -2858,24 +2904,24 @@
           "Cink! To bol drahokam."
         ]
       },
-      "chili": {
-        "name": "Čili paprička",
+      "flame": {
+        "name": "Ohník",
         "launch": [
-          "Paprička letí!",
-          "Hádžem čili!",
-          "Pozor, pálivé!"
+          "Ohník letí!",
+          "Hádžem ohník!",
+          "Pozor, horúce!"
         ],
         "sound": [
-          "Pšš!"
+          "Fššš!"
         ],
         "hit": [
-          "Chrlím oheň ako drak!",
-          "Vodu, rýchlo vodu!",
-          "To páli až v ušiach!"
+          "Teplučko!",
+          "Hreje to ako dračí dych!",
+          "Iskričky všade!"
         ],
         "expect": [
-          "Nebude to pálivé?",
-          "Dúfam, že je to sladká paprika."
+          "Nebude to páliť?",
+          "Dúfam, že je to len malý ohník."
         ]
       },
       "nest": {

@@ -154,7 +154,7 @@ describe('rescue missions', () => {
     p.progress.worldsDone = [5, 6, 7, 8, 9];
     expect(rescueUnlocked(p)).toBe(true);
     const kinds = new Set(Array.from({ length: 20 }, (_, seed) => rescueLevel(seed).kind));
-    expect(kinds).toEqual(new Set(['meadow', 'space', 'swamp', 'crystals']));
+    expect(kinds).toEqual(new Set(['meadow', 'space', 'swamp', 'crystals', 'flames']));
   });
 });
 
@@ -194,13 +194,23 @@ describe('first level', () => {
   });
 });
 
+describe('the valley', () => {
+  it('flames, the overgrown path (a calm copy), flying lessons, the lullaby, the take-off', () => {
+    const ids = ['w4-1', 'w4-2', 'w4-3', 'w4-4', 'w4-5'];
+    expect(ids.map((id) => levelById(id)?.kind)).toEqual(['flames', 'thicket', 'flight', 'lullaby', 'takeoff']);
+    expect(ids.map((id) => activityOf(levelById(id)!))).toEqual(['chase', 'clean', 'chase', 'clean', 'super']);
+    expect(ids.map((id) => minActiveS(levelById(id)!))).toEqual([MIN_ACTIVE_S, 60, MIN_ACTIVE_S, MIN_ACTIVE_S, MIN_ACTIVE_S]);
+    expect(ids.slice(2).map((id) => levelById(id)?.count)).toEqual([3, 3, 3]);
+  });
+});
+
 describe('worlds not built yet', () => {
-  it('every level of worlds 4-15 plays the cyclic copy, a copy dot with the full minimum', () => {
-    const later = LEVELS.filter((l) => l.world >= 3);
-    expect(later).toHaveLength(60);
+  it('every level of worlds 5-15 plays the cyclic copy, a copy dot with the full minimum', () => {
+    const later = LEVELS.filter((l) => l.world >= 4);
+    expect(later).toHaveLength(55);
     expect(later.every((l) => l.kind === 'copyloop' && minActiveS(l) === MIN_ACTIVE_S)).toBe(true);
     expect(later.filter((l) => !l.isSuper).every((l) => activityOf(l) === 'clean')).toBe(true);
-    expect(LEVELS.filter((l) => l.world < 3).some((l) => l.kind === 'copyloop')).toBe(false);
+    expect(LEVELS.filter((l) => l.world < 4).some((l) => l.kind === 'copyloop')).toBe(false);
   });
 });
 

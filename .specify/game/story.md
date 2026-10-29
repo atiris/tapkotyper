@@ -14,7 +14,7 @@ tells the story to the child in the second person ("you catch the leaf", "Melody
 gives you a wreath"), never about the character as someone else.
 
 ### Worlds not built yet
-Only the first three worlds (meadow, rocket, planet) are built on the agreed rules. Until a
+Only the first four worlds (meadow, rocket, planet, valley) are built on the agreed rules. Until a
 world is redone, all five of its levels, the super level too, play one simple placeholder
 game, **cyclic copy** ([mechanics](mechanics.md)), so the child still progresses: playing a
 level's round time unlocks the next one, and new letters keep coming as in any level. The
@@ -177,8 +177,58 @@ as they are. The world descriptions below marked *not built yet* are the design 
    **monolith** (a carved stone pedestal, not an altar) rises with a soft light above it;
    he puts the crystals of life on it, they float above it, glowing, and the planet blooms. Super-obstacle: the great swamp and the boulder. Reward: **the Force**, the crystals'
    thanks. The planet's own thing at the target range is a crystal.
-4. **Dragon Domain** (*not built yet*) - the Force and gentle shield fields divert falling space rocks away
-   from baby dragons. Super-obstacle: rolling energy wave. Reward: a **Dragon Egg**.
+4. **Dragon Valley** - the baby dragons' home is a big fire pit at the valley's entrance. Its
+   fire went out when the crystal of life lost its light: the little flames scattered, the path
+   into the valley grew over and the babies, cold and scared, hid deep in it. They never learned
+   to fly, and their place is the crystal meadow (the planet's level 2). Tapko lights the fire,
+   clears the path, teaches them to fly, sings them to sleep and in the morning helps them fly
+   off. The babies are never targets: words sit on flames, bushes, a panel or a bubble high up.
+   Tapko stands on the left as everywhere; in levels 3-5 the burning pit stands on the ground on
+   the right (about 0.8 of the stage) and the dragons sit round it.
+   1 the flames (a word stream): little flames (three shapes, some mirrored, bigger for a longer
+   word) fly from the right in soft arcs; a flame's word shows once it is wholly in sight. Tapko
+   holds a torch upright just right of him, above the dead fire pit. A typed flame speeds into
+   the torch, which rises to meet it and always catches it (the torch's own flame does not grow),
+   then dips it into the pit. The first three flames cross-fade the pit from dead embers into
+   burning, three pictures taking turns as a flicker; its warm glow and soft sparkles grow with
+   the level. A flame not typed flies past the torch, goes out (a curl of smoke) and fades;
+   nothing else happens. End: the fire burns and the dragons will see it from the valley.
+   2 the overgrown path (a calm step, growing copy): bushes and branches (four kinds in random
+   order, some mirrored) stand on the path one after another; the nearest has its spell, one
+   word, above it, and the view glides as Tapko walks to it. Typed without a slip, the bush
+   shrinks away. A slip turns the word red, it fades, two more bushes grow on the path ahead and
+   the same spell shows again; bushes grow at most three times (6 words), after that a slip only
+   shows the spell again. End: the path is open and the dragons peek out at its end. Its map dot
+   is the copy envelope.
+   3 flying lessons (a stream with rhythm): a dragon (the colours take turns) waits right of
+   Tapko, two or three bushes stand together in the middle. Words come one at a time in a
+   bubble high in the middle. The first typed word starts the flight, a slow arc to the right
+   (about 22 seconds to the pit) whose height follows the rhythm, full from 60 % of the rhythm
+   goal; the dragon flaps while it rises and glides while it sinks. Too low over the bushes it
+   lands in them, giggles ("Júj, to šteklí!"), climbs out and walks to the pit; high enough, it
+   glides on and lands by the pit with a hop. Words typed while it walks still count; the next
+   dragon starts once it is there. End: how many of the dragons learned to fly.
+   4 the lullaby (copy twist): evening; the dragons circle slowly above the burning pit. A panel
+   in the middle shows one line of the lullaby, a short sentence ending with a period (the
+   period is new in this world). Copied without a slip, one dragon glides down and sleeps by the
+   fire with a small "z z"; a line with a slip is written again from its start, the slips only
+   count in the accuracy. End: all sleep by the fire.
+   5 the take-off (super level): morning; the dragons sit by the pit and one by one fly to the
+   left. A flight is sets of 2-3 short words in a row above the middle, 3 sets for the first
+   dragon and 4 for the others. Each word has its time from the moment it is the one to type
+   (the child's own pace, a thin bar under the row shows it), and the dragon flaps and slowly
+   sinks while a word waits. A set typed without a slip, every word in time, lifts the dragon a
+   step up and on; a late word or a slip sends it gliding back to the pit ("Skúsime to znova!")
+   and the flight starts again with new sets. After its third return a dragon's tries have one
+   set less and 1.25 times the time; after the sixth its sets have two words and a slip or a late
+   word only starts that word again, so every child finishes. After its last set the dragon flies
+   off to the left. The paws are off. When the last is gone the fire goes out, an egg fades in
+   behind the pit with a soft glow, and Tapko is glad and cheers.
+   Flying lessons, the lullaby and the take-off start with three dragons; when the last is done
+   while the level's minimum time is not played, one more comes, at most five, and the fifth
+   ends the level even below the minimum (played on without an end, one more always comes).
+   Reward: the **Dragon Egg** the dragons left behind the burnt-out fire. The valley's own thing
+   at the target range is a flame.
 5. **Egg Journey** (*not built yet*) - the hatching egg rolls downhill; typing makes it jump over rocks and
    stumps. Super-obstacle: a friendly mole. Reward: a new companion hatches and
    **endless rescue missions** unlock (replayable, generated from all worlds).
@@ -271,7 +321,7 @@ story stays playable in any browser ([mechanics](mechanics.md)).
 - When a creature or Tapko is glad, a short cheer pops up over the scene with a cheer
   sound: "Hurá!", "Jupí!" or "Super!" ("Hooray!", "Yippee!", "Great!"). It comes when a
   super-obstacle is beaten (the hedgehog shouts it while it hops, Tapko when the world is
-  done), when the owl's riddle is solved, a lake phrase is sung and the city gate opens.
+  done, also after the valley's take-off), when the owl's riddle is solved, a lake phrase is sung and the city gate opens.
 - Once per such moment, never on every target: a cheer on every word would turn into
   noise and lose its joy.
 
@@ -303,6 +353,14 @@ story stays playable in any browser ([mechanics](mechanics.md)).
   The stony practice path was added to the owner's paths: no other path trains the keys the
   child still needs. The whole story of the first three worlds is in
   [the scenario](story-1-scenario.md).
+- The valley was four times the rocket's game (space rocks falling on baby dragons, a shield
+  bubble) and did not play the world rhythm. Nothing falls on anyone now: the targets are flames
+  and bushes, and a dragon that does not make it giggles in the bushes and walks on. Each level
+  has its reason (the fire is the dragons' home, the cleared path is where non-flyers walk, the
+  flight learnt in level 3 is tested in level 5), the period, new here, makes the twist the first
+  sentence copy, and the take-off asks for clean sets in the child's own pace but leaves nobody
+  behind. The flight levels count dragons, not words; the arc is slow enough that five flights
+  take about the minimum, so a rare fast typist may end one a little early.
 - The old meadow text (goals as the happy outcome, a fan) described something else than the
   play and confused children. Goalkeeper gloves fit the animals' football game; a leaf kicked
   up to them is caught where the child looks, above their character.

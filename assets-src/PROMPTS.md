@@ -1119,7 +1119,6 @@ and the fish keep their faces). Checked at 46 px on a light and a dark band befo
 | `obj-aim-chicken.jpg` | a classic funny rubber chicken toy, side view facing right, body stretched out: long thin neck, wide open orange beak, red comb, closed eyes as curved lines, yellow body #F9D84A, thin orange legs | magenta | done 2026-10-24 |
 | `obj-aim-water-balloon.jpg` | one round water balloon, solid sky-blue rubber #5FB7EA with a lighter area and a big shine (never pink), a small knot on top, three outlined drops #BFE6F7 | magenta | done 2026-10-24 |
 | `obj-aim-banana.jpg` | one whole ripe banana curved like a smile, yellow #F9D84A with lighter top and darker underside, brown stem and tip, unpeeled | magenta | done 2026-10-24 |
-| `obj-aim-chili.jpg` | one small plump red chili pepper on its side, gently curved, glossy red #E0453A, tip curling down on the right, dark-green stem and cap #3E8E41, no flames | magenta | done 2026-10-24 |
 | `obj-aim-wrench.jpg` | one chunky adjustable wrench lying diagonally, oval hole in the handle, open C jaw, ridged wheel, blue-grey steel #8FA3B8/#C9D6E3/#5E7286 | magenta | done 2026-10-24 |
 | `obj-aim-toast.jpg` | one slice of toast from the front, rounded puffy top, golden middle #EBB563, darker crust #B9772F, a small pat of butter #FFE9A0, strictly front view | magenta | done 2026-10-24 |
 | `obj-aim-pinecone.jpg` | one plump pine cone standing upright, rows of open rounded scales, brown #A8693A with lighter tips #D49A62, short stem, no needles | magenta | done 2026-10-24 |

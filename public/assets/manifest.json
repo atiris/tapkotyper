@@ -596,10 +596,6 @@
    "w": 384,
    "h": 341
   },
-  "obj-aim-chili": {
-   "w": 384,
-   "h": 216
-  },
   "obj-aim-clock": {
    "w": 351,
    "h": 384
@@ -1174,10 +1170,6 @@
   },
   "obj-rock-falling-1": {
    "w": 335,
-   "h": 384
-  },
-  "obj-rock-falling-2": {
-   "w": 371,
    "h": 384
   },
   "obj-rock-round": {

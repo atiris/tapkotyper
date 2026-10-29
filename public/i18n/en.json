@@ -640,7 +640,7 @@
       "meadow": "It is a lovely afternoon on the meadow and there is a **football match** later! The animals train with you: they kick leaves like a ball and **you keep goal**. Catch the leaves with letters: **type the word on a leaf** and the leaf is yours.",
       "space": "Three, two, one... **lift off!** You fly off to explore a few planets, all the way to the **dragons' planet**. **Your typing rhythm** drives the rocket and a soft beam pushes meteors out of the way.",
       "planet": "**Welcome** to the dragons' planet, where spells are real and crystals power life! But the **last crystal** of life has **gone dark.** The planet may lose its light. Luckily you **have a map**: cross the swamp and the meadow, **find** at least three **crystals of life** and wake them with a spell. When you **carry** them all the way **to the stone monolith**, life on the dragons' planet **will be saved.** **Accuracy** still matters more than speed.",
-      "dragons": "**Space rocks** are falling into the Dragon Valley. Every word makes a **shield bubble** for a baby dragon. The rocks just bounce away, nobody gets hurt.",
+      "dragons": "In the Dragon Valley **the fire went out** and the baby dragons ran away. Little **flames** float all over the valley. **Type the word** on a flame to catch it in your torch; together they light the fire in the fire pit again.",
       "egg": "Oh! **The egg starts to wiggle** and roll down the hill. Help it **jump over rocks and stumps**. Watch out for a friendly mole!",
       "junkyard": "You walk past an old junkyard. **Someone is beeping sadly under a pile of old things.** Type a word and a **soft magnet** lifts the junk off the pile.",
       "workshop": "Bolt wants to go home, but **he is missing some parts**. Gears, bolts and springs ride along the conveyor belt. **Type a part's word** and toss it into the basket.",
@@ -669,8 +669,9 @@
         "The dragons in the next valley need help."
       ],
       "egg": [
-        "The dragons are safe and happy.",
-        "As a thank you, they give you a magical Dragon Egg!"
+        "The baby dragons flew off to the crystal meadow and the fire burned out.",
+        "Something shines in the ashes behind the fire pit... it is a dragon egg!",
+        "The dragons left it here. Now you take care of it."
       ],
       "hatched": [
         "Crack... crack... the egg hatches!",
@@ -728,6 +729,51 @@
         "Now you can also guide little birds and fireflies home on rescue missions."
       ]
     },
+    "flamesStart": [
+      "Catch the flames in your torch, so the fire in the fire pit burns again."
+    ],
+    "flamesDone": [
+      "The fire is burning! The dragons will see it from all over the valley."
+    ],
+    "thicketStart": [
+      "The path to the dragons is overgrown. Each bush disappears when you type its **spell without a slip**. A slip makes two new branches grow."
+    ],
+    "thicketDone": [
+      "The path is open! The baby dragons peek out at its end."
+    ],
+    "flightStart": [
+      "The baby dragons must learn to fly. Type **nicely in rhythm**, so they fly over the bushes to the fire."
+    ],
+    "flightBush": [
+      "Hee hee, that tickles!",
+      "Tickly!",
+      "Crunchy!",
+      "Bushes!"
+    ],
+    "flightDone": {
+      "one": "{n} of {m} baby dragons\nlearned to fly.",
+      "few": "{n} of {m} baby dragons\nlearned to fly.",
+      "other": "{n} of {m} baby dragons\nlearned to fly."
+    },
+    "lullabyStart": [
+      "The baby dragons circle around and cannot fall asleep. Copy a lullaby for them; every line ends with a **period**."
+    ],
+    "lullabyDone": [
+      "Shh... all the baby dragons are asleep by the fire."
+    ],
+    "takeoffStart": [
+      "In the morning the baby dragons want to fly off to the crystal meadow. Each one needs a few groups of words **without a slip and in rhythm**, or it comes back and tries again."
+    ],
+    "takeoffBack": [
+      "Let's try that again!",
+      "Never mind, once more!",
+      "Almost! Let's try again."
+    ],
+    "takeoffGone": [
+      "It's flying! See you on the crystal meadow!",
+      "Hooray, off it goes!",
+      "Bye-bye, little dragon!"
+    ],
     "copyLoopStart": "This level is still being made. For now you practise copying here: type the words in the middle until the time is up.",
     "copyLoopSoon": "Coming soon",
     "copyLoopCount": "typed: {n}",
@@ -2843,23 +2889,23 @@
           "Clink! What a gem."
         ]
       },
-      "chili": {
-        "name": "Chili pepper",
+      "flame": {
+        "name": "Little flame",
         "launch": [
-          "Chili away!",
+          "Flame away!",
           "Hot stuff incoming!"
         ],
         "sound": [
-          "Sizzle!"
+          "Whoosh!"
         ],
         "hit": [
-          "Now I breathe fire like a dragon!",
-          "Water, quick, water!",
-          "My ears are on fire!"
+          "Nice and warm!",
+          "Warm like dragon breath!",
+          "Sparks everywhere!"
         ],
         "expect": [
-          "Is it going to be spicy?",
-          "I hope it's a sweet pepper."
+          "Is it going to burn?",
+          "I hope it's just a tiny flame."
         ]
       },
       "nest": {

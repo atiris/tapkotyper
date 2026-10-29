@@ -31,9 +31,10 @@ a panel or the top bubble.
       `obj-bush-1..4`; generate with the `gemini-images` skill, cut out as the other sprites
       (magenta/green key, `scripts/defringe.mjs` where a fringe shows), webp in `public/assets/`,
       entries in `manifest.json`. Record any prompt lesson in PROMPTS.md "Lessons from generating".
-- [ ] Until a picture exists the mode draws a code fallback (as `glovesFallback`), so the code steps
+- [x] Until a picture exists the mode draws a code fallback (as `glovesFallback`), so the code steps
       do not wait for the art.
-- [ ] Drop `obj-rock-falling-1/2` (and its PROMPTS.md row) once nothing draws them.
+- [x] Drop `obj-rock-falling-1/2` (and its PROMPTS.md row) once nothing draws them. -2 dropped;
+      -1 and its row stay: the rocket world (`space.ts`) still draws it as an asteroid.
 - Reused: `obj-dragon-baby-1..3`, `obj-dragon-sleeping`, `obj-egg`, `bg-dragons-*`.
 
 ## 2. Common rules
@@ -53,88 +54,112 @@ a panel or the top bubble.
   setting `minActive` to the time played; `stretchMin` is the model), used only by these modes.
 
 ## 3. Level 1 - Ohníky (word stream)
-- [ ] Generalise the meadow's `Gloves` into a catcher that takes its sprite, size and lean (gloves
+- [x] Generalise the meadow's `Gloves` into a catcher that takes its sprite, size and lean (gloves
       stay as they are); the torch is one held upright just right of Tapko, above the fire pit.
-- [ ] Flames (one of three, sometimes mirrored, size by word length) come from the right in soft
+- [x] Flames (one of three, sometimes mirrored, size by word length) come from the right in soft
       arcs with the stream rules of the meadow (`ApproachMode`, `L.travelTime`, `L.maxActive`,
       `L.spawnGap`); the word shows once the flame is wholly in sight.
-- [ ] Typed: the flame speeds into the torch, which rises to meet it and always catches it (meadow
+- [x] Typed: the flame speeds into the torch, which rises to meet it and always catches it (meadow
       rule); the torch flame does not grow (owner); the torch dips to the pit, which catches more.
-- [ ] Not typed: the flame flies past the torch, turns into `obj-flame-out` and fades. No sound of
+- [x] Not typed: the flame flies past the torch, turns into `obj-flame-out` and fades. No sound of
       failure, no line.
-- [ ] The pit: dead at start; the first three catches cross-fade it into the burning pictures, which
+- [x] The pit: dead at start; the first three catches cross-fade it into the burning pictures, which
       then take turns every ~0.2 s as a flicker; its glow (code-drawn, warm radial) and a soft
       sparkle grow with the share of the level done.
-- [ ] End line (`story.flamesDone`): the fire burns, the dragons will see it from the valley.
+- [x] End line (`story.flamesDone`): the fire burns, the dragons will see it from the valley.
 
 ## 4. Level 2 - Zarastená cesta (growing copy, calm)
-- [ ] Bushes (`obj-bush-1..4` in random order, some mirrored) stand on the path one after another;
+- [x] Bushes (`obj-bush-1..4` in random order, some mirrored) stand on the path one after another;
       the nearest one has its spell (one word, `L.word`) above it. Tapko walks to it; the view glides.
-- [ ] Typed without a slip: the bush shrinks and fades, Tapko walks on to the next.
-- [ ] A slip: the word turns red and fades (CopyRow's slip look); while `slipWords(1, added)` allows,
+- [x] Typed without a slip: the bush shrinks and fades, Tapko walks on to the next.
+- [x] A slip: the word turns red and fades (CopyRow's slip look); while `slipWords(1, added)` allows,
       two more bushes grow on the path ahead (`L.count += 2`), which happens at most three times
       (6 words). The same bush then shows its spell again. After the ceiling a slip only shows the
       spell again.
-- [ ] End (`story.thicketDone`): the path is open, the dragons peek out at its end.
+- [x] End (`story.thicketDone`): the path is open, the dragons peek out at its end.
 
 ## 5. Level 3 - Lietanie (word stream with rhythm)
-- [ ] A dragon (colours take turns) waits on the ground just right of Tapko; 2-3 bushes stand
+- [x] A dragon (colours take turns) waits on the ground just right of Tapko; 2-3 bushes stand
       together in the middle (about 0.45-0.6 vw); the burning pit on the right.
-- [ ] Words come one at a time in a bubble high in the middle (`L.word`, never on the dragon). The
+- [x] Words come one at a time in a bubble high in the middle (`L.word`, never on the dragon). The
       first typed word starts the flight; call `L.rhythm.ready(now)` before it so the wait between
       flights is not measured.
-- [ ] The flight moves right at a fixed slow speed (`FLIGHT_S` about 22 s from start to the pit,
+- [x] The flight moves right at a fixed slow speed (`FLIGHT_S` about 22 s from start to the pit,
       tuned so 5 flights take about the 120 s minimum); its height is
       `maxAlt * lift * sin(pi * progress)`, `lift` easing toward `min(1, ratio / LIFT_RATIO)` with
       `ratio = L.rhythm.ratio(L.difficulty)` and `LIFT_RATIO = 0.6`. Wings flap while lift rises,
       the dragon glides while it sinks.
-- [ ] Over the bushes: if its foot is below the bushes' top it lands in them, shakes, shouts one of
+- [x] Over the bushes: if its foot is below the bushes' top it lands in them, shakes, shouts one of
       `story.flightBush` ("Júj, to šteklí!", "Šteklivé!", "Chrumkavé!", "Kríčky!"), climbs out and
       walks on the ground to the pit; else it glides on and lands by the pit with a hop.
-- [ ] Words typed while the dragon walks still count; the next dragon starts after it reaches the pit.
-- [ ] End (`story.flightDone`): "{n} z {m} dráčikov sa naučilo lietať." (plural forms per language).
+- [x] Words typed while the dragon walks still count; the next dragon starts after it reaches the pit.
+- [x] End (`story.flightDone`): "{n} z {m} dráčikov sa naučilo lietať." (plural forms per language).
 
 ## 6. Level 4 - Uspávanka (copy)
-- [ ] The dragons circle slowly above the burning pit (wide ellipses, each its own phase). A panel in
+- [x] The dragons circle slowly above the burning pit (wide ellipses, each its own phase). A panel in
       the middle (SpellMode's panel look, without the mushrooms) shows one lullaby line: a sentence
       of the level's keys ending with a period (`L.word(undefined, 5, 3)` gives a punctuated
       sentence; keep it at most about 30 characters).
-- [ ] A line typed without a slip: one circling dragon glides down by the pit and is drawn as
+- [x] A line typed without a slip: one circling dragon glides down by the pit and is drawn as
       `obj-dragon-sleeping`, with a small "z z" float. A line with a slip is written again (the same
       line, a new start); slips only count in the accuracy.
-- [ ] Dragon count rule; the end (`story.lullabyDone`): all sleep by the fire.
+- [x] Dragon count rule; the end (`story.lullabyDone`): all sleep by the fire.
 
 ## 7. Level 5 - Odlet (super-obstacle)
-- [ ] Morning light. The dragons sit by the pit on the right; one by one each flies to the left.
-- [ ] A flight is sets of 2-3 short words shown as a row (CopyRow look) above the middle: 3 sets for
+- [x] Morning light. The dragons sit by the pit on the right; one by one each flies to the left.
+- [x] A flight is sets of 2-3 short words shown as a row (CopyRow look) above the middle: 3 sets for
       the first dragon, 4 for the others. Each word has `L.travelTime(word)` to be finished from the
       moment it becomes current (a thin bar under the row shows it); the dragon flaps and slowly
       sinks while a word waits.
-- [ ] A set typed without a slip, every word in time: the dragon rises a step and moves a step left.
+- [x] A set typed without a slip, every word in time: the dragon rises a step and moves a step left.
       A late word or a slip: the dragon glides back to the pit and the flight starts again with new
       sets (`story.takeoffBack`, gentle: "Skúsime to znova!").
-- [ ] Safety (owner): after the 3rd return of the same dragon its next tries have one set less and
+- [x] Safety (owner): after the 3rd return of the same dragon its next tries have one set less and
       word time x 1.25; after the 6th return the sets have 2 words and a slip only restarts that
       word, so every child finishes.
-- [ ] After its last set the dragon flies off to the left out of the stage (`story.takeoffGone`).
+- [x] After its last set the dragon flies off to the left out of the stage (`story.takeoffGone`).
       Dragon count rule.
-- [ ] When the last is gone: the pit cross-fades back to `obj-firepit` over ~2 s, then `obj-egg` fades
+- [x] When the last is gone: the pit cross-fades back to `obj-firepit` over ~2 s, then `obj-egg` fades
       in behind it with a soft glow; Tapko is glad, a cheer (`Cheers`), then the level ends.
-- [ ] The paws: off, as in the city gate (they would type the sets).
+- [x] The paws: off, as in the city gate (they would type the sets).
 
 ## 8. Texts, scene, specs, checks
-- [ ] Start lines per level and the world story (first card of level 1) from the proposal's
+- [x] Start lines per level and the world story (first card of level 1) from the proposal's
       "Scenario in Slovak", English versions; remove the shield and wave lines and the old world
       story. Guide notes, `catalog.ts`, unused-key test clean.
-- [ ] Scene `egg` (`src/screens/story.ts`, i18n `scenes.egg`): the three lines of the proposal's
+- [x] Scene `egg` (`src/screens/story.ts`, i18n `scenes.egg`): the three lines of the proposal's
       reward scene; its sprites `obj-egg` with the dead pit, no baby dragon.
-- [ ] The valley's own range thing (`aim-things.ts`): a flame.
-- [ ] Specs: `story.md` world 4 (and the Why), `story-1-scenario.md` Svet 4 in Slovak,
+- [x] The valley's own range thing (`aim-things.ts`): a flame.
+- [x] Specs: `story.md` world 4 (and the Why), `story-1-scenario.md` Svet 4 in Slovak,
       `super-obstacles.md` (the take-off instead of the energy wave), `mechanics.md` where it names
       the shield or the wave, `game/index.md` line.
-- [ ] Tests: `levels.test.ts` (kinds, `activityOf`, `minActiveS` of `thicket`), `idle.test.ts` with
+- [x] Tests: `levels.test.ts` (kinds, `activityOf`, `minActiveS` of `thicket`), `idle.test.ts` with
       the new modes, unit tests for the catcher, the slip growth ceiling, the dragon count rule and
       the take-off safety. tsc, vitest, build.
 - [ ] Browser play-through (`?fast`, tester profile `.e2e/tester-profile.json`, `tapkoType`): all
       five levels to the end, with a missed flame, slips on a bush beyond the ceiling, a dragon that
       lands in the bushes, a lullaby line with a slip, three returns in the take-off, the egg shown.
+
+## State
+Code, texts, scene, specs and tests are in (commit "feat(valley): ..."). Open: the pictures (step 1)
+and the browser play-through (step 8). Decisions taken while implementing:
+- Two files, as the planet has: `modes/dragons.ts` (shared pit, flock rule, fallbacks, flames,
+  thicket) and `modes/dragons-flight.ts` (flight, lullaby, take-off).
+- Meadow's `Gloves` became an exported `Catcher` with a `CatcherLook` (picture, height, lean,
+  catch point); the gloves keep their look as the default. Flames is its own `ApproachMode`
+  with the catcher, not a `MeadowMode` subclass (no critters, kicks or gusts to switch off).
+- Dragon count rule read as "one more comes when the last one is done while the minimum is not
+  played" (`flockAfter`), not "one more per dragon done": a slow typist keeps 3 lullaby lines.
+  The modes keep their own dragon count; `L.count` is not used for it, since the runtime grows
+  it toward the minimum. "Stay a while" always gets one more (`flockFor`).
+- `LevelRuntime.endMinimum()` sets the minimum to the time played; called when the 5th is done.
+- Flight: the arc runs from the start to just left of the pit, the bushes stand in the middle
+  of that way (12 % spread each side, 0.46-0.59 vw on a 1280 stage), so the arc's height over
+  them is the same on any width. MAX_ALT 240, bushes' top 140: clearing needs lift >= ~0.76,
+  i.e. about 46 % of the rhythm goal. The landed dragon hops to its seat by the pit.
+- Lullaby line: `L.word(5, 4, 3)` (3-4 words of at most 5 letters, punctuated) keeps it under
+  30 characters without retries. A slip restarts the line at once (red fade, same line).
+- Take-off: after the 6th return a late word also only restarts that word (not only a slip),
+  so a slow child surely finishes; `CopyRow`'s drawing moved to an exported `drawRow` reused
+  by the take-off row.
+- The range's valley thing: the chili became `flame` (texts renamed, `obj-aim-chili` dropped).

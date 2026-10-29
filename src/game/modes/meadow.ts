@@ -224,25 +224,35 @@ const HOLD_TIME = 0.35;
 /** Speed of a typed leaf on its way into the gloves. */
 const SAVE_SPEED = 950;
 
-/** Tapko's goalkeeper gloves just right of him; on a finished word they rise with the leaf and catch it. */
-class Gloves {
-  private static readonly H = 72;
-  /** The picture's palms face the viewer; leaning right they reach for leaves coming from the right. */
-  private static readonly LEAN = 0.55;
-  /** Height the gloves reach for; their rest height when nothing flies at them. */
+/** What a catcher holds: its picture, height, lean, where in front of it a caught thing sits (shares of its height) and its picture while missing. */
+export interface CatcherLook {
+  pic: string;
+  h: number;
+  lean: number;
+  at: [number, number];
+  fallback: (g: G, w: number, h: number) => void;
+}
+
+/** The picture's palms face the viewer; leaning right they reach for leaves coming from the right. */
+const GLOVES: CatcherLook = { pic: 'obj-gloves', h: 72, lean: 0.55, at: [0.3, 0], fallback: glovesFallback };
+
+/** What Tapko holds just right of him (the gloves, the valley's torch); on a finished word it rises with the target and catches it. */
+export class Catcher {
+  /** Height it reaches for; its rest height when nothing flies at it. */
   aimY: number;
-  /** A typed leaf leads them: they keep pace with it instead of easing slowly. */
+  /** A typed target leads it: it keeps pace with it instead of easing slowly. */
   follow = false;
   y: number;
   private bob = 0;
   private squeeze = 0;
-  constructor(private L: LevelRuntime, public x: number, public restY: number) {
+  constructor(private L: LevelRuntime, public x: number, public restY: number, private look: CatcherLook = GLOVES) {
     this.aimY = this.y = restY;
   }
 
-  /** Where a leaf sits when caught: in front of the palms. */
+  /** Where a caught thing sits. */
   catchPoint(): [number, number] {
-    return [this.x + Gloves.H * 0.3, this.y + this.bob];
+    const [ax, ay] = this.look.at;
+    return [this.x + this.look.h * ax, this.y + this.bob + this.look.h * ay];
   }
 
   catch(): void {
@@ -256,13 +266,13 @@ class Gloves {
   }
 
   draw(g: G): void {
-    // They join Tapko when the game starts, not during the preparation cards, and fade out at the end.
+    // It joins Tapko when the game starts, not during the preparation cards, and fades out at the end.
     const alpha = this.L.toolAlpha;
     if (!this.L.started || alpha <= 0) return;
     const sq = Math.sin(this.squeeze * Math.PI) * 0.12;
     g.save();
     g.globalAlpha *= alpha;
-    drawSprite(g, 'obj-gloves', this.x, this.y + this.bob, Gloves.H, { rot: Gloves.LEAN, sx: 1 - sq, sy: 1 + sq }, glovesFallback);
+    drawSprite(g, this.look.pic, this.x, this.y + this.bob, this.look.h, { rot: this.look.lean, sx: 1 - sq, sy: 1 + sq }, this.look.fallback);
     g.restore();
   }
 }
@@ -293,14 +303,14 @@ interface Critter {
 export class MeadowMode extends ApproachMode {
   readonly pictures = PICTURES;
   readonly world = 'meadow';
-  protected gloves: Gloves;
+  protected gloves: Catcher;
   /** Seconds left of the gust: null before it, 0 after it (it comes once, in the `gust` variant only). */
   private gustLeft: number | null = null;
 
   constructor(L: LevelRuntime) {
     super(L);
     this.playerX = this.tapkoX();
-    this.gloves = new Gloves(L, this.glovesX(), this.glovesRest());
+    this.gloves = new Catcher(L, this.glovesX(), this.glovesRest());
   }
 
   /** The training in level 1, the real match in level 3 (the gust's level). */

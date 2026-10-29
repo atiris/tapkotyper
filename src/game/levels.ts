@@ -42,6 +42,7 @@ export type LevelKind =
   | 'meadow' | 'poppies' | 'invitation' | 'hedgehog'
   | 'space' | 'hop' | 'command' | 'asteroid'
   | 'swamp' | 'crystals' | 'crossroads' | 'spells' | 'greatswamp'
+  | 'flames' | 'thicket' | 'flight' | 'lullaby' | 'takeoff'
   | 'copyloop'
   | 'practice' | 'freetype' | 'aim' | 'parrot';
 
@@ -72,8 +73,10 @@ export const MIN_ACTIVE_S = 120;
 
 /** A calm step is a short valley between two action levels. */
 const CALM_ACTIVE_S = 60;
-/** The calm steps of the world rhythm: waiting words (the meadow's poppies, the rocket world's meteors to hop on, the planet's swamp). */
-const CALM_KINDS: LevelKind[] = ['poppies', 'hop', 'swamp'];
+/** The calm steps of the world rhythm: waiting words (the meadow's poppies, the rocket world's meteors to hop on, the planet's swamp) and the valley's overgrown path. */
+const CALM_KINDS: LevelKind[] = ['poppies', 'hop', 'swamp', 'thicket'];
+/** Copy levels: a growing or a clean line (the valley's calm path is one too). */
+const COPY_KINDS: LevelKind[] = ['invitation', 'command', 'spells', 'thicket', 'lullaby', 'copyloop'];
 
 /** Seconds of active play the level lasts at least (when it has a minimum length); a rescue mission always the full minimum. */
 export function minActiveS(l: LevelDef): number {
@@ -85,8 +88,8 @@ export type Activity = 'chase' | 'catch' | 'clean' | 'crossroads' | 'super';
 
 export function activityOf(l: LevelDef): Activity {
   if (l.isSuper) return 'super';
+  if (COPY_KINDS.includes(l.kind)) return 'clean';
   if (CALM_KINDS.includes(l.kind)) return 'catch';
-  if (l.kind === 'invitation' || l.kind === 'command' || l.kind === 'spells' || l.kind === 'copyloop') return 'clean';
   if (l.kind === 'crossroads') return 'crossroads';
   return 'chase';
 }
@@ -127,8 +130,10 @@ export const LEVELS: LevelDef[] = [
   def(1, 0, 'space', 12, 'asteroids'), def(1, 1, 'hop', 16), def(1, 2, 'space', 16, 'strong'), def(1, 3, 'command', 12), def(1, 4, 'asteroid', 4),
   // The planet: the swamp after the landing (waiting words), the meadow's crystals (a stream), crossroads, spells (copy), the great swamp.
   def(2, 0, 'swamp', 12), def(2, 1, 'crystals', 16), def(2, 2, 'crossroads', 16), def(2, 3, 'spells', 18), def(2, 4, 'greatswamp', 21),
-  // Worlds 4-15 are not built yet: every level plays the placeholder, cyclic copy, until its world is redone.
-  ...WORLDS.slice(3).flatMap((_, w) => [12, 14, 16, 18, 14].map((count, i) => def(w + 3, i, 'copyloop', count))),
+  // The valley: flames for the fire pit, the overgrown path (calm), flying lessons, the lullaby, the take-off; a flight level counts its dragons at the start.
+  def(3, 0, 'flames', 12), def(3, 1, 'thicket', 12), def(3, 2, 'flight', 3), def(3, 3, 'lullaby', 3), def(3, 4, 'takeoff', 3),
+  // Worlds 5-15 are not built yet: every level plays the placeholder, cyclic copy, until its world is redone.
+  ...WORLDS.slice(4).flatMap((_, w) => [12, 14, 16, 18, 14].map((count, i) => def(w + 4, i, 'copyloop', count))),
 ];
 
 export function levelById(id: string): LevelDef | undefined {
@@ -216,6 +221,7 @@ export function halfStarsFor(accuracy: number): number {
 
 const RESCUE_KINDS: { kind: LevelKind; world: number; variant: string }[] = [
   { kind: 'meadow', world: 0, variant: 'mix' }, { kind: 'space', world: 1, variant: 'mix' }, { kind: 'swamp', world: 2, variant: '' }, { kind: 'crystals', world: 2, variant: '' },
+  { kind: 'flames', world: 3, variant: '' },
 ];
 
 /** Endless rescue missions: a level kind of a built world (worlds not built yet have none); the friend helped follows its story. */

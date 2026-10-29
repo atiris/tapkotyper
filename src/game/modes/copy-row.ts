@@ -100,22 +100,30 @@ export class CopyRow {
 
   /** The row centred at (cx, y), fitted into `width`: typed words in `ink`, the next ones faint. */
   draw(g: G, cx: number, y: number, width: number, ink: string): void {
-    const widths = (size: number) => this.row.map((s) => wordBox(g, s.word, size).w);
-    const total = (size: number) => widths(size).reduce((a, b) => a + b, 0) + WORD_GAP * (this.row.length - 1);
-    const size = total(WORD_SIZE) > width ? Math.max(24, (WORD_SIZE * width) / total(WORD_SIZE)) : WORD_SIZE;
-    let x = cx - total(size) / 2;
-    widths(size).forEach((w, i) => {
-      const s = this.row[i], c = x + w / 2;
-      x += w + WORD_GAP;
-      if (i === this.at) return this.L.label(g, s.tg, c, y, size);
-      g.save();
-      g.font = `600 ${size}px ${fontFamily()}`;
-      g.textAlign = 'center';
-      g.textBaseline = 'middle';
-      g.fillStyle = s.slip >= 0 ? SLIP_INK : ink;
-      g.globalAlpha = s.slip >= 0 ? Math.max(SLIP_TRACE, 1 - (1 - SLIP_TRACE) * s.slip / SLIP_FADE) : i < this.at ? 1 : 0.35;
-      g.fillText(s.word, c, y);
-      g.restore();
-    });
+    drawRow(g, this.L, this.row, this.at, this.row[this.at]?.tg ?? null, cx, y, width, ink);
   }
+}
+
+/**
+ * A row of words centred at (cx, y), fitted into `width`: the word at `at` is the target `current`
+ * (its label), the ones before it in `ink`, the next ones faint; a slipped word (`slip` seconds) fades red to a trace.
+ */
+export function drawRow(g: G, L: LevelRuntime, row: { word: string; slip: number }[], at: number, current: Target | null, cx: number, y: number, width: number, ink: string): void {
+  const widths = (size: number) => row.map((s) => wordBox(g, s.word, size).w);
+  const total = (size: number) => widths(size).reduce((a, b) => a + b, 0) + WORD_GAP * (row.length - 1);
+  const size = total(WORD_SIZE) > width ? Math.max(24, (WORD_SIZE * width) / total(WORD_SIZE)) : WORD_SIZE;
+  let x = cx - total(size) / 2;
+  widths(size).forEach((w, i) => {
+    const s = row[i], c = x + w / 2;
+    x += w + WORD_GAP;
+    if (i === at && current) return L.label(g, current, c, y, size);
+    g.save();
+    g.font = `600 ${size}px ${fontFamily()}`;
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+    g.fillStyle = s.slip >= 0 ? SLIP_INK : ink;
+    g.globalAlpha = s.slip >= 0 ? Math.max(SLIP_TRACE, 1 - (1 - SLIP_TRACE) * s.slip / SLIP_FADE) : i < at ? 1 : 0.35;
+    g.fillText(s.word, c, y);
+    g.restore();
+  });
 }

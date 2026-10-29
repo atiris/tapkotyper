@@ -270,6 +270,10 @@
       "title": "Lines of the Planet world",
       "about": "Opening lines and bubbles of the Planet world's levels: the swamp, crystals on the meadow, crossroads with signposts, spells for the crystals of life and the great swamp with the monolith."
     },
+    "story-valley": {
+      "title": "Lines of the Dragon Valley",
+      "about": "Opening lines, shouts and end lines of the valley's levels: flames for the fire pit, the overgrown path, flying lessons, the lullaby and the take-off to the crystal meadow."
+    },
     "story-placeholder": {
       "title": "Worlds still being made",
       "about": "The card line, the small sign, the counter and the end line of the copying game that every level of a world not built yet plays for now."
@@ -737,7 +741,7 @@
     "story.scenes.invitation": "Scene after finishing the meadow (world 1), a reward from the results screen.",
     "story.scenes.landing": "Scene after finishing space (world 2), a reward from the results screen.",
     "story.scenes.force": "Scene after finishing the new planet (world 3), a reward from the results screen.",
-    "story.scenes.egg": "Scene after finishing Dragon Valley (world 4), a reward from the results screen.",
+    "story.scenes.egg": "Scene after finishing Dragon Valley (world 4): the dragons flew off, the fire burned out and an egg is left behind; a reward from the results screen.",
     "story.scenes.hatched": "Scene after finishing the egg world (world 5), when the dragon hatches; a reward from the results screen.",
     "story.scenes.friends": "Scene after finishing the junkyard (world 6), when the child meets the robot Bolt.",
     "story.scenes.legs": "Scene after finishing the workshop (world 7), when Bolt gets new legs.",
@@ -792,6 +796,18 @@
     "story.boulderStart": "Line when a boulder blocks the way at the end of the great swamp; one is picked at random.",
     "story.boulderOpen": "Line on the planet when the boulder falls apart and the way is clear; one is picked at random.",
     "story.cradleDone": "Line at the end of the Planet world when Tapko puts the crystals of life on the monolith; one is picked at random.",
+    "story.flamesStart": "Opening line of the valley's first level: little flames fly to Tapko, a typed one is caught in his torch and lights the fire pit.",
+    "story.flamesDone": "Line at the end of the flames level: the fire pit burns and the dragons will see it; one is picked at random.",
+    "story.thicketStart": "Opening line of the overgrown path: each bush has a spell (a word) typed without a slip; a slip grows two more branches.",
+    "story.thicketDone": "Line at the end of the overgrown path: it is open and the baby dragons peek out; one is picked at random.",
+    "story.flightStart": "Opening line of the flying lessons: typing in a steady rhythm keeps a baby dragon flying over the bushes to the fire.",
+    "story.flightBush": "What a baby dragon shouts when it lands in the bushes instead of flying over them (a giggle, never sad); one is picked at random.",
+    "story.flightDone": "Text in the middle at the end of the flying lessons; {n} is how many baby dragons flew, {m} how many tried. The plural form follows {n}. Keep the line break.",
+    "story.lullabyStart": "Opening line of the lullaby: the baby dragons circle and cannot sleep; the child copies the lullaby line by line, each line ends with a period.",
+    "story.lullabyDone": "Line at the end of the lullaby: all the baby dragons sleep by the fire; one is picked at random.",
+    "story.takeoffStart": "Opening line of the valley's super-obstacle: in the morning the baby dragons fly off to the crystal meadow; each needs a few groups of words without a slip and in time.",
+    "story.takeoffBack": "Gentle line when a baby dragon glides back to the fire to try again (a late word or a slip); one is picked at random.",
+    "story.takeoffGone": "Line when a baby dragon flies off to the crystal meadow; one is picked at random.",
     "story.copyLoopStart": "Line on the get-ready card of every level of a world not built yet: the level is still being made, for now the child copies the words in the middle until the time is up.",
     "story.copyLoopSoon": "Small words on the sign at the top of such a level, under the world's name: the world is still being made.",
     "story.copyLoopCount": "Small counter under the panel of such a level; {n} is the number of words typed.",

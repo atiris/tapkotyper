@@ -407,9 +407,9 @@ export class LevelRuntime {
 
   private readonly offShortcuts: () => void;
 
-  /** Story levels and rescue missions; free practice, drills, the target range and the parrot count every key. */
+  /** Story levels and rescue missions; free practice, drills, the target range and the parrot count every key, and the valley's take-off is the child's own flight. */
   get pawsAllowed(): boolean {
-    return this.def.kind !== 'practice' && this.def.kind !== 'freetype' && this.def.kind !== 'aim' && this.def.kind !== 'parrot' && !this.opts.keys;
+    return this.def.kind !== 'practice' && this.def.kind !== 'freetype' && this.def.kind !== 'takeoff' && this.def.kind !== 'aim' && this.def.kind !== 'parrot' && !this.opts.keys;
   }
 
   /** The background: the rescue camp in a rescue mission, else the mode's world. */
@@ -990,6 +990,11 @@ export class LevelRuntime {
   /** A path taken at a crossroads makes the rest of the level shorter or longer: the minimum time, scaled by `k`. */
   stretchMin(k: number): void {
     if (Number.isFinite(this.minActive)) this.minActive *= k;
+  }
+
+  /** The valley's flights end at their last dragon even below the minimum: the minimum is what is played now. */
+  endMinimum(): void {
+    if (Number.isFinite(this.minActive)) this.minActive = Math.min(this.minActive, this.played);
   }
 
   /** Seconds of active play the level still needs before it may end (0 without a minimum). */

@@ -17,6 +17,8 @@ const { GreatSwampMode, SwampMode } = await import('./planet');
 const { CrystalsMode, SpellMode } = await import('./planet-crystals');
 const { CrossroadsMode } = await import('./planet-roads');
 const { CopyLoopMode, copyTarget } = await import('./copy-loop');
+const { FlamesMode, ThicketMode, flockAfter } = await import('./dragons');
+const { FlightMode, LullabyMode, TakeoffMode, takeoffPlan } = await import('./dragons-flight');
 
 /** A level runtime with just enough to run a mode: words are fixed, every other call does nothing. */
 function fakeRuntime(count = 4): LevelRuntime {
@@ -31,7 +33,7 @@ function fakeRuntime(count = 4): LevelRuntime {
     noPressure: false,
     difficulty: 5,
     idleFor: 99,
-    rhythm: { ema: 0.5, ratio: () => 0.3 },
+    rhythm: { ema: 0.5, ratio: () => 0.3, ready: () => {} },
     robot: null,
     toolAlpha: 1,
     rng: { pick: <T>(a: T[]) => a[0], range: (a: number) => a, chance: () => false, int: (a: number) => a, next: () => 0.5, shuffle: <T>(a: T[]) => [...a] },
@@ -40,6 +42,7 @@ function fakeRuntime(count = 4): LevelRuntime {
     weakWord: () => 'ab',
     playedS: 0,
     minLeft: 0,
+    staying: false,
     letter: () => 'a',
     travelTime: () => 3,
     friendSpot: () => ({ x: 120, y: 600 }),
@@ -53,6 +56,7 @@ function fakeRuntime(count = 4): LevelRuntime {
 const MODES: [string, new (L: LevelRuntime) => Mode][] = [
   ['meadow', MeadowMode], ['poppies', PoppyMode], ['invitation', InvitationMode], ['hedgehog', HedgehogMode], ['space', SpaceMode], ['hop', HopMode], ['command', CommandMode], ['asteroid', AsteroidMode],
   ['swamp', SwampMode], ['crystals', CrystalsMode], ['crossroads', CrossroadsMode], ['spells', SpellMode], ['greatswamp', GreatSwampMode], ['copyloop', CopyLoopMode],
+  ['flames', FlamesMode], ['thicket', ThicketMode], ['flight', FlightMode], ['lullaby', LullabyMode], ['takeoff', TakeoffMode],
 ];
 
 describe('no typing, no progress', () => {
@@ -298,5 +302,143 @@ describe('cyclic copy', () => {
     expect(mode.finished).toBe(false);
     run(L, mode, 4);
     expect(mode.finished).toBe(true);
+  });
+});
+
+describe('the catcher', () => {
+  it('rests where it is put and reaches for a height, faster while it follows', async () => {
+    const { Catcher } = await import('./meadow');
+    const L = fakeRuntime();
+    const slow = new Catcher(L, 100, 400), fast = new Catcher(L, 100, 400);
+    expect(slow.catchPoint()[0]).toBeGreaterThan(100);
+    slow.aimY = fast.aimY = 200;
+    fast.follow = true;
+    slow.update(0.05, 0);
+    fast.update(0.05, 0);
+    expect(fast.y).toBeLessThan(slow.y);
+    expect(slow.y).toBeLessThan(400);
+  });
+});
+
+describe('the valley', () => {
+  it('a typed flame is caught in the torch and feeds the pit; a missed one goes out', () => {
+    const L = fakeRuntime(2);
+    const mode = new FlamesMode(L);
+    mode.start();
+    run(L, mode, 1);
+    typeWord(L, mode);
+    expect(mode.progress()).toBe(0.5);
+    run(L, mode, 3);
+    expect((mode as any).caught).toBe(1);
+    expect((mode as any).pit.litTo).toBeCloseTo(1 / 3);
+    run(L, mode, 10);
+    expect(L.core.missed).toBeGreaterThan(0);
+  });
+
+  it('a slip on a bush grows two more ahead, at most three times; the same spell comes again', () => {
+    const L = fakeRuntime(4);
+    const mode = new ThicketMode(L);
+    mode.start();
+    for (let i = 0; i < 4; i++) {
+      const f = L.core.focus()!;
+      L.core.type('x');
+      mode.onWrong(f);
+      run(L, mode, 1);
+      expect(L.core.focus()?.word).toBe(f.word);
+    }
+    expect(L.count).toBe(10);
+    expect((mode as any).bushes).toHaveLength(10);
+    typeWord(L, mode);
+    expect(mode.progress()).toBeCloseTo(1 / 10);
+  });
+
+  it('a flight level starts with three dragons, gets one more while the minimum is not played, at most five', () => {
+    expect(flockAfter(3, 2, 30)).toBe(3);
+    expect(flockAfter(3, 3, 30)).toBe(4);
+    expect(flockAfter(3, 3, 0)).toBe(3);
+    expect(flockAfter(5, 5, 30)).toBe(5);
+  });
+
+  it('the fifth dragon asleep ends the lullaby even below the minimum', () => {
+    const L = fakeRuntime(3);
+    let ended = 0;
+    Object.assign(L, { minLeft: 60, endMinimum: () => ended++ });
+    const mode = new LullabyMode(L);
+    mode.start();
+    for (let i = 0; i < 5; i++) {
+      typeWord(L, mode);
+      run(L, mode, 2);
+    }
+    expect(mode.progress()).toBe(1);
+    expect(ended).toBe(1);
+    expect(L.core.focus()).toBeNull();
+    run(L, mode, 4);
+    expect(mode.finished).toBe(true);
+  });
+
+  it('a lullaby line with a slip is written again', () => {
+    const L = fakeRuntime(3);
+    const mode = new LullabyMode(L);
+    mode.start();
+    const f = L.core.focus()!;
+    L.core.type('x');
+    mode.onWrong(f);
+    run(L, mode, 1);
+    expect(L.core.focus()?.word).toBe(f.word);
+    expect(mode.progress()).toBe(0);
+  });
+
+  it('a dragon too low over the bushes lands in them and walks to the fire', () => {
+    const L = fakeRuntime(3);
+    const mode = new FlightMode(L);
+    mode.start();
+    typeWord(L, mode);
+    for (let i = 0; i < 600 && (mode as any).dragons[0].state === 'fly'; i++) run(L, mode, 0.05);
+    expect((mode as any).dragons[0].state).toBe('bush');
+    run(L, mode, 30);
+    expect((mode as any).dragons[0].state).toBe('home');
+    expect((mode as any).flown).toBe(0);
+    expect(mode.progress()).toBeCloseTo(1 / 3);
+  });
+
+  it('the take-off gets easier after the third and the sixth return of a dragon', () => {
+    expect(takeoffPlan(true, 0)).toEqual({ sets: 3, words: [2, 3], time: 1, soft: false });
+    expect(takeoffPlan(false, 0).sets).toBe(4);
+    expect(takeoffPlan(false, 3)).toEqual({ sets: 3, words: [2, 3], time: 1.25, soft: false });
+    expect(takeoffPlan(true, 6)).toEqual({ sets: 2, words: [2, 2], time: 1.25, soft: true });
+  });
+
+  it('a slip sends the dragon back; after six returns a slip only restarts the word', () => {
+    const L = fakeRuntime(3);
+    const mode = new TakeoffMode(L);
+    mode.start();
+    run(L, mode, 1);
+    for (let i = 0; i < 6; i++) {
+      const f = L.core.focus()!;
+      L.core.type('x');
+      mode.onWrong(f);
+      expect(L.core.focus()).toBeNull();
+      run(L, mode, 3);
+    }
+    expect((mode as any).dragons[0].returns).toBe(6);
+    const f = L.core.focus()!;
+    L.core.type('x');
+    mode.onWrong(f);
+    expect(L.core.focus()?.word).toBe(f.word);
+  });
+});
+
+describe('staying a while in the valley', () => {
+  it('another dragon always comes, so the lullaby has no end', () => {
+    const L = fakeRuntime(3);
+    Object.assign(L, { staying: true });
+    const mode = new LullabyMode(L);
+    mode.start();
+    for (let i = 0; i < 7; i++) {
+      typeWord(L, mode);
+      run(L, mode, 2);
+    }
+    expect(L.core.focus()).not.toBeNull();
+    expect(mode.finished).toBe(false);
   });
 });

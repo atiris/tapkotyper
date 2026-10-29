@@ -1,6 +1,6 @@
-# Príbeh 1: Tapko a dračie vajíčko - scenár prvých troch svetov
+# Príbeh 1: Tapko a dračie vajíčko - scenár prvých štyroch svetov
 
-Celý dej prvých troch svetov úroveň po úrovni, ako ho hra rozpráva (úvodné scény, vety na
+Celý dej prvých štyroch svetov úroveň po úrovni, ako ho hra rozpráva (úvodné scény, vety na
 začiatku úrovní, koniec). Pravidlá hry sú v [story.md](story.md) a [mechanics.md](mechanics.md);
 tu je **čo sa deje a prečo**, aby každá úroveň mala svoj kúsok príbehu. Rozprávač hovorí
 dieťaťu v druhej osobe ("chytíš list"), nikdy o postave ako o niekom inom.
@@ -80,8 +80,48 @@ veľké svetlé kryštály a malé zúbkované oranžové oblaky. Kryštály sú
 Koniec sveta: kryštály života Tapkovi ako poďakovanie darujú Silu (jemne pohybuje vecami,
 len písaním) a dráčiky v susednom údolí potrebujú pomoc.
 
+## Svet 4: Dračie údolie - oheň, cesta a prvé lietanie
+
+Domovom dráčikov je veľké **dračie ohnisko** pri vstupe do údolia. Keď kryštál života stratil
+svetlo, oheň v ňom zhasol, malé ohníky sa rozleteli po údolí, cesta do údolia zarástla a
+dráčiky sa vystrašené schovali hlboko v nej. Lietať sa nikdy nenaučili a ich miesto je na lúke
+kryštálov (2. úroveň planéty), kde ich kryštály hrejú a dávajú im silu. Dráčiky nie sú nikdy
+terčom: slová sú na ohníkoch, kríkoch, na paneli alebo v bubline.
+
+Úvod sveta (prvá karta 1. úrovne): "V Dračom údolí zhasol oheň a dráčiky sa rozutekali. Malé
+ohníky poletujú po údolí. Napíš slovo na ohníku a chytíš ho do fakle; z nich sa rozhorí oheň v
+ohnisku."
+
+1. **Ohníky** - Tapko drží fakľu, pod ňou leží vyhasnuté ohnisko. Ohníky priletujú sprava v
+   mäkkých oblúkoch; napísaný ohník Tapko chytí do fakle a fakľou ho vloží do ohniska. Prvé tri
+   ohnisko rozhoria, potom oheň rastie a iskrí. Nenapísaný ohník preletí popri fakli a zhasne.
+   Na konci oheň horí a dráčiky ho uvidia z celého údolia.
+2. **Zarastená cesta** - cesta k dráčikom je zarastená kríkmi a konármi. Každý krík má svoje
+   kúzlo; napísané bez chyby krík zmizne a Tapko ide ďalej. Pri chybe vyrastú na ceste dva nové
+   kríky (najviac trikrát) a kúzlo príde znova. Na konci cesty vykúkajú dráčiky.
+3. **Lietanie** - dráčiky sa učia lietať: jeden po druhom štartujú pri Tapkovi, v strede stoja
+   kríky a pristáť majú pri ohnisku. Slová prichádzajú v bubline hore; keď dieťa píše pekne v
+   rytme, dráčik letí vysoko ponad kríky. Keď rytmus klesne, pristane v kríkoch ("Júj, to
+   šteklí!", "Šteklivé!", "Chrumkavé!", "Kríčky!"), vylezie a k ohnisku dôjde pešo. Na konci sa
+   ukáže, koľko dráčikov sa naučilo lietať.
+4. **Uspávanka** - večer dráčiky krúžia nad ohniskom a nemôžu zaspať. Tapko im píše uspávanku
+   riadok po riadku, každý riadok je krátka veta s bodkou. Riadok bez chyby uspí jedného dráčika
+   pri ohni; riadok s chybou sa píše znova. Na konci všetky spia pri ohni.
+5. **Odlet** - ráno chcú dráčiky odletieť na lúku kryštálov. Každý potrebuje niekoľko skupín
+   krátkych slov bez chyby a načas; inak sa vráti k ohnisku ("Skúsime to znova!") a skúsi to
+   znova. Po troch návratoch má o skupinu menej a viac času, po šiestich sa pri chybe opakuje
+   len to slovo, takže to zvládne každý. Keď odletí posledný, oheň dohorí a za ohniskom sa
+   objaví vajíčko.
+
+Koniec sveta: "Dráčiky odleteli na lúku kryštálov a oheň dohorel. V popole za ohniskom niečo
+svieti... je to dračie vajíčko! Dráčiky ho tu nechali. Teraz ho opatruješ ty."
+
 ## Prečo
 - Každá úroveň má svoj dôvod v príbehu, takže päť úrovní sveta sa nečíta ako päťkrát tá istá
   hra s iným číslom.
 - Príbehy troch svetov na seba nadväzujú (lúka, cesta vesmírom, planéta drakov) a pripravujú
   Dračie údolie, kde Tapko Silu použije.
+- V údolí nič nepadá nikomu na hlavu: ciele sú ohníky a kríky a dráčik, ktorý to nezvládne, sa
+  v kríkoch zasmeje a dôjde pešo. Úrovne na seba nadväzujú (oheň je domov dráčikov, vyčistená
+  cesta je pre tých, čo nelietajú, lietanie z 3. úrovne sa skúša v 5.) a vajíčko za ohniskom
+  vedie do piateho sveta.

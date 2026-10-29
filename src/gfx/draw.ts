@@ -39,6 +39,18 @@ export function drawSprite(g: G, name: string, x: number, y: number, h: number, 
   g.restore();
 }
 
+/** Frees a cached canvas's pixels when it leaves its cache, without waiting for the garbage collector. */
+export function release(c: HTMLCanvasElement): void {
+  c.width = c.height = 0;
+}
+
+/** Drops the least recently used entry of a cache of canvases. */
+export function evictOldest<K>(cache: Map<K, HTMLCanvasElement>): void {
+  const [key, c] = cache.entries().next().value!;
+  cache.delete(key);
+  release(c);
+}
+
 /** Shapes drawn once into a canvas of their own, least recently drawn first. */
 const cached = new Map<string, HTMLCanvasElement>();
 const CACHED_KEEP = 16;
@@ -60,7 +72,7 @@ export function drawCached(g: G, key: string, x: number, y: number, w: number, h
     const cg = c.getContext('2d')!;
     cg.scale(c.width / w, c.height / h);
     paint(cg);
-    if (cached.size >= CACHED_KEEP) cached.delete(cached.keys().next().value!);
+    if (cached.size >= CACHED_KEEP) evictOldest(cached);
   }
   cached.set(id, c);
   g.drawImage(c, x, y, w, h);
@@ -168,7 +180,7 @@ export const PALETTES: Record<string, Palette> = {
 };
 
 /** Scaled layers, least recently drawn first; only the current scene's few are kept, so memory does not grow with every world played. */
-const fitted = new Map<HTMLImageElement, { px: number; c: HTMLCanvasElement }>();
+const fitted = new Map<HTMLImageElement, HTMLCanvasElement>();
 const FITTED_KEEP = 4;
 
 /**
@@ -179,18 +191,19 @@ function fittedTile(tile: HTMLImageElement, px: number): HTMLCanvasElement | HTM
   if (px >= tile.naturalHeight) return tile;
   const hit = fitted.get(tile);
   fitted.delete(tile);
-  if (hit && hit.px === px) {
+  if (hit && hit.height === px) {
     fitted.set(tile, hit);
-    return hit.c;
+    return hit;
   }
-  if (fitted.size >= FITTED_KEEP) fitted.delete(fitted.keys().next().value!);
+  if (hit) release(hit);
+  if (fitted.size >= FITTED_KEEP) evictOldest(fitted);
   const c = document.createElement('canvas');
   c.width = Math.round(tile.naturalWidth * px / tile.naturalHeight);
   c.height = px;
   const cg = c.getContext('2d')!;
   cg.imageSmoothingQuality = 'high';
   cg.drawImage(tile, 0, 0, c.width, px);
-  fitted.set(tile, { px, c });
+  fitted.set(tile, c);
   return c;
 }
 

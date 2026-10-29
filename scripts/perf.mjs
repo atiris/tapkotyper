@@ -32,7 +32,7 @@ const MACHINES = {
   big: { viewport: { width: 1920, height: 1080 }, dpr: 2, cpu: 1 },
 };
 /** Frame time budget in ms (.specify/architecture.md, Performance budget): normal with full graphics, slow with simple. */
-const BUDGET = { normal: { p50: 17, p95: 20 }, 'slow-low': { p50: 34, p95: 100 } };
+const BUDGET = { normal: { p50: 17, p95: 20 }, 'slow-low': { p50: 34, p95: 80 } };
 
 /** Scenes: a level (its map island and node, or the target range of a world), the map or the start page. */
 const SCENES = [
@@ -277,6 +277,10 @@ async function leak(browser) {
     const { objects } = await cdp.send('Runtime.queryObjects', { prototypeObjectId: proto.objectId });
     const { result: count } = await cdp.send('Runtime.callFunctionOn', { objectId: objects.objectId, functionDeclaration: 'function () { return this.length; }', returnByValue: true });
     canvases.push(count.value);
+    if (i === LEAK_LEVELS - 1) {
+      const { result: kinds } = await cdp.send('Runtime.callFunctionOn', { objectId: objects.objectId, returnByValue: true, functionDeclaration: 'function () { const n = {}; for (const c of this) { const k = `${c.isConnected ? "on page" : "detached"} ${c.className || "-"} ${c.width}x${c.height}`; n[k] = (n[k] || 0) + 1; } return n; }' });
+      console.log('canvases at the end:', JSON.stringify(kinds.value));
+    }
     // The player's stored data grows with every level played (sessions, key stats): part of the heap's growth.
     storeKB.push(await page.evaluate(() => Math.round((localStorage.getItem('tapkotyper:v1') ?? '').length / 1024)));
   }

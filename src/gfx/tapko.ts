@@ -1,6 +1,6 @@
 import type { Companion, CompanionKind } from '../storage/schema';
 import { accessories, hasImage, imageUrl, sprite, type Slot } from './assets';
-import { drawFace, type G } from './draw';
+import { drawFace, evictOldest, type G } from './draw';
 
 /** `surprised` is optional art, used only in story 2's meeting scene. */
 export type Mood = 'idle' | 'happy' | 'thinking' | 'surprised';
@@ -97,7 +97,7 @@ function stackCanvas(layers: { name: string }[], px: number): HTMLCanvasElement 
     c.width = c.height = px;
     const cg = c.getContext('2d')!;
     for (const img of imgs) cg.drawImage(img!, 0, 0, px, px);
-    if (stacks.size >= STACKS_KEEP) stacks.delete(stacks.keys().next().value!);
+    if (stacks.size >= STACKS_KEEP) evictOldest(stacks);
   }
   stacks.set(key, c);
   return c;

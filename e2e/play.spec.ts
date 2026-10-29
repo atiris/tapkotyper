@@ -83,8 +83,8 @@ test('the robot story is a second row on the map, and Bolt walks with the child 
   await page.keyboard.type('supertapkotyper', { delay: 40 });
   await expect(page.locator('.story-row')).toHaveCount(3);
   await page.locator('.story-robot .level-node').first().click();
-  // The world's story is on the get-ready card, highlighted.
-  await expect(page.locator('.posture-text strong').first()).toBeVisible();
+  // The world is not built yet: the card says so instead of its story.
+  await expect(page.locator('.posture-card')).toContainText('still being made');
   await page.keyboard.press('Space');
   await expect(page.locator('.level-screen.world-junkyard[data-bolt="broken"]')).toBeVisible();
   await page.locator('.level-tapko:not(.waiting)').waitFor();
@@ -152,30 +152,16 @@ test('Escape closes the get-ready card like the space bar and starts the level',
   await expect(page.locator('.level-screen')).toBeVisible();
 });
 
-test('the main gate wants its whole code without a mistake and starts again after one', async ({ page }) => {
+test('a world not built yet plays the cyclic copy and its level is finished by copying', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await page.goto('./');
   await page.locator('.start-screen').waitFor();
   await page.keyboard.type('supertapkotyper', { delay: 40 });
-  await page.locator('.story-robot .island-robocity .level-node.super').click();
-  await expect(page.locator('.posture-card')).toContainText('without a mistake');
-  await page.keyboard.press('Space');
-  await expect(page.locator('.paw-btn')).toHaveCount(0);
-  const next = () => page.locator('.kb-guide').getAttribute('data-next');
-  await expect.poll(next).not.toBe('');
-  const first = (await next())!;
-  for (let i = 0; i < 7; i++) {
-    await typeChar(page, (await next())!);
-    await page.waitForTimeout(60);
-  }
-  await expect.poll(() => page.locator('.progress-fill').evaluate((e) => e.style.width)).toBe('13%');
-  const expected = (await next())!;
-  await page.keyboard.type(expected === 'a' ? 's' : 'a');
-  // The code starts again from its first key; the progress bar never goes back.
-  await expect.poll(next).toBe(first);
-  expect(await page.locator('.progress-fill').evaluate((e) => e.style.width)).toBe('13%');
-  expect(await playLevel(page, false)).toMatch(/%/);
+  await page.locator('.island-dragons .level-node.super').click();
+  await expect(page.locator('.posture-card')).toContainText('This level is still being made');
+  await expect(page.locator('.level-screen.world-dragons')).toBeVisible();
+  expect(await playLevel(page)).toMatch(/%/);
   expect(errors).toEqual([]);
 });
 
@@ -208,25 +194,19 @@ test('world badges sit on the map, grow with stars and line up on the progress s
   await expect(page.locator('.badge-shelf .badge.none').first()).toHaveAttribute('aria-label', 'Finish world 4');
 });
 
-test('the fairy story is a third row; Melody floats with the child, and dictation plays as copying without a voice', async ({ page }) => {
+test('the fairy story is a third row; Melody floats with the child', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
-  // A browser without voices.
-  await page.addInitScript(() => {
-    Object.defineProperty(window, 'speechSynthesis', { value: { getVoices: () => [], speak() {}, cancel() {}, addEventListener() {} } });
-  });
-  await page.goto('./');
+  // A few seconds of copying, so the child's own keys count.
+  await page.goto('./?minActive=8');
   await page.locator('.start-screen').waitFor();
   await page.keyboard.type('supertapkotyper', { delay: 40 });
   const row = page.locator('.story-fairy');
   await expect(row.locator('.story-name')).toHaveText('Melody the Fairy');
   await expect(row.locator('.island')).toHaveCount(5);
-  // The forest path: dictation, here without a voice.
   await row.locator('.island-forestpath .level-node').first().click();
-  await expect(page.locator('.posture-cards')).toContainText('cannot read aloud');
   await expect(page.locator('.level-screen.world-forestpath[data-fairy="melody"]')).toBeVisible();
-  const text = await playLevel(page, false);
-  expect(text).not.toContain('By ear');
+  expect(await playLevel(page, false)).toMatch(/%/);
   expect(errors).toEqual([]);
 });
 

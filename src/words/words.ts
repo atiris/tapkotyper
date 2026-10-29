@@ -199,6 +199,11 @@ export class WordSource {
     return this.remember(target);
   }
 
+  /** The key is one of the source's keys. */
+  knows(key: string): boolean {
+    return this.keys.has(key);
+  }
+
   private remember(target: string): string {
     this.recent.push(target);
     if (this.recent.length > 12) this.recent.shift();

@@ -19,7 +19,6 @@
   chosen duration.
 - A goal text appears above the animal that scored. A closed world on the map tells, when
   clicked, what is still missing: the world before it, or how many letters its story needs.
-- Rain street: Bolt walks toward the sun as the rain thins.
 - Automatic growth counts only levels where the child typed at least 85 % of the targets
   (and typed accurately); a level where many targets floated by unread adds no time.
 - A small round rhythm gauge in the top bar (calm blue to green, never red; in the space world
@@ -33,8 +32,8 @@
 - The start is slow: at difficulty 3 a short word needs about 10 seconds to reach Tapko
   and one word is on screen at a time.
 - Every story level, super level and rescue mission lasts at least 2 minutes of active
-  play (pauses and cards do not count): a quick child gets more targets of the same kind
-  (the gate a new code). The progress bar shows the slower of the two shares, the targets done
+  play (pauses and cards do not count): a quick child gets more targets of the same kind.
+  The progress bar shows the slower of the two shares, the targets done
   and the minimum time played, so it never runs ahead of either, ends exactly when the level
   ends and never goes back when more targets come. Practice,
   custom exercises and free typing keep their own length. At the end Tapko stays where he is and jumps happily
@@ -59,8 +58,8 @@
   session (about one world) goes up and down instead of repeating one game: 1 the world's
   main game, gently; 2 a calm step; 3 the main game, harder, with one short surprise; 4 a
   twist; 5 the super-obstacle. Each level dot on the map shows the icon of its activity
-  (main game a flying leaf, waiting words a chair, copy an envelope, dictation an ear,
-  secret words a keyhole, crossroads a signpost, the super level a crown)
+  (main game a flying leaf, waiting words a chair, copy an envelope, crossroads a signpost,
+  the super level a crown)
   (the number stays in its tooltip and for screen readers). The super level's crown, the
   target range's target and the parrot sit on white cards until they are mastered, then turn
   green like every played level: the crown once the super level is done, the target once the
@@ -77,13 +76,23 @@
   - *Copy* (twist, a clean line): a row of 3 to 4 words typed from left to right. A slip turns the
     word red, it fades to a faint trace (about a fifth) where it stood and the next word is the one to type; the level gets 2 more
     words, at most (1 + story order) x 3 in all (6 in the dragon story).
+  - *Cyclic copy* (the placeholder of every level of a world not built yet, see
+    [story](story.md)): the world's own background bands, the near one drifting slowly, Tapko
+    at his usual place, and a small sign at the top with the world's name and "Coming soon".
+    One target at a time on a large panel in the middle, above Tapko's head, soft white with
+    the world's accent colour as its border and glow. Levels 1-2 a word, 3-4 a phrase of 2-3
+    words, the super level a sentence of 3-5 words once space and period are known (else a
+    phrase); the level's keys give the letters. A finished target floats up out of the panel
+    with a soft sparkle and the next one grows in; the words typed are counted small under
+    the panel. A slip only counts. Targets come without end until the minimum time (2
+    minutes) is played; the target typed then is the last, and the end says how many words
+    were typed. Its map dot is the copy envelope.
   - *Gust* (surprise of the meadow's level 3): half way through, the character says that
     the wind blows, and for about 25 seconds up to 3 small leaves (words of at most 3
     letters) come at once and fly slower. Once per run; a leaf flying by is a goal as
     always.
 - **Ways to type** (a style per run, the same movement and story in every mode):
-  - *Copy* (default, stories 1 and 2 and the fairy story's garden): the child types the
-    word shown.
+  - *Copy* (default, every story level): the child types the word shown.
   - *Dictation*: the voice says each target when it becomes the one to type; its label
     shows a speaker and one dot per letter (spaces as gaps), and the typed letters
     appear in place. A wrong key shows the whole target, which stays shown until done.
@@ -97,7 +106,7 @@
     the one exception to "a word seen can be typed", clearly marked by the ring. A wrong
     key shows it again for a short flash; the letters typed so far stay. Targets get
     1.8 times the travel time (calm modes wait anyway).
-  - *Mixed* (the fairy story's music tree): dictation and memory targets in turns, each
+  - *Mixed* (kept for the fairy story's music tree, not built yet): dictation and memory targets in turns, each
     with its own icon. Without a voice the run is memory only.
   - The mark `↵` of a target waiting for Enter stays visible in all of them, and the voice
     never says it.

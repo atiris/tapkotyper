@@ -248,7 +248,7 @@
     },
     "helpers": {
       "title": "Typing helpers",
-      "about": "The paw help and the short praise in the wave games."
+      "about": "The paw help: Tapko types a word for the child."
     },
     "tapko": {
       "title": "Tapko and fairy Melody",
@@ -269,6 +269,10 @@
     "story-planet": {
       "title": "Lines of the Planet world",
       "about": "Opening lines and bubbles of the Planet world's levels: the swamp, crystals on the meadow, crossroads with signposts, spells for the crystals of life and the great swamp with the monolith."
+    },
+    "story-placeholder": {
+      "title": "Worlds still being made",
+      "about": "The card line, the small sign, the counter and the end line of the copying game that every level of a world not built yet plays for now."
     },
     "story-paths": {
       "title": "Paths at the planet's crossroads",
@@ -705,8 +709,6 @@
     "paw.aria": "Screen-reader label of the paw button; {n} is the number of charged paws.",
     "paw.start": "Tapko, when the paw starts typing for the child.",
     "paw.charged": "Tapko, when a paw gets charged; {n} is the words without a mistake, {words} the words the paw will type.",
-    "wave.onBeat": "Short praise above the wave when the child types a word right on the beat.",
-    "wave.good": "Short praise above the wave when the child types a word off the beat.",
     "tapko.statsHint": "Tooltip of Tapko on the map and in a level; clicking opens the statistics.",
     "tapko.correct_streak": "Tapko during play after a run of right words; one line is picked at random. {name} is the player's nickname.",
     "tapko.mistake": "Tapko during play after two mistakes in a row; one line is picked at random.",
@@ -790,29 +792,12 @@
     "story.boulderStart": "Line when a boulder blocks the way at the end of the great swamp; one is picked at random.",
     "story.boulderOpen": "Line on the planet when the boulder falls apart and the way is clear; one is picked at random.",
     "story.cradleDone": "Line at the end of the Planet world when Tapko puts the crystals of life on the monolith; one is picked at random.",
+    "story.copyLoopStart": "Line on the get-ready card of every level of a world not built yet: the level is still being made, for now the child copies the words in the middle until the time is up.",
+    "story.copyLoopSoon": "Small words on the sign at the top of such a level, under the world's name: the world is still being made.",
+    "story.copyLoopCount": "Small counter under the panel of such a level; {n} is the number of words typed.",
+    "story.copyLoopDone": "Text in the middle at the end of such a level; {n} is the number of words typed. Keep the line break.",
     "story.matchStart": "Opening line of the meadow's third level: the real football match begins.",
     "story.spaceStart": "Opening line of the rocket's first level: the flight to the first planet.",
-    "story.waveCalm": "Line in Dragon Valley when the wave has calmed after all the words; one is picked at random.",
-    "story.junkStart": "Line at the junkyard at the start of a level where Bolt beeps under the pile; one is picked at random.",
-    "story.knotOpen": "Line at the junkyard when the knot is untied; one is picked at random.",
-    "story.batteryFull": "Line in the workshop when Bolt's battery is full; one is picked at random.",
-    "story.rainTickle": "Bolt in the rain, when a drop falls on him; one is picked at random.",
-    "story.stormCalm": "Line in the town when the storm calms down; one is picked at random.",
-    "story.doorOpen": "Line in Robot City when a door opens after a right password; shown only now and then, one is picked at random.",
-    "story.gateOpen": "Line in Robot City when the whole gate code is typed right; one is picked at random.",
-    "story.gateIntro": "Line in Robot City at the start of the main gate level.",
-    "story.gateSlow": "Line in Robot City when the child has restarted the gate code for the third time.",
-    "story.gateMore": "Line in Robot City when the gate has another lock and a new code appears.",
-    "story.welcomeDone": "Line in Bolt's home when the family greeting level is done; one is picked at random.",
-    "story.flowerIntro": "Fairy Melody in the garden, at the start of the big flower level.",
-    "story.flowerAwake": "Line in the garden when the big flower wakes up; one is picked at random.",
-    "story.owlIntro": "Line on the forest path at the start of the level with the owl and the riddle.",
-    "story.owlSolved": "Line on the forest path when all riddles are solved; one is picked at random.",
-    "story.reflectionIntro": "Line at the lake at the start of the level with a long sentence shown only once.",
-    "story.reflectionDone": "Line at the lake when the child typed all sentences from memory; one is picked at random.",
-    "story.treeSong": "Line at the Music Tree when the child finishes the level; one is picked at random.",
-    "story.lastSongIntro": "Line at the moonlit ball at the start of the last song level.",
-    "story.lastSongDone": "Line at the moonlit ball when the last song is finished; one is picked at random.",
     "aim.title": "Name of the game: the button and tooltip on the map, and the level title at the top while playing.",
     "aim.start": "Story on the card before the range: what the range is for and the rare thing of each range.",
     "aim.swapHint": "Added to the rules at the start once the child has found a rare thing.",
@@ -1475,8 +1460,8 @@
     "help.games.catch": "Help, Progress tab: the waiting words game with its picture (a chair); the bold name matches map.act.catch.",
     "help.games.crossroads": "Help, Progress tab: the crossroads game with its picture; the bold name matches map.act.crossroads.",
     "help.games.clean": "Help, Progress tab: the copy game with its picture (an envelope); the bold name matches map.act.clean.",
-    "help.games.listen": "Help, Progress tab: the dictation game with its picture (an ear); the bold name matches map.act.listen.",
-    "help.games.remember": "Help, Progress tab: the secret words game with its picture (a keyhole); the bold name matches map.act.remember.",
+    "help.games.listen": "Help, Progress tab: the dictation way of typing with its picture (an ear), as in own practice.",
+    "help.games.remember": "Help, Progress tab: the secret words way of typing with its picture (a keyhole), as in own practice.",
     "help.games.aim": "Help, Progress tab: the target range with its target picture; the bold name matches aim.title.",
     "help.games.parrot": "Help, Progress tab: the parrot round with the parrot picture; the bold name matches parrot.title.",
     "help.games.super": "Help, Progress tab: the big challenge with its crown; the bold name matches map.act.super.",

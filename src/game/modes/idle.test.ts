@@ -9,32 +9,20 @@ vi.mock('../../app/app', async () => {
   return { app: { profile: newProfile('Test', 'sk') }, pickLine: () => '' };
 });
 
-const { ShieldMode, WaveMode } = await import('./dragons');
-const { MoleMode, SlopeMode } = await import('./egg');
-const { BirdsMode } = await import('./forestpath');
-const { JunkMode, KnotMode } = await import('./junkyard');
 const { HedgehogMode, MeadowMode } = await import('./meadow');
 const { PoppyMode, InvitationMode } = await import('./meadow-calm');
-const { FirefliesMode, LastSongMode } = await import('./moonball');
-const { NotesMode, TreeSongMode } = await import('./musictree');
-const { RainMode, StormMode } = await import('./raintown');
-const { RoomsMode, WelcomeMode } = await import('./robohome');
 const { AsteroidMode, SpaceMode } = await import('./space');
 const { CommandMode, HopMode } = await import('./space-calm');
-const { BatteryMode, BeltMode } = await import('./workshop');
 const { GreatSwampMode, SwampMode } = await import('./planet');
 const { CrystalsMode, SpellMode } = await import('./planet-crystals');
 const { CrossroadsMode } = await import('./planet-roads');
-const { DoorsMode, GateMode } = await import('./robocity');
-const { BudsMode, FlowerMode } = await import('./garden');
-const { LiliesMode, ReflectionMode } = await import('./lilylake');
-const { OwlMode } = await import('./forestpath');
+const { CopyLoopMode, copyTarget } = await import('./copy-loop');
 
 /** A level runtime with just enough to run a mode: words are fixed, every other call does nothing. */
 function fakeRuntime(count = 4): LevelRuntime {
   const base: Record<string, unknown> = {
     core: new TypingCore(),
-    def: { count, variant: 'mix', index: 0, kind: 'x', world: 1 },
+    def: { count, variant: 'mix', index: 0, kind: 'x', world: 3 },
     count,
     vw: 1280,
     stage: { scale: 1 },
@@ -48,6 +36,7 @@ function fakeRuntime(count = 4): LevelRuntime {
     toolAlpha: 1,
     rng: { pick: <T>(a: T[]) => a[0], range: (a: number) => a, chance: () => false, int: (a: number) => a, next: () => 0.5, shuffle: <T>(a: T[]) => [...a] },
     word: () => 'ab',
+    words: { knows: () => true },
     weakWord: () => 'ab',
     playedS: 0,
     minLeft: 0,
@@ -63,12 +52,7 @@ function fakeRuntime(count = 4): LevelRuntime {
 
 const MODES: [string, new (L: LevelRuntime) => Mode][] = [
   ['meadow', MeadowMode], ['poppies', PoppyMode], ['invitation', InvitationMode], ['hedgehog', HedgehogMode], ['space', SpaceMode], ['hop', HopMode], ['command', CommandMode], ['asteroid', AsteroidMode],
-  ['swamp', SwampMode], ['crystals', CrystalsMode], ['crossroads', CrossroadsMode], ['spells', SpellMode], ['greatswamp', GreatSwampMode], ['shield', ShieldMode], ['wave', WaveMode],
-  ['slope', SlopeMode], ['mole', MoleMode], ['junk', JunkMode], ['knot', KnotMode], ['belt', BeltMode],
-  ['battery', BatteryMode], ['rain', RainMode], ['storm', StormMode], ['doors', DoorsMode], ['gate', GateMode],
-  ['rooms', RoomsMode], ['welcome', WelcomeMode], ['buds', BudsMode], ['flower', FlowerMode], ['birds', BirdsMode],
-  ['owl', OwlMode], ['lilies', LiliesMode], ['reflection', ReflectionMode], ['notes', NotesMode],
-  ['treesong', TreeSongMode], ['fireflies', FirefliesMode], ['lastsong', LastSongMode],
+  ['swamp', SwampMode], ['crystals', CrystalsMode], ['crossroads', CrossroadsMode], ['spells', SpellMode], ['greatswamp', GreatSwampMode], ['copyloop', CopyLoopMode],
 ];
 
 describe('no typing, no progress', () => {
@@ -132,15 +116,6 @@ describe('invitation', () => {
     expect(first.gone).toBe(true);
     expect(L.count).toBe(8);
     expect(L.core.focus()).not.toBe(first);
-  });
-});
-
-describe('rain walk', () => {
-  it('Bolt walks from the street start to the sun as the rain thins', async () => {
-    const { rainWalkX } = await import('./raintown');
-    expect(rainWalkX(1000, 0)).toBeLessThan(rainWalkX(1000, 0.5));
-    expect(rainWalkX(1000, 0.5)).toBeLessThan(rainWalkX(1000, 1));
-    expect(rainWalkX(1000, 2)).toBe(rainWalkX(1000, 1));
   });
 });
 
@@ -294,5 +269,34 @@ describe('spells', () => {
     run(L, mode, 2);
     expect(mode.progress()).toBe(0);
     expect(L.core.focus()).not.toBeNull();
+  });
+});
+
+describe('cyclic copy', () => {
+  it('words at levels 1-2, phrases at 3-4, a sentence at the super level once space and period are known', () => {
+    expect([0, 1, 2, 3, 4].map((i) => copyTarget(i, true))).toEqual([
+      { words: 1, min: 2 }, { words: 1, min: 2 }, { words: 3, min: 2 }, { words: 3, min: 2 }, { words: 5, min: 3 },
+    ]);
+    expect(copyTarget(4, false)).toEqual({ words: 3, min: 2 });
+  });
+
+  it('targets come without end until the time is played; a slip only counts; the target typed then is the last', () => {
+    const L = fakeRuntime(4);
+    Object.assign(L, { minLeft: 60 });
+    const mode = new CopyLoopMode(L);
+    mode.start();
+    for (let i = 0; i < 6; i++) typeWord(L, mode);
+    expect(L.core.focus()).not.toBeNull();
+    const f = L.core.focus()!;
+    expect(L.core.type('x').kind).toBe('wrong');
+    mode.onWrong(f);
+    expect(L.core.focus()).toBe(f);
+    Object.assign(L, { minLeft: 0 });
+    typeWord(L, mode);
+    expect(L.core.focus()).toBeNull();
+    expect(mode.progress()).toBe(1);
+    expect(mode.finished).toBe(false);
+    run(L, mode, 4);
+    expect(mode.finished).toBe(true);
   });
 });

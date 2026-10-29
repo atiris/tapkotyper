@@ -114,8 +114,6 @@
       "catch": "Waiting words",
       "clean": "Copy",
       "crossroads": "Crossroads",
-      "listen": "Dictation",
-      "remember": "Secret words",
       "super": "Big challenge"
     },
     "ownText": "My text",
@@ -638,10 +636,6 @@
     "spaceStart": [
       "You have a special mission: explore a few planets, all the way to the dragons' planet, where they need your help. Your **typing in the right rhythm drives** the **spaceship** on this journey. When there is danger, **give** the right **command** to the ship's computer. If you enter the **right code** of the asteroid that crossed your way, you **switch on the laser**, which bounces the coming rock away like a billiard ball. But the dragons' planet is far away. What waits for you on this journey?"
     ],
-    "waveCalm": [
-      "The wave calmed down. Look, a rainbow!",
-      "Steady rhythm wins!"
-    ],
     "world": {
       "meadow": "It is a lovely afternoon on the meadow and there is a **football match** later! The animals train with you: they kick leaves like a ball and **you keep goal**. Catch the leaves with letters: **type the word on a leaf** and the leaf is yours.",
       "space": "Three, two, one... **lift off!** You fly off to explore a few planets, all the way to the **dragons' planet**. **Your typing rhythm** drives the rocket and a soft beam pushes meteors out of the way.",
@@ -734,67 +728,14 @@
         "Now you can also guide little birds and fireflies home on rescue missions."
       ]
     },
-    "junkStart": [
-      "Can you hear that beeping? Someone is under the pile!",
-      "Type a word and the magnet takes the junk away."
-    ],
-    "knotOpen": [
-      "The knot is untied! Bolt is free.",
-      "Beep beep! That means thank you."
-    ],
-    "batteryFull": [
-      "The battery is full! Bolt is glowing with joy.",
-      "Nice steady rhythm!"
-    ],
-    "rainTickle": [
-      "Bolt: Beep, that tickles!",
-      "Bolt shakes like a puppy.",
-      "Bolt: Beep beep, a drop on my head!"
-    ],
-    "stormCalm": [
-      "The storm calmed down. Here comes the sun!",
-      "A calm rhythm did it!"
-    ],
-    "doorOpen": [
-      "Ding! The door is open.",
-      "Right password!",
-      "Another door is open!"
-    ],
-    "gateOpen": [
-      "The big gate is opening! Welcome to Robot City.",
-      "The whole code is right!"
-    ],
-    "gateIntro": "The main gate wants the whole code without a mistake. If you slip, you start again. There is no hurry.",
-    "gateSlow": "Slowly and exactly. No clock runs here.",
-    "gateMore": "The gate has one more lock! Here is a new code.",
-    "welcomeDone": [
-      "The whole family said hello!",
-      "Beep beep beep! The little robots are happy."
-    ],
-    "flowerIntro": "The big flower is asleep. Melody whispers a word, listen and type it. Each word wakes the flower a little more.",
-    "flowerAwake": [
-      "The big flower is awake! It smells so nice.",
-      "The garden hums its song again!"
-    ],
-    "owlIntro": "The owl tells a riddle, one word at a time. Listen to each word and type it.",
-    "owlSolved": [
-      "Who, who! All riddles solved.",
-      "The owl is happy, the birds are singing!"
-    ],
-    "reflectionIntro": "The lake shows a whole long sentence, but only once. Look well, then type it word by word.",
-    "reflectionDone": [
-      "The long reflection is back in the lake!",
-      "What a memory! The frogs are clapping."
-    ],
-    "treeSong": [
-      "The Music Tree plays its song!",
-      "A calm steady beat did it."
-    ],
-    "lastSongIntro": "The last song of the night. Melody sings short sentences, one after another. Listen and type.",
-    "lastSongDone": [
-      "The whole forest sings!",
-      "Every song is home again."
-    ]
+    "copyLoopStart": "This level is still being made. For now you practise copying here: type the words in the middle until the time is up.",
+    "copyLoopSoon": "Coming soon",
+    "copyLoopCount": "typed: {n}",
+    "copyLoopDone": {
+      "one": "Well copied!\nYou typed {n} word.",
+      "few": "Well copied!\nYou typed {n} words.",
+      "other": "Well copied!\nYou typed {n} words."
+    }
   },
   "fairy": {
     "start": [
@@ -812,10 +753,6 @@
       "Melody: The forest heard you!",
       "Melody: One more song is home."
     ]
-  },
-  "wave": {
-    "onBeat": "On the beat!",
-    "good": "Good!"
   },
   "progress": {
     "title": "My progress",

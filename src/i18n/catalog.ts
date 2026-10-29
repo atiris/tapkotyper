@@ -45,7 +45,7 @@ export const PLURAL_FORMS = ['zero', 'one', 'two', 'few', 'many', 'other'] as co
 /** Keys read by `tn`: an object of plural forms. */
 export const PLURAL_KEYS = new Set([
   'teacher.scan.count', 'teacher.n.sets', 'teacher.n.writers', 'teacher.n.results', 'teacher.n.handIns',
-  'teacher.file.added', 'teacher.file.old', 'teacher.wipe.goSets', 'teacher.wipe.goResults',
+  'teacher.file.added', 'teacher.file.old', 'teacher.wipe.goSets', 'teacher.wipe.goResults', 'story.copyLoopDone',
 ]);
 
 /** Arrays whose order and count matter; every other array is a pool read at random. */
@@ -81,7 +81,7 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
     g('new-key', 'keysIntro.*', 'newKey.*', 'homeRow.*'),
     g('practice', 'practice.*', 'practiceKeys.*'),
     g('free-type', 'freeType.*', 'touch.*'),
-    g('helpers', 'paw.*', 'wave.*'),
+    g('helpers', 'paw.*'),
   ] },
   { id: 'story', groups: [
     g('tapko', 'tapko.*', 'fairy.*'),
@@ -89,6 +89,7 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
     g('story-scenes', 'story.scenes.*', 'story.next'),
     g('story-space', 'story.spaceStart', 'story.hopStart', 'story.hopTooFar', 'story.strongStart', 'story.strongHit', 'story.commandStart', 'story.commandReply', 'story.commandRejected', 'story.boarded', 'story.asteroidStart'),
     g('story-planet', 'story.swampStart', 'story.swampDone', 'story.crystalsStart', 'story.crystalsDoneOne', 'story.crystalsDoneFew', 'story.crystalsDoneMany', 'story.crossroadsStart', 'story.roadEnd', 'story.signGone', 'story.signLast', 'story.spellStart', 'story.spellCast', 'story.spellBroken', 'story.greatSwampStart', 'story.greatSwampSlip', 'story.boulderStart', 'story.boulderOpen', 'story.cradleDone'),
+    g('story-placeholder', 'story.copyLoopStart', 'story.copyLoopSoon', 'story.copyLoopCount', 'story.copyLoopDone'),
     g('story-paths', 'story.path.*'),
     g('story-play', 'story.*'),
   ] },

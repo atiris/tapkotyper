@@ -32,55 +32,55 @@ migration or data version, old results simply stay under their ids.
 - **Side cards** of these worlds (target range, parrot, free typing) stay as they are.
 
 ## 1. The get-ready card
-- [ ] For a `copyloop` level the story part of the card says one line instead of the story:
+- [x] For a `copyloop` level the story part of the card says one line instead of the story:
       sk "Táto úroveň sa ešte pripravuje. Zatiaľ si tu precvičíš odpis: píš slová zo stredu, kým
       neuplynie čas.", en "This level is still being made. For now you practise copying here:
       type the words in the middle until the time is up." The level title, the posture picture,
       the key cards of new keys and the tip stay as on every card.
 
 ## 2. The scene
-- [ ] The world's own three background bands (`bg-<world>-far/mid/near`, all exist), the near band
+- [x] The world's own three background bands (`bg-<world>-far/mid/near`, all exist), the near band
       drifting slowly as in the calm levels.
-- [ ] Tapko (the DOM Tapko) at his usual place on the left, at the meadow's size; his idle, happy
+- [x] Tapko (the DOM Tapko) at his usual place on the left, at the meadow's size; his idle, happy
       and thinking faces react as in other levels (a finished target: happy, a slip: thinking).
-- [ ] A small rounded sign at the top middle, the world's name and "Pripravuje sa" / "Coming soon"
+- [x] A small rounded sign at the top middle, the world's name and "Pripravuje sa" / "Coming soon"
       in small letters, calm, never covering the panel or Tapko.
 
 ## 3. The game: cyclic copy (`CopyLoopMode`)
-- [ ] One target at a time on a panel in the middle of the stage (above Tapko's head height, never
+- [x] One target at a time on a panel in the middle of the stage (above Tapko's head height, never
       over him), large, in the panel look of the planet's spells (rounded, soft white with the
       world's accent colour as its border and glow). The typed part changes colour as in other
       copy levels; the finger guide and the keyboard work as everywhere.
-- [ ] What the target is, from the level's index and the keys: levels 1-2 a word (`L.word(undefined,
+- [x] What the target is, from the level's index and the keys: levels 1-2 a word (`L.word(undefined,
       1)`); levels 3-4 a phrase of 2-3 words (`L.word(undefined, 3)`); level 5 a sentence of 3-5
       words (`L.word(undefined, 5, 3)`) once the space and the period are known, else a phrase.
       The level's key rules (need, ceiling, weak keys) give the letters, so new letters show up.
-- [ ] A finished target floats up out of the panel, fades with a soft sparkle in the accent colour,
+- [x] A finished target floats up out of the panel, fades with a soft sparkle in the accent colour,
       and the next one grows in; a count "napísané: n" sits small under the panel.
-- [ ] A slip: the usual wrong-key wobble and statistics; it only counts (no restart, no extra
+- [x] A slip: the usual wrong-key wobble and statistics; it only counts (no restart, no extra
       words). The paws work as in other levels.
-- [ ] Length: the level's minimum time (`MIN_ACTIVE_S`, 120 s of active play) is the round time;
+- [x] Length: the level's minimum time (`MIN_ACTIVE_S`, 120 s of active play) is the round time;
       the targets come without end (`count` grows with `grownCount`), the progress bar follows the
       time, and the level ends with the target being typed when the time is played. Stars from the
       accuracy as usual; finishing unlocks the next level and, at level 5, the world as now.
-- [ ] Accent colour per world in the mode (a small table: dragons warm orange, egg cream-turquoise,
+- [x] Accent colour per world in the mode (a small table: dragons warm orange, egg cream-turquoise,
       junkyard rust, workshop steel blue, raintown rain blue, robocity teal, robohome warm yellow,
       garden rose, forestpath leaf green, lilylake water blue, musictree violet, moonball moon
       silver), each checked against its background for contrast.
-- [ ] `activityOf` gives `clean` for `copyloop`, so its map dots show the copy icon.
-- [ ] End line (`story.copyLoopDone`): sk "Pekne odpísané! Napísal(a) si {n} …" with the plural
+- [x] `activityOf` gives `clean` for `copyloop`, so its map dots show the copy icon.
+- [x] End line (`story.copyLoopDone`): sk "Pekne odpísané! Napísal(a) si {n} …" with the plural
       forms the catalog uses; en the same.
 
 ## 4. Clean-up, specs, checks
-- [ ] Delete the old modes of worlds 4-15, their kinds in `LevelKind` and `MODES`, their i18n lines
+- [x] Delete the old modes of worlds 4-15, their kinds in `LevelKind` and `MODES`, their i18n lines
       (start lines, story lines, hints, guide notes) and anything left unused; the unused-key test
       must pass. Reward scenes and world names stay.
-- [ ] Specs: `story.md` says worlds 4-15 play the placeholder until their world is built (their
+- [x] Specs: `story.md` says worlds 4-15 play the placeholder until their world is built (their
       story text stays as the design to build, marked "not built yet"); `super-obstacles.md` marks
       the super-obstacles of worlds 4-15 as not built yet; `mechanics.md` describes the cyclic copy;
       `game/index.md` line.
-- [ ] Plan 80 depends on this plan: it replaces the world 4 placeholder defs with its own kinds.
-- [ ] Tests: `levels.test.ts` (kinds of worlds 4-15, activity, minimum), `idle.test.ts` (the new
+- [x] Plan 80 depends on this plan: it replaces the world 4 placeholder defs with its own kinds.
+- [x] Tests: `levels.test.ts` (kinds of worlds 4-15, activity, minimum), `idle.test.ts` (the new
       mode), a unit test that the target kind follows the level index and the known keys, e2e that
       named the old kinds. tsc, vitest, build.
 - [ ] Browser play-through (`?fast`, tester profile `.e2e/tester-profile.json`, `tapkoType`): the
@@ -88,3 +88,23 @@ migration or data version, old results simply stay under their ids.
       fairy-story level to the end, a slip, the next level unlocked; look at a narrow and a wide
       screen in each of the three worlds that every placeholder looks clean (panel, sign, Tapko,
       bands).
+
+## State
+- Implemented: steps 1-4 except the browser play-through. `copyloop` kind in `levels.ts`
+  (worlds 4-15 built by one `flatMap`, counts 12/14/16/18/14), `modes/copy-loop.ts`, old modes,
+  `gate.ts`, their i18n lines and translator notes deleted.
+- Decisions taken while implementing:
+  - The get-ready card of a placeholder level never shows the world's story (runtime skips the
+    first-visit world story for `copyloop`), so the story is still told when the world is built.
+  - The counter and the end line count **words** typed (a phrase or sentence adds all its
+    words), so "napísané: n" and "Napísal(a) si n slov" stay true at the phrase levels.
+  - The end line uses the catalog's plural mechanism (`tn`, `PLURAL_KEYS`), new group
+    `story-placeholder` in the translator catalog.
+  - Bolt and Melody still stand next to Tapko in the placeholder levels of their stories.
+  - Rescue missions draw from the four built kinds for every finished story, so until stories
+    2 and 3 are built every rescued friend is a dragon (`rescueLevel(seed)` lost its profile).
+  - Removed as left without users: `LevelDef.style`, the `listen`/`remember` map activities
+    and their `map.act.*` lines (the help legend still explains the ways to type with its own
+    `help.games.*` lines and `ui-act-*` pictures), the `beat`/`click` sounds, Bolt's `wet` mood,
+    the `wave.*` texts and `gate.ts`. Styles `dictation`/`memory`/`mixed` stay as decided (own
+    practice uses the first two; `mixed` waits for the music tree).

@@ -114,8 +114,6 @@
       "catch": "Čakajúce slová",
       "clean": "Odpis",
       "crossroads": "Rázcestie",
-      "listen": "Odposluch",
-      "remember": "Tajné slová",
       "super": "Veľká výzva"
     },
     "ownText": "Môj text",
@@ -638,10 +636,6 @@
     "spaceStart": [
       "Dostal si špeciálnu úlohu: preskúmať zopár planét až k planéte drakov, kde potrebujú tvoju pomoc. Tvoje **písanie v správnom rytme poháňa** vesmírnu **loď** na tejto ceste. V prípade nebezpečenstva **zadaj** správny **príkaz** palubnému počítaču. Ak uvedieš **správny kód** asteroidu, ktorý ti skrížil cestu, **aktivuješ laser**, ktorý blížiaci sa balvan odrazí ako biliardovú guľu. Planéta drakov je však ďaleko. Čo ťa na tejto ceste čaká?"
     ],
-    "waveCalm": [
-      "Vlna sa upokojila. Pozri, dúha!",
-      "Pokojný rytmus vyhráva!"
-    ],
     "world": {
       "meadow": "Na lúke je krásne popoludnie a poobede bude **futbalový zápas**! Zvieratká s tebou trénujú: kopú listy ako loptu a **ty si brankár**. Chytaj listy písmenami: **napíš slovo na liste** a list je tvoj.",
       "space": "Tri, dva, jeden... **štart!** Letíš preskúmať zopár planét až k **planéte drakov**. **Rytmus tvojho písania** poháňa raketu a jemný lúč odsúva meteority z cesty.",
@@ -734,67 +728,14 @@
         "Teraz môžeš na záchranných misiách odprevadiť domov aj malé vtáčatá a svetlušky."
       ]
     },
-    "junkStart": [
-      "Počuješ to pípanie? Niekto je pod tou kopou!",
-      "Napíš slovo a magnet odnesie haraburdu."
-    ],
-    "knotOpen": [
-      "Uzol je rozmotaný! Šróbik je voľný.",
-      "Píp píp! To znamená ďakujem."
-    ],
-    "batteryFull": [
-      "Batéria je nabitá! Šróbik svieti od radosti.",
-      "Pekný rovnomerný rytmus!"
-    ],
-    "rainTickle": [
-      "Šróbik: Píp, to šteklí!",
-      "Šróbik sa otriasa ako psík.",
-      "Šróbik: Píp píp, kvapka na hlave!"
-    ],
-    "stormCalm": [
-      "Búrka sa upokojila. Vykuklo slniečko!",
-      "Pokojný rytmus pomohol!"
-    ],
-    "doorOpen": [
-      "Cink! Dvere sa otvorili.",
-      "Správne heslo!",
-      "Ďalšie dvere sú otvorené!"
-    ],
-    "gateOpen": [
-      "Veľká brána sa otvára! Vitaj v Robotickom meste.",
-      "Celý kód je správne!"
-    ],
-    "gateIntro": "Hlavná brána chce celý kód bez chyby. Keď sa pomýliš, začneš znova. Nikam sa neponáhľaj.",
-    "gateSlow": "Pomaly a presne. Čas tu nebeží.",
-    "gateMore": "Brána má ešte jeden zámok! Tu je nový kód.",
-    "welcomeDone": [
-      "Celá rodina ťa pozdravila!",
-      "Píp píp píp! Malí roboti sa tešia."
-    ],
-    "flowerIntro": "Veľký kvet spí. Melódia zašepká slovo, počúvaj a napíš ho. Každé slovo kvet trochu prebudí.",
-    "flowerAwake": [
-      "Veľký kvet sa zobudil! Tak krásne vonia.",
-      "Záhrada zase spieva svoju pieseň!"
-    ],
-    "owlIntro": "Sova hovorí hádanku, po jednom slove. Počúvaj každé slovo a napíš ho.",
-    "owlSolved": [
-      "Hú, hú! Všetky hádanky sú vyriešené.",
-      "Sova sa teší, vtáčiky spievajú!"
-    ],
-    "reflectionIntro": "Jazero ukáže celú dlhú vetu, ale len raz. Dobre sa pozri a potom ju napíš slovo po slove.",
-    "reflectionDone": [
-      "Dlhý odraz je späť v jazere!",
-      "To je pamäť! Žabky tlieskajú."
-    ],
-    "treeSong": [
-      "Hudobný strom hrá svoju pieseň!",
-      "Pokojný stály rytmus to dokázal."
-    ],
-    "lastSongIntro": "Posledná pieseň noci. Melódia spieva krátke vety, jednu za druhou. Počúvaj a píš.",
-    "lastSongDone": [
-      "Spieva celý les!",
-      "Všetky piesne sú zase doma."
-    ]
+    "copyLoopStart": "Táto úroveň sa ešte pripravuje. Zatiaľ si tu precvičíš odpis: píš slová zo stredu, kým neuplynie čas.",
+    "copyLoopSoon": "Pripravuje sa",
+    "copyLoopCount": "napísané: {n}",
+    "copyLoopDone": {
+      "one": "Pekne odpísané!\nNapísal(a) si {n} slovo.",
+      "few": "Pekne odpísané!\nNapísal(a) si {n} slová.",
+      "other": "Pekne odpísané!\nNapísal(a) si {n} slov."
+    }
   },
   "fairy": {
     "start": [
@@ -812,10 +753,6 @@
       "Melódia: Les ťa počul!",
       "Melódia: Ďalšia pieseň je doma."
     ]
-  },
-  "wave": {
-    "onBeat": "Presne v rytme!",
-    "good": "Dobre!"
   },
   "progress": {
     "title": "Môj postup",

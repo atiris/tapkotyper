@@ -14,6 +14,8 @@ Each world ends with a bigger, special challenge:
   a slip on the way cracks the stones back to the firm stone, so accuracy is what moves him on.
   At the end a boulder cracks with precise words (a word with a slip counts half), and the
   crystals of life go onto the monolith.
+- The super-obstacles below, of worlds 4-15, are **not built yet**: until their world is
+  redone its super level plays the placeholder copy ([story](story.md)).
 - **Rolling energy wave** (dragons): countered by a rhythm sequence - short letter groups
   typed to a steady beat. Off-beat typing still counts, only less smoothly.
 - **Friendly mole** (egg journey): pops up unexpectedly with a short word that rewards a

@@ -3,7 +3,7 @@ import type { G } from './draw';
 
 /** Bolt's look along story 2: rusty and broken in the junkyard, repaired after it, new legs after the workshop. */
 export type RobotLook = 'broken' | 'robot' | 'robot2';
-export type RobotMood = 'idle' | 'happy' | 'worried' | 'wet';
+export type RobotMood = 'idle' | 'happy' | 'worried';
 
 export interface RobotState {
   look: RobotLook;
@@ -32,7 +32,6 @@ export function drawRobot(g: G, st: RobotState, mood: RobotMood, x: number, y: n
   g.save();
   g.globalAlpha *= alpha;
   g.translate(x, y + bob);
-  if (mood === 'wet') g.rotate(Math.sin(t * 40) * 0.05);
   const img = sprite(robotImage(st.look, mood));
   if (img) g.drawImage(img, -size / 2, -size * 0.95, size, size);
   else robotFallback(g, st.look, mood, size);
@@ -41,7 +40,6 @@ export function drawRobot(g: G, st: RobotState, mood: RobotMood, x: number, y: n
     if (coat) g.drawImage(coat, -size / 2, -size * 0.95, size, size);
     else raincoatFallback(g, size);
   }
-  if (mood === 'wet') drops(g, size, t);
   g.restore();
 }
 
@@ -103,7 +101,7 @@ function robotFallback(g: G, look: RobotLook, mood: RobotMood, s: number): void 
   g.lineWidth = s * 0.018;
   for (const dx of [-0.05, 0.05]) {
     g.beginPath();
-    if (mood === 'happy' || mood === 'wet') {
+    if (mood === 'happy') {
       g.arc(dx * s, hy + s * 0.02, s * 0.025, Math.PI * 1.1, Math.PI * 1.9);
       g.stroke();
     } else {
@@ -137,17 +135,6 @@ function raincoatFallback(g: G, s: number): void {
   g.closePath();
   g.fill();
   g.stroke();
-}
-
-function drops(g: G, s: number, t: number): void {
-  g.fillStyle = '#8fd3ff';
-  for (let i = 0; i < 5; i++) {
-    const a = i * 1.3 + t * 2;
-    const r = s * (0.3 + ((t * 0.8 + i * 0.2) % 0.25));
-    g.beginPath();
-    g.arc(Math.cos(a) * r, -s * 0.45 + Math.sin(a) * r * 0.6, s * 0.018, 0, Math.PI * 2);
-    g.fill();
-  }
 }
 
 /** DOM version for scenes and the friends screen: the picture, else a small canvas. */

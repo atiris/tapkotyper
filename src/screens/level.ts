@@ -59,7 +59,7 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
   else if (params.id === 'freetype') def = freeTypeLevel(params.world != null && isWorldUnlocked(p, params.world) ? params.world : 0);
   else if (params.id === 'aim') def = aimLevel(p, params.world != null && aimOpen(p, params.world) ? params.world : aimWorld(p, 0) ?? 0);
   else if (params.id === 'parrot') def = parrotLevel(params.world != null && aimOpen(p, params.world) ? params.world : aimWorld(p, 0) ?? 0);
-  else if (params.id === 'rescue') def = rescueLevel(p, p.progress.friends.length * 7 + Math.floor(Math.random() * 5));
+  else if (params.id === 'rescue') def = rescueLevel(p.progress.friends.length * 7 + Math.floor(Math.random() * 5));
   else def = levelById(params.id) ?? LEVELS[0];
   // A super-obstacle has no endless form (the asteroids' has): staying plays the world's last regular level.
   const stayDef = params.stay && def.isSuper && def.kind !== 'asteroid' ? LEVELS.find((l) => l.world === def.world && l.index === def.index - 1) ?? def : def;

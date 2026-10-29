@@ -159,7 +159,7 @@ export interface RuntimeOptions {
   seconds?: number | null;
   /** Own words and text instead of the parent's (a task's). */
   own?: WordSourceOwn;
-  /** Free practice: the style chosen in the key picker (a level's own style wins). */
+  /** Free practice: the style chosen in the key picker. */
   style?: Style;
   /** Staying a while: the level runs without an end until Esc, for no stars. */
   stay?: boolean;
@@ -292,7 +292,7 @@ export class LevelRuntime {
     const p = app.profile!;
     this.difficulty = this.core.difficulty = p.settings.difficulty;
     this.noPressure = p.settings.noTimePressure;
-    this.style = def.style ?? opts.style ?? 'copy';
+    this.style = opts.style ?? 'copy';
     this.highContrast = p.settings.highContrast;
     this.reduceMotion = reduceMotion();
     this.tweens.speed = this.reduceMotion ? 0.5 : 1;
@@ -306,7 +306,7 @@ export class LevelRuntime {
     // Practice (the custom exercise, key drills, tasks) has its own word language; story levels use the player's.
     this.words = wordSource(p, def.kind === 'practice' ? p.settings.ownWordLang : p.settings.wordLang, opts.keys, opts.own, opts.chosen, def.focus);
     // Enter comes with the right little finger's home key; drills, single letters and the gate's code stay without it.
-    const enterOk = !opts.keys && !def.noSpace && def.kind !== 'gate' && def.kind !== 'freetype' && def.kind !== 'aim' && def.kind !== 'parrot' && (opts.chosen ?? activeKeys(p)).includes(enterAfter(lay));
+    const enterOk = !opts.keys && !def.noSpace && def.kind !== 'freetype' && def.kind !== 'aim' && def.kind !== 'parrot' && (opts.chosen ?? activeKeys(p)).includes(enterAfter(lay));
     this.enter = enterOk ? new EnterMarks(() => this.rng.next(), def.kind === 'practice' ? null : ENTER_MAX) : null;
     this.surprise = opts.stay || def.kind === 'aim' || def.kind === 'parrot' ? null : surpriseFor(p, def, !!opts.keys);
     this.count = def.count;
@@ -407,9 +407,9 @@ export class LevelRuntime {
 
   private readonly offShortcuts: () => void;
 
-  /** Story levels and rescue missions; free practice, drills, the target range and the parrot count every key, and the main gate's code is the child's own. */
+  /** Story levels and rescue missions; free practice, drills, the target range and the parrot count every key. */
   get pawsAllowed(): boolean {
-    return this.def.kind !== 'practice' && this.def.kind !== 'freetype' && this.def.kind !== 'gate' && this.def.kind !== 'aim' && this.def.kind !== 'parrot' && !this.opts.keys;
+    return this.def.kind !== 'practice' && this.def.kind !== 'freetype' && this.def.kind !== 'aim' && this.def.kind !== 'parrot' && !this.opts.keys;
   }
 
   /** The background: the rescue camp in a rescue mission, else the mode's world. */
@@ -467,7 +467,8 @@ export class LevelRuntime {
     this.paintRead();
     // The level's story and what it asks in particular, both on the one get-ready card; the first
     // level of a world tells the world's story instead of its own the first time.
-    const opening = LEVELS.find((l) => l.id === this.def.id)?.index === 0 ? `world-${WORLDS[this.def.world]}` : null;
+    // A world not built yet keeps its story for when it is: its placeholder says what it plays instead.
+    const opening = this.def.kind !== 'copyloop' && LEVELS.find((l) => l.id === this.def.id)?.index === 0 ? `world-${WORLDS[this.def.world]}` : null;
     const worldStory = opening && !p.progress.scenesSeen.includes(opening) ? t(`story.world.${WORLDS[this.def.world]}`) : null;
     const story = [worldStory ?? this.mode.startLine(), this.mode.intro()].filter(Boolean).join(' ') || null;
     if (!this.opts.keys) await showPosture(host, p, tip, this.surprise, voiceNote, story);
@@ -890,13 +891,13 @@ export class LevelRuntime {
 
   // ---- Bolt --------------------------------------------------------------------
 
-  setRobotMood(mood: RobotMood, seconds: number): void {
+  private setRobotMood(mood: RobotMood, seconds: number): void {
     this.robotMood = mood;
     this.robotMoodT = seconds;
   }
 
   /** Melody looks curious, sings, or hops once (happy). */
-  setFairyMood(mood: FairyMood, seconds: number): void {
+  private setFairyMood(mood: FairyMood, seconds: number): void {
     this.fairyMood = mood;
     this.fairyMoodT = seconds;
     if (mood === 'happy' && !this.reduceMotion) this.fairyHop = FAIRY_HOP;

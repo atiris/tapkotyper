@@ -1,7 +1,6 @@
 import { activeKeys, aimKeys, isLetterKey, practiceOrder } from '../learning/lessons';
 import { type Profile, SUPER_ID } from '../storage/schema';
 import { type ParrotSize, parrotSize } from './parrots';
-import type { Style } from './typing';
 
 export type WorldId = 'meadow' | 'space' | 'planet' | 'dragons' | 'egg' | 'junkyard' | 'workshop' | 'raintown' | 'robocity' | 'robohome'
   | 'garden' | 'forestpath' | 'lilylake' | 'musictree' | 'moonball';
@@ -43,18 +42,7 @@ export type LevelKind =
   | 'meadow' | 'poppies' | 'invitation' | 'hedgehog'
   | 'space' | 'hop' | 'command' | 'asteroid'
   | 'swamp' | 'crystals' | 'crossroads' | 'spells' | 'greatswamp'
-  | 'shield' | 'wave'
-  | 'slope' | 'mole'
-  | 'junk' | 'knot'
-  | 'belt' | 'battery'
-  | 'rain' | 'storm'
-  | 'doors' | 'gate'
-  | 'rooms' | 'welcome'
-  | 'buds' | 'flower'
-  | 'birds' | 'owl'
-  | 'lilies' | 'reflection'
-  | 'notes' | 'treesong'
-  | 'fireflies' | 'lastsong'
+  | 'copyloop'
   | 'practice' | 'freetype' | 'aim' | 'parrot';
 
 export interface LevelDef {
@@ -71,8 +59,6 @@ export interface LevelDef {
   isSuper: boolean;
   /** Free practice of the parent's own text: these targets in order, then the end. */
   phrases?: string[];
-  /** How its targets are shown (copy typing when absent). */
-  style?: Style;
   /** Every target is one chunk or word, never several with a space (the first level, before the space bar is taught). */
   noSpace?: boolean;
   /** A rescue mission: it plays its kind at the rescue camp. */
@@ -95,15 +81,13 @@ export function minActiveS(l: LevelDef): number {
 }
 
 /** What the child does in a level; the map shows it as the icon of the level's dot. */
-export type Activity = 'chase' | 'catch' | 'clean' | 'crossroads' | 'listen' | 'remember' | 'super';
+export type Activity = 'chase' | 'catch' | 'clean' | 'crossroads' | 'super';
 
 export function activityOf(l: LevelDef): Activity {
   if (l.isSuper) return 'super';
   if (CALM_KINDS.includes(l.kind)) return 'catch';
-  if (l.kind === 'invitation' || l.kind === 'command' || l.kind === 'spells') return 'clean';
+  if (l.kind === 'invitation' || l.kind === 'command' || l.kind === 'spells' || l.kind === 'copyloop') return 'clean';
   if (l.kind === 'crossroads') return 'crossroads';
-  if (l.style === 'dictation' || l.style === 'mixed') return 'listen';
-  if (l.style === 'memory') return 'remember';
   return 'chase';
 }
 
@@ -134,28 +118,17 @@ export function shownProgress(modeProgress: number, active: number, min: number)
   return Math.min(modeProgress, active / min);
 }
 
-const def = (world: number, index: number, kind: LevelKind, count: number, variant = '', style?: Style, noSpace = false): LevelDef =>
-  ({ id: `w${world + 1}-${index + 1}`, world, index, kind, count, variant, isSuper: index === 4, ...(style ? { style } : {}), ...(noSpace ? { noSpace } : {}) });
+const def = (world: number, index: number, kind: LevelKind, count: number, variant = '', noSpace = false): LevelDef =>
+  ({ id: `w${world + 1}-${index + 1}`, world, index, kind, count, variant, isSuper: index === 4, ...(noSpace ? { noSpace } : {}) });
 
 export const LEVELS: LevelDef[] = [
   // The meadow plays the world rhythm: main game, calm step, main game with a gust, twist, super-obstacle.
-  def(0, 0, 'meadow', 12, 'flyers', undefined, true), def(0, 1, 'poppies', 20), def(0, 2, 'meadow', 16, 'gust'), def(0, 3, 'invitation', 14), def(0, 4, 'hedgehog', 6),
+  def(0, 0, 'meadow', 12, 'flyers', true), def(0, 1, 'poppies', 20), def(0, 2, 'meadow', 16, 'gust'), def(0, 3, 'invitation', 14), def(0, 4, 'hedgehog', 6),
   def(1, 0, 'space', 12, 'asteroids'), def(1, 1, 'hop', 16), def(1, 2, 'space', 16, 'strong'), def(1, 3, 'command', 12), def(1, 4, 'asteroid', 4),
   // The planet: the swamp after the landing (waiting words), the meadow's crystals (a stream), crossroads, spells (copy), the great swamp.
   def(2, 0, 'swamp', 12), def(2, 1, 'crystals', 16), def(2, 2, 'crossroads', 16), def(2, 3, 'spells', 18), def(2, 4, 'greatswamp', 21),
-  def(3, 0, 'shield', 12, '1'), def(3, 1, 'shield', 14, '2'), def(3, 2, 'shield', 16, '3'), def(3, 3, 'shield', 18, '3'), def(3, 4, 'wave', 14),
-  def(4, 0, 'slope', 12, 'rocks'), def(4, 1, 'slope', 14, 'stumps'), def(4, 2, 'slope', 16, 'mix'), def(4, 3, 'slope', 18, 'mix'), def(4, 4, 'mole', 14),
-  def(5, 0, 'junk', 12, 'tires'), def(5, 1, 'junk', 14, 'crates'), def(5, 2, 'junk', 14, 'mix'), def(5, 3, 'junk', 16, 'mix'), def(5, 4, 'knot', 6),
-  def(6, 0, 'belt', 12, 'gears'), def(6, 1, 'belt', 14, 'bolts'), def(6, 2, 'belt', 16, 'mix'), def(6, 3, 'belt', 18, 'mix'), def(6, 4, 'battery', 12),
-  def(7, 0, 'rain', 12), def(7, 1, 'rain', 14), def(7, 2, 'rain', 16), def(7, 3, 'rain', 18), def(7, 4, 'storm', 14),
-  def(8, 0, 'doors', 10, '1'), def(8, 1, 'doors', 12, '2'), def(8, 2, 'doors', 14, '2'), def(8, 3, 'doors', 16, '3'), def(8, 4, 'gate', 8),
-  def(9, 0, 'rooms', 10), def(9, 1, 'rooms', 12), def(9, 2, 'rooms', 14), def(9, 3, 'rooms', 16), def(9, 4, 'welcome', 14),
-  // Story 3 trains listening and remembering; level 1 of the forest path and the lake starts with single short words.
-  def(10, 0, 'buds', 10), def(10, 1, 'buds', 12), def(10, 2, 'buds', 14), def(10, 3, 'buds', 16), def(10, 4, 'flower', 6, '', 'dictation'),
-  def(11, 0, 'birds', 10, 'short', 'dictation'), def(11, 1, 'birds', 12, '', 'dictation'), def(11, 2, 'birds', 14, '', 'dictation'), def(11, 3, 'birds', 16, '', 'dictation'), def(11, 4, 'owl', 3, '', 'dictation'),
-  def(12, 0, 'lilies', 10, 'short', 'memory'), def(12, 1, 'lilies', 12, '', 'memory'), def(12, 2, 'lilies', 14, '', 'memory'), def(12, 3, 'lilies', 16, '', 'memory'), def(12, 4, 'reflection', 2, '', 'memory'),
-  def(13, 0, 'notes', 10, '', 'mixed'), def(13, 1, 'notes', 12, '', 'mixed'), def(13, 2, 'notes', 14, '', 'mixed'), def(13, 3, 'notes', 16, '', 'mixed'), def(13, 4, 'treesong', 8, '', 'dictation'),
-  def(14, 0, 'fireflies', 6, '', 'dictation'), def(14, 1, 'fireflies', 7, '', 'dictation'), def(14, 2, 'fireflies', 8, '', 'dictation'), def(14, 3, 'fireflies', 9, '', 'dictation'), def(14, 4, 'lastsong', 5, '', 'dictation'),
+  // Worlds 4-15 are not built yet: every level plays the placeholder, cyclic copy, until its world is redone.
+  ...WORLDS.slice(3).flatMap((_, w) => [12, 14, 16, 18, 14].map((count, i) => def(w + 3, i, 'copyloop', count))),
 ];
 
 export function levelById(id: string): LevelDef | undefined {
@@ -241,21 +214,14 @@ export function halfStarsFor(accuracy: number): number {
   return accuracy >= 0.95 ? 3 : accuracy >= 0.9 ? 2.5 : accuracy >= 0.85 ? 2 : accuracy >= 0.8 ? 1.5 : 1;
 }
 
-const RESCUE_KINDS: { kind: LevelKind; world: number; variant: string; style?: Style }[] = [
-  { kind: 'meadow', world: 0, variant: 'mix' }, { kind: 'space', world: 1, variant: 'mix' }, { kind: 'swamp', world: 2, variant: '' },
-  { kind: 'crystals', world: 2, variant: '' }, { kind: 'shield', world: 3, variant: '3' }, { kind: 'slope', world: 4, variant: 'mix' },
-  { kind: 'junk', world: 5, variant: 'mix' }, { kind: 'belt', world: 6, variant: 'mix' }, { kind: 'rain', world: 7, variant: '' },
-  { kind: 'doors', world: 8, variant: '2' }, { kind: 'rooms', world: 9, variant: '' },
-  { kind: 'buds', world: 10, variant: '' }, { kind: 'birds', world: 11, variant: '', style: 'dictation' }, { kind: 'lilies', world: 12, variant: '', style: 'memory' },
-  { kind: 'notes', world: 13, variant: '', style: 'mixed' }, { kind: 'fireflies', world: 14, variant: '', style: 'dictation' },
+const RESCUE_KINDS: { kind: LevelKind; world: number; variant: string }[] = [
+  { kind: 'meadow', world: 0, variant: 'mix' }, { kind: 'space', world: 1, variant: 'mix' }, { kind: 'swamp', world: 2, variant: '' }, { kind: 'crystals', world: 2, variant: '' },
 ];
 
-/** Endless rescue missions: a level kind from any world of a finished story; the friend helped follows the story. */
-export function rescueLevel(p: Profile, seed: number): LevelDef {
-  const open = RESCUE_KINDS.filter((r) => storyDone(p, storyOf(r.world)));
-  const pool = open.length ? open : RESCUE_KINDS.filter((r) => STORIES[0].worlds.includes(r.world));
-  const r = pool[Math.abs(seed) % pool.length];
-  return { id: 'rescue', world: r.world, index: -1, kind: r.kind, count: r.kind === 'fireflies' ? 8 : 14, variant: r.variant, isSuper: false, rescue: true, ...(r.style ? { style: r.style } : {}) };
+/** Endless rescue missions: a level kind of a built world (worlds not built yet have none); the friend helped follows its story. */
+export function rescueLevel(seed: number): LevelDef {
+  const r = RESCUE_KINDS[Math.abs(seed) % RESCUE_KINDS.length];
+  return { id: 'rescue', world: r.world, index: -1, kind: r.kind, count: 14, variant: r.variant, isSuper: false, rescue: true };
 }
 
 /** Free typing ("just typing") in a world the child has opened. */

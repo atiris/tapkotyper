@@ -148,24 +148,13 @@ describe('keys needed per level', () => {
 });
 
 describe('rescue missions', () => {
-  it('open with either finished story and come from finished stories only', () => {
+  it('open with either finished story and play only kinds of built worlds', () => {
     const p = newProfile('Ema', 'sk');
     expect(rescueUnlocked(p)).toBe(false);
-    p.progress.worldsDone = [0, 1, 5, 6, 7, 8, 9];
+    p.progress.worldsDone = [5, 6, 7, 8, 9];
     expect(rescueUnlocked(p)).toBe(true);
-    for (let seed = 0; seed < 20; seed++) expect(rescueLevel(p, seed).world).toBeGreaterThanOrEqual(5);
-    p.progress.worldsDone.push(2, 3, 4);
-    const worlds = new Set(Array.from({ length: 20 }, (_, seed) => rescueLevel(p, seed).world >= 5));
-    expect(worlds).toEqual(new Set([true, false]));
-  });
-
-  it('listen and remember once the fairy story is done', () => {
-    const p = newProfile('Ema', 'sk');
-    p.progress.worldsDone = [0, 1, 2, 3, 4];
-    const styles = () => new Set(Array.from({ length: 40 }, (_, seed) => rescueLevel(p, seed).style ?? 'copy'));
-    expect(styles()).toEqual(new Set(['copy']));
-    p.progress.worldsDone.push(10, 11, 12, 13, 14);
-    expect(styles()).toEqual(new Set(['copy', 'dictation', 'memory', 'mixed']));
+    const kinds = new Set(Array.from({ length: 20 }, (_, seed) => rescueLevel(seed).kind));
+    expect(kinds).toEqual(new Set(['meadow', 'space', 'swamp', 'crystals']));
   });
 });
 
@@ -201,9 +190,17 @@ describe('first level', () => {
 
   it('every level has an activity for its map dot', () => {
     expect(activityOf(levelById('w3-3')!)).toBe('crossroads');
-    expect(activityOf(levelById('w12-2')!)).toBe('listen');
-    expect(activityOf(levelById('w13-2')!)).toBe('remember');
     expect(LEVELS.filter((l) => l.isSuper).every((l) => activityOf(l) === 'super')).toBe(true);
+  });
+});
+
+describe('worlds not built yet', () => {
+  it('every level of worlds 4-15 plays the cyclic copy, a copy dot with the full minimum', () => {
+    const later = LEVELS.filter((l) => l.world >= 3);
+    expect(later).toHaveLength(60);
+    expect(later.every((l) => l.kind === 'copyloop' && minActiveS(l) === MIN_ACTIVE_S)).toBe(true);
+    expect(later.filter((l) => !l.isSuper).every((l) => activityOf(l) === 'clean')).toBe(true);
+    expect(LEVELS.filter((l) => l.world < 3).some((l) => l.kind === 'copyloop')).toBe(false);
   });
 });
 

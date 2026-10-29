@@ -5,7 +5,10 @@ World 4 (Údolie, `dragons`) is redone on the owner's design of 2026-10-29
 (space rocks fall onto baby dragons, a shield bubble) and a rhythm wave; the owner wants no rocks
 falling on the dragons, the world rhythm of worlds 1-3, and an ending that leaves the egg for world 5.
 
-Affected: `src/game/modes/dragons.ts` (rewritten), `src/game/modes/meadow.ts` (the catcher shared
+Depends on plan 81 (placeholder levels): world 4 then plays the placeholder, and this plan
+replaces its five defs with its own kinds.
+
+Affected: `src/game/modes/dragons.ts` (new; plan 81 deleted the old one), `src/game/modes/meadow.ts` (the catcher shared
 with the torch), `src/game/levels.ts` (kinds, counts, calm kinds, activities, rescue kinds),
 `src/game/modes.ts`, `src/game/runtime.ts` (an early end at the last dragon),
 `src/game/modes/idle.test.ts`, `src/game/levels.test.ts`, `e2e/play.spec.ts` if it names the old
@@ -37,13 +40,13 @@ a panel or the top bubble.
 - Tapko at the DOM Tapko's size on the left (`TAPKO_X`), as in the other worlds. The fire pit stands
   on the ground on the right (about 0.8 vw) in levels 3-5 and burns there; in level 1 it is just
   right of Tapko under the torch (see 3).
-- Level kinds (replace `shield`, `wave`): `flames`, `thicket`, `flight`, `lullaby`, `takeoff`.
+- Level kinds (replace the world's `copyloop` defs): `flames`, `thicket`, `flight`, `lullaby`, `takeoff`.
   `LEVELS` world 3: `def(3,0,'flames',12)`, `def(3,1,'thicket',12)`, `def(3,2,'flight',3)`,
   `def(3,3,'lullaby',3)`, `def(3,4,'takeoff',3)`; for `flight`, `lullaby` and `takeoff` the count is
   the number of dragons at start (see the dragon count rule).
 - `thicket` is a calm kind (60 s) but its map icon is `clean` (growing copy): make `activityOf`
   check the copy kinds before `CALM_KINDS`. `lullaby` is `clean`, `flight` is `chase`.
-- Rescue kinds: `{ kind: 'flames', world: 3, variant: '' }` instead of `shield`.
+- Rescue kinds: add `{ kind: 'flames', world: 3, variant: '' }`.
 - **Dragon count rule (flight, lullaby, takeoff):** 3 dragons at start; whenever one is done while
   the level's minimum time is not played, one more comes, at most 5. When the 5th is done the level
   ends even below the minimum: add a runtime call that ends the minimum now (e.g. `endMinimum()`

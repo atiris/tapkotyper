@@ -6,4 +6,5 @@ each in its own clean session. One line per plan in `.todo/`:
 listed here is never run. Lines whose plan has moved to `.todo/.done/` are
 skipped, and the session that finishes a plan removes its line.
 
-- [P1] 80-dragon-valley.md - only open plan; world 4 is the next world of the dragon story to redo
+- [P1] 81-placeholder-levels.md - first: every unbuilt world plays the placeholder, plan 80 builds on it
+- [P1] 80-dragon-valley.md - after 81; world 4 is the next world of the dragon story to redo

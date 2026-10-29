@@ -38,6 +38,57 @@
   only its own pictures when it opens; the other worlds' pictures are just downloaded in the
   background, and only the last scene's scaled backgrounds stay in memory.
 
+## Performance on slow computers
+- **What costs:** drawing pictures, not code. On a computer that draws the canvas without the
+  graphics card (old school laptops, cheap Chromebooks, a blocklisted driver) nine tenths of a
+  frame is copying and filtering pixels; game logic is a few per cent. So the rules are about
+  pixels: background bands are scaled once to the screen and copied on whole pixels whenever
+  they stand still (or always where a pixel is too small to see a jump, at a device pixel
+  ratio of 2 and more); the layer in front of Tapko is only as wide as what he holds; big
+  blurred glows are drawn once per size and then copied; a scene that does not move (cards
+  before play, the pause) is not drawn again.
+- **Simple graphics:** a teacher can set Graphics to Automatic (default), Full or Simple in the
+  settings. Simple draws one canvas pixel per screen pixel, fewer particles, no blurred
+  shadows and no blur behind cards, moving bands on whole pixels and the start page's sky
+  without its butterflies and fireflies. Automatic switches to it by itself when the first seconds of play are slow
+  (the slowest 5 % of frames over 25 ms) and remembers that for the device. It never changes
+  the game's pace, word timing or results: a slow computer gets the same lesson.
+- **A slow frame does not slow the next one:** the game takes at most four update steps per
+  frame (longer steps instead of more), so the game clock stays right without piling work up.
+- **Downloads:** a level's own pictures go first; the other worlds' play pictures download in
+  the background two at a time and wait while a screen loads its own.
+
+## Performance budget
+Measured by `scripts/perf.mjs` (Playwright, headless Chromium with software drawing, which stands
+for a computer without canvas acceleration): `normal` is 1366 x 768 at device pixel ratio 1,
+`slow` the same with the processor slowed six times.
+- Every story level in play: on `normal` with Full graphics a steady 60 fps (p50 at most 17 ms,
+  p95 at most 20 ms); on `slow` with Simple graphics (the automatic choice there) a steady
+  30 fps (p50 at most 34 ms, p95 at most 80 ms). There the whole frame is the software drawing
+  of a full screen; only a smaller canvas would cut it further.
+- Main chunk at most 270 KB (90 KB gzip); each mode's code is its own chunk, loaded with its
+  first level, and imports only `modes/kit/`, never another world's mode.
+- A world's own pictures at most 1 MB, one music track at most 1.4 MB.
+- `node scripts/perf.mjs --budget` (normal) and `node scripts/perf.mjs --machine slow --low --budget`
+  fail over budget. They are slow (one to two minutes per scene), so they are not part of
+  `npm test`; they run before a world plan is finished.
+
+## How to add a world
+- **Mode contract:** a level kind maps to a `Mode` subclass in `src/game/modes.ts` (loaded on
+  demand). The mode draws its scene on the stage (600 units high, width follows the screen),
+  asks for word labels through the runtime (`label`), lists its `pictures` (the level opens when
+  they are loaded) and may draw in front of Tapko (`renderFront`, within 640 units of the left
+  edge). Shared pieces used by two or more modes live in `src/game/modes/kit/` (approach,
+  catcher, copy row, hero); a mode never imports another world's mode.
+- **Pictures:** prompts in `assets-src/PROMPTS.md`, raw files in `assets-src/`, `npm run assets`
+  makes the web files and the manifest. Background bands are `bg-<world>[ground]-far|mid|near`,
+  their ends joined to repeat (`scripts/bg-seam.mjs`); every picture keeps a drawn fallback.
+- **Texts:** the world's name, story and level lines in every `public/i18n/<lang>.json`, a place
+  in the catalog (`src/i18n/catalog.ts`) and a situation in `public/i18n/translator/en.json`.
+- **Tests:** the mode in `src/game/modes/idle.test.ts` (plays to its end, idles safely), its
+  pure rules as unit tests, and a run of `scripts/perf.mjs` with the world's levels added to its
+  scenes, within the budget above.
+
 ## Why
 - GitHub Pages is free and needs no server, which also guarantees privacy.
 - Generated art and music give a polished storybook look; procedural fallbacks keep the
@@ -47,7 +98,7 @@
 
 ## Quality bar
 - Zero perceived input lag: a key press is checked and shown in the same frame.
-- 60 fps on a mid-range school laptop or Chromebook; keeps working when the tab is hidden
-  and shown again.
+- 60 fps on a mid-range school laptop or Chromebook, at least a steady 30 fps on a slow one
+  (with Simple graphics); keeps working when the tab is hidden and shown again.
 - Unit tests (Vitest) for logic (word engine, layouts, stats, storage, progression);
   Playwright tests for the main user flows.

@@ -38,6 +38,12 @@ Notes from real Gemini runs; add new ones here.
   with the hind legs stretched forward, walks on all four legs seen from the side).
 - A motion word on an object ("bouncing", "running") makes Gemini add arms and legs. Say
   "no arms, no legs" when the object should stay an object.
+- The common prompt's "friendly faces ... where the object has a face" gives a face to things
+  that should have none (a stone of the fire pit). Say "NO face, no eyes" for every thing.
+- A word for a part is taken literally: "a pale cream heart" (the flame's core) drew a heart
+  shape. Name the shape instead ("a soft pale cream teardrop core").
+- Pictures of one set (the four flames) come out alike only from one chat, or with the first
+  one attached; separate chats drift in shape and color.
 - A vague technical object ("a round gate with three panels") turns into a character with a
   face. Describe the shape concretely (material, how the parts are split, where they meet),
   add "no face" and "strictly front view, symmetrical".
@@ -534,17 +540,12 @@ BG is `magenta color (#FF00FF)` unless the table says `green`, then use `green c
 | `obj-dragon-baby-2.jpg` | a chubby baby dragon, sky blue, tiny wings, sitting, big eyes, happy | magenta |
 | `obj-dragon-baby-3.jpg` | a chubby baby dragon, sunny yellow, tiny wings, sitting, big eyes, happy | magenta |
 | `obj-rock-falling.jpg` | a small round space rock falling with a soft light trail behind it, sleepy face, front view | magenta |
-| `obj-flame-1.jpg` | (2026-10-29, the valley's level 1, [proposal](../.research/game/valley.md)) ONE small free-floating flame flying to the right, a round teardrop with one soft tip curling back, warm orange (#F59A3C) with a yellow core (#FFD86B) and a pale cream heart; no face, no wood, no ground, no sparks around it | magenta |
-| `obj-flame-2.jpg` | ONE small free-floating flame, taller and slimmer, with two tips side by side, the left one shorter, red-orange (#EE7A3A) with a golden core (#FFC94D); as `obj-flame-1` otherwise | green |
-| `obj-flame-3.jpg` | ONE small free-floating flame, short and round like a plump drop, with three little wavy tips, golden yellow (#FFC94D) with a light cream core and a thin orange rim (#F59A3C); as `obj-flame-1` otherwise | magenta |
-| `obj-flame-out.jpg` | **attach `obj-flame-1.jpg`**: "redraw the attached flame in exactly the same style, size and position, but gone out: only a thin soft grey curl of smoke (#B8B0A8) in the flame's shape, a tiny dull orange ember dot at its foot; no fire, no glow" | magenta |
-| `obj-torch.jpg` | (tall portrait 1 : 3) a wooden torch held upright: a straight round handle of honey wood (#C99A62) with two carved rings, the top wrapped in light brown cloth (#B98A5A) bound with a cord, a small calm orange flame on top; no hand, no face | green |
-| `obj-firepit.jpg` | (wide 2 : 1) a round fire pit seen slightly from above: a ring of smooth grey stones (#A9A39A) around a heap of dark burnt logs and grey ash with two or three faint dull orange embers; no flame, no smoke, no ground around the stones | magenta |
-| `obj-firepit-burning-1.jpg` | **attach `obj-firepit.jpg`**: "redraw the attached fire pit in exactly the same style, size, position and stones, but burning: the logs glow orange and a cosy campfire flame rises from them, orange (#F59A3C) with a yellow core (#FFD86B), its tips leaning a little to the left; no sparks outside the flame, no smoke, no ground" | magenta |
-| `obj-firepit-burning-2.jpg` | as `-1`, the flame's tips leaning a little to the right and one tip taller | magenta |
-| `obj-firepit-burning-3.jpg` | as `-1`, the flame a bit lower and wider with three even tips | magenta |
-| `obj-bush-1.jpg` | (wide 3 : 2, the valley's overgrown path, stands on the ground on its own) a low round thick bush of small dark-green leaves (#4F8A4A) with a few tangled brown twigs sticking out; no face, no flowers, no ground | magenta |
-| `obj-bush-2.jpg` | a tangle of bare curved brown branches (#7A5434) lying across, with a few small green leaves and one curling tendril; no face, no ground | green |
+| `obj-flame-1.jpg` to `obj-flame-4.jpg` | (the owner's pictures, 2026-10-29, the valley) four flames of one look from the smallest to the biggest: a golden drop (1), then flames with more and more tips, orange at the biggest (4); each with a cream core and a brown outline. The flying flames take them by word length; in the burning pit they stand from the smallest in front to the biggest at the back | muted magenta |
+| `obj-flame-out.jpg` | (the owner's picture, 2026-10-29) a gone-out flame: a thin grey curl of smoke in a flame's shape with a small glowing ember at its foot | magenta |
+| `obj-torch.jpg` | (the owner's picture, 2026-10-29) a wooden torch held upright, honey wood with carved rings, the top wrapped in cloth bound with a cord, no flame (the game lights it with the first caught flame) | green |
+| `obj-firepit.jpg` | (the owner's picture, 2026-10-29) a round fire pit a little from above: smooth grey stones round burnt logs and ash with a few dull embers; no flame, no face. The burning pit is this picture with the four flames flickering in front of it (in code), so there are no burning pictures | magenta |
+| `obj-bush-1.jpg` | (the valley's overgrown path, done 2026-10-29) a low, wide, round, thick bush of small dark-green leaves (#4F8A4A, lighter #6FA85F highlights) with a few tangled brown twigs (#7A5434) sticking out of it, about one and a half times wider than tall, its bottom edge cut straight as if it stands on a path; NO face, no eyes, no flowers, no berries, no ground, no grass, no stones | magenta |
+| `obj-bush-2.jpg` | (done 2026-10-29) a low tangle of bare curved brown branches (#7A5434, lighter #9A6A44 on top) lying across each other like a small barrier on a path, with a few small green leaves and one curling tendril, about twice as wide as tall, its bottom edge flat as if it lies on the ground; NO face, no eyes, no flowers, no ground, no grass, no stones | magenta |
 | `obj-bush-3.jpg` | (tall portrait 2 : 3) a tall prickly bramble bush with arching stems, soft green leaves and a few small dark berries; no face, no ground | magenta |
 | `obj-bush-4.jpg` | a fallen leafy branch with a fork, a patch of fern growing over its end; no face, no ground | magenta |
 | **Egg journey** | | |

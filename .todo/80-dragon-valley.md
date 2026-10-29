@@ -27,10 +27,11 @@ burns out and an egg is left behind it. The babies are never targets: words sit 
 a panel or the top bubble.
 
 ## 1. Pictures (Gemini, prompts already in `assets-src/PROMPTS.md` section 4, Dragons)
-- [ ] `obj-flame-1..3`, `obj-flame-out`, `obj-torch`, `obj-firepit`, `obj-firepit-burning-1..3`,
-      `obj-bush-1..4`; generate with the `gemini-images` skill, cut out as the other sprites
-      (magenta/green key, `scripts/defringe.mjs` where a fringe shows), webp in `public/assets/`,
-      entries in `manifest.json`. Record any prompt lesson in PROMPTS.md "Lessons from generating".
+- [~] Pictures. Done (the owner's pictures, 2026-10-29): `obj-flame-1..4` (four sizes of one look),
+      `obj-flame-out`, `obj-torch` (unlit), `obj-firepit`; generated: `obj-bush-1`, `obj-bush-2`.
+      Open: `obj-bush-3`, `obj-bush-4` after the owner looks at bushes 1-2 (he asked to see them
+      first). No `obj-firepit-burning-*`: the owner chose the pit with the four flames flickering
+      in code in front of it, sparks and smoke in code.
 - [x] Until a picture exists the mode draws a code fallback (as `glovesFallback`), so the code steps
       do not wait for the art.
 - [x] Drop `obj-rock-falling-1/2` (and its PROMPTS.md row) once nothing draws them. -2 dropped;
@@ -141,8 +142,8 @@ a panel or the top bubble.
       lands in the bushes, a lullaby line with a slip, three returns in the take-off, the egg shown.
 
 ## State
-Code, texts, scene, specs and tests are in (commit "feat(valley): ..."). Open: the pictures (step 1)
-and the browser play-through (step 8). Decisions taken while implementing:
+Code, texts, scene, specs and tests are in (commit "feat(valley): ..."). Open: bushes 3-4 (step 1)
+and the browser play-through (step 8; levels 1 and 2 checked so far). Decisions taken while implementing:
 - Two files, as the planet has: `modes/dragons.ts` (shared pit, flock rule, fallbacks, flames,
   thicket) and `modes/dragons-flight.ts` (flight, lullaby, take-off).
 - Meadow's `Gloves` became an exported `Catcher` with a `CatcherLook` (picture, height, lean,
@@ -163,3 +164,8 @@ and the browser play-through (step 8). Decisions taken while implementing:
   so a slow child surely finishes; `CopyRow`'s drawing moved to an exported `drawRow` reused
   by the take-off row.
 - The range's valley thing: the chili became `flame` (texts renamed, `obj-aim-chili` dropped).
+- The owner's art review (2026-10-29): four flames instead of three, by word length; the burning
+  pit is code (pit + the four flames close and overlapping, back = biggest, feet at the middle of
+  the pit's inside, irregular flicker, rising sparks, smoke when it goes out); the pit stands
+  right of the torch, which tips over its grip in an arc (`Catcher.tilt`, `CatcherLook.grip`) to
+  hand the flame to the fire; the torch picture is unlit and the first caught flame lights it.

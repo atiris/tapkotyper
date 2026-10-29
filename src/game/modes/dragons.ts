@@ -12,20 +12,19 @@ import { Catcher, type CatcherLook } from './meadow';
 /** The baby dragons (their colors take turns) and their colors while a picture is missing. */
 export const DRAGONS = ['obj-dragon-baby-1', 'obj-dragon-baby-2', 'obj-dragon-baby-3'];
 export const DRAGON_COLOR: Record<string, string> = { 'obj-dragon-baby-1': '#8fd6b0', 'obj-dragon-baby-2': '#f2a6c0', 'obj-dragon-baby-3': '#a9c4f2' };
-const FLAMES = ['obj-flame-1', 'obj-flame-2', 'obj-flame-3'];
+/** The flames from the smallest to the biggest. */
+export const FLAMES = ['obj-flame-1', 'obj-flame-2', 'obj-flame-3', 'obj-flame-4'];
 /** Each flame's outer and inner color while its picture is missing. */
 const FLAME_COLOR: Record<string, [string, string]> = {
-  'obj-flame-1': ['#f59a3c', '#ffd86b'], 'obj-flame-2': ['#ee7a3a', '#ffc94d'], 'obj-flame-3': ['#ffc94d', '#fff1c2'],
+  'obj-flame-1': ['#f2b632', '#ffe9a8'], 'obj-flame-2': ['#ffc94d', '#fff1c2'], 'obj-flame-3': ['#f59a3c', '#fff1c2'], 'obj-flame-4': ['#ee7a3a', '#fff1c2'],
 };
 /** The bushes and branches of the overgrown path. */
 export const BUSHES = ['obj-bush-1', 'obj-bush-2', 'obj-bush-3', 'obj-bush-4'];
-const PIT_BURNING = ['obj-firepit-burning-1', 'obj-firepit-burning-2', 'obj-firepit-burning-3'];
-export const PIT_PICTURES = ['obj-firepit', ...PIT_BURNING];
+export const PIT_PICTURES = ['obj-firepit', ...FLAMES];
 /** The ground the valley's things stand on: where Tapko's feet are. */
 export const GROUND = TAPKO_FEET + 6;
-/** The fire pit's height, and seconds each burning picture shows before the next one. */
-export const PIT_H = 84;
-const FLICKER = 0.2;
+/** The fire pit's height. */
+export const PIT_H = 96;
 const INK = '#3d3355';
 const END_TIME = 3;
 
@@ -104,53 +103,36 @@ function torchFallback(g: G, _w: number, h: number): void {
   g.restore();
 }
 
-/** The fire pit seen a little from above: a ring of stones round the logs; burning (`frame` 0-2) with a flame of its own. */
-function pitFallback(frame: number | null) {
-  return (g: G, _w: number, h: number) => {
-    const rx = h * 0.9, ry = h * 0.24, cy = h * 0.2;
+/** The fire pit seen a little from above: a ring of stones round the burnt logs. */
+function pitFallback(g: G, _w: number, h: number): void {
+  const rx = h * 0.9, ry = h * 0.24, cy = h * 0.2;
+  g.save();
+  g.strokeStyle = 'rgba(70,50,40,0.6)';
+  g.lineWidth = 2;
+  g.fillStyle = '#5b4335';
+  g.beginPath();
+  g.ellipse(0, cy, rx * 0.8, ry * 0.75, 0, 0, Math.PI * 2);
+  g.fill();
+  for (const a of [-0.35, 0.35]) {
     g.save();
-    g.strokeStyle = 'rgba(70,50,40,0.6)';
-    g.lineWidth = 2;
-    g.fillStyle = '#5b4335';
+    g.translate(0, cy - ry * 0.2);
+    g.rotate(a);
+    g.fillStyle = '#7a5434';
     g.beginPath();
-    g.ellipse(0, cy, rx * 0.8, ry * 0.75, 0, 0, Math.PI * 2);
+    g.roundRect(-rx * 0.55, -h * 0.06, rx * 1.1, h * 0.12, h * 0.06);
     g.fill();
-    for (const a of [-0.35, 0.35]) {
-      g.save();
-      g.translate(0, cy - ry * 0.2);
-      g.rotate(a);
-      g.fillStyle = '#7a5434';
-      g.beginPath();
-      g.roundRect(-rx * 0.55, -h * 0.06, rx * 1.1, h * 0.12, h * 0.06);
-      g.fill();
-      g.stroke();
-      g.restore();
-    }
-    if (frame !== null) {
-      const tall = [1, 1.15, 0.85][frame], lean = [-0.12, 0.1, 0][frame];
-      g.save();
-      g.translate(0, cy - h * 0.1);
-      g.rotate(lean);
-      flameShape(g, 0, -h * 0.45 * tall, h * 0.9, h * 1.0 * tall, '#f59a3c', '#ffd86b');
-      g.restore();
-    } else {
-      g.fillStyle = '#c9783a';
-      for (const dx of [-0.3, 0.1, 0.35]) {
-        g.beginPath();
-        g.arc(dx * rx, cy - ry * 0.1, h * 0.04, 0, Math.PI * 2);
-        g.fill();
-      }
-    }
-    g.fillStyle = '#a9a39a';
-    for (let i = 0; i < 12; i++) {
-      const a = (i / 12) * Math.PI * 2;
-      g.beginPath();
-      g.ellipse(Math.cos(a) * rx, cy + Math.sin(a) * ry, h * 0.13, h * 0.09, 0, 0, Math.PI * 2);
-      g.fill();
-      g.stroke();
-    }
+    g.stroke();
     g.restore();
-  };
+  }
+  g.fillStyle = '#a9a39a';
+  for (let i = 0; i < 12; i++) {
+    const a = (i / 12) * Math.PI * 2;
+    g.beginPath();
+    g.ellipse(Math.cos(a) * rx, cy + Math.sin(a) * ry, h * 0.13, h * 0.09, 0, 0, Math.PI * 2);
+    g.fill();
+    g.stroke();
+  }
+  g.restore();
 }
 
 /** A round bush of leaves (or a tangle of branches) while its picture is missing. */
@@ -203,16 +185,47 @@ export function rimmed(g: G, text: string, x: number, y: number, size: number, a
 }
 
 /**
- * The dragons' fire pit: the dead embers, or burning with three pictures taking turns as a
- * flicker. It cross-fades between them in `fade` seconds; its warm glow and sparkles grow with `glow`.
+ * The fire in the pit, from the back to the front: the biggest flame at the back, the smallest in
+ * front; each one's place (shares of the pit's width), its height (of the pit's) and its own flicker.
+ */
+const FIRE = [
+  { pic: 3, dx: 0.01, dy: -0.06, h: 1.15 },
+  { pic: 2, dx: -0.08, dy: -0.03, h: 0.92 },
+  { pic: 1, dx: 0.08, dy: -0.01, h: 0.78 },
+  { pic: 0, dx: -0.01, dy: 0.03, h: 0.62 },
+];
+/** Where the flames stand in the pit: their bottoms at the middle of its inside (a share of its height from the ground). */
+const FIRE_FOOT = 0.48;
+/** The pit picture's width per height (a code-drawn pit is drawn about as wide). */
+const PIT_RATIO = 1.47;
+
+interface Ember {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  t: number;
+  life: number;
+  size: number;
+  /** A spark glows orange, smoke is a soft grey puff that grows. */
+  smoke: boolean;
+}
+
+/**
+ * The dragons' fire pit: dead embers, or burning with four flames that flicker each its own way,
+ * the biggest at the back. It lights up or goes out toward `litTo` in `fade` seconds, the flames
+ * coming one by one from the front; sparks rise while it burns, smoke while it goes out. Its warm
+ * glow, the flames' size and the sparks grow with `glow`.
  */
 export class Firepit {
   /** 0: dead, 1: burning; it moves toward `litTo`. */
   lit = 0;
   litTo = 0;
   fade = 0.6;
-  /** 0..1: how big the fire's glow and sparkles are. */
+  /** 0..1: how big the fire, its glow and its sparks are. */
   glow = 0;
+  private embers: Ember[] = [];
+  private t = 0;
   constructor(private L: LevelRuntime, public x: number) {}
 
   /** Lit at once (a level that starts with the fire burning). */
@@ -227,19 +240,48 @@ export class Firepit {
     return GROUND - PIT_H * 0.55;
   }
 
-  update(dt: number): void {
-    const step = dt / this.fade;
-    this.lit = this.lit < this.litTo ? Math.min(this.litTo, this.lit + step) : Math.max(this.litTo, this.lit - step);
-    const heat = this.lit * this.glow;
-    if (heat > 0 && this.L.rng.chance(dt * heat * 5)) {
-      this.L.particles.emit(this.x + this.L.rng.range(-25, 25), GROUND - PIT_H * (0.9 + 0.3 * this.glow), 1, 'sparkle', ['#ffd86b', '#ffb23d', '#fff6a8'], 60, 5, 1.1);
-    }
+  /** Smoke rises from it now and then (a flame that went out into it, the fire going out). */
+  smoke(n: number): void {
+    for (let i = 0; i < n; i++) this.ember(true);
   }
 
-  draw(g: G, t: number): void {
+  private ember(smoke: boolean): void {
+    const r = this.L.rng;
+    this.embers.push({
+      x: this.x + r.range(-0.22, 0.22) * PIT_H * PIT_RATIO, y: GROUND - PIT_H * (smoke ? 0.7 : 0.9 + 0.4 * this.glow),
+      vx: r.range(-12, 12), vy: -r.range(smoke ? 25 : 50, smoke ? 45 : 110), t: 0, life: r.range(smoke ? 1.6 : 0.8, smoke ? 2.6 : 1.6),
+      size: smoke ? r.range(9, 15) : r.range(1.6, 3.2), smoke,
+    });
+  }
+
+  update(dt: number): void {
+    this.t += dt;
+    const step = dt / this.fade, going = this.litTo < this.lit;
+    this.lit = this.lit < this.litTo ? Math.min(this.litTo, this.lit + step) : Math.max(this.litTo, this.lit - step);
+    const heat = this.lit * (0.3 + 0.7 * this.glow);
+    if (!this.L.reduceMotion) {
+      if (heat > 0 && this.L.rng.chance(dt * heat * 9)) this.ember(false);
+      if (going && this.L.rng.chance(dt * 6)) this.ember(true);
+    }
+    for (const e of this.embers) {
+      e.t += dt;
+      // Sparks wiggle as they rise; smoke drifts and slows.
+      e.x += (e.vx + (e.smoke ? 0 : Math.sin(e.t * 9 + e.size * 3) * 30)) * dt;
+      e.y += e.vy * dt;
+      if (e.smoke) e.vy *= 1 - dt * 0.3;
+    }
+    this.embers = this.embers.filter((e) => e.t < e.life);
+  }
+
+  /** How much of each flame shows: they come one by one from the front and go from the back. */
+  private shown(k: number): number {
+    return Math.max(0, Math.min(1, this.lit * FIRE.length - (FIRE.length - 1 - k)));
+  }
+
+  draw(g: G): void {
     const heat = this.lit * this.glow;
     if (heat > 0) {
-      const cy = GROUND - PIT_H * 0.6, r = PIT_H * (1.2 + 1.6 * this.glow);
+      const cy = GROUND - PIT_H * 0.7, r = PIT_H * (1.2 + 1.6 * this.glow);
       g.save();
       const glow = g.createRadialGradient(this.x, cy, 4, this.x, cy, r);
       glow.addColorStop(0, `rgba(255,214,120,${0.6 * heat})`);
@@ -248,19 +290,51 @@ export class Firepit {
       g.fillRect(this.x - r, cy - r, r * 2, r * 2);
       g.restore();
     }
-    if (this.lit < 1) drawSprite(g, 'obj-firepit', this.x, GROUND, PIT_H, { ay: 0.9 }, pitFallback(null));
-    if (this.lit <= 0) return;
-    const frame = Math.floor(t / FLICKER) % PIT_BURNING.length;
-    drawSprite(g, PIT_BURNING[frame], this.x, GROUND, PIT_H * (0.9 + 0.2 * this.glow), { ay: 0.9, alpha: this.lit }, pitFallback(frame));
+    drawSprite(g, 'obj-firepit', this.x, GROUND, PIT_H, { ay: 0.9 }, pitFallback);
+    const w = PIT_H * PIT_RATIO, foot = GROUND - PIT_H * FIRE_FOOT, size = 0.8 + 0.35 * this.glow;
+    const motion = !this.L.reduceMotion;
+    FIRE.forEach((f, k) => {
+      const a = this.shown(k);
+      if (a <= 0) return;
+      // Each flame flickers on its own, from a few waves that never line up.
+      const ph = k * 1.7;
+      const up = motion ? 0.08 * Math.sin(this.t * 7.3 + ph) + 0.05 * Math.sin(this.t * 12.7 + ph * 2) + 0.03 * Math.sin(this.t * 3.1 + ph) : 0;
+      const lean = motion ? 0.07 * Math.sin(this.t * 4.3 + ph * 1.3) + 0.03 * Math.sin(this.t * 10.9 + ph) : 0;
+      const pic = FLAMES[f.pic];
+      drawSprite(g, pic, this.x + f.dx * w, foot + f.dy * PIT_H, PIT_H * f.h * size * (0.4 + 0.6 * a) * (1 + up), { ay: 0.96, rot: lean, sx: 1 - up * 0.5, alpha: a }, flameFallback(pic));
+    });
+    for (const e of this.embers) {
+      const k = e.t / e.life;
+      g.save();
+      if (e.smoke) {
+        g.globalAlpha = 0.45 * Math.sin(Math.PI * Math.min(1, k * 1.4)) * (1 - k);
+        g.fillStyle = '#b8b0a8';
+        g.beginPath();
+        g.arc(e.x, e.y, e.size * (1 + k * 1.8), 0, Math.PI * 2);
+      } else {
+        g.globalAlpha = 1 - k;
+        g.fillStyle = k < 0.4 ? '#fff1a8' : '#ffb23d';
+        g.beginPath();
+        g.arc(e.x, e.y, e.size * (1 - k * 0.5), 0, Math.PI * 2);
+      }
+      g.fill();
+      g.restore();
+    }
   }
 }
 
-/** The torch: held upright just right of Tapko, a caught flame sits on its top. */
-const TORCH: CatcherLook = { pic: 'obj-torch', h: 130, lean: 0, at: [0, -0.42], fallback: torchFallback };
-/** Up and down of a flame's soft arcs, seconds a caught flame stays on the torch, and of the torch's dip into the pit. */
+/** The torch: held upright just right of Tapko, a caught flame sits on its top; the first one lights it, and its flame stays small. */
+const TORCH: CatcherLook = { pic: 'obj-torch', h: 130, lean: 0, at: [0, -0.46], grip: 0.3, fallback: torchFallback };
+/** How far the torch tips over to the right to hand its flame to the fire, and how far right of it the pit stands. */
+const DIP_TILT = 1.5;
+const PIT_GAP = 95;
+const TORCH_FLAME = 34;
+/** Up and down of a flame's soft arcs, seconds a caught flame stays on the torch, and of the torch handing it to the fire. */
 const ARC = 36;
 const HOLD = 0.3;
-const DIP = 0.5;
+const DIP = 0.7;
+/** Seconds of the tipping before the flame starts to go into the fire. */
+const REACH = 0.25;
 /** Speed of a typed flame on its way into the torch. */
 const SAVE_SPEED = 950;
 /** Flames caught until the pit burns fully (it cross-fades on the way). */
@@ -268,20 +342,23 @@ const LIGHT_UP = 3;
 
 /**
  * Valley 1, the flames (a word stream): little flames fly from the right in soft arcs. A typed one
- * speeds into Tapko's torch, which rises to meet it, then dips to the fire pit under it; the pit
+ * speeds into Tapko's torch, which rises to meet it, then tips over in an arc and hands it to the fire pit; the pit
  * starts burning and its glow grows with the level. A flame not typed flies past and goes out.
  */
 export class FlamesMode extends ApproachMode {
-  readonly pictures = [...FLAMES, 'obj-flame-out', 'obj-torch', ...PIT_PICTURES];
+  readonly pictures = [...PIT_PICTURES, 'obj-flame-out', 'obj-torch'];
   readonly world = 'dragons';
   private torch: Catcher;
   private pit: Firepit;
   private caught = 0;
+  /** Seconds since the first caught flame lit the torch; -1 while it is not lit. */
+  private torchLit = -1;
   private endT: number | null = null;
 
   constructor(L: LevelRuntime) {
     super(L);
-    this.pit = new Firepit(L, this.torchX());
+    // The pit right of the torch: the torch tips over in an arc and hands its flame to the fire.
+    this.pit = new Firepit(L, this.torchX() + PIT_GAP);
     this.torch = new Catcher(L, this.torchX(), this.torchRest(), TORCH);
     // A flame past the torch has passed.
     this.playerX = this.torchX() - 40;
@@ -300,19 +377,14 @@ export class FlamesMode extends ApproachMode {
     return GROUND - PIT_H - TORCH.h * 0.45;
   }
 
-  /** The torch's height while it dips its flame into the pit. */
-  private dipY(): number {
-    return this.pit.top - TORCH.h * 0.05;
-  }
-
   makeMover(word: string): Mover {
     const L = this.L;
-    const n = word.length;
-    const size = n <= 3 ? 58 : n <= 5 ? 72 : 88;
+    const n = word.length, k = n <= 3 ? 0 : n <= 5 ? 1 : n <= 7 ? 2 : 3;
+    const size = [56, 66, 78, 90][k];
     const x = L.vw + size;
     const by = L.rng.range(150, VH - 170);
     return {
-      x, y: by, by, vx: this.speedFor(word, x), vy: 0, rot: 0, vr: 0, age: 0, state: 'come', fade: 0, sprite: L.rng.pick(FLAMES), size,
+      x, y: by, by, vx: this.speedFor(word, x), vy: 0, rot: 0, vr: 0, age: 0, state: 'come', fade: 0, sprite: FLAMES[k], size,
       flip: L.rng.chance(0.5), phase: L.rng.range(0, 6), out: false, hold: -1, lf: 0, fed: false, saveY: by, saveDist: 0, saveFrom: by,
     };
   }
@@ -325,7 +397,7 @@ export class FlamesMode extends ApproachMode {
       const m = tg.data as Mover;
       if (m.state === 'come' && tg.selectable) tg.selectable = m.x + m.size / 2 <= L.vw;
     }
-    // The torch rises with the closest typed flame, dips a caught one into the pit, else rests.
+    // The torch rises with the closest typed flame, tips a caught one into the fire, else rests.
     let aim: Mover | null = null, dip = false, holding = false;
     for (const tg of L.core.targets) {
       const m = tg.data as Mover;
@@ -338,9 +410,10 @@ export class FlamesMode extends ApproachMode {
     if (aim) {
       const k = aim.saveDist > 0 ? Math.min(1, Math.max(0, 1 - (aim.x - tc.catchPoint()[0]) / aim.saveDist)) : 1;
       tc.aimY = aim.saveFrom + (aim.saveY - aim.saveFrom) * ease.inOutQuad(k);
-    } else if (dip) tc.aimY = this.dipY();
-    else if (!holding) tc.aimY = tc.restY;
+    } else if (!holding) tc.aimY = tc.restY;
+    tc.tiltAim = dip ? DIP_TILT : 0;
     tc.update(dt, this.t);
+    if (this.torchLit >= 0) this.torchLit += dt;
     this.pit.glow = Math.min(1, this.resolved / this.total);
     this.pit.update(dt);
     if (this.endT === null && super.finished) {
@@ -370,6 +443,7 @@ export class FlamesMode extends ApproachMode {
   protected onPass(m: Mover): void {
     m.out = true;
     m.vx *= 0.7;
+    this.L.particles.emit(m.x, m.y - m.size * 0.2, 6, 'puff', ['#d8d2cc', '#b8b0a8', '#efeae4'], 40, 10, 1.4);
   }
 
   protected moveGone(m: Mover, dt: number): void {
@@ -377,11 +451,13 @@ export class FlamesMode extends ApproachMode {
       m.x += m.vx * dt;
       m.y = m.by + Math.sin(m.age * 1.6 + m.phase) * ARC;
       m.lf = Math.min(1, m.lf + dt * 0.7);
+      // A thin wisp of smoke trails it as it fades.
+      if (this.L.rng.chance(dt * 5)) this.L.particles.emit(m.x, m.y - m.size * 0.4, 1, 'puff', ['#d8d2cc', '#b8b0a8'], 15, 7, 1.2);
     } else this.save(m, dt);
     m.fade = m.lf;
   }
 
-  /** On its way into the torch, then on its top while the torch dips it into the pit, where it feeds the fire. */
+  /** On its way into the torch, then on its top while the torch tips it into the fire, where it feeds the fire. */
   private save(m: Mover, dt: number): void {
     const [gx, gy] = this.torch.catchPoint();
     if (m.hold < 0) {
@@ -394,13 +470,14 @@ export class FlamesMode extends ApproachMode {
       }
       m.hold = 0;
       this.torch.catch();
+      if (this.torchLit < 0) this.torchLit = 0;
       this.L.sfx('pop');
       this.L.particles.emit(gx, gy, 6, 'sparkle', ['#fff6a8', '#ffd25a'], 110, 7);
     }
     m.hold += dt;
     m.x = gx;
     m.y = gy;
-    m.lf = Math.max(0, Math.min(1, (m.hold - HOLD) / DIP));
+    m.lf = Math.max(0, Math.min(1, (m.hold - HOLD - REACH) / (DIP - REACH)));
     if (m.lf >= 1 && !m.fed) {
       m.fed = true;
       this.caught++;
@@ -416,12 +493,17 @@ export class FlamesMode extends ApproachMode {
   }
 
   render(g: G): void {
-    this.pit.draw(g, this.t);
+    this.pit.draw(g);
     super.render(g);
   }
 
   renderFront(g: G): void {
     this.torch.draw(g);
+    if (this.torchLit < 0 || !this.L.started || this.L.toolAlpha <= 0) return;
+    const [x, y] = this.torch.catchPoint();
+    const up = this.L.reduceMotion ? 0 : 0.07 * Math.sin(this.t * 8.1) + 0.04 * Math.sin(this.t * 13.3);
+    const k = Math.min(1, this.torchLit / 0.4);
+    drawSprite(g, 'obj-flame-1', x, y + 4, TORCH_FLAME * (0.5 + 0.5 * k) * (1 + up), { ay: 0.95, sx: 1 - up * 0.5, alpha: this.L.toolAlpha }, flameFallback('obj-flame-1'));
   }
 
   get finished(): boolean {
@@ -571,7 +653,7 @@ export class ThicketMode extends Mode {
       drawSprite(g, b.pic, x, GROUND + 8, BUSH_H * grow * (1 - 0.7 * ease.inQuad(k)), { ay: 1, flip: b.flip, alpha: 1 - k }, bushFallback(i));
     });
     const b = this.bushes[this.cleared];
-    const y = GROUND + 8 - BUSH_H - 34;
+    const y = GROUND + 8 - BUSH_H - 46;
     if (b && this.current) this.L.label(g, this.current, b.x - s, y);
     if (b && this.slip) {
       g.save();

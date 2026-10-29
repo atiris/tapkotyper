@@ -442,3 +442,25 @@ describe('staying a while in the valley', () => {
     expect(mode.finished).toBe(false);
   });
 });
+
+describe('the torch', () => {
+  it('tips over in an arc and hands a caught flame to the fire right of it, then stands up again', () => {
+    const L = fakeRuntime(2);
+    Object.assign(L, { reduceMotion: false });
+    const mode = new FlamesMode(L);
+    mode.start();
+    run(L, mode, 1);
+    typeWord(L, mode);
+    const torch = (mode as any).torch, pit = (mode as any).pit;
+    let reach = Infinity;
+    for (let i = 0; i < 80; i++) {
+      run(L, mode, 0.05);
+      const [x, y] = torch.catchPoint();
+      reach = Math.min(reach, Math.hypot(x - pit.x, y - (pit.top - 50)));
+    }
+    expect(reach).toBeLessThan(40);
+    expect(torch.x).toBeLessThan(pit.x - 60);
+    run(L, mode, 2);
+    expect(Math.abs(torch.tilt)).toBeLessThan(0.05);
+  });
+});

@@ -253,7 +253,7 @@ export class FlightMode extends Mode {
 
   render(g: G): void {
     const L = this.L;
-    this.pit.draw(g, this.t);
+    this.pit.draw(g);
     const shake = this.bushShake > 0 && !L.reduceMotion ? Math.sin(this.t * 40) * 0.05 : 0;
     // Dragons behind the bushes are the ones in them.
     for (const d of this.dragons) if (d.state === 'bush') this.drawFlyer(g, d);
@@ -431,7 +431,7 @@ export class LullabyMode extends Mode {
     g.fillStyle = 'rgba(40,40,110,0.28)';
     g.fillRect(0, 0, L.vw, VH);
     g.restore();
-    this.pit.draw(g, this.t);
+    this.pit.draw(g);
     for (const d of this.dragons) this.drawCircler(g, d);
     if (this.endT !== null) return;
     const p = this.panel();
@@ -759,7 +759,7 @@ export class TakeoffMode extends Mode {
     g.fillRect(0, 0, L.vw, VH);
     g.restore();
     this.drawEgg(g);
-    this.pit.draw(g, this.t);
+    this.pit.draw(g);
     const motion = !L.reduceMotion;
     this.dragons.forEach((d, i) => {
       if (i < this.done) return;

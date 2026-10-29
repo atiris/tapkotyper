@@ -92,9 +92,9 @@ terčom: slová sú na ohníkoch, kríkoch, na paneli alebo v bubline.
 ohníky poletujú po údolí. Napíš slovo na ohníku a chytíš ho do fakle; z nich sa rozhorí oheň v
 ohnisku."
 
-1. **Ohníky** - Tapko drží fakľu, pod ňou leží vyhasnuté ohnisko. Ohníky priletujú sprava v
-   mäkkých oblúkoch; napísaný ohník Tapko chytí do fakle a fakľou ho vloží do ohniska. Prvé tri
-   ohnisko rozhoria, potom oheň rastie a iskrí. Nenapísaný ohník preletí popri fakli a zhasne.
+1. **Ohníky** - Tapko drží fakľu, kúsok vpravo leží vyhasnuté ohnisko. Ohníky priletujú sprava v
+   mäkkých oblúkoch; napísaný ohník Tapko chytí do fakle, fakľa sa oblúkom nakloní a odovzdá ho
+   ohňu. Prvé tri ohnisko rozhoria, potom oheň rastie a iskrí. Nenapísaný ohník preletí popri fakli a zhasne.
    Na konci oheň horí a dráčiky ho uvidia z celého údolia.
 2. **Zarastená cesta** - cesta k dráčikom je zarastená kríkmi a konármi. Každý krík má svoje
    kúzlo; napísané bez chyby krík zmizne a Tapko ide ďalej. Pri chybe vyrastú na ceste dva nové

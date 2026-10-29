@@ -185,14 +185,18 @@ as they are. The world descriptions below marked *not built yet* are the design 
    off. The babies are never targets: words sit on flames, bushes, a panel or a bubble high up.
    Tapko stands on the left as everywhere; in levels 3-5 the burning pit stands on the ground on
    the right (about 0.8 of the stage) and the dragons sit round it.
-   1 the flames (a word stream): little flames (three shapes, some mirrored, bigger for a longer
-   word) fly from the right in soft arcs; a flame's word shows once it is wholly in sight. Tapko
-   holds a torch upright just right of him, above the dead fire pit. A typed flame speeds into
-   the torch, which rises to meet it and always catches it (the torch's own flame does not grow),
-   then dips it into the pit. The first three flames cross-fade the pit from dead embers into
-   burning, three pictures taking turns as a flicker; its warm glow and soft sparkles grow with
-   the level. A flame not typed flies past the torch, goes out (a curl of smoke) and fades;
-   nothing else happens. End: the fire burns and the dragons will see it from the valley.
+   1 the flames (a word stream): little flames of four sizes (one look, a bigger one for a longer
+   word, some mirrored) fly from the right in soft arcs; a flame's word shows once it is wholly in
+   sight. Tapko holds an unlit torch upright just right of him, the dead fire pit a little further
+   right. A typed flame speeds into the torch, which rises to meet it and always catches it; the
+   first one lights the torch, whose small flame never grows. The torch then tips over in an arc
+   and hands the flame to the fire. A burning pit is the pit with the four flames standing close
+   and overlapping in it, the smallest in front and the biggest at the back, their feet at the
+   middle of its inside, each flickering its own irregular way; sparks rise from it. The first
+   three caught flames light it up flame by flame, then its flames, warm glow and sparks grow
+   with the level. A flame not typed flies past the torch, goes out (a curl of smoke with a puff)
+   and fades; nothing else happens. End: the fire burns and the dragons will see it from the
+   valley. When the fire goes out (the take-off's end) its flames go from the back and smoke rises.
    2 the overgrown path (a calm step, growing copy): bushes and branches (four kinds in random
    order, some mirrored) stand on the path one after another; the nearest has its spell, one
    word, above it, and the view glides as Tapko walks to it. Typed without a slip, the bush

@@ -27,7 +27,7 @@ export function soundButton(): HTMLButtonElement {
     e.preventDefault();
     audio.shuffleTrack();
   });
-  const paint = () => {
+  const paint = (b: HTMLButtonElement) => {
     const label = soundLabel();
     b.setAttribute('aria-label', label);
     const song = audio.playing && audio.level !== 'off' ? `\n${t('common.song', { name: trackName(audio.playing) })}` : '';
@@ -36,10 +36,13 @@ export function soundButton(): HTMLButtonElement {
     b.setAttribute('aria-pressed', String(audio.level === 'normal'));
     paintRound(b, LEVEL_ICON[audio.level]);
   };
-  paint();
+  paint(b);
+  // Held weakly: a screen left behind is not kept in memory until the sound changes next.
+  const ref = new WeakRef(b);
   const off = audio.onChange(() => {
-    if (!b.isConnected) return off();
-    paint();
+    const btn = ref.deref();
+    if (!btn?.isConnected) return off();
+    paint(btn);
   });
   return b;
 }
@@ -55,7 +58,7 @@ export function fullscreenButton(): HTMLButtonElement | null {
   if (!document.fullscreenEnabled) return null;
   const b = roundButton('control', 'fullscreen', '', toggleFullscreen);
   b.classList.add('fullscreen-btn');
-  const paint = () => {
+  const paint = (b: HTMLButtonElement) => {
     const on = !!document.fullscreenElement;
     const label = t(on ? 'common.fullscreenExit' : 'common.fullscreen');
     b.setAttribute('aria-label', label);
@@ -63,9 +66,15 @@ export function fullscreenButton(): HTMLButtonElement | null {
     tip(b, `${label} (F11)`);
     paintRound(b, on ? 'fullscreenExit' : 'fullscreen');
   };
-  const onChange = () => (b.isConnected ? paint() : document.removeEventListener('fullscreenchange', onChange));
+  // Held weakly, as the sound button.
+  const ref = new WeakRef(b);
+  const onChange = () => {
+    const btn = ref.deref();
+    if (btn?.isConnected) paint(btn);
+    else document.removeEventListener('fullscreenchange', onChange);
+  };
   document.addEventListener('fullscreenchange', onChange);
-  paint();
+  paint(b);
   return b;
 }
 

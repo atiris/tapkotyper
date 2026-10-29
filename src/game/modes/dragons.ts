@@ -240,9 +240,9 @@ export class Firepit {
     return GROUND - PIT_H * 0.55;
   }
 
-  /** Smoke rises from it now and then (a flame that went out into it, the fire going out). */
-  smoke(n: number): void {
-    for (let i = 0; i < n; i++) this.ember(true);
+  /** A burst of sparks: a flame handed to the fire. */
+  sparkle(n: number): void {
+    for (let i = 0; i < n; i++) this.ember(false);
   }
 
   private ember(smoke: boolean): void {
@@ -329,12 +329,15 @@ const TORCH: CatcherLook = { pic: 'obj-torch', h: 130, lean: 0, at: [0, -0.46], 
 const DIP_TILT = 1.5;
 const PIT_GAP = 95;
 const TORCH_FLAME = 34;
-/** Up and down of a flame's soft arcs, seconds a caught flame stays on the torch, and of the torch handing it to the fire. */
+/** Up and down of a flame's soft arcs; seconds the torch holds a caught flame before it tips, until it reaches the fire, and until it stands up again. */
 const ARC = 36;
 const HOLD = 0.3;
-const DIP = 0.7;
-/** Seconds of the tipping before the flame starts to go into the fire. */
 const REACH = 0.25;
+const DIP = 0.6;
+/** Sparks when the torch catches a flame and when it hands it to the fire. */
+const TORCH_SPARKS = 18;
+const FIRE_SPARKS = 22;
+const SPARKS = ['#fff6a8', '#ffd25a', '#ffb23d'];
 /** Speed of a typed flame on its way into the torch. */
 const SAVE_SPEED = 950;
 /** Flames caught until the pit burns fully (it cross-fades on the way). */
@@ -385,7 +388,7 @@ export class FlamesMode extends ApproachMode {
     const by = L.rng.range(150, VH - 170);
     return {
       x, y: by, by, vx: this.speedFor(word, x), vy: 0, rot: 0, vr: 0, age: 0, state: 'come', fade: 0, sprite: FLAMES[k], size,
-      flip: L.rng.chance(0.5), phase: L.rng.range(0, 6), out: false, hold: -1, lf: 0, fed: false, saveY: by, saveDist: 0, saveFrom: by,
+      flip: L.rng.chance(0.5), phase: L.rng.range(0, 6), out: false, hold: -1, lf: 0, fed: false, saveY: by, saveDist: 0, saveFull: 1, shrink: 1, saveFrom: by,
     };
   }
 
@@ -402,7 +405,7 @@ export class FlamesMode extends ApproachMode {
     for (const tg of L.core.targets) {
       const m = tg.data as Mover;
       if (m.state === 'leave' && m.hold < 0 && (!aim || m.x < aim.x)) aim = m;
-      if (m.hold >= HOLD && m.lf < 1) dip = true;
+      if (m.hold >= HOLD && m.hold < HOLD + DIP) dip = true;
       else if (m.hold >= 0 && m.hold < HOLD) holding = true;
     }
     const tc = this.torch;
@@ -429,14 +432,22 @@ export class FlamesMode extends ApproachMode {
     m.rot = Math.sin(m.age * 2.4 + m.phase) * 0.15;
   }
 
-  /** A typed flame speeds into the torch, which rises to meet it at its height. */
+  /** A typed flame speeds into the torch, which rises to meet it at its height; it shrinks on the way and is gone in the torch. */
   protected onLeave(m: Mover): void {
     m.vx = 0;
     const lift = TORCH.h * -TORCH.at[1];
     m.saveY = Math.max(120 + lift, Math.min(this.torch.restY, m.y + lift));
-    m.saveDist = m.x - this.torch.catchPoint()[0];
+    const [cx, cy] = this.torch.catchPoint();
+    m.saveDist = m.x - cx;
+    m.saveFull = Math.max(1, Math.hypot(m.x - cx, m.y - cy));
+    m.shrink = 1;
     m.saveFrom = this.torch.y;
     this.L.sfx('whoosh');
+  }
+
+  /** The torch has no scroll to move: the scene stands still in this level. */
+  protected scrollSpeed(): number {
+    return 0;
   }
 
   /** Not typed: it flies past the torch and goes out. Nothing else happens. */
@@ -453,43 +464,55 @@ export class FlamesMode extends ApproachMode {
       m.lf = Math.min(1, m.lf + dt * 0.7);
       // A thin wisp of smoke trails it as it fades.
       if (this.L.rng.chance(dt * 5)) this.L.particles.emit(m.x, m.y - m.size * 0.4, 1, 'puff', ['#d8d2cc', '#b8b0a8'], 15, 7, 1.2);
-    } else this.save(m, dt);
-    m.fade = m.lf;
+      m.fade = m.lf;
+      return;
+    }
+    this.save(m, dt);
+    // Caught, the flame is in the torch; it is done once the torch stands up again.
+    m.fade = m.hold >= HOLD + DIP ? 1 : 0;
   }
 
-  /** On its way into the torch, then on its top while the torch tips it into the fire, where it feeds the fire. */
+  /**
+   * On its way into the torch, shrinking until it is gone in it (the torch sparkles), then the
+   * torch tips over and hands the flame to the fire, which sparkles and feeds on it.
+   */
   private save(m: Mover, dt: number): void {
     const [gx, gy] = this.torch.catchPoint();
     if (m.hold < 0) {
       const ty = m.saveY + gy - this.torch.y;
       const dx = gx - m.x, dy = ty - m.y, d = Math.hypot(dx, dy), step = SAVE_SPEED * dt;
+      m.shrink = Math.min(1, d / m.saveFull);
       if (d > step) {
         m.x += (dx / d) * step;
         m.y += (dy / d) * step;
         return;
       }
       m.hold = 0;
+      m.shrink = 0;
       this.torch.catch();
       if (this.torchLit < 0) this.torchLit = 0;
       this.L.sfx('pop');
-      this.L.particles.emit(gx, gy, 6, 'sparkle', ['#fff6a8', '#ffd25a'], 110, 7);
+      this.L.particles.emit(gx, gy, TORCH_SPARKS, 'sparkle', SPARKS, 150, 6);
     }
     m.hold += dt;
     m.x = gx;
     m.y = gy;
-    m.lf = Math.max(0, Math.min(1, (m.hold - HOLD - REACH) / (DIP - REACH)));
-    if (m.lf >= 1 && !m.fed) {
+    if (m.hold >= HOLD + REACH && !m.fed) {
       m.fed = true;
       this.caught++;
       this.pit.litTo = Math.min(1, this.caught / LIGHT_UP);
-      this.L.particles.emit(this.pit.x, this.pit.top, 10, 'sparkle', ['#ffd86b', '#ffb23d', '#fff6a8'], 140, 7);
+      this.L.sfx('whoosh');
+      this.pit.sparkle(FIRE_SPARKS);
+      this.L.particles.emit(gx, gy, TORCH_SPARKS, 'sparkle', SPARKS, 150, 6);
     }
   }
 
   drawMover(g: G, m: Mover): void {
     const flick = Math.sin(m.age * 12 + m.phase) * 0.05;
-    if (m.out) drawSprite(g, 'obj-flame-out', m.x, m.y, m.size, { flip: m.flip, rot: m.rot }, flameOutFallback);
-    else drawSprite(g, m.sprite, m.x, m.y, m.size, { flip: m.flip, rot: m.rot, sx: 1 - flick, sy: 1 + flick }, flameFallback(m.sprite));
+    if (m.out) return drawSprite(g, 'obj-flame-out', m.x, m.y, m.size, { flip: m.flip, rot: m.rot }, flameOutFallback);
+    const k = m.state === 'leave' ? Math.sqrt(m.shrink) : 1;
+    if (k <= 0) return;
+    drawSprite(g, m.sprite, m.x, m.y, m.size * k, { flip: m.flip, rot: m.rot, sx: 1 - flick, sy: 1 + flick }, flameFallback(m.sprite));
   }
 
   render(g: G): void {

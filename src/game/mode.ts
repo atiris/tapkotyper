@@ -48,8 +48,6 @@ export abstract class Mode {
   readonly midOnly: boolean = false;
   /** The band that drifts on its own while the scene stands still, also where `midOnly` holds the others. */
   readonly drift: Drift | null = null;
-  /** A still scene's middle and near bands moved from where they start (shares of the stage width, plus is to the left), else null. */
-  readonly bandShift: { mid: number; near: number } | null = null;
   /** The sound of a wrong key. */
   readonly wrongSfx: Sfx = 'wrong';
 

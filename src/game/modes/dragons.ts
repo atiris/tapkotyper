@@ -353,8 +353,6 @@ const LIGHT_UP = 3;
 export class FlamesMode extends ApproachMode {
   readonly pictures = [...PIT_PICTURES, 'obj-flame-out', 'obj-torch'];
   readonly world = 'dragons';
-  /** The scene stands still: its middle band a little left and its near band a little right of where they start. */
-  readonly bandShift = { mid: 0.2, near: -0.2 };
   private torch: Catcher;
   private pit: Firepit;
   private caught = 0;

@@ -197,8 +197,7 @@ as they are. The world descriptions below marked *not built yet* are the design 
    with the level. A flame not typed flies past the torch, goes out (a curl of smoke with a puff)
    and fades; nothing else happens. End: the fire burns and the dragons will see it from the
    valley. When the fire goes out (the take-off's end) its flames go from the back and smoke rises.
-   The scene stands still; its middle band starts a fifth of the stage further left and its near
-   band a fifth further right, and a warm glow round the torch's top sets it off from them. A
+   The scene stands still, and a warm glow round the torch's top sets it off from it. A
    caught flame shrinks on its way and is gone in the torch, which sparkles, as the fire does
    when the torch hands it over.
    2 the overgrown path (a calm step, growing copy): bushes and branches (four kinds in random

@@ -4,7 +4,7 @@ import { ease } from '../../engine/tween';
 import { drawSprite, fontFamily, type G, wordBox } from '../../gfx/draw';
 import { t } from '../../i18n/i18n';
 import { Mode, TAPKO_H, TAPKO_X } from '../mode';
-import { PATH_FEET } from './planet';
+import { PATH_FEET } from './kit/hero';
 import type { Target } from '../typing';
 
 /** The three kinds of crystal, each with its cracked picture, and their colors while the pictures are missing. */

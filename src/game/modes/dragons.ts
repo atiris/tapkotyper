@@ -6,9 +6,9 @@ import { SPACE } from '../../learning/lessons';
 import { Mode, TAPKO_FEET, TAPKO_H, TAPKO_X } from '../mode';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
-import { ApproachMode, type Mover } from './approach';
-import { slipWords } from './copy-row';
-import { Catcher, type CatcherLook } from './meadow';
+import { ApproachMode, type Mover } from './kit/approach';
+import { Catcher, type CatcherLook } from './kit/catcher';
+import { slipWords } from './kit/copy-row';
 
 /** The baby dragons (their colors take turns) and their colors while a picture is missing. */
 export const DRAGONS = ['obj-dragon-baby-1', 'obj-dragon-baby-2', 'obj-dragon-baby-3'];

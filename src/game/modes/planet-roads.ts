@@ -4,7 +4,7 @@ import { sprite } from '../../gfx/assets';
 import { drawSprite, fontFamily, type G } from '../../gfx/draw';
 import { t, tList } from '../../i18n/i18n';
 import type { Target } from '../typing';
-import { HeroMode, PATH_FEET, wordAbove } from './planet';
+import { HeroMode, PATH_FEET, wordAbove } from './kit/hero';
 
 /**
  * The kinds of path at a crossroads; each sets how the road goes on. `ask` is how hard its

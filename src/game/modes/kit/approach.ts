@@ -1,7 +1,6 @@
-import { VH } from '../../engine/loop';
-import type { G } from '../../gfx/draw';
-import { Mode } from '../mode';
-import type { Target } from '../typing';
+import type { G } from '../../../gfx/draw';
+import { Mode } from '../../mode';
+import type { Target } from '../../typing';
 
 export interface Mover {
   x: number;
@@ -159,4 +158,3 @@ export abstract class ApproachMode extends Mode {
   }
 }
 
-export const groundY = () => VH * 0.8;

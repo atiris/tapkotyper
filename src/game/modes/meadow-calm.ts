@@ -5,7 +5,7 @@ import { blob, drawSprite, fontFamily, type G } from '../../gfx/draw';
 import { t } from '../../i18n/i18n';
 import { type Drift, Mode, TAPKO_X } from '../mode';
 import type { Target } from '../typing';
-import { CopyRow } from './copy-row';
+import { CopyRow } from './kit/copy-row';
 
 /** The pictures this world's levels draw; a level opens when they are loaded. */
 const PICTURES = ['obj-bee', 'obj-butterfly', 'obj-invitation', 'obj-ladybug', 'obj-mouse', 'obj-poppy-bud', 'obj-poppy-faded', 'obj-poppy-flower', 'obj-poppy-opening', 'obj-poppy-seedhead'];

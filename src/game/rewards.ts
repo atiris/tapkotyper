@@ -33,7 +33,6 @@ export const WORLD_REWARDS = ['invitation', 'landing', 'force', 'egg', 'hatched'
 
 /** A world's badge: bronze when the world is done, better with the world's stars. */
 export type BadgeTier = 'bronze' | 'silver' | 'gold';
-export const BADGE_TIERS: BadgeTier[] = ['bronze', 'silver', 'gold'];
 /** World stars (5 levels x 3) for a silver and a gold badge. */
 export const BADGE_SILVER = 12;
 export const BADGE_GOLD = 15;

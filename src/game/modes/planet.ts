@@ -1,92 +1,16 @@
-import { app, pickLine } from '../../app/app';
+import { pickLine } from '../../app/app';
 import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
 import { sprite } from '../../gfx/assets';
 import { blob, drawSprite, type G } from '../../gfx/draw';
-import { drawTapko, type Mood } from '../../gfx/tapko';
 import { t } from '../../i18n/i18n';
-import { Mode, TAPKO_H } from '../mode';
+import { TAPKO_H } from '../mode';
+import { HeroMode, wordAbove } from './kit/hero';
 import { LIFE_CRYSTALS, drawLifeCrystals } from './planet-crystals';
-import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
 
-/** Tapko as the hero walking and hopping through the planet (and Bolt's robot city and home, Melody's garden and lake). */
-export abstract class HeroMode extends Mode {
-  readonly world: string = 'planet';
-  protected heroX = 220;
-  protected heroY = VH * 0.78;
-  /** Height of his picture: as big as the meadow's Tapko in every world. */
-  protected readonly heroSize: number = TAPKO_H;
-  protected jump = 0;
-  protected mood: Mood = 'idle';
-  /** Tapko's soft shadow on the ground. */
-  protected readonly shadow: boolean = true;
-  private moodT = 0;
-  protected done = 0;
-
-  constructor(L: LevelRuntime) {
-    super(L);
-  }
-
-  /** Hops the hero to (x, y) while scrolling the world by `scrollBy`. */
-  protected hop(toY: number, scrollBy: number, then?: () => void): void {
-    const fromY = this.heroY, fromScroll = this.scroll;
-    this.L.tweens.add(0.55, (k) => {
-      this.jump = k;
-      this.heroY = fromY + (toY - fromY) * k;
-      this.scroll = fromScroll + scrollBy * ease.inOutQuad(k);
-    }, ease.linear, () => {
-      this.jump = 0;
-      then?.();
-    });
-  }
-
-  protected happy(): void {
-    this.mood = 'happy';
-    this.moodT = 1.2;
-  }
-
-  protected surprised(seconds: number): void {
-    this.mood = 'surprised';
-    this.moodT = seconds;
-  }
-
-  update(dt: number): void {
-    if (this.moodT > 0 && (this.moodT -= dt) <= 0) this.mood = 'idle';
-  }
-
-  onWrong(_tg?: Target | null): void {
-    this.mood = 'thinking';
-    this.moodT = 1;
-  }
-
-  /** The story friend walks (or floats) right behind the hero. */
-  friendSpot(): { x: number; y: number } {
-    return { x: this.heroX - 105, y: this.heroY };
-  }
-
-  heroSpot(): { x: number; y: number } {
-    return { x: this.heroX, y: this.heroY - this.heroSize * 0.85 - 20 };
-  }
-
-  protected drawHero(g: G): void {
-    // The level is done: Tapko hops happily in place.
-    if (this.L.endTime != null) return drawTapko(g, app.profile!.companion, 'happy', this.heroX, this.heroY, this.heroSize, { t: this.t, jump: this.L.endHop, shadow: this.shadow });
-    drawTapko(g, app.profile!.companion, this.mood, this.heroX, this.heroY, this.heroSize, { t: this.t, jump: this.jump, shadow: this.shadow });
-  }
-}
-
-/** Where the meadow's DOM Tapko has his feet. */
-export const FEET = VH - TAPKO_H * 0.1;
-/** On the planet's meadow he walks in the middle of the path, which the near band draws at this height. */
-export const PATH_FEET = VH * 0.89;
-/** Where Tapko stands in a world's side activity (the target range, the parrot, free typing): on the planet's path, else at `ground`. */
-export const sideFeet = (world: string, ground: number): number => (world === 'planet' ? PATH_FEET : ground);
 /** His feet on a stepping stone in the swamp, a bit higher, so the stone fits under them. */
 const SWAMP_FEET = VH * 0.85;
-/** The word to type is above his head. */
-export const wordAbove = (feet: number): number => feet - TAPKO_H * 0.8 - 100;
-
 /**
  * A stepping stone (a round mossy stone with a face): its picture's height, how far above its middle
  * his feet stand (two thirds up from its bottom, on the moss), and how much higher or lower than the

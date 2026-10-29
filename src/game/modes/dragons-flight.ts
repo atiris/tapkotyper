@@ -6,7 +6,7 @@ import { tn } from '../../i18n/i18n';
 import { Mode, TAPKO_X } from '../mode';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
-import { drawRow } from './copy-row';
+import { drawRow } from './kit/copy-row';
 import { BUSHES, DRAGONS, FLOCK_MAX, FLOCK_START, Firepit, GROUND, PIT_PICTURES, bushFallback, drawDragon, flockFor, rimmed } from './dragons';
 
 /** The fire pit stands on the right in the flight levels; the dragons sit round it at these offsets. */

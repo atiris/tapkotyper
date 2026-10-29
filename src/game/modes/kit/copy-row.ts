@@ -1,7 +1,7 @@
-import { fontFamily, type G, wordBox } from '../../gfx/draw';
-import { STORIES, storyOf } from '../levels';
-import type { LevelRuntime } from '../runtime';
-import type { Target } from '../typing';
+import { fontFamily, type G, wordBox } from '../../../gfx/draw';
+import { STORIES, storyOf } from '../../levels';
+import type { LevelRuntime } from '../../runtime';
+import type { Target } from '../../typing';
 
 /** Extra words a slip may still add: 2 each, up to (1 + story order) x 3 in all. */
 export function slipWords(storyOrder: number, added: number): number {

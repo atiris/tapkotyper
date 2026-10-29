@@ -7,7 +7,7 @@ import { drawTapko } from '../../gfx/tapko';
 import { TAPKO_H, TAPKO_X } from '../mode';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
-import { ApproachMode, type Mover } from './approach';
+import { ApproachMode, type Mover } from './kit/approach';
 
 /** The pictures this world's levels draw; a level opens when they are loaded. */
 const PICTURES = ['obj-asteroid-big', 'obj-asteroid-small', 'obj-planet-1', 'obj-planet-2', 'obj-planet-3', 'obj-planet-4', 'obj-planet-5', 'obj-rock-falling-1', 'obj-rocket-empty', 'obj-rocket-pilot', 'tapko-astronaut', 'tapko-astronaut-suit'];

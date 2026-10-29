@@ -8,7 +8,7 @@ import { WordSource } from '../../words/words';
 import { BEAT_S, FLAP } from '../../ui/parrot-visit';
 import { STORIES, WORLDS, parrotKeys, parrotSizeOf, storyOf } from '../levels';
 import { Mode, TAPKO_FEET, TAPKO_X } from '../mode';
-import { sideFeet } from './planet';
+import { sideFeet } from './kit/hero';
 import { ParrotRound, parrotPatience } from '../parrots';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';

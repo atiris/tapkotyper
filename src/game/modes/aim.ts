@@ -13,7 +13,7 @@ import { WORLDS } from '../levels';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
 import { BURST_COLORS, Bags, type Burst, type Effect, type Eyes, STAY_WORLD_EVERY, THINGS, type Thing, type Tier, WORLD_THINGS, storyPool, tierOf, tierPoints, worldDue, worldThing } from './aim-things';
-import { HeroMode, sideFeet } from './planet';
+import { HeroMode, sideFeet } from './kit/hero';
 
 /** Seconds of play before the run ends with the throw in the air (staying a while has no end). */
 export const AIM_SECONDS = fast(120);

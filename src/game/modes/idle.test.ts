@@ -101,7 +101,7 @@ describe('a level shorter than its minimum', () => {
 
 describe('invitation', () => {
   it('a slip adds two words until the story ceiling of (1 + story order) x 3', async () => {
-    const { slipWords } = await import('./copy-row');
+    const { slipWords } = await import('./kit/copy-row');
     expect(slipWords(1, 0)).toBe(2);
     expect(slipWords(1, 4)).toBe(2);
     expect(slipWords(1, 6)).toBe(0);
@@ -307,9 +307,10 @@ describe('cyclic copy', () => {
 
 describe('the catcher', () => {
   it('rests where it is put and reaches for a height, faster while it follows', async () => {
-    const { Catcher } = await import('./meadow');
+    const { Catcher } = await import('./kit/catcher');
     const L = fakeRuntime();
-    const slow = new Catcher(L, 100, 400), fast = new Catcher(L, 100, 400);
+    const look = { pic: 'obj-gloves', h: 72, lean: 0.55, at: [0.3, 0] as [number, number], fallback: () => {} };
+    const slow = new Catcher(L, 100, 400, look), fast = new Catcher(L, 100, 400, look);
     expect(slow.catchPoint()[0]).toBeGreaterThan(100);
     slow.aimY = fast.aimY = 200;
     fast.follow = true;

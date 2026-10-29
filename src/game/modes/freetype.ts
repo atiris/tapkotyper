@@ -6,7 +6,7 @@ import { t } from '../../i18n/i18n';
 import { WORLDS } from '../levels';
 import type { LevelRuntime } from '../runtime';
 import { TypedLine } from '../typed-line';
-import { HeroMode, sideFeet } from './planet';
+import { HeroMode, sideFeet } from './kit/hero';
 
 /** Tapko's walking speed (background units per second) and the seconds of his hop at a key. */
 const WALK = 28;

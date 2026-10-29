@@ -6,7 +6,7 @@ import { SPEECH_W, blob, drawSprite, type G, speechLayout } from '../../gfx/draw
 import { t } from '../../i18n/i18n';
 import { type Drift, Mode } from '../mode';
 import type { Target } from '../typing';
-import { CopyRow } from './copy-row';
+import { CopyRow } from './kit/copy-row';
 import { ROCKET_H, WINDOW, drawAstronaut } from './space';
 
 const PICTURES = ['obj-asteroid-big', 'obj-asteroid-small', 'obj-rocket-empty', 'obj-rocket-pilot', 'tapko-astronaut'];

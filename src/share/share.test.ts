@@ -11,10 +11,10 @@ import { moveCode, parseMove, trimHistory } from './transfer';
 const b64 = (bytes: number[]) => btoa(String.fromCharCode(...bytes)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 const unb64 = (code: string) => Uint8Array.from(atob(code.replace(/-/g, '+').replace(/_/g, '/')), (c) => c.charCodeAt(0));
 
-/** A loaded teacher store on a fresh database of its own. */
-async function teacherStore(idb: IDBFactory | null = new IDBFactory()): Promise<TeacherStore> {
+/** A loaded teacher store on a fresh database of its own, loaded at `now` (a test's own date, else the real one). */
+async function teacherStore(idb: IDBFactory | null = new IDBFactory(), now = Date.now()): Promise<TeacherStore> {
   const s = new TeacherStore(idb);
-  await s.load();
+  await s.load(now);
   return s;
 }
 
@@ -181,7 +181,8 @@ describe('results', () => {
     s.assign(s.results, '5.A');
     expect(s.sets[0].group).toBe('5.A');
     await s.saved();
-    const back = await teacherStore(idb);
+    // Read back on a day these hand-ins are still kept (they were added long ago, dated 2026-10-21).
+    const back = await teacherStore(idb, new Date(2026, 9, 23).getTime());
     expect(back.results.find((x) => x.name === 'Ema')).toEqual(ema);
     expect(back.sets[0].group).toBe('5.A');
     expect(back.childResults(childKey({ name: 'Ema', group: '5.A' }))).toHaveLength(1);
@@ -256,7 +257,7 @@ describe('results', () => {
     other.importFile('b.tapko', changed.sets, changed.results, now);
     expect(other.results.find((x) => x.name === 'Ema')!.intact).toBe(false);
     await pc.saved();
-    const back = await teacherStore(idb);
+    const back = await teacherStore(idb, now);
     expect([back.results.length, back.sets.length, back.files.length]).toEqual([3, 1, 2]);
     expect(() => parseTapko('{"format":"tapkotyper-mentor","version":2,"sets":[],"results":[]}')).toThrow('teacher.file.unknown');
     expect(() => parseTapko('not json')).toThrow('teacher.file.unknown');

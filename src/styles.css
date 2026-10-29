@@ -272,7 +272,6 @@ body.reduce-motion :is(.btn, .teacher-big):is(:hover, :active) { transform: none
 /* Links in the app's orange, underlined only on hover. */
 a:not(.btn) { color: var(--brand-ink); text-decoration: none; }
 a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
-.link-btn { background: none; border: 0; color: var(--ink-soft); cursor: pointer; text-decoration: underline; display: inline-flex; gap: 0.3em; align-items: center; }
 .chip { border: 0; border-radius: 999px; padding: 0.4em 0.9em; cursor: pointer; background: var(--glass); font-weight: 600; min-height: 40px; }
 .chip.on { background: var(--brand); color: var(--on-brand); text-shadow: var(--on-brand-glow-soft); }
 .row { display: flex; gap: 0.8rem; flex-wrap: wrap; align-items: center; margin-top: 1rem; }
@@ -554,6 +553,10 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
 .start-sky.still, .start-sky.still * { transition: none !important; }
 /* Reduced motion: no travel, no idle motion, a short cross-fade. */
 .start-sky.calm *, .start-sky.calm *::before { animation: none !important; transform: none !important; transition: opacity 0.3s ease !important; }
+/* Simple graphics (engine/graphics.ts): the sky without its small life and soft edges; no blur over the moving scene. */
+.gfx-simple .start-sky .meadow-life { display: none; }
+.gfx-simple .sky-cloud > img, .gfx-simple .sky-star > img { filter: none; }
+.gfx-simple .overlay, .gfx-simple .hud { backdrop-filter: none; }
 
 /* Room above the cards for the lift and the focus ring, which the scrolling list would clip. */
 .profile-list { display: flex; flex-direction: column; gap: 0.8rem; align-items: center; padding: 14px 12px 20px; }
@@ -1159,7 +1162,6 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .confirm p { font-size: 1.1rem; max-width: 30em; }
 .confirm-modal { width: min(520px, 100%); }
 .kbd { display: inline-grid; place-items: center; min-width: 1.8em; padding: 0 0.3em; font-family: var(--font-keys); border-radius: 8px; background: var(--surface); box-shadow: inset 0 -3px 0 var(--brand); }
-.adult-check { text-align: center; }
 
 /* Story */
 .story-screen { background: var(--bg, linear-gradient(#a8dcf0, #e9f8ef)) center / cover no-repeat; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 2rem; overflow: hidden; }
@@ -1548,7 +1550,6 @@ body.reduce-motion .round-btn.timer.ending { --rb: #d9661f; --rb-ring: #ff8a3d; 
 .teacher-table { overflow-x: auto; margin: 1rem 0; }
 .teacher-table table { width: 100%; border-collapse: collapse; }
 .teacher-table th, .teacher-table td { text-align: left; padding: 0.4rem 0.5rem; border-bottom: 1px solid var(--line); }
-.teacher-table .task-row th { background: var(--paper-2); font-size: 1.05rem; padding-top: 0.7rem; }
 .teacher-table tr.broken td { color: var(--danger-ink); }
 
 /* ---------- Teacher: camera scan, groups, big code ---------- */
@@ -1577,7 +1578,6 @@ body.reduce-motion .round-btn.timer.ending { --rb: #d9661f; --rb-ring: #ff8a3d; 
 .scan-name { font-weight: 700; }
 .teacher-count { margin: 0.4rem 0 0; }
 .teacher-actions { margin-top: 0.4rem; }
-.teacher-table .group-row th { background: var(--brand); color: var(--on-brand); text-shadow: var(--on-brand-glow-soft); font-size: 1.1rem; }
 .teacher-table td:first-child { width: 2rem; }
 .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.6rem; }
 .big-code { --bc-frame: var(--green-dark); --bc-gap: clamp(16px, 3vmin, 32px); position: fixed; inset: 0; z-index: 100; box-sizing: border-box; border: 14px solid var(--bc-frame); background: #fff; color: #111; cursor: pointer;
@@ -1595,10 +1595,6 @@ body.reduce-motion .round-btn.timer.ending { --rb: #d9661f; --rb-ring: #ff8a3d; 
 .status-pill { display: inline-block; font-size: 0.8rem; font-weight: 600; border-radius: 999px; padding: 0.15em 0.6em; white-space: nowrap; }
 .status-pill.mastered { color: var(--green-ink); background: var(--tint-green); }
 .status-pill.practice { color: var(--orange-ink); background: var(--tint-orange); }
-.teacher-filters { display: flex; flex-wrap: wrap; gap: 0.6rem 1rem; align-items: flex-end; justify-content: space-between; }
-.task-pick { display: flex; align-items: center; gap: 0.5rem; color: var(--ink-soft); font-size: 0.92rem; }
-.task-pick[hidden] { display: none; }
-.task-pick select { width: auto; max-width: 100%; min-height: 44px; padding: 0 0.6em; font-weight: 600; color: var(--ink); }
 .sort-btn { border: 0; background: none; padding: 0.3rem 0.4rem; margin: -0.3rem -0.4rem; border-radius: 10px; font: inherit; font-weight: 600; color: var(--ink-soft); display: inline-flex; align-items: center; gap: 0.2rem; cursor: pointer; text-align: left; }
 .sort-btn.on { color: var(--brand-ink); background: var(--tint-orange); }
 .sort-arrow { width: 0.9em; height: 0.9em; }
@@ -1610,7 +1606,6 @@ body.reduce-motion .round-btn.timer.ending { --rb: #d9661f; --rb-ring: #ff8a3d; 
 .sort-chips .chip { flex: none; display: inline-flex; align-items: center; gap: 0.2rem; min-height: 44px; background: var(--paper-2); }
 .sort-chips .chip.on { background: var(--brand); }
 .teacher-list { display: none; flex-direction: column; gap: 0.5rem; margin: 1rem 0; }
-.list-task { margin: 0.3rem 0 0; font-size: 0.95rem; color: var(--ink-soft); }
 .child-row { display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.75rem 0.9rem; border: 0; border-radius: 16px; background: var(--surface); box-shadow: 0 0 0 1px var(--line); font: inherit; color: var(--ink); text-align: left; cursor: pointer; }
 .child-row.broken { color: var(--danger-ink); }
 .child-row-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.2rem; }
@@ -1621,9 +1616,6 @@ body.reduce-motion .round-btn.timer.ending { --rb: #d9661f; --rb-ring: #ff8a3d; 
   .teacher-table { display: none; }
   .teacher-list, .sort-chips { display: flex; }
   .sort-chips[hidden] { display: none; }
-  .teacher-filters { flex-direction: column; align-items: stretch; }
-  .task-pick { flex-direction: column; align-items: stretch; gap: 0.2rem; }
-  .task-pick select { width: 100%; }
 }
 .teacher-empty { display: flex; gap: 1rem; align-items: center; }
 .child-head { flex: 1; display: flex; flex-direction: column; min-width: 0; }

@@ -81,11 +81,35 @@ export interface TapkoMotion {
   shadow?: boolean;
 }
 
+/** Tapko's layers put together, least recently drawn first: a frame draws one picture instead of one per accessory. */
+const stacks = new Map<string, HTMLCanvasElement>();
+const STACKS_KEEP = 6;
+
+/** The layers drawn together at `px` device pixels; null while one is still loading. */
+function stackCanvas(layers: { name: string }[], px: number): HTMLCanvasElement | null {
+  const key = `${layers.map((l) => l.name).join(' ')}|${px}`;
+  let c = stacks.get(key);
+  if (c) stacks.delete(key);
+  else {
+    const imgs = layers.map((l) => sprite(l.name));
+    if (imgs.some((img) => !img)) return null;
+    c = document.createElement('canvas');
+    c.width = c.height = px;
+    const cg = c.getContext('2d')!;
+    for (const img of imgs) cg.drawImage(img!, 0, 0, px, px);
+    if (stacks.size >= STACKS_KEEP) stacks.delete(stacks.keys().next().value!);
+  }
+  stacks.set(key, c);
+  return c;
+}
+
 /**
  * Draws the companion with its accessories. (x, y) is the point between the feet;
  * `size` is the height of the square template image.
  */
 export function drawTapko(g: G, c: Companion, mood: Mood, x: number, y: number, size: number, m: TapkoMotion): void {
+  const t0 = g.getTransform();
+  const px = Math.ceil(size * Math.hypot(t0.a, t0.b));
   const breathe = Math.sin(m.t * 2.4) * 0.018;
   const jumpH = m.jump ? Math.sin(m.jump * Math.PI) * size * (m.height ?? 0.35) : 0;
   const squash = m.jump ? 1 + Math.sin(m.jump * Math.PI * 2) * 0.05 : 1;
@@ -109,7 +133,10 @@ export function drawTapko(g: G, c: Companion, mood: Mood, x: number, y: number, 
   g.scale((m.flip ? -1 : 1) * (1 - breathe) / squash, (1 + breathe) * squash);
   // The template's feet sit at 90 % of the image height.
   g.translate(-size / 2, -size * 0.9);
-  for (const layer of tapkoStack(c, mood)) {
+  const layers = tapkoStack(c, mood);
+  const stack = stackCanvas(layers, px);
+  if (stack) g.drawImage(stack, 0, 0, size, size);
+  else for (const layer of layers) {
     const img = sprite(layer.name);
     if (img) g.drawImage(img, 0, 0, size, size);
     else if (layer.slot === 'companion') drawFallbackBody(g, c.kind, mood, size);

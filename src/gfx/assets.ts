@@ -15,6 +15,13 @@ interface Manifest {
 }
 
 let manifest: Manifest = { images: {}, accessories: [], music: [] };
+/** Pictures ready so far: a still scene draws again when one more comes. */
+let ready = 0;
+
+export function picturesReady(): number {
+  return ready;
+}
+
 const images = new Map<string, HTMLImageElement>();
 const loading = new Map<string, Promise<void>>();
 
@@ -63,9 +70,32 @@ const PLAY_PICTURES = /^(obj|robot|fairy|tapko-astronaut)/;
  * a player. Only the files come: a level decodes its own pictures when it opens (`preload`), so the
  * memory and the work at the start do not grow with every world added.
  */
-export function preloadPlay(): Promise<void> {
+export async function preloadPlay(): Promise<void> {
   const names = Object.keys(manifest.images).filter((n) => PLAY_PICTURES.test(n) && !loading.has(n));
-  return Promise.all(names.map((n) => fetch(assetUrl(`${n}.webp`), { priority: 'low' }).then((r) => r.blob()).catch(() => undefined))).then(() => undefined);
+  const next = async (): Promise<void> => {
+    for (let n = names.shift(); n; n = names.shift()) {
+      await ownIdle();
+      if (!loading.has(n)) await fetch(assetUrl(`${n}.webp`), { priority: 'low' }).then((r) => r.blob()).catch(() => undefined);
+    }
+  };
+  await Promise.all(Array.from({ length: BACKGROUND_AT_ONCE }, next));
+}
+
+/** Background downloads at a time: a few, so on a slow line a level's own pictures do not queue behind every other world's. */
+const BACKGROUND_AT_ONCE = 2;
+/** Pictures a screen asked for that are still loading; the background downloads wait for them. */
+let own = 0;
+let ownWaiting: (() => void)[] = [];
+
+function ownIdle(): Promise<void> {
+  return own ? new Promise((resolve) => ownWaiting.push(resolve)) : Promise.resolve();
+}
+
+function ownSettled(): void {
+  if (--own) return;
+  const waiting = ownWaiting;
+  ownWaiting = [];
+  for (const go of waiting) go();
 }
 
 /** Bolt and Melody in every look and mood: the story friend may join any level. */
@@ -75,14 +105,15 @@ export function friendPictures(): string[] {
 
 function load(name: string): Promise<void> {
   if (!loading.has(name)) {
+    own++;
     loading.set(name, new Promise<void>((resolve) => {
       const img = new Image();
       img.decoding = 'async';
       // Decoded before its first draw, so the frame that shows it does not stall.
-      img.onload = () => void img.decode().catch(() => undefined).then(() => { images.set(name, img); resolve(); });
+      img.onload = () => void img.decode().catch(() => undefined).then(() => { images.set(name, img); ready++; resolve(); });
       img.onerror = () => resolve();
       img.src = assetUrl(`${name}.webp`);
-    }));
+    }).finally(ownSettled));
   }
   return loading.get(name)!;
 }

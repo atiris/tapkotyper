@@ -26,6 +26,11 @@ export class Tweens {
   /** Durations are multiplied by this (reduce motion shortens them). */
   speed = 1;
 
+  /** Something is moving. */
+  get busy(): boolean {
+    return this.list.length > 0;
+  }
+
   add(dur: number, fn: (k: number) => void, easing = ease.outCubic, done?: () => void): void {
     this.list.push({ t: 0, dur: Math.max(0.001, dur * this.speed), fn, easing, done });
   }

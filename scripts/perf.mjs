@@ -8,8 +8,9 @@
 // Machines: normal = 1366 x 768 at DPR 1; slow = the same with CPU throttling x 6; big = 1920 x 1080
 // at DPR 2 (the largest canvas the stage makes). `--load` measures a cold first load and a level
 // open on "Fast 3G"; `--leak` opens and leaves ten levels and compares the heap; `--budget` fails
-// (exit code 1) when a story level is over the budget of .specify/architecture.md; `--low` forces
-// the simple graphics. Needs the tester profile `.e2e/tester-profile.json` (git-ignored).
+// (exit code 1) when a story level is over the budget of .specify/architecture.md (normal, and slow
+// with `--low`); `--low` sets the simple graphics, else the full ones. Needs the tester profile
+// `.e2e/tester-profile.json` (git-ignored).
 import { chromium } from '@playwright/test';
 import { spawn, execSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -30,8 +31,8 @@ const MACHINES = {
   slow: { viewport: { width: 1366, height: 768 }, dpr: 1, cpu: 6 },
   big: { viewport: { width: 1920, height: 1080 }, dpr: 2, cpu: 1 },
 };
-/** p95 frame time budget per machine, in ms (.specify/architecture.md, Performance budget). */
-const BUDGET = { normal: 20, slow: 33, big: 33 };
+/** Frame time budget in ms (.specify/architecture.md, Performance budget): normal with full graphics, slow with simple. */
+const BUDGET = { normal: { p50: 17, p95: 20 }, 'slow-low': { p50: 34, p95: 100 } };
 
 /** Scenes: a level (its map island and node, or the target range of a world), the map or the start page. */
 const SCENES = [
@@ -102,9 +103,9 @@ const SAMPLER = () => {
 async function newPage(browser, m, low) {
   const context = await browser.newContext({ viewport: m.viewport, deviceScaleFactor: m.dpr, serviceWorkers: 'block' });
   await context.addInitScript(SAMPLER);
-  // The tester profile, opened directly; `low` forces the simple graphics.
+  // The tester profile, opened directly, with the graphics pinned: the automatic choice would switch during a run.
   const profile = structuredClone(tester);
-  if (low) profile.settings.graphics = 'simple';
+  profile.settings.graphics = low ? 'simple' : 'full';
   await context.addInitScript((p) => {
     const raw = JSON.parse(localStorage.getItem('tapkotyper:v1') ?? 'null') ?? { profiles: [] };
     raw.profiles = [...(raw.profiles ?? []).filter((x) => x.id !== p.id), p];
@@ -191,7 +192,11 @@ async function measure(browser, machine, sc, low) {
   const end = t0 + SECONDS * 1000;
   let endedAt = null;
   while (Date.now() < end) {
-    if (level && endedAt === null && (await step(page)) === 'results') endedAt = Math.round(SECONDS - (end - Date.now()) / 1000);
+    // Play only: the results card is a still card over the scene, not play.
+    if (level && (await step(page)) === 'results') {
+      endedAt = Math.round(SECONDS - (end - Date.now()) / 1000);
+      break;
+    }
     // About three keys a second, a child's steady pace.
     await page.waitForTimeout(level ? 330 : 500);
   }
@@ -246,12 +251,15 @@ async function load(browser) {
   return { toMap, toLevel, mapKB: kb(bytes.map), levelKB: kb(bytes.level) };
 }
 
-/** Heap after one level against after ten (each opened, played a few seconds and left). */
+/** Heap after one level against after many (each opened, played a few seconds and left). */
+const LEAK_LEVELS = Number(opt('levels', '10'));
 async function leak(browser) {
   const { context, page, cdp } = await newPage(browser, MACHINES.normal, false);
   const heaps = [];
   const listeners = [];
-  for (let i = 0; i < 10; i++) {
+  const storeKB = [];
+  const canvases = [];
+  for (let i = 0; i < LEAK_LEVELS; i++) {
     const sc = SCENES[i % 10];
     await openScene(page, sc);
     for (let k = 0; k < 20; k++) {
@@ -264,9 +272,16 @@ async function leak(browser) {
     const { result } = await cdp.send('Runtime.evaluate', { expression: 'window' });
     const { listeners: l } = await cdp.send('DOMDebugger.getEventListeners', { objectId: result.objectId });
     listeners.push(l.length);
+    // Canvases still alive, attached or not: a level left behind keeps its stage's.
+    const { result: proto } = await cdp.send('Runtime.evaluate', { expression: 'HTMLCanvasElement.prototype' });
+    const { objects } = await cdp.send('Runtime.queryObjects', { prototypeObjectId: proto.objectId });
+    const { result: count } = await cdp.send('Runtime.callFunctionOn', { objectId: objects.objectId, functionDeclaration: 'function () { return this.length; }', returnByValue: true });
+    canvases.push(count.value);
+    // The player's stored data grows with every level played (sessions, key stats): part of the heap's growth.
+    storeKB.push(await page.evaluate(() => Math.round((localStorage.getItem('tapkotyper:v1') ?? '').length / 1024)));
   }
   await context.close();
-  return { heaps, listeners };
+  return { heaps, listeners, storeKB, canvases };
 }
 
 function table(rows) {
@@ -290,8 +305,9 @@ try {
         const r = await measure(browser, machine, sc, flag('low'));
         console.log(`${r.machine} ${r.scene}: p50 ${r.p50} p95 ${r.p95} p99 ${r.p99} >33 ${r.over33} long ${r.long} busy ${r.busy}% heap ${r.heapStart}/${r.heapEnd}`);
         rows.push(r);
-        if (flag('budget') && r.level && r.p95 > BUDGET[machine]) {
-          console.log(`  OVER BUDGET: p95 ${r.p95} ms > ${BUDGET[machine]} ms`);
+        const budget = BUDGET[r.machine];
+        if (flag('budget') && budget && r.level && (r.p50 > budget.p50 || r.p95 > budget.p95)) {
+          console.log(`  OVER BUDGET: p50 ${r.p50} ms (at most ${budget.p50}), p95 ${r.p95} ms (at most ${budget.p95})`);
           failed = true;
         }
       }
@@ -299,7 +315,7 @@ try {
     console.log(`\n${table(rows)}`);
   }
   if (flag('load')) console.log('\nload (Fast 3G, cold):', JSON.stringify(await load(browser)));
-  if (flag('leak')) console.log('\nleak (heap MB and window listeners after each of ten levels):', JSON.stringify(await leak(browser)));
+  if (flag('leak')) console.log('\nleak (heap MB, window listeners, stored KB and live canvases after each of ten levels):', JSON.stringify(await leak(browser)));
   writeFileSync(`${OUT}/last.json`, JSON.stringify(rows, null, 1));
   await browser.close();
 } catch (e) {

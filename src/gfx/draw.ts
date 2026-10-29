@@ -1,4 +1,5 @@
 import { sprite } from './assets';
+import { graphics } from '../engine/graphics';
 import { VH } from '../engine/loop';
 import { ENTER } from '../keyboard/layouts';
 
@@ -36,6 +37,33 @@ export function drawSprite(g: G, name: string, x: number, y: number, h: number, 
     fallback(g, w, h);
   }
   g.restore();
+}
+
+/** Shapes drawn once into a canvas of their own, least recently drawn first. */
+const cached = new Map<string, HTMLCanvasElement>();
+const CACHED_KEEP = 16;
+
+/**
+ * Draws what `paint` draws in the box (x, y, w, h) from a canvas made once per key, size and
+ * device scale: a blurred shadow costs far more to draw than its copy. `paint` draws in the box's
+ * own units, from (0, 0).
+ */
+export function drawCached(g: G, key: string, x: number, y: number, w: number, h: number, paint: (g: G) => void): void {
+  const k = g.getTransform().a;
+  const id = `${key}|${w}|${h}|${k}`;
+  let c = cached.get(id);
+  if (c) cached.delete(id);
+  else {
+    c = document.createElement('canvas');
+    c.width = Math.ceil(w * k);
+    c.height = Math.ceil(h * k);
+    const cg = c.getContext('2d')!;
+    cg.scale(c.width / w, c.height / h);
+    paint(cg);
+    if (cached.size >= CACHED_KEEP) cached.delete(cached.keys().next().value!);
+  }
+  cached.set(id, c);
+  g.drawImage(c, x, y, w, h);
 }
 
 export function roundRect(g: G, x: number, y: number, w: number, h: number, r: number): void {
@@ -166,14 +194,33 @@ function fittedTile(tile: HTMLImageElement, px: number): HTMLCanvasElement | HTM
   return c;
 }
 
+/** Each layer's offset in the last frame: a layer that stands still is copied on whole pixels. */
+const lastOffset = new WeakMap<HTMLImageElement, number>();
+
 /** Draws a background layer at full screen height, repeated horizontally by `offset`; up to the layer's x `end` only, when given. */
 function tiled(g: G, img: HTMLImageElement, vw: number, offset: number, end = Infinity): void {
   const s = VH / img.naturalHeight;
-  const tile = fittedTile(img, Math.round(VH * g.getTransform().d));
+  const m = g.getTransform();
+  const tile = fittedTile(img, Math.round(VH * m.d));
   const w = img.naturalWidth * s, h = img.naturalHeight * s;
-  const y = VH - h;
-  // Sub-pixel positions: rounding made slow layers move in visible jumps.
-  for (let x = -(((offset % w) + w) % w); x < Math.min(vw, end - offset); x += w) g.drawImage(tile, x, y, w + 1, h);
+  const from = -(((offset % w) + w) % w), to = Math.min(vw, end - offset);
+  // A band that ends in its end piece keeps exact positions, so the piece meets its last copy.
+  if (tile === img || end !== Infinity) {
+    for (let x = from; x < to; x += w) g.drawImage(tile, x, VH - h, w + 1, h);
+    return;
+  }
+  // The scaled copy goes on unscaled, in device pixels, each copy right after the last one: a copy
+  // on whole pixels is several times cheaper than a filtered one. A moving layer keeps sub-pixel steps where a pixel is big enough
+  // to see (device pixel ratio under 2), else slow layers move in visible jumps.
+  const still = lastOffset.get(img) === offset;
+  lastOffset.set(img, offset);
+  const snap = still || graphics.simple || g.canvas.width >= 2 * g.canvas.clientWidth;
+  const x0 = m.a * from + m.e, x1 = m.a * to + m.e;
+  const y = Math.round(m.d * VH + m.f) - tile.height;
+  g.save();
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  for (let x = snap ? Math.round(x0) : x0; x < x1; x += tile.width) g.drawImage(tile, x, y);
+  g.restore();
 }
 
 /** Where the end piece's flat part starts (a share of its width); it repeats from there, every other copy mirrored. */
@@ -413,9 +460,11 @@ export function drawWord(g: G, word: string, typed: number, x: number, y: number
   const padX = size * 0.45, h = size * 1.45;
   const shake = wobble > 0 ? Math.sin(wobble * 60) * 5 * (wobble / 0.35) : 0;
   const bx = x - (total + iconW) / 2 - padX + shake;
-  g.shadowColor = 'rgba(40,30,20,0.25)';
-  g.shadowBlur = 8;
-  g.shadowOffsetY = 3;
+  if (!graphics.simple) {
+    g.shadowColor = 'rgba(40,30,20,0.25)';
+    g.shadowBlur = 8;
+    g.shadowOffsetY = 3;
+  }
   g.fillStyle = st.highContrast ? '#ffffff' : c.plate;
   roundRect(g, bx, y - h / 2, total + iconW + padX * 2, h, h / 2);
   g.fill();

@@ -6,7 +6,7 @@ import { LEVELS, type LevelDef, WORLDS } from '../game/levels';
 import { SHOW_DAYS, SHOW_DAYS_MAX, SURPRISES_MAX, SURPRISE_LEN, SURPRISE_N_MAX, TRIGGERS, newSurprise, restartSurprise, surpriseCount } from '../game/own-content';
 import { wordSource } from '../game/runtime';
 import { lessonKeyOf, lessonOrder, punctuationKeys } from '../learning/lessons';
-import { COMPANION_KINDS, GUEST_ID, SUPER_ID, type FontChoice, type LangRef, type LayoutId, type OwnMix, type ParentLock, type Profile, type Surprise, type SurpriseTrigger, type TaskKind } from '../storage/schema';
+import { COMPANION_KINDS, GUEST_ID, SUPER_ID, type FontChoice, type GraphicsChoice, type LangRef, type LayoutId, type OwnMix, type ParentLock, type Profile, type Surprise, type SurpriseTrigger, type TaskKind } from '../storage/schema';
 import { checkLock, makeLock } from '../storage/lock';
 import { linkOf } from '../share/codec';
 import { TASK_GROUP_MAX, TASK_MINUTES, TASK_TITLE_MAX, type TaskSpec, addTask, taskCode } from '../share/task';
@@ -212,6 +212,7 @@ function settingsTab(p: Profile): HTMLElement {
       switchField(t('parent.largeText'), check(s.largeText, (v) => { s.largeText = v; save(); })),
       switchField(t('parent.reduceMotion'), check(s.reduceMotion, (v) => { s.reduceMotion = v; save(); })),
       switchField(t('parent.highContrast'), check(s.highContrast, (v) => { s.highContrast = v; save(); })),
+      field(t('parent.graphics'), select<GraphicsChoice>(s.graphics, [['auto', t('parent.graphicsAuto')], ['full', t('parent.graphicsFull')], ['simple', t('parent.graphicsSimple')]], (v) => { s.graphics = v; save(); }), t('parent.graphicsHint')),
       switchField(t('parent.autoFullscreen'), check(s.autoFullscreen, (v) => { s.autoFullscreen = v; save(); }), t('parent.autoFullscreenHint')),
       ...translateTool()),
     lockGroup());

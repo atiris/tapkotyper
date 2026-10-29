@@ -2,13 +2,14 @@ import { app, isBreakDue, layout, pickLine, reduceMotion, saveProfile } from '..
 import { fast } from '../app/fast';
 import { audio, type Sfx } from '../audio/audio';
 import { speech } from '../audio/speech';
+import { FrameWatch, graphics, markSlowDevice } from '../engine/graphics';
 import { Loop, Stage, VH } from '../engine/loop';
 import { Particles } from '../engine/particles';
 import { Rng } from '../engine/rng';
-import { Tweens, ease } from '../engine/tween';
-import { SPEECH_W, drawBackground, drawSpeech, drawWord, fontFamily, type G, type SpeechLayout, speechLayout, wordBox } from '../gfx/draw';
+import { Tweens } from '../engine/tween';
+import { drawBackground, type G } from '../gfx/draw';
 import { type Mood, pawColors, tapkoElement, tapkoPictures, renderTapkoInto } from '../gfx/tapko';
-import { friendPictures, preload } from '../gfx/assets';
+import { friendPictures, picturesReady, preload } from '../gfx/assets';
 import { type FairyMood, drawFairy } from '../gfx/fairy';
 import { type RobotMood, type RobotState, drawRobot, robotFor } from '../gfx/robot';
 import { locale, t, tList } from '../i18n/i18n';
@@ -40,56 +41,9 @@ import { type Style, type Target, TypingCore } from './typing';
 import { pickTip, showCard, showHomeRow, showKeysIntro, showNewKey, showPosture } from './cards';
 import { surpriseFor } from './own-content';
 import { HELP_PLANS, type HelpHost, type HelpPlan, SuperHelper } from './super-help';
+import { Callouts } from './runtime/callouts';
+import { LABEL_GAP, Labels } from './runtime/labels';
 
-/** A short shout over the scene (a goal, a cheer) where it popped up. */
-interface Shout {
-  text: string;
-  x: number;
-  y: number;
-  age: number;
-}
-
-/** A speech bubble in the scene: who says it, centered near (x, y) (or ending at x), its tail toward (tx, ty). */
-interface Speech {
-  who: string;
-  /** (x, y) is the middle of its right edge, not its center. */
-  right: boolean;
-  text: string;
-  x: number;
-  y: number;
-  tx: number;
-  ty: number;
-  age: number;
-  life: number;
-  /** Its vertical move clear of the word labels, kept while it stays clear. */
-  dy: number;
-  lay?: SpeechLayout;
-}
-
-/** A word label a mode asked for in this frame, at its object's anchor. */
-interface PendingLabel {
-  tg: Target;
-  x: number;
-  y: number;
-  size: number;
-}
-
-interface Rect {
-  /** The target whose label it is. */
-  id?: number;
-  x0: number;
-  x1: number;
-  y0: number;
-  y1: number;
-}
-
-/** Space kept between two labels, and the move from which a line points back to the object. */
-const LABEL_GAP = 6;
-const LABEL_LINE_FROM = 30;
-/** A label keeps at least this far from the stage's edges, so the whole word and its bubble stay in sight. */
-const LABEL_EDGE = 8;
-/** A long label shrinks to fit, down to this font size. */
-const LABEL_MIN_SIZE = 28;
 /** Seconds every target gets to be read. */
 const READ_TIME = 3;
 /** Extra seconds a target with a capital letter gets (the Shift chord is hard). */
@@ -105,10 +59,6 @@ const BOLT_SIZE = 150;
 const FAIRY_SIZE = 120;
 const FAIRY_FLOAT = 110;
 const FAIRY_HOP = 0.6;
-/** Seconds a shout stays over the scene. */
-const SHOUT_TIME = 1.1;
-/** How far a speech bubble may move up or down to stay clear of the word labels. */
-const SPEECH_ROOM = 160;
 /** The end of a level: Tapko hops HOPS times of HOP_TIME seconds, his tool fades in TOOL_FADE, then the results open. */
 const HOPS = 3;
 const HOP_TIME = 0.4;
@@ -173,13 +123,6 @@ export interface RuntimeOptions {
   onBreak(back: () => void, play: () => void): void;
 }
 
-/** The e2e build counts the frames with a speech bubble and those where one covers a word label (`window.speechLog`). */
-function speechLog(b: Rect, labels: Rect[]): void {
-  const log = ((window as any).speechLog ??= { frames: 0, overlaps: 0 });
-  log.frames++;
-  if (labels.some((r) => r.x1 > b.x0 + LABEL_GAP && r.x0 < b.x1 - LABEL_GAP && r.y1 > b.y0 + LABEL_GAP && r.y0 < b.y1 - LABEL_GAP)) log.overlaps++;
-}
-
 /** Runs one level: input, typing state, mode, HUD, guide, Tapko, stats. */
 export class LevelRuntime {
   readonly core = new TypingCore();
@@ -212,8 +155,8 @@ export class LevelRuntime {
   private fairyMood: FairyMood = 'idle';
   private fairyMoodT = 0;
   private fairyHop = 0;
-  private shouts: Shout[] = [];
-  private speeches: Speech[] = [];
+  private labels = new Labels(this);
+  private callouts = new Callouts(this);
 
   private loop: Loop;
   private input: KeyInput | null = null;
@@ -296,7 +239,7 @@ export class LevelRuntime {
     this.highContrast = p.settings.highContrast;
     this.reduceMotion = reduceMotion();
     this.tweens.speed = this.reduceMotion ? 0.5 : 1;
-    this.particles.enabled = !this.reduceMotion;
+    this.particles.enabled = !this.reduceMotion && !graphics.simple;
     const lastCpm = p.stats.sessions[p.stats.sessions.length - 1]?.cpm ?? 0;
     this.rhythm = new Rhythm(lastCpm, this.difficulty);
     this.lastCps = lastCpm ? lastCpm / 60 : 1;
@@ -855,7 +798,7 @@ export class LevelRuntime {
     if (!this.dictating || !this.started || this.paused || this.finished) return;
     const r = this.stage.canvas.getBoundingClientRect();
     const x = (e.clientX - r.left) / this.stage.scale, y = (e.clientY - r.top) / this.stage.scale;
-    const hit = this.labelRects.find((b) => x >= b.x0 && x <= b.x1 && y >= b.y0 && y <= b.y1);
+    const hit = this.labels.at(x, y);
     const tg = hit && this.core.active.find((a) => a.id === hit.id);
     if (tg?.style === 'dictation') this.dictate(tg, true);
   }
@@ -905,7 +848,7 @@ export class LevelRuntime {
 
   /** A short text pops up over the scene at (x, y) and fades. */
   shout(text: string, x: number, y: number): void {
-    this.shouts.push({ text, x, y, age: 0 });
+    this.callouts.shout(text, x, y);
   }
 
   /**
@@ -914,14 +857,13 @@ export class LevelRuntime {
    * the voice does not read it.
    */
   speak(who: string, text: string, x: number, y: number, tx: number, ty: number, seconds: number, right = false): void {
-    this.speeches = this.speeches.filter((s) => s.who !== who);
-    this.speeches.push({ who, right, text, x, y, tx, ty, age: 0, life: seconds, dy: 0 });
+    this.callouts.speak(who, text, x, y, tx, ty, seconds, right);
     if (this.saidEl) this.saidEl.textContent = text;
   }
 
   /** The speaker's bubble is still up (and has been up less than `within` seconds). */
   speaking(who: string, within = Infinity): boolean {
-    return this.speeches.some((s) => s.who === who && s.age < within);
+    return this.callouts.speaking(who, within);
   }
 
   /** Someone is glad: a cheer ("Hurá!") pops up above Tapko, or at `at`, with the cheer sound; returns the cheer. */
@@ -930,42 +872,6 @@ export class LevelRuntime {
     this.sfx('cheer');
     this.shout(text, at.x, at.y);
     return text;
-  }
-
-  /** A speech bubble pops in and fades out; it moves up or down while it would cover a word label. */
-  private drawSpeech(g: G, s: Speech): void {
-    const lay = (s.lay ??= speechLayout(g, s.text, SPEECH_W));
-    const x = Math.min(this.vw - lay.w / 2 - 8, Math.max(lay.w / 2 + 8, s.right ? s.x - lay.w / 2 : s.x));
-    const box = (dy: number) => ({ x0: x - lay.w / 2 - LABEL_GAP, x1: x + lay.w / 2 + LABEL_GAP, y0: s.y + dy - lay.h / 2 - LABEL_GAP, y1: s.y + dy + lay.h / 2 + LABEL_GAP });
-    const clear = (dy: number) => {
-      const b = box(dy);
-      return b.y0 >= 0 && b.y1 <= VH && this.labelRects.every((r) => r.x1 <= b.x0 || r.x0 >= b.x1 || r.y1 <= b.y0 || r.y0 >= b.y1);
-    };
-    if (!clear(s.dy)) s.dy = Array.from({ length: SPEECH_ROOM / 4 }, (_, i) => (i % 2 ? -1 : 1) * Math.ceil((i + 1) / 2) * 8).find(clear) ?? s.dy;
-    if (import.meta.env.MODE === 'e2e') speechLog(box(s.dy), this.labelRects);
-    const fade = Math.max(0, Math.min(1, (s.life - s.age) / 0.25));
-    const pop = this.reduceMotion ? 1 : ease.outBack(Math.min(1, s.age / 0.25));
-    drawSpeech(g, lay, x, s.y + s.dy, s.tx, s.ty, fade, pop);
-  }
-
-  private drawShout(g: G, s: Shout): void {
-    const k = ease.outBack(Math.min(1, s.age / 0.35));
-    g.save();
-    g.globalAlpha = Math.max(0, Math.min(1, (SHOUT_TIME - s.age) / 0.3));
-    g.font = `800 58px ${fontFamily()}`;
-    const half = g.measureText(s.text).width / 2 + 8;
-    g.translate(Math.min(this.vw - half, Math.max(half, s.x)), Math.max(50, s.y - s.age * 12));
-    g.scale(k, k);
-    g.rotate(-0.06);
-    g.textAlign = 'center';
-    g.textBaseline = 'middle';
-    g.lineJoin = 'round';
-    g.lineWidth = 8;
-    g.strokeStyle = '#5a3d2b';
-    g.strokeText(s.text, 0, 0);
-    g.fillStyle = '#ffd25a';
-    g.fillText(s.text, 0, 0);
-    g.restore();
   }
 
   /** The story friend's feet (Bolt, Melody below where she floats): where the mode puts them, else next to Tapko. */
@@ -1351,10 +1257,7 @@ export class LevelRuntime {
     if (this.robotMoodT > 0 && (this.robotMoodT -= dt) <= 0) this.robotMood = 'idle';
     if (this.fairyMoodT > 0 && (this.fairyMoodT -= dt) <= 0) this.fairyMood = 'idle';
     this.fairyHop = Math.max(0, this.fairyHop - dt);
-    for (const s of this.shouts) s.age += dt;
-    this.shouts = this.shouts.filter((s) => s.age < SHOUT_TIME);
-    for (const s of this.speeches) s.age += dt;
-    this.speeches = this.speeches.filter((s) => s.age < s.life);
+    this.callouts.update(dt);
     // More targets after the minimum grew the level lower the mode's share; the bar never goes back.
     const pct = Math.max(this.progressPct, Math.round(this.share() * 100));
     if (pct !== this.progressPct) {
@@ -1387,97 +1290,48 @@ export class LevelRuntime {
   }
 
   private tapkoPx = 0;
+  private frameWatch = new FrameWatch();
+
+  /** Automatic graphics: when the first seconds of play are too slow, this device switches to the simple drawing. */
+  private watchFrames(): void {
+    if (graphics.simple || app.profile!.settings.graphics !== 'auto') return;
+    if (!this.started || this.paused || this.finished) return this.frameWatch.pause();
+    if (!this.frameWatch.frame(performance.now())) return;
+    markSlowDevice();
+    this.particles.enabled = false;
+    this.stage.resize();
+  }
+  /** Pictures ready when the last frame was drawn. */
+  private drawnPictures = -1;
 
   private render(): void {
     this.sizeTapko();
-    // A paused level does not move: the last frame stays unless a resize cleared it.
-    if (this.paused && !this.stage.dirty) return;
+    this.watchFrames();
+    // A paused level and the cards before play do not move: the last frame stays unless a resize cleared it or a picture came.
+    const still = this.paused || (!this.started && !this.tweens.busy);
+    if (still && !this.stage.dirty && picturesReady() === this.drawnPictures) return;
+    this.drawnPictures = picturesReady();
     const g = this.stage.begin();
     const drift = this.mode.drift;
     drawBackground(g, this.backdrop, this.stage.vw, this.mode.scroll, !this.reduceMotion, this.mode.midOnly, drift && { layer: drift.layer, offset: driftOffset(drift, this.elapsed, !this.reduceMotion) }, this.ground, this.def.rescue ? null : this.mode.nearEnd);
     if (this.robot) this.drawBolt(g);
     if (this.fairy) this.drawMelody(g);
-    this.labels = [];
-    this.labelRects = [];
+    this.labels.begin();
     this.mode.render(g);
-    this.drawLabels(g);
+    this.labels.draw(g);
     this.particles.render(g);
-    for (const s of this.speeches) this.drawSpeech(g, s);
-    for (const s of this.shouts) this.drawShout(g, s);
-    this.mode.renderFront(this.stage.beginFront());
+    this.callouts.draw(g, this.labels.rects);
+    this.mode.renderFront?.(this.stage.beginFront());
     this.placeBubble();
   }
 
-  private labels: PendingLabel[] = [];
-  /** Where this frame's labels were drawn, in stage units. */
-  private labelRects: Rect[] = [];
-  /** Vertical shift of each target's label, smoothed over frames. */
-  private labelShift = new Map<number, number>();
-  private labelTime = 0;
 
   /**
    * Word label above a target (helper for modes); drawn after the mode, so labels never overlap.
    * A word the child sees can be typed at once, so a target not selectable yet gets no label.
    */
   label(_g: G, tg: Target, x: number, y: number, size = 40): void {
-    if (tg.selectable) this.labels.push({ tg, x, y, size });
-  }
-
-  /**
-   * The locked and most urgent labels keep their place; each later one moves up (down
-   * near the top) until it is clear of the placed ones. Far moves get a line to the object.
-   */
-  private drawLabels(g: G): void {
-    const now = performance.now();
-    const dt = this.labelTime ? Math.min(0.1, (now - this.labelTime) / 1000) : 0;
-    this.labelTime = now;
-    // 0.25 of the way per frame at 60 Hz, the same at any frame rate.
-    const follow = 1 - Math.pow(0.75, dt * 60);
-    const rank = (l: PendingLabel) => (this.core.locked === l.tg ? Infinity : l.tg.urgency);
-    const placed: Rect[] = [];
-    const shifts = new Map<number, number>();
-    const icon = this.style !== 'copy';
-    for (const l of [...this.labels].sort((a, b) => rank(b) - rank(a))) {
-      // Phrases shrink to fit: in calm modes the stage around their place, moving targets half of it.
-      const room = this.mode.phraseWords > 2 ? Math.min(this.vw * 0.9, 2 * Math.min(l.x, this.vw - l.x) - 20) : this.vw * 0.5;
-      const full = wordBox(g, l.tg.word, l.size, icon).w;
-      if (full > room) l.size = Math.max(LABEL_MIN_SIZE, Math.min(l.size, l.size * room / full));
-      const { w, h } = wordBox(g, l.tg.word, l.size, icon);
-      // A word near an edge moves inward: the whole word is always in sight.
-      l.x = Math.max(w / 2 + LABEL_EDGE, Math.min(this.vw - w / 2 - LABEL_EDGE, l.x));
-      l.y = Math.max(h / 2 + LABEL_EDGE, Math.min(VH - h / 2 - LABEL_EDGE, l.y));
-      const x0 = l.x - w / 2 - LABEL_GAP, x1 = l.x + w / 2 + LABEL_GAP;
-      const clear = (dy: number) => placed.every((b) => x1 <= b.x0 || x0 >= b.x1 || l.y + dy + h / 2 + LABEL_GAP <= b.y0 || l.y + dy - h / 2 - LABEL_GAP >= b.y1);
-      let want = 0;
-      if (!clear(0)) {
-        const up = Array.from({ length: Math.max(0, Math.floor((l.y - h / 2) / 4)) }, (_, i) => -(i + 1) * 4).find(clear);
-        want = up ?? Array.from({ length: Math.max(0, Math.floor((VH - l.y - h / 2) / 4)) }, (_, i) => (i + 1) * 4).find(clear) ?? 0;
-      }
-      placed.push({ x0: x0 + LABEL_GAP, x1: x1 - LABEL_GAP, y0: l.y + want - h / 2, y1: l.y + want + h / 2 });
-      const prev = this.labelShift.get(l.tg.id);
-      const shift = prev == null ? want : prev + (want - prev) * follow;
-      shifts.set(l.tg.id, shift);
-      this.labelRects.push({ id: l.tg.id, x0: l.x - w / 2, x1: l.x + w / 2, y0: l.y + shift - h / 2, y1: l.y + shift + h / 2 });
-      if (Math.abs(shift) > LABEL_LINE_FROM) {
-        g.save();
-        g.strokeStyle = 'rgba(255,253,246,0.7)';
-        g.lineWidth = 2;
-        g.setLineDash([4, 5]);
-        g.beginPath();
-        g.moveTo(l.x, l.y + shift + (shift < 0 ? h / 2 : -h / 2));
-        g.lineTo(l.x, l.y);
-        g.stroke();
-        g.restore();
-      }
-      drawWord(g, l.tg.word, l.tg.typed, l.x, l.y + shift, l.tg.wobble, {
-        size: l.size,
-        highContrast: this.highContrast,
-        locked: this.core.locked === l.tg,
-        masked: !this.core.letters(l.tg),
-        icon: l.tg.style === 'dictation' ? { kind: 'speaker' } : l.tg.style === 'memory' ? { kind: 'ring', left: l.tg.showFor ? l.tg.showLeft / l.tg.showFor : 0 } : undefined,
-      });
-    }
-    this.labelShift = shifts;
+    this.labels.add(tg, x, y, size);
   }
 
   /** The word is the task, so the narrator's bubble never covers one: over a label it hides until its spot is free. */
@@ -1494,7 +1348,7 @@ export class LevelRuntime {
     const covers = () => {
       const x0 = b.offsetLeft / s - LABEL_GAP, x1 = (b.offsetLeft + b.offsetWidth) / s + LABEL_GAP;
       const y0 = b.offsetTop / s - LABEL_GAP, y1 = (b.offsetTop + b.offsetHeight) / s + LABEL_GAP;
-      return this.labelRects.some((r) => r.x0 < x1 && r.x1 > x0 && r.y0 < y1 && r.y1 > y0);
+      return this.labels.rects.some((r) => r.x0 < x1 && r.x1 > x0 && r.y0 < y1 && r.y1 > y0);
     };
     b.classList.toggle('covered', covers());
   }
@@ -1573,7 +1427,7 @@ export class LevelRuntime {
     if (this.fairy && !this.def.isSuper) this.say(pickLine('fairy.done'), RESULTS_AFTER);
     else this.hideBubble();
     // A beaten super-obstacle finishes the world: Tapko cheers, unless the mode's last cheer is still up.
-    if (this.def.isSuper && !this.shouts.length) this.hooray();
+    if (this.def.isSuper && !this.callouts.shouting) this.hooray();
     this.moodTimer = 0;
     this.tapkoMood = 'happy';
     renderTapkoInto(this.tapko, app.profile!.companion, 'happy');

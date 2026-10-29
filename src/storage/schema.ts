@@ -2,6 +2,8 @@
 // and of exported `.json` files. No migrations while the game is in alpha: missing fields get defaults.
 
 export type Lang = 'sk' | 'en';
+/** How much the game draws: automatic (simple once this device was measured slow), always full, or simple. */
+export type GraphicsChoice = 'auto' | 'full' | 'simple';
 /** A language as players and settings point to it: an official one, or an own one made in the translator (`own:<id>`). */
 export type LangRef = Lang | `own:${string}`;
 /** The look of the whole device: `system` follows the browser's color scheme. */
@@ -73,6 +75,8 @@ export interface Settings {
   largeText: boolean;
   reduceMotion: boolean;
   highContrast: boolean;
+  /** How much the game draws (engine/graphics.ts); automatic turns simple on a device measured slow. */
+  graphics: GraphicsChoice;
   /** Ask for fullscreen on the first key press or click after the app starts. */
   autoFullscreen: boolean;
   /** The parent's own words and text, mixed into the targets by `ownMix`. */
@@ -282,6 +286,7 @@ export function defaultSettings(wordLang: LangRef): Settings {
     largeText: false,
     reduceMotion: false,
     highContrast: false,
+    graphics: 'auto',
     autoFullscreen: false,
     ownWords: [],
     ownText: '',

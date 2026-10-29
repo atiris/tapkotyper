@@ -1,6 +1,7 @@
+import { graphics } from '../../engine/graphics';
 import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
-import { drawWord, fontFamily, type G, wordBox } from '../../gfx/draw';
+import { drawCached, drawWord, fontFamily, type G, wordBox } from '../../gfx/draw';
 import { t, tn } from '../../i18n/i18n';
 import { SPACE } from '../../learning/lessons';
 import { WORLDS } from '../levels';
@@ -17,6 +18,8 @@ const ACCENT: Record<string, string> = {
 const SIZE = 52;
 const PANEL_Y = VH * 0.36;
 const PANEL_MIN_W = 420;
+/** Room round the panel for its glow: a shadow blur of 26 reaches about 40 device pixels, inside this down to a stage 400 px high. */
+const GLOW = 60;
 /** Seconds a new target grows in, a finished one floats up, and the end line shows before the level ends. */
 const GROW = 0.3;
 const FLOAT = 0.7;
@@ -121,20 +124,24 @@ export class CopyLoopMode extends Mode {
     const need = this.current ? wordBox(g, this.current.word, SIZE).w : Math.max(0, ...end.map((l) => g.measureText(l).width));
     g.restore();
     // The panel fits the current target or the end line, never wider than the stage.
-    const w = Math.min(this.L.vw - 80, Math.max(PANEL_MIN_W, need + 80)), h = SIZE * 1.45 + 56;
+    const w = Math.round(Math.min(this.L.vw - 80, Math.max(PANEL_MIN_W, need + 80))), h = SIZE * 1.45 + 56;
     this.drawSign(g, cx);
-    g.save();
-    g.shadowColor = this.accent;
-    g.shadowBlur = 26;
-    g.fillStyle = 'rgba(252,250,255,0.93)';
-    g.strokeStyle = this.accent;
-    g.lineWidth = 5;
-    g.beginPath();
-    g.roundRect(cx - w / 2, PANEL_Y - h / 2, w, h, 28);
-    g.fill();
-    g.shadowColor = 'transparent';
-    g.stroke();
-    g.restore();
+    // The panel with its glow is drawn once per width: a blur this big is slow to draw every frame.
+    const simple = graphics.simple;
+    drawCached(g, `copy-panel ${this.accent} ${simple}`, cx - w / 2 - GLOW, PANEL_Y - h / 2 - GLOW, w + 2 * GLOW, h + 2 * GLOW, (pg) => {
+      if (!simple) {
+        pg.shadowColor = this.accent;
+        pg.shadowBlur = 26;
+      }
+      pg.fillStyle = 'rgba(252,250,255,0.93)';
+      pg.strokeStyle = this.accent;
+      pg.lineWidth = 5;
+      pg.beginPath();
+      pg.roundRect(GLOW, GLOW, w, h, 28);
+      pg.fill();
+      pg.shadowColor = 'transparent';
+      pg.stroke();
+    });
     for (const f of this.floating) {
       const k = Math.min(1, f.t / FLOAT);
       g.save();

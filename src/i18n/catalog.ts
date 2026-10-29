@@ -134,7 +134,7 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
       'parent.appTipsHint', 'parent.wardrobeLimit', 'parent.wardrobeLimitHint', 'parent.wardrobeBalance', 'parent.sessionMinutes', 'parent.breaksLocked', 'parent.breaksLockedHint', 'parent.minutes', 'parent.guide',
       'parent.guideAuto', 'parent.guideOn', 'parent.guideOff', 'parent.guideLocked'),
     g('parent-look', 'parent.sfx', 'parent.music', 'parent.speakTyped', 'parent.speakTypedHint', 'parent.font', 'parent.largeText', 'parent.reduceMotion',
-      'parent.highContrast', 'parent.autoFullscreen', 'parent.autoFullscreenHint', 'parent.keyFont', 'parent.keyFontHint'),
+      'parent.highContrast', 'parent.graphics', 'parent.graphicsAuto', 'parent.graphicsFull', 'parent.graphicsSimple', 'parent.graphicsHint', 'parent.autoFullscreen', 'parent.autoFullscreenHint', 'parent.keyFont', 'parent.keyFontHint'),
     g('parent-lock', 'parent.lock.*'),
     g('parent-keys', 'parent.keysMode', 'parent.keysAuto', 'parent.keysManual', 'parent.keysHint', 'parent.punctuation', 'parent.unlocked', 'parent.preset.*'),
     g('parent-data', 'parent.*'),

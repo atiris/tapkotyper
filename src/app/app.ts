@@ -1,4 +1,5 @@
 import { audio } from '../audio/audio';
+import { useGraphics } from '../engine/graphics';
 import { resetFontFamily } from '../gfx/draw';
 import { askedLanguage, setLanguage, tList } from '../i18n/i18n';
 import { LAYOUTS, type Layout } from '../keyboard/layouts';
@@ -189,6 +190,7 @@ export function applyProfileLook(p: Profile | null): void {
   b.classList.toggle('large-text', !!s?.largeText);
   b.classList.toggle('high-contrast', !!s?.highContrast);
   b.classList.toggle('reduce-motion', reduceMotion());
+  useGraphics(s?.graphics ?? 'auto');
   resetFontFamily();
   audio.setVolumes(s?.sfxVolume ?? 0.7, s?.musicVolume ?? 0.5);
 }

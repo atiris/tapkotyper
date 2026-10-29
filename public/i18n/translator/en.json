@@ -802,6 +802,7 @@
     "story.thicketDone": "Line at the end of the overgrown path: it is open and the baby dragons peek out; one is picked at random.",
     "story.flightStart": "Opening line of the flying lessons: typing in a steady rhythm keeps a baby dragon flying over the bushes to the fire.",
     "story.flightBush": "What a baby dragon shouts when it lands in the bushes instead of flying over them (a giggle, never sad); one is picked at random.",
+    "story.flightHard": "What a baby dragon says when it stopped flying past the bushes and landed hard (a little bump, never hurt); one is picked at random.",
     "story.flightDone": "Text in the middle at the end of the flying lessons; {n} is how many baby dragons flew, {m} how many tried. The plural form follows {n}. Keep the line break.",
     "story.lullabyStart": "Opening line of the lullaby: the baby dragons circle and cannot sleep; the child copies the lullaby line by line, each line ends with a period.",
     "story.lullabyDone": "Line at the end of the lullaby: all the baby dragons sleep by the fire; one is picked at random.",

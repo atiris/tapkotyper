@@ -750,6 +750,11 @@
       "Crunchy!",
       "Bushes!"
     ],
+    "flightHard": [
+      "Ouch! That was a hard landing.",
+      "Bump! A bit of a hard landing.",
+      "Oof, hard landing!"
+    ],
     "flightDone": {
       "one": "{n} of {m} baby dragons\nlearned to fly.",
       "few": "{n} of {m} baby dragons\nlearned to fly.",

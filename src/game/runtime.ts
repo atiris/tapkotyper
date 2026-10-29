@@ -1534,7 +1534,7 @@ export class LevelRuntime {
       return;
     }
     const stats = { accuracy, chars, errors, cpm, seconds };
-    const result = noStars ? completeStay(p, stats, typedShare) : completeLevel(p, this.def, stats, typedShare);
+    const result = noStars ? completeStay(p, stats, typedShare) : completeLevel(p, this.def, stats, typedShare, this.mode.starCap());
     if (this.style !== 'copy') result.byStyle = { style: this.style, clean, total: resolved };
     saveProfile();
     if (!this.mode.lost) {

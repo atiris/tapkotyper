@@ -29,8 +29,8 @@ a panel or the top bubble.
 ## 1. Pictures (Gemini, prompts already in `assets-src/PROMPTS.md` section 4, Dragons)
 - [~] Pictures. Done (the owner's pictures, 2026-10-29): `obj-flame-1..4` (four sizes of one look),
       `obj-flame-out`, `obj-torch` (unlit), `obj-firepit`; generated: `obj-bush-1`, `obj-bush-2`.
-      Open: `obj-bush-3`, `obj-bush-4` after the owner looks at bushes 1-2 (he asked to see them
-      first). No `obj-firepit-burning-*`: the owner chose the pit with the four flames flickering
+      `obj-bush-3`, `obj-bush-4` in bush 1's style (one with a flower). The owner's new mid and near
+      bands (eggshells gone), joined by Gemini, moved down to 55 % and 27 % from the bottom. No `obj-firepit-burning-*`: the owner chose the pit with the four flames flickering
       in code in front of it, sparks and smoke in code.
 - [x] Until a picture exists the mode draws a code fallback (as `glovesFallback`), so the code steps
       do not wait for the art.
@@ -169,3 +169,9 @@ and the browser play-through (step 8; levels 1 and 2 checked so far). Decisions 
   the pit's inside, irregular flicker, rising sparks, smoke when it goes out); the pit stands
   right of the torch, which tips over its grip in an arc (`Catcher.tilt`, `CatcherLook.grip`) to
   hand the flame to the fire; the torch picture is unlit and the first caught flame lights it.
+- The owner's play of level 3 (2026-10-29): it was too easy (a 5 s pause still left most of the
+  lift, three stars from accuracy alone). Now full lift needs 80 % of the rhythm goal, a pause
+  over 1.2 s takes the lift away within 2 s, a stop past the bushes is a hard landing, and the
+  stars are capped by the flyers (`Mode.starCap`, `completeLevel`'s `cap`). The pit stands at
+  0.9 vw there, the dragons sit left of it at different heights; the flight uses the round
+  bushes (1, 3, 4), the overgrown path all four.

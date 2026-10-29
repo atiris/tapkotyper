@@ -205,13 +205,19 @@ as they are. The world descriptions below marked *not built yet* are the design 
    shows the spell again. End: the path is open and the dragons peek out at its end. Its map dot
    is the copy envelope.
    3 flying lessons (a stream with rhythm): a dragon (the colours take turns) waits right of
-   Tapko, two or three bushes stand together in the middle. Words come one at a time in a
-   bubble high in the middle. The first typed word starts the flight, a slow arc to the right
-   (about 22 seconds to the pit) whose height follows the rhythm, full from 60 % of the rhythm
-   goal; the dragon flaps while it rises and glides while it sinks. Too low over the bushes it
-   lands in them, giggles ("Júj, to šteklí!"), climbs out and walks to the pit; high enough, it
-   glides on and lands by the pit with a hop. Words typed while it walks still count; the next
-   dragon starts once it is there. End: how many of the dragons learned to fly.
+   Tapko, two or three round leafy bushes stand together in the middle, the burning pit stands
+   near the right edge (about 0.9 of the stage) and the dragons sit only left of it, each a
+   little further left and higher, overlapping. Words come one at a time in a bubble high in
+   the middle. The first typed word starts the flight, a slow arc to its seat (about 22 seconds)
+   whose height follows the rhythm, full from 80 % of the rhythm goal; a pause in typing takes
+   the lift away (from 1.2 seconds on, all of it in 2 more). The dragon leans nose up and flaps
+   while it rises, leans nose down and glides while it sinks, and rocks gently. Too low over the
+   bushes it lands in them, giggles ("Júj, to šteklí!"), climbs out and walks to its seat; past
+   the bushes with the typing stopped it drops, lands hard ("Au! To bolo tvrdé pristátie.") and
+   walks on (it still flew); high enough, it glides on and lands at its seat with a hop. Words
+   typed while it walks still count; the next dragon starts once it is there. End: how many of
+   the dragons learned to fly; the stars count them too (all of them 3, at least half 2, else 1,
+   never more than the accuracy gives).
    4 the lullaby (copy twist): evening; the dragons circle slowly above the burning pit. A panel
    in the middle shows one line of the lullaby, a short sentence ending with a period (the
    period is new in this world). Copied without a slip, one dragon glides down and sleeps by the

@@ -52,7 +52,8 @@
   typed fewer than 5 keys (the paw did the rest) says so, gives one star, never
   lowers a better result and adds no time toward automatic growth. Esc on the end screen
   peeks under it first and a second Esc goes back to the map (see Peeking under the results).
-- **Stars**: 3 from 95 % accuracy, 2 from 85 %, else 1 (finishing always gives one). The end
+- **Stars**: 3 from 95 % accuracy, 2 from 85 %, else 1 (finishing always gives one). The
+  valley's flying lessons also count the dragons that flew: never more stars than they earn. The end
   screen also shows half stars, 1.5 from 80 % and 2.5 from 90 %, so a child sees a small gain
   before the next whole star; the map, the progress table and every count keep whole stars
   only, the shown stars rounded down.

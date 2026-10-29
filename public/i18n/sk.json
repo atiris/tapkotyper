@@ -750,6 +750,11 @@
       "Chrumkavé!",
       "Kríčky!"
     ],
+    "flightHard": [
+      "Au! To bolo tvrdé pristátie.",
+      "Bum! Trochu tvrdé pristátie.",
+      "Uf, tvrdé pristátie!"
+    ],
     "flightDone": {
       "one": "{n} z {m} dráčikov\nsa naučil lietať.",
       "few": "{n} z {m} dráčikov\nsa naučili lietať.",

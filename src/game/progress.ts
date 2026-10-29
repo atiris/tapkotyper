@@ -86,11 +86,11 @@ export function grow(p: Profile, seconds: number, accuracy: number, typedShare: 
  * Applies a finished level to the profile. Unlocks keys, worlds and accessories.
  * `typedShare`: targets the child typed / targets typed or let pass.
  */
-export function completeLevel(p: Profile, def: LevelDef, r: RunStats, typedShare: number): LevelResult {
+export function completeLevel(p: Profile, def: LevelDef, r: RunStats, typedShare: number, cap = 3): LevelResult {
   // Accuracy of a handful of keys says nothing; such a level earns one star and no growth time.
   const byTapko = def.kind !== 'practice' && r.chars + r.errors < MIN_OWN_KEYS;
-  const stars = byTapko ? 1 : starsFor(r.accuracy);
-  const shownStars = byTapko ? 1 : halfStarsFor(r.accuracy);
+  const stars = byTapko ? 1 : Math.min(cap, starsFor(r.accuracy));
+  const shownStars = byTapko ? 1 : Math.min(cap, halfStarsFor(r.accuracy));
   let worldDone: number | null = null;
   let badge: LevelResult['badge'] = null;
   if (def.kind !== 'practice') {

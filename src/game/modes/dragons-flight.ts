@@ -39,14 +39,31 @@ function drawBubble(g: G, word: string, x: number, y: number): void {
   g.restore();
 }
 
-/** Seconds a dragon flies from its start to the pit; with a 60 % rhythm its arc is full. */
+/** In the flying lessons the pit stands nearer the right edge; the dragons sit left of it, each a little further left and higher. */
+const FLIGHT_PIT_AT = 0.9;
+const SEAT_FIRST = 100;
+const SEAT_GAP = 62;
+const SEAT_LIFT = [0, 24, 8, 32, 14];
+/** Seconds a dragon flies from its start to its seat; with 80 % of the rhythm goal its arc is full. */
 const FLIGHT_S = 22;
-const LIFT_RATIO = 0.6;
+const LIFT_RATIO = 0.8;
 /** How fast the lift follows the rhythm, per second. */
 const LIFT_EASE = 0.9;
+/** A pause in typing takes the lift away: after this many seconds it starts to go, and in this many more it is gone. */
+const IDLE_GRACE = 1.2;
+const IDLE_FALL = 2;
+/** Past the bushes, a lift below this drops the dragon: it falls and lands hard. */
+const HARD_AIM = 0.3;
+const FALL_G = 900;
+/** The lean of a dragon climbing (nose up) and gliding (nose down), and its gentle rocking. */
+const TILT_UP = -0.18;
+const TILT_GLIDE = 0.3;
+const ROCK = 0.07;
 /** The arc's top at full lift, the bushes' height and how high a dragon's feet must be to pass over them. */
 const MAX_ALT = 240;
 const FLY_BUSH_H = 150;
+/** The round leafy bushes stand in the middle (the branch tangle is the overgrown path's). */
+const FLY_BUSHES = [BUSHES[0], BUSHES[2], BUSHES[3]];
 const BUSH_TOP = 140;
 const BUSH_HALF = 70;
 /** Seconds in the bushes: dropping in, shaking (the shout), climbing out; then walking speed. */
@@ -61,12 +78,16 @@ interface Flyer {
   x: number;
   /** Height of its feet above the ground. */
   alt: number;
-  /** wait: on the ground for the first word; fly: on its arc; bush: in the bushes; walk: on the ground; hop: to its place; home: there. */
-  state: 'wait' | 'fly' | 'bush' | 'walk' | 'hop' | 'home';
+  /** wait: on the ground for the first word; fly: on its arc; fall: dropping after the bushes; bush: in the bushes; walk: on the ground; hop: to its place; home: there. */
+  state: 'wait' | 'fly' | 'fall' | 'bush' | 'walk' | 'hop' | 'home';
   /** Share of the flight done. */
   p: number;
   lift: number;
   flap: boolean;
+  /** Its lean, easing toward climbing or gliding; its fall speed; the squash of a hard landing (1..0). */
+  tilt: number;
+  vy: number;
+  squash: number;
   /** Seconds in the state. */
   t: number;
   /** Where it was when the state began (bush, hop). */
@@ -85,7 +106,7 @@ interface Flyer {
  * fire, and the end counts how many flew.
  */
 export class FlightMode extends Mode {
-  readonly pictures = [...DRAGONS, ...BUSHES.slice(0, 3), ...PIT_PICTURES];
+  readonly pictures = [...DRAGONS, ...FLY_BUSHES, ...PIT_PICTURES];
   readonly world = 'dragons';
   readonly phraseWords = 1;
   private pit: Firepit;
@@ -102,23 +123,44 @@ export class FlightMode extends Mode {
 
   constructor(L: LevelRuntime) {
     super(L);
-    this.pit = new Firepit(L, L.vw * PIT_AT).burn(0.8);
+    this.pit = new Firepit(L, L.vw * FLIGHT_PIT_AT).burn(0.8);
   }
 
   startLine(): string {
     return pickLine('story.flightStart');
   }
 
+  /** The stars also count the flyers: all of them 3, at least half 2, else 1. */
+  starCap(): number {
+    if (!this.done || this.flown === this.done) return 3;
+    return this.flown * 2 >= this.done ? 2 : 1;
+  }
+
+  /** A dragon's seat left of the pit, and how much higher on the ground it sits. */
+  private seatX(i: number): number {
+    return this.pit.x - SEAT_FIRST - (i % SEAT_LIFT.length) * SEAT_GAP;
+  }
+
+  private seatLift(i: number): number {
+    return SEAT_LIFT[i % SEAT_LIFT.length];
+  }
+
+  /** The ground under a dragon: it rises toward its seat. */
+  private groundAt(d: Flyer): number {
+    const to = this.seatX(d.seat);
+    return this.seatLift(d.seat) * Math.max(0, Math.min(1, (d.x - START_X) / (to - START_X)));
+  }
+
   start(): void {
     const r = this.L.rng, n = r.int(2, 3);
-    for (let i = 0; i < n; i++) this.bushes.push({ share: n === 1 ? 0 : i / (n - 1), pic: BUSHES[i], flip: r.chance(0.5), h: FLY_BUSH_H * r.range(0.92, 1.05) });
+    for (let i = 0; i < n; i++) this.bushes.push({ share: n === 1 ? 0 : i / (n - 1), pic: FLY_BUSHES[i], flip: r.chance(0.5), h: FLY_BUSH_H * r.range(0.92, 1.05) });
     this.newDragon();
     this.ask();
   }
 
-  /** The bushes' middle and their spread between the start and the pit. */
+  /** The bushes' middle and their spread between the start and the nearest seat. */
   private bushX(share: number): number {
-    const mid = (START_X + this.pit.x) / 2, spread = (this.pit.x - START_X) * 0.12;
+    const end = this.seatX(0), mid = (START_X + end) / 2, spread = (end - START_X) * 0.12;
     return mid - spread + share * spread * 2;
   }
 
@@ -128,7 +170,7 @@ export class FlightMode extends Mode {
 
   private newDragon(): void {
     const i = this.done;
-    this.dragons.push({ pic: DRAGONS[i % DRAGONS.length], x: START_X, alt: 0, state: 'wait', p: 0, lift: 0, flap: false, t: 0, fromX: START_X, fromAlt: 0, flew: false, seat: i });
+    this.dragons.push({ pic: DRAGONS[i % DRAGONS.length], x: START_X, alt: 0, state: 'wait', p: 0, lift: 0, flap: false, tilt: 0, vy: 0, squash: 0, t: 0, fromX: START_X, fromAlt: 0, flew: false, seat: i });
     // The wait between flights is not rhythm.
     this.L.rhythm.ready(performance.now());
   }
@@ -152,14 +194,15 @@ export class FlightMode extends Mode {
     if (this.endT === null) this.ask();
   }
 
-  /** The lift the rhythm asks for: full from 60 % of the goal. */
+  /** The lift the rhythm asks for, full from 80 % of the goal; a pause in typing takes it away. */
   private liftAim(): number {
-    return Math.min(1, this.L.rhythm.ratio(this.L.difficulty) / LIFT_RATIO);
+    const idle = Math.max(0, Math.min(1, (this.L.idleFor - IDLE_GRACE) / IDLE_FALL));
+    return Math.min(1, this.L.rhythm.ratio(this.L.difficulty) / LIFT_RATIO) * (1 - idle);
   }
 
   update(dt: number): void {
     const L = this.L;
-    this.pit.x = L.vw * PIT_AT;
+    this.pit.x = L.vw * FLIGHT_PIT_AT;
     this.pit.update(dt);
     this.bushShake = Math.max(0, this.bushShake - dt);
     for (const d of this.dragons) this.move(d, dt);
@@ -169,17 +212,26 @@ export class FlightMode extends Mode {
 
   private move(d: Flyer, dt: number): void {
     d.t += dt;
+    d.squash = Math.max(0, d.squash - dt * 2.5);
     const L = this.L;
-    const arrive = this.pit.x - 70;
+    const arrive = this.seatX(d.seat);
+    const right = this.bushX(1) + BUSH_HALF;
     if (d.state === 'fly') {
       d.p = Math.min(1, d.p + dt / FLIGHT_S);
       const aim = this.liftAim();
       d.flap = aim > d.lift + 0.01;
       d.lift += (aim - d.lift) * Math.min(1, dt * LIFT_EASE);
+      d.tilt += ((d.flap ? TILT_UP : TILT_GLIDE) - d.tilt) * Math.min(1, dt * 3);
       d.x = START_X + (arrive - START_X) * d.p;
-      d.alt = MAX_ALT * d.lift * Math.sin(Math.PI * d.p);
-      const left = this.bushX(0) - BUSH_HALF, right = this.bushX(1) + BUSH_HALF;
-      if (d.x >= left && d.x <= right && d.alt < BUSH_TOP) {
+      d.alt = this.groundAt(d) + MAX_ALT * d.lift * Math.sin(Math.PI * d.p);
+      const left = this.bushX(0) - BUSH_HALF;
+      // Over the bushes and the typing stopped: it drops and lands hard (it still flew over them).
+      if (d.x > right && aim < HARD_AIM && d.p < 0.95 && d.alt > this.groundAt(d) + 20) {
+        d.state = 'fall';
+        d.flew = true;
+        d.vy = 0;
+        d.flap = false;
+      } else if (d.x >= left && d.x <= right && d.alt < BUSH_TOP) {
         d.state = 'bush';
         d.t = 0;
         d.fromX = d.x;
@@ -189,6 +241,21 @@ export class FlightMode extends Mode {
       } else if (d.p >= 1) {
         d.flew = true;
         this.hop(d);
+      }
+    } else if (d.state === 'fall') {
+      d.x = Math.min(arrive, d.x + ((arrive - START_X) / FLIGHT_S) * 1.4 * dt);
+      d.vy += FALL_G * dt;
+      d.alt -= d.vy * dt;
+      d.tilt += (0.5 - d.tilt) * Math.min(1, dt * 4);
+      const ground = this.groundAt(d);
+      if (d.alt <= ground) {
+        d.alt = ground;
+        d.state = 'walk';
+        d.t = 0;
+        d.squash = 1;
+        L.sfx('thud');
+        L.shout(pickLine('story.flightHard'), d.x, GROUND - d.alt - DRAGON_H - 30);
+        L.particles.emit(d.x, GROUND - d.alt, 10, 'puff', ['#d8cbb0', '#c9b896', '#efe6d2'], 90, 9, 0.9);
       }
     } else if (d.state === 'bush') {
       if (d.t < DROP) {
@@ -209,15 +276,22 @@ export class FlightMode extends Mode {
         d.alt = 0;
       }
     } else if (d.state === 'walk') {
+      // After a hard landing it shakes it off a moment before it walks.
+      if (d.squash > 0) return;
+      d.tilt = 0;
       d.x = Math.min(arrive, d.x + WALK * dt);
-      d.alt = L.reduceMotion ? 0 : Math.abs(Math.sin(d.t * 9)) * 6;
+      d.alt = this.groundAt(d) + (L.reduceMotion ? 0 : Math.abs(Math.sin(d.t * 9)) * 6);
       if (d.x >= arrive) this.hop(d);
     } else if (d.state === 'hop') {
-      const k = Math.min(1, d.t / HOP), to = spot(this.pit.x, d.seat, L.vw);
+      const k = Math.min(1, d.t / HOP), to = this.seatX(d.seat);
       d.x = d.fromX + (to - d.fromX) * ease.inOutQuad(k);
-      d.alt = d.fromAlt * (1 - k) + Math.sin(k * Math.PI) * 40;
+      d.alt = d.fromAlt + (this.seatLift(d.seat) - d.fromAlt) * k + Math.sin(k * Math.PI) * 30;
+      d.tilt *= 1 - k;
       if (k >= 1) this.home(d);
-    } else if (d.state === 'home') d.x = spot(this.pit.x, d.seat, L.vw);
+    } else if (d.state === 'home') {
+      d.x = this.seatX(d.seat);
+      d.alt = this.seatLift(d.seat);
+    }
   }
 
   /** It landed by the pit with a hop (or walked there): a hop to its place. */
@@ -232,7 +306,7 @@ export class FlightMode extends Mode {
   private home(d: Flyer): void {
     const L = this.L;
     d.state = 'home';
-    d.alt = 0;
+    d.alt = this.seatLift(d.seat);
     this.done++;
     if (d.flew) {
       this.flown++;
@@ -255,10 +329,12 @@ export class FlightMode extends Mode {
     const L = this.L;
     this.pit.draw(g);
     const shake = this.bushShake > 0 && !L.reduceMotion ? Math.sin(this.t * 40) * 0.05 : 0;
-    // Dragons behind the bushes are the ones in them.
+    // The seated ones further back first; dragons behind the bushes are the ones in them.
+    const seated = this.dragons.filter((d) => d.state === 'home').sort((a, b) => b.alt - a.alt);
+    for (const d of seated) this.drawFlyer(g, d);
     for (const d of this.dragons) if (d.state === 'bush') this.drawFlyer(g, d);
     this.bushes.forEach((b, i) => drawSprite(g, b.pic, this.bushX(b.share), GROUND + 8, b.h, { ay: 1, flip: b.flip, rot: shake }, bushFallback(i)));
-    for (const d of this.dragons) if (d.state !== 'bush') this.drawFlyer(g, d);
+    for (const d of this.dragons) if (d.state !== 'bush' && d.state !== 'home') this.drawFlyer(g, d);
     if (this.current) {
       drawBubble(g, this.current.word, L.vw / 2, VH * 0.15);
       L.label(g, this.current, L.vw / 2, VH * 0.15);
@@ -269,11 +345,13 @@ export class FlightMode extends Mode {
   }
 
   private drawFlyer(g: G, d: Flyer): void {
-    const flying = d.state === 'fly' || d.state === 'hop';
-    const flap = flying && d.flap && !this.L.reduceMotion ? Math.sin(this.t * 16) : 0;
-    const wobble = d.state === 'bush' && d.t > DROP && d.t < SHAKE && !this.L.reduceMotion ? Math.sin(this.t * 30) * 0.12 : 0;
-    // A gliding dragon leans down a little.
-    const rot = d.state === 'fly' && !d.flap ? 0.12 : wobble;
+    const motion = !this.L.reduceMotion;
+    const flying = d.state === 'fly' || d.state === 'hop' || d.state === 'fall';
+    // Wings beat while it climbs; a hard landing squashes it.
+    const flap = (flying && d.flap && motion ? Math.sin(this.t * 16) : 0) + (motion ? Math.sin(d.squash * Math.PI) * 3 : 0);
+    const wobble = d.state === 'bush' && d.t > DROP && d.t < SHAKE && motion ? Math.sin(this.t * 30) * 0.12 : 0;
+    // In the air it leans (nose up climbing, down gliding) and rocks gently.
+    const rot = flying ? d.tilt + (motion && d.state === 'fly' ? ROCK * Math.sin(this.t * 2.6 + d.seat) : 0) : wobble;
     drawDragon(g, d.pic, d.x, GROUND - d.alt, d.state === 'home' ? SIT_H : DRAGON_H, flap, 1, 1, rot);
   }
 

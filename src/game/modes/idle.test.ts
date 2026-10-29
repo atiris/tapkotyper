@@ -464,3 +464,40 @@ describe('the torch', () => {
     expect(Math.abs(torch.tilt)).toBeLessThan(0.05);
   });
 });
+
+describe('flying lessons', () => {
+  it('a dragon that flew over the bushes and lost its rhythm falls and lands hard; it still counts as flown', () => {
+    const L = fakeRuntime(3);
+    let shouts = 0;
+    Object.assign(L, { idleFor: 0, rhythm: { ema: 2, ratio: () => 1, ready: () => {} }, shout: () => shouts++ });
+    const mode = new FlightMode(L);
+    mode.start();
+    typeWord(L, mode);
+    const d = (mode as any).dragons[0];
+    const right = (mode as any).bushX(1) + 70;
+    for (let i = 0; i < 600 && d.x <= right + 10; i++) run(L, mode, 0.05);
+    expect(d.state).toBe('fly');
+    Object.assign(L, { idleFor: 99 });
+    run(L, mode, 0.1);
+    expect(d.state).toBe('fall');
+    run(L, mode, 20);
+    expect(d.state).toBe('home');
+    expect((mode as any).flown).toBe(1);
+    expect(shouts).toBe(1);
+  });
+
+  it('a pause in typing takes the lift away, and the stars count the flyers', () => {
+    const L = fakeRuntime(3);
+    Object.assign(L, { idleFor: 0, rhythm: { ema: 2, ratio: () => 1, ready: () => {} } });
+    const mode = new FlightMode(L);
+    expect((mode as any).liftAim()).toBe(1);
+    Object.assign(L, { idleFor: 2.2 });
+    expect((mode as any).liftAim()).toBeCloseTo(0.5);
+    Object.assign(mode as any, { done: 3, flown: 3 });
+    expect(mode.starCap()).toBe(3);
+    Object.assign(mode as any, { flown: 2 });
+    expect(mode.starCap()).toBe(2);
+    Object.assign(mode as any, { flown: 1 });
+    expect(mode.starCap()).toBe(1);
+  });
+});

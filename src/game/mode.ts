@@ -78,6 +78,10 @@ export abstract class Mode {
   /** Words typed so far / needed, for the progress bar. */
   abstract progress(): number;
   abstract get finished(): boolean;
+  /** The most stars the level gives whatever the accuracy (a level that also counts how it went). */
+  starCap(): number {
+    return 3;
+  }
   /** The level ended lost (the parrot flew off): no celebration before the results. */
   get lost(): boolean {
     return false;

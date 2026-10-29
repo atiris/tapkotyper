@@ -162,7 +162,7 @@ export function bushFallback(kind: number) {
   };
 }
 
-/** A baby dragon at (x, y), its feet there: `flap` squeezes it as its wings beat, `wide` makes it only wider (a pulse), `face` -1 turns it to the left. */
+/** A baby dragon at (x, y), its feet there: `flap` squeezes it as its wings beat, `wide` changes only its width (a pulse), `face` -1 turns it to the left. */
 export function drawDragon(g: G, pic: string, x: number, y: number, h: number, flap = 0, face = 1, alpha = 1, rot = 0, wide = 0): void {
   drawSprite(g, pic, x, y, h, { ay: 1, flip: face < 0, sx: (1 + flap * 0.06) * (1 + wide), sy: 1 - flap * 0.06, alpha, rot }, blob(DRAGON_COLOR[pic] ?? '#8fd6b0'));
 }

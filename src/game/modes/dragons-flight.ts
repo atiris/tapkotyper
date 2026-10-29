@@ -647,10 +647,10 @@ const FOLLOW = [0.8, 3];
 /** How far a dragon sinks while the typing pauses, per second, and at most. */
 const SINK = 10;
 const SINK_MAX = 30;
-/** A flying dragon turns so its back is about level (it faces left); it sways gently round that and pulses a little wider and back. */
+/** A flying dragon turns so its back is about level (it faces left); it sways gently round that and pulses a very little narrower and back. */
 const FLY_ROT = -1.05;
 const SWAY = 0.06;
-const PULSE = 0.05;
+const PULSE = 0.025;
 /** The end: the fire goes out, the egg shows, the cheer, the level ends. */
 const FIRE_OUT = 2;
 const EGG_IN = 1.5;
@@ -957,13 +957,14 @@ export class TakeoffMode extends Mode {
       if (i < this.done) return;
       const air = d.state === 'fly' || d.state === 'gone' || (d.state === 'back' && d.alt > 0);
       const seated = d.state === 'sit' || d.state === 'ready';
-      // In the air it sways round its lean and pulses a little wider (no bobbing up and down); on the ground a slow small bob.
+      // In the air it sways round its lean and pulses a very little narrower (no bobbing up and down); on the ground a slow small bob.
       const sway = air && motion ? SWAY * Math.sin(this.t * 2.2) : 0;
-      const pulse = air && motion ? PULSE * Math.sin(this.t * 4.5) : 0;
+      const pulse = air && motion ? -PULSE * (0.5 + 0.5 * Math.sin(this.t * 4.5)) : 0;
       const bob = seated && motion ? Math.abs(Math.sin(this.t * 1.6 + i)) * 2 : 0;
       // A dragon that came later fades in.
       const alpha = seated && i >= FLOCK_START ? Math.min(1, d.t / 0.6) : 1;
-      drawDragon(g, d.pic, d.x, GROUND - d.alt - bob, seated ? SIT_H : DRAGON_H, 0, air ? -1 : 1, alpha, d.rot + sway, pulse);
+      // They all face the way they fly off, to the left.
+      drawDragon(g, d.pic, d.x, GROUND - d.alt - bob, seated ? SIT_H : DRAGON_H, 0, -1, alpha, d.rot + sway, pulse);
     });
     const d = this.flyer;
     if (this.endT !== null || !d || (d.state !== 'ready' && d.state !== 'fly' && d.state !== 'back') || !this.sets.length) return;

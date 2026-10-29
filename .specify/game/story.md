@@ -232,16 +232,16 @@ as they are. The world descriptions below marked *not built yet* are the design 
    puts one dragon to sleep: it glides down and sleeps by the fire with a small "z z", the
    sleepers at different heights (a higher one is further back); a line with a slip is written
    again from its start, the slips only count in the accuracy. End: all sleep by the fire.
-   5 the take-off (super level): morning; the dragons sit by the pit and one by one fly to the
-   left. A flight is sets of 2-3 short words in a row above the middle, 3 sets for the first
+   5 the take-off (super level): morning; the dragons sit by the pit facing left and one by one
+   fly to the left. A flight is sets of 2-3 short words in a row above the middle, 3 sets for the first
    dragon and 4 for the others. Each word has its time from the moment it is the one to type
    (the child's own pace, tighter than a stream's), shown by a round clock right of the row in
    the look of the HUD's round buttons: a green ring that empties round an hourglass and blinks
    in its last quarter. Every try starts with the dragon sitting by the pit: its first set has
    no clock (a slip only starts that word again) and the dragon does not turn; typed, it lifts
    off to about the middle of the stage and the clock runs from then on. The flying dragon turns
-   so its back is about level, sways gently round that and pulses a little wider (no bobbing up
-   and down), follows the typing smoothly, letter by letter, quicker with a better rhythm, and
+   so its back is about level, sways gently round that and pulses a very little narrower (no
+   bobbing up and down), follows the typing smoothly, letter by letter, quicker with a better rhythm, and
    sinks a little while the typing pauses. A set typed without a slip, every word in time, lifts the dragon a
    step up and on; a late word (it counts as a mistake) or a slip sends it gliding back to the pit ("Skúsime to znova!")
    and the flight starts again with new sets. After its third return a dragon's tries have one

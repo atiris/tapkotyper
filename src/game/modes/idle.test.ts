@@ -418,6 +418,7 @@ describe('the valley', () => {
     mode.start();
     run(L, mode, 1);
     for (let i = 0; i < 6; i++) {
+      liftOff(L, mode);
       const f = L.core.focus()!;
       L.core.type('x');
       mode.onWrong(f);
@@ -425,6 +426,7 @@ describe('the valley', () => {
       run(L, mode, 3);
     }
     expect((mode as any).dragons[0].returns).toBe(6);
+    liftOff(L, mode);
     const f = L.core.focus()!;
     L.core.type('x');
     mode.onWrong(f);
@@ -506,13 +508,38 @@ describe('flying lessons', () => {
   });
 });
 
+/** Types words until the take-off's dragon has lifted off. */
+function liftOff(L: LevelRuntime, mode: Mode): void {
+  for (let i = 0; i < 5 && (mode as any).flyer.state === 'ready'; i++) typeWord(L, mode);
+}
+
 describe('the take-off', () => {
+  it('the dragon sits and no clock runs until its first set is typed; a slip then only starts the word again', () => {
+    const L = fakeRuntime(3);
+    Object.assign(L, { errors: 0 });
+    const mode = new TakeoffMode(L);
+    mode.start();
+    run(L, mode, 10);
+    const d = (mode as any).dragons[0];
+    expect(d.state).toBe('ready');
+    expect(d.rot).toBe(0);
+    expect((L as any).errors).toBe(0);
+    const f = L.core.focus()!;
+    L.core.type('x');
+    mode.onWrong(f);
+    expect(L.core.focus()?.word).toBe(f.word);
+    expect(d.state).toBe('ready');
+    liftOff(L, mode);
+    expect(d.state).toBe('fly');
+  });
+
   it('a word not typed in time counts as a mistake and sends the dragon back', () => {
     const L = fakeRuntime(3);
     Object.assign(L, { errors: 0 });
     const mode = new TakeoffMode(L);
     mode.start();
     run(L, mode, 1);
+    liftOff(L, mode);
     expect(L.core.focus()).not.toBeNull();
     run(L, mode, 2);
     expect((L as any).errors).toBe(1);
@@ -525,6 +552,8 @@ describe('the take-off', () => {
     const mode = new TakeoffMode(L);
     mode.start();
     run(L, mode, 1);
+    liftOff(L, mode);
+    run(L, mode, 0.5);
     const d = (mode as any).dragons[0], x0 = d.x;
     L.core.type(L.core.focus()!.word[0]);
     run(L, mode, 0.2);

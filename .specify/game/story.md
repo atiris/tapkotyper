@@ -237,9 +237,12 @@ as they are. The world descriptions below marked *not built yet* are the design 
    dragon and 4 for the others. Each word has its time from the moment it is the one to type
    (the child's own pace, tighter than a stream's), shown by a round clock right of the row in
    the look of the HUD's round buttons: a green ring that empties round an hourglass and blinks
-   in its last quarter. The flying dragon turns so its back is about level and follows the
-   typing smoothly, letter by letter, quicker with a better rhythm, and sinks a little while the
-   typing pauses. A set typed without a slip, every word in time, lifts the dragon a
+   in its last quarter. Every try starts with the dragon sitting by the pit: its first set has
+   no clock (a slip only starts that word again) and the dragon does not turn; typed, it lifts
+   off to about the middle of the stage and the clock runs from then on. The flying dragon turns
+   so its back is about level, sways gently round that and pulses a little wider (no bobbing up
+   and down), follows the typing smoothly, letter by letter, quicker with a better rhythm, and
+   sinks a little while the typing pauses. A set typed without a slip, every word in time, lifts the dragon a
    step up and on; a late word (it counts as a mistake) or a slip sends it gliding back to the pit ("Skúsime to znova!")
    and the flight starts again with new sets. After its third return a dragon's tries have one
    set less and 1.25 times the time; after the sixth its sets have two words and a slip or a late

@@ -636,9 +636,9 @@ export function takeoffPlan(first: boolean, returns: number): { sets: number; wo
   return { sets: (first ? 3 : 4) - (safe ? 1 : 0), words: soft ? [2, 2] : [2, 3], time: safe ? SAFE_TIME : 1, soft };
 }
 
-/** The take-off: a flight's lowest and highest height, the row's height, and seconds of a return and the flight away. */
-const TAKE_LOW = 60;
-const TAKE_TOP = 300;
+/** The take-off: the height it lifts off to (about the middle of the stage) and the highest one, the row's height, and seconds of a return and the flight away. */
+const TAKE_LOW = 260;
+const TAKE_TOP = 330;
 const ROW_Y = VH * 0.16;
 const BACK = 1.4;
 const GONE = 2.2;
@@ -647,8 +647,10 @@ const FOLLOW = [0.8, 3];
 /** How far a dragon sinks while the typing pauses, per second, and at most. */
 const SINK = 10;
 const SINK_MAX = 30;
-/** A flying dragon turns so its back is about level (it faces left). */
+/** A flying dragon turns so its back is about level (it faces left); it sways gently round that and pulses a little wider and back. */
 const FLY_ROT = -1.05;
+const SWAY = 0.06;
+const PULSE = 0.05;
 /** The end: the fire goes out, the egg shows, the cheer, the level ends. */
 const FIRE_OUT = 2;
 const EGG_IN = 1.5;
@@ -663,8 +665,8 @@ const CLOCK_BLINK = 0.25;
 interface Sitter {
   pic: string;
   seat: number;
-  /** sit: by the pit; fly: on its way; back: gliding back to the pit; gone: flying off to the left. */
-  state: 'sit' | 'fly' | 'back' | 'gone';
+  /** sit: by the pit; ready: by the pit, its first set waits (no clock); fly: on its way; back: gliding back to the pit; gone: flying off to the left. */
+  state: 'sit' | 'ready' | 'fly' | 'back' | 'gone';
   t: number;
   x: number;
   alt: number;
@@ -778,7 +780,7 @@ export class TakeoffMode extends Mode {
     return this.dragons[this.done];
   }
 
-  /** The next dragon tries (again): new sets, and it lifts off. */
+  /** The next dragon tries (again): new sets; it sits until its first set is typed (no clock), then lifts off. */
   private flight(): void {
     const L = this.L, d = this.flyer!;
     const plan = takeoffPlan(this.done === 0, d.returns);
@@ -786,7 +788,7 @@ export class TakeoffMode extends Mode {
     this.timeK = plan.time;
     this.sets = Array.from({ length: plan.sets }, () => Array.from({ length: L.rng.int(plan.words[0], plan.words[1]) }, () => L.word(4, 1)));
     this.set = 0;
-    d.state = 'fly';
+    d.state = 'ready';
     d.t = 0;
     d.sink = 0;
     this.showSet();
@@ -804,11 +806,11 @@ export class TakeoffMode extends Mode {
     this.timeFull = this.timeLeft = this.L.travelTime(word) * WORD_PACE * this.timeK;
   }
 
-  /** How far along its way the dragon should be: the sets done and the letters typed of this one. */
+  /** How far along its way the dragon should be: the sets done after the take-off set and the letters typed of this one. */
   private way(): number {
     const n = this.sets[this.set]?.length ?? 1;
     const typed = this.current ? this.current.typed / this.current.word.length : 0;
-    return Math.min(1, (this.set + (this.at + typed) / n) / this.sets.length);
+    return Math.max(0, Math.min(1, (this.set - 1 + (this.at + typed) / n) / Math.max(1, this.sets.length - 1)));
   }
 
   onDone(tg: Target): void {
@@ -818,9 +820,13 @@ export class TakeoffMode extends Mode {
     this.current = null;
     L.sfx('pop');
     if (++this.at < this.sets[this.set].length) return this.ask();
-    // A clean set.
+    // A clean set; the first one lifts the dragon off.
     const d = this.flyer!;
     this.set++;
+    if (d.state === 'ready') {
+      d.state = 'fly';
+      d.t = 0;
+    }
     L.sfx('whoosh');
     L.particles.emit(d.x, GROUND - d.alt - DRAGON_H * 0.5, 8, 'sparkle', ['#fff6a8', '#ffd25a'], 110, 6);
     if (this.set < this.sets.length) this.showSet();
@@ -838,7 +844,8 @@ export class TakeoffMode extends Mode {
     L.core.release(this.current!, false);
     L.core.prune();
     this.current = null;
-    if (this.soft) {
+    // Still by the pit, or soft after many returns: only the word starts again.
+    if (this.soft || this.flyer!.state === 'ready') {
       this.current = L.core.add(word, {});
       this.timeLeft = this.timeFull;
       return;
@@ -906,7 +913,7 @@ export class TakeoffMode extends Mode {
   private move(d: Sitter, dt: number): void {
     d.t += dt;
     const L = this.L, home = spot(this.pit.x, d.seat, L.vw);
-    if (d.state === 'sit') {
+    if (d.state === 'sit' || d.state === 'ready') {
       d.x = home;
       d.alt = 0;
       d.rot = 0;
@@ -949,18 +956,20 @@ export class TakeoffMode extends Mode {
     this.dragons.forEach((d, i) => {
       if (i < this.done) return;
       const air = d.state === 'fly' || d.state === 'gone' || (d.state === 'back' && d.alt > 0);
-      // Calm wing beats in the air, a slow small bob on the ground.
-      const flap = air && motion ? Math.sin(this.t * 12) * 0.6 : 0;
-      const bob = d.state === 'sit' && motion ? Math.abs(Math.sin(this.t * 1.6 + i)) * 2 : 0;
+      const seated = d.state === 'sit' || d.state === 'ready';
+      // In the air it sways round its lean and pulses a little wider (no bobbing up and down); on the ground a slow small bob.
+      const sway = air && motion ? SWAY * Math.sin(this.t * 2.2) : 0;
+      const pulse = air && motion ? PULSE * Math.sin(this.t * 4.5) : 0;
+      const bob = seated && motion ? Math.abs(Math.sin(this.t * 1.6 + i)) * 2 : 0;
       // A dragon that came later fades in.
-      const alpha = d.state === 'sit' && i >= FLOCK_START ? Math.min(1, d.t / 0.6) : 1;
-      drawDragon(g, d.pic, d.x, GROUND - d.alt - bob, d.state === 'sit' ? SIT_H : DRAGON_H, flap, air ? -1 : 1, alpha, d.rot);
+      const alpha = seated && i >= FLOCK_START ? Math.min(1, d.t / 0.6) : 1;
+      drawDragon(g, d.pic, d.x, GROUND - d.alt - bob, seated ? SIT_H : DRAGON_H, 0, air ? -1 : 1, alpha, d.rot + sway, pulse);
     });
     const d = this.flyer;
-    if (this.endT !== null || !d || (d.state !== 'fly' && d.state !== 'back') || !this.sets.length) return;
+    if (this.endT !== null || !d || (d.state !== 'ready' && d.state !== 'fly' && d.state !== 'back') || !this.sets.length) return;
     const row = this.sets[this.set] ?? [];
     const w = drawRow(g, L, row.map((word, i) => ({ word, slip: this.slips[i] ?? -1 })), this.at, this.current, L.vw / 2, ROW_Y, L.vw - 2 * (TAPKO_X + 110), ROW_INK);
-    if (this.current && !L.noPressure) drawClock(g, L.vw / 2 + w / 2 + CLOCK_R + 26, ROW_Y, this.timeLeft / this.timeFull, this.t, motion);
+    if (this.current && d.state === 'fly' && !L.noPressure) drawClock(g, L.vw / 2 + w / 2 + CLOCK_R + 26, ROW_Y, this.timeLeft / this.timeFull, this.t, motion);
   }
 
   /** The egg the dragons left behind the burnt-out pit, with a soft glow. */

@@ -534,6 +534,19 @@ BG is `magenta color (#FF00FF)` unless the table says `green`, then use `green c
 | `obj-dragon-baby-2.jpg` | a chubby baby dragon, sky blue, tiny wings, sitting, big eyes, happy | magenta |
 | `obj-dragon-baby-3.jpg` | a chubby baby dragon, sunny yellow, tiny wings, sitting, big eyes, happy | magenta |
 | `obj-rock-falling.jpg` | a small round space rock falling with a soft light trail behind it, sleepy face, front view | magenta |
+| `obj-flame-1.jpg` | (2026-10-29, the valley's level 1, [proposal](../.research/game/valley.md)) ONE small free-floating flame flying to the right, a round teardrop with one soft tip curling back, warm orange (#F59A3C) with a yellow core (#FFD86B) and a pale cream heart; no face, no wood, no ground, no sparks around it | magenta |
+| `obj-flame-2.jpg` | ONE small free-floating flame, taller and slimmer, with two tips side by side, the left one shorter, red-orange (#EE7A3A) with a golden core (#FFC94D); as `obj-flame-1` otherwise | green |
+| `obj-flame-3.jpg` | ONE small free-floating flame, short and round like a plump drop, with three little wavy tips, golden yellow (#FFC94D) with a light cream core and a thin orange rim (#F59A3C); as `obj-flame-1` otherwise | magenta |
+| `obj-flame-out.jpg` | **attach `obj-flame-1.jpg`**: "redraw the attached flame in exactly the same style, size and position, but gone out: only a thin soft grey curl of smoke (#B8B0A8) in the flame's shape, a tiny dull orange ember dot at its foot; no fire, no glow" | magenta |
+| `obj-torch.jpg` | (tall portrait 1 : 3) a wooden torch held upright: a straight round handle of honey wood (#C99A62) with two carved rings, the top wrapped in light brown cloth (#B98A5A) bound with a cord, a small calm orange flame on top; no hand, no face | green |
+| `obj-firepit.jpg` | (wide 2 : 1) a round fire pit seen slightly from above: a ring of smooth grey stones (#A9A39A) around a heap of dark burnt logs and grey ash with two or three faint dull orange embers; no flame, no smoke, no ground around the stones | magenta |
+| `obj-firepit-burning-1.jpg` | **attach `obj-firepit.jpg`**: "redraw the attached fire pit in exactly the same style, size, position and stones, but burning: the logs glow orange and a cosy campfire flame rises from them, orange (#F59A3C) with a yellow core (#FFD86B), its tips leaning a little to the left; no sparks outside the flame, no smoke, no ground" | magenta |
+| `obj-firepit-burning-2.jpg` | as `-1`, the flame's tips leaning a little to the right and one tip taller | magenta |
+| `obj-firepit-burning-3.jpg` | as `-1`, the flame a bit lower and wider with three even tips | magenta |
+| `obj-bush-1.jpg` | (wide 3 : 2, the valley's overgrown path, stands on the ground on its own) a low round thick bush of small dark-green leaves (#4F8A4A) with a few tangled brown twigs sticking out; no face, no flowers, no ground | magenta |
+| `obj-bush-2.jpg` | a tangle of bare curved brown branches (#7A5434) lying across, with a few small green leaves and one curling tendril; no face, no ground | green |
+| `obj-bush-3.jpg` | (tall portrait 2 : 3) a tall prickly bramble bush with arching stems, soft green leaves and a few small dark berries; no face, no ground | magenta |
+| `obj-bush-4.jpg` | a fallen leafy branch with a fork, a patch of fern growing over its end; no face, no ground | magenta |
 | **Egg journey** | | |
 | `obj-egg.jpg` | a big oval dragon egg, cream with turquoise spots, front view | magenta |
 | `obj-egg-cracking.jpg` | the same dragon egg with a zigzag crack and a tiny light glowing from inside | magenta |

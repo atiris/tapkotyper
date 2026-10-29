@@ -42,6 +42,9 @@ Notes from real Gemini runs; add new ones here.
   that should have none (a stone of the fire pit). Say "NO face, no eyes" for every thing.
 - A word for a part is taken literally: "a pale cream heart" (the flame's core) drew a heart
   shape. Name the shape instead ("a soft pale cream teardrop core").
+- A near band the owner drew as one tall picture kept a soft pink halo on its grass tips that no
+  keying cleaned; the sheet of low strips (near prompt) comes with crisp edges. A seam repaint of
+  such a strip came back tinted purple: crossfading the strip's own calm ends is safer.
 - Pictures of one set (the four flames) come out alike only from one chat, or with the first
   one attached; separate chats drift in shape and color.
 - A vague technical object ("a round gate with three panels") turns into a character with a
@@ -467,7 +470,7 @@ flat storybook style and no longer apply.
 | `bg-planet-near.jpg` | (the owner's picture, 2026-10-28) a sandy path with pebbles, small crystals and mushrooms along its upper edge, calm grass below | full | done 2026-10-28 (seam by Gemini, tint cleaned, moved down 240 px: the path's middle at 89 % of the stage, where Tapko walks) |
 | `bg-dragons-far.jpg` | a peaceful dragon valley at sunset, warm orange and pink colours in the sky, the sun hidden behind the mountains, soft rounded mountains and a waterfall | full | done 2026-10-23 |
 | `bg-dragons-mid.jpg` | (the owner's picture, redrawn 2026-10-29) grey rocks with moss, a cave with a glowing crystal, a tree with orange blossoms, a big fly agaric on a grassy hill, then a wide calm meadow | full | done 2026-10-29 (seam by Gemini, moved down 224 px: its top at 55 % from the bottom) |
-| `bg-dragons-near.jpg` | (the owner's picture with the owner's own seam, 2026-10-29) green grass tufts, pebbles, flowers, a fern, a small fly agaric and a blue and red crystal, then calm grass | full | done 2026-10-29 (the usual keying only: a firmer cleanup ate the grass tips; moved down 405 px: its top at 27 % from the bottom) |
+| `bg-dragons-near.jpg` | (generated 2026-10-29 with the near prompt above, the owner's picture attached for style; PLANTS: fresh green grass with grass tufts, small round brown pebbles, small orange and yellow flowers, a fern, one small red fly agaric, one light blue and red crystal cluster; "no soft or blurry edge, no shadow on the magenta", "no pink, purple or violet") | 27 % | done 2026-10-29 (sheet of three strips, the middle one; Gemini's seam repaint tinted the grass purple twice, so the strip's two calm grass ends are crossfaded over 120 px instead; scaled up 1.54 so its top is at 27 % from the bottom: the tile is 1920 x 697) |
 | `bg-egg-far.jpg` | a bright morning valley with a long gentle grassy slope going down from left to right, a few trees and a blue river far away | full | done 2026-10-23 |
 | `bg-egg-mid.jpg` | a bush with yellow flowers, a leaning tree, a mossy boulder, a haystack, a pine, a bush with pink flowers, a signpost with empty boards and a rocky outcrop with ferns | 50 % | done 2026-10-23 |
 | `bg-egg-near.jpg` | only plants and small things: grass, yellow flowers, a pink wild rose, foxtail, a fern, a broken spotted eggshell, daisies, a mushroom and a thistle; no big rocks | 20 % | done 2026-10-23 |

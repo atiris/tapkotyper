@@ -29,13 +29,19 @@ export function copyTarget(index: number, sentence: boolean): { words: number; m
   return index >= 4 && sentence ? { words: 5, min: 3 } : { words: 3, min: 2 };
 }
 
-/** A small text centred at (x, y). */
-function text(g: G, s: string, x: number, y: number, size: number, weight: number, ink: string, alpha = 1): void {
+/** A small text centred at (x, y); with `rim` a white rim keeps it readable on any background. */
+function text(g: G, s: string, x: number, y: number, size: number, weight: number, ink: string, alpha = 1, rim = false): void {
   g.save();
   g.globalAlpha = alpha;
   g.font = `${weight} ${size}px ${fontFamily()}`;
   g.textAlign = 'center';
   g.textBaseline = 'middle';
+  if (rim) {
+    g.lineJoin = 'round';
+    g.lineWidth = size / 4;
+    g.strokeStyle = 'rgba(255,253,246,0.9)';
+    g.strokeText(s, x, y);
+  }
   g.fillStyle = ink;
   g.fillText(s, x, y);
   g.restore();
@@ -140,7 +146,7 @@ export class CopyLoopMode extends Mode {
       const grow = this.L.reduceMotion ? 1 : 0.6 + 0.4 * ease.outBack(Math.min(1, this.age / GROW));
       this.L.label(g, this.current, cx, PANEL_Y, SIZE * grow);
     }
-    text(g, t('story.copyLoopCount', { n: this.typedWords }), cx, PANEL_Y + h / 2 + 24, 22, 600, '#fffdf6');
+    text(g, t('story.copyLoopCount', { n: this.typedWords }), cx, PANEL_Y + h / 2 + 24, 22, 700, INK, 1, true);
     const a = Math.min(1, (this.endT ?? 0) / 0.4);
     end.forEach((l, i) => text(g, l, cx, PANEL_Y + (i - (end.length - 1) / 2) * 48, 40, 700, INK, a));
   }

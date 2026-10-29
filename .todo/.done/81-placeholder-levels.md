@@ -83,14 +83,14 @@ migration or data version, old results simply stay under their ids.
 - [x] Tests: `levels.test.ts` (kinds of worlds 4-15, activity, minimum), `idle.test.ts` (the new
       mode), a unit test that the target kind follows the level index and the known keys, e2e that
       named the old kinds. tsc, vitest, build.
-- [ ] Browser play-through (`?fast`, tester profile `.e2e/tester-profile.json`, `tapkoType`): the
+- [x] Browser play-through (`?fast`, tester profile `.e2e/tester-profile.json`, `tapkoType`): the
       get-ready card of a placeholder level, level 1 and 5 of Údolie, one robot-story and one
       fairy-story level to the end, a slip, the next level unlocked; look at a narrow and a wide
       screen in each of the three worlds that every placeholder looks clean (panel, sign, Tapko,
       bands).
 
 ## State
-- Implemented: steps 1-4 except the browser play-through. `copyloop` kind in `levels.ts`
+- Implemented: all steps. `copyloop` kind in `levels.ts`
   (worlds 4-15 built by one `flatMap`, counts 12/14/16/18/14), `modes/copy-loop.ts`, old modes,
   `gate.ts`, their i18n lines and translator notes deleted.
 - Decisions taken while implementing:
@@ -108,3 +108,17 @@ migration or data version, old results simply stay under their ids.
     `help.games.*` lines and `ui-act-*` pictures), the `beat`/`click` sounds, Bolt's `wet` mood,
     the `wave.*` texts and `gate.ts`. Styles `dictation`/`memory`/`mixed` stay as decided (own
     practice uses the first two; `mixed` waits for the music tree).
+  - The counter under the panel is dark ink with a white rim: white text was hard to read on
+    the junkyard's light sand (seen in the play-through).
+
+## Done - 2026-10-29
+Shipped: every level of worlds 4-15 plays the cyclic copy (`modes/copy-loop.ts`) with the
+world's bands, a "Pripravuje sa" sign, a panel in the world's accent, word/phrase/sentence
+targets by level, a word counter and an end line; the get-ready card says the level is being
+made. The twelve old modes, `gate.ts` and everything only they used are gone; rescue missions
+play only the built kinds; specs, translator notes and tests (unit, e2e) follow. Played in the
+browser: Údolie 1 (with a slip) and 5 (a five-word sentence, end line, world badge), Šrotisko 1
+at 1024x600 with Bolt, Záhrada 1 at 1920 and 1024 wide with Melody; each unlocked its next level,
+no console errors.
+Left out: Údolie at a narrow and Šrotisko at a wide screen were not looked at separately (the
+same layout code was seen at both sizes in the other worlds).

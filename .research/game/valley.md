@@ -68,10 +68,11 @@ only follows the child's typing.
 - Tapko comes to the dragons. To reach the crystal meadow they must fly, so they learn now:
   one by one a baby starts on the left, a few branches stand in the middle, and it should land
   on the right, by the fire.
-- While a dragon flies its words come one after another; typed **in a steady enough pace** they
-  keep it rising on a very slow, wide arc over the branches. The pace is measured against the
-  child's own speed, like the rocket's speedometer, so a slow typist can fly too.
-- When the pace drops too low, the dragon does not make it over: it lands in the branches and
+- While a dragon flies its words come one after another above it; typed **in a steady enough
+  rhythm** they keep it rising on a very slow, wide arc over the branches (see Rhythm below).
+  The dragon flaps its wings while the rhythm holds and glides lower when it drops, so the
+  child sees in time that it needs to keep typing.
+- When the rhythm is too low as the dragon reaches the branches, it does not make it over: it lands in the branches and
   shouts one of "Júj, to šteklí!", "Šteklivé!", "Chrumkavé!", "Kríčky!", climbs out and walks
   on along the cleared path to the fire.
 - Every dragon reaches the fire either way; the end counts **how many learned to fly**.
@@ -90,13 +91,41 @@ only follows the child's typing.
 ### 5 Odlet (super-obstacle)
 - Morning. The babies wake up and want to fly to the crystal meadow. They start one by one
   from the **right, by the fire**, and fly to the **left**, where the meadow lies.
-- A flight is **3 or 4 sets** of short words. A set typed without a slip and in pace lifts the
-  dragon higher and further on its way. When a word is not typed in time (or a set has a
-  slip), the dragon glides back to the fire and tries again, until it flies off.
-- Every child must be able to finish: proposal - after the third return of the same dragon its
-  next try asks for one set less and a slower pace (see open questions).
+- A flight is **3 or 4 sets** of 2-3 short words. A set typed without a slip, each word in its
+  time, lifts the dragon one step higher and further on its way. When a word is not typed in
+  time, or a set has a slip, the dragon glides back to the fire and tries again, until it
+  flies off.
+- Every child can finish (owner, 2026-10-29): after the third return of the same dragon its
+  next try asks for one set less and gives each word more time (x 1.25).
 - When the last dragon is off, the **fire goes out**, and behind it, in the ashes, an **egg**
   shows up that the dragons left behind (the existing egg picture).
+
+### Rhythm: what it is and how it is measured
+Both flights reuse what the rocket already has (`src/game/rhythm.ts`, `src/game/pace.ts`).
+
+- **Rhythm** (`Rhythm.ema`): correct characters per second, smoothed. Every correct key adds
+  the time since the previous correct key with a weight of 15 %, so one fast or slow key moves
+  it a little, a few in a row a lot. A wrong key adds nothing, and the same key again ("ffff")
+  does not count, so it cannot be faked. After 2.5 s without a counted key it sinks by 0.25
+  per second, down to a floor. A level opens at most at 80 % of the goal.
+- **Goal** (`rhythmTarget`): 0.9 + 0.35 x difficulty characters per second; at the default
+  difficulty 3 about 2 per second (117 per minute). The difficulty rises step by step as the
+  child gets better, and "Slower" in the pause lowers it, so the goal follows the child; it
+  is not the child's own average. The rocket's speedometer shows rhythm / goal.
+- **Word time** (`perChar`): the child's own seconds per character, the average of the last 5
+  finished words (reading and finding the first key included), kept between 0.7 and 2.4 s;
+  the silent valve stretches it when two words in a row pass by. This is the one measured on
+  the child.
+
+How the flights use them:
+- **Level 3 (Lietanie)** uses the **rhythm**: the dragon's height on its arc follows rhythm /
+  goal. Over the branches it needs about 60 % of the goal (to be tuned in play). Short
+  thinking pauses do not hurt (2.5 s grace); about 5 s without typing at the default
+  difficulty is a landing in the branches. A slip only adds nothing, it does not drop it.
+- **Level 5 (Odlet)** uses the **word time**: each word of a set has the time its length x
+  the child's own seconds per character x a factor gives it; the dragon slowly sinks while
+  a word waits. A late word or a slip in the set sends it back. So the test is "clean and in
+  your own pace", fair for a slow typist, and it trains the accuracy the dragon story ends on.
 
 ### Reward scene (replaces today's "egg" scene)
 1. "Dráčiky odleteli na lúku kryštálov a oheň dohorel."
@@ -142,8 +171,6 @@ World 5 starts as now: "Ojoj! Vajíčko sa začína hýbať a kotúľa sa dolu k
   `obj-dragon-sleeping`, `obj-egg`, the `bg-dragons-*` bands.
 
 ## Open questions for the owner
-1. Level 5 safety: is "after the third return one set less and a slower pace" fine, or should
-   the dragon simply keep trying?
-2. How many dragons per level 3 and level 5 (three, one per picture, or five with repeated
+1. How many dragons per level 3 and level 5 (three, one per picture, or five with repeated
    colours)?
-3. Should the torch flame grow visibly in level 1, or only the fire pit?
+2. Should the torch flame grow visibly in level 1, or only the fire pit?

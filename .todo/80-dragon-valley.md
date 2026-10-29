@@ -183,3 +183,8 @@ and the browser play-through (step 8; levels 1 and 2 checked so far). Decisions 
   take-off: smooth follow by rhythm, back level in flight, a late word is an error (no valve),
   word time x 0.6, the round clock (`drawClock`). The owner tested with `?fast` (a sixth of the
   minimum), which is why only three dragons came.
+- 2026-10-29: the owner painted new valley bands on a cyan key (`assets-src/bg-work/dragons/v4`,
+  mid `d3ue`, near `bmks`). Their seams must come from Gemini (the owner rejected stitching them);
+  `near-seam/` and `mid-seam/seam-in.png` are prepared, Gemini's daily limit stopped the run. Next:
+  queue the seam prompt with a flat cyan sky, `merge`, move down (near: skyline at 27 % from the
+  bottom, mid: at 62 %), `npm run assets bg-dragons`, manifest widths stay 1376.

@@ -197,12 +197,19 @@ as they are. The world descriptions below marked *not built yet* are the design 
    with the level. A flame not typed flies past the torch, goes out (a curl of smoke with a puff)
    and fades; nothing else happens. End: the fire burns and the dragons will see it from the
    valley. When the fire goes out (the take-off's end) its flames go from the back and smoke rises.
+   The scene stands still; its middle band starts a fifth of the stage further left and its near
+   band a fifth further right, and a warm glow round the torch's top sets it off from them. A
+   caught flame shrinks on its way and is gone in the torch, which sparkles, as the fire does
+   when the torch hands it over.
    2 the overgrown path (a calm step, growing copy): bushes and branches (four kinds in random
    order, some mirrored) stand on the path one after another; the nearest has its spell, one
    word, above it, and the view glides as Tapko walks to it. Typed without a slip, the bush
    shrinks away. A slip turns the word red, it fades, two more bushes grow on the path ahead and
    the same spell shows again; bushes grow at most three times (6 words), after that a slip only
-   shows the spell again. End: the path is open and the dragons peek out at its end. Its map dot
+   shows the spell again. One big bush (several stacked) about two thirds along asks for two
+   words (or the longest of a few words before space is known). The first slip, and then one in
+   ten, says why ("Kúzlo sa nepodarilo.", "To bolo kúzlo na varenie čaju!"). End: the path is
+   open and Tapko walks on to its end, where the dragons wait for him and cheer. Its map dot
    is the copy envelope.
    3 flying lessons (a stream with rhythm): a dragon (the colours take turns) waits right of
    Tapko, two or three round leafy bushes stand together in the middle, the burning pit stands
@@ -217,18 +224,23 @@ as they are. The world descriptions below marked *not built yet* are the design 
    walks on (it still flew); high enough, it glides on and lands at its seat with a hop. Words
    typed while it walks still count; the next dragon starts once it is there. End: how many of
    the dragons learned to fly; the stars count them too (all of them 3, at least half 2, else 1,
-   never more than the accuracy gives).
+   never more than the accuracy gives). Its pit is smaller than the others and the seated
+   dragons are glad now and then (a little hop).
    4 the lullaby (copy twist): evening; the dragons circle slowly above the burning pit. A panel
-   in the middle shows one line of the lullaby, a short sentence ending with a period (the
-   period is new in this world). Copied without a slip, one dragon glides down and sleeps by the
-   fire with a small "z z"; a line with a slip is written again from its start, the slips only
-   count in the accuracy. End: all sleep by the fire.
+   in the middle shows one line of the lullaby, a sentence of four or five short words ending
+   with a period (the period is new in this world). A verse of two lines copied without a slip
+   puts one dragon to sleep: it glides down and sleeps by the fire with a small "z z", the
+   sleepers at different heights (a higher one is further back); a line with a slip is written
+   again from its start, the slips only count in the accuracy. End: all sleep by the fire.
    5 the take-off (super level): morning; the dragons sit by the pit and one by one fly to the
    left. A flight is sets of 2-3 short words in a row above the middle, 3 sets for the first
    dragon and 4 for the others. Each word has its time from the moment it is the one to type
-   (the child's own pace, a thin bar under the row shows it), and the dragon flaps and slowly
-   sinks while a word waits. A set typed without a slip, every word in time, lifts the dragon a
-   step up and on; a late word or a slip sends it gliding back to the pit ("Skúsime to znova!")
+   (the child's own pace, tighter than a stream's), shown by a round clock right of the row in
+   the look of the HUD's round buttons: a green ring that empties round an hourglass and blinks
+   in its last quarter. The flying dragon turns so its back is about level and follows the
+   typing smoothly, letter by letter, quicker with a better rhythm, and sinks a little while the
+   typing pauses. A set typed without a slip, every word in time, lifts the dragon a
+   step up and on; a late word (it counts as a mistake) or a slip sends it gliding back to the pit ("Skúsime to znova!")
    and the flight starts again with new sets. After its third return a dragon's tries have one
    set less and 1.25 times the time; after the sixth its sets have two words and a slip or a late
    word only starts that word again, so every child finishes. After its last set the dragon flies
@@ -363,6 +375,8 @@ story stays playable in any browser ([mechanics](mechanics.md)).
   The stony practice path was added to the owner's paths: no other path trains the keys the
   child still needs. The whole story of the first three worlds is in
   [the scenario](story-1-scenario.md).
+- Anything on the ground that stands higher on the screen is further back and is drawn behind
+  what stands lower (the sleeping dragons, the seated ones, the planet's swamp stones).
 - The valley was four times the rocket's game (space rocks falling on baby dragons, a shield
   bubble) and did not play the world rhythm. Nothing falls on anyone now: the targets are flames
   and bushes, and a dragon that does not make it giggles in the bushes and walks on. Each level

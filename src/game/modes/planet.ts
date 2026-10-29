@@ -314,7 +314,8 @@ abstract class SwampHero extends HeroMode {
   }
 
   protected drawStones(g: G): void {
-    for (const s of this.stones) {
+    // A higher stone is further back: it is drawn first.
+    for (const s of [...this.stones].sort((a, b) => a.y - b.y)) {
       const k = this.L.reduceMotion ? 1 : ease.outBack(Math.min(1, s.age / 0.35));
       const cracked = s.state === 'cracked';
       const sh = cracked ? Math.sin(s.crackT * 60) * 3 : 0;

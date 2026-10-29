@@ -1394,7 +1394,7 @@ export class LevelRuntime {
     if (this.paused && !this.stage.dirty) return;
     const g = this.stage.begin();
     const drift = this.mode.drift;
-    drawBackground(g, this.backdrop, this.stage.vw, this.mode.scroll, !this.reduceMotion, this.mode.midOnly, drift && { layer: drift.layer, offset: driftOffset(drift, this.elapsed, !this.reduceMotion) }, this.ground, this.def.rescue ? null : this.mode.nearEnd);
+    drawBackground(g, this.backdrop, this.stage.vw, this.mode.scroll, !this.reduceMotion, this.mode.midOnly, drift && { layer: drift.layer, offset: driftOffset(drift, this.elapsed, !this.reduceMotion) }, this.ground, this.def.rescue ? null : this.mode.nearEnd, this.mode.bandShift && { mid: this.mode.bandShift.mid * this.stage.vw, near: this.mode.bandShift.near * this.stage.vw });
     if (this.robot) this.drawBolt(g);
     if (this.fairy) this.drawMelody(g);
     this.labels = [];

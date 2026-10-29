@@ -2,6 +2,7 @@ import { pickLine } from '../../app/app';
 import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
 import { blob, drawSprite, fontFamily, type G } from '../../gfx/draw';
+import { SPACE } from '../../learning/lessons';
 import { Mode, TAPKO_FEET, TAPKO_H, TAPKO_X } from '../mode';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
@@ -18,13 +19,13 @@ export const FLAMES = ['obj-flame-1', 'obj-flame-2', 'obj-flame-3', 'obj-flame-4
 const FLAME_COLOR: Record<string, [string, string]> = {
   'obj-flame-1': ['#f2b632', '#ffe9a8'], 'obj-flame-2': ['#ffc94d', '#fff1c2'], 'obj-flame-3': ['#f59a3c', '#fff1c2'], 'obj-flame-4': ['#ee7a3a', '#fff1c2'],
 };
-/** The bushes and branches of the overgrown path. */
-export const BUSHES = ['obj-bush-1', 'obj-bush-2', 'obj-bush-3', 'obj-bush-4'];
+/** The round leafy bushes of the valley. */
+export const BUSHES = ['obj-bush-1', 'obj-bush-2', 'obj-bush-3'];
 export const PIT_PICTURES = ['obj-firepit', ...FLAMES];
 /** The ground the valley's things stand on: where Tapko's feet are. */
 export const GROUND = TAPKO_FEET + 6;
-/** The fire pit's height. */
-export const PIT_H = 96;
+/** The fire pit's height (the flight levels draw it smaller). */
+export const PIT_H = 88;
 const INK = '#3d3355';
 const END_TIME = 3;
 
@@ -226,7 +227,7 @@ export class Firepit {
   glow = 0;
   private embers: Ember[] = [];
   private t = 0;
-  constructor(private L: LevelRuntime, public x: number) {}
+  constructor(private L: LevelRuntime, public x: number, readonly h = PIT_H) {}
 
   /** Lit at once (a level that starts with the fire burning). */
   burn(glow: number): this {
@@ -237,7 +238,7 @@ export class Firepit {
 
   /** The top of its fire, where caught things go in. */
   get top(): number {
-    return GROUND - PIT_H * 0.55;
+    return GROUND - this.h * 0.55;
   }
 
   /** A burst of sparks: a flame handed to the fire. */
@@ -248,7 +249,7 @@ export class Firepit {
   private ember(smoke: boolean): void {
     const r = this.L.rng;
     this.embers.push({
-      x: this.x + r.range(-0.22, 0.22) * PIT_H * PIT_RATIO, y: GROUND - PIT_H * (smoke ? 0.7 : 0.9 + 0.4 * this.glow),
+      x: this.x + r.range(-0.22, 0.22) * this.h * PIT_RATIO, y: GROUND - this.h * (smoke ? 0.7 : 0.9 + 0.4 * this.glow),
       vx: r.range(-12, 12), vy: -r.range(smoke ? 25 : 50, smoke ? 45 : 110), t: 0, life: r.range(smoke ? 1.6 : 0.8, smoke ? 2.6 : 1.6),
       size: smoke ? r.range(9, 15) : r.range(1.6, 3.2), smoke,
     });
@@ -281,7 +282,7 @@ export class Firepit {
   draw(g: G): void {
     const heat = this.lit * this.glow;
     if (heat > 0) {
-      const cy = GROUND - PIT_H * 0.7, r = PIT_H * (1.2 + 1.6 * this.glow);
+      const cy = GROUND - this.h * 0.7, r = this.h * (1.2 + 1.6 * this.glow);
       g.save();
       const glow = g.createRadialGradient(this.x, cy, 4, this.x, cy, r);
       glow.addColorStop(0, `rgba(255,214,120,${0.6 * heat})`);
@@ -290,8 +291,8 @@ export class Firepit {
       g.fillRect(this.x - r, cy - r, r * 2, r * 2);
       g.restore();
     }
-    drawSprite(g, 'obj-firepit', this.x, GROUND, PIT_H, { ay: 0.9 }, pitFallback);
-    const w = PIT_H * PIT_RATIO, foot = GROUND - PIT_H * FIRE_FOOT, size = 0.8 + 0.35 * this.glow;
+    drawSprite(g, 'obj-firepit', this.x, GROUND, this.h, { ay: 0.9 }, pitFallback);
+    const w = this.h * PIT_RATIO, foot = GROUND - this.h * FIRE_FOOT, size = 0.8 + 0.35 * this.glow;
     const motion = !this.L.reduceMotion;
     FIRE.forEach((f, k) => {
       const a = this.shown(k);
@@ -301,7 +302,7 @@ export class Firepit {
       const up = motion ? 0.08 * Math.sin(this.t * 7.3 + ph) + 0.05 * Math.sin(this.t * 12.7 + ph * 2) + 0.03 * Math.sin(this.t * 3.1 + ph) : 0;
       const lean = motion ? 0.07 * Math.sin(this.t * 4.3 + ph * 1.3) + 0.03 * Math.sin(this.t * 10.9 + ph) : 0;
       const pic = FLAMES[f.pic];
-      drawSprite(g, pic, this.x + f.dx * w, foot + f.dy * PIT_H, PIT_H * f.h * size * (0.4 + 0.6 * a) * (1 + up), { ay: 0.96, rot: lean, sx: 1 - up * 0.5, alpha: a }, flameFallback(pic));
+      drawSprite(g, pic, this.x + f.dx * w, foot + f.dy * this.h, this.h * f.h * size * (0.4 + 0.6 * a) * (1 + up), { ay: 0.96, rot: lean, sx: 1 - up * 0.5, alpha: a }, flameFallback(pic));
     });
     for (const e of this.embers) {
       const k = e.t / e.life;
@@ -329,6 +330,8 @@ const TORCH: CatcherLook = { pic: 'obj-torch', h: 130, lean: 0, at: [0, -0.46], 
 const DIP_TILT = 1.5;
 const PIT_GAP = 95;
 const TORCH_FLAME = 34;
+/** A warm glow round the torch's top, so it stands out from the background: unlit and lit. */
+const TORCH_GLOW = [0.55, 0.85];
 /** Up and down of a flame's soft arcs; seconds the torch holds a caught flame before it tips, until it reaches the fire, and until it stands up again. */
 const ARC = 36;
 const HOLD = 0.3;
@@ -351,6 +354,8 @@ const LIGHT_UP = 3;
 export class FlamesMode extends ApproachMode {
   readonly pictures = [...PIT_PICTURES, 'obj-flame-out', 'obj-torch'];
   readonly world = 'dragons';
+  /** The scene stands still: its middle band a little left and its near band a little right of where they start. */
+  readonly bandShift = { mid: 0.2, near: -0.2 };
   private torch: Catcher;
   private pit: Firepit;
   private caught = 0;
@@ -375,9 +380,9 @@ export class FlamesMode extends ApproachMode {
     return TAPKO_X + TAPKO_H * 0.62;
   }
 
-  /** The torch rests just above the pit. */
+  /** The torch rests with its grip at Tapko's hand. */
   private torchRest(): number {
-    return GROUND - PIT_H - TORCH.h * 0.45;
+    return VH - TAPKO_H * 0.33 - TORCH.h * (TORCH.grip ?? 0);
   }
 
   makeMover(word: string): Mover {
@@ -521,6 +526,17 @@ export class FlamesMode extends ApproachMode {
   }
 
   renderFront(g: G): void {
+    if (this.L.started && this.L.toolAlpha > 0) {
+      const [gx, gy] = this.torch.catchPoint(), r = TORCH_FLAME * 2.6;
+      const a = TORCH_GLOW[this.torchLit < 0 ? 0 : 1] * this.L.toolAlpha;
+      g.save();
+      const glow = g.createRadialGradient(gx, gy - 6, 2, gx, gy - 6, r);
+      glow.addColorStop(0, `rgba(255,236,170,${a})`);
+      glow.addColorStop(1, 'rgba(255,200,110,0)');
+      g.fillStyle = glow;
+      g.fillRect(gx - r, gy - 6 - r, r * 2, r * 2);
+      g.restore();
+    }
     this.torch.draw(g);
     if (this.torchLit < 0 || !this.L.started || this.L.toolAlpha <= 0) return;
     const [x, y] = this.torch.catchPoint();
@@ -547,6 +563,13 @@ const WALK_IN = 0.35;
 const SLIP_INK = '#d9482b';
 /** The dragon story's place in the story order, for the growing-copy ceiling: (1 + 1) x 3 = 6 extra words. */
 const STORY_ORDER = 1;
+/** One big bush of several stacked ones stands this far along the path; its spell is two words (or the longest of a few words). */
+const BIG_AT = 0.6;
+const BIG_TRIES = 4;
+/** After the first slip, a slip says why now and then. */
+const SLIP_SAY = 0.1;
+/** Seconds of the walk to the dragons at the end. */
+const WALK_END = 2.4;
 
 interface Bush {
   /** Its place on the path (the screen shows it at x - scroll). */
@@ -557,6 +580,8 @@ interface Bush {
   born: number;
   /** Seconds it has been shrinking away; -1 while it stands. */
   gone: number;
+  /** Several bushes stacked on each other: a harder spell. */
+  big: boolean;
 }
 
 /**
@@ -576,9 +601,10 @@ export class ThicketMode extends Mode {
   private current: Target | null = null;
   /** A slipped spell fading red, with its seconds. */
   private slip: { word: string; t: number } | null = null;
-  private glide: { from: number; to: number; k: number } | null = null;
+  private glide: { from: number; to: number; k: number; dur: number } | null = null;
   /** Seconds until Tapko walks on after a cleared bush; -1 when not waiting. */
   private walkIn = -1;
+  private slips = 0;
   private endT: number | null = null;
 
   startLine(): string {
@@ -587,17 +613,26 @@ export class ThicketMode extends Mode {
 
   start(): void {
     this.plant(false);
-    this.ask(this.L.word());
+    this.ask(this.spellFor(this.bushes[0]));
   }
 
-  /** Bushes up to the level's count; the ones a slip or the minimum adds grow in. */
+  /** Bushes up to the level's count; the ones a slip or the minimum adds grow in. One of the first ones planned is big. */
   private plant(grow: boolean): void {
+    const big = Math.floor(this.L.def.count * BIG_AT);
     while (this.bushes.length < this.L.count) {
       const i = this.bushes.length, prev = this.bushes[i - 1]?.pic;
       const pic = this.L.rng.pick(BUSHES.filter((b) => b !== prev));
-      this.bushes.push({ x: STAND + i * BUSH_GAP, pic, flip: this.L.rng.chance(0.5), born: grow ? this.t : -1, gone: -1 });
+      this.bushes.push({ x: STAND + i * BUSH_GAP, pic, flip: this.L.rng.chance(0.5), born: grow ? this.t : -1, gone: -1, big: i === big });
       if (grow) this.L.particles.emit(STAND + i * BUSH_GAP - this.scroll, GROUND - 30, 6, 'leaf', ['#6f9a4a', '#9ccf7a'], 90, 7);
     }
+  }
+
+  /** A bush's spell: one word; the big bush's two words once space is known, else the longest of a few. */
+  private spellFor(b: Bush | undefined): string {
+    const L = this.L;
+    if (!b?.big) return L.word();
+    if (L.words.knows(SPACE)) return L.word(undefined, 2, 2);
+    return Array.from({ length: BIG_TRIES }, () => L.word()).reduce((a, w) => (w.length > a.length ? w : a));
   }
 
   private ask(word: string): void {
@@ -619,6 +654,8 @@ export class ThicketMode extends Mode {
   /** A slip: the spell fades red, two more bushes grow ahead while the ceiling allows, and the same spell comes again. */
   onWrong(tg: Target | null): void {
     if (!this.current || tg !== this.current) return;
+    // The first slip says why, later ones now and then.
+    if (this.slips++ === 0 || this.L.rng.chance(SLIP_SAY)) this.L.say(pickLine('story.thicketSlip'), 2);
     const more = slipWords(STORY_ORDER, this.added);
     this.added += more;
     this.L.count += more;
@@ -637,11 +674,11 @@ export class ThicketMode extends Mode {
     }
     if (this.glide) {
       const gl = this.glide;
-      gl.k = Math.min(1, gl.k + dt / GLIDE);
+      gl.k = Math.min(1, gl.k + dt / gl.dur);
       this.scroll = gl.from + (gl.to - gl.from) * ease.inOutQuad(gl.k);
       if (gl.k >= 1) {
         this.glide = null;
-        if (this.endT === null) this.ask(this.L.word());
+        if (this.endT === null) this.ask(this.spellFor(this.bushes[this.cleared]));
       }
     }
     if (this.endT !== null) {
@@ -651,12 +688,12 @@ export class ThicketMode extends Mode {
     if (this.walkIn < 0 || (this.walkIn -= dt) > 0) return;
     this.walkIn = -1;
     if (this.cleared < this.L.count) {
-      this.glide = { from: this.scroll, to: this.bushes[this.cleared].x - STAND, k: 0 };
+      this.glide = { from: this.scroll, to: this.bushes[this.cleared].x - STAND, k: 0, dur: GLIDE };
       return;
     }
-    // The path is open: the view glides to its end, where the dragons peek out.
+    // The path is open: Tapko walks on to its end, where the dragons wait for him and cheer.
     this.endT = 0;
-    this.glide = { from: this.scroll, to: this.endX() - this.L.vw * 0.6, k: 0 };
+    this.glide = { from: this.scroll, to: this.endX() - (TAPKO_X + 230), k: 0, dur: WALK_END };
     this.L.sfx('cheer');
     this.L.say(pickLine('story.thicketDone'), END_TIME);
   }
@@ -673,10 +710,17 @@ export class ThicketMode extends Mode {
       if (x < -BUSH_H * 2 || x > this.L.vw + BUSH_H * 2 || b.gone >= SHRINK) return;
       const grow = b.born < 0 || this.L.reduceMotion ? 1 : Math.max(0.05, ease.outBack(Math.min(1, (this.t - b.born) / GROW_IN)));
       const k = b.gone < 0 ? 0 : Math.min(1, b.gone / SHRINK);
-      drawSprite(g, b.pic, x, GROUND + 8, BUSH_H * grow * (1 - 0.7 * ease.inQuad(k)), { ay: 1, flip: b.flip, alpha: 1 - k }, bushFallback(i));
+      const h = BUSH_H * grow * (1 - 0.7 * ease.inQuad(k)), o = { ay: 1, flip: b.flip, alpha: 1 - k };
+      if (b.big) {
+        // Bushes stacked on each other: two at the sides, one on top, the main one in front.
+        for (const [dx, dy, sc, j] of [[-0.42, 0, 0.75, 1], [0.42, 0, 0.8, 2], [0.05, -0.55, 0.7, 1]] as const) {
+          drawSprite(g, BUSHES[(BUSHES.indexOf(b.pic) + j) % BUSHES.length], x + dx * h, GROUND + 8 + dy * h, h * sc, { ...o, flip: !b.flip }, bushFallback(i + j));
+        }
+      }
+      drawSprite(g, b.pic, x, GROUND + 8, h, o, bushFallback(i));
     });
     const b = this.bushes[this.cleared];
-    const y = GROUND + 8 - BUSH_H - 46;
+    const y = GROUND + 8 - BUSH_H * (b?.big ? 1.45 : 1) - 46;
     if (b && this.current) this.L.label(g, this.current, b.x - s, y);
     if (b && this.slip) {
       g.save();
@@ -689,11 +733,12 @@ export class ThicketMode extends Mode {
       g.restore();
     }
     if (this.endT === null) return;
-    // The dragons peek out at the path's end.
-    const k = ease.outBack(Math.min(1, Math.max(0, this.endT - 0.6) / 0.8));
-    DRAGONS.forEach((pic, i) => {
-      const x = this.endX() - s + (i - 1) * 110, hop = this.L.reduceMotion ? 0 : Math.abs(Math.sin(this.t * 3 + i)) * 6;
-      drawDragon(g, pic, x, GROUND + (1 - k) * 60 - hop, 100 - i * 8, 0, -1, Math.min(1, k));
+    // The dragons wait at the path's end and cheer as he comes: each hops its own way, the further back higher up.
+    const k = ease.outBack(Math.min(1, this.endT / 0.8));
+    [2, 0, 1].forEach((i) => {
+      const x = this.endX() - s + i * 95, up = [0, 18, 34][i];
+      const hop = this.L.reduceMotion ? 0 : Math.abs(Math.sin(this.t * 5 + i * 1.3)) * 22;
+      drawDragon(g, DRAGONS[i], x, GROUND - up + (1 - k) * 60 - hop, 104, 0, -1, Math.min(1, k));
     });
   }
 

@@ -738,6 +738,12 @@
     "thicketStart": [
       "The path to the dragons is overgrown. Each bush disappears when you type its **spell without a slip**. A slip makes two new branches grow."
     ],
+    "thicketSlip": [
+      "The spell did not work.",
+      "That was a spell for making tea!",
+      "A slip in the spell, try again.",
+      "Oops, the bush did not even move."
+    ],
     "thicketDone": [
       "The path is open! The baby dragons peek out at its end."
     ],

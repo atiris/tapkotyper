@@ -210,9 +210,9 @@ function nearEnd(g: G, img: HTMLImageElement, vw: number, offset: number, at: nu
  * `-swamp`), the far one stays; `end` is the near layer's x where the band ends in its end piece (the
  * swamp's bank), null where it goes on.
  */
-export function drawBackground(g: G, world: string, vw: number, scroll: number, motion = true, midOnly = false, drift: { layer: 'mid' | 'near'; offset: number } | null = null, ground = '', end: number | null = null): void {
+export function drawBackground(g: G, world: string, vw: number, scroll: number, motion = true, midOnly = false, drift: { layer: 'mid' | 'near'; offset: number } | null = null, ground = '', end: number | null = null, shift: { mid: number; near: number } | null = null): void {
   const still = midOnly || !motion;
-  const midDrift = drift?.layer === 'mid' ? drift.offset : 0, nearDrift = drift?.layer === 'near' ? drift.offset : 0;
+  const midDrift = (drift?.layer === 'mid' ? drift.offset : 0) + (shift?.mid ?? 0), nearDrift = (drift?.layer === 'near' ? drift.offset : 0) + (shift?.near ?? 0);
   const pal = PALETTES[world] ?? PALETTES.meadow;
   const far = sprite(`bg-${world}-far`);
   if (far) tiled(g, far, vw, still ? 0 : scroll * 0.1);

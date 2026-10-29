@@ -738,6 +738,12 @@
     "thicketStart": [
       "Cesta k dráčikom je zarastená. Každý krík zmizne, keď napíšeš jeho **kúzlo bez chyby**. Pri chybe vyrastú dva nové konáre."
     ],
+    "thicketSlip": [
+      "Kúzlo sa nepodarilo.",
+      "To bolo kúzlo na varenie čaju!",
+      "Chyba v kúzle, skús znova.",
+      "Ups, krík sa ani nepohol."
+    ],
     "thicketDone": [
       "Cesta je voľná! Na jej konci vykúkajú dráčiky."
     ],

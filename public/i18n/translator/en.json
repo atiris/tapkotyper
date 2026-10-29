@@ -799,6 +799,7 @@
     "story.flamesStart": "Opening line of the valley's first level: little flames fly to Tapko, a typed one is caught in his torch and lights the fire pit.",
     "story.flamesDone": "Line at the end of the flames level: the fire pit burns and the dragons will see it; one is picked at random.",
     "story.thicketStart": "Opening line of the overgrown path: each bush has a spell (a word) typed without a slip; a slip grows two more branches.",
+    "story.thicketSlip": "Short line when a spell on a bush has a slip (the first time, then now and then); playful, one is picked at random.",
     "story.thicketDone": "Line at the end of the overgrown path: it is open and the baby dragons peek out; one is picked at random.",
     "story.flightStart": "Opening line of the flying lessons: typing in a steady rhythm keeps a baby dragon flying over the bushes to the fire.",
     "story.flightBush": "What a baby dragon shouts when it lands in the bushes instead of flying over them (a giggle, never sad); one is picked at random.",

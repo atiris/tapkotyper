@@ -359,13 +359,17 @@ describe('the valley', () => {
     expect(flockAfter(5, 5, 30)).toBe(5);
   });
 
-  it('the fifth dragon asleep ends the lullaby even below the minimum', () => {
+  it('two lines put a dragon to sleep; the fifth asleep ends the lullaby even below the minimum', () => {
     const L = fakeRuntime(3);
     let ended = 0;
     Object.assign(L, { minLeft: 60, endMinimum: () => ended++ });
     const mode = new LullabyMode(L);
     mode.start();
-    for (let i = 0; i < 5; i++) {
+    typeWord(L, mode);
+    expect(mode.progress()).toBeCloseTo(1 / 6);
+    expect((mode as any).asleep).toBe(0);
+    run(L, mode, 2);
+    for (let i = 1; i < 10; i++) {
       typeWord(L, mode);
       run(L, mode, 2);
     }
@@ -499,5 +503,49 @@ describe('flying lessons', () => {
     expect(mode.starCap()).toBe(2);
     Object.assign(mode as any, { flown: 1 });
     expect(mode.starCap()).toBe(1);
+  });
+});
+
+describe('the take-off', () => {
+  it('a word not typed in time counts as a mistake and sends the dragon back', () => {
+    const L = fakeRuntime(3);
+    Object.assign(L, { errors: 0 });
+    const mode = new TakeoffMode(L);
+    mode.start();
+    run(L, mode, 1);
+    expect(L.core.focus()).not.toBeNull();
+    run(L, mode, 2);
+    expect((L as any).errors).toBe(1);
+    expect((mode as any).dragons[0].state).toBe('back');
+  });
+
+  it('the dragon flies on smoothly as the letters are typed', () => {
+    const L = fakeRuntime(3);
+    Object.assign(L, { idleFor: 0, rhythm: { ema: 2, ratio: () => 1, ready: () => {} } });
+    const mode = new TakeoffMode(L);
+    mode.start();
+    run(L, mode, 1);
+    const d = (mode as any).dragons[0], x0 = d.x;
+    L.core.type(L.core.focus()!.word[0]);
+    run(L, mode, 0.2);
+    expect(d.x).toBeLessThan(x0);
+    expect(d.rot).toBeLessThan(-0.3);
+  });
+});
+
+describe('the overgrown path', () => {
+  it('one big bush asks for two words', () => {
+    const L = fakeRuntime(12);
+    const words: number[] = [];
+    Object.assign(L, { word: (_m?: number, w = 1) => { words.push(w); return w > 1 ? 'ab cd' : 'ab'; } });
+    const mode = new ThicketMode(L);
+    mode.start();
+    const big = (mode as any).bushes.findIndex((b: any) => b.big);
+    expect(big).toBe(7);
+    for (let i = 0; i < big; i++) {
+      typeWord(L, mode);
+      run(L, mode, 2);
+    }
+    expect(L.core.focus()?.word).toBe('ab cd');
   });
 });

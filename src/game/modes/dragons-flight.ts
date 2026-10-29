@@ -7,13 +7,13 @@ import { Mode, TAPKO_X } from '../mode';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
 import { drawRow } from './copy-row';
-import { BUSHES, DRAGONS, FLOCK_MAX, FLOCK_START, Firepit, GROUND, PIT_H, PIT_PICTURES, bushFallback, drawDragon, flockFor, rimmed } from './dragons';
+import { BUSHES, DRAGONS, FLOCK_MAX, FLOCK_START, Firepit, GROUND, PIT_PICTURES, bushFallback, drawDragon, flockFor, rimmed } from './dragons';
 
 /** The fire pit stands on the right in the flight levels; the dragons sit round it at these offsets. */
 const PIT_AT = 0.8;
 const SPOTS = [-105, 105, -170, 170, -235];
-const DRAGON_H = 96;
-const SIT_H = 84;
+const DRAGON_H = 108;
+const SIT_H = 94;
 /** Where a dragon waits for its flight, just right of Tapko. */
 const START_X = TAPKO_X + 170;
 /** Seconds of the end before the level ends. */
@@ -41,6 +41,8 @@ function drawBubble(g: G, word: string, x: number, y: number): void {
 
 /** In the flying lessons the pit stands nearer the right edge; the dragons sit left of it, each a little further left and higher. */
 const FLIGHT_PIT_AT = 0.9;
+/** The pit is smaller in the flying lessons, so the dragons are the scene. */
+const FLIGHT_PIT_H = 64;
 const SEAT_FIRST = 100;
 const SEAT_GAP = 62;
 const SEAT_LIFT = [0, 24, 8, 32, 14];
@@ -55,15 +57,16 @@ const IDLE_FALL = 2;
 /** Past the bushes, a lift below this drops the dragon: it falls and lands hard. */
 const HARD_AIM = 0.3;
 const FALL_G = 900;
-/** The lean of a dragon climbing (nose up) and gliding (nose down), and its gentle rocking. */
-const TILT_UP = -0.18;
-const TILT_GLIDE = 0.3;
+/** A flying dragon leans forward, less while it climbs, more as it glides down, and rocks gently. */
+const TILT_UP = 0.2;
+const TILT_GLIDE = 0.6;
 const ROCK = 0.07;
+/** Now and then a seated dragon is glad: a little hop, every few seconds each at its own time. */
+const GLAD_EVERY = 5;
+const GLAD_HOP = 0.6;
 /** The arc's top at full lift, the bushes' height and how high a dragon's feet must be to pass over them. */
 const MAX_ALT = 240;
 const FLY_BUSH_H = 150;
-/** The round leafy bushes stand in the middle (the branch tangle is the overgrown path's). */
-const FLY_BUSHES = [BUSHES[0], BUSHES[2], BUSHES[3]];
 const BUSH_TOP = 140;
 const BUSH_HALF = 70;
 /** Seconds in the bushes: dropping in, shaking (the shout), climbing out; then walking speed. */
@@ -106,7 +109,7 @@ interface Flyer {
  * fire, and the end counts how many flew.
  */
 export class FlightMode extends Mode {
-  readonly pictures = [...DRAGONS, ...FLY_BUSHES, ...PIT_PICTURES];
+  readonly pictures = [...DRAGONS, ...BUSHES, ...PIT_PICTURES];
   readonly world = 'dragons';
   readonly phraseWords = 1;
   private pit: Firepit;
@@ -123,7 +126,7 @@ export class FlightMode extends Mode {
 
   constructor(L: LevelRuntime) {
     super(L);
-    this.pit = new Firepit(L, L.vw * FLIGHT_PIT_AT).burn(0.8);
+    this.pit = new Firepit(L, L.vw * FLIGHT_PIT_AT, FLIGHT_PIT_H).burn(0.8);
   }
 
   startLine(): string {
@@ -153,7 +156,7 @@ export class FlightMode extends Mode {
 
   start(): void {
     const r = this.L.rng, n = r.int(2, 3);
-    for (let i = 0; i < n; i++) this.bushes.push({ share: n === 1 ? 0 : i / (n - 1), pic: FLY_BUSHES[i], flip: r.chance(0.5), h: FLY_BUSH_H * r.range(0.92, 1.05) });
+    for (let i = 0; i < n; i++) this.bushes.push({ share: n === 1 ? 0 : i / (n - 1), pic: BUSHES[i], flip: r.chance(0.5), h: FLY_BUSH_H * r.range(0.92, 1.05) });
     this.newDragon();
     this.ask();
   }
@@ -290,7 +293,9 @@ export class FlightMode extends Mode {
       if (k >= 1) this.home(d);
     } else if (d.state === 'home') {
       d.x = this.seatX(d.seat);
-      d.alt = this.seatLift(d.seat);
+      // Now and then it is glad and hops.
+      const glad = (this.t + d.seat * 1.9) % GLAD_EVERY;
+      d.alt = this.seatLift(d.seat) + (L.reduceMotion || glad > GLAD_HOP ? 0 : Math.sin((glad / GLAD_HOP) * Math.PI) * 16);
     }
   }
 
@@ -330,7 +335,7 @@ export class FlightMode extends Mode {
     this.pit.draw(g);
     const shake = this.bushShake > 0 && !L.reduceMotion ? Math.sin(this.t * 40) * 0.05 : 0;
     // The seated ones further back first; dragons behind the bushes are the ones in them.
-    const seated = this.dragons.filter((d) => d.state === 'home').sort((a, b) => b.alt - a.alt);
+    const seated = this.dragons.filter((d) => d.state === 'home').sort((a, b) => this.seatLift(b.seat) - this.seatLift(a.seat));
     for (const d of seated) this.drawFlyer(g, d);
     for (const d of this.dragons) if (d.state === 'bush') this.drawFlyer(g, d);
     this.bushes.forEach((b, i) => drawSprite(g, b.pic, this.bushX(b.share), GROUND + 8, b.h, { ay: 1, flip: b.flip, rot: shake }, bushFallback(i)));
@@ -365,18 +370,24 @@ export class FlightMode extends Mode {
 }
 
 /** The lullaby: the line's letter size, the circle's middle height and size, and seconds of a few things. */
-const LINE_SIZE = 36;
+const LINE_SIZE = 34;
 const CIRCLE_Y = VH * 0.24;
 const CIRCLE_RX = 190;
 const CIRCLE_RY = 55;
 /** Seconds of one round. */
 const ROUND = 9;
-const FLY_H = 80;
-const SLEEP_H = 66;
+const FLY_H = 92;
+const SLEEP_H = 76;
 const COME = 1.5;
 const DOWN = 1.6;
 const NEXT_LINE = 0.9;
 const SLIP_FADE = 0.6;
+/** Lines of the lullaby that put one dragon to sleep. */
+const VERSE = 2;
+/** The fire pit of the lullaby and the take-off, smaller than in the flames. */
+const PIT_SMALL = 70;
+/** Where the sleeping dragons lie beside the pit: each a little higher, so further back. */
+const SLEEP_SPOTS = [{ dx: -115, up: 0 }, { dx: 110, up: 12 }, { dx: -185, up: 26 }, { dx: 175, up: 38 }, { dx: -40, up: 50 }];
 
 interface Circler {
   pic: string;
@@ -392,8 +403,8 @@ interface Circler {
 /**
  * Valley 4, the lullaby (copy): in the evening the dragons circle above the burning pit and cannot
  * sleep. A panel in the middle shows one line of the lullaby, a short sentence ending with a
- * period. Copied without a slip, one dragon glides down and falls asleep by the fire; a line with
- * a slip is written again.
+ * period. Two lines copied without a slip put one dragon to sleep: it glides down by the fire; a
+ * line with a slip is written again.
  */
 export class LullabyMode extends Mode {
   readonly pictures = [...DRAGONS, 'obj-dragon-sleeping', ...PIT_PICTURES];
@@ -402,6 +413,8 @@ export class LullabyMode extends Mode {
   private dragons: Circler[] = [];
   private planned = FLOCK_START;
   private asleep = 0;
+  /** Lines of the verse typed so far. */
+  private verse = 0;
   private line = '';
   private current: Target | null = null;
   private slip: number | null = null;
@@ -411,7 +424,7 @@ export class LullabyMode extends Mode {
 
   constructor(L: LevelRuntime) {
     super(L);
-    this.pit = new Firepit(L, L.vw * PIT_AT).burn(0.7);
+    this.pit = new Firepit(L, L.vw * PIT_AT, PIT_SMALL).burn(0.7);
   }
 
   startLine(): string {
@@ -420,7 +433,12 @@ export class LullabyMode extends Mode {
 
   start(): void {
     for (let i = 0; i < this.planned; i++) this.addDragon('circle');
-    this.ask(this.L.word(5, 4, 3));
+    this.ask(this.newLine());
+  }
+
+  /** A line of the lullaby: a sentence of four or five short words. */
+  private newLine(): string {
+    return this.L.word(5, 5, 4);
   }
 
   /** A dragon that circles (one more comes flying in from the right). */
@@ -432,6 +450,12 @@ export class LullabyMode extends Mode {
   private ask(line: string): void {
     this.line = line;
     this.current = this.L.core.add(line, {});
+  }
+
+  /** Where a sleeping dragon lies (its feet), kept on the stage. */
+  private sleepSpot(i: number): { x: number; y: number; up: number } {
+    const s = SLEEP_SPOTS[i % SLEEP_SPOTS.length];
+    return { x: Math.min(this.L.vw - 60, this.pit.x + s.dx), y: GROUND + 4 - s.up, up: s.up };
   }
 
   /** The circle's place: above the pit, kept on the stage. */
@@ -447,6 +471,17 @@ export class LullabyMode extends Mode {
     this.current = null;
     L.core.prune();
     L.sfx('note');
+    // The first line of a verse makes them a little sleepy; the last one puts one to sleep.
+    if (++this.verse < VERSE) {
+      const d = this.dragons.find((o) => o.state === 'circle');
+      if (d) {
+        const c = this.circle(d);
+        L.particles.emit(c.x, c.y - FLY_H * 0.6, 6, 'sparkle', ['#fff6a8', '#d8d0ff'], 60, 6);
+      }
+      this.nextIn = NEXT_LINE * 0.6;
+      return;
+    }
+    this.verse = 0;
     const d = this.dragons.find((o) => o.state === 'circle') ?? this.dragons.find((o) => o.state === 'come');
     if (d) {
       const c = this.circle(d);
@@ -481,14 +516,15 @@ export class LullabyMode extends Mode {
       if (d.state === 'come' && d.t >= COME) d.state = 'circle';
       if (d.state === 'down' && d.t >= DOWN) {
         d.state = 'sleep';
-        this.L.particles.emit(spot(this.pit.x, d.seat, this.L.vw), GROUND - SLEEP_H * 0.6, 6, 'sparkle', ['#fff6a8', '#d8d0ff'], 60, 6);
+        const s = this.sleepSpot(d.seat);
+        this.L.particles.emit(s.x, s.y - SLEEP_H * 0.6, 6, 'sparkle', ['#fff6a8', '#d8d0ff'], 60, 6);
       }
     }
     if (this.slip !== null && (this.slip += dt) >= SLIP_FADE) {
       this.slip = null;
       this.ask(this.line);
     }
-    if (this.nextIn >= 0 && (this.nextIn -= dt) < 0) this.ask(this.L.word(5, 4, 3));
+    if (this.nextIn >= 0 && (this.nextIn -= dt) < 0) this.ask(this.newLine());
     if (this.endT !== null) this.endT += dt;
     else if (this.asleep >= this.planned && this.dragons.every((d) => d.state === 'sleep')) {
       this.endT = 0;
@@ -509,8 +545,12 @@ export class LullabyMode extends Mode {
     g.fillStyle = 'rgba(40,40,110,0.28)';
     g.fillRect(0, 0, L.vw, VH);
     g.restore();
+    // The sleepers further back (higher) first, the pit among them, the nearer ones over it.
+    const sleepers = this.dragons.filter((d) => d.state === 'sleep').sort((a, b) => this.sleepSpot(b.seat).up - this.sleepSpot(a.seat).up);
+    for (const d of sleepers) if (this.sleepSpot(d.seat).up > 10) this.drawSleeper(g, d);
     this.pit.draw(g);
-    for (const d of this.dragons) this.drawCircler(g, d);
+    for (const d of sleepers) if (this.sleepSpot(d.seat).up <= 10) this.drawSleeper(g, d);
+    for (const d of this.dragons) if (d.state !== 'sleep') this.drawCircler(g, d);
     if (this.endT !== null) return;
     const p = this.panel();
     const size = Math.min(LINE_SIZE, (LINE_SIZE * (p.maxW - 60)) / Math.max(1, wordBox(g, this.line, LINE_SIZE).w));
@@ -524,7 +564,16 @@ export class LullabyMode extends Mode {
     g.fill();
     g.stroke();
     g.restore();
-    if (this.current) L.label(g, this.current, p.cx, p.y, size);
+    // The lines of the verse: a small dot for each, filled once typed.
+    for (let i = 0; i < VERSE; i++) {
+      g.save();
+      g.fillStyle = i < this.verse ? '#9b86c9' : 'rgba(155,134,201,0.3)';
+      g.beginPath();
+      g.arc(p.cx + (i - (VERSE - 1) / 2) * 18, p.y + h / 2 - 12, 5, 0, Math.PI * 2);
+      g.fill();
+      g.restore();
+    }
+    if (this.current) L.label(g, this.current, p.cx, p.y - 4, size);
     if (this.slip !== null) {
       g.save();
       g.globalAlpha = 1 - this.slip / SLIP_FADE;
@@ -532,29 +581,28 @@ export class LullabyMode extends Mode {
       g.textAlign = 'center';
       g.textBaseline = 'middle';
       g.fillStyle = SLIP_INK;
-      g.fillText(this.line, p.cx, p.y);
+      g.fillText(this.line, p.cx, p.y - 4);
       g.restore();
     }
   }
 
+  private drawSleeper(g: G, d: Circler): void {
+    const s = this.sleepSpot(d.seat);
+    drawSprite(g, 'obj-dragon-sleeping', s.x, s.y, SLEEP_H, { ay: 1, flip: s.x > this.pit.x }, (g2, _w, h) => drawDragon(g2, d.pic, 0, h / 2, h));
+    // A small "z z" floats up.
+    const k = (this.t * 0.4 + d.seat * 0.37) % 1;
+    g.save();
+    g.globalAlpha = Math.sin(k * Math.PI) * 0.9;
+    g.font = `700 ${18 + k * 8}px ${fontFamily()}`;
+    g.fillStyle = '#ffffff';
+    g.textAlign = 'center';
+    g.fillText('z z', s.x + 20 + k * 14, s.y - SLEEP_H - 6 - k * 40);
+    g.restore();
+  }
+
   private drawCircler(g: G, d: Circler): void {
     const L = this.L;
-    const motion = !L.reduceMotion;
-    const flap = motion ? Math.sin(this.t * 10 + d.phase) * 0.6 : 0;
-    if (d.state === 'sleep') {
-      const x = spot(this.pit.x, d.seat, L.vw);
-      drawSprite(g, 'obj-dragon-sleeping', x, GROUND + 4, SLEEP_H, { ay: 1, flip: x > this.pit.x }, (g2, _w, h) => drawDragon(g2, d.pic, 0, h / 2, h));
-      // A small "z z" floats up.
-      const k = (this.t * 0.4 + d.seat * 0.37) % 1;
-      g.save();
-      g.globalAlpha = Math.sin(k * Math.PI) * 0.9;
-      g.font = `700 ${18 + k * 8}px ${fontFamily()}`;
-      g.fillStyle = '#ffffff';
-      g.textAlign = 'center';
-      g.fillText('z z', x + 20 + k * 14, GROUND - SLEEP_H - 6 - k * 40);
-      g.restore();
-      return;
-    }
+    const flap = L.reduceMotion ? 0 : Math.sin(this.t * 10 + d.phase) * 0.6;
     const c = this.circle(d);
     if (d.state === 'circle') return drawDragon(g, d.pic, c.x, c.y, FLY_H, flap, c.face);
     if (d.state === 'come') {
@@ -562,12 +610,12 @@ export class LullabyMode extends Mode {
       return drawDragon(g, d.pic, L.vw + 80 + (c.x - L.vw - 80) * k, c.y - (1 - k) * 60, FLY_H, flap, -1);
     }
     // Gliding down to its place by the fire.
-    const k = ease.inOutQuad(Math.min(1, d.t / DOWN)), to = spot(this.pit.x, d.seat, L.vw);
-    drawDragon(g, d.pic, d.fromX + (to - d.fromX) * k, d.fromY + (GROUND - d.fromY) * k, FLY_H - (FLY_H - SLEEP_H) * k, 0, to < d.fromX ? -1 : 1, 1, 0.1);
+    const k = ease.inOutQuad(Math.min(1, d.t / DOWN)), to = this.sleepSpot(d.seat);
+    drawDragon(g, d.pic, d.fromX + (to.x - d.fromX) * k, d.fromY + (to.y - d.fromY) * k, FLY_H - (FLY_H - SLEEP_H) * k, 0, to.x < d.fromX ? -1 : 1, 1, 0.1);
   }
 
   progress(): number {
-    return Math.min(1, this.asleep / this.planned);
+    return Math.min(1, (this.asleep + this.verse / VERSE) / this.planned);
   }
 
   get finished(): boolean {
@@ -579,6 +627,8 @@ export class LullabyMode extends Mode {
 const SAFE_AFTER = 3;
 const SOFT_AFTER = 6;
 const SAFE_TIME = 1.25;
+/** A word's time in the take-off: the child's own pace (the stream's time), tighter. */
+const WORD_PACE = 0.6;
 
 /** A take-off try: its sets, words per set, the factor of each word's time, and whether a miss only restarts the word. */
 export function takeoffPlan(first: boolean, returns: number): { sets: number; words: [number, number]; time: number; soft: boolean } {
@@ -586,44 +636,97 @@ export function takeoffPlan(first: boolean, returns: number): { sets: number; wo
   return { sets: (first ? 3 : 4) - (safe ? 1 : 0), words: soft ? [2, 2] : [2, 3], time: safe ? SAFE_TIME : 1, soft };
 }
 
-/** The take-off: a flight's lowest and highest height, the row's height, and seconds of a step, a return and the flight away. */
+/** The take-off: a flight's lowest and highest height, the row's height, and seconds of a return and the flight away. */
 const TAKE_LOW = 60;
 const TAKE_TOP = 300;
 const ROW_Y = VH * 0.16;
-const STEP = 0.7;
 const BACK = 1.4;
 const GONE = 2.2;
-/** How far a dragon sinks while a word waits, per second, and at most. */
-const SINK = 8;
+/** How fast a flying dragon follows the typing: slow with a calm rhythm, quick with a good one (per second). */
+const FOLLOW = [0.8, 3];
+/** How far a dragon sinks while the typing pauses, per second, and at most. */
+const SINK = 10;
 const SINK_MAX = 30;
+/** A flying dragon turns so its back is about level (it faces left). */
+const FLY_ROT = -1.05;
 /** The end: the fire goes out, the egg shows, the cheer, the level ends. */
 const FIRE_OUT = 2;
 const EGG_IN = 1.5;
 const CHEER_AT = FIRE_OUT + EGG_IN;
 const TAKEOFF_END = CHEER_AT + 2;
-const EGG_H = 92;
+const EGG_H = 86;
 const ROW_INK = '#3d3355';
+/** The word's time: a round clock right of the row, in the look of the HUD's round buttons; it blinks in its last quarter. */
+const CLOCK_R = 22;
+const CLOCK_BLINK = 0.25;
 
 interface Sitter {
   pic: string;
   seat: number;
-  /** sit: by the pit; fly: on its way in steps; back: gliding back to the pit; gone: flying off to the left. */
+  /** sit: by the pit; fly: on its way; back: gliding back to the pit; gone: flying off to the left. */
   state: 'sit' | 'fly' | 'back' | 'gone';
   t: number;
   x: number;
   alt: number;
+  rot: number;
   fromX: number;
   fromAlt: number;
-  toX: number;
-  toAlt: number;
   sink: number;
   returns: number;
 }
 
+/** The word's time left as a round clock: a green ring that empties (blinking at the end) round a green disc with an hourglass. */
+function drawClock(g: G, x: number, y: number, share: number, t: number, motion: boolean): void {
+  const k = Math.max(0, Math.min(1, share));
+  const blink = k < CLOCK_BLINK && motion ? 0.45 + 0.55 * Math.abs(Math.cos(t * 7)) : 1;
+  g.save();
+  g.fillStyle = '#ffffff';
+  g.beginPath();
+  g.arc(x, y, CLOCK_R + 2, 0, Math.PI * 2);
+  g.fill();
+  g.lineWidth = 4;
+  g.strokeStyle = 'rgba(47,138,76,0.18)';
+  g.beginPath();
+  g.arc(x, y, CLOCK_R - 1, 0, Math.PI * 2);
+  g.stroke();
+  g.globalAlpha = blink;
+  g.strokeStyle = '#4fb57a';
+  g.lineCap = 'round';
+  g.beginPath();
+  g.arc(x, y, CLOCK_R - 1, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * k);
+  g.stroke();
+  g.globalAlpha = 1;
+  g.fillStyle = '#2f8a4c';
+  g.beginPath();
+  g.arc(x, y, CLOCK_R - 5.5, 0, Math.PI * 2);
+  g.fill();
+  // The hourglass.
+  const s = CLOCK_R * 0.42;
+  g.strokeStyle = '#ffffff';
+  g.fillStyle = '#ffffff';
+  g.lineWidth = 2;
+  g.lineJoin = 'round';
+  g.beginPath();
+  g.moveTo(x - s * 0.7, y - s);
+  g.lineTo(x + s * 0.7, y - s);
+  g.lineTo(x - s * 0.7, y + s);
+  g.lineTo(x + s * 0.7, y + s);
+  g.closePath();
+  g.stroke();
+  g.beginPath();
+  g.moveTo(x - s * 0.45 * k, y - s * (0.2 + 0.6 * k));
+  g.lineTo(x + s * 0.45 * k, y - s * (0.2 + 0.6 * k));
+  g.lineTo(x, y);
+  g.closePath();
+  g.fill();
+  g.restore();
+}
+
 /**
  * Valley 5, the take-off (super-obstacle): in the morning the dragons sit by the pit and one by one
- * fly to the left, to the crystal meadow. A flight is a few sets of short words: a set typed without
- * a slip and every word in its time lifts the dragon a step higher and further; a late word or a slip
+ * fly to the left, to the crystal meadow. A flight is a few sets of short words: the dragon flies on
+ * smoothly as the words are typed, quicker with a good rhythm; a set typed without a slip and every
+ * word in its time takes it a step higher and further. A late word or a slip counts as a mistake and
  * sends it back to the pit to try again, easier after a few returns. When the last is gone the fire
  * goes out and an egg shows behind it.
  */
@@ -650,7 +753,7 @@ export class TakeoffMode extends Mode {
 
   constructor(L: LevelRuntime) {
     super(L);
-    this.pit = new Firepit(L, L.vw * PIT_AT).burn(0.6);
+    this.pit = new Firepit(L, L.vw * PIT_AT, PIT_SMALL).burn(0.6);
   }
 
   startLine(): string {
@@ -664,7 +767,7 @@ export class TakeoffMode extends Mode {
 
   private addDragon(): void {
     const i = this.dragons.length, x = spot(this.pit.x, i, this.L.vw);
-    this.dragons.push({ pic: DRAGONS[i % DRAGONS.length], seat: i, state: 'sit', t: 0, x, alt: 0, fromX: x, fromAlt: 0, toX: x, toAlt: 0, sink: 0, returns: 0 });
+    this.dragons.push({ pic: DRAGONS[i % DRAGONS.length], seat: i, state: 'sit', t: 0, x, alt: 0, rot: 0, fromX: x, fromAlt: 0, sink: 0, returns: 0 });
   }
 
   private after(seconds: number, fn: () => void): void {
@@ -675,7 +778,7 @@ export class TakeoffMode extends Mode {
     return this.dragons[this.done];
   }
 
-  /** The next dragon tries (again): new sets, and it lifts off to the first step's height. */
+  /** The next dragon tries (again): new sets, and it lifts off. */
   private flight(): void {
     const L = this.L, d = this.flyer!;
     const plan = takeoffPlan(this.done === 0, d.returns);
@@ -684,19 +787,9 @@ export class TakeoffMode extends Mode {
     this.sets = Array.from({ length: plan.sets }, () => Array.from({ length: L.rng.int(plan.words[0], plan.words[1]) }, () => L.word(4, 1)));
     this.set = 0;
     d.state = 'fly';
-    this.stepTo(d, 0);
-    this.showSet();
-  }
-
-  /** Its way: from its place by the pit, a step left and up for every set done. */
-  private stepTo(d: Sitter, k: number): void {
-    const home = spot(this.pit.x, d.seat, this.L.vw), left = TAPKO_X + 220, n = this.sets.length;
-    d.fromX = d.x;
-    d.fromAlt = d.alt;
-    d.toX = home - ((home - left) * k) / n;
-    d.toAlt = TAKE_LOW + ((TAKE_TOP - TAKE_LOW) * k) / n;
-    d.sink = 0;
     d.t = 0;
+    d.sink = 0;
+    this.showSet();
   }
 
   private showSet(): void {
@@ -708,7 +801,14 @@ export class TakeoffMode extends Mode {
   private ask(): void {
     const word = this.sets[this.set][this.at];
     this.current = this.L.core.add(word, {});
-    this.timeFull = this.timeLeft = this.L.travelTime(word) * this.timeK;
+    this.timeFull = this.timeLeft = this.L.travelTime(word) * WORD_PACE * this.timeK;
+  }
+
+  /** How far along its way the dragon should be: the sets done and the letters typed of this one. */
+  private way(): number {
+    const n = this.sets[this.set]?.length ?? 1;
+    const typed = this.current ? this.current.typed / this.current.word.length : 0;
+    return Math.min(1, (this.set + (this.at + typed) / n) / this.sets.length);
   }
 
   onDone(tg: Target): void {
@@ -718,23 +818,24 @@ export class TakeoffMode extends Mode {
     this.current = null;
     L.sfx('pop');
     if (++this.at < this.sets[this.set].length) return this.ask();
-    // A clean set: a step higher and further.
+    // A clean set.
     const d = this.flyer!;
-    this.stepTo(d, ++this.set);
+    this.set++;
     L.sfx('whoosh');
     L.particles.emit(d.x, GROUND - d.alt - DRAGON_H * 0.5, 8, 'sparkle', ['#fff6a8', '#ffd25a'], 110, 6);
-    if (this.set < this.sets.length) this.after(STEP, () => this.showSet());
-    else this.after(STEP, () => this.away(d));
+    if (this.set < this.sets.length) this.showSet();
+    else this.away(d);
   }
 
   onWrong(tg: Target | null): void {
     if (this.current && tg === this.current) this.miss(true);
   }
 
-  /** A slip or a late word: the dragon glides back to the pit and tries again, or (soft) the word starts again. */
+  /** A slip or a late word (a late one counts as a mistake too): the dragon glides back to the pit and tries again, or (soft) the word starts again. */
   private miss(slip: boolean): void {
     const L = this.L, word = this.current!.word;
-    L.core.release(this.current!, !slip);
+    if (!slip) L.errors++;
+    L.core.release(this.current!, false);
     L.core.prune();
     this.current = null;
     if (this.soft) {
@@ -804,20 +905,26 @@ export class TakeoffMode extends Mode {
 
   private move(d: Sitter, dt: number): void {
     d.t += dt;
-    const home = spot(this.pit.x, d.seat, this.L.vw);
+    const L = this.L, home = spot(this.pit.x, d.seat, L.vw);
     if (d.state === 'sit') {
       d.x = home;
       d.alt = 0;
+      d.rot = 0;
     } else if (d.state === 'fly') {
-      const k = ease.inOutQuad(Math.min(1, d.t / STEP));
-      // While a word waits it flaps and slowly sinks.
-      if (this.current) d.sink = Math.min(SINK_MAX, d.sink + SINK * dt);
-      d.x = d.fromX + (d.toX - d.fromX) * k;
-      d.alt = Math.max(10, d.fromAlt + (d.toAlt - d.fromAlt) * k - d.sink);
+      // It follows the typing smoothly, quicker with a better rhythm, and sinks a little while the typing pauses.
+      const k = this.way(), left = TAPKO_X + 220;
+      d.sink = Math.max(0, Math.min(SINK_MAX, d.sink + (L.idleFor > 0.8 ? SINK : -SINK * 3) * dt));
+      const tx = home - (home - left) * k, talt = TAKE_LOW + (TAKE_TOP - TAKE_LOW) * k - d.sink;
+      const rate = FOLLOW[0] + (FOLLOW[1] - FOLLOW[0]) * Math.max(0, Math.min(1, L.rhythm.ratio(L.difficulty)));
+      const f = Math.min(1, dt * rate);
+      d.x += (tx - d.x) * f;
+      d.alt += (talt - d.alt) * f;
+      d.rot += (FLY_ROT - d.rot) * Math.min(1, dt * 3);
     } else if (d.state === 'back') {
       const k = Math.min(1, d.t / BACK), e = ease.inOutQuad(k);
       d.x = d.fromX + (home - d.fromX) * e;
       d.alt = d.fromAlt * (1 - e) + Math.sin(k * Math.PI) * 30;
+      d.rot *= 1 - Math.min(1, dt * 4);
       if (k >= 1) {
         d.state = 'sit';
         d.alt = 0;
@@ -842,36 +949,25 @@ export class TakeoffMode extends Mode {
     this.dragons.forEach((d, i) => {
       if (i < this.done) return;
       const air = d.state === 'fly' || d.state === 'gone' || (d.state === 'back' && d.alt > 0);
-      const flap = air && motion ? Math.sin(this.t * 16) : 0;
-      const bob = d.state === 'sit' && motion ? Math.abs(Math.sin(this.t * 2 + i)) * 3 : 0;
+      // Calm wing beats in the air, a slow small bob on the ground.
+      const flap = air && motion ? Math.sin(this.t * 12) * 0.6 : 0;
+      const bob = d.state === 'sit' && motion ? Math.abs(Math.sin(this.t * 1.6 + i)) * 2 : 0;
       // A dragon that came later fades in.
       const alpha = d.state === 'sit' && i >= FLOCK_START ? Math.min(1, d.t / 0.6) : 1;
-      drawDragon(g, d.pic, d.x, GROUND - d.alt - bob, d.state === 'sit' ? SIT_H : DRAGON_H, flap, d.state === 'fly' || d.state === 'gone' ? -1 : 1, alpha);
+      drawDragon(g, d.pic, d.x, GROUND - d.alt - bob, d.state === 'sit' ? SIT_H : DRAGON_H, flap, air ? -1 : 1, alpha, d.rot);
     });
     const d = this.flyer;
     if (this.endT !== null || !d || (d.state !== 'fly' && d.state !== 'back') || !this.sets.length) return;
     const row = this.sets[this.set] ?? [];
-    drawRow(g, L, row.map((word, i) => ({ word, slip: this.slips[i] ?? -1 })), this.at, this.current, L.vw / 2, ROW_Y, L.vw - 2 * (TAPKO_X + 60), ROW_INK);
-    if (!this.current || L.noPressure) return;
-    // The word's time: a thin bar under the row.
-    const w = 260, k = Math.max(0, this.timeLeft / this.timeFull);
-    g.save();
-    g.fillStyle = 'rgba(255,253,246,0.8)';
-    g.beginPath();
-    g.roundRect(L.vw / 2 - w / 2, ROW_Y + 36, w, 10, 5);
-    g.fill();
-    g.fillStyle = k > 0.3 ? '#7cbf5a' : '#f2a23a';
-    g.beginPath();
-    g.roundRect(L.vw / 2 - w / 2, ROW_Y + 36, w * k, 10, 5);
-    g.fill();
-    g.restore();
+    const w = drawRow(g, L, row.map((word, i) => ({ word, slip: this.slips[i] ?? -1 })), this.at, this.current, L.vw / 2, ROW_Y, L.vw - 2 * (TAPKO_X + 110), ROW_INK);
+    if (this.current && !L.noPressure) drawClock(g, L.vw / 2 + w / 2 + CLOCK_R + 26, ROW_Y, this.timeLeft / this.timeFull, this.t, motion);
   }
 
   /** The egg the dragons left behind the burnt-out pit, with a soft glow. */
   private drawEgg(g: G): void {
     if (this.endT === null || this.endT < FIRE_OUT) return;
     const a = Math.min(1, (this.endT - FIRE_OUT) / EGG_IN);
-    const x = this.pit.x + 14, y = GROUND - PIT_H * 0.35, r = EGG_H * 1.1;
+    const x = this.pit.x + 14, y = GROUND - PIT_SMALL * 0.35, r = EGG_H * 1.1;
     g.save();
     const glow = g.createRadialGradient(x, y - EGG_H * 0.5, 4, x, y - EGG_H * 0.5, r);
     glow.addColorStop(0, `rgba(255,246,200,${0.7 * a})`);

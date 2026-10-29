@@ -106,9 +106,9 @@ export class CopyRow {
 
 /**
  * A row of words centred at (cx, y), fitted into `width`: the word at `at` is the target `current`
- * (its label), the ones before it in `ink`, the next ones faint; a slipped word (`slip` seconds) fades red to a trace.
+ * (its label), the ones before it in `ink`, the next ones faint; a slipped word (`slip` seconds) fades red to a trace. Returns its width.
  */
-export function drawRow(g: G, L: LevelRuntime, row: { word: string; slip: number }[], at: number, current: Target | null, cx: number, y: number, width: number, ink: string): void {
+export function drawRow(g: G, L: LevelRuntime, row: { word: string; slip: number }[], at: number, current: Target | null, cx: number, y: number, width: number, ink: string): number {
   const widths = (size: number) => row.map((s) => wordBox(g, s.word, size).w);
   const total = (size: number) => widths(size).reduce((a, b) => a + b, 0) + WORD_GAP * (row.length - 1);
   const size = total(WORD_SIZE) > width ? Math.max(24, (WORD_SIZE * width) / total(WORD_SIZE)) : WORD_SIZE;
@@ -126,4 +126,5 @@ export function drawRow(g: G, L: LevelRuntime, row: { word: string; slip: number
     g.fillText(s.word, c, y);
     g.restore();
   });
+  return total(size);
 }

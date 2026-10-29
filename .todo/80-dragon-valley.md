@@ -175,3 +175,11 @@ and the browser play-through (step 8; levels 1 and 2 checked so far). Decisions 
   stars are capped by the flyers (`Mode.starCap`, `completeLevel`'s `cap`). The pit stands at
   0.9 vw there, the dragons sit left of it at different heights; the flight uses the round
   bushes (1, 3, 4), the overgrown path all four.
+- The owner's play, round 3 (2026-10-29): bush 2 (branch tangle) dropped, bush 4 renamed to bush 2;
+  near band defringed; pit sizes per level (flames 88, flight 64, lullaby/take-off 70) and bigger
+  dragons; flames: torch glow, grip at Tapko's hand, still scene with `Mode.bandShift`; thicket:
+  one big bush (two words), slip lines (`story.thicketSlip`), the end walks to the dragons; flight:
+  more lean, glad hops; lullaby: verses of two longer lines, sleepers at heights, back ones first;
+  take-off: smooth follow by rhythm, back level in flight, a late word is an error (no valve),
+  word time x 0.6, the round clock (`drawClock`). The owner tested with `?fast` (a sixth of the
+  minimum), which is why only three dragons came.

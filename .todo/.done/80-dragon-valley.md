@@ -27,11 +27,12 @@ burns out and an egg is left behind it. The babies are never targets: words sit 
 a panel or the top bubble.
 
 ## 1. Pictures (Gemini, prompts already in `assets-src/PROMPTS.md` section 4, Dragons)
-- [~] Pictures. Done (the owner's pictures, 2026-10-29): `obj-flame-1..4` (four sizes of one look),
+- [x] Pictures. Done (the owner's pictures, 2026-10-29): `obj-flame-1..4` (four sizes of one look),
       `obj-flame-out`, `obj-torch` (unlit), `obj-firepit`; generated: `obj-bush-1`, `obj-bush-2`.
-      `obj-bush-3`, `obj-bush-4` in bush 1's style (one with a flower). The owner's new mid and near
-      bands (eggshells gone), joined by Gemini, moved down to 55 % and 27 % from the bottom. No `obj-firepit-burning-*`: the owner chose the pit with the four flames flickering
-      in code in front of it, sparks and smoke in code.
+      `obj-bush-3` in bush 1's style (bush 2 with a flower). The owner's new mid and near bands,
+      painted on a cyan key, seams by Gemini, their skylines at 62 % and 22 % from the bottom. No
+      `obj-firepit-burning-*`: the owner chose the pit with the four flames flickering in code in
+      front of it, sparks and smoke in code.
 - [x] Until a picture exists the mode draws a code fallback (as `glovesFallback`), so the code steps
       do not wait for the art.
 - [x] Drop `obj-rock-falling-1/2` (and its PROMPTS.md row) once nothing draws them. -2 dropped;
@@ -137,7 +138,7 @@ a panel or the top bubble.
 - [x] Tests: `levels.test.ts` (kinds, `activityOf`, `minActiveS` of `thicket`), `idle.test.ts` with
       the new modes, unit tests for the catcher, the slip growth ceiling, the dragon count rule and
       the take-off safety. tsc, vitest, build.
-- [ ] Browser play-through (`?fast`, tester profile `.e2e/tester-profile.json`, `tapkoType`): all
+- [x] Browser play-through (`?fast`, tester profile `.e2e/tester-profile.json`, `tapkoType`): all
       five levels to the end, with a missed flame, slips on a bush beyond the ceiling, a dragon that
       lands in the bushes, a lullaby line with a slip, three returns in the take-off, the egg shown.
 
@@ -184,5 +185,15 @@ and the browser play-through (step 8; levels 1 and 2 checked so far). Decisions 
   word time x 0.6, the round clock (`drawClock`). The owner tested with `?fast` (a sixth of the
   minimum), which is why only three dragons came.
 - 2026-10-29: the owner painted new valley bands on a cyan key (`assets-src/bg-work/dragons/v4`,
-  mid `d3ue`, near `bmks`); seams by Gemini (the owner rejected stitching), near skyline at 27 %
-  from the bottom, mid at 62 %.
+  mid `d3ue`, near `bmks`); seams by Gemini (the owner rejected stitching), near skyline at 22 %
+  from the bottom, mid at 62 %; the flames level's band shift dropped (the owner wanted none).
+
+## Done - 2026-10-29
+World 4 (Údolie) redone as five levels: Ohníky (flames caught by a torch and handed to the fire
+pit), Zarastená cesta (growing copy, bushes with spells, one big two-word bush), Lietanie (rhythm
+lifts the dragons over the bushes, hard landings, stars capped by how many flew), Uspávanka (verses
+of two sentences with a period) and Odlet (sets of words in time, the round clock, a late word
+sends the dragon back). The dragon count rule (3, one more while the minimum is not played, at most
+5) ends a level via `endMinimum`. Texts in sk/en, the egg scene, specs, unit tests and browser play
+in every level through the owner's review rounds. The owner's pictures (flames, torch, pit, bands on
+a cyan key) are in; the keying handles any key color. Left out: nothing.

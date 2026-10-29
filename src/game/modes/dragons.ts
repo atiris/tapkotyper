@@ -332,11 +332,10 @@ const PIT_GAP = 95;
 const TORCH_FLAME = 34;
 /** A warm glow round the torch's top, so it stands out from the background: unlit and lit. */
 const TORCH_GLOW = [0.55, 0.85];
-/** Up and down of a flame's soft arcs; seconds the torch holds a caught flame before it tips, until it reaches the fire, and until it stands up again. */
+/** Up and down of a flame's soft arcs; seconds the torch holds a caught flame before it goes to tip, and stays over the fire before it stands up again. */
 const ARC = 36;
 const HOLD = 0.3;
 const REACH = 0.25;
-const DIP = 0.6;
 /** Sparks when the torch catches a flame and when it hands it to the fire. */
 const TORCH_SPARKS = 18;
 const FIRE_SPARKS = 22;
@@ -393,7 +392,7 @@ export class FlamesMode extends ApproachMode {
     const by = L.rng.range(150, VH - 170);
     return {
       x, y: by, by, vx: this.speedFor(word, x), vy: 0, rot: 0, vr: 0, age: 0, state: 'come', fade: 0, sprite: FLAMES[k], size,
-      flip: L.rng.chance(0.5), phase: L.rng.range(0, 6), out: false, hold: -1, lf: 0, fed: false, saveY: by, saveDist: 0, saveFull: 1, shrink: 1, saveFrom: by,
+      flip: L.rng.chance(0.5), phase: L.rng.range(0, 6), out: false, hold: -1, lf: 0, fed: false, fedAt: 0, handed: false, saveY: by, saveDist: 0, saveFull: 1, shrink: 1, saveFrom: by,
     };
   }
 
@@ -410,7 +409,7 @@ export class FlamesMode extends ApproachMode {
     for (const tg of L.core.targets) {
       const m = tg.data as Mover;
       if (m.state === 'leave' && m.hold < 0 && (!aim || m.x < aim.x)) aim = m;
-      if (m.hold >= HOLD && m.hold < HOLD + DIP) dip = true;
+      if (m.hold >= HOLD && !m.handed) dip = true;
       else if (m.hold >= 0 && m.hold < HOLD) holding = true;
     }
     const tc = this.torch;
@@ -419,7 +418,8 @@ export class FlamesMode extends ApproachMode {
       const k = aim.saveDist > 0 ? Math.min(1, Math.max(0, 1 - (aim.x - tc.catchPoint()[0]) / aim.saveDist)) : 1;
       tc.aimY = aim.saveFrom + (aim.saveY - aim.saveFrom) * ease.inOutQuad(k);
     } else if (!holding) tc.aimY = tc.restY;
-    tc.tiltAim = dip ? DIP_TILT : 0;
+    // Back at Tapko's hand first, then it tips over to the fire.
+    tc.tiltAim = dip && Math.abs(tc.y - tc.restY) < 8 ? DIP_TILT : 0;
     tc.update(dt, this.t);
     if (this.torchLit >= 0) this.torchLit += dt;
     this.pit.glow = Math.min(1, this.resolved / this.total);
@@ -474,7 +474,7 @@ export class FlamesMode extends ApproachMode {
     }
     this.save(m, dt);
     // Caught, the flame is in the torch; it is done once the torch stands up again.
-    m.fade = m.hold >= HOLD + DIP ? 1 : 0;
+    m.fade = m.handed && this.torch.tilt < 0.2 ? 1 : 0;
   }
 
   /**
@@ -502,8 +502,11 @@ export class FlamesMode extends ApproachMode {
     m.hold += dt;
     m.x = gx;
     m.y = gy;
-    if (m.hold >= HOLD + REACH && !m.fed) {
+    // Handed over once the torch is over the fire; a moment later it stands up again.
+    if (m.fed && m.hold - m.fedAt >= REACH) m.handed = true;
+    if (!m.fed && this.torch.tilt >= DIP_TILT * 0.85) {
       m.fed = true;
+      m.fedAt = m.hold;
       this.caught++;
       this.pit.litTo = Math.min(1, this.caught / LIGHT_UP);
       this.L.sfx('whoosh');

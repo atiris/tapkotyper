@@ -848,20 +848,12 @@
    "w": 384,
    "h": 353
   },
-  "obj-crystal-glow": {
-   "w": 304,
-   "h": 384
-  },
   "obj-crystal-rose-cracked": {
    "w": 297,
    "h": 384
   },
   "obj-crystal-rose": {
    "w": 296,
-   "h": 384
-  },
-  "obj-crystal": {
-   "w": 297,
    "h": 384
   },
   "obj-dance-step": {
@@ -1068,10 +1060,6 @@
    "w": 357,
    "h": 384
   },
-  "obj-mushroom-aqua": {
-   "w": 195,
-   "h": 384
-  },
   "obj-mushroom-brown": {
    "w": 288,
    "h": 384
@@ -1180,10 +1168,6 @@
    "w": 384,
    "h": 211
   },
-  "obj-radio": {
-   "w": 312,
-   "h": 384
-  },
   "obj-raindrop": {
    "w": 325,
    "h": 384
@@ -1252,14 +1236,6 @@
    "w": 228,
    "h": 384
   },
-  "obj-star-bright": {
-   "w": 384,
-   "h": 378
-  },
-  "obj-star-dim": {
-   "w": 384,
-   "h": 375
-  },
   "obj-storm-cloud": {
    "w": 384,
    "h": 244
@@ -1303,10 +1279,6 @@
   "obj-tree-leaf": {
    "w": 342,
    "h": 384
-  },
-  "obj-twig": {
-   "w": 384,
-   "h": 153
   },
   "obj-umbrella": {
    "w": 384,

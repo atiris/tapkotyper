@@ -1,6 +1,6 @@
 # The Dragon Valley: five new levels (world 4)
 
-**Status:** proposal, reworked with the owner (2026-10-29). **Prio:** P1. **Effort:** M-L.
+**Status:** decided (2026-10-29), plan `.todo/80-dragon-valley.md`. **Prio:** P1. **Effort:** M-L.
 
 ## The problem
 - World 4 today ([story.md](../../.specify/game/story.md), `src/game/modes/dragons.ts`) is four

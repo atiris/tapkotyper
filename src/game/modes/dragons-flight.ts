@@ -957,10 +957,11 @@ export class TakeoffMode extends Mode {
       if (i < this.done) return;
       const air = d.state === 'fly' || d.state === 'gone' || (d.state === 'back' && d.alt > 0);
       const seated = d.state === 'sit' || d.state === 'ready';
-      // In the air it sways round its lean and pulses a very little narrower (no bobbing up and down); on the ground a slow small bob.
+      // In the air it sways round its lean and pulses a very little narrower (no bobbing up and down).
       const sway = air && motion ? SWAY * Math.sin(this.t * 2.2) : 0;
       const pulse = air && motion ? -PULSE * (0.5 + 0.5 * Math.sin(this.t * 4.5)) : 0;
-      const bob = seated && motion ? Math.abs(Math.sin(this.t * 1.6 + i)) * 2 : 0;
+      // Only the dragon about to take off bobs a little; the others sit still.
+      const bob = d.state === 'ready' && motion ? Math.abs(Math.sin(this.t * 1.6)) * 2 : 0;
       // A dragon that came later fades in.
       const alpha = seated && i >= FLOCK_START ? Math.min(1, d.t / 0.6) : 1;
       // They all face the way they fly off, to the left.

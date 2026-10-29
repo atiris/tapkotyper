@@ -46,8 +46,8 @@ only follows the child's typing.
   cold (the dead embers). Little **flames** (three shapes, also mirrored) fly toward him from
   the right in soft arcs, each with a word; the flame's size shows the word length.
 - Typing the word sends the flame faster toward the torch, which rises with it step by step
-  and meets it, as the meadow's gloves meet the leaf: it is always caught. The torch burns
-  brighter, dips to the fire pit, and the pit catches a bit more.
+  and meets it, as the meadow's gloves meet the leaf: it is always caught. The torch (its
+  flame stays the same) dips to the fire pit, and the pit catches a bit more.
 - The pit grows from the dead embers to the **burning embers**: three pictures that take
   turns as a flicker, and the fire grows (size, glow) with the flames caught.
 - A flame not typed in time flies past the torch and **goes out** (the dead-flame picture, a
@@ -170,7 +170,10 @@ World 5 starts as now: "Ojoj! Vajíčko sa začína hýbať a kotúľa sa dolu k
   `obj-rock-falling-*` goes when the levels are built. Reused: `obj-dragon-baby-1..3`,
   `obj-dragon-sleeping`, `obj-egg`, the `bg-dragons-*` bands.
 
-## Open questions for the owner
-1. How many dragons per level 3 and level 5 (three, one per picture, or five with repeated
-   colours)?
-2. Should the torch flame grow visibly in level 1, or only the fire pit?
+## Decisions (owner, 2026-10-29)
+1. **Dragons per flight level (3 and 5):** at least 3; while the level's minimum time is not
+   played, one more dragon comes, at most 5. When the 5th is done the level ends even if the
+   minimum is not reached (a rare fast typist), so the flight levels are an exception to the
+   minimum length. The arc is slow enough that 5 flights take about the minimum.
+2. **The torch flame does not grow** in level 1; only the fire pit grows.
+3. Level 5 safety and the fire pit's place: as written above.

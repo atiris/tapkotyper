@@ -1,4 +1,4 @@
-// Removes the flat key color (magenta or green) Gemini paints behind a picture. Used by assets.mjs and cert-frame.mjs.
+// Removes the flat key color (magenta, green or cyan) Gemini paints behind a picture. Used by assets.mjs and cert-frame.mjs.
 
 // Keying works on the RGB distance from the sampled background color.
 const D_FLOOD = 70; // border-connected background
@@ -12,8 +12,19 @@ const K_SHINE = 20; // inside a lens even a pale key tint is a painted highlight
 // the inside of the object up to HAZE_AROUND px away.
 const HAZE_REACH = 4;
 const HAZE_AROUND = 32;
-const HAZE_MARGIN = 10; // a rim this much pinker than the inside is still drawn so
+const HAZE_MARGIN = 10; // a rim this much more key-tinted than the inside is still drawn so
 const HAZE = 30; // the most key tint taken out
+
+/** The key's own channels (those close to its brightest one), e.g. red and blue of magenta. */
+export const hotChannels = (key) => key.map((v) => v > (Math.max(...key) + Math.min(...key)) / 2);
+
+/** How much a color leans to the key: its weakest key channel above its strongest other one. */
+export function tintOf(hot, r, g, b) {
+  const c = [r, g, b];
+  let lo = 255, hi = 0;
+  for (let ch = 0; ch < 3; ch++) if (hot[ch]) lo = Math.min(lo, c[ch]); else hi = Math.max(hi, c[ch]);
+  return lo - hi;
+}
 
 function sampleKey(data, w, h) {
   // The most saturated corner is the key; corners covered by artwork (the ground
@@ -29,17 +40,17 @@ function sampleKey(data, w, h) {
 }
 
 /** Removes the flat key background in place (RGBA buffer). */
-export function keyOut(data, w, h, { glass = false, layer = false, tint = null, pocket = 0.6 } = {}) {
+export function keyOut(data, w, h, { glass = false, layer = false, tint = null, pocket = 0.6, pockets = true } = {}) {
   const key = sampleKey(data, w, h);
-  const green = key[1] > key[0] && key[1] > key[2];
-  const kKey = green ? key[1] - Math.max(key[0], key[2]) : Math.min(key[0], key[2]) - key[1];
+  const hot = hotChannels(key);
+  const kKey = tintOf(hot, ...key);
   const n = w * h;
   const dist = new Float32Array(n);
   const k = new Int16Array(n);
   for (let p = 0; p < n; p++) {
     const r = data[p * 4], g = data[p * 4 + 1], b = data[p * 4 + 2];
     dist[p] = Math.hypot(r - key[0], g - key[1], b - key[2]);
-    k[p] = green ? g - Math.max(r, b) : Math.min(r, b) - g;
+    k[p] = tintOf(hot, r, g, b);
   }
 
   // 1. Flood fill from the border.
@@ -48,7 +59,7 @@ export function keyOut(data, w, h, { glass = false, layer = false, tint = null, 
   let head = 0, tail = 0;
   // Background layers have shaded key pockets between grass blades: the flood
   // follows the key tint into them.
-  const seed = (p) => { if (!removed[p] && (dist[p] < D_FLOOD || layer && k[p] > kKey * 0.3)) { removed[p] = 1; queue[tail++] = p; } };
+  const seed = (p) => { if (!removed[p] && (dist[p] < D_FLOOD || layer && pockets && k[p] > kKey * 0.3)) { removed[p] = 1; queue[tail++] = p; } };
   for (let x = 0; x < w; x++) { seed(x); seed((h - 1) * w + x); }
   for (let y = 0; y < h; y++) { seed(y * w); seed(y * w + w - 1); }
   while (head < tail) {
@@ -63,7 +74,7 @@ export function keyOut(data, w, h, { glass = false, layer = false, tint = null, 
   // tinted pockets of background layers).
   const enclosed = new Uint8Array(n);
   for (let p = 0; p < n; p++) {
-    if (!removed[p] && (dist[p] < D_ENCLOSED || glass && k[p] > K_LENS || layer && k[p] > kKey * pocket)) { removed[p] = 1; enclosed[p] = 1; }
+    if (!removed[p] && (dist[p] < D_ENCLOSED || glass && k[p] > K_LENS || layer && pockets && k[p] > kKey * pocket)) { removed[p] = 1; enclosed[p] = 1; }
   }
 
   // 3. Pixels up to 2 px from removed ones form the edge feather band.
@@ -109,27 +120,26 @@ export function keyOut(data, w, h, { glass = false, layer = false, tint = null, 
     // Despill: a shadowed key tint survives the unmix; take it out of the key
     // channels, and on background layers fade such pixels out.
     const r = data[i], g = data[i + 1], b = data[i + 2];
-    const spill = green ? g - Math.max(r, b) : Math.min(r, b) - g;
+    const spill = tintOf(hot, r, g, b);
     let fade = 1;
     if (spill > 0) {
-      if (green) data[i + 1] = g - spill;
-      else { data[i] = r - spill; data[i + 2] = b - spill; }
+      for (let c = 0; c < 3; c++) if (hot[c]) data[i + c] -= spill;
       if (layer) fade = Math.max(0, 1 - spill / 40);
     }
     data[i + 3] = Math.round(data[i + 3] * a * fade);
   }
   if (glass) growShine(data, w, h, k, shine, removed);
-  if (layer) clearHaze(data, w, h, removed, green);
+  if (layer) clearHaze(data, w, h, removed, hot);
   bleedColor(data, w, h);
 }
 
 /**
- * The key mixed into the light tips and outlines of grass leaves a pale grey-pink rim, too
+ * The key mixed into the light tips and outlines of grass leaves a pale key-tinted rim, too
  * weak for the despill. A rim pixel loses the key tint by which it leans to the key more than
  * the inside of the objects around it (a pink stone or a red poppy stays as it is), but never
  * more than it has (a white flower beside the grass stays white).
  */
-function clearHaze(data, w, h, removed, green) {
+function clearHaze(data, w, h, removed, hot) {
   const n = w * h;
   // Chessboard distance from the removed key, up to HAZE_REACH + 1 (the inside).
   const depth = new Uint8Array(n).fill(HAZE_REACH + 1);
@@ -149,7 +159,12 @@ function clearHaze(data, w, h, removed, green) {
     front = next;
   }
   // How much a pixel leans to the key; the inside's lean summed over boxes (integral image).
-  const lean = (i) => green ? data[i + 1] - (data[i] + data[i + 2]) / 2 : (data[i] + data[i + 2]) / 2 - data[i + 1];
+  const nHot = hot.filter(Boolean).length;
+  const lean = (i) => {
+    let a = 0, b = 0;
+    for (let c = 0; c < 3; c++) if (hot[c]) a += data[i + c]; else b += data[i + c];
+    return a / nHot - b / (3 - nHot);
+  };
   const W = w + 1;
   const sum = new Float64Array(W * (h + 1));
   const cnt = new Float64Array(W * (h + 1));
@@ -171,8 +186,7 @@ function clearHaze(data, w, h, removed, green) {
     if (!c) continue;
     const shift = Math.min(HAZE, lean(i), Math.max(0, lean(i) - box(sum, x0, y0, x1, y1) / c - HAZE_MARGIN));
     if (shift <= 0) continue;
-    if (green) data[i + 1] = Math.max(0, data[i + 1] - shift);
-    else { data[i] = Math.max(0, data[i] - shift); data[i + 2] = Math.max(0, data[i + 2] - shift); }
+    for (let c = 0; c < 3; c++) if (hot[c]) data[i + c] = Math.max(0, data[i + c] - shift);
   }
 }
 

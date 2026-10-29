@@ -7,7 +7,7 @@
 //   node scripts/bg-seam.mjs merge <dir> <gemini> <out>  the repainted middle joined to the exact sides
 //   node scripts/bg-seam.mjs quilt <dir> <donor> <out>   the middle filled from another strip, no Gemini
 //   node scripts/bg-seam.mjs black <img> <out> [floor]   stars on black moved onto magenta, by brightness
-//   node scripts/bg-seam.mjs lift <img> <px|near> <out>  a strip moved up; the near layer hides its bottom
+//   node scripts/bg-seam.mjs lift <img> <px|near> <out>  a strip moved up (down by a negative px); the near layer hides its bottom
 //   node scripts/bg-seam.mjs preview <world> <out>       the three processed layers repeated side by side
 //
 // Gemini draws a strip as tall as half its picture, whatever the prompt says; asked for a sheet of
@@ -24,6 +24,7 @@
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import sharp from 'sharp';
+import { hotChannels, tintOf } from './key.mjs';
 
 export const W = 1376;
 export const H = 768;
@@ -59,12 +60,19 @@ const MAX_EDGE_STEP = 3;
 
 async function load(file) {
   const { data, info } = await sharp(file).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+  const corner = [data[0], data[1], data[2]];
+  key = Math.max(...corner) - Math.min(...corner) > 150 ? corner : MAGENTA;
+  hot = hotChannels(key);
   return { data, w: info.width, h: info.height };
 }
 
 const save = (img, file) => sharp(img.data, { raw: { width: img.w, height: img.h, channels: 3 } }).png().toFile(file);
 const dist = (d, i, c) => Math.hypot(d[i] - c[0], d[i + 1] - c[1], d[i + 2] - c[2]);
-const isKey = (d, i) => dist(d, i, MAGENTA) < 120 && Math.min(d[i], d[i + 2]) - d[i + 1] > 90;
+// The key of the picture loaded last: its top left corner when that is a strong color (a band
+// painted on cyan), else magenta (a far picture's corner is sky).
+let key = MAGENTA;
+let hot = hotChannels(MAGENTA);
+const isKey = (d, i) => dist(d, i, key) < 120 && tintOf(hot, d[i], d[i + 1], d[i + 2]) > 90;
 
 function sizeOk(img, file) {
   if (img.w === W && img.h === H) return true;
@@ -462,10 +470,10 @@ async function black(file, out, floor = BLACK_FLOOR) {
  */
 async function lift(file, by, out) {
   const img = await load(file);
-  if (!sizeOk(img, file)) return false;
   const { w, h, data } = img;
   let px = Number(by);
   if (Number.isNaN(px)) {
+    if (!sizeOk(img, file)) return false;
     const near = await load(by);
     // The solid band: the rows drawn almost all across above the bottom edge (a few last rows may have gaps).
     const solidRow = (y) => 1 - keyShare(near, y, y + 1) > 0.98;
@@ -476,11 +484,13 @@ async function lift(file, by, out) {
     while (bottom > 0 && keyShare(img, bottom - 1, bottom) > 0.995) bottom--;
     px = Math.max(0, bottom - solid - LIFT_HIDDEN);
   }
+  // The rows that come in are the key, as in the top corner.
   const res = Buffer.alloc(data.length);
-  for (let p = 0; p < w * h; p++) res.set(MAGENTA, p * 3);
-  data.copy(res, 0, px * w * 3);
+  for (let p = 0; p < w * h; p++) data.copy(res, p * 3, 0, 3);
+  if (px >= 0) data.copy(res, 0, px * w * 3);
+  else data.copy(res, -px * w * 3, 0, (h + px) * w * 3);
   await save({ data: res, w, h }, out);
-  console.log(`lifted by ${px} px`);
+  console.log(px >= 0 ? `lifted by ${px} px` : `moved down by ${-px} px`);
   return true;
 }
 

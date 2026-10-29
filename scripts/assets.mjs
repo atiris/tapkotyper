@@ -34,6 +34,7 @@ const SETS = [{ prefix: 'obj-parrot-flying', tone: true }, { prefix: 'obj-poppy-
 // The start page's meadow (day and night) repeats across the window: its left and right edges are
 // blended into each other over this part of its width.
 const MEADOW = 'ui-start-meadow';
+const CLEAN_KEY = 'bg-dragons-';
 const MEADOW_SEAM = 0.1;
 // The night meadow is the day one with its flowers closed, drawn in day colors: scaled to the day
 // picture's size (so its plants lie on the day ones) and recolored to the night palette.
@@ -170,7 +171,8 @@ async function processImage(name, file, manifest) {
   if (name.startsWith('outfit-')) return processOutfit(name.slice(7), data, w, h, manifest);
   if (name.startsWith('acc-')) return processAccessory(name.slice(4), data, w, h, manifest);
   // The meadow's grass leaves many small shaded key pockets, which the strips' threshold keeps as purple specks.
-  keyOut(data, w, h, name.startsWith(MEADOW) ? { layer: true, pocket: 0.3 } : { layer: name.startsWith('bg-') });
+  // The valley's layers are painted on a clean cyan key: no pockets, and their blue flowers lean to the key.
+  keyOut(data, w, h, name.startsWith(MEADOW) ? { layer: true, pocket: 0.3 } : { layer: name.startsWith('bg-'), pockets: !name.startsWith(CLEAN_KEY) });
   // Bolt's pictures stay square, so the raincoat overlay fits every one of them; Melody's keep her size in every mood.
   if (name === 'base-template' || name.startsWith('tapko-') || name.startsWith('robot') || name.startsWith('fairy-')) return writeSquare(name, data, w, h, manifest);
   if (name.startsWith(MEADOW)) return writeTile(name, data, w, h, bbox(data, w, h), manifest);

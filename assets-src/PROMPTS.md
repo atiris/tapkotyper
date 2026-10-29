@@ -30,6 +30,9 @@ them in any order, skip some, or redo one later with the same name.
 
 ### Lessons from generating
 Notes from real Gemini runs; add new ones here.
+- A background layer painted on a clean cyan key (the owner's valley layers) keys out without
+  the purple rim a magenta key leaves in grass tips; its blue art leans to the key, so it skips
+  the pocket rules (`CLEAN_KEY` in scripts/assets.mjs).
 - A soft glow or halo (a light bulb) blends into the magenta and leaves a pink fringe after
   keying. Ask for light as "a few short thin ray lines with dark outlines, no soft glow, no halo".
 - With an attached character picture, "a new pose" keeps its stance and only changes the arms

@@ -30,6 +30,7 @@ describe('the green line of an end card', () => {
     expect(bestLetter([{ key: 'a', before: 0.8, after: 0.9 }, { key: 'b', before: 0.5, after: 0.8 }, { key: 'c', before: 0.9, after: 0.7 }]))
       .toEqual({ kind: 'letter', key: 'b', before: 0.5, after: 0.8 });
     expect(bestLetter([{ key: 'c', before: 0.9, after: 0.9 }])).toBeNull();
+    expect(bestLetter([{ key: 'o', before: 0.921, after: 0.923 }])).toBeNull();
   });
 
   it('a thing new in the range collection goes first, without counting other rewards', () => {

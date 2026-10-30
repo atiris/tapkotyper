@@ -71,6 +71,8 @@
   --tint-neutral: #f3ece2;
   --heat-good: #c9efd3; --heat-ok: #fff1b8; --heat-practice: #ffd4c4;
   --shadow: 0 10px 30px rgba(70, 45, 30, 0.14), 0 2px 6px rgba(70, 45, 30, 0.08);
+  /* A card or window over the blurred game: lifted off it. */
+  --lift: 0 18px 44px rgba(40, 25, 15, 0.5), 0 4px 12px rgba(40, 25, 15, 0.28), 0 0 0 1px rgba(90, 61, 43, 0.22);
   /* The short hard shadow under buttons and keys, and the soft one of a drop shadow. */
   --edge: rgba(90, 61, 43, 0.18);
   /* A key's outline, clearly apart from the paper on every side. */
@@ -128,6 +130,7 @@
   --tint-neutral: #383250;
   --heat-good: #2f5a48; --heat-ok: #5a5034; --heat-practice: #643a40;
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(255, 240, 220, 0.08);
+  --lift: 0 18px 48px rgba(0, 0, 0, 0.75), 0 4px 12px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 240, 220, 0.14);
   --edge: rgba(0, 0, 0, 0.35);
   --key-line: rgba(255, 240, 220, 0.38);
   --soft-shadow: rgba(0, 0, 0, 0.4);
@@ -169,7 +172,7 @@ body.high-contrast {
   --brand-ink: #7a2d00; --green-ink: #004d21; --danger-ink: #a01e1a; --orange-ink: #7a2d00; --red-ink: #7a1612; --gold-ink: #5a3800;
   --tint-orange: #fff; --tint-green: #fff; --tint-yellow: #fff; --tint-red: #fff; --tint-purple: #fff; --tint-blue: #fff; --tint-neutral: #fff;
   --heat-good: #c9efd3; --heat-ok: #fff1b8; --heat-practice: #ffd4c4;
-  --shadow: 0 0 0 2px #000; --edge: rgba(0, 0, 0, 0.5); --soft-shadow: rgba(0, 0, 0, 0.2);
+  --shadow: 0 0 0 2px #000; --lift: 0 0 0 2px #000; --edge: rgba(0, 0, 0, 0.5); --soft-shadow: rgba(0, 0, 0, 0.2);
   --track: rgba(0, 0, 0, 0.2); --axis: #000; --dot: #bbb; --star-off: #888; --rb-base: #bbb; --bump: #000; --scroll: #000; --focus: #0047d6;
   --tip-bg: #000; --tip-ink: #fff; --hud-bg: #fff; --kb-bg: #fff; --story-box: #fff; --break-bg: #fff; --page-bg: #fff;
   --item-bg: #fff; --item-on: #fff;
@@ -219,6 +222,8 @@ p { line-height: 1.5; }
 }
 .btn:disabled { opacity: 0.5; cursor: default; transform: none; }
 .btn.primary { background: linear-gradient(180deg, var(--brand-top), var(--brand)); color: var(--on-brand); text-shadow: var(--on-brand-glow); }
+/* A plain button has the keys' thin line, so a pale face stays visible on a pale card. */
+.btn:not(.primary) { border: 1px solid var(--key-line); }
 /*
  * A raised button is a key: its base stays put. Lifted it shows more of its edge over a wider,
  * softer ground shadow; pressed it sinks into the base. Its own layer keeps the text's shine steady
@@ -989,6 +994,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 
 /* Overlays and cards */
 .overlay { position: absolute; inset: 0; z-index: 10; display: grid; place-items: center; background: var(--overlay); backdrop-filter: blur(3px); padding: 1rem; animation: fade-in 0.2s ease; }
+.overlay > :is(.card, .modal), .modal-back > .modal { box-shadow: var(--lift); }
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 .card { background: var(--paper); border-radius: 28px; padding: clamp(1.2rem, 3vw, 2.2rem); box-shadow: var(--shadow); max-width: 640px; width: 100%; text-align: center; animation: pop-in 0.3s ease; max-height: 100%; overflow: auto; }
 .card .row { justify-content: center; }

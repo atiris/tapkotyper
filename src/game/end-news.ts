@@ -35,10 +35,11 @@ export function levelNews(r: LevelResult, rescued: Friend | null = null): News[]
   return news;
 }
 
-/** The trained letter whose accuracy grew the most in a target range run, or null when none grew. */
+/** The trained letter whose accuracy grew the most in a target range run, or null when none grew by a whole percent (the card shows whole percents). */
 export function bestLetter(report: { key: string; before: number; after: number }[]): News | null {
+  const grew = (k: { before: number; after: number }) => Math.round(k.after * 100) - Math.round(k.before * 100);
   let best: { key: string; before: number; after: number } | null = null;
-  for (const k of report) if (k.after > k.before && (!best || k.after - k.before > best.after - best.before)) best = k;
+  for (const k of report) if (grew(k) > 0 && (!best || grew(k) > grew(best))) best = k;
   return best && { kind: 'letter', ...best };
 }
 

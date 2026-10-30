@@ -57,9 +57,11 @@ One set of rules for where things sit and how they behave, so every screen feels
    covers a word to type.
 8. **Buttons.** The one main action of a view is the orange button ("primary"); everything
    else is plain or ghost. A view never has two orange buttons. Every button looks pressable
-   (a raised key that lifts and sinks); a ghost one is only lighter, never flat.
+   (a raised key that lifts and sinks); a ghost one is only lighter, never flat. A plain button
+   carries the keys' thin outline, so a pale face stays visible on a pale card.
 9. **Panels.** Content sits on paper-coloured panels of one maximum width with the same
-   padding and heading style; the page background is the world's sky gradient.
+   padding and heading style; the page background is the world's sky gradient. A card or window
+   laid over the blurred game or page is lifted off it by a clear shadow, never flat on it.
 10. **Switches.** A checkbox is always on the left; to its right the title in bold, and under
    the title a short explanation in normal, smaller text. A title is a name ("Automatická
    náročnosť"), not a sentence with a bracket. The same layout holds for every switch in
@@ -72,6 +74,9 @@ One set of rules for where things sit and how they behave, so every screen feels
    says in its tooltip what is still missing, and a badge says its world, what its tier means
    and what the next tier needs (silver for bronze, gold for silver). The sound button names
    the sound level with F4 and, on a second line, that F8 plays another song.
+12. **One end card.** Every end of play (any level, practice, activity, break or hand-in,
+   including ones added later) uses the one end card of [mechanics](../game/mechanics.md): the
+   same parts in the same places, its own title, picture and rows. No end gets its own layout.
 - No decorative bursts (confetti, sparkles, flying petals or feathers) for success or at an
   end. Particles only show what happens in the scene: dust of a crumbling stone, splashes of a
   pushed log, sparks of a torch, leaves of a bush, what a thing at the target range is
@@ -95,3 +100,5 @@ One set of rules for where things sit and how they behave, so every screen feels
   language still finds it.
 - Bursts of confetti pull the eyes off the words and make a calm game loud; the joy is in
   the scene itself and in Tapko.
+- One end card means a child finds the result, the news and the way on in the same place after
+  every kind of play, and a new activity cannot drift into its own crowded layout.

@@ -258,7 +258,9 @@ as they are. The world descriptions below marked *not built yet* are the design 
    little from above: a dragon in front is a bit bigger and flies over the ones behind, each on its
    own slightly different circle, beating its wings. They lean into their flight as in the take-off
    (backs about level) and turn at the sides of the circle like a flat card turning round a pole
-   through the body: the lean stays and comes out mirrored, quick (about half a second), never a
+   through the body, the nearer side a little taller, so on both sides of the circle it reads as
+   the same way round (clockwise from above): the lean stays and comes out mirrored, quick (about
+   half a second), never a
    sudden jump, never a long thin phase, stretching up and rising a little through the turn; a
    landing dragon keeps its size. A panel top left, above Tapko's head and left of the circling dragons,
    shows a verse of the lullaby: two lines one under the other, each a sentence of four or five

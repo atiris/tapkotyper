@@ -456,6 +456,9 @@ const TURN_RISE = 10;
 const BEAT = 0.8;
 const BOB = 4;
 const BREATH = 0.5;
+/** A turning dragon in perspective: how much taller its nearer edge is, and the strips it is drawn in. */
+const PERSPECTIVE = 0.3;
+const CARD_STRIPS = 16;
 const COME = 1.5;
 const DOWN = 1.6;
 const NEXT_LINE = 0.9;
@@ -521,6 +524,8 @@ export class LullabyMode extends Mode {
   /** Seconds until the next line; -1 when none is due. */
   private nextIn = -1;
   private endT: number | null = null;
+  /** The picture a turning dragon is drawn into first. */
+  private cardPic: HTMLCanvasElement | null = null;
 
   constructor(L: LevelRuntime) {
     super(L);
@@ -714,31 +719,60 @@ export class LullabyMode extends Mode {
    * A dragon in flight: its body's middle at x, y, `v` its turn (1 right, -1 left), `size` its
    * nearness. The lean is drawn first, the turn after it, so a turning dragon narrows like a card
    * round a pole through its body and comes out mirrored, leaning the new way; it beats its wings.
+   * `nose` 1 turns its nose toward us, -1 away: the card's nearer side is taller, so every turn reads
+   * as the same way round (clockwise from above), whichever side of the circle it is on.
    */
-  private fly(g: G, d: Circler, x: number, y: number, v: number, size: number): void {
+  private fly(g: G, d: Circler, x: number, y: number, v: number, size: number, nose: number): void {
     const motion = !this.L.reduceMotion, beat = Math.sin((this.t * BEAT + d.phase) * Math.PI * 2);
     const w = Math.sin((v * Math.PI) / 2), turning = 1 - Math.abs(w), h = FLY_H * size;
     const lean = LEAN + (motion ? ROCK * Math.sin(this.t * 2.6 + d.phase) : 0);
+    // Drawn from its feet: they go where its middle turns round.
+    const draw = (to: G) => drawDragon(to, d.pic, (-h / 2) * Math.sin(lean), (h / 2) * Math.cos(lean), h, motion ? beat * BREATH : 0, 1, 1, lean);
     g.save();
     g.translate(x, y - turning * TURN_RISE * size + (motion ? beat * BOB : 0));
-    g.scale((w < 0 ? -1 : 1) * Math.max(TURN_MIN, Math.abs(w)), 1 + turning * TURN_STRETCH);
-    // Drawn from its feet: they go where its middle turns round.
-    drawDragon(g, d.pic, (-h / 2) * Math.sin(lean), (h / 2) * Math.cos(lean), h, motion ? beat * BREATH : 0, 1, 1, lean);
+    g.scale(w < 0 ? -1 : 1, 1 + turning * TURN_STRETCH);
+    const narrow = Math.max(TURN_MIN, Math.abs(w));
+    if (narrow > 0.99) {
+      g.scale(narrow, 1);
+      draw(g);
+    } else this.card(g, h, narrow, PERSPECTIVE * Math.sqrt(1 - w * w) * nose, draw);
     g.restore();
+  }
+
+  /**
+   * A turning card in perspective: `draw` (round 0, 0, about `h` big) goes into a picture of its own,
+   * then onto `g` in thin upright strips, `narrow` as wide, each strip taller toward the side `tip`
+   * points to (a share of its height at the card's edge).
+   */
+  private card(g: G, h: number, narrow: number, tip: number, draw: (to: G) => void): void {
+    const t = g.getTransform(), res = Math.min(3, Math.hypot(t.a, t.b) || 1), side = Math.ceil(h * 1.7);
+    const c = (this.cardPic ??= document.createElement('canvas')), px = Math.ceil(side * res);
+    if (c.width < px || c.height < px) c.width = c.height = px;
+    const cg = c.getContext('2d')!;
+    cg.setTransform(1, 0, 0, 1, 0, 0);
+    cg.clearRect(0, 0, px, px);
+    cg.setTransform(res, 0, 0, res, px / 2, px / 2);
+    draw(cg);
+    const strip = side / CARD_STRIPS;
+    for (let i = 0; i < CARD_STRIPS; i++) {
+      const u = (i + 0.5) / CARD_STRIPS - 0.5, grow = 1 + tip * u * 2;
+      g.drawImage(c, i * strip * res, 0, strip * res, px, (i * strip - side / 2) * narrow * grow, (-side / 2) * grow, strip * narrow * grow + 0.6, side * grow);
+    }
   }
 
   private drawCircler(g: G, d: Circler): void {
     const L = this.L, c = this.circle(d), size = (near: number) => 1 + DEPTH * near;
-    if (d.state === 'circle') return this.fly(g, d, c.x, c.y, c.v, size(c.near));
+    // Clockwise from above: on the right it turns its nose toward us, on the left away.
+    if (d.state === 'circle') return this.fly(g, d, c.x, c.y, c.v, size(c.near), c.x > this.pit.x ? 1 : -1);
     if (d.state === 'come') {
       // In from the right, high, settling into its place on the circle; it turns into the circle's way at the end.
       const k = ease.outQuad(Math.min(1, d.t / COME)), turn = ease.inOutQuad(Math.max(0, Math.min(1, (d.t - COME + TURN_S) / TURN_S)));
-      return this.fly(g, d, L.vw + 80 + (c.x - L.vw - 80) * k, c.y - (1 - k) * 60, -1 + (c.v + 1) * turn, size(c.near));
+      return this.fly(g, d, L.vw + 80 + (c.x - L.vw - 80) * k, c.y - (1 - k) * 60, -1 + (c.v + 1) * turn, size(c.near), -1);
     }
     // Gliding down to its place by the fire at the size it had, its feet landing there; it turns toward it first.
     const k = ease.inOutQuad(Math.min(1, d.t / DOWN)), to = this.sleepSpot(d.seat), way = to.x < d.fromX ? -1 : 1, s = size(d.fromNear);
     const toY = to.y - (FLY_H * s) / 2;
-    this.fly(g, d, d.fromX + (to.x - d.fromX) * k, d.fromY + (toY - d.fromY) * k, d.fromV + (way - d.fromV) * ease.inOutQuad(Math.min(1, d.t / TURN_S)), s);
+    this.fly(g, d, d.fromX + (to.x - d.fromX) * k, d.fromY + (toY - d.fromY) * k, d.fromV + (way - d.fromV) * ease.inOutQuad(Math.min(1, d.t / TURN_S)), s, way < d.fromV ? 1 : -1);
   }
 
   progress(): number {

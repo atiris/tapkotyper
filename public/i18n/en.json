@@ -679,7 +679,7 @@
       "meadow": "It is a lovely afternoon on the meadow and there is a **football match** later! The animals train with you: they kick leaves like a ball and **you keep goal**. Catch the leaves with letters: **type the word on a leaf** and the leaf is yours.",
       "space": "Three, two, one... **lift off!** You fly off to explore a few planets, all the way to the **dragons' planet**. **Your typing rhythm** drives the rocket and a soft beam pushes meteors out of the way.",
       "planet": "**Welcome** to the dragons' planet, where spells are real and crystals power life! But the **last crystal** of life has **gone dark.** The planet may lose its light. Luckily you **have a map**: cross the swamp and the meadow, **find** at least three **crystals of life** and wake them with a spell. When you **carry** them all the way **to the stone monolith**, life on the dragons' planet **will be saved.** **Accuracy** still matters more than speed.",
-      "dragons": "In the Dragon Valley **the fire went out** and the baby dragons ran away. Little **flames** float all over the valley. **Type the word** on a flame to catch it in your torch; together they light the fire in the fire pit again.",
+      "dragons": "The crystal of life lit up the planet, but **in the dragon valley** the **warm fire is** still **out.** For the baby dragons to come back to the valley, you must light the dragon fire pit again. **Catch as many little flames as you can** and light the fire pit, so it brings warmth and light back to this valley. Then the baby dragons will surely come too.",
       "egg": "Oh! **The egg starts to wiggle** and roll down the hill. Help it **jump over rocks and stumps**. Watch out for a friendly mole!",
       "junkyard": "You walk past an old junkyard. **Someone is beeping sadly under a pile of old things.** Type a word and a **soft magnet** lifts the junk off the pile.",
       "workshop": "Bolt wants to go home, but **he is missing some parts**. Gears, bolts and springs ride along the conveyor belt. **Type a part's word** and toss it into the basket.",
@@ -769,13 +769,13 @@
       ]
     },
     "flamesStart": [
-      "Catch the flames in your torch, so the fire in the fire pit burns again."
+      "The crystal of life lit up the planet, but **in the dragon valley** the **warm fire is** still **out.** For the baby dragons to come back to the valley, you must light the dragon fire pit again. **Catch as many little flames as you can** and light the fire pit, so it brings warmth and light back to this valley. Then the baby dragons will surely come too."
     ],
     "flamesDone": [
       "The fire is burning! The dragons will see it from all over the valley."
     ],
     "thicketStart": [
-      "The path to the dragons is overgrown. Each bush disappears when you type its **spell without a slip**. A slip makes two new branches grow."
+      "The valley is cosy again, but **the baby dragons cannot get here** until the path into the valley is cleared. For every bush there is a spell that makes it melt away. **Type the spell** above each bush **and clear the path**, so the baby dragons can come back to the valley."
     ],
     "thicketSlip": [
       "The spell did not work.",
@@ -787,7 +787,7 @@
       "The path is open! The baby dragons peek out at its end."
     ],
     "flightStart": [
-      "The baby dragons must learn to fly. Type **nicely in rhythm**, so they fly over the bushes to the fire."
+      "In the cave the baby dragons did not need to fly, so they never learned it. **On the meadow**, though, **flying will be a must** for them, to fly out of the valley and explore the dragon planet. They must lift their wings evenly and smoothly. Show them how and **type steadily, smoothly and without slips.**"
     ],
     "flightBush": [
       "Hee hee, that tickles!",
@@ -806,13 +806,13 @@
       "other": "{n} of {m} baby dragons\nlearned to fly."
     },
     "lullabyStart": [
-      "The baby dragons circle around and cannot fall asleep. Copy a lullaby for them; every line ends with a **period**."
+      "The **baby dragons** have **practised** flying all day, and they are really good at it now. But now they **cannot fall asleep.** A **lullaby will surely help!** You must type every verse of the lullaby exactly, or the baby dragon will not fall asleep. So good night, little dragons."
     ],
     "lullabyDone": [
       "Shh... all the baby dragons are asleep by the fire."
     ],
     "takeoffStart": [
-      "In the morning the baby dragons want to fly off to the crystal meadow. Each one needs a few groups of words **without a slip and in rhythm**, or it comes back and tries again."
+      "In the morning the baby dragons want to **fly off** to the crystal meadow. It is a long flight over hills and swamps, but they are ready for it. On take-off a baby dragon **must not slip and must flap its wings fast enough**, or it comes back to the fire pit to try again from the start. **Help them take off** on their first big journey."
     ],
     "takeoffBack": [
       "Let's try that again!",

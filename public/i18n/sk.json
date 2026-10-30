@@ -679,7 +679,7 @@
       "meadow": "Na lúke je krásne popoludnie a poobede bude **futbalový zápas**! Zvieratká s tebou trénujú: kopú listy ako loptu a **ty si brankár**. Chytaj listy písmenami: **napíš slovo na liste** a list je tvoj.",
       "space": "Tri, dva, jeden... **štart!** Letíš preskúmať zopár planét až k **planéte drakov**. **Rytmus tvojho písania** poháňa raketu a jemný lúč odsúva meteority z cesty.",
       "planet": "**Vitaj** na planéte drakov, na ktorej existujú kúzla a život poháňajú kryštály! **Posledný kryštál** života však už **vyhasol.** Hrozí, že planéta stratí svetlo. Našťastie **máš mapu**, podľa ktorej treba prejsť močiar a lúku, **nájsť** aspoň tri **kryštály života** a prebudiť ich kúzlom. Keď sa ti ich podarí **odniesť** až **ku kamennému monolitu**, život na planéte drakov **bude zachránený.** **Presnosť** je stále dôležitejšia ako rýchlosť.",
-      "dragons": "V Dračom údolí **zhasol oheň** a dráčiky sa rozutekali. Malé **ohníky** poletujú po údolí. **Napíš slovo** na ohníku a chytíš ho do fakle; z nich sa rozhorí oheň v ohnisku.",
+      "dragons": "Kryštál života rozjasnil planétu, ale **v údolí drakov je** stále **zhasnutý hrejivý plameň.** Aby sa dráčiky vrátili do údolia, musíš znova rozžiariť dračie ohnisko. **Chyť čo najviac plamienkov** a rozžiar ohnisko tak, aby znova prinieslo teplo a jas do tohto údolia. Potom sem určite prídu aj dráčiky.",
       "egg": "Ojoj! **Vajíčko sa začína hýbať** a kotúľa sa dolu kopcom. Pomôž mu **preskočiť kamene a pníky**. Pozor na priateľského krtka!",
       "junkyard": "Ideš okolo starého šrotiska. **Pod kopou starých vecí niekto smutne pípa.** Napíš slovo a **jemný magnet** zdvihne haraburdu z kopy.",
       "workshop": "Šróbik chce ísť domov, ale **chýbajú mu súčiastky**. Po páse sa vezú kolieska, skrutky a pružiny. **Napíš slovo súčiastky** a hodíš ju do košíka.",
@@ -769,13 +769,13 @@
       ]
     },
     "flamesStart": [
-      "Chytaj ohníky do fakle, nech oheň v ohnisku znova horí."
+      "Kryštál života rozjasnil planétu, ale **v údolí drakov je** stále **zhasnutý hrejivý plameň.** Aby sa dráčiky vrátili do údolia, musíš znova rozžiariť dračie ohnisko. **Chyť čo najviac plamienkov** a rozžiar ohnisko tak, aby znova prinieslo teplo a jas do tohto údolia. Potom sem určite prídu aj dráčiky."
     ],
     "flamesDone": [
       "Oheň v ohnisku horí! Dráčiky ho uvidia z celého údolia."
     ],
     "thicketStart": [
-      "Cesta k dráčikom je zarastená. Každý krík zmizne, keď napíšeš jeho **kúzlo bez chyby**. Pri chybe vyrastú dva nové konáre."
+      "V údolí je už príjemne, ale **dráčiky sa sem nedostanú**, kým nebude vyčistená cesta do údolia. Na každý krík však existuje kúzlo, ktoré ho nechá rozplynúť. **Napíš kúzlo** nad každým kríkom **a vyčisti cestičku**, aby sa dráčiky mohli dostať späť do údolia."
     ],
     "thicketSlip": [
       "Kúzlo sa nepodarilo.",
@@ -787,7 +787,7 @@
       "Cesta je voľná! Na jej konci vykúkajú dráčiky."
     ],
     "flightStart": [
-      "Dráčiky sa musia naučiť lietať. Píš **pekne v rytme**, nech preletia ponad kríky k ohnisku."
+      "V jaskyni dráčiky lietať nepotrebovali, preto sa to nikdy neučili. **Na lúke** však **bude** pre nich **lietanie nevyhnutné**, aby mohli z údolia vyletieť a preskúmať planétu drakov. Krídla musia dvíhať rovnomerne a hladko. Predveď to dráčikom a **píš pravidelne, plynulo a bez chýb.**"
     ],
     "flightBush": [
       "Júj, to šteklí!",
@@ -806,13 +806,13 @@
       "other": "{n} z {m} dráčikov\nsa naučilo lietať."
     },
     "lullabyStart": [
-      "Dráčiky krúžia a nemôžu zaspať. Opíš im uspávanku, každý riadok končí **bodkou**."
+      "**Dráčiky** celý deň **trénovali** lietanie, ktoré im už ide skutočne dobre. Teraz však **nevedia zaspať.** Určite im **pomôže uspávanka!** Každý verš uspávanky musíš napísať presne, inak sa ti nepodarí dráčika uspať. Tak dobrú noc, dráčiky."
     ],
     "lullabyDone": [
       "Pst... všetky dráčiky spia pri ohni."
     ],
     "takeoffStart": [
-      "Ráno chcú dráčiky odletieť na lúku kryštálov. Každý potrebuje niekoľko skupín slov **bez chyby a v rytme**, inak sa vráti a skúsi to znova."
+      "Ráno chcú dráčiky **odletieť** na lúku kryštálov. Je to dlhý let ponad kopce a močiare, sú však na to pripravené. Dráčik sa pri odlete **nesmie pomýliť a musí mávať krídlami dostatočne rýchlo**, inak sa vráti k ohnisku, aby to skúsil znova od začiatku. **Pomôž im s odletom** na ich prvú veľkú cestu."
     ],
     "takeoffBack": [
       "Skúsime to znova!",

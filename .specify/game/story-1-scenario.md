@@ -88,9 +88,12 @@ dráčiky sa vystrašené schovali hlboko v nej. Lietať sa nikdy nenaučili a i
 kryštálov (2. úroveň planéty), kde ich kryštály hrejú a dávajú im silu. Dráčiky nie sú nikdy
 terčom: slová sú na ohníkoch, kríkoch, na paneli alebo v bubline.
 
-Úvod sveta (prvá karta 1. úrovne): "V Dračom údolí zhasol oheň a dráčiky sa rozutekali. Malé
-ohníky poletujú po údolí. Napíš slovo na ohníku a chytíš ho do fakle; z nich sa rozhorí oheň v
-ohnisku."
+Úvod sveta (prvá karta 1. úrovne, zároveň úvod 1. úrovne): "Kryštál života rozjasnil planétu,
+ale v údolí drakov je stále zhasnutý hrejivý plameň. Aby sa dráčiky vrátili do údolia, musíš znova
+rozžiariť dračie ohnisko. Chyť čo najviac plamienkov a rozžiar ohnisko tak, aby znova prinieslo
+teplo a jas do tohto údolia. Potom sem určite prídu aj dráčiky." Úvody ďalších úrovní pokračujú v
+príbehu: cesta je zarastená kríkmi s kúzlami, v jaskyni sa dráčiky nenaučili lietať, po celom dni
+tréningu nevedia zaspať, ráno odlietajú na lúku kryštálov.
 
 1. **Ohníky** - Tapko drží fakľu, kúsok vpravo leží vyhasnuté ohnisko. Ohníky priletujú sprava v
    mäkkých oblúkoch; napísaný ohník Tapko chytí do fakle, fakľa sa oblúkom nakloní a odovzdá ho

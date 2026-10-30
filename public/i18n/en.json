@@ -2949,16 +2949,21 @@
       "flame": {
         "name": "Little flame",
         "launch": [
-          "Flame away!",
-          "Hot stuff incoming!"
+          "Make a ring of fire!",
+          "Hot stuff incoming!",
+          "Hot, hot!"
         ],
         "sound": [
           "Whoosh!"
         ],
         "hit": [
-          "Nice and warm!",
+          "387 °C",
           "Warm like dragon breath!",
-          "Sparks everywhere!"
+          "Sparks everywhere!",
+          "Fire, fire!",
+          "Call the firefighters!",
+          "Calling 112!",
+          "I'm all crispy!"
         ],
         "expect": [
           "Is it going to burn?",

@@ -2964,17 +2964,22 @@
       "flame": {
         "name": "Ohník",
         "launch": [
-          "Ohník letí!",
+          "Vyrob ohnivú obruč!",
           "Hádžem ohník!",
-          "Pozor, horúce!"
+          "Pozor, horúce!",
+          "Páli, páli!"
         ],
         "sound": [
           "Fššš!"
         ],
         "hit": [
-          "Teplučko!",
+          "387 °C",
           "Hreje to ako dračí dych!",
-          "Iskričky všade!"
+          "Iskričky všade!",
+          "Horí, horí!",
+          "Volajte hasičov!",
+          "Volám 150!",
+          "Som chrumkavý!"
         ],
         "expect": [
           "Nebude to páliť?",

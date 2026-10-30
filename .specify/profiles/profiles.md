@@ -73,8 +73,9 @@
   mistakes and 2 hesitations. The slips are spread evenly over the level: the level is cut
   into one part more than there are slips, and a slip comes at each cut, in the listed order.
   A mistake is a random wrong key. A hesitation lets one word fly by unfinished; in a level
-  where nothing flies by, it is skipped. Three more choices aim at an accuracy instead, about
-  95 % (3 stars), 90 % (2 stars) and 75 % (1 star), with wrong keys at random all through the level.
+  where nothing flies by, it is skipped. Four more choices aim at an accuracy instead, about
+  98 % and 95 % (3 stars), 90 % (2 stars) and 75 % (1 star), with wrong keys at random all
+  through the level.
   Everything counts as the player's own typing:
   statistics, stars and paw charges. While it types, the button has a full red ring, like
   the other round buttons show their state; the same menu stops it. Only the temporary player has

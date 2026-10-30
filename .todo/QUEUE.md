@@ -6,3 +6,4 @@ each in its own clean session. One line per plan in `.todo/`:
 listed here is never run. Lines whose plan has moved to `.todo/.done/` are
 skipped, and the session that finishes a plan removes its line.
 
+- [P1] 61-level-minimums-and-swamp-log.md - the owner ran out of targets in Planéta:5 halfway; minimums by story and the log are next

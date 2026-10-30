@@ -2,7 +2,7 @@ import { pickLine } from '../../app/app';
 import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
 import { sprite } from '../../gfx/assets';
-import { blob, drawSprite, type G } from '../../gfx/draw';
+import { NEAR_DROP, blob, drawSprite, type G } from '../../gfx/draw';
 import { t } from '../../i18n/i18n';
 import { TAPKO_H } from '../mode';
 import { HeroMode, wordAbove } from './kit/hero';
@@ -31,7 +31,7 @@ const SHORE_LAND = 1.06;
 const SHORE_SAME = 0.8;
 const SHORE_MEADOW = 1.22;
 const SHORE_CRADLE = 1.45;
-const SHORE_FEET = SWAMP_FEET - 6;
+const SHORE_FEET = SWAMP_FEET - 6 + NEAR_DROP['-swamp'];
 const SHORE_VIEW = 0.6;
 /** He ends on the meadow at least this far from the right edge. */
 const SHORE_MARGIN = 160;

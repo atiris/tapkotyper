@@ -5,7 +5,7 @@ import { ENTER, LAYOUTS, stepsFor } from '../src/keyboard/layouts';
 export async function playLevel(page: Page, mistakes = true, typed: string[] = []): Promise<string> {
   for (let i = 0; i < 3000; i++) {
     const state = await page.evaluate(() => {
-      const res = document.querySelector<HTMLElement>('.results-card');
+      const res = document.querySelector<HTMLElement>('.end-card');
       if (res) return { kind: 'results', text: res.innerText };
       if (document.querySelector('.keys-intro')) return { kind: 'ready' };
       const ck = document.querySelector<HTMLElement>('.controlkey-card');

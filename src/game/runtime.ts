@@ -34,7 +34,7 @@ import { type Mode, TAPKO_FEET, TAPKO_H, TAPKO_X, driftOffset } from './mode';
 import { PAW_MAX, PAW_STREAK, PAW_WORDS } from './paw';
 import { ENTER_MAX, EnterMarks } from './enter';
 import type { ModeMaker } from './modes';
-import type { FreeTypeMode } from './modes/freetype';
+import type { FreeTypeMode, FreeTyped } from './modes/freetype';
 import { PressureValve, perChar, sayTime } from './pace';
 import { Rhythm } from './rhythm';
 import { type LevelResult, completeLevel, completeStay } from './progress';
@@ -116,6 +116,8 @@ export interface RuntimeOptions {
   stay?: boolean;
   onFinish(result: LevelResult | null): void;
   onExit(): void;
+  /** Free typing left after something was typed: its end card. */
+  onFreeDone(typed: FreeTyped): void;
   /** A click on Tapko during play (the level pauses first). */
   onTapko(): void;
   /** The help page over the paused level, with what this level asks (`now`); `back` returns to the paused level. */
@@ -255,7 +257,7 @@ export class LevelRuntime {
     // Enter comes with the right little finger's home key; drills, single letters and the gate's code stay without it.
     const enterOk = !opts.keys && !def.noSpace && def.kind !== 'freetype' && def.kind !== 'aim' && def.kind !== 'parrot' && (opts.chosen ?? activeKeys(p)).includes(enterAfter(lay));
     this.enter = enterOk ? new EnterMarks(() => this.rng.next(), def.kind === 'practice' ? null : ENTER_MAX) : null;
-    this.surprise = opts.stay || def.kind === 'aim' || def.kind === 'parrot' ? null : surpriseFor(p, def, !!opts.keys);
+    this.surprise = opts.stay ? null : surpriseFor(p, def, !!opts.keys);
     this.count = def.count;
     // The e2e build may shorten the minimum (`?minActive=8`), so its tests finish levels in seconds.
     // Staying a while never reaches its minimum: the targets keep coming until Esc.
@@ -1233,10 +1235,17 @@ export class LevelRuntime {
     if (this.dictating) this.readId = 0;
   }
 
+  /** Leaving: free typing after something was typed ends with its card, everything else goes to the map. */
   private exit(): void {
     speech.stop();
     this.flushSession();
-    this.opts.onExit();
+    const typed = this.free?.summary();
+    if (!typed?.words) return this.opts.onExit();
+    this.finished = true;
+    this.input?.dispose();
+    this.input = null;
+    this.guide.show(null);
+    this.opts.onFreeDone(typed);
   }
 
   private onVisibility(): void {

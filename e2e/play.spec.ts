@@ -10,23 +10,23 @@ test('a new child plays the first level by typing and sees stars', async ({ page
   expect(text).toMatch(/%/);
   // The character celebrated in place, not running off.
   await expect(page.locator('.level-tapko.celebrate')).toHaveCount(1);
-  await expect(page.locator('.results-card .star.on').first()).toBeVisible();
+  await expect(page.locator('.end-card .star.on').first()).toBeVisible();
   // Esc peeks at the last frame of the game under the card; a key that types nothing brings the card back with its focus (a letter would stay a while).
   const overlay = page.locator('.overlay.results');
-  const first = page.locator('.results-card .row.center button').first();
+  const first = page.locator('.end-card .ec-bot button').first();
   await expect(first).toBeFocused();
   await page.keyboard.press('Escape');
   await expect(overlay).toHaveClass(/peek/);
-  await expect(page.locator('.results-card')).toBeHidden();
+  await expect(page.locator('.end-card')).toBeHidden();
   await expect(page.locator('.level-screen canvas').first()).toBeVisible();
   await page.keyboard.press('ArrowDown');
-  await expect(page.locator('.results-card')).toBeVisible();
+  await expect(page.locator('.end-card')).toBeVisible();
   await expect(first).toBeFocused();
   // The round X peeks too, a click on the stage brings the card back.
-  await page.locator('.results-card .modal-x').click();
-  await expect(page.locator('.results-card')).toBeHidden();
+  await page.locator('.end-card .modal-x').click();
+  await expect(page.locator('.end-card')).toBeHidden();
   await overlay.click({ position: { x: 20, y: 20 } });
-  await expect(page.locator('.results-card')).toBeVisible();
+  await expect(page.locator('.end-card')).toBeVisible();
   // Esc twice goes to the map.
   await page.keyboard.press('Escape');
   await page.keyboard.press('Escape');
@@ -184,7 +184,7 @@ test('world badges sit on the map, grow with stars and line up on the progress s
   await expect(page.locator('.island-planet .badge.bronze')).toBeVisible();
   await expect(page.locator('.island-dragons .badge')).toHaveCount(0);
   await page.locator('.island-meadow .level-node').first().click();
-  expect(await playLevel(page, false)).toContain('Your badge is gold now!');
+  expect(await playLevel(page, false)).toContain('A gold badge');
   await page.keyboard.press('Escape');
   await page.keyboard.press('Escape');
   await expect(page.locator('.island-meadow .badge.gold')).toBeVisible();
@@ -237,7 +237,7 @@ test('free practice with a diacritic key is played to the results card', async (
   }
   expect(typed).toContain('ô');
   await page.locator('.hud').getByRole('button', { name: 'Stop typing' }).click();
-  await expect(page.locator('.results-card')).toBeVisible();
+  await expect(page.locator('.end-card')).toBeVisible();
   expect(errors).toEqual([]);
 });
 
@@ -249,10 +249,10 @@ test('staying a while after a level keeps typing until Esc and leaves the stars 
   await playLevel(page);
   const node = page.locator('.level-node').first();
   // Whole stars only: the card shows a half star too, which is never saved.
-  const stars = await page.locator('.results-card .star.on:not([src*="half"])').count();
+  const stars = await page.locator('.end-card .star.on:not([src*="half"])').count();
   // The main action keeps the focus; staying is one of the other buttons.
-  await expect(page.locator('.results-card .row.center button').first()).toBeFocused();
-  await page.locator('.results-card button', { hasText: 'Stay a while' }).click();
+  await expect(page.locator('.end-card .ec-bot button').first()).toBeFocused();
+  await page.locator('.end-card button', { hasText: 'A while more' }).click();
   await expect(page.locator('.hud-hint')).toHaveText('Esc = stop');
   await expect(page.locator('.level-screen .bubble')).toContainText('Press Esc');
   await expect(page.locator('.posture-card')).toHaveCount(0);
@@ -262,13 +262,14 @@ test('staying a while after a level keeps typing until Esc and leaves the stars 
     await page.waitForTimeout(90);
   }
   await page.keyboard.press('Escape');
-  const card = page.locator('.results-card.stay-done');
-  await expect(card).toContainText('Practice finished!');
+  const card = page.locator('.end-card.stay-done');
+  await expect(card.locator('h2')).toHaveText('Easy round finished!');
   await expect(card).toContainText('%');
   await expect(card.locator('.star')).toHaveCount(0);
-  await expect(card.locator('.row.center button').first()).toBeFocused();
-  await expect(card.locator('.row.center button').first()).toContainText('Stop typing');
-  await card.locator('.row.center button').first().click();
+  // The next level is the main button, the map always last.
+  await expect(card.locator('.ec-bot button').first()).toBeFocused();
+  await expect(card.locator('.ec-bot button').first()).toContainText('Next level');
+  await card.locator('.ec-bot button').last().click();
   await expect(node.locator('.mini-stars i.on')).toHaveCount(stars);
   expect(errors).toEqual([]);
 });

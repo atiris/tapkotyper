@@ -31,7 +31,7 @@ test('the whole game by keyboard only: a new player, a level, the results, endin
   await page.keyboard.press('Enter');
   await untilPlay(page, 'ready');
   await playLevel(page);
-  await expect(page.locator('.results-card .row.center button').first()).toBeFocused();
+  await expect(page.locator('.end-card .ec-bot button').first()).toBeFocused();
   await page.keyboard.press('Escape');
   await page.keyboard.press('Escape');
   await expect(page.locator('.level-node.done')).toHaveCount(1);

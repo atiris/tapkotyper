@@ -13,7 +13,7 @@ import { badge } from '../ui/badge';
 import { flyAway, hasParrotBadge } from '../game/parrots';
 import { localDate } from '../learning/stats';
 import { arrowFocus, button, closeButton, h, icon, modal } from '../ui/dom';
-import { surpriseAsk, surpriseTold } from '../game/cards';
+import { openSurprises, surpriseAsk } from '../game/cards';
 import { TRIGGERS, surpriseAnnounced, surpriseCount, surprisesToldOn, surprisesWonIn } from '../game/own-content';
 import { cornerControls, settingsButton } from '../ui/chrome';
 import { offerInstall } from '../ui/install';
@@ -250,10 +250,7 @@ function surprisesBox(p: Profile): HTMLElement | null {
   if (!told.length && !waiting.length) return null;
   const title = t(told.length ? 'surprise.toldTitle' : 'surprise.waitingTitle');
   const pic = imageUrl(told.length ? 'ui-surprise-open' : 'ui-surprise');
-  const show = () => modal(h('div', { class: 'surprises-won' },
-    h('h2', {}, title),
-    ...told.map(surpriseTold),
-    ...waiting.map((s) => h('div', { class: 'surprise-result' }, surpriseAsk(s.q), h('p', { class: 'surprise left' }, surpriseNeed(p, s))))), { cls: 'surprises-modal' });
+  const show = () => openSurprises(title, told, waiting.map((s) => h('div', { class: 'surprise-result' }, surpriseAsk(s.q), h('p', { class: 'surprise left' }, surpriseNeed(p, s)))));
   return h('button', { class: 'surprises-box', type: 'button', 'aria-label': title, tip: t(told.length ? 'surprise.toldTip' : 'surprise.waitingTip'), onClick: show },
     pic ? h('img', { src: pic, alt: '' }) : icon('star'));
 }

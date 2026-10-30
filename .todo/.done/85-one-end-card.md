@@ -8,6 +8,10 @@ at once for a child. Every end gets the same fixed card, agreed in the design ca
 the old "Dnes" boards and the first "Prehľad" table are history, not the target). Where this plan
 and the canvas differ, this plan wins (it holds the owner's last words).
 
+Owner change (2026-10-30, relayed by another session, board `new/Range.dc.html` updated): the range
+shows the hits under the picture, rows Počet bodov / Presnosť / Zásahy do stredu, no Zbierka row,
+and a new collection thing wins the green line.
+
 Also in this plan (a fix outside the design the owner asked for): the parent's **surprises can be
 won at the target range and with the parrot** too, through the typing time they count.
 
@@ -42,7 +46,8 @@ card), then the end's own main button below.
 
 The one green line takes the first that applies: a rescued friend, a new or better world badge
 (several rewards at once: the first and "a N ďalšie odmeny"), new keys, a new medal, new things
-in the wardrobe or a new companion, rhythm better than last week; the range: the most improved
+in the wardrobe or a new companion, rhythm better than last week; the range: a thing new in the
+collection (its picture in the line, "Do zbierky ti pribudol nový predmet."), then the most improved
 trained letter; the parrot: faster than usual. Waiting surprises and the narrator's question are
 no longer on the card (the map shows waiting surprises). A task still running shows as a row
 "Úloha - zostáva N min" (it takes the third row).
@@ -54,8 +59,8 @@ no longer on the card (the map shows waiting surprises). A task still running sh
 | Level | Úroveň hotová! | the player's character (Tapko) | stars | Presnosť; Rytmus za minútu (N písmen); per style "Podľa sluchu / Z pamäti bez chyby" | Ďalšia úroveň or Pozrieť odmenu (world done) or Ďalšia misia; Hrať znova; Ešte chvíľu; Na mapu |
 | Practice (free practice, own text, a task's practice) | Písanie hotové! | `ui-end-practice` typewriter | N minút | Presnosť; Rytmus za minútu; style row | Hrať znova; Na mapu |
 | Staying a while in a level | Oddychové kolo hotové! | `ui-end-stay` armchair | N minút | Presnosť; Rytmus za minútu | Ďalšia úroveň (when open); Ešte chvíľu; Na mapu |
-| Target range | Strelnica hotová! | `ui-end-range` target on legs with eyes | N bodov | Presnosť; Zásahy (do stredu) "24 (9)"; Zbierka "4 z 15" | Hrať znova; Ešte chvíľu; Na mapu |
-| Target range, new record | Nový svetový rekord! | `ui-end-range-record` cup with the target peeking | N bodov | as above | as above |
+| Target range | Strelnica hotová! | `ui-end-range` target on legs with eyes | N zásahov (all hits) | Počet bodov; Presnosť; Zásahy do stredu (count) | Hrať znova; Ešte chvíľu; Na mapu |
+| Target range, new record | Nový svetový rekord! | `ui-end-range-record` cup with the target peeking | N zásahov | as above | as above |
 | Parrot at home | Papagáj je doma! | `ui-act-parrot` | N slov | Slová (the first three, then ", …"); Na začiatku za minútu; Pri opakovaní za minútu | Nové slová; Na mapu |
 | Parrot flew off | Papagáj uletel | `ui-act-parrot-perch` | skús znova | Slová; Na začiatku za minútu; then a yellow tip line "Píš pomaly a presne a papagáj sa vráti." | Hrať znova; Na mapu |
 | Free typing (new end: only when something was typed; with nothing typed leaving goes straight to the map) | Koniec voľného písania! | `ui-end-freetype` paper pinwheel | N slov | Čas; Posledná veta | Písať ďalej; Na mapu |
@@ -67,35 +72,64 @@ Speeds are always "písmen za minútu" (the parrot said "znakov" before). The pa
 nothing in the statistics (free typing never does).
 
 ## Steps
-- [ ] Pictures: copy the owner-approved Gemini pictures from `assets-src/` (already there, raw,
+- [x] Pictures: copy the owner-approved Gemini pictures from `assets-src/` (already there, raw,
       not committed: `ui-end-practice.jpg`, `ui-end-stay.jpg`, `ui-end-range.jpg`,
       `ui-end-range-record.jpg`, `ui-end-freetype.jpg`, `ui-end-break.jpg`, `ui-end-task.jpg`)
       through `npm run assets` (magenta key, trimmed, like the `ui-act-*` icons); their prompts are
       in `PROMPTS.md` section 11. If one is missing, generate it with that prompt (skill
       `gemini-bridge:gemini-images`).
-- [ ] The card: one builder in `level.ts` (or `src/ui/end-card.ts`) that takes title, picture,
+- [x] The card: one builder in `level.ts` (or `src/ui/end-card.ts`) that takes title, picture,
       under-picture value, rows, the green line, the surprise flag and the buttons, and the CSS
       for its fixed parts; `showResults`, `showStayDone`, `showAimDone`, `showParrotDone` use it.
       Keep `peekable`, the break action and the Esc behaviour. Remove the narrator bubble, chips,
       the notes block, the aim before/after list, the collection grid and the CSS nothing uses
       any more.
-- [ ] Texts in `public/i18n/sk.json` (and en, cs) and `catalog.ts`; drop keys nothing uses
+- [x] Texts in `public/i18n/sk.json` (and en, cs) and `catalog.ts`; drop keys nothing uses
       (`unused-keys.test.ts`).
-- [ ] Free typing end card (leaving free typing after something was typed: words typed, minutes,
+- [x] Free typing end card (leaving free typing after something was typed: words typed, minutes,
       the last sentence).
-- [ ] The break's end and the hand-in dialog as the same card.
-- [ ] Surprises at the range and with the parrot: their runs ask and tell surprises with a
+- [x] The break's end and the hand-in dialog as the same card.
+- [x] Surprises at the range and with the parrot: their runs ask and tell surprises with a
       counting time trigger (`minutes`) like a practice does (get-ready card, `surpriseOutcome`
       on the end card, the map's won-today window); level-, levels- and stars-triggered surprises
       stay out. Check that their typing time already counts toward the minutes (it counts in the
       statistics). Staying a while keeps no surprises.
-- [ ] `.specify/`: the end card in game/mechanics.md (replace the "compact card" paragraph), the
+- [x] `.specify/`: the end card in game/mechanics.md (replace the "compact card" paragraph), the
       ends in target-practice.md, parrot.md, free-typing.md, the surprises rule in
       parent-controls.md ("Surprises ... range and parrot count by time"), ui-rules.md if it
       names the old card.
-- [ ] Tests: unit tests for the green-line choice and the surprise rule at the range/parrot;
+- [x] Tests: unit tests for the green-line choice and the surprise rule at the range/parrot;
       update e2e specs that read the old cards (`play`, `aim`, `parrot`, `free-type`,
       `practice-keys`, `layout`); `npm run build`, lint, unit tests, e2e.
-- [ ] Look at every end in the browser (playwright MCP, `?fast`, the tester profile
+- [x] Look at every end in the browser (playwright MCP, `?fast`, the tester profile
       `.e2e/tester-profile.json`, typing through `tapkoType`) at 1024x600 and at phone width,
       light and dark theme, and compare with the canvas boards.
+
+## Decisions
+- The card lives in `src/ui/end-card.ts` (`endCard`); the green line's choice is pure in
+  `src/game/end-news.ts` (unit tested). "Na mapu" is the builder's own last button.
+- A due break and the surprise go before the end's own buttons; at most two plain buttons
+  follow the main one, so with a break and a surprise the third own button (A while more) drops.
+  After the surprises window closes, its button leaves the row (the band stays clickable).
+- "The paw did most of this level" is the yellow tip line (it is a hint, not news).
+- A thing new in the range collection is not counted as a reward in "a N ďalšie odmeny" (the
+  owner's sentence ends with a period, a tail would read badly).
+- The parrot's "faster than usual" compares the repeating speed with the usual speed of the last
+  14 days.
+- A break opened from an end card (not the map's warm-up) ends with "Pokračovať" back to the
+  card in place of "Pokračovať v písaní"; "Na mapu" there leaves to the map.
+- "Písať ďalej" on the free typing end starts free typing again in the same place (the counts
+  start over); typing a letter while peeking does the same.
+- The hand-in card drops the Edupage line and the checksum note: the teacher's help already says
+  the checksum finds damaged links, not cheating (teacher-links spec now points there).
+- Only Slovak and English dictionaries exist in `public/i18n/`; there is no Czech file to update.
+- Old texts nothing reads any more were removed (`tapko.level_done`, old `results.*`, `aim.*`,
+  `parrot.*`, `task.*`, `break.done`); news texts lost their exclamation marks.
+
+## Done - 2026-10-30
+Shipped: one end card for the level, practice, staying a while, target range (with the owner's
+later change: hits under the picture, rows points / accuracy / middle hits, a new collection thing
+first in the green line), parrot (home and flown off), free typing (new end after typing), the
+stretch break and the task hand-in; seven new pictures; surprises counting training time asked
+and told at the range and with the parrot; specs, translator catalog, unit and e2e tests updated.
+Checked in the browser at 1024x600 and 390 px, light and dark. Nothing left out.

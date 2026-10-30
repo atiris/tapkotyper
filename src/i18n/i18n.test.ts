@@ -2,7 +2,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { IDBFactory } from 'fake-indexeddb';
-import { askedLanguage, detectLanguage, language, locale, ownDict, setLanguage, t, tList, tMap, tn, useDictionaries } from './i18n';
+import { askedLanguage, detectLanguage, language, locale, ownDict, setLanguage, t, tMap, tn, useDictionaries } from './i18n';
 import { newOwnLang, ownRef, saveOwnLang } from './own-langs';
 
 const load = (lang: string) => JSON.parse(readFileSync(`public/i18n/${lang}.json`, 'utf8'));
@@ -74,7 +74,6 @@ describe('i18n', () => {
       const d = load(lang);
       useDictionaries(lang as 'sk', d);
       expect(Object.keys(d.tips).length).toBeGreaterThanOrEqual(40);
-      expect(tList('tapko.level_done').length).toBeGreaterThan(2);
     }
   });
 

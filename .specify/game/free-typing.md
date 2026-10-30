@@ -22,11 +22,16 @@
   Free typing has no task, so it cannot tell good typing from mashing one or two keys:
   nothing typed here counts in the statistics (no key presses, readiness, speed, accuracy,
   training time or wardrobe time), and Tapko says so in the bubble at the start. The time
-  counts only toward the break reminder: when a break is due, the narrator says so in the bubble (there is no end screen). It never gives stars,
+  counts only toward the break reminder: when a break is due, the narrator says so in the bubble. It never gives stars,
   levels, keys or task time.
 - No game cards: no get-ready card, no new key, no tip, no paw help. Esc or the round X
-  leaves to the map; the keyboard guide can be shown as in other levels.
-- The typed text is never kept in the profile, the results or exported files.
+  leaves; the keyboard guide can be shown as in other levels. With nothing typed it goes
+  straight to the map; after something was typed the end card "Koniec voľného písania!" (the
+  one card of every end, see [mechanics](mechanics.md)) shows the paper pinwheel, the words
+  typed, the time and the last text shown, with "Písať ďalej" (a new free typing in the same
+  place) and "Na mapu". The end counts nothing in the statistics either.
+- The typed text is never kept in the profile, the results or exported files; the end card
+  shows the last text only until it closes.
 
 ## Why
 - Children want to type their own name and silly words, not only what the game asks; a

@@ -357,50 +357,101 @@
       "{key} patrí pod prst: stláčaj ho {finger}. Potom prst späť na základné miesto!",
       "Pomaly: {key} stláčaš {finger}."
     ],
-    "level_done": [
-      "Podarilo sa ti to, {name}!",
-      "Úžasné písanie!",
-      "Krása, len tak ďalej!",
-      "Prsty spolupracovali ako tím!",
-      "Tvoje prsty tancovali po klávesoch!"
-    ],
     "break": [
       "Je čas na malú prestávku na pretiahnutie. Ruky si ju zaslúžia!",
       "Natiahni sa a na chvíľku zatvor oči."
     ]
   },
+  "end": {
+    "level": "Úroveň hotová!",
+    "practice": "Písanie hotové!",
+    "stay": "Oddychové kolo hotové!",
+    "range": "Strelnica hotová!",
+    "rangeRecord": "Nový svetový rekord!",
+    "parrotHome": "Papagáj je doma!",
+    "parrotLost": "Papagáj uletel",
+    "freeType": "Koniec voľného písania!",
+    "break": "Rozcvička hotová!",
+    "taskDone": "Úloha splnená!",
+    "toMap": "Na mapu",
+    "breakBtn": "Prestávka",
+    "surpriseNew": "Odomkol si nové prekvapenie!",
+    "surpriseSee": "Pozrieť prekvapenie",
+    "accuracy": "Presnosť",
+    "rhythm": "Rytmus za minútu",
+    "dictationClean": "Podľa sluchu bez chyby",
+    "memoryClean": "Z pamäti bez chyby",
+    "mixedClean": "Podľa sluchu a z pamäti bez chyby",
+    "ofTotal": "{n} z {total}",
+    "task": "Úloha",
+    "taskLeft": "zostáva {n} min",
+    "points": "Počet bodov",
+    "centers": "Zásahy do stredu",
+    "newFind": "Do zbierky ti pribudol nový predmet.",
+    "parrotWords": "Slová",
+    "speedStart": "Na začiatku za minútu",
+    "speedRepeat": "Pri opakovaní za minútu",
+    "tryAgain": "skús znova",
+    "parrotTip": "Píš pomaly a presne a papagáj sa vráti.",
+    "time": "Čas",
+    "lastText": "Posledná veta",
+    "sendTeacher": "Pošli učiteľovi",
+    "sendHow": "odkaz alebo kód",
+    "letterBetter": "Písmeno {key}: presnosť z {before} % na {after} %",
+    "faster": "Rýchlejšie ako zvyčajne",
+    "letters": {
+      "one": "{n} písmeno",
+      "few": "{n} písmená",
+      "other": "{n} písmen"
+    },
+    "minutes": {
+      "one": "{n} minúta",
+      "few": "{n} minúty",
+      "other": "{n} minút"
+    },
+    "hits": {
+      "one": "{n} zásah",
+      "few": "{n} zásahy",
+      "other": "{n} zásahov"
+    },
+    "words": {
+      "one": "{n} slovo",
+      "few": "{n} slová",
+      "other": "{n} slov"
+    },
+    "exercises": {
+      "one": "{n} cvik",
+      "few": "{n} cviky",
+      "other": "{n} cvikov"
+    },
+    "moreRewards": {
+      "one": "a {n} ďalšia odmena",
+      "few": "a {n} ďalšie odmeny",
+      "other": "a {n} ďalších odmien"
+    }
+  },
   "results": {
-    "title": "Úroveň hotová!",
-    "practiceDone": "Cvičenie hotové!",
     "peek": "Pozrieť sa na hru (Esc)",
-    "dictationClean": "Podľa sluchu bez chyby: {n} z {total}",
-    "memoryClean": "Z pamäti bez chyby: {n} z {total}",
     "starsAria": "{n} z 3 hviezdičiek",
-    "accuracy": "Presnosť {n} %",
     "byTapko": "Túto úroveň zvládla hlavne labka.",
-    "rhythm": "Rytmus {n} písmen za minútu",
-    "trendUp": "Tvoj rytmus je plynulejší ako minulý týždeň!",
+    "trendUp": "Rytmus je plynulejší ako minulý týždeň",
     "newKey": "Nový kláves: {key}",
     "newKeys": "Nové klávesy: {keys}",
     "newAccessory": "Nové veci v šatníku: {n}",
     "newCompanion": "Nová postavička v šatníku: {kind}",
-    "rescued": "Dráčik {name} je zachránený!",
+    "rescued": "Dráčik {name} je zachránený",
     "next": "Ďalšia úroveň",
     "nextRescue": "Ďalšia misia",
     "replay": "Hrať znova",
-    "stay": "Ešte chvíľu zostať",
+    "stay": "Ešte chvíľu",
     "reward": "Pozrieť odmenu",
-    "takeBreak": "Prestávka na pretiahnutie",
-    "growthTitle": "Nová medaila!",
-    "growthDifficulty": "Predmety sa budú hýbať o kúsok rýchlejšie.",
-    "growthWordLen": "Slová môžu mať už {n} písmen.",
+    "growthTitle": "Nová medaila",
     "medalAria": "medaila číslo {n}",
-    "repaired": "Robotík {name} je opravený!",
-    "badgeNew": "Nový odznak!",
-    "badgeSilver": "Odznak je teraz strieborný!",
-    "badgeGold": "Odznak je teraz zlatý!",
-    "mixedClean": "Podľa sluchu a z pamäti bez chyby: {n} z {total}",
-    "guided": "{name} je vďaka tebe zase doma!"
+    "repaired": "Robotík {name} je opravený",
+    "badgeNew": "Nový odznak",
+    "badgeSilver": "Strieborný odznak",
+    "badgeGold": "Zlatý odznak",
+    "guided": "{name} je vďaka tebe zase doma"
   },
   "badge": {
     "bronze": "bronzový",
@@ -1054,8 +1105,7 @@
     "neck": "Pomaly otoč hlavu doľava a doprava. Potom prikývni, áno, áno.",
     "wrists": "Krúž zápästiami jedným smerom a potom druhým.",
     "eyes": "Pozri sa ďaleko z okna, potom na svoj nos a znova ďaleko. Nakoniec zažmurkaj.",
-    "water": "Napi sa vody a trikrát sa pomaly a zhlboka nadýchni.",
-    "done": "To bola dobrá rozcvička, {name}!"
+    "water": "Napi sa vody a trikrát sa pomaly a zhlboka nadýchni."
   },
   "parent": {
     "title": "Nastavenia lokálneho profilu",
@@ -1919,14 +1969,8 @@
     "today": "Úloha na dnes",
     "left": "Zostáva {n} min",
     "start": "Začať úlohu",
-    "continue": "Pokračovať v úlohe",
     "doneToday": "Úloha je splnená!",
     "handIn": "Odovzdať",
-    "handInTitle": "Odovzdať úlohu",
-    "handInText": "Pošli tento odkaz učiteľovi, napríklad cez Edupage alebo e-mail.",
-    "checksumNote": "Odkaz obsahuje meno, úlohu, čas, presnosť, rytmus a päť najslabších kláves. Kontrolný súčet odhalí poškodený odkaz, nie podvádzanie.",
-    "doneLine": "Úloha „{title}“ je splnená. Odovzdaj ju učiteľovi.",
-    "leftLine": "Úloha „{title}“: zostáva ešte {n} min.",
     "group": "Skupina (nepovinné)",
     "intro": "Úloha je odkaz. Pošlite ho študentom (napríklad cez Edupage). Kto ho otvorí, vyberie si hráča a na mape uvidí Úlohu na dnes. Po splnení vám študent pošle odkaz s výsledkom.",
     "title": "Názov úlohy",
@@ -1941,7 +1985,7 @@
     "doneAt": "splnená {date}",
     "played": "{n} z {total} min",
     "none": "Tento hráč zatiaľ nemá žiadne úlohy.",
-    "bigCode": "Ukázať veľký kód",
+    "bigCode": "Veľký kód",
     "groupPlaceholder": "Napríklad: 5.A",
     "groupHint": "Učiteľ podľa nej v tabuľke zoskupí výsledky.",
     "legendNew": "Nová úloha",
@@ -2022,15 +2066,11 @@
     "start": "**Toto je strelnica.** Je určená **na zlepšenie presnosti** a nachádza sa v každom svete, cez ktorý počas tohto dobrodružstva pôjdeš. Na trénovanie presnosti je potrebné spraviť **čo najmenej chýb.** Ak je tvoja presnosť dostatočná, odomkneš si prístup k ďalším písmenám a do ďalších svetov. V každej strelnici, ktorú dokážeš prejsť bez chyby, sa ti objaví **vzácny predmet**, ktorý sa nenachádza v žiadnej inej strelnici v iných svetoch. **Dokážeš získať všetky** vzácne predmety strelníc? Skontroluješ si to na karte **Môj postup.**",
     "swapHint": "Enterom vymeníš vec v labke za vzácnu zo zbierky.",
     "swap": "Zo zbierky: {name}!",
-    "keys": "Písmená na tréning",
     "ready": "Výborne! {keys} už píšeš presne.",
     "score": "Zásahy: {hits}   Body: {points}",
     "record": "Nový svetový rekord!",
     "stayTip": "Esc: strieľaš ďalej, ďalší Esc strelnicu ukončí",
-    "stay": "Zostať na strelnici",
     "stayStart": "Strieľame ďalej. Keď budeš chcieť skončiť, stlač Esc.",
-    "hitsDone": "Zásahy do terča: {n}, z toho do stredu: {center}",
-    "pointsDone": "Body: {n}",
     "lines": {
       "center": [
         "Zásah do čierneho!",
@@ -2132,7 +2172,6 @@
     },
     "collection": {
       "new": "Vzácna vec! Dohádž do konca a je tvoja.",
-      "count": "Zbierka: {n} z 15",
       "waiting": "Čaká v svete {world}"
     },
     "things": {
@@ -3217,11 +3256,7 @@
           "Si kráľ presnosti!"
         ]
       }
-    },
-    "done": "Náš terč nám poslal tvoje výsledky!",
-    "beforeAfter": "predtým {before} %, teraz {after} %",
-    "opened": "Presné písanie otvorilo nové písmená: {keys}",
-    "again": "Znova"
+    }
   },
   "parrot": {
     "title": "Papagáj",
@@ -3239,15 +3274,8 @@
       "Skúús prresnejššie!",
       "Prrriíliš neprresneé"
     ],
-    "done": "Opakovanie s papagájom!",
-    "flown": "Papagáj ti uletel. Skús to znova, pomaly a presne.",
-    "learned": "Slová: {words}",
-    "speedUsual": "Tvoja zvyčajná rýchlosť: {n} znakov za minútu",
-    "speedLearn": "Na začiatku: {n} znakov za minútu",
-    "speedRepeat": "Pri opakovaní: {n} znakov za minútu",
     "again": "Nové slová",
     "badge": "Odznak Papagáj: všetky papagáje sú doma",
-    "badgeNew": "Odznak Papagáj: všetky papagáje sú doma!",
     "name": "Aro",
     "takeoff": [
       "Zalieétamme si!",

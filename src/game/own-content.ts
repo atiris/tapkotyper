@@ -54,14 +54,28 @@ function countingOpen(p: Profile): Surprise[] {
 }
 
 /**
+ * Which rules a run may ask and tell: every one, only those counting typing time (the target
+ * range and the parrot give no levels or stars), or none (drills).
+ */
+export type SurpriseRun = 'all' | 'time' | 'none';
+
+export function surpriseRun(def: LevelDef, drill: boolean): SurpriseRun {
+  return drill ? 'none' : def.kind === 'aim' || def.kind === 'parrot' ? 'time' : 'all';
+}
+
+/** Counting rules still waiting that a run of this kind may tell. */
+const openFor = (p: Profile, run: SurpriseRun) => countingOpen(p).filter((s) => run === 'all' || run === 'time' && s.trigger === 'minutes');
+
+/**
  * The rule asked about on the get-ready card of this run: the one of this level, else a
- * counting rule (one already reached first). Drills have none.
+ * counting rule the run may tell (one already reached first). Drills have none.
  */
 export function surpriseFor(p: Profile, def: LevelDef, drill: boolean): Surprise | null {
-  if (drill) return null;
-  const level = p.surprises.find((s) => !s.doneAt && s.trigger === 'level' && s.level === def.id);
+  const run = surpriseRun(def, drill);
+  if (run === 'none') return null;
+  const level = run === 'all' ? p.surprises.find((s) => !s.doneAt && s.trigger === 'level' && s.level === def.id) : undefined;
   if (level) return level;
-  const open = countingOpen(p);
+  const open = openFor(p, run);
   return open.find((s) => reached(p, s)) ?? open[0] ?? null;
 }
 
@@ -102,12 +116,12 @@ function reveal(p: Profile, s: Surprise, today: string): void {
 
 /**
  * The surprises on the results of a finished run, `asked` being the rule from `surpriseFor`:
- * every rule that fired (the level's and each counting one reached; their answers are told and
- * recorded), and the asked rule when it still waits.
+ * every rule that fired (the level's and each counting one the run may tell that is reached;
+ * their answers are told and recorded), and the asked rule when it still waits.
  */
-export function surpriseOutcome(p: Profile, asked: Surprise | null, drill: boolean, today = localDate()): { revealed: Surprise[]; waiting: Surprise | null } {
-  if (drill) return { revealed: [], waiting: null };
-  const revealed = [...(asked?.trigger === 'level' ? [asked] : []), ...countingOpen(p).filter((s) => reached(p, s))];
+export function surpriseOutcome(p: Profile, asked: Surprise | null, run: SurpriseRun, today = localDate()): { revealed: Surprise[]; waiting: Surprise | null } {
+  if (run === 'none') return { revealed: [], waiting: null };
+  const revealed = [...(asked?.trigger === 'level' ? [asked] : []), ...openFor(p, run).filter((s) => reached(p, s))];
   for (const s of revealed) reveal(p, s, today);
   return { revealed, waiting: asked && !revealed.includes(asked) ? asked : null };
 }

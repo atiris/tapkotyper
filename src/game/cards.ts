@@ -6,7 +6,7 @@ import type { Profile, Surprise } from '../storage/schema';
 import { surpriseCount } from './own-content';
 import type { Style } from './typing';
 import { FINGER_COLORS, type KeyboardGuide, chipOf, fingerChip, lessonFinger, textColorsOn } from '../ui/keyboard-guide';
-import { button, closeButton, h, icon, richText } from '../ui/dom';
+import { button, closeButton, h, icon, modal, richText } from '../ui/dom';
 import { tapkoElement } from '../gfx/tapko';
 import { imageUrl } from '../gfx/assets';
 import { SHIFT_L, SHIFT_R, SPACE } from '../learning/lessons';
@@ -193,15 +193,20 @@ export function surpriseAsk(question: string): HTMLElement {
 }
 
 /** A told surprise: the open golden box beside its question with the answer highlighted under it. */
-export function surpriseTold(s: Surprise): HTMLElement {
+function surpriseTold(s: Surprise): HTMLElement {
   const pic = imageUrl('ui-surprise-open');
   return h('div', { class: 'surprise-told' },
     pic ? h('img', { class: 'surprise-box', src: pic, alt: '' }) : null,
     h('div', { class: 'surprise-result' }, surpriseAsk(s.q), h('p', { class: 'surprise answer' }, s.a)));
 }
 
+/** The window of surprises: the told ones with their answers, then `more` (the waiting ones on the map); `onClose` after it closes. */
+export function openSurprises(title: string, told: Surprise[], more: HTMLElement[] = [], onClose?: () => void): void {
+  modal(h('div', { class: 'surprises-won' }, h('h2', {}, title), ...told.map(surpriseTold), ...more), { cls: 'surprises-modal', onClose });
+}
+
 /** What a counting surprise still needs ("2 more levels"), or null when it is reached or does not count. */
-export function surpriseLeft(p: Profile, s: Surprise): HTMLElement | null {
+function surpriseLeft(p: Profile, s: Surprise): HTMLElement | null {
   if (s.trigger !== 'minutes' && s.trigger !== 'levels' && s.trigger !== 'stars') return null;
   const { have, need } = surpriseCount(p, s);
   const n = need - have;

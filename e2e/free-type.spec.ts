@@ -50,6 +50,15 @@ test('just typing shows what was typed after a pause and counts nothing', async 
   await page.keyboard.press('Backspace');
   await page.keyboard.press('Enter');
   await expect(shown(page)).toHaveText('pes', { timeout: 500 });
+  // Leaving after typing shows its end card: the words, the time and the last text.
+  await page.keyboard.press('Escape');
+  const card = page.locator('.end-card.free-done');
+  await expect(card.locator('h2')).toHaveText('Free typing finished!');
+  await expect(card.locator('.ec-under')).toHaveText('2 words');
+  await expect(card.locator('.ec-row', { hasText: 'Last sentence' })).toContainText('pes');
+  await expect(card.locator('.ec-bot .btn.primary')).toContainText('Keep typing');
+  await expect(card.locator('.ec-bot .btn').last()).toContainText('To the map');
+  await page.keyboard.press('Escape');
   await page.keyboard.press('Escape');
   await expect(page.locator('.map-screen')).toBeVisible();
   const stats = await page.evaluate(() => JSON.parse(localStorage.getItem('tapkotyper:v1')!).profiles[0].stats);

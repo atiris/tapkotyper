@@ -34,9 +34,9 @@ test('a finished world\'s parrot learns the words and brings the badge', async (
     }
     await page.waitForTimeout(60);
   }
-  await expect(page.locator('.parrot-done h2')).toHaveText('Repeating with the parrot!');
-  await expect(page.locator('.parrot-done .badge-fact')).toContainText('Parrot badge');
-  await expect(page.locator('.parrot-done .fact', { hasText: 'While repeating' })).toHaveCount(1);
+  await expect(page.locator('.parrot-done h2')).toHaveText('The parrot is at home!');
+  await expect(page.locator('.parrot-done .ec-news')).toContainText('Parrot badge');
+  await expect(page.locator('.parrot-done .ec-row', { hasText: 'Repeating, per minute' })).toContainText('letters');
   await expect(page.locator('.parrot-done .modal-x')).toBeVisible();
   // Escape peeks under the card, a second Escape goes to the map.
   await page.keyboard.press('Escape');
@@ -69,8 +69,9 @@ test('too many mistakes send the parrot away: the round ends with its empty perc
     await page.waitForTimeout(150);
   }
   // The results wait until the parrot has flown off the scene.
-  await expect(page.locator('.parrot-done .bubble')).toHaveText('Your parrot flew away. Try again, slowly and carefully.', { timeout: 15_000 });
-  await expect(page.locator('.parrot-done .parrot-done-pic')).toHaveAttribute('src', /ui-act-parrot-perch/);
+  await expect(page.locator('.parrot-done h2')).toHaveText('The parrot flew off', { timeout: 15_000 });
+  await expect(page.locator('.parrot-done .ec-tip')).toHaveText('Type slowly and exactly and the parrot comes back.');
+  await expect(page.locator('.parrot-done .ec-img')).toHaveAttribute('src', /ui-act-parrot-perch/);
   await expect(page.locator('.parrot-done .btn.primary')).toContainText('Play again');
   await page.keyboard.press('Escape');
   await page.keyboard.press('Escape');

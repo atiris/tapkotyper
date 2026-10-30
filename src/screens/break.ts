@@ -1,11 +1,11 @@
-import { app } from '../app/app';
+import { app, go } from '../app/app';
 import { fast } from '../app/fast';
 import { audio } from '../audio/audio';
 import { tapkoElement } from '../gfx/tapko';
-import { t } from '../i18n/i18n';
-import { nickname } from '../storage/store';
+import { t, tn } from '../i18n/i18n';
 import { button, closeButton, h, modal } from '../ui/dom';
 import { cornerControls } from '../ui/chrome';
+import { endCard, focusMain } from '../ui/end-card';
 
 /** The short break's stretches, 20 seconds each. */
 const SMALL = { title: 'break.title', exercises: ['arms', 'fists', 'shoulders'], seconds: 20 };
@@ -16,13 +16,14 @@ const ALL = [...SMALL.exercises, ...BIG.exercises];
 
 /**
  * Stretch break led by the narrator over the screen it was opened from: three short exercises,
- * then "that was a good warm-up", and `onDone` back on that screen. Under the countdown the big
+ * then the end card (the exercises done and the time; Continue, once more, the map), and `onDone`
+ * back on that screen. Under the countdown the big
  * break can be added: six longer exercises, after which the short break goes on where it was; a
  * short exercise can be swapped for another one. Anyone may skip either (Esc too), unless the
  * profile's breaks cannot be skipped: then only the big one can.
  * With `play` it is the map's warm-up, the child's own choice: "Continue typing" (`play`) is there
- * all along and at its end, the end offers it once more, and "Cancel", the round X and Esc go back
- * to the map; it is never locked.
+ * all along and is the end's main button, and "Cancel", the round X and Esc go back to the map; it
+ * is never locked.
  */
 export function openBreak(onDone: () => void, play?: () => void): void {
   const p = app.profile!;
@@ -45,6 +46,10 @@ export function openBreak(onDone: () => void, play?: () => void): void {
   /** Where the short break was when the big one started. */
   let paused: { i: number; left: number } | null = null;
   let finished = false;
+  /** Exercises done to their end, and when the break began. */
+  let done = 0;
+  let begun = Date.now();
+  let endEl: HTMLElement | null = null;
   const bigButton = button(t('break.big'), () => startBig(), 'btn', 'play');
   bigButton.autofocus = true;
   const otherButton = button(t('break.other'), () => other(), 'btn', 'replay');
@@ -75,11 +80,21 @@ export function openBreak(onDone: () => void, play?: () => void): void {
     clearInterval(tick);
     finished = true;
     app.sessionSeconds = 0;
-    box.replaceChildren(...[x(), h('h2', {}, t('break.done', { name: nickname(p) })),
-      h('div', { class: 'row center break-actions' }, ...(play
-        ? [button(t('break.play'), () => leave(play), 'btn primary', 'play'), button(t('break.again'), () => again(), 'btn', 'replay'), button(t('break.cancel'), () => leave(), 'btn', 'close')]
-        : [button(t('common.continue'), () => leave(), 'btn primary', 'next')]))].filter((c) => c !== null));
-    (box.querySelector('.btn.primary') as HTMLElement).focus();
+    const card = endEl = endCard({
+      cls: 'break-done',
+      title: t('end.break'),
+      picture: 'ui-end-break',
+      under: tn('end.exercises', done),
+      rows: [[t('end.time'), tn('end.minutes', Math.max(1, Math.round((Date.now() - begun) / 60_000)))]],
+      actions: [
+        play ? { label: t('break.play'), icon: 'play', run: () => leave(play) } : { label: t('common.continue'), icon: 'next', run: () => leave() },
+        { label: t('break.again'), icon: 'replay', run: () => again() },
+      ],
+      toMap: () => leave(() => go('map')),
+    });
+    card.prepend(closeButton(() => leave(), t('break.closeTip')));
+    box.replaceWith(card);
+    focusMain(card);
   };
   /** The warm-up once more, from its first short exercise. */
   const again = () => {
@@ -88,6 +103,10 @@ export function openBreak(onDone: () => void, play?: () => void): void {
     i = 0;
     left = length();
     finished = false;
+    done = 0;
+    begun = Date.now();
+    endEl?.replaceWith(box);
+    endEl = null;
     exercise();
     show();
     tick = setInterval(step, 1000);
@@ -144,6 +163,7 @@ export function openBreak(onDone: () => void, play?: () => void): void {
     left--;
     timer.textContent = String(left);
     if (left > 0) return;
+    done++;
     i++;
     left = length();
     if (i < plan.exercises.length) {

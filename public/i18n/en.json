@@ -357,50 +357,101 @@
       "{key} belongs to your {finger}. Then back home!",
       "Slowly: {key} is pressed by your {finger}."
     ],
-    "level_done": [
-      "You did it, {name}!",
-      "Fantastic typing!",
-      "Lovely, keep it up!",
-      "Your fingers worked as a team!",
-      "Your fingers danced on the keys!"
-    ],
     "break": [
       "Time for a little stretch break. Your hands deserve it!",
       "Stretch a little and close your eyes for a moment."
     ]
   },
+  "end": {
+    "level": "Level finished!",
+    "practice": "Typing finished!",
+    "stay": "Easy round finished!",
+    "range": "Range finished!",
+    "rangeRecord": "A new world record!",
+    "parrotHome": "The parrot is at home!",
+    "parrotLost": "The parrot flew off",
+    "freeType": "Free typing finished!",
+    "break": "Warm-up finished!",
+    "taskDone": "Task done!",
+    "toMap": "To the map",
+    "breakBtn": "Break",
+    "surpriseNew": "You unlocked a new surprise!",
+    "surpriseSee": "See the surprise",
+    "accuracy": "Accuracy",
+    "rhythm": "Rhythm per minute",
+    "dictationClean": "By ear without a mistake",
+    "memoryClean": "From memory without a mistake",
+    "mixedClean": "By ear and from memory without a mistake",
+    "ofTotal": "{n} of {total}",
+    "task": "Task",
+    "taskLeft": "{n} min left",
+    "points": "Points",
+    "centers": "Hits in the middle",
+    "newFind": "A new thing joined your collection.",
+    "parrotWords": "Words",
+    "speedStart": "At the start, per minute",
+    "speedRepeat": "Repeating, per minute",
+    "tryAgain": "try again",
+    "parrotTip": "Type slowly and exactly and the parrot comes back.",
+    "time": "Time",
+    "lastText": "Last sentence",
+    "sendTeacher": "Send to the teacher",
+    "sendHow": "the link or the code",
+    "letterBetter": "Letter {key}: accuracy from {before} % to {after} %",
+    "faster": "Faster than usual",
+    "letters": {
+      "one": "{n} letter",
+      "few": "{n} letters",
+      "other": "{n} letters"
+    },
+    "minutes": {
+      "one": "{n} minute",
+      "few": "{n} minutes",
+      "other": "{n} minutes"
+    },
+    "hits": {
+      "one": "{n} hit",
+      "few": "{n} hits",
+      "other": "{n} hits"
+    },
+    "words": {
+      "one": "{n} word",
+      "few": "{n} words",
+      "other": "{n} words"
+    },
+    "exercises": {
+      "one": "{n} exercise",
+      "few": "{n} exercises",
+      "other": "{n} exercises"
+    },
+    "moreRewards": {
+      "one": "and {n} more reward",
+      "few": "and {n} more rewards",
+      "other": "and {n} more rewards"
+    }
+  },
   "results": {
-    "title": "Level finished!",
-    "practiceDone": "Practice finished!",
     "peek": "Look at the game (Esc)",
-    "dictationClean": "By ear without a mistake: {n} of {total}",
-    "memoryClean": "From memory without a mistake: {n} of {total}",
     "starsAria": "{n} of 3 stars",
-    "accuracy": "Accuracy {n} %",
     "byTapko": "The paw did most of this level.",
-    "rhythm": "Rhythm {n} letters per minute",
-    "trendUp": "Your rhythm is smoother than last week!",
+    "trendUp": "Your rhythm is smoother than last week",
     "newKey": "New key unlocked: {key}",
     "newKeys": "New keys unlocked: {keys}",
     "newAccessory": "New things in the wardrobe: {n}",
     "newCompanion": "A new character in your wardrobe: {kind}",
-    "rescued": "You rescued the dragon {name}!",
+    "rescued": "You rescued the dragon {name}",
     "next": "Next level",
     "nextRescue": "Another mission",
     "replay": "Play again",
-    "stay": "Stay a while",
+    "stay": "A while more",
     "reward": "See the reward",
-    "takeBreak": "Stretch break",
-    "growthTitle": "A new medal!",
-    "growthDifficulty": "Things will move a little faster now.",
-    "growthWordLen": "Words can now have {n} letters.",
+    "growthTitle": "A new medal",
     "medalAria": "medal number {n}",
-    "repaired": "You repaired the little robot {name}!",
-    "badgeNew": "New badge!",
-    "badgeSilver": "Your badge is silver now!",
-    "badgeGold": "Your badge is gold now!",
-    "mixedClean": "By ear and from memory without a mistake: {n} of {total}",
-    "guided": "You helped {name} find the way home!"
+    "repaired": "You repaired the little robot {name}",
+    "badgeNew": "A new badge",
+    "badgeSilver": "A silver badge",
+    "badgeGold": "A gold badge",
+    "guided": "You helped {name} find the way home"
   },
   "badge": {
     "bronze": "bronze",
@@ -1054,8 +1105,7 @@
     "neck": "Slowly turn your head left and right. Then nod yes, yes.",
     "wrists": "Circle your wrists one way and then the other.",
     "eyes": "Look far out of the window, then at your nose and far again. Then blink.",
-    "water": "Drink some water and take three slow, deep breaths.",
-    "done": "That was a good warm-up, {name}!"
+    "water": "Drink some water and take three slow, deep breaths."
   },
   "parent": {
     "title": "Local profile settings",
@@ -1919,14 +1969,8 @@
     "today": "Today's task",
     "left": "{n} min left",
     "start": "Start the task",
-    "continue": "Continue the task",
     "doneToday": "Task done!",
     "handIn": "Hand in",
-    "handInTitle": "Hand in the task",
-    "handInText": "Send this link to your teacher, for example by e-mail or your school app.",
-    "checksumNote": "The link holds the name, task, time, accuracy, rhythm and the five weakest keys. The checksum finds damaged links, not cheating.",
-    "doneLine": "Task “{title}” is done. Hand it in to your teacher.",
-    "leftLine": "Task “{title}”: {n} min left.",
     "group": "Group (optional)",
     "intro": "A task is a link. Send it to the students (for example in your school app); whoever opens it picks a player and sees Today's task on the map. When it is done, the student sends you a result link.",
     "title": "Task name",
@@ -1941,7 +1985,7 @@
     "doneAt": "done {date}",
     "played": "{n} of {total} min",
     "none": "This player has no tasks yet.",
-    "bigCode": "Show big code",
+    "bigCode": "Big code",
     "groupPlaceholder": "For example: 5.A",
     "groupHint": "The teacher's table groups results by it.",
     "legendNew": "New task",
@@ -2022,15 +2066,11 @@
     "start": "**This is the target range.** It is here **to make you more accurate**, and there is one in every world you pass through on this adventure. To train accuracy, make **as few mistakes as you can.** When your accuracy is good enough, you unlock more letters and more worlds. In every range you finish without a mistake, a **rare thing** appears that no range in any other world has. **Can you collect all** the rare things of the ranges? You can check on the **My progress** card.",
     "swapHint": "Press Enter to swap the thing in the paw for a rare one from the collection.",
     "swap": "From the collection: {name}!",
-    "keys": "Letters to train",
     "ready": "Great! You type {keys} accurately now.",
     "score": "Hits: {hits}   Points: {points}",
     "record": "A new world record!",
     "stayTip": "Esc: keep throwing; Esc again ends the range",
-    "stay": "Stay at the range",
     "stayStart": "We keep throwing. Press Esc when you want to stop.",
-    "hitsDone": "Target hits: {n}, in the middle: {center}",
-    "pointsDone": "Points: {n}",
     "lines": {
       "center": [
         "Bullseye!",
@@ -2132,7 +2172,6 @@
     },
     "collection": {
       "new": "A rare find! Throw to the end and it's yours.",
-      "count": "Collection: {n} of 15",
       "waiting": "Waiting in the {world} world"
     },
     "things": {
@@ -3194,11 +3233,7 @@
           "You're the king of accuracy!"
         ]
       }
-    },
-    "done": "Our target sent us your results!",
-    "beforeAfter": "before {before} %, now {after} %",
-    "opened": "Accurate typing opened new letters: {keys}",
-    "again": "Again"
+    }
   },
   "parrot": {
     "title": "Parrot",
@@ -3216,15 +3251,8 @@
       "Trry more carrrefully!",
       "Waaay too inaccurrrate!"
     ],
-    "done": "Repeating with the parrot!",
-    "flown": "Your parrot flew away. Try again, slowly and carefully.",
-    "learned": "Words: {words}",
-    "speedUsual": "Your usual speed: {n} characters per minute",
-    "speedLearn": "At the start: {n} characters per minute",
-    "speedRepeat": "While repeating: {n} characters per minute",
     "again": "New words",
     "badge": "Parrot badge: all parrots are at home",
-    "badgeNew": "Parrot badge: all parrots are at home!",
     "name": "Aro",
     "takeoff": [
       "Let's fly a rrround!",

@@ -48,6 +48,7 @@ export const PLURAL_FORMS = ['zero', 'one', 'two', 'few', 'many', 'other'] as co
 export const PLURAL_KEYS = new Set([
   'teacher.scan.count', 'teacher.n.sets', 'teacher.n.writers', 'teacher.n.results', 'teacher.n.handIns',
   'teacher.file.added', 'teacher.file.old', 'teacher.wipe.goSets', 'teacher.wipe.goResults', 'story.flightDone', 'story.copyLoopDone',
+  'end.letters', 'end.minutes', 'end.hits', 'end.words', 'end.exercises', 'end.moreRewards',
 ]);
 
 /** Arrays whose order and count matter; every other array is a pool read at random. */
@@ -97,13 +98,16 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
     g('story-play', 'story.*'),
   ] },
   { id: 'aim', groups: [
-    g('aim-page', 'aim.title', 'aim.start', 'aim.swapHint', 'aim.swap', 'aim.keys', 'aim.ready', 'aim.score', 'aim.record', 'aim.stayTip', 'aim.stay', 'aim.stayStart',
-      'aim.hitsDone', 'aim.pointsDone', 'aim.done', 'aim.beforeAfter', 'aim.opened', 'aim.again', 'aim.collection.*'),
+    g('aim-page', 'aim.title', 'aim.start', 'aim.swapHint', 'aim.swap', 'aim.ready', 'aim.score', 'aim.record', 'aim.stayTip', 'aim.stayStart',
+      'aim.collection.*'),
     g('aim-lines', 'aim.lines.*'),
     { id: 'aim-thing', keys: [], each: 'aim.things' },
     g('parrot', 'parrot.*'),
   ] },
   { id: 'results', groups: [
+    g('end-titles', 'end.level', 'end.practice', 'end.stay', 'end.range', 'end.rangeRecord', 'end.parrotHome', 'end.parrotLost', 'end.freeType', 'end.break', 'end.taskDone',
+      'end.toMap', 'end.breakBtn', 'end.surpriseNew', 'end.surpriseSee'),
+    g('end', 'end.*'),
     g('results', 'results.*'),
     g('badge', 'badge.*'),
     g('progress', 'progress.*'),

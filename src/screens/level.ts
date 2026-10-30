@@ -1,32 +1,32 @@
-import { app, go, isBreakDue, pickLine, saveProfile } from '../app/app';
+import { app, go, isBreakDue, saveProfile } from '../app/app';
 import { starRow } from '../ui/chrome';
 import { tapkoElement } from '../gfx/tapko';
-import { t, tList } from '../i18n/i18n';
-import { nickname } from '../storage/store';
+import { t, tList, tn } from '../i18n/i18n';
 import { LEVELS, type LevelDef, type StoryDef, aimLevel, aimOpen, aimWorld, freeTypeLevel, isLevelUnlocked, isWorldUnlocked, levelById, parrotLevel, practiceLevel, rescueLevel, storyOf } from '../game/levels';
 import type { LevelResult } from '../game/progress';
 import type { Style } from '../game/typing';
 import { WORLD_REWARDS } from '../game/rewards';
 import { LevelRuntime } from '../game/runtime';
 import { loadMode } from '../game/modes';
-import { captureKeys, surpriseAsk, surpriseLeft, surpriseTold } from '../game/cards';
-import { surpriseOutcome, surpriseWonIn } from '../game/own-content';
+import { captureKeys } from '../game/cards';
+import { type SurpriseRun, surpriseOutcome, surpriseRun, surpriseWonIn, surprisesToldOn } from '../game/own-content';
+import { type News, bestLetter, greenLine, levelNews } from '../game/end-news';
 import { ownTextPhrases } from '../game/modes/practice';
 import type { AimMode } from '../game/modes/aim';
+import type { FreeTyped } from '../game/modes/freetype';
 import type { ParrotMode } from '../game/modes/parrot';
 import { loseParrot, winParrot } from '../game/parrots';
+import { THINGS } from '../game/modes/aim-things';
 import { imageUrl } from '../gfx/assets';
-import { WORLD_THINGS } from '../game/modes/aim-things';
-import type { Friend, Profile, Surprise, Task } from '../storage/schema';
+import type { Friend, Surprise, Task } from '../storage/schema';
 import { recordTaskRun, taskOwn } from '../share/task';
 import { localDate, recentTyping } from '../learning/stats';
-import { type Child, button, closeButton, h } from '../ui/dom';
-import { tip } from '../ui/tooltip';
+import { type Child, closeButton, h } from '../ui/dom';
+import { type EndAction, type EndCardOpts, endCard, focusMain } from '../ui/end-card';
 import { keyLabel } from '../ui/keyboard-guide';
 import { badge, parrotBadge } from '../ui/badge';
 import { medal } from '../ui/medal';
 import { roundButton } from '../ui/hud';
-import { rangeFinds } from '../ui/finds';
 import { openPlacePicker, openWorlds } from './free-type';
 import { openHelp } from './help';
 import { openStats } from './stats';
@@ -78,14 +78,15 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
       style: params.style,
       stay: params.stay,
       onExit: exit,
+      onFreeDone: (typed) => showFreeDone(root, typed, params),
       onTapko: openStats,
       onHelp: (back, now) => openHelp(root.querySelector('.level-screen')!, back, now),
       onBreak: (back, play) => openBreak(back, play),
       onLayout: () => go('level', params, false),
       onFinish: (result) => {
         if (!result) return exit();
-        if (def.kind === 'aim') return showAimDone(root, result, runtime.mode as AimMode, params);
-        if (def.kind === 'parrot') return showParrotDone(root, def, result, runtime.mode as ParrotMode, params);
+        if (def.kind === 'aim') return showAimDone(root, def, result, runtime.mode as AimMode, params, runtime.surprise);
+        if (def.kind === 'parrot') return showParrotDone(root, def, result, runtime.mode as ParrotMode, params, runtime.surprise);
         if (params.stay) return showStayDone(root, def, result);
         if (task) {
           recordTaskRun(task, result);
@@ -114,16 +115,6 @@ const NAMES_FALLBACK: Record<Friend['kind'], string[]> = { dragon: ['Iskra', 'MÃ
 /** The friend a rescue mission helps, by the mission's story. */
 const FRIEND_OF: Record<StoryDef['id'], Friend['kind']> = { dragon: 'dragon', robot: 'robot', fairy: 'forest' };
 const RESCUED_LINE: Record<Friend['kind'], string> = { dragon: 'results.rescued', robot: 'results.repaired', forest: 'results.guided' };
-
-/** The break as the results' first action; back from it the card goes on without it, with the narrator's `line`. */
-function breakAction(actions: HTMLElement, bubble: HTMLElement, line: string): void {
-  const b = button(t('results.takeBreak'), () => openBreak(() => {
-    b.remove();
-    bubble.textContent = line;
-    actions.querySelector('button')?.focus();
-  }), 'btn primary', 'play');
-  actions.append(b);
-}
 
 const MODIFIERS = ['Shift', 'Alt', 'Control', 'Meta', 'AltGraph'];
 
@@ -165,6 +156,63 @@ function peekable(overlay: HTMLElement, card: HTMLElement, esc: () => void, type
   });
 }
 
+const toMap = () => go('map');
+const pct = (n: number) => Math.round(n * 100);
+const letters = (n: number) => tn('end.letters', n);
+/** Whole minutes, at least one. */
+const minutes = (seconds: number) => tn('end.minutes', Math.max(1, Math.round(seconds / 60)));
+
+/** The end card over the level's last frame, its main button focused; Esc and typing as in `peekable`. */
+function showEnd(root: HTMLElement, o: Omit<EndCardOpts, 'onBreak' | 'toMap'>, esc: () => void = toMap, type?: () => void): void {
+  const card = endCard({ ...o, toMap, onBreak: isBreakDue() ? (back) => openBreak(back) : null });
+  const overlay = h('div', { class: 'overlay results' }, card);
+  root.querySelector('.level-screen')!.append(overlay);
+  focusMain(card);
+  peekable(overlay, card, esc, type);
+}
+
+/** Accuracy and rhythm, the rows every typing end starts with. */
+function typingRows(r: LevelResult): [string, Child][] {
+  return [[t('end.accuracy'), `${pct(r.accuracy)} %`], r.cpm > 0 ? [t('end.rhythm'), letters(r.cpm)] : null].filter((x): x is [string, string] => x !== null);
+}
+
+/** The green line's content: the first news with its picture, and how many more rewards came with it. */
+function newsLine(news: News[]): Child[] | null {
+  const line = greenLine(news);
+  if (!line) return null;
+  const n = line.news;
+  const keys = (k: string[]) => (k.length === 1 ? t('results.newKey', { key: keyLabel(k[0]) }) : t('results.newKeys', { keys: k.map(keyLabel).join(', ') }));
+  const [pic, text]: [Child, string] =
+    n.kind === 'rescued' ? [null, t(RESCUED_LINE[n.friend.kind], { name: n.friend.name })]
+    : n.kind === 'badge' ? [badge(n.world, n.tier, true), t(!n.upgrade ? 'results.badgeNew' : n.tier === 'gold' ? 'results.badgeGold' : 'results.badgeSilver')]
+    : n.kind === 'parrotBadge' ? [parrotBadge(), t('parrot.badge')]
+    : n.kind === 'keys' ? [null, keys(n.keys)]
+    : n.kind === 'medal' ? [medal(n.growth.medal, true), t('results.growthTitle')]
+    : n.kind === 'wardrobe' ? [null, t('results.newAccessory', { n: n.n })]
+    : n.kind === 'companion' ? [null, t('results.newCompanion', { kind: t(`kinds.${n.companion}`) })]
+    : n.kind === 'trend' ? [null, t('results.trendUp')]
+    : n.kind === 'find' ? [findPic(n.thing), t('end.newFind')]
+    : n.kind === 'letter' ? [null, t('end.letterBetter', { key: keyLabel(n.key), before: pct(n.before), after: pct(n.after) })]
+    : [null, t('end.faster')];
+  return [pic, h('span', {}, line.more ? `${text} ${tn('end.moreRewards', line.more)}` : text)];
+}
+
+/** The picture of a range thing in the green line. */
+function findPic(id: string): Child {
+  const src = imageUrl(THINGS.find((th) => th.id === id)?.pics[0] ?? '');
+  return src && h('img', { class: 'ec-find', src, alt: '' });
+}
+
+/** Tells and records the surprises the run reached (a story level keeps them in its world); the card then shows today's told ones, or none. */
+function toldSurprises(def: LevelDef, asked: Surprise | null, run: SurpriseRun): Surprise[] {
+  const p = app.profile!;
+  const { revealed } = surpriseOutcome(p, asked, run);
+  if (!revealed.length) return [];
+  if (def.index >= 0 && !def.rescue) for (const s of revealed) surpriseWonIn(s, def.world);
+  saveProfile();
+  return surprisesToldOn(p);
+}
+
 function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: LevelParams, surprise: Surprise | null, task: Task | null): void {
   const p = app.profile!;
   let rescued: Friend | null = null;
@@ -178,187 +226,109 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
     p.progress.friends.push(rescued);
     saveProfile();
   }
-  const stars = starRow(r.shownStars);
-  // The facts as small chips in one wrapping row, accuracy first.
-  const chip = (cls: string, ...kids: Child[]) => h('span', { class: `fact ${cls}` }, ...kids);
-  const facts: HTMLElement[] = [
-    chip('main', r.byTapko ? t('results.byTapko') : t('results.accuracy', { n: Math.round(r.accuracy * 100) })),
-  ];
-  if (r.byStyle) facts.push(chip('', t(`results.${r.byStyle.style}Clean`, { n: r.byStyle.clean, total: r.byStyle.total })));
-  if (r.cpm > 0) facts.push(chip('', t('results.rhythm', { n: r.cpm })));
-  if (r.trend && r.trend > 1.05) facts.push(chip('good', t('results.trendUp')));
-  if (r.newKeys.length) {
-    facts.push(chip('new-key', r.newKeys.length === 1 ? t('results.newKey', { key: keyLabel(r.newKeys[0]) }) : t('results.newKeys', { keys: r.newKeys.map(keyLabel).join(', ') })));
-  }
-  if (r.newAccessories.length) facts.push(chip('good', t('results.newAccessory', { n: r.newAccessories.length })));
-  for (const kind of r.newCompanions) facts.push(chip('good', t('results.newCompanion', { kind: t(`kinds.${kind}`) })));
-  if (r.badge) {
-    const line = !r.badge.upgrade ? 'results.badgeNew' : r.badge.tier === 'gold' ? 'results.badgeGold' : 'results.badgeSilver';
-    facts.push(chip('badge-fact', badge(r.badge.world, r.badge.tier, true), h('b', {}, t(line))));
-  }
-  if (rescued) facts.push(chip('good', t(RESCUED_LINE[rescued.kind], { name: rescued.name })));
-  if (r.growth) {
-    facts.push(chip('growth', medal(r.growth.medal, true), h('span', {}, h('b', {}, t('results.growthTitle')), ' ',
-      r.growth.kind === 'difficulty' ? t('results.growthDifficulty') : t('results.growthWordLen', { n: r.growth.value }))));
-  }
-  const sentence = pickLine('tapko.level_done', { name: nickname(p) }, p.customMessages);
-
-  const actions = h('div', { class: 'row center' });
+  const practice = def.kind === 'practice';
   const taskOn = task && !task.doneAt ? task : null;
-  if (task?.doneAt) actions.append(button(t('task.handIn'), () => void handInDialog(p, task), 'btn primary', 'upload'));
-  else if (taskOn && def.kind === 'practice') actions.append(button(t('task.continue'), () => startTask(p, taskOn), 'btn primary', 'play'));
-  const breakDue = isBreakDue();
-  // A break or a finished task's hand-in is the main action then.
-  const calm = breakDue || !!task?.doneAt;
+  // A task still running takes the third row.
+  const rows: [string, Child][] = [...typingRows(r)];
+  if (taskOn) rows.push([t('end.task'), t('end.taskLeft', { n: minutesLeft(taskOn) })]);
+  if (r.byStyle) rows.push([t(`end.${r.byStyle.style}Clean`), t('end.ofTotal', { n: r.byStyle.clean, total: r.byStyle.total })]);
+  const actions: EndAction[] = [];
+  if (task?.doneAt) actions.push({ label: t('task.handIn'), icon: 'upload', run: () => void handInDialog(p, task) });
   const nextDef = def.index >= 0 && !def.isSuper ? LEVELS.find((l) => l.world === def.world && l.index === def.index + 1) : undefined;
-  const bubble = h('p', { class: 'bubble static side' }, breakDue ? pickLine('tapko.break') : sentence);
-  if (breakDue) breakAction(actions, bubble, sentence);
-  if (r.worldDone !== null) {
-    actions.append(button(t('results.reward'), () => go('story', { scene: WORLD_REWARDS[r.worldDone!], next: 'map' }), `btn ${calm ? '' : 'primary'}`, 'star'));
-  } else if (nextDef) {
-    actions.append(button(t('results.next'), () => go('level', { id: nextDef.id, task: taskOn?.id }), `btn ${calm ? '' : 'primary'}`, 'next'));
-  } else if (def.rescue) {
-    actions.append(button(t('results.nextRescue'), () => go('level', { id: 'rescue' }), `btn ${calm ? '' : 'primary'}`, 'rescue'));
-  }
+  if (r.worldDone !== null) actions.push({ label: t('results.reward'), icon: 'star', run: () => go('story', { scene: WORLD_REWARDS[r.worldDone!], next: 'map' }) });
+  else if (nextDef) actions.push({ label: t('results.next'), icon: 'next', run: () => go('level', { id: nextDef.id, task: taskOn?.id }) });
+  else if (def.rescue) actions.push({ label: t('results.nextRescue'), icon: 'rescue', run: () => go('level', { id: 'rescue' }) });
+  // A task's practice plays what is left of it.
+  actions.push({ label: t('results.replay'), icon: 'replay', run: () => (taskOn && practice ? startTask(p, taskOn) : go('level', params)) });
   const stay = def.index >= 0 && !task ? () => go('level', { id: def.id, stay: true }) : undefined;
-  if (stay) actions.append(button(t('results.stay'), stay, 'btn', 'play'));
-  actions.append(button(t('results.replay'), () => go('level', params), 'btn', 'replay'));
-  const toMap = () => go('map');
-  actions.append(button(t('level.end'), toMap, 'btn', 'close'));
-
-  // The surprises told in this run (each with its open box), the one still waiting, and the task share one small framed block.
-  const outcome = surpriseOutcome(p, surprise, !!params.keys);
-  // A story level keeps the told surprises in its world on the map.
-  if (def.index >= 0 && !def.rescue) for (const s of outcome.revealed) surpriseWonIn(s, def.world);
-  if (outcome.revealed.length || outcome.waiting) saveProfile();
-  const notes = [
-    ...outcome.revealed.map(surpriseTold),
-    outcome.waiting ? h('div', { class: 'surprise-result' }, surpriseAsk(outcome.waiting.q), surpriseLeft(p, outcome.waiting)) : null,
-    task ? h('p', { class: `task-line ${task.doneAt ? 'good' : ''}` }, task.doneAt ? t('task.doneLine', { title: task.title }) : t('task.leftLine', { title: task.title, n: minutesLeft(task) })) : null,
-  ].filter((x) => x !== null);
-  const card = h('div', { class: 'card results-card' },
-    h('div', { class: 'results-top' },
-      h('h2', {}, def.kind === 'practice' ? t('results.practiceDone') : t('results.title')),
-      def.kind === 'practice' ? null : stars),
-    h('div', { class: 'results-tapko' }, tapkoElement(p.companion, 'happy', 80), bubble),
-    h('div', { class: 'results-facts' }, ...facts),
-    notes.length ? h('div', { class: 'results-notes' }, ...notes) : null,
-    actions);
-  const overlay = h('div', { class: 'overlay results' }, card);
-  root.querySelector('.level-screen')!.append(overlay);
-  (actions.querySelector('button') as HTMLButtonElement).focus();
-  peekable(overlay, card, toMap, stay);
+  if (stay) actions.push({ label: t('results.stay'), icon: 'play', run: stay });
+  showEnd(root, {
+    cls: practice ? 'practice-done' : 'level-done',
+    title: t(practice ? 'end.practice' : 'end.level'),
+    picture: practice ? 'ui-end-practice' : tapkoElement(p.companion, 'happy', 120),
+    under: practice ? minutes(r.seconds) : starRow(r.shownStars),
+    rows: rows.slice(0, 3),
+    news: newsLine(levelNews(r, rescued)),
+    tip: r.byTapko ? t('results.byTapko') : null,
+    surprises: toldSurprises(def, surprise, surpriseRun(def, !!params.keys)),
+    actions,
+  }, toMap, stay);
 }
 
-/** The end of staying a while: accuracy and rhythm like after a practice, the map first. */
+/** The end of staying a while: accuracy and rhythm like after a practice, the next level first. */
 function showStayDone(root: HTMLElement, def: LevelDef, r: LevelResult): void {
   const p = app.profile!;
-  const chip = (cls: string, text: string) => h('span', { class: `fact ${cls}` }, text);
-  const facts = [chip('main', t('results.accuracy', { n: Math.round(r.accuracy * 100) }))];
-  if (r.cpm > 0) facts.push(chip('', t('results.rhythm', { n: r.cpm })));
-  if (r.newKeys.length) {
-    facts.push(chip('new-key', r.newKeys.length === 1 ? t('results.newKey', { key: keyLabel(r.newKeys[0]) }) : t('results.newKeys', { keys: r.newKeys.map(keyLabel).join(', ') })));
-  }
-  if (r.growth) facts.push(chip('good', r.growth.kind === 'difficulty' ? t('results.growthDifficulty') : t('results.growthWordLen', { n: r.growth.value })));
-  const breakDue = isBreakDue();
   const next = LEVELS[LEVELS.indexOf(def) + 1];
-  const actions = h('div', { class: 'row center' });
-  const line = pickLine('tapko.level_done', { name: nickname(p) }, p.customMessages);
-  const bubble = h('p', { class: 'bubble static side' }, breakDue ? pickLine('tapko.break') : line);
-  if (breakDue) breakAction(actions, bubble, line);
-  actions.append(button(t('level.end'), () => go('map'), `btn ${breakDue ? '' : 'primary'}`, 'close'));
-  if (next && isLevelUnlocked(p, next)) actions.append(button(t('results.next'), () => go('level', { id: next.id }), 'btn', 'next'));
-  const card = h('div', { class: 'card results-card stay-done' },
-    h('div', { class: 'results-top' }, h('h2', {}, t('results.practiceDone'))),
-    h('div', { class: 'results-tapko' }, tapkoElement(p.companion, 'happy', 80), bubble),
-    h('div', { class: 'results-facts' }, ...facts),
-    actions);
-  const overlay = h('div', { class: 'overlay results' }, card);
-  root.querySelector('.level-screen')!.append(overlay);
-  (actions.querySelector('button') as HTMLButtonElement).focus();
-  peekable(overlay, card, () => go('map'), () => go('level', { id: def.id, stay: true }));
+  const stay = () => go('level', { id: def.id, stay: true });
+  const actions: EndAction[] = [];
+  if (next && isLevelUnlocked(p, next)) actions.push({ label: t('results.next'), icon: 'next', run: () => go('level', { id: next.id }) });
+  actions.push({ label: t('results.stay'), icon: 'play', run: stay });
+  showEnd(root, { cls: 'stay-done', title: t('end.stay'), picture: 'ui-end-stay', under: minutes(r.seconds), rows: typingRows(r), news: newsLine(levelNews(r)), actions }, toMap, stay);
 }
 
-/** The end of the target range over it: accuracy before and after per weak key, the hits and points (a new record), new keys when the lesson advanced; no stars. */
-function showAimDone(root: HTMLElement, r: LevelResult, mode: AimMode, params: LevelParams): void {
-  const p = app.profile!;
-  const pct = (n: number) => Math.round(n * 100);
-  const rows = mode.report().map((k) => h('li', { class: `aim-row ${k.after > k.before ? 'good' : ''}` },
-    h('b', { class: 'aim-row-key' }, keyLabel(k.key)),
-    h('span', {}, t('aim.beforeAfter', { before: pct(k.before), after: pct(k.after) }))));
-  const facts = [h('span', { class: 'fact main' }, t('results.accuracy', { n: pct(r.accuracy) })), h('span', { class: 'fact' }, t('aim.hitsDone', { n: mode.hits, center: mode.centers })),
-    h('span', { class: 'fact' }, t('aim.pointsDone', { n: mode.points }))];
-  if (mode.newRecord) facts.push(h('span', { class: 'fact new-key' }, t('aim.record')));
-  if (r.newKeys.length) facts.push(h('span', { class: 'fact new-key' }, t('aim.opened', { keys: r.newKeys.map(keyLabel).join(', ') })));
-  const breakDue = isBreakDue();
-  const actions = h('div', { class: 'row center' });
-  const line = pickLine('tapko.level_done', { name: nickname(p) }, p.customMessages);
-  const bubble = h('p', { class: 'bubble static side' }, breakDue ? pickLine('tapko.break') : line);
-  if (breakDue) breakAction(actions, bubble, line);
-  actions.append(button(t('aim.again'), () => go('level', { ...params, stay: undefined }), `btn ${breakDue ? '' : 'primary'}`, 'replay'));
+/** The end of the target range: the hits (a new record has its own title and picture), the points, accuracy and the middle hits; no stars. */
+function showAimDone(root: HTMLElement, def: LevelDef, r: LevelResult, mode: AimMode, params: LevelParams, surprise: Surprise | null): void {
+  const better = bestLetter(mode.report());
   const stay = () => go('level', { ...params, stay: true });
-  const stayBtn = button(t('aim.stay'), stay, 'btn', 'play');
-  tip(stayBtn, t('aim.stayTip'));
-  actions.append(stayBtn, button(t('level.end'), () => go('map'), 'btn', 'close'));
-  const card = h('div', { class: 'card results-card aim-done' },
-    h('div', { class: 'results-top' }, h('h2', {}, t('aim.done'))),
-    h('div', { class: 'results-tapko' }, tapkoElement(p.companion, 'happy', 80), bubble),
-    h('ul', { class: 'aim-rows', 'aria-label': t('aim.keys') }, ...rows),
-    h('div', { class: 'results-facts' }, ...facts),
-    aimCollection(p),
-    actions);
-  const overlay = h('div', { class: 'overlay results' }, card);
-  root.querySelector('.level-screen')!.append(overlay);
-  (actions.querySelector('button') as HTMLButtonElement).focus();
+  showEnd(root, {
+    cls: 'aim-done',
+    title: t(mode.newRecord ? 'end.rangeRecord' : 'end.range'),
+    picture: mode.newRecord ? 'ui-end-range-record' : 'ui-end-range',
+    under: tn('end.hits', mode.hits),
+    rows: [[t('end.points'), mode.points], [t('end.accuracy'), `${pct(r.accuracy)} %`], [t('end.centers'), mode.centers]],
+    // A thing new in the collection comes before everything else.
+    news: newsLine([...mode.won.map((thing) => ({ kind: 'find', thing }) as const), ...levelNews({ ...r, growth: null, trend: null }), ...(better ? [better] : [])]),
+    // Staying at the range keeps no surprises.
+    surprises: params.stay ? [] : toldSurprises(def, surprise, 'time'),
+    actions: [
+      { label: t('results.replay'), icon: 'replay', run: () => go('level', { ...params, stay: undefined }) },
+      { label: t('results.stay'), icon: 'play', run: stay, tip: t('aim.stayTip') },
+    ],
   // Escape stays at the range; Escape there ends it and brings this card back. After this key is
   // done, or the new range would take the same Escape as its end.
-  peekable(overlay, card, () => setTimeout(stay), stay);
+  }, () => setTimeout(stay), stay);
 }
 
 /**
- * The end of a parrot round: the parrot is at home, the words it learned, the speeds, the badge when
- * this win brought it; or its empty perch when it flew off, and a new try. No stars.
+ * The end of a parrot round: the parrot at home with the words it learned and the speeds, the badge
+ * when this win brought it; or its empty perch when it flew off, and a tip for the new try. No stars.
  */
-function showParrotDone(root: HTMLElement, def: LevelDef, r: LevelResult, mode: ParrotMode, params: LevelParams): void {
+function showParrotDone(root: HTMLElement, def: LevelDef, r: LevelResult, mode: ParrotMode, params: LevelParams, surprise: Surprise | null): void {
   const p = app.profile!;
   const lost = mode.flewOff;
   const badgeNew = !lost && winParrot(p, def.world, localDate());
   if (lost) loseParrot(p, def.world);
   saveProfile();
-  const pic = imageUrl(lost ? 'ui-act-parrot-perch' : 'ui-act-parrot');
-  const words = h('div', { class: 'results-facts parrot-words' }, h('span', { class: 'fact main' }, t('parrot.learned', { words: mode.round.words.join(', ') })));
-  const facts: HTMLElement[] = [];
-  // How fast the fingers got: the usual speed of the last 14 days, the learning part and the repeating part.
-  const usual = recentTyping(p, 14).cpm, learn = mode.speed(1), repeat = mode.speed(2);
-  if (usual) facts.push(h('span', { class: 'fact' }, t('parrot.speedUsual', { n: usual })));
-  if (learn) facts.push(h('span', { class: 'fact' }, t('parrot.speedLearn', { n: learn })));
-  if (repeat) facts.push(h('span', { class: `fact ${repeat > learn ? 'good' : ''}` }, t('parrot.speedRepeat', { n: repeat })));
-  if (r.newKeys.length) facts.push(h('span', { class: 'fact new-key' }, t('aim.opened', { keys: r.newKeys.map(keyLabel).join(', ') })));
-  if (badgeNew) facts.push(h('span', { class: 'fact badge-fact' }, parrotBadge(), h('b', {}, t('parrot.badgeNew'))));
-  const breakDue = isBreakDue();
-  const actions = h('div', { class: 'row center' });
-  const line = lost ? t('parrot.flown') : pickLine('tapko.level_done', { name: nickname(p) }, p.customMessages);
-  const bubble = h('p', { class: 'bubble static side' }, breakDue && !lost ? pickLine('tapko.break') : line);
-  if (breakDue) breakAction(actions, bubble, line);
-  actions.append(button(t(lost ? 'results.replay' : 'parrot.again'), () => go('level', params), `btn ${breakDue ? '' : 'primary'}`, 'replay'),
-    button(t('level.end'), () => go('map'), 'btn', 'close'));
-  const card = h('div', { class: 'card results-card parrot-done' },
-    h('div', { class: 'results-top' }, h('h2', {}, t('parrot.done'))),
-    h('div', { class: 'results-tapko' }, pic ? h('img', { class: 'parrot-done-pic', src: pic, alt: '' }) : tapkoElement(p.companion, 'happy', 80), bubble),
-    words,
-    h('div', { class: 'results-facts' }, ...facts),
-    actions);
-  const overlay = h('div', { class: 'overlay results' }, card);
-  root.querySelector('.level-screen')!.append(overlay);
-  (actions.querySelector('button') as HTMLButtonElement).focus();
-  peekable(overlay, card, () => go('map'));
+  const words = mode.round.words;
+  const learn = mode.speed(1), repeat = mode.speed(2);
+  // Faster while repeating than the usual speed of the last 14 days.
+  const usual = recentTyping(p, 14).cpm;
+  const news: News[] = [...(badgeNew ? [{ kind: 'parrotBadge' } as const] : []), ...levelNews({ ...r, growth: null, trend: null }), ...(usual && repeat > usual ? [{ kind: 'faster' } as const] : [])];
+  const rows: [string, Child][] = [[t('end.parrotWords'), words.slice(0, 3).join(', ') + (words.length > 3 ? ', â€¦' : '')]];
+  if (learn) rows.push([t('end.speedStart'), letters(learn)]);
+  if (!lost && repeat) rows.push([t('end.speedRepeat'), letters(repeat)]);
+  showEnd(root, {
+    cls: 'parrot-done',
+    title: t(lost ? 'end.parrotLost' : 'end.parrotHome'),
+    picture: lost ? 'ui-act-parrot-perch' : 'ui-act-parrot',
+    under: lost ? t('end.tryAgain') : tn('end.words', words.length),
+    rows,
+    news: lost ? null : newsLine(news),
+    tip: lost ? t('end.parrotTip') : null,
+    surprises: toldSurprises(def, surprise, 'time'),
+    actions: [{ label: t(lost ? 'results.replay' : 'parrot.again'), icon: 'replay', run: () => go('level', params) }],
+  });
 }
 
-/** The range's collection under the run's result, with how many are found. */
-function aimCollection(p: Profile): HTMLElement {
-  const found = WORLD_THINGS.filter((th) => p.progress.rangeFinds.includes(th.id)).length;
-  return h('div', { class: 'aim-collection' },
-    h('p', { class: 'aim-collection-count' }, t('aim.collection.count', { n: found })),
-    rangeFinds(p));
+/** The end of free typing after something was typed: the words, the time and the last text; none of it counts in the statistics. */
+function showFreeDone(root: HTMLElement, typed: FreeTyped, params: LevelParams): void {
+  const again = () => go('level', params);
+  showEnd(root, {
+    cls: 'free-done',
+    title: t('end.freeType'),
+    picture: 'ui-end-freetype',
+    under: tn('end.words', typed.words),
+    rows: [[t('end.time'), minutes(typed.seconds)], [t('end.lastText'), typed.last]],
+    actions: [{ label: t('level.keepTyping'), icon: 'play', run: again }],
+  }, toMap, again);
 }
-

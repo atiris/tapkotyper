@@ -1664,6 +1664,34 @@
    "w": 510,
    "h": 512
   },
+  "ui-end-break": {
+   "w": 504,
+   "h": 512
+  },
+  "ui-end-freetype": {
+   "w": 351,
+   "h": 512
+  },
+  "ui-end-practice": {
+   "w": 474,
+   "h": 512
+  },
+  "ui-end-range": {
+   "w": 410,
+   "h": 512
+  },
+  "ui-end-range-record": {
+   "w": 473,
+   "h": 512
+  },
+  "ui-end-stay": {
+   "w": 512,
+   "h": 469
+  },
+  "ui-end-task": {
+   "w": 440,
+   "h": 512
+  },
   "ui-icon-hr-darkbg": {
    "w": 512,
    "h": 451

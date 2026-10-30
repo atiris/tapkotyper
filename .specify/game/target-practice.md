@@ -89,15 +89,17 @@
   enough that the target's eyes peeking out over its top stay in sight. The most points of a run
   are the range's record (kept per player with the day it was set, staying a while does not count;
   the progress's third row, the totals since the start, shows it and its day); the first time a
-  run beats it Tapko says "Nový svetový rekord!", and the end card says it too. The end card
-  ("Náš terč nám poslal tvoje výsledky!") says the hits, how many were in the middle and the
-  points; its collection stays in one row while the window is wide enough. No stars,
-  no paw help, no Enter marks, no surprises, no story friends. The end card shows accuracy
-  before and after per trained letter over the range, "Again", "Stay at the range" and "To the
-  map". Esc or that button keeps throwing without an end (every hit counts); Esc there ends
-  it and the card comes back. The lesson may advance at the end, so a ready
-  group opens new letters right there, and the card says so; good play counts toward growth
-  like a practice.
+  run beats it Tapko says "Nový svetový rekord!". The end card (the one card of every end, see
+  [mechanics](mechanics.md)) is "Strelnica hotová!" with the target, or "Nový svetový rekord!"
+  with the winner's cup when the run set the record; under the picture all hits of the run, the
+  rows the points, accuracy and the hits in the middle. Its green line tells a thing new in the
+  collection (its picture and "Do zbierky ti pribudol nový predmet."), else new letters when the
+  lesson advanced, else the trained letter whose accuracy grew most. Buttons: "Hrať znova",
+  "Ešte chvíľu" and "Na mapu". No stars, no paw help, no Enter marks, no story friends; the
+  parent's surprises counting training time are asked and told like after a practice (see
+  [parent controls](../profiles/parent-controls.md)), never while staying. Esc or "Ešte chvíľu"
+  keeps throwing without an end (every hit counts); Esc there ends it and the card comes back.
+  Good play counts toward growth like a practice.
 
 ## Why
 - A child with low accuracy on a few letters is stuck and does not see why: new letters

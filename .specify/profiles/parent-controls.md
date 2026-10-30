@@ -75,14 +75,16 @@
     switch "show on the map ahead" puts a closed golden gift box in place of that level's
     game picture on the map (its tooltip says a surprise waits there) until the answer is told,
     so the child sees where to go;
-  - **after minutes of training** (story levels and practice together), **after more
+  - **after minutes of training** (story levels, practice, the target range and the parrot together), **after more
     levels** or **after more stars**, counted from when the rule was made: the game
     asks on every get-ready card while it waits, with what is still left ("3 more
     levels"), and tells the answer on the results of the level that reaches it.
   A rule either repeats (counts again from the reveal, or fires on every finish of its level)
   or is done after its reveal and never shown again. A level run
   asks one surprise at most on its get-ready card, in the order level, minutes, levels, stars, but
-  its results tell every surprise reached in it, each with an open golden box beside its question.
+  its end card says a surprise was unlocked and opens the surprises told today, each with an open
+  golden box beside its question. The target range and the parrot ask and tell only rules counting
+  training time (they finish no levels and give no stars); staying a while asks and tells none.
   The answer always comes right under its question,
   highlighted. The table shows the question, the answer, when (in words), repeat, the
   state (waiting, "12 / 20 min", done with its date) and edit and delete; a form under it

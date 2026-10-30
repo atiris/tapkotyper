@@ -38,9 +38,11 @@ test('a task travels by link to a child, and the result back to the teacher\'s t
   const typed: string[] = [];
   await playLevel(child, false, typed);
   expect(typed.join('')).toMatch(/lopta|ruka/);
-  await expect(child.locator('.results-card .task-line')).toContainText('Zvieratá');
-  await child.locator('.results-card .btn.primary').first().click();
-  const resultLink = await child.locator('.hand-in .link-text').inputValue();
+  // The task is done in this run: the hand-in is the main button and opens the task's own end card.
+  await child.locator('.end-card .btn.primary').first().click();
+  const handIn = child.locator('.end-card.task-done');
+  await expect(handIn.locator('.ec-row', { hasText: 'Task' }).first()).toContainText('Zvieratá');
+  const resultLink = await handIn.locator('.link-text').inputValue();
   expect(resultLink).toMatch(/#\/result\/[A-Za-z0-9_-]+$/);
 
   // The teacher opens the result link: one row in the table, kept after a reload.

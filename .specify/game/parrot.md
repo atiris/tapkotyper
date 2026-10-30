@@ -36,18 +36,19 @@
   The words use the letters of the world's last level: real words where the letters allow it
   (letter drills in the meadow's tiny set), all different and starting with different letters
   where possible, new ones each round.
-- The typing counts in the statistics and in the lesson like at the target range; paws, Enter
-  marks and the parent's surprises stay out.
+- The typing counts in the statistics and in the lesson like at the target range; paws and Enter
+  marks stay out, the parent's surprises counting training time are asked and told.
 - **End:** a learned round ends with the parrot flying off the scene, and it is back on the end
-  card: the parrot in colour, "Opakovanie s papagájom!", the words learned set apart in their own
-  row, how fast the fingers were (the child's usual speed of the last 14 days, the learning part
-  and the repeating part, the last one green when it was faster), new letters when the lesson
-  moved on, and the Parrot badge with its line when this win brought it. "Nové slová" plays again
-  with new words; the X at the top right and Esc show the game under the card, a second Esc goes
-  to the map. Finishing the round wins the
+  card (the one card of every end, see [mechanics](mechanics.md)): "Papagáj je doma!", the parrot
+  in colour with the number of words under it, the rows the words (the first three), the speed at
+  the start and while repeating (letters per minute); the green line tells the Parrot badge when
+  this win brought it, new letters, or that repeating was faster than the child's usual speed of
+  the last 14 days. "Nové slová" plays again with new words; the X at the top right and Esc show
+  the game under the card, a second Esc goes to the map. Finishing the round wins the
   world's parrot.
-- **Lost round:** no celebration; the end card shows the empty perch and says the parrot flew
-  away and to try again slowly; "Hrať znova" is the main button. The world's parrot leaves home
+- **Lost round:** no celebration; the end card "Papagáj uletel" shows the empty perch with "skús
+  znova", the words and the speed at the start, and a yellow tip "Píš pomaly a presne a papagáj sa
+  vráti."; "Hrať znova" is the main button. The world's parrot leaves home
   (the badge may go with it) and its map node shows the empty perch.
 - **Parrots fly away**, so the child comes back and practises again:
   - one roll for each day since the last check (only today the first time): a 20 % chance that

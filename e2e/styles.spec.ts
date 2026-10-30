@@ -45,7 +45,7 @@ test('dictation: the voice says the target, a wrong key reveals it', async ({ pa
   // The reading-aloud button is hidden: the voice is the task.
   await expect(page.locator('.read-btn')).toBeHidden();
   await page.locator('.hud').getByRole('button', { name: 'Stop typing' }).click();
-  await expect(page.locator('.results-card')).toContainText('By ear without a mistake: 1 of 2');
+  await expect(page.locator('.end-card .ec-row', { hasText: 'By ear without a mistake' })).toContainText('1 of 2');
   expect(errors).toEqual([]);
 });
 
@@ -91,7 +91,7 @@ test('memory: keys wait while the target shows, a mistake shows it again', async
   for (const ch of word.slice(1)) await typeChar(page, ch);
   await expect(page.locator('.hud')).toBeVisible();
   await page.locator('.hud').getByRole('button', { name: 'Stop typing' }).click();
-  await expect(page.locator('.results-card')).toContainText('From memory without a mistake: 0 of 1');
+  await expect(page.locator('.end-card .ec-row', { hasText: 'From memory without a mistake' })).toContainText('0 of 1');
   expect(errors).toEqual([]);
 });
 

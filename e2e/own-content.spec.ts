@@ -35,8 +35,16 @@ test('own words and a surprise from the parent reach the child\'s next level', a
   const typed: string[] = [];
   await playLevel(page, false, typed);
   expect(typed.join('')).toMatch(/lopta|ruka/);
-  await expect(page.locator('.results-card .surprise.ask')).toContainText('Where is the treat?');
-  await expect(page.locator('.results-card .surprise.answer')).toHaveText('Behind the fridge.');
+  // The card tells a surprise was unlocked; its main button opens today's surprises over it.
+  await expect(page.locator('.end-card .ec-surprise')).toContainText('You unlocked a new surprise!');
+  const main = page.locator('.end-card .ec-bot .btn.primary');
+  await expect(main).toContainText('See the surprise');
+  await main.click();
+  await expect(page.locator('.surprises-modal .surprise.ask')).toContainText('Where is the treat?');
+  await expect(page.locator('.surprises-modal .surprise.answer')).toHaveText('Behind the fridge.');
+  await page.keyboard.press('Escape');
+  await expect(main).not.toContainText('See the surprise');
+  await expect(main).toBeFocused();
   const done = await page.evaluate(() => JSON.parse(localStorage.getItem('tapkotyper:v1')!).profiles[0].surprises[0].doneAt);
   expect(done).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   expect(errors).toEqual([]);

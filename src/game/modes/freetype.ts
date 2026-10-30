@@ -26,10 +26,17 @@ const LINE_SIZE = 30;
 const HOME_X = 100;
 const GROUND = VH * 0.97;
 
+/** What free typing wrote, for its end card: the words, the last text shown and the seconds of typing. */
+export interface FreeTyped {
+  words: number;
+  last: string;
+  seconds: number;
+}
+
 /**
  * "Just typing": Tapko walks through a chosen world, hops with the typing (never faster than one
  * hop and a short rest), now and then does a trick, and the text typed before a pause is shown
- * above him (and said, when the parent allows it). No targets, no end.
+ * above him (and said, when the parent allows it). No targets; leaving after something was typed shows its end card.
  */
 export class FreeTypeMode extends HeroMode {
   readonly world: string;
@@ -41,6 +48,9 @@ export class FreeTypeMode extends HeroMode {
   private hopT = HOP + REST;
   private trick: Trick | null = null;
   private keysToTrick = 0;
+  /** Words shown so far and the last text shown. */
+  private words = 0;
+  private last = '';
 
   constructor(L: LevelRuntime) {
     super(L);
@@ -95,8 +105,21 @@ export class FreeTypeMode extends HeroMode {
   }
 
   private show(text: string): void {
+    this.count(text);
     this.shown = { text, age: 0 };
     this.L.speakTyped(text);
+  }
+
+  private count(text: string): void {
+    this.words += text.split(' ').length;
+    this.last = text;
+  }
+
+  /** What was typed here; the text still collecting in the line counts too. */
+  summary(): FreeTyped {
+    const text = this.line.take();
+    if (text) this.count(text);
+    return { words: this.words, last: this.last, seconds: this.t };
   }
 
   update(dt: number): void {

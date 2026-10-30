@@ -11,13 +11,14 @@
 - Opening a task link asks which player takes it (or creates a new one). The map then
   shows **Úloha na dnes** as its first card until the minutes are played; a story task
   may take several levels, and leaving a level early does not count it.
-- **Hand-in:** after the task, the child gets **Odovzdať**: a result link and the short
-  instruction to send it to the teacher (Edupage, e-mail). It holds the player's real name
+- **Hand-in:** after the task, the child gets **Odovzdať**: the end card "Úloha splnená!" (the
+  one card of every end, see [mechanics](../game/mechanics.md)) with the backpack, the minutes, the
+  task, "Pošli učiteľovi: odkaz alebo kód", the result link, "Kopírovať odkaz" and "Veľký kód". The link holds the player's real name
   (or the nickname when there is none),
   the task, the date, minutes played, accuracy, rhythm and the five weakest keys, a yes/no
   flag that the super player removed or changed the settings password on the child's device
   ([profiles](profiles.md)), plus a checksum; the teacher's views and the QR scan show a red
-  lock by that child's name. The UI says plainly that the checksum finds damaged copies, not cheating.
+  lock by that child's name. The teacher's help says plainly that the checksum finds damaged copies, not cheating.
 - **Teacher view** (`#/teacher`, from the start page footer, or by opening a result link):
   results are kept in this browser only (IndexedDB), apart from the players, so a large
   class's history does not crowd the players' storage. No accounts.

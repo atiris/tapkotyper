@@ -244,6 +244,8 @@ export class AimMode extends HeroMode {
   private cleanSoFar = true;
   /** World things hit in the middle during this run: they join the collection only when the run ends, not when it is left early. */
   private finds: string[] = [];
+  /** Things this run added to the collection, once it ended. */
+  won: string[] = [];
   /** Bullseyes in a row. */
   private streak = 0;
   private eyes: EyesUp | null = null;
@@ -684,6 +686,7 @@ export class AimMode extends HeroMode {
   onFinish(): void {
     const pr = app.profile!.progress;
     pr.rangeFinds.push(...this.finds);
+    this.won.push(...this.finds);
     this.finds = [];
     if (!this.L.staying && this.points > pr.rangeRecord) {
       pr.rangeRecord = this.points;

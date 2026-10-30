@@ -15,18 +15,23 @@ export function linkBox(link: string): HTMLElement {
   area.addEventListener('focus', () => area.select());
   const done = h('span', { class: 'hint', 'aria-live': 'polite' });
   const copy = button(t('share.copy'), async () => {
-    try {
-      await navigator.clipboard.writeText(link);
-    } catch {
-      area.select();
-      document.execCommand('copy');
-    }
+    await copyLink(link, area);
     done.textContent = t('share.copied');
   }, 'btn primary', 'code');
   return h('div', { class: 'link-box' },
     area,
     h('div', { class: 'row' }, copy, done),
     fitsQr(link) ? qr(link) : h('p', { class: 'hint' }, t('share.noQr')));
+}
+
+/** Copies the link, through its text field where the clipboard is not allowed. */
+export async function copyLink(link: string, area: HTMLTextAreaElement): Promise<void> {
+  try {
+    await navigator.clipboard.writeText(link);
+  } catch {
+    area.select();
+    document.execCommand('copy');
+  }
 }
 
 export function qr(link: string): HTMLElement {

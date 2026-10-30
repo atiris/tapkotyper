@@ -53,15 +53,8 @@
   custom exercises and free typing keep their own length. At the end Tapko stays where he is and jumps happily
   three times (Bolt hops with him in story 2, Melody hops in story 3; a super level adds a cheer), and any tool he held in the level (gloves,
   torch, umbrella) fades away; with reduced motion he only smiles and the tool is gone
-  at once. About 1.4 seconds later the end screen shows stars (accuracy), new keys, and a
-  sentence from the narrator. The end screen is a compact card that fits a small laptop screen
-  (1024x600) without scrolling, also with a new key, a medal and a surprise: title and
-  stars in one line, the small character with the sentence beside it, the facts (accuracy
-  first, rhythm, new keys, new things, a rescued friend, a medal, a new or better world
-  badge) as small chips, the
-  task, surprise and the narrator's question in one small framed block, and one main button with
-  Replay and Map as smaller ones next to it. Accuracy counts only the child's own keys: a level where the child
-  typed fewer than 5 keys (the paw did the rest) says so, gives one star, never
+  at once. About 1.4 seconds later the end card comes (see The end card). Accuracy counts only the child's own keys: a level where the child
+  typed fewer than 5 keys (the paw did the rest) says so in a yellow tip line, gives one star, never
   lowers a better result and adds no time toward automatic growth. Esc on the end screen
   peeks under it first and a second Esc goes back to the map (see Peeking under the results).
 - **Stars**: 3 from 95 % accuracy, 2 from 85 %, else 1 (finishing always gives one). The
@@ -144,8 +137,31 @@
   cancelling returns to the pause) and the end of the level. The title and the stretch center on
   the whole card, with room above and below the stretch. Help is the level's "?", not a button
   here.
+- **The end card** is one fixed card for every end (a level, a practice, staying a while, the
+  target range, the parrot, free typing, the stretch break and a finished task), so a child
+  always finds the same things in the same place. It fits a small laptop screen (1024x600) and a
+  phone without scrolling:
+  - on top only the title of what ended and the round X;
+  - in the middle on the left a square with one picture of what happened (the player's
+    character after a level, the end's own picture elsewhere) and under it the stars (a level)
+    or one short value (minutes, hits, words, exercises); on the right at most three rows
+    "label - value" and at most one green line with the most important news; no narrator
+    sentence, no chips, no exclamations besides the title;
+  - when this run told a parent's surprise, a band with the open golden box and "Odomkol si
+    nové prekvapenie!"; its button opens the surprises told today over the card;
+  - at the bottom one orange main button first, at most two plain ones, and "Na mapu" always
+    last on the right.
+  The main button is, in order: "Prestávka" when a break is due (back from it the card goes on
+  without it), "Pozrieť prekvapenie", "Odovzdať" when a task was finished in this run, then the
+  end's own (the next level, the reward of a finished world, the next mission, play again). The
+  green line takes the first that applies: a rescued friend, a new or better world badge (with
+  several rewards at once the first and "a N ďalšie odmeny"), new keys, a new medal, new things or
+  a new character in the wardrobe, a smoother rhythm than last week; at the range a thing new in
+  the collection, then the trained letter that improved most; with the parrot faster repeating
+  than usual. A task still running shows as a row with its minutes left. Speeds are always
+  letters per minute. The pause card and "Really end it?" are not ends and stay as they are.
 - **Leaving a level** is said the same everywhere: "Stop typing" on the pause card of a story,
-  an exercise or a rescue, and on every end card back to the map, so the child learns one button. Once something was typed in
+  an exercise or a rescue, so the child learns one button; every end card leaves with "Na mapu". Once something was typed in
   the level (a right or a wrong key) it asks first: "Really end it? This level will not
   count.", with "Stop typing" and "Continue", Continue focused. Ending keeps the time and keys typed in
   the statistics. Free typing keeps its X and leaves without asking, nothing is scored there.
@@ -155,8 +171,8 @@
   action, which keeps the focus. The same level, mode and background run again without an
   end: targets keep coming at the level's pace and Tapko says that Esc ends it; a small HUD
   hint "Esc = stop" stays in place of the progress bar. Esc ends the run (it does not pause)
-  and a small card like after a practice shows accuracy and rhythm, with Map first and Next
-  level. The run gives no stars, rewards, level result or unlocks; its keys and time count in
+  and the end card "Oddychové kolo hotové!" shows the minutes, accuracy and rhythm, with Next
+  level first (when open), A while more and the map. The run gives no stars, rewards, level result or unlocks; its keys and time count in
   the statistics and the lesson may advance, as after a practice. A super-obstacle has no
   endless form, so staying there plays the world's last regular level; the rocket's asteroids
   are the exception and keep coming, shielded pieces among them.
@@ -174,7 +190,10 @@
 
 ## Why
 - A results card that fills the screen hides the game and slows the next try; the child
-  reads the stars and one or two facts, so those must be visible at a glance. A child also
+  reads the stars and one or two facts, so those must be visible at a glance. Ends that each
+  looked different and said many things at once confused children; one fixed card with one
+  picture, a few rows and one piece of news reads at a glance, and the same buttons in the same
+  place are learned once. A child also
   wants to see the scene they finished; peeking keeps the card one key away, and a second Esc
   never leaves a keyboard-only child stuck.
 - A bar that filled on time alone and then waited for the last words, or waited for the time

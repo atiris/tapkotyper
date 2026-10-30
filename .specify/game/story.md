@@ -203,8 +203,10 @@ as they are. The world descriptions below marked *not built yet* are the design 
    and hands the flame to the fire. A burning pit is the pit with the four flames standing close
    and overlapping in it, the smallest in front and the biggest at the back, their feet at the
    middle of its inside, each flickering its own irregular way; sparks rise from it. The first
-   three caught flames light it up flame by flame, then its flames, warm glow and sparks grow
-   with the level. A flame not typed flies past the torch, goes out (a curl of smoke with a puff)
+   caught flame lights it, and its fire grows slowly with the level's bar: until two thirds of
+   the level one small flame at half height, then a second behind it, a third, and the biggest
+   only with the last catches; all flames grow from half to full height, the full fire comes at
+   the very end. Its warm glow and sparks grow with the level too. A flame not typed flies past the torch, goes out (a curl of smoke with a puff)
    and fades; nothing else happens. End: the fire burns and the dragons will see it from the
    valley. When the fire is blown out (the take-off's end) its flames shrink away from the back
    with a burst of sparks and smoke rises.
@@ -274,6 +276,9 @@ as they are. The world descriptions below marked *not built yet* are the design 
    a quiet moment, then the fire flares up and an egg (without a face) is laid in it under the
    big flames; the fire is blown out with a burst of sparks and the egg sits in the dead pit with
    a soft glow. It greets Tapko ("Ahoj, ty budeš môj kamarát?"), and Tapko is glad and cheers.
+   In the take-off a dragon that comes later flies in from the right in a high half-arc (in the
+   upper half of the stage) and glides down a quarter-arc to its seat by the pit; the next try
+   waits until it sits.
    Flying lessons, the lullaby and the take-off start with three dragons; when the last is done
    while the level's minimum time is not played, one more comes, at most five, and the fifth
    ends the level even below the minimum (played on without an end, one more always comes).

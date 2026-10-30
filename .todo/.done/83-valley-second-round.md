@@ -19,12 +19,12 @@ the world gets new objects. Level 1 (flames) only got its new text.
 Same style as the existing ones, magenta key, the existing picture attached as reference (pose and
 style kept, only the colour changes). Record each prompt in `assets-src/PROMPTS.md` (Dragons table)
 and lessons in its "Lessons from generating" section.
-- [~] (bridge failed `ui_changed` on every job 2026-10-30 (5 jobs + 1 retry); prompts are in PROMPTS.md, BACKLOG has the line) `obj-dragon-baby-4`: the chubby baby dragon of `obj-dragon-baby-1` in warm red (soft cherry,
+- [x] `obj-dragon-baby-4`: the chubby baby dragon of `obj-dragon-baby-1` in warm red (soft cherry,
       not orange; belly lighter), same sitting pose. The owner wants this one from Gemini, never drawn in code.
-- [~] (rename done; -2..-4 not made: Gemini bridge `ui_changed`) Sleeping dragon in every colour: rename `obj-dragon-sleeping` to `obj-dragon-sleeping-1`
+- [x] Sleeping dragon in every colour: rename `obj-dragon-sleeping` to `obj-dragon-sleeping-1`
       (mint) and generate `-2` (sky blue, as baby 2), `-3` (sunny yellow, as baby 3), `-4` (red, as
       baby 4) from it as reference. Baby N sleeps as sleeping N.
-- [~] (not made: Gemini bridge `ui_changed`; the take-off draws the code egg, the `egg` scene keeps `obj-egg` until the picture exists, else it would show no egg) `obj-egg-plain`: `obj-egg` without eyes, brows and mouth (the same cream egg with turquoise
+- [x] `obj-egg-plain`: `obj-egg` without eyes, brows and mouth (the same cream egg with turquoise
       spots, no face). Used in the valley (take-off end, `egg` scene); `obj-egg` with its face stays
       for the egg world.
 - [x] Until a picture exists the code fallback draws it (as now), so the code steps do not wait.
@@ -142,3 +142,6 @@ session): levels 2-5 at 1366 px, the lullaby also at 1024 and 1920 px.
 Left out (to BACKLOG): the five Gemini pictures (`obj-dragon-baby-4`, `obj-dragon-sleeping-2..4`,
 `obj-egg-plain`) and switching the `egg` scene to `obj-egg-plain` - the Gemini bridge failed with
 `ui_changed` on every job.
+
+Later the same day the five pictures came from Gemini (after the bridge was fixed) and the `egg`
+scene shows `obj-egg-plain`; the backlog line is gone.

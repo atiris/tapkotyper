@@ -202,6 +202,11 @@ const FIRE = [
   { pic: 1, dx: 0.08, dy: -0.01, h: 0.78 },
   { pic: 0, dx: -0.01, dy: 0.03, h: 0.62 },
 ];
+/** A growing fire (the flames level): the share of the level at which each flame comes, the front (smallest) one first, the biggest with the last catches; the share over which one fades in. */
+const GROW_AT = [0, 2 / 3, 0.8, 0.9];
+const FLAME_IN = 0.04;
+/** The flames' size at full glow; a growing fire starts at half of it. */
+const FULL_SIZE = 1.15;
 /** Where the flames stand in the pit: their bottoms at the middle of its inside (a share of its height from the ground). */
 const FIRE_FOOT = 0.48;
 /** The pit picture's width per height (a code-drawn pit is drawn about as wide). */
@@ -234,6 +239,8 @@ export class Firepit {
   glow = 0;
   /** 0..1: the flames flare up to twice their size. */
   flare = 0;
+  /** 0..1 in a fire that grows with the level (the flames level): its flames come one by one and grow from half size; null elsewhere. */
+  growth: number | null = null;
   private embers: Ember[] = [];
   private t = 0;
   constructor(private L: LevelRuntime, public x: number, readonly h = PIT_H) {}
@@ -295,9 +302,11 @@ export class Firepit {
     this.embers = this.embers.filter((e) => e.t < e.life);
   }
 
-  /** How much of each flame shows: they come one by one from the front and go from the back. */
+  /** How much of each flame shows: they come one by one from the front and go from the back; a growing fire adds them as it grows. */
   private shown(k: number): number {
-    return Math.max(0, Math.min(1, this.lit * FIRE.length - (FIRE.length - 1 - k)));
+    const front = FIRE.length - 1 - k;
+    if (this.growth !== null) return this.lit * Math.max(0, Math.min(1, (this.growth - GROW_AT[front]) / FLAME_IN + (front ? 0 : 1)));
+    return Math.max(0, Math.min(1, this.lit * FIRE.length - front));
   }
 
   /** The pit, then `inside` (something sitting in it, hidden by big flames), then its flames and sparks. */
@@ -315,7 +324,7 @@ export class Firepit {
     }
     drawSprite(g, 'obj-firepit', this.x, GROUND, this.h, { ay: 0.9 }, pitFallback);
     inside?.(g);
-    const w = this.h * PIT_RATIO, foot = GROUND - this.h * FIRE_FOOT, size = (0.8 + 0.35 * this.glow) * (1 + this.flare);
+    const w = this.h * PIT_RATIO, foot = GROUND - this.h * FIRE_FOOT, size = (this.growth === null ? 0.8 + 0.35 * this.glow : FULL_SIZE * (0.5 + 0.5 * this.growth)) * (1 + this.flare);
     const motion = !this.L.reduceMotion;
     FIRE.forEach((f, k) => {
       const a = this.shown(k);
@@ -365,8 +374,6 @@ const FIRE_SPARKS = 22;
 const SPARKS = ['#fff6a8', '#ffd25a', '#ffb23d'];
 /** Speed of a typed flame on its way into the torch. */
 const SAVE_SPEED = 950;
-/** Flames caught until the pit burns fully (it cross-fades on the way). */
-const LIGHT_UP = 3;
 
 /**
  * Valley 1, the flames (a word stream): little flames fly from the right in soft arcs. A typed one
@@ -378,7 +385,6 @@ export class FlamesMode extends ApproachMode {
   readonly world = 'dragons';
   private torch: Catcher;
   private pit: Firepit;
-  private caught = 0;
   /** Seconds since the first caught flame lit the torch; -1 while it is not lit. */
   private torchLit = -1;
   private endT: number | null = null;
@@ -387,6 +393,7 @@ export class FlamesMode extends ApproachMode {
     super(L);
     // The pit right of the torch: the torch tips over in an arc and hands its flame to the fire.
     this.pit = new Firepit(L, this.torchX() + PIT_GAP);
+    this.pit.growth = 0;
     this.torch = new Catcher(L, this.torchX(), this.torchRest(), TORCH);
     // A flame past the torch has passed.
     this.playerX = this.torchX() - 40;
@@ -444,6 +451,8 @@ export class FlamesMode extends ApproachMode {
     tc.update(dt, this.t);
     if (this.torchLit >= 0) this.torchLit += dt;
     this.pit.glow = Math.min(1, this.resolved / this.total);
+    // The fire grows with the level's bar, never back: full only with the last catches.
+    this.pit.growth = Math.max(this.pit.growth ?? 0, Math.min(1, L.share()));
     this.pit.update(dt);
     if (this.endT === null && super.finished) {
       this.endT = 0;
@@ -528,8 +537,7 @@ export class FlamesMode extends ApproachMode {
     if (!m.fed && this.torch.tilt >= DIP_TILT * 0.85) {
       m.fed = true;
       m.fedAt = m.hold;
-      this.caught++;
-      this.pit.litTo = Math.min(1, this.caught / LIGHT_UP);
+      this.pit.litTo = 1;
       this.L.sfx('whoosh');
       this.pit.sparkle(FIRE_SPARKS);
       this.L.particles.emit(gx, gy, TORCH_SPARKS, 'sparkle', SPARKS, 150, 6);

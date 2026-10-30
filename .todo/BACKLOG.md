@@ -3,7 +3,6 @@
 Everything found outside the current task, one line each, most important first:
 `- [P1|P2|P3] <title> - <one line: what is wrong and where>`.
 Search before adding; an entry is worked only when it is named.
-- [P2] Valley pictures from Gemini still missing - obj-dragon-baby-4, obj-dragon-sleeping-2..4 and obj-egg-plain (prompts in assets-src/PROMPTS.md, plan 83) were not made: the Gemini bridge failed `ui_changed` (owner: Diagnose in the popup); after `npm run assets` switch the `egg` scene in src/screens/story.ts to obj-egg-plain
 - [P3] Check .tapko sharing and opening on real devices - src/screens/teacher.ts sendDialog uses Web Share with files (Android, iPhone) and main.ts launchQueue opens a double-clicked .tapko in installed Chrome/Edge (plan 59); neither is testable here
 - [P2] Mole and molehill are one picture - assets-src/obj-mole.jpg draws the mole inside its hill; the egg world's mole (not built yet; its old src/game/modes/egg.ts is gone) needs the mole and the molehill as separate pictures
 - [P2] Dictation words not all audible — src/words/words.ts WordSource.heard still lets through words whose spelling hearing does not decide (voicing at the end or before a consonant, i/y after consonants); see .research/game/activities.md Dictation rules

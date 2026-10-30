@@ -41,6 +41,7 @@ function fakeRuntime(count = 4): LevelRuntime {
     words: { knows: () => true },
     weakWord: () => 'ab',
     playedS: 0,
+    share: () => 0.5,
     minLeft: 0,
     staying: false,
     letter: () => 'a',
@@ -455,8 +456,10 @@ describe('the valley', () => {
     typeWord(L, mode);
     expect(mode.progress()).toBe(0.5);
     run(L, mode, 3);
-    expect((mode as any).caught).toBe(1);
-    expect((mode as any).pit.litTo).toBeCloseTo(1 / 3);
+    // The first catch lights the pit; its fire grows with the level, never back.
+    const pit = (mode as any).pit;
+    expect(pit.litTo).toBe(1);
+    expect(pit.growth).toBe(0.5);
     run(L, mode, 10);
     expect(L.core.missed).toBeGreaterThan(0);
   });

@@ -27,7 +27,7 @@ const SCENES: Record<string, SceneDef> = {
   invitation: { world: 'meadow', sprites: ['obj-rocket'], tapko: true, envelope: true },
   landing: { world: 'space', sprites: ['obj-planet-3', 'obj-rocket'], tapko: true },
   force: { world: 'planet', sprites: ['obj-crystal-amber', 'obj-crystal-rose', 'obj-crystal-aqua'], tapko: true, sparkles: true },
-  egg: { world: 'dragons', sprites: ['obj-egg', 'obj-firepit'], tapko: true, sparkles: true },
+  egg: { world: 'dragons', sprites: ['obj-egg-plain', 'obj-firepit'], tapko: true, sparkles: true },
   hatched: { world: 'egg', sprites: ['obj-dragon-hatched'], tapko: true, sparkles: true },
   friends: { world: 'junkyard', sprites: [], tapko: true, mood: 'surprised', bolt: { look: 'broken', raincoat: false, mood: 'happy' }, sparkles: true },
   legs: { world: 'workshop', sprites: [], tapko: true, bolt: { look: 'robot2', raincoat: false, mood: 'happy' }, sparkles: true },

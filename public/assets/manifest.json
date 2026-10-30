@@ -448,13 +448,13 @@
    "w": 1376,
    "h": 768
   },
-  "bg-planet-swamp-shore": {
-   "w": 1376,
-   "h": 330
-  },
   "bg-planet-swamp-near": {
    "w": 1376,
    "h": 768
+  },
+  "bg-planet-swamp-shore": {
+   "w": 1376,
+   "h": 330
   },
   "bg-raintown-far": {
    "w": 1376,
@@ -603,6 +603,10 @@
   "obj-aim-crown": {
    "w": 512,
    "h": 364
+  },
+  "obj-aim-crystal": {
+   "w": 312,
+   "h": 512
   },
   "obj-aim-diaper": {
    "w": 512,
@@ -880,11 +884,27 @@
    "w": 426,
    "h": 512
   },
+  "obj-dragon-baby-4": {
+   "w": 426,
+   "h": 512
+  },
   "obj-dragon-hatched": {
    "w": 383,
    "h": 512
   },
   "obj-dragon-sleeping-1": {
+   "w": 512,
+   "h": 396
+  },
+  "obj-dragon-sleeping-2": {
+   "w": 512,
+   "h": 395
+  },
+  "obj-dragon-sleeping-3": {
+   "w": 512,
+   "h": 396
+  },
+  "obj-dragon-sleeping-4": {
    "w": 512,
    "h": 396
   },
@@ -894,6 +914,10 @@
   },
   "obj-egg-glow": {
    "w": 413,
+   "h": 512
+  },
+  "obj-egg-plain": {
+   "w": 401,
    "h": 512
   },
   "obj-egg": {
@@ -1244,10 +1268,6 @@
    "w": 512,
    "h": 404
   },
-  "obj-swamp-stone-broken": {
-   "w": 459,
-   "h": 512
-  },
   "obj-swamp-stone-1": {
    "w": 512,
    "h": 389
@@ -1259,6 +1279,10 @@
   "obj-swamp-stone-3": {
    "w": 512,
    "h": 389
+  },
+  "obj-swamp-stone-broken": {
+   "w": 459,
+   "h": 512
   },
   "obj-timetable": {
    "w": 332,

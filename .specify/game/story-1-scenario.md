@@ -97,7 +97,7 @@ tréningu nevedia zaspať, ráno odlietajú na lúku kryštálov.
 
 1. **Ohníky** - Tapko drží fakľu, kúsok vpravo leží vyhasnuté ohnisko. Ohníky priletujú sprava v
    mäkkých oblúkoch; napísaný ohník Tapko chytí do fakle, fakľa sa oblúkom nakloní a odovzdá ho
-   ohňu. Prvé tri ohnisko rozhoria, potom oheň rastie a iskrí. Nenapísaný ohník preletí popri fakli a zhasne.
+   ohňu. Prvý ohník ohnisko zapáli a oheň potom rastie pomaly s úrovňou: do dvoch tretín len jeden malý plameň v polovičnej výške, potom pribudne druhý, tretí a najväčší až pri posledných ohníkoch; plnú veľkosť má oheň až na konci. Nenapísaný ohník preletí popri fakli a zhasne.
    Na konci oheň horí a dráčiky ho uvidia z celého údolia.
 2. **Zarastená cesta** - cesta k dráčikom je zarastená kríkmi a konármi. Každý krík má svoje
    kúzlo; napísané bez chyby krík zmizne a Tapko ide ďalej. Pri chybe vyrastú na ceste dva nové
@@ -122,7 +122,8 @@ tréningu nevedia zaspať, ráno odlietajú na lúku kryštálov.
 5. **Odlet** - ráno chcú dráčiky odletieť na lúku kryštálov. Každý potrebuje niekoľko skupín
    krátkych slov bez chyby a načas; inak sa vráti k ohnisku ("Skúsime to znova!") a skúsi to
    znova. Po troch návratoch má o skupinu menej a viac času, po šiestich sa pri chybe opakuje
-   len to slovo, takže to zvládne každý. Keď odletí posledný, Tapko za nimi zavolá ("Ahojte!"),
+   len to slovo, takže to zvládne každý. Dráčik, ktorý príde neskôr, priletí sprava vysokým
+   oblúkom a v štvrťoblúku zosadne na svoje miesto pri ohnisku. Keď odletí posledný, Tapko za nimi zavolá ("Ahojte!"),
    chvíľu je ticho, potom oheň vzbĺkne a pod veľkými plameňmi sa v ohnisku objaví vajíčko (bez
    tváre). Oheň sfúkne so spŕškou iskier, vajíčko ostane v zhasnutom ohnisku a pozdraví ("Ahoj,
    ty budeš môj kamarát?"), Tapko sa poteší.

@@ -723,6 +723,12 @@ const TAKE_TOP = 330;
 const ROW_Y = VH * 0.16;
 const BACK = 1.4;
 const GONE = 2.2;
+/** A dragon that comes later flies in from the right in a high half-arc (the upper half of the stage), then glides down a quarter-arc to its seat: seconds of each, the arc's ends and top (from the top), the quarter's width. */
+const COME_ARC = 1.8;
+const COME_LAND = 1.2;
+const COME_Y = VH * 0.32;
+const COME_TOP = VH * 0.14;
+const COME_R = 170;
 /** How fast a flying dragon follows the typing: slow with a calm rhythm, quick with a good one (per second). */
 const FOLLOW = [0.8, 3];
 /** How far a dragon sinks while the typing pauses, per second, and at most. */
@@ -753,8 +759,8 @@ const CLOCK_BLINK = 0.25;
 interface Sitter {
   pic: string;
   seat: number;
-  /** sit: by the pit; ready: by the pit, its first set waits (no clock); fly: on its way; back: gliding back to the pit; gone: flying off to the left. */
-  state: 'sit' | 'ready' | 'fly' | 'back' | 'gone';
+  /** come: flying in to the pit; sit: by the pit; ready: by the pit, its first set waits (no clock); fly: on its way; back: gliding back to the pit; gone: flying off to the left. */
+  state: 'come' | 'sit' | 'ready' | 'fly' | 'back' | 'gone';
   t: number;
   x: number;
   alt: number;
@@ -855,9 +861,10 @@ export class TakeoffMode extends Mode {
     this.after(0.6, () => this.flight());
   }
 
-  private addDragon(): void {
-    const i = this.dragons.length, x = spot(this.pit.x, i, this.L.vw);
-    this.dragons.push({ pic: DRAGONS[i % DRAGONS.length], seat: i, state: 'sit', t: 0, x, alt: 0, rot: 0, fromX: x, fromAlt: 0, sink: 0, returns: 0 });
+  /** A dragon by the pit, or (`come`) one flying in from the right. */
+  private addDragon(come = false): void {
+    const i = this.dragons.length, x = come ? this.L.vw + 90 : spot(this.pit.x, i, this.L.vw);
+    this.dragons.push({ pic: DRAGONS[i % DRAGONS.length], seat: i, state: come ? 'come' : 'sit', t: 0, x, alt: 0, rot: 0, fromX: x, fromAlt: 0, sink: 0, returns: 0 });
   }
 
   private after(seconds: number, fn: () => void): void {
@@ -966,8 +973,9 @@ export class TakeoffMode extends Mode {
     this.done++;
     const before = this.planned;
     this.planned = flockFor(L, this.planned, this.done);
-    if (this.planned > before) this.addDragon();
-    if (this.done < this.planned) return this.after(1, () => this.flight());
+    if (this.planned > before) this.addDragon(true);
+    // The next one may be the one just coming: it lands first.
+    if (this.done < this.planned) return this.after(this.flyer!.state === 'come' ? COME_ARC + COME_LAND + 0.4 : 1, () => this.flight());
     if (this.done >= FLOCK_MAX) L.endMinimum();
     // Tapko calls after them (over the last one's line), then the egg comes from the fire.
     this.endT = 0;
@@ -1006,7 +1014,27 @@ export class TakeoffMode extends Mode {
   private move(d: Sitter, dt: number): void {
     d.t += dt;
     const L = this.L, home = spot(this.pit.x, d.seat, L.vw);
-    if (d.state === 'sit' || d.state === 'ready') {
+    if (d.state === 'come') {
+      const high = GROUND - COME_Y, from = Math.max(L.vw + 90, home + COME_R + 90);
+      if (d.t < COME_ARC) {
+        // The half-arc high on the right, leaning into the flight.
+        const k = d.t / COME_ARC;
+        d.x = from + (home + COME_R - from) * k;
+        d.alt = high + (COME_Y - COME_TOP) * Math.sin(Math.PI * k);
+        d.rot += (FLY_ROT * 0.6 - d.rot) * Math.min(1, dt * 3);
+      } else {
+        // The quarter-arc down to its seat; it sits up in the last part.
+        const k = Math.min(1, (d.t - COME_ARC) / COME_LAND), a = (Math.PI / 2) * ease.inOutQuad(k);
+        d.x = home + COME_R * Math.cos(a);
+        d.alt = high * (1 - Math.sin(a));
+        d.rot = k < 0.6 ? d.rot : FLY_ROT * 0.6 * (1 - (k - 0.6) / 0.4);
+        if (k >= 1) {
+          d.state = 'sit';
+          d.alt = 0;
+          d.rot = 0;
+        }
+      }
+    } else if (d.state === 'sit' || d.state === 'ready') {
       d.x = home;
       d.alt = 0;
       d.rot = 0;
@@ -1047,17 +1075,14 @@ export class TakeoffMode extends Mode {
     const motion = !L.reduceMotion;
     this.dragons.forEach((d, i) => {
       if (i < this.done) return;
-      const air = d.state === 'fly' || d.state === 'gone' || (d.state === 'back' && d.alt > 0);
-      const seated = d.state === 'sit' || d.state === 'ready';
+      const air = d.state === 'fly' || d.state === 'gone' || d.state === 'come' || (d.state === 'back' && d.alt > 0);
       // In the air it sways round its lean and pulses a very little narrower (no bobbing up and down).
       const sway = air && motion ? SWAY * Math.sin(this.t * 2.2) : 0;
       const pulse = air && motion ? -PULSE * (0.5 + 0.5 * Math.sin(this.t * 4.5)) : 0;
       // Only the dragon about to take off bobs a little; the others sit still.
       const bob = d.state === 'ready' && motion ? Math.abs(Math.sin(this.t * 1.6)) * 2 : 0;
-      // A dragon that came later fades in.
-      const alpha = seated && i >= FLOCK_START ? Math.min(1, d.t / 0.6) : 1;
       // They all face the way they fly off, to the left.
-      drawDragon(g, d.pic, d.x, GROUND - d.alt - bob, DRAGON_H, 0, -1, alpha, d.rot + sway, pulse);
+      drawDragon(g, d.pic, d.x, GROUND - d.alt - bob, DRAGON_H, 0, -1, 1, d.rot + sway, pulse);
     });
     const d = this.flyer;
     if (this.endT !== null || !d || (d.state !== 'ready' && d.state !== 'fly' && d.state !== 'back') || !this.sets.length) return;

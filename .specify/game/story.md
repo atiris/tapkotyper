@@ -250,7 +250,8 @@ as they are. The world descriptions below marked *not built yet* are the design 
    never more than the accuracy gives). Its pit is smaller than the others and the seated
    dragons are glad now and then (a little hop).
    4 the lullaby (copy twist): evening; the dragons circle slowly above the burning pit, leaning
-   into their flight. A panel top left, above Tapko's head and left of the circling dragons,
+   into their flight as in the take-off (backs about level) and turning smoothly at the sides
+   of the circle, never with a sudden flip; a landing dragon keeps its size. A panel top left, above Tapko's head and left of the circling dragons,
    shows a verse of the lullaby: two lines one under the other, each a sentence of four or five
    short words ending with a period (the period is new in this world). Only the line to type is
    a target; a typed one stays in ink, the one to come is faint. A verse copied puts one dragon

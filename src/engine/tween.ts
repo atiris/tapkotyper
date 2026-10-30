@@ -4,6 +4,7 @@ export const ease = {
   outQuad: (t: number) => 1 - (1 - t) * (1 - t),
   inOutQuad: (t: number) => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2),
   outCubic: (t: number) => 1 - (1 - t) ** 3,
+  inOutCubic: (t: number) => (t < 0.5 ? 4 * t ** 3 : 1 - (-2 * t + 2) ** 3 / 2),
   outBack: (t: number) => {
     const c1 = 1.70158, c3 = c1 + 1;
     return 1 + c3 * (t - 1) ** 3 + c1 * (t - 1) ** 2;

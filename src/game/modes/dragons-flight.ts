@@ -25,26 +25,12 @@ function spot(pitX: number, i: number, vw: number): number {
   return Math.min(vw - 60, pitX + SPOTS[i % SPOTS.length]);
 }
 
-/** A word in a soft white bubble, high in the middle. */
-function drawBubble(g: G, word: string, x: number, y: number): void {
-  const w = wordBox(g, word, 40).w + 56, h = 76;
-  g.save();
-  g.fillStyle = 'rgba(255,253,246,0.88)';
-  g.strokeStyle = 'rgba(160,120,90,0.5)';
-  g.lineWidth = 3;
-  g.beginPath();
-  g.roundRect(x - w / 2, y - h / 2, w, h, h / 2);
-  g.fill();
-  g.stroke();
-  g.restore();
-}
-
 /** In the flying lessons the pit stands at the right edge (wholly on the stage); the dragons sit left of where it stood before, each a little further left and higher, out of its fire. */
 const FLIGHT_PIT_AT = 0.95;
 const SEAT_AT = 0.9;
 /** The pit is smaller in the flying lessons, so the dragons are the scene. */
 const FLIGHT_PIT_H = 64;
-const SEAT_FIRST = 100;
+const SEAT_FIRST = 80;
 const SEAT_GAP = 62;
 const SEAT_LIFT = [0, 24, 8, 32, 14];
 /** Seconds a dragon flies from its start to its seat; with 80 % of the rhythm goal its arc is full. */
@@ -65,11 +51,19 @@ const ROCK = 0.07;
 /** Now and then a seated dragon is glad: a little hop, every few seconds each at its own time. */
 const GLAD_EVERY = 5;
 const GLAD_HOP = 0.6;
-/** The arc's top at full lift, the bushes' height and how high a dragon's feet must be to pass over them. */
-const MAX_ALT = 240;
+/**
+ * The flight's top at full lift, and how flat it is: the height follows sin^FLAT of the way, so the
+ * dragon climbs fast, flies nearly level through the middle and comes down fast (not a half circle).
+ * Then the bushes' height and how high a dragon's feet must be to pass over them.
+ */
+const MAX_ALT = 270;
+const FLAT = 0.4;
 const FLY_BUSH_H = 150;
 const BUSH_TOP = 140;
 const BUSH_HALF = 70;
+/** The two bushes, as shares of the bush spread: the left one and the middle one. */
+const BUSH_SHARES = [0, 0.5];
+const LAST_BUSH = BUSH_SHARES[BUSH_SHARES.length - 1];
 /** Seconds in the bushes: dropping in, shaking (the shout), climbing out; then walking speed. */
 const DROP = 0.4;
 const SHAKE = 1.4;
@@ -181,7 +175,7 @@ export class FlightMode extends Mode {
 
   start(): void {
     const r = this.L.rng;
-    this.bushes = r.shuffle(BUSHES).map((pic, i) => ({ share: i / (BUSHES.length - 1), pic, flip: r.chance(0.5), h: FLY_BUSH_H * r.range(0.92, 1.05) }));
+    this.bushes = r.shuffle(BUSHES).slice(0, BUSH_SHARES.length).map((pic, i) => ({ share: BUSH_SHARES[i], pic, flip: r.chance(0.5), h: FLY_BUSH_H * r.range(0.92, 1.05) }));
     this.newDragon();
     this.ask();
   }
@@ -234,7 +228,7 @@ export class FlightMode extends Mode {
       d.wobble = WOBBLE;
       this.L.shout(pickLine('story.flightOops'), d.x, GROUND - d.alt - DRAGON_H - 30);
     } else if (d.slips >= DOWN_AT) {
-      if (d.x > this.bushX(1) + BUSH_HALF) this.fall(d);
+      if (d.x > this.bushX(LAST_BUSH) + BUSH_HALF) this.fall(d);
       else this.toBush(d);
     }
   }
@@ -279,7 +273,7 @@ export class FlightMode extends Mode {
     d.wobble = Math.max(0, d.wobble - dt);
     const L = this.L;
     const arrive = this.seatX(d.seat);
-    const right = this.bushX(1) + BUSH_HALF;
+    const right = this.bushX(LAST_BUSH) + BUSH_HALF;
     if (d.state === 'fly') {
       d.p = Math.min(1, d.p + dt / FLIGHT_S);
       const aim = this.liftAim();
@@ -287,7 +281,7 @@ export class FlightMode extends Mode {
       d.lift += (aim - d.lift) * Math.min(1, dt * LIFT_EASE);
       d.tilt += ((d.climb ? TILT_UP : TILT_GLIDE) - d.tilt) * Math.min(1, dt * 3);
       d.x = START_X + (arrive - START_X) * d.p;
-      d.alt = this.groundAt(d) + MAX_ALT * d.lift * Math.sin(Math.PI * d.p);
+      d.alt = this.groundAt(d) + MAX_ALT * d.lift * Math.sin(Math.PI * d.p) ** FLAT;
       const left = this.bushX(0) - BUSH_HALF;
       // Over the bushes and the typing stopped: it drops and lands hard (it still flew over them).
       if (d.x > right && aim < HARD_AIM && d.p < 0.95 && d.alt > this.groundAt(d) + 20) this.fall(d);
@@ -328,7 +322,7 @@ export class FlightMode extends Mode {
         }
       } else if (d.t < climb) {
         const k = ease.inOutQuad((d.t - shake) / (climb - shake));
-        const out = this.bushX(1) + BUSH_HALF + 30;
+        const out = this.bushX(LAST_BUSH) + BUSH_HALF + 30;
         d.x = d.toX + (out - d.toX) * k;
         d.alt = BUSH_TOP * 0.35 * (1 - k) + Math.sin(k * Math.PI) * 50;
       } else {
@@ -401,10 +395,7 @@ export class FlightMode extends Mode {
     for (const d of this.dragons) if (d.state === 'bush') this.drawFlyer(g, d);
     this.bushes.forEach((b, i) => drawSprite(g, b.pic, this.bushX(b.share), GROUND + 8, b.h, { ay: 1, flip: b.flip, rot: shake }, bushFallback(i)));
     for (const d of this.dragons) if (d.state !== 'bush' && d.state !== 'home') this.drawFlyer(g, d);
-    if (this.current) {
-      drawBubble(g, this.current.word, L.vw / 2, VH * 0.15);
-      L.label(g, this.current, L.vw / 2, VH * 0.15);
-    }
+    if (this.current) L.label(g, this.current, L.vw / 2, VH * 0.15);
     if (this.endT === null) return;
     const line = tn('story.flightDone', this.flown, { n: this.flown, m: this.done });
     rimmed(g, line, L.vw / 2, VH * 0.24, 40, Math.min(1, this.endT / 0.4));
@@ -443,9 +434,15 @@ const ROUND = 9;
 const FLY_H = 92;
 /** A sleeper is no bigger than the dragons in flight. */
 const SLEEP_H = 65;
-/** A flying dragon leans forward the way it flies as in the take-off, its back about level (it should not look seated); at the circle's sides it turns smoothly, narrowing through the turn down to this share of its width. */
+/**
+ * A flying dragon leans forward the way it flies as in the take-off, its back about level (it should
+ * not look seated). At the circle's sides it turns like a flat picture flipping round: its width goes
+ * from full one way to full the other in TURN_S seconds, slow at the ends and very fast through the
+ * middle (ease in and out), never thinner than this share of its width.
+ */
 const LEAN = 1.05;
 const TURN_MIN = 0.08;
+const TURN_S = 0.3;
 const COME = 1.5;
 const DOWN = 1.6;
 const NEXT_LINE = 0.9;
@@ -555,10 +552,14 @@ export class LullabyMode extends Mode {
   }
 
   /** The circle's place: above the pit. */
-  /** Where on its circle a dragon is, and which way it flies there: `dir` 1 right, -1 left, through 0 at the sides. */
+  /** Where on its circle a dragon is, and which way it faces there: `dir` 1 right, -1 left, through 0 only in the short turn at the sides. */
   private circle(d: Circler): { x: number; y: number; dir: number } {
     const a = d.phase + (this.t * Math.PI * 2) / ROUND;
-    return { x: this.pit.x + Math.cos(a) * this.circleRx(), y: CIRCLE_Y + Math.sin(a) * CIRCLE_RY + FLY_H / 2, dir: -Math.sin(a) };
+    // The angle from the nearest side, where the way flips; the turn spans TURN_S seconds around it.
+    const side = a - Math.round(a / Math.PI) * Math.PI, half = (TURN_S / ROUND) * Math.PI;
+    const before = -Math.sign(Math.sin(a - side - half));
+    const dir = Math.abs(side) >= half ? -Math.sign(Math.sin(a)) : before * Math.cos(Math.PI * ease.inOutCubic((side + half) / (2 * half)));
+    return { x: this.pit.x + Math.cos(a) * this.circleRx(), y: CIRCLE_Y + Math.sin(a) * CIRCLE_RY + FLY_H / 2, dir };
   }
 
   onDone(tg: Target): void {
@@ -695,21 +696,20 @@ export class LullabyMode extends Mode {
     const L = this.L, motion = !L.reduceMotion;
     // `dir` 1 flies right, -1 left; in between it is turning: narrower, its lean following.
     const fly = (x: number, y: number, dir: number) => {
-      // The square root keeps the turn itself short.
-      const face = dir >= 0 ? 1 : -1, turn = Math.sqrt(Math.abs(dir));
+      const face = dir >= 0 ? 1 : -1, turn = Math.abs(dir);
       const lean = face * turn * (LEAN + (motion ? ROCK * Math.sin(this.t * 2.6 + d.phase) : 0));
       drawDragon(g, d.pic, x, y, FLY_H, 0, face, 1, lean, Math.max(TURN_MIN, turn) - 1);
     };
     const c = this.circle(d);
     if (d.state === 'circle') return fly(c.x, c.y, c.dir);
     if (d.state === 'come') {
-      // In from the right, turning into the circle's way at the end.
-      const k = ease.outQuad(Math.min(1, d.t / COME));
-      return fly(L.vw + 80 + (c.x - L.vw - 80) * k, c.y - (1 - k) * 60, -1 + (c.dir + 1) * k * k);
+      // In from the right, turning into the circle's way at the end, as quickly as at the sides.
+      const k = ease.outQuad(Math.min(1, d.t / COME)), turn = ease.inOutCubic(Math.max(0, Math.min(1, (d.t - COME + TURN_S) / TURN_S)));
+      return fly(L.vw + 80 + (c.x - L.vw - 80) * k, c.y - (1 - k) * 60, -1 + (c.dir + 1) * turn);
     }
     // Gliding down to its place by the fire, at its flying size until it curls up asleep; it turns toward it first.
     const k = ease.inOutQuad(Math.min(1, d.t / DOWN)), to = this.sleepSpot(d.seat), way = to.x < d.fromX ? -1 : 1;
-    fly(d.fromX + (to.x - d.fromX) * k, d.fromY + (to.y - d.fromY) * k, d.fromDir + (way - d.fromDir) * Math.min(1, k * 2.5));
+    fly(d.fromX + (to.x - d.fromX) * k, d.fromY + (to.y - d.fromY) * k, d.fromDir + (way - d.fromDir) * ease.inOutCubic(Math.min(1, d.t / TURN_S)));
   }
 
   progress(): number {

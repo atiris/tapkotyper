@@ -740,7 +740,7 @@ describe('slips in a flight', () => {
     Object.assign(L, { idleFor: 0, rhythm: { ema: 2, ratio: () => 1, ready: () => {} }, shout: (s: string) => shouts.push(s) });
     const mode = new FlightMode(L);
     mode.start();
-    expect((mode as any).bushes).toHaveLength(3);
+    expect((mode as any).bushes).toHaveLength(2);
     typeWord(L, mode);
     const d = (mode as any).dragons[0];
     slip(L, mode);

@@ -233,12 +233,13 @@ as they are. The world descriptions below marked *not built yet* are the design 
    hop if they are in sight. End: the path is open, the dragons are glad (they
    hop and cheer) and Tapko walks on to them. Its map dot is the copy envelope.
    3 flying lessons (a stream with rhythm): a dragon (the colours take turns) waits right of
-   Tapko, the three round leafy bushes stand together in the middle (random order, some
+   Tapko, two round leafy bushes stand together left of the middle (random two of three, some
    mirrored), the burning pit stands at the right edge (about 0.95 of the stage, wholly on it)
    and the dragons sit left of it, out of its fire, each a little further left and higher,
-   overlapping. Words come one at a time in a bubble high in
-   the middle. The first typed word starts the flight, a slow arc to its seat (about 22 seconds)
-   whose height follows the rhythm, full from 80 % of the rhythm goal; a pause in typing takes
+   overlapping. Words come one at a time high in the middle, in the
+   usual word box (no second frame around it). The first typed word starts the flight to its seat
+   (about 22 seconds), a high flight flat on top, not a half circle: it climbs fast, flies nearly
+   level through the middle and comes down fast; its height follows the rhythm, full from 80 % of the rhythm goal; a pause in typing takes
    the lift away (from 1.2 seconds on, all of it in 2 more). The dragon leans nose up while it
    rises (its body never stretches or squeezes in flight), leans nose down and glides while it sinks, and rocks gently. Too low over the
    bushes it lands in them, giggles ("Júj, to šteklí!"), climbs out and walks to its seat; past
@@ -254,8 +255,9 @@ as they are. The world descriptions below marked *not built yet* are the design 
    never more than the accuracy gives). Its pit is smaller than the others and the seated
    dragons are glad now and then (a little hop).
    4 the lullaby (copy twist): evening; the dragons circle slowly above the burning pit, leaning
-   into their flight as in the take-off (backs about level) and turning smoothly at the sides
-   of the circle, never with a sudden flip; a landing dragon keeps its size. A panel top left, above Tapko's head and left of the circling dragons,
+   into their flight as in the take-off (backs about level) and turning at the sides of the circle
+   like a flat picture flipping round: quick (about 0.3 seconds), slow at the start and end and
+   very fast through the middle, never a sudden jump and never a long thin phase; a landing dragon keeps its size. A panel top left, above Tapko's head and left of the circling dragons,
    shows a verse of the lullaby: two lines one under the other, each a sentence of four or five
    short words ending with a period (the period is new in this world). Only the line to type is
    a target; a typed one stays in ink, the one to come is faint. A verse copied puts one dragon

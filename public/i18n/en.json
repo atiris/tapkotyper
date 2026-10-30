@@ -828,9 +828,9 @@
     "copyLoopSoon": "Coming soon",
     "copyLoopCount": "typed: {n}",
     "copyLoopDone": {
-      "one": "Well copied!\nYou typed {n} word.",
-      "few": "Well copied!\nYou typed {n} words.",
-      "other": "Well copied!\nYou typed {n} words."
+      "one": "Great practice!\nWords typed: {n}.",
+      "few": "Great practice!\nWords typed: {n}.",
+      "other": "Great practice!\nWords typed: {n}."
     }
   },
   "fairy": {

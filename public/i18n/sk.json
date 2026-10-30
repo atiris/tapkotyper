@@ -828,9 +828,9 @@
     "copyLoopSoon": "Pripravuje sa",
     "copyLoopCount": "napísané: {n}",
     "copyLoopDone": {
-      "one": "Pekne odpísané!\nNapísal(a) si {n} slovo.",
-      "few": "Pekne odpísané!\nNapísal(a) si {n} slová.",
-      "other": "Pekne odpísané!\nNapísal(a) si {n} slov."
+      "one": "Výborné cvičenie!\nPočet napísaných slov: {n}.",
+      "few": "Výborné cvičenie!\nPočet napísaných slov: {n}.",
+      "other": "Výborné cvičenie!\nPočet napísaných slov: {n}."
     }
   },
   "fairy": {

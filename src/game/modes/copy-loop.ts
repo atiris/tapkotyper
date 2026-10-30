@@ -9,7 +9,7 @@ import { type Drift, Mode } from '../mode';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
 
-/** The accent of each world's panel and sparkles, picked to stand out on its background. */
+/** The accent of each world's panel, picked to stand out on its background. */
 const ACCENT: Record<string, string> = {
   dragons: '#e0782a', egg: '#2fa596', junkyard: '#b0603a', workshop: '#4a78b0', raintown: '#3d8fd6', robocity: '#1f9e94',
   robohome: '#d99a12', garden: '#d9587a', forestpath: '#4f9e3a', lilylake: '#2f86c4', musictree: '#8a5cc8', moonball: '#8b97b3',
@@ -98,7 +98,6 @@ export class CopyLoopMode extends Mode {
     this.done++;
     this.typedWords += tg.word.trim().split(/\s+/).length;
     this.floating.push({ word: tg.word, t: 0 });
-    this.L.particles.emit(this.L.vw / 2, PANEL_Y, 14, 'sparkle', [this.accent, '#ffffff', '#fff6a8'], 150, 7);
     this.L.sfx('pop');
     this.L.core.prune();
     this.current = null;

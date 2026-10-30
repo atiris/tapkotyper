@@ -86,7 +86,7 @@
     the world's accent colour as its border and glow. Levels 1-2 a word, 3-4 a phrase of 2-3
     words, the super level a sentence of 3-5 words once space and period are known (else a
     phrase); the level's keys give the letters. A finished target floats up out of the panel
-    with a soft sparkle and the next one grows in; the words typed are counted small under
+    and the next one grows in; the words typed are counted small under
     the panel. A slip only counts. Targets come without end until the minimum time (2
     minutes) is played; the target typed then is the last, and the end says how many words
     were typed. Its map dot is the copy envelope.

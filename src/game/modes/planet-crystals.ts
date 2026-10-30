@@ -161,7 +161,6 @@ export class CrystalsMode extends Mode {
       } else if ((c.t += dt) >= (c.state === 'fly' ? FLY : CRACKED)) {
         m.crystal = null;
         m.rest = REST;
-        if (c.state === 'fly') this.L.particles.emit(TAPKO_X + 30, this.tapkoFeet - TAPKO_H * 0.3, 8, 'sparkle', ['#fff6a8', CRYSTAL_COLOR[c.pic]], 90, 6);
       }
     }
     this.L.core.prune();
@@ -214,7 +213,6 @@ export class CrystalsMode extends Mode {
     c.from = { x: m.x, y: this.foot(m) - this.size(c) * 0.5 };
     this.collected++;
     this.L.sfx('pop');
-    this.L.particles.emit(c.from.x, c.from.y, 12, 'sparkle', ['#fff6a8', CRYSTAL_COLOR[c.pic], '#ffffff'], 140, 7);
   }
 
   private drawCrystal(g: G, m: Mound, c: Crystal): void {
@@ -437,7 +435,6 @@ export class SpellMode extends Mode {
     const c = this.crystal();
     this.L.sfx('cheer');
     this.L.shout(pickLine('story.spellCast'), c.x, c.y - LIFE_SIZE - 20);
-    this.L.particles.emit(c.x, c.y - LIFE_SIZE * 0.5, 26, 'sparkle', ['#fff6a8', '#ffd1f5', '#a8f0ff'], 220, 9);
     this.pause = NEXT_SPELL;
   }
 

@@ -62,8 +62,9 @@ export abstract class HeroMode extends Mode {
     return { x: this.heroX - 105, y: this.heroY };
   }
 
+  /** Above his head even at the top of a hop. */
   heroSpot(): { x: number; y: number } {
-    return { x: this.heroX, y: this.heroY - this.heroSize * 0.85 - 20 };
+    return { x: this.heroX, y: this.heroY - this.heroSize * 1.2 - 20 };
   }
 
   protected drawHero(g: G): void {

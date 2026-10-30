@@ -295,9 +295,7 @@ export class InvitationMode extends Mode {
     this.row.update(dt);
     this.friendT += dt;
     if (this.party === null) return;
-    const before = this.party;
     this.party += dt;
-    if (before < PARTY_COME && this.party >= PARTY_COME) this.L.particles.emit(this.L.vw / 2, VH * 0.4, 40, 'sparkle', ['#ffd25a', '#ff8fb1', '#9ccf7a', '#8ec5f0'], 320, 9);
   }
 
   onDone(tg: Target): void {

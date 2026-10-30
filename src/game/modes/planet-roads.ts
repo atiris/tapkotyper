@@ -286,7 +286,6 @@ export class CrossroadsMode extends HeroMode {
     }
     sign.spin = 0;
     this.L.core.prune();
-    this.L.particles.emit(this.slotX(sign.slot), FEET - POSTS[sign.slot % 3].h, 14, 'sparkle', ['#fff6a8', '#a6e3c9', '#f5a3d3'], 150, 8);
     const unknown: Unknown | undefined = sign.kind === 'unknown'
       ? { len: this.L.rng.pick(['short', 'long'] as const), time: this.L.rng.pick(['quick', 'slow'] as const), diff: this.L.rng.pick(['easy', 'hard'] as const) }
       : undefined;

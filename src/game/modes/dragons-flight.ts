@@ -315,7 +315,6 @@ export class FlightMode extends Mode {
     this.done++;
     if (d.flew) {
       this.flown++;
-      L.particles.emit(d.x, GROUND - DRAGON_H * 0.6, 14, 'sparkle', ['#fff6a8', '#ffd25a', '#ffffff'], 150, 8);
     }
     L.sfx('cheer');
     this.planned = flockFor(L, this.planned, this.done);
@@ -473,11 +472,6 @@ export class LullabyMode extends Mode {
     L.sfx('note');
     // The first line of a verse makes them a little sleepy; the last one puts one to sleep.
     if (++this.verse < VERSE) {
-      const d = this.dragons.find((o) => o.state === 'circle');
-      if (d) {
-        const c = this.circle(d);
-        L.particles.emit(c.x, c.y - FLY_H * 0.6, 6, 'sparkle', ['#fff6a8', '#d8d0ff'], 60, 6);
-      }
       this.nextIn = NEXT_LINE * 0.6;
       return;
     }
@@ -516,8 +510,6 @@ export class LullabyMode extends Mode {
       if (d.state === 'come' && d.t >= COME) d.state = 'circle';
       if (d.state === 'down' && d.t >= DOWN) {
         d.state = 'sleep';
-        const s = this.sleepSpot(d.seat);
-        this.L.particles.emit(s.x, s.y - SLEEP_H * 0.6, 6, 'sparkle', ['#fff6a8', '#d8d0ff'], 60, 6);
       }
     }
     if (this.slip !== null && (this.slip += dt) >= SLIP_FADE) {
@@ -828,7 +820,6 @@ export class TakeoffMode extends Mode {
       d.t = 0;
     }
     L.sfx('whoosh');
-    L.particles.emit(d.x, GROUND - d.alt - DRAGON_H * 0.5, 8, 'sparkle', ['#fff6a8', '#ffd25a'], 110, 6);
     if (this.set < this.sets.length) this.showSet();
     else this.away(d);
   }
@@ -903,7 +894,6 @@ export class TakeoffMode extends Mode {
     if (this.endT === null) return;
     const e = this.endT;
     this.endT += dt;
-    if (e < FIRE_OUT && this.endT >= FIRE_OUT) L.particles.emit(this.pit.x, this.pit.top - EGG_H * 0.4, 16, 'sparkle', ['#fff6a8', '#ffe9c8', '#ffffff'], 120, 7, 1.2);
     if (e < CHEER_AT && this.endT >= CHEER_AT) {
       L.setMood('happy', 3);
       L.hooray();

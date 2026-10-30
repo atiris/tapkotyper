@@ -72,6 +72,10 @@ One set of rules for where things sit and how they behave, so every screen feels
    says in its tooltip what is still missing, and a badge says its world, what its tier means
    and what the next tier needs (silver for bronze, gold for silver). The sound button names
    the sound level with F4 and, on a second line, that F8 plays another song.
+- No decorative bursts (confetti, sparkles, flying petals or feathers) for success or at an
+  end. Particles only show what happens in the scene: dust of a crumbling stone, smoke of a
+  bursting boulder, sparks of a torch, leaves of a bush, what a thing at the target range is
+  made of.
 
 ## Why
 - A child learns where "sound" or "close" is once, and then it is there everywhere; buttons
@@ -89,3 +93,5 @@ One set of rules for where things sit and how they behave, so every screen feels
 - A language switch with two letter chips does not grow past two languages; one button with the
   common language symbol and a list of native names does, and a visitor who reads neither
   language still finds it.
+- Bursts of confetti pull the eyes off the words and make a calm game loud; the joy is in
+  the scene itself and in Tapko.

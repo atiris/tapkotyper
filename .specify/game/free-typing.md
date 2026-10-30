@@ -9,7 +9,7 @@
 - Tapko walks through the chosen world (its background and music). He starts in the bottom
   left corner, where he stands in other levels, so the bubble at the top left reads as his;
   from there he strolls on the ground into the left part and back. Every key makes him
-  hop happily with a small sound and a few sparkles; with reduced motion he only smiles.
+  hop happily with a small sound; with reduced motion he only smiles.
 - The typed characters collect in a quiet line at the top. After about 1.5 seconds without
   a key (fixed, not a setting), or at once with Enter, the text is shown as a word or short
   phrase above Tapko for a few seconds, and the line is cleared. A full line (32 characters)

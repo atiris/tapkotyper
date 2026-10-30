@@ -90,9 +90,9 @@ export abstract class Mode {
   friendSpot(): { x: number; y: number } | null {
     return null;
   }
-  /** Just above Tapko's head, where his shouts pop up: above the DOM Tapko unless the mode draws him. */
+  /** Above Tapko's head even at the top of a hop, where his shouts pop up: above the DOM Tapko unless the mode draws him. */
   heroSpot(): { x: number; y: number } {
-    return { x: TAPKO_X, y: this.tapkoFeet - TAPKO_H * 0.9 - 40 };
+    return { x: TAPKO_X, y: this.tapkoFeet - TAPKO_H * 1.25 - 40 };
   }
   /** Where the tail of Tapko's bubble points, or null for the bubble's corner above the DOM Tapko. */
   bubbleSpot(): { x: number; y: number } | null {

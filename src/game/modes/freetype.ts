@@ -22,7 +22,6 @@ type Trick = keyof typeof TRICKS;
 const SHOW = 3.2;
 const SHOW_SIZE = 64;
 const LINE_SIZE = 30;
-const SPARKS = ['#fff6a8', '#ffffff', '#ffd1f5', '#a6e3c9'];
 /** Tapko's spot in the bottom left corner, where he stands in other levels, and the ground under him. */
 const HOME_X = 100;
 const GROUND = VH * 0.97;
@@ -76,7 +75,6 @@ export class FreeTypeMode extends HeroMode {
   }
 
   private cheer(): void {
-    this.L.particles.emit(this.heroX, this.heroY - this.heroSize * 0.53, 5, 'sparkle', SPARKS, 140, 7, 0.6);
     this.keysToTrick--;
     if (this.L.reduceMotion || this.hopT < this.length() + REST) return this.trick ? undefined : this.happy();
     this.hopT = 0;

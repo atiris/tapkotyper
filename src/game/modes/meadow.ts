@@ -2,7 +2,7 @@ import { pickLine } from '../../app/app';
 import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
 import { sprite } from '../../gfx/assets';
-import { blob, drawFace, drawSprite, type G, lighten } from '../../gfx/draw';
+import { blob, drawFace, drawSprite, type G } from '../../gfx/draw';
 import { t } from '../../i18n/i18n';
 import { TAPKO_H, TAPKO_X } from '../mode';
 import type { LevelRuntime } from '../runtime';
@@ -498,7 +498,6 @@ export class MeadowMode extends ApproachMode {
       m.hold = 0;
       this.gloves.catch();
       L.sfx('pop');
-      L.particles.emit(gx, gy, 6, 'sparkle', ['#fff6a8', '#ffd25a'], 110, 7);
       const c = m.critter as Critter | null;
       if (c) {
         c.state = 'home';
@@ -546,12 +545,10 @@ export class MeadowMode extends ApproachMode {
     m.fade = Math.min(m.lf, c ? c.gone : 1);
   }
 
-  /** Not typed in time: a goal! Confetti, the pop text and a cheer; nothing bad happens. */
+  /** Not typed in time: a goal! The pop text and a cheer; nothing bad happens. */
   protected onPass(m: Mover): void {
     const L = this.L;
     m.vx *= 0.8;
-    const color = LEAF_COLORS[m.kind as LeafKind];
-    L.particles.emit(m.x, m.y, 14, 'leaf', [color, lighten(color, 0.4), '#ffd25a', '#9ccf7a'], 200, 7, 1.1);
     L.sfx('cheer');
     const spot = this.goalSpot(m);
     L.shout(t('story.goalShout'), spot.x, spot.y);
@@ -725,7 +722,6 @@ export class HedgehogMode extends MeadowMode {
     m.lf = 1;
     this.pile++;
     this.hop = 0.4;
-    this.L.particles.emit(this.hx, this.hy - 70, 6, 'sparkle', ['#fff6a8', '#ffd25a'], 110, 7);
   }
 
   /** A goal does not count: the leaf goes back on the pile and is shaken off again. */

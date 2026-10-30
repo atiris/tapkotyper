@@ -469,7 +469,6 @@ export class AimMode extends HeroMode {
     }
     if (f.next === f.stops.length - 1) return stop.missed ? this.miss(f) : this.hit(f);
     stop.passed = 0.0001;
-    if (stop.typed) this.L.particles.emit(stop.x, stop.y, 10, 'sparkle', ['#bfe8ff', '#ffffff', '#ffd1f5'], 140, 7);
     if ((f.next === 0 && f.expect === 'ring1') || (f.next === 1 && f.expect === 'ring2')) this.expectLine(f);
     if (f.next === 1 && f.egg === 'flight') this.hatchInFlight(f);
     f.next++;

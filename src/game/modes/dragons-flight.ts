@@ -95,7 +95,8 @@ interface Flyer {
   /** Share of the flight done. */
   p: number;
   lift: number;
-  flap: boolean;
+  /** Climbing (its lift still rising) or gliding. */
+  climb: boolean;
   /** Its lean, easing toward climbing or gliding; its fall speed; the squash of a hard landing (1..0). */
   tilt: number;
   vy: number;
@@ -139,6 +140,8 @@ export class FlightMode extends Mode {
   private nextIn = -1;
   private bushes: { share: number; pic: string; flip: boolean; h: number }[] = [];
   private bushShake = 0;
+  /** The last flight is over. */
+  private over = false;
   private endT: number | null = null;
 
   constructor(L: LevelRuntime) {
@@ -196,15 +199,16 @@ export class FlightMode extends Mode {
   private newDragon(): void {
     const i = this.done;
     this.dragons.push({
-      pic: DRAGONS[i % DRAGONS.length], x: START_X, alt: 0, state: 'wait', p: 0, lift: 0, flap: false, tilt: 0, vy: 0, squash: 0, t: 0,
+      pic: DRAGONS[i % DRAGONS.length], x: START_X, alt: 0, state: 'wait', p: 0, lift: 0, climb: false, tilt: 0, vy: 0, squash: 0, t: 0,
       fromX: START_X, fromAlt: 0, fromTilt: 0, toX: START_X, drop: DROP, flew: false, seat: i, slips: 0, wobble: 0,
     });
     // The wait between flights is not rhythm.
     this.L.rhythm.ready(performance.now());
   }
 
+  /** The dragon of the current flight: waiting, flying, falling or in the bushes (one that walks on to the pit is done with it). */
   private get flyer(): Flyer | undefined {
-    return this.dragons.find((d) => d.state !== 'home');
+    return this.dragons.find((d) => d.state === 'wait' || d.state === 'fly' || d.state === 'fall' || d.state === 'bush');
   }
 
   onDone(tg: Target): void {
@@ -219,7 +223,7 @@ export class FlightMode extends Mode {
       d.lift = this.liftAim();
       this.L.sfx('whoosh');
     }
-    if (this.endT === null) this.ask();
+    if (!this.over) this.ask();
   }
 
   /** A slip during a flight: the second one makes the dragon cry out and wobble, the third ends its flight. */
@@ -240,7 +244,6 @@ export class FlightMode extends Mode {
     d.state = 'fall';
     d.flew = true;
     d.vy = 0;
-    d.flap = false;
   }
 
   /** Down into the bushes; one not there yet first glides forward onto the nearest. */
@@ -251,7 +254,6 @@ export class FlightMode extends Mode {
     d.fromAlt = d.alt;
     d.toX = Math.max(d.x, this.bushX(0));
     d.drop = d.toX > d.x + 10 ? GLIDE_IN : DROP;
-    d.flap = false;
     this.L.sfx('plop');
   }
 
@@ -268,6 +270,7 @@ export class FlightMode extends Mode {
     for (const d of this.dragons) this.move(d, dt);
     if (this.nextIn >= 0 && (this.nextIn -= dt) < 0) this.newDragon();
     if (this.endT !== null) this.endT += dt;
+    else if (this.over && this.dragons.every((d) => d.state === 'home')) this.endT = 0;
   }
 
   private move(d: Flyer, dt: number): void {
@@ -280,9 +283,9 @@ export class FlightMode extends Mode {
     if (d.state === 'fly') {
       d.p = Math.min(1, d.p + dt / FLIGHT_S);
       const aim = this.liftAim();
-      d.flap = aim > d.lift + 0.01;
+      d.climb = aim > d.lift + 0.01;
       d.lift += (aim - d.lift) * Math.min(1, dt * LIFT_EASE);
-      d.tilt += ((d.flap ? TILT_UP : TILT_GLIDE) - d.tilt) * Math.min(1, dt * 3);
+      d.tilt += ((d.climb ? TILT_UP : TILT_GLIDE) - d.tilt) * Math.min(1, dt * 3);
       d.x = START_X + (arrive - START_X) * d.p;
       d.alt = this.groundAt(d) + MAX_ALT * d.lift * Math.sin(Math.PI * d.p);
       const left = this.bushX(0) - BUSH_HALF;
@@ -292,6 +295,7 @@ export class FlightMode extends Mode {
       else if (d.p >= 1) {
         d.flew = true;
         this.hop(d);
+        this.flightOver();
       }
     } else if (d.state === 'fall') {
       d.x = Math.min(arrive, d.x + ((arrive - START_X) / FLIGHT_S) * 1.4 * dt);
@@ -304,6 +308,7 @@ export class FlightMode extends Mode {
         d.state = 'walk';
         d.t = 0;
         d.squash = 1;
+        this.flightOver();
         L.sfx('thud');
         L.shout(pickLine('story.flightHard'), d.x, GROUND - d.alt - DRAGON_H - 30);
         L.particles.emit(d.x, GROUND - d.alt, 10, 'puff', ['#d8cbb0', '#c9b896', '#efe6d2'], 90, 9, 0.9);
@@ -329,6 +334,7 @@ export class FlightMode extends Mode {
       } else {
         d.state = 'walk';
         d.alt = 0;
+        this.flightOver();
       }
     } else if (d.state === 'walk') {
       // After a hard landing it shakes it off a moment before it walks.
@@ -359,25 +365,27 @@ export class FlightMode extends Mode {
     d.fromX = d.x;
     d.fromAlt = d.alt;
     d.fromTilt = d.tilt;
-    d.flap = false;
   }
 
   private home(d: Flyer): void {
-    const L = this.L;
     d.state = 'home';
     d.alt = this.seatLift(d.seat);
+    this.L.sfx('cheer');
+  }
+
+  /** A flight is over (landed by the pit, in the bushes or hard): the next dragon comes while this one goes on to its seat. */
+  private flightOver(): void {
+    const L = this.L, d = this.dragons[this.done];
     this.done++;
-    if (d.flew) {
-      this.flown++;
-    }
-    L.sfx('cheer');
+    if (d.flew) this.flown++;
     this.planned = flockFor(L, this.planned, this.done);
     if (this.done < this.planned) {
       this.nextIn = 0.8;
       return;
     }
     if (this.done >= FLOCK_MAX) L.endMinimum();
-    this.endT = 0;
+    // The last flight: no more words; the end comes once every dragon sits by the pit.
+    this.over = true;
     if (this.current) L.core.release(this.current, false);
     L.core.prune();
     this.current = null;
@@ -406,15 +414,14 @@ export class FlightMode extends Mode {
     const motion = !this.L.reduceMotion;
     const gliding = d.state === 'bush' && d.t < d.drop;
     const flying = d.state === 'fly' || d.state === 'hop' || d.state === 'fall' || gliding;
-    // Wings beat while it climbs; a hard landing squashes it.
-    const flap = (flying && d.flap && motion ? Math.sin(this.t * 16) : 0) + (motion ? Math.sin(d.squash * Math.PI) * 3 : 0);
+    // A hard landing squashes it.
+    const squash = motion ? Math.sin(d.squash * Math.PI) * 3 : 0;
     const shaken = d.state === 'bush' && d.t > d.drop && d.t < d.drop + SHAKE - DROP && motion ? Math.sin(this.t * 30) * 0.12 : 0;
     // A second slip rocks it quickly a moment.
     const wobble = motion && d.wobble > 0 ? Math.sin(this.t * 30) * 0.18 * (d.wobble / WOBBLE) : 0;
     // In the air it leans (nose up climbing, down gliding) and rocks gently.
     const rot = flying ? d.tilt + wobble + (motion && d.state === 'fly' ? ROCK * Math.sin(this.t * 2.6 + d.seat) : 0) : shaken;
-    drawDragon(g, d.pic, d.x, GROUND - d.alt, DRAGON_H, flap, 1, 1, rot);
-
+    drawDragon(g, d.pic, d.x, GROUND - d.alt, DRAGON_H, squash, 1, 1, rot);
   }
 
   progress(): number {
@@ -690,9 +697,9 @@ export class LullabyMode extends Mode {
       const k = ease.outQuad(Math.min(1, d.t / COME));
       return drawDragon(g, d.pic, L.vw + 80 + (c.x - L.vw - 80) * k, c.y - (1 - k) * 60, FLY_H, flap, -1, 1, lean(-1));
     }
-    // Gliding down to its place by the fire.
+    // Gliding down to its place by the fire, at its flying size until it curls up asleep.
     const k = ease.inOutQuad(Math.min(1, d.t / DOWN)), to = this.sleepSpot(d.seat), face = to.x < d.fromX ? -1 : 1;
-    drawDragon(g, d.pic, d.fromX + (to.x - d.fromX) * k, d.fromY + (to.y - d.fromY) * k, FLY_H - (FLY_H - SLEEP_H) * k, 0, face, 1, lean(face));
+    drawDragon(g, d.pic, d.fromX + (to.x - d.fromX) * k, d.fromY + (to.y - d.fromY) * k, FLY_H, 0, face, 1, lean(face));
   }
 
   progress(): number {

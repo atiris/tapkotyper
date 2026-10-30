@@ -111,7 +111,7 @@ tréningu nevedia zaspať, ráno odlietajú na lúku kryštálov.
    vždy tri kríky a pristáť majú pri ohnisku, ktoré stojí celkom vpravo (dráčiky sedia mimo jeho
    ohňa). Slová prichádzajú v bubline hore; keď dieťa píše pekne v rytme, dráčik letí vysoko
    ponad kríky. Keď rytmus klesne, pristane v kríkoch ("Júj, to šteklí!", "Šteklivé!",
-   "Chrumkavé!", "Kríčky!"), vylezie a k ohnisku dôjde pešo. Pri druhej chybe počas letu dráčik
+   "Prásk!", "Kríčky!"), vylezie a k ohnisku dôjde pešo. Pri druhej chybe počas letu dráčik
    vykríkne ("Jaj!", "Pozor!", "Opatrne!") a zakolíše sa, pri tretej let skončí: pred kríkmi
    alebo nad nimi spadne do kríkov, za nimi tvrdo pristane. Dráčik sedí rovnako veľký ako letí a
    pred dosadnutím sa narovná. Na konci sa ukáže, koľko dráčikov sa naučilo lietať.

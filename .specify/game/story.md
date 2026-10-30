@@ -235,8 +235,8 @@ as they are. The world descriptions below marked *not built yet* are the design 
    overlapping. Words come one at a time in a bubble high in
    the middle. The first typed word starts the flight, a slow arc to its seat (about 22 seconds)
    whose height follows the rhythm, full from 80 % of the rhythm goal; a pause in typing takes
-   the lift away (from 1.2 seconds on, all of it in 2 more). The dragon leans nose up and flaps
-   while it rises, leans nose down and glides while it sinks, and rocks gently. Too low over the
+   the lift away (from 1.2 seconds on, all of it in 2 more). The dragon leans nose up while it
+   rises (its body never stretches or squeezes in flight), leans nose down and glides while it sinks, and rocks gently. Too low over the
    bushes it lands in them, giggles ("Júj, to šteklí!"), climbs out and walks to its seat; past
    the bushes with the typing stopped it drops, lands hard ("Au! To bolo tvrdé pristátie.") and
    walks on (it still flew); high enough, it glides on and lands at its seat with a hop. A dragon
@@ -244,7 +244,8 @@ as they are. The world descriptions below marked *not built yet* are the design 
    pose. Slips during one flight count for that dragon: the second makes it cry out ("Jaj!",
    "Pozor!") and wobble as it flies on; the third ends the flight at once - before or over the
    bushes it glides down into them (as too low), past them it drops and lands hard (it still
-   flew). Words typed while it walks still count; the next dragon starts once it is there. End: how many of
+   flew). Once a flight ends in the bushes or with a hard landing, the next dragon is up while the
+   last one walks on slowly to its seat; the words are the new dragon's. End: how many of
    the dragons learned to fly; the stars count them too (all of them 3, at least half 2, else 1,
    never more than the accuracy gives). Its pit is smaller than the others and the seated
    dragons are glad now and then (a little hop).

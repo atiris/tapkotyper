@@ -528,10 +528,15 @@ describe('the valley', () => {
     typeWord(L, mode);
     for (let i = 0; i < 600 && (mode as any).dragons[0].state === 'fly'; i++) run(L, mode, 0.05);
     expect((mode as any).dragons[0].state).toBe('bush');
+    // Out of the bushes it walks on slowly, and the next dragon is already up.
+    for (let i = 0; i < 200 && (mode as any).dragons[0].state === 'bush'; i++) run(L, mode, 0.05);
+    run(L, mode, 1);
+    expect((mode as any).dragons[0].state).toBe('walk');
+    expect((mode as any).dragons[1].state).toBe('wait');
+    expect(mode.progress()).toBeCloseTo(1 / 3);
     run(L, mode, 30);
     expect((mode as any).dragons[0].state).toBe('home');
     expect((mode as any).flown).toBe(0);
-    expect(mode.progress()).toBeCloseTo(1 / 3);
   });
 
   it('the take-off gets easier after the third and the sixth return of a dragon', () => {

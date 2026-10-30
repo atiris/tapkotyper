@@ -56,7 +56,7 @@
   at once. About 1.4 seconds later the end card comes (see The end card). Accuracy counts only the child's own keys: a level where the child
   typed fewer than 5 keys (the paw did the rest) says so in a yellow tip line, gives one star, never
   lowers a better result and adds no time toward automatic growth. Esc on the end screen
-  peeks under it first and a second Esc goes back to the map (see Peeking under the results).
+  peeks under it and a second Esc brings it back (see Peeking under the results).
 - **Stars**: 3 from 95 % accuracy, 2 from 85 %, else 1 (finishing always gives one). The
   valley's flying lessons also count the dragons that flew: never more stars than they earn. The end
   screen also shows half stars, 1.5 from 80 % and 2.5 from 90 %, so a child sees a small gain
@@ -169,20 +169,23 @@
   every other screen: it ends the exercise and shows its results. Escape still pauses.
 - **Staying a while**: the results card of a story level offers "Stay a while" after the main
   action, which keeps the focus. The same level, mode and background run again without an
-  end: targets keep coming at the level's pace and Tapko says that Esc ends it; a small HUD
-  hint "Esc = stop" stays in place of the progress bar. Esc ends the run (it does not pause)
-  and the end card "Oddychové kolo hotové!" shows the minutes, accuracy and rhythm, with Next
+  end: targets keep coming at the level's pace and Tapko says that Esc ends it; there is no
+  progress bar. Esc pauses as anywhere, but the level is already done, so the pause card's
+  first (focused) button is "Ďalšia úroveň" (when open), else "Ukončiť písanie": Enter after Esc
+  goes on, the child need not look for the way out. Ending it shows
+  the end card "Oddychové kolo hotové!" with the minutes, accuracy and rhythm, with Next
   level first (when open), A while more and the map. The run gives no stars, rewards, level result or unlocks; its keys and time count in
   the statistics and the lesson may advance, as after a practice. A super-obstacle has no
   endless form, so staying there plays the world's last regular level; the rocket's asteroids
   are the exception and keep coming, shielded pieces among them.
 - **Peeking under the results**: on every results card (level, practice, staying a while,
   target range, parrot) Esc or the round X hides the card and its dimming; the last frame of
-  the game stays in sight as it ended. A typed letter while peeking plays the same level again
-  from its start without an end (staying a while; at the target range: staying there), where
-  staying is offered. Any other key or a click brings the card back as it was, with the same
-  focus, and the key does nothing else. Esc while peeking does what Esc on the card did before
-  (the map; at the target range: stay there).
+  the game stays in sight as it ended. Its top bar and the keyboard layout switch under the
+  on-screen keyboard work as in play (help, voice, sound, the layout). A typed letter while
+  peeking plays the same level again from its start without an end (staying a while; at the
+  target range: staying there), where staying is offered. Esc, any other key or a click into the
+  game brings the card back as it was, with the same focus, and the key does nothing else;
+  peeking never ends anything, so a child looking around loses no card.
 - **Calm scenes breathe**: a scene that stands still (the calm steps of a world) lets one
   background band drift slowly on its own; with reduced motion nothing drifts. In a scene that
   moves with Tapko (its near band scrolls as he goes), the middle band never drifts: it moves
@@ -195,7 +198,8 @@
   picture, a few rows and one piece of news reads at a glance, and the same buttons in the same
   place are learned once. A child also
   wants to see the scene they finished; peeking keeps the card one key away, and a second Esc
-  never leaves a keyboard-only child stuck.
+  never leaves a keyboard-only child stuck. A child pressing Esc to look around expects to come
+  back, not to land on the map.
 - A bar that filled on time alone and then waited for the last words, or waited for the time
   after the last word, looked broken; following the slower share makes it honest.
 - A frozen background in a calm level feels like the game stopped.

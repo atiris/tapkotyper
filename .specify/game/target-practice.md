@@ -97,8 +97,9 @@
   lesson advanced, else the trained letter whose accuracy grew most. Buttons: "Hrať znova",
   "Ešte chvíľu" and "Na mapu". No stars, no paw help, no Enter marks, no story friends; the
   parent's surprises counting training time are asked and told like after a practice (see
-  [parent controls](../profiles/parent-controls.md)), never while staying. Esc or "Ešte chvíľu"
-  keeps throwing without an end (every hit counts); Esc there ends it and the card comes back.
+  [parent controls](../profiles/parent-controls.md)), never while staying. Typing while peeking
+  under the card or "Ešte chvíľu" keeps throwing without an end (every hit counts); Esc there
+  pauses with "Ukončiť písanie" first, and ending brings the card back.
   Good play counts toward growth like a practice.
 
 ## Why

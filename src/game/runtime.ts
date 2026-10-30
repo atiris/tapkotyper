@@ -112,15 +112,17 @@ export interface RuntimeOptions {
   own?: WordSourceOwn;
   /** Free practice: the style chosen in the key picker. */
   style?: Style;
-  /** Staying a while: the level runs without an end until Esc, for no stars. */
+  /** Staying a while: the level runs without an end until the child ends it on the pause card, for no stars. */
   stay?: boolean;
+  /** Staying a while in a story level with the next one open: the pause card's first button goes on to it. */
+  next?: () => void;
   onFinish(result: LevelResult | null): void;
   onExit(): void;
   /** Free typing left after something was typed: its end card. */
   onFreeDone(typed: FreeTyped): void;
   /** A click on Tapko during play (the level pauses first). */
   onTapko(): void;
-  /** The help page over the paused level, with what this level asks (`now`); `back` returns to the paused level. */
+  /** The help page over the paused or ended level, with what this level asks (`now`); `back` returns to the paused level. */
   onHelp(back: () => void, now: HTMLElement[]): void;
   /** The map's warm-up over the paused level: `back` returns to the pause card, `play` goes on typing. */
   onBreak(back: () => void, play: () => void): void;
@@ -303,7 +305,6 @@ export class LevelRuntime {
       this.superBtn,
       def.kind === 'practice' || def.index < 0 ? null : placeRing(def),
       h('b', { class: 'hud-title' }, title),
-      opts.stay && def.kind !== 'aim' ? h('span', { class: 'hud-hint' }, t('level.stayHint')) : null,
       ...(def.kind === 'freetype' ? [] : [opts.stay ? null : h('div', { class: 'progress', tip: t('level.progress') }, this.progressFill), ...this.accuracyPics.map((a) => a.pic.el), def.kind === 'parrot' ? null : this.gauge.el]),
       h('span', { class: 'hud-divider', 'aria-hidden': 'true' }),
       guideBtn, this.readBtn, ...globalButtons(helpBtn));
@@ -479,8 +480,7 @@ export class LevelRuntime {
     return {
       onChar: (c) => this.onChar(c),
       onDead: () => { this.deadPending = true; this.updateGuide(); },
-      // Staying a while ends with Esc, it never pauses.
-      onEscape: () => (this.paused ? this.resume() : this.free ? this.exit() : this.opts.stay ? this.endPractice() : this.pause()),
+      onEscape: () => (this.paused ? this.resume() : this.free ? this.exit() : this.pause()),
       onRaw: (code, key, shift) => this.onRaw(code, key, shift),
       // A target waiting for Enter takes it; else the Enter that closed a card just before play is not a call for the paw.
       onEnter: () => (this.free ? this.freeSend() : this.waitsEnter ? this.typeEnter() : performance.now() - this.begunAt >= ENTER_GUARD_MS && (this.modeEnter() || this.startPaws())),
@@ -1113,20 +1113,22 @@ export class LevelRuntime {
   /**
    * A small card at the top (the words and the guide's next key stay in sight): a stretch to try,
    * the X (Esc too) to go on, and Continue, Slower (only in play), the short exercise of that stretch and the end.
+   * Staying a while, the level is already done: the next level (when open), else the end comes first.
    */
   private pauseCard(): void {
     const stretch = STRETCHES[Math.floor(Math.random() * STRETCHES.length)];
     const slower = this.started ? button(t('level.slower'), () => this.slowDown(), 'btn') : null;
     if (slower) slower.disabled = this.difficulty <= 1;
+    const { next, stay } = this.opts;
+    const keep = button(t(this.ending.keep), () => this.resume(), 'btn', 'play');
+    const end = button(t(this.ending.label), () => void this.leave(), 'btn', 'close');
+    const first = !stay ? keep : next ? button(t('results.next'), next, 'btn', 'next') : end;
+    first.classList.add('primary');
     this.pauseEl!.replaceChildren(
       closeButton(() => this.resume(), t('level.pauseClose')),
       h('h2', {}, t('level.paused')),
       h('p', { class: 'pause-tip' }, t(`break.${stretch}`)),
-      h('div', { class: 'row' },
-        button(t(this.ending.keep), () => this.resume(), 'btn primary', 'play'),
-        slower,
-        button(t('level.stretch'), () => this.stretch(stretch), 'btn', 'smile'),
-        button(t(this.ending.label), () => void this.leave(), 'btn', 'close')));
+      h('div', { class: 'row' }, first, ...[keep, slower, button(t('level.stretch'), () => this.stretch(stretch), 'btn', 'smile'), end].filter((b) => b !== first)));
   }
 
   /** The short exercise on the pause card: the stretch with a countdown, then the pause again; or the longer break instead. */
@@ -1168,7 +1170,7 @@ export class LevelRuntime {
     tip(this.pauseBtn, label);
   }
 
-  /** Continue on the pause card. */
+  /** The pause card's first button: Continue, or staying a while the next level or the end. */
   private focusPause(): void {
     this.pauseEl?.querySelector<HTMLButtonElement>('.btn.primary')?.focus();
   }
@@ -1183,7 +1185,7 @@ export class LevelRuntime {
 
   /**
    * Leaving from the pause card; after a key of this level it asks first, Continue being the safe choice.
-   * Staying a while loses nothing: it ends like with Esc.
+   * Staying a while loses nothing: it ends with its card.
    */
   private async leave(): Promise<void> {
     if (this.opts.stay) {
@@ -1200,12 +1202,15 @@ export class LevelRuntime {
   /**
    * The "?" button, F1 and Help on the pause card: the level pauses and the help page opens
    * over it, with what this level asks and a tip first. A dialog over the level closes.
+   * After the end (peeking under the end card) it opens over the last frame.
    */
   private openHelp(): void {
-    if (!this.started || this.finished) return;
+    if (!this.started) return;
     closeModals();
-    this.pause();
-    if (!this.pauseEl) return;
+    if (!this.finished) {
+      this.pause();
+      if (!this.pauseEl) return;
+    }
     const intro = this.mode.intro();
     const tip = pickTip(app.profile!, this.style)?.text;
     this.opts.onHelp(() => this.focusPause(), [intro, tip].filter((x): x is string => !!x).map((x) => h('p', {}, x)));

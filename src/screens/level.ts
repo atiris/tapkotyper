@@ -64,6 +64,7 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
   // A super-obstacle has no endless form (the asteroids' has): staying plays the world's last regular level.
   const stayDef = params.stay && def.isSuper && def.kind !== 'asteroid' ? LEVELS.find((l) => l.world === def.world && l.index === def.index - 1) ?? def : def;
   const task = p.tasks.find((x) => x.id === params.task && !x.doneAt) ?? null;
+  const next = params.stay ? nextOpen(def) : undefined;
   let rt: LevelRuntime | null = null;
   let left = false;
   const exit = () => go('map');
@@ -77,6 +78,7 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
       own: task ? taskOwn(task) : undefined,
       style: params.style,
       stay: params.stay,
+      next: next && (() => go('level', { id: next.id })),
       onExit: exit,
       onFreeDone: (typed) => showFreeDone(root, typed, params),
       onTapko: openStats,
@@ -120,11 +122,11 @@ const MODIFIERS = ['Shift', 'Alt', 'Control', 'Meta', 'AltGraph'];
 
 /**
  * A results card the child can look under: Esc or the round X hides the card and its dimming over
- * the last frame of the game; a typed character while peeking does `type` when given (play on in
- * the same level without an end), any other key or a click brings the card back with the same
- * focus, and Esc while peeking does `esc` (what Esc on the card did before). A dialog over the card goes first.
+ * the last frame of the game, whose bar and keyboard work again; a typed character while peeking
+ * does `type` when given (play on in the same level without an end), any other key or a click into
+ * the game brings the card back with the same focus. A dialog or the help page over it goes first.
  */
-function peekable(overlay: HTMLElement, card: HTMLElement, esc: () => void, type?: () => void): void {
+function peekable(overlay: HTMLElement, card: HTMLElement, type?: () => void): void {
   let focused: HTMLElement | null = null;
   const peek = (on: boolean) => {
     if (on) focused = document.activeElement as HTMLElement | null;
@@ -132,12 +134,12 @@ function peekable(overlay: HTMLElement, card: HTMLElement, esc: () => void, type
     if (!on) focused?.focus();
   };
   card.prepend(closeButton(() => peek(true), t('results.peek')));
-  // Peeking, the hidden card lets every click through to the overlay.
-  overlay.addEventListener('click', (e) => {
-    if (e.target === overlay && overlay.classList.contains('peek')) peek(false);
+  // Peeking, the hidden card lets every click through.
+  overlay.parentElement!.querySelector('.stage-wrap')!.addEventListener('click', () => {
+    if (overlay.classList.contains('peek')) peek(false);
   });
   const stop = captureKeys(overlay, (e) => {
-    if (document.querySelector('.modal-back') || MODIFIERS.includes(e.key)) return;
+    if (document.querySelector('.modal-back, .level-help') || MODIFIERS.includes(e.key)) return;
     const peeking = overlay.classList.contains('peek');
     if (e.key !== 'Escape' && !peeking) return;
     e.preventDefault();
@@ -147,12 +149,7 @@ function peekable(overlay: HTMLElement, card: HTMLElement, esc: () => void, type
       stop();
       // After this key is done, or the new run would take it as its first.
       setTimeout(type);
-    } else if (e.key !== 'Escape') peek(false);
-    else if (!peeking) peek(true);
-    else {
-      stop();
-      esc();
-    }
+    } else peek(!peeking);
   });
 }
 
@@ -163,12 +160,12 @@ const letters = (n: number) => tn('end.letters', n);
 const minutes = (seconds: number) => tn('end.minutes', Math.max(1, Math.round(seconds / 60)));
 
 /** The end card over the level's last frame, its main button focused; Esc and typing as in `peekable`. */
-function showEnd(root: HTMLElement, o: Omit<EndCardOpts, 'onBreak' | 'toMap'>, esc: () => void = toMap, type?: () => void): void {
+function showEnd(root: HTMLElement, o: Omit<EndCardOpts, 'onBreak' | 'toMap'>, type?: () => void): void {
   const card = endCard({ ...o, toMap, onBreak: isBreakDue() ? (back) => openBreak(back) : null });
   const overlay = h('div', { class: 'overlay results' }, card);
   root.querySelector('.level-screen')!.append(overlay);
   focusMain(card);
-  peekable(overlay, card, esc, type);
+  peekable(overlay, card, type);
 }
 
 /** Accuracy and rhythm, the rows every typing end starts with. */
@@ -252,18 +249,23 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
     tip: r.byTapko ? t('results.byTapko') : null,
     surprises: toldSurprises(def, surprise, surpriseRun(def, !!params.keys)),
     actions,
-  }, toMap, stay);
+  }, stay);
+}
+
+/** The level after a story level, when open: staying a while goes on to it. */
+function nextOpen(def: LevelDef): LevelDef | undefined {
+  const next = LEVELS.includes(def) ? LEVELS[LEVELS.indexOf(def) + 1] : undefined;
+  return next && isLevelUnlocked(app.profile!, next) ? next : undefined;
 }
 
 /** The end of staying a while: accuracy and rhythm like after a practice, the next level first. */
 function showStayDone(root: HTMLElement, def: LevelDef, r: LevelResult): void {
-  const p = app.profile!;
-  const next = LEVELS[LEVELS.indexOf(def) + 1];
+  const next = nextOpen(def);
   const stay = () => go('level', { id: def.id, stay: true });
   const actions: EndAction[] = [];
-  if (next && isLevelUnlocked(p, next)) actions.push({ label: t('results.next'), icon: 'next', run: () => go('level', { id: next.id }) });
+  if (next) actions.push({ label: t('results.next'), icon: 'next', run: () => go('level', { id: next.id }) });
   actions.push({ label: t('results.stay'), icon: 'play', run: stay });
-  showEnd(root, { cls: 'stay-done', title: t('end.stay'), picture: 'ui-end-stay', under: minutes(r.seconds), rows: typingRows(r), news: newsLine(levelNews(r)), actions }, toMap, stay);
+  showEnd(root, { cls: 'stay-done', title: t('end.stay'), picture: 'ui-end-stay', under: minutes(r.seconds), rows: typingRows(r), news: newsLine(levelNews(r)), actions }, stay);
 }
 
 /** The end of the target range: the hits (a new record has its own title and picture), the points, accuracy and the middle hits; no stars. */
@@ -284,9 +286,7 @@ function showAimDone(root: HTMLElement, def: LevelDef, r: LevelResult, mode: Aim
       { label: t('results.replay'), icon: 'replay', run: () => go('level', { ...params, stay: undefined }) },
       { label: t('results.stay'), icon: 'play', run: stay, tip: t('aim.stayTip') },
     ],
-  // Escape stays at the range; Escape there ends it and brings this card back. After this key is
-  // done, or the new range would take the same Escape as its end.
-  }, () => setTimeout(stay), stay);
+  }, stay);
 }
 
 /**
@@ -330,5 +330,5 @@ function showFreeDone(root: HTMLElement, typed: FreeTyped, params: LevelParams):
     under: tn('end.words', typed.words),
     rows: [[t('end.time'), minutes(typed.seconds)], [t('end.lastText'), typed.last]],
     actions: [{ label: t('level.keepTyping'), icon: 'play', run: again }],
-  }, toMap, again);
+  }, again);
 }

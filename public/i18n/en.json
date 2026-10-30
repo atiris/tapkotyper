@@ -217,7 +217,6 @@
     "endAsk": "Really end it?",
     "endLevelText": "This level will not count.",
     "endPracticeText": "This exercise will not count.",
-    "stayHint": "Esc = stop",
     "stayStart": "We stay here. Type as long as you like. Press Esc when you want to stop.",
     "endRescueText": "This mission will not count."
   },
@@ -2069,7 +2068,7 @@
     "ready": "Great! You type {keys} accurately now.",
     "score": "Hits: {hits}   Points: {points}",
     "record": "A new world record!",
-    "stayTip": "Esc: keep throwing; Esc again ends the range",
+    "stayTip": "Keep throwing without an end. Esc pauses.",
     "stayStart": "We keep throwing. Press Esc when you want to stop.",
     "lines": {
       "center": [

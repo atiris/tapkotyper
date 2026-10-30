@@ -22,14 +22,21 @@ test('a new child plays the first level by typing and sees stars', async ({ page
   await page.keyboard.press('ArrowDown');
   await expect(page.locator('.end-card')).toBeVisible();
   await expect(first).toBeFocused();
-  // The round X peeks too, a click on the stage brings the card back.
+  // The round X peeks too; the top bar works while peeking, a click on the stage brings the card back.
   await page.locator('.end-card .modal-x').click();
   await expect(page.locator('.end-card')).toBeHidden();
-  await overlay.click({ position: { x: 20, y: 20 } });
+  await page.locator('.hud').getByRole('button', { name: 'Help in the level' }).click();
+  await expect(page.locator('.level-help')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.level-help')).toHaveCount(0);
+  await expect(page.locator('.end-card')).toBeHidden();
+  await page.locator('.level-screen .stage-wrap').click({ position: { x: 20, y: 20 } });
   await expect(page.locator('.end-card')).toBeVisible();
-  // Esc twice goes to the map.
+  // Esc while peeking brings the card back, it never leaves.
   await page.keyboard.press('Escape');
   await page.keyboard.press('Escape');
+  await expect(page.locator('.end-card')).toBeVisible();
+  await page.locator('.end-card .ec-bot .btn').last().click();
   await expect(page.locator('.level-node.done')).toHaveCount(1);
   await page.locator('.map-tapko').click();
   await expect(page.locator('.stats-modal .progress-story').first().locator('.story-stars')).toHaveAttribute('aria-label', /: [1-3]$/);
@@ -185,8 +192,7 @@ test('world badges sit on the map, grow with stars and line up on the progress s
   await expect(page.locator('.island-dragons .badge')).toHaveCount(0);
   await page.locator('.island-meadow .level-node').first().click();
   expect(await playLevel(page, false)).toContain('A gold badge');
-  await page.keyboard.press('Escape');
-  await page.keyboard.press('Escape');
+  await page.locator('.end-card .ec-bot .btn').last().click();
   await expect(page.locator('.island-meadow .badge.gold')).toBeVisible();
   await page.locator('.map-tapko').click();
   await expect(page.locator('.badge-shelf .badge')).toHaveCount(15);
@@ -241,7 +247,7 @@ test('free practice with a diacritic key is played to the results card', async (
   expect(errors).toEqual([]);
 });
 
-test('staying a while after a level keeps typing until Esc and leaves the stars alone', async ({ page }) => {
+test('staying a while after a level keeps typing until it is ended on the pause card and leaves the stars alone', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await createProfile(page, 'Mia');
@@ -253,7 +259,6 @@ test('staying a while after a level keeps typing until Esc and leaves the stars 
   // The main action keeps the focus; staying is one of the other buttons.
   await expect(page.locator('.end-card .ec-bot button').first()).toBeFocused();
   await page.locator('.end-card button', { hasText: 'A while more' }).click();
-  await expect(page.locator('.hud-hint')).toHaveText('Esc = stop');
   await expect(page.locator('.level-screen .bubble')).toContainText('Press Esc');
   await expect(page.locator('.posture-card')).toHaveCount(0);
   for (let i = 0; i < 25; i++) {
@@ -261,7 +266,12 @@ test('staying a while after a level keeps typing until Esc and leaves the stars 
     if (next) await typeChar(page, next);
     await page.waitForTimeout(90);
   }
+  // Esc pauses; the level is done, so the next level comes first and the end is there too.
   await page.keyboard.press('Escape');
+  const pause = page.locator('.pause-card');
+  await expect(pause.locator('.btn.primary')).toBeFocused();
+  await expect(pause.locator('.btn.primary')).toContainText('Next level');
+  await pause.getByRole('button', { name: 'Stop typing' }).click();
   const card = page.locator('.end-card.stay-done');
   await expect(card.locator('h2')).toHaveText('Easy round finished!');
   await expect(card).toContainText('%');

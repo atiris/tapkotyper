@@ -38,9 +38,7 @@ test('a finished world\'s parrot learns the words and brings the badge', async (
   await expect(page.locator('.parrot-done .ec-news')).toContainText('Parrot badge');
   await expect(page.locator('.parrot-done .ec-row', { hasText: 'Repeating, per minute' })).toContainText('letters');
   await expect(page.locator('.parrot-done .modal-x')).toBeVisible();
-  // Escape peeks under the card, a second Escape goes to the map.
-  await page.keyboard.press('Escape');
-  await page.keyboard.press('Escape');
+  await page.locator('.end-card .ec-bot .btn').last().click();
   await expect(node).toHaveClass(/home/);
   // Aro, the badge's parrot, lands on his perch left of Tapko and says hello.
   await expect(page.locator('.map-hero .aro-perch')).toHaveCount(1);
@@ -73,8 +71,7 @@ test('too many mistakes send the parrot away: the round ends with its empty perc
   await expect(page.locator('.parrot-done .ec-tip')).toHaveText('Type slowly and exactly and the parrot comes back.');
   await expect(page.locator('.parrot-done .ec-img')).toHaveAttribute('src', /ui-act-parrot-perch/);
   await expect(page.locator('.parrot-done .btn.primary')).toContainText('Play again');
-  await page.keyboard.press('Escape');
-  await page.keyboard.press('Escape');
+  await page.locator('.end-card .ec-bot .btn').last().click();
   await expect(node).not.toHaveClass(/home/);
   await expect(node.locator('img')).toHaveAttribute('src', /obj-parrot-perch-short/);
   expect(errors).toEqual([]);

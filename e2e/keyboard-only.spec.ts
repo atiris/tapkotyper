@@ -32,8 +32,7 @@ test('the whole game by keyboard only: a new player, a level, the results, endin
   await untilPlay(page, 'ready');
   await playLevel(page);
   await expect(page.locator('.end-card .ec-bot button').first()).toBeFocused();
-  await page.keyboard.press('Escape');
-  await page.keyboard.press('Escape');
+  await page.locator('.end-card .ec-bot .btn').last().press('Enter');
   await expect(page.locator('.level-node.done')).toHaveCount(1);
 
   // Back on the map Continue is focused: the second level starts by Enter, its card too.

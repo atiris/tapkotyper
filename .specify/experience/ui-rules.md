@@ -24,10 +24,10 @@ One set of rules for where things sit and how they behave, so every screen feels
    left (just typing, the custom exercise) has the round X at the start of its play bar; in the
    custom exercise it ends it and shows the results. A window laid over a screen (dialogs, the progress panel, the
    new player form, level cards and the pause card) closes with the round X at the top right, and with Escape; a results card's X and
-   Escape first hide it to show the game under it, and a second Escape closes it. The X's
+   Escape hide it to show the game under it, and Escape or a click into the game brings it back. The X's
    tip says what closing does, so a card needs no "Esc: ..." line. Escape always closes the window
    on top, else pauses a running level or resumes a paused one (free typing and the endless
-   custom exercise end instead). The
+   custom exercise end instead; a paused run that is already done offers the next level or the end first). The
    only closing control at the bottom of a window is a normal action button (for example
    "Pokračovať"), never the one way out.
 3. **Scrolling.** A window scrolls inside itself: its header (title, X, tabs) stays in sight and

@@ -661,7 +661,6 @@
     "level.endLevelText": "Text of the question when ending a story level.",
     "level.endPracticeText": "Text of the question when ending an exercise.",
     "level.endRescueText": "Text of the question when ending a rescue mission.",
-    "level.stayHint": "Small note in the top bar when the child stays in a level and types without limit.",
     "level.stayStart": "Tapko, at the start of a stay-and-type session without a limit.",
     "keys.*": "Name of a special key, used inside sentences and tooltips about keys.",
     "layouts.*": "Name of a keyboard layout, in the parent settings, the layout switch's menu and the different-keyboard notice.",

@@ -76,8 +76,6 @@
 - Slow, per-player character prices keep a reason to collect stars through all three
   stories, and different prices and accessories per player make siblings compare and
   talk about what they got.
-- An open question is a gentle reason to play one more level, and the answer teaches
-  something on the way.
 - The word is the child's task, so it must always be readable.
 - Paw help is a reward for accuracy that makes play more fun and takes the edge off a
   crowded moment, without blurring what the child really typed.

@@ -10,7 +10,7 @@ Images and background music for the game. Sound effects stay synthesized in code
    music as mp3, wav or m4a.
 3. Run `npm run assets` (or ask Claude to) and commit `public/assets/`. It removes the flat
    background, trims (except companions and outfits, which keep their square), resizes
-   and writes small web files to `public/assets/`; the game uses each file that exists.
+   and writes web files to `public/assets/`; the game uses each file that exists.
    Raw files in this folder are not committed, only the processed ones.
 
 The game works without any of these files (it draws simple shapes instead), so you can make

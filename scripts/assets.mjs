@@ -1,4 +1,4 @@
-// Turns the raw Gemini images and music in assets-src/ into small web files in
+// Turns the raw Gemini images and music in assets-src/ into web files in
 // public/assets/ and writes public/assets/manifest.json. Run with `npm run assets`.
 import { readdir, mkdir, writeFile, rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
@@ -11,7 +11,11 @@ import { bleedColor, keyOut } from './key.mjs';
 
 const SRC = 'assets-src';
 const OUT = 'public/assets';
-const SPRITE_MAX = 384;
+// A picture is kept at about its largest drawn size on a 1440-pixel-high screen: smaller looks
+// blurry on Full HD, bigger only costs memory, which weak computers lack (each one is decoded).
+const SPRITE_MAX = 512;
+// The companions' square layers (Tapko is drawn 265 units of the 600-unit stage) and the planet's boulder (300 units).
+const BIG_MAX = 640;
 // The planet's far bank is a long strip drawn at the swamp band's scale, as wide as the stage.
 const WIDE_MAX = 1376;
 const ICON_MAX = 512; // ui-icon is also the app icon (scripts/icons.mjs), ui-icon-hr the start page's large logo
@@ -148,8 +152,8 @@ function matchTone(frames, n) {
 const webp = (img) => img.webp({ quality: 84, alphaQuality: 90, effort: 5 });
 
 async function writeSquare(name, data, w, h, manifest) {
-  await webp(sharp(data, { raw: { width: w, height: h, channels: 4 } }).resize(SPRITE_MAX, SPRITE_MAX)).toFile(join(OUT, `${name}.webp`));
-  manifest.images[name] = { w: SPRITE_MAX, h: SPRITE_MAX };
+  await webp(sharp(data, { raw: { width: w, height: h, channels: 4 } }).resize(BIG_MAX, BIG_MAX)).toFile(join(OUT, `${name}.webp`));
+  manifest.images[name] = { w: BIG_MAX, h: BIG_MAX };
 }
 
 async function processImage(name, file, manifest) {
@@ -185,7 +189,7 @@ async function processImage(name, file, manifest) {
     return;
   }
   const box = bbox(data, w, h);
-  const max = name.startsWith('ui-icon') ? ICON_MAX : name === 'ui-cert-parrot' ? STAMP_MAX : name === 'obj-planet-bank' ? WIDE_MAX : SPRITE_MAX;
+  const max = name.startsWith('ui-icon') ? ICON_MAX : name === 'ui-cert-parrot' ? STAMP_MAX : name === 'obj-planet-bank' ? WIDE_MAX : name.startsWith('obj-boulder-') ? BIG_MAX : SPRITE_MAX;
   const info = await webp(sharp(data, { raw: { width: w, height: h, channels: 4 } }).extract(box).resize(max, max, { fit: 'inside', withoutEnlargement: true })).toFile(join(OUT, `${name}.webp`));
   manifest.images[name] = { w: info.width, h: info.height };
 }
@@ -335,7 +339,7 @@ async function processOutfit(set, data, w, h, manifest) {
 
 async function processMusic(name, file, manifest) {
   const out = join(OUT, `${name}.mp3`);
-  await run(ffmpeg, ['-y', '-loglevel', 'error', '-i', file, '-ac', '1', '-ar', '44100', '-b:a', '60k', '-af', 'loudnorm=I=-20:TP=-2:LRA=11', '-map_metadata', '-1', out]);
+  await run(ffmpeg, ['-y', '-loglevel', 'error', '-i', file, '-ac', '1', '-ar', '44100', '-b:a', '64k', '-af', 'loudnorm=I=-20:TP=-2:LRA=11', '-map_metadata', '-1', out]);
   manifest.music.push(name);
 }
 

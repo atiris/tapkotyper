@@ -8,7 +8,7 @@
 - Rendering: HTML5 Canvas 2D for game scenes, DOM for menus, overlays and forms. No 3D.
 - Graphics: illustrated sprites, backgrounds and background music are made by the owner in
   Gemini from the prompts in [`../assets-src/PROMPTS.md`](../assets-src/PROMPTS.md). Raw
-  files go to `assets-src/` (not committed); a build-time script turns them into small web
+  files go to `assets-src/` (not committed); a build-time script turns them into web
   files in `public/assets/` (committed). Every asset has a procedural fallback (Canvas
   paths, gradients, CSS), so the app is complete and polished with any subset of assets.
 - Audio: sound effects are always synthesized with the Web Audio API; background music
@@ -28,12 +28,20 @@
   `public/i18n/translator/en.json`, loaded only by the translator. A catalog in code places every text in a section and group with its kind; a
   unit test fails when a text has no place or no situation, so the translator stays complete.
 - Installable offline PWA (a service worker caches the app after the first visit). An update downloads only the files that changed: on a slow or metered connection (school, phone hotspot) a release with one new picture costs that picture, not the whole app again.
-- Weight budget for weak school devices: music at most 1.4 MB per track (mono, 60 kbps),
-  sprites at most 384 px, the install cache (everything except music) under about 10 MB,
-  the settings screen and the translator loaded on first use, and the QR decoder fallback (`jsqr`, about 130 KB,
-  48 KB gzip) loaded only when the teacher opens the camera scan and only in browsers without
-  `BarcodeDetector`; the install cache is about 6.8 MB. A scaled copy of the current scene's background
-  tiles is cached at the drawn pixel size, and the HUD is written only when a value changes.
+- Weak school computers are short of processor power and memory, and have no graphics card worth
+  counting on (the canvas is often drawn by the processor); disk space and network speed are not
+  their limit (a phone's data plan matters a little). So a file is made smaller only where that
+  makes the game faster or lighter on memory without a visible or audible loss, never to fit a
+  size number or just to save some download:
+  - music: mono MP3 at 64 kbps (calm background music loses nothing audible);
+  - pictures: WebP at high quality, each kept at about the size it is drawn on a 1440-pixel-high
+    screen: smaller looks blurry on Full HD, larger only costs memory, since every picture a level
+    draws is held decoded; backgrounds keep the full resolution they are made in;
+  - code and data the first screens do not need load on first use: each mode's code, the settings
+    screen, the translator, and the QR decoder fallback (`jsqr`), which loads only when the teacher
+    opens the camera scan in a browser without `BarcodeDetector`.
+- A scaled copy of the current scene's background tiles is cached at the drawn pixel size, and
+  the HUD is written only when a value changes.
 - Adding worlds must not slow the game: memory and work at the start stay flat. A level decodes
   only its own pictures when it opens; the other worlds' pictures are just downloaded in the
   background, and only the last scene's scaled backgrounds stay in memory.
@@ -66,9 +74,8 @@ for a computer without canvas acceleration): `normal` is 1366 x 768 at device pi
   p95 at most 20 ms); on `slow` with Simple graphics (the automatic choice there) a steady
   30 fps (p50 at most 34 ms, p95 at most 80 ms). There the whole frame is the software drawing
   of a full screen; only a smaller canvas would cut it further.
-- Main chunk at most 270 KB (90 KB gzip); each mode's code is its own chunk, loaded with its
-  first level, and imports only `modes/kit/`, never another world's mode.
-- A world's own pictures at most 1 MB, one music track at most 1.4 MB.
+- The main chunk holds only what the start page and the map need; each mode's code is its own
+  chunk, loaded with its first level, and imports only `modes/kit/`, never another world's mode.
 - `node scripts/perf.mjs --budget` (normal) and `node scripts/perf.mjs --machine slow --low --budget`
   fail over budget. They are slow (one to two minutes per scene), so they are not part of
   `npm test`; they run before a world plan is finished.

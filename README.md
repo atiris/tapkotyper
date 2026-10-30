@@ -1,11 +1,10 @@
 # TapkoTyper
 
 A peaceful, story-driven touch-typing adventure for children (about 10-15 years).
-Kids learn to type with **all ten fingers** together with their friend **Tapko**: they play catch
-with animals on a meadow, fly a rocket through space, explore a new planet, protect dragons and
-hatch a new friend; in a second story they help the little robot Bolt get home, in a third
-the fairy Melody brings the songs back to a quiet forest by listening and remembering. No
-explosions, no punishment, no ads, no accounts.
+Kids learn to type with **all ten fingers** as their friend **Tapko**: they keep goal for the
+meadow animals, fly a rocket through a meteor belt, bring the light back to the dragons' planet
+and teach the baby dragons to fly. Later stories (the little robot Bolt, the fairy Melody) are
+being made. No explosions, no punishment, no ads, no accounts.
 
 *Pokojná príbehová hra pre deti na nácvik písania všetkými desiatimi. Po slovensky aj po anglicky.*
 
@@ -22,12 +21,14 @@ explosions, no punishment, no ads, no accounts.
 - **Real sentences early.** Space comes with the first keys, period and comma with the
   letters, and capitals in the middle of the path, one Shift at a time; targets grow from
   `fj jf` to short phrases like `Ema ide.`
-- **Every key has its finger.** The on-screen keyboard shows finger colors and numbers,
-  lights up the next key (and both steps of Slovak accent keys), and two hands show which
-  finger to use. The guide fades for keys the child already masters.
-- **Accuracy before speed.** Stars come from accuracy; speed is only a personal trend.
-  Mistakes never cost anything: the letter wobbles, the right key glows, and after three
-  misses on one key Tapko offers a 20-second mini practice.
+- **Every key has its finger.** Each new key gets its own card (where it is, which finger),
+  and after `F` and `J` a card shows the home row. The on-screen keyboard shows finger colors
+  and numbers, lights up the next key (and both steps of Slovak accent keys), and two hands
+  show which finger to use. The guide fades for keys the child already masters.
+- **Accuracy before speed.** Stars come from accuracy (half stars show a small gain); speed is
+  only a personal trend. Mistakes never cost anything: the letter wobbles, the right key glows,
+  and after three misses on one key Tapko shows which key it is and which finger presses it.
+  Backspace wipes a started word, so the child can start another one.
 - **Weak keys come more often**, and "My progress" (click Tapko) shows which keys to
   practise, with a one-minute drill.
 - **Grows with the child.** Difficulty and word length go up in small automatic steps
@@ -42,16 +43,22 @@ explosions, no punishment, no ads, no accounts.
   exactly the letters holding the next ones back. The **parrot** makes the fingers learn a few
   words by typing them many times over; keep the Parrot badge and Aro the parrot joins Tapko.
   **Just typing** is a free sandbox: type anything, Tapko shows and says it, nothing is counted.
-- **Tapko keeps the child curious and helps out.** After a level he asks a question about
-  the next one and answers it only when that level is done. Fifteen words in a row
-  without a mistake charge a paw (three at most): on Enter, Tapko's paws replace the hands
-  and type the three closest words, which never count in the stats.
+- **A story worth following.** Each level opens with one get-ready card that tells what
+  happens and what to type; nothing else stands between the child and play except the key
+  cards. Each world has its own twists (a hop across meteors, a crossroads where the chosen
+  sign changes the road, a lullaby copied word by word), and the parent's own surprises
+  (below) give real rewards.
+- **Paw help.** Fifteen words in a row without a mistake charge a paw (three at most): on
+  Enter, Tapko's paws replace the hands and type the three closest words, which never count
+  in the stats.
 - **Per-key stats** count only the last 50 presses, show what a key is mixed up with and
   how it changed day by day; click any key on the stats keyboard. "My progress" is its own
   page with badges, the treasure chest and range awards.
-- **Good habits:** before every adventure a "Ready, steady, type!" card with one posture
-  reminder and a two-letter password to start, a short preparation tip each session
-  (over 50 tips), and a stretch break after the session length the parent chose.
+- **Good habits:** the get-ready card ("The adventure goes on!") shows a boy or a girl
+  sitting well, with one preparation tip each session (over 40 tips) or a posture reminder;
+  the space bar starts. The map has a warm-up button, and after the session length the
+  parent chose comes a stretch break (a longer "big break" can be added; anyone may skip it
+  unless the parent locks it).
 - **Slovak keyboards done right:** QWERTZ and QWERTY variants, `ľ š č ť ž ý á í é` on the
   number row, `ú ä ô ň`, dead keys for `ó ĺ ŕ ď` and accented capitals, and a hint when
   the real keyboard looks different.
@@ -62,11 +69,14 @@ explosions, no punishment, no ads, no accounts.
 
 | World | What happens | Big challenge | Reward |
 |---|---|---|---|
-| 1. Training Meadow | goalkeeper Tapko fans back the leaves bees, ladybugs and mice send him; a miss is a cheered goal | hedgehog throwing leaf volleys | invitation to space, meet Tapko |
-| 2. Rocket Flight | typing rhythm drives the speedometer, a beam pushes rocks away | splitting asteroid | landing clearance |
+| 1. Training Meadow | goalkeeper Tapko catches the leaves bees, ladybugs and mice kick at him (a miss is a cheered goal); a poppy bouquet, the match, party invitations | hedgehog throwing leaf volleys | invitation to space |
+| 2. Rocket Flight | typing rhythm drives the speedometer, a beam pushes rocks away; hops across meteors, commands to the rocket | fractured asteroid | landing clearance |
 | 3. New Planet | stones across a swamp, crystals on the meadow, crossroads that change the road, spells for the crystals of life | the great swamp and a boulder | the Force |
-| 4. Dragon Valley | shield bubbles protect baby dragons | rhythm wave | a dragon egg |
-| 5. Egg Journey | the egg jumps over rocks and stumps | friendly mole | a baby dragon, endless rescue missions |
+| 4. Dragon Valley | flames light the dragons' fire, spells clear the overgrown path, flying lessons, a lullaby | the take-off: every dragon flies away | a dragon egg |
+| 5. Egg Journey *(being made)* | the egg jumps over rocks and stumps | friendly mole | a baby dragon, endless rescue missions |
+
+Worlds 5-15 are still being made: until a world is built, its levels play one simple copying
+game, so the child keeps progressing and new keys keep coming. The tables below are the plan.
 
 **Story 2: Tapko and Bolt the Robot** (opens at 10 known keys; Bolt walks next to Tapko)
 
@@ -110,21 +120,25 @@ see on the map or in My progress.
   reaches a server.
 - **Parent area** (gear button, one confirm question; the settings also work without a player): child and companion names, keyboard layout, active keys (automatic or picked by hand), word
   length and difficulty 1-10 (automatic or fixed), words without diacritics, no time pressure, session length,
-  guide visibility, read typed words aloud, wardrobe time, volumes, fonts (Lexend, Atkinson Hyperlegible, OpenDyslexic), large
-  text, reduced motion, high contrast. A dashboard shows a per-key heat map, accuracy and
-  rhythm trends, time per day, and a printable progress card.
+  unskippable breaks, guide visibility, read typed words aloud, wardrobe time, Ms Turtle's tips
+  about the app on the map, volumes, fonts (Lexend, Atkinson Hyperlegible, OpenDyslexic), large
+  text, reduced motion, high contrast, and graphics (Automatic, Full or Simple: Simple draws
+  less for slow computers and plays the same; Automatic switches to it when the game runs
+  slowly). A dashboard shows a per-key heat map, accuracy and rhythm trends, time per day, and
+  a printable progress card. All profiles can be deleted at once.
 - **Own content** (its own tab): encouraging messages, own words (for example this week's
   spelling words) and an own text, mixed into the levels by a share you pick. The text can
   also be typed in order as free practice ("My text").
 - **Surprises** (their own tab): this is meant for real rewards. Write a question ("Do you
   know where Dad hid a sweet reward?") and the answer ("In the cupboard behind the
   fridge."), and say when the answer comes: after a given level, after some minutes of
-  training, after some more levels or stars, or at random now and then. The companion asks
-  the question before the level (with what is still left) and shows the answer right under
-  it when the time comes, once or again and again. One table shows every surprise and its
-  state.
+  training, or after some more levels or stars. The get-ready card asks the question (with
+  what is still left) and the results show the answer right under it when the time comes,
+  once or again and again. A closed golden box on the map lists the waiting surprises and
+  what they still need; won ones stay on the map for the days you choose. One table shows
+  every surprise and its state.
 - **Translate the game:** a parent page (its button ends the "Sounds and interface" settings) shows every text of
-  the game with its situation, and makes a new language or a corrected copy of one. Export and
+  the game with its situation (explained in English, beside a sample language you pick), and makes a new language or a corrected copy of one. Export and
   import as pair files (handy for an AI translator) or `.json`; progress is shown per section.
 - **Reading aloud:** a button in the level bar reads the word to type and the companion's
   lines with the browser's own voice (shown when the browser has one for the language).
@@ -171,7 +185,7 @@ npm run dev      # http://localhost:5173/tapkotyper/
 npm run build    # type check + production build into dist/
 npm test         # unit tests (Vitest)
 npm run test:e2e # browser tests (Playwright)
-npm run assets   # turn raw images and music in assets-src/ into public/assets/
+npm run assets   # turn raw images and music in assets-src/ into web files in public/assets/
 npm run icons    # render the favicon and the PWA icons from ui-icon (after npm run assets)
 ```
 
@@ -180,6 +194,11 @@ For quick manual testing, open the dev server with `?fast` before the hash
 the play time before a break all take a sixth of their time. A browser driver types through
 `window.tapkoType('text')` (dev and e2e builds): it sends the player's layout's real keys, with
 Shift and dead keys, so `ô`, `ä` or `Ľ` work where a driver's own typing sends US keys.
+
+The game must run well on weak school computers (slow processor, little memory, no graphics
+card worth counting on). `node scripts/perf.mjs` measures frame times per level on a normal and
+a slowed-down computer with software drawing; `--budget` fails when a level is over the budget
+in [`.specify/architecture.md`](.specify/architecture.md).
 
 Every push to `main` builds the site and deploys it to GitHub Pages
 (`.github/workflows/deploy.yml`).

@@ -1,10 +1,9 @@
 import { assetUrl, hasMusic, musicTracks } from '../gfx/assets';
 import { nextTrack } from './tracks';
+import type { SoundLevel } from '../storage/schema';
 
 export type Sfx = 'key' | 'wrong' | 'word' | 'reward' | 'whoosh' | 'pop' | 'cheer' | 'bzzt' | 'note' | 'plop' | 'squeak' | 'ring' | 'whistle' | 'crack' | 'thud' | 'squawk';
 /** Quick sound switch: normal, quiet (20 % of normal) or off. */
-export type SoundLevel = 'normal' | 'quiet' | 'off';
-
 export const SOUND_LEVELS: SoundLevel[] = ['normal', 'quiet', 'off'];
 const LEVEL_GAIN: Record<SoundLevel, number> = { normal: 1, quiet: 0.2, off: 0 };
 const SOUND_KEY = 'tapkotyper:sound';
@@ -88,12 +87,18 @@ class AudioEngine {
 
   /** Next quick sound level: normal -> quiet -> off -> normal. */
   cycleLevel(): SoundLevel {
-    this.level = SOUND_LEVELS[(SOUND_LEVELS.indexOf(this.level) + 1) % SOUND_LEVELS.length];
+    this.setLevel(SOUND_LEVELS[(SOUND_LEVELS.indexOf(this.level) + 1) % SOUND_LEVELS.length]);
+    return this.level;
+  }
+
+  /** The quick sound level, kept on this device for the start page. */
+  setLevel(level: SoundLevel): void {
+    if (level === this.level) return;
+    this.level = level;
     try { localStorage.setItem(SOUND_KEY, this.level); } catch { /* private mode */ }
     this.applyVolumes();
     this.silence();
     this.listeners.forEach((l) => l());
-    return this.level;
   }
 
   /**

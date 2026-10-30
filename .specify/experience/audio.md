@@ -5,7 +5,8 @@
   gentle wrong, word done, reward, a soft cheer for a goal), all synthesized with the Web Audio API.
 - Separate volume for music and effects (parent area); a quick sound button on every
   screen switches normal / quiet (20 % of normal) / off. The game starts with the sound off
-  until the player turns it on (the choice is kept); audio starts only after the
+  until the player turns it on (the choice is kept by the player and comes back when the player
+  is picked; the start page keeps the last player's; a new player starts with what the device has); audio starts only after the
   first user interaction (on phones the first tap; see [devices.md](devices.md)). Off is real
   silence: nothing plays at all, not even at zero volume.
 - A right click on the sound button plays another random track from the whole library; the

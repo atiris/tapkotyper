@@ -114,7 +114,9 @@
   it is a short cross-fade and nothing moves. Only the start page has this scene.
 - **Dark theme** ("dark enough, not black"): a deep violet night sky as the page background, dark
   violet paper for panels and cards, cream text. It follows the system's setting until the
-  player picks one on the theme button, and then stays on this device. Everything around the
+  player picks one on the theme button; the choice belongs to the player and comes back when the
+  player is picked, the start page shows the last player's, and a new player starts with the look
+  the device shows. Everything around the
   game follows it: panels, cards, dialogs, tabs, tooltips, inputs, scrollbars, menus, charts, the
   keyboard guide, a level's top bar, cards and bars. The keyboard guide's hands are solid there
   (a see-through hand turns grey on dark), their resting fingers a dimmer skin. Pictures stay as drawn: the level

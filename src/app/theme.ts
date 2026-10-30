@@ -43,8 +43,15 @@ export function installTheme(s: Store): void {
   });
 }
 
-/** The theme button: stores the opposite of what is shown, so the device stops following the system. */
-export function toggleTheme(): void {
+/** A player's theme: shown now and kept on this device for the start page. */
+export function useTheme(theme: Theme): void {
+  store.data.theme = theme;
+  store.save();
+  show(resolveTheme(theme, systemDark()));
+}
+
+/** The theme button: stores the opposite of what is shown, so the device stops following the system; returns it. */
+export function toggleTheme(): Look {
   const look: Look = shownLook() === 'dark' ? 'light' : 'dark';
   store.data.theme = look;
   store.save();
@@ -56,6 +63,7 @@ export function toggleTheme(): void {
     fadeTimer = setTimeout(() => root.classList.remove('theme-fade'), 900);
   }
   show(look);
+  return look;
 }
 
 /** Calls `fn` with the new look on every change; returns the unsubscribe. */

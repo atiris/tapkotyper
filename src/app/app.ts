@@ -2,6 +2,7 @@ import { audio } from '../audio/audio';
 import { useGraphics } from '../engine/graphics';
 import { resetFontFamily } from '../gfx/draw';
 import { askedLanguage, setLanguage, tList } from '../i18n/i18n';
+import { toggleTheme, useTheme } from './theme';
 import { LAYOUTS, type Layout } from '../keyboard/layouts';
 import { Store } from '../storage/store';
 import { GUEST_ID, type LangRef, type Profile, SUPER_ID } from '../storage/schema';
@@ -179,6 +180,24 @@ export async function selectProfile(p: Profile): Promise<void> {
   }
   await Promise.all([useLanguage(p.language), loadPlayerWords(p)]);
   applyProfileLook(p);
+  useTheme(p.settings.theme);
+  audio.setLevel(p.settings.sound);
+}
+
+/** The quick sound switch (its button and F4): the player keeps the level. */
+export function cycleSound(): void {
+  audio.cycleLevel();
+  if (!app.profile) return;
+  app.profile.settings.sound = audio.level;
+  saveProfile();
+}
+
+/** The theme button: the player keeps the look. */
+export function toggleLook(): void {
+  const look = toggleTheme();
+  if (!app.profile) return;
+  app.profile.settings.theme = look;
+  saveProfile();
 }
 
 /** Applies per-profile look and sound: fonts, text size, contrast, motion, volumes. */

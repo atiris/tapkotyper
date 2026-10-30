@@ -1,4 +1,5 @@
 import { app, go, selectProfile } from '../app/app';
+import { audio } from '../audio/audio';
 import { tapkoElement } from '../gfx/tapko';
 import { langOptions, language, t } from '../i18n/i18n';
 import { COMPANION_KINDS, type CompanionKind, type Lang, type LayoutId } from '../storage/schema';
@@ -48,6 +49,9 @@ export function newProfileScreen(root: HTMLElement): () => void {
     }
     const p = newProfile(name.value, lang.value as Lang, lay.value as LayoutId, kind, nick.value);
     p.settings.wordLang = p.settings.ownWordLang = wordLang.value as Lang;
+    // A new player keeps the look and sound the device shows now.
+    p.settings.theme = app.store.data.theme;
+    p.settings.sound = audio.level;
     if (app.pendingTask) addTask(p, app.pendingTask);
     app.pendingTask = null;
     app.store.add(p);

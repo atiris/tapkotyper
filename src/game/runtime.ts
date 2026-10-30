@@ -752,8 +752,12 @@ export class LevelRuntime {
     this.guide.show(ch, this.deadPending && stepsFor(layout(), ch ?? '').length > 1, fade);
   }
 
+  /** The on-screen keyboard on or off; the player keeps the choice for the next levels. */
   private toggleGuide(): void {
     this.guideOn = !this.guideOn;
+    const s = app.profile!.settings;
+    s.guide = !this.guideOn ? 'off' : s.guide === 'off' ? 'auto' : s.guide;
+    saveProfile();
     this.guide.setVisible(this.guideOn);
     this.guideBtn.setAttribute('aria-pressed', String(!this.guideOn));
     this.stage.resize();

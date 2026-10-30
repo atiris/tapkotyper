@@ -1,11 +1,11 @@
-import { type ScreenName, app, go, shownScreen } from '../app/app';
-import { onThemeChange, shownLook, toggleTheme } from '../app/theme';
-import { audio, type SoundLevel } from '../audio/audio';
+import { type ScreenName, app, cycleSound, go, shownScreen, toggleLook } from '../app/app';
+import { onThemeChange, shownLook } from '../app/theme';
+import { audio } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
 import { WORLDS } from '../game/levels';
 import { LANGS, LANGUAGES, language, languageName, locale, t } from '../i18n/i18n';
 import { installShortcuts, setDefaultShortcuts, withKey } from '../input/shortcuts';
-import type { Lang } from '../storage/schema';
+import type { Lang, SoundLevel } from '../storage/schema';
 import { type Child, ICONS, h, icon } from './dom';
 import { paintRound, roundButton } from './hud';
 import { cornerMenu } from './menu';
@@ -20,7 +20,7 @@ const soundLabel = () => `${t('common.sound')}: ${t(`common.sound_${audio.level}
 
 /** Quick sound switch (on every screen): normal, quiet, off; F4 too. Full sound has the orange ring; the tooltip names the song playing. */
 export function soundButton(): HTMLButtonElement {
-  const b = roundButton('control', LEVEL_ICON[audio.level], '', () => audio.cycleLevel());
+  const b = roundButton('control', LEVEL_ICON[audio.level], '', cycleSound);
   b.classList.add('sound-btn');
   // Right click: another track from the whole library.
   b.addEventListener('contextmenu', (e) => {
@@ -117,7 +117,7 @@ export function appShortcuts(): void {
   setDefaultShortcuts({
     help: openScreenHelp,
     sound: () => {
-      audio.cycleLevel();
+      cycleSound();
       toast(soundLabel());
     },
     track: () => {
@@ -143,7 +143,7 @@ export function settingsButton(): HTMLButtonElement {
 
 /** Dark or light: a moon in the light look, a sun in the dark one. */
 export function themeButton(): HTMLButtonElement {
-  const b = roundButton('control', 'moon', '', toggleTheme);
+  const b = roundButton('control', 'moon', '', toggleLook);
   b.classList.add('theme-btn');
   paintTheme(b);
   return b;

@@ -247,3 +247,29 @@ test('in the dark look every screen reads well', async ({ page }) => {
   await playLevel(page, false);
   await readable(page, 'results');
 });
+
+test('a player keeps the look, the sound and a hidden keyboard; the start page shows the last player choice', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'light' });
+  const settings = () => page.evaluate(() => JSON.parse(localStorage.getItem('tapkotyper:v1')!).profiles[0].settings);
+  await page.goto('./');
+  await page.evaluate(() => {
+    const profile = { id: 'p0', name: 'Ema', progress: {}, settings: { theme: 'dark', sound: 'quiet', guide: 'off' }, companion: { name: 'Ema', kind: 'fox' } };
+    localStorage.setItem('tapkotyper:v1', JSON.stringify({ version: 5, profiles: [profile], lastProfileId: null, language: 'sk', theme: 'light' }));
+  });
+  await page.reload();
+  expect(await look(page)).toBe('light');
+  await page.locator('.profile-card').first().click();
+  await page.locator('.map-screen').waitFor();
+  expect(await look(page)).toBe('dark');
+  await expect(page.locator('.sound-btn')).toHaveAttribute('data-level', 'quiet');
+  // The device keeps the last player's look for the start page.
+  expect(await stored(page)).toBe('dark');
+  await page.locator('.sound-btn').click();
+  expect((await settings()).sound).toBe('off');
+  await page.locator('.theme-btn').click();
+  expect((await settings()).theme).toBe('light');
+  // The keyboard stays hidden in the next level.
+  await page.locator('.map-side .btn.primary').click();
+  await page.locator('.level-screen').waitFor();
+  await expect(page.locator('.kb-guide')).toBeHidden();
+});

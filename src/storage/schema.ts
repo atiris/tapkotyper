@@ -8,6 +8,8 @@ export type GraphicsChoice = 'auto' | 'full' | 'simple';
 export type LangRef = Lang | `own:${string}`;
 /** The look of the whole device: `system` follows the browser's color scheme. */
 export type Theme = 'system' | 'light' | 'dark';
+/** The quick sound switch: full, quiet or off. */
+export type SoundLevel = 'normal' | 'quiet' | 'off';
 export type LayoutId = 'sk-qwertz' | 'sk-qwerty' | 'us-qwerty';
 export type CompanionKind = 'fox' | 'cat' | 'bunny' | 'owl' | 'dog' | 'bear' | 'panda' | 'penguin' | 'lion';
 export type FontChoice = 'lexend' | 'atkinson' | 'opendyslexic';
@@ -77,6 +79,9 @@ export interface Settings {
   highContrast: boolean;
   /** How much the game draws (engine/graphics.ts); automatic turns simple on a device measured slow. */
   graphics: GraphicsChoice;
+  /** The player's look and quick sound level; picking the player brings them back, and the start page keeps the last player's. */
+  theme: Theme;
+  sound: SoundLevel;
   /** Ask for fullscreen on the first key press or click after the app starts. */
   autoFullscreen: boolean;
   /** The parent's own words and text, mixed into the targets by `ownMix`. */
@@ -290,6 +295,8 @@ export function defaultSettings(wordLang: LangRef): Settings {
     reduceMotion: false,
     highContrast: false,
     graphics: 'auto',
+    theme: 'system',
+    sound: 'off',
     autoFullscreen: false,
     ownWords: [],
     ownText: '',

@@ -543,6 +543,7 @@ BG is `magenta color (#FF00FF)` unless the table says `green`, then use `green c
 | `obj-dragon-baby-1.jpg` | a chubby baby dragon, mint green, tiny wings, sitting, big eyes, happy | magenta |
 | `obj-dragon-baby-2.jpg` | a chubby baby dragon, sky blue, tiny wings, sitting, big eyes, happy | magenta |
 | `obj-dragon-baby-3.jpg` | a chubby baby dragon, sunny yellow, tiny wings, sitting, big eyes, happy | magenta |
+| `obj-dragon-baby-4.jpg` | (plan 83, not made yet: the bridge failed `ui_changed` on 2026-10-30; the owner wants it from Gemini, never drawn in code) **attach `obj-dragon-baby-1.jpg`**: "redraw the attached baby dragon in exactly the same drawing style, outline, shading, size, position and the same sitting pose, only change its colour: the body is a warm soft cherry red (#E0565B, darker shade #B83E45), never orange, never pink or magenta; the belly lighter warm cream-rose (#F7C9B8); the tiny wings a slightly darker red. Same big eyes and happy face" | magenta |
 | `obj-rock-falling.jpg` | a small round space rock falling with a soft light trail behind it, sleepy face, front view | magenta |
 | `obj-flame-1.jpg` to `obj-flame-4.jpg` | (the owner's pictures, 2026-10-29, the valley) four flames of one look from the smallest to the biggest: a golden drop (1), then flames with more and more tips, orange at the biggest (4); each with a cream core and a brown outline. The flying flames take them by word length; in the burning pit they stand from the smallest in front to the biggest at the back | muted magenta |
 | `obj-flame-out.jpg` | (the owner's picture, 2026-10-29) a gone-out flame: a thin grey curl of smoke in a flame's shape with a small glowing ember at its foot | magenta |
@@ -554,6 +555,7 @@ BG is `magenta color (#FF00FF)` unless the table says `green`, then use `green c
 | **Egg journey** | | |
 | `obj-egg.jpg` | a big oval dragon egg, cream with turquoise spots, front view | magenta |
 | `obj-egg-cracking.jpg` | the same dragon egg with a zigzag crack and a tiny light glowing from inside | magenta |
+| `obj-egg-plain.jpg` | (plan 83, not made yet: the bridge failed `ui_changed` on 2026-10-30; the valley's take-off end and the `egg` scene) **attach `obj-egg.jpg`**: "redraw the attached dragon egg in exactly the same drawing style, outline, shading, colours, size, position and shape (the same cream egg with the same turquoise spots), but with NO face at all: no eyes, no eyebrows, no mouth, no cheeks. Where the face was, the egg shell simply continues in cream with turquoise spots like the rest", front view | magenta |
 | `obj-stump.jpg` | a short round tree stump with a small mushroom | magenta |
 | `obj-rock-round.jpg` | a smooth round grey rock with a small tuft of grass | magenta |
 | `obj-mole.jpg` | a friendly mole peeking out of a small dirt hole, waving with one paw, front view | magenta |
@@ -992,7 +994,10 @@ at a small size, since many of them stand still on screen with a word next to th
 | `obj-invitation.jpg` | a small folded paper party invitation card tied with a green ribbon and a tiny daisy, front view, no face | magenta |
 | **Dragons** | | |
 | `obj-nest.jpg` | a big round cozy nest of woven twigs and soft moss, empty, seen a little from above | magenta |
-| `obj-dragon-sleeping.jpg` | a chubby baby dragon, mint green, curled up asleep with closed eyes and a tiny smile | magenta |
+| `obj-dragon-sleeping-1.jpg` | a chubby baby dragon, mint green, curled up asleep with closed eyes and a tiny smile (renamed from `obj-dragon-sleeping` 2026-10-30: baby N sleeps as sleeping N) | magenta |
+| `obj-dragon-sleeping-2.jpg` | (plan 83, not made yet: the bridge failed `ui_changed` on 2026-10-30) **attach `obj-dragon-sleeping-1.jpg`**: "redraw the attached sleeping baby dragon in exactly the same drawing style, outline, shading, size, position and exactly the same lying, curled-up sleeping pose with closed eyes and a tiny smile, only change its colour: the body is sky blue (#8EC5F0, darker shade #5E9FD6), the belly a lighter pale blue-cream (#DDEFFB), the tiny wings a slightly darker blue" | magenta |
+| `obj-dragon-sleeping-3.jpg` | (not made yet, as -2) as -2 with "sunny yellow (#F6D55C, darker shade #E2B43A), the belly a lighter pale cream-yellow (#FFF2C2), the tiny wings a slightly darker warm yellow. Never green" | magenta |
+| `obj-dragon-sleeping-4.jpg` | (not made yet, as -2) as -2 with "a warm soft cherry red (#E0565B, darker shade #B83E45), never orange, never pink or magenta; the belly lighter warm cream-rose (#F7C9B8); the tiny wings a slightly darker red" | magenta |
 | **Egg journey** | | |
 | `obj-egg-glow.jpg` | the cream dragon egg with turquoise spots, glowing warmly like a little lantern at night | green |
 | **Junkyard** | | |

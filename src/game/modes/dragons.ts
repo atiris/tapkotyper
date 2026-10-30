@@ -11,8 +11,15 @@ import { Catcher, type CatcherLook } from './kit/catcher';
 import { slipWords } from './kit/copy-row';
 
 /** The baby dragons (their colors take turns) and their colors while a picture is missing. */
-export const DRAGONS = ['obj-dragon-baby-1', 'obj-dragon-baby-2', 'obj-dragon-baby-3'];
-export const DRAGON_COLOR: Record<string, string> = { 'obj-dragon-baby-1': '#8fd6b0', 'obj-dragon-baby-2': '#f2a6c0', 'obj-dragon-baby-3': '#a9c4f2' };
+export const DRAGONS = ['obj-dragon-baby-1', 'obj-dragon-baby-2', 'obj-dragon-baby-3', 'obj-dragon-baby-4'];
+export const DRAGON_COLOR: Record<string, string> = { 'obj-dragon-baby-1': '#8fd6b0', 'obj-dragon-baby-2': '#8ec5f0', 'obj-dragon-baby-3': '#f6d55c', 'obj-dragon-baby-4': '#e0565b' };
+/** Each baby dragon asleep, in its own color. */
+export const SLEEPERS = DRAGONS.map(sleeperOf);
+
+/** The sleeping picture of a baby dragon: baby N sleeps as sleeping N. */
+export function sleeperOf(pic: string): string {
+  return pic.replace('obj-dragon-baby-', 'obj-dragon-sleeping-');
+}
 /** The flames from the smallest to the biggest. */
 export const FLAMES = ['obj-flame-1', 'obj-flame-2', 'obj-flame-3', 'obj-flame-4'];
 /** Each flame's outer and inner color while its picture is missing. */
@@ -198,7 +205,7 @@ const FIRE = [
 /** Where the flames stand in the pit: their bottoms at the middle of its inside (a share of its height from the ground). */
 const FIRE_FOOT = 0.48;
 /** The pit picture's width per height (a code-drawn pit is drawn about as wide). */
-const PIT_RATIO = 1.47;
+export const PIT_RATIO = 1.47;
 
 interface Ember {
   x: number;
@@ -216,7 +223,7 @@ interface Ember {
  * The dragons' fire pit: dead embers, or burning with four flames that flicker each its own way,
  * the biggest at the back. It lights up or goes out toward `litTo` in `fade` seconds, the flames
  * coming one by one from the front; sparks rise while it burns, smoke while it goes out. Its warm
- * glow, the flames' size and the sparks grow with `glow`.
+ * glow, the flames' size and the sparks grow with `glow`; `flare` makes the flames bigger still.
  */
 export class Firepit {
   /** 0: dead, 1: burning; it moves toward `litTo`. */
@@ -225,6 +232,8 @@ export class Firepit {
   fade = 0.6;
   /** 0..1: how big the fire, its glow and its sparks are. */
   glow = 0;
+  /** 0..1: the flames flare up to twice their size. */
+  flare = 0;
   private embers: Ember[] = [];
   private t = 0;
   constructor(private L: LevelRuntime, public x: number, readonly h = PIT_H) {}
@@ -244,6 +253,18 @@ export class Firepit {
   /** A burst of sparks: a flame handed to the fire. */
   sparkle(n: number): void {
     for (let i = 0; i < n; i++) this.ember(false);
+  }
+
+  /** The fire is blown out: a sharp burst of sparks, and the flames shrink away in `seconds`. */
+  blowOut(seconds: number): void {
+    for (let i = 0; i < 40; i++) {
+      this.ember(false);
+      const e = this.embers[this.embers.length - 1];
+      e.vx *= 8;
+      e.vy *= 1.8;
+    }
+    this.fade = seconds;
+    this.litTo = 0;
   }
 
   private ember(smoke: boolean): void {
@@ -279,7 +300,8 @@ export class Firepit {
     return Math.max(0, Math.min(1, this.lit * FIRE.length - (FIRE.length - 1 - k)));
   }
 
-  draw(g: G): void {
+  /** The pit, then `inside` (something sitting in it, hidden by big flames), then its flames and sparks. */
+  draw(g: G, inside?: (g: G) => void): void {
     const heat = this.lit * this.glow;
     if (heat > 0) {
       const cy = GROUND - this.h * 0.7, r = this.h * (1.2 + 1.6 * this.glow);
@@ -292,7 +314,8 @@ export class Firepit {
       g.restore();
     }
     drawSprite(g, 'obj-firepit', this.x, GROUND, this.h, { ay: 0.9 }, pitFallback);
-    const w = this.h * PIT_RATIO, foot = GROUND - this.h * FIRE_FOOT, size = 0.8 + 0.35 * this.glow;
+    inside?.(g);
+    const w = this.h * PIT_RATIO, foot = GROUND - this.h * FIRE_FOOT, size = (0.8 + 0.35 * this.glow) * (1 + this.flare);
     const motion = !this.L.reduceMotion;
     FIRE.forEach((f, k) => {
       const a = this.shown(k);
@@ -571,6 +594,10 @@ const BIG_TRIES = 4;
 const SLIP_SAY = 0.1;
 /** Seconds of the walk to the dragons at the end. */
 const WALK_END = 2.4;
+/** The dragons waiting at the path's end: each one's place right of it and how much further back (higher) it sits; seconds of their hop back when the path grows. */
+const WAITING = [{ dx: 0, up: 0 }, { dx: 85, up: 22 }, { dx: 170, up: 38 }, { dx: 250, up: 10 }];
+const WAIT_H = 104;
+const HOP_BACK = 0.5;
 
 interface Bush {
   /** Its place on the path (the screen shows it at x - scroll). */
@@ -587,8 +614,9 @@ interface Bush {
 
 /**
  * Valley 2, the overgrown path (calm, growing copy): bushes stand on the path one after another,
- * the nearest has its spell above it. Typed without a slip it shrinks away and Tapko walks on; a
- * slip fades the spell red, two more bushes grow ahead (at most three times) and the spell comes again.
+ * the nearest has its spell above it, the dragons wait past the last one. Typed without a slip it
+ * shrinks away and Tapko walks on; a slip fades the spell red, two more bushes grow ahead (at most
+ * three times; the dragons move back) and the spell comes again.
  */
 export class ThicketMode extends Mode {
   readonly pictures = [...BUSHES, ...DRAGONS];
@@ -606,6 +634,8 @@ export class ThicketMode extends Mode {
   /** Seconds until Tapko walks on after a cleared bush; -1 when not waiting. */
   private walkIn = -1;
   private slips = 0;
+  /** Where the waiting dragons sit on the path once it is planted; they hop from `from` to `to` (`k` 0..1). */
+  private waiting: { x: number; from: number; to: number; k: number } | null = null;
   private endT: number | null = null;
 
   startLine(): string {
@@ -668,6 +698,7 @@ export class ThicketMode extends Mode {
 
   update(dt: number): void {
     this.plant(true);
+    this.followEnd(dt);
     for (const b of this.bushes) if (b.gone >= 0) b.gone += dt;
     if (this.slip && (this.slip.t += dt) >= SLIP_FADE) {
       this.slip = null;
@@ -704,6 +735,21 @@ export class ThicketMode extends Mode {
     return this.bushes[this.bushes.length - 1].x + BUSH_GAP * 0.8;
   }
 
+  /** The path grew: dragons in sight hop back to its new end, the others are just there. */
+  private followEnd(dt: number): void {
+    const w = this.waiting, end = this.endX();
+    if (!w) {
+      this.waiting = { x: end, from: end, to: end, k: 1 };
+      return;
+    }
+    if (w.to !== end) {
+      const seen = w.x - this.scroll < this.L.vw && !this.L.reduceMotion;
+      Object.assign(w, { from: seen ? w.x : end, to: end, k: seen ? 0 : 1 });
+    }
+    w.k = Math.min(1, w.k + dt / HOP_BACK);
+    w.x = w.from + (w.to - w.from) * ease.inOutQuad(w.k);
+  }
+
   render(g: G): void {
     const s = this.scroll;
     this.bushes.forEach((b, i) => {
@@ -733,14 +779,25 @@ export class ThicketMode extends Mode {
       g.fillText(this.slip.word, b.x - s, y);
       g.restore();
     }
-    if (this.endT === null) return;
-    // The dragons wait at the path's end and cheer as he comes: each hops its own way, the further back higher up.
-    const k = ease.outBack(Math.min(1, this.endT / 0.8));
-    [2, 0, 1].forEach((i) => {
-      const x = this.endX() - s + i * 95, up = [0, 18, 34][i];
-      const hop = this.L.reduceMotion ? 0 : Math.abs(Math.sin(this.t * 5 + i * 1.3)) * 22;
-      drawDragon(g, DRAGONS[i], x, GROUND - up + (1 - k) * 60 - hop, 104, 0, -1, Math.min(1, k));
-    });
+    this.drawWaiting(g);
+  }
+
+  /**
+   * The dragons sit at the path's end facing Tapko, calm, only breathing; they come into sight with
+   * the path. Once it is open they cheer: each hops its own way. The further back first.
+   */
+  private drawWaiting(g: G): void {
+    const w = this.waiting;
+    if (!w) return;
+    const motion = !this.L.reduceMotion, back = Math.sin(w.k * Math.PI) * 30;
+    const order = WAITING.map((_, i) => i).sort((a, b) => WAITING[b].up - WAITING[a].up);
+    for (const i of order) {
+      const x = w.x - this.scroll + WAITING[i].dx;
+      if (x < -WAIT_H || x > this.L.vw + WAIT_H) continue;
+      const hop = this.endT !== null && motion ? Math.abs(Math.sin(this.t * 5 + i * 1.3)) * 22 : 0;
+      const breath = motion ? 0.02 * Math.sin(this.t * 1.4 + i * 1.7) : 0;
+      drawDragon(g, DRAGONS[i % DRAGONS.length], x, GROUND - WAITING[i].up - back - hop, WAIT_H, 0, -1, 1, 0, breath);
+    }
   }
 
   progress(): number {

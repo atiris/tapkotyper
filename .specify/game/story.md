@@ -192,7 +192,9 @@ as they are. The world descriptions below marked *not built yet* are the design 
    clears the path, teaches them to fly, sings them to sleep and in the morning helps them fly
    off. The babies are never targets: words sit on flames, bushes, a panel or a bubble high up.
    Tapko stands on the left as everywhere; in levels 3-5 the burning pit stands on the ground on
-   the right (about 0.8 of the stage) and the dragons sit round it.
+   the right (about 0.8 of the stage) and the dragons sit round it. There are four baby dragons,
+   mint, sky blue, sunny yellow and red; their colours take turns (a fifth repeats the first), and
+   each sleeps in its own colour.
    1 the flames (a word stream): little flames of four sizes (one look, a bigger one for a longer
    word, some mirrored) fly from the right in soft arcs; a flame's word shows once it is wholly in
    sight. Tapko holds an unlit torch upright just right of him, the dead fire pit a little further
@@ -204,7 +206,9 @@ as they are. The world descriptions below marked *not built yet* are the design 
    three caught flames light it up flame by flame, then its flames, warm glow and sparks grow
    with the level. A flame not typed flies past the torch, goes out (a curl of smoke with a puff)
    and fades; nothing else happens. End: the fire burns and the dragons will see it from the
-   valley. When the fire goes out (the take-off's end) its flames go from the back and smoke rises.
+   valley. When the fire is blown out (the take-off's end) its flames shrink away from the back
+   with a burst of sparks and smoke rises.
+
    The scene stands still, and a warm glow round the torch's top sets it off from it. A
    caught flame shrinks on its way and is gone in the torch, which sparkles, as the fire does
    when the torch hands it over.
@@ -215,30 +219,42 @@ as they are. The world descriptions below marked *not built yet* are the design 
    the same spell shows again; bushes grow at most three times (6 words), after that a slip only
    shows the spell again. One big bush (several stacked) about two thirds along asks for two
    words (or the longest of a few words before space is known). The first slip, and then one in
-   ten, says why ("Kúzlo sa nepodarilo.", "To bolo kúzlo na varenie čaju!"). End: the path is
-   open and Tapko walks on to its end, where the dragons wait for him and cheer. Its map dot
-   is the copy envelope.
+   ten, says why ("Kúzlo sa nepodarilo.", "To bolo kúzlo na varenie čaju!"). The four dragons
+   sit on the path just past the last bush from the start, facing Tapko and calm (only
+   breathing); they come into sight with the path, never faded in. When a slip grows the path,
+   dragons in sight hop back to its new end. End: the path is open, the dragons are glad (they
+   hop and cheer) and Tapko walks on to them. Its map dot is the copy envelope.
    3 flying lessons (a stream with rhythm): a dragon (the colours take turns) waits right of
-   Tapko, two or three round leafy bushes stand together in the middle, the burning pit stands
-   near the right edge (about 0.9 of the stage) and the dragons sit only left of it, each a
-   little further left and higher, overlapping. Words come one at a time in a bubble high in
+   Tapko, the three round leafy bushes stand together in the middle (random order, some
+   mirrored), the burning pit stands at the right edge (about 0.95 of the stage, wholly on it)
+   and the dragons sit left of it, out of its fire, each a little further left and higher,
+   overlapping. Words come one at a time in a bubble high in
    the middle. The first typed word starts the flight, a slow arc to its seat (about 22 seconds)
    whose height follows the rhythm, full from 80 % of the rhythm goal; a pause in typing takes
    the lift away (from 1.2 seconds on, all of it in 2 more). The dragon leans nose up and flaps
    while it rises, leans nose down and glides while it sinks, and rocks gently. Too low over the
    bushes it lands in them, giggles ("Júj, to šteklí!"), climbs out and walks to its seat; past
    the bushes with the typing stopped it drops, lands hard ("Au! To bolo tvrdé pristátie.") and
-   walks on (it still flew); high enough, it glides on and lands at its seat with a hop. Words
-   typed while it walks still count; the next dragon starts once it is there. End: how many of
+   walks on (it still flew); high enough, it glides on and lands at its seat with a hop. A dragon
+   is as big seated as flying; just before it touches down it turns upright into its sitting
+   pose. Slips during one flight count for that dragon: the second makes it cry out ("Jaj!",
+   "Pozor!") and wobble as it flies on; the third ends the flight at once - before or over the
+   bushes it glides down into them (as too low), past them it drops and lands hard (it still
+   flew). Words typed while it walks still count; the next dragon starts once it is there. End: how many of
    the dragons learned to fly; the stars count them too (all of them 3, at least half 2, else 1,
    never more than the accuracy gives). Its pit is smaller than the others and the seated
    dragons are glad now and then (a little hop).
-   4 the lullaby (copy twist): evening; the dragons circle slowly above the burning pit. A panel
-   in the middle shows one line of the lullaby, a sentence of four or five short words ending
-   with a period (the period is new in this world). A verse of two lines copied without a slip
-   puts one dragon to sleep: it glides down and sleeps by the fire with a small "z z", the
-   sleepers at different heights (a higher one is further back); a line with a slip is written
-   again from its start, the slips only count in the accuracy. End: all sleep by the fire.
+   4 the lullaby (copy twist): evening; the dragons circle slowly above the burning pit, leaning
+   into their flight. A panel top left, above Tapko's head and left of the circling dragons,
+   shows a verse of the lullaby: two lines one under the other, each a sentence of four or five
+   short words ending with a period (the period is new in this world). Only the line to type is
+   a target; a typed one stays in ink, the one to come is faint. A verse copied puts one dragon
+   to sleep: it glides down and sleeps by the fire in its own colour, no bigger than the flying
+   ones, with a small "z z", the sleepers at different heights (a higher one is further back). A
+   line with a slip fades red and is written again from its start (a typed first line stays
+   typed); every third slip in the same line first makes it shorter (about its last quarter goes,
+   at whole words, the period stays), so every child finishes. When the last circling dragon goes
+   to sleep while the level still needs time, a new one flies in. End: all sleep by the fire.
    5 the take-off (super level): morning; the dragons sit by the pit facing left and one by one
    fly to the left. A flight is sets of 2-3 short words in a row above the middle, 3 sets for the first
    dragon and 4 for the others. Each word has its time from the moment it is the one to type
@@ -254,13 +270,15 @@ as they are. The world descriptions below marked *not built yet* are the design 
    and the flight starts again with new sets. After its third return a dragon's tries have one
    set less and 1.25 times the time; after the sixth its sets have two words and a slip or a late
    word only starts that word again, so every child finishes. After its last set the dragon flies
-   off to the left. The paws are off. When the last is gone the fire goes out, an egg fades in
-   behind the pit with a soft glow, and Tapko is glad and cheers.
+   off to the left. The paws are off. When the last is gone Tapko calls after them ("Ahojte!"),
+   a quiet moment, then the fire flares up and an egg (without a face) is laid in it under the
+   big flames; the fire is blown out with a burst of sparks and the egg sits in the dead pit with
+   a soft glow. It greets Tapko ("Ahoj, ty budeš môj kamarát?"), and Tapko is glad and cheers.
    Flying lessons, the lullaby and the take-off start with three dragons; when the last is done
    while the level's minimum time is not played, one more comes, at most five, and the fifth
    ends the level even below the minimum (played on without an end, one more always comes).
-   Reward: the **Dragon Egg** the dragons left behind the burnt-out fire. The valley's own thing
-   at the target range is a flame.
+   Reward: the **Dragon Egg** that came from the dragons' fire. The valley's own thing at the
+   target range is a flame (kept although the world got new things).
 5. **Egg Journey** (*not built yet*) - the hatching egg rolls downhill; typing makes it jump over rocks and
    stumps. Super-obstacle: a friendly mole. Reward: a new companion hatches and
    **endless rescue missions** unlock (replayable, generated from all worlds).

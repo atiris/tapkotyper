@@ -800,6 +800,14 @@
       "Bum! Trochu tvrdé pristátie.",
       "Uf, tvrdé pristátie!"
     ],
+    "flightOops": [
+      "Jaj!",
+      "Pozor!",
+      "Opatrne!",
+      "Ups!",
+      "Jej!",
+      "Joj!"
+    ],
     "flightDone": {
       "one": "{n} z {m} dráčikov\nsa naučil lietať.",
       "few": "{n} z {m} dráčikov\nsa naučili lietať.",
@@ -823,6 +831,17 @@
       "Letí! Dovidenia na lúke kryštálov!",
       "Hurá, odletel!",
       "Pápá, dráčik!"
+    ],
+    "takeoffBye": [
+      "Ahojte!",
+      "Dovidenia!",
+      "Krásny let!"
+    ],
+    "eggHello": [
+      "Ahoj!",
+      "Postaráš sa o mňa?",
+      "Kde som?",
+      "Ahoj, ty budeš môj kamarát?"
     ],
     "copyLoopStart": "Táto úroveň sa ešte pripravuje. Zatiaľ si tu precvičíš odpis: píš slová zo stredu, kým neuplynie čas.",
     "copyLoopSoon": "Pripravuje sa",

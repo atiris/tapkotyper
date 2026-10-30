@@ -101,23 +101,37 @@ tréningu nevedia zaspať, ráno odlietajú na lúku kryštálov.
    Na konci oheň horí a dráčiky ho uvidia z celého údolia.
 2. **Zarastená cesta** - cesta k dráčikom je zarastená kríkmi a konármi. Každý krík má svoje
    kúzlo; napísané bez chyby krík zmizne a Tapko ide ďalej. Pri chybe vyrastú na ceste dva nové
-   kríky (najviac trikrát) a kúzlo príde znova. Na konci cesty vykúkajú dráčiky.
+   kríky (najviac trikrát) a kúzlo príde znova. Štyri dráčiky od začiatku sedia na ceste hneď za
+   posledným kríkom, otočené k Tapkovi, pokojné; ukážu sa, keď k nim dovidieť. Keď cesta pri
+   chybe narastie, dráčiky, ktoré vidno, odskáču na jej nový koniec. Keď zmizne posledný krík,
+   dráčiky sa tešia a Tapko k nim dôjde.
 3. **Lietanie** - dráčiky sa učia lietať: jeden po druhom štartujú pri Tapkovi, v strede stoja
-   kríky a pristáť majú pri ohnisku. Slová prichádzajú v bubline hore; keď dieťa píše pekne v
-   rytme, dráčik letí vysoko ponad kríky. Keď rytmus klesne, pristane v kríkoch ("Júj, to
-   šteklí!", "Šteklivé!", "Chrumkavé!", "Kríčky!"), vylezie a k ohnisku dôjde pešo. Na konci sa
-   ukáže, koľko dráčikov sa naučilo lietať.
-4. **Uspávanka** - večer dráčiky krúžia nad ohniskom a nemôžu zaspať. Tapko im píše uspávanku
-   riadok po riadku, každý riadok je krátka veta s bodkou. Riadok bez chyby uspí jedného dráčika
-   pri ohni; riadok s chybou sa píše znova. Na konci všetky spia pri ohni.
+   vždy tri kríky a pristáť majú pri ohnisku, ktoré stojí celkom vpravo (dráčiky sedia mimo jeho
+   ohňa). Slová prichádzajú v bubline hore; keď dieťa píše pekne v rytme, dráčik letí vysoko
+   ponad kríky. Keď rytmus klesne, pristane v kríkoch ("Júj, to šteklí!", "Šteklivé!",
+   "Chrumkavé!", "Kríčky!"), vylezie a k ohnisku dôjde pešo. Pri druhej chybe počas letu dráčik
+   vykríkne ("Jaj!", "Pozor!", "Opatrne!") a zakolíše sa, pri tretej let skončí: pred kríkmi
+   alebo nad nimi spadne do kríkov, za nimi tvrdo pristane. Dráčik sedí rovnako veľký ako letí a
+   pred dosadnutím sa narovná. Na konci sa ukáže, koľko dráčikov sa naučilo lietať.
+4. **Uspávanka** - večer dráčiky krúžia nad ohniskom, naklonené do letu, a nemôžu zaspať. Tapko
+   im píše uspávanku: panel vľavo hore nad Tapkom ukazuje celý verš, dva riadky pod sebou, každý
+   krátka veta s bodkou. Verš bez chyby uspí jedného dráčika pri ohni, spí vo svojej farbe. Pri
+   chybe sa znova píše len ten riadok; každá tretia chyba v tom istom riadku ho skráti (asi o
+   štvrtinu, po celých slovách, bodka ostane), takže to zvládne každý. Keď posledný krúžiaci
+   zaspí a úroveň ešte potrebuje čas, priletí ďalší. Na konci všetky spia pri ohni.
 5. **Odlet** - ráno chcú dráčiky odletieť na lúku kryštálov. Každý potrebuje niekoľko skupín
    krátkych slov bez chyby a načas; inak sa vráti k ohnisku ("Skúsime to znova!") a skúsi to
    znova. Po troch návratoch má o skupinu menej a viac času, po šiestich sa pri chybe opakuje
-   len to slovo, takže to zvládne každý. Keď odletí posledný, oheň dohorí a za ohniskom sa
-   objaví vajíčko.
+   len to slovo, takže to zvládne každý. Keď odletí posledný, Tapko za nimi zavolá ("Ahojte!"),
+   chvíľu je ticho, potom oheň vzbĺkne a pod veľkými plameňmi sa v ohnisku objaví vajíčko (bez
+   tváre). Oheň sfúkne so spŕškou iskier, vajíčko ostane v zhasnutom ohnisku a pozdraví ("Ahoj,
+   ty budeš môj kamarát?"), Tapko sa poteší.
+
+Dráčiky sú štyri: mätové, modré, žlté a červené. Vec sveta na strelnici (plameň) ostáva.
 
 Koniec sveta: "Dráčiky odleteli na lúku kryštálov a oheň dohorel. V popole za ohniskom niečo
 svieti... je to dračie vajíčko! Dráčiky ho tu nechali. Teraz ho opatruješ ty."
+
 
 ## Prečo
 - Každá úroveň má svoj dôvod v príbehu, takže päť úrovní sveta sa nečíta ako päťkrát tá istá

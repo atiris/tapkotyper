@@ -101,7 +101,8 @@ export class Callouts {
     g.save();
     g.globalAlpha = Math.max(0, Math.min(1, (SHOUT_TIME - s.age) / 0.3));
     g.font = `800 58px ${fontFamily()}`;
-    const half = g.measureText(s.text).width / 2 + 8;
+    // Room for its pop (it grows a little past its size) keeps it wholly on the stage.
+    const half = (g.measureText(s.text).width / 2) * 1.12 + 10;
     g.translate(Math.min(this.L.vw - half, Math.max(half, s.x)), Math.max(50, s.y - s.age * 12));
     g.scale(k, k);
     g.rotate(-0.06);

@@ -18,7 +18,7 @@ const { CrystalsMode, SpellMode } = await import('./planet-crystals');
 const { CrossroadsMode } = await import('./planet-roads');
 const { CopyLoopMode } = await import('./copy-loop');
 const { FlamesMode, ThicketMode, flockAfter } = await import('./dragons');
-const { FlightMode, LullabyMode, TakeoffMode, takeoffPlan } = await import('./dragons-flight');
+const { FlightMode, LullabyMode, TakeoffMode, shortenLine, takeoffPlan } = await import('./dragons-flight');
 
 /** A level runtime with just enough to run a mode: words are fixed, every other call does nothing. */
 function fakeRuntime(count = 4): LevelRuntime {
@@ -702,5 +702,127 @@ describe('the overgrown path', () => {
       run(L, mode, 2);
     }
     expect(L.core.focus()?.word).toBe('ab cd');
+  });
+});
+
+/** A wrong key on the word to type. */
+function slip(L: LevelRuntime, mode: Mode): void {
+  const f = L.core.focus()!;
+  L.core.type('x');
+  mode.onWrong(f);
+}
+
+describe('slips in a flight', () => {
+  it('the second slip makes the dragon cry out and fly on, the third drops it into the bushes', () => {
+    const L = fakeRuntime(3);
+    const shouts: string[] = [];
+    Object.assign(L, { idleFor: 0, rhythm: { ema: 2, ratio: () => 1, ready: () => {} }, shout: (s: string) => shouts.push(s) });
+    const mode = new FlightMode(L);
+    mode.start();
+    expect((mode as any).bushes).toHaveLength(3);
+    typeWord(L, mode);
+    const d = (mode as any).dragons[0];
+    slip(L, mode);
+    expect(shouts).toHaveLength(0);
+    slip(L, mode);
+    expect(shouts).toHaveLength(1);
+    expect(d.state).toBe('fly');
+    slip(L, mode);
+    expect(d.state).toBe('bush');
+    run(L, mode, 30);
+    expect(d.state).toBe('home');
+    expect((mode as any).flown).toBe(0);
+  });
+
+  it('the third slip past the bushes ends in a hard landing that still counts as flown; the next dragon starts at 0', () => {
+    const L = fakeRuntime(3);
+    Object.assign(L, { idleFor: 0, rhythm: { ema: 2, ratio: () => 1, ready: () => {} } });
+    const mode = new FlightMode(L);
+    mode.start();
+    typeWord(L, mode);
+    const d = (mode as any).dragons[0];
+    const right = (mode as any).bushX(1) + 70;
+    for (let i = 0; i < 600 && d.x <= right + 10; i++) run(L, mode, 0.05);
+    for (let i = 0; i < 3; i++) slip(L, mode);
+    expect(d.state).toBe('fall');
+    run(L, mode, 20);
+    expect(d.state).toBe('home');
+    expect((mode as any).flown).toBe(1);
+    expect((mode as any).dragons[1].slips).toBe(0);
+  });
+
+  it('a dragon lands upright at its flying size', () => {
+    const L = fakeRuntime(3);
+    Object.assign(L, { idleFor: 0, rhythm: { ema: 2, ratio: () => 1, ready: () => {} } });
+    const mode = new FlightMode(L);
+    mode.start();
+    typeWord(L, mode);
+    const d = (mode as any).dragons[0];
+    for (let i = 0; i < 1000 && d.state !== 'home'; i++) {
+      if (L.core.focus()) typeWord(L, mode);
+      run(L, mode, 0.05);
+    }
+    expect(d.state).toBe('home');
+    expect(d.tilt).toBe(0);
+  });
+});
+
+describe('the lullaby made easier', () => {
+  it('a shortened line loses about its last quarter between words and keeps its period', () => {
+    expect(shortenLine('Spi, dráčik môj malý.')).toBe('Spi, dráčik môj.');
+    expect(shortenLine('Spi dráčik.')).toBe('Spi.');
+    expect(shortenLine('Spi.')).toBe('Spi.');
+    expect(shortenLine('one two three four five six seven eight')).toBe('one two three four five six');
+  });
+
+  it('every third slip in a line shortens it; the typed first line stays typed', () => {
+    const L = fakeRuntime(3);
+    Object.assign(L, { word: () => 'aa bb cc dd ee.' });
+    const mode = new LullabyMode(L);
+    mode.start();
+    typeWord(L, mode);
+    run(L, mode, 1);
+    const lines = (mode as any).lines;
+    for (let i = 0; i < 2; i++) {
+      slip(L, mode);
+      run(L, mode, 1);
+    }
+    expect(lines[1]).toBe('aa bb cc dd ee.');
+    slip(L, mode);
+    run(L, mode, 1);
+    expect(lines[1]).toBe('aa bb cc dd.');
+    expect(L.core.focus()?.word).toBe('aa bb cc dd.');
+    for (let i = 0; i < 3; i++) {
+      slip(L, mode);
+      run(L, mode, 1);
+    }
+    expect(lines[1]).toBe('aa bb cc.');
+    expect(lines[0]).toBe('aa bb cc dd ee.');
+    expect((mode as any).verse).toBe(1);
+    for (let i = 0; i < 30; i++) {
+      slip(L, mode);
+      run(L, mode, 1);
+    }
+    expect(lines[1]).toBe('aa.');
+    typeWord(L, mode);
+    expect((mode as any).asleep).toBe(1);
+  });
+});
+
+describe('the dragons on the path', () => {
+  it('wait past the last bush and hop back when a slip grows the path', () => {
+    const L = fakeRuntime(1);
+    Object.assign(L, { vw: 4000, reduceMotion: false });
+    const mode = new ThicketMode(L);
+    mode.start();
+    run(L, mode, 0.05);
+    const w = (mode as any).waiting, end = (mode as any).endX();
+    expect(w.x).toBe(end);
+    slip(L, mode);
+    run(L, mode, 0.25);
+    expect(w.x).toBeGreaterThan(end);
+    expect(w.x).toBeLessThan((mode as any).endX());
+    run(L, mode, 1);
+    expect(w.x).toBe((mode as any).endX());
   });
 });

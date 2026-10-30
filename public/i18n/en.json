@@ -800,6 +800,14 @@
       "Bump! A bit of a hard landing.",
       "Oof, hard landing!"
     ],
+    "flightOops": [
+      "Ouch!",
+      "Watch out!",
+      "Careful!",
+      "Oops!",
+      "Whoa!",
+      "Oh no!"
+    ],
     "flightDone": {
       "one": "{n} of {m} baby dragons\nlearned to fly.",
       "few": "{n} of {m} baby dragons\nlearned to fly.",
@@ -823,6 +831,17 @@
       "It's flying! See you on the crystal meadow!",
       "Hooray, off it goes!",
       "Bye-bye, little dragon!"
+    ],
+    "takeoffBye": [
+      "Bye!",
+      "Goodbye!",
+      "Have a lovely flight!"
+    ],
+    "eggHello": [
+      "Hello!",
+      "Will you look after me?",
+      "Where am I?",
+      "Hi, will you be my friend?"
     ],
     "copyLoopStart": "This level is still being made. For now you practise copying here: type the words in the middle until the time is up.",
     "copyLoopSoon": "Coming soon",

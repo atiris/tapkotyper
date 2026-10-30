@@ -44,6 +44,8 @@ export function superProfile(lang: LangRef, rand: () => number = Math.random): P
   const keys = lessonOrder(p.layout);
   p.progress.unlockedKeys = [...keys];
   p.progress.introducedKeys = [...keys];
+  // The control keys' cards are told too (runtime: `key-<id>`).
+  p.progress.scenesSeen = ['key-escape', 'key-tab', 'key-backspace'];
   p.progress.worldsDone = WORLDS.map((_, i) => i);
   p.progress.rewards = [...accessories().map((a) => `acc:${a.id}`), ...WORLD_REWARDS];
   p.progress.levels = Object.fromEntries(LEVELS.map((l) => [l.id, 0]));

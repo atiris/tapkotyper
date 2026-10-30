@@ -222,11 +222,13 @@ test('free practice with a diacritic key is played to the results card', async (
   const typed: string[] = [];
   for (let i = 0; i < 600 && !typed.includes('ô'); i++) {
     const state = await page.evaluate(() => ({
+      control: document.querySelector<HTMLElement>('.controlkey-card')?.dataset.key ?? '',
       newkey: document.querySelector<HTMLElement>('.newkey-card')?.dataset.sample ?? '',
       ready: !!document.querySelector('.posture-card, .keys-intro'),
       next: document.querySelector<HTMLElement>('.kb-guide')?.dataset.next ?? '',
     }));
     if (state.ready) await page.keyboard.press('Space');
+    else if (state.control) await page.keyboard.press(state.control);
     else if (state.newkey || state.next) {
       await typeChar(page, state.newkey || state.next);
       if (!state.newkey) typed.push(state.next);

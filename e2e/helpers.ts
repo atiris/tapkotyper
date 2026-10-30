@@ -8,6 +8,8 @@ export async function playLevel(page: Page, mistakes = true, typed: string[] = [
       const res = document.querySelector<HTMLElement>('.results-card');
       if (res) return { kind: 'results', text: res.innerText };
       if (document.querySelector('.keys-intro')) return { kind: 'ready' };
+      const ck = document.querySelector<HTMLElement>('.controlkey-card');
+      if (ck) return { kind: 'control', key: ck.dataset.key ?? '' };
       const nk = document.querySelector<HTMLElement>('.newkey-card');
       // A key card typed right three times closes a moment later; a key meanwhile would land on the next card.
       if (nk && !nk.matches('.homerow-card') && nk.querySelectorAll('.newkey-mark.ok').length >= 3) return { kind: 'closing', key: '' };
@@ -17,6 +19,7 @@ export async function playLevel(page: Page, mistakes = true, typed: string[] = [
     });
     if (state.kind === 'results') return state.text!;
     if (state.kind === 'ready') await page.keyboard.press('Space');
+    else if (state.kind === 'control') await page.keyboard.press(state.key!);
     else if (state.kind === 'newkey') await typeChar(page, state.key!);
     else if (state.next) {
       if (mistakes && typed.length % 13 === 4) await page.keyboard.type('q');
@@ -38,6 +41,8 @@ export async function untilPlay(page: Page, until: 'ready' | 'play' = 'play'): P
     await page.locator('.newkey-card, .posture-card, .level-tapko:not(.waiting)').first().waitFor({ state: 'attached' });
     const state = await page.evaluate(() => {
       if (document.querySelector('.keys-intro')) return { kind: 'intro', key: '' };
+      const ck = document.querySelector<HTMLElement>('.controlkey-card');
+      if (ck) return { kind: 'control', key: ck.dataset.key ?? '' };
       const nk = document.querySelector<HTMLElement>('.newkey-card');
       // A key card typed right three times closes a moment later; a key meanwhile would land on the next card.
       if (nk && !nk.matches('.homerow-card') && nk.querySelectorAll('.newkey-mark.ok').length >= 3) return { kind: 'closing', key: '' };
@@ -49,6 +54,7 @@ export async function untilPlay(page: Page, until: 'ready' | 'play' = 'play'): P
     if (state.kind === 'play') throw new Error('play started without a get-ready card');
     if (state.kind === 'closing') await page.waitForFunction(() => ![...document.querySelectorAll('.newkey-card:not(.homerow-card)')].some((c) => c.querySelectorAll('.newkey-mark.ok').length >= 3));
     else if (state.kind === 'newkey') await typeChar(page, state.key);
+    else if (state.kind === 'control') await page.keyboard.press(state.key);
     else await page.keyboard.press('Space');
     await page.waitForTimeout(150);
   }
@@ -83,9 +89,12 @@ export async function createProfile(page: Page, name: string, layout?: string): 
   await page.locator('.map-screen').waitFor();
 }
 
-/** Closes the card told before the very first key card (a new player's first level) with the space bar. */
+/** Closes the cards told before the very first key card (a new player's first level): the intro with the space bar, Esc's card with Esc. */
 export async function closeKeysIntro(page: Page): Promise<void> {
   await page.locator('.keys-intro').waitFor();
   await page.keyboard.press('Space');
   await page.locator('.keys-intro').waitFor({ state: 'detached' });
+  await page.locator('.controlkey-card').waitFor();
+  await page.keyboard.press('Escape');
+  await page.locator('.controlkey-card').waitFor({ state: 'detached' });
 }

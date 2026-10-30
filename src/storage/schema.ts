@@ -117,7 +117,7 @@ export interface Progress {
   friends: Friend[];
   /** Ids of the last preparation tips shown, newest last. */
   lastTips: string[];
-  /** Story scenes already seen (they stay skippable). */
+  /** Story scenes and control-key cards (`key-escape`, `key-tab`, `key-backspace`) already seen. */
   scenesSeen: string[];
   /** Automatic steps up in difficulty or word length earned so far (each one is a medal). */
   growth: number;

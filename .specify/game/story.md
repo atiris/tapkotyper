@@ -143,8 +143,8 @@ as they are. The world descriptions below marked *not built yet* are the design 
    three heights, alternated so that no two within two places share one, each with its
    activation word on top. A slip inside a sign's word makes that
    sign vanish; the last one left must be typed without a slip (a slip starts its word again).
-   Backspace wipes the started sign's word so another can be chosen; the level's opening card
-   teaches it here, saying that elsewhere it deletes the last letter.
+   Backspace wipes the started sign's word so another can be chosen; Backspace's control-key
+   card before the level teaches it ([finger guide](../learning/finger-guide.md)).
    Each post carries a long wooden arrow board (two kinds) pinned by its middle, with the path's
    name written along it, as long as the name needs, turned around its middle its own way (never
    straight up or down, the name always upright). The paws never type a sign: at a crossroads

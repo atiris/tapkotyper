@@ -5,7 +5,7 @@ import { layout } from '../app/app';
 import type { Profile, Surprise } from '../storage/schema';
 import { surpriseCount } from './own-content';
 import type { Style } from './typing';
-import { FINGER_COLORS, type KeyboardGuide, fingerChip, lessonFinger, textColorsOn } from '../ui/keyboard-guide';
+import { FINGER_COLORS, type KeyboardGuide, chipOf, fingerChip, lessonFinger, textColorsOn } from '../ui/keyboard-guide';
 import { button, closeButton, h, icon, richText } from '../ui/dom';
 import { tapkoElement } from '../gfx/tapko';
 import { imageUrl } from '../gfx/assets';
@@ -310,6 +310,68 @@ export function showNewKey(host: HTMLElement, key: string, layout: Layout, guide
       stop();
       overlay.remove();
       guide.show(null);
+      resolve();
+    };
+    const stop = captureKeys(overlay, onKey);
+  });
+}
+
+/**
+ * Keys that steer the game but never count among the learned keys: the key's name in key
+ * events, its symbol on the card, the finger that presses it and how many presses close its card.
+ */
+const CONTROL_KEYS = {
+  escape: { key: 'Escape', symbol: 'Esc', finger: 0, presses: 1 },
+  tab: { key: 'Tab', symbol: 'Tab', finger: 0, presses: 3 },
+  backspace: { key: 'Backspace', symbol: '⌫', finger: 9, presses: 3 },
+} as const;
+export type ControlKey = keyof typeof CONTROL_KEYS;
+
+/**
+ * Teaches a control key once (Esc before the first key card, Tab a level after Enter came, Backspace
+ * before the first crossroads): what it does in the game, which finger presses it, and tips; the child presses
+ * it to close the card. Escape also skips the other cards, as on a new-key card.
+ */
+export function showControlKey(host: HTMLElement, id: ControlKey, lay: Layout, p: Profile): Promise<void> {
+  return new Promise((resolve) => {
+    const ck = CONTROL_KEYS[id];
+    const marks = h('span', { class: 'newkey-marks', 'aria-hidden': 'true' });
+    const home = (homeKey(lay, ck.finger) ?? '').toUpperCase();
+    const [before, after] = t('newKey.fingerBack', { finger: '\u0000', home }).split('\u0000');
+    const card = h('div', { class: 'card newkey-card controlkey-card', 'data-key': ck.key },
+      closeButton(() => done(), t(`controlKey.${id}.close`)),
+      h('div', { class: 'newkey-tapko' }, tapkoElement(p.companion, 'happy', 220)),
+      h('div', { class: 'newkey-how' },
+        h('h2', {}, h('span', { class: `big-key small ${ck.symbol.length > 1 ? 'named' : ''}` }, ck.symbol), t(`controlKey.${id}.title`)),
+        ...tList(`controlKey.${id}.text`).map((line) => h('p', {}, ...richText(line))),
+        h('p', { class: 'newkey-finger' }, before, chipOf(ck.finger), after ?? ''),
+        h('p', { class: 'hint newkey-type' }, h('span', {}, t(`controlKey.${id}.type`)), ' ', marks)));
+    const overlay = h('div', { class: 'overlay' }, card);
+    host.append(overlay);
+    let n = 0;
+    const onKey = (e: KeyboardEvent) => {
+      const own = e.key === ck.key;
+      if (e.key === 'Escape' && !own) {
+        e.preventDefault();
+        e.stopPropagation();
+        return done();
+      }
+      if (e.repeat || n >= ck.presses || (!own && [...e.key].length !== 1)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      if (marks.children.length >= MARKS_MAX) marks.firstElementChild!.remove();
+      marks.append(h('span', { class: `newkey-mark ${own ? 'ok' : 'bad'}` }, icon(own ? 'check' : 'close')));
+      if (!own) return audio.sfx('wrong');
+      n++;
+      audio.sfx('pop');
+      if (n >= ck.presses) setTimeout(done, 350);
+    };
+    let finished = false;
+    const done = () => {
+      if (finished) return;
+      finished = true;
+      stop();
+      overlay.remove();
       resolve();
     };
     const stop = captureKeys(overlay, onKey);

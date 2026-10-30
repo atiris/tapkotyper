@@ -49,7 +49,7 @@ export const PLURAL_KEYS = new Set([
 ]);
 
 /** Arrays whose order and count matter; every other array is a pool read at random. */
-const LINES = ['start.slogan', 'story.scenes.*', 'keysIntro.text', 'cert.praise', 'about.*', 'help.*'];
+const LINES = ['start.slogan', 'story.scenes.*', 'keysIntro.text', 'controlKey.*', 'cert.praise', 'about.*', 'help.*'];
 
 /** The id of the word list item and of its field. */
 export const WORDS = 'words';
@@ -78,7 +78,7 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
     g('level', 'level.*'),
     g('keyboard', 'keys.*', 'layouts.*', 'fingers.*', 'guide.*'),
     g('posture', 'posture.*'),
-    g('new-key', 'keysIntro.*', 'newKey.*', 'homeRow.*'),
+    g('new-key', 'keysIntro.*', 'controlKey.*', 'newKey.*', 'homeRow.*'),
     g('practice', 'practice.*', 'practiceKeys.*'),
     g('free-type', 'freeType.*', 'touch.*'),
     g('helpers', 'paw.*'),

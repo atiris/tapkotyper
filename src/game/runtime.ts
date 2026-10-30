@@ -38,7 +38,7 @@ import { PressureValve, perChar, sayTime } from './pace';
 import { Rhythm } from './rhythm';
 import { type LevelResult, completeLevel, completeStay } from './progress';
 import { type Style, type Target, TypingCore } from './typing';
-import { pickTip, showCard, showHomeRow, showKeysIntro, showNewKey, showPosture } from './cards';
+import { type ControlKey, pickTip, showCard, showControlKey, showHomeRow, showKeysIntro, showNewKey, showPosture } from './cards';
 import { surpriseFor } from './own-content';
 import { HELP_PLANS, type HelpHost, type HelpPlan, SuperHelper } from './super-help';
 import { Callouts } from './runtime/callouts';
@@ -394,12 +394,20 @@ export class LevelRuntime {
       if (this.disposed) return;
       // The very first key card is preceded by why key cards come and how they close.
       if (!p.progress.introducedKeys.length && !this.shownKeys.length) await showKeysIntro(host, p);
+      // Esc comes before the first key: it stops the game and closes every card.
+      if (!this.disposed) await this.controlKey(host, 'escape');
       if (this.disposed) return;
       await showNewKey(host, key, lay, this.guide, p);
       this.shownKeys.push(key);
       // Once F and J are both known, the home row is taught, before they are used in play.
       if (homeKeys.includes(key) && homeKeys.every(known)) await showHomeRow(host, lay, this.guide, p);
     }
+    if (this.disposed) return;
+    // Tab comes a level after Enter (which comes with the right little finger's home key): together they get around any page without a mouse.
+    if (p.progress.introducedKeys.includes(enterAfter(lay)) && !this.opts.keys) await this.controlKey(host, 'tab');
+    if (this.disposed) return;
+    // The first crossroads teaches Backspace: here it takes back a choice, it never fixes a typo.
+    if (this.def.kind === 'crossroads' && !this.opts.keys) await this.controlKey(host, 'backspace');
     if (this.disposed) return;
     // Without a voice of the language a dictation runs as copy typing (a mixed run as memory), and the card says so.
     const noVoice = this.dictating && !speech.available(locale());
@@ -421,6 +429,15 @@ export class LevelRuntime {
       saveProfile();
     }
     this.begin();
+  }
+
+  /** A control key's card, once per profile; it never counts among the learned keys. */
+  private async controlKey(host: HTMLElement, id: ControlKey): Promise<void> {
+    const p = app.profile!, seen = `key-${id}`;
+    if (p.progress.scenesSeen.includes(seen)) return;
+    p.progress.scenesSeen.push(seen);
+    saveProfile();
+    await showControlKey(host, id, layout(), p);
   }
 
   /** When play began (`performance.now()`). */

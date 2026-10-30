@@ -254,9 +254,39 @@
     "text": [
       "Naučíš sa tu písať **všetkými desiatimi prstami** a bez pozerania na klávesnicu.",
       "Začneš len s pár klávesmi. Keď už nimi píšeš **dosť presne**, alebo keď je čas na ďalšie písmeno, ukáže sa okienko **Nový kláves**. Povie ti, kde kláves je a **ktorým prstom** ho stláčať, a klávesnica dole ti ho ukáže.",
-      "Okienko s novým klávesom zatvoríš, keď kláves **trikrát správne napíšeš** (preklepy sa nepočítajú), alebo klávesom **Esc**. Klávesom Esc sa zatvárajú aj ostatné okienka.",
+      "Okienko s novým klávesom zatvoríš, keď kláves **trikrát správne napíšeš** (preklepy sa nepočítajú), alebo klávesom **Esc**.",
       "Toto okienko potvrď **medzerníkom**, najdlhším klávesom na klávesnici."
     ]
+  },
+  "controlKey": {
+    "escape": {
+      "title": "Kláves Esc",
+      "close": "Zavrieť (Esc)",
+      "text": [
+        "Niektoré klávesy sa **nepočítajú medzi naučené**, ale sú **dôležité**. Prvý z nich je **Esc**, celkom vľavo hore.",
+        "Esc **zastaví hru**, keď si potrebuješ oddýchnuť. Ďalší Esc ju pustí ďalej. Esc tiež **zatvorí každé okienko**."
+      ],
+      "type": "Stlač Esc."
+    },
+    "tab": {
+      "title": "Kláves Tab",
+      "close": "Preskočiť (Esc)",
+      "text": [
+        "Ani **Tab** sa nepočíta medzi naučené klávesy. Je vľavo nad Caps Lockom.",
+        "Tab **prechádza po tlačidlách a odkazoch** na stránke a **Enter ich spustí**. Shift + Tab ide späť. Tak ovládaš Ťapka aj iné stránky **bez myši**."
+      ],
+      "type": "Stlač Tab trikrát."
+    },
+    "backspace": {
+      "title": "Kláves Backspace",
+      "close": "Preskočiť (Esc)",
+      "text": [
+        "Ani **Backspace** sa nepočíta medzi naučené klávesy. Je vpravo hore nad Enterom, so šípkou doľava. Ostatné prsty pritom nechaj na základnom rade.",
+        "V tejto hre Backspace **neopravuje písmenká**. Zmaže **celú rozpísanú voľbu** (smerovník, skupinu slov alebo slovo), aby si mohol **zmeniť rozhodnutie** a vybrať si inú.",
+        "Pri bežnom písaní zmaže jedno písmeno a **Ctrl + Backspace** celé slovo. Oveľa dôležitejšie je však **písať bez chyby**: oprava stojí aspoň **tri stlačenia** (chyba, Backspace, správne písmeno) namiesto jedného."
+      ],
+      "type": "Stlač Backspace trikrát."
+    }
   },
   "homeRow": {
     "title": "Základný rad",
@@ -493,7 +523,7 @@
     "crystalsDoneFew": "{n} kryštály\nsú v tvojom vrecku!",
     "crystalsDoneMany": "{n} kryštálov\nje v tvojom vrecku!",
     "crossroadsStart": [
-      "Cesta ku kryštálom života je plná rôznych **križovatiek a skratiek.** Skratka je síce ľahšia na prejdenie, ale nie každý zvládne zvoliť si práve krátku cestu. **Slová**, ktoré píšeš, **ťa sprevádzajú** na cestách a od ciest, ktoré si vyberieš, záleží, aké slová dostávaš. Vyberieš si **jednoduché smery**, na ktorých sú ťažké slová, alebo **ťažké smerovníky**, na ktorých budú slová ľahké a krátke? Ak si to rozmyslíš, stlač **Backspace** (kláves so šípkou vpravo hore nad Enterom), ktorý bežne zmaže písmeno, ale v tejto hre zmaže celú rozpísanú možnosť a môžeš si vyberať znova. Pokračuj a rozhodni sa!"
+      "Cesta ku kryštálom života je plná rôznych **križovatiek a skratiek.** Skratka je síce ľahšia na prejdenie, ale nie každý zvládne zvoliť si práve krátku cestu. **Slová**, ktoré píšeš, **ťa sprevádzajú** na cestách a od ciest, ktoré si vyberieš, záleží, aké slová dostávaš. Vyberieš si cestičky, ktoré sa **začínajú jednoducho, ale** sú na nich **ťažké slová**, alebo také, ktoré sú **zložité** na napísanie na začiatku, ale **privedú ťa k cieľu ľahko alebo skôr**? Ak sa počas písania rozhodneš zmeniť cestu, stlač **Backspace**. Pokračuj a rozhodni sa!"
     ],
     "roadEnd": [
       "Koniec cesty! Sme tu.",

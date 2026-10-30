@@ -125,6 +125,8 @@ async function step(page) {
   const s = await page.evaluate(() => {
     if (document.querySelector('.results-card')) return 'results';
     if (document.querySelector('.keys-intro')) return 'space';
+    const ck = document.querySelector('.controlkey-card');
+    if (ck) return `press:${ck.dataset.key}`;
     const nk = document.querySelector('.newkey-card');
     if (nk && !nk.matches('.homerow-card') && nk.querySelectorAll('.newkey-mark.ok').length >= 3) return 'wait';
     if (nk) {
@@ -140,6 +142,7 @@ async function step(page) {
     return 'wait';
   });
   if (s === 'space') await page.keyboard.press('Space');
+  else if (s.startsWith('press:')) await page.keyboard.press(s.slice(6));
   return s;
 }
 

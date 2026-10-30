@@ -254,9 +254,39 @@
     "text": [
       "Here you learn to type with **all ten fingers**, without looking at the keyboard.",
       "You start with just a few keys. Once you type them **accurately enough**, or when it is time for another letter, a **New key** card shows up. It tells you where the key is and **which finger** presses it, and the keyboard below shows it to you.",
-      "You close a new key card by **typing the key right three times** (typos do not count), or with **Esc**. Esc closes the other cards too.",
+      "You close a new key card by **typing the key right three times** (typos do not count), or with **Esc**.",
       "Confirm this card with the **space bar**, the longest key on the keyboard."
     ]
+  },
+  "controlKey": {
+    "escape": {
+      "title": "The Esc key",
+      "close": "Close (Esc)",
+      "text": [
+        "Some keys **do not count among the learned ones**, but they are **important**. The first one is **Esc**, at the very top left.",
+        "Esc **stops the game** when you need a rest. Another Esc lets it go on. Esc also **closes every card**."
+      ],
+      "type": "Press Esc."
+    },
+    "tab": {
+      "title": "The Tab key",
+      "close": "Skip (Esc)",
+      "text": [
+        "**Tab** does not count among the learned keys either. It is on the left above Caps Lock.",
+        "Tab **moves between buttons and links** on a page and **Enter opens them**. Shift + Tab goes back. That way you use Tapko and other pages **without a mouse**."
+      ],
+      "type": "Press Tab three times."
+    },
+    "backspace": {
+      "title": "The Backspace key",
+      "close": "Skip (Esc)",
+      "text": [
+        "**Backspace** does not count among the learned keys either. It is at the top right above Enter, with an arrow pointing left. Keep the other fingers on the home row.",
+        "In this game Backspace **does not fix letters**. It wipes **the whole choice you started** (a signpost, a group of words or a word), so you can **change your mind** and pick another.",
+        "In normal typing it deletes one letter, and **Ctrl + Backspace** a whole word. But **typing without mistakes** matters much more: a fix costs at least **three presses** (the mistake, Backspace, the right letter) instead of one."
+      ],
+      "type": "Press Backspace three times."
+    }
   },
   "homeRow": {
     "title": "The home row",
@@ -493,7 +523,7 @@
     "crystalsDoneFew": "{n} crystals\nare in your pocket!",
     "crystalsDoneMany": "{n} crystals\nare in your pocket!",
     "crossroadsStart": [
-      "The way to the crystals of life is full of **crossroads and shortcuts.** A shortcut is easier to walk, but not everyone manages to pick the short way. **The words** you type **go with you** on the roads, and the roads you choose decide which words you get. Will you pick **easy directions** with hard words, or **hard signposts** with easy, short words? If you change your mind, press **Backspace** (the key with the arrow at the top right, above Enter), which usually deletes a letter, but in this game deletes the whole choice you started, and you can choose again. Go on and decide!"
+      "The way to the crystals of life is full of **crossroads and shortcuts.** A shortcut is easier to walk, but not everyone manages to pick the short way. **The words** you type **go with you** on the roads, and the roads you choose decide which words you get. Will you pick paths that **start easy, but** carry **hard words**, or ones that are **tricky** to type at the start, but **take you to the goal easily or sooner**? If you decide to change the road while typing, press **Backspace**. Go on and decide!"
     ],
     "roadEnd": [
       "The end of the road! We are here.",

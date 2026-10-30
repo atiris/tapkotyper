@@ -31,12 +31,15 @@ test('free practice starts with a key picker and uses only the chosen keys', asy
   for (let i = 0; i < 400 && typed.length < 30; i++) {
     const state = await page.evaluate(() => {
       if (document.querySelector('.keys-intro')) return { kind: 'ready', key: '' };
+      const ck = document.querySelector<HTMLElement>('.controlkey-card');
+      if (ck) return { kind: 'control', key: ck.dataset.key ?? '' };
       const nk = document.querySelector<HTMLElement>('.newkey-card');
       if (nk) return { kind: 'newkey', key: nk.dataset.sample ?? '' };
       if (document.querySelector('.posture-card')) return { kind: 'ready', key: '' };
       return { kind: 'play', key: document.querySelector<HTMLElement>('.kb-guide')?.dataset.next ?? '' };
     });
     if (state.kind === 'ready') await page.keyboard.press('Space');
+    else if (state.kind === 'control') await page.keyboard.press(state.key);
     else if (state.key) {
       await typeChar(page, state.key);
       if (state.kind === 'play') typed.push(state.key);

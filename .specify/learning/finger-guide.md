@@ -38,9 +38,21 @@
   you learn to type with all ten fingers without looking; new keys come one by one, when the
   known ones are typed accurately enough or when another letter is due, and their card shows
   where the key is and which finger presses it; a key card closes once the key is typed right
-  three times (typos do not count) or with Esc, which closes the other cards too; and this card
-  closes with the space bar, the longest key. The space bar, Enter, Esc, the drawn space bar
-  or the round X closes it.
+  three times (typos do not count) or with Esc; and this card closes with the space bar, the
+  longest key. The space bar, Enter, Esc, the drawn space bar or the round X closes it.
+- **Control keys** steer the game but never count among the learned keys; each gets one card
+  on the new-key card's model, once per profile, with its finger and short tips, closed by
+  pressing the key (Esc skips it):
+  - Esc, right after that first card: some keys do not count but matter; Esc stops the game,
+    another Esc lets it go on, and it closes every card. Pressing it once closes the card.
+  - Tab, in the level after the one where Enter first came: Tab moves between buttons and links
+    on a page and Enter opens them (Shift + Tab goes back), so pages work without a mouse.
+    Pressed three times.
+  - Backspace, before the first crossroads, where it first matters: here it does not fix
+    letters, it wipes the whole started choice (a sign, a group of words or a word) so the
+    child can change their mind; in normal typing it deletes a letter and Ctrl + Backspace a
+    word, but typing without mistakes matters more, since a fix costs at least three presses
+    instead of one. Pressed three times.
 - The level can be paused while its key cards are open too (the pause button): the pause card
   then has no "Slower", since nothing is played yet, and "Stop typing" goes back to the map.
   Keys whose cards were shown count as introduced only once play begins; leaving before that,

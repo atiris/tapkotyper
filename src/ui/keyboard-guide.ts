@@ -64,7 +64,11 @@ export function lessonFinger(layout: Layout, key: string): Finger | null {
 /** Finger name on the finger's own color, as on the keyboard guide. */
 export function fingerChip(layout: Layout, key: string): HTMLElement | null {
   const f = lessonFinger(layout, key);
-  if (f == null) return null;
+  return f == null ? null : chipOf(f);
+}
+
+/** A finger's name on its own color. */
+export function chipOf(f: Finger): HTMLElement {
   const chip = document.createElement('b');
   chip.className = 'finger-chip';
   const [bg, ink] = textColorsOn(FINGER_COLORS[f]);

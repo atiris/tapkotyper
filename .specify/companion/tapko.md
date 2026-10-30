@@ -53,10 +53,10 @@
   only when the child calls it: there is no automatic paw, and Backspace does nothing in a
   level (only in [free typing](../game/free-typing.md)). A target waiting for its Enter
   takes the Enter instead of calling the paw.
-- The speech bubble in a level has one fixed spot at the top left of the scene, slightly
-  see-through, and does not move with the character's jumps. It never covers a word: when
-  it would, it hides until the spot is free. The bubble and its tail pointing down to the
-  character read as one shape, with one shadow around both.
+- Everything the character says in a level is in one speech bubble with one fixed spot at
+  the top left of the scene, slightly see-through, without a tail: the character moves and
+  can be anywhere, so the bubble points at nobody and does not move with the jumps. It never
+  covers a word: when it would, it hides until the spot is free.
 - Clicking the character, on the map or in a level, opens the progress and statistics
   overlay ([statistics](../profiles/statistics.md)); its title says "Click yourself to see
   how you are doing".

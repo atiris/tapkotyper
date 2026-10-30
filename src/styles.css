@@ -832,6 +832,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 /* The tail: a square of the bubble's own color turned 45 deg, half of it inside the bubble, pointing down to Tapko. */
 .bubble::before { content: ''; position: absolute; width: 16px; height: 16px; left: 40px; bottom: -8px; background: inherit; border-radius: 2px; transform: rotate(45deg); }
 .bubble p { margin: 0; }
+/* In a level Tapko moves, so his bubble stays top left and points nowhere. */
+.stage-wrap > .bubble::before { content: none; }
 .bubble.covered { visibility: hidden; }
 .bubble-actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap; }
 .bubble.static { position: relative; top: auto; left: auto; animation: none; margin: 0; background: var(--tint-orange); filter: drop-shadow(0 6px 10px var(--soft-shadow)) drop-shadow(0 1px 2px var(--soft-shadow)); }

@@ -1,6 +1,6 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { PLURAL_FORMS, PLURAL_KEYS, WORDS, buildCatalog, itemKeys, lookup, matches, namedKeys, situationKey } from './catalog';
+import { PLURAL_FORMS, PLURAL_KEYS, WORDS, buildCatalog, itemKeys, lookup, matches, namedKeys, situationKey, thumbs } from './catalog';
 import { flatGuide, situationFinder } from './translation';
 
 const load = (lang: string) => JSON.parse(readFileSync(`public/i18n/${lang}.json`, 'utf8'));
@@ -10,6 +10,11 @@ const en = load('en');
 describe('catalog', () => {
   const catalog = buildCatalog(en);
   const items = catalog.flatMap((s) => s.groups.flatMap((g) => g.items));
+
+  it('shows a picture for every thing of the target range', () => {
+    const things = Object.keys((JSON.parse(readFileSync('public/i18n/en.json', 'utf8')) as { aim: { things: Record<string, unknown> } }).aim.things);
+    for (const id of things) expect(thumbs(`aim.things.${id}.name`).some((n) => existsSync(`public/assets/${n}.webp`)), id).toBe(true);
+  });
 
   it('places every text of both dictionaries in exactly one item', () => {
     const keys = items.map((i) => i.key).filter((k) => k !== WORDS);

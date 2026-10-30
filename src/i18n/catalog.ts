@@ -3,6 +3,8 @@
 // the translator's own file `public/i18n/translator/en.json`; the texts themselves in
 // `public/i18n/<lang>.json`.
 
+import { THINGS } from '../game/modes/aim-things';
+
 /**
  * How an item is translated: one string, a random pool (variants may be added or removed), an
  * ordered list (exactly the base count), a count with plural forms, or the word list.
@@ -248,6 +250,6 @@ export function thumbs(key: string): string[] {
   if (top === 'items') return [`acc-${id}-thumb`];
   if (top === 'worlds') return [`badge-${id}`];
   if (top === 'kinds') return [`tapko-${id}-idle`];
-  if (key.startsWith('aim.things.') && key.endsWith('.name')) return [`obj-aim-${key.split('.')[2]}`, `obj-${key.split('.')[2]}`];
+  if (key.startsWith('aim.things.') && key.endsWith('.name')) return THINGS.find((th) => th.id === key.split('.')[2])?.pics ?? [];
   return [];
 }

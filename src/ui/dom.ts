@@ -21,9 +21,18 @@ export function h<K extends keyof HTMLElementTagNameMap>(tag: K, attrs: Attrs = 
   return el;
 }
 
-/** Text with `**phrase**` marks: the marked phrases in bold, built as nodes, never as markup. */
+/**
+ * Text with `**phrase**` marks: the marked phrases in bold, built as nodes, never as markup. A comma
+ * or period right after a phrase belongs to its last word and is bold with it.
+ */
 export function richText(text: string): Child[] {
-  return text.split('**').map((part, i) => (i % 2 ? h('strong', {}, part) : part)).filter((x) => x !== '');
+  const parts = text.split('**');
+  for (let i = 1; i < parts.length - 1; i += 2) {
+    const mark = /^[.,;:!?…]+/.exec(parts[i + 1])?.[0] ?? '';
+    parts[i] += mark;
+    parts[i + 1] = parts[i + 1].slice(mark.length);
+  }
+  return parts.map((part, i) => (i % 2 ? h('strong', {}, part) : part)).filter((x) => x !== '');
 }
 
 /** Inline SVG icon (24x24, stroke based). */

@@ -342,14 +342,15 @@ const SET = 4;
 const SENTENCE_WORDS = 4;
 /**
  * The floating log: the words that push it away, its length on the stage (about two stones), how far
- * below the swamp line its middle floats, and its gentle bob (pixels, seconds). It comes once the bar
- * is at this share, and only while this many words of time are left after it (so the shore is not near).
+ * above his feet on the swamp line its middle floats (so the whole log is in sight), and its gentle
+ * bob (pixels, seconds). It comes once the bar is at this share, and only while this many words of
+ * time are left after it (so the shore is not near).
  */
 const LOG = 6;
 const LOG_W = 250;
 /** The log picture's height to its width (512 x 404). */
 const LOG_RATIO = 404 / 512;
-const LOG_SINK = 40;
+const LOG_RISE = 18;
 const LOG_BOB = 2.5;
 const LOG_BOB_S = 3;
 const LOG_AT = 0.5;
@@ -582,7 +583,7 @@ export class GreatSwampMode extends SwampHero {
     log.tg = null;
     this.happy();
     this.L.sfx('pop');
-    this.L.particles.emit(log.x - this.scroll, SWAMP_FEET + LOG_SINK, 10, 'dot', ['#cfe8c0', '#ffffff'], 110, 6);
+    this.L.particles.emit(log.x - this.scroll, SWAMP_FEET - LOG_RISE, 10, 'dot', ['#cfe8c0', '#ffffff'], 110, 6);
     this.L.core.prune();
     const off = this.scroll + this.L.vw + LOG_W;
     log.to = log.x0 + (off - log.x0) * (log.pushed / LOG);
@@ -697,7 +698,7 @@ export class GreatSwampMode extends SwampHero {
     const log = this.log;
     if (log) {
       // It bobs very gently on the water; still with reduced motion.
-      const y = SWAMP_FEET + LOG_SINK + (this.L.reduceMotion ? 0 : Math.sin((this.t * Math.PI * 2) / LOG_BOB_S) * LOG_BOB);
+      const y = SWAMP_FEET - LOG_RISE + (this.L.reduceMotion ? 0 : Math.sin((this.t * Math.PI * 2) / LOG_BOB_S) * LOG_BOB);
       drawSprite(g, 'obj-swamp-log', log.x - this.scroll, y, LOG_W * LOG_RATIO, {}, blob('#a8743f', true, 'rgba(0,0,0,0.12)'));
       if (log.tg) this.L.label(g, log.tg, log.x - this.scroll, y - LOG_W * LOG_RATIO * 0.5 - 30, 46);
     }

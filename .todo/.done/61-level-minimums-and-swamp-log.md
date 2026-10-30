@@ -117,9 +117,18 @@
 - [x] 4. Great swamp: stones until both minimums, then the shore; the log instead of the
        boulder; boulder removed; texts.
 - [x] 5. Specs updated (mechanics, story).
-- [ ] 6. tsc, unit, build, e2e (`npx playwright test`); Playwright MCP play-through of
+- [x] 6. tsc, unit, build, e2e (`npx playwright test`); Playwright MCP play-through of
        Planéta:5 (log bobbing, six pushes, new stone, shore only after the minimum, bar
        100 % at the end) and of one level each in stories 2 and 3 (time minimum shown by
        the bar). Browser rules: memory `browser-test-typing` (tester profile,
        `window.tapkoType`, `?fast`; with `?fast` the minimum is shortened, so check the
        real minimum without it on one level).
+
+## Done - 2026-10-30
+
+- Minimum time 120 / 180 / 240 s by story, calm 0.75x, super 1.25x, rescue the story base (`minActiveS`); `minWords` at 8 / 10 / 12 wpm; `LevelDef.count` derived per kind (`UNITS` in levels.ts: asteroid 5 words a big one, great swamp tasks, copy targets by `copyTarget`, now in levels.ts; flights 3 dragons).
+- `grownCount` adds only the targets the child's pace still needs (at most a step): a slow child at the planned pace no longer gets 4 extra words.
+- Test caught and fixed: spells ran dry for a quick child (now pages of at most 14 words, the last spell gets another page while the minimum is not played); the asteroid counted a big one before its pieces (pace looked 4x faster).
+- Great swamp: stones in sets until both minimums are near, then the shore just past the right edge; the floating log (6 words, half for a slip, eased pushes, bob 2.5 px / 3 s, still with reduced motion) instead of the boulder; boulder pictures, texts and code removed.
+- Verified: tsc, 409 unit tests, build, 82 e2e; Playwright MCP: Planéta:5 without ?fast three times (log at bar 0.52-0.57 next to Tapko, Tapko's line top left, six pushes, a stone where it lay, end at the 150 s minimum with the bar 100 %), Šrotisko 1 and Záhrada 1 with ?fast (bar follows 30 s / 40 s).
+- Left out: a child who waits long at the log meets the shore about 8 jumps after the time minimum (backlog).

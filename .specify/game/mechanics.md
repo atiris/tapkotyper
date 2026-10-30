@@ -31,9 +31,11 @@
   (up, or down near the top), and a far-moved word gets a thin line to its object.
 - The start is slow: at difficulty 3 a short word needs about 10 seconds to reach Tapko
   and one word is on screen at a time.
-- Every story level, super level and rescue mission lasts a minimum of active play (pauses
-  and cards do not count) that grows with the story: 2 minutes in the dragon story, 3 in the
-  robot story, 4 in the fairy story. A calm step lasts a quarter less, a super level a quarter
+- Every story level, super level and rescue mission lasts a minimum of active play that grows
+  with the story: 2 minutes in the dragon story, 3 in the robot story, 4 in the fairy story.
+  Pauses and cards do not count, nor waiting over a word: once a word waits and no key came for
+  5 seconds, the clock stops until the next key, so a break in typing or words left to fly by
+  never fill the minimum (the paws' help and the mode's own scenes without a word count). A calm step lasts a quarter less, a super level a quarter
   more; a rescue mission the full minimum. Even 4 minutes is well under the 10-15 minutes a day
   usually recommended for children and under a KTouch lesson (5-10 minutes): a level is one part
   of a session, not the whole of it.

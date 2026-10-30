@@ -29,7 +29,7 @@ import { type MenuEntry, menuPanel } from '../ui/menu';
 import { OWN_SHARE, WordSource, type WordSourceOwn } from '../words/words';
 import { type LangRef, type Profile, SUPER_ID, type Surprise } from '../storage/schema';
 import type { LevelDef } from './levels';
-import { LEVELS, WORLDS, grownCount, hasMinLength, levelOver, minActiveS, shownProgress, storyOf } from './levels';
+import { LEVELS, WORLDS, grownCount, hasMinLength, levelOver, minActiveS, playedStep, shownProgress, storyOf } from './levels';
 import { type Mode, TAPKO_FEET, TAPKO_H, TAPKO_X, driftOffset } from './mode';
 import { PAW_MAX, PAW_STREAK, PAW_WORDS } from './paw';
 import { ENTER_MAX, EnterMarks } from './enter';
@@ -201,7 +201,7 @@ export class LevelRuntime {
   private elapsed = 0;
   /** Targets the level wants now: the planned count, more while the level is shorter than its minimum. */
   count: number;
-  /** Seconds of active play (no pause, no card) and the minimum before the level may end; 0 = no minimum. */
+  /** Seconds of active play (no pause, no card, no long wait over a word: `playedStep`) and the minimum before the level may end; 0 = no minimum. */
   private played = 0;
   private minActive: number;
   /** The child's rhythm; it also measures each press's reaction time. */
@@ -1258,7 +1258,8 @@ export class LevelRuntime {
     this.elapsed += dt;
     if (!this.finished) {
       app.sessionSeconds += dt;
-      this.played += dt;
+      // The paws typing for the child count as play.
+      this.played += playedStep(dt, this.pawWords ? 0 : this.idleFor, this.core.active.some((tg) => tg.selectable));
     }
     this.core.update(dt);
     this.tweens.update(dt);

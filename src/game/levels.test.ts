@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { SUPER_ID } from '../storage/schema';
 import { lessonOrder } from '../learning/lessons';
-import { LEVELS, STORIES, WORLDS, activityOf, minActiveS, minWords, aimLevel, aimOpen, aimWorld, freeTypeLevel, grownCount, hasMinLength, isLevelUnlocked, isWorldUnlocked, keysNeeded, levelById, levelOver, nextLevel, parrotKeys, parrotLevel, parrotSizeOf, practiceLevel, rescueLevel, rescueUnlocked, shownProgress, worldLevels, worldLock } from './levels';
+import { LEVELS, STORIES, WORLDS, activityOf, minActiveS, minWords, playedStep, aimLevel, aimOpen, aimWorld, freeTypeLevel, grownCount, hasMinLength, isLevelUnlocked, isWorldUnlocked, keysNeeded, levelById, levelOver, nextLevel, parrotKeys, parrotLevel, parrotSizeOf, practiceLevel, rescueLevel, rescueUnlocked, shownProgress, worldLevels, worldLock } from './levels';
 
 const KEYS = ['f', 'j', 'd', 'k', 's', 'l', 'a', ';', 'g', 'h', 'r', 'u', 'e', 'i', 't', 'y', 'w', 'o', 'q', 'p', 'v', 'm', 'c', ',', 'x', '.'];
 
@@ -294,6 +294,12 @@ describe('minimum level length', () => {
     expect(t).toBeGreaterThanOrEqual(MIN);
     expect(t).toBeLessThan(MIN + 12);
     expect(done).toBeGreaterThan(12);
+  });
+
+  it('the clock stops while a word waits and nobody has typed for five seconds; scenes without a word count', () => {
+    expect(playedStep(0.05, 4, true)).toBe(0.05);
+    expect(playedStep(0.05, 6, true)).toBe(0);
+    expect(playedStep(0.05, 60, false)).toBe(0.05);
   });
 
   it('a slow level keeps its planned count', () => {

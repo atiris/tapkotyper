@@ -152,6 +152,17 @@ export function grownCount(count: number, done: number, active: number, step: nu
   return count + Math.max(0, Math.min(step, need - (count - done)));
 }
 
+/** Seconds without a key, while a word waits to be typed, after which the minimum's clock stops (a slow child's keys come much closer). */
+export const IDLE_STOP_S = 5;
+
+/**
+ * Seconds of active play a frame adds: none once the child has not typed for `IDLE_STOP_S` while a
+ * word waits (a pause in typing, words left to fly by); the mode's own scenes without a word count.
+ */
+export function playedStep(dt: number, idleFor: number, wordWaits: boolean): number {
+  return wordWaits && idleFor > IDLE_STOP_S ? 0 : dt;
+}
+
 /** A level ends when its mode is done and the minimum of active play is reached. */
 export function levelOver(modeFinished: boolean, active: number, min: number): boolean {
   return modeFinished && active >= min;

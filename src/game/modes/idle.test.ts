@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { TypingCore } from '../typing';
-import { LEVELS, type LevelDef, levelById, type LevelKind, STORIES, copyTarget, grownCount, levelOver, minActiveS, shownProgress, storyOf } from '../levels';
+import { LEVELS, type LevelDef, levelById, type LevelKind, STORIES, copyTarget, grownCount, levelOver, minActiveS, playedStep, shownProgress, storyOf } from '../levels';
 import type { LevelRuntime } from '../runtime';
 import type { Mode } from '../mode';
 
@@ -124,23 +124,25 @@ interface Play {
 
 /**
  * Plays a level: a letter every `letter` seconds, and a new word only `word` seconds after the
- * one before began; the count grows as in the runtime.
+ * one before began; the count grows and the minimum's clock runs as in the runtime (`playedStep`).
  */
-function play(def: LevelDef, Ctor: new (L: LevelRuntime) => Mode, letter: number, word: number, tick?: (L: LevelRuntime & { clock: number; min: number }) => void): Play {
+function play(def: LevelDef, Ctor: new (L: LevelRuntime) => Mode, letter: number, word: number, tick?: (L: LevelRuntime & { clock: number; min: number }) => boolean | void): Play {
   const L = levelRuntime(def);
   // The runtime fits a target's travel to the child's word pace; a slow child's targets wait near Tapko, so none is missed.
   Object.assign(L as object, { travelTime: () => Math.max(3, word * 1.5), noPressure: word > 0 });
   mode = new Ctor(L);
   mode.start();
   const dt = 0.05;
-  let next = 0, wordAt = 0, started: number | null = null, idleFrom: number | null = null, gap = 0, gapAt = 0, words = 0, minAt: number | null = null;
-  while (L.clock < 900 && !levelOver(mode.finished, L.clock, L.min)) {
+  let now = 0, keyAt = 0, next = 0, wordAt = 0, started: number | null = null, idleFrom: number | null = null, gap = 0, gapAt = 0, words = 0, minAt: number | null = null;
+  while (now < 900 && !levelOver(mode.finished, L.clock, L.min)) {
     L.count = grownCount(L.count, mode.progress() * L.count, L.clock, Math.max(3, L.maxActive + 1), L.min);
+    L.clock += playedStep(dt, now - keyAt, L.core.active.some((tg) => tg.selectable));
+    now += dt;
     L.core.update(dt);
     mode.t += dt;
     mode.update(dt);
-    L.clock += dt;
-    tick?.(L);
+    // The tick may hold the child's typing for a while.
+    const hold = tick?.(L) === true;
     if (minAt === null && L.clock >= L.min) minAt = L.clock;
     const f = L.core.focus() ?? L.core.active.find((tg) => tg.selectable && !tg.done) ?? null;
     if (f && started === null) started = L.clock;
@@ -152,9 +154,10 @@ function play(def: LevelDef, Ctor: new (L: LevelRuntime) => Mode, letter: number
       if (f) idleFrom = null;
       else idleFrom ??= L.clock;
     }
-    if (!f || L.clock < next || (f.typed === 0 && L.clock < wordAt)) continue;
-    next = L.clock + letter;
-    if (f.typed === 0) wordAt = L.clock + word;
+    if (hold || !f || now < next || (f.typed === 0 && now < wordAt)) continue;
+    next = now + letter;
+    keyAt = now;
+    if (f.typed === 0) wordAt = now + word;
     const res = L.core.type(f.word[f.typed]);
     if (res.kind === 'done') {
       words++;
@@ -181,7 +184,9 @@ describe('every level keeps giving targets until both minimums are met', () => {
   });
 
   it.each(KIND_LEVELS.filter(([k]) => !['flight', 'lullaby', 'takeoff'].includes(k)))('%s: a slow typist at the pace of its story ends near the minimum', (kind, def) => {
-    const p = play(def, ctor(kind), 0.15, 60 / WPM[STORIES.indexOf(storyOf(def.world))]);
+    // A slow child's keys come evenly over the word (five letters), not in a burst and a wait.
+    const word = 60 / WPM[STORIES.indexOf(storyOf(def.world))];
+    const p = play(def, ctor(kind), word / 5, word);
     expect(p.end).toBeGreaterThanOrEqual(p.min);
     expect(p.end, `${p.words} words`).toBeLessThanOrEqual(p.min * 1.25);
   });
@@ -264,6 +269,21 @@ describe('the great swamp', () => {
     expect((mode as any).logGone).toBe(true);
     expect(shoreAt).toBeGreaterThan(p.min - 15);
     expect(mode!.progress()).toBe(1);
+  });
+
+  it('a child who waits a minute at the log still meets the shore only near the minimum', () => {
+    const def = levelById('w3-5')!;
+    let frames = 0, shoreAt = -1;
+    const p = play(def, GreatSwampMode, 0.15, 0, (L) => {
+      const m = mode as any;
+      if (m.shore !== null && shoreAt < 0) shoreAt = L.clock;
+      // At the log's first word the child types nothing for sixty seconds (1200 frames of 0.05 s).
+      if (!m.log?.tg || frames >= 1200) return;
+      return ++frames < 1200;
+    });
+    expect(frames).toBe(1200);
+    expect(shoreAt).toBeGreaterThan(p.min - 15);
+    expect(p.over).toBeLessThan(15);
   });
 
   it('a slip away from the firm stone cracks the stones back to it, where a new word comes', () => {

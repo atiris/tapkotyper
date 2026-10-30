@@ -19,11 +19,12 @@ interface CardOpts {
 /**
  * Captures keys for a card while it is on screen. A card that leaves together with its
  * screen (back button, map) lets go by itself, so it never swallows the next level's keys.
- * While the level's pause card lies over the card (beside it on the stage) the keys are the pause's.
+ * While the level's pause card lies over the card (beside it on the stage) the keys are the pause's,
+ * while the keyboard layout's menu is open they are the menu's.
  */
 export function captureKeys(overlay: HTMLElement, onKey: (e: KeyboardEvent) => void): () => void {
   const stop = () => window.removeEventListener('keydown', listener, true);
-  const paused = () => overlay.parentElement?.querySelector(':scope > .pause-card');
+  const paused = () => overlay.parentElement?.querySelector(':scope > .pause-card') || document.querySelector('.kb-layout-menu');
   const listener = (e: KeyboardEvent) => (!overlay.isConnected ? stop() : paused() ? undefined : onKey(e));
   window.addEventListener('keydown', listener, true);
   return stop;

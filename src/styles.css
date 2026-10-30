@@ -876,6 +876,24 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 :root[data-theme='dark'] body:not(.high-contrast) .hand .finger { opacity: 1; }
 :root[data-theme='dark'] body:not(.high-contrast) .hand .finger:not(.active) .tip-band { opacity: 0.75; }
 .kb-guide.hidden { display: none; }
+.kb-guide { position: relative; }
+/* The layout switch sits in the corner beside the space bar, where no key is, so the keyboard never moves for it:
+   quiet text at rest, a key under the pointer or with focus, marked when the keys typed fit another layout. */
+.kb-layout { position: absolute; right: 10px; bottom: 8px; z-index: 2; display: flex; align-items: center; gap: 0.35rem; height: 32px; padding: 0 0.6rem; border: 1px solid transparent; border-radius: 999px; background: transparent; color: var(--ink-soft); font: inherit; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.15s; }
+.kb-layout .icon { width: 18px; height: 18px; }
+.kb-layout:hover, .kb-layout:focus-visible, .kb-layout[aria-expanded='true'] { background: var(--surface); color: var(--ink); border-color: var(--key-line); box-shadow: 0 2px 0 var(--edge); }
+.kb-layout:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
+.kb-layout.flagged { background: var(--tint-orange); color: var(--brand-ink); border-color: var(--brand); box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand) 25%, transparent); animation: kb-layout-glow 1.2s ease-in-out 2; }
+@keyframes kb-layout-glow { 50% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--brand) 18%, transparent); } }
+.kb-layout-menu { position: absolute; right: 10px; bottom: 48px; z-index: 4; min-width: 230px; max-height: min(320px, 60vh); overflow-y: auto; overscroll-behavior: contain; padding: 6px; display: flex; flex-direction: column; gap: 2px; background: var(--surface); border: 1px solid var(--key-line); border-radius: 14px; box-shadow: 0 10px 24px var(--soft-shadow); }
+.kb-layout-item { display: flex; align-items: center; gap: 0.6rem; min-height: 44px; padding: 0 0.8rem; border: 0; border-radius: 10px; background: transparent; color: var(--ink); font: inherit; font-size: 0.9rem; text-align: left; cursor: pointer; }
+.kb-layout-item .icon { width: 18px; height: 18px; color: var(--brand-ink); visibility: hidden; }
+.kb-layout-item.on { font-weight: 600; background: var(--tint-orange); }
+.kb-layout-item.on .icon { visibility: visible; }
+.kb-layout-item:hover, .kb-layout-item:focus-visible { background: var(--tint-orange); outline: none; box-shadow: inset 0 0 0 2px var(--brand); }
+/* Narrower screens keep only the keyboard icon (its name stays for screen readers and in the tooltip). */
+@media (max-width: 1100px) { .kb-layout span:not(.icon) { display: none; } .kb-layout { padding: 0 0.45rem; } }
+@media (prefers-reduced-motion: reduce) { .kb-layout.flagged { animation: none; } }
 .kb-paws { display: contents; }
 .kb-paw { width: clamp(60px, 11vw, 150px); align-self: end; transform: translateY(130%); opacity: 0; transition: transform 0.45s ease, opacity 0.3s; pointer-events: none; }
 .kb-paw-l { grid-column: 1; grid-row: 2; justify-self: end; }

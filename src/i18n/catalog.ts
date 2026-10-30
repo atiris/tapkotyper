@@ -76,7 +76,7 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
   { id: 'typing', groups: [
     g('level-pause', 'level.pause', 'level.paused', 'level.pauseClose', 'level.slower', 'level.slowerSaid', 'level.stretch', 'level.stretchLong', 'level.stretchDone'),
     g('level', 'level.*'),
-    g('keyboard', 'keys.*', 'layouts.*', 'fingers.*', 'guide.*'),
+    g('keyboard', 'keys.*', 'layouts.*', 'layoutsShort.*', 'layoutSwitch.*', 'fingers.*', 'guide.*'),
     g('posture', 'posture.*'),
     g('new-key', 'keysIntro.*', 'controlKey.*', 'newKey.*', 'homeRow.*'),
     g('practice', 'practice.*', 'practiceKeys.*'),

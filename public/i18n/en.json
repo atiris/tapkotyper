@@ -80,6 +80,15 @@
     "sk-qwerty": "Slovak (QWERTY)",
     "us-qwerty": "English US (QWERTY)"
   },
+  "layoutsShort": {
+    "sk-qwertz": "SK QWERTZ",
+    "sk-qwerty": "SK QWERTY",
+    "us-qwerty": "US QWERTY"
+  },
+  "layoutSwitch": {
+    "tip": "Keyboard layout",
+    "label": "Keyboard layout: {layout}. Change"
+  },
   "kinds": {
     "fox": "Fox",
     "cat": "Kitten",
@@ -195,7 +204,7 @@
     "progress": "Progress",
     "rhythm": "Rhythm: {n} letters per minute",
     "keyAccuracy": "{key}: {n} % right",
-    "layoutHint": "Your keyboard looks like {layout}. Ask a parent to switch it in the parent area.",
+    "layoutHint": "Your keyboard looks like {layout}. Switch it at the bottom right, under the keyboard.",
     "shiftOtherHand": "Press Shift with the other hand: the little finger on the side away from the letter.",
     "memoryWait": "Wait until it hides.",
     "noVoice": "This browser cannot read aloud, so today you will see the words and copy them.",

@@ -204,6 +204,13 @@ export function activeKeys(profile: Profile): string[] {
 }
 
 /** Unlocked keys that were not introduced yet, in lesson order (each is shown alone first). */
+/** The profile types on another layout: the progress stays, but only with keys the new layout teaches. */
+export function useLayout(profile: Profile, id: LayoutId): void {
+  profile.layout = id;
+  const order = lessonOrder(id);
+  profile.progress.unlockedKeys = order.slice(0, Math.max(2, profile.progress.unlockedKeys.filter((k) => order.includes(k)).length));
+}
+
 export function keysToIntroduce(profile: Profile): string[] {
   if (profile.settings.activeKeysMode === 'manual') return [];
   return profile.progress.unlockedKeys.filter((k) => !profile.progress.introducedKeys.includes(k));

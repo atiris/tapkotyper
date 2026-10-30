@@ -80,6 +80,15 @@
     "sk-qwerty": "slovenská (QWERTY)",
     "us-qwerty": "anglická US (QWERTY)"
   },
+  "layoutsShort": {
+    "sk-qwertz": "SK QWERTZ",
+    "sk-qwerty": "SK QWERTY",
+    "us-qwerty": "US QWERTY"
+  },
+  "layoutSwitch": {
+    "tip": "Rozloženie klávesnice",
+    "label": "Rozloženie klávesnice: {layout}. Zmeniť"
+  },
   "kinds": {
     "fox": "Líška",
     "cat": "Mačiatko",
@@ -195,7 +204,7 @@
     "progress": "Postup",
     "rhythm": "Rytmus: {n} písmen za minútu",
     "keyAccuracy": "{key}: {n} % správne",
-    "layoutHint": "Tvoja klávesnica vyzerá ako {layout}. Popros rodiča, nech ju prepne v rodičovskej časti.",
+    "layoutHint": "Tvoja klávesnica vyzerá ako {layout}. Prepni ju vpravo dole pod klávesnicou.",
     "shiftOtherHand": "Shift stlač druhou rukou: malíčkom na opačnej strane ako písmeno.",
     "memoryWait": "Počkaj, kým sa skryje.",
     "noVoice": "Tento prehliadač nevie čítať nahlas, preto dnes slová uvidíš a odpíšeš ich.",

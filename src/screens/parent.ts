@@ -5,7 +5,7 @@ import { ENTER, LAYOUTS, LAYOUT_IDS, allKeys } from '../keyboard/layouts';
 import { LEVELS, type LevelDef, WORLDS } from '../game/levels';
 import { SHOW_DAYS, SHOW_DAYS_MAX, SURPRISES_MAX, SURPRISE_LEN, SURPRISE_N_MAX, TRIGGERS, newSurprise, restartSurprise, surpriseCount } from '../game/own-content';
 import { wordSource } from '../game/runtime';
-import { lessonKeyOf, lessonOrder, punctuationKeys } from '../learning/lessons';
+import { lessonKeyOf, punctuationKeys, useLayout } from '../learning/lessons';
 import { COMPANION_KINDS, GUEST_ID, SUPER_ID, type FontChoice, type GraphicsChoice, type LangRef, type LayoutId, type OwnMix, type ParentLock, type Profile, type Surprise, type SurpriseTrigger, type TaskKind } from '../storage/schema';
 import { checkLock, makeLock } from '../storage/lock';
 import { linkOf } from '../share/codec';
@@ -180,10 +180,7 @@ function settingsTab(p: Profile): HTMLElement {
       field(t('parent.language'), langSelect(p.language, async (v) => { p.language = v; save(); await useLanguage(v); go('parent', { granted: true }); })),
       field(t('parent.wordLang'), langSelect(s.wordLang, (v) => { s.wordLang = v; save(); void loadPlayerWords(p); }), t('parent.wordLangHint')),
       field(t('parent.layout'), select<LayoutId>(p.layout, LAYOUT_IDS.map((id) => [id, t(`layouts.${id}`)]), (v) => {
-        p.layout = v;
-        // Keep the progress, but only keys the new layout teaches.
-        const order = lessonOrder(v);
-        p.progress.unlockedKeys = order.slice(0, Math.max(2, p.progress.unlockedKeys.filter((k) => order.includes(k)).length));
+        useLayout(p, v);
         save();
       }), t('parent.layoutHint'))),
     h('fieldset', {}, h('legend', {}, t('parent.group.practice')),

@@ -17,9 +17,10 @@ import { nickname } from '../storage/store';
 import { type InputHandlers, KeyInput, type TypedChar } from '../input/input';
 import { setShortcuts, withKey } from '../input/shortcuts';
 import { ENTER, LAYOUTS, LayoutMismatchDetector, enterAfter, fingerFor, homeKey, stepsFor } from '../keyboard/layouts';
-import { SHIFT_L, SHIFT_R, SPACE, activeKeys, aimKeys, isKeyReady, isLetterKey, keysToIntroduce, masteryLevel, newestGroup, recentAccuracy, shiftKeyOf } from '../learning/lessons';
+import { SHIFT_L, SHIFT_R, SPACE, activeKeys, aimKeys, isKeyReady, isLetterKey, keysToIntroduce, masteryLevel, newestGroup, recentAccuracy, shiftKeyOf, useLayout } from '../learning/lessons';
 import { keyWeights, recordPress, recordSession } from '../learning/stats';
 import { FINGER_KEYS, KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
+import { LayoutSwitch } from '../ui/layout-switch';
 import { button, closeButton, closeModals, confirmDialog, h } from '../ui/dom';
 import { globalButtons } from '../ui/chrome';
 import { tip } from '../ui/tooltip';
@@ -121,6 +122,8 @@ export interface RuntimeOptions {
   onHelp(back: () => void, now: HTMLElement[]): void;
   /** The map's warm-up over the paused level: `back` returns to the pause card, `play` goes on typing. */
   onBreak(back: () => void, play: () => void): void;
+  /** The player switched the keyboard layout under the on-screen keyboard: the level starts again with it. */
+  onLayout(): void;
 }
 
 /** Runs one level: input, typing state, mode, HUD, guide, Tapko, stats. */
@@ -187,6 +190,7 @@ export class LevelRuntime {
   private finished = false;
   private deadPending = false;
   private mismatch: LayoutMismatchDetector;
+  private layoutSwitch: LayoutSwitch;
   private mismatchShown = false;
 
   /** Keys the child pressed for a target in this level, right or wrong; leaving after one asks first. */
@@ -314,6 +318,12 @@ export class LevelRuntime {
     this.bubble = h('div', { class: 'bubble hidden', role: 'status', 'aria-live': 'polite' });
     stageWrap.append(this.tapko, this.bubble);
     this.guide = new KeyboardGuide(lay);
+    this.layoutSwitch = new LayoutSwitch(p.layout, (id) => {
+      useLayout(p, id);
+      saveProfile();
+      this.opts.onLayout();
+    });
+    this.guide.el.append(this.layoutSwitch.el);
     this.guideOn = p.settings.guide !== 'off';
     this.guide.setVisible(this.guideOn);
     guideBtn.setAttribute('aria-pressed', String(!this.guideOn));
@@ -488,6 +498,7 @@ export class LevelRuntime {
     speech.stop();
     this.offVoices();
     this.offShortcuts();
+    this.layoutSwitch.dispose();
     this.loop.stop();
     this.input?.dispose();
     this.stage.dispose();
@@ -579,6 +590,7 @@ export class LevelRuntime {
     const other = this.mismatch.observe(code, key, shift);
     if (other) {
       this.mismatchShown = true;
+      this.layoutSwitch.flag();
       this.say(t('level.layoutHint', { layout: t(`layouts.${other}`) }), 7);
     }
   }

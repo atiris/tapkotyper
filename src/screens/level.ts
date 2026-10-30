@@ -81,6 +81,7 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
       onTapko: openStats,
       onHelp: (back, now) => openHelp(root.querySelector('.level-screen')!, back, now),
       onBreak: (back, play) => openBreak(back, play),
+      onLayout: () => go('level', params, false),
       onFinish: (result) => {
         if (!result) return exit();
         if (def.kind === 'aim') return showAimDone(root, result, runtime.mode as AimMode, params);

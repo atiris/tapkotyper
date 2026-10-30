@@ -238,12 +238,18 @@ function tiled(g: G, img: HTMLImageElement, vw: number, offset: number, dy = 0):
 /** How much lower a ground's near band sits, its bottom cut off (the planet's swamp). */
 export const NEAR_DROP: Record<string, number> = { '-swamp': VH * 0.05 };
 
+/** The scale of a world's near band (its picture as high as the stage; 768 px until it is there); a shore picture is drawn at it too. */
+export function bandScale(world: string, ground: string): number {
+  return VH / (sprite(`bg-${world}${ground}-near`)?.naturalHeight ?? 768);
+}
+
 /** Three-layer parallax background of a world; `scroll` grows as the scene moves forward; with `midOnly` just the middle strip follows it. */
 /** `drift` moves one band on its own by `offset` on top of the scroll. */
 /**
  * The world's layers; `ground` picks another middle and near band of the world (the planet's swamp:
  * `-swamp`), the far one stays; `shore` is the near layer's x where the ground's shore picture
- * (`bg-<world><ground>-shore`, the swamp's grassy bank) stands in front of the band, null for none.
+ * (`bg-<world><ground>-shore`, the swamp's grassy bank, drawn at the band's scale on its bottom and
+ * lowered with it) stands in front of the band, null for none.
  */
 export function drawBackground(g: G, world: string, vw: number, scroll: number, motion = true, midOnly = false, drift: { layer: 'mid' | 'near'; offset: number } | null = null, ground = '', shore: number | null = null): void {
   const still = midOnly || !motion;
@@ -278,8 +284,8 @@ export function drawBackground(g: G, world: string, vw: number, scroll: number, 
     tiled(g, near, vw, nearAt, NEAR_DROP[ground] ?? 0);
     const bank = shore === null ? null : sprite(`bg-${world}${ground}-shore`);
     if (bank) {
-      const w = (bank.naturalWidth * VH) / bank.naturalHeight, x = shore! - nearAt;
-      if (x < vw && x + w > 0) g.drawImage(bank, x, 0, w, VH);
+      const s = VH / near.naturalHeight, w = bank.naturalWidth * s, h = bank.naturalHeight * s, x = shore! - nearAt;
+      if (x < vw && x + w > 0) g.drawImage(bank, x, VH - h + (NEAR_DROP[ground] ?? 0), w, h);
     }
   } else if (world !== 'space') {
     hills(g, vw, (midOnly ? 0 : scroll) + nearDrift, VH * 0.82, 30, pal.hills[1]);

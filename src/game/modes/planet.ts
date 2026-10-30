@@ -2,7 +2,7 @@ import { pickLine } from '../../app/app';
 import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
 import { sprite } from '../../gfx/assets';
-import { blob, drawSprite, type G } from '../../gfx/draw';
+import { bandScale, blob, drawSprite, type G } from '../../gfx/draw';
 import { t } from '../../i18n/i18n';
 import { TAPKO_H } from '../mode';
 import { HeroMode, wordAbove } from './kit/hero';
@@ -12,7 +12,7 @@ import type { Target } from '../typing';
 /** His feet on a stepping stone in the swamp, a bit higher, so the stone fits under them. */
 const SWAMP_FEET = VH * 0.85;
 /**
- * A stepping stone (a round mossy stone with a face): its picture's height, how far above its middle
+ * A stepping stone (a round mossy stone, one of `SWAMP_PICTURES`): its picture's height, how far above its middle
  * his feet stand (two thirds up from its bottom, on the moss), and how much higher or lower than the
  * swamp line a stone may lie.
  */
@@ -21,27 +21,26 @@ const STONE_TOP = 1 / 6;
 const STONE_RISE = 26;
 const STONE_DROP = 6;
 /**
- * The swamp ends at the shore picture (`bg-planet-swamp-shore`, a grassy bank with an earthen cliff,
- * drawn in front of the band). In shares of its width from its left edge: where its cliff begins,
+ * The swamp ends at the shore picture (`bg-planet-swamp-shore`, a grassy bank with a steep earthen
+ * cliff, drawn in front of the band). In shares of its width from its left edge: where its cliff begins,
  * where he lands on the grass from the last stone and where he ends; his feet on the grass, and the
  * share of the stage he moves to through the swamp.
  */
-const SHORE_CLIFF = 0.09;
-const SHORE_LAND = 0.38;
-const SHORE_MEADOW = 0.6;
+const SHORE_CLIFF = 0.14;
+const SHORE_LAND = 0.3;
+const SHORE_MEADOW = 0.52;
 const SHORE_FEET = VH * 0.84;
 /** The last stone lies at least this share of a jump before the cliff. */
-const LAND_GAP = 0.4;
+const LAND_GAP = 0.25;
 const SHORE_VIEW = 0.6;
 /** He ends on the meadow at least this far from the right edge. */
 const SHORE_MARGIN = 160;
 /** In the first level the shore comes once this share of the level is done, or when the words are done and fewer seconds than this are left. */
 const SHORE_AT = 0.9;
 const SHORE_LAST_S = 10;
-/** The shore picture's width on the stage (1376 x 768 until its picture is there). */
+/** The shore picture's width on the stage (1376 px until its picture is there). */
 function shoreW(): number {
-  const img = sprite('bg-planet-swamp-shore');
-  return img ? (img.naturalWidth * VH) / img.naturalHeight : (1376 * VH) / 768;
+  return (sprite('bg-planet-swamp-shore')?.naturalWidth ?? 1376) * bandScale('planet', '-swamp');
 }
 /** Seconds of a jump between stones and of the view gliding after him. */
 const JUMP = 0.55;
@@ -78,12 +77,14 @@ function drawRing(g: G, x: number, y: number, t: number): void {
   g.restore();
 }
 
-const SWAMP_PICTURES = ['obj-swamp-stone'];
+const SWAMP_PICTURES = ['obj-swamp-stone-1', 'obj-swamp-stone-2', 'obj-swamp-stone-3'];
 
 /** A stone in the scene: the screen shows it at x - scroll. */
 interface Stone {
   x: number;
   y: number;
+  /** Its picture, picked at random. */
+  look: string;
   /** Seconds since it came. */
   age: number;
   state: 'ok' | 'cracked';
@@ -120,7 +121,7 @@ abstract class SwampHero extends HeroMode {
   private afterGlide: (() => void) | null = null;
 
   protected stone(x: number, y = SWAMP_FEET + this.L.rng.range(-STONE_RISE, STONE_DROP) + STONE_H * STONE_TOP): Stone {
-    const s: Stone = { x, y, age: 0, state: 'ok', crackT: 0 };
+    const s: Stone = { x, y, look: this.L.rng.pick(SWAMP_PICTURES), age: 0, state: 'ok', crackT: 0 };
     this.stones.push(s);
     return s;
   }
@@ -226,7 +227,7 @@ abstract class SwampHero extends HeroMode {
       const k = this.L.reduceMotion ? 1 : ease.outBack(Math.min(1, s.age / 0.35));
       const cracked = s.state === 'cracked';
       const sh = cracked ? Math.sin(s.crackT * 60) * 3 : 0;
-      drawSprite(g, cracked ? 'obj-swamp-stone-cracked' : 'obj-swamp-stone', s.x - this.scroll + sh, s.y, STONE_H * k, {}, stoneFallback);
+      drawSprite(g, s.look, s.x - this.scroll + sh, s.y, STONE_H * k, {}, stoneFallback);
     }
   }
 
@@ -385,7 +386,7 @@ interface Crumb {
  * the crystals of life fly onto it, float and pulse in their glow.
  */
 export class GreatSwampMode extends SwampHero {
-  readonly pictures = [...SWAMP_PICTURES, 'obj-swamp-stone-cracked', 'obj-swamp-stone-broken', 'obj-boulder-1', 'obj-boulder-2', 'obj-cradle', ...LIFE_CRYSTALS];
+  readonly pictures = [...SWAMP_PICTURES, 'obj-swamp-stone-broken', 'obj-boulder-1', 'obj-boulder-2', 'obj-cradle', ...LIFE_CRYSTALS];
   private gap = 200;
   private home = 130;
   /** The first stone's x; stone `i` lies at `x0 + i * gap`. */

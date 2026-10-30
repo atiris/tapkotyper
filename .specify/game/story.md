@@ -120,8 +120,8 @@ as they are. The world descriptions below marked *not built yet* are the design 
    over him or touching it.
    1 the swamp after the landing (waiting words, a calm minute): one word at a time above him,
    a ring on the water where the next stone comes; typed, the stone is there and he jumps onto
-   it, the view glides after him. The stones are round mossy stones with a smiling face and
-   nothing under them, and they lie at a little different heights; he lands two thirds up a
+   it, the view glides after him. The stones are round mossy stones without a face, in three
+   looks picked at random, nothing under them, and they lie at a little different heights; he lands two thirds up a
    stone. He moves toward the right edge as the level goes on. When about nine tenths of the
    level are done (or its words are, with fewer than ten seconds left), the shore comes in front
    of the swamp band, its earthen cliff just past the right edge (a separate picture of a grassy
@@ -169,8 +169,8 @@ as they are. The world descriptions below marked *not built yet* are the design 
    minimum time at the child's pace.
    5 the great swamp (super level): from a firm stone Tapko jumps three stones on, the fourth
    jump reaches the next firm stone and the view moves on. A slip on the firm stone is only a
-   slip; a slip on any other stone cracks it (the stone squeezes its eyes shut as if tickled),
-   he jumps back stone by stone (each one left crumbles, half broken and without a face, and the
+   slip; a slip on any other stone cracks it (the stone shakes),
+   he jumps back stone by stone (each one left crumbles, half broken, and the
    next one cracks) and on the firm stone a new word comes. Halfway a boulder lies where a firm
    stone would be; slightly harder words crack it (a word with a slip counts half), it bursts
    into that firm stone and he jumps onto it. Every jump is a typed word up to the last stone,

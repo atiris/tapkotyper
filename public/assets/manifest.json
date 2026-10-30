@@ -450,7 +450,7 @@
   },
   "bg-planet-swamp-shore": {
    "w": 1376,
-   "h": 768
+   "h": 330
   },
   "bg-planet-swamp-near": {
    "w": 1376,
@@ -1252,13 +1252,17 @@
    "w": 459,
    "h": 512
   },
-  "obj-swamp-stone-cracked": {
+  "obj-swamp-stone-1": {
    "w": 512,
    "h": 389
   },
-  "obj-swamp-stone": {
+  "obj-swamp-stone-2": {
    "w": 512,
-   "h": 388
+   "h": 376
+  },
+  "obj-swamp-stone-3": {
+   "w": 512,
+   "h": 389
   },
   "obj-timetable": {
    "w": 332,

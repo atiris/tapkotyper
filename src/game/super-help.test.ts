@@ -66,8 +66,8 @@ describe('super help', () => {
     expect(play('m1h1').log).toEqual(['wrong@7', 'missed@14']);
   });
 
-  it('aims at an accuracy for 2 stars or 1 star', () => {
-    for (const [plan, accuracy] of [['acc90', 0.9], ['acc75', 0.75]] as const) {
+  it('aims at an accuracy for 3, 2 or 1 star', () => {
+    for (const [plan, accuracy] of [['acc95', 0.95], ['acc90', 0.9], ['acc75', 0.75]] as const) {
       const words = Array.from({ length: 150 }, () => 'abcd');
       const level = fakeLevel(words, false);
       const rng = new Rng(7);

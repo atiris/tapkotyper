@@ -211,6 +211,9 @@ function translatorPage(screen: HTMLElement): () => void {
       h('span', { class: 'tr-page-tip', tabindex: 0, role: 'note', 'aria-label': tr('pageTip'), tip: tr('pageTip') }, icon('language'), h('span', {}, tr('tip')))),
     cornerControls(), tools,
     h('div', { class: 'tr-body' }, h('aside', { class: 'tr-side' }, toc), h('div', { class: 'tr-content' }, tocSelect, note, filter, empty, main)));
+  // The tools wrap to more lines on a narrow screen: the contents and the section jumps sit under them.
+  const toolsSize = new ResizeObserver(() => screen.style.setProperty('--tr-tools-h', `${tools.offsetHeight}px`));
+  toolsSize.observe(tools);
 
   // ---- loading ----
   void (async () => {
@@ -937,6 +940,7 @@ function translatorPage(screen: HTMLElement): () => void {
   return () => {
     alive = false;
     observer.disconnect();
+    toolsSize.disconnect();
     document.removeEventListener('visibilitychange', onHide);
     document.removeEventListener('pointerdown', onDown);
     document.removeEventListener('keydown', onKey, true);

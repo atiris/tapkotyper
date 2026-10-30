@@ -51,6 +51,11 @@
   the minimum's time still holds the words to reach it and finish it. Each moment the story
   promises appears for both players (a slow child may meet fewer repeats, never none), and a
   test plays the level at both paces and checks that it appears.
+- **The stage's width changes during play** (the on-screen keyboard hidden or shown, the window
+  resized, fullscreen on or off; the height stays). Everything placed by the stage's width (rings
+  on a path, a target, Tapko by the edge) keeps its place in the scene's own terms (a share of the
+  path, a share of the width) and follows the new width at once; nothing keeps the place it had
+  when it came.
   The valley's flight levels count dragons (three, one more while the minimum is not played,
   at most five) and the fifth ends the level even below the minimum ([story](story.md)).
   The progress bar shows the slower of the two shares, the targets done
@@ -212,6 +217,9 @@
   to the shore; a slow child's level is barely 20 words, so the log almost never came and the
   story's promise went unseen. A fixed cost with a silent skip hides a moment; a cost scaled
   to the level and a test at both paces keep it in sight without stretching the level.
+- The target range kept each ring where it was when the thing was thrown; hiding the keyboard
+  widened the stage and the rings stood off the arc. A place kept in the scene's own terms
+  cannot go stale.
 - A frozen background in a calm level feels like the game stopped.
 - Arcade-style typing (ZType, Typer Shark, Epistory) is praised as motivating; the peaceful
   variant keeps the fun without destruction or stress.

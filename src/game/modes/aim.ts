@@ -68,10 +68,8 @@ export function pickWord(words: string[], keys: string[], len: number): string {
   return pool.filter((w) => off(w) === near).reduce((best, w) => (weakCount(w, keys) > weakCount(best, keys) ? w : best));
 }
 
-/** A ring on the way, or the target as the last stop. */
+/** A ring on the way, or the target as the last stop; its place follows the path, also when the stage's width changes. */
 interface Stop {
-  x: number;
-  y: number;
   /** Where along the path it stands. */
   s: number;
   len: number;
@@ -318,8 +316,13 @@ export class AimMode extends HeroMode {
     return { x: a.x + (b.x - a.x) * s, y: a.y + (b.y - a.y) * s - Math.sin(s * Math.PI) * VH * 0.12 };
   }
 
-  start(): void {
+  /** Tapko stands near the left edge; the stage's width changes with the on-screen keyboard and the window. */
+  private placeHero(): void {
     this.heroX = Math.max(80, this.L.vw * 0.08);
+  }
+
+  start(): void {
+    this.placeHero();
     this.heroY = sideFeet(this.world, VH * 0.92);
     this.throw();
   }
@@ -407,7 +410,7 @@ export class AimMode extends HeroMode {
   private throw(): void {
     const stops: Stop[] = throwLengths(app.profile!.settings.wordLen).map((len, i) => {
       const s = i < RINGS ? (i + 1) / (RINGS + 1) : 1;
-      return { ...this.point(s), s, len, tg: null, typed: false, passed: 0, missed: false };
+      return { s, len, tg: null, typed: false, passed: 0, missed: false };
     });
     const th = this.pickThing();
     this.throws++;
@@ -522,6 +525,7 @@ export class AimMode extends HeroMode {
 
   update(dt: number): void {
     super.update(dt);
+    this.placeHero();
     // The time runs from the first throw on.
     if (!this.firstThrow) this.time += dt;
     this.scroll += dt * SWAY;
@@ -752,7 +756,7 @@ export class AimMode extends HeroMode {
       f.stops.slice(0, RINGS).forEach((r, i) => this.drawRing(g, r, i === f.next && f.phase === 'fly'));
       const last = f.stops[RINGS];
       // High enough over the target that its eyes, peeking out over its top, stay in sight.
-      if (last.tg) this.L.label(g, last.tg, last.x, last.y - this.radius - WORD_OVER, 38);
+      if (last.tg) this.L.label(g, last.tg, this.target.x, this.target.y - this.radius - WORD_OVER, 38);
       if (f.launch) this.L.label(g, f.launch, this.hand.x, this.hand.y - 70, 38);
       if (f.phase !== 'hit' && f.phase !== 'miss') this.drawProjectile(g, f);
     }
@@ -1064,7 +1068,7 @@ export class AimMode extends HeroMode {
   }
 
   private drawRing(g: G, r: Stop, current: boolean): void {
-    const rx = 34, ry = 70;
+    const rx = 34, ry = 70, { x, y } = this.point(r.s);
     if (r.passed) {
       // A passed ring pops like a soap bubble; one passed too late fades grey.
       const k = Math.min(1, r.passed / 0.4);
@@ -1074,13 +1078,13 @@ export class AimMode extends HeroMode {
       g.strokeStyle = r.missed ? '#b9b4ab' : '#bfe8ff';
       g.lineWidth = 6;
       g.beginPath();
-      g.ellipse(r.x, r.y, rx * (1 + k), ry * (1 + k), 0, 0, Math.PI * 2);
+      g.ellipse(x, y, rx * (1 + k), ry * (1 + k), 0, 0, Math.PI * 2);
       g.stroke();
       g.restore();
       return;
     }
-    const wobble = this.L.reduceMotion ? 0 : Math.sin(this.t * 2 + r.x) * 3;
-    drawSprite(g, 'obj-aim-ring', r.x, r.y + wobble, ry * 2, {}, (c) => {
+    const wobble = this.L.reduceMotion ? 0 : Math.sin(this.t * 2 + x) * 3;
+    drawSprite(g, 'obj-aim-ring', x, y + wobble, ry * 2, {}, (c) => {
       const grad = c.createLinearGradient(0, -ry, 0, ry);
       grad.addColorStop(0, '#ffd1f5');
       grad.addColorStop(0.5, '#bfe8ff');
@@ -1097,7 +1101,7 @@ export class AimMode extends HeroMode {
       c.ellipse(0, 0, rx - 6, ry - 6, 0, -2.4, -1.6);
       c.stroke();
     });
-    if (r.tg) this.L.label(g, r.tg, r.x, r.y - ry - 34, 38);
+    if (r.tg) this.L.label(g, r.tg, x, y - ry - 34, 38);
   }
 
   /** The egg after it hatched in flight: cracked for a moment, then the chick. */

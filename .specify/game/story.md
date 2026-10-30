@@ -254,10 +254,13 @@ as they are. The world descriptions below marked *not built yet* are the design 
    the dragons learned to fly; the stars count them too (all of them 3, at least half 2, else 1,
    never more than the accuracy gives). Its pit is smaller than the others and the seated
    dragons are glad now and then (a little hop).
-   4 the lullaby (copy twist): evening; the dragons circle slowly above the burning pit, leaning
-   into their flight as in the take-off (backs about level) and turning at the sides of the circle
-   like a flat picture flipping round: quick (about 0.3 seconds), slow at the start and end and
-   very fast through the middle, never a sudden jump and never a long thin phase; a landing dragon keeps its size. A panel top left, above Tapko's head and left of the circling dragons,
+   4 the lullaby (copy twist): evening; the dragons circle slowly above the burning pit, seen a
+   little from above: a dragon in front is a bit bigger and flies over the ones behind, each on its
+   own slightly different circle, beating its wings. They lean into their flight as in the take-off
+   (backs about level) and turn at the sides of the circle like a flat card turning round a pole
+   through the body: the lean stays and comes out mirrored, quick (about half a second), never a
+   sudden jump, never a long thin phase, stretching up and rising a little through the turn; a
+   landing dragon keeps its size. A panel top left, above Tapko's head and left of the circling dragons,
    shows a verse of the lullaby: two lines one under the other, each a sentence of four or five
    short words ending with a period (the period is new in this world). Only the line to type is
    a target; a typed one stays in ink, the one to come is faint. A verse copied puts one dragon

@@ -435,14 +435,27 @@ const FLY_H = 92;
 /** A sleeper is no bigger than the dragons in flight. */
 const SLEEP_H = 65;
 /**
+ * The circle seen a little from above: a dragon in front (low) is bigger and drawn over the ones
+ * behind, by up to this share of its size; each one's circle is a little narrower and higher.
+ */
+const DEPTH = 0.13;
+const RING_NARROW = 0.07;
+const RING_UP = 9;
+/**
  * A flying dragon leans forward the way it flies as in the take-off, its back about level (it should
- * not look seated). At the circle's sides it turns like a flat picture flipping round: its width goes
- * from full one way to full the other in TURN_S seconds, slow at the ends and very fast through the
- * middle (ease in and out), never thinner than this share of its width.
+ * not look seated). At the circle's sides it turns like a flat card turning round a pole through its
+ * body: the lean stays, the card's width follows the turn's angle (cos), over about TURN_S seconds,
+ * never thinner than TURN_MIN. Through the turn it stretches up a little and rises (a swoop).
  */
 const LEAN = 1.05;
-const TURN_MIN = 0.08;
-const TURN_S = 0.3;
+const TURN_MIN = 0.1;
+const TURN_S = 0.45;
+const TURN_STRETCH = 0.08;
+const TURN_RISE = 10;
+/** Wing beats: per second, how far the body bobs and how much it breathes with them. */
+const BEAT = 0.8;
+const BOB = 4;
+const BREATH = 0.5;
 const COME = 1.5;
 const DOWN = 1.6;
 const NEXT_LINE = 0.9;
@@ -476,10 +489,11 @@ interface Circler {
   phase: number;
   state: 'come' | 'circle' | 'down' | 'sleep';
   t: number;
-  /** Where it started gliding down from, and which way it flew then. */
+  /** Where it started gliding down from, its turn and how near it was then. */
   fromX: number;
   fromY: number;
-  fromDir: number;
+  fromV: number;
+  fromNear: number;
   seat: number;
 }
 
@@ -533,7 +547,7 @@ export class LullabyMode extends Mode {
   /** A dragon that circles (one more comes flying in from the right). */
   private addDragon(state: 'come' | 'circle'): void {
     const i = this.dragons.length;
-    this.dragons.push({ pic: DRAGONS[i % DRAGONS.length], phase: (i / FLOCK_MAX) * Math.PI * 2 * 1.3, state, t: 0, fromX: 0, fromY: 0, fromDir: 0, seat: i });
+    this.dragons.push({ pic: DRAGONS[i % DRAGONS.length], phase: (i / FLOCK_MAX) * Math.PI * 2 * 1.3, state, t: 0, fromX: 0, fromY: 0, fromV: 0, fromNear: 0, seat: i });
   }
 
   private ask(): void {
@@ -551,15 +565,16 @@ export class LullabyMode extends Mode {
     return Math.max(80, Math.min(CIRCLE_RX, this.L.vw - this.pit.x - 70));
   }
 
-  /** The circle's place: above the pit. */
-  /** Where on its circle a dragon is, and which way it faces there: `dir` 1 right, -1 left, through 0 only in the short turn at the sides. */
-  private circle(d: Circler): { x: number; y: number; dir: number } {
-    const a = d.phase + (this.t * Math.PI * 2) / ROUND;
-    // The angle from the nearest side, where the way flips; the turn spans TURN_S seconds around it.
-    const side = a - Math.round(a / Math.PI) * Math.PI, half = (TURN_S / ROUND) * Math.PI;
-    const before = -Math.sign(Math.sin(a - side - half));
-    const dir = Math.abs(side) >= half ? -Math.sign(Math.sin(a)) : before * Math.cos(Math.PI * ease.inOutCubic((side + half) / (2 * half)));
-    return { x: this.pit.x + Math.cos(a) * this.circleRx(), y: CIRCLE_Y + Math.sin(a) * CIRCLE_RY + FLY_H / 2, dir };
+  /**
+   * Where on its circle above the pit a dragon is (its body's middle), how near (-1 behind .. 1 in
+   * front) and its turn `v`: 1 facing right, -1 left. `v` follows its sideways speed, so it turns
+   * only near the circle's sides, where it flies toward or away from us.
+   */
+  private circle(d: Circler): { x: number; y: number; near: number; v: number } {
+    const a = d.phase + (this.t * Math.PI * 2) / ROUND, ring = d.seat % 3;
+    const near = Math.sin(a), half = Math.sin((TURN_S / ROUND) * Math.PI);
+    const x = this.pit.x + Math.cos(a) * this.circleRx() * (1 - ring * RING_NARROW) * (1 + DEPTH * near);
+    return { x, y: CIRCLE_Y - ring * RING_UP + Math.sin(a) * CIRCLE_RY, near, v: Math.max(-1, Math.min(1, -near / half)) };
   }
 
   onDone(tg: Target): void {
@@ -581,7 +596,8 @@ export class LullabyMode extends Mode {
       d.t = 0;
       d.fromX = c.x;
       d.fromY = c.y;
-      d.fromDir = c.dir;
+      d.fromV = c.v;
+      d.fromNear = c.near;
       d.seat = this.asleep;
     }
     this.asleep++;
@@ -638,7 +654,10 @@ export class LullabyMode extends Mode {
     for (const d of sleepers) if (this.sleepSpot(d.seat).up > 10) this.drawSleeper(g, d);
     this.pit.draw(g);
     for (const d of sleepers) if (this.sleepSpot(d.seat).up <= 10) this.drawSleeper(g, d);
-    for (const d of this.dragons) if (d.state !== 'sleep') this.drawCircler(g, d);
+    // The flying ones further back first: the nearer ones fly in front of them.
+    const flying = this.dragons.filter((d) => d.state !== 'sleep');
+    const depth = (d: Circler) => (d.state === 'down' ? 2 : this.circle(d).near);
+    for (const d of flying.sort((a, b) => depth(a) - depth(b))) this.drawCircler(g, d);
     if (this.endT === null && this.lines.length) this.drawPanel(g);
   }
 
@@ -691,25 +710,35 @@ export class LullabyMode extends Mode {
     g.restore();
   }
 
-  /** In flight a dragon leans forward the way it flies and rocks gently; it turns smoothly, its lean following the turn. */
+  /**
+   * A dragon in flight: its body's middle at x, y, `v` its turn (1 right, -1 left), `size` its
+   * nearness. The lean is drawn first, the turn after it, so a turning dragon narrows like a card
+   * round a pole through its body and comes out mirrored, leaning the new way; it beats its wings.
+   */
+  private fly(g: G, d: Circler, x: number, y: number, v: number, size: number): void {
+    const motion = !this.L.reduceMotion, beat = Math.sin((this.t * BEAT + d.phase) * Math.PI * 2);
+    const w = Math.sin((v * Math.PI) / 2), turning = 1 - Math.abs(w), h = FLY_H * size;
+    const lean = LEAN + (motion ? ROCK * Math.sin(this.t * 2.6 + d.phase) : 0);
+    g.save();
+    g.translate(x, y - turning * TURN_RISE * size + (motion ? beat * BOB : 0));
+    g.scale((w < 0 ? -1 : 1) * Math.max(TURN_MIN, Math.abs(w)), 1 + turning * TURN_STRETCH);
+    // Drawn from its feet: they go where its middle turns round.
+    drawDragon(g, d.pic, (-h / 2) * Math.sin(lean), (h / 2) * Math.cos(lean), h, motion ? beat * BREATH : 0, 1, 1, lean);
+    g.restore();
+  }
+
   private drawCircler(g: G, d: Circler): void {
-    const L = this.L, motion = !L.reduceMotion;
-    // `dir` 1 flies right, -1 left; in between it is turning: narrower, its lean following.
-    const fly = (x: number, y: number, dir: number) => {
-      const face = dir >= 0 ? 1 : -1, turn = Math.abs(dir);
-      const lean = face * turn * (LEAN + (motion ? ROCK * Math.sin(this.t * 2.6 + d.phase) : 0));
-      drawDragon(g, d.pic, x, y, FLY_H, 0, face, 1, lean, Math.max(TURN_MIN, turn) - 1);
-    };
-    const c = this.circle(d);
-    if (d.state === 'circle') return fly(c.x, c.y, c.dir);
+    const L = this.L, c = this.circle(d), size = (near: number) => 1 + DEPTH * near;
+    if (d.state === 'circle') return this.fly(g, d, c.x, c.y, c.v, size(c.near));
     if (d.state === 'come') {
-      // In from the right, turning into the circle's way at the end, as quickly as at the sides.
-      const k = ease.outQuad(Math.min(1, d.t / COME)), turn = ease.inOutCubic(Math.max(0, Math.min(1, (d.t - COME + TURN_S) / TURN_S)));
-      return fly(L.vw + 80 + (c.x - L.vw - 80) * k, c.y - (1 - k) * 60, -1 + (c.dir + 1) * turn);
+      // In from the right, high, settling into its place on the circle; it turns into the circle's way at the end.
+      const k = ease.outQuad(Math.min(1, d.t / COME)), turn = ease.inOutQuad(Math.max(0, Math.min(1, (d.t - COME + TURN_S) / TURN_S)));
+      return this.fly(g, d, L.vw + 80 + (c.x - L.vw - 80) * k, c.y - (1 - k) * 60, -1 + (c.v + 1) * turn, size(c.near));
     }
-    // Gliding down to its place by the fire, at its flying size until it curls up asleep; it turns toward it first.
-    const k = ease.inOutQuad(Math.min(1, d.t / DOWN)), to = this.sleepSpot(d.seat), way = to.x < d.fromX ? -1 : 1;
-    fly(d.fromX + (to.x - d.fromX) * k, d.fromY + (to.y - d.fromY) * k, d.fromDir + (way - d.fromDir) * ease.inOutCubic(Math.min(1, d.t / TURN_S)));
+    // Gliding down to its place by the fire at the size it had, its feet landing there; it turns toward it first.
+    const k = ease.inOutQuad(Math.min(1, d.t / DOWN)), to = this.sleepSpot(d.seat), way = to.x < d.fromX ? -1 : 1, s = size(d.fromNear);
+    const toY = to.y - (FLY_H * s) / 2;
+    this.fly(g, d, d.fromX + (to.x - d.fromX) * k, d.fromY + (toY - d.fromY) * k, d.fromV + (way - d.fromV) * ease.inOutQuad(Math.min(1, d.t / TURN_S)), s);
   }
 
   progress(): number {

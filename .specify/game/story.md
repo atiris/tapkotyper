@@ -121,7 +121,7 @@ as they are. The world descriptions below marked *not built yet* are the design 
    1 the swamp after the landing (waiting words, a calm minute): one word at a time above him,
    a ring on the water where the next stone comes; typed, the stone is there and he jumps onto
    it, the view glides after him. The stones are round mossy stones without a face, in three
-   looks picked at random, nothing under them, and they lie at a little different heights; he lands two thirds up a
+   looks, each one picked at random but never the same as the stone before, nothing under them, and they lie at a little different heights; he lands two thirds up a
    stone. He moves toward the right edge as the level goes on. When about nine tenths of the
    level are done (or its words are, with fewer than ten seconds left), the shore comes in front
    of the swamp band, its earthen cliff just past the right edge (a separate picture of a grassy

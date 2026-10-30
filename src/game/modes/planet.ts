@@ -83,7 +83,7 @@ const SWAMP_PICTURES = ['obj-swamp-stone-1', 'obj-swamp-stone-2', 'obj-swamp-sto
 interface Stone {
   x: number;
   y: number;
-  /** Its picture, picked at random. */
+  /** Its picture, picked at random from those the stone before does not have. */
   look: string;
   /** Seconds since it came. */
   age: number;
@@ -121,7 +121,9 @@ abstract class SwampHero extends HeroMode {
   private afterGlide: (() => void) | null = null;
 
   protected stone(x: number, y = SWAMP_FEET + this.L.rng.range(-STONE_RISE, STONE_DROP) + STONE_H * STONE_TOP): Stone {
-    const s: Stone = { x, y, look: this.L.rng.pick(SWAMP_PICTURES), age: 0, state: 'ok', crackT: 0 };
+    // Each stone looks different from the one before it.
+    const last = this.stones.at(-1)?.look;
+    const s: Stone = { x, y, look: this.L.rng.pick(SWAMP_PICTURES.filter((p) => p !== last)), age: 0, state: 'ok', crackT: 0 };
     this.stones.push(s);
     return s;
   }

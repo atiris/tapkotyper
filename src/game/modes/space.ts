@@ -510,8 +510,9 @@ export class AsteroidMode extends SpaceMode {
     this.L.core.add(word, piece);
   }
 
+  /** A big asteroid counts once it is split and its pieces are gone (only one is in the sky at a time). */
   progress(): number {
-    const done = this.bigs - (this.L.core.active.some((t) => (t.data as Mover).big) ? 1 : 0);
+    const done = this.splits - (this.L.core.active.length ? 1 : 0);
     return Math.min(1, Math.max(0, done) / this.L.count);
   }
 

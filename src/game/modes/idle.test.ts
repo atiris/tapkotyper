@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { TypingCore } from '../typing';
-import { MIN_ACTIVE_S, grownCount, levelOver } from '../levels';
+import { LEVELS, type LevelDef, levelById, type LevelKind, STORIES, copyTarget, grownCount, levelOver, minActiveS, shownProgress, storyOf } from '../levels';
 import type { LevelRuntime } from '../runtime';
 import type { Mode } from '../mode';
 
@@ -16,7 +16,7 @@ const { CommandMode, HopMode } = await import('./space-calm');
 const { GreatSwampMode, SwampMode } = await import('./planet');
 const { CrystalsMode, SpellMode } = await import('./planet-crystals');
 const { CrossroadsMode } = await import('./planet-roads');
-const { CopyLoopMode, copyTarget } = await import('./copy-loop');
+const { CopyLoopMode } = await import('./copy-loop');
 const { FlamesMode, ThicketMode, flockAfter } = await import('./dragons');
 const { FlightMode, LullabyMode, TakeoffMode, takeoffPlan } = await import('./dragons-flight');
 
@@ -74,28 +74,116 @@ describe('no typing, no progress', () => {
   });
 });
 
-describe('a level shorter than its minimum', () => {
-  it.each(MODES)('%s: a steady typist plays at least two minutes, then the level ends', (_name, Ctor) => {
-    const L = fakeRuntime();
-    const mode = new Ctor(L);
-    mode.start();
-    let time = 0, next = 0;
-    while (time < 600 && !levelOver(mode.finished, time, MIN_ACTIVE_S)) {
-      L.count = grownCount(L.count, mode.progress() * L.count, time, 4, MIN_ACTIVE_S);
-      L.core.update(0.05);
-      mode.update(0.05);
-      mode.t += 0.05;
-      time += 0.05;
-      const f = L.core.focus();
-      if (f?.selectable && time >= next) {
-        next = time + 0.5;
-        const res = L.core.type(f.word[f.typed]);
-        if (res.kind === 'done') mode.onDone(res.target);
-        else if (res.kind === 'ok') mode.onCorrect(res.target);
+/** Words a minute of the story's slow typist (`STORY_WPM` in levels). */
+const WPM = [8, 10, 12];
+
+/**
+ * The fake runtime of a real level: the clock of active play, the minimum left, the bar and the
+ * growing count work as in the game; `stretchMin` and `endMinimum` change the minimum.
+ */
+function levelRuntime(def: LevelDef): LevelRuntime & { clock: number; min: number } {
+  const L = fakeRuntime(def.count) as LevelRuntime & { clock: number; min: number };
+  const live = { clock: 0, min: minActiveS(def) };
+  // Every word starts with its own letter, as targets on the stage do.
+  let n = 0;
+  const word = () => 'acegikmoqsuwy'[n++ % 13] + 'bdfh';
+  Object.assign(L as object, { def, word, weakWord: word });
+  return new Proxy(L, {
+    get: (o, k) => {
+      if (k === 'clock' || k === 'min') return live[k];
+      if (k === 'playedS') return live.clock;
+      if (k === 'minLeft') return Math.max(0, live.min - live.clock);
+      if (k === 'share') return () => shownProgress(mode!.progress(), live.clock, live.min);
+      if (k === 'stretchMin') return (f: number) => { live.min *= f; };
+      if (k === 'endMinimum') return () => { live.min = Math.min(live.min, live.clock); };
+      return (o as any)[k];
+    },
+    set: (o, k, v) => {
+      if (k === 'clock' || k === 'min') live[k] = v;
+      else (o as any)[k] = v;
+      return true;
+    },
+  });
+}
+let mode: Mode | null = null;
+
+interface Play {
+  /** Seconds the level lasted, and its minimum then. */
+  end: number;
+  min: number;
+  /** The longest stretch without a selectable target between the first and the last one, and where it began. */
+  gap: number;
+  gapAt: number;
+  /** Seconds from the last target to the end (the mode's end scene). */
+  tail: number;
+  /** Seconds from the minimum to the end. */
+  over: number;
+  /** Words typed. */
+  words: number;
+}
+
+/**
+ * Plays a level: a letter every `letter` seconds, and a new word only `word` seconds after the
+ * one before began; the count grows as in the runtime.
+ */
+function play(def: LevelDef, Ctor: new (L: LevelRuntime) => Mode, letter: number, word: number, tick?: (L: LevelRuntime & { clock: number; min: number }) => void): Play {
+  const L = levelRuntime(def);
+  // The runtime fits a target's travel to the child's word pace; a slow child's targets wait near Tapko, so none is missed.
+  Object.assign(L as object, { travelTime: () => Math.max(3, word * 1.5), noPressure: word > 0 });
+  mode = new Ctor(L);
+  mode.start();
+  const dt = 0.05;
+  let next = 0, wordAt = 0, started: number | null = null, idleFrom: number | null = null, gap = 0, gapAt = 0, words = 0, minAt: number | null = null;
+  while (L.clock < 900 && !levelOver(mode.finished, L.clock, L.min)) {
+    L.count = grownCount(L.count, mode.progress() * L.count, L.clock, Math.max(3, L.maxActive + 1), L.min);
+    L.core.update(dt);
+    mode.t += dt;
+    mode.update(dt);
+    L.clock += dt;
+    tick?.(L);
+    if (minAt === null && L.clock >= L.min) minAt = L.clock;
+    const f = L.core.focus() ?? L.core.active.find((tg) => tg.selectable && !tg.done) ?? null;
+    if (f && started === null) started = L.clock;
+    if (started !== null) {
+      if (f && idleFrom !== null && L.clock - idleFrom > gap) {
+        gap = L.clock - idleFrom;
+        gapAt = idleFrom;
       }
+      if (f) idleFrom = null;
+      else idleFrom ??= L.clock;
     }
-    expect(time).toBeGreaterThanOrEqual(MIN_ACTIVE_S);
-    expect(time).toBeLessThan(MIN_ACTIVE_S + 60);
+    if (!f || L.clock < next || (f.typed === 0 && L.clock < wordAt)) continue;
+    next = L.clock + letter;
+    if (f.typed === 0) wordAt = L.clock + word;
+    const res = L.core.type(f.word[f.typed]);
+    if (res.kind === 'done') {
+      words++;
+      mode.onDone(res.target);
+    } else if (res.kind === 'ok') mode.onCorrect(res.target);
+  }
+  return { end: L.clock, min: L.min, gap, gapAt, tail: L.clock - (idleFrom ?? L.clock), over: L.clock - (minAt ?? L.clock), words };
+}
+
+/** The first story level of each kind (the valley's flights only count dragons, they are left out of the words). */
+const KIND_LEVELS: [string, LevelDef][] = MODES.map(([kind]) => [kind, LEVELS.find((l) => l.kind === kind as LevelKind)!]);
+const ctor = (kind: string) => MODES.find(([k]) => k === kind)![1];
+
+/** Scripted moments with no target, longer than the 8 s a quick child may wait: none so far. */
+const SCRIPTED: Partial<Record<string, string>> = {};
+
+describe('every level keeps giving targets until both minimums are met', () => {
+  it.each(KIND_LEVELS)('%s: a quick steady typist never waits long, and the level ends just after its minimum', (kind, def) => {
+    const p = play(def, ctor(kind), 0.15, 0);
+    if (!SCRIPTED[kind]) expect(p.gap, `waited from ${p.gapAt.toFixed(1)} s`).toBeLessThanOrEqual(8);
+    expect(p.tail).toBeLessThanOrEqual(10);
+    expect(p.end).toBeGreaterThanOrEqual(p.min);
+    expect(p.over).toBeLessThan(15);
+  });
+
+  it.each(KIND_LEVELS.filter(([k]) => !['flight', 'lullaby', 'takeoff'].includes(k)))('%s: a slow typist at the pace of its story ends near the minimum', (kind, def) => {
+    const p = play(def, ctor(kind), 0.15, 60 / WPM[STORIES.indexOf(storyOf(def.world))]);
+    expect(p.end).toBeGreaterThanOrEqual(p.min);
+    expect(p.end, `${p.words} words`).toBeLessThanOrEqual(p.min * 1.25);
   });
 });
 
@@ -161,6 +249,23 @@ function run(L: LevelRuntime, mode: Mode, seconds: number): void {
 }
 
 describe('the great swamp', () => {
+  it('a log floats there once about halfway and six words push it away; the shore comes only near both minimums', () => {
+    const def = levelById('w3-5')!;
+    let logAt = -1, shoreAt = -1;
+    const pushes = vi.spyOn(GreatSwampMode.prototype as any, 'pushLog');
+    const p = play(def, GreatSwampMode, 0.15, 0, (L) => {
+      const m = mode as any;
+      if (m.log && logAt < 0) logAt = L.share();
+      if (m.shore !== null && shoreAt < 0) shoreAt = L.clock;
+    });
+    expect(logAt).toBeGreaterThanOrEqual(0.5);
+    expect(logAt).toBeLessThan(0.7);
+    expect(pushes).toHaveBeenCalledTimes(6);
+    expect((mode as any).logGone).toBe(true);
+    expect(shoreAt).toBeGreaterThan(p.min - 15);
+    expect(mode!.progress()).toBe(1);
+  });
+
   it('a slip away from the firm stone cracks the stones back to it, where a new word comes', () => {
     const L = fakeRuntime(21);
     const mode = new GreatSwampMode(L);

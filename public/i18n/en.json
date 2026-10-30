@@ -514,10 +514,6 @@
     "hedgehogDone": [
       "All the leaves are back on the hedgehog. Well done!"
     ],
-    "boulderOpen": [
-      "The boulder fell apart! The way is clear.",
-      "Your careful typing did it!"
-    ],
     "swampStart": [
       "**Welcome** to the dragons' planet, where spells are real and crystals power life! But the **last crystal** of life has **gone dark.** The planet may lose its light. Luckily you **have a map**: cross the swamp and the meadow, **find** at least three **crystals of life** and wake them with a spell. When you **carry** them all the way **to the stone monolith**, life on the dragons' planet **will be saved.** **Accuracy** still matters more than speed."
     ],
@@ -663,9 +659,7 @@
       "You have just reached the **Great Swamp**, with the **stone monolith** behind it. The water is deep here and **the stones are fragile.** Luckily you have the crystals of life in your pocket. From a firm stone you must **jump three more stones without a slip** to reach a firm stone again. If you slip, you can try again. Everyone on the dragons' planet hopes you will set the crystals right and light the planet up with life."
     ],
     "greatSwampSlip": "The stone is cracking! Back to the firm one.",
-    "boulderStart": [
-      "A boulder blocks the way. Crack it with careful words!"
-    ],
+    "greatSwampLog": "A little log like this won't hold me. I have to wait until it floats away.",
     "monolithAsk": [
       "You are at the shore! Type this sentence without a slip and the monolith wakes up."
     ],

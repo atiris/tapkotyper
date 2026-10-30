@@ -14,7 +14,7 @@ const OUT = 'public/assets';
 // A picture is kept at about its largest drawn size on a 1440-pixel-high screen: smaller looks
 // blurry on Full HD, bigger only costs memory, which weak computers lack (each one is decoded).
 const SPRITE_MAX = 512;
-// The companions' square layers (Tapko is drawn 265 units of the 600-unit stage) and the planet's boulder (300 units).
+// The companions' square layers (Tapko is drawn 265 units of the 600-unit stage).
 const BIG_MAX = 640;
 // The planet's far bank is a long strip drawn at the swamp band's scale, as wide as the stage.
 const WIDE_MAX = 1376;
@@ -189,7 +189,7 @@ async function processImage(name, file, manifest) {
     return;
   }
   const box = bbox(data, w, h);
-  const max = name.startsWith('ui-icon') ? ICON_MAX : name === 'ui-cert-parrot' ? STAMP_MAX : name === 'obj-planet-bank' ? WIDE_MAX : name.startsWith('obj-boulder-') ? BIG_MAX : SPRITE_MAX;
+  const max = name.startsWith('ui-icon') ? ICON_MAX : name === 'ui-cert-parrot' ? STAMP_MAX : name === 'obj-planet-bank' ? WIDE_MAX : SPRITE_MAX;
   const info = await webp(sharp(data, { raw: { width: w, height: h, channels: 4 } }).extract(box).resize(max, max, { fit: 'inside', withoutEnlargement: true })).toFile(join(OUT, `${name}.webp`));
   manifest.images[name] = { w: info.width, h: info.height };
 }

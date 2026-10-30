@@ -31,8 +31,18 @@
   (up, or down near the top), and a far-moved word gets a thin line to its object.
 - The start is slow: at difficulty 3 a short word needs about 10 seconds to reach Tapko
   and one word is on screen at a time.
-- Every story level, super level and rescue mission lasts at least 2 minutes of active
-  play (pauses and cards do not count): a quick child gets more targets of the same kind.
+- Every story level, super level and rescue mission lasts a minimum of active play (pauses
+  and cards do not count) that grows with the story: 2 minutes in the dragon story, 3 in the
+  robot story, 4 in the fairy story. A calm step lasts a quarter less, a super level a quarter
+  more; a rescue mission the full minimum. Even 4 minutes is well under the 10-15 minutes a day
+  usually recommended for children and under a KTouch lesson (5-10 minutes): a level is one part
+  of a session, not the whole of it.
+- A level also asks for a minimum of words: what a slow but practising child types in the
+  minimum time, 8 / 10 / 12 words a minute in the three stories (children of 7-9 type about
+  5-15 words a minute, 10-20 with practice). A level plans that many targets in its own unit
+  (a big asteroid, a dragon, a copy target count as the words they hold). A quick child gets
+  more targets of the same kind until the minimum time is played, never a long wait with
+  nothing to type; a slow child at that pace gets no more than the minimum needs.
   The valley's flight levels count dragons (three, one more while the minimum is not played,
   at most five) and the fifth ends the level even below the minimum ([story](story.md)).
   The progress bar shows the slower of the two shares, the targets done
@@ -74,8 +84,8 @@
     is measured against the key it should be; a key that starts no word counts only in the
     level's accuracy (in the rocket world the meteors the astronaut hops across carry words of
     up to 4 letters). New words keep coming until the minimum time is played. Nothing moves
-    toward the child and nothing is missed. A calm step lasts at least 1 minute of
-    active play, not 2.
+    toward the child and nothing is missed. A calm step lasts a quarter less than the
+    story's minimum.
   - *Copy* (twist, a clean line): a row of 3 to 4 words typed from left to right. A slip turns the
     word red, it fades to a faint trace (about a fifth) where it stood and the next word is the one to type; the level gets 2 more
     words, at most (1 + story order) x 3 in all (6 in the dragon story).
@@ -87,8 +97,8 @@
     words, the super level a sentence of 3-5 words once space and period are known (else a
     phrase); the level's keys give the letters. A finished target floats up out of the panel
     and the next one grows in; the words typed are counted small under
-    the panel. A slip only counts. Targets come without end until the minimum time (2
-    minutes) is played; the target typed then is the last, and the end says how many words
+    the panel. A slip only counts. Targets come without end until the minimum time is
+    played; the target typed then is the last, and the end says how many words
     were typed. Its map dot is the copy envelope.
   - *Gust* (surprise of the meadow's level 3): half way through, the character says that
     the wind blows, and for about 25 seconds up to 3 small leaves (words of at most 3

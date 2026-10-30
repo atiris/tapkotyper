@@ -521,9 +521,8 @@ BG is `magenta color (#FF00FF)` unless the table says `green`, then use `green c
 | `obj-planet-2.jpg` | a small round pastel blue planet with soft stripes, front view | magenta |
 | `obj-planet-3.jpg` | a small round pastel purple planet with spots, front view | green |
 | **New planet** | | |
-| `obj-boulder-1.jpg` | a huge round boulder, whole, calm sleepy face | magenta |
-| `obj-boulder-2.jpg` | the same huge round boulder with a few cracks, surprised face | magenta |
 | `obj-swamp-stone-1.jpg`, `-2`, `-3` | (the owner's pictures, 2026-10-30) a round mossy stepping stone without a face in three looks (a red crystal, blue flowers, thick moss), each stone in the swamp picks one at random; all three keep one outline, so `obj-swamp-stone-broken` fits each | magenta |
+| `obj-swamp-log.jpg` | (the owner's picture, 2026-10-30) a short mossy log lying slanted, with a white flower and a small red mushroom on its moss, the cut end on the right; it floats in the great swamp | magenta |
 | `obj-swamp-stone-broken.jpg` | **attach `obj-swamp-stone.jpg`**: "... the stone is half crumbled: its top and one side have broken off into four or five chunks falling apart, the rest still holds together; no face any more; no water, no ground, no shadow" | magenta |
 | `obj-crystal-amber.jpg` | (2026-10-28, tall portrait) one big six-sided crystal standing upright with two smaller points low at its sides, translucent amber (#F2B65A, facets #FFD98A, edges #C98A2E), one soft white highlight; the base cut straight, no rock or ground; no face, no glow (the game draws its glow) | magenta |
 | `obj-crystal-rose.jpg` | (2026-10-28, tall portrait) two tall six-sided points of different height from one base, leaning slightly apart, rose quartz (#F3B3BE, facets #FCD9DE, edges #D07A8C); as amber otherwise | green |

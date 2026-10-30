@@ -110,13 +110,13 @@
 
 ## Steps
 
-- [ ] 1. Minimum time by story, calm and super factors; `minActiveS` everywhere; unit tests.
-- [ ] 2. `minWords` and derived counts per kind (own units, flights excepted); unit tests.
-- [ ] 3. The idle-stretch / slow-typist tests over all modes; fix every mode they catch
+- [x] 1. Minimum time by story, calm and super factors; `minActiveS` everywhere; unit tests.
+- [x] 2. `minWords` and derived counts per kind (own units, flights excepted); unit tests.
+- [x] 3. The idle-stretch / slow-typist tests over all modes; fix every mode they catch
        (except the great swamp, step 4).
-- [ ] 4. Great swamp: stones until both minimums, then the shore; the log instead of the
+- [x] 4. Great swamp: stones until both minimums, then the shore; the log instead of the
        boulder; boulder removed; texts.
-- [ ] 5. Specs updated (mechanics, story).
+- [x] 5. Specs updated (mechanics, story).
 - [ ] 6. tsc, unit, build, e2e (`npx playwright test`); Playwright MCP play-through of
        Planéta:5 (log bobbing, six pushes, new stone, shore only after the minimum, bar
        100 % at the end) and of one level each in stories 2 and 3 (time minimum shown by

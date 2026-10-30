@@ -162,24 +162,28 @@ as they are. The world descriptions below marked *not built yet* are the design 
    (its words train the keys the child still practises, as the target range does).
    4 spells (copy twist): three crystals of life of three kinds, asleep (grey), peek out of a
    big molehill on the right, and now and then one of them gives a little shake. A spell of
-   several words is written on a panel in the middle, word by word. Three slips break it: three
+   several words is written on a panel in the middle, word by word; a long one comes page by page
+   (at most 14 words at once). Three slips break a page: three
    different small mushrooms grow from the top edge of the panel (high in the scene) and one goes at each slip; when the third
-   goes, the spell breaks and a new spell comes. Each spell cast lights the next crystal with a shout
+   goes, the page breaks and new words come in it. Each spell cast lights the next crystal with a shout
    ("Jupí!", "Zipp!", "Juchú!"); all three lit, the crystals fly to Tapko. The spells are long enough to fill the level's
-   minimum time at the child's pace.
+   minimum time at the child's pace; the last one gets another page while the minimum is not played.
    5 the great swamp (super level): from a firm stone Tapko jumps three stones on, the fourth
    jump reaches the next firm stone and the view moves on. A slip on the firm stone is only a
    slip; a slip on any other stone cracks it (the stone shakes),
    he jumps back stone by stone (each one left crumbles, half broken, and the
-   next one cracks) and on the firm stone a new word comes. Halfway a boulder lies where a firm
-   stone would be; slightly harder words crack it (a word with a slip counts half), it bursts
-   into that firm stone and he jumps onto it. Every jump is a typed word up to the last stone,
-   which lies just before the shore; the shore stays in the stage's right part and its end never
-   shows. From it he steps onto the grass, where a longer sentence of known words (a capital and a period once known) wakes the monolith: it must be typed without a
+   next one cracks) and on the firm stone a new word comes. About halfway (the bar at half) a
+   little mossy log floats where a firm stone would be, bobbing gently on the water; Tapko says
+   it would not hold him and he has to wait until it floats away. Six words push it away (a word
+   with a slip pushes half), each a bit to the right, the sixth off the stage; a stone comes up
+   where it lay and he jumps onto it. Never while the shore is near. Stones keep coming until
+   both minimums (time and words) are nearly met, so a quick child never runs out of stones;
+   only then the shore comes just past the stage's right edge, the last stone just before it.
+   Every jump is a typed word up to the last stone; the shore's end never shows. From it he steps onto the grass, where a longer sentence of known words (a capital and a period once known) wakes the monolith: it must be typed without a
    slip, a slip brings a new one. Then the **monolith** (a carved stone pedestal, not an altar)
    rises out of the grass beside him, its foot a bit low with a soft dark green shadow behind it, a soft light
    above it; the crystals of life fly onto it, float in their glow and pulse, the planet blooms,
-   and a few seconds later the level ends. The progress bar is full once the sentence is typed. Super-obstacle: the great swamp and the boulder. Reward: **the Force**, the crystals'
+   and a few seconds later the level ends. The progress bar is full once the sentence is typed. Super-obstacle: the great swamp and the log. Reward: **the Force**, the crystals'
    thanks. The planet's own thing at the target range is a crystal.
 4. **Dragon Valley** - the baby dragons' home is a big fire pit at the valley's entrance. Its
    fire went out when the crystal of life lost its light: the little flames scattered, the path

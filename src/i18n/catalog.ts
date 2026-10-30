@@ -88,7 +88,7 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
     g('story-worlds', 'story.world.*'),
     g('story-scenes', 'story.scenes.*', 'story.next'),
     g('story-space', 'story.spaceStart', 'story.hopStart', 'story.hopTooFar', 'story.strongStart', 'story.strongHit', 'story.commandStart', 'story.commandReply', 'story.commandRejected', 'story.boarded', 'story.asteroidStart'),
-    g('story-planet', 'story.swampStart', 'story.swampDone', 'story.crystalsStart', 'story.crystalsDoneOne', 'story.crystalsDoneFew', 'story.crystalsDoneMany', 'story.crossroadsStart', 'story.roadEnd', 'story.signGone', 'story.signLast', 'story.spellStart', 'story.spellCast', 'story.spellBroken', 'story.greatSwampStart', 'story.greatSwampSlip', 'story.boulderStart', 'story.boulderOpen', 'story.cradleDone'),
+    g('story-planet', 'story.swampStart', 'story.swampDone', 'story.crystalsStart', 'story.crystalsDoneOne', 'story.crystalsDoneFew', 'story.crystalsDoneMany', 'story.crossroadsStart', 'story.roadEnd', 'story.signGone', 'story.signLast', 'story.spellStart', 'story.spellCast', 'story.spellBroken', 'story.greatSwampStart', 'story.greatSwampSlip', 'story.greatSwampLog', 'story.cradleDone'),
     g('story-valley', 'story.flamesStart', 'story.flamesDone', 'story.thicketStart', 'story.thicketSlip', 'story.thicketDone', 'story.flightStart', 'story.flightBush', 'story.flightHard', 'story.flightDone', 'story.lullabyStart', 'story.lullabyDone', 'story.takeoffStart', 'story.takeoffBack', 'story.takeoffGone'),
     g('story-placeholder', 'story.copyLoopStart', 'story.copyLoopSoon', 'story.copyLoopCount', 'story.copyLoopDone'),
     g('story-paths', 'story.path.*'),

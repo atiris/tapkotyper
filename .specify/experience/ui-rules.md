@@ -73,8 +73,8 @@ One set of rules for where things sit and how they behave, so every screen feels
    and what the next tier needs (silver for bronze, gold for silver). The sound button names
    the sound level with F4 and, on a second line, that F8 plays another song.
 - No decorative bursts (confetti, sparkles, flying petals or feathers) for success or at an
-  end. Particles only show what happens in the scene: dust of a crumbling stone, smoke of a
-  bursting boulder, sparks of a torch, leaves of a bush, what a thing at the target range is
+  end. Particles only show what happens in the scene: dust of a crumbling stone, splashes of a
+  pushed log, sparks of a torch, leaves of a bush, what a thing at the target range is
   made of.
 
 ## Why

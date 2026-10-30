@@ -514,10 +514,6 @@
     "hedgehogDone": [
       "Všetky listy sú späť u ježka. Výborne!"
     ],
-    "boulderOpen": [
-      "Balvan sa rozpadol! Cesta je voľná.",
-      "Dokázalo to tvoje presné písanie!"
-    ],
     "swampStart": [
       "**Vitaj** na planéte drakov, na ktorej existujú kúzla a život poháňajú kryštály! **Posledný kryštál** života však už **vyhasol.** Hrozí, že planéta stratí svetlo. Našťastie **máš mapu**, podľa ktorej treba prejsť močiar a lúku, **nájsť** aspoň tri **kryštály života** a prebudiť ich kúzlom. Keď sa ti ich podarí **odniesť** až **ku kamennému monolitu**, život na planéte drakov **bude zachránený.** **Presnosť** je stále dôležitejšia ako rýchlosť."
     ],
@@ -663,9 +659,7 @@
       "Práve si dorazil k **Veľkému močiaru**, za ktorým sa nachádza **kamenný monolit.** Voda je tu hlboká a **kamene krehké.** Vo vrecku máš našťastie kryštály života. Z pevného kameňa musíš **bez chyby preskočiť tri ďalšie** kamene, aby si sa znova dostal na pevný kameň. Ak sa pomýliš, môžeš to skúsiť znova. Všetci na planéte drakov dúfajú, že sa ti podarí správne umiestniť kryštály a rozžiariť planétu životom."
     ],
     "greatSwampSlip": "Kameň praská! Späť na pevný kameň.",
-    "boulderStart": [
-      "Cestu zatarasil balvan. Rozbi ho presnými slovami!"
-    ],
+    "greatSwampLog": "Takéto drievko ma neudrží, musím počkať, kým odpláva.",
     "monolithAsk": [
       "Si pri brehu! Napíš túto vetu bez chyby a monolit sa prebudí."
     ],

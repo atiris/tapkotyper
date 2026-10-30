@@ -71,7 +71,7 @@ being made. No explosions, no punishment, no ads, no accounts.
 |---|---|---|---|
 | 1. Training Meadow | goalkeeper Tapko catches the leaves bees, ladybugs and mice kick at him (a miss is a cheered goal); a poppy bouquet, the match, party invitations | hedgehog throwing leaf volleys | invitation to space |
 | 2. Rocket Flight | typing rhythm drives the speedometer, a beam pushes rocks away; hops across meteors, commands to the rocket | fractured asteroid | landing clearance |
-| 3. New Planet | stones across a swamp, crystals on the meadow, crossroads that change the road, spells for the crystals of life | the great swamp and a boulder | the Force |
+| 3. New Planet | stones across a swamp, crystals on the meadow, crossroads that change the road, spells for the crystals of life | the great swamp and a floating log | the Force |
 | 4. Dragon Valley | flames light the dragons' fire, spells clear the overgrown path, flying lessons, a lullaby | the take-off: every dragon flies away | a dragon egg |
 | 5. Egg Journey *(being made)* | the egg jumps over rocks and stumps | friendly mole | a baby dragon, endless rescue missions |
 

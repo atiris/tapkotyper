@@ -4,7 +4,7 @@ import { ease } from '../../engine/tween';
 import { drawCached, drawWord, fontFamily, type G, wordBox } from '../../gfx/draw';
 import { t, tn } from '../../i18n/i18n';
 import { SPACE } from '../../learning/lessons';
-import { WORLDS } from '../levels';
+import { WORLDS, copyTarget } from '../levels';
 import { type Drift, Mode } from '../mode';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
@@ -25,12 +25,6 @@ const GROW = 0.3;
 const FLOAT = 0.7;
 const END_TIME = 3;
 const INK = '#3d3355';
-
-/** How many words a target has at a level's place in its world: words, then phrases, a sentence at the super level once space and period are known. */
-export function copyTarget(index: number, sentence: boolean): { words: number; min: number } {
-  if (index <= 1) return { words: 1, min: 2 };
-  return index >= 4 && sentence ? { words: 5, min: 3 } : { words: 3, min: 2 };
-}
 
 /** A small text centred at (x, y); with `rim` a white rim keeps it readable on any background. */
 function text(g: G, s: string, x: number, y: number, size: number, weight: number, ink: string, alpha = 1, rim = false): void {

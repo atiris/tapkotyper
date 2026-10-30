@@ -10,10 +10,11 @@ Each world ends with a bigger, special challenge:
 - **Fractured asteroid** (space): a big asteroid, when pushed, splits into smaller
   targets with shorter words. The big ones turn, each its own way (some mirrored), and the
   last one, bigger, flies straight at the rocket.
-- **Great swamp and boulder** (planet): from a firm stone four jumps reach the next firm one;
+- **Great swamp and log** (planet): from a firm stone four jumps reach the next firm one;
   a slip on the way cracks the stones back to the firm stone, so accuracy is what moves him on.
-  At the end a boulder cracks with precise words (a word with a slip counts half), and the
-  crystals of life go onto the monolith.
+  Halfway a floating log is pushed away with precise words (a word with a slip pushes half);
+  stones come until the minimum is played, then the shore, and the crystals of life go onto
+  the monolith.
 - **Take-off** (valley): the baby dragons fly off one by one; a flight is 3 or 4 sets of 2-3
   short words, each word in its own time (the child's pace). A clean set lifts the dragon a step
   on; a late word or a slip sends it back to the fire to try again. After three returns a try has

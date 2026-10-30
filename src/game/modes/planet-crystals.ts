@@ -277,8 +277,8 @@ export class CrystalsMode extends Mode {
 /** Slips that break a spell; each takes one of its mushrooms. */
 export const SPELL_SLIPS = 3;
 const SPELLS = 3;
-/** The longest spell, the size of its words and the gap between them. */
-const SPELL_MAX = 14;
+/** The most words the panel shows (a longer spell comes page by page), the size of its words and the gap between them. */
+const SPELL_PAGE = 14;
 const SPELL_SIZE = 36;
 const SPELL_GAP = 22;
 const SPELL_LINE = 54;
@@ -358,9 +358,9 @@ const SHAKE_TIME = 0.4;
 
 /**
  * Planet 4, the spells (copy twist): three sleeping crystals of life peek out of a molehill on the
- * right. A spell is a row of words on the panel in the middle, typed left to right; three small
- * mushrooms on the panel are the slips it takes, one goes at each slip, and with the third one the
- * spell breaks and a new spell comes. A spell cast lights the next crystal with a shout; when all
+ * right. A spell is a row of words on the panel in the middle, typed left to right, a long one page
+ * by page; three small mushrooms on the panel are the slips a page takes, one goes at each slip, and
+ * with the third one the page breaks and new words come in it. A spell cast lights the next crystal with a shout; when all
  * three glow, they fly to Tapko and the level ends.
  */
 export class SpellMode extends Mode {
@@ -399,24 +399,32 @@ export class SpellMode extends Mode {
 
   /**
    * A new spell: the level's words in three, but long enough that the spells left fill the minimum
-   * time at the child's pace so far.
+   * time at the child's pace so far; the last one gets another page while the minimum is not played.
    */
   private spell(): void {
     const left = SPELLS - this.cast;
     let n = Math.max(3, Math.round(this.L.count / SPELLS));
     const pace = this.doneWords > 0 ? this.L.playedS / this.doneWords : 0;
-    if (pace > 0) n = Math.max(n, Math.ceil((this.L.minLeft * 1.1) / pace / left));
-    n = Math.min(SPELL_MAX, n);
+    if (pace > 0) n = Math.max(n, Math.round(this.L.minLeft / pace / left));
     this.L.count = this.doneWords + n * left;
     this.words = Array.from({ length: n }, () => this.L.word(6, 1));
-    this.begin();
+    this.begin(0);
   }
 
-  private begin(): void {
-    this.at = 0;
+  /** The first word of the page being typed. */
+  private first = 0;
+
+  /** The words of the page being typed. */
+  private get page(): string[] {
+    return this.words.slice(this.first, this.first + SPELL_PAGE);
+  }
+
+  /** A page starts at word `at`, with all its mushrooms. */
+  private begin(at: number): void {
+    this.at = this.first = at;
     this.slips = 0;
     this.shroomGone = [-1, -1, -1];
-    this.current = this.L.core.add(this.words[0], {});
+    this.current = this.L.core.add(this.words[at], {});
   }
 
   onDone(tg: Target): void {
@@ -425,8 +433,16 @@ export class SpellMode extends Mode {
     this.at++;
     this.L.core.prune();
     if (this.at < this.words.length) {
+      if (this.at - this.first >= SPELL_PAGE) return this.begin(this.at);
       this.current = this.L.core.add(this.words[this.at], {});
       return;
+    }
+    if (this.cast === SPELLS - 1 && this.L.minLeft > 0) {
+      const pace = this.L.playedS / (this.doneWords + this.at);
+      const more = Math.min(SPELL_PAGE, Math.max(1, Math.round(this.L.minLeft / pace)));
+      this.words.push(...Array.from({ length: more }, () => this.L.word(6, 1)));
+      this.L.count += more;
+      return this.begin(this.at);
     }
     this.current = null;
     this.doneWords += this.words.length;
@@ -443,7 +459,7 @@ export class SpellMode extends Mode {
     // Each slip takes a mushroom, from the left.
     this.shroomGone[SPELL_SLIPS - 1 - this.slips] = 0;
     if (++this.slips < SPELL_SLIPS) return;
-    // The third slip took the last mushroom: the spell fizzles and a new one comes.
+    // The third slip took the last mushroom: the page fizzles and new words come in it.
     this.L.core.release(this.current, false);
     this.L.core.prune();
     this.current = null;
@@ -465,10 +481,11 @@ export class SpellMode extends Mode {
       this.shakeT = SHAKE_TIME;
       this.shakeIn = this.L.rng.range(SHAKE_EVERY[0], SHAKE_EVERY[1]);
     }
-    // A broken spell is gone: a new one of the same length comes.
+    // A broken page is gone: new words of the same number come in it.
     if (this.fizzle >= 0 && (this.fizzle -= dt) < 0) {
-      this.words = this.words.map(() => this.L.word(6, 1));
-      this.begin();
+      const first = this.first;
+      this.words = this.words.map((w, i) => (i >= first && i < first + SPELL_PAGE ? this.L.word(6, 1) : w));
+      this.begin(first);
     }
     if (this.pause >= 0 && (this.pause -= dt) < 0) {
       if (this.cast < SPELLS) this.spell();
@@ -491,11 +508,11 @@ export class SpellMode extends Mode {
     return { x0: TAPKO_X + 150, x1: this.L.vw - 290, y: VH * 0.32 };
   }
 
-  /** The spell's words in lines that fit the panel: each word's center and line. */
+  /** The page's words in lines that fit the panel: each word's center and line. */
   private layout(g: G, width: number): { x: number; line: number; w: number }[] {
     const out: { x: number; line: number; w: number }[] = [];
     let x = 0, line = 0;
-    for (const w of this.words.map((word) => wordBox(g, word, SPELL_SIZE).w)) {
+    for (const w of this.page.map((word) => wordBox(g, word, SPELL_SIZE).w)) {
       if (x > 0 && x + w > width) {
         x = 0;
         line++;
@@ -536,16 +553,17 @@ export class SpellMode extends Mode {
       return ws.length ? ws[ws.length - 1].x + ws[ws.length - 1].w / 2 : 0;
     };
     const y0 = p.y - ((lines - 1) * SPELL_LINE) / 2 + 12;
+    const page = this.page, first = this.first;
     lay.forEach((o, i) => {
       const x = (p.x0 + p.x1) / 2 - lineW(o.line) / 2 + o.x, y = y0 + o.line * SPELL_LINE;
-      if (i === this.at && this.current) return this.L.label(g, this.current, x, y, SPELL_SIZE);
+      if (first + i === this.at && this.current) return this.L.label(g, this.current, x, y, SPELL_SIZE);
       g.save();
       g.font = `600 ${SPELL_SIZE}px ${fontFamily()}`;
       g.textAlign = 'center';
       g.textBaseline = 'middle';
       g.fillStyle = SPELL_INK;
-      g.globalAlpha = i < this.at ? 1 : 0.35;
-      g.fillText(this.words[i], x, y);
+      g.globalAlpha = first + i < this.at ? 1 : 0.35;
+      g.fillText(page[i], x, y);
       g.restore();
     });
   }

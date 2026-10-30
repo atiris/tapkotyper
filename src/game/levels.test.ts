@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { SUPER_ID } from '../storage/schema';
 import { lessonOrder } from '../learning/lessons';
-import { LEVELS, MIN_ACTIVE_S, STORIES, WORLDS, activityOf, minActiveS, aimLevel, aimOpen, aimWorld, freeTypeLevel, grownCount, hasMinLength, isLevelUnlocked, isWorldUnlocked, keysNeeded, levelById, levelOver, nextLevel, parrotKeys, parrotLevel, parrotSizeOf, practiceLevel, rescueLevel, rescueUnlocked, shownProgress, worldLevels, worldLock } from './levels';
+import { LEVELS, STORIES, WORLDS, activityOf, minActiveS, minWords, aimLevel, aimOpen, aimWorld, freeTypeLevel, grownCount, hasMinLength, isLevelUnlocked, isWorldUnlocked, keysNeeded, levelById, levelOver, nextLevel, parrotKeys, parrotLevel, parrotSizeOf, practiceLevel, rescueLevel, rescueUnlocked, shownProgress, worldLevels, worldLock } from './levels';
 
 const KEYS = ['f', 'j', 'd', 'k', 's', 'l', 'a', ';', 'g', 'h', 'r', 'u', 'e', 'i', 't', 'y', 'w', 'o', 'q', 'p', 'v', 'm', 'c', ',', 'x', '.'];
 
@@ -168,21 +168,21 @@ describe('first level', () => {
     expect(['w1-1', 'w1-2', 'w1-3', 'w1-4', 'w1-5'].map((id) => levelById(id)?.kind)).toEqual(['meadow', 'poppies', 'meadow', 'invitation', 'hedgehog']);
     expect(['w1-1', 'w1-2', 'w1-3', 'w1-4', 'w1-5'].map((id) => activityOf(levelById(id)!))).toEqual(['chase', 'catch', 'chase', 'clean', 'super']);
     expect(levelById('w1-3')?.variant).toBe('gust');
-    expect(minActiveS(levelById('w1-2')!)).toBe(60);
-    expect(minActiveS(levelById('w1-4')!)).toBe(MIN_ACTIVE_S);
+    expect(minActiveS(levelById('w1-2')!)).toBe(90);
+    expect(minActiveS(levelById('w1-4')!)).toBe(120);
   });
 
   it('the rocket world plays the world rhythm too: its second level is the calm hop', () => {
     expect(levelById('w2-2')?.kind).toBe('hop');
     expect(activityOf(levelById('w2-2')!)).toBe('catch');
-    expect(minActiveS(levelById('w2-2')!)).toBe(60);
+    expect(minActiveS(levelById('w2-2')!)).toBe(90);
   });
 
   it('the planet: the swamp waits (a calm minute), crystals stream, crossroads, spells to copy', () => {
     expect(levelById('w3-1')?.kind).toBe('swamp');
     expect(activityOf(levelById('w3-1')!)).toBe('catch');
-    expect(minActiveS(levelById('w3-1')!)).toBe(60);
-    expect(minActiveS({ ...levelById('w3-1')!, rescue: true })).toBe(MIN_ACTIVE_S);
+    expect(minActiveS(levelById('w3-1')!)).toBe(90);
+    expect(minActiveS({ ...levelById('w3-1')!, rescue: true })).toBe(120);
     expect(activityOf(levelById('w3-2')!)).toBe('chase');
     expect(activityOf(levelById('w3-4')!)).toBe('clean');
     expect(levelById('w3-5')?.kind).toBe('greatswamp');
@@ -199,7 +199,7 @@ describe('the valley', () => {
     const ids = ['w4-1', 'w4-2', 'w4-3', 'w4-4', 'w4-5'];
     expect(ids.map((id) => levelById(id)?.kind)).toEqual(['flames', 'thicket', 'flight', 'lullaby', 'takeoff']);
     expect(ids.map((id) => activityOf(levelById(id)!))).toEqual(['chase', 'clean', 'chase', 'clean', 'super']);
-    expect(ids.map((id) => minActiveS(levelById(id)!))).toEqual([MIN_ACTIVE_S, 60, MIN_ACTIVE_S, MIN_ACTIVE_S, MIN_ACTIVE_S]);
+    expect(ids.map((id) => minActiveS(levelById(id)!))).toEqual([120, 90, 120, 120, 150]);
     expect(ids.slice(2).map((id) => levelById(id)?.count)).toEqual([3, 3, 3]);
   });
 });
@@ -208,7 +208,7 @@ describe('worlds not built yet', () => {
   it('every level of worlds 5-15 plays the cyclic copy, a copy dot with the full minimum', () => {
     const later = LEVELS.filter((l) => l.world >= 4);
     expect(later).toHaveLength(55);
-    expect(later.every((l) => l.kind === 'copyloop' && minActiveS(l) === MIN_ACTIVE_S)).toBe(true);
+    expect(later.every((l) => l.kind === 'copyloop')).toBe(true);
     expect(later.filter((l) => !l.isSuper).every((l) => activityOf(l) === 'clean')).toBe(true);
     expect(LEVELS.filter((l) => l.world < 4).some((l) => l.kind === 'copyloop')).toBe(false);
   });
@@ -246,6 +246,34 @@ describe('target range', () => {
 });
 
 describe('minimum level length', () => {
+  it('grows with the story: 2 / 3 / 4 minutes, a calm step a quarter shorter, a super level a quarter longer', () => {
+    const first = STORIES.map((st) => worldLevels(st.worlds[1]));
+    expect(first.map((ls) => minActiveS(ls[0]))).toEqual([120, 180, 240]);
+    expect(first.map((ls) => minActiveS(ls[4]))).toEqual([150, 225, 300]);
+    expect(minActiveS(levelById('w2-2')!)).toBe(90);
+    expect(minActiveS({ ...levelById('w2-2')!, world: 6 })).toBe(135);
+    expect(minActiveS(rescueLevel(2))).toBe(120);
+  });
+
+  it('asks for the words of a slow but practising child: 8 / 10 / 12 a minute', () => {
+    expect(minWords(levelById('w1-1')!)).toBe(16);
+    expect(minWords(levelById('w1-2')!)).toBe(12);
+    expect(minWords(levelById('w1-5')!)).toBe(20);
+    expect([levelById('w6-1')!, levelById('w11-1')!].map(minWords)).toEqual([30, 48]);
+    expect([levelById('w6-5')!, levelById('w11-5')!].map(minWords)).toEqual([38, 60]);
+  });
+
+  it("plans its targets in the kind's own unit: words, big asteroids, swamp tasks, copy targets; flights count dragons", () => {
+    expect(levelById('w1-1')?.count).toBe(16);
+    expect(levelById('w1-2')?.count).toBe(12);
+    expect(levelById('w2-5')?.count).toBe(4);
+    expect(levelById('w3-5')?.count).toBe(17);
+    expect(levelById('w6-1')?.count).toBe(30);
+    expect(levelById('w6-3')?.count).toBe(12);
+    expect(levelById('w6-5')?.count).toBe(10);
+    expect(rescueLevel(0).count).toBe(16);
+  });
+
   it('practice and free typing keep their own length, every other level has the minimum', () => {
     expect(hasMinLength(practiceLevel(60))).toBe(false);
     expect(hasMinLength(freeTypeLevel(0))).toBe(false);
@@ -253,28 +281,30 @@ describe('minimum level length', () => {
     expect(hasMinLength(LEVELS[4])).toBe(true);
   });
 
+  const MIN = minActiveS(levelById('w1-1')!);
+
   it('a quick level gets more targets until the minimum, and ends only after it', () => {
     // Fake clock: one word every 3 s, 12 planned.
     let count = 12, done = 0, t = 0;
-    while (!levelOver(done >= count, t, MIN_ACTIVE_S)) {
-      count = grownCount(count, done, t, 3, MIN_ACTIVE_S);
+    while (!levelOver(done >= count, t, MIN)) {
+      count = grownCount(count, done, t, 3, MIN);
       t += 3;
       done++;
     }
-    expect(t).toBeGreaterThanOrEqual(MIN_ACTIVE_S);
-    expect(t).toBeLessThan(MIN_ACTIVE_S + 12);
+    expect(t).toBeGreaterThanOrEqual(MIN);
+    expect(t).toBeLessThan(MIN + 12);
     expect(done).toBeGreaterThan(12);
   });
 
   it('a slow level keeps its planned count', () => {
-    expect(grownCount(12, 10, 130, 3, MIN_ACTIVE_S)).toBe(12);
+    expect(grownCount(12, 10, 130, 3, MIN)).toBe(12);
   });
 
   it('the bar shows the slower of the targets and the time', () => {
-    expect(shownProgress(1, 60, MIN_ACTIVE_S)).toBe(0.5);
-    expect(shownProgress(0.3, 60, MIN_ACTIVE_S)).toBeCloseTo(0.3);
-    expect(shownProgress(0.6, 240, MIN_ACTIVE_S)).toBeCloseTo(0.6);
-    expect(shownProgress(1, 240, MIN_ACTIVE_S)).toBe(1);
+    expect(shownProgress(1, 60, MIN)).toBe(0.5);
+    expect(shownProgress(0.3, 60, MIN)).toBeCloseTo(0.3);
+    expect(shownProgress(0.6, 240, MIN)).toBeCloseTo(0.6);
+    expect(shownProgress(1, 240, MIN)).toBe(1);
     expect(shownProgress(0.3, 5, 0)).toBe(0.3);
   });
 });

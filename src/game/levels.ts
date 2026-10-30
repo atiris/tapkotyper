@@ -53,7 +53,7 @@ export interface LevelDef {
   /** 0-4 inside the world; 4 is the super-obstacle. */
   index: number;
   kind: LevelKind;
-  /** Planned number of words (targets); a level that would end before its minimum length gets more. */
+  /** Planned targets in the kind's own unit, for the level's `minWords`; a level that would end before its minimum length gets more. */
   count: number;
   /** Creature / object mix. */
   variant: string;
@@ -68,19 +68,60 @@ export interface LevelDef {
   focus?: string[];
 }
 
-/** Story levels, super levels and rescue missions last at least this many seconds of active play. */
-export const MIN_ACTIVE_S = 120;
+/** Seconds of active play a level lasts at least, by story (dragon, robot, fairy): the difficulty grows with the story. */
+const STORY_MIN_S = [120, 180, 240];
+/** A calm step is a quarter shorter, a super level a quarter longer. */
+const CALM_SHARE = 0.75;
+const SUPER_SHARE = 1.25;
+/** Words a minute of a slow but practising child, by story: the words a level asks for in its minimum. */
+const STORY_WPM = [8, 10, 12];
 
-/** A calm step is a short valley between two action levels. */
-const CALM_ACTIVE_S = 60;
 /** The calm steps of the world rhythm: waiting words (the meadow's poppies, the rocket world's meteors to hop on, the planet's swamp) and the valley's overgrown path. */
 const CALM_KINDS: LevelKind[] = ['poppies', 'hop', 'swamp', 'thicket'];
 /** Copy levels: a growing or a clean line (the valley's calm path is one too). */
 const COPY_KINDS: LevelKind[] = ['invitation', 'command', 'spells', 'thicket', 'lullaby', 'copyloop'];
 
-/** Seconds of active play the level lasts at least (when it has a minimum length); a rescue mission always the full minimum. */
-export function minActiveS(l: LevelDef): number {
-  return CALM_KINDS.includes(l.kind) && !l.rescue ? CALM_ACTIVE_S : MIN_ACTIVE_S;
+/** Seconds of active play the level lasts at least (when it has a minimum length); a rescue mission always the story's full minimum. */
+export function minActiveS(l: Pick<LevelDef, 'world' | 'kind' | 'isSuper' | 'rescue'>): number {
+  const base = STORY_MIN_S[STORIES.indexOf(storyOf(l.world))];
+  if (l.rescue) return base;
+  if (CALM_KINDS.includes(l.kind)) return base * CALM_SHARE;
+  return l.isSuper ? base * SUPER_SHARE : base;
+}
+
+/** Words the level asks for in its minimum time, at the story's slow pace. */
+export function minWords(l: Pick<LevelDef, 'world' | 'kind' | 'isSuper' | 'rescue'>): number {
+  return Math.round((STORY_WPM[STORIES.indexOf(storyOf(l.world))] * minActiveS(l)) / 60);
+}
+
+/** How many words a target has at a level's place in its world: words, then phrases, a sentence at the super level once space and period are known. */
+export function copyTarget(index: number, sentence: boolean): { words: number; min: number } {
+  if (index <= 1) return { words: 1, min: 2 };
+  return index >= 4 && sentence ? { words: 5, min: 3 } : { words: 3, min: 2 };
+}
+
+/** Dragons a flight level starts with; one more comes while the minimum is not played (`flockAfter`). */
+const FLOCK = 3;
+
+/** A kind's planned count in its own unit for `words` words; every other kind counts words. */
+const UNITS: Partial<Record<LevelKind, (words: number, l: LevelDef) => number>> = {
+  // A big asteroid is its word, three or four pieces and now and then a shielded one: about five words.
+  asteroid: (w) => w / 5,
+  // The great swamp's tasks are jumps, the log's words and the sentence on the shore (one task of about four words).
+  greatswamp: (w) => w - 3,
+  // A copy target is one word, a phrase of two or three, or a sentence of three to five (`copyTarget`).
+  copyloop: (w, l) => {
+    const size = copyTarget(l.index, true);
+    return w / (size.words <= 1 ? 1 : (size.min + size.words) / 2);
+  },
+  // The valley's flying lessons, lullaby and take-off count dragons, not words (the exception).
+  flight: () => FLOCK, lullaby: () => FLOCK, takeoff: () => FLOCK,
+};
+
+/** The planned count of a level: its minimum words in the kind's own unit. */
+function plannedCount(l: LevelDef): number {
+  const w = minWords(l);
+  return Math.max(1, Math.round(UNITS[l.kind]?.(w, l) ?? w));
 }
 
 /** What the child does in a level; the map shows it as the icon of the level's dot. */
@@ -100,11 +141,15 @@ export function hasMinLength(l: LevelDef): boolean {
 }
 
 /**
- * The target count of a level while it plays: as long as the active seconds are under `min`
- * and fewer than `step` targets are left, `step` more come, so the mode never runs dry early.
+ * The target count of a level while it plays: as long as the active seconds are under `min` and
+ * fewer than `step` targets are left, the ones missing to fill `min` at the child's pace so far
+ * come (a whole `step` before the first is done, never more), so the mode never runs dry early
+ * and a slow child is not given more than the minimum needs.
  */
 export function grownCount(count: number, done: number, active: number, step: number, min: number): number {
-  return active < min && count - done < step ? count + step : count;
+  if (active >= min || count - done >= step) return count;
+  const need = done > 0 ? Math.round(((min - active) * done) / active) : step;
+  return count + Math.max(0, Math.min(step, need - (count - done)));
 }
 
 /** A level ends when its mode is done and the minimum of active play is reached. */
@@ -121,19 +166,21 @@ export function shownProgress(modeProgress: number, active: number, min: number)
   return Math.min(modeProgress, active / min);
 }
 
-const def = (world: number, index: number, kind: LevelKind, count: number, variant = '', noSpace = false): LevelDef =>
-  ({ id: `w${world + 1}-${index + 1}`, world, index, kind, count, variant, isSuper: index === 4, ...(noSpace ? { noSpace } : {}) });
+const def = (world: number, index: number, kind: LevelKind, variant = '', noSpace = false): LevelDef => {
+  const l: LevelDef = { id: `w${world + 1}-${index + 1}`, world, index, kind, count: 0, variant, isSuper: index === 4, ...(noSpace ? { noSpace } : {}) };
+  return { ...l, count: plannedCount(l) };
+};
 
 export const LEVELS: LevelDef[] = [
   // The meadow plays the world rhythm: main game, calm step, main game with a gust, twist, super-obstacle.
-  def(0, 0, 'meadow', 12, 'flyers', true), def(0, 1, 'poppies', 20), def(0, 2, 'meadow', 16, 'gust'), def(0, 3, 'invitation', 14), def(0, 4, 'hedgehog', 6),
-  def(1, 0, 'space', 12, 'asteroids'), def(1, 1, 'hop', 16), def(1, 2, 'space', 16, 'strong'), def(1, 3, 'command', 12), def(1, 4, 'asteroid', 4),
+  def(0, 0, 'meadow', 'flyers', true), def(0, 1, 'poppies'), def(0, 2, 'meadow', 'gust'), def(0, 3, 'invitation'), def(0, 4, 'hedgehog'),
+  def(1, 0, 'space', 'asteroids'), def(1, 1, 'hop'), def(1, 2, 'space', 'strong'), def(1, 3, 'command'), def(1, 4, 'asteroid'),
   // The planet: the swamp after the landing (waiting words), the meadow's crystals (a stream), crossroads, spells (copy), the great swamp.
-  def(2, 0, 'swamp', 12), def(2, 1, 'crystals', 16), def(2, 2, 'crossroads', 16), def(2, 3, 'spells', 18), def(2, 4, 'greatswamp', 21),
-  // The valley: flames for the fire pit, the overgrown path (calm), flying lessons, the lullaby, the take-off; a flight level counts its dragons at the start.
-  def(3, 0, 'flames', 12), def(3, 1, 'thicket', 12), def(3, 2, 'flight', 3), def(3, 3, 'lullaby', 3), def(3, 4, 'takeoff', 3),
+  def(2, 0, 'swamp'), def(2, 1, 'crystals'), def(2, 2, 'crossroads'), def(2, 3, 'spells'), def(2, 4, 'greatswamp'),
+  // The valley: flames for the fire pit, the overgrown path (calm), flying lessons, the lullaby, the take-off.
+  def(3, 0, 'flames'), def(3, 1, 'thicket'), def(3, 2, 'flight'), def(3, 3, 'lullaby'), def(3, 4, 'takeoff'),
   // Worlds 5-15 are not built yet: every level plays the placeholder, cyclic copy, until its world is redone.
-  ...WORLDS.slice(4).flatMap((_, w) => [12, 14, 16, 18, 14].map((count, i) => def(w + 4, i, 'copyloop', count))),
+  ...WORLDS.slice(4).flatMap((_, w) => [0, 1, 2, 3, 4].map((i) => def(w + 4, i, 'copyloop'))),
 ];
 
 export function levelById(id: string): LevelDef | undefined {
@@ -227,7 +274,8 @@ const RESCUE_KINDS: { kind: LevelKind; world: number; variant: string }[] = [
 /** Endless rescue missions: a level kind of a built world (worlds not built yet have none); the friend helped follows its story. */
 export function rescueLevel(seed: number): LevelDef {
   const r = RESCUE_KINDS[Math.abs(seed) % RESCUE_KINDS.length];
-  return { id: 'rescue', world: r.world, index: -1, kind: r.kind, count: 14, variant: r.variant, isSuper: false, rescue: true };
+  const l: LevelDef = { id: 'rescue', world: r.world, index: -1, kind: r.kind, count: 0, variant: r.variant, isSuper: false, rescue: true };
+  return { ...l, count: plannedCount(l) };
 }
 
 /** Free typing ("just typing") in a world the child has opened. */

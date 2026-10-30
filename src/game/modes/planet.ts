@@ -337,15 +337,27 @@ export class SwampMode extends SwampHero {
   }
 }
 
-/** The super level: jumps from a firm stone before the view moves on, the boulder's words, and the boulder's size. */
+/** The super level: jumps from a firm stone before the view moves on, and the words of the sentence on the shore (about). */
 const SET = 4;
-const BOULDER = 5;
-const BOULDER_H = 300;
+const SENTENCE_WORDS = 4;
+/**
+ * The floating log: the words that push it away, its length on the stage (about two stones), how far
+ * below the swamp line its middle floats, and its gentle bob (pixels, seconds). It comes once the bar
+ * is at this share, and only while this many words of time are left after it (so the shore is not near).
+ */
+const LOG = 6;
+const LOG_W = 250;
+/** The log picture's height to its width (512 x 404). */
+const LOG_RATIO = 404 / 512;
+const LOG_SINK = 40;
+const LOG_BOB = 2.5;
+const LOG_BOB_S = 3;
+const LOG_AT = 0.5;
+const LOG_ROOM = 2 * SET + LOG + SENTENCE_WORDS;
 /** Seconds of a cracked stone before he jumps back, and of a crumbled stone sinking away. */
 const CRACK_WAIT = 0.45;
 const CRUMBLE = 0.9;
-/** Seconds of the end: the boulder bursts, the monolith rises, the crystals fly onto it, and they glow before the level ends. */
-const BURST = 0.8;
+/** Seconds of the end: the monolith rises, the crystals fly onto it, and they glow before the level ends. */
 const RISE = 1;
 const PLACE = 1.2;
 const GLOW_S = 3;
@@ -381,21 +393,21 @@ interface Crumb {
  * Planet 5, the great swamp: from a firm stone Tapko jumps three stones on and the fourth jump
  * reaches the next firm one, where the view moves on. A slip on stone +1 to +3 cracks it: he jumps
  * back stone by stone, each stone behind him crumbles and the next one cracks, and on the firm stone
- * a new word comes. Halfway a boulder lies where a firm stone would be; precise words crack it and it
- * bursts into that firm stone. The stones lie so that the last one is just before the shore, in the
- * stage's right part. He steps onto its grass, and a longer sentence of known words (with a
- * capital and a period once they are known) typed without a slip wakes the monolith beside him;
- * the crystals of life fly onto it, float and pulse in their glow.
+ * a new word comes. About halfway a little log floats where a firm stone would be; each word pushes
+ * it a bit to the right until it floats away, and a stone comes up where it lay. Stones come until
+ * both minimums are nearly met; then the shore comes just past the stage's right edge, the last stone
+ * just before it. He steps onto its grass, and a longer sentence of known words (with a capital and a
+ * period once they are known) typed without a slip wakes the monolith beside him; the crystals of
+ * life fly onto it, float and pulse in their glow.
  */
 export class GreatSwampMode extends SwampHero {
-  readonly pictures = [...SWAMP_PICTURES, 'obj-swamp-stone-broken', 'obj-boulder-1', 'obj-boulder-2', 'obj-cradle', ...LIFE_CRYSTALS];
+  readonly pictures = [...SWAMP_PICTURES, 'obj-swamp-stone-broken', 'obj-swamp-log', 'obj-cradle', ...LIFE_CRYSTALS];
   private gap = 200;
   private home = 130;
   /** The first stone's x; stone `i` lies at `x0 + i * gap`. */
   private x0 = 0;
-  /** Jumps to the last stone, and the stone the boulder takes (-1 none). */
-  private jumps = SET;
-  private boulderAt = -1;
+  /** Jumps to the last stone, once the shore is placed. */
+  private jumps = Infinity;
   /** The firm stone of this set. */
   private base: Stone | null = null;
   private current: Target | null = null;
@@ -405,8 +417,11 @@ export class GreatSwampMode extends SwampHero {
   /** Seconds until the next jump back; null when he is not going back. */
   private back: number | null = null;
   private slipSaid = false;
-  private boulderSaid = false;
-  private boulder: { x: number; crack: number; shake: number; burst: number | null; tg: Target | null } | null = null;
+  /** Words typed, for the child's pace. */
+  private typed = 0;
+  /** The log: the stone it takes, where it lay, where it is and glides to, its pushes (a slipped word pushes half) and its word. */
+  private log: { at: number; x0: number; x: number; to: number; pushed: number; tg: Target | null } | null = null;
+  private logGone = false;
   private cradle: { x: number; rise: number } | null = null;
   /** 0..1 of the crystals flying onto the cradle, then on; null before. */
   private place: number | null = null;
@@ -418,15 +433,9 @@ export class GreatSwampMode extends SwampHero {
   start(): void {
     this.gap = Math.min(220, this.L.vw * 0.19);
     this.home = this.L.vw * 0.12;
-    this.jumps = Math.max(SET, this.L.count - BOULDER - 1);
-    const b = Math.round(this.jumps / 2 / SET) * SET;
-    this.boulderAt = b > 0 && b < this.jumps ? b : -1;
-    // The shore is there from the start, far on: the last stone lies just before its cliff.
     this.x0 = this.home;
-    this.shore = this.x0 + (this.jumps + LAND_GAP) * this.gap - SHORE_CLIFF * shoreW();
     this.stand = this.base = this.stone(this.x0);
     this.stand.age = 1;
-    this.boulderAhead(0);
     this.ask();
   }
 
@@ -440,25 +449,57 @@ export class GreatSwampMode extends SwampHero {
     return this.stones.length - 1 - this.stones.indexOf(this.base!);
   }
 
-  /** The view never goes so far that the shore's right edge shows. */
+  /** The view never goes so far that the shore's right edge shows; no limit before the shore. */
   private get maxScroll(): number {
-    return this.shore! + shoreW() - this.L.vw - END_MARGIN;
+    return this.shore === null ? Infinity : this.shore + shoreW() - this.L.vw - END_MARGIN;
   }
 
-  /** The boulder lies in the set from the firm stone `i`: it shows where its firm stone would be. */
-  private boulderAhead(i: number): void {
-    if (this.boulderAt > i && this.boulderAt <= i + SET && !this.boulder) {
-      this.boulder = { x: this.x0 + this.boulderAt * this.gap, crack: 0, shake: 0, burst: null, tg: null };
-    }
+  /** Seconds a word takes the child so far (a slow child's pace before the first word). */
+  private get pace(): number {
+    return this.typed ? this.L.playedS / this.typed : 7.5;
   }
 
+  /** Jumps reached and the log's pushes: the tasks done before the sentence. */
+  private get tasksDone(): number {
+    const reached = this.stones.length ? this.idx(this.stones[this.stones.length - 1]) : 0;
+    // The stone where the log lay is reached by its pushes, not by a jump.
+    return reached + (this.log ? this.log.pushed : this.logGone ? LOG - 1 : 0);
+  }
+
+  /** The last stone if the shore came now: its cliff just past the stage's right edge, the stone `LAND_GAP` before it. */
+  private lastStone(): number {
+    return Math.max(this.idx(this.stand!) + 1, Math.ceil((this.scroll + this.L.vw - this.x0) / this.gap - LAND_GAP));
+  }
+
+  /** The shore comes when the jumps to it and the sentence fill the planned tasks and about the time still left. */
+  private get shoreDue(): boolean {
+    const left = this.lastStone() - this.idx(this.stand!);
+    return this.tasksDone + left + 1 >= this.L.count && this.L.minLeft <= (left + SENTENCE_WORDS) * this.pace;
+  }
+
+  private placeShoreAhead(): void {
+    this.jumps = this.lastStone();
+    this.shore = this.x0 + (this.jumps + LAND_GAP) * this.gap - SHORE_CLIFF * shoreW();
+    this.L.count = this.tasksDone + this.jumps - this.idx(this.stand!) + 1;
+  }
+
+  /** The log lies where the firm stone after the set from stone `i` would be: about halfway, never near the shore. */
+  private logAhead(i: number): void {
+    if (this.log || this.logGone || this.shore !== null || this.L.share() < LOG_AT || this.L.minLeft < LOG_ROOM * this.pace) return;
+    const x = this.x0 + (i + SET) * this.gap;
+    this.log = { at: i + SET, x0: x, x, to: x, pushed: 0, tg: null };
+  }
+
+  /** The next word, unless the shore comes now. */
   private ask(): void {
+    if (this.shore === null && this.shoreDue) this.placeShoreAhead();
     this.current = this.L.core.add(this.L.word(4, 1), {});
   }
 
   onDone(tg: Target): void {
-    const b = this.boulder;
-    if (b && tg === b.tg) return this.hitBoulder(tg);
+    this.typed++;
+    const log = this.log;
+    if (log && tg === log.tg) return this.pushLog(tg);
     if (tg === this.sentence) return this.wake();
     if (tg !== this.current) return;
     this.current = null;
@@ -473,15 +514,15 @@ export class GreatSwampMode extends SwampHero {
     this.stand = s;
     const i = this.idx(s);
     if (i >= this.jumps) return this.ashore();
-    // The boulder lies where the next stone would come.
-    if (i === this.boulderAt - 1 && this.boulder) return this.boulderWords();
+    // The log lies where the next stone would come.
+    if (this.log && i === this.log.at - 1) return this.logWords();
     if (this.ahead < SET) return this.ask();
     // The fourth jump: this stone is the new firm one and the view moves on.
     this.base = s;
     this.glide(s.x, Math.max(this.home, s.x - this.maxScroll), () => {
       // Only stones gone off the stage on the left go; the view may stop before the shore.
       this.stones = this.stones.filter((o) => o.x > this.scroll - STONE_H || o === s);
-      this.boulderAhead(i);
+      this.logAhead(i);
       this.ask();
     });
   }
@@ -525,39 +566,34 @@ export class GreatSwampMode extends SwampHero {
     });
   }
 
-  private boulderWords(): void {
-    if (!this.boulderSaid) {
-      this.boulderSaid = true;
-      this.L.say(pickLine('story.boulderStart'), 3);
-    }
-    this.nextChunk();
+  private logWords(): void {
+    this.L.say(t('story.greatSwampLog'), 4);
+    this.logWord();
   }
 
-  private nextChunk(): void {
-    this.boulder!.tg = this.L.core.add(this.L.word(6, 1), {});
+  private logWord(): void {
+    this.log!.tg = this.L.core.add(this.L.word(6, 1), {});
   }
 
-  /** A typed word cracks the boulder: a whole step without a slip, half with one. */
-  private hitBoulder(tg: Target): void {
-    const b = this.boulder!;
-    b.crack += tg.errors === 0 ? 1 : 0.5;
-    b.shake = 1;
-    b.tg = null;
+  /** A typed word pushes the log on (a word with a slip half as far); the last one pushes it off the stage. */
+  private pushLog(tg: Target): void {
+    const log = this.log!;
+    log.pushed = Math.min(LOG, log.pushed + (tg.errors === 0 ? 1 : 0.5));
+    log.tg = null;
     this.happy();
     this.L.sfx('pop');
-    this.L.particles.emit(b.x - this.scroll, VH * 0.6, 16, 'dot', ['#c9c2b8', '#e9e4dc', '#a39586'], 200, 7);
+    this.L.particles.emit(log.x - this.scroll, SWAMP_FEET + LOG_SINK, 10, 'dot', ['#cfe8c0', '#ffffff'], 110, 6);
     this.L.core.prune();
-    if (b.crack < BOULDER) return this.nextChunk();
-    b.burst = 0;
-    this.L.sfx('crack');
-    this.L.say(pickLine('story.boulderOpen'), 3);
-    this.L.particles.emit(b.x - this.scroll, VH * 0.6, 40, 'puff', ['#d8d2c8', '#bdb4a6', '#efe9df'], 260, 16, 1.2);
+    const off = this.scroll + this.L.vw + LOG_W;
+    log.to = log.x0 + (off - log.x0) * (log.pushed / LOG);
+    if (log.pushed < LOG) this.logWord();
   }
 
-  /** The boulder is gone: in its place lies the firm stone, and he jumps onto it. */
-  private boulderStone(): void {
-    const s = this.stone(this.boulder!.x);
-    this.boulder = null;
+  /** The log floated away: a stone comes up where it lay, and he jumps onto it. */
+  private logStone(): void {
+    const s = this.stone(this.log!.x0);
+    this.log = null;
+    this.logGone = true;
     this.leap(this.top(s), () => this.land(s));
   }
 
@@ -611,10 +647,11 @@ export class GreatSwampMode extends SwampHero {
       this.stepBack();
       if (this.jumpTo) this.back = Infinity;
     }
-    const b = this.boulder;
-    if (b) {
-      b.shake = Math.max(0, b.shake - dt * 3);
-      if (b.burst !== null && (b.burst += dt) >= BURST) this.boulderStone();
+    const log = this.log;
+    if (log) {
+      // Each push glides it on, easing out; pushed off the stage, it is gone.
+      log.x = this.L.reduceMotion ? log.to : log.x + (log.to - log.x) * Math.min(1, dt * 3);
+      if (log.pushed >= LOG && log.x - this.scroll - LOG_W / 2 > this.L.vw && !this.jumpTo) this.logStone();
     }
     if (this.cradle) {
       this.cradle.rise = Math.min(1, this.cradle.rise + dt / RISE);
@@ -657,13 +694,12 @@ export class GreatSwampMode extends SwampHero {
       drawSprite(g, 'obj-swamp-stone-broken', c.x - this.scroll, c.y + k * 26, STONE_H, { alpha: 1 - k }, stoneFallback);
     }
     this.drawStones(g);
-    const b = this.boulder;
-    if (b) {
-      const fade = b.burst === null ? 1 : 1 - b.burst / BURST;
-      const sh = Math.sin(this.t * 50) * 6 * b.shake;
-      const x = b.x - this.scroll + sh;
-      drawSprite(g, b.crack >= BOULDER / 2 ? 'obj-boulder-2' : 'obj-boulder-1', x, SWAMP_FEET + 30, BOULDER_H * (b.burst === null ? 1 : 1 + b.burst * 0.3), { ay: 0.92, alpha: fade }, blob('#a39586', true, 'rgba(0,0,0,0.12)'));
-      if (b.tg) this.L.label(g, b.tg, x, SWAMP_FEET + 30 - BOULDER_H - 30, 46);
+    const log = this.log;
+    if (log) {
+      // It bobs very gently on the water; still with reduced motion.
+      const y = SWAMP_FEET + LOG_SINK + (this.L.reduceMotion ? 0 : Math.sin((this.t * Math.PI * 2) / LOG_BOB_S) * LOG_BOB);
+      drawSprite(g, 'obj-swamp-log', log.x - this.scroll, y, LOG_W * LOG_RATIO, {}, blob('#a8743f', true, 'rgba(0,0,0,0.12)'));
+      if (log.tg) this.L.label(g, log.tg, log.x - this.scroll, y - LOG_W * LOG_RATIO * 0.5 - 30, 46);
     }
     if (this.cradle) this.drawCradle(g);
     if (this.current) {
@@ -721,13 +757,11 @@ export class GreatSwampMode extends SwampHero {
     g.restore();
   }
 
-  /** Jumps reached, the boulder's cracks and the sentence, out of all of them; full once the sentence is typed. */
+  /** Jumps reached and the log's pushes out of the planned tasks (the sentence one more); full once the sentence is typed. */
   progress(): number {
-    if (!this.stones.length) return 0;
-    const reached = this.idx(this.stones[this.stones.length - 1]);
-    const tasks = this.jumps + (this.boulderAt > 0 ? BOULDER : 0) + 1;
-    const cracked = this.boulder ? Math.min(BOULDER, this.boulder.crack) : this.boulderAt > 0 && reached >= this.boulderAt ? BOULDER : 0;
-    return this.cradle ? 1 : Math.min(1, (reached + cracked) / tasks);
+    if (this.cradle) return 1;
+    const done = this.tasksDone;
+    return done / Math.max(this.L.count, done + 1);
   }
 
   get finished(): boolean {

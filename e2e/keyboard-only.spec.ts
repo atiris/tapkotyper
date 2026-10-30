@@ -98,12 +98,13 @@ test('a player is picked by a number key, the super password still works', async
 test('F4 steps the sound and says so, the tooltips name the keys', async ({ page }) => {
   await createProfile(page, 'Lea');
   const sound = page.locator('.map-screen .top-right .sound-btn');
-  await expect(sound).toHaveAttribute('data-level', 'normal');
-  await expect(sound).toHaveAttribute('data-tip', /^Sound: normal \(F4\)\nMusic: \S.*\nF8 plays another song$/);
+  // The game starts silent.
+  await expect(sound).toHaveAttribute('data-level', 'off');
   await expect(page.locator('.map-screen .top-right .help-btn')).toHaveAttribute('data-tip', 'Help (F1)');
   await page.keyboard.press('F4');
-  await expect(sound).toHaveAttribute('data-level', 'quiet');
-  await expect(page.locator('.toast')).toHaveText('Sound: quiet');
+  await expect(sound).toHaveAttribute('data-level', 'normal');
+  await expect(page.locator('.toast')).toHaveText('Sound: normal');
+  await expect(sound).toHaveAttribute('data-tip', /^Sound: normal \(F4\)\nMusic: \S.*\nF8 plays another song$/);
   // F1 on the map opens help on its buttons; Escape goes back.
   await page.keyboard.press('F1');
   await expect(page.locator('.help-page .tab[aria-selected="true"]')).toHaveText('Interface');

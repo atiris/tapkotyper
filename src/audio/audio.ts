@@ -1,5 +1,4 @@
 import { assetUrl, hasMusic, musicTracks } from '../gfx/assets';
-import { keyboardGated } from '../app/keyboard-gate';
 import { nextTrack } from './tracks';
 
 export type Sfx = 'key' | 'wrong' | 'word' | 'reward' | 'whoosh' | 'pop' | 'cheer' | 'bzzt' | 'note' | 'plop' | 'squeak' | 'ring' | 'whistle' | 'crack' | 'thud' | 'squawk';
@@ -21,7 +20,8 @@ class AudioEngine {
   private musicGain!: GainNode;
   private sfxVolume = 0.7;
   private musicVolume = 0.5;
-  level: SoundLevel = 'normal';
+  /** The game starts silent until the player turns the sound on (the choice is kept). */
+  level: SoundLevel = 'off';
   private track: string | null = null;
   private current: { el?: HTMLAudioElement; gain: GainNode; stop: () => void } | null = null;
   private listeners: (() => void)[] = [];
@@ -30,8 +30,6 @@ class AudioEngine {
     try {
       const saved = localStorage.getItem(SOUND_KEY) as SoundLevel | null;
       if (saved && SOUND_LEVELS.includes(saved)) this.level = saved;
-      // A phone without a keyboard is often opened in class or on the way: it starts silent.
-      else if (keyboardGated()) this.level = 'off';
     } catch { /* private mode */ }
     // iOS Safari takes only a tap's end (pointerup, touchend, click) as the gesture that may start sound.
     const events = ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown'];

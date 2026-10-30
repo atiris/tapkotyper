@@ -17,8 +17,8 @@
   help are reachable; any other address goes to the start page. A task link opened then is
   kept and continues once the keyboard is there.
 - A computer, or any device with a mouse or trackpad, is never asked for a keyboard.
-- **Sound on phones:** a device without a keyboard starts with the sound off, until the player
-  turns it on (the choice is kept). Sound starts with the first tap. The iPhone's silent switch mutes web
+- **Sound on phones:** sound starts with the first tap (every device starts with the sound off,
+  see [audio.md](audio.md)). The iPhone's silent switch mutes web
   audio by design.
 
 ## Why

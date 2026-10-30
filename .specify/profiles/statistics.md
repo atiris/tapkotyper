@@ -14,7 +14,8 @@
   each of the 75 levels: 225). The second row is the last 14 days: accuracy and speed in
   characters per minute once something was typed, and the letters typed. The third row is the totals
   since the start, so a replay never takes anything away: every parrot round won (two parrot heads)
-  and every star earned, replays included (a stack of stars). Under the heading "Príbehy" one row per story (all stories, closed ones grey) with its picture and
+  and every star earned, replays included (a stack of stars), and once there is one the target
+  range's record: the most points of one run, its day in the tooltip (the target). Under the heading "Príbehy" one row per story (all stories, closed ones grey) with its picture and
   name, its worlds' pictures (done in colour, the rest grey) and the stars earned in it, the
   shelf of world badges ("Odznaky svetov", [story](../game/story.md)) with the row of target
   range awards under it ("Ocenenia zo strelníc": every world's rare thing, found ones in

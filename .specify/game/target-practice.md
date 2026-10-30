@@ -15,7 +15,7 @@
   casts a shadow. Tapko stands at the far left, his feet level with the target's legs.
 - Tapko stands at the left and throws something funny at a target at the right, picked at
   random for each throw (never the same twice in a row) from about 35 things open in every
-  world (a pebble, a tomato, an egg, an alarm clock, a cactus, a boomerang, a planet, ...),
+  world (a pebble, a tomato, an egg, an alarm clock, a cactus, a boomerang, a planet, a computer mouse, ...),
   three more in the robot story's worlds (a battery, a magnet, a gear) and three more in the
   fairy story's (a music note, a frog, a magic wand). The child does not know what flies until
   it is thrown. A short word over Tapko's paw starts each throw, with no hurry; the rules said at the start
@@ -50,7 +50,7 @@
   words): n mistakes cost n x (n + 1) letters, so 21 letters give 100, with one mistake 19/21
   (90), with two 15/21 (71); a miss or a fall gives 0. A miss
   and a fall get only a kind line of the target ("Vedľa!" among them, no word pops up); at the third and fifth bullseye in a row a streak line follows the hit line, so the thing's joke is not lost. The last throw
-  of the two minutes and a target that steps back (shrinks) a line of their own. Now and then
+  of the base time and a target that steps back (shrinks) a line of their own. Now and then
   (about one throw in four, more for a cactus or a spider) the target reacts while the thing is
   on its way: worried, wondering or cheering. No line comes twice in a row. Every line stays long
   enough for a slow reader (longer lines longer); the next throw waits for the target's line a
@@ -66,7 +66,7 @@
   no face.
 - Every world has one thing of its own that no other range throws (a ladybug on the meadow, a
   toy rocket in the rocket world, a fish at the lake, ...). It comes once a run, as the last
-  throw of the two minutes or the one before (judged by the time left), so it is a goal to
+  throw of the base time or the one before (judged by the time left), so it is a goal to
   reach; while staying a while it comes every 6 to 10 throws. It never comes before the fourth
   throw, and only while every throw before went without a wrong key or a late word: after one
   careless throw the run goes without it. Hitting it in the middle (no
@@ -81,13 +81,14 @@
   smaller as it improves. When a trained letter becomes ready during the run, the target
   shrinks with a little bounce, Tapko cheers, the narrator says so, and the letter leaves the
   list. The trained letters are said at the start, not shown in the HUD.
-- At least two minutes, counted from the first throw (reading the rules takes none of them): the
-  run ends with the throw in the air after two minutes, the same in every world (the range is
+- At least two and a half minutes (the base time), counted from the first throw (reading the rules takes none of them): the
+  run ends with the throw in the air after them, the same in every world (the range is
   for time only, never a number of throws). The HUD bar shows only the time; the hits and the
   points so far stand in the top right corner over the target ("Zásahy: 1   Body: 89") in the
   shouts' rounded bold letters, in their own colour. The last word, over the target, stands high
   enough that the target's eyes peeking out over its top stay in sight. The most points of a run
-  are the range's record (kept per player, staying a while does not count); the first time a
+  are the range's record (kept per player with the day it was set, staying a while does not count;
+  the progress's third row, the totals since the start, shows it and its day); the first time a
   run beats it Tapko says "Nový svetový rekord!", and the end card says it too. The end card
   ("Náš terč nám poslal tvoje výsledky!") says the hits, how many were in the middle and the
   points; its collection stays in one row while the window is wide enough. No stars,

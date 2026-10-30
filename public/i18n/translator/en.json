@@ -971,6 +971,7 @@
     "progress.parrotCount": "Short text next to the parrot icon in the progress's top row, e.g. \"2 max 5\": {n} at home now, {best} the most at once.",
     "progress.parrotsEarned": "Tooltip over the count of all parrots won in the progress's third row: every parrot round won since the start. {n} is the count.",
     "progress.starsEarned": "Tooltip over the count of all stars earned in the progress's third row: every run counts, replays too. {n} is the count.",
+    "progress.rangeRecord": "Tooltip over the target range record in the progress's third row (shown once there is one). {n} is the points, {date} the day it was set.",
     "progress.parrotHome": "Tooltip of the parrot icon beside a world's name in the levels list of the progress: the parrot is at home.",
     "progress.parrotAway": "Tooltip of the grey parrot icon beside a world's name in the levels list of the progress: the parrot is not at home.",
     "progress.rareFound": "Tooltip of the rare thing beside a world's name in the levels list of the progress, once found; {name} is the thing.",

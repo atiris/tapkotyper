@@ -111,7 +111,7 @@ function chip(pic: string | null, glyph: string, text: string, label: string): H
     pic ? h('img', { src: pic, alt: '' }) : h('span', { class: 'sum-glyph' }, glyph), h('b', {}, text));
 }
 
-/** The long-term picture in one row (mastered keys, finished stories and worlds, the chest's points, the parrots at home against their best count, the best stars of all levels), the last 14 days in the next (accuracy, speed, letters), the totals ever in the third (parrot rounds won, stars earned). */
+/** The long-term picture in one row (mastered keys, finished stories and worlds, the chest's points, the parrots at home against their best count, the best stars of all levels), the last 14 days in the next (accuracy, speed, letters), the totals ever in the third (parrot rounds won, stars earned, the target range's record and its day). */
 export function summaryRow(p: Profile): HTMLElement {
   const m = masterySummary(p);
   const stories = STORIES.filter((x) => storyDone(p, x)).length;
@@ -119,6 +119,7 @@ export function summaryRow(p: Profile): HTMLElement {
   const percent = Math.round(recent.accuracy * 100);
   const chest = chestPoints(p), stars = totalStars(p);
   const parrots = { n: p.progress.parrots.length, best: p.progress.parrotBest };
+  const { rangeRecordAt } = p.progress;
   return h('div', { class: 'progress-sums' }, h('ul', { class: 'progress-sum' },
     chip(imageUrl('ui-key'), '⌨', `${m.mastered}/${m.total}`, t('progress.keys', { n: m.mastered, total: m.total })),
     chip(imageUrl('ui-level'), '▲', `${stories}/${STORIES.length}`, t('progress.stories', { n: stories, total: STORIES.length })),
@@ -132,7 +133,9 @@ export function summaryRow(p: Profile): HTMLElement {
     chip(imageUrl('ui-keys-typed'), 'Aa', String(recent.chars), t('progress.chars14', { n: recent.chars }))),
   h('ul', { class: 'progress-sum' },
     chip(imageUrl('ui-parrots-earned'), 'P', String(p.progress.parrotsEarned), t('progress.parrotsEarned', { n: p.progress.parrotsEarned })),
-    chip(imageUrl('ui-stars-earned'), '★', String(p.progress.starsEarned), t('progress.starsEarned', { n: p.progress.starsEarned }))));
+    chip(imageUrl('ui-stars-earned'), '★', String(p.progress.starsEarned), t('progress.starsEarned', { n: p.progress.starsEarned })),
+    rangeRecordAt ? chip(imageUrl('obj-aim-target'), '◎', String(p.progress.rangeRecord),
+      t('progress.rangeRecord', { n: p.progress.rangeRecord, date: new Date(rangeRecordAt).toLocaleDateString(locale()) })) : null));
 }
 
 /** Who a story is about, for its row. */

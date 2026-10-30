@@ -95,6 +95,7 @@ export const THINGS: Thing[] = [
   { id: 'chicken', pics: ['obj-aim-chicken'], story: 0, sfx: 'squeak', effect: 'bounce' },
   { id: 'water-balloon', pics: ['obj-aim-water-balloon'], story: 0, sfx: 'plop', effect: 'burst', burst: 'splash' },
   { id: 'banana', pics: ['obj-aim-banana'], story: 0, sfx: 'plop', effect: 'bounce' },
+  { id: 'mouse', pics: ['obj-aim-mouse'], story: 0, sfx: 'pop', effect: 'bounce', expect: 0.4, eyes: 'wide' },
   { id: 'asteroid', pics: ['obj-asteroid-small'], story: 0, sfx: 'thud', effect: 'bounce', wobble: true, burst: 'dust' },
   { id: 'battery', pics: ['obj-battery'], story: 1, sfx: 'bzzt', effect: 'bounce', burst: 'sparks' },
   { id: 'magnet', pics: ['obj-aim-magnet'], story: 1, sfx: 'pop', effect: 'stick', hold: 1.5 },

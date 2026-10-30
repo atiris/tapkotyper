@@ -15,7 +15,7 @@ import { BURST_COLORS, Bags, type Burst, type Effect, type Eyes, STAY_WORLD_EVER
 import { HeroMode, sideFeet } from './kit/hero';
 
 /** Seconds of play before the run ends with the throw in the air (staying a while has no end). */
-export const AIM_SECONDS = fast(120);
+export const AIM_SECONDS = fast(150);
 /** Wrong keys in one flight before the projectile falls. */
 export const FALL_ERRORS = 3;
 /** How much lower the path runs after each wrong key. */
@@ -685,7 +685,10 @@ export class AimMode extends HeroMode {
     const pr = app.profile!.progress;
     pr.rangeFinds.push(...this.finds);
     this.finds = [];
-    if (!this.L.staying) pr.rangeRecord = Math.max(pr.rangeRecord, this.points);
+    if (!this.L.staying && this.points > pr.rangeRecord) {
+      pr.rangeRecord = this.points;
+      pr.rangeRecordAt = Date.now();
+    }
   }
 
   private land(f: Flight): void {

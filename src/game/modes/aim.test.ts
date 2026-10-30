@@ -216,7 +216,7 @@ describe('target range', () => {
     expect(L.core.focus()).not.toBeNull();
   });
 
-  it('two minutes end the run once the throw in the air lands, with accuracy before and after per key', () => {
+  it('the base time ends the run once the throw in the air lands, with accuracy before and after per key', () => {
     const L = fakeRuntime();
     const mode = new AimMode(L);
     mode.start();
@@ -286,7 +286,7 @@ describe('target range', () => {
     app.profile!.progress.rangeRecord = 0;
   });
 
-  it('staying a while keeps throwing after two minutes', () => {
+  it('staying a while keeps throwing after the base time', () => {
     const L = fakeRuntime({ staying: true });
     const mode = new AimMode(L);
     mode.start();

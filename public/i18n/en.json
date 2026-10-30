@@ -903,6 +903,7 @@
     "parrotCount": "{n} max {best}",
     "parrotsEarned": "Parrots won since the start: {n}",
     "starsEarned": "Stars earned since the start: {n}",
+    "rangeRecord": "Target range record since the start: {n} points, set on {date}",
     "parrotHome": "This world's parrot is at home",
     "parrotAway": "This world's parrot is not at home yet",
     "rareFound": "Rare thing from the range: {name}",
@@ -2798,6 +2799,28 @@
           "Peel it for me, please!",
           "Will you throw a monkey next?",
           "Vitamin bomb!"
+        ]
+      },
+      "mouse": {
+        "name": "Computer mouse",
+        "launch": [
+          "A flying mouse!",
+          "Hardware I don't need.",
+          "Sorry, I want a wireless one!"
+        ],
+        "sound": [
+          "Click!"
+        ],
+        "hit": [
+          "I was afraid it would be alive!",
+          "Off to the scrapyard!",
+          "Three buttons!",
+          "The wheel doesn't work!",
+          "I have no USB port."
+        ],
+        "expect": [
+          "I'm seeing white mice.",
+          "A cat is not enough for this!"
         ]
       },
       "battery": {

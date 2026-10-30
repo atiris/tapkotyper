@@ -903,6 +903,7 @@
     "parrotCount": "{n} max {best}",
     "parrotsEarned": "Papagáje získané od začiatku: {n}",
     "starsEarned": "Hviezdičky získané od začiatku: {n}",
+    "rangeRecord": "Rekord strelnice od začiatku: {n} bodov, dosiahnutý {date}",
     "parrotHome": "Papagáj tohto sveta je doma",
     "parrotAway": "Papagáj tohto sveta ešte nie je doma",
     "rareFound": "Vzácna vec zo strelnice: {name}",
@@ -2811,6 +2812,28 @@
           "Ošúp mi ho, prosím!",
           "Teraz hodíš opicu?",
           "Vitamínová bomba!"
+        ]
+      },
+      "mouse": {
+        "name": "Počítačová myš",
+        "launch": [
+          "Lietajúca myš!",
+          "Nepotrebný hardvér.",
+          "Prepáč, chcem bezdrôtovú!"
+        ],
+        "sound": [
+          "Klik!"
+        ],
+        "hit": [
+          "Bál som sa, že bude živá!",
+          "Do šrotu!",
+          "Trojtlačidlová!",
+          "Koliesko nefunguje!",
+          "Nemám USB port."
+        ],
+        "expect": [
+          "Vidím biele myši.",
+          "Na toto mačka nestačí!"
         ]
       },
       "battery": {

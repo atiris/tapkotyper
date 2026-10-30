@@ -813,19 +813,26 @@ describe('the lullaby made easier', () => {
 });
 
 describe('the dragons on the path', () => {
-  it('wait past the last bush and hop back when a slip grows the path', () => {
+  it('wait past the room the slips may grow, so a slip never moves them; the minimum makes them hop back', () => {
     const L = fakeRuntime(1);
     Object.assign(L, { vw: 4000, reduceMotion: false });
     const mode = new ThicketMode(L);
     mode.start();
     run(L, mode, 0.05);
-    const w = (mode as any).waiting, end = (mode as any).endX();
-    expect(w.x).toBe(end);
-    slip(L, mode);
+    const w = (mode as any).waiting, at = w.x;
+    const lastBush = () => (mode as any).bushes.at(-1).x;
+    expect(at).toBeGreaterThan(lastBush() + 6 * 300);
+    for (let i = 0; i < 4; i++) {
+      slip(L, mode);
+      run(L, mode, 1);
+    }
+    expect(w.x).toBe(at);
+    expect(lastBush()).toBeLessThan(at);
+    // Bushes beyond the slips' room (the level's minimum) push the dragons on, with a hop in sight.
+    L.count += 2;
     run(L, mode, 0.25);
-    expect(w.x).toBeGreaterThan(end);
-    expect(w.x).toBeLessThan((mode as any).endX());
+    expect(w.x).toBeGreaterThan(at);
     run(L, mode, 1);
-    expect(w.x).toBe((mode as any).endX());
+    expect(w.x).toBe((mode as any).waitX());
   });
 });

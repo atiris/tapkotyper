@@ -219,12 +219,14 @@ as they are. The world descriptions below marked *not built yet* are the design 
    word, above it, and the view glides as Tapko walks to it. Typed without a slip, the bush
    shrinks away. A slip turns the word red, it fades, two more bushes grow on the path ahead and
    the same spell shows again; bushes grow at most three times (6 words), after that a slip only
-   shows the spell again. One big bush (several stacked) about two thirds along asks for two
-   words (or the longest of a few words before space is known). The first slip, and then one in
+   shows the spell again. Once space is known, one big bush (several stacked) about two thirds
+   along asks for two words with a space, as one spell; before that there is no big bush. The first slip, and then one in
    ten, says why ("Kúzlo sa nepodarilo.", "To bolo kúzlo na varenie čaju!"). The four dragons
-   sit on the path just past the last bush from the start, facing Tapko and calm (only
-   breathing); they come into sight with the path, never faded in. When a slip grows the path,
-   dragons in sight hop back to its new end. End: the path is open, the dragons are glad (they
+   sit on the path from the start, facing Tapko and calm (only breathing), past the last bush
+   and the room the slips may still grow, so a slip never moves them (the new bushes grow into
+   the empty path before them, also on a wide, low screen); they come into sight with the path,
+   never faded in. Only bushes the level's minimum adds beyond that room push them on, with a
+   hop if they are in sight. End: the path is open, the dragons are glad (they
    hop and cheer) and Tapko walks on to them. Its map dot is the copy envelope.
    3 flying lessons (a stream with rhythm): a dragon (the colours take turns) waits right of
    Tapko, the three round leafy bushes stand together in the middle (random order, some

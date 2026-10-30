@@ -101,9 +101,11 @@ tréningu nevedia zaspať, ráno odlietajú na lúku kryštálov.
    Na konci oheň horí a dráčiky ho uvidia z celého údolia.
 2. **Zarastená cesta** - cesta k dráčikom je zarastená kríkmi a konármi. Každý krík má svoje
    kúzlo; napísané bez chyby krík zmizne a Tapko ide ďalej. Pri chybe vyrastú na ceste dva nové
-   kríky (najviac trikrát) a kúzlo príde znova. Štyri dráčiky od začiatku sedia na ceste hneď za
-   posledným kríkom, otočené k Tapkovi, pokojné; ukážu sa, keď k nim dovidieť. Keď cesta pri
-   chybe narastie, dráčiky, ktoré vidno, odskáču na jej nový koniec. Keď zmizne posledný krík,
+   kríky (najviac trikrát) a kúzlo príde znova. Štyri dráčiky od začiatku sedia na konci cesty,
+   otočené k Tapkovi, pokojné; za posledným kríkom im ostáva voľná cesta pre kríky, ktoré môžu
+   ešte narásť po chybách, takže sa pri chybe nepohnú. Ukážu sa, keď k nim dovidieť. Veľký
+   krík (viac kríkov na sebe) je len vtedy, keď už dieťa pozná medzeru, a jeho kúzlo sú dve
+   slová s medzerou. Keď zmizne posledný krík,
    dráčiky sa tešia a Tapko k nim dôjde.
 3. **Lietanie** - dráčiky sa učia lietať: jeden po druhom štartujú pri Tapkovi, v strede stoja
    vždy tri kríky a pristáť majú pri ohnisku, ktoré stojí celkom vpravo (dráčiky sedia mimo jeho

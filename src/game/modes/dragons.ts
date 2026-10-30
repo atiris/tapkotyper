@@ -595,14 +595,13 @@ const WALK_IN = 0.35;
 const SLIP_INK = '#d9482b';
 /** The dragon story's place in the story order, for the growing-copy ceiling: (1 + 1) x 3 = 6 extra words. */
 const STORY_ORDER = 1;
-/** One big bush of several stacked ones stands this far along the path; its spell is two words (or the longest of a few words). */
+/** Once space is known, one big bush of several stacked ones stands this far along the path; its spell is two words. */
 const BIG_AT = 0.6;
-const BIG_TRIES = 4;
 /** After the first slip, a slip says why now and then. */
 const SLIP_SAY = 0.1;
 /** Seconds of the walk to the dragons at the end. */
 const WALK_END = 2.4;
-/** The dragons waiting at the path's end: each one's place right of it and how much further back (higher) it sits; seconds of their hop back when the path grows. */
+/** The dragons waiting at the path's end: each one's place right of it and how much further back (higher) it sits; seconds of their hop back when the path grows past them (only the level's minimum can do that). */
 const WAITING = [{ dx: 0, up: 0 }, { dx: 85, up: 22 }, { dx: 170, up: 38 }, { dx: 250, up: 10 }];
 const WAIT_H = 104;
 const HOP_BACK = 0.5;
@@ -655,9 +654,9 @@ export class ThicketMode extends Mode {
     this.ask(this.spellFor(this.bushes[0]));
   }
 
-  /** Bushes up to the level's count; the ones a slip or the minimum adds grow in. One of the first ones planned is big. */
+  /** Bushes up to the level's count; the ones a slip or the minimum adds grow in. Once space is known, one of the first ones planned is big. */
   private plant(grow: boolean): void {
-    const big = Math.floor(this.L.def.count * BIG_AT);
+    const big = this.L.words.knows(SPACE) ? Math.floor(this.L.def.count * BIG_AT) : -1;
     while (this.bushes.length < this.L.count) {
       const i = this.bushes.length, prev = this.bushes[i - 1]?.pic;
       const pic = this.L.rng.pick(BUSHES.filter((b) => b !== prev));
@@ -666,12 +665,9 @@ export class ThicketMode extends Mode {
     }
   }
 
-  /** A bush's spell: one word; the big bush's two words once space is known, else the longest of a few. */
+  /** A bush's spell: one word; the big bush's two words. */
   private spellFor(b: Bush | undefined): string {
-    const L = this.L;
-    if (!b?.big) return L.word();
-    if (L.words.knows(SPACE)) return L.word(undefined, 2, 2);
-    return Array.from({ length: BIG_TRIES }, () => L.word()).reduce((a, w) => (w.length > a.length ? w : a));
+    return b?.big ? this.L.word(undefined, 2, 2) : this.L.word();
   }
 
   private ask(word: string): void {
@@ -733,19 +729,24 @@ export class ThicketMode extends Mode {
     }
     // The path is open: Tapko walks on to its end, where the dragons wait for him and cheer.
     this.endT = 0;
-    this.glide = { from: this.scroll, to: this.endX() - (TAPKO_X + 230), k: 0, dur: WALK_END };
+    this.glide = { from: this.scroll, to: this.waitX() - (TAPKO_X + 230), k: 0, dur: WALK_END };
     this.L.sfx('cheer');
     this.L.say(pickLine('story.thicketDone'), END_TIME);
   }
 
-  /** Where the path ends, past the last bush. */
-  private endX(): number {
-    return this.bushes[this.bushes.length - 1].x + BUSH_GAP * 0.8;
+  /**
+   * Where the dragons wait: past the last bush and the room the slips may still grow, so a slip
+   * never moves them; the bushes grow into the empty path before them.
+   */
+  private waitX(): number {
+    let room = 0;
+    for (let a = this.added, more; (more = slipWords(STORY_ORDER, a)) > 0; a += more) room += more;
+    return this.bushes[this.bushes.length - 1].x + BUSH_GAP * (0.8 + room);
   }
 
-  /** The path grew: dragons in sight hop back to its new end, the others are just there. */
+  /** The path grew past the dragons (the level's minimum added bushes): in sight they hop back to its new end, else they are just there. */
   private followEnd(dt: number): void {
-    const w = this.waiting, end = this.endX();
+    const w = this.waiting, end = this.waitX();
     if (!w) {
       this.waiting = { x: end, from: end, to: end, k: 1 };
       return;

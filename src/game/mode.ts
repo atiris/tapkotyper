@@ -33,8 +33,8 @@ export abstract class Mode {
   readonly tapkoFeet: number = TAPKO_FEET;
   /** Another set of the world's middle and near bands (`bg-<world><ground>-mid`), '' for the usual one. */
   readonly ground: string = '';
-  /** The near layer's x where its band ends in the end piece (`bg-<world><ground>-near-end`), null where it goes on. */
-  nearEnd: number | null = null;
+  /** The near layer's x where the ground's shore picture (`bg-<world><ground>-shore`) stands in front of the band, null for none. */
+  shore: number | null = null;
   /** The pictures the mode draws; the level opens when they are loaded. */
   readonly pictures: readonly string[] = [];
   /** Background scroll position (parallax). */

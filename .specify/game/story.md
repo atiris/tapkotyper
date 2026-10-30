@@ -123,9 +123,9 @@ as they are. The world descriptions below marked *not built yet* are the design 
    it, the view glides after him. The stones are round mossy stones with a smiling face and
    nothing under them, and they lie at a little different heights; he lands two thirds up a
    stone. He moves toward the right edge as the level goes on. When about nine tenths of the
-   level are done (or its words are, with fewer than ten seconds left), the swamp band ends in
-   its end piece just past the right edge (its water turns into a meadow shore, which runs on past
-   the edge); the words go on stone by stone and the last one leads onto the grass, where he walks
+   level are done (or its words are, with fewer than ten seconds left), the shore comes in front
+   of the swamp band, its earthen cliff just past the right edge (a separate picture of a grassy
+   bank, so the band never needs a seam or mirrored copies; its far end never shows); the words go on stone by stone and the last one leads onto the grass, where he walks
    a little way in and says he can see the meadow and looks forward to it.
    2 the meadow's crystals (a stream): five molehills (fewer on a narrow screen), lumpy heaps
    with pebbles at their foot that sit anywhere low on the ground; a crystal of one of three kinds,

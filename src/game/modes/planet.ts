@@ -2,7 +2,7 @@ import { pickLine } from '../../app/app';
 import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
 import { sprite } from '../../gfx/assets';
-import { NEAR_DROP, blob, drawSprite, type G } from '../../gfx/draw';
+import { blob, drawSprite, type G } from '../../gfx/draw';
 import { t } from '../../i18n/i18n';
 import { TAPKO_H } from '../mode';
 import { HeroMode, wordAbove } from './kit/hero';
@@ -21,25 +21,26 @@ const STONE_TOP = 1 / 6;
 const STONE_RISE = 26;
 const STONE_DROP = 6;
 /**
- * The swamp ends in the near band's end piece (`bg-planet-swamp-near-end`, as wide as its picture):
- * the band, then the meadow coming in and running on past the right edge. In tiles from the piece's
- * start: where its grass begins (he lands there from the last stone) and where he ends; his feet on
- * the grass, and the share of the stage he moves to through the swamp.
+ * The swamp ends at the shore picture (`bg-planet-swamp-shore`, a grassy bank with an earthen cliff,
+ * drawn in front of the band). In shares of its width from its left edge: where its cliff begins,
+ * where he lands on the grass from the last stone and where he ends; his feet on the grass, and the
+ * share of the stage he moves to through the swamp.
  */
-const SHORE_LAND = 1.06;
-/** Up to here (in tiles) the end piece is the band itself. */
-const SHORE_SAME = 0.8;
-const SHORE_MEADOW = 1.22;
-const SHORE_FEET = SWAMP_FEET - 6 + NEAR_DROP['-swamp'];
+const SHORE_CLIFF = 0.09;
+const SHORE_LAND = 0.38;
+const SHORE_MEADOW = 0.6;
+const SHORE_FEET = VH * 0.84;
+/** The last stone lies at least this share of a jump before the cliff. */
+const LAND_GAP = 0.4;
 const SHORE_VIEW = 0.6;
 /** He ends on the meadow at least this far from the right edge. */
 const SHORE_MARGIN = 160;
 /** In the first level the shore comes once this share of the level is done, or when the words are done and fewer seconds than this are left. */
 const SHORE_AT = 0.9;
 const SHORE_LAST_S = 10;
-/** The swamp band's tile width on the stage (1376 x 768 until its picture is there). */
-function tileW(): number {
-  const img = sprite('bg-planet-swamp-near');
+/** The shore picture's width on the stage (1376 x 768 until its picture is there). */
+function shoreW(): number {
+  const img = sprite('bg-planet-swamp-shore');
   return img ? (img.naturalWidth * VH) / img.naturalHeight : (1376 * VH) / 768;
 }
 /** Seconds of a jump between stones and of the view gliding after him. */
@@ -129,15 +130,14 @@ abstract class SwampHero extends HeroMode {
     return { x: s.x, y: s.y - STONE_H * STONE_TOP };
   }
 
-  /** A place on the shore, in tiles from the end piece's start, his feet on the grass. */
-  protected shoreAt(tiles: number): { x: number; y: number } {
-    return { x: this.nearEnd! + tileW() * tiles, y: SHORE_FEET };
+  /** A place on the shore, as a share of its picture's width from its left edge, his feet on the grass. */
+  protected shoreAt(share: number): { x: number; y: number } {
+    return { x: this.shore! + shoreW() * share, y: SHORE_FEET };
   }
 
-  /** The swamp ends: the band's end piece comes as near as it can, its first differing part just past the stage's right edge. */
+  /** The swamp ends: the shore comes as near as it can, its cliff just past the stage's right edge. */
   protected placeShore(): void {
-    const t = tileW();
-    this.nearEnd = Math.ceil((this.scroll + this.L.vw - SHORE_SAME * t) / t) * t;
+    this.shore = this.scroll + this.L.vw - SHORE_CLIFF * shoreW();
   }
 
   /** From his stone onto the shore's grass, the view moving on if needed, and a little way up onto the meadow. */
@@ -155,9 +155,9 @@ abstract class SwampHero extends HeroMode {
     });
   }
 
-  /** The shore's grass is one jump (`gap`) or less from the stone at `x`. */
+  /** The next stone after the one at `x` (`gap` on) would lie on the shore's cliff: he jumps onto the grass instead. */
   protected nearShore(x: number, gap: number): boolean {
-    return x + gap >= this.shoreAt(SHORE_LAND).x - gap * 0.6;
+    return x + gap > this.shoreAt(SHORE_CLIFF).x - gap * LAND_GAP;
   }
 
   /** Jumps him to a place in the scene; `then` runs when he lands. */
@@ -275,13 +275,13 @@ export class SwampMode extends SwampHero {
    */
   private next(): void {
     const from = this.stand!;
-    if (this.nearEnd === null && this.shoreDue) {
+    if (this.shore === null && this.shoreDue) {
       this.placeShore();
       let left = 1;
       for (let x = from.x; !this.nearShore(x, SWAMP_GAP); x += SWAMP_GAP) left++;
       this.L.count = this.done + left;
     }
-    this.toLand = this.nearEnd !== null && this.nearShore(from.x, SWAMP_GAP);
+    this.toLand = this.shore !== null && this.nearShore(from.x, SWAMP_GAP);
     this.nextX = from.x + SWAMP_GAP;
     this.current = this.L.core.add(this.L.word(6, 2), {});
   }
@@ -353,17 +353,8 @@ const CRADLE_SINK = 30;
 /** Above the cradle they float this high, bobbing a little. */
 const FLOAT = 26;
 const BOB = 6;
-/**
- * The last stone lies this share of a jump before the shore's grass; the end piece always reaches
- * this far past the stage's right edge, so the whole shore never shows.
- */
-const LAND_GAP = 0.55;
+/** The shore picture always reaches this far past the stage's right edge, so its end never shows. */
 const END_MARGIN = 40;
-/** The end piece's width on the stage (2688 x 768 until its picture is there): a wider picture gives more shore. */
-function endW(): number {
-  const img = sprite('bg-planet-swamp-near-end');
-  return img ? (img.naturalWidth * VH) / img.naturalHeight : (2688 * VH) / 768;
-}
 
 /** The monolith while its picture is missing. */
 function cradleFallback(g: G, w: number, h: number): void {
@@ -422,16 +413,14 @@ export class GreatSwampMode extends SwampHero {
   }
 
   start(): void {
-    const t = tileW();
     this.gap = Math.min(220, this.L.vw * 0.19);
     this.home = this.L.vw * 0.12;
     this.jumps = Math.max(SET, this.L.count - BOULDER - 1);
     const b = Math.round(this.jumps / 2 / SET) * SET;
     this.boulderAt = b > 0 && b < this.jumps ? b : -1;
-    // The shore is there from the start, far on: the last stone lies just before its grass.
-    this.nearEnd = Math.ceil((this.jumps * this.gap + this.home + this.L.vw) / t) * t;
-    this.x0 = this.nearEnd + SHORE_LAND * t - LAND_GAP * this.gap - this.jumps * this.gap;
-    this.scroll = this.x0 - this.home;
+    // The shore is there from the start, far on: the last stone lies just before its cliff.
+    this.x0 = this.home;
+    this.shore = this.x0 + (this.jumps + LAND_GAP) * this.gap - SHORE_CLIFF * shoreW();
     this.stand = this.base = this.stone(this.x0);
     this.stand.age = 1;
     this.boulderAhead(0);
@@ -448,9 +437,9 @@ export class GreatSwampMode extends SwampHero {
     return this.stones.length - 1 - this.stones.indexOf(this.base!);
   }
 
-  /** The view never goes so far that the shore's end piece ends on the stage. */
+  /** The view never goes so far that the shore's right edge shows. */
   private get maxScroll(): number {
-    return this.nearEnd! + endW() - this.L.vw - END_MARGIN;
+    return this.shore! + shoreW() - this.L.vw - END_MARGIN;
   }
 
   /** The boulder lies in the set from the firm stone `i`: it shows where its firm stone would be. */
@@ -604,8 +593,8 @@ export class GreatSwampMode extends SwampHero {
     this.sentence = null;
     this.happy();
     this.L.core.prune();
-    const t = tileW(), grass = this.nearEnd! + SHORE_LAND * t;
-    const x = Math.max(grass + CRADLE_H * 0.8, Math.min(grass + t * 0.3, this.scroll + this.L.vw - CRADLE_H * 0.6));
+    const w = shoreW(), grass = this.shore! + SHORE_LAND * w;
+    const x = Math.max(grass + CRADLE_H * 0.8, Math.min(grass + w * 0.3, this.scroll + this.L.vw - CRADLE_H * 0.6));
     this.cradle = { x, rise: 0 };
     this.L.sfx('whoosh');
   }

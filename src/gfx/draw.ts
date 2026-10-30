@@ -210,16 +210,15 @@ function fittedTile(tile: HTMLImageElement, px: number): HTMLCanvasElement | HTM
 /** Each layer's offset in the last frame: a layer that stands still is copied on whole pixels. */
 const lastOffset = new WeakMap<HTMLImageElement, number>();
 
-/** Draws a background layer at full screen height, repeated horizontally by `offset`; up to the layer's x `end` only, when given; `dy` lowers it. */
-function tiled(g: G, img: HTMLImageElement, vw: number, offset: number, end = Infinity, dy = 0): void {
+/** Draws a background layer at full screen height, repeated horizontally by `offset`; `dy` lowers it. */
+function tiled(g: G, img: HTMLImageElement, vw: number, offset: number, dy = 0): void {
   const s = VH / img.naturalHeight;
   const m = g.getTransform();
   const tile = fittedTile(img, Math.round(VH * m.d));
   const w = img.naturalWidth * s, h = img.naturalHeight * s;
-  const from = -(((offset % w) + w) % w), to = Math.min(vw, end - offset);
-  // A band that ends in its end piece keeps exact positions, so the piece meets its last copy.
-  if (tile === img || end !== Infinity) {
-    for (let x = from; x < to; x += w) g.drawImage(tile, x, VH - h + dy, w + 1, h);
+  const from = -(((offset % w) + w) % w);
+  if (tile === img) {
+    for (let x = from; x < vw; x += w) g.drawImage(tile, x, VH - h + dy, w + 1, h);
     return;
   }
   // The scaled copy goes on unscaled, in device pixels, each copy right after the last one: a copy
@@ -228,7 +227,7 @@ function tiled(g: G, img: HTMLImageElement, vw: number, offset: number, end = In
   const still = lastOffset.get(img) === offset;
   lastOffset.set(img, offset);
   const snap = still || graphics.simple || g.canvas.width >= 2 * g.canvas.clientWidth;
-  const x0 = m.a * from + m.e, x1 = m.a * to + m.e;
+  const x0 = m.a * from + m.e, x1 = m.a * vw + m.e;
   const y = Math.round(m.d * (VH + dy) + m.f) - tile.height;
   g.save();
   g.setTransform(1, 0, 0, 1, 0, 0);
@@ -236,44 +235,17 @@ function tiled(g: G, img: HTMLImageElement, vw: number, offset: number, end = In
   g.restore();
 }
 
-/** Where the end piece's flat part starts (a share of its width); it repeats from there, every other copy mirrored. */
-const END_FLAT = 0.78;
-
-/**
- * The near band's end piece (`bg-<world><ground>-near-end`) from the layer's x `at` on (a tile
- * boundary, its first columns are the band's own), then its flat part again and again to the stage's
- * right edge, every other copy mirrored so each edge meets its own mirror image; `dy` lowers it.
- */
-function nearEnd(g: G, img: HTMLImageElement, vw: number, offset: number, at: number, dy: number): void {
-  const s = VH / img.naturalHeight;
-  const w = img.naturalWidth * s, h = img.naturalHeight * s, x0 = at - offset, top = VH - h + dy;
-  if (x0 >= vw) return;
-  g.drawImage(img, x0, top, w + 1, h);
-  const sx = img.naturalWidth * END_FLAT, sw = img.naturalWidth - sx, dw = w * (1 - END_FLAT);
-  for (let x = x0 + w - 1, i = 0; x < vw; x += dw - 1, i++) {
-    g.save();
-    g.translate(x, top);
-    // The first copy is mirrored: its left edge is the piece's own right edge.
-    if (i % 2 === 0) {
-      g.translate(dw, 0);
-      g.scale(-1, 1);
-    }
-    g.drawImage(img, sx, 0, sw, img.naturalHeight, 0, 0, dw, h);
-    g.restore();
-  }
-}
-
-/** How much lower a ground's near band and its end piece sit, their bottom cut off (the planet's swamp). */
+/** How much lower a ground's near band sits, its bottom cut off (the planet's swamp). */
 export const NEAR_DROP: Record<string, number> = { '-swamp': VH * 0.05 };
 
 /** Three-layer parallax background of a world; `scroll` grows as the scene moves forward; with `midOnly` just the middle strip follows it. */
 /** `drift` moves one band on its own by `offset` on top of the scroll. */
 /**
  * The world's layers; `ground` picks another middle and near band of the world (the planet's swamp:
- * `-swamp`), the far one stays; `end` is the near layer's x where the band ends in its end piece (the
- * swamp's bank), null where it goes on.
+ * `-swamp`), the far one stays; `shore` is the near layer's x where the ground's shore picture
+ * (`bg-<world><ground>-shore`, the swamp's grassy bank) stands in front of the band, null for none.
  */
-export function drawBackground(g: G, world: string, vw: number, scroll: number, motion = true, midOnly = false, drift: { layer: 'mid' | 'near'; offset: number } | null = null, ground = '', end: number | null = null): void {
+export function drawBackground(g: G, world: string, vw: number, scroll: number, motion = true, midOnly = false, drift: { layer: 'mid' | 'near'; offset: number } | null = null, ground = '', shore: number | null = null): void {
   const still = midOnly || !motion;
   const midDrift = drift?.layer === 'mid' ? drift.offset : 0, nearDrift = drift?.layer === 'near' ? drift.offset : 0;
   const pal = PALETTES[world] ?? PALETTES.meadow;
@@ -302,11 +274,13 @@ export function drawBackground(g: G, world: string, vw: number, scroll: number, 
   const near = sprite(`bg-${world}${ground}-near`);
   // The space's near rocks drift at half speed, calmer behind the words.
   const nearAt = (still ? 0 : scroll * (world === 'space' ? 0.5 : 1)) + nearDrift;
-  const endPiece = end === null ? null : sprite(`bg-${world}${ground}-near-end`);
   if (near) {
-    const dy = NEAR_DROP[ground] ?? 0;
-    tiled(g, near, vw, nearAt, endPiece ? end! : Infinity, dy);
-    if (endPiece) nearEnd(g, endPiece, vw, nearAt, end!, dy);
+    tiled(g, near, vw, nearAt, NEAR_DROP[ground] ?? 0);
+    const bank = shore === null ? null : sprite(`bg-${world}${ground}-shore`);
+    if (bank) {
+      const w = (bank.naturalWidth * VH) / bank.naturalHeight, x = shore! - nearAt;
+      if (x < vw && x + w > 0) g.drawImage(bank, x, 0, w, VH);
+    }
   } else if (world !== 'space') {
     hills(g, vw, (midOnly ? 0 : scroll) + nearDrift, VH * 0.82, 30, pal.hills[1]);
     if (world === 'rescue') lookoutFlag(g, vw, (still ? 0 : scroll) + nearDrift, pal.hills[1], pal.accent);

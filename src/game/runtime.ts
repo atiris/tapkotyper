@@ -384,7 +384,7 @@ export class LevelRuntime {
     const p = app.profile!;
     // The level opens with every picture its mode, Tapko and the friends draw, so none shows its fallback first;
     // the other worlds' pictures keep loading in the background (main.ts).
-    const own = [`bg-${this.backdrop}-far`, `bg-${this.backdrop}${this.ground}-mid`, `bg-${this.backdrop}${this.ground}-near`, `bg-${this.backdrop}${this.ground}-near-end`, ...this.mode.pictures, ...tapkoPictures(p.companion), ...friendPictures()];
+    const own = [`bg-${this.backdrop}-far`, `bg-${this.backdrop}${this.ground}-mid`, `bg-${this.backdrop}${this.ground}-near`, `bg-${this.backdrop}${this.ground}-shore`, ...this.mode.pictures, ...tapkoPictures(p.companion), ...friendPictures()];
     await Promise.race([preload(own), new Promise((r) => setTimeout(r, PICTURES_WAIT_S * 1000))]);
     if (this.disposed) return;
     audio.music(this.def.kind === 'practice' ? app.menuTrack : this.mode.world);
@@ -1342,7 +1342,7 @@ export class LevelRuntime {
     this.drawnPictures = picturesReady();
     const g = this.stage.begin();
     const drift = this.mode.drift;
-    drawBackground(g, this.backdrop, this.stage.vw, this.mode.scroll, !this.reduceMotion, this.mode.midOnly, drift && { layer: drift.layer, offset: driftOffset(drift, this.elapsed, !this.reduceMotion) }, this.ground, this.def.rescue ? null : this.mode.nearEnd);
+    drawBackground(g, this.backdrop, this.stage.vw, this.mode.scroll, !this.reduceMotion, this.mode.midOnly, drift && { layer: drift.layer, offset: driftOffset(drift, this.elapsed, !this.reduceMotion) }, this.ground, this.def.rescue ? null : this.mode.shore);
     if (this.robot) this.drawBolt(g);
     if (this.fairy) this.drawMelody(g);
     this.labels.begin();

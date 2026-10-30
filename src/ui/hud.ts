@@ -6,8 +6,8 @@ import { ICONS, h } from './dom';
 import { keyLabel } from './keyboard-guide';
 import { tip } from './tooltip';
 
-/** Colors of the round buttons: controls purple; the paw, rhythm, place in the world, a key's accuracy and the target's hits green (the round being played); the super star and a new version red; the wardrobe's time teal. */
-export type RoundKind = 'control' | 'paw' | 'rhythm' | 'super' | 'place' | 'timer' | 'accuracy' | 'hits' | 'update';
+/** Colors of the round buttons: controls purple; the paw, rhythm, place in the world, a key's accuracy green (the round being played); the super star and a new version red; the wardrobe's time teal. */
+export type RoundKind = 'control' | 'paw' | 'rhythm' | 'super' | 'place' | 'timer' | 'accuracy' | 'update';
 
 const RING_LEN = 2 * Math.PI * 21;
 /** Glyphs drawn filled in white; the others are white lines. */
@@ -132,24 +132,6 @@ export function accuracyPic(key: string): { el: HTMLElement; set(accuracy: numbe
       el.className = `round-btn accuracy acc-${band}`;
       el.innerHTML = roundTextSvg(glyph, rhythmRing(accuracyFill(accuracy)));
       const label = t('level.keyAccuracy', { key: keyLabel(key), n: pct });
-      tip(el, label);
-      el.setAttribute('aria-label', label);
-    },
-  };
-}
-
-/** Hits on the target range's target (a picture): their number on the disc, the ring filling with the base time. */
-export function hitsPic(): { el: HTMLElement; set(hits: number, time: number): void } {
-  const el = h('div', { class: 'round-btn hits', role: 'img' });
-  let shown = '';
-  return {
-    el,
-    set(hits, time) {
-      const step = `${hits}:${Math.round(Math.max(0, Math.min(1, time)) * 40)}`;
-      if (step === shown) return;
-      shown = step;
-      el.innerHTML = roundTextSvg(String(hits), rhythmRing(time));
-      const label = t('aim.hits', { n: hits });
       tip(el, label);
       el.setAttribute('aria-label', label);
     },

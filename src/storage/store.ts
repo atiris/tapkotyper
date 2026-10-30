@@ -125,6 +125,7 @@ export function newProfile(name: string, language: LangRef, layout?: LayoutId, k
       starsEarned: 0,
       wardrobeSeconds: 0,
       rangeFinds: [],
+      rangeRecord: 0,
       parrots: [],
       parrotsWon: [],
       parrotsEarned: 0,

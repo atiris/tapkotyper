@@ -97,8 +97,8 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
     g('story-play', 'story.*'),
   ] },
   { id: 'aim', groups: [
-    g('aim-page', 'aim.title', 'aim.start', 'aim.swapHint', 'aim.swap', 'aim.keys', 'aim.ready', 'aim.hits', 'aim.stayTip', 'aim.stay', 'aim.stayStart',
-      'aim.hitsDone', 'aim.done', 'aim.beforeAfter', 'aim.opened', 'aim.again', 'aim.collection.*'),
+    g('aim-page', 'aim.title', 'aim.start', 'aim.swapHint', 'aim.swap', 'aim.keys', 'aim.ready', 'aim.score', 'aim.record', 'aim.stayTip', 'aim.stay', 'aim.stayStart',
+      'aim.hitsDone', 'aim.pointsDone', 'aim.done', 'aim.beforeAfter', 'aim.opened', 'aim.again', 'aim.collection.*'),
     g('aim-lines', 'aim.lines.*'),
     { id: 'aim-thing', keys: [], each: 'aim.things' },
     g('parrot', 'parrot.*'),

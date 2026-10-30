@@ -44,7 +44,11 @@
   ("Mucha vpred!"). About every other hit makes a word pop out of the target, above or left of it at a random angle: the thing's impact sound ("Pľac!") or a general one ("Bum!", "Kaboom!", "Auuuu!"). At every hit the target
   says how good the throw was in a bubble left of it, below the flight path: in the middle (no
   wrong key) mostly a funny line of the thing ("100-percentný kečup!"), one time in five a
-  bullseye line; one wrong key a near miss (85-95 points), two a decent hit (75-85 points). A miss
+  bullseye line; one mistake a near miss, two or more a decent hit; when a line names the points
+  they are the hit's real points. A hit's points are the share of the letters of the words given
+  in its flight, in percent, after a penalty that grows with the mistakes (wrong keys and late
+  words): n mistakes cost n x (n + 1) letters, so 21 letters give 100, with one mistake 19/21
+  (90), with two 15/21 (71); a miss or a fall gives 0. A miss
   and a fall get only a kind line of the target ("Vedľa!" among them, no word pops up); at the third and fifth bullseye in a row a streak line follows the hit line, so the thing's joke is not lost. The last throw
   of the two minutes and a target that steps back (shrinks) a line of their own. Now and then
   (about one throw in four, more for a cactus or a spider) the target reacts while the thing is
@@ -78,10 +82,15 @@
   shrinks with a little bounce, Tapko cheers, the narrator says so, and the letter leaves the
   list. The trained letters are said at the start, not shown in the HUD.
 - At least two minutes, counted from the first throw (reading the rules takes none of them): the
-  run ends with the throw in the air after two minutes. A red ring
-  next to the accuracy rings counts the target hits of those two minutes and fills with the
-  time; the end card ("Náš terč nám poslal tvoje výsledky!") says the hits and how many were in
-  the middle; its collection stays in one row while the window is wide enough. No stars,
+  run ends with the throw in the air after two minutes, the same in every world (the range is
+  for time only, never a number of throws). The HUD bar shows only the time; the hits and the
+  points so far stand in the top right corner over the target ("Zásahy: 1   Body: 89") in the
+  shouts' rounded bold letters, in their own colour. The last word, over the target, stands high
+  enough that the target's eyes peeking out over its top stay in sight. The most points of a run
+  are the range's record (kept per player, staying a while does not count); the first time a
+  run beats it Tapko says "Nový svetový rekord!", and the end card says it too. The end card
+  ("Náš terč nám poslal tvoje výsledky!") says the hits, how many were in the middle and the
+  points; its collection stays in one row while the window is wide enough. No stars,
   no paw help, no Enter marks, no surprises, no story friends. The end card shows accuracy
   before and after per trained letter over the range, "Again", "Stay at the range" and "To the
   map". Esc or that button keeps throwing without an end (every hit counts); Esc there ends

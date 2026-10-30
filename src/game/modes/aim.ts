@@ -4,15 +4,14 @@ import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
 import type { ParticleShape } from '../../engine/particles';
 import { hasImage } from '../../gfx/assets';
-import { drawSprite, type G, roundRect } from '../../gfx/draw';
+import { drawSprite, fontFamily, type G, roundRect } from '../../gfx/draw';
 import { t, tList } from '../../i18n/i18n';
 import { SHIFT_L, SHIFT_R, SPACE, isKeyReady, keysAccuracy, notReadyKeys, recentAccuracy } from '../../learning/lessons';
-import { hitsPic } from '../../ui/hud';
 import { keyLabel } from '../../ui/keyboard-guide';
 import { WORLDS } from '../levels';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
-import { BURST_COLORS, Bags, type Burst, type Effect, type Eyes, STAY_WORLD_EVERY, THINGS, type Thing, type Tier, WORLD_THINGS, storyPool, tierOf, tierPoints, worldDue, worldThing } from './aim-things';
+import { BURST_COLORS, Bags, type Burst, type Effect, type Eyes, STAY_WORLD_EVERY, THINGS, type Thing, type Tier, WORLD_THINGS, storyPool, throwPoints, tierOf, worldDue, worldThing } from './aim-things';
 import { HeroMode, sideFeet } from './kit/hero';
 
 /** Seconds of play before the run ends with the throw in the air (staying a while has no end). */
@@ -102,6 +101,8 @@ interface Flight {
   next: number;
   /** Wrong keys, and the words of rings not typed in time: both rate the hit lower. */
   errors: number;
+  /** Letters of the words given in flight: its points are a share of them. */
+  letters: number;
   slips: number;
   sink: number;
   /** Where the leg to the next stop began; the drift of the words missed so far, and the drift shown now (negative = up). */
@@ -160,6 +161,12 @@ const OWN_HIT = 0.8;
 /** Chance of a word popping out of the target at a hit, this far beyond its edge. */
 const POP_CHANCE = 0.5;
 const POP_OUT = 60;
+/** The last word's height over the target's top. */
+const WORD_OVER = 62;
+/** The score in the top right corner: letter size, margin, outline and fill. */
+const SCORE_SIZE = 34;
+const SCORE_MARGIN = 18;
+const SCORE_INK = ['#1f4a5c', '#8fe3d0'];
 /** Chances of the eyes: with a line before the hit, at a hit that wobbles the target, at a bullseye. */
 const EYES_EXPECT = 0.6;
 const EYES_DIZZY = 0.3;
@@ -220,10 +227,13 @@ export class AimMode extends HeroMode {
   private radius: number;
   private shrink = 0;
   private marks: Mark[] = [];
-  /** Hits on the target and in its middle, from throws within the base time (all of them while staying). */
+  /** Hits on the target and in its middle, and their points, from throws within the base time (all of them while staying). */
   hits = 0;
   centers = 0;
-  private hitsEl = hitsPic();
+  points = 0;
+  /** The range's record before this run; `newRecord` once this run's points beat it (announced once). */
+  private readonly record: number;
+  newRecord = false;
   private readonly bags: Bags;
   private throws = 0;
   /** The world's thing comes with the last throw of the base time (1) or the one before (2); while staying, with throw `worldAt`. */
@@ -258,7 +268,7 @@ export class AimMode extends HeroMode {
     this.before = new Map(this.keys.map((k) => [k, recentAccuracy(p.stats.keys[k])]));
     this.phraseWords = this.keys.includes(SPACE) ? 2 : 1;
     this.radius = targetRadius(this.accuracy);
-    this.hitsEl.set(0, 0);
+    this.record = p.progress.rangeRecord;
     this.bags = new Bags(L.rng);
     this.worldSlot = L.rng.chance(0.5) ? 1 : 2;
     this.worldAt = L.rng.int(...STAY_WORLD_EVERY);
@@ -270,10 +280,6 @@ export class AimMode extends HeroMode {
   startLine(): string {
     const rules = t('aim.start');
     return this.rare().length ? `${rules} ${t('aim.swapHint')}` : rules;
-  }
-
-  rings(): HTMLElement[] {
-    return [this.hitsEl.el];
   }
 
   /** Accuracy before and now of each trained key. */
@@ -407,7 +413,7 @@ export class AimMode extends HeroMode {
     this.throws++;
     const f: Flight = {
       th, pic: '', launch: null, stops, s: 0, speed: 0, next: 0, errors: 0, slips: 0, sink: 0, from: 0, drift: 0, lift: 0,
-      phase: 'ready', counts: false, drop: 0, vy: 0, landed: false, after: 0, spin: 0,
+      phase: 'ready', counts: false, letters: 0, drop: 0, vy: 0, landed: false, after: 0, spin: 0,
       egg: null, hatched: 0, expect: null, then: null, flown: 0, trail: [], smoke: 0,
     };
     this.dress(f, th);
@@ -444,6 +450,7 @@ export class AimMode extends HeroMode {
     const stop = f.stops[f.next];
     const words = Array.from({ length: CANDIDATES }, () => this.L.word(stop.len));
     stop.tg = this.L.core.add(pickWord(words, this.aimed, stop.len), {});
+    f.letters += stop.tg.word.length;
     f.from = f.s;
     f.speed = (stop.s - f.s) / this.L.travelTime(stop.tg.word);
   }
@@ -519,7 +526,6 @@ export class AimMode extends HeroMode {
     if (!this.firstThrow) this.time += dt;
     this.scroll += dt * SWAY;
     this.radius += (targetRadius(this.accuracy) - this.radius) * Math.min(1, dt * 3);
-    this.hitsEl.set(this.hits, this.progress());
     this.shrink = Math.max(0, this.shrink - dt);
     this.wobble = Math.max(0, this.wobble - dt);
     this.stars = Math.max(0, this.stars - dt);
@@ -596,10 +602,17 @@ export class AimMode extends HeroMode {
   private hit(f: Flight): void {
     f.phase = 'hit';
     const tg = this.target, th = f.th;
-    const tier = tierOf(f.errors + f.slips), center = tier === 'center';
+    const tier = tierOf(f.errors + f.slips), center = tier === 'center', points = throwPoints(f.letters, f.errors + f.slips);
     if (f.counts) {
       this.hits++;
       if (center) this.centers++;
+      this.points += points;
+      // A record of the base time (staying plays on without an end) is said once, the first time it is beaten.
+      if (!this.L.staying && this.record > 0 && this.points > this.record && !this.newRecord) {
+        this.newRecord = true;
+        this.L.sfx('reward');
+        this.tapkoSays(t('aim.record'));
+      }
     }
     const side = this.L.rng.chance(0.5) ? 1 : -1;
     const dx = center ? 0 : side * this.L.rng.range(0.5, 0.75) * this.radius;
@@ -627,23 +640,23 @@ export class AimMode extends HeroMode {
     if (this.eyes) this.eyesReact(th.wobble ? 'dizzy' : center ? 'squeeze' : 'wide');
     else if (th.wobble && this.L.rng.chance(EYES_DIZZY)) this.eyesUp('dizzy');
     else if (center && this.L.rng.chance(EYES_SQUEEZE)) this.eyesUp('squeeze');
-    this.targetSays(this.hitLine(f, tier, own));
+    this.targetSays(this.hitLine(f, tier, own, points));
     if (center && f.counts && th.world != null) this.find(th);
     this.happy();
     this.L.setMood('happy', 1.2);
   }
 
   /**
-   * The target's line for a hit: in the middle mostly the thing's own line, else a common one; off it the points.
+   * The target's line for a hit: in the middle mostly the thing's own line, else a common one; `{n}` in a line is the hit's points.
    * A third and a fifth bullseye in a row add a streak line after it.
    */
-  private hitLine(f: Flight, tier: Tier, own: string): string {
+  private hitLine(f: Flight, tier: Tier, own: string, points: number): string {
     if (tier !== 'center') {
       this.streak = 0;
-      return this.line(`aim.lines.${tier}`, tierPoints(tier, this.L.rng));
+      return this.line(`aim.lines.${tier}`, points);
     }
     if (++this.streak === 3 || this.streak === 5) f.then = this.line(`aim.lines.streak${this.streak}`);
-    return tList(own).length && this.L.rng.chance(OWN_HIT) ? this.line(own) : this.line('aim.lines.center');
+    return tList(own).length && this.L.rng.chance(OWN_HIT) ? this.line(own) : this.line('aim.lines.center', points);
   }
 
   /** A world thing hit in the middle for the first time: it joins the collection when the run ends. */
@@ -669,8 +682,10 @@ export class AimMode extends HeroMode {
 
   /** The run ended (not left early): what was found joins the collection; the runtime saves the profile. */
   onFinish(): void {
-    app.profile!.progress.rangeFinds.push(...this.finds);
+    const pr = app.profile!.progress;
+    pr.rangeFinds.push(...this.finds);
     this.finds = [];
+    if (!this.L.staying) pr.rangeRecord = Math.max(pr.rangeRecord, this.points);
   }
 
   private land(f: Flight): void {
@@ -737,13 +752,31 @@ export class AimMode extends HeroMode {
     if (f) {
       f.stops.slice(0, RINGS).forEach((r, i) => this.drawRing(g, r, i === f.next && f.phase === 'fly'));
       const last = f.stops[RINGS];
-      if (last.tg) this.L.label(g, last.tg, last.x, last.y - this.radius - 34, 38);
+      // High enough over the target that its eyes, peeking out over its top, stay in sight.
+      if (last.tg) this.L.label(g, last.tg, last.x, last.y - this.radius - WORD_OVER, 38);
       if (f.launch) this.L.label(g, f.launch, this.hand.x, this.hand.y - 70, 38);
       if (f.phase !== 'hit' && f.phase !== 'miss') this.drawProjectile(g, f);
     }
     this.drawHero(g);
     // The boomerang flies back over everything into Tapko's paw.
     for (const m of this.marks) if (m.effect === 'boomerang') this.drawBoomerang(g, m);
+    this.drawScore(g);
+  }
+
+  /** The hits and the points in the top right corner, over the target, in the shouts' rounded bold letters. */
+  private drawScore(g: G): void {
+    const text = t('aim.score', { hits: this.hits, points: this.points });
+    g.save();
+    g.font = `800 ${SCORE_SIZE}px ${fontFamily()}`;
+    g.textAlign = 'right';
+    g.textBaseline = 'top';
+    g.lineJoin = 'round';
+    g.lineWidth = 7;
+    g.strokeStyle = SCORE_INK[0];
+    g.strokeText(text, this.L.vw - SCORE_MARGIN, SCORE_MARGIN);
+    g.fillStyle = SCORE_INK[1];
+    g.fillText(text, this.L.vw - SCORE_MARGIN, SCORE_MARGIN);
+    g.restore();
   }
 
   private drawTarget(g: G): void {

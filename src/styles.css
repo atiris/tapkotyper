@@ -250,8 +250,8 @@ body.reduce-motion :is(.btn, .teacher-big):is(:hover, :active) { transform: none
  * in the world, the rhythm, a key's accuracy, the target's hits), and what calls for attention red
  * (the super star, a new version). The wardrobe's time is its own teal.
  */
-.round-btn.paw, .round-btn.rhythm, .round-btn.place, .round-btn.hits, .round-btn.accuracy { --rb: #2f8a4c; --rb-ring: #4fb57a; }
-.round-btn.rhythm, .round-btn.place, .round-btn.hits, .round-btn.accuracy { cursor: default; }
+.round-btn.paw, .round-btn.rhythm, .round-btn.place, .round-btn.accuracy { --rb: #2f8a4c; --rb-ring: #4fb57a; }
+.round-btn.rhythm, .round-btn.place, .round-btn.accuracy { cursor: default; }
 .round-btn.super, .round-btn.update { --rb: #d63a32; --rb-ring: #d63a32; }
 .round-btn.timer { --rb: #1f8a86; --rb-ring: #3cc0b8; cursor: default; }
 .round-btn.accuracy { --rb-ring: #e5534b; }

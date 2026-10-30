@@ -20,7 +20,7 @@ useDictionaries('sk', sk);
 
 const { AIM_SECONDS, AimMode, FALL_ERRORS, RINGS, pickWord, targetRadius, throwLengths, weakCount } = await import('./aim');
 const { app } = await import('../../app/app');
-const { THINGS } = await import('./aim-things');
+const { THINGS, throwPoints } = await import('./aim-things');
 const { VH } = await import('../../engine/loop');
 
 function fakeRuntime(extra: Record<string, unknown> = {}): LevelRuntime {
@@ -109,7 +109,7 @@ describe('target range', () => {
     expect(L.speak).toHaveBeenCalledWith('tapko', expect.toBeOneOf(tList('aim.things.tomato.launch')), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number));
     expect(L.speak).toHaveBeenLastCalledWith('target', expect.toBeOneOf([...tList('aim.lines.center'), ...tList('aim.things.tomato.hit')]), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), true);
     expect(L.shout).not.toHaveBeenCalled();
-    expect([mode.hits, mode.centers]).toEqual([1, 1]);
+    expect([mode.hits, mode.centers, mode.points]).toEqual([1, 1, 100]);
     run(mode, L, 2);
     // The next throw waits for its launch word.
     expect(L.core.focus()?.word).toBe('kdk');
@@ -162,9 +162,10 @@ describe('target range', () => {
       typeRing(mode, L);
     }
     run(mode, L, 0.5);
-    // The fake rng gives the lowest points of the tier.
-    expect(L.speak).toHaveBeenLastCalledWith('target', expect.toBeOneOf(tList('aim.lines.one', { n: 85 })), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), true);
-    expect([mode.hits, mode.centers]).toEqual([1, 0]);
+    // One mistake costs two letters of the throw's words.
+    const points = throwPoints(3 * (RINGS + 1), 1);
+    expect(L.speak).toHaveBeenLastCalledWith('target', expect.toBeOneOf(tList('aim.lines.one', { n: points })), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), true);
+    expect([mode.hits, mode.centers, mode.points]).toEqual([1, 0, points]);
   });
 
   it('a ring passed before its word is typed still hits, off the middle like a wrong key', () => {
@@ -262,6 +263,27 @@ describe('target range', () => {
     expect(mode.onEnter()).toBe(false);
     app.profile!.progress.rangeFinds = [];
     expect(mode.onEnter()).toBe(false);
+  });
+
+  it('beating the record says so once, and a finished run keeps the new record', () => {
+    app.profile!.progress.rangeRecord = 150;
+    const L = fakeRuntime();
+    const mode = new AimMode(L);
+    mode.start();
+    const record = () => (L.speak as ReturnType<typeof vi.fn>).mock.calls.filter((c) => c[1] === t('aim.record')).length;
+    for (let throwN = 0; throwN < 2; throwN++) {
+      typeRing(mode, L);
+      for (let stop = 0; stop <= RINGS; stop++) {
+        run(mode, L, 0.5);
+        typeRing(mode, L);
+      }
+      run(mode, L, 3);
+    }
+    expect(mode.points).toBe(200);
+    expect([mode.newRecord, record()]).toEqual([true, 1]);
+    mode.onFinish();
+    expect(app.profile!.progress.rangeRecord).toBe(200);
+    app.profile!.progress.rangeRecord = 0;
   });
 
   it('staying a while keeps throwing after two minutes', () => {

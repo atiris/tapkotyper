@@ -176,9 +176,14 @@ export function tierOf(errors: number): Tier {
   return errors <= 0 ? 'center' : errors === 1 ? 'one' : 'two';
 }
 
-/** The points a tier says (`{n}` in its lines): one wrong key 85-95, two 75-85. */
-export function tierPoints(tier: Tier, rng: Rng): number {
-  return tier === 'center' ? 100 : tier === 'one' ? rng.int(85, 95) : rng.int(75, 85);
+/**
+ * A hit's points: the share of the letters of its words, in percent, after a penalty that grows
+ * with the mistakes (wrong keys and late words): 2 letters for one, 6 for two, 12 for three
+ * (n x (n + 1)); 21 letters with one mistake give 19/21, with two 15/21.
+ */
+export function throwPoints(letters: number, mistakes: number): number {
+  if (letters <= 0) return 0;
+  return Math.max(0, Math.round(((letters - mistakes * (mistakes + 1)) / letters) * 100));
 }
 
 /** Lines and things drawn from a shuffled bag per list: each once before any comes again, never the same twice in a row. */

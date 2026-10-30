@@ -4,7 +4,7 @@ import { Rng } from '../../engine/rng';
 
 vi.mock('../../gfx/assets', () => ({ hasImage: () => true }));
 
-const { Bags, THINGS, WORLD_THINGS, storyPool, tierOf, tierPoints, worldDue, worldThing } = await import('./aim-things');
+const { Bags, THINGS, WORLD_THINGS, storyPool, throwPoints, tierOf, worldDue, worldThing } = await import('./aim-things');
 const { STORIES, WORLDS } = await import('../levels');
 
 const dicts = { sk: JSON.parse(readFileSync('public/i18n/sk.json', 'utf8')), en: JSON.parse(readFileSync('public/i18n/en.json', 'utf8')) };
@@ -64,17 +64,17 @@ describe('things to throw', () => {
 });
 
 describe('the target\'s lines', () => {
-  it('rates a hit by the wrong keys, with the points of each tier', () => {
+  it('rates a hit by its wrong keys', () => {
     expect([0, 1, 2].map(tierOf)).toEqual(['center', 'one', 'two']);
-    const rng = new Rng(7);
-    for (let i = 0; i < 200; i++) {
-      const one = tierPoints('one', rng), two = tierPoints('two', rng);
-      expect(one).toBeGreaterThanOrEqual(85);
-      expect(one).toBeLessThanOrEqual(95);
-      expect(two).toBeGreaterThanOrEqual(75);
-      expect(two).toBeLessThanOrEqual(85);
-      expect(Number.isInteger(one) && Number.isInteger(two)).toBe(true);
-    }
+  });
+
+  it('scores a hit as the share of its letters after a penalty growing with the mistakes', () => {
+    expect(throwPoints(21, 0)).toBe(100);
+    expect(throwPoints(21, 1)).toBe(Math.round((19 / 21) * 100));
+    expect(throwPoints(21, 2)).toBe(Math.round((15 / 21) * 100));
+    expect(throwPoints(21, 3)).toBe(Math.round((9 / 21) * 100));
+    expect(throwPoints(21, 5)).toBe(0);
+    expect(throwPoints(0, 0)).toBe(0);
   });
 
   it('never says the same line twice in a row, and repeats a run from the same seed', () => {

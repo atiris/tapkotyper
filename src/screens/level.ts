@@ -279,14 +279,16 @@ function showStayDone(root: HTMLElement, def: LevelDef, r: LevelResult): void {
   peekable(overlay, card, () => go('map'), () => go('level', { id: def.id, stay: true }));
 }
 
-/** The end of the target range over it: accuracy before and after per weak key, the hits, new keys when the lesson advanced; no stars. */
+/** The end of the target range over it: accuracy before and after per weak key, the hits and points (a new record), new keys when the lesson advanced; no stars. */
 function showAimDone(root: HTMLElement, r: LevelResult, mode: AimMode, params: LevelParams): void {
   const p = app.profile!;
   const pct = (n: number) => Math.round(n * 100);
   const rows = mode.report().map((k) => h('li', { class: `aim-row ${k.after > k.before ? 'good' : ''}` },
     h('b', { class: 'aim-row-key' }, keyLabel(k.key)),
     h('span', {}, t('aim.beforeAfter', { before: pct(k.before), after: pct(k.after) }))));
-  const facts = [h('span', { class: 'fact main' }, t('results.accuracy', { n: pct(r.accuracy) })), h('span', { class: 'fact' }, t('aim.hitsDone', { n: mode.hits, center: mode.centers }))];
+  const facts = [h('span', { class: 'fact main' }, t('results.accuracy', { n: pct(r.accuracy) })), h('span', { class: 'fact' }, t('aim.hitsDone', { n: mode.hits, center: mode.centers })),
+    h('span', { class: 'fact' }, t('aim.pointsDone', { n: mode.points }))];
+  if (mode.newRecord) facts.push(h('span', { class: 'fact new-key' }, t('aim.record')));
   if (r.newKeys.length) facts.push(h('span', { class: 'fact new-key' }, t('aim.opened', { keys: r.newKeys.map(keyLabel).join(', ') })));
   const breakDue = isBreakDue();
   const actions = h('div', { class: 'row center' });

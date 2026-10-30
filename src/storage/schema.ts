@@ -137,6 +137,8 @@ export interface Progress {
   wardrobeSeconds: number;
   /** Ids of the world things hit in the middle at the target range (its collection). */
   rangeFinds: string[];
+  /** The most points in one run of the target range (its base time). */
+  rangeRecord: number;
   /** Worlds whose parrot is won (at home). */
   parrots: number[];
   /** Worlds whose parrot round was ever won, the parrot at home or flown away since. */

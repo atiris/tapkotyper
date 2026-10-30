@@ -128,8 +128,6 @@ interface Flight {
   then: string | null;
   /** Seconds since the throw. */
   flown: number;
-  /** The last places of a thing with a paper trail. */
-  trail: { x: number; y: number }[];
   smoke: number;
 }
 
@@ -416,7 +414,7 @@ export class AimMode extends HeroMode {
     const f: Flight = {
       th, pic: '', launch: null, stops, s: 0, speed: 0, next: 0, errors: 0, slips: 0, sink: 0, from: 0, drift: 0, lift: 0,
       phase: 'ready', counts: false, letters: 0, drop: 0, vy: 0, landed: false, after: 0, spin: 0,
-      egg: null, hatched: 0, expect: null, then: null, flown: 0, trail: [], smoke: 0,
+      egg: null, hatched: 0, expect: null, then: null, flown: 0, smoke: 0,
     };
     this.dress(f, th);
     this.flight = f;
@@ -570,17 +568,12 @@ export class AimMode extends HeroMode {
     this.L.core.prune();
   }
 
-  /** A paper ribbon or a smoke trail behind the thing. */
+  /** A smoke trail behind the thing. */
   private trail(f: Flight, dt: number): void {
-    if (!f.th.trail) return;
-    const p = this.point(f.s), at = { x: p.x, y: p.y + f.sink + f.lift };
-    if (f.th.trail === 'paper') {
-      f.trail.push(at);
-      if (f.trail.length > 16) f.trail.shift();
-    } else if ((f.smoke += dt) >= 0.06) {
-      f.smoke = 0;
-      this.L.particles.emit(at.x - 20, at.y + 6, 1, 'puff', BURST_COLORS.smoke, 20, 12, 0.7);
-    }
+    if (!f.th.trail || (f.smoke += dt) < 0.06) return;
+    f.smoke = 0;
+    const p = this.point(f.s);
+    this.L.particles.emit(p.x - 20, p.y + f.sink + f.lift + 6, 1, 'puff', BURST_COLORS.smoke, 20, 12, 0.7);
   }
 
   /** The throw is over (hit or fallen) and the target's line has been up a while; the next one comes until the time is up, or always while staying. */
@@ -1115,29 +1108,11 @@ export class AimMode extends HeroMode {
   private drawProjectile(g: G, f: Flight): void {
     const p = this.point(f.s);
     const y = p.y + f.sink + f.lift + f.drop;
-    if (f.trail.length > 1 && f.phase === 'fly') this.drawPaper(g, f.trail, p.x, y);
     // An arrow or a rocket points along the path, winged things stay upright, the rest tumbles slowly. A fallen one lies on the grass and fades before the next throw.
     const next = this.point(Math.min(1, f.s + 0.01));
     const rot = f.th.spin === 'point' ? Math.atan2(next.y - p.y, next.x - p.x) : f.th.spin || this.L.reduceMotion || f.hatched ? 0 : f.spin;
     const flap = f.hatched && !this.L.reduceMotion ? Math.sin(this.t * 18) * 4 : 0;
     this.drawThing(g, f.th, this.flightPic(f), p.x, y + flap, THING_SIZE * (f.th.scale ?? 1), rot, f.landed ? 1 - f.after / PAUSE_AFTER : 1);
-  }
-
-  /** A short paper ribbon trailing behind the roll. */
-  private drawPaper(g: G, trail: { x: number; y: number }[], x: number, y: number): void {
-    const dy = y - trail[trail.length - 1].y;
-    g.save();
-    g.lineCap = 'round';
-    g.lineJoin = 'round';
-    for (const [w, c] of [[9, 'rgba(90,61,43,0.45)'], [6, '#ffffff']] as const) {
-      g.strokeStyle = c;
-      g.lineWidth = w;
-      g.beginPath();
-      trail.forEach((q, i) => g.lineTo(q.x - 12, q.y + dy + 8 + (this.L.reduceMotion ? 0 : Math.sin(this.t * 10 + i) * 4)));
-      g.lineTo(x - 12, y + 8);
-      g.stroke();
-    }
-    g.restore();
   }
 
   /** A thing; the first seven are drawn in code until their picture is there. */

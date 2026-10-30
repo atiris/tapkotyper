@@ -43,8 +43,8 @@ export interface Thing {
   stars?: boolean;
   /** The target flashes this color. */
   flash?: string;
-  /** Something trails behind it in flight. */
-  trail?: 'paper' | 'smoke';
+  /** Smoke trails behind it in flight. */
+  trail?: 'smoke';
   /** It points along its path instead of tumbling (an arrow, a rocket), or keeps upright (things with wings). */
   spin?: 'point' | 'none';
   /** The chance of its own `expect` lines (it has some in the texts) and the eyes they bring. */
@@ -71,7 +71,7 @@ export const THINGS: Thing[] = [
   { id: 'egg', pics: ['obj-aim-egg'], story: 0, sfx: 'plop', effect: 'egg', spin: 'none' },
   { id: 'clock', pics: ['obj-aim-clock'], story: 0, sfx: 'ring', effect: 'stick', hold: 1.2, jitter: 'shake' },
   { id: 'cactus', pics: ['obj-aim-cactus'], story: 0, sfx: 'pop', effect: 'bounce', expect: 0.6, eyes: 'worry' },
-  { id: 'toilet-paper', pics: ['obj-aim-toilet-paper'], story: 0, sfx: 'pop', effect: 'bounce', trail: 'paper' },
+  { id: 'toilet-paper', pics: ['obj-aim-toilet-paper'], story: 0, sfx: 'pop', effect: 'bounce' },
   { id: 'candle', pics: ['obj-aim-candle'], story: 0, sfx: 'whoosh', effect: 'bounce', burst: 'smoke', spin: 'none' },
   { id: 'cheese', pics: ['obj-aim-cheese'], story: 0, sfx: 'plop', effect: 'bounce', burst: 'stink' },
   { id: 'boomerang', pics: ['obj-aim-boomerang'], story: 0, sfx: 'whoosh', effect: 'boomerang' },

@@ -2935,15 +2935,17 @@
         "launch": [
           "A crystal flies!",
           "A sparkly throw!",
-          "Fly, sparkles!"
+          "Throwing rare stuff!"
         ],
         "sound": [
           "Clink!"
         ],
         "hit": [
-          "Look at it sparkle!",
+          "I'm turning to crystal!",
           "I'm all glittery!",
-          "Clink! What a gem."
+          "Ruby!",
+          "Diamond!",
+          "A lovely gem."
         ]
       },
       "flame": {

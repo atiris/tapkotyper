@@ -2950,15 +2950,17 @@
         "launch": [
           "Kryštál letí!",
           "Ligotavý hod!",
-          "Trblietky, leťte!"
+          "Hádžem vzácny materiál!"
         ],
         "sound": [
           "Cink!"
         ],
         "hit": [
-          "Ligoce sa to!",
+          "Kryštalizujem sa!",
           "Som celý trblietavý!",
-          "Cink! To bol drahokam."
+          "Rubín!",
+          "Diamant!",
+          "Krásny drahokam."
         ]
       },
       "flame": {

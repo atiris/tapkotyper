@@ -124,8 +124,9 @@ tréningu nevedia zaspať, ráno odlietajú na lúku kryštálov.
 5. **Odlet** - ráno chcú dráčiky odletieť na lúku kryštálov. Každý potrebuje niekoľko skupín
    krátkych slov bez chyby a načas; inak sa vráti k ohnisku ("Skúsime to znova!") a skúsi to
    znova. Po troch návratoch má o skupinu menej a viac času, po šiestich sa pri chybe opakuje
-   len to slovo, takže to zvládne každý. Dráčik, ktorý príde neskôr, priletí sprava vysokým
-   oblúkom a v štvrťoblúku zosadne na svoje miesto pri ohnisku. Keď odletí posledný, Tapko za nimi zavolá ("Ahojte!"),
+   len to slovo, takže to zvládne každý. Dráčik, ktorý príde neskôr, priletí spoza pravého
+   okraja vo výške polovice až troch štvrtín obrazovky jedným oblúkom (ako ľavá strana dáždnika)
+   a so spomalením dosadne na svoje miesto pri ohnisku. Keď odletí posledný, Tapko za nimi zavolá ("Ahojte!"),
    chvíľu je ticho, potom oheň vzbĺkne a pod veľkými plameňmi sa v ohnisku objaví vajíčko (bez
    tváre). Oheň sfúkne so spŕškou iskier, vajíčko ostane v zhasnutom ohnisku a pozdraví ("Ahoj,
    ty budeš môj kamarát?"), Tapko sa poteší.

@@ -280,9 +280,10 @@ as they are. The world descriptions below marked *not built yet* are the design 
    a quiet moment, then the fire flares up and an egg (without a face) is laid in it under the
    big flames; the fire is blown out with a burst of sparks and the egg sits in the dead pit with
    a soft glow. It greets Tapko ("Ahoj, ty budeš môj kamarát?"), and Tapko is glad and cheers.
-   In the take-off a dragon that comes later flies in from the right in a high half-arc (in the
-   upper half of the stage) and glides down a quarter-arc to its seat by the pit; the next try
-   waits until it sits.
+   In the take-off a dragon that comes later flies in from behind the right edge, starting at
+   half to three quarters of the stage's height, in one simple arc like the left side of an
+   umbrella (level at first, then down onto its seat), slowing as it lands; it is never seen
+   appear. The next try waits until it sits.
    Flying lessons, the lullaby and the take-off start with three dragons; when the last is done
    while the level's minimum time is not played, one more comes, at most five, and the fifth
    ends the level even below the minimum (played on without an end, one more always comes).

@@ -740,12 +740,15 @@ const TAKE_TOP = 330;
 const ROW_Y = VH * 0.16;
 const BACK = 1.4;
 const GONE = 2.2;
-/** A dragon that comes later flies in from the right in a high half-arc (the upper half of the stage), then glides down a quarter-arc to its seat: seconds of each, the arc's ends and top (from the top), the quarter's width. */
-const COME_ARC = 1.8;
-const COME_LAND = 1.2;
-const COME_Y = VH * 0.32;
-const COME_TOP = VH * 0.14;
-const COME_R = 170;
+/**
+ * A dragon that comes later flies in from behind the right edge in one arc, like the left side of
+ * an umbrella: level at first, bending down to its seat, slowing as it lands. Its seconds, and the
+ * height it starts at (a share of the stage's height, picked in this range).
+ */
+const ARRIVE = 2.8;
+const ARRIVE_HIGH = [0.5, 0.75];
+/** The share of the arrival in which it sits up for landing. */
+const ARRIVE_UPRIGHT = 0.35;
 /** How fast a flying dragon follows the typing: slow with a calm rhythm, quick with a good one (per second). */
 const FOLLOW = [0.8, 3];
 /** How far a dragon sinks while the typing pauses, per second, and at most. */
@@ -880,8 +883,9 @@ export class TakeoffMode extends Mode {
 
   /** A dragon by the pit, or (`come`) one flying in from the right. */
   private addDragon(come = false): void {
-    const i = this.dragons.length, x = come ? this.L.vw + 90 : spot(this.pit.x, i, this.L.vw);
-    this.dragons.push({ pic: DRAGONS[i % DRAGONS.length], seat: i, state: come ? 'come' : 'sit', t: 0, x, alt: 0, rot: 0, fromX: x, fromAlt: 0, sink: 0, returns: 0 });
+    const L = this.L, i = this.dragons.length, x = come ? L.vw + 90 : spot(this.pit.x, i, L.vw);
+    const alt = come ? GROUND - VH * (1 - L.rng.range(ARRIVE_HIGH[0], ARRIVE_HIGH[1])) : 0;
+    this.dragons.push({ pic: DRAGONS[i % DRAGONS.length], seat: i, state: come ? 'come' : 'sit', t: 0, x, alt, rot: come ? FLY_ROT : 0, fromX: x, fromAlt: alt, sink: 0, returns: 0 });
   }
 
   private after(seconds: number, fn: () => void): void {
@@ -992,7 +996,7 @@ export class TakeoffMode extends Mode {
     this.planned = flockFor(L, this.planned, this.done);
     if (this.planned > before) this.addDragon(true);
     // The next one may be the one just coming: it lands first.
-    if (this.done < this.planned) return this.after(this.flyer!.state === 'come' ? COME_ARC + COME_LAND + 0.4 : 1, () => this.flight());
+    if (this.done < this.planned) return this.after(this.flyer!.state === 'come' ? ARRIVE + 0.4 : 1, () => this.flight());
     if (this.done >= FLOCK_MAX) L.endMinimum();
     // Tapko calls after them (over the last one's line), then the egg comes from the fire.
     this.endT = 0;
@@ -1032,24 +1036,16 @@ export class TakeoffMode extends Mode {
     d.t += dt;
     const L = this.L, home = spot(this.pit.x, d.seat, L.vw);
     if (d.state === 'come') {
-      const high = GROUND - COME_Y, from = Math.max(L.vw + 90, home + COME_R + 90);
-      if (d.t < COME_ARC) {
-        // The half-arc high on the right, leaning into the flight.
-        const k = d.t / COME_ARC;
-        d.x = from + (home + COME_R - from) * k;
-        d.alt = high + (COME_Y - COME_TOP) * Math.sin(Math.PI * k);
-        d.rot += (FLY_ROT * 0.6 - d.rot) * Math.min(1, dt * 3);
-      } else {
-        // The quarter-arc down to its seat; it sits up in the last part.
-        const k = Math.min(1, (d.t - COME_ARC) / COME_LAND), a = (Math.PI / 2) * ease.inOutQuad(k);
-        d.x = home + COME_R * Math.cos(a);
-        d.alt = high * (1 - Math.sin(a));
-        d.rot = k < 0.6 ? d.rot : FLY_ROT * 0.6 * (1 - (k - 0.6) / 0.4);
-        if (k >= 1) {
-          d.state = 'sit';
-          d.alt = 0;
-          d.rot = 0;
-        }
+      // A quarter of an ellipse round the point under its start: level at first, down onto its seat at the end, slowing.
+      const k = Math.min(1, d.t / ARRIVE), a = (Math.PI / 2) * ease.outQuad(k);
+      d.x = d.fromX - (d.fromX - home) * Math.sin(a);
+      d.alt = d.fromAlt * Math.cos(a);
+      // It flies leaning as in its take-off and sits up for landing.
+      d.rot = FLY_ROT * (1 - ease.inOutQuad(Math.max(0, (k - (1 - ARRIVE_UPRIGHT)) / ARRIVE_UPRIGHT)));
+      if (k >= 1) {
+        d.state = 'sit';
+        d.alt = 0;
+        d.rot = 0;
       }
     } else if (d.state === 'sit' || d.state === 'ready') {
       d.x = home;

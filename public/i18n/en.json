@@ -709,7 +709,7 @@
       "You have just reached the **Great Swamp**, with the **stone monolith** behind it. The water is deep here and **the stones are fragile.** Luckily you have the crystals of life in your pocket. From a firm stone you must **jump three more stones without a slip** to reach a firm stone again. If you slip, you can try again. Everyone on the dragons' planet hopes you will set the crystals right and light the planet up with life."
     ],
     "greatSwampSlip": "The stone is cracking! Back to the firm one.",
-    "greatSwampLog": "A little log like this won't hold me. I have to wait until it floats away.",
+    "swampLog": "A little log like this won't hold me. I have to wait until it floats away.",
     "monolithAsk": [
       "You are at the shore! Type this sentence without a slip and the monolith wakes up."
     ],

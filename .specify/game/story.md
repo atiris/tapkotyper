@@ -120,7 +120,9 @@ as they are. The world descriptions below marked *not built yet* are the design 
    over him or touching it.
    1 the swamp after the landing (waiting words, a calm minute): one word at a time above him,
    a ring on the water where the next stone comes; typed, the stone is there and he jumps onto
-   it, the view glides after him. The stones are round mossy stones without a face, in three
+   it, the view glides after him. Twice (at about a third and past half of the level) a little
+   mossy log floats where the ring was, as in the great swamp below: words push it away, then a
+   stone comes up where it lay. The stones are round mossy stones without a face, in three
    looks, each one picked at random but never the same as the stone before, nothing under them, and they lie at a little different heights; he lands two thirds up a
    stone. He moves toward the right edge as the level goes on. When about nine tenths of the
    level are done (or its words are, with fewer than ten seconds left), the shore comes in front
@@ -172,11 +174,13 @@ as they are. The world descriptions below marked *not built yet* are the design 
    jump reaches the next firm stone and the view moves on. A slip on the firm stone is only a
    slip; a slip on any other stone cracks it (the stone shakes),
    he jumps back stone by stone (each one left crumbles, half broken, and the
-   next one cracks) and on the firm stone a new word comes. About halfway (the bar at half) a
-   little mossy log floats where a firm stone would be, bobbing gently on the water; Tapko says
-   it would not hold him and he has to wait until it floats away. Six words push it away (a word
-   with a slip pushes half), each a bit to the right, the sixth off the stage; a stone comes up
-   where it lay and he jumps onto it. Never while the shore is near. Stones keep coming until
+   next one cracks) and on the firm stone a new word comes. Twice (the bar at about a third and
+   past half) a little mossy log floats where a firm stone would be, bobbing gently on the water; Tapko says
+   it would not hold him and he has to wait until it floats away. Words push it away (an eighth of
+   the level's planned words, 3 to 6; a word with a slip pushes half), each a bit to the right,
+   the last off the stage; a stone comes up where it lay and he jumps onto it. A log comes only
+   while the minimum's time still holds the words to reach it and push it away, never once the
+   shore is there: a quick child meets both logs, a slow child at least one. Stones keep coming until
    both minimums (time and words) are nearly met, so a quick child never runs out of stones;
    only then the shore comes just past the stage's right edge, the last stone just before it.
    Every jump is a typed word up to the last stone; the shore's end never shows. From it he steps onto the grass, where a longer sentence of known words (a capital and a period once known) wakes the monolith: it must be typed without a

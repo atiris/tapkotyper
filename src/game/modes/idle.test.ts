@@ -255,21 +255,34 @@ function run(L: LevelRuntime, mode: Mode, seconds: number): void {
 }
 
 describe('the great swamp', () => {
-  it('a log floats there once about halfway and six words push it away; the shore comes only near both minimums', () => {
+  it('two logs float there, at a third and past half, and words push them away; the shore comes only near both minimums', () => {
     const def = levelById('w3-5')!;
-    let logAt = -1, shoreAt = -1;
-    const pushes = vi.spyOn(GreatSwampMode.prototype as any, 'pushLog');
+    const logsAt: number[] = [];
+    let shoreAt = -1, pushes = 0;
     const p = play(def, GreatSwampMode, 0.15, 0, (L) => {
       const m = mode as any;
-      if (m.log && logAt < 0) logAt = L.share();
+      if (m.log && logsAt.length === m.logsGone) {
+        logsAt.push(L.share());
+        pushes += m.log.pushes;
+      }
       if (m.shore !== null && shoreAt < 0) shoreAt = L.clock;
     });
-    expect(logAt).toBeGreaterThanOrEqual(0.5);
-    expect(logAt).toBeLessThan(0.7);
-    expect(pushes).toHaveBeenCalledTimes(6);
-    expect((mode as any).logGone).toBe(true);
+    expect(logsAt).toHaveLength(2);
+    expect(logsAt[0]).toBeGreaterThanOrEqual(0.3);
+    expect(logsAt[1]).toBeGreaterThanOrEqual(0.6);
+    expect(pushes).toBeGreaterThanOrEqual(6);
+    expect((mode as any).logsGone).toBe(2);
     expect(shoreAt).toBeGreaterThan(p.min - 15);
     expect(mode!.progress()).toBe(1);
+  });
+
+  it.each([['w3-1', SwampMode], ['w3-5', GreatSwampMode]] as const)('%s: a quick child meets two logs, a slow one at least one', (id, Ctor) => {
+    const def = levelById(id)!;
+    const word = 60 / WPM[STORIES.indexOf(storyOf(def.world))];
+    for (const [letter, gap, logs] of [[0.15, 0, 2], [word / 5, word, 1]]) {
+      play(def, Ctor, letter, gap);
+      expect((mode as any).logsGone).toBeGreaterThanOrEqual(logs);
+    }
   });
 
   it('a child who waits a minute at the log still meets the shore only near the minimum', () => {

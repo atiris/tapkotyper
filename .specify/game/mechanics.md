@@ -45,6 +45,12 @@
   (a big asteroid, a dragon, a copy target count as the words they hold). A quick child gets
   more targets of the same kind until the minimum time is played, never a long wait with
   nothing to type; a slow child at that pace gets no more than the minimum needs.
+- **Story moments in a level** (a log to wait for, a boulder, a gust) are planned against the
+  same two players: the quick one and the slow one at the story's pace. A moment that takes
+  words costs a share of the level's planned words, not a fixed number, and it comes only while
+  the minimum's time still holds the words to reach it and finish it. Each moment the story
+  promises appears for both players (a slow child may meet fewer repeats, never none), and a
+  test plays the level at both paces and checks that it appears.
   The valley's flight levels count dragons (three, one more while the minimum is not played,
   at most five) and the fifth ends the level even below the minimum ([story](story.md)).
   The progress bar shows the slower of the two shares, the targets done
@@ -202,6 +208,10 @@
   back, not to land on the map.
 - A bar that filled on time alone and then waited for the last words, or waited for the time
   after the last word, looked broken; following the slower share makes it honest.
+- The great swamp's log took six words and came only when the time left held them and the way
+  to the shore; a slow child's level is barely 20 words, so the log almost never came and the
+  story's promise went unseen. A fixed cost with a silent skip hides a moment; a cost scaled
+  to the level and a test at both paces keep it in sight without stretching the level.
 - A frozen background in a calm level feels like the game stopped.
 - Arcade-style typing (ZType, Typer Shark, Epistory) is praised as motivating; the peaceful
   variant keeps the fun without destruction or stress.

@@ -814,7 +814,7 @@
     "story.spellBroken": "Line when a spell breaks (more than three slips) and a new one comes; one is picked at random.",
     "story.greatSwampStart": "Opening line of the planet's last level: from a firm stone the child jumps four stones; a slip cracks them.",
     "story.greatSwampSlip": "Line when the child first slips away from the firm stone and the stones start to crack.",
-    "story.greatSwampLog": "Tapko's line when a small floating log lies where the next stone should be in the great swamp; each typed word pushes it a bit until it floats away.",
+    "story.swampLog": "Tapko's line when a small floating log lies where the next stone should be in the swamp (planet levels 1 and 5); each typed word pushes it a bit until it floats away.",
     "story.monolithAsk": "Tapko on the shore of the great swamp: a longer sentence typed without a slip wakes the monolith; one is picked at random.",
     "story.monolithSlip": "Tapko when a slip spoils that sentence and a new one comes; one is picked at random.",
     "story.cradleDone": "Line at the end of the Planet world when Tapko puts the crystals of life on the monolith; one is picked at random.",

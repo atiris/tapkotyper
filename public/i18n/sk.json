@@ -709,7 +709,7 @@
       "Práve si dorazil k **Veľkému močiaru**, za ktorým sa nachádza **kamenný monolit.** Voda je tu hlboká a **kamene krehké.** Vo vrecku máš našťastie kryštály života. Z pevného kameňa musíš **bez chyby preskočiť tri ďalšie** kamene, aby si sa znova dostal na pevný kameň. Ak sa pomýliš, môžeš to skúsiť znova. Všetci na planéte drakov dúfajú, že sa ti podarí správne umiestniť kryštály a rozžiariť planétu životom."
     ],
     "greatSwampSlip": "Kameň praská! Späť na pevný kameň.",
-    "greatSwampLog": "Takéto drievko ma neudrží, musím počkať, kým odpláva.",
+    "swampLog": "Takéto drievko ma neudrží, musím počkať, kým odpláva.",
     "monolithAsk": [
       "Si pri brehu! Napíš túto vetu bez chyby a monolit sa prebudí."
     ],
@@ -2062,7 +2062,7 @@
   },
   "aim": {
     "title": "Strelnica",
-    "start": "**Toto je strelnica.** Je určená **na zlepšenie presnosti** a nachádza sa v každom svete, cez ktorý počas tohto dobrodružstva pôjdeš. Na trénovanie presnosti je potrebné spraviť **čo najmenej chýb.** Ak je tvoja presnosť dostatočná, odomkneš si prístup k ďalším písmenám a do ďalších svetov. V každej strelnici, ktorú dokážeš prejsť bez chyby, sa ti objaví **vzácny predmet**, ktorý sa nenachádza v žiadnej inej strelnici v iných svetoch. **Dokážeš získať všetky** vzácne predmety strelníc? Skontroluješ si to na karte **Môj postup.**",
+    "start": "**Toto je strelnica.** Je určená **na zlepšenie presnosti** a nachádza sa v každom svete, cez ktorý pôjdeš. Na trénovanie presnosti je potrebné spraviť **čo najmenej chýb.** Ak je tvoja presnosť dostatočná, odomkneš si prístup k ďalším písmenám a do ďalších svetov. V každej strelnici, ktorú dokážeš prejsť bez chyby, sa ti objaví **vzácny predmet**, ktorý sa nenachádza v žiadnej inej strelnici v iných svetoch. **Dokážeš získať všetky** vzácne predmety strelníc? Skontroluješ si to na karte **Môj postup.**",
     "swapHint": "Enterom vymeníš vec v labke za vzácnu zo zbierky.",
     "swap": "Zo zbierky: {name}!",
     "ready": "Výborne! {keys} už píšeš presne.",

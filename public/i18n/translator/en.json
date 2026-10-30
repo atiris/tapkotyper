@@ -880,6 +880,8 @@
     "parrot.phase2": "Tapko in a bubble when the second part starts: each word a few times in a row.",
     "parrot.slip": "At the third mistake the parrot takes off, flies a while, says one of these lines and comes back. It drags its sounds (r, vowels) like a parrot; the translation may too.",
     "parrot.leave": "With too many mistakes the parrot says one of these lines and flies away; the round ends. Drawn-out sounds like a parrot.",
+    "parrot.won": "When the round is learned, the parrot praises the child with one of these. Drawn-out sounds like a parrot.",
+    "parrot.coming": "Right after the praise the parrot says one of these, then flies to the child and out of the scene. Drawn-out sounds like a parrot.",
     "parrot.again": "Button on the end card: a new round with new words.",
     "parrot.badge": "Tooltip and label of Aro, the Parrot badge parrot on his perch (map, My progress), and of the small badge mark on the end card.",
     "parrot.name": "The badge parrot's name, Aro. A name: keep it or give it a short, easy name in the language.",

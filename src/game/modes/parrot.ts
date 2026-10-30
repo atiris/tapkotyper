@@ -37,6 +37,10 @@ const OFF_WAIT = 1.65;
 const OFF_S = 2.7;
 /** Height of the flying parrot. */
 const FLY_H = 170;
+/** A learned round: seconds after the last word before the parrot praises, then says it is coming, then flies to the child. */
+const PRAISE_AT = 1.2;
+const LINE_S = 1.6;
+const HOME_S = 2.2;
 /** Speed of the background's middle strip. */
 const SWAY = 2;
 
@@ -62,9 +66,9 @@ export function parrotWords(p: Profile, world: number, seed?: number): string[] 
   return words;
 }
 
-/** The parrot leaves its perch: a short flight round the scene and back, or off for good. `t` below 0 still waits on the perch. */
+/** The parrot leaves its perch: a short flight round the scene and back, off for good, or home with the child. `t` below 0 still waits on the perch. */
 interface Flight {
-  kind: 'round' | 'off';
+  kind: 'round' | 'off' | 'home';
   t: number;
 }
 
@@ -72,8 +76,8 @@ interface Flight {
  * The parrot: Tapko says a word, the child types it, and the parrot on its perch repeats it. First
  * the words in turn three times, then each word several times in a row; a wrong key brings the word
  * twice more. The third mistake sends the parrot on a short flight; more than `parrotPatience` and it
- * flies off, which ends the round lost. A won round ends with the parrot flying off before the
- * results. Speed does not matter; no stars.
+ * flies off, which ends the round lost. A won round ends with the parrot's praise, its "I am coming"
+ * and its flight toward the child, up out of the scene, before the results. Speed does not matter; no stars.
  */
 export class ParrotMode extends Mode {
   readonly pictures = ['ui-act-parrot', 'obj-parrot-perch', ...new Set(FLAP)];
@@ -142,8 +146,19 @@ export class ParrotMode extends Mode {
     this.pop = Math.min(1, this.pop + dt * 4);
     this.hop = Math.max(0, this.hop - dt);
     this.scroll += dt * SWAY;
-    if (this.flight) this.flight.t += dt;
+    if (this.flight) {
+      const was = this.flight.t;
+      this.flight.t += dt;
+      if (this.flight.kind === 'home') this.homeLines(was, this.flight.t);
+    }
     if (this.flight?.kind === 'round' && this.flight.t >= ROUND_S) this.flight = null;
+  }
+
+  /** A learned round, before the flight home: the praise, then that the parrot is coming. */
+  private homeLines(was: number, now: number): void {
+    const at = (s: number) => was < s && now >= s;
+    if (at(-2 * LINE_S)) this.parrotSays(pickLine('parrot.won'), LINE_S);
+    if (at(-LINE_S)) this.parrotSays(pickLine('parrot.coming'), LINE_S + 0.6);
   }
 
   /** Correct characters per minute in part 1 (learning) or 2 (repeating); 0 before any. */
@@ -177,8 +192,8 @@ export class ParrotMode extends Mode {
     this.L.sfx('squawk');
     if (!this.L.reduceMotion && ++this.repeats % HOP_EVERY === 0) this.hop = HOP;
     this.next();
-    // The round is learned: the parrot flies off and waits on the results.
-    if (this.round.done) this.flight = { kind: 'off', t: -OFF_WAIT };
+    // The round is learned: the parrot praises, says it is coming and flies to the child.
+    if (this.round.done) this.flight = { kind: 'home', t: -PRAISE_AT - 2 * LINE_S };
   }
 
   onWrong(): void {
@@ -237,6 +252,12 @@ export class ParrotMode extends Mode {
       x = px - arc * this.L.vw * 0.28;
       y = py - arc * ROUND_UP + Math.sin(k * Math.PI * 6) * 14 * arc;
       left = k < 0.5;
+    } else if (f.kind === 'home') {
+      // To the left toward Tapko, rising faster and faster up out of the scene.
+      const k = Math.min(1, f.t / HOME_S);
+      x = px - k * (px - TAPKO_X);
+      y = py - k ** 2 * (py + FLY_H);
+      left = true;
     } else {
       // Up and away to the right, faster and faster.
       const k = Math.min(1, f.t / OFF_S) ** 2;
@@ -252,8 +273,9 @@ export class ParrotMode extends Mode {
     return this.round.progress();
   }
 
-  /** Over once the parrot has flown off: the round learned, or lost. */
+  /** Over once the parrot has flown off (lost) or home to the child (learned). */
   get finished(): boolean {
-    return this.flight?.kind === 'off' && this.flight.t >= OFF_S;
+    const f = this.flight;
+    return !!f && (f.kind === 'off' ? f.t >= OFF_S : f.kind === 'home' && f.t >= HOME_S);
   }
 }

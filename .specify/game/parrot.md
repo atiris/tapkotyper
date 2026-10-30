@@ -38,7 +38,9 @@
   where possible, new ones each round.
 - The typing counts in the statistics and in the lesson like at the target range; paws and Enter
   marks stay out, the parent's surprises counting training time are asked and told.
-- **End:** a learned round ends with the parrot flying off the scene, and it is back on the end
+- **End:** a learned round ends with the parrot's praise ("Suuperr", "Parraáda", ...), then its
+  "I am coming" ("Prrilletiím", "Maáš to", ...), and it flies to the left toward Tapko and up out of
+  the scene: the parrot goes home with the child. It is back on the end
   card (the one card of every end, see [mechanics](mechanics.md)): "Papagáj je doma!", the parrot
   in colour with the number of words under it, the rows the words (the first three), the speed at
   the start and while repeating (letters per minute); the green line tells the Parrot badge when

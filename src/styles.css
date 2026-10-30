@@ -1317,18 +1317,21 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-ink); }
 .sound-btn[data-level='quiet'] { color: var(--ink-soft); }
 .story-levels h3.story-head { margin: 1.2rem 0 0.4rem; }
 .world-levels h4 { display: flex; align-items: center; gap: 0.6rem; margin: 0.5rem 0 0.3rem; font-size: 0.95rem; color: var(--ink-soft); }
-.world-extras { display: inline-flex; gap: 0.3rem; }
-.world-extra { display: grid; place-items: center; width: 1.8rem; height: 1.8rem; border-radius: 8px; background: var(--paper-2); }
-.world-extra img { max-width: 1.5rem; max-height: 1.5rem; object-fit: contain; }
-.world-extra.waiting img { filter: grayscale(1); opacity: 0.35; }
 .chart-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); margin-top: 1rem; }
 .chart-grid h3 { margin-top: 0; }
 .chart { width: 100%; max-width: 640px; height: auto; background: var(--paper-2); border-radius: 14px; }
 .chart .axis { stroke: var(--axis); stroke-width: 2; }
 .chart-label { font-size: 12px; fill: var(--ink-soft); font-family: var(--font-game); }
-.level-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(12.5rem, 1fr)); gap: 0.5rem 1rem; }
-.level-cell { display: grid; grid-template-columns: minmax(0, 1fr) 5.4rem; align-items: center; gap: 0.5rem; padding: 0.3rem 0.6rem; border-radius: 12px; background: var(--paper-2); }
-.level-name { font-weight: 600; font-size: 0.95rem; }
+.level-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr)); gap: 0.5rem 1rem; }
+.level-cell { display: grid; grid-template-columns: 2.8rem 5.4rem; justify-content: space-between; align-items: center; gap: 0.5rem; padding: 0.3rem 0.6rem; border-radius: 12px; background: var(--paper-2); }
+/* A cell's picture opens its level, its parrot round or its target range. */
+.cell-act { display: grid; place-items: center; width: 2.8rem; height: 2.8rem; padding: 0; border: 0; border-radius: 10px; background: var(--surface); box-shadow: 0 3px 0 var(--edge); cursor: pointer; }
+.cell-act img { width: 2.1rem; height: 2.1rem; object-fit: contain; }
+.cell-act:disabled { cursor: default; box-shadow: none; }
+.cell-act:disabled img { filter: grayscale(1); opacity: 0.4; }
+.cell-rare { display: grid; place-items: center; width: 5.4rem; }
+.cell-rare img { width: 2rem; height: 2rem; object-fit: contain; }
+.cell-rare.waiting img { filter: grayscale(1); opacity: 0.35; }
 .cell-stars { gap: 0.1rem; justify-content: center; width: 5.4rem; }
 .cell-stars .star { width: 1.7rem; animation: none; }
 .cell-stars .star-fallback { font-size: 1.5rem; width: 1.7rem; text-align: center; }

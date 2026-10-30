@@ -1,12 +1,12 @@
 import { app, go } from '../app/app';
 import { imageUrl } from '../gfx/assets';
-import { STORIES, WORLDS, worldLevels } from '../game/levels';
+import { STORIES, WORLDS, activityOf, aimOpen, isLevelUnlocked, worldLevels } from '../game/levels';
 import { worldThing } from '../game/modes/aim-things';
 import { t } from '../i18n/i18n';
 import type { Profile } from '../storage/schema';
 import { barChart, lineChart } from '../ui/charts';
 import { cornerControls, starRow } from '../ui/chrome';
-import { button, h } from '../ui/dom';
+import { button, h, icon } from '../ui/dom';
 import { badgeShow } from '../ui/badge-show';
 import { barTabLinks, tabBar } from '../ui/tabs';
 import { tip } from '../ui/tooltip';
@@ -29,31 +29,49 @@ function trendCharts(p: Profile): HTMLElement {
       barChart(sessions.map((s) => Math.round(s.seconds / 60)), labels, 'min')));
 }
 
-/** What a world gave besides stars, beside its name: its parrot at home and its rare range thing, in color once won, grey until then. */
-function worldExtras(p: Profile, w: number): HTMLElement {
-  const th = worldThing(w);
-  const mark = (pic: string | null, has: boolean, say: string): HTMLElement => {
-    const el = h('span', { class: `world-extra ${has ? 'found' : 'waiting'}`, role: 'img', 'aria-label': say }, pic ? h('img', { src: pic, alt: '' }) : null);
-    tip(el, say);
-    return el;
-  };
-  const parrot = p.progress.parrots.includes(w);
-  const found = !!th && p.progress.rangeFinds.includes(th.id);
-  return h('span', { class: 'world-extras' },
-    mark(imageUrl('ui-act-parrot-head'), parrot, t(parrot ? 'progress.parrotHome' : 'progress.parrotAway')),
-    th ? mark(imageUrl(th.pics[0]), found, found ? t('progress.rareFound', { name: t(`aim.things.${th.id}.name`) }) : t('progress.rareWaiting')) : null);
+/** A cell's picture as a button that opens what it shows; disabled while that is still closed. */
+function cellButton(pic: string | null, say: string, open: boolean, play: () => void): HTMLButtonElement {
+  return h('button', { class: 'cell-act', type: 'button', disabled: !open, 'aria-label': say, tip: say, onClick: play },
+    pic ? h('img', { src: pic, alt: '' }) : icon('play'));
 }
 
-/** The levels of each story under its picture and title, one row of level cells per world. */
+/**
+ * One world's cells: its levels by their game's picture (the last one the great challenge) with
+ * the stars, then its parrot (its head while at home, else the empty perch) and its target range
+ * with the rare thing, in color once found, grey until then. A picture opens what it shows.
+ */
+function worldCells(p: Profile, w: number): HTMLElement[] {
+  const levels = worldLevels(w).map((l) => {
+    const act = activityOf(l);
+    const say = l.isSuper ? t('map.act.super') : `${l.index + 1}. ${t(`map.act.${act}`)}`;
+    return h('div', { class: 'level-cell' },
+      cellButton(imageUrl(`ui-act-${act}`), say, isLevelUnlocked(p, l), () => go('level', { id: l.id })),
+      starRow(p.progress.levels[l.id] ?? 0, 'stars cell-stars'));
+  });
+  const open = aimOpen(p, w);
+  const home = p.progress.parrots.includes(w);
+  const parrot = h('div', { class: 'level-cell' },
+    cellButton(imageUrl(home ? 'ui-act-parrot-head' : 'obj-parrot-perch-short'), t(home ? 'progress.parrotHome' : 'progress.parrotAway'), open, () => go('level', { id: 'parrot', world: w })));
+  const th = worldThing(w);
+  const found = !!th && p.progress.rangeFinds.includes(th.id);
+  const rareSay = found ? t('progress.rareFound', { name: t(`aim.things.${th!.id}.name`) }) : t('progress.rareWaiting');
+  const rarePic = th && imageUrl(th.pics[0]);
+  const rare = rarePic ? h('span', { class: `cell-rare ${found ? 'found' : 'waiting'}`, role: 'img', 'aria-label': rareSay }, h('img', { src: rarePic, alt: '' })) : null;
+  if (rare) tip(rare, rareSay);
+  const range = h('div', { class: 'level-cell' },
+    cellButton(imageUrl('obj-aim-target'), t('aim.title'), open, () => go('level', { id: 'aim', world: w })), rare);
+  return [...levels, parrot, range];
+}
+
+/** The levels of each story under its picture and title, one row of cells per world. */
 function storyLevels(p: Profile): HTMLElement {
   return h('div', {}, ...STORIES.map((story) => {
     const pic = storyPicture(story);
     return h('section', { class: 'story-levels' },
       h('h3', { class: 'story-head' }, pic ? h('img', { class: 'story-pic', src: pic, alt: '' }) : null, t(story.title)),
       ...story.worlds.map((w) => h('div', { class: 'world-levels' },
-        h('h4', {}, t(`worlds.${WORLDS[w]}`), worldExtras(p, w)),
-        h('div', { class: 'level-grid' }, ...worldLevels(w).map((l) => h('div', { class: 'level-cell' },
-          h('span', { class: 'level-name' }, l.isSuper ? t('map.super') : String(l.index + 1)), starRow(p.progress.levels[l.id] ?? 0, 'stars cell-stars')))))));
+        h('h4', {}, t(`worlds.${WORLDS[w]}`)),
+        h('div', { class: 'level-grid' }, ...worldCells(p, w)))));
   }));
 }
 

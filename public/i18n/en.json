@@ -666,6 +666,12 @@
     "boulderStart": [
       "A boulder blocks the way. Crack it with careful words!"
     ],
+    "monolithAsk": [
+      "You are at the shore! Type this sentence without a slip and the monolith wakes up."
+    ],
+    "monolithSlip": [
+      "The sentence must have no slip. Here is a new one."
+    ],
     "cradleDone": [
       "The crystals of life are on the monolith. The planet blooms again!"
     ],

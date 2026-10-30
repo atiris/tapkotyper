@@ -38,7 +38,7 @@ as they are. The world descriptions below marked *not built yet* are the design 
    else at its own height. The caught leaf fades away in the gloves, and its creature turns
    and goes home. The world's story and the level's start line tell exactly this, on the get-ready
    card of every story level under its title. A leaf not typed in time flies past: a goal, everybody cheers (a "GOAL!" pop,
-   confetti and the creature's joy before it leaves, but no words from the narrator, which would nag), so a miss is
+   the creature's joy before it leaves, but no words from the narrator, which would nag), so a miss is
    a laugh, not a failure. The leaf size shows the word length at a glance. Animals are
    never the target of anything (no webs, nets or swatters): even soft hitting or catching
    is the wrong message for small children; playing with them is better.
@@ -171,11 +171,15 @@ as they are. The world descriptions below marked *not built yet* are the design 
    jump reaches the next firm stone and the view moves on. A slip on the firm stone is only a
    slip; a slip on any other stone cracks it (the stone squeezes its eyes shut as if tickled),
    he jumps back stone by stone (each one left crumbles, half broken and without a face, and the
-   next one cracks) and on the firm stone a new word comes. At the end a boulder
-   blocks the way; slightly harder words crack it (a word with a slip counts half), it bursts,
-   and as in level 1 stones come by themselves to the shore where the swamp ends. There the
-   **monolith** (a carved stone pedestal, not an altar) rises with a soft light above it;
-   he puts the crystals of life on it, they float above it, glowing, and the planet blooms. Super-obstacle: the great swamp and the boulder. Reward: **the Force**, the crystals'
+   next one cracks) and on the firm stone a new word comes. Halfway a boulder lies where a firm
+   stone would be; slightly harder words crack it (a word with a slip counts half), it bursts
+   into that firm stone and he jumps onto it. Every jump is a typed word up to the last stone,
+   which lies just before the shore; the shore stays in the stage's right part and its end never
+   shows. From it he steps onto the grass, where a longer sentence of known words (a capital and a period once known) wakes the monolith: it must be typed without a
+   slip, a slip brings a new one. Then the **monolith** (a carved stone pedestal, not an altar)
+   rises out of the grass beside him, its foot a bit low with a soft dark green shadow behind it, a soft light
+   above it; the crystals of life fly onto it, float in their glow and pulse, the planet blooms,
+   and a few seconds later the level ends. The progress bar is full once the sentence is typed. Super-obstacle: the great swamp and the boulder. Reward: **the Force**, the crystals'
    thanks. The planet's own thing at the target range is a crystal.
 4. **Dragon Valley** - the baby dragons' home is a big fire pit at the valley's entrance. Its
    fire went out when the crystal of life lost its light: the little flames scattered, the path

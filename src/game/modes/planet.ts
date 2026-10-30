@@ -21,16 +21,15 @@ const STONE_TOP = 1 / 6;
 const STONE_RISE = 26;
 const STONE_DROP = 6;
 /**
- * The swamp ends in the near band's end piece (`bg-planet-swamp-near-end`, one and a half tiles):
+ * The swamp ends in the near band's end piece (`bg-planet-swamp-near-end`, as wide as its picture):
  * the band, then the meadow coming in and running on past the right edge. In tiles from the piece's
- * start: where its grass begins (he lands there from the last stone), where he ends and where the
- * cradle stands; his feet on the grass, and the share of the stage he moves to through the swamp.
+ * start: where its grass begins (he lands there from the last stone) and where he ends; his feet on
+ * the grass, and the share of the stage he moves to through the swamp.
  */
 const SHORE_LAND = 1.06;
 /** Up to here (in tiles) the end piece is the band itself. */
 const SHORE_SAME = 0.8;
 const SHORE_MEADOW = 1.22;
-const SHORE_CRADLE = 1.45;
 const SHORE_FEET = SWAMP_FEET - 6 + NEAR_DROP['-swamp'];
 const SHORE_VIEW = 0.6;
 /** He ends on the meadow at least this far from the right edge. */
@@ -161,22 +160,6 @@ abstract class SwampHero extends HeroMode {
     return x + gap >= this.shoreAt(SHORE_LAND).x - gap * 0.6;
   }
 
-  /** The shore comes, stones come by themselves `gap` apart after `from`, and he jumps across them ashore. */
-  protected toShore(from: number, gap: number, then: () => void): void {
-    this.placeShore();
-    const hop = (x: number): void => {
-      if (this.nearShore(x - gap, gap)) return this.stepAshore(then);
-      const s = this.stone(x);
-      this.L.sfx('pop');
-      this.L.tweens.add(0.35, () => {}, ease.linear, () => this.leap(this.top(s), () => {
-        this.stand = s;
-        this.glide(s.x, this.L.vw * SHORE_VIEW, () => hop(x + gap));
-      }));
-    };
-    hop(from + gap);
-  }
-
-
   /** Jumps him to a place in the scene; `then` runs when he lands. */
   protected leap(to: { x: number; y: number }, then: () => void): void {
     const from = this.feetInScene();
@@ -306,7 +289,6 @@ export class SwampMode extends SwampHero {
   private ashore(): void {
     this.happy();
     this.L.say(pickLine('story.swampDone'), 3);
-    this.L.particles.emit(this.heroX, this.heroY - 20, 14, 'leaf', ['#9ccf7a', '#ffe27a', '#f5a3d3'], 140, 8);
     this.endT = 0;
   }
 
@@ -359,15 +341,29 @@ const BOULDER_H = 300;
 /** Seconds of a cracked stone before he jumps back, and of a crumbled stone sinking away. */
 const CRACK_WAIT = 0.45;
 const CRUMBLE = 0.9;
-/** Seconds of the end: the boulder bursts, the cradle rises, the crystals fly onto it. */
+/** Seconds of the end: the boulder bursts, the monolith rises, the crystals fly onto it, and they glow before the level ends. */
 const BURST = 0.8;
 const RISE = 1;
 const PLACE = 1.2;
+const GLOW_S = 3;
 const CRADLE_H = 190;
 const LIFE_H = 100;
+/** The monolith's foot stands this far below the grass line, a dark green shadow behind it. */
+const CRADLE_SINK = 30;
 /** Above the cradle they float this high, bobbing a little. */
 const FLOAT = 26;
 const BOB = 6;
+/**
+ * The last stone lies this share of a jump before the shore's grass; the end piece always reaches
+ * this far past the stage's right edge, so the whole shore never shows.
+ */
+const LAND_GAP = 0.55;
+const END_MARGIN = 40;
+/** The end piece's width on the stage (2688 x 768 until its picture is there): a wider picture gives more shore. */
+function endW(): number {
+  const img = sprite('bg-planet-swamp-near-end');
+  return img ? (img.naturalWidth * VH) / img.naturalHeight : (2688 * VH) / 768;
+}
 
 /** The monolith while its picture is missing. */
 function cradleFallback(g: G, w: number, h: number): void {
@@ -391,26 +387,34 @@ interface Crumb {
  * Planet 5, the great swamp: from a firm stone Tapko jumps three stones on and the fourth jump
  * reaches the next firm one, where the view moves on. A slip on stone +1 to +3 cracks it: he jumps
  * back stone by stone, each stone behind him crumbles and the next one cracks, and on the firm stone
- * a new word comes. At the end a boulder blocks the way; precise words crack it, it bursts, stones
- * come by themselves, he crosses to the shore and puts the crystals of life on the monolith.
+ * a new word comes. Halfway a boulder lies where a firm stone would be; precise words crack it and it
+ * bursts into that firm stone. The stones lie so that the last one is just before the shore, in the
+ * stage's right part. He steps onto its grass, and a longer sentence of known words (with a
+ * capital and a period once they are known) typed without a slip wakes the monolith beside him;
+ * the crystals of life fly onto it, float and pulse in their glow.
  */
 export class GreatSwampMode extends SwampHero {
   readonly pictures = [...SWAMP_PICTURES, 'obj-swamp-stone-cracked', 'obj-swamp-stone-broken', 'obj-boulder-1', 'obj-boulder-2', 'obj-cradle', ...LIFE_CRYSTALS];
   private gap = 200;
   private home = 130;
-  /** The firm stone of this set, and how many jumps are behind him for good. */
+  /** The first stone's x; stone `i` lies at `x0 + i * gap`. */
+  private x0 = 0;
+  /** Jumps to the last stone, and the stone the boulder takes (-1 none). */
+  private jumps = SET;
+  private boulderAt = -1;
+  /** The firm stone of this set. */
   private base: Stone | null = null;
-  private secured = 0;
   private current: Target | null = null;
+  /** The last task: the sentence that wakes the monolith. */
+  private sentence: Target | null = null;
   private crumbs: Crumb[] = [];
   /** Seconds until the next jump back; null when he is not going back. */
   private back: number | null = null;
   private slipSaid = false;
+  private boulderSaid = false;
   private boulder: { x: number; crack: number; shake: number; burst: number | null; tg: Target | null } | null = null;
-  /** He is on his way to the shore after the boulder. */
-  private crossing = false;
   private cradle: { x: number; rise: number } | null = null;
-  /** 0..1 of the crystals flying onto the cradle, then seconds after; null before. */
+  /** 0..1 of the crystals flying onto the cradle, then on; null before. */
   private place: number | null = null;
 
   startLine(): string {
@@ -418,21 +422,42 @@ export class GreatSwampMode extends SwampHero {
   }
 
   start(): void {
+    const t = tileW();
     this.gap = Math.min(220, this.L.vw * 0.19);
     this.home = this.L.vw * 0.12;
-    this.stand = this.base = this.stone(this.home);
+    this.jumps = Math.max(SET, this.L.count - BOULDER - 1);
+    const b = Math.round(this.jumps / 2 / SET) * SET;
+    this.boulderAt = b > 0 && b < this.jumps ? b : -1;
+    // The shore is there from the start, far on: the last stone lies just before its grass.
+    this.nearEnd = Math.ceil((this.jumps * this.gap + this.home + this.L.vw) / t) * t;
+    this.x0 = this.nearEnd + SHORE_LAND * t - LAND_GAP * this.gap - this.jumps * this.gap;
+    this.scroll = this.x0 - this.home;
+    this.stand = this.base = this.stone(this.x0);
     this.stand.age = 1;
+    this.boulderAhead(0);
     this.ask();
   }
 
-  /** Jumps of all the sets before the boulder. */
-  private get jumpsGoal(): number {
-    return Math.max(SET, this.L.count - BOULDER);
+  /** The stone's number from the first one. */
+  private idx(s: Stone): number {
+    return Math.round((s.x - this.x0) / this.gap);
   }
 
   /** Jumps since the firm stone. */
   private get ahead(): number {
     return this.stones.length - 1 - this.stones.indexOf(this.base!);
+  }
+
+  /** The view never goes so far that the shore's end piece ends on the stage. */
+  private get maxScroll(): number {
+    return this.nearEnd! + endW() - this.L.vw - END_MARGIN;
+  }
+
+  /** The boulder lies in the set from the firm stone `i`: it shows where its firm stone would be. */
+  private boulderAhead(i: number): void {
+    if (this.boulderAt > i && this.boulderAt <= i + SET && !this.boulder) {
+      this.boulder = { x: this.x0 + this.boulderAt * this.gap, crack: 0, shake: 0, burst: null, tg: null };
+    }
   }
 
   private ask(): void {
@@ -442,6 +467,7 @@ export class GreatSwampMode extends SwampHero {
   onDone(tg: Target): void {
     const b = this.boulder;
     if (b && tg === b.tg) return this.hitBoulder(tg);
+    if (tg === this.sentence) return this.wake();
     if (tg !== this.current) return;
     this.current = null;
     this.happy();
@@ -453,20 +479,24 @@ export class GreatSwampMode extends SwampHero {
 
   private land(s: Stone): void {
     this.stand = s;
+    const i = this.idx(s);
+    if (i >= this.jumps) return this.ashore();
+    // The boulder lies where the next stone would come.
+    if (i === this.boulderAt - 1 && this.boulder) return this.boulderWords();
     if (this.ahead < SET) return this.ask();
     // The fourth jump: this stone is the new firm one and the view moves on.
-    this.secured += SET;
-    const old = this.base!;
     this.base = s;
-    this.glide(s.x, this.home, () => {
-      this.stones = this.stones.filter((o) => o.x >= old.x + this.gap * 2 || o === s);
-      if (this.secured >= this.jumpsGoal) this.startBoulder();
-      else this.ask();
+    this.glide(s.x, Math.max(this.home, s.x - this.maxScroll), () => {
+      // Only stones gone off the stage on the left go; the view may stop before the shore.
+      this.stones = this.stones.filter((o) => o.x > this.scroll - STONE_H || o === s);
+      this.boulderAhead(i);
+      this.ask();
     });
   }
 
   onWrong(tg: Target | null): void {
     super.onWrong(tg);
+    if (tg && tg === this.sentence) return this.sentenceSlip();
     if (!this.current || tg !== this.current || this.ahead < 1) return;
     // A slip away from the firm stone: this stone cracks and he goes back.
     this.L.core.release(this.current, false);
@@ -503,10 +533,11 @@ export class GreatSwampMode extends SwampHero {
     });
   }
 
-  private startBoulder(): void {
-    const x = this.stand!.x + this.gap * 2.4;
-    this.boulder = { x, crack: 0, shake: 0, burst: null, tg: null };
-    this.L.say(pickLine('story.boulderStart'), 3);
+  private boulderWords(): void {
+    if (!this.boulderSaid) {
+      this.boulderSaid = true;
+      this.L.say(pickLine('story.boulderStart'), 3);
+    }
     this.nextChunk();
   }
 
@@ -531,6 +562,54 @@ export class GreatSwampMode extends SwampHero {
     this.L.particles.emit(b.x - this.scroll, VH * 0.6, 40, 'puff', ['#d8d2c8', '#bdb4a6', '#efe9df'], 260, 16, 1.2);
   }
 
+  /** The boulder is gone: in its place lies the firm stone, and he jumps onto it. */
+  private boulderStone(): void {
+    const s = this.stone(this.boulder!.x);
+    this.boulder = null;
+    this.leap(this.top(s), () => this.land(s));
+  }
+
+  /** From the last stone onto the shore's grass, where a sentence typed without a slip wakes the monolith. */
+  private ashore(): void {
+    const land = this.shoreAt(SHORE_LAND);
+    this.leap(land, () => {
+      this.stand = null;
+      this.onShore = land;
+      // The view moves on as far as the shore allows, so he and the monolith have room on the grass.
+      if (this.maxScroll <= this.scroll) return this.askSentence();
+      this.glide(land.x, land.x - this.maxScroll, () => this.askSentence());
+    });
+  }
+
+  private askSentence(): void {
+    this.L.say(pickLine('story.monolithAsk'), 4);
+    this.newSentence();
+  }
+
+  /** Three to five known words; the word source adds the capital and the period once they are known. */
+  private newSentence(): void {
+    this.sentence = this.L.core.add(this.L.word(6, 5, 3), {});
+  }
+
+  /** A slip spoils the sentence: a new one comes. */
+  private sentenceSlip(): void {
+    this.L.core.release(this.sentence!, false);
+    this.L.core.prune();
+    this.L.say(pickLine('story.monolithSlip'), 3);
+    this.newSentence();
+  }
+
+  /** The sentence is typed: the monolith rises on the grass beside him, in sight before the right edge. */
+  private wake(): void {
+    this.sentence = null;
+    this.happy();
+    this.L.core.prune();
+    const t = tileW(), grass = this.nearEnd! + SHORE_LAND * t;
+    const x = Math.max(grass + CRADLE_H * 0.8, Math.min(grass + t * 0.3, this.scroll + this.L.vw - CRADLE_H * 0.6));
+    this.cradle = { x, rise: 0 };
+    this.L.sfx('whoosh');
+  }
+
   update(dt: number): void {
     super.update(dt);
     for (const c of this.crumbs) c.t += dt;
@@ -543,9 +622,12 @@ export class GreatSwampMode extends SwampHero {
     const b = this.boulder;
     if (b) {
       b.shake = Math.max(0, b.shake - dt * 3);
-      if (b.burst !== null && (b.burst += dt) >= BURST && !this.crossing) this.cross();
+      if (b.burst !== null && (b.burst += dt) >= BURST) this.boulderStone();
     }
-    if (this.cradle) this.cradle.rise = Math.min(1, this.cradle.rise + dt / RISE);
+    if (this.cradle) {
+      this.cradle.rise = Math.min(1, this.cradle.rise + dt / RISE);
+      if (this.cradle.rise >= 1 && this.place === null) this.place = 0;
+    }
     if (this.place !== null) {
       const before = this.place;
       this.place += dt / PLACE;
@@ -553,30 +635,28 @@ export class GreatSwampMode extends SwampHero {
     }
   }
 
-  /** After the boulder stones come over its place to the shore; there the monolith rises beside him. */
-  private cross(): void {
-    this.crossing = true;
-    this.toShore(this.base!.x, this.gap, () => {
-      this.cradle = { x: this.shoreAt(SHORE_CRADLE).x, rise: 0 };
-      // He and the cradle in the middle; the meadow goes on past the edge.
-      this.glide((this.onShore!.x + this.cradle.x) / 2, this.L.vw / 2, () => (this.place = 0));
-    });
-  }
-
   /** The crystals of life are on the cradle: they glow, the planet comes to life, Tapko cheers. */
   private lit(): void {
     const c = this.cradle!;
     const x = c.x - this.scroll, y = this.cradleTop();
     this.happy();
-    this.L.particles.emit(x, y - LIFE_H * 0.5, 40, 'sparkle', ['#fff6a8', '#ffd1f5', '#a8f0ff'], 280, 10, 1.4);
-    this.L.particles.emit(x, VH * 0.85, 24, 'leaf', ['#9ccf7a', '#ffe27a', '#f5a3d3', '#e5402e'], 220, 9, 1.4);
     this.L.say(pickLine('story.cradleDone'), 3);
     this.L.hooray({ x, y: y - LIFE_H - 40 });
   }
 
+  /** The monolith's foot on the shore. */
+  private get cradleBase(): number {
+    return SHORE_FEET + CRADLE_SINK;
+  }
+
   private cradleTop(): number {
     const k = ease.outCubic(this.cradle!.rise);
-    return SHORE_FEET + 16 - CRADLE_H * 0.86 + (1 - k) * CRADLE_H;
+    return this.cradleBase - CRADLE_H * 0.86 + (1 - k) * CRADLE_H;
+  }
+
+  /** The crystals pulse once they float above the monolith: -1..1; 0 before, or with reduced motion. */
+  private get pulse(): number {
+    return this.place !== null && this.place >= 1 && !this.L.reduceMotion ? Math.sin(this.t * 3.2) : 0;
   }
 
   render(g: G): void {
@@ -586,44 +666,59 @@ export class GreatSwampMode extends SwampHero {
     }
     this.drawStones(g);
     const b = this.boulder;
-    if (b && (b.burst ?? 0) < BURST) {
+    if (b) {
       const fade = b.burst === null ? 1 : 1 - b.burst / BURST;
       const sh = Math.sin(this.t * 50) * 6 * b.shake;
       const x = b.x - this.scroll + sh;
       drawSprite(g, b.crack >= BOULDER / 2 ? 'obj-boulder-2' : 'obj-boulder-1', x, SWAMP_FEET + 30, BOULDER_H * (b.burst === null ? 1 : 1 + b.burst * 0.3), { ay: 0.92, alpha: fade }, blob('#a39586', true, 'rgba(0,0,0,0.12)'));
       if (b.tg) this.L.label(g, b.tg, x, SWAMP_FEET + 30 - BOULDER_H - 30, 46);
     }
-    if (this.cradle) {
-      const c = this.cradle;
-      g.save();
-      g.beginPath();
-      g.rect(0, 0, this.L.vw, SHORE_FEET + 20);
-      g.clip();
-      drawSprite(g, 'obj-cradle', c.x - this.scroll, this.cradleTop(), CRADLE_H, { ay: 0.14 }, cradleFallback);
-      g.restore();
-      this.drawCradleGlow(g);
-    }
+    if (this.cradle) this.drawCradle(g);
     if (this.current) {
       this.drawNextRing(g, this.stand!.x + this.gap);
       this.L.label(g, this.current, this.heroX, wordAbove(SWAMP_FEET));
     }
+    if (this.sentence) this.L.label(g, this.sentence, this.heroX, wordAbove(SWAMP_FEET));
     this.drawHero(g);
-    if (this.place !== null && this.cradle) this.drawLife(g);
+    if (this.place !== null) this.drawLife(g);
   }
 
-  /** The crystals of life rise from his paws and fly onto the cradle, where they glow. */
+  /** The monolith rising out of the grass, a soft dark green shadow behind its foot, and the light above it. */
+  private drawCradle(g: G): void {
+    const c = this.cradle!, x = c.x - this.scroll, base = this.cradleBase;
+    const k = ease.outCubic(c.rise), rx = CRADLE_H * 0.7;
+    g.save();
+    g.translate(x, base - 6);
+    g.scale(1, 0.22);
+    const shadow = g.createRadialGradient(0, 0, 0, 0, 0, rx);
+    shadow.addColorStop(0, `rgba(22,64,32,${0.6 * k})`);
+    shadow.addColorStop(1, 'rgba(22,64,32,0)');
+    g.fillStyle = shadow;
+    g.fillRect(-rx, -rx, rx * 2, rx * 2);
+    g.restore();
+    g.save();
+    g.beginPath();
+    g.rect(0, 0, this.L.vw, base);
+    g.clip();
+    drawSprite(g, 'obj-cradle', x, this.cradleTop(), CRADLE_H, { ay: 0.14 }, cradleFallback);
+    g.restore();
+    this.drawCradleGlow(g);
+  }
+
+  /** The crystals of life rise from his paws and fly onto the cradle, where they float, glow and pulse. */
   private drawLife(g: G): void {
     const k = ease.inOutQuad(Math.min(1, this.place!));
     const fx = this.heroX, fy = this.heroY - TAPKO_H * 0.45;
     const tx = this.cradle!.x - this.scroll, ty = this.cradleTop() - FLOAT * k + Math.sin(this.t * 2) * BOB * k;
     const x = fx + (tx - fx) * k, y = fy + (ty - fy) * k - Math.sin(k * Math.PI) * 90;
-    drawLifeCrystals(g, x, y, LIFE_H * (0.5 + 0.5 * k), [1, 1, 1]);
+    const p = this.pulse, lit = 0.8 + 0.2 * p;
+    drawLifeCrystals(g, x, y, LIFE_H * (0.5 + 0.5 * k) * (1 + 0.05 * p), [lit, lit, lit]);
   }
 
-  /** A soft light above the cradle, waiting for the crystals; brighter once they float there. */
+  /** A soft light above the cradle, waiting for the crystals; brighter once they float there, pulsing with them. */
   private drawCradleGlow(g: G): void {
     const c = this.cradle!, x = c.x - this.scroll, y = this.cradleTop() - LIFE_H * 0.6;
-    const k = ease.outCubic(c.rise) * (this.place !== null && this.place >= 1 ? 1 : 0.55);
+    const k = ease.outCubic(c.rise) * (this.place !== null && this.place >= 1 ? 0.85 + 0.15 * this.pulse : 0.55);
     const r = LIFE_H * 1.4;
     g.save();
     const glow = g.createRadialGradient(x, y, 4, x, y, r);
@@ -634,13 +729,16 @@ export class GreatSwampMode extends SwampHero {
     g.restore();
   }
 
-
+  /** Jumps reached, the boulder's cracks and the sentence, out of all of them; full once the sentence is typed. */
   progress(): number {
-    const cracked = this.boulder ? Math.min(BOULDER, this.boulder.crack) : 0;
-    return Math.min(1, (this.secured + Math.max(0, this.ahead) + cracked) / this.L.count);
+    if (!this.stones.length) return 0;
+    const reached = this.idx(this.stones[this.stones.length - 1]);
+    const tasks = this.jumps + (this.boulderAt > 0 ? BOULDER : 0) + 1;
+    const cracked = this.boulder ? Math.min(BOULDER, this.boulder.crack) : this.boulderAt > 0 && reached >= this.boulderAt ? BOULDER : 0;
+    return this.cradle ? 1 : Math.min(1, (reached + cracked) / tasks);
   }
 
   get finished(): boolean {
-    return (this.place ?? 0) > 1.8;
+    return (this.place ?? 0) >= 1 + GLOW_S / PLACE;
   }
 }

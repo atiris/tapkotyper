@@ -666,6 +666,12 @@
     "boulderStart": [
       "Cestu zatarasil balvan. Rozbi ho presnými slovami!"
     ],
+    "monolithAsk": [
+      "Si pri brehu! Napíš túto vetu bez chyby a monolit sa prebudí."
+    ],
+    "monolithSlip": [
+      "Veta musí byť bez chyby. Tu je nová."
+    ],
     "cradleDone": [
       "Kryštály života sú na monolite. Planéta zase kvitne!"
     ],

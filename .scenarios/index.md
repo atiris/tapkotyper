@@ -26,3 +26,8 @@ come only from the gitignored `*.protect.md` files and are never written down.
   typing through World 1 and into World 2, target range and parrot, surprises (announced on
   the map, kept in their world), badges and parrots won and lost, a teacher's task and its
   result, settings and statistics, export and moving the player. Not destructive.
+- [performance-upkeep.md](performance-upkeep.md) - S3: a periodic review for speed, smooth
+  drawing, memory and upkeep on a weak school computer: measure first, fix only what measurably
+  helps, nothing visible changes on a normal computer, the slow-computer drawing keeps the same
+  lesson, the budget in `.specify/architecture.md` guards the result. Not destructive (changes
+  code only through the finding triage).

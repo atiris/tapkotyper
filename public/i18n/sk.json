@@ -607,7 +607,7 @@
       "unknownSaid": "Neznáma cesta: {len}, {time} a {diff}."
     },
     "spellStart": [
-      "Našiel si to! Tri **kryštály života** je ešte potrebné **prebudiť.** **Kúzlo**, ktoré je na to určené, **musíš zopakovať slovo po slove** pred kryštálmi, inak ich nebude možné rozžiariť. Potom si ich odlož, aby si ich mohol postaviť na kamenný monolit, odkiaľ posilnia život na tejto planéte. Daj si pozor na správne odpísanie kúzla: ak by si spravil vo formulke **tri chyby**, tak sa **kúzlo zruší** a musíš začať znova."
+      "Našiel si to! Tri **kryštály života** je ešte potrebné **prebudiť.** **Kúzlo**, ktoré je na to určené, **musíš zopakovať slovo po slove** pred kryštálmi, inak ich nebude možné rozžiariť. Potom si ich odlož, aby si ich mohol postaviť na kamenný monolit, odkiaľ posilnia život na tejto planéte. **Daj si pozor** na správne odpísanie kúzla: ak by si spravil vo formulke **tri chyby**, tak sa **kúzlo zruší** a musíš začať znova."
     ],
     "spellCast": [
       "Jupí!",

@@ -1,31 +1,20 @@
+import { done, openDb } from '../storage/idb';
+
 /** The mentor's database: hand-ins, sets of them and loaded `.tapko` files, apart from the players. */
 export const TEACHER_DB = 'tapkotyper-mentor';
 
 export type TeacherTable = 'results' | 'sets' | 'files';
 
-const done = <T>(req: IDBRequest<T>): Promise<T> => new Promise((ok, fail) => {
-  req.onsuccess = () => ok(req.result);
-  req.onerror = () => fail(req.error);
-});
-
 /** Opens the database, creating its stores on the first visit; null when the browser blocks IndexedDB. */
-export async function openTeacherDb(idb: IDBFactory | null): Promise<IDBDatabase | null> {
-  try {
-    if (!idb) return null;
-    const req = idb.open(TEACHER_DB, 1);
-    req.onupgradeneeded = () => {
-      const db = req.result;
-      const results = db.createObjectStore('results', { keyPath: 'id' });
-      results.createIndex('child', 'child');
-      results.createIndex('group', 'group');
-      results.createIndex('date', 'date');
-      db.createObjectStore('sets', { keyPath: 'id' }).createIndex('start', 'start');
-      db.createObjectStore('files', { autoIncrement: true });
-    };
-    return await done(req);
-  } catch {
-    return null;
-  }
+export function openTeacherDb(idb: IDBFactory | null): Promise<IDBDatabase | null> {
+  return openDb(idb, TEACHER_DB, 1, (db) => {
+    const results = db.createObjectStore('results', { keyPath: 'id' });
+    results.createIndex('child', 'child');
+    results.createIndex('group', 'group');
+    results.createIndex('date', 'date');
+    db.createObjectStore('sets', { keyPath: 'id' }).createIndex('start', 'start');
+    db.createObjectStore('files', { autoIncrement: true });
+  });
 }
 
 export function getAll<T>(db: IDBDatabase, table: TeacherTable): Promise<T[]> {

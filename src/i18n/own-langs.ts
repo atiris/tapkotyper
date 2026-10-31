@@ -1,3 +1,4 @@
+import { askPersist, done, openDb } from '../storage/idb';
 import type { Lang, LangRef, LayoutId } from '../storage/schema';
 import type { Value } from './catalog';
 
@@ -31,28 +32,12 @@ export const isOwnRef = (ref: string): ref is `own:${string}` => ref.startsWith(
 export const ownRef = (id: string): LangRef => `own:${id}`;
 export const ownId = (ref: string): string => ref.slice(4);
 
-const done = <T>(req: IDBRequest<T>): Promise<T> => new Promise((ok, fail) => {
-  req.onsuccess = () => ok(req.result);
-  req.onerror = () => fail(req.error);
-});
-
 let db: Promise<IDBDatabase | null> | null = null;
 /** Own languages of this visit when the browser blocks IndexedDB. */
 const memory = new Map<string, OwnLang>();
-let persistAsked = false;
 
 function open(): Promise<IDBDatabase | null> {
-  db ??= (async () => {
-    try {
-      const idb = globalThis.indexedDB;
-      if (!idb) return null;
-      const req = idb.open(TRANSLATE_DB, 1);
-      req.onupgradeneeded = () => req.result.createObjectStore(TABLE, { keyPath: 'id' });
-      return await done(req);
-    } catch {
-      return null;
-    }
-  })();
+  db ??= openDb(globalThis.indexedDB, TRANSLATE_DB, 1, (d) => d.createObjectStore(TABLE, { keyPath: 'id' }));
   return db;
 }
 
@@ -78,10 +63,7 @@ export async function saveOwnLang(l: OwnLang): Promise<void> {
   l.updatedAt = Date.now();
   const d = await open();
   if (!d) return void memory.set(l.id, structuredClone(l));
-  if (!persistAsked) {
-    persistAsked = true;
-    void navigator.storage?.persist?.().catch(() => undefined);
-  }
+  askPersist();
   await done(d.transaction(TABLE, 'readwrite').objectStore(TABLE).put(structuredClone(l)));
 }
 

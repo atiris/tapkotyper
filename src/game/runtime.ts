@@ -198,6 +198,8 @@ export class LevelRuntime {
     this.reading = new Reading(this.state, this, this.labels);
     // Free typing has nothing to pause: its X leaves.
     const pauseBtn = def.kind === 'freetype' ? roundButton('control', 'close', t('level.leave'), () => this.exit()) : roundButton('control', 'pause', t('level.pause'), () => (this.state.paused ? this.resume() : this.pause()));
+    // After the end, while peeking under the results, the end card brings it back (see peekable).
+    pauseBtn.classList.add('pause-btn');
     this.ending = endingOf(def, !!opts.stay);
     this.pauseCard = new PauseCard(this.state, {
       ending: this.ending, stay: !!opts.stay, next: opts.next,

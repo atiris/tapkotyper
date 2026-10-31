@@ -141,8 +141,8 @@ const MODIFIERS = ['Shift', 'Alt', 'Control', 'Meta', 'AltGraph'];
 /**
  * A results card the child can look under: Esc or the round X hides the card and its dimming over
  * the last frame of the game, whose bar and keyboard work again; a typed character while peeking
- * does `type` when given (play on in the same level without an end), any other key or a click into
- * the game brings the card back with the same focus. A dialog or the help page over it goes first.
+ * does `type` when given (play on in the same level without an end), any other key, a click into
+ * the game or the pause button brings the card back with the same focus. A dialog or the help page over it goes first.
  */
 function peekable(overlay: HTMLElement, card: HTMLElement, type?: () => void): void {
   let focused: HTMLElement | null = null;
@@ -152,8 +152,8 @@ function peekable(overlay: HTMLElement, card: HTMLElement, type?: () => void): v
     if (!on) focused?.focus();
   };
   card.prepend(closeButton(() => peek(true), t('results.peek')));
-  // Peeking, the hidden card lets every click through.
-  overlay.parentElement!.querySelector('.stage-wrap')!.addEventListener('click', () => {
+  // Peeking, the hidden card lets every click through; a click into the game or on the pause button (nothing to pause after the end) brings it back.
+  for (const el of overlay.parentElement!.querySelectorAll('.stage-wrap, .pause-btn')) el.addEventListener('click', () => {
     if (overlay.classList.contains('peek')) peek(false);
   });
   const stop = captureKeys(overlay, (e) => {

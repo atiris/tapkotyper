@@ -212,8 +212,8 @@
   the game stays in sight as it ended. Its top bar and the keyboard layout switch under the
   on-screen keyboard work as in play (help, voice, sound, the layout). A typed letter while
   peeking plays the same level again from its start without an end (staying a while; at the
-  target range: staying there), where staying is offered. Esc, any other key or a click into the
-  game brings the card back as it was, with the same focus, and the key does nothing else;
+  target range: staying there), where staying is offered. Esc, any other key, a click into the
+  game or the pause button (nothing is left to pause) brings the card back as it was, with the same focus, and the key does nothing else;
   peeking never ends anything, so a child looking around loses no card.
 - **Calm scenes breathe**: a scene that stands still (the calm steps of a world) lets one
   background band drift slowly on its own; with reduced motion nothing drifts. In a scene that

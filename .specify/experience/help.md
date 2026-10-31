@@ -10,7 +10,7 @@
   else to the map, or to the start page before a player is chosen. Opened from the settings,
   help starts on the settings tab:
   1. **Interface**: the buttons of the map and of a level, each drawn exactly as it looks in the
-     game with one line on what it does, and the player's card on the map (the companion opens
+     game with one line on what it does (not the super account's star, which stays a tester's tool), and the player's card on the map (the companion opens
      "My progress", the side buttons, the task card).
   2. **Typing**: sitting, the home keys F and J, thumbs over the space bar, each finger
      with its own keys, eyes on the screen, accuracy before speed, short breaks.

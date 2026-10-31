@@ -1521,7 +1521,6 @@
     "help.icons.progress": "Help, Interface tab: describes the progress bar in a level.",
     "help.icons.gauge": "Help, Interface tab: describes the green ring with the typing rhythm in a level.",
     "help.icons.levelHelp": "Help, Interface tab: describes the help icon inside a level; **F1** is a key.",
-    "help.icons.super": "Help, Interface tab: describes the star at the top that opens the super mode service menu.",
     "help.icons.read": "Help, Interface tab: describes the read aloud icon in a level; **F3** is a key.",
     "help.icons.guide": "Help, Interface tab: describes the icon that shows or hides the keyboard in a level; **F2** is a key.",
     "help.icons.menu": "Help, Interface tab: describes the Menu button that holds the other buttons on a small screen.",

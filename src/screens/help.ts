@@ -71,7 +71,6 @@ function levelIcons(): HTMLElement[] {
     iconLine(round('keyboardOff'), t('help.icons.guide')),
     iconLine(round('sound'), t('help.icons.sound')),
     iconLine(round('fullscreen'), t('help.icons.fullscreen')),
-    iconLine(roundPic('super', 'star'), t('help.icons.super')),
   ];
 }
 

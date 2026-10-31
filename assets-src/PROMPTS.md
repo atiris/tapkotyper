@@ -138,6 +138,12 @@ Notes from real Gemini runs; add new ones here.
 - A single strip on magenta always came out about half the picture tall, whatever the pixel
   heights in the prompt; an attached layout (magenta with a white band to fill) was ignored too.
   A "sheet of three low strips stacked above each other" came at the asked scale (190 px each).
+- A far seam repaint with the usual 30 % gap drew a pass or valley with distant low mountains in
+  it (egg, 2026-10-31); `prep <img> <dir> 0.14` and "one big peak as high as the ones beside it, NO
+  pass, NO valley" kept the ridge line. A low strip at the bottom of a tall magenta frame came back
+  drawn twice, the second copy in the magenta; "a single low strip at the bottom ... the magenta area
+  stays empty, do not add a second strip" fixed it, and naming the things to draw ("low flat rocks,
+  one mushroom, one crystal group; no stacked stones") gave a middle like the sides.
 - A colored fill (blue) in a seam repaint tinted the sky painted into it; white "empty paper"
   did not. An inpainting prompt that starts with "Generate an image" gets a new picture.
 - A follow-up "less sky" stacked the landscape twice in one picture; ask again from scratch.
@@ -489,9 +495,9 @@ flat storybook style and no longer apply.
 | `bg-dragons-far.jpg` | a peaceful dragon valley at sunset, warm orange and pink colours in the sky, the sun hidden behind the mountains, soft rounded mountains and a waterfall | full | done 2026-10-23 |
 | `bg-dragons-mid.jpg` | (the owner's picture on a cyan key, 2026-10-29) wooded hills, a big fly agaric, a mossy cave with a glowing crystal, a tree with red and yellow blossoms, then a wide calm meadow | full | done 2026-10-29 (seam by Gemini, moved down 8 px: its skyline at 62 % from the bottom) |
 | `bg-dragons-near.jpg` | (the owner's picture on a cyan key, 2026-10-29) a low grassy edge with a red crystal, a stump, fly agarics, pebbles, blue flowers, then wide calm grass | full | done 2026-10-29 (seam by Gemini, moved down 284 px: its skyline at 22 % from the bottom) |
-| `bg-egg-far.jpg` | (redone 2026-10-31, the Mountain of Awakening; attach `bg-planet-far.png` as a style guide and say the landscape must be different) rocky hills and peaks in grey-brown and warm ochre with moss patches, many big groups of pale crystals (amber, rose quartz, aquamarine) in the slopes, no mushroom trees, a light blue sky with small jagged sawtooth clouds tinted soft orange, peaks of similar size across the width | full | done 2026-10-31 (seam by Gemini; the grey tone it gave the middle sky was corrected locally) |
-| `bg-egg-mid.jpg` | (redone 2026-10-31) flat rocky terrain far back: low rocks and slabs, some under moss with low stemless flowers, a few small mushrooms and crystals growing out of the rock; calm, nothing tall | low band | done 2026-10-31 (sheet of two strips on a dull pink key turned to pure magenta locally; strips came 130 px tall, not 330; quilted from the other strip, lifted 133 px) |
-| `bg-egg-near.jpg` | (redone 2026-10-31) a path of pale grey-tan stone on rocky ground: small crystals, a few mushrooms and one low bush along its upper edge, the lower half of the path calm rock with no detail | full | done 2026-10-31 (sheet of three strips, quilted, moved down 14 px: the path runs y 623 to 745, its middle at 89 % of the stage like `bg-planet-near`) |
+| `bg-egg-far.jpg` | (the owner's picture, 2026-10-31) rocky grey-brown and ochre peaks with big groups of pale crystals (amber, rose quartz, aquamarine), moss patches and one fly agaric, a light blue sky with small jagged orange-tinted clouds | full | done 2026-10-31 (seam by Gemini with a narrow 14 % gap and "one big peak, no pass": a 30 % gap got a pass down to the horizon) |
+| `bg-egg-mid.jpg` | (the owner's picture, 2026-10-31) a wide field of rounded mossy boulders and ochre slabs with fly agarics and small crystals, to the bottom edge | full | done 2026-10-31 (seam by Gemini, moved down 100 px: its skyline at about 40 % of the stage) |
+| `bg-egg-near.jpg` | (the owner's picture, 2026-10-31, 1376 x 300) a pale stone path with low rocks, crystals, fly agarics and one bush along its upper edge, a cracked rock wall below | full | done 2026-10-31 (put at the bottom of a magenta frame, seam by Gemini on the 3rd try, moved down 84 px: the path's middle at 89 % of the stage) |
 
 ## 4. Game objects (sprites)
 

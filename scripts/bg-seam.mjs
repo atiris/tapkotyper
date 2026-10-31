@@ -178,7 +178,7 @@ async function prep(file, dir, gap = GAP) {
   for (let y = top; y < h; y++) for (let x = g0; x < g1; x++) if (y >= body || near(x, y)) seamIn.set(FILL, (y * w + x) * 3);
   await save({ data: rolled, w, h }, join(dir, 'rolled.png'));
   await save({ data: seamIn, w, h }, join(dir, 'seam-in.png'));
-  await writeFile(join(dir, 'seam.json'), JSON.stringify({ top }) + '\n');
+  await writeFile(join(dir, 'seam.json'), JSON.stringify({ top, gap }) + '\n');
   console.log(`gap ${g0}-${g1} px, from row ${top}`);
   return true;
 }

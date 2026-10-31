@@ -1147,9 +1147,9 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
 .stats .tabs { margin: 0 3rem 1rem 0; }
 .stats-code { margin-top: 1rem; }
 .exercise-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
-.exercise { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.7rem 1rem; border-radius: 16px; background: var(--paper-2); border-left: 6px solid var(--sun); }
-.exercise.done { border-left-color: var(--green); }
-.exercise p { margin: 0.2rem 0 0; }
+.exercise-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.7rem 1rem; border-radius: 16px; background: var(--paper-2); border-left: 6px solid var(--sun); }
+.exercise-row.done { border-left-color: var(--green); }
+.exercise-row p { margin: 0.2rem 0 0; }
 .progress-view { display: grid; gap: 0.4rem; }
 .progress-view p { margin: 0; }
 .progress-sum { list-style: none; margin: 0.4rem 0 0.7rem; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem 0.9rem; }

@@ -277,7 +277,7 @@ export function exercisesTab(p: Profile): HTMLElement {
   return h('ul', { class: 'exercise-list' }, ...played.map((task) => {
     const total = task.chars + task.errors;
     const show = async () => bigCode(linkOf('result', await resultCode(makeResult(p, task, app.store.data.lockRemovedAt !== undefined))), nickname(p), t('progress.exerciseCaption', { title: task.title || t('task.untitled') }), 'exercise');
-    return h('li', { class: `exercise ${task.doneAt ? 'done' : ''}` },
+    return h('li', { class: `exercise-row ${task.doneAt ? 'done' : ''}` },
       h('div', {},
         h('b', {}, task.title || t('task.untitled')), task.group ? h('span', { class: 'chip' }, task.group) : null,
         h('p', { class: 'hint' }, task.doneAt ?? t('progress.exerciseOpen'), ' · ',

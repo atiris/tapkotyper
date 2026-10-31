@@ -164,7 +164,7 @@ export const PALETTES: Record<string, Palette> = {
   space: { sky: ['#1d1b4b', '#3d2c6e'], hills: ['#2d3f7a', '#3b2f6b'], ground: '#251f4f', accent: '#ffe27a' },
   planet: { sky: ['#bdf0dc', '#eafbf3'], hills: ['#7fd1c7', '#b49be0'], ground: '#5eb59a', accent: '#f5a3d3' },
   dragons: { sky: ['#ffb48a', '#ffe0c2'], hills: ['#c79a7a', '#a8806a'], ground: '#8fb267', accent: '#ff8a65' },
-  egg: { sky: ['#9fd8f5', '#f2fbff'], hills: ['#a5d97f', '#86c465'], ground: '#76b457', accent: '#ffd25a' },
+  egg: { sky: ['#9fd8f5', '#f2fbff'], hills: ['#b8a58c', '#9c8f80'], ground: '#bdb3a5', accent: '#ffd25a' },
   junkyard: { sky: ['#a8d8f0', '#f4f1e6'], hills: ['#c2a882', '#9e8a6e'], ground: '#8a7a62', accent: '#ff8a65' },
   workshop: { sky: ['#e8c9a0', '#f7e8d2'], hills: ['#c49a6c', '#a87f56'], ground: '#8f6a48', accent: '#ffd84a' },
   raintown: { sky: ['#8fa6bf', '#d5e1ec'], hills: ['#9fb0c4', '#7f93a8'], ground: '#6f8296', accent: '#ffd84a' },

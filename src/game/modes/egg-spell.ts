@@ -253,7 +253,9 @@ export class SpellRibbonMode extends HeroMode {
       this.target();
     }
     this.warmth = Math.max(this.warmth, Math.min(1, L.share()));
+    // Weak low flames at first; they come one by one and grow with the spell.
     this.hearth.glow = GLOW_START + (1 - GLOW_START) * this.warmth;
+    this.hearth.growth = this.warmth;
     this.hearth.update(dt);
     this.wobble = Math.max(0, this.wobble - dt);
     if (this.ghost && (this.ghost.t += dt) >= ERASE_S) this.ghost = null;
@@ -302,7 +304,9 @@ export class SpellRibbonMode extends HeroMode {
   }
 
   render(g: G): void {
-    this.hearth.draw(g, (gg) => this.drawEgg(gg));
+    // The egg lies in the hearth in front of its flames, so they never hide it.
+    this.hearth.draw(g);
+    this.drawEgg(g);
     this.drawHero(g);
     if (this.lay >= 0 && this.lay < LAY_S) this.drawLaying(g);
     if (!this.spellOn) return;
@@ -507,7 +511,8 @@ export class SpellRibbonMode extends HeroMode {
     this.frameUp = this.L.reduceMotion ? aimUp : this.frameUp + (aimUp - this.frameUp) * 0.15;
     g.save();
     g.beginPath();
-    g.rect(b.x + 8, b.y + 8, b.w - 16, b.h - 16);
+    // Only whole lines show: the one scrolling away leaves at the top of the text.
+    g.rect(b.x + 8, b.y + FRAME_PAD - 4, b.w - 16, LINES * LINE_H + 8);
     g.clip();
     const fade = ghost ? 1 - ghost.t / ERASE_S : 0;
     let cursor: { x: number; y: number } | null = null;

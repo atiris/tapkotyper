@@ -182,6 +182,17 @@ Notes from real Gemini runs; add new ones here.
   arms run plain to the image edges, and a "sheet of three border bands" cut by both side
   edges). All five such prompts came out clean and symmetrical on the first try; the page joins
   the parts with CSS border-image (bands repeat, cut between two motifs).
+- Mountain layers (2026-10-31): a sheet of two strips came on a dull pink key (196,82,154), not magenta,
+  so `strips` found nothing; turning the pixels near that tone to #FF00FF locally first fixed it. The mid
+  strips came 130 px tall although 330 was asked. Quilting a mid strip from itself repeated a slab and
+  a mushroom pair side by side; the other strip of the sheet as donor did not. Gemini's seam repaint gave
+  the middle sky a greyer tone than the sides (a visible rectangle): a per-row offset on the sky-like
+  pixels inside the gap fixed it. The near sheet's path came 18 px too high: `lift <img> -14` put its
+  middle at 89 % of the stage.
+- A follow-up that asks for a different aspect ("four times wider than tall", "ten times taller than
+  wide") changed almost nothing: the mud puddles stay 2.3 and 2.7 times wider than tall, the poles 1.7,
+  3.3 and 3.9 times taller (the planet's posts are 3.1, 5.8 and 6.1). An object of a square picture keeps
+  about its shape; plan for the game to scale it or accept the shape.
 
 ---
 
@@ -475,9 +486,9 @@ flat storybook style and no longer apply.
 | `bg-dragons-far.jpg` | a peaceful dragon valley at sunset, warm orange and pink colours in the sky, the sun hidden behind the mountains, soft rounded mountains and a waterfall | full | done 2026-10-23 |
 | `bg-dragons-mid.jpg` | (the owner's picture on a cyan key, 2026-10-29) wooded hills, a big fly agaric, a mossy cave with a glowing crystal, a tree with red and yellow blossoms, then a wide calm meadow | full | done 2026-10-29 (seam by Gemini, moved down 8 px: its skyline at 62 % from the bottom) |
 | `bg-dragons-near.jpg` | (the owner's picture on a cyan key, 2026-10-29) a low grassy edge with a red crystal, a stump, fly agarics, pebbles, blue flowers, then wide calm grass | full | done 2026-10-29 (seam by Gemini, moved down 284 px: its skyline at 22 % from the bottom) |
-| `bg-egg-far.jpg` | a bright morning valley with a long gentle grassy slope going down from left to right, a few trees and a blue river far away | full | done 2026-10-23 |
-| `bg-egg-mid.jpg` | a bush with yellow flowers, a leaning tree, a mossy boulder, a haystack, a pine, a bush with pink flowers, a signpost with empty boards and a rocky outcrop with ferns | 50 % | done 2026-10-23 |
-| `bg-egg-near.jpg` | only plants and small things: grass, yellow flowers, a pink wild rose, foxtail, a fern, a broken spotted eggshell, daisies, a mushroom and a thistle; no big rocks | 20 % | done 2026-10-23 |
+| `bg-egg-far.jpg` | (redone 2026-10-31, the Mountain of Awakening; attach `bg-planet-far.png` as a style guide and say the landscape must be different) rocky hills and peaks in grey-brown and warm ochre with moss patches, many big groups of pale crystals (amber, rose quartz, aquamarine) in the slopes, no mushroom trees, a light blue sky with small jagged sawtooth clouds tinted soft orange, peaks of similar size across the width | full | done 2026-10-31 (seam by Gemini; the grey tone it gave the middle sky was corrected locally) |
+| `bg-egg-mid.jpg` | (redone 2026-10-31) flat rocky terrain far back: low rocks and slabs, some under moss with low stemless flowers, a few small mushrooms and crystals growing out of the rock; calm, nothing tall | low band | done 2026-10-31 (sheet of two strips on a dull pink key turned to pure magenta locally; strips came 130 px tall, not 330; quilted from the other strip, lifted 133 px) |
+| `bg-egg-near.jpg` | (redone 2026-10-31) a path of pale grey-tan stone on rocky ground: small crystals, a few mushrooms and one low bush along its upper edge, the lower half of the path calm rock with no detail | full | done 2026-10-31 (sheet of three strips, quilted, moved down 14 px: the path runs y 623 to 745, its middle at 89 % of the stage like `bg-planet-near`) |
 
 ## 4. Game objects (sprites)
 
@@ -549,6 +560,11 @@ BG is `magenta color (#FF00FF)` unless the table says `green`, then use `green c
 | `obj-bush-1.jpg` | (the valley's overgrown path, done 2026-10-29) a low, wide, round, thick bush of small dark-green leaves (#4F8A4A, lighter #6FA85F highlights) with a few tangled brown twigs (#7A5434) sticking out of it, about one and a half times wider than tall, its bottom edge cut straight as if it stands on a path; NO face, no eyes, no flowers, no berries, no ground, no grass, no stones | magenta |
 | `obj-bush-3.jpg` | (done 2026-10-29) **attach `obj-bush-1.jpg`**: "Draw a new bush in exactly the same drawing style, outline, shading and leaf pattern as the attached bush ..., but a different bush: a bit smaller and narrower, slightly taller than wide, an upright oval shape, the greens a little lighter and more yellow-green (#6B9A4A with #8DB860 highlights)"; NO face, no flowers, no ground | magenta |
 | `obj-bush-2.jpg` | (done 2026-10-29; the branch tangle that was bush 2 is dropped) **attach `obj-bush-1.jpg`**: as bush 3, "smaller and thinner than the attached one, a little taller than wide, slightly bluish green leaves (#4F8A5E with #74AE7E highlights), and ONE single small pale pink flower with five round petals sitting near its top" | magenta |
+| **World 5, the mountain** | | |
+| `obj-mud-1.jpg`, `-2` | (2026-10-31) a flat glossy sticky dark brown mud puddle (#5A3A24, highlights #7A5236) on a path, a little from above, with a few bubbles, very wide and flat (four times wider than tall); two outlines (a blob, two lobes joined by a neck); NO face, nothing else | magenta |
+| `obj-boulder-1.jpg` to `-3` | (2026-10-31) a big round rolling boulder, roughly a ball so it can spin: grey-brown stone with cracks (1), warm grey with moss patches (2), ochre-brown with one pale aquamarine crystal speck (3); NO face, no ground | magenta |
+| `obj-signpost-stone-1.jpg` to `-3` | (2026-10-31, mountain crossroads, no board: the game draws the arrow boards) a weathered wooden pole set in a small cairn of mossy stones, no fire, no lantern; about three, seven and twelve times taller than wide (tall narrow portrait for 2 and 3) | magenta |
+| `obj-hearth.jpg` | (2026-10-31, the dragons' hearth on the summit; attach `obj-firepit.jpg`) a big ring of old carved stones seen a little from above, runes carved softly in them (not an altar), the inside empty bare ash-grey ground: the game draws flames and an egg into it; about 1.5 times wider than tall | magenta |
 | **Egg journey** | | |
 | `obj-egg.jpg` | a big oval dragon egg, cream with turquoise spots, front view | magenta |
 | `obj-egg-cracking.jpg` | the same dragon egg with a zigzag crack and a tiny light glowing from inside | magenta |

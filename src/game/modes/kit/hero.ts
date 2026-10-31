@@ -81,7 +81,7 @@ export abstract class HeroMode extends Mode {
 
 /** On the planet's meadow he walks in the middle of the path, which the near band draws at this height. */
 export const PATH_FEET = VH * 0.89;
-/** Where Tapko stands in a world's side activity (the target range, the parrot, free typing): on the planet's path, else at `ground`. */
-export const sideFeet = (world: string, ground: number): number => (world === 'planet' ? PATH_FEET : ground);
+/** Where Tapko stands in a world's side activity (the target range, the parrot, free typing): on the planet's and the mountain's path, else at `ground`. */
+export const sideFeet = (world: string, ground: number): number => (world === 'planet' || world === 'egg' ? PATH_FEET : ground);
 /** The word to type is above his head. */
 export const wordAbove = (feet: number): number => feet - TAPKO_H * 0.8 - 100;

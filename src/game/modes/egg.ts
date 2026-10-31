@@ -1,5 +1,6 @@
 import { pickLine } from '../../app/app';
 import { ease } from '../../engine/tween';
+import { sprite } from '../../gfx/assets';
 import { blob, drawSprite, type G } from '../../gfx/draw';
 import type { TapkoMotion } from '../../gfx/tapko';
 import { t } from '../../i18n/i18n';
@@ -99,7 +100,7 @@ abstract class SlopeStream extends ApproachMode {
 }
 
 /** A gust's swirl radius, how much a slip makes it grow and speeds it up, and the speed of its rush after a second slip. */
-const GUST_R = 62;
+const GUST_R = 70;
 const STRONG = 1.3;
 const STRONG_SPEED = 1.35;
 const RUSH_SPEED = 1500;
@@ -210,35 +211,38 @@ export class WindMode extends SlopeStream {
     tg.selectable = false;
   }
 
+  /** A swirl of air: soft blue-grey strokes under white ones, so it reads on a bright sky too. */
   drawMover(g: G, m: Mover): void {
-    const r = GUST_R * m.grow, spin = m.age * (m.strong ? 5 : 3.5) + m.phase;
-    g.save();
-    g.lineCap = 'round';
-    g.strokeStyle = '#ffffff';
+    const r = GUST_R * m.grow, spin = m.age * (m.strong ? 5 : 3.5) + m.phase, w = m.strong ? 1.6 : 1;
+    const strokes: ((g: G) => void)[] = [];
     for (let i = 0; i < 4; i++) {
       const rr = r * (0.35 + 0.2 * i), a = spin * (1 - i * 0.12) + i * 1.7;
-      g.lineWidth = (m.strong ? 6 : 3.5) - i * 0.5;
-      g.save();
-      g.globalAlpha = 0.85 - i * 0.12;
-      g.beginPath();
-      g.arc(m.x, m.y, rr, a, a + 1.3 + i * 0.25);
-      g.stroke();
-      g.restore();
+      strokes.push((gg) => gg.arc(m.x, m.y, rr, a, a + 1.5 + i * 0.25));
     }
     // Wisps trail behind it.
-    g.lineWidth = m.strong ? 4 : 2.5;
-    g.globalAlpha = 0.6;
     for (const dy of [-0.35, 0.1, 0.45]) {
       const y = m.y + dy * r, wave = Math.sin(m.age * 6 + dy * 5) * 6;
-      g.beginPath();
-      g.moveTo(m.x + r * 0.7, y);
-      g.quadraticCurveTo(m.x + r * 1.3, y + wave, m.x + r * (1.8 + (m.strong ? 0.4 : 0)), y);
-      g.stroke();
+      strokes.push((gg) => {
+        gg.moveTo(m.x + r * 0.7, y);
+        gg.quadraticCurveTo(m.x + r * 1.3, y + wave, m.x + r * (1.8 + (m.strong ? 0.4 : 0)), y);
+      });
+    }
+    g.save();
+    g.lineCap = 'round';
+    for (const [ink, width, alpha] of [['#5f7f9c', 8, 0.35], ['#ffffff', 4.5, 0.95]] as const) {
+      g.strokeStyle = ink;
+      g.lineWidth = width * w;
+      g.globalAlpha = alpha;
+      for (const s of strokes) {
+        g.beginPath();
+        s(g);
+        g.stroke();
+      }
     }
     g.restore();
     for (const lf of m.leaves as { pic: string; phase: number }[]) {
       const a = spin * 1.2 + lf.phase;
-      drawSprite(g, lf.pic, m.x + Math.cos(a) * r * 0.62, m.y + Math.sin(a) * r * 0.45, 30 * m.grow, { rot: a * 1.5 }, leafFallback);
+      drawSprite(g, lf.pic, m.x + Math.cos(a) * r * 0.62, m.y + Math.sin(a) * r * 0.45, 40 * m.grow, { rot: a * 1.5 }, leafFallback);
     }
   }
 
@@ -415,9 +419,10 @@ export class BouldersMode extends SlopeStream {
 /** The path's places right of him (shares of the stage), and the seconds a round's puddles and words grow. */
 const SLOTS = [0.42, 0.62, 0.82];
 const GROW = 0.35;
-/** The puddles: their pictures, size on the path and how many rounds after a mud step have one very hard word. */
+/** The puddles: their pictures, their width and most height on the path (flattened, they lie on it), and how many rounds after a mud step have one very hard word. */
 const MUDS = ['obj-mud-1', 'obj-mud-2'];
-const MUD_H = 46;
+const MUD_W = 170;
+const MUD_H = 50;
 export const HARD_ROUNDS = 3;
 /** A very hard word: the longest of a few drawn from the hardest keys the child knows. */
 const HARD_DRAWS = 4;
@@ -614,7 +619,8 @@ export class MudMode extends HeroMode {
 
   private drawPuddle(g: G, p: Place, grow: number): void {
     if (!p.mud) return;
-    drawSprite(g, p.mud, p.x - this.scroll, FEET + 4, MUD_H * grow, { flip: p.flip }, mudFallback);
+    const img = sprite(p.mud), h = MUD_W / (img ? img.naturalWidth / img.naturalHeight : MUD_W / MUD_H);
+    drawSprite(g, p.mud, p.x - this.scroll, FEET + 4, h * grow, { flip: p.flip, sy: Math.min(1, MUD_H / h) }, mudFallback);
   }
 
   render(g: G): void {

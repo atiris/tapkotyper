@@ -231,7 +231,7 @@ Made with the section 3 prompts of `assets-src/PROMPTS.md` (skill `gemini-images
       lines, translator notes.
 - [x] Egg on the back: `carry: 'egg'` in `drawTapko`, the silhouette cache, peeking; unit test of
       the visible share with the widest back accessories and with fallback drawings.
-- [ ] Backgrounds: prompts, Gemini generation (`gemini-images`), seam procedure, `npm run
+- [x] Backgrounds: prompts, Gemini generation (`gemini-images`), seam procedure, `npm run
       assets bg-egg`, preview; the path's middle at `PATH_FEET`. If Gemini is unavailable, keep
       the old layers and add a backlog line.
 - [x] Level 1 wind (gust strengthening, reset on a slip, second slip push with +2 words /
@@ -241,12 +241,12 @@ Made with the section 3 prompts of `assets-src/PROMPTS.md` (skill `gemini-images
 - [x] Level 4 boulders (pairs, jump over, stumble with +7 % capped at +70 %).
 - [x] Level 5 spell ribbon (band, frame, two-word erase with the rewind anchor, hearth stages,
       hatching end).
-- [ ] Object pictures via `gemini-images` (mud, boulders, stone posts, hearth) and the assets run.
-- [ ] Tests: `levels.test.ts` (kinds, minimums, activities of world 5), unit tests for the wind's
+- [x] Object pictures via `gemini-images` (mud, boulders, stone posts, hearth) and the assets run.
+- [x] Tests: `levels.test.ts` (kinds, minimums, activities of world 5), unit tests for the wind's
       growth cap, the boulders' +7 % cap, the ribbon's erase/anchor rule, the countdown (only the best path, at least three signs, its fair time, a half-typed sign vanishing without a mistake); `idle.test.ts` (each
       new mode keeps giving targets and ends at both paces; pairs of boulders and the mud's hard
       rounds appear for the slow child); e2e: world 5 levels reach their end with `?minActive=`.
-- [ ] `npm run build`, `npx vitest run`, affected e2e; Playwright MCP play-through of all five
+- [x] `npm run build`, `npx vitest run`, affected e2e; Playwright MCP play-through of all five
       levels (tester profile, `?fast`, `tapkoType`), screenshots: the egg peeking with dragon
       wings and with a jetpack, a strengthened gust, a mud round, the stone posts, a boulder
       pair, the ribbon after a rewind, the hatching.
@@ -278,3 +278,27 @@ Decisions taken while implementing (2026-10-31):
   "Ďakujem, že ma tvoje kúzlo zohrialo!" and "Uf, už sa to nelepí!".
 - Runtime: `extendMin(seconds)` (the wind's and the boulders' longer way) and `letterTime` (the
   child's seconds per letter, for the countdown).
+- Pictures (a Sonnet agent through the gemini bridge): all twelve made. The mud puddles came out
+  about 2.3-2.7 times wider than tall (asked 4): the game draws them 170 px wide and flattens them
+  to at most 50 px high, so they lie on the path. The stone posts are stockier than asked (1.7,
+  3.3, 3.9 times taller than wide); they look right at the planet's post heights, kept as they are.
+  The filtered `npm run assets <name>` keeps the manifest, so the new pictures' sizes were added
+  to `public/assets/manifest.json` from the files themselves.
+- With the new near band (its path's middle at `PATH_FEET`), side activities in the egg world
+  (range, parrot, free typing) stand on the path too (`sideFeet`).
+- Spell: the hearth's fire grows with the spell (`Firepit.growth`, the valley's growing fire), and
+  the egg is drawn in front of the flames so they never hide it.
+
+## Done - 2026-10-31
+Shipped: world 5 plays the mountain: wind (gusts, strengthening, rush with +2 words / +15 s up to
++10 / +75 s), sticky puddles (2-3 places, three very hard rounds after a mud step), the mountain
+crossroads (world from the level, stone posts, five mountain paths, the best path's countdown),
+boulders (pairs from a third, hop over, stumble with +7 % up to +70 %) and the spell of awakening
+(the first ribbon: band, stone frame, two-word erase with the rewind anchor, hearth stages,
+hatching). The egg rides on Tapko's back in levels 1-4, placed from his outfit's silhouette, and
+peeks; level 5 lays it into the hearth. New backgrounds and object pictures, texts in sk/en with
+translator notes, specs, unit tests, an e2e test of all five levels, a Playwright MCP play-through
+of all five levels with screenshots (gust, mud round and hard round, stone posts with the
+countdown, boulders, the ribbon after a rewind, the hatching, the egg with dragon wings and with
+a jetpack and a wizard hat).
+Left out: the far band's light sky streaks (BACKLOG, P3).

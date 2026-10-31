@@ -1,7 +1,7 @@
 # 88 - The dragon story's own hero's journey: down the mountain back to the rocket
 
 Needs `.todo/.done/86-heros-journey.md` (the journey's machinery, node after the crown, harder play,
-stricter stars, star totals) and `.todo/87-egg-mountain.md` (world 5's modes, bands and the
+stricter stars, star totals) and `.todo/.done/87-egg-mountain.md` (world 5's modes, bands and the
 hatched baby dragon).
 
 ## Why

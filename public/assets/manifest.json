@@ -776,6 +776,18 @@
    "w": 512,
    "h": 320
   },
+  "obj-boulder-1": {
+   "w": 508,
+   "h": 512
+  },
+  "obj-boulder-2": {
+   "w": 512,
+   "h": 512
+  },
+  "obj-boulder-3": {
+   "w": 512,
+   "h": 506
+  },
   "obj-box": {
    "w": 512,
    "h": 372
@@ -984,6 +996,10 @@
    "w": 512,
    "h": 361
   },
+  "obj-hearth": {
+   "w": 512,
+   "h": 389
+  },
   "obj-hedgehog": {
    "w": 512,
    "h": 445
@@ -1075,6 +1091,14 @@
   "obj-mouse": {
    "w": 476,
    "h": 512
+  },
+  "obj-mud-1": {
+   "w": 512,
+   "h": 227
+  },
+  "obj-mud-2": {
+   "w": 512,
+   "h": 187
   },
   "obj-mushroom-brown": {
    "w": 383,
@@ -1238,6 +1262,18 @@
   },
   "obj-signpost-3": {
    "w": 84,
+   "h": 512
+  },
+  "obj-signpost-stone-1": {
+   "w": 298,
+   "h": 512
+  },
+  "obj-signpost-stone-2": {
+   "w": 156,
+   "h": 512
+  },
+  "obj-signpost-stone-3": {
+   "w": 131,
    "h": 512
   },
   "obj-song-sheet": {

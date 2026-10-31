@@ -80,6 +80,13 @@ without a caller, no dead code.
   spreads the same stars over real level ids (its expected values are unchanged).
 - Step 2: `ui/hud.ts` had its own `worldName(def)`; it went, its one caller uses the new helper.
 
+- Step 8: three e2e specs fail the same way before this plan (checked by running them on dc33fce);
+  they are already in the backlog. The browser check used the dev server: the translator and
+  teacher databases were checked by saving through their modules in the real browser, reloading
+  and reading back (then removing the test rows), not by scanning a QR code.
+- Step 8: the tester profile showed 228 stars on the wardrobe and 75 per story on the stats, the
+  same as the old sum of every key (its only extra key is `journey-dragon`).
+
 ## Steps
 
 - [x] 1. `StoryDef.tier` and its readers (`STORY_MIN_S`, `STORY_WPM`, `slipWords`, `parrotPatience`,
@@ -98,7 +105,7 @@ without a caller, no dead code.
       numbers come from the story's tier, world names and stories from one helper, built-in totals
       from built-in lists only, pictures and music through one resolver each, the device's own
       databases through one helper; points to `game/story-packs.md`.
-- [ ] 8. Check: `npm run build`, `npx vitest run`, `npx playwright test`. Playwright MCP as a user
+- [x] 8. Check: `npm run build`, `npx vitest run`, `npx playwright test`. Playwright MCP as a user
       with the tester profile (`?fast`, `tapkoType`; never script the super password): the map
       shows the three stories and world names, a world's opening story appears on its first level,
       one level in the dragon story and one copy level in the robot story play to their end card,
@@ -107,3 +114,13 @@ without a caller, no dead code.
       screen's surprise level list lists every world, the translator still saves an own language
       after a reload, and the teacher screen keeps a scanned result after a reload. Console clean.
       Each step is its own commit; the plan moves to `.todo/.done/` in the last one.
+
+## Done - 2026-10-31
+
+Shipped: stories carry a `tier` that sets their numbers; `worldName` / `worldStory` are the only
+readers of the world i18n keys; built-in levels are found through `levelAt` / `levelById`;
+`totalStars` counts only built-in levels and journeys (with a test that a pack-like id buys
+nothing); music goes through `musicUrl` (`hasMusic` went); `storage/idb.ts` serves the mentor's and
+the translator's databases; `.specify/architecture.md` says what is ready for story packs.
+Behaviour is unchanged. Left out: nothing new for the backlog (the failing e2e specs were already
+listed); the pack format and everything named under "Not in this plan" stay with the pack plan.

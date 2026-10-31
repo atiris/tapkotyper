@@ -1,66 +1,83 @@
 import { app, pickLine } from '../../app/app';
 import { graphics } from '../../engine/graphics';
+import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
 import { WORD, drawSprite, fontFamily, type G, roundRect } from '../../gfx/draw';
-import { littleDragonFallback } from '../../gfx/little-dragon';
+import { LITTLE_DRAGON_PICTURES, drawLittleDragon, littleDragonFallback, littleDragonImage } from '../../gfx/little-dragon';
 import { eggFallback, eggSpot } from '../../gfx/tapko';
 import { t } from '../../i18n/i18n';
 import { ENTER } from '../../keyboard/layouts';
 import { TAPKO_H } from '../mode';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
-import { FLAMES, Firepit, PIT_RATIO, type PitLook } from './dragons';
+import { FLAMES, Firepit, type PitLook } from './dragons';
+import { Detour, lengthen, secondsPerWord } from './kit/egg';
 import { HeroMode, PATH_FEET } from './kit/hero';
 
 const FEET = PATH_FEET;
 const HERO_X = 200;
-/** The dragons' hearth on the right: its place (a share of the stage), its height, and the egg in it. */
-const HEARTH_AT = 0.78;
+/** The dragons' hearth just right of Tapko (its middle this far right of him), its height, and the egg in it. */
+const HEARTH_DX = 150;
 const HEARTH_H = 112;
 const EGG_IN = 64;
 const HATCHED_H = 96;
+/** The little dragon out of its shell, as big as it walks with Tapko on the hero's journey. */
+const LITTLE_H = 92;
 /** Seconds Tapko takes to lay the egg off his back into the hearth before the first word shows. */
 const LAY_S = 1;
 
-/** The ribbon: its middle's height, its size, its letters, where the next letter stays (a share of its width) and how far it fades at each end. */
+/**
+ * The spell's area: the right half of the stage, the right two thirds on a narrow one (narrower
+ * than `NARROW` stage heights), never over Tapko; a margin on the right.
+ */
+const NARROW = 1.6;
+const SPELL_MARGIN = 30;
+/** The ribbon: its middle's height, its size, its letters, and where the next letter stays (a share of its width). */
 const RIBBON_Y = 84;
 const RIBBON_H = 66;
-const RIBBON_W = 780;
 const RIBBON_SIZE = 40;
 const RIBBON_AT = 0.42;
-const RIBBON_FADE = 0.2;
-/** A word not in progress shows faint on the ribbon. */
-const FAINT = 0.35;
+/** Its ends fade out over its round end cap and a little more. */
+const RIBBON_FADE = RIBBON_H / 2 + 10;
+/** Seconds of the ribbon's ease toward where it should be: it glides, never snaps. */
+const GLIDE_S = 0.25;
+/** A new word slides in from this far right and fades in over these seconds. */
+const APPEAR_DX = 40;
+const APPEAR_S = 0.35;
+/** Every word but the one in progress is grey. */
+const GREY = '#8a8f98';
+const GREY_HC = '#5a5f68';
 /** The spell frame: its lines (at most three show), their letters and the room round them. */
 const LINES = 3;
 const LINE_H = 44;
 const TEXT_SIZE = 28;
 const FRAME_PAD = 26;
 const FRAME_GAP = 26;
-/** Seconds an erased word fades back out of the frame. */
+/** Seconds the letters of a restarted word fade back out of the frame. */
 const ERASE_S = 0.4;
+/** A slip adds one word to the spell, at most this many in a level. */
+const GROW_MAX = 10;
 /** After the first slip's line, the reminder comes with about one slip in this many. */
 const CAREFUL_EVERY = 10;
-/** The end: the fire flares, the egg breaks, the baby says hello and Tapko cheers; then the level ends. */
+/**
+ * The end: the fire flares, the egg breaks and the flames go out, the little dragon hops out of the
+ * hearth to Tapko's right and says hello, Tapko cheers; then the level ends.
+ */
 const FLARE_AT = 0;
 const BREAK_AT = 0.8;
-const HELLO_AT = 1.3;
-const CHEER_AT = 2.4;
-const END_AT = 3.8;
+const OUT_S = 0.9;
+const HOP_AT = 1.4;
+const HOP_S = 0.8;
+const HOP_UP = 110;
+const CHEER_AT = 2.9;
+const END_AT = 3.9;
+/** Where the little dragon lands: this far right of Tapko, a little in front of him. */
+const LAND_DX = 95;
+const LAND_DY = 16;
 /** The flames grow with the spell from this glow; the egg cracks at half, and cracks open at three quarters. */
 const GLOW_START = 0.12;
 const CRACK_AT = 0.5;
 const CRACKING_AT = 0.75;
-
-/**
- * Where the spell goes on after a slip at word `at`: the word in progress always goes, and the last
- * written word with it, unless the last rewind (`anchor`) was fewer than two words back; the rewind
- * then sits where the erased word began.
- */
-export function slipBack(at: number, anchor: number | null): { at: number; anchor: number | null } {
-  if (at > 0 && (anchor === null || at - anchor >= 2)) return { at: at - 1, anchor: at - 1 };
-  return { at, anchor };
-}
 
 /** The dragons' hearth while its picture is missing: a ring of old carved stones. */
 function hearthFallback(g: G, _w: number, h: number): void {
@@ -90,30 +107,46 @@ function hearthFallback(g: G, _w: number, h: number): void {
 }
 const HEARTH: PitLook = { pic: 'obj-hearth', fallback: hearthFallback };
 
-/** A word of the spell: its text with the space after it (the last word ends without), and its target while it is the one to type. */
+/** A word of the spell: its text (without the space after it) and its place on the ribbon. */
 interface SpellWord {
   text: string;
   /** Its sentence ends with it. */
   last: boolean;
+  /** When it came (the mode's clock): it fades in. */
+  born: number;
+  /** Its width, and its start along the spell (pixels), measured when it is drawn; NaN before. */
+  w: number;
+  start: number;
+  /** Where it shows along the spell: it glides to its start, from a little further right when new. */
+  x: number;
+}
+
+/** The spell's area on a stage `vw` wide: the right half, the right two thirds on a narrow stage, never over Tapko. */
+export function spellArea(vw: number): { x: number; w: number } {
+  const x = Math.max(vw < NARROW * VH ? vw / 3 : vw / 2, HERO_X + TAPKO_H * 0.45);
+  return { x, w: vw - SPELL_MARGIN - x };
 }
 
 /**
  * Egg 5, the spell of awakening (the super level, the first ribbon): Tapko lays the egg into the
- * dragons' hearth on the summit, then types one long spell from an endless ribbon, spaces and
- * periods too; what he has written fills a stone frame. A slip erases the word in progress and the
- * last written word, and the ribbon rewinds to it (`slipBack`). Each sentence makes the fire grow;
- * the egg glows, cracks and at the end hatches.
+ * dragons' hearth just right of him, then types one long spell from an endless ribbon, spaces and
+ * periods too; what he has written fills a stone frame under it, both in the right part of the
+ * stage. A slip starts the word in progress again and adds one word to the spell right after it
+ * (the minimum grows with it, at most `GROW_MAX` words). Each sentence makes the fire grow; the egg
+ * glows and cracks, and at the end it hatches, the flames go out and the little dragon hops out to
+ * Tapko.
  */
 export class SpellRibbonMode extends HeroMode {
   readonly world = 'egg';
-  readonly pictures = ['obj-hearth', ...FLAMES, 'obj-egg-plain', 'obj-egg-glow', 'obj-egg-cracking', 'obj-dragon-hatched'];
+  readonly pictures = ['obj-hearth', ...FLAMES, 'obj-egg-plain', 'obj-egg-glow', 'obj-egg-cracking', ...LITTLE_DRAGON_PICTURES];
   private words: SpellWord[] = [];
-  /** The word to type, the most words ever written (the progress), and the last rewind's place. */
+  /** The word to type, and the most words ever written (the progress). */
   private at = 0;
   private best = 0;
-  private anchor: number | null = null;
   private current: Target | null = null;
   private hearth: Firepit;
+  /** The words slips added to the spell. */
+  private detour: Detour;
   /** Seconds since the egg left his back (-1 before play); the spell starts when it lies in the hearth. */
   private lay = -1;
   private spellOn = false;
@@ -121,11 +154,15 @@ export class SpellRibbonMode extends HeroMode {
   private warmth = 0;
   /** Seconds of the egg's wobble after a sentence. */
   private wobble = 0;
-  /** Erased letters fading out of the frame: the text, where it starts in the frame's text, seconds since. */
+  /** Letters of a restarted word fading out of the frame: the text, where it starts in the frame's text, seconds since. */
   private ghost: { text: string; from: number; t: number } | null = null;
-  /** The ribbon's position (pixels along the spell) and the frame's scroll (pixels up). */
+  /** The ribbon's position (pixels along the spell) and the frame's scroll (pixels up), each gliding to its aim. */
   private ribbonX = 0;
+  private ribbonAim = 0;
   private frameUp = 0;
+  private frameAim = 0;
+  /** The picture the ribbon's letters go into before its ends fade out. */
+  private layer: HTMLCanvasElement | null = null;
   private slips = 0;
   private endT: number | null = null;
   private helloSaid = false;
@@ -133,26 +170,30 @@ export class SpellRibbonMode extends HeroMode {
 
   constructor(L: LevelRuntime) {
     super(L);
-    this.hearth = new Firepit(L, 0, HEARTH_H, FEET + 6, HEARTH).burn(GLOW_START);
+    this.hearth = new Firepit(L, HERO_X + HEARTH_DX, HEARTH_H, FEET + 6, HEARTH).burn(GLOW_START);
+    this.detour = new Detour(GROW_MAX, secondsPerWord(L));
   }
 
   startLine(): string {
-    return pickLine('story.spellStart');
+    return pickLine('story.awakeningStart');
   }
 
   start(): void {
     this.heroX = HERO_X;
     this.heroY = FEET;
-    this.hearth.x = this.L.vw * HEARTH_AT;
     this.lay = 0;
     if (this.L.reduceMotion) this.lay = LAY_S;
   }
 
-  /** The next sentence of 4-6 known words, ending with a period when the period is known. */
-  private sentence(): void {
-    const s = this.L.word(undefined, 6, 4).replace(ENTER, '');
-    const list = s.split(' ').filter(Boolean);
-    list.forEach((w, i) => this.words.push({ text: w, last: i === list.length - 1 }));
+  private spellWord(text: string, last: boolean): SpellWord {
+    return { text, last, born: this.t, w: NaN, start: NaN, x: NaN };
+  }
+
+  /** The next sentence of 4-6 known words, ending with a period when the period is known; false when it came empty. */
+  private sentence(): boolean {
+    const list = this.L.word(undefined, 6, 4).replace(ENTER, '').split(' ').filter(Boolean);
+    list.forEach((w, i) => this.words.push(this.spellWord(w, i === list.length - 1)));
+    return list.length > 0;
   }
 
   /** The spell needs more: either minimum is not met yet. */
@@ -160,13 +201,12 @@ export class SpellRibbonMode extends HeroMode {
     return this.L.minLeft > 0 || this.words.length < this.L.count;
   }
 
-  /** The word at `at` becomes the target: with its space, unless it ends the spell. */
+  /** The word at `at` becomes the target: with its space, unless it ends the spell. The next word is always there to read. */
   private target(): void {
-    if (this.at >= this.words.length && this.more) this.sentence();
+    while (this.at + 1 >= this.words.length && this.more && this.sentence());
     const w = this.words[this.at];
     if (!w) return;
-    // Its sentence's last word leads into the next one, as long as the spell needs more.
-    const end = w.last && this.at === this.words.length - 1 && !this.more;
+    const end = this.at === this.words.length - 1 && !this.more;
     this.current = this.L.core.add(end ? w.text : `${w.text} `, {});
   }
 
@@ -186,27 +226,33 @@ export class SpellRibbonMode extends HeroMode {
       this.L.sfx('pop');
     }
     this.current = null;
-    if (this.at >= this.words.length && !this.more) return this.end();
+    if (this.spellDone) return this.end();
     this.target();
   }
 
-  /** A slip erases the word in progress and, by `slipBack`, the last written word; the ribbon rewinds. */
+  /** A slip starts the word in progress again and adds a word to the spell after it; nothing written is lost. */
   onWrong(tg: Target | null): void {
     super.onWrong(tg);
     if (!tg || tg !== this.current || this.endT !== null) return;
-    const before = this.frameText();
-    const back = slipBack(this.at, this.anchor);
-    this.at = back.at;
-    this.anchor = back.anchor;
+    const typed = tg.word.slice(0, tg.typed);
     this.L.core.release(tg, false);
     this.L.core.prune();
     this.current = null;
-    const kept = this.written(this.at);
-    if (before.length > kept.length) this.ghost = { text: before.slice(kept.length), from: kept.length, t: 0 };
+    if (typed) this.ghost = { text: typed, from: this.written(this.at).length, t: 0 };
+    this.grow();
     this.L.sfx('whoosh');
     if (!this.slips++) this.L.say(t('story.spellSlip'), 3);
     else if (this.L.rng.int(1, CAREFUL_EVERY) === 1) this.L.say(t('story.spellCareful'), 2.5);
     this.target();
+  }
+
+  /** One word more right after the word in progress, a word of the spell's own kind; the minimum grows by its share. */
+  private grow(): void {
+    if (!lengthen(this.L, this.detour, 1)) return;
+    const list = this.L.word(undefined, 6, 4).replace(ENTER, '').split(' ').filter(Boolean);
+    // A word from inside a sentence: no capital, no period.
+    const pool = list.length > 2 ? list.slice(1, -1) : list;
+    this.words.splice(this.at + 1, 0, this.spellWord(this.L.rng.pick(pool), false));
   }
 
   /** The spell's first `n` words as the frame writes them. */
@@ -220,7 +266,7 @@ export class SpellRibbonMode extends HeroMode {
     return this.written(this.at) + (tg ? tg.word.slice(0, tg.typed) : '');
   }
 
-  /** The spell is said: the fire flares up, the egg breaks and the baby dragon sits in the hearth. */
+  /** The spell is said: the fire flares up, the egg breaks and the little dragon comes out. */
   private end(): void {
     this.endT = 0;
     this.happy();
@@ -233,7 +279,6 @@ export class SpellRibbonMode extends HeroMode {
   update(dt: number): void {
     super.update(dt);
     const L = this.L;
-    this.hearth.x = L.vw * HEARTH_AT;
     if (this.lay >= 0 && !this.spellOn && (this.lay += dt) >= LAY_S) {
       this.spellOn = true;
       L.sfx('pop');
@@ -246,6 +291,11 @@ export class SpellRibbonMode extends HeroMode {
     this.hearth.update(dt);
     this.wobble = Math.max(0, this.wobble - dt);
     if (this.ghost && (this.ghost.t += dt) >= ERASE_S) this.ghost = null;
+    // The ribbon, its words and the frame glide to where they should be.
+    const k = L.reduceMotion ? 1 : 1 - Math.exp(-dt / GLIDE_S);
+    this.ribbonX += (this.ribbonAim - this.ribbonX) * k;
+    this.frameUp += (this.frameAim - this.frameUp) * k;
+    for (const w of this.words) if (!Number.isNaN(w.start)) w.x += (w.start - w.x) * k;
     if (this.endT !== null) this.updateEnd(dt);
   }
 
@@ -257,13 +307,18 @@ export class SpellRibbonMode extends HeroMode {
       L.tweens.add(L.reduceMotion ? 0.01 : 0.6, (k) => { this.hearth.flare = k * 0.6; }, ease.outCubic);
     }
     if (at(BREAK_AT)) {
+      // The shell breaks and the flames go out, leaving a cold hearth and a curl of smoke.
       L.sfx('pop');
       L.particles.emit(this.hearth.x, this.eggY() - EGG_IN / 2, 18, 'dot', ['#fbf1dc', '#6cc7c0', '#ffffff'], 160, 8);
-      L.tweens.add(L.reduceMotion ? 0.01 : 0.8, (k) => { this.hearth.flare = 0.6 * (1 - k); }, ease.inOutQuad);
+      L.tweens.add(L.reduceMotion ? 0.01 : 0.5, (k) => { this.hearth.flare = 0.6 * (1 - k); }, ease.inOutQuad);
+      this.hearth.fade = L.reduceMotion ? 0.01 : OUT_S;
+      this.hearth.litTo = 0;
     }
-    if (at(HELLO_AT) && !this.helloSaid) {
+    if (at(HOP_AT + HOP_S) && !this.helloSaid) {
       this.helloSaid = true;
-      L.shout(t('story.spellHello'), this.hearth.x, this.eggY() - HATCHED_H - 40);
+      L.sfx('pop');
+      const land = this.landSpot();
+      L.shout(t('story.spellHello'), land.x, land.y - LITTLE_H - 30);
     }
     if (at(CHEER_AT) && !this.cheered) {
       this.cheered = true;
@@ -274,6 +329,11 @@ export class SpellRibbonMode extends HeroMode {
   /** The egg's foot in the hearth. */
   private eggY(): number {
     return FEET + 6 - HEARTH_H * 0.42;
+  }
+
+  /** Where the little dragon lands: on Tapko's right, a little in front of him. */
+  private landSpot(): { x: number; y: number } {
+    return { x: HERO_X + LAND_DX, y: FEET + LAND_DY };
   }
 
   /** While he lays it into the hearth the egg flies off his back; before and after it is not on him. */
@@ -291,10 +351,12 @@ export class SpellRibbonMode extends HeroMode {
   }
 
   render(g: G): void {
-    // The egg lies in the hearth in front of its flames, so they never hide it.
+    // The egg lies in the hearth in front of its flames, so they never hide it; the little dragon hops out in front of Tapko.
     this.hearth.draw(g);
-    this.drawEgg(g);
+    const out = this.endT !== null && this.endT >= HOP_AT;
+    if (!out) this.drawEgg(g);
     this.drawHero(g);
+    if (out) this.drawHatched(g);
     if (this.lay >= 0 && this.lay < LAY_S) this.drawLaying(g);
     if (!this.spellOn) return;
     this.drawRibbon(g);
@@ -314,7 +376,8 @@ export class SpellRibbonMode extends HeroMode {
     if (this.lay < LAY_S && !this.spellOn) return;
     const x = this.hearth.x, y = this.eggY();
     if (this.endT !== null && this.endT >= BREAK_AT) {
-      const k = this.L.reduceMotion ? 1 : ease.outBack(Math.min(1, (this.endT - BREAK_AT) / 0.5));
+      // Out of its shell, the little dragon stands up in the hearth.
+      const k = this.L.reduceMotion ? 1 : ease.outBack(Math.min(1, (this.endT - BREAK_AT) / 0.4));
       drawSprite(g, 'obj-dragon-hatched', x, y + 8, HATCHED_H * k, { ay: 1 }, littleDragonFallback);
       return;
     }
@@ -339,115 +402,140 @@ export class SpellRibbonMode extends HeroMode {
     }
   }
 
-  /** The ribbon's box, centred at the top, narrower on a narrow stage. */
-  private ribbonBox(): { x: number; w: number } {
-    const w = Math.min(RIBBON_W, this.L.vw - 120);
-    return { x: (this.L.vw - w) / 2, w };
+  /** The little dragon, out of its shell, hops out of the cold hearth in an arc and lands on Tapko's right, where it stays. */
+  private drawHatched(g: G): void {
+    const e = this.endT!, k = this.L.reduceMotion ? 1 : Math.min(1, (e - HOP_AT) / HOP_S), to = this.landSpot();
+    if (k >= 1) return drawLittleDragon(g, 'happy', to.x, to.y, LITTLE_H, this.t, 0, !this.L.reduceMotion);
+    const m = ease.inOutQuad(k), from = { x: this.hearth.x, y: this.eggY() + 8 };
+    const x = from.x + (to.x - from.x) * m, y = from.y + (to.y - from.y) * m - Math.sin(Math.PI * k) * HOP_UP;
+    drawSprite(g, littleDragonImage(), x, y, LITTLE_H, { ay: 1 }, littleDragonFallback);
   }
 
   /**
-   * The ribbon: the previous word faint, the word to type with its typed letters marked, the next
-   * word faint, fading out at both ends. It slides letter by letter, so the next letter stays at the
-   * same point; a space is a gap that lights up when it is the key to type.
+   * Draws what `paint` draws inside the box (x, y, w, h) through a picture of its own whose left
+   * and right ends fade out over `fade`, so nothing is ever cut off hard.
+   */
+  private faded(g: G, x: number, y: number, w: number, h: number, fade: number, paint: (to: G) => void): void {
+    const m = g.getTransform(), res = Math.min(3, Math.hypot(m.a, m.b) || 1);
+    const c = (this.layer ??= document.createElement('canvas')), pw = Math.ceil(w * res), ph = Math.ceil(h * res);
+    if (c.width !== pw || c.height !== ph) {
+      c.width = pw;
+      c.height = ph;
+    }
+    const cg = c.getContext('2d')!;
+    cg.setTransform(1, 0, 0, 1, 0, 0);
+    cg.globalCompositeOperation = 'source-over';
+    cg.globalAlpha = 1;
+    cg.clearRect(0, 0, pw, ph);
+    cg.setTransform(res, 0, 0, res, -x * res, -y * res);
+    paint(cg);
+    cg.setTransform(res, 0, 0, res, 0, 0);
+    cg.globalAlpha = 1;
+    cg.globalCompositeOperation = 'destination-in';
+    const mask = cg.createLinearGradient(0, 0, w, 0), f = Math.min(0.5, fade / w);
+    mask.addColorStop(0, 'rgba(0,0,0,0)');
+    mask.addColorStop(f, '#000');
+    mask.addColorStop(1 - f, '#000');
+    mask.addColorStop(1, 'rgba(0,0,0,0)');
+    cg.fillStyle = mask;
+    cg.fillRect(0, 0, w, h);
+    cg.globalCompositeOperation = 'source-over';
+    g.drawImage(c, x, y, w, h);
+  }
+
+  /**
+   * The ribbon: the word to type with its typed letters marked, every other word grey, its ends
+   * fading out. It glides letter by letter, so the next letter stays near one point; a new word
+   * slides in from the right. A space is a gap that lights up when it is the key to type.
    */
   private drawRibbon(g: G): void {
-    const tg = this.current;
-    const box = this.ribbonBox(), size = RIBBON_SIZE, top = RIBBON_Y - RIBBON_H / 2;
+    const tg = this.current, hc = this.L.highContrast;
+    const box = spellArea(this.L.vw), size = RIBBON_SIZE, top = RIBBON_Y - RIBBON_H / 2;
+    const font = `600 ${size}px ${fontFamily()}`, space = size * 0.5;
     g.save();
-    g.font = `600 ${size}px ${fontFamily()}`;
-    const space = size * 0.5;
-    const width = (w: string) => g.measureText(w).width + space;
-    // Pixels along the spell to each word's start, and to the next letter.
-    const starts: number[] = [];
-    let x = 0;
-    for (let i = 0; i <= Math.min(this.words.length - 1, this.at + 1); i++) {
-      starts.push(x);
-      x += width(this.words[i].text);
+    g.font = font;
+    // Each word's start along the spell.
+    let along = 0;
+    for (const w of this.words) {
+      if (Number.isNaN(w.w)) w.w = g.measureText(w.text).width;
+      w.start = along;
+      if (Number.isNaN(w.x)) w.x = along + (this.L.reduceMotion ? 0 : APPEAR_DX);
+      along += w.w + space;
     }
     const word = this.words[this.at];
     const typed = tg && word ? Math.min(tg.typed, word.text.length) : 0;
-    const aim = (starts[this.at] ?? x) + (word ? g.measureText(word.text.slice(0, typed)).width + (tg && tg.typed > word.text.length ? space : 0) : 0);
-    this.ribbonX = this.L.reduceMotion ? aim : this.ribbonX + (aim - this.ribbonX) * Math.min(1, 0.25);
+    this.ribbonAim = word ? word.start + g.measureText(word.text.slice(0, typed)).width + (tg && tg.typed > word.text.length ? space : 0) : along;
     if (!graphics.simple) {
       g.shadowColor = 'rgba(40,30,20,0.25)';
       g.shadowBlur = 8;
       g.shadowOffsetY = 3;
     }
-    g.fillStyle = this.L.highContrast ? '#ffffff' : WORD.plate;
+    g.fillStyle = hc ? '#ffffff' : WORD.plate;
     roundRect(g, box.x, top, box.w, RIBBON_H, RIBBON_H / 2);
     g.fill();
     g.shadowColor = 'transparent';
     g.lineWidth = 4;
     g.strokeStyle = '#ffb23e';
     g.stroke();
-    g.save();
-    roundRect(g, box.x, top, box.w, RIBBON_H, RIBBON_H / 2);
-    g.clip();
-    const origin = box.x + box.w * RIBBON_AT - this.ribbonX;
-    g.textBaseline = 'middle';
-    g.textAlign = 'left';
-    for (let i = Math.max(0, this.at - 1); i < starts.length; i++) {
-      const w = this.words[i], wx = origin + starts[i], now = i === this.at;
-      g.globalAlpha = now ? 1 : FAINT;
-      if (now && tg && !this.L.core.letters(tg)) {
-        // A hidden word (dictation, memory) shows dots for the letters still to type.
-        g.fillStyle = WORD.ink;
-        let cx = wx;
-        [...w.text].forEach((ch, k) => {
-          const cw = g.measureText(ch).width;
-          if (k < typed) {
-            g.fillStyle = WORD.typed;
-            g.fillText(ch, cx, RIBBON_Y + 2);
-          } else {
-            g.fillStyle = WORD.ink;
-            g.beginPath();
-            g.arc(cx + cw / 2, RIBBON_Y + 2, size * 0.12, 0, Math.PI * 2);
-            g.fill();
+    g.restore();
+    const origin = box.x + box.w * RIBBON_AT - this.ribbonX, grey = hc ? GREY_HC : GREY;
+    this.faded(g, box.x, top, box.w, RIBBON_H, RIBBON_FADE, (cg) => {
+      cg.font = font;
+      cg.textBaseline = 'middle';
+      cg.textAlign = 'left';
+      this.words.forEach((w, i) => {
+        const wx = origin + w.x, now = i === this.at;
+        if (wx > box.x + box.w || wx + w.w + space < box.x) return;
+        const shown = this.L.reduceMotion ? 1 : Math.min(1, (this.t - w.born) / APPEAR_S);
+        cg.globalAlpha = shown;
+        if (now && tg && !this.L.core.letters(tg)) {
+          // A hidden word (dictation, memory) shows dots for the letters still to type.
+          let cx = wx;
+          [...w.text].forEach((ch, k) => {
+            const cw = cg.measureText(ch).width;
+            if (k < typed) {
+              cg.fillStyle = WORD.typed;
+              cg.fillText(ch, cx, RIBBON_Y + 2);
+            } else {
+              cg.fillStyle = WORD.ink;
+              cg.beginPath();
+              cg.arc(cx + cw / 2, RIBBON_Y + 2, size * 0.12, 0, Math.PI * 2);
+              cg.fill();
+            }
+            cx += cw;
+          });
+        } else if (now) {
+          const head = w.text.slice(0, typed), hw = cg.measureText(head).width;
+          cg.fillStyle = hc ? '#006b2e' : WORD.typed;
+          cg.fillText(head, wx, RIBBON_Y + 2);
+          if (typed < w.text.length) {
+            const ch = w.text[typed], cw = cg.measureText(ch).width;
+            cg.fillStyle = hc ? '#ffe066' : WORD.next;
+            roundRect(cg, wx + hw - size * 0.04, RIBBON_Y - size * 0.62, cw + size * 0.08, size * 1.24, size * 0.2);
+            cg.fill();
+            cg.fillStyle = WORD.nextInk;
+            cg.fillText(ch, wx + hw, RIBBON_Y + 2);
+            cg.fillStyle = hc ? '#000' : WORD.ink;
+            cg.fillText(w.text.slice(typed + 1), wx + hw + cw, RIBBON_Y + 2);
           }
-          cx += cw;
-        });
-      } else if (now) {
-        const head = w.text.slice(0, typed), hw = g.measureText(head).width;
-        g.fillStyle = this.L.highContrast ? '#006b2e' : WORD.typed;
-        g.fillText(head, wx, RIBBON_Y + 2);
-        if (typed < w.text.length) {
-          const ch = w.text[typed], cw = g.measureText(ch).width;
-          g.fillStyle = this.L.highContrast ? '#ffe066' : WORD.next;
-          roundRect(g, wx + hw - size * 0.04, RIBBON_Y - size * 0.62, cw + size * 0.08, size * 1.24, size * 0.2);
-          g.fill();
-          g.fillStyle = WORD.nextInk;
-          g.fillText(ch, wx + hw, RIBBON_Y + 2);
-          g.fillStyle = this.L.highContrast ? '#000' : WORD.ink;
-          g.fillText(w.text.slice(typed + 1), wx + hw + cw, RIBBON_Y + 2);
+        } else {
+          cg.fillStyle = grey;
+          cg.fillText(w.text, wx, RIBBON_Y + 2);
         }
-      } else {
-        g.fillStyle = this.L.highContrast ? '#000' : WORD.ink;
-        g.fillText(w.text, wx, RIBBON_Y + 2);
-      }
-      // The space after it: a gap with a soft pill, lit when it is the key to type.
-      const sx = wx + g.measureText(w.text).width, lit = now && !!tg && typed >= w.text.length;
-      g.globalAlpha = lit ? 1 : FAINT * 0.7;
-      g.fillStyle = lit ? WORD.next : 'rgba(90,61,43,0.25)';
-      roundRect(g, sx + space * 0.12, RIBBON_Y - size * 0.3, space * 0.76, size * 0.6, size * 0.2);
-      g.fill();
-    }
-    g.restore();
-    // It fades out at both ends.
-    g.globalAlpha = 1;
-    for (const [from, to] of [[box.x, box.x + box.w * RIBBON_FADE], [box.x + box.w, box.x + box.w * (1 - RIBBON_FADE)]]) {
-      const fade = g.createLinearGradient(from, 0, to, 0);
-      fade.addColorStop(0, this.L.highContrast ? '#ffffff' : 'rgba(255,253,246,1)');
-      fade.addColorStop(1, 'rgba(255,253,246,0)');
-      g.fillStyle = fade;
-      g.fillRect(Math.min(from, to), top + 3, Math.abs(to - from), RIBBON_H - 6);
-    }
-    g.restore();
+        // The space after it: a gap with a soft pill, lit when it is the key to type.
+        const lit = now && !!tg && typed >= w.text.length;
+        cg.globalAlpha = shown * (lit ? 1 : 0.3);
+        cg.fillStyle = lit ? WORD.next : grey;
+        roundRect(cg, wx + w.w + space * 0.12, RIBBON_Y - size * 0.3, space * 0.76, size * 0.6, size * 0.2);
+        cg.fill();
+      });
+    });
   }
 
-  /** The frame's box: between the ribbon and the ground, clear of Tapko and the hearth. */
+  /** The frame's box: right under the ribbon, as wide as it and from the same left edge. */
   private frameBox(): { x: number; y: number; w: number; h: number } {
-    const left = HERO_X + TAPKO_H * 0.55, right = this.hearth.x - (HEARTH_H * PIT_RATIO) / 2 - FRAME_GAP;
-    return { x: left, y: RIBBON_Y + RIBBON_H / 2 + FRAME_GAP, w: Math.max(240, right - left), h: LINES * LINE_H + FRAME_PAD * 2 };
+    const area = spellArea(this.L.vw);
+    return { x: area.x, y: RIBBON_Y + RIBBON_H / 2 + FRAME_GAP, w: area.w, h: LINES * LINE_H + FRAME_PAD * 2 };
   }
 
   /** `text` broken into lines that fit `width`, at whole words; each line keeps its start in the text. */
@@ -470,7 +558,7 @@ export class SpellRibbonMode extends HeroMode {
   /**
    * The spell frame: a carved stone frame with a glowing rune stone in each corner; inside, what
    * the child has written with a blinking cursor. A full frame scrolls its oldest line up and away;
-   * erased letters fade back out.
+   * the letters of a restarted word fade back out.
    */
   private drawFrame(g: G): void {
     const b = this.frameBox(), shown = this.frameText(), ghost = this.ghost;
@@ -494,8 +582,7 @@ export class SpellRibbonMode extends HeroMode {
     g.textBaseline = 'middle';
     g.textAlign = 'left';
     const inner = b.w - FRAME_PAD * 2, lines = this.lines(g, full, inner);
-    const aimUp = Math.max(0, lines.length - LINES) * LINE_H;
-    this.frameUp = this.L.reduceMotion ? aimUp : this.frameUp + (aimUp - this.frameUp) * 0.15;
+    this.frameAim = Math.max(0, lines.length - LINES) * LINE_H;
     g.save();
     g.beginPath();
     // Only whole lines show: the one scrolling away leaves at the top of the text.

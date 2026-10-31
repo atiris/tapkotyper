@@ -730,7 +730,7 @@
       }
     },
     "spellStart": [
-      "You are on the summit. Lay the egg into the **dragons' hearth** and say the **spell of awakening**. It is long and must be exact: a slip also erases the last word written."
+      "You found it! The three **crystals of life** still have to be **woken up.** You **must repeat** the **spell** for it **word by word** in front of the crystals, or they will not light up. Then put them away, so you can set them on the stone monolith, where they will strengthen life on this planet. Copy the spell carefully: with **three mistakes** in it, **the spell breaks** and you have to start again."
     ],
     "spellCast": [
       "Yippee!",
@@ -985,9 +985,12 @@
     "bouldersDone": [
       "The summit is in sight! Little egg, we are nearly there."
     ],
-    "spellSlip": "The spell breaks off, write the last words again.",
+    "awakeningStart": [
+      "**You are on the summit** of the Mountain of Awakening. Lay the egg into the dragons' hearth and say the spell of awakening. It is long and must be exact: at a slip a new word appears in the spell to make up for it, so **focus on typing** the spell **exactly**. Once it is said, the hearth should wake up, and if it is strong enough, the little dragon will wake up. It surely can't wait to see you!"
+    ],
+    "spellSlip": "Oops! A word was added to the spell.",
     "spellCareful": "Careful, the spell must be exact!",
-    "spellHello": "Hello! Thank you, your spell warmed me!",
+    "spellHello": "Hi!",
     "copyLoopStart": "This level is still being made. For now you practise copying here: type the words in the middle until the time is up.",
     "copyLoopSoon": "Coming soon",
     "copyLoopCount": "typed: {n}",

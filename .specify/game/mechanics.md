@@ -5,7 +5,7 @@
   further letters fill it in, and completing the word resolves the target peacefully.
 - A wrong letter never unlocks the target or resets progress on the word. Two levels of the egg
   mountain are the exceptions, each told on its card: a slip in a gust of wind starts its word
-  again, and a slip in the spell ribbon erases the word in progress (see Ribbon).
+  again, and a slip in the spell ribbon starts its word again and adds a word (see Ribbon).
 - Backspace wipes the started word and lets go of it, so the child who started the wrong one
   of several words can start any of them again. It is no mistake and costs nothing.
 - Target speed and count follow difficulty (1-10) and the child's word pace, so the game
@@ -106,15 +106,18 @@
     word red, it fades to a faint trace (about a fifth) where it stood and the next word is the one to type; the level gets 2 more
     words, at most (1 + story order) x 3 in all (6 in the dragon story).
   - *Ribbon* (the egg mountain's super level, the first of its kind): one long text runs as an
-    endless band in a wide word box: the previous word faint, the word to type with its typed
-    letters marked, the next word faint, fading out at both ends; it slides letter by letter so
-    the next letter stays at one point, and a space is a gap that lights up when it is the key.
-    Spaces and the period are typed like letters. What the child has written fills a frame below
-    it (up to three lines, the oldest scrolling away). A slip (a wrong letter, a letter where the
-    space belongs, a space inside a word) erases the word in progress and the last written word,
-    and the band rewinds to the start of the erased word; it never erases behind the last rewind
-    until two words were written past it, so every child finishes. Sentences of 4-6 known words
-    come until both minimums are met; erased words count once.
+    endless band: the word to type with its typed letters marked, every other word grey, both
+    ends fading softly out (nothing is cut off hard). It glides letter by letter so the next
+    letter stays near one point and never jumps; a new word slides in from the right. A space is
+    a gap that lights up when it is the key. Spaces and the period are typed like letters. What
+    the child has written fills a frame right below it, as wide as the band and from the same
+    left edge (up to three lines, the oldest scrolling away); band and frame take the right half
+    of the stage (the right two thirds on a narrow one), Tapko and the scene stay on the left.
+    A slip (a wrong letter, a letter where the space belongs, a space inside a word) erases
+    nothing written: the word in progress starts again from its first letter, and one new word
+    of the same kind joins the text right after it, the minimum time growing by one word's share
+    (at most 10 words in a level; after that a slip only restarts the word). Sentences of 4-6
+    known words come until both minimums are met; a restarted word counts once.
   - *Cyclic copy* (the placeholder of every level of a world not built yet, see
     [story](story.md)): the world's own background bands, the near one drifting slowly, Tapko
     at his usual place, and a small sign at the top with the world's name and "Coming soon".
@@ -243,9 +246,10 @@
   cannot go stale.
 - A frozen background in a calm level feels like the game stopped.
 - The ribbon trains what word-by-word targets never do: keeping one's place in a running text
-  and treating the space as one more key. Erasing the last word as well makes accuracy matter
-  in a super level; a rewind that may not reach back further until two words are written keeps
-  a struggling child moving forward. On the wind level a slip that only counted made the gust
+  and treating the space as one more key. A word added at a slip makes accuracy matter in a
+  super level without taking away what the child already wrote, which felt like being sent
+  back (owner review, 2026-10-31); the cap keeps a struggling child moving forward. A band that
+  jumps after a slip loses the child's place, so it glides. On the wind level a slip that only counted made the gust
   meaningless; restarting the word and a stronger, faster gust make the slip felt, and a few
   words more at most keep it small.
 - Arcade-style typing (ZType, Typer Shark, Epistory) is praised as motivating; the peaceful

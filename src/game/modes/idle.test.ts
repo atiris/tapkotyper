@@ -921,33 +921,48 @@ describe('the egg mountain', () => {
     expect(adds.slice(10).every((a) => a.words === 0 && a.seconds === 0)).toBe(true);
   });
 
-  it('a slip in the spell erases the last written word too, but never behind the last rewind until two words were written past it', async () => {
-    const { slipBack } = await import('./egg-spell');
-    expect(slipBack(0, null)).toEqual({ at: 0, anchor: null });
-    expect(slipBack(5, null)).toEqual({ at: 4, anchor: 4 });
-    // Slips again at the same place cost only the word in progress.
-    expect(slipBack(4, 4)).toEqual({ at: 4, anchor: 4 });
-    expect(slipBack(5, 4)).toEqual({ at: 5, anchor: 4 });
-    expect(slipBack(6, 4)).toEqual({ at: 5, anchor: 5 });
+  it('the spell and its frame share the right half, the right two thirds on a narrow stage, never over Tapko', async () => {
+    const { spellArea } = await import('./egg-spell');
+    expect(spellArea(1067)).toEqual({ x: 1067 / 2, w: 1067 / 2 - 30 });
+    const narrow = spellArea(959);
+    expect(narrow.x).toBeCloseTo(959 / 3);
+    expect(narrow.x + narrow.w).toBe(929);
+    expect(spellArea(781).x).toBeGreaterThan(781 / 3);
   });
 
-  it('the spell rewinds after a slip and every word counts once', () => {
+  it('a slip in the spell starts the word again and adds one word after it, at most ten, and every word counts once', async () => {
+    const { secondsPerWord } = await import('./kit/egg');
     const L = levelRuntime(levelById('w5-5')!);
     const m = new SpellRibbonMode(L);
     mode = m;
     m.start();
     m.update(2);
+    const spell = m as unknown as { words: { text: string }[]; at: number };
     for (let i = 0; i < 3; i++) typeWord(L, m);
     expect(m.progress()).toBeCloseTo(3 / L.count);
-    const res = L.core.type('#');
-    if (res.kind !== 'wrong') throw new Error('a wrong key');
-    m.onWrong(res.target);
-    expect(m.progress()).toBeCloseTo(3 / L.count);
-    // The rewound word is typed again; the progress does not count it twice.
-    typeWord(L, m);
+    const count = L.count, min = L.min, perWord = secondsPerWord(L);
+    const word = spell.words[3].text, next = spell.words[4].text;
+    const slip = () => {
+      L.core.type(L.core.focus()!.word[0]);
+      const res = L.core.type('#');
+      if (res.kind !== 'wrong') throw new Error('a wrong key');
+      m.onWrong(res.target);
+    };
+    slip();
+    // Nothing written is lost: the same word starts again, and a new one waits right after it.
+    expect(spell.at).toBe(3);
+    expect(L.core.focus()!.word).toBe(`${word} `);
+    expect(L.core.focus()!.typed).toBe(0);
+    expect(spell.words[4].text).not.toBe(next);
+    expect(spell.words[5].text).toBe(next);
+    expect(L.count).toBe(count + 1);
+    expect(L.min).toBeCloseTo(min + perWord);
     expect(m.progress()).toBeCloseTo(3 / L.count);
     typeWord(L, m);
     expect(m.progress()).toBeCloseTo(4 / L.count);
+    for (let i = 0; i < 12; i++) slip();
+    expect(L.count).toBe(count + 10);
+    expect(L.min).toBeCloseTo(min + 10 * perWord);
   });
 
   it('only the best path among three signs or more gets a countdown, when it is a quick one, and its time fits the child', async () => {

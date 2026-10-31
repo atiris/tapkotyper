@@ -22,9 +22,9 @@ Each world ends with a bigger, special challenge:
   finishes. The paws are off (they would type the sets). When the last is gone the fire goes out
   and the egg shows.
 - **Spell of awakening** (egg mountain): one long spell on a ribbon, spaces and periods typed like
-  letters; a slip erases the word in progress and the last written word and the ribbon rewinds
-  (never behind the last rewind until two words were written past it). The fire in the dragons'
-  hearth grows with each sentence and the egg hatches at the end ([mechanics](mechanics.md), Ribbon).
+  letters; a slip starts the word in progress again and adds one word to the spell (at most 10).
+  The fire in the dragons' hearth grows with each sentence and the egg hatches at the end
+  ([mechanics](mechanics.md), Ribbon).
 - The super-obstacles below, of worlds 6-15, are **not built yet**: until their world is
   redone its super level plays the placeholder copy ([story](story.md)).
 - **Cable knot** (junkyard): every short word unties one loop; an exact word unties a

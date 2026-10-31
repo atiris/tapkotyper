@@ -349,12 +349,16 @@ as they are. The world descriptions below marked *not built yet* are the design 
    the path ("Hups!"), his top wobbles left and right with a small hop, and the way gets a little
    longer (the first time the narrator says why). End: the summit in sight.
    5 the spell of awakening (super level, the first ribbon): Tapko lays the egg off his back into
-   the dragons' hearth on the right, a ring of old carved stones with weak low flames, and says
-   the spell: one long text on a ribbon at the top, what he has written in a stone frame with
-   glowing rune stones below it ([mechanics](mechanics.md), Ribbon). Each finished sentence makes
-   the flames grow and the egg glow warmer; at half the level it cracks a little, at three
-   quarters it cracks open. End: the fire flares up, the egg breaks and the baby dragon sits in
-   the hearth ("Ahoj! Ďakujem, že ma tvoje kúzlo zohrialo!"), Tapko cheers.
+   the dragons' hearth just right of him, a ring of old carved stones with weak low flames, and
+   says the spell: one long text on a ribbon, what he has written in a stone frame with glowing
+   rune stones right below it, both in the right part of the stage so the scene and the spell
+   never crowd each other ([mechanics](mechanics.md), Ribbon). The card asks for exact typing: a
+   slip adds a new word to the spell ("Chybička! Do kúzla pribudlo slovo."), it never takes away
+   what is written. Each finished sentence makes the flames grow and the egg glow warmer; at
+   half the level it cracks a little, at three quarters it cracks open. End (about 4 s): the
+   fire flares up, the egg breaks, the flames go out and the little dragon hops out of the cold
+   hearth to land right of Tapko ("Ahoj!"), Tapko cheers. A real hatching that ends next to
+   Tapko leads straight into the hero's journey, where the two walk together.
    Reward: the hatched baby dragon (the scene `hatched`) and the **hero's journey** opens
    ([hero's journey](heros-journey.md)). The range's thing stays the egg.
 

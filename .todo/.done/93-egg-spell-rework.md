@@ -47,10 +47,39 @@ when a key is added or removed), `.specify/game/story.md` (egg 5 paragraph).
   speech. Keep the total end about as long as now (about 4 s).
 
 ## Steps
-- [ ] Start text sk/en; `story.spellSlip` (and `spellCareful` if needed) reworded for the new rule.
-- [ ] Hearth next to Tapko; spell ribbon and frame in the right half (right two thirds when narrow), same width and left edge.
-- [ ] Ribbon motion smoothed (no snapping), new words ease in; inactive words grey; soft fading ends.
-- [ ] Slip rule: restart the word, insert one word after it, extend the minimum, cap 10; remove `slipBack` and anything only it used (no dead code); tests rewritten for the new rule.
-- [ ] End: flare, hatch, flames out, the dragon hops out to Tapko, "Ahoj!".
-- [ ] `.specify/game/story.md` egg 5 paragraph updated (what and why).
-- [ ] tsc, vitest, build; play `w5-5` in the browser with the Playwright MCP (tester profile, `?fast`, `window.tapkoType`): the layout at 1366x768 and at a narrow 1000x768, a slip (a word is added, nothing vanishes, nothing jumps), the end sequence.
+- [x] Start text sk/en; `story.spellSlip` (and `spellCareful` if needed) reworded for the new rule.
+- [x] Hearth next to Tapko; spell ribbon and frame in the right half (right two thirds when narrow), same width and left edge.
+- [x] Ribbon motion smoothed (no snapping), new words ease in; inactive words grey; soft fading ends.
+- [x] Slip rule: restart the word, insert one word after it, extend the minimum, cap 10; remove `slipBack` and anything only it used (no dead code); tests rewritten for the new rule.
+- [x] End: flare, hatch, flames out, the dragon hops out to Tapko, "Ahoj!".
+- [x] `.specify/game/story.md` egg 5 paragraph updated (what and why).
+- [x] tsc, vitest, build; play `w5-5` in the browser with the Playwright MCP (tester profile, `?fast`, `window.tapkoType`): the layout at 1366x768 and at a narrow 1000x768, a slip (a word is added, nothing vanishes, nothing jumps), the end sequence.
+
+## Done - 2026-10-31
+
+- `src/game/modes/egg-spell.ts`: hearth at `HERO_X + 150`; ribbon and frame share `spellArea(vw)`
+  (right half, right two thirds when `vw < 1.6 * VH`); ribbon, its words and the frame scroll
+  glide with an exponential ease (0.25 s); new words slide and fade in from the right; every word
+  but the current one grey `#8a8f98`; the ribbon's letters go through an offscreen layer masked
+  with a `destination-in` gradient over `RIBBON_H / 2 + 10` at each end. `slipBack` is gone: a
+  slip restarts the word, `lengthen` (kit/egg `Detour`, cap 10) adds one word after it and grows
+  the minimum. End: flare, the egg breaks, the hearth goes cold (`litTo = 0`, smoke), the little
+  dragon hops out and lands right of Tapko, "Ahoj!", Tapko cheers; 3.9 s.
+- Texts: egg 5 got its own key `story.awakeningStart`; `story.spellStart` belongs to the planet's
+  spells level, whose own text egg 5 had overwritten (restored from ae8fd14, a correctness fix).
+  `story.spellSlip` "Chybička! Do kúzla pribudlo slovo.", `story.spellCareful` kept,
+  `story.spellHello` "Ahoj!" / "Hi!".
+- Specs: story.md egg 5, mechanics.md Ribbon and its why, super-obstacles.md.
+- Tests: `spellArea` layout; the slip rule (word restarts, one word added after it, count and
+  minimum grow, cap 10, progress counts each word once).
+- Decisions: the frame and ribbon never start left of `HERO_X + 0.45 * TAPKO_H` (on a narrow
+  stage that bound is about a third anyway, and it keeps them off Tapko's head); the word added
+  at a slip is taken from inside a fresh spell sentence (no capital, no period); the ends fade
+  only the letters, the plate keeps its crisp rounded box so it lines up with the frame; the
+  dragon that hops out is the out-of-shell `obj-dragon-little` (as on the hero's journey),
+  because `obj-dragon-hatched` sits in its shell - that one stands up in the hearth at the break.
+- Browser (Playwright MCP, tester profile, `?fast`): the card text, the layout at 1366x768 and
+  1000x768 (both are wide stages with the on-screen keyboard), a slip (word added after the
+  current one, it slides in, nothing written lost, no jump), the end (cold hearth, the dragon
+  lands right of Tapko); console clean.
+- Left out: the egg hides the hearth's small first flame early in the spell (BACKLOG P3).

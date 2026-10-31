@@ -1,5 +1,5 @@
 import { fontFamily, type G, wordBox } from '../../../gfx/draw';
-import { STORIES, storyOf } from '../../levels';
+import { storyOf } from '../../levels';
 import type { LevelRuntime } from '../../runtime';
 import type { Target } from '../../typing';
 
@@ -88,7 +88,7 @@ export class CopyRow {
     s.slip = 0;
     this.rowSlips++;
     this.L.core.release(tg, false);
-    const more = slipWords(STORIES.indexOf(storyOf(this.L.def.world)) + 1, this.added);
+    const more = slipWords(storyOf(this.L.def.world).tier + 1, this.added);
     this.added += more;
     this.L.count += more;
     this.next();

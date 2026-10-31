@@ -76,7 +76,7 @@ without a caller, no dead code.
 
 ## Steps
 
-- [ ] 1. `StoryDef.tier` and its readers (`STORY_MIN_S`, `STORY_WPM`, `slipWords`, `parrotPatience`,
+- [x] 1. `StoryDef.tier` and its readers (`STORY_MIN_S`, `STORY_WPM`, `slipWords`, `parrotPatience`,
       `parrotSize`); tests in `levels.test.ts` / `parrots.test.ts` that pin `minActiveS`,
       `minWords` and the parrot size of one level per story keep passing unchanged.
 - [ ] 2. `worldName` / `worldStory`, all call sites moved; `rg` shows no template i18n key for

@@ -9,6 +9,8 @@ export const WORLDS: WorldId[] = ['meadow', 'space', 'planet', 'dragons', 'egg',
 
 export interface StoryDef {
   id: 'dragon' | 'robot' | 'fairy';
+  /** The story's difficulty step (0-2): its level lengths, words a minute, slips and parrot rounds. */
+  tier: 0 | 1 | 2;
   /** i18n key of the story title. */
   title: string;
   /** World indexes of the story, in order. */
@@ -24,9 +26,9 @@ const ramp = (from: number, to: number, n: number): number[] => Array.from({ len
 
 /** Story rows on the map; each story goes on independently once it is open. */
 export const STORIES: StoryDef[] = [
-  { id: 'dragon', title: 'map.storyName', worlds: [0, 1, 2, 3, 4], opensAtKeys: null, keys: [3, 3, 4, 5, 5, 7, 8, 9, 10, 10, 12, 13, 14, 15, 15, 16, 17, 17, 18, 18, 19, 19, 20, 20, 20] },
-  { id: 'robot', title: 'map.storyRobot', worlds: [5, 6, 7, 8, 9], opensAtKeys: 10, keys: ramp(10, 34, 25) },
-  { id: 'fairy', title: 'map.storyFairy', worlds: [10, 11, 12, 13, 14], opensAtKeys: 20, keys: ramp(20, 62, 25) },
+  { id: 'dragon', tier: 0, title: 'map.storyName', worlds: [0, 1, 2, 3, 4], opensAtKeys: null, keys: [3, 3, 4, 5, 5, 7, 8, 9, 10, 10, 12, 13, 14, 15, 15, 16, 17, 17, 18, 18, 19, 19, 20, 20, 20] },
+  { id: 'robot', tier: 1, title: 'map.storyRobot', worlds: [5, 6, 7, 8, 9], opensAtKeys: 10, keys: ramp(10, 34, 25) },
+  { id: 'fairy', tier: 2, title: 'map.storyFairy', worlds: [10, 11, 12, 13, 14], opensAtKeys: 20, keys: ramp(20, 62, 25) },
 ];
 
 export function storyOf(world: number): StoryDef {
@@ -89,12 +91,12 @@ export interface JourneyStep {
   picture?: number;
 }
 
-/** Seconds of active play a level lasts at least, by story (dragon, robot, fairy): the difficulty grows with the story. */
+/** Seconds of active play a level lasts at least, by the story's tier (dragon, robot, fairy): the difficulty grows with the story. */
 const STORY_MIN_S = [120, 180, 240];
 /** A calm step is a quarter shorter, a super level a quarter longer. */
 const CALM_SHARE = 0.75;
 const SUPER_SHARE = 1.25;
-/** Words a minute of a slow but practising child, by story: the words a level asks for in its minimum. */
+/** Words a minute of a slow but practising child, by the story's tier: the words a level asks for in its minimum. */
 const STORY_WPM = [8, 10, 12];
 
 /** The calm steps of the world rhythm: waiting words (the meadow's poppies, the rocket world's meteors to hop on, the planet's swamp, the mountain's sticky puddles) and the valley's overgrown path. */
@@ -105,16 +107,16 @@ const COPY_KINDS: LevelKind[] = ['invitation', 'command', 'spells', 'lullaby', '
 /** A hero's journey is as long as this many regular levels of its story, split evenly over its parts (the dragon story's: 6 minutes). */
 const JOURNEY_SHARE = 3;
 
-/** The story's place in `STORIES`: a journey part counts by its story, every other level by its world's. */
-function storyIndex(l: Pick<LevelDef, 'world' | 'journey'>): number {
-  return l.journey ? STORIES.findIndex((s) => s.id === l.journey!.story) : STORIES.indexOf(storyOf(l.world));
+/** The level's story tier: a journey part counts by its story, every other level by its world's. */
+function tierOf(l: Pick<LevelDef, 'world' | 'journey'>): number {
+  return (l.journey ? STORIES.find((s) => s.id === l.journey!.story)! : storyOf(l.world)).tier;
 }
 
 /** Seconds of active play the level lasts at least (when it has a minimum length); a journey part its share of the journey's. */
 export function minActiveS(l: Pick<LevelDef, 'world' | 'kind' | 'isSuper' | 'journey' | 'task'>): number {
   // A task's minutes are its own limit; the text limit has none.
   if (l.task) return l.task.limit === 'text' ? 0 : l.task.minutes * 60;
-  const base = STORY_MIN_S[storyIndex(l)];
+  const base = STORY_MIN_S[tierOf(l)];
   if (l.journey) return (JOURNEY_SHARE * base) / l.journey.parts;
   if (CALM_KINDS.includes(l.kind)) return base * CALM_SHARE;
   return l.isSuper ? base * SUPER_SHARE : base;
@@ -122,9 +124,9 @@ export function minActiveS(l: Pick<LevelDef, 'world' | 'kind' | 'isSuper' | 'jou
 
 /** Words the level asks for in its minimum time, at the story's slow pace; a journey part its share of the journey's. */
 export function minWords(l: Pick<LevelDef, 'world' | 'kind' | 'isSuper' | 'journey'>): number {
-  const story = storyIndex(l);
-  if (l.journey) return Math.round((JOURNEY_SHARE * Math.round((STORY_WPM[story] * STORY_MIN_S[story]) / 60)) / l.journey.parts);
-  return Math.round((STORY_WPM[story] * minActiveS(l)) / 60);
+  const tier = tierOf(l);
+  if (l.journey) return Math.round((JOURNEY_SHARE * Math.round((STORY_WPM[tier] * STORY_MIN_S[tier]) / 60)) / l.journey.parts);
+  return Math.round((STORY_WPM[tier] * minActiveS(l)) / 60);
 }
 
 /** How many words a target has at a level's place in its world: words, then phrases, a sentence at the super level once space and period are known. */
@@ -383,10 +385,10 @@ export function parrotLevel(world: number): LevelDef {
   return { id: 'parrot', world, index: -1, kind: 'parrot', count: 0, variant: '', isSuper: false };
 }
 
-/** The parrot round's size by the world's story and its place in it. */
+/** The parrot round's size by the world's story tier and its place in the story. */
 export function parrotSizeOf(world: number): ParrotSize {
   const story = storyOf(world);
-  return parrotSize(STORIES.indexOf(story), story.worlds.indexOf(world));
+  return parrotSize(story.tier, story.worlds.indexOf(world));
 }
 
 /** Letters of the parrot's words: the keys of the world's last level. */

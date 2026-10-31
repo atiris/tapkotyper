@@ -83,9 +83,9 @@ export function bringParrotHome(p: Profile, today: string, rand: () => number = 
   return w;
 }
 
-/** Mistakes a parrot round bears, 4 plus the story's number (1-3) for its index `story` (0-2); one more and the parrot flies off. */
-export function parrotPatience(story: number): number {
-  return 5 + story;
+/** Mistakes a parrot round bears, 5 plus the story's `tier` (0-2); one more and the parrot flies off. */
+export function parrotPatience(tier: number): number {
+  return 5 + tier;
 }
 
 /** The parrot flew off after too many mistakes: it leaves home, if it lived there. */
@@ -100,11 +100,11 @@ export interface ParrotSize {
   repeats: number;
 }
 
-/** By the story's order (0-2) and the world's place in it (0-4): later stories take more and longer words. */
-export function parrotSize(story: number, place: number): ParrotSize {
+/** By the story's tier (0-2) and the world's place in it (0-4): harder stories take more and longer words. */
+export function parrotSize(tier: number, place: number): ParrotSize {
   const early = place <= 1;
   const len: [number, number][] = [early ? [2, 4] : [3, 5], early ? [4, 5] : [4, 6], early ? [5, 6] : [5, 7]];
-  return { words: 3 + story, len: len[story], repeats: 3 + story };
+  return { words: 3 + tier, len: len[tier], repeats: 3 + tier };
 }
 
 export interface ParrotStep {

@@ -6,7 +6,7 @@ import { LAYOUTS } from '../../keyboard/layouts';
 import type { Profile } from '../../storage/schema';
 import { WordSource } from '../../words/words';
 import { BEAT_S, FLAP } from '../../ui/parrot-visit';
-import { STORIES, WORLDS, parrotKeys, parrotSizeOf, storyOf } from '../levels';
+import { WORLDS, parrotKeys, parrotSizeOf, storyOf } from '../levels';
 import { Mode, TAPKO_FEET, TAPKO_X } from '../mode';
 import { sideFeet } from './kit/hero';
 import { ParrotRound, parrotPatience } from '../parrots';
@@ -105,7 +105,7 @@ export class ParrotMode extends Mode {
     this.world = WORLDS[L.def.world];
     this.tapkoFeet = sideFeet(this.world, TAPKO_FEET);
     this.round = new ParrotRound(parrotWords(app.profile!, L.def.world), parrotSizeOf(L.def.world).repeats);
-    this.patience = parrotPatience(STORIES.indexOf(storyOf(L.def.world)));
+    this.patience = parrotPatience(storyOf(L.def.world).tier);
   }
 
   startLine(): string {

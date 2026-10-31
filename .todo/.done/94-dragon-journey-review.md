@@ -102,7 +102,7 @@ steps, `JOURNEY_SHARE`, progress), `src/game/runtime.ts` (journey flow, progress
 - [x] Part 4: dragon hovers above Tapko; at least 4 rounds.
 - [x] Part 5: rocket off the shore edge, Tapko beside it; at least 7 commands; the reply lines.
 - [x] `.specify/game/heros-journey.md` updated (what and why).
-- [ ] tsc, vitest, build; play the whole journey in the browser with the Playwright MCP (tester profile, `?fast`, `window.tapkoType`): the panel between each part, the give-up dialog, the bar after each part, each part's change, total active time about 6 minutes at the tester's pace.
+- [x] tsc, vitest, build; play the whole journey in the browser with the Playwright MCP (tester profile, `?fast`, `window.tapkoType`): the panel between each part, the give-up dialog, the bar after each part, each part's change, total active time about 6 minutes at the tester's pace.
 
 ## State
 - Cause of the 3 minutes: the share was 2 (4 minutes of active play in all) and the valley flight
@@ -117,4 +117,21 @@ steps, `JOURNEY_SHARE`, progress), `src/game/runtime.ts` (journey flow, progress
   - The panel's stretch offers the longer break too, as on the pause card.
   - The slow-typist test bound (1.3x the minimum) does not hold for the journey's flight, swamp and
     take-off: their own least counts (2 flights, 16 stones, 7 commands) are longer for a slow child.
-- Open: the browser play-through.
+- Browser play-through (Playwright MCP, tester profile, `?fast`): get-ready text, the panel before
+  each part (map picture, text, stretch and back, give-up dialog with Esc back to the panel),
+  the bar at 20/40/60/80 % on the panels, two good valley flights (to the pit, back to Tapko),
+  crystals, the hovering little dragon in the swamp, the take-off and the end card; no console
+  errors. With `?fast` the floors (16 stones, 7 commands, 2 flights) dominate, about 3 minutes of
+  quick typing; without it the minimum is 6 minutes.
+- Owner's notes during the run, done: "Vzdať to" stands apart at the right end of the panel's
+  row; the rocket was cut by the right edge (now its middle is 150 px in) and Tapko stood in it
+  (now 250 px left of its middle). Found: a later part's bar started empty and animated up; it now
+  starts at its slice.
+
+## Done - 2026-10-31
+Shipped everything above: the journey is three regular levels long and no part ends before its
+share, one bar over the whole journey, the panel between parts on the end card with its three
+buttons, the give-up question from the panel and the pause card, the new texts (sk, en, notes),
+and each part's own goal (slip stones, two good flights there and back, seven crystals and the
+two-slip crack, four sets in the swamp with the hovering little dragon, seven commands with the
+rocket's short replies). Nothing left out.

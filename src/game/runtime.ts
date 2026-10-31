@@ -190,7 +190,8 @@ export class LevelRuntime {
     this.friends = new Friends(this, def);
     if (this.friends.robot) this.el.dataset.bolt = this.friends.robot.look;
     if (this.friends.fairy) this.el.dataset.fairy = 'melody';
-    this.progressFill = h('div', { class: 'progress-fill' });
+    // A later part of a hero's journey starts with the bar where the parts before it left it.
+    this.progressFill = h('div', { class: 'progress-fill', style: def.journey ? `width: ${Math.round(journeyProgress(def.journey, 0) * 100)}%` : '' });
     const title = def.kind === 'practice' ? t(def.phrases ? 'level.ownText' : 'level.practice') : def.kind === 'freetype' ? t('level.freeType') : def.kind === 'aim' ? t('aim.title') : def.kind === 'parrot' ? t('parrot.title') : def.journey ? t('journey.title') : worldName(def);
     // Hiding the guide is the switch: the crossed keyboard, with the orange ring while the guide is hidden.
     const guideBtn = this.guideBtn = roundButton('control', 'keyboardOff', t('level.guide'), () => this.toggleGuide());

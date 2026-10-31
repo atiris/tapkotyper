@@ -24,8 +24,8 @@ const WARM_STEP = 2;
 /** Commands the rocket accepts at least before its countdown; a row of the copy row is 3 to 4 words. */
 const COMMANDS = 7;
 const ROW_WORDS = 4;
-/** He stands on the grass right beside the rocket, this far left of its middle. */
-const BESIDE = 120;
+/** He stands on the grass beside the rocket, this far left of its middle (a step of room between them). */
+const BESIDE = 250;
 
 /**
  * The dragon story's hero's journey ends with the take-off (the rocket world's command game on the

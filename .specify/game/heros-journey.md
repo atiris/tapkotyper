@@ -14,7 +14,7 @@
   end ([mechanics](mechanics.md)): "Cesta hrdinu pokračuje!" with the round X; on the left the map
   picture of the world the next part goes to, on the right the next part's own story instead of
   stats. Buttons: "Ideme ďalej" (focused; the X, Esc, Space and Enter too), "Krátke cvičenie" (the
-  pause card's short stretch, then the panel again) and "Vzdať to" last. No other intro cards and
+  pause card's short stretch, then the panel again) and "Vzdať to" apart at the right end of the row. No other intro cards and
   no key cards.
 - Leaving a journey, from the panel's "Vzdať to" or the pause card's "Ukončiť písanie", asks one
   question: "Hrdina, vydrž to!", that the journey is a tough nut even for the best heroes, to try
@@ -75,7 +75,7 @@
      least four sets before the shore. The little dragon flies, hovering over Tapko's head. It
      ends on the shore, where the rocket stands ready on the grass.
   5. **The take-off** (the same shore): the rocket world's command game on the ground. The
-     rocket stands well away from the water, Tapko right beside it. It accepts at least seven
+     rocket stands away from the water, wholly in sight, Tapko beside it with a step of room. It accepts at least seven
      commands, each answered with a short "Potvrdzujem!", "Rozumiem!" or the like, the last one
      with the countdown; a rejected one is answered "Chyba!", "Preklep!" or the like and nothing
      happens. After the last one Tapko and the little dragon climb in, "3, 2, 1, štart!", and the

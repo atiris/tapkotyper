@@ -486,8 +486,8 @@ const FLOAT = 26;
 const BOB = 6;
 /** The shore picture always reaches this far past the stage's right edge, so its end never shows. */
 const END_MARGIN = 40;
-/** On the dragon story's hero's journey Tapko's rocket stands on the shore's grass this far left of the shore's last view's right edge, well away from the water. */
-const ROCKET_IN = 90;
+/** On the dragon story's hero's journey Tapko's rocket stands on the shore's grass this far left of the shore's last view's right edge: away from the water, wholly in sight. */
+const ROCKET_IN = 190;
 
 /** The shore's x when the view at 0 ends where the great swamp's last view does (the journey's take-off goes on there). */
 export function shoreEndView(vw: number): number {

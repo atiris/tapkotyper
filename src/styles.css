@@ -188,7 +188,7 @@ body.high-contrast {
  * still scrolls the start page).
  */
 html { font-size: calc(16px * var(--scale)); height: 100%; overflow: hidden; background: var(--page-bg) fixed; }
-body:has(.parent-screen, .help-screen, .progress-screen) { scrollbar-gutter: stable; }
+body:has(.parent-screen, .help-screen, .progress-screen, .tasks-screen) { scrollbar-gutter: stable; }
 body:has(.start-screen, .level-screen, .story-screen, .break-screen) { scrollbar-width: none; }
 body {
   margin: 0;
@@ -1151,10 +1151,6 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
 .stats-body > div > h3 { margin: 1rem 0 0; }
 .stats .tabs { margin: 0 3rem 1rem 0; }
 .stats-code { margin-top: 1rem; }
-.exercise-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
-.exercise-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.7rem 1rem; border-radius: 16px; background: var(--paper-2); border-left: 6px solid var(--sun); }
-.exercise-row.done { border-left-color: var(--green); }
-.exercise-row p { margin: 0.2rem 0 0; }
 .progress-view { display: grid; gap: 0.4rem; }
 .progress-view p { margin: 0; }
 .progress-sum { list-style: none; margin: 0.4rem 0 0.7rem; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem 0.9rem; }
@@ -1329,7 +1325,7 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-ink); }
 .range output { min-width: 4.5em; font-weight: 600; }
 .range input:disabled + output { color: var(--ink-soft); }
 .auto-field { display: flex; flex-direction: column; gap: 0.2rem; }
-.own-tab textarea, .task-tab textarea { width: 100%; resize: vertical; }
+.own-tab textarea, .task-form textarea { width: 100%; resize: vertical; }
 .own-list { padding-left: 1.2rem; margin: 0.8rem 0 0; display: flex; flex-direction: column; gap: 0.5rem; }
 .own-list li { display: flex; gap: 0.5rem; align-items: flex-start; justify-content: space-between; }
 .own-list li > div { display: flex; flex-direction: column; min-width: 0; overflow-wrap: anywhere; }
@@ -1593,7 +1589,56 @@ body.reduce-motion .round-btn.timer.ending { --rb: #d9661f; --rb-ring: #ff8a3d; 
 .task-card.done h2 { color: var(--green-ink); }
 .task-card .task-title { margin: 0; font-weight: 700; overflow-wrap: anywhere; }
 .task-card .hint { margin: 0; }
-.task-out:not(:empty) { margin-top: 1rem; border-top: 2px dashed var(--line); padding-top: 0.5rem; }
+/* The teacher's task form and the tasks made with it. */
+.task-make { background: var(--paper-2); border-radius: 18px; padding: 16px; margin-bottom: 1rem; }
+.task-make h2 { margin: 0 0 0.4rem; font-size: 1.2rem; }
+.task-form-names { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 0 1rem; }
+@media (max-width: 600px) { .task-form-names { grid-template-columns: minmax(0, 1fr); } }
+.task-form .chips.seg { margin-top: 0; }
+.task-form .chips.seg .chip { background: var(--paper); }
+.task-form .chips.seg .chip.on { background: var(--brand); }
+.task-form .field[hidden] { display: none; }
+.made-tasks { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
+.made-tasks li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.6rem 1rem; padding: 0.7rem 1rem; border-radius: 16px; background: var(--paper-2); }
+.made-task-text { display: flex; flex-direction: column; min-width: 0; overflow-wrap: anywhere; }
+.made-task-text small { color: var(--ink-soft); }
+.made-tasks .row { margin: 0; }
+.task-show h2 { margin: 0 3rem 0.2rem 0; }
+.task-show .hint { margin: 0.2rem 0; }
+/* The player's Tasks page. */
+.tasks-screen .panel h2 { margin: 1.2rem 0 0.6rem; font-size: 1.2rem; }
+.task-add { display: flex; flex-direction: column; align-items: flex-start; gap: 0.6rem; }
+.task-add form { width: 100%; margin: 0; flex-wrap: nowrap; }
+.task-add input { flex: 1; min-width: 0; }
+.task-add .error:empty { display: none; }
+.my-tasks { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
+.my-task { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.6rem 1rem; padding: 0.7rem 1rem; border-radius: 16px; background: var(--paper-2); border-left: 6px solid var(--sun); }
+.my-task.done { border-left-color: var(--green); }
+.my-task.fresh { animation: task-fresh 2.5s ease-out; }
+@keyframes task-fresh { from { box-shadow: 0 0 0 4px var(--green); } to { box-shadow: 0 0 0 4px transparent; } }
+.my-task-text { min-width: 0; overflow-wrap: anywhere; }
+.my-task-text .chip { margin-left: 0.5rem; min-height: 0; padding: 0.15em 0.7em; cursor: default; }
+.my-task p { margin: 0.2rem 0 0; }
+.my-task-state { display: flex; align-items: center; gap: 0.3rem; font-weight: 600; }
+.my-task-state .icon { color: var(--green-ink); }
+.my-task-actions { margin: 0; gap: 0.4rem; }
+.task-scan { display: flex; flex-direction: column; gap: 12px; padding-top: 2.5rem; }
+.task-scan-modal { width: min(560px, 100%); }
+.task-scan .scan-video { max-height: 60vh; }
+.task-scan .hint, .task-scan .error { margin: 0; }
+.task-result h2 { margin: 0 3rem 0.6rem 0; }
+.task-result dl { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 16px; }
+.task-result dt { color: var(--ink-soft); font-weight: 600; }
+.task-result dd { margin: 0; font-weight: 700; }
+/* Noting a task on a phone. */
+.note-scan .scan-video { max-height: 55vh; }
+.note-actions .btn { text-decoration: none; }
+.note-body .task-panel { width: 100%; margin: 0; }
+.noted h2 { font-size: 1.1rem; margin: 1rem 0 0.4rem; }
+.noted-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.4rem; }
+.noted-list li { display: flex; align-items: center; gap: 0.4rem; }
+.noted-open { flex: 1; min-width: 0; min-height: 48px; display: flex; flex-direction: column; align-items: flex-start; padding: 0.5rem 0.9rem; border: 0; border-radius: 14px; background: var(--paper-2); color: inherit; font: inherit; text-align: left; cursor: pointer; overflow-wrap: anywhere; }
+.noted-open small { color: var(--ink-soft); }
 .link-box { display: flex; flex-direction: column; gap: 0.6rem; margin: 0.6rem 0; }
 .link-text { font-family: ui-monospace, monospace; font-size: 0.85rem; word-break: break-all; resize: vertical; }
 .qr { width: min(240px, 70vw); align-self: center; background: #fff; border-radius: 12px; }
@@ -1643,6 +1688,8 @@ body.reduce-motion .round-btn.timer.ending { --rb: #d9661f; --rb-ring: #ff8a3d; 
 .big-code { --bc-frame: var(--green-dark); --bc-gap: clamp(16px, 3vmin, 32px); position: fixed; inset: 0; z-index: 100; box-sizing: border-box; border: 14px solid var(--bc-frame); background: #fff; color: #111; cursor: pointer;
   display: grid; grid-template-rows: auto auto auto; align-content: center; justify-items: center; gap: var(--bc-gap); padding: var(--bc-gap); }
 .big-code.overall { --bc-frame: var(--brand-dark); }
+/* A task's code: the ink's plum, apart from the two result codes. */
+.big-code.task { --bc-frame: #6b4a8f; }
 .big-code .qr { border-radius: 0; }
 .big-code-caption { justify-self: stretch; margin: 0; text-align: center; font-size: clamp(1.2rem, 3.2vmin, 2rem); line-height: 1.3; font-weight: 700; padding: 0.4em 0.9em; border-radius: var(--radius); background: var(--bc-frame); color: #fff; }
 .big-code-dot { padding: 0 0.4em; opacity: 0.8; }

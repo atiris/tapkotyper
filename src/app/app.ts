@@ -5,15 +5,14 @@ import { askedLanguage, setLanguage, tList } from '../i18n/i18n';
 import { toggleTheme, useTheme } from './theme';
 import { LAYOUTS, type Layout } from '../keyboard/layouts';
 import { Store } from '../storage/store';
-import { GUEST_ID, type LangRef, type Profile, SUPER_ID } from '../storage/schema';
-import type { TaskSpec } from '../share/task';
+import { GUEST_ID, type LangRef, type Profile, SUPER_ID, type TaskSpec } from '../storage/schema';
 import { loadWordsOf } from '../words/words';
 import { closeModals } from '../ui/dom';
 import { hideTip } from '../ui/tooltip';
 import { fast } from './fast';
 import { keyboardGated, waitForKeyboard } from './keyboard-gate';
 
-export type ScreenName = 'start' | 'newProfile' | 'map' | 'level' | 'story' | 'parent' | 'wardrobe' | 'teacher' | 'taskImport' | 'moveImport' | 'help' | 'translate' | 'progress';
+export type ScreenName = 'start' | 'newProfile' | 'map' | 'level' | 'story' | 'parent' | 'wardrobe' | 'teacher' | 'taskImport' | 'moveImport' | 'help' | 'translate' | 'progress' | 'tasks' | 'taskNote';
 export type Screen = (root: HTMLElement, params: any) => (() => void) | void;
 
 const screens = new Map<ScreenName, Screen>();
@@ -66,8 +65,8 @@ export function registerScreen(name: ScreenName, s: Screen): void {
 }
 
 /** Screens with their own address; the others belong to the player's map. */
-const ROUTES: Partial<Record<ScreenName, string>> = { wardrobe: 'wardrobe', progress: 'progress', parent: 'settings', help: 'help', level: 'play', story: 'play' };
-const OWN_ROUTE: ScreenName[] = ['map', 'wardrobe', 'progress', 'parent', 'help'];
+const ROUTES: Partial<Record<ScreenName, string>> = { wardrobe: 'wardrobe', progress: 'progress', tasks: 'tasks', parent: 'settings', help: 'help', level: 'play', story: 'play' };
+const OWN_ROUTE: ScreenName[] = ['map', 'wardrobe', 'progress', 'tasks', 'parent', 'help'];
 
 /** Screens of a link with data in it, by the link's first part. */
 const LINKS: Partial<Record<string, ScreenName>> = { task: 'taskImport', move: 'moveImport', result: 'teacher' };
@@ -76,6 +75,7 @@ const LINKS: Partial<Record<string, ScreenName>> = { task: 'taskImport', move: '
 export function routeOf(name: ScreenName, params: { code?: string; tab?: string; child?: string; set?: string } = {}): string {
   if (name === 'newProfile') return '#/new';
   if (name === 'translate') return '#/translate';
+  if (name === 'taskNote') return '#/note';
   // A result link is read once into the teacher's page; each tab, a set and a child's card have their own address.
   if (name === 'teacher') {
     if (params.child) return `#/teacher/child/${encodeURIComponent(params.child)}`;
@@ -99,6 +99,7 @@ export function parseRoute(hash: string): { name: ScreenName; profileId: string 
   const parts = hash.replace(/^#\/?/, '').split('/').filter(Boolean).map(decodeURIComponent);
   if (parts[0] === 'new') return { name: 'newProfile', profileId: null };
   if (parts[0] === 'translate') return { name: 'translate', profileId: null };
+  if (parts[0] === 'note') return { name: 'taskNote', profileId: null };
   if (parts[0] === 'settings') return { name: 'parent', profileId: null };
   if (parts[0] === 'help') return { name: 'help', profileId: null, tab: parts[1] };
   if (parts[0] === 'teacher') {
@@ -121,8 +122,8 @@ export async function openRoute(hash: string): Promise<void> {
   go(r.name, r.code ? { code: r.code } : r.tab ? { tab: r.tab } : r.child ? { child: r.child } : r.set ? { set: r.set } : {}, false);
 }
 
-/** Screens a touch-only device reaches before a keyboard is connected: the teacher and the translator need none. */
-const NO_KEYBOARD: ScreenName[] = ['start', 'teacher', 'help', 'translate'];
+/** Screens a touch-only device reaches before a keyboard is connected: the teacher, the translator and noting a task need none. */
+const NO_KEYBOARD: ScreenName[] = ['start', 'teacher', 'help', 'translate', 'taskNote'];
 
 /** The number of the screen shown now; a screen that waits compares it before it goes on. */
 export function screenVisit(): number {

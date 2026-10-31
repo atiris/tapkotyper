@@ -1,8 +1,9 @@
 import { app, applyProfileLook, go, reduceMotion, routeOf, screenVisit } from '../app/app';
 import { locale, t, tn } from '../i18n/i18n';
-import { codeFrom } from '../share/codec';
+import { codeFrom, linkOf } from '../share/codec';
 import { parseResult } from '../share/result';
-import { TASK_GROUP_MAX } from '../share/task';
+import { TASK_GROUP_MAX, keepTeacherTask, taskCode } from '../share/task';
+import type { TaskSpec } from '../storage/schema';
 import { TAPKO_TYPE, parseTapko, tapkoFile, tapkoName } from '../share/tapko-file';
 import { type ResultSet, type Sort, type SortKey, type StoredResult, TeacherStore, type Writer, type WriterKey, childKey, dateBefore, mastered, newest, nextSort, sortWriters, writer } from '../share/teacher';
 import { lineChart } from '../ui/charts';
@@ -10,6 +11,10 @@ import { teacherArt, button, confirmDialog, download, h, icon, modal, richText }
 import { keyLabel } from '../ui/keyboard-guide';
 import { cornerControls } from '../ui/chrome';
 import { tabBar } from '../ui/tabs';
+import { bigCode } from '../ui/big-code';
+import { fitsQr, linkBox } from '../ui/link-box';
+import { taskForm } from '../ui/task-form';
+import { taskSummary } from '../ui/task-panel';
 import { type ScanCard, scanCard } from './teacher-scan';
 
 /** The lock sign by a child whose device had its settings password removed or changed by the super player. */
@@ -18,7 +23,7 @@ function lockMark(r: { lockRemoved?: boolean }): HTMLElement | null {
   return h('span', { class: 'lock-mark', tip: t('teacher.lockRemoved'), 'aria-label': t('teacher.lockRemoved'), role: 'img' }, icon('lock'));
 }
 
-const TABS = ['groups', 'writers', 'files'] as const;
+const TABS = ['groups', 'writers', 'files', 'tasks'] as const;
 type Tab = (typeof TABS)[number];
 
 /** The writers' columns a teacher sorts by, in the table's order; the phone list offers them as chips, the most useful first. */
@@ -127,7 +132,6 @@ function teacherPage(root: HTMLElement, store: TeacherStore, first: Tab, code: s
   let scan: ScanCard | null = null;
   /** Results this scan collected. */
   let session: StoredResult[] = [];
-  let lastUnknown = -Infinity;
 
   const showTab = (x: Tab) => {
     tab = x;
@@ -154,12 +158,8 @@ function teacherPage(root: HTMLElement, store: TeacherStore, first: Tab, code: s
       }
       paint();
     } catch (e) {
-      if (fromScan) {
-        // Not a TapkoTyper code: one hint a second at most.
-        if (performance.now() - lastUnknown > 1000) scan?.hint(t('teacher.scan.unknown'));
-        lastUnknown = performance.now();
-        return;
-      }
+      // Not a TapkoTyper code.
+      if (fromScan) return scan?.unknown(t('teacher.scan.unknown'));
       msg.className = 'error';
       msg.textContent = t((e as Error).message);
     }
@@ -365,6 +365,36 @@ function teacherPage(root: HTMLElement, store: TeacherStore, first: Tab, code: s
     ];
   };
 
+  /** Úlohy: the form, then the tasks made here, newest first. */
+  const tasksTab = (): Node[] => {
+    const tasks = app.store.data.teacherTasks;
+    const remove = (id: string) => {
+      app.store.data.teacherTasks = app.store.data.teacherTasks.filter((x) => x.id !== id);
+      app.store.save();
+      paint();
+    };
+    return [
+      h('section', { class: 'task-make' }, h('h2', {}, t('task.legendNew')), h('p', { class: 'hint' }, t('task.intro')), form.el),
+      h('h2', {}, t('teacher.tasks.title')),
+      tasks.length ? h('ul', { class: 'made-tasks' }, ...tasks.map((x) => h('li', {},
+        h('div', { class: 'made-task-text' },
+          h('b', {}, x.title || t('task.untitled')),
+          h('small', {}, [taskSummary(x), x.group, new Date(x.madeAt).toLocaleDateString(locale())].filter(Boolean).join(' · '))),
+        h('div', { class: 'row' },
+          button(t('teacher.tasks.show'), () => void showTask(x), 'btn small primary', 'code'),
+          button(t('teacher.tasks.edit'), () => form.edit(x), 'btn small', 'edit'),
+          button(t('teacher.tasks.remove'), () => remove(x.id), 'btn small ghost', 'trash')))))
+        : h('p', { class: 'hint' }, t('teacher.tasks.empty')),
+    ];
+  };
+  // The form lives across repaints, so what is typed into it stays.
+  const form = taskForm((spec) => {
+    app.store.data.teacherTasks = keepTeacherTask(app.store.data.teacherTasks, spec);
+    app.store.save();
+    paint();
+    void showTask(spec);
+  });
+
   const paintScanList = () => scan?.setList(session.filter((r) => store.results.includes(r)).map((r) => {
     const undo = button('', () => { store.remove(r); session = session.filter((x) => x !== r); paint(); }, 'btn small ghost', 'trash');
     undo.setAttribute('aria-label', t('teacher.scan.undo'));
@@ -376,7 +406,7 @@ function teacherPage(root: HTMLElement, store: TeacherStore, first: Tab, code: s
 
   const paint = () => {
     paintScanList();
-    panel.replaceChildren(...(tab === 'groups' ? groupsTab() : tab === 'writers' ? writersTab() : filesTab()).filter((x): x is Node => !!x));
+    panel.replaceChildren(...(tab === 'groups' ? groupsTab() : tab === 'writers' ? writersTab() : tab === 'tasks' ? tasksTab() : filesTab()).filter((x): x is Node => !!x));
   };
 
   const scanButton = button(t('teacher.scan.start'), () => startScanning(), 'btn primary', 'camera');
@@ -437,6 +467,18 @@ function teacherPage(root: HTMLElement, store: TeacherStore, first: Tab, code: s
   const added = code ? addCode(code) : Promise.resolve();
   if (!store.kept) void added.then(() => { msg.textContent = [msg.textContent, t('teacher.notKept')].filter(Boolean).join(' '); });
   return stopScan;
+}
+
+/** A task's link to hand out: the link, copying and its QR code, and the big code when it fits. */
+async function showTask(spec: TaskSpec): Promise<void> {
+  const link = linkOf('task', await taskCode(spec));
+  const title = spec.title || t('task.untitled');
+  modal(h('div', { class: 'task-show' },
+    h('h2', {}, title),
+    h('p', { class: 'hint' }, `${taskSummary(spec)}${spec.group ? ` · ${spec.group}` : ''}`),
+    h('p', { class: 'hint' }, t('task.linkHint')),
+    linkBox(link),
+    fitsQr(link) ? button(t('task.bigCode'), () => bigCode(link, '', title, 'task'), 'btn', 'fullscreen') : null));
 }
 
 /** Asks for a group name and puts `rows` into it; returns the name, or null when cancelled. */

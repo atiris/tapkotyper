@@ -1,10 +1,9 @@
-import { app, go } from '../app/app';
+import { app, go, saveProfile } from '../app/app';
 import { t, tn } from '../i18n/i18n';
-import { nextLevel } from '../game/levels';
 import { localDate } from '../learning/stats';
 import { linkOf } from '../share/codec';
 import { makeResult, resultCode } from '../share/result';
-import { activeTask, taskLeft } from '../share/task';
+import { type FinishedTask, activeTask, isFinished, restartTask, taskLeft } from '../share/task';
 import type { Profile, Task } from '../storage/schema';
 import { nickname } from '../storage/store';
 import { button, h, modal } from '../ui/dom';
@@ -12,15 +11,17 @@ import { type EndAction, endCard } from '../ui/end-card';
 import { bigCode } from '../ui/big-code';
 import { copyLink, fitsQr } from '../ui/link-box';
 
-/** Plays the task: a timed practice of what is left, or the next story level. */
-export function startTask(p: Profile, task: Task): void {
-  if (task.kind === 'practice') go('level', { id: 'practice', seconds: taskLeft(task), task: task.id });
-  else {
-    const next = nextLevel(p);
-    // No level open for the child's keys: practice the task's minutes instead.
-    if (next) go('level', { id: next.id, task: task.id });
-    else go('level', { id: 'practice', seconds: taskLeft(task), task: task.id });
-  }
+/** Plays what is left of the task's run. */
+export function startTask(task: Task): void {
+  // TEMP: plan 96 plays the task's own game, limit, dictionary and world; until then a timed practice of its words and text.
+  go('level', { id: 'practice', seconds: taskLeft(task), task: task.id });
+}
+
+/** Plays a finished task once more from zero; its best stays unless this run is better. */
+export function replayTask(task: Task): void {
+  restartTask(task);
+  saveProfile();
+  startTask(task);
 }
 
 /** Minutes of a task still to play, rounded up. */
@@ -34,9 +35,9 @@ export function taskCard(p: Profile): HTMLElement | null {
       h('h2', {}, t('task.today')),
       h('p', { class: 'task-title' }, task.title || t('task.untitled')),
       h('p', { class: 'hint' }, t('task.left', { n: minutesLeft(task) })),
-      button(t('task.start'), () => startTask(p, task), 'btn primary', 'play'));
+      button(t('task.start'), () => startTask(task), 'btn primary', 'play'));
   }
-  const done = p.tasks.find((x) => x.doneAt === localDate());
+  const done = p.tasks.filter(isFinished).find((x) => x.best.doneAt === localDate());
   if (!done) return null;
   return h('section', { class: 'task-card done' },
     h('h2', {}, t('task.doneToday')),
@@ -44,9 +45,18 @@ export function taskCard(p: Profile): HTMLElement | null {
     button(t('task.handIn'), () => void handInDialog(p, done), 'btn primary', 'upload'));
 }
 
-/** The finished task's end card: the result as a link for the teacher, to copy or show as a big code. */
-export async function handInDialog(p: Profile, task: Task): Promise<void> {
-  const link = linkOf('result', await resultCode(makeResult(p, task, app.store.data.lockRemovedAt !== undefined)));
+/** The link of a finished task's result: its best run. */
+export const resultLink = async (p: Profile, task: FinishedTask): Promise<string> =>
+  linkOf('result', await resultCode(makeResult(p, task, app.store.data.lockRemovedAt !== undefined)));
+
+/** The big QR code of a finished task's result. */
+export async function showResultCode(p: Profile, task: FinishedTask): Promise<void> {
+  bigCode(await resultLink(p, task), nickname(p), t('task.resultCaption', { title: task.title || t('task.untitled') }), 'exercise');
+}
+
+/** The finished task's end card: the best run's result as a link for the teacher, to copy or show as a big code. */
+export async function handInDialog(p: Profile, task: FinishedTask): Promise<void> {
+  const link = await resultLink(p, task);
   const title = task.title || t('task.untitled');
   const area = h('textarea', { class: 'link-text', rows: 2, readonly: true, 'aria-label': t('share.link') });
   area.value = link;
@@ -56,7 +66,7 @@ export async function handInDialog(p: Profile, task: Task): Promise<void> {
     cls: 'task-done',
     title: t('end.taskDone'),
     picture: 'ui-end-task',
-    under: tn('end.minutes', Math.max(1, Math.round(task.seconds / 60))),
+    under: tn('end.minutes', Math.max(1, Math.round(task.best.seconds / 60))),
     rows: [[t('end.task'), title], [t('end.sendTeacher'), t('end.sendHow')]],
     extra: h('div', { class: 'ec-link' }, area, copied),
     actions: [
@@ -64,7 +74,7 @@ export async function handInDialog(p: Profile, task: Task): Promise<void> {
         await copyLink(link, area);
         copied.textContent = t('share.copied');
       } },
-      ...(fitsQr(link) ? [{ label: t('task.bigCode'), icon: 'fullscreen', run: () => bigCode(link, nickname(p), t('progress.exerciseCaption', { title }), 'exercise') } satisfies EndAction] : []),
+      ...(fitsQr(link) ? [{ label: t('task.bigCode'), icon: 'fullscreen', run: () => bigCode(link, nickname(p), t('task.resultCaption', { title }), 'exercise') } satisfies EndAction] : []),
     ],
     toMap: () => {
       close();

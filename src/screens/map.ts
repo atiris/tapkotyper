@@ -147,6 +147,7 @@ export function mapScreen(root: HTMLElement): () => void {
         taskCard(p),
         button(t('map.warmUp'), () => openBreak(() => undefined, start), 'btn', 'wave'),
         play,
+        button(t('task.pageTitle'), () => go('tasks'), 'btn', 'tasks'),
         button(t('map.practice'), () => openPracticeKeys(), 'btn', 'practice'),
         ownTextPhrases(p).length ? button(t('map.ownText'), () => go('level', { id: 'practice', text: true }), 'btn', 'read') : null,
         button(t('map.freeType'), startFreeType, 'btn', 'keyboard'),

@@ -60,7 +60,11 @@
       "wardrobe": "Šatník a hviezdičky za snahu",
       "mentors": "Sledovateľný pokrok"
     },
-    "first": "Zvoľ si prezývku, vyber si postavu a môžeš trénovať."
+    "first": "Zvoľ si prezývku, vyber si postavu a môžeš trénovať.",
+    "note": {
+      "title": "Nová úloha",
+      "sub": "Zaznačte si úlohu z QR kódu a pošlite si ju domov do počítača"
+    }
   },
   "newProfile": {
     "title": "Ahoj, vitaj!",
@@ -1046,15 +1050,9 @@
     "tabProgress": "Postup",
     "tabKeys": "Klávesy",
     "tabLevels": "Úrovne",
-    "tabExercises": "Cvičenia",
     "showCode": "QR kód celého postupu",
     "overallTitle": "Celý postup",
     "overallCaption": "Celé moje štatistiky",
-    "exerciseCaption": "Štatistiky cvičenia {title}",
-    "exercisesEmpty": "Zatiaľ tu nie je žiadne cvičenie. Cvičenia od učiteľa sa zapíšu sem.",
-    "exerciseLine": "{min} min, presnosť {acc} %, rytmus {cpm}",
-    "exerciseOpen": "Ešte nedokončené",
-    "exerciseCode": "QR kód",
     "quality": "Presnosť za posledných 14 dní: {n} %",
     "speed": "Rýchlosť za posledných 14 dní: {n} znakov za minútu",
     "storyStars": "Hviezdičky v tomto príbehu: {n}",
@@ -1214,7 +1212,6 @@
       "settings": "Nastavenia",
       "own": "Vlastné",
       "surprises": "Prekvapenia",
-      "task": "Úloha",
       "keys": "Klávesy",
       "data": "Údaje"
     },
@@ -1351,7 +1348,6 @@
       "words": "Vlastné slová",
       "text": "Vlastný text"
     },
-    "remove": "Odstrániť",
     "words": "Slová",
     "wordsHint": "Napríklad slová na tento týždeň. Jedno na riadok, alebo oddelené čiarkou či medzerou. Použijú sa aj s klávesmi, ktoré študent ešte nepozná, sprievodca ich ukáže.",
     "wordsPlaceholder": "škola\nkamarát\nslnko",
@@ -1560,7 +1556,7 @@
       "Môj text: keď ti rodič pridá vlastný text, napíšeš ho celý po poradí.",
       "Len chcem písať: píš, čo chceš, prechádzaš sa po svete, ktorý si vyberieš, a tvoj text sa tam ukáže.",
       "Ja a môj šatník: vyber si postavičku, prezývku a obleč sa do odomknutých vecí.",
-      "Úloha na dnes: keď ti učiteľ pošle úlohu, nájdeš ju na karte. Po splnení ju odovzdáš."
+      "Úlohy: úlohy od učiteľa. Pridáš ich kamerou alebo odkazom, zahráš, zopakuješ a odovzdáš. Úloha na dnes je aj na karte na mape."
     ],
     "progressTitle": "Môj postup",
     "progress": [
@@ -1626,9 +1622,9 @@
     ],
     "taskTitle": "Úloha od učiteľa",
     "task": [
-      "Učiteľ ti môže poslať úlohu ako odkaz. Otvor ho a vyber, kto ju bude robiť.",
-      "Na mape uvidíš Úlohu na dnes. Píš, kým neuplynie čas.",
-      "Keď je hotová, stlač Odovzdať a pošli učiteľovi **odkaz s výsledkom**."
+      "Učiteľ ti pošle úlohu ako odkaz alebo ju ukáže ako QR kód. Na mape stlač **Úlohy** a pridaj si ju kamerou alebo vložením odkazu.",
+      "Na stránke Úlohy ju spustíš tlačidlom Hrať, alebo na mape v Úlohe na dnes. Píš, kým neuplynie čas.",
+      "Keď je hotová, stlač Odovzdať a pošli učiteľovi **odkaz s výsledkom**. Úlohu môžeš zopakovať: počíta sa lepší výsledok."
     ],
     "settingsIntro": "Nastavenia sú pre učiteľa alebo rodiča. Otvoria sa ozubeným kolieskom. Kým ich **nezamknete heslom**, otvorí ich ktokoľvek, kliknutím na jednoduché potvrdzovacie tlačidlo.",
     "settings": {
@@ -1653,10 +1649,6 @@
       "surprises": [
         "Schovajte **skutočnú odmenu** za pravidlo: po úrovni, po minútach cvičenia, po ďalších úrovniach či hviezdičkách, alebo náhodou.",
         "Hra položí otázku pred úrovňou a odpoveď prezradí, keď sa pravidlo splní."
-      ],
-      "task": [
-        "Pre učiteľa písania alebo rodiča: vytvorte úlohu so slovami alebo textom a dĺžkou. Vznikne odkaz a QR kód.",
-        "Študenti odkaz otvoria a po splnení vám pošlú odkaz s výsledkom. Výsledky si prezriete cez tlačidlo Pre učiteľov na úvodnej stránke."
       ],
       "keys": [
         "Automaticky prídu klávesy po jednom, od základného radu F a J. Ďalšie klávesy pribúdajú podľa toho, ako **presne** a plynulo študent používa tie predchádzajúce.",
@@ -1688,13 +1680,13 @@
     "mentor": [
       "Stránku **Pre učiteľov** otvoríte ikonou grafu vpravo hore na úvodnej stránke. Výsledky sa ukladajú len v tomto prehliadači.",
       "Najrýchlejšie je skenovať: napíšte skupinu (napríklad 5.A), stlačte **Sken QR** a obíďte miestnosť. Kamera načíta aj viac QR kódov naraz a každý nový výsledok zapíše do tejto skupiny.",
-      "Študent ukáže QR kód v Môj postup alebo po odovzdaní úlohy. Bez kamery stačí vložiť alebo otvoriť **odkaz s výsledkom**.",
+      "Študent ukáže QR kód úlohy na svojej stránke Úlohy alebo po jej odovzdaní, všetky svoje štatistiky v Môj postup. Bez kamery stačí vložiť alebo otvoriť **odkaz s výsledkom**.",
       "**Sada** sú výsledky jednej skupiny, ktoré prišli spolu: jeden sken kamerou, alebo odkazy pridané do **20 minút** od prvého. Na karte **Skupiny** sú sady každej skupiny. Kliknutím na deň uvidíte študentov sady a celé to stiahnete ako CSV.",
       "Každé odovzdanie sa uchová. Na karte **Študenti** nájdete študenta podľa mena a uvidíte, ako sa mu zmenila presnosť a rytmus od prvého po posledné odovzdanie. Kliknutím na meno uvidíte vývoj v grafoch a všetky odovzdania.",
       "**Z telefónu do počítača:** na karte **Súbory** stlačte na telefóne **Poslať do počítača** a pošlite si súbor .tapko (napríklad e-mailom). Na počítači ho na tej istej karte načítajte alebo ho na stránku pretiahnite. Čo už máte, sa nepridá druhýkrát.",
       "Výsledky staršie ako **rok** sa pri otvorení stránky zmažú. Staré výsledky načítané zo súboru ostanú ešte **7 dní**. Skôr ich zmažete tlačidlom **Vymazať…**.",
       "Kontrolný súčet ukáže poškodený odkaz (výkričník pri mene), nie podvádzanie.",
-      "Úlohu pre študentov vytvoríte v nastaveniach na karte Úloha: vznikne odkaz a QR kód, ktorý študenti otvoria."
+      "Úlohy pre študentov vytvoríte na tejto stránke na karte **Úlohy**: vyberiete hru, slová alebo text a limit a vznikne odkaz a QR kód. Na telefóne bez klávesnice si študent úlohu zaznačí tlačidlom **Nová úloha** a pošle si ju domov."
     ]
   },
   "tips": {
@@ -1895,21 +1887,12 @@
     "removeManyText": "Odstráni sa {sets}, spolu {results}.",
     "scan": {
       "start": "Sken QR",
-      "preview": "Obraz z kamery",
-      "camera": "Kamera",
-      "starting": "Zapínam kameru...",
       "many": "Namier kameru na jeden alebo viac QR kódov.",
       "one": "Zamier na jeden kód.",
       "done": "Hotovo",
       "collected": "Načítané",
       "unknown": "Neznámy kód",
       "undo": "Zrušiť tento výsledok",
-      "error": {
-        "denied": "Prístup ku kamere nie je povolený. Povoľte ho v nastaveniach prehliadača.",
-        "none": "Nenašla sa žiadna kamera.",
-        "insecure": "Kamera funguje len na zabezpečenej stránke (HTTPS).",
-        "failed": "Kameru sa nepodarilo zapnúť."
-      },
       "group": "Skupina pre tento sken",
       "groupPlaceholder": "Skupina, napríklad 5.A",
       "title": "Skenovanie",
@@ -1958,7 +1941,8 @@
     "tab": {
       "groups": "Skupiny",
       "writers": "Študenti",
-      "files": "Súbory"
+      "files": "Súbory",
+      "tasks": "Úlohy"
     },
     "n": {
       "sets": {
@@ -2071,6 +2055,13 @@
       "remove": "Odstrániť sadu",
       "removeTitle": "Odstrániť sadu?",
       "removeText": "Odstráni sa celá sada: {n}."
+    },
+    "tasks": {
+      "title": "Pripravené úlohy",
+      "empty": "Zatiaľ žiadne pripravené úlohy. Úloha, ktorú vytvoríte, sa tu uloží.",
+      "show": "Ukázať",
+      "edit": "Upraviť",
+      "remove": "Odstrániť"
     }
   },
   "task": {
@@ -2080,34 +2071,81 @@
     "pickBelow": "Úlohu priradíte výberom hráča nižšie.",
     "cancel": "Zrušiť túto úlohu",
     "untitled": "Úloha",
-    "kind": {
-      "practice": "Vlastné písanie so slovami úlohy",
-      "story": "Príbeh so slovami úlohy"
-    },
     "today": "Úloha na dnes",
     "left": "Zostáva {n} min",
     "start": "Začať úlohu",
     "doneToday": "Úloha je splnená!",
     "handIn": "Odovzdať",
     "group": "Skupina (nepovinné)",
-    "intro": "Úloha je odkaz. Pošlite ho študentom (napríklad cez Edupage). Kto ho otvorí, vyberie si hráča a na mape uvidí Úlohu na dnes. Po splnení vám študent pošle odkaz s výsledkom.",
+    "intro": "Úloha je odkaz a QR kód. Pošlite ho študentom (napríklad cez Edupage) alebo ho ukážte v triede. Študent si úlohu pridá na svojej stránke Úlohy a po splnení vám pošle výsledok. Pripravené úlohy sa ukladajú len v tomto prehliadači.",
     "title": "Názov úlohy",
     "titlePlaceholder": "Napríklad: Zvieratá na farme",
     "minutes": "Dĺžka",
-    "kindLabel": "Čo sa bude hrať",
     "make": "Vytvoriť odkaz",
     "needContent": "Napíšte aspoň jedno slovo alebo text.",
-    "linkTitle": "Odkaz na úlohu",
     "linkHint": "Skopírujte odkaz alebo ukážte QR kód. Údaje sú v samotnom odkaze, nikde sa neukladajú.",
-    "giveHere": "Dať úlohu aj hráčovi {name}",
-    "doneAt": "splnená {date}",
-    "played": "{n} z {total} min",
-    "none": "Tento hráč zatiaľ nemá žiadne úlohy.",
     "bigCode": "Veľký kód",
     "groupPlaceholder": "Napríklad: 5.A",
     "groupHint": "Učiteľ podľa nej v tabuľke zoskupí výsledky.",
     "legendNew": "Nová úloha",
-    "legendList": "Úlohy hráča {name}"
+    "gameLabel": "Hra",
+    "game": {
+      "chase": "Prúd slov",
+      "catch": "Čakajúce slová",
+      "copy": "Odpis",
+      "ribbon": "Pás",
+      "transcribe": "Prepis"
+    },
+    "words": "Slová",
+    "wordsHint": "Jedno na riadok, alebo oddelené čiarkou či medzerou.",
+    "text": "Text",
+    "limit": "Limit",
+    "limits": {
+      "time": "Čas",
+      "text": "Text",
+      "both": "Čas aj text"
+    },
+    "limitHint": "Čas: píše sa, kým sa čas neminie. Text: úloha sa skončí, keď je text celý napísaný. Čas aj text: text sa musí napísať celý; ak je hotový skôr, píše sa ďalej, kým sa čas neminie.",
+    "dictionary": "Použiť slovník, keď sa minie text",
+    "dictionaryHint": "Keď sa zadané slová minú, prídu slová zo slovníka, ktoré študent vie písať. Vypnuté: zadané slová sa opakujú.",
+    "knownOnly": "Len písmená, ktoré už ovláda",
+    "knownOnlyHint": "Slová s písmenami, ktoré študent ešte neovláda, sa vynechajú. Vypnuté: pred úlohou sa naučí všetky písmená z textu, ktoré ešte neovláda, aby vedel napísať všetko.",
+    "world": "Svet",
+    "worlds": {
+      "current": "Aktuálny",
+      "random": "Náhodný"
+    },
+    "worldHint": "Náhodný svet môže byť aj taký, ktorý študent ešte nemá otvorený - len ako pozadie.",
+    "save": "Uložiť zmeny",
+    "cancelEdit": "Zrušiť úpravu",
+    "groupShort": "Skupina",
+    "resultCaption": "Štatistiky úlohy {title}",
+    "pageTitle": "Úlohy",
+    "scan": "Naskenovať úlohu",
+    "scanHint": "Namierte kameru na QR kód úlohy.",
+    "paste": "Odkaz alebo kód úlohy",
+    "pastePlaceholder": "Vložiť odkaz alebo kód úlohy",
+    "add": "Pridať",
+    "notTask": "Toto nie je kód úlohy.",
+    "mine": "Moje úlohy",
+    "noneYet": "Zatiaľ tu nie je žiadna úloha. Úlohu od učiteľa pridáš kamerou alebo vložením odkazu.",
+    "textLeft": "Treba napísať celý text",
+    "bestLine": "{date} · {min} min · presnosť {acc} % · rytmus {cpm}",
+    "play": "Hrať",
+    "replay": "Zopakovať",
+    "qr": "QR kód",
+    "result": {
+      "button": "Výsledok",
+      "date": "Dátum",
+      "minutes": "Čas",
+      "accuracy": "Presnosť",
+      "rhythm": "Rytmus",
+      "improved": "Opakovanie výsledok zlepšilo.",
+      "kept": "Opakovanie výsledok nezlepšilo, platí ten skorší."
+    },
+    "remove": "Odstrániť",
+    "removeTitle": "Odstrániť úlohu?",
+    "removeText": "Úloha {title} aj jej výsledok sa z tohto hráča odstránia."
   },
   "move": {
     "button": "Preniesť na iný počítač",
@@ -3437,5 +3475,25 @@
         "Neznámy príkaz!"
       ]
     }
+  },
+  "camera": {
+    "preview": "Obraz z kamery",
+    "pick": "Kamera",
+    "starting": "Zapínam kameru...",
+    "error": {
+      "denied": "Prístup ku kamere nie je povolený. Povoľte ho v nastaveniach prehliadača.",
+      "none": "Nenašla sa žiadna kamera.",
+      "insecure": "Kamera funguje len na zabezpečenej stránke (HTTPS).",
+      "failed": "Kameru sa nepodarilo zapnúť."
+    }
+  },
+  "note": {
+    "send": "Poslať",
+    "email": "E-mail",
+    "again": "Skenovať ďalšiu",
+    "noted": "Zaznačené úlohy",
+    "remove": "Odstrániť zo zoznamu",
+    "subject": "TapkoTyper: {title}",
+    "body": "Úloha z TapkoTypera. Otvorte tento odkaz v počítači s klávesnicou:"
   }
 }

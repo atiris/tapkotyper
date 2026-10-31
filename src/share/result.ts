@@ -1,8 +1,8 @@
 import { localDate, masterySummary, weakKeys } from '../learning/stats';
-import type { Profile, Task } from '../storage/schema';
+import type { Profile } from '../storage/schema';
 import { nickname } from '../storage/store';
 import { checksum, decode, encode } from './codec';
-import { TASK_GROUP_MAX } from './task';
+import { type FinishedTask, TASK_GROUP_MAX, runAccuracy } from './task';
 
 /** What a typist hands in after a task. */
 export interface TaskResult {
@@ -32,18 +32,18 @@ export const RESULT_WEAK_KEYS = 5;
 /** The mentor sees the real name, or the nickname of a player without one. */
 const mentorName = (p: Profile): string => p.name || nickname(p);
 
-/** `lockRemoved`: the super player removed or changed the device's settings password (`StoreData.lockRemovedAt`). */
-export function makeResult(p: Profile, task: Task, lockRemoved = false): TaskResult {
-  const total = task.chars + task.errors;
+/** The result of a finished task's best run. `lockRemoved`: the super player removed or changed the device's settings password (`StoreData.lockRemovedAt`). */
+export function makeResult(p: Profile, task: FinishedTask, lockRemoved = false): TaskResult {
+  const best = task.best;
   return {
     taskId: task.id,
     title: task.title,
     ...(task.group && { group: task.group }),
     name: mentorName(p),
-    date: task.doneAt ?? '',
-    minutes: Math.round(task.seconds / 6) / 10,
-    accuracy: total ? Math.round((task.chars / total) * 100) : 100,
-    cpm: task.cpm,
+    date: best.doneAt,
+    minutes: Math.round(best.seconds / 6) / 10,
+    accuracy: runAccuracy(best),
+    cpm: best.cpm,
     levels: Object.keys(p.progress.levels).length,
     weak: weakKeys(p, Object.keys(p.stats.keys), RESULT_WEAK_KEYS).map((k) => [k.key, Math.round(k.accuracy * 100)]),
     ...(lockRemoved && { lockRemoved: true }),

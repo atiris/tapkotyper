@@ -10,8 +10,8 @@ test('help opens from the map and from a paused level and goes back', async ({ p
   await page.locator('.map-screen .top-right .help-btn').click();
   const help = page.locator('.help-page');
   await expect(help.locator('.tab[aria-selected="true"]')).toHaveText('Interface');
-  // Six map buttons, the start page's language, the Menu of small screens, the wardrobe countdown and eleven level buttons (with the super star).
-  await expect(help.locator('.help-icons li')).toHaveCount(21);
+  // Six map buttons, the start page's language, the update, the Menu of small screens, the wardrobe countdown and the level buttons.
+  await expect(help.locator('.help-icons li')).toHaveCount(20);
   expect(page.url()).toMatch(/\/help\/ui$/);
   await help.getByRole('tab', { name: 'Typing' }).click();
   await expect(help.locator('h2', { hasText: 'How to type' })).toBeVisible();
@@ -70,7 +70,7 @@ test('help opens from the start page on the about tab, without a player', async 
     await help.getByRole('tab', { name: tab }).click();
     await expect(help.locator('.tab-panel h2').first()).toBeVisible();
   }
-  await expect(help.locator('.help-section')).toHaveCount(6);
+  await expect(help.locator('.help-section')).toHaveCount(5);
   expect(page.url()).toMatch(/#\/help\/settings$/);
   await help.locator('.bar').getByRole('button', { name: 'Back' }).click();
   await page.locator('.start-screen').waitFor();

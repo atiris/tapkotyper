@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { createProfile, playLevel } from './helpers';
+import { NEW_PLAYER, playLevel } from './helpers';
 
 test('a task travels by link to a child, and the result back to the teacher\'s table', async ({ browser }) => {
   test.setTimeout(300_000);
@@ -10,26 +10,26 @@ test('a task travels by link to a child, and the result back to the teacher\'s t
     return page;
   };
 
-  // The parent builds a one-minute practice task.
+  // The teacher makes a one-minute task on the teacher page; it is kept there.
   const parent = await open();
-  await createProfile(parent, 'Ema');
-  await parent.locator('.top-right .round-btn').first().click();
-  await parent.locator('.confirm .btn:not(.primary)').last().click();
-  await parent.locator('.tab[data-tab=task]').click();
-  await parent.locator('.task-new input[type=text]').first().fill('Zvieratá');
-  await parent.locator('.task-new input[type=text]').nth(1).fill('5.A');
-  await parent.locator('.task-new textarea').first().fill('lopta, ruka');
-  await parent.locator('.task-new input[type=range]').fill('1');
-  await parent.locator('.task-new .btn.primary').first().click();
-  const taskLink = await parent.locator('.task-out .link-text').inputValue();
+  await parent.goto('./#/teacher/tasks');
+  const form = parent.locator('.task-form');
+  await form.locator('input[type=text]').first().fill('Zvieratá');
+  await form.locator('input[type=text]').nth(1).fill('5.A');
+  await form.locator('textarea').first().fill('lopta, ruka');
+  await form.locator('input[type=range]').fill('1');
+  await form.locator('.btn.primary').first().click();
+  const taskLink = await parent.locator('.task-show .link-text').inputValue();
   expect(taskLink).toMatch(/#\/task\/[A-Za-z0-9_-]+$/);
-  await expect(parent.locator('.task-out .qr svg')).toBeVisible();
+  await expect(parent.locator('.task-show .qr svg')).toBeVisible();
+  await parent.keyboard.press('Escape');
+  await expect(parent.locator('.made-tasks li')).toContainText('Zvieratá');
 
   // A child on another computer opens it as a new player and plays it.
   const child = await open();
   await child.goto(taskLink);
-  await expect(child.locator('.task-summary')).toContainText('Zvieratá');
-  await child.locator('.profile-card.new').click();
+  await expect(child.locator('.task-panel')).toContainText('Zvieratá');
+  await child.locator(NEW_PLAYER).first().click();
   await child.locator('#np-nick').fill('Adam');
   await child.locator('form button[type=submit]').click();
   await child.locator('.map-screen').waitFor();

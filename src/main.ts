@@ -20,6 +20,8 @@ import { storyScreen } from './screens/story';
 import { teacherScreen } from './screens/teacher';
 import { wardrobeScreen } from './screens/wardrobe';
 import { progressScreen } from './screens/progress';
+import { tasksScreen } from './screens/tasks';
+import { taskNoteScreen } from './screens/task-note';
 
 /** Screens that need a selected profile go back to the start without one. */
 const needsProfile = (s: (root: HTMLElement, params: any) => any) => (root: HTMLElement, params: any) => {
@@ -67,6 +69,8 @@ registerScreen('parent', parentPage('parent', () => import('./screens/parent').t
 registerScreen('translate', parentPage('translate', () => import('./screens/translate').then((m) => m.translateScreen), () => go(app.profile ? 'map' : 'start')));
 registerScreen('wardrobe', needsProfile(wardrobeScreen));
 registerScreen('progress', needsProfile(progressScreen));
+registerScreen('tasks', needsProfile(tasksScreen));
+registerScreen('taskNote', taskNoteScreen);
 // Help works without a player too: the start page opens it on the about tab.
 registerScreen('help', helpScreen);
 

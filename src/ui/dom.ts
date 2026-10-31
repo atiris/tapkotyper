@@ -81,6 +81,8 @@ export const ICONS = {
   replay: '<path d="M4 12a8 8 0 108-8H7"/><path d="M8 1L5 4l3 3"/>',
   undo: '<path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 010 10h-3"/>',
   redo: '<path d="M15 14l5-5-5-5"/><path d="M20 9H9a5 5 0 000 10h3"/>',
+  mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5"/>',
+  tasks: '<path d="M10 6h10M10 12h10M10 18h10"/><path d="M3.5 6l1.6 1.6L8 4.6M3.5 12l1.6 1.6L8 10.6"/><circle cx="5.5" cy="18" r="1.3"/>',
   camera: '<path d="M3 8h4l2-3h6l2 3h4v11H3z"/><circle cx="12" cy="13" r="3.5"/>',
   fullscreen: '<path d="M4 9V4h5M4 4l5 5M15 4h5v5M20 4l-5 5M4 15v5h5M4 20l5-5M20 15v5h-5M20 20l-5-5"/>',
   smile: '<path d="M6.5 13.5a6.5 6.5 0 0011 0"/><path d="M8.5 8.5v1.5M15.5 8.5v1.5"/>',
@@ -115,6 +117,12 @@ const KEYBOARD_ART = '<svg viewBox="0 0 120 64" aria-hidden="true"><rect x="2" y
   [14, 31, 48, 65, 82].map((x) => `<rect x="${x}" y="16" width="12" height="9" rx="2"/>`).join('') + '<rect x="99" y="16" width="8" height="9" rx="2"/>' +
   [20, 37, 54, 71, 88].map((x) => `<rect x="${x}" y="30" width="12" height="9" rx="2"/>`).join('') + '<rect x="32" y="44" width="56" height="8" rx="2"/></g></svg>';
 
+/** A desk with a keyboard on it, drawn in the keyboard's lines: the new task's fallback picture. */
+const TASK_ART = '<svg viewBox="0 0 120 64" aria-hidden="true"><rect x="4" y="30" width="112" height="8" rx="3" fill="#c98b4f" stroke="#3b2a3f" stroke-width="3"/>' +
+  '<path d="M16 38v22M104 38v22" stroke="#3b2a3f" stroke-width="4" stroke-linecap="round"/>' +
+  '<rect x="30" y="16" width="60" height="14" rx="4" fill="#fff6e6" stroke="#3b2a3f" stroke-width="3"/><g fill="#3b2a3f">' +
+  [36, 46, 56, 66, 76].map((x) => `<rect x="${x}" y="20" width="7" height="6" rx="1.5"/>`).join('') + '</g></svg>';
+
 /** A big button's picture when there is one, else the drawn one. */
 function bigArt(name: string, drawn: string): HTMLElement {
   const src = imageUrl(name);
@@ -126,6 +134,9 @@ export const teacherArt = (): HTMLElement => bigArt('ui-mentor', TEACHER_ART);
 
 /** The mouse with a broken keyboard: a phone without a keyboard. */
 export const keyboardArt = (): HTMLElement => bigArt('ui-missing-keyboard', KEYBOARD_ART);
+
+/** The pupil at a desk: noting a task on a phone. */
+export const taskArt = (): HTMLElement => bigArt('ui-new-task', TASK_ART);
 
 /** A big orange button of the start page: a picture, a title and one line under it. */
 export function bigButton(art: HTMLElement, title: string, sub: string, onClick: () => void): HTMLButtonElement {

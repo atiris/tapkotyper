@@ -6,16 +6,15 @@ import { LEVELS, type LevelDef, WORLDS } from '../game/levels';
 import { SHOW_DAYS, SHOW_DAYS_MAX, SURPRISES_MAX, SURPRISE_LEN, SURPRISE_N_MAX, TRIGGERS, newSurprise, restartSurprise, surpriseCount } from '../game/own-content';
 import { wordSource } from '../game/runtime/options';
 import { lessonKeyOf, punctuationKeys, useLayout } from '../learning/lessons';
-import { COMPANION_KINDS, GUEST_ID, SUPER_ID, type FontChoice, type GraphicsChoice, type LangRef, type LayoutId, type OwnMix, type ParentLock, type Profile, type Surprise, type SurpriseTrigger, type TaskKind } from '../storage/schema';
+import { COMPANION_KINDS, GUEST_ID, SUPER_ID, type FontChoice, type GraphicsChoice, type LangRef, type LayoutId, type OwnMix, type ParentLock, type Profile, type Surprise, type SurpriseTrigger } from '../storage/schema';
 import { checkLock, makeLock } from '../storage/lock';
 import { linkOf } from '../share/codec';
-import { TASK_GROUP_MAX, TASK_MINUTES, TASK_TITLE_MAX, type TaskSpec, addTask, taskCode } from '../share/task';
 import { moveCode } from '../share/transfer';
 import { linkBox } from '../ui/link-box';
-import { handInDialog } from './task';
 import { NICK_MAX, applyImport, nickname, parseImport, planImport } from '../storage/store';
 import { KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
 import { button, confirmDialog, download, h, modal } from '../ui/dom';
+import { check, field, range, select, switchField } from '../ui/form';
 import { tip } from '../ui/tooltip';
 import { tapkoElement } from '../gfx/tapko';
 import { numberPick, profileCard } from '../ui/profile-card';
@@ -26,7 +25,7 @@ import { hasCompanion } from '../game/rewards';
 import { lockRemovedNote } from '../ui/service';
 import { OWN_TEXT_MAX, OWN_WORDS_MAX, parseOwnWords, typableText, untypableWords } from '../words/words';
 
-const TABS = ['settings', 'own', 'surprises', 'task', 'keys', 'data'] as const;
+const TABS = ['settings', 'own', 'surprises', 'keys', 'data'] as const;
 type Tab = (typeof TABS)[number];
 
 /**
@@ -42,7 +41,7 @@ export function parentScreen(root: HTMLElement, params: { tab?: string }): void 
   const panel = (tab: Tab): HTMLElement => {
     if (tab === 'data') return dataTab(p);
     if (!p) return deviceTab();
-    return tab === 'settings' ? settingsTab(p) : tab === 'own' ? ownTab(p) : tab === 'surprises' ? surprisesTab(p) : tab === 'task' ? taskTab(p) : keysTab(p);
+    return tab === 'settings' ? settingsTab(p) : tab === 'own' ? ownTab(p) : tab === 'surprises' ? surprisesTab(p) : keysTab(p);
   };
   const nav = tabBar(tabs.map((tab) => [tab, t(`parent.tab.${tab}`)] as const), current, (tab) => {
     current = tab;
@@ -91,47 +90,12 @@ function childSwitch(p: Profile | null, others: Profile[], tab: () => string): H
   return b;
 }
 
-function field(label: string, control: HTMLElement, hint?: string, tag: 'label' | 'div' = 'label'): HTMLElement {
-  return h(tag, { class: 'field' }, h('span', { class: 'field-label' }, label), control, hint ? h('small', {}, hint) : null);
-}
-
-function range(value: number, min: number, max: number, step: number, onInput: (v: number) => void, fmt: (v: number) => string = String): HTMLElement {
-  const out = h('output', {}, fmt(value));
-  const input = h('input', { type: 'range', min, max, step, value });
-  input.addEventListener('input', () => { out.textContent = fmt(Number(input.value)); onInput(Number(input.value)); });
-  return h('span', { class: 'range' }, input, out);
-}
-
-function check(value: boolean, onChange: (v: boolean) => void): HTMLInputElement {
-  const c = h('input', { type: 'checkbox' });
-  c.checked = value;
-  c.addEventListener('change', () => onChange(c.checked));
-  return c;
-}
-
-let switchIds = 0;
-
-/** A checkbox on the left, its bold title to the right and an optional short line under the title. */
-function switchField(title: string, box: HTMLInputElement, hint?: string): HTMLElement {
-  const id = hint ? `switch-hint-${++switchIds}` : '';
-  if (id) box.setAttribute('aria-describedby', id);
-  return h('div', { class: 'switch-field' },
-    h('label', {}, box, h('span', { class: 'switch-title' }, title)),
-    hint ? h('small', { id }, hint) : null);
-}
-
 /** The official languages, then the own ones made in the translator on this device. */
 function langSelect(value: LangRef, onChange: (v: LangRef) => void): HTMLSelectElement {
   const s = select<LangRef>(value, langOptions(), onChange);
   void ownLangs().then((list) => {
     if (list.length) s.append(h('optgroup', { label: t('parent.ownLangs') }, ...list.map((l) => h('option', { value: ownRef(l.id), selected: ownRef(l.id) === value }, l.name))));
   });
-  return s;
-}
-
-function select<T extends string>(value: T, options: [T, string][], onChange: (v: T) => void): HTMLSelectElement {
-  const s = h('select', {}, ...options.map(([v, l]) => h('option', { value: v, selected: v === value }, l)));
-  s.addEventListener('change', () => onChange(s.value as T));
   return s;
 }
 
@@ -271,8 +235,6 @@ function ownTab(p: Profile): HTMLElement {
     h('fieldset', {}, h('legend', {}, t('own.group.messages')), field(t('parent.messages'), messages, t('parent.messagesHint'))),
     ...ownWordsEditors(p));
 }
-
-const newId = () => Math.random().toString(36).slice(2, 8) + Date.now().toString(36);
 
 /** Story level name for the level picker and the table. */
 function levelName(l: LevelDef): string {
@@ -477,51 +439,6 @@ function ownWordsEditors(p: Profile): HTMLElement[] {
         preview,
         button(t('own.previewMore'), paintPreview, 'btn small ghost', 'replay'))),
   ];
-}
-
-/** A task for this child or a whole class: a link (and QR) with words, text, minutes and what to play. */
-function taskTab(p: Profile): HTMLElement {
-  const title = h('input', { type: 'text', maxlength: TASK_TITLE_MAX, placeholder: t('task.titlePlaceholder') });
-  const words = h('textarea', { rows: 3, placeholder: t('own.wordsPlaceholder') });
-  const text = h('textarea', { rows: 4, maxlength: OWN_TEXT_MAX, placeholder: t('own.textPlaceholder') });
-  const group = h('input', { type: 'text', maxlength: TASK_GROUP_MAX, placeholder: t('task.groupPlaceholder') });
-  let minutes = 10;
-  const kind = select<TaskKind>('practice', [['practice', t('task.kind.practice')], ['story', t('task.kind.story')]], () => undefined);
-  const msg = h('p', { class: 'error', role: 'alert' });
-  const out = h('div', { class: 'task-out' });
-  const list = h('ul', { class: 'own-list task-list' });
-  const make = async () => {
-    msg.textContent = '';
-    const spec: TaskSpec = { id: newId(), title: title.value.trim(), words: parseOwnWords(words.value), text: text.value.slice(0, OWN_TEXT_MAX).trim(), minutes, kind: kind.value as TaskKind, ...(group.value.trim() && { group: group.value.trim() }) };
-    if (!spec.words.length && !spec.text) return void (msg.textContent = t('task.needContent'));
-    const link = linkOf('task', await taskCode(spec));
-    out.replaceChildren(
-      h('h3', {}, t('task.linkTitle')),
-      h('p', { class: 'hint' }, t('task.linkHint')),
-      linkBox(link),
-      button(t('task.giveHere', { name: nickname(p) }), () => { addTask(p, spec); saveProfile(); paint(); }, 'btn small', 'plus'));
-  };
-  const paint = () => list.replaceChildren(...(p.tasks.length ? [] : [h('li', { class: 'hint' }, t('task.none'))]), ...p.tasks.map((x) => h('li', { class: x.doneAt ? 'revealed' : '' },
-    h('div', {}, h('b', {}, x.title || t('task.untitled')),
-      h('small', {}, `${t(`task.kind.${x.kind}`)} · ${x.doneAt ? t('task.doneAt', { date: new Date(x.doneAt).toLocaleDateString(locale()) }) : t('task.played', { n: Math.floor(x.seconds / 60), total: x.minutes })}`)),
-    x.doneAt ? button(t('task.handIn'), () => void handInDialog(p, x), 'btn small', 'upload') : null,
-    button(t('own.remove'), () => { p.tasks = p.tasks.filter((y) => y !== x); saveProfile(); paint(); }, 'btn small ghost', 'trash'))));
-  paint();
-  return h('div', { class: 'settings-grid task-tab' },
-    h('fieldset', { class: 'task-new' }, h('legend', {}, t('task.legendNew')),
-      h('p', { class: 'hint' }, t('task.intro')),
-      field(t('task.title'), title),
-      field(t('task.group'), group, t('task.groupHint')),
-      field(t('own.words'), words, t('own.wordsHint')),
-      field(t('own.text'), text),
-      h('div', { class: 'row' },
-        field(t('task.minutes'), range(minutes, TASK_MINUTES[0], TASK_MINUTES[1], 1, (v) => (minutes = v), (v) => t('parent.minutes', { n: v }))),
-        field(t('task.kindLabel'), kind)),
-      msg,
-      button(t('task.make'), () => void make(), 'btn primary', 'code'),
-      out),
-    h('fieldset', { class: 'task-own' }, h('legend', {}, t('task.legendList', { name: nickname(p) })),
-      list));
 }
 
 function keysTab(p: Profile): HTMLElement {

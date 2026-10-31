@@ -20,7 +20,7 @@ import { THINGS } from '../game/modes/aim-things';
 import { imageUrl } from '../gfx/assets';
 import { compassElement } from '../gfx/compass';
 import type { Surprise, Task } from '../storage/schema';
-import { recordTaskRun, taskOwn } from '../share/task';
+import { isFinished, recordTaskRun, taskOwn } from '../share/task';
 import { localDate, recentTyping } from '../learning/stats';
 import { type Child, closeButton, h } from '../ui/dom';
 import { type EndAction, type EndCardOpts, endCard, focusMain } from '../ui/end-card';
@@ -31,7 +31,7 @@ import { roundButton } from '../ui/hud';
 import { openPlacePicker, openWorlds } from './free-type';
 import { openHelp } from './help';
 import { openStats } from './stats';
-import { handInDialog, minutesLeft, startTask } from './task';
+import { handInDialog, minutesLeft, replayTask, startTask } from './task';
 import { openBreak } from './break';
 
 interface LevelParams {
@@ -66,7 +66,7 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
   else def = levelById(params.id) ?? LEVELS[0];
   // A super-obstacle has no endless form (the asteroids' has): staying plays the world's last regular level.
   const stayDef = params.stay && def.isSuper && def.kind !== 'asteroid' ? LEVELS.find((l) => l.world === def.world && l.index === def.index - 1) ?? def : def;
-  const task = p.tasks.find((x) => x.id === params.task && !x.doneAt) ?? null;
+  const task = p.tasks.find((x) => x.id === params.task) ?? null;
   const next = params.stay ? nextOpen(def) : undefined;
   // A hero's journey plays its parts one after another on this screen and keeps them as one run.
   const journey = def.journey ? newJourneyRun() : undefined;
@@ -105,11 +105,9 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
         if (def.kind === 'aim') return showAimDone(root, def, result, runtime.mode as AimMode, params, runtime.surprise);
         if (def.kind === 'parrot') return showParrotDone(root, def, result, runtime.mode as ParrotMode, params, runtime.surprise);
         if (params.stay) return showStayDone(root, def, result);
-        if (task) {
-          recordTaskRun(task, result);
-          saveProfile();
-        }
-        showResults(root, def, result, params, runtime.surprise, task);
+        const finished = !!task && recordTaskRun(task, result);
+        if (task) saveProfile();
+        showResults(root, def, result, params, runtime.surprise, task, finished);
       },
     });
     if (part?.part === 0) asked = runtime.surprise;
@@ -230,21 +228,22 @@ function toldSurprises(def: LevelDef, asked: Surprise | null, run: SurpriseRun):
   return surprisesToldOn(p);
 }
 
-function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: LevelParams, surprise: Surprise | null, task: Task | null): void {
+/** `finished`: this run finished the task's run. */
+function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: LevelParams, surprise: Surprise | null, task: Task | null, finished: boolean): void {
   const p = app.profile!;
   const practice = def.kind === 'practice';
-  const taskOn = task && !task.doneAt ? task : null;
+  const taskOn = task && !finished ? task : null;
   // A task still running takes the third row.
   const rows: [string, Child][] = [...typingRows(r)];
   if (taskOn) rows.push([t('end.task'), t('end.taskLeft', { n: minutesLeft(taskOn) })]);
   if (r.byStyle) rows.push([t(`end.${r.byStyle.style}Clean`), t('end.ofTotal', { n: r.byStyle.clean, total: r.byStyle.total })]);
   const actions: EndAction[] = [];
-  if (task?.doneAt) actions.push({ label: t('task.handIn'), icon: 'upload', run: () => void handInDialog(p, task) });
+  if (finished && task && isFinished(task)) actions.push({ label: t('task.handIn'), icon: 'upload', run: () => void handInDialog(p, task) });
   const nextDef = def.index >= 0 && !def.isSuper ? LEVELS.find((l) => l.world === def.world && l.index === def.index + 1) : undefined;
   if (r.worldDone !== null) actions.push({ label: t('results.reward'), icon: 'star', run: () => go('story', { scene: WORLD_REWARDS[r.worldDone!], next: 'map' }) });
   else if (nextDef) actions.push({ label: t('results.next'), icon: 'next', run: () => go('level', { id: nextDef.id, task: taskOn?.id }) });
-  // A task's practice plays what is left of it.
-  actions.push({ label: t('results.replay'), icon: 'replay', run: () => (taskOn && practice ? startTask(p, taskOn) : go('level', params)) });
+  // A task's practice plays what is left of its run, or a new run once it finished.
+  actions.push({ label: t('results.replay'), icon: 'replay', run: () => (task && practice ? (taskOn ? startTask(taskOn) : replayTask(task)) : go('level', params)) });
   const stay = def.index >= 0 && !task ? () => go('level', { id: def.id, stay: true }) : undefined;
   if (stay) actions.push({ label: t('results.stay'), icon: 'play', run: stay });
   showEnd(root, {

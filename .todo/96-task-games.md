@@ -3,7 +3,7 @@
 Plan 95 gives a task its game, text source, limit, dictionary, known-letters and world options (the
 owner, 2026-10-31). This plan makes a task **play** that way: one task level with five games, the
 task's own intro text, its limits, and the world it is set in. Until now every task played the
-practice level (`startTask` with `// TEMP: plan 96 ...` from plan 95); that fallback goes.
+practice level (`startTask` with `// TEMP: plan 96 ...` from plan 95, `.todo/.done/95-teacher-tasks.md`); that fallback goes.
 **Depends on plan 95** (the `TaskSpec` fields, the Tasks page, the best run).
 
 Affects `src/game/levels.ts` (a `task` level kind and `taskLevel(spec)`), new modes under

@@ -52,6 +52,8 @@
   translator changes the interface, so it sits with the interface settings.
 - The settings have no progress tab: the progress, the charts and the levels are on the
   typist's own "My progress" page ([statistics](statistics.md)).
+- The settings have no task tab: tasks are made on the teacher page and kept by the player on
+  the Úlohy page ([teacher links](teacher-links.md)).
 - A button by "Back" (the child's picture and name) switches the parent area to another
   profile from the same cards as on the start page (a number key picks one; as many in a row as the
   window has room for, at most five, in balanced rows with more in the first), keeping the open tab and without asking for

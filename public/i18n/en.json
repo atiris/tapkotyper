@@ -60,7 +60,11 @@
       "wardrobe": "A wardrobe and stars for effort",
       "mentors": "Trackable progress"
     },
-    "first": "Pick a nickname, choose your character and start training."
+    "first": "Pick a nickname, choose your character and start training.",
+    "note": {
+      "title": "New task",
+      "sub": "Note a task from its QR code and send it home to your computer"
+    }
   },
   "newProfile": {
     "title": "Hello and welcome!",
@@ -1046,15 +1050,9 @@
     "tabProgress": "Progress",
     "tabKeys": "Keys",
     "tabLevels": "Levels",
-    "tabExercises": "Exercises",
     "showCode": "QR code of all my progress",
     "overallTitle": "All progress",
     "overallCaption": "All my statistics",
-    "exerciseCaption": "Exercise statistics: {title}",
-    "exercisesEmpty": "No exercise yet. Exercises from a teacher are listed here.",
-    "exerciseLine": "{min} min, accuracy {acc} %, rhythm {cpm}",
-    "exerciseOpen": "Not finished yet",
-    "exerciseCode": "QR code",
     "quality": "Accuracy over the last 14 days: {n} %",
     "speed": "Speed over the last 14 days: {n} characters per minute",
     "storyStars": "Stars in this story: {n}",
@@ -1214,7 +1212,6 @@
       "settings": "Settings",
       "own": "Own content",
       "surprises": "Surprises",
-      "task": "Task",
       "keys": "Keys",
       "data": "Data"
     },
@@ -1351,7 +1348,6 @@
       "words": "Own words",
       "text": "Own text"
     },
-    "remove": "Remove",
     "words": "Words",
     "wordsHint": "For example this week's spelling words. One per line, or separated by commas or spaces. They are used even with keys the student does not know yet; the guide shows them.",
     "wordsPlaceholder": "school\nfriend\nsunny",
@@ -1560,7 +1556,7 @@
       "My text: when a parent adds their own text, you type all of it in order.",
       "Just typing: type anything, you walk through a world you choose and see what you typed.",
       "Me and my wardrobe: pick your character and nickname and dress up in the things you unlocked.",
-      "Today's task: when your teacher sends a task, you find it on the card. When it is done, you hand it in."
+      "Tasks: tasks from your teacher. Add them with the camera or a link, play them, play them again and hand them in. Today's task is also on the card on the map."
     ],
     "progressTitle": "My progress",
     "progress": [
@@ -1626,9 +1622,9 @@
     ],
     "taskTitle": "A task from your teacher",
     "task": [
-      "Your teacher can send you a task as a link. Open it and choose who does it.",
-      "On the map you see Today's task. Type until the time is up.",
-      "When it is done, press Hand in and send your teacher the **result link**."
+      "Your teacher sends you a task as a link or shows it as a QR code. On the map press **Tasks** and add it with the camera or by pasting the link.",
+      "On the Tasks page you start it with Play, or on the map in Today's task. Type until the time is up.",
+      "When it is done, press Hand in and send your teacher the **result link**. You can play the task again: the better result counts."
     ],
     "settingsIntro": "The settings are for the teacher or parent. They open with the gear. Until you **lock them with a password**, anyone opens them by clicking a simple confirm button.",
     "settings": {
@@ -1653,10 +1649,6 @@
       "surprises": [
         "Hide a **real reward** behind a rule: after a level, after minutes of training, after more levels or stars, or at random.",
         "The game asks the question before a level and tells the answer once the rule is met."
-      ],
-      "task": [
-        "For typing teachers and parents: make a task with words or a text and a length. You get a link and a QR code.",
-        "Students open the link and, when done, send you a result link. You see the results with the For teachers button on the start page."
       ],
       "keys": [
         "Automatic: keys come one by one, starting from the home row F and J. New keys come as the student uses the previous ones **accurately** and steadily.",
@@ -1688,13 +1680,13 @@
     "mentor": [
       "Open the **For teachers** page with the chart icon at the top right of the start page. Results are stored only in this browser.",
       "Scanning is fastest: type a group (for example 5A), press **Scan QR** and walk around the room. The camera reads several QR codes at once and puts every new result into this group.",
-      "A student shows the QR code in My progress or after handing in a task. Without a camera, paste or open the **result link**.",
+      "A student shows a task's QR code on their Tasks page or after handing it in, and all their statistics in My progress. Without a camera, paste or open the **result link**.",
       "A **set** is the results of one group that came together: one camera scan, or links added within **20 minutes** of the first. The **Groups** tab shows each group's sets; click a day to see the set's students, and download it all as CSV.",
       "Every hand-in is kept. On the **Students** tab, find a student by name and see how accuracy and rhythm changed from the first hand-in to the last. Click a name to see the progress in charts and every hand-in.",
       "**From a phone to a computer:** on the **Files** tab, press **Send to a computer** on the phone and send yourself the .tapko file (by e-mail, for example). On the computer, load it on the same tab or drop it on the page. What you already have is not added twice.",
       "Results older than a **year** are deleted when the page opens. Old results loaded from a file stay for **7 days** more. Delete sooner with **Delete…**.",
       "The checksum shows a damaged link (an exclamation mark by the name), not cheating.",
-      "Create a task for students in the settings, on the Task tab: you get a link and a QR code for the students to open."
+      "Make tasks for students on this page, on the **Tasks** tab: pick the game, the words or text and the limit, and you get a link and a QR code. On a phone without a keyboard a student notes the task with **New task** and sends it home."
     ]
   },
   "tips": {
@@ -1895,21 +1887,12 @@
     "removeManyText": "{sets} are removed, {results} in all.",
     "scan": {
       "start": "Scan QR",
-      "preview": "Camera picture",
-      "camera": "Camera",
-      "starting": "Starting the camera...",
       "many": "Point the camera at one or more QR codes.",
       "one": "Point at one code.",
       "done": "Done",
       "collected": "Collected",
       "unknown": "Unknown code",
       "undo": "Undo this result",
-      "error": {
-        "denied": "Camera access is not allowed. Allow it in the browser settings.",
-        "none": "No camera was found.",
-        "insecure": "The camera works only on a secure page (HTTPS).",
-        "failed": "The camera could not be started."
-      },
       "group": "Group for this scan",
       "groupPlaceholder": "Group, for example 5.A",
       "title": "Scanning",
@@ -1958,7 +1941,8 @@
     "tab": {
       "groups": "Groups",
       "writers": "Students",
-      "files": "Files"
+      "files": "Files",
+      "tasks": "Tasks"
     },
     "n": {
       "sets": {
@@ -2071,6 +2055,13 @@
       "remove": "Remove the set",
       "removeTitle": "Remove the set?",
       "removeText": "The whole set is removed: {n}."
+    },
+    "tasks": {
+      "title": "Prepared tasks",
+      "empty": "No prepared tasks yet. A task you make is kept here.",
+      "show": "Show",
+      "edit": "Edit",
+      "remove": "Remove"
     }
   },
   "task": {
@@ -2080,34 +2071,81 @@
     "pickBelow": "Pick a player below to give them the task.",
     "cancel": "Cancel this task",
     "untitled": "Task",
-    "kind": {
-      "practice": "Own typing with the task's words",
-      "story": "Story with the task's words"
-    },
     "today": "Today's task",
     "left": "{n} min left",
     "start": "Start the task",
     "doneToday": "Task done!",
     "handIn": "Hand in",
     "group": "Group (optional)",
-    "intro": "A task is a link. Send it to the students (for example in your school app); whoever opens it picks a player and sees Today's task on the map. When it is done, the student sends you a result link.",
+    "intro": "A task is a link and a QR code. Send it to your students (for example through your school system) or show it in class. A student adds the task on their Tasks page and sends you the result when it is done. Prepared tasks are kept in this browser only.",
     "title": "Task name",
     "titlePlaceholder": "For example: Farm animals",
     "minutes": "Length",
-    "kindLabel": "What to play",
     "make": "Create link",
     "needContent": "Write at least one word or a text.",
-    "linkTitle": "Task link",
     "linkHint": "Copy the link or show the QR code. The data is inside the link itself and stored nowhere.",
-    "giveHere": "Give the task to {name} too",
-    "doneAt": "done {date}",
-    "played": "{n} of {total} min",
-    "none": "This player has no tasks yet.",
     "bigCode": "Big code",
     "groupPlaceholder": "For example: 5.A",
     "groupHint": "The teacher's table groups results by it.",
     "legendNew": "New task",
-    "legendList": "Tasks of {name}"
+    "gameLabel": "Game",
+    "game": {
+      "chase": "Word stream",
+      "catch": "Waiting words",
+      "copy": "Copying",
+      "ribbon": "Ribbon",
+      "transcribe": "Transcribing"
+    },
+    "words": "Words",
+    "wordsHint": "One per line, or separated by commas or spaces.",
+    "text": "Text",
+    "limit": "Limit",
+    "limits": {
+      "time": "Time",
+      "text": "Text",
+      "both": "Time and text"
+    },
+    "limitHint": "Time: typing goes on until the time is up. Text: the task ends when the whole text is typed. Time and text: the whole text must be typed; if it is done sooner, typing goes on until the time is up.",
+    "dictionary": "Use the dictionary when the text runs out",
+    "dictionaryHint": "When the given words run out, words from the dictionary that the student can type come. Off: the given words repeat.",
+    "knownOnly": "Only letters the student knows",
+    "knownOnlyHint": "Words with letters the student does not know yet are left out. Off: before the task the student learns all the letters of the text they do not know yet, to be able to type everything.",
+    "world": "World",
+    "worlds": {
+      "current": "Current",
+      "random": "Random"
+    },
+    "worldHint": "A random world may also be one the student has not opened yet - only as a backdrop.",
+    "save": "Save changes",
+    "cancelEdit": "Cancel editing",
+    "groupShort": "Group",
+    "resultCaption": "Statistics of the task {title}",
+    "pageTitle": "Tasks",
+    "scan": "Scan a task",
+    "scanHint": "Point the camera at the task's QR code.",
+    "paste": "Task link or code",
+    "pastePlaceholder": "Paste a task link or code",
+    "add": "Add",
+    "notTask": "This is not a task code.",
+    "mine": "My tasks",
+    "noneYet": "No task here yet. Add a task from your teacher with the camera or by pasting its link.",
+    "textLeft": "The whole text is to be typed",
+    "bestLine": "{date} · {min} min · accuracy {acc} % · rhythm {cpm}",
+    "play": "Play",
+    "replay": "Play again",
+    "qr": "QR code",
+    "result": {
+      "button": "Result",
+      "date": "Date",
+      "minutes": "Time",
+      "accuracy": "Accuracy",
+      "rhythm": "Rhythm",
+      "improved": "Playing again made the result better.",
+      "kept": "Playing again did not make it better, the earlier result counts."
+    },
+    "remove": "Remove",
+    "removeTitle": "Remove the task?",
+    "removeText": "The task {title} and its result are removed from this player."
   },
   "move": {
     "button": "Move to another computer",
@@ -3414,5 +3452,25 @@
         "Unknown command!"
       ]
     }
+  },
+  "camera": {
+    "preview": "Camera picture",
+    "pick": "Camera",
+    "starting": "Starting the camera...",
+    "error": {
+      "denied": "Camera access is not allowed. Allow it in the browser settings.",
+      "none": "No camera was found.",
+      "insecure": "The camera works only on a secure page (HTTPS).",
+      "failed": "The camera could not be started."
+    }
+  },
+  "note": {
+    "send": "Send",
+    "email": "E-mail",
+    "again": "Scan another",
+    "noted": "Noted tasks",
+    "remove": "Remove from the list",
+    "subject": "TapkoTyper: {title}",
+    "body": "A task from TapkoTyper. Open this link on a computer with a keyboard:"
   }
 }

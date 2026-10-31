@@ -1,6 +1,5 @@
-import { audio } from '../audio/audio';
 import { t, tn } from '../i18n/i18n';
-import { type Camera, type CameraError, startScan } from '../ui/qr-scanner';
+import { cameraView } from '../ui/camera';
 import { button, h } from '../ui/dom';
 
 export interface ScanCard {
@@ -9,8 +8,8 @@ export interface ScanCard {
   hit(): void;
   /** Blinks the preview orange twice: this code is here already. */
   again(): void;
-  /** A short hint under the preview, for example an unknown code. */
-  hint(text: string): void;
+  /** A short hint under the preview, at most once a second: an unknown code. */
+  unknown(text: string): void;
   /** Replaces the list of what this scan collected; the done bar counts it. */
   setList(rows: Node[]): void;
   /** Stops the camera for good. */
@@ -22,95 +21,29 @@ export interface ScanCard {
  * with the counts of this scan, the cameras and the list of this scan.
  */
 export function scanCard(group: string, onText: (text: string) => void, onDone: () => void): ScanCard {
-  const video = h('video', { class: 'scan-video', playsinline: true, muted: true, 'aria-label': t('teacher.scan.preview') });
-  video.muted = true;
-  const status = h('p', { class: 'hint', role: 'status', 'aria-live': 'polite' });
-  const picker = h('select', { class: 'scan-camera', 'aria-label': t('teacher.scan.camera'), onChange: (e: Event) => void camera?.use((e.target as HTMLSelectElement).value).catch(fail) });
-  picker.hidden = true;
+  const camera = cameraView(onText, (multi) => t(multi ? 'teacher.scan.many' : 'teacher.scan.one'));
   const list = h('ul', { class: 'scan-list' });
   const total = h('span', { class: 'scan-total' });
-  const frame = h('div', { class: 'scan-frame' }, video);
-  let camera: Camera | null = null;
-  let closed = false;
-  let flash = 0;
-  let restore = 0;
-  let base = '';
-
-  const say = (text: string, cls = 'hint') => {
-    status.className = cls;
-    status.textContent = text;
-  };
-  const fail = (e: unknown) => {
-    base = '';
-    say(t(`teacher.scan.error.${(typeof e === 'string' ? e : 'failed') as CameraError}`), 'error');
-  };
-  const halt = () => {
-    camera?.stop();
-    camera = null;
-  };
-  const begin = async () => {
-    if (closed || camera) return;
-    say(t('teacher.scan.starting'));
-    try {
-      const c = await startScan(video, onText);
-      if (closed || document.hidden) return void c.stop();
-      camera = c;
-      base = t(c.multi ? 'teacher.scan.many' : 'teacher.scan.one');
-      say(base);
-      picker.replaceChildren(...c.devices.map((d) => h('option', { value: d.id }, d.label)));
-      picker.hidden = c.devices.length < 2;
-    } catch (e) {
-      fail(e);
-    }
-  };
-  // A hidden tab must not keep the camera on.
-  const onVisibility = () => (document.hidden ? halt() : void begin());
-  document.addEventListener('visibilitychange', onVisibility);
-  void begin();
-
   return {
     el: h('section', { class: 'scan-card' },
       // On a phone this part fills the screen: the camera and the way out without scrolling.
       h('div', { class: 'scan-stage' },
         h('h2', { class: 'scan-title' }, group ? `${t('teacher.scan.title')} · ${group}` : t('teacher.scan.title')),
-        frame,
+        camera.frame,
         h('div', { class: 'scan-done' },
           h('div', { class: 'scan-counts', 'aria-live': 'polite' }, total),
           button(t('teacher.scan.done'), onDone, 'btn primary', 'next'))),
-      picker,
-      status,
+      camera.picker,
+      camera.status,
       h('h2', {}, t('teacher.scan.collected')),
       list),
-    hit() {
-      frame.classList.remove('again');
-      frame.classList.add('hit');
-      clearTimeout(flash);
-      flash = window.setTimeout(() => frame.classList.remove('hit'), 400);
-      audio.sfx('beep');
-      navigator.vibrate?.(400);
-    },
-    again() {
-      clearTimeout(flash);
-      frame.classList.remove('hit', 'again');
-      // A reflow restarts the blink when the same code comes back right away.
-      void frame.offsetWidth;
-      frame.classList.add('again');
-    },
-    hint(text) {
-      say(text);
-      clearTimeout(restore);
-      restore = window.setTimeout(() => base && say(base), 1500);
-    },
+    hit: camera.hit,
+    again: camera.again,
+    unknown: camera.unknown,
     setList(rows) {
       list.replaceChildren(...rows);
       total.textContent = tn('teacher.scan.count', rows.length);
     },
-    stop() {
-      closed = true;
-      document.removeEventListener('visibilitychange', onVisibility);
-      clearTimeout(flash);
-      clearTimeout(restore);
-      halt();
-    },
+    stop: camera.stop,
   };
 }

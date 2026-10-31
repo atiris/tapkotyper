@@ -148,16 +148,16 @@ The teacher's IndexedDB (`src/share/teacher-db.ts`) is not touched.
 
 ## Steps
 - [x] Picture processed (`public/assets/ui-new-task.webp`, 2026-10-31).
-- [ ] `TaskSpec`/`Task` fields, code + parse, store lists, best-run rule; unit tests.
-- [ ] Shared camera helper; the teacher scan card uses it (its behaviour unchanged).
-- [ ] `src/ui/task-form.ts` and the teacher tab "Úlohy" (form, list, show/edit/remove, route); the
+- [x] `TaskSpec`/`Task` fields, code + parse, store lists, best-run rule; unit tests.
+- [x] Shared camera helper; the teacher scan card uses it (its behaviour unchanged).
+- [x] `src/ui/task-form.ts` and the teacher tab "Úlohy" (form, list, show/edit/remove, route); the
   parent settings' task tab removed.
-- [ ] The Tasks page with camera popup, paste, list and row actions; map button; My progress
+- [x] The Tasks page with camera popup, paste, list and row actions; map button; My progress
   without Cvičenia; `startTask` with the TEMP practice fallback.
-- [ ] `src/ui/task-panel.ts`; phone start button, `taskNote` screen, noted list; `bigCode` task kind.
-- [ ] Texts sk/en, translator notes, catalog; `npx tsc --noEmit`, `npx vitest run`.
-- [ ] Spec updates.
-- [ ] Browser check with the playwright MCP in an own tab (the browser may be shared): teacher tab at
+- [x] `src/ui/task-panel.ts`; phone start button, `taskNote` screen, noted list; `bigCode` task kind.
+- [x] Texts sk/en, translator notes, catalog; `npx tsc --noEmit`, `npx vitest run`.
+- [x] Spec updates.
+- [x] Browser check with the playwright MCP in an own tab (the browser may be shared): teacher tab at
   1366x768 and phone width (each game shows its source field, limit shows/hides minutes, make, show
   QR, edit keeps the id, remove, reload keeps the list); the parent settings have no task tab; a
   player's map has Úlohy under Pokračovať; the Tasks page adds a pasted link, the camera popup gets a
@@ -167,3 +167,31 @@ The teacher's IndexedDB (`src/share/teacher-db.ts`) is not touched.
   start page at 390x844 with touch emulation shows Nová úloha first; `#/note` with a fed code shows
   the task view, the E-mail href, Veľký kód, the noted list after reload. Report the camera itself
   as unverified.
+
+## Decisions taken while implementing
+- `TaskSpec`, `Task` (play of the run going on + `finished` count + `best?: TaskRun` with `try`),
+  `TeacherTask` and `NotedTask` live in `src/storage/schema.ts`; old stored tasks get defaults
+  in `normalizeProfile` (no migration). `doneAt` is now `best.doneAt`.
+- "Better" compares the accuracy rounded as the result shows it, then the rhythm.
+- A player keeps 30 tasks (was 10): the Tasks page is the child's record of hand-ins.
+- Text limit until plan 96: the TEMP practice plays the task's minutes for every limit; the row
+  says "Treba napísať celý text" instead of minutes left.
+- "Zopakovať" (and "Hrať znova" on the end card of a finished run) restarts the run from zero
+  (`restartTask`); "Hrať" continues the unfinished run.
+- The parent settings' form helpers moved to `src/ui/form.ts` (with a new `segmented`), shared by
+  the settings and the task form; the camera's texts moved from `teacher.scan.*` to `camera.*`.
+- The quick-look overlay (click on Tapko) lost its Cvičenia tab too, like My progress.
+- The phone's note page reuses `task.importTitle` ("Nová úloha") as its title.
+- E2E: `teacher-links` now makes the task on the teacher page; stale counts in `help.spec`
+  (icon lines, settings sections) and `parent.spec` (tabs) fixed.
+
+## Done - 2026-10-31
+Shipped: task data with game/limit/dictionary/known letters/world, best-run rule with unit tests;
+shared camera helper (teacher scan, Tasks page popup, phone); teacher tab "Úlohy" with form,
+list, show/edit/remove; parent task tab and My progress Cvičenia removed; the player's Tasks page
+(camera popup, paste, list, play/repeat/hand-in/QR/result/remove) and the map button; the phone's
+"Nová úloha" button and `#/note` page with noted tasks; `bigCode` task kind; texts, translator
+notes, catalog; specs. Verified in the browser (camera fed with a canvas stream showing a task QR).
+Left out: playing the task's own game, limit, dictionary, letters and world (plan 96, TEMP
+fallback in `startTask`); a real camera on a device was not tried.
+

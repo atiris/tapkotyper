@@ -198,29 +198,71 @@ export interface Companion {
   accessories: string[];
 }
 
-export type TaskKind = 'practice' | 'story';
+/** The game a task plays: the words games use the task's words, the text games its text. */
+export type TaskGame = 'chase' | 'catch' | 'copy' | 'ribbon' | 'transcribe';
+/** When a task ends: when its time is up, when its text is all typed, or the whole text and then on until the time is up. */
+export type TaskLimit = 'time' | 'text' | 'both';
 
-/**
- * A task from a teacher or parent, taken from a link: its own words and text, how long, and
- * what to play; with the play collected so far over all its runs.
- */
-export interface Task {
+/** A task as the teacher made it and its link carries. */
+export interface TaskSpec {
   id: string;
   title: string;
-  words: string[];
-  text: string;
-  minutes: number;
-  /** Free practice of the task's words only, or the next story levels with them mixed in. */
-  kind: TaskKind;
   /** Class or group label the teacher typed, for example "5.A". */
   group?: string;
+  game: TaskGame;
+  /** The words of a words game; empty for a text game. */
+  words: string[];
+  /** The text of a text game; empty for a words game. */
+  text: string;
+  limit: TaskLimit;
+  /** Minutes of the limits `time` and `both`; kept but unused for `text`. */
+  minutes: number;
+  /** When the task's words run out, words of the dictionary the student can type come; off: the task's words repeat. */
+  dictionary: boolean;
+  /** Words with letters the student does not know yet are left out; off: those letters are learned before the task. */
+  knownOnly: boolean;
+  /** The world behind the task: the student's current one or any (only as a backdrop). */
+  world: 'current' | 'random';
+}
+
+/** One finished run of a task. */
+export interface TaskRun {
   seconds: number;
   chars: number;
   errors: number;
-  /** Rhythm of the last run, correct characters per minute. */
+  /** Rhythm, correct characters per minute. */
   cpm: number;
-  /** Local date the task was finished. */
-  doneAt?: string;
+  /** Local date the run finished. */
+  doneAt: string;
+  /** Which finished run it was, 1 for the first. */
+  try: number;
+}
+
+/**
+ * A task from a teacher, taken from a link or a code: what the teacher made, the play of the run
+ * going on now (collected over its sittings), and the best finished run, which is handed in.
+ */
+export interface Task extends TaskSpec {
+  seconds: number;
+  chars: number;
+  errors: number;
+  /** Rhythm of the last sitting, correct characters per minute. */
+  cpm: number;
+  /** Finished runs so far. */
+  finished: number;
+  best?: TaskRun;
+}
+
+/** A task the teacher made on the teacher page and keeps there. */
+export interface TeacherTask extends TaskSpec {
+  madeAt: number;
+}
+
+/** A task noted on a phone from the teacher's QR code: its code, to send it home. */
+export interface NotedTask {
+  code: string;
+  title: string;
+  at: number;
 }
 
 export interface Profile {
@@ -233,7 +275,7 @@ export interface Profile {
   companion: Companion;
   customMessages: string[];
   surprises: Surprise[];
-  /** Tasks from links, newest first. */
+  /** Tasks from links and codes, newest first. */
   tasks: Task[];
   layout: LayoutId;
   language: LangRef;
@@ -258,6 +300,10 @@ export interface StoreData {
   parentLock?: ParentLock;
   /** When the super player last removed or changed the password without the current one (ms since epoch). */
   lockRemovedAt?: number;
+  /** Tasks made on the teacher page in this browser, newest first; never sent anywhere. */
+  teacherTasks: TeacherTask[];
+  /** Tasks noted on a phone without a keyboard, newest first. */
+  notedTasks: NotedTask[];
 }
 
 export const GUEST_ID = 'guest';

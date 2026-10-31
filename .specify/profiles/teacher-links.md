@@ -4,21 +4,55 @@
 - **No server, links only.** Everything a link carries is inside its address hash
   (`#/task/…`, `#/result/…`, `#/move/…`), compressed, with a format version, so the data
   never reaches a web server and old links can still be told apart later.
-- **Task** (parent area, tab "Úloha"): a name, own words and/or a text, 1-20 minutes, and
-  what to play: free practice of only the task's words, or the next story levels with the
-  task's words mixed in mostly. The result is a link to copy and a QR code (when the link
-  fits in one). It can also be given straight to the current player.
+- **Making a task** happens only on the teacher page, tab **Úlohy** (`#/teacher/tasks`): a form,
+  then "Pripravené úlohy", newest first. The form asks, top to bottom: the task's name and group;
+  the **game** (Prúd slov, Čakajúce slová, Odpis, Pás, Prepis); the task's **words** (for the two
+  words games) or its **text** (for the three text games), only the one the game uses; the
+  **limit**: Čas (typing goes on until the time is up), Text (the task ends when the whole text
+  is typed) or Čas aj text (the whole text, and then on until the time is up); **use the
+  dictionary when the text runs out** (on: words of the dictionary the student can type come;
+  off: the task's words repeat); **only letters the student knows** (on: words with unknown
+  letters are left out; off: the student learns the missing letters before the task); the
+  **length** 1-30 minutes (only for a limit with time); the **world**: the student's current one
+  or a random one (also one not open yet, only as a backdrop). Each choice has one line saying
+  what it does. A task needs at least one word or some text.
+- Making a task keeps it in the list at once and shows it: the link to copy, its QR code and
+  "Veľký kód" (the task's title over the code, in a frame of its own colour). A row shows the
+  title, game, limit, group and the date made, with **Ukázať**, **Upraviť** (the form fills;
+  saving keeps the task's identity so its results stay together) and **Odstrániť**. The list
+  keeps the last 100 tasks in this browser and is never sent anywhere. Until the task games
+  exist, a task plays its words and text as a timed practice of its minutes.
 - Opening a task link shows the start page with a task panel in place of its title and texts:
-  **Nová úloha** with the task name, what is played and how long, a hint to pick a player, and
-  **Zrušiť túto úlohu**. The player card asks **Pre koho je táto úloha?**; a player, **Vyskúšať**
-  or **Nový hráč** takes the task. The map then
-  shows **Úloha na dnes** as its first card until the minutes are played; a story task
-  may take several levels, and leaving a level early does not count it.
-- **Hand-in:** after the task, the child gets **Odovzdať**: the end card "Úloha splnená!" (the
+  **Nová úloha** with the task name, its game, limit and group, its words or text, a hint to pick
+  a player, and **Zrušiť túto úlohu**. The player card asks **Pre koho je táto úloha?**; a player,
+  **Vyskúšať** or **Nový hráč** takes the task. The map shows **Úloha na dnes** as its first card
+  until the task is finished.
+- **The player's Úlohy page** (`#/p/<id>/tasks`, the map's **Úlohy** button right under
+  Pokračovať) is the child's place for tasks: **Naskenovať úlohu** (a camera window with only the
+  picture, the camera choice when there are several, and one status line; a task code flashes
+  green, beeps, buzzes where it can and the window closes by itself) and a field for a pasted
+  link or code with **Pridať**; anything else says "Toto nie je kód úlohy.". A task added again
+  only refreshes what the teacher made. Under them **Moje úlohy**, unfinished first, a new one
+  marked for a moment: title, game, group, and what is left or the best run (date, minutes,
+  accuracy, rhythm). **Hrať** or **Zopakovať**, and for a finished task **Odovzdať**, **QR kód**
+  (the result's big code) and **Výsledok** (the best run and whether playing again improved it);
+  **Odstrániť** asks first. A player keeps the last 30 tasks.
+- **Best run:** a finished task keeps its best run. Playing it again starts from zero; a finished
+  repeat replaces the best only when it is better (higher accuracy, at equal accuracy a higher
+  rhythm); an unfinished repeat changes nothing. The hand-in and the QR code always carry the
+  best run.
+- **Noting a task on a phone:** a phone without a keyboard has **Nová úloha** on its start page
+  ([devices](../experience/devices.md)): a page with the same camera. A task code stops the camera
+  and shows the task panel with **Poslať** (the phone's share sheet, only where the phone has
+  one), **E-mail** (a new e-mail with the task's name and link), **Kopírovať odkaz**, **Veľký kód**
+  (for a laptop's camera on the Úlohy page) and **Skenovať ďalšiu**. Under the camera
+  "Zaznačené úlohy" keeps the last 20 noted tasks (the same one once, newest first): a tap shows
+  it again, an X removes it.
+- **Hand-in:** after the task (and on the Úlohy page), the child gets **Odovzdať**: the end card "Úloha splnená!" (the
   one card of every end, see [mechanics](../game/mechanics.md)) with the backpack, the minutes, the
   task, "Pošli učiteľovi: odkaz alebo kód", the result link, "Kopírovať odkaz" and "Veľký kód". The link holds the player's real name
   (or the nickname when there is none),
-  the task, the date, minutes played (typing time, [statistics](statistics.md)), accuracy, rhythm and the five weakest keys, a yes/no
+  the task, the date, minutes played of its best run (typing time, [statistics](statistics.md)), accuracy, rhythm and the five weakest keys, a yes/no
   flag that the super player removed or changed the settings password on the child's device
   ([profiles](profiles.md)), plus a checksum; the teacher's views and the QR scan show a red
   lock by that child's name. The teacher's help says plainly that the checksum finds damaged copies, not cheating.
@@ -32,7 +66,7 @@
   form one set; later, or in another group, a new set starts. One camera scan is always one
   set, however long. A set keeps its group, start and end time, where it came from (scan, link,
   file) and its results.
-- **Tabs:** Skupiny · Študenti · Súbory, under the intro, the scan box (the group, then "Sken QR") and below it the paste field with "Add". One line at the bottom says the camera picture goes nowhere and the results stay in this browser.
+- **Tabs:** Skupiny · Študenti · Súbory · Úlohy, under the intro, the scan box (the group, then "Sken QR") and below it the paste field with "Add". One line at the bottom says the camera picture goes nowhere and the results stay in this browser.
   Each tab, a set and a writer have their own address, so Back works.
   - **Skupiny:** group chips; per group a line with sets, writers, accuracy and rhythm, then one
     row per set: day, time from-to, tasks, results, "zvládli X z Y", accuracy, rhythm. On a
@@ -78,8 +112,8 @@
   counts this scan ("7 načítaných") next to "Hotovo", the list of this scan follows below.
   Hotovo stops the camera and shows the scanned group with this scan's set open.
 - **Big code:** the child's hand-in can show the QR over the whole screen so it can be scanned
-  across a desk: the child's name and what it is first ("Ema · Štatistiky cvičenia …" in a
-  green frame, "Ema · Celé moje štatistiky" in an orange one), the code as big as fits, then
+  across a desk: the child's name and what it is first ("Ema · Štatistiky úlohy …" in a
+  green frame, "Ema · Celé moje štatistiky" in an orange one; a task's own code has only its title, in a plum frame), the code as big as fits, then
   "Kopírovať kód" and "Zatvoriť klikom na obrazovku"; a click anywhere also closes it. The
   frame's padding and the gaps between caption, code and buttons are one size.
 - **A writer's page:** clicking a writer (the name in a table, the whole card on a phone)
@@ -111,6 +145,13 @@
   sorting and one child's card answer what a teacher asks ("who needs help", "how is Jakub doing").
 - A teacher with 20-30 screens in a room cannot paste links one at a time; walking past the
   screens with a phone or webcam fills the table, and links stay for children working at home.
+- A teacher prepares the week's tasks in one place and gives the same task to a class again;
+  the task's game, limit and source say exactly what the children practise. Parents give their
+  own words in the own content tab, so the settings need no task tab.
+- A child keeps every task in one place, may try again for a better result without losing a
+  good one, and hands in the best; the teacher sees the child's best effort.
+- Pupils often have only a phone at school: noting the task from the board's QR code and sending
+  it home brings it to the computer with a keyboard without typing a long link.
 - Teachers and parents want to give today's task and get the child's results back, and
   a child wants to continue on another computer, without copying JSON files around.
 - The app has no backend and promises that nothing leaves the browser on its own; links

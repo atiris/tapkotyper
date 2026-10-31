@@ -3,7 +3,8 @@ import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { CODEC_VERSION, checksum, codeFrom, decode, encode } from './codec';
 import { OVERALL_ID, makeOverallResult, makeResult, parseResult, resultCode } from './result';
-import { activeTask, addTask, parseTask, recordTaskRun, taskCode, taskOwn } from './task';
+import type { TaskSpec } from '../storage/schema';
+import { type FinishedTask, activeTask, addTask, betterRun, keepTeacherTask, noteTask, parseTask, recordTaskRun, restartTask, taskCode } from './task';
 import { parseTapko, tapkoFile } from './tapko-file';
 import { type SortKey, TeacherStore, childKey, childSummary, dateBefore, fingerprint, newest, nextSort, sortWriters } from './teacher';
 import { moveCode, parseMove, trimHistory } from './transfer';
@@ -17,6 +18,8 @@ async function teacherStore(idb: IDBFactory | null = new IDBFactory(), now = Dat
   await s.load(now);
   return s;
 }
+
+const SPEC: TaskSpec = { id: 't1', title: 'Zvieratá', game: 'chase', words: ['pes', 'mačka'], text: '', limit: 'time', minutes: 2, dictionary: true, knownOnly: true, world: 'current' };
 
 describe('codec', () => {
   it('round-trips with link-safe characters', async () => {
@@ -53,11 +56,20 @@ describe('codec', () => {
 });
 
 describe('tasks', () => {
-  const spec = { id: 't1', title: 'Zvieratá', words: ['pes', 'mačka'], text: '', minutes: 2, kind: 'practice' as const };
+  const spec = SPEC;
+  const run = (chars: number, errors: number, cpm: number) => ({ seconds: 120, chars, errors, cpm });
 
   it('travel by code and come back cleaned', async () => {
-    expect(await parseTask(await taskCode({ ...spec, minutes: 99, title: `  ${'x'.repeat(100)}` }))).toMatchObject({ minutes: 20, title: 'x'.repeat(60) });
-    await expect(parseTask(await encode({ app: 'tapkotyper', type: 'task', id: 'x', title: 'y', words: [], text: '' }))).rejects.toThrow('share.broken');
+    expect(await parseTask(await taskCode({ ...spec, minutes: 99, title: `  ${'x'.repeat(100)}` }))).toMatchObject({ minutes: 30, title: 'x'.repeat(60) });
+    await expect(parseTask(await encode({ app: 'tapkotyper', type: 'task', id: 'x', title: 'y', game: 'chase', words: [], text: '' }))).rejects.toThrow('share.broken');
+    await expect(parseTask(await encode({ app: 'tapkotyper', type: 'task', id: 'x', title: 'y', words: ['a'], text: '' }))).rejects.toThrow('share.broken');
+    expect(await parseTask(await taskCode(spec))).toEqual(spec);
+  });
+
+  it('keep only the source their game uses', async () => {
+    const copy = await parseTask(await taskCode({ ...spec, game: 'copy', text: 'Pes beží.', limit: 'both', dictionary: false, knownOnly: false, world: 'random' }));
+    expect(copy).toMatchObject({ game: 'copy', words: [], text: 'Pes beží.', limit: 'both', dictionary: false, knownOnly: false, world: 'random' });
+    await expect(parseTask(await taskCode({ ...spec, game: 'ribbon' }))).rejects.toThrow('share.broken');
   });
 
   it('finish when their time is played, and keep play when given again', () => {
@@ -65,21 +77,55 @@ describe('tasks', () => {
     const task = addTask(p, spec);
     expect(activeTask(p)).toBe(task);
     expect(recordTaskRun(task, { seconds: 70, chars: 50, errors: 5, cpm: 40 })).toBe(false);
-    expect(addTask(p, spec).seconds).toBe(70);
+    expect(addTask(p, { ...spec, title: 'Nové' })).toMatchObject({ seconds: 70, title: 'Nové' });
     expect(p.tasks).toHaveLength(1);
     expect(recordTaskRun(p.tasks[0], { seconds: 49, chars: 50, errors: 0, cpm: 44 })).toBe(true);
-    expect(p.tasks[0].doneAt).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(p.tasks[0].best).toMatchObject({ seconds: 119, chars: 100, errors: 5, cpm: 44, try: 1 });
+    expect(p.tasks[0].best!.doneAt).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(p.tasks[0].seconds).toBe(0);
     expect(activeTask(p)).toBe(null);
-    expect(taskOwn(p.tasks[0]).share).toBe(1);
+  });
+
+  it('keep the best run: a better repeat replaces it, a worse or unfinished one does not', () => {
+    const p = newProfile('Ema', 'sk');
+    const task = addTask(p, spec);
+    recordTaskRun(task, run(90, 10, 50));
+    restartTask(task);
+    expect(recordTaskRun(task, run(80, 20, 90))).toBe(true);
+    expect(task.best).toMatchObject({ chars: 90, try: 1 });
+    restartTask(task);
+    recordTaskRun(task, run(90, 10, 60));
+    expect(task.best).toMatchObject({ cpm: 60, try: 3 });
+    restartTask(task);
+    recordTaskRun(task, run(90, 10, 60));
+    expect(task.best).toMatchObject({ try: 3 });
+    restartTask(task);
+    expect(recordTaskRun(task, { seconds: 30, chars: 100, errors: 0, cpm: 99 })).toBe(false);
+    expect(task.best).toMatchObject({ try: 3 });
+    expect(task.finished).toBe(4);
+    const r = (chars: number, errors: number, cpm: number) => ({ seconds: 60, chars, errors, cpm, doneAt: '', try: 1 });
+    expect(betterRun(r(95, 5, 10), r(90, 10, 99))).toBe(true);
+    expect(betterRun(r(90, 10, 50), r(90, 10, 50))).toBe(false);
+  });
+
+  it('are kept on the teacher page and noted on a phone, newest first', () => {
+    let list = keepTeacherTask([], spec, 1);
+    list = keepTeacherTask(list, { ...spec, id: 't2' }, 2);
+    list = keepTeacherTask(list, { ...spec, title: 'Upravená' }, 3);
+    expect(list.map((x) => [x.id, x.title, x.madeAt])).toEqual([['t2', 'Zvieratá', 2], ['t1', 'Upravená', 1]]);
+    let noted = noteTask([], 'a', 'A', 1);
+    noted = noteTask(noted, 'b', 'B', 2);
+    noted = noteTask(noted, 'a', 'A', 3);
+    expect(noted.map((x) => x.code)).toEqual(['a', 'b']);
   });
 });
 
 describe('results', () => {
   it('round-trip, and a changed copy is not intact', async () => {
     const p = newProfile('Ema', 'sk');
-    const task = addTask(p, { id: 't1', title: 'Zvieratá', words: ['pes'], text: '', minutes: 1, kind: 'story' });
+    const task = addTask(p, { ...SPEC, minutes: 1 });
     recordTaskRun(task, { seconds: 60, chars: 90, errors: 10, cpm: 50 });
-    const r = makeResult(p, task);
+    const r = makeResult(p, task as FinishedTask);
     expect(r).toMatchObject({ name: 'Ema', minutes: 1, accuracy: 90, cpm: 50 });
     const back = await parseResult(await resultCode(r));
     expect(back).toEqual({ result: r, intact: true });
@@ -89,21 +135,21 @@ describe('results', () => {
 
   it('name a player without a real name by the nickname', async () => {
     const p = newProfile('', 'sk', undefined, 'fox', 'Blesk');
-    const task = addTask(p, { id: 't1', title: 'Zvieratá', words: ['pes'], text: '', minutes: 1, kind: 'story' });
+    const task = addTask(p, { ...SPEC, minutes: 1 });
     recordTaskRun(task, { seconds: 60, chars: 90, errors: 10, cpm: 50 });
-    expect((await parseResult(await resultCode(makeResult(p, task)))).result.name).toBe('Blesk');
+    expect((await parseResult(await resultCode(makeResult(p, task as FinishedTask)))).result.name).toBe('Blesk');
     expect(makeOverallResult(p, 'x').name).toBe('Blesk');
   });
 
   it('carry a group, and a result without one keeps its old checksum', async () => {
     const p = newProfile('Ema', 'sk');
-    const task = addTask(p, { id: 't1', title: 'Zvieratá', words: ['pes'], text: '', minutes: 1, kind: 'story', group: '5.A' });
+    const task = addTask(p, { ...SPEC, minutes: 1, group: '5.A' });
     recordTaskRun(task, { seconds: 60, chars: 90, errors: 10, cpm: 50 });
-    const r = makeResult(p, task);
+    const r = makeResult(p, task as FinishedTask);
     expect(r.group).toBe('5.A');
     expect(r.levels).toBe(0);
     expect(await parseResult(await resultCode(r))).toEqual({ result: r, intact: true });
-    const spec = { id: 't1', title: 'x', words: ['a'], text: '', minutes: 1, kind: 'practice' as const };
+    const spec = { ...SPEC, title: 'x', words: ['a'], minutes: 1 };
     expect((await parseTask(await taskCode({ ...spec, group: ' 5.A ' }))).group).toBe('5.A');
     expect('group' in (await parseTask(await taskCode(spec)))).toBe(false);
     // An older link has no group field and the sum of the old field list.
@@ -118,11 +164,11 @@ describe('results', () => {
 
   it('say when the service menu removed the settings password, and the flag cannot be dropped unseen', async () => {
     const p = newProfile('Ema', 'sk');
-    const task = addTask(p, { id: 't1', title: 'Zvieratá', words: ['pes'], text: '', minutes: 1, kind: 'story' });
+    const task = addTask(p, { ...SPEC, minutes: 1 });
     recordTaskRun(task, { seconds: 60, chars: 90, errors: 10, cpm: 50 });
-    const plain = makeResult(p, task);
+    const plain = makeResult(p, task as FinishedTask);
     expect('lockRemoved' in plain).toBe(false);
-    const r = makeResult(p, task, true);
+    const r = makeResult(p, task as FinishedTask, true);
     expect(r.lockRemoved).toBe(true);
     expect(makeOverallResult(p, 'x', true).lockRemoved).toBe(true);
     expect(await parseResult(await resultCode(r))).toEqual({ result: r, intact: true });

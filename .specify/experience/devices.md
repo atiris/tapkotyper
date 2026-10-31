@@ -10,11 +10,16 @@
   import stay hidden.
 - Pressing any key of a connected keyboard lifts the card at once and for the rest of the
   session (the card has no text field, so an on-screen keyboard cannot lift it).
+- Above it, first after the intro, a big orange **"Nová úloha"** button (a badger pupil typing
+  at a desk; "Zaznačte si úlohu z QR kódu a pošlite si ju domov do počítača") opens noting a
+  task: a child without a keyboard at school notes the teacher's task on a phone and sends it
+  home to the computer ([teacher links](../profiles/teacher-links.md)). Order: intro, Nová úloha,
+  Pre učiteľov, Chýba klávesnica (last, in the quieter style).
 - Under it a big orange **"Pre učiteľov"** button with the teacher's own animal (a
   turtle with glasses and a mortar board, not one of the players' animals) opens the teacher
   view; the same turtle greets an empty teacher view.
-- Until a key is seen only the start page, the teacher view (also from a result link) and
-  help are reachable; any other address goes to the start page. A task link opened then is
+- Until a key is seen only the start page, the teacher view (also from a result link), noting
+  a task and help are reachable; any other address goes to the start page. A task link opened then is
   kept and continues once the keyboard is there.
 - A computer, or any device with a mouse or trackpad, is never asked for a keyboard.
 - **Sound on phones:** sound starts with the first tap (every device starts with the sound off,

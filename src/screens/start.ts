@@ -3,9 +3,10 @@ import { keyboardGated, onKeyboard, takeWaiting } from '../app/keyboard-gate';
 import { audio } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
 import { language, t, tList } from '../i18n/i18n';
-import { type TaskSpec, addTask } from '../share/task';
-import type { Lang, Profile } from '../storage/schema';
-import { type ICONS, arrowFocus, bigButton, button, h, icon, keyboardArt, modal, teacherArt } from '../ui/dom';
+import { addTask } from '../share/task';
+import type { Lang, Profile, TaskSpec } from '../storage/schema';
+import { type ICONS, arrowFocus, bigButton, button, h, icon, keyboardArt, modal, taskArt, teacherArt } from '../ui/dom';
+import { taskPanel } from '../ui/task-panel';
 import { cornerControls, languageButton, settingsButton } from '../ui/chrome';
 import { roundButton } from '../ui/hud';
 import { numberPick, profileCard } from '../ui/profile-card';
@@ -41,7 +42,10 @@ export function startScreen(root: HTMLElement, { task }: { task?: TaskOffer } = 
   });
   const gated = keyboardGated();
 
-  const top = task ? taskPanel(task.spec) : h('div', { class: 'start-top' },
+  const top = task ? taskPanel(task.spec,
+    // The card is beside the panel on a wide page and under it on a narrow one.
+    h('p', { class: 'task-pick' }, h('span', { class: 'wide' }, t('task.pickRight')), h('span', { class: 'narrow' }, t('task.pickBelow'))),
+    h('div', { class: 'task-actions' }, button(t('task.cancel'), () => go('start'), 'btn ghost', 'close'))) : h('div', { class: 'start-top' },
     gated ? logoFace('gate-logo') : null,
     h('h1', { class: 'wordmark', 'aria-label': 'TapkoTyper' },
       h('span', { class: 'wm-halo', 'aria-hidden': 'true' }, 'TapkoTyper'),
@@ -113,6 +117,7 @@ export function startScreen(root: HTMLElement, { task }: { task?: TaskOffer } = 
   const more = task ? null : h('div', { class: 'start-more' },
     ...(gated ? [
       h('p', { class: 'start-intro' }, t('start.phoneIntro')),
+      bigButton(taskArt(), t('start.note.title'), t('start.note.sub'), () => go('taskNote')),
       bigButton(teacherArt(), t('start.teacher.title'), t('start.teacher.sub'), () => go('teacher')),
       keyboardButton(),
     ] : [
@@ -154,23 +159,6 @@ export function startScreen(root: HTMLElement, { task }: { task?: TaskOffer } = 
     offPick();
     offSuper();
   };
-}
-
-/** A task link's panel: the task's title, what and how long it asks, how to take it, and a way out. */
-function taskPanel(spec: TaskSpec): HTMLElement {
-  return h('section', { class: 'task-panel', 'aria-labelledby': 'task-title' },
-    h('header', {},
-      h('p', { class: 'task-label' }, t('task.importTitle')),
-      h('h1', { id: 'task-title' }, spec.title || t('task.untitled'))),
-    h('div', { class: 'task-body' },
-      h('dl', {},
-        h('dt', {}, t('task.kindLabel')), h('dd', {}, t(`task.kind.${spec.kind}`)),
-        h('dt', {}, t('task.minutes')), h('dd', {}, t('parent.minutes', { n: spec.minutes }))),
-      spec.words.length ? h('p', { class: 'task-words' }, spec.words.slice(0, 20).join(', '), spec.words.length > 20 ? ' …' : '') : null,
-      spec.text ? h('p', { class: 'task-text' }, spec.text.length > 160 ? `${spec.text.slice(0, 160)} …` : spec.text) : null),
-    // The card is beside the panel on a wide page and under it on a narrow one.
-    h('p', { class: 'task-pick' }, h('span', { class: 'wide' }, t('task.pickRight')), h('span', { class: 'narrow' }, t('task.pickBelow'))),
-    h('div', { class: 'task-actions' }, button(t('task.cancel'), () => go('start'), 'btn ghost', 'close')));
 }
 
 /** The logo face: its picture for a light page and the one drawn for a dark page (the CSS shows one), with `tip` on hover. */

@@ -3,12 +3,12 @@ import { button, h } from './dom';
 import { qr } from './link-box';
 
 /**
- * A QR code over the whole screen, readable by a camera across a desk: the child's name and
- * what the code is (`caption`: an exercise or all statistics) first, then the code, then
- * copying and closing. `kind` colours the frame so the two are told apart at a glance. A click
- * anywhere but the copy button, the close button or Esc closes it.
+ * A QR code over the whole screen, readable by a camera across a desk: the child's name (none for
+ * a task) and what the code is (`caption`: an exercise, all statistics or a task's title) first,
+ * then the code, then copying and closing. `kind` colours the frame so they are told apart at a
+ * glance. A click anywhere but the copy button, the close button or Esc closes it.
  */
-export function bigCode(link: string, name: string, caption: string, kind: 'exercise' | 'overall'): void {
+export function bigCode(link: string, name: string, caption: string, kind: 'exercise' | 'overall' | 'task'): void {
   let copiedTimer = 0;
   const copyLabel = h('span', {}, t('share.copyCode'));
   const copy = button(copyLabel, async () => {
@@ -23,9 +23,9 @@ export function bigCode(link: string, name: string, caption: string, kind: 'exer
   }, 'btn big-code-copy', 'copy');
   copy.addEventListener('click', (e) => e.stopPropagation());
   const code = qr(link);
-  const head = h('p', { class: 'big-code-caption' }, name, h('span', { class: 'big-code-dot', 'aria-hidden': 'true' }, '·'), caption);
+  const head = h('p', { class: 'big-code-caption' }, ...(name ? [name, h('span', { class: 'big-code-dot', 'aria-hidden': 'true' }, '·')] : []), caption);
   const actions = h('div', { class: 'big-code-actions' }, copy, button(t('share.closeByClick'), () => undefined, 'btn big-code-close', 'close'));
-  const view = h('div', { class: `big-code ${kind}`, role: 'dialog', 'aria-modal': 'true', 'aria-label': `${name} · ${caption}` }, head, code, actions);
+  const view = h('div', { class: `big-code ${kind}`, role: 'dialog', 'aria-modal': 'true', 'aria-label': name ? `${name} · ${caption}` : caption }, head, code, actions);
   // The code takes all the room the caption and the buttons leave, as a square.
   const fit = () => {
     const s = getComputedStyle(view);

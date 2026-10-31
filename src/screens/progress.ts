@@ -13,9 +13,9 @@ import { badgeShow } from '../ui/badge-show';
 import { barTabLinks, tabBar } from '../ui/tabs';
 import { tip } from '../ui/tooltip';
 import { onTypedWord } from '../ui/typed-word';
-import { exercisesTab, keysTab, progressTab, storyPicture } from './stats';
+import { keysTab, progressTab, storyPicture } from './stats';
 
-const TABS = ['progress', 'keys', 'levels', 'exercises'] as const;
+const TABS = ['progress', 'keys', 'levels'] as const;
 type Tab = (typeof TABS)[number];
 
 /** The trends over the last sessions: accuracy, rhythm and time per day. */
@@ -96,14 +96,14 @@ function showWords(): string[] {
   return [...STORIES.map((s) => t(s.title)), t('progress.badges')].flatMap((s) => s.split(/\s+/)).filter((w) => w.length >= 4);
 }
 
-/** "My progress" as a page of its own, opened from the map: progress, keys with the trends, levels and exercises; one of its words typed brings the badge show. */
+/** "My progress" as a page of its own, opened from the map: progress, keys with the trends and levels; one of its words typed brings the badge show. */
 export function progressScreen(root: HTMLElement): () => void {
   const p = app.profile!;
   const body = h('div', { class: 'tab-panel stats-body' });
   const nav = tabBar(TABS.map((tab) => [tab, t(`progress.tab${tab[0].toUpperCase()}${tab.slice(1)}`)] as const), 'progress', (tab: Tab) => body.replaceChildren(
     tab === 'progress' ? progressTab(p, false)
       : tab === 'keys' ? h('div', {}, keysTab(p, () => {}), trendCharts(p))
-        : tab === 'levels' ? storyLevels(p) : exercisesTab(p)));
+        : storyLevels(p)));
   const bar = h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'), h('h1', {}, t('progress.title')));
   barTabLinks(bar, nav);
   root.append(h('div', { class: 'screen progress-screen' }, bar, cornerControls(), nav, body));

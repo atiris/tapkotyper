@@ -97,7 +97,7 @@ test('the parent question shows once on a double click, also while the settings 
   await expect(page.locator('.parent-screen')).toBeVisible();
 });
 
-test('settings: nickname first and required, name optional, word language, key font, task legends, progress by story', async ({ page }) => {
+test('settings: nickname first and required, name optional, word language, key font, no task tab, progress by story', async ({ page }) => {
   await createProfile(page, 'Ema');
   await page.locator('.top-right .round-btn').first().click();
   await page.locator('.confirm .btn:not(.primary)').last().click();
@@ -122,9 +122,8 @@ test('settings: nickname first and required, name optional, word language, key f
   await page.getByRole('checkbox', { name: /\(l, I, 1\)/ }).uncheck();
   await expect(page.locator('body')).not.toHaveAttribute('data-keyfont');
 
-  await page.locator('.tab[data-tab=task]').click();
-  await expect(page.locator('.task-tab legend')).toHaveCount(2);
-  for (const legend of await page.locator('.task-tab legend').allTextContents()) expect(legend).not.toContain('task.');
+  // Tasks are made on the teacher page only.
+  await expect(page.locator('.tab[data-tab=task]')).toHaveCount(0);
 
   await page.locator('.tab[data-tab=data]').click();
   await expect(page.locator('.data-tab legend')).toHaveText(['Profiles']);
@@ -143,5 +142,5 @@ test('the gear on the start page opens the settings without a profile; a student
   await expect(page.locator('.lock-group')).toBeVisible();
   await page.locator('.switch-btn').click();
   await page.locator('.switch-dialog .profile-card', { hasText: 'Nina' }).click();
-  await expect(page.locator('.parent-screen .tabs .tab')).toHaveCount(6);
+  await expect(page.locator('.parent-screen .tabs .tab')).toHaveCount(5);
 });

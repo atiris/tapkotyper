@@ -8,7 +8,7 @@ import { allKeys } from '../keyboard/layouts';
 import { activeKeys, lessonKeyOf } from '../learning/lessons';
 import { STATS_WINDOW, keyHistory, keyReport, lastTraining, masterySummary, recentPractice, recentTyping, weakKeys } from '../learning/stats';
 import { linkOf } from '../share/codec';
-import { makeOverallResult, makeResult, resultCode } from '../share/result';
+import { makeOverallResult, resultCode } from '../share/result';
 import type { Profile } from '../storage/schema';
 import { nickname } from '../storage/store';
 import { lineChart } from '../ui/charts';
@@ -189,7 +189,7 @@ function progressSection(p: Profile): HTMLElement {
     h('p', { class: 'progress-last' }, last, daysAgo === null ? null : [' ', t('progress.week', { n: weekMinutes })]));
 }
 
-type StatsTab = 'progress' | 'keys' | 'exercises';
+type StatsTab = 'progress' | 'keys';
 
 /** The QR code of all the player's statistics, over the whole screen. */
 export async function showOverallCode(p: Profile): Promise<void> {
@@ -270,28 +270,12 @@ export function keysTab(p: Profile, close: () => void): HTMLElement {
       detail));
 }
 
-/** The exercises given by a teacher or parent, newest first, each with the code of its result. */
-export function exercisesTab(p: Profile): HTMLElement {
-  const played = p.tasks.filter((x) => x.seconds > 0 || x.doneAt);
-  if (!played.length) return h('p', { class: 'hint center' }, t('progress.exercisesEmpty'));
-  return h('ul', { class: 'exercise-list' }, ...played.map((task) => {
-    const total = task.chars + task.errors;
-    const show = async () => bigCode(linkOf('result', await resultCode(makeResult(p, task, app.store.data.lockRemovedAt !== undefined))), nickname(p), t('progress.exerciseCaption', { title: task.title || t('task.untitled') }), 'exercise');
-    return h('li', { class: `exercise-row ${task.doneAt ? 'done' : ''}` },
-      h('div', {},
-        h('b', {}, task.title || t('task.untitled')), task.group ? h('span', { class: 'chip' }, task.group) : null,
-        h('p', { class: 'hint' }, task.doneAt ?? t('progress.exerciseOpen'), ' · ',
-          t('progress.exerciseLine', { min: Math.round(task.seconds / 6) / 10, acc: total ? Math.round((task.chars / total) * 100) : 100, cpm: task.cpm }))),
-      button(t('progress.exerciseCode'), () => void show(), 'btn small', 'code'));
-  }));
-}
-
-/** The child's quick look at the progress (click on the character), in tabs: progress, keys, exercises; the map's button opens the whole page. */
+/** The child's quick look at the progress (click on the character), in tabs: progress and keys; the map's button opens the whole page. */
 export function openStats(): void {
   const p = app.profile!;
   let close = () => {};
-  const tabs: [StatsTab, string][] = [['progress', t('progress.tabProgress')], ['keys', t('progress.tabKeys')], ['exercises', t('progress.tabExercises')]];
+  const tabs: [StatsTab, string][] = [['progress', t('progress.tabProgress')], ['keys', t('progress.tabKeys')]];
   const body = h('div', { class: 'stats-body' });
-  const nav = tabBar(tabs, 'progress', (tab) => body.replaceChildren(tab === 'progress' ? progressTab(p) : tab === 'keys' ? keysTab(p, close) : exercisesTab(p)));
+  const nav = tabBar(tabs, 'progress', (tab) => body.replaceChildren(tab === 'progress' ? progressTab(p) : keysTab(p, close)));
   close = modal(h('div', { class: 'stats' }, nav, body), { cls: 'stats-modal' });
 }

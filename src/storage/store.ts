@@ -7,6 +7,7 @@ import {
   type ParentLock,
   type Profile,
   type StoreData,
+  type TaskSpec,
   type Theme,
   COMPANION_KINDS,
   GUEST_ID,
@@ -42,8 +43,13 @@ function nickFrom(name: string): string {
   return name.trim().slice(0, NICK_MAX).trim() || '?';
 }
 
+/** The defaults of a task's fields, for a task stored before a field was there. */
+const TASK_DEFAULTS: Omit<TaskSpec, 'id' | 'title'> = { game: 'chase', words: [], text: '', limit: 'time', minutes: 5, dictionary: true, knownOnly: true, world: 'current' };
+const PLAY_DEFAULTS = { seconds: 0, chars: 0, errors: 0, cpm: 0, finished: 0 };
+const MADE_DEFAULT = { madeAt: 0 };
+
 function emptyStore(): StoreData {
-  return { profiles: [], lastProfileId: null, language: null, theme: 'system' };
+  return { profiles: [], lastProfileId: null, language: null, theme: 'system', teacherTasks: [], notedTasks: [] };
 }
 
 /**
@@ -58,6 +64,8 @@ export function readStore(raw: any): StoreData {
   if (!isParentLock(store.parentLock)) delete store.parentLock;
   if (typeof store.lockRemovedAt !== 'number' || !Number.isFinite(store.lockRemovedAt)) delete store.lockRemovedAt;
   if (!THEMES.includes(store.theme)) store.theme = 'system';
+  store.teacherTasks = Array.isArray(store.teacherTasks) ? store.teacherTasks.filter((x) => typeof x?.id === 'string').map((x) => ({ ...TASK_DEFAULTS, ...MADE_DEFAULT, ...x })) : [];
+  store.notedTasks = Array.isArray(store.notedTasks) ? store.notedTasks.filter((x) => typeof x?.code === 'string' && typeof x.title === 'string' && typeof x.at === 'number') : [];
   return store;
 }
 
@@ -72,6 +80,7 @@ export function normalizeProfile(p: Profile): Profile {
     seed: typeof p.seed === 'number' ? p.seed >>> 0 : base.seed,
     companion: { ...base.companion, ...p.companion, name: p.companion?.name?.trim() || base.companion.name },
     settings: { ...base.settings, ...p.settings },
+    tasks: Array.isArray(p.tasks) ? p.tasks.map((x) => ({ ...TASK_DEFAULTS, ...PLAY_DEFAULTS, ...x })) : [],
     progress: { ...base.progress, ...p.progress },
     stats: {
       keys: Object.fromEntries(Object.entries(p.stats?.keys ?? {}).map(([k, st]) => [k, { ...emptyKeyStat(), ...st }])),

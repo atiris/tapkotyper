@@ -40,7 +40,7 @@
   instead (question mark, exclamation mark, colon, Slovak digits), each with its own
   statistics; capitals count for their letter and its Shift.
 - **My progress** ("Môj postup") is a page of its own, opened by the map's button, with a top
-  bar ("Back" to the map and the title) like the other pages, and four tabs: **Postup**,
+  bar ("Back" to the map and the title) like the other pages, and three tabs: **Postup**,
   **Klávesy** (with the trends over the last sessions: accuracy, rhythm and time per day,
   side by side on wide screens), **Úrovne** (the levels grouped by story, a heading with the
   story's picture and title, and by world, one row of cells per world: each level by its game's
@@ -48,24 +48,25 @@
   filled or empty, in a fixed place, then the world's parrot (its head while at home, else the
   empty perch) and its target range with its rare thing, in color once found, grey until then,
   so nothing a world gives is missing from the list; a click on a picture opens that level,
-  parrot round or range, while one still closed stays grey) and **Cvičenia**. Under the progress sit
+  parrot round or range, while one still closed stays grey). Under the progress sit
   "QR kód celého postupu" and "Certifikát" ([parent controls](parent-controls.md)).
 - Once a parrot was ever won, the summary row has a **parrot** chip: the parrot's picture and
   "2 max 5", the parrots at home now and the most that were home at once; the tooltip says it
   in words ([parrot](../game/parrot.md)). Secret words on the page start the badge show
   ([easter eggs](../experience/easter-eggs.md)).
-- The overlay (a quick look, only by a click on the character) has three tabs: **Postup** (the progress above, a big Tapko, the growth
-  medals and the stars as the last chip; stories come before worlds),
-  **Klávesy** (the key map and the key details) and **Cvičenia** (the history of exercises
-  from a teacher or parent, newest first, each with a button for its QR code).
+- The overlay (a quick look, only by a click on the character) has two tabs: **Postup** (the progress above, a big Tapko, the growth
+  medals and the stars as the last chip; stories come before worlds) and
+  **Klávesy** (the key map and the key details).
+- Tasks from a teacher, their results and their QR codes are on the player's **Úlohy** page
+  ([teacher links](teacher-links.md)), not here: one place for everything about tasks.
 - The Parrot badge, when held, sits just under the child's character on the Postup tab.
 - The child's character on the Postup tab is big (beside the summary, above it on a phone), in
   its outfit, and lively: every 5 to 20 seconds its big smile turns into the usual one and back.
   Clicked or pressed with Enter or Space it pulls another face at once (wondering too, never the
   same twice in a row), half the time with a hop; the smiles then go on. With reduced motion it
   only changes its face.
-- QR codes (an exercise's result, or all of the player's statistics from the Postup tab) fill
-  the whole screen until clicked; the caption and frame colour tell an exercise from all
+- QR codes (a task's result from the Úlohy page, or all of the player's statistics from the Postup tab) fill
+  the whole screen until clicked; the caption and frame colour tell a task's result from all
   statistics, and a button at the bottom copies the code to send to the teacher. The code for
   all statistics is a result link like any other, so the teacher's table takes it as one row
   per child.

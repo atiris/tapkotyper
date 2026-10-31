@@ -6,4 +6,3 @@ each in its own clean session. One line per plan in `.todo/`:
 listed here is never run. Lines whose plan has moved to `.todo/.done/` are
 skipped, and the session that finishes a plan removes its line.
 
-- [P3] 97-readme-screenshots.md - owner wish: README pictures of the game as it is now; last, so they show the work of the plans before it

@@ -109,6 +109,7 @@ A few secret words do something too: try saying hello on the start page, or typi
 see on the map or in My progress.
 
 ![The map](docs/map.png)
+![Tasks page](docs/tasks.png)
 ![Meadow level](docs/meadow.png)
 ![Space level](docs/space.png)
 

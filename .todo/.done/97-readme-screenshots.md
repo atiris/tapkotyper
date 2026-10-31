@@ -34,7 +34,17 @@ new script `scripts/readme-shots.mjs`. No code, store or spec impact.
   over, no console error.
 
 ## Steps
-- [ ] `scripts/readme-shots.mjs` (build, serve, player state, five pictures).
-- [ ] Run it; look at each picture; fix what looks wrong.
-- [ ] `README.md`: the fifth picture line; alt texts unchanged for the four.
-- [ ] Commit the script, the pictures and the README.
+- [x] `scripts/readme-shots.mjs` (build, serve, player state, five pictures).
+- [x] Run it; look at each picture; fix what looks wrong.
+- [x] `README.md`: the fifth picture line; alt texts unchanged for the four.
+- [x] Commit the script, the pictures and the README.
+
+## Done - 2026-10-31
+Shipped `scripts/readme-shots.mjs` (`node scripts/readme-shots.mjs`): e2e build, `vite preview` on
+a free port, Chromium at 1366x768 with the Slovak locale, light theme and reduced motion. It reads
+the lesson order and the dragon story's key counts from the game's own code (`vite.ssrLoadModule`),
+so worlds 1-4 are done and the keys of the next level (5.1, the egg) are known, which keeps the
+highlighted level in the first story. Focus is taken off before each picture, so no tooltip shows.
+New pictures: start, map, tasks (new, under the map), meadow (level 1.3) and space (level 2.1).
+Decision: the 1366 px PNGs were 650-1000 KB and still over 400 KB at width 1200, so the script then
+saves them with a 256-color palette (170-250 KB, no visible loss). Nothing left out.

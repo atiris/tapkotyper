@@ -318,11 +318,16 @@ as they are. The world descriptions below marked *not built yet* are the design 
    him further back and makes the way longer by two words (the first time the narrator says
    why). End: a sheltered ledge, the wind drops.
    2 sticky puddles (waiting words, calm): each round shows 2 or 3 words over places on the path
-   ahead, at least one clean and one with a sticky puddle; their first letters differ. He walks
-   to the place of the typed word; in a puddle he says "Fuj!", a line explains that the next
-   three words are hard, and he is stuck for three rounds of one very hard word each (the
-   longest words of the hardest keys he knows) above his head, then "Uf, už sa to nelepí!" and
-   he walks on. End: the puddles behind, he wipes his paws and walks on.
+   ahead; their first letters differ. A sticky puddle crawls slowly along the path from the right
+   toward him, under the words, and sinks off the path before it reaches him or as soon as he
+   steps to a word it is not under; then the next one comes, so the words truly wait. The word
+   the puddle is under has dripping mud stuck behind its lower right corner. Finished while the
+   puddle is under it, he walks into the mud and says "Fuj!", his bubble says the mud slows him
+   and the next three words are hard, and he is stuck for three very hard words (a long word of
+   the hardest keys he knows, or two of them) above his head; at each of the first two he
+   wobbles from side to side trying to get free, after the third he hops out to the clean path
+   just past the puddle ("Uf, už sa to nelepí!") and gets the next words there. End: the
+   puddles behind, he wipes his paws with a hop where he stands.
    3 crossroads up the mountain: the planet's crossroads with the same paths, names and effects,
    the Backspace card too, with the egg on his back, posts in small cairns of mossy stones and
    the mountain's own paths: left and right (ordinary, one of them at most), obstacles (tempting,

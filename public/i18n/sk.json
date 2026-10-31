@@ -932,7 +932,7 @@
       "Ahoj, ty budeš môj kamarát?"
     ],
     "windStart": [
-      "Na svahu fúka **silný vietor**. Napíš slovo, ktoré nesie, skôr než k tebe dofúka."
+      "**Cesta** k ohnisku drakov **vedie úzkymi horskými chodníčkami**, na ktorých je ale občas veľmi veterno. Vetru sa vyhneš len tak, že budeš dostatočne **presný** a stihneš to včas. Silný závan ťa môže odfúknuť, hoci len pár krokov späť. Ak sa tak stane, stačí tie kroky spraviť znova. Verím, že spolu s vajíčkom prekonáš túto veternú cestu a dostaneš sa vyššie na **Horu prebudenia**."
     ],
     "windGust": [
       "Uf, to fúka!",
@@ -943,14 +943,14 @@
       "Uf, tu už nefúka."
     ],
     "mudStart": [
-      "Na chodníku sú **lepkavé mláky**. Vyber si slovo nad čistým miestom. Kto stúpi do bahna, chvíľu sa nepohne z miesta."
+      "Na chodníku zostali po čiernych kryštáloch **lepkavé mláky**, ktoré sa pomaly stekajú po chodníku. Kto do toho lepkavého blata stúpi, chvíľu bude kráčať veľmi ťažko. Daj si pozor na to, ako sa po chodníku posúva mláka. Ak bude v momente, keď dopíšeš slovo, pod týmto slovom, budeš mať chvíľu ťažké a zablatené nohy!"
     ],
     "mudStep": [
       "Fuj!",
       "Bahno!",
       "Ble, lepí sa to!"
     ],
-    "mudSlow": "Bahno ťa riadne spomalí:\nďalšie tri slová sú ťažké.",
+    "mudSlow": "Bahno ťa spomaľuje, ďalšie tri slová sú ťažké.",
     "mudFree": [
       "Uf, už sa to nelepí!"
     ],

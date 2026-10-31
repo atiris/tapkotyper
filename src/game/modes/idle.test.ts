@@ -979,17 +979,30 @@ describe('the egg mountain', () => {
     expect(signs.filter((s) => !s.tg.gone)).toHaveLength(2);
   });
 
-  it('pairs of boulders and the hard rounds after a mud step come for the slow child too', () => {
+  it('pairs of boulders come for the slow child too', () => {
     const word = 60 / WPM[0];
-    let pairs = 0, hard = 0;
+    let pairs = 0;
     play(levelById('w5-4')!, BouldersMode, word / 5, word, (L) => {
       if (L.core.active.filter((tg) => tg.data.state === 'come').length >= 2) pairs++;
     });
-    play(levelById('w5-2')!, MudMode, word / 5, word, () => {
-      if ((mode as unknown as { hardLeft: number }).hardLeft > 0) hard++;
-    });
     expect(pairs).toBeGreaterThan(0);
+  });
+
+  it('a word finished while the crawling puddle is under it brings three hard rounds, then he walks on', () => {
+    type Mud = { hardLeft: number; hard: unknown; places: { tg: { selectable: boolean } | null }[]; muddy(): unknown };
+    let hard = 0, waited = 0;
+    const res = play(levelById('w5-2')!, MudMode, 0.02, 0, (L) => {
+      const m = mode as unknown as Mud;
+      if (m.hardLeft > 0) hard++;
+      // The child waits with the first word until the puddle crawls under it.
+      const first = m.places.find((p) => p.tg?.selectable);
+      const wait = !hard && !m.hard && !!first && m.muddy() !== first && L.core.active.every((tg) => tg.typed === 0);
+      if (wait) waited++;
+      return wait;
+    });
+    expect(waited).toBeGreaterThan(0);
     expect(hard).toBeGreaterThan(0);
+    expect(res.end).toBeGreaterThanOrEqual(res.min);
   });
 
   it('the mountain crossroads keeps giving targets at both paces', () => {

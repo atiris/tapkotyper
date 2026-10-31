@@ -932,7 +932,7 @@
       "Hi, will you be my friend?"
     ],
     "windStart": [
-      "A **strong wind** blows on the slope. Type the word it carries before it blows into you."
+      "The **way** to the dragons' hearth **follows narrow mountain paths**, and now and then it gets very windy there. You only dodge the wind if you are **accurate** enough and in time. A strong gust can blow you back, if only a few steps. If it does, just take those steps again. I believe that together with the egg you will get through this windy path and climb higher up the **Mountain of Awakening**."
     ],
     "windGust": [
       "Phew, it's windy!",
@@ -943,14 +943,14 @@
       "Phew, no wind here."
     ],
     "mudStart": [
-      "There are **sticky puddles** on the path. Pick a word over a clean spot. Step into the mud and you are stuck for a while."
+      "The black crystals left **sticky puddles** on the path, and they slowly ooze along it. Whoever steps into that sticky mud walks very heavily for a while. Watch how the puddle moves along the path: if it is under a word at the moment you finish typing it, your feet will be heavy and muddy for a while!"
     ],
     "mudStep": [
       "Yuck!",
       "Mud!",
       "Eww, it's sticky!"
     ],
-    "mudSlow": "The mud slows you right down:\nthe next three words are hard.",
+    "mudSlow": "The mud slows you down, the next three words are hard.",
     "mudFree": [
       "Phew, it doesn't stick any more!"
     ],

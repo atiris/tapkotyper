@@ -1625,7 +1625,7 @@
    "h": 364
   },
   "ui-act-crossroads": {
-   "w": 461,
+   "w": 484,
    "h": 512
   },
   "ui-act-listen": {
@@ -1648,9 +1648,17 @@
    "w": 459,
    "h": 512
   },
+  "ui-act-ribbon": {
+   "w": 512,
+   "h": 465
+  },
   "ui-act-super": {
    "w": 512,
    "h": 391
+  },
+  "ui-act-transcribe": {
+   "w": 512,
+   "h": 474
   },
   "ui-cert-parrot": {
    "w": 640,
@@ -1676,12 +1684,12 @@
    "w": 474,
    "h": 512
   },
-  "ui-end-range": {
-   "w": 410,
-   "h": 512
-  },
   "ui-end-range-record": {
    "w": 473,
+   "h": 512
+  },
+  "ui-end-range": {
+   "w": 410,
    "h": 512
   },
   "ui-end-stay": {

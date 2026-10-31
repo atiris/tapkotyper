@@ -8,6 +8,8 @@ const MUSIC = 'tapkotyper-music';
 /** Where a cache keeps the versions of its files; written last, so a cache without it is incomplete. */
 const VERSIONS = 'sw-versions.json';
 const MAX_TRACKS = 3;
+/** Downloads at once during an install: a slow school line still has room for the pictures the open level needs. */
+const POOL = 4;
 
 self.addEventListener('install', (event) => {
   event.waitUntil(install());
@@ -18,14 +20,29 @@ self.addEventListener('install', (event) => {
 async function install() {
   const cache = await caches.open(CACHE);
   const old = await previous();
-  await Promise.all(Object.entries(FILES).map(async ([path, version]) => {
-    const hit = old && old.versions[path] === version ? await old.cache.match(path, { ignoreVary: true }) : null;
-    if (hit && hit.ok) return cache.put(path, hit);
-    // Revalidated: the HTTP cache may still hold the old bytes of a file that keeps its name.
-    const res = await fetch(path, { cache: 'no-cache' });
-    if (!res.ok) throw new Error(`${path}: ${res.status}`);
-    return cache.put(path, res);
-  }));
+  const files = Object.entries(FILES);
+  let next = 0;
+  let failed = false;
+  // A few workers take the files in order; after the first failure none starts another download.
+  const take = async () => {
+    while (!failed && next < files.length) {
+      const [path, version] = files[next++];
+      const hit = old && old.versions[path] === version ? await old.cache.match(path, { ignoreVary: true }) : null;
+      if (hit && hit.ok) {
+        await cache.put(path, hit);
+        continue;
+      }
+      // Revalidated: the HTTP cache may still hold the old bytes of a file that keeps its name.
+      const res = await fetch(path, { cache: 'no-cache' });
+      if (!res.ok) throw new Error(`${path}: ${res.status}`);
+      await cache.put(path, res);
+    }
+  };
+  const worker = () => take().catch((e) => {
+    failed = true;
+    throw e;
+  });
+  await Promise.all(Array.from({ length: POOL }, worker));
   await cache.put(VERSIONS, new Response(JSON.stringify(FILES)));
 }
 

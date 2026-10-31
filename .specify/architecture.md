@@ -64,7 +64,9 @@
 - **A slow frame does not slow the next one:** the game takes at most four update steps per
   frame (longer steps instead of more), so the game clock stays right without piling work up.
 - **Downloads:** a level's own pictures go first; the other worlds' play pictures download in
-  the background two at a time and wait while a screen loads its own.
+  the background two at a time and wait while a screen loads its own. Installing the offline
+  copy downloads four files at a time, so on a slow school line it does not crowd out the
+  pictures the open level needs.
 
 ## Performance budget
 Measured by `scripts/perf.mjs` (Playwright, headless Chromium with software drawing, which stands

@@ -7,3 +7,5 @@ listed here is never run. Lines whose plan has moved to `.todo/.done/` are
 skipped, and the session that finishes a plan removes its line.
 
 - [P2] 86-heros-journey.md - owner asked for it; nothing else queued
+- [P2] 87-egg-mountain.md - world 5 of the dragon story; independent of 86, before 88
+- [P2] 88-dragon-heros-journey.md - needs 86 (journey machinery) and 87 (world 5 modes)

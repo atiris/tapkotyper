@@ -27,10 +27,13 @@
   growth a little.
 - A small round rhythm gauge in the top bar (calm blue to green, never red; in the space world
   also the rocket's speedometer, without a caption) shows the current smooth typing rhythm, not raw WPM.
+  Its ring is full a fifth above the child's usual pace of the last two weeks (before any typing,
+  at the difficulty's rhythm), so a quick child does not sit at the top all the time.
 - A word the child can see can be typed at once; a target that cannot be typed yet shows
   no word.
 - A word label is always wholly in sight with its bubble: a word near an edge of the stage moves
-  inward (an object coming in from the right shows its word only once it is in sight).
+  inward (an object coming in from the right shows its word only once it is in sight). A word
+  with a countdown keeps its clock beside it, and the clock is always in sight too.
 - Word labels never overlap: the most urgent word keeps its place, the others glide aside
   (up, or down near the top), and a far-moved word gets a thin line to its object.
 - The start is slow: at difficulty 3 a short word needs about 10 seconds to reach Tapko

@@ -249,10 +249,10 @@ describe('first level', () => {
 });
 
 describe('the valley', () => {
-  it('flames, the overgrown path (a calm copy), flying lessons, the lullaby, the take-off', () => {
+  it('flames, the overgrown path (waiting words), flying lessons, the lullaby, the take-off', () => {
     const ids = ['w4-1', 'w4-2', 'w4-3', 'w4-4', 'w4-5'];
     expect(ids.map((id) => levelById(id)?.kind)).toEqual(['flames', 'thicket', 'flight', 'lullaby', 'takeoff']);
-    expect(ids.map((id) => activityOf(levelById(id)!))).toEqual(['chase', 'clean', 'chase', 'clean', 'super']);
+    expect(ids.map((id) => activityOf(levelById(id)!))).toEqual(['chase', 'catch', 'chase', 'clean', 'super']);
     expect(ids.map((id) => minActiveS(levelById(id)!))).toEqual([120, 90, 120, 120, 150]);
     expect(ids.slice(2).map((id) => levelById(id)?.count)).toEqual([3, 3, 3]);
   });

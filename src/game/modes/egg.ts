@@ -443,14 +443,13 @@ const MUD_W = 170;
 const MUD_H = 50;
 /**
  * A puddle crawls along the path from the right edge toward him, in this many seconds per stage
- * width; it sinks off the path (this many seconds, this far down) before it reaches him, or as soon
- * as he steps to a word it is not under; the next one comes from the right after a short wait.
+ * width; it fades away where it lies on the path (in this many seconds) before it reaches him, or as
+ * soon as he steps to a word it is not under; the next one comes from the right after a short wait.
  */
 const MUD_CRAWL_S = 8;
-const MUD_SINK_S = 0.7;
-const MUD_SINK_DY = 26;
+const MUD_FADE_S = 0.7;
 const MUD_WAIT_S = 0.6;
-/** It sinks this far right of him (beyond his reach), and a word is over it while the puddle's middle is this close. */
+/** It fades this far right of him (beyond his reach), and a word is over it while the puddle's middle is this close. */
 const MUD_STOP = 170;
 const MUD_UNDER = MUD_W * 0.45;
 /** A mud step makes this many very hard words; he wobbles at each of the first ones and hops out after the last. */
@@ -512,18 +511,18 @@ interface Place {
   age: number;
 }
 
-/** A puddle on the path, in the scene: crawling toward him, sinking off the path (0..1), or holding him. */
+/** A puddle on the path, in the scene: crawling toward him, fading away on the path (0..1), or holding him. */
 interface Puddle {
   x: number;
   pic: string;
   flip: boolean;
-  sink: number | null;
+  fade: number | null;
 }
 
 /**
  * Egg 2, sticky puddles (waiting words, a calm step): each round shows 2 or 3 words over places on
  * the path ahead, and a puddle crawls along the path from the right toward him, under the words; it
- * sinks off the path before it reaches him or once he steps to a word it is not under, and the next
+ * fades away on the path before it reaches him or once he steps to a word it is not under, and the next
  * one comes. The word with the puddle under it has dripping mud stuck on it. Typed then, he walks
  * into the mud and is stuck for three very hard words, wobbling at each of the first two, and hops
  * out to the clean path after the third.
@@ -591,7 +590,7 @@ export class MudMode extends HeroMode {
   /** The place the crawling puddle is under now, if any. */
   private muddy(): Place | undefined {
     const mud = this.mud;
-    if (!mud || mud.sink !== null) return undefined;
+    if (!mud || mud.fade !== null) return undefined;
     return this.places.find((p) => p.tg && Math.abs(p.x - mud.x) < MUD_UNDER);
   }
 
@@ -616,7 +615,7 @@ export class MudMode extends HeroMode {
     this.L.core.prune();
     this.places = [];
     if (!stuck) {
-      if (this.mud) this.mud.sink ??= 0;
+      if (this.mud) this.mud.fade ??= 0;
       return this.walkTo(place.x - this.scroll, () => this.walkOn(() => this.round()));
     }
     // The puddle stops under the word's place and he walks into it.
@@ -681,7 +680,7 @@ export class MudMode extends HeroMode {
   /** The puddles are behind him: he wipes his paws with a little hop where he stands. */
   private end(): void {
     this.endT = 0;
-    if (this.mud) this.mud.sink ??= 0;
+    if (this.mud) this.mud.fade ??= 0;
     this.happy();
     this.L.say(pickLine('story.mudDone'), END_TIME);
     this.L.tweens.add(0.5, (k) => { this.jump = Math.sin(k * Math.PI) * 0.3; }, ease.linear, () => { this.jump = 0; });
@@ -704,29 +703,29 @@ export class MudMode extends HeroMode {
     if (this.endT !== null) this.endT += dt;
   }
 
-  /** The puddle crawls toward him while the words wait (not while he walks or is stuck in it), sinks, and the next one comes. */
+  /** The puddle crawls toward him while the words wait (not while he walks or is stuck in it), fades away, and the next one comes. */
   private updateMud(dt: number): void {
     const L = this.L, mud = this.mud;
     if (mud) {
-      if (mud.sink !== null) {
-        if ((mud.sink += dt / MUD_SINK_S) < 1) return;
+      if (mud.fade !== null) {
+        if ((mud.fade += dt / MUD_FADE_S) < 1) return;
         this.mud = null;
         this.mudWait = MUD_WAIT_S;
       } else if (!this.busy && this.hardLeft === 0) {
         mud.x -= (L.vw / MUD_CRAWL_S) * dt;
-        if (mud.x - this.scroll <= HERO_X + MUD_STOP) mud.sink = 0;
+        if (mud.x - this.scroll <= HERO_X + MUD_STOP) mud.fade = 0;
       }
       return;
     }
     if (this.busy || this.endT !== null || !this.places.length || (this.mudWait -= dt) > 0) return;
-    this.mud = { x: this.scroll + L.vw + MUD_W / 2, pic: L.rng.pick(MUDS), flip: L.rng.chance(0.5), sink: null };
+    this.mud = { x: this.scroll + L.vw + MUD_W / 2, pic: L.rng.pick(MUDS), flip: L.rng.chance(0.5), fade: null };
   }
 
   private drawPuddle(g: G, p: Puddle): void {
-    const img = sprite(p.pic), h = MUD_W / (img ? img.naturalWidth / img.naturalHeight : MUD_W / MUD_H), k = p.sink ?? 0;
+    const img = sprite(p.pic), h = MUD_W / (img ? img.naturalWidth / img.naturalHeight : MUD_W / MUD_H), k = p.fade ?? 0;
     g.save();
     g.globalAlpha *= 1 - k;
-    drawSprite(g, p.pic, p.x - this.scroll, FEET + 4 + MUD_SINK_DY * ease.inOutQuad(k), h, { flip: p.flip, sy: Math.min(1, MUD_H / h) }, mudFallback);
+    drawSprite(g, p.pic, p.x - this.scroll, FEET + 4, h, { flip: p.flip, sy: Math.min(1, MUD_H / h) }, mudFallback);
     g.restore();
   }
 

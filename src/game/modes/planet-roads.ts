@@ -1,12 +1,11 @@
 import { pickLine } from '../../app/app';
 import { ease } from '../../engine/tween';
 import { sprite } from '../../gfx/assets';
-import { drawSprite, fontFamily, type G, wordBox } from '../../gfx/draw';
+import { drawSprite, fontFamily, type G } from '../../gfx/draw';
 import { t, tList } from '../../i18n/i18n';
 import type { TapkoMotion } from '../../gfx/tapko';
 import { WORLDS } from '../levels';
 import type { Target } from '../typing';
-import { CLOCK_R, drawClock } from './kit/clock';
 import { EggPeek } from './kit/egg';
 import { HeroMode, PATH_FEET, wordAbove } from './kit/hero';
 
@@ -524,9 +523,8 @@ export class CrossroadsMode extends HeroMode {
       drawSprite(g, post.pic, x, FEET + 6, post.h, { ay: 1, sy: grow, alpha }, this.mountain ? stonePostFallback : postFallback);
       this.drawArrow(g, s, x, FEET + 6 - post.h * ARROW_AT * grow, grow, alpha);
       if (s.gone !== null || s.spin !== null || grow < 1) continue;
-      this.L.label(g, s.tg, x, top - 28);
-      // The best path's countdown, right beside its word.
-      if (s.clock) drawClock(g, x + wordBox(g, s.tg.word).w / 2 + CLOCK_R + 10, top - 28, 1 - s.clock.spent / s.clock.full, this.t, !this.L.reduceMotion);
+      // The best path's countdown sits right beside its word.
+      this.L.label(g, s.tg, x, top - 28, undefined, s.clock ? 1 - s.clock.spent / s.clock.full : undefined);
     }
     if (this.current && !this.current.done && !this.busy) this.L.label(g, this.current, this.heroX, wordAbove(FEET) - ROAD_WORD_UP);
     this.drawHero(g);

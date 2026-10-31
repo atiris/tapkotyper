@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { Rhythm, rhythmTarget } from './rhythm';
+import { Rhythm, gaugeTop, rhythmTarget } from './rhythm';
 
 /** Types `keys` one every `gapMs`, starting `gapMs` after `start`; returns the time of the last press. */
 function type(r: Rhythm, keys: string, gapMs: number, start = 0): number {
@@ -76,5 +76,12 @@ describe('rhythm', () => {
     r.ready(0);
     type(r, 'f'.repeat(50), 120);
     expect(r.ratio(3)).toBeLessThan(0.6);
+  });
+});
+
+describe('the gauge', () => {
+  it('is full a fifth above the usual pace, or at the difficulty rhythm before any typing', () => {
+    expect(gaugeTop(200, 3)).toBeCloseTo((200 / 60) * 1.2);
+    expect(gaugeTop(0, 3)).toBe(rhythmTarget(3));
   });
 });

@@ -1,5 +1,6 @@
 import { VH } from '../../engine/loop';
 import { type G, drawWord, wordBox } from '../../gfx/draw';
+import { CLOCK_R, drawClock } from '../modes/kit/clock';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
 
@@ -9,6 +10,8 @@ interface PendingLabel {
   x: number;
   y: number;
   size: number;
+  /** The share of its countdown left, for a word that has one; the clock sits right of the word. */
+  clock?: number;
 }
 
 export interface Rect {
@@ -27,6 +30,8 @@ const LABEL_LINE_FROM = 30;
 const LABEL_EDGE = 8;
 /** A long label shrinks to fit, down to this font size. */
 const LABEL_MIN_SIZE = 28;
+/** The gap between a word and its countdown clock. */
+const CLOCK_GAP = 10;
 
 /** The word labels of a frame: the modes ask for them, they are drawn after the mode, so labels never overlap. */
 export class Labels {
@@ -46,8 +51,8 @@ export class Labels {
   }
 
   /** A word the child sees can be typed at once, so a target not selectable yet gets no label. */
-  add(tg: Target, x: number, y: number, size: number): void {
-    if (tg.selectable) this.pending.push({ tg, x, y, size });
+  add(tg: Target, x: number, y: number, size: number, clock?: number): void {
+    if (tg.selectable) this.pending.push({ tg, x, y, size, clock });
   }
 
   /** The label drawn at stage point (x, y), if any. */
@@ -76,8 +81,9 @@ export class Labels {
       const full = wordBox(g, l.tg.word, l.size, icon).w;
       if (full > room) l.size = Math.max(LABEL_MIN_SIZE, Math.min(l.size, l.size * room / full));
       const { w, h } = wordBox(g, l.tg.word, l.size, icon);
-      // A word near an edge moves inward: the whole word is always in sight.
-      l.x = Math.max(w / 2 + LABEL_EDGE, Math.min(L.vw - w / 2 - LABEL_EDGE, l.x));
+      // A word near an edge moves inward: the whole word, and its countdown, is always in sight.
+      const tail = l.clock === undefined ? 0 : CLOCK_GAP + 2 * (CLOCK_R + 2);
+      l.x = Math.max(w / 2 + LABEL_EDGE, Math.min(L.vw - w / 2 - LABEL_EDGE - tail, l.x));
       l.y = Math.max(h / 2 + LABEL_EDGE, Math.min(VH - h / 2 - LABEL_EDGE, l.y));
       const x0 = l.x - w / 2 - LABEL_GAP, x1 = l.x + w / 2 + LABEL_GAP;
       const clear = (dy: number) => placed.every((b) => x1 <= b.x0 || x0 >= b.x1 || l.y + dy + h / 2 + LABEL_GAP <= b.y0 || l.y + dy - h / 2 - LABEL_GAP >= b.y1);
@@ -109,6 +115,7 @@ export class Labels {
         masked: !core.letters(l.tg),
         icon: l.tg.style === 'dictation' ? { kind: 'speaker' } : l.tg.style === 'memory' ? { kind: 'ring', left: l.tg.showFor ? l.tg.showLeft / l.tg.showFor : 0 } : undefined,
       });
+      if (l.clock !== undefined) drawClock(g, l.x + w / 2 + CLOCK_GAP + CLOCK_R + 2, l.y + shift, l.clock, now / 1000, !L.reduceMotion);
     }
     this.shift = shifts;
   }

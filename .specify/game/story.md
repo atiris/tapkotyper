@@ -218,7 +218,7 @@ as they are. The world descriptions below marked *not built yet* are the design 
    The scene stands still, and a warm glow round the torch's top sets it off from it. A
    caught flame shrinks on its way and is gone in the torch, which sparkles, as the fire does
    when the torch hands it over.
-   2 the overgrown path (a calm step, growing copy): bushes and branches (four kinds in random
+   2 the overgrown path (a calm step, waiting words): bushes and branches (four kinds in random
    order, some mirrored) stand on the path one after another; the nearest has its spell, one
    word, above it, and the view glides as Tapko walks to it. Typed without a slip, the bush
    shrinks away. A slip turns the word red, it fades, two more bushes grow on the path ahead and
@@ -319,7 +319,7 @@ as they are. The world descriptions below marked *not built yet* are the design 
    why). End: a sheltered ledge, the wind drops.
    2 sticky puddles (waiting words, calm): each round shows 2 or 3 words over places on the path
    ahead; their first letters differ. A sticky puddle crawls slowly along the path from the right
-   toward him, under the words, and sinks off the path before it reaches him or as soon as he
+   toward him, under the words, and fades away on the path before it reaches him or as soon as he
    steps to a word it is not under; then the next one comes, so the words truly wait. The word
    the puddle is under has dripping mud stuck behind its lower right corner. Finished while the
    puddle is under it, he walks into the mud and says "Fuj!", his bubble says the mud slows him

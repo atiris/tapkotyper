@@ -12,9 +12,18 @@ const START_SHARE = 0.8;
 /** Reaction time (ms) of a press with nothing to measure from. */
 const UNKNOWN_RT = 1000;
 
-/** Characters per second that fill the rhythm gauge at a difficulty. */
+/** Characters per second of a full rhythm at a difficulty (the rocket's and the dragons' top). */
 export function rhythmTarget(difficulty: number): number {
   return 0.9 + difficulty * 0.35;
+}
+
+/** The days of typing the child's usual pace is taken from, and how far above it the gauge's ring is full. */
+export const GAUGE_DAYS = 14;
+const GAUGE_ABOVE = 1.2;
+
+/** Characters per second that fill the top bar's rhythm ring: the child's usual pace and a fifth more, or the difficulty's rhythm before any. */
+export function gaugeTop(usualCpm: number, difficulty: number): number {
+  return usualCpm > 0 ? (usualCpm / 60) * GAUGE_ABOVE : rhythmTarget(difficulty);
 }
 
 /** One press: its reaction time for the key statistics, whether it repeated the correct key before it, and whether it moved the rhythm. */

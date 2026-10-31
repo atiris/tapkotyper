@@ -97,8 +97,8 @@ const STORY_WPM = [8, 10, 12];
 
 /** The calm steps of the world rhythm: waiting words (the meadow's poppies, the rocket world's meteors to hop on, the planet's swamp, the mountain's sticky puddles) and the valley's overgrown path. */
 const CALM_KINDS: LevelKind[] = ['poppies', 'hop', 'swamp', 'thicket', 'mud'];
-/** Copy levels: a growing or a clean line (the valley's calm path is one too), and the mountain's spell ribbon. */
-const COPY_KINDS: LevelKind[] = ['invitation', 'command', 'spells', 'thicket', 'lullaby', 'spell', 'copyloop'];
+/** Copy levels: a growing or a clean line, and the mountain's spell ribbon. */
+const COPY_KINDS: LevelKind[] = ['invitation', 'command', 'spells', 'lullaby', 'spell', 'copyloop'];
 
 /** A hero's journey is as long as this many regular levels of its story, split evenly over its parts. */
 const JOURNEY_SHARE = 2;

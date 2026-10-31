@@ -16,7 +16,7 @@ import { type InputHandlers, KeyInput, type TypedChar } from '../input/input';
 import { setShortcuts, withKey } from '../input/shortcuts';
 import { ENTER, LAYOUTS, LayoutMismatchDetector, enterAfter, fingerFor, stepsFor } from '../keyboard/layouts';
 import { SHIFT_L, SPACE, activeKeys, aimKeys, isKeyReady, masteryLevel, recentAccuracy, shiftKeyOf, useLayout } from '../learning/lessons';
-import { recordPress, recordSession, typingStep } from '../learning/stats';
+import { recentTyping, recordPress, recordSession, typingStep } from '../learning/stats';
 import { FINGER_KEYS, KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
 import { LayoutSwitch } from '../ui/layout-switch';
 import { closeModals, confirmDialog, h } from '../ui/dom';
@@ -32,7 +32,7 @@ import { ENTER_MAX, EnterMarks } from './enter';
 import type { ModeMaker } from './modes';
 import type { FreeTypeMode } from './modes/freetype';
 import { PressureValve, childPace, perChar } from './pace';
-import { Rhythm } from './rhythm';
+import { GAUGE_DAYS, Rhythm, gaugeTop } from './rhythm';
 import { completeLevel, completeStay, joinRuns } from './progress';
 import { type Style, type Target, TypingCore } from './typing';
 import { pickTip, showCard, showPosture, showTravel } from './cards';
@@ -109,6 +109,8 @@ export class LevelRuntime {
   private readonly tapko: StageTapko;
   private progressFill: HTMLElement;
   private gauge = rhythmPic();
+  /** Characters per second that fill the gauge's ring. */
+  private readonly gaugeFull: number;
   /** Own practice and the target range: a ring of accuracy for each key in focus, before the rhythm. */
   private accuracyPics: { key: string; pic: ReturnType<typeof accuracyPic> }[] = [];
   /** Seconds until the gauge's spoken label may change again. */
@@ -165,6 +167,7 @@ export class LevelRuntime {
     this.particles.enabled = !this.reduceMotion && !graphics.simple;
     const lastCpm = p.stats.sessions[p.stats.sessions.length - 1]?.cpm ?? 0;
     this.rhythm = new Rhythm(lastCpm, this.difficulty);
+    this.gaugeFull = gaugeTop(recentTyping(p, GAUGE_DAYS).cpm, this.difficulty);
     this.lastCps = lastCpm ? lastCpm / 60 : 1;
     this.mismatch = new LayoutMismatchDetector(p.layout);
 
@@ -887,7 +890,7 @@ export class LevelRuntime {
       this.progressPct = pct;
       this.progressFill.style.width = `${pct}%`;
     }
-    this.gauge.set(this.rhythm.ratio(this.difficulty));
+    this.gauge.set(this.rhythm.ema / this.gaugeFull);
     if ((this.gaugeLabelIn -= dt) <= 0) {
       this.gaugeLabelIn = 1;
       this.gauge.label(t('level.rhythm', { n: this.rhythm.cpm }));
@@ -947,9 +950,10 @@ export class LevelRuntime {
   /**
    * Word label above a target (helper for modes); drawn after the mode, so labels never overlap.
    * A word the child sees can be typed at once, so a target not selectable yet gets no label.
+   * `clock` is the share of the word's countdown left: its clock stays in sight beside the word.
    */
-  label(_g: G, tg: Target, x: number, y: number, size = 40): void {
-    this.labels.add(tg, x, y, size);
+  label(_g: G, tg: Target, x: number, y: number, size = 40, clock?: number): void {
+    this.labels.add(tg, x, y, size, clock);
   }
 
   // ---- end ---------------------------------------------------------------------

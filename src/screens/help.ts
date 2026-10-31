@@ -43,8 +43,8 @@ function mapIcons(): HTMLElement[] {
 
 /** The game types, each with the picture the map shows for it. */
 const GAMES: [string, string][] = [
-  ['chase', 'ui-act-chase'], ['catch', 'ui-act-catch'], ['crossroads', 'ui-act-crossroads'], ['clean', 'ui-act-clean'], ['listen', 'ui-act-listen'],
-  ['remember', 'ui-act-remember'], ['aim', 'obj-aim-target'], ['parrot', 'ui-act-parrot'], ['super', 'ui-act-super'],
+  ['chase', 'ui-act-chase'], ['catch', 'ui-act-catch'], ['crossroads', 'ui-act-crossroads'], ['clean', 'ui-act-clean'],
+  ['ribbon', 'ui-act-ribbon'], ['transcribe', 'ui-act-transcribe'], ['listen', 'ui-act-listen'], ['remember', 'ui-act-remember'], ['aim', 'obj-aim-target'], ['parrot', 'ui-act-parrot'], ['super', 'ui-act-super'],
 ];
 
 function gameIcons(): HTMLElement[] {

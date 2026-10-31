@@ -454,6 +454,10 @@
       "title": "Title, tabs and icons",
       "about": "The title of the Help page, the tab names and the descriptions of the button icons on the map and in a level."
     },
+    "help-games": {
+      "title": "Kinds of games",
+      "about": "The list of game kinds in the Progress tab of Help, one line each. Keep the **bold** game names the same as on the map."
+    },
     "help-texts": {
       "title": "Help page texts",
       "about": "Headings and paragraphs of the Help tabs. Keep the **bold** marks in the text in your translation."
@@ -1522,6 +1526,8 @@
     "help.games.catch": "Help, Progress tab: the waiting words game with its picture (a chair); the bold name matches map.act.catch.",
     "help.games.crossroads": "Help, Progress tab: the crossroads game with its picture; the bold name matches map.act.crossroads.",
     "help.games.clean": "Help, Progress tab: the copy game with its picture (an envelope); the bold name matches map.act.clean.",
+    "help.games.ribbon": "Help, Progress tab: the ribbon game (one long flowing text, spaces typed without stopping) with its picture (a ribbon); not on the map yet.",
+    "help.games.transcribe": "Help, Progress tab: the transcribe game (copy a text from one block into another of a different width) with its picture (two open books); not on the map yet.",
     "help.games.listen": "Help, Progress tab: the dictation way of typing with its picture (an ear), as in own practice.",
     "help.games.remember": "Help, Progress tab: the secret words way of typing with its picture (a keyhole), as in own practice.",
     "help.games.aim": "Help, Progress tab: the target range with its target picture; the bold name matches aim.title.",

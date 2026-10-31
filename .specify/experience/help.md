@@ -19,7 +19,7 @@
      accuracy, Esc pauses), the kinds of games by their standard names with one line each, each
      with the picture the map shows for it (the target range's target, the parrot and the big
      challenge's crown too; the same names as the map dots' tooltips; a new kind joins the list
-     when it is in the game) right above letters that open levels and stories, "My progress" (a page from the map's
+     when it is in the game; Ribbon and Transcribe are listed ahead of their levels) right above letters that open levels and stories, "My progress" (a page from the map's
      button with four tabs, a quick look by a click on the character, the parrots, QR codes and
      the certificate), rescue missions, the target range (where it opens, what it
      trains, the middle, a fall that costs nothing, the collection and Enter), the parrot (where it

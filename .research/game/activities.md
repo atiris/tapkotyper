@@ -111,6 +111,19 @@ minutes (the fairy story: 5 words x 8 times x 6 letters is about 240 keys).
 Is it too complicated? For the child it is simple: "a parrot flew away, go get it back". The
 rules underneath are only the daily roll, the floor and the 21-day drop, all in one place.
 
+## Ribbon and Transcribe (owner, 2026-10-31)
+
+Two copy kinds that break the word-by-word rhythm; first planned for the end of the dragon
+story. Both are already in the help with their pictures (`ui-act-ribbon`, `ui-act-transcribe`).
+
+- **Pás** / Ribbon: the text is one long ribbon, not words on objects; a space is just one more
+  key and the ribbon waits for the child. Why: no other kind trains typing smoothly across
+  spaces, every other one stops after each word.
+- **Prepis** / Transcribe: the text stands in one block and is copied into another block of a
+  different width, so the lines break in other places and the child keeps track of where they
+  are in the original. Why: it is the real copy skill, eyes on the source and not on the
+  keyboard or the letters appearing.
+
 ## Ideas dropped
 
 Ink fog (blind copy), sentence puzzle and name it (owner, 2026-10-25).

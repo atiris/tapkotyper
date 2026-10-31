@@ -167,6 +167,7 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
   ] },
   { id: 'help', groups: [
     g('help-tabs', 'help.title', 'help.tab.*', 'help.icons.*'),
+    g('help-games', 'help.gamesTitle', 'help.games.*'),
     g('help-texts', 'help.*'),
     g('about', 'about.*'),
   ] },

@@ -1501,6 +1501,8 @@
       "catch": "**Čakajúce slová**: slová pokojne čakajú, napríklad nad púčikmi vlčích makov. Každé začína iným písmenom, tak si vyber, ktoré napíšeš.",
       "crossroads": "**Rázcestie**: na rázcestí slovom vyberieš cestu.",
       "clean": "**Odpis**: slová stoja v riadku a píšeš ich zľava doprava. Pri pozvánke za chybu slovo zbledne a pribudnú dve nové, je to viac cvičenia, nie trest.",
+      "ribbon": "**Pás**: text beží ako jeden dlhý pás, nie slovo po slove. Píš plynulo ďalej, medzera je len ďalší kláves.",
+      "transcribe": "**Prepis**: text je v jednom bloku a ty ho prepisuješ do druhého, ktorý je inak široký. Sleduj, kde v predlohe práve si.",
       "listen": "**Odposluch**: slovo nevidíš, iba počuješ. Napíš, čo počuješ. Keď chvíľu nepíšeš, zopakuje sa.",
       "remember": "**Tajné slová**: slovo sa ukáže len na chvíľu a schová sa. Zapamätaj si ho a napíš ho spamäti.",
       "aim": "**Strelnica**: slová plné písmen, ktoré ti ešte nejdú. Každé slovo hodí vec cez krúžky až do terča.",

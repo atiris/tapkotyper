@@ -6,7 +6,7 @@ Today a task is made only in a player's parent settings (`taskTab` in `src/scree
 not kept anywhere; the phone start page offers only "Pre učiteľov" and the missing keyboard.
 
 Affects `src/screens/teacher.ts`, `src/screens/parent.ts` (form moves out), a new
-`src/ui/task-form.ts`, `src/screens/start.ts` (phone page button; `taskPanel` moves out to
+`src/ui/task-form.ts`, `src/screens/map.ts` (Načítať úlohu), `src/screens/start.ts` (phone page button; `taskPanel` moves out to
 `src/ui/task-panel.ts`), a new screen `src/screens/task-note.ts`, `src/app/app.ts` (screen name,
 route, `NO_KEYBOARD`), `src/main.ts`, `src/ui/dom.ts` (art), `src/ui/big-code.ts` (a task caption),
 `src/storage/schema.ts` + `src/storage/store.ts` (two lists), `src/styles.css`,
@@ -63,6 +63,18 @@ IndexedDB (`src/share/teacher-db.ts`) is not touched.
   same task code only once - scanning it again moves it to the top). Under the camera the list
   "Zaznačené úlohy": title + date, a tap opens the same task view (Poslať, E-mail, Kopírovať,
   Veľký kód) and an X removes it. So a task noted at school can still be sent at home later.
+- **Reading a task code with the computer's camera** (the owner, 2026-10-31): on the player's map,
+  a new button **Načítať úlohu** (icon `camera`) right under **Len chcem písať** in `src/screens/map.ts`.
+  It opens only a popup (the usual `modal`: round X top right, Esc closes) with the camera picture in
+  the same frame as the teacher's scan, the camera picker when there are several cameras, and one
+  status line (starting, the camera errors as in the teacher's scan, "Toto nie je kód úlohy." at most
+  once a second). A task code (`codeFrom(text, 'task')` + `parseTask`): the frame flashes green, the
+  `beep` sounds (and the phone buzzes where it can), the camera stops, and after the flash (about
+  400 ms) the popup closes by itself; the task is given to this player (`addTask` + `saveProfile`; the
+  same task id again only refreshes it) and the map paints again so **Úloha na dnes** shows. Closing
+  the popup or leaving the map stops the camera. The camera card's frame/feedback/error code is
+  shared with the teacher scan and the phone note screen, not copied (e.g. a small camera-frame
+  helper in `src/ui/` that `teacher-scan.ts` also uses).
 - **bigCode for a task**: `bigCode` gets a `'task'` kind whose caption is the task title (name
   line empty); the existing kinds stay as they are.
 - **Texts**: sk as above; en in the same plain tone. Every new key gets a translator note
@@ -84,6 +96,7 @@ IndexedDB (`src/share/teacher-db.ts`) is not touched.
 - [ ] `src/ui/task-panel.ts` out of `start.ts` (the task link page unchanged).
 - [ ] Phone start page button and the `taskNote` screen with scan, task view, actions and the
   noted list; `bigCode` task kind.
+- [ ] Map button **Načítať úlohu** and its camera popup (shared camera-frame helper).
 - [ ] Texts sk/en, translator notes, catalog; `npx tsc --noEmit`, `npx vitest run`.
 - [ ] Spec updates.
 - [ ] Browser check with the playwright MCP in an own tab (the browser may be shared): teacher
@@ -92,4 +105,4 @@ IndexedDB (`src/share/teacher-db.ts`) is not touched.
   (`keyboardGated()` needs touch only and no key seen) shows Nová úloha first; on `#/note` feed a
   task code by calling the screen's code handler from `browser_evaluate` (no camera in the test
   browser) and check the task view, Copy, E-mail href, Veľký kód, the noted list after reload, and
-  "Toto nie je kód úlohy." for a result link. Report the camera itself as unverified.
+  "Toto nie je kód úlohy." for a result link; on a player's map open Načítať úlohu, feed a task code the same way and check the green flash, that the popup closes and that Úloha na dnes shows; Esc and X close it. Report the camera itself as unverified.

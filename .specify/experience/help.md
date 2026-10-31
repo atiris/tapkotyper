@@ -35,7 +35,8 @@
      QR codes by group, result links, sets (one scan, or links within 20 minutes), the kept
      history of every hand-in and a writer's progress, sending results from a phone to a
      computer as a `.tapko` file, the yearly cleanup (7 more days for old results loaded from a
-     file), CSV, the checksum, making a task, and the task from the child's side. The "?" (and F1) on the
+     file), CSV, the checksum, making a task, the task from the child's side, and the accuracy each count
+     of stars needs (the numbers from the game itself, so they never drift). The "?" (and F1) on the
      "For teachers" page opens this tab, since a teacher there needs exactly this.
   6. **About Tapko**: the intro, the privacy promise (its word "nainštalujete" is a link that asks the browser to install
      the web app, or opens the browser's guide when it cannot), data and one bullet with the open

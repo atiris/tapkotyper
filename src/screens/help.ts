@@ -1,6 +1,7 @@
 import { app, go, routeOf } from '../app/app';
 import { t, tList } from '../i18n/i18n';
 import { captureKeys, homePinky } from '../game/cards';
+import { STAR_STEPS } from '../game/levels';
 import { PAW_MAX, PAW_STREAK, PAW_WORDS } from '../game/paw';
 import { type Child, ICONS, button, h, icon, richText } from '../ui/dom';
 import { levelRing, pawRing, rhythmPic, roundPic, timerPic } from '../ui/hud';
@@ -79,6 +80,11 @@ function section(title: string, ...kids: Child[]): HTMLElement {
 
 const list = (key: string, params?: Record<string, string>) => h('ul', {}, ...tList(key, params).map((l) => h('li', {}, ...richText(l))));
 
+/** The accuracy (in whole percent) each count of stars needs, as `{s3}`, `{s2_5}`, `{s2}` and `{s1_5}`. */
+function starSteps(): Record<string, string> {
+  return Object.fromEntries(STAR_STEPS.map((s) => [`s${String(s.stars).replace('.', '_')}`, String(Math.round(s.from * 100))]));
+}
+
 /** A list item of `line` with `{mark}` replaced by `link`. */
 function linkedItem(line: string, mark: string, link: () => HTMLElement): HTMLElement {
   const [before, after] = line.split(`{${mark}}`);
@@ -155,6 +161,7 @@ function tabContent(tab: HelpTab, now: Child[] = []): HTMLElement[] {
       s === 'settings' ? h('p', {}, ...richText(t('help.settingsIntro'))) : null, list(`help.settings.${s}`)));
     case 'mentoring': return [
       section(t('help.mentorTitle'), list('help.mentor')),
+      section(t('help.starsTitle'), list('help.stars', starSteps())),
       section(t('help.taskTitle'), list('help.task')),
     ];
     case 'about': return aboutTab();

@@ -1568,6 +1568,13 @@
       "**F4** prepína zvuk: normálny, potichu, vypnutý. **F8** pustí inú pesničku.",
       "**Esc** zatvorí okno, ktoré je navrchu. Inak úroveň zastaví alebo pustí ďalej a z ostatných obrazoviek ide späť."
     ],
+    "starsTitle": "Hviezdičky za úroveň",
+    "stars": [
+      "Hviezdičky za úroveň sú len za **presnosť**: podiel správnych klávesov zo všetkých stlačených. Rýchlosť ich nemení.",
+      "**3 hviezdičky** od {s3} %, **2** od {s2} %, inak 1. Za dokončenú úroveň je vždy aspoň jedna.",
+      "Na konci úrovne vidno aj pol hviezdičky: 2,5 od {s2_5} % a 1,5 od {s1_5} %. Uloží sa celý počet, zaokrúhlený nadol.",
+      "Z úrovne sa ráta najlepší výsledok, opakovanie hviezdičky nikdy nezoberie."
+    ],
     "mentorTitle": "Výsledky a QR kódy",
     "mentor": [
       "Stránku **Pre učiteľov** otvoríte ikonou grafu vpravo hore na úvodnej stránke. Výsledky sa ukladajú len v tomto prehliadači.",

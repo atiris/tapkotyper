@@ -1529,6 +1529,8 @@
     "help.games.super": "Help, Progress tab: the big challenge with its crown; the bold name matches map.act.super.",
     "help.journeyTitle": "Help, Progress tab: the heading about worlds, levels and stars.",
     "help.journey": "Help, Progress tab: bullet points about stories, worlds, levels and stars.",
+    "help.starsTitle": "Help, Parents and teachers tab: the heading about how many stars a level gives.",
+    "help.stars": "Help, Parents and teachers tab: bullet points on the accuracy each count of stars needs; {s3}, {s2_5}, {s2} and {s1_5} are whole percents.",
     "help.taskTitle": "Help, Parents and teachers tab: the heading about a task from the teacher.",
     "help.task": "Help, Parents and teachers tab: bullet points on how a child opens and completes a task.",
     "help.settingsIntro": "Help, Settings tab: the opening paragraph at the top, on who the settings are for.",

@@ -267,14 +267,17 @@ export function rescueUnlocked(p: Profile): boolean {
   return STORIES.some((s) => storyDone(p, s));
 }
 
-/** Stars from accuracy: 3 >= 96 %, 2 >= 89 %, else 1 (finishing always gives one). */
+/** Lowest accuracy for each count of stars on the results card, best first; below them 1 (finishing always gives one). */
+export const STAR_STEPS = [{ stars: 3, from: 0.96 }, { stars: 2.5, from: 0.93 }, { stars: 2, from: 0.89 }, { stars: 1.5, from: 0.84 }] as const;
+
+/** Stars from accuracy: whole stars only. */
 export function starsFor(accuracy: number): number {
-  return accuracy >= 0.96 ? 3 : accuracy >= 0.89 ? 2 : 1;
+  return Math.floor(halfStarsFor(accuracy));
 }
 
-/** Stars shown on the results card: `starsFor` with a half more from 84 % and from 93 %; never saved. */
+/** Stars shown on the results card, by `STAR_STEPS`; never saved. */
 export function halfStarsFor(accuracy: number): number {
-  return accuracy >= 0.96 ? 3 : accuracy >= 0.93 ? 2.5 : accuracy >= 0.89 ? 2 : accuracy >= 0.84 ? 1.5 : 1;
+  return STAR_STEPS.find((s) => accuracy >= s.from)?.stars ?? 1;
 }
 
 const RESCUE_KINDS: { kind: LevelKind; world: number; variant: string }[] = [

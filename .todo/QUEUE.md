@@ -8,3 +8,4 @@ skipped, and the session that finishes a plan removes its line.
 
 - [P1] 96-task-games.md - the five task games; after 95 (task fields) and 93 (the reworked ribbon it reuses)
 - [P2] 92-story-pack-groundwork.md - safe refactors only, ahead of any story pack work; nothing depends on it yet
+- [P3] 97-readme-screenshots.md - owner wish: README pictures of the game as it is now; last, so they show the work of the plans before it

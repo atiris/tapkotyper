@@ -2,7 +2,7 @@ import { assetUrl, hasMusic, musicTracks } from '../gfx/assets';
 import { nextTrack } from './tracks';
 import type { SoundLevel } from '../storage/schema';
 
-export type Sfx = 'key' | 'wrong' | 'word' | 'reward' | 'whoosh' | 'pop' | 'cheer' | 'bzzt' | 'note' | 'plop' | 'squeak' | 'ring' | 'whistle' | 'crack' | 'thud' | 'squawk';
+export type Sfx = 'key' | 'wrong' | 'word' | 'reward' | 'whoosh' | 'pop' | 'cheer' | 'bzzt' | 'note' | 'plop' | 'squeak' | 'ring' | 'whistle' | 'crack' | 'thud' | 'squawk' | 'beep';
 /** Quick sound switch: normal, quiet (20 % of normal) or off. */
 export const SOUND_LEVELS: SoundLevel[] = ['normal', 'quiet', 'off'];
 const LEVEL_GAIN: Record<SoundLevel, number> = { normal: 1, quiet: 0.2, off: 0 };
@@ -171,7 +171,7 @@ class AudioEngine {
     const ctx = this.ctx;
     if (!ctx || this.level === 'off' || ctx.state !== 'running') return;
     const t = ctx.currentTime;
-    const tone = (freq: number, start: number, dur: number, type: OscillatorType = 'sine', vol = 0.3, slide?: number) => {
+    const tone = (freq: number, start: number, dur: number, type: OscillatorType = 'sine', vol = 0.3, slide?: number, flat = false) => {
       const o = ctx.createOscillator();
       const g = ctx.createGain();
       o.type = type;
@@ -179,6 +179,8 @@ class AudioEngine {
       if (slide) o.frequency.exponentialRampToValueAtTime(slide, t + start + dur);
       g.gain.setValueAtTime(0, t + start);
       g.gain.linearRampToValueAtTime(vol, t + start + 0.01);
+      // A flat tone holds its loudness and cuts off, like a shop scanner.
+      if (flat) g.gain.setValueAtTime(vol, t + start + dur - 0.015);
       g.gain.exponentialRampToValueAtTime(0.001, t + start + dur);
       o.connect(g).connect(this.sfxGain);
       o.start(t + start);
@@ -189,6 +191,7 @@ class AudioEngine {
       case 'wrong': tone(300, 0, 0.18, 'sine', 0.12, 240); break;
       case 'bzzt': tone(150, 0, 0.16, 'square', 0.03, 120); tone(150, 0.08, 0.12, 'square', 0.025, 110); break;
       case 'word': tone(660, 0, 0.12, 'triangle', 0.2); tone(990, 0.08, 0.18, 'triangle', 0.18); break;
+      case 'beep': tone(1850, 0, 0.11, 'square', 0.05, undefined, true); break;
       case 'pop': tone(520, 0, 0.12, 'sine', 0.25, 1040); break;
       case 'plop': tone(260, 0, 0.16, 'sine', 0.16, 120); break;
       case 'squeak': tone(1100, 0, 0.09, 'triangle', 0.14, 1600); tone(1300, 0.1, 0.12, 'triangle', 0.12, 900); break;

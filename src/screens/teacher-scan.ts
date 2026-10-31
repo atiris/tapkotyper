@@ -5,7 +5,7 @@ import { button, h } from '../ui/dom';
 
 export interface ScanCard {
   el: HTMLElement;
-  /** Flashes the preview green and ticks softly. */
+  /** Flashes the preview green, beeps like a shop scanner and buzzes where the phone can. */
   hit(): void;
   /** A short hint under the preview, for example an unknown code. */
   hint(text: string): void;
@@ -82,8 +82,9 @@ export function scanCard(group: string, onText: (text: string) => void, onDone: 
     hit() {
       frame.classList.add('hit');
       clearTimeout(flash);
-      flash = window.setTimeout(() => frame.classList.remove('hit'), 400);
-      audio.sfx('pop');
+      flash = window.setTimeout(() => frame.classList.remove('hit'), 300);
+      audio.sfx('beep');
+      navigator.vibrate?.(60);
     },
     hint(text) {
       say(text);

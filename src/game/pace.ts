@@ -7,15 +7,19 @@ export const PACE_MIN = 0.7;
 export const PACE_MAX = 2.4;
 
 /**
- * Seconds per character for the travel time. From the last finished targets (reading and
- * finding the first key included); before there are enough, from the last session's rhythm.
+ * The child's own seconds per character. From the last finished targets (reading and finding the
+ * first key included); before there are enough, from the last session's rhythm.
  */
-export function perChar(samples: number[], lastCps: number): number {
+export function childPace(samples: number[], lastCps: number): number {
   const recent = samples.slice(-PACE_WORDS);
-  const raw = recent.length >= PACE_WORDS
+  return recent.length >= PACE_WORDS
     ? recent.reduce((a, b) => a + b, 0) / recent.length
     : 1 / Math.max(0.5, lastCps * 0.85);
-  return Math.min(PACE_MAX, Math.max(PACE_MIN, raw));
+}
+
+/** Seconds per character for the travel time: the child's pace within the travel time's bounds. */
+export function perChar(samples: number[], lastCps: number): number {
+  return Math.min(PACE_MAX, Math.max(PACE_MIN, childPace(samples, lastCps)));
 }
 
 /** One step of the valve, and its largest factor. */

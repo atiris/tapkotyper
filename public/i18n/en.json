@@ -958,7 +958,13 @@
       "The puddles are behind us. Clean paws, let's go on!"
     ],
     "mountainStart": [
-      "The way to the summit splits. At each **crossroads** pick a signpost and type its word."
+      "Several paths lead to the top of the mountain. Some are short, others are hard. At a crossroads pick **the signpost of the path you would like to take** and type the words on it. But watch out, **the best path** does **not stay there for long**! Will you pick paths of hard words with easy signposts, ones that are tricky only on the sign but have easy words along the way, or ones that get you to the goal sooner? If you change your mind about the path while typing, press **Backspace**."
+    ],
+    "roadCareful": [
+      "Slowly!",
+      "Accuracy first!",
+      "Focus!",
+      "Slower, but right!"
     ],
     "mountainEnd": [
       "I can see the summit!",

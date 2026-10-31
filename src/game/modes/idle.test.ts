@@ -50,6 +50,7 @@ function fakeRuntime(count = 4): LevelRuntime {
     letter: () => 'a',
     travelTime: () => 3,
     letterTime: 0.4,
+    letterPace: 0.4,
     friendSpot: () => ({ x: 120, y: 600 }),
     particles: { emit: () => {} },
     // A tween ends at once.
@@ -977,6 +978,30 @@ describe('the egg mountain', () => {
     expect(L.core.locked).toBeNull();
     expect(L.core.missed).toBe(0);
     expect(signs.filter((s) => !s.tg.gone)).toHaveLength(2);
+  });
+
+  it('two slips in a mountain road word bring an easier word and a call to slow down; one slip does not', () => {
+    const L = levelRuntime(levelById('w5-3')!);
+    const shouts: string[] = [];
+    Object.assign(L, { shout: (text: string) => shouts.push(text) });
+    const m = new CrossroadsMode(L);
+    mode = m;
+    m.start();
+    const current = () => (m as unknown as { current: { word: string; gone: boolean; typed: number } }).current;
+    const first = current();
+    const slip = () => {
+      const tg = current();
+      if (!tg.typed) L.core.type(tg.word[0]);
+      L.core.type('#');
+      m.onWrong(L.core.locked);
+    };
+    slip();
+    expect(current()).toBe(first);
+    slip();
+    expect(first.gone).toBe(true);
+    expect(current()).not.toBe(first);
+    expect(shouts).toHaveLength(1);
+    expect(L.core.missed).toBe(0);
   });
 
   it('pairs of boulders come for the slow child too', () => {

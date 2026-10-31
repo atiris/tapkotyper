@@ -335,9 +335,13 @@ as they are. The world descriptions below marked *not built yet* are the design 
    least three signs the sign of the best path, when that is the teleport, the cable car or the
    fast path, gets a round clock beside its word (the take-off's clock). It starts once all
    posts have grown and gives this child time to read and decide plus the word's letters at
-   their own pace, at least 4 seconds; when it runs out the sign vanishes as after a slip, also
+   their own real pace (a quick child is not slowed to the floor the moving targets keep), at
+   least 4 seconds; when it runs out the sign vanishes as after a slip, also
    half typed (no mistake), while at least two signs are left ("Škoda, tá cesta sa zavrela.").
-   With "no time pressure" there is no clock. End: he can see the summit.
+   With "no time pressure" there is no clock. Two slips in one road word bring a slightly
+   easier word in its place (a step shorter, a word fewer) with a call to slow down ("Pomaly!",
+   "Radšej presne!", "Sústreď sa!"); the next word is as hard as the road again. End: he can
+   see the summit.
    4 boulders before the summit (a stream): round boulders of three looks roll down the path at
    him, spinning, the word above each; from a third of the level about every third throw is a
    pair. Typed, it rolls on and he hops over it; missed, he hops too late, stumbles ("Hups!"),

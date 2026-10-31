@@ -958,7 +958,13 @@
       "Mláky sú za nami. Labky čisté, ideme ďalej!"
     ],
     "mountainStart": [
-      "Cesta k vrcholu sa delí. Na **rázcestí** si vyber smerovník a napíš jeho slovo."
+      "K vrcholu hory vedie viacero ciest. Niektoré sú krátke, iné zasa ťažké. Na rázcestí si vyber **smerovník podľa cesty, ktorou by si rád pokračoval**, a napíš slová, ktoré sú na ňom. Pozor však, **najlepšia cesta** tam **nezostane dlho**! Vyberieš si cestičky ťažkých slov s ľahkými smerovníkmi, alebo také, ktoré sú zložité len na značke, ale majú ľahké slová počas cestovania, alebo ťa privedú k cieľu skôr? Ak sa počas písania rozhodneš zmeniť cestu, stlač **Backspace**."
+    ],
+    "roadCareful": [
+      "Pomaly!",
+      "Radšej presne!",
+      "Sústreď sa!",
+      "Pomalšie, ale presne!"
     ],
     "mountainEnd": [
       "Už vidím vrchol!",

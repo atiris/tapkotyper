@@ -65,6 +65,8 @@ export const QUICK_SIGNS = 3;
 const QUICK_READ = 2;
 const QUICK_PACE = 1.5;
 const QUICK_MIN = 4;
+/** On the mountain, this many slips in one road word bring a slightly easier one instead (and a call to slow down). */
+export const EASIER_AFTER = 2;
 
 /** The sign of the best path among `kinds` (the lowest time x words), when it is a quick one; else null. */
 export function quickSign(kinds: PathKind[]): number | null {
@@ -236,6 +238,8 @@ export class CrossroadsMode extends HeroMode {
   private busy = false;
   private signGoneSaid = false;
   private signLastSaid = false;
+  /** Slips in the current road word. */
+  private slips = 0;
   private endT: number | null = null;
 
   startLine(): string {
@@ -262,6 +266,12 @@ export class CrossroadsMode extends HeroMode {
     const max = LEN_MAX[r.len];
     if (r.weak) return this.L.weakWord(max ?? 6);
     return this.L.word(max, DIFF_WORDS[r.diff], 2);
+  }
+
+  /** A slightly easier road word after slips: a step shorter and a word fewer. */
+  private easierWord(): string {
+    const r = this.road;
+    return this.L.word(r.len === 'long' ? LEN_MAX.normal : r.len === 'normal' ? LEN_MAX.short : 3, Math.max(1, DIFF_WORDS[r.diff] - 1), 1);
   }
 
   /** An activation word of the asked difficulty. */
@@ -295,6 +305,7 @@ export class CrossroadsMode extends HeroMode {
       this.echoes = 0;
       word = this.road.echo && this.legLeft === this.extremeAt ? this.askWord('extreme') : this.roadWord();
     }
+    this.slips = 0;
     this.current = this.L.core.add(word, {});
   }
 
@@ -317,7 +328,7 @@ export class CrossroadsMode extends HeroMode {
       let word = this.askWord(PATHS[kind].ask);
       for (let k = 0; k < 8 && this.L.core.active.some((o) => o.word[0] === word[0]); k++) word = this.askWord(PATHS[kind].ask);
       const arrow = { pic: r.pick(ARROWS), rot: r.range(-ARROW_TURN, ARROW_TURN), left: r.chance(0.5) };
-      const clock = i === quick ? { spent: 0, full: quickTime(word.length, this.L.letterTime) } : null;
+      const clock = i === quick ? { spent: 0, full: quickTime(word.length, this.L.letterPace) } : null;
       return { slot, kind, name: r.pick(tList(`story.path.${kind}.names`)), tg: this.L.core.add(word, {}), age: -i * POST_STAGGER, gone: null, arrow, spin: null, clock };
     });
     for (const s of this.signs) s.tg.selectable = false;
@@ -402,6 +413,7 @@ export class CrossroadsMode extends HeroMode {
 
   onWrong(tg: Target | null): void {
     super.onWrong(tg);
+    if (this.mountain && tg && tg === this.current && this.L.core.locked === tg && ++this.slips >= EASIER_AFTER) return this.easier();
     const sign = this.signs.find((s) => s.tg === tg);
     // Only a slip inside a started sign's word counts; a key that starts no word does not.
     if (!sign || !tg || this.L.core.locked !== tg) return;
@@ -423,6 +435,15 @@ export class CrossroadsMode extends HeroMode {
       this.signLastSaid = true;
       this.L.say(t('story.signLast'), 2.5);
     }
+  }
+
+  /** Two slips in a road word on the mountain: a call to slow down and a slightly easier word in its place; the next one is as hard as the road again. */
+  private easier(): void {
+    this.L.core.release(this.current!, false);
+    this.L.core.prune();
+    this.L.shout(pickLine('story.roadCareful'), this.heroSpot().x, this.heroSpot().y);
+    this.slips = 0;
+    this.current = this.L.core.add(this.easierWord(), {});
   }
 
   /** The best path's countdown ran out: its sign vanishes as after a slip, half typed or not, while two others stand. */

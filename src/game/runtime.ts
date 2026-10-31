@@ -31,7 +31,7 @@ import { type Mode, driftOffset } from './mode';
 import { ENTER_MAX, EnterMarks } from './enter';
 import type { ModeMaker } from './modes';
 import type { FreeTypeMode } from './modes/freetype';
-import { PressureValve, perChar } from './pace';
+import { PressureValve, childPace, perChar } from './pace';
 import { Rhythm } from './rhythm';
 import { completeLevel, completeStay, joinRuns } from './progress';
 import { type Style, type Target, TypingCore } from './typing';
@@ -418,6 +418,11 @@ export class LevelRuntime {
   /** Seconds the child takes per letter over the last few words (reading included), as the travel time counts it. */
   get letterTime(): number {
     return perChar(this.paceSamples, this.lastCps);
+  }
+
+  /** Seconds the child really takes per letter (reading included), without the travel time's bounds: a quick child is not slowed to the floor. */
+  get letterPace(): number {
+    return childPace(this.paceSamples, this.lastCps);
   }
 
   /** How many targets may be on screen at once. */

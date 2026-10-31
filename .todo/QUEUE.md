@@ -6,5 +6,4 @@ each in its own clean session. One line per plan in `.todo/`:
 listed here is never run. Lines whose plan has moved to `.todo/.done/` are
 skipped, and the session that finishes a plan removes its line.
 
-- [P3] 90-upkeep-loading-drawing-runtime.md - backlog upkeep; after 89 (both touch runtime.ts timekeeping)
 - [P3] 91-audible-dictation-words.md - backlog fix for own-practice dictation; independent

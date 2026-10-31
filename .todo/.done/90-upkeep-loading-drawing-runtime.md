@@ -91,6 +91,24 @@ cannot be done now (2026-10-31).
       valley with Simple graphics at 1024x600.
 - [x] Runtime split into pause, paws and super-helper files with a shared state object; no
       behaviour change; `runtime.ts` under about 1000 lines.
-- [ ] `npm run build`, `npx vitest run`, the full e2e suite (the split touches every level);
+- [x] `npm run build`, `npx vitest run`, the full e2e suite (the split touches every level);
       Playwright MCP: a level to its end card, peek and back, pause with a stretch and a quick
       exercise, the paw help, with Full and with Simple graphics; console clean.
+
+## Done - 2026-10-31
+
+- The offline install downloads four files at a time (`scripts/sw-template.js`), unit-tested
+  with fake caches and fetch (`src/app/sw-install.test.ts`): complete cache, at most 4 at once,
+  a failed file fails the install.
+- With Full graphics the scene under a blurring card stands still (canvas, the stage's CSS
+  animations and Tapko on the end card); peeking draws live again. Results p50 33.3 -> 16.7 ms
+  (meadow-1), busy 30 % -> 3 %. `scripts/perf.mjs --results` measures it (and now finds the end
+  card at all).
+- Simple graphics draw at 0.75 resolution: slow profile p50 33 -> 17 ms in meadow and valley,
+  p95 66.7 -> 50 ms in valley-1 and space-5.
+- `runtime.ts` 1586 -> 1048 lines: pause card, paws, super help, friends, reading, key cards,
+  stage Tapko and options in `src/game/runtime/`, sharing `LevelState`.
+- Verified: build, 496 unit tests, 86 e2e tests, Playwright MCP play-through with Full and
+  Simple graphics (paws, pause with a stretch, end card, peek and back), console clean.
+- Left out: valley-1 and space-5 p95 on the slow profile stay at the 50 ms frame step instead
+  of under it (backlog).

@@ -21,10 +21,12 @@ Each world ends with a bigger, special challenge:
   one set less and more time, after six a miss only starts that word again, so every child
   finishes. The paws are off (they would type the sets). When the last is gone the fire goes out
   and the egg shows.
-- The super-obstacles below, of worlds 5-15, are **not built yet**: until their world is
+- **Spell of awakening** (egg mountain): one long spell on a ribbon, spaces and periods typed like
+  letters; a slip erases the word in progress and the last written word and the ribbon rewinds
+  (never behind the last rewind until two words were written past it). The fire in the dragons'
+  hearth grows with each sentence and the egg hatches at the end ([mechanics](mechanics.md), Ribbon).
+- The super-obstacles below, of worlds 6-15, are **not built yet**: until their world is
   redone its super level plays the placeholder copy ([story](story.md)).
-- **Friendly mole** (egg journey): pops up unexpectedly with a short word that rewards a
-  quick reaction; missing it just makes the mole wave and hide.
 - **Cable knot** (junkyard): every short word unties one loop; an exact word unties a
   whole loop, one with mistakes half of it.
 - **Battery** (workshop) and **storm cloud** (rainy town): rhythm sequences, short letter

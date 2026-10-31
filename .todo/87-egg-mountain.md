@@ -227,7 +227,7 @@ Made with the section 3 prompts of `assets-src/PROMPTS.md` (skill `gemini-images
 
 ## Steps
 
-- [ ] Specs and texts first: story.md world 5, scenario Svet 5, mechanics exceptions, sk/en
+- [x] Specs and texts first: story.md world 5, scenario Svet 5, mechanics exceptions, sk/en
       lines, translator notes.
 - [x] Egg on the back: `carry: 'egg'` in `drawTapko`, the silhouette cache, peeking; unit test of
       the visible share with the widest back accessories and with fallback drawings.
@@ -273,5 +273,8 @@ Decisions taken while implementing (2026-10-31):
   at random, the label does not); a countdown that would leave fewer than two signs just stops.
 - Spell: each word is a target with its trailing space, so the space is typed while the word is
   locked; a wrong first letter is a slip too. Enter marks are dropped from the spell.
+- Slovak lines never use a gendered past tense about the child (`tapko.md`): the plan's
+  "Zaváhal si", "že si ma zohrial" and "odlepil som sa" became "Chvíľka zaváhania a cesta ...",
+  "Ďakujem, že ma tvoje kúzlo zohrialo!" and "Uf, už sa to nelepí!".
 - Runtime: `extendMin(seconds)` (the wind's and the boulders' longer way) and `letterTime` (the
   child's seconds per letter, for the countdown).

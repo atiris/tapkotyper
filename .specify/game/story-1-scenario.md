@@ -1,6 +1,6 @@
-# Príbeh 1: Tapko a dračie vajíčko - scenár prvých štyroch svetov
+# Príbeh 1: Tapko a dračie vajíčko - scenár prvých piatich svetov
 
-Celý dej prvých štyroch svetov úroveň po úrovni, ako ho hra rozpráva (úvodné scény, vety na
+Celý dej prvých piatich svetov úroveň po úrovni, ako ho hra rozpráva (úvodné scény, vety na
 začiatku úrovní, koniec). Pravidlá hry sú v [story.md](story.md) a [mechanics.md](mechanics.md);
 tu je **čo sa deje a prečo**, aby každá úroveň mala svoj kúsok príbehu. Rozprávač hovorí
 dieťaťu v druhej osobe ("chytíš list"), nikdy o postave ako o niekom inom.
@@ -137,6 +137,60 @@ Koniec sveta: "Dráčiky odleteli na lúku kryštálov a oheň dohorel. V popole
 svieti... je to dračie vajíčko! Dráčiky ho tu nechali. Teraz ho opatruješ ty."
 
 
+## Svet 5: Vajíčko - Hora prebudenia
+
+Plamene v údolí, v ktorých sa dráčik zrodil, sú príliš slabé, aby ho prebudili. Tapko nesie
+vajíčko na chrbte hore na **Horu prebudenia** do **ohniska drakov** na vrchole a zobudí dráčika
+dlhým kúzlom. Vajíčko mu vykúka ponad pravé plece, vždy aspoň tretinou, nech má oblečené
+čokoľvek (aj krídla či raketový batoh); občas a pri príbehových chvíľach (poryv, mláka,
+zakopnutie) sa vysunie vyššie, zakolíše sa a znova sa schová. Slová nie sú nikdy na vajíčku ani
+na Tapkovi. Všetkých päť úrovní má to isté pozadie: skalnaté štíty s bledými kryštálmi, nízke
+machové skaly a skalnatý chodník, v ktorého strede Tapko kráča.
+
+Úvod sveta (prvá karta 1. úrovne): "Plamene, v ktorých sa dráčik zrodil, sú príliš slabé, aby ho
+prebudili. Vajíčko musíš vyniesť na Horu prebudenia do ohniska drakov. Cesta hore je dlhá: fúka
+silný vietor, sú tam lepkavé mláky, rázcestia a padajúce balvany. Na vrchole prednesieš kúzlo
+prebudenia."
+
+1. **Vietor na svahu** - "Na svahu fúka silný vietor. Napíš slovo, ktoré nesie, skôr než k tebe
+   dofúka." Slová prichádzajú sprava v poryvoch (vír bieleho vzduchu s lístkom), najprv po
+   jednom, od polovice po dvoch. Napísaný poryv sa rozplynie a Tapko vyjde kúsok vyššie;
+   nenapísaný ho s vajíčkom odtlačí o pár krokov späť ("Uf, to fúka!", "Držím sa!"). Kým poryv
+   letí, Tapko sa opiera do vetra. Pri chybe poryv zosilnie, zrýchli a jeho slovo sa píše odznova;
+   druhá chyba v tom istom poryve ho hneď vrhne na Tapka, odtlačí ho ďalej a cesta sa predĺži o
+   dve slová (prvýkrát: "Silný poryv ťa odtlačil, cesta sa predĺžila."). Na konci dôjde na
+   záveternú rímsu: "Uf, tu už nefúka."
+2. **Lepkavé mláky** - "Na chodníku sú lepkavé mláky. Vyber si slovo nad čistým miestom. Kto
+   stúpi do bahna, chvíľu sa nepohne z miesta." V každom kole sú 2 alebo 3 slová nad miestami na
+   chodníku, aspoň jedno čisté a jedno s mlákou. Tapko prejde na miesto napísaného slova; v
+   bahne povie "Fuj!" a pod slovom sa ukáže "Bahno ťa riadne spomalí: ďalšie tri slová sú ťažké."
+   Tri kolá potom stojí v mláke a nad ním je vždy jedno veľmi ťažké slovo, potom "Uf, už sa to
+   nelepí!" a ide ďalej. Na konci sú mláky za ním, oklepe si labky a ide ďalej.
+3. **Rázcestia** - "Cesta k vrcholu sa delí. Na rázcestí si vyber smerovník a napíš jeho slovo."
+   Hrá sa ako rázcestia na planéte (tie isté cesty, mená aj účinky), smerovníky stoja v kôpkach
+   machových kameňov a pribudnú horské cesty: vľavo a vpravo (obyčajné, najviac jedna z nich),
+   prekážky ("Samé kamene a pníky, to bude dlhé!"), lanovka ("Hurá, vezieme sa!") a zablatená
+   cesta ("Fuj, blato až po kolená."). Na rázcestí s aspoň tromi smerovníkmi má najlepšia cesta
+   (teleport, lanovka alebo rýchla cesta) hodiny; keď dobehnú, smerovník zmizne aj s
+   rozpísaným slovom, bez chyby ("Škoda, tá cesta sa zavrela."). Na konci Tapko vidí vrchol.
+4. **Balvany** - "Tesne pod vrcholom sa po chodníku valia balvany. Napíš slovo na balvane a
+   preskočíš ho." Okrúhle balvany sa kotúľajú sprava, od tretiny úrovne asi každý tretí hod sú
+   dva naraz. Napísaný balvan sa kotúľa ďalej a Tapko ho preskočí; nenapísaný preskočí neskoro,
+   zakopne ("Hups!", "Jejda!", "Uf!"), na chvíľu si sadne a vstane, a cesta sa trochu predĺži
+   (prvýkrát: "Chvíľka zaváhania a cesta na vrchol sa predĺžila."). Na konci je vrchol na dohľad.
+5. **Kúzlo prebudenia** (super úroveň, prvý pás) - "Si na vrchole. Polož vajíčko do ohniska
+   drakov a prednes kúzlo prebudenia. Je dlhé a musí byť presné: pri chybe zmizne aj posledné
+   napísané slovo." Tapko zloží vajíčko z chrbta do ohniska (kruh starých vyrezávaných kameňov so
+   slabými plamienkami). Hore beží kúzlo ako nekonečný pás, pod ním v kamennom ráme so
+   svietiacimi runami pribúda napísaný text. Pri chybe zmizne rozpísané aj posledné napísané
+   slovo a pás sa vráti ("Kúzlo sa preruší, napíš posledné slová znova."). Každá napísaná veta
+   oheň zväčší a vajíčko viac žiari, v polovici sa na ňom ukáže prasklina, v troch štvrtinách
+   praská. Na konci oheň vzbĺkne, vajíčko sa rozbije a v ohnisku sedí dráčik: "Ahoj! Ďakujem, že
+   ma tvoje kúzlo zohrialo!" Tapko sa poteší ("Hurá!").
+
+Koniec sveta: "Ohnisko drakov vzbĺklo a vajíčko praská... krak... krak! Malý dráčik sa na teba
+pozerá. Máš nového kamaráta! Teraz ťa čaká cesta hrdinu: späť dolu z hory až k rakete."
+
 ## Prečo
 - Každá úroveň má svoj dôvod v príbehu, takže päť úrovní sveta sa nečíta ako päťkrát tá istá
   hra s iným číslom.
@@ -146,3 +200,6 @@ svieti... je to dračie vajíčko! Dráčiky ho tu nechali. Teraz ho opatruješ 
   v kríkoch zasmeje a dôjde pešo. Úrovne na seba nadväzujú (oheň je domov dráčikov, vyčistená
   cesta je pre tých, čo nelietajú, lietanie z 3. úrovne sa skúša v 5.) a vajíčko za ohniskom
   vedie do piateho sveta.
+- Hora nadväzuje na údolie: plamene, v ktorých sa vajíčko zrodilo, ho nezobudia, preto ho Tapko
+  nesie k silnejšiemu ohňu. Každá úroveň je kúsok cesty hore a vrchol je kúzlo, ktoré sa píše
+  ako jeden dlhý text; odtlačenie a zakopnutie sú malé a smiešne, vajíčko nikdy nespadne.

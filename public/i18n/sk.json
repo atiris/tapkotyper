@@ -949,7 +949,7 @@
     ],
     "mudSlow": "Bahno ťa riadne spomalí:\nďalšie tri slová sú ťažké.",
     "mudFree": [
-      "Uf, odlepil som sa!"
+      "Uf, už sa to nelepí!"
     ],
     "mudDone": [
       "Mláky sú za nami. Labky čisté, ideme ďalej!"
@@ -972,13 +972,13 @@
       "Jejda!",
       "Uf!"
     ],
-    "bouldersLonger": "Zaváhal si, cesta na vrchol sa predĺžila.",
+    "bouldersLonger": "Chvíľka zaváhania a cesta na vrchol sa predĺžila.",
     "bouldersDone": [
       "Vrchol je na dohľad! Vajíčko, už sme skoro tam."
     ],
     "spellSlip": "Kúzlo sa preruší, napíš posledné slová znova.",
     "spellCareful": "Pozor, kúzlo musí byť presné!",
-    "spellHello": "Ahoj! Ďakujem, že si ma zohrial!",
+    "spellHello": "Ahoj! Ďakujem, že ma tvoje kúzlo zohrialo!",
     "copyLoopStart": "Táto úroveň sa ešte pripravuje. Zatiaľ si tu precvičíš odpis: píš slová zo stredu, kým neuplynie čas.",
     "copyLoopSoon": "Pripravuje sa",
     "copyLoopCount": "napísané: {n}",
@@ -1569,7 +1569,7 @@
       "catch": "**Čakajúce slová**: slová pokojne čakajú, napríklad nad púčikmi vlčích makov. Každé začína iným písmenom, tak si vyber, ktoré napíšeš.",
       "crossroads": "**Rázcestie**: na rázcestí slovom vyberieš cestu.",
       "clean": "**Odpis**: slová stoja v riadku a píšeš ich zľava doprava. Pri pozvánke za chybu slovo zbledne a pribudnú dve nové, je to viac cvičenia, nie trest.",
-      "ribbon": "**Pás**: text beží ako jeden dlhý pás, nie slovo po slove. Píš plynulo ďalej, medzera je len ďalší kláves.",
+      "ribbon": "**Pás**: text beží ako jeden dlhý pás, nie slovo po slove, ako kúzlo prebudenia na vrchole hory. Píš plynulo ďalej, medzera je len ďalší kláves.",
       "transcribe": "**Prepis**: text je v jednom bloku a ty ho prepisuješ do druhého, ktorý je inak široký. Sleduj, kde v predlohe práve si.",
       "listen": "**Odposluch**: slovo nevidíš, iba počuješ. Napíš, čo počuješ. Keď chvíľu nepíšeš, zopakuje sa.",
       "remember": "**Tajné slová**: slovo sa ukáže len na chvíľu a schová sa. Zapamätaj si ho a napíš ho spamäti.",

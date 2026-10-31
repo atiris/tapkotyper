@@ -14,7 +14,7 @@ tells the story to the child in the second person ("you catch the leaf", "Melody
 gives you a wreath"), never about the character as someone else.
 
 ### Worlds not built yet
-Only the first four worlds (meadow, rocket, planet, valley) are built on the agreed rules. Until a
+Only the first five worlds (meadow, rocket, planet, valley, egg mountain) are built on the agreed rules. Until a
 world is redone, all five of its levels, the super level too, play one simple placeholder
 game, **cyclic copy** ([mechanics](mechanics.md)), so the child still progresses: playing a
 level's round time unlocks the next one, and new letters keep coming as in any level. The
@@ -300,9 +300,51 @@ as they are. The world descriptions below marked *not built yet* are the design 
    ends the level even below the minimum (played on without an end, one more always comes).
    Reward: the **Dragon Egg** that came from the dragons' fire. The valley's own thing at the
    target range is a flame (kept although the world got new things).
-5. **Egg Journey** (*not built yet*) - the hatching egg rolls downhill; typing makes it jump over rocks and
-   stumps. Super-obstacle: a friendly mole. Reward: a new companion hatches and
-   the **hero's journey** opens ([hero's journey](heros-journey.md)).
+5. **Egg** (the Mountain of Awakening) - the flames the egg was born in are too weak to wake it:
+   Tapko carries it up the mountain to the **dragons' hearth** on the summit and wakes the baby
+   with a long spell. Levels 1-4 he carries the egg on his back: it peeks over his right shoulder
+   behind everything he wears, a third of it at rest whatever the outfit (wings, a cape and a
+   jetpack included), and now and then and at story moments (a gust, a mud step, a stumble) it
+   rises to show about two thirds, wobbles and sinks back (still with reduced motion). The
+   mountain's three background bands are the same in all five levels: rocky peaks with pale
+   crystals far back, low mossy rocks in the middle, a rocky path in front with Tapko in its middle.
+   1 wind on the slope (a stream): each word comes from the right in a gust, a swirl of white
+   air with a leaf or two; one at a time, two from the second half. Typed, the gust breaks up
+   and Tapko walks a few steps on; untyped, it pushes him and the egg a few steps back ("Uf, to
+   fúka!"). He leans into the wind while a gust flies. A slip makes the gust bigger and faster
+   and starts its word again; a second slip in the same gust sends it into him at once, pushes
+   him further back and makes the way longer by two words (the first time the narrator says
+   why). End: a sheltered ledge, the wind drops.
+   2 sticky puddles (waiting words, calm): each round shows 2 or 3 words over places on the path
+   ahead, at least one clean and one with a sticky puddle; their first letters differ. He walks
+   to the place of the typed word; in a puddle he says "Fuj!", a line explains that the next
+   three words are hard, and he is stuck for three rounds of one very hard word each (the
+   longest words of the hardest keys he knows) above his head, then "Uf, už sa to nelepí!" and
+   he walks on. End: the puddles behind, he wipes his paws and walks on.
+   3 crossroads up the mountain: the planet's crossroads with the same paths, names and effects,
+   the Backspace card too, with the egg on his back, posts in small cairns of mossy stones and
+   the mountain's own paths: left and right (ordinary, one of them at most), obstacles (tempting,
+   clearly bad), the cable car (good) and a muddy path (a little bad). At a crossroads with at
+   least three signs the sign of the best path, when that is the teleport, the cable car or the
+   fast path, gets a round clock beside its word (the take-off's clock). It starts once all
+   posts have grown and gives this child time to read and decide plus the word's letters at
+   their own pace, at least 4 seconds; when it runs out the sign vanishes as after a slip, also
+   half typed (no mistake), while at least two signs are left ("Škoda, tá cesta sa zavrela.").
+   With "no time pressure" there is no clock. End: he can see the summit.
+   4 boulders before the summit (a stream): round boulders of three looks roll down the path at
+   him, spinning, the word above each; from a third of the level about every third throw is a
+   pair. Typed, it rolls on and he hops over it; missed, he hops too late, stumbles ("Hups!"),
+   sits a moment and gets up while it rolls on behind him, and the way gets a little longer (the
+   first time the narrator says why). End: the summit in sight.
+   5 the spell of awakening (super level, the first ribbon): Tapko lays the egg off his back into
+   the dragons' hearth on the right, a ring of old carved stones with weak low flames, and says
+   the spell: one long text on a ribbon at the top, what he has written in a stone frame with
+   glowing rune stones below it ([mechanics](mechanics.md), Ribbon). Each finished sentence makes
+   the flames grow and the egg glow warmer; at half the level it cracks a little, at three
+   quarters it cracks open. End: the fire flares up, the egg breaks and the baby dragon sits in
+   the hearth ("Ahoj! Ďakujem, že ma tvoje kúzlo zohrialo!"), Tapko cheers.
+   Reward: the hatched baby dragon (the scene `hatched`) and the **hero's journey** opens
+   ([hero's journey](heros-journey.md)). The range's thing stays the egg.
 
 ### Story 2: Bolt the Robot (*not built yet*)
 A more technical story for children who like machines. **Bolt** (Šróbik in Slovak), a
@@ -429,6 +471,10 @@ story stays playable in any browser ([mechanics](mechanics.md)).
 - The old meadow text (goals as the happy outcome, a fan) described something else than the
   play and confused children. Goalkeeper gloves fit the animals' football game; a leaf kicked
   up to them is caught where the child looks, above their character.
+- The egg was left in the valley's dead fire; carrying it up a mountain to a stronger fire gives
+  world 5 one way with five steps and a reason for each. Words never sit on the egg or on Tapko,
+  pushes back and stumbles are small and funny, and the egg never falls. An egg drawn at a fixed
+  height vanished behind tall wings or a jetpack, so its height follows what he wears.
 - Tapko drawn small inside the rocket's window flickered; one picture of the suited pilot
   stays steady and looks the same for every companion. A speedometer bobbing with the rocket
   was hard to read.

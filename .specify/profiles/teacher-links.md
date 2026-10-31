@@ -8,7 +8,10 @@
   what to play: free practice of only the task's words, or the next story levels with the
   task's words mixed in mostly. The result is a link to copy and a QR code (when the link
   fits in one). It can also be given straight to the current player.
-- Opening a task link asks which player takes it (or creates a new one). The map then
+- Opening a task link shows the start page with a task panel in place of its title and texts:
+  **Nová úloha** with the task name, what is played and how long, a hint to pick a player, and
+  **Zrušiť túto úlohu**. The player card asks **Pre koho je táto úloha?**; a player, **Vyskúšať**
+  or **Nový hráč** takes the task. The map then
   shows **Úloha na dnes** as its first card until the minutes are played; a story task
   may take several levels, and leaving a level early does not count it.
 - **Hand-in:** after the task, the child gets **Odovzdať**: the end card "Úloha splnená!" (the

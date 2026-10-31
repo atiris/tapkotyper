@@ -1,12 +1,13 @@
-import { app, applyProfileLook, go, saveProfile, selectProfile } from '../app/app';
+import { app, applyProfileLook, go } from '../app/app';
 import { tapkoElement } from '../gfx/tapko';
 import { totalStars } from '../game/rewards';
 import { t } from '../i18n/i18n';
-import { type TaskSpec, addTask, parseTask } from '../share/task';
+import { parseTask } from '../share/task';
 import { parseMove } from '../share/transfer';
 import { applyImport, nickname, planImport } from '../storage/store';
-import { button, h, icon } from '../ui/dom';
+import { button, h } from '../ui/dom';
 import { cornerControls } from '../ui/chrome';
+import { startScreen } from './start';
 
 /** Shell of a link screen: a panel with a way back to the start. */
 function linkScreen(root: HTMLElement, cls: string): HTMLElement {
@@ -24,38 +25,20 @@ function broken(panel: HTMLElement, e: unknown): void {
   panel.replaceChildren(h('h1', {}, t('share.brokenTitle')), h('p', { class: 'error', role: 'alert' }, t((e as Error).message)));
 }
 
-/** A task link: which player takes it, or a new one. */
-export function taskImportScreen(root: HTMLElement, params: { code: string }): void {
+/** A task link: the start page with the task, where a player takes it (or a new one). */
+export function taskImportScreen(root: HTMLElement, params: { code: string }): () => void {
   const panel = linkScreen(root, 'task-import');
+  let off: () => void = () => undefined;
+  let left = false;
   void parseTask(params.code).then((spec) => {
-    const take = async (pid: string) => {
-      const p = app.store.get(pid)!;
-      await selectProfile(p);
-      addTask(p, spec);
-      saveProfile();
-      go('map');
-    };
-    panel.replaceChildren(
-      h('h1', {}, t('task.importTitle')),
-      taskSummary(spec),
-      h('h2', {}, t('task.whoTakes')),
-      h('div', { class: 'profile-list' },
-        ...app.store.profiles.map((p) => h('button', { class: 'profile-card', type: 'button', onClick: () => void take(p.id) },
-          tapkoElement(p.companion, 'idle', 110),
-          h('span', { class: 'profile-name' }, nickname(p)),
-          h('span', { class: 'profile-sub' }, t('start.stars', { n: totalStars(p) })))),
-        h('button', { class: 'profile-card new', type: 'button', onClick: () => { app.pendingTask = spec; go('newProfile'); } },
-          h('span', { class: 'plus' }, icon('plus')), h('span', { class: 'profile-name' }, t('start.newProfile')))));
+    if (left) return;
+    root.replaceChildren();
+    off = startScreen(root, { task: { spec, code: params.code } });
   }, (e) => broken(panel, e));
-}
-
-/** What a task asks, in one card. */
-export function taskSummary(spec: TaskSpec): HTMLElement {
-  return h('div', { class: 'task-summary' },
-    h('h3', {}, spec.title || t('task.untitled')),
-    h('p', {}, t(`task.kind.${spec.kind}`), ' · ', t('parent.minutes', { n: spec.minutes })),
-    spec.words.length ? h('p', { class: 'task-words' }, spec.words.slice(0, 20).join(', '), spec.words.length > 20 ? ' …' : '') : null,
-    spec.text ? h('p', { class: 'task-text' }, spec.text.length > 160 ? `${spec.text.slice(0, 160)} …` : spec.text) : null);
+  return () => {
+    left = true;
+    off();
+  };
 }
 
 /** A move link: the whole player from another computer; never replaces one without asking. */

@@ -2079,7 +2079,10 @@
   },
   "task": {
     "importTitle": "Nová úloha",
-    "whoTakes": "Kto bude úlohu robiť?",
+    "whoTakes": "Pre koho je táto úloha?",
+    "pickRight": "Úlohu priradíte výberom hráča vpravo.",
+    "pickBelow": "Úlohu priradíte výberom hráča nižšie.",
+    "cancel": "Zrušiť túto úlohu",
     "untitled": "Úloha",
     "kind": {
       "practice": "Vlastné písanie so slovami úlohy",

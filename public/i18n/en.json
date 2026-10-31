@@ -2079,7 +2079,10 @@
   },
   "task": {
     "importTitle": "New task",
-    "whoTakes": "Who will do the task?",
+    "whoTakes": "Who is this task for?",
+    "pickRight": "Pick a player on the right to give them the task.",
+    "pickBelow": "Pick a player below to give them the task.",
+    "cancel": "Cancel this task",
     "untitled": "Task",
     "kind": {
       "practice": "Own typing with the task's words",

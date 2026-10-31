@@ -1,8 +1,9 @@
-import { app, applyProfileLook, go, openRoute, selectProfile, useLanguage } from '../app/app';
+import { app, applyProfileLook, go, openRoute, saveProfile, selectProfile, useLanguage } from '../app/app';
 import { keyboardGated, onKeyboard, takeWaiting } from '../app/keyboard-gate';
 import { audio } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
 import { language, t, tList } from '../i18n/i18n';
+import { type TaskSpec, addTask } from '../share/task';
 import type { Lang, Profile } from '../storage/schema';
 import { type ICONS, arrowFocus, bigButton, button, h, icon, keyboardArt, modal, teacherArt } from '../ui/dom';
 import { cornerControls, languageButton, settingsButton } from '../ui/chrome';
@@ -20,7 +21,11 @@ const CARD_GAP = 12;
 /** In two columns the title's column keeps at least this share of the width; the card takes the rest. */
 const TITLE_SHARE = 0.32;
 
-export function startScreen(root: HTMLElement): () => void {
+/** A task link on the start page: the task, and its code for coming back after a language switch. */
+export interface TaskOffer { spec: TaskSpec; code: string }
+
+/** The start page; with a task, its panel takes the title's place and the card asks who takes it. */
+export function startScreen(root: HTMLElement, { task }: { task?: TaskOffer } = {}): () => void {
   app.profile = null;
   applyProfileLook(null);
   audio.music(app.menuTrack);
@@ -29,13 +34,14 @@ export function startScreen(root: HTMLElement): () => void {
     app.store.save();
     await useLanguage(l);
     // Re-render only if the child is still here (the file may load slowly); the focus goes back to the language.
-    if (root.dataset.screen !== 'start') return;
-    go('start');
+    const here = task ? 'taskImport' : 'start';
+    if (root.dataset.screen !== here) return;
+    go(here, task ? { code: task.code } : {});
     [...root.querySelectorAll<HTMLElement>('.top-right .lang-btn, .top-right .menu-btn')].find((e) => e.offsetParent)?.focus();
   });
   const gated = keyboardGated();
 
-  const top = h('div', { class: 'start-top' },
+  const top = task ? taskPanel(task.spec) : h('div', { class: 'start-top' },
     gated ? logoFace('gate-logo') : null,
     h('h1', { class: 'wordmark', 'aria-label': 'TapkoTyper' },
       h('span', { class: 'wm-halo', 'aria-hidden': 'true' }, 'TapkoTyper'),
@@ -47,20 +53,24 @@ export function startScreen(root: HTMLElement): () => void {
   let offPick: () => void = () => undefined;
   let placeRows: () => void = () => undefined;
   if (!gated) {
-    // Super Tapko comes last, so it never shifts the order of the real players.
-    const players = [...app.store.profiles, ...(app.superPlayer ? [app.superPlayer] : [])];
+    // Super Tapko comes last, so it never shifts the order of the real players; a task is only for them.
+    const players = [...app.store.profiles, ...(app.superPlayer && !task ? [app.superPlayer] : [])];
     let picked = false;
     const play = async (p: Profile) => {
       if (picked) return;
       picked = true;
       await selectProfile(p);
+      if (task) {
+        addTask(p, task.spec);
+        saveProfile();
+      }
       go('map');
     };
-    const guest = button(t('start.guest'), async () => {
-      const g = app.store.startGuest(language(), t('start.guestName'));
-      await selectProfile(g);
-      go('map');
-    }, 'btn ghost', 'play');
+    const guest = button(t('start.guest'), () => void play(app.store.startGuest(language(), t('start.guestName'))), 'btn ghost', 'play');
+    const newPlayer = () => {
+      app.pendingTask = task?.spec ?? null;
+      go('newProfile');
+    };
     const cards = players.map((p, i) => profileCard(p, i, () => void play(p)));
     const list = h('div', { class: 'profile-list' });
     arrowFocus(list, '.profile-card');
@@ -86,21 +96,21 @@ export function startScreen(root: HTMLElement): () => void {
     };
     card = h('section', { class: 'start-card', 'aria-labelledby': 'start-who' },
       logoFace('card-logo', t('start.logoTip')),
-      h('h2', { id: 'start-who' }, t('start.whoPlays')),
+      h('h2', { id: 'start-who' }, t(task ? 'task.whoTakes' : 'start.whoPlays')),
       // Profiles are loaded on the start page only before the first player; later in the settings.
       ...(players.length ? [
         list,
-        h('div', { class: 'start-ghosts' }, guest, button(t('start.newProfile'), () => go('newProfile'), 'btn ghost new-player', 'plus')),
+        h('div', { class: 'start-ghosts' }, guest, button(t('start.newProfile'), newPlayer, 'btn ghost new-player', 'plus')),
       ] : [
         h('p', { class: 'start-first' }, t('start.first')),
-        button(t('start.newFirst'), () => go('newProfile'), 'btn primary big new-player', 'plus'),
+        button(t('start.newFirst'), newPlayer, 'btn primary big new-player', 'plus'),
         h('div', { class: 'start-ghosts' }, guest,
-          button(t('start.import'), () => void import('./parent').then((m) => m.importDialog(() => go('start'))), 'btn ghost', 'upload')),
+          task ? null : button(t('start.import'), () => void import('./parent').then((m) => m.importDialog(() => go('start'))), 'btn ghost', 'upload')),
       ]));
     offPick = pickByNumber(players.length, (i) => void play(players[i]));
   }
 
-  const more = h('div', { class: 'start-more' },
+  const more = task ? null : h('div', { class: 'start-more' },
     ...(gated ? [
       h('p', { class: 'start-intro' }, t('start.phoneIntro')),
       bigButton(teacherArt(), t('start.teacher.title'), t('start.teacher.sub'), () => go('teacher')),
@@ -110,11 +120,11 @@ export function startScreen(root: HTMLElement): () => void {
       promises(),
     ]));
 
-  const screen = h('div', { class: `screen start-screen${gated ? ' gated' : ''}` });
+  const screen = h('div', { class: `screen start-screen${gated ? ' gated' : ''}${task ? ' task-start' : ''}` });
   const sky = skyScene(screen, () => [top], () => [card, card?.querySelector('.card-logo') ?? null]);
   screen.append(sky.el,
     cornerControls(lang, gated ? null : settingsButton(), roundButton('control', 'chart', t('teacher.title'), () => go('teacher'))),
-    h('div', { class: 'start-wrap' }, top, card, more),
+    h('div', { class: `start-wrap${task ? ' task-wrap' : ''}` }, top, card, more),
     h('a', { class: 'start-sig', href: 'https://github.com/atiris/tapkotyper', target: '_blank', rel: 'noopener' }, 'MIT · Atiris'));
   root.append(screen);
 
@@ -128,7 +138,7 @@ export function startScreen(root: HTMLElement): () => void {
   window.addEventListener('resize', placeRows);
   // The first player (or the new player) waits for Enter; a number key picks one too.
   if (!gated) (root.querySelector<HTMLElement>('.profile-card') ?? root.querySelector<HTMLElement>('.start-card .btn.primary'))?.focus();
-  const offSuper = listenForSuperPassword(async () => {
+  const offSuper = task ? () => undefined : listenForSuperPassword(async () => {
     app.superMode = true;
     app.superPlayer = superProfile(language());
     await selectProfile(app.superPlayer);
@@ -144,6 +154,23 @@ export function startScreen(root: HTMLElement): () => void {
     offPick();
     offSuper();
   };
+}
+
+/** A task link's panel: the task's title, what and how long it asks, how to take it, and a way out. */
+function taskPanel(spec: TaskSpec): HTMLElement {
+  return h('section', { class: 'task-panel', 'aria-labelledby': 'task-title' },
+    h('header', {},
+      h('p', { class: 'task-label' }, t('task.importTitle')),
+      h('h1', { id: 'task-title' }, spec.title || t('task.untitled'))),
+    h('div', { class: 'task-body' },
+      h('dl', {},
+        h('dt', {}, t('task.kindLabel')), h('dd', {}, t(`task.kind.${spec.kind}`)),
+        h('dt', {}, t('task.minutes')), h('dd', {}, t('parent.minutes', { n: spec.minutes }))),
+      spec.words.length ? h('p', { class: 'task-words' }, spec.words.slice(0, 20).join(', '), spec.words.length > 20 ? ' …' : '') : null,
+      spec.text ? h('p', { class: 'task-text' }, spec.text.length > 160 ? `${spec.text.slice(0, 160)} …` : spec.text) : null),
+    // The card is beside the panel on a wide page and under it on a narrow one.
+    h('p', { class: 'task-pick' }, h('span', { class: 'wide' }, t('task.pickRight')), h('span', { class: 'narrow' }, t('task.pickBelow'))),
+    h('div', { class: 'task-actions' }, button(t('task.cancel'), () => go('start'), 'btn ghost', 'close')));
 }
 
 /** The logo face: its picture for a light page and the one drawn for a dark page (the CSS shows one), with `tip` on hover. */

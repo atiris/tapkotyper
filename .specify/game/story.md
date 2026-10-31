@@ -310,7 +310,8 @@ as they are. The world descriptions below marked *not built yet* are the design 
    mountain's three background bands are the same in all five levels: rocky peaks with pale
    crystals far back, low mossy rocks in the middle, a rocky path in front with Tapko in its middle.
    1 wind on the slope (a stream): each word comes from the right in a gust, a swirl of white
-   air with a leaf or two; one at a time, two from the second half. Typed, the gust breaks up
+   air with a leaf or two, starting at any height and from half its way sinking to Tapko so it
+   really blows into him; one at a time, two from the second half. Typed, the gust breaks up
    and Tapko walks a few steps on; untyped, it pushes him and the egg a few steps back ("Uf, to
    fúka!"). He leans into the wind while a gust flies. A slip makes the gust bigger and faster
    and starts its word again; a second slip in the same gust sends it into him at once, pushes

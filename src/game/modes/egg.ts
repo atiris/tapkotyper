@@ -119,6 +119,13 @@ const RUSH_BACK = 120;
 /** A rush adds two planned words (and their time), at most ten in a level. */
 export const RUSH_WORDS = 2;
 export const WIND_MAX_WORDS = 10;
+/**
+ * A gust starts at any height above his head (its word stays below the bar) and keeps it for this
+ * share of its way, then sinks to his body (his middle, a little up or down), so it blows into him.
+ */
+const GUST_TOP = 150;
+const GUST_SINK_FROM = 0.5;
+const GUST_AIM: [number, number] = [-0.65, -0.35];
 /** He leans into the wind while a gust is in flight: a share of a whole turn. */
 const LEAN = 0.022;
 /** An untyped gust that reaches him makes him say something about every other time. */
@@ -151,9 +158,9 @@ export class WindMode extends SlopeStream {
   }
 
   makeMover(word: string): Mover {
-    const L = this.L, x = L.vw + GUST_R * 1.5, by = L.rng.range(190, 330);
+    const L = this.L, x = L.vw + GUST_R * 1.5, to = FEET + L.rng.range(...GUST_AIM) * TAPKO_H, by = L.rng.range(GUST_TOP, to);
     const leaves = Array.from({ length: L.rng.int(1, 2) }, (_, i) => ({ pic: L.rng.pick(LEAVES), phase: i * Math.PI + L.rng.range(0, 1) }));
-    return { x, y: by, by, vx: this.speedFor(word, x), vy: 0, rot: 0, vr: 0, age: 0, state: 'come', fade: 0, sprite: '', size: GUST_R * 2, strong: false, grow: 1, rush: false, leaves, phase: L.rng.range(0, 6) };
+    return { x, y: by, by, vx: this.speedFor(word, x), vy: 0, rot: 0, vr: 0, age: 0, state: 'come', fade: 0, sprite: '', size: GUST_R * 2, strong: false, grow: 1, rush: false, leaves, phase: L.rng.range(0, 6), x0: x, to };
   }
 
   update(dt: number): void {
@@ -173,7 +180,8 @@ export class WindMode extends SlopeStream {
   protected moveComing(m: Mover, dt: number, tg: Target): void {
     if (m.rush) m.x -= RUSH_SPEED * dt;
     else super.moveComing(m, dt, tg);
-    m.y = m.by + Math.sin(m.age * 2.1 + m.phase) * 10;
+    const way = (m.x0 - m.x) / (m.x0 - HERO_X - REACH), sink = ease.inOutQuad(Math.min(1, Math.max(0, (way - GUST_SINK_FROM) / (1 - GUST_SINK_FROM))));
+    m.y = m.by + (m.to - m.by) * sink + Math.sin(m.age * 2.1 + m.phase) * 10;
   }
 
   /** A typed gust breaks up in a puff and he walks on up the path. */

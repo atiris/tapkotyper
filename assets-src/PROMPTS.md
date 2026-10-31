@@ -76,7 +76,7 @@ Notes from real Gemini runs; add new ones here.
 - In a strip, "ground in the ground color of the world" can come out pink-violet (garden near)
   and the key then eats it. Name the ground color in hex and add "never pink, purple or magenta".
 - With the whole WORLD STYLE block in a strip prompt (sky and hill colors), Gemini painted a
-  sky, hills and a camp behind the pieces (rescue mid and near). Leave the sky and hill colors
+  sky, hills and a camp behind the pieces (a camp strip, since removed). Leave the sky and hill colors
   out of the strip palette, open with "THE WHOLE IMAGE IS ONE FLAT SOLID PURE MAGENTA EXCEPT
   THE PIECES AND A LOW GROUND BAND" and list what is absent ("NO sky, NO hills, NO tents").
 - A switched-on lamp in a strip throws a pink glow into the magenta. Ask for lamps switched
@@ -478,9 +478,6 @@ flat storybook style and no longer apply.
 | `bg-egg-far.jpg` | a bright morning valley with a long gentle grassy slope going down from left to right, a few trees and a blue river far away | full | done 2026-10-23 |
 | `bg-egg-mid.jpg` | a bush with yellow flowers, a leaning tree, a mossy boulder, a haystack, a pine, a bush with pink flowers, a signpost with empty boards and a rocky outcrop with ferns | 50 % | done 2026-10-23 |
 | `bg-egg-near.jpg` | only plants and small things: grass, yellow flowers, a pink wild rose, foxtail, a fern, a broken spotted eggshell, daisies, a mushroom and a thistle; no big rocks | 20 % | done 2026-10-23 |
-| `bg-rescue-far.jpg` | a cozy rescue camp in a calm evening: a few small tents and wooden huts with warm glowing lanterns on poles, soft hills far away, an evening sky from violet to warm peach with a few soft clouds | full | done 2026-10-23 |
-| `bg-rescue-mid.jpg` | a wooden rope bridge between two posts, a lookout tower with a small flag, a tent with a glowing lantern, a stack of crates, a round bush, a signpost with empty boards, a pine and a campfire ring of stones (no fire) | 45 % | done 2026-10-23 (ground gap under the bridge, magenta left between the tower ladder rungs) |
-| `bg-rescue-near.jpg` | evening grass tufts, a small lantern on a stake, a coil of rope, a smooth stone, a short wooden post with a small flag, a fern and a small backpack | 25 % | done 2026-10-23 (the lantern floats beside its stake) |
 
 ## 4. Game objects (sprites)
 
@@ -1138,6 +1135,7 @@ and the fish keep their faces). Checked at 46 px on a light and a dark band befo
 | `obj-aim-crown.jpg` | a small chunky golden crown from the front, three rounded points with balls, gold #F6C945/#FFE58A/#D9A520, three pink gems #F48FB1, strictly front view (the wardrobe's `acc-crown` is too small at 46 px) | magenta | done 2026-10-24 |
 | `obj-aim-crystal.jpg` | (plan 84, the owner's wish: one crystal, not the planet's three points) **attach `obj-aim-crown.jpg`** for the style: one single six-sided gem crystal, upright and slightly tilted, pointed at both ends like a double-terminated quartz, no side points, no base, no rock; translucent ruby red #D7263D, facets #FF5A6E, edges #8E1426, one soft white highlight; no face, no glow | magenta | done 2026-10-30 |
 | `obj-aim-mouse.jpg` | (the owner's wish, 2026-10-30) **attach `obj-aim-crown.jpg`** for the style: one classic wired computer mouse seen from above at a slight angle, rounded, light grey-white plastic #E9ECF0 (shade #C5CBD3), two buttons and a small dark scroll wheel #4A5260, a short curly grey cable out of its front end; no face, no eyes, no hand | magenta | done 2026-10-30 |
+| `obj-aim-compass.jpg` | (plan 86, the hero's journey's picture and a range thing) **attach `obj-aim-crown.jpg`** for the style: one friendly brass pocket compass seen strictly from the front, a round chunky golden case #E2B33C (light #F6D77A, shade #B5862A) with a small round ring on top, a cream face #FFF6DC with four small brown dots for the directions, a red needle #E5534B pointing up and a grey needle #9AA5B1 pointing down, a small dark-brown pin in the middle; no letters, no numbers, no face, no eyes | magenta | done 2026-10-31 |
 
 ## 11. End cards (plan `.todo/85-one-end-card.md`)
 

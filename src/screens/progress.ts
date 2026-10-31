@@ -1,6 +1,7 @@
 import { app, go } from '../app/app';
 import { imageUrl } from '../gfx/assets';
-import { STORIES, WORLDS, activityOf, aimOpen, isLevelUnlocked, worldLevels } from '../game/levels';
+import { STORIES, type StoryDef, WORLDS, activityOf, aimOpen, isLevelUnlocked, journeyId, journeyOpen, worldLevels } from '../game/levels';
+import { compassElement } from '../gfx/compass';
 import { worldThing } from '../game/modes/aim-things';
 import { t } from '../i18n/i18n';
 import type { Profile } from '../storage/schema';
@@ -63,7 +64,17 @@ function worldCells(p: Profile, w: number): HTMLElement[] {
   return [...levels, parrot, range];
 }
 
-/** The levels of each story under its picture and title, one row of cells per world. */
+/** The story's hero's journey after its last world: the compass, which opens it, and its stars. */
+function journeyRow(p: Profile, story: StoryDef): HTMLElement {
+  const open = journeyOpen(p, story);
+  const say = t('journey.title');
+  const cell = h('div', { class: 'level-cell' },
+    h('button', { class: 'cell-act', type: 'button', disabled: !open, 'aria-label': say, tip: say, onClick: () => go('level', { id: 'journey', story: story.id }) }, compassElement('')),
+    starRow(p.progress.levels[journeyId(story)] ?? 0, 'stars cell-stars'));
+  return h('div', { class: 'world-levels journey-levels' }, h('h4', {}, say), h('div', { class: 'level-grid' }, cell));
+}
+
+/** The levels of each story under its picture and title, one row of cells per world, then its hero's journey. */
 function storyLevels(p: Profile): HTMLElement {
   return h('div', {}, ...STORIES.map((story) => {
     const pic = storyPicture(story);
@@ -71,7 +82,8 @@ function storyLevels(p: Profile): HTMLElement {
       h('h3', { class: 'story-head' }, pic ? h('img', { class: 'story-pic', src: pic, alt: '' }) : null, t(story.title)),
       ...story.worlds.map((w) => h('div', { class: 'world-levels' },
         h('h4', {}, t(`worlds.${WORLDS[w]}`)),
-        h('div', { class: 'level-grid' }, ...worldCells(p, w)))));
+        h('div', { class: 'level-grid' }, ...worldCells(p, w)))),
+      journeyRow(p, story));
   }));
 }
 

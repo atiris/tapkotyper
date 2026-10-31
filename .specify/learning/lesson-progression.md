@@ -45,7 +45,7 @@
   the narrator and a story still closed for keys also name them ("type these more
   accurately: k, l"), and the narrator offers the [target range](../game/target-practice.md)
   once a world is done (that world's, else the last finished one), own practice before. "Continue" skips such levels: it replays
-  the last open one, or starts own practice when none is open. Rescue missions and the
+  the last open one, or starts own practice when none is open. The hero's journey and the
   super profile have no key need.
 - Own practice mode: calm typing of words from the chosen keys, no story. Every way into
   it (the practice button, "Continue" with nothing open, the narrator's offer on the map) first

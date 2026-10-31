@@ -70,10 +70,9 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
   { id: 'map', groups: [
     g('worlds', 'worlds.*'),
     g('map-teacher', 'map.teacher.*'),
-    g('map-buttons', 'map.hello', 'map.title', 'map.switchProfile', 'map.settings', 'map.warmUp', 'map.continue', 'map.practice', 'map.ownText', 'map.freeType', 'map.wardrobe', 'map.rescue', 'map.friends'),
+    g('map-buttons', 'map.hello', 'map.title', 'map.switchProfile', 'map.settings', 'map.warmUp', 'map.continue', 'map.practice', 'map.ownText', 'map.freeType', 'map.wardrobe'),
     g('map-page', 'map.*'),
     g('surprise', 'surprise.*'),
-    g('friends', 'friends.*', 'dragonNames', 'robotNames', 'forestNames'),
     g('tracks', 'tracks.*'),
   ] },
   { id: 'typing', groups: [
@@ -85,6 +84,7 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
     g('practice', 'practice.*', 'practiceKeys.*'),
     g('free-type', 'freeType.*', 'touch.*'),
     g('helpers', 'paw.*'),
+    g('journey', 'journey.*'),
   ] },
   { id: 'story', groups: [
     g('tapko', 'tapko.*', 'fairy.*'),
@@ -105,7 +105,7 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
     g('parrot', 'parrot.*'),
   ] },
   { id: 'results', groups: [
-    g('end-titles', 'end.level', 'end.practice', 'end.stay', 'end.range', 'end.rangeRecord', 'end.parrotHome', 'end.parrotLost', 'end.freeType', 'end.break', 'end.taskDone',
+    g('end-titles', 'end.level', 'end.practice', 'end.stay', 'end.range', 'end.rangeRecord', 'end.journey', 'end.parrotHome', 'end.parrotLost', 'end.freeType', 'end.break', 'end.taskDone',
       'end.toMap', 'end.breakBtn', 'end.surpriseNew', 'end.surpriseSee'),
     g('end', 'end.*'),
     g('results', 'results.*'),

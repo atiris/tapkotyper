@@ -102,14 +102,6 @@ export interface Settings {
   keyFont: boolean;
 }
 
-/** A little friend helped in a rescue mission: a dragon (story 1), a robot (story 2) or a forest friend (story 3). */
-export interface Friend {
-  kind: 'dragon' | 'robot' | 'forest';
-  name: string;
-  hue: number;
-  date: string;
-}
-
 export interface Progress {
   unlockedKeys: string[];
   /** Keys whose "new key" introduction was shown. */
@@ -119,7 +111,6 @@ export interface Progress {
   worldsDone: number[];
   /** Unlocked reward ids: accessories (`acc:<id>`) and story rewards. */
   rewards: string[];
-  friends: Friend[];
   /** Ids of the last preparation tips shown, newest last. */
   lastTips: string[];
   /** Story scenes and control-key cards (`key-escape`, `key-tab`, `key-backspace`) already seen. */
@@ -134,7 +125,7 @@ export interface Progress {
   companionsUnlocked: CompanionKind[];
   /** Seconds of training ever (story levels and practice), the time `recordSession` counts. */
   trainedSeconds: number;
-  /** Story levels and rescue missions finished ever. */
+  /** Story levels and hero's journeys finished ever. */
   levelsFinished: number;
   /** Stars earned ever, every finished run counts. */
   starsEarned: number;

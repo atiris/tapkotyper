@@ -43,6 +43,8 @@ describe('things to throw', () => {
     expect(ids(fairy)).toContain('wand');
     expect(ids(fairy)).toContain('pebble');
     for (const w of WORLDS.keys()) expect(storyPool(w).some((th) => th.world != null)).toBe(false);
+    // The hero's journey's compass flies at every range.
+    for (const w of WORLDS.keys()) expect(ids(w)).toContain('compass');
   });
 
   it('brings the world thing with the last throw or the one before, judged by the time left', () => {

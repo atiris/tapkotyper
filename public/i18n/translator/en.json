@@ -126,7 +126,7 @@
     },
     "map": {
       "title": "Map and worlds",
-      "about": "The map where the child enters the levels: its buttons, names of worlds and stories, the questions and answers after a level, secrets and little friends."
+      "about": "The map where the child enters the levels: its buttons, names of worlds and stories, the questions and answers after a level and secrets."
     },
     "typing": {
       "title": "Typing on the keyboard",
@@ -210,10 +210,6 @@
       "title": "Parent's secret",
       "about": "Texts about a secret that a parent prepared as a reward."
     },
-    "friends": {
-      "title": "Little friends",
-      "about": "The screen of rescued friends and their names."
-    },
     "tracks": {
       "title": "Music titles",
       "about": "Titles of music tracks that belong to no world."
@@ -249,6 +245,10 @@
     "helpers": {
       "title": "Typing helpers",
       "about": "The paw help: Tapko types a word for the child."
+    },
+    "journey": {
+      "title": "Hero's journey",
+      "about": "The long, harder trip through every world of a story that opens after its last world: its title, the line about it being harder and the card between its parts."
     },
     "tapko": {
       "title": "Tapko and fairy Melody",
@@ -312,7 +312,7 @@
     },
     "results": {
       "title": "Results news",
-      "about": "What the green line of an end card says: new keys, badges, medals, a rescued friend, and the buttons after a level."
+      "about": "What the green line of an end card says: new keys, badges, medals, and the buttons after a level."
     },
     "badge": {
       "title": "World badges",
@@ -570,12 +570,12 @@
     "map.warmUp": "Map button above Continue that starts the short stretch break (the big one can be added); after it the next level starts.",
     "map.practice": "Button for practising chosen letters; also used in bubbles and in the Continue button's description.",
     "map.wardrobe": "Map button that opens the wardrobe.",
-    "map.rescue": "Map button for rescue missions (once unlocked), also on the friends screen.",
     "map.switchProfile": "Top left map button that returns to the player picker.",
     "map.act.*": "Name of a level's activity in the tooltip over its map dot and for screen readers, for example \"2. Waiting words\". Short, 1 to 3 words.",
     "map.super": "Label of a world's last, big level instead of a number, for example \"Meadow big challenge\".",
     "map.aimTip": "Tooltip on the Target range node on the map; explains what the range is for. Its first word (the range's name), typed on the map, sends a thing of the range flying across the page.",
     "map.parrotTip": "Tooltip of the Parrot node on the map; says what it is for. Its first word (the parrot's name), typed on the map, calls a parrot that flies around the page.",
+    "map.journeyTip": "Tooltip of the hero's journey's compass on the map, after the big challenge of a story's last world.",
     "map.parrotHome": "Hidden addition to the Parrot node label (screen reader) when the parrot is won.",
     "map.sideOpens": "Added to the tooltip of the grey Target range and Parrot nodes on the map while the world is not finished.",
     "map.surpriseHere": "Tooltip of a level on the map where a parent announced a surprise ahead (a golden box stands in place of the game's picture).",
@@ -590,7 +590,6 @@
     "map.storyOpens": "Under a closed story. {n} is the letters needed, {have} the letters the child knows now.",
     "map.lockWorld": "Bubble after clicking a locked world. {world} is the name of the world before it.",
     "map.lockKeys": "Bubble after clicking a locked story. {n} is the letters needed, {have} the letters the child knows now.",
-    "map.friends": "Map button (once rescue missions are open) that opens the friends screen.",
     "map.keysOne": "Bubble after clicking a level that needs one more letter.",
     "map.keysFew": "Bubble after clicking a level that needs 2 to 4 more letters. {n} is the count.",
     "map.keysMany": "Bubble after clicking a level that needs 5 or more letters. {n} is the count.",
@@ -619,17 +618,6 @@
     "surprise.left.starsOne": "What is still needed, when 1 star is left. {n} is the count.",
     "surprise.left.starsFew": "A parent's surprise: what is still needed when 2 to 4 stars are left. {n} is the count.",
     "surprise.left.starsMany": "A parent's surprise: what is still needed when 5 or more stars are left. {n} is the count.",
-    "friends.title": "Heading of the little friends screen.",
-    "friends.dragons": "Heading of the list of rescued dragons.",
-    "friends.robots": "Heading of the list of repaired robots.",
-    "friends.firstDragon": "Caption of the first dragon, hatched in the story.",
-    "friends.bolt": "Caption of the robot Bolt among the robots.",
-    "friends.empty": "Text on the empty screen when no friend is rescued yet.",
-    "friends.forests": "Heading of the list of forest friends.",
-    "friends.melody": "Caption of the fairy Melody among the forest friends.",
-    "dragonNames": "Names of rescued dragons; after a rescue mission the next one in order is used.",
-    "robotNames": "Names of repaired robots; after a rescue mission the next one in order is used.",
-    "forestNames": "Names of forest friends; after a rescue mission the next one in order is used.",
     "tracks.menu": "Name of the menu music, in the \"Music: ...\" notice when the song changes.",
     "tracks.relaxing": "Name of the relaxing music in the same notice.",
     "tracks.break": "Name of the break music in the same notice.",
@@ -641,7 +629,6 @@
     "level.help": "Tooltip of the question-mark button (F1) in a level that opens help.",
     "level.helpNow": "Heading in the help page for what the current level asks, shown when help is opened from a level.",
     "level.practice": "Title of the own typing screen.",
-    "level.rescue": "Title of a rescue mission, the endless kind of level.",
     "level.guide": "Tooltip of the button (F2) that shows or hides the on-screen keyboard.",
     "level.pause": "Tooltip of the pause button in the level's top bar.",
     "level.paused": "Heading of the small card shown when the level is paused.",
@@ -663,12 +650,11 @@
     "level.end": "The Stop typing button: on the pause card, in the confirm question, the round X of an exercise and on every end card (back to the map).",
     "level.keepPractice": "Button on the pause card and in the confirm question that continues an exercise.",
     "level.keepLevel": "Button on the pause card and in the confirm question that continues a story level (Continue).",
-    "level.keepRescue": "Button on the pause card and in the confirm question that continues a rescue mission.",
     "level.keepTyping": "Button on the pause card in free typing that keeps typing.",
     "level.endAsk": "Heading of the question asked when leaving a level after at least one key was pressed.",
     "level.endLevelText": "Text of the question when ending a story level.",
     "level.endPracticeText": "Text of the question when ending an exercise.",
-    "level.endRescueText": "Text of the question when ending a rescue mission.",
+    "level.endJourneyText": "Text of the question when ending a hero's journey: the parts already played are lost.",
     "level.stayStart": "Tapko, at the start of a stay-and-type session without a limit.",
     "keys.*": "Name of a special key, used inside sentences and tooltips about keys.",
     "layouts.*": "Name of a keyboard layout, in the parent settings, the layout switch's menu and the different-keyboard notice.",
@@ -901,6 +887,7 @@
     "end.stay": "Title of the end card after staying a while in a level (an easy round with no end).",
     "end.range": "Title of the end card after the target range.",
     "end.rangeRecord": "Title of the end card after the target range when the run beat the range's record.",
+    "end.journey": "Title of the end card after the whole hero's journey.",
     "end.parrotHome": "Title of the end card when the parrot stayed: it is at home now.",
     "end.parrotLost": "Title of the end card when the parrot flew off after too many mistakes. No exclamation: a calm line.",
     "end.freeType": "Title of the end card when the child leaves free typing after typing something.",
@@ -947,11 +934,7 @@
     "results.newKeys": "Fact on the results card when several new keys opened. {keys} are the keys.",
     "results.newAccessory": "Fact on the results card. {n} is the number of new things in the wardrobe.",
     "results.newCompanion": "Fact on the results card. {kind} is the kind of the new character.",
-    "results.rescued": "Fact on the results card after rescuing a dragon. {name} is its name.",
-    "results.repaired": "Fact on the results card after repairing a robot. {name} is its name.",
-    "results.guided": "Fact on the results card after a lost character found its way home. {name} is its name.",
     "results.next": "Button on the results card: the next level.",
-    "results.nextRescue": "Button on the results card: the next rescue mission.",
     "results.replay": "Button on the results card: play the level again.",
     "results.stay": "Button on the results card: keep playing the level a while.",
     "results.reward": "Button on the results card after a world is done: the reward story.",
@@ -1526,8 +1509,8 @@
     "help.card": "Help, Interface tab: bullet points about the player card on the map (My progress, Continue, own typing).",
     "help.progressTitle": "Help, Progress tab: the heading that describes the My progress screen.",
     "help.progress": "Help, Progress tab: bullet points on what the My progress screen shows.",
-    "help.moreTitle": "Help, Progress tab: the heading about the rescue mission, target range and badge.",
-    "help.more": "Help, Progress tab: bullet points about the rescue mission, target range and badge.",
+    "help.moreTitle": "Help, Progress tab: the heading about the hero's journey, target range, parrot and badge.",
+    "help.more": "Help, Progress tab: bullet points about the hero's journey, target range, parrot and badge.",
     "help.playTitle": "Help, Progress tab: the heading of the list on how a level is played.",
     "help.play": "Help, Progress tab: bullet points on typing words, stars and accuracy.",
     "help.gamesTitle": "Help, Progress tab: the heading of the list of game kinds (the level activities).",
@@ -1573,6 +1556,10 @@
     "about.creditsTitle": "Help, About Tapko tab: the heading of the bottom part with the license and links.",
     "about.credits": "Help, About Tapko tab: a paragraph on the license and the fonts used.",
     "about.open": "Help, About Tapko tab: the start of a bullet, before the link to the public visit counter.",
-    "words": "Translator: the field where you write all words of the new language, separated by spaces or new lines."
+    "words": "Translator: the field where you write all words of the new language, separated by spaces or new lines.",
+    "journey.title": "Name of the hero's journey: its map node, its row in My progress and the level title at the top while playing.",
+    "journey.harder": "On the card before the hero's journey, under its story: why it is harder (harder words, a bit faster, 98 % for three stars).",
+    "journey.next": "Title of the card between two parts of the hero's journey. {world} is the next world's name.",
+    "journey.go": "Button on the card between two parts of the hero's journey that starts the next part."
   }
 }

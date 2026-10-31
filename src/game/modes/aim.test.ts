@@ -105,9 +105,9 @@ describe('target range', () => {
       typeRing(mode, L);
     }
     run(mode, L, 0.5);
-    // Tapko named the tomato (the first of the shuffled pool with this rng) at the throw; the target says a bullseye line; no word pops up while the chance says no.
-    expect(L.speak).toHaveBeenCalledWith('tapko', expect.toBeOneOf(tList('aim.things.tomato.launch')), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number));
-    expect(L.speak).toHaveBeenLastCalledWith('target', expect.toBeOneOf([...tList('aim.lines.center'), ...tList('aim.things.tomato.hit')]), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), true);
+    // Tapko named the arrow (the first of the shuffled pool with this rng) at the throw; the target says a bullseye line; no word pops up while the chance says no.
+    expect(L.speak).toHaveBeenCalledWith('tapko', expect.toBeOneOf(tList('aim.things.arrow.launch')), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number));
+    expect(L.speak).toHaveBeenLastCalledWith('target', expect.toBeOneOf([...tList('aim.lines.center'), ...tList('aim.things.arrow.hit')]), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number), true);
     expect(L.shout).not.toHaveBeenCalled();
     expect([mode.hits, mode.centers, mode.points]).toEqual([1, 1, 100]);
     run(mode, L, 2);

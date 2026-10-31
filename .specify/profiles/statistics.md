@@ -19,7 +19,7 @@
   maximum (a world badge bronze 1, silver 2, gold 3; each target range award 1; the
   [Parrot badge](../game/parrot.md) 7: 15 x 3 + 15 + 7 = 67), the parrots at home against the most
   ever at home (the parrot's head), and the stars (the best of every level) of the maximum (3 in
-  each of the 75 levels: 225). The second row is the last 14 days: accuracy and speed in
+  75 levels and 3 hero's journeys: 234). The second row is the last 14 days: accuracy and speed in
   characters per minute once something was typed, the letters typed, the **days trained** (a desk
   calendar: days with at least one own key of the 14, today included, e.g. `9/14`) and the
   **typing time** (an alarm clock: `45 min`, from an hour `1 h 25`, in full in the tooltip);
@@ -75,7 +75,7 @@
   that readies a key for the next lesson). This is long-term: it is computed from the stored
   key statistics, so it fades when the child stops typing the key well.
 
-- **Maintenance:** the maxima shown (stars 225, chest 67) follow from the levels, worlds and
+- **Maintenance:** the maxima shown (stars 234, chest 67) follow from the levels, worlds and
   range things; when their number changes, the new maximum must be shown and written here
   (a unit test pins both numbers, so a change cannot slip by).
 

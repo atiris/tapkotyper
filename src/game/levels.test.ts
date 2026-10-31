@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { SUPER_ID } from '../storage/schema';
 import { lessonOrder } from '../learning/lessons';
-import { LEVELS, STORIES, WORLDS, activityOf, minActiveS, minWords, playedStep, aimLevel, aimOpen, aimWorld, freeTypeLevel, grownCount, hasMinLength, isLevelUnlocked, isWorldUnlocked, keysNeeded, levelById, levelOver, nextLevel, parrotKeys, parrotLevel, parrotSizeOf, practiceLevel, rescueLevel, rescueUnlocked, shownProgress, worldLevels, worldLock } from './levels';
+import { LEVELS, STORIES, WORLDS, activityOf, minActiveS, minWords, playedStep, aimLevel, aimOpen, aimWorld, freeTypeLevel, grownCount, hasMinLength, isLevelUnlocked, isWorldUnlocked, keysNeeded, levelById, levelOver, nextLevel, parrotKeys, parrotLevel, parrotSizeOf, practiceLevel, JOURNEY_STAR_STEPS, halfStarsFor, journeyId, journeyLevel, journeyOpen, starsFor, shownProgress, worldLevels, worldLock } from './levels';
 
 const KEYS = ['f', 'j', 'd', 'k', 's', 'l', 'a', ';', 'g', 'h', 'r', 'u', 'e', 'i', 't', 'y', 'w', 'o', 'q', 'p', 'v', 'm', 'c', ',', 'x', '.'];
 
@@ -147,14 +147,51 @@ describe('keys needed per level', () => {
   });
 });
 
-describe('rescue missions', () => {
-  it('open with either finished story and play only kinds of built worlds', () => {
+describe("hero's journey", () => {
+  it("opens with the story's last world done, like its range and parrot", () => {
     const p = newProfile('Ema', 'sk');
-    expect(rescueUnlocked(p)).toBe(false);
-    p.progress.worldsDone = [5, 6, 7, 8, 9];
-    expect(rescueUnlocked(p)).toBe(true);
-    const kinds = new Set(Array.from({ length: 20 }, (_, seed) => rescueLevel(seed).kind));
-    expect(kinds).toEqual(new Set(['meadow', 'space', 'swamp', 'crystals', 'flames']));
+    const [dragon, robot] = STORIES;
+    p.progress.worldsDone = [0, 1, 2, 3];
+    expect(journeyOpen(p, dragon)).toBe(false);
+    p.progress.worldsDone.push(4);
+    expect(journeyOpen(p, dragon)).toBe(true);
+    expect(journeyOpen(p, robot)).toBe(false);
+  });
+
+  it("plays the first level of each of the story's worlds, in order, as parts of one journey", () => {
+    for (const story of STORIES) {
+      const parts = story.worlds.map((_, i) => journeyLevel(story, i));
+      expect(parts.map((l) => l.world)).toEqual(story.worlds);
+      expect(parts.map((l) => l.kind)).toEqual(story.worlds.map((w) => worldLevels(w)[0].kind));
+      for (const [i, l] of parts.entries()) {
+        expect(l.id).toBe(journeyId(story));
+        expect(l.journey).toEqual({ story: story.id, part: i, parts: story.worlds.length });
+        expect(l.index).toBe(-1);
+        expect(l.noSpace).toBeUndefined();
+      }
+    }
+  });
+
+  it('lasts twice a regular level of its story, split evenly over the parts, in time and in words', () => {
+    for (const [i, story] of STORIES.entries()) {
+      const regular = worldLevels(story.worlds[1])[0];
+      const parts = story.worlds.map((_, n) => journeyLevel(story, n));
+      const time = parts.reduce((a, l) => a + minActiveS(l), 0);
+      expect(time).toBeCloseTo(2 * minActiveS(regular));
+      expect(minActiveS(parts[0])).toBeCloseTo((2 * [120, 180, 240][i]) / parts.length);
+      expect(minWords(parts[0])).toBe(Math.round((2 * minWords(regular)) / parts.length));
+    }
+    expect(minWords(journeyLevel(STORIES[0], 0))).toBe(6);
+  });
+
+  it('gives stars one step stricter than a level: 3 from 98 %, 2 from 95 %, halves at 96.5 and 90 %', () => {
+    expect(starsFor(0.98, JOURNEY_STAR_STEPS)).toBe(3);
+    expect(starsFor(0.979, JOURNEY_STAR_STEPS)).toBe(2);
+    expect(starsFor(0.95, JOURNEY_STAR_STEPS)).toBe(2);
+    expect(starsFor(0.949, JOURNEY_STAR_STEPS)).toBe(1);
+    expect(halfStarsFor(0.965, JOURNEY_STAR_STEPS)).toBe(2.5);
+    expect(halfStarsFor(0.9, JOURNEY_STAR_STEPS)).toBe(1.5);
+    expect(halfStarsFor(0.899, JOURNEY_STAR_STEPS)).toBe(1);
   });
 });
 
@@ -182,7 +219,6 @@ describe('first level', () => {
     expect(levelById('w3-1')?.kind).toBe('swamp');
     expect(activityOf(levelById('w3-1')!)).toBe('catch');
     expect(minActiveS(levelById('w3-1')!)).toBe(90);
-    expect(minActiveS({ ...levelById('w3-1')!, rescue: true })).toBe(120);
     expect(activityOf(levelById('w3-2')!)).toBe('chase');
     expect(activityOf(levelById('w3-4')!)).toBe('clean');
     expect(levelById('w3-5')?.kind).toBe('greatswamp');
@@ -252,7 +288,6 @@ describe('minimum level length', () => {
     expect(first.map((ls) => minActiveS(ls[4]))).toEqual([150, 225, 300]);
     expect(minActiveS(levelById('w2-2')!)).toBe(90);
     expect(minActiveS({ ...levelById('w2-2')!, world: 6 })).toBe(135);
-    expect(minActiveS(rescueLevel(2))).toBe(120);
   });
 
   it('asks for the words of a slow but practising child: 8 / 10 / 12 a minute', () => {
@@ -271,7 +306,7 @@ describe('minimum level length', () => {
     expect(levelById('w6-1')?.count).toBe(30);
     expect(levelById('w6-3')?.count).toBe(12);
     expect(levelById('w6-5')?.count).toBe(10);
-    expect(rescueLevel(0).count).toBe(16);
+    expect(journeyLevel(STORIES[0], 0).count).toBe(6);
   });
 
   it('practice and free typing keep their own length, every other level has the minimum', () => {

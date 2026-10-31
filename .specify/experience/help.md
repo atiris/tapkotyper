@@ -21,7 +21,7 @@
      challenge's crown too; the same names as the map dots' tooltips; a new kind joins the list
      when it is in the game; Ribbon and Transcribe are listed ahead of their levels) right above letters that open levels and stories, "My progress" (a page from the map's
      button with four tabs, a quick look by a click on the character, the parrots, QR codes and
-     the certificate), rescue missions, the target range (where it opens, what it
+     the certificate), the hero's journey, the target range (where it opens, what it
      trains, the middle, a fall that costs nothing, the collection and Enter), the parrot (where it
      opens, why it repeats words, parrots that fly away and the Parrot badge) and badges.
   4. **Settings**, for the teacher or parent: under the Settings heading, that they are for the teacher or
@@ -62,7 +62,7 @@
 - Explains that on a small screen the top buttons hide under one Menu button, and (in how to
   type and in about) that a real keyboard is needed, also on a phone or tablet.
 - Explains the wardrobe's countdown (a smile, then a number that drops every 10 seconds, blinking at the end, a lock when the time is up, time earned by practice) next to the map's buttons.
-- Explains the paw (what it shows, when to press Enter; no other key calls it, Backspace neither), the ring with the level's number beside the pause button (filled up to this level, full at the big challenge), the rescue mission and the badge, each in one short sentence.
+- Explains the paw (what it shows, when to press Enter; no other key calls it, Backspace neither), the ring with the level's number beside the pause button (filled up to this level, full at the big challenge), the hero's journey and the badge, each in one short sentence.
 
 - **Ms Turtle's tips**: with "Introduce the app's features" on (the default), a panel above the
   worlds on the map now and then shows one thing about the app, from Ms Turtle the teacher (three

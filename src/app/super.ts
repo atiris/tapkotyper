@@ -1,6 +1,6 @@
 import { accessories } from '../gfx/assets';
 import { randomOutfit } from '../gfx/tapko';
-import { LEVELS, WORLDS } from '../game/levels';
+import { LEVELS, STORIES, WORLDS, journeyId } from '../game/levels';
 import { WORLD_THINGS } from '../game/modes/aim-things';
 import { PAW_MAX } from '../game/paw';
 import { WORLD_REWARDS } from '../game/rewards';
@@ -127,8 +127,11 @@ export function fillProgress(p: Profile, f: ProgressFill, rand: () => number = M
     stars.set(l.id, stars.get(l.id)! + 1);
     extra--;
   }
-  pr.levels = Object.fromEntries(LEVELS.map((l) => [l.id, stars.get(l.id) ?? 0]));
-  pr.levelsFinished = done.length;
+  // A finished story's hero's journey has its stars too, spread the same way.
+  const journeys = STORIES.filter((s) => s.worlds.every((w) => pr.worldsDone.includes(w))).map(journeyId);
+  for (const id of journeys) stars.set(id, Math.max(1, Math.min(3, Math.round(f.stars * 3 + (rand() - 0.5)))));
+  pr.levels = Object.fromEntries([...LEVELS.map((l) => [l.id, stars.get(l.id) ?? 0]), ...journeys.map((id) => [id, stars.get(id)!])]);
+  pr.levelsFinished = done.length + journeys.length;
   pr.starsEarned = [...stars.values()].reduce((a, b) => a + b, 0);
   pr.rewards = [...accessories().map((a) => `acc:${a.id}`), ...WORLD_REWARDS.filter((_, i) => pr.worldsDone.includes(i))];
   const things = WORLD_THINGS.filter((th) => pr.worldsDone.includes(th.world!));

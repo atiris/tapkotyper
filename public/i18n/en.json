@@ -133,11 +133,11 @@
     "practice": "Own typing",
     "warmUp": "Warm-up",
     "wardrobe": "Me and my wardrobe",
-    "rescue": "Rescue missions",
     "switchProfile": "Players",
     "super": "big challenge",
     "aimTip": "Target range: practise the letters you do not type accurately enough yet. When only accuracy stands between you and the next letter, this is where you get it.",
     "parrotTip": "Parrot: type a few words many times in a row, until your fingers know them by themselves. Speed does not matter.",
+    "journeyTip": "Hero's journey: a longer, harder trip through every world of this story.",
     "parrotHome": "the parrot is at home",
     "sideOpens": "Opens when you finish this world.",
     "surpriseHere": "A surprise waits for you here!",
@@ -152,7 +152,6 @@
     "storyOpens": "Opens when you know {n} letters. Now you know {have}.",
     "lockWorld": "Finish {world} first.",
     "lockKeys": "This story opens when you know {n} letters. Now you know {have}.",
-    "friends": "Little friends",
     "keysOne": "You need one more letter for this level. You get new letters by playing or in Own typing.",
     "keysFew": "You need {n} more letters for this level. You get new letters by playing or in Own typing.",
     "keysMany": "You need {n} more letters for this level. You get new letters by playing or in Own typing.",
@@ -190,7 +189,6 @@
     "help": "Help in the level",
     "helpNow": "In this level",
     "practice": "Own typing",
-    "rescue": "Rescue mission",
     "guide": "Show or hide the keyboard",
     "pause": "Pause",
     "paused": "Little pause",
@@ -212,13 +210,12 @@
     "end": "Stop typing",
     "keepPractice": "Keep practising",
     "keepLevel": "Continue",
-    "keepRescue": "Continue the mission",
     "keepTyping": "Keep typing",
     "endAsk": "Really end it?",
     "endLevelText": "This level will not count.",
     "endPracticeText": "This exercise will not count.",
-    "stayStart": "We stay here. Type as long as you like. Press Esc when you want to stop.",
-    "endRescueText": "This mission will not count."
+    "endJourneyText": "The hero's journey will not count, and next time it starts from the beginning.",
+    "stayStart": "We stay here. Type as long as you like. Press Esc when you want to stop."
   },
   "guide": {
     "deadStep1": "{ch}: first the accent key, then the letter",
@@ -367,6 +364,7 @@
     "stay": "Easy round finished!",
     "range": "Range finished!",
     "rangeRecord": "A new world record!",
+    "journey": "Hero's journey done!",
     "parrotHome": "The parrot is at home!",
     "parrotLost": "The parrot flew off",
     "freeType": "Free typing finished!",
@@ -439,19 +437,15 @@
     "newKeys": "New keys unlocked: {keys}",
     "newAccessory": "New things in the wardrobe: {n}",
     "newCompanion": "A new character in your wardrobe: {kind}",
-    "rescued": "You rescued the dragon {name}",
     "next": "Next level",
-    "nextRescue": "Another mission",
     "replay": "Play again",
     "stay": "A while more",
     "reward": "See the reward",
     "growthTitle": "A new medal",
     "medalAria": "medal number {n}",
-    "repaired": "You repaired the little robot {name}",
     "badgeNew": "A new badge",
     "badgeSilver": "A silver badge",
-    "badgeGold": "A gold badge",
-    "guided": "You helped {name} find the way home"
+    "badgeGold": "A gold badge"
   },
   "badge": {
     "bronze": "bronze",
@@ -766,7 +760,7 @@
       "hatched": [
         "Crack... crack... the egg hatches!",
         "A tiny baby dragon looks at you. You have a new friend!",
-        "Now you can go on rescue missions and help more dragons."
+        "Now the hero's journey waits for you: a long trip through every world of the story."
       ],
       "friends": [
         "A small rusty robot climbs out of the pile.",
@@ -791,7 +785,7 @@
       "home": [
         "Bolt's family is so happy he is home.",
         "They thank you, {name}, for helping Bolt.",
-        "Now you can repair little robots on rescue missions too."
+        "Now the hero's journey waits for you, through every world of Bolt's story."
       ],
       "wreath": [
         "The big flower is awake and the whole garden hums!",
@@ -816,7 +810,7 @@
       "wings": [
         "The whole forest sings! Every bird, every frog, every tree.",
         "The forest thanks you, {name}. Melody gives you fairy wings.",
-        "Now you can also guide little birds and fireflies home on rescue missions."
+        "Now the hero's journey waits for you, through the whole forest."
       ]
     },
     "flamesStart": [
@@ -1069,28 +1063,6 @@
     "eye-mask": "Eye mask",
     "carnival-mask": "Carnival mask"
   },
-  "dragonNames": [
-    "Sparky",
-    "Minty",
-    "Luna",
-    "Pebble",
-    "Sunny",
-    "Bubble",
-    "Ember",
-    "Clover",
-    "Misty",
-    "Pip",
-    "Nova",
-    "Honey",
-    "Willow",
-    "Puff",
-    "Comet",
-    "Biscuit",
-    "Maple",
-    "Ziggy",
-    "Tulip",
-    "Breeze"
-  ],
   "break": {
     "title": "Stretch {n}/{total}",
     "arms": "Stretch your arms up high like a tree. Breathe in... and out.",
@@ -1468,7 +1440,6 @@
       "My text: when a parent adds their own text, you type all of it in order.",
       "Just typing: type anything, you walk through a world you choose and see what you typed.",
       "Me and my wardrobe: pick your character and nickname and dress up in the things you unlocked.",
-      "Rescue missions and Little friends: they appear after you finish your first story.",
       "Today's task: when your teacher sends a task, you find it on the card. When it is done, you hand it in."
     ],
     "progressTitle": "My progress",
@@ -1481,9 +1452,9 @@
       "Keys shows which keys go well and which to practise. You can start practice right from there.",
       "A **QR code** shows your progress or an exercise to your teacher: they just take a photo of it. You can print a **Certificate** with your results."
     ],
-    "moreTitle": "Rescue mission, target range, parrot and badge",
+    "moreTitle": "Hero's journey, target range, parrot and badge",
     "more": [
-      "Rescue mission: a short task where you help a little friend. It opens when you finish the first story, and you find it on the map.",
+      "Hero's journey: when you finish the last world of a story, a compass appears right after its big challenge. It is a long trip through every world of the story. It is harder: the words are harder, everything is a bit faster, and **three stars** need 98 % accuracy, two need 95 %.",
       "Badge: you get one for every finished world. The more stars you collect in that world, the nicer it is: bronze, silver, gold.",
       "Target range: when you finish a world, a target appears on the map next to its big challenge. Tapko throws funny things at the target and you type the words on the rings they fly through. You practise the letters you do not type accurately enough yet.",
       "Type every word in time and without a mistake and you hit the middle. A mistake makes the thing fly a little lower, and after three it falls to the ground. Nothing bad happens, the next one comes.",
@@ -2020,56 +1991,6 @@
     "button": "Install",
     "later": "Not now"
   },
-  "friends": {
-    "title": "Little friends",
-    "dragons": "Dragons",
-    "robots": "Robots",
-    "firstDragon": "My first dragon",
-    "bolt": "Bolt",
-    "empty": "Go on a rescue mission to meet new little friends.",
-    "forests": "Forest friends",
-    "melody": "Melody"
-  },
-  "robotNames": [
-    "Bip",
-    "Zip",
-    "Cog",
-    "Diode",
-    "Springy",
-    "Nutty",
-    "Bzzz",
-    "Chip",
-    "Screwy",
-    "Sparky",
-    "Volt",
-    "Pixel",
-    "Bubo",
-    "Button",
-    "Tick",
-    "Tock",
-    "Lampy",
-    "Click",
-    "Roller",
-    "Beepo"
-  ],
-  "forestNames": [
-    "Pip",
-    "Twinkle",
-    "Feather",
-    "Glow",
-    "Chirp",
-    "Spark",
-    "Tweet",
-    "Lumi",
-    "Peep",
-    "Flicker",
-    "Robin",
-    "Star",
-    "Wren",
-    "Shine",
-    "Trill",
-    "Beam"
-  ],
   "tracks": {
     "menu": "Menu",
     "relaxing": "Relaxing",
@@ -3246,6 +3167,24 @@
           "Your Majesty, a hit!",
           "You're the king of accuracy!"
         ]
+      },
+      "compass": {
+        "name": "Compass",
+        "launch": [
+          "Fly east!",
+          "The compass must point the right way!",
+          "I hope it hits!",
+          "The compass will spin things up!"
+        ],
+        "sound": [
+          "Clang!"
+        ],
+        "hit": [
+          "It points north!",
+          "There was magnetism between us!",
+          "I will never get lost again!",
+          "Finally I find my way home!"
+        ]
       }
     }
   },
@@ -3306,5 +3245,11 @@
       "Landing!",
       "Got crrrackers?"
     ]
+  },
+  "journey": {
+    "title": "Hero's journey",
+    "harder": "The hero's journey is harder than the usual levels: the words are harder, everything is a bit faster, and three stars need 98 % accuracy.",
+    "next": "Next: {world}",
+    "go": "On we go"
   }
 }

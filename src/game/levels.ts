@@ -62,10 +62,26 @@ export interface LevelDef {
   phrases?: string[];
   /** Every target is one chunk or word, never several with a space (the first level, before the space bar is taught). */
   noSpace?: boolean;
-  /** A rescue mission: it plays its kind at the rescue camp. */
-  rescue?: boolean;
   /** The target range: the weak keys its words train. */
   focus?: string[];
+  /** A part of its story's hero's journey. */
+  journey?: JourneyPart;
+}
+
+/** Which part of a story's hero's journey a level is, of how many, and the part's own story line (an i18n key). */
+export interface JourneyPart {
+  story: StoryDef['id'];
+  part: number;
+  parts: number;
+  line?: string;
+}
+
+/** One part of a story's own hero's journey: what it plays, the world of its background and its own story line (an i18n key). */
+export interface JourneyStep {
+  kind: LevelKind;
+  variant: string;
+  world: number;
+  line?: string;
 }
 
 /** Seconds of active play a level lasts at least, by story (dragon, robot, fairy): the difficulty grows with the story. */
@@ -81,17 +97,27 @@ const CALM_KINDS: LevelKind[] = ['poppies', 'hop', 'swamp', 'thicket'];
 /** Copy levels: a growing or a clean line (the valley's calm path is one too). */
 const COPY_KINDS: LevelKind[] = ['invitation', 'command', 'spells', 'thicket', 'lullaby', 'copyloop'];
 
-/** Seconds of active play the level lasts at least (when it has a minimum length); a rescue mission always the story's full minimum. */
-export function minActiveS(l: Pick<LevelDef, 'world' | 'kind' | 'isSuper' | 'rescue'>): number {
-  const base = STORY_MIN_S[STORIES.indexOf(storyOf(l.world))];
-  if (l.rescue) return base;
+/** A hero's journey is as long as this many regular levels of its story, split evenly over its parts. */
+const JOURNEY_SHARE = 2;
+
+/** The story's place in `STORIES`: a journey part counts by its story, every other level by its world's. */
+function storyIndex(l: Pick<LevelDef, 'world' | 'journey'>): number {
+  return l.journey ? STORIES.findIndex((s) => s.id === l.journey!.story) : STORIES.indexOf(storyOf(l.world));
+}
+
+/** Seconds of active play the level lasts at least (when it has a minimum length); a journey part its share of the journey's. */
+export function minActiveS(l: Pick<LevelDef, 'world' | 'kind' | 'isSuper' | 'journey'>): number {
+  const base = STORY_MIN_S[storyIndex(l)];
+  if (l.journey) return (JOURNEY_SHARE * base) / l.journey.parts;
   if (CALM_KINDS.includes(l.kind)) return base * CALM_SHARE;
   return l.isSuper ? base * SUPER_SHARE : base;
 }
 
-/** Words the level asks for in its minimum time, at the story's slow pace. */
-export function minWords(l: Pick<LevelDef, 'world' | 'kind' | 'isSuper' | 'rescue'>): number {
-  return Math.round((STORY_WPM[STORIES.indexOf(storyOf(l.world))] * minActiveS(l)) / 60);
+/** Words the level asks for in its minimum time, at the story's slow pace; a journey part its share of the journey's. */
+export function minWords(l: Pick<LevelDef, 'world' | 'kind' | 'isSuper' | 'journey'>): number {
+  const story = storyIndex(l);
+  if (l.journey) return Math.round((JOURNEY_SHARE * Math.round((STORY_WPM[story] * STORY_MIN_S[story]) / 60)) / l.journey.parts);
+  return Math.round((STORY_WPM[story] * minActiveS(l)) / 60);
 }
 
 /** How many words a target has at a level's place in its world: words, then phrases, a sentence at the super level once space and period are known. */
@@ -262,33 +288,46 @@ export function nextLevel(p: Profile): LevelDef | null {
   return open.find((l) => !p.progress.levels[l.id]) ?? open[open.length - 1] ?? null;
 }
 
-/** Rescue missions (and the little friends) open with the first finished story. */
-export function rescueUnlocked(p: Profile): boolean {
-  return STORIES.some((s) => storyDone(p, s));
-}
-
 /** Lowest accuracy for each count of stars on the results card, best first; below them 1 (finishing always gives one). */
-export const STAR_STEPS = [{ stars: 3, from: 0.96 }, { stars: 2.5, from: 0.93 }, { stars: 2, from: 0.89 }, { stars: 1.5, from: 0.84 }] as const;
+export type StarSteps = readonly { stars: number; from: number }[];
+export const STAR_STEPS: StarSteps = [{ stars: 3, from: 0.96 }, { stars: 2.5, from: 0.93 }, { stars: 2, from: 0.89 }, { stars: 1.5, from: 0.84 }];
+/** A hero's journey is one step stricter. */
+export const JOURNEY_STAR_STEPS: StarSteps = [{ stars: 3, from: 0.98 }, { stars: 2.5, from: 0.965 }, { stars: 2, from: 0.95 }, { stars: 1.5, from: 0.9 }];
 
 /** Stars from accuracy: whole stars only. */
-export function starsFor(accuracy: number): number {
-  return Math.floor(halfStarsFor(accuracy));
+export function starsFor(accuracy: number, steps = STAR_STEPS): number {
+  return Math.floor(halfStarsFor(accuracy, steps));
 }
 
-/** Stars shown on the results card, by `STAR_STEPS`; never saved. */
-export function halfStarsFor(accuracy: number): number {
-  return STAR_STEPS.find((s) => accuracy >= s.from)?.stars ?? 1;
+/** Stars shown on the results card, by the steps; never saved. */
+export function halfStarsFor(accuracy: number, steps = STAR_STEPS): number {
+  return steps.find((s) => accuracy >= s.from)?.stars ?? 1;
 }
 
-const RESCUE_KINDS: { kind: LevelKind; world: number; variant: string }[] = [
-  { kind: 'meadow', world: 0, variant: 'mix' }, { kind: 'space', world: 1, variant: 'mix' }, { kind: 'swamp', world: 2, variant: '' }, { kind: 'crystals', world: 2, variant: '' },
-  { kind: 'flames', world: 3, variant: '' },
-];
+/** Stories with a hero's journey of their own; every other story plays the first level of each of its worlds, in order. */
+export const JOURNEYS: Partial<Record<StoryDef['id'], JourneyStep[]>> = {};
 
-/** Endless rescue missions: a level kind of a built world (worlds not built yet have none); the friend helped follows its story. */
-export function rescueLevel(seed: number): LevelDef {
-  const r = RESCUE_KINDS[Math.abs(seed) % RESCUE_KINDS.length];
-  const l: LevelDef = { id: 'rescue', world: r.world, index: -1, kind: r.kind, count: 0, variant: r.variant, isSuper: false, rescue: true };
+function journeySteps(story: StoryDef): JourneyStep[] {
+  return JOURNEYS[story.id] ?? story.worlds.map((w) => {
+    const first = worldLevels(w)[0];
+    return { kind: first.kind, variant: first.variant, world: w };
+  });
+}
+
+/** The id the journey's best stars are kept under in `progress.levels`. */
+export const journeyId = (story: StoryDef): string => `journey-${story.id}`;
+
+/** The story's hero's journey opens with its last world done, like that world's target range and parrot. */
+export function journeyOpen(p: Profile, story: StoryDef): boolean {
+  return aimOpen(p, story.worlds[story.worlds.length - 1]);
+}
+
+/** One part of the story's hero's journey: a regular run of its kind with the part's share of the journey's minimum. */
+export function journeyLevel(story: StoryDef, part: number): LevelDef {
+  const steps = journeySteps(story);
+  const s = steps[Math.max(0, Math.min(steps.length - 1, part))];
+  const journey: JourneyPart = { story: story.id, part: steps.indexOf(s), parts: steps.length, ...(s.line ? { line: s.line } : {}) };
+  const l: LevelDef = { id: journeyId(story), world: s.world, index: -1, kind: s.kind, count: 0, variant: s.variant, isSuper: false, journey };
   return { ...l, count: plannedCount(l) };
 }
 

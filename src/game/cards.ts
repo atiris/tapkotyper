@@ -115,7 +115,7 @@ const POSTURE_PICTURES = ['ui-posture-boy', 'ui-posture-girl'];
  * drawing always at the bottom. The space bar, Enter or Escape (or a tap on the space
  * bar's drawing or the close button) closes it and opens the adventure.
  */
-export function showPosture(host: HTMLElement, p: Profile, tip?: string, surprise?: Surprise | null, note?: string, story?: string | null): Promise<void> {
+export function showPosture(host: HTMLElement, p: Profile, tip?: string, surprise?: Surprise | null, note?: string, story?: string | null, under?: string | null): Promise<void> {
   return new Promise((resolve) => {
     const close = () => {
       stop();
@@ -138,6 +138,7 @@ export function showPosture(host: HTMLElement, p: Profile, tip?: string, surpris
       h('h2', {}, t('posture.title')),
       h('div', { class: 'posture-body' },
         story ? h('p', { class: 'posture-text' }, ...richText(story)) : null,
+        under ? h('p', { class: 'posture-under' }, ...richText(under)) : null,
         surprise ? surpriseAsk(surprise.q) : null,
         surprise ? surpriseLeft(p, surprise) : null),
       space);
@@ -152,6 +153,40 @@ export function showPosture(host: HTMLElement, p: Profile, tip?: string, surpris
     };
     const stop = captureKeys(overlay, onKey);
     host.append(overlay);
+  });
+}
+
+/**
+ * Between two parts of a hero's journey: the next world's island as on the map, its name and the
+ * part's own story line. The space bar, Enter, Escape, the button, the X or a click goes on.
+ */
+export function showTravel(host: HTMLElement, world: string, line?: string | null): Promise<void> {
+  return new Promise((resolve) => {
+    const close = () => {
+      stop();
+      overlay.remove();
+      resolve();
+    };
+    const src = imageUrl(`ui-map-${world}`);
+    const go = button(t('journey.go'), close, 'btn primary', 'next');
+    const card = h('div', { class: 'card travel-card', role: 'dialog', 'aria-label': t('journey.next', { world: t(`worlds.${world}`) }) },
+      closeButton(close, t('journey.go')),
+      src ? h('img', { class: 'travel-img', src, alt: '' }) : null,
+      h('h2', {}, t('journey.next', { world: t(`worlds.${world}`) })),
+      line ? h('p', { class: 'posture-text' }, ...richText(line)) : null,
+      h('div', { class: 'row' }, go));
+    const overlay = h('div', { class: 'overlay' }, card);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+    const onKey = (e: KeyboardEvent) => {
+      if (e.repeat || (e.key !== ' ' && e.key !== 'Enter' && e.key !== 'Escape')) return;
+      e.preventDefault();
+      e.stopPropagation();
+      audio.sfx('pop');
+      close();
+    };
+    const stop = captureKeys(overlay, onKey);
+    host.append(overlay);
+    queueMicrotask(() => go.focus());
   });
 }
 

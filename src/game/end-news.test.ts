@@ -12,10 +12,8 @@ describe('the green line of an end card', () => {
     expect(greenLine(levelNews(result()))).toBeNull();
   });
 
-  it('takes a rescued friend first, then the badge, keys, medal and wardrobe, and counts the other rewards', () => {
-    const friend = { kind: 'dragon' as const, name: 'Iskra', hue: 10, date: '2026-10-30' };
+  it('takes the badge first, then keys, medal and wardrobe, and counts the other rewards', () => {
     const r = result({ newKeys: ['j'], badge: { world: 0, tier: 'gold', upgrade: true }, newAccessories: ['hat'], trend: 1.2 });
-    expect(greenLine(levelNews(r, friend))).toEqual({ news: { kind: 'rescued', friend }, more: 3 });
     expect(greenLine(levelNews(r))).toEqual({ news: { kind: 'badge', world: 0, tier: 'gold', upgrade: true }, more: 2 });
     expect(greenLine(levelNews(result({ growth: { kind: 'difficulty', value: 4, medal: 1 }, newCompanions: ['cat'] })))?.more).toBe(1);
   });

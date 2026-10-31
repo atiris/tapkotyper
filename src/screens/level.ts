@@ -1,9 +1,9 @@
 import { app, go, isBreakDue, saveProfile } from '../app/app';
 import { starRow } from '../ui/chrome';
 import { tapkoElement } from '../gfx/tapko';
-import { t, tList, tn } from '../i18n/i18n';
-import { LEVELS, type LevelDef, type StoryDef, aimLevel, aimOpen, aimWorld, freeTypeLevel, isLevelUnlocked, isWorldUnlocked, levelById, parrotLevel, practiceLevel, rescueLevel, storyOf } from '../game/levels';
-import type { LevelResult } from '../game/progress';
+import { t, tn } from '../i18n/i18n';
+import { LEVELS, type LevelDef, STORIES, type StoryDef, aimLevel, aimOpen, aimWorld, freeTypeLevel, isLevelUnlocked, isWorldUnlocked, journeyLevel, journeyOpen, levelById, parrotLevel, practiceLevel } from '../game/levels';
+import { type LevelResult, newJourneyRun } from '../game/progress';
 import type { Style } from '../game/typing';
 import { WORLD_REWARDS } from '../game/rewards';
 import { LevelRuntime } from '../game/runtime';
@@ -18,7 +18,8 @@ import type { ParrotMode } from '../game/modes/parrot';
 import { loseParrot, winParrot } from '../game/parrots';
 import { THINGS } from '../game/modes/aim-things';
 import { imageUrl } from '../gfx/assets';
-import type { Friend, Surprise, Task } from '../storage/schema';
+import { compassElement } from '../gfx/compass';
+import type { Surprise, Task } from '../storage/schema';
 import { recordTaskRun, taskOwn } from '../share/task';
 import { localDate, recentTyping } from '../learning/stats';
 import { type Child, closeButton, h } from '../ui/dom';
@@ -50,6 +51,8 @@ interface LevelParams {
   world?: number;
   /** Staying a while in this story level: no end, no stars. */
   stay?: boolean;
+  /** A hero's journey: the id of its story. */
+  story?: StoryDef['id'];
 }
 
 export function levelScreen(root: HTMLElement, params: LevelParams): () => void {
@@ -59,19 +62,26 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
   else if (params.id === 'freetype') def = freeTypeLevel(params.world != null && isWorldUnlocked(p, params.world) ? params.world : 0);
   else if (params.id === 'aim') def = aimLevel(p, params.world != null && aimOpen(p, params.world) ? params.world : aimWorld(p, 0) ?? 0);
   else if (params.id === 'parrot') def = parrotLevel(params.world != null && aimOpen(p, params.world) ? params.world : aimWorld(p, 0) ?? 0);
-  else if (params.id === 'rescue') def = rescueLevel(p.progress.friends.length * 7 + Math.floor(Math.random() * 5));
+  else if (params.id === 'journey' && journeyStory(params.story)) def = journeyLevel(journeyStory(params.story)!, 0);
   else def = levelById(params.id) ?? LEVELS[0];
   // A super-obstacle has no endless form (the asteroids' has): staying plays the world's last regular level.
   const stayDef = params.stay && def.isSuper && def.kind !== 'asteroid' ? LEVELS.find((l) => l.world === def.world && l.index === def.index - 1) ?? def : def;
   const task = p.tasks.find((x) => x.id === params.task && !x.doneAt) ?? null;
   const next = params.stay ? nextOpen(def) : undefined;
+  // A hero's journey plays its parts one after another on this screen and keeps them as one run.
+  const journey = def.journey ? newJourneyRun() : undefined;
+  // The surprise asked on its first part's get-ready card is told at its end.
+  let asked: Surprise | null = null;
   let rt: LevelRuntime | null = null;
   let left = false;
   const exit = () => go('map');
   // The level's mode comes with its own code; leaving before it is there opens nothing.
-  void loadMode(stayDef).then((makeMode) => {
+  const play = (level: LevelDef) => void loadMode(level).then((makeMode) => {
     if (left) return;
-    const runtime = rt = new LevelRuntime(root, stayDef, makeMode, {
+    rt?.dispose();
+    rt?.el.remove();
+    const part = level.journey;
+    const runtime = rt = new LevelRuntime(root, level, makeMode, {
       keys: params.keys,
       chosen: params.chosen,
       seconds: params.seconds ?? null,
@@ -85,8 +95,11 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
       onHelp: (back, now) => openHelp(root.querySelector('.level-screen')!, back, now),
       onBreak: (back, play) => openBreak(back, play),
       onLayout: () => go('level', params, false),
+      journey,
+      onPart: part && (() => play(journeyLevel(journeyStory(part.story)!, part.part + 1))),
       onFinish: (result) => {
         if (!result) return exit();
+        if (part) return showJourneyDone(root, level, result, params, asked);
         if (def.kind === 'aim') return showAimDone(root, def, result, runtime.mode as AimMode, params, runtime.surprise);
         if (def.kind === 'parrot') return showParrotDone(root, def, result, runtime.mode as ParrotMode, params, runtime.surprise);
         if (params.stay) return showStayDone(root, def, result);
@@ -97,6 +110,7 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
         showResults(root, def, result, params, runtime.surprise, task);
       },
     });
+    if (part?.part === 0) asked = runtime.surprise;
     if (def.kind === 'freetype' && openWorlds(p).length > 1) {
       root.querySelector('.hud-title')!.after(roundButton('control', 'map', t('freeType.place'), () => openPlacePicker(def.world)));
     }
@@ -107,16 +121,18 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
       root.querySelector('.hud')!.prepend(end);
     }
   });
+  play(stayDef);
   return () => {
     left = true;
     rt?.dispose();
   };
 }
 
-const NAMES_FALLBACK: Record<Friend['kind'], string[]> = { dragon: ['Iskra', 'Mäta', 'Luna', 'Bubu'], robot: ['Bip', 'Zip', 'Kolík', 'Dioda'], forest: ['Pipi', 'Iskrička', 'Perko', 'Lúčik'] };
-/** The friend a rescue mission helps, by the mission's story. */
-const FRIEND_OF: Record<StoryDef['id'], Friend['kind']> = { dragon: 'dragon', robot: 'robot', fairy: 'forest' };
-const RESCUED_LINE: Record<Friend['kind'], string> = { dragon: 'results.rescued', robot: 'results.repaired', forest: 'results.guided' };
+/** The story whose hero's journey is asked for, when the journey is open. */
+function journeyStory(id: string | undefined): StoryDef | undefined {
+  const story = STORIES.find((s) => s.id === id);
+  return story && journeyOpen(app.profile!, story) ? story : undefined;
+}
 
 const MODIFIERS = ['Shift', 'Alt', 'Control', 'Meta', 'AltGraph'];
 
@@ -180,8 +196,7 @@ function newsLine(news: News[]): Child[] | null {
   const n = line.news;
   const keys = (k: string[]) => (k.length === 1 ? t('results.newKey', { key: keyLabel(k[0]) }) : t('results.newKeys', { keys: k.map(keyLabel).join(', ') }));
   const [pic, text]: [Child, string] =
-    n.kind === 'rescued' ? [null, t(RESCUED_LINE[n.friend.kind], { name: n.friend.name })]
-    : n.kind === 'badge' ? [badge(n.world, n.tier, true), t(!n.upgrade ? 'results.badgeNew' : n.tier === 'gold' ? 'results.badgeGold' : 'results.badgeSilver')]
+    n.kind === 'badge' ? [badge(n.world, n.tier, true), t(!n.upgrade ? 'results.badgeNew' : n.tier === 'gold' ? 'results.badgeGold' : 'results.badgeSilver')]
     : n.kind === 'parrotBadge' ? [parrotBadge(), t('parrot.badge')]
     : n.kind === 'keys' ? [null, keys(n.keys)]
     : n.kind === 'medal' ? [medal(n.growth.medal, true), t('results.growthTitle')]
@@ -200,29 +215,20 @@ function findPic(id: string): Child {
   return src && h('img', { class: 'ec-find', src, alt: '' });
 }
 
-/** Tells and records the surprises the run reached (a story level keeps them in its world); the card then shows today's told ones, or none. */
+/** Tells and records the surprises the run reached (a story level keeps them in its world, a hero's journey in its story's last world); the card then shows today's told ones, or none. */
 function toldSurprises(def: LevelDef, asked: Surprise | null, run: SurpriseRun): Surprise[] {
   const p = app.profile!;
   const { revealed } = surpriseOutcome(p, asked, run);
   if (!revealed.length) return [];
-  if (def.index >= 0 && !def.rescue) for (const s of revealed) surpriseWonIn(s, def.world);
+  const story = STORIES.find((s) => s.id === def.journey?.story);
+  const world = story ? story.worlds[story.worlds.length - 1] : def.index >= 0 ? def.world : null;
+  if (world !== null) for (const s of revealed) surpriseWonIn(s, world);
   saveProfile();
   return surprisesToldOn(p);
 }
 
 function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: LevelParams, surprise: Surprise | null, task: Task | null): void {
   const p = app.profile!;
-  let rescued: Friend | null = null;
-  if (def.rescue) {
-    // The friend helped follows the mission's story.
-    const kind = FRIEND_OF[storyOf(def.world).id];
-    const names = tList(`${kind}Names`);
-    const pool = names.length ? names : NAMES_FALLBACK[kind];
-    const same = p.progress.friends.filter((f) => f.kind === kind).length;
-    rescued = { kind, name: pool[same % pool.length], hue: Math.floor(Math.random() * 360), date: localDate() };
-    p.progress.friends.push(rescued);
-    saveProfile();
-  }
   const practice = def.kind === 'practice';
   const taskOn = task && !task.doneAt ? task : null;
   // A task still running takes the third row.
@@ -234,7 +240,6 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
   const nextDef = def.index >= 0 && !def.isSuper ? LEVELS.find((l) => l.world === def.world && l.index === def.index + 1) : undefined;
   if (r.worldDone !== null) actions.push({ label: t('results.reward'), icon: 'star', run: () => go('story', { scene: WORLD_REWARDS[r.worldDone!], next: 'map' }) });
   else if (nextDef) actions.push({ label: t('results.next'), icon: 'next', run: () => go('level', { id: nextDef.id, task: taskOn?.id }) });
-  else if (def.rescue) actions.push({ label: t('results.nextRescue'), icon: 'rescue', run: () => go('level', { id: 'rescue' }) });
   // A task's practice plays what is left of it.
   actions.push({ label: t('results.replay'), icon: 'replay', run: () => (taskOn && practice ? startTask(p, taskOn) : go('level', params)) });
   const stay = def.index >= 0 && !task ? () => go('level', { id: def.id, stay: true }) : undefined;
@@ -245,11 +250,26 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
     picture: practice ? 'ui-end-practice' : tapkoElement(p.companion, 'happy', 120),
     under: practice ? minutes(r.seconds) : starRow(r.shownStars),
     rows: rows.slice(0, 3),
-    news: newsLine(levelNews(r, rescued)),
+    news: newsLine(levelNews(r)),
     tip: r.byTapko ? t('results.byTapko') : null,
     surprises: toldSurprises(def, surprise, surpriseRun(def, !!params.keys)),
     actions,
   }, stay);
+}
+
+/** The end of a hero's journey: its compass, the stars of all its parts together, accuracy, rhythm and minutes; no staying a while. */
+function showJourneyDone(root: HTMLElement, def: LevelDef, r: LevelResult, params: LevelParams, surprise: Surprise | null): void {
+  showEnd(root, {
+    cls: 'journey-done',
+    title: t('end.journey'),
+    picture: compassElement('ec-img'),
+    under: starRow(r.shownStars),
+    rows: [...typingRows(r), [t('end.time'), minutes(r.seconds)]],
+    news: newsLine(levelNews(r)),
+    tip: r.byTapko ? t('results.byTapko') : null,
+    surprises: toldSurprises(def, surprise, 'all'),
+    actions: [{ label: t('results.replay'), icon: 'replay', run: () => go('level', params) }],
+  });
 }
 
 /** The level after a story level, when open: staying a while goes on to it. */

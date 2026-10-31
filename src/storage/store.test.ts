@@ -52,10 +52,10 @@ describe('Store', () => {
   it('fills missing fields of older profiles', () => {
     const p: any = newProfile('Ema', 'sk');
     delete p.settings.font;
-    delete p.progress.friends;
+    delete p.progress.rangeFinds;
     const out = readStore({ profiles: [p] }).profiles[0];
     expect(out.settings.font).toBe('lexend');
-    expect(out.progress.friends).toEqual([]);
+    expect(out.progress.rangeFinds).toEqual([]);
   });
 
   it('keeps a parent lock and drops a broken one', () => {

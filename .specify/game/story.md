@@ -302,7 +302,7 @@ as they are. The world descriptions below marked *not built yet* are the design 
    target range is a flame (kept although the world got new things).
 5. **Egg Journey** (*not built yet*) - the hatching egg rolls downhill; typing makes it jump over rocks and
    stumps. Super-obstacle: a friendly mole. Reward: a new companion hatches and
-   **endless rescue missions** unlock (replayable, generated from all worlds).
+   the **hero's journey** opens ([hero's journey](heros-journey.md)).
 
 ### Story 2: Bolt the Robot (*not built yet*)
 A more technical story for children who like machines. **Bolt** (Šróbik in Slovak), a
@@ -328,8 +328,8 @@ worried at a mistake and happy at a finished word.
    must be typed without a single mistake. Reward: Bolt's home key card.
 10. **Home** (Domov) - dark rooms; each typed word switches on a lamp and wakes a helper
     robot that waves. Super-obstacle: Bolt's family welcome, little robots popping out of
-    boxes (like the friendly mole). Reward: the family thanks the child, and rescue missions
-    also repair little robots.
+    boxes (like the friendly mole). Reward: the family thanks the child, and the
+    hero's journey opens.
 
 ### Story 3: Melody the Fairy (*not built yet*)
 A gentle, musical story that is meant to appeal more to girls than the technical robot
@@ -357,8 +357,8 @@ a short line at the start of a level, after repeated mistakes and at its end.
 15. **Ball** (Ples) - fireflies drift down carrying short sentences of three to six words
     that Melody sings; each typed one lights the dance floor more. Super-obstacle: the
     last song, short sentences dictated one after another, and at the end the whole
-    forest sings. Reward: the forest thanks the child and Melody gives them fairy wings; rescue
-    missions also guide little forest friends (baby birds and fireflies) home.
+    forest sings. Reward: the forest thanks the child and Melody gives them fairy wings, and the
+    hero's journey opens.
 
 The first level of the path and the lake starts with single short words. Without a voice
 for the language the dictation worlds play as copy typing and the tree as memory, so the
@@ -374,14 +374,8 @@ story stays playable in any browser ([mechanics](mechanics.md)).
   needs a few known keys ([lesson progression](../learning/lesson-progression.md)).
 - On the map each story is one row with its name above its world cards, left aligned with
   the first card; a closed story shows when it opens. World numbers run on across stories.
-- Rescue missions open with the first finished story and play only level kinds of built
-  worlds, never the placeholder. The friend met in a mission follows its story: a dragon, a
-  little robot or a little forest friend (only dragons while stories 2 and 3 are not built).
-  They collect on the **Little friends** screen, one group per story.
-- Rescue missions happen at the **rescue camp**: an evening place with warm lanterns, a
-  rope bridge and a lookout flag, so a mission looks different from replaying a world. The
-  play keeps the mission's level kind and its friend. The paw never starts by itself in a
-  mission unless the child turned the automatic paw on.
+- The last world of each story ends with a hero's journey, one long, harder trip through the
+  story's worlds ([hero's journey](heros-journey.md)).
 - Every level can be finished by any child: obstacles that are not cleared in time just
   pass by or are helped by Tapko; they never cause failure.
 - World names are short words a young child reads at once, at most 12 characters (Lúka,
@@ -413,10 +407,8 @@ story stays playable in any browser ([mechanics](mechanics.md)).
   what gold needs, each with the stars the child has in that world.
 
 ## Why
-- The story gives a reason to practice without competition; replayable rescue missions
-  give long-term variety without streak pressure.
-- A rescue is a special event and should feel like one; a paw that types by itself takes
-  the mission away from the child.
+- The story gives a reason to practice without competition; the hero's journey closes it with
+  one final test, without streak pressure.
 - The planet's levels were the same swamp twice with signs and a boulder in a mint and purple
   world; Tapko was smaller than in the worlds before and his word covered him. One story per
   level, the rules of the first two worlds and paths that change the level make each level

@@ -106,8 +106,9 @@
   says how long it stays there ("Na mape", short choices like "+1 deň", the explanation with an example in its tooltip): the day it was
   told and 0 to 15 more days (default 1: told on Wednesday evening, still there all Thursday), or
   for ever; after that the map no longer shows it (a repeating one comes back with its next
-  telling). Answers told in practice or a rescue mission belong to no world and stay only on their
-  results card. Free practice drills of chosen keys have no surprise.
+  telling). Answers told in a hero's journey belong to the last world of its story
+  ([hero's journey](../game/heros-journey.md)); answers told in practice belong to no world
+  and stay only on their results card. Free practice drills of chosen keys have no surprise.
 - **Certificate** ("Certifikát", next to "QR kód celého postupu" under the progress): a window with a sheet in the style of a
   certificate, printed on A4 portrait (browser print): a cream band with the same sleeping fox in
   every corner (turned a quarter round from corner to corner) and pairs of paw prints between them,

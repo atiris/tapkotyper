@@ -13,7 +13,7 @@ import { hideTip } from '../ui/tooltip';
 import { fast } from './fast';
 import { keyboardGated, waitForKeyboard } from './keyboard-gate';
 
-export type ScreenName = 'start' | 'newProfile' | 'map' | 'level' | 'story' | 'parent' | 'wardrobe' | 'friends' | 'teacher' | 'taskImport' | 'moveImport' | 'help' | 'translate' | 'progress';
+export type ScreenName = 'start' | 'newProfile' | 'map' | 'level' | 'story' | 'parent' | 'wardrobe' | 'teacher' | 'taskImport' | 'moveImport' | 'help' | 'translate' | 'progress';
 export type Screen = (root: HTMLElement, params: any) => (() => void) | void;
 
 const screens = new Map<ScreenName, Screen>();
@@ -66,8 +66,8 @@ export function registerScreen(name: ScreenName, s: Screen): void {
 }
 
 /** Screens with their own address; the others belong to the player's map. */
-const ROUTES: Partial<Record<ScreenName, string>> = { wardrobe: 'wardrobe', friends: 'friends', progress: 'progress', parent: 'settings', help: 'help', level: 'play', story: 'play' };
-const OWN_ROUTE: ScreenName[] = ['map', 'wardrobe', 'friends', 'progress', 'parent', 'help'];
+const ROUTES: Partial<Record<ScreenName, string>> = { wardrobe: 'wardrobe', progress: 'progress', parent: 'settings', help: 'help', level: 'play', story: 'play' };
+const OWN_ROUTE: ScreenName[] = ['map', 'wardrobe', 'progress', 'parent', 'help'];
 
 /** Screens of a link with data in it, by the link's first part. */
 const LINKS: Partial<Record<string, ScreenName>> = { task: 'taskImport', move: 'moveImport', result: 'teacher' };

@@ -132,7 +132,7 @@ function notes(g: G, s: number, t: number): void {
   g.globalAlpha = 1;
 }
 
-/** DOM version for scenes and the friends screen: the picture, else a small canvas. */
+/** DOM version for scenes: the picture, else a small canvas. */
 export function fairyElement(mood: FairyMood, size: number): HTMLElement {
   const src = imageUrl(fairyImage(mood));
   const el = document.createElement('div');

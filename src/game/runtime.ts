@@ -37,9 +37,9 @@ import type { ModeMaker } from './modes';
 import type { FreeTypeMode, FreeTyped } from './modes/freetype';
 import { PressureValve, perChar, sayTime } from './pace';
 import { Rhythm } from './rhythm';
-import { type LevelResult, completeLevel, completeStay } from './progress';
+import { type JourneyRun, type LevelResult, completeLevel, completeStay, joinRuns } from './progress';
 import { type Style, type Target, TypingCore } from './typing';
-import { type ControlKey, pickTip, showCard, showControlKey, showHomeRow, showKeysIntro, showNewKey, showPosture } from './cards';
+import { type ControlKey, pickTip, showCard, showControlKey, showHomeRow, showKeysIntro, showNewKey, showPosture, showTravel } from './cards';
 import { surpriseFor } from './own-content';
 import { HELP_PLANS, type HelpHost, type HelpPlan, SuperHelper } from './super-help';
 import { Callouts } from './runtime/callouts';
@@ -72,6 +72,10 @@ const ENTER_GUARD_MS = 300;
 /** Stretches done sitting, one of them shown on the pause card; its short exercise lasts STRETCH_S seconds. */
 const STRETCHES = ['arms', 'fists', 'shoulders', 'neck', 'wrists', 'eyes'];
 const STRETCH_S = 20;
+/** A hero's journey plays a difficulty step above the profile's, its words a letter longer and its phrases up to three words (the planet's hard path). */
+const JOURNEY_STEP = 1;
+const DIFFICULTY_MAX = 10;
+const JOURNEY_WORDS = 3;
 
 /** What the voice says for a target: its words, never the Enter mark. */
 function spoken(tg: Target): string {
@@ -84,13 +88,13 @@ function spoken(tg: Target): string {
  * parent's own words and text mixed in (not in drills, chosen keys or the target range, their
  * words would bring other letters), or a task's.
  */
-export function wordSource(p: Profile, lang: LangRef, drill?: string[], own?: WordSourceOwn, chosen?: string[], focus?: string[]): WordSource {
+export function wordSource(p: Profile, lang: LangRef, drill?: string[], own?: WordSourceOwn, chosen?: string[], focus?: string[], hard = false): WordSource {
   // Practice of space, punctuation or a Shift needs letters around it: the known ones.
   const keys = chosen ?? (!drill ? activeKeys(p) : drill.every(isLetterKey) ? drill : [...new Set([...activeKeys(p), ...drill])]);
   const s = p.settings;
   return new WordSource(app.words[lang], {
     keys,
-    len: s.wordLen,
+    len: hard ? [s.wordLen[0] + 1, s.wordLen[1] + 1] : s.wordLen,
     noDiacritics: s.noDiacritics,
     weights: keyWeights(p, keys),
     focus: drill ?? (focus ?? newestGroup(p)).filter((k) => keys.includes(k)),
@@ -128,6 +132,10 @@ export interface RuntimeOptions {
   onBreak(back: () => void, play: () => void): void;
   /** The player switched the keyboard layout under the on-screen keyboard: the level starts again with it. */
   onLayout(): void;
+  /** A hero's journey part: the journey's parts so far, this one is added at its end. */
+  journey?: JourneyRun;
+  /** A hero's journey part that is not the last one ended: the next part comes. */
+  onPart?(): void;
 }
 
 /** Runs one level: input, typing state, mode, HUD, guide, Tapko, stats. */
@@ -153,11 +161,11 @@ export class LevelRuntime {
   readonly highContrast: boolean;
   readonly reduceMotion: boolean;
   readonly el: HTMLElement;
-  /** Bolt walks with Tapko in story 2 levels and its rescue missions (with his final look); null elsewhere. */
+  /** Bolt walks with Tapko in story 2 levels; null elsewhere. */
   readonly robot: RobotState | null;
   private robotMood: RobotMood = 'idle';
   private robotMoodT = 0;
-  /** Melody floats next to Tapko in story 3 levels and its rescue missions. */
+  /** Melody floats next to Tapko in story 3 levels. */
   readonly fairy: boolean;
   private fairyMood: FairyMood = 'idle';
   private fairyMoodT = 0;
@@ -244,7 +252,7 @@ export class LevelRuntime {
 
   constructor(root: HTMLElement, readonly def: LevelDef, makeMode: ModeMaker, private opts: RuntimeOptions) {
     const p = app.profile!;
-    this.difficulty = this.core.difficulty = p.settings.difficulty;
+    this.difficulty = this.core.difficulty = def.journey ? Math.min(DIFFICULTY_MAX, p.settings.difficulty + JOURNEY_STEP) : p.settings.difficulty;
     this.noPressure = p.settings.noTimePressure;
     this.style = opts.style ?? 'copy';
     this.highContrast = p.settings.highContrast;
@@ -258,7 +266,7 @@ export class LevelRuntime {
 
     const lay = LAYOUTS[p.layout];
     // Practice (the custom exercise, key drills, tasks) has its own word language; story levels use the player's.
-    this.words = wordSource(p, def.kind === 'practice' ? p.settings.ownWordLang : p.settings.wordLang, opts.keys, opts.own, opts.chosen, def.focus);
+    this.words = wordSource(p, def.kind === 'practice' ? p.settings.ownWordLang : p.settings.wordLang, opts.keys, opts.own, opts.chosen, def.focus, !!def.journey);
     // Enter comes with the right little finger's home key; drills, single letters and the gate's code stay without it.
     const enterOk = !opts.keys && !def.noSpace && def.kind !== 'freetype' && def.kind !== 'aim' && def.kind !== 'parrot' && (opts.chosen ?? activeKeys(p)).includes(enterAfter(lay));
     this.enter = enterOk ? new EnterMarks(() => this.rng.next(), def.kind === 'practice' ? null : ENTER_MAX) : null;
@@ -269,14 +277,14 @@ export class LevelRuntime {
     this.minActive = opts.stay ? Infinity : !hasMinLength(def) ? 0 : import.meta.env.MODE === 'e2e' ? Number(new URLSearchParams(location.search).get('minActive') ?? 0) : fast(minActiveS(def));
 
     // DOM: HUD, stage, Tapko, bubble, guide.
-    this.el = h('div', { class: `level-screen world-${WORLDS[def.world]}${def.rescue ? ' world-rescue' : ''}` });
+    this.el = h('div', { class: `level-screen world-${WORLDS[def.world]}` });
     const story = def.kind !== 'practice' && def.kind !== 'freetype' && def.kind !== 'aim' && def.kind !== 'parrot';
-    this.robot = story && storyOf(def.world).id === 'robot' ? robotFor(def.rescue ? WORLDS.length - 1 : def.world) : null;
+    this.robot = story && storyOf(def.world).id === 'robot' ? robotFor(def.world) : null;
     if (this.robot) this.el.dataset.bolt = this.robot.look;
     this.fairy = story && storyOf(def.world).id === 'fairy';
     if (this.fairy) this.el.dataset.fairy = 'melody';
     this.progressFill = h('div', { class: 'progress-fill' });
-    const title = def.kind === 'practice' ? t(def.phrases ? 'level.ownText' : 'level.practice') : def.kind === 'freetype' ? t('level.freeType') : def.kind === 'aim' ? t('aim.title') : def.kind === 'parrot' ? t('parrot.title') : def.rescue ? t('level.rescue') : worldName(def);
+    const title = def.kind === 'practice' ? t(def.phrases ? 'level.ownText' : 'level.practice') : def.kind === 'freetype' ? t('level.freeType') : def.kind === 'aim' ? t('aim.title') : def.kind === 'parrot' ? t('parrot.title') : def.journey ? t('journey.title') : worldName(def);
     // Hiding the guide is the switch: the crossed keyboard, with the orange ring while the guide is hidden.
     const guideBtn = this.guideBtn = roundButton('control', 'keyboardOff', t('level.guide'), () => this.toggleGuide());
     tip(guideBtn, withKey(t('level.guide'), 'F2'));
@@ -366,19 +374,9 @@ export class LevelRuntime {
 
   private readonly offShortcuts: () => void;
 
-  /** Story levels and rescue missions; free practice, drills, the target range and the parrot count every key, and the valley's take-off is the child's own flight. */
+  /** Story levels and hero's journeys; free practice, drills, the target range and the parrot count every key, and the valley's take-off is the child's own flight. */
   get pawsAllowed(): boolean {
     return this.def.kind !== 'practice' && this.def.kind !== 'freetype' && this.def.kind !== 'takeoff' && this.def.kind !== 'aim' && this.def.kind !== 'parrot' && !this.opts.keys;
-  }
-
-  /** The background: the rescue camp in a rescue mission, else the mode's world. */
-  get backdrop(): string {
-    return this.def.rescue ? 'rescue' : this.mode.world;
-  }
-
-  /** The mode's own middle and near bands of its world (the rescue camp has one set). */
-  get ground(): string {
-    return this.def.rescue ? '' : this.mode.ground;
   }
 
   get tapkoOnStage(): boolean {
@@ -390,13 +388,22 @@ export class LevelRuntime {
     const p = app.profile!;
     // The level opens with every picture its mode, Tapko and the friends draw, so none shows its fallback first;
     // the other worlds' pictures keep loading in the background (main.ts).
-    const own = [`bg-${this.backdrop}-far`, `bg-${this.backdrop}${this.ground}-mid`, `bg-${this.backdrop}${this.ground}-near`, `bg-${this.backdrop}${this.ground}-shore`, ...this.mode.pictures, ...tapkoPictures(p.companion), ...friendPictures()];
+    const { world, ground } = this.mode;
+    const own = [`bg-${world}-far`, `bg-${world}${ground}-mid`, `bg-${world}${ground}-near`, `bg-${world}${ground}-shore`, ...this.mode.pictures, ...tapkoPictures(p.companion), ...friendPictures()];
     await Promise.race([preload(own), new Promise((r) => setTimeout(r, PICTURES_WAIT_S * 1000))]);
     if (this.disposed) return;
     audio.music(this.def.kind === 'practice' ? app.menuTrack : this.mode.world);
     // Free typing and staying a while start at once; the child has just played this level.
     if (this.free || this.opts.stay) return this.begin();
     const host = this.el.querySelector<HTMLElement>('.stage-wrap')!;
+    const journey = this.def.journey;
+    // A later part of a hero's journey: only the travel card to the next world.
+    if (journey && journey.part > 0) {
+      this.core.style = this.style;
+      await showTravel(host, WORLDS[this.def.world], journey.line ? t(journey.line) : null);
+      if (!this.disposed) this.begin();
+      return;
+    }
     let tip: string | undefined;
     if (!app.tipShown && !this.opts.keys) {
       app.tipShown = true;
@@ -437,8 +444,8 @@ export class LevelRuntime {
     // A world not built yet keeps its story for when it is: its placeholder says what it plays instead.
     const opening = this.def.kind !== 'copyloop' && LEVELS.find((l) => l.id === this.def.id)?.index === 0 ? `world-${WORLDS[this.def.world]}` : null;
     const worldStory = opening && !p.progress.scenesSeen.includes(opening) ? t(`story.world.${WORLDS[this.def.world]}`) : null;
-    const story = [worldStory ?? this.mode.startLine(), this.mode.intro()].filter(Boolean).join(' ') || null;
-    if (!this.opts.keys) await showPosture(host, p, tip, this.surprise, voiceNote, story);
+    const story = [worldStory ?? (journey?.line ? t(journey.line) : this.mode.startLine()), this.mode.intro()].filter(Boolean).join(' ') || null;
+    if (!this.opts.keys) await showPosture(host, p, tip, this.surprise, voiceNote, story, journey ? t('journey.harder') : null);
     if (this.disposed) return;
     if (opening && worldStory) {
       p.progress.scenesSeen.push(opening);
@@ -517,6 +524,8 @@ export class LevelRuntime {
   /** Next target (a word, a phrase of up to `words` words, or a sentence of at least `minWords`); avoids first letters already on screen. */
   word(maxLen?: number, words = this.mode.phraseWords, minWords = this.mode.phraseMin): string {
     const avoid = new Set(this.core.active.map((t) => t.word[0].toLowerCase()));
+    // A hero's journey makes phrases longer; a target of one word stays one (it may fly on a small thing).
+    if (this.def.journey && words >= 2) words = Math.max(words, JOURNEY_WORDS);
     const w = this.words.next(avoid, maxLen, this.def.noSpace ? 1 : words, minWords);
     return this.enter?.next() ? w + ENTER : w;
   }
@@ -1194,11 +1203,11 @@ export class LevelRuntime {
     this.pauseEl?.querySelector<HTMLButtonElement>('.btn.primary')?.focus();
   }
 
-  /** What leaving and going on are called, and what the question says is lost: a story level, an exercise or a rescue mission. */
+  /** What leaving and going on are called, and what the question says is lost: a story level, an exercise or a hero's journey. */
   private get ending(): { label: string; keep: string; text: string } {
     if (this.def.kind === 'freetype') return { label: 'level.leave', keep: 'level.keepTyping', text: '' };
     if (this.def.kind === 'practice' || this.def.kind === 'aim' || this.def.kind === 'parrot' || this.opts.stay) return { label: 'level.end', keep: 'level.keepPractice', text: 'level.endPracticeText' };
-    if (this.def.rescue) return { label: 'level.end', keep: 'level.keepRescue', text: 'level.endRescueText' };
+    if (this.def.journey) return { label: 'level.end', keep: 'level.keepLevel', text: 'level.endJourneyText' };
     return { label: 'level.end', keep: 'level.keepLevel', text: 'level.endLevelText' };
   }
 
@@ -1211,7 +1220,8 @@ export class LevelRuntime {
       this.resume();
       return this.endPractice();
     }
-    if (this.pressed && !this.free) {
+    // A later part of a hero's journey always has the parts before it to lose.
+    if ((this.pressed || (this.def.journey?.part ?? 0) > 0) && !this.free) {
       const yes = await confirmDialog({ title: t('level.endAsk'), text: t(this.ending.text), ok: t(this.ending.label), cancel: t(this.ending.keep) });
       if (!yes || this.disposed) return;
     }
@@ -1239,7 +1249,8 @@ export class LevelRuntime {
   private slowDown(): void {
     const p = app.profile!;
     this.difficulty = this.core.difficulty = Math.max(1, this.difficulty - 1);
-    p.settings.difficulty = this.difficulty;
+    // A hero's journey plays above the profile's difficulty: the profile's goes down by the same step.
+    p.settings.difficulty = Math.max(1, p.settings.difficulty - 1);
     p.progress.growthSeconds = 0;
     saveProfile();
     this.resume();
@@ -1377,7 +1388,7 @@ export class LevelRuntime {
     this.drawnPictures = picturesReady();
     const g = this.stage.begin();
     const drift = this.mode.drift;
-    drawBackground(g, this.backdrop, this.stage.vw, this.mode.scroll, !this.reduceMotion, this.mode.midOnly, drift && { layer: drift.layer, offset: driftOffset(drift, this.elapsed, !this.reduceMotion) }, this.ground, this.def.rescue ? null : this.mode.shore);
+    drawBackground(g, this.mode.world, this.stage.vw, this.mode.scroll, !this.reduceMotion, this.mode.midOnly, drift && { layer: drift.layer, offset: driftOffset(drift, this.elapsed, !this.reduceMotion) }, this.mode.ground, this.mode.shore);
     if (this.robot) this.drawBolt(g);
     if (this.fairy) this.drawMelody(g);
     this.labels.begin();
@@ -1454,7 +1465,23 @@ export class LevelRuntime {
       return;
     }
     const stats = { accuracy, chars, errors, cpm, seconds };
-    const result = noStars ? completeStay(p, stats, typedShare) : completeLevel(p, this.def, stats, typedShare, this.mode.starCap());
+    // A hero's journey adds each part to the parts before; only its last part ends it, with all of them as one run.
+    const run = this.opts.journey;
+    if (run) {
+      run.stats = run.stats ? joinRuns(run.stats, stats) : stats;
+      run.typed += this.typedTargets;
+      run.resolved += resolved;
+      run.cap = Math.min(run.cap, this.mode.starCap());
+      const j = this.def.journey!;
+      if (j.part < j.parts - 1) {
+        if (!this.mode.lost) this.celebrate();
+        setTimeout(() => { if (!this.disposed) this.opts.onPart?.(); }, RESULTS_AFTER * 1000);
+        return;
+      }
+    }
+    const result = noStars ? completeStay(p, stats, typedShare)
+      : run ? completeLevel(p, this.def, run.stats!, run.resolved ? run.typed / run.resolved : 1, run.cap)
+      : completeLevel(p, this.def, stats, typedShare, this.mode.starCap());
     if (this.style !== 'copy') result.byStyle = { style: this.style, clean, total: resolved };
     saveProfile();
     if (!this.mode.lost) {

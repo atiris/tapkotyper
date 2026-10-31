@@ -133,11 +133,11 @@
     "warmUp": "Rozcvička",
     "practice": "Vlastné písanie",
     "wardrobe": "Ja a môj šatník",
-    "rescue": "Záchranné misie",
     "switchProfile": "Hráči",
     "super": "veľká výzva",
     "aimTip": "Strelnica: tu si precvičíš písmená, ktoré ešte nepíšeš dosť presne. Keď ti k ďalšiemu písmenu chýba už len presnosť, tu ju získaš.",
     "parrotTip": "Papagáj: napíšeš pár slov veľakrát za sebou, kým ich prsty nebudú vedieť samy. Na rýchlosti nezáleží.",
+    "journeyTip": "Cesta hrdinu: dlhšia a ťažšia výprava cez všetky svety tohto príbehu.",
     "parrotHome": "papagáj je doma",
     "sideOpens": "Otvorí sa, keď dokončíš tento svet.",
     "surpriseHere": "Tu na teba čaká prekvapenie!",
@@ -152,7 +152,6 @@
     "storyOpens": "Otvorí sa, keď budeš vedieť {n} písmen. Teraz vieš {have}.",
     "lockWorld": "Najprv dokonči svet {world}.",
     "lockKeys": "Tento príbeh sa otvorí, keď budeš vedieť {n} písmen. Teraz vieš {have}.",
-    "friends": "Malí priatelia",
     "keysOne": "Na túto úroveň potrebuješ ešte jedno písmeno. Nové písmenká získaš hraním alebo vo Vlastnom písaní.",
     "keysFew": "Na túto úroveň potrebuješ ešte {n} písmená. Nové písmenká získaš hraním alebo vo Vlastnom písaní.",
     "keysMany": "Na túto úroveň potrebuješ ešte {n} písmen. Nové písmenká získaš hraním alebo vo Vlastnom písaní.",
@@ -190,7 +189,6 @@
     "help": "Pomoc v úrovni",
     "helpNow": "V tejto úrovni",
     "practice": "Vlastné písanie",
-    "rescue": "Záchranná misia",
     "guide": "Ukázať alebo skryť klávesnicu",
     "pause": "Pauza",
     "paused": "Malá prestávka",
@@ -212,13 +210,12 @@
     "end": "Ukončiť písanie",
     "keepPractice": "Písať ďalej",
     "keepLevel": "Pokračovať",
-    "keepRescue": "Pokračovať v misii",
     "keepTyping": "Písať ďalej",
     "endAsk": "Naozaj ukončiť?",
     "endLevelText": "Táto úroveň sa nezapočíta.",
     "endPracticeText": "Toto cvičenie sa nezapočíta.",
-    "stayStart": "Zostávame tu. Píš, koľko chceš. Keď budeš chcieť skončiť, stlač Esc.",
-    "endRescueText": "Táto misia sa nezapočíta."
+    "endJourneyText": "Cesta hrdinu sa nezapočíta a nabudúce začne od začiatku.",
+    "stayStart": "Zostávame tu. Píš, koľko chceš. Keď budeš chcieť skončiť, stlač Esc."
   },
   "guide": {
     "deadStep1": "{ch}: najprv kláves s mäkčeňom alebo dĺžňom, potom písmeno",
@@ -367,6 +364,7 @@
     "stay": "Oddychové kolo hotové!",
     "range": "Strelnica hotová!",
     "rangeRecord": "Nový svetový rekord!",
+    "journey": "Cesta hrdinu prejdená!",
     "parrotHome": "Papagáj je doma!",
     "parrotLost": "Papagáj uletel",
     "freeType": "Koniec voľného písania!",
@@ -439,19 +437,15 @@
     "newKeys": "Nové klávesy: {keys}",
     "newAccessory": "Nové veci v šatníku: {n}",
     "newCompanion": "Nová postavička v šatníku: {kind}",
-    "rescued": "Dráčik {name} je zachránený",
     "next": "Ďalšia úroveň",
-    "nextRescue": "Ďalšia misia",
     "replay": "Hrať znova",
     "stay": "Ešte chvíľu",
     "reward": "Pozrieť odmenu",
     "growthTitle": "Nová medaila",
     "medalAria": "medaila číslo {n}",
-    "repaired": "Robotík {name} je opravený",
     "badgeNew": "Nový odznak",
     "badgeSilver": "Strieborný odznak",
-    "badgeGold": "Zlatý odznak",
-    "guided": "{name} je vďaka tebe zase doma"
+    "badgeGold": "Zlatý odznak"
   },
   "badge": {
     "bronze": "bronzový",
@@ -766,7 +760,7 @@
       "hatched": [
         "Krak... krak... vajíčko sa liahne!",
         "Malý dráčik sa na teba pozerá. Máš nového kamaráta!",
-        "Teraz môžeš chodiť na záchranné misie a pomáhať ďalším dráčikom."
+        "Teraz ťa čaká Cesta hrdinu: dlhá výprava cez všetky svety príbehu."
       ],
       "friends": [
         "Z kopy vylieza malý hrdzavý robot.",
@@ -791,7 +785,7 @@
       "home": [
         "Šróbikova rodina je šťastná, že je doma.",
         "Ďakujú ti, {name}, za pomoc Šróbikovi.",
-        "Teraz môžeš na záchranných misiách opravovať aj malých robotov."
+        "Teraz ťa čaká Cesta hrdinu cez všetky svety Šróbikovho príbehu."
       ],
       "wreath": [
         "Veľký kvet sa zobudil a celá záhrada si pobzukuje!",
@@ -816,7 +810,7 @@
       "wings": [
         "Spieva celý les! Každý vtáčik, každá žabka, každý strom.",
         "Les ti ďakuje, {name}. Melódia ti daruje vílie krídla.",
-        "Teraz môžeš na záchranných misiách odprevadiť domov aj malé vtáčatá a svetlušky."
+        "Teraz ťa čaká Cesta hrdinu cez celý les."
       ]
     },
     "flamesStart": [
@@ -1069,28 +1063,6 @@
     "eye-mask": "Škraboška",
     "carnival-mask": "Karnevalová maska"
   },
-  "dragonNames": [
-    "Iskrička",
-    "Mätka",
-    "Luna",
-    "Kamienok",
-    "Slniečko",
-    "Bublinka",
-    "Žiarik",
-    "Ďatelinka",
-    "Hmlička",
-    "Pipo",
-    "Hviezdička",
-    "Medík",
-    "Vŕbka",
-    "Obláčik",
-    "Kométka",
-    "Sušienka",
-    "Javorček",
-    "Zigi",
-    "Tulipán",
-    "Vánok"
-  ],
   "break": {
     "title": "Pretiahnutie {n}/{total}",
     "arms": "Natiahni ruky vysoko hore ako strom. Nádych... a výdych.",
@@ -1468,7 +1440,6 @@
       "Môj text: keď ti rodič pridá vlastný text, napíšeš ho celý po poradí.",
       "Len chcem písať: píš, čo chceš, prechádzaš sa po svete, ktorý si vyberieš, a tvoj text sa tam ukáže.",
       "Ja a môj šatník: vyber si postavičku, prezývku a obleč sa do odomknutých vecí.",
-      "Záchranné misie a Malí priatelia: objavia sa po prvom dokončenom príbehu.",
       "Úloha na dnes: keď ti učiteľ pošle úlohu, nájdeš ju na karte. Po splnení ju odovzdáš."
     ],
     "progressTitle": "Môj postup",
@@ -1481,9 +1452,9 @@
       "Klávesy ukazujú, ktoré ti idú a ktoré si ešte precvičiť. Odtiaľ hneď spustíš cvičenie.",
       "**QR kód** ukáže tvoj postup alebo cvičenie učiteľovi, stačí ho odfotiť. **Certifikát** s tvojimi výsledkami si môžeš vytlačiť."
     ],
-    "moreTitle": "Záchranná misia, strelnica, papagáj a odznak",
+    "moreTitle": "Cesta hrdinu, strelnica, papagáj a odznak",
     "more": [
-      "Záchranná misia: krátka úloha, v ktorej pomôžeš malému kamarátovi. Otvorí sa, keď dokončíš prvý príbeh, a nájdeš ju na mape.",
+      "Cesta hrdinu: keď dokončíš posledný svet príbehu, hneď za jeho veľkou výzvou pribudne kompas. Je to dlhá výprava cez všetky svety príbehu. Je ťažšia: slová sú ťažšie, všetko je o kúsok rýchlejšie a na **tri hviezdičky** treba 98 % presnosť, na dve 95 %.",
       "Odznak: dostaneš ho za dokončený svet. Čím viac hviezdičiek v svete zbieraš, tým je krajší: bronzový, strieborný, zlatý.",
       "Strelnica: keď dokončíš svet, pri jeho veľkej výzve na mape pribudne terč. Tapko hádže na terč vtipné veci a ty píšeš slová na kruhoch, ktorými vec preletí. Trénuješ písmená, ktoré ešte nepíšeš dosť presne.",
       "Keď napíšeš každé slovo načas a bez chyby, trafíš do stredu. Chyba vec trochu zníži, po troch chybách spadne na zem. Nič zlé sa nestane, príde ďalšia.",
@@ -2020,56 +1991,6 @@
     "button": "Nainštalovať",
     "later": "Nie teraz"
   },
-  "friends": {
-    "title": "Malí priatelia",
-    "dragons": "Dráčiky",
-    "robots": "Robotíci",
-    "firstDragon": "Môj prvý dráčik",
-    "bolt": "Šróbik",
-    "empty": "Choď na záchrannú misiu a spoznáš nových malých priateľov.",
-    "forests": "Lesní priatelia",
-    "melody": "Melódia"
-  },
-  "robotNames": [
-    "Bip",
-    "Zip",
-    "Kolík",
-    "Dioda",
-    "Pružinka",
-    "Matička",
-    "Bzzz",
-    "Čip",
-    "Skrutkáčik",
-    "Iskrička",
-    "Volt",
-    "Pixel",
-    "Bubo",
-    "Gombík",
-    "Tik",
-    "Tak",
-    "Lampáš",
-    "Klik",
-    "Rolka",
-    "Pípo"
-  ],
-  "forestNames": [
-    "Pípa",
-    "Iskrička",
-    "Pierko",
-    "Lúčik",
-    "Čvirik",
-    "Svetielko",
-    "Pipi",
-    "Hviezdička",
-    "Ťuťu",
-    "Blikotka",
-    "Červienka",
-    "Žiarka",
-    "Trilko",
-    "Muška",
-    "Vrabčik",
-    "Jasanka"
-  ],
   "tracks": {
     "menu": "Menu",
     "relaxing": "Oddych",
@@ -3269,6 +3190,24 @@
           "Vaše veličenstvo, zásah!",
           "Si kráľ presnosti!"
         ]
+      },
+      "compass": {
+        "name": "Kompas",
+        "launch": [
+          "Leť na východ!",
+          "Kompas musí mať správny smer!",
+          "Hádam trafí!",
+          "Kompas to tu roztočí!"
+        ],
+        "sound": [
+          "Klang!"
+        ],
+        "hit": [
+          "Ukazuje na sever!",
+          "Bol medzi nami magnetizmus!",
+          "Už sa nestratím!",
+          "Konečne trafím domov!"
+        ]
       }
     }
   },
@@ -3329,5 +3268,11 @@
       "Prristaávam!",
       "Maááš krrekrry?"
     ]
+  },
+  "journey": {
+    "title": "Cesta hrdinu",
+    "harder": "Cesta hrdinu je ťažšia ako bežné úrovne: slová sú ťažšie, všetko je o kúsok rýchlejšie a na tri hviezdy treba 98 % presnosť.",
+    "next": "Ďalej: {world}",
+    "go": "Ideme ďalej"
   }
 }

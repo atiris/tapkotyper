@@ -1,7 +1,7 @@
 import { Rng } from '../engine/rng';
 import { isMastered } from '../learning/lessons';
 import { COMPANION_KINDS, type CompanionKind, type Profile } from '../storage/schema';
-import { LEVELS, WORLDS, worldLevels } from './levels';
+import { LEVELS, STORIES, WORLDS, worldLevels } from './levels';
 import { WORLD_THINGS } from './modes/aim-things';
 import { PARROT_POINTS, hasParrotBadge } from './parrots';
 
@@ -89,8 +89,8 @@ export function totalStars(p: Profile): number {
   return Object.values(p.progress.levels).reduce((a, b) => a + b, 0);
 }
 
-/** Three stars in every story level. A new level, world or range thing changes the maxima shown in "My progress". */
-export const MAX_STARS = LEVELS.length * 3;
+/** Three stars in every story level and every story's hero's journey. A new level, world or range thing changes the maxima shown in "My progress". */
+export const MAX_STARS = (LEVELS.length + STORIES.length) * 3;
 
 /** Points of the treasure chest: a world badge by its tier, one for each rare thing found at a range, and the Parrot badge. */
 export const BADGE_POINTS: Record<BadgeTier, number> = { bronze: 1, silver: 2, gold: 3 };

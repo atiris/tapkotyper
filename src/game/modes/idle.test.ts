@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { TypingCore } from '../typing';
-import { LEVELS, type LevelDef, levelById, type LevelKind, STORIES, copyTarget, grownCount, levelOver, minActiveS, playedStep, shownProgress, storyOf } from '../levels';
+import { LEVELS, type LevelDef, levelById, type LevelKind, STORIES, copyTarget, grownCount, journeyLevel, levelOver, minActiveS, playedStep, shownProgress, storyOf } from '../levels';
 import type { LevelRuntime } from '../runtime';
 import type { Mode } from '../mode';
 
@@ -190,6 +190,19 @@ describe('every level keeps giving targets until both minimums are met', () => {
     const p = play(def, ctor(kind), word / 5, word);
     expect(p.end).toBeGreaterThanOrEqual(p.min);
     expect(p.end, `${p.words} words`).toBeLessThanOrEqual(p.min * 1.25);
+  });
+});
+
+describe("every part of a hero's journey keeps giving targets until its share of the minimum is met", () => {
+  const PARTS: [string, LevelDef][] = STORIES.flatMap((story) => story.worlds.map((_, i) => {
+    const l = journeyLevel(story, i);
+    return [`${story.id} ${i + 1}: ${l.kind}`, l] as [string, LevelDef];
+  }));
+  it.each(PARTS)('%s: a quick steady typist never waits long, and the part ends just after its minimum', (_name, def) => {
+    const p = play(def, ctor(def.kind), 0.15, 0);
+    expect(p.gap, `waited from ${p.gapAt.toFixed(1)} s`).toBeLessThanOrEqual(8);
+    expect(p.end).toBeGreaterThanOrEqual(p.min);
+    expect(p.over).toBeLessThan(15);
   });
 });
 

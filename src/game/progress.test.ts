@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
-import { LEVELS, worldLevels } from './levels';
-import { AUTO_DIFFICULTY_MAX, GROWTH_TYPED_SHARE, MIN_OWN_KEYS, completeLevel, completeStay, grow, growthNeed } from './progress';
+import { LEVELS, STORIES, journeyLevel, worldLevels } from './levels';
+import { AUTO_DIFFICULTY_MAX, GROWTH_TYPED_SHARE, MIN_OWN_KEYS, completeLevel, completeStay, grow, growthNeed, joinRuns } from './progress';
 import { COMPANION_KINDS } from '../storage/schema';
 import { MAX_CHEST, MAX_STARS, STORY_ACCESSORIES, badgeTier, chestPoints, friendStars, grantAccessories, grantCompanions, kindPrices, unlockRules } from './rewards';
 
@@ -57,6 +57,27 @@ describe('a level the paw typed for the child', () => {
     expect(r).toMatchObject({ byTapko: false, stars: 3 });
     expect(p.progress.levels['w1-1']).toBe(3);
     expect(p.progress.growthSeconds).toBe(120);
+  });
+});
+
+describe("a hero's journey", () => {
+  it('joins its parts into one run: keys and time added up, accuracy of all keys, rhythm by typing time', () => {
+    const r = joinRuns({ accuracy: 1, chars: 90, errors: 0, cpm: 60, seconds: 60 }, { accuracy: 0.5, chars: 10, errors: 10, cpm: 120, seconds: 30 });
+    expect(r).toEqual({ accuracy: 100 / 110, chars: 100, errors: 10, cpm: 80, seconds: 90 });
+  });
+
+  it('keeps its best stars under its own id with the stricter steps, and is no level of its world', () => {
+    const p = newProfile('Ema', 'sk');
+    p.progress.worldsDone = [0, 1, 2, 3, 4];
+    const last = journeyLevel(STORIES[0], 4);
+    const run = { chars: 97, errors: 3, cpm: 60, seconds: 240 };
+    const r = completeLevel(p, last, { ...run, accuracy: 0.97 }, 1);
+    expect(r).toMatchObject({ stars: 2, shownStars: 2.5, worldDone: null, badge: null });
+    expect(p.progress.levels['journey-dragon']).toBe(2);
+    expect(p.progress.levelsFinished).toBe(1);
+    completeLevel(p, last, { ...run, accuracy: 0.9 }, 1);
+    expect(p.progress.levels['journey-dragon']).toBe(2);
+    expect(p.progress.worldsDone).toEqual([0, 1, 2, 3, 4]);
   });
 });
 
@@ -162,7 +183,7 @@ describe('staying a while', () => {
 describe('the treasure chest and the stars of My progress', () => {
   // These maxima are shown to the player; a new level, world or range thing changes them on purpose.
   it('has fixed maxima', () => {
-    expect(MAX_STARS).toBe(225);
+    expect(MAX_STARS).toBe(234);
     expect(MAX_CHEST).toBe(67);
   });
 

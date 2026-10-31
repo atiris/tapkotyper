@@ -1,10 +1,9 @@
-import type { CompanionKind, Friend } from '../storage/schema';
+import type { CompanionKind } from '../storage/schema';
 import type { BadgeTier } from './rewards';
 import type { GrowthStep, LevelResult } from './progress';
 
 /** What an end card's one green line may tell, most important first. */
 export type News =
-  | { kind: 'rescued'; friend: Friend }
   | { kind: 'badge'; world: number; tier: BadgeTier; upgrade: boolean }
   | { kind: 'parrotBadge' }
   | { kind: 'keys'; keys: string[] }
@@ -17,15 +16,14 @@ export type News =
   | { kind: 'faster' };
 
 /** News that are rewards: several at once are told as the first and "and N more rewards". */
-const REWARDS = new Set<News['kind']>(['rescued', 'badge', 'parrotBadge', 'keys', 'medal', 'wardrobe', 'companion']);
+const REWARDS = new Set<News['kind']>(['badge', 'parrotBadge', 'keys', 'medal', 'wardrobe', 'companion']);
 
 /** A rhythm this much better than a week ago is news. */
 const TREND_UP = 1.05;
 
 /** The news of a level, a practice or staying a while, in the green line's order. */
-export function levelNews(r: LevelResult, rescued: Friend | null = null): News[] {
+export function levelNews(r: LevelResult): News[] {
   const news: News[] = [];
-  if (rescued) news.push({ kind: 'rescued', friend: rescued });
   if (r.badge) news.push({ kind: 'badge', ...r.badge });
   if (r.newKeys.length) news.push({ kind: 'keys', keys: r.newKeys });
   if (r.growth) news.push({ kind: 'medal', growth: r.growth });

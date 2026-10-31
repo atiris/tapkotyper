@@ -31,7 +31,7 @@
   picks another animal kind. Other kinds are earned by stars over all levels, slowly:
   about one new animal per two worlds. Every player gets their own order and prices, set
   at random when the player is created: each next kind costs 18 to 26 stars more than the
-  previous one, so the last costs 144 to 208 of the 225 possible stars; the starting kind
+  previous one, so the last costs 144 to 208 of the 234 possible stars; the starting kind
   is free. The screen's header shows the stars the child has now, so the missing stars
   are easy to compare. Every tile shows the kind's name on one line; a locked kind is paler,
   with a lock, and its tooltip says how many stars are missing ("62 more ★ and Lion is
@@ -43,7 +43,7 @@
   is reason enough. Only a parent's surprises ([parent controls](../profiles/parent-controls.md))
   ask a question and tell its answer.
 - **Paw help**: fifteen words in a row without a mistake charge one paw (three at most,
-  kept between levels). In story levels and rescue missions (not at the main gate, whose
+  kept between levels). In story levels and hero's journeys (not at the main gate, whose
   code must be the child's own), Enter (or the round paw button next to pause: a paw in
   the character's color, ringed by three arcs for the charges; its label names Enter; with no
   charge it keeps its colors, only its arcs are empty, never dimmed like a disabled button)
@@ -62,8 +62,7 @@
   how you are doing".
 - After world 5 a newly hatched friend (a baby dragon) joins; in story 2 the robot Bolt
   walks next to the child, in story 3 the fairy Melody floats next to the child
-  ([story](../game/story.md)). More little friends, dragons, robots and forest friends,
-  come from rescue missions.
+  ([story](../game/story.md)).
 - The character needs no new base pictures for stories 2 and 3; an optional "surprised"
   face is used only in the meeting scene with Bolt (else the happy one). Story 3 rewards
   are a feather, a little harp and fairy wings.

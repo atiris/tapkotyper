@@ -857,7 +857,6 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .level-screen { position: fixed; inset: 0; display: flex; flex-direction: column; background: #a8dcf0; overflow: hidden; }
 .level-screen.world-space { background: #1d1b4b; }
 .level-screen.world-moonball { background: #1f2350; }
-.level-screen.world-rescue { background: #3d3566; }
 .hud { display: flex; align-items: center; gap: 0.7rem; padding: 0.5rem 0.8rem; background: var(--hud-bg); backdrop-filter: blur(6px); z-index: 3; flex-wrap: wrap; }
 .hud-title { font-size: 17px; white-space: nowrap; }
 /* The divider and the buttons after it keep to the right, also without a progress bar (just typing). */
@@ -1021,6 +1020,12 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .posture-body { flex: 1 0 auto; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 1.6rem; }
 .posture-text { font-size: 1.4rem; line-height: 1.5; margin: 0; text-align: center; text-wrap: pretty; }
 .posture-text strong { color: var(--brand-ink); }
+/* The hero's journey says on its get-ready card that it is harder. */
+.posture-under { font-size: 1.1rem; line-height: 1.45; margin: 0; text-align: center; color: var(--ink-soft); text-wrap: pretty; }
+/* Between the parts of a hero's journey: the next world's island and its name. */
+.travel-card { position: relative; display: grid; justify-items: center; gap: 0.8rem; text-align: center; max-width: 30rem; }
+.travel-card h2 { margin: 0 48px; }
+.travel-img { width: 200px; height: 140px; object-fit: contain; }
 .posture-card .surprise { margin: 0; }
 .posture-side .hint { margin: 0.6rem 0 0; }
 @media (max-width: 760px) {
@@ -1270,13 +1275,6 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .dragon small { color: var(--ink-soft); font-weight: 400; }
 .dragon.first { background: var(--tint-yellow); }
 .dragon .robot-stack { margin: 0 auto; }
-.friend-group { margin-bottom: 1.4rem; }
-.friends-board { max-width: 900px; margin: 0 auto; display: grid; gap: 1rem; }
-.friends-empty { display: grid; justify-items: center; gap: 0.6rem; text-align: center; }
-.friends-empty p { margin: 0; font-size: 1.15rem; max-width: 28em; }
-.friends-teasers { display: flex; gap: 1rem; }
-.friend-teaser { display: grid; place-items: center; width: 110px; height: 110px; border-radius: 50%; background: var(--paper-2); border: 3px dashed var(--line); font-size: 2.4rem; color: var(--ink-soft); }
-.friend-teaser img { width: 80px; height: 80px; object-fit: contain; filter: grayscale(1) brightness(0.9); opacity: 0.55; }
 
 /* Parent */
 .tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
@@ -1340,9 +1338,9 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-ink); }
 .level-cell { display: grid; grid-template-columns: 2.8rem 5.4rem; justify-content: space-between; align-items: center; gap: 0.5rem; padding: 0.3rem 0.6rem; border-radius: 12px; background: var(--paper-2); }
 /* A cell's picture opens its level, its parrot round or its target range. */
 .cell-act { display: grid; place-items: center; width: 2.8rem; height: 2.8rem; padding: 0; border: 0; border-radius: 10px; background: var(--surface); box-shadow: 0 3px 0 var(--edge); cursor: pointer; }
-.cell-act img { width: 2.1rem; height: 2.1rem; object-fit: contain; }
+.cell-act img, .cell-act canvas { width: 2.1rem; height: 2.1rem; object-fit: contain; }
 .cell-act:disabled { cursor: default; box-shadow: none; }
-.cell-act:disabled img { filter: grayscale(1); opacity: 0.4; }
+.cell-act:disabled img, .cell-act:disabled canvas { filter: grayscale(1); opacity: 0.4; }
 .cell-rare { display: grid; place-items: center; width: 5.4rem; }
 .cell-rare img { width: 2rem; height: 2rem; object-fit: contain; }
 .cell-rare.waiting img { filter: grayscale(1); opacity: 0.35; }

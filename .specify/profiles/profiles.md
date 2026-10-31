@@ -42,7 +42,7 @@
   A player can also move by link ([teacher-links.md](teacher-links.md)).
 - While the game is in alpha, stored data has no version and no migrations: missing fields
   get their defaults on load and broken parts are dropped.
-- Every player has an address (`#/p/<id>`, plus `/wardrobe`, `/friends`, `/settings`), so a
+- Every player has an address (`#/p/<id>`, plus `/wardrobe`, `/settings`), so a
   link or desktop shortcut opens that child's map directly; the browser's back and forward
   buttons move between screens. Leaving the whole app asks first while a player is active.
 - **Super mode** for parents and testers: typing `supertapkotyper` fast (within 4 seconds,

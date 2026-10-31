@@ -19,7 +19,7 @@ One set of rules for where things sit and how they behave, so every screen feels
    with Escape, a click outside or after an action. The red super star opens its own service
    menu panel of the same look and keys, under the star (or under the Menu it is folded in).
    The start page's title **TapkoTyper** always fits on one line under the buttons, from 320 px up.
-2. **Leaving.** A page you navigated to (settings, help, teacher view, wardrobe, friends) closes with
+2. **Leaving.** A page you navigated to (settings, help, teacher view, wardrobe) closes with
    "Späť" at the top left, also the help page in a paused level. A level that is not paused but
    left (just typing, the custom exercise) has the round X at the start of its play bar; in the
    custom exercise it ends it and shows the results. A window laid over a screen (dialogs, the progress panel, the

@@ -1,10 +1,11 @@
 import { app, go, saveProfile } from '../app/app';
 import { audio } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
+import { compassElement } from '../gfx/compass';
 import { tapkoElement } from '../gfx/tapko';
 import { t, tList } from '../i18n/i18n';
 import { nickname } from '../storage/store';
-import { LEVELS, STORIES, type StoryDef, WORLDS, activityOf, aimOpen, aimWorld, isLevelReached, isWorldUnlocked, keysMissing, nextLevel, rescueUnlocked, storyOpen, worldLevels, worldLock } from '../game/levels';
+import { LEVELS, STORIES, type StoryDef, WORLDS, activityOf, aimOpen, aimWorld, isLevelReached, isWorldUnlocked, journeyId, journeyOpen, keysMissing, nextLevel, storyOpen, worldLevels, worldLock } from '../game/levels';
 import { GUEST_ID, type Profile, SUPER_ID, type Surprise } from '../storage/schema';
 import { activeKeys, notReadyKeys } from '../learning/lessons';
 import { keyLabel } from '../ui/keyboard-guide';
@@ -125,7 +126,6 @@ export function mapScreen(root: HTMLElement): () => void {
     bubble.hidden = false;
   };
   const next = nextLevel(p);
-  const rescue = rescueUnlocked(p);
   // Nothing open for the child's keys: continue means practice, which brings new keys.
   const start = () => (next ? go('level', { id: next.id }) : openPracticeKeys());
   const play = button(t('map.continue'), start, 'btn primary big', 'play');
@@ -150,9 +150,7 @@ export function mapScreen(root: HTMLElement): () => void {
         ownTextPhrases(p).length ? button(t('map.ownText'), () => go('level', { id: 'practice', text: true }), 'btn', 'read') : null,
         button(t('map.freeType'), startFreeType, 'btn', 'keyboard'),
         button(t('map.wardrobe'), () => go('wardrobe'), 'btn', 'shirt'),
-        button(t('progress.title'), () => go('progress'), 'btn', 'chart'),
-        rescue ? button(t('map.rescue'), () => go('level', { id: 'rescue' }), 'btn', 'rescue') : null,
-        rescue ? button(t('map.friends'), () => go('friends'), 'btn', 'dragon') : null),
+        button(t('progress.title'), () => go('progress'), 'btn', 'chart')),
       h('div', { class: 'story-rows' }, teacher, ...STORIES.map((s) => storyRow(p, s, next?.id, held, keysBubble, lockBubble))))));
   // The arrows walk the levels and the closed worlds like a grid.
   arrowFocus(root.querySelector('.story-rows')!, '.level-node, .island-art[tabindex]');
@@ -222,6 +220,17 @@ function parrotNode(p: Profile, open: boolean, world: number): HTMLElement {
   }, pic ? h('img', { class: 'level-act', src: pic, alt: '' }) : icon('star', 'icon'));
 }
 
+/** The story's hero's journey: the compass with its best stars, right after the crown of the story's last world; faded and closed until that world is finished. */
+function journeyNode(p: Profile, story: StoryDef): HTMLElement {
+  const open = journeyOpen(p, story);
+  const stars = p.progress.levels[journeyId(story)] ?? 0;
+  return h('button', {
+    class: `level-node journey-node ${stars ? 'done' : ''}`, type: 'button', disabled: !open,
+    'aria-label': `${t('journey.title')}${stars ? `, ${t('map.starsAria', { n: stars })}` : ''}`, tip: sideTip(open, 'map.journeyTip'),
+    onClick: () => go('level', { id: 'journey', story: story.id }),
+  }, compassElement('level-act'), h('span', { class: 'mini-stars' }, ...[1, 2, 3].map((s) => h('i', { class: s <= stars ? 'on' : '' }))));
+}
+
 /** Story levels still to finish up to the level `id`, counted from the next one (at least that level itself). */
 function levelsToGo(p: Profile, id: string): number {
   const next = nextLevel(p);
@@ -271,7 +280,8 @@ function surprisesMark(p: Profile, world: number): HTMLElement | null {
 /**
  * One story: its title and its worlds as islands; a story still closed says when it opens.
  * A level reached without enough keys shows a key and lets the bubble say how many are missing
- * and which letters need accuracy (`held`); every world shows its target range and its parrot, open once the world is finished.
+ * and which letters need accuracy (`held`); every world shows its target range and its parrot, open once the world is finished,
+ * and the story's last world its hero's journey after the crown.
  */
 function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held: string, keysBubble: (n: number, world: number) => void, lockBubble: (world: number) => void): HTMLElement {
   const islands = story.worlds.map((wi) => {
@@ -311,7 +321,7 @@ function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held:
       }) }, img ? h('img', { src: img, alt: '' }) : h('div', { class: 'island-fallback' }), open ? null : h('span', { class: 'lock', tip: lock || null }, icon('lock')),
         tier ? badge(wi, tier, true) : null, surprisesMark(p, wi)),
       h('h3', {}, `${wi + 1}. ${t(`worlds.${w}`)}`),
-      h('div', { class: 'level-row' }, ...levels, aimNode(p, aimOpen(p, wi), wi), parrotNode(p, aimOpen(p, wi), wi)));
+      h('div', { class: 'level-row' }, ...levels, wi === story.worlds[story.worlds.length - 1] ? journeyNode(p, story) : null, aimNode(p, aimOpen(p, wi), wi), parrotNode(p, aimOpen(p, wi), wi)));
   });
   const closed = !storyOpen(p, story);
   return h('section', { class: `story-row story-${story.id}` },

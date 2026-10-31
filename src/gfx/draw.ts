@@ -175,8 +175,6 @@ export const PALETTES: Record<string, Palette> = {
   lilylake: { sky: ['#b8e2f2', '#f1fbff'], hills: ['#8fcfc4', '#5fb3b0'], ground: '#4f9fa8', accent: '#ffd1e6' },
   musictree: { sky: ['#e8c9ec', '#fbf0fb'], hills: ['#b9a6dc', '#9c86c9'], ground: '#7f6aa8', accent: '#ffd25a' },
   moonball: { sky: ['#1f2350', '#4a3a7a'], hills: ['#2f3a6e', '#3b2f6b'], ground: '#2a2456', accent: '#fff3a0' },
-  /** The rescue camp of every rescue mission: an evening sky over dark hills. */
-  rescue: { sky: ['#3d3566', '#f2a97e'], hills: ['#4f4468', '#2f2a45'], ground: '#2a2540', accent: '#ffc861' },
 };
 
 /** Scaled layers, least recently drawn first; only the current scene's few are kept, so memory does not grow with every world played. */
@@ -264,7 +262,6 @@ export function drawBackground(g: G, world: string, vw: number, scroll: number, 
     g.fillStyle = grad;
     g.fillRect(0, 0, vw, VH);
     if (world === 'space') starField(g, vw, midOnly ? 0 : scroll * 0.1);
-    if (world === 'rescue') lanterns(g, vw, still ? 0 : scroll * 0.1);
   }
   if (world === 'space') {
     // Calm the busy sky so words stay readable.
@@ -273,10 +270,7 @@ export function drawBackground(g: G, world: string, vw: number, scroll: number, 
   }
   const mid = sprite(`bg-${world}${ground}-mid`);
   if (mid) tiled(g, mid, vw, (motion ? scroll * 0.35 : 0) + midDrift);
-  else {
-    hills(g, vw, scroll * 0.35 + midDrift, VH * 0.62, 70, pal.hills[0]);
-    if (world === 'rescue') ropeBridge(g, vw, (motion ? scroll * 0.35 : 0) + midDrift, pal.hills[1]);
-  }
+  else hills(g, vw, scroll * 0.35 + midDrift, VH * 0.62, 70, pal.hills[0]);
   const near = sprite(`bg-${world}${ground}-near`);
   // The space's near rocks drift at half speed, calmer behind the words.
   const nearAt = (still ? 0 : scroll * (world === 'space' ? 0.5 : 1)) + nearDrift;
@@ -287,90 +281,7 @@ export function drawBackground(g: G, world: string, vw: number, scroll: number, 
       const s = VH / near.naturalHeight, w = bank.naturalWidth * s, h = bank.naturalHeight * s, x = shore! - nearAt;
       if (x < vw && x + w > 0) g.drawImage(bank, x, VH - h + (NEAR_DROP[ground] ?? 0), w, h);
     }
-  } else if (world !== 'space') {
-    hills(g, vw, (midOnly ? 0 : scroll) + nearDrift, VH * 0.82, 30, pal.hills[1]);
-    if (world === 'rescue') lookoutFlag(g, vw, (still ? 0 : scroll) + nearDrift, pal.hills[1], pal.accent);
-  }
-}
-
-/** `x` of each copy of a scene element that repeats every `every` units, shifted by `offset`, on the stage. */
-function repeats(vw: number, offset: number, every: number, margin: number): number[] {
-  const xs: number[] = [];
-  for (let x = -(((offset % every) + every) % every); x < vw + margin; x += every) if (x > -margin) xs.push(x);
-  return xs;
-}
-
-/** Warm lantern glows far away in the evening, a few per screen. */
-function lanterns(g: G, vw: number, offset: number): void {
-  const spots = [[0.1, 0.52], [0.34, 0.47], [0.58, 0.55], [0.8, 0.49]];
-  g.save();
-  for (const x0 of repeats(vw, offset, 1400, 1400)) {
-    for (const [fx, fy] of spots) {
-      const x = x0 + fx * 1400, y = VH * fy;
-      const glow = g.createRadialGradient(x, y, 0, x, y, 46);
-      glow.addColorStop(0, 'rgba(255,214,140,0.85)');
-      glow.addColorStop(0.25, 'rgba(255,190,110,0.45)');
-      glow.addColorStop(1, 'rgba(255,170,90,0)');
-      g.fillStyle = glow;
-      g.fillRect(x - 46, y - 46, 92, 92);
-      g.fillStyle = '#ffe6b0';
-      g.beginPath();
-      g.arc(x, y, 5, 0, Math.PI * 2);
-      g.fill();
-    }
-  }
-  g.restore();
-}
-
-/** A dark rope bridge between two posts on the middle hills. */
-function ropeBridge(g: G, vw: number, offset: number, color: string): void {
-  const span = 420, top = VH * 0.5;
-  g.save();
-  g.strokeStyle = color;
-  g.fillStyle = color;
-  g.lineCap = 'round';
-  for (const x of repeats(vw, offset, 1600, span + 40)) {
-    const x1 = x + span;
-    for (const px of [x, x1]) g.fillRect(px - 6, top - 50, 12, 110);
-    // The deck sags in the middle; two ropes run above it, planks hang below.
-    const curve = (y: number, sag: number) => {
-      g.beginPath();
-      g.moveTo(x, y);
-      g.quadraticCurveTo((x + x1) / 2, y + sag, x1, y);
-      g.stroke();
-    };
-    g.lineWidth = 7;
-    curve(top + 40, 70);
-    g.lineWidth = 3;
-    curve(top - 40, 60);
-    for (let i = 1; i < 12; i++) {
-      const k = i / 12, px = x + span * k;
-      const deck = top + 40 + 2 * k * (1 - k) * 70, rope = top - 40 + 2 * k * (1 - k) * 60;
-      g.beginPath();
-      g.moveTo(px, rope);
-      g.lineTo(px, deck);
-      g.stroke();
-    }
-  }
-  g.restore();
-}
-
-/** A small lookout flag on a pole in the near grass. */
-function lookoutFlag(g: G, vw: number, offset: number, pole: string, cloth: string): void {
-  const base = VH * 0.8, h = 150;
-  g.save();
-  for (const x of repeats(vw, offset, 1100, 80)) {
-    g.fillStyle = pole;
-    g.fillRect(x - 3, base - h, 6, h);
-    g.fillStyle = cloth;
-    g.beginPath();
-    g.moveTo(x + 3, base - h);
-    g.quadraticCurveTo(x + 30, base - h + 6, x + 56, base - h + 18);
-    g.quadraticCurveTo(x + 30, base - h + 30, x + 3, base - h + 38);
-    g.closePath();
-    g.fill();
-  }
-  g.restore();
+  } else if (world !== 'space') hills(g, vw, (midOnly ? 0 : scroll) + nearDrift, VH * 0.82, 30, pal.hills[1]);
 }
 
 function hills(g: G, vw: number, offset: number, base: number, amp: number, color: string): void {

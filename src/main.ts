@@ -10,7 +10,6 @@ import { noteVisit } from './ui/install';
 import { installTooltips } from './ui/tooltip';
 import { installing, watchUpdates } from './ui/update';
 import { parentAccess } from './screens/parent-gate';
-import { friendsScreen } from './screens/friends';
 import { helpScreen } from './screens/help';
 import { levelScreen } from './screens/level';
 import { moveImportScreen, taskImportScreen } from './screens/link-import';
@@ -68,7 +67,6 @@ registerScreen('parent', parentPage('parent', () => import('./screens/parent').t
 registerScreen('translate', parentPage('translate', () => import('./screens/translate').then((m) => m.translateScreen), () => go(app.profile ? 'map' : 'start')));
 registerScreen('wardrobe', needsProfile(wardrobeScreen));
 registerScreen('progress', needsProfile(progressScreen));
-registerScreen('friends', needsProfile(friendsScreen));
 // Help works without a player too: the start page opens it on the about tab.
 registerScreen('help', helpScreen);
 

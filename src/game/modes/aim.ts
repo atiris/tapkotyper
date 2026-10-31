@@ -4,6 +4,7 @@ import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
 import type { ParticleShape } from '../../engine/particles';
 import { hasImage } from '../../gfx/assets';
+import { drawCompass } from '../../gfx/compass';
 import { drawSprite, fontFamily, type G, roundRect } from '../../gfx/draw';
 import { t, tList } from '../../i18n/i18n';
 import { SHIFT_L, SHIFT_R, SPACE, isKeyReady, keysAccuracy, notReadyKeys, recentAccuracy } from '../../learning/lessons';
@@ -1119,7 +1120,7 @@ export class AimMode extends HeroMode {
     this.drawThing(g, f.th, this.flightPic(f), p.x, y + flap, THING_SIZE * (f.th.scale ?? 1), rot, f.landed ? 1 - f.after / PAUSE_AFTER : 1);
   }
 
-  /** A thing; the first seven are drawn in code until their picture is there. */
+  /** A thing; the first seven and the compass are drawn in code until their picture is there. */
   private drawThing(g: G, th: Thing, pic: string, x: number, y: number, size: number, rot: number, alpha: number): void {
     if (alpha <= 0) return;
     drawSprite(g, pic, x, y, size, { rot, alpha }, th.drawn ? (c, w, hh) => drawProjectileFallback(c, th.id, w, hh, this.t) : undefined);
@@ -1150,8 +1151,9 @@ function markLife(m: Mark): number {
   }
 }
 
-/** The first seven things drawn in code. */
+/** The first seven things and the compass drawn in code. */
 function drawProjectileFallback(c: G, kind: string, w: number, hh: number, time: number): void {
+  if (kind === 'compass') return drawCompass(c, w, hh);
   const r = Math.min(w, hh) / 2;
   c.lineJoin = 'round';
   c.strokeStyle = 'rgba(90,61,43,0.7)';

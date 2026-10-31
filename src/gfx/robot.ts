@@ -137,7 +137,7 @@ function raincoatFallback(g: G, s: number): void {
   g.stroke();
 }
 
-/** DOM version for scenes and the friends screen: the picture, else a small canvas. */
+/** DOM version for scenes: the picture, else a small canvas. */
 export function robotElement(st: RobotState, mood: RobotMood, size: number): HTMLElement {
   const name = robotImage(st.look, mood);
   const src = imageUrl(name);

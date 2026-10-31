@@ -113,7 +113,6 @@ export function newProfile(name: string, language: LangRef, layout?: LayoutId, k
       levels: {},
       worldsDone: [],
       rewards: [],
-      friends: [],
       lastTips: [],
       scenesSeen: [],
       growth: 0,

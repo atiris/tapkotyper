@@ -2,6 +2,7 @@ import type { Sfx } from '../../audio/audio';
 import type { Rng } from '../../engine/rng';
 import { hasImage } from '../../gfx/assets';
 import { storyOf } from '../levels';
+import { COMPASS } from '../../gfx/compass';
 
 /**
  * What a thing does at the target:
@@ -52,7 +53,7 @@ export interface Thing {
   eyes?: Eyes;
   /** Size in flight against the common one. */
   scale?: number;
-  /** The seven first things: drawn in code until their picture is there. */
+  /** The seven first things and the compass: drawn in code until their picture is there. */
   drawn?: boolean;
 }
 
@@ -97,6 +98,8 @@ export const THINGS: Thing[] = [
   { id: 'banana', pics: ['obj-aim-banana'], story: 0, sfx: 'plop', effect: 'bounce' },
   { id: 'mouse', pics: ['obj-aim-mouse'], story: 0, sfx: 'pop', effect: 'bounce', expect: 0.4, eyes: 'wide' },
   { id: 'asteroid', pics: ['obj-asteroid-small'], story: 0, sfx: 'thud', effect: 'bounce', wobble: true, burst: 'dust' },
+  // The hero's journey's compass; drawn in code until its picture is there.
+  { id: 'compass', pics: [COMPASS], story: 0, sfx: 'ring', effect: 'bounce', wobble: true, burst: 'sparkle', drawn: true },
   { id: 'battery', pics: ['obj-battery'], story: 1, sfx: 'bzzt', effect: 'bounce', burst: 'sparks' },
   { id: 'magnet', pics: ['obj-aim-magnet'], story: 1, sfx: 'pop', effect: 'stick', hold: 1.5 },
   { id: 'gear', pics: ['obj-gear'], story: 1, sfx: 'pop', effect: 'bounce' },
@@ -142,7 +145,7 @@ export const thing = (id: string): Thing => THINGS.find((th) => th.id === id)!;
 /** Every world's own thing, in world order. */
 export const WORLD_THINGS: Thing[] = THINGS.filter((th) => th.world != null).sort((a, b) => a.world! - b.world!);
 
-/** A thing can be thrown: its picture is there (the first seven are drawn in code without one). */
+/** A thing can be thrown: its picture is there (the first seven and the compass are drawn in code without one). */
 function ready(th: Thing): boolean {
   return th.drawn || th.pics.some(hasImage);
 }

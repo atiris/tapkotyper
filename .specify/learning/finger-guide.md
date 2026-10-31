@@ -9,7 +9,7 @@
   color, idle fingers faint); the finger that presses the key lifts and is fully opaque.
 - The guide fades as the child improves (per-key mastery) and can be shown or hidden by
   the child, or locked by the parent. Colors also carry a pattern or label (colorblind-safe).
-- "The adventure goes on!" card before every adventure (story level, rescue, own practice)
+- "The adventure goes on!" card before every adventure (story level, hero's journey, own practice)
   and at breaks, the only card before a level apart from the key cards. Two panels side by side
   with a gap (one above the other on a narrow screen), no frames inside them: on the left a
   picture of good posture, a boy's or a girl's at random, with **one** line under it - the

@@ -1,6 +1,6 @@
 import { advanceLesson } from '../learning/lessons';
 import type { CompanionKind, Profile } from '../storage/schema';
-import { type LevelDef, halfStarsFor, starsFor } from './levels';
+import { JOURNEY_STAR_STEPS, type LevelDef, STAR_STEPS, halfStarsFor, starsFor } from './levels';
 import { type BadgeTier, badgeTier, grantAccessories, grantCompanions } from './rewards';
 import type { Style } from './typing';
 
@@ -33,6 +33,26 @@ export interface LevelResult {
 
 /** What the runtime measured in one run. */
 export type RunStats = Pick<LevelResult, 'accuracy' | 'chars' | 'errors' | 'cpm' | 'seconds' | 'byStyle'>;
+
+/** A hero's journey so far: its finished parts as one run, the targets typed of those typed or let pass, and the lowest star cap of a part. */
+export interface JourneyRun {
+  stats: RunStats | null;
+  typed: number;
+  resolved: number;
+  cap: number;
+}
+
+export const newJourneyRun = (): JourneyRun => ({ stats: null, typed: 0, resolved: 0, cap: 3 });
+
+/** Two runs as one: keys and typing time added up, the accuracy of all keys, the rhythm weighted by typing time. */
+export function joinRuns(a: RunStats, b: RunStats): RunStats {
+  const chars = a.chars + b.chars, errors = a.errors + b.errors, seconds = a.seconds + b.seconds;
+  return {
+    chars, errors, seconds,
+    accuracy: chars + errors ? chars / (chars + errors) : 1,
+    cpm: seconds ? Math.round((a.cpm * a.seconds + b.cpm * b.seconds) / seconds) : Math.max(a.cpm, b.cpm),
+  };
+}
 
 export interface GrowthStep {
   kind: 'difficulty' | 'wordLen';
@@ -89,14 +109,18 @@ export function grow(p: Profile, seconds: number, accuracy: number, typedShare: 
 export function completeLevel(p: Profile, def: LevelDef, r: RunStats, typedShare: number, cap = 3): LevelResult {
   // Accuracy of a handful of keys says nothing; such a level earns one star and no growth time.
   const byTapko = def.kind !== 'practice' && r.chars + r.errors < MIN_OWN_KEYS;
-  const stars = byTapko ? 1 : Math.min(cap, starsFor(r.accuracy));
-  const shownStars = byTapko ? 1 : Math.min(cap, halfStarsFor(r.accuracy));
+  // A hero's journey (`r` is all its parts together) has stricter stars.
+  const steps = def.journey ? JOURNEY_STAR_STEPS : STAR_STEPS;
+  const stars = byTapko ? 1 : Math.min(cap, starsFor(r.accuracy, steps));
+  const shownStars = byTapko ? 1 : Math.min(cap, halfStarsFor(r.accuracy, steps));
   let worldDone: number | null = null;
   let badge: LevelResult['badge'] = null;
   if (def.kind !== 'practice') {
     p.progress.levelsFinished++;
     p.progress.starsEarned += stars;
   }
+  // Not a level of its world: it changes neither the badge nor which levels open.
+  if (def.journey) p.progress.levels[def.id] = Math.max(p.progress.levels[def.id] ?? 0, stars);
   if (def.index >= 0 && def.kind !== 'practice') {
     const before = badgeTier(p, def.world);
     p.progress.levels[def.id] = Math.max(p.progress.levels[def.id] ?? 0, stars);

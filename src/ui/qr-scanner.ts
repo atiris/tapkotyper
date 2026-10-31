@@ -3,7 +3,7 @@ export type Detect = (frame: CanvasImageSource, width: number, height: number) =
 
 export const SCAN_FPS = 8;
 /** The same code is reported again only after this many milliseconds out of sight. */
-export const SCAN_DEDUPE_MS = 3000;
+export const SCAN_DEDUPE_MS = 7000;
 /** Longest side of the picture given to the fallback decoder; smaller is faster. */
 const FALLBACK_SIDE = 640;
 

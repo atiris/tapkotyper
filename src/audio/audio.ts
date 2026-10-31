@@ -191,7 +191,7 @@ class AudioEngine {
       case 'wrong': tone(300, 0, 0.18, 'sine', 0.12, 240); break;
       case 'bzzt': tone(150, 0, 0.16, 'square', 0.03, 120); tone(150, 0.08, 0.12, 'square', 0.025, 110); break;
       case 'word': tone(660, 0, 0.12, 'triangle', 0.2); tone(990, 0.08, 0.18, 'triangle', 0.18); break;
-      case 'beep': tone(1850, 0, 0.11, 'square', 0.05, undefined, true); break;
+      case 'beep': tone(1850, 0, 0.2, 'square', 0.05, undefined, true); break;
       case 'pop': tone(520, 0, 0.12, 'sine', 0.25, 1040); break;
       case 'plop': tone(260, 0, 0.16, 'sine', 0.16, 120); break;
       case 'squeak': tone(1100, 0, 0.09, 'triangle', 0.14, 1600); tone(1300, 0.1, 0.12, 'triangle', 0.12, 900); break;

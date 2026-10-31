@@ -7,6 +7,8 @@ export interface ScanCard {
   el: HTMLElement;
   /** Flashes the preview green, beeps like a shop scanner and buzzes where the phone can. */
   hit(): void;
+  /** Blinks the preview orange twice: this code is here already. */
+  again(): void;
   /** A short hint under the preview, for example an unknown code. */
   hint(text: string): void;
   /** Replaces the list of what this scan collected; the done bar counts it. */
@@ -80,11 +82,19 @@ export function scanCard(group: string, onText: (text: string) => void, onDone: 
       h('h2', {}, t('teacher.scan.collected')),
       list),
     hit() {
+      frame.classList.remove('again');
       frame.classList.add('hit');
       clearTimeout(flash);
-      flash = window.setTimeout(() => frame.classList.remove('hit'), 300);
+      flash = window.setTimeout(() => frame.classList.remove('hit'), 400);
       audio.sfx('beep');
-      navigator.vibrate?.(60);
+      navigator.vibrate?.(400);
+    },
+    again() {
+      clearTimeout(flash);
+      frame.classList.remove('hit', 'again');
+      // A reflow restarts the blink when the same code comes back right away.
+      void frame.offsetWidth;
+      frame.classList.add('again');
     },
     hint(text) {
       say(text);

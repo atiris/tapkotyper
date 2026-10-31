@@ -62,8 +62,10 @@
   tab, where everything else is explained; a teacher in a classroom reads the page at a glance.
 - **Camera scan:** the teacher types the group being scanned (a class), one tap starts a
   continuous scan, and every new valid code is written into that group at once
-  (green flash, soft tick), a code seen again is ignored, an unknown code only shows a short
-  hint. A browser that reads
+  (green flash, a short shop-scanner beep, a buzz where the phone can). A code stays quiet
+  while it is in sight and for about 7 seconds after; a code already here that comes back later
+  blinks the frame orange twice, so the teacher knows it is collected. An unknown code only
+  shows a short hint. A browser that reads
   several codes per picture reads several screens at once, otherwise one code at a time. A
   list of what the scan collected lets the teacher undo a wrong read. The camera stops when
   the scan ends, the screen is left or the tab is hidden; clear messages say when access is

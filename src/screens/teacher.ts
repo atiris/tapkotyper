@@ -147,7 +147,7 @@ function teacherPage(root: HTMLElement, store: TeacherStore, first: Tab, code: s
       if (added && fromScan) {
         session.push(added);
         scan?.hit();
-      }
+      } else if (fromScan) scan?.again();
       if (!fromScan) {
         msg.className = intact ? 'ok' : 'error';
         msg.textContent = `${t(added ? 'teacher.added' : 'teacher.already', { name: result.name, title: result.title })}${intact ? '' : ` ${t('teacher.notIntact')}`}`;

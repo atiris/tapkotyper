@@ -1,6 +1,6 @@
 /** What the super help leaves in a run: random wrong keys, and words it does not finish in time. */
 export type Slip = 'mistake' | 'hesitate';
-export type HelpPlan = 'clean' | 'm1' | 'm2' | 'm1h1' | 'm2h2' | 'acc98' | 'acc95' | 'acc90' | 'acc75';
+export type HelpPlan = 'clean' | 'm1' | 'm2' | 'm1h1' | 'm2h2' | 'acc98' | 'acc97' | 'acc92' | 'acc75';
 
 export const HELP_PLANS: Record<HelpPlan, Slip[]> = {
   clean: [],
@@ -9,13 +9,13 @@ export const HELP_PLANS: Record<HelpPlan, Slip[]> = {
   m1h1: ['mistake', 'hesitate'],
   m2h2: ['mistake', 'hesitate', 'mistake', 'hesitate'],
   acc98: [],
-  acc95: [],
-  acc90: [],
+  acc97: [],
+  acc92: [],
   acc75: [],
 };
 
 /** Plans that aim at an accuracy instead (3, 2 and 1 star, see `starsFor`): wrong keys at random all through the level. */
-const HELP_ACCURACY: Partial<Record<HelpPlan, number>> = { acc98: 0.98, acc95: 0.95, acc90: 0.9, acc75: 0.75 };
+const HELP_ACCURACY: Partial<Record<HelpPlan, number>> = { acc98: 0.98, acc97: 0.97, acc92: 0.92, acc75: 0.75 };
 
 /** Characters per minute of the super help, and how much each key's time may vary either way. */
 const HELP_CPM = 200;

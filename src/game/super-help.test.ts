@@ -67,7 +67,7 @@ describe('super help', () => {
   });
 
   it('aims at an accuracy for 3, 2 or 1 star', () => {
-    for (const [plan, accuracy] of [['acc98', 0.98], ['acc95', 0.95], ['acc90', 0.9], ['acc75', 0.75]] as const) {
+    for (const [plan, accuracy] of [['acc98', 0.98], ['acc97', 0.97], ['acc92', 0.92], ['acc75', 0.75]] as const) {
       const words = Array.from({ length: 150 }, () => 'abcd');
       const level = fakeLevel(words, false);
       const rng = new Rng(7);

@@ -267,14 +267,14 @@ export function rescueUnlocked(p: Profile): boolean {
   return STORIES.some((s) => storyDone(p, s));
 }
 
-/** Stars from accuracy: 3 >= 95 %, 2 >= 85 %, else 1 (finishing always gives one). */
+/** Stars from accuracy: 3 >= 96 %, 2 >= 89 %, else 1 (finishing always gives one). */
 export function starsFor(accuracy: number): number {
-  return accuracy >= 0.95 ? 3 : accuracy >= 0.85 ? 2 : 1;
+  return accuracy >= 0.96 ? 3 : accuracy >= 0.89 ? 2 : 1;
 }
 
-/** Stars shown on the results card: `starsFor` with a half more from 80 % and from 90 %; never saved. */
+/** Stars shown on the results card: `starsFor` with a half more from 84 % and from 93 %; never saved. */
 export function halfStarsFor(accuracy: number): number {
-  return accuracy >= 0.95 ? 3 : accuracy >= 0.9 ? 2.5 : accuracy >= 0.85 ? 2 : accuracy >= 0.8 ? 1.5 : 1;
+  return accuracy >= 0.96 ? 3 : accuracy >= 0.93 ? 2.5 : accuracy >= 0.89 ? 2 : accuracy >= 0.84 ? 1.5 : 1;
 }
 
 const RESCUE_KINDS: { kind: LevelKind; world: number; variant: string }[] = [

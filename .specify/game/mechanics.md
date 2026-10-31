@@ -68,9 +68,9 @@
   typed fewer than 5 keys (the paw did the rest) says so in a yellow tip line, gives one star, never
   lowers a better result and adds no time toward automatic growth. Esc on the end screen
   peeks under it and a second Esc brings it back (see Peeking under the results).
-- **Stars**: 3 from 95 % accuracy, 2 from 85 %, else 1 (finishing always gives one). The
+- **Stars**: 3 from 96 % accuracy, 2 from 89 %, else 1 (finishing always gives one). The
   valley's flying lessons also count the dragons that flew: never more stars than they earn. The end
-  screen also shows half stars, 1.5 from 80 % and 2.5 from 90 %, so a child sees a small gain
+  screen also shows half stars, 1.5 from 84 % and 2.5 from 93 %, so a child sees a small gain
   before the next whole star; the map, the progress table and every count keep whole stars
   only, the shown stars rounded down.
 - **World rhythm** (the meadow, the rocket world and the valley; the planet starts with its calm step, see [story](story.md)): the levels of a world have fixed roles, so one

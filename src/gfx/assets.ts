@@ -40,8 +40,9 @@ export function hasImage(name: string): boolean {
   return name in manifest.images;
 }
 
-export function hasMusic(name: string): boolean {
-  return manifest.music.includes(name);
+/** Where a music track (`music-NAME`) plays from; null when the manifest has no such track. */
+export function musicUrl(name: string): string | null {
+  return manifest.music.includes(name) ? assetUrl(`${name}.mp3`) : null;
 }
 
 /** Names of all music tracks (`audio.music` takes them without the `music-` prefix). */

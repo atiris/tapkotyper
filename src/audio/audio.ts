@@ -1,4 +1,4 @@
-import { assetUrl, hasMusic, musicTracks } from '../gfx/assets';
+import { musicTracks, musicUrl } from '../gfx/assets';
 import { nextTrack } from './tracks';
 import type { SoundLevel } from '../storage/schema';
 
@@ -146,8 +146,9 @@ class AudioEngine {
     gain.gain.value = 0;
     gain.connect(this.musicGain);
     gain.gain.setTargetAtTime(1, ctx.currentTime, FADE / 3);
-    if (hasMusic(`music-${name}`)) {
-      const el = new Audio(assetUrl(`music-${name}.mp3`));
+    const url = musicUrl(`music-${name}`);
+    if (url) {
+      const el = new Audio(url);
       el.loop = true;
       el.crossOrigin = 'anonymous';
       const src = ctx.createMediaElementSource(el);

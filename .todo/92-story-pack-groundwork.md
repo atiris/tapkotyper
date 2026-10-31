@@ -90,7 +90,7 @@ without a caller, no dead code.
 - [x] 3. `levelAt`, `levelById` at every by-id search, `wardrobe.ts` without id parsing.
 - [x] 4. `totalStars` over built-in ids; a unit test: a `progress.levels` entry with an unknown id
       (for example `pack:x:w1-1`) adds nothing to `totalStars` and buys no companion.
-- [ ] 5. `musicUrl` and its use in `audio.ts`.
+- [x] 5. `musicUrl` and its use in `audio.ts`.
 - [ ] 6. `storage/idb.ts`, both stores on it; a unit test of `openDb` with `fake-indexeddb`
       (creates stores on first open, null without IndexedDB); the existing teacher and
       own-language tests pass unchanged.

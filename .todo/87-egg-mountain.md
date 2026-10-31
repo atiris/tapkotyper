@@ -11,7 +11,7 @@ level is one piece of the way up and keeps the world rhythm with the owner's gam
 1 a word stream, 2 waiting words, 3 crossroads, 4 a word stream, 5 the super level as the first
 **ribbon** (Pás) level, the copy kind the help already lists ahead of its level.
 
-## Decisions (taken with the owner, 2026-10-31)
+## Decisions (taken with the owner, 2026-10-31; the same three background layers for all five levels and the hero's journey's use of them confirmed the same day)
 
 ### The world
 - Name stays "Vajíčko" / "Egg"; map card, badge (the hatched baby dragon), reward `hatched`,
@@ -93,10 +93,10 @@ Made with the section 3 prompts of `assets-src/PROMPTS.md` (skill `gemini-images
   **2 or 3 words, each above one slot**: at least one slot is clean path, at least one has a
   sticky puddle (`obj-mud-1/2`, a flat glossy dark brown puddle with a few bubbles; no animation
   of stickiness). The typed word's slot is where he walks; the view glides, a new round grows.
-- **About half of the rounds are quick:** every word starts with another letter, so the first
-  key picks the word for good (no Backspace, no change of mind). The other half share their first
-  one or two letters, so the choice is made at the first letter that differs and Backspace still
-  lets go of the word before it is finished (as at the crossroads).
+- The words of a round start each with another letter, so the first key picks the word, as in
+  every waiting-words level (Backspace lets go as everywhere). The owner moved the "quick
+  choice" idea to the crossroads (level 3, the countdown of the best path), so there is no
+  quick or late-decided round here.
 - **A mud word:** he steps into the puddle and says "Fuj!" / "Bahno!" / "Ble, lepí sa to!", and a
   line explains it each time under the words: "Bahno ťa riadne spomalí: ďalšie tri slová sú
   ťažké." The next **three rounds have one very hard word each** (the planet's `extreme` word
@@ -107,17 +107,37 @@ Made with the section 3 prompts of `assets-src/PROMPTS.md` (skill `gemini-images
 
 ### 3. Crossroads up the mountain (crossroads, kind `crossroads`, variant `mountain`)
 - Line (sk): "Cesta k vrcholu sa delí. Na **rázcestí** si vyber smerovník a napíš jeho slovo."
-- Plays exactly as the planet's level 3 (`planet-roads.ts`, same path kinds and their effects,
-  Backspace card included), in this world's bands. The mode gets its world from the level
-  instead of the fixed `'planet'` (pictures, path names, background).
+- Plays as the planet's level 3 (`planet-roads.ts`, the same path kinds, **the same path names**
+  and effects, Backspace card included), in this world's bands, with the additions below (only on
+  the mountain; the planet's level 3 stays as it is). The mode gets its world from the level
+  instead of the fixed `'planet'` (pictures, background, the extra kinds and the countdown).
 - **New posts:** the signposts stand on new pedestals of three heights (`obj-signpost-stone-1..3`:
   a weathered wooden pole set in a small cairn of mossy stones; no fire, no lantern); the arrow
   boards stay `obj-arrow-1/2`.
-- **Mountain path names** (sk lists per path kind, the planet's lists stay for the planet):
-  plain "horský chodník, serpentína, kamenná cestička", short "skratka cez skaly", fast "kamenné
-  schody", teleport "kryštálový teleport", detour "okolo útesu", hard "sutinová cesta", wide
-  "stará dračia cesta", dark "jaskyňa s ozvenou" (its echo fits a cave), unknown "cesta v hmle",
-  practice "cvičný chodník"; en to match. Tapko's lines at the end say he can see the summit.
+- **Extra path kinds on the mountain** (added to the draw of the planet's kinds; names sk / en,
+  effects as `PathDef` fields):
+  - **"vľavo"** and **"vpravo"** ("left", "right"): `ask: 'normal'`, `time: 1`, `words: 1`,
+    `leg: 4`; ordinary words, nothing changes. At most one of the two per crossroads.
+  - **"prekážky"** ("obstacles", clearly bad): `ask: 'easy'` (tempting), `len: 'long'`,
+    `diff: 'hard'`, `time: 1.3`, `words: 1.35`, `leg: 4`; Tapko says "Samé kamene a pníky, to
+    bude dlhé!".
+  - **"lanovka"** ("cable car", good): `ask: 'twoLong'`, `len: 'short'`, `time: 0.7`,
+    `words: 0.7`, `leg: 3`; Tapko says "Hurá, vezieme sa!".
+  - **"zablatená cesta"** ("muddy path", a little bad): `ask: 'easy'`, `len: 'long'`,
+    `time: 1.1`, `words: 1.15`, `leg: 4`; Tapko says "Fuj, blato až po kolená.".
+  These go into `PATHS` as kinds that only the mountain variant draws.
+- **The best path has a countdown** (the owner's "quick choice", 2026-10-31): at a crossroads
+  with at least three signs, the sign of the best path among them (the lowest `time x words`;
+  only when that is teleport, the cable car or the fast path) gets a round clock beside its arrow,
+  in the look of the valley take-off's clock (a green ring that empties round an hourglass and
+  blinks in its last quarter). It starts once all posts have grown. Its time is fair for this
+  child: 2 s to read and decide, plus the sign word's letters at the child's word pace
+  (`mechanics.md`: per letter over the last five words) times 1.5, at least 4 s. When it runs
+  out the sign vanishes as a sign does after a slip, **also without a slip and also when its word
+  is half typed** (the typed letters go, nothing counts as a mistake); Tapko says "Škoda, tá
+  cesta sa zavrela.". At least two signs are always left, so the last-sign rule stays. The paws
+  never type a sign, so the clock runs for the child alone; with "no time pressure" there is no
+  clock. Tapko's lines at the end say he can see the summit.
 
 ### 4. Boulders before the summit (word stream, kind `boulders`)
 - Line (sk): "Tesne pod vrcholom sa po chodníku **valia balvany**. Napíš slovo na balvane a
@@ -190,8 +210,8 @@ Made with the section 3 prompts of `assets-src/PROMPTS.md` (skill `gemini-images
   raising its own `extraMin`/`extraWords` that `minActiveS` users take into account),
   `src/game/modes.ts` (factory), new `src/game/modes/egg-wind.ts`, `egg-mud.ts`,
   `egg-boulders.ts`, `egg-spell.ts` (or two files if the stream kinds share most code),
-  `src/game/modes/planet-roads.ts` and `kit/hero.ts` (world from the level, mountain posts and
-  names), `src/game/modes/kit/approach.ts` (gusts and boulders if it needs a hook),
+  `src/game/modes/planet-roads.ts` and `kit/hero.ts` (world from the level, mountain posts, extra kinds and
+  the countdown), `src/game/modes/kit/approach.ts` (gusts and boulders if it needs a hook),
   `src/gfx/tapko.ts` (`carry: 'egg'`, silhouette cache), `src/gfx/assets.ts` (new pictures),
   `src/game/runtime.ts` (progress/minimum growth, end), `src/screens/story.ts` (reward scene
   text only), `src/screens/help.ts` (ribbon now in the game), `public/i18n/{sk,en}.json`,
@@ -216,14 +236,14 @@ Made with the section 3 prompts of `assets-src/PROMPTS.md` (skill `gemini-images
       the old layers and add a backlog line.
 - [ ] Level 1 wind (gust strengthening, reset on a slip, second slip push with +2 words /
       +15 s capped at +10 / +75 s).
-- [ ] Level 2 mud (slots, quick and late-decided rounds, three hard rounds after mud).
-- [ ] Level 3 crossroads in the mountains (world from the level, stone posts, mountain names).
+- [ ] Level 2 mud (slots, at least one clean and one mud slot per round, three hard rounds after mud).
+- [ ] Level 3 crossroads in the mountains (world from the level, stone posts, the five extra path kinds, the best path's countdown).
 - [ ] Level 4 boulders (pairs, jump over, stumble with +7 % capped at +70 %).
 - [ ] Level 5 spell ribbon (band, frame, two-word erase with the rewind anchor, hearth stages,
       hatching end).
 - [ ] Object pictures via `gemini-images` (mud, boulders, stone posts, hearth) and the assets run.
 - [ ] Tests: `levels.test.ts` (kinds, minimums, activities of world 5), unit tests for the wind's
-      growth cap, the boulders' +7 % cap, the ribbon's erase/anchor rule; `idle.test.ts` (each
+      growth cap, the boulders' +7 % cap, the ribbon's erase/anchor rule, the countdown (only the best path, at least three signs, its fair time, a half-typed sign vanishing without a mistake); `idle.test.ts` (each
       new mode keeps giving targets and ends at both paces; pairs of boulders and the mud's hard
       rounds appear for the slow child); e2e: world 5 levels reach their end with `?minActive=`.
 - [ ] `npm run build`, `npx vitest run`, affected e2e; Playwright MCP play-through of all five

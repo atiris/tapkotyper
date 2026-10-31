@@ -27,7 +27,8 @@ the order of the way home, so the journey reads as one trip, not five unrelated 
   `obj-dragon-hatched`, out of its shell, small wings open, three-quarter view facing right);
   until it exists the hatched picture is used.
 - **Direction:** Tapko always goes to the right, as everywhere; nothing is turned round.
-- **The parts, in this order** (one per world; world 1 is not on this planet, its meadow is home):
+- **The parts, in this order** (one per world; world 1 is not on this planet, its meadow is home,
+  so the planet comes twice, its meadow and its swamp; confirmed by the owner 2026-10-31):
   1. **Down the mountain** (world 5 bands): the boulders of world 5 level 4, now rolling down
      after him from the right; jump over typed ones, the +7 % growth applies to the part's own
      minimum (cap +70 % of it). Line: "Z hory sa valia balvany, preskakuj ich!"

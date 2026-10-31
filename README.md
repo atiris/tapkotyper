@@ -213,4 +213,4 @@ Every push to `main` builds the site and deploys it to GitHub Pages
 
 ## License
 
-[MIT](LICENSE). Fonts: SIL Open Font License (see `public/fonts/`).
+[MIT](LICENSE). Fonts: SIL Open Font License (see `public/fonts/`). The name TapkoTyper, the Ťapko character and the logo are not part of the MIT license, see [TRADEMARKS.md](TRADEMARKS.md).

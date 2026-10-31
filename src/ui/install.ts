@@ -11,12 +11,25 @@ interface BeforeInstallPrompt extends Event {
   prompt(): Promise<void>;
 }
 
+/** The protocol the installed app registers in its manifest; a link to it opens the app's own window. */
+const OPEN_URL = 'web+tapkotyper:open';
+
 let deferred: BeforeInstallPrompt | null = null;
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferred = e as BeforeInstallPrompt;
 });
 window.addEventListener('appinstalled', () => { deferred = null; });
+
+/** Whether the game runs as the desktop web app, in its own window. */
+export const standalone = () => matchMedia('(display-mode: standalone)').matches;
+
+/** Whether this browser has the game installed as a desktop web app (Chromium 140+ can tell from a tab; others say false). */
+export async function appInstalled(): Promise<boolean> {
+  if (standalone()) return true;
+  const related = (navigator as Navigator & { getInstalledRelatedApps?: () => Promise<unknown[]> }).getInstalledRelatedApps;
+  try { return ((await related?.call(navigator)) ?? []).length > 0; } catch { return false; }
+}
 
 function load(): InstallState {
   try { return readInstall(localStorage.getItem(KEY)); } catch { return { days: [], offered: true }; /* blocked storage: no offer */ }
@@ -38,14 +51,18 @@ export function installApp(): boolean {
   return true;
 }
 
+/** Opens the installed desktop web app in its own window (the browser may ask once). */
+export function openApp(): void {
+  location.href = OPEN_URL;
+}
+
 /**
  * Offers the installation as a desktop web app once, after the game was opened on three
  * different days, and only when the browser can install it (and the game does not already run as one).
  */
 export function offerInstall(companion: Companion): void {
   const state = load();
-  const standalone = matchMedia('(display-mode: standalone)').matches;
-  if (!deferred || standalone || state.offered || state.days.length < OFFER_DAYS) return;
+  if (!deferred || standalone() || state.offered || state.days.length < OFFER_DAYS) return;
   save({ ...state, offered: true });
   const event = deferred;
   let close = () => {};

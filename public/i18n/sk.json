@@ -1476,10 +1476,13 @@
   "about": {
     "code": "Kód na GitHube",
     "report": "Nahlásiť chybu alebo nápad",
-    "intro": "TapkoTyper (Ťapko) je bezplatná pokojná hra, ktorá učí písať všetkými desiatimi prstami. Študent písania na klávesnici cestuje ako zvieratko podľa vlastného výberu po svetoch plných dobrodružstiev. Nikdy sa nestane nič zlé: prekážky sa odsunú alebo sa im pomôže, nikdy sa neničia.",
+    "intro": "TapkoTyper (Ťapko) je bezplatná pokojná hra, ktorá učí písať všetkými desiatimi prstami. Študent písania na klávesnici cestuje ako zvieratko podľa vlastného výberu po svetoch plných dobrodružstiev. Snažili sme sa o pokojnú nenásilnú hru. Časový tlak sme skúsili obmedziť len na niektoré typy hier a akcie sú vysvetľované ako pomáhajúce.",
     "privacyTitle": "Náš sľub rodičom",
     "install": "nainštalujete",
     "installHelp": "https://support.google.com/chrome/answer/9658361?hl=sk",
+    "privacyInstalled": "Funguje aj bez internetu. Keďže ste ju nainštalovali ako desktopovú webovú aplikáciu, môžete si ju {open} priamo vo vlastnom okne, bez celého prehliadača, je to rýchle a jednoduché na spustenie.",
+    "openApp": "otvárať",
+    "privacyApp": "Práve ju používate ako desktopovú webovú aplikáciu: otvára sa vo vlastnom okne bez celého prehliadača, funguje aj bez internetu a rýchlo sa spúšťa.",
     "readme": "readme",
     "privacy": [
       "Bez reklám, nákupov, prihlasovania či cookies. Tento web nemá na pozadí vlastný server.",
@@ -1498,12 +1501,16 @@
     "how": [
       "Klávesy sa učia postupne, od základného radu (F a J).",
       "Každý kláves má svoj prst a klávesnica s rukami na obrazovke ukazujú ktorý.",
-      "Najprv presnosť! Rýchlosť sa ukazuje len ako osobný pokrok.",
+      "**Najprv presnosť!** Rýchlosť sa ukazuje len ako osobný pokrok.",
       "Slabšie klávesy sa objavujú častejšie a krátke prestávky chránia zdravie.",
-      "Hrá sa na skutočnej klávesnici, mobil alebo tablet potrebuje pripojenú klávesnicu. Učiteľ písania alebo rodič s mobilom bez klávesnice môže skenovať výsledky."
+      "Hrá sa na skutočnej klávesnici, mobil alebo tablet potrebuje pripojenú klávesnicu.",
+      "Rodič alebo učiteľ môže pomocou mobilu rýchlo naskenovať výsledky aj väčšej skupiny študentov."
     ],
-    "creditsTitle": "Prepojenia",
-    "credits": "Otvorený kód pod licenciou MIT. Písma: Lexend, Atkinson Hyperlegible a OpenDyslexic (SIL Open Font License).",
+    "authorTitle": "O autorovi",
+    "author": "Ahojte, pisatelia. Aplikáciu Ťapko som navrhol na podporu výučby písania na klávesnici pre moje deti, ktoré bežné aplikácie nedokázali udržať natoľko, aby sa k nim vracali. Napriek intenzívnemu používaniu série modelov umelej inteligencie od Anthropic trval vývoj tejto aplikácie do podoby, s ktorou som bol dostatočne spokojný (dizajn, funkcie, bezpečnosť, rýchlosť a ďalšie), mnoho hodín. Dúfam, že podobne ako dokáže pri písaní o chvíľku dlhšie udržať moje deti, dokáže to aj pri vás a vašich deťoch (ak by ich to už bavilo menej, môžete im do hry schovať prekvapenie z fyzického sveta, ktoré si cvičením odomknú). Nakoniec vás prosím o pomoc: ak nájdete chybu alebo máte nápad na zlepšenie, {report} prosím na GitHube, kde je kód tejto aplikácie.",
+    "authorReport": "nahláste mi to",
+    "creditsTitle": "Kredit",
+    "credits": "Ťapko je publikovaný ako otvorený kód pod licenciou MIT. Názov TapkoTyper, postavička Ťapko a logo do licencie nepatria a v upravených kópiách sa nesmú použiť. Použité písma Lexend, Atkinson Hyperlegible a OpenDyslexic sú pod licenciou SIL Open Font License. Mediálne súbory sú generované prevažne pomocou modelov Gemini a niektoré sú doladené ručne.",
     "open": "Nič neskrývame: všetky údaje o používaní nájdete rovnako ako my na adrese"
   },
   "help": {

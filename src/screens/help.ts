@@ -6,7 +6,7 @@ import { PAW_MAX, PAW_STREAK, PAW_WORDS } from '../game/paw';
 import { type Child, ICONS, button, h, icon, richText } from '../ui/dom';
 import { levelRing, pawRing, rhythmPic, roundPic, timerPic } from '../ui/hud';
 import { barTabLinks, tabBar } from '../ui/tabs';
-import { installApp } from '../ui/install';
+import { appInstalled, installApp, openApp, standalone } from '../ui/install';
 import { imageUrl } from '../gfx/assets';
 
 const TABS = ['ui', 'typing', 'progress', 'settings', 'mentoring', 'about'] as const;
@@ -16,6 +16,7 @@ export type HelpTab = (typeof TABS)[number];
 const SETTINGS_TABS = ['settings', 'own', 'surprises', 'task', 'keys', 'data'] as const;
 
 const COUNTER = 'https://tapkotyper.goatcounter.com';
+const REPO = 'https://github.com/atiris/tapkotyper';
 
 /** A top icon as the child sees it (a picture, not a working button) with its one line. */
 function iconLine(pic: HTMLElement, text: string): HTMLElement {
@@ -85,16 +86,30 @@ function starSteps(): Record<string, string> {
   return Object.fromEntries(STAR_STEPS.map((s) => [`s${String(s.stars).replace('.', '_')}`, String(Math.round(s.from * 100))]));
 }
 
-/** A list item of `line` with `{mark}` replaced by `link`. */
-function linkedItem(line: string, mark: string, link: () => HTMLElement): HTMLElement {
+/** The text of `line` with `{mark}` replaced by `link`. */
+function linkedText(line: string, mark: string, link: () => HTMLElement): Child[] {
   const [before, after] = line.split(`{${mark}}`);
-  return after === undefined ? h('li', {}, ...richText(line)) : h('li', {}, ...richText(before), link(), ...richText(after));
+  return after === undefined ? richText(line) : [...richText(before), link(), ...richText(after)];
 }
 
-/** The privacy promise; "{install}" is a link that installs the web app, or opens the browser's guide when the browser cannot. */
+/** The line about the installed app: inside the app it says so, in a browser tab "{open}" is a link that opens the app. */
+function installedItem(): HTMLElement {
+  if (standalone()) return h('li', {}, ...richText(t('about.privacyApp')));
+  return h('li', {}, ...linkedText(t('about.privacyInstalled'), 'open', () =>
+    h('a', { href: '#', onClick: (e: MouseEvent) => { e.preventDefault(); openApp(); } }, t('about.openApp'))));
+}
+
+/**
+ * The privacy promise; "{install}" is a link that installs the web app, or opens the browser's
+ * guide when the browser cannot. Once the app turns out to be installed, that line says how to open it.
+ */
 function privacyList(): HTMLElement {
-  return h('ul', {}, ...tList('about.privacy').map((l) => linkedItem(l, 'install', () =>
-    h('a', { href: t('about.installHelp'), target: '_blank', rel: 'noopener', onClick: (e: MouseEvent) => { if (installApp()) e.preventDefault(); } }, t('about.install')))));
+  return h('ul', {}, ...tList('about.privacy').map((l) => {
+    const item = h('li', {}, ...linkedText(l, 'install', () =>
+      h('a', { href: t('about.installHelp'), target: '_blank', rel: 'noopener', onClick: (e: MouseEvent) => { if (installApp()) e.preventDefault(); } }, t('about.install'))));
+    if (l.includes('{install}')) void appInstalled().then((yes) => { if (yes) item.replaceWith(installedItem()); });
+    return item;
+  }));
 }
 
 /** The visit count the public counter reports; null when offline or blocked. */
@@ -121,18 +136,20 @@ function openData(): HTMLElement {
 
 /** About the game and the privacy promise, for parents. */
 function aboutTab(): HTMLElement[] {
-  const data = h('ul', {}, ...tList('about.data').map((l) => linkedItem(l, 'readme', () =>
-    h('a', { href: 'https://github.com/atiris/tapkotyper#readme', target: '_blank', rel: 'noopener' }, t('about.readme')))));
+  const data = h('ul', {}, ...tList('about.data').map((l) => h('li', {}, ...linkedText(l, 'readme', () =>
+    h('a', { href: `${REPO}#readme`, target: '_blank', rel: 'noopener' }, t('about.readme'))))));
   data.append(openData());
   return [
     h('p', {}, ...richText(t('about.intro'))),
     section(t('about.privacyTitle'), privacyList()),
     section(t('about.dataTitle'), data),
     section(t('about.howTitle'), list('about.how')),
+    section(t('about.authorTitle'), h('p', {}, ...linkedText(t('about.author'), 'report', () =>
+      h('a', { href: `${REPO}/issues/new`, target: '_blank', rel: 'noopener' }, t('about.authorReport'))))),
     section(t('about.creditsTitle'), h('p', {}, t('about.credits')),
       h('div', { class: 'row about-actions' },
-        h('a', { class: 'btn', href: 'https://github.com/atiris/tapkotyper', target: '_blank', rel: 'noopener' }, icon('code'), t('about.code')),
-        h('a', { class: 'btn', href: 'https://github.com/atiris/tapkotyper/issues/new', target: '_blank', rel: 'noopener' }, icon('edit'), t('about.report')))),
+        h('a', { class: 'btn', href: REPO, target: '_blank', rel: 'noopener' }, icon('code'), t('about.code')),
+        h('a', { class: 'btn', href: `${REPO}/issues/new`, target: '_blank', rel: 'noopener' }, icon('edit'), t('about.report')))),
   ];
 }
 

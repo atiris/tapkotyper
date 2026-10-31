@@ -39,9 +39,13 @@
      of stars needs (the numbers from the game itself, so they never drift). The "?" (and F1) on the
      "For teachers" page opens this tab, since a teacher there needs exactly this.
   6. **About Tapko**: the intro, the privacy promise (its word "nainštalujete" is a link that asks the browser to install
-     the web app, or opens the browser's guide when it cannot), data and one bullet with the open
+     the web app, or opens the browser's guide when it cannot; when the browser tells the app is already
+     installed, the line says so instead and its word "otvárať" opens the installed app from a browser tab;
+     inside the installed app the line only says that it runs as the app), data and one bullet with the open
      GoatCounter address (we hide nothing: anyone sees the same usage data we do) and the visits
-     recorded so far, how it teaches, links, the code and a bug report. Links are in the app's
+     recorded so far, how it teaches, about the author (why the game exists, with a link to report a bug
+     or an idea), and credits: the licenses, that the name, the Tapko character and the logo are not part
+     of the code's license, where the media come from, the code and a bug report. Links are in the app's
      orange, underlined only on hover.
 - The tab is part of the address (`#/p/<id>/help/<tab>`, `#/help/<tab>`), so a tab can be linked.
 - The round "?" in the map's top buttons opens it on the interface tab. The "?" on the start

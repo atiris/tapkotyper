@@ -1476,10 +1476,13 @@
   "about": {
     "code": "Code on GitHub",
     "report": "Report a bug or an idea",
-    "intro": "TapkoTyper (Tapko) is a free, peaceful game that teaches typing with all ten fingers. As an animal of their own choice, keyboard typing students travel through worlds full of adventures. Nothing bad ever happens: obstacles are pushed away or helped, never destroyed.",
+    "intro": "TapkoTyper (Tapko) is a free, peaceful game that teaches typing with all ten fingers. As an animal of their own choice, keyboard typing students travel through worlds full of adventures. We aimed for a calm, non-violent game. We tried to keep time pressure to only some game types, and actions are explained as helping.",
     "privacyTitle": "Our promise to parents",
     "install": "Installed",
     "installHelp": "https://support.google.com/chrome/answer/9658361?hl=en",
+    "privacyInstalled": "It works without the internet too. Since you installed it as a desktop web app, you can {open} directly in its own window, without the whole browser; it is quick and easy to start.",
+    "openApp": "open it",
+    "privacyApp": "You are using it as a desktop web app right now: it opens in its own window without the whole browser, works without the internet too and starts quickly.",
     "readme": "readme",
     "privacy": [
       "No ads, purchases, sign-in or cookies. This site has no server of its own in the background.",
@@ -1498,12 +1501,16 @@
     "how": [
       "Keys are learned one by one, starting from the home row (F and J).",
       "Every key has its finger; the on-screen keyboard and hands show which one.",
-      "Accuracy comes first; speed is only shown as a personal trend.",
+      "**Accuracy comes first!** Speed is only shown as a personal trend.",
       "Weak keys appear more often, and short breaks keep sessions healthy.",
-      "It is played on a real keyboard; a phone or tablet needs a keyboard connected. A typing teacher or a parent with a phone and no keyboard can still scan the results."
+      "It is played on a real keyboard; a phone or tablet needs a keyboard connected.",
+      "A parent or a teacher can quickly scan the results of even a larger group of students with a phone."
     ],
-    "creditsTitle": "Links",
-    "credits": "Open source under the MIT license. Fonts: Lexend, Atkinson Hyperlegible and OpenDyslexic (SIL Open Font License).",
+    "authorTitle": "About the author",
+    "author": "Hello, typists. I designed Tapko to help my children learn to type, because the usual apps could not hold them long enough to come back. Even with heavy use of a series of Anthropic's AI models, building this app until I was happy enough with its design, features, safety, speed and more took many hours. I hope that, just as it keeps my children typing a little longer, it does the same for you and your children (and if they enjoy it less, you can hide a surprise from the real world in the game for them to unlock by practising). Finally, I ask for your help: if you find a bug or have an idea for an improvement, please {report} on GitHub, where the code of this app lives.",
+    "authorReport": "report it to me",
+    "creditsTitle": "Credits",
+    "credits": "Tapko is published as open source under the MIT license. The name TapkoTyper, the Tapko character and the logo are not part of the license and may not be used in modified copies. The fonts Lexend, Atkinson Hyperlegible and OpenDyslexic are under the SIL Open Font License. Media files are generated mostly with Gemini models, and some are touched up by hand.",
     "open": "We hide nothing: you can see all usage data, just as we do, at"
   },
   "help": {

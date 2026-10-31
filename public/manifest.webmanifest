@@ -1,4 +1,5 @@
 {
+  "id": "./",
   "name": "TapkoTyper",
   "short_name": "TapkoTyper",
   "description": "A peaceful story-driven touch-typing adventure for children.",
@@ -8,6 +9,12 @@
   "background_color": "#e9f8ef",
   "theme_color": "#7cc79a",
   "lang": "sk",
+  "related_applications": [
+    { "platform": "webapp", "url": "https://atiris.github.io/tapkotyper/manifest.webmanifest", "id": "https://atiris.github.io/tapkotyper/" }
+  ],
+  "protocol_handlers": [
+    { "protocol": "web+tapkotyper", "url": "./?open=%s" }
+  ],
   "file_handlers": [
     { "action": "./#/teacher/files", "accept": { "application/x-tapkotyper": [".tapko"] } }
   ],

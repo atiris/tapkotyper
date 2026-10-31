@@ -5,8 +5,8 @@ import { blob, drawSprite, type G } from '../../../gfx/draw';
 export const STANDING_ROCKET = ['obj-rocket-standing', 'obj-rocket-empty'];
 /** Its height on the stage, a bit taller than Tapko, so he and the little dragon fit in. */
 export const ROCKET_STAND_H = 300;
-/** Its door, as a share of its height from its feet. */
-export const ROCKET_DOOR = 0.42;
+/** Where he climbs in: its round window, as a share of its height from its feet. */
+export const ROCKET_DOOR = 0.55;
 
 /** The flying picture's height to its length (512 x 272) while it is missing. */
 const FLYING_RATIO = 272 / 512;

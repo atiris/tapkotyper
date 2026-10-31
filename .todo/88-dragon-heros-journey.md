@@ -84,7 +84,7 @@ the order of the way home, so the journey reads as one trip, not five unrelated 
       one-dragon flight, crystals for the rocket with the valley dragons at the back, the swamp
       to the shore with the rocket standing, the ground command game with the launch).
 - [x] The little dragon following Tapko in every part.
-- [ ] Pictures `obj-dragon-little`, `obj-rocket-standing` via `gemini-images`; the assets run;
+- [x] Pictures `obj-dragon-little`, `obj-rocket-standing` via `gemini-images`; the assets run;
       fallbacks until then (if Gemini is unavailable, a backlog line).
 - [x] Tests: unit test that the dragon journey's parts are in this order with these kinds and
       that the parts' minimums add up to twice the story's minimum; `idle.test.ts` for each

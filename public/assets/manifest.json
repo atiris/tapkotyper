@@ -900,6 +900,10 @@
    "w": 383,
    "h": 512
   },
+  "obj-dragon-little": {
+   "w": 512,
+   "h": 497
+  },
   "obj-dragon-sleeping-1": {
    "w": 512,
    "h": 396
@@ -1239,6 +1243,10 @@
   "obj-rocket-pilot": {
    "w": 512,
    "h": 272
+  },
+  "obj-rocket-standing": {
+   "w": 322,
+   "h": 512
   },
   "obj-rocket": {
    "w": 512,

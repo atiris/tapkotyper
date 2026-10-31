@@ -30,6 +30,9 @@ them in any order, skip some, or redo one later with the same name.
 
 ### Lessons from generating
 Notes from real Gemini runs; add new ones here.
+- An object standing on the ground (the upright rocket on its fins) came with a dark floor
+  shadow despite "no shadow, no floor"; one follow-up "remove the shadow under it completely,
+  the background one flat color everywhere" fixed it.
 - A background layer painted on a clean cyan key (the owner's valley layers) keys out without
   the purple rim a magenta key leaves in grass tips; its blue art leans to the key, so it skips
   the pocket rules (`CLEAN_KEY` in scripts/assets.mjs).
@@ -573,6 +576,8 @@ BG is `magenta color (#FF00FF)` unless the table says `green`, then use `green c
 | `obj-rock-round.jpg` | a smooth round grey rock with a small tuft of grass | magenta |
 | `obj-mole.jpg` | a friendly mole peeking out of a small dirt hole, waving with one paw, front view | magenta |
 | `obj-dragon-hatched.jpg` | a tiny newborn baby dragon sitting in half of a cream eggshell with turquoise spots, front view, very happy | magenta |
+| `obj-dragon-little.jpg` | (plan 88, the dragon story's hero's journey) **attach `obj-dragon-hatched.jpg`**: "draw the same newborn baby dragon from the attached picture in exactly the same drawing style, outline, shading and colours, but now OUT of its shell (no eggshell anywhere): it stands on its two hind legs, three-quarter view facing right, its small wings open, very happy, ready to walk and flutter. The body pose must be completely different from the attached picture" | magenta |
+| `obj-rocket-standing.jpg` | (plan 88, the rocket waiting on the planet's shore) **attach `obj-rocket-empty.jpg`**: "redraw the attached red and white rocket in exactly the same drawing style, colours, stripes and round window (empty clear glass, nobody inside), but standing upright on the ground: the nose points straight up, it stands on its small fins, strictly side view, symmetrical, not tilted. NO flame, no smoke, no stars, no face. Tall portrait image" | green |
 
 ## 5. Interface
 

@@ -380,7 +380,7 @@ export class LevelRuntime {
   }
 
   get tapkoOnStage(): boolean {
-    return ['freetype', 'aim', 'swamp', 'crossroads', 'greatswamp', 'doors', 'gate', 'rooms', 'buds', 'flower', 'owl', 'lilies', 'reflection', 'space', 'hop', 'command', 'asteroid'].includes(this.def.kind);
+    return ['freetype', 'aim', 'swamp', 'crossroads', 'greatswamp', 'wind', 'mud', 'boulders', 'spell', 'doors', 'gate', 'rooms', 'buds', 'flower', 'owl', 'lilies', 'reflection', 'space', 'hop', 'command', 'asteroid'].includes(this.def.kind);
   }
 
   /** Preparation: assets, new keys, the get-ready card with the tip and its password, then play. */
@@ -537,7 +537,12 @@ export class LevelRuntime {
   travelTime(word: string): number {
     const base = (9 - this.difficulty * 0.5) * 0.55;
     const read = READ_TIME + (/\p{Lu}/u.test(word) ? CAPITAL_EXTRA : 0);
-    return (base + word.length * perChar(this.paceSamples, this.lastCps) + read) * this.valve.factor * STYLE_PACE[this.style];
+    return (base + word.length * this.letterTime + read) * this.valve.factor * STYLE_PACE[this.style];
+  }
+
+  /** Seconds the child takes per letter over the last few words (reading included), as the travel time counts it. */
+  get letterTime(): number {
+    return perChar(this.paceSamples, this.lastCps);
   }
 
   /** How many targets may be on screen at once. */
@@ -955,6 +960,11 @@ export class LevelRuntime {
   /** A path taken at a crossroads makes the rest of the level shorter or longer: the minimum time, scaled by `k`. */
   stretchMin(k: number): void {
     if (Number.isFinite(this.minActive)) this.minActive *= k;
+  }
+
+  /** A gust that pushed Tapko back or a stumble makes the way longer: the minimum time grows by `seconds`. */
+  extendMin(seconds: number): void {
+    if (Number.isFinite(this.minActive) && this.minActive > 0) this.minActive += seconds;
   }
 
   /** The valley's flights end at their last dragon even below the minimum: the minimum is what is played now. */

@@ -43,6 +43,7 @@ export type LevelKind =
   | 'space' | 'hop' | 'command' | 'asteroid'
   | 'swamp' | 'crystals' | 'crossroads' | 'spells' | 'greatswamp'
   | 'flames' | 'thicket' | 'flight' | 'lullaby' | 'takeoff'
+  | 'wind' | 'mud' | 'boulders' | 'spell'
   | 'copyloop'
   | 'practice' | 'freetype' | 'aim' | 'parrot';
 
@@ -92,10 +93,10 @@ const SUPER_SHARE = 1.25;
 /** Words a minute of a slow but practising child, by story: the words a level asks for in its minimum. */
 const STORY_WPM = [8, 10, 12];
 
-/** The calm steps of the world rhythm: waiting words (the meadow's poppies, the rocket world's meteors to hop on, the planet's swamp) and the valley's overgrown path. */
-const CALM_KINDS: LevelKind[] = ['poppies', 'hop', 'swamp', 'thicket'];
-/** Copy levels: a growing or a clean line (the valley's calm path is one too). */
-const COPY_KINDS: LevelKind[] = ['invitation', 'command', 'spells', 'thicket', 'lullaby', 'copyloop'];
+/** The calm steps of the world rhythm: waiting words (the meadow's poppies, the rocket world's meteors to hop on, the planet's swamp, the mountain's sticky puddles) and the valley's overgrown path. */
+const CALM_KINDS: LevelKind[] = ['poppies', 'hop', 'swamp', 'thicket', 'mud'];
+/** Copy levels: a growing or a clean line (the valley's calm path is one too), and the mountain's spell ribbon. */
+const COPY_KINDS: LevelKind[] = ['invitation', 'command', 'spells', 'thicket', 'lullaby', 'spell', 'copyloop'];
 
 /** A hero's journey is as long as this many regular levels of its story, split evenly over its parts. */
 const JOURNEY_SHARE = 2;
@@ -216,8 +217,10 @@ export const LEVELS: LevelDef[] = [
   def(2, 0, 'swamp'), def(2, 1, 'crystals'), def(2, 2, 'crossroads'), def(2, 3, 'spells'), def(2, 4, 'greatswamp'),
   // The valley: flames for the fire pit, the overgrown path (calm), flying lessons, the lullaby, the take-off.
   def(3, 0, 'flames'), def(3, 1, 'thicket'), def(3, 2, 'flight'), def(3, 3, 'lullaby'), def(3, 4, 'takeoff'),
-  // Worlds 5-15 are not built yet: every level plays the placeholder, cyclic copy, until its world is redone.
-  ...WORLDS.slice(4).flatMap((_, w) => [0, 1, 2, 3, 4].map((i) => def(w + 4, i, 'copyloop'))),
+  // The egg's mountain: the wind on the slope, sticky puddles (calm), crossroads, boulders, the spell of awakening (the first ribbon).
+  def(4, 0, 'wind'), def(4, 1, 'mud'), def(4, 2, 'crossroads', 'mountain'), def(4, 3, 'boulders'), def(4, 4, 'spell'),
+  // Worlds 6-15 are not built yet: every level plays the placeholder, cyclic copy, until its world is redone.
+  ...WORLDS.slice(5).flatMap((_, w) => [0, 1, 2, 3, 4].map((i) => def(w + 5, i, 'copyloop'))),
 ];
 
 export function levelById(id: string): LevelDef | undefined {

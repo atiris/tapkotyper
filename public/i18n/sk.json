@@ -684,10 +684,50 @@
           "Kamenistý chodník: slová s písmenami, ktoré ešte cvičíš."
         ]
       },
-      "unknownSaid": "Neznáma cesta: {len}, {time} a {diff}."
+      "unknownSaid": "Neznáma cesta: {len}, {time} a {diff}.",
+      "left": {
+        "names": [
+          "vľavo"
+        ],
+        "said": [
+          "Doľava! Obyčajná cesta."
+        ]
+      },
+      "right": {
+        "names": [
+          "vpravo"
+        ],
+        "said": [
+          "Doprava! Obyčajná cesta."
+        ]
+      },
+      "obstacles": {
+        "names": [
+          "prekážky"
+        ],
+        "said": [
+          "Samé kamene a pníky, to bude dlhé!"
+        ]
+      },
+      "cablecar": {
+        "names": [
+          "lanovka"
+        ],
+        "said": [
+          "Hurá, vezieme sa!"
+        ]
+      },
+      "muddy": {
+        "names": [
+          "zablatená cesta"
+        ],
+        "said": [
+          "Fuj, blato až po kolená."
+        ]
+      }
     },
     "spellStart": [
-      "Našiel si to! Tri **kryštály života** je ešte potrebné **prebudiť.** **Kúzlo**, ktoré je na to určené, **musíš zopakovať slovo po slove** pred kryštálmi, inak ich nebude možné rozžiariť. Potom si ich odlož, aby si ich mohol postaviť na kamenný monolit, odkiaľ posilnia život na tejto planéte. **Daj si pozor** na správne odpísanie kúzla: ak by si spravil vo formulke **tri chyby**, tak sa **kúzlo zruší** a musíš začať znova."
+      "Si na vrchole. Polož vajíčko do **ohniska drakov** a prednes **kúzlo prebudenia**. Je dlhé a musí byť presné: pri chybe zmizne aj posledné napísané slovo."
     ],
     "spellCast": [
       "Jupí!",
@@ -725,7 +765,7 @@
       "space": "Tri, dva, jeden... **štart!** Letíš preskúmať zopár planét až k **planéte drakov**. **Rytmus tvojho písania** poháňa raketu a jemný lúč odsúva meteority z cesty.",
       "planet": "**Vitaj** na planéte drakov, na ktorej existujú kúzla a život poháňajú kryštály! **Posledný kryštál** života však už **vyhasol.** Hrozí, že planéta stratí svetlo. Našťastie **máš mapu**, podľa ktorej treba prejsť močiar a lúku, **nájsť** aspoň tri **kryštály života** a prebudiť ich kúzlom. Keď sa ti ich podarí **odniesť** až **ku kamennému monolitu**, život na planéte drakov **bude zachránený.** **Presnosť** je stále dôležitejšia ako rýchlosť.",
       "dragons": "Kryštál života rozjasnil planétu, ale **v údolí drakov je** stále **zhasnutý hrejivý plameň.** Aby sa dráčiky vrátili do údolia, musíš znova rozžiariť dračie ohnisko. **Chyť čo najviac plamienkov** a rozžiar ohnisko tak, aby znova prinieslo teplo a jas do tohto údolia. Potom sem určite prídu aj dráčiky.",
-      "egg": "Ojoj! **Vajíčko sa začína hýbať** a kotúľa sa dolu kopcom. Pomôž mu **preskočiť kamene a pníky**. Pozor na priateľského krtka!",
+      "egg": "Plamene, v ktorých sa dráčik zrodil, sú príliš slabé, aby ho prebudili. Vajíčko musíš vyniesť na **Horu prebudenia** do **ohniska drakov**. Cesta hore je dlhá: fúka **silný vietor**, sú tam **lepkavé mláky**, **rázcestia** a **padajúce balvany**. Na vrchole prednesieš **kúzlo prebudenia**.",
       "junkyard": "Ideš okolo starého šrotiska. **Pod kopou starých vecí niekto smutne pípa.** Napíš slovo a **jemný magnet** zdvihne haraburdu z kopy.",
       "workshop": "Šróbik chce ísť domov, ale **chýbajú mu súčiastky**. Po páse sa vezú kolieska, skrutky a pružiny. **Napíš slovo súčiastky** a hodíš ju do košíka.",
       "raintown": "Ojoj, začína pršať! Roboti nesmú zmoknúť, inak **zhrdzavejú**. **Napíš slovo na kvapke** a tvoj dáždnik ju zachytí.",
@@ -758,9 +798,9 @@
         "Dráčiky ho tu nechali. Teraz ho opatruješ ty."
       ],
       "hatched": [
-        "Krak... krak... vajíčko sa liahne!",
+        "Ohnisko drakov vzbĺklo a vajíčko praská... krak... krak!",
         "Malý dráčik sa na teba pozerá. Máš nového kamaráta!",
-        "Teraz ťa čaká Cesta hrdinu: dlhá výprava cez všetky svety príbehu."
+        "Teraz ťa čaká **cesta hrdinu**: späť dolu z hory až k rakete."
       ],
       "friends": [
         "Z kopy vylieza malý hrdzavý robot.",
@@ -888,6 +928,57 @@
       "Kde som?",
       "Ahoj, ty budeš môj kamarát?"
     ],
+    "windStart": [
+      "Na svahu fúka **silný vietor**. Napíš slovo, ktoré nesie, skôr než k tebe dofúka."
+    ],
+    "windGust": [
+      "Uf, to fúka!",
+      "Držím sa!"
+    ],
+    "windLonger": "Silný poryv ťa odtlačil, cesta sa predĺžila.",
+    "windDone": [
+      "Uf, tu už nefúka."
+    ],
+    "mudStart": [
+      "Na chodníku sú **lepkavé mláky**. Vyber si slovo nad čistým miestom. Kto stúpi do bahna, chvíľu sa nepohne z miesta."
+    ],
+    "mudStep": [
+      "Fuj!",
+      "Bahno!",
+      "Ble, lepí sa to!"
+    ],
+    "mudSlow": "Bahno ťa riadne spomalí:\nďalšie tri slová sú ťažké.",
+    "mudFree": [
+      "Uf, odlepil som sa!"
+    ],
+    "mudDone": [
+      "Mláky sú za nami. Labky čisté, ideme ďalej!"
+    ],
+    "mountainStart": [
+      "Cesta k vrcholu sa delí. Na **rázcestí** si vyber smerovník a napíš jeho slovo."
+    ],
+    "mountainEnd": [
+      "Už vidím vrchol!",
+      "Vrchol je na dohľad!"
+    ],
+    "roadClosed": [
+      "Škoda, tá cesta sa zavrela."
+    ],
+    "bouldersStart": [
+      "Tesne pod vrcholom sa po chodníku **valia balvany**. Napíš slovo na balvane a preskočíš ho."
+    ],
+    "boulderOops": [
+      "Hups!",
+      "Jejda!",
+      "Uf!"
+    ],
+    "bouldersLonger": "Zaváhal si, cesta na vrchol sa predĺžila.",
+    "bouldersDone": [
+      "Vrchol je na dohľad! Vajíčko, už sme skoro tam."
+    ],
+    "spellSlip": "Kúzlo sa preruší, napíš posledné slová znova.",
+    "spellCareful": "Pozor, kúzlo musí byť presné!",
+    "spellHello": "Ahoj! Ďakujem, že si ma zohrial!",
     "copyLoopStart": "Táto úroveň sa ešte pripravuje. Zatiaľ si tu precvičíš odpis: píš slová zo stredu, kým neuplynie čas.",
     "copyLoopSoon": "Pripravuje sa",
     "copyLoopCount": "napísané: {n}",

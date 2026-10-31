@@ -274,13 +274,17 @@
       "title": "Lines of the Dragon Valley",
       "about": "Opening lines, shouts and end lines of the valley's levels: flames for the fire pit, the overgrown path, flying lessons, the lullaby and the take-off to the crystal meadow."
     },
+    "story-mountain": {
+      "title": "Lines of the egg mountain",
+      "about": "Opening lines, shouts and end lines of the egg mountain's levels: the wind on the slope, sticky puddles, the mountain crossroads, rolling boulders and the spell of awakening on the summit."
+    },
     "story-placeholder": {
       "title": "Worlds still being made",
       "about": "The card line, the small sign, the counter and the end line of the copying game that every level of a world not built yet plays for now."
     },
     "story-paths": {
-      "title": "Paths at the planet's crossroads",
-      "about": "Names of the paths on the signposts, Tapko's lines when the child takes one, and the parts of the line about the unknown road."
+      "title": "Paths at the crossroads",
+      "about": "Names of the paths on the signposts (the planet's and the mountain's), Tapko's lines when the child takes one, and the parts of the line about the unknown road."
     },
     "story-play": {
       "title": "Lines during play",
@@ -742,7 +746,7 @@
     "story.world.space": "Story of space (world 2), on the get-ready card before its first level the first time; **phrase** is shown in bold.",
     "story.world.planet": "Story of the dragons' planet (world 3), on the get-ready card before its first level the first time; **phrase** is shown in bold.",
     "story.world.dragons": "Story of Dragon Valley (world 4), on the get-ready card before its first level the first time; **phrase** is shown in bold.",
-    "story.world.egg": "Story of the rolling egg world (world 5), on the get-ready card before its first level the first time; **phrase** is shown in bold.",
+    "story.world.egg": "Story of the egg mountain world (world 5), on the get-ready card before its first level the first time; **phrase** is shown in bold.",
     "story.world.junkyard": "Story of the junkyard (world 6), the start of the robot story with Bolt, on the get-ready card before its first level the first time; **phrase** is shown in bold.",
     "story.world.workshop": "Story of the workshop (world 7), on the get-ready card before its first level the first time; **phrase** is shown in bold.",
     "story.world.raintown": "Story of the rain in town (world 8), on the get-ready card before its first level the first time; **phrase** is shown in bold.",
@@ -757,7 +761,7 @@
     "story.scenes.landing": "Scene after finishing space (world 2), a reward from the results screen.",
     "story.scenes.force": "Scene after finishing the new planet (world 3), a reward from the results screen.",
     "story.scenes.egg": "Scene after finishing Dragon Valley (world 4): the dragons flew off, the fire burned out and an egg is left behind; a reward from the results screen.",
-    "story.scenes.hatched": "Scene after finishing the egg world (world 5), when the dragon hatches; a reward from the results screen.",
+    "story.scenes.hatched": "Scene after finishing the egg mountain (world 5): the dragons' hearth blazes and the dragon hatches; a reward from the results screen.",
     "story.scenes.friends": "Scene after finishing the junkyard (world 6), when the child meets the robot Bolt.",
     "story.scenes.legs": "Scene after finishing the workshop (world 7), when Bolt gets new legs.",
     "story.scenes.raincoat": "Scene after finishing the rain (world 8), when Bolt gets a raincoat.",
@@ -803,7 +807,7 @@
     "story.path.*.said": "Tapko when the child takes this path; says what the path changes. One is picked at random.",
     "story.path.unknown.*": "A part of the line about the unknown road ({len}, {time} or {diff} in story.path.unknownSaid).",
     "story.path.unknownSaid": "Tapko after taking the unknown road says what happened: {len} word length, {time} road length, {diff} word difficulty.",
-    "story.spellStart": "Opening line of the spell level: three sleeping crystals of life; a spell breaks with more than three slips and a new one comes.",
+    "story.spellStart": "Opening line of the super level of world 5: lay the egg into the dragons' hearth and type one long spell from a ribbon; a slip also erases the last written word.",
     "story.spellCast": "A short shout over the crystals when a spell works and the next third lights up; one is picked at random.",
     "story.spellBroken": "Line when a spell breaks (more than three slips) and a new one comes; one is picked at random.",
     "story.greatSwampStart": "Opening line of the planet's last level: from a firm stone the child jumps four stones; a slip cracks them.",
@@ -829,6 +833,25 @@
     "story.takeoffGone": "Line when a baby dragon flies off to the crystal meadow; one is picked at random.",
     "story.takeoffBye": "What Tapko calls after the baby dragons when the last one has flown off; one is picked at random.",
     "story.eggHello": "What the egg says to Tapko when it appears in the fire pit after the dragons have flown off (short, curious, friendly); one is picked at random.",
+    "story.windStart": "Opening line of the wind level on the mountain (world 5, level 1): words come in gusts of wind; typed before the gust reaches Tapko, he walks on up the path.",
+    "story.windGust": "What Tapko says when a gust of wind reaches him and pushes him a few steps back (short, playful); one is picked at random.",
+    "story.windLonger": "The narrator, the first time a strengthened gust (after two slips in its word) pushes Tapko back: the way got longer (two more words).",
+    "story.windDone": "Line at the end of the wind level: Tapko reached a sheltered ledge where the wind drops; one is picked at random.",
+    "story.mudStart": "Opening line of the sticky puddles level: each round has words over places on the path, pick one over a clean place; a word over a puddle gets Tapko stuck.",
+    "story.mudStep": "What Tapko says when he steps into a sticky puddle (short, never sad); one is picked at random.",
+    "story.mudSlow": "Line under the first very hard word after a mud step: the next three words are hard. The line break splits it into two lines.",
+    "story.mudFree": "What Tapko says when he gets out of the mud after the three hard words; one is picked at random.",
+    "story.mudDone": "Line at the end of the sticky puddles level: the puddles are behind, Tapko wipes his paws and walks on; one is picked at random.",
+    "story.mountainStart": "Opening line of the crossroads level on the mountain (world 5, level 3): pick a signpost and type its word.",
+    "story.mountainEnd": "Tapko at the end of the mountain crossroads: he can see the summit; one is picked at random.",
+    "story.roadClosed": "Tapko when the countdown of the best path on the mountain runs out and its signpost vanishes; one is picked at random.",
+    "story.bouldersStart": "Opening line of the boulders level: boulders roll down the path, a typed word on a boulder lets Tapko jump over it.",
+    "story.boulderOops": "What Tapko says when he jumps too late and stumbles over a boulder (short, funny, never hurt); one is picked at random.",
+    "story.bouldersLonger": "The narrator, the first time a boulder is missed: the way to the summit got a little longer.",
+    "story.bouldersDone": "Line at the end of the boulders level: the summit is in sight, said to the egg; one is picked at random.",
+    "story.spellSlip": "The narrator, the first time the spell has a slip: the last words disappear and are written again.",
+    "story.spellCareful": "A rare reminder after later slips in the spell: it must be exact.",
+    "story.spellHello": "What the baby dragon says when it hatches in the hearth at the end of the spell (short, warm).",
     "story.copyLoopStart": "Line on the get-ready card of every level of a world not built yet: the level is still being made, for now the child copies the words in the middle until the time is up.",
     "story.copyLoopSoon": "Small words on the sign at the top of such a level, under the world's name: the world is still being made.",
     "story.copyLoopCount": "Small counter under the panel of such a level; {n} is the number of words typed.",

@@ -229,17 +229,17 @@ Made with the section 3 prompts of `assets-src/PROMPTS.md` (skill `gemini-images
 
 - [ ] Specs and texts first: story.md world 5, scenario Svet 5, mechanics exceptions, sk/en
       lines, translator notes.
-- [ ] Egg on the back: `carry: 'egg'` in `drawTapko`, the silhouette cache, peeking; unit test of
+- [x] Egg on the back: `carry: 'egg'` in `drawTapko`, the silhouette cache, peeking; unit test of
       the visible share with the widest back accessories and with fallback drawings.
 - [ ] Backgrounds: prompts, Gemini generation (`gemini-images`), seam procedure, `npm run
       assets bg-egg`, preview; the path's middle at `PATH_FEET`. If Gemini is unavailable, keep
       the old layers and add a backlog line.
-- [ ] Level 1 wind (gust strengthening, reset on a slip, second slip push with +2 words /
+- [x] Level 1 wind (gust strengthening, reset on a slip, second slip push with +2 words /
       +15 s capped at +10 / +75 s).
-- [ ] Level 2 mud (slots, at least one clean and one mud slot per round, three hard rounds after mud).
-- [ ] Level 3 crossroads in the mountains (world from the level, stone posts, the five extra path kinds, the best path's countdown).
-- [ ] Level 4 boulders (pairs, jump over, stumble with +7 % capped at +70 %).
-- [ ] Level 5 spell ribbon (band, frame, two-word erase with the rewind anchor, hearth stages,
+- [x] Level 2 mud (slots, at least one clean and one mud slot per round, three hard rounds after mud).
+- [x] Level 3 crossroads in the mountains (world from the level, stone posts, the five extra path kinds, the best path's countdown).
+- [x] Level 4 boulders (pairs, jump over, stumble with +7 % capped at +70 %).
+- [x] Level 5 spell ribbon (band, frame, two-word erase with the rewind anchor, hearth stages,
       hatching end).
 - [ ] Object pictures via `gemini-images` (mud, boulders, stone posts, hearth) and the assets run.
 - [ ] Tests: `levels.test.ts` (kinds, minimums, activities of world 5), unit tests for the wind's
@@ -250,3 +250,28 @@ Made with the section 3 prompts of `assets-src/PROMPTS.md` (skill `gemini-images
       levels (tester profile, `?fast`, `tapkoType`), screenshots: the egg peeking with dragon
       wings and with a jetpack, a strengthened gust, a mud round, the stone posts, a boulder
       pair, the ribbon after a rewind, the hatching.
+
+## State
+Code of the five levels, the egg on his back, texts and unit tests are in. Open: specs, pictures and
+backgrounds (a background agent runs them through Gemini), e2e, the browser play-through.
+Decisions taken while implementing (2026-10-31):
+- Files: `modes/egg.ts` (wind, mud, boulders), `modes/egg-spell.ts` (the ribbon), `modes/kit/egg.ts`
+  (`EggPeek`, `drawCarrier`, `Detour`), `modes/kit/clock.ts` (the valley's round clock, now shared).
+  All five levels draw Tapko on the canvas (`tapkoOnStage`), so the egg can sit behind his stack.
+- The egg sits over his right shoulder, the viewer's left (away from what comes from the right).
+  Its place: sunk from above his head behind the union silhouette until no more than a third of
+  its area would show (`eggRest`, never lower than his chest); peeking rises until two thirds show,
+  at most half its height (`eggPeek`). "Visible share" is measured by area; a test checks fox, owl
+  and bunny with dragon wings, jetpack, hero cape, butterfly and fairy wings, star cape, backpack,
+  balloon and hat combinations, and the fallback ovals (>= 30 % at rest, less than 90 %).
+- Mud: while stuck, the very hard word stands above his head (he does not move); it is the longest
+  of four words drawn from the child's weakest keys (`weakWord`), not the teleport's sentence.
+  The explaining line is drawn in the scene under that word during the first hard round.
+- Wind: only a slip inside a started gust's word counts (as the crossroads' signs); a rush is a
+  passed target (a miss for the pressure valve).
+- Crossroads: the countdown clock stands right beside the best sign's word label (the arrow turns
+  at random, the label does not); a countdown that would leave fewer than two signs just stops.
+- Spell: each word is a target with its trailing space, so the space is typed while the word is
+  locked; a wrong first letter is a slip too. Enter marks are dropped from the spell.
+- Runtime: `extendMin(seconds)` (the wind's and the boulders' longer way) and `letterTime` (the
+  child's seconds per letter, for the countdown).

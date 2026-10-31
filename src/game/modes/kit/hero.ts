@@ -2,7 +2,7 @@ import { app } from '../../../app/app';
 import { VH } from '../../../engine/loop';
 import { ease } from '../../../engine/tween';
 import type { G } from '../../../gfx/draw';
-import { drawTapko, type Mood } from '../../../gfx/tapko';
+import { drawTapko, type Mood, type TapkoMotion } from '../../../gfx/tapko';
 import { Mode, TAPKO_H } from '../../mode';
 import type { LevelRuntime } from '../../runtime';
 import type { Target } from '../../typing';
@@ -67,10 +67,15 @@ export abstract class HeroMode extends Mode {
     return { x: this.heroX, y: this.heroY - this.heroSize * 1.2 - 20 };
   }
 
+  /** What else his picture shows (the egg he carries up the mountain). */
+  protected heroExtras(): Partial<TapkoMotion> {
+    return {};
+  }
+
   protected drawHero(g: G): void {
     // The level is done: Tapko hops happily in place.
-    if (this.L.endTime != null) return drawTapko(g, app.profile!.companion, 'happy', this.heroX, this.heroY, this.heroSize, { t: this.t, jump: this.L.endHop, shadow: this.shadow });
-    drawTapko(g, app.profile!.companion, this.mood, this.heroX, this.heroY, this.heroSize, { t: this.t, jump: this.jump, shadow: this.shadow });
+    if (this.L.endTime != null) return drawTapko(g, app.profile!.companion, 'happy', this.heroX, this.heroY, this.heroSize, { t: this.t, jump: this.L.endHop, shadow: this.shadow, ...this.heroExtras() });
+    drawTapko(g, app.profile!.companion, this.mood, this.heroX, this.heroY, this.heroSize, { t: this.t, jump: this.jump, shadow: this.shadow, ...this.heroExtras() });
   }
 }
 

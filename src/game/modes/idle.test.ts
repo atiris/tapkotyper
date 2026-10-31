@@ -19,6 +19,8 @@ const { CrossroadsMode } = await import('./planet-roads');
 const { CopyLoopMode } = await import('./copy-loop');
 const { FlamesMode, ThicketMode, flockAfter } = await import('./dragons');
 const { FlightMode, LullabyMode, TakeoffMode, shortenLine, takeoffPlan } = await import('./dragons-flight');
+const { BouldersMode, MudMode, WindMode } = await import('./egg');
+const { SpellRibbonMode } = await import('./egg-spell');
 
 /** A level runtime with just enough to run a mode: words are fixed, every other call does nothing. */
 function fakeRuntime(count = 4): LevelRuntime {
@@ -46,6 +48,7 @@ function fakeRuntime(count = 4): LevelRuntime {
     staying: false,
     letter: () => 'a',
     travelTime: () => 3,
+    letterTime: 0.4,
     friendSpot: () => ({ x: 120, y: 600 }),
     particles: { emit: () => {} },
     // A tween ends at once.
@@ -58,6 +61,7 @@ const MODES: [string, new (L: LevelRuntime) => Mode][] = [
   ['meadow', MeadowMode], ['poppies', PoppyMode], ['invitation', InvitationMode], ['hedgehog', HedgehogMode], ['space', SpaceMode], ['hop', HopMode], ['command', CommandMode], ['asteroid', AsteroidMode],
   ['swamp', SwampMode], ['crystals', CrystalsMode], ['crossroads', CrossroadsMode], ['spells', SpellMode], ['greatswamp', GreatSwampMode], ['copyloop', CopyLoopMode],
   ['flames', FlamesMode], ['thicket', ThicketMode], ['flight', FlightMode], ['lullaby', LullabyMode], ['takeoff', TakeoffMode],
+  ['wind', WindMode], ['mud', MudMode], ['boulders', BouldersMode], ['spell', SpellRibbonMode],
 ];
 
 describe('no typing, no progress', () => {
@@ -97,6 +101,7 @@ function levelRuntime(def: LevelDef): LevelRuntime & { clock: number; min: numbe
       if (k === 'share') return () => shownProgress(mode!.progress(), live.clock, live.min);
       if (k === 'stretchMin') return (f: number) => { live.min *= f; };
       if (k === 'endMinimum') return () => { live.min = Math.min(live.min, live.clock); };
+      if (k === 'extendMin') return (s: number) => { live.min += s; };
       return (o as any)[k];
     },
     set: (o, k, v) => {
@@ -865,5 +870,112 @@ describe('the dragons on the path', () => {
     expect(w.x).toBeGreaterThan(at);
     run(L, mode, 1);
     expect(w.x).toBe((mode as any).waitX());
+  });
+});
+
+describe('the egg mountain', () => {
+  it('a rush adds two words and 15 s, at most ten words and 75 s', async () => {
+    const { Detour } = await import('./kit/egg');
+    const { RUSH_WORDS, WIND_MAX_WORDS } = await import('./egg');
+    const d = new Detour(WIND_MAX_WORDS, 7.5);
+    const adds = Array.from({ length: 7 }, () => d.add(RUSH_WORDS));
+    expect(adds[0]).toEqual({ words: 2, seconds: 15 });
+    expect(adds.reduce((a, b) => a + b.words, 0)).toBe(10);
+    expect(adds.reduce((a, b) => a + b.seconds, 0)).toBe(75);
+    expect(d.full).toBe(true);
+  });
+
+  it('a missed boulder adds 7 % of the planned words and minimum, at most 70 %', async () => {
+    const { Detour } = await import('./kit/egg');
+    const { STUMBLE_MAX, STUMBLE_SHARE } = await import('./egg');
+    const words = 16, perWord = 120 / 16;
+    const d = new Detour(STUMBLE_SHARE * STUMBLE_MAX * words, perWord);
+    const adds = Array.from({ length: 12 }, () => d.add(STUMBLE_SHARE * words));
+    expect(adds[0].seconds).toBeCloseTo(8.4);
+    expect(adds.reduce((a, b) => a + b.seconds, 0)).toBeCloseTo(84);
+    expect(adds.reduce((a, b) => a + b.words, 0)).toBe(11);
+    expect(adds.slice(10).every((a) => a.words === 0 && a.seconds === 0)).toBe(true);
+  });
+
+  it('a slip in the spell erases the last written word too, but never behind the last rewind until two words were written past it', async () => {
+    const { slipBack } = await import('./egg-spell');
+    expect(slipBack(0, null)).toEqual({ at: 0, anchor: null });
+    expect(slipBack(5, null)).toEqual({ at: 4, anchor: 4 });
+    // Slips again at the same place cost only the word in progress.
+    expect(slipBack(4, 4)).toEqual({ at: 4, anchor: 4 });
+    expect(slipBack(5, 4)).toEqual({ at: 5, anchor: 4 });
+    expect(slipBack(6, 4)).toEqual({ at: 5, anchor: 5 });
+  });
+
+  it('the spell rewinds after a slip and every word counts once', () => {
+    const L = levelRuntime(levelById('w5-5')!);
+    const m = new SpellRibbonMode(L);
+    mode = m;
+    m.start();
+    m.update(2);
+    for (let i = 0; i < 3; i++) typeWord(L, m);
+    expect(m.progress()).toBeCloseTo(3 / L.count);
+    const res = L.core.type('#');
+    if (res.kind !== 'wrong') throw new Error('a wrong key');
+    m.onWrong(res.target);
+    expect(m.progress()).toBeCloseTo(3 / L.count);
+    // The rewound word is typed again; the progress does not count it twice.
+    typeWord(L, m);
+    expect(m.progress()).toBeCloseTo(3 / L.count);
+    typeWord(L, m);
+    expect(m.progress()).toBeCloseTo(4 / L.count);
+  });
+
+  it('only the best path among three signs or more gets a countdown, when it is a quick one, and its time fits the child', async () => {
+    const { quickSign, quickTime } = await import('./planet-roads');
+    expect(quickSign(['plain', 'teleport', 'detour'])).toBe(1);
+    expect(quickSign(['plain', 'short', 'detour'])).toBeNull();
+    expect(quickSign(['plain', 'cablecar'])).toBeNull();
+    expect(quickSign(['fast', 'cablecar', 'obstacles', 'left'])).toBe(1);
+    expect(quickTime(10, 0.5)).toBeCloseTo(9.5);
+    expect(quickTime(2, 0.3)).toBe(4);
+  });
+
+  it('a half typed best sign vanishes when its countdown runs out, and it is no mistake', () => {
+    const L = levelRuntime(levelById('w5-3')!);
+    const m = new CrossroadsMode(L);
+    mode = m;
+    m.start();
+    for (let i = 0; i < 3; i++) typeWord(L, m);
+    m.update(1);
+    const signs = (m as unknown as { signs: { kind: string; tg: { word: string; gone: boolean }; clock: unknown }[] }).signs;
+    expect(signs).toHaveLength(3);
+    const quick = signs.find((s) => s.clock)!;
+    expect(quick.kind).toBe('fast');
+    L.core.type(quick.tg.word[0]);
+    expect(L.core.locked).toBe(quick.tg);
+    for (let i = 0; i < 400; i++) m.update(0.05);
+    expect(quick.tg.gone).toBe(true);
+    expect(L.core.locked).toBeNull();
+    expect(L.core.missed).toBe(0);
+    expect(signs.filter((s) => !s.tg.gone)).toHaveLength(2);
+  });
+
+  it('pairs of boulders and the hard rounds after a mud step come for the slow child too', () => {
+    const word = 60 / WPM[0];
+    let pairs = 0, hard = 0;
+    play(levelById('w5-4')!, BouldersMode, word / 5, word, (L) => {
+      if (L.core.active.filter((tg) => tg.data.state === 'come').length >= 2) pairs++;
+    });
+    play(levelById('w5-2')!, MudMode, word / 5, word, () => {
+      if ((mode as unknown as { hardLeft: number }).hardLeft > 0) hard++;
+    });
+    expect(pairs).toBeGreaterThan(0);
+    expect(hard).toBeGreaterThan(0);
+  });
+
+  it('the mountain crossroads keeps giving targets at both paces', () => {
+    const def = levelById('w5-3')!;
+    const quick = play(def, CrossroadsMode, 0.15, 0);
+    expect(quick.gap).toBeLessThanOrEqual(8);
+    expect(quick.end).toBeGreaterThanOrEqual(quick.min);
+    const word = 60 / WPM[0];
+    const slow = play(def, CrossroadsMode, word / 5, word);
+    expect(slow.end).toBeGreaterThanOrEqual(slow.min);
   });
 });

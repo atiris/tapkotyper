@@ -684,10 +684,50 @@
           "A stony path: words with the letters you are still practising."
         ]
       },
-      "unknownSaid": "The unknown road: {len}, {time} and {diff}."
+      "unknownSaid": "The unknown road: {len}, {time} and {diff}.",
+      "left": {
+        "names": [
+          "left"
+        ],
+        "said": [
+          "Left! An ordinary path."
+        ]
+      },
+      "right": {
+        "names": [
+          "right"
+        ],
+        "said": [
+          "Right! An ordinary path."
+        ]
+      },
+      "obstacles": {
+        "names": [
+          "obstacles"
+        ],
+        "said": [
+          "Nothing but stones and stumps, this will take long!"
+        ]
+      },
+      "cablecar": {
+        "names": [
+          "cable car"
+        ],
+        "said": [
+          "Hooray, we get a ride!"
+        ]
+      },
+      "muddy": {
+        "names": [
+          "muddy path"
+        ],
+        "said": [
+          "Yuck, mud up to my knees."
+        ]
+      }
     },
     "spellStart": [
-      "You found it! The three **crystals of life** still have to be **woken up.** You **must repeat** the **spell** for it **word by word** in front of the crystals, or they will not light up. Then put them away, so you can set them on the stone monolith, where they will strengthen life on this planet. Copy the spell carefully: with **three mistakes** in it, **the spell breaks** and you have to start again."
+      "You are on the summit. Lay the egg into the **dragons' hearth** and say the **spell of awakening**. It is long and must be exact: a slip also erases the last word written."
     ],
     "spellCast": [
       "Yippee!",
@@ -725,7 +765,7 @@
       "space": "Three, two, one... **lift off!** You fly off to explore a few planets, all the way to the **dragons' planet**. **Your typing rhythm** drives the rocket and a soft beam pushes meteors out of the way.",
       "planet": "**Welcome** to the dragons' planet, where spells are real and crystals power life! But the **last crystal** of life has **gone dark.** The planet may lose its light. Luckily you **have a map**: cross the swamp and the meadow, **find** at least three **crystals of life** and wake them with a spell. When you **carry** them all the way **to the stone monolith**, life on the dragons' planet **will be saved.** **Accuracy** still matters more than speed.",
       "dragons": "The crystal of life lit up the planet, but **in the dragon valley** the **warm fire is** still **out.** For the baby dragons to come back to the valley, you must light the dragon fire pit again. **Catch as many little flames as you can** and light the fire pit, so it brings warmth and light back to this valley. Then the baby dragons will surely come too.",
-      "egg": "Oh! **The egg starts to wiggle** and roll down the hill. Help it **jump over rocks and stumps**. Watch out for a friendly mole!",
+      "egg": "The flames the little dragon was born in are too weak to wake it. You must carry the egg up the **Mountain of Awakening** to the **dragons' hearth**. The way up is long: a **strong wind** blows, there are **sticky puddles**, **crossroads** and **rolling boulders**. On the summit you will say the **spell of awakening**.",
       "junkyard": "You walk past an old junkyard. **Someone is beeping sadly under a pile of old things.** Type a word and a **soft magnet** lifts the junk off the pile.",
       "workshop": "Bolt wants to go home, but **he is missing some parts**. Gears, bolts and springs ride along the conveyor belt. **Type a part's word** and toss it into the basket.",
       "raintown": "Oh no, it starts to rain! Robots must not get wet, or they **rust**. **Type the word on a raindrop** and your umbrella catches it.",
@@ -758,9 +798,9 @@
         "The dragons left it here. Now you take care of it."
       ],
       "hatched": [
-        "Crack... crack... the egg hatches!",
-        "A tiny baby dragon looks at you. You have a new friend!",
-        "Now the hero's journey waits for you: a long trip through every world of the story."
+        "The dragons' hearth blazes up and the egg cracks... crack... crack!",
+        "A little dragon looks at you. You have a new friend!",
+        "Now the **hero's journey** awaits: back down the mountain all the way to the rocket."
       ],
       "friends": [
         "A small rusty robot climbs out of the pile.",
@@ -888,6 +928,57 @@
       "Where am I?",
       "Hi, will you be my friend?"
     ],
+    "windStart": [
+      "A **strong wind** blows on the slope. Type the word it carries before it blows into you."
+    ],
+    "windGust": [
+      "Phew, it's windy!",
+      "Hold on!"
+    ],
+    "windLonger": "A strong gust pushed you back, the way got longer.",
+    "windDone": [
+      "Phew, no wind here."
+    ],
+    "mudStart": [
+      "There are **sticky puddles** on the path. Pick a word over a clean spot. Step into the mud and you are stuck for a while."
+    ],
+    "mudStep": [
+      "Yuck!",
+      "Mud!",
+      "Eww, it's sticky!"
+    ],
+    "mudSlow": "The mud slows you right down:\nthe next three words are hard.",
+    "mudFree": [
+      "Phew, I'm unstuck!"
+    ],
+    "mudDone": [
+      "The puddles are behind us. Clean paws, let's go on!"
+    ],
+    "mountainStart": [
+      "The way to the summit splits. At each **crossroads** pick a signpost and type its word."
+    ],
+    "mountainEnd": [
+      "I can see the summit!",
+      "The summit is in sight!"
+    ],
+    "roadClosed": [
+      "Oh no, that path has closed."
+    ],
+    "bouldersStart": [
+      "Just below the summit **boulders roll** down the path. Type the word on a boulder and you jump over it."
+    ],
+    "boulderOops": [
+      "Oops!",
+      "Whoa!",
+      "Oof!"
+    ],
+    "bouldersLonger": "You hesitated, the way to the summit got longer.",
+    "bouldersDone": [
+      "The summit is in sight! Little egg, we are nearly there."
+    ],
+    "spellSlip": "The spell breaks off, write the last words again.",
+    "spellCareful": "Careful, the spell must be exact!",
+    "spellHello": "Hello! Thank you for warming me!",
     "copyLoopStart": "This level is still being made. For now you practise copying here: type the words in the middle until the time is up.",
     "copyLoopSoon": "Coming soon",
     "copyLoopCount": "typed: {n}",

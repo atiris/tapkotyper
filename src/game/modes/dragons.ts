@@ -224,8 +224,15 @@ interface Ember {
   smoke: boolean;
 }
 
+/** The picture a fire burns in, and its drawing while the picture is missing. */
+export interface PitLook {
+  pic: string;
+  fallback: (g: G, w: number, h: number) => void;
+}
+const FIREPIT: PitLook = { pic: 'obj-firepit', fallback: pitFallback };
+
 /**
- * The dragons' fire pit: dead embers, or burning with four flames that flicker each its own way,
+ * The dragons' fire pit (and the dragons' hearth on the mountain, `look`): dead embers, or burning with four flames that flicker each its own way,
  * the biggest at the back. It lights up or goes out toward `litTo` in `fade` seconds, the flames
  * coming one by one from the front; sparks rise while it burns, smoke while it goes out. Its warm
  * glow, the flames' size and the sparks grow with `glow`; `flare` makes the flames bigger still.
@@ -243,7 +250,7 @@ export class Firepit {
   growth: number | null = null;
   private embers: Ember[] = [];
   private t = 0;
-  constructor(private L: LevelRuntime, public x: number, readonly h = PIT_H) {}
+  constructor(private L: LevelRuntime, public x: number, readonly h = PIT_H, readonly ground = GROUND, private look: PitLook = FIREPIT) {}
 
   /** Lit at once (a level that starts with the fire burning). */
   burn(glow: number): this {
@@ -254,7 +261,7 @@ export class Firepit {
 
   /** The top of its fire, where caught things go in. */
   get top(): number {
-    return GROUND - this.h * 0.55;
+    return this.ground - this.h * 0.55;
   }
 
   /** A burst of sparks: a flame handed to the fire. */
@@ -277,7 +284,7 @@ export class Firepit {
   private ember(smoke: boolean): void {
     const r = this.L.rng;
     this.embers.push({
-      x: this.x + r.range(-0.22, 0.22) * this.h * PIT_RATIO, y: GROUND - this.h * (smoke ? 0.7 : 0.9 + 0.4 * this.glow),
+      x: this.x + r.range(-0.22, 0.22) * this.h * PIT_RATIO, y: this.ground - this.h * (smoke ? 0.7 : 0.9 + 0.4 * this.glow),
       vx: r.range(-12, 12), vy: -r.range(smoke ? 25 : 50, smoke ? 45 : 110), t: 0, life: r.range(smoke ? 1.6 : 0.8, smoke ? 2.6 : 1.6),
       size: smoke ? r.range(9, 15) : r.range(1.6, 3.2), smoke,
     });
@@ -313,7 +320,7 @@ export class Firepit {
   draw(g: G, inside?: (g: G) => void): void {
     const heat = this.lit * this.glow;
     if (heat > 0) {
-      const cy = GROUND - this.h * 0.7, r = this.h * (1.2 + 1.6 * this.glow);
+      const cy = this.ground - this.h * 0.7, r = this.h * (1.2 + 1.6 * this.glow);
       g.save();
       const glow = g.createRadialGradient(this.x, cy, 4, this.x, cy, r);
       glow.addColorStop(0, `rgba(255,214,120,${0.6 * heat})`);
@@ -322,9 +329,9 @@ export class Firepit {
       g.fillRect(this.x - r, cy - r, r * 2, r * 2);
       g.restore();
     }
-    drawSprite(g, 'obj-firepit', this.x, GROUND, this.h, { ay: 0.9 }, pitFallback);
+    drawSprite(g, this.look.pic, this.x, this.ground, this.h, { ay: 0.9 }, this.look.fallback);
     inside?.(g);
-    const w = this.h * PIT_RATIO, foot = GROUND - this.h * FIRE_FOOT, size = (this.growth === null ? 0.8 + 0.35 * this.glow : FULL_SIZE * (0.5 + 0.5 * this.growth)) * (1 + this.flare);
+    const w = this.h * PIT_RATIO, foot = this.ground - this.h * FIRE_FOOT, size = (this.growth === null ? 0.8 + 0.35 * this.glow : FULL_SIZE * (0.5 + 0.5 * this.growth)) * (1 + this.flare);
     const motion = !this.L.reduceMotion;
     FIRE.forEach((f, k) => {
       const a = this.shown(k);

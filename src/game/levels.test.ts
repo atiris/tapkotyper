@@ -240,13 +240,24 @@ describe('the valley', () => {
   });
 });
 
+describe('the egg mountain', () => {
+  it('plays the wind, the puddles, the crossroads, the boulders and the spell ribbon with the dragon minimums', () => {
+    const ids = ['w5-1', 'w5-2', 'w5-3', 'w5-4', 'w5-5'];
+    expect(ids.map((id) => levelById(id)?.kind)).toEqual(['wind', 'mud', 'crossroads', 'boulders', 'spell']);
+    expect(levelById('w5-3')?.variant).toBe('mountain');
+    expect(ids.map((id) => activityOf(levelById(id)!))).toEqual(['chase', 'catch', 'crossroads', 'chase', 'super']);
+    expect(ids.map((id) => minActiveS(levelById(id)!))).toEqual([120, 90, 120, 120, 150]);
+    expect(ids.map((id) => minWords(levelById(id)!))).toEqual([16, 12, 16, 16, 20]);
+  });
+});
+
 describe('worlds not built yet', () => {
-  it('every level of worlds 5-15 plays the cyclic copy, a copy dot with the full minimum', () => {
-    const later = LEVELS.filter((l) => l.world >= 4);
-    expect(later).toHaveLength(55);
+  it('every level of worlds 6-15 plays the cyclic copy, a copy dot with the full minimum', () => {
+    const later = LEVELS.filter((l) => l.world >= 5);
+    expect(later).toHaveLength(50);
     expect(later.every((l) => l.kind === 'copyloop')).toBe(true);
     expect(later.filter((l) => !l.isSuper).every((l) => activityOf(l) === 'clean')).toBe(true);
-    expect(LEVELS.filter((l) => l.world < 4).some((l) => l.kind === 'copyloop')).toBe(false);
+    expect(LEVELS.filter((l) => l.world < 5).some((l) => l.kind === 'copyloop')).toBe(false);
   });
 });
 

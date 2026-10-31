@@ -1,6 +1,6 @@
 import type { Companion, CompanionKind } from '../storage/schema';
 import { accessories, hasImage, imageUrl, sprite, type Slot } from './assets';
-import { drawFace, evictOldest, type G } from './draw';
+import { drawFace, drawSprite, evictOldest, type G } from './draw';
 
 /** `surprised` is optional art, used only in story 2's meeting scene. */
 export type Mood = 'idle' | 'happy' | 'thinking' | 'surprised';
@@ -79,6 +79,12 @@ export interface TapkoMotion {
   alpha?: number;
   /** false leaves out the ground shadow (Tapko off the ground, in a vehicle). */
   shadow?: boolean;
+  /** He carries the dragon egg on his back (world 5): it peeks over his right shoulder, behind everything he wears. */
+  carry?: 'egg';
+  /** 0..1 of the egg's peek: 0 at rest (a third of it shows), 1 risen (two thirds show). */
+  peek?: number;
+  /** The egg's extra tilt while it peeks (radians, a little wobble). */
+  wobble?: number;
 }
 
 /** Tapko's layers put together, least recently drawn first: a frame draws one picture instead of one per accessory. */
@@ -101,6 +107,132 @@ function stackCanvas(layers: { name: string }[], px: number): HTMLCanvasElement 
   }
   stacks.set(key, c);
   return c;
+}
+
+/**
+ * The egg on his back (`carry: 'egg'`): its picture's height and its middle's x as shares of his
+ * picture (over his right shoulder, the viewer's left, away from what comes from the right), its
+ * tilt outward, and the share of it that shows at rest and while it peeks.
+ */
+const EGG = 'obj-egg-plain';
+const EGG_H = 0.27;
+const EGG_X = 0.32;
+const EGG_TILT = -0.26;
+export const EGG_REST = 1 / 3;
+export const EGG_PEEK = 2 / 3;
+/** Its middle sinks no lower than his chest, and rises at most this share of its height to peek. */
+const EGG_LOW = 0.5;
+const EGG_RISE = 0.5;
+/** The egg picture's width per height (401 x 512); its outline is about this oval. */
+const EGG_RATIO = 401 / 512;
+/** Side of the silhouette mask the egg's place is found on. */
+const MASK = 96;
+
+/** Is (x, y) inside the egg (shares of the picture) whose middle is at (cx, cy)? */
+function inEgg(x: number, y: number, cx: number, cy: number): boolean {
+  const c = Math.cos(EGG_TILT), s = Math.sin(EGG_TILT), dx = x - cx, dy = y - cy;
+  const u = (dx * c + dy * s) / (EGG_H * EGG_RATIO * 0.5), v = (-dx * s + dy * c) / (EGG_H * 0.5);
+  return u * u + v * v <= 1;
+}
+
+/** The share of the egg, its middle at (EGG_X, cy), that no opaque pixel of the silhouette (`mask`, n x n, 1 = opaque) covers. */
+export function eggVisible(mask: Uint8Array, n: number, cy: number): number {
+  let all = 0, shown = 0;
+  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+    if (!inEgg((x + 0.5) / n, (y + 0.5) / n, EGG_X, cy)) continue;
+    all++;
+    if (!mask[y * n + x]) shown++;
+  }
+  return all ? shown / all : 0;
+}
+
+/**
+ * The egg's middle y at rest (share of the picture): sunk from above his head behind him while at
+ * least `EGG_REST` of it shows, never lower than his chest.
+ */
+export function eggRest(mask: Uint8Array, n: number): number {
+  let cy = 0;
+  while (cy + 1 / n <= EGG_LOW && eggVisible(mask, n, cy + 1 / n) >= EGG_REST) cy += 1 / n;
+  return cy;
+}
+
+/** Peeking, it rises from `rest` until `EGG_PEEK` of it shows, at most `EGG_RISE` of its height. */
+export function eggPeek(mask: Uint8Array, n: number, rest: number): number {
+  let cy = rest;
+  while (cy > rest - EGG_RISE * EGG_H && eggVisible(mask, n, cy) < EGG_PEEK) cy -= 1 / n;
+  return cy;
+}
+
+/** An opaque silhouette (n x n, 1 = alpha over a half) of ovals given in shares of the picture. */
+export function ovalMask(ovals: Oval[], n: number, mask = new Uint8Array(n * n)): Uint8Array {
+  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+    const px = (x + 0.5) / n, py = (y + 0.5) / n;
+    if (ovals.some(([cx, cy, rx, ry, rot]) => {
+      const c = Math.cos(rot), s = Math.sin(rot), dx = px - cx, dy = py - cy;
+      const u = (dx * c + dy * s) / rx, v = (-dx * s + dy * c) / ry;
+      return u * u + v * v <= 1;
+    })) mask[y * n + x] = 1;
+  }
+  return mask;
+}
+
+/** The egg's middle at rest and peeking, per outfit (his idle stack) and which of its pictures were there. */
+const eggPlaces = new Map<string, { rest: number; peek: number }>();
+
+/** The egg's place for this outfit, from the union of everything he wears: drawn pictures, else their fallbacks' ovals. */
+function eggPlace(c: Companion): { rest: number; peek: number } {
+  const layers = tapkoStack(c, 'idle');
+  const imgs = layers.map((l) => sprite(l.name));
+  const key = layers.map((l, i) => `${l.name}${imgs[i] ? '' : '?'}`).join(' ');
+  let place = eggPlaces.get(key);
+  if (place) return place;
+  const mask = new Uint8Array(MASK * MASK);
+  const cv = document.createElement('canvas');
+  cv.width = cv.height = MASK;
+  const cg = cv.getContext('2d', { willReadFrequently: true })!;
+  layers.forEach((l, i) => {
+    const img = imgs[i];
+    if (img) cg.drawImage(img, 0, 0, MASK, MASK);
+    else if (l.slot === 'companion') ovalMask(FALLBACK_BODY, MASK, mask);
+    else if (l.slot === 'back') ovalMask(FALLBACK_BACK, MASK, mask);
+  });
+  const px = cg.getImageData(0, 0, MASK, MASK).data;
+  for (let i = 0; i < mask.length; i++) if (px[i * 4 + 3] > 127) mask[i] = 1;
+  const rest = eggRest(mask, MASK);
+  place = { rest, peek: eggPeek(mask, MASK, rest) };
+  eggPlaces.set(key, place);
+  return place;
+}
+
+/** Where the egg's middle is on the stage for Tapko standing at (x, y) at `size` (no sway): where it is lifted off his back. */
+export function eggSpot(c: Companion, x: number, y: number, size: number): { x: number; y: number; h: number; rot: number } {
+  return { x: x + (EGG_X - 0.5) * size, y: y + (eggPlace(c).rest - 0.9) * size, h: EGG_H * size, rot: EGG_TILT };
+}
+
+/** The egg in his picture's own units (the stack's square, `size` high), behind the stack. */
+function drawEgg(g: G, c: Companion, size: number, m: TapkoMotion): void {
+  const place = eggPlace(c), k = m.peek ?? 0;
+  const cy = place.rest + (place.peek - place.rest) * k;
+  drawSprite(g, EGG, EGG_X * size, cy * size, EGG_H * size, { rot: EGG_TILT + (m.wobble ?? 0) }, eggFallback);
+}
+
+/** The egg while its picture is missing: a cream oval with turquoise spots. */
+export function eggFallback(g: G, w: number, h: number): void {
+  g.save();
+  g.fillStyle = '#fbf1dc';
+  g.strokeStyle = '#6d5040';
+  g.lineWidth = Math.max(1.5, h * 0.02);
+  g.beginPath();
+  g.ellipse(0, 0, w * 0.48, h * 0.48, 0, 0, Math.PI * 2);
+  g.fill();
+  g.stroke();
+  g.fillStyle = '#6cc7c0';
+  for (const [dx, dy, r] of [[-0.15, -0.2, 0.08], [0.18, -0.05, 0.07], [-0.05, 0.18, 0.09], [0.2, 0.25, 0.05]]) {
+    g.beginPath();
+    g.arc(dx * w, dy * h, r * h, 0, Math.PI * 2);
+    g.fill();
+  }
+  g.restore();
 }
 
 /**
@@ -133,6 +265,7 @@ export function drawTapko(g: G, c: Companion, mood: Mood, x: number, y: number, 
   g.scale((m.flip ? -1 : 1) * (1 - breathe) / squash, (1 + breathe) * squash);
   // The template's feet sit at 90 % of the image height.
   g.translate(-size / 2, -size * 0.9);
+  if (m.carry === 'egg') drawEgg(g, c, size, m);
   const layers = tapkoStack(c, mood);
   const stack = stackCanvas(layers, px);
   if (stack) g.drawImage(stack, 0, 0, size, size);
@@ -145,14 +278,21 @@ export function drawTapko(g: G, c: Companion, mood: Mood, x: number, y: number, 
   g.restore();
 }
 
+/** An ellipse of a fallback drawing in shares of the picture: middle, radii and turn. */
+export type Oval = [cx: number, cy: number, rx: number, ry: number, rot: number];
+/** The fallback body: feet, paws, belly and head. */
+export const FALLBACK_BODY: Oval[] = [[0.4, 0.86, 0.07, 0.05, 0], [0.6, 0.86, 0.07, 0.05, 0], [0.29, 0.64, 0.06, 0.06, 0], [0.71, 0.64, 0.06, 0.06, 0], [0.5, 0.66, 0.2, 0.2, 0], [0.5, 0.36, 0.25, 0.22, 0]];
+/** The fallback back item: two wings. */
+export const FALLBACK_BACK: Oval[] = [[0.22, 0.55, 0.1, 0.14, -0.5], [0.78, 0.55, 0.1, 0.14, 0.5]];
+
 function drawFallbackBody(g: G, kind: CompanionKind, mood: Mood, s: number): void {
   const [main, belly] = KIND_COLORS[kind];
   g.strokeStyle = '#5a3d2b';
   g.lineWidth = s * 0.012;
   g.fillStyle = main;
-  for (const [cx, cy, rx, ry] of [[0.4, 0.86, 0.07, 0.05], [0.6, 0.86, 0.07, 0.05], [0.29, 0.64, 0.06, 0.06], [0.71, 0.64, 0.06, 0.06], [0.5, 0.66, 0.2, 0.2], [0.5, 0.36, 0.25, 0.22]]) {
+  for (const [cx, cy, rx, ry, rot] of FALLBACK_BODY) {
     g.beginPath();
-    g.ellipse(cx * s, cy * s, rx * s, ry * s, 0, 0, Math.PI * 2);
+    g.ellipse(cx * s, cy * s, rx * s, ry * s, rot, 0, Math.PI * 2);
     g.fill();
     g.stroke();
   }
@@ -172,7 +312,7 @@ function drawFallbackAccessory(g: G, slot: Slot, s: number): void {
   else if (slot === 'eyes') { g.lineWidth = s * 0.015; g.strokeStyle = FALLBACK_ACC.eyes; g.arc(0.4 * s, 0.37 * s, 0.06 * s, 0, 7); g.moveTo(0.66 * s, 0.37 * s); g.arc(0.6 * s, 0.37 * s, 0.06 * s, 0, 7); g.stroke(); return; }
   else if (slot === 'neck') g.ellipse(0.5 * s, 0.53 * s, 0.15 * s, 0.035 * s, 0, 0, Math.PI * 2);
   else if (slot === 'body') g.ellipse(0.5 * s, 0.67 * s, 0.17 * s, 0.13 * s, 0, 0, Math.PI * 2);
-  else if (slot === 'back') { g.ellipse(0.22 * s, 0.55 * s, 0.1 * s, 0.14 * s, -0.5, 0, Math.PI * 2); g.ellipse(0.78 * s, 0.55 * s, 0.1 * s, 0.14 * s, 0.5, 0, Math.PI * 2); }
+  else if (slot === 'back') for (const [cx, cy, rx, ry, rot] of FALLBACK_BACK) { g.ellipse(cx * s, cy * s, rx * s, ry * s, rot, 0, Math.PI * 2); }
   else if (slot === 'hand') g.arc(0.78 * s, 0.6 * s, 0.05 * s, 0, Math.PI * 2);
   else { g.ellipse(0.4 * s, 0.88 * s, 0.08 * s, 0.04 * s, 0, 0, Math.PI * 2); g.ellipse(0.6 * s, 0.88 * s, 0.08 * s, 0.04 * s, 0, 0, Math.PI * 2); }
   g.fill();

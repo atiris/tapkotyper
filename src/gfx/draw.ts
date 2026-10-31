@@ -341,7 +341,7 @@ function letterWidths(g: G, word: string, size: number): number[] {
  * A word label's colors. The play field keeps its daylight pictures in both looks, so the label
  * stays a light plate with dark letters on a dark page too.
  */
-const WORD = { plate: 'rgba(255,253,246,0.94)', edge: 'rgba(90,61,43,0.55)', ink: '#4a3a5c', typed: '#3fa65a', next: '#ffe9b0', nextInk: '#2d2140', icon: '#5a3d2b' };
+export const WORD = { plate: 'rgba(255,253,246,0.94)', edge: 'rgba(90,61,43,0.55)', ink: '#4a3a5c', typed: '#3fa65a', next: '#ffe9b0', nextInk: '#2d2140', icon: '#5a3d2b' };
 
 /** Room the icon of a label takes. */
 const ICON_W = 0.85;

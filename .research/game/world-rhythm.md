@@ -115,7 +115,7 @@ change inside it.
   level-3 surprise), `learning/lesson-progression.md` (letter catch uses the new and weak
   keys), `game/super-obstacles.md` (no change), map icons in `experience/visuals.md`.
 - Code: `LevelKind` and `LEVELS` in `src/game/levels.ts`, new modes in `src/game/modes/`,
-  the key set of a level in `wordSource` (`src/game/runtime.ts`), map dots, i18n lines for
+  the key set of a level in `wordSource` (`src/game/runtime/options.ts`), map dots, i18n lines for
   Tapko per engine. No profile data change: ids and stars stay.
 - Art: new object sets per world and activity icons for the map, prompts in
   `assets-src/PROMPTS.md` section 9.
@@ -141,7 +141,7 @@ In the formulas below the story order is 1 for the dragon story, 2 for the robot
    (1 + story order) x 3: 6 in the dragon story, 9 in the robot story, 12 in the fairy
    story, so a child with many slips never ends up in an endless level.
 4. **Text in early worlds and a key ceiling.** A replayed level already uses every key the
-   child knows now (checked in `wordSource`, `src/game/runtime.ts`), so a child who comes
+   child knows now (checked in `wordSource`, `src/game/runtime/options.ts`), so a child who comes
    back to the meadow with more letters gets richer words there, and simple text becomes
    possible. New: each story level gets a key ceiling of its key need + 3 + 2 x story
    order (dragon story need + 5, robot need + 7, fairy need + 9; the meadow 8 to 10 keys).

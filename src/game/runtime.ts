@@ -3,48 +3,51 @@ import { fast } from '../app/fast';
 import { audio, type Sfx } from '../audio/audio';
 import { speech } from '../audio/speech';
 import { FrameWatch, graphics, markSlowDevice } from '../engine/graphics';
-import { Loop, Stage, VH } from '../engine/loop';
+import { Loop, Stage } from '../engine/loop';
 import { Particles } from '../engine/particles';
 import { Rng } from '../engine/rng';
 import { Tweens } from '../engine/tween';
 import { drawBackground, type G } from '../gfx/draw';
-import { type Mood, pawColors, tapkoElement, tapkoPictures, renderTapkoInto } from '../gfx/tapko';
+import { type Mood, tapkoPictures } from '../gfx/tapko';
 import { friendPictures, picturesReady, preload } from '../gfx/assets';
-import { type FairyMood, drawFairy } from '../gfx/fairy';
-import { type RobotMood, type RobotState, drawRobot, robotFor } from '../gfx/robot';
-import { LITTLE_DRAGON_PICTURES, type LittleDragonMood, drawLittleDragon } from '../gfx/little-dragon';
-import { locale, t, tList } from '../i18n/i18n';
+import { locale, t } from '../i18n/i18n';
 import { nickname } from '../storage/store';
 import { type InputHandlers, KeyInput, type TypedChar } from '../input/input';
 import { setShortcuts, withKey } from '../input/shortcuts';
-import { ENTER, LAYOUTS, LayoutMismatchDetector, enterAfter, fingerFor, homeKey, stepsFor } from '../keyboard/layouts';
-import { SHIFT_L, SHIFT_R, SPACE, activeKeys, aimKeys, isKeyReady, isLetterKey, keysToIntroduce, masteryLevel, newestGroup, recentAccuracy, shiftKeyOf, useLayout } from '../learning/lessons';
-import { keyWeights, recordPress, recordSession, typingStep } from '../learning/stats';
+import { ENTER, LAYOUTS, LayoutMismatchDetector, enterAfter, fingerFor, stepsFor } from '../keyboard/layouts';
+import { SHIFT_L, SPACE, activeKeys, aimKeys, isKeyReady, masteryLevel, recentAccuracy, shiftKeyOf, useLayout } from '../learning/lessons';
+import { recordPress, recordSession, typingStep } from '../learning/stats';
 import { FINGER_KEYS, KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
 import { LayoutSwitch } from '../ui/layout-switch';
-import { button, closeButton, closeModals, confirmDialog, h } from '../ui/dom';
+import { closeModals, confirmDialog, h } from '../ui/dom';
 import { globalButtons } from '../ui/chrome';
 import { tip } from '../ui/tooltip';
-import { accuracyPic, paintRound, pawRing, placeRing, rhythmPic, rhythmRing, roundButton, roundPic, worldName } from '../ui/hud';
-import { type MenuEntry, menuPanel } from '../ui/menu';
-import { OWN_SHARE, WordSource, type WordSourceOwn } from '../words/words';
-import { type LangRef, type Profile, SUPER_ID, type Surprise } from '../storage/schema';
+import { accuracyPic, placeRing, rhythmPic, roundButton, worldName } from '../ui/hud';
+import type { WordSource } from '../words/words';
+import { SUPER_ID, type Surprise } from '../storage/schema';
 import type { LevelDef } from './levels';
-import { LEVELS, WORLDS, grownCount, hasMinLength, levelOver, minActiveS, playedStep, shownProgress, storyOf } from './levels';
-import { type Mode, TAPKO_FEET, TAPKO_H, TAPKO_X, driftOffset } from './mode';
-import { PAW_MAX, PAW_STREAK, PAW_WORDS } from './paw';
+import { LEVELS, WORLDS, grownCount, hasMinLength, levelOver, minActiveS, playedStep, shownProgress } from './levels';
+import { type Mode, driftOffset } from './mode';
 import { ENTER_MAX, EnterMarks } from './enter';
 import type { ModeMaker } from './modes';
-import type { FreeTypeMode, FreeTyped } from './modes/freetype';
-import { PressureValve, perChar, sayTime } from './pace';
+import type { FreeTypeMode } from './modes/freetype';
+import { PressureValve, perChar } from './pace';
 import { Rhythm } from './rhythm';
-import { type JourneyRun, type LevelResult, completeLevel, completeStay, joinRuns } from './progress';
+import { completeLevel, completeStay, joinRuns } from './progress';
 import { type Style, type Target, TypingCore } from './typing';
-import { type ControlKey, pickTip, showCard, showControlKey, showHomeRow, showKeysIntro, showNewKey, showPosture, showTravel } from './cards';
+import { pickTip, showCard, showPosture, showTravel } from './cards';
 import { surpriseFor } from './own-content';
-import { HELP_PLANS, type HelpHost, type HelpPlan, SuperHelper } from './super-help';
 import { Callouts } from './runtime/callouts';
-import { LABEL_GAP, Labels } from './runtime/labels';
+import { Friends } from './runtime/friends';
+import { keyCards } from './runtime/key-cards';
+import { Labels } from './runtime/labels';
+import { type RuntimeOptions, wordSource } from './runtime/options';
+import { type Ending, PauseCard, endingOf } from './runtime/pause';
+import { Paws } from './runtime/paws';
+import { Reading } from './runtime/reading';
+import { LevelState } from './runtime/state';
+import { SuperHelp } from './runtime/super-helper';
+import { StageTapko } from './runtime/tapko';
 
 /** Seconds every target gets to be read. */
 const READ_TIME = 3;
@@ -52,19 +55,6 @@ const READ_TIME = 3;
 const CAPITAL_EXTRA = 1.5;
 /** Travel time of dictated and remembered targets: hearing or recalling a target takes longer. */
 const STYLE_PACE: Record<Style, number> = { copy: 1, dictation: 1.5, memory: 1.8, mixed: 1.8 };
-/** Seconds without a key after which a dictated target is said once more. */
-const DICTATION_REPEAT = 4;
-/** Bolt's place next to the DOM Tapko and his height, in game units. */
-const BOLT_X = 350;
-const BOLT_SIZE = 150;
-/** Melody's height, how high she floats above the friend's spot, and the seconds of her happy hop. */
-const FAIRY_SIZE = 120;
-const FAIRY_FLOAT = 110;
-const FAIRY_HOP = 0.6;
-/** The little dragon's height, its place behind the DOM Tapko, and the seconds of its glad hop. */
-const LITTLE_SIZE = 92;
-const LITTLE_X = TAPKO_X - 95;
-const LITTLE_HOP = 0.5;
 /** The end of a level: Tapko hops HOPS times of HOP_TIME seconds, his tool fades in TOOL_FADE, then the results open. */
 const HOPS = 3;
 const HOP_TIME = 0.4;
@@ -74,74 +64,10 @@ const RESULTS_AFTER = 1.4;
 const PICTURES_WAIT_S = 30;
 /** Milliseconds after play begins in which Enter does nothing. */
 const ENTER_GUARD_MS = 300;
-/** Stretches done sitting, one of them shown on the pause card; its short exercise lasts STRETCH_S seconds. */
-const STRETCHES = ['arms', 'fists', 'shoulders', 'neck', 'wrists', 'eyes'];
-const STRETCH_S = 20;
 /** A hero's journey plays a difficulty step above the profile's, its words a letter longer and its phrases up to three words (the planet's hard path). */
 const JOURNEY_STEP = 1;
 const DIFFICULTY_MAX = 10;
 const JOURNEY_WORDS = 3;
-
-/** What the voice says for a target: its words, never the Enter mark. */
-function spoken(tg: Target): string {
-  return tg.word.replace(ENTER, '');
-}
-
-/**
- * The targets of a profile: its active keys (or a drill's, or the keys chosen for free practice),
- * weak keys more often, the newest group in focus (or the target range's weak keys), and the
- * parent's own words and text mixed in (not in drills, chosen keys or the target range, their
- * words would bring other letters), or a task's.
- */
-export function wordSource(p: Profile, lang: LangRef, drill?: string[], own?: WordSourceOwn, chosen?: string[], focus?: string[], hard = false): WordSource {
-  // Practice of space, punctuation or a Shift needs letters around it: the known ones.
-  const keys = chosen ?? (!drill ? activeKeys(p) : drill.every(isLetterKey) ? drill : [...new Set([...activeKeys(p), ...drill])]);
-  const s = p.settings;
-  return new WordSource(app.words[lang], {
-    keys,
-    len: hard ? [s.wordLen[0] + 1, s.wordLen[1] + 1] : s.wordLen,
-    noDiacritics: s.noDiacritics,
-    weights: keyWeights(p, keys),
-    focus: drill ?? (focus ?? newestGroup(p)).filter((k) => keys.includes(k)),
-    layout: LAYOUTS[p.layout],
-    names: tList('names'),
-    shiftMastery: Object.fromEntries([SHIFT_L, SHIFT_R].map((k) => [k, masteryLevel(p.stats.keys[k], s.difficulty)])),
-    own: drill || chosen || focus ? undefined : own ?? { words: s.ownWords, text: s.ownText, share: OWN_SHARE[s.ownMix] },
-  });
-}
-
-export interface RuntimeOptions {
-  /** Practice: only these keys (drills), else the profile's active keys. */
-  keys?: string[];
-  /** Free practice: words only from these keys, chosen in the key picker. */
-  chosen?: string[];
-  /** Practice length in seconds; null = until the child stops. */
-  seconds?: number | null;
-  /** Own words and text instead of the parent's (a task's). */
-  own?: WordSourceOwn;
-  /** Free practice: the style chosen in the key picker. */
-  style?: Style;
-  /** Staying a while: the level runs without an end until the child ends it on the pause card, for no stars. */
-  stay?: boolean;
-  /** Staying a while in a story level with the next one open: the pause card's first button goes on to it. */
-  next?: () => void;
-  onFinish(result: LevelResult | null): void;
-  onExit(): void;
-  /** Free typing left after something was typed: its end card. */
-  onFreeDone(typed: FreeTyped): void;
-  /** A click on Tapko during play (the level pauses first). */
-  onTapko(): void;
-  /** The help page over the paused or ended level, with what this level asks (`now`); `back` returns to the paused level. */
-  onHelp(back: () => void, now: HTMLElement[]): void;
-  /** The map's warm-up over the paused level: `back` returns to the pause card, `play` goes on typing. */
-  onBreak(back: () => void, play: () => void): void;
-  /** The player switched the keyboard layout under the on-screen keyboard: the level starts again with it. */
-  onLayout(): void;
-  /** A hero's journey part: the journey's parts so far, this one is added at its end. */
-  journey?: JourneyRun;
-  /** A hero's journey part that is not the last one ended: the next part comes. */
-  onPart?(): void;
-}
 
 /** Runs one level: input, typing state, mode, HUD, guide, Tapko, stats. */
 export class LevelRuntime {
@@ -166,50 +92,31 @@ export class LevelRuntime {
   readonly highContrast: boolean;
   readonly reduceMotion: boolean;
   readonly el: HTMLElement;
-  /** Bolt walks with Tapko in story 2 levels; null elsewhere. */
-  readonly robot: RobotState | null;
-  private robotMood: RobotMood = 'idle';
-  private robotMoodT = 0;
-  /** Melody floats next to Tapko in story 3 levels. */
-  readonly fairy: boolean;
-  private fairyMood: FairyMood = 'idle';
-  private fairyMoodT = 0;
-  private fairyHop = 0;
-  /** The hatched little dragon walks behind Tapko on the dragon story's hero's journey. */
-  readonly littleDragon: boolean;
-  private littleMood: LittleDragonMood = 'idle';
-  private littleMoodT = 0;
-  private littleHop = 0;
+  readonly friends: Friends;
   private labels = new Labels(this);
   private callouts = new Callouts(this);
 
   private loop: Loop;
   private input: KeyInput | null = null;
   private guide: KeyboardGuide;
-  private guideOn: boolean;
-  private tapko: HTMLElement;
-  /** Tapko's current mood, for modes that draw him on the canvas. */
-  tapkoMood: Mood = 'idle';
-  private bubble: HTMLElement;
-  private bubbleTimer = 0;
+  /** The on-screen keyboard is shown; the player keeps the choice for the next levels. */
+  guideOn: boolean;
+  private readonly state: LevelState;
+  private readonly ending: Ending;
+  private readonly pauseCard: PauseCard;
+  private readonly paws: Paws | null = null;
+  private readonly superHelp: SuperHelp | null = null;
+  private readonly tapko: StageTapko;
   private progressFill: HTMLElement;
   private gauge = rhythmPic();
   /** Own practice and the target range: a ring of accuracy for each key in focus, before the rhythm. */
   private accuracyPics: { key: string; pic: ReturnType<typeof accuracyPic> }[] = [];
   /** Seconds until the gauge's spoken label may change again. */
   private gaugeLabelIn = 0;
-  private pauseEl: HTMLElement | null = null;
-  private pauseBtn: HTMLButtonElement | null = null;
   private guideBtn: HTMLButtonElement;
-  /** The countdown of the short exercise on the pause card; 0 when none runs. */
-  private stretchTimer = 0;
   /** Free typing's text shown above Tapko and the range's speech bubbles, for screen readers. */
   private saidEl: HTMLElement | null = null;
   private breakSaid = false;
-  private paused = false;
-  /** Play began (the preparation cards are done). */
-  started = false;
-  private finished = false;
   private deadPending = false;
   private mismatch: LayoutMismatchDetector;
   private layoutSwitch: LayoutSwitch;
@@ -220,7 +127,6 @@ export class LevelRuntime {
   /** Stats of this level. */
   chars = 0;
   errors = 0;
-  private elapsed = 0;
   /** Seconds of typing: each own key adds the time since the one before (`typingStep`); and the level time of the last one. */
   private typedSeconds = 0;
   private ownKeyAt = 0;
@@ -234,7 +140,6 @@ export class LevelRuntime {
   private wrongStreak = { ch: '', n: 0 };
   private wordStreak = 0;
   private lastCheer = 0;
-  private moodTimer = 0;
   private hadKeydown = false;
   /** Rhythm of the last session (characters per second), the pace before the child's own words. */
   private readonly lastCps: number;
@@ -248,17 +153,6 @@ export class LevelRuntime {
   private missesSeen = 0;
   /** Targets the child typed without a reveal (dictation) or a flash (memory). */
   private cleanTargets = 0;
-
-  /** Paw help: the HUD button, words the paw still types, seconds to its next key. */
-  private pawBtn: HTMLButtonElement | null = null;
-  /** The super player's help: the button, its open menu and the helper while it types. */
-  private superBtn: HTMLButtonElement | null = null;
-  private closeHelpMenu: ((refocus?: boolean) => void) | null = null;
-  private helper: SuperHelper | null = null;
-  private pawWords = 0;
-  private pawTimer = 0;
-  private pawIdle = 0;
-  private guideBeforePaws = true;
 
   constructor(root: HTMLElement, readonly def: LevelDef, makeMode: ModeMaker, private opts: RuntimeOptions) {
     const p = app.profile!;
@@ -288,12 +182,11 @@ export class LevelRuntime {
 
     // DOM: HUD, stage, Tapko, bubble, guide.
     this.el = h('div', { class: `level-screen world-${WORLDS[def.world]}` });
-    const story = def.kind !== 'practice' && def.kind !== 'freetype' && def.kind !== 'aim' && def.kind !== 'parrot';
-    this.robot = story && storyOf(def.world).id === 'robot' ? robotFor(def.world) : null;
-    if (this.robot) this.el.dataset.bolt = this.robot.look;
-    this.fairy = story && storyOf(def.world).id === 'fairy';
-    if (this.fairy) this.el.dataset.fairy = 'melody';
-    this.littleDragon = def.journey?.story === 'dragon';
+    this.guide = new KeyboardGuide(lay);
+    this.state = new LevelState(this.core, this.guide, this.el);
+    this.friends = new Friends(this, def);
+    if (this.friends.robot) this.el.dataset.bolt = this.friends.robot.look;
+    if (this.friends.fairy) this.el.dataset.fairy = 'melody';
     this.progressFill = h('div', { class: 'progress-fill' });
     const title = def.kind === 'practice' ? t(def.phrases ? 'level.ownText' : 'level.practice') : def.kind === 'freetype' ? t('level.freeType') : def.kind === 'aim' ? t('aim.title') : def.kind === 'parrot' ? t('parrot.title') : def.journey ? t('journey.title') : worldName(def);
     // Hiding the guide is the switch: the crossed keyboard, with the orange ring while the guide is hidden.
@@ -302,47 +195,38 @@ export class LevelRuntime {
     if (p.settings.guideLocked) guideBtn.disabled = true;
     const helpBtn = roundButton('control', 'help', t('level.help'), () => this.openHelp());
     tip(helpBtn, withKey(t('level.help'), 'F1'));
-    this.readBtn = roundButton('control', 'read', t('level.read'), () => this.toggleRead());
-    tip(this.readBtn, withKey(t('level.read'), 'F3'));
-    this.paintRead();
-    this.offVoices = speech.onVoices(() => this.paintRead());
+    this.reading = new Reading(this.state, this, this.labels);
     // Free typing has nothing to pause: its X leaves.
-    const pauseBtn = def.kind === 'freetype' ? roundButton('control', 'close', t('level.leave'), () => this.exit()) : this.pauseBtn = roundButton('control', 'pause', t('level.pause'), () => (this.paused ? this.resume() : this.pause()));
-    if (this.pawsAllowed) {
-      this.pawBtn = roundButton('paw', 'paw', t('paw.title', { n: PAW_STREAK, words: PAW_WORDS }), () => this.startPaws());
-      this.pawBtn.classList.add('paw-btn');
-      this.renderPawBtn();
-    }
-    if (p.id === SUPER_ID && def.kind !== 'freetype') {
-      this.superBtn = roundButton('super', 'lifebuoy', t('super.help.title'), () => this.toggleHelpMenu());
-      this.superBtn.classList.add('super-help');
-      this.superBtn.setAttribute('aria-haspopup', 'menu');
-      this.paintHelpBtn();
-    }
+    const pauseBtn = def.kind === 'freetype' ? roundButton('control', 'close', t('level.leave'), () => this.exit()) : roundButton('control', 'pause', t('level.pause'), () => (this.state.paused ? this.resume() : this.pause()));
+    this.ending = endingOf(def, !!opts.stay);
+    this.pauseCard = new PauseCard(this.state, {
+      ending: this.ending, stay: !!opts.stay, next: opts.next,
+      canSlowDown: () => this.difficulty > 1,
+      resume: () => this.resume(),
+      slowDown: () => this.slowDown(),
+      leave: () => void this.leave(),
+      onBreak: (back, play) => opts.onBreak(back, play),
+    }, def.kind === 'freetype' ? null : pauseBtn);
+    if (this.pawsAllowed) this.paws = new Paws(this.state, this);
+    if (p.id === SUPER_ID && def.kind !== 'freetype') this.superHelp = new SuperHelp(this.state, { rng: this.rng, noPressure: this.noPressure, share: () => this.share(), type: (c) => this.onChar(c) });
     if (def.kind === 'practice' || def.kind === 'aim') this.accuracyPics = [...this.words.focus].map((key) => ({ key, pic: accuracyPic(key) }));
     this.paintAccuracy();
     const hud = h('div', { class: 'hud' },
       pauseBtn,
-      this.pawBtn,
-      this.superBtn,
+      this.paws?.btn,
+      this.superHelp?.btn,
       def.kind === 'practice' || def.index < 0 ? null : placeRing(def),
       h('b', { class: 'hud-title' }, title),
       ...(def.kind === 'freetype' ? [] : [opts.stay ? null : h('div', { class: 'progress', tip: t('level.progress') }, this.progressFill), ...this.accuracyPics.map((a) => a.pic.el), def.kind === 'parrot' ? null : this.gauge.el]),
       h('span', { class: 'hud-divider', 'aria-hidden': 'true' }),
-      guideBtn, this.readBtn, ...globalButtons(helpBtn));
+      guideBtn, this.reading.btn, ...globalButtons(helpBtn));
     const stageWrap = h('div', { class: 'stage-wrap' });
-    this.tapko = tapkoElement(p.companion, 'idle');
-    // Tapko joins the stage when play starts; the preparation cards show him themselves.
-    this.tapko.classList.add('level-tapko', 'waiting');
-    this.tapko.dataset.tip = t('tapko.statsHint');
-    this.tapko.addEventListener('click', () => {
-      if (this.finished || !this.started) return;
+    this.tapko = new StageTapko(this.reduceMotion, () => {
+      if (this.state.finished || !this.state.started) return;
       this.pause();
       this.opts.onTapko();
     });
-    this.bubble = h('div', { class: 'bubble hidden', role: 'status', 'aria-live': 'polite' });
-    stageWrap.append(this.tapko, this.bubble);
-    this.guide = new KeyboardGuide(lay);
+    stageWrap.append(this.tapko.el, this.tapko.bubble);
     this.layoutSwitch = new LayoutSwitch(p.layout, (id) => {
       useLayout(p, id);
       saveProfile();
@@ -356,8 +240,7 @@ export class LevelRuntime {
     root.append(this.el);
 
     this.stage = new Stage(stageWrap);
-    this.onStageClick = this.onStageClick.bind(this);
-    this.stage.canvas.addEventListener('pointerdown', this.onStageClick);
+    this.reading.listen(this.stage.canvas);
     this.mode = makeMode(this);
     this.free = def.kind === 'freetype' ? this.mode as FreeTypeMode : null;
     const extra = this.mode.hud();
@@ -367,7 +250,7 @@ export class LevelRuntime {
       this.saidEl = h('p', { class: 'sr-only', role: 'status', 'aria-live': 'polite' });
       stageWrap.append(this.saidEl);
     }
-    this.tapko.classList.toggle('hidden', this.tapkoOnStage);
+    this.tapko.el.classList.toggle('hidden', this.tapkoOnStage);
     this.loop = new Loop((dt) => this.update(dt), () => this.render());
     this.loop.start();
     this.onVisibility = this.onVisibility.bind(this);
@@ -378,12 +261,18 @@ export class LevelRuntime {
     this.offShortcuts = setShortcuts({
       help: () => this.openHelp(),
       guide: () => { if (!guideBtn.disabled) this.toggleGuide(); },
-      read: () => { if (!this.readBtn.hidden) this.toggleRead(); },
+      read: () => { if (!this.reading.btn.hidden) this.reading.toggle(); },
     });
     void this.prepare();
   }
 
   private readonly offShortcuts: () => void;
+  private readonly reading: Reading;
+
+  /** Play began (the preparation cards are done). */
+  get started(): boolean {
+    return this.state.started;
+  }
 
   /** Story levels and hero's journeys; free practice, drills, the target range and the parrot count every key, and the valley's take-off is the child's own flight. */
   get pawsAllowed(): boolean {
@@ -400,7 +289,7 @@ export class LevelRuntime {
     // The level opens with every picture its mode, Tapko and the friends draw, so none shows its fallback first;
     // the other worlds' pictures keep loading in the background (main.ts).
     const { world, ground } = this.mode;
-    const own = [`bg-${world}-far`, `bg-${world}${ground}-mid`, `bg-${world}${ground}-near`, `bg-${world}${ground}-shore`, ...this.mode.pictures, ...tapkoPictures(p.companion), ...friendPictures(), ...(this.littleDragon ? LITTLE_DRAGON_PICTURES : [])];
+    const own = [`bg-${world}-far`, `bg-${world}${ground}-mid`, `bg-${world}${ground}-near`, `bg-${world}${ground}-shore`, ...this.mode.pictures, ...tapkoPictures(p.companion), ...friendPictures(), ...this.friends.pictures];
     await Promise.race([preload(own), new Promise((r) => setTimeout(r, PICTURES_WAIT_S * 1000))]);
     if (this.disposed) return;
     audio.music(this.def.kind === 'practice' ? app.menuTrack : this.mode.world);
@@ -421,35 +310,18 @@ export class LevelRuntime {
       tip = pickTip(p, this.style)?.text;
       saveProfile();
     }
-    const lay = layout();
-    const homeKeys = [homeKey(lay, 3), homeKey(lay, 6)];
-    const known = (k: string | null) => !!k && (p.progress.introducedKeys.includes(k) || this.shownKeys.includes(k));
-    for (const key of this.opts.keys ? [] : keysToIntroduce(p)) {
-      if (this.disposed) return;
-      // The very first key card is preceded by why key cards come and how they close.
-      if (!p.progress.introducedKeys.length && !this.shownKeys.length) await showKeysIntro(host, p);
-      // Esc comes before the first key: it stops the game and closes every card.
-      if (!this.disposed) await this.controlKey(host, 'escape');
-      if (this.disposed) return;
-      await showNewKey(host, key, lay, this.guide, p);
-      this.shownKeys.push(key);
-      // Once F and J are both known, the home row is taught, before they are used in play.
-      if (homeKeys.includes(key) && homeKeys.every(known)) await showHomeRow(host, lay, this.guide, p);
+    if (!this.opts.keys) {
+      const shown = await keyCards(host, this.guide, this.def.kind, () => this.disposed);
+      if (!shown) return;
+      this.shownKeys = shown;
     }
-    if (this.disposed) return;
-    // Tab comes a level after Enter (which comes with the right little finger's home key): together they get around any page without a mouse.
-    if (p.progress.introducedKeys.includes(enterAfter(lay)) && !this.opts.keys) await this.controlKey(host, 'tab');
-    if (this.disposed) return;
-    // The first crossroads teaches Backspace: here it takes back a choice, it never fixes a typo.
-    if (this.def.kind === 'crossroads' && !this.opts.keys) await this.controlKey(host, 'backspace');
-    if (this.disposed) return;
     // Without a voice of the language a dictation runs as copy typing (a mixed run as memory), and the card says so.
-    const noVoice = this.dictating && !speech.available(locale());
+    const noVoice = this.reading.dictating && !speech.available(locale());
     const voiceNote = noVoice ? t(this.style === 'mixed' ? 'level.noVoiceMemory' : 'level.noVoice') : undefined;
     if (noVoice) this.style = this.style === 'mixed' ? 'memory' : 'copy';
     this.core.style = this.style;
-    this.words.heard = this.dictating;
-    this.paintRead();
+    this.words.heard = this.reading.dictating;
+    this.reading.paint();
     // The level's story and what it asks in particular, both on the one get-ready card; the first
     // level of a world tells the world's story instead of its own the first time.
     // A world not built yet keeps its story for when it is: its placeholder says what it plays instead.
@@ -465,15 +337,6 @@ export class LevelRuntime {
     this.begin();
   }
 
-  /** A control key's card, once per profile; it never counts among the learned keys. */
-  private async controlKey(host: HTMLElement, id: ControlKey): Promise<void> {
-    const p = app.profile!, seen = `key-${id}`;
-    if (p.progress.scenesSeen.includes(seen)) return;
-    p.progress.scenesSeen.push(seen);
-    saveProfile();
-    await showControlKey(host, id, layout(), p);
-  }
-
   /** When play began (`performance.now()`). */
   private begunAt = 0;
   /** Keys whose cards were shown before this level; they count as introduced only once play begins. */
@@ -482,7 +345,7 @@ export class LevelRuntime {
   /** Play starts: the mode, the story line or the friend's first line, the keys. */
   private begin(): void {
     this.mode.start();
-    this.started = true;
+    this.state.started = true;
     this.begunAt = performance.now();
     if (this.shownKeys.length) {
       app.profile!.progress.introducedKeys.push(...this.shownKeys);
@@ -490,8 +353,8 @@ export class LevelRuntime {
     }
     if (this.free) this.say(t('freeType.start'), 6);
     else if (this.opts.stay) this.say(t(this.def.kind === 'aim' ? 'aim.stayStart' : 'level.stayStart'), 6);
-    else if (this.fairy) this.say(pickLine('fairy.start'), 3);
-    this.tapko.classList.remove('waiting');
+    else if (this.friends.fairy) this.say(pickLine('fairy.start'), 3);
+    this.tapko.el.classList.remove('waiting');
     this.rhythm.ready(performance.now());
     this.input = new KeyInput(window, this.handlers());
     this.updateGuide();
@@ -501,13 +364,13 @@ export class LevelRuntime {
     return {
       onChar: (c) => this.onChar(c),
       onDead: () => { this.deadPending = true; this.updateGuide(); },
-      onEscape: () => (this.paused ? this.resume() : this.free ? this.exit() : this.pause()),
+      onEscape: () => (this.state.paused ? this.resume() : this.free ? this.exit() : this.pause()),
       onRaw: (code, key, shift) => this.onRaw(code, key, shift),
       // A target waiting for Enter takes it; else the Enter that closed a card just before play is not a call for the paw.
-      onEnter: () => (this.free ? this.freeSend() : this.waitsEnter ? this.typeEnter() : performance.now() - this.begunAt >= ENTER_GUARD_MS && (this.modeEnter() || this.startPaws())),
+      onEnter: () => (this.free ? this.freeSend() : this.waitsEnter ? this.typeEnter() : performance.now() - this.begunAt >= ENTER_GUARD_MS && (this.modeEnter() || !!this.paws?.start())),
       onBackspace: () => (this.free ? this.freeErase() : this.restartTarget()),
       // A pause or a dialog: the keys belong to its buttons.
-      idle: () => this.paused || !!document.querySelector('.modal-back'),
+      idle: () => this.state.paused || !!document.querySelector('.modal-back'),
     };
   }
 
@@ -515,11 +378,11 @@ export class LevelRuntime {
 
   dispose(): void {
     // Leaving by the browser's back button still keeps the time and keys typed.
-    if (this.started && !this.finished) this.flushSession();
+    if (this.state.started && !this.state.finished) this.flushSession();
     this.disposed = true;
-    clearInterval(this.stretchTimer);
+    this.pauseCard.dispose();
     speech.stop();
-    this.offVoices();
+    this.reading.dispose();
     this.offShortcuts();
     this.layoutSwitch.dispose();
     this.loop.stop();
@@ -527,7 +390,6 @@ export class LevelRuntime {
     this.stage.dispose();
     document.removeEventListener('visibilitychange', this.onVisibility);
     window.removeEventListener('pointerdown', this.onTouch);
-    this.stage.canvas.removeEventListener('pointerdown', this.onStageClick);
   }
 
   // ---- words and pacing ------------------------------------------------------
@@ -580,7 +442,7 @@ export class LevelRuntime {
   /** Word pace and valve: visible targets get their start time, misses slow the level down. */
   private trackPace(): void {
     const shown = new Map<number, number>();
-    for (const tg of this.core.active) if (tg.selectable) shown.set(tg.id, this.shownAt.get(tg.id) ?? this.elapsed);
+    for (const tg of this.core.active) if (tg.selectable) shown.set(tg.id, this.shownAt.get(tg.id) ?? this.state.elapsed);
     this.shownAt = shown;
     for (; this.missesSeen < this.core.missed; this.missesSeen++) this.valve.miss();
   }
@@ -588,7 +450,7 @@ export class LevelRuntime {
   /** A target the child typed (not the paw). */
   private targetTyped(tg: Target): void {
     const since = this.shownAt.get(tg.id);
-    if (since != null) this.paceSamples.push((this.elapsed - since) / tg.word.length);
+    if (since != null) this.paceSamples.push((this.state.elapsed - since) / tg.word.length);
     this.typedTargets++;
     if (!tg.revealed) this.cleanTargets++;
     this.valve.hit();
@@ -632,7 +494,7 @@ export class LevelRuntime {
 
   /** The mode may take an Enter no word waits for, while playing. */
   private modeEnter(): boolean {
-    return this.started && !this.paused && !this.finished && this.mode.onEnter();
+    return this.state.started && !this.state.paused && !this.state.finished && this.mode.onEnter();
   }
 
   /** Enter finishes a waiting target like any other key of it. */
@@ -643,7 +505,7 @@ export class LevelRuntime {
 
   private onChar(c: TypedChar): void {
     if (this.free) return this.freeChar(c, this.free);
-    if (!this.started || this.paused || this.finished || this.pawWords) return;
+    if (!this.state.playing || this.paws?.typing) return;
     this.ownKey();
     // A space between targets is a habit, not a mistake.
     if (c.ch === SPACE && !this.core.locked) return;
@@ -652,7 +514,7 @@ export class LevelRuntime {
     if (res.kind === 'ignored') return this.say(t('level.memoryWait'), 2);
     this.pressed++;
     const p = app.profile!;
-    this.keyAt = this.elapsed;
+    this.state.keyAt = this.state.elapsed;
     if (res.kind === 'wrong') {
       const { rt } = this.rhythm.press(null, c.time);
       if (res.expected) {
@@ -662,9 +524,7 @@ export class LevelRuntime {
       }
       this.sfx(this.mode.wrongSfx);
       this.setMood('thinking', 1.2);
-      this.setRobotMood('worried', 1);
-      this.setFairyMood('curious', 1);
-      this.setLittleMood('worried', 1);
+      this.friends.wrong();
       this.mode.onWrong(res.target);
     } else {
       const { rt, repeat } = this.rhythm.press(res.expected, c.time);
@@ -677,12 +537,10 @@ export class LevelRuntime {
         this.targetTyped(res.target);
         this.wordStreak++;
         this.setMood('happy', 1.4);
-        this.setRobotMood('happy', 1.2);
-        this.setFairyMood('happy', 1.2);
-        this.setLittleMood('happy', 1.2);
+        this.friends.done();
         this.mode.onDone(res.target);
         this.cheer();
-        if (this.pawsAllowed && this.wordStreak % PAW_STREAK === 0) this.chargePaw();
+        this.paws?.wordDone(this.wordStreak);
       } else {
         this.sfx('key');
         this.mode.onCorrect(res.target);
@@ -693,22 +551,22 @@ export class LevelRuntime {
 
   /** Backspace in a level: the started word is wiped and the child may start any word again. */
   private restartTarget(): void {
-    if (!this.started || this.paused || this.finished || this.pawWords) return;
+    if (!this.state.playing || this.paws?.typing) return;
     this.ownKey();
     if (this.core.restart()) this.updateGuide();
   }
 
   /** A key of the child's own (never the paws' or the helper's) adds to the typing time. */
   private ownKey(): void {
-    this.typedSeconds += typingStep(this.elapsed - this.ownKeyAt);
-    this.ownKeyAt = this.elapsed;
+    this.typedSeconds += typingStep(this.state.elapsed - this.ownKeyAt);
+    this.ownKeyAt = this.state.elapsed;
   }
 
   // ---- free typing ----------------------------------------------------------------
 
   /** Keys reach free typing only while it plays and no dialog (the place picker) is open. */
   private get freeOpen(): boolean {
-    return this.started && !this.paused && !document.querySelector('.modal-back');
+    return this.state.started && !this.state.paused && !document.querySelector('.modal-back');
   }
 
   /**
@@ -742,7 +600,7 @@ export class LevelRuntime {
   speakTyped(text: string): void {
     if (this.saidEl) this.saidEl.textContent = text;
     const p = app.profile!;
-    if (this.reading && p.settings.speakTyped) speech.say(text, locale());
+    if (this.reading.on && p.settings.speakTyped) speech.say(text, locale());
   }
 
   /** Once per level: a capital typed with the Shift of its own hand gets a short tip. */
@@ -760,12 +618,12 @@ export class LevelRuntime {
     this.wordStreak = 0;
     if (this.wrongStreak.ch === expected) this.wrongStreak.n++;
     else this.wrongStreak = { ch: expected, n: 1 };
-    if (this.wrongStreak.n === 2) this.say(pickLine(this.fairy ? 'fairy.mistake' : 'tapko.mistake'), 2);
+    if (this.wrongStreak.n === 2) this.say(pickLine(this.friends.fairy ? 'fairy.mistake' : 'tapko.mistake'), 2);
     if (this.wrongStreak.n === 3) this.showHint(expected);
   }
 
   private cheer(): void {
-    const now = this.elapsed;
+    const now = this.state.elapsed;
     if (this.wordStreak > 0 && this.wordStreak % 5 === 0 && now - this.lastCheer > 12) {
       this.lastCheer = now;
       const p = app.profile!;
@@ -795,7 +653,7 @@ export class LevelRuntime {
   }
 
   /** The on-screen keyboard on or off; the player keeps the choice for the next levels. */
-  private toggleGuide(): void {
+  toggleGuide(): void {
     this.guideOn = !this.guideOn;
     const s = app.profile!.settings;
     s.guide = !this.guideOn ? 'off' : s.guide === 'off' ? 'auto' : s.guide;
@@ -805,79 +663,9 @@ export class LevelRuntime {
     this.stage.resize();
   }
 
-  // ---- reading aloud -----------------------------------------------------------
-
-  private readBtn: HTMLButtonElement;
-  private offVoices: () => void;
-  /** The target read last, so each one is read once, when it becomes the focus. */
-  private readId = 0;
-
-  private get reading(): boolean {
-    const p = app.profile!;
-    return p.settings.readAloud && speech.available(locale());
-  }
-
-  /** The run has dictated targets. */
-  private get dictating(): boolean {
-    return this.style === 'dictation' || this.style === 'mixed';
-  }
-
-  /** The button shows only when the browser has a voice of the profile's language; in a dictation the voice is the task. */
-  private paintRead(): void {
-    const p = app.profile!;
-    this.readBtn.hidden = this.dictating || !speech.available(locale()) || (this.def.kind === 'freetype' && !p.settings.speakTyped);
-    this.readBtn.setAttribute('aria-pressed', String(p.settings.readAloud));
-  }
-
-  private toggleRead(): void {
-    const p = app.profile!;
-    p.settings.readAloud = !p.settings.readAloud;
-    saveProfile();
-    this.paintRead();
-    this.readId = 0;
-    if (!p.settings.readAloud) speech.stop();
-    else this.readFocus();
-  }
-
-  private readFocus(): void {
-    const tg = this.core.focus();
-    if (!tg || this.pawWords || !this.started || this.paused) return;
-    if (tg.id !== this.readId) {
-      this.readId = tg.id;
-      if (tg.style === 'dictation') this.dictate(tg, false);
-      else if (this.reading && !this.dictating) speech.say(spoken(tg), locale());
-    } else if (tg.style === 'dictation' && tg.masked && !this.repeated && this.elapsed - Math.max(this.spokenAt, this.keyAt) >= DICTATION_REPEAT) {
-      this.dictate(tg, true);
-    }
-  }
-
-  /** Level time of the child's last counted key, and of the last dictated target said; it is said again once by itself. */
-  private keyAt = 0;
-
   /** Seconds of play since the child's last key (since play started before the first one). */
   get idleFor(): number {
-    return this.elapsed - this.keyAt;
-  }
-  private spokenAt = 0;
-  private repeated = false;
-
-  /** Says a dictated target; a repeat cuts what is still being said. */
-  private dictate(tg: Target, repeat: boolean): void {
-    if (repeat) speech.stop();
-    speech.say(spoken(tg), locale());
-    this.spokenAt = this.elapsed;
-    this.repeated = repeat;
-    this.setFairyMood('singing', 1.4);
-  }
-
-  /** A click or tap on a dictated target's label says it again. */
-  private onStageClick(e: PointerEvent): void {
-    if (!this.dictating || !this.started || this.paused || this.finished) return;
-    const r = this.stage.canvas.getBoundingClientRect();
-    const x = (e.clientX - r.left) / this.stage.scale, y = (e.clientY - r.top) / this.stage.scale;
-    const hit = this.labels.at(x, y);
-    const tg = hit && this.core.active.find((a) => a.id === hit.id);
-    if (tg?.style === 'dictation') this.dictate(tg, true);
+    return this.state.idleFor;
   }
 
   // ---- Tapko --------------------------------------------------------------------
@@ -887,54 +675,25 @@ export class LevelRuntime {
    * It stays long enough to read (`seconds` is a minimum) and a line still shown is not replaced.
    */
   say(text: string, seconds = 0): void {
-    if (this.bubbleTimer > 0) return;
-    this.bubble.replaceChildren(h('p', {}, text));
-    this.bubble.classList.remove('hidden');
-    this.bubbleTimer = Math.max(seconds, sayTime(text));
+    this.tapko.say(text, seconds);
   }
 
   hideBubble(): void {
-    this.bubble.classList.add('hidden');
-    this.bubbleTimer = 0;
+    this.tapko.hideBubble();
   }
 
   setMood(mood: Mood, seconds: number): void {
-    this.tapkoMood = mood;
-    renderTapkoInto(this.tapko, app.profile!.companion, mood);
-    this.tapko.classList.remove('jump');
-    if (mood === 'happy' && !this.reduceMotion) {
-      void this.tapko.offsetWidth;
-      this.tapko.classList.add('jump');
-    }
-    this.moodTimer = seconds;
+    this.tapko.setMood(mood, seconds);
   }
 
-  // ---- Bolt --------------------------------------------------------------------
-
-  private setRobotMood(mood: RobotMood, seconds: number): void {
-    this.robotMood = mood;
-    this.robotMoodT = seconds;
-  }
-
-  /** Melody looks curious, sings, or hops once (happy). */
-  private setFairyMood(mood: FairyMood, seconds: number): void {
-    this.fairyMood = mood;
-    this.fairyMoodT = seconds;
-    if (mood === 'happy' && !this.reduceMotion) this.fairyHop = FAIRY_HOP;
+  /** Tapko's current mood, for modes that draw him on the canvas. */
+  get tapkoMood(): Mood {
+    return this.tapko.mood;
   }
 
   /** A stumble in the story (a missed boulder, a cracked stone): the story friend looks worried a while. */
   friendWorried(seconds = 1.4): void {
-    this.setRobotMood('worried', seconds);
-    this.setFairyMood('curious', seconds);
-    this.setLittleMood('worried', seconds);
-  }
-
-  /** The little dragon is glad (a hop) or worried a while. */
-  private setLittleMood(mood: LittleDragonMood, seconds: number): void {
-    this.littleMood = mood;
-    this.littleMoodT = seconds;
-    if (mood === 'happy' && !this.reduceMotion) this.littleHop = LITTLE_HOP;
+    this.friends.worried(seconds);
   }
 
   /** A short text pops up over the scene at (x, y) and fades. */
@@ -963,33 +722,6 @@ export class LevelRuntime {
     this.sfx('cheer');
     this.shout(text, at.x, at.y);
     return text;
-  }
-
-  /** The story friend's feet (Bolt, Melody below where she floats): where the mode puts them, else next to Tapko. */
-  friendSpot(): { x: number; y: number } {
-    return this.mode.friendSpot() ?? { x: BOLT_X, y: VH - 6 };
-  }
-
-  /** Bolt on the canvas, under the mode's objects; he hops with Tapko at the end. */
-  private drawBolt(g: G): void {
-    const { x, y } = this.friendSpot();
-    if (this.endTime == null) return drawRobot(g, this.robot!, this.robotMood, x, y, BOLT_SIZE, this.mode.t);
-    drawRobot(g, this.robot!, 'happy', x, y - Math.sin(this.endHop * Math.PI) * 24, BOLT_SIZE, this.mode.t);
-  }
-
-  /** Melody floats above the friend's spot, under the mode's objects; she hops at a word and at the end. */
-  private drawMelody(g: G): void {
-    const { x, y } = this.friendSpot();
-    const hop = this.endTime == null ? (this.fairyHop > 0 ? 1 - this.fairyHop / FAIRY_HOP : 0) : this.endHop;
-    drawFairy(g, this.endTime == null ? this.fairyMood : 'happy', x, y - FAIRY_FLOAT, FAIRY_SIZE, this.mode.t, hop);
-  }
-
-  /** The little dragon right behind Tapko, under the mode's objects; it hops with him at the end. */
-  private drawLittle(g: G): void {
-    if (this.mode.friendAway()) return;
-    const { x, y } = this.mode.friendSpot() ?? { x: LITTLE_X, y: this.mode.tapkoFeet };
-    const hop = this.endTime == null ? (this.littleHop > 0 ? 1 - this.littleHop / LITTLE_HOP : 0) : this.endHop;
-    drawLittleDragon(g, this.endTime == null ? this.littleMood : 'happy', x, y, LITTLE_SIZE, this.mode.t, hop, !this.reduceMotion);
   }
 
   /** A path taken at a crossroads makes the rest of the level shorter or longer: the minimum time, scaled by `k`. */
@@ -1022,238 +754,14 @@ export class LevelRuntime {
     return shownProgress(this.mode.progress(), this.played, this.minActive);
   }
 
-  // ---- super help ----------------------------------------------------------------
-
-  /** The super help's menu: how the game types for the super player, or stop it. */
-  private toggleHelpMenu(): void {
-    if (this.closeHelpMenu) return this.closeHelpMenu();
-    const btn = this.superBtn!;
-    const entries: MenuEntry[] = (Object.keys(HELP_PLANS) as HelpPlan[]).map((plan) => ({ label: t(`super.help.${plan}`), art: roundPic('super', 'lifebuoy'), pick: () => this.startHelp(plan) }));
-    if (this.helper) entries.push({ label: t('super.help.stop'), art: roundPic('super', 'close'), pick: () => this.stopHelp() });
-    this.closeHelpMenu = menuPanel(btn, t('super.help.title'), entries, (panel) => {
-      const r = btn.getBoundingClientRect();
-      panel.classList.add('service-menu');
-      panel.style.top = `${r.bottom + 10}px`;
-      panel.style.left = `${r.left}px`;
-      panel.style.right = 'auto';
-      document.querySelector('#app')!.append(panel);
-    }, (refocus) => {
-      this.closeHelpMenu = null;
-      if (refocus) btn.focus();
-    });
-  }
-
-  private startHelp(plan: HelpPlan): void {
-    this.helper = new SuperHelper(plan, () => this.rng.next());
-    this.paintHelpBtn();
-  }
-
-  private stopHelp(): void {
-    this.helper = null;
-    this.paintHelpBtn();
-  }
-
-  /** A full ring around the button while the super help types, like the other round buttons show their state. */
-  private paintHelpBtn(): void {
-    if (!this.superBtn) return;
-    paintRound(this.superBtn, 'lifebuoy', this.helper ? rhythmRing(1) : '');
-    this.superBtn.setAttribute('aria-pressed', String(!!this.helper));
-  }
-
-  /** The super help types through the same key handler as the child, so everything counts as typed. */
-  private readonly helpHost: HelpHost = {
-    progress: () => this.share(),
-    next: () => {
-      const tg = this.core.focus();
-      if (!tg || !this.core.typable(tg)) return null;
-      return { ch: tg.word[tg.typed], last: tg.typed === tg.word.length - 1 };
-    },
-    press: (ch) => {
-      const shift = shiftKeyOf(layout(), ch);
-      this.onChar({ ch, code: '', shift: !!shift, shiftCode: shift ? (shift === SHIFT_L ? 'ShiftLeft' : 'ShiftRight') : null, time: performance.now() });
-    },
-    wrongKey: () => {
-      const expected = this.core.expectedChar();
-      const keys = activeKeys(app.profile!).filter((k) => isLetterKey(k) && k !== expected);
-      return keys.length ? this.rng.pick(keys) : expected === 'x' ? 'q' : 'x';
-    },
-    missed: () => this.core.missed,
-    canMiss: () => !this.noPressure,
-  };
-
-  // ---- paw help ------------------------------------------------------------------
-
-  private renderPawBtn(): void {
-    if (!this.pawBtn) return;
-    const p = app.profile!;
-    const { pawHelp } = p.progress;
-    this.pawBtn.classList.toggle('empty', pawHelp === 0);
-    this.pawBtn.dataset.charged = String(pawHelp);
-    this.pawBtn.setAttribute('aria-label', t('paw.aria', { n: pawHelp }));
-    paintRound(this.pawBtn, 'paw', pawRing(pawHelp, PAW_MAX));
-  }
-
-  /** A mistake-free streak charges one paw help. */
-  private chargePaw(): void {
-    const p = app.profile!;
-    if (p.progress.pawHelp >= PAW_MAX) return;
-    p.progress.pawHelp++;
-    saveProfile();
-    this.say(t('paw.charged', { n: PAW_STREAK, words: PAW_WORDS }), 4);
-    this.renderPawBtn();
-    this.pawBtn?.classList.remove('charged');
-    void this.pawBtn?.offsetWidth;
-    this.pawBtn?.classList.add('charged');
-  }
-
-  /** The paws replace the hands and type the closest words for the child. */
-  private startPaws(): boolean {
-    const p = app.profile!;
-    if (!this.pawsAllowed || !this.started || this.paused || this.finished || this.pawWords) return false;
-    const focus = this.core.focus();
-    if (p.progress.pawHelp <= 0 || !focus || !this.mode.pawMay(focus)) return false;
-    p.progress.pawHelp--;
-    saveProfile();
-    this.pawWords = PAW_WORDS;
-    this.pawTimer = this.reduceMotion ? 0.2 : 0.6;
-    this.pawIdle = 0;
-    this.guideBeforePaws = this.guideOn;
-    if (!this.guideOn) this.toggleGuide();
-    this.guide.setPaws(pawColors(p.companion.kind));
-    this.say(t('paw.start'), 2.5);
-    this.setMood('happy', 1.4);
-    this.renderPawBtn();
-    return true;
-  }
-
-  private stopPaws(): void {
-    this.pawWords = 0;
-    this.renderPawBtn();
-    this.guide.setPaws(null);
-    if (this.guideOn !== this.guideBeforePaws) this.toggleGuide();
-    // The child's next reaction time starts now, not with the paw's last key.
-    this.rhythm.ready(performance.now());
-    this.updateGuide();
-  }
-
-  /** One key at a time, with Tapko's rhythm; none of it counts in the child's statistics. */
-  private tapkoTypes(dt: number): void {
-    if ((this.pawTimer -= dt) > 0) return;
-    const tg = this.core.focus();
-    if (!tg) {
-      // Wait a moment for the next word; stop when none comes.
-      this.pawTimer = 0.2;
-      if ((this.pawIdle += 0.2) > 4) this.stopPaws();
-      return;
-    }
-    // A decision waits: the paws stop and the child chooses.
-    if (!this.mode.pawMay(tg)) return this.stopPaws();
-    this.pawIdle = 0;
-    const ch = tg.word[tg.typed];
-    if (tg.masked) this.core.reveal(tg);
-    this.core.locked = tg;
-    const res = this.core.type(ch);
-    this.guide.pawTap(ch);
-    if (res.kind === 'done') {
-      this.sfx('word');
-      this.mode.onDone(tg);
-      this.pawTimer = 0.4;
-      if (--this.pawWords === 0) this.stopPaws();
-    } else {
-      this.sfx('key');
-      this.mode.onCorrect(tg);
-      this.pawTimer = 0.13;
-    }
-    this.updateGuide();
-  }
-
   // ---- pause -------------------------------------------------------------------
 
   /** Also while the cards before play are open: their keys wait, and the pause card has no Slower then. */
   pause(): void {
-    if (this.paused || this.finished) return;
-    this.paused = true;
+    if (this.state.paused || this.state.finished) return;
+    this.state.paused = true;
     speech.stop();
-    this.paintPause();
-    this.pauseEl = h('div', { class: 'card pause-card', role: 'dialog', 'aria-label': t('level.paused') });
-    // Before play there is no key input yet: Esc on the card goes on to the cards.
-    if (!this.started) this.pauseEl.addEventListener('keydown', (e) => { if (e.key === 'Escape') this.resume(); });
-    this.pauseCard();
-    this.el.querySelector('.stage-wrap')!.append(this.pauseEl);
-    this.focusPause();
-  }
-
-  /**
-   * A small card at the top (the words and the guide's next key stay in sight): a stretch to try,
-   * the X (Esc too) to go on, and Continue, Slower (only in play), the short exercise of that stretch and the end.
-   * Staying a while, the level is already done: the next level (when open), else the end comes first.
-   */
-  private pauseCard(): void {
-    const stretch = STRETCHES[Math.floor(Math.random() * STRETCHES.length)];
-    const slower = this.started ? button(t('level.slower'), () => this.slowDown(), 'btn') : null;
-    if (slower) slower.disabled = this.difficulty <= 1;
-    const { next, stay } = this.opts;
-    const keep = button(t(this.ending.keep), () => this.resume(), 'btn', 'play');
-    const end = button(t(this.ending.label), () => void this.leave(), 'btn', 'close');
-    const first = !stay ? keep : next ? button(t('results.next'), next, 'btn', 'next') : end;
-    first.classList.add('primary');
-    this.pauseEl!.replaceChildren(
-      closeButton(() => this.resume(), t('level.pauseClose')),
-      h('h2', {}, t('level.paused')),
-      h('p', { class: 'pause-tip' }, t(`break.${stretch}`)),
-      h('div', { class: 'row' }, first, ...[keep, slower, button(t('level.stretch'), () => this.stretch(stretch), 'btn', 'smile'), end].filter((b) => b !== first)));
-  }
-
-  /** The short exercise on the pause card: the stretch with a countdown, then the pause again; or the longer break instead. */
-  private stretch(name: string): void {
-    let left = STRETCH_S;
-    const count = h('div', { class: 'break-timer' }, String(left));
-    const back = () => {
-      clearInterval(this.stretchTimer);
-      this.stretchTimer = 0;
-      if (!this.pauseEl) return;
-      this.pauseCard();
-      this.focusPause();
-    };
-    this.pauseEl!.replaceChildren(
-      closeButton(() => this.resume(), t('level.pauseClose')),
-      h('h2', {}, t('level.stretch')),
-      h('p', { class: 'pause-tip' }, t(`break.${name}`)),
-      count,
-      h('div', { class: 'row' },
-        button(t('level.stretchDone'), back, 'btn primary', 'check'),
-        button(t('level.stretchLong'), () => {
-          clearInterval(this.stretchTimer);
-          this.stretchTimer = 0;
-          this.opts.onBreak(back, () => this.resume());
-        }, 'btn', 'wave')));
-    this.focusPause();
-    this.stretchTimer = window.setInterval(() => {
-      count.textContent = String(--left);
-      if (left <= 0) back();
-    }, 1000);
-  }
-
-  /** The pause button shows what it does: pause while playing, play while paused. */
-  private paintPause(): void {
-    if (!this.pauseBtn) return;
-    const label = t(this.paused ? this.ending.keep : 'level.pause');
-    paintRound(this.pauseBtn, this.paused ? 'play' : 'pause');
-    this.pauseBtn.setAttribute('aria-label', label);
-    tip(this.pauseBtn, label);
-  }
-
-  /** The pause card's first button: Continue, or staying a while the next level or the end. */
-  private focusPause(): void {
-    this.pauseEl?.querySelector<HTMLButtonElement>('.btn.primary')?.focus();
-  }
-
-  /** What leaving and going on are called, and what the question says is lost: a story level, an exercise or a hero's journey. */
-  private get ending(): { label: string; keep: string; text: string } {
-    if (this.def.kind === 'freetype') return { label: 'level.leave', keep: 'level.keepTyping', text: '' };
-    if (this.def.kind === 'practice' || this.def.kind === 'aim' || this.def.kind === 'parrot' || this.opts.stay) return { label: 'level.end', keep: 'level.keepPractice', text: 'level.endPracticeText' };
-    if (this.def.journey) return { label: 'level.end', keep: 'level.keepLevel', text: 'level.endJourneyText' };
-    return { label: 'level.end', keep: 'level.keepLevel', text: 'level.endLevelText' };
+    this.pauseCard.open();
   }
 
   /**
@@ -1279,15 +787,15 @@ export class LevelRuntime {
    * After the end (peeking under the end card) it opens over the last frame.
    */
   private openHelp(): void {
-    if (!this.started) return;
+    if (!this.state.started) return;
     closeModals();
-    if (!this.finished) {
+    if (!this.state.finished) {
       this.pause();
-      if (!this.pauseEl) return;
+      if (!this.pauseCard.el) return;
     }
     const intro = this.mode.intro();
     const tip = pickTip(app.profile!, this.style)?.text;
-    this.opts.onHelp(() => this.focusPause(), [intro, tip].filter((x): x is string => !!x).map((x) => h('p', {}, x)));
+    this.opts.onHelp(() => this.pauseCard.focus(), [intro, tip].filter((x): x is string => !!x).map((x) => h('p', {}, x)));
   }
 
   /** One step lower difficulty from now on; automatic growth may raise it again after accurate play. */
@@ -1303,16 +811,11 @@ export class LevelRuntime {
   }
 
   resume(): void {
-    if (!this.paused || !this.pauseEl) return;
-    clearInterval(this.stretchTimer);
-    this.stretchTimer = 0;
-    this.pauseEl.remove();
-    this.pauseEl = null;
-    this.paused = false;
-    this.paintPause();
+    if (!this.state.paused || !this.pauseCard.el) return;
+    this.state.paused = false;
+    this.pauseCard.close();
     this.rhythm.ready(performance.now());
-    // The pause cut the voice: a dictated target is said again.
-    if (this.dictating) this.readId = 0;
+    this.reading.again();
   }
 
   /** Leaving: free typing after something was typed ends with its card, everything else goes to the map. */
@@ -1322,7 +825,7 @@ export class LevelRuntime {
     this.flushSession();
     const typed = this.free && { ...this.free.summary(), seconds };
     if (!typed?.words) return this.opts.onExit();
-    this.finished = true;
+    this.state.finished = true;
     this.input?.dispose();
     this.input = null;
     this.guide.show(null);
@@ -1341,15 +844,15 @@ export class LevelRuntime {
   // ---- loop --------------------------------------------------------------------
 
   private update(dt: number): void {
-    if (this.paused || !this.started) {
-      this.tweens.update(this.paused ? 0 : dt);
+    if (this.state.paused || !this.state.started) {
+      this.tweens.update(this.state.paused ? 0 : dt);
       return;
     }
-    this.elapsed += dt;
-    if (!this.finished) {
+    this.state.elapsed += dt;
+    if (!this.state.finished) {
       app.sessionSeconds += dt;
       // The paws typing for the child count as play.
-      this.played += playedStep(dt, this.pawWords ? 0 : this.idleFor, this.core.active.some((tg) => tg.selectable));
+      this.played += playedStep(dt, this.paws?.typing ? 0 : this.idleFor, this.core.active.some((tg) => tg.selectable));
     }
     this.core.update(dt);
     this.tweens.update(dt);
@@ -1360,25 +863,16 @@ export class LevelRuntime {
     this.mode.update(dt);
     if (!hadFocus && this.core.focus()) this.rhythm.ready(performance.now());
     this.trackPace();
-    if (this.pawWords) this.tapkoTypes(dt);
-    else if (this.helper && !this.finished) this.helper.tick(dt, this.helpHost);
-    this.readFocus();
+    if (this.paws?.typing) this.paws.tick(dt);
+    else this.superHelp?.tick(dt);
+    if (!this.paws?.typing) this.reading.focus();
     // Free typing and staying a while have no end on their own: the bubble says when a break is due.
     if ((this.free || this.opts.stay) && !this.breakSaid && isBreakDue()) {
       this.breakSaid = true;
       this.say(pickLine('tapko.break'), 6);
     }
-    // A line hidden behind a target waits for a free spot instead of running out.
-    if (this.bubbleTimer > 0 && !this.bubble.classList.contains('covered') && (this.bubbleTimer -= dt) <= 0) this.hideBubble();
-    if (this.moodTimer > 0 && (this.moodTimer -= dt) <= 0) {
-      this.tapkoMood = 'idle';
-      renderTapkoInto(this.tapko, app.profile!.companion, 'idle');
-    }
-    if (this.robotMoodT > 0 && (this.robotMoodT -= dt) <= 0) this.robotMood = 'idle';
-    if (this.fairyMoodT > 0 && (this.fairyMoodT -= dt) <= 0) this.fairyMood = 'idle';
-    if (this.littleMoodT > 0 && (this.littleMoodT -= dt) <= 0) this.littleMood = 'idle';
-    this.littleHop = Math.max(0, this.littleHop - dt);
-    this.fairyHop = Math.max(0, this.fairyHop - dt);
+    this.tapko.update(dt);
+    this.friends.update(dt);
     this.callouts.update(dt);
     // More targets after the minimum grew the level lower the mode's share; the bar never goes back.
     const pct = Math.max(this.progressPct, Math.round(this.share() * 100));
@@ -1394,30 +888,18 @@ export class LevelRuntime {
     }
     this.rhythm.idle(dt, performance.now());
     if (this.core.shownChar() !== this.lastExpected) this.updateGuide();
-    if (!this.finished && levelOver(this.mode.finished, this.played, this.minActive)) this.finish();
+    if (!this.state.finished && levelOver(this.mode.finished, this.played, this.minActive)) this.finish();
   }
 
   private lastExpected: string | null = null;
   private progressPct = -1;
 
-  /** The DOM Tapko keeps his size in game units, so he grows and shrinks with the scene. */
-  private sizeTapko(): void {
-    const k = this.stage.scale;
-    const px = Math.round(TAPKO_H * k);
-    if (px === this.tapkoPx) return;
-    this.tapkoPx = px;
-    this.tapko.style.setProperty('--size', `${px}px`);
-    this.tapko.style.left = `${Math.round((TAPKO_X - TAPKO_H / 2) * k)}px`;
-    this.tapko.style.bottom = `${Math.round((TAPKO_FEET - this.mode.tapkoFeet) * k)}px`;
-  }
-
-  private tapkoPx = 0;
   private frameWatch = new FrameWatch();
 
   /** Automatic graphics: when the first seconds of play are too slow, this device switches to the simple drawing. */
   private watchFrames(): void {
     if (graphics.simple || app.profile!.settings.graphics !== 'auto') return;
-    if (!this.started || this.paused || this.finished || this.covered) return this.frameWatch.pause();
+    if (!this.state.started || this.state.paused || this.state.finished || this.covered) return this.frameWatch.pause();
     if (!this.frameWatch.frame(performance.now())) return;
     markSlowDevice();
     this.particles.enabled = false;
@@ -1435,25 +917,23 @@ export class LevelRuntime {
   }
 
   private render(): void {
-    this.sizeTapko();
+    this.tapko.size(this.stage.scale, this.mode.tapkoFeet);
     this.watchFrames();
     // A paused level, the cards before play and a blurring card do not move: the last frame stays unless a resize cleared it or a picture came.
-    const still = this.paused || (!this.started && !this.tweens.busy) || this.covered;
+    const still = this.state.paused || (!this.state.started && !this.tweens.busy) || this.covered;
     if (still && !this.stage.dirty && picturesReady() === this.drawnPictures) return;
     this.drawnPictures = picturesReady();
     const g = this.stage.begin();
     const drift = this.mode.drift;
-    drawBackground(g, this.mode.world, this.stage.vw, this.mode.scroll, !this.reduceMotion, this.mode.midOnly, drift && { layer: drift.layer, offset: driftOffset(drift, this.elapsed, !this.reduceMotion) }, this.mode.ground, this.mode.shore);
-    if (this.robot) this.drawBolt(g);
-    if (this.fairy) this.drawMelody(g);
-    if (this.littleDragon) this.drawLittle(g);
+    drawBackground(g, this.mode.world, this.stage.vw, this.mode.scroll, !this.reduceMotion, this.mode.midOnly, drift && { layer: drift.layer, offset: driftOffset(drift, this.state.elapsed, !this.reduceMotion) }, this.mode.ground, this.mode.shore);
+    this.friends.draw(g);
     this.labels.begin();
     this.mode.render(g);
     this.labels.draw(g);
     this.particles.render(g);
     this.callouts.draw(g, this.labels.rects);
     this.mode.renderFront?.(this.stage.beginFront());
-    this.placeBubble();
+    this.tapko.placeBubble(this.stage.scale, this.mode.bubbleSpot(), this.labels.rects);
   }
 
 
@@ -1465,31 +945,12 @@ export class LevelRuntime {
     this.labels.add(tg, x, y, size);
   }
 
-  /** The word is the task, so the narrator's bubble never covers one: over a label it hides until its spot is free. */
-  private placeBubble(): void {
-    const b = this.bubble;
-    if (b.classList.contains('hidden')) return;
-    const s = this.stage.scale;
-    // The tail's tip (40 px + half of its 16 px from the left, 8 px below) points to the mode's spot.
-    const at = this.mode.bubbleSpot();
-    if (at) {
-      b.style.left = `${Math.max(8, at.x * s - 48)}px`;
-      b.style.top = `${Math.max(8, at.y * s - b.offsetHeight - 8)}px`;
-    }
-    const covers = () => {
-      const x0 = b.offsetLeft / s - LABEL_GAP, x1 = (b.offsetLeft + b.offsetWidth) / s + LABEL_GAP;
-      const y0 = b.offsetTop / s - LABEL_GAP, y1 = (b.offsetTop + b.offsetHeight) / s + LABEL_GAP;
-      return this.labels.rects.some((r) => r.x0 < x1 && r.x1 > x0 && r.y0 < y1 && r.y1 > y0);
-    };
-    b.classList.toggle('covered', covers());
-  }
-
   // ---- end ---------------------------------------------------------------------
 
   private flushSession(): void {
     const p = app.profile!;
     if (this.chars + this.errors > 0) recordSession(p, this.typedSeconds, this.chars, this.errors, this.rhythm.cpm);
-    this.elapsed = 0;
+    this.state.elapsed = 0;
     this.typedSeconds = 0;
     this.ownKeyAt = 0;
     this.chars = 0;
@@ -1498,9 +959,9 @@ export class LevelRuntime {
   }
 
   private finish(): void {
-    this.finished = true;
+    this.state.finished = true;
     this.mode.onFinish();
-    if (this.pawWords) this.stopPaws();
+    if (this.paws?.typing) this.paws.stop();
     this.input?.dispose();
     this.input = null;
     this.guide.show(null);
@@ -1573,22 +1034,15 @@ export class LevelRuntime {
   private celebrate(): void {
     this.endAt = performance.now();
     // Melody thanks the child; a super-obstacle has said its own line.
-    if (this.fairy && !this.def.isSuper) this.say(pickLine('fairy.done'), RESULTS_AFTER);
+    if (this.friends.fairy && !this.def.isSuper) this.say(pickLine('fairy.done'), RESULTS_AFTER);
     else this.hideBubble();
     // A beaten super-obstacle finishes the world: Tapko cheers, unless the mode's last cheer is still up.
     if (this.def.isSuper && !this.callouts.shouting) this.hooray();
-    this.moodTimer = 0;
-    this.tapkoMood = 'happy';
-    renderTapkoInto(this.tapko, app.profile!.companion, 'happy');
-    this.tapko.classList.remove('jump');
-    if (!this.reduceMotion) {
-      void this.tapko.offsetWidth;
-      this.tapko.classList.add('celebrate');
-    }
+    this.tapko.celebrate();
   }
 
   /** Ends an untimed practice or staying a while on request. */
   endPractice(): void {
-    if (!this.finished) this.finish();
+    if (!this.state.finished) this.finish();
   }
 }

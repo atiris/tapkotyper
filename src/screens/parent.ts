@@ -4,7 +4,7 @@ import { ownLangs, ownRef } from '../i18n/own-langs';
 import { ENTER, LAYOUTS, LAYOUT_IDS, allKeys } from '../keyboard/layouts';
 import { LEVELS, type LevelDef, WORLDS } from '../game/levels';
 import { SHOW_DAYS, SHOW_DAYS_MAX, SURPRISES_MAX, SURPRISE_LEN, SURPRISE_N_MAX, TRIGGERS, newSurprise, restartSurprise, surpriseCount } from '../game/own-content';
-import { wordSource } from '../game/runtime';
+import { wordSource } from '../game/runtime/options';
 import { lessonKeyOf, punctuationKeys, useLayout } from '../learning/lessons';
 import { COMPANION_KINDS, GUEST_ID, SUPER_ID, type FontChoice, type GraphicsChoice, type LangRef, type LayoutId, type OwnMix, type ParentLock, type Profile, type Surprise, type SurpriseTrigger, type TaskKind } from '../storage/schema';
 import { checkLock, makeLock } from '../storage/lock';

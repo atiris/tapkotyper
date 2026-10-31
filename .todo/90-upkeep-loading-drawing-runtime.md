@@ -73,6 +73,13 @@ cannot be done now (2026-10-31).
   would only be slower). Screenshots at 1024x600 (`.e2e/plan90-meadow-simple.png`,
   `.e2e/plan90-valley-simple.png`, git-ignored) look fine: painted bands are soft anyway and the
   words are DOM, so 0.85 was not needed.
+- Runtime split: `runtime.ts` 1586 -> 1048 lines. Pause, paws and super help alone gave only
+  ~1270, so also moved out: the story friends (`friends.ts`), reading aloud and dictation
+  (`reading.ts`), the key cards before play (`key-cards.ts`), Tapko on the stage with the
+  narrator's bubble (`tapko.ts`) and `wordSource` with `RuntimeOptions` (`options.ts`). The
+  shared state is `runtime/state.ts` (`LevelState`: paused, started, finished, elapsed, keyAt,
+  core, guide, element); each part gets it plus a small host interface, never the runtime's
+  private fields (friends take the runtime's public API like labels and callouts do).
 
 ## Steps
 
@@ -82,7 +89,7 @@ cannot be done now (2026-10-31).
       in the commit message.
 - [x] Simple graphics at 0.75 resolution; perf numbers before/after; screenshots meadow and
       valley with Simple graphics at 1024x600.
-- [ ] Runtime split into pause, paws and super-helper files with a shared state object; no
+- [x] Runtime split into pause, paws and super-helper files with a shared state object; no
       behaviour change; `runtime.ts` under about 1000 lines.
 - [ ] `npm run build`, `npx vitest run`, the full e2e suite (the split touches every level);
       Playwright MCP: a level to its end card, peek and back, pause with a stretch and a quick

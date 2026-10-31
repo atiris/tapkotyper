@@ -682,6 +682,18 @@ describe('flying lessons', () => {
     Object.assign(mode as any, { flown: 1 });
     expect(mode.starCap()).toBe(1);
   });
+
+  it("on the hero's journey the little dragon flies alone, at most twice, and a landing in the bushes caps no stars", () => {
+    const L = fakeRuntime(1);
+    Object.assign(L, { def: { ...L.def, variant: 'journey' }, idleFor: 0, rhythm: { ema: 2, ratio: () => 1, ready: () => {} } });
+    const mode = new FlightMode(L);
+    mode.start();
+    expect((mode as any).dragons).toHaveLength(1);
+    expect(mode.friendAway()).toBe(true);
+    expect((mode as any).flock).toBe(2);
+    Object.assign(mode as any, { done: 1, flown: 0 });
+    expect(mode.starCap()).toBe(3);
+  });
 });
 
 /** Types words until the take-off's dragon has lifted off. */

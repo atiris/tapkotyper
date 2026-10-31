@@ -49,7 +49,8 @@
      times.
   2. **Through the valley** (the valley's bands, the burning pit on the right): the little
      dragon's first flight, the flying lessons with this one dragon over the two bushes to the
-     pit; one more flight while the part's minimum is not played, at most two.
+     pit; one more flight while the part's minimum is not played, at most two. A landing in the
+     bushes costs no stars: it is the little dragon's first try.
   3. **The crystal meadow** (the planet's meadow): the crystals of the planet's second level,
      for the rocket's energy to fly home; the end says how many the rocket gets. The four valley
      dragons sit at the back of the meadow (they flew here at the valley's take-off) and wave.

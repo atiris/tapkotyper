@@ -166,9 +166,9 @@ export class FlightMode extends Mode {
     return this.journey;
   }
 
-  /** The stars also count the flyers: all of them 3, at least half 2, else 1. */
+  /** The stars also count the flyers: all of them 3, at least half 2, else 1. The little dragon's first flight on the journey only tries, it caps nothing. */
   starCap(): number {
-    if (!this.done || this.flown === this.done) return 3;
+    if (this.journey || !this.done || this.flown === this.done) return 3;
     return this.flown * 2 >= this.done ? 2 : 1;
   }
 

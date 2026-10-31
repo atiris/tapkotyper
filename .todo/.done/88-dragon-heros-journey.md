@@ -90,7 +90,7 @@ the order of the way home, so the journey reads as one trip, not five unrelated 
       that the parts' minimums add up to twice the story's minimum; `idle.test.ts` for each
       journey variant at both paces; e2e: with world 5 done the journey plays through all five
       parts (`?minActive=` short) and ends on the end card after the launch, stars on the node.
-- [ ] `npm run build`, `npx vitest run`, affected e2e; Playwright MCP play-through (tester
+- [x] `npm run build`, `npx vitest run`, affected e2e; Playwright MCP play-through (tester
       profile, `?fast`, `tapkoType`) with screenshots of each part, the rocket on the shore and
       the launch.
 
@@ -108,4 +108,28 @@ Decisions taken while implementing (2026-10-31):
   sentence's slack); only the sentence's task is left out of the count.
 - The first-finish green line goes before any other news of that end card (the story's ending).
 - Stumbles also worry the story friend (`friendWorried`): a missed boulder.
+- The journey's flight caps no stars (found in the play-through: one bushy flight of the only
+  dragon capped the whole journey at one star at 100 % accuracy).
+- The little dragon boards through the rocket's round window (`ROCKET_DOOR`), the standing
+  picture has no door.
+
+## Done - 2026-10-31
+
+Shipped:
+- `JOURNEYS.dragon`: down the mountain (boulders, no egg), the valley (the little dragon's first
+  flight, at most two), the crystal meadow (crystals for the rocket, the valley dragons waving at
+  the back), the swamp (no log, no monolith, the rocket on the shore) and the take-off
+  (`LaunchMode`: ready steps, no veer, boarding, countdown, the rocket rising with a code flame
+  and smoke). Travel cards name the places; the first finish's green line.
+- The little dragon behind Tapko in every part (runtime companion, glad, worried, away).
+- Pictures `obj-dragon-little` and `obj-rocket-standing` from Gemini (prompts and a lesson in
+  `assets-src/PROMPTS.md`).
+- Spec section in `game/heros-journey.md`, "Cesta hrdinu" in `story-1-scenario.md`, sk/en texts,
+  translator notes and catalog group.
+- Tests: the parts' order, kinds and minimums; idle tests for every part at both paces; the
+  journey flight; e2e journey through all five places to the end card. Full e2e suite (86) green.
+  Playwright MCP play-through with the tester profile: screenshots of every part, the rocket
+  on the shore, the lift-off and the end card (`.e2e/journey88-*.png`, not committed).
+
+Left out: nothing.
 

@@ -31,7 +31,7 @@ its last world. It gives the finished story a final test that counts like a real
     order; each part plays that world's first level's kind and variant (`worldLevels(w)[0]`)
     unless the story has its own journey (`JOURNEYS[storyId]`: a list of parts, each a kind,
     variant, world for the background and its own story line; the dragon story gets its own in
-    `.todo/88-dragon-heros-journey.md`, this plan only adds the hook),
+    `.todo/.done/88-dragon-heros-journey.md`, this plan only adds the hook),
     in that world's background; a world not built yet plays what its levels play now (the
     cyclic copy placeholder). Between parts a short travel card names the next world (picture
     of the world island like the map, "Ďalej: <world name>", Space/Enter or a click goes on;

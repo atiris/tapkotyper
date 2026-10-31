@@ -131,7 +131,7 @@ function openData(): HTMLElement {
     const n = Number(count.replace(/\D/g, ''));
     visits.textContent = ` ${t(n === 1 ? 'about.visitsOne' : n > 1 && n < 5 ? 'about.visitsFew' : 'about.visitsMany', { n: count })}`;
   });
-  return h('li', {}, t('about.open'), ' ', h('a', { href: `${COUNTER}/`, target: '_blank', rel: 'noopener' }, new URL(COUNTER).host), '.', visits);
+  return h('li', {}, ...richText(t('about.open')), ' ', h('a', { href: `${COUNTER}/`, target: '_blank', rel: 'noopener' }, new URL(COUNTER).host), '.', visits);
 }
 
 /** About the game and the privacy promise, for parents. */
@@ -143,10 +143,9 @@ function aboutTab(): HTMLElement[] {
     h('p', {}, ...richText(t('about.intro'))),
     section(t('about.privacyTitle'), privacyList()),
     section(t('about.dataTitle'), data),
-    section(t('about.howTitle'), list('about.how')),
     section(t('about.authorTitle'), h('p', {}, ...linkedText(t('about.author'), 'report', () =>
       h('a', { href: `${REPO}/issues/new`, target: '_blank', rel: 'noopener' }, t('about.authorReport'))))),
-    section(t('about.creditsTitle'), h('p', {}, t('about.credits')),
+    section(t('about.creditsTitle'), h('p', {}, ...richText(t('about.credits'))),
       h('div', { class: 'row about-actions' },
         h('a', { class: 'btn', href: REPO, target: '_blank', rel: 'noopener' }, icon('code'), t('about.code')),
         h('a', { class: 'btn', href: `${REPO}/issues/new`, target: '_blank', rel: 'noopener' }, icon('edit'), t('about.report')))),
@@ -179,6 +178,7 @@ function tabContent(tab: HelpTab, now: Child[] = []): HTMLElement[] {
     case 'mentoring': return [
       section(t('help.mentorTitle'), list('help.mentor')),
       section(t('help.starsTitle'), list('help.stars', starSteps())),
+      section(t('help.teachTitle'), list('help.teach')),
       section(t('help.taskTitle'), list('help.task')),
     ];
     case 'about': return aboutTab();

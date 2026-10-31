@@ -35,7 +35,7 @@
      QR codes by group, result links, sets (one scan, or links within 20 minutes), the kept
      history of every hand-in and a writer's progress, sending results from a phone to a
      computer as a `.tapko` file, the yearly cleanup (7 more days for old results loaded from a
-     file), CSV, the checksum, making a task, the task from the child's side, and the accuracy each count
+     file), CSV, the checksum, how the game teaches typing, making a task, the task from the child's side, and the accuracy each count
      of stars needs (the numbers from the game itself, so they never drift). The "?" (and F1) on the
      "For teachers" page opens this tab, since a teacher there needs exactly this.
   6. **About Tapko**: the intro, the privacy promise (its word "nainštalujete" is a link that asks the browser to install
@@ -43,8 +43,8 @@
      installed, the line says so instead and its word "otvárať" opens the installed app from a browser tab;
      inside the installed app the line only says that it runs as the app), data and one bullet with the open
      GoatCounter address (we hide nothing: anyone sees the same usage data we do) and the visits
-     recorded so far, how it teaches, about the author (why the game exists, with a link to report a bug
-     or an idea), and credits: the licenses, that the name, the Tapko character and the logo are not part
+     recorded so far, about the author (why the game exists, with a link to report a bug
+     or an idea), and licenses and sources: the licenses, that the name, the Tapko character and the logo are not part
      of the code's license, where the media come from, the code and a bug report. Links are in the app's
      orange, underlined only on hover.
 - The tab is part of the address (`#/p/<id>/help/<tab>`, `#/help/<tab>`), so a tab can be linked.

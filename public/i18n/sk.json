@@ -1486,32 +1486,24 @@
     "readme": "readme",
     "privacy": [
       "Bez reklám, nákupov, prihlasovania či cookies. Tento web nemá na pozadí vlastný server.",
+      "Aplikácia vám nikdy nemôže poslať žiaden e-mail a nevyžaduje konto ani žiadny iný **osobný údaj**, preto ich v aplikácii **nepoužívajte**.",
       "Všetky pokroky sú uložené **len v tomto prehliadači**, a nikto k nim nemá prístup, ale môžete ich exportovať do súboru a zálohovať alebo preniesť na iný počítač.",
       "Po prvej návšteve, alebo ako desktopová aplikácia, funguje aj bez internetu. Ak ju {install} ako desktopovú webovú aplikáciu, otvorí sa bez celého prehliadača vo vlastnom okne, pracuje offline, je to rýchle a jednoduché na spustenie."
     ],
     "dataTitle": "Vaše údaje a počítadlo návštev",
     "data": [
       "Keďže všetko je len na vašom počítači, nevieme vám zistiť zabudnuté heslo k nastaveniam ani vaše nastavenia a pokrok, keď sa vám počítač pokazí. Preto si pokrok občas exportujte do súboru. Ak predsa len zabudnete heslo, prečítajte si {readme} súbor na GitHube.",
-      "Počítame len anonymné návštevy, bez cookies a bez akýchkoľvek údajov o používateľoch (samozrejme nezapočítame nič, ak to používate offline). Počíta ich služba GoatCounter, ktorá nepoužíva cookies ani nezbiera osobné údaje. Nevýhodou je, že nedokážeme určiť, ktoré časti aplikácie sa používajú a ktoré nie."
+      "Počítame len **anonymné návštevy**, bez cookies a bez akýchkoľvek údajov o používateľoch (samozrejme nezapočítame nič, ak to používate offline). Počíta ich služba GoatCounter, ktorá nepoužíva cookies ani nezbiera osobné údaje. Nevýhodou je, že nedokážeme určiť, ktoré časti aplikácie sa používajú a ktoré nie."
     ],
     "visitsOne": "Doteraz sme zaznamenali {n} návštevu.",
     "visitsFew": "Doteraz sme zaznamenali {n} návštevy.",
     "visitsMany": "Doteraz sme zaznamenali {n} návštev.",
-    "howTitle": "Ako učí",
-    "how": [
-      "Klávesy sa učia postupne, od základného radu (F a J).",
-      "Každý kláves má svoj prst a klávesnica s rukami na obrazovke ukazujú ktorý.",
-      "**Najprv presnosť!** Rýchlosť sa ukazuje len ako osobný pokrok.",
-      "Slabšie klávesy sa objavujú častejšie a krátke prestávky chránia zdravie.",
-      "Hrá sa na skutočnej klávesnici, mobil alebo tablet potrebuje pripojenú klávesnicu.",
-      "Rodič alebo učiteľ môže pomocou mobilu rýchlo naskenovať výsledky aj väčšej skupiny študentov."
-    ],
     "authorTitle": "O autorovi",
-    "author": "Ahojte, pisatelia. Aplikáciu Ťapko som navrhol na podporu výučby písania na klávesnici pre moje deti, ktoré bežné aplikácie nedokázali udržať natoľko, aby sa k nim vracali. Napriek intenzívnemu používaniu série modelov umelej inteligencie od Anthropic trval vývoj tejto aplikácie do podoby, s ktorou som bol dostatočne spokojný (dizajn, funkcie, bezpečnosť, rýchlosť a ďalšie), mnoho hodín. Dúfam, že podobne ako dokáže pri písaní o chvíľku dlhšie udržať moje deti, dokáže to aj pri vás a vašich deťoch (ak by ich to už bavilo menej, môžete im do hry schovať prekvapenie z fyzického sveta, ktoré si cvičením odomknú). Nakoniec vás prosím o pomoc: ak nájdete chybu alebo máte nápad na zlepšenie, {report} prosím na GitHube, kde je kód tejto aplikácie.",
+    "author": "Ahojte, pisatelia. Aplikáciu **Ťapko** som navrhol **na podporu výučby písania na klávesnici** pre moje deti, ktoré bežné aplikácie nedokázali udržať natoľko, aby sa k nim vracali. Napriek intenzívnemu používaniu série modelov umelej inteligencie od Anthropic trval vývoj tejto aplikácie do podoby, s ktorou som bol dostatočne spokojný (dizajn, funkcie, bezpečnosť, rýchlosť a ďalšie), mnoho hodín. Dúfam, že podobne ako dokáže pri písaní o chvíľku dlhšie udržať moje deti, dokáže to aj pri vás a vašich deťoch (ak by ich to už bavilo menej, môžete im do hry schovať prekvapenie z fyzického sveta, ktoré si cvičením odomknú). Nakoniec vás prosím o pomoc: ak nájdete chybu alebo máte nápad na zlepšenie, {report} prosím na GitHube, kde je kód tejto aplikácie.",
     "authorReport": "nahláste mi to",
-    "creditsTitle": "Kredit",
-    "credits": "Ťapko je publikovaný ako otvorený kód pod licenciou MIT. Názov TapkoTyper, postavička Ťapko a logo do licencie nepatria a v upravených kópiách sa nesmú použiť. Použité písma Lexend, Atkinson Hyperlegible a OpenDyslexic sú pod licenciou SIL Open Font License. Mediálne súbory sú generované prevažne pomocou modelov Gemini a niektoré sú doladené ručne.",
-    "open": "Nič neskrývame: všetky údaje o používaní nájdete rovnako ako my na adrese"
+    "creditsTitle": "Licencie a zdroje",
+    "credits": "Ťapko je publikovaný ako **otvorený kód** pod licenciou MIT. Názov TapkoTyper, postavička Ťapko a logo do licencie nepatria a v upravených kópiách sa nesmú použiť. Použité písma Lexend, Atkinson Hyperlegible a OpenDyslexic sú pod licenciou SIL Open Font License. Mediálne súbory sú generované prevažne pomocou modelov Gemini a niektoré sú doladené ručne.",
+    "open": "**Nič neskrývame!** Všetky údaje o používaní aplikácie Ťapko nájdete rovnako ako my na adrese"
   },
   "help": {
     "title": "Pomoc",
@@ -1622,6 +1614,15 @@
       "Nové písmenká prídu, keď ti tie staré idú dobre. Niektoré úrovne a príbehy sa otvoria, až keď vieš dosť písmeniek.",
       "Keď ti chýba písmenko, precvič ho vo Vlastnom písaní."
     ],
+    "teachTitle": "Postup výučby písania",
+    "teach": [
+      "Klávesy sa učia postupne, od základného radu (F a J).",
+      "Každý kláves má svoj prst a klávesnica s rukami na obrazovke ukazujú ktorý.",
+      "**Najprv presnosť!** Rýchlosť sa ukazuje len ako osobný pokrok.",
+      "Slabšie klávesy sa objavujú častejšie a krátke prestávky chránia zdravie.",
+      "Hrá sa na skutočnej klávesnici, mobil alebo tablet potrebuje pripojenú klávesnicu.",
+      "Rodič alebo učiteľ môže pomocou mobilu rýchlo naskenovať výsledky aj väčšej skupiny študentov."
+    ],
     "taskTitle": "Úloha od učiteľa",
     "task": [
       "Učiteľ ti môže poslať úlohu ako odkaz. Otvor ho a vyber, kto ju bude robiť.",
@@ -1632,14 +1633,14 @@
     "settings": {
       "settings": [
         "Študent: prezývka, postavička a nepovinné meno, jazyk hry, jazyk slov a rozloženie klávesnice. Rozloženie vyberte podľa skutočnej klávesnice, sprievodca prstov sa podľa neho riadi.",
-        "Cvičenie: náročnosť a dĺžka slov. Automaticky rastú spolu so študentom, ale môžete ich nastaviť aj ručne.",
+        "Cvičenie: náročnosť a dĺžka slov **automaticky rastú so zlepšovaním** písania študenta, ale môžete ich nastaviť aj ručne.",
         "Slová bez diakritiky pomôžu začiatočníkom na chvíľu. Bez časového tlaku veci zastanú a čakajú na študenta.",
         "Dĺžka hrania pred prestávkou: potom hra pozve študenta na krátky oddych.",
         "Sprievodca prstov: zmizne, keď sú klávesy zvládnuté, alebo je stále zapnutý či vypnutý. Môžete ho študentovi zamknúť.",
         "Šatník za čas cvičenia: 1 minúta v šatníku za 5 minút cvičenia, najviac 7 minút. Po vypnutí je šatník stále otvorený.",
         "Zvuky a rozhranie: hlasitosť, písmo, veľký text, menej pohybu, vysoký kontrast, celá obrazovka. **Preložiť hru** otvorí stránku prekladu, kde preložíte hru do nového jazyka alebo si upravíte vlastné texty.",
         "Heslo na nastavenia zamkne nastavenia pre všetkých hráčov na tomto zariadení. Zabudnuté heslo nevieme obnoviť.",
-        "Heslo chráni nastavenia len v hre. Všetky údaje (hráči, pokrok aj nastavenia) sú uložené v tomto prehliadači a heslo ich nešifruje. Kto sa k nim dostane priamo, napríklad cez nástroje prehliadača, môže ich prečítať aj zmeniť.",
+        "Heslo chráni nastavenia len v hre. Všetky údaje (hráči, pokrok aj nastavenia) sú uložené v tomto prehliadači a heslo ich nešifruje. Kto sa k nim dostane priamo, napríklad cez nástroje prehliadača, môže ich prečítať aj zmeniť. Preto v aplikácii **nezadávajte** nikdy žiadne **citlivé údaje**. Pri uložení nie sú chránené a je to tak zámerne.",
         "Ktokoľvek, kto používa tento počítač, môže v prehliadači vymazať údaje stránky. Tým sa odstránia všetci hráči, ich pokrok, výsledky aj heslo. Preto si pokrok občas exportujte do súboru."
       ],
       "own": [
@@ -1649,7 +1650,7 @@
         "Koľko vlastných slov a textu: aký diel cieľov v úrovniach budú tvoriť."
       ],
       "surprises": [
-        "Schovajte skutočnú odmenu za pravidlo: po úrovni, po minútach cvičenia, po ďalších úrovniach či hviezdičkách, alebo náhodou.",
+        "Schovajte **skutočnú odmenu** za pravidlo: po úrovni, po minútach cvičenia, po ďalších úrovniach či hviezdičkách, alebo náhodou.",
         "Hra položí otázku pred úrovňou a odpoveď prezradí, keď sa pravidlo splní."
       ],
       "task": [
@@ -1657,13 +1658,14 @@
         "Študenti odkaz otvoria a po splnení vám pošlú odkaz s výsledkom. Výsledky si prezriete cez tlačidlo Pre učiteľov na úvodnej stránke."
       ],
       "keys": [
-        "Automaticky prídu klávesy po jednom, od základného radu F a J. To je najlepšie.",
+        "Automaticky prídu klávesy po jednom, od základného radu F a J. Ďalšie klávesy pribúdajú podľa toho, ako **presne** a plynulo študent používa tie predchádzajúce.",
+        "Hra naučí aj ovládacie klávesy ako Esc, Tab, Backspace a Enter, ale do pokroku ich nezapočítava.",
         "Ručne vyberiete, ktoré klávesy sa študent učí, aj interpunkciu."
       ],
       "data": [
         "Všetko je uložené **len v tomto prehliadači**. Keď sa vymažú údaje prehliadača alebo sa pokazí počítač, pokrok sa stratí, ak nemáte zálohu.",
         "Preto občas **exportujte profil** do súboru. Import ho načíta späť alebo na inom zariadení.",
-        "Preniesť na iný počítač: celý profil je v odkaze. Hosťovský profil sa zabudne po zatvorení karty."
+        "Preniesť na iný počítač: hráč aj s pokrokom sa uloží do odkazu, ktorý otvoríte na druhom počítači. Keď je profil na odkaz príliš veľký, použite export do súboru. Hosťovský profil sa zabudne po zatvorení karty."
       ]
     },
     "keysTitle": "Hraj len s klávesnicou",

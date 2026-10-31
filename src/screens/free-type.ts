@@ -1,5 +1,5 @@
 import { app, go } from '../app/app';
-import { WORLDS, isWorldUnlocked } from '../game/levels';
+import { WORLDS, isWorldUnlocked, worldName } from '../game/levels';
 import { imageUrl } from '../gfx/assets';
 import { t } from '../i18n/i18n';
 import type { Profile } from '../storage/schema';
@@ -30,7 +30,7 @@ export function openPlacePicker(current?: number): void {
         close();
         if (wi !== current) go('level', { id: 'freetype', world: wi });
       },
-    }, img ? h('img', { src: img, alt: '' }) : h('div', { class: 'island-fallback' }), h('span', {}, t(`worlds.${w}`)));
+    }, img ? h('img', { src: img, alt: '' }) : h('div', { class: 'island-fallback' }), h('span', {}, worldName(wi)));
   });
   const close = modal(h('div', { class: 'place-picker' },
     h('h2', {}, t('freeType.pick')),

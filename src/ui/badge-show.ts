@@ -1,6 +1,6 @@
 import { audio } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
-import { WORLDS } from '../game/levels';
+import { WORLDS, worldName } from '../game/levels';
 import { WORLD_THINGS } from '../game/modes/aim-things';
 import type { BadgeTier } from '../game/rewards';
 import { t } from '../i18n/i18n';
@@ -25,7 +25,7 @@ export function badgeShow(): void {
   const tier = pick(TIERS);
   const thing = pick(WORLD_THINGS);
   const award = imageUrl(thing.pics[0]);
-  const title = t('badge.aria', { world: t(`worlds.${WORLDS[world]}`), tier: t(`badge.${tier}`) });
+  const title = t('badge.aria', { world: worldName(world), tier: t(`badge.${tier}`) });
   const awardName = t(`aim.things.${thing.id}.name`);
   const medal = badge(world, tier);
   medal.removeAttribute('tip');

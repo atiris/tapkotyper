@@ -1,6 +1,6 @@
 import { app, go, saveProfile, shownScreen } from '../app/app';
 import { fillProgress, randomFill } from '../app/super';
-import { WORLDS } from '../game/levels';
+import { WORLDS, worldName } from '../game/levels';
 import { bringParrotHome, sendParrotAway } from '../game/parrots';
 import { localDate } from '../learning/stats';
 import { lessonOrder } from '../learning/lessons';
@@ -80,7 +80,7 @@ function fillDialog(p: Profile): void {
   const most = lessonOrder(p.layout).length;
   const keys = h('input', { type: 'number', min: 0, max: most, step: 1, value: f.keys });
   const world = h('select', {}, h('option', { value: '-1' }, t('service.noWorld')),
-    ...WORLDS.map((_, i) => h('option', { value: String(i), selected: i === f.lastWorld }, `${i + 1}. ${t(`worlds.${WORLDS[i]}`)}`)));
+    ...WORLDS.map((_, i) => h('option', { value: String(i), selected: i === f.lastWorld }, `${i + 1}. ${worldName(i)}`)));
   const stars = percent(f.stars);
   const accuracy = percent(f.accuracy, 70);
   const ranges = percent(f.ranges);

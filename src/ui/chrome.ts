@@ -2,7 +2,7 @@ import { type ScreenName, app, cycleSound, go, shownScreen, toggleLook } from '.
 import { onThemeChange, shownLook } from '../app/theme';
 import { audio } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
-import { WORLDS } from '../game/levels';
+import { WORLDS, worldName } from '../game/levels';
 import { LANGS, LANGUAGES, language, languageName, locale, t } from '../i18n/i18n';
 import { installShortcuts, setDefaultShortcuts, withKey } from '../input/shortcuts';
 import type { Lang, SoundLevel } from '../storage/schema';
@@ -103,7 +103,8 @@ export function helpButton(): HTMLButtonElement {
 
 /** A track's name: its world's, or the menu's, the relaxing one's or the break's. */
 function trackName(track: string): string {
-  return t((WORLDS as string[]).includes(track) ? `worlds.${track}` : `tracks.${track}`);
+  const world = (WORLDS as string[]).indexOf(track);
+  return world >= 0 ? worldName(world) : t(`tracks.${track}`);
 }
 
 /** The app's function keys: F1 the screen's help, F4 the sound level, F8 the next song, F11 fullscreen; a level adds its own. */

@@ -5,7 +5,7 @@ import { compassElement } from '../gfx/compass';
 import { tapkoElement } from '../gfx/tapko';
 import { t, tList } from '../i18n/i18n';
 import { nickname } from '../storage/store';
-import { LEVELS, STORIES, type StoryDef, WORLDS, activityOf, aimOpen, aimWorld, isLevelReached, isWorldUnlocked, journeyId, journeyOpen, keysMissing, nextLevel, storyOpen, worldLevels, worldLock } from '../game/levels';
+import { LEVELS, STORIES, type StoryDef, WORLDS, activityOf, aimOpen, aimWorld, isLevelReached, isWorldUnlocked, journeyId, journeyOpen, keysMissing, nextLevel, storyOpen, worldLevels, worldLock, worldName } from '../game/levels';
 import { GUEST_ID, type Profile, SUPER_ID, type Surprise } from '../storage/schema';
 import { activeKeys, notReadyKeys } from '../learning/lessons';
 import { keyLabel } from '../ui/keyboard-guide';
@@ -159,7 +159,7 @@ export function mapScreen(root: HTMLElement): () => void {
   // Enter starts at once.
   play.focus();
   if (flown.length) {
-    const worlds = flown.map((w) => t(`worlds.${WORLDS[w]}`)).join(', ');
+    const worlds = flown.map((w) => worldName(w)).join(', ');
     bubble.replaceChildren(h('p', {}, t(flown.length === 1 ? 'map.parrotFlown' : 'map.parrotsFlown', { worlds })));
     bubble.hidden = false;
   }
@@ -189,7 +189,7 @@ function lockText(p: Profile, world: number): string {
   const lock = worldLock(p, world);
   if (!lock) return '';
   return lock.kind === 'world'
-    ? t('map.lockWorld', { world: t(`worlds.${WORLDS[lock.prev]}`) })
+    ? t('map.lockWorld', { world: worldName(lock.prev) })
     : t('map.lockKeys', { n: lock.need, have: lock.have });
 }
 
@@ -271,7 +271,7 @@ function surprisesMark(p: Profile, world: number): HTMLElement | null {
   const won = surprisesWonIn(p, world);
   if (!won.length) return null;
   const pic = imageUrl('ui-surprise-open');
-  const title = t('map.surprisesTitle', { world: t(`worlds.${WORLDS[world]}`) });
+  const title = t('map.surprisesTitle', { world: worldName(world) });
   const show = () => modal(h('div', { class: 'surprises-won' },
     h('h2', {}, title),
     ...won.map((s) => h('div', { class: 'surprise-result' }, surpriseAsk(s.q), h('p', { class: 'surprise answer' }, s.a)))), { cls: 'surprises-modal' });
@@ -303,7 +303,7 @@ function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held:
         class: `level-node ${l.isSuper ? 'super' : ''} ${stars ? 'done' : ''} ${l.id === nextId ? 'current' : ''} ${missing ? 'keys' : ''} ${gift ? 'gift' : ''}`,
         type: 'button',
         disabled: !reached,
-        'aria-label': `${t(`worlds.${w}`)} ${l.isSuper ? `${t('map.super')}, ${t(`map.act.${act}`)}` : `${l.index + 1}, ${t(`map.act.${act}`)}`}${stars ? `, ${t('map.starsAria', { n: stars })}` : ''}${missing ? `, ${t('map.keysLocked')}` : ''}${gift ? `, ${t('map.surpriseHere')}` : ''}`,
+        'aria-label': `${worldName(wi)} ${l.isSuper ? `${t('map.super')}, ${t(`map.act.${act}`)}` : `${l.index + 1}, ${t(`map.act.${act}`)}`}${stars ? `, ${t('map.starsAria', { n: stars })}` : ''}${missing ? `, ${t('map.keysLocked')}` : ''}${gift ? `, ${t('map.surpriseHere')}` : ''}`,
         tip: `${l.isSuper ? `${t('map.act.super')}: ${t(`map.act.${act}`)}` : `${l.index + 1}. ${t(`map.act.${act}`)}`}${gift ? `\n${t('map.surpriseHere')}` : ''}`,
         onClick: () => (missing ? keysBubble(missing, wi) : go('level', { id: l.id })),
       }, actImg ? h('img', { class: 'level-act', src: actImg, alt: '' }) : h('span', { class: 'num' }, num), l.isSuper ? crown('level-crown') : null,
@@ -318,11 +318,11 @@ function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held:
         onKeydown: (e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') lockBubble(wi); },
         role: 'button',
         tabindex: '0',
-        'aria-label': t(`worlds.${w}`),
+        'aria-label': worldName(wi),
         tip: lock || null,
       }) }, img ? h('img', { src: img, alt: '' }) : h('div', { class: 'island-fallback' }), open ? null : h('span', { class: 'lock', tip: lock || null }, icon('lock')),
         tier ? badge(wi, tier, true) : null, surprisesMark(p, wi)),
-      h('h3', {}, `${wi + 1}. ${t(`worlds.${w}`)}`),
+      h('h3', {}, `${wi + 1}. ${worldName(wi)}`),
       h('div', { class: 'level-row' }, ...levels, wi === story.worlds[story.worlds.length - 1] ? journeyNode(p, story) : null, aimNode(p, aimOpen(p, wi), wi), parrotNode(p, aimOpen(p, wi), wi)));
   });
   const closed = !storyOpen(p, story);

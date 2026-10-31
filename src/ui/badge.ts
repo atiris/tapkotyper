@@ -1,6 +1,6 @@
 import { app } from '../app/app';
 import { imageUrl } from '../gfx/assets';
-import { WORLDS } from '../game/levels';
+import { WORLDS, worldName } from '../game/levels';
 import { BADGE_GOLD, BADGE_SILVER, type BadgeTier, worldStars } from '../game/rewards';
 import { t } from '../i18n/i18n';
 import { h } from './dom';
@@ -10,7 +10,7 @@ const COLORS = ['#8fd18a', '#7fb2f0', '#6fd6c4', '#f3a46b', '#f1d36a', '#b7a99a'
 
 /** What the badge is for and what its tier means; short of gold, also what gold needs. */
 function badgeTip(world: number, tier: BadgeTier | null): string {
-  const name = t(`worlds.${WORLDS[world]}`);
+  const name = worldName(world);
   if (!tier) return t('badge.tip.locked', { world: name });
   const line = t(`badge.tip.${tier}`, { world: name, silver: BADGE_SILVER, gold: BADGE_GOLD });
   const have = app.profile ? worldStars(app.profile, world) : 0;
@@ -26,7 +26,7 @@ function badgeTip(world: number, tier: BadgeTier | null): string {
 export function badge(world: number, tier: BadgeTier | null, small = false): HTMLElement {
   const w = WORLDS[world];
   const src = imageUrl(`badge-${w}`) ?? imageUrl(`ui-map-${w}`);
-  const name = t(`worlds.${w}`);
+  const name = worldName(world);
   const label = tier ? t('badge.aria', { world: name, tier: t(`badge.${tier}`) }) : t('badge.locked', { n: world + 1 });
   return h('span', { class: `badge ${tier ?? 'none'} ${small ? 'small' : ''}`, role: 'img', 'aria-label': label, tip: badgeTip(world, tier), style: `--c:${COLORS[world]}` },
     src ? h('img', { src, alt: '' }) : h('span', { class: 'badge-num' }, String(world + 1)));

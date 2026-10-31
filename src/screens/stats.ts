@@ -1,7 +1,7 @@
 import { app, go, layout, reduceMotion } from '../app/app';
 import { imageUrl } from '../gfx/assets';
 import { type Mood, otherMood, renderTapkoInto, tapkoElement } from '../gfx/tapko';
-import { STORIES, type StoryDef, WORLDS, storyDone, storyOpen } from '../game/levels';
+import { STORIES, type StoryDef, WORLDS, storyDone, storyOpen, worldName } from '../game/levels';
 import { MAX_CHEST, MAX_STARS, badgeTier, chestPoints, totalStars, worldStars } from '../game/rewards';
 import { locale, t } from '../i18n/i18n';
 import { allKeys } from '../keyboard/layouts';
@@ -168,7 +168,7 @@ function storyRow(p: Profile, story: StoryDef): HTMLElement {
     h('div', { class: 'world-icons' }, ...story.worlds.map((w) => {
       const src = imageUrl(`ui-map-${WORLDS[w]}`);
       const on = p.progress.worldsDone.includes(w);
-      const name = t(`worlds.${WORLDS[w]}`);
+      const name = worldName(w);
       return src ? h('img', { class: on ? 'done' : '', src, alt: '', tip: name }) : h('span', { class: `world-dot ${on ? 'done' : ''}`, tip: name });
     })),
     h('p', { class: 'story-stars', tip: t('progress.storyStars', { n: stars }), 'aria-label': t('progress.storyStars', { n: stars }) },

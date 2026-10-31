@@ -2,7 +2,7 @@ import { app, applyProfileLook, go, loadPlayerWords, saveProfile, selectProfile,
 import { langOptions, locale, t } from '../i18n/i18n';
 import { ownLangs, ownRef } from '../i18n/own-langs';
 import { ENTER, LAYOUTS, LAYOUT_IDS, allKeys } from '../keyboard/layouts';
-import { LEVELS, type LevelDef, WORLDS } from '../game/levels';
+import { LEVELS, type LevelDef, WORLDS, worldName } from '../game/levels';
 import { SHOW_DAYS, SHOW_DAYS_MAX, SURPRISES_MAX, SURPRISE_LEN, SURPRISE_N_MAX, TRIGGERS, newSurprise, restartSurprise, surpriseCount } from '../game/own-content';
 import { wordSource } from '../game/runtime/options';
 import { lessonKeyOf, punctuationKeys, useLayout } from '../learning/lessons';
@@ -238,7 +238,7 @@ function ownTab(p: Profile): HTMLElement {
 
 /** Story level name for the level picker and the table. */
 function levelName(l: LevelDef): string {
-  return `${t(`worlds.${WORLDS[l.world]}`)}: ${l.isSuper ? t('map.super') : l.index + 1}`;
+  return `${worldName(l.world)}: ${l.isSuper ? t('map.super') : l.index + 1}`;
 }
 
 /** When a rule tells its answer, in words. */
@@ -270,7 +270,7 @@ function surprisesTab(p: Profile): HTMLElement {
   const q = h('textarea', { rows: 2, maxlength: SURPRISE_LEN, placeholder: t('surprises.qPlaceholder') });
   const a = h('textarea', { rows: 2, maxlength: SURPRISE_LEN, placeholder: t('surprises.aPlaceholder') });
   const trigger = select<SurpriseTrigger>('level', TRIGGERS.map((x): [SurpriseTrigger, string] => [x, t(`surprises.trigger.${x}`)]), () => sync());
-  const level = h('select', {}, ...WORLDS.map((w, i) => h('optgroup', { label: t(`worlds.${w}`) },
+  const level = h('select', {}, ...WORLDS.map((_, i) => h('optgroup', { label: worldName(i) },
     ...LEVELS.filter((l) => l.world === i).map((l) => h('option', { value: l.id }, levelName(l))))));
   const n = h('input', { type: 'number', min: 1, max: SURPRISE_N_MAX, step: 1, value: 10, inputmode: 'numeric' });
   const repeat = check(false, () => undefined);

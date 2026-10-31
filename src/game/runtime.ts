@@ -22,11 +22,11 @@ import { LayoutSwitch } from '../ui/layout-switch';
 import { closeModals, confirmDialog, h } from '../ui/dom';
 import { globalButtons } from '../ui/chrome';
 import { tip } from '../ui/tooltip';
-import { accuracyPic, placeRing, rhythmPic, roundButton, worldName } from '../ui/hud';
+import { accuracyPic, placeRing, rhythmPic, roundButton } from '../ui/hud';
 import type { WordSource } from '../words/words';
 import { SUPER_ID, type Surprise, type TaskSpec } from '../storage/schema';
 import type { LevelDef } from './levels';
-import { LEVELS, WORLDS, grownCount, hasMinLength, journeyProgress, levelOver, minActiveS, playedStep, shownProgress } from './levels';
+import { LEVELS, WORLDS, grownCount, hasMinLength, journeyProgress, levelOver, minActiveS, playedStep, shownProgress, worldName, worldStory } from './levels';
 import { type Mode, driftOffset } from './mode';
 import { ENTER_MAX, EnterMarks } from './enter';
 import type { ModeMaker } from './modes';
@@ -194,7 +194,7 @@ export class LevelRuntime {
     if (this.friends.fairy) this.el.dataset.fairy = 'melody';
     // A later part of a hero's journey starts with the bar where the parts before it left it.
     this.progressFill = h('div', { class: 'progress-fill', style: def.journey ? `width: ${Math.round(journeyProgress(def.journey, 0) * 100)}%` : '' });
-    const title = def.task ? def.task.title || t('task.untitled') : def.kind === 'practice' ? t(def.phrases ? 'level.ownText' : 'level.practice') : def.kind === 'freetype' ? t('level.freeType') : def.kind === 'aim' ? t('aim.title') : def.kind === 'parrot' ? t('parrot.title') : def.journey ? t('journey.title') : worldName(def);
+    const title = def.task ? def.task.title || t('task.untitled') : def.kind === 'practice' ? t(def.phrases ? 'level.ownText' : 'level.practice') : def.kind === 'freetype' ? t('level.freeType') : def.kind === 'aim' ? t('aim.title') : def.kind === 'parrot' ? t('parrot.title') : def.journey ? t('journey.title') : worldName(def.world);
     // Hiding the guide is the switch: the crossed keyboard, with the orange ring while the guide is hidden.
     const guideBtn = this.guideBtn = roundButton('control', 'keyboardOff', t('level.guide'), () => this.toggleGuide());
     tip(guideBtn, withKey(t('level.guide'), 'F2'));
@@ -337,11 +337,11 @@ export class LevelRuntime {
     // level of a world tells the world's story instead of its own the first time.
     // A world not built yet keeps its story for when it is: its placeholder says what it plays instead.
     const opening = this.def.kind !== 'copyloop' && LEVELS.find((l) => l.id === this.def.id)?.index === 0 ? `world-${WORLDS[this.def.world]}` : null;
-    const worldStory = opening && !p.progress.scenesSeen.includes(opening) ? t(`story.world.${WORLDS[this.def.world]}`) : null;
-    const story = [worldStory ?? (journey?.line ? t(journey.line) : this.mode.startLine()), this.mode.intro()].filter(Boolean).join(' ') || null;
+    const told = opening && !p.progress.scenesSeen.includes(opening) ? worldStory(this.def.world) : null;
+    const story = [told ?? (journey?.line ? t(journey.line) : this.mode.startLine()), this.mode.intro()].filter(Boolean).join(' ') || null;
     if (!this.opts.keys) await showPosture(host, p, tip, this.surprise, voiceNote, story, journey ? t('journey.harder') : null);
     if (this.disposed) return;
-    if (opening && worldStory) {
+    if (opening && told) {
       p.progress.scenesSeen.push(opening);
       saveProfile();
     }

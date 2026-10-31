@@ -4,7 +4,7 @@ import { ease } from '../../engine/tween';
 import { drawCached, drawWord, fontFamily, type G, wordBox } from '../../gfx/draw';
 import { t, tn } from '../../i18n/i18n';
 import { SPACE } from '../../learning/lessons';
-import { WORLDS, copyTarget } from '../levels';
+import { WORLDS, copyTarget, worldName } from '../levels';
 import { type Drift, Mode } from '../mode';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
@@ -153,7 +153,7 @@ export class CopyLoopMode extends Mode {
 
   /** A small rounded sign at the top: the world's name and that it is still being made. */
   private drawSign(g: G, cx: number): void {
-    const name = t(`worlds.${this.world}`), soon = t('story.copyLoopSoon');
+    const name = worldName(this.L.def.world), soon = t('story.copyLoopSoon');
     g.save();
     g.font = `700 22px ${fontFamily()}`;
     const w = Math.max(g.measureText(name).width, g.measureText(soon).width * 0.8) + 44;

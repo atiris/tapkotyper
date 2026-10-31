@@ -1,4 +1,4 @@
-import { WORLDS, type LevelDef, worldLevels } from '../game/levels';
+import { type LevelDef, worldLevels, worldName } from '../game/levels';
 import { WARDROBE_MAX, countdownFace } from '../game/wardrobe-time';
 import { t } from '../i18n/i18n';
 import { SHIFT_L, SHIFT_R, SPACE } from '../learning/lessons';
@@ -174,10 +174,5 @@ export function timerPic(left: number, note = ''): { el: HTMLElement; set(left: 
 
 /** "Meadow · level 3": a level named without a world number. */
 export function levelTitleWords(world: number, index: number): string {
-  return t('level.titleWords', { name: t(`worlds.${WORLDS[world]}`), level: index + 1 });
-}
-
-/** The world's name as a word. */
-export function worldName(def: LevelDef): string {
-  return t(`worlds.${WORLDS[def.world]}`);
+  return t('level.titleWords', { name: worldName(world), level: index + 1 });
 }

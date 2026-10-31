@@ -1,6 +1,6 @@
 import { app, go } from '../app/app';
 import { imageUrl } from '../gfx/assets';
-import { STORIES, type StoryDef, WORLDS, activityOf, aimOpen, isLevelUnlocked, journeyId, journeyOpen, worldLevels } from '../game/levels';
+import { STORIES, type StoryDef, activityOf, aimOpen, isLevelUnlocked, journeyId, journeyOpen, worldLevels, worldName } from '../game/levels';
 import { compassElement } from '../gfx/compass';
 import { worldThing } from '../game/modes/aim-things';
 import { t } from '../i18n/i18n';
@@ -85,7 +85,7 @@ function storyLevels(p: Profile): HTMLElement {
     return h('section', { class: 'story-levels' },
       h('h3', { class: 'story-head' }, pic ? h('img', { class: 'story-pic', src: pic, alt: '' }) : null, t(story.title)),
       ...story.worlds.map((w) => h('div', { class: 'world-levels' },
-        h('h4', {}, t(`worlds.${WORLDS[w]}`)),
+        h('h4', {}, worldName(w)),
         h('div', { class: 'level-grid' }, ...worldCells(p, w)))),
       journeyRow(p, story));
   }));

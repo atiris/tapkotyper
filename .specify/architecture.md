@@ -54,7 +54,9 @@
   they stand still (or always where a pixel is too small to see a jump, at a device pixel
   ratio of 2 and more); the layer in front of Tapko is only as wide as what he holds; big
   blurred glows are drawn once per size and then copied; a scene that does not move (cards
-  before play, the pause) is not drawn again.
+  before play, the pause) is not drawn again, and with Full graphics a scene under a blurring
+  card (the end card) stands still, Tapko on the card too: any move there would blur the stage
+  again every frame. Peeking under the end card shows it live again.
 - **Simple graphics:** a teacher can set Graphics to Automatic (default), Full or Simple in the
   settings. Simple draws one canvas pixel per screen pixel, fewer particles, no blurred
   shadows and no blur behind cards, moving bands on whole pixels and the start page's sky

@@ -1417,7 +1417,7 @@ export class LevelRuntime {
   /** Automatic graphics: when the first seconds of play are too slow, this device switches to the simple drawing. */
   private watchFrames(): void {
     if (graphics.simple || app.profile!.settings.graphics !== 'auto') return;
-    if (!this.started || this.paused || this.finished) return this.frameWatch.pause();
+    if (!this.started || this.paused || this.finished || this.covered) return this.frameWatch.pause();
     if (!this.frameWatch.frame(performance.now())) return;
     markSlowDevice();
     this.particles.enabled = false;
@@ -1426,11 +1426,19 @@ export class LevelRuntime {
   /** Pictures ready when the last frame was drawn. */
   private drawnPictures = -1;
 
+  /**
+   * A card blurs the stage (the end card unless peeking, a card before play): redrawing the scene
+   * would re-blur it every frame for nothing seen. The simple drawing has no blur and stays live.
+   */
+  private get covered(): boolean {
+    return !graphics.simple && !!this.el.querySelector(':scope > .overlay:not(.peek)');
+  }
+
   private render(): void {
     this.sizeTapko();
     this.watchFrames();
-    // A paused level and the cards before play do not move: the last frame stays unless a resize cleared it or a picture came.
-    const still = this.paused || (!this.started && !this.tweens.busy);
+    // A paused level, the cards before play and a blurring card do not move: the last frame stays unless a resize cleared it or a picture came.
+    const still = this.paused || (!this.started && !this.tweens.busy) || this.covered;
     if (still && !this.stage.dirty && picturesReady() === this.drawnPictures) return;
     this.drawnPictures = picturesReady();
     const g = this.stage.begin();

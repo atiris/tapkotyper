@@ -776,6 +776,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .overlay.results.peek { background: none; backdrop-filter: none; pointer-events: none; }
 .level-screen:has(> .overlay.results.peek) .stage-wrap { cursor: pointer; }
 .overlay.results.peek > .card { visibility: hidden; }
+/* Under a blurring card the scene stands still (the canvas is not redrawn either), and so does Tapko on the card: any move there would blur the stage again each frame. */
+body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *, .overlay .tapko-stack) { animation-play-state: paused; }
 /* The one end card: the title on top, a square picture panel beside the rows, the surprise band, the buttons at the bottom. */
 .card.end-card { position: relative; width: min(660px, 100%); max-width: none; padding: 0; display: grid; grid-template-rows: auto auto auto auto; }
 .ec-top { display: flex; align-items: center; justify-content: center; min-height: 72px; padding: 0.8rem 4rem; }

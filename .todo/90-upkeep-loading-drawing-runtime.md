@@ -53,11 +53,26 @@ cannot be done now (2026-10-31).
   at a time) if they describe these.
 - DB/store: none.
 
+## Progress notes
+
+- Install pool: unit test `src/app/sw-install.test.ts` runs the template with fake caches and
+  fetch (vitest only covers `src/`).
+- `scripts/perf.mjs` did not measure results cards: it waited for the old `.results-card` class
+  (the end card is `.end-card` since plan 85) and levels never ended within its time. New
+  `--results` flag: levels open with `minActive=0` and a `<scene>-results` row measures 6 s
+  under the card.
+- Results card (normal, Full): before meadow-1 p50 33.3 (busy 30 %), placeholder p50 16.7 /
+  p95 33.4 (busy 11 %). Skipping the canvas alone cut busy to 2 % but frames stayed at 33 ms:
+  the software compositor re-blurs whenever anything under or in the card moves. Decided: under
+  a blurring card in a level (Full graphics) the stage's CSS animations pause and Tapko on the
+  end card stands still too (`src/styles.css`); with that both p50 16.7. Replacing the
+  backdrop blur with a `filter` on the still scene did not help and was dropped.
+
 ## Steps
 
-- [ ] Service worker: pooled install (4 at once); unit or e2e check that an install still fills
+- [x] Service worker: pooled install (4 at once); unit or e2e check that an install still fills
       the cache completely and a failed file still fails it.
-- [ ] No redraw under a blurred card; peek and close resume drawing; perf numbers before/after
+- [x] No redraw under a blurred card; peek and close resume drawing; perf numbers before/after
       in the commit message.
 - [ ] Simple graphics at 0.75 resolution; perf numbers before/after; screenshots meadow and
       valley with Simple graphics at 1024x600.

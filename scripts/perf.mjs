@@ -3,13 +3,14 @@
 // times, long tasks and JS heap; a Chrome trace of each scene goes to test-results/perf/.
 //
 //   node scripts/perf.mjs [--machine normal|slow|big|all] [--only meadow-1,map] [--seconds 30]
-//                         [--no-build] [--no-trace] [--load] [--leak] [--budget] [--low]
+//                         [--no-build] [--no-trace] [--load] [--leak] [--budget] [--low] [--results]
 //
 // Machines: normal = 1366 x 768 at DPR 1; slow = the same with CPU throttling x 6; big = 1920 x 1080
 // at DPR 2 (the largest canvas the stage makes). `--load` measures a cold first load and a level
 // open on "Fast 3G"; `--leak` opens and leaves ten levels and compares the heap; `--budget` fails
 // (exit code 1) when a story level is over the budget of .specify/architecture.md (normal, and slow
-// with `--low`); `--low` sets the simple graphics, else the full ones. Needs the tester profile
+// with `--low`); `--low` sets the simple graphics, else the full ones; `--results` adds a row of
+// the frames under the results card of a level that ended within the time. Needs the tester profile
 // `.e2e/tester-profile.json` (git-ignored).
 import { chromium } from '@playwright/test';
 import { spawn, execSync } from 'node:child_process';
@@ -26,6 +27,8 @@ const PORT = 4175;
 const BASE = `http://localhost:${PORT}/tapkotyper/`;
 const OUT = 'test-results/perf';
 const SECONDS = Number(opt('seconds', '30'));
+/** Seconds of frames measured under the results card with `--results`. */
+const RESULTS_S = 6;
 const MACHINES = {
   normal: { viewport: { width: 1366, height: 768 }, dpr: 1, cpu: 1 },
   slow: { viewport: { width: 1366, height: 768 }, dpr: 1, cpu: 6 },
@@ -123,7 +126,7 @@ async function newPage(browser, m, low) {
 /** One step of play: Space on a card, the sample key on a key card, the next key of the guide in play. */
 async function step(page) {
   const s = await page.evaluate(() => {
-    if (document.querySelector('.results-card')) return 'results';
+    if (document.querySelector('.end-card')) return 'results';
     if (document.querySelector('.keys-intro')) return 'space';
     const ck = document.querySelector('.controlkey-card');
     if (ck) return `press:${ck.dataset.key}`;
@@ -162,7 +165,8 @@ async function busy(cdp) {
 }
 
 async function openScene(page, sc) {
-  await page.goto(`${BASE}?fast#/p/${tester.id}`);
+  // Measuring the results card, a level ends after its last target, without a minimum time.
+  await page.goto(`${BASE}?fast${flag('results') ? '&minActive=0' : ''}#/p/${tester.id}`);
   await page.locator('.map-screen').waitFor();
   if (sc.screen === 'start') {
     await page.goto(`${BASE}?fast#/`);
@@ -206,18 +210,32 @@ async function measure(browser, machine, sc, low) {
   const p = await page.evaluate(() => { window.__perf.on = false; return window.__perf; });
   const b1 = await busy(cdp);
   const wall = (Date.now() - t0) / 1000;
-  // Share of the wall time the main thread was busy, in %; script, style and layout of it.
-  const share = (k) => Math.round((b1[k] - b0[k]) / wall * 1000) / 10;
   if (trace) await browser.stopTracing();
+  const rows = [row(sc.name, p, b0, b1, wall, endedAt, level)];
+  // The card comes a moment after the end: its own frames, with the celebration under it.
+  if (flag('results') && endedAt !== null) {
+    await page.evaluate(() => { window.__perf.frames = []; window.__perf.long = 0; window.__perf.longMs = 0; window.__perf.on = true; });
+    const r0 = await busy(cdp);
+    await page.waitForTimeout(RESULTS_S * 1000);
+    const pr = await page.evaluate(() => { window.__perf.on = false; return window.__perf; });
+    rows.push(row(`${sc.name}-results`, pr, r0, await busy(cdp), RESULTS_S, null, false));
+  }
   const heapEnd = await heap(cdp);
   await context.close();
+  return rows.map((r) => ({ ...r, machine: machine + (low ? '-low' : ''), heapStart, heapEnd }));
+}
+
+/** A table row of sampled frames `p` over `wall` seconds, with the main thread's busy times `b0` to `b1`. */
+function row(scene, p, b0, b1, wall, endedAt, level) {
+  // Share of the wall time the main thread was busy, in %; script, style and layout of it.
+  const share = (k) => Math.round((b1[k] - b0[k]) / wall * 1000) / 10;
   const f = [...p.frames].sort((a, b) => a - b);
   return {
-    scene: sc.name, machine: machine + (low ? '-low' : ''), frames: f.length,
+    scene, frames: f.length,
     p50: +pct(f, 0.5).toFixed(1), p95: +pct(f, 0.95).toFixed(1), p99: +pct(f, 0.99).toFixed(1),
     over33: f.filter((x) => x > 34).length, long: p.long, longMs: Math.round(p.longMs),
     busy: share('task'), script: share('script'), style: share('style'), layout: share('layout'),
-    heapStart, heapEnd, endedAt, level,
+    endedAt, level,
   };
 }
 
@@ -309,13 +327,14 @@ try {
   if (!flag('load') && !flag('leak') || only.length) {
     for (const machine of machines) {
       for (const sc of scenes) {
-        const r = await measure(browser, machine, sc, flag('low'));
-        console.log(`${r.machine} ${r.scene}: p50 ${r.p50} p95 ${r.p95} p99 ${r.p99} >33 ${r.over33} long ${r.long} busy ${r.busy}% heap ${r.heapStart}/${r.heapEnd}`);
-        rows.push(r);
-        const budget = BUDGET[r.machine];
-        if (flag('budget') && budget && r.level && (r.p50 > budget.p50 || r.p95 > budget.p95)) {
-          console.log(`  OVER BUDGET: p50 ${r.p50} ms (at most ${budget.p50}), p95 ${r.p95} ms (at most ${budget.p95})`);
-          failed = true;
+        for (const r of await measure(browser, machine, sc, flag('low'))) {
+          console.log(`${r.machine} ${r.scene}: p50 ${r.p50} p95 ${r.p95} p99 ${r.p99} >33 ${r.over33} long ${r.long} busy ${r.busy}% heap ${r.heapStart}/${r.heapEnd}`);
+          rows.push(r);
+          const budget = BUDGET[r.machine];
+          if (flag('budget') && budget && r.level && (r.p50 > budget.p50 || r.p95 > budget.p95)) {
+            console.log(`  OVER BUDGET: p50 ${r.p50} ms (at most ${budget.p50}), p95 ${r.p95} ms (at most ${budget.p95})`);
+            failed = true;
+          }
         }
       }
     }

@@ -101,6 +101,20 @@ for a computer without canvas acceleration): `normal` is 1366 x 768 at device pi
   pure rules as unit tests, and a run of `scripts/perf.mjs` with the world's levels added to its
   scenes, within the budget above.
 
+## Ready for story packs
+A story made by someone else should later come in as data (`game/story-packs.md`). The built-in
+stories therefore pass through single places that a pack can join, without changing anything a
+child sees today:
+- **Difficulty from the story's tier:** level lengths, words a minute, extra words after a slip
+  and the parrot's rounds follow the story's tier, not its row on the map, so a pack story picks
+  the step it starts from.
+- **World names and stories from one helper each,** so a pack world can bring its own texts
+  instead of the language files.
+- **Built-in levels found by one lookup,** and **the star total counts only built-in levels and
+  journeys,** so stars of a pack can never buy the characters or accessories of the game.
+- **Pictures and music through one resolver each,** so a pack's files are one more source.
+- **The device's own databases through one helper,** so a pack store is not another copy.
+
 ## Why
 - GitHub Pages is free and needs no server, which also guarantees privacy.
 - Generated art and music give a polished storybook look; procedural fallbacks keep the

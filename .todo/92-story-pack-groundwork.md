@@ -94,7 +94,7 @@ without a caller, no dead code.
 - [x] 6. `storage/idb.ts`, both stores on it; a unit test of `openDb` with `fake-indexeddb`
       (creates stores on first open, null without IndexedDB); the existing teacher and
       own-language tests pass unchanged.
-- [ ] 7. `.specify/architecture.md`: a short "Ready for story packs" section, WHAT and WHY: per-story
+- [x] 7. `.specify/architecture.md`: a short "Ready for story packs" section, WHAT and WHY: per-story
       numbers come from the story's tier, world names and stories from one helper, built-in totals
       from built-in lists only, pictures and music through one resolver each, the device's own
       databases through one helper; points to `game/story-packs.md`.

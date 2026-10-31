@@ -577,7 +577,7 @@ BG is `magenta color (#FF00FF)` unless the table says `green`, then use `green c
 | `obj-hearth.jpg` | (2026-10-31, the dragons' hearth on the summit; attach `obj-firepit.jpg`) a big ring of old carved stones seen a little from above, runes carved softly in them (not an altar), the inside empty bare ash-grey ground: the game draws flames and an egg into it; about 1.5 times wider than tall | magenta |
 | **Egg journey** | | |
 | `obj-egg.jpg` | a big oval dragon egg, cream with turquoise spots, front view | magenta |
-| `obj-egg-cracking.jpg` | the same dragon egg with a zigzag crack and a tiny light glowing from inside | magenta |
+| `obj-egg-cracking.jpg` | (redone 2026-10-31: the old one had eyes) **attach `obj-egg-plain.jpg`**, "redraw ... in exactly the same drawing style": the egg half cracked, a big jagged zigzag crack around its middle, the upper shell slightly lifted and tilted, a thin warm golden light out of the crack, two or three small shell chips; NO face, NO eyes, nothing peeking out | magenta |
 | `obj-egg-plain.jpg` | (plan 83, done 2026-10-30; the valley's take-off end and the `egg` scene) **attach `obj-egg.jpg`**: "redraw the attached dragon egg in exactly the same drawing style, outline, shading, colours, size, position and shape (the same cream egg with the same turquoise spots), but with NO face at all: no eyes, no eyebrows, no mouth, no cheeks. Where the face was, the egg shell simply continues in cream with turquoise spots like the rest", front view | magenta |
 | `obj-stump.jpg` | a short round tree stump with a small mushroom | magenta |
 | `obj-rock-round.jpg` | a smooth round grey rock with a small tuft of grass | magenta |

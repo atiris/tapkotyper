@@ -81,8 +81,8 @@ const UPRIGHT = 0.4;
 const OOPS_AT = 2;
 const DOWN_AT = 3;
 const WOBBLE = 0.8;
-/** On the dragon story's hero's journey the little dragon flies alone, at most twice. */
-const JOURNEY_FLIGHTS = 2;
+/** On the journey each failed flight in a row adds this much lift to the next try, so a slow child's little dragon makes it too. */
+const RETRY_HELP = 0.25;
 
 interface Flyer {
   pic: string;
@@ -112,6 +112,9 @@ interface Flyer {
   flew: boolean;
   /** Its place by the pit. */
   seat: number;
+  /** The journey's flight back from the pit to Tapko, and a failed flight's walk back to its start to fly it again. */
+  back: boolean;
+  retry: boolean;
   /** Slips during its flight, and seconds of the wobble the second one gave it. */
   slips: number;
   wobble: number;
@@ -124,20 +127,23 @@ interface Flyer {
  * Too low over the bushes it lands in them with a giggle and walks on. A second slip in a flight
  * makes it cry out and wobble, a third ends the flight (into the bushes, or a hard landing past
  * them). Every dragon reaches the fire, and the end counts how many flew. On the dragon story's hero's
- * journey the hatched little dragon learns to fly: it alone flies, once more while the part's minimum
- * is not played.
+ * journey the hatched little dragon learns to fly: it alone flies, from Tapko to the pit, then back to
+ * Tapko, and on; only a flight that lands where it aimed counts, a failed one walks back and is flown
+ * again. It needs `JOURNEY_FLOCK` good flights, and more while the part's minimum is not nearly played.
  */
 export class FlightMode extends Mode {
   readonly pictures = [...DRAGONS, ...BUSHES, ...PIT_PICTURES, ...LITTLE_DRAGON_PICTURES];
   readonly world = 'dragons';
   readonly phraseWords = 1;
   private readonly journey = this.L.def.variant === 'journey';
-  private readonly flock = this.journey ? JOURNEY_FLIGHTS : FLOCK_MAX;
+  private readonly flock = this.journey ? JOURNEY_FLOCK : FLOCK_MAX;
   private pit: Firepit;
   private dragons: Flyer[] = [];
   private planned = this.journey ? JOURNEY_FLOCK : FLOCK_START;
   private done = 0;
   private flown = 0;
+  /** The journey's failed flights since the last good one. */
+  private failed = 0;
   private current: Target | null = null;
   /** Seconds until the next dragon comes; -1 when none is due. */
   private nextIn = -1;
@@ -166,7 +172,7 @@ export class FlightMode extends Mode {
     return this.journey;
   }
 
-  /** The stars also count the flyers: all of them 3, at least half 2, else 1. The little dragon's first flight on the journey only tries, it caps nothing. */
+  /** The stars also count the flyers: all of them 3, at least half 2, else 1. On the journey the little dragon flies until it makes it, it caps nothing. */
   starCap(): number {
     if (this.journey || !this.done || this.flown === this.done) return 3;
     return this.flown * 2 >= this.done ? 2 : 1;
@@ -179,6 +185,15 @@ export class FlightMode extends Mode {
 
   private seatLift(i: number): number {
     return SEAT_LIFT[i % SEAT_LIFT.length];
+  }
+
+  /** Where a flight starts and ends: from beside Tapko to its seat, on the journey's way back the other way. */
+  private startX(d: Flyer): number {
+    return d.back ? this.seatX(d.seat) : START_X;
+  }
+
+  private endX(d: Flyer): number {
+    return d.back ? START_X : this.seatX(d.seat);
   }
 
   /** The ground under a dragon: it rises toward its seat. */
@@ -205,15 +220,20 @@ export class FlightMode extends Mode {
   }
 
   private newDragon(): void {
-    const i = this.done;
-    // The little dragon tries once more from the start, it is the only one.
-    if (this.journey) this.dragons = [];
-    this.dragons.push({
+    const i = this.done, little = this.dragons[0];
+    // The little dragon is the only one: it turns and waits to fly the other way.
+    if (this.journey && little) this.ready(little, !little.back);
+    else this.dragons.push({
       pic: this.journey ? littleDragonImage() : DRAGONS[i % DRAGONS.length], x: START_X, alt: 0, state: 'wait', p: 0, lift: 0, climb: false, tilt: 0, vy: 0, squash: 0, t: 0,
-      fromX: START_X, fromAlt: 0, fromTilt: 0, toX: START_X, drop: DROP, flew: false, seat: this.journey ? 0 : i, slips: 0, wobble: 0,
+      fromX: START_X, fromAlt: 0, fromTilt: 0, toX: START_X, drop: DROP, flew: false, seat: this.journey ? 0 : i, slips: 0, wobble: 0, back: false, retry: false,
     });
     // The wait between flights is not rhythm.
     this.L.rhythm.ready(performance.now());
+  }
+
+  /** The little dragon waits on the ground for the first word of its flight (`back`: from the pit to Tapko). */
+  private ready(d: Flyer, back: boolean): void {
+    Object.assign(d, { state: 'wait', back, retry: false, alt: this.groundAt(d), p: 0, lift: 0, climb: false, tilt: 0, vy: 0, t: 0, flew: false, slips: 0, wobble: 0 });
   }
 
   /** The dragon of the current flight: waiting, flying, falling or in the bushes (one that walks on to the pit is done with it). */
@@ -244,9 +264,14 @@ export class FlightMode extends Mode {
       d.wobble = WOBBLE;
       this.L.shout(pickLine('story.flightOops'), d.x, GROUND - d.alt - DRAGON_H - 30);
     } else if (d.slips >= DOWN_AT) {
-      if (d.x > this.bushX(LAST_BUSH) + BUSH_HALF) this.fall(d);
+      if (this.pastBushes(d)) this.fall(d);
       else this.toBush(d);
     }
+  }
+
+  /** It has flown over the bushes, the way it flies. */
+  private pastBushes(d: Flyer): boolean {
+    return d.back ? d.x < this.bushX(0) - BUSH_HALF : d.x > this.bushX(LAST_BUSH) + BUSH_HALF;
   }
 
   /** It drops after the bushes and lands hard (it flew over them). */
@@ -262,15 +287,15 @@ export class FlightMode extends Mode {
     d.t = 0;
     d.fromX = d.x;
     d.fromAlt = d.alt;
-    d.toX = Math.max(d.x, this.bushX(0));
-    d.drop = d.toX > d.x + 10 ? GLIDE_IN : DROP;
+    d.toX = d.back ? Math.min(d.x, this.bushX(LAST_BUSH)) : Math.max(d.x, this.bushX(0));
+    d.drop = Math.abs(d.toX - d.x) > 10 ? GLIDE_IN : DROP;
     this.L.sfx('plop');
   }
 
-  /** The lift the rhythm asks for, full from 80 % of the goal; a pause in typing takes it away. */
+  /** The lift the rhythm asks for, full from 80 % of the goal (on the journey a little more after each failed try); a pause in typing takes it away. */
   private liftAim(): number {
     const idle = Math.max(0, Math.min(1, (this.L.idleFor - IDLE_GRACE) / IDLE_FALL));
-    return Math.min(1, this.L.rhythm.ratio(this.L.difficulty) / LIFT_RATIO) * (1 - idle);
+    return Math.min(1, this.L.rhythm.ratio(this.L.difficulty) / LIFT_RATIO + this.failed * RETRY_HELP) * (1 - idle);
   }
 
   update(dt: number): void {
@@ -290,27 +315,27 @@ export class FlightMode extends Mode {
     d.squash = Math.max(0, d.squash - dt * 2.5);
     d.wobble = Math.max(0, d.wobble - dt);
     const L = this.L;
-    const arrive = this.seatX(d.seat);
-    const right = this.bushX(LAST_BUSH) + BUSH_HALF;
+    const from = this.startX(d), arrive = this.endX(d);
+    const left = this.bushX(0) - BUSH_HALF, right = this.bushX(LAST_BUSH) + BUSH_HALF;
     if (d.state === 'fly') {
       d.p = Math.min(1, d.p + dt / FLIGHT_S);
       const aim = this.liftAim();
       d.climb = aim > d.lift + 0.01;
       d.lift += (aim - d.lift) * Math.min(1, dt * LIFT_EASE);
       d.tilt += ((d.climb ? TILT_UP : TILT_GLIDE) - d.tilt) * Math.min(1, dt * 3);
-      d.x = START_X + (arrive - START_X) * d.p;
+      d.x = from + (arrive - from) * d.p;
       d.alt = this.groundAt(d) + MAX_ALT * d.lift * Math.sin(Math.PI * d.p) ** FLAT;
-      const left = this.bushX(0) - BUSH_HALF;
       // Over the bushes and the typing stopped: it drops and lands hard (it still flew over them).
-      if (d.x > right && aim < HARD_AIM && d.p < 0.95 && d.alt > this.groundAt(d) + 20) this.fall(d);
+      if (this.pastBushes(d) && aim < HARD_AIM && d.p < 0.95 && d.alt > this.groundAt(d) + 20) this.fall(d);
       else if (d.x >= left && d.x <= right && d.alt < BUSH_TOP) this.toBush(d);
       else if (d.p >= 1) {
         d.flew = true;
         this.hop(d);
-        this.flightOver();
+        this.flightOver(true);
       }
     } else if (d.state === 'fall') {
-      d.x = Math.min(arrive, d.x + ((arrive - START_X) / FLIGHT_S) * 1.4 * dt);
+      const step = (Math.abs(arrive - from) / FLIGHT_S) * 1.4 * dt;
+      d.x = d.back ? Math.max(arrive, d.x - step) : Math.min(arrive, d.x + step);
       d.vy += FALL_G * dt;
       d.alt -= d.vy * dt;
       d.tilt += (0.5 - d.tilt) * Math.min(1, dt * 4);
@@ -320,7 +345,7 @@ export class FlightMode extends Mode {
         d.state = 'walk';
         d.t = 0;
         d.squash = 1;
-        this.flightOver();
+        this.flightOver(false);
         L.sfx('thud');
         L.shout(pickLine('story.flightHard'), d.x, GROUND - d.alt - DRAGON_H - 30);
         L.particles.emit(d.x, GROUND - d.alt, 10, 'puff', ['#d8cbb0', '#c9b896', '#efe6d2'], 90, 9, 0.9);
@@ -340,30 +365,37 @@ export class FlightMode extends Mode {
         }
       } else if (d.t < climb) {
         const k = ease.inOutQuad((d.t - shake) / (climb - shake));
-        const out = this.bushX(LAST_BUSH) + BUSH_HALF + 30;
+        // It climbs out on the far side; on the journey back toward its start, to fly again.
+        const out = d.back === this.journey ? right + 30 : left - 30;
         d.x = d.toX + (out - d.toX) * k;
         d.alt = BUSH_TOP * 0.35 * (1 - k) + Math.sin(k * Math.PI) * 50;
       } else {
         d.state = 'walk';
         d.alt = 0;
-        this.flightOver();
+        this.flightOver(false);
       }
     } else if (d.state === 'walk') {
       // After a hard landing it shakes it off a moment before it walks.
       if (d.squash > 0) return;
       d.tilt = 0;
-      d.x = Math.min(arrive, d.x + WALK * dt);
+      // A failed journey flight walks back to its start, every other walk on to where it flew.
+      const to = d.retry ? from : arrive;
+      d.x = d.x < to ? Math.min(to, d.x + WALK * dt) : Math.max(to, d.x - WALK * dt);
       d.alt = this.groundAt(d) + (L.reduceMotion ? 0 : Math.abs(Math.sin(d.t * 9)) * 6);
-      if (d.x >= arrive) this.hop(d);
+      if (d.x !== to) return;
+      if (d.retry) {
+        this.ready(d, d.back);
+        L.rhythm.ready(performance.now());
+      } else this.hop(d);
     } else if (d.state === 'hop') {
-      const k = Math.min(1, d.t / HOP), to = this.seatX(d.seat);
+      const k = Math.min(1, d.t / HOP), to = arrive;
       d.x = d.fromX + (to - d.fromX) * ease.inOutQuad(k);
       d.alt = d.fromAlt + (this.seatLift(d.seat) - d.fromAlt) * k + Math.sin(k * Math.PI) * 30;
       // Just before it touches down it turns upright.
       d.tilt = d.fromTilt * (1 - ease.inOutQuad(Math.max(0, (k - (1 - UPRIGHT)) / UPRIGHT)));
       if (k >= 1) this.home(d);
     } else if (d.state === 'home') {
-      d.x = this.seatX(d.seat);
+      d.x = arrive;
       // Now and then it is glad and hops.
       const glad = (this.t + d.seat * 1.9) % GLAD_EVERY;
       d.alt = this.seatLift(d.seat) + (L.reduceMotion || glad > GLAD_HOP ? 0 : Math.sin((glad / GLAD_HOP) * Math.PI) * 16);
@@ -385,10 +417,28 @@ export class FlightMode extends Mode {
     this.L.sfx('cheer');
   }
 
-  /** A flight is over (landed by the pit, in the bushes or hard): the next dragon comes while this one goes on to its seat. */
-  private flightOver(): void {
+  /**
+   * A flight is over (`landed` where it aimed, or in the bushes or hard): the next dragon comes while
+   * this one goes on to its seat. On the journey a failed flight is flown again, and a good one turns
+   * the little dragon round until it has its good flights and the part's minimum is nearly played.
+   */
+  private flightOver(landed: boolean): void {
     const L = this.L, d = this.dragons[this.dragons.length - 1];
     this.done++;
+    if (this.journey) {
+      if (!landed) {
+        this.failed++;
+        d.retry = true;
+        return;
+      }
+      this.failed = 0;
+      this.flown++;
+      if (this.flown < this.flock || L.minLeft >= FLIGHT_S / 2) {
+        this.nextIn = 0.8;
+        return;
+      }
+      return this.lastFlight();
+    }
     if (d.flew) this.flown++;
     this.planned = flockFor(L, this.planned, this.done, this.flock);
     if (this.done < this.planned) {
@@ -396,7 +446,12 @@ export class FlightMode extends Mode {
       return;
     }
     if (this.done >= this.flock) L.endMinimum();
-    // The last flight: no more words; the end comes once every dragon sits by the pit.
+    this.lastFlight();
+  }
+
+  /** The last flight: no more words; the end comes once every dragon sits by the pit (the little dragon wherever it landed). */
+  private lastFlight(): void {
+    const L = this.L;
     this.over = true;
     if (this.current) L.core.release(this.current, false);
     L.core.prune();
@@ -415,7 +470,7 @@ export class FlightMode extends Mode {
     for (const d of this.dragons) if (d.state !== 'bush' && d.state !== 'home') this.drawFlyer(g, d);
     if (this.current) L.label(g, this.current, L.vw / 2, VH * 0.15);
     if (this.endT === null) return;
-    const line = this.journey ? t(this.flown ? 'story.littleFlightDone' : 'story.littleFlightTried') : tn('story.flightDone', this.flown, { n: this.flown, m: this.done });
+    const line = this.journey ? t('story.littleFlightDone') : tn('story.flightDone', this.flown, { n: this.flown, m: this.done });
     rimmed(g, line, L.vw / 2, VH * 0.24, 40, Math.min(1, this.endT / 0.4));
   }
 
@@ -430,11 +485,14 @@ export class FlightMode extends Mode {
     const wobble = motion && d.wobble > 0 ? Math.sin(this.t * 30) * 0.18 * (d.wobble / WOBBLE) : 0;
     // In the air it leans (nose up climbing, down gliding) and rocks gently.
     const rot = flying ? d.tilt + wobble + (motion && d.state === 'fly' ? ROCK * Math.sin(this.t * 2.6 + d.seat) : 0) : shaken;
-    drawDragon(g, d.pic, d.x, GROUND - d.alt, DRAGON_H, squash, 1, 1, rot);
+    // It faces the way it goes (back to its start after a failed flight), and leans that way.
+    const face = d.back !== (d.state === 'walk' && d.retry) ? -1 : 1;
+    drawDragon(g, d.pic, d.x, GROUND - d.alt, DRAGON_H, squash, face, 1, rot * face);
   }
 
+  /** On the journey only the good flights bring the end closer. */
   progress(): number {
-    return Math.min(1, this.done / this.planned);
+    return Math.min(1, this.journey ? this.flown / this.flock : this.done / this.planned);
   }
 
   get finished(): boolean {

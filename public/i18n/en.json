@@ -214,7 +214,6 @@
     "endAsk": "Really end it?",
     "endLevelText": "This level will not count.",
     "endPracticeText": "This exercise will not count.",
-    "endJourneyText": "The hero's journey will not count, and next time it starts from the beginning.",
     "stayStart": "We stay here. Type as long as you like. Press Esc when you want to stop."
   },
   "guide": {
@@ -1005,7 +1004,6 @@
       "The boulders are behind us, on we go!"
     ],
     "littleFlightDone": "The little dragon flies!\nNow it can fly like its friends.",
-    "littleFlightTried": "The little dragon tried bravely\nand sits by the fire now.",
     "crystalsRocketOne": "{n} crystal\nwill power the rocket home!",
     "crystalsRocketFew": "{n} crystals\nwill power the rocket home!",
     "crystalsRocketMany": "{n} crystals\nwill power the rocket home!",
@@ -1013,12 +1011,7 @@
       "The rocket! Right where we left it.",
       "Hooray, our rocket is waiting for us!"
     ],
-    "launchSteps": [
-      "Door open.",
-      "Crystals loaded.",
-      "Engines warming up.",
-      "Countdown started."
-    ],
+    "launchCountdown": "Countdown started.",
     "launchCount": [
       "3",
       "2",
@@ -3389,18 +3382,37 @@
   "journey": {
     "title": "Hero's journey",
     "harder": "The hero's journey is harder than the usual levels: the words are harder, everything is a bit faster, and three stars need 98 % accuracy.",
-    "next": "Next: {world}",
+    "panelTitle": "The hero's journey goes on!",
     "go": "On we go",
+    "giveUp": {
+      "button": "Give up",
+      "title": "Hang in there, hero!",
+      "text": "This hero's journey can be a tough nut even for **the best heroes, like you!** Try to finish the journey; if it really does not work, you can gather your strength and come back later. If you stop typing now, the hero's journey will not count, and next time it starts from the beginning.",
+      "keep": "Go on with the journey",
+      "end": "Stop typing"
+    },
     "dragon": {
-      "down": "The little dragon has hatched! Now take it **down the mountain** and through the **valley**, the **Crystal Meadow** and the **swamp** all the way to the **rocket** waiting on the shore. At the end you will **launch** it. Boulders are rolling down the mountain, jump over them!",
-      "valley": "The little dragon wants to learn to fly like its friends.",
-      "valleyPlace": "The Dragons' Valley",
-      "crystals": "The rocket needs the **crystals' energy** to fly home. Collect as many as you can! The dragons from the valley are already waiting on the meadow.",
-      "crystalsPlace": "The Crystal Meadow",
-      "swamp": "The last swamp! Your rocket is already waiting on the shore.",
-      "swampPlace": "The swamp",
-      "launch": "Type **commands** to the rocket and get it ready for take-off. Then you and the little dragon climb in and fly home!",
-      "launchPlace": "The rocket on the shore"
+      "down": "**The little dragon has hatched** and wants to stay with you! Now you have to **get down from the Mountain of Awakening** together. You have to climb down the mountains and go **through the Dragons' Valley, the Crystal Meadow and the swamp** all the way to the rocket waiting on the shore, ready to take off as soon as it gets its crystal fuel. Little stones are rolling down the mountain and you have to dodge them, so try it together!",
+      "valley": "Next comes **the Dragons' Valley**, where you can learn to fly. For the little dragon to **learn to fly** like its friends, it has to **fly to the fire pit and back!**",
+      "crystals": "On the Crystal Meadow you will find **energy gems** that **your rocket needs** to take off. Collect as many as you can! The little dragons from the valley are already waiting for you on the meadow.",
+      "swamp": "Your **rocket is already parked** on the shore of the swamp. We have the fuel, we only need to get to the other side. Lucky little dragon, it can fly! But I can make it too!",
+      "launch": "The rocket is waiting on the shore. Type **commands into the onboard computer** and start it up, so you can **fly off with the little dragon** to new adventures on many other worlds.",
+      "launchOk": [
+        "Confirmed!",
+        "OK!",
+        "Good!",
+        "Understood!",
+        "All right!",
+        "Correct!"
+      ],
+      "launchNo": [
+        "Error!",
+        "I do not understand!",
+        "Say again!",
+        "Again, please!",
+        "Typo!",
+        "Unknown command!"
+      ]
     }
   }
 }

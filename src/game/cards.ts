@@ -6,7 +6,9 @@ import type { Profile, Surprise } from '../storage/schema';
 import { surpriseCount } from './own-content';
 import type { Style } from './typing';
 import { FINGER_COLORS, type KeyboardGuide, chipOf, fingerChip, lessonFinger, textColorsOn } from '../ui/keyboard-guide';
-import { button, closeButton, h, icon, modal, richText } from '../ui/dom';
+import { button, closeButton, confirmDialog, h, icon, modal, richText } from '../ui/dom';
+import { endCard, focusMain } from '../ui/end-card';
+import { pickStretch, stretchExercise } from './runtime/pause';
 import { tapkoElement } from '../gfx/tapko';
 import { imageUrl } from '../gfx/assets';
 import { SHIFT_L, SHIFT_R, SPACE } from '../learning/lessons';
@@ -157,38 +159,66 @@ export function showPosture(host: HTMLElement, p: Profile, tip?: string, surpris
 }
 
 /**
- * Between two parts of a hero's journey: the next world's island as on the map, the place's name
- * (the world's without one) and the part's own story line. The space bar, Enter, Escape, the
- * button, the X or a click goes on.
+ * Leaving a hero's journey, from the panel between parts or the pause card: the one question,
+ * going on being the safe choice (focused, Esc). Resolves true when the child ends it.
  */
-export function showTravel(host: HTMLElement, world: string, line?: string | null, place?: string | null): Promise<void> {
+export function giveUpJourney(): Promise<boolean> {
+  return confirmDialog({ title: t('journey.giveUp.title'), text: t('journey.giveUp.text'), ok: t('journey.giveUp.end'), cancel: t('journey.giveUp.keep') });
+}
+
+/**
+ * Between two parts of a hero's journey, on the card of every end: the map picture of the world the
+ * next part goes to and the part's own story. "On we go" (focused; the X, Esc, the space bar and
+ * Enter too), the pause card's short stretch exercise (then the panel again) and giving up, which
+ * asks first. Resolves true to play on, false to leave the journey.
+ */
+export function showJourneyPanel(host: HTMLElement, world: string, text: string, onBreak: (back: () => void, go: () => void) => void): Promise<boolean> {
   return new Promise((resolve) => {
-    const close = () => {
+    let stopStretch = () => {};
+    const close = (on: boolean) => {
+      stopStretch();
       stop();
       overlay.remove();
-      resolve();
+      resolve(on);
     };
-    const src = imageUrl(`ui-map-${world}`);
-    const go = button(t('journey.go'), close, 'btn primary', 'next');
-    const next = t('journey.next', { world: place ?? t(`worlds.${world}`) });
-    const card = h('div', { class: 'card travel-card', role: 'dialog', 'aria-label': next },
-      closeButton(close, t('journey.go')),
-      src ? h('img', { class: 'travel-img', src, alt: '' }) : null,
-      h('h2', {}, next),
-      line ? h('p', { class: 'posture-text' }, ...richText(line)) : null,
-      h('div', { class: 'row' }, go));
-    const overlay = h('div', { class: 'overlay' }, card);
-    overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+    const go = () => close(true);
+    const show = () => {
+      overlay.replaceChildren(panel);
+      focusMain(panel);
+    };
+    const stretch = () => {
+      const card = h('div', { class: 'card pause-card journey-stretch', role: 'dialog', 'aria-label': t('level.stretch') });
+      overlay.replaceChildren(card);
+      stopStretch = stretchExercise(card, pickStretch(), show, go, () => onBreak(show, go));
+    };
+    const giveUp = async () => {
+      if (await giveUpJourney()) close(false);
+      else focusMain(panel);
+    };
+    const panel = endCard({
+      cls: 'journey-panel',
+      title: t('journey.panelTitle'),
+      picture: `ui-map-${world}`,
+      text,
+      actions: [
+        { label: t('journey.go'), icon: 'next', run: go },
+        { label: t('level.stretch'), icon: 'smile', run: stretch },
+        { label: t('journey.giveUp.button'), icon: 'close', run: () => void giveUp() },
+      ],
+      onClose: go,
+    });
+    const overlay = h('div', { class: 'overlay' }, panel);
+    // Esc goes on; the space bar and Enter press the focused button (on the panel the main one). A dialog over it keeps its keys.
     const onKey = (e: KeyboardEvent) => {
-      if (e.repeat || (e.key !== ' ' && e.key !== 'Enter' && e.key !== 'Escape')) return;
+      if (e.repeat || e.key !== 'Escape' || document.querySelector('.modal-back') || !panel.isConnected) return;
       e.preventDefault();
       e.stopPropagation();
       audio.sfx('pop');
-      close();
+      go();
     };
     const stop = captureKeys(overlay, onKey);
     host.append(overlay);
-    queueMicrotask(() => go.focus());
+    queueMicrotask(() => focusMain(panel));
   });
 }
 

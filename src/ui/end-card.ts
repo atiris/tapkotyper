@@ -2,7 +2,7 @@ import { imageUrl } from '../gfx/assets';
 import { t } from '../i18n/i18n';
 import { openSurprises } from '../game/cards';
 import type { Surprise } from '../storage/schema';
-import { type Child, type ICONS, button, h } from './dom';
+import { type Child, type ICONS, button, closeButton, h, richText } from './dom';
 import { tip } from './tooltip';
 
 export interface EndAction {
@@ -19,9 +19,11 @@ export interface EndCardOpts {
   /** One picture of what happened: an image's name, or an element (the player's character). */
   picture: string | HTMLElement;
   /** Under the picture: the stars, or one short value. */
-  under: Child;
+  under?: Child;
   /** At most three rows, label and value. */
-  rows: [string, Child][];
+  rows?: [string, Child][];
+  /** Instead of the rows: a text with `**bold**` (the hero's journey's panel between parts). */
+  text?: string | null;
   /** The one green line of news. */
   news?: Child[] | null;
   /** A yellow tip line. */
@@ -34,7 +36,10 @@ export interface EndCardOpts {
   onBreak?: ((back: () => void) => void) | null;
   /** The end's own buttons, its main one first; at most two others are shown. */
   actions: EndAction[];
-  toMap: () => void;
+  /** "To the map" last; none on a card that goes on in the level. */
+  toMap?: (() => void) | null;
+  /** The round X at the top right. */
+  onClose?: (() => void) | null;
 }
 
 /** Plain buttons beside the main one, "To the map" not counted. */
@@ -70,19 +75,21 @@ export function endCard(o: EndCardOpts): HTMLElement {
       return b;
     };
     const [main, ...rest] = list;
-    bot.replaceChildren(...[main && make(main, 'btn primary'), ...rest.slice(0, PLAIN_MAX).map((a) => make(a, 'btn')), make({ label: t('end.toMap'), icon: 'map', run: o.toMap }, 'btn home')].filter((b) => !!b));
+    bot.replaceChildren(...[main && make(main, 'btn primary'), ...rest.slice(0, PLAIN_MAX).map((a) => make(a, 'btn')), o.toMap ? make({ label: t('end.toMap'), icon: 'map', run: o.toMap }, 'btn home') : null].filter((b) => !!b));
   };
   render();
   const pic = typeof o.picture === 'string' ? imageUrl(o.picture) : null;
   const box = imageUrl('ui-surprise-open');
   return h('div', { class: `card end-card ${o.cls}` },
+    o.onClose ? closeButton(o.onClose, o.actions[0]?.label) : null,
     h('div', { class: 'ec-top' }, h('h2', {}, o.title)),
     h('div', { class: 'ec-mid' },
       h('div', { class: 'ec-pic' },
         typeof o.picture === 'string' ? pic && h('img', { class: 'ec-img', src: pic, alt: '' }) : o.picture,
-        h('div', { class: 'ec-under' }, o.under)),
+        o.under != null ? h('div', { class: 'ec-under' }, o.under) : null),
       h('div', { class: 'ec-rows' },
-        ...o.rows.map(([label, value]) => h('div', { class: 'ec-row' }, h('span', {}, label), h('b', {}, value))),
+        o.text ? h('p', { class: 'ec-text' }, ...richText(o.text)) : null,
+        ...(o.rows ?? []).map(([label, value]) => h('div', { class: 'ec-row' }, h('span', {}, label), h('b', {}, value))),
         o.extra,
         o.news?.length ? h('p', { class: 'ec-news' }, ...o.news) : null,
         o.tip ? h('p', { class: 'ec-tip' }, o.tip) : null)),

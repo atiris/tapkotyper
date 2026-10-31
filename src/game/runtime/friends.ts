@@ -128,12 +128,12 @@ export class Friends {
     drawFairy(g, L.endTime == null ? this.fairyMood : 'happy', x, y - FAIRY_FLOAT, FAIRY_SIZE, L.mode.t, hop);
   }
 
-  /** The little dragon right behind Tapko. */
+  /** The little dragon right behind Tapko, or hovering where the mode holds it. */
   private drawLittle(g: G): void {
     const L = this.L;
     if (L.mode.friendAway()) return;
-    const { x, y } = L.mode.friendSpot() ?? { x: LITTLE_X, y: L.mode.tapkoFeet };
+    const { x, y, lift = 0 } = L.mode.friendSpot() ?? { x: LITTLE_X, y: L.mode.tapkoFeet };
     const hop = L.endTime == null ? (this.littleHop > 0 ? 1 - this.littleHop / LITTLE_HOP : 0) : L.endHop;
-    drawLittleDragon(g, L.endTime == null ? this.littleMood : 'happy', x, y, LITTLE_SIZE, L.mode.t, hop, !L.reduceMotion);
+    drawLittleDragon(g, L.endTime == null ? this.littleMood : 'happy', x, y, LITTLE_SIZE, L.mode.t, hop, !L.reduceMotion, lift);
   }
 }

@@ -69,22 +69,22 @@ export interface LevelDef {
   journey?: JourneyPart;
 }
 
-/** Which part of a story's hero's journey a level is, of how many, and the part's own story line (an i18n key). */
+/** Which part of a story's hero's journey a level is, of how many, the part's own story line (an i18n key) and the world whose map picture the panel before it shows. */
 export interface JourneyPart {
   story: StoryDef['id'];
   part: number;
   parts: number;
   line?: string;
-  place?: string;
+  picture: number;
 }
 
-/** One part of a story's own hero's journey: what it plays, the world of its background, its own story line and the place its travel card names (i18n keys; the world's name without one). */
+/** One part of a story's own hero's journey: what it plays, the world of its background, its own story line (an i18n key) and the world of its picture where that differs. */
 export interface JourneyStep {
   kind: LevelKind;
   variant: string;
   world: number;
   line?: string;
-  place?: string;
+  picture?: number;
 }
 
 /** Seconds of active play a level lasts at least, by story (dragon, robot, fairy): the difficulty grows with the story. */
@@ -100,8 +100,8 @@ const CALM_KINDS: LevelKind[] = ['poppies', 'hop', 'swamp', 'thicket', 'mud'];
 /** Copy levels: a growing or a clean line, and the mountain's spell ribbon. */
 const COPY_KINDS: LevelKind[] = ['invitation', 'command', 'spells', 'lullaby', 'spell', 'copyloop'];
 
-/** A hero's journey is as long as this many regular levels of its story, split evenly over its parts. */
-const JOURNEY_SHARE = 2;
+/** A hero's journey is as long as this many regular levels of its story, split evenly over its parts (the dragon story's: 6 minutes). */
+const JOURNEY_SHARE = 3;
 
 /** The story's place in `STORIES`: a journey part counts by its story, every other level by its world's. */
 function storyIndex(l: Pick<LevelDef, 'world' | 'journey'>): number {
@@ -129,9 +129,9 @@ export function copyTarget(index: number, sentence: boolean): { words: number; m
   return index >= 4 && sentence ? { words: 5, min: 3 } : { words: 3, min: 2 };
 }
 
-/** Dragons a flight level starts with; one more comes while the minimum is not played (`flockAfter`). The dragon story's journey flies the little dragon alone. */
+/** Dragons a flight level starts with; one more comes while the minimum is not played (`flockAfter`). On the dragon story's journey the little dragon alone needs two good flights. */
 const FLOCK = 3;
-export const JOURNEY_FLOCK = 1;
+export const JOURNEY_FLOCK = 2;
 
 /** A kind's planned count in its own unit for `words` words; every other kind counts words. */
 const UNITS: Partial<Record<LevelKind, (words: number, l: LevelDef) => number>> = {
@@ -205,6 +205,11 @@ export function levelOver(modeFinished: boolean, active: number, min: number): b
 export function shownProgress(modeProgress: number, active: number, min: number): number {
   if (min <= 0) return modeProgress;
   return Math.min(modeProgress, active / min);
+}
+
+/** The journey's bar: part `part` of `parts` fills only its own slice, the part's progress mapped into it. */
+export function journeyProgress(j: Pick<JourneyPart, 'part' | 'parts'>, share: number): number {
+  return (j.part + Math.max(0, Math.min(1, share))) / j.parts;
 }
 
 const def = (world: number, index: number, kind: LevelKind, variant = '', noSpace = false): LevelDef => {
@@ -316,10 +321,11 @@ export const JOURNEYS: Partial<Record<StoryDef['id'], JourneyStep[]>> = {
   // crystal meadow and its swamp back to his rocket on the shore, and takes off. World 1 is not on this planet.
   dragon: [
     { kind: 'boulders', variant: 'journey', world: 4, line: 'journey.dragon.down' },
-    { kind: 'flight', variant: 'journey', world: 3, line: 'journey.dragon.valley', place: 'journey.dragon.valleyPlace' },
-    { kind: 'crystals', variant: 'journey', world: 2, line: 'journey.dragon.crystals', place: 'journey.dragon.crystalsPlace' },
-    { kind: 'greatswamp', variant: 'journey', world: 2, line: 'journey.dragon.swamp', place: 'journey.dragon.swampPlace' },
-    { kind: 'command', variant: 'journey', world: 2, line: 'journey.dragon.launch', place: 'journey.dragon.launchPlace' },
+    { kind: 'flight', variant: 'journey', world: 3, line: 'journey.dragon.valley' },
+    { kind: 'crystals', variant: 'journey', world: 2, line: 'journey.dragon.crystals' },
+    { kind: 'greatswamp', variant: 'journey', world: 2, line: 'journey.dragon.swamp' },
+    // The take-off plays on the planet's shore, but it is the way into space: the rocket world's picture.
+    { kind: 'command', variant: 'journey', world: 2, line: 'journey.dragon.launch', picture: 1 },
   ],
 };
 
@@ -342,7 +348,7 @@ export function journeyOpen(p: Profile, story: StoryDef): boolean {
 export function journeyLevel(story: StoryDef, part: number): LevelDef {
   const steps = journeySteps(story);
   const s = steps[Math.max(0, Math.min(steps.length - 1, part))];
-  const journey: JourneyPart = { story: story.id, part: steps.indexOf(s), parts: steps.length, ...(s.line ? { line: s.line } : {}), ...(s.place ? { place: s.place } : {}) };
+  const journey: JourneyPart = { story: story.id, part: steps.indexOf(s), parts: steps.length, picture: s.picture ?? s.world, ...(s.line ? { line: s.line } : {}) };
   const l: LevelDef = { id: journeyId(story), world: s.world, index: -1, kind: s.kind, count: 0, variant: s.variant, isSuper: false, journey };
   return { ...l, count: plannedCount(l) };
 }

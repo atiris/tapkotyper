@@ -470,6 +470,13 @@ const PLACE = 1.2;
 const GLOW_S = 3;
 /** Seconds by the rocket before the journey's swamp ends. */
 const ROCKET_END = 2.5;
+/** The journey's swamp has at least four sets (three fragile stones and the firm fourth) before the shore. */
+const JOURNEY_JUMPS = 4 * SET;
+/** The little dragon hovers above Tapko's head, a little behind him, bobbing gently (pixels, seconds). */
+const HOVER_BACK = 80;
+const HOVER_UP = TAPKO_H * 0.8;
+const HOVER_BOB = 8;
+const HOVER_BOB_S = 1.6;
 const CRADLE_H = 190;
 const LIFE_H = 100;
 /** The monolith's foot stands this far below the grass line, a dark green shadow behind it. */
@@ -479,8 +486,8 @@ const FLOAT = 26;
 const BOB = 6;
 /** The shore picture always reaches this far past the stage's right edge, so its end never shows. */
 const END_MARGIN = 40;
-/** On the dragon story's hero's journey Tapko's rocket stands on the shore's grass this far left of the shore's last view's right edge. */
-const ROCKET_IN = 170;
+/** On the dragon story's hero's journey Tapko's rocket stands on the shore's grass this far left of the shore's last view's right edge, well away from the water. */
+const ROCKET_IN = 90;
 
 /** The shore's x when the view at 0 ends where the great swamp's last view does (the journey's take-off goes on there). */
 export function shoreEndView(vw: number): number {
@@ -525,7 +532,7 @@ interface Crumb {
 export class GreatSwampMode extends SwampHero {
   readonly pictures = [...SWAMP_PICTURES, 'obj-swamp-stone-broken', 'obj-swamp-log', 'obj-cradle', ...LIFE_CRYSTALS, ...STANDING_ROCKET];
   private readonly journey = this.L.def.variant === 'journey';
-  /** The little dragon hops after him from stone to stone (in the scene), and the seconds he has stood by the rocket. */
+  /** The little dragon flies after him above his head (in the scene), and the seconds he has stood by the rocket. */
   private friend: { x: number; y: number } | null = null;
   private atRocket: number | null = null;
   private gap = 200;
@@ -557,6 +564,7 @@ export class GreatSwampMode extends SwampHero {
     this.x0 = this.home;
     this.stand = this.base = this.stone(this.x0);
     this.stand.age = 1;
+    if (this.journey) this.L.count = Math.max(this.L.count, JOURNEY_JUMPS);
     this.ask();
   }
 
@@ -592,9 +600,10 @@ export class GreatSwampMode extends SwampHero {
     return this.journey ? 0 : 1;
   }
 
-  /** The shore comes when the jumps to it and the sentence (on the journey the scene by the rocket) fill the planned tasks and about the time still left. */
+  /** The shore comes when the jumps to it and the sentence (on the journey the scene by the rocket) fill the planned tasks and about the time still left; on the journey not before its four sets. */
   private get shoreDue(): boolean {
     const left = this.lastStone() - this.idx(this.stand!);
+    if (this.journey && this.lastStone() < JOURNEY_JUMPS) return false;
     return this.tasksDone + left + 1 >= this.L.count && this.L.minLeft <= (left + SENTENCE_WORDS) * this.pace;
   }
 
@@ -609,18 +618,17 @@ export class GreatSwampMode extends SwampHero {
     return !this.journey && super.logDue(reach);
   }
 
-  /** The little dragon right behind him: on the stone before his, on the shore beside him. */
-  friendSpot(): { x: number; y: number } {
+  /** The little dragon flies: it hovers above his head, a little behind him, bobbing gently. */
+  friendSpot(): { x: number; y: number; lift?: number } {
     const f = this.friend;
-    return f ? { x: f.x - this.scroll, y: f.y } : super.friendSpot();
+    if (!f) return super.friendSpot();
+    const bob = this.L.reduceMotion ? 0 : Math.sin((this.t * Math.PI * 2) / HOVER_BOB_S) * HOVER_BOB;
+    return { x: f.x - this.scroll, y: f.y, lift: HOVER_UP + bob };
   }
 
-  /** Where the little dragon heads for in the scene. */
+  /** Where the little dragon heads for in the scene: over his feet, wherever he jumps. */
   private friendAim(): { x: number; y: number } {
-    if (this.onShore) return { x: this.onShore.x - 105, y: this.onShore.y };
-    const i = this.stand ? this.stones.indexOf(this.stand) : -1;
-    const behind = i > 0 ? this.stones[i - 1] : null;
-    return behind ? this.top(behind) : { x: this.heroX + this.scroll - 105, y: this.heroY };
+    return { x: this.heroX + this.scroll - HOVER_BACK, y: this.heroY };
   }
 
   /** The next word, unless the shore comes now; never while a log lies ahead. */

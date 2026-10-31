@@ -214,7 +214,6 @@
     "endAsk": "Naozaj ukončiť?",
     "endLevelText": "Táto úroveň sa nezapočíta.",
     "endPracticeText": "Toto cvičenie sa nezapočíta.",
-    "endJourneyText": "Cesta hrdinu sa nezapočíta a nabudúce začne od začiatku.",
     "stayStart": "Zostávame tu. Píš, koľko chceš. Keď budeš chcieť skončiť, stlač Esc."
   },
   "guide": {
@@ -1005,7 +1004,6 @@
       "Balvany sú za nami, ideme ďalej!"
     ],
     "littleFlightDone": "Dráčik letí!\nUž vie lietať ako kamaráti.",
-    "littleFlightTried": "Dráčik to skúšal statočne\na už sedí pri ohni.",
     "crystalsRocketOne": "{n} kryštál\nnabije raketu na cestu domov!",
     "crystalsRocketFew": "{n} kryštály\nnabijú raketu na cestu domov!",
     "crystalsRocketMany": "{n} kryštálov\nnabije raketu na cestu domov!",
@@ -1013,12 +1011,7 @@
       "Raketa! Stojí presne tam, kde sme ju nechali.",
       "Hurá, naša raketa nás čaká!"
     ],
-    "launchSteps": [
-      "Dvere otvorené.",
-      "Kryštály načítané.",
-      "Motory sa zahrievajú.",
-      "Odpočítavanie spustené."
-    ],
+    "launchCountdown": "Odpočítavanie spustené.",
     "launchCount": [
       "3",
       "2",
@@ -3412,18 +3405,37 @@
   "journey": {
     "title": "Cesta hrdinu",
     "harder": "Cesta hrdinu je ťažšia ako bežné úrovne: slová sú ťažšie, všetko je o kúsok rýchlejšie a na tri hviezdy treba 98 % presnosť.",
-    "next": "Ďalej: {world}",
+    "panelTitle": "Cesta hrdinu pokračuje!",
     "go": "Ideme ďalej",
+    "giveUp": {
+      "button": "Vzdať to",
+      "title": "Hrdina, vydrž to!",
+      "text": "Táto cesta hrdinu môže byť ťažký oriešok aj pre **najlepších hrdinov, ako si ty!** Skús cestu dokončiť, ak to skutočne nejde, môžeš preskupiť svoje sily a vrátiť sa neskôr. Ak teraz ukončíš písanie, Cesta hrdinu sa nezapočíta a nabudúce začne od začiatku.",
+      "keep": "Pokračovať v ceste",
+      "end": "Ukončiť písanie"
+    },
     "dragon": {
-      "down": "Dráčik sa vyliahol! Teraz ho musíš dostať **dolu z hory** a cez **údolie**, **Lúku kryštálov** a **močiar** až k **rakete**, ktorá čaká na brehu. Na konci ju **odštartuješ**. Z hory sa valia balvany, preskakuj ich!",
-      "valley": "Dráčik sa chce naučiť lietať ako jeho kamaráti.",
-      "valleyPlace": "Údolie drakov",
-      "crystals": "Raketa potrebuje na let domov **energiu kryštálov**. Nazbieraj ich čo najviac! Dráčiky z údolia ťa už čakajú na lúke.",
-      "crystalsPlace": "Lúka kryštálov",
-      "swamp": "Posledný močiar! Na brehu už čaká tvoja raketa.",
-      "swampPlace": "Močiar",
-      "launch": "Napíš rakete **príkazy** a priprav ju na štart. Potom s dráčikom nastúpite a letíte domov!",
-      "launchPlace": "Raketa na brehu"
+      "down": "**Dráčik sa vyliahol** a chce zostať s tebou! Teraz sa musíte **dostať dolu z Hory prebudenia** spoločne. Musíte zostúpiť z hôr a **cez Údolie drakov, Lúku kryštálov a močiar** sa dostať až k rakete, ktorá čaká na brehu, pripravená na odlet hneď, ako dostane kryštálové palivo. Z hory sa kotúľajú kamienky, ktorým je potrebné sa vyhnúť, tak to skúste spolu!",
+      "valley": "Ďalej nás čaká **Údolie drakov**, v ktorom sa môžeš naučiť lietať. Na to, aby sa dráčik **naučil lietať** ako jeho kamaráti, musí **úspešne preletieť k ohnisku a späť!**",
+      "crystals": "Na Lúke kryštálov nájdeš **energetické drahokamy**, ktoré **potrebuje tvoja raketa** na odlet. Nazbieraj ich čo najviac! Dráčiky z údolia ťa už na lúke čakajú.",
+      "swamp": "Na brehu močiara je už **zaparkovaná raketa.** Palivo už máme, stačí sa dostať na druhú stranu. Dráčik sa má, ten môže letieť! Ale ja to zvládnem tiež!",
+      "launch": "Raketa čaká na brehu. Napíš **príkazy do palubného počítača** a naštartuj ju, aby ste mohli **s dráčikom odletieť** zažívať nové dobrodružstvá na rôznych iných svetoch.",
+      "launchOk": [
+        "Potvrdzujem!",
+        "Ok!",
+        "Dobre!",
+        "Rozumiem!",
+        "V poriadku!",
+        "Správne!"
+      ],
+      "launchNo": [
+        "Chyba!",
+        "Nerozumiem!",
+        "Zopakujte!",
+        "Prosím, znova!",
+        "Preklep!",
+        "Neznámy príkaz!"
+      ]
     }
   }
 }

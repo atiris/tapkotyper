@@ -414,11 +414,15 @@ export class CommandMode extends Mode {
     }
     this.L.sfx('whoosh');
     const { rowTyped: right, rowSlips: slips } = this.row;
+    if (this.row.left <= 0) this.lastRow();
     const last = this.row.left <= 0;
     const accepted = last || slips === 0 || (right > 0 && !this.L.rng.chance(0.5));
     this.answer = this.answered(accepted, last);
     this.reply = REPLY_TIME;
   }
+
+  /** The level's words are done with this row; a mode may give more rows instead. */
+  protected lastRow(): void {}
 
   /** The rocket takes an accepted command (the engine fires, it comes closer) or turns at a rejected one; returns its answer. */
   protected answered(accepted: boolean, last: boolean): string {

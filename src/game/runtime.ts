@@ -26,7 +26,7 @@ import { accuracyPic, placeRing, rhythmPic, roundButton, worldName } from '../ui
 import type { WordSource } from '../words/words';
 import { SUPER_ID, type Surprise } from '../storage/schema';
 import type { LevelDef } from './levels';
-import { LEVELS, WORLDS, grownCount, hasMinLength, levelOver, minActiveS, playedStep, shownProgress } from './levels';
+import { LEVELS, WORLDS, grownCount, hasMinLength, journeyProgress, levelOver, minActiveS, playedStep, shownProgress } from './levels';
 import { type Mode, driftOffset } from './mode';
 import { ENTER_MAX, EnterMarks } from './enter';
 import type { ModeMaker } from './modes';
@@ -35,7 +35,7 @@ import { PressureValve, childPace, perChar } from './pace';
 import { GAUGE_DAYS, Rhythm, gaugeTop } from './rhythm';
 import { completeLevel, completeStay, joinRuns } from './progress';
 import { type Style, type Target, TypingCore } from './typing';
-import { pickTip, showCard, showPosture, showTravel } from './cards';
+import { giveUpJourney, pickTip, showCard, showJourneyPanel, showPosture } from './cards';
 import { surpriseFor } from './own-content';
 import { Callouts } from './runtime/callouts';
 import { Friends } from './runtime/friends';
@@ -302,11 +302,13 @@ export class LevelRuntime {
     if (this.free || this.opts.stay) return this.begin();
     const host = this.el.querySelector<HTMLElement>('.stage-wrap')!;
     const journey = this.def.journey;
-    // A later part of a hero's journey: only the travel card to the next world.
+    // A later part of a hero's journey: only the panel with the next world and its story; giving up there leaves the journey.
     if (journey && journey.part > 0) {
       this.core.style = this.style;
-      await showTravel(host, WORLDS[this.def.world], journey.line ? t(journey.line) : null, journey.place ? t(journey.place) : null);
-      if (!this.disposed) this.begin();
+      const on = await showJourneyPanel(host, WORLDS[journey.picture], journey.line ? t(journey.line) : '', (back, go) => this.opts.onBreak(back, go));
+      if (this.disposed) return;
+      if (on) this.begin();
+      else this.exit();
       return;
     }
     let tip: string | undefined;
@@ -783,8 +785,10 @@ export class LevelRuntime {
       this.resume();
       return this.endPractice();
     }
-    // A later part of a hero's journey always has the parts before it to lose.
-    if ((this.pressed || (this.def.journey?.part ?? 0) > 0) && !this.free) {
+    // A hero's journey asks with its own words; a later part always has the parts before it to lose.
+    if (this.def.journey && (this.pressed || this.def.journey.part > 0)) {
+      if (!(await giveUpJourney()) || this.disposed) return;
+    } else if (this.pressed && !this.free) {
       const yes = await confirmDialog({ title: t('level.endAsk'), text: t(this.ending.text), ok: t(this.ending.label), cancel: t(this.ending.keep) });
       if (!yes || this.disposed) return;
     }
@@ -885,7 +889,9 @@ export class LevelRuntime {
     this.friends.update(dt);
     this.callouts.update(dt);
     // More targets after the minimum grew the level lower the mode's share; the bar never goes back.
-    const pct = Math.max(this.progressPct, Math.round(this.share() * 100));
+    // A hero's journey's bar shows the whole journey: this part fills only its own slice.
+    const j = this.def.journey, share = this.share();
+    const pct = Math.max(this.progressPct, Math.round((j ? journeyProgress(j, share) : share) * 100));
     if (pct !== this.progressPct) {
       this.progressPct = pct;
       this.progressFill.style.width = `${pct}%`;

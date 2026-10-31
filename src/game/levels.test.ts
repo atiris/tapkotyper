@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { SUPER_ID } from '../storage/schema';
 import { lessonOrder } from '../learning/lessons';
-import { LEVELS, STORIES, WORLDS, activityOf, minActiveS, minWords, playedStep, aimLevel, aimOpen, aimWorld, freeTypeLevel, grownCount, hasMinLength, isLevelUnlocked, isWorldUnlocked, keysNeeded, levelById, levelOver, nextLevel, parrotKeys, parrotLevel, parrotSizeOf, practiceLevel, JOURNEYS, JOURNEY_STAR_STEPS, halfStarsFor, journeyId, journeyLevel, journeyOpen, starsFor, shownProgress, worldLevels, worldLock } from './levels';
+import { LEVELS, STORIES, WORLDS, activityOf, minActiveS, minWords, playedStep, aimLevel, aimOpen, aimWorld, freeTypeLevel, grownCount, hasMinLength, isLevelUnlocked, isWorldUnlocked, keysNeeded, levelById, levelOver, nextLevel, parrotKeys, parrotLevel, parrotSizeOf, practiceLevel, JOURNEYS, JOURNEY_STAR_STEPS, halfStarsFor, journeyId, journeyLevel, journeyOpen, journeyProgress, starsFor, shownProgress, worldLevels, worldLock } from './levels';
 
 const KEYS = ['f', 'j', 'd', 'k', 's', 'l', 'a', ';', 'g', 'h', 'r', 'u', 'e', 'i', 't', 'y', 'w', 'o', 'q', 'p', 'v', 'm', 'c', ',', 'x', '.'];
 
@@ -165,7 +165,7 @@ describe("hero's journey", () => {
       expect(parts.map((l) => l.kind)).toEqual(story.worlds.map((w) => worldLevels(w)[0].kind));
       for (const [i, l] of parts.entries()) {
         expect(l.id).toBe(journeyId(story));
-        expect(l.journey).toEqual({ story: story.id, part: i, parts: story.worlds.length });
+        expect(l.journey).toEqual({ story: story.id, part: i, parts: story.worlds.length, picture: l.world });
         expect(l.index).toBe(-1);
         expect(l.noSpace).toBeUndefined();
       }
@@ -181,25 +181,32 @@ describe("hero's journey", () => {
       expect(l.journey).toMatchObject({ story: 'dragon', part: i, parts: 5 });
       expect(l.journey?.line).toBeTruthy();
     }
-    // The first part tells the way on the get-ready card; every later one has its travel card's place.
-    expect(parts[0].journey?.place).toBeUndefined();
-    expect(parts.slice(1).every((l) => l.journey?.place)).toBe(true);
-    expect(parts.reduce((a, l) => a + minActiveS(l), 0)).toBeCloseTo(2 * minActiveS(worldLevels(1)[0]));
-    // The flight counts its one little dragon, the swamp has no sentence on the shore.
-    expect(parts[1].count).toBe(1);
+    // The panel before a part shows its world's map picture; the take-off on the shore shows the rocket world's.
+    expect(parts.map((l) => l.journey?.picture)).toEqual([4, 3, 2, 2, 1]);
+    expect(parts.reduce((a, l) => a + minActiveS(l), 0)).toBeCloseTo(3 * minActiveS(worldLevels(1)[0]));
+    // The flight counts the little dragon's two good flights, the swamp has no sentence on the shore.
+    expect(parts[1].count).toBe(2);
     expect(parts[3].count).toBe(minWords(parts[3]));
   });
 
-  it('lasts twice a regular level of its story, split evenly over the parts, in time and in words', () => {
+  it('lasts three times a regular level of its story, split evenly over the parts, in time and in words', () => {
     for (const [i, story] of STORIES.entries()) {
       const regular = worldLevels(story.worlds[1])[0];
       const parts = story.worlds.map((_, n) => journeyLevel(story, n));
       const time = parts.reduce((a, l) => a + minActiveS(l), 0);
-      expect(time).toBeCloseTo(2 * minActiveS(regular));
-      expect(minActiveS(parts[0])).toBeCloseTo((2 * [120, 180, 240][i]) / parts.length);
-      expect(minWords(parts[0])).toBe(Math.round((2 * minWords(regular)) / parts.length));
+      expect(time).toBeCloseTo(3 * minActiveS(regular));
+      expect(minActiveS(parts[0])).toBeCloseTo((3 * [120, 180, 240][i]) / parts.length);
+      expect(minWords(parts[0])).toBe(Math.round((3 * minWords(regular)) / parts.length));
     }
-    expect(minWords(journeyLevel(STORIES[0], 0))).toBe(6);
+    expect(minWords(journeyLevel(STORIES[0], 0))).toBe(10);
+  });
+
+  it('fills the bar over the whole journey: each part only its own slice', () => {
+    expect(journeyProgress({ part: 0, parts: 5 }, 0)).toBe(0);
+    expect(journeyProgress({ part: 0, parts: 5 }, 1)).toBeCloseTo(0.2);
+    expect(journeyProgress({ part: 2, parts: 5 }, 0.5)).toBeCloseTo(0.5);
+    expect(journeyProgress({ part: 4, parts: 5 }, 1)).toBe(1);
+    expect(journeyProgress({ part: 1, parts: 5 }, 2)).toBeCloseTo(0.4);
   });
 
   it('gives stars one step stricter than a level: 3 from 98 %, 2 from 95 %, halves at 96.5 and 90 %', () => {
@@ -335,7 +342,7 @@ describe('minimum level length', () => {
     expect(levelById('w6-1')?.count).toBe(30);
     expect(levelById('w6-3')?.count).toBe(12);
     expect(levelById('w6-5')?.count).toBe(10);
-    expect(journeyLevel(STORIES[0], 0).count).toBe(6);
+    expect(journeyLevel(STORIES[0], 0).count).toBe(10);
   });
 
   it('practice and free typing keep their own length, every other level has the minimum', () => {

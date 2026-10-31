@@ -207,8 +207,10 @@ describe("every part of a hero's journey keeps giving targets until its share of
   }));
   // The dragon story's take-off is the command game on the ground.
   const partCtor = (def: LevelDef) => (def.kind === 'command' && def.variant === 'journey' ? LaunchMode : ctor(def.kind));
+  // The little dragon's lift follows the typing: the child types on.
+  const typing = (def: LevelDef) => (def.kind === 'flight' ? (L: LevelRuntime) => void Object.assign(L, { idleFor: 0 }) : undefined);
   it.each(PARTS)('%s: a quick steady typist never waits long, and the part ends just after its minimum', (_name, def) => {
-    const p = play(def, partCtor(def), 0.15, 0);
+    const p = play(def, partCtor(def), 0.15, 0, typing(def));
     expect(p.gap, `waited from ${p.gapAt.toFixed(1)} s`).toBeLessThanOrEqual(8);
     expect(p.end).toBeGreaterThanOrEqual(p.min);
     expect(p.over).toBeLessThan(15);
@@ -216,10 +218,62 @@ describe("every part of a hero's journey keeps giving targets until its share of
 
   it.each(PARTS)('%s: a slow typist at the pace of its story ends near its minimum', (_name, def) => {
     const word = 60 / WPM[STORIES.findIndex((s) => s.id === def.journey!.story)];
-    const p = play(def, partCtor(def), word / 5, word);
+    const p = play(def, partCtor(def), word / 5, word, typing(def));
     expect(p.end).toBeGreaterThanOrEqual(p.min);
-    // The flights end with their last dragon, their minimum is what was played.
-    if (def.kind !== 'flight') expect(p.end, `${p.words} words`).toBeLessThanOrEqual(p.min * 1.3);
+    // The dragon journey's flights, swamp and take-off have their own least count (two good flights, four sets, seven commands), which may take a slow child longer.
+    if (def.variant !== 'journey' || !['flight', 'greatswamp', 'command'].includes(def.kind)) expect(p.end, `${p.words} words`).toBeLessThanOrEqual(p.min * 1.3);
+  });
+});
+
+describe("the dragon story's hero's journey, part by part", () => {
+  const part = (i: number) => journeyLevel(STORIES[0], i);
+
+  it('down the mountain: a slip in a stone\'s word brings one more stone and its time, once a stone, at most seven', () => {
+    const def = part(0);
+    const L = levelRuntime(def);
+    const m = new BouldersMode(L);
+    m.start();
+    const count = L.count, min = L.min;
+    const stones = Array.from({ length: 9 }, (_, i) => L.core.add(`stone${i}`, {}));
+    m.onWrong(stones[0]);
+    m.onWrong(stones[0]);
+    expect(L.count).toBe(count + 1);
+    expect(L.min).toBeCloseTo(min + minActiveS(def) / def.count);
+    for (const tg of stones) m.onWrong(tg);
+    expect(L.count).toBe(count + 7);
+    m.onWrong(null);
+    expect(L.count).toBe(count + 7);
+  });
+
+  it('the crystal meadow: the rocket gets at least seven crystals; a second slip in a crystal\'s word cracks it', () => {
+    const def = { ...part(2), count: 3 };
+    play(def, CrystalsMode, 0.15, 0);
+    expect((mode as any).collected).toBeGreaterThanOrEqual(7);
+    const L = fakeRuntime(10);
+    Object.assign(L, { def: { ...L.def, variant: 'journey' }, maxActive: 1 });
+    const m = new CrystalsMode(L);
+    m.start();
+    run(L, m, 2);
+    const crystal = (m as any).mounds.find((o: any) => o.crystal)?.crystal;
+    m.onWrong(crystal.tg);
+    expect(crystal.state).toBe('grow');
+    m.onWrong(crystal.tg);
+    expect(crystal.state).toBe('cracked');
+  });
+
+  it('the swamp: four sets of stones before the shore, the little dragon hovering above Tapko', () => {
+    let hover = Infinity;
+    play(part(3), GreatSwampMode, 0.15, 0, () => {
+      const f = (mode as any).friendSpot();
+      if (f.lift !== undefined) hover = Math.min(hover, f.lift);
+    });
+    expect((mode as any).jumps).toBeGreaterThanOrEqual(16);
+    expect(hover).toBeGreaterThan(150);
+  });
+
+  it('the take-off: the rocket accepts at least seven commands before its countdown', () => {
+    play(part(4), LaunchMode, 0.15, 0);
+    expect((mode as any).steps).toBeGreaterThanOrEqual(7);
   });
 });
 
@@ -684,16 +738,33 @@ describe('flying lessons', () => {
     expect(mode.starCap()).toBe(1);
   });
 
-  it("on the hero's journey the little dragon flies alone, at most twice, and a landing in the bushes caps no stars", () => {
-    const L = fakeRuntime(1);
+  it("on the hero's journey the little dragon flies alone to the pit and back; a failed flight is flown again and counts nothing", () => {
+    const L = fakeRuntime(2);
     Object.assign(L, { def: { ...L.def, variant: 'journey' }, idleFor: 0, rhythm: { ema: 2, ratio: () => 1, ready: () => {} } });
     const mode = new FlightMode(L);
     mode.start();
+    const d = (mode as any).dragons[0];
     expect((mode as any).dragons).toHaveLength(1);
     expect(mode.friendAway()).toBe(true);
-    expect((mode as any).flock).toBe(2);
-    Object.assign(mode as any, { done: 1, flown: 0 });
+    // A third slip ends the flight in the bushes: it walks back to its start and waits to fly the same way again.
+    typeWord(L, mode);
+    expect(d.state).toBe('fly');
+    for (let i = 0; i < 3; i++) mode.onWrong(L.core.focus());
+    run(L, mode, 12);
+    expect(d.state).toBe('wait');
+    expect(d.back).toBe(false);
+    expect(mode.progress()).toBe(0);
     expect(mode.starCap()).toBe(3);
+    // A good flight lands by the pit; the next one flies back to Tapko.
+    typeWord(L, mode);
+    for (let i = 0; i < 600 && (mode as any).flown < 1; i++) {
+      if (L.core.focus()) typeWord(L, mode);
+      run(L, mode, 0.05);
+    }
+    expect(mode.progress()).toBe(0.5);
+    run(L, mode, 3);
+    expect(d.state).toBe('wait');
+    expect(d.back).toBe(true);
   });
 });
 

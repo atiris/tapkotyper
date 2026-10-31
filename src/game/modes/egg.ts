@@ -285,6 +285,8 @@ const PAIR_GAP: [number, number] = [1, 1.5];
 /** A missed boulder makes the way longer by this share of the level's planned words (and its minimum time), at most ten times. */
 export const STUMBLE_SHARE = 0.07;
 export const STUMBLE_MAX = 10;
+/** On the journey a slip in a stone's word adds one more stone and its time, once a stone, at most this many times. */
+export const SLIP_STONES = 7;
 /**
  * A typed boulder slides off the path and falls down (its pull, px/s², and how much of its speed it
  * keeps); a missed one bounces off him (a little back and up) and falls down off the path too.
@@ -324,7 +326,7 @@ function boulderFallback(g: G, w: number, h: number): void {
  * off the path and falls down before it reaches him; missed, it bounces off him and falls down off
  * the path, he wobbles with a small hop, and the way gets a little longer. On the dragon story's
  * hero's journey they roll after him on the way down, the egg hatched, and the way grows by the
- * part's own share.
+ * part's own share; a slip in a stone's word also brings one more stone (`SLIP_STONES`).
  */
 export class BouldersMode extends SlopeStream {
   readonly pictures = [...BOULDERS, 'obj-egg-plain'];
@@ -333,9 +335,20 @@ export class BouldersMode extends SlopeStream {
   private pairSecond = false;
   /** 0..1 through his wobble after a hit, -1 when he stands. */
   private wobble = -1;
+  /** The journey's stones added by slips, and the stones whose word already added one. */
+  private slipStones: Detour;
+  private slipped = new Set<Target>();
 
   constructor(L: LevelRuntime) {
     super(L, STUMBLE_SHARE * STUMBLE_MAX * L.def.count);
+    this.slipStones = new Detour(SLIP_STONES, secondsPerWord(L));
+  }
+
+  /** On the journey a slip in a stone's word brings one more stone and a planned word's time, once a stone. */
+  onWrong(tg: Target | null): void {
+    if (!this.journey || !tg || this.slipped.has(tg)) return;
+    this.slipped.add(tg);
+    lengthen(this.L, this.slipStones, 1);
   }
 
   startLine(): string {

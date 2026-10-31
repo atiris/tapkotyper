@@ -91,15 +91,30 @@ steps, `JOURNEY_SHARE`, progress), `src/game/runtime.ts` (journey flow, progress
   `launchNo` lists.
 
 ## Steps
-- [ ] `JOURNEY_SHARE` 3 and every part honours its minimum (find why it took 3 minutes); tests.
-- [ ] Progress bar over the whole journey (slice per part); test of the mapping.
-- [ ] Panel between parts on the end card (picture of the next world, its text, three buttons, X/Esc); `showTravel` and its texts removed; `picture` on `JourneyStep`.
-- [ ] Give-up dialog "Hrdina, vydrž to!" from the panel and from the pause card during a journey.
-- [ ] Texts: get-ready, four part texts, give-up dialog, rocket replies (sk, en, translator notes, catalog).
-- [ ] Part 1: egg 4 stones; a slip adds a stone and time, at most 7.
-- [ ] Part 2: two successful flights, alternating Tapko -> hearth -> Tapko, failed ones repeated.
-- [ ] Part 3: two slips crack a crystal; at least 7 crystals.
-- [ ] Part 4: dragon hovers above Tapko; at least 4 rounds.
-- [ ] Part 5: rocket off the shore edge, Tapko beside it; at least 7 commands; the reply lines.
-- [ ] `.specify/game/heros-journey.md` updated (what and why).
+- [x] `JOURNEY_SHARE` 3 and every part honours its minimum (find why it took 3 minutes); tests.
+- [x] Progress bar over the whole journey (slice per part); test of the mapping.
+- [x] Panel between parts on the end card (picture of the next world, its text, three buttons, X/Esc); `showTravel` and its texts removed; `picture` on `JourneyStep`.
+- [x] Give-up dialog "Hrdina, vydrž to!" from the panel and from the pause card during a journey.
+- [x] Texts: get-ready, four part texts, give-up dialog, rocket replies (sk, en, translator notes, catalog).
+- [x] Part 1: egg 4 stones; a slip adds a stone and time, at most 7.
+- [x] Part 2: two successful flights, alternating Tapko -> hearth -> Tapko, failed ones repeated.
+- [x] Part 3: two slips crack a crystal; at least 7 crystals.
+- [x] Part 4: dragon hovers above Tapko; at least 4 rounds.
+- [x] Part 5: rocket off the shore edge, Tapko beside it; at least 7 commands; the reply lines.
+- [x] `.specify/game/heros-journey.md` updated (what and why).
 - [ ] tsc, vitest, build; play the whole journey in the browser with the Playwright MCP (tester profile, `?fast`, `window.tapkoType`): the panel between each part, the give-up dialog, the bar after each part, each part's change, total active time about 6 minutes at the tester's pace.
+
+## State
+- Cause of the 3 minutes: the share was 2 (4 minutes of active play in all) and the valley flight
+  ended at its last flight below its minimum (`endMinimum`); the journey's flight no longer calls it.
+- Decisions taken while implementing:
+  - A failed valley flight walks back and is flown again; each failed try in a row adds a quarter
+    of full lift (`RETRY_HELP`), so a child below the rhythm goal is never stuck in the valley.
+    After two good flights more come while more than half a flight of the minimum is left.
+  - A slip on the mountain adds a stone once per stone's word (not per wrong key), at most 7.
+  - The take-off answers accepted commands from `journey.dragon.launchOk`, the last one with
+    `story.launchCountdown` ("Odpočítavanie spustené."); the old `story.launchSteps` list is gone.
+  - The panel's stretch offers the longer break too, as on the pause card.
+  - The slow-typist test bound (1.3x the minimum) does not hold for the journey's flight, swamp and
+    take-off: their own least counts (2 flights, 16 stones, 7 commands) are longer for a slow child.
+- Open: the browser play-through.

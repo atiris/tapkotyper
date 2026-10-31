@@ -39,6 +39,9 @@ const WATCH_UP = 120;
 const WATCH_H = 64;
 const WAVE_EVERY = 4;
 const WAVE_S = 0.6;
+/** On the journey the rocket needs at least this many crystals, and a second slip in a crystal's word cracks it. */
+const JOURNEY_CRYSTALS = 7;
+const JOURNEY_SLIPS = 2;
 
 /** A crystal while its picture is missing: a pointed six-sided column. */
 function crystalFallback(color: string) {
@@ -98,6 +101,8 @@ interface Crystal {
   t: number;
   /** Where it flew from, on the screen. */
   from?: { x: number; y: number };
+  /** Slips in its word. */
+  slips: number;
 }
 
 interface Mound {
@@ -119,7 +124,8 @@ interface Mound {
  * crack. As a crystal grows its word shows high above it and sinks toward its tip; typed in time,
  * the crystal flies into Tapko's pocket; when the word reaches it, it cracks, fades, and later a new
  * one grows there. Tapko wants as many as he can get: the end says how many he has. On the dragon
- * story's hero's journey the rocket needs their energy to fly home, and the valley dragons watch.
+ * story's hero's journey the rocket needs their energy (at least `JOURNEY_CRYSTALS`), a second slip
+ * in a crystal's word cracks it, and the valley dragons watch.
  */
 export class CrystalsMode extends Mode {
   readonly tapkoFeet = PATH_FEET;
@@ -142,6 +148,7 @@ export class CrystalsMode extends Mode {
       this.mounds.push({ x: 0, share: i / (n - 1), jitter: r.range(-18, 18), y: PATH_FEET + r.range(4, 24), pic: r.pick(MOUNDS), flip: r.chance(0.5), crystal: null, rest: r.range(0, 1.5) });
     }
     this.place();
+    if (this.journey) this.L.count = Math.max(this.L.count, JOURNEY_CRYSTALS);
   }
 
   /** The molehills spread over the room right of Tapko as the stage is now. */
@@ -202,7 +209,7 @@ export class CrystalsMode extends Mode {
     }
     const r = this.L.rng;
     const pic = r.pick(CRYSTALS);
-    r.pick(free).crystal = { pic, rot: r.range(-0.22, 0.22), flip: r.chance(0.5), age: 0, travel: this.L.travelTime(word), tg: this.L.core.add(word, {}), state: 'grow', t: 0 };
+    r.pick(free).crystal = { pic, rot: r.range(-0.22, 0.22), flip: r.chance(0.5), age: 0, travel: this.L.travelTime(word), tg: this.L.core.add(word, {}), state: 'grow', t: 0, slips: 0 };
     this.wait = this.L.spawnGap;
   }
 
@@ -214,6 +221,12 @@ export class CrystalsMode extends Mode {
     c.t = 0;
     this.L.sfx('crack');
     this.L.particles.emit(m.x, this.foot(m) - CRYSTAL_H * 0.6, 10, 'dot', [CRYSTAL_COLOR[c.pic], '#ffffff'], 120, 5);
+  }
+
+  /** On the journey a second slip in a crystal's word cracks it at once. */
+  onWrong(tg: Target | null): void {
+    const m = this.journey && tg ? this.mounds.find((o) => o.crystal?.tg === tg) : undefined;
+    if (m && ++m.crystal!.slips >= JOURNEY_SLIPS) this.crack(m, m.crystal!);
   }
 
   onDone(tg: Target): void {

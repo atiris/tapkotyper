@@ -2,10 +2,10 @@ import { app, pickLine } from '../../app/app';
 import { ease } from '../../engine/tween';
 import type { G } from '../../gfx/draw';
 import { drawTapko } from '../../gfx/tapko';
-import { tList } from '../../i18n/i18n';
+import { t, tList } from '../../i18n/i18n';
 import { TAPKO_H } from '../mode';
 import { ROCKET_DOOR, ROCKET_STAND_H, STANDING_ROCKET, drawStandingRocket } from './kit/rocket';
-import { SHORE_FEET, SHORE_LAND, shoreEndView, shoreRocketX, shoreW } from './planet';
+import { SHORE_FEET, shoreEndView, shoreRocketX } from './planet';
 import { CommandMode } from './space-calm';
 
 /** The rocket's feet a little into the grass, as on the swamp's shore. */
@@ -21,13 +21,18 @@ const END_TIME = LIFT_AT + RISE + 0.4;
 const RISE_BY = SHORE_FEET + ROCKET_STAND_H;
 /** Accepted commands get the rocket ready step by step; after this one its engines warm up (a little smoke). */
 const WARM_STEP = 2;
+/** Commands the rocket accepts at least before its countdown; a row of the copy row is 3 to 4 words. */
+const COMMANDS = 7;
+const ROW_WORDS = 4;
+/** He stands on the grass right beside the rocket, this far left of its middle. */
+const BESIDE = 120;
 
 /**
  * The dragon story's hero's journey ends with the take-off (the rocket world's command game on the
- * ground): Tapko on the shore writes commands on the panel to his rocket standing on the grass. Each
- * accepted command gets it ready a step; a rejected one is answered and nothing happens (it does not
- * veer on the ground). After the last one he and the little dragon climb in, the countdown runs, and
- * the rocket rises off the top of the stage with its flame and smoke.
+ * ground): Tapko beside his rocket standing on the grass writes commands on the panel. Each accepted
+ * command gets it ready a step (at least `COMMANDS` of them); a rejected one is answered and nothing
+ * happens (it does not veer on the ground). After the last one he and the little dragon climb in, the
+ * countdown runs, and the rocket rises off the top of the stage with its flame and smoke.
  */
 export class LaunchMode extends CommandMode {
   readonly pictures = [...STANDING_ROCKET, 'obj-console'];
@@ -48,9 +53,9 @@ export class LaunchMode extends CommandMode {
     this.shore = shoreEndView(this.L.vw);
   }
 
-  /** He stands on the grass where he stepped ashore. */
+  /** He stands on the grass right beside the rocket. */
   protected get feet(): { x: number; y: number } {
-    return { x: this.shore! + shoreW() * SHORE_LAND, y: SHORE_FEET };
+    return { x: shoreRocketX(this.shore!) - BESIDE, y: SHORE_FEET };
   }
 
   /** The middle of the standing rocket, risen by the take-off. */
@@ -90,13 +95,16 @@ export class LaunchMode extends CommandMode {
     return this.climb >= 0.85;
   }
 
-  /** An accepted command is a step of getting ready; a rejected one changes nothing on the ground. */
+  /** Until the rocket has accepted its commands, the words do not run out: one more row comes. */
+  protected lastRow(): void {
+    if (this.steps + 1 < COMMANDS) this.L.count += ROW_WORDS;
+  }
+
+  /** An accepted command is a step of getting ready, the last one starts the countdown; a rejected one changes nothing on the ground. */
   protected answered(accepted: boolean, last: boolean): string {
-    if (!accepted) return pickLine('story.commandRejected');
-    const lines = tList('story.launchSteps');
-    const line = lines[last ? lines.length - 1 : Math.min(lines.length - 2, this.steps)];
+    if (!accepted) return pickLine('journey.dragon.launchNo');
     this.steps++;
-    return line;
+    return last ? t('story.launchCountdown') : pickLine('journey.dragon.launchOk');
   }
 
   update(dt: number): void {

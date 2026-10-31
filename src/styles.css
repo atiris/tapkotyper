@@ -821,6 +821,10 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
 .ec-news .badge, .ec-news .medal, .ec-news .parrot-badge { flex: none; zoom: 0.7; }
 .ec-news .ec-find { flex: none; width: 40px; height: 40px; object-fit: contain; }
 .ec-tip { background: var(--tint-yellow); color: var(--gold-ink); }
+/* Between the parts of a hero's journey: the next world's island as on the map, and the part's story beside it. */
+.ec-text { margin: 0; font-size: 1.15rem; line-height: 1.5; text-wrap: pretty; }
+.ec-text strong { color: var(--brand-ink); }
+.journey-panel .ec-pic .ec-img { width: 100%; height: 100%; }
 .ec-link { display: grid; gap: 0.3rem; margin-top: 0.4rem; }
 .ec-link .hint { min-height: 1.2em; }
 .ec-surprise { display: flex; align-items: center; gap: 0.9rem; margin: 1rem 1.5rem 0; padding: 0.5rem 1rem; border: 0; border-radius: 18px; background: var(--tint-yellow); color: var(--gold-ink); font: inherit; font-size: 1.1rem; text-align: left; cursor: pointer; }
@@ -1047,10 +1051,6 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
 .posture-text strong { color: var(--brand-ink); }
 /* The hero's journey says on its get-ready card that it is harder. */
 .posture-under { font-size: 1.1rem; line-height: 1.45; margin: 0; text-align: center; color: var(--ink-soft); text-wrap: pretty; }
-/* Between the parts of a hero's journey: the next world's island and its name. */
-.travel-card { position: relative; display: grid; justify-items: center; gap: 0.8rem; text-align: center; max-width: 30rem; }
-.travel-card h2 { margin: 0 48px; }
-.travel-img { width: 200px; height: 140px; object-fit: contain; }
 .posture-card .surprise { margin: 0; }
 .posture-side .hint { margin: 0.6rem 0 0; }
 @media (max-width: 760px) {

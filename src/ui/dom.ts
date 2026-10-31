@@ -255,7 +255,7 @@ export function confirmDialog(o: ConfirmOpts): Promise<boolean> {
     const close = modal(h('div', { class: 'confirm' },
       o.art ?? null,
       h('h2', {}, o.title),
-      h('p', {}, o.text),
+      h('p', {}, ...richText(o.text)),
       h('div', { class: 'row center' },
         button(o.cancel, () => close(), 'btn primary'),
         button(o.ok, () => { yes = true; close(); }, `btn ${o.danger ? 'danger' : ''}`))), { cls: 'confirm-modal', onClose: () => resolve(yes) });

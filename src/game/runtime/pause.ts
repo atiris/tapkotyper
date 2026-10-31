@@ -9,6 +9,39 @@ import type { LevelState } from './state';
 const STRETCHES = ['arms', 'fists', 'shoulders', 'neck', 'wrists', 'eyes'];
 const STRETCH_S = 20;
 
+/** One stretch to try, at random. */
+export function pickStretch(): string {
+  return STRETCHES[Math.floor(Math.random() * STRETCHES.length)];
+}
+
+/**
+ * The short exercise of a stretch in `el`: its name, what to do and a countdown; Done (or the end of
+ * the countdown) calls `back`, the X `close`, the longer break `long`. Returns the countdown's stop.
+ */
+export function stretchExercise(el: HTMLElement, name: string, back: () => void, close: () => void, long: () => void): () => void {
+  let left = STRETCH_S;
+  const count = h('div', { class: 'break-timer' }, String(left));
+  const stop = () => clearInterval(timer);
+  const done = () => {
+    stop();
+    back();
+  };
+  el.replaceChildren(
+    closeButton(() => { stop(); close(); }, t('level.pauseClose')),
+    h('h2', {}, t('level.stretch')),
+    h('p', { class: 'pause-tip' }, t(`break.${name}`)),
+    count,
+    h('div', { class: 'row' },
+      button(t('level.stretchDone'), done, 'btn primary', 'check'),
+      button(t('level.stretchLong'), () => { stop(); long(); }, 'btn', 'wave')));
+  el.querySelector<HTMLButtonElement>('.btn.primary')?.focus();
+  const timer = window.setInterval(() => {
+    count.textContent = String(--left);
+    if (left <= 0) done();
+  }, 1000);
+  return stop;
+}
+
 /** What leaving and going on are called, and what the question before leaving says is lost. */
 export interface Ending {
   label: string;
@@ -16,11 +49,10 @@ export interface Ending {
   text: string;
 }
 
-/** A story level, an exercise or a hero's journey: each ends and goes on in its own words. */
+/** A story level or an exercise: each ends and goes on in its own words (a hero's journey asks with `giveUpJourney`). */
 export function endingOf(def: LevelDef, stay: boolean): Ending {
   if (def.kind === 'freetype') return { label: 'level.leave', keep: 'level.keepTyping', text: '' };
   if (def.kind === 'practice' || def.kind === 'aim' || def.kind === 'parrot' || stay) return { label: 'level.end', keep: 'level.keepPractice', text: 'level.endPracticeText' };
-  if (def.journey) return { label: 'level.end', keep: 'level.keepLevel', text: 'level.endJourneyText' };
   return { label: 'level.end', keep: 'level.keepLevel', text: 'level.endLevelText' };
 }
 
@@ -43,8 +75,8 @@ export interface PauseHost {
 /** The pause card over the scene and the HUD's pause button (none in free typing, whose X leaves). */
 export class PauseCard {
   el: HTMLElement | null = null;
-  /** The countdown of the short exercise; 0 when none runs. */
-  private timer = 0;
+  /** Stops the countdown of the short exercise. */
+  private stopTimer = () => {};
 
   constructor(private state: LevelState, private host: PauseHost, private btn: HTMLButtonElement | null) {}
 
@@ -83,11 +115,6 @@ export class PauseCard {
     this.stopTimer();
   }
 
-  private stopTimer(): void {
-    clearInterval(this.timer);
-    this.timer = 0;
-  }
-
   /**
    * A small card at the top (the words and the guide's next key stay in sight): a stretch to try,
    * the X (Esc too) to go on, and Continue, Slower (only in play), the short exercise of that stretch and the end.
@@ -95,7 +122,7 @@ export class PauseCard {
    */
   private card(): void {
     const host = this.host;
-    const stretch = STRETCHES[Math.floor(Math.random() * STRETCHES.length)];
+    const stretch = pickStretch();
     const slower = this.state.started ? button(t('level.slower'), () => host.slowDown(), 'btn') : null;
     if (slower) slower.disabled = !host.canSlowDown();
     const keep = button(t(host.ending.keep), () => host.resume(), 'btn', 'play');
@@ -111,29 +138,11 @@ export class PauseCard {
 
   /** The short exercise on the pause card: the stretch with a countdown, then the pause again; or the longer break instead. */
   private stretch(name: string): void {
-    let left = STRETCH_S;
-    const count = h('div', { class: 'break-timer' }, String(left));
     const back = () => {
-      this.stopTimer();
       if (!this.el) return;
       this.card();
       this.focus();
     };
-    this.el!.replaceChildren(
-      closeButton(() => this.host.resume(), t('level.pauseClose')),
-      h('h2', {}, t('level.stretch')),
-      h('p', { class: 'pause-tip' }, t(`break.${name}`)),
-      count,
-      h('div', { class: 'row' },
-        button(t('level.stretchDone'), back, 'btn primary', 'check'),
-        button(t('level.stretchLong'), () => {
-          this.stopTimer();
-          this.host.onBreak(back, () => this.host.resume());
-        }, 'btn', 'wave')));
-    this.focus();
-    this.timer = window.setInterval(() => {
-      count.textContent = String(--left);
-      if (left <= 0) back();
-    }, 1000);
+    this.stopTimer = stretchExercise(this.el!, name, back, () => this.host.resume(), () => this.host.onBreak(back, () => this.host.resume()));
   }
 }

@@ -5,7 +5,7 @@ import { ENTER, LAYOUTS, stepsFor } from '../src/keyboard/layouts';
 export async function playLevel(page: Page, mistakes = true, typed: string[] = []): Promise<string> {
   for (let i = 0; i < 3000; i++) {
     const state = await page.evaluate(() => {
-      const res = document.querySelector<HTMLElement>('.end-card');
+      const res = document.querySelector<HTMLElement>('.end-card:not(.journey-panel)');
       if (res) return { kind: 'results', text: res.innerText };
       if (document.querySelector('.keys-intro')) return { kind: 'ready' };
       const ck = document.querySelector<HTMLElement>('.controlkey-card');
@@ -14,7 +14,7 @@ export async function playLevel(page: Page, mistakes = true, typed: string[] = [
       // A key card typed right three times closes a moment later; a key meanwhile would land on the next card.
       if (nk && !nk.matches('.homerow-card') && nk.querySelectorAll('.newkey-mark.ok').length >= 3) return { kind: 'closing', key: '' };
       if (nk) return { kind: 'newkey', key: nk.dataset.sample ?? '' };
-      if (document.querySelector('.posture-card, .travel-card')) return { kind: 'ready' };
+      if (document.querySelector('.posture-card, .journey-panel')) return { kind: 'ready' };
       return { kind: 'play', next: document.querySelector<HTMLElement>('.kb-guide')?.dataset.next ?? '' };
     });
     if (state.kind === 'results') return state.text!;

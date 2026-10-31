@@ -28,9 +28,9 @@ export function littleDragonFallback(g: G, w: number, h: number): void {
 /**
  * Draws the little dragon with its feet at (x, y), `size` high, facing right: it flutters a
  * little (a bob and a breath of its wings), hops when glad (`hop` 0..1) and shakes when worried.
- * With `motion` off it stands still.
+ * With `motion` off it stands still. `lift` holds it in the air that high above its shadow.
  */
-export function drawLittleDragon(g: G, mood: LittleDragonMood, x: number, y: number, size: number, t: number, hop: number, motion: boolean): void {
+export function drawLittleDragon(g: G, mood: LittleDragonMood, x: number, y: number, size: number, t: number, hop: number, motion: boolean, lift = 0): void {
   const bob = motion ? Math.abs(Math.sin(t * 4.2)) * size * 0.05 : 0;
   const up = Math.sin(Math.min(1, hop) * Math.PI) * size * 0.3;
   const breath = motion ? Math.sin(t * 8.4) * 0.03 : 0;
@@ -39,8 +39,8 @@ export function drawLittleDragon(g: G, mood: LittleDragonMood, x: number, y: num
   g.save();
   g.fillStyle = 'rgba(0,0,0,0.14)';
   g.beginPath();
-  g.ellipse(x, y, size * 0.26 * (1 - up / size), size * 0.05, 0, 0, Math.PI * 2);
+  g.ellipse(x, y, size * 0.26 * Math.max(0.4, 1 - (up + lift) / size), size * 0.05, 0, 0, Math.PI * 2);
   g.fill();
   g.restore();
-  drawSprite(g, littleDragonImage(), x, y - bob - up, size, { ay: 1, sx: 1 + breath, sy: (1 - breath) * (mood === 'worried' ? 0.95 : 1), rot: shake }, littleDragonFallback);
+  drawSprite(g, littleDragonImage(), x, y - bob - up - lift, size, { ay: 1, sx: 1 + breath, sy: (1 - breath) * (mood === 'worried' ? 0.95 : 1), rot: shake }, littleDragonFallback);
 }

@@ -2,7 +2,7 @@ import { app, go, isBreakDue, saveProfile } from '../app/app';
 import { starRow } from '../ui/chrome';
 import { tapkoElement } from '../gfx/tapko';
 import { t, tn } from '../i18n/i18n';
-import { JOURNEYS, LEVELS, type LevelDef, STORIES, type StoryDef, WORLDS, aimLevel, aimOpen, aimWorld, freeTypeLevel, isLevelUnlocked, isWorldUnlocked, journeyLevel, journeyOpen, levelById, nextLevel, parrotLevel, practiceLevel, taskLevel } from '../game/levels';
+import { JOURNEYS, LEVELS, type LevelDef, STORIES, type StoryDef, WORLDS, aimLevel, aimOpen, aimWorld, freeTypeLevel, isLevelUnlocked, isWorldUnlocked, journeyLevel, journeyOpen, levelAt, levelById, nextLevel, parrotLevel, practiceLevel, taskLevel } from '../game/levels';
 import { type LevelResult, newJourneyRun } from '../game/progress';
 import type { Style } from '../game/typing';
 import { WORLD_REWARDS } from '../game/rewards';
@@ -67,7 +67,7 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
   else if (params.id === 'journey' && journeyStory(params.story)) def = journeyLevel(journeyStory(params.story)!, 0);
   else def = levelById(params.id) ?? LEVELS[0];
   // A super-obstacle has no endless form (the asteroids' has): staying plays the world's last regular level.
-  const stayDef = params.stay && def.isSuper && def.kind !== 'asteroid' ? LEVELS.find((l) => l.world === def.world && l.index === def.index - 1) ?? def : def;
+  const stayDef = params.stay && def.isSuper && def.kind !== 'asteroid' ? levelAt(def.world, def.index - 1) ?? def : def;
   const next = params.stay ? nextOpen(def) : undefined;
   // A hero's journey plays its parts one after another on this screen and keeps them as one run.
   const journey = def.journey ? newJourneyRun() : undefined;
@@ -239,7 +239,7 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
   const rows: [string, Child][] = [...typingRows(r)];
   if (r.byStyle) rows.push([t(`end.${r.byStyle.style}Clean`), t('end.ofTotal', { n: r.byStyle.clean, total: r.byStyle.total })]);
   const actions: EndAction[] = [];
-  const nextDef = def.index >= 0 && !def.isSuper ? LEVELS.find((l) => l.world === def.world && l.index === def.index + 1) : undefined;
+  const nextDef = def.index >= 0 && !def.isSuper ? levelAt(def.world, def.index + 1) : undefined;
   if (r.worldDone !== null) actions.push({ label: t('results.reward'), icon: 'star', run: () => go('story', { scene: WORLD_REWARDS[r.worldDone!], next: 'map' }) });
   else if (nextDef) actions.push({ label: t('results.next'), icon: 'next', run: () => go('level', { id: nextDef.id }) });
   actions.push({ label: t('results.replay'), icon: 'replay', run: () => go('level', params) });

@@ -2,7 +2,7 @@ import { app, applyProfileLook, go, loadPlayerWords, saveProfile, selectProfile,
 import { langOptions, locale, t } from '../i18n/i18n';
 import { ownLangs, ownRef } from '../i18n/own-langs';
 import { ENTER, LAYOUTS, LAYOUT_IDS, allKeys } from '../keyboard/layouts';
-import { LEVELS, type LevelDef, WORLDS, worldName } from '../game/levels';
+import { LEVELS, type LevelDef, WORLDS, levelById, worldName } from '../game/levels';
 import { SHOW_DAYS, SHOW_DAYS_MAX, SURPRISES_MAX, SURPRISE_LEN, SURPRISE_N_MAX, TRIGGERS, newSurprise, restartSurprise, surpriseCount } from '../game/own-content';
 import { wordSource } from '../game/runtime/options';
 import { lessonKeyOf, punctuationKeys, useLayout } from '../learning/lessons';
@@ -244,7 +244,7 @@ function levelName(l: LevelDef): string {
 /** When a rule tells its answer, in words. */
 function whenText(s: Surprise): string {
   if (s.trigger === 'level') {
-    const l = LEVELS.find((x) => x.id === s.level);
+    const l = s.level ? levelById(s.level) : undefined;
     return l ? levelName(l) : '?';
   }
   const n = s.n ?? 1;

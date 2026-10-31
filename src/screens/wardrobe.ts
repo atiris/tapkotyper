@@ -2,6 +2,7 @@ import { app, go, reduceMotion, saveProfile } from '../app/app';
 import { accessories, imageUrl } from '../gfx/assets';
 import { type Mood, SLOTS, otherMood, randomOutfit, tapkoElement, renderTapkoInto } from '../gfx/tapko';
 import { t } from '../i18n/i18n';
+import { levelById } from '../game/levels';
 import { friendStars, grantCompanions, hasAccessory, hasCompanion, totalStars, unlockRules } from '../game/rewards';
 import { practiceToOpen, spendWardrobe, wardrobeLimited, wardrobeLocked } from '../game/wardrobe-time';
 import { COMPANION_KINDS } from '../storage/schema';
@@ -53,8 +54,8 @@ export function wardrobeScreen(root: HTMLElement): () => void {
     const r = rules.get(id);
     if (!r) return '';
     if (r.kind === 'level') {
-      const [w, l] = r.id.slice(1).split('-');
-      return t('wardrobe.byLevel', { level: levelTitleWords(Number(w) - 1, Number(l) - 1) });
+      const l = levelById(r.id);
+      return l ? t('wardrobe.byLevel', { level: levelTitleWords(l.world, l.index) }) : '';
     }
     if (r.kind === 'world') return t('wardrobe.byWorld', { world: r.world + 1 });
     return t('wardrobe.byMastery', { n: r.keys });

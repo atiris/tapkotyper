@@ -5,7 +5,7 @@ import { compassElement } from '../gfx/compass';
 import { tapkoElement } from '../gfx/tapko';
 import { t, tList } from '../i18n/i18n';
 import { nickname } from '../storage/store';
-import { LEVELS, STORIES, type StoryDef, WORLDS, activityOf, aimOpen, aimWorld, isLevelReached, isWorldUnlocked, journeyId, journeyOpen, keysMissing, nextLevel, storyOpen, worldLevels, worldLock, worldName } from '../game/levels';
+import { LEVELS, STORIES, type StoryDef, WORLDS, activityOf, aimOpen, aimWorld, isLevelReached, isWorldUnlocked, journeyId, journeyOpen, keysMissing, levelById, nextLevel, storyOpen, worldLevels, worldLock, worldName } from '../game/levels';
 import { GUEST_ID, type Profile, SUPER_ID, type Surprise } from '../storage/schema';
 import { activeKeys, notReadyKeys } from '../learning/lessons';
 import { keyLabel } from '../ui/keyboard-guide';
@@ -242,7 +242,7 @@ function levelsToGo(p: Profile, id: string): number {
 /** What a waiting surprise still needs, with what the child has so far. */
 function surpriseNeed(p: Profile, s: Surprise): string {
   if (s.trigger === 'level') {
-    const l = LEVELS.find((x) => x.id === s.level);
+    const l = s.level ? levelById(s.level) : undefined;
     return t('surprise.need.level', { level: l ? levelTitleWords(l.world, l.index) : '', left: levelsToGo(p, s.level ?? '') });
   }
   const { have, need } = surpriseCount(p, s);

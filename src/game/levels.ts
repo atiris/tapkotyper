@@ -252,6 +252,11 @@ export function levelById(id: string): LevelDef | undefined {
   return LEVELS.find((l) => l.id === id);
 }
 
+/** The built-in level at `index` (0-4) of `world`. */
+export function levelAt(world: number, index: number): LevelDef | undefined {
+  return LEVELS.find((l) => l.world === world && l.index === index);
+}
+
 export function worldLevels(world: number): LevelDef[] {
   return LEVELS.filter((l) => l.world === world);
 }

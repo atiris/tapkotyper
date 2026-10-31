@@ -26,7 +26,7 @@ import { accuracyPic, placeRing, rhythmPic, roundButton } from '../ui/hud';
 import type { WordSource } from '../words/words';
 import { SUPER_ID, type Surprise, type TaskSpec } from '../storage/schema';
 import type { LevelDef } from './levels';
-import { LEVELS, WORLDS, grownCount, hasMinLength, journeyProgress, levelOver, minActiveS, playedStep, shownProgress, worldName, worldStory } from './levels';
+import { WORLDS, grownCount, hasMinLength, journeyProgress, levelById, levelOver, minActiveS, playedStep, shownProgress, worldName, worldStory } from './levels';
 import { type Mode, driftOffset } from './mode';
 import { ENTER_MAX, EnterMarks } from './enter';
 import type { ModeMaker } from './modes';
@@ -336,7 +336,7 @@ export class LevelRuntime {
     // The level's story and what it asks in particular, both on the one get-ready card; the first
     // level of a world tells the world's story instead of its own the first time.
     // A world not built yet keeps its story for when it is: its placeholder says what it plays instead.
-    const opening = this.def.kind !== 'copyloop' && LEVELS.find((l) => l.id === this.def.id)?.index === 0 ? `world-${WORLDS[this.def.world]}` : null;
+    const opening = this.def.kind !== 'copyloop' && levelById(this.def.id)?.index === 0 ? `world-${WORLDS[this.def.world]}` : null;
     const told = opening && !p.progress.scenesSeen.includes(opening) ? worldStory(this.def.world) : null;
     const story = [told ?? (journey?.line ? t(journey.line) : this.mode.startLine()), this.mode.intro()].filter(Boolean).join(' ') || null;
     if (!this.opts.keys) await showPosture(host, p, tip, this.surprise, voiceNote, story, journey ? t('journey.harder') : null);

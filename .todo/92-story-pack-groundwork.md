@@ -81,7 +81,7 @@ without a caller, no dead code.
       `minWords` and the parrot size of one level per story keep passing unchanged.
 - [x] 2. `worldName` / `worldStory`, all call sites moved; `rg` shows no template i18n key for
       worlds outside `levels.ts`.
-- [ ] 3. `levelAt`, `levelById` at every by-id search, `wardrobe.ts` without id parsing.
+- [x] 3. `levelAt`, `levelById` at every by-id search, `wardrobe.ts` without id parsing.
 - [ ] 4. `totalStars` over built-in ids; a unit test: a `progress.levels` entry with an unknown id
       (for example `pack:x:w1-1`) adds nothing to `totalStars` and buys no companion.
 - [ ] 5. `musicUrl` and its use in `audio.ts`.

@@ -30,3 +30,9 @@ feet and "tap" is a key press. An earlier working name was dropped for an unwant
 - [companion/](companion/index.md) - the character the child plays as, accessories, rewards, wardrobe time
 - [profiles/](profiles/index.md) - profiles, guest, parent controls, statistics, export
 - [experience/](experience/index.md) - localization, visuals, audio, accessibility, pacing, privacy, offline
+
+## Long-term goals
+
+Not built yet; the app is prepared for them step by step.
+
+- [game/story-packs.md](game/story-packs.md) - stories made by others, imported by a parent as a data pack

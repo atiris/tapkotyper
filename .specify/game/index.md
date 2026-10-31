@@ -8,3 +8,4 @@
 - [heros-journey.md](heros-journey.md) - the hero's journey: one long, harder trip through the worlds of a story, closing it
 - [parrot.md](parrot.md) - the parrot: a few words many times over, parrots that fly away, the Parrot badge
 - [super-obstacles.md](super-obstacles.md) - hedgehog volleys, fractured asteroid, great swamp, the dragons' take-off, the spell of awakening
+- [story-packs.md](story-packs.md) - long-term goal: a parent imports a story made by others as data, separate rewards

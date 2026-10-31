@@ -67,6 +67,12 @@ cannot be done now (2026-10-31).
   a blurring card in a level (Full graphics) the stage's CSS animations pause and Tapko on the
   end card stands still too (`src/styles.css`); with that both p50 16.7. Replacing the
   backdrop blur with a `filter` on the still scene did not help and was dropped.
+- Simple at 0.75 (slow profile, `--low`): meadow-1 p50 33.3 -> 16.7, p95 50.1 -> 33.4;
+  valley-1 p50 33.3 -> 16.7, p95 66.7 -> 50; space-5 p50 33.4 -> 33.3, p95 66.7 -> 50.1.
+  Valley and space-5 p95 land on the 50 ms frame step rather than under it; kept 0.75 (0.85
+  would only be slower). Screenshots at 1024x600 (`.e2e/plan90-meadow-simple.png`,
+  `.e2e/plan90-valley-simple.png`, git-ignored) look fine: painted bands are soft anyway and the
+  words are DOM, so 0.85 was not needed.
 
 ## Steps
 
@@ -74,7 +80,7 @@ cannot be done now (2026-10-31).
       the cache completely and a failed file still fails it.
 - [x] No redraw under a blurred card; peek and close resume drawing; perf numbers before/after
       in the commit message.
-- [ ] Simple graphics at 0.75 resolution; perf numbers before/after; screenshots meadow and
+- [x] Simple graphics at 0.75 resolution; perf numbers before/after; screenshots meadow and
       valley with Simple graphics at 1024x600.
 - [ ] Runtime split into pause, paws and super-helper files with a shared state object; no
       behaviour change; `runtime.ts` under about 1000 lines.

@@ -58,7 +58,8 @@
   card (the end card) stands still, Tapko on the card too: any move there would blur the stage
   again every frame. Peeking under the end card shows it live again.
 - **Simple graphics:** a teacher can set Graphics to Automatic (default), Full or Simple in the
-  settings. Simple draws one canvas pixel per screen pixel, fewer particles, no blurred
+  settings. Simple draws the scene at three quarters of the screen's resolution (scaled up; the
+  words are not on the canvas and stay sharp), fewer particles, no blurred
   shadows and no blur behind cards, moving bands on whole pixels and the start page's sky
   without its butterflies and fireflies. Automatic switches to it by itself when the first seconds of play are slow
   (the slowest 5 % of frames over 25 ms) and remembers that for the device. It never changes
@@ -77,7 +78,7 @@ for a computer without canvas acceleration): `normal` is 1366 x 768 at device pi
 - Every story level in play: on `normal` with Full graphics a steady 60 fps (p50 at most 17 ms,
   p95 at most 20 ms); on `slow` with Simple graphics (the automatic choice there) a steady
   30 fps (p50 at most 34 ms, p95 at most 80 ms). There the whole frame is the software drawing
-  of a full screen; only a smaller canvas would cut it further.
+  of a full screen, which is why Simple draws a smaller canvas.
 - The main chunk holds only what the start page and the map need; each mode's code is its own
   chunk, loaded with its first level, and imports only `modes/kit/`, never another world's mode.
 - `node scripts/perf.mjs --budget` (normal) and `node scripts/perf.mjs --machine slow --low --budget`

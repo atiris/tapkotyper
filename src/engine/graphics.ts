@@ -10,11 +10,14 @@ const WATCH_S = 4;
 export const SLOW_P95_MS = 25;
 
 /**
- * The simple drawing for slow computers: the canvas at one pixel per screen pixel, fewer particles,
+ * The simple drawing for slow computers: the canvas at `SIMPLE_RES` canvas pixels per screen pixel, fewer particles,
  * no blurred shadows or blur behind cards, background bands on whole pixels, the start page's sky without its small life.
  * It changes only how the game is drawn, never its pace, word timing or results.
  */
 export const graphics = { simple: false };
+
+/** Canvas pixels per screen pixel in the simple drawing: a full-screen canvas drawn without a graphics card costs by its pixels; word labels are DOM and stay sharp. */
+export const SIMPLE_RES = 0.75;
 
 function measuredSlow(): boolean {
   try {

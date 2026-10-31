@@ -135,7 +135,8 @@
     A click or tap on the label says it again, and the voice repeats it once by itself
     after 4 seconds without a key. Targets get one and a half times the travel time.
     Without a voice for the language the run is copy typing and the get-ready card says
-    so; the reading-aloud button is hidden in a dictation (the voice is the task).
+    so; the reading-aloud button is hidden in a dictation (the voice is the task). What a
+    dictation may say is in `.specify/learning/words.md`.
   - *Memory*: a target shows for a moment (longer for long words, shorter at a higher
     difficulty, with a small ring that empties), then its letters turn into dots and
     typing starts. Keys pressed while it shows are not counted and the narrator asks to wait:

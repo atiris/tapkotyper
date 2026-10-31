@@ -1,6 +1,8 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { LAYOUTS } from '../keyboard/layouts';
-import { WordSource, filterWords, isBlocked, parseOwnWords, textPhrases, typableText, untypableWords } from './words';
+import { lessonOrder } from '../learning/lessons';
+import { WordSource, filterWords, heardSafe, isBlocked, parseOwnWords, textPhrases, typableText, untypableWords } from './words';
 
 const WORDS = ['sad', 'lak', 'las', 'les', 'kde', 'ide', 'šaty', 'ruka', 'noha', 'dom', 'kôň', 'ja', 'aha', 'jeseň', 'slnko'];
 
@@ -39,6 +41,14 @@ describe('WordSource', () => {
     src.heard = true;
     const known = new Set(WORDS);
     for (let i = 0; i < 80; i++) for (const w of src.next(new Set(), undefined, 3).split(' ')) expect(known.has(w)).toBe(true);
+  });
+
+  it('dictates in Slovak only words whose spelling the ear decides, own words too', () => {
+    const keys = [...'fjdkslaeiruotnhšôň ž'];
+    const own = { words: ['hrad', 'kde', 'ruka'], text: '', share: 0.5 };
+    const src = new WordSource([...WORDS, 'hrad', 'nôž', 'roh'], { keys, len: [2, 6], noDiacritics: false, seed: 8, own, lang: 'sk' });
+    src.heard = true;
+    for (let i = 0; i < 200; i++) for (const w of src.next(new Set(), undefined, 3).split(' ')) expect(heardSafe(w, 'sk'), w).toBe(true);
   });
 
   it('never uses keys outside the set', () => {
@@ -206,5 +216,31 @@ describe('own words and text', () => {
   it('keeps own words out of objects too small for them', () => {
     const src = new WordSource(WORDS, { keys: [...'fjdkslaeiruo'], len: [2, 5], noDiacritics: false, layout: lay, own: { words: ['zebra'], text: '', share: 1 }, seed: 4 });
     for (let i = 0; i < 50; i++) expect(src.next(new Set(), 3, 1)).not.toBe('zebra');
+  });
+});
+
+describe('heardSafe', () => {
+  it('rejects Slovak words whose spelling the ear cannot decide', () => {
+    for (const w of ['dub', 'hrad', 'nôž', 'lev', 'vták', 'kde', 'bili', 'ryba', 'syr', 'vy', 'líška', 'hádž', 'hrádz']) expect(heardSafe(w, 'sk'), w).toBe(false);
+  });
+
+  it('keeps Slovak words the ear spells', () => {
+    for (const w of ['mama', 'noha', 'sklo', 'stĺp', 'ruka', 'kino', 'tyč', 'tvoj', 'chata', 'medzi']) expect(heardSafe(w, 'sk'), w).toBe(true);
+  });
+
+  it('checks only Slovak', () => {
+    expect(heardSafe('dub', 'en')).toBe(true);
+    expect(heardSafe('dub')).toBe(true);
+  });
+
+  it('leaves enough Slovak words for a dictation as keys come', () => {
+    const dict = (JSON.parse(readFileSync('public/words/sk.json', 'utf8')) as { words: string[] }).words.map((w) => w.normalize('NFC').toLowerCase());
+    const order = lessonOrder('sk-qwertz').filter((k) => k.length === 1);
+    const counts = [10, 20, 30].map((n) => {
+      const all = filterWords(dict, new Set(order.slice(0, n)), [2, 8]);
+      return { keys: n, words: all.length, heard: all.filter((w) => heardSafe(w, 'sk')).length };
+    });
+    console.log('Slovak dictation words by keys:', counts);
+    expect(counts[2].heard).toBeGreaterThanOrEqual(8);
   });
 });

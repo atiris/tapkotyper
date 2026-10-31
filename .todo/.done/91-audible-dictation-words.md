@@ -42,11 +42,25 @@ practice now and the main mode of the fairy story later.
 
 ## Steps
 
-- [ ] Spec lines in `words.md` and `mechanics.md`.
-- [ ] `heardSafe` with the three rules; used for dictionary and own words in heard mode.
-- [ ] Tests: unsafe examples (dub, hrad, nôž, lev, vták, kde, bili, ryba, syr, vy, líška) are
+- [x] Spec lines in `words.md` and `mechanics.md`.
+- [x] `heardSafe` with the three rules; used for dictionary and own words in heard mode.
+- [x] Tests: unsafe examples (dub, hrad, nôž, lev, vták, kde, bili, ryba, syr, vy, líška) are
       rejected, safe ones (mama, noha, sklo, stĺp, ruka, kino, tyč: after t the ear tells ty from
       ti) are kept; a heard source never yields an unsafe
       word over many draws; the count of safe words at 10/20/30 keys is printed.
-- [ ] `npm run build`, `npx vitest run`; Playwright MCP: own practice with dictation in Slovak
+- [x] `npm run build`, `npx vitest run`; Playwright MCP: own practice with dictation in Slovak
       (tester profile), a dozen words heard, none of them unsafe; console clean.
+
+## Done - 2026-10-31
+
+- `heardSafe(word, lang)` in `src/words/words.ts` with the three Slovak rules (`ch`, `dz`, `dž` one
+  sound); a heard source takes dictionary words from a lazily made pool of safe words (apostrophe
+  rule moved there too) and own words only when safe. `WordOptions.lang` carries the language;
+  `wordSource` passes it.
+- Decision: only the official `sk` list is checked; an own language (even with base `sk`) keeps
+  the old rule, its words need not be Slovak.
+- Safe Slovak words (lengths 2-8) at 10/20/30 keys of the SK QWERTZ order: 17 of 20, 458 of 580,
+  1487 of 2285.
+- Browser: own practice, dictation, tester profile with a stubbed Slovak voice; 14 dictated
+  phrases (about 40 words) typed, none breaks a rule; console clean.
+- Left out: nothing.

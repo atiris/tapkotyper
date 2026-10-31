@@ -21,6 +21,12 @@
   capitals, apostrophes or punctuation, and no made-up words. Own words of a parent or a task
   join a dictation only when the dictionary has them as written; own text never does: a child
   cannot hear where a capital or a comma goes.
+- A Slovak dictation says only words whose spelling the ear decides, own words too: none with a
+  voiced consonant at the end (dub sounds "dup"), none with a voiced and a voiceless consonant
+  side by side (vták, kde), and none with i or y after a consonant that takes both (ryba, bili).
+  A child who writes what was heard is always right. Fewer words is fine: below enough of them
+  single letters are dictated, as with too few keys. English keeps dictionary words, its spelling
+  never follows the ear alone.
 - No word may be offensive or scary; pseudo-words are checked against a small block list.
 - The first level asks one chunk per target, never two with a space; the second level is the
   first that asks for the space bar.

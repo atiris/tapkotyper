@@ -38,6 +38,34 @@ export function gameWords(words: string[], layout: Layout): string[] {
   return [...new Set(words.map((w) => w.normalize('NFC').toLowerCase()))].filter((w) => w && [...w].every((c) => canType(layout, c)));
 }
 
+/** Slovak sounds as a dictation hears them: `ch`, `dz` and `dž` are one sound each. */
+const SK_SOUND = /ch|dz|dž|./gu;
+/** Voiced consonants with a voiceless pair; they sound voiceless at the end of a word or before a voiceless one. */
+const SK_VOICED = new Set(['b', 'd', 'ď', 'g', 'h', 'z', 'ž', 'dz', 'dž']);
+const SK_VOICELESS = new Set(['p', 't', 'ť', 'k', 'ch', 's', 'š', 'c', 'č', 'f']);
+/** Consonants after which the ear cannot tell i from y. */
+const SK_BOTH_WAYS = new Set([...'bflmprsvz']);
+const SK_IY = new Set([...'iíyý']);
+
+/**
+ * The spelling of a word follows from hearing it, so a dictation may say it. Only Slovak is
+ * checked: no voiced consonant at the end, no voicing pair of mixed voicing side by side, and
+ * no i or y after a consonant that takes both.
+ */
+export function heardSafe(word: string, lang?: LangRef): boolean {
+  if (lang !== 'sk') return true;
+  const sounds = word.match(SK_SOUND) ?? [];
+  const last = sounds[sounds.length - 1];
+  if (last && (SK_VOICED.has(last) || last === 'v')) return false;
+  for (let i = 1; i < sounds.length; i++) {
+    const [a, b] = [sounds[i - 1], sounds[i]];
+    if ((SK_VOICED.has(a) || a === 'v') && SK_VOICELESS.has(b)) return false;
+    if (SK_VOICELESS.has(a) && SK_VOICED.has(b)) return false;
+    if (SK_BOTH_WAYS.has(a) && SK_IY.has(b)) return false;
+  }
+  return true;
+}
+
 export function isBlocked(word: string): boolean {
   const w = word.toLowerCase();
   return BLOCK.some((b) => w.includes(b));
@@ -66,6 +94,8 @@ export interface WordOptions {
   shiftMastery?: Record<string, number>;
   /** The parent's (or a task's) own words and text. */
   own?: WordSourceOwn;
+  /** The language of the words; a dictation checks its spelling by ear (`heardSafe`). */
+  lang?: LangRef;
   seed?: number;
 }
 
@@ -144,6 +174,8 @@ export class WordSource {
   readonly rng: Rng;
   private letters: string[];
   private pool: string[];
+  /** Dictionary words a dictation says: no apostrophe, spelled as heard; made when first needed. */
+  private heardWords: string[] | null = null;
   private digits: string[];
   private names: string[];
   private space: boolean;
@@ -152,14 +184,14 @@ export class WordSource {
   private recent: string[] = [];
   private ownWords: string[];
   private ownText: string;
-  /** Own words found in the dictionary, the only ones a dictation says; made when first needed. */
+  /** Own words found in the dictionary and spelled as heard, the only ones a dictation says; made when first needed. */
   private dictOwn: string[] | null = null;
   /** Own text cut for each target size, with the place reached in it. */
   private ownPhrases = new Map<string, { list: string[]; at: number }>();
   /**
-   * The targets are heard (dictation), so only what a voice says clearly: dictionary words (own
-   * ones only when the dictionary has them), and single letters while the known letters make too
-   * few of them; no own text, digits, capitals or marks.
+   * The targets are heard (dictation), so only what a voice says clearly: dictionary words whose
+   * spelling the ear decides (own ones only when the dictionary has them), and single letters while
+   * the known letters make too few of them; no own text, digits, capitals or marks.
    */
   heard = false;
 
@@ -239,7 +271,7 @@ export class WordSource {
 
   /** An own word a voice can say for a dictation: one of the dictionary as it is written there (no own text, capitals or marks); null when none fits. */
   private heardOwn(avoidFirst: Set<string>, limit: number | undefined): string | null {
-    this.dictOwn ??= this.ownWords.filter((w) => this.dict.includes(w));
+    this.dictOwn ??= this.ownWords.filter((w) => this.dict.includes(w) && heardSafe(w, this.opts.lang));
     const list = this.dictOwn.filter((w) => limit === undefined || w.length <= limit);
     if (!list.length) return null;
     const fresh = list.filter((w) => !this.recent.includes(w) && !avoidFirst.has(w[0]));
@@ -277,7 +309,7 @@ export class WordSource {
 
   private word(maxLen: number, focus: string | null, inPhrase: boolean): string {
     const r = this.rng;
-    if (this.heard) return this.pool.length >= REAL_MIN ? this.pickReal(maxLen, focus) : this.weightedLetter(focus);
+    if (this.heard) return this.heardPool().length >= REAL_MIN ? this.pickReal(maxLen, focus) : this.weightedLetter(focus);
     // Chunk pairs like `fj jf` for the first keys.
     if (this.letters.length <= 4) return this.drill(inPhrase ? Math.min(2, maxLen) : maxLen, focus);
     if (this.focus.has("'") && this.keys.has("'") && r.chance(0.5)) {
@@ -332,14 +364,18 @@ export class WordSource {
     return text;
   }
 
+  private heardPool(): string[] {
+    this.heardWords ??= this.pool.filter((w) => !w.includes("'") && heardSafe(w, this.opts.lang));
+    return this.heardWords;
+  }
+
   /** Weighted pick from a random sample of real words. */
   private pickReal(maxLen: number, focus: string | null): string {
-    // A dictation says no apostrophe.
-    const fits = (w: string) => w.length <= maxLen && !(this.heard && w.includes("'"));
+    const pool = this.heard ? this.heardPool() : this.pool;
     const sample: string[] = [];
     for (let i = 0; i < 16; i++) {
-      const w = this.rng.pick(this.pool);
-      if (fits(w)) sample.push(w);
+      const w = this.rng.pick(pool);
+      if (w.length <= maxLen) sample.push(w);
     }
     if (!sample.length) return this.heard ? this.weightedLetter(focus) : this.pseudo(maxLen, focus);
     const weights = sample.map((w) => {

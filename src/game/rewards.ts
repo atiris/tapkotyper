@@ -1,7 +1,7 @@
 import { Rng } from '../engine/rng';
 import { isMastered } from '../learning/lessons';
 import { COMPANION_KINDS, type CompanionKind, type Profile } from '../storage/schema';
-import { LEVELS, STORIES, WORLDS, worldLevels } from './levels';
+import { LEVELS, STORIES, WORLDS, journeyId, worldLevels } from './levels';
 import { WORLD_THINGS } from './modes/aim-things';
 import { PARROT_POINTS, hasParrotBadge } from './parrots';
 
@@ -85,8 +85,9 @@ export function hasAccessory(p: Profile, id: string): boolean {
 /** Stars each next character kind costs on top of the previous one, at random per player. */
 export const KIND_STEP: [number, number] = [18, 26];
 
+/** Stars of the built-in story levels and the built-in stories' journeys; stars kept under any other id buy nothing here. */
 export function totalStars(p: Profile): number {
-  return Object.values(p.progress.levels).reduce((a, b) => a + b, 0);
+  return [...LEVELS.map((l) => l.id), ...STORIES.map(journeyId)].reduce((a, id) => a + (p.progress.levels[id] ?? 0), 0);
 }
 
 /** Three stars in every story level and every story's hero's journey. A new level, world or range thing changes the maxima shown in "My progress". */

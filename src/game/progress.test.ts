@@ -3,7 +3,7 @@ import { newProfile } from '../storage/store';
 import { LEVELS, STORIES, journeyLevel, worldLevels } from './levels';
 import { AUTO_DIFFICULTY_MAX, GROWTH_TYPED_SHARE, MIN_OWN_KEYS, completeLevel, completeStay, grow, growthNeed, joinRuns } from './progress';
 import { COMPANION_KINDS } from '../storage/schema';
-import { MAX_CHEST, MAX_STARS, STORY_ACCESSORIES, badgeTier, chestPoints, friendStars, grantAccessories, grantCompanions, kindPrices, unlockRules } from './rewards';
+import { MAX_CHEST, MAX_STARS, STORY_ACCESSORIES, badgeTier, chestPoints, friendStars, grantAccessories, grantCompanions, kindPrices, totalStars, unlockRules } from './rewards';
 
 describe('automatic growth', () => {
   it('steps up after enough good play, difficulty and word length in turn', () => {
@@ -103,14 +103,26 @@ describe('characters earned by stars', () => {
     expect(kindPrices(newProfile('Ema', 'sk'))).not.toEqual(kindPrices(newProfile('Jano', 'sk')));
   });
 
+  /** `n` stars over the first story levels, three each. */
+  const starsIn = (n: number): Record<string, number> =>
+    Object.fromEntries(LEVELS.slice(0, Math.ceil(n / 3)).map((l, i) => [l.id, Math.min(3, n - i * 3)]));
+
   it('unlocks the kinds the stars reach', () => {
     const p = newProfile('Ema', 'sk', undefined, 'cat');
     const [, [first, need]] = kindPrices(p);
-    p.progress.levels = { x: need - 1 };
+    p.progress.levels = starsIn(need - 1);
     expect(grantCompanions(p)).toEqual([]);
-    p.progress.levels = { x: need };
+    p.progress.levels = starsIn(need);
     expect(grantCompanions(p)).toEqual([first]);
     expect(p.progress.companionsUnlocked).toEqual(['cat', first]);
+  });
+
+  it('counts only the built-in levels and journeys', () => {
+    const p = newProfile('Ema', 'sk', undefined, 'cat');
+    const [, [, need]] = kindPrices(p);
+    p.progress.levels = { 'journey-dragon': 3, 'pack:x:w1-1': need };
+    expect(totalStars(p)).toBe(3);
+    expect(grantCompanions(p)).toEqual([]);
   });
 });
 

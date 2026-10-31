@@ -74,6 +74,12 @@ without a caller, no dead code.
 - Contracts: none outward (no link, file or i18n change). DB: none (same names, versions, stores).
 - Specs: `.specify/architecture.md` gets one short section (step 7).
 
+## Progress notes
+
+- Step 4: the companion test in `progress.test.ts` kept its stars under a made-up id `x`; it now
+  spreads the same stars over real level ids (its expected values are unchanged).
+- Step 2: `ui/hud.ts` had its own `worldName(def)`; it went, its one caller uses the new helper.
+
 ## Steps
 
 - [x] 1. `StoryDef.tier` and its readers (`STORY_MIN_S`, `STORY_WPM`, `slipWords`, `parrotPatience`,
@@ -82,7 +88,7 @@ without a caller, no dead code.
 - [x] 2. `worldName` / `worldStory`, all call sites moved; `rg` shows no template i18n key for
       worlds outside `levels.ts`.
 - [x] 3. `levelAt`, `levelById` at every by-id search, `wardrobe.ts` without id parsing.
-- [ ] 4. `totalStars` over built-in ids; a unit test: a `progress.levels` entry with an unknown id
+- [x] 4. `totalStars` over built-in ids; a unit test: a `progress.levels` entry with an unknown id
       (for example `pack:x:w1-1`) adds nothing to `totalStars` and buys no companion.
 - [ ] 5. `musicUrl` and its use in `audio.ts`.
 - [ ] 6. `storage/idb.ts`, both stores on it; a unit test of `openDb` with `fake-indexeddb`

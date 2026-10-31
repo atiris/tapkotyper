@@ -219,18 +219,30 @@ function tiled(g: G, img: HTMLImageElement, vw: number, offset: number, dy = 0):
     for (let x = from; x < vw; x += w) g.drawImage(tile, x, VH - h + dy, w + 1, h);
     return;
   }
-  // The scaled copy goes on unscaled, in device pixels, each copy right after the last one: a copy
+  // The scaled copy goes on unscaled, in device pixels, each copy right after the last one (bandCopies): a copy
   // on whole pixels is several times cheaper than a filtered one. A moving layer keeps sub-pixel steps where a pixel is big enough
   // to see (device pixel ratio under 2), else slow layers move in visible jumps.
   const still = lastOffset.get(img) === offset;
   lastOffset.set(img, offset);
   const snap = still || graphics.simple || g.canvas.width >= 2 * g.canvas.clientWidth;
-  const x0 = m.a * from + m.e, x1 = m.a * vw + m.e;
+  const { xs, w: copyW } = bandCopies(m.a * from + m.e, m.a * vw + m.e, tile.width, snap);
   const y = Math.round(m.d * (VH + dy) + m.f) - tile.height;
   g.save();
   g.setTransform(1, 0, 0, 1, 0, 0);
-  for (let x = snap ? Math.round(x0) : x0; x < x1; x += tile.width) g.drawImage(tile, x, y);
+  for (const x of xs) g.drawImage(tile, x, y, copyW, tile.height);
   g.restore();
+}
+
+/**
+ * Where a band's copies `tileW` device pixels wide go from `x0` to `x1`, and how wide each is drawn.
+ * On whole pixels they sit side by side. Between pixels a browser may draw a copy's edge pixel half
+ * see-through (Firefox does), so two edges meeting in one pixel leave a thin line: each copy is then
+ * one pixel wider, its right edge under the next copy.
+ */
+export function bandCopies(x0: number, x1: number, tileW: number, snap: boolean): { xs: number[]; w: number } {
+  const xs: number[] = [];
+  for (let x = snap ? Math.round(x0) : x0; x < x1; x += tileW) xs.push(x);
+  return { xs, w: snap ? tileW : tileW + 1 };
 }
 
 /** How much lower a ground's near band sits, its bottom cut off (the planet's swamp). */

@@ -1,4 +1,5 @@
 import { pickLine } from '../../app/app';
+import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
 import { sprite } from '../../gfx/assets';
 import { blob, drawSprite, type G, wordBox } from '../../gfx/draw';
@@ -16,6 +17,10 @@ const FEET = PATH_FEET;
 const HERO_X = 200;
 const REACH = 60;
 const END_TIME = 3;
+/** His wobble (stuck in the mud, hit by a boulder): seconds, swings of his top left and right, and their size (a share of a whole turn). */
+const WOBBLE_S = 0.9;
+const WOBBLE_SWINGS = 3;
+const WOBBLE = 0.03;
 /** Seconds the bands glide when he walks on or is pushed back. */
 const GLIDE = 0.6;
 
@@ -33,10 +38,9 @@ abstract class SlopeStream extends ApproachMode {
   /** The dragon story's hero's journey goes back down: the egg has hatched and the little dragon walks behind him. */
   protected readonly journey: boolean;
   protected detour: Detour;
-  /** His own bob or hop (0..1), his lean (a share of a turn), and his sit after a stumble (0..1). */
+  /** His own bob or hop (0..1) and his lean (a share of a turn). */
   protected jump = 0;
   protected lean = 0;
-  protected sit = 0;
   protected endT: number | null = null;
   private longerSaid = false;
 
@@ -97,8 +101,7 @@ abstract class SlopeStream extends ApproachMode {
   }
 
   protected drawHero(g: G): void {
-    const sitDrop = Math.sin(Math.PI * Math.min(1, this.sit)) * 14;
-    drawCarrier(g, this.L, this.journey ? null : this.egg, this.L.tapkoMood, HERO_X, FEET + sitDrop, { t: this.t, jump: this.jump, spin: this.lean });
+    drawCarrier(g, this.L, this.journey ? null : this.egg, this.L.tapkoMood, HERO_X, FEET, { t: this.t, jump: this.jump, spin: this.lean });
   }
 
   get finished(): boolean {
@@ -274,7 +277,7 @@ export class WindMode extends SlopeStream {
 
 /** The boulders' looks, and their size by the word's length (the shortest word, the smallest boulder). */
 const BOULDERS = ['obj-boulder-1', 'obj-boulder-2', 'obj-boulder-3'];
-const BOULDER_SIZE = [72, 86, 100, 114];
+const BOULDER_SIZE = [58, 60, 62, 64];
 /** From this share of the level every third throw is a pair, the second 1-1.5 s after the first. */
 const PAIR_FROM = 1 / 3;
 const PAIR_EVERY = 3;
@@ -282,9 +285,16 @@ const PAIR_GAP: [number, number] = [1, 1.5];
 /** A missed boulder makes the way longer by this share of the level's planned words (and its minimum time), at most ten times. */
 export const STUMBLE_SHARE = 0.07;
 export const STUMBLE_MAX = 10;
-/** Seconds of a hop over a typed boulder and of a stumble over a missed one (a late hop, a sit, up again). */
-const HOP_S = 0.55;
-const STUMBLE_S = 1.4;
+/**
+ * A typed boulder slides off the path and falls down (its pull, px/s², and how much of its speed it
+ * keeps); a missed one bounces off him (a little back and up) and falls down off the path too.
+ */
+const FALL = 900;
+const SLIDE_KEEP = 0.45;
+const BOUNCE: [vx: number, vy: number] = [90, -260];
+/** A boulder that hits him makes him wobble (see WOBBLE) with a small hop at its start. */
+const WOBBLE_HOP = 0.25;
+const WOBBLE_HOP_K = 0.3;
 
 /** A round grey-brown boulder while its picture is missing. */
 function boulderFallback(g: G, w: number, h: number): void {
@@ -309,19 +319,20 @@ function boulderFallback(g: G, w: number, h: number): void {
 }
 
 /**
- * Egg 4, boulders before the summit (a word stream): round boulders roll down the path at him,
- * the word above each; from a third of the level about every third throw is a pair. Typed, it rolls
- * on and he hops over it; missed, he hops too late, stumbles and sits a moment, and the way gets
- * a little longer. On the dragon story's hero's journey they roll after him on the way down, the egg
- * hatched, and the way grows by the part's own share.
+ * Egg 4, boulders before the summit (a word stream): small round boulders roll down the path at him,
+ * the word above each; from a third of the level about every third throw is a pair. Typed, it slides
+ * off the path and falls down before it reaches him; missed, it bounces off him and falls down off
+ * the path, he wobbles with a small hop, and the way gets a little longer. On the dragon story's
+ * hero's journey they roll after him on the way down, the egg hatched, and the way grows by the
+ * part's own share.
  */
 export class BouldersMode extends SlopeStream {
   readonly pictures = [...BOULDERS, 'obj-egg-plain'];
   /** Throws so far, and the second boulder of a pair is due. */
   private throws = 0;
   private pairSecond = false;
-  /** Seconds through his stumble, -1 when he stands. */
-  private stumble = -1;
+  /** 0..1 through his wobble after a hit, -1 when he stands. */
+  private wobble = -1;
 
   constructor(L: LevelRuntime) {
     super(L, STUMBLE_SHARE * STUMBLE_MAX * L.def.count);
@@ -355,7 +366,7 @@ export class BouldersMode extends SlopeStream {
     const x = L.vw + size;
     return {
       x, y: FEET - size / 2 + 4, vx: this.speedFor(word, x), vy: 0, rot: L.rng.range(0, Math.PI * 2), vr: 0, age: 0, state: 'come', fade: 0,
-      sprite: L.rng.pick(BOULDERS), size, flip: L.rng.chance(0.5), hopped: false,
+      sprite: L.rng.pick(BOULDERS), size, flip: L.rng.chance(0.5),
     };
   }
 
@@ -366,17 +377,12 @@ export class BouldersMode extends SlopeStream {
       const m = tg.data as Mover;
       if (m.state === 'come' && tg.selectable) tg.selectable = m.x + m.size / 2 <= this.L.vw;
     }
-    if (this.stumble >= 0) {
-      this.stumble += dt;
-      const k = this.stumble / STUMBLE_S;
-      // A late hop, then he sits a moment and gets up.
-      this.jump = k < 0.3 ? k / 0.3 : 0;
-      this.sit = k < 0.3 ? 0 : Math.min(1, (k - 0.3) / 0.7);
-      this.lean = k < 0.3 ? 0 : -0.04 * Math.sin(Math.PI * this.sit);
-      if (k >= 1) {
-        this.stumble = -1;
-        this.jump = this.sit = this.lean = 0;
-      }
+    if (this.wobble >= 0) {
+      const k = (this.wobble += dt / WOBBLE_S);
+      // His top swings left and right, fading out, after a small hop.
+      this.lean = k >= 1 ? 0 : WOBBLE * Math.sin(k * Math.PI * 2 * WOBBLE_SWINGS) * (1 - k);
+      this.jump = k < WOBBLE_HOP_K ? Math.sin((k / WOBBLE_HOP_K) * Math.PI) * WOBBLE_HOP : 0;
+      if (k >= 1) this.wobble = -1;
     }
   }
 
@@ -387,15 +393,17 @@ export class BouldersMode extends SlopeStream {
     m.rot += (m.x - x) / (m.size / 2);
   }
 
-  /** A typed boulder rolls on; as it reaches him he hops over it, and it rolls off the left edge. */
+  /** A typed boulder slides off the path: it keeps some of its speed and falls down. */
   protected onLeave(m: Mover): void {
-    m.hopped = false;
+    m.vx *= SLIDE_KEEP;
+    m.vy = 0;
   }
 
-  /** A missed one rolls on behind him: he stumbles, and the way gets longer. */
+  /** A missed one bounces off him and falls down off the path: he wobbles, and the way gets longer. */
   protected onPass(m: Mover): void {
-    m.hopped = true;
-    this.stumble = this.L.reduceMotion ? STUMBLE_S : 0;
+    [m.vx, m.vy] = BOUNCE;
+    if (!this.L.reduceMotion) this.wobble = 0;
+    this.L.sfx('pop');
     this.egg.poke();
     this.exclaim('story.boulderOops');
     this.L.setMood('thinking', 1.4);
@@ -405,20 +413,11 @@ export class BouldersMode extends SlopeStream {
 
   protected moveGone(m: Mover, dt: number): void {
     const x = m.x;
+    m.vy += FALL * dt;
     m.x += m.vx * dt;
+    m.y += m.vy * dt;
     m.rot += (m.x - x) / (m.size / 2);
-    if (!m.hopped && m.x - m.size / 2 < HERO_X + REACH) {
-      m.hopped = true;
-      this.hop();
-    }
-    if (m.x < -m.size) m.fade = 1;
-  }
-
-  /** He hops over a typed boulder (a stumble is never cut short). */
-  private hop(): void {
-    if (this.stumble >= 0) return;
-    this.L.sfx('whoosh');
-    this.L.tweens.add(HOP_S, (k) => { this.jump = k; }, ease.linear, () => { this.jump = 0; });
+    if (m.y - m.size > VH) m.fade = 1;
   }
 
   drawMover(g: G, m: Mover): void {
@@ -426,13 +425,10 @@ export class BouldersMode extends SlopeStream {
   }
 
   render(g: G): void {
-    // A missed boulder rolls on behind him; the others in front, so he hops over them.
-    const list = [...this.L.core.targets];
-    for (const tg of list) if ((tg.data as Mover).state === 'pass') this.drawMover(g, tg.data as Mover);
     this.drawHero(g);
-    for (const tg of list) if ((tg.data as Mover).state !== 'pass') this.drawMover(g, tg.data as Mover);
-    for (const tg of list) {
+    for (const tg of this.L.core.targets) {
       const m = tg.data as Mover;
+      this.drawMover(g, m);
       if (m.state === 'come') this.L.label(g, tg, m.x, m.y - m.size / 2 - 34);
     }
   }
@@ -462,10 +458,6 @@ export const HARD_ROUNDS = 3;
 /** A very hard word: the longest of a few drawn from the hardest keys the child knows; a short one gets a second word. */
 const HARD_DRAWS = 4;
 const HARD_LONG = 9;
-/** His wobble trying to get out of the mud: seconds, swings and their size (a share of a whole turn). */
-const WOBBLE_S = 0.9;
-const WOBBLE_SWINGS = 3;
-const WOBBLE = 0.03;
 /** Seconds of his walk to a place, per stage width, and of his hop out of the mud. */
 const WALK_S = 0.9;
 const HOP_OUT_S = 0.6;

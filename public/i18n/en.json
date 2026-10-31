@@ -505,7 +505,7 @@
       "This afternoon there is a football match on the meadow. The animals would like to warm up first, so they decided to **train with you**. You catch every leaf they kick when you **type the word above it**. If some slip into the goal, never mind."
     ],
     "commandStart": [
-      "This planet is explored too, but it is not the dragons' planet, where they need your help. You can go on, you just **have to call the rocket.** Luckily you have a radio linked to the ship's computer: just **send a few commands without a mistake** and the ship will surely come closer. **There is no need to hurry**, what matters is to **type the commands exactly.**"
+      "This planet is explored too, but it is not the Dragons' Planet, where they need your help. You can go on, you just **have to call the rocket.** Luckily you have a radio linked to the ship's computer: just **send a few commands without a mistake** and the ship will surely come closer. **There is no need to hurry**, what matters is to **type the commands exactly.**"
     ],
     "commandReply": [
       "Instruction received.",
@@ -519,11 +519,11 @@
       "The signal got lost."
     ],
     "asteroidStart": [
-      "This looks like the last part of the journey. The dragons' planet is in sight! Oh, these asteroids are too big to push away. But you found out great news: your **laser can break** the **big rocks**, and then you can push the smaller asteroids out of the way. Some rocks here may even have a shield! **Luckily you have** practised enough **before**, so you **can do this too!**"
+      "This looks like the last part of the journey. The Dragons' Planet is in sight! Oh, these asteroids are too big to push away. But you found out great news: your **laser can break** the **big rocks**, and then you can push the smaller asteroids out of the way. Some rocks here may even have a shield! **Luckily you have** practised enough **before**, so you **can do this too!**"
     ],
     "boarded": "Hooray, you are on board!",
     "strongStart": [
-      "On your way into deep space you have run into asteroids with a **force field** around them! That makes your journey a bit harder, because you have to **shoot at them twice.** But your **fingers are** already **fast**, so you will surely make it. Behind this belt of asteroids another planet waits for you. Will it be the dragons' planet at last?"
+      "On your way into deep space you have run into asteroids with a **force field** around them! That makes your journey a bit harder, because you have to **shoot at them twice.** But your **fingers are** already **fast**, so you will surely make it. Behind this belt of asteroids another planet waits for you. Will it be the Dragons' Planet at last?"
     ],
     "strongHit": [
       "Ouch!",
@@ -532,7 +532,7 @@
       "Oof!"
     ],
     "hopStart": [
-      "On your journey you have explored the first planet, but it is not the dragons' planet! **You parked the rocket behind a belt of asteroids**, so nothing would happen to it. To get to the rocket, you have to **hop across.** But you noticed something useful! **Some asteroids can be skipped**, so if the nearest meteor is a bit hard, just type the name of the second one. Do not hop any further than that!"
+      "On your journey you have explored the first planet, but it is not the Dragons' Planet! **You parked the rocket behind a belt of asteroids**, so nothing would happen to it. To get to the rocket, you have to **hop across.** But you noticed something useful! **Some asteroids can be skipped**, so if the nearest meteor is a bit hard, just type the name of the second one. Do not hop any further than that!"
     ],
     "hopTooFar": "Oh, I can't jump that far.",
     "poppyStart": [
@@ -557,13 +557,13 @@
       "Great!"
     ],
     "hedgehogStart": [
-      "Your friend the **hedgehog** is back from a trip. It did not make it to the match, though it wanted to very much. You want to make it happy, so you play a game just with it. But watch out, **it is a very good player!** Its back carries **several shots at the goal at once!** Can you catch every shot of the hedgehog, the best striker of the meadow team?"
+      "Your friend the **hedgehog** is back from a trip. It did not make it to the match, though it wanted to very much. You want to make it happy, so you play a game just with it. But watch out, **it is a very good player!** Its back carries **several shots at the goal at once!** Can you catch every shot of the hedgehog, the best striker of the Meadow team?"
     ],
     "hedgehogDone": [
       "All the leaves are back on the hedgehog. Well done!"
     ],
     "swampStart": [
-      "**Welcome** to the dragons' planet, where spells are real and crystals power life! But the **last crystal** of life has **gone dark.** The planet may lose its light. Luckily you **have a map**: cross the swamp and the meadow, **find** at least three **crystals of life** and wake them with a spell. When you **carry** them all the way **to the stone monolith**, life on the dragons' planet **will be saved.** **Accuracy** still matters more than speed."
+      "**Welcome** to the Dragons' Planet, where spells are real and crystals power life! But the **last crystal** of life has **gone dark.** The planet may lose its light. Luckily you **have a map**: cross the swamp and the meadow, **find** at least three **crystals of life** and wake them with a spell. When you **carry** them all the way **to the stone monolith**, life on the Dragons' Planet **will be saved.** **Accuracy** still matters more than speed."
     ],
     "swampDone": [
       "I can see the meadow! I can't wait.",
@@ -744,7 +744,7 @@
       "Phew, the spell fizzled. Here is a new one, nice and slow."
     ],
     "greatSwampStart": [
-      "You have just reached the **Great Swamp**, with the **stone monolith** behind it. The water is deep here and **the stones are fragile.** Luckily you have the crystals of life in your pocket. From a firm stone you must **jump three more stones without a slip** to reach a firm stone again. If you slip, you can try again. Everyone on the dragons' planet hopes you will set the crystals right and light the planet up with life."
+      "You have just reached the **Great Swamp**, with the **stone monolith** behind it. The water is deep here and **the stones are fragile.** Luckily you have the crystals of life in your pocket. From a firm stone you must **jump three more stones without a slip** to reach a firm stone again. If you slip, you can try again. Everyone on the Dragons' Planet hopes you will set the crystals right and light the planet up with life."
     ],
     "greatSwampSlip": "The stone is cracking! Back to the firm one.",
     "swampLog": "A little log like this won't hold me. I have to wait until it floats away.",
@@ -761,13 +761,13 @@
       "The stag beetle's whistle has started the football match. **You are the goalkeeper for the meadow team!** I hope you trained well this morning. How many shots you catch depends **on the speed and above all the accuracy of your fingers**. Watch out above all for the **final attacks**, when **several animals rush at you at once**. **Stay calm** and you will surely make it."
     ],
     "spaceStart": [
-      "You have a special mission: explore a few planets, all the way to the dragons' planet, where they need your help. Your **typing in the right rhythm drives** the **spaceship** on this journey. When there is danger, **give** the right **command** to the ship's computer. If you enter the **right code** of the asteroid that crossed your way, you **switch on the laser**, which bounces the coming rock away like a billiard ball. But the dragons' planet is far away. What waits for you on this journey?"
+      "You have a special mission: explore a few planets, all the way to the Dragons' Planet, where they need your help. Your **typing in the right rhythm drives** the **spaceship** on this journey. When there is danger, **give** the right **command** to the ship's computer. If you enter the **right code** of the asteroid that crossed your way, you **switch on the laser**, which bounces the coming rock away like a billiard ball. But the Dragons' Planet is far away. What waits for you on this journey?"
     ],
     "world": {
       "meadow": "It is a lovely afternoon on the meadow and there is a **football match** later! The animals train with you: they kick leaves like a ball and **you keep goal**. Catch the leaves with letters: **type the word on a leaf** and the leaf is yours.",
-      "space": "Three, two, one... **lift off!** You fly off to explore a few planets, all the way to the **dragons' planet**. **Your typing rhythm** drives the rocket and a soft beam pushes meteors out of the way.",
-      "planet": "**Welcome** to the dragons' planet, where spells are real and crystals power life! But the **last crystal** of life has **gone dark.** The planet may lose its light. Luckily you **have a map**: cross the swamp and the meadow, **find** at least three **crystals of life** and wake them with a spell. When you **carry** them all the way **to the stone monolith**, life on the dragons' planet **will be saved.** **Accuracy** still matters more than speed.",
-      "dragons": "The crystal of life lit up the planet, but **in the dragon valley** the **warm fire is** still **out.** For the baby dragons to come back to the valley, you must light the dragon fire pit again. **Catch as many little flames as you can** and light the fire pit, so it brings warmth and light back to this valley. Then the baby dragons will surely come too.",
+      "space": "Three, two, one... **lift off!** You fly off to explore a few planets, all the way to the **Dragons' Planet**. **Your typing rhythm** drives the rocket and a soft beam pushes meteors out of the way.",
+      "planet": "**Welcome** to the Dragons' Planet, where spells are real and crystals power life! But the **last crystal** of life has **gone dark.** The planet may lose its light. Luckily you **have a map**: cross the swamp and the meadow, **find** at least three **crystals of life** and wake them with a spell. When you **carry** them all the way **to the stone monolith**, life on the Dragons' Planet **will be saved.** **Accuracy** still matters more than speed.",
+      "dragons": "The crystal of life lit up the planet, but **in the Dragons' Valley** the **warm fire is** still **out.** For the baby dragons to come back to the valley, you must light the dragon fire pit again. **Catch as many little flames as you can** and light the fire pit, so it brings warmth and light back to this valley. Then the baby dragons will surely come too.",
       "egg": "The flames the little dragon was born in are too weak to wake it. You must carry the egg up the **Mountain of Awakening** to the **dragons' hearth**. The way up is long: a **strong wind** blows, there are **sticky puddles**, **crossroads** and **rolling boulders**. On the summit you will say the **spell of awakening**.",
       "junkyard": "You walk past an old junkyard. **Someone is beeping sadly under a pile of old things.** Type a word and a **soft magnet** lifts the junk off the pile.",
       "workshop": "Bolt wants to go home, but **he is missing some parts**. Gears, bolts and springs ride along the conveyor belt. **Type a part's word** and toss it into the basket.",
@@ -787,7 +787,7 @@
         "Your fingers are ready for a rocket flight."
       ],
       "landing": [
-        "The dragons' planet is in sight. The control tower says: landing clearance granted!",
+        "The Dragons' Planet is in sight. The control tower says: landing clearance granted!",
         "We are landing... oh no, right in a swamp!"
       ],
       "force": [
@@ -796,7 +796,7 @@
         "The dragons in the next valley need help."
       ],
       "egg": [
-        "The baby dragons flew off to the crystal meadow and the fire burned out.",
+        "The baby dragons flew off to the Crystal Meadow and the fire burned out.",
         "Something shines in the ashes behind the fire pit... it is a dragon egg!",
         "The dragons left it here. Now you take care of it."
       ],
@@ -857,7 +857,7 @@
       ]
     },
     "flamesStart": [
-      "The crystal of life lit up the planet, but **in the dragon valley** the **warm fire is** still **out.** For the baby dragons to come back to the valley, you must light the dragon fire pit again. **Catch as many little flames as you can** and light the fire pit, so it brings warmth and light back to this valley. Then the baby dragons will surely come too."
+      "The crystal of life lit up the planet, but **in the Dragons' Valley** the **warm fire is** still **out.** For the baby dragons to come back to the valley, you must light the dragon fire pit again. **Catch as many little flames as you can** and light the fire pit, so it brings warmth and light back to this valley. Then the baby dragons will surely come too."
     ],
     "flamesDone": [
       "The fire is burning! The dragons will see it from all over the valley."
@@ -875,7 +875,7 @@
       "The path is open! The baby dragons peek out at its end."
     ],
     "flightStart": [
-      "In the cave the baby dragons did not need to fly, so they never learned it. **On the meadow**, though, **flying will be a must** for them, to fly out of the valley and explore the dragon planet. They must lift their wings evenly and smoothly. Show them how and **type steadily, smoothly and without slips.**"
+      "In the cave the baby dragons did not need to fly, so they never learned it. **On the meadow**, though, **flying will be a must** for them, to fly out of the valley and explore the Dragons' Planet. They must lift their wings evenly and smoothly. Show them how and **type steadily, smoothly and without slips.**"
     ],
     "flightBush": [
       "Hee hee, that tickles!",
@@ -908,7 +908,7 @@
       "Shh... all the baby dragons are asleep by the fire."
     ],
     "takeoffStart": [
-      "In the morning the baby dragons want to **fly off** to the crystal meadow. It is a long flight over hills and swamps, but they are ready for it. On take-off a baby dragon **must not slip and must flap its wings fast enough**, or it comes back to the fire pit to try again from the start. **Help them take off** on their first big journey."
+      "In the morning the baby dragons want to **fly off** to the Crystal Meadow. It is a long flight over hills and swamps, but they are ready for it. On take-off a baby dragon **must not slip and must flap its wings fast enough**, or it comes back to the fire pit to try again from the start. **Help them take off** on their first big journey."
     ],
     "takeoffBack": [
       "Let's try that again!",
@@ -916,7 +916,7 @@
       "Almost! Let's try again."
     ],
     "takeoffGone": [
-      "It's flying! See you on the crystal meadow!",
+      "It's flying! See you on the Crystal Meadow!",
       "Hooray, off it goes!",
       "Bye-bye, little dragon!"
     ],
@@ -974,7 +974,7 @@
       "Oh no, that path has closed."
     ],
     "bouldersStart": [
-      "Just below the summit **boulders roll** down the path. Type the word on a boulder and you jump over it."
+      "Only **the last few metres** to the top of the mountain are left! But **small stones keep falling** from the steep rocks onto the path **and roll on** down into the valley. Try to dodge them all so they do not trip you. They are not very big, but they could slow you down. If you type the word above a rolling stone correctly, it falls off the path before it gets close to you."
     ],
     "boulderOops": [
       "Oops!",
@@ -3386,11 +3386,11 @@
     "next": "Next: {world}",
     "go": "On we go",
     "dragon": {
-      "down": "The little dragon has hatched! Now take it **down the mountain** and through the **valley**, the **crystal meadow** and the **swamp** all the way to the **rocket** waiting on the shore. At the end you will **launch** it. Boulders are rolling down the mountain, jump over them!",
+      "down": "The little dragon has hatched! Now take it **down the mountain** and through the **valley**, the **Crystal Meadow** and the **swamp** all the way to the **rocket** waiting on the shore. At the end you will **launch** it. Boulders are rolling down the mountain, jump over them!",
       "valley": "The little dragon wants to learn to fly like its friends.",
-      "valleyPlace": "The dragons' valley",
+      "valleyPlace": "The Dragons' Valley",
       "crystals": "The rocket needs the **crystals' energy** to fly home. Collect as many as you can! The dragons from the valley are already waiting on the meadow.",
-      "crystalsPlace": "The crystal meadow",
+      "crystalsPlace": "The Crystal Meadow",
       "swamp": "The last swamp! Your rocket is already waiting on the shore.",
       "swampPlace": "The swamp",
       "launch": "Type **commands** to the rocket and get it ready for take-off. Then you and the little dragon climb in and fly home!",

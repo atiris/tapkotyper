@@ -342,11 +342,12 @@ as they are. The world descriptions below marked *not built yet* are the design 
    easier word in its place (a step shorter, a word fewer) with a call to slow down ("Pomaly!",
    "Radšej presne!", "Sústreď sa!"); the next word is as hard as the road again. End: he can
    see the summit.
-   4 boulders before the summit (a stream): round boulders of three looks roll down the path at
-   him, spinning, the word above each; from a third of the level about every third throw is a
-   pair. Typed, it rolls on and he hops over it; missed, he hops too late, stumbles ("Hups!"),
-   sits a moment and gets up while it rolls on behind him, and the way gets a little longer (the
-   first time the narrator says why). End: the summit in sight.
+   4 boulders before the summit (a stream): small round stones of three looks (the longer the
+   word, a little bigger) fall from the rocks and roll down the path at him, spinning, the word
+   above each; from a third of the level about every third throw is a pair. Typed, it slides off
+   the path and falls down before it reaches him; missed, it bounces off him and falls down off
+   the path ("Hups!"), his top wobbles left and right with a small hop, and the way gets a little
+   longer (the first time the narrator says why). End: the summit in sight.
    5 the spell of awakening (super level, the first ribbon): Tapko lays the egg off his back into
    the dragons' hearth on the right, a ring of old carved stones with weak low flames, and says
    the spell: one long text on a ribbon at the top, what he has written in a stone frame with

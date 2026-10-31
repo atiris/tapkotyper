@@ -505,7 +505,7 @@
       "Popoludní bude na lúke futbalový zápas. Zvieratká by sa však chceli rozcvičiť a rozhodli sa, že si s tebou **zatrénujú**. Každý vykopnutý list môžeš chytiť tak, že **napíšeš slovo nad ním**. Ak ti niektoré prekĺznu až do brány, nevadí."
     ],
     "commandStart": [
-      "Aj táto planéta je preskúmaná, nie je to však planéta drakov, kde potrebujú tvoju pomoc. Môžeš pokračovať, len **si musíš privolať raketu.** Našťastie máš so sebou vysielač spojený s palubným počítačom, ktorému stačí **odoslať zopár bezchybných príkazov**, a loď sa ti určite priblíži. **Nemusíš sa nikam ponáhľať**, dôležité je **zadať príkazy presne.**"
+      "Aj táto planéta je preskúmaná, nie je to však Planéta drakov, kde potrebujú tvoju pomoc. Môžeš pokračovať, len **si musíš privolať raketu.** Našťastie máš so sebou vysielač spojený s palubným počítačom, ktorému stačí **odoslať zopár bezchybných príkazov**, a loď sa ti určite priblíži. **Nemusíš sa nikam ponáhľať**, dôležité je **zadať príkazy presne.**"
     ],
     "commandReply": [
       "Inštrukcia prijatá.",
@@ -523,7 +523,7 @@
     ],
     "boarded": "Hurá, si na palube!",
     "strongStart": [
-      "Pri ceste do hlbín vesmíru si narazil na asteroidy, ktoré majú okolo seba **ochranné pole!** To robí tvoju cestu trocha ťažšou, pretože musíš na ne **vystreliť dvakrát.** Tvoje **prsty sú** už však **rýchle**, a preto to určite zvládneš. Za týmto pásom asteroidov ťa čaká ďalšia planéta. Bude to už planéta drakov?"
+      "Pri ceste do hlbín vesmíru si narazil na asteroidy, ktoré majú okolo seba **ochranné pole!** To robí tvoju cestu trocha ťažšou, pretože musíš na ne **vystreliť dvakrát.** Tvoje **prsty sú** už však **rýchle**, a preto to určite zvládneš. Za týmto pásom asteroidov ťa čaká ďalšia planéta. Bude to už Planéta drakov?"
     ],
     "strongHit": [
       "Au!",
@@ -532,7 +532,7 @@
       "Ouha!"
     ],
     "hopStart": [
-      "Na svojej ceste si preskúmal prvú planétu, nie je to však planéta drakov! **Raketu si zaparkoval za pásom asteroidov**, aby sa jej nič nestalo. Aby si sa dostal k rakete, musíš k nej **preskákať.** Ale všimol si si užitočnú vec! **Niektoré asteroidy sa dajú preskočiť**, tak ak je najbližší meteorit trocha ťažký, stačí napísať meno druhého v poradí. Ďalej radšej neskáč!"
+      "Na svojej ceste si preskúmal prvú planétu, nie je to však Planéta drakov! **Raketu si zaparkoval za pásom asteroidov**, aby sa jej nič nestalo. Aby si sa dostal k rakete, musíš k nej **preskákať.** Ale všimol si si užitočnú vec! **Niektoré asteroidy sa dajú preskočiť**, tak ak je najbližší meteorit trocha ťažký, stačí napísať meno druhého v poradí. Ďalej radšej neskáč!"
     ],
     "hopTooFar": "Jaj, tam nedoskočím.",
     "poppyStart": [
@@ -557,13 +557,13 @@
       "Super!"
     ],
     "hedgehogStart": [
-      "Kamarát **ježko** sa vrátil z výletu. Zápas sa mu stihnúť nepodarilo, aj keď po tom veľmi túžil. Chceš mu spraviť radosť a zahráš sa špeciálne len s ním. Ale pozor, **je to veľmi dobrý hráč!** Jeho chrbát unesie **viacero striel na bránku naraz!** Podarí sa ti chytiť všetky strely ježka, najlepšieho futbalového strelca, ktorý tím lúka má?"
+      "Kamarát **ježko** sa vrátil z výletu. Zápas sa mu stihnúť nepodarilo, aj keď po tom veľmi túžil. Chceš mu spraviť radosť a zahráš sa špeciálne len s ním. Ale pozor, **je to veľmi dobrý hráč!** Jeho chrbát unesie **viacero striel na bránku naraz!** Podarí sa ti chytiť všetky strely ježka, najlepšieho futbalového strelca, ktorý tím Lúka má?"
     ],
     "hedgehogDone": [
       "Všetky listy sú späť u ježka. Výborne!"
     ],
     "swampStart": [
-      "**Vitaj** na planéte drakov, na ktorej existujú kúzla a život poháňajú kryštály! **Posledný kryštál** života však už **vyhasol.** Hrozí, že planéta stratí svetlo. Našťastie **máš mapu**, podľa ktorej treba prejsť močiar a lúku, **nájsť** aspoň tri **kryštály života** a prebudiť ich kúzlom. Keď sa ti ich podarí **odniesť** až **ku kamennému monolitu**, život na planéte drakov **bude zachránený.** **Presnosť** je stále dôležitejšia ako rýchlosť."
+      "**Vitaj** na Planéte drakov, na ktorej existujú kúzla a život poháňajú kryštály! **Posledný kryštál** života však už **vyhasol.** Hrozí, že planéta stratí svetlo. Našťastie **máš mapu**, podľa ktorej treba prejsť močiar a lúku, **nájsť** aspoň tri **kryštály života** a prebudiť ich kúzlom. Keď sa ti ich podarí **odniesť** až **ku kamennému monolitu**, život na Planéte drakov **bude zachránený.** **Presnosť** je stále dôležitejšia ako rýchlosť."
     ],
     "swampDone": [
       "Už vidím lúku! Teším sa na ňu.",
@@ -744,7 +744,7 @@
       "Fuu, kúzlo zhaslo. Tu je nové, pekne pomaly."
     ],
     "greatSwampStart": [
-      "Práve si dorazil k **Veľkému močiaru**, za ktorým sa nachádza **kamenný monolit.** Voda je tu hlboká a **kamene krehké.** Vo vrecku máš našťastie kryštály života. Z pevného kameňa musíš **bez chyby preskočiť tri ďalšie** kamene, aby si sa znova dostal na pevný kameň. Ak sa pomýliš, môžeš to skúsiť znova. Všetci na planéte drakov dúfajú, že sa ti podarí správne umiestniť kryštály a rozžiariť planétu životom."
+      "Práve si dorazil k **Veľkému močiaru**, za ktorým sa nachádza **kamenný monolit.** Voda je tu hlboká a **kamene krehké.** Vo vrecku máš našťastie kryštály života. Z pevného kameňa musíš **bez chyby preskočiť tri ďalšie** kamene, aby si sa znova dostal na pevný kameň. Ak sa pomýliš, môžeš to skúsiť znova. Všetci na Planéte drakov dúfajú, že sa ti podarí správne umiestniť kryštály a rozžiariť planétu životom."
     ],
     "greatSwampSlip": "Kameň praská! Späť na pevný kameň.",
     "swampLog": "Takéto drievko ma neudrží, musím počkať, kým odpláva.",
@@ -761,13 +761,13 @@
       "Hvizd roháča odštartoval futbalový zápas. Za tím lúky **chytáš práve ty!** Dúfam, že si si ráno dobre zatrénoval. Koľko striel chytíš, závisí **od rýchlosti a najmä presnosti tvojich prstov**. Daj si pozor najmä na **finálne nájazdy**, pri ktorých proti tebe vyštartuje **viac zvieratiek naraz**. **V pokoji** to však určite zvládneš."
     ],
     "spaceStart": [
-      "Dostal si špeciálnu úlohu: preskúmať zopár planét až k planéte drakov, kde potrebujú tvoju pomoc. Tvoje **písanie v správnom rytme poháňa** vesmírnu **loď** na tejto ceste. V prípade nebezpečenstva **zadaj** správny **príkaz** palubnému počítaču. Ak uvedieš **správny kód** asteroidu, ktorý ti skrížil cestu, **aktivuješ laser**, ktorý blížiaci sa balvan odrazí ako biliardovú guľu. Planéta drakov je však ďaleko. Čo ťa na tejto ceste čaká?"
+      "Dostal si špeciálnu úlohu: preskúmať zopár planét až k Planéte drakov, kde potrebujú tvoju pomoc. Tvoje **písanie v správnom rytme poháňa** vesmírnu **loď** na tejto ceste. V prípade nebezpečenstva **zadaj** správny **príkaz** palubnému počítaču. Ak uvedieš **správny kód** asteroidu, ktorý ti skrížil cestu, **aktivuješ laser**, ktorý blížiaci sa balvan odrazí ako biliardovú guľu. Planéta drakov je však ďaleko. Čo ťa na tejto ceste čaká?"
     ],
     "world": {
       "meadow": "Na lúke je krásne popoludnie a poobede bude **futbalový zápas**! Zvieratká s tebou trénujú: kopú listy ako loptu a **ty si brankár**. Chytaj listy písmenami: **napíš slovo na liste** a list je tvoj.",
-      "space": "Tri, dva, jeden... **štart!** Letíš preskúmať zopár planét až k **planéte drakov**. **Rytmus tvojho písania** poháňa raketu a jemný lúč odsúva meteority z cesty.",
-      "planet": "**Vitaj** na planéte drakov, na ktorej existujú kúzla a život poháňajú kryštály! **Posledný kryštál** života však už **vyhasol.** Hrozí, že planéta stratí svetlo. Našťastie **máš mapu**, podľa ktorej treba prejsť močiar a lúku, **nájsť** aspoň tri **kryštály života** a prebudiť ich kúzlom. Keď sa ti ich podarí **odniesť** až **ku kamennému monolitu**, život na planéte drakov **bude zachránený.** **Presnosť** je stále dôležitejšia ako rýchlosť.",
-      "dragons": "Kryštál života rozjasnil planétu, ale **v údolí drakov je** stále **zhasnutý hrejivý plameň.** Aby sa dráčiky vrátili do údolia, musíš znova rozžiariť dračie ohnisko. **Chyť čo najviac plamienkov** a rozžiar ohnisko tak, aby znova prinieslo teplo a jas do tohto údolia. Potom sem určite prídu aj dráčiky.",
+      "space": "Tri, dva, jeden... **štart!** Letíš preskúmať zopár planét až k **Planéte drakov**. **Rytmus tvojho písania** poháňa raketu a jemný lúč odsúva meteority z cesty.",
+      "planet": "**Vitaj** na Planéte drakov, na ktorej existujú kúzla a život poháňajú kryštály! **Posledný kryštál** života však už **vyhasol.** Hrozí, že planéta stratí svetlo. Našťastie **máš mapu**, podľa ktorej treba prejsť močiar a lúku, **nájsť** aspoň tri **kryštály života** a prebudiť ich kúzlom. Keď sa ti ich podarí **odniesť** až **ku kamennému monolitu**, život na Planéte drakov **bude zachránený.** **Presnosť** je stále dôležitejšia ako rýchlosť.",
+      "dragons": "Kryštál života rozjasnil planétu, ale **v Údolí drakov je** stále **zhasnutý hrejivý plameň.** Aby sa dráčiky vrátili do údolia, musíš znova rozžiariť dračie ohnisko. **Chyť čo najviac plamienkov** a rozžiar ohnisko tak, aby znova prinieslo teplo a jas do tohto údolia. Potom sem určite prídu aj dráčiky.",
       "egg": "Plamene, v ktorých sa dráčik zrodil, sú príliš slabé, aby ho prebudili. Vajíčko musíš vyniesť na **Horu prebudenia** do **ohniska drakov**. Cesta hore je dlhá: fúka **silný vietor**, sú tam **lepkavé mláky**, **rázcestia** a **padajúce balvany**. Na vrchole prednesieš **kúzlo prebudenia**.",
       "junkyard": "Ideš okolo starého šrotiska. **Pod kopou starých vecí niekto smutne pípa.** Napíš slovo a **jemný magnet** zdvihne haraburdu z kopy.",
       "workshop": "Šróbik chce ísť domov, ale **chýbajú mu súčiastky**. Po páse sa vezú kolieska, skrutky a pružiny. **Napíš slovo súčiastky** a hodíš ju do košíka.",
@@ -796,7 +796,7 @@
         "Dráčiky v susednom údolí potrebujú pomoc."
       ],
       "egg": [
-        "Dráčiky odleteli na lúku kryštálov a oheň dohorel.",
+        "Dráčiky odleteli na Lúku kryštálov a oheň dohorel.",
         "V popole za ohniskom niečo svieti... je to dračie vajíčko!",
         "Dráčiky ho tu nechali. Teraz ho opatruješ ty."
       ],
@@ -857,7 +857,7 @@
       ]
     },
     "flamesStart": [
-      "Kryštál života rozjasnil planétu, ale **v údolí drakov je** stále **zhasnutý hrejivý plameň.** Aby sa dráčiky vrátili do údolia, musíš znova rozžiariť dračie ohnisko. **Chyť čo najviac plamienkov** a rozžiar ohnisko tak, aby znova prinieslo teplo a jas do tohto údolia. Potom sem určite prídu aj dráčiky."
+      "Kryštál života rozjasnil planétu, ale **v Údolí drakov je** stále **zhasnutý hrejivý plameň.** Aby sa dráčiky vrátili do údolia, musíš znova rozžiariť dračie ohnisko. **Chyť čo najviac plamienkov** a rozžiar ohnisko tak, aby znova prinieslo teplo a jas do tohto údolia. Potom sem určite prídu aj dráčiky."
     ],
     "flamesDone": [
       "Oheň v ohnisku horí! Dráčiky ho uvidia z celého údolia."
@@ -875,7 +875,7 @@
       "Cesta je voľná! Na jej konci vykúkajú dráčiky."
     ],
     "flightStart": [
-      "V jaskyni dráčiky lietať nepotrebovali, preto sa to nikdy neučili. **Na lúke** však **bude** pre nich **lietanie nevyhnutné**, aby mohli z údolia vyletieť a preskúmať planétu drakov. Krídla musia dvíhať rovnomerne a hladko. Predveď to dráčikom a **píš pravidelne, plynulo a bez chýb.**"
+      "V jaskyni dráčiky lietať nepotrebovali, preto sa to nikdy neučili. **Na lúke** však **bude** pre nich **lietanie nevyhnutné**, aby mohli z údolia vyletieť a preskúmať Planétu drakov. Krídla musia dvíhať rovnomerne a hladko. Predveď to dráčikom a **píš pravidelne, plynulo a bez chýb.**"
     ],
     "flightBush": [
       "Júj, to šteklí!",
@@ -908,7 +908,7 @@
       "Pst... všetky dráčiky spia pri ohni."
     ],
     "takeoffStart": [
-      "Ráno chcú dráčiky **odletieť** na lúku kryštálov. Je to dlhý let ponad kopce a močiare, sú však na to pripravené. Dráčik sa pri odlete **nesmie pomýliť a musí mávať krídlami dostatočne rýchlo**, inak sa vráti k ohnisku, aby to skúsil znova od začiatku. **Pomôž im s odletom** na ich prvú veľkú cestu."
+      "Ráno chcú dráčiky **odletieť** na Lúku kryštálov. Je to dlhý let ponad kopce a močiare, sú však na to pripravené. Dráčik sa pri odlete **nesmie pomýliť a musí mávať krídlami dostatočne rýchlo**, inak sa vráti k ohnisku, aby to skúsil znova od začiatku. **Pomôž im s odletom** na ich prvú veľkú cestu."
     ],
     "takeoffBack": [
       "Skúsime to znova!",
@@ -916,7 +916,7 @@
       "Takmer! Skúsime to znova."
     ],
     "takeoffGone": [
-      "Letí! Dovidenia na lúke kryštálov!",
+      "Letí! Dovidenia na Lúke kryštálov!",
       "Hurá, odletel!",
       "Pápá, dráčik!"
     ],
@@ -974,7 +974,7 @@
       "Škoda, tá cesta sa zavrela."
     ],
     "bouldersStart": [
-      "Tesne pod vrcholom sa po chodníku **valia balvany**. Napíš slovo na balvane a preskočíš ho."
+      "Na vrchol hory zostáva **pár posledných metrov**! Zo strmých skál však **odpadávajú kamienky** aj na chodník **a kotúľajú sa ďalej** do údolia. Skús sa im všetkým vyhnúť, aby ťa nepotkli. Nie sú veľmi veľké, ale mohli by ťa spomaliť. Ak správne opíšeš slovo, ktoré je nad kotúľajúcim sa kamienkom, spadne z chodníka ešte skôr, ako sa k tebe priblíži."
     ],
     "boulderOops": [
       "Hups!",
@@ -3409,7 +3409,7 @@
     "next": "Ďalej: {world}",
     "go": "Ideme ďalej",
     "dragon": {
-      "down": "Dráčik sa vyliahol! Teraz ho musíš dostať **dolu z hory** a cez **údolie**, **lúku kryštálov** a **močiar** až k **rakete**, ktorá čaká na brehu. Na konci ju **odštartuješ**. Z hory sa valia balvany, preskakuj ich!",
+      "down": "Dráčik sa vyliahol! Teraz ho musíš dostať **dolu z hory** a cez **údolie**, **Lúku kryštálov** a **močiar** až k **rakete**, ktorá čaká na brehu. Na konci ju **odštartuješ**. Z hory sa valia balvany, preskakuj ich!",
       "valley": "Dráčik sa chce naučiť lietať ako jeho kamaráti.",
       "valleyPlace": "Údolie drakov",
       "crystals": "Raketa potrebuje na let domov **energiu kryštálov**. Nazbieraj ich čo najviac! Dráčiky z údolia ťa už čakajú na lúke.",

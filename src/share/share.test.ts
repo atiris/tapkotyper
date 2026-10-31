@@ -4,7 +4,7 @@ import { newProfile } from '../storage/store';
 import { CODEC_VERSION, checksum, codeFrom, decode, encode } from './codec';
 import { OVERALL_ID, makeOverallResult, makeResult, parseResult, resultCode } from './result';
 import type { TaskSpec } from '../storage/schema';
-import { type FinishedTask, activeTask, addTask, betterRun, keepTeacherTask, noteTask, parseTask, recordTaskRun, restartTask, taskCode } from './task';
+import { type FinishedTask, activeTask, addTask, betterRun, keepTeacherTask, noteTask, parseTask, recordTaskRun, taskCode } from './task';
 import { parseTapko, tapkoFile } from './tapko-file';
 import { type SortKey, TeacherStore, childKey, childSummary, dateBefore, fingerprint, newest, nextSort, sortWriters } from './teacher';
 import { moveCode, parseMove, trimHistory } from './transfer';
@@ -72,35 +72,27 @@ describe('tasks', () => {
     await expect(parseTask(await taskCode({ ...spec, game: 'ribbon' }))).rejects.toThrow('share.broken');
   });
 
-  it('finish when their time is played, and keep play when given again', () => {
+  it('finish with a run, and keep their runs when given again', () => {
     const p = newProfile('Ema', 'sk');
     const task = addTask(p, spec);
     expect(activeTask(p)).toBe(task);
-    expect(recordTaskRun(task, { seconds: 70, chars: 50, errors: 5, cpm: 40 })).toBe(false);
-    expect(addTask(p, { ...spec, title: 'Nové' })).toMatchObject({ seconds: 70, title: 'Nové' });
+    expect(recordTaskRun(task, { seconds: 119.6, chars: 100, errors: 5, cpm: 44 })).toBe(true);
+    expect(addTask(p, { ...spec, title: 'Nové' })).toMatchObject({ finished: 1, title: 'Nové' });
     expect(p.tasks).toHaveLength(1);
-    expect(recordTaskRun(p.tasks[0], { seconds: 49, chars: 50, errors: 0, cpm: 44 })).toBe(true);
-    expect(p.tasks[0].best).toMatchObject({ seconds: 119, chars: 100, errors: 5, cpm: 44, try: 1 });
+    expect(p.tasks[0].best).toMatchObject({ seconds: 120, chars: 100, errors: 5, cpm: 44, try: 1 });
     expect(p.tasks[0].best!.doneAt).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-    expect(p.tasks[0].seconds).toBe(0);
     expect(activeTask(p)).toBe(null);
   });
 
-  it('keep the best run: a better repeat replaces it, a worse or unfinished one does not', () => {
+  it('keep the best run: a better repeat replaces it, a worse or equal one does not', () => {
     const p = newProfile('Ema', 'sk');
     const task = addTask(p, spec);
     recordTaskRun(task, run(90, 10, 50));
-    restartTask(task);
-    expect(recordTaskRun(task, run(80, 20, 90))).toBe(true);
+    expect(recordTaskRun(task, run(80, 20, 90))).toBe(false);
     expect(task.best).toMatchObject({ chars: 90, try: 1 });
-    restartTask(task);
-    recordTaskRun(task, run(90, 10, 60));
+    expect(recordTaskRun(task, run(90, 10, 60))).toBe(true);
     expect(task.best).toMatchObject({ cpm: 60, try: 3 });
-    restartTask(task);
-    recordTaskRun(task, run(90, 10, 60));
-    expect(task.best).toMatchObject({ try: 3 });
-    restartTask(task);
-    expect(recordTaskRun(task, { seconds: 30, chars: 100, errors: 0, cpm: 99 })).toBe(false);
+    expect(recordTaskRun(task, run(90, 10, 60))).toBe(false);
     expect(task.best).toMatchObject({ try: 3 });
     expect(task.finished).toBe(4);
     const r = (chars: number, errors: number, cpm: number) => ({ seconds: 60, chars, errors, cpm, doneAt: '', try: 1 });

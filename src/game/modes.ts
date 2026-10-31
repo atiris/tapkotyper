@@ -37,6 +37,13 @@ const MODES: Record<LevelKind, (def: ModeDef) => Promise<ModeMaker>> = {
   freetype: () => import('./modes/freetype').then((m) => (L) => new m.FreeTypeMode(L)),
   aim: () => import('./modes/aim').then((m) => (L) => new m.AimMode(L)),
   parrot: () => import('./modes/parrot').then((m) => (L) => new m.ParrotMode(L)),
+  // A teacher's task plays its own game: the words games here, the text games beside them.
+  task: (def) => {
+    const game = def.task!.game;
+    if (game === 'chase') return import('./modes/task').then((m) => (L) => new m.TaskChaseMode(L));
+    if (game === 'catch') return import('./modes/task').then((m) => (L) => new m.TaskCatchMode(L));
+    return import('./modes/task-text').then((m) => (L) => (game === 'copy' ? new m.TaskCopyMode(L) : game === 'ribbon' ? new m.TaskRibbonMode(L) : new m.TaskTranscribeMode(L)));
+  },
 };
 
 export function loadMode(def: ModeDef): Promise<ModeMaker> {

@@ -53,7 +53,7 @@ test('no element keeps a native title', async ({ page }) => {
   expect(await noTitles()).toEqual([]);
   await page.keyboard.press('Escape');
   await page.locator('.map-side .btn', { hasText: 'My progress' }).click();
-  for (const tab of ['progress', 'keys', 'levels', 'exercises']) {
+  for (const tab of ['progress', 'keys', 'levels']) {
     await page.locator(`.progress-screen .tab[data-tab=${tab}]`).click();
     expect(await noTitles()).toEqual([]);
   }

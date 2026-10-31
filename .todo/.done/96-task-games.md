@@ -75,20 +75,64 @@ with an index line) and `.specify/profiles/teacher-links.md`. No store change be
   page of the left panel turns when it is copied.
 
 ## Steps
-- [ ] `taskLevel(spec)` and the `task` level kind (no map place, no stars, no progress entry other
+- [x] `taskLevel(spec)` and the `task` level kind (no map place, no stars, no progress entry other
   than the task's run); launch from `startTask`, the TEMP fallback removed.
-- [ ] Word/text source with known letters, dictionary fallback and repeat; unit tests (filtering,
+- [x] Word/text source with known letters, dictionary fallback and repeat; unit tests (filtering,
   fallback, repeat, sentence split, nothing left).
-- [ ] Limits time / text / both with the progress bar; unit tests for when each ends.
-- [ ] The intro card and the new-key cards for untaught letters (not learned).
-- [ ] The scene: Tapko fixed left, current/random world background.
-- [ ] Prúd slov and Čakajúce slová.
-- [ ] Odpis (shared panel drawing extracted from `LullabyMode` into `kit/`).
-- [ ] Pás (shared ribbon extracted from `SpellRibbonMode` into `kit/`, after plan 93).
-- [ ] Prepis.
-- [ ] Texts sk/en, translator notes, catalog; spec `.specify/game/task-games.md` (+ index) and
+- [x] Limits time / text / both with the progress bar; unit tests for when each ends.
+- [x] The intro card and the new-key cards for untaught letters (not learned).
+- [x] The scene: Tapko fixed left, current/random world background.
+- [x] Prúd slov and Čakajúce slová.
+- [x] Odpis (shared panel drawing extracted from `LullabyMode` into `kit/`).
+- [x] Pás (shared ribbon extracted from `SpellRibbonMode` into `kit/`, after plan 93).
+- [x] Prepis.
+- [x] Texts sk/en, translator notes, catalog; spec `.specify/game/task-games.md` (+ index) and
   `teacher-links.md`; `npx tsc --noEmit`, `npx vitest run`.
-- [ ] Browser check (playwright MCP, own tab, `?fast`, `window.tapkoType`): make one task of each game
+- [x] Browser check (playwright MCP, own tab, `?fast`, `window.tapkoType`): make one task of each game
   on the teacher page (time 1 min; text; both), add it on a player's Tasks page, play each to the end,
   check the scene, the limit end, a slip not sending back, knownOnly on/off (cards shown, words left
   out), dictionary on/off, current/random world, and the best run after a repeat.
+
+## Progress
+- 2026-10-31: all code steps done; `npx tsc --noEmit`, `npx vitest run` (533) and the task e2e green.
+  Decisions taken while building:
+  - **One sitting is one run.** The level ends only by its limit, and a task left early keeps
+    nothing (as every level); so `Task` lost its in-progress fields (`seconds`, `chars`, `errors`,
+    `cpm`), `taskLeft`, `restartTask`, `taskOwn` and the practice's `own` option. `recordTaskRun`
+    records a finished run and says whether it became the best. No migration (alpha); old stored
+    fields are ignored.
+  - The regular new-key cards of the lesson path come before a task as before every level; the
+    task's own untaught-letter cards follow them and do not make the letters learned.
+  - Known letters: a capital needs its Shift, a text game needs the space (without it nothing is
+    left); marks the child does not know are dropped from a word, a word with an unknown letter
+    goes. Keys outside the lesson order get no card.
+  - Nothing left + dictionary: as many dictionary words (or sentences) as the task had, so the text
+    limit still means something.
+  - A word let pass in Prúd slov comes again later (the text limit needs it written).
+  - Copy games type word by word (Backspace restarts only the word); in Odpis a line's last word
+    has no space after it, in Pás and Prepis the text's last word has none.
+  - The Pás ribbon drops words of frame lines long scrolled away (`Ribbon` with `trims`), so a long
+    task stays light to draw; the egg's spell does not trim.
+  - Leaving a task goes back to the Tasks page; its end card has its own class (`task-run-done`),
+    rows accuracy, rhythm and "best / earlier better counts".
+  - A task in the e2e build keeps its own minutes (the `?minActive` override is for levels).
+  - The "nothing left" card has a round X (new `close` option of `showCard`); Esc closes it too.
+- 2026-10-31: browser check (playwright MCP, `?fast`, `tapkoType`): tasks put on the tester's Tasks
+  page through the app's own modules (the teacher form itself is covered by the green
+  `e2e/teacher-links.spec.ts`), all five games played to the end; time, text and both limits end
+  right; slips count and send nothing back (Odpis marks the place red); Pás repeats the text
+  without the dictionary; a random world showed another backdrop; known letters on left `les` out,
+  off showed the l/e/s cards and did not make them learned; nothing left: the card with back and X,
+  with the dictionary dictionary words; a better repeat replaced the best, a worse one kept it.
+  Fixed on the way: Odpis's next-letter mark was the band's own colour (now a stronger yellow),
+  Prepis's left panel moved a little away from Tapko. Full e2e: 82 passed; three specs fail on main
+  as well (backlog), `e2e/tooltip.spec.ts` still asked for the removed Cvičenia tab (fixed).
+
+## Done - 2026-10-31
+Shipped: the `task` level (`taskLevel`, no stars or map place), the five games (`modes/task.ts`,
+`modes/task-text.ts`) on the shared `TaskPlay` / `TaskFeed` (`game/task-play.ts`), limits through
+the levels' minimum and `taskDone`, the intro card with the task's title, untaught-letter cards,
+dictionary fallback and repeat, the world backdrop, the lullaby panel (`kit/copy-panel.ts`) and the
+egg's ribbon (`kit/ribbon.ts`) extracted and shared, the task's end card with the best run, texts,
+translator notes, spec `.specify/game/task-games.md`. Left out: nothing of the plan; the three e2e
+specs failing on main went to `.todo/BACKLOG.md`.

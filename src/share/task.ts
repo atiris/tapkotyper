@@ -1,6 +1,6 @@
 import type { NotedTask, Profile, Task, TaskGame, TaskLimit, TaskRun, TaskSpec, TeacherTask } from '../storage/schema';
 import { localDate } from '../learning/stats';
-import { OWN_TEXT_MAX, type WordSourceOwn, parseOwnWords } from '../words/words';
+import { OWN_TEXT_MAX, parseOwnWords } from '../words/words';
 import { decode, encode } from './codec';
 
 export const TASK_TITLE_MAX = 60;
@@ -14,8 +14,6 @@ export const TASKS_MAX = 30;
 export const TEACHER_TASKS_MAX = 100;
 /** Tasks a phone keeps noted. */
 export const NOTED_MAX = 20;
-/** Seconds a run may fall short of the task's time and still finish it (pauses round down). */
-const TASK_SLACK = 2;
 
 /** The games that play the task's words; the others play its text. */
 export const wordsGame = (game: TaskGame): boolean => game === 'chase' || game === 'catch';
@@ -56,11 +54,11 @@ export async function parseTask(code: string): Promise<TaskSpec> {
   };
 }
 
-/** Gives a task to a player, on top; the same task again only refreshes what the teacher made and keeps what was played. */
+/** Gives a task to a player, on top; the same task again only refreshes what the teacher made and keeps its runs. */
 export function addTask(p: Profile, spec: TaskSpec): Task {
   const had = p.tasks.find((x) => x.id === spec.id);
   const clean = specOf(spec);
-  const task: Task = had ? { ...had, group: undefined, ...clean } : { ...clean, seconds: 0, chars: 0, errors: 0, cpm: 0, finished: 0 };
+  const task: Task = had ? { ...had, group: undefined, ...clean } : { ...clean, finished: 0 };
   if (!task.group) delete task.group;
   p.tasks = [task, ...p.tasks.filter((x) => x !== had)].slice(0, TASKS_MAX);
   return task;
@@ -75,11 +73,6 @@ export function activeTask(p: Profile): Task | null {
   return p.tasks.find((x) => !x.best) ?? null;
 }
 
-/** Seconds of the run going on still to play. */
-export function taskLeft(task: Task): number {
-  return Math.max(0, task.minutes * 60 - task.seconds);
-}
-
 /** Correct characters in percent of all typed, rounded as the result shows it. */
 export function runAccuracy(r: { chars: number; errors: number }): number {
   const total = r.chars + r.errors;
@@ -92,31 +85,16 @@ export function betterRun(a: TaskRun, b: TaskRun): boolean {
   return accA !== accB ? accA > accB : a.cpm > b.cpm;
 }
 
-/** A new run of a finished task starts from zero; the best stays until a better one finishes. */
-export function restartTask(task: Task): void {
-  task.seconds = task.chars = task.errors = task.cpm = 0;
-}
-
 /**
- * Adds one sitting to the run going on; true when it finished the run. A finished run that is
- * better than the best (or the first one) becomes the best, and the next run starts from zero.
+ * Records a finished run of the task (a task is played in one sitting, its limit ends it); it
+ * becomes the best when it is the first or better. True when it did.
  */
 export function recordTaskRun(task: Task, r: { seconds: number; chars: number; errors: number; cpm: number }): boolean {
-  task.seconds += Math.round(r.seconds);
-  task.chars += r.chars;
-  task.errors += r.errors;
-  if (r.cpm > 0) task.cpm = r.cpm;
-  if (taskLeft(task) > TASK_SLACK) return false;
   task.finished += 1;
-  const run: TaskRun = { seconds: task.seconds, chars: task.chars, errors: task.errors, cpm: task.cpm, doneAt: localDate(), try: task.finished };
-  if (!task.best || betterRun(run, task.best)) task.best = run;
-  restartTask(task);
-  return true;
-}
-
-/** The task's words and text as the levels' own content: only them. */
-export function taskOwn(task: Task): WordSourceOwn {
-  return { words: task.words, text: task.text, share: 1 };
+  const run: TaskRun = { seconds: Math.round(r.seconds), chars: r.chars, errors: r.errors, cpm: r.cpm, doneAt: localDate(), try: task.finished };
+  const better = !task.best || betterRun(run, task.best);
+  if (better) task.best = run;
+  return better;
 }
 
 /** The teacher's list with a task made or edited: an edit keeps its row and date, a new one goes on top. */

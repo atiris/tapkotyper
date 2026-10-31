@@ -7,7 +7,7 @@ import { HIT_MS, cameraView } from '../ui/camera';
 import { cornerControls } from '../ui/chrome';
 import { button, confirmDialog, h, icon, modal } from '../ui/dom';
 import { taskSummary } from '../ui/task-panel';
-import { handInDialog, minutesLeft, replayTask, showResultCode, startTask } from './task';
+import { handInDialog, showResultCode, startTask, taskAsks } from './task';
 
 /** Milliseconds a task just added stays marked new in the list. */
 const FRESH_MS = 2500;
@@ -96,7 +96,7 @@ export function tasksScreen(root: HTMLElement): void {
   };
   const row = (task: Task) => {
     const done = isFinished(task) ? task : null;
-    const state = done ? bestLine(done) : task.limit === 'text' ? t('task.textLeft') : t('task.left', { n: minutesLeft(task) });
+    const state = done ? bestLine(done) : taskAsks(task);
     return h('li', { class: `my-task${done ? ' done' : ''}${task.id === fresh ? ' fresh' : ''}` },
       h('div', { class: 'my-task-text' },
         h('b', {}, task.title || t('task.untitled')), task.group ? h('span', { class: 'chip' }, task.group) : null,
@@ -104,7 +104,7 @@ export function tasksScreen(root: HTMLElement): void {
         h('p', { class: 'my-task-state' }, done ? icon('check') : null, state)),
       h('div', { class: 'row my-task-actions' },
         done
-          ? button(t('task.replay'), () => replayTask(task), 'btn small', 'replay')
+          ? button(t('task.replay'), () => startTask(task), 'btn small', 'replay')
           : button(t('task.play'), () => startTask(task), 'btn small primary', 'play'),
         done ? button(t('task.handIn'), () => void handInDialog(p, done), 'btn small primary', 'upload') : null,
         done ? button(t('task.qr'), () => void showResultCode(p, done), 'btn small', 'code') : null,

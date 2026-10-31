@@ -52,7 +52,7 @@ export interface Ending {
 /** A story level or an exercise: each ends and goes on in its own words (a hero's journey asks with `giveUpJourney`). */
 export function endingOf(def: LevelDef, stay: boolean): Ending {
   if (def.kind === 'freetype') return { label: 'level.leave', keep: 'level.keepTyping', text: '' };
-  if (def.kind === 'practice' || def.kind === 'aim' || def.kind === 'parrot' || stay) return { label: 'level.end', keep: 'level.keepPractice', text: 'level.endPracticeText' };
+  if (def.kind === 'practice' || def.kind === 'task' || def.kind === 'aim' || def.kind === 'parrot' || stay) return { label: 'level.end', keep: 'level.keepPractice', text: 'level.endPracticeText' };
   return { label: 'level.end', keep: 'level.keepLevel', text: 'level.endLevelText' };
 }
 

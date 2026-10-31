@@ -4,7 +4,7 @@ import { LAYOUTS } from '../../keyboard/layouts';
 import { SHIFT_L, SHIFT_R, activeKeys, isLetterKey, masteryLevel, newestGroup } from '../../learning/lessons';
 import { keyWeights } from '../../learning/stats';
 import type { LangRef, Profile } from '../../storage/schema';
-import { OWN_SHARE, WordSource, type WordSourceOwn } from '../../words/words';
+import { OWN_SHARE, WordSource } from '../../words/words';
 import type { FreeTyped } from '../modes/freetype';
 import type { JourneyRun, LevelResult } from '../progress';
 import type { Style } from '../typing';
@@ -13,9 +13,9 @@ import type { Style } from '../typing';
  * The targets of a profile: its active keys (or a drill's, or the keys chosen for free practice),
  * weak keys more often, the newest group in focus (or the target range's weak keys), and the
  * parent's own words and text mixed in (not in drills, chosen keys or the target range, their
- * words would bring other letters), or a task's.
+ * words would bring other letters).
  */
-export function wordSource(p: Profile, lang: LangRef, drill?: string[], own?: WordSourceOwn, chosen?: string[], focus?: string[], hard = false): WordSource {
+export function wordSource(p: Profile, lang: LangRef, drill?: string[], chosen?: string[], focus?: string[], hard = false): WordSource {
   // Practice of space, punctuation or a Shift needs letters around it: the known ones.
   const keys = chosen ?? (!drill ? activeKeys(p) : drill.every(isLetterKey) ? drill : [...new Set([...activeKeys(p), ...drill])]);
   const s = p.settings;
@@ -29,7 +29,7 @@ export function wordSource(p: Profile, lang: LangRef, drill?: string[], own?: Wo
     names: tList('names'),
     shiftMastery: Object.fromEntries([SHIFT_L, SHIFT_R].map((k) => [k, masteryLevel(p.stats.keys[k], s.difficulty)])),
     lang,
-    own: drill || chosen || focus ? undefined : own ?? { words: s.ownWords, text: s.ownText, share: OWN_SHARE[s.ownMix] },
+    own: drill || chosen || focus ? undefined : { words: s.ownWords, text: s.ownText, share: OWN_SHARE[s.ownMix] },
   });
 }
 
@@ -40,8 +40,6 @@ export interface RuntimeOptions {
   chosen?: string[];
   /** Practice length in seconds; null = until the child stops. */
   seconds?: number | null;
-  /** Own words and text instead of the parent's (a task's). */
-  own?: WordSourceOwn;
   /** Free practice: the style chosen in the key picker. */
   style?: Style;
   /** Staying a while: the level runs without an end until the child ends it on the pause card, for no stars. */

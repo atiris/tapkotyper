@@ -37,7 +37,7 @@ export class Friends {
   private littleHop = 0;
 
   constructor(private L: LevelRuntime, def: LevelDef) {
-    const story = def.kind !== 'practice' && def.kind !== 'freetype' && def.kind !== 'aim' && def.kind !== 'parrot';
+    const story = def.kind !== 'practice' && def.kind !== 'task' && def.kind !== 'freetype' && def.kind !== 'aim' && def.kind !== 'parrot';
     this.robot = story && storyOf(def.world).id === 'robot' ? robotFor(def.world) : null;
     this.fairy = story && storyOf(def.world).id === 'fairy';
     this.little = def.journey?.story === 'dragon';

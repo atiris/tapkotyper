@@ -9,7 +9,8 @@ import { Mode, TAPKO_FEET, TAPKO_H, TAPKO_X } from '../mode';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
 import { CLOCK_R, drawClock } from './kit/clock';
-import { drawRow } from './kit/copy-row';
+import { PANEL_INK, drawCopyPanel } from './kit/copy-panel';
+import { SLIP_INK, drawRow } from './kit/copy-row';
 import { BUSHES, DRAGONS, FLOCK_MAX, FLOCK_START, Firepit, GROUND, PIT_PICTURES, PIT_RATIO, SLEEPERS, bushFallback, drawDragon, flockFor, rimmed, sleeperOf } from './dragons';
 
 /** The fire pit stands on the right in the flight levels; the dragons sit round it at these offsets. */
@@ -21,7 +22,6 @@ const DRAGON_H = 108;
 const START_X = TAPKO_X + 170;
 /** Seconds of the end before the level ends. */
 const END_TIME = 3.4;
-const SLIP_INK = '#d9482b';
 
 /** Where a dragon sits by the pit, kept on the stage. */
 function spot(pitX: number, i: number, vw: number): number {
@@ -547,7 +547,6 @@ const EASE_SLIPS = 3;
 const PANEL_LEFT = 32;
 const PANEL_ABOVE = 24;
 const PANEL_CLEAR = 60;
-const LINE_INK = '#3d3355';
 /** The fire pit of the lullaby and the take-off, smaller than in the flames. */
 const PIT_SMALL = 70;
 /** Where the sleeping dragons lie beside the pit: each a little higher, so further back. */
@@ -753,15 +752,7 @@ export class LullabyMode extends Mode {
     const size = Math.min(LINE_SIZE, (LINE_SIZE * (maxW - 60)) / widest(LINE_SIZE));
     const w = Math.min(maxW, widest(size) + 80), gap = size * 1.5, h = gap * VERSE + 30;
     const cx = PANEL_LEFT + w / 2, top = bottom - h;
-    g.save();
-    g.fillStyle = 'rgba(250,246,255,0.92)';
-    g.strokeStyle = '#9b86c9';
-    g.lineWidth = 4;
-    g.beginPath();
-    g.roundRect(PANEL_LEFT, top, w, h, 22);
-    g.fill();
-    g.stroke();
-    g.restore();
+    drawCopyPanel(g, PANEL_LEFT, top, w, h);
     this.lines.forEach((line, i) => {
       const y = top + 15 + gap * (i + 0.5);
       if (i === this.verse && this.current) return L.label(g, this.current, cx, y, size);
@@ -770,7 +761,7 @@ export class LullabyMode extends Mode {
       g.font = `600 ${size}px ${fontFamily()}`;
       g.textAlign = 'center';
       g.textBaseline = 'middle';
-      g.fillStyle = slipped ? SLIP_INK : LINE_INK;
+      g.fillStyle = slipped ? SLIP_INK : PANEL_INK;
       g.globalAlpha = slipped ? 1 - this.slip!.t / SLIP_FADE : i < this.verse ? 1 : 0.35;
       g.fillText(slipped ? this.slip!.line : line, cx, y);
       g.restore();

@@ -45,7 +45,7 @@ function nickFrom(name: string): string {
 
 /** The defaults of a task's fields, for a task stored before a field was there. */
 const TASK_DEFAULTS: Omit<TaskSpec, 'id' | 'title'> = { game: 'chase', words: [], text: '', limit: 'time', minutes: 5, dictionary: true, knownOnly: true, world: 'current' };
-const PLAY_DEFAULTS = { seconds: 0, chars: 0, errors: 0, cpm: 0, finished: 0 };
+const PLAY_DEFAULTS = { finished: 0 };
 const MADE_DEFAULT = { madeAt: 0 };
 
 function emptyStore(): StoreData {

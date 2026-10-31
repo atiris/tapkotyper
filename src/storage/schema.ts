@@ -239,15 +239,10 @@ export interface TaskRun {
 }
 
 /**
- * A task from a teacher, taken from a link or a code: what the teacher made, the play of the run
- * going on now (collected over its sittings), and the best finished run, which is handed in.
+ * A task from a teacher, taken from a link or a code: what the teacher made, how many runs were
+ * finished (a run is one sitting) and the best of them, which is handed in.
  */
 export interface Task extends TaskSpec {
-  seconds: number;
-  chars: number;
-  errors: number;
-  /** Rhythm of the last sitting, correct characters per minute. */
-  cpm: number;
   /** Finished runs so far. */
   finished: number;
   best?: TaskRun;

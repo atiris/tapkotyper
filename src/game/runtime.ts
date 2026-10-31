@@ -24,7 +24,7 @@ import { globalButtons } from '../ui/chrome';
 import { tip } from '../ui/tooltip';
 import { accuracyPic, placeRing, rhythmPic, roundButton, worldName } from '../ui/hud';
 import type { WordSource } from '../words/words';
-import { SUPER_ID, type Surprise } from '../storage/schema';
+import { SUPER_ID, type Surprise, type TaskSpec } from '../storage/schema';
 import type { LevelDef } from './levels';
 import { LEVELS, WORLDS, grownCount, hasMinLength, journeyProgress, levelOver, minActiveS, playedStep, shownProgress } from './levels';
 import { type Mode, driftOffset } from './mode';
@@ -35,7 +35,9 @@ import { PressureValve, childPace, perChar } from './pace';
 import { GAUGE_DAYS, Rhythm, gaugeTop } from './rhythm';
 import { completeLevel, completeStay, joinRuns } from './progress';
 import { type Style, type Target, TypingCore } from './typing';
-import { giveUpJourney, pickTip, showCard, showJourneyPanel, showPosture } from './cards';
+import { giveUpJourney, pickTip, showCard, showJourneyPanel, showNewKey, showPosture } from './cards';
+import { splitSentences, taskContent } from './task-play';
+import { wordsGame } from '../share/task';
 import { surpriseFor } from './own-content';
 import { Callouts } from './runtime/callouts';
 import { Friends } from './runtime/friends';
@@ -173,15 +175,15 @@ export class LevelRuntime {
 
     const lay = LAYOUTS[p.layout];
     // Practice (the custom exercise, key drills, tasks) has its own word language; story levels use the player's.
-    this.words = wordSource(p, def.kind === 'practice' ? p.settings.ownWordLang : p.settings.wordLang, opts.keys, opts.own, opts.chosen, def.focus, !!def.journey);
-    // Enter comes with the right little finger's home key; drills, single letters and the gate's code stay without it.
-    const enterOk = !opts.keys && !def.noSpace && def.kind !== 'freetype' && def.kind !== 'aim' && def.kind !== 'parrot' && (opts.chosen ?? activeKeys(p)).includes(enterAfter(lay));
+    this.words = wordSource(p, def.kind === 'practice' ? p.settings.ownWordLang : p.settings.wordLang, opts.keys, opts.chosen, def.focus, !!def.journey);
+    // Enter comes with the right little finger's home key; drills, single letters, a teacher's task and the gate's code stay without it.
+    const enterOk = !opts.keys && !def.noSpace && def.kind !== 'freetype' && def.kind !== 'task' && def.kind !== 'aim' && def.kind !== 'parrot' && (opts.chosen ?? activeKeys(p)).includes(enterAfter(lay));
     this.enter = enterOk ? new EnterMarks(() => this.rng.next(), def.kind === 'practice' ? null : ENTER_MAX) : null;
     this.surprise = opts.stay ? null : surpriseFor(p, def, !!opts.keys);
     this.count = def.count;
     // The e2e build may shorten the minimum (`?minActive=8`), so its tests finish levels in seconds.
-    // Staying a while never reaches its minimum: the targets keep coming until Esc.
-    this.minActive = opts.stay ? Infinity : !hasMinLength(def) ? 0 : import.meta.env.MODE === 'e2e' ? Number(new URLSearchParams(location.search).get('minActive') ?? 0) : fast(minActiveS(def));
+    // Staying a while never reaches its minimum: the targets keep coming until Esc. A task's minutes are its own limit.
+    this.minActive = opts.stay ? Infinity : !hasMinLength(def) ? 0 : import.meta.env.MODE === 'e2e' && !def.task ? Number(new URLSearchParams(location.search).get('minActive') ?? 0) : fast(minActiveS(def));
 
     // DOM: HUD, stage, Tapko, bubble, guide.
     this.el = h('div', { class: `level-screen world-${WORLDS[def.world]}` });
@@ -192,7 +194,7 @@ export class LevelRuntime {
     if (this.friends.fairy) this.el.dataset.fairy = 'melody';
     // A later part of a hero's journey starts with the bar where the parts before it left it.
     this.progressFill = h('div', { class: 'progress-fill', style: def.journey ? `width: ${Math.round(journeyProgress(def.journey, 0) * 100)}%` : '' });
-    const title = def.kind === 'practice' ? t(def.phrases ? 'level.ownText' : 'level.practice') : def.kind === 'freetype' ? t('level.freeType') : def.kind === 'aim' ? t('aim.title') : def.kind === 'parrot' ? t('parrot.title') : def.journey ? t('journey.title') : worldName(def);
+    const title = def.task ? def.task.title || t('task.untitled') : def.kind === 'practice' ? t(def.phrases ? 'level.ownText' : 'level.practice') : def.kind === 'freetype' ? t('level.freeType') : def.kind === 'aim' ? t('aim.title') : def.kind === 'parrot' ? t('parrot.title') : def.journey ? t('journey.title') : worldName(def);
     // Hiding the guide is the switch: the crossed keyboard, with the orange ring while the guide is hidden.
     const guideBtn = this.guideBtn = roundButton('control', 'keyboardOff', t('level.guide'), () => this.toggleGuide());
     tip(guideBtn, withKey(t('level.guide'), 'F2'));
@@ -280,9 +282,9 @@ export class LevelRuntime {
     return this.state.started;
   }
 
-  /** Story levels and hero's journeys; free practice, drills, the target range and the parrot count every key, and the valley's take-off is the child's own flight. */
+  /** Story levels and hero's journeys; free practice, a teacher's task, drills, the target range and the parrot count every key, and the valley's take-off is the child's own flight. */
   get pawsAllowed(): boolean {
-    return this.def.kind !== 'practice' && this.def.kind !== 'freetype' && this.def.kind !== 'takeoff' && this.def.kind !== 'aim' && this.def.kind !== 'parrot' && !this.opts.keys;
+    return this.def.kind !== 'practice' && this.def.kind !== 'task' && this.def.kind !== 'freetype' && this.def.kind !== 'takeoff' && this.def.kind !== 'aim' && this.def.kind !== 'parrot' && !this.opts.keys;
   }
 
   get tapkoOnStage(): boolean {
@@ -312,6 +314,7 @@ export class LevelRuntime {
       else this.exit();
       return;
     }
+    if (this.def.task) return this.prepareTask(host, this.def.task);
     let tip: string | undefined;
     if (!app.tipShown && !this.opts.keys) {
       app.tipShown = true;
@@ -344,6 +347,43 @@ export class LevelRuntime {
     }
     this.begin();
   }
+
+  /**
+   * A teacher's task before play: the new keys of the lesson path as before every level; then the
+   * task's pieces (only known letters, or each letter not learned yet on its own card, which does
+   * not make it learned); with nothing left, dictionary words, or a card that says so and goes back;
+   * then the get-ready card with the task's title and what it asks.
+   */
+  private async prepareTask(host: HTMLElement, spec: TaskSpec): Promise<void> {
+    const p = app.profile!, lay = layout();
+    const shown = await keyCards(host, this.guide, this.def.kind, () => this.disposed);
+    if (!shown) return;
+    this.shownKeys = shown;
+    const content = taskContent(spec, activeKeys(p), lay);
+    for (const key of content.untaught) {
+      if (this.disposed) return;
+      await showNewKey(host, key, lay, this.guide, p);
+    }
+    if (this.disposed) return;
+    this.taskItems = content.items.length || !spec.dictionary ? content.items : this.dictionaryItems(spec);
+    if (!this.taskItems.length) {
+      await showCard(host, h('div', {}, h('h2', {}, spec.title || t('task.untitled')), h('p', {}, t('task.needLetters'))), { button: t('common.back'), close: t('common.back') });
+      if (!this.disposed) this.exit();
+      return;
+    }
+    this.core.style = this.style;
+    await showPosture(host, p, undefined, null, undefined, t('task.ready'), null, spec.title || t('task.untitled'));
+    if (!this.disposed) this.begin();
+  }
+
+  /** A task with nothing left the child can type plays dictionary words instead: as many as its own words, or sentences for its text. */
+  private dictionaryItems(spec: TaskSpec): string[] {
+    const words = wordsGame(spec.game), n = Math.max(1, words ? spec.words.length : splitSentences(spec.text).length);
+    return Array.from({ length: n }, () => (words ? this.word(undefined, 1) : this.word(undefined, 6, 4)));
+  }
+
+  /** A teacher's task: its words or sentences, set before play. */
+  taskItems: string[] = [];
 
   /** When play began (`performance.now()`). */
   private begunAt = 0;
@@ -445,7 +485,7 @@ export class LevelRuntime {
   /** A word that trains the child's weak keys (the target range's), for the planet's practice path. */
   weakWord(maxLen?: number): string {
     const p = app.profile!;
-    this.weakWords ??= wordSource(p, p.settings.wordLang, undefined, undefined, undefined, aimKeys(p));
+    this.weakWords ??= wordSource(p, p.settings.wordLang, undefined, undefined, aimKeys(p));
     const avoid = new Set(this.core.active.map((t) => t.word[0].toLowerCase()));
     return this.weakWords.next(avoid, maxLen, 1);
   }
@@ -994,7 +1034,7 @@ export class LevelRuntime {
     const typedShare = resolved ? this.typedTargets / resolved : 1;
     const clean = this.cleanTargets;
     this.flushSession();
-    const noStars = this.opts.stay || this.def.kind === 'aim' || this.def.kind === 'parrot';
+    const noStars = this.opts.stay || this.def.kind === 'task' || this.def.kind === 'aim' || this.def.kind === 'parrot';
     if ((noStars || this.def.kind === 'practice' && !this.def.count) && total === 0) {
       this.opts.onFinish(null);
       return;

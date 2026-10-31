@@ -1,9 +1,9 @@
-import { app, go, saveProfile } from '../app/app';
+import { app, go } from '../app/app';
 import { t, tn } from '../i18n/i18n';
 import { localDate } from '../learning/stats';
 import { linkOf } from '../share/codec';
 import { makeResult, resultCode } from '../share/result';
-import { type FinishedTask, activeTask, isFinished, restartTask, taskLeft } from '../share/task';
+import { type FinishedTask, activeTask, isFinished } from '../share/task';
 import type { Profile, Task } from '../storage/schema';
 import { nickname } from '../storage/store';
 import { button, h, modal } from '../ui/dom';
@@ -11,21 +11,13 @@ import { type EndAction, endCard } from '../ui/end-card';
 import { bigCode } from '../ui/big-code';
 import { copyLink, fitsQr } from '../ui/link-box';
 
-/** Plays what is left of the task's run. */
+/** Plays the task in its own game; a finished one once more, its best staying unless this run is better. */
 export function startTask(task: Task): void {
-  // TEMP: plan 96 plays the task's own game, limit, dictionary and world; until then a timed practice of its words and text.
-  go('level', { id: 'practice', seconds: taskLeft(task), task: task.id });
+  go('level', { id: 'task', task: task.id });
 }
 
-/** Plays a finished task once more from zero; its best stays unless this run is better. */
-export function replayTask(task: Task): void {
-  restartTask(task);
-  saveProfile();
-  startTask(task);
-}
-
-/** Minutes of a task still to play, rounded up. */
-export const minutesLeft = (task: Task) => Math.max(1, Math.ceil(taskLeft(task) / 60));
+/** What an unfinished task asks: its whole text, or its minutes. */
+export const taskAsks = (task: Task): string => (task.limit === 'text' ? t('task.textLeft') : t('task.left', { n: task.minutes }));
 
 /** The map's first card: today's task, or the hand-in of one finished today. */
 export function taskCard(p: Profile): HTMLElement | null {
@@ -34,7 +26,7 @@ export function taskCard(p: Profile): HTMLElement | null {
     return h('section', { class: 'task-card' },
       h('h2', {}, t('task.today')),
       h('p', { class: 'task-title' }, task.title || t('task.untitled')),
-      h('p', { class: 'hint' }, t('task.left', { n: minutesLeft(task) })),
+      h('p', { class: 'hint' }, taskAsks(task)),
       button(t('task.start'), () => startTask(task), 'btn primary', 'play'));
   }
   const done = p.tasks.filter(isFinished).find((x) => x.best.doneAt === localDate());

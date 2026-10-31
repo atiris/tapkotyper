@@ -7,5 +7,6 @@
 - [target-practice.md](target-practice.md) - the target range: throws through rings of words that train the letters holding the next ones back
 - [heros-journey.md](heros-journey.md) - the hero's journey: one long, harder trip through the worlds of a story, closing it
 - [parrot.md](parrot.md) - the parrot: a few words many times over, parrots that fly away, the Parrot badge
+- [task-games.md](task-games.md) - how a teacher's task plays: its five games, its limit, dictionary, known letters and world
 - [super-obstacles.md](super-obstacles.md) - hedgehog volleys, fractured asteroid, great swamp, the dragons' take-off, the spell of awakening
 - [story-packs.md](story-packs.md) - long-term goal: a parent imports a story made by others as data, separate rewards

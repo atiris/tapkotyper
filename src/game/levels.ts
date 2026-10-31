@@ -1,5 +1,5 @@
 import { activeKeys, aimKeys, isLetterKey, practiceOrder } from '../learning/lessons';
-import { type Profile, SUPER_ID } from '../storage/schema';
+import { type Profile, SUPER_ID, type TaskSpec } from '../storage/schema';
 import { type ParrotSize, parrotSize } from './parrots';
 
 export type WorldId = 'meadow' | 'space' | 'planet' | 'dragons' | 'egg' | 'junkyard' | 'workshop' | 'raintown' | 'robocity' | 'robohome'
@@ -45,7 +45,7 @@ export type LevelKind =
   | 'flames' | 'thicket' | 'flight' | 'lullaby' | 'takeoff'
   | 'wind' | 'mud' | 'boulders' | 'spell'
   | 'copyloop'
-  | 'practice' | 'freetype' | 'aim' | 'parrot';
+  | 'practice' | 'freetype' | 'aim' | 'parrot' | 'task';
 
 export interface LevelDef {
   id: string;
@@ -67,6 +67,8 @@ export interface LevelDef {
   focus?: string[];
   /** A part of its story's hero's journey. */
   journey?: JourneyPart;
+  /** A teacher's task: its game, words or text and limit; `world` is only its backdrop. */
+  task?: TaskSpec;
 }
 
 /** Which part of a story's hero's journey a level is, of how many, the part's own story line (an i18n key) and the world whose map picture the panel before it shows. */
@@ -109,7 +111,9 @@ function storyIndex(l: Pick<LevelDef, 'world' | 'journey'>): number {
 }
 
 /** Seconds of active play the level lasts at least (when it has a minimum length); a journey part its share of the journey's. */
-export function minActiveS(l: Pick<LevelDef, 'world' | 'kind' | 'isSuper' | 'journey'>): number {
+export function minActiveS(l: Pick<LevelDef, 'world' | 'kind' | 'isSuper' | 'journey' | 'task'>): number {
+  // A task's minutes are its own limit; the text limit has none.
+  if (l.task) return l.task.limit === 'text' ? 0 : l.task.minutes * 60;
   const base = STORY_MIN_S[storyIndex(l)];
   if (l.journey) return (JOURNEY_SHARE * base) / l.journey.parts;
   if (CALM_KINDS.includes(l.kind)) return base * CALM_SHARE;
@@ -165,7 +169,7 @@ export function activityOf(l: LevelDef): Activity {
   return 'chase';
 }
 
-/** Practice, custom exercises, free typing, the target range and the parrot keep their own length; every other level has the minimum. */
+/** Practice, custom exercises, free typing, the target range and the parrot keep their own length; every other level (a task too: its minutes) has the minimum. */
 export function hasMinLength(l: LevelDef): boolean {
   return l.kind !== 'practice' && l.kind !== 'freetype' && l.kind !== 'aim' && l.kind !== 'parrot';
 }
@@ -389,6 +393,11 @@ export function parrotSizeOf(world: number): ParrotSize {
 export function parrotKeys(p: Profile, world: number): string[] {
   const last = worldLevels(world)[4];
   return practiceOrder(p).slice(0, keysNeeded(p, last)).filter(isLetterKey);
+}
+
+/** A teacher's task played in `world` (only a backdrop): no map place, no stars. */
+export function taskLevel(spec: TaskSpec, world: number): LevelDef {
+  return { id: 'task', world, index: -1, kind: 'task', count: 0, variant: spec.game, isSuper: false, task: spec };
 }
 
 export function practiceLevel(seconds: number | null, phrases?: string[]): LevelDef & { seconds: number | null } {

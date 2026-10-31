@@ -1008,7 +1008,7 @@ describe('the egg mountain', () => {
     mode = m;
     m.start();
     m.update(2);
-    const spell = m as unknown as { words: { text: string }[]; at: number };
+    const spell = (m as unknown as { ribbon: { words: { text: string }[]; at: number } }).ribbon;
     for (let i = 0; i < 3; i++) typeWord(L, m);
     expect(m.progress()).toBeCloseTo(3 / L.count);
     const count = L.count, min = L.min, perWord = secondsPerWord(L);

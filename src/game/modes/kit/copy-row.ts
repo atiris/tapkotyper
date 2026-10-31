@@ -16,7 +16,8 @@ interface Slot {
   slip: number;
 }
 
-const SLIP_INK = '#d9482b';
+/** A slipped word's red. */
+export const SLIP_INK = '#d9482b';
 const SLIP_FADE = 0.6;
 /** What stays of a slipped word: a faint trace where it stood. */
 const SLIP_TRACE = 0.2;

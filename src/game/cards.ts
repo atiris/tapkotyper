@@ -16,6 +16,8 @@ import { SHIFT_L, SHIFT_R, SPACE } from '../learning/lessons';
 interface CardOpts {
   button?: string;
   cls?: string;
+  /** The round X's label: the card gets one, top right. */
+  close?: string;
 }
 
 /**
@@ -35,7 +37,7 @@ export function captureKeys(overlay: HTMLElement, onKey: (e: KeyboardEvent) => v
 /** Overlay card over the stage; Enter, Space or Escape dismisses it, and it resolves then. */
 export function showCard(host: HTMLElement, content: HTMLElement, o: CardOpts = {}): Promise<void> {
   return new Promise((resolve) => {
-    const card = h('div', { class: `card ${o.cls ?? ''}` }, content);
+    const card = h('div', { class: `card ${o.cls ?? ''}` }, o.close ? closeButton(() => done(), o.close) : null, content);
     const overlay = h('div', { class: 'overlay' }, card);
     const done = () => {
       stop();
@@ -112,12 +114,12 @@ const POSTURE_PICTURES = ['ui-posture-boy', 'ui-posture-girl'];
  * panels side by side on a wide enough screen: on the left the technical part, a posture picture with
  * the session's preparation tip when one is due (else a posture reminder) under it, where the fingers
  * go (shown only after a while without the space bar) and a note on the run when one is due; on the
- * right the title on the close button's line, in the middle the story (`**phrase**` marks highlight)
+ * right the title (a task's own, else the usual) on the close button's line, in the middle the story (`**phrase**` marks highlight)
  * and the question of a parent's surprise asked in this run (with what is still left when it counts), the space bar's
  * drawing always at the bottom. The space bar, Enter or Escape (or a tap on the space
  * bar's drawing or the close button) closes it and opens the adventure.
  */
-export function showPosture(host: HTMLElement, p: Profile, tip?: string, surprise?: Surprise | null, note?: string, story?: string | null, under?: string | null): Promise<void> {
+export function showPosture(host: HTMLElement, p: Profile, tip?: string, surprise?: Surprise | null, note?: string, story?: string | null, under?: string | null, title?: string): Promise<void> {
   return new Promise((resolve) => {
     const close = () => {
       stop();
@@ -137,7 +139,7 @@ export function showPosture(host: HTMLElement, p: Profile, tip?: string, surpris
       note ? h('p', { class: 'hint style-note' }, note) : null);
     const card = h('div', { class: 'card posture-card' },
       closeButton(close, t('posture.close')),
-      h('h2', {}, t('posture.title')),
+      h('h2', {}, title ?? t('posture.title')),
       h('div', { class: 'posture-body' },
         story ? h('p', { class: 'posture-text' }, ...richText(story)) : null,
         under ? h('p', { class: 'posture-under' }, ...richText(under)) : null,

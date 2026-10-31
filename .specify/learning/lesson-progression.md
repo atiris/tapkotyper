@@ -49,7 +49,7 @@
   super profile have no key need.
 - Own practice mode: calm typing of words from the chosen keys, no story. Every way into
   it (the practice button, "Continue" with nothing open, the narrator's offer on the map) first
-  opens a key picker; a task's practice, a drill from the stats and the parent's own text
+  opens a key picker; a drill from the stats and the parent's own text
   do not, they have their own targets. The picker shows the keyboard with the chosen keys
   lit in their finger colors, a slider over the lesson order (step 1 is `f j` and space,
   each step adds the next three keys, the last is the whole order) and opens with the

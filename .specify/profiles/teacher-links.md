@@ -20,8 +20,8 @@
   "Veľký kód" (the task's title over the code, in a frame of its own colour). A row shows the
   title, game, limit, group and the date made, with **Ukázať**, **Upraviť** (the form fills;
   saving keeps the task's identity so its results stay together) and **Odstrániť**. The list
-  keeps the last 100 tasks in this browser and is never sent anywhere. Until the task games
-  exist, a task plays its words and text as a timed practice of its minutes.
+  keeps the last 100 tasks in this browser and is never sent anywhere. How a task plays: its
+  [games](../game/task-games.md).
 - Opening a task link shows the start page with a task panel in place of its title and texts:
   **Nová úloha** with the task name, its game, limit and group, its words or text, a hint to pick
   a player, and **Zrušiť túto úlohu**. The player card asks **Pre koho je táto úloha?**; a player,
@@ -33,14 +33,14 @@
   green, beeps, buzzes where it can and the window closes by itself) and a field for a pasted
   link or code with **Pridať**; anything else says "Toto nie je kód úlohy.". A task added again
   only refreshes what the teacher made. Under them **Moje úlohy**, unfinished first, a new one
-  marked for a moment: title, game, group, and what is left or the best run (date, minutes,
+  marked for a moment: title, game, group, and what it asks (its minutes or its whole text) or the best run (date, minutes,
   accuracy, rhythm). **Hrať** or **Zopakovať**, and for a finished task **Odovzdať**, **QR kód**
   (the result's big code) and **Výsledok** (the best run and whether playing again improved it);
   **Odstrániť** asks first. A player keeps the last 30 tasks.
-- **Best run:** a finished task keeps its best run. Playing it again starts from zero; a finished
-  repeat replaces the best only when it is better (higher accuracy, at equal accuracy a higher
-  rhythm); an unfinished repeat changes nothing. The hand-in and the QR code always carry the
-  best run.
+- **Best run:** a task is played in one sitting, its limit ends it; leaving early keeps nothing.
+  A finished task keeps its best run. Playing it again starts from zero and replaces the best only
+  when it is better (higher accuracy, at equal accuracy a higher rhythm). The hand-in and the QR
+  code always carry the best run.
 - **Noting a task on a phone:** a phone without a keyboard has **Nová úloha** on its start page
   ([devices](../experience/devices.md)): a page with the same camera. A task code stops the camera
   and shows the task panel with **Poslať** (the phone's share sheet, only where the phone has

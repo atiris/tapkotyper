@@ -10,14 +10,15 @@ test('a task travels by link to a child, and the result back to the teacher\'s t
     return page;
   };
 
-  // The teacher makes a one-minute task on the teacher page; it is kept there.
+  // The teacher makes a task on the teacher page that ends when its words are typed, with every letter of them taught first; it is kept there.
   const parent = await open();
   await parent.goto('./#/teacher/tasks');
   const form = parent.locator('.task-form');
   await form.locator('input[type=text]').first().fill('Zvieratá');
   await form.locator('input[type=text]').nth(1).fill('5.A');
   await form.locator('textarea').first().fill('lopta, ruka');
-  await form.locator('input[type=range]').fill('1');
+  await form.getByRole('group', { name: 'Limit' }).getByRole('button', { name: 'Text', exact: true }).click();
+  await form.locator('.switch-field input[type=checkbox]').nth(1).uncheck();
   await form.locator('.btn.primary').first().click();
   const taskLink = await parent.locator('.task-show .link-text').inputValue();
   expect(taskLink).toMatch(/#\/task\/[A-Za-z0-9_-]+$/);
@@ -37,7 +38,8 @@ test('a task travels by link to a child, and the result back to the teacher\'s t
   await child.locator('.task-card .btn.primary').click();
   const typed: string[] = [];
   await playLevel(child, false, typed);
-  expect(typed.join('')).toMatch(/lopta|ruka/);
+  expect(typed.join('')).toContain('lopta');
+  expect(typed.join('')).toContain('ruka');
   // The task is done in this run: the hand-in is the main button and opens the task's own end card.
   await child.locator('.end-card .btn.primary').first().click();
   const handIn = child.locator('.end-card.task-done');

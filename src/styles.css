@@ -737,6 +737,9 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .level-key { width: 16px; height: 16px; }
 /* The activity of a level, in place of its number. */
 .level-act { width: 28px; height: 28px; object-fit: contain; }
+/* A world's last level (its great challenge): its game's picture with a small crown on the corner. */
+.level-node.super, .cell-act { position: relative; }
+.level-crown, .cell-act .cell-crown { position: absolute; top: -9px; right: -8px; width: 22px; height: 22px; object-fit: contain; transform: rotate(14deg); pointer-events: none; filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.25)); }
 /* The target range of a world, next to the super level's star. */
 .level-node.aim-node { color: var(--danger-ink); }
 .aim-icon { width: 22px; height: 22px; }

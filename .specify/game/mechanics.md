@@ -87,9 +87,10 @@
   session (about one world) goes up and down instead of repeating one game: 1 the world's
   main game, gently; 2 a calm step; 3 the main game, harder, with one short surprise; 4 a
   twist; 5 the super-obstacle. Each level dot on the map shows the icon of its activity
-  (main game a flying leaf, waiting words a chair, copy an envelope, crossroads a signpost,
-  the super level a crown)
-  (the number stays in its tooltip and for screen readers). The super level's crown, the
+  (main game a flying leaf, waiting words a chair, copy an envelope, crossroads a signpost);
+  the super level shows the icon of its own game too, with a small crown on the card's corner
+  (its tooltip "Veľká výzva: <game>"), so the child sees what the great challenge plays
+  (the number stays in its tooltip and for screen readers). The super level's card, the
   target range's target and the parrot sit on white cards until they are mastered, then turn
   green like every played level: the crown once the super level is done, the target once the
   world's own thing is found at the range, the parrot once its round was won (it stays green

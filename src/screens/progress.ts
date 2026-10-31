@@ -7,6 +7,7 @@ import { t } from '../i18n/i18n';
 import type { Profile } from '../storage/schema';
 import { barChart, lineChart } from '../ui/charts';
 import { cornerControls, starRow } from '../ui/chrome';
+import { crown } from '../ui/crown';
 import { button, h, icon } from '../ui/dom';
 import { badgeShow } from '../ui/badge-show';
 import { barTabLinks, tabBar } from '../ui/tabs';
@@ -44,9 +45,12 @@ function cellButton(pic: string | null, say: string, open: boolean, play: () => 
 function worldCells(p: Profile, w: number): HTMLElement[] {
   const levels = worldLevels(w).map((l) => {
     const act = activityOf(l);
-    const say = l.isSuper ? t('map.act.super') : `${l.index + 1}. ${t(`map.act.${act}`)}`;
+    const say = l.isSuper ? `${t('map.act.super')}: ${t(`map.act.${act}`)}` : `${l.index + 1}. ${t(`map.act.${act}`)}`;
+    const cell = cellButton(imageUrl(`ui-act-${act}`), say, isLevelUnlocked(p, l), () => go('level', { id: l.id }));
+    const mark = l.isSuper && crown('cell-crown');
+    if (mark) cell.append(mark);
     return h('div', { class: 'level-cell' },
-      cellButton(imageUrl(`ui-act-${act}`), say, isLevelUnlocked(p, l), () => go('level', { id: l.id })),
+      cell,
       starRow(p.progress.levels[l.id] ?? 0, 'stars cell-stars'));
   });
   const open = aimOpen(p, w);

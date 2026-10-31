@@ -155,10 +155,10 @@ function plannedCount(l: LevelDef): number {
 }
 
 /** What the child does in a level; the map shows it as the icon of the level's dot. */
-export type Activity = 'chase' | 'catch' | 'clean' | 'crossroads' | 'super';
+export type Activity = 'chase' | 'catch' | 'clean' | 'crossroads';
 
+/** The super level shows its own game's picture too; the map adds its crown. */
 export function activityOf(l: LevelDef): Activity {
-  if (l.isSuper) return 'super';
   if (COPY_KINDS.includes(l.kind)) return 'clean';
   if (CALM_KINDS.includes(l.kind)) return 'catch';
   if (l.kind === 'crossroads') return 'crossroads';

@@ -228,7 +228,7 @@ describe('first level', () => {
 
   it('the meadow plays the world rhythm: main game, calm step, gust, twist, super-obstacle', () => {
     expect(['w1-1', 'w1-2', 'w1-3', 'w1-4', 'w1-5'].map((id) => levelById(id)?.kind)).toEqual(['meadow', 'poppies', 'meadow', 'invitation', 'hedgehog']);
-    expect(['w1-1', 'w1-2', 'w1-3', 'w1-4', 'w1-5'].map((id) => activityOf(levelById(id)!))).toEqual(['chase', 'catch', 'chase', 'clean', 'super']);
+    expect(['w1-1', 'w1-2', 'w1-3', 'w1-4', 'w1-5'].map((id) => activityOf(levelById(id)!))).toEqual(['chase', 'catch', 'chase', 'clean', 'chase']);
     expect(levelById('w1-3')?.variant).toBe('gust');
     expect(minActiveS(levelById('w1-2')!)).toBe(90);
     expect(minActiveS(levelById('w1-4')!)).toBe(120);
@@ -251,7 +251,8 @@ describe('first level', () => {
 
   it('every level has an activity for its map dot', () => {
     expect(activityOf(levelById('w3-3')!)).toBe('crossroads');
-    expect(LEVELS.filter((l) => l.isSuper).every((l) => activityOf(l) === 'super')).toBe(true);
+    // The super levels show their own game: the hedgehog and the asteroid chase, the spell ribbons are copying.
+    expect(['w1-5', 'w2-5', 'w5-5', 'w6-5'].map((id) => activityOf(levelById(id)!))).toEqual(['chase', 'chase', 'clean', 'clean']);
   });
 });
 
@@ -259,7 +260,7 @@ describe('the valley', () => {
   it('flames, the overgrown path (waiting words), flying lessons, the lullaby, the take-off', () => {
     const ids = ['w4-1', 'w4-2', 'w4-3', 'w4-4', 'w4-5'];
     expect(ids.map((id) => levelById(id)?.kind)).toEqual(['flames', 'thicket', 'flight', 'lullaby', 'takeoff']);
-    expect(ids.map((id) => activityOf(levelById(id)!))).toEqual(['chase', 'catch', 'chase', 'clean', 'super']);
+    expect(ids.map((id) => activityOf(levelById(id)!))).toEqual(['chase', 'catch', 'chase', 'clean', 'chase']);
     expect(ids.map((id) => minActiveS(levelById(id)!))).toEqual([120, 90, 120, 120, 150]);
     expect(ids.slice(2).map((id) => levelById(id)?.count)).toEqual([3, 3, 3]);
   });
@@ -270,7 +271,7 @@ describe('the egg mountain', () => {
     const ids = ['w5-1', 'w5-2', 'w5-3', 'w5-4', 'w5-5'];
     expect(ids.map((id) => levelById(id)?.kind)).toEqual(['wind', 'mud', 'crossroads', 'boulders', 'spell']);
     expect(levelById('w5-3')?.variant).toBe('mountain');
-    expect(ids.map((id) => activityOf(levelById(id)!))).toEqual(['chase', 'catch', 'crossroads', 'chase', 'super']);
+    expect(ids.map((id) => activityOf(levelById(id)!))).toEqual(['chase', 'catch', 'crossroads', 'chase', 'clean']);
     expect(ids.map((id) => minActiveS(levelById(id)!))).toEqual([120, 90, 120, 120, 150]);
     expect(ids.map((id) => minWords(levelById(id)!))).toEqual([16, 12, 16, 16, 20]);
   });

@@ -44,7 +44,7 @@
   **Klávesy** (with the trends over the last sessions: accuracy, rhythm and time per day,
   side by side on wide screens), **Úrovne** (the levels grouped by story, a heading with the
   story's picture and title, and by world, one row of cells per world: each level by its game's
-  picture as on the map (no numbers; the last one the great challenge) with its three stars,
+  picture as on the map (no numbers; the last one, the great challenge, with its small crown) with its three stars,
   filled or empty, in a fixed place, then the world's parrot (its head while at home, else the
   empty perch) and its target range with its rare thing, in color once found, grey until then,
   so nothing a world gives is missing from the list; a click on a picture opens that level,

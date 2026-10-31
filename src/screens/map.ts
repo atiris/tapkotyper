@@ -13,6 +13,7 @@ import { badgeTier } from '../game/rewards';
 import { badge } from '../ui/badge';
 import { flyAway, hasParrotBadge } from '../game/parrots';
 import { localDate } from '../learning/stats';
+import { crown } from '../ui/crown';
 import { arrowFocus, button, closeButton, h, icon, modal } from '../ui/dom';
 import { openSurprises, surpriseAsk } from '../game/cards';
 import { TRIGGERS, surpriseAnnounced, surpriseCount, surprisesToldOn, surprisesWonIn } from '../game/own-content';
@@ -301,10 +302,10 @@ function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held:
         class: `level-node ${l.isSuper ? 'super' : ''} ${stars ? 'done' : ''} ${l.id === nextId ? 'current' : ''} ${missing ? 'keys' : ''} ${gift ? 'gift' : ''}`,
         type: 'button',
         disabled: !reached,
-        'aria-label': `${t(`worlds.${w}`)} ${l.isSuper ? t('map.super') : `${l.index + 1}, ${t(`map.act.${act}`)}`}${stars ? `, ${t('map.starsAria', { n: stars })}` : ''}${missing ? `, ${t('map.keysLocked')}` : ''}${gift ? `, ${t('map.surpriseHere')}` : ''}`,
-        tip: `${l.isSuper ? t('map.act.super') : `${l.index + 1}. ${t(`map.act.${act}`)}`}${gift ? `\n${t('map.surpriseHere')}` : ''}`,
+        'aria-label': `${t(`worlds.${w}`)} ${l.isSuper ? `${t('map.super')}, ${t(`map.act.${act}`)}` : `${l.index + 1}, ${t(`map.act.${act}`)}`}${stars ? `, ${t('map.starsAria', { n: stars })}` : ''}${missing ? `, ${t('map.keysLocked')}` : ''}${gift ? `, ${t('map.surpriseHere')}` : ''}`,
+        tip: `${l.isSuper ? `${t('map.act.super')}: ${t(`map.act.${act}`)}` : `${l.index + 1}. ${t(`map.act.${act}`)}`}${gift ? `\n${t('map.surpriseHere')}` : ''}`,
         onClick: () => (missing ? keysBubble(missing, wi) : go('level', { id: l.id })),
-      }, actImg ? h('img', { class: 'level-act', src: actImg, alt: '' }) : h('span', { class: 'num' }, num),
+      }, actImg ? h('img', { class: 'level-act', src: actImg, alt: '' }) : h('span', { class: 'num' }, num), l.isSuper ? crown('level-crown') : null,
         missing ? keyIcon(held) : h('span', { class: 'mini-stars' }, ...[1, 2, 3].map((s) => h('i', { class: s <= stars ? 'on' : '' }))));
       return b;
     });

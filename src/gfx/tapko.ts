@@ -110,19 +110,19 @@ function stackCanvas(layers: { name: string }[], px: number): HTMLCanvasElement 
 }
 
 /**
- * The egg on his back (`carry: 'egg'`): its picture's height and its middle's x as shares of his
- * picture (over his right shoulder, the viewer's left, away from what comes from the right), its
- * tilt outward, and the share of it that shows at rest and while it peeks.
+ * The egg on his back (`carry: 'egg'`): its picture's height, its middle's y as shares of his
+ * picture (behind his back, at his belly's height), its tilt outward, and the share of it that shows
+ * past his left side (the viewer's left, away from what comes from the right) at rest and while it peeks.
  */
 const EGG = 'obj-egg-plain';
 const EGG_H = 0.27;
-const EGG_X = 0.32;
+const EGG_Y = 0.62;
 const EGG_TILT = -0.26;
 export const EGG_REST = 1 / 3;
 export const EGG_PEEK = 2 / 3;
-/** Its middle sinks no lower than his chest, and rises at most this share of its height to peek. */
-const EGG_LOW = 0.5;
-const EGG_RISE = 0.5;
+/** Its middle starts behind his middle, goes no further left than the picture's edge, and slides out at most this share of its height to peek. */
+const EGG_START = 0.5;
+const EGG_SLIDE = 0.5;
 /** The egg picture's width per height (401 x 512); its outline is about this oval. */
 const EGG_RATIO = 401 / 512;
 /** Side of the silhouette mask the egg's place is found on. */
@@ -135,32 +135,29 @@ function inEgg(x: number, y: number, cx: number, cy: number): boolean {
   return u * u + v * v <= 1;
 }
 
-/** The share of the egg, its middle at (EGG_X, cy), that no opaque pixel of the silhouette (`mask`, n x n, 1 = opaque) covers. */
-export function eggVisible(mask: Uint8Array, n: number, cy: number): number {
+/** The share of the egg, its middle at (cx, EGG_Y), that no opaque pixel of the silhouette (`mask`, n x n, 1 = opaque) covers. */
+export function eggVisible(mask: Uint8Array, n: number, cx: number): number {
   let all = 0, shown = 0;
   for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
-    if (!inEgg((x + 0.5) / n, (y + 0.5) / n, EGG_X, cy)) continue;
+    if (!inEgg((x + 0.5) / n, (y + 0.5) / n, cx, EGG_Y)) continue;
     all++;
     if (!mask[y * n + x]) shown++;
   }
   return all ? shown / all : 0;
 }
 
-/**
- * The egg's middle y at rest (share of the picture): sunk from above his head behind him while at
- * least `EGG_REST` of it shows, never lower than his chest.
- */
+/** The egg's middle x at rest (share of the picture): slid left from behind his middle until `EGG_REST` of it shows. */
 export function eggRest(mask: Uint8Array, n: number): number {
-  let cy = 0;
-  while (cy + 1 / n <= EGG_LOW && eggVisible(mask, n, cy + 1 / n) >= EGG_REST) cy += 1 / n;
-  return cy;
+  let cx = EGG_START;
+  while (cx - 1 / n >= 0 && eggVisible(mask, n, cx) < EGG_REST) cx -= 1 / n;
+  return cx;
 }
 
-/** Peeking, it rises from `rest` until `EGG_PEEK` of it shows, at most `EGG_RISE` of its height. */
+/** Peeking, it slides left from `rest` until `EGG_PEEK` of it shows, at most `EGG_SLIDE` of its height. */
 export function eggPeek(mask: Uint8Array, n: number, rest: number): number {
-  let cy = rest;
-  while (cy > rest - EGG_RISE * EGG_H && eggVisible(mask, n, cy) < EGG_PEEK) cy -= 1 / n;
-  return cy;
+  let cx = rest;
+  while (cx > rest - EGG_SLIDE * EGG_H && eggVisible(mask, n, cx) < EGG_PEEK) cx -= 1 / n;
+  return cx;
 }
 
 /** An opaque silhouette (n x n, 1 = alpha over a half) of ovals given in shares of the picture. */
@@ -206,14 +203,14 @@ function eggPlace(c: Companion): { rest: number; peek: number } {
 
 /** Where the egg's middle is on the stage for Tapko standing at (x, y) at `size` (no sway): where it is lifted off his back. */
 export function eggSpot(c: Companion, x: number, y: number, size: number): { x: number; y: number; h: number; rot: number } {
-  return { x: x + (EGG_X - 0.5) * size, y: y + (eggPlace(c).rest - 0.9) * size, h: EGG_H * size, rot: EGG_TILT };
+  return { x: x + (eggPlace(c).rest - 0.5) * size, y: y + (EGG_Y - 0.9) * size, h: EGG_H * size, rot: EGG_TILT };
 }
 
 /** The egg in his picture's own units (the stack's square, `size` high), behind the stack. */
 function drawEgg(g: G, c: Companion, size: number, m: TapkoMotion): void {
   const place = eggPlace(c), k = m.peek ?? 0;
-  const cy = place.rest + (place.peek - place.rest) * k;
-  drawSprite(g, EGG, EGG_X * size, cy * size, EGG_H * size, { rot: EGG_TILT + (m.wobble ?? 0) }, eggFallback);
+  const cx = place.rest + (place.peek - place.rest) * k;
+  drawSprite(g, EGG, cx * size, EGG_Y * size, EGG_H * size, { rot: EGG_TILT + (m.wobble ?? 0) }, eggFallback);
 }
 
 /** The egg while its picture is missing: a cream oval with turquoise spots. */

@@ -14,8 +14,9 @@ const PEEK_RISE = 0.3;
 const PEEK_WOBBLE = 0.12;
 
 /**
- * The egg Tapko carries on his back up the mountain: a third of it peeks out at rest; now and then
- * and at story moments (`poke`) it rises to show two thirds, wobbles a little and sinks back. With
+ * The egg Tapko carries on his back up the mountain: a third of it shows past his left side at rest;
+ * now and then and at story moments (`poke`) it slides out to show two thirds, wobbles a little and
+ * slides back. With
  * reduced motion it never moves.
  */
 export class EggPeek {

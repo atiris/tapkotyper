@@ -14,7 +14,7 @@ async function silhouette(names: string[]): Promise<Uint8Array> {
   return mask;
 }
 
-/** The egg at rest shows at least 30 % and still sits on his back; peeking it shows more. */
+/** The egg at rest shows at least 30 % and is still mostly behind him; peeking it shows more. */
 function expectPeeks(mask: Uint8Array, label: string): void {
   const at = eggRest(mask, N), rest = eggVisible(mask, N, at);
   expect(rest, label).toBeGreaterThanOrEqual(0.3);

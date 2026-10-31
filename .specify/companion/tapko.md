@@ -61,8 +61,9 @@
   overlay ([statistics](../profiles/statistics.md)); its title says "Click yourself to see
   how you are doing".
 - On the egg mountain (world 5, levels 1-4) the character carries the dragon egg on its back:
-  it is drawn behind everything the character wears and always peeks out, at least about a
-  third of it at rest, whatever the outfit; it rises to peek now and then and at story moments.
+  it is drawn behind everything the character wears and always peeks out past its left side
+  (not over its head), at least about a third of it at rest, whatever the outfit; it slides
+  further out to peek now and then and at story moments.
 - After world 5 a newly hatched friend (a baby dragon) joins; in story 2 the robot Bolt
   walks next to the child, in story 3 the fairy Melody floats next to the child
   ([story](../game/story.md)).

@@ -302,10 +302,11 @@ as they are. The world descriptions below marked *not built yet* are the design 
    target range is a flame (kept although the world got new things).
 5. **Egg** (the Mountain of Awakening) - the flames the egg was born in are too weak to wake it:
    Tapko carries it up the mountain to the **dragons' hearth** on the summit and wakes the baby
-   with a long spell. Levels 1-4 he carries the egg on his back: it peeks over his right shoulder
-   behind everything he wears, a third of it at rest whatever the outfit (wings, a cape and a
-   jetpack included), and now and then and at story moments (a gust, a mud step, a stumble) it
-   rises to show about two thirds, wobbles and sinks back (still with reduced motion). The
+   with a long spell. Levels 1-4 he carries the egg on his back: it sits behind him and peeks
+   out past his left side (not over his head), behind everything he wears, a third of it at rest
+   whatever the outfit (wings, a cape and a jetpack included), and now and then and at story
+   moments (a gust, a mud step, a stumble) it slides out to show about two thirds, wobbles and
+   slides back (still with reduced motion). The
    mountain's three background bands are the same in all five levels: rocky peaks with pale
    crystals far back, low mossy rocks in the middle, a rocky path in front with Tapko in its middle.
    1 wind on the slope (a stream): each word comes from the right in a gust, a swirl of white

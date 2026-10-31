@@ -180,7 +180,7 @@ export class WindMode extends SlopeStream {
   protected onLeave(m: Mover): void {
     m.vx = -30;
     m.vy = -20;
-    this.L.particles.emit(m.x, m.y, 14, 'puff', ['#ffffff', '#e8f4ff'], 120, 14);
+    this.L.particles.emit(m.x, m.y, 8, 'puff', ['rgba(255,255,255,0.35)', 'rgba(232,244,255,0.3)'], 140, 18);
     this.glide(WALK_ON);
   }
 
@@ -188,7 +188,7 @@ export class WindMode extends SlopeStream {
   protected onPass(m: Mover): void {
     m.vx = -60;
     m.vy = -30;
-    this.L.particles.emit(HERO_X + 40, m.y, 12, 'puff', ['#ffffff', '#e8f4ff'], 140, 12);
+    this.L.particles.emit(HERO_X + 40, m.y, 8, 'puff', ['rgba(255,255,255,0.35)', 'rgba(232,244,255,0.3)'], 150, 16);
     this.egg.poke();
     this.L.setMood('thinking', 1);
     this.glide(-(m.rush ? RUSH_BACK : PUSH_BACK));
@@ -200,7 +200,7 @@ export class WindMode extends SlopeStream {
     m.x += m.vx * dt;
     m.y += m.vy * dt;
     m.grow += dt * 0.8;
-    m.fade = Math.min(1, m.fade + dt * 1.6);
+    m.fade = Math.min(1, m.fade + dt * 1.2);
   }
 
   /** A slip in a started gust makes it stronger and its word starts again; a second sends it into him at once. */
@@ -219,13 +219,17 @@ export class WindMode extends SlopeStream {
     tg.selectable = false;
   }
 
-  /** A swirl of air: soft blue-grey strokes under white ones, so it reads on a bright sky too. */
+  /**
+   * A swirl of air: soft blue-grey strokes under white ones, so it reads on a bright sky too. Breaking
+   * up, it melts into the air: the grey edge goes first, the strokes thin out, shorten and drift apart.
+   */
   drawMover(g: G, m: Mover): void {
-    const r = GUST_R * m.grow, spin = m.age * (m.strong ? 5 : 3.5) + m.phase, w = m.strong ? 1.6 : 1;
+    const f = m.fade, thin = 1 - 0.7 * f, open = 1 + 0.6 * f;
+    const r = GUST_R * m.grow, spin = m.age * (m.strong ? 5 : 3.5) + m.phase, w = (m.strong ? 1.6 : 1) * thin;
     const strokes: ((g: G) => void)[] = [];
     for (let i = 0; i < 4; i++) {
-      const rr = r * (0.35 + 0.2 * i), a = spin * (1 - i * 0.12) + i * 1.7;
-      strokes.push((gg) => gg.arc(m.x, m.y, rr, a, a + 1.5 + i * 0.25));
+      const rr = r * (0.35 + 0.2 * i) * open, a = spin * (1 - i * 0.12) + i * 1.7;
+      strokes.push((gg) => gg.arc(m.x, m.y, rr, a, a + (1.5 + i * 0.25) * thin));
     }
     // Wisps trail behind it.
     for (const dy of [-0.35, 0.1, 0.45]) {
@@ -237,10 +241,11 @@ export class WindMode extends SlopeStream {
     }
     g.save();
     g.lineCap = 'round';
-    for (const [ink, width, alpha] of [['#5f7f9c', 8, 0.35], ['#ffffff', 4.5, 0.95]] as const) {
+    const a0 = g.globalAlpha;
+    for (const [ink, width, alpha] of [['#5f7f9c', 8, 0.35 * (1 - f) ** 2], ['#ffffff', 4.5, 0.95 * (1 - f)]] as const) {
       g.strokeStyle = ink;
       g.lineWidth = width * w;
-      g.globalAlpha = alpha;
+      g.globalAlpha = a0 * alpha;
       for (const s of strokes) {
         g.beginPath();
         s(g);

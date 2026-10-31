@@ -78,18 +78,34 @@ the order of the way home, so the journey reads as one trip, not five unrelated 
 
 ## Steps
 
-- [ ] Spec section and scenario text, sk/en lines, translator notes.
-- [ ] `JOURNEYS.dragon` with the five parts and their backgrounds; travel card names.
-- [ ] Journey variants of the five modes (boulders from the right with the part's growth cap,
+- [x] Spec section and scenario text, sk/en lines, translator notes.
+- [x] `JOURNEYS.dragon` with the five parts and their backgrounds; travel card names.
+- [x] Journey variants of the five modes (boulders from the right with the part's growth cap,
       one-dragon flight, crystals for the rocket with the valley dragons at the back, the swamp
       to the shore with the rocket standing, the ground command game with the launch).
-- [ ] The little dragon following Tapko in every part.
+- [x] The little dragon following Tapko in every part.
 - [ ] Pictures `obj-dragon-little`, `obj-rocket-standing` via `gemini-images`; the assets run;
       fallbacks until then (if Gemini is unavailable, a backlog line).
-- [ ] Tests: unit test that the dragon journey's parts are in this order with these kinds and
+- [x] Tests: unit test that the dragon journey's parts are in this order with these kinds and
       that the parts' minimums add up to twice the story's minimum; `idle.test.ts` for each
       journey variant at both paces; e2e: with world 5 done the journey plays through all five
       parts (`?minActive=` short) and ends on the end card after the launch, stars on the node.
 - [ ] `npm run build`, `npx vitest run`, affected e2e; Playwright MCP play-through (tester
       profile, `?fast`, `tapkoType`) with screenshots of each part, the rocket on the shore and
       the launch.
+
+## State
+
+Decisions taken while implementing (2026-10-31):
+- Parts carry `variant: 'journey'`; each mode checks it. The take-off is `LaunchMode`, a small
+  subclass of `CommandMode` (its scene, answers and end), loaded for `command` with that variant.
+- The first part's line is the get-ready story and the boulders line in one text.
+- A travel card names the part's place (`JourneyStep.place`), falling back to the world's name.
+- The little dragon is drawn by the runtime like Bolt and Melody (`friendSpot`); a mode may say
+  it is away (`friendAway`: it flies the flight, it sits in the rocket). Its second flight starts
+  once it sits by the fire, from the start again (one dragon on the stage).
+- The journey's swamp keeps the great swamp's shore timing (the rocket scene takes the
+  sentence's slack); only the sentence's task is left out of the count.
+- The first-finish green line goes before any other news of that end card (the story's ending).
+- Stumbles also worry the story friend (`friendWorried`): a missed boulder.
+

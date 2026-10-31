@@ -157,10 +157,11 @@ export function showPosture(host: HTMLElement, p: Profile, tip?: string, surpris
 }
 
 /**
- * Between two parts of a hero's journey: the next world's island as on the map, its name and the
- * part's own story line. The space bar, Enter, Escape, the button, the X or a click goes on.
+ * Between two parts of a hero's journey: the next world's island as on the map, the place's name
+ * (the world's without one) and the part's own story line. The space bar, Enter, Escape, the
+ * button, the X or a click goes on.
  */
-export function showTravel(host: HTMLElement, world: string, line?: string | null): Promise<void> {
+export function showTravel(host: HTMLElement, world: string, line?: string | null, place?: string | null): Promise<void> {
   return new Promise((resolve) => {
     const close = () => {
       stop();
@@ -169,10 +170,11 @@ export function showTravel(host: HTMLElement, world: string, line?: string | nul
     };
     const src = imageUrl(`ui-map-${world}`);
     const go = button(t('journey.go'), close, 'btn primary', 'next');
-    const card = h('div', { class: 'card travel-card', role: 'dialog', 'aria-label': t('journey.next', { world: t(`worlds.${world}`) }) },
+    const next = t('journey.next', { world: place ?? t(`worlds.${world}`) });
+    const card = h('div', { class: 'card travel-card', role: 'dialog', 'aria-label': next },
       closeButton(close, t('journey.go')),
       src ? h('img', { class: 'travel-img', src, alt: '' }) : null,
-      h('h2', {}, t('journey.next', { world: t(`worlds.${world}`) })),
+      h('h2', {}, next),
       line ? h('p', { class: 'posture-text' }, ...richText(line)) : null,
       h('div', { class: 'row' }, go));
     const overlay = h('div', { class: 'overlay' }, card);

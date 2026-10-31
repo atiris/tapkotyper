@@ -90,6 +90,10 @@ export abstract class Mode {
   friendSpot(): { x: number; y: number } | null {
     return null;
   }
+  /** The story friend is not by Tapko now (the little dragon flies its own flight, or sits in the rocket). */
+  friendAway(): boolean {
+    return false;
+  }
   /** Above Tapko's head even at the top of a hop, where his shouts pop up: above the DOM Tapko unless the mode draws him. */
   heroSpot(): { x: number; y: number } {
     return { x: TAPKO_X, y: this.tapkoFeet - TAPKO_H * 1.25 - 40 };

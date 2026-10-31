@@ -13,7 +13,8 @@ export type News =
   | { kind: 'trend' }
   | { kind: 'find'; thing: string }
   | { kind: 'letter'; key: string; before: number; after: number }
-  | { kind: 'faster' };
+  | { kind: 'faster' }
+  | { kind: 'journeyHome'; story: string };
 
 /** News that are rewards: several at once are told as the first and "and N more rewards". */
 const REWARDS = new Set<News['kind']>(['badge', 'parrotBadge', 'keys', 'medal', 'wardrobe', 'companion']);

@@ -2,6 +2,7 @@ import { app, pickLine } from '../../app/app';
 import { graphics } from '../../engine/graphics';
 import { ease } from '../../engine/tween';
 import { WORD, drawSprite, fontFamily, type G, roundRect } from '../../gfx/draw';
+import { littleDragonFallback } from '../../gfx/little-dragon';
 import { eggFallback, eggSpot } from '../../gfx/tapko';
 import { t } from '../../i18n/i18n';
 import { ENTER } from '../../keyboard/layouts';
@@ -88,20 +89,6 @@ function hearthFallback(g: G, _w: number, h: number): void {
   g.restore();
 }
 const HEARTH: PitLook = { pic: 'obj-hearth', fallback: hearthFallback };
-
-/** A baby dragon while its picture is missing. */
-function hatchedFallback(g: G, w: number, h: number): void {
-  g.save();
-  g.fillStyle = '#8fd6b0';
-  g.strokeStyle = '#3d6b55';
-  g.lineWidth = 2;
-  g.beginPath();
-  g.ellipse(0, h * 0.15, w * 0.35, h * 0.32, 0, 0, Math.PI * 2);
-  g.ellipse(0, -h * 0.25, w * 0.28, h * 0.22, 0, 0, Math.PI * 2);
-  g.fill();
-  g.stroke();
-  g.restore();
-}
 
 /** A word of the spell: its text with the space after it (the last word ends without), and its target while it is the one to type. */
 interface SpellWord {
@@ -328,7 +315,7 @@ export class SpellRibbonMode extends HeroMode {
     const x = this.hearth.x, y = this.eggY();
     if (this.endT !== null && this.endT >= BREAK_AT) {
       const k = this.L.reduceMotion ? 1 : ease.outBack(Math.min(1, (this.endT - BREAK_AT) / 0.5));
-      drawSprite(g, 'obj-dragon-hatched', x, y + 8, HATCHED_H * k, { ay: 1 }, hatchedFallback);
+      drawSprite(g, 'obj-dragon-hatched', x, y + 8, HATCHED_H * k, { ay: 1 }, littleDragonFallback);
       return;
     }
     const rot = this.L.reduceMotion ? 0 : Math.sin(this.wobble * 18) * 0.12 * this.wobble;

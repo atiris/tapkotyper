@@ -426,6 +426,9 @@
       "one": "a {n} ďalšia odmena",
       "few": "a {n} ďalšie odmeny",
       "other": "a {n} ďalších odmien"
+    },
+    "journeyHome": {
+      "dragon": "Raketa letí domov aj s dráčikom!"
     }
   },
   "results": {
@@ -986,7 +989,33 @@
       "one": "Výborné cvičenie!\nPočet napísaných slov: {n}.",
       "few": "Výborné cvičenie!\nPočet napísaných slov: {n}.",
       "other": "Výborné cvičenie!\nPočet napísaných slov: {n}."
-    }
+    },
+    "bouldersDownLonger": "Chvíľka zaváhania a cesta dolu sa predĺžila.",
+    "bouldersDownDone": [
+      "Sme dole z hory! Dráčik je v bezpečí.",
+      "Balvany sú za nami, ideme ďalej!"
+    ],
+    "littleFlightDone": "Dráčik letí!\nUž vie lietať ako kamaráti.",
+    "littleFlightTried": "Dráčik to skúšal statočne\na už sedí pri ohni.",
+    "crystalsRocketOne": "{n} kryštál\nnabije raketu na cestu domov!",
+    "crystalsRocketFew": "{n} kryštály\nnabijú raketu na cestu domov!",
+    "crystalsRocketMany": "{n} kryštálov\nnabije raketu na cestu domov!",
+    "swampRocket": [
+      "Raketa! Stojí presne tam, kde sme ju nechali.",
+      "Hurá, naša raketa nás čaká!"
+    ],
+    "launchSteps": [
+      "Dvere otvorené.",
+      "Kryštály načítané.",
+      "Motory sa zahrievajú.",
+      "Odpočítavanie spustené."
+    ],
+    "launchCount": [
+      "3",
+      "2",
+      "1",
+      "Štart!"
+    ]
   },
   "fairy": {
     "start": [
@@ -3364,6 +3393,17 @@
     "title": "Cesta hrdinu",
     "harder": "Cesta hrdinu je ťažšia ako bežné úrovne: slová sú ťažšie, všetko je o kúsok rýchlejšie a na tri hviezdy treba 98 % presnosť.",
     "next": "Ďalej: {world}",
-    "go": "Ideme ďalej"
+    "go": "Ideme ďalej",
+    "dragon": {
+      "down": "Dráčik sa vyliahol! Teraz ho musíš dostať **dolu z hory** a cez **údolie**, **lúku kryštálov** a **močiar** až k **rakete**, ktorá čaká na brehu. Na konci ju **odštartuješ**. Z hory sa valia balvany, preskakuj ich!",
+      "valley": "Dráčik sa chce naučiť lietať ako jeho kamaráti.",
+      "valleyPlace": "Údolie drakov",
+      "crystals": "Raketa potrebuje na let domov **energiu kryštálov**. Nazbieraj ich čo najviac! Dráčiky z údolia ťa už čakajú na lúke.",
+      "crystalsPlace": "Lúka kryštálov",
+      "swamp": "Posledný močiar! Na brehu už čaká tvoja raketa.",
+      "swampPlace": "Močiar",
+      "launch": "Napíš rakete **príkazy** a priprav ju na štart. Potom s dráčikom nastúpite a letíte domov!",
+      "launchPlace": "Raketa na brehu"
+    }
   }
 }

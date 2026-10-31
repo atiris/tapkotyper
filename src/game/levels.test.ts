@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { SUPER_ID } from '../storage/schema';
 import { lessonOrder } from '../learning/lessons';
-import { LEVELS, STORIES, WORLDS, activityOf, minActiveS, minWords, playedStep, aimLevel, aimOpen, aimWorld, freeTypeLevel, grownCount, hasMinLength, isLevelUnlocked, isWorldUnlocked, keysNeeded, levelById, levelOver, nextLevel, parrotKeys, parrotLevel, parrotSizeOf, practiceLevel, JOURNEY_STAR_STEPS, halfStarsFor, journeyId, journeyLevel, journeyOpen, starsFor, shownProgress, worldLevels, worldLock } from './levels';
+import { LEVELS, STORIES, WORLDS, activityOf, minActiveS, minWords, playedStep, aimLevel, aimOpen, aimWorld, freeTypeLevel, grownCount, hasMinLength, isLevelUnlocked, isWorldUnlocked, keysNeeded, levelById, levelOver, nextLevel, parrotKeys, parrotLevel, parrotSizeOf, practiceLevel, JOURNEYS, JOURNEY_STAR_STEPS, halfStarsFor, journeyId, journeyLevel, journeyOpen, starsFor, shownProgress, worldLevels, worldLock } from './levels';
 
 const KEYS = ['f', 'j', 'd', 'k', 's', 'l', 'a', ';', 'g', 'h', 'r', 'u', 'e', 'i', 't', 'y', 'w', 'o', 'q', 'p', 'v', 'm', 'c', ',', 'x', '.'];
 
@@ -159,7 +159,7 @@ describe("hero's journey", () => {
   });
 
   it("plays the first level of each of the story's worlds, in order, as parts of one journey", () => {
-    for (const story of STORIES) {
+    for (const story of STORIES.filter((s) => !JOURNEYS[s.id])) {
       const parts = story.worlds.map((_, i) => journeyLevel(story, i));
       expect(parts.map((l) => l.world)).toEqual(story.worlds);
       expect(parts.map((l) => l.kind)).toEqual(story.worlds.map((w) => worldLevels(w)[0].kind));
@@ -170,6 +170,24 @@ describe("hero's journey", () => {
         expect(l.noSpace).toBeUndefined();
       }
     }
+  });
+
+  it('takes the dragon story down the mountain, through the valley, the crystal meadow and the swamp to the rocket', () => {
+    const story = STORIES[0];
+    const parts = [0, 1, 2, 3, 4].map((i) => journeyLevel(story, i));
+    expect(parts.map((l) => [l.kind, l.world])).toEqual([['boulders', 4], ['flight', 3], ['crystals', 2], ['greatswamp', 2], ['command', 2]]);
+    for (const [i, l] of parts.entries()) {
+      expect(l.variant).toBe('journey');
+      expect(l.journey).toMatchObject({ story: 'dragon', part: i, parts: 5 });
+      expect(l.journey?.line).toBeTruthy();
+    }
+    // The first part tells the way on the get-ready card; every later one has its travel card's place.
+    expect(parts[0].journey?.place).toBeUndefined();
+    expect(parts.slice(1).every((l) => l.journey?.place)).toBe(true);
+    expect(parts.reduce((a, l) => a + minActiveS(l), 0)).toBeCloseTo(2 * minActiveS(worldLevels(1)[0]));
+    // The flight counts its one little dragon, the swamp has no sentence on the shore.
+    expect(parts[1].count).toBe(1);
+    expect(parts[3].count).toBe(minWords(parts[3]));
   });
 
   it('lasts twice a regular level of its story, split evenly over the parts, in time and in words', () => {

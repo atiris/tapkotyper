@@ -477,6 +477,10 @@
     "words": {
       "title": "A language word list",
       "about": "The everyday words of the new language, in one field, separated by spaces or new lines. Leave out words that cannot be typed on the chosen keyboard; the first lessons need enough words made of their few letters."
+    },
+    "story-journey": {
+      "title": "Lines of the dragon story's hero's journey",
+      "about": "Shouts and end lines of the way back to the rocket: boulders on the way down, the little dragon's first flight, crystals for the rocket, the rocket on the shore and its take-off."
     }
   },
   "situations": {
@@ -1582,7 +1586,27 @@
     "words": "Translator: the field where you write all words of the new language, separated by spaces or new lines.",
     "journey.title": "Name of the hero's journey: its map node, its row in My progress and the level title at the top while playing.",
     "journey.harder": "On the card before the hero's journey, under its story: why it is harder (harder words, a bit faster, 98 % for three stars).",
-    "journey.next": "Title of the card between two parts of the hero's journey. {world} is the next world's name.",
-    "journey.go": "Button on the card between two parts of the hero's journey that starts the next part."
+    "journey.next": "Title of the card between two parts of the hero's journey. {world} is the next world's name, or the next place's.",
+    "journey.go": "Button on the card between two parts of the hero's journey that starts the next part.",
+    "journey.dragon.down": "The dragon story's hero's journey, on the card before its first part: the egg has hatched, the way back to the rocket (mountain, valley, crystal meadow, swamp) and the first part's boulders.",
+    "journey.dragon.valley": "The dragon story's hero's journey, card before the valley part: the hatched little dragon's first flight.",
+    "journey.dragon.valleyPlace": "The dragon story's hero's journey: the place of the valley part, shown as {world} in the card title \"Next: {world}\".",
+    "journey.dragon.crystals": "The dragon story's hero's journey, card before the crystal meadow part: the rocket needs the crystals' energy, the valley dragons wait there.",
+    "journey.dragon.crystalsPlace": "The dragon story's hero's journey: the place of the crystal meadow part, shown as {world} in the card title.",
+    "journey.dragon.swamp": "The dragon story's hero's journey, card before the swamp part: the last swamp, the rocket waits on the shore.",
+    "journey.dragon.swampPlace": "The dragon story's hero's journey: the place of the swamp part, shown as {world} in the card title.",
+    "journey.dragon.launch": "The dragon story's hero's journey, card before the take-off: commands get the rocket ready, then Tapko and the little dragon fly home.",
+    "journey.dragon.launchPlace": "The dragon story's hero's journey: the place of the take-off part, shown as {world} in the card title.",
+    "story.bouldersDownLonger": "The narrator on the hero's journey, the first time a boulder is missed on the way down: the way got a little longer.",
+    "story.bouldersDownDone": "The narrator at the end of the hero's journey's boulders, down the mountain; one is picked at random.",
+    "story.littleFlightDone": "Text in the middle at the end of the hero's journey's flight when the little dragon flew.",
+    "story.littleFlightTried": "Text in the middle at the end of the hero's journey's flight when the little dragon only landed in the bushes or hard.",
+    "story.crystalsRocketOne": "Text in the middle at the end of the hero's journey's crystal meadow with one crystal for the rocket; {n} is the number.",
+    "story.crystalsRocketFew": "The same with a few (2-4) crystals; {n} is the number.",
+    "story.crystalsRocketMany": "The same with many (0, 5 and more) crystals; {n} is the number.",
+    "story.swampRocket": "Tapko on the shore at the end of the hero's journey's swamp, seeing his rocket; one is picked at random.",
+    "story.launchSteps": "The rocket's answers to accepted commands in the take-off, in order: each gets it ready a step; the last one comes with the last command.",
+    "story.launchCount": "The countdown before the rocket lifts off, one shout each, in order.",
+    "end.journeyHome.dragon": "Green line on the end card the first time the dragon story's hero's journey is finished."
   }
 }

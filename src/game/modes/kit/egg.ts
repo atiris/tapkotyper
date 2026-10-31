@@ -51,11 +51,11 @@ export class EggPeek {
   }
 }
 
-/** Tapko with the egg on his back, on the canvas at his usual size; at the level's end he hops happily. */
-export function drawCarrier(g: G, L: LevelRuntime, egg: EggPeek, mood: Mood, x: number, y: number, m: TapkoMotion): void {
-  const c = app.profile!.companion;
-  if (L.endTime != null) return drawTapko(g, c, 'happy', x, y, TAPKO_H, { ...m, ...egg.motion(), jump: L.endHop, spin: 0 });
-  drawTapko(g, c, mood, x, y, TAPKO_H, { ...m, ...egg.motion() });
+/** Tapko with the egg on his back (none once it hatched), on the canvas at his usual size; at the level's end he hops happily. */
+export function drawCarrier(g: G, L: LevelRuntime, egg: EggPeek | null, mood: Mood, x: number, y: number, m: TapkoMotion): void {
+  const c = app.profile!.companion, carry = egg?.motion() ?? {};
+  if (L.endTime != null) return drawTapko(g, c, 'happy', x, y, TAPKO_H, { ...m, ...carry, jump: L.endHop, spin: 0 });
+  drawTapko(g, c, mood, x, y, TAPKO_H, { ...m, ...carry });
 }
 
 /**

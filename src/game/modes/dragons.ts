@@ -40,14 +40,14 @@ const END_TIME = 3;
 export const FLOCK_START = 3;
 export const FLOCK_MAX = 5;
 
-/** Dragons of a flight level once `done` of them are done: one more while the minimum is not played, at most `FLOCK_MAX`. */
-export function flockAfter(planned: number, done: number, minLeft: number): number {
-  return done >= planned && minLeft > 0 ? Math.min(FLOCK_MAX, planned + 1) : planned;
+/** Dragons of a flight level once `done` of them are done: one more while the minimum is not played, at most `max`. */
+export function flockAfter(planned: number, done: number, minLeft: number, max = FLOCK_MAX): number {
+  return done >= planned && minLeft > 0 ? Math.min(max, planned + 1) : planned;
 }
 
 /** `flockAfter` in a level; played on without an end ("stay a while"), one more always comes. */
-export function flockFor(L: LevelRuntime, planned: number, done: number): number {
-  return L.staying ? Math.max(planned, done + 1) : flockAfter(planned, done, L.minLeft);
+export function flockFor(L: LevelRuntime, planned: number, done: number, max = FLOCK_MAX): number {
+  return L.staying ? Math.max(planned, done + 1) : flockAfter(planned, done, L.minLeft, max);
 }
 
 /** A teardrop flame in a box `h` high, pointing up. */

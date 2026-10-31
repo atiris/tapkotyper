@@ -2,7 +2,7 @@ import { app, go, isBreakDue, saveProfile } from '../app/app';
 import { starRow } from '../ui/chrome';
 import { tapkoElement } from '../gfx/tapko';
 import { t, tn } from '../i18n/i18n';
-import { LEVELS, type LevelDef, STORIES, type StoryDef, aimLevel, aimOpen, aimWorld, freeTypeLevel, isLevelUnlocked, isWorldUnlocked, journeyLevel, journeyOpen, levelById, parrotLevel, practiceLevel } from '../game/levels';
+import { JOURNEYS, LEVELS, type LevelDef, STORIES, type StoryDef, aimLevel, aimOpen, aimWorld, freeTypeLevel, isLevelUnlocked, isWorldUnlocked, journeyLevel, journeyOpen, levelById, parrotLevel, practiceLevel } from '../game/levels';
 import { type LevelResult, newJourneyRun } from '../game/progress';
 import type { Style } from '../game/typing';
 import { WORLD_REWARDS } from '../game/rewards';
@@ -70,6 +70,8 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
   const next = params.stay ? nextOpen(def) : undefined;
   // A hero's journey plays its parts one after another on this screen and keeps them as one run.
   const journey = def.journey ? newJourneyRun() : undefined;
+  // A story's own journey ends its story the first time it is finished: its end card says so.
+  const firstHome = !!def.journey && !!JOURNEYS[def.journey.story] && !p.progress.levels[def.id];
   // The surprise asked on its first part's get-ready card is told at its end.
   let asked: Surprise | null = null;
   let rt: LevelRuntime | null = null;
@@ -99,7 +101,7 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
       onPart: part && (() => play(journeyLevel(journeyStory(part.story)!, part.part + 1))),
       onFinish: (result) => {
         if (!result) return exit();
-        if (part) return showJourneyDone(root, level, result, params, asked);
+        if (part) return showJourneyDone(root, level, result, params, asked, firstHome);
         if (def.kind === 'aim') return showAimDone(root, def, result, runtime.mode as AimMode, params, runtime.surprise);
         if (def.kind === 'parrot') return showParrotDone(root, def, result, runtime.mode as ParrotMode, params, runtime.surprise);
         if (params.stay) return showStayDone(root, def, result);
@@ -205,6 +207,7 @@ function newsLine(news: News[]): Child[] | null {
     : n.kind === 'trend' ? [null, t('results.trendUp')]
     : n.kind === 'find' ? [findPic(n.thing), t('end.newFind')]
     : n.kind === 'letter' ? [null, t('end.letterBetter', { key: keyLabel(n.key), before: pct(n.before), after: pct(n.after) })]
+    : n.kind === 'journeyHome' ? [null, t(`end.journeyHome.${n.story}`)]
     : [null, t('end.faster')];
   return [pic, h('span', {}, line.more ? `${text} ${tn('end.moreRewards', line.more)}` : text)];
 }
@@ -257,15 +260,17 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
   }, stay);
 }
 
-/** The end of a hero's journey: its compass, the stars of all its parts together, accuracy, rhythm and minutes; no staying a while. */
-function showJourneyDone(root: HTMLElement, def: LevelDef, r: LevelResult, params: LevelParams, surprise: Surprise | null): void {
+/** The end of a hero's journey: its compass, the stars of all its parts together, accuracy, rhythm and minutes; no staying a while. A story's own journey finished the first time says how its story ends. */
+function showJourneyDone(root: HTMLElement, def: LevelDef, r: LevelResult, params: LevelParams, surprise: Surprise | null, firstHome: boolean): void {
+  const news = levelNews(r);
+  if (firstHome) news.unshift({ kind: 'journeyHome', story: def.journey!.story });
   showEnd(root, {
     cls: 'journey-done',
     title: t('end.journey'),
     picture: compassElement('ec-img'),
     under: starRow(r.shownStars),
     rows: [...typingRows(r), [t('end.time'), minutes(r.seconds)]],
-    news: newsLine(levelNews(r)),
+    news: newsLine(news),
     tip: r.byTapko ? t('results.byTapko') : null,
     surprises: toldSurprises(def, surprise, 'all'),
     actions: [{ label: t('results.replay'), icon: 'replay', run: () => go('level', params) }],

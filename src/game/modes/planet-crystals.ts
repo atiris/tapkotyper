@@ -5,6 +5,7 @@ import { drawSprite, fontFamily, type G, wordBox } from '../../gfx/draw';
 import { t } from '../../i18n/i18n';
 import { Mode, TAPKO_H, TAPKO_X } from '../mode';
 import { PATH_FEET } from './kit/hero';
+import { DRAGONS, drawDragon } from './dragons';
 import type { Target } from '../typing';
 
 /** The three kinds of crystal, each with its cracked picture, and their colors while the pictures are missing. */
@@ -28,6 +29,16 @@ const WORD_START = 0.1;
 const COUNT_LINE = 0.4;
 const END_TIME = 3.2;
 const INK = '#3d3355';
+/**
+ * On the dragon story's hero's journey the four valley dragons sit at the back of the meadow (they
+ * flew here at the valley's take-off): their places as shares of the stage, how far above the path
+ * they sit, their height, and their wave (a little hop every few seconds, each at its own time).
+ */
+const WATCHERS = [0.46, 0.6, 0.74, 0.88];
+const WATCH_UP = 120;
+const WATCH_H = 64;
+const WAVE_EVERY = 4;
+const WAVE_S = 0.6;
 
 /** A crystal while its picture is missing: a pointed six-sided column. */
 function crystalFallback(color: string) {
@@ -107,12 +118,14 @@ interface Mound {
  * Planet 2, the meadow of crystals (a stream): crystals grow out of mounds, stay big a while and
  * crack. As a crystal grows its word shows high above it and sinks toward its tip; typed in time,
  * the crystal flies into Tapko's pocket; when the word reaches it, it cracks, fades, and later a new
- * one grows there. Tapko wants as many as he can get: the end says how many he has.
+ * one grows there. Tapko wants as many as he can get: the end says how many he has. On the dragon
+ * story's hero's journey the rocket needs their energy to fly home, and the valley dragons watch.
  */
 export class CrystalsMode extends Mode {
   readonly tapkoFeet = PATH_FEET;
-  readonly pictures = [...CRYSTALS, ...CRYSTALS.map((c) => `${c}-cracked`), ...MOUNDS];
+  readonly pictures = [...CRYSTALS, ...CRYSTALS.map((c) => `${c}-cracked`), ...MOUNDS, ...DRAGONS];
   readonly world = 'planet';
+  private readonly journey = this.L.def.variant === 'journey';
   private mounds: Mound[] = [];
   private collected = 0;
   private wait = 1;
@@ -242,7 +255,16 @@ export class CrystalsMode extends Mode {
     drawSprite(g, cracked ? `${c.pic}-cracked` : c.pic, m.x + sh, this.foot(m) + 10, this.size(c), { ay: 1, rot: c.rot, flip: c.flip, alpha }, fall);
   }
 
+  /** The valley dragons at the back of the meadow, waving now and then. */
+  private drawWatchers(g: G): void {
+    WATCHERS.forEach((share, i) => {
+      const wave = (this.t + i * 1.3) % WAVE_EVERY, k = this.L.reduceMotion || wave > WAVE_S ? 0 : Math.sin((wave / WAVE_S) * Math.PI);
+      drawDragon(g, DRAGONS[i], this.L.vw * share, PATH_FEET - WATCH_UP - k * 12, WATCH_H, 0, -1, 1, k * 0.15);
+    });
+  }
+
   render(g: G): void {
+    if (this.journey) this.drawWatchers(g);
     // Lower mounds are nearer: they draw last, each over its own crystal.
     for (const m of [...this.mounds].sort((a, b) => a.y - b.y)) {
       if (m.crystal && m.crystal.state !== 'fly') this.drawCrystal(g, m, m.crystal);
@@ -260,7 +282,8 @@ export class CrystalsMode extends Mode {
     }
     if (this.endT === null || this.endT < COUNT_LINE) return;
     const n = this.collected;
-    const line = t(n === 1 ? 'story.crystalsDoneOne' : n > 1 && n < 5 ? 'story.crystalsDoneFew' : 'story.crystalsDoneMany', { n });
+    const size = n === 1 ? 'One' : n > 1 && n < 5 ? 'Few' : 'Many';
+    const line = t(this.journey ? `story.crystalsRocket${size}` : `story.crystalsDone${size}`, { n });
     const a = Math.min(1, (this.endT - COUNT_LINE) / 0.4);
     line.split('\n').forEach((l, i) => rimmed(g, l, this.L.vw / 2, VH * 0.26 + i * 56, 44, INK, a));
   }

@@ -16,7 +16,8 @@ const MODES: Record<LevelKind, (def: ModeDef) => Promise<ModeMaker>> = {
   space: () => import('./modes/space').then((m) => (L) => new m.SpaceMode(L)),
   asteroid: () => import('./modes/space').then((m) => (L) => new m.AsteroidMode(L)),
   hop: () => import('./modes/space-calm').then((m) => (L) => new m.HopMode(L)),
-  command: () => import('./modes/space-calm').then((m) => (L) => new m.CommandMode(L)),
+  // The dragon story's hero's journey takes off from the planet's shore.
+  command: (def) => (def.variant === 'journey' ? import('./modes/launch').then((m) => (L) => new m.LaunchMode(L)) : import('./modes/space-calm').then((m) => (L) => new m.CommandMode(L))),
   swamp: () => import('./modes/planet').then((m) => (L) => new m.SwampMode(L)),
   greatswamp: () => import('./modes/planet').then((m) => (L) => new m.GreatSwampMode(L)),
   crystals: () => import('./modes/planet-crystals').then((m) => (L) => new m.CrystalsMode(L)),

@@ -1,10 +1,10 @@
 import { expect, test } from '@playwright/test';
 import { playLevel } from './helpers';
 
-test("a finished story's hero's journey plays its worlds with a travel card between them and keeps its stars", async ({ page }) => {
+test("the dragon story's hero's journey goes back down to the rocket with a travel card between its places, takes off and keeps its stars", async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
-  // Short parts, so the five worlds play in a minute.
+  // Short parts, so the five places play in a minute or two.
   await page.goto('./?minActive=3');
   await page.locator('.start-screen').waitFor();
   await page.keyboard.type('supertapkotyper', { delay: 40 });
@@ -17,7 +17,8 @@ test("a finished story's hero's journey plays its worlds with a travel card betw
   await egg.locator('.journey-node').click();
   await expect(page.locator('.hud-title')).toHaveText("Hero's journey");
   await expect(page.locator('.posture-card .posture-under')).toContainText('98 %');
-  // Every travel card met on the way names the next world.
+  await expect(page.locator('.posture-card')).toContainText('The little dragon has hatched!');
+  // Every travel card met on the way names the next place.
   await page.evaluate(() => {
     const seen: string[] = [];
     (window as unknown as { travels: string[] }).travels = seen;
@@ -28,7 +29,7 @@ test("a finished story's hero's journey plays its worlds with a travel card betw
   });
   expect(await playLevel(page, false)).toMatch(/%/);
   const travels = await page.evaluate(() => (window as unknown as { travels: string[] }).travels);
-  expect(travels).toEqual(['Next: Rocket', 'Next: Planet', 'Next: Valley', 'Next: Egg']);
+  expect(travels).toEqual(["Next: The dragons' valley", 'Next: The crystal meadow', 'Next: The swamp', 'Next: The rocket on the shore']);
   await expect(page.locator('.journey-done h2')).toHaveText("Hero's journey done!");
   const stars = Math.floor(Number((await page.locator('.journey-done .ec-under .stars').getAttribute('aria-label'))!.replace(/\D*([\d.]+).*/, '$1')));
   await page.locator('.end-card .ec-bot .btn').last().click();

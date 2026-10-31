@@ -6,6 +6,7 @@ import { bandScale, blob, drawSprite, type G } from '../../gfx/draw';
 import { t } from '../../i18n/i18n';
 import { TAPKO_H } from '../mode';
 import { HeroMode, wordAbove } from './kit/hero';
+import { STANDING_ROCKET, drawStandingRocket } from './kit/rocket';
 import { LIFE_CRYSTALS, drawLifeCrystals } from './planet-crystals';
 import type { Target } from '../typing';
 
@@ -27,9 +28,9 @@ const STONE_DROP = 6;
  * share of the stage he moves to through the swamp.
  */
 const SHORE_CLIFF = 0.14;
-const SHORE_LAND = 0.3;
+export const SHORE_LAND = 0.3;
 const SHORE_MEADOW = 0.52;
-const SHORE_FEET = VH * 0.84;
+export const SHORE_FEET = VH * 0.84;
 /** The last stone lies at least this share of a jump before the cliff. */
 const LAND_GAP = 0.25;
 const SHORE_VIEW = 0.6;
@@ -39,7 +40,7 @@ const SHORE_MARGIN = 160;
 const SHORE_AT = 0.9;
 const SHORE_LAST_S = 10;
 /** The shore picture's width on the stage (1376 px until its picture is there). */
-function shoreW(): number {
+export function shoreW(): number {
   return (sprite('bg-planet-swamp-shore')?.naturalWidth ?? 1376) * bandScale('planet', '-swamp');
 }
 /** Seconds of a jump between stones and of the view gliding after him. */
@@ -467,6 +468,8 @@ const CRUMBLE = 0.9;
 const RISE = 1;
 const PLACE = 1.2;
 const GLOW_S = 3;
+/** Seconds by the rocket before the journey's swamp ends. */
+const ROCKET_END = 2.5;
 const CRADLE_H = 190;
 const LIFE_H = 100;
 /** The monolith's foot stands this far below the grass line, a dark green shadow behind it. */
@@ -476,6 +479,18 @@ const FLOAT = 26;
 const BOB = 6;
 /** The shore picture always reaches this far past the stage's right edge, so its end never shows. */
 const END_MARGIN = 40;
+/** On the dragon story's hero's journey Tapko's rocket stands on the shore's grass this far left of the shore's last view's right edge. */
+const ROCKET_IN = 170;
+
+/** The shore's x when the view at 0 ends where the great swamp's last view does (the journey's take-off goes on there). */
+export function shoreEndView(vw: number): number {
+  return vw + END_MARGIN - shoreW();
+}
+
+/** Where the journey's rocket stands on the shore at `shore`, in the scene. */
+export function shoreRocketX(shore: number): number {
+  return shore + shoreW() - END_MARGIN - ROCKET_IN;
+}
 
 /** The monolith while its picture is missing. */
 function cradleFallback(g: G, w: number, h: number): void {
@@ -504,10 +519,15 @@ interface Crumb {
  * both minimums are nearly met; then the shore comes just past the stage's right edge, the last stone
  * just before it. He steps onto its grass, and a longer sentence of known words (with a capital and a
  * period once they are known) typed without a slip wakes the monolith beside him; the crystals of
- * life fly onto it, float and pulse in their glow.
+ * life fly onto it, float and pulse in their glow. On the dragon story's hero's journey it is the
+ * last swamp before the rocket: no log, and on the shore no sentence, Tapko's rocket stands ready.
  */
 export class GreatSwampMode extends SwampHero {
-  readonly pictures = [...SWAMP_PICTURES, 'obj-swamp-stone-broken', 'obj-swamp-log', 'obj-cradle', ...LIFE_CRYSTALS];
+  readonly pictures = [...SWAMP_PICTURES, 'obj-swamp-stone-broken', 'obj-swamp-log', 'obj-cradle', ...LIFE_CRYSTALS, ...STANDING_ROCKET];
+  private readonly journey = this.L.def.variant === 'journey';
+  /** The little dragon hops after him from stone to stone (in the scene), and the seconds he has stood by the rocket. */
+  private friend: { x: number; y: number } | null = null;
+  private atRocket: number | null = null;
   private gap = 200;
   private home = 130;
   /** The first stone's x; stone `i` lies at `x0 + i * gap`. */
@@ -567,7 +587,12 @@ export class GreatSwampMode extends SwampHero {
     return Math.max(this.idx(this.stand!) + 1, Math.ceil((this.scroll + this.L.vw - this.x0) / this.gap - LAND_GAP));
   }
 
-  /** The shore comes when the jumps to it and the sentence fill the planned tasks and about the time still left. */
+  /** The sentence on the shore: one task of its words; none on the journey. */
+  private get sentenceTasks(): number {
+    return this.journey ? 0 : 1;
+  }
+
+  /** The shore comes when the jumps to it and the sentence (on the journey the scene by the rocket) fill the planned tasks and about the time still left. */
   private get shoreDue(): boolean {
     const left = this.lastStone() - this.idx(this.stand!);
     return this.tasksDone + left + 1 >= this.L.count && this.L.minLeft <= (left + SENTENCE_WORDS) * this.pace;
@@ -576,7 +601,26 @@ export class GreatSwampMode extends SwampHero {
   private placeShoreAhead(): void {
     this.jumps = this.lastStone();
     this.shore = this.x0 + (this.jumps + LAND_GAP) * this.gap - SHORE_CLIFF * shoreW();
-    this.L.count = this.tasksDone + this.jumps - this.idx(this.stand!) + 1;
+    this.L.count = this.tasksDone + this.jumps - this.idx(this.stand!) + this.sentenceTasks;
+  }
+
+  /** The journey's swamp has no log. */
+  protected logDue(reach: number): boolean {
+    return !this.journey && super.logDue(reach);
+  }
+
+  /** The little dragon right behind him: on the stone before his, on the shore beside him. */
+  friendSpot(): { x: number; y: number } {
+    const f = this.friend;
+    return f ? { x: f.x - this.scroll, y: f.y } : super.friendSpot();
+  }
+
+  /** Where the little dragon heads for in the scene. */
+  private friendAim(): { x: number; y: number } {
+    if (this.onShore) return { x: this.onShore.x - 105, y: this.onShore.y };
+    const i = this.stand ? this.stones.indexOf(this.stand) : -1;
+    const behind = i > 0 ? this.stones[i - 1] : null;
+    return behind ? this.top(behind) : { x: this.heroX + this.scroll - 105, y: this.heroY };
   }
 
   /** The next word, unless the shore comes now; never while a log lies ahead. */
@@ -660,16 +704,25 @@ export class GreatSwampMode extends SwampHero {
     });
   }
 
-  /** From the last stone onto the shore's grass, where a sentence typed without a slip wakes the monolith. */
+  /** From the last stone onto the shore's grass, where a sentence typed without a slip wakes the monolith (on the journey the rocket waits). */
   private ashore(): void {
     const land = this.shoreAt(SHORE_LAND);
+    const then = () => (this.journey ? this.rocketReady() : this.askSentence());
     this.leap(land, () => {
       this.stand = null;
       this.onShore = land;
       // The view moves on as far as the shore allows, so he and the monolith have room on the grass.
-      if (this.maxScroll <= this.scroll) return this.askSentence();
-      this.glide(land.x, land.x - this.maxScroll, () => this.askSentence());
+      if (this.maxScroll <= this.scroll) return then();
+      this.glide(land.x, land.x - this.maxScroll, then);
     });
+  }
+
+  /** On the journey's shore: his rocket is there. */
+  private rocketReady(): void {
+    this.happy();
+    this.atRocket = 0;
+    this.L.say(pickLine('story.swampRocket'), ROCKET_END);
+    this.L.hooray();
   }
 
   private askSentence(): void {
@@ -703,6 +756,12 @@ export class GreatSwampMode extends SwampHero {
 
   update(dt: number): void {
     super.update(dt);
+    if (this.atRocket !== null) this.atRocket += dt;
+    if (this.journey) {
+      const aim = this.friendAim(), f = this.friend ??= { ...aim }, k = this.L.reduceMotion ? 1 : Math.min(1, dt * 5);
+      f.x += (aim.x - f.x) * k;
+      f.y += (aim.y - f.y) * k;
+    }
     for (const c of this.crumbs) c.t += dt;
     this.crumbs = this.crumbs.filter((c) => c.t < CRUMBLE);
     if (this.back !== null && !this.jumpTo && (this.back -= dt) <= 0) {
@@ -752,6 +811,7 @@ export class GreatSwampMode extends SwampHero {
     }
     this.drawStones(g);
     this.drawLog(g);
+    if (this.journey && this.shore !== null) drawStandingRocket(g, shoreRocketX(this.shore) - this.scroll, SHORE_FEET + 6);
     if (this.cradle) this.drawCradle(g);
     if (this.current) {
       this.drawNextRing(g, this.stand!.x + this.gap);
@@ -810,12 +870,13 @@ export class GreatSwampMode extends SwampHero {
 
   /** Jumps reached and the log's pushes out of the planned tasks (the sentence one more); full once the sentence is typed. */
   progress(): number {
-    if (this.cradle) return 1;
+    if (this.cradle || this.atRocket !== null) return 1;
     const done = this.tasksDone;
     return done / Math.max(this.L.count, done + 1);
   }
 
   get finished(): boolean {
+    if (this.journey) return (this.atRocket ?? 0) >= ROCKET_END;
     return (this.place ?? 0) >= 1 + GLOW_S / PLACE;
   }
 }

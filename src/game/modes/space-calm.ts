@@ -288,12 +288,12 @@ const PANEL_INK = '#e8f6ff';
  */
 export class CommandMode extends Mode {
   readonly pictures = [...PICTURES, 'obj-console'];
-  readonly world = 'space';
+  readonly world: string = 'space';
   readonly phraseWords = 1;
-  readonly drift: Drift = { layer: 'near', speed: 12 };
-  private row = new CopyRow(this.L);
+  readonly drift: Drift | null = { layer: 'near', speed: 12 };
+  protected row = new CopyRow(this.L);
   /** Seconds until the next row comes after a sent one (-1: writing). */
-  private reply = -1;
+  protected reply = -1;
   /** The rocket's share of the way to him, set by accepted commands, and shown eased; it never goes back. */
   private goal = 0;
   private shown = 0;
@@ -302,9 +302,9 @@ export class CommandMode extends Mode {
   private dyShown = 0;
   /** The rocket's answer, said on the next frame once its bubble can be measured. */
   private answer: string | null = null;
-  private flame = 0;
+  protected flame = 0;
   /** Seconds of the end; null before it. */
-  private end: number | null = null;
+  protected end: number | null = null;
 
   startLine(): string {
     return pickLine('story.commandStart');
@@ -314,7 +314,8 @@ export class CommandMode extends Mode {
     this.row.fill();
   }
 
-  private get feet(): { x: number; y: number } {
+  /** Where he stands: the commands fly from there. */
+  protected get feet(): { x: number; y: number } {
     return { x: COMMAND_X, y: VH * COMMAND_Y - ROCK_SIZE * 0.32 + Math.sin(this.t * 1.4) * 4 };
   }
 
@@ -322,7 +323,7 @@ export class CommandMode extends Mode {
    * The rocket, mirrored to face him: from the right third to beside him as commands are accepted
    * (`share`), `dy` off the middle line, bobbing; at the end it flies off to the left.
    */
-  private rocket(share = this.shown, dy = this.dyShown): { x: number; y: number } {
+  protected rocket(share = this.shown, dy = this.dyShown): { x: number; y: number } {
     const from = this.L.vw * ROCKET_START, to = COMMAND_X + ROCKET_STOP;
     const x = from + (to - from) * ease.inOutQuad(share);
     return { x: x - ease.inQuad(this.away) * (x + 300), y: VH * 0.5 + dy + Math.sin(this.t * 1.8) * 8 };
@@ -364,13 +365,7 @@ export class CommandMode extends Mode {
     if (this.end !== null) {
       const before = this.end;
       this.end += dt;
-      if (before < BOARD && this.end >= BOARD) {
-        const r = this.rocket();
-        this.L.particles.emit(r.x, r.y, 30, 'sparkle', ['#fff6a8', '#ffd1f5', '#a8f0ff'], 260, 9);
-        this.L.shout(t('story.boarded'), r.x, r.y - 110);
-        this.L.sfx('cheer');
-      }
-      if (before < BOARD + REST && this.end >= BOARD + REST) this.L.sfx('whoosh');
+      this.ending(before);
       return;
     }
     if (this.reply < 0) return;
@@ -380,6 +375,18 @@ export class CommandMode extends Mode {
     this.L.core.prune();
     if (this.row.left > 0) this.row.fill();
     else this.end = 0;
+  }
+
+  /** What happens at the end's seconds passed since `before`: he is in, the rocket flies off. */
+  protected ending(before: number): void {
+    const end = this.end!;
+    if (before < BOARD && end >= BOARD) {
+      const r = this.rocket();
+      this.L.particles.emit(r.x, r.y, 30, 'sparkle', ['#fff6a8', '#ffd1f5', '#a8f0ff'], 260, 9);
+      this.L.shout(t('story.boarded'), r.x, r.y - 110);
+      this.L.sfx('cheer');
+    }
+    if (before < BOARD + REST && end >= BOARD + REST) this.L.sfx('whoosh');
   }
 
   onDone(tg: Target): void {
@@ -409,6 +416,12 @@ export class CommandMode extends Mode {
     const { rowTyped: right, rowSlips: slips } = this.row;
     const last = this.row.left <= 0;
     const accepted = last || slips === 0 || (right > 0 && !this.L.rng.chance(0.5));
+    this.answer = this.answered(accepted, last);
+    this.reply = REPLY_TIME;
+  }
+
+  /** The rocket takes an accepted command (the engine fires, it comes closer) or turns at a rejected one; returns its answer. */
+  protected answered(accepted: boolean, last: boolean): string {
     if (last) {
       this.goal = 1;
       this.dy = 0;
@@ -417,8 +430,7 @@ export class CommandMode extends Mode {
       this.dy /= 2;
     } else this.veer();
     if (accepted) this.flame = 1;
-    this.answer = pickLine(accepted ? 'story.commandReply' : 'story.commandRejected');
-    this.reply = REPLY_TIME;
+    return pickLine(accepted ? 'story.commandReply' : 'story.commandRejected');
   }
 
   /** A rejected command turns the rocket up or down, staying within the band. */
@@ -430,7 +442,7 @@ export class CommandMode extends Mode {
   }
 
   /** The command panel fixed in the middle of the stage, and the onboard computer standing on its left edge with a third of it over the panel. */
-  private panel(): { x0: number; x1: number; y: number; console: { x: number; w: number } } {
+  protected panel(): { x0: number; x1: number; y: number; console: { x: number; w: number } } {
     const w = Math.min(this.L.vw * 0.56, 700), x0 = this.L.vw / 2 - w / 2;
     const img = sprite('obj-console');
     const cw = CONSOLE_H * (img ? img.naturalWidth / img.naturalHeight : 2 / 3);
@@ -449,6 +461,12 @@ export class CommandMode extends Mode {
   }
 
   render(g: G): void {
+    this.drawScene(g);
+    this.drawPanel(g);
+  }
+
+  /** The rocket's answer once it can be measured, the meteor, the rocket and the astronaut. */
+  protected drawScene(g: G): void {
     if (this.answer) {
       this.answerWith(g, this.answer);
       this.answer = null;
@@ -470,6 +488,10 @@ export class CommandMode extends Mode {
       const s = this.hero();
       drawAstronaut(g, true, s.x, s.y, s.size);
     }
+  }
+
+  /** The command panel with the onboard computer and the row to type, until the end. */
+  protected drawPanel(g: G): void {
     if (this.end !== null) return;
     const p = this.panel();
     g.save();

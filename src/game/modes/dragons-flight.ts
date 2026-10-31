@@ -2,7 +2,9 @@ import { pickLine } from '../../app/app';
 import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
 import { drawSprite, fontFamily, type G, wordBox } from '../../gfx/draw';
-import { tn } from '../../i18n/i18n';
+import { LITTLE_DRAGON_PICTURES, littleDragonImage } from '../../gfx/little-dragon';
+import { t, tn } from '../../i18n/i18n';
+import { JOURNEY_FLOCK } from '../levels';
 import { Mode, TAPKO_FEET, TAPKO_H, TAPKO_X } from '../mode';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
@@ -79,6 +81,8 @@ const UPRIGHT = 0.4;
 const OOPS_AT = 2;
 const DOWN_AT = 3;
 const WOBBLE = 0.8;
+/** On the dragon story's hero's journey the little dragon flies alone, at most twice. */
+const JOURNEY_FLIGHTS = 2;
 
 interface Flyer {
   pic: string;
@@ -119,15 +123,19 @@ interface Flyer {
  * the middle; the first typed word starts the flight, a slow arc whose height follows the rhythm.
  * Too low over the bushes it lands in them with a giggle and walks on. A second slip in a flight
  * makes it cry out and wobble, a third ends the flight (into the bushes, or a hard landing past
- * them). Every dragon reaches the fire, and the end counts how many flew.
+ * them). Every dragon reaches the fire, and the end counts how many flew. On the dragon story's hero's
+ * journey the hatched little dragon learns to fly: it alone flies, once more while the part's minimum
+ * is not played.
  */
 export class FlightMode extends Mode {
-  readonly pictures = [...DRAGONS, ...BUSHES, ...PIT_PICTURES];
+  readonly pictures = [...DRAGONS, ...BUSHES, ...PIT_PICTURES, ...LITTLE_DRAGON_PICTURES];
   readonly world = 'dragons';
   readonly phraseWords = 1;
+  private readonly journey = this.L.def.variant === 'journey';
+  private readonly flock = this.journey ? JOURNEY_FLIGHTS : FLOCK_MAX;
   private pit: Firepit;
   private dragons: Flyer[] = [];
-  private planned = FLOCK_START;
+  private planned = this.journey ? JOURNEY_FLOCK : FLOCK_START;
   private done = 0;
   private flown = 0;
   private current: Target | null = null;
@@ -151,6 +159,11 @@ export class FlightMode extends Mode {
   /** The pit near the right edge, its picture wholly on the stage. */
   private pitX(): number {
     return Math.min(this.L.vw * FLIGHT_PIT_AT, this.L.vw - (FLIGHT_PIT_H * PIT_RATIO) / 2 - 8);
+  }
+
+  /** The little dragon is the one flying: it does not walk behind Tapko. */
+  friendAway(): boolean {
+    return this.journey;
   }
 
   /** The stars also count the flyers: all of them 3, at least half 2, else 1. */
@@ -193,9 +206,11 @@ export class FlightMode extends Mode {
 
   private newDragon(): void {
     const i = this.done;
+    // The little dragon tries once more from the start, it is the only one.
+    if (this.journey) this.dragons = [];
     this.dragons.push({
-      pic: DRAGONS[i % DRAGONS.length], x: START_X, alt: 0, state: 'wait', p: 0, lift: 0, climb: false, tilt: 0, vy: 0, squash: 0, t: 0,
-      fromX: START_X, fromAlt: 0, fromTilt: 0, toX: START_X, drop: DROP, flew: false, seat: i, slips: 0, wobble: 0,
+      pic: this.journey ? littleDragonImage() : DRAGONS[i % DRAGONS.length], x: START_X, alt: 0, state: 'wait', p: 0, lift: 0, climb: false, tilt: 0, vy: 0, squash: 0, t: 0,
+      fromX: START_X, fromAlt: 0, fromTilt: 0, toX: START_X, drop: DROP, flew: false, seat: this.journey ? 0 : i, slips: 0, wobble: 0,
     });
     // The wait between flights is not rhythm.
     this.L.rhythm.ready(performance.now());
@@ -263,7 +278,9 @@ export class FlightMode extends Mode {
     this.pit.update(dt);
     this.bushShake = Math.max(0, this.bushShake - dt);
     for (const d of this.dragons) this.move(d, dt);
-    if (this.nextIn >= 0 && (this.nextIn -= dt) < 0) this.newDragon();
+    // The little dragon first gets to the fire, then tries again.
+    const away = this.journey && this.dragons.some((d) => d.state !== 'home');
+    if (this.nextIn >= 0 && !away && (this.nextIn -= dt) < 0) this.newDragon();
     if (this.endT !== null) this.endT += dt;
     else if (this.over && this.dragons.every((d) => d.state === 'home')) this.endT = 0;
   }
@@ -370,15 +387,15 @@ export class FlightMode extends Mode {
 
   /** A flight is over (landed by the pit, in the bushes or hard): the next dragon comes while this one goes on to its seat. */
   private flightOver(): void {
-    const L = this.L, d = this.dragons[this.done];
+    const L = this.L, d = this.dragons[this.dragons.length - 1];
     this.done++;
     if (d.flew) this.flown++;
-    this.planned = flockFor(L, this.planned, this.done);
+    this.planned = flockFor(L, this.planned, this.done, this.flock);
     if (this.done < this.planned) {
       this.nextIn = 0.8;
       return;
     }
-    if (this.done >= FLOCK_MAX) L.endMinimum();
+    if (this.done >= this.flock) L.endMinimum();
     // The last flight: no more words; the end comes once every dragon sits by the pit.
     this.over = true;
     if (this.current) L.core.release(this.current, false);
@@ -398,7 +415,7 @@ export class FlightMode extends Mode {
     for (const d of this.dragons) if (d.state !== 'bush' && d.state !== 'home') this.drawFlyer(g, d);
     if (this.current) L.label(g, this.current, L.vw / 2, VH * 0.15);
     if (this.endT === null) return;
-    const line = tn('story.flightDone', this.flown, { n: this.flown, m: this.done });
+    const line = this.journey ? t(this.flown ? 'story.littleFlightDone' : 'story.littleFlightTried') : tn('story.flightDone', this.flown, { n: this.flown, m: this.done });
     rimmed(g, line, L.vw / 2, VH * 0.24, 40, Math.min(1, this.endT / 0.4));
   }
 

@@ -21,6 +21,7 @@ const { FlamesMode, ThicketMode, flockAfter } = await import('./dragons');
 const { FlightMode, LullabyMode, TakeoffMode, shortenLine, takeoffPlan } = await import('./dragons-flight');
 const { BouldersMode, MudMode, WindMode } = await import('./egg');
 const { SpellRibbonMode } = await import('./egg-spell');
+const { LaunchMode } = await import('./launch');
 
 /** A level runtime with just enough to run a mode: words are fixed, every other call does nothing. */
 function fakeRuntime(count = 4): LevelRuntime {
@@ -203,11 +204,21 @@ describe("every part of a hero's journey keeps giving targets until its share of
     const l = journeyLevel(story, i);
     return [`${story.id} ${i + 1}: ${l.kind}`, l] as [string, LevelDef];
   }));
+  // The dragon story's take-off is the command game on the ground.
+  const partCtor = (def: LevelDef) => (def.kind === 'command' && def.variant === 'journey' ? LaunchMode : ctor(def.kind));
   it.each(PARTS)('%s: a quick steady typist never waits long, and the part ends just after its minimum', (_name, def) => {
-    const p = play(def, ctor(def.kind), 0.15, 0);
+    const p = play(def, partCtor(def), 0.15, 0);
     expect(p.gap, `waited from ${p.gapAt.toFixed(1)} s`).toBeLessThanOrEqual(8);
     expect(p.end).toBeGreaterThanOrEqual(p.min);
     expect(p.over).toBeLessThan(15);
+  });
+
+  it.each(PARTS)('%s: a slow typist at the pace of its story ends near its minimum', (_name, def) => {
+    const word = 60 / WPM[STORIES.findIndex((s) => s.id === def.journey!.story)];
+    const p = play(def, partCtor(def), word / 5, word);
+    expect(p.end).toBeGreaterThanOrEqual(p.min);
+    // The flights end with their last dragon, their minimum is what was played.
+    if (def.kind !== 'flight') expect(p.end, `${p.words} words`).toBeLessThanOrEqual(p.min * 1.3);
   });
 });
 

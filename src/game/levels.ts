@@ -75,14 +75,16 @@ export interface JourneyPart {
   part: number;
   parts: number;
   line?: string;
+  place?: string;
 }
 
-/** One part of a story's own hero's journey: what it plays, the world of its background and its own story line (an i18n key). */
+/** One part of a story's own hero's journey: what it plays, the world of its background, its own story line and the place its travel card names (i18n keys; the world's name without one). */
 export interface JourneyStep {
   kind: LevelKind;
   variant: string;
   world: number;
   line?: string;
+  place?: string;
 }
 
 /** Seconds of active play a level lasts at least, by story (dragon, robot, fairy): the difficulty grows with the story. */
@@ -127,22 +129,23 @@ export function copyTarget(index: number, sentence: boolean): { words: number; m
   return index >= 4 && sentence ? { words: 5, min: 3 } : { words: 3, min: 2 };
 }
 
-/** Dragons a flight level starts with; one more comes while the minimum is not played (`flockAfter`). */
+/** Dragons a flight level starts with; one more comes while the minimum is not played (`flockAfter`). The dragon story's journey flies the little dragon alone. */
 const FLOCK = 3;
+export const JOURNEY_FLOCK = 1;
 
 /** A kind's planned count in its own unit for `words` words; every other kind counts words. */
 const UNITS: Partial<Record<LevelKind, (words: number, l: LevelDef) => number>> = {
   // A big asteroid is its word, three or four pieces and now and then a shielded one: about five words.
   asteroid: (w) => w / 5,
-  // The great swamp's tasks are jumps, the log's words and the sentence on the shore (one task of about four words).
-  greatswamp: (w) => w - 3,
+  // The great swamp's tasks are jumps, the log's words and the sentence on the shore (one task of about four words); the journey's swamp has no sentence.
+  greatswamp: (w, l) => (l.journey ? w : w - 3),
   // A copy target is one word, a phrase of two or three, or a sentence of three to five (`copyTarget`).
   copyloop: (w, l) => {
     const size = copyTarget(l.index, true);
     return w / (size.words <= 1 ? 1 : (size.min + size.words) / 2);
   },
   // The valley's flying lessons, lullaby and take-off count dragons, not words (the exception).
-  flight: () => FLOCK, lullaby: () => FLOCK, takeoff: () => FLOCK,
+  flight: (_, l) => (l.journey ? JOURNEY_FLOCK : FLOCK), lullaby: () => FLOCK, takeoff: () => FLOCK,
 };
 
 /** The planned count of a level: its minimum words in the kind's own unit. */
@@ -308,7 +311,17 @@ export function halfStarsFor(accuracy: number, steps = STAR_STEPS): number {
 }
 
 /** Stories with a hero's journey of their own; every other story plays the first level of each of its worlds, in order. */
-export const JOURNEYS: Partial<Record<StoryDef['id'], JourneyStep[]>> = {};
+export const JOURNEYS: Partial<Record<StoryDef['id'], JourneyStep[]>> = {
+  // The egg has hatched: Tapko takes the little dragon down the mountain, through the valley, the planet's
+  // crystal meadow and its swamp back to his rocket on the shore, and takes off. World 1 is not on this planet.
+  dragon: [
+    { kind: 'boulders', variant: 'journey', world: 4, line: 'journey.dragon.down' },
+    { kind: 'flight', variant: 'journey', world: 3, line: 'journey.dragon.valley', place: 'journey.dragon.valleyPlace' },
+    { kind: 'crystals', variant: 'journey', world: 2, line: 'journey.dragon.crystals', place: 'journey.dragon.crystalsPlace' },
+    { kind: 'greatswamp', variant: 'journey', world: 2, line: 'journey.dragon.swamp', place: 'journey.dragon.swampPlace' },
+    { kind: 'command', variant: 'journey', world: 2, line: 'journey.dragon.launch', place: 'journey.dragon.launchPlace' },
+  ],
+};
 
 function journeySteps(story: StoryDef): JourneyStep[] {
   return JOURNEYS[story.id] ?? story.worlds.map((w) => {
@@ -329,7 +342,7 @@ export function journeyOpen(p: Profile, story: StoryDef): boolean {
 export function journeyLevel(story: StoryDef, part: number): LevelDef {
   const steps = journeySteps(story);
   const s = steps[Math.max(0, Math.min(steps.length - 1, part))];
-  const journey: JourneyPart = { story: story.id, part: steps.indexOf(s), parts: steps.length, ...(s.line ? { line: s.line } : {}) };
+  const journey: JourneyPart = { story: story.id, part: steps.indexOf(s), parts: steps.length, ...(s.line ? { line: s.line } : {}), ...(s.place ? { place: s.place } : {}) };
   const l: LevelDef = { id: journeyId(story), world: s.world, index: -1, kind: s.kind, count: 0, variant: s.variant, isSuper: false, journey };
   return { ...l, count: plannedCount(l) };
 }

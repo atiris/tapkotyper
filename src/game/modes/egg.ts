@@ -31,6 +31,8 @@ const leafFallback = blob('#9ccf7a', false);
 abstract class SlopeStream extends ApproachMode {
   readonly world = 'egg';
   protected egg: EggPeek;
+  /** The dragon story's hero's journey goes back down: the egg has hatched and the little dragon walks behind him. */
+  protected readonly journey: boolean;
   protected detour: Detour;
   /** His own bob or hop (0..1), his lean (a share of a turn), and his sit after a stumble (0..1). */
   protected jump = 0;
@@ -42,6 +44,7 @@ abstract class SlopeStream extends ApproachMode {
   constructor(L: LevelRuntime, maxWords: number) {
     super(L);
     this.egg = new EggPeek(L);
+    this.journey = L.def.variant === 'journey';
     this.detour = new Detour(maxWords, secondsPerWord(L));
     this.playerX = HERO_X + REACH;
   }
@@ -77,6 +80,11 @@ abstract class SlopeStream extends ApproachMode {
     return { x: HERO_X, y: FEET - TAPKO_H * 1.25 - 40 };
   }
 
+  /** The little dragon of the hero's journey walks right behind him. */
+  friendSpot(): { x: number; y: number } {
+    return { x: HERO_X - 105, y: FEET };
+  }
+
   /** The line at the end of the stream. */
   protected abstract doneLine(): string;
 
@@ -91,7 +99,7 @@ abstract class SlopeStream extends ApproachMode {
 
   protected drawHero(g: G): void {
     const sitDrop = Math.sin(Math.PI * Math.min(1, this.sit)) * 14;
-    drawCarrier(g, this.L, this.egg, this.L.tapkoMood, HERO_X, FEET + sitDrop, { t: this.t, jump: this.jump, spin: this.lean });
+    drawCarrier(g, this.L, this.journey ? null : this.egg, this.L.tapkoMood, HERO_X, FEET + sitDrop, { t: this.t, jump: this.jump, spin: this.lean });
   }
 
   get finished(): boolean {
@@ -292,7 +300,8 @@ function boulderFallback(g: G, w: number, h: number): void {
  * Egg 4, boulders before the summit (a word stream): round boulders roll down the path at him,
  * the word above each; from a third of the level about every third throw is a pair. Typed, it rolls
  * on and he hops over it; missed, he hops too late, stumbles and sits a moment, and the way gets
- * a little longer.
+ * a little longer. On the dragon story's hero's journey they roll after him on the way down, the egg
+ * hatched, and the way grows by the part's own share.
  */
 export class BouldersMode extends SlopeStream {
   readonly pictures = [...BOULDERS, 'obj-egg-plain'];
@@ -311,7 +320,7 @@ export class BouldersMode extends SlopeStream {
   }
 
   protected doneLine(): string {
-    return 'story.bouldersDone';
+    return this.journey ? 'story.bouldersDownDone' : 'story.bouldersDone';
   }
 
   /** A pair's second boulder may come while the first rolls; else one at a time. */
@@ -378,7 +387,8 @@ export class BouldersMode extends SlopeStream {
     this.egg.poke();
     this.exclaim('story.boulderOops');
     this.L.setMood('thinking', 1.4);
-    this.longer(STUMBLE_SHARE * this.L.def.count, 'story.bouldersLonger');
+    this.L.friendWorried();
+    this.longer(STUMBLE_SHARE * this.L.def.count, this.journey ? 'story.bouldersDownLonger' : 'story.bouldersLonger');
   }
 
   protected moveGone(m: Mover, dt: number): void {

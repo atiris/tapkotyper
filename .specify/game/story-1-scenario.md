@@ -191,6 +191,44 @@ prebudenia."
 Koniec sveta: "Ohnisko drakov vzbĺklo a vajíčko praská... krak... krak! Malý dráčik sa na teba
 pozerá. Máš nového kamaráta! Teraz ťa čaká cesta hrdinu: späť dolu z hory až k rakete."
 
+## Cesta hrdinu: dolu z hory k rakete
+
+Dráčik sa na vrchole vyliahol a Tapko ho vezie domov. Cesta hrdinu (po korune 5. sveta) ide
+späť dolu z Hory prebudenia cez kľúčové miesta príbehu až k rakete a skončí štartom. Dráčik
+(vyliahnutý, už bez škrupiny, s malými roztvorenými krídlami) cupitá a poletuje hneď za
+Tapkom v každej časti, nikdy nie je cieľ: pri slove a na konci časti sa poteší, pri chybe a
+zakopnutí sa ustarostí. Tapko ide vždy doprava.
+
+Karta pred prvou časťou: "Dráčik sa vyliahol! Teraz ho musíš dostať **dolu z hory** a cez
+**údolie**, **lúku kryštálov** a **močiar** až k **rakete**, ktorá čaká na brehu. Na konci ju
+**odštartuješ**. Z hory sa valia balvany, preskakuj ich!" a pod tým riadok o ťažšej hre. Medzi
+časťami karta "Ďalej: <miesto>".
+
+1. **Dolu z hory** (pozadie hory) - balvany zo 4. úrovne sveta 5 sa valia sprava za ním;
+   napísaný preskočí, nenapísaný zakopne a cesta sa trochu predĺži ("Chvíľka zaváhania a cesta
+   dolu sa predĺžila."). Na konci: "Sme dole z hory! Dráčik je v bezpečí."
+2. **Údolie drakov** (pozadie údolia, horiace ohnisko vpravo) - "Dráčik sa chce naučiť lietať
+   ako jeho kamaráti." Prvé lietanie dráčika: lekcie lietania s jediným drakom, ním, cez dva
+   kríky k ohnisku; kým nie je odohrané minimum časti, skúsi to ešte raz (najviac dvakrát). Na
+   konci: "Dráčik letí! Už vie lietať ako kamaráti."
+3. **Lúka kryštálov** (lúka planéty) - "Raketa potrebuje na let domov energiu kryštálov.
+   Nazbieraj ich čo najviac! Dráčiky z údolia ťa už čakajú na lúke." Kryštály z 2. úrovne
+   planéty; štyri dráčiky z údolia sedia vzadu na lúke (prileteli sem na konci údolia) a
+   mávajú. Na konci: "N kryštálov nabije raketu na cestu domov!"
+4. **Močiar** (močiar planéty) - "Posledný močiar! Na brehu už čaká tvoja raketa." Krehké
+   kamene veľkého močiara (tri kamene a štvrtý pevný, pri chybe kameň praskne a Tapko ide
+   späť), bez brvna a bez monolitu. Dráčik skáče za ním z kameňa na kameň. Na brehu stojí na
+   tráve raketa: "Raketa! Stojí presne tam, kde sme ju nechali."
+5. **Raketa na brehu** (ten istý breh) - "Napíš rakete príkazy a priprav ju na štart. Potom s
+   dráčikom nastúpite a letíte domov!" Príkazová hra z raketového sveta na zemi: každý prijatý
+   príkaz raketu pripraví o krok ("Dvere otvorené.", "Kryštály načítané.", "Motory sa
+   zahrievajú.", "Odpočítavanie spustené."); neprijatý ("Príkaz neprijatý!") nič nezmení,
+   raketa na zemi neuhýba. Po poslednom Tapko s dráčikom nastúpia, "3, 2, 1, Štart!" a raketa
+   s plameňom a dymom vzlietne hore z obrazovky.
+
+Koniec: karta "Cesta hrdinu prejdená!" s kompasom; prvýkrát v zelenom riadku "Raketa letí domov
+aj s dráčikom!".
+
 ## Prečo
 - Každá úroveň má svoj dôvod v príbehu, takže päť úrovní sveta sa nečíta ako päťkrát tá istá
   hra s iným číslom.

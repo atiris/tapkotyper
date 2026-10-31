@@ -12,6 +12,7 @@ import { type Mood, pawColors, tapkoElement, tapkoPictures, renderTapkoInto } fr
 import { friendPictures, picturesReady, preload } from '../gfx/assets';
 import { type FairyMood, drawFairy } from '../gfx/fairy';
 import { type RobotMood, type RobotState, drawRobot, robotFor } from '../gfx/robot';
+import { LITTLE_DRAGON_PICTURES, type LittleDragonMood, drawLittleDragon } from '../gfx/little-dragon';
 import { locale, t, tList } from '../i18n/i18n';
 import { nickname } from '../storage/store';
 import { type InputHandlers, KeyInput, type TypedChar } from '../input/input';
@@ -60,6 +61,10 @@ const BOLT_SIZE = 150;
 const FAIRY_SIZE = 120;
 const FAIRY_FLOAT = 110;
 const FAIRY_HOP = 0.6;
+/** The little dragon's height, its place behind the DOM Tapko, and the seconds of its glad hop. */
+const LITTLE_SIZE = 92;
+const LITTLE_X = TAPKO_X - 95;
+const LITTLE_HOP = 0.5;
 /** The end of a level: Tapko hops HOPS times of HOP_TIME seconds, his tool fades in TOOL_FADE, then the results open. */
 const HOPS = 3;
 const HOP_TIME = 0.4;
@@ -170,6 +175,11 @@ export class LevelRuntime {
   private fairyMood: FairyMood = 'idle';
   private fairyMoodT = 0;
   private fairyHop = 0;
+  /** The hatched little dragon walks behind Tapko on the dragon story's hero's journey. */
+  readonly littleDragon: boolean;
+  private littleMood: LittleDragonMood = 'idle';
+  private littleMoodT = 0;
+  private littleHop = 0;
   private labels = new Labels(this);
   private callouts = new Callouts(this);
 
@@ -283,6 +293,7 @@ export class LevelRuntime {
     if (this.robot) this.el.dataset.bolt = this.robot.look;
     this.fairy = story && storyOf(def.world).id === 'fairy';
     if (this.fairy) this.el.dataset.fairy = 'melody';
+    this.littleDragon = def.journey?.story === 'dragon';
     this.progressFill = h('div', { class: 'progress-fill' });
     const title = def.kind === 'practice' ? t(def.phrases ? 'level.ownText' : 'level.practice') : def.kind === 'freetype' ? t('level.freeType') : def.kind === 'aim' ? t('aim.title') : def.kind === 'parrot' ? t('parrot.title') : def.journey ? t('journey.title') : worldName(def);
     // Hiding the guide is the switch: the crossed keyboard, with the orange ring while the guide is hidden.
@@ -389,7 +400,7 @@ export class LevelRuntime {
     // The level opens with every picture its mode, Tapko and the friends draw, so none shows its fallback first;
     // the other worlds' pictures keep loading in the background (main.ts).
     const { world, ground } = this.mode;
-    const own = [`bg-${world}-far`, `bg-${world}${ground}-mid`, `bg-${world}${ground}-near`, `bg-${world}${ground}-shore`, ...this.mode.pictures, ...tapkoPictures(p.companion), ...friendPictures()];
+    const own = [`bg-${world}-far`, `bg-${world}${ground}-mid`, `bg-${world}${ground}-near`, `bg-${world}${ground}-shore`, ...this.mode.pictures, ...tapkoPictures(p.companion), ...friendPictures(), ...(this.littleDragon ? LITTLE_DRAGON_PICTURES : [])];
     await Promise.race([preload(own), new Promise((r) => setTimeout(r, PICTURES_WAIT_S * 1000))]);
     if (this.disposed) return;
     audio.music(this.def.kind === 'practice' ? app.menuTrack : this.mode.world);
@@ -400,7 +411,7 @@ export class LevelRuntime {
     // A later part of a hero's journey: only the travel card to the next world.
     if (journey && journey.part > 0) {
       this.core.style = this.style;
-      await showTravel(host, WORLDS[this.def.world], journey.line ? t(journey.line) : null);
+      await showTravel(host, WORLDS[this.def.world], journey.line ? t(journey.line) : null, journey.place ? t(journey.place) : null);
       if (!this.disposed) this.begin();
       return;
     }
@@ -653,6 +664,7 @@ export class LevelRuntime {
       this.setMood('thinking', 1.2);
       this.setRobotMood('worried', 1);
       this.setFairyMood('curious', 1);
+      this.setLittleMood('worried', 1);
       this.mode.onWrong(res.target);
     } else {
       const { rt, repeat } = this.rhythm.press(res.expected, c.time);
@@ -667,6 +679,7 @@ export class LevelRuntime {
         this.setMood('happy', 1.4);
         this.setRobotMood('happy', 1.2);
         this.setFairyMood('happy', 1.2);
+        this.setLittleMood('happy', 1.2);
         this.mode.onDone(res.target);
         this.cheer();
         if (this.pawsAllowed && this.wordStreak % PAW_STREAK === 0) this.chargePaw();
@@ -910,6 +923,20 @@ export class LevelRuntime {
     if (mood === 'happy' && !this.reduceMotion) this.fairyHop = FAIRY_HOP;
   }
 
+  /** A stumble in the story (a missed boulder, a cracked stone): the story friend looks worried a while. */
+  friendWorried(seconds = 1.4): void {
+    this.setRobotMood('worried', seconds);
+    this.setFairyMood('curious', seconds);
+    this.setLittleMood('worried', seconds);
+  }
+
+  /** The little dragon is glad (a hop) or worried a while. */
+  private setLittleMood(mood: LittleDragonMood, seconds: number): void {
+    this.littleMood = mood;
+    this.littleMoodT = seconds;
+    if (mood === 'happy' && !this.reduceMotion) this.littleHop = LITTLE_HOP;
+  }
+
   /** A short text pops up over the scene at (x, y) and fades. */
   shout(text: string, x: number, y: number): void {
     this.callouts.shout(text, x, y);
@@ -955,6 +982,14 @@ export class LevelRuntime {
     const { x, y } = this.friendSpot();
     const hop = this.endTime == null ? (this.fairyHop > 0 ? 1 - this.fairyHop / FAIRY_HOP : 0) : this.endHop;
     drawFairy(g, this.endTime == null ? this.fairyMood : 'happy', x, y - FAIRY_FLOAT, FAIRY_SIZE, this.mode.t, hop);
+  }
+
+  /** The little dragon right behind Tapko, under the mode's objects; it hops with him at the end. */
+  private drawLittle(g: G): void {
+    if (this.mode.friendAway()) return;
+    const { x, y } = this.mode.friendSpot() ?? { x: LITTLE_X, y: this.mode.tapkoFeet };
+    const hop = this.endTime == null ? (this.littleHop > 0 ? 1 - this.littleHop / LITTLE_HOP : 0) : this.endHop;
+    drawLittleDragon(g, this.endTime == null ? this.littleMood : 'happy', x, y, LITTLE_SIZE, this.mode.t, hop, !this.reduceMotion);
   }
 
   /** A path taken at a crossroads makes the rest of the level shorter or longer: the minimum time, scaled by `k`. */
@@ -1341,6 +1376,8 @@ export class LevelRuntime {
     }
     if (this.robotMoodT > 0 && (this.robotMoodT -= dt) <= 0) this.robotMood = 'idle';
     if (this.fairyMoodT > 0 && (this.fairyMoodT -= dt) <= 0) this.fairyMood = 'idle';
+    if (this.littleMoodT > 0 && (this.littleMoodT -= dt) <= 0) this.littleMood = 'idle';
+    this.littleHop = Math.max(0, this.littleHop - dt);
     this.fairyHop = Math.max(0, this.fairyHop - dt);
     this.callouts.update(dt);
     // More targets after the minimum grew the level lower the mode's share; the bar never goes back.
@@ -1401,6 +1438,7 @@ export class LevelRuntime {
     drawBackground(g, this.mode.world, this.stage.vw, this.mode.scroll, !this.reduceMotion, this.mode.midOnly, drift && { layer: drift.layer, offset: driftOffset(drift, this.elapsed, !this.reduceMotion) }, this.mode.ground, this.mode.shore);
     if (this.robot) this.drawBolt(g);
     if (this.fairy) this.drawMelody(g);
+    if (this.littleDragon) this.drawLittle(g);
     this.labels.begin();
     this.mode.render(g);
     this.labels.draw(g);

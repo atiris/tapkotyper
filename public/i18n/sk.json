@@ -394,6 +394,7 @@
     "parrotTip": "Píš pomaly a presne a papagáj sa vráti.",
     "time": "Čas",
     "lastText": "Posledná veta",
+    "underMinute": "menej ako 1 min",
     "sendTeacher": "Pošli učiteľovi",
     "sendHow": "odkaz alebo kód",
     "letterBetter": "Písmeno {key}: presnosť z {before} % na {after} %",
@@ -958,7 +959,12 @@
     "parrotAway": "Papagáj tohto sveta ešte nie je doma",
     "rareFound": "Vzácna vec zo strelnice: {name}",
     "rareWaiting": "Vzácna vec zo strelnice tu ešte čaká",
-    "chars14": "{n} písmen napísaných za posledných 14 dní"
+    "chars14": "{n} písmen napísaných za posledných 14 dní",
+    "days14": "Dni s tréningom za posledných 14 dní: {n} z 14",
+    "time14": "Čas písania za posledných 14 dní: {time}",
+    "timeMin": "{m} min",
+    "timeHours": "{h} h {m}",
+    "timeHoursFull": "{h} h {m} min"
   },
   "stats": {
     "title": "Moje klávesy",

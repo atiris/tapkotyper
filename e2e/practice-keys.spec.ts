@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { createProfile, typeChar } from './helpers';
+import { createProfile, typeChar, untilPlay } from './helpers';
 
 test('free practice starts with a key picker and uses only the chosen keys', async ({ page }) => {
   const errors: string[] = [];
@@ -58,4 +58,27 @@ test('Escape closes the key picker', async ({ page }) => {
   await page.keyboard.press('Escape');
   await expect(page.locator('.practice-keys-modal')).toHaveCount(0);
   await expect(page.locator('.map-screen')).toBeVisible();
+});
+
+test('waiting in a level without keys counts no typing time', async ({ page }) => {
+  test.setTimeout(60_000);
+  await createProfile(page, 'Ema');
+  await page.locator('.map-side .btn', { hasText: 'Own typing' }).click();
+  await page.locator('.practice-keys-modal').getByRole('button', { name: 'Start' }).click();
+  await untilPlay(page);
+  // 12 s without a key, then two keys: each key adds at most 5 s.
+  await page.waitForTimeout(12_000);
+  for (let i = 0; i < 2; i++) await typeChar(page, await page.locator('.kb-guide').getAttribute('data-next') ?? 'f');
+  await page.waitForTimeout(3000);
+  await page.locator('.hud').getByRole('button', { name: 'Stop typing' }).click();
+  await expect(page.locator('.end-card .ec-under')).toHaveText('less than 1 min');
+  const p = await page.evaluate(() => JSON.parse(localStorage.getItem('tapkotyper:v1')!).profiles[0]);
+  expect(p.stats.sessions).toHaveLength(1);
+  expect(p.stats.sessions[0].seconds).toBeGreaterThan(0);
+  expect(p.stats.sessions[0].seconds).toBeLessThanOrEqual(10);
+  expect(p.progress.trainedSeconds).toBe(p.stats.sessions[0].seconds);
+  await page.locator('.end-card .ec-bot .btn').last().click();
+  await page.locator('.map-side .btn', { hasText: 'My progress' }).click();
+  await expect(page.locator('.progress-screen .sum-chip[aria-label^="Days with practice"]')).toHaveText('1/14');
+  await expect(page.locator('.progress-screen .sum-chip[aria-label^="Typing time"]')).toHaveText('0 min');
 });

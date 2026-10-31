@@ -394,6 +394,7 @@
     "parrotTip": "Type slowly and exactly and the parrot comes back.",
     "time": "Time",
     "lastText": "Last sentence",
+    "underMinute": "less than 1 min",
     "sendTeacher": "Send to the teacher",
     "sendHow": "the link or the code",
     "letterBetter": "Letter {key}: accuracy from {before} % to {after} %",
@@ -958,7 +959,12 @@
     "parrotAway": "This world's parrot is not at home yet",
     "rareFound": "Rare thing from the range: {name}",
     "rareWaiting": "The rare thing of this range still waits",
-    "chars14": "{n} letters typed in the last 14 days"
+    "chars14": "{n} letters typed in the last 14 days",
+    "days14": "Days with practice in the last 14 days: {n} of 14",
+    "time14": "Typing time in the last 14 days: {time}",
+    "timeMin": "{m} min",
+    "timeHours": "{h} h {m}",
+    "timeHoursFull": "{h} h {m} min"
   },
   "stats": {
     "title": "My keys",

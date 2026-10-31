@@ -15,7 +15,7 @@
   one card of every end, see [mechanics](../game/mechanics.md)) with the backpack, the minutes, the
   task, "Pošli učiteľovi: odkaz alebo kód", the result link, "Kopírovať odkaz" and "Veľký kód". The link holds the player's real name
   (or the nickname when there is none),
-  the task, the date, minutes played, accuracy, rhythm and the five weakest keys, a yes/no
+  the task, the date, minutes played (typing time, [statistics](statistics.md)), accuracy, rhythm and the five weakest keys, a yes/no
   flag that the super player removed or changed the settings password on the child's device
   ([profiles](profiles.md)), plus a checksum; the teacher's views and the QR scan show a red
   lock by that child's name. The teacher's help says plainly that the checksum finds damaged copies, not cheating.

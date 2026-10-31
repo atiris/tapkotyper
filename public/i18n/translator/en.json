@@ -318,6 +318,10 @@
       "title": "World badges",
       "about": "The bronze, silver and gold badge of each world and their tooltips."
     },
+    "progress-sums": {
+      "title": "My progress counters",
+      "about": "The tooltips and short texts of the three rows of counters at the top of My progress: the long-term picture, the last 14 days and the totals ever."
+    },
     "progress": {
       "title": "My progress",
       "about": "The My progress page the child opens with the button on the map (a quick look by tapping Tapko too), and its tabs."
@@ -924,6 +928,7 @@
     "end.parrotTip": "Yellow tip on the end card when the parrot flew off.",
     "end.time": "Row label: how long the free typing or the break took; the value is end.minutes.",
     "end.lastText": "Row label on the free typing end card; the value is the last text the child typed.",
+    "end.underMinute": "End card time when the child typed less than a minute (instead of a count of minutes).",
     "end.sendTeacher": "Row label on the finished task's card; the value is end.sendHow.",
     "end.sendHow": "Row value: what to send to the teacher.",
     "end.letterBetter": "Green line on the range's end card: the trained letter that got most accurate. {key} is the letter, {before} and {after} percent.",
@@ -1005,6 +1010,11 @@
     "progress.rareFound": "Tooltip of the rare thing beside a world's name in the levels list of the progress, once found; {name} is the thing.",
     "progress.rareWaiting": "Tooltip of the grey rare thing beside a world's name in the levels list of the progress, not found yet.",
     "progress.chars14": "Tooltip of the letters counter. {n} is the letters in 14 days.",
+    "progress.days14": "Tooltip of the days counter in the progress's 14-day row. {n} is the days with any typing in the last 14 days, today included.",
+    "progress.time14": "Tooltip of the typing time counter in the progress's 14-day row. {time} is the time in full, e.g. \"45 min\" or \"1 h 25 min\".",
+    "progress.timeMin": "Typing time under an hour, short, e.g. \"45 min\". {m} is the minutes.",
+    "progress.timeHours": "Typing time of an hour or more beside the clock icon, short, e.g. \"1 h 25\". {h} hours, {m} minutes.",
+    "progress.timeHoursFull": "Typing time of an hour or more in the tooltip, e.g. \"1 h 25 min\". {h} hours, {m} minutes.",
     "stats.title": "Heading of the Keys tab: the keyboard map with coloured keys.",
     "stats.intro": "Intro of the Keys tab. {n} is how many of the latest presses count.",
     "stats.empty": "Intro of the Keys tab when the child has not played yet.",

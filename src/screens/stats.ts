@@ -6,7 +6,7 @@ import { MAX_CHEST, MAX_STARS, badgeTier, chestPoints, totalStars, worldStars } 
 import { locale, t } from '../i18n/i18n';
 import { allKeys } from '../keyboard/layouts';
 import { activeKeys, lessonKeyOf } from '../learning/lessons';
-import { STATS_WINDOW, keyHistory, keyReport, lastTraining, masterySummary, recentTyping, weakKeys } from '../learning/stats';
+import { STATS_WINDOW, keyHistory, keyReport, lastTraining, masterySummary, recentPractice, recentTyping, weakKeys } from '../learning/stats';
 import { linkOf } from '../share/codec';
 import { makeOverallResult, makeResult, resultCode } from '../share/result';
 import type { Profile } from '../storage/schema';
@@ -111,11 +111,24 @@ function chip(pic: string | null, glyph: string, text: string, label: string): H
     pic ? h('img', { src: pic, alt: '' }) : h('span', { class: 'sum-glyph' }, glyph), h('b', {}, text));
 }
 
-/** The long-term picture in one row (mastered keys, finished stories and worlds, the chest's points, the parrots at home against their best count, the best stars of all levels), the last 14 days in the next (accuracy, speed, letters), the totals ever in the third (parrot rounds won, stars earned, the target range's record and its day). */
+/** Typing time short (`45 min`, `1 h 25`) for a chip and in full (`1 h 25 min`) for its tooltip. */
+function typingTime(seconds: number): { short: string; full: string } {
+  const min = Math.round(seconds / 60);
+  if (min < 60) {
+    const short = t('progress.timeMin', { m: min });
+    return { short, full: short };
+  }
+  const hm = { h: Math.floor(min / 60), m: min % 60 };
+  return { short: t('progress.timeHours', hm), full: t('progress.timeHoursFull', hm) };
+}
+
+/** The long-term picture in one row (mastered keys, finished stories and worlds, the chest's points, the parrots at home against their best count, the best stars of all levels), the last 14 days in the next (accuracy, speed, letters, days with practice, typing time), the totals ever in the third (parrot rounds won, stars earned, the target range's record and its day). */
 export function summaryRow(p: Profile): HTMLElement {
   const m = masterySummary(p);
   const stories = STORIES.filter((x) => storyDone(p, x)).length;
   const recent = recentTyping(p, 14);
+  const practice = recentPractice(p, 14);
+  const time = typingTime(practice.seconds);
   const percent = Math.round(recent.accuracy * 100);
   const chest = chestPoints(p), stars = totalStars(p);
   const parrots = { n: p.progress.parrots.length, best: p.progress.parrotBest };
@@ -130,7 +143,9 @@ export function summaryRow(p: Profile): HTMLElement {
   h('ul', { class: 'progress-sum' },
     recent.chars ? chip(imageUrl('ui-accuracy'), '✓', `${percent} %`, t('progress.quality', { n: percent })) : null,
     recent.cpm ? chip(imageUrl('ui-typing-speed'), '»', String(recent.cpm), t('progress.speed', { n: recent.cpm })) : null,
-    chip(imageUrl('ui-keys-typed'), 'Aa', String(recent.chars), t('progress.chars14', { n: recent.chars }))),
+    chip(imageUrl('ui-keys-typed'), 'Aa', String(recent.chars), t('progress.chars14', { n: recent.chars })),
+    chip(imageUrl('ui-days-trained'), '▦', `${practice.days}/14`, t('progress.days14', { n: practice.days })),
+    chip(imageUrl('ui-typing-time'), '◷', time.short, t('progress.time14', { time: time.full }))),
   h('ul', { class: 'progress-sum' },
     chip(imageUrl('ui-parrots-earned'), 'P', String(p.progress.parrotsEarned), t('progress.parrotsEarned', { n: p.progress.parrotsEarned })),
     chip(imageUrl('ui-stars-earned'), '★', String(p.progress.starsEarned), t('progress.starsEarned', { n: p.progress.starsEarned })),

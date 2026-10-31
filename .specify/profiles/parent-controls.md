@@ -20,7 +20,7 @@
   for a month a round red "!" sits on the arc of the password panel's top right corner, its
   tooltip says when the super account did it, and results for the teacher carry a flag.
 - Difficulty and word length each have an **automatic** mode (on by default): after a few
-  minutes of accurate play (90 %+) one of them goes up by one step, taking turns, up to a
+  minutes of accurate typing time (90 %+, [statistics](statistics.md)) one of them goes up by one step, taking turns, up to a
   ceiling (difficulty 8, words of 9 letters); each step gives the child a numbered medal.
   A parent who sets the value by hand turns its automatic mode off. Each automatic mode is
   its own switch with a title ("Automatic difficulty", "Automatic word length") and one short
@@ -75,7 +75,7 @@
     switch "show on the map ahead" puts a closed golden gift box in place of that level's
     game picture on the map (its tooltip says a surprise waits there) until the answer is told,
     so the child sees where to go;
-  - **after minutes of training** (story levels, practice, the target range and the parrot together), **after more
+  - **after minutes of training** (typing time, [statistics](statistics.md): story levels, practice, the target range and the parrot together), **after more
     levels** or **after more stars**, counted from when the rule was made: the game
     asks on every get-ready card while it waits, with what is still left ("3 more
     levels"), and tells the answer on the results of the level that reaches it.

@@ -156,8 +156,8 @@ function peekable(overlay: HTMLElement, card: HTMLElement, type?: () => void): v
 const toMap = () => go('map');
 const pct = (n: number) => Math.round(n * 100);
 const letters = (n: number) => tn('end.letters', n);
-/** Whole minutes, at least one. */
-const minutes = (seconds: number) => tn('end.minutes', Math.max(1, Math.round(seconds / 60)));
+/** Whole minutes of typing; under a minute says so. */
+const minutes = (seconds: number) => seconds < 60 ? t('end.underMinute') : tn('end.minutes', Math.round(seconds / 60));
 
 /** The end card over the level's last frame, its main button focused; Esc and typing as in `peekable`. */
 function showEnd(root: HTMLElement, o: Omit<EndCardOpts, 'onBreak' | 'toMap'>, type?: () => void): void {

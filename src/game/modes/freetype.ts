@@ -26,7 +26,7 @@ const LINE_SIZE = 30;
 const HOME_X = 100;
 const GROUND = VH * 0.97;
 
-/** What free typing wrote, for its end card: the words, the last text shown and the seconds of typing. */
+/** What free typing wrote, for its end card: the words, the last text shown and the seconds of typing (the runtime's typing time). */
 export interface FreeTyped {
   words: number;
   last: string;
@@ -116,10 +116,10 @@ export class FreeTypeMode extends HeroMode {
   }
 
   /** What was typed here; the text still collecting in the line counts too. */
-  summary(): FreeTyped {
+  summary(): Omit<FreeTyped, 'seconds'> {
     const text = this.line.take();
     if (text) this.count(text);
-    return { words: this.words, last: this.last, seconds: this.t };
+    return { words: this.words, last: this.last };
   }
 
   update(dt: number): void {

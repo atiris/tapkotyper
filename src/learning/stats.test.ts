@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
-import { recentTyping, recordPress, recordSession } from './stats';
+import { recentPractice, recentTyping, recordPress, recordSession, typingStep } from './stats';
 
 describe('recordSession', () => {
   it('counts the training time and earns wardrobe time from it, also with the limit off', () => {
@@ -11,6 +11,41 @@ describe('recordSession', () => {
     expect(p.progress.wardrobeSeconds).toBe(60);
     expect(p.stats.sessions[0].seconds).toBe(300);
   });
+});
+
+describe('typingStep', () => {
+  it('adds the gap since the last own key, at most 5 s', () => {
+    expect(typingStep(0.4)).toBe(0.4);
+    expect(typingStep(5)).toBe(5);
+    expect(typingStep(60)).toBe(5);
+    expect(typingStep(-1)).toBe(0);
+  });
+
+  it('a level left a minute with two keys counts at most 10 s', () => {
+    // The game clock stops in a pause, so a pause adds nothing to the gap.
+    const keysAt = [30, 61];
+    let at = 0, typed = 0;
+    for (const k of keysAt) {
+      typed += typingStep(k - at);
+      at = k;
+    }
+    expect(typed).toBe(10);
+  });
+});
+
+describe('recentPractice', () => {
+  const s = (date: string, seconds: number, chars: number, errors = 0) => ({ date, seconds, chars, errors, cpm: 0 });
+
+  it('counts local days with keys and their typing time over the last 14 days, today included', () => {
+    const p = newProfile('Ema', 'sk');
+    p.stats.sessions = [s('2026-10-09', 600, 50), s('2026-10-10', 120, 10), s('2026-10-15', 30, 0), s('2026-10-23', 300, 40, 2)];
+    expect(recentPractice(p, 14, new Date(2026, 9, 23, 20))).toEqual({ days: 2, seconds: 450 });
+  });
+
+  it('is empty without sessions', () => {
+    expect(recentPractice(newProfile('Ema', 'sk'), 14)).toEqual({ days: 0, seconds: 0 });
+  });
+
 });
 
 describe('recentTyping', () => {

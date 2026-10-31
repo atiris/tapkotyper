@@ -2,7 +2,7 @@
 
 ## What
 - **Wardrobe time is earned by practice** (on by default; a parent switch turns it off per
-  player). Training time of every kind (story levels, practice, every mode that counts as
+  player). Typing time ([statistics](../profiles/statistics.md)) of every kind (story levels, practice, every mode that counts as
   training) earns a fifth of itself: 10 minutes of practice give 2 minutes in the wardrobe.
   The balance adds up until it is spent, at most 7 minutes, and keeps growing while the
   limit is off, so turning it back on does not start from zero.

@@ -20,7 +20,9 @@
 - A goal text appears above the animal that scored. A closed world on the map tells, when
   clicked, what is still missing: the world before it, or how many letters its story needs.
 - Automatic growth counts only levels where the child typed at least 85 % of the targets
-  (and typed accurately); a level where many targets floated by unread adds no time.
+  (and typed accurately); a level where many targets floated by unread adds no time. The time it
+  adds is typing time ([statistics](../profiles/statistics.md)), so long reading or waiting delays
+  growth a little.
 - A small round rhythm gauge in the top bar (calm blue to green, never red; in the space world
   also the rocket's speedometer, without a caption) shows the current smooth typing rhythm, not raw WPM.
 - A word the child can see can be typed at once; a target that cannot be typed yet shows

@@ -4,6 +4,14 @@
 - Per key: accuracy and typical reaction time from the **last 50 presses only**, the keys
   typed instead of it lately, total presses, and a day-by-day history (accuracy and time
   to press).
+- **Typing time** is the only time of practice: every own key (right or wrong, Backspace too;
+  never the paws' or the helper's keys) adds the time since the previous own key, or since play
+  began for the first one, at most 5 seconds. Waiting without keys, pauses, cards and a hidden
+  tab add nothing, so a level left open counts no practice. It fills the day's time, all the
+  minutes trained (the parent's "minutes" surprises, the teacher's results, the task's played
+  minutes), the wardrobe time, automatic growth and the end cards' time (under a minute it says
+  "menej ako 1 min"). The break reminder still counts screen time in a level, and a level's
+  minimum and a timed practice's length keep their own clocks.
 - An overlay opened by clicking the child's character (on the map, or in a level, which pauses first)
   starts with "My progress": two rows of icon and number chips, each with its own picture and
   the meaning only in the tooltip. The first row is the long run: keys mastered of the layout's
@@ -12,7 +20,10 @@
   [Parrot badge](../game/parrot.md) 7: 15 x 3 + 15 + 7 = 67), the parrots at home against the most
   ever at home (the parrot's head), and the stars (the best of every level) of the maximum (3 in
   each of the 75 levels: 225). The second row is the last 14 days: accuracy and speed in
-  characters per minute once something was typed, and the letters typed. The third row is the totals
+  characters per minute once something was typed, the letters typed, the **days trained** (a desk
+  calendar: days with at least one own key of the 14, today included, e.g. `9/14`) and the
+  **typing time** (an alarm clock: `45 min`, from an hour `1 h 25`, in full in the tooltip);
+  both always show, also at 0. The third row is the totals
   since the start, so a replay never takes anything away: every parrot round won (two parrot heads)
   and every star earned, replays included (a stack of stars), and once there is one the target
   range's record: the most points of one run, its day in the tooltip (the target). Under the heading "Príbehy" one row per story (all stories, closed ones grey) with its picture and
@@ -20,7 +31,7 @@
   shelf of world badges ("Odznaky svetov", [story](../game/story.md)) with the row of target
   range awards under it ("Ocenenia zo strelníc": every world's rare thing, found ones in
   colour, [target range](../game/target-practice.md)), and when
-  the child last trained (today, yesterday, n days ago) with the minutes of the last 7
+  the child last trained (today, yesterday, n days ago) with the typing minutes of the last 7
   days. Below it a friendly view of the keys: a keyboard colored
   by how well each key goes, the 3 keys to practice, the growth medals earned, and a
   button to practice them now. Clicking a key (or a key in the list) shows that key's

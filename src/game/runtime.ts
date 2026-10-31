@@ -18,7 +18,7 @@ import { type InputHandlers, KeyInput, type TypedChar } from '../input/input';
 import { setShortcuts, withKey } from '../input/shortcuts';
 import { ENTER, LAYOUTS, LayoutMismatchDetector, enterAfter, fingerFor, homeKey, stepsFor } from '../keyboard/layouts';
 import { SHIFT_L, SHIFT_R, SPACE, activeKeys, aimKeys, isKeyReady, isLetterKey, keysToIntroduce, masteryLevel, newestGroup, recentAccuracy, shiftKeyOf, useLayout } from '../learning/lessons';
-import { keyWeights, recordPress, recordSession } from '../learning/stats';
+import { keyWeights, recordPress, recordSession, typingStep } from '../learning/stats';
 import { FINGER_KEYS, KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
 import { LayoutSwitch } from '../ui/layout-switch';
 import { button, closeButton, closeModals, confirmDialog, h } from '../ui/dom';
@@ -203,6 +203,9 @@ export class LevelRuntime {
   chars = 0;
   errors = 0;
   private elapsed = 0;
+  /** Seconds of typing: each own key adds the time since the one before (`typingStep`); and the level time of the last one. */
+  private typedSeconds = 0;
+  private ownKeyAt = 0;
   /** Targets the level wants now: the planned count, more while the level is shorter than its minimum. */
   count: number;
   /** Seconds of active play (no pause, no card, no long wait over a word: `playedStep`) and the minimum before the level may end; 0 = no minimum. */
@@ -616,6 +619,7 @@ export class LevelRuntime {
   private onChar(c: TypedChar): void {
     if (this.free) return this.freeChar(c, this.free);
     if (!this.started || this.paused || this.finished || this.pawWords) return;
+    this.ownKey();
     // A space between targets is a habit, not a mistake.
     if (c.ch === SPACE && !this.core.locked) return;
     this.deadPending = false;
@@ -662,8 +666,15 @@ export class LevelRuntime {
 
   /** Backspace in a level: the started word is wiped and the child may start any word again. */
   private restartTarget(): void {
-    if (!this.started || this.paused || this.finished || this.pawWords || !this.core.restart()) return;
-    this.updateGuide();
+    if (!this.started || this.paused || this.finished || this.pawWords) return;
+    this.ownKey();
+    if (this.core.restart()) this.updateGuide();
+  }
+
+  /** A key of the child's own (never the paws' or the helper's) adds to the typing time. */
+  private ownKey(): void {
+    this.typedSeconds += typingStep(this.elapsed - this.ownKeyAt);
+    this.ownKeyAt = this.elapsed;
   }
 
   // ---- free typing ----------------------------------------------------------------
@@ -679,6 +690,7 @@ export class LevelRuntime {
    */
   private freeChar(c: TypedChar, mode: FreeTypeMode): void {
     if (!this.freeOpen || !stepsFor(layout(), c.ch).length) return;
+    this.ownKey();
     this.deadPending = false;
     this.sfx('key');
     mode.key(c.ch);
@@ -686,12 +698,15 @@ export class LevelRuntime {
   }
 
   private freeErase(): void {
-    if (this.freeOpen) this.free!.erase();
+    if (!this.freeOpen) return;
+    this.ownKey();
+    this.free!.erase();
   }
 
   /** Enter shows the collected text at once; a focused button keeps its Enter while a dialog is open. */
   private freeSend(): boolean {
     if (!this.freeOpen) return false;
+    this.ownKey();
     this.free!.send();
     return true;
   }
@@ -1247,8 +1262,9 @@ export class LevelRuntime {
   /** Leaving: free typing after something was typed ends with its card, everything else goes to the map. */
   private exit(): void {
     speech.stop();
+    const seconds = this.typedSeconds;
     this.flushSession();
-    const typed = this.free?.summary();
+    const typed = this.free && { ...this.free.summary(), seconds };
     if (!typed?.words) return this.opts.onExit();
     this.finished = true;
     this.input?.dispose();
@@ -1405,8 +1421,10 @@ export class LevelRuntime {
 
   private flushSession(): void {
     const p = app.profile!;
-    if (this.chars + this.errors > 0) recordSession(p, this.elapsed, this.chars, this.errors, this.rhythm.cpm);
+    if (this.chars + this.errors > 0) recordSession(p, this.typedSeconds, this.chars, this.errors, this.rhythm.cpm);
     this.elapsed = 0;
+    this.typedSeconds = 0;
+    this.ownKeyAt = 0;
     this.chars = 0;
     this.errors = 0;
     saveProfile();
@@ -1422,7 +1440,7 @@ export class LevelRuntime {
     const p = app.profile!;
     const total = this.chars + this.errors;
     const accuracy = total ? this.chars / total : 1;
-    const seconds = this.elapsed;
+    const seconds = this.typedSeconds;
     const cpm = this.rhythm.cpm;
     const chars = this.chars, errors = this.errors;
     // Targets the paw typed count neither way.

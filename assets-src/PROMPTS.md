@@ -609,6 +609,20 @@ Cute, soft 2D children's game icon, flat vector style with gentle gradients, sof
 
 ### ui-keys-typed.jpg (letters typed in the last 14 days chip in the stats; a pile of pastel keys, one with a plus; the owner's picture 2026-10-23, replaced ui-key-star)
 
+### ui-days-trained.jpg (days with practice in the last 14 days chip in the stats; a desk calendar page with a few days ticked off, plan 89)
+```
+Generate an image: Days trained
+
+Cute, soft 2D children's game icon, flat vector style with gentle gradients, soft dark-brown outline (not black), warm pastel palette, bold simple shapes that stay readable when very small. A single icon: a small pastel desk calendar seen a little from above, a cream page on a soft mint green stand with two round peach rings at the top. The page shows a simple grid of rounded squares in two rows; three or four of the squares are pastel green with a bold dark-brown tick mark, the others are empty. No numbers, no letters, no face. Centered, the whole icon visible, wide empty margin. No text, no letters, no numbers, no watermark. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no other objects. Square image.
+```
+
+### ui-typing-time.jpg (typing time in the last 14 days chip in the stats; an alarm clock with two bells, plan 89)
+```
+Generate an image: Typing time
+
+Cute, soft 2D children's game icon, flat vector style with gentle gradients, soft dark-brown outline (not black), warm pastel palette, bold simple shapes that stay readable when very small. A single icon: a chubby pastel alarm clock, front view, a round soft peach body with a cream face, two small round pastel yellow bells on top joined by a little handle, two short stubby feet. The clock face has two dark-brown hands and only four short dark-brown tick marks, no numbers. NO face, no eyes, no mouth, no arms, no legs other than the two stubby feet. Centered, the whole clock visible, wide empty margin. No text, no letters, no numbers, no watermark. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no other objects. Square image.
+```
+
 ### ui-accuracy.jpg (accuracy in 14 days chip in the stats; an arrow in the middle of a target; the owner's picture)
 
 ### ui-chest.jpg (range finds chip in the stats, between worlds and accuracy; a pastel treasure chest with gems and leaves; the owner's picture 2026-10-24)

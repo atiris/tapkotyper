@@ -1,3 +1,4 @@
+import { IDLE_STOP_S } from '../game/levels';
 import { earnWardrobe } from '../game/wardrobe-time';
 import { LAYOUTS } from '../keyboard/layouts';
 import { type KeyStat, type Profile, type SessionRecord, emptyKeyStat } from '../storage/schema';
@@ -51,7 +52,15 @@ export function recordPress(profile: Profile, expected: string, typed: string, r
   }
 }
 
-/** Adds play time and characters to today's session record, and the time to all the training and the wardrobe time. */
+/**
+ * Typing time one own key adds: the game-clock seconds since the previous own key (or since the
+ * run started), at most `IDLE_STOP_S`, so waiting without keys counts no practice.
+ */
+export function typingStep(gap: number): number {
+  return Math.min(IDLE_STOP_S, Math.max(0, gap));
+}
+
+/** Adds typing time and characters to today's session record, and the time to all the training and the wardrobe time. */
 export function recordSession(profile: Profile, seconds: number, chars: number, errors: number, cpm: number): void {
   const date = localDate();
   const sessions = profile.stats.sessions;
@@ -76,7 +85,7 @@ function daysBetween(from: string, to: string): number {
   return Math.round((day(to) - day(from)) / 86_400_000);
 }
 
-/** When the child last trained (days ago, null = never) and the minutes of the last 7 days. */
+/** When the child last trained (days ago, null = never) and the typing minutes of the last 7 days. */
 export function lastTraining(profile: Profile, now = new Date()): { daysAgo: number | null; weekMinutes: number } {
   const today = localDate(now);
   const sessions = profile.stats.sessions.filter((s) => s.seconds > 0);
@@ -101,6 +110,14 @@ export function recentTyping(profile: Profile, days: number, now = new Date()): 
     accuracy: chars + errors ? chars / (chars + errors) : 0,
     cpm: timedChars ? Math.round(timed.reduce((a, s) => a + s.cpm * s.chars, 0) / timedChars) : 0,
   };
+}
+
+/** Days with an own key and the typing seconds in the last `days` local calendar days, today included. */
+export function recentPractice(profile: Profile, days: number, now = new Date()): { days: number; seconds: number } {
+  const today = localDate(now);
+  const recent = profile.stats.sessions.filter((s) => daysBetween(s.date, today) < days);
+  const trained = new Set(recent.filter((s) => s.chars + s.errors > 0).map((s) => s.date));
+  return { days: trained.size, seconds: recent.reduce((a, s) => a + s.seconds, 0) };
 }
 
 export interface KeyReport {

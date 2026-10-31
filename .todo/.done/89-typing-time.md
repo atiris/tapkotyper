@@ -67,16 +67,33 @@ regularly and how long the child typed in the last 14 days (2026-10-31).
 
 ## Steps
 
-- [ ] Specs: statistics (typing time, the new chips), the other mentions of trained minutes.
-- [ ] Typing time in `stats.ts` and the runtime; every consumer switched from `elapsed`; end
+- [x] Specs: statistics (typing time, the new chips), the other mentions of trained minutes.
+- [x] Typing time in `stats.ts` and the runtime; every consumer switched from `elapsed`; end
       card "menej ako 1 min".
-- [ ] The two chips in the 14-day row with texts and fallbacks; pictures via `gemini-images`
+- [x] The two chips in the 14-day row with texts and fallbacks; pictures via `gemini-images`
       and the assets run (if Gemini is unavailable, keep the glyphs and add a backlog line).
-- [ ] Tests: unit tests of the typing step (gaps capped at 5 s, no key = 0, paw keys ignored,
+- [x] Tests: unit tests of the typing step (gaps capped at 5 s, no key = 0, paw keys ignored,
       a pause adds nothing), days trained and 14-day time (local dates, today included, days
       without keys not counted); a runtime-level test that a level left idle for a minute with
       two keys records at most about 10 s; the stats row shows both chips.
-- [ ] `npm run build`, `npx vitest run`, the stats e2e; Playwright MCP: play a level, wait a
+- [x] `npm run build`, `npx vitest run`, the stats e2e; Playwright MCP: play a level, wait a
       minute without keys, type, end it, and check My progress (the chips, the day chart, the
       7-day line) shows only the typing time; screenshot of the 14-day row at 1024x600 and at
       phone width (the chips fit on one or two lines without overflow).
+
+## Done - 2026-10-31
+
+- Shipped: typing time (`typingStep` in `src/learning/stats.ts`, `typedSeconds` in the runtime,
+  counted on every own key incl. Backspace, Enter and free typing's keys; the paws and the
+  helper never) replaces `elapsed` in `recordSession`, `completeLevel`/`completeStay` and the
+  free typing card; end cards say "menej ako 1 min" under a minute; My progress's 14-day row has
+  the days-trained chip (`ui-days-trained`) and the typing-time chip (`ui-typing-time`), both
+  generated in Gemini and built with `npm run assets`; specs (statistics, wardrobe,
+  parent-controls, teacher-links, mechanics' growth line).
+- Decisions: free typing's summary no longer carries seconds, the runtime adds its typing time.
+  "Posledný tréning" keeps its rule (a session with time). The translator's progress group grew
+  past 40 items, so the counters' texts got their own group "progress-sums". Growth is described
+  in `.specify/game/mechanics.md` (lesson-progression has no growth text). The runtime-level
+  idle check is an e2e test (`e2e/practice-keys.spec.ts`: 12 s idle + two keys <= 10 s) plus a
+  unit test of the step sum; the MCP run (a minute idle + two keys) recorded 6 s.
+- Left out: nothing.

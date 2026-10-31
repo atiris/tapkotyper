@@ -266,12 +266,12 @@
   "controlKey": {
     "escape": {
       "title": "The Esc key",
-      "close": "Close (Esc)",
+      "close": "Close",
       "text": [
         "Some keys **do not count among the learned ones**, but they are **important**. The first one is **Esc**, at the very top left.",
         "Esc **stops the game** when you need a rest. Another Esc lets it go on. Esc also **closes every card**."
       ],
-      "type": "Press Esc."
+      "type": "Press Esc three times."
     },
     "tab": {
       "title": "The Tab key",

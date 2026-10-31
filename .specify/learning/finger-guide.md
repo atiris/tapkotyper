@@ -42,9 +42,10 @@
   longest key. The space bar, Enter, Esc, the drawn space bar or the round X closes it.
 - **Control keys** steer the game but never count among the learned keys; each gets one card
   on the new-key card's model, once per profile, with its finger and short tips, closed by
-  pressing the key (Esc skips it):
+  pressing the key (Esc skips it, except on its own card):
   - Esc, right after that first card: some keys do not count but matter; Esc stops the game,
-    another Esc lets it go on, and it closes every card. Pressing it once closes the card.
+    another Esc lets it go on, and it closes every card. On its own card Esc does not close it: each press is
+    counted like a learned key, and the third one closes the card; the round X closes it at once.
   - Tab, in the level after the one where Enter first came: Tab moves between buttons and links
     on a page and Enter opens them (Shift + Tab goes back), so pages work without a mouse.
     Pressed three times.

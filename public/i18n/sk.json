@@ -266,12 +266,12 @@
   "controlKey": {
     "escape": {
       "title": "Kláves Esc",
-      "close": "Zavrieť (Esc)",
+      "close": "Zavrieť",
       "text": [
         "Niektoré klávesy sa **nepočítajú medzi naučené**, ale sú **dôležité**. Prvý z nich je **Esc**, celkom vľavo hore.",
         "Esc **zastaví hru**, keď si potrebuješ oddýchnuť. Ďalší Esc ju pustí ďalej. Esc tiež **zatvorí každé okienko**."
       ],
-      "type": "Stlač Esc."
+      "type": "Stlač Esc trikrát."
     },
     "tab": {
       "title": "Kláves Tab",

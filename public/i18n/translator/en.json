@@ -686,7 +686,7 @@
     "controlKey.escape.title": "Heading of the card told once before the first new key card: the Esc key, which never counts among the learned keys.",
     "controlKey.escape.close": "Label of that card's close cross.",
     "controlKey.escape.text": "Paragraphs of that card: some keys do not count but matter, Esc is the first; Esc pauses the game, another Esc goes on, Esc closes every card. **phrase** is shown in bold.",
-    "controlKey.escape.type": "Line asking to press Esc, which closes the card.",
+    "controlKey.escape.type": "Line asking to press Esc three times; the third press closes the card.",
     "controlKey.tab.title": "Heading of the card told once in the level after the one where Enter first came: the Tab key, which never counts among the learned keys.",
     "controlKey.tab.close": "Label of that card's close cross (Esc skips it).",
     "controlKey.tab.text": "Paragraphs of that card: where Tab is; Tab moves between buttons and links on a page, Enter opens them, Shift + Tab goes back, so pages work without a mouse. **phrase** is shown in bold.",

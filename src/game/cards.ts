@@ -364,7 +364,7 @@ export function showNewKey(host: HTMLElement, key: string, layout: Layout, guide
  * events, its symbol on the card, the finger that presses it and how many presses close its card.
  */
 const CONTROL_KEYS = {
-  escape: { key: 'Escape', symbol: 'Esc', finger: 0, presses: 1 },
+  escape: { key: 'Escape', symbol: 'Esc', finger: 0, presses: 3 },
   tab: { key: 'Tab', symbol: 'Tab', finger: 0, presses: 3 },
   backspace: { key: 'Backspace', symbol: '⌫', finger: 9, presses: 3 },
 } as const;

@@ -202,6 +202,11 @@ Notes from real Gemini runs; add new ones here.
   wide") changed almost nothing: the mud puddles stay 2.3 and 2.7 times wider than tall, the poles 1.7,
   3.3 and 3.9 times taller (the planet's posts are 3.1, 5.8 and 6.1). An object of a square picture keeps
   about its shape; plan for the game to scale it or accept the shape.
+- Swapping one thing in a picture (the badger's notebook for a keyboard, the squirrel's backpack for a
+  basket, 2026-10-31) worked best as a new picture in a new chat with the old one attached: "Redraw the
+  attached picture with exactly the same ... Change only one thing: ...". Two animals made from the same
+  prompt and style sample came out in the same pose and layout; moving the desk to the other side for a
+  difference was not wanted, a different prop (a basket of acorns) was enough.
 
 ---
 
@@ -661,6 +666,21 @@ The ui-icon prompt with "thin dark-brown outline" instead of "bold dark-brown ou
 ```
 Generate an image: Cute, soft 2D children's game icon, flat vector style with gentle gradients, soft dark-brown outline (not black), warm pastel palette, bold simple shapes that stay readable when very small. A single icon: a friendly wise turtle teacher with a green shell, round glasses and a small dark graduation cap, smiling, holding a small tablet in its front flipper. Three-quarter front view, centered, the whole figure visible, wide empty margin. No text, no letters, no numbers, no watermark. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no other objects. Square image.
 ```
+
+### ui-new-task.jpg and ui-new-task-squirrel.jpg (the phone start page's "Nová úloha" button: a pupil at a school desk; 2026-10-31)
+**Attach `ui-missing-keyboard.jpg`** for the style (the mouse on the same page):
+```
+Generate an image: Badger pupil at a school desk
+
+Draw a new character in exactly the same drawing style as the attached picture of the mouse: the same soft cartoon look, the same dark-brown outline weight, the same warm muted colors and gentle shading. Use the attached picture only for the style; the character, pose and composition must be completely different.
+
+A single picture: a cute young badger, a pupil, sitting on a small wooden school chair behind a small wooden school desk, seen three quarters from the front. The badger has the classic badger face: white head with two dark-grey stripes running over the eyes to the ears, a small dark nose, big shiny friendly eyes with white highlights, a happy smile, soft grey body fur. It wears a small cozy teal sweater. On the desk lies an open notebook with a few wavy lines instead of writing, and the badger holds a yellow pencil in one paw above the notebook, the other paw resting on the desk, as if it is just noting down homework. A small school backpack leans against a leg of the desk. The whole desk, chair and badger are visible, centered, with a wide empty margin.
+
+No text, no letters, no numbers, no watermark. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no floor, no other objects. Square image.
+```
+Then, in a new chat with that picture attached: "Redraw the attached picture with exactly the same badger, sweater, chair, desk, backpack, drawing style, colors, outline weight, pose and composition. Change only one thing: instead of the open notebook and the pencil, a small computer keyboard lies flat on the desk, and the badger types on it happily with both front paws on the keys. The keys are plain light keys with no letters or symbols on them." plus the no-text and magenta lines.
+
+The squirrel: the same first prompt with "a cute young red squirrel ... warm orange-red fur, a cream belly, small tufts on the ears ... a big fluffy curled tail rising behind the chair ... a small mustard-yellow knitted vest" typing on a keyboard with plain keys; then, attached, "Change only one thing: remove the backpack completely, and in its place on the ground next to the desk leg stands a small woven basket full of brown acorns."
 
 ### ui-teacher.jpg (Ms Turtle the teacher: her tips above the worlds on the map; 2026-10-28)
 **Attach `ui-mentor.jpg`:**

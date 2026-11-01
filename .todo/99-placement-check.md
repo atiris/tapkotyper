@@ -34,17 +34,41 @@ never rewards: opened is not passed, stars still show who practised how much.
   - accuracy of the stage >= 94 % (the 3-star step, `STAR_STEPS`);
   - median reaction of correct presses of the stage's new keys <= `reactionLimit(difficulty)`;
   - **the touch-typing signal** holds (below).
-- **Touch-typing signal (two fingers, looking at the keys):** fingers cannot be seen, but the
-  timing shows them. A hunt-and-peck typist's interval grows with the distance the hand travels
-  between two keys and shows no gain on hand alternation; a touch typist's interval barely
-  depends on the distance and alternating hands are faster than one hand.
-  - Over the correct presses of the check so far (min 60 intervals), compute the Pearson
-    correlation between the interval to the previous key and the physical distance of the two
-    keys (key centres from `LAYOUTS`, intervals over 2.5 s left out as pauses), and the ratio
-    median(same hand) / median(alternating hands) using the finger map of the layout.
-  - The signal **fails** when correlation >= 0.35 **or** the ratio < 1.05. Both limits live in
-    one exported constant next to the function, with a unit test on synthetic presses (a
-    pecking pattern fails, an even touch-typing pattern passes).
+- **Touch-typing signal (two fingers, looking at the keys), independent of speed.** Fingers
+  cannot be seen, but the timing shows which finger model explains the student, and the student
+  is compared **with themselves**, never with an absolute speed: a fast two-finger typist and a
+  slow ten-finger typist must both come out right. There are no real typists to calibrate on, so
+  the rule rests on two models and synthetic typists (below).
+  - **Intervals used:** correct presses only, the interval to the previous correct press inside
+    the same word (the first key of a word is reading time, left out), intervals over 2.5 s left
+    out as pauses. Every measure below is a rank correlation or a ratio of medians, so it does
+    not change when the student is twice as fast or twice as slow.
+  - **Two distances per interval** (key centres and the finger map from `LAYOUTS`):
+    `travel` = distance from the previous key (one pointing finger travels it, the hunt-and-peck
+    model) and `reach` = distance of the key from the home key of its finger under ten fingers,
+    plus a same-finger mark when the two keys share a finger (the touch model).
+  - **Measure 1, which model fits:** Spearman correlation of the intervals with `travel` minus
+    the one with `reach`, both over the same-hand pairs. Pecking: travel explains the times;
+    touch typing: reach and same finger do, travel hardly.
+  - **Measure 2, the contrast pairs:** median interval of same-hand pairs that are **near but on
+    one finger** (`f r`, `j u`, `d e`, `k i`, `j m`...) divided by the median of same-hand pairs
+    that are **far but on different fingers** (`a f`, `s f`, `j l`, `j ô`...). A touch typist is
+    slower on the near same-finger pairs (ratio > 1); a pecker is faster on them, the finger
+    is already there (ratio < 1). The check's words are picked so both groups have at least 12
+    pairs once the upper row is in; before that only measure 1 counts.
+  - **Decision:** the signal fails when measure 1 >= 0.2, or measure 2 < 0.95 (when it has its
+    pairs). Too few intervals for a measure (under 60, or under 12 per contrast group): that
+    measure does not decide; with no measure deciding the signal passes (then only the first
+    groups were reached, little is skipped). The limits live in one exported constant.
+  - **Synthetic typists for the unit tests:** a pecker (interval = a + b x log2(1 + travel / key
+    width), Fitts' law, from the previous key) and a touch typist (interval = a + reach cost + a
+    same-finger penalty), each at a fast and a slow tempo (x 0.5 and x 2), each with noise
+    (lognormal, sd 0.3) and now and then a reading pause. All eight runs (2 models x 2 tempos x
+    2 noise seeds) must come out right; a mixed typist (touch on the home row, pecking above)
+    must fail once the upper row is in.
+  - **Super mode readout:** in super mode the check's end card shows both measures and the
+    decision in one small line, so the owner can type the check with two fingers and with ten
+    and see the numbers; the limits are tuned from that, not guessed again.
   - When the signal fails, the check ends and **unlocks nothing**: the turtle says kindly
     that it looks like the eyes still help find the keys and the lessons will teach the fingers
     from the start, quickly. No "you failed" wording anywhere.
@@ -91,7 +115,7 @@ never rewards: opened is not passed, stars still show who practised how much.
 
 ## Steps
 
-- [ ] Placement logic: stages from `lessonGroups`, stage pass rule, touch-typing signal with its
+- [ ] Placement logic: stages from `lessonGroups`, stage pass rule, touch-typing signal (both measures, contrast pairs in the check words, synthetic typists) with its
       constant and unit tests (synthetic pecking and touch-typing presses), result applied to the
       profile (`unlockedKeys`, `placementKeys`, difficulty); unit tests.
 - [ ] Levels: `isLevelReached` and `nextLevel` with `placementKeys`; unit tests (placed 15 keys

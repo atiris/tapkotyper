@@ -11,7 +11,15 @@ never rewards: opened is not passed, stars still show who practised how much.
 
 ## Decisions
 
-- **Who asks:** Turtle the teacher on the map (`src/app/teacher-tips.ts`, `src/screens/map.ts`),
+- **The check is also "How am I doing on the keyboard?"**: the same run any student can start
+  at any time, which measures the keys from the start of the lesson order and shows the strong
+  and weak ones. Ways in:
+  - **My progress popup**, keys tab (`keysTab` in `src/screens/stats.ts`): a button **How am I
+    doing?** with its length in the tooltip (about 4 minutes). No limit on how often: it only
+    ever adds keys and is real typing practice, so running it again does no harm.
+  - **Parent area**: **Check what the student knows** (below).
+  - **Turtle** on the map, for the first run (below).
+- **Who asks first:** Turtle the teacher on the map (`src/app/teacher-tips.ts`, `src/screens/map.ts`),
   not a popup before play and not a question about age.
   - First map visit of a profile with no star yet: "Do you already know the keyboard a bit?
     Let's check, so we start where you are." Buttons: **Start from the beginning** (default,
@@ -92,8 +100,18 @@ never rewards: opened is not passed, stars still show who practised how much.
     `AUTO_DIFFICULTY_MAX` whose `reactionLimit` is >= 1.2 x the student's median reaction in the
     check; never lower than the current one. Word length stays.
   - The end uses the one end card ([end card](../.specify/experience/visuals.md), plan 85): the
-    turtle's picture, under it the count of letters the student can already use, one action
-    **Continue** to the map. The map then shows the newly opened worlds.
+    turtle's picture, under it the count of letters the student can already use. Below it the
+    **strong and weak keys** of this run: every key measured in the check (at least 5 presses)
+    ranked by its accuracy, then median reaction against `reactionLimit(difficulty)`; at most 5
+    strong (green) and 5 weak (orange) as key caps, a key in neither list is not shown. Weak means
+    accuracy under 94 % or reaction over the limit; a run with no weak key says so in one line.
+    Actions: **Practise the weak keys** (when there are any: the stats' practice,
+    `go('level', { id: 'practice', keys, seconds: 60 })`) and **Continue** to the map. The map
+    then shows the newly opened worlds.
+  - The weak and strong keys come from this run only, not from the stored statistics, so the
+    card answers "how did it go now"; the presses still go into the statistics like any run.
+  - When the touch-typing signal failed, the card still shows the strong and weak keys, with
+    the kind line instead of new letters.
 - **Super player:** the check works the same (needed for testing); the super password is never
   scripted in tests.
 - **Stored data:** two new fields with defaults (`placementAsked: false`, `placementKeys: 0`),
@@ -107,9 +125,11 @@ never rewards: opened is not passed, stars still show who practised how much.
   (copy, hidden keyboard and guide), `src/storage/schema.ts` (two fields with defaults).
 - UI: `src/screens/map.ts` and `src/app/teacher-tips.ts` (the turtle's questions),
   `src/screens/level.ts` (end card), `src/screens/parent.ts` (the parent's button),
+  `src/screens/stats.ts` (the How am I doing? button),
   i18n `public/i18n/sk.json`, `en.json` (and the translator's catalog).
 - Specs: `.specify/learning/lesson-progression.md` (new section: placement check, WHAT and
-  WHY), `.specify/profiles/parent-controls.md` (the button), `.specify/companion` or wherever
+  WHY), `.specify/profiles/parent-controls.md` (the button), `.specify/profiles/statistics.md`
+  (the My progress button and the strong and weak keys), `.specify/companion` or wherever
   the turtle's lines are specified; `.research/learning/placement-check.md` points to the spec.
 - DB / store: two new profile fields with defaults.
 
@@ -121,13 +141,15 @@ never rewards: opened is not passed, stars still show who practised how much.
 - [ ] Levels: `isLevelReached` and `nextLevel` with `placementKeys`; unit tests (placed 15 keys
       opens the right levels, none of them done, Continue picks the most advanced one).
 - [ ] The check run: level kind and mode (copy, no keyboard, no guide, stages, 4 min cap), no
-      stars, no rewards, presses recorded; the end card.
+      stars, no rewards, presses recorded; the end card with the strong and weak keys and its
+      two actions.
 - [ ] Turtle on the map: first-visit question, the honest fingers question, the later offer;
-      the parent's button; i18n sk and en.
+      the parent's button; the How am I doing? button in the My progress keys tab; i18n sk and en.
 - [ ] Specs updated (WHAT and WHY).
 - [ ] Verify: build, lint, unit tests, e2e for the turtle's question and a check run. In the
       browser (playwright MCP, tester profile, `tapkoType` + `?fast`): a new profile answers
       "Start from the beginning" (nothing changes); a new profile types the check evenly and
       well (worlds open, no stars, Continue goes to the most advanced open level); a check typed
       with uneven, distance-dependent timing unlocks nothing and shows the kind line; the
-      parent's button runs it again and never removes keys. Fix what is wrong.
+      parent's button and the My progress button run it again, never remove keys, and the end card
+      lists strong and weak keys with a working Practise the weak keys. Fix what is wrong.

@@ -88,8 +88,6 @@ export interface WordOptions {
   focus?: string[];
   /** The keyboard; capitals need it (which Shift, can it be typed). */
   layout?: Layout;
-  /** Children's names of the language, for capitals at the start of a target. */
-  names?: string[];
   /** 0..1 how well each Shift goes; capitals grow from 1 target in 6 to every phrase start. */
   shiftMastery?: Record<string, number>;
   /** The parent's (or a task's) own words and text. */
@@ -177,6 +175,7 @@ export class WordSource {
   /** Dictionary words a dictation says: no apostrophe, spelled as heard; made when first needed. */
   private heardWords: string[] | null = null;
   private digits: string[];
+  /** The dictionary's proper nouns (names, towns, places), lower-cased; they come only with a capital. */
   private names: string[];
   private space: boolean;
   private keys: Set<string>;
@@ -203,7 +202,7 @@ export class WordSource {
     this.focus = new Set(opts.focus ?? []);
     const set = new Set(this.letters);
     const len: [number, number] = [Math.max(1, opts.len[0]), Math.max(opts.len[0], opts.len[1])];
-    this.names = (opts.names ?? []).map((n) => n.normalize('NFC').toLowerCase()).filter((n) => [...n].every((c) => set.has(c)));
+    this.names = dict.filter((w) => w[0] !== w[0].toLowerCase()).map((n) => n.normalize('NFC').toLowerCase()).filter((n) => [...n].every((c) => set.has(c)));
     if (this.keys.has("'")) set.add("'");
     this.pool = filterWords(dict, set, len);
     this.digits = opts.keys.filter((k) => DIGITS.has(k));

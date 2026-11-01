@@ -64,7 +64,6 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
     g('common', 'common.*'),
     g('start-page', 'start.*'),
     g('new-profile', 'newProfile.*', 'kinds.*'),
-    g('names', 'names'),
     g('import', 'import.*', 'move.*', 'install.*'),
   ] },
   { id: 'map', groups: [

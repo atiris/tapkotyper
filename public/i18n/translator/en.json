@@ -182,10 +182,6 @@
       "title": "New player",
       "about": "The form for creating a new player and the names of the characters."
     },
-    "names": {
-      "title": "Names in words",
-      "about": "A list of children's names that sometimes appear among the words to type."
-    },
     "import": {
       "title": "Importing and moving profiles",
       "about": "Dialogs for loading profiles from a file, moving a player by a link, and installing the game."
@@ -555,7 +551,6 @@
     "newProfile.nickMissing": "Red error when a player is created without a nickname.",
     "newProfile.wordLang": "Label of the picker for the language of the words the child types.",
     "kinds.*": "Name of a character kind under its picture in the pickers (new player, settings, wardrobe) and in the new-character message.",
-    "names": "Children's names that sometimes appear as words to type, so they should start with a capital. One is picked at random.",
     "import.title": "Heading of the profile import window in the settings.",
     "import.text": "Instruction in the import window.",
     "import.found": "After a file is chosen. {names} are the players in it, {n} is their count.",

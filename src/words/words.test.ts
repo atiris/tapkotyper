@@ -4,7 +4,7 @@ import { LAYOUTS } from '../keyboard/layouts';
 import { lessonOrder } from '../learning/lessons';
 import { WordSource, filterWords, heardSafe, isBlocked, parseOwnWords, textPhrases, typableText, untypableWords } from './words';
 
-const WORDS = ['sad', 'lak', 'las', 'les', 'kde', 'ide', 'šaty', 'ruka', 'noha', 'dom', 'kôň', 'ja', 'aha', 'jeseň', 'slnko'];
+const WORDS = ['sad', 'lak', 'las', 'les', 'kde', 'ide', 'šaty', 'ruka', 'noha', 'dom', 'kôň', 'ja', 'aha', 'jeseň', 'slnko', 'Ema', 'Jano', 'Ola'];
 
 describe('word filter', () => {
   it('gives one chunk per target when one word is asked, even with the space known', () => {
@@ -115,7 +115,7 @@ describe('phrases', () => {
 
   it('never use a key that is not known', () => {
     const keys = [...KNOWN, 'ShiftL', '?'];
-    const src = new WordSource(WORDS, { keys, len: [2, 6], noDiacritics: false, layout: SK, names: ['Ema', 'Jano', 'Ola'], seed: 11 });
+    const src = new WordSource(WORDS, { keys, len: [2, 6], noDiacritics: false, layout: SK, seed: 11 });
     for (const w of [...sample(src, 300, 2), ...sample(src, 300, 4)]) {
       for (const c of w) expect(keys.includes(c) || (c !== c.toLowerCase() && keys.includes(c.toLowerCase()))).toBe(true);
       // Left Shift only: capitals only of right-hand letters.
@@ -166,8 +166,8 @@ describe('phrases', () => {
     expect(caps(1)).toBeGreaterThan(0.95);
   });
 
-  it('uses names and the learned Shift while it is new', () => {
-    const src = new WordSource(WORDS, { keys: [...KNOWN, 'ShiftL'], len: [2, 6], noDiacritics: false, layout: SK, names: ['Jano', 'Ola'], focus: ['ShiftL'], seed: 16 });
+  it('uses the dictionary names and the learned Shift while it is new', () => {
+    const src = new WordSource(WORDS, { keys: [...KNOWN, 'ShiftL'], len: [2, 6], noDiacritics: false, layout: SK, focus: ['ShiftL'], seed: 16 });
     const list = sample(src, 500, 2);
     const caps = list.filter((w) => w[0] !== w[0].toLowerCase());
     expect(caps.length / list.length).toBeGreaterThan(0.4);

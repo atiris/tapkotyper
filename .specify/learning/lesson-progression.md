@@ -11,7 +11,10 @@
 - Capitals come in the middle, in two steps: the left Shift (capitals of right-hand letters)
   after `p`, the right Shift (left-hand letters) after `z` (US `y`). Each Shift is its own
   lesson key, measured on the capitals it serves. Capital accented letters appear only when
-  the letter and its Shift are both known, and rarely.
+  the letter and its Shift are both known, and rarely. A capital starts a target's first word,
+  or brings a proper noun: the dictionary holds names, and the Slovak one also the best-known
+  towns and places of Slovakia (Bratislava, Tatry, Dunaj); they never come in lower case, so
+  they wait for their Shift.
 - Space, punctuation and the Shifts get ready sooner than letters (fewer presses), so they do
   not hold the next letter back for long.
 - A new key is introduced alone first (where it is, which finger), then mixed with known keys.
@@ -87,3 +90,6 @@
   it is a side key that comes rarely, so it must not decide when new letters open.
 - Mirrored pairs keep the hands balanced, and a lighter unlock target keeps the first
   world from feeling like endless `f j` drills; mastery still asks for solid accuracy.
+- Proper nouns in the dictionary, not in a list of their own: one place for the words of a
+  language, and Slovak towns and places teach the capitals and diacritics the child will
+  really write.

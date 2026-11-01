@@ -1,5 +1,4 @@
 import { app } from '../../app/app';
-import { tList } from '../../i18n/i18n';
 import { LAYOUTS } from '../../keyboard/layouts';
 import { SHIFT_L, SHIFT_R, activeKeys, isLetterKey, masteryLevel, newestGroup } from '../../learning/lessons';
 import { keyWeights } from '../../learning/stats';
@@ -26,7 +25,6 @@ export function wordSource(p: Profile, lang: LangRef, drill?: string[], chosen?:
     weights: keyWeights(p, keys),
     focus: drill ?? (focus ?? newestGroup(p)).filter((k) => keys.includes(k)),
     layout: LAYOUTS[p.layout],
-    names: tList('names'),
     shiftMastery: Object.fromEntries([SHIFT_L, SHIFT_R].map((k) => [k, masteryLevel(p.stats.keys[k], s.difficulty)])),
     lang,
     own: drill || chosen || focus ? undefined : { words: s.ownWords, text: s.ownText, share: OWN_SHARE[s.ownMix] },

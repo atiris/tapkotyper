@@ -6,4 +6,3 @@ each in its own clean session. One line per plan in `.todo/`:
 listed here is never run. Lines whose plan has moved to `.todo/.done/` are
 skipped, and the session that finishes a plan removes its line.
 
-- [P2] 98-five-stars.md - only open plan; stars 1-5, badges and progress page as agreed

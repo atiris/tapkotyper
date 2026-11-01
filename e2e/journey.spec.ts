@@ -16,7 +16,7 @@ test("the dragon story's hero's journey goes back down to the rocket with a pane
   expect(nodes.findIndex((c) => c.includes('aim-node'))).toBe(nodes.findIndex((c) => c.includes('journey-node')) + 1);
   await egg.locator('.journey-node').click();
   await expect(page.locator('.hud-title')).toHaveText("Hero's journey");
-  await expect(page.locator('.posture-card .posture-under')).toContainText('98 %');
+  await expect(page.locator('.posture-card .posture-under')).toContainText('five stars need almost no mistakes');
   await expect(page.locator('.posture-card')).toContainText('The little dragon has hatched and wants to stay with you!');
   // Every panel met on the way shows the next part's world and its story.
   await page.evaluate(() => {

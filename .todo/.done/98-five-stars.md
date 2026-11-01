@@ -84,7 +84,7 @@ matches TypingClub's "5 = top accuracy".
       My progress, badge tips, Levels tab removed, surprise default and hint, help texts; i18n sk
       and en; asset `ui-star-half` removed.
 - [x] Specs and README updated (WHAT and WHY).
-- [ ] Verify: build, lint, unit tests, e2e. In the browser (playwright MCP, tester profile,
+- [x] Verify: build, lint, unit tests, e2e. In the browser (playwright MCP, tester profile,
       `tapkoType` + `?fast`): finish a level with few and many mistakes and read the end card
       stars; the map nodes on desktop and at phone width (no overflow, two star rows); My
       progress badges in three sections and no Levels tab; the parent's surprise form with
@@ -104,3 +104,18 @@ matches TypingClub's "5 = top accuracy".
   - `start.stars`, never read, was found by the unused-keys test once the help's old `s${...}`
     template stopped matching it by chance; removed.
   - The help line "four tabs: Progress, Keys, Levels and Exercises" was stale already; now "two tabs".
+  - The empty badge section's "none yet" line is italic in the soft ink, not faded by opacity: the
+    dark look's contrast check (theme.spec) needs 4.5:1.
+
+## Done - 2026-11-01
+
+Shipped: 1-5 stars (`STAR_STEPS`, `JOURNEY_STAR_STEPS`, `MAX_LEVEL_STARS`), no half stars and no
+dragon-flight cap, badges from 10/15/20 world stars (a done world may have none), chest, prices
+30-43, teacher 88 %, super fill and helper labels, Olympic star rows on the end card and the map
+(nodes 56/50 px), badge shelf in gold/silver/bronze sections, Levels tab removed, surprise
+default 20 with the "one world gives at most 25" hint, help texts, `ui-star-half` removed, specs
+and README. Verified: build, 537 unit tests, e2e (83 of 86 pass; the 3 failing ones fail on the
+commit before too and are already in the backlog), and in the browser: end card 1/5 at 84 % and
+4/5 at 97 %, map nodes on desktop and at 390 px (two rows, no page scroll), badge sections, no
+Levels tab, surprise form, help lines, no console errors.
+Left out: nothing new; the three old e2e failures stay in .todo/BACKLOG.md.

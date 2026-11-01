@@ -1202,7 +1202,7 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
 .badge-shelf h4 { margin: 0.2rem 0; font-size: 0.95rem; color: var(--ink-soft); }
 .badge-row { display: flex; flex-wrap: wrap; gap: 0.35rem; }
 .badge-tier h5 { margin: 0.4rem 0 0.2rem; font-size: 0.85rem; color: var(--ink-soft); }
-.badge-none { margin: 0; font-size: 0.85rem; color: var(--ink-soft); opacity: 0.6; }
+.badge-none { margin: 0; font-size: 0.85rem; font-style: italic; color: var(--ink-soft); }
 .badge-shelf .aim-finds { justify-content: flex-start; margin: 0; }
 .legend { display: flex; gap: 0.6rem; flex-wrap: wrap; font-size: 0.9rem; }
 .lg { padding: 0.2em 0.6em; border-radius: 10px; font-weight: 600; }

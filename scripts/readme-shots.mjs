@@ -25,7 +25,7 @@ const port = await new Promise((resolve) => {
     s.close(() => resolve(p));
   });
 });
-const BASE = `http://localhost:${port}/tapkotyper/`;
+const BASE = `http://localhost:${port}/`;
 
 execSync('npx vite build --mode e2e --outDir .e2e/dist', { stdio: 'inherit' });
 const server = spawn(`npx vite preview --outDir .e2e/dist --port ${port} --strictPort`, { shell: true, stdio: 'ignore' });

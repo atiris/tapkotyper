@@ -24,7 +24,7 @@ const opt = (name, def) => {
 };
 
 const PORT = 4175;
-const BASE = `http://localhost:${PORT}/tapkotyper/`;
+const BASE = `http://localhost:${PORT}/`;
 const OUT = 'test-results/perf';
 const SECONDS = Number(opt('seconds', '30'));
 /** Seconds of frames measured under the results card with `--results`. */

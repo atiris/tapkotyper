@@ -23,8 +23,8 @@ asset pipeline.
 
 | # | Must be true | How to check | Produced by |
 |---|---|---|---|
-| G1 | The dev server is up | `http://localhost:5173/tapkotyper/` shows the start screen, no console errors | - |
-| G2 | A production preview is available for the offline phase | `npm run build && npm run preview`, `http://localhost:4173/tapkotyper/` loads | - |
+| G1 | The dev server is up | `http://localhost:5173/` shows the start screen, no console errors | - |
+| G2 | A production preview is available for the offline phase | `npm run build && npm run preview`, `http://localhost:4173/` loads | - |
 | G3 | Fresh browser context (no TapkoTyper data) | the start screen lists no players | - |
 
 **Leaves behind:** one profile with World 1 finished, in a throwaway context.

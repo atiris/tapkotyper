@@ -8,7 +8,7 @@ being made. No explosions, no punishment, no ads, no accounts.
 
 *Pokojná príbehová hra pre deti na nácvik písania všetkými desiatimi. Po slovensky aj po anglicky.*
 
-**Play:** https://atiris.github.io/tapkotyper/
+**Play:** https://tapkotyper.com/
 
 ![Start screen](docs/start.png)
 
@@ -143,7 +143,7 @@ see on the map or in My progress.
   import as pair files (handy for an AI translator) or `.json`; progress is shown per section.
 - **Reading aloud:** a button in the level bar reads the word to type and the companion's
   lines with the browser's own voice (shown when the browser has one for the language).
-- **Direct links:** each child's map has its own address (`.../tapkotyper/#/p/<id>`), so you
+- **Direct links:** each child's map has its own address (`tapkotyper.com/#/p/<id>`), so you
   can bookmark it or put it on the desktop. Leaving the app asks first.
 - **Quick sound button:** normal, quiet (20 %) or off.
 - **Super mode (secret password):** on the start screen, type `supertapkotyper` quickly
@@ -182,7 +182,7 @@ Requires Node.js 24+.
 
 ```sh
 npm ci
-npm run dev      # http://localhost:5173/tapkotyper/
+npm run dev      # http://localhost:5173/
 npm run build    # type check + production build into dist/
 npm test         # unit tests (Vitest)
 npm run test:e2e # browser tests (Playwright)
@@ -191,7 +191,7 @@ npm run icons    # render the favicon and the PWA icons from ui-icon (after npm 
 ```
 
 For quick manual testing, open the dev server with `?fast` before the hash
-(`http://localhost:5173/tapkotyper/?fast#/`): level minimums, the stretch break and
+(`http://localhost:5173/?fast#/`): level minimums, the stretch break and
 the play time before a break all take a sixth of their time. A browser driver types through
 `window.tapkoType('text')` (dev and e2e builds): it sends the player's layout's real keys, with
 Shift and dead keys, so `ô`, `ä` or `Ľ` work where a driver's own typing sends US keys.

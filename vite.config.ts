@@ -37,9 +37,9 @@ function serviceWorker(): Plugin {
   };
 }
 
-// GitHub Pages serves the site from /tapkotyper/
+// GitHub Pages serves the site at the root of tapkotyper.com
 export default defineConfig({
-  base: '/tapkotyper/',
+  base: '/',
   plugins: [serviceWorker()],
   test: { include: ['src/**/*.test.ts'] },
 });

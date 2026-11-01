@@ -10,7 +10,7 @@
   "theme_color": "#7cc79a",
   "lang": "sk",
   "related_applications": [
-    { "platform": "webapp", "url": "https://atiris.github.io/tapkotyper/manifest.webmanifest", "id": "https://atiris.github.io/tapkotyper/" }
+    { "platform": "webapp", "url": "https://tapkotyper.com/manifest.webmanifest", "id": "https://tapkotyper.com/" }
   ],
   "protocol_handlers": [
     { "protocol": "web+tapkotyper", "url": "./?open=%s" }

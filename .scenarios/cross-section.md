@@ -32,7 +32,7 @@ away, bring one home) are product features and may be used where a phase says so
 
 | # | Must be true | How to check | Produced by |
 |---|---|---|---|
-| G1 | The dev server is up | `http://localhost:5173/tapkotyper/` shows the start screen, no console errors | - |
+| G1 | The dev server is up | `http://localhost:5173/` shows the start screen, no console errors | - |
 | G2 | Fresh browser context (no TapkoTyper data) | the start screen lists no players; the teacher page lists no results | - |
 | G3 | A second, empty browser context can be opened for the move phase | the MCP opens a new context or a private window | - |
 | G4 | Unit tests pass before the run | `npm test` is green | - |

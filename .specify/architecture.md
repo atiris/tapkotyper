@@ -2,7 +2,7 @@
 
 ## What
 - Static single-page app: HTML + CSS + TypeScript, built by Vite, hosted on GitHub Pages
-  at `https://atiris.github.io/tapkotyper/` (base path `/tapkotyper/`).
+  at the custom domain `https://tapkotyper.com/` (base path `/`); the old `https://atiris.github.io/tapkotyper/` redirects there.
 - Deployed by GitHub Actions on every push to `main` (build + unit tests must pass).
 - No backend, no external runtime services, no third-party scripts.
 - Rendering: HTML5 Canvas 2D for game scenes, DOM for menus, overlays and forms. No 3D.

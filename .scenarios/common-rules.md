@@ -16,11 +16,11 @@ this file wins, and a scenario wins over this file.
 ## 2. Environment
 
 - How to start the product and what "up" means: `npm ci`, then `npm run dev`;
-  up = `http://localhost:5173/tapkotyper/` loads with no console errors.
+  up = `http://localhost:5173/` loads with no console errors.
   Production build check: `npm run build && npm run preview`
-  (`http://localhost:4173/tapkotyper/`).
+  (`http://localhost:4173/`).
 - Environments: local dev server only. Production is GitHub Pages at
-  `https://atiris.github.io/tapkotyper/`, deployed by `.github/workflows/deploy.yml`
+  `https://tapkotyper.com/`, deployed by `.github/workflows/deploy.yml`
   on every push to `main`.
 - Seeded accounts: none. There is no backend; profiles live in the browser
   `localStorage`. Start each run in a fresh browser context.
@@ -28,7 +28,7 @@ this file wins, and a scenario wins over this file.
 ## 3. Production guard
 
 - Check: the browser URL host is `localhost` or `127.0.0.1`.
-- Production looks like: `atiris.github.io`. Reading it is harmless (no
+- Production looks like: `tapkotyper.com`. Reading it is harmless (no
   backend, no shared data), but scenarios run against localhost.
 
 ## 4. Protected files

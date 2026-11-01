@@ -6,7 +6,7 @@ import qrcode from 'qrcode-generator';
 import { resultCode } from '../src/share/result';
 
 const result = (name: string, group?: string, title = 'Zvieratá') => ({ taskId: `t-${title}`, title, ...(group && { group }), name, date: '2026-10-21', minutes: 2, accuracy: 90, cpm: 50, weak: [['ô', 70]] as [string, number][] });
-const linkOf = async (name: string, group?: string, title?: string) => `http://localhost:4173/tapkotyper/#/result/${await resultCode(result(name, group, title))}`;
+const linkOf = async (name: string, group?: string, title?: string) => `http://localhost:4173/#/result/${await resultCode(result(name, group, title))}`;
 
 /** A y4m video (the fake camera feed) of white frames holding one QR code per link, side by side. */
 function qrVideo(file: string, links: string[], width: number, height: number): void {
@@ -137,7 +137,7 @@ test('on a phone the preview and Hotovo are in view with the counter', async ({ 
 
 test('writers: sorting, search and a writer\'s detail with charts, on a computer and on a phone', async ({ page }) => {
   await page.goto('./#/teacher/writers');
-  const add = (r: ReturnType<typeof result>) => resultCode(r).then((code) => paste(page, `http://localhost:4173/tapkotyper/#/result/${code}`, r.name));
+  const add = (r: ReturnType<typeof result>) => resultCode(r).then((code) => paste(page, `http://localhost:4173/#/result/${code}`, r.name));
   await add({ ...result('Ema', '3.A', 'Domáce'), accuracy: 96, cpm: 74 });
   await add({ ...result('Jakub', '3.A', 'Domáce'), accuracy: 81, cpm: 80 });
   await add({ ...result('Adam', '3.A', 'Domáce'), accuracy: 70, cpm: 41 });

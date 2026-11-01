@@ -36,7 +36,6 @@
     "guestName": "Guest",
     "import": "Import profiles",
     "language": "Language",
-    "stars": "{n} stars",
     "langNow": "Language: {name}",
     "gate": {
       "title": "Keyboard missing",
@@ -437,7 +436,7 @@
   },
   "results": {
     "peek": "Look at the game (Esc)",
-    "starsAria": "{n} of 3 stars",
+    "starsAria": "{n} of {max} stars",
     "byTapko": "The paw did most of this level.",
     "trendUp": "Your rhythm is smoother than last week",
     "newKey": "New key unlocked: {key}",
@@ -459,14 +458,14 @@
     "silver": "silver",
     "gold": "gold",
     "aria": "Badge of {world}: {tier}",
-    "locked": "Finish world {n}",
+    "locked": "World {n}: no badge yet",
     "tip": {
-      "bronze": "Bronze badge for {world}: the world is done.",
+      "bronze": "Bronze badge for {world}: the world is done with at least {bronze} ★.",
       "silver": "Silver badge for {world}: at least {silver} ★ in this world.",
-      "gold": "Gold badge for {world}: all {gold} ★ in this world.",
+      "gold": "Gold badge for {world}: at least {gold} ★ in this world.",
       "toSilver": "Silver badge: at least {silver} ★ in this world (you have {have}).",
-      "toGold": "Gold badge: all {gold} ★ in this world (you have {have}).",
-      "locked": "Finish {world} to earn its badge."
+      "toGold": "Gold badge: at least {gold} ★ in this world (you have {have}).",
+      "locked": "Finish {world} and get {bronze} ★ in it to earn its badge (you have {have})."
     }
   },
   "surprise": {
@@ -1050,7 +1049,6 @@
     "stars": "Stars in total: {n} of {total}",
     "tabProgress": "Progress",
     "tabKeys": "Keys",
-    "tabLevels": "Levels",
     "showCode": "QR code of all my progress",
     "overallTitle": "All progress",
     "overallCaption": "All my statistics",
@@ -1064,16 +1062,18 @@
     "week": "Last 7 days: {n} min",
     "storiesTitle": "Stories",
     "badges": "World badges",
+    "badgeTier": {
+      "gold": "Gold, from {n} ★",
+      "silver": "Silver, from {n} ★",
+      "bronze": "Bronze, from {n} ★"
+    },
+    "badgeNone": "None yet",
     "rangeAwards": "Target range awards",
     "parrots": "Parrots at home: {n}, most at once: {best}",
     "parrotCount": "{n} max {best}",
     "parrotsEarned": "Parrots won since the start: {n}",
     "starsEarned": "Stars earned since the start: {n}",
     "rangeRecord": "Target range record since the start: {n} points, set on {date}",
-    "parrotHome": "This world's parrot is at home",
-    "parrotAway": "This world's parrot is not at home yet",
-    "rareFound": "Rare thing from the range: {name}",
-    "rareWaiting": "The rare thing of this range still waits",
     "chars14": "{n} letters typed in the last 14 days",
     "days14": "Days with practice in the last 14 days: {n} of 14",
     "time14": "Typing time in the last 14 days: {time}",
@@ -1395,6 +1395,7 @@
     },
     "repeat": "Repeat",
     "announce": "Show on the map ahead",
+    "starsHint": "One world gives at most {n} stars.",
     "announceHint": "The map shows a golden box on that level ahead, in place of the game's picture, so the child knows where the surprise waits.",
     "showDays": "On the map",
     "showDaysHint": "How long a won surprise stays on the map by the world where it was won: the day it is won and this many days more. With 1 day, a child who wins it on Wednesday evening still sees it all Thursday. After that the map no longer shows it.",
@@ -1565,14 +1566,14 @@
       "The target is your accuracy over the last 14 days, the arrow of keys your speed in characters per minute, the star all the stars you have earned, and the pile of keys the letters you typed in the last 14 days.",
       "Each story row shows its worlds: finished ones in colour, the rest grey, and the stars of that story.",
       "Parrot: how many parrots are at home now and the most there were at once. Flown ones come back when you play with them again.",
-      "Open My progress with its button on the map. It has four tabs: Progress, Keys, Levels and Exercises. A click on your character shows a quick look.",
+      "Open My progress with its button on the map. It has two tabs: Progress and Keys. A click on your character shows a quick look.",
       "Keys shows which keys go well and which to practise. You can start practice right from there.",
       "A **QR code** shows your progress or an exercise to your teacher: they just take a photo of it. You can print a **Certificate** with your results."
     ],
     "moreTitle": "Hero's journey, target range, parrot and badge",
     "more": [
-      "Hero's journey: when you finish the last world of a story, a compass appears right after its big challenge. It is a long trip through every world of the story. It is harder: the words are harder, everything is a bit faster, and **three stars** need 98 % accuracy, two need 95 %.",
-      "Badge: you get one for every finished world. The more stars you collect in that world, the nicer it is: bronze, silver, gold.",
+      "Hero's journey: when you finish the last world of a story, a compass appears right after its big challenge. It is a long trip through every world of the story. It is harder: the words are harder, everything is a bit faster, and the stars need fewer mistakes.",
+      "Badge: a finished world gives one when you collect enough of its {max} stars: **bronze** from {bronze}, **silver** from {silver}, **gold** from {gold}.",
       "Target range: when you finish a world, a target appears on the map next to its big challenge. Tapko throws funny things at the target and you type the words on the rings they fly through. You practise the letters you do not type accurately enough yet.",
       "Type every word in time and without a mistake and you hit the middle. A mistake makes the thing fly a little lower, and after three it falls to the ground. Nothing bad happens, the next one comes.",
       "Every world has a rare thing of its own at the range. Hit it in the middle and throw to the end, and it joins your collection. Then **Enter** puts it in Tapko's paw instead of the thing that is there.",
@@ -1607,7 +1608,7 @@
     "journey": [
       "The game has stories. Each story has worlds, and each world has a few levels.",
       "You play the levels in order. At the end of a world a big challenge waits.",
-      "Every level gives you up to **three stars**. The fewer mistakes, the more stars.",
+      "Every level gives you up to **five stars**. The fewer mistakes, the more stars.",
       "You can play a level again when you want more stars.",
       "New letters come when the old ones go well. Some levels and stories open only when you know enough letters.",
       "When you miss a letter, practise it in Own typing."
@@ -1673,8 +1674,8 @@
     "starsTitle": "Stars for a level",
     "stars": [
       "Stars for a level come from **accuracy** only: the share of right keys among all pressed. Speed does not change them.",
-      "**3 stars** from {s3} %, **2** from {s2} %, else 1. A finished level always gives at least one.",
-      "The end of a level also shows half stars: 2.5 from {s2_5} % and 1.5 from {s1_5} %. The whole count is saved, rounded down.",
+      "**5 stars** from {s5} %, **4** from {s4} %, **3** from {s3} %, **2** from {s2} %, else 1. Each further star needs half the mistakes. A finished level always gives at least one.",
+      "The hero's journey is a bit stricter: **5** from {j5} %, **4** from {j4} %, **3** from {j3} %, **2** from {j2} %.",
       "A level keeps its best result; playing it again never takes stars away."
     ],
     "mentorTitle": "Results and QR codes",
@@ -1753,8 +1754,8 @@
       "m2": "2 mistakes",
       "m1h1": "1 mistake and 1 hesitation",
       "m2h2": "2 mistakes and 2 hesitations",
-      "acc98": "About 98 % accuracy (3 stars)",
-      "acc97": "About 97 % accuracy (3 stars)",
+      "acc98": "About 98 % accuracy (4 stars)",
+      "acc97": "About 97 % accuracy (3 or 4 stars)",
       "acc92": "About 92 % accuracy (2 stars)",
       "acc75": "About 75 % accuracy (1 star)",
       "stop": "Stop the super help"
@@ -1775,7 +1776,7 @@
     "fillRanges": "Rare things from target ranges",
     "fillKeysHint": "Keys in lesson order the player already knows.",
     "fillWorldHint": "This world and every one before it are finished.",
-    "fillStarsHint": "Share of the 3 stars in each level of the finished worlds.",
+    "fillStarsHint": "Share of the {n} stars in each level of the finished worlds.",
     "fillAccuracyHint": "Accuracy of every known key, give or take a little.",
     "fillRangesHint": "Share of the rare things found at the target ranges of the finished worlds.",
     "fillParrots": "All parrots",
@@ -3422,7 +3423,7 @@
   },
   "journey": {
     "title": "Hero's journey",
-    "harder": "The hero's journey is harder than the usual levels: the words are harder, everything is a bit faster, and three stars need 98 % accuracy.",
+    "harder": "The hero's journey is harder than the usual levels: the words are harder, everything is a bit faster, and five stars need almost no mistakes.",
     "panelTitle": "The hero's journey goes on!",
     "go": "On we go",
     "giveUp": {

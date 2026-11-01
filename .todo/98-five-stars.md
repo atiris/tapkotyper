@@ -76,16 +76,31 @@ matches TypingClub's "5 = top accuracy".
 
 ## Steps
 
-- [ ] Scoring: `MAX_LEVEL_STARS`, new `STAR_STEPS` / `JOURNEY_STAR_STEPS`, drop half stars and
+- [x] Scoring: `MAX_LEVEL_STARS`, new `STAR_STEPS` / `JOURNEY_STAR_STEPS`, drop half stars and
       `shownStars`, drop `starCap` everywhere; unit tests.
-- [ ] Rewards: badges 10/15/20 with "done and enough stars", `MAX_STARS`, `KIND_STEP`, chest,
+- [x] Rewards: badges 10/15/20 with "done and enough stars", `MAX_STARS`, `KIND_STEP`, chest,
       teacher 88 %, super fill; unit tests.
-- [ ] UI: Olympic star rows (`starRow`, `.mini-stars`, node heights), badges in three sections on
+- [x] UI: Olympic star rows (`starRow`, `.mini-stars`, node heights), badges in three sections on
       My progress, badge tips, Levels tab removed, surprise default and hint, help texts; i18n sk
       and en; asset `ui-star-half` removed.
-- [ ] Specs and README updated (WHAT and WHY).
+- [x] Specs and README updated (WHAT and WHY).
 - [ ] Verify: build, lint, unit tests, e2e. In the browser (playwright MCP, tester profile,
       `tapkoType` + `?fast`): finish a level with few and many mistakes and read the end card
       stars; the map nodes on desktop and at phone width (no overflow, two star rows); My
       progress badges in three sections and no Levels tab; the parent's surprise form with
       trigger "stars" (default 20, hint); help page star lines. Fix what is wrong.
+
+## Progress
+
+- Decisions taken while implementing (runner session, 2026-11-01):
+  - The super helper's accuracy plans keep their ids (98/97/92/75 %); their labels now say
+    4, 3 or 4, 2 and 1 stars instead of renaming the plans.
+  - The help's star percents are shown with decimals in the page's locale (98,5 %, 97,75 %), so
+    the journey's steps read exactly; the journey card text (`journey.harder`) and the help's
+    journey line in "more" name no numbers any more ("five stars need almost no mistakes").
+  - The badge help line takes its thresholds from the code (`{bronze}` `{silver}` `{gold}` `{max}`).
+  - A badge not earned yet says "World N: no badge yet" (was "Finish world N"), since a done world
+    can have none too.
+  - `start.stars`, never read, was found by the unused-keys test once the help's old `s${...}`
+    template stopped matching it by chance; removed.
+  - The help line "four tabs: Progress, Keys, Levels and Exercises" was stale already; now "two tabs".

@@ -1,14 +1,12 @@
 import { advanceLesson } from '../learning/lessons';
 import type { CompanionKind, Profile } from '../storage/schema';
-import { JOURNEY_STAR_STEPS, type LevelDef, STAR_STEPS, halfStarsFor, starsFor } from './levels';
+import { JOURNEY_STAR_STEPS, type LevelDef, STAR_STEPS, starsFor } from './levels';
 import { type BadgeTier, badgeTier, grantAccessories, grantCompanions } from './rewards';
 import type { Style } from './typing';
 
 export interface LevelResult {
-  /** Whole stars, saved and counted. */
+  /** Stars, saved and counted. */
   stars: number;
-  /** Stars shown on the results card, with halves (`halfStarsFor`). */
-  shownStars: number;
   accuracy: number;
   chars: number;
   errors: number;
@@ -34,15 +32,14 @@ export interface LevelResult {
 /** What the runtime measured in one run. */
 export type RunStats = Pick<LevelResult, 'accuracy' | 'chars' | 'errors' | 'cpm' | 'seconds' | 'byStyle'>;
 
-/** A hero's journey so far: its finished parts as one run, the targets typed of those typed or let pass, and the lowest star cap of a part. */
+/** A hero's journey so far: its finished parts as one run, and the targets typed of those typed or let pass. */
 export interface JourneyRun {
   stats: RunStats | null;
   typed: number;
   resolved: number;
-  cap: number;
 }
 
-export const newJourneyRun = (): JourneyRun => ({ stats: null, typed: 0, resolved: 0, cap: 3 });
+export const newJourneyRun = (): JourneyRun => ({ stats: null, typed: 0, resolved: 0 });
 
 /** Two runs as one: keys and typing time added up, the accuracy of all keys, the rhythm weighted by typing time. */
 export function joinRuns(a: RunStats, b: RunStats): RunStats {
@@ -106,13 +103,12 @@ export function grow(p: Profile, seconds: number, accuracy: number, typedShare: 
  * Applies a finished level to the profile. Unlocks keys, worlds and accessories.
  * `typedShare`: targets the child typed / targets typed or let pass.
  */
-export function completeLevel(p: Profile, def: LevelDef, r: RunStats, typedShare: number, cap = 3): LevelResult {
+export function completeLevel(p: Profile, def: LevelDef, r: RunStats, typedShare: number): LevelResult {
   // Accuracy of a handful of keys says nothing; such a level earns one star and no growth time.
   const byTapko = def.kind !== 'practice' && r.chars + r.errors < MIN_OWN_KEYS;
   // A hero's journey (`r` is all its parts together) has stricter stars.
   const steps = def.journey ? JOURNEY_STAR_STEPS : STAR_STEPS;
-  const stars = byTapko ? 1 : Math.min(cap, starsFor(r.accuracy, steps));
-  const shownStars = byTapko ? 1 : Math.min(cap, halfStarsFor(r.accuracy, steps));
+  const stars = byTapko ? 1 : starsFor(r.accuracy, steps);
   let worldDone: number | null = null;
   let badge: LevelResult['badge'] = null;
   if (def.kind !== 'practice') {
@@ -135,7 +131,7 @@ export function completeLevel(p: Profile, def: LevelDef, r: RunStats, typedShare
   const newAccessories = grantAccessories(p);
   const newCompanions = grantCompanions(p);
   const growth = byTapko ? null : grow(p, r.seconds, r.accuracy, typedShare);
-  return { ...r, stars, shownStars, newKeys, newAccessories, newCompanions, worldDone, trend: rhythmTrend(p), growth, byTapko, badge };
+  return { ...r, stars, newKeys, newAccessories, newCompanions, worldDone, trend: rhythmTrend(p), growth, byTapko, badge };
 }
 
 /** Current rhythm vs. a week ago (only positive framing is shown). */
@@ -159,5 +155,5 @@ export function rhythmTrend(p: Profile): number | null {
 export function completeStay(p: Profile, r: RunStats, typedShare: number): LevelResult {
   const newKeys = advanceLesson(p);
   const growth = grow(p, r.seconds, r.accuracy, typedShare);
-  return { ...r, stars: 0, shownStars: 0, newKeys, newAccessories: [], newCompanions: [], worldDone: null, trend: rhythmTrend(p), growth, byTapko: false, badge: null };
+  return { ...r, stars: 0, newKeys, newAccessories: [], newCompanions: [], worldDone: null, trend: rhythmTrend(p), growth, byTapko: false, badge: null };
 }

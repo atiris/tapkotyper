@@ -3,7 +3,7 @@ import { langOptions, locale, t } from '../i18n/i18n';
 import { ownLangs, ownRef } from '../i18n/own-langs';
 import { ENTER, LAYOUTS, LAYOUT_IDS, allKeys } from '../keyboard/layouts';
 import { LEVELS, type LevelDef, WORLDS, levelById, worldName } from '../game/levels';
-import { SHOW_DAYS, SHOW_DAYS_MAX, SURPRISES_MAX, SURPRISE_LEN, SURPRISE_N_MAX, TRIGGERS, newSurprise, restartSurprise, surpriseCount } from '../game/own-content';
+import { SHOW_DAYS, SHOW_DAYS_MAX, SURPRISES_MAX, SURPRISE_LEN, SURPRISE_N_DEFAULT, SURPRISE_N_MAX, TRIGGERS, newSurprise, restartSurprise, surpriseCount } from '../game/own-content';
 import { wordSource } from '../game/runtime/options';
 import { lessonKeyOf, punctuationKeys, useLayout } from '../learning/lessons';
 import { COMPANION_KINDS, GUEST_ID, SUPER_ID, type FontChoice, type GraphicsChoice, type LangRef, type LayoutId, type OwnMix, type ParentLock, type Profile, type Surprise, type SurpriseTrigger } from '../storage/schema';
@@ -21,7 +21,7 @@ import { numberPick, profileCard } from '../ui/profile-card';
 import { MAX_PER_ROW, rowSplit } from '../ui/rows';
 import { cornerControls } from '../ui/chrome';
 import { barTabLinks, tabBar } from '../ui/tabs';
-import { hasCompanion } from '../game/rewards';
+import { MAX_WORLD_STARS, hasCompanion } from '../game/rewards';
 import { lockRemovedNote } from '../ui/service';
 import { OWN_TEXT_MAX, OWN_WORDS_MAX, parseOwnWords, typableText, untypableWords } from '../words/words';
 
@@ -269,7 +269,12 @@ function surprisesTab(p: Profile): HTMLElement {
   let editing: Surprise | null = null;
   const q = h('textarea', { rows: 2, maxlength: SURPRISE_LEN, placeholder: t('surprises.qPlaceholder') });
   const a = h('textarea', { rows: 2, maxlength: SURPRISE_LEN, placeholder: t('surprises.aPlaceholder') });
-  const trigger = select<SurpriseTrigger>('level', TRIGGERS.map((x): [SurpriseTrigger, string] => [x, t(`surprises.trigger.${x}`)]), () => sync());
+  const trigger = select<SurpriseTrigger>('level', TRIGGERS.map((x): [SurpriseTrigger, string] => [x, t(`surprises.trigger.${x}`)]), () => {
+    // A new rule starts each count at its own default; an edited one keeps what it had.
+    const tr = trigger.value as SurpriseTrigger;
+    if (!editing && tr !== 'level') n.value = String(SURPRISE_N_DEFAULT[tr]);
+    sync();
+  });
   const level = h('select', {}, ...WORLDS.map((_, i) => h('optgroup', { label: worldName(i) },
     ...LEVELS.filter((l) => l.world === i).map((l) => h('option', { value: l.id }, levelName(l))))));
   const n = h('input', { type: 'number', min: 1, max: SURPRISE_N_MAX, step: 1, value: 10, inputmode: 'numeric' });
@@ -284,12 +289,14 @@ function surprisesTab(p: Profile): HTMLElement {
   tip(showDays, t('surprises.showDaysHint'));
   const levelField = field(t('surprises.level'), level);
   const nLabel = h('span', { class: 'field-label' });
-  const nField = h('label', { class: 'field' }, nLabel, n);
+  const starsHint = h('span', { class: 'hint' }, t('surprises.starsHint', { n: MAX_WORLD_STARS }));
+  const nField = h('label', { class: 'field' }, nLabel, starsHint, n);
   const sync = () => {
     const tr = trigger.value as SurpriseTrigger;
     levelField.hidden = announceField.hidden = tr !== 'level';
     nField.hidden = tr === 'level';
     if (!nField.hidden) nLabel.textContent = t(`surprises.n.${tr}`);
+    starsHint.hidden = tr !== 'stars';
   };
   const msg = h('p', { class: 'error', role: 'alert' });
   const saveLabel = h('span', {}, t('surprises.add'));
@@ -304,7 +311,7 @@ function surprisesTab(p: Profile): HTMLElement {
     editing = null;
     q.value = a.value = '';
     trigger.value = 'level';
-    n.value = '10';
+    n.value = String(SURPRISE_N_DEFAULT.levels);
     repeat.checked = false;
     announce.checked = false;
     showDays.value = String(SHOW_DAYS);
@@ -319,7 +326,7 @@ function surprisesTab(p: Profile): HTMLElement {
     a.value = s.a;
     trigger.value = s.trigger;
     if (s.level) level.value = s.level;
-    n.value = String(s.n ?? 10);
+    n.value = String(s.n ?? SURPRISE_N_DEFAULT.levels);
     repeat.checked = s.repeat;
     announce.checked = !!s.announce;
     showDays.value = String(s.showDays ?? SHOW_DAYS);

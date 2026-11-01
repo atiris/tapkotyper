@@ -17,7 +17,7 @@ import { crown } from '../ui/crown';
 import { arrowFocus, button, closeButton, h, icon, modal } from '../ui/dom';
 import { openSurprises, surpriseAsk } from '../game/cards';
 import { TRIGGERS, surpriseAnnounced, surpriseCount, surprisesToldOn, surprisesWonIn } from '../game/own-content';
-import { cornerControls, settingsButton } from '../ui/chrome';
+import { STAR_PLACES, cornerControls, settingsButton } from '../ui/chrome';
 import { offerInstall } from '../ui/install';
 import { tipShown } from '../ui/tooltip';
 import { firstWord, onTypedWord } from '../ui/typed-word';
@@ -222,6 +222,9 @@ function parrotNode(p: Profile, open: boolean, world: number): HTMLElement {
   }, pic ? h('img', { class: 'level-act', src: pic, alt: '' }) : icon('star', 'icon'));
 }
 
+/** A node's best stars, small, in the ring layout of `starRow`. */
+const miniStars = (stars: number) => h('span', { class: 'mini-stars' }, ...STAR_PLACES.map((s) => h('i', { class: s <= stars ? 'on' : '' })));
+
 /** The story's hero's journey: the compass with its best stars, right after the crown of the story's last world; faded and closed until that world is finished. */
 function journeyNode(p: Profile, story: StoryDef): HTMLElement {
   const open = journeyOpen(p, story);
@@ -230,7 +233,7 @@ function journeyNode(p: Profile, story: StoryDef): HTMLElement {
     class: `level-node journey-node ${stars ? 'done' : ''}`, type: 'button', disabled: !open,
     'aria-label': `${t('journey.title')}${stars ? `, ${t('map.starsAria', { n: stars })}` : ''}`, tip: sideTip(open, 'map.journeyTip'),
     onClick: () => go('level', { id: 'journey', story: story.id }),
-  }, compassElement('level-act'), h('span', { class: 'mini-stars' }, ...[1, 2, 3].map((s) => h('i', { class: s <= stars ? 'on' : '' }))));
+  }, compassElement('level-act'), miniStars(stars));
 }
 
 /** Story levels still to finish up to the level `id`, counted from the next one (at least that level itself). */
@@ -307,7 +310,7 @@ function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held:
         tip: `${l.isSuper ? `${t('map.act.super')}: ${t(`map.act.${act}`)}` : `${l.index + 1}. ${t(`map.act.${act}`)}`}${gift ? `\n${t('map.surpriseHere')}` : ''}`,
         onClick: () => (missing ? keysBubble(missing, wi) : go('level', { id: l.id })),
       }, actImg ? h('img', { class: 'level-act', src: actImg, alt: '' }) : h('span', { class: 'num' }, num), l.isSuper ? crown('level-crown') : null,
-        missing ? keyIcon(held) : h('span', { class: 'mini-stars' }, ...[1, 2, 3].map((s) => h('i', { class: s <= stars ? 'on' : '' }))));
+        missing ? keyIcon(held) : miniStars(stars));
       return b;
     });
     const tier = badgeTier(p, wi);

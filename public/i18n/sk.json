@@ -36,7 +36,6 @@
     "guestName": "Hosť",
     "import": "Načítať profily",
     "language": "Jazyk",
-    "stars": "Hviezdičky: {n}",
     "langNow": "Jazyk: {name}",
     "gate": {
       "title": "Chýba klávesnica",
@@ -437,7 +436,7 @@
   },
   "results": {
     "peek": "Pozrieť sa na hru (Esc)",
-    "starsAria": "{n} z 3 hviezdičiek",
+    "starsAria": "{n} z {max} hviezdičiek",
     "byTapko": "Túto úroveň zvládla hlavne labka.",
     "trendUp": "Rytmus je plynulejší ako minulý týždeň",
     "newKey": "Nový kláves: {key}",
@@ -459,14 +458,14 @@
     "silver": "strieborný",
     "gold": "zlatý",
     "aria": "Odznak sveta {world}: {tier}",
-    "locked": "Prejdi svet {n}",
+    "locked": "Svet {n}: zatiaľ bez odznaku",
     "tip": {
-      "bronze": "Bronzový odznak za svet {world}: svet je prejdený.",
+      "bronze": "Bronzový odznak za svet {world}: svet je prejdený a má aspoň {bronze} ★.",
       "silver": "Strieborný odznak za svet {world}: aspoň {silver} ★ v tomto svete.",
-      "gold": "Zlatý odznak za svet {world}: všetkých {gold} ★ v tomto svete.",
+      "gold": "Zlatý odznak za svet {world}: aspoň {gold} ★ v tomto svete.",
       "toSilver": "Strieborný odznak: aspoň {silver} ★ v tomto svete (máš {have}).",
-      "toGold": "Zlatý odznak: všetkých {gold} ★ v tomto svete (máš {have}).",
-      "locked": "Prejdi svet {world} a získaš odznak."
+      "toGold": "Zlatý odznak: aspoň {gold} ★ v tomto svete (máš {have}).",
+      "locked": "Prejdi svet {world} a získaj v ňom {bronze} ★, dostaneš odznak (máš {have})."
     }
   },
   "surprise": {
@@ -1050,7 +1049,6 @@
     "stars": "Hviezdičky spolu: {n} z {total}",
     "tabProgress": "Postup",
     "tabKeys": "Klávesy",
-    "tabLevels": "Úrovne",
     "showCode": "QR kód celého postupu",
     "overallTitle": "Celý postup",
     "overallCaption": "Celé moje štatistiky",
@@ -1064,16 +1062,18 @@
     "week": "Za posledných 7 dní: {n} min",
     "storiesTitle": "Príbehy",
     "badges": "Odznaky svetov",
+    "badgeTier": {
+      "gold": "Zlaté, od {n} ★",
+      "silver": "Strieborné, od {n} ★",
+      "bronze": "Bronzové, od {n} ★"
+    },
+    "badgeNone": "Zatiaľ žiadny",
     "rangeAwards": "Ocenenia zo strelníc",
     "parrots": "Papagáje doma: {n}, najviac naraz: {best}",
     "parrotCount": "{n} max {best}",
     "parrotsEarned": "Papagáje získané od začiatku: {n}",
     "starsEarned": "Hviezdičky získané od začiatku: {n}",
     "rangeRecord": "Rekord strelnice od začiatku: {n} bodov, dosiahnutý {date}",
-    "parrotHome": "Papagáj tohto sveta je doma",
-    "parrotAway": "Papagáj tohto sveta ešte nie je doma",
-    "rareFound": "Vzácna vec zo strelnice: {name}",
-    "rareWaiting": "Vzácna vec zo strelnice tu ešte čaká",
     "chars14": "{n} písmen napísaných za posledných 14 dní",
     "days14": "Dni s tréningom za posledných 14 dní: {n} z 14",
     "time14": "Čas písania za posledných 14 dní: {time}",
@@ -1395,6 +1395,7 @@
     },
     "repeat": "Opakovať",
     "announce": "Ukázať na mape vopred",
+    "starsHint": "Jeden svet dá najviac {n} hviezd.",
     "announceHint": "Na mape bude na tej úrovni už vopred zlatá krabička namiesto obrázka hry, takže dieťa vie, kde prekvapenie čaká.",
     "showDays": "Na mape",
     "showDaysHint": "Ako dlho ostane získané prekvapenie na mape pri svete, kde sa získalo: v deň získania a ešte toľko ďalších dní. Pri 1 dni ho dieťa, ktoré ho získa v stredu večer, vidí ešte celý štvrtok. Potom sa na mape už neukáže.",
@@ -1565,14 +1566,14 @@
       "Terč je tvoja presnosť za posledných 14 dní, šípka z kláves rýchlosť v znakoch za minútu, hviezdička všetky získané hviezdičky a kôpka kláves počet písmen napísaných za posledných 14 dní.",
       "V každom riadku príbehu sú jeho svety: hotové sú farebné, ostatné sivé, a hviezdičky z toho príbehu.",
       "Papagáj: koľko papagájov je teraz doma a koľko ich tam bolo najviac naraz. Uletené sa vrátia, keď si s nimi znova zahráš.",
-      "Môj postup otvoríš tlačidlom na mape. Má štyri karty: Postup, Klávesy, Úrovne a Cvičenia. Klik na postavičku ukáže rýchly prehľad.",
+      "Môj postup otvoríš tlačidlom na mape. Má dve karty: Postup a Klávesy. Klik na postavičku ukáže rýchly prehľad.",
       "Klávesy ukazujú, ktoré ti idú a ktoré si ešte precvičiť. Odtiaľ hneď spustíš cvičenie.",
       "**QR kód** ukáže tvoj postup alebo cvičenie učiteľovi, stačí ho odfotiť. **Certifikát** s tvojimi výsledkami si môžeš vytlačiť."
     ],
     "moreTitle": "Cesta hrdinu, strelnica, papagáj a odznak",
     "more": [
-      "Cesta hrdinu: keď dokončíš posledný svet príbehu, hneď za jeho veľkou výzvou pribudne kompas. Je to dlhá výprava cez všetky svety príbehu. Je ťažšia: slová sú ťažšie, všetko je o kúsok rýchlejšie a na **tri hviezdičky** treba 98 % presnosť, na dve 95 %.",
-      "Odznak: dostaneš ho za dokončený svet. Čím viac hviezdičiek v svete zbieraš, tým je krajší: bronzový, strieborný, zlatý.",
+      "Cesta hrdinu: keď dokončíš posledný svet príbehu, hneď za jeho veľkou výzvou pribudne kompas. Je to dlhá výprava cez všetky svety príbehu. Je ťažšia: slová sú ťažšie, všetko je o kúsok rýchlejšie a hviezdičky chcú menej chýb.",
+      "Odznak: dokončený svet ti ho dá, keď v ňom zbieraš dosť z jeho {max} hviezdičiek: **bronzový** od {bronze}, **strieborný** od {silver}, **zlatý** od {gold}.",
       "Strelnica: keď dokončíš svet, pri jeho veľkej výzve na mape pribudne terč. Tapko hádže na terč vtipné veci a ty píšeš slová na kruhoch, ktorými vec preletí. Trénuješ písmená, ktoré ešte nepíšeš dosť presne.",
       "Keď napíšeš každé slovo načas a bez chyby, trafíš do stredu. Chyba vec trochu zníži, po troch chybách spadne na zem. Nič zlé sa nestane, príde ďalšia.",
       "Každý svet má na strelnici svoju vzácnu vec. Keď ju trafíš do stredu a dohádžeš do konca, pribudne do tvojej zbierky. Potom si ju môžeš **Enterom** vziať do labky namiesto veci, ktorú Tapko práve drží.",
@@ -1607,7 +1608,7 @@
     "journey": [
       "Hra má príbehy. Každý príbeh má svety a každý svet má niekoľko úrovní.",
       "Úrovne hráš po poradí. Na konci sveta ťa čaká veľká výzva.",
-      "Za každú úroveň dostaneš až **tri hviezdičky**. Čím menej chýb, tým viac hviezdičiek.",
+      "Za každú úroveň dostaneš až **päť hviezdičiek**. Čím menej chýb, tým viac hviezdičiek.",
       "Úroveň môžeš hrať znova, keď chceš viac hviezdičiek.",
       "Nové písmenká prídu, keď ti tie staré idú dobre. Niektoré úrovne a príbehy sa otvoria, až keď vieš dosť písmeniek.",
       "Keď ti chýba písmenko, precvič ho vo Vlastnom písaní."
@@ -1673,8 +1674,8 @@
     "starsTitle": "Hviezdičky za úroveň",
     "stars": [
       "Hviezdičky za úroveň sú len za **presnosť**: podiel správnych klávesov zo všetkých stlačených. Rýchlosť ich nemení.",
-      "**3 hviezdičky** od {s3} %, **2** od {s2} %, inak 1. Za dokončenú úroveň je vždy aspoň jedna.",
-      "Na konci úrovne vidno aj pol hviezdičky: 2,5 od {s2_5} % a 1,5 od {s1_5} %. Uloží sa celý počet, zaokrúhlený nadol.",
+      "**5 hviezdičiek** od {s5} %, **4** od {s4} %, **3** od {s3} %, **2** od {s2} %, inak 1. Každá ďalšia hviezdička chce polovicu chýb. Za dokončenú úroveň je vždy aspoň jedna.",
+      "Cesta hrdinu je o kúsok prísnejšia: **5** od {j5} %, **4** od {j4} %, **3** od {j3} %, **2** od {j2} %.",
       "Z úrovne sa ráta najlepší výsledok, opakovanie hviezdičky nikdy nezoberie."
     ],
     "mentorTitle": "Výsledky a QR kódy",
@@ -1753,8 +1754,8 @@
       "m2": "2 chyby",
       "m1h1": "1 chyba a 1 zaváhanie",
       "m2h2": "2 chyby a 2 zaváhania",
-      "acc98": "Presnosť asi 98 % (3 hviezdy)",
-      "acc97": "Presnosť asi 97 % (3 hviezdy)",
+      "acc98": "Presnosť asi 98 % (4 hviezdy)",
+      "acc97": "Presnosť asi 97 % (3 alebo 4 hviezdy)",
       "acc92": "Presnosť asi 92 % (2 hviezdy)",
       "acc75": "Presnosť asi 75 % (1 hviezda)",
       "stop": "Zastaviť super pomoc"
@@ -1775,7 +1776,7 @@
     "fillRanges": "Vzácne veci zo strelníc",
     "fillKeysHint": "Klávesy v poradí lekcií, ktoré hráč už pozná.",
     "fillWorldHint": "Tento svet a všetky pred ním sú prejdené.",
-    "fillStarsHint": "Podiel z 3 hviezd v každej úrovni prejdených svetov.",
+    "fillStarsHint": "Podiel z {n} hviezd v každej úrovni prejdených svetov.",
     "fillAccuracyHint": "Presnosť každej známej klávesy, o kúsok viac či menej.",
     "fillRangesHint": "Podiel nájdených vzácnych vecí zo strelníc prejdených svetov.",
     "fillParrots": "Všetky papagáje",
@@ -3445,7 +3446,7 @@
   },
   "journey": {
     "title": "Cesta hrdinu",
-    "harder": "Cesta hrdinu je ťažšia ako bežné úrovne: slová sú ťažšie, všetko je o kúsok rýchlejšie a na tri hviezdy treba 98 % presnosť.",
+    "harder": "Cesta hrdinu je ťažšia ako bežné úrovne: slová sú ťažšie, všetko je o kúsok rýchlejšie a päť hviezdičiek dostaneš len skoro bez chýb.",
     "panelTitle": "Cesta hrdinu pokračuje!",
     "go": "Ideme ďalej",
     "giveUp": {

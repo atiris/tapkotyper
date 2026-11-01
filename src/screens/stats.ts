@@ -2,7 +2,7 @@ import { app, go, layout, reduceMotion } from '../app/app';
 import { imageUrl } from '../gfx/assets';
 import { type Mood, otherMood, renderTapkoInto, tapkoElement } from '../gfx/tapko';
 import { STORIES, type StoryDef, WORLDS, storyDone, storyOpen, worldName } from '../game/levels';
-import { MAX_CHEST, MAX_STARS, badgeTier, chestPoints, totalStars, worldStars } from '../game/rewards';
+import { BADGE_STARS, MAX_CHEST, MAX_STARS, badgeTier, chestPoints, totalStars, worldStars } from '../game/rewards';
 import { locale, t } from '../i18n/i18n';
 import { allKeys } from '../keyboard/layouts';
 import { activeKeys, lessonKeyOf } from '../learning/lessons';
@@ -175,6 +175,15 @@ function storyRow(p: Profile, story: StoryDef): HTMLElement {
       h('b', {}, String(stars)), star ? h('img', { src: star, alt: '' }) : '★'));
 }
 
+/** The badges by tier, gold first, each with the stars it needs; worlds without a badge are not listed. */
+function badgeTiers(p: Profile): HTMLElement[] {
+  return (['gold', 'silver', 'bronze'] as const).map((tier) => {
+    const worlds = WORLDS.map((_, w) => w).filter((w) => badgeTier(p, w) === tier);
+    return h('div', { class: `badge-tier ${tier}` }, h('h5', {}, t(`progress.badgeTier.${tier}`, { n: BADGE_STARS[tier] })),
+      worlds.length ? h('div', { class: 'badge-row' }, ...worlds.map((w) => badge(w, tier, true))) : h('p', { class: 'badge-none' }, t('progress.badgeNone')));
+  });
+}
+
 /** The summary rows, a row per story under their heading, the badge shelf and the range awards, and when the child last trained. */
 function progressSection(p: Profile): HTMLElement {
   const { daysAgo, weekMinutes } = lastTraining(p);
@@ -183,8 +192,7 @@ function progressSection(p: Profile): HTMLElement {
     summaryRow(p),
     h('div', { class: 'badge-shelf' }, h('h4', {}, t('progress.storiesTitle'))),
     ...STORIES.map((s) => storyRow(p, s)),
-    h('div', { class: 'badge-shelf' }, h('h4', {}, t('progress.badges')),
-      h('div', { class: 'badge-row' }, ...WORLDS.map((_, w) => badge(w, badgeTier(p, w), true)))),
+    h('div', { class: 'badge-shelf' }, h('h4', {}, t('progress.badges')), ...badgeTiers(p)),
     h('div', { class: 'badge-shelf' }, h('h4', {}, t('progress.rangeAwards')), rangeFinds(p)),
     h('p', { class: 'progress-last' }, last, daysAgo === null ? null : [' ', t('progress.week', { n: weekMinutes })]));
 }

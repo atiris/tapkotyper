@@ -36,7 +36,7 @@
      history of every hand-in and a writer's progress, sending results from a phone to a
      computer as a `.tapko` file, the yearly cleanup (7 more days for old results loaded from a
      file), CSV, the checksum, how the game teaches typing, making a task, the task from the child's side, and the accuracy each count
-     of stars needs (the numbers from the game itself, so they never drift). The "?" (and F1) on the
+     of stars needs, for a level and for the stricter hero's journey (the numbers from the game itself, so they never drift). The "?" (and F1) on the
      "For teachers" page opens this tab, since a teacher there needs exactly this.
   6. **About Tapko**: the intro, the privacy promise (its word "nainštalujete" is a link that asks the browser to install
      the web app, or opens the browser's guide when it cannot; when the browser tells the app is already

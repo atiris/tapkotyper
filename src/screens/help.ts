@@ -1,7 +1,8 @@
 import { app, go, routeOf } from '../app/app';
-import { t, tList } from '../i18n/i18n';
+import { locale, t, tList } from '../i18n/i18n';
 import { captureKeys, homePinky } from '../game/cards';
-import { STAR_STEPS } from '../game/levels';
+import { JOURNEY_STAR_STEPS, STAR_STEPS, type StarSteps } from '../game/levels';
+import { BADGE_STARS, MAX_WORLD_STARS } from '../game/rewards';
 import { PAW_MAX, PAW_STREAK, PAW_WORDS } from '../game/paw';
 import { type Child, ICONS, button, h, icon, richText } from '../ui/dom';
 import { levelRing, pawRing, rhythmPic, roundPic, timerPic } from '../ui/hud';
@@ -80,9 +81,10 @@ function section(title: string, ...kids: Child[]): HTMLElement {
 
 const list = (key: string, params?: Record<string, string>) => h('ul', {}, ...tList(key, params).map((l) => h('li', {}, ...richText(l))));
 
-/** The accuracy (in whole percent) each count of stars needs, as `{s3}`, `{s2_5}`, `{s2}` and `{s1_5}`. */
+/** The accuracy in percent each count of stars needs: a level's as `{s5}` to `{s2}`, the hero's journey's as `{j5}` to `{j2}`. */
 function starSteps(): Record<string, string> {
-  return Object.fromEntries(STAR_STEPS.map((s) => [`s${String(s.stars).replace('.', '_')}`, String(Math.round(s.from * 100))]));
+  const percents = (steps: StarSteps, mark: string) => steps.map((s) => [`${mark}${s.stars}`, (s.from * 100).toLocaleString(locale(), { maximumFractionDigits: 2 })]);
+  return Object.fromEntries([...percents(STAR_STEPS, 's'), ...percents(JOURNEY_STAR_STEPS, 'j')]);
 }
 
 /** The text of `line` with `{mark}` replaced by `link`. */
@@ -169,7 +171,7 @@ function tabContent(tab: HelpTab, now: Child[] = []): HTMLElement[] {
       section(t('help.playTitle'), list('help.play')),
       section(t('help.gamesTitle'), h('p', {}, t('help.games.intro')), h('ul', { class: 'help-icons' }, ...gameIcons())),
       section(t('help.progressTitle'), list('help.progress')),
-      section(t('help.moreTitle'), list('help.more')),
+      section(t('help.moreTitle'), list('help.more', { max: String(MAX_WORLD_STARS), bronze: String(BADGE_STARS.bronze), silver: String(BADGE_STARS.silver), gold: String(BADGE_STARS.gold) })),
     ];
     // Who the settings are for and how they open, under their first heading.
     case 'settings': return SETTINGS_TABS.map((s) => section(t(`parent.tab.${s}`),

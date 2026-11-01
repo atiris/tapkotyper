@@ -30,8 +30,8 @@
 - In the same screen the child sets the nickname (up to 16 characters, may be empty) and
   picks another animal kind. Other kinds are earned by stars over all levels, slowly:
   about one new animal per two worlds. Every player gets their own order and prices, set
-  at random when the player is created: each next kind costs 18 to 26 stars more than the
-  previous one, so the last costs 144 to 208 of the 234 possible stars; the starting kind
+  at random when the player is created: each next kind costs 30 to 43 stars more than the
+  previous one, so the last costs 240 to 344 of the 390 possible stars; the starting kind
   is free. The screen's header shows the stars the child has now, so the missing stars
   are easy to compare. Every tile shows the kind's name on one line; a locked kind is paler,
   with a lock, and its tooltip says how many stars are missing ("62 more ★ and Lion is

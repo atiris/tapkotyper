@@ -3,7 +3,7 @@ import { newProfile } from '../storage/store';
 import { LEVELS, STORIES, journeyLevel, worldLevels } from './levels';
 import { AUTO_DIFFICULTY_MAX, GROWTH_TYPED_SHARE, MIN_OWN_KEYS, completeLevel, completeStay, grow, growthNeed, joinRuns } from './progress';
 import { COMPANION_KINDS } from '../storage/schema';
-import { MAX_CHEST, MAX_STARS, STORY_ACCESSORIES, badgeTier, chestPoints, friendStars, grantAccessories, grantCompanions, kindPrices, totalStars, unlockRules } from './rewards';
+import { KIND_STEP, MAX_CHEST, MAX_STARS, STORY_ACCESSORIES, badgeTier, chestPoints, friendStars, grantAccessories, grantCompanions, kindPrices, totalStars, unlockRules } from './rewards';
 
 describe('automatic growth', () => {
   it('steps up after enough good play, difficulty and word length in turn', () => {
@@ -54,8 +54,8 @@ describe('a level the paw typed for the child', () => {
   it('counts the level normally once the child typed enough keys', () => {
     const p = newProfile('Ema', 'sk');
     const r = completeLevel(p, LEVELS[0], { ...run, chars: MIN_OWN_KEYS }, 1);
-    expect(r).toMatchObject({ byTapko: false, stars: 3 });
-    expect(p.progress.levels['w1-1']).toBe(3);
+    expect(r).toMatchObject({ byTapko: false, stars: 5 });
+    expect(p.progress.levels['w1-1']).toBe(5);
     expect(p.progress.growthSeconds).toBe(120);
   });
 });
@@ -72,17 +72,17 @@ describe("a hero's journey", () => {
     const last = journeyLevel(STORIES[0], 4);
     const run = { chars: 97, errors: 3, cpm: 60, seconds: 240 };
     const r = completeLevel(p, last, { ...run, accuracy: 0.97 }, 1);
-    expect(r).toMatchObject({ stars: 2, shownStars: 2.5, worldDone: null, badge: null });
-    expect(p.progress.levels['journey-dragon']).toBe(2);
+    expect(r).toMatchObject({ stars: 3, worldDone: null, badge: null });
+    expect(p.progress.levels['journey-dragon']).toBe(3);
     expect(p.progress.levelsFinished).toBe(1);
     completeLevel(p, last, { ...run, accuracy: 0.9 }, 1);
-    expect(p.progress.levels['journey-dragon']).toBe(2);
+    expect(p.progress.levels['journey-dragon']).toBe(3);
     expect(p.progress.worldsDone).toEqual([0, 1, 2, 3, 4]);
   });
 });
 
 describe('characters earned by stars', () => {
-  it('prices the kinds per player: start free, then 18-26 stars a step', () => {
+  it('prices the kinds per player: start free, then 30-43 stars a step', () => {
     for (const name of ['Ema', 'Jano', 'Zuzka', 'Ondrej', 'Guest']) {
       const p = newProfile(name, 'sk', undefined, 'cat');
       const prices = kindPrices(p);
@@ -90,10 +90,10 @@ describe('characters earned by stars', () => {
       expect(prices.map(([k]) => k).sort()).toEqual([...COMPANION_KINDS].sort());
       for (let i = 1; i < prices.length; i++) {
         const step = prices[i][1] - prices[i - 1][1];
-        expect(step).toBeGreaterThanOrEqual(18);
-        expect(step).toBeLessThanOrEqual(26);
+        expect(step).toBeGreaterThanOrEqual(KIND_STEP[0]);
+        expect(step).toBeLessThanOrEqual(KIND_STEP[1]);
       }
-      expect(prices[prices.length - 1][1]).toBeLessThanOrEqual(208);
+      expect(prices[prices.length - 1][1]).toBeLessThanOrEqual(MAX_STARS);
       expect(friendStars(p, 'cat')).toBe(0);
     }
   });
@@ -103,9 +103,9 @@ describe('characters earned by stars', () => {
     expect(kindPrices(newProfile('Ema', 'sk'))).not.toEqual(kindPrices(newProfile('Jano', 'sk')));
   });
 
-  /** `n` stars over the first story levels, three each. */
+  /** `n` stars over the first story levels, five each. */
   const starsIn = (n: number): Record<string, number> =>
-    Object.fromEntries(LEVELS.slice(0, Math.ceil(n / 3)).map((l, i) => [l.id, Math.min(3, n - i * 3)]));
+    Object.fromEntries(LEVELS.slice(0, Math.ceil(n / 5)).map((l, i) => [l.id, Math.min(5, n - i * 5)]));
 
   it('unlocks the kinds the stars reach', () => {
     const p = newProfile('Ema', 'sk', undefined, 'cat');
@@ -161,18 +161,30 @@ describe('world badges', () => {
   const run = { accuracy: 0.9, chars: 100, errors: 10, cpm: 60, seconds: 120 };
   const perfect = { ...run, accuracy: 1, errors: 0 };
 
-  it('is earned with the world and grows with its stars', () => {
+  it('needs the world done and 10, 15 or 20 of its stars', () => {
     const p = newProfile('Ema', 'sk');
     const [l1, l2, l3, l4, gate] = worldLevels(0);
+    // 90 % gives 2 stars: the world is done with 10 stars, just bronze.
     for (const l of [l1, l2, l3, l4]) expect(completeLevel(p, l, run, 1).badge).toBeNull();
     expect(badgeTier(p, 0)).toBeNull();
     expect(completeLevel(p, gate, run, 1).badge).toEqual({ world: 0, tier: 'bronze', upgrade: false });
-    // 10 stars: still bronze; 12 make it silver.
+    // 13 and 16 stars: a replay of any level of the done world makes the badge better.
     expect(completeLevel(p, l1, perfect, 1).badge).toBeNull();
     expect(completeLevel(p, l2, perfect, 1).badge).toEqual({ world: 0, tier: 'silver', upgrade: true });
-    for (const l of [l3, l4]) completeLevel(p, l, perfect, 1);
-    expect(completeLevel(p, gate, perfect, 1).badge).toEqual({ world: 0, tier: 'gold', upgrade: true });
+    completeLevel(p, l3, perfect, 1);
+    expect(completeLevel(p, l4, perfect, 1).badge).toEqual({ world: 0, tier: 'gold', upgrade: true });
     expect(completeLevel(p, gate, perfect, 1).badge).toBeNull();
+  });
+
+  it('gives a done world with fewer than 10 stars no badge, until a replay brings them', () => {
+    const p = newProfile('Ema', 'sk');
+    const poor = { ...run, accuracy: 0.5, errors: 100 };
+    const [l1, , , , gate] = worldLevels(0);
+    for (const l of worldLevels(0)) completeLevel(p, l, poor, 1);
+    expect(p.progress.worldsDone).toEqual([0]);
+    expect(badgeTier(p, 0)).toBeNull();
+    expect(completeLevel(p, l1, perfect, 1).badge).toBeNull();
+    expect(completeLevel(p, gate, perfect, 1).badge).toEqual({ world: 0, tier: 'bronze', upgrade: false });
   });
 });
 
@@ -195,27 +207,28 @@ describe('staying a while', () => {
 describe('the treasure chest and the stars of My progress', () => {
   // These maxima are shown to the player; a new level, world or range thing changes them on purpose.
   it('has fixed maxima', () => {
-    expect(MAX_STARS).toBe(234);
+    expect(MAX_STARS).toBe(390);
     expect(MAX_CHEST).toBe(67);
   });
 
   it('counts a badge by its tier and a range find as one point', () => {
     const p = newProfile('Ema', 'sk');
     p.progress.worldsDone = [0, 1, 2];
-    for (const l of worldLevels(0)) p.progress.levels[l.id] = 3;
+    for (const l of worldLevels(0)) p.progress.levels[l.id] = 4;
     for (const l of worldLevels(1)) p.progress.levels[l.id] = 2;
     p.progress.rangeFinds = ['crown'];
-    // Gold 3 + bronze 1 (10 stars) + bronze 1 (no stars) + one find.
-    expect(chestPoints(p)).toBe(6);
+    // Gold 3 (20 stars) + bronze 1 (10 stars) + no badge (no stars) + one find.
+    expect(chestPoints(p)).toBe(5);
   });
 
   it('adds seven points while every finished world has its parrot', () => {
     const p = newProfile('Ema', 'sk');
     p.progress.worldsDone = [0];
     p.progress.parrots = [0];
+    for (const l of worldLevels(0)) p.progress.levels[l.id] = 2;
     // Bronze 1 + the Parrot badge 7.
     expect(chestPoints(p)).toBe(8);
     p.progress.worldsDone.push(1);
-    expect(chestPoints(p)).toBe(2);
+    expect(chestPoints(p)).toBe(1);
   });
 });

@@ -723,19 +723,13 @@ describe('flying lessons', () => {
     expect(shouts).toBe(1);
   });
 
-  it('a pause in typing takes the lift away, and the stars count the flyers', () => {
+  it('a pause in typing takes the lift away', () => {
     const L = fakeRuntime(3);
     Object.assign(L, { idleFor: 0, rhythm: { ema: 2, ratio: () => 1, ready: () => {} } });
     const mode = new FlightMode(L);
     expect((mode as any).liftAim()).toBe(1);
     Object.assign(L, { idleFor: 2.2 });
     expect((mode as any).liftAim()).toBeCloseTo(0.5);
-    Object.assign(mode as any, { done: 3, flown: 3 });
-    expect(mode.starCap()).toBe(3);
-    Object.assign(mode as any, { flown: 2 });
-    expect(mode.starCap()).toBe(2);
-    Object.assign(mode as any, { flown: 1 });
-    expect(mode.starCap()).toBe(1);
   });
 
   it("on the hero's journey the little dragon flies alone to the pit and back; a failed flight is flown again and counts nothing", () => {
@@ -754,7 +748,6 @@ describe('flying lessons', () => {
     expect(d.state).toBe('wait');
     expect(d.back).toBe(false);
     expect(mode.progress()).toBe(0);
-    expect(mode.starCap()).toBe(3);
     // A good flight lands by the pit; the next one flies back to Tapko.
     typeWord(L, mode);
     for (let i = 0; i < 600 && (mode as any).flown < 1; i++) {

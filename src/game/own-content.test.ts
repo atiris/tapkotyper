@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import type { Profile, Surprise } from '../storage/schema';
 import { aimLevel, levelById, parrotLevel, practiceLevel } from './levels';
-import { newSurprise, restartSurprise, surpriseAnnounced, surpriseCount, surpriseFor, surpriseOutcome, surpriseRun, surpriseWonIn, surprisesToldOn, surprisesWonIn } from './own-content';
+import { MAX_WORLD_STARS } from './rewards';
+import { SURPRISE_N_DEFAULT, newSurprise, restartSurprise, surpriseAnnounced, surpriseCount, surpriseFor, surpriseOutcome, surpriseRun, surpriseWonIn, surprisesToldOn, surprisesWonIn } from './own-content';
 
 const w11 = levelById('w1-1')!;
 const w12 = levelById('w1-2')!;
@@ -134,5 +135,13 @@ describe('surprise rules', () => {
     expect(surprisesWonIn(p, 0, '2026-10-29')).toEqual([byDefault, always, week]);
     expect(surprisesWonIn(p, 0, '2026-10-30')).toEqual([always, week]);
     expect(surprisesWonIn(p, 0, '2026-11-05')).toEqual([always]);
+  });
+});
+
+describe('a new counting rule', () => {
+  it('waits for about one world of stars by default, never more than a world gives', () => {
+    expect(MAX_WORLD_STARS).toBe(25);
+    expect(SURPRISE_N_DEFAULT.stars).toBe(20);
+    expect(SURPRISE_N_DEFAULT.stars).toBeLessThanOrEqual(MAX_WORLD_STARS);
   });
 });

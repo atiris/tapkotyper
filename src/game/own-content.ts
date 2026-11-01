@@ -12,6 +12,9 @@ export const TRIGGERS: SurpriseTrigger[] = ['level', 'minutes', 'levels', 'stars
 
 type Counting = 'minutes' | 'levels' | 'stars';
 
+/** The count a new counting rule starts with in the form: stars about one world's worth. */
+export const SURPRISE_N_DEFAULT: Record<Counting, number> = { minutes: 10, levels: 10, stars: 20 };
+
 const counting = (s: Surprise): s is Surprise & { trigger: Counting } => s.trigger === 'minutes' || s.trigger === 'levels' || s.trigger === 'stars';
 
 /** The profile's counter a counting trigger follows: trained seconds, finished levels or earned stars. */

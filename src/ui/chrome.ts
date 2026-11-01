@@ -2,8 +2,8 @@ import { type ScreenName, app, cycleSound, go, shownScreen, toggleLook } from '.
 import { onThemeChange, shownLook } from '../app/theme';
 import { audio } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
-import { WORLDS, worldName } from '../game/levels';
-import { LANGS, LANGUAGES, language, languageName, locale, t } from '../i18n/i18n';
+import { MAX_LEVEL_STARS, WORLDS, worldName } from '../game/levels';
+import { LANGS, LANGUAGES, language, languageName, t } from '../i18n/i18n';
 import { installShortcuts, setDefaultShortcuts, withKey } from '../input/shortcuts';
 import type { Lang, SoundLevel } from '../storage/schema';
 import { type Child, ICONS, h, icon } from './dom';
@@ -256,14 +256,15 @@ export function watchAutoFullscreen(): void {
   window.addEventListener('pointerdown', ask, true);
 }
 
-/** Three stars, `n` of them filled; a half (`2.5`) only on the results card. */
-export function starRow(n: number, cls = 'stars'): HTMLElement {
-  const star = imageUrl('ui-star'), half = imageUrl('ui-star-half'), empty = imageUrl('ui-star-empty');
-  const label = n.toLocaleString(locale(), { maximumFractionDigits: 1 });
-  return h('div', { class: cls, role: 'img', 'aria-label': t('results.starsAria', { n: label }) },
-    ...[1, 2, 3].map((i) => {
-      const isHalf = i - 0.5 === n, on = i <= n || isHalf;
-      const src = isHalf ? half : on ? star : empty;
-      return src ? h('img', { class: `star ${on ? 'on' : ''}`, src, alt: '', style: `--i:${i}` }) : h('span', { class: `star-fallback ${on ? 'on' : ''} ${isHalf ? 'half' : ''}`, style: `--i:${i}` }, '★');
+/** The 1-5 places of a level's stars, filled in reading order (three on top, two below). */
+export const STAR_PLACES = Array.from({ length: MAX_LEVEL_STARS }, (_, i) => i + 1);
+
+/** A level's stars in the ring layout (`.stars`), `n` of them filled. */
+export function starRow(n: number): HTMLElement {
+  const star = imageUrl('ui-star'), empty = imageUrl('ui-star-empty');
+  return h('div', { class: 'stars', role: 'img', 'aria-label': t('results.starsAria', { n, max: MAX_LEVEL_STARS }) },
+    ...STAR_PLACES.map((i) => {
+      const on = i <= n, src = on ? star : empty;
+      return src ? h('img', { class: `star ${on ? 'on' : ''}`, src, alt: '', style: `--i:${i}` }) : h('span', { class: `star-fallback ${on ? 'on' : ''}`, style: `--i:${i}` }, '★');
     }));
 }

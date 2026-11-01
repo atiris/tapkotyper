@@ -1,6 +1,6 @@
 import { app, go, saveProfile, shownScreen } from '../app/app';
 import { fillProgress, randomFill } from '../app/super';
-import { WORLDS, worldName } from '../game/levels';
+import { MAX_LEVEL_STARS, WORLDS, worldName } from '../game/levels';
 import { bringParrotHome, sendParrotAway } from '../game/parrots';
 import { localDate } from '../learning/stats';
 import { lessonOrder } from '../learning/lessons';
@@ -97,7 +97,7 @@ function fillDialog(p: Profile): void {
     h('div', { class: 'fill-grid' },
       fillField(t('service.fillKeys', { n: most }), keys, t('service.fillKeysHint')),
       fillField(t('service.fillWorld'), world, t('service.fillWorldHint')),
-      fillField(t('service.fillStars'), stars.el, t('service.fillStarsHint')),
+      fillField(t('service.fillStars'), stars.el, t('service.fillStarsHint', { n: MAX_LEVEL_STARS })),
       fillField(t('service.fillAccuracy'), accuracy.el, t('service.fillAccuracyHint')),
       fillField(t('service.fillRanges'), ranges.el, t('service.fillRangesHint')),
       h('div', { class: 'switch-field' }, h('label', {}, parrots, h('span', { class: 'switch-title' }, t('service.fillParrots'))), h('small', {}, t('service.fillParrotsHint')))),

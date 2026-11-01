@@ -78,11 +78,13 @@
   typed fewer than 5 keys (the paw did the rest) says so in a yellow tip line, gives one star, never
   lowers a better result and adds no time toward automatic growth. Esc on the end screen
   peeks under it and a second Esc brings it back (see Peeking under the results).
-- **Stars**: 3 from 96 % accuracy, 2 from 89 %, else 1 (finishing always gives one). The
-  valley's flying lessons also count the dragons that flew: never more stars than they earn. The end
-  screen also shows half stars, 1.5 from 84 % and 2.5 from 93 %, so a child sees a small gain
-  before the next whole star; the map, the progress table and every count keep whole stars
-  only, the shown stars rounded down.
+- **Stars**: 1 to 5 per level, from accuracy only, on a logarithmic scale of the mistakes:
+  every further star needs half the mistakes. 5 from 98.5 % accuracy, 4 from 97 %, 3 from
+  94 %, 2 from 88 %, else 1 (finishing always gives one, a flawless level five). Whole stars
+  only; every game counts the same way (the valley's flying lessons too). The stars stand like
+  the Olympic rings, three on top and two below in their gaps, filled in reading order, on the
+  end card and as mini stars on the map's level dots. Best results kept from the times of three
+  stars stay as they are until the level is played again.
 - **World rhythm** (the meadow, the rocket world and the valley; the planet starts with its calm step, see [story](story.md)): the levels of a world have fixed roles, so one
   session (about one world) goes up and down instead of repeating one game: 1 the world's
   main game, gently; 2 a calm step; 3 the main game, harder, with one short surprise; 4 a
@@ -272,6 +274,11 @@
   and mixed practice keep children involved and help them keep the skill
   ([research](../../.research/game/world-rhythm.md)). A slip in the clean line costs a
   little more practice, never the row, so accuracy matters without fear.
+- Three stars were too coarse: a child who plays well and one who plays almost without a
+  mistake got the same. Halving the mistakes for each star keeps the first stars easy and
+  makes five a real goal; stars stay accuracy-only because speed already grows on its own
+  (as on typing.com, with TypingClub's five as the top of accuracy). A cap by the dragons that
+  flew made one game count differently from the rest.
 - Some levels ended in under a minute, super levels with a few words in seconds: too short
   to settle into a rhythm, and stars came cheap.
 - A pause that hides the game breaks the child's focus; a way to slow down without a

@@ -125,7 +125,7 @@
   name in two groups stay apart.
 - **Groups:** a task may carry a group label (a class such as "5.A", typed in the task form).
   It travels in the task link and back in the result, with the number of levels the child has
-  finished. A child mastered a task from 85 % accuracy. A later hand-in without a group keeps
+  finished. A child mastered a task from 88 % accuracy (two stars in the game). A later hand-in without a group keeps
   the group the teacher gave that child. CSV exports what is shown, or everything, and has a
   group column.
 - **Move a player:** parent area, data tab, "Preniesť na iný počítač": a link (and QR when

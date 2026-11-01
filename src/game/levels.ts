@@ -321,19 +321,19 @@ export function nextLevel(p: Profile): LevelDef | null {
   return open.find((l) => !p.progress.levels[l.id]) ?? open[open.length - 1] ?? null;
 }
 
-/** Lowest accuracy for each count of stars on the results card, best first; below them 1 (finishing always gives one). */
+/** Most stars a level (and a hero's journey) gives. */
+export const MAX_LEVEL_STARS = 5;
+
+/**
+ * Lowest accuracy for each count of stars, best first; below them 1 (finishing always gives one).
+ * Every further star needs half the mistakes.
+ */
 export type StarSteps = readonly { stars: number; from: number }[];
-export const STAR_STEPS: StarSteps = [{ stars: 3, from: 0.96 }, { stars: 2.5, from: 0.93 }, { stars: 2, from: 0.89 }, { stars: 1.5, from: 0.84 }];
-/** A hero's journey is one step stricter. */
-export const JOURNEY_STAR_STEPS: StarSteps = [{ stars: 3, from: 0.98 }, { stars: 2.5, from: 0.965 }, { stars: 2, from: 0.95 }, { stars: 1.5, from: 0.9 }];
+export const STAR_STEPS: StarSteps = [{ stars: 5, from: 0.985 }, { stars: 4, from: 0.97 }, { stars: 3, from: 0.94 }, { stars: 2, from: 0.88 }];
+/** A hero's journey is a bit stricter: three quarters of the mistakes of a level for each step. */
+export const JOURNEY_STAR_STEPS: StarSteps = [{ stars: 5, from: 0.99 }, { stars: 4, from: 0.9775 }, { stars: 3, from: 0.955 }, { stars: 2, from: 0.91 }];
 
-/** Stars from accuracy: whole stars only. */
 export function starsFor(accuracy: number, steps = STAR_STEPS): number {
-  return Math.floor(halfStarsFor(accuracy, steps));
-}
-
-/** Stars shown on the results card, by the steps; never saved. */
-export function halfStarsFor(accuracy: number, steps = STAR_STEPS): number {
   return steps.find((s) => accuracy >= s.from)?.stars ?? 1;
 }
 

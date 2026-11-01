@@ -172,12 +172,6 @@ export class FlightMode extends Mode {
     return this.journey;
   }
 
-  /** The stars also count the flyers: all of them 3, at least half 2, else 1. On the journey the little dragon flies until it makes it, it caps nothing. */
-  starCap(): number {
-    if (this.journey || !this.done || this.flown === this.done) return 3;
-    return this.flown * 2 >= this.done ? 2 : 1;
-  }
-
   /** A dragon's seat left of the pit, and how much higher on the ground it sits. */
   private seatX(i: number): number {
     return this.L.vw * SEAT_AT - SEAT_FIRST - (i % SEAT_LIFT.length) * SEAT_GAP;

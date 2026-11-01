@@ -28,14 +28,14 @@
   five parts it stands at a fifth).
 - The play is harder, and the get-ready card says so in one line: the difficulty is one step
   above the child's (at most 10), the words are harder (a letter longer, and longer phrases),
-  and three stars need 98 % accuracy.
-- Stars come from the accuracy of the whole journey, one step stricter than a level: 3 stars
-  from 98 %, 2 from 95 %, else 1. The card shows halves: 3 from 98 %, 2.5 from 96.5 %, 2 from
-  95 %, 1.5 from 90 %, else 1. The paw rule (fewer than 5 own keys gives one star) holds over
+  and five stars need almost no mistakes.
+- Stars come from the accuracy of the whole journey, a bit stricter than a level (three quarters
+  of a level's mistakes for each step): 5 from 99 %, 4 from 97.75 %, 3 from 95.5 %, 2 from 91 %,
+  else 1. The paw rule (fewer than 5 own keys gives one star) holds over
   the whole journey.
 - It counts like a level: its keys, time and rhythm go into the [statistics](../profiles/statistics.md),
   and growth and the lesson advance as after a story level. The best stars show as mini stars
-  on its node and add to the star total (234).
+  on its node and add to the star total (390).
 - It is not a level of its world: it gives no badge, does not finish the world and opens
   nothing. The parent's surprises count it as a level of the story's last world
   ([parent controls](../profiles/parent-controls.md)).

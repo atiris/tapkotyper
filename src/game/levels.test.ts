@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { SUPER_ID } from '../storage/schema';
 import { lessonOrder } from '../learning/lessons';
-import { LEVELS, STORIES, WORLDS, activityOf, minActiveS, minWords, playedStep, aimLevel, aimOpen, aimWorld, freeTypeLevel, grownCount, hasMinLength, isLevelUnlocked, isWorldUnlocked, keysNeeded, levelById, levelOver, nextLevel, parrotKeys, parrotLevel, parrotSizeOf, practiceLevel, JOURNEYS, JOURNEY_STAR_STEPS, halfStarsFor, journeyId, journeyLevel, journeyOpen, journeyProgress, starsFor, shownProgress, worldLevels, worldLock } from './levels';
+import { LEVELS, STORIES, WORLDS, activityOf, minActiveS, minWords, playedStep, aimLevel, aimOpen, aimWorld, freeTypeLevel, grownCount, hasMinLength, isLevelUnlocked, isWorldUnlocked, keysNeeded, levelById, levelOver, nextLevel, parrotKeys, parrotLevel, parrotSizeOf, practiceLevel, JOURNEYS, JOURNEY_STAR_STEPS, journeyId, journeyLevel, journeyOpen, journeyProgress, starsFor, shownProgress, worldLevels, worldLock } from './levels';
 
 const KEYS = ['f', 'j', 'd', 'k', 's', 'l', 'a', ';', 'g', 'h', 'r', 'u', 'e', 'i', 't', 'y', 'w', 'o', 'q', 'p', 'v', 'm', 'c', ',', 'x', '.'];
 
@@ -209,14 +209,16 @@ describe("hero's journey", () => {
     expect(journeyProgress({ part: 1, parts: 5 }, 2)).toBeCloseTo(0.4);
   });
 
-  it('gives stars one step stricter than a level: 3 from 98 %, 2 from 95 %, halves at 96.5 and 90 %', () => {
-    expect(starsFor(0.98, JOURNEY_STAR_STEPS)).toBe(3);
-    expect(starsFor(0.979, JOURNEY_STAR_STEPS)).toBe(2);
-    expect(starsFor(0.95, JOURNEY_STAR_STEPS)).toBe(2);
-    expect(starsFor(0.949, JOURNEY_STAR_STEPS)).toBe(1);
-    expect(halfStarsFor(0.965, JOURNEY_STAR_STEPS)).toBe(2.5);
-    expect(halfStarsFor(0.9, JOURNEY_STAR_STEPS)).toBe(1.5);
-    expect(halfStarsFor(0.899, JOURNEY_STAR_STEPS)).toBe(1);
+  it('gives stars a bit stricter than a level: 5 from 99 %, 4 from 97.75 %, 3 from 95.5 %, 2 from 91 %', () => {
+    expect(starsFor(1, JOURNEY_STAR_STEPS)).toBe(5);
+    expect(starsFor(0.99, JOURNEY_STAR_STEPS)).toBe(5);
+    expect(starsFor(0.989, JOURNEY_STAR_STEPS)).toBe(4);
+    expect(starsFor(0.9775, JOURNEY_STAR_STEPS)).toBe(4);
+    expect(starsFor(0.977, JOURNEY_STAR_STEPS)).toBe(3);
+    expect(starsFor(0.955, JOURNEY_STAR_STEPS)).toBe(3);
+    expect(starsFor(0.954, JOURNEY_STAR_STEPS)).toBe(2);
+    expect(starsFor(0.91, JOURNEY_STAR_STEPS)).toBe(2);
+    expect(starsFor(0.909, JOURNEY_STAR_STEPS)).toBe(1);
   });
 });
 

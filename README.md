@@ -25,7 +25,7 @@ being made. No explosions, no punishment, no ads, no accounts.
   and after `F` and `J` a card shows the home row. The on-screen keyboard shows finger colors
   and numbers, lights up the next key (and both steps of Slovak accent keys), and two hands
   show which finger to use. The guide fades for keys the child already masters.
-- **Accuracy before speed.** Stars come from accuracy (half stars show a small gain); speed is
+- **Accuracy before speed.** Stars come from accuracy, 1 to 5, each further star for half the mistakes; speed is
   only a personal trend. Mistakes never cost anything: the letter wobbles, the right key glows,
   and after three misses on one key Tapko shows which key it is and which finger presses it.
   Backspace wipes a started word, so the child can start another one.

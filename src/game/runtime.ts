@@ -1046,7 +1046,6 @@ export class LevelRuntime {
       run.stats = run.stats ? joinRuns(run.stats, stats) : stats;
       run.typed += this.typedTargets;
       run.resolved += resolved;
-      run.cap = Math.min(run.cap, this.mode.starCap());
       const j = this.def.journey!;
       if (j.part < j.parts - 1) {
         if (!this.mode.lost) this.celebrate();
@@ -1055,8 +1054,8 @@ export class LevelRuntime {
       }
     }
     const result = noStars ? completeStay(p, stats, typedShare)
-      : run ? completeLevel(p, this.def, run.stats!, run.resolved ? run.typed / run.resolved : 1, run.cap)
-      : completeLevel(p, this.def, stats, typedShare, this.mode.starCap());
+      : run ? completeLevel(p, this.def, run.stats!, run.resolved ? run.typed / run.resolved : 1)
+      : completeLevel(p, this.def, stats, typedShare);
     if (this.style !== 'copy') result.byStyle = { style: this.style, clean, total: resolved };
     saveProfile();
     if (!this.mode.lost) {

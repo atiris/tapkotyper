@@ -73,7 +73,7 @@ export function dateBefore(now: number, months: number, days = 0): string {
 export const isOld = (r: TaskResult, now: number): boolean => r.date < dateBefore(now, 12);
 
 /** Accuracy in percent from which a child has mastered the task (two stars in the game). */
-export const MASTERED = 85;
+export const MASTERED = 88;
 
 export const mastered = (r: Pick<TaskResult, 'accuracy'>): boolean => r.accuracy >= MASTERED;
 

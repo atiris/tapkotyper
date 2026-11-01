@@ -80,7 +80,9 @@
   - **after minutes of training** (typing time, [statistics](statistics.md): story levels, practice, the target range and the parrot together), **after more
     levels** or **after more stars**, counted from when the rule was made: the game
     asks on every get-ready card while it waits, with what is still left ("3 more
-    levels"), and tells the answer on the results of the level that reaches it.
+    levels"), and tells the answer on the results of the level that reaches it. A new rule
+    starts at 10 minutes or levels, or at 20 stars (about one world), and above the count of
+    stars a hint says how many one world gives at most (25).
   A rule either repeats (counts again from the reveal, or fires on every finish of its level)
   or is done after its reveal and never shown again. A level run
   asks one surprise at most on its get-ready card, in the order level, minutes, levels, stars, but
@@ -146,6 +148,8 @@
   time, after more levels or stars. A random surprise now and then was dropped: a reward
   the child cannot work toward is no goal. One table shows
   every rule and what is done.
+- A parent cannot guess how much "20 stars" is; one world's maximum next to the field makes the
+  count a choice instead of a guess.
 - After a level a child may not remember the question any more, so the answer always
   comes together with it.
 - A box shown ahead on the map is a goal the child can head for; an open box kept in the

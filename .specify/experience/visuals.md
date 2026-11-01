@@ -52,7 +52,8 @@
   the stage like the gloves, the creatures and the background, so a tall window does not make
   it small next to them.
 - A level dot on the map shows the icon of its activity (word stream, waiting words, copy,
-  crossroads, dictation, secret words, big challenge) with the stars under it; its
+  crossroads, dictation, secret words, big challenge) with its five mini stars under it
+  (three on top, two below in their gaps, like the end card's); its
   tooltip says the number and the activity. A dot without its picture shows the number.
 - A finished world adds two side cards after its super star: the target range (a red target)
   and the parrot (its head `ui-act-parrot-head` while it is at home, else the empty short perch

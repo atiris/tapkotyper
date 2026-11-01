@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { TypingCore, memoryFlash, memoryShow } from './typing';
-import { halfStarsFor, starsFor } from './levels';
+import { starsFor } from './levels';
 import { ENTER } from '../keyboard/layouts';
 
 describe('TypingCore', () => {
@@ -158,21 +158,17 @@ describe('styles', () => {
 
 describe('stars', () => {
   it('rewards accuracy and always gives at least one', () => {
-    expect(starsFor(1)).toBe(3);
-    expect(starsFor(0.95)).toBe(2);
-    expect(starsFor(0.88)).toBe(1);
+    expect(starsFor(1)).toBe(5);
     expect(starsFor(0.2)).toBe(1);
   });
 
-  it('shows a half star from 84 % and from 93 % on the results card', () => {
-    expect(halfStarsFor(0.8399)).toBe(1);
-    expect(halfStarsFor(0.84)).toBe(1.5);
-    expect(halfStarsFor(0.89)).toBe(2);
-    expect(halfStarsFor(0.93)).toBe(2.5);
-    expect(halfStarsFor(0.96)).toBe(3);
-  });
-
-  it('saves the shown stars rounded down', () => {
-    for (let a = 0; a <= 1; a += 0.001) expect(Math.floor(halfStarsFor(a))).toBe(starsFor(a));
+  it('needs half the mistakes for each further star: 2 from 88 %, 3 from 94 %, 4 from 97 %, 5 from 98.5 %', () => {
+    expect(starsFor(0.879)).toBe(1);
+    expect(starsFor(0.88)).toBe(2);
+    expect(starsFor(0.94)).toBe(3);
+    expect(starsFor(0.97)).toBe(4);
+    expect(starsFor(97 / 100)).toBe(4);
+    expect(starsFor(0.984)).toBe(4);
+    expect(starsFor(0.985)).toBe(5);
   });
 });

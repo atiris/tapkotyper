@@ -18,8 +18,8 @@
   total, stories finished, worlds finished, the **treasure chest** of rarities in points of its
   maximum (a world badge bronze 1, silver 2, gold 3; each target range award 1; the
   [Parrot badge](../game/parrot.md) 7: 15 x 3 + 15 + 7 = 67), the parrots at home against the most
-  ever at home (the parrot's head), and the stars (the best of every level) of the maximum (3 in
-  75 levels and 3 hero's journeys: 234). The second row is the last 14 days: accuracy and speed in
+  ever at home (the parrot's head), and the stars (the best of every level) of the maximum (5 in
+  75 levels and 3 hero's journeys: 390). The second row is the last 14 days: accuracy and speed in
   characters per minute once something was typed, the letters typed, the **days trained** (a desk
   calendar: days with at least one own key of the 14, today included, e.g. `9/14`) and the
   **typing time** (an alarm clock: `45 min`, from an hour `1 h 25`, in full in the tooltip);
@@ -28,7 +28,7 @@
   and every star earned, replays included (a stack of stars), and once there is one the target
   range's record: the most points of one run, its day in the tooltip (the target). Under the heading "Príbehy" one row per story (all stories, closed ones grey) with its picture and
   name, its worlds' pictures (done in colour, the rest grey) and the stars earned in it, the
-  shelf of world badges ("Odznaky svetov", [story](../game/story.md)) with the row of target
+  shelf of world badges ("Odznaky svetov": gold, silver and bronze sections with the stars each needs, [story](../game/story.md)) with the row of target
   range awards under it ("Ocenenia zo strelníc": every world's rare thing, found ones in
   colour, [target range](../game/target-practice.md)), and when
   the child last trained (today, yesterday, n days ago) with the typing minutes of the last 7
@@ -40,15 +40,9 @@
   instead (question mark, exclamation mark, colon, Slovak digits), each with its own
   statistics; capitals count for their letter and its Shift.
 - **My progress** ("Môj postup") is a page of its own, opened by the map's button, with a top
-  bar ("Back" to the map and the title) like the other pages, and three tabs: **Postup**,
+  bar ("Back" to the map and the title) like the other pages, and two tabs: **Postup** and
   **Klávesy** (with the trends over the last sessions: accuracy, rhythm and time per day,
-  side by side on wide screens), **Úrovne** (the levels grouped by story, a heading with the
-  story's picture and title, and by world, one row of cells per world: each level by its game's
-  picture as on the map (no numbers; the last one, the great challenge, with its small crown) with its three stars,
-  filled or empty, in a fixed place, then the world's parrot (its head while at home, else the
-  empty perch) and its target range with its rare thing, in color once found, grey until then,
-  so nothing a world gives is missing from the list; a click on a picture opens that level,
-  parrot round or range, while one still closed stays grey). Under the progress sit
+  side by side on wide screens); every level's stars are on the map. Under the progress sit
   "QR kód celého postupu" and "Certifikát" ([parent controls](parent-controls.md)).
 - Once a parrot was ever won, the summary row has a **parrot** chip: the parrot's picture and
   "2 max 5", the parrots at home now and the most that were home at once; the tooltip says it
@@ -76,7 +70,7 @@
   that readies a key for the next lesson). This is long-term: it is computed from the stored
   key statistics, so it fades when the child stops typing the key well.
 
-- **Maintenance:** the maxima shown (stars 234, chest 67) follow from the levels, worlds and
+- **Maintenance:** the maxima shown (stars 390, chest 67) follow from the levels, worlds and
   range things; when their number changes, the new maximum must be shown and written here
   (a unit test pins both numbers, so a change cannot slip by).
 
@@ -87,6 +81,8 @@
   progress answers that first, and the key details stay for the curious.
 - The character is the child's own figure; a friend that reacts to a click makes the
   progress page warm instead of a report card.
+- The Levels tab repeated the map's stars in a table; the map already shows every level's
+  stars, and one place is easier to read.
 - Knowing the problem keys turns mistakes into a clear, small next step.
 - Old mistakes must not weigh on a key the child already fixed: only recent presses
   count, while the history still shows the way there.

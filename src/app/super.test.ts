@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { LEVELS } from '../game/levels';
+import { LEVELS, MAX_LEVEL_STARS } from '../game/levels';
 import { WORLD_THINGS } from '../game/modes/aim-things';
 import { lessonOrder } from '../learning/lessons';
 import { fillProgress, randomFill, superProfile } from './super';
@@ -21,8 +21,8 @@ describe('service menu progress filling', () => {
     fillProgress(p, { keys: 20, lastWorld: 1, stars: 0.6, accuracy: 0.9, ranges: 0, allParrots: true }, seeded(2));
     const done = LEVELS.filter((l) => l.world <= 1);
     const stars = done.map((l) => p.progress.levels[l.id]);
-    expect(stars.every((s) => s >= 1 && s <= 3)).toBe(true);
-    expect(stars.reduce((a, b) => a + b, 0)).toBe(Math.round(0.6 * 3 * done.length));
+    expect(stars.every((s) => s >= 1 && s <= MAX_LEVEL_STARS)).toBe(true);
+    expect(stars.reduce((a, b) => a + b, 0)).toBe(Math.round(0.6 * MAX_LEVEL_STARS * done.length));
     expect(LEVELS.filter((l) => l.world > 1).every((l) => p.progress.levels[l.id] === 0)).toBe(true);
     fillProgress(p, { keys: 20, lastWorld: 1, stars: 0, accuracy: 0.9, ranges: 0, allParrots: true }, seeded(2));
     expect(done.every((l) => p.progress.levels[l.id] === 1)).toBe(true);
@@ -69,7 +69,7 @@ describe('service menu progress filling', () => {
       expect(f.accuracy).toBeGreaterThanOrEqual(0.9);
       expect(f.ranges).toBeGreaterThanOrEqual(0.4);
       const done = LEVELS.filter((l) => p.progress.worldsDone.includes(l.world));
-      const share = done.reduce((a, l) => a + p.progress.levels[l.id], 0) / (3 * done.length);
+      const share = done.reduce((a, l) => a + p.progress.levels[l.id], 0) / (MAX_LEVEL_STARS * done.length);
       expect(share).toBeGreaterThanOrEqual(0.69);
       expect(share).toBeLessThanOrEqual(0.96);
       expect(p.progress.parrots.length).toBeGreaterThanOrEqual(p.progress.worldsDone.length - 1);

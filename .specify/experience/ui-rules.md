@@ -72,7 +72,7 @@ One set of rules for where things sit and how they behave, so every screen feels
    above its element (below without room), never leaves the window, and hides on leaving,
    scroll, click and Escape. On touch a long press shows it; a tap never does. Every lock
    says in its tooltip what is still missing, and a badge says its world, what its tier means
-   and what the next tier needs (silver for bronze, gold for silver). The sound button names
+   and what the next tier needs (bronze for none yet, silver for bronze, gold for silver). The sound button names
    the sound level with F4 and, on a second line, that F8 plays another song.
 12. **One end card.** Every end of play (any level, practice, activity, break or hand-in,
    including ones added later) uses the one end card of [mechanics](../game/mechanics.md): the

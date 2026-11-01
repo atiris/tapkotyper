@@ -189,16 +189,18 @@ test('the egg mountain: each of its five levels is played to its end', async ({ 
   expect(errors).toEqual([]);
 });
 
-test('world badges sit on the map, grow with stars and line up on the progress shelf', async ({ page }) => {
+test('world badges sit on the map, grow with stars and line up on the progress shelf by tier', async ({ page }) => {
   await createProfile(page, 'Bea');
   await page.evaluate(() => {
     const d = JSON.parse(localStorage.getItem('tapkotyper:v1')!);
     const p = d.profiles[0];
-    p.progress.worldsDone = [0, 1, 2];
+    p.progress.worldsDone = [0, 1, 2, 3];
+    // 18, 17 and 10 world stars: silver, silver, bronze; the done dragon world with 5 has none.
     Object.assign(p.progress.levels, {
-      'w1-1': 2, 'w1-2': 3, 'w1-3': 3, 'w1-4': 3, 'w1-5': 3,
-      'w2-1': 3, 'w2-2': 3, 'w2-3': 2, 'w2-4': 2, 'w2-5': 2,
-      'w3-1': 1, 'w3-2': 1, 'w3-3': 1, 'w3-4': 1, 'w3-5': 1,
+      'w1-1': 2, 'w1-2': 4, 'w1-3': 4, 'w1-4': 4, 'w1-5': 4,
+      'w2-1': 4, 'w2-2': 4, 'w2-3': 3, 'w2-4': 3, 'w2-5': 3,
+      'w3-1': 2, 'w3-2': 2, 'w3-3': 2, 'w3-4': 2, 'w3-5': 2,
+      'w4-1': 1, 'w4-2': 1, 'w4-3': 1, 'w4-4': 1, 'w4-5': 1,
     });
     localStorage.setItem('tapkotyper:v1', JSON.stringify(d));
   });
@@ -212,9 +214,12 @@ test('world badges sit on the map, grow with stars and line up on the progress s
   await page.locator('.end-card .ec-bot .btn').last().click();
   await expect(page.locator('.island-meadow .badge.gold')).toBeVisible();
   await page.locator('.map-tapko').click();
-  await expect(page.locator('.badge-shelf .badge')).toHaveCount(15);
-  await expect(page.locator('.badge-shelf .badge.none')).toHaveCount(12);
-  await expect(page.locator('.badge-shelf .badge.none').first()).toHaveAttribute('aria-label', 'Finish world 4');
+  // Gold, silver and bronze each list their worlds; a world without a badge is not on the shelf.
+  await expect(page.locator('.badge-tier.gold .badge.gold')).toHaveCount(1);
+  await expect(page.locator('.badge-tier.gold h5')).toHaveText('Gold, from 20 ★');
+  await expect(page.locator('.badge-tier.silver .badge.silver')).toHaveCount(1);
+  await expect(page.locator('.badge-tier.bronze .badge.bronze')).toHaveCount(1);
+  await expect(page.locator('.badge-shelf .badge.none')).toHaveCount(0);
 });
 
 test('the fairy story is a third row; Melody floats with the child', async ({ page }) => {

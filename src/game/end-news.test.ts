@@ -3,7 +3,7 @@ import type { LevelResult } from './progress';
 import { bestLetter, greenLine, levelNews } from './end-news';
 
 const result = (extra: Partial<LevelResult> = {}): LevelResult => ({
-  stars: 3, shownStars: 3, accuracy: 0.95, chars: 100, errors: 5, cpm: 60, seconds: 120, newKeys: [], newAccessories: [], newCompanions: [],
+  stars: 3, accuracy: 0.95, chars: 100, errors: 5, cpm: 60, seconds: 120, newKeys: [], newAccessories: [], newCompanions: [],
   worldDone: null, trend: null, growth: null, byTapko: false, badge: null, ...extra,
 });
 

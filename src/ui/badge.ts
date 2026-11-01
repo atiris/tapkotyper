@@ -1,7 +1,7 @@
 import { app } from '../app/app';
 import { imageUrl } from '../gfx/assets';
 import { WORLDS, worldName } from '../game/levels';
-import { BADGE_GOLD, BADGE_SILVER, type BadgeTier, worldStars } from '../game/rewards';
+import { BADGE_STARS, type BadgeTier, worldStars } from '../game/rewards';
 import { t } from '../i18n/i18n';
 import { h } from './dom';
 
@@ -11,11 +11,11 @@ const COLORS = ['#8fd18a', '#7fb2f0', '#6fd6c4', '#f3a46b', '#f1d36a', '#b7a99a'
 /** What the badge is for and what its tier means; short of gold, also what gold needs. */
 function badgeTip(world: number, tier: BadgeTier | null): string {
   const name = worldName(world);
-  if (!tier) return t('badge.tip.locked', { world: name });
-  const line = t(`badge.tip.${tier}`, { world: name, silver: BADGE_SILVER, gold: BADGE_GOLD });
   const have = app.profile ? worldStars(app.profile, world) : 0;
+  if (!tier) return t('badge.tip.locked', { world: name, bronze: BADGE_STARS.bronze, have });
+  const line = t(`badge.tip.${tier}`, { world: name, ...BADGE_STARS });
   if (tier === 'gold') return line;
-  const next = tier === 'bronze' ? t('badge.tip.toSilver', { silver: BADGE_SILVER, have }) : t('badge.tip.toGold', { gold: BADGE_GOLD, have });
+  const next = tier === 'bronze' ? t('badge.tip.toSilver', { silver: BADGE_STARS.silver, have }) : t('badge.tip.toGold', { gold: BADGE_STARS.gold, have });
   return `${line} ${next}`;
 }
 

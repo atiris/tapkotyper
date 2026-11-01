@@ -455,18 +455,24 @@ story stays playable in any browser ([mechanics](mechanics.md)).
   workshop a gear with a spring leg, rain an umbrella, city a key card, home a house with
   a heart, garden a flower, path a feather, lake a lily, tree a note, ball a moon. The
   story reward scenes stay; the badge comes in addition.
-- Its tier follows the world's stars (5 levels x 3): bronze when the world is done, silver
-  at 12 stars, gold at 15 (three stars everywhere). The tier is the colour of its ring.
+- It needs the world done and enough of the world's stars (5 levels x 5 = 25): bronze from
+  10, silver from 15, gold from 20. A done world with fewer than 10 stars has no badge yet; a
+  replay of any of its levels can bring one. The tier is the colour of its ring.
 - The end screen says "New badge!" or "Your badge is silver / gold now!" when a level
   earns or improves one. The badge sits in the corner of its world card on the map, and
-  the progress view has a badge shelf with a place for every world: earned ones in colour with
-  their tier, the others as grey outlines that say which world to finish.
+  the progress view has a badge shelf in three sections, gold, silver and bronze, each with the
+  stars it needs ("from 20 ★") and the worlds that hold that tier; a section without one says
+  "none yet", and worlds without a badge are not listed (the chest counts them all).
 - A badge's tooltip shows the way to the next tier: bronze names what silver needs, silver
-  what gold needs, each with the stars the child has in that world.
+  what gold needs, each with the stars the child has in that world; a world without a badge
+  says to finish it and get 10 stars in it.
 
 ## Why
 - The story gives a reason to practice without competition; the hero's journey closes it with
   one final test, without streak pressure.
+- A badge earned by a finished world alone said nothing about how it was played; with five
+  stars a level, a badge from 10, 15 and 20 of the world's 25 stars makes a world worth
+  replaying.
 - The planet's levels were the same swamp twice with signs and a boulder in a mint and purple
   world; Tapko was smaller than in the worlds before and his word covered him. One story per
   level, the rules of the first two worlds and paths that change the level make each level

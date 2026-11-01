@@ -1,7 +1,7 @@
 import { Rng } from '../engine/rng';
 import { isMastered } from '../learning/lessons';
 import { COMPANION_KINDS, type CompanionKind, type Profile } from '../storage/schema';
-import { LEVELS, STORIES, WORLDS, journeyId, worldLevels } from './levels';
+import { LEVELS, MAX_LEVEL_STARS, STORIES, WORLDS, journeyId, worldLevels } from './levels';
 import { WORLD_THINGS } from './modes/aim-things';
 import { PARROT_POINTS, hasParrotBadge } from './parrots';
 
@@ -31,21 +31,23 @@ export const STORY_ACCESSORIES = ['flower-wreath', 'umbrella', 'raincoat', 'feat
 /** Story rewards per world. */
 export const WORLD_REWARDS = ['invitation', 'landing', 'force', 'egg', 'hatched', 'friends', 'legs', 'raincoat', 'key', 'home', 'wreath', 'feather', 'lily', 'harp', 'wings'];
 
-/** A world's badge: bronze when the world is done, better with the world's stars. */
+/** A world's badge: the world done and enough of its stars; a done world with fewer stars has none yet. */
 export type BadgeTier = 'bronze' | 'silver' | 'gold';
-/** World stars (5 levels x 3) for a silver and a gold badge. */
-export const BADGE_SILVER = 12;
-export const BADGE_GOLD = 15;
+/** World stars (of 5 levels x 5) for each badge, worst first. */
+export const BADGE_STARS: Record<BadgeTier, number> = { bronze: 10, silver: 15, gold: 20 };
+
+/** The most stars one world gives. */
+export const MAX_WORLD_STARS = Math.max(...WORLDS.map((_, w) => worldLevels(w).length)) * MAX_LEVEL_STARS;
 
 export function worldStars(p: Profile, world: number): number {
   return worldLevels(world).reduce((a, l) => a + (p.progress.levels[l.id] ?? 0), 0);
 }
 
-/** The badge of a world, null until the world is done. */
+/** The badge of a world, null until the world is done with at least the bronze stars. */
 export function badgeTier(p: Profile, world: number): BadgeTier | null {
   if (!p.progress.worldsDone.includes(world)) return null;
   const stars = worldStars(p, world);
-  return stars >= BADGE_GOLD ? 'gold' : stars >= BADGE_SILVER ? 'silver' : 'bronze';
+  return stars >= BADGE_STARS.gold ? 'gold' : stars >= BADGE_STARS.silver ? 'silver' : stars >= BADGE_STARS.bronze ? 'bronze' : null;
 }
 
 export interface UnlockRule {
@@ -83,15 +85,15 @@ export function hasAccessory(p: Profile, id: string): boolean {
 }
 
 /** Stars each next character kind costs on top of the previous one, at random per player. */
-export const KIND_STEP: [number, number] = [18, 26];
+export const KIND_STEP: [number, number] = [30, 43];
 
 /** Stars of the built-in story levels and the built-in stories' journeys; stars kept under any other id buy nothing here. */
 export function totalStars(p: Profile): number {
   return [...LEVELS.map((l) => l.id), ...STORIES.map(journeyId)].reduce((a, id) => a + (p.progress.levels[id] ?? 0), 0);
 }
 
-/** Three stars in every story level and every story's hero's journey. A new level, world or range thing changes the maxima shown in "My progress". */
-export const MAX_STARS = (LEVELS.length + STORIES.length) * 3;
+/** All stars in every story level and every story's hero's journey. A new level, world or range thing changes the maxima shown in "My progress". */
+export const MAX_STARS = (LEVELS.length + STORIES.length) * MAX_LEVEL_STARS;
 
 /** Points of the treasure chest: a world badge by its tier, one for each rare thing found at a range, and the Parrot badge. */
 export const BADGE_POINTS: Record<BadgeTier, number> = { bronze: 1, silver: 2, gold: 3 };

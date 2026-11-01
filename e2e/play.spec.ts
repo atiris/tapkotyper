@@ -165,7 +165,7 @@ test('a world not built yet plays the cyclic copy and its level is finished by c
   await page.goto('./');
   await page.locator('.start-screen').waitFor();
   await page.keyboard.type('supertapkotyper', { delay: 40 });
-  await page.locator('.island-junkyard .level-node.super').click();
+  await page.locator('.island-junkyard .level-node:nth-child(5)').click();
   await expect(page.locator('.posture-card')).toContainText('This level is still being made');
   await expect(page.locator('.level-screen.world-junkyard')).toBeVisible();
   expect(await playLevel(page)).toMatch(/%/);

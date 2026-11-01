@@ -29,6 +29,7 @@ function fakeRuntime(count = 4): LevelRuntime {
     core: new TypingCore(),
     def: { count, variant: 'mix', index: 0, kind: 'x', world: 3 },
     count,
+    countFixed: false,
     vw: 1280,
     stage: { scale: 1 },
     maxActive: 3,
@@ -143,7 +144,7 @@ function play(def: LevelDef, Ctor: new (L: LevelRuntime) => Mode, letter: number
   const dt = 0.05;
   let now = 0, keyAt = 0, next = 0, wordAt = 0, started: number | null = null, idleFrom: number | null = null, gap = 0, gapAt = 0, words = 0, minAt: number | null = null;
   while (now < 900 && !levelOver(mode.finished, L.clock, L.min)) {
-    L.count = grownCount(L.count, mode.progress() * L.count, L.clock, Math.max(3, L.maxActive + 1), L.min);
+    if (!L.countFixed) L.count = grownCount(L.count, mode.progress() * L.count, L.clock, Math.max(3, L.maxActive + 1), L.min);
     L.clock += playedStep(dt, now - keyAt, L.core.active.some((tg) => tg.selectable));
     now += dt;
     L.core.update(dt);
@@ -937,27 +938,25 @@ describe('the lullaby made easier', () => {
 });
 
 describe('the dragons on the path', () => {
-  it('wait past the room the slips may grow, so a slip never moves them; the minimum makes them hop back', () => {
-    const L = fakeRuntime(1);
-    Object.assign(L, { vw: 4000, reduceMotion: false });
+  it('sit once the path end nears the screen; then no slip and no minimum grows a bush', () => {
+    const L = fakeRuntime(12);
+    Object.assign(L, { reduceMotion: false });
     const mode = new ThicketMode(L);
     mode.start();
     run(L, mode, 0.05);
-    const w = (mode as any).waiting, at = w.x;
-    const lastBush = () => (mode as any).bushes.at(-1).x;
-    expect(at).toBeGreaterThan(lastBush() + 6 * 300);
-    for (let i = 0; i < 4; i++) {
+    expect((mode as any).waiting).toBeNull();
+    while ((mode as any).waiting === null) {
+      typeWord(L, mode);
+      run(L, mode, 2);
+    }
+    const at = (mode as any).waiting, bushes = (mode as any).bushes.length;
+    expect(at).toBeGreaterThan((mode as any).bushes.at(-1).x);
+    for (let i = 0; i < 3; i++) {
       slip(L, mode);
       run(L, mode, 1);
     }
-    expect(w.x).toBe(at);
-    expect(lastBush()).toBeLessThan(at);
-    // Bushes beyond the slips' room (the level's minimum) push the dragons on, with a hop in sight.
-    L.count += 2;
-    run(L, mode, 0.25);
-    expect(w.x).toBeGreaterThan(at);
-    run(L, mode, 1);
-    expect(w.x).toBe((mode as any).waitX());
+    expect((mode as any).bushes.length).toBe(bushes);
+    expect((mode as any).waiting).toBe(at);
   });
 });
 

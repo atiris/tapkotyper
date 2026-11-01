@@ -13,7 +13,6 @@ import { badgeTier } from '../game/rewards';
 import { badge } from '../ui/badge';
 import { flyAway, hasParrotBadge } from '../game/parrots';
 import { localDate } from '../learning/stats';
-import { crown } from '../ui/crown';
 import { arrowFocus, button, closeButton, h, icon, modal } from '../ui/dom';
 import { openSurprises, surpriseAsk } from '../game/cards';
 import { TRIGGERS, surpriseAnnounced, surpriseCount, surprisesToldOn, surprisesWonIn } from '../game/own-content';
@@ -130,6 +129,8 @@ export function mapScreen(root: HTMLElement): () => void {
   // Nothing open for the child's keys: continue means practice, which brings new keys.
   const start = () => (next ? go('level', { id: next.id }) : openPracticeKeys());
   const play = button(t('map.continue'), start, 'btn primary big', 'play');
+  // The map marks the level to continue with only while it is still to play: with everything played none is.
+  const current = next && !p.progress.levels[next.id] ? next.id : undefined;
   const teacher = teacherPanel(p);
   const nextName = next ? levelTitleWords(next.world, next.index) : t('map.practice');
   play.dataset.tip = nextName;
@@ -153,7 +154,7 @@ export function mapScreen(root: HTMLElement): () => void {
         button(t('map.freeType'), startFreeType, 'btn', 'keyboard'),
         button(t('map.wardrobe'), () => go('wardrobe'), 'btn', 'shirt'),
         button(t('progress.title'), () => go('progress'), 'btn', 'chart')),
-      h('div', { class: 'story-rows' }, teacher, ...STORIES.map((s) => storyRow(p, s, next?.id, held, keysBubble, lockBubble))))));
+      h('div', { class: 'story-rows' }, teacher, ...STORIES.map((s) => storyRow(p, s, current, held, keysBubble, lockBubble))))));
   // The arrows walk the levels and the closed worlds like a grid.
   arrowFocus(root.querySelector('.story-rows')!, '.level-node, .island-art[tabindex]');
   // Enter starts at once.
@@ -297,19 +298,20 @@ function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held:
       const reached = isLevelReached(p, l);
       const missing = reached ? keysMissing(p, l) : 0;
       const stars = p.progress.levels[l.id] ?? 0;
-      const num = l.isSuper ? '★' : String(l.index + 1);
       const act = activityOf(l);
+      // Every level is named by its place and game; the world's last one is its finale.
+      const name = `${l.index + 1}. ${l.isSuper ? `${t('map.act.super')}: ` : ''}${t(`map.act.${act}`)}`;
       // A surprise the parent announced shows its golden box in place of the game's picture.
       const gift = surpriseAnnounced(p, l.id);
       const actImg = imageUrl(gift ? 'ui-surprise' : `ui-act-${act}`);
       const b = h('button', {
-        class: `level-node ${l.isSuper ? 'super' : ''} ${stars ? 'done' : ''} ${l.id === nextId ? 'current' : ''} ${missing ? 'keys' : ''} ${gift ? 'gift' : ''}`,
+        class: `level-node ${stars ? 'done' : ''} ${l.id === nextId ? 'current' : ''} ${missing ? 'keys' : ''} ${gift ? 'gift' : ''}`,
         type: 'button',
         disabled: !reached,
-        'aria-label': `${worldName(wi)} ${l.isSuper ? `${t('map.super')}, ${t(`map.act.${act}`)}` : `${l.index + 1}, ${t(`map.act.${act}`)}`}${stars ? `, ${t('map.starsAria', { n: stars })}` : ''}${missing ? `, ${t('map.keysLocked')}` : ''}${gift ? `, ${t('map.surpriseHere')}` : ''}`,
-        tip: `${l.isSuper ? `${t('map.act.super')}: ${t(`map.act.${act}`)}` : `${l.index + 1}. ${t(`map.act.${act}`)}`}${gift ? `\n${t('map.surpriseHere')}` : ''}`,
+        'aria-label': `${worldName(wi)} ${name}${stars ? `, ${t('map.starsAria', { n: stars })}` : ''}${missing ? `, ${t('map.keysLocked')}` : ''}${gift ? `, ${t('map.surpriseHere')}` : ''}`,
+        tip: `${name}${gift ? `\n${t('map.surpriseHere')}` : ''}`,
         onClick: () => (missing ? keysBubble(missing, wi) : go('level', { id: l.id })),
-      }, actImg ? h('img', { class: 'level-act', src: actImg, alt: '' }) : h('span', { class: 'num' }, num), l.isSuper ? crown('level-crown') : null,
+      }, actImg ? h('img', { class: 'level-act', src: actImg, alt: '' }) : h('span', { class: 'num' }, String(l.index + 1)),
         missing ? keyIcon(held) : miniStars(stars));
       return b;
     });

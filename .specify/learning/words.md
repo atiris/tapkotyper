@@ -12,6 +12,10 @@
   without diacritics are used.
 - Selection respects: active keys, word length range (for example 2-5), difficulty 1-10,
   and weak-key weighting.
+- The practised words are dictionary words whenever the known letters make enough of them
+  (a short word over a made-up one, a recent word over one with a first letter already on
+  screen). Made-up words are only a fallback while the known letters make too few real
+  words, and a regular mix only in key drills.
 - Fallback generator: when too few real words match, pronounceable pseudo-words are made
   from the allowed keys (alternating consonants and vowels, rhythmic syllables). With very
   small key sets (for example only `f j`), short letter patterns like `fff jjj fj jf` are

@@ -136,6 +136,8 @@ export class LevelRuntime {
   private ownKeyAt = 0;
   /** Targets the level wants now: the planned count, more while the level is shorter than its minimum. */
   count: number;
+  /** The mode fixed its count for good: the minimum no longer grows it. */
+  countFixed = false;
   /** Seconds of active play (no pause, no card, no long wait over a word: `playedStep`) and the minimum before the level may end; 0 = no minimum. */
   private played = 0;
   private minActive: number;
@@ -913,7 +915,7 @@ export class LevelRuntime {
     this.tweens.update(dt);
     this.particles.update(dt);
     const hadFocus = !!this.core.focus();
-    if (this.minActive) this.count = grownCount(this.count, this.mode.progress() * this.count, this.played, Math.max(3, this.maxActive + 1), this.minActive);
+    if (this.minActive && !this.countFixed) this.count = grownCount(this.count, this.mode.progress() * this.count, this.played, Math.max(3, this.maxActive + 1), this.minActive);
     this.mode.t += dt;
     this.mode.update(dt);
     if (!hadFocus && this.core.focus()) this.rhythm.ready(performance.now());

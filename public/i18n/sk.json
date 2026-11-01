@@ -126,7 +126,7 @@
       "catch": "Čakajúce slová",
       "clean": "Odpis",
       "crossroads": "Rázcestie",
-      "super": "Veľká výzva"
+      "super": "Finále"
     },
     "ownText": "Môj text",
     "freeType": "Len chcem písať",
@@ -137,7 +137,7 @@
     "practice": "Vlastné písanie",
     "wardrobe": "Ja a môj šatník",
     "switchProfile": "Hráči",
-    "super": "veľká výzva",
+    "super": "finále",
     "aimTip": "Strelnica: tu si precvičíš písmená, ktoré ešte nepíšeš dosť presne. Keď ti k ďalšiemu písmenu chýba už len presnosť, tu ju získaš.",
     "parrotTip": "Papagáj: napíšeš pár slov veľakrát za sebou, kým ich prsty nebudú vedieť samy. Na rýchlosti nezáleží.",
     "journeyTip": "Cesta hrdinu: dlhšia a ťažšia výprava cez všetky svety tohto príbehu.",
@@ -1459,7 +1459,7 @@
     "accuracy": "presnosť",
     "speed": "znakov za minútu",
     "stars": "hviezdičky",
-    "worlds": "svety",
+    "starsEarned": "hviezdičky od začiatku",
     "stories": "Postup v príbehoch",
     "date": "Dňa {date}",
     "sign": "Tapko",
@@ -1602,7 +1602,7 @@
       "remember": "**Tajné slová**: slovo sa ukáže len na chvíľu a schová sa. Zapamätaj si ho a napíš ho spamäti.",
       "aim": "**Strelnica**: slová plné písmen, ktoré ti ešte nejdú. Každé slovo hodí vec cez krúžky až do terča.",
       "parrot": "**Papagáj**: pár slov veľakrát za sebou. Papagáj každé zopakuje. Za chybu príde slovo ešte dvakrát.",
-      "super": "**Veľká výzva**: posledná úroveň sveta. Každý svet ju má inú."
+      "super": "**Finále**: posledná úroveň sveta. Každý svet ju má inú."
     },
     "journeyTitle": "Svety, úrovne a hviezdičky",
     "journey": [

@@ -28,6 +28,7 @@ export function wordSource(p: Profile, lang: LangRef, drill?: string[], chosen?:
     shiftMastery: Object.fromEntries([SHIFT_L, SHIFT_R].map((k) => [k, masteryLevel(p.stats.keys[k], s.difficulty)])),
     lang,
     own: drill || chosen || focus ? undefined : { words: s.ownWords, text: s.ownText, share: OWN_SHARE[s.ownMix] },
+    pseudo: !!drill,
   });
 }
 

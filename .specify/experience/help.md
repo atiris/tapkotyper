@@ -17,8 +17,8 @@
   3. **Progress**, in the child's voice: stories, worlds and levels, stars, how a level is
      played (type the word on the object, nothing bad happens when it gets away, stars come from
      accuracy, Esc pauses), the kinds of games by their standard names with one line each, each
-     with the picture the map shows for it (the target range's target, the parrot and the big
-     challenge's crown too; the same names as the map dots' tooltips; a new kind joins the list
+     with the picture the map shows for it (the target range's target, the parrot and the finale's
+     picture too; the same names as the map dots' tooltips; a new kind joins the list
      when it is in the game; Transcribe is listed ahead of its levels, Ribbon names its first level, the spell on the egg mountain's summit) right above letters that open levels and stories, "My progress" (a page from the map's
      button with four tabs, a quick look by a click on the character, the parrots, QR codes and
      the certificate), the hero's journey, the target range (where it opens, what it

@@ -83,21 +83,22 @@
   94 %, 2 from 88 %, else 1 (finishing always gives one, a flawless level five). Whole stars
   only; every game counts the same way (the valley's flying lessons too). The stars stand like
   the Olympic rings, three on top and two below in their gaps, filled in reading order, on the
-  end card and as mini stars on the map's level dots. Best results kept from the times of three
+  map's level dots (the two rows a little apart, the card a bit taller for them); beside Tapko
+  on the end card they stand small in one row. Best results kept from the times of three
   stars stay as they are until the level is played again.
 - **World rhythm** (the meadow, the rocket world and the valley; the planet starts with its calm step, see [story](story.md)): the levels of a world have fixed roles, so one
   session (about one world) goes up and down instead of repeating one game: 1 the world's
   main game, gently; 2 a calm step; 3 the main game, harder, with one short surprise; 4 a
   twist; 5 the super-obstacle. Each level dot on the map shows the icon of its activity
   (main game a flying leaf, waiting words a chair, copy an envelope, crossroads a signpost);
-  the super level shows the icon of its own game too, with a small crown on the card's corner
-  (its tooltip "Veľká výzva: <game>"), so the child sees what the great challenge plays
-  (the number stays in its tooltip and for screen readers). The super level's card, the
-  target range's target and the parrot sit on white cards until they are mastered, then turn
-  green like every played level: the crown once the super level is done, the target once the
+  the super level shows the icon of its own game too, without a crown, named like the others
+  with its number ("5. Finále: <game>"), so the child sees what the finale plays. The level
+  to continue with is marked only while it is still unplayed: with everything played, no
+  level is. The target range's target and the parrot sit on white cards until they are
+  mastered, then turn green like every played level: the target once the
   world's own thing is found at the range, the parrot once its round was won (it stays green
   with the empty perch after the parrot flew away). Their pictures are in colour and faded like
-  any level not reached yet, and only the crown has stars under it.
+  any level not reached yet.
   - *Waiting words* (calm step): still objects carry short words (2 letters in the meadow),
     each starting with another letter, so the first key picks the word and every later key
     is measured against the key it should be; a key that starts no word counts only in the

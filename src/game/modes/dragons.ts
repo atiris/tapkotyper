@@ -608,10 +608,9 @@ const BIG_AT = 0.6;
 const SLIP_SAY = 0.1;
 /** Seconds of the walk to the dragons at the end. */
 const WALK_END = 2.4;
-/** The dragons waiting at the path's end: each one's place right of it and how much further back (higher) it sits; seconds of their hop back when the path grows past them (only the level's minimum can do that). */
+/** The dragons waiting at the path's end: each one's place right of it and how much further back (higher) it sits. */
 const WAITING = [{ dx: 0, up: 0 }, { dx: 85, up: 22 }, { dx: 170, up: 38 }, { dx: 250, up: 10 }];
 const WAIT_H = 104;
-const HOP_BACK = 0.5;
 
 interface Bush {
   /** Its place on the path (the screen shows it at x - scroll). */
@@ -628,9 +627,10 @@ interface Bush {
 
 /**
  * Valley 2, the overgrown path (calm, growing copy): bushes stand on the path one after another,
- * the nearest has its spell above it, the dragons wait past the last one. Typed without a slip it
- * shrinks away and Tapko walks on; a slip fades the spell red, two more bushes grow ahead (at most
- * three times; the dragons move back) and the spell comes again.
+ * the nearest has its spell above it. Typed without a slip it shrinks away and Tapko walks on; a
+ * slip fades the spell red, two more bushes grow ahead (at most three times) and the spell comes
+ * again. Once the path's end nears the screen it is sealed: no bush grows any more and the dragons
+ * sit past the last one.
  */
 export class ThicketMode extends Mode {
   readonly pictures = [...BUSHES, ...DRAGONS];
@@ -648,8 +648,8 @@ export class ThicketMode extends Mode {
   /** Seconds until Tapko walks on after a cleared bush; -1 when not waiting. */
   private walkIn = -1;
   private slips = 0;
-  /** Where the waiting dragons sit on the path once it is planted; they hop from `from` to `to` (`k` 0..1). */
-  private waiting: { x: number; from: number; to: number; k: number } | null = null;
+  /** Where the waiting dragons sit on the path; null until the path is sealed. */
+  private waiting: number | null = null;
   private endT: number | null = null;
 
   startLine(): string {
@@ -698,7 +698,7 @@ export class ThicketMode extends Mode {
     if (!this.current || tg !== this.current) return;
     // The first slip says why, later ones now and then.
     if (this.slips++ === 0 || this.L.rng.chance(SLIP_SAY)) this.L.say(pickLine('story.thicketSlip'), 2);
-    const more = slipWords(STORY_ORDER, this.added);
+    const more = this.waiting === null ? slipWords(STORY_ORDER, this.added) : 0;
     this.added += more;
     this.L.count += more;
     this.L.core.release(this.current, false);
@@ -709,7 +709,7 @@ export class ThicketMode extends Mode {
 
   update(dt: number): void {
     this.plant(true);
-    this.followEnd(dt);
+    this.seal();
     for (const b of this.bushes) if (b.gone >= 0) b.gone += dt;
     if (this.slip && (this.slip.t += dt) >= SLIP_FADE) {
       this.slip = null;
@@ -734,36 +734,26 @@ export class ThicketMode extends Mode {
       this.glide = { from: this.scroll, to: this.bushes[this.cleared].x - STAND, k: 0, dur: GLIDE };
       return;
     }
-    // The path is open: Tapko walks on to its end, where the dragons wait for him and cheer.
+    // The path is open: Tapko walks on to its end, where the dragons wait for him and cheer; the fixed path is the whole level.
+    this.L.endMinimum();
     this.endT = 0;
-    this.glide = { from: this.scroll, to: this.waitX() - (TAPKO_X + 230), k: 0, dur: WALK_END };
+    this.glide = { from: this.scroll, to: this.waiting! - (TAPKO_X + 230), k: 0, dur: WALK_END };
     this.L.sfx('cheer');
     this.L.say(pickLine('story.thicketDone'), END_TIME);
   }
 
   /**
-   * Where the dragons wait: past the last bush and the room the slips may still grow, so a slip
-   * never moves them; the bushes grow into the empty path before them.
+   * Once the last bush is a bush's room from the screen, the path is final: the bushes still
+   * missing for the minimum at the child's pace so far are planted (out of sight), the count is
+   * fixed, slips grow nothing, and the dragons sit past the last bush for good.
    */
-  private waitX(): number {
-    let room = 0;
-    for (let a = this.added, more; (more = slipWords(STORY_ORDER, a)) > 0; a += more) room += more;
-    return this.bushes[this.bushes.length - 1].x + BUSH_GAP * (0.8 + room);
-  }
-
-  /** The path grew past the dragons (the level's minimum added bushes): in sight they hop back to its new end, else they are just there. */
-  private followEnd(dt: number): void {
-    const w = this.waiting, end = this.waitX();
-    if (!w) {
-      this.waiting = { x: end, from: end, to: end, k: 1 };
-      return;
-    }
-    if (w.to !== end) {
-      const seen = w.x - this.scroll < this.L.vw && !this.L.reduceMotion;
-      Object.assign(w, { from: seen ? w.x : end, to: end, k: seen ? 0 : 1 });
-    }
-    w.k = Math.min(1, w.k + dt / HOP_BACK);
-    w.x = w.from + (w.to - w.from) * ease.inOutQuad(w.k);
+  private seal(): void {
+    if (this.waiting !== null || this.bushes.at(-1)!.x - this.scroll > this.L.vw + BUSH_GAP) return;
+    const left = this.L.count - this.cleared, played = this.L.playedS;
+    if (this.cleared > 0 && played > 0) this.L.count = this.cleared + Math.max(left, Math.round((this.L.minLeft * this.cleared) / played));
+    this.L.countFixed = true;
+    this.plant(true);
+    this.waiting = this.bushes.at(-1)!.x + BUSH_GAP * 0.8;
   }
 
   render(g: G): void {
@@ -804,15 +794,15 @@ export class ThicketMode extends Mode {
    */
   private drawWaiting(g: G): void {
     const w = this.waiting;
-    if (!w) return;
-    const motion = !this.L.reduceMotion, back = Math.sin(w.k * Math.PI) * 30;
+    if (w === null) return;
+    const motion = !this.L.reduceMotion;
     const order = WAITING.map((_, i) => i).sort((a, b) => WAITING[b].up - WAITING[a].up);
     for (const i of order) {
-      const x = w.x - this.scroll + WAITING[i].dx;
+      const x = w - this.scroll + WAITING[i].dx;
       if (x < -WAIT_H || x > this.L.vw + WAIT_H) continue;
       const hop = this.endT !== null && motion ? Math.abs(Math.sin(this.t * 5 + i * 1.3)) * 22 : 0;
       const breath = motion ? 0.02 * Math.sin(this.t * 1.4 + i * 1.7) : 0;
-      drawDragon(g, DRAGONS[i % DRAGONS.length], x, GROUND - WAITING[i].up - back - hop, WAIT_H, 0, -1, 1, 0, breath);
+      drawDragon(g, DRAGONS[i % DRAGONS.length], x, GROUND - WAITING[i].up - hop, WAIT_H, 0, -1, 1, 0, breath);
     }
   }
 

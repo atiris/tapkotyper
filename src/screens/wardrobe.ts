@@ -142,13 +142,15 @@ export function wardrobeScreen(root: HTMLElement): () => void {
   };
   const interval = timer && !locked ? setInterval(tick, 1000) : undefined;
   const owned = accessories().filter((a) => hasAccessory(p, a.id)).length;
-  const star = imageUrl('ui-star');
+  const star = imageUrl('ui-star'), earned = imageUrl('ui-stars-earned');
   root.append(h('div', { class: 'screen wardrobe-screen' },
     h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'), h('h1', {}, t('wardrobe.title'))),
     cornerControls(),
     h('div', { class: 'wardrobe-body' },
       h('div', { class: 'wardrobe-preview' }, timer?.el, tickle,
-        h('span', { class: 'star-count', role: 'img', 'aria-label': t('wardrobe.stars', { n: stars }) }, star ? h('img', { src: star, alt: '' }) : '★', String(stars)),
+        h('div', { class: 'star-counts' },
+          h('span', { class: 'star-count', role: 'img', 'aria-label': t('wardrobe.stars', { n: stars }) }, star ? h('img', { src: star, alt: '' }) : '★', String(stars)),
+          h('span', { class: 'star-count', role: 'img', 'aria-label': t('progress.starsEarned', { n: p.progress.starsEarned }) }, earned ? h('img', { src: earned, alt: '' }) : '★', String(p.progress.starsEarned))),
         h('p', {}, t('wardrobe.count', { n: owned, total: accessories().length })),
         h('div', { class: 'row' }, clear, random)),
       h('div', { class: 'wardrobe-main' },

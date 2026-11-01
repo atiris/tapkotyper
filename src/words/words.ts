@@ -94,6 +94,8 @@ export interface WordOptions {
   own?: WordSourceOwn;
   /** The language of the words; a dictation checks its spelling by ear (`heardSafe`). */
   lang?: LangRef;
+  /** Made-up words mixed in with the dictionary's (key drills); otherwise they come only while the known letters make too few real words. */
+  pseudo?: boolean;
   seed?: number;
 }
 
@@ -227,6 +229,11 @@ export class WordSource {
       target = this.candidate(maxLen, words, minWords);
       if (!avoidFirst.has(target[0].toLowerCase()) && !this.recent.includes(target)) break;
     }
+    // A small word list keeps its fresh words on letters already on screen: a recent real word with another first letter beats a clash.
+    if (avoidFirst.has(target[0].toLowerCase()) && !this.heard) {
+      const apart = this.pool.filter((w) => w.length <= maxLen && !avoidFirst.has(w[0]));
+      if (apart.length) target = this.rng.pick(apart);
+    }
     return this.remember(target);
   }
 
@@ -315,7 +322,8 @@ export class WordSource {
       const own = this.pool.filter((w) => w.includes("'") && w.length <= maxLen);
       if (own.length) return r.pick(own);
     }
-    if (this.pool.length >= REAL_MIN && r.chance(this.pool.length >= 40 ? 0.9 : 0.6)) return this.pickReal(maxLen, focus);
+    const real = this.pool.length >= REAL_MIN;
+    if (real && (!this.opts.pseudo || r.chance(this.pool.length >= 40 ? 0.9 : 0.6))) return this.pickReal(maxLen, focus);
     return this.pseudo(maxLen, focus);
   }
 
@@ -371,10 +379,15 @@ export class WordSource {
   /** Weighted pick from a random sample of real words. */
   private pickReal(maxLen: number, focus: string | null): string {
     const pool = this.heard ? this.heardPool() : this.pool;
-    const sample: string[] = [];
+    let sample: string[] = [];
     for (let i = 0; i < 16; i++) {
       const w = this.rng.pick(pool);
       if (w.length <= maxLen) sample.push(w);
+    }
+    // Few short words among long ones: the short ones themselves before anything made up.
+    if (!sample.length) {
+      const short = pool.filter((w) => w.length <= maxLen);
+      sample = short.length ? Array.from({ length: 16 }, () => this.rng.pick(short)) : [];
     }
     if (!sample.length) return this.heard ? this.weightedLetter(focus) : this.pseudo(maxLen, focus);
     const weights = sample.map((w) => {

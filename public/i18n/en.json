@@ -126,7 +126,7 @@
       "catch": "Waiting words",
       "clean": "Copy",
       "crossroads": "Crossroads",
-      "super": "Big challenge"
+      "super": "Finale"
     },
     "ownText": "My text",
     "freeType": "Just typing",
@@ -137,7 +137,7 @@
     "warmUp": "Warm-up",
     "wardrobe": "Me and my wardrobe",
     "switchProfile": "Players",
-    "super": "big challenge",
+    "super": "finale",
     "aimTip": "Target range: practise the letters you do not type accurately enough yet. When only accuracy stands between you and the next letter, this is where you get it.",
     "parrotTip": "Parrot: type a few words many times in a row, until your fingers know them by themselves. Speed does not matter.",
     "journeyTip": "Hero's journey: a longer, harder trip through every world of this story.",
@@ -1459,7 +1459,7 @@
     "accuracy": "accuracy",
     "speed": "characters per minute",
     "stars": "stars",
-    "worlds": "worlds",
+    "starsEarned": "stars since the start",
     "stories": "Progress in the stories",
     "date": "On {date}",
     "sign": "Tapko",
@@ -1602,7 +1602,7 @@
       "remember": "**Secret words**: a word shows only for a moment and hides. Remember it and type it from memory.",
       "aim": "**Target range**: words full of the letters you still miss. Each word throws a thing through the rings into the target.",
       "parrot": "**Parrot**: a few words many times in a row. The parrot repeats each one. A slip brings the word twice more.",
-      "super": "**Big challenge**: the last level of a world. Every world has its own."
+      "super": "**Finale**: the last level of a world. Every world has its own."
     },
     "journeyTitle": "Worlds, levels and stars",
     "journey": [

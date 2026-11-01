@@ -77,6 +77,14 @@ describe('WordSource', () => {
     expect(w).toMatch(/^[fjdkslae]+$/);
   });
 
+  it('takes only dictionary words once the known letters make enough of them; key drills mix in made-up ones', () => {
+    const keys = [...'fjdkslaeiruotnh'];
+    const real = new WordSource(WORDS, { keys, len: [2, 6], noDiacritics: false, seed: 7 });
+    expect(Array.from({ length: 300 }, () => real.next()).every((w) => WORDS.includes(w))).toBe(true);
+    const drill = new WordSource(WORDS, { keys, len: [2, 6], noDiacritics: false, seed: 7, pseudo: true });
+    expect(Array.from({ length: 300 }, () => drill.next()).some((w) => !WORDS.includes(w))).toBe(true);
+  });
+
   it('avoids first letters already on screen when it can', () => {
     const src = new WordSource(WORDS, { keys: [...'fjdkslaeiruotnh'], len: [2, 6], noDiacritics: false, seed: 6 });
     let clashes = 0;

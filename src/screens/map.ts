@@ -204,8 +204,8 @@ function keyIcon(held: string): HTMLElement {
 /** A node's tooltip; before the world is finished it also says when the node opens. */
 const sideTip = (open: boolean, key: string) => (open ? t(key) : `${t(key)} ${t('map.sideOpens')}`);
 
-/** A node's mark under its picture: a check once its game is won (the target range's thing found, the parrot's round won); the place stays without. */
-const miniCheck = (on: boolean) => h('span', { class: 'mini-marks' }, on ? icon('check', 'mini-check') : null);
+/** A node's mark under its picture: a check once its game is won (the target range's thing found, the parrot's round won); none before, so the picture stands in the middle. */
+const miniCheck = (on: boolean) => (on ? h('span', { class: 'mini-marks' }, icon('check', 'mini-check')) : null);
 
 /** The target range of a world: a card like a level's with the range's target and a check once the world's own thing is found there; faded and closed until the world is finished. */
 function aimNode(p: Profile, open: boolean, world: number): HTMLElement {
@@ -226,8 +226,8 @@ function parrotNode(p: Profile, open: boolean, world: number): HTMLElement {
   }, pic ? h('img', { class: 'level-act', src: pic, alt: '' }) : icon('star', 'icon'), miniCheck(p.progress.parrotsWon.includes(world)));
 }
 
-/** A node's best stars, small, only the earned ones: one in the middle, two side by side, three as a triangle, four two over two, five like the rings. */
-const miniStars = (stars: number) => h('span', { class: `mini-stars n${stars}` }, ...Array.from({ length: stars }, () => h('i')));
+/** A node's best stars, small, only the earned ones: one in the middle, two side by side, three as a triangle, four two over two, five like the rings; none before the first finish, so the picture stands in the middle. */
+const miniStars = (stars: number) => (stars ? h('span', { class: `mini-stars n${stars}` }, ...Array.from({ length: stars }, () => h('i'))) : null);
 
 /** The story's hero's journey: the compass with its best stars, right after the crown of the story's last world; faded and closed until that world is finished. */
 function journeyNode(p: Profile, story: StoryDef): HTMLElement {

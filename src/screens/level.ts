@@ -352,6 +352,8 @@ function showParrotDone(root: HTMLElement, def: LevelDef, r: LevelResult, mode: 
   const rows: [string, Child][] = [[t('end.parrotWords'), words.slice(0, 3).join(', ') + (words.length > 3 ? ', …' : '')]];
   if (learn) rows.push([t('end.speedStart'), letters(learn)]);
   if (!lost && repeat) rows.push([t('end.speedRepeat'), letters(repeat)]);
+  // The words typed faster in the second half than at their best in the first.
+  if (!lost && mode.beaten.size) rows.push([t('end.parrotBeaten'), [...mode.beaten].join(', ')]);
   showEnd(root, {
     cls: 'parrot-done',
     title: t(lost ? 'end.parrotLost' : 'end.parrotHome'),

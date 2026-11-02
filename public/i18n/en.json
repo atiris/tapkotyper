@@ -62,7 +62,7 @@
     "first": "Pick a nickname, choose your character and start training.",
     "note": {
       "title": "New task",
-      "sub": "Note a task from its QR code and send it home to your computer"
+      "sub": "Note a task by scanning its QR code"
     }
   },
   "newProfile": {
@@ -389,8 +389,9 @@
     "centers": "Hits in the middle",
     "newFind": "A new thing joined your collection.",
     "parrotWords": "Words",
-    "speedStart": "At the start, per minute",
-    "speedRepeat": "Repeating, per minute",
+    "speedStart": "First half, per minute",
+    "speedRepeat": "Second half, per minute",
+    "parrotBeaten": "Faster than before",
     "tryAgain": "try again",
     "parrotTip": "Type slowly and exactly and the parrot comes back.",
     "time": "Time",
@@ -1124,7 +1125,9 @@
     "byLevel": "Finish {level}",
     "byWorld": "Finish world {world}",
     "byMastery": "Master {n} keys",
-    "stars": "Stars: {n}"
+    "stars": "Stars: {n}",
+    "starsTip": "The stars you hold now in all the worlds.",
+    "starsEarnedTip": "All the stars you have earned typing with Tapko."
   },
   "slots": {
     "head": "Head",
@@ -1459,7 +1462,7 @@
     "accuracy": "accuracy",
     "speed": "characters per minute",
     "stars": "stars",
-    "starsEarned": "stars since the start",
+    "starsEarned": "since the start",
     "stories": "Progress in the stories",
     "date": "On {date}",
     "sign": "Tapko",
@@ -1688,7 +1691,7 @@
       "**From a phone to a computer:** on the **Files** tab, press **Send to a computer** on the phone and send yourself the .tapko file (by e-mail, for example). On the computer, load it on the same tab or drop it on the page. What you already have is not added twice.",
       "Results older than a **year** are deleted when the page opens. Old results loaded from a file stay for **7 days** more. Delete sooner with **Delete…**.",
       "The checksum shows a damaged link (an exclamation mark by the name), not cheating.",
-      "Make tasks for students on this page, on the **Tasks** tab: pick the game, the words or text and the limit, and you get a link and a QR code. On a phone without a keyboard a student notes the task with **New task** and sends it home."
+      "Make tasks for students on this page, on the **New task** tab: pick the game, the words or text and the limit, and you get a link and a QR code. On a phone without a keyboard a student notes the task with **New task** and sends it home."
     ]
   },
   "tips": {
@@ -1902,7 +1905,8 @@
       "groups": "Groups",
       "writers": "Students",
       "files": "Files",
-      "tasks": "Tasks"
+      "newTask": "New task",
+      "tasks": "Prepared tasks"
     },
     "n": {
       "sets": {
@@ -2017,7 +2021,6 @@
       "removeText": "The whole set is removed: {n}."
     },
     "tasks": {
-      "title": "Prepared tasks",
       "empty": "No prepared tasks yet. A task you make is kept here.",
       "show": "Show",
       "edit": "Edit",
@@ -2047,7 +2050,6 @@
     "bigCode": "Big code",
     "groupPlaceholder": "For example: 5.A",
     "groupHint": "The teacher's table groups results by it.",
-    "legendNew": "New task",
     "gameLabel": "Game",
     "game": {
       "chase": "Word stream",
@@ -3324,7 +3326,7 @@
   "parrot": {
     "title": "Parrot",
     "start": "In every world your **buddy Aro** watches you from afar. When he spots you, he usually **flies off fast**, but a parrot **loves biscuits and repeating**, so if you start repeating words to him, he stays. **When you win** the parrot **in every world**, **Aro sits down by you** on the World map, where you can play with him. But **watch out, parrots fly away now and then** anyway. Nothing is easier than winning them back, though! So try to catch him here too.",
-    "phase2": "Now each word a few times in a row.",
+    "phase2": "Now try to type a word faster than before.",
     "slip": [
       "Take a shorrrt brrreak.",
       "Slow dowwwn!",

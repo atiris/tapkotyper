@@ -12,7 +12,7 @@ test('a task travels by link to a child, and the result back to the teacher\'s t
 
   // The teacher makes a task on the teacher page that ends when its words are typed, with every letter of them taught first; it is kept there.
   const parent = await open();
-  await parent.goto('./#/teacher/tasks');
+  await parent.goto('./#/teacher/newTask');
   const form = parent.locator('.task-form');
   await form.locator('input[type=text]').first().fill('Zvieratá');
   await form.locator('input[type=text]').nth(1).fill('5.A');

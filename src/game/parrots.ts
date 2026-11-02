@@ -9,11 +9,10 @@ const FLY_RANGE = 3;
 /** Points of the Parrot badge in the treasure chest. */
 export const PARROT_POINTS = 7;
 
-/** Rounds of the learning phase: every word in turn. */
-export const LEARN_ROUNDS = 3;
-/** Repetitions a wrong key adds to its word, and at most for one word. */
-export const SLIP_ADD = 2;
-export const SLIP_MAX = 6;
+/** Seconds of play a parrot round lasts at least, in every world; each mistake adds MISS_ADD_S, up to PARROT_MAX_S. */
+export const PARROT_MIN_S = 120;
+export const PARROT_MAX_S = 180;
+export const MISS_ADD_S = 10;
 
 /** Days from `from` to `to`, both local `YYYY-MM-DD` dates. */
 export function daysBetween(from: string, to: string): number {
@@ -93,53 +92,46 @@ export function loseParrot(p: Profile, world: number): void {
   p.progress.parrots = p.progress.parrots.filter((w) => w !== world);
 }
 
-/** Size of a parrot round: how many words, their letters and the repetitions of each in phase 2. */
+/** Size of a parrot round: how many words and their letters. */
 export interface ParrotSize {
   words: number;
   len: [number, number];
-  repeats: number;
 }
 
 /** By the story's tier (0-2) and the world's place in it (0-4): harder stories take more and longer words. */
 export function parrotSize(tier: number, place: number): ParrotSize {
   const early = place <= 1;
   const len: [number, number][] = [early ? [2, 4] : [3, 5], early ? [4, 5] : [4, 6], early ? [5, 6] : [5, 7]];
-  return { words: 3 + tier, len: len[tier], repeats: 3 + tier };
+  return { words: 5 + tier, len: len[tier] };
 }
 
-export interface ParrotStep {
-  word: string;
-  /** 1 learning (the words in turn), 2 repeating (each word several times in a row). */
-  phase: 1 | 2;
-}
+/** Steps of one block: a pair of words twice, A B A B. */
+export const BLOCK = 4;
 
 /**
- * One parrot round: the words in turn LEARN_ROUNDS times, then each one `repeats` times in a row;
- * a wrong key brings its word SLIP_ADD more times right after it, at most SLIP_MAX more per word.
+ * One parrot round: the words in pairs, each pair twice (A B A B C D C D E F E F G A G A B C B C),
+ * round and round the list until the round's time is up; it ends with a whole block.
  */
 export class ParrotRound {
-  readonly steps: ParrotStep[];
   /** Index of the current step. */
   at = 0;
-  private added = new Map<string, number>();
+  /** The time is up: the round ends with the block it is in. */
+  private closing = false;
 
-  constructor(readonly words: string[], repeats: number) {
-    this.steps = [
-      ...Array.from({ length: LEARN_ROUNDS }, () => words.map((word) => ({ word, phase: 1 as const }))).flat(),
-      ...words.flatMap((word) => Array.from({ length: repeats }, () => ({ word, phase: 2 as const }))),
-    ];
+  constructor(readonly words: string[]) {}
+
+  /** The word of step `i`. */
+  wordAt(i: number): string {
+    const n = this.words.length, first = (Math.floor(i / BLOCK) * 2) % n;
+    return this.words[(first + (i % 2)) % n];
   }
 
-  get current(): ParrotStep | null {
-    return this.steps[this.at] ?? null;
+  get current(): string | null {
+    return this.done ? null : this.wordAt(this.at);
   }
 
   get done(): boolean {
-    return this.at >= this.steps.length;
-  }
-
-  progress(): number {
-    return this.steps.length ? this.at / this.steps.length : 1;
+    return this.closing && this.at % BLOCK === 0;
   }
 
   /** The current word is typed. */
@@ -147,14 +139,8 @@ export class ParrotRound {
     if (!this.done) this.at++;
   }
 
-  /** A wrong key: its word comes SLIP_ADD more times right after it, up to SLIP_MAX per word; returns how many were added. */
-  slip(): number {
-    const cur = this.current;
-    if (!cur) return 0;
-    const n = Math.min(SLIP_ADD, SLIP_MAX - (this.added.get(cur.word) ?? 0));
-    if (n <= 0) return 0;
-    this.added.set(cur.word, (this.added.get(cur.word) ?? 0) + n);
-    this.steps.splice(this.at + 1, 0, ...Array.from({ length: n }, () => ({ word: cur.word, phase: cur.phase })));
-    return n;
+  /** The time is up: the round finishes the block it is in (at once between blocks). */
+  close(): void {
+    this.closing = true;
   }
 }

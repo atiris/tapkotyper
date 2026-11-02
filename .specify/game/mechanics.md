@@ -83,8 +83,10 @@
   94 %, 2 from 88 %, else 1 (finishing always gives one, a flawless level five). Whole stars
   only; every game counts the same way (the valley's flying lessons too). The stars stand like
   the Olympic rings, three on top and two below in their gaps, filled in reading order, on the
-  map's level dots (the two rows a little apart, the card a bit taller for them); beside Tapko
-  on the end card they stand small in one row. Best results kept from the times of three
+  end card beside Tapko, where they stand small in one row. On the map's level cards only the
+  earned stars show, in a fixed box of two rows: one in the middle, two side by side, three as a
+  triangle (two over one), four two over two, five like the rings. The target range's and the
+  parrot's cards look the same: the game on top, a check under it once it is won. Best results kept from the times of three
   stars stay as they are until the level is played again.
 - **World rhythm** (the meadow, the rocket world and the valley; the planet starts with its calm step, see [story](story.md)): the levels of a world have fixed roles, so one
   session (about one world) goes up and down instead of repeating one game: 1 the world's

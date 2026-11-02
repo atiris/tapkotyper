@@ -391,11 +391,12 @@ describe('minimum level length', () => {
 
 describe('parrot', () => {
   it('sizes the round by story and place, and takes the letters of the world\'s last level', () => {
-    expect(parrotSizeOf(0).words).toBe(3);
-    expect(parrotSizeOf(7)).toEqual({ words: 4, len: [4, 6], repeats: 4 });
+    expect(parrotSizeOf(0).words).toBe(5);
+    expect(parrotSizeOf(7)).toEqual({ words: 6, len: [4, 6] });
     const p = newProfile('Ema', 'sk');
     expect(parrotKeys(p, 0)).toEqual(['f', 'j', 'd', 'k']);
     expect(parrotLevel(3)).toMatchObject({ id: 'parrot', kind: 'parrot', world: 3, index: -1 });
-    expect(hasMinLength(parrotLevel(3))).toBe(false);
+    expect(hasMinLength(parrotLevel(3))).toBe(true);
+    expect(minActiveS(parrotLevel(3))).toBe(minActiveS(parrotLevel(12)));
   });
 });

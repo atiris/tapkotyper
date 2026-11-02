@@ -23,7 +23,7 @@ function lockMark(r: { lockRemoved?: boolean }): HTMLElement | null {
   return h('span', { class: 'lock-mark', tip: t('teacher.lockRemoved'), 'aria-label': t('teacher.lockRemoved'), role: 'img' }, icon('lock'));
 }
 
-const TABS = ['groups', 'writers', 'files', 'tasks'] as const;
+const TABS = ['groups', 'writers', 'files', 'newTask', 'tasks'] as const;
 type Tab = (typeof TABS)[number];
 
 /** The writers' columns a teacher sorts by, in the table's order; the phone list offers them as chips, the most useful first. */
@@ -365,7 +365,10 @@ function teacherPage(root: HTMLElement, store: TeacherStore, first: Tab, code: s
     ];
   };
 
-  /** Úlohy: the form, then the tasks made here, newest first. */
+  /** Nová úloha: the form; a saved task shows its link and waits among the prepared ones. */
+  const newTaskTab = (): Node[] => [h('section', { class: 'task-make' }, h('p', { class: 'hint' }, t('task.intro')), form.el)];
+
+  /** Pripravené úlohy: the tasks made here, newest first; editing one opens it in the form. */
   const tasksTab = (): Node[] => {
     const tasks = app.store.data.teacherTasks;
     const remove = (id: string) => {
@@ -374,15 +377,13 @@ function teacherPage(root: HTMLElement, store: TeacherStore, first: Tab, code: s
       paint();
     };
     return [
-      h('section', { class: 'task-make' }, h('h2', {}, t('task.legendNew')), h('p', { class: 'hint' }, t('task.intro')), form.el),
-      h('h2', {}, t('teacher.tasks.title')),
       tasks.length ? h('ul', { class: 'made-tasks' }, ...tasks.map((x) => h('li', {},
         h('div', { class: 'made-task-text' },
           h('b', {}, x.title || t('task.untitled')),
           h('small', {}, [taskSummary(x), x.group, new Date(x.madeAt).toLocaleDateString(locale())].filter(Boolean).join(' · '))),
         h('div', { class: 'row' },
           button(t('teacher.tasks.show'), () => void showTask(x), 'btn small primary', 'code'),
-          button(t('teacher.tasks.edit'), () => form.edit(x), 'btn small', 'edit'),
+          button(t('teacher.tasks.edit'), () => { form.edit(x); showTab('newTask'); }, 'btn small', 'edit'),
           button(t('teacher.tasks.remove'), () => remove(x.id), 'btn small ghost', 'trash')))))
         : h('p', { class: 'hint' }, t('teacher.tasks.empty')),
     ];
@@ -391,7 +392,7 @@ function teacherPage(root: HTMLElement, store: TeacherStore, first: Tab, code: s
   const form = taskForm((spec) => {
     app.store.data.teacherTasks = keepTeacherTask(app.store.data.teacherTasks, spec);
     app.store.save();
-    paint();
+    showTab('tasks');
     void showTask(spec);
   });
 
@@ -406,7 +407,7 @@ function teacherPage(root: HTMLElement, store: TeacherStore, first: Tab, code: s
 
   const paint = () => {
     paintScanList();
-    panel.replaceChildren(...(tab === 'groups' ? groupsTab() : tab === 'writers' ? writersTab() : tab === 'tasks' ? tasksTab() : filesTab()).filter((x): x is Node => !!x));
+    panel.replaceChildren(...(tab === 'groups' ? groupsTab() : tab === 'writers' ? writersTab() : tab === 'newTask' ? newTaskTab() : tab === 'tasks' ? tasksTab() : filesTab()).filter((x): x is Node => !!x));
   };
 
   const scanButton = button(t('teacher.scan.start'), () => startScanning(), 'btn primary', 'camera');

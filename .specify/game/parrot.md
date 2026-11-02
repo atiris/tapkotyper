@@ -3,11 +3,13 @@
 ## What
 - **Papagáj** / **Parrot**: a voluntary side card in every world, next to the target range. The
   child types the same few words many times over, so the fingers learn them (muscle memory).
-  Speed is not judged and there are no stars; slow typing is fine, the point is the practice.
+  There are no stars; slow typing is fine, the point is the practice. Speed only shows the child
+  which words got quicker.
 - It opens with the world's super level, like the [target range](target-practice.md): a small
   parrot node after the range's target on the map. Its picture tells the parrot's state: its
   head while it is at home, else an empty short wooden perch (closed, not won yet, or flown
-  away); its tooltip says what it trains. Before the world is finished the node is already there, grey and closed like a
+  away); under it a check once the world's round was ever won (like the range's card: the game
+  on top, the marks under it); its tooltip says what it trains. Before the world is finished the node is already there, grey and closed like a
   level not reached yet (the tooltip adds when it opens). It starts only when the child picks
   it, never by "Continue".
 - **Scene:** the world's own background, only its middle strip drifting very slowly. Tapko
@@ -18,20 +20,22 @@
 - **Mistakes:** the third wrong key of a round sends the parrot up on a short flight round the
   scene (its wings beating, facing where it goes) with a parrot line ("Daj si kráátku
   prestáávku.", "Brrrzdi!", "Pozooórr.", "Opakovanie, matka múdrrosti.", "Trretií pokus"); it
-  lands back and the round goes on. More wrong keys than 4 plus the story's number (5 in the
+  lands back and the round goes on. Each wrong key makes the round 10 seconds longer, up to
+  3 minutes in all. More wrong keys than 4 plus the story's number (5 in the
   dragon story, 6 in the robot's, 7 in the fairy's) and the parrot says "Veeéľa chýb!", "Skúús
   prresnejššie!" or "Prrriíliš neprresneé" and flies off: the word goes, nothing more is shown,
   and the round ends lost.
-- **Round:** first the words in turn, three rounds (dom strom časy dom strom časy dom strom
-  časy), then each word several times in a row; Tapko says when the second part starts. A wrong
-  key brings the current word twice more, at most six more per word, so a round always ends.
+- **Round:** 2 minutes of play in every world (the world only makes the words longer and more of
+  them). The words come in pairs, each pair twice, round and round the list (A B A B C D C D E F
+  E F G A G A B C B C ...), never one word many times in a row; the round ends with a whole pair.
+  The first half measures how fast each word goes; in the second half (Tapko says when it
+  starts) the child tries to type some word faster than before.
 - **Size** by the world's story and its place in it (worlds 1-2 of a story shorter words):
 
   | | Dragon story | Robot story | Fairy story |
   |---|---|---|---|
-  | Words | 3 | 4 | 5 |
+  | Words | 5 | 6 | 7 |
   | Letters per word | 2-4, then 3-5 | 4-5, then 4-6 | 5-6, then 5-7 |
-  | Repeats per word in part 2 | 3 | 4 | 5 |
 
   The words use the letters of the world's last level: real words where the letters allow it
   (letter drills in the meadow's tiny set), all different and starting with different letters
@@ -39,17 +43,18 @@
 - The typing counts in the statistics and in the lesson like at the target range; paws and Enter
   marks stay out, the parent's surprises counting training time are asked and told.
 - **End:** a learned round ends with the parrot's praise ("Suuperr", "Parraáda", ...), then its
-  "I am coming" ("Prrilletiím", "Maáš to", ...), and it flies to the left toward Tapko and up out of
-  the scene: the parrot goes home with the child. It is back on the end
-  card (the one card of every end, see [mechanics](mechanics.md)): "Papagáj je doma!", the parrot
-  in colour with the number of words under it, the rows the words (the first three), the speed at
-  the start and while repeating (letters per minute); the green line tells the Parrot badge when
+  "I am coming" ("Prrilletiím", "Maáš to", ...), and it flies down to Tapko and sits on the grass
+  beside him (in front of him, should its way cross him): the parrot goes home with the child. It
+  is back on the end card (the one card of every end, see [mechanics](mechanics.md)): "Papagáj je
+  doma!", the parrot in colour with the number of words under it, the rows the words (the first
+  three), the speed in the first and in the second half (letters per minute) and the words typed
+  faster than before; the green line tells the Parrot badge when
   this win brought it, new letters, or that repeating was faster than the child's usual speed of
   the last 14 days. "Nové slová" plays again with new words; the X at the top right and Esc show
   the game under the card, a second Esc goes to the map. Finishing the round wins the
   world's parrot.
 - **Lost round:** no celebration; the end card "Papagáj uletel" shows the empty perch with "skús
-  znova", the words and the speed at the start, and a yellow tip "Píš pomaly a presne a papagáj sa
+  znova", the words and the speed in the first half, and a yellow tip "Píš pomaly a presne a papagáj sa
   vráti."; "Hrať znova" is the main button. The world's parrot leaves home
   (the badge may go with it) and its map node shows the empty perch.
 - **Parrots fly away**, so the child comes back and practises again:

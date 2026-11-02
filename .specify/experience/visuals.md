@@ -97,7 +97,7 @@
   meadow it is a little quieter and lights up yellow-white. The about and teacher ways in are round buttons at
   the top right, so they stay reachable with any number of players.
 - A phone without a keyboard: the logo face above the title, the slogan, a short text, then the
-  teachers' button as the main orange one and the keyboard button under it.
+  big buttons (new task, teachers, keyboard), none of them the main orange one.
 - **The start page's sky and meadow.** A repeating meadow strip along the bottom and a few sky
   pieces in the top left corner, never behind text: the sun and two clouds by day, the moon and
   three stars by night. Farther pieces are softer (blurred more). By day three butterflies (one of
@@ -130,7 +130,7 @@
   the hero, or seated in its vehicle (the suited astronaut in the rocket's window). His shouts and bubble then point
   to where he is.
 - A level opens with all its pictures: every world's pictures load in the background from the start, and a level waits for the ones it draws (its things, Tapko in every mood and outfit, the story friends), so on a slow connection no thing shows its drawn stand-in first. Only a stalled connection opens it after half a minute with the stand-ins.
-- The super star (super mode) and the wardrobe's star count are normal members of the layout: the star sits in the top row before the sound button on every screen; the wardrobe's counts sit under the animal picture: the stars and, right beside them, the stars earned since the start.
+- The super star (super mode) and the wardrobe's star count are normal members of the layout: the star sits in the top row before the sound button on every screen; the wardrobe's counts sit under the animal picture: the stars and, right beside them, the stars earned since the start; a hover says which is which ("Aktuálny stav hviezd vo všetkých svetoch.", "Celkový počet hviezd získaných počas písania s Ťapkom.").
 - A password removed or changed by the super player shows as a round red "!" button inside the password panel's top right corner (the text beside it kept clear) for a month, and as a small red lock by the child's name in the teacher's views.
 - The results card's three buttons (next level, replay, map) share one style; only the next level is accented.
 - Back buttons in top bars have the same height as the round buttons beside them.

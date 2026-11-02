@@ -197,10 +197,8 @@ function pickByNumber(count: number, pick: (i: number) => void): () => void {
 
 /** A phone or tablet without a keyboard: the game needs one. A tap says how to connect it, unless it is there by now. */
 function keyboardButton(): HTMLButtonElement {
-  const b = bigButton(keyboardArt(), t('start.gate.title'), t('start.gate.sub'), () => {
+  return bigButton(keyboardArt(), t('start.gate.title'), t('start.gate.sub'), () => {
     if (!keyboardGated()) return go('start', {}, false);
     modal(h('div', { class: 'keyboard-gate' }, keyboardArt(), h('h2', {}, t('start.gate.connect')), h('p', {}, t('start.gate.text'))));
   });
-  b.classList.add('alt');
-  return b;
 }

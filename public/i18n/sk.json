@@ -62,7 +62,7 @@
     "first": "Zvoľ si prezývku, vyber si postavu a môžeš trénovať.",
     "note": {
       "title": "Nová úloha",
-      "sub": "Zaznačte si úlohu z QR kódu a pošlite si ju domov do počítača"
+      "sub": "Poznačiť si úlohu pomocou naskenovania QR kódu"
     }
   },
   "newProfile": {
@@ -389,8 +389,9 @@
     "centers": "Zásahy do stredu",
     "newFind": "Do zbierky ti pribudol nový predmet.",
     "parrotWords": "Slová",
-    "speedStart": "Na začiatku za minútu",
-    "speedRepeat": "Pri opakovaní za minútu",
+    "speedStart": "V prvej polovici za minútu",
+    "speedRepeat": "V druhej polovici za minútu",
+    "parrotBeaten": "Rýchlejšie ako predtým",
     "tryAgain": "skús znova",
     "parrotTip": "Píš pomaly a presne a papagáj sa vráti.",
     "time": "Čas",
@@ -1124,7 +1125,9 @@
     "byLevel": "Dokonči {level}",
     "byWorld": "Dokonči svet {world}",
     "byMastery": "Zvládni {n} klávesov",
-    "stars": "Hviezdičky: {n}"
+    "stars": "Hviezdičky: {n}",
+    "starsTip": "Aktuálny stav hviezd vo všetkých svetoch.",
+    "starsEarnedTip": "Celkový počet hviezd získaných počas písania s Ťapkom."
   },
   "slots": {
     "head": "Hlava",
@@ -1459,7 +1462,7 @@
     "accuracy": "presnosť",
     "speed": "znakov za minútu",
     "stars": "hviezdičky",
-    "starsEarned": "hviezdičky od začiatku",
+    "starsEarned": "od začiatku",
     "stories": "Postup v príbehoch",
     "date": "Dňa {date}",
     "sign": "Tapko",
@@ -1688,7 +1691,7 @@
       "**Z telefónu do počítača:** na karte **Súbory** stlačte na telefóne **Poslať do počítača** a pošlite si súbor .tapko (napríklad e-mailom). Na počítači ho na tej istej karte načítajte alebo ho na stránku pretiahnite. Čo už máte, sa nepridá druhýkrát.",
       "Výsledky staršie ako **rok** sa pri otvorení stránky zmažú. Staré výsledky načítané zo súboru ostanú ešte **7 dní**. Skôr ich zmažete tlačidlom **Vymazať…**.",
       "Kontrolný súčet ukáže poškodený odkaz (výkričník pri mene), nie podvádzanie.",
-      "Úlohy pre študentov vytvoríte na tejto stránke na karte **Úlohy**: vyberiete hru, slová alebo text a limit a vznikne odkaz a QR kód. Na telefóne bez klávesnice si študent úlohu zaznačí tlačidlom **Nová úloha** a pošle si ju domov."
+      "Úlohy pre študentov vytvoríte na tejto stránke na karte **Nová úloha**: vyberiete hru, slová alebo text a limit a vznikne odkaz a QR kód. Na telefóne bez klávesnice si študent úlohu zaznačí tlačidlom **Nová úloha** a pošle si ju domov."
     ]
   },
   "tips": {
@@ -1902,7 +1905,8 @@
       "groups": "Skupiny",
       "writers": "Študenti",
       "files": "Súbory",
-      "tasks": "Úlohy"
+      "newTask": "Nová úloha",
+      "tasks": "Pripravené úlohy"
     },
     "n": {
       "sets": {
@@ -2017,7 +2021,6 @@
       "removeText": "Odstráni sa celá sada: {n}."
     },
     "tasks": {
-      "title": "Pripravené úlohy",
       "empty": "Zatiaľ žiadne pripravené úlohy. Úloha, ktorú vytvoríte, sa tu uloží.",
       "show": "Ukázať",
       "edit": "Upraviť",
@@ -2047,7 +2050,6 @@
     "bigCode": "Veľký kód",
     "groupPlaceholder": "Napríklad: 5.A",
     "groupHint": "Učiteľ podľa nej v tabuľke zoskupí výsledky.",
-    "legendNew": "Nová úloha",
     "gameLabel": "Hra",
     "game": {
       "chase": "Prúd slov",
@@ -3347,7 +3349,7 @@
   "parrot": {
     "title": "Papagáj",
     "start": "Z diaľky ťa v každom svete sleduje aj **kamoš Aro.** Ak si ťa všimne, zvyčajne **rýchlo odletí**, ale keďže papagáj **má rád keksy a opakovanie**, ak mu začneš opakovať slová, zostane. **Keď získaš** papagája **v každom svete**, **Aro si sadne k tebe** na Mape svetov, kde sa s ním môžeš zahrať. Ale **pozor, papagáje raz za čas uletia** aj tak. No nie je nič jednoduchšie, než ich získať znovu! Skús ho chytiť teda aj tu.",
-    "phase2": "Teraz každé slovo niekoľkokrát za sebou.",
+    "phase2": "Teraz skús niektoré slovo napísať rýchlejšie ako predtým.",
     "slip": [
       "Daj si kráátku prestáávku.",
       "Brrrzdi!",

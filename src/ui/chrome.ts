@@ -257,7 +257,7 @@ export function watchAutoFullscreen(): void {
 }
 
 /** The 1-5 places of a level's stars, filled in reading order (three on top, two below). */
-export const STAR_PLACES = Array.from({ length: MAX_LEVEL_STARS }, (_, i) => i + 1);
+const STAR_PLACES = Array.from({ length: MAX_LEVEL_STARS }, (_, i) => i + 1);
 
 /** A level's stars in the ring layout (`.stars`), `n` of them filled. */
 export function starRow(n: number): HTMLElement {

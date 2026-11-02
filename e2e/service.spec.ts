@@ -21,7 +21,7 @@ test('the star menu fills in the super player\'s progress', async ({ page }) => 
   // The story levels only: the range and the parrot beside a finished world are level nodes too.
   const levels = page.locator('.level-node.done:not(.aim-node, .parrot-node)');
   await expect(levels).toHaveCount(10);
-  const stars = await levels.locator('.mini-stars i.on').count();
+  const stars = await levels.locator('.mini-stars i').count();
   expect(stars).toBe(30);
   expect(errors).toEqual([]);
 });

@@ -38,6 +38,6 @@ test("the dragon story's hero's journey goes back down to the rocket with a pane
   const stars = Math.floor(Number((await page.locator('.journey-done .ec-under .stars').getAttribute('aria-label'))!.replace(/\D*([\d.]+).*/, '$1')));
   await page.locator('.end-card .ec-bot .btn').last().click();
   // The node keeps the best stars (the super player's filled progress may have more).
-  expect(await egg.locator('.journey-node .mini-stars i.on').count()).toBeGreaterThanOrEqual(stars);
+  expect(await egg.locator('.journey-node .mini-stars i').count()).toBeGreaterThanOrEqual(stars);
   expect(errors).toEqual([]);
 });

@@ -10,12 +10,13 @@
   import stay hidden.
 - Pressing any key of a connected keyboard lifts the card at once and for the rest of the
   session (the card has no text field, so an on-screen keyboard cannot lift it).
-- Above it, first after the intro, a big orange **"Nová úloha"** button (a badger pupil typing
-  at a desk; "Zaznačte si úlohu z QR kódu a pošlite si ju domov do počítača") opens noting a
+- Above it, first after the intro, a big **"Nová úloha"** button (a badger pupil typing
+  at a desk; "Poznačiť si úlohu pomocou naskenovania QR kódu") opens noting a
   task: a child without a keyboard at school notes the teacher's task on a phone and sends it
   home to the computer ([teacher links](../profiles/teacher-links.md)). Order: intro, Nová úloha,
-  Pre učiteľov, Chýba klávesnica (last, in the quieter style).
-- Under it a big orange **"Pre učiteľov"** button with the teacher's own animal (a
+  Pre učiteľov, Chýba klávesnica. None of the three is the default (orange) one: all have the
+  quiet light style, and each one's small text stays within two lines.
+- Under it a big **"Pre učiteľov"** button with the teacher's own animal (a
   turtle with glasses and a mortar board, not one of the players' animals) opens the teacher
   view; the same turtle greets an empty teacher view.
 - Until a key is seen only the start page, the teacher view (also from a result link), noting

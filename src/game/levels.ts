@@ -1,7 +1,7 @@
 import { t } from '../i18n/i18n';
 import { activeKeys, aimKeys, isLetterKey, practiceOrder } from '../learning/lessons';
 import { type Profile, SUPER_ID, type TaskSpec } from '../storage/schema';
-import { type ParrotSize, parrotSize } from './parrots';
+import { PARROT_MIN_S, type ParrotSize, parrotSize } from './parrots';
 
 export type WorldId = 'meadow' | 'space' | 'planet' | 'dragons' | 'egg' | 'junkyard' | 'workshop' | 'raintown' | 'robocity' | 'robohome'
   | 'garden' | 'forestpath' | 'lilylake' | 'musictree' | 'moonball';
@@ -127,6 +127,8 @@ function tierOf(l: Pick<LevelDef, 'world' | 'journey'>): number {
 export function minActiveS(l: Pick<LevelDef, 'world' | 'kind' | 'isSuper' | 'journey' | 'task'>): number {
   // A task's minutes are its own limit; the text limit has none.
   if (l.task) return l.task.limit === 'text' ? 0 : l.task.minutes * 60;
+  // The parrot's round is as long in every world; its mistakes make it longer.
+  if (l.kind === 'parrot') return PARROT_MIN_S;
   const base = STORY_MIN_S[tierOf(l)];
   if (l.journey) return (JOURNEY_SHARE * base) / l.journey.parts;
   if (CALM_KINDS.includes(l.kind)) return base * CALM_SHARE;
@@ -182,9 +184,9 @@ export function activityOf(l: LevelDef): Activity {
   return 'chase';
 }
 
-/** Practice, custom exercises, free typing, the target range and the parrot keep their own length; every other level (a task too: its minutes) has the minimum. */
+/** Practice, custom exercises, free typing and the target range keep their own length; every other level (a task too: its minutes, the parrot its round's) has the minimum. */
 export function hasMinLength(l: LevelDef): boolean {
-  return l.kind !== 'practice' && l.kind !== 'freetype' && l.kind !== 'aim' && l.kind !== 'parrot';
+  return l.kind !== 'practice' && l.kind !== 'freetype' && l.kind !== 'aim';
 }
 
 /**

@@ -4,8 +4,9 @@
 - **No server, links only.** Everything a link carries is inside its address hash
   (`#/task/…`, `#/result/…`, `#/move/…`), compressed, with a format version, so the data
   never reaches a web server and old links can still be told apart later.
-- **Making a task** happens only on the teacher page, tab **Úlohy** (`#/teacher/tasks`): a form,
-  then "Pripravené úlohy", newest first. The form asks, top to bottom: the task's name and group;
+- **Making a task** happens only on the teacher page, tab **Nová úloha** (`#/teacher/newTask`): a
+  form; a saved task shows its link and waits on the next tab, **Pripravené úlohy**
+  (`#/teacher/tasks`), newest first, where editing one opens it in the form. The form asks, top to bottom: the task's name and group;
   the **game** (Prúd slov, Čakajúce slová, Odpis, Pás, Prepis); the task's **words** (for the two
   words games) or its **text** (for the three text games), only the one the game uses; the
   **limit**: Čas (typing goes on until the time is up), Text (the task ends when the whole text

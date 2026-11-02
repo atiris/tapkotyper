@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
-import { DROP_DAYS, LEARN_ROUNDS, ParrotRound, SLIP_MAX, bringParrotHome, daysBetween, flyAway, hasParrotBadge, loseParrot, parrotFloor, parrotPatience, parrotSize, sendParrotAway, winParrot } from './parrots';
+import { BLOCK, DROP_DAYS, ParrotRound, bringParrotHome, daysBetween, flyAway, hasParrotBadge, loseParrot, parrotFloor, parrotPatience, parrotSize, sendParrotAway, winParrot } from './parrots';
 
 /** A profile with these worlds done and their parrots at home, won on `day`. */
 function withParrots(worlds: number[], day = '2026-10-01') {
@@ -102,38 +102,25 @@ describe('parrot badge', () => {
 });
 
 describe('parrot round', () => {
-  it('sizes the round by story and place', () => {
-    expect(parrotSize(0, 0)).toEqual({ words: 3, len: [2, 4], repeats: 3 });
-    expect(parrotSize(0, 2)).toEqual({ words: 3, len: [3, 5], repeats: 3 });
-    expect(parrotSize(1, 1)).toEqual({ words: 4, len: [4, 5], repeats: 4 });
-    expect(parrotSize(2, 4)).toEqual({ words: 5, len: [5, 7], repeats: 5 });
+  it('sizes the round by story and place: five words, one more each story', () => {
+    expect(parrotSize(0, 0)).toEqual({ words: 5, len: [2, 4] });
+    expect(parrotSize(0, 2)).toEqual({ words: 5, len: [3, 5] });
+    expect(parrotSize(1, 1)).toEqual({ words: 6, len: [4, 5] });
+    expect(parrotSize(2, 4)).toEqual({ words: 7, len: [5, 7] });
   });
 
-  it('learns the words in turn, then repeats each in a row', () => {
-    const r = new ParrotRound(['dom', 'strom', 'časy'], 3);
-    expect(r.steps).toHaveLength(LEARN_ROUNDS * 3 + 9);
-    expect(r.steps.slice(0, 4).map((s) => s.word)).toEqual(['dom', 'strom', 'časy', 'dom']);
-    expect(r.steps.slice(9).map((s) => `${s.phase}${s.word}`)).toEqual(['2dom', '2dom', '2dom', '2strom', '2strom', '2strom', '2časy', '2časy', '2časy']);
+  it('takes the words in pairs, each pair twice, round the list', () => {
+    const r = new ParrotRound([...'ABCDEFG']);
+    expect(Array.from({ length: 20 }, (_, i) => r.wordAt(i)).join(' ')).toBe('A B A B C D C D E F E F G A G A B C B C');
   });
 
-  it('adds two repetitions per wrong key, at most six per word', () => {
-    const r = new ParrotRound(['dom', 'strom'], 2);
-    const before = r.steps.length;
-    expect(r.slip()).toBe(2);
-    expect(r.steps.slice(0, 4).map((s) => s.word)).toEqual(['dom', 'dom', 'dom', 'strom']);
-    r.slip();
-    r.slip();
-    expect(r.slip()).toBe(0);
-    expect(r.steps.length).toBe(before + SLIP_MAX);
+  it('ends with a whole pair once its time is up', () => {
+    const r = new ParrotRound(['dom', 'strom']);
     r.advance();
-    expect(r.current?.word).toBe('dom');
-  });
-
-  it('ends after the last step', () => {
-    const r = new ParrotRound(['ab'], 1);
-    for (let i = 0; i < LEARN_ROUNDS + 1; i++) r.advance();
+    r.close();
+    expect(r.done).toBe(false);
+    for (let i = 0; i < BLOCK - 1; i++) r.advance();
     expect(r.done).toBe(true);
-    expect(r.progress()).toBe(1);
     expect(r.current).toBeNull();
   });
 });

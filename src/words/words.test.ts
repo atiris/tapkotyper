@@ -4,6 +4,8 @@ import { LAYOUTS } from '../keyboard/layouts';
 import { lessonOrder } from '../learning/lessons';
 import { WordSource, filterWords, heardSafe, isBlocked, parseOwnWords, textPhrases, typableText, untypableWords } from './words';
 
+/** A dictionary big enough that no word's uses are limited: consonant, vowel, consonant. */
+const BIG = [...'dksltnhr'].flatMap((a) => [...'aeiou'].flatMap((v) => [...'dkstn'].map((b) => a + v + b)));
 const WORDS = ['sad', 'lak', 'las', 'les', 'kde', 'ide', 'šaty', 'ruka', 'noha', 'dom', 'kôň', 'ja', 'aha', 'jeseň', 'slnko', 'Ema', 'Jano', 'Ola'];
 
 describe('word filter', () => {
@@ -79,14 +81,23 @@ describe('WordSource', () => {
 
   it('takes only dictionary words once the known letters make enough of them; key drills mix in made-up ones', () => {
     const keys = [...'fjdkslaeiruotnh'];
-    const real = new WordSource(WORDS, { keys, len: [2, 6], noDiacritics: false, seed: 7 });
-    expect(Array.from({ length: 300 }, () => real.next()).every((w) => WORDS.includes(w))).toBe(true);
-    const drill = new WordSource(WORDS, { keys, len: [2, 6], noDiacritics: false, seed: 7, pseudo: true });
-    expect(Array.from({ length: 300 }, () => drill.next()).some((w) => !WORDS.includes(w))).toBe(true);
+    const real = new WordSource(BIG, { keys, len: [2, 6], noDiacritics: false, seed: 7 });
+    expect(Array.from({ length: 300 }, () => real.next()).every((w) => BIG.includes(w))).toBe(true);
+    const drill = new WordSource(BIG, { keys, len: [2, 6], noDiacritics: false, seed: 7, pseudo: true });
+    expect(Array.from({ length: 300 }, () => drill.next()).some((w) => !BIG.includes(w))).toBe(true);
+  });
+
+  it('gives a word of a small dictionary at most twice, then made-up words', () => {
+    const src = new WordSource(WORDS, { keys: [...'fjdkslaeiruotnh'], len: [2, 6], noDiacritics: false, seed: 11 });
+    const seen = new Map<string, number>();
+    for (const w of Array.from({ length: 60 }, () => src.next())) seen.set(w, (seen.get(w) ?? 0) + 1);
+    // Made-up words alternate consonants and vowels, so they never make these two.
+    expect(['kde', 'slnko'].every((w) => (seen.get(w) ?? 0) <= 2)).toBe(true);
+    expect([...seen.keys()].some((w) => !WORDS.includes(w))).toBe(true);
   });
 
   it('avoids first letters already on screen when it can', () => {
-    const src = new WordSource(WORDS, { keys: [...'fjdkslaeiruotnh'], len: [2, 6], noDiacritics: false, seed: 6 });
+    const src = new WordSource(BIG, { keys: [...'fjdkslaeiruotnh'], len: [2, 6], noDiacritics: false, seed: 6 });
     let clashes = 0;
     for (let i = 0; i < 100; i++) if (src.next(new Set(['s', 'l']))[0].match(/[sl]/)) clashes++;
     expect(clashes).toBeLessThan(5);
@@ -163,7 +174,7 @@ describe('phrases', () => {
   it('starts about one target in six with a capital, every one once the Shifts are mastered', () => {
     const keys = [...KNOWN, 'ShiftL', 'ShiftR'];
     const caps = (mastery: number) => {
-      const src = new WordSource(WORDS, { keys, len: [2, 6], noDiacritics: false, layout: SK, shiftMastery: { ShiftL: mastery, ShiftR: mastery }, seed: 15 });
+      const src = new WordSource(BIG, { keys, len: [2, 6], noDiacritics: false, layout: SK, shiftMastery: { ShiftL: mastery, ShiftR: mastery }, seed: 15 });
       const list = sample(src, 2000, 4);
       for (const w of list) expect(w.slice(1)).toBe(w.slice(1).toLowerCase());
       return list.filter((w) => w[0] !== w[0].toLowerCase()).length / list.length;

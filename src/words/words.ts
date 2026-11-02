@@ -168,6 +168,9 @@ const SHORT_WORD = 5;
 const SHORT_TOTAL = 12;
 /** Dictionary words the known letters must make before real words are picked over made-up ones. */
 const REAL_MIN = 8;
+/** Below this many dictionary words a word comes at most USES_MAX times; then made-up words fill in. */
+const SMALL_POOL = 40;
+const USES_MAX = 2;
 
 /** Endless supply of practice targets for a key set: words, and phrases once space is known. */
 export class WordSource {
@@ -183,6 +186,8 @@ export class WordSource {
   private keys: Set<string>;
   readonly focus: Set<string>;
   private recent: string[] = [];
+  /** How often each word came, for a small word list's limit. */
+  private uses = new Map<string, number>();
   private ownWords: string[];
   private ownText: string;
   /** Own words found in the dictionary and spelled as heard, the only ones a dictation says; made when first needed. */
@@ -231,7 +236,7 @@ export class WordSource {
     }
     // A small word list keeps its fresh words on letters already on screen: a recent real word with another first letter beats a clash.
     if (avoidFirst.has(target[0].toLowerCase()) && !this.heard) {
-      const apart = this.pool.filter((w) => w.length <= maxLen && !avoidFirst.has(w[0]));
+      const apart = this.realPool(this.pool).filter((w) => w.length <= maxLen && !avoidFirst.has(w[0]));
       if (apart.length) target = this.rng.pick(apart);
     }
     return this.remember(target);
@@ -243,6 +248,7 @@ export class WordSource {
   }
 
   private remember(target: string): string {
+    for (const w of target.toLowerCase().split(/[^\p{L}']+/u)) if (w) this.uses.set(w, (this.uses.get(w) ?? 0) + 1);
     this.recent.push(target);
     if (this.recent.length > 12) this.recent.shift();
     return target;
@@ -378,7 +384,8 @@ export class WordSource {
 
   /** Weighted pick from a random sample of real words. */
   private pickReal(maxLen: number, focus: string | null): string {
-    const pool = this.heard ? this.heardPool() : this.pool;
+    const pool = this.realPool(this.heard ? this.heardPool() : this.pool);
+    if (!pool.length) return this.heard ? this.weightedLetter(focus) : this.pseudo(maxLen, focus);
     let sample: string[] = [];
     for (let i = 0; i < 16; i++) {
       const w = this.rng.pick(pool);
@@ -399,6 +406,11 @@ export class WordSource {
       return score * score;
     });
     return sample[this.rng.weighted(weights)];
+  }
+
+  /** The words still free to come: a small list's words come at most USES_MAX times each (a dictation keeps its few words rather than spell letters). */
+  private realPool(pool: string[]): string[] {
+    return pool.length >= SMALL_POOL || this.heard ? pool : pool.filter((w) => (this.uses.get(w) ?? 0) < USES_MAX);
   }
 
   /** Letter patterns for tiny key sets, e.g. `fff jjj fj jf`. */

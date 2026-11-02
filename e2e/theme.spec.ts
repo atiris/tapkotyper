@@ -111,9 +111,11 @@ test('the phone without a keyboard fits in both looks', async ({ browser }) => {
     expect(await look(page)).toBe(colorScheme);
     const r = await page.evaluate(() => ({
       scroll: document.body.scrollHeight > innerHeight || document.body.scrollWidth > document.body.clientWidth,
-      order: [...document.querySelectorAll('.start-more .teacher-big')].map((b) => b.classList.contains('alt')),
+      // None of the buttons is the default (orange) one, and no small text runs over two lines.
+      orange: [...document.querySelectorAll('.start-more .btn.primary')].length,
+      tall: [...document.querySelectorAll('.start-more .teacher-big-text > :last-child')].some((s) => s.getBoundingClientRect().height > 3.2 * parseFloat(getComputedStyle(s).fontSize)),
     }));
-    expect(r).toEqual({ scroll: false, order: [false, true] });
+    expect(r).toEqual({ scroll: false, orange: 0, tall: false });
     expect(await contrastMisses(page)).toEqual([]);
     await ctx.close();
   }

@@ -3,7 +3,7 @@
 Everything found outside the current task, one line each, most important first:
 `- [P1|P2|P3] <title> - <one line: what is wrong and where>`.
 Search before adding; an entry is worked only when it is named.
-- [P2] Three e2e specs fail on main (checked at 44caa69) - own-content.spec.ts and layout.spec.ts:43 wait forever for Esc's control card to close (closeKeysIntro in e2e/helpers.ts), theme.spec.ts:105 expects the phone start page's old button order and no scroll (the new Nová úloha button)
+- [P2] Three e2e specs fail on main (checked at 44caa69, play.spec at 1f9147d) - own-content.spec.ts and layout.spec.ts:43 wait forever for Esc's control card to close (closeKeysIntro in e2e/helpers.ts), play.spec.ts:241 free practice with a diacritic key never reaches its results card
 - [P3] Profile PIN - optional PIN a child sets on their profile; anything beyond the map and the progress popup asks for it until the player switches profile or locks the map; the parent removes it with the device password (src/screens/start.ts, map.ts)
 - [P3] Check .tapko sharing and opening on real devices - src/screens/teacher.ts sendDialog uses Web Share with files (Android, iPhone) and main.ts launchQueue opens a double-clicked .tapko in installed Chrome/Edge (plan 59); neither is testable here
 - [P3] Calm background bands may show their inner joins - layers quilted with a sibling strip (scripts/bg-seam.mjs quilt) can leave steps in calm bands, as the planet path did; re-quilt them with the same strip as donor (assets-src/PROMPTS.md section 3) when one shows

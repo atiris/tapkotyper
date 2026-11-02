@@ -302,6 +302,6 @@ test('staying a while after a level keeps typing until it is ended on the pause 
   await expect(card.locator('.ec-bot button').first()).toBeFocused();
   await expect(card.locator('.ec-bot button').first()).toContainText('Next level');
   await card.locator('.ec-bot button').last().click();
-  await expect(node.locator('.mini-stars i.on')).toHaveCount(stars);
+  await expect(node.locator('.mini-stars i')).toHaveCount(stars);
   expect(errors).toEqual([]);
 });

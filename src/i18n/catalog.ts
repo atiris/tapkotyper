@@ -166,7 +166,7 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
     g('teacher-tasks', 'teacher.tasks.*'),
     g('teacher-wipe', 'teacher.*'),
     g('camera', 'camera.*'),
-    g('task-make', 'task.intro', 'task.legendNew', 'task.title', 'task.titlePlaceholder', 'task.group', 'task.groupPlaceholder', 'task.groupHint', 'task.gameLabel', 'task.game.*',
+    g('task-make', 'task.intro', 'task.title', 'task.titlePlaceholder', 'task.group', 'task.groupPlaceholder', 'task.groupHint', 'task.gameLabel', 'task.game.*',
       'task.words', 'task.wordsHint', 'task.text', 'task.limit', 'task.limits.*', 'task.limitHint', 'task.dictionary', 'task.dictionaryHint', 'task.knownOnly', 'task.knownOnlyHint',
       'task.minutes', 'task.world', 'task.worlds.*', 'task.worldHint', 'task.make', 'task.save', 'task.cancelEdit', 'task.needContent', 'task.linkHint', 'task.bigCode'),
     g('task-play', 'task.*'),

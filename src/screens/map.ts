@@ -16,7 +16,7 @@ import { localDate } from '../learning/stats';
 import { arrowFocus, button, closeButton, h, icon, modal } from '../ui/dom';
 import { openSurprises, surpriseAsk } from '../game/cards';
 import { TRIGGERS, surpriseAnnounced, surpriseCount, surprisesToldOn, surprisesWonIn } from '../game/own-content';
-import { STAR_PLACES, cornerControls, settingsButton } from '../ui/chrome';
+import { cornerControls, settingsButton } from '../ui/chrome';
 import { offerInstall } from '../ui/install';
 import { tipShown } from '../ui/tooltip';
 import { firstWord, onTypedWord } from '../ui/typed-word';
@@ -204,15 +204,18 @@ function keyIcon(held: string): HTMLElement {
 /** A node's tooltip; before the world is finished it also says when the node opens. */
 const sideTip = (open: boolean, key: string) => (open ? t(key) : `${t(key)} ${t('map.sideOpens')}`);
 
-/** The target range of a world: a small node with the range's target next to the super level's star, faded and closed until the world is finished; green once the world's own thing is found there. */
+/** A node's mark under its picture: a check once its game is won (the target range's thing found, the parrot's round won); the place stays without. */
+const miniCheck = (on: boolean) => h('span', { class: 'mini-marks' }, on ? icon('check', 'mini-check') : null);
+
+/** The target range of a world: a card like a level's with the range's target and a check once the world's own thing is found there; faded and closed until the world is finished. */
 function aimNode(p: Profile, open: boolean, world: number): HTMLElement {
   const pic = imageUrl('obj-aim-target');
   const found = WORLD_THINGS.some((th) => th.world === world && p.progress.rangeFinds.includes(th.id));
   return h('button', { class: `level-node aim-node ${found ? 'done' : ''}`, type: 'button', disabled: !open, 'aria-label': t('aim.title'), tip: sideTip(open, 'map.aimTip'), onClick: () => go('level', { id: 'aim', world }) },
-    pic ? h('img', { class: 'level-act', src: pic, alt: '' }) : icon('target', 'icon aim-icon'));
+    pic ? h('img', { class: 'level-act', src: pic, alt: '' }) : icon('target', 'icon aim-icon'), miniCheck(found));
 }
 
-/** The parrot of a world: its head while it is at home, else its empty short perch; faded and closed until the world is finished; green once its round was ever won. */
+/** The parrot of a world: its head while it is at home, else its empty short perch, and a check once its round was ever won; faded and closed until the world is finished. */
 function parrotNode(p: Profile, open: boolean, world: number): HTMLElement {
   const home = p.progress.parrots.includes(world);
   const pic = imageUrl(home ? 'ui-act-parrot-head' : 'obj-parrot-perch-short');
@@ -220,11 +223,11 @@ function parrotNode(p: Profile, open: boolean, world: number): HTMLElement {
     class: `level-node parrot-node ${home ? 'home' : ''} ${p.progress.parrotsWon.includes(world) ? 'done' : ''}`, type: 'button', disabled: !open,
     'aria-label': `${t('parrot.title')}${home ? `, ${t('map.parrotHome')}` : ''}`, tip: sideTip(open, 'map.parrotTip'),
     onClick: () => go('level', { id: 'parrot', world }),
-  }, pic ? h('img', { class: 'level-act', src: pic, alt: '' }) : icon('star', 'icon'));
+  }, pic ? h('img', { class: 'level-act', src: pic, alt: '' }) : icon('star', 'icon'), miniCheck(p.progress.parrotsWon.includes(world)));
 }
 
-/** A node's best stars, small, in the ring layout of `starRow`. */
-const miniStars = (stars: number) => h('span', { class: 'mini-stars' }, ...STAR_PLACES.map((s) => h('i', { class: s <= stars ? 'on' : '' })));
+/** A node's best stars, small, only the earned ones: one in the middle, two side by side, three as a triangle, four two over two, five like the rings. */
+const miniStars = (stars: number) => h('span', { class: `mini-stars n${stars}` }, ...Array.from({ length: stars }, () => h('i')));
 
 /** The story's hero's journey: the compass with its best stars, right after the crown of the story's last world; faded and closed until that world is finished. */
 function journeyNode(p: Profile, story: StoryDef): HTMLElement {

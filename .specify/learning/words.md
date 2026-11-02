@@ -14,8 +14,10 @@
   and weak-key weighting.
 - The practised words are dictionary words whenever the known letters make enough of them
   (a short word over a made-up one, a recent word over one with a first letter already on
-  screen). Made-up words are only a fallback while the known letters make too few real
-  words, and a regular mix only in key drills.
+  screen). While the known letters make fewer than 40 real words, each comes at most twice;
+  then made-up words fill in (a level asks about 12-16 words at a slow child's pace, a quick
+  child types two or three times as many). Made-up words are only that fallback, and a regular
+  mix only in key drills. A dictation keeps its few real words instead.
 - Fallback generator: when too few real words match, pronounceable pseudo-words are made
   from the allowed keys (alternating consonants and vowels, rhythmic syllables). With very
   small key sets (for example only `f j`), short letter patterns like `fff jjj fj jf` are

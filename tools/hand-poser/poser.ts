@@ -69,21 +69,21 @@ const HOME_CONSTANT: PoseFile = {
   v: 1, side: 'left', name: 'home', line: 1,
   hand: { x: 140, y: 427, yaw: 23, pitch: 8, roll: 0, scale: 2565 },
   joints: {
-    'index-finger-phalanx-proximal': { bend: 14.8, spread: -0.3 },
-    'index-finger-phalanx-intermediate': { bend: 25.1 },
-    'index-finger-phalanx-distal': { bend: 3.1 },
-    'middle-finger-phalanx-proximal': { bend: 20.1, spread: -3.2 },
-    'middle-finger-phalanx-intermediate': { bend: 35.3 },
-    'middle-finger-phalanx-distal': { bend: 9.3 },
-    'ring-finger-phalanx-proximal': { bend: 18.6, spread: -7.7 },
-    'ring-finger-phalanx-intermediate': { bend: 32.4 },
-    'ring-finger-phalanx-distal': { bend: 7.2 },
-    'pinky-finger-phalanx-proximal': { bend: 13.6, spread: -13.1 },
-    'pinky-finger-phalanx-intermediate': { bend: 22.4 },
-    'pinky-finger-phalanx-distal': { bend: 1.3 },
-    'thumb-metacarpal': { bend: 24, spread: -18.6, twist: -15 },
-    'thumb-phalanx-proximal': { bend: -3.2 },
-    'thumb-phalanx-distal': { bend: 22.8 },
+    'index-finger-phalanx-proximal': { bend: 15.9, spread: -1 },
+    'index-finger-phalanx-intermediate': { bend: 27.2 },
+    'index-finger-phalanx-distal': { bend: 4.3 },
+    'middle-finger-phalanx-proximal': { bend: 20.3, spread: -4.5 },
+    'middle-finger-phalanx-intermediate': { bend: 35.6 },
+    'middle-finger-phalanx-distal': { bend: 9.4 },
+    'ring-finger-phalanx-proximal': { bend: 18.8, spread: -8 },
+    'ring-finger-phalanx-intermediate': { bend: 32.8 },
+    'ring-finger-phalanx-distal': { bend: 7.4 },
+    'pinky-finger-phalanx-proximal': { bend: 12.5, spread: -12.5 },
+    'pinky-finger-phalanx-intermediate': { bend: 20.2 },
+    'pinky-finger-phalanx-distal': { bend: 0.1 },
+    'thumb-metacarpal': { bend: 24, spread: -14.1, twist: -15 },
+    'thumb-phalanx-proximal': { bend: 0.3 },
+    'thumb-phalanx-distal': { bend: 26.3 },
   },
 };
 
@@ -1043,14 +1043,16 @@ const pair = () => `${nameOf('left')}+${nameOf('right')}`;
 const FINGER_WORD = ['', 'thumb', 'index finger', 'middle finger', 'ring finger', 'little finger'];
 const KEY_WORD: Record<string, string> = { Space: 'space bar', ShiftLeft: 'left Shift', ShiftRight: 'right Shift', Tab: 'Tab', CapsLock: 'Caps Lock', Enter: 'Enter', Backspace: 'Backspace' };
 /** The finger and the key's sign a hand's pose types, read from its name (none for home, rest and its steps). */
-function pressOf(s: Side): { finger: string; key: string; row: number } | null {
+/** The home keys by their names: each finger's own key on the home row. */
+const HOME_KEYS = ['a0', 's0', 'd0', 'f0', 'j0', 'k0', 'l0', 'l1'];
+function pressOf(s: Side): { finger: string; key: string; row: number; home: boolean } | null {
   const m = /^[lr]([1-5])([a-z0-9]{2})$/.exec(nameOf(s));
   const board = keyboard();
   const at = m && board.rows.findIndex((row) => row.some((d) => keyName(board, d.code) === m[2]));
   const def = m && at != null && at >= 0 ? board.rows[at].find((d) => keyName(board, d.code) === m[2]) : undefined;
   if (!m || !def || at == null) return null;
   const key = KEY_WORD[def.code] ?? (def.base.length === 1 ? def.base.toUpperCase() : m[2]);
-  return { finger: FINGER_WORD[Number(m[1])], key, row: at };
+  return { finger: FINGER_WORD[Number(m[1])], key, row: at, home: HOME_KEYS.includes(m[2]) };
 }
 
 /** Saves the pair's picture for Gemini (muted keyboard, both hands' outlines, the marks) and each hand's silhouette. */

@@ -1244,6 +1244,11 @@ copies each, to paste into Gemini. "Z Gemini do SVG" then takes the newest pictu
 picture) as the answer, traces it and shows the saved outlines over the keyboard ("Náhľad SVG"). The last five pairs
 are buttons below, all of them in a list; a click opens a pair (poses, picture, prompt, outlines).
 
+A press of a home key (A S D F, J K L Ô) is a small move and Gemini then copies the home position of the style
+sample: the prompt says in its own paragraph which finger presses its home key, how that shows from above (shorter,
+tip pulled back a third of a key, rounder middle joint, nail a slice or hidden, deeper fold), the neighbours' small
+move, and not to copy the sample's pose.
+
 - `answer.png`: **attach `picture.png`, then `style-sample.jpg`**, with the pair's `prompt.txt` (written by the poser
   from `tools/hand-poser/gemini-prompt.ts`: the line style, freedom to make the hands natural, each finger's bend read
   from the pose and how a bend shows from above, the fingertips' arc, the marks, 1376 x 768).

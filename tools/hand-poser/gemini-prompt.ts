@@ -33,8 +33,25 @@ function restingRule(poses: Record<Side, PoseFile>, presses: Record<Side, Press 
     : 'The fingers that do not type rest on or near their home keys (left hand A S D F, right hand J K L and the key right of L): they may shift a little with the typing finger, but only so far that each can go back to its home key as simply as possible.';
 }
 
-/** A key pressed: the finger, the key's sign and its row (0 the digit row). */
-export interface Press { finger: string; key: string; row: number }
+/** A key pressed: the finger, the key's sign, its row (0 the digit row) and whether it is that finger's own home key. */
+export interface Press { finger: string; key: string; row: number; home: boolean }
+
+/**
+ * A press of a home key is a small move, so Gemini must be told what changes (it otherwise copies the home position):
+ * the owner's rules for a home key pressed (assets-src/PROMPTS.md section 12).
+ */
+function homePress(side: Side, press: Press | null): string {
+  if (!press?.home) return '';
+  const hand = side === 'left' ? 'left' : 'right';
+  const neighbours = press.finger === 'index finger'
+    ? 'The middle finger beside it comes very slightly closer to it.'
+    : press.finger === 'little finger' || press.finger === 'ring finger'
+      ? 'The little and ring fingers lean a little towards the index finger, the ring finger as if sliding under the middle finger.'
+      : '';
+  return `
+
+The ${hand} hand's ${press.finger} is PRESSING its own home key ${press.key} right now. This press is that hand's one difference from the home position and it must be clearly visible: draw that finger pushed down, more bent than at rest, so from above it looks clearly shorter, its tip pulled back towards the palm by about a third of a key and its middle joint a rounder, higher bump; its nail is only a thin slice at the tip or hidden; the fold over its middle joint is deeper. ${neighbours} Every other finger of that hand stays as in the home position. The hands in the second image are in the home position: do not copy their pose, only their drawing style.`;
+}
 
 /** A hand's line of the prompt; `press`: the finger and the key when the hand types one. */
 function handLine(side: Side, p: PoseFile, press: Press | null): string {
@@ -56,7 +73,7 @@ The palms and wrists are lifted about 3 cm above the keyboard, so every finger s
 
 How the fingers are bent (the bend must show in the outline):
 ${handLine('left', poses.left, presses.left)}
-${handLine('right', poses.right, presses.right)}
+${handLine('right', poses.right, presses.right)}${homePress('left', presses.left)}${homePress('right', presses.right)}
 
 How a bend shows from above: a nearly straight finger looks long, its sides almost parallel, its whole nail seen as a long rounded outline. A slightly bent finger looks a little shorter, its nail a little shorter. A bent finger looks clearly shorter: its middle joint shows as a rounded bump in the outline, the finger narrows and rounds off towards its tip, which points down onto the key, only a short wide slice of the nail is seen at the very tip, and the fold lines over its middle joint are clearer. A strongly curled finger shows mainly its first part and the round middle joint, the tip tucked under, hardly any nail. So the bent middle and ring fingers reach no further than the straighter index and little fingers: they are bent, not short. The fingertips lie in a gentle arc: the middle finger reaches furthest, the ring and index fingers a little less, the little finger least.
 

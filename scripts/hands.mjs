@@ -14,13 +14,20 @@ import { existsSync, readdirSync, writeFileSync } from 'node:fs';
 const SRC = 'assets-src/hands';
 const OUT = 'public/hands/poses.json';
 
-/** The hand each pose belongs to, and how much lower it sits (picture key units) so a stretch is not overdone. */
+/** Gemini's poses (a reach to another key): the hand, and how much lower it sits (picture key units) so a stretch is not overdone. */
 const POSES = {
-  KeyA: { hand: 'left', down: 0 }, KeyS: { hand: 'left', down: 0 }, KeyD: { hand: 'left', down: 0 }, KeyF: { hand: 'left', down: 0 },
-  KeyG: { hand: 'left', down: 0 }, KeyR: { hand: 'left', down: 0 }, KeyT: { hand: 'left', down: 0 },
-  KeyH: { hand: 'right', down: 0 }, KeyJ: { hand: 'right', down: 0 }, KeyK: { hand: 'right', down: 0 }, KeyL: { hand: 'right', down: 0 },
-  Semicolon: { hand: 'right', down: 0 }, KeyU: { hand: 'right', down: 5 },
+  KeyR: { hand: 'left', down: 0 }, KeyT: { hand: 'left', down: 0 }, KeyU: { hand: 'right', down: 5 },
 };
+/**
+ * A home key pressed: too small a change for Gemini, so made from home.jpg. The finger's tip goes PRESS_DOWN towards the
+ * palm (the finger looks shorter) and `dx` sideways, fading out to its knuckle; the other fingers do not move.
+ * `x`: the key's middle in picture key units (the little fingers already moved inwards).
+ */
+const PRESSES = {
+  KeyA: { hand: 'left', x: 97 + 4.5, dx: 2 }, KeyS: { hand: 'left', x: 141, dx: 2 }, KeyD: { hand: 'left', x: 185, dx: 0 }, KeyF: { hand: 'left', x: 229, dx: 2 },
+  KeyJ: { hand: 'right', x: 361, dx: -2 }, KeyK: { hand: 'right', x: 405, dx: -2 }, KeyL: { hand: 'right', x: 449, dx: -2 }, Semicolon: { hand: 'right', x: 493 - 4.5, dx: -2 },
+};
+const PRESS_DOWN = 5;
 
 // ---- the keyboard Gemini drew on: square keys, 44 per key, the Q key's middle at (86, 20) ----
 const PITCH = 44, Q = [86, 20], AE_X = 570;
@@ -36,7 +43,8 @@ const CREASE_MAX = 2500;
 // first, so a curve that does not quite meet the outline still closes it. Smaller areas are the keys' bumps.
 const NAIL_GAP = 2, NAIL_MIN = 150, NAIL_MAX = 5000;
 
-async function trace(file) {
+/** `press`: a pressed finger ({ x, dx } of PRESSES) bent in the picture before tracing. */
+async function trace(file, press = null) {
   const { data, info } = await sharp(file).removeAlpha().raw().toBuffer({ resolveWithObject: true });
   const { width: W, height: H } = info;
   const px = (p) => [data[p * 3], data[p * 3 + 1], data[p * 3 + 2]];
@@ -132,16 +140,25 @@ async function trace(file) {
     const shift = PINKY_IN * s;
     const [lFull] = toPx(108, 0), [lNone] = toPx(128, 0), [rNone] = toPx(462, 0), [rFull] = toPx(482, 0);
     const [, yFull] = toPx(0, 110), [, yNone] = toPx(0, 150);
-    const disp = (x, y) => {
+    const pinky = (x, y) => {
       const v = 1 - smooth((y - yFull) / (yNone - yFull));
       if (x < (lNone + rNone) / 2) return shift * v * (1 - smooth((x - lFull) / (lNone - lFull)));
       return -shift * v * smooth((x - rNone) / (rFull - rNone));
     };
+    // The pressed finger: full at its tip, none from its knuckle down, none a finger's width beside it.
+    const [pressX] = press ? toPx(press.x, 0) : [0];
+    const [, tipY] = toPx(0, 80), [, knuckleY] = toPx(0, 150);
+    const pressed = (x, y) => {
+      if (!press) return [0, 0];
+      const w = (1 - smooth((y - tipY) / (knuckleY - tipY))) * (1 - smooth((Math.abs(x - pressX) - 10 * s) / (14 * s)));
+      return [press.dx * s * w, PRESS_DOWN * s * w];
+    };
     const warp = (buf) => {
       const moved = Buffer.alloc(W * H, 255);
       for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
-        const sx = Math.round(x - disp(x, y));
-        if (sx >= 0 && sx < W) moved[y * W + x] = buf[y * W + sx];
+        const [px2, py2] = pressed(x, y);
+        const sx = Math.round(x - pinky(x, y) - px2), sy = Math.round(y - py2);
+        if (sx >= 0 && sx < W && sy >= 0 && sy < H) moved[y * W + x] = buf[sy * W + sx];
       }
       return moved;
     };
@@ -222,6 +239,10 @@ for (const file of readdirSync(SRC).filter((f) => /^[A-Z]\w+\.(jpg|png)$/.test(f
     nails.push({ f: n.f, d: n.d.replace(/(-?\d+(?:\.\d+)?) (-?\d+(?:\.\d+)?)/g, (_, x, y) => `${x} ${(Number(y) + dy).toFixed(1)}`) });
   }
   out.keys[code] = { hand: pose.hand, ...lines, nails: nailsOut(nails) };
+}
+for (const [code, press] of Object.entries(PRESSES)) {
+  const lines = (await trace(`${SRC}/home.jpg`, press))(0)[press.hand];
+  out.keys[code] = { hand: press.hand, ...lines, nails: nailsOut(lines.nails.map((n) => ({ d: n.d, f: nearestFinger(homeNails[press.hand], n.at) }))) };
 }
 writeFileSync(OUT, JSON.stringify(out));
 console.log(`${OUT}: home and ${Object.keys(out.keys).length} key poses`);

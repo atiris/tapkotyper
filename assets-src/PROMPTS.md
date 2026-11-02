@@ -1246,9 +1246,18 @@ other hand, the other fingers, both thumbs, the image size and framing, the flat
 bold black outline and the thin inner lines. Same flat vector style, no shading.
 ```
 
+Gemini only manages a reach into another row; a home key pressed is too small a change (it
+stretched F, dropped D a whole row, moved other fingers), so `scripts/hands.mjs` makes the presses
+of A S D F J K L Ô itself from `home.jpg` (`PRESSES`). Sideways reaches (G, H) also failed: the
+index dropped to the bottom row. A drawing on the app's own keyboard (`keyboard-app.png`) put the
+hands a whole row too low.
+
 | file | state |
 |---|---|
 | `home.jpg` | done |
-| `KeyU.jpg` | done (`down: 5`) |
+| `KeyU.jpg`, `KeyR.jpg` | done (`KeyU` with `down: 5`) |
+| `KeyT.jpg` | in use; the other fingers curl a little |
+| A S D F J K L Ô pressed | made by the script |
+| `KeyG`, `KeyH` | open: the index dropped to the bottom row |
 | `KeyM.jpg` | open: the bent finger came too low, then straight with its nail |
 

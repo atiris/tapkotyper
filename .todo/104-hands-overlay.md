@@ -37,7 +37,7 @@ Affected: `src/ui/keyboard-guide.ts`, new `src/ui/hands.ts`, `src/game/runtime.t
 - [x] Runtime: hands parked when the get-ready card opens, arriving after 1 s or when it closes.
 - [x] Paw help: the hands type (no paws), same rules.
 - [~] Poses: home and U done; the other keys come one by one with Gemini, the owner reviews each (prompts and state in `assets-src/PROMPTS.md` section 12).
-- [x] Specs, tests (pose choice), build, browser check (level, key card, paw help, 1024x600).
+- [x] Specs, tests (pose choice), build, browser check (level start, typing, paw help, 1024x600); key cards not opened yet.
 
 ## State
 The hands, their arrival and the paw help work with the home and U poses; every other key keeps the

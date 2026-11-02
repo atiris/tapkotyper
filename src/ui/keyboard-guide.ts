@@ -1,8 +1,9 @@
-import { ENTER, type Finger, type Layout, type KeyStep, allKeys, fingerFor, shiftKeyFor, stepsFor, typesChar } from '../keyboard/layouts';
+import { ENTER, type Finger, type Layout, type KeyStep, allKeys, fingerFor, keyByCode, shiftKeyFor, stepsFor, typesChar } from '../keyboard/layouts';
 import { t } from '../i18n/i18n';
+import { Hands } from './hands';
 import { SHIFT_L, SHIFT_R, SPACE } from '../learning/lessons';
 
-/** Finger colors (Okabe-Ito based, colorblind-safe) plus a number label on each key. */
+/** Finger colors (Okabe-Ito based, colorblind-safe). */
 export const FINGER_COLORS: Record<Finger, string> = {
   0: '#e69f00', 1: '#56b4e9', 2: '#009e73', 3: '#f0c419', 4: '#bbbbbb',
   5: '#bbbbbb', 6: '#0072b2', 7: '#d55e00', 8: '#cc79a7', 9: '#8fbc3a',
@@ -99,8 +100,8 @@ export class KeyboardGuide {
   readonly el: HTMLElement;
   private keys = new Map<string, HTMLElement>();
   private board: HTMLElement;
-  private hands: HTMLElement;
-  private paws: HTMLElement;
+  /** The outline hands on the keys, made the first time a key is shown (heat maps and pickers never show one). */
+  private hands: Hands | null = null;
   private hint: HTMLElement;
 
   constructor(private layout: Layout) {
@@ -133,16 +134,23 @@ export class KeyboardGuide {
       }
       board.appendChild(r);
     }
-    this.hands = document.createElement('div');
-    this.hands.className = 'kb-hands';
-    this.hands.innerHTML = handsSvg();
-    this.paws = document.createElement('div');
-    this.paws.className = 'kb-paws';
-    this.paws.innerHTML = pawSvg('l') + pawSvg('r');
     this.hint = document.createElement('div');
     this.hint.className = 'kb-hint';
     this.hint.setAttribute('aria-live', 'polite');
-    this.el.append(this.hint, board, this.hands, this.paws);
+    this.el.append(this.hint, board);
+  }
+
+  private handsView(): Hands {
+    if (!this.hands) {
+      this.hands = new Hands(this.layout, (f) => FINGER_COLORS[f as Finger]);
+      this.board.append(this.hands.el);
+    }
+    return this.hands;
+  }
+
+  /** The hands wait at the page's sides (on) or lie on the keys in the home position (off). */
+  parkHands(on: boolean): void {
+    this.handsView().park(on);
   }
 
   /**
@@ -151,14 +159,17 @@ export class KeyboardGuide {
    */
   show(ch: string | null, deadDone = false, fade = 0): void {
     for (const k of this.keys.values()) k.classList.remove('next', 'next2', 'shift-next');
-    this.hands.querySelectorAll('.finger').forEach((f) => f.classList.remove('active'));
     this.el.style.setProperty('--fade', String(fade));
     this.hint.textContent = '';
     this.el.dataset.next = ch ?? '';
-    if (!ch) return;
-    const steps = stepsFor(this.layout, ch);
-    if (!steps.length) return;
+    const steps = ch ? stepsFor(this.layout, ch) : [];
+    if (!ch || !steps.length) {
+      this.handsView().show(null);
+      return;
+    }
     const current: KeyStep = steps.length > 1 && deadDone ? steps[steps.length - 1] : steps[0];
+    const def = keyByCode(this.layout, current.code)!;
+    this.handsView().show({ step: current, label: label(def.base, def.shift), color: FINGER_COLORS[def.finger] });
     this.mark(current, 'next');
     if (steps.length > 1) {
       if (!deadDone) this.mark(steps[steps.length - 1], 'next2');
@@ -171,36 +182,23 @@ export class KeyboardGuide {
     key?.classList.add(cls);
     // An L-shaped Enter lights up whole.
     if (step.code === 'Enter') this.keys.get('EnterTop')?.classList.add(cls);
-    const def = allKeys(this.layout).find((d) => d.code === step.code);
-    if (def && cls === 'next') this.hands.querySelector(`[data-f="${def.finger}"]`)?.classList.add('active');
     const shift = shiftKeyFor(this.layout, step);
-    if (shift && cls === 'next') {
-      this.keys.get(shift)?.classList.add('shift-next');
-      const sdef = allKeys(this.layout).find((d) => d.code === shift);
-      if (sdef) this.hands.querySelector(`[data-f="${sdef.finger}"]`)?.classList.add('active');
-    }
+    if (shift && cls === 'next') this.keys.get(shift)?.classList.add('shift-next');
   }
 
   setVisible(on: boolean): void {
     this.el.classList.toggle('hidden', !on);
   }
 
-  /** Tapko's paws (fur and toe-bean colors) take the hands' place; null brings the hands back. */
-  setPaws(colors: [string, string] | null): void {
-    this.el.classList.toggle('paws-on', !!colors);
-    if (!colors) return;
-    this.paws.style.setProperty('--paw', colors[0]);
-    this.paws.style.setProperty('--bean', colors[1]);
-  }
-
-  /** The paw on the side of the finger for `ch` presses a key. */
-  pawTap(ch: string): void {
-    const f = fingerFor(this.layout, ch);
-    const paw = f == null ? null : this.paws.querySelector(`.kb-paw-${f < 5 ? 'l' : 'r'}`);
-    if (!paw) return;
-    paw.classList.remove('tap');
-    void (paw as HTMLElement).getBoundingClientRect();
-    paw.classList.add('tap');
+  /** The keys of `ch` go down for a moment: the hands type it (the paw help). */
+  tap(ch: string): void {
+    for (const step of stepsFor(this.layout, ch)) {
+      const key = this.keys.get(step.code);
+      if (!key) continue;
+      key.classList.remove('tap');
+      void key.offsetWidth;
+      key.classList.add('tap');
+    }
   }
 
   /** Colors keys by score for the stats heat map (0 bad .. 1 good, null = no data). */
@@ -236,30 +234,4 @@ export class KeyboardGuide {
   keyEl(code: string): HTMLElement | undefined {
     return this.keys.get(code);
   }
-}
-
-function handsSvg(): string {
-  // Two hands seen from above ("soft palm"): rounded skin fingers with a band in the finger's
-  // color over a faint palm; each finger carries data-f with its finger index.
-  const finger = (f: Finger, cx: number, top: number, rot: number, bx: number, by: number, bottom = 98) =>
-    `<g class="finger" data-f="${f}"><g transform="rotate(${rot} ${bx} ${by})">` +
-    `<rect class="skin" x="${cx - 10.5}" y="${top}" width="21" height="${bottom - top}" rx="10.5"/>` +
-    `<rect class="tip-band" x="${cx - 9.6}" y="${top + 13}" width="19.2" height="6" fill="${FINGER_COLORS[f]}"/></g></g>`;
-  const hand = (side: 'l' | 'r') => {
-    const f = (left: Finger): Finger => (side === 'l' ? left : (9 - left) as Finger);
-    const body = '<path class="palm" d="M14 88C14 80 20 78 28 78L86 78C95 78 99 84 98 92C97 104 93 114 86 120C80 125 73 127 62 127L46 127C33 127 24 122 19 113C15 106 14 98 14 88Z"/>' +
-      finger(f(0), 22, 46, -7, 22, 96) + finger(f(1), 43, 22, -2, 43, 96) +
-      finger(f(2), 64, 12, 1, 64, 96) + finger(f(3), 85, 26, 5, 85, 96) +
-      finger(f(4), 92, 62, 40, 92, 104, 108);
-    return `<svg viewBox="0 0 130 132" class="hand hand-${side}"><g${side === 'r' ? ' transform="translate(130 0) scale(-1 1)"' : ''}>${body}</g></svg>`;
-  };
-  return hand('l') + hand('r');
-}
-
-/** One of Tapko's paws seen from above: a soft paw with four toes and toe beans. */
-function pawSvg(side: 'l' | 'r'): string {
-  const toes = [[22, 50], [48, 30], [82, 30], [108, 50]]
-    .map(([x, y]) => `<ellipse class="paw-fur" cx="${x}" cy="${y}" rx="15" ry="18"/><ellipse class="bean" cx="${x}" cy="${y + 3}" rx="7" ry="9"/>`).join('');
-  return `<svg viewBox="0 0 130 132" class="kb-paw kb-paw-${side}" aria-hidden="true">${toes}` +
-    `<ellipse class="paw-fur" cx="65" cy="96" rx="48" ry="34"/><ellipse class="bean" cx="65" cy="100" rx="24" ry="17"/></svg>`;
 }

@@ -38,6 +38,12 @@ Notes from real Gemini runs; add new ones here.
   the pocket rules (`CLEAN_KEY` in scripts/assets.mjs).
 - A soft glow or halo (a light bulb) blends into the magenta and leaves a pink fringe after
   keying. Ask for light as "a few short thin ray lines with dark outlines, no soft glow, no halo".
+- Hands (section 12): a photo of real hands as a reference made Gemini redraw the keyboard (extra
+  rows, the keys moved) and curl the fingertips into an arc; without photos, editing one finger of
+  the finished home picture keeps the keyboard. "Bigger hands" made them chubby and broke the
+  keyboard: the size is set in `scripts/hands.mjs` instead. A follow-up in the bridge sometimes
+  runs in a new empty chat (an unrelated picture comes back): queue a new picture with the home
+  picture attached instead.
 - With an attached character picture, "a new pose" keeps its stance and only changes the arms
   (Ms Turtle came back standing the same way twice). Say "the body pose must be completely
   different from the attached picture" and describe the legs and the view concretely (sits
@@ -1197,3 +1203,52 @@ kite were tried and turned down).
 | `ui-end-freetype.jpg` | one classic paper pinwheel toy on a stick: four curled paper blades around a round center pin in peach orange (#FFB07A), light sky blue (#8CCBF0), soft mint (#8FD3B6) and light yellow (#FFE08A), each with a lighter folded side, a small round cream pin head (#FFF3DC), a straight thin light wooden stick (#D4A26A) ending well above the bottom edge; strictly front view, upright; no hand, no wind lines; nothing touches any edge (Koniec voľného písania) |
 | `ui-end-break.jpg` | one classic football (soccer ball), a perfect circle, white panels (#FFFDF6) with light grey-blue shading (#DCE3EA) and dark-brown pentagon patches (#5A3D2B), one small white shine upper left; no grass, no goal, no motion lines; strictly front view (Rozcvička hotová) |
 | `ui-end-task.jpg` | a chubby child's school backpack standing upright, strictly front view, symmetrical: rounded body in warm sky blue (#7FC4EA) with a lighter top, a big front flap with one golden buckle (#F2C14E), a small front pocket, a short carry handle, the shoulder straps just peeking out at the sides; a green pencil and a ruler stick out a little from the top; no face (Úloha splnená) |
+
+## 12. Hands on the keyboard (plan `.todo/104-hands-overlay.md`)
+
+The outline hands over the on-screen keyboard. Save into `assets-src/hands/` and run
+`node scripts/hands.mjs`, which writes `public/hands/poses.json` (commit that file). The grey
+fill is dropped and only the black lines stay; their place comes from the coloured stripes under
+Q and Ä, so the keyboard in the picture must stay exactly as attached.
+
+- `keyboard.png`: the keyboard to draw on (square keys on the real 15-unit grid, the finger
+  stripes under the letters). It is the base of `home.jpg` only.
+- `home.jpg`: **attach `keyboard.png`**. Both hands in the home position:
+
+```
+Generate an image: Hands on the keyboard
+
+Edit the attached image (a flat on-screen keyboard seen exactly from above) by drawing two adult
+hands resting on it in the touch-typing home position. Keep the keyboard exactly as it is: same
+keys, same size, same position, same white background, same canvas size and framing; only add the
+hands on top. Left fingertips on A, S, D, F, right fingertips on J, K, L, Ô, all eight in one
+straight line just below the letters; fingers gently curved; both thumbs on the space bar; the
+backs of the hands and the wrists come down to the bottom edge and are cut off by it. View strictly
+from above. Style: simple flat vector illustration, hands filled with one flat medium grey
+(#9a9a9a), no shading, no texture, no hair; a clean bold uniform black outline; inside only a few
+thin black lines between the fingers and one small curve for each fingernail. No shadows, no text.
+```
+
+- `<KeyCode>.jpg` (`KeyU.jpg`, `KeyM.jpg` ...): **attach `home.jpg`**. One hand typing one key; then
+  add the key to `POSES` in `scripts/hands.mjs` with its hand (`down` lowers a pose that reaches
+  too far):
+
+```
+Generate an image: Hands typing <KEY>
+
+Edit the attached image. Change ONLY the <right|left> hand, nothing else. Its <finger> currently
+rests on <HOME KEY>. Make it <lift and stretch forward | bend and pull back | reach sideways> so
+that its fingertip rests on the key <KEY> (<where the key is from the home key>), just below the
+letter <KEY>, which stays fully visible. <A stretched finger is a little longer and straighter / a
+bent finger looks shorter from above and its nail is not visible.> Everything else must stay
+exactly as it is: the keyboard (do not move, resize, redraw, add or remove any keys or rows), the
+other hand, the other fingers, both thumbs, the image size and framing, the flat grey fill, the
+bold black outline and the thin inner lines. Same flat vector style, no shading.
+```
+
+| file | state |
+|---|---|
+| `home.jpg` | done |
+| `KeyU.jpg` | done (`down: 5`) |
+| `KeyM.jpg` | open: the bent finger came too low, then straight with its nail |
+

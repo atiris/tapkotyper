@@ -18,6 +18,7 @@ import { ENTER, LAYOUTS, LayoutMismatchDetector, enterAfter, fingerFor, stepsFor
 import { SHIFT_L, SPACE, activeKeys, aimKeys, isKeyReady, masteryLevel, recentAccuracy, shiftKeyOf, useLayout } from '../learning/lessons';
 import { recentTyping, recordPress, recordSession, typingStep } from '../learning/stats';
 import { FINGER_KEYS, KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
+import { HANDS_ARRIVE_S } from '../ui/hands';
 import { LayoutSwitch } from '../ui/layout-switch';
 import { closeModals, confirmDialog, h } from '../ui/dom';
 import { globalButtons } from '../ui/chrome';
@@ -350,7 +351,7 @@ export class LevelRuntime {
     const opening = this.def.kind !== 'copyloop' && levelById(this.def.id)?.index === 0 ? `world-${WORLDS[this.def.world]}` : null;
     const told = opening && !p.progress.scenesSeen.includes(opening) ? worldStory(this.def.world) : null;
     const story = [told ?? (journey?.line ? t(journey.line) : this.mode.startLine()), this.mode.intro()].filter(Boolean).join(' ') || null;
-    if (!this.opts.keys) await showPosture(host, p, tip, this.surprise, voiceNote, story, journey ? t('journey.harder') : null, teaches ? undefined : t('level.placement'));
+    if (!this.opts.keys) await this.readyCard(() => showPosture(host, p, tip, this.surprise, voiceNote, story, journey ? t('journey.harder') : null, teaches ? undefined : t('level.placement')));
     if (this.disposed) return;
     if (opening && told) {
       p.progress.scenesSeen.push(opening);
@@ -383,8 +384,21 @@ export class LevelRuntime {
       return;
     }
     this.core.style = this.style;
-    await showPosture(host, p, undefined, null, undefined, t('task.ready'), null, spec.title || t('task.untitled'));
+    await this.readyCard(() => showPosture(host, p, undefined, null, undefined, t('task.ready'), null, spec.title || t('task.untitled')));
     if (!this.disposed) this.begin();
+  }
+
+  /**
+   * The get-ready card. When it is the level's first panel the hands wait at the page's sides and come onto the home
+   * position a second later, or at once when the card closes; after key cards they are on the keys already.
+   */
+  private async readyCard(show: () => Promise<void>): Promise<void> {
+    if (this.shownKeys.length) return show();
+    this.guide.parkHands(true);
+    const arrive = setTimeout(() => this.guide.parkHands(false), HANDS_ARRIVE_S * 1000);
+    await show();
+    clearTimeout(arrive);
+    this.guide.parkHands(false);
   }
 
   /** A task with nothing left the child can type plays dictionary words instead: as many as its own words, or sentences for its text. */

@@ -5,8 +5,16 @@
   highlight on the next key; for dead-key letters both steps are shown. The letter on a
   highlighted key is dark or white, whichever reads better on that finger's color, the color darkened a little when needed
   to reach AA contrast.
-- Optional hands seen from above (soft palm, rounded fingers, a band in each finger's
-  color, idle fingers faint); the finger that presses the key lifts and is fully opaque.
+- **Hands on the keyboard**: two outline hands seen from above lie on the on-screen keyboard
+  in the home position, only their lines drawn (nothing inside them), so every key shows through;
+  a see-through nail in each finger's color; the wrists fade out below the keyboard. For the
+  next key the hand that types it takes that key's pose (the other stays home; for a capital it
+  takes its Shift), and the key's letter is drawn over the hands (white, a thin outline in the
+  finger's color, a small disc of that color fading from its middle), so a finger never hides
+  it. A key without a pose yet keeps the home position. On the get-ready card that opens a
+  level the hands wait at the page's sides and slide onto the home position about a second
+  later, or at once when the card closes; they then stay the whole level. They fade and hide
+  with the guide, and are not in the heat map, the key pickers or the placement check.
 - The guide fades as the child improves (per-key mastery) and can be shown or hidden by
   the child, or locked by the parent. The finger colors are a colorblind-safe palette; the keys
   carry no finger numbers.
@@ -93,6 +101,8 @@
 - Weak finger guidance is a frequent complaint (Dance Mat); masking or fading the keyboard
   is standard teacher advice
   ([research](../../.research/features/on-screen-keyboard-finger-guide.md)).
+- Hands lying on the keys show where every finger rests and how far it reaches, which small
+  hands beside the keyboard could not; a letter under a finger would be lost, so it is drawn over it.
 - Finger numbers on every key were clutter beside the colors and the finger guide; a keyboard
   whose keys got flatter in a low window no longer looked like a keyboard. Rows of different key
   sizes put keys where no real keyboard has them (U right of J), so the fingers' reach shown on

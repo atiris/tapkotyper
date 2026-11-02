@@ -1,6 +1,6 @@
 import { app, saveProfile } from '../../app/app';
 import type { Sfx } from '../../audio/audio';
-import { type Mood, pawColors } from '../../gfx/tapko';
+import type { Mood } from '../../gfx/tapko';
 import { t } from '../../i18n/i18n';
 import { paintRound, pawRing, roundButton } from '../../ui/hud';
 import type { Mode } from '../mode';
@@ -22,7 +22,7 @@ export interface PawHost {
   readonly rhythm: Rhythm;
 }
 
-/** The paw help: a mistake-free streak charges it, its HUD button (or Enter) lets Tapko's paws type the next words for the child. */
+/** The paw help: a mistake-free streak charges it, its HUD button (or Enter) lets the hands on the keyboard type the next words for the child, so the child sees how they are typed. */
 export class Paws {
   readonly btn: HTMLButtonElement;
   /** Words the paws still type; 0 while the child types. */
@@ -38,7 +38,7 @@ export class Paws {
     this.render();
   }
 
-  /** The paws type now: the child's keys wait, and none of it counts. */
+  /** The hands type now: the child's keys wait, and none of it counts. */
   get typing(): boolean {
     return this.words > 0;
   }
@@ -65,7 +65,7 @@ export class Paws {
     this.btn.classList.add('charged');
   }
 
-  /** The paws replace the hands and type the closest words for the child. */
+  /** The hands type the closest words for the child, with the on-screen keyboard shown. */
   start(): boolean {
     const p = app.profile!;
     if (!this.state.playing || this.words) return false;
@@ -78,7 +78,6 @@ export class Paws {
     this.idle = 0;
     this.guideBefore = this.host.guideOn;
     if (!this.host.guideOn) this.host.toggleGuide();
-    this.state.guide.setPaws(pawColors(p.companion.kind));
     this.host.say(t('paw.start'), 2.5);
     this.host.setMood('happy', 1.4);
     this.render();
@@ -88,7 +87,6 @@ export class Paws {
   stop(): void {
     this.words = 0;
     this.render();
-    this.state.guide.setPaws(null);
     if (this.host.guideOn !== this.guideBefore) this.host.toggleGuide();
     // The child's next reaction time starts now, not with the paw's last key.
     this.host.rhythm.ready(performance.now());
@@ -114,7 +112,7 @@ export class Paws {
     if (tg.masked) core.reveal(tg);
     core.locked = tg;
     const res = core.type(ch);
-    guide.pawTap(ch);
+    guide.tap(ch);
     if (res.kind === 'done') {
       this.host.sfx('word');
       mode.onDone(tg);

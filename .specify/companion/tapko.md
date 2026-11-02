@@ -47,9 +47,10 @@
   code must be the child's own), Enter (or the round paw button next to pause: a paw in
   the character's color, ringed by three arcs for the charges; its label names Enter; with no
   charge it keeps its colors, only its arcs are empty, never dimmed like a disabled button)
-  sends the character's paws onto the keyboard in place of the hands, and the paw types
-  the three closest words with its own rhythm. These keys never count in the child's
-  statistics, accuracy or rhythm, and the child's own keys wait meanwhile. The paw comes
+  lets the hands on the keyboard type the three closest words with their own rhythm: each key
+  in its pose, the key going down as it is typed, so the child sees how the words are typed and
+  need not type meanwhile (the on-screen keyboard shows while they type). These keys never count
+  in the child's statistics, accuracy or rhythm, and the child's own keys wait meanwhile. The paw comes
   only when the child calls it: there is no automatic paw, and Backspace does nothing in a
   level (only in [free typing](../game/free-typing.md)). A target waiting for its Enter
   takes the Enter instead of calling the paw.

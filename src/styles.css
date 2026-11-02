@@ -96,6 +96,7 @@
   --tip-ink: #fff;
   --hud-bg: rgba(255, 255, 255, 0.75);
   --kb-bg: linear-gradient(180deg, rgba(255, 253, 247, 0.96), #f4ead8);
+  --hand-line: #5a5560;
   --story-box: rgba(255, 253, 247, 0.95);
   /* The page behind every screen; the help page in a level takes it too. */
   --page-bg: linear-gradient(180deg, #c9ecfa 0%, #e9f8ef 55%, #d7f0c8 100%);
@@ -150,6 +151,7 @@
   --tip-ink: #f4ecdf;
   --hud-bg: rgba(43, 39, 66, 0.84);
   --kb-bg: linear-gradient(180deg, rgba(43, 39, 66, 0.96), #231f38);
+  --hand-line: #f1e6dc;
   --story-box: rgba(43, 39, 66, 0.94);
   --page-bg: linear-gradient(180deg, #171631 0%, #23213e 55%, #1e2830 100%);
   --break-bg: var(--page-bg);
@@ -175,7 +177,7 @@ body.high-contrast {
   --shadow: 0 0 0 2px #000; --lift: 0 0 0 2px #000; --edge: rgba(0, 0, 0, 0.5); --soft-shadow: rgba(0, 0, 0, 0.2);
   --track: rgba(0, 0, 0, 0.2); --axis: #000; --dot: #bbb; --star-off: #888; --rb-base: #bbb; --bump: #000; --scroll: #000; --focus: #0047d6;
   --tip-bg: #000; --tip-ink: #fff; --hud-bg: #fff; --kb-bg: #fff; --story-box: #fff; --break-bg: #fff; --page-bg: #fff;
-  --item-bg: #fff; --item-on: #fff;
+  --item-bg: #fff; --item-on: #fff; --hand-line: #000;
   color-scheme: light;
 }
 
@@ -955,7 +957,7 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
  * The keyboard keeps a real keyboard's shape: every row is 15 key units, one unit (--p, a key and a gap) follows the
  * keyboard's width, and in a level a low window makes the whole keyboard narrower instead of the keys flatter.
  */
-.kb { --g: 4px; --p: calc((100cqw + var(--g)) / 15); grid-column: 2; justify-self: center; width: 100%; max-width: 866px; container-type: inline-size; display: flex; flex-direction: column; gap: var(--g); opacity: calc(1 - var(--fade)); transition: opacity 0.4s; }
+.kb { --g: 4px; --p: calc((100cqw + var(--g)) / 15); position: relative; grid-column: 2; justify-self: center; width: 100%; max-width: 866px; container-type: inline-size; display: flex; flex-direction: column; gap: var(--g); opacity: calc(1 - var(--fade)); transition: opacity 0.4s; }
 .kb-guide:not(.heatmap, .picker) .kb { width: min(100%, 98vh); }
 .kb-row { display: flex; gap: var(--g); }
 .kb-key {
@@ -976,20 +978,26 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
 .kb-key.next2 { box-shadow: inset 0 -5px 0 var(--finger), 0 0 0 3px var(--finger); background: var(--tint-yellow); }
 .kb-key.shift-next { background: var(--next-bg); color: var(--next-ink); }
 @keyframes key-glow { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.15); } }
-.kb-hands { display: contents; }
-.hand { width: clamp(60px, 11vw, 150px); align-self: end; opacity: calc(1 - var(--fade) * 0.7); transition: transform 0.45s ease, opacity 0.3s; }
-.hand-l { grid-column: 1; grid-row: 2; justify-self: end; }
-.hand-r { grid-column: 3; grid-row: 2; justify-self: start; }
-.hand .palm { fill: #f8e0cb; opacity: 0.45; }
-.hand .skin { fill: #f3d2b3; stroke: #e2bc9b; stroke-width: 1.5; transition: fill 0.15s; }
-.hand .finger { opacity: 0.55; transition: opacity 0.15s, transform 0.15s; }
-.hand .finger.active { opacity: 1; transform: translateY(-3px); }
-.hand .finger.active .skin { fill: #f3d2b3; stroke: #c9946c; stroke-width: 2; }
-/* A see-through hand turns grey on a dark page: there the hand is solid, its resting fingers a dimmer skin. */
-:root[data-theme='dark'] body:not(.high-contrast) .hand .palm { fill: #6e5862; opacity: 1; }
-:root[data-theme='dark'] body:not(.high-contrast) .hand .skin { fill: #b39181; stroke: #7e6259; }
-:root[data-theme='dark'] body:not(.high-contrast) .hand .finger { opacity: 1; }
-:root[data-theme='dark'] body:not(.high-contrast) .hand .finger:not(.active) .tip-band { opacity: 0.75; }
+/*
+ * The outline hands lie over the keys and scale with the keyboard (their SVG is in full size keyboard units, placed by
+ * --vx/--vy/--vw); only their lines are drawn, so every key shows through. They wait at the page's sides while parked.
+ */
+.kb-hands { position: absolute; left: calc(var(--vx) * 100%); top: calc(var(--vy) * 100cqw); width: calc(var(--vw) * 100%); height: auto; overflow: visible; pointer-events: none; z-index: 2; opacity: 0; transition: opacity 0.3s; }
+.kb-hands.ready { opacity: 1; }
+.kb-hands .hand-lines { fill: var(--hand-line); fill-rule: evenodd; }
+.kb-hands .hand-creases { fill: var(--hand-line); fill-rule: evenodd; opacity: 0.35; }
+.kb-hands .hand-nail { fill-opacity: 0.22; }
+.kb-hands .hand-left, .kb-hands .hand-right { transition: transform 0.9s cubic-bezier(0.3, 0, 0.2, 1); }
+.kb-hands.parked .hand-left { transform: translateX(-330px); }
+.kb-hands.parked .hand-right { transform: translateX(330px); }
+.kb-hands .hand-letter { fill: #fff; font: 700 17px var(--font-keys); text-anchor: middle; stroke: var(--hit); stroke-width: 3.5; stroke-linejoin: round; paint-order: stroke; }
+@media (prefers-reduced-motion: reduce) {
+  .kb-hands .hand-left, .kb-hands .hand-right { transition: opacity 0.3s; }
+  .kb-hands.parked .hand-left, .kb-hands.parked .hand-right { transform: none; opacity: 0; }
+}
+/* A key the hands type (the paw help) goes down for a moment. */
+.kb-key.tap { animation: key-tap 0.14s ease; }
+@keyframes key-tap { 50% { transform: translateY(2px) scale(0.94); } }
 .kb-guide.hidden { display: none; }
 .kb-guide { position: relative; }
 /* The layout switch sits in the corner beside the space bar, where no key is, so the keyboard never moves for it:
@@ -1009,23 +1017,13 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
 /* Narrower screens keep only the keyboard icon (its name stays for screen readers and in the tooltip). */
 @media (max-width: 1100px) { .kb-layout span:not(.icon) { display: none; } .kb-layout { padding: 0 0.45rem; } }
 @media (prefers-reduced-motion: reduce) { .kb-layout.flagged { animation: none; } }
-.kb-paws { display: contents; }
-.kb-paw { width: clamp(60px, 11vw, 150px); align-self: end; transform: translateY(130%); opacity: 0; transition: transform 0.45s ease, opacity 0.3s; pointer-events: none; }
-.kb-paw-l { grid-column: 1; grid-row: 2; justify-self: end; }
-.kb-paw-r { grid-column: 3; grid-row: 2; justify-self: start; }
-.kb-paw .paw-fur { fill: var(--paw); stroke: #8b6650; stroke-width: 2.5; }
-.kb-paw .bean { fill: var(--bean); }
-.kb-guide.paws-on .hand { transform: translateY(130%); opacity: 0; }
-.kb-guide.paws-on .kb-paw { transform: none; opacity: 1; }
-.kb-paw.tap { animation: paw-tap 0.14s ease; }
-@keyframes paw-tap { 50% { transform: translateY(-8px) scale(0.95); } }
 .heatmap .kb-key, .picker .kb-key { box-shadow: inset 0 -5px 0 var(--finger), 0 2px 0 var(--edge); }
 .heatmap .kb-key.heat-good { background: var(--heat-good); }
 .heatmap .kb-key.heat-ok { background: var(--heat-ok); }
 .heatmap .kb-key.heat-practice { background: var(--heat-practice); }
 .heatmap .kb-key[data-heat]::before { content: attr(data-heat); position: absolute; bottom: 7px; right: 6px; font-size: 0.6em; font-weight: 700; }
 .heatmap, .picker { grid-template-columns: 0 1fr 0; box-shadow: none; background: var(--paper-2); border-radius: 16px; margin: 0.6rem 0; }
-.heatmap .hand, .picker .hand, .heatmap .kb-paw, .picker .kb-paw, .heatmap .kb-hint, .picker .kb-hint { display: none; }
+.heatmap .kb-hint, .picker .kb-hint { display: none; }
 .picker .kb-key { cursor: pointer; }
 .picker .kb-key.picked { background: var(--green); color: #fff; }
 .picker.disabled { opacity: 0.5; pointer-events: none; }
@@ -1550,10 +1548,6 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-ink); }
   .newkey-card h2 { margin-right: 0; justify-content: center; }
   .newkey-type { justify-content: center; }
 }
-@media (max-height: 640px) {
-  .hand { display: none; }
-}
-
 /* A short note of what a function key changed, at the bottom middle. */
 .toast {
   position: fixed; z-index: 210; left: 50%; bottom: 1.5rem; transform: translate(-50%, 8px); padding: 0.55rem 1rem; border-radius: 999px;

@@ -30,13 +30,6 @@ const KIND_COLORS: Record<CompanionKind, [string, string]> = {
   dog: ['#e3b46c', '#ffffff'], bear: ['#a8703f', '#e5c49a'], panda: ['#f5f5f5', '#2f2f35'], penguin: ['#4a5878', '#ffffff'], lion: ['#e8b544', '#f5e3b3'],
 };
 
-/** Paw and toe-bean colors of a kind (Tapko's paws on the keyboard). */
-export function pawColors(kind: CompanionKind): [string, string] {
-  const [main, belly] = KIND_COLORS[kind];
-  // A panda's paws are its dark color.
-  return kind === 'panda' ? [belly, '#f4a9b8'] : [main, '#f4a9b8'];
-}
-
 const FALLBACK_ACC: Record<Slot, string> = { head: '#e0574f', eyes: '#f29a38', neck: '#4f8fd6', body: '#7bb661', back: '#a5d8f3', hand: '#ffd25a', feet: '#c0504d' };
 
 export function slotOf(accId: string): Slot | null {

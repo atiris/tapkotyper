@@ -536,10 +536,10 @@
     }
   },
   "paw": {
-    "title": "Labková pomoc: {n} slov bez chyby nabije labku (najviac 3). Enter: labka napíše za teba {words} slová.",
+    "title": "Labková pomoc: {n} slov bez chyby nabije labku (najviac 3). Enter: ruky na klávesnici ti pri {words} slovách ukážu, ako ich správne napísať.",
     "aria": "Labková pomoc (Enter), nabité labky: {n}",
-    "start": "Labka sa pustila do písania!",
-    "charged": "{n} slov bez chyby! Labka je nabitá. Stlač Enter a labka napíše za teba {words} slová."
+    "start": "Pozri, ako sa to píše. Teraz chvíľu písať nemusíš.",
+    "charged": "{n} slov bez chyby! Labka je nabitá. Stlač Enter a ruky ti pri {words} slovách ukážu, ako ich správne napísať."
   },
   "story": {
     "next": "Ďalej",
@@ -1591,7 +1591,7 @@
       "update": "Červené tlačidlo úplne vpravo sa ukáže, keď je pripravená nová verzia hry. Kliknutím ju nainštaluješ.",
       "timer": "Hodiny v šatníku ukazujú, koľko času ti ostáva. Kým je času dosť, usmievajú sa, potom v nich je číslo, ktoré každých 10 sekúnd klesne o jedna. Keď blikajú, čas sa končí. Keď čas uplynie, je v nich zámka a ich tip povie, koľko treba docvičiť. Čas v šatníku získaš cvičením.",
       "pause": "Pauza. Rovnako ju zapne aj **kláves Esc**. V pauze sa dá úroveň ukončiť. Keď už je niečo napísané, najprv sa opýta, lebo sa nezapočíta.",
-      "paw": "Labka ti ukazuje, či máš pomoc pripravenú: každé slovo bez chyby zaplní kúsok kruhu, po {n} slovách je labka nabitá. Keď to nejde, stlač **Enter** a labka napíše za teba {words} slová.",
+      "paw": "Labka ti ukazuje, či máš pomoc pripravenú: každé slovo bez chyby zaplní kúsok kruhu, po {n} slovách je labka nabitá. Keď to nejde, stlač **Enter** a ruky na klávesnici ti pri {words} slovách ukážu, ako ich správne napísať. Ty vtedy písať nemusíš.",
       "ring": "Krúžok s číslom ukazuje, ktorá úroveň sveta je táto. Zelené kúsky sa plnia až po túto úroveň, prázdne ťa ešte čakajú. Pri poslednej, veľkej výzve je plný celý.",
       "progress": "Pásik ukazuje, koľko z úrovne už máš za sebou.",
       "gauge": "Zelený kruh ukazuje tvoj rytmus. Keď píšeš plynulo, naplní sa.",

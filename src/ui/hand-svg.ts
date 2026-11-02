@@ -16,10 +16,14 @@ export type Side = 'left' | 'right';
  */
 export const VIEW = { x: -400, y: -20, w: 1666, h: 460 };
 
-/** The hand's lines (filled shapes, even-odd) and its nails by finger (0-4 left pinky..thumb, 5-9 right thumb..pinky). */
+/**
+ * The hand's outline and its thin lines (folds of skin over the joints, the nail beds), as filled shapes (even-odd), and the
+ * stroke that thickens the outline (its `stroke-width` in the file, which can be changed there).
+ */
 export interface HandShape {
   lines: string;
-  nails: { f: number; d: string }[];
+  creases: string;
+  stroke: number;
 }
 
 /** The names of the saved outlines per hand. */
@@ -27,8 +31,9 @@ export type HandIndex = Record<Side, string[]>;
 
 export function readHandSvg(svg: string): HandShape {
   const lines = /<path class="hand-lines" d="([^"]*)"/.exec(svg)?.[1] ?? '';
-  const nails = [...svg.matchAll(/<path class="hand-nail" data-finger="(\d)" d="([^"]*)"/g)].map((m) => ({ f: Number(m[1]), d: m[2] }));
-  return { lines, nails };
+  const creases = /<path class="hand-creases" d="([^"]*)"/.exec(svg)?.[1] ?? '';
+  const stroke = Number(/<path class="hand-lines"[^>]*stroke-width="([\d.]+)"/.exec(svg)?.[1] ?? 0);
+  return { lines, creases, stroke };
 }
 
 /** Keys named by a word; the bottom row's modifiers only in the hand poser (Tapko's keyboard leaves them out). */
@@ -36,8 +41,8 @@ const WORDS: Record<string, string> = {
   Tab: 'tab', CapsLock: 'caps', ShiftLeft: 'lshi', ShiftRight: 'rshi', Space: 'spac', Enter: 'ente', EnterTop: 'ente', Backspace: 'back',
   ControlLeft: 'lctl', ControlRight: 'rctl', MetaLeft: 'lwin', MetaRight: 'rwin', AltLeft: 'lalt', AltRight: 'ralt', ContextMenu: 'menu',
 };
-/** Each row's plain range of keys, as on the Slovak keyboard, and the code of its first key. */
-const RANGES: [first: string, keys: string][] = [['Digit1', '1234567890'], ['KeyQ', 'qwertzuiop'], ['KeyA', 'asdfghjkl'], ['KeyZ', 'yxcvbnm']];
+/** Each row's plain range of keys, as on the English keyboard, and the code of its first key. */
+const RANGES: [first: string, keys: string][] = [['Digit1', '1234567890'], ['KeyQ', 'qwertyuiop'], ['KeyA', 'asdfghjkl'], ['KeyZ', 'zxcvbnm']];
 
 /**
  * A pose's name, its file's name, by the key's place: a word (`tab`, `lshi`, `spac`), a key of the row's plain range (`1`, `r`,

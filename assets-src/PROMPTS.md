@@ -1217,9 +1217,10 @@ an open Tapko shows it at once; commit them. "Zrkadliť z druhej ruky" starts a 
 pose of the same name.
 
 Names (as written on the poser's keyboard): `tab`, `caps`, `lshi`, `rshi`, `spac`, `ente`, `back`; the
-plain range of each row by its key (`1`-`0`, `q`-`p`, `a`-`l`, `y`-`m`, Slovak letters); any other key by
+plain range of each row by its key (`1`-`0`, `q`-`p`, `a`-`l`, `z`-`m`, English letters); any other key by
 the range's end and how many keys further out (`11` left of 1, `01` right of 0, `p1` right of P, `l1` = ô,
-`m1` right of M). `home` is the home position, `rest` the hands lying beside the keyboard when a level
+`m1` right of M). `home` is the home position (it may be tuned; "Reset na HOMECONSTANT" brings back the
+one the owner approved, `HOME_CONSTANT` in `tools/hand-poser/poser.ts`), `rest` the hands lying beside the keyboard when a level
 starts; "Prechod rest → home" saves the steps `rest1`...`rest4` between them, which Tapko plays when the
 hands come onto the keys. A key without its own outline shows `home`. Gemini pictures and the 2D
 skeleton were dropped: Gemini drifted on small changes and a flat drawing cannot bend like a hand.
@@ -1229,8 +1230,13 @@ skeleton were dropped: Gemini drifted on small changes and a flat drawing cannot
 Look
 - Lines only, nothing inside: every key shows through. The line is grey, not black, thin. The wrists
   fade out below the keyboard.
-- Nails: in the finger's colour, see-through and slightly blurred; a nail is seen only where the
-  finger shows it from above.
+- Nails: no colours (a coloured nail plate never looked right); only a thin line of the nail bed (the
+  cuticle's arc and the sides), seen where the finger shows it from above. Thin lighter lines also mark
+  the folds of skin over the joints (three over the middle joint, two over the last, two on the thumb).
+- The outline is thin (1 unit by default); a file's `stroke-width` on the outline makes it thicker in
+  Tapko. The line is smoothed when saved, short broken bits are dropped.
+- The ring and little fingers are a little thicker than the 3D model's; the gaps between the fingers
+  end in a sharp V, not a soft U; the thumb's outer side runs smoothly, not broken at its joints.
 - The key being typed is always readable: its letter is drawn over the hands (white, a thin solid
   outline in the finger's colour, on a small disc half a key wide that fades from its centre); the
   key's own letter underneath is hidden, never two letters.

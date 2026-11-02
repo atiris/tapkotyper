@@ -117,8 +117,7 @@ export class Hands {
   /** The outline of the key typed last, `<side>/<name>` (the hand poser opens it). */
   lastPose = `left/${HOME}`;
 
-  /** `fingerColor`: the colour of a finger (its nail). */
-  constructor(private layout: Layout, private fingerColor: (finger: number) => string) {
+  constructor(private layout: Layout) {
     const id = `hands-${Math.random().toString(36).slice(2, 8)}`;
     this.el = el('svg', { class: 'kb-hands', viewBox: `${VIEW.x} ${VIEW.y} ${VIEW.w} ${VIEW.h}`, 'aria-hidden': 'true' }) as SVGSVGElement;
     this.el.style.setProperty('--vx', String(VIEW.x / WIDTH));
@@ -130,15 +129,12 @@ export class Hands {
     el('stop', { offset: 1, 'stop-color': '#000' }, grad);
     const mask = el('mask', { id: `${id}-mask`, maskUnits: 'userSpaceOnUse', x: VIEW.x - 500, y: VIEW.y, width: VIEW.w + 1000, height: VIEW.h }, defs);
     el('rect', { x: VIEW.x - 500, y: VIEW.y, width: VIEW.w + 1000, height: VIEW.h, fill: `url(#${id}-fade)` }, mask);
-    // The nails are soft: their own shapes, blurred a little like the letter's disc.
-    const soft = el('filter', { id: `${id}-soft`, x: '-30%', y: '-30%', width: '160%', height: '160%' }, defs);
-    el('feGaussianBlur', { stdDeviation: 1.6 }, soft);
     const both = el('g', { mask: `url(#${id}-mask)` }, this.el);
     const make = (s: Side) => {
       const g = el('g', { class: `hand-${s}` }, both);
       const layers = [0, 1].map(() => {
         const layer = el('g', { class: 'hand-pose' }, g);
-        el('g', { class: 'hand-nails', filter: `url(#${id}-soft)` }, layer);
+        el('path', { class: 'hand-creases' }, layer);
         el('path', { class: 'hand-lines' }, layer);
         return layer;
       });
@@ -239,8 +235,10 @@ export class Hands {
     const side = this.side[s];
     side.shown = name;
     const [old, layer] = side.layers[0].classList.contains('on') ? side.layers : [side.layers[1], side.layers[0]];
-    layer.querySelector('.hand-lines')!.setAttribute('d', shape.lines);
-    layer.querySelector('.hand-nails')!.replaceChildren(...shape.nails.map((n) => el('path', { class: 'hand-nail', d: n.d, fill: this.fingerColor(n.f) })));
+    const lines = layer.querySelector('.hand-lines')!;
+    lines.setAttribute('d', shape.lines);
+    lines.setAttribute('stroke-width', String(shape.stroke));
+    layer.querySelector('.hand-creases')!.setAttribute('d', shape.creases);
     old.classList.remove('on');
     layer.classList.add('on');
     this.el.classList.add('ready');

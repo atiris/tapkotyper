@@ -142,7 +142,7 @@ export class KeyboardGuide {
 
   private handsView(): Hands {
     if (!this.hands) {
-      this.hands = new Hands(this.layout, (f) => FINGER_COLORS[f as Finger]);
+      this.hands = new Hands(this.layout);
       this.board.append(this.hands.el);
     }
     return this.hands;

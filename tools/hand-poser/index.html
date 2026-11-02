@@ -20,6 +20,7 @@
     <section class="row">
       <label><input type="radio" name="side" value="left" checked> Ľavá</label>
       <label><input type="radio" name="side" value="right"> Pravá</label>
+      <label>Priblíženie <select id="zoom"><option value="1">1×</option><option value="2">2×</option><option value="3">3×</option></select></label>
       <label>Klávesnica <select id="layout"><option value="us-qwerty">EN</option><option value="sk-qwertz">SK</option></select></label>
     </section>
     <section class="files">
@@ -31,13 +32,13 @@
       <button id="mirror" title="Póza druhej ruky s týmto názvom, zrkadlená">Zrkadliť z druhej ruky</button>
       <button id="save" class="main">Uložiť SVG</button>
       <button id="remove">Zmazať</button>
+      <button id="reset" title="Pevná základná pozícia HOME_CONSTANT (v kóde nástroja), ku ktorej sa dá vždy vrátiť">Reset na HOMECONSTANT</button>
       <button id="steps" title="Uloží kroky rest1, rest2… tejto ruky medzi uloženými pózami rest a home">Prechod rest → home</button>
       <p id="status" class="status"></p>
     </section>
     <section class="row">
       <label><input type="checkbox" id="showShade" checked> Ruka</label>
       <label><input type="checkbox" id="showLines" checked> Obrys</label>
-      <label><input type="checkbox" id="showNails" checked> Nechty</label>
       <label><input type="checkbox" id="showOther" checked> Druhá ruka</label>
     </section>
     <div id="controls"></div>

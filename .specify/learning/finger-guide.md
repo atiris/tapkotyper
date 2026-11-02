@@ -7,7 +7,7 @@
   to reach AA contrast.
 - **Hands on the keyboard**: two outline hands seen from above lie on the on-screen keyboard
   in the home position, only their lines drawn (nothing inside them), so every key shows through;
-  a see-through nail in each finger's color; the wrists fade out below the keyboard. For the
+  thin lines for the nail beds and the folds of skin over the joints; the wrists fade out below the keyboard. For the
   next key the hand that types it takes that key's pose (the other stays home; for a capital it
   takes its Shift; for the space bar the thumb of the hand that did not type the last key goes
   down); each pose is the outline of a real hand seen from above typing that key, posed by the owner

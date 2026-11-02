@@ -11,7 +11,7 @@ import { type JointTurn, type PoseFile, readPose } from './pose-file';
 /**
  * The hand poser: a local page (dev server only, /tools/hand-poser/) where the owner poses a 3D hand (the WebXR generic hand,
  * MIT) seen from above over Tapko's keyboard and saves its outline as the SVG Tapko draws. The outline comes from two renders:
- * which part of the hand each pixel shows (palm, a finger, a nail) and how deep it is; a line is drawn where the part changes
+ * which part of the hand each pixel shows (palm, a finger, a fold of skin) and how deep it is; a line is drawn where the part changes
  * between fingers, at the hand's edge, and where the depth jumps (a finger over the palm or a curled one). The pose is kept in
  * the SVG, so it can be loaded and tuned later.
  */
@@ -27,11 +27,9 @@ const LINE_COLOR = new THREE.Color('#5a5560');
 const FINGERS = ['thumb', 'index', 'middle', 'ring', 'pinky'] as const;
 type FingerName = (typeof FINGERS)[number];
 const FINGER_LABEL: Record<FingerName, string> = { thumb: 'Palec', index: 'Ukazovák', middle: 'Prostredník', ring: 'Prstenník', pinky: 'Malíček' };
-/** The parts a pixel can show; a nail is NAIL + its finger's part. */
+/** The parts a pixel can show; a thin line on a finger (a fold of skin, a nail bed) is FOLD + its finger's part. */
 const PART: Record<'palm' | FingerName, number> = { palm: 1, thumb: 2, index: 3, middle: 4, ring: 5, pinky: 6 };
-const NAIL = 10;
-/** Tapko's finger number (its nail colour) of a finger of a hand. */
-const appFinger = (side: Side, f: FingerName): Finger => (side === 'left' ? 6 - PART[f] : PART[f] + 3) as Finger;
+const FOLD = 40;
 
 const chainOf = (f: FingerName): string[] => (f === 'thumb'
   ? ['thumb-metacarpal', 'thumb-phalanx-proximal', 'thumb-phalanx-distal', 'thumb-tip']
@@ -59,19 +57,36 @@ const CURL: Record<string, number> = { 'phalanx-proximal': 0.5, 'phalanx-interme
 const curlShare = (joint: string) => CURL[joint] ?? CURL[joint.replace(/^\w+-finger-/, '')] ?? 0;
 const spreadJoint = (f: FingerName) => (f === 'thumb' ? 'thumb-metacarpal' : `${f}-finger-phalanx-proximal`);
 
-/** A first pose, before the home position of a hand is saved: fingers over the home keys, gently bent. */
-function defaultPose(side: Side, name: string): PoseFile {
-  const joints: Record<string, JointTurn> = {};
-  for (const f of FINGERS) {
-    if (f === 'thumb') continue;
-    joints[`${f}-finger-phalanx-proximal`] = { bend: 25 };
-    joints[`${f}-finger-phalanx-intermediate`] = { bend: 45 };
-    joints[`${f}-finger-phalanx-distal`] = { bend: 15 };
-  }
-  joints['thumb-metacarpal'] = { bend: -20 };
-  joints['thumb-phalanx-proximal'] = { bend: 10 };
-  const left: PoseFile = { v: 1, side: 'left', name, hand: { x: 222, y: 440, yaw: 4, pitch: 20, roll: 0, scale: 2565 }, joints, line: 2.4 };
-  return side === 'left' ? left : mirrored(left);
+/**
+ * HOME_CONSTANT: the home position the owner approved, left hand (the right one is its mirror). A saved `home` may be
+ * moved a little away from it; "Reset na HOMECONSTANT" always brings it back.
+ */
+const HOME_CONSTANT: PoseFile = {
+  v: 1, side: 'left', name: 'home', line: 1,
+  hand: { x: 145, y: 428, yaw: 18, pitch: 8, roll: 0, scale: 2565 },
+  joints: {
+    'index-finger-phalanx-proximal': { bend: 22.4, spread: 2.9 },
+    'index-finger-phalanx-intermediate': { bend: 39.9 },
+    'index-finger-phalanx-distal': { bend: 12 },
+    'middle-finger-phalanx-proximal': { bend: 26.2, spread: 2.2 },
+    'middle-finger-phalanx-intermediate': { bend: 47.3 },
+    'middle-finger-phalanx-distal': { bend: 16.5 },
+    'ring-finger-phalanx-proximal': { bend: 24.6, spread: -1.6 },
+    'ring-finger-phalanx-intermediate': { bend: 44 },
+    'ring-finger-phalanx-distal': { bend: 14.3 },
+    'pinky-finger-phalanx-proximal': { bend: 19.7, spread: -6.4 },
+    'pinky-finger-phalanx-intermediate': { bend: 34.5 },
+    'pinky-finger-phalanx-distal': { bend: 8.7 },
+    'thumb-metacarpal': { bend: 12, spread: -19, twist: 20 },
+    'thumb-phalanx-proximal': { bend: 10 },
+    'thumb-phalanx-distal': { bend: 20 },
+  },
+};
+
+/** HOME_CONSTANT for a hand, under a name: where a new pose starts when the hand has no saved home. */
+function homeConstant(side: Side, name: string): PoseFile {
+  const left = { ...structuredClone(HOME_CONSTANT), name };
+  return side === 'left' ? left : { ...mirrored(left), name };
 }
 
 /** Between the F and J keys: a pose mirrored over it lies on the other hand's home keys. */
@@ -91,7 +106,7 @@ const keysSvg = document.getElementById('keys') as unknown as SVGSVGElement;
 const status = $<HTMLParagraphElement>('status');
 const nameInput = $<HTMLInputElement>('name');
 const savedSelect = $<HTMLSelectElement>('saved');
-const show = { shade: $<HTMLInputElement>('showShade'), lines: $<HTMLInputElement>('showLines'), nails: $<HTMLInputElement>('showNails'), other: $<HTMLInputElement>('showOther') };
+const show = { shade: $<HTMLInputElement>('showShade'), lines: $<HTMLInputElement>('showLines'), other: $<HTMLInputElement>('showOther') };
 
 const say = (text: string, error = false) => {
   status.textContent = text;
@@ -150,7 +165,7 @@ for (const y of [283, 354]) svgEl('line', { class: 'fade', x1: VIEW.x, x2: VIEW.
 // The grips on the fingertips, over the hand.
 const tipsSvg = document.getElementById('tips') as unknown as SVGSVGElement;
 tipsSvg.setAttribute('viewBox', `${VIEW.x} ${VIEW.y} ${VIEW.w} ${VIEW.h}`);
-const other = { lines: svgEl('path', { class: 'other' }, keysSvg), nails: svgEl('g', { opacity: 0.3 }, keysSvg) };
+const other = { lines: svgEl('path', { class: 'other' }, keysSvg), creases: svgEl('path', { class: 'other' }, keysSvg) };
 
 function markKey(): void {
   for (const rect of keysG.querySelectorAll<SVGElement>('rect:not(.stripe)')) {
@@ -197,24 +212,24 @@ const partMaterial = new THREE.ShaderMaterial({
       float hi = floor(z / 256.0);
       gl_FragColor = vec4(vPart / 255.0, hi / 255.0, (z - hi * 256.0) / 255.0, 1.0);
     }`,
+  side: THREE.DoubleSide,
 });
 
 const edgeMaterial = new THREE.ShaderMaterial({
   uniforms: {
     tPart: { value: null }, texel: { value: new THREE.Vector2() }, radius: { value: 1 }, jump: { value: 0 },
-    mask: { value: false }, showLines: { value: true }, showNails: { value: true }, lineColor: { value: LINE_COLOR },
-    nailColors: { value: FINGERS.map(() => new THREE.Color()) },
+    mask: { value: false }, showLines: { value: true }, lineColor: { value: LINE_COLOR },
   },
   transparent: true,
   depthTest: false,
   vertexShader: 'varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }',
   fragmentShader: /* glsl */ `
     uniform sampler2D tPart; uniform vec2 texel; uniform float radius; uniform float jump;
-    uniform bool mask; uniform bool showLines; uniform bool showNails; uniform vec3 lineColor; uniform vec3 nailColors[5];
+    uniform bool mask; uniform bool showLines; uniform vec3 lineColor;
     varying vec2 vUv;
     float idOf(vec4 c) { return floor(c.r * 255.0 + 0.5); }
     float zOf(vec4 c) { return floor(c.g * 255.0 + 0.5) * 256.0 + floor(c.b * 255.0 + 0.5); }
-    float baseOf(float id) { return id > 10.0 ? id - 10.0 : id; }
+    float baseOf(float id) { return id >= ${FOLD}.0 ? id - ${FOLD}.0 : id; }
     // Two neighbouring pixels on two sides of a line: the hand's edge; two fingers side by side (a finger meets the palm
     // without a line); a step in depth (a finger over the palm, a curled tip).
     bool differ(vec4 a, vec4 b) {
@@ -229,18 +244,17 @@ const edgeMaterial = new THREE.ShaderMaterial({
       return differ(c, texture2D(tPart, uv + vec2(texel.x, 0.0))) || differ(c, texture2D(tPart, uv + vec2(0.0, texel.y)));
     }
     void main() {
-      vec4 c = texture2D(tPart, vUv);
-      float id = idOf(c), b = baseOf(id);
-      // Ink within the line's half width of an edge: the same thickness everywhere.
-      bool line = false;
+      // Ink within the line's half width of an edge: the same thickness everywhere; the folds of skin and the nail beds
+      // are thin strips on the fingers, drawn as they are.
+      bool line = false, fine = idOf(texture2D(tPart, vUv)) >= ${FOLD}.0;
       int r = int(ceil(radius));
       for (int i = -r; i <= r; i++) for (int j = -r; j <= r; j++) {
-        if (line || float(i * i + j * j) > radius * radius) continue;
-        line = edgeAt(vUv + vec2(float(i), float(j)) * texel);
+        if (!line && float(i * i + j * j) <= radius * radius) line = edgeAt(vUv + vec2(float(i), float(j)) * texel);
       }
-      if (mask) { gl_FragColor = vec4(vec3(line ? 0.0 : 1.0), 1.0); return; }
+      // The mask: red the outline, green the thin lines (black ink on white).
+      if (mask) { gl_FragColor = vec4(line ? 0.0 : 1.0, line || !fine ? 1.0 : 0.0, 1.0, 1.0); return; }
       if (line && showLines) gl_FragColor = vec4(lineColor, 1.0);
-      else if (id > 10.0 && showNails) gl_FragColor = vec4(nailColors[int(b) - 2], 0.45);
+      else if (fine && showLines) gl_FragColor = vec4(lineColor, 0.6);
       else discard;
     }`,
 });
@@ -259,12 +273,100 @@ interface Hand {
   mesh: THREE.SkinnedMesh;
   bones: Map<string, THREE.Bone>;
   rest: Map<string, THREE.Quaternion>;
-  nails: THREE.Mesh[];
+  /** The thin strips on the fingers (folds of skin, nail beds). */
+  marks: THREE.Mesh[];
   shade: THREE.Material;
 }
 
 const loader = new GLTFLoader();
 const hands: Partial<Record<Side, Promise<Hand>>> = {};
+
+/** Ring and little fingers a little thicker than the model's (the owner's eye): their skin pushed out from the bones. */
+const THICK: Partial<Record<FingerName, number>> = { ring: 1.08, pinky: 1.12 };
+/** A triangle belongs to a finger when that finger moves it at least this much (else to the palm). */
+const WEB = 0.3;
+/** The nail bed's line: its width (of the finger's), and where it starts and ends along the last bone (of its length). */
+const NAIL_BED = { width: 0.66, from: 0.4, to: 0.95 };
+/** Metres: a thin line lies this far over the skin; its thickness and the gap between folds. */
+const LIFT = 0.00015, FOLD_THICK = 0.0004, FOLD_GAP = 0.0011;
+/** Metres along the bone from a joint whose skin sets the height of its folds (wider takes in the bulge of the bone before). */
+const FOLD_REACH = 0.0025;
+
+/** Pushes the skin of the fingers in THICK out from their bones (in the pose the model is bound in). */
+function thicken(mesh: THREE.SkinnedMesh, fingerOf: (bone: string) => FingerName | null): void {
+  const geo = mesh.geometry, pos = geo.getAttribute('position'), index = geo.getAttribute('skinIndex'), weight = geo.getAttribute('skinWeight');
+  const bones = mesh.skeleton.bones, inverses = mesh.skeleton.boneInverses;
+  const p = new THREE.Vector3();
+  for (let i = 0; i < pos.count; i++) {
+    let main = 0, best = -1;
+    const by = new Map<FingerName, number>();
+    for (let k = 0; k < 4; k++) {
+      const b = index.getComponent(i, k), w = weight.getComponent(i, k);
+      if (w > best) [main, best] = [b, w];
+      const f = fingerOf(bones[b].name);
+      if (f) by.set(f, (by.get(f) ?? 0) + w);
+    }
+    const f = fingerOf(bones[main].name), k = f && THICK[f];
+    if (!f || !k) continue;
+    // Where the finger meets the palm the push fades out.
+    const kk = 1 + (k - 1) * (by.get(f) ?? 0);
+    p.fromBufferAttribute(pos, i).applyMatrix4(mesh.bindMatrix).applyMatrix4(inverses[main]);
+    p.x *= kk;
+    p.y *= kk;
+    p.applyMatrix4(inverses[main].clone().invert()).applyMatrix4(mesh.bindMatrixInverse);
+    pos.setXYZ(i, p.x, p.y, p.z);
+  }
+  pos.needsUpdate = true;
+}
+
+/** A flat rounded plate (a squircle, rounder with a smaller `round`), `w` across and `l` long. */
+function plate(w: number, l: number, round = 4): THREE.BufferGeometry {
+  const shape = new THREE.Shape();
+  const n = 48;
+  for (let i = 0; i <= n; i++) {
+    const a = (i / n) * Math.PI * 2, c = Math.cos(a), sn = Math.sin(a);
+    const x = (w / 2) * Math.sign(c) * Math.abs(c) ** (2 / round), y = (l / 2) * Math.sign(sn) * Math.abs(sn) ** (2 / round);
+    if (i === 0) shape.moveTo(x, y);
+    else shape.lineTo(x, y);
+  }
+  return new THREE.ShapeGeometry(shape);
+}
+
+/**
+ * The nail bed's line as a flat band `thick` wide: the arc of the cuticle `from` along the bone, both sides on to `to`;
+ * `w` across.
+ */
+function nailBed(w: number, from: number, to: number, thick: number): THREE.BufferGeometry {
+  const rx = w / 2, ry = w * 0.32, pts: [number, number][] = [[-rx, to]];
+  for (let i = 0; i <= 24; i++) {
+    const a = Math.PI + (i / 24) * Math.PI;
+    pts.push([rx * Math.cos(a), from + ry + ry * Math.sin(a)]);
+  }
+  pts.push([rx, to]);
+  // Both edges of the band: the line moved half its thickness to each side.
+  const side = (k: number) => pts.map(([x, y], i) => {
+    const [px, py] = pts[Math.max(0, i - 1)], [nx, ny] = pts[Math.min(pts.length - 1, i + 1)];
+    const dx = nx - px, dy = ny - py, len = Math.hypot(dx, dy);
+    return new THREE.Vector2(x - (dy / len) * k, y + (dx / len) * k);
+  });
+  return new THREE.ShapeGeometry(new THREE.Shape([...side(thick / 2), ...side(-thick / 2).reverse()]));
+}
+
+/**
+ * A plate bent over the back of a finger in a bone's frame: around a cylinder of `radius` along the bone whose top follows
+ * the skin (`top` at each place along the bone), its middle `z` along the bone; tagged with its part.
+ */
+function bent(geo: THREE.BufferGeometry, radius: number, top: (z: number) => number, z: number, partId: number): THREE.Mesh {
+  const pos = geo.getAttribute('position');
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i), at = z - pos.getY(i), a = x / radius;
+    pos.setXYZ(i, radius * Math.sin(a), top(at) - radius * (1 - Math.cos(a)), at);
+  }
+  geo.setAttribute('partId', new THREE.BufferAttribute(new Float32Array(pos.count).fill(partId), 1));
+  const mesh = new THREE.Mesh(geo);
+  mesh.frustumCulled = false;
+  return mesh;
+}
 
 async function buildHand(side: Side): Promise<Hand> {
   const gltf = await loader.loadAsync(side === 'left' ? leftGlb : rightGlb);
@@ -290,51 +392,73 @@ async function buildHand(side: Side): Promise<Hand> {
   model.traverse((o) => { if ((o as THREE.SkinnedMesh).isSkinnedMesh) mesh = o as THREE.SkinnedMesh; });
   const skinned = mesh as unknown as THREE.SkinnedMesh;
   skinned.frustumCulled = false;
-  // Every triangle is one part (the bone that moves it most), so a part's edge is sharp.
+  const boneNames = skinned.skeleton.bones.map((b) => b.name);
+  const fingerOf = (bone: string): FingerName | null => (bone === 'wrist' || bone.includes('metacarpal') ? null : bone.split('-')[0] as FingerName);
+  thicken(skinned, fingerOf);
+  // Every triangle is one part, so a part's edge is sharp: the finger that moves it most once that finger moves it enough
+  // (the skin between two fingers splits between them, so their line runs on into a sharp notch), else the palm.
   const geo = skinned.geometry.toNonIndexed();
   skinned.geometry = geo;
   const index = geo.getAttribute('skinIndex'), weight = geo.getAttribute('skinWeight');
   const part = new Float32Array(geo.getAttribute('position').count);
-  const partOfBone = (name: string) => (name === 'wrist' || name.includes('metacarpal') ? PART.palm : PART[name.split('-')[0] as FingerName]);
   for (let t = 0; t < part.length; t += 3) {
-    const sum = new Map<number, number>();
-    for (let v = t; v < t + 3; v++) for (let k = 0; k < 4; k++) sum.set(index.getComponent(v, k), (sum.get(index.getComponent(v, k)) ?? 0) + weight.getComponent(v, k));
-    const bone = [...sum].sort((a, b) => b[1] - a[1])[0][0];
-    part.fill(partOfBone(skinned.skeleton.bones[bone].name), t, t + 3);
+    const sum = new Map<FingerName, number>();
+    for (let v = t; v < t + 3; v++) for (let k = 0; k < 4; k++) {
+      const f = fingerOf(boneNames[index.getComponent(v, k)]);
+      if (f) sum.set(f, (sum.get(f) ?? 0) + weight.getComponent(v, k) / 3);
+    }
+    const [f, w] = [...sum].sort((x, y) => y[1] - x[1])[0] ?? [null, 0];
+    part.fill(f && w >= WEB ? PART[f] : PART.palm, t, t + 3);
   }
   geo.setAttribute('partId', new THREE.BufferAttribute(part, 1));
   const shade = new THREE.MeshStandardMaterial({ color: 0xeac8ae, roughness: 0.75, transparent: true, opacity: 0.8 });
   skinned.material = shade;
 
-  // A nail on each last bone: a flat ellipsoid on the back of the finger, so the depth render hides it when the tip curls.
   root.updateMatrixWorld(true);
-  const nails = FINGERS.map((f) => {
-    const distal = bones.get(distalOf(f))!, tip = bones.get(tipOf(f))!;
-    const len = tip.position.length(), dir = tip.position.clone().normalize();
+  /** The skin moved most by these bones, in a bone's frame (-z along the bone, +y the back of the finger), at rest. */
+  const skinOf = (names: string[], frame: THREE.Bone) => {
     const pts: THREE.Vector3[] = [];
     const v = new THREE.Vector3();
     for (let i = 0; i < part.length; i++) {
-      const b = skinned.skeleton.bones[index.getComponent(i, 0)].name;
-      if (b !== distalOf(f) && b !== tipOf(f)) continue;
+      if (!names.includes(boneNames[index.getComponent(i, 0)])) continue;
       skinned.getVertexPosition(i, v);
-      pts.push(distal.worldToLocal(skinned.localToWorld(v.clone())));
+      pts.push(frame.worldToLocal(skinned.localToWorld(v.clone())));
     }
-    const along = (p: THREE.Vector3) => p.dot(dir) / len;
-    const mid = pts.filter((p) => along(p) > 0.35 && along(p) < 0.85);
-    const across = new THREE.Vector3(0, 1, 0).cross(dir).normalize();
-    const width = Math.max(...mid.map((p) => p.dot(across))) - Math.min(...mid.map((p) => p.dot(across)));
-    const top = Math.max(...mid.map((p) => p.y));
-    const geoN = new THREE.SphereGeometry(1, 20, 10);
-    geoN.setAttribute('partId', new THREE.BufferAttribute(new Float32Array(geoN.getAttribute('position').count).fill(NAIL + PART[f]), 1));
-    const nail = new THREE.Mesh(geoN, new THREE.MeshBasicMaterial({ color: FINGER_COLORS[appFinger(side, f)], transparent: true, opacity: 0.7 }));
-    nail.scale.set(width * 0.34, 0.0012, len * 0.3);
-    nail.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, -1), dir);
-    nail.position.copy(dir).multiplyScalar(len * 0.6).add(new THREE.Vector3(0, top - 0.0006, 0));
-    nail.frustumCulled = false;
-    distal.add(nail);
-    return nail;
-  });
-  return { side, root, mesh: skinned, bones, rest, nails, shade };
+    return pts;
+  };
+  /** The finger's width and the height of its back around a place along the bone (metres, the bone's frame). */
+  const backAt = (pts: THREE.Vector3[], z: number, reach: number) => {
+    const near = pts.filter((p) => Math.abs(p.z - z) < reach);
+    const xs = near.map((p) => p.x);
+    return { width: Math.max(...xs) - Math.min(...xs), top: Math.max(...near.map((p) => p.y)) };
+  };
+
+  // Thin strips on the back of the fingers, hidden by the depth render where the finger turns away: each nail bed, and the
+  // folds of skin over the joints (three over the middle one, two over the last).
+  const marks: THREE.Mesh[] = [];
+  const mark = (geo: THREE.BufferGeometry, bone: THREE.Bone, radius: number, top: number, z: number, f: FingerName) => {
+    const m = bent(geo, radius, () => top + LIFT, z, FOLD + PART[f]);
+    m.material = new THREE.MeshBasicMaterial({ color: 0x5a5560, side: THREE.DoubleSide });
+    bone.add(m);
+    marks.push(m);
+  };
+  for (const f of FINGERS) {
+    const chain = chainOf(f);
+    const distal = bones.get(distalOf(f))!, len = bones.get(tipOf(f))!.position.length();
+    const nail = backAt(skinOf([distalOf(f), tipOf(f)], distal), -len * NAIL_BED.from, len * 0.2);
+    mark(nailBed(nail.width * NAIL_BED.width, len * NAIL_BED.from, len * NAIL_BED.to, FOLD_THICK), distal, nail.width / 2, nail.top, 0, f);
+    // The bone after each joint with folds, and how many lines.
+    const folds: [string, number][] = f === 'thumb' ? [[chain[2], 2]] : [[chain[2], 3], [chain[3], 2]];
+    for (const [after, count] of folds) {
+      const bone = bones.get(after)!;
+      const back = backAt(skinOf([after, chain[chain.indexOf(after) - 1]], bone), 0, FOLD_REACH);
+      for (let i = 0; i < count; i++) {
+        const middle = count === 2 || i === 1;
+        mark(plate(back.width * (middle ? 0.42 : 0.3), FOLD_THICK, 1.2), bone, back.width / 2, back.top, (i - (count - 1) / 2) * FOLD_GAP, f);
+      }
+    }
+  }
+  return { side, root, mesh: skinned, bones, rest, marks, shade };
 }
 
 // ---- posing ----
@@ -379,7 +503,7 @@ const clampTurn = (joint: string, turn: keyof JointTurn, v: number) => {
 // ---- state ----
 
 let current: Hand | null = null;
-let pose: PoseFile = defaultPose('left', 'home');
+let pose: PoseFile = homeConstant('left', 'home');
 let saved = '';
 let history: string[] = [];
 let index: HandIndex = { left: [], right: [] };
@@ -434,7 +558,7 @@ function redraw(): void {
 function useMaterials(parts: boolean): void {
   if (!current) return;
   current.mesh.material = parts ? partMaterial : current.shade;
-  for (const n of current.nails) {
+  for (const n of current.marks) {
     n.userData.shade ??= n.material;
     n.material = parts ? partMaterial : n.userData.shade;
   }
@@ -454,8 +578,6 @@ function drawEdges(parts: THREE.WebGLRenderTarget, px: number, mask: boolean): v
   u.mask.value = mask;
   u.jump.value = Math.max(DEPTH_JUMP, SLOPE / px) / ((FAR - NEAR) / 65535);
   u.showLines.value = show.lines.checked;
-  u.showNails.value = show.nails.checked;
-  FINGERS.forEach((f, i) => u.nailColors.value[i].set(FINGER_COLORS[appFinger(pose.side, f)]));
   renderer.render(edgeScene, edgeCamera);
 }
 
@@ -471,8 +593,8 @@ function draw(): void {
   drawEdges(partTarget, canvas.width / VIEW.w, false);
 }
 
-/** The outline and each visible nail as black on white PNGs over VIEW, EXPORT_PX pixels per unit. */
-function exportPngs(): { lines: string; nails: { f: number; png: string }[] } {
+/** The outline and the thin lines as black on white PNGs over VIEW, EXPORT_PX pixels per unit. */
+function exportPngs(): { lines: string; creases: string } {
   const w = VIEW.w * EXPORT_PX, h = VIEW.h * EXPORT_PX;
   const parts = targetOf(w, h), out = targetOf(w, h);
   drawParts(parts);
@@ -484,7 +606,7 @@ function exportPngs(): { lines: string; nails: { f: number; png: string }[] } {
     renderer.readRenderTargetPixels(t, 0, 0, w, h, px);
     return px;
   };
-  const linePx = read(out), partPx = read(parts);
+  const linePx = read(out);
   renderer.setRenderTarget(null);
   parts.dispose();
   out.dispose();
@@ -504,14 +626,9 @@ function exportPngs(): { lines: string; nails: { f: number; png: string }[] } {
     return c.toDataURL('image/png');
   };
   const lines = png((i) => linePx[i] < 128);
-  const nails = FINGERS.flatMap((f) => {
-    const id = NAIL + PART[f];
-    let any = false;
-    for (let i = 0; i < partPx.length && !any; i += 4) any = partPx[i] === id;
-    return any ? [{ f: appFinger(pose.side, f), png: png((i) => partPx[i] === id) }] : [];
-  });
+  const creases = png((i) => linePx[i + 1] < 128);
   draw();
-  return { lines, nails };
+  return { lines, creases };
 }
 
 // ---- sliders ----
@@ -664,17 +781,16 @@ async function fetchSvg(s: Side, name: string): Promise<string | null> {
 }
 async function homeOf(s: Side): Promise<PoseFile> {
   const svg = await fetchSvg(s, 'home');
-  return (svg && readPose(svg)) || defaultPose(s, 'home');
+  return (svg && readPose(svg)) || homeConstant(s, 'home');
 }
 
 /** The other hand, faint, as Tapko would draw it with this key: its outline of the same name, else its home. */
 async function showOther(): Promise<void> {
   const s: Side = side() === 'left' ? 'right' : 'left';
   const svg = show.other.checked ? (await fetchSvg(s, nameInput.value)) ?? (await fetchSvg(s, 'home')) : null;
-  const shape = svg ? readHandSvg(svg) : { lines: '', nails: [] };
+  const shape = svg ? readHandSvg(svg) : { lines: '', creases: '' };
   other.lines.setAttribute('d', shape.lines);
-  other.nails.replaceChildren();
-  for (const n of shape.nails) svgEl('path', { d: n.d, fill: FINGER_COLORS[n.f as Finger] }, other.nails);
+  other.creases.setAttribute('d', shape.creases);
 }
 
 async function open(name: string): Promise<void> {
@@ -795,6 +911,10 @@ $('mirror').addEventListener('click', async () => {
   say(`Zrkadlené z ${from}/${nameInput.value}`);
 });
 $('save').addEventListener('click', () => void save());
+$('reset').addEventListener('click', () => {
+  setPose(homeConstant(side(), nameInput.value.trim() || 'home'), false);
+  say('HOMECONSTANT načítaná, ulož ju ako home, ak ju chceš späť');
+});
 $('steps').addEventListener('click', () => void saveSteps());
 $('remove').addEventListener('click', () => void remove());
 nameInput.addEventListener('input', () => {
@@ -803,6 +923,11 @@ nameInput.addEventListener('input', () => {
 });
 for (const c of Object.values(show)) c.addEventListener('change', () => (c === show.other ? void showOther() : redraw()));
 window.addEventListener('resize', redraw);
+// A closer look: the stage grows (the page scrolls) and the hand is drawn sharper.
+$<HTMLSelectElement>('zoom').addEventListener('change', (e) => {
+  $('stage').style.setProperty('--zoom', (e.target as HTMLSelectElement).value);
+  redraw();
+});
 window.addEventListener('keydown', (e) => {
   if (!(e.ctrlKey || e.metaKey)) return;
   if (e.key === 'z') {

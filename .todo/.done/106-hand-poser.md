@@ -44,3 +44,9 @@ row's range `1`-`0`, `q`-`p`, `a`-`l`, `y`-`m`, others as the range's end plus t
 keyboard with the steps `rest1`..`rest4` that Tapko plays when the hands come onto the keys (instead of
 sliding in from the page's sides); the paw button in free typing (dev server only) opens the poser on the
 key typed last, and a save there shows in the open Tapko at once.
+
+## Follow-up 2 - 2026-11-02
+Rows named `q`-`p` and `z`-`m` (English letters). `HOME_CONSTANT` in the poser, with a reset button. Ring and
+little fingers thicker; the gaps between fingers end in a V; coloured nails dropped for thin nail-bed lines; thin
+folds of skin over the joints; the outline 1 unit, smoothed, thickened by the file's `stroke-width`; a zoom in
+the poser; the thumb straightened.

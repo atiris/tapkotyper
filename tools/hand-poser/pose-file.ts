@@ -24,12 +24,13 @@ export interface PoseFile {
 const POSE = /<metadata id="hand-pose">([\s\S]*?)<\/metadata>/;
 
 /** The SVG Tapko draws (src/ui/hand-svg.ts reads it), with the pose kept in its metadata for the poser. */
-export function poseSvg(pose: PoseFile, lines: string, nails: { f: number; d: string }[]): string {
+export function poseSvg(pose: PoseFile, lines: string, creases: string): string {
   return [
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${VIEW.x} ${VIEW.y} ${VIEW.w} ${VIEW.h}" data-side="${pose.side}">`,
     `<metadata id="hand-pose">${JSON.stringify(pose)}</metadata>`,
-    ...nails.map((n) => `<path class="hand-nail" data-finger="${n.f}" d="${n.d}" fill="#999" fill-opacity="0.4"/>`),
-    `<path class="hand-lines" d="${lines}" fill="#5a5560" fill-rule="evenodd"/>`,
+    `<path class="hand-creases" d="${creases}" fill="#5a5560" fill-opacity="0.6" fill-rule="evenodd"/>`,
+    // The outline is a thin filled band; a stroke (its width can be changed here) makes it thicker in Tapko.
+    `<path class="hand-lines" d="${lines}" fill="#5a5560" fill-rule="evenodd" stroke="#5a5560" stroke-width="0" stroke-linejoin="round"/>`,
     '</svg>',
     '',
   ].join('\n');

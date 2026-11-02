@@ -6,7 +6,7 @@ import { type PoseFile, VIEW, poseSvg } from './pose-file';
 
 /**
  * The hand poser's save and delete, on the dev server only (the poser is a local tool, never part of the built site).
- * A save gets the poser's renders (the lines and each nail as black on white PNGs, `px` pixels per keyboard unit over VIEW),
+ * A save gets the poser's renders (the outline and the thin lines as black on white PNGs, `px` pixels per keyboard unit over VIEW),
  * traces them into paths in keyboard units and writes `public/hands/<side>/<name>.svg` with the pose inside, then the list
  * `public/hands/index.json` that Tapko reads.
  */
@@ -17,16 +17,25 @@ interface SaveBody {
   pose: PoseFile;
   px: number;
   lines: string;
-  nails: { f: number; png: string }[];
+  creases: string;
 }
 
 const pngOf = (dataUrl: string) => Buffer.from(dataUrl.slice(dataUrl.indexOf(',') + 1), 'base64');
 
 /** Traced shapes of a black on white picture, in keyboard units. */
-async function trace(png: Buffer, px: number): Promise<string> {
-  const { default: potrace } = await import('potrace');
+/**
+ * Bits of line smaller than this many pixels are dropped (short broken pieces where the model's facets meet); the thin
+ * lines are short by nature, so they keep smaller ones.
+ */
+const SPECKS = 160, CREASE_SPECKS = 12;
+/** The renders are blurred this much (pixels) before tracing: the model's facets and stair steps smooth out. */
+const BLUR = 1.4;
+
+async function trace(png: Buffer, px: number, specks = SPECKS): Promise<string> {
+  const [{ default: potrace }, { default: sharp }] = await Promise.all([import('potrace'), import('sharp')]);
+  const smooth = await sharp(png).blur(BLUR).threshold(128).png().toBuffer();
   const svg = await new Promise<string>((ok, fail) =>
-    potrace.trace(png, { turdSize: 12, alphaMax: 1.3, optTolerance: 0.4, threshold: 128 }, (err, out) => (err ? fail(err) : ok(out))));
+    potrace.trace(smooth, { turdSize: specks, alphaMax: 1.3, optTolerance: 0.6, threshold: 128 }, (err, out) => (err ? fail(err) : ok(out))));
   const d = /\sd="([^"]*)"/.exec(svg)?.[1] ?? '';
   // potrace writes absolute commands with x y pairs only: every other number is an x.
   let i = 0;
@@ -66,9 +75,9 @@ export function handPoser(): Plugin {
           if (path.endsWith('delete')) rmSync(file, { force: true });
           else {
             const lines = await trace(pngOf(data.lines), data.px);
-            const nails = await Promise.all(data.nails.map(async (n) => ({ f: n.f, d: await trace(pngOf(n.png), data.px) })));
+            const creases = await trace(pngOf(data.creases), data.px, CREASE_SPECKS);
             mkdirSync(join(DIR, side), { recursive: true });
-            writeFileSync(file, poseSvg(data.pose, lines, nails.filter((n) => n.d)));
+            writeFileSync(file, poseSvg(data.pose, lines, creases));
           }
           writeIndex();
           res.setHeader('Content-Type', 'application/json');

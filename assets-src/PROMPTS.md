@@ -1238,6 +1238,8 @@ its physical shape; never "one moved finger" or "one stretched finger".
 - A reach to the top letter row (R, T, U): the index stretches onto the key (its tip on the key, not
   beyond it); the middle finger bends a little after it, the ring finger hardly, the little finger
   not at all; the thumb follows a little up and towards the reach; the whole hand moves up a hair.
+- T (the index far up and to the side): the other fingers of that hand curl so far that their last
+  joints tuck under the middle ones and are hardly seen from above.
 - The digit row (ť, 5): there the whole back of the hand moves up; a top-row reach must not look like it.
 - The bottom row (M): the finger bends, its nail is not visible, its tip on the lower part of the key
   (not below it, not on the space bar).

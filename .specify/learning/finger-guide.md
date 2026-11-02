@@ -9,9 +9,11 @@
   in the home position, only their lines drawn (nothing inside them), so every key shows through;
   a see-through nail in each finger's color; the wrists fade out below the keyboard. For the
   next key the hand that types it takes that key's pose (the other stays home; for a capital it
-  takes its Shift), and the key's letter is drawn over the hands (white, a thin outline in the
+  takes its Shift; for the space bar the thumb of the hand that did not type the last key goes
+  down); a pose bends the whole hand on a skeleton, as a real hand typing that key would, and the
+  hands move from one pose to the next. The key's letter is drawn over the hands (white, a thin outline in the
   finger's color, a small disc of that color fading from its middle), so a finger never hides
-  it. A key without a pose yet keeps the home position. On the get-ready card that opens a
+  it. On the get-ready card that opens a
   level the hands wait at the page's sides and slide onto the home position about a second
   later, or at once when the card closes; they then stay the whole level. They fade and hide
   with the guide, and are not in the heat map, the key pickers or the placement check.

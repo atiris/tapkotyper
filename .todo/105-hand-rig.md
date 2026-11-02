@@ -53,15 +53,17 @@ picture poses), `scripts/hands.mjs` (traces the base once and binds it), `public
   before the poses go into the app; his remarks go into §12.
 
 ## Steps
-- [ ] Measure the skeleton on home-base.png; script: trace once, bind, write `public/hands/rig.json`;
+- [x] Measure the skeleton on home-base.png; script: trace once, bind, write `public/hands/rig.json`;
   a debug picture of the bones and the point weights.
-- [ ] `src/ui/hand-rig.ts`: skeleton, deform (LBS on path control points), solver with the §12 rules;
+- [x] `src/ui/hand-rig.ts`: skeleton, deform (LBS on path control points), solver with the §12 rules;
   tests: the typing fingertip within 3 units of each lesson key's middle, untouched fingers unmoved for
   a home press, nails hidden on a bottom-row bend, the space bar's thumb by the last hand.
-- [ ] `src/ui/hands.ts`: rigged lines, tween, the last typed hand for the space bar; drop `poses.json`.
+- [x] `src/ui/hands.ts`: rigged lines, tween, the last typed hand for the space bar; drop `poses.json`.
 - [ ] Review artifact of all keys; the owner's remarks into §12 and the rule constants.
 - [ ] Spec update, build, tests, browser check (level, free typing, 1024x600).
 
 ## State
-Open. `public/hands/poses.json` (picture poses: home, U, pressed home keys of plan 104) stays in use
-until the rig replaces it. Gemini's U, R, T drawn from home-base.png may be useful to compare reaches.
+The rig is in the app (first try, as the owner asked: the home presses, the space bar, R, T and U by the
+§12 rules; other keys get the plain reach of their finger). Open: the owner's review, then the other rows
+and Shift tuned key by key; a curled fingertip still ends in a small point (linear skinning cannot round
+a knuckle).

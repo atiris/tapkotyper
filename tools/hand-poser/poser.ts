@@ -1115,33 +1115,39 @@ const pairUrl = (p: string, name: string) => `/__hand-poser/pair-file?pair=${enc
 async function showGemini(p: string): Promise<void> {
   const box = $('geminiBox'), img = $<HTMLImageElement>('geminiPicture'), text = $('geminiPrompt');
   img.src = pairUrl(p, 'picture.png');
+  $<HTMLImageElement>('geminiStyle').src = `/__hand-poser/style?t=${Date.now()}`;
   const r = await fetch(pairUrl(p, 'prompt.txt'));
   text.textContent = r.ok ? await r.text() : '';
   box.hidden = false;
 }
-$('geminiPicture').addEventListener('click', async () => {
-  const blob = await (await fetch($<HTMLImageElement>('geminiPicture').src)).blob();
-  await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
-  say('Obrázok pre Gemini je v schránke');
-});
+/** Copies a picture to the clipboard as PNG (the clipboard takes no JPEG). */
+async function copyPicture(img: HTMLImageElement, what: string): Promise<void> {
+  const c = Object.assign(document.createElement('canvas'), { width: img.naturalWidth, height: img.naturalHeight });
+  c.getContext('2d')!.drawImage(img, 0, 0);
+  const blob = await new Promise<Blob>((ok) => c.toBlob((b) => ok(b!), 'image/png'));
+  await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+  say(`${what} je v schránke`);
+}
+$('geminiPicture').addEventListener('click', () => void copyPicture($<HTMLImageElement>('geminiPicture'), 'Obrázok polohy'));
+$('geminiStyle').addEventListener('click', () => void copyPicture($<HTMLImageElement>('geminiStyle'), 'Vzorový vzhľad'));
 $('geminiPrompt').addEventListener('click', async () => {
   await navigator.clipboard.writeText($('geminiPrompt').textContent ?? '');
   say('Prompt je v schránke');
 });
 
-/** The pairs sent to Gemini: the last five as buttons, all in a list. */
-const RECENT = 5;
+/** The pairs sent to Gemini, newest first, to pick one (a tick: Gemini's answer is there). */
 async function loadPairs(): Promise<void> {
   const r = await fetch('/__hand-poser/pairs');
   const { pairs } = (await r.json()) as { pairs: { pair: string; answer: boolean }[] };
-  $('recentPairs').replaceChildren(...pairs.slice(0, RECENT).map(({ pair: p, answer }) => {
-    const b = Object.assign(document.createElement('button'), { textContent: p, className: answer ? 'answered' : '', title: answer ? 'má odpoveď Gemini' : 'bez odpovede Gemini' });
-    b.addEventListener('click', () => void openPair(p));
-    return b;
+  $('pairList').replaceChildren(...pairs.map(({ pair: p, answer }) => {
+    const label = Object.assign(document.createElement('label'), { className: answer ? 'answered' : '', title: answer ? 'má odpoveď Gemini' : 'bez odpovede Gemini' });
+    const radio = Object.assign(document.createElement('input'), { type: 'radio', name: 'pair', value: p, checked: p === pair() });
+    radio.addEventListener('change', () => void openPair(p));
+    label.append(radio, p);
+    return label;
   }));
-  const all = $<HTMLSelectElement>('allPairs');
-  all.replaceChildren(Object.assign(document.createElement('option'), { value: '', textContent: `všetky páry (${pairs.length})…` }),
-    ...pairs.map(({ pair: p }) => Object.assign(document.createElement('option'), { value: p, textContent: p })));
+  // The pair shown has a picture already: its pictures and prompt below.
+  if ($('geminiBox').hidden && pairs.some((x) => x.pair === pair())) await showGemini(pair());
 }
 /** A pair: both hands' poses, its picture and prompt, and the saved outlines over the keyboard. */
 async function openPair(p: string): Promise<void> {
@@ -1222,10 +1228,7 @@ $('gemini').addEventListener('click', () => void geminiPicture());
 $('fromGemini').addEventListener('click', () => void fromGemini());
 for (const c of [show.shade, show.lines]) c.addEventListener('change', redraw);
 show.preview.addEventListener('change', () => void showPreview());
-$<HTMLSelectElement>('allPairs').addEventListener('change', (e) => {
-  const p = (e.target as HTMLSelectElement).value;
-  if (p) void openPair(p);
-});
+
 window.addEventListener('resize', redraw);
 // A closer look: the stage grows (the page scrolls) and the hands are drawn sharper.
 $<HTMLSelectElement>('zoom').addEventListener('change', (e) => {

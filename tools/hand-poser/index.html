@@ -27,36 +27,41 @@
       <svg class="tips" id="tips" aria-hidden="true"></svg>
     </div>
     <section class="general">
-      <div class="buttons">
-        <button id="loadPair" title="Načíta pózy oboch rúk podľa názvov (nová póza začne zo základnej)">Načítať pár</button>
-        <button id="save" class="main" title="Uloží pózy oboch rúk ako SVG (Ctrl+S); kláves s uloženou pózou má zelenú guličku">Uložiť vzor pre tento pár</button>
-        <button id="mirrorLR" title="Pravá ruka ako zrkadlo ľavej">Zrkadliť ľavú → pravú</button>
-        <button id="mirrorRL" title="Ľavá ruka ako zrkadlo pravej">Zrkadliť pravú → ľavú</button>
-        <button id="steps" title="Uloží kroky rest1, rest2… oboch rúk medzi ich uloženými pózami rest a home">Prechod rest → home</button>
-        <button id="gemini" title="Uloží obrázok páru so stlmenou klávesnicou pre Gemini (assets-src/hands/gemini/ľavá+pravá/picture.png, 1376 × 768)">Vzor pre Gemini</button>
-        <button id="fromGemini" title="Najnovší obrázok v Downloads (novší ako vzor) vezme ako odpoveď Gemini, prekreslí ho do SVG oboch rúk a ukáže náhľad">Z Gemini do SVG</button>
+      <div class="pairs" title="Páry poslané do Gemini, najnovšie hore: výber načíta pózy, obrázky s promptom a náhľad SVG">
+        <h3>Páry</h3>
+        <div id="pairList" class="pair-list"></div>
       </div>
-      <div class="buttons">
-        <label><input type="checkbox" id="showShade" checked> Ruky</label>
-        <label><input type="checkbox" id="showLines" checked> Obrys</label>
-        <label title="Uložené SVG oboch rúk, ako ich kreslí Tapko"><input type="checkbox" id="showPreview"> Náhľad SVG</label>
-        <label><input type="checkbox" id="muted"> Stlmená klávesnica</label>
-        <label title="Pri symetrickom páre (home, rest): obrys pravej ruky z Gemini nahradí zrkadlo ľavej"><input type="checkbox" id="mirrorTrace"> Pravú zrkadliť z ľavej</label>
-        <label>Priblíženie <select id="zoom"><option value="1">1×</option><option value="2">2×</option><option value="3">3×</option></select></label>
-        <label>Klávesnica <select id="layout"><option value="us-qwerty">EN</option><option value="sk-qwertz">SK</option></select></label>
-        <label title="Ktorý prst stláča ktorý kláves: štandardne, alebo ergonomicky (číselný rad posunutý o prst)">Prsty <select id="scheme"><option value="standard">štandard</option><option value="ergonomic">ergonomické</option></select></label>
+      <div class="general-main">
+        <div class="buttons">
+          <button id="loadPair" title="Načíta pózy oboch rúk podľa názvov (nová póza začne zo základnej)">Načítať pár</button>
+          <button id="save" class="main" title="Uloží pózy oboch rúk ako SVG (Ctrl+S); kláves s uloženou pózou má zelenú guličku">Uložiť vzor pre tento pár</button>
+          <button id="mirrorLR" title="Pravá ruka ako zrkadlo ľavej">Zrkadliť ľavú → pravú</button>
+          <button id="mirrorRL" title="Ľavá ruka ako zrkadlo pravej">Zrkadliť pravú → ľavú</button>
+          <button id="steps" title="Uloží kroky rest1, rest2… oboch rúk medzi ich uloženými pózami rest a home">Prechod rest → home</button>
+          <button id="gemini" title="Uloží obrázok páru so stlmenou klávesnicou pre Gemini (assets-src/hands/gemini/ľavá+pravá/picture.png, 1376 × 768)">Vzor pre Gemini</button>
+          <button id="fromGemini" title="Najnovší obrázok v Downloads (novší ako vzor) vezme ako odpoveď Gemini, prekreslí ho do SVG oboch rúk a ukáže náhľad">Z Gemini do SVG</button>
+        </div>
+        <div class="buttons">
+          <label><input type="checkbox" id="showShade" checked> Ruky</label>
+          <label><input type="checkbox" id="showLines" checked> Obrys</label>
+          <label title="Uložené SVG oboch rúk, ako ich kreslí Tapko"><input type="checkbox" id="showPreview"> Náhľad SVG</label>
+          <label><input type="checkbox" id="muted"> Stlmená klávesnica</label>
+          <label title="Pri symetrickom páre (home, rest): obrys pravej ruky z Gemini nahradí zrkadlo ľavej"><input type="checkbox" id="mirrorTrace"> Pravú zrkadliť z ľavej</label>
+          <label>Priblíženie <select id="zoom"><option value="1">1×</option><option value="1.5">1,5×</option><option value="2">2×</option><option value="3">3×</option></select></label>
+          <label>Klávesnica <select id="layout"><option value="us-qwerty">EN</option><option value="sk-qwertz">SK</option></select></label>
+          <label title="Ktorý prst stláča ktorý kláves: štandardne, alebo ergonomicky (číselný rad posunutý o prst)">Prsty <select id="scheme"><option value="standard">štandard</option><option value="ergonomic">ergonomické</option></select></label>
+        </div>
+        <p id="status" class="status"></p>
+        <div class="gemini-box" id="geminiBox" hidden>
+          <div class="gemini-pictures">
+            <figure><img id="geminiPicture" alt="Obrázok polohy pre Gemini" title="Klik: skopíruje obrázok do schránky"><figcaption>1. poloha (tento pár)</figcaption></figure>
+            <figure><img id="geminiStyle" alt="Vzorový vzhľad rúk" title="Klik: skopíruje obrázok do schránky"><figcaption>2. vzorový vzhľad</figcaption></figure>
+          </div>
+          <pre id="geminiPrompt" title="Klik: skopíruje prompt do schránky"></pre>
+        </div>
+        <p class="hint">Klik na kláves mimo rúk: ruka, ktorá ho stláča, dostane jeho pózu (druhá ruka ostane, napr. veľké Q: klik na q0, potom na rs). Ťahaj krúžok na končeku prsta ktorejkoľvek ruky: do strán ho natočíš, hore a dolu ho vystrieš alebo ohneš.
+          Ťahaj dlaňou: posunieš ruku, so Shiftom ju otočíš. Ctrl+Z vráti zmenu ruky, ktorú si upravoval naposledy, Ctrl+S uloží obe.</p>
       </div>
-      <p id="status" class="status"></p>
-      <div class="pairs" title="Páry poslané do Gemini, najnovšie prvé: klik načíta pózy, obrázok s promptom a náhľad SVG">
-        <span>Páry</span><span id="recentPairs"></span>
-        <select id="allPairs"><option value="">všetky páry…</option></select>
-      </div>
-      <div class="gemini-box" id="geminiBox" hidden>
-        <img id="geminiPicture" alt="Obrázok pre Gemini" title="Klik: skopíruje obrázok do schránky">
-        <pre id="geminiPrompt" title="Klik: skopíruje prompt do schránky"></pre>
-      </div>
-      <p class="hint">Klik na kláves mimo rúk: ruka, ktorá ho stláča, dostane jeho pózu (druhá ruka ostane, napr. veľké Q: klik na q0, potom na rs). Ťahaj krúžok na končeku prsta ktorejkoľvek ruky: do strán ho natočíš, hore a dolu ho vystrieš alebo ohneš.
-        Ťahaj dlaňou: posunieš ruku, so Shiftom ju otočíš. Ctrl+Z vráti zmenu ruky, ktorú si upravoval naposledy, Ctrl+S uloží obe.</p>
     </section>
     <datalist id="names"></datalist>
   </main>

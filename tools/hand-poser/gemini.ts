@@ -11,6 +11,8 @@ import { MIRROR_X, VIEW } from './pose-file';
  */
 
 export const GEMINI_DIR = 'assets-src/hands/gemini';
+/** The look Gemini copies (the owner's approved drawing), the second picture sent with each pair's. */
+export const STYLE_SAMPLE = 'assets-src/hands/style-sample.jpg';
 const SIDES: Side[] = ['left', 'right'];
 
 /** The part of VIEW Gemini sees and its pixels per keyboard unit. */

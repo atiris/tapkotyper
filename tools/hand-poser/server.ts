@@ -2,7 +2,7 @@ import { mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'nod
 import { join } from 'node:path';
 import type { Plugin } from 'vite';
 import { POSE_NAME } from '../../src/ui/hand-svg';
-import { type PictureBody, answerFromDownloads, listPairs, pairFile, savePicture, traceAnswer, writeOutline } from './gemini';
+import { type PictureBody, STYLE_SAMPLE, answerFromDownloads, listPairs, pairFile, savePicture, traceAnswer, writeOutline } from './gemini';
 import { type PoseFile, VIEW, mirrorPath, poseSvg } from './pose-file';
 
 /**
@@ -87,6 +87,11 @@ export function handPoser(): Plugin {
         try {
           if (req.method === 'GET') {
             if (path === '/__hand-poser/pairs') return reply({ pairs: listPairs() });
+            if (path === '/__hand-poser/style') {
+              res.setHeader('Content-Type', 'image/jpeg');
+              res.setHeader('Cache-Control', 'no-store');
+              return res.end(readFileSync(STYLE_SAMPLE));
+            }
             const q = new URLSearchParams(query);
             const file = path === '/__hand-poser/pair-file' && pairFile(q.get('pair') ?? '', q.get('name') ?? '');
             if (!file) return next();

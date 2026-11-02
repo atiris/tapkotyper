@@ -20,7 +20,8 @@ body { margin: 0; display: grid; grid-template-columns: 290px 1fr 290px; height:
 .keys.muted rect { fill: #fdf4fb; stroke: #f0c8ea; }
 .keys.muted .stripe { display: none; }
 .keys.muted text { fill: #ecbde5; }
-.general { display: grid; justify-items: center; gap: 8px; margin-top: 12px; }
+.general { display: grid; grid-template-columns: 11em 1fr; gap: 16px; margin-top: 12px; align-items: start; }
+.general-main { display: grid; justify-items: center; gap: 8px; }
 .buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 12px; align-items: center; }
 .general .main { font-weight: 700; }
 .hint { color: #6a6070; max-width: 70em; text-align: center; margin: 0; }
@@ -40,8 +41,13 @@ legend { font-weight: 700; padding: 0 4px; }
 .slider { display: grid; grid-template-columns: 7em 1fr 3em; align-items: center; gap: 6px; }
 .slider input { width: 100%; }
 .slider output { text-align: right; font-variant-numeric: tabular-nums; }
-.pairs { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: center; }
-.pairs button.answered { font-weight: 700; }
-.gemini-box { display: grid; justify-items: center; gap: 8px; max-width: 70em; }
-.gemini-box img { width: min(100%, 560px); border: 1px solid #ddd; border-radius: 6px; cursor: copy; }
+.pairs h3 { font-size: 13px; margin: 0 0 6px; }
+.pair-list { display: grid; gap: 2px; max-height: 24em; overflow-y: auto; }
+.pair-list label { display: flex; gap: 6px; align-items: center; cursor: pointer; }
+.pair-list label.answered::after { content: '✓'; color: #2a9d4b; font-weight: 700; }
+.gemini-box { display: grid; justify-items: center; gap: 8px; width: 100%; max-width: 70em; }
+.gemini-pictures { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
+.gemini-pictures figure { margin: 0; display: grid; gap: 4px; justify-items: center; }
+.gemini-pictures figcaption { color: #6a6070; }
+.gemini-box img { width: 100%; border: 1px solid #ddd; border-radius: 6px; cursor: copy; }
 .gemini-box pre { white-space: pre-wrap; font: 12px/1.4 system-ui, sans-serif; background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 8px 10px; margin: 0; cursor: copy; max-height: 16em; overflow: auto; }

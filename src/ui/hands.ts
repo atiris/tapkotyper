@@ -16,21 +16,27 @@ const WIDTH = 15 * UNIT - GAP;
 const FADE = [283, 354];
 /** Seconds the hands wait at the sides before they come to the keys. */
 export const HANDS_ARRIVE_S = 1;
-/** Seconds a typed key's pose stays in free typing. */
+/** Seconds a typed key's pose stays in free typing, and each step on the way from rest to home. */
 const PRESS_S = 0.3;
-/** A hand's outline without its own pose for a key. */
+const STEP_S = 0.1;
+/** A hand's outline without its own pose for a key; the hands beside the keyboard; the steps between (`rest1`, `rest2`...). */
 const HOME = 'home';
+const REST = 'rest';
+/** The hand poser tells an open Tapko on the dev server that it saved an outline. */
+export const HANDS_CHANNEL = 'tapko-hands';
 
 const base = () => `${import.meta.env.BASE_URL}hands/`;
+// On the dev server an outline may change while Tapko is open (the hand poser saves it).
+const fresh: RequestInit = { cache: import.meta.env.DEV ? 'no-store' : 'default' };
 let indexLoad: Promise<HandIndex | null> | null = null;
 const shapes = new Map<string, Promise<HandShape | null>>();
 function loadIndex(): Promise<HandIndex | null> {
-  indexLoad ??= fetch(`${base()}index.json`).then((r) => (r.ok ? (r.json() as Promise<HandIndex>) : null)).catch(() => null);
+  indexLoad ??= fetch(`${base()}index.json`, fresh).then((r) => (r.ok ? (r.json() as Promise<HandIndex>) : null)).catch(() => null);
   return indexLoad;
 }
 function loadShape(side: Side, name: string): Promise<HandShape | null> {
   const key = `${side}/${name}`;
-  if (!shapes.has(key)) shapes.set(key, fetch(`${base()}${key}.svg`).then(async (r) => (r.ok ? readHandSvg(await r.text()) : null)).catch(() => null));
+  if (!shapes.has(key)) shapes.set(key, fetch(`${base()}${key}.svg`, fresh).then(async (r) => (r.ok ? readHandSvg(await r.text()) : null)).catch(() => null));
   return shapes.get(key)!;
 }
 
@@ -68,15 +74,16 @@ export function handOf(layout: Layout, code: string): Side | null {
  */
 export function poseNames(layout: Layout, step: KeyStep | null, lastHand: Side | null): Record<Side, string> {
   const names: Record<Side, string> = { left: HOME, right: HOME };
-  if (!step || !keyByCode(layout, step.code)) return names;
+  const name = step && poseName(layout, step.code);
+  if (!step || !name) return names;
   const hand = handOf(layout, step.code);
   if (!hand) {
-    names[lastHand === 'right' ? 'left' : 'right'] = poseName(step.code);
+    names[lastHand === 'right' ? 'left' : 'right'] = name;
     return names;
   }
-  names[hand] = poseName(step.code);
+  names[hand] = name;
   const shift = shiftKeyFor(layout, step);
-  if (shift) names[hand === 'left' ? 'right' : 'left'] = poseName(shift);
+  if (shift) names[hand === 'left' ? 'right' : 'left'] = poseName(layout, shift) ?? HOME;
   return names;
 }
 
@@ -104,6 +111,11 @@ export class Hands {
   private lastHand: Side | null = null;
   /** Counts the changes, so an outline that loads late never replaces a newer one. */
   private turn = 0;
+  /** Beside the keyboard (the level's start), on the way to the keys (the step), or on the keys. */
+  private place: 'rest' | number | 'keys' = 'keys';
+  private stepTimer = 0;
+  /** The outline of the key typed last, `<side>/<name>` (the hand poser opens it). */
+  lastPose = `left/${HOME}`;
 
   /** `fingerColor`: the colour of a finger (its nail). */
   constructor(private layout: Layout, private fingerColor: (finger: number) => string) {
@@ -144,11 +156,37 @@ export class Hands {
       this.index = index;
       this.update();
     });
+    if (import.meta.env.DEV) {
+      new BroadcastChannel(HANDS_CHANNEL).onmessage = () => {
+        indexLoad = null;
+        shapes.clear();
+        for (const s of ['left', 'right'] as Side[]) this.side[s].shown = '';
+        void loadIndex().then((index) => {
+          this.index = index;
+          this.update();
+        });
+      };
+    }
   }
 
-  /** The hands wait at the page's sides (on) or lie on the keys (off). */
+  /** The hands rest beside the keyboard (on) or come onto the keys (off), through the steps between when there are any. */
   park(on: boolean): void {
-    this.el.classList.toggle('parked', on);
+    // Already on the way: the steps go on.
+    if (!on && typeof this.place === 'number') return;
+    clearTimeout(this.stepTimer);
+    if (on) this.place = 'rest';
+    else if (this.place === 'rest' && !document.body.classList.contains('reduce-motion')) this.step(1);
+    else this.place = 'keys';
+    this.update();
+  }
+
+  private step(n: number): void {
+    const has = (s: Side) => this.index?.[s].includes(`${REST}${n}`);
+    this.place = has('left') || has('right') ? n : 'keys';
+    if (this.place !== 'keys') this.stepTimer = window.setTimeout(() => {
+      this.step(n + 1);
+      this.update();
+    }, STEP_S * 1000);
   }
 
   /** Shows how `key` is typed: the hands' outlines and its sign over them; null leaves both hands at home. */
@@ -180,9 +218,15 @@ export class Hands {
     const index = this.index;
     if (!index) return;
     const turn = ++this.turn;
-    const names = poseNames(this.layout, key?.step ?? null, this.lastHand);
+    const names = this.place === 'keys' ? poseNames(this.layout, key?.step ?? null, this.lastHand)
+      : { left: this.place === 'rest' ? REST : `${REST}${this.place}`, right: this.place === 'rest' ? REST : `${REST}${this.place}` };
+    if (key && this.place === 'keys') {
+      const hand = handOf(this.layout, key.step.code) ?? (names.left === HOME ? 'right' : 'left');
+      this.lastPose = `${hand}/${names[hand]}`;
+    }
     for (const s of ['left', 'right'] as Side[]) {
-      const name = index[s].includes(names[s]) ? names[s] : HOME;
+      const fallback = this.place !== 'keys' && index[s].includes(REST) ? REST : HOME;
+      const name = index[s].includes(names[s]) ? names[s] : fallback;
       if (name === this.side[s].shown) continue;
       void loadShape(s, name).then((shape) => {
         if (shape && turn === this.turn) this.draw(s, name, shape);

@@ -148,9 +148,14 @@ export class KeyboardGuide {
     return this.hands;
   }
 
-  /** The hands wait at the page's sides (on) or lie on the keys in the home position (off). */
+  /** The hands rest beside the keyboard (on) or come onto the keys in the home position (off). */
   parkHands(on: boolean): void {
     this.handsView().park(on);
+  }
+
+  /** The hands' outline of the key typed last, `<side>/<name>`. */
+  get handPose(): string {
+    return this.handsView().lastPose;
   }
 
   /**

@@ -389,7 +389,7 @@ export class LevelRuntime {
   }
 
   /**
-   * The get-ready card. When it is the level's first panel the hands wait at the page's sides and come onto the home
+   * The get-ready card. When it is the level's first panel the hands rest beside the keyboard and come onto the home
    * position a second later, or at once when the card closes; after key cards they are on the keys already.
    */
   private async readyCard(show: () => Promise<void>): Promise<void> {
@@ -1129,6 +1129,11 @@ export class LevelRuntime {
     // A beaten super-obstacle finishes the world: Tapko cheers, unless the mode's last cheer is still up.
     if (this.def.isSuper && !this.callouts.shouting) this.hooray();
     this.tapko.celebrate();
+  }
+
+  /** The hands' outline of the key typed last, `<side>/<name>` (the hand poser opens it on the dev server). */
+  handPose(): string {
+    return this.guide.handPose;
   }
 
   /** Ends an untimed practice or staying a while on request. */

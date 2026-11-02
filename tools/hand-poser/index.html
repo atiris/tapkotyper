@@ -20,6 +20,7 @@
     <section class="row">
       <label><input type="radio" name="side" value="left" checked> Ľavá</label>
       <label><input type="radio" name="side" value="right"> Pravá</label>
+      <label>Klávesnica <select id="layout"><option value="us-qwerty">EN</option><option value="sk-qwertz">SK</option></select></label>
     </section>
     <section class="files">
       <label>Uložené <select id="saved"></select></label>
@@ -30,6 +31,7 @@
       <button id="mirror" title="Póza druhej ruky s týmto názvom, zrkadlená">Zrkadliť z druhej ruky</button>
       <button id="save" class="main">Uložiť SVG</button>
       <button id="remove">Zmazať</button>
+      <button id="steps" title="Uloží kroky rest1, rest2… tejto ruky medzi uloženými pózami rest a home">Prechod rest → home</button>
       <p id="status" class="status"></p>
     </section>
     <section class="row">

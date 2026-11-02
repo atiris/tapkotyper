@@ -4,6 +4,7 @@ import leftGlb from '@webxr-input-profiles/assets/dist/profiles/generic-hand/lef
 import rightGlb from '@webxr-input-profiles/assets/dist/profiles/generic-hand/right.glb?url';
 import { type Finger, type KeyDef, LAYOUTS } from '../../src/keyboard/layouts';
 import { type HandIndex, POSE_NAME, type Side, VIEW, poseName, readHandSvg } from '../../src/ui/hand-svg';
+import { HANDS_CHANNEL } from '../../src/ui/hands';
 import { FINGER_COLORS } from '../../src/ui/keyboard-guide';
 import { type JointTurn, type PoseFile, readPose } from './pose-file';
 
@@ -100,13 +101,13 @@ const say = (text: string, error = false) => {
 // ---- the keyboard under the hand ----
 
 /**
- * The classic US keyboard, every key named as its pose is saved (poseName: from the key's code, a place on the keyboard, so
- * the same keys in Tapko's Slovak layout, except the ISO Enter), with the bottom row's modifiers that Tapko leaves out.
+ * Tapko's keyboard (English or Slovak, chosen on the page), every key named as its pose is saved (poseName), with the
+ * bottom row's modifiers that Tapko leaves out.
  */
 const MODIFIERS: KeyDef[] = [
   ['ControlLeft', 0], ['MetaLeft', 0], ['AltLeft', 4], ['Space', 4, 6.25], ['AltRight', 5], ['MetaRight', 9], ['ContextMenu', 9], ['ControlRight', 9],
 ].map(([code, finger, w]) => ({ code: code as string, base: code === 'Space' ? ' ' : '', shift: '', finger: finger as Finger, w: (w as number) ?? 1.25 }));
-const rows = [...LAYOUTS['us-qwerty'].rows.slice(0, 4), MODIFIERS];
+const layoutSelect = $<HTMLSelectElement>('layout');
 const NS = 'http://www.w3.org/2000/svg';
 function svgEl(name: string, attrs: Record<string, string | number>, parent: Element): SVGElement {
   const e = document.createElementNS(NS, name);
@@ -115,18 +116,34 @@ function svgEl(name: string, attrs: Record<string, string | number>, parent: Ele
   return e;
 }
 keysSvg.setAttribute('viewBox', `${VIEW.x} ${VIEW.y} ${VIEW.w} ${VIEW.h}`);
+const keysG = svgEl('g', {}, keysSvg);
 const keyRects = new Map<string, SVGElement>();
-for (const [r, row] of rows.entries()) {
-  let x = 0;
-  for (const d of row) {
-    x += (d.x ?? 0) * UNIT;
-    const w = (d.w ?? 1) * UNIT - GAP, y = r * (KEY_H + GAP);
-    keyRects.set(poseName(d.code), svgEl('rect', { x, y, width: w, height: KEY_H, rx: 6 }, keysSvg));
-    svgEl('rect', { class: 'stripe', x: x + 4, y: y + KEY_H - 7, width: w - 8, height: 3, rx: 1.5, fill: FINGER_COLORS[d.finger] }, keysSvg);
-    const label = poseName(d.code);
-    svgEl('text', { x: x + w / 2, y: y + (KEY_H - 9) / 2, class: label.length > 1 ? 'word' : '' }, keysSvg).textContent = label;
-    x += (d.w ?? 1) * UNIT;
+const names = $<HTMLDataListElement>('names');
+function drawKeys(): void {
+  const layout = LAYOUTS[layoutSelect.value as 'us-qwerty' | 'sk-qwertz'];
+  const rows = [...layout.rows.slice(0, 4), MODIFIERS];
+  const layoutWithMods = { ...layout, rows };
+  keysG.replaceChildren();
+  keyRects.clear();
+  names.replaceChildren();
+  for (const [value, label] of [['home', 'základná pozícia'], ['rest', 'ruky vedľa klávesnice']]) names.append(Object.assign(document.createElement('option'), { value, label }));
+  for (const [r, row] of rows.entries()) {
+    let x = 0;
+    for (const d of row) {
+      x += (d.x ?? 0) * UNIT;
+      const w = (d.w ?? 1) * UNIT - GAP, y = r * (KEY_H + GAP);
+      const name = poseName(layoutWithMods, d.code) ?? '';
+      const rect = svgEl('rect', { x, y, width: w, height: KEY_H, rx: 6 }, keysG);
+      // The ISO Enter's two parts are one key.
+      if (!keyRects.has(name)) keyRects.set(name, rect);
+      else rect.dataset.also = name;
+      svgEl('rect', { class: 'stripe', x: x + 4, y: y + KEY_H - 7, width: w - 8, height: 3, rx: 1.5, fill: FINGER_COLORS[d.finger] }, keysG);
+      svgEl('text', { x: x + w / 2, y: y + (KEY_H - 9) / 2, class: name.length > 1 ? 'word' : '' }, keysG).textContent = name;
+      if (!names.querySelector(`option[value="${name}"]`)) names.append(Object.assign(document.createElement('option'), { value: name, label: d.base.length === 1 ? d.base : '' }));
+      x += (d.w ?? 1) * UNIT;
+    }
   }
+  markKey();
 }
 // Where Tapko fades the wrists out.
 for (const y of [283, 354]) svgEl('line', { class: 'fade', x1: VIEW.x, x2: VIEW.x + VIEW.w, y1: y, y2: y }, keysSvg);
@@ -135,16 +152,14 @@ const tipsSvg = document.getElementById('tips') as unknown as SVGSVGElement;
 tipsSvg.setAttribute('viewBox', `${VIEW.x} ${VIEW.y} ${VIEW.w} ${VIEW.h}`);
 const other = { lines: svgEl('path', { class: 'other' }, keysSvg), nails: svgEl('g', { opacity: 0.3 }, keysSvg) };
 
-const names = $<HTMLDataListElement>('names');
-for (const [value, label] of [['home', 'základná pozícia'], ...rows.flat().map((d) => [poseName(d.code), d.base.length === 1 ? d.base : ''])]) {
-  const o = document.createElement('option');
-  o.value = value;
-  o.label = label;
-  names.append(o);
-}
 function markKey(): void {
-  for (const [code, rect] of keyRects) rect.style.fill = code === nameInput.value ? '#fff3b8' : '';
+  for (const rect of keysG.querySelectorAll<SVGElement>('rect:not(.stripe)')) {
+    const on = keyRects.get(nameInput.value) === rect || rect.dataset.also === nameInput.value;
+    rect.style.fill = on ? '#fff3b8' : '';
+  }
 }
+layoutSelect.addEventListener('change', drawKeys);
+drawKeys();
 
 // ---- three.js ----
 
@@ -537,7 +552,7 @@ function group(title: string): HTMLFieldSetElement {
   const hand = (key: keyof PoseFile['hand'], label: string, min: number, max: number, step = 1) =>
     slider(g, label, min, max, step, () => pose.hand[key], (v) => { pose.hand[key] = v; });
   hand('x', 'Zápästie x', VIEW.x, VIEW.x + VIEW.w);
-  hand('y', 'Zápästie y', 0, VIEW.y + VIEW.h);
+  hand('y', 'Zápästie y', 0, VIEW.y + VIEW.h + 200);
   hand('yaw', 'Otočenie', -60, 60, 0.5);
   hand('pitch', 'Sklon prstov', -40, 40, 0.5);
   hand('roll', 'Náklon', -40, 40, 0.5);
@@ -671,19 +686,69 @@ async function open(name: string): Promise<void> {
   void showOther();
 }
 
+/** Tells an open Tapko (same dev server) that an outline changed, so it shows it at once. */
+const tapko = new BroadcastChannel(HANDS_CHANNEL);
+
+/** Renders the pose shown and saves it; the saved file's path, or null when it failed (said on the page). */
+async function post(): Promise<string | null> {
+  const r = await fetch('/__hand-poser/save', { method: 'POST', body: JSON.stringify({ pose, px: EXPORT_PX, ...exportPngs() }) });
+  const res = (await r.json()) as { ok: boolean; file?: string; error?: string; index?: HandIndex };
+  if (!res.ok) {
+    say(res.error ?? 'Uloženie zlyhalo', true);
+    return null;
+  }
+  if (res.index) index = res.index;
+  return res.file ?? null;
+}
+
 async function save(): Promise<void> {
   const name = nameInput.value.trim();
-  if (!POSE_NAME.test(name)) return say('Názov ako na klávese: malé písmená a číslice (napríklad r, spc, lsft, home)', true);
+  if (!POSE_NAME.test(name)) return say('Názov ako na klávese: malé písmená a číslice (napríklad r, spac, lshi, l1, home, rest)', true);
   pose.name = name;
   pose.side = side();
   say('Ukladám…');
-  const r = await fetch('/__hand-poser/save', { method: 'POST', body: JSON.stringify({ pose, px: EXPORT_PX, ...exportPngs() }) });
-  const res = (await r.json()) as { ok: boolean; file?: string; error?: string; index?: HandIndex };
-  if (!res.ok) return say(res.error ?? 'Uloženie zlyhalo', true);
+  const file = await post();
+  if (!file) return;
   saved = JSON.stringify(pose);
-  if (res.index) index = res.index;
   await loadIndex();
-  say(`Uložené ${res.file}`);
+  tapko.postMessage(file);
+  say(`Uložené ${file}`);
+}
+
+/** The steps saved between rest and home, so the hands come onto the keys smoothly. */
+const STEPS = 4;
+/** A pose `t` of the way from `a` to `b` (every turn and the hand's place mixed). */
+function between(a: PoseFile, b: PoseFile, t: number): PoseFile {
+  const mix = (x = 0, y = 0) => Math.round((x + (y - x) * t) * 10) / 10;
+  const hand = { ...a.hand };
+  for (const k of Object.keys(hand) as (keyof PoseFile['hand'])[]) hand[k] = mix(a.hand[k], b.hand[k]);
+  const joints: Record<string, JointTurn> = {};
+  for (const j of new Set([...Object.keys(a.joints), ...Object.keys(b.joints)])) {
+    const [x, y] = [a.joints[j] ?? {}, b.joints[j] ?? {}];
+    joints[j] = { bend: mix(x.bend, y.bend), spread: mix(x.spread, y.spread), twist: mix(x.twist, y.twist) };
+  }
+  return { ...a, hand, joints, line: mix(a.line, b.line) };
+}
+
+async function saveSteps(): Promise<void> {
+  const s = side();
+  const [rest, home] = await Promise.all(['rest', 'home'].map(async (n) => {
+    const svg = await fetchSvg(s, n);
+    return svg && readPose(svg);
+  }));
+  if (!rest || !home) return say('Najprv ulož rest aj home tejto ruky', true);
+  const keep = pose;
+  for (let i = 1; i <= STEPS; i++) {
+    pose = { ...between(rest, home, i / (STEPS + 1)), name: `rest${i}`, side: s };
+    applyPose(current!, pose);
+    say(`Ukladám rest${i}…`);
+    if (!(await post())) break;
+  }
+  pose = keep;
+  refresh();
+  await loadIndex();
+  tapko.postMessage(`${s}/rest`);
+  say(`Uložené kroky rest1 až rest${STEPS}`);
 }
 
 async function remove(): Promise<void> {
@@ -691,6 +756,7 @@ async function remove(): Promise<void> {
   if (!index[side()].includes(name) || !confirm(`Zmazať ${side()}/${name}.svg?`)) return;
   await fetch('/__hand-poser/delete', { method: 'POST', body: JSON.stringify({ pose: { ...pose, name, side: side() } }) });
   await loadIndex();
+  tapko.postMessage(name);
   saved = '';
   say(`Zmazané ${name}`);
 }
@@ -703,10 +769,13 @@ async function chooseSide(): Promise<void> {
   current = hand;
   hand.root.visible = true;
   await loadIndex();
-  const name = index[s].includes(nameInput.value) ? nameInput.value : 'home';
+  const name = nameInput.value.trim() || 'home';
   if (index[s].includes(name)) await open(name);
   else {
-    setPose({ ...(await homeOf(s)), name: nameInput.value || 'home' }, false);
+    // A pose not saved yet starts from the home position.
+    nameInput.value = name;
+    setPose({ ...(await homeOf(s)), name }, false);
+    say(`Nová póza ${name} zo základnej pozície`);
     void showOther();
   }
 }
@@ -726,6 +795,7 @@ $('mirror').addEventListener('click', async () => {
   say(`Zrkadlené z ${from}/${nameInput.value}`);
 });
 $('save').addEventListener('click', () => void save());
+$('steps').addEventListener('click', () => void saveSteps());
 $('remove').addEventListener('click', () => void remove());
 nameInput.addEventListener('input', () => {
   markKey();
@@ -747,4 +817,8 @@ window.addEventListener('beforeunload', (e) => {
   if (JSON.stringify(pose) !== saved) e.preventDefault();
 });
 
+// Tapko's free typing opens the poser on the outline of the key typed last: `?pose=<side>/<name>`.
+const [wantSide, wantName] = (new URLSearchParams(location.search).get('pose') ?? '').split('/');
+if (wantSide === 'left' || wantSide === 'right') document.querySelector<HTMLInputElement>(`input[name=side][value=${wantSide}]`)!.checked = true;
+if (wantName && POSE_NAME.test(wantName)) nameInput.value = wantName;
 void chooseSide();

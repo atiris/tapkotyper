@@ -36,3 +36,11 @@ dependencies `three`, `@types/three`, `@webxr-input-profiles/assets`. No store c
 ## Done - 2026-11-02
 The tool and Tapko's side shipped with the two home poses (slanted, size and thumb as the owner asked).
 The per-key poses are left to the owner in the tool.
+
+## Follow-up - 2026-11-02
+On the owner's remarks: names by key place (`tab`, `caps`, `lshi`, `rshi`, `spac`, `ente`, `back`, the
+row's range `1`-`0`, `q`-`p`, `a`-`l`, `y`-`m`, others as the range's end plus the count further out:
+`11`, `01`, `p1`, `l1`...); the poser's keyboard English or Slovak; a flatter home; `rest` beside the
+keyboard with the steps `rest1`..`rest4` that Tapko plays when the hands come onto the keys (instead of
+sliding in from the page's sides); the paw button in free typing (dev server only) opens the poser on the
+key typed last, and a save there shows in the open Tapko at once.

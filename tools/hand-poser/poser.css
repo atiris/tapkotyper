@@ -1,7 +1,7 @@
 * { box-sizing: border-box; }
 body { margin: 0; display: grid; grid-template-columns: 1fr 340px; height: 100vh; font: 13px system-ui, sans-serif; background: #f4f1ec; color: #2d2140; }
 .stage-wrap { padding: 12px; overflow: auto; }
-.stage { position: relative; width: 100%; aspect-ratio: 1166 / 460; background: #fff; border-radius: 8px; box-shadow: 0 1px 4px #0002; }
+.stage { position: relative; width: 100%; aspect-ratio: 1666 / 460; background: #fff; border-radius: 8px; box-shadow: 0 1px 4px #0002; }
 .stage .keys, .stage canvas, .stage .tips { position: absolute; inset: 0; width: 100%; height: 100%; }
 .stage .tips { pointer-events: none; }
 .tips circle { fill: #fff8; stroke: #d55e00; stroke-width: 1.5; }

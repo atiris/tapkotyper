@@ -1207,15 +1207,22 @@ kite were tried and turned down).
 ## 12. Hands on the keyboard (no Gemini pictures any more)
 
 The outline hands over the on-screen keyboard are posed by hand in the **hand poser**, a local page of
-the dev server: `npm run dev`, then open `/tools/hand-poser/`. It shows a 3D hand (the WebXR generic
-hand, MIT) from above over the keyboard; the owner drags the fingertips (sideways turns the finger,
-up and down stretches or bends it), drags the palm (Shift turns the hand) and tunes every joint with
-the sliders. "Uložiť SVG" writes `public/hands/<left|right>/<name>.svg` (the outline Tapko draws, the
-pose kept inside to load and tune later) and `public/hands/index.json`; commit them. A pose is named by
-the key the hand presses, as written on the poser's keyboard (`r`, `5`, `semi`, `spc`, `lsft`, `home`
-for the home position); Tapko shows the home outline for a key without its own. "Zrkadliť z druhej
-ruky" starts a pose from the other hand's pose of the same name. Gemini pictures and the 2D skeleton
-were dropped: Gemini drifted on small changes and a flat drawing cannot bend like a hand.
+the dev server: `npm run dev`, then open `/tools/hand-poser/`, or in Tapko's "Len chcem písať" press the
+paw button (dev server only), which opens the outline of the key typed last. It shows a 3D hand (the
+WebXR generic hand, MIT) from above over the keyboard (English or Slovak); the owner drags the
+fingertips (sideways turns the finger, up and down stretches or bends it), drags the palm (Shift turns
+the hand) and tunes every joint with the sliders. "Uložiť SVG" writes `public/hands/<left|right>/<name>.svg`
+(the outline Tapko draws, the pose kept inside to load and tune later) and `public/hands/index.json`, and
+an open Tapko shows it at once; commit them. "Zrkadliť z druhej ruky" starts a pose from the other hand's
+pose of the same name.
+
+Names (as written on the poser's keyboard): `tab`, `caps`, `lshi`, `rshi`, `spac`, `ente`, `back`; the
+plain range of each row by its key (`1`-`0`, `q`-`p`, `a`-`l`, `y`-`m`, Slovak letters); any other key by
+the range's end and how many keys further out (`11` left of 1, `01` right of 0, `p1` right of P, `l1` = ô,
+`m1` right of M). `home` is the home position, `rest` the hands lying beside the keyboard when a level
+starts; "Prechod rest → home" saves the steps `rest1`...`rest4` between them, which Tapko plays when the
+hands come onto the keys. A key without its own outline shows `home`. Gemini pictures and the 2D
+skeleton were dropped: Gemini drifted on small changes and a flat drawing cannot bend like a hand.
 
 ### The owner's rules for the hands (keep every new pose to them)
 
@@ -1233,7 +1240,10 @@ Look
 - The thumb lies close to the hand, its tip on the space bar; the thumb's root at the wrist must not
   stick out from the back of the hand.
 - Home position: the fingertips in the middle of their keys, all eight in one row (the little fingers
-  only slightly tucked); the ring fingers' middle joints lie against the middle fingers.
+  only slightly tucked); the ring fingers' middle joints lie against the middle fingers. The hand is
+  fairly flat, lifted only a little, so the cuts between the fingers go deep.
+- Rest (a level's start): the hands lie beside the keyboard, less slanted, fingers flat enough that
+  the nails show; they come onto the home position through the steps between.
 
 Motion: a pose is the outline of a real hand seen from above typing that key, the whole hand keeping
 its physical shape; never "one moved finger" or "one stretched finger".
@@ -1250,7 +1260,7 @@ its physical shape; never "one moved finger" or "one stretched finger".
 - The digit row (ť, 5): there the whole back of the hand moves up; a top-row reach must not look like it.
 - The bottom row (M): the finger bends, its nail is not visible, its tip on the lower part of the key
   (not below it, not on the space bar).
-- The hands wait at the page's sides when a level starts and slide onto the home position about a
+- The hands rest beside the keyboard when a level starts and come onto the home position about a
   second later (at once with the space bar); then they stay the whole level, no parking when idle.
   They fade with the on-screen keyboard. In free typing they show the key typed at the moment it is
   typed, not the next one.

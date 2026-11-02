@@ -14,7 +14,7 @@
   on a 3D hand, and one pose fades into the next. The hands lie slanted, as with the elbows wide. The key's letter is drawn over the hands (white, a thin outline in the
   finger's color, a small disc of that color fading from its middle), so a finger never hides
   it. On the get-ready card that opens a
-  level the hands wait at the page's sides and slide onto the home position about a second
+  level the hands rest beside the keyboard and come onto the home position about a second
   later, or at once when the card closes; they then stay the whole level. They fade and hide
   with the guide, and are not in the heat map, the key pickers or the placement check.
 - The guide fades as the child improves (per-key mastery) and can be shown or hidden by

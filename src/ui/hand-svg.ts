@@ -1,14 +1,20 @@
+import type { Layout } from '../keyboard/layouts';
+
 /**
  * One hand's outline for one key, as the hand poser (tools/hand-poser) writes it: `public/hands/<side>/<name>.svg`, named
- * by the key the hand presses (poseName: `r`, `spc`, `lsft`, `home` for the home position); the list of them in
- * `public/hands/index.json`. Paths are in units of the full size keyboard (a key and its gap 58 wide, a row 50 high, the
- * digit row on top) over VIEW, so every file lies on the keyboard as it is.
+ * by the key the hand presses (poseName: `r`, `spac`, `lshi`, `l1`), `home` for the home position, `rest` beside the
+ * keyboard and `rest1`, `rest2`... on the way from rest to home; the list of them in `public/hands/index.json`. Paths
+ * are in units of the full size keyboard (a key and its gap 58 wide, a row 50 high, the digit row on top) over VIEW, so
+ * every file lies on the keyboard as it is.
  */
 
 export type Side = 'left' | 'right';
 
-/** The room the hands are drawn in: the keyboard (866 x 246) and around it, where the hands reach out and their wrists lie. */
-export const VIEW = { x: -150, y: -20, w: 1166, h: 460 };
+/**
+ * The room the hands are drawn in: the keyboard (866 x 246) and around it, where the hands reach out, rest beside it and
+ * their wrists lie.
+ */
+export const VIEW = { x: -400, y: -20, w: 1666, h: 460 };
 
 /** The hand's lines (filled shapes, even-odd) and its nails by finger (0-4 left pinky..thumb, 5-9 right thumb..pinky). */
 export interface HandShape {
@@ -25,16 +31,30 @@ export function readHandSvg(svg: string): HandShape {
   return { lines, nails };
 }
 
-/** The keys without a letter or digit, by their code: a short word of at most 4 letters, `l` and `r` for a pair (the ISO Enter's top is the Enter). */
+/** Keys named by a word; the bottom row's modifiers only in the hand poser (Tapko's keyboard leaves them out). */
 const WORDS: Record<string, string> = {
-  Backquote: 'grv', Minus: 'dash', Equal: 'eql', BracketLeft: 'lbrk', BracketRight: 'rbrk', Backslash: 'bsl', Semicolon: 'semi',
-  Quote: 'quot', Comma: 'comm', Period: 'dot', Slash: 'slsh', Tab: 'tab', CapsLock: 'caps', Enter: 'entr', EnterTop: 'entr', Backspace: 'bksp',
-  Space: 'spc', ShiftLeft: 'lsft', ShiftRight: 'rsft', ControlLeft: 'lctl', ControlRight: 'rctl', MetaLeft: 'lwin', MetaRight: 'rwin',
-  AltLeft: 'lalt', AltRight: 'ralt', ContextMenu: 'menu',
+  Tab: 'tab', CapsLock: 'caps', ShiftLeft: 'lshi', ShiftRight: 'rshi', Space: 'spac', Enter: 'ente', EnterTop: 'ente', Backspace: 'back',
+  ControlLeft: 'lctl', ControlRight: 'rctl', MetaLeft: 'lwin', MetaRight: 'rwin', AltLeft: 'lalt', AltRight: 'ralt', ContextMenu: 'menu',
 };
+/** Each row's plain range of keys, as on the Slovak keyboard, and the code of its first key. */
+const RANGES: [first: string, keys: string][] = [['Digit1', '1234567890'], ['KeyQ', 'qwertzuiop'], ['KeyA', 'asdfghjkl'], ['KeyZ', 'yxcvbnm']];
 
-/** A pose's name, its file's name: the key's letter or digit, or its word, in small letters (`KeyR` -> `r`, `ShiftLeft` -> `lsft`). */
-export const poseName = (code: string): string => WORDS[code] ?? code.replace(/^(Key|Digit)/, '').toLowerCase();
+/**
+ * A pose's name, its file's name, by the key's place: a word (`tab`, `lshi`, `spac`), a key of the row's plain range (`1`, `r`,
+ * `y`), or the range's end key and how many keys further out (`11` left of 1, `01` right of 0, `p1` right of P, `l1` ô).
+ */
+export function poseName(layout: Layout, code: string): string | null {
+  if (WORDS[code]) return WORDS[code];
+  for (const [r, row] of layout.rows.entries()) {
+    const keys = row.filter((d) => !WORDS[d.code]);
+    const at = keys.findIndex((d) => d.code === code);
+    if (at < 0 || !RANGES[r]) continue;
+    const [first, range] = RANGES[r];
+    const i = at - keys.findIndex((d) => d.code === first);
+    return i < 0 ? `${range[0]}${-i}` : i < range.length ? range[i] : `${range.at(-1)}${i - range.length + 1}`;
+  }
+  return null;
+}
 
 /** What a pose's name may be. */
 export const POSE_NAME = /^[a-z0-9]+$/;

@@ -1,8 +1,18 @@
 {
   "left": [
-    "home"
+    "home",
+    "rest",
+    "rest1",
+    "rest2",
+    "rest3",
+    "rest4"
   ],
   "right": [
-    "home"
+    "home",
+    "rest",
+    "rest1",
+    "rest2",
+    "rest3",
+    "rest4"
   ]
 }

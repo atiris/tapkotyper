@@ -739,10 +739,9 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .mini-stars i { grid-column: span 2; justify-self: center; width: var(--sw); height: var(--sw); clip-path: polygon(50% 0, 63% 35%, 100% 38%, 71% 60%, 80% 100%, 50% 77%, 20% 100%, 29% 60%, 0 38%, 37% 35%); background: #f5b301; }
 .mini-stars:is(.n1, .n2) i { grid-row: 1 / span 2; align-self: center; }
 .mini-stars.n1 i { grid-column: 3 / span 2; }
-.mini-stars:is(.n2, .n3) i:nth-child(1) { grid-column: 2 / span 2; }
-.mini-stars:is(.n2, .n3) i:nth-child(2) { grid-column: 4 / span 2; }
+.mini-stars:is(.n2, .n3, .n4) i:nth-child(1) { grid-column: 2 / span 2; }
+.mini-stars:is(.n2, .n3, .n4) i:nth-child(2) { grid-column: 4 / span 2; }
 .mini-stars.n3 i:nth-child(3) { grid-column: 3 / span 2; grid-row: 2; }
-.mini-stars.n4 i:nth-child(2) { grid-column: 5 / span 2; }
 .mini-stars.n4 i:nth-child(3) { grid-column: 2 / span 2; grid-row: 2; }
 .mini-stars.n4 i:nth-child(4) { grid-column: 4 / span 2; grid-row: 2; }
 .mini-stars.n5 i:nth-child(4) { grid-column: 2 / span 2; grid-row: 2; }

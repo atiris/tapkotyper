@@ -174,6 +174,20 @@ function drawKeys(): void {
     }
   }
   markKey();
+  markSaved();
+}
+/** The poses saved per hand (public/hands/index.json), filled in once the list is read. */
+let savedNames: HandIndex = { left: [], right: [] };
+const savedDots = svgEl('g', {}, keysSvg);
+/** A green dot in the corner of each key whose pose is saved (by the scheme's finger; either thumb for the space bar). */
+function markSaved(): void {
+  savedDots.replaceChildren();
+  const board = keyboard();
+  for (const { def, x, y, w } of keyBoxes) {
+    const fingers: Finger[] = def.code === 'Space' ? [4, 5] : [fingerOf(def, scheme())];
+    const saved = fingers.some((f) => savedNames[f <= 4 ? 'left' : 'right'].includes(poseName(board, def.code, f) ?? ''));
+    if (saved) svgEl('circle', { class: 'saved', cx: x + w - 8, cy: y + 8, r: 4.5 }, savedDots);
+  }
 }
 // Where Tapko fades the wrists out.
 for (const y of [283, 354]) svgEl('line', { class: 'fade', x1: VIEW.x, x2: VIEW.x + VIEW.w, y1: y, y2: y }, keysSvg);
@@ -897,6 +911,8 @@ async function loadIndex(): Promise<void> {
     const r = await fetch(`/hands/index.json?t=${Date.now()}`);
     if (r.ok) index = (await r.json()) as HandIndex;
   } catch { /* nothing saved yet */ }
+  savedNames = index;
+  markSaved();
   for (const s of SIDES) {
     const list = own<HTMLSelectElement>(s, 'saved');
     list.replaceChildren(...index[s].map((n) => Object.assign(document.createElement('option'), { value: n, textContent: n })));

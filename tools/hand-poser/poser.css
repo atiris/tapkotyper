@@ -14,6 +14,7 @@ body { margin: 0; display: grid; grid-template-columns: 290px 1fr 290px; height:
 .keys rect { fill: #f6f3ef; stroke: #d8d2ca; }
 .keys .stripe { stroke: none; }
 .keys text { font: 600 14px system-ui, sans-serif; fill: #8a8090; text-anchor: middle; dominant-baseline: central; }
+.keys .saved { fill: #2a9d4b; stroke: #fff; stroke-width: 1; }
 .keys .fade { stroke: #c9b; stroke-dasharray: 6 6; fill: none; }
 /* The keyboard as Gemini sees it: muted and pink, so it stays a background and splits easily from the hands. */
 .keys.muted rect { fill: #fdf4fb; stroke: #f0c8ea; }

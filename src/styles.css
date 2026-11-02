@@ -986,11 +986,13 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
 .kb-hands.ready { opacity: 1; }
 .kb-hands .hand-lines { fill: var(--hand-line); fill-rule: evenodd; }
 .kb-hands .hand-creases { fill: var(--hand-line); fill-rule: evenodd; opacity: 0.35; }
-.kb-hands .hand-nail { fill-opacity: 0.22; }
+.kb-hands .hand-nail { fill-opacity: 0.4; }
 .kb-hands .hand-left, .kb-hands .hand-right { transition: transform 0.9s cubic-bezier(0.3, 0, 0.2, 1); }
 .kb-hands.parked .hand-left { transform: translateX(-330px); }
 .kb-hands.parked .hand-right { transform: translateX(330px); }
-.kb-hands .hand-letter { fill: #fff; font: 700 17px var(--font-keys); text-anchor: middle; stroke: var(--hit); stroke-width: 3.5; stroke-linejoin: round; paint-order: stroke; }
+.kb-hands .hand-letter { fill: #fff; font: 700 17px var(--font-keys); text-anchor: middle; dominant-baseline: central; stroke: var(--hit); stroke-width: 3.5; stroke-linejoin: round; paint-order: stroke; }
+/* The hands draw the next key's letter over themselves; the key's own letter would show beside it. */
+.kb:has(> .kb-hands.ready) .kb-key.next .kb-label { visibility: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .kb-hands .hand-left, .kb-hands .hand-right { transition: opacity 0.3s; }
   .kb-hands.parked .hand-left, .kb-hands.parked .hand-right { transform: none; opacity: 0; }

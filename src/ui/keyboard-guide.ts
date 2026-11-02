@@ -190,6 +190,13 @@ export class KeyboardGuide {
     this.el.classList.toggle('hidden', !on);
   }
 
+  /** Free typing: the hands show the key just typed (its code, with or without Shift) for a moment. */
+  press(code: string, shift: boolean): void {
+    const def = keyByCode(this.layout, code);
+    if (!def) return;
+    this.handsView().press({ step: { code, shift }, label: label(def.base, def.shift), color: FINGER_COLORS[def.finger] });
+  }
+
   /** The keys of `ch` go down for a moment: the hands type it (the paw help). */
   tap(ch: string): void {
     for (const step of stepsFor(this.layout, ch)) {

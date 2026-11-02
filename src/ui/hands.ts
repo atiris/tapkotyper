@@ -6,10 +6,11 @@ import { type KeyStep, type Layout, keyByCode, shiftKeyFor } from '../keyboard/l
  * lies over `.kb` and scales with it, so the hands keep to the keys at any size; inside `.kb` they also fade with it.
  */
 
-/** One hand's lines: its outline and its softer joint creases. */
+/** One hand's lines: its outline, its softer joint creases and its nails (each with its finger). */
 interface HandLines {
   d: string;
   creases: string;
+  nails: { d: string; f: number }[];
 }
 interface Poses {
   home: Record<Side, HandLines>;
@@ -18,18 +19,17 @@ interface Poses {
 type Side = 'left' | 'right';
 
 const UNIT = 58, GAP = 4, KEY_H = 46, ROW = KEY_H + GAP;
+/** Where a key's letter sits: the middle of the key above its finger stripe. */
+const LABEL_Y = (KEY_H - 9) / 2;
 /** The full size keyboard's width (15 units) and the room around it: the hands reach out and their wrists below. */
 const WIDTH = 15 * UNIT - GAP;
 const VIEW = { x: -150, y: -20, w: WIDTH + 300, h: 460 };
 /** The wrists fade out between these heights. */
 const FADE = [283, 354];
-/** The keys the fingertips rest on, little finger to index on the left, index to little finger on the right. */
-const HOME: Record<Side, string[]> = { left: ['KeyA', 'KeyS', 'KeyD', 'KeyF'], right: ['KeyJ', 'KeyK', 'KeyL', 'Semicolon'] };
-const FINGERS: Record<Side, number[]> = { left: [0, 1, 2, 3], right: [6, 7, 8, 9] };
-/** Below the key's middle, where the nail sits on a resting fingertip. */
-const NAIL_DY = 3;
 /** Seconds the hands wait at the sides before they come to the keys. */
 export const HANDS_ARRIVE_S = 1;
+/** Seconds a typed key's pose stays in free typing. */
+const PRESS_S = 0.3;
 
 let posesLoad: Promise<Poses | null> | null = null;
 function loadPoses(): Promise<Poses | null> {
@@ -87,12 +87,15 @@ export interface HandsKey {
 export class Hands {
   readonly el: SVGSVGElement;
   private poses: Poses | null = null;
-  private side: Record<Side, { g: SVGElement; lines: SVGElement; creases: SVGElement; nails: SVGElement[] }>;
+  private side: Record<Side, { g: SVGElement; lines: SVGElement; creases: SVGElement; nails: SVGElement }>;
   private focus: SVGElement;
   private disc: SVGElement;
   private letter: SVGElement;
   private stops: SVGElement[];
-  private shown: HandsKey | null = null;
+  /** The next key the hands show, and a key just typed in free typing, which they show for a moment instead. */
+  private next: HandsKey | null = null;
+  private pressed: HandsKey | null = null;
+  private pressTimer = 0;
 
   /** `fingerColor`: the colour of a finger (its nail). */
   constructor(private layout: Layout, private fingerColor: (finger: number) => string) {
@@ -107,17 +110,20 @@ export class Hands {
     el('stop', { offset: 1, 'stop-color': '#000' }, grad);
     const mask = el('mask', { id: `${id}-mask`, maskUnits: 'userSpaceOnUse', x: VIEW.x - 500, y: VIEW.y, width: VIEW.w + 1000, height: VIEW.h }, defs);
     el('rect', { x: VIEW.x - 500, y: VIEW.y, width: VIEW.w + 1000, height: VIEW.h, fill: `url(#${id}-fade)` }, mask);
+    // The nails are soft: their own shapes, blurred a little like the letter's disc.
+    const soft = el('filter', { id: `${id}-soft`, x: '-30%', y: '-30%', width: '160%', height: '160%' }, defs);
+    el('feGaussianBlur', { stdDeviation: 1.6 }, soft);
     const both = el('g', { mask: `url(#${id}-mask)` }, this.el);
     const make = (s: Side) => {
       const g = el('g', { class: `hand-${s}` }, both);
+      const nails = el('g', { class: 'hand-nails', filter: `url(#${id}-soft)` }, g);
       const lines = el('path', { class: 'hand-lines' }, g);
       const creases = el('path', { class: 'hand-creases' }, g);
-      const nails = HOME[s].map(() => el('ellipse', { class: 'hand-nail', rx: 8, ry: 7 }, g));
       return { g, lines, creases, nails };
     };
     this.side = { left: make('left'), right: make('right') };
     // The key being typed, over the hands: its letter with a thin outline in its finger's colour on a small disc of that
-    // colour fading from its centre, so a finger never hides it.
+    // colour fading from its centre, so a finger never hides it (the key's own letter is hidden meanwhile).
     const glow = el('radialGradient', { id: `${id}-glow` }, defs);
     this.stops = [[0, 0.9], [1, 0]].map(([offset, opacity]) => el('stop', { offset, 'stop-opacity': opacity }, glow));
     this.focus = el('g', { class: 'hand-focus', visibility: 'hidden' }, this.el);
@@ -126,7 +132,7 @@ export class Hands {
     void loadPoses().then((poses) => {
       this.poses = poses;
       this.el.classList.toggle('ready', !!poses);
-      this.show(this.shown);
+      this.paint();
     });
   }
 
@@ -137,42 +143,46 @@ export class Hands {
 
   /** Shows how `key` is typed: the hands' poses and its sign over them; null leaves both hands in the home position. */
   show(key: HandsKey | null): void {
-    this.shown = key;
+    this.next = key;
+    this.paint();
+  }
+
+  /** Free typing: the key just typed, in its pose for a moment, then back to what was shown. */
+  press(key: HandsKey): void {
+    this.pressed = key;
+    clearTimeout(this.pressTimer);
+    this.pressTimer = window.setTimeout(() => {
+      this.pressed = null;
+      this.paint();
+    }, PRESS_S * 1000);
+    this.paint();
+  }
+
+  private paint(): void {
+    const key = this.pressed ?? this.next;
     const poses = this.poses;
     if (poses) {
       const chosen = posesFor(this.layout, key?.step ?? null, (code) => !!poses.keys[code]);
       for (const s of ['left', 'right'] as Side[]) {
         const code = chosen[s];
         const lines = code ? poses.keys[code] : poses.home[s];
-        this.side[s].lines.setAttribute('d', lines.d);
-        this.side[s].creases.setAttribute('d', lines.creases);
-        this.placeNails(s, code);
+        const side = this.side[s];
+        side.lines.setAttribute('d', lines.d);
+        side.creases.setAttribute('d', lines.creases);
+        side.nails.replaceChildren(...lines.nails.map((n) => el('path', { class: 'hand-nail', d: n.d, fill: this.fingerColor(n.f) })));
       }
     }
     const at = key && keyCenter(this.layout, key.step.code);
     this.focus.setAttribute('visibility', at ? 'visible' : 'hidden');
     if (!key || !at) return;
+    // The letter where the key's own letter is: above the finger stripe.
+    const y = at[1] - KEY_H / 2 + LABEL_Y;
     for (const st of this.stops) st.setAttribute('stop-color', key.color);
     this.disc.setAttribute('cx', String(at[0]));
-    this.disc.setAttribute('cy', String(at[1] - 4));
+    this.disc.setAttribute('cy', String(y));
     this.letter.setAttribute('x', String(at[0]));
-    this.letter.setAttribute('y', String(at[1] + 2));
+    this.letter.setAttribute('y', String(y));
     this.letter.textContent = key.label;
     this.letter.style.setProperty('--hit', key.color);
-  }
-
-  /** See-through nails on the keys the fingertips rest on: home, or the posed key for its finger. */
-  private placeNails(s: Side, code: string | null): void {
-    const finger = code ? keyByCode(this.layout, code)?.finger : null;
-    HOME[s].forEach((home, i) => {
-      const on = finger === FINGERS[s][i] && code ? code : home;
-      const at = keyCenter(this.layout, on);
-      const nail = this.side[s].nails[i];
-      nail.setAttribute('visibility', at ? 'visible' : 'hidden');
-      if (!at) return;
-      nail.setAttribute('cx', String(at[0]));
-      nail.setAttribute('cy', String(at[1] + NAIL_DY));
-      nail.setAttribute('fill', this.fingerColor(FINGERS[s][i]));
-    });
   }
 }

@@ -16,7 +16,10 @@ const OUT = 'public/hands/poses.json';
 
 /** The hand each pose belongs to, and how much lower it sits (picture key units) so a stretch is not overdone. */
 const POSES = {
-  KeyU: { hand: 'right', down: 5 },
+  KeyA: { hand: 'left', down: 0 }, KeyS: { hand: 'left', down: 0 }, KeyD: { hand: 'left', down: 0 }, KeyF: { hand: 'left', down: 0 },
+  KeyG: { hand: 'left', down: 0 }, KeyR: { hand: 'left', down: 0 }, KeyT: { hand: 'left', down: 0 },
+  KeyH: { hand: 'right', down: 0 }, KeyJ: { hand: 'right', down: 0 }, KeyK: { hand: 'right', down: 0 }, KeyL: { hand: 'right', down: 0 },
+  Semicolon: { hand: 'right', down: 0 }, KeyU: { hand: 'right', down: 5 },
 };
 
 // ---- the keyboard Gemini drew on: square keys, 44 per key, the Q key's middle at (86, 20) ----
@@ -29,6 +32,9 @@ const APP = { unit: 58, row: 50 };
 const PINKY_IN = 4.5;
 // Lines apart from the outline up to this size (pixels) are the joint creases.
 const CREASE_MAX = 2500;
+// A nail is a small grey area closed by the nail's curve and the fingertip; the lines are widened by NAIL_GAP pixels
+// first, so a curve that does not quite meet the outline still closes it. Smaller areas are the keys' bumps.
+const NAIL_GAP = 2, NAIL_MIN = 150, NAIL_MAX = 5000;
 
 async function trace(file) {
   const { data, info } = await sharp(file).removeAlpha().raw().toBuffer({ resolveWithObject: true });
@@ -96,6 +102,29 @@ async function trace(file) {
     if (big.has(pieces.label[p]) && lum(px(p)) < 90 && nearFill(x, y)) ink[p] = 0;
   }
 
+  // The nails: grey of the hands away from the widened lines, in small closed pieces; grown back by the widening.
+  let nails = Buffer.alloc(W * H, 255);
+  {
+    const near = (x, y) => {
+      for (let dy = -NAIL_GAP; dy <= NAIL_GAP; dy++) for (let dx = -NAIL_GAP; dx <= NAIL_GAP; dx++) {
+        const nx = x + dx, ny = y + dy;
+        if (nx >= 0 && ny >= 0 && nx < W && ny < H && lum(px(ny * W + nx)) < 90) return true;
+      }
+      return false;
+    };
+    const open = new Uint8Array(W * H);
+    for (let p = 0; p < W * H; p++) open[p] = fill[p] && !near(p % W, (p - (p % W)) / W) ? 1 : 0;
+    const areas = components((p) => open[p], false);
+    const small = (p) => open[p] && areas.sizes[areas.label[p]] >= NAIL_MIN && areas.sizes[areas.label[p]] <= NAIL_MAX;
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      if (!small(y * W + x)) continue;
+      for (let dy = -NAIL_GAP; dy <= NAIL_GAP; dy++) for (let dx = -NAIL_GAP; dx <= NAIL_GAP; dx++) {
+        const nx = x + dx, ny = y + dy;
+        if (nx >= 0 && ny >= 0 && nx < W && ny < H) nails[ny * W + nx] = 0;
+      }
+    }
+  }
+
   // The little fingers move a little towards the others, softly: the full shift beyond the gap between A and S (L and Ô),
   // none past it and none below the bottom letter row.
   {
@@ -108,12 +137,16 @@ async function trace(file) {
       if (x < (lNone + rNone) / 2) return shift * v * (1 - smooth((x - lFull) / (lNone - lFull)));
       return -shift * v * smooth((x - rNone) / (rFull - rNone));
     };
-    const moved = Buffer.alloc(W * H, 255);
-    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
-      const sx = Math.round(x - disp(x, y));
-      if (sx >= 0 && sx < W) moved[y * W + x] = ink[y * W + sx];
-    }
-    ink = moved;
+    const warp = (buf) => {
+      const moved = Buffer.alloc(W * H, 255);
+      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+        const sx = Math.round(x - disp(x, y));
+        if (sx >= 0 && sx < W) moved[y * W + x] = buf[y * W + sx];
+      }
+      return moved;
+    };
+    ink = warp(ink);
+    nails = warp(nails);
   }
 
   // The outline is one big line per hand; the creases are small lines apart from it.
@@ -137,6 +170,7 @@ async function trace(file) {
   };
   const outline = halves(await svgOf(await layer((n) => n > CREASE_MAX, true)));
   const creases = halves(await svgOf(await layer((n) => n <= CREASE_MAX, false)));
+  const nailPaths = halves(await svgOf(await sharp(nails, { raw: { width: W, height: H, channels: 1 } }).png().toBuffer()));
 
   /** Every point of a path from picture pixels into app keyboard units, with the hand's fit and its pose's drop. */
   const place = (d, side, down) => d.replace(/(-?\d+(?:\.\d+)?)[ ,]+(-?\d+(?:\.\d+)?)/g, (_, a, b) => {
@@ -145,18 +179,49 @@ async function trace(file) {
     const fy = FIT.tipY + (ky - FIT.tipY) * FIT.scale[1] - FIT.lift + down;
     return `${((fx * APP.unit) / PITCH).toFixed(1)} ${(APP.row + (fy * APP.row) / PITCH).toFixed(1)}`;
   }).replace(/,/g, '');
-  const hands = (down) => Object.fromEntries(['left', 'right'].map((side) => [side, { d: place(outline[side].join(' '), side, down), creases: place(creases[side].join(' '), side, down) }]));
+  /** The middle of a placed path (its points' bounding box). */
+  const middle = (d) => {
+    const n = d.match(/-?\d+(?:\.\d+)?/g).map(Number), xs = n.filter((_, i) => i % 2 === 0), ys = n.filter((_, i) => i % 2);
+    return [(Math.min(...xs) + Math.max(...xs)) / 2, (Math.min(...ys) + Math.max(...ys)) / 2];
+  };
+  const hands = (down) => Object.fromEntries(['left', 'right'].map((side) => [side, {
+    d: place(outline[side].join(' '), side, down),
+    creases: place(creases[side].join(' '), side, down),
+    nails: nailPaths[side].map((sub) => { const d = place(sub, side, down); return { d, at: middle(d) }; }),
+  }]));
   console.log(file, `${W}x${H}`, 'scale', s.toFixed(3));
   return hands;
 }
 
+/** Fingers of a hand from the little finger outwards: the home picture's nails, the thumb's the lowest, the others by x. */
+const FINGERS = { left: [0, 1, 2, 3], right: [6, 7, 8, 9] }, THUMB = { left: 4, right: 5 };
+function homeFingers(side, nails) {
+  const thumb = nails.reduce((a, b) => (b.at[1] > a.at[1] ? b : a));
+  const rest = nails.filter((n) => n !== thumb).sort((a, b) => a.at[0] - b.at[0]);
+  if (rest.length !== 4) throw new Error(`home: ${side} hand has ${rest.length + 1} nails, 5 expected`);
+  return [{ ...thumb, f: THUMB[side] }, ...rest.map((n, i) => ({ ...n, f: FINGERS[side][i] }))];
+}
+/** A pose's nails take the finger of the nearest home nail of the same hand. */
+const nearestFinger = (home, at) => home.reduce((a, b) => (Math.hypot(b.at[0] - at[0], b.at[1] - at[1]) < Math.hypot(a.at[0] - at[0], a.at[1] - at[1]) ? b : a)).f;
+const nailsOut = (nails) => nails.map(({ d, f }) => ({ d, f }));
+
 if (!existsSync(`${SRC}/home.jpg`)) throw new Error('assets-src/hands/home.jpg is missing');
-const out = { home: (await trace(`${SRC}/home.jpg`))(0), keys: {} };
-for (const file of readdirSync(SRC).filter((f) => /^[A-Z]\w+\.jpg$/.test(f))) {
-  const code = file.replace(/\.jpg$/, '');
+const home = (await trace(`${SRC}/home.jpg`))(0);
+const homeNails = { left: homeFingers('left', home.left.nails), right: homeFingers('right', home.right.nails) };
+const out = { home: Object.fromEntries(['left', 'right'].map((s) => [s, { ...home[s], nails: nailsOut(homeNails[s]) }])), keys: {} };
+for (const file of readdirSync(SRC).filter((f) => /^[A-Z]\w+\.(jpg|png)$/.test(f))) {
+  const code = file.replace(/\.(jpg|png)$/, '');
   const pose = POSES[code];
   if (!pose) { console.warn(`no pose settings for ${code}, skipped`); continue; }
-  out.keys[code] = { hand: pose.hand, ...(await trace(`${SRC}/${file}`))(pose.down)[pose.hand] };
+  const lines = (await trace(`${SRC}/${file}`))(pose.down)[pose.hand];
+  const nails = lines.nails.map((n) => ({ d: n.d, f: nearestFinger(homeNails[pose.hand], n.at) }));
+  // A nail the pose picture does not close stays where it rests at home, moved with the pose.
+  const dy = (pose.down * APP.row) / PITCH;
+  for (const n of homeNails[pose.hand]) {
+    if (nails.some((m) => m.f === n.f)) continue;
+    nails.push({ f: n.f, d: n.d.replace(/(-?\d+(?:\.\d+)?) (-?\d+(?:\.\d+)?)/g, (_, x, y) => `${x} ${(Number(y) + dy).toFixed(1)}`) });
+  }
+  out.keys[code] = { hand: pose.hand, ...lines, nails: nailsOut(nails) };
 }
 writeFileSync(OUT, JSON.stringify(out));
 console.log(`${OUT}: home and ${Object.keys(out.keys).length} key poses`);

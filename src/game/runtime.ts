@@ -661,6 +661,7 @@ export class LevelRuntime {
     this.sfx('key');
     mode.key(c.ch);
     this.updateGuide();
+    this.guide.press(c.code, c.shift);
   }
 
   private freeErase(): void {

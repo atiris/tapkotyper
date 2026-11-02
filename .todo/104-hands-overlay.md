@@ -40,5 +40,8 @@ Affected: `src/ui/keyboard-guide.ts`, new `src/ui/hands.ts`, `src/game/runtime.t
 - [x] Specs, tests (pose choice), build, browser check (level start, typing, paw help, 1024x600); key cards not opened yet.
 
 ## State
+The owner's rules for the hands are in `assets-src/PROMPTS.md` section 12. `scripts/hands-base.mjs` makes the new
+base (fingertips centred). Moving a finger's pixels (`scripts/hands.mjs` moves) was rejected: it does not look like a real
+hand and leaves torn lines; `public/hands/poses.json` stays the earlier set until a better way is chosen.
 The hands, their arrival and the paw help work with the home and U poses; every other key keeps the
 home position until its pose is drawn. Open: the poses of the other keys.

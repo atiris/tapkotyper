@@ -1211,6 +1211,41 @@ The outline hands over the on-screen keyboard. Save into `assets-src/hands/` and
 fill is dropped and only the black lines stay; their place comes from the coloured stripes under
 Q and Ä, so the keyboard in the picture must stay exactly as attached.
 
+### The owner's rules for the hands (keep every new pose to them)
+
+Look
+- Lines only, nothing inside: every key shows through. The line is grey, not black, a little thinner
+  than Gemini draws it; the joint creases softer still. The wrists fade out below the keyboard.
+- Nails: the drawn nail's own shape, in its finger's colour, see-through and slightly blurred; each
+  pose has its own nails (where a finger moves, its nail moves with it).
+- The key being typed is always readable: its letter is drawn over the hands (white, a thin solid
+  outline in the finger's colour, on a small disc half a key wide that fades from its centre); the
+  key's own letter underneath is hidden, never two letters.
+- Adult hands: fingers a little longer than Gemini drew them, but not flat and not chubby.
+- Home position: the fingertips in the middle of their keys, all eight in one row (the little fingers
+  only slightly tucked); the ring fingers' middle joints lie against the middle fingers (lines may
+  touch or overlap, as real fingers do). The Gemini base must already be like that
+  (`home-base.png`, made by `scripts/hands-base.mjs`), or every pose drawn from it keeps the fault.
+
+Motion: a pose is the outline of a real hand seen from above typing that key, the whole hand keeping
+its physical shape; never "one moved finger" or "one stretched finger".
+- A home key pressed: the finger bends a little, its tip AND its middle joint go a little towards the
+  palm (only the last joint moving looks broken); the little and ring fingers also come a little
+  towards the index, the ring finger as if sliding under the middle finger; the other fingers do not
+  deform. The index pressed brings the middle finger very slightly closer (its middle and its tip
+  very slightly). Mirrored on the right hand.
+- The space bar: only the thumb of the hand that did NOT type the last key presses (it goes a little lower).
+- A reach to the top letter row (R, T, U): the index stretches onto the key (its tip on the key, not
+  beyond it); the middle finger bends a little after it, the ring finger hardly, the little finger
+  not at all; the thumb follows a little up and towards the reach; the whole hand moves up a hair.
+- The digit row (ť, 5): there the whole back of the hand moves up; a top-row reach must not look like it.
+- The bottom row (M): the finger bends, its nail is not visible, its tip on the lower part of the key
+  (not below it, not on the space bar).
+- The hands wait at the page's sides when a level starts and slide onto the home position about a
+  second later (at once with the space bar); then they stay the whole level, no parking when idle.
+  They fade with the on-screen keyboard. In free typing they show the key typed at the moment it is
+  typed, not the next one.
+
 - `keyboard.png`: the keyboard to draw on (square keys on the real 15-unit grid, the finger
   stripes under the letters). It is the base of `home.jpg` only.
 - `home.jpg`: **attach `keyboard.png`**. Both hands in the home position:

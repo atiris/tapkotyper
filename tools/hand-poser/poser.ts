@@ -941,10 +941,18 @@ async function post(s: Side): Promise<string | null> {
 
 const badName = () => say('Názov: ruka, prst a kláves (napríklad l2f0, r1sp, l520), alebo home, rest', true);
 
+/**
+ * Saves the hands whose pose changed or is not saved yet; an unchanged hand keeps its file (a new render of the same pose
+ * comes out a little different, and an outline drawn by Gemini would be lost), and a hand drawn by Gemini is asked first.
+ */
 async function save(): Promise<void> {
   if (!SIDES.every((s) => POSE_NAME.test(nameOf(s)))) return badName();
   const files: string[] = [];
-  for (const s of SIDES) {
+  const due = SIDES.filter((s) => !index[s].includes(nameOf(s)) || poses[s].name !== nameOf(s) || JSON.stringify(poses[s]) !== saved[s]);
+  if (!due.length) return say('Nič sa nezmenilo, súbory ostali');
+  for (const s of due) {
+    const old = await fetchSvg(s, nameOf(s));
+    if (old?.includes('data-source="gemini"') && !confirm(`${s}/${nameOf(s)} má obrys z Gemini. Uložením ho nahradí obrys z 3D. Pokračovať?`)) continue;
     poses[s].name = nameOf(s);
     say(`Ukladám ${s}/${poses[s].name}…`);
     const file = await post(s);
@@ -953,6 +961,7 @@ async function save(): Promise<void> {
     files.push(file);
   }
   await loadIndex();
+  if (!files.length) return say('Nič neuložené');
   tapko.postMessage(files.join(' '));
   void showPreview();
   say(`Uložené ${files.join(', ')}`);
@@ -1042,9 +1051,9 @@ const pair = () => `${nameOf('left')}+${nameOf('right')}`;
 
 const FINGER_WORD = ['', 'thumb', 'index finger', 'middle finger', 'ring finger', 'little finger'];
 const KEY_WORD: Record<string, string> = { Space: 'space bar', ShiftLeft: 'left Shift', ShiftRight: 'right Shift', Tab: 'Tab', CapsLock: 'Caps Lock', Enter: 'Enter', Backspace: 'Backspace' };
-/** The finger and the key's sign a hand's pose types, read from its name (none for home, rest and its steps). */
 /** The home keys by their names: each finger's own key on the home row. */
 const HOME_KEYS = ['a0', 's0', 'd0', 'f0', 'j0', 'k0', 'l0', 'l1'];
+/** The finger and the key's sign a hand's pose types, read from its name (none for home, rest and its steps). */
 function pressOf(s: Side): { finger: string; key: string; row: number; home: boolean } | null {
   const m = /^[lr]([1-5])([a-z0-9]{2})$/.exec(nameOf(s));
   const board = keyboard();

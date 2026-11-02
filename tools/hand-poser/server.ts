@@ -115,7 +115,7 @@ export function handPoser(): Plugin {
             const fromDownloads = answerFromDownloads(pair);
             const outlines = await traceAnswer(pair, (png, toUnits) => trace(png, toUnits, GEMINI.specks, GEMINI.blur, GEMINI.ink));
             // A symmetric pair (home, rest): the right hand as the left one's mirror, when Gemini drew it worse.
-            if (mirror) outlines.right = mirrorPath(outlines.left);
+            if (mirror) outlines.right = { lines: mirrorPath(outlines.left.lines), creases: mirrorPath(outlines.left.creases) };
             return reply({ fromDownloads, files: (['left', 'right'] as const).map((side) => writeOutline(join(DIR, side, `${names[side]}.svg`), outlines[side])) });
           }
           if (path !== '/__hand-poser/save' && path !== '/__hand-poser/delete') return next();

@@ -121,9 +121,10 @@ const DARK = 200;
 
 /**
  * Traces Gemini's answer for a pair into the two hands' outlines: the magenta marks place it on the keyboard, its dark
- * lines go to the hand whose silhouette is nearer. The traced outline of each hand, as an SVG path in keyboard units.
+ * lines go to the hand whose silhouette is nearer, split into the bold outline and the thin lines. Each hand's traced
+ * outline, as SVG paths in keyboard units.
  */
-export async function traceAnswer(pair: string, trace: (png: Buffer, toUnits: (x: number, y: number) => [number, number]) => Promise<string>): Promise<Record<Side, string>> {
+export async function traceAnswer(pair: string, trace: (png: Buffer, toUnits: (x: number, y: number) => [number, number]) => Promise<string>): Promise<Record<Side, Outline>> {
   const sharp = await sharpOf();
   const dir = dirOf(pair);
   const answer = readdirSync(dir).find((f) => ANSWER.test(f));
@@ -169,21 +170,54 @@ export async function traceAnswer(pair: string, trace: (png: Buffer, toUnits: (x
     const d = [distOf(0, ux, uy), distOf(1, ux, uy)], own = ux < MIRROR_X ? 0 : 1, k = d[own] > NEAR_HAND && d[1 - own] <= NEAR_HAND ? 1 - own : own;
     if (d[k] <= NEAR_HAND * 2) inks[k][i] = 0;
   }
-  const out = {} as Record<Side, string>;
+  const out = {} as Record<Side, Outline>;
+  const pngOfInk = (ink: Buffer) => sharp(ink, { raw: { width: W, height: H, channels: 1 } }).png().toBuffer();
   for (const [k, s] of SIDES.entries()) {
-    const png = await sharp(inks[k], { raw: { width: W, height: H, channels: 1 } }).png().toBuffer();
-    writeFileSync(join(dir, `${s}-traced.png`), png);
-    out[s] = await trace(png, toUnits);
+    writeFileSync(join(dir, `${s}-traced.png`), await pngOfInk(inks[k]));
+    const { bold, thin } = weights(inks[k], W, H);
+    out[s] = { lines: await trace(await pngOfInk(bold), toUnits), creases: await trace(await pngOfInk(thin), toUnits) };
   }
   return out;
 }
 
+/** A hand's outline (Gemini's bold line) and its thin lines (nails, folds, knuckles), as SVG paths. */
+export interface Outline { lines: string; creases: string }
+
+/**
+ * Gemini's lines split by their weight: the bold outline is 3-4 pixels wide, the thin lines 1-2. One step of erosion
+ * (a pixel stays only when all its neighbours are ink) leaves the bold lines' cores; the ink they reach again (two steps
+ * of growth within the ink) is the bold line, the rest is thin. Black (0) on white (255).
+ */
+function weights(ink: Buffer, W: number, H: number): { bold: Buffer; thin: Buffer } {
+  const isInk = (i: number) => ink[i] === 0;
+  const near = (i: number, test: (j: number) => boolean) => {
+    const x = i % W, y = (i - x) / W;
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+      const xx = x + dx, yy = y + dy;
+      if (xx >= 0 && yy >= 0 && xx < W && yy < H && test(yy * W + xx)) return true;
+    }
+    return false;
+  };
+  let bold = new Uint8Array(W * H);
+  for (let i = 0; i < W * H; i++) bold[i] = isInk(i) && !near(i, (j) => !isInk(j)) ? 1 : 0;
+  for (let step = 0; step < BOLD_GROW; step++) {
+    const next = new Uint8Array(bold);
+    for (let i = 0; i < W * H; i++) if (!bold[i] && isInk(i) && near(i, (j) => bold[j] === 1)) next[i] = 1;
+    bold = next;
+  }
+  const out = { bold: Buffer.alloc(W * H, 255), thin: Buffer.alloc(W * H, 255) };
+  for (let i = 0; i < W * H; i++) if (isInk(i)) (bold[i] ? out.bold : out.thin)[i] = 0;
+  return out;
+}
+/** Steps of growth back from a bold line's core to its edges (pixels). */
+const BOLD_GROW = 2;
+
 /** Puts a traced outline into a hand's saved SVG (its pose stays), marked as drawn by Gemini; the file's path. */
-export function writeOutline(file: string, lines: string): string {
+export function writeOutline(file: string, outline: Outline): string {
   if (!existsSync(file)) throw new Error(`${file} neexistuje: najprv ulož pózu`);
   const svg = readFileSync(file, 'utf8')
-    .replace(/<path class="hand-creases" d="[^"]*"/, '<path class="hand-creases" d=""')
-    .replace(/<path class="hand-lines" d="[^"]*"( data-source="[^"]*")?/, `<path class="hand-lines" d="${lines}" data-source="gemini"`);
+    .replace(/<path class="hand-creases" d="[^"]*"/, `<path class="hand-creases" d="${outline.creases}"`)
+    .replace(/<path class="hand-lines" d="[^"]*"( data-source="[^"]*")?/, `<path class="hand-lines" d="${outline.lines}" data-source="gemini"`);
   writeFileSync(file, svg);
   return file.replaceAll('\\', '/');
 }

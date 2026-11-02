@@ -1235,7 +1235,7 @@ Look
   the folds of skin over the joints (three over the middle joint, two over the last, two on the thumb).
 - The outline is thin (1 unit by default); a file's `stroke-width` on the outline makes it thicker in
   Tapko. The line is smoothed when saved, short broken bits are dropped.
-- The ring and little fingers are a little thicker than the 3D model's; the gaps between the fingers
+- The ring and little fingers are a little thicker than the 3D model's, every finger's base at the palm too; the gaps between the fingers
   end in a sharp V, not a soft U; the thumb's outer side runs smoothly, not broken at its joints.
 - The key being typed is always readable: its letter is drawn over the hands (white, a thin solid
   outline in the finger's colour, on a small disc half a key wide that fades from its centre); the
@@ -1247,7 +1247,7 @@ Look
   stick out from the back of the hand.
 - Home position: the fingertips in the middle of their keys, all eight in one row (the little fingers
   only slightly tucked); the ring fingers' middle joints lie against the middle fingers. The hand is
-  fairly flat, lifted only a little, so the cuts between the fingers go deep.
+  fairly flat, lifted only a little, the fingers only gently curled, so the cuts between the fingers go deep.
 - Rest (a level's start): the hands lie beside the keyboard, less slanted, fingers flat enough that
   the nails show; they come onto the home position through the steps between.
 

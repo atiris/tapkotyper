@@ -63,20 +63,20 @@ const spreadJoint = (f: FingerName) => (f === 'thumb' ? 'thumb-metacarpal' : `${
  */
 const HOME_CONSTANT: PoseFile = {
   v: 1, side: 'left', name: 'home', line: 1,
-  hand: { x: 145, y: 428, yaw: 18, pitch: 8, roll: 0, scale: 2565 },
+  hand: { x: 145, y: 446, yaw: 18, pitch: 8, roll: 0, scale: 2565 },
   joints: {
-    'index-finger-phalanx-proximal': { bend: 22.4, spread: 2.9 },
-    'index-finger-phalanx-intermediate': { bend: 39.9 },
-    'index-finger-phalanx-distal': { bend: 12 },
-    'middle-finger-phalanx-proximal': { bend: 26.2, spread: 2.2 },
-    'middle-finger-phalanx-intermediate': { bend: 47.3 },
-    'middle-finger-phalanx-distal': { bend: 16.5 },
-    'ring-finger-phalanx-proximal': { bend: 24.6, spread: -1.6 },
-    'ring-finger-phalanx-intermediate': { bend: 44 },
-    'ring-finger-phalanx-distal': { bend: 14.3 },
-    'pinky-finger-phalanx-proximal': { bend: 19.7, spread: -6.4 },
-    'pinky-finger-phalanx-intermediate': { bend: 34.5 },
-    'pinky-finger-phalanx-distal': { bend: 8.7 },
+    'index-finger-phalanx-proximal': { bend: 19.6, spread: 0.7 },
+    'index-finger-phalanx-intermediate': { bend: 34.4 },
+    'index-finger-phalanx-distal': { bend: 8.7 },
+    'middle-finger-phalanx-proximal': { bend: 23.8, spread: 0.6 },
+    'middle-finger-phalanx-intermediate': { bend: 42.5 },
+    'middle-finger-phalanx-distal': { bend: 13.6 },
+    'ring-finger-phalanx-proximal': { bend: 22, spread: -1.5 },
+    'ring-finger-phalanx-intermediate': { bend: 38.9 },
+    'ring-finger-phalanx-distal': { bend: 11.2 },
+    'pinky-finger-phalanx-proximal': { bend: 16.4, spread: -4.5 },
+    'pinky-finger-phalanx-intermediate': { bend: 27.9 },
+    'pinky-finger-phalanx-distal': { bend: 4.7 },
     'thumb-metacarpal': { bend: 12, spread: -19, twist: 20 },
     'thumb-phalanx-proximal': { bend: 10 },
     'thumb-phalanx-distal': { bend: 20 },
@@ -283,6 +283,8 @@ const hands: Partial<Record<Side, Promise<Hand>>> = {};
 
 /** Ring and little fingers a little thicker than the model's (the owner's eye): their skin pushed out from the bones. */
 const THICK: Partial<Record<FingerName, number>> = { ring: 1.08, pinky: 1.12 };
+/** The fingers' first bones a little thicker where they leave the palm, the extra fading out towards their next joint. */
+const BASE = 1.08;
 /** A triangle belongs to a finger when that finger moves it at least this much (else to the palm). */
 const WEB = 0.3;
 /** The nail bed's line: its width (of the finger's), and where it starts and ends along the last bone (of its length). */
@@ -292,7 +294,7 @@ const LIFT = 0.00015, FOLD_THICK = 0.0004, FOLD_GAP = 0.0011;
 /** Metres along the bone from a joint whose skin sets the height of its folds (wider takes in the bulge of the bone before). */
 const FOLD_REACH = 0.0025;
 
-/** Pushes the skin of the fingers in THICK out from their bones (in the pose the model is bound in). */
+/** Pushes the skin of the fingers in THICK and of the fingers' bases (BASE) out from their bones (in the pose the model is bound in). */
 function thicken(mesh: THREE.SkinnedMesh, fingerOf: (bone: string) => FingerName | null): void {
   const geo = mesh.geometry, pos = geo.getAttribute('position'), index = geo.getAttribute('skinIndex'), weight = geo.getAttribute('skinWeight');
   const bones = mesh.skeleton.bones, inverses = mesh.skeleton.boneInverses;
@@ -306,11 +308,14 @@ function thicken(mesh: THREE.SkinnedMesh, fingerOf: (bone: string) => FingerName
       const f = fingerOf(bones[b].name);
       if (f) by.set(f, (by.get(f) ?? 0) + w);
     }
-    const f = fingerOf(bones[main].name), k = f && THICK[f];
-    if (!f || !k) continue;
-    // Where the finger meets the palm the push fades out.
-    const kk = 1 + (k - 1) * (by.get(f) ?? 0);
+    const name = bones[main].name, f = fingerOf(name);
+    if (!f) continue;
     p.fromBufferAttribute(pos, i).applyMatrix4(mesh.bindMatrix).applyMatrix4(inverses[main]);
+    // Where the finger meets the palm the finger's own push fades out; the base's push is strongest there.
+    let kk = 1 + ((THICK[f] ?? 1) - 1) * (by.get(f) ?? 0);
+    const next = bones[main].children.find((c) => (c as THREE.Bone).isBone);
+    if (f !== 'thumb' && name.endsWith('phalanx-proximal') && next) kk *= 1 + (BASE - 1) * Math.max(0, 1 - -p.z / next.position.length());
+    if (kk === 1) continue;
     p.x *= kk;
     p.y *= kk;
     p.applyMatrix4(inverses[main].clone().invert()).applyMatrix4(mesh.bindMatrixInverse);

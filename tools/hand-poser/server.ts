@@ -29,15 +29,18 @@ const pngOf = (dataUrl: string) => Buffer.from(dataUrl.slice(dataUrl.indexOf(','
  * lines are short by nature, so they keep smaller ones.
  */
 const SPECKS = 520, CREASE_SPECKS = 12;
-/** Gemini draws clean lines: its short folds over the joints stay. */
-const GEMINI_SPECKS = 30;
+/**
+ * Gemini draws clean lines, its folds over the joints short and thin: small bits stay, a light blur only smooths the
+ * edges, and a light grey after it still counts as line.
+ */
+const GEMINI = { specks: 30, blur: 0.7, ink: 200 };
 /** The renders are blurred this much (pixels) before tracing: the model's facets and stair steps smooth out. */
 const BLUR = 1.4;
 
 /** Traced shapes of a black on white picture, in keyboard units (`toUnits` places a pixel). */
-async function trace(png: Buffer, toUnits: (x: number, y: number) => [number, number], specks = SPECKS): Promise<string> {
+async function trace(png: Buffer, toUnits: (x: number, y: number) => [number, number], specks = SPECKS, blur = BLUR, ink = 128): Promise<string> {
   const [{ default: potrace }, { default: sharp }] = await Promise.all([import('potrace'), import('sharp')]);
-  const smooth = await sharp(png).blur(BLUR).threshold(128).png().toBuffer();
+  const smooth = await sharp(png).blur(blur).threshold(ink).png().toBuffer();
   const svg = await new Promise<string>((ok, fail) =>
     potrace.trace(smooth, { turdSize: specks, alphaMax: 1.3, optTolerance: 0.6, threshold: 128 }, (err, out) => (err ? fail(err) : ok(out))));
   const d = /\sd="([^"]*)"/.exec(svg)?.[1] ?? '';
@@ -86,7 +89,7 @@ export function handPoser(): Plugin {
           if (path === '/__hand-poser/gemini-trace') {
             const { pair, names } = await body<{ pair: string; names: Record<'left' | 'right', string> }>(req);
             if (!Object.values(names).every((n) => POSE_NAME.test(n))) throw new Error('bad pose names');
-            const outlines = await traceAnswer(pair, (png, toUnits) => trace(png, toUnits, GEMINI_SPECKS));
+            const outlines = await traceAnswer(pair, (png, toUnits) => trace(png, toUnits, GEMINI.specks, GEMINI.blur, GEMINI.ink));
             return reply({ files: (['left', 'right'] as const).map((side) => writeOutline(join(DIR, side, `${names[side]}.svg`), outlines[side])) });
           }
           if (path !== '/__hand-poser/save' && path !== '/__hand-poser/delete') return next();

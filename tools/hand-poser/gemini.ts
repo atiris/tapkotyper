@@ -25,6 +25,8 @@ export interface PictureBody {
   marks: Mark[];
   /** The muted keyboard as SVG elements in keyboard units. */
   keyboard: string;
+  /** The prompt for this pair (./gemini-prompt.ts), saved next to the picture. */
+  prompt: string;
   /** Each hand's outline and silhouette, black on white PNGs over VIEW. */
   lines: string[];
   silhouettes: Record<Side, string>;
@@ -52,7 +54,7 @@ async function grey(dataUrl: string, px: number): Promise<{ data: Buffer; w: num
   return { data, w, h };
 }
 
-/** Writes the pair's picture for Gemini and the hands' silhouettes; the picture's path. */
+/** Writes the pair's picture for Gemini, its prompt and the hands' silhouettes; the picture's path. */
 export async function savePicture(b: PictureBody): Promise<string> {
   const sharp = await sharpOf();
   const dir = dirOf(b.pair), f = b.view;
@@ -78,6 +80,7 @@ export async function savePicture(b: PictureBody): Promise<string> {
     const m = await grey(b.silhouettes[s], MASK_PX);
     await sharp(m.data, { raw: { width: m.w, height: m.h, channels: 1 } }).png().toFile(join(dir, `${s}-silhouette.png`));
   }
+  writeFileSync(join(dir, 'prompt.txt'), b.prompt);
   writeFileSync(join(dir, 'meta.json'), `${JSON.stringify({ frame: f, marks: b.marks, maskPx: MASK_PX } satisfies Meta, null, 2)}\n`);
   return file.replaceAll('\\', '/');
 }

@@ -6,6 +6,7 @@ import { type Finger, type KeyDef, LAYOUTS } from '../../src/keyboard/layouts';
 import { type HandIndex, POSE_NAME, type Side, VIEW, poseName } from '../../src/ui/hand-svg';
 import { HANDS_CHANNEL } from '../../src/ui/hands';
 import { FINGER_COLORS } from '../../src/ui/keyboard-guide';
+import { geminiPrompt } from './gemini-prompt';
 import { type JointTurn, type PoseFile, readPose } from './pose-file';
 
 /**
@@ -1013,6 +1014,16 @@ function mutedKeyboard(): string {
 
 const pair = () => `${nameOf('left')}+${nameOf('right')}`;
 
+const FINGER_WORD = ['little finger', 'ring finger', 'middle finger', 'index finger', 'thumb', 'thumb', 'index finger', 'middle finger', 'ring finger', 'little finger'];
+/** The finger and the key's sign a hand's pose types (none for home, rest and its steps). */
+function pressOf(s: Side): { finger: string; key: string } | null {
+  const layout = LAYOUTS[layoutSelect.value as 'us-qwerty' | 'sk-qwertz'];
+  const def = [...layout.rows.flat(), ...MODIFIERS].find((d) => poseName({ ...layout, rows: [...layout.rows, MODIFIERS] }, d.code) === nameOf(s));
+  if (!def) return null;
+  const key = def.base.length === 1 && def.base !== ' ' ? def.base.toUpperCase() : poseName(layout, def.code) ?? def.code;
+  return { finger: FINGER_WORD[def.finger], key: def.code === 'Space' ? 'space bar' : key };
+}
+
 /** Saves the pair's picture for Gemini (muted keyboard, both hands' outlines, the marks) and each hand's silhouette. */
 async function geminiPicture(): Promise<void> {
   if (!SIDES.every((s) => POSE_NAME.test(nameOf(s)))) return badName();
@@ -1022,6 +1033,7 @@ async function geminiPicture(): Promise<void> {
     method: 'POST',
     body: JSON.stringify({
       pair: pair(), view: GEMINI, px: EXPORT_PX, marks: MARKS, keyboard: mutedKeyboard(),
+      prompt: geminiPrompt(poses, { left: pressOf('left'), right: pressOf('right') }),
       lines: SIDES.map((s) => hands[s].lines), silhouettes: Object.fromEntries(SIDES.map((s) => [s, hands[s].silhouette])),
     }),
   });

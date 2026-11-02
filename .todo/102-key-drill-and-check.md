@@ -96,7 +96,11 @@ later in the order are never reached.
   order. Then a failed key comes as the next lesson only after the newest keys are ready, and
   each gap key must get ready before the next gap opens. The check pushes its keys in lesson order.
 - [ ] End card: strong and weak keys stay as they are (this run). The weak keys' button is the
-  two-minute "Krátke cvičenie" (step 2).
+  two-minute "Krátke cvičenie" (step 2). Today the card has only "Pokračovať" and the practice,
+  with `toMap: null`, so the child sees no way to end it. "Pokračovať" goes away; the card gets
+  the standard "Na mapu" last on the right, like every end card (it keeps the check's own landing:
+  the map, which shows the opened worlds). Without weak keys "Na mapu" is the only button and
+  takes the focus.
 - [ ] The get-ready card text (`level.placementStart`):
   sk: "Píš výrazy, ktoré sa ti zobrazia, **pokojne, všetkými desiatimi prstami.** Toto cvičenie
   zisťuje, ktoré klávesy už vieš, a niektoré klávesy ti odomkne aj bez ich uvádzania v príbehoch.

@@ -3,7 +3,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import leftGlb from '@webxr-input-profiles/assets/dist/profiles/generic-hand/left.glb?url';
 import rightGlb from '@webxr-input-profiles/assets/dist/profiles/generic-hand/right.glb?url';
 import { type Finger, type KeyDef, LAYOUTS } from '../../src/keyboard/layouts';
-import { type HandIndex, POSE_NAME, type Side, VIEW, poseName, readHandSvg } from '../../src/ui/hand-svg';
+import { type HandIndex, POSE_NAME, type Side, VIEW, poseName } from '../../src/ui/hand-svg';
 import { HANDS_CHANNEL } from '../../src/ui/hands';
 import { FINGER_COLORS } from '../../src/ui/keyboard-guide';
 import { type JointTurn, type PoseFile, readPose } from './pose-file';
@@ -65,20 +65,20 @@ const spreadJoint = (f: FingerName) => (f === 'thumb' ? 'thumb-metacarpal' : `${
  */
 const HOME_CONSTANT: PoseFile = {
   v: 1, side: 'left', name: 'home', line: 1,
-  hand: { x: 146, y: 425, yaw: 18, pitch: 8, roll: 0, scale: 2565 },
+  hand: { x: 146, y: 447, yaw: 18, pitch: 8, roll: 0, scale: 2565 },
   joints: {
-    'index-finger-phalanx-proximal': { bend: 19.6, spread: 6 },
-    'index-finger-phalanx-intermediate': { bend: 34.4 },
-    'index-finger-phalanx-distal': { bend: 8.7 },
-    'middle-finger-phalanx-proximal': { bend: 23.8, spread: 3 },
-    'middle-finger-phalanx-intermediate': { bend: 42.5 },
-    'middle-finger-phalanx-distal': { bend: 13.6 },
-    'ring-finger-phalanx-proximal': { bend: 22, spread: -1.5 },
-    'ring-finger-phalanx-intermediate': { bend: 38.9 },
-    'ring-finger-phalanx-distal': { bend: 11.2 },
-    'pinky-finger-phalanx-proximal': { bend: 16.4, spread: -4.5 },
-    'pinky-finger-phalanx-intermediate': { bend: 27.9 },
-    'pinky-finger-phalanx-distal': { bend: 4.7 },
+    'index-finger-phalanx-proximal': { bend: 15.4, spread: 2.4 },
+    'index-finger-phalanx-intermediate': { bend: 26.1 },
+    'index-finger-phalanx-distal': { bend: 3.7 },
+    'middle-finger-phalanx-proximal': { bend: 20.4, spread: 1.1 },
+    'middle-finger-phalanx-intermediate': { bend: 35.8 },
+    'middle-finger-phalanx-distal': { bend: 9.6 },
+    'ring-finger-phalanx-proximal': { bend: 19, spread: -0.7 },
+    'ring-finger-phalanx-intermediate': { bend: 33 },
+    'ring-finger-phalanx-distal': { bend: 7.6 },
+    'pinky-finger-phalanx-proximal': { bend: 13.9, spread: -4 },
+    'pinky-finger-phalanx-intermediate': { bend: 22.9 },
+    'pinky-finger-phalanx-distal': { bend: 1.7 },
     'thumb-metacarpal': { bend: 16, spread: -16, twist: -15 },
     'thumb-phalanx-proximal': { bend: 4 },
     'thumb-phalanx-distal': { bend: 30 },
@@ -106,9 +106,7 @@ const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as 
 const canvas = $<HTMLCanvasElement>('view');
 const keysSvg = document.getElementById('keys') as unknown as SVGSVGElement;
 const status = $<HTMLParagraphElement>('status');
-const nameInput = $<HTMLInputElement>('name');
-const savedSelect = $<HTMLSelectElement>('saved');
-const show = { shade: $<HTMLInputElement>('showShade'), lines: $<HTMLInputElement>('showLines'), other: $<HTMLInputElement>('showOther') };
+const show = { shade: $<HTMLInputElement>('showShade'), lines: $<HTMLInputElement>('showLines') };
 
 const say = (text: string, error = false) => {
   status.textContent = text;
@@ -167,12 +165,12 @@ for (const y of [283, 354]) svgEl('line', { class: 'fade', x1: VIEW.x, x2: VIEW.
 // The grips on the fingertips, over the hand.
 const tipsSvg = document.getElementById('tips') as unknown as SVGSVGElement;
 tipsSvg.setAttribute('viewBox', `${VIEW.x} ${VIEW.y} ${VIEW.w} ${VIEW.h}`);
-const other = { lines: svgEl('path', { class: 'other' }, keysSvg), creases: svgEl('path', { class: 'other' }, keysSvg) };
 
 function markKey(): void {
+  const on = new Set(['left', 'right'].map((side) => $<HTMLInputElement>(side === 'left' ? 'nameLeft' : 'nameRight').value.trim()));
   for (const rect of keysG.querySelectorAll<SVGElement>('rect:not(.stripe)')) {
-    const on = keyRects.get(nameInput.value) === rect || rect.dataset.also === nameInput.value;
-    rect.style.fill = on ? '#fff3b8' : '';
+    const name = [...keyRects].find(([, r]) => r === rect)?.[0] ?? rect.dataset.also ?? '';
+    rect.style.fill = on.has(name) ? '#fff3b8' : '';
   }
 }
 layoutSelect.addEventListener('change', drawKeys);
@@ -283,7 +281,6 @@ interface Hand {
 }
 
 const loader = new GLTFLoader();
-const hands: Partial<Record<Side, Promise<Hand>>> = {};
 
 /** Ring and little fingers a little thicker than the model's (the owner's eye): their skin pushed out from the bones. */
 const THICK: Partial<Record<FingerName, number>> = { ring: 1.08, pinky: 1.12 };
@@ -569,44 +566,61 @@ const clampTurn = (joint: string, turn: keyof JointTurn, v: number) => {
 
 // ---- state ----
 
-let current: Hand | null = null;
-let pose: PoseFile = homeConstant('left', 'home');
-let saved = '';
-let history: string[] = [];
+/** Both hands are posed together; the sliders and Ctrl+Z work on the active one. */
+const built: Partial<Record<Side, Hand>> = {};
+const poses: Record<Side, PoseFile> = { left: homeConstant('left', 'home'), right: homeConstant('right', 'home') };
+const saved: Record<Side, string> = { left: '', right: '' };
+const histories: Record<Side, string[]> = { left: [], right: [] };
+let active: Side = 'left';
 let index: HandIndex = { left: [], right: [] };
-const side = (): Side => (document.querySelector<HTMLInputElement>('input[name=side]:checked')!.value as Side);
+const SIDES: Side[] = ['left', 'right'];
+const otherSide = (s: Side): Side => (s === 'left' ? 'right' : 'left');
+/** A hand's own control in its panel: `name`, `saved`, `load`... + Left or Right. */
+const own = <T extends HTMLElement>(s: Side, id: string) => $<T>(`${id}${s === 'left' ? 'Left' : 'Right'}`);
+const nameEl = (s: Side) => own<HTMLInputElement>(s, 'name');
+const nameOf = (s: Side) => nameEl(s).value.trim() || 'home';
+/** The pose of the hand last touched (Ctrl+Z, the drag). */
+const pose = () => poses[active];
 
-function setPose(p: PoseFile, asSaved: boolean): void {
-  pose = structuredClone(p);
-  if (asSaved) saved = JSON.stringify(pose);
-  history = [JSON.stringify(pose)];
+function setPose(s: Side, p: PoseFile, asSaved: boolean): void {
+  poses[s] = structuredClone({ ...p, side: s });
+  if (asSaved) saved[s] = JSON.stringify(poses[s]);
+  histories[s] = [JSON.stringify(poses[s])];
   refresh();
 }
-/** The pose changed: the hand, the sliders, the picture. */
+function activate(s: Side): void {
+  active = s;
+  for (const side of SIDES) own(side, 'panel').classList.toggle('active', side === s);
+  refresh();
+}
+/** A pose changed: the hands, the sliders, the picture. */
 function refresh(): void {
-  if (current) {
-    applyPose(current, pose);
-    const hand = current;
-    tipsSvg.replaceChildren();
+  tipsSvg.replaceChildren();
+  for (const s of SIDES) {
+    const hand = built[s];
+    if (!hand) continue;
+    applyPose(hand, poses[s]);
     for (const f of FINGERS) {
       const [cx, cy] = tipAt(hand, f);
-      svgEl('circle', { cx, cy, r: 6, 'data-finger': f }, tipsSvg);
+      svgEl('circle', { cx, cy, r: 6, 'data-finger': f, 'data-side': s, class: s === active ? 'on' : '' }, tipsSvg);
     }
   }
-  for (const s of sliders) s.sync();
+  for (const sl of sliders) sl.sync();
   markKey();
-  say(JSON.stringify(pose) === saved ? '' : 'Neuložené zmeny');
+  const changed = SIDES.filter((s) => JSON.stringify(poses[s]) !== saved[s]);
+  say(changed.length ? `Neuložené zmeny: ${changed.map((s) => (s === 'left' ? 'ľavá' : 'pravá')).join(', ')}` : '');
   redraw();
 }
-/** A finished change (a slider let go, a drag ended): one step for Ctrl+Z. */
-function commit(): void {
-  const now = JSON.stringify(pose);
-  if (history.at(-1) !== now) history.push(now);
+/** A finished change of a hand (a slider let go, a drag ended): one step for Ctrl+Z. */
+function commit(s: Side = active): void {
+  const now = JSON.stringify(poses[s]), h = histories[s];
+  if (h.at(-1) !== now) h.push(now);
 }
 function undo(): void {
-  if (history.length < 2) return;
-  history.pop();
-  pose = JSON.parse(history.at(-1)!) as PoseFile;
+  const h = histories[active];
+  if (h.length < 2) return;
+  h.pop();
+  poses[active] = JSON.parse(h.at(-1)!) as PoseFile;
   refresh();
 }
 
@@ -623,11 +637,12 @@ function redraw(): void {
 }
 
 function useMaterials(parts: boolean): void {
-  if (!current) return;
-  current.mesh.material = parts ? partMaterial : current.shade;
-  for (const n of current.marks) {
-    n.userData.shade ??= n.material;
-    n.material = parts ? partMaterial : n.userData.shade;
+  for (const hand of Object.values(built)) {
+    hand.mesh.material = parts ? partMaterial : hand.shade;
+    for (const n of hand.marks) {
+      n.userData.shade ??= n.material;
+      n.material = parts ? partMaterial : n.userData.shade;
+    }
   }
 }
 function drawParts(target: THREE.WebGLRenderTarget): void {
@@ -637,11 +652,11 @@ function drawParts(target: THREE.WebGLRenderTarget): void {
   renderer.render(scene, camera);
   useMaterials(false);
 }
-function drawEdges(parts: THREE.WebGLRenderTarget, px: number, mask: boolean): void {
+function drawEdges(parts: THREE.WebGLRenderTarget, px: number, mask: boolean, line: number): void {
   const u = edgeMaterial.uniforms;
   u.tPart.value = parts.texture;
   u.texel.value.set(1 / parts.width, 1 / parts.height);
-  u.radius.value = Math.max(0.5, (pose.line / 2) * px);
+  u.radius.value = Math.max(0.5, (line / 2) * px);
   u.mask.value = mask;
   u.jump.value = Math.max(DEPTH_JUMP, SLOPE / px) / ((FAR - NEAR) / 65535);
   u.showLines.value = show.lines.checked;
@@ -649,7 +664,7 @@ function drawEdges(parts: THREE.WebGLRenderTarget, px: number, mask: boolean): v
 }
 
 function draw(): void {
-  if (!current) return;
+  if (!built.left && !built.right) return;
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
   partTarget.setSize(canvas.width, canvas.height);
@@ -657,26 +672,32 @@ function draw(): void {
   renderer.setRenderTarget(null);
   renderer.clear();
   if (show.shade.checked) renderer.render(scene, camera);
-  drawEdges(partTarget, canvas.width / VIEW.w, false);
+  drawEdges(partTarget, canvas.width / VIEW.w, false, pose().line);
 }
 
-/** The outline and the thin lines as black on white PNGs over VIEW, EXPORT_PX pixels per unit. */
-function exportPngs(): { lines: string; creases: string } {
+/**
+ * One hand alone (the other hidden) as black on white PNGs over VIEW, EXPORT_PX pixels per unit: its outline, its thin
+ * lines and its silhouette.
+ */
+function exportPngs(s: Side): { lines: string; creases: string; silhouette: string } {
+  const other = built[otherSide(s)];
+  if (other) other.root.visible = false;
   const w = VIEW.w * EXPORT_PX, h = VIEW.h * EXPORT_PX;
   const parts = targetOf(w, h), out = targetOf(w, h);
   drawParts(parts);
   renderer.setRenderTarget(out);
   renderer.clear();
-  drawEdges(parts, EXPORT_PX, true);
+  drawEdges(parts, EXPORT_PX, true, poses[s].line);
   const read = (t: THREE.WebGLRenderTarget) => {
     const px = new Uint8Array(w * h * 4);
     renderer.readRenderTargetPixels(t, 0, 0, w, h, px);
     return px;
   };
-  const linePx = read(out);
+  const linePx = read(out), partPx = read(parts);
   renderer.setRenderTarget(null);
   parts.dispose();
   out.dispose();
+  if (other) other.root.visible = true;
   const c = document.createElement('canvas');
   c.width = w;
   c.height = h;
@@ -692,61 +713,61 @@ function exportPngs(): { lines: string; creases: string } {
     ctx.putImageData(img, 0, 0);
     return c.toDataURL('image/png');
   };
-  const lines = png((i) => linePx[i] < 128);
-  const creases = png((i) => linePx[i + 1] < 128);
+  const result = { lines: png((i) => linePx[i] < 128), creases: png((i) => linePx[i + 1] < 128), silhouette: png((i) => partPx[i] !== 0) };
   draw();
-  return { lines, creases };
+  return result;
 }
 
 // ---- sliders ----
 
 interface Slider { sync(): void }
 const sliders: Slider[] = [];
-function slider(parent: HTMLElement, label: string, min: number, max: number, step: number, get: () => number, set: (v: number) => void): void {
+function slider(parent: HTMLElement, side: Side, label: string, min: number, max: number, step: number, get: (p: PoseFile) => number, set: (p: PoseFile, v: number) => void): void {
   const row = document.createElement('label');
   row.className = 'slider';
   const input = Object.assign(document.createElement('input'), { type: 'range', min, max, step });
   const out = document.createElement('output');
   row.append(label, input, out);
   parent.append(row);
-  input.addEventListener('input', () => {
-    set(Number(input.value));
-    refresh();
-  });
-  input.addEventListener('change', commit);
+  const change = (v: number) => {
+    set(poses[side], v);
+    if (active !== side) activate(side);
+    else refresh();
+  };
+  input.addEventListener('input', () => change(Number(input.value)));
+  input.addEventListener('change', () => commit(side));
   // A double click puts the turn back to zero.
   input.addEventListener('dblclick', () => {
-    set(min <= 0 && max >= 0 ? 0 : min);
-    refresh();
-    commit();
+    change(min <= 0 && max >= 0 ? 0 : min);
+    commit(side);
   });
   sliders.push({ sync: () => {
-    input.value = String(get());
-    out.textContent = String(Math.round(get() * 10) / 10);
+    input.value = String(get(poses[side]));
+    out.textContent = String(Math.round(get(poses[side]) * 10) / 10);
   } });
 }
-function group(title: string): HTMLFieldSetElement {
+function group(side: Side, title: string): HTMLFieldSetElement {
   const fs = document.createElement('fieldset');
   fs.append(Object.assign(document.createElement('legend'), { textContent: title }));
-  $('controls').append(fs);
+  own(side, 'controls').append(fs);
   return fs;
 }
-{
-  const g = group('Ruka');
+for (const side of SIDES) {
+  const g = group(side, 'Ruka');
   const hand = (key: keyof PoseFile['hand'], label: string, min: number, max: number, step = 1) =>
-    slider(g, label, min, max, step, () => pose.hand[key], (v) => { pose.hand[key] = v; });
+    slider(g, side, label, min, max, step, (p) => p.hand[key], (p, v) => { p.hand[key] = v; });
   hand('x', 'Zápästie x', VIEW.x, VIEW.x + VIEW.w);
   hand('y', 'Zápästie y', 0, VIEW.y + VIEW.h + 200);
   hand('yaw', 'Otočenie', -60, 60, 0.5);
   hand('pitch', 'Sklon prstov', -40, 40, 0.5);
   hand('roll', 'Náklon', -40, 40, 0.5);
   hand('scale', 'Veľkosť', 1500, 3600, 5);
-  slider(g, 'Hrúbka čiary', 1, 5, 0.1, () => pose.line, (v) => { pose.line = v; });
-}
-for (const f of FINGERS) {
-  const g = group(FINGER_LABEL[f]);
-  for (const [joint, turn, label, min, max] of controlsOf(f)) {
-    slider(g, label, min, max, 0.5, () => pose.joints[joint]?.[turn] ?? 0, (v) => { pose.joints[joint] = { ...pose.joints[joint], [turn]: v }; });
+  slider(g, side, 'Hrúbka čiary', 1, 5, 0.1, (p) => p.line, (p, v) => { p.line = v; });
+  for (const f of FINGERS) {
+    const fg = group(side, FINGER_LABEL[f]);
+    for (const [joint, turn, label, min, max] of controlsOf(f)) {
+      slider(fg, side, label, min, max, 0.5, (p) => p.joints[joint]?.[turn] ?? 0, (p, v) => { p.joints[joint] = { ...p.joints[joint], [turn]: v }; });
+    }
   }
 }
 
@@ -756,17 +777,20 @@ const units = (e: PointerEvent): [number, number] => {
   const r = canvas.getBoundingClientRect();
   return [VIEW.x + ((e.clientX - r.left) / r.width) * VIEW.w, VIEW.y + ((e.clientY - r.top) / r.height) * VIEW.h];
 };
-function partUnder(e: PointerEvent): number {
+/** Which hand a pixel of the last picture shows, if any (the part render knows its finger, not its hand: the nearer wrist decides). */
+function handUnder(e: PointerEvent, at: [number, number]): Side | null {
   const r = canvas.getBoundingClientRect();
   const x = Math.floor(((e.clientX - r.left) / r.width) * partTarget.width), y = Math.floor(((e.clientY - r.top) / r.height) * partTarget.height);
   const px = new Uint8Array(4);
   renderer.readRenderTargetPixels(partTarget, x, partTarget.height - 1 - y, 1, 1, px);
-  return px[0];
+  if (!px[0]) return null;
+  const d = (s: Side) => Math.abs(poses[s].hand.x - at[0]);
+  return d('left') <= d('right') ? 'left' : 'right';
 }
 
 /** Bends and turns a finger so its tip comes to `to`: one sideways turn and one curl shared over its joints. */
 function dragFinger(f: FingerName, to: [number, number], start: PoseFile): void {
-  const hand = current!;
+  const hand = built[active]!, p = pose();
   const at = (s: number, c: number): [number, number] => {
     const joints = structuredClone(start.joints);
     const sj = spreadJoint(f);
@@ -775,16 +799,16 @@ function dragFinger(f: FingerName, to: [number, number], start: PoseFile): void 
       const share = curlShare(j);
       if (share) joints[j] = { ...joints[j], bend: clampTurn(j, 'bend', (joints[j]?.bend ?? 0) + c * share) };
     }
-    pose.joints = joints;
-    applyPose(hand, pose);
+    p.joints = joints;
+    applyPose(hand, p);
     return tipAt(hand, f);
   };
   let s = 0, c = 0;
   for (let i = 0; i < 10; i++) {
-    const p = at(s, c), ex = to[0] - p[0], ey = to[1] - p[1];
+    const q = at(s, c), ex = to[0] - q[0], ey = to[1] - q[1];
     if (Math.hypot(ex, ey) < 0.3) break;
     const ps = at(s + 1, c), pc = at(s, c + 1);
-    const a = ps[0] - p[0], b = pc[0] - p[0], cc = ps[1] - p[1], d = pc[1] - p[1], det = a * d - b * cc;
+    const a = ps[0] - q[0], b = pc[0] - q[0], cc = ps[1] - q[1], d = pc[1] - q[1], det = a * d - b * cc;
     if (Math.abs(det) < 1e-6) break;
     const step = (v: number) => Math.max(-15, Math.min(15, v));
     s += step((d * ex - b * ey) / det);
@@ -795,29 +819,36 @@ function dragFinger(f: FingerName, to: [number, number], start: PoseFile): void 
 
 let drag: { kind: 'finger' | 'hand' | 'turn'; f?: FingerName; from: [number, number]; start: PoseFile } | null = null;
 canvas.addEventListener('pointerdown', (e) => {
-  if (!current) return;
   const at = units(e);
-  const near = FINGERS.map((f) => {
-    const [x, y] = tipAt(current!, f);
-    return { f, d: Math.hypot(x - at[0], y - at[1]) };
-  }).sort((a, b) => a.d - b.d)[0];
-  const start = structuredClone(pose);
-  if (near.d < GRIP) drag = { kind: 'finger', f: near.f, from: at, start };
-  else if (partUnder(e)) drag = { kind: e.shiftKey ? 'turn' : 'hand', from: at, start };
-  else return;
+  // The nearest fingertip of either hand; that hand becomes the active one.
+  const near = SIDES.flatMap((s) => (built[s] ? FINGERS.map((f) => {
+    const [x, y] = tipAt(built[s]!, f);
+    return { s, f, d: Math.hypot(x - at[0], y - at[1]) };
+  }) : [])).sort((a, b) => a.d - b.d)[0];
+  let kind: 'finger' | 'hand' | 'turn';
+  if (near && near.d < GRIP) {
+    if (near.s !== active) activate(near.s);
+    kind = 'finger';
+  } else {
+    const s = handUnder(e, at);
+    if (!s) return;
+    if (s !== active) activate(s);
+    kind = e.shiftKey ? 'turn' : 'hand';
+  }
+  drag = { kind, f: near?.f, from: at, start: structuredClone(pose()) };
   canvas.setPointerCapture(e.pointerId);
   canvas.classList.add('dragging');
 });
 canvas.addEventListener('pointermove', (e) => {
   if (!drag) return;
-  const at = units(e), s = drag.start.hand;
+  const at = units(e), s = drag.start.hand, p = pose();
   if (drag.kind === 'finger') dragFinger(drag.f!, at, drag.start);
   else if (drag.kind === 'hand') {
-    pose.hand.x = Math.round((s.x + at[0] - drag.from[0]) * 10) / 10;
-    pose.hand.y = Math.round((s.y + at[1] - drag.from[1]) * 10) / 10;
+    p.hand.x = Math.round((s.x + at[0] - drag.from[0]) * 10) / 10;
+    p.hand.y = Math.round((s.y + at[1] - drag.from[1]) * 10) / 10;
   } else {
-    const angle = (p: [number, number]) => Math.atan2(p[1] - s.y, p[0] - s.x) / D;
-    pose.hand.yaw = Math.round((s.yaw + angle(at) - angle(drag.from)) * 10) / 10;
+    const angle = (q: [number, number]) => Math.atan2(q[1] - s.y, q[0] - s.x) / D;
+    p.hand.yaw = Math.round((s.yaw + angle(at) - angle(drag.from)) * 10) / 10;
   }
   refresh();
 });
@@ -837,8 +868,11 @@ async function loadIndex(): Promise<void> {
     const r = await fetch(`/hands/index.json?t=${Date.now()}`);
     if (r.ok) index = (await r.json()) as HandIndex;
   } catch { /* nothing saved yet */ }
-  savedSelect.replaceChildren(...index[side()].map((n) => Object.assign(document.createElement('option'), { value: n, textContent: n })));
-  if (index[side()].includes(nameInput.value)) savedSelect.value = nameInput.value;
+  for (const s of SIDES) {
+    const list = own<HTMLSelectElement>(s, 'saved');
+    list.replaceChildren(...index[s].map((n) => Object.assign(document.createElement('option'), { value: n, textContent: n })));
+    if (index[s].includes(nameOf(s))) list.value = nameOf(s);
+  }
 }
 /** A saved file (only names in the list: the dev server answers a missing file with the app's page). */
 async function fetchSvg(s: Side, name: string): Promise<string | null> {
@@ -851,30 +885,25 @@ async function homeOf(s: Side): Promise<PoseFile> {
   return (svg && readPose(svg)) || homeConstant(s, 'home');
 }
 
-/** The other hand, faint, as Tapko would draw it with this key: its outline of the same name, else its home. */
-async function showOther(): Promise<void> {
-  const s: Side = side() === 'left' ? 'right' : 'left';
-  const svg = show.other.checked ? (await fetchSvg(s, nameInput.value)) ?? (await fetchSvg(s, 'home')) : null;
-  const shape = svg ? readHandSvg(svg) : { lines: '', creases: '' };
-  other.lines.setAttribute('d', shape.lines);
-  other.creases.setAttribute('d', shape.creases);
-}
-
-async function open(name: string): Promise<void> {
-  const svg = await fetchSvg(side(), name);
+/** A hand's pose by its name: the saved one, or a new one from its home position. */
+async function open(s: Side, name: string): Promise<void> {
+  const svg = await fetchSvg(s, name);
   const p = svg && readPose(svg);
-  if (!p) return say(`${name} sa nedá načítať`, true);
-  nameInput.value = name;
-  setPose(p, true);
-  void showOther();
+  nameEl(s).value = name;
+  if (p) setPose(s, p, true);
+  else {
+    setPose(s, { ...(await homeOf(s)), name }, false);
+    say(`Nová póza ${s === 'left' ? 'ľavej' : 'pravej'} ruky ${name} zo základnej pozície`);
+  }
 }
 
 /** Tells an open Tapko (same dev server) that an outline changed, so it shows it at once. */
 const tapko = new BroadcastChannel(HANDS_CHANNEL);
 
-/** Renders the pose shown and saves it; the saved file's path, or null when it failed (said on the page). */
-async function post(): Promise<string | null> {
-  const r = await fetch('/__hand-poser/save', { method: 'POST', body: JSON.stringify({ pose, px: EXPORT_PX, ...exportPngs() }) });
+/** Renders a hand's pose and saves it; the saved file's path, or null when it failed (said on the page). */
+async function post(s: Side): Promise<string | null> {
+  const { lines, creases } = exportPngs(s);
+  const r = await fetch('/__hand-poser/save', { method: 'POST', body: JSON.stringify({ pose: poses[s], px: EXPORT_PX, lines, creases }) });
   const res = (await r.json()) as { ok: boolean; file?: string; error?: string; index?: HandIndex };
   if (!res.ok) {
     say(res.error ?? 'Uloženie zlyhalo', true);
@@ -884,18 +913,22 @@ async function post(): Promise<string | null> {
   return res.file ?? null;
 }
 
+const badName = () => say('Názov ako na klávese: malé písmená a číslice (napríklad r, spac, lshi, l1, home, rest)', true);
+
 async function save(): Promise<void> {
-  const name = nameInput.value.trim();
-  if (!POSE_NAME.test(name)) return say('Názov ako na klávese: malé písmená a číslice (napríklad r, spac, lshi, l1, home, rest)', true);
-  pose.name = name;
-  pose.side = side();
-  say('Ukladám…');
-  const file = await post();
-  if (!file) return;
-  saved = JSON.stringify(pose);
+  if (!SIDES.every((s) => POSE_NAME.test(nameOf(s)))) return badName();
+  const files: string[] = [];
+  for (const s of SIDES) {
+    poses[s].name = nameOf(s);
+    say(`Ukladám ${s}/${poses[s].name}…`);
+    const file = await post(s);
+    if (!file) return;
+    saved[s] = JSON.stringify(poses[s]);
+    files.push(file);
+  }
   await loadIndex();
-  tapko.postMessage(file);
-  say(`Uložené ${file}`);
+  tapko.postMessage(files.join(' '));
+  say(`Uložené ${files.join(', ')}`);
 }
 
 /** The steps saved between rest and home, so the hands come onto the keys smoothly. */
@@ -913,84 +946,150 @@ function between(a: PoseFile, b: PoseFile, t: number): PoseFile {
   return { ...a, hand, joints, line: mix(a.line, b.line) };
 }
 
+/** Both hands' steps from their saved rest to their saved home. */
 async function saveSteps(): Promise<void> {
-  const s = side();
-  const [rest, home] = await Promise.all(['rest', 'home'].map(async (n) => {
-    const svg = await fetchSvg(s, n);
-    return svg && readPose(svg);
-  }));
-  if (!rest || !home) return say('Najprv ulož rest aj home tejto ruky', true);
-  const keep = pose;
-  for (let i = 1; i <= STEPS; i++) {
-    pose = { ...between(rest, home, i / (STEPS + 1)), name: `rest${i}`, side: s };
-    applyPose(current!, pose);
-    say(`Ukladám rest${i}…`);
-    if (!(await post())) break;
+  const keep = structuredClone(poses);
+  for (const s of SIDES) {
+    const [rest, home] = await Promise.all(['rest', 'home'].map(async (n) => {
+      const svg = await fetchSvg(s, n);
+      return svg && readPose(svg);
+    }));
+    if (!rest || !home) {
+      say(`Najprv ulož rest aj home (${s})`, true);
+      break;
+    }
+    for (let i = 1; i <= STEPS; i++) {
+      poses[s] = { ...between(rest, home, i / (STEPS + 1)), name: `rest${i}`, side: s };
+      applyPose(built[s]!, poses[s]);
+      say(`Ukladám ${s}/rest${i}…`);
+      if (!(await post(s))) break;
+    }
+    poses[s] = keep[s];
   }
-  pose = keep;
   refresh();
   await loadIndex();
-  tapko.postMessage(`${s}/rest`);
-  say(`Uložené kroky rest1 až rest${STEPS}`);
+  tapko.postMessage('rest');
+  say(`Uložené kroky rest1 až rest${STEPS} oboch rúk`);
 }
 
-async function remove(): Promise<void> {
-  const name = nameInput.value.trim();
-  if (!index[side()].includes(name) || !confirm(`Zmazať ${side()}/${name}.svg?`)) return;
-  await fetch('/__hand-poser/delete', { method: 'POST', body: JSON.stringify({ pose: { ...pose, name, side: side() } }) });
+async function remove(s: Side): Promise<void> {
+  const name = nameOf(s);
+  if (!index[s].includes(name) || !confirm(`Zmazať ${s}/${name}.svg?`)) return;
+  await fetch('/__hand-poser/delete', { method: 'POST', body: JSON.stringify({ pose: { ...poses[s], name, side: s } }) });
   await loadIndex();
   tapko.postMessage(name);
-  saved = '';
-  say(`Zmazané ${name}`);
+  saved[s] = '';
+  say(`Zmazané ${s}/${name}`);
 }
 
-async function chooseSide(): Promise<void> {
-  const s = side();
-  hands[s] ??= buildHand(s);
-  const hand = await hands[s];
-  if (current) current.root.visible = false;
-  current = hand;
-  hand.root.visible = true;
-  await loadIndex();
-  const name = nameInput.value.trim() || 'home';
-  if (index[s].includes(name)) await open(name);
-  else {
-    // A pose not saved yet starts from the home position.
-    nameInput.value = name;
-    setPose({ ...(await homeOf(s)), name }, false);
-    say(`Nová póza ${name} zo základnej pozície`);
-    void showOther();
+// ---- Gemini ----
+
+/** The picture Gemini gets and gives back (pixels), and the part of VIEW it shows: the keyboard and the hands to their wrists. */
+const GEMINI_SIZE = { w: 1376, h: 768 };
+const GEMINI = (() => {
+  const x = -60, y = -20, w = 986, px = GEMINI_SIZE.w / w;
+  return { x, y, w, h: GEMINI_SIZE.h / px, px };
+})();
+/** Magenta squares in two corners, which Gemini keeps: they place its answer back on the keyboard. */
+const MARKS = [[GEMINI.x + 8, GEMINI.y + 8], [GEMINI.x + GEMINI.w - 22, GEMINI.y + GEMINI.h - 22]].map(([x, y]) => ({ x, y, size: 14 }));
+
+/** The keyboard, muted: light keys with faint signs, so Gemini keeps it as a background and draws only the hands. */
+function mutedKeyboard(): string {
+  const layout = LAYOUTS[layoutSelect.value as 'us-qwerty' | 'sk-qwertz'];
+  const parts: string[] = [];
+  for (const [r, row] of [...layout.rows.slice(0, 4), MODIFIERS].entries()) {
+    let x = 0;
+    for (const d of row) {
+      x += (d.x ?? 0) * UNIT;
+      const w = (d.w ?? 1) * UNIT - GAP, y = r * (KEY_H + GAP);
+      parts.push(`<rect x="${x}" y="${y}" width="${w}" height="${KEY_H}" rx="6" fill="#fbfaf8" stroke="#e4e0da"/>`);
+      const sign = d.base.length === 1 && d.base !== ' ' ? d.base.toUpperCase() : '';
+      if (sign) parts.push(`<text x="${x + w / 2}" y="${y + 20}" font-family="sans-serif" font-size="15" font-weight="600" fill="#d2ccd6" text-anchor="middle" dominant-baseline="central">${sign.replace('&', '&amp;').replace('<', '&lt;')}</text>`);
+      x += (d.w ?? 1) * UNIT;
+    }
   }
+  return parts.join('');
 }
 
-for (const r of document.querySelectorAll<HTMLInputElement>('input[name=side]')) r.addEventListener('change', () => void chooseSide());
-$('load').addEventListener('click', () => void open(savedSelect.value));
-$('fresh').addEventListener('click', async () => {
-  setPose({ ...(await homeOf(side())), name: nameInput.value }, false);
-  say('Nová póza zo základnej pozície');
-});
-$('mirror').addEventListener('click', async () => {
-  const from: Side = side() === 'left' ? 'right' : 'left';
-  const svg = await fetchSvg(from, nameInput.value);
-  const p = svg && readPose(svg);
-  if (!p) return say(`Druhá ruka nemá ${nameInput.value}`, true);
-  setPose({ ...mirrored(p), name: nameInput.value }, false);
-  say(`Zrkadlené z ${from}/${nameInput.value}`);
-});
+const pair = () => `${nameOf('left')}+${nameOf('right')}`;
+
+/** Saves the pair's picture for Gemini (muted keyboard, both hands' outlines, the marks) and each hand's silhouette. */
+async function geminiPicture(): Promise<void> {
+  if (!SIDES.every((s) => POSE_NAME.test(nameOf(s)))) return badName();
+  say('Pripravujem obrázok pre Gemini…');
+  const hands = Object.fromEntries(SIDES.map((s) => [s, exportPngs(s)]));
+  const r = await fetch('/__hand-poser/gemini-picture', {
+    method: 'POST',
+    body: JSON.stringify({
+      pair: pair(), view: GEMINI, px: EXPORT_PX, marks: MARKS, keyboard: mutedKeyboard(),
+      lines: SIDES.map((s) => hands[s].lines), silhouettes: Object.fromEntries(SIDES.map((s) => [s, hands[s].silhouette])),
+    }),
+  });
+  const res = (await r.json()) as { ok: boolean; file?: string; error?: string };
+  say(res.ok ? `Obrázok pre Gemini: ${res.file}` : res.error ?? 'Nepodarilo sa', !res.ok);
+}
+
+/** Traces Gemini's answer for the pair into both hands' SVGs (their poses stay). */
+async function fromGemini(): Promise<void> {
+  say('Prekresľujem z Gemini…');
+  const r = await fetch('/__hand-poser/gemini-trace', { method: 'POST', body: JSON.stringify({ pair: pair(), names: { left: nameOf('left'), right: nameOf('right') } }) });
+  const res = (await r.json()) as { ok: boolean; files?: string[]; error?: string };
+  if (!res.ok) return say(res.error ?? 'Nepodarilo sa', true);
+  await loadIndex();
+  tapko.postMessage(res.files!.join(' '));
+  say(`Z Gemini: ${res.files!.join(', ')}`);
+}
+
+// ---- start ----
+
+async function start(): Promise<void> {
+  // Tapko's free typing opens the poser on the outline of the key typed last: `?pose=<side>/<name>`.
+  const [wantSide, wantName] = (new URLSearchParams(location.search).get('pose') ?? '').split('/');
+  if ((wantSide === 'left' || wantSide === 'right') && POSE_NAME.test(wantName ?? '')) {
+    nameEl(wantSide).value = wantName;
+    active = wantSide;
+  }
+  const [left, right] = await Promise.all(SIDES.map(buildHand));
+  built.left = left;
+  built.right = right;
+  left.root.visible = right.root.visible = true;
+  await loadIndex();
+  for (const s of SIDES) await open(s, nameOf(s));
+  activate(active);
+}
+
+for (const s of SIDES) {
+  own(s, 'load').addEventListener('click', () => void open(s, own<HTMLSelectElement>(s, 'saved').value));
+  own(s, 'fresh').addEventListener('click', async () => {
+    setPose(s, { ...(await homeOf(s)), name: nameOf(s) }, false);
+    activate(s);
+    say('Nová póza zo základnej pozície');
+  });
+  own(s, 'reset').addEventListener('click', () => {
+    setPose(s, homeConstant(s, nameOf(s)), false);
+    activate(s);
+    say('HOMECONSTANT načítaná, ulož ju ako home, ak ju chceš späť');
+  });
+  own(s, 'remove').addEventListener('click', () => void remove(s));
+  nameEl(s).addEventListener('change', () => void open(s, nameOf(s)));
+}
+$('loadPair').addEventListener('click', () => void Promise.all(SIDES.map((s) => open(s, nameOf(s)))));
+for (const [id, from] of [['mirrorLR', 'left'], ['mirrorRL', 'right']] as const) {
+  $(id).addEventListener('click', () => {
+    const to = otherSide(from);
+    setPose(to, { ...mirrored(poses[from]), name: nameOf(to) }, false);
+    activate(to);
+    say(`Zrkadlené z ${from === 'left' ? 'ľavej' : 'pravej'} ruky`);
+  });
+}
+$('muted').addEventListener('change', (e) => keysSvg.classList.toggle('muted', (e.target as HTMLInputElement).checked));
 $('save').addEventListener('click', () => void save());
-$('reset').addEventListener('click', () => {
-  setPose(homeConstant(side(), nameInput.value.trim() || 'home'), false);
-  say('HOMECONSTANT načítaná, ulož ju ako home, ak ju chceš späť');
-});
 $('steps').addEventListener('click', () => void saveSteps());
-$('remove').addEventListener('click', () => void remove());
-nameInput.addEventListener('input', () => {
-  markKey();
-  void showOther();
-});
-for (const c of Object.values(show)) c.addEventListener('change', () => (c === show.other ? void showOther() : redraw()));
+$('gemini').addEventListener('click', () => void geminiPicture());
+$('fromGemini').addEventListener('click', () => void fromGemini());
+for (const c of Object.values(show)) c.addEventListener('change', redraw);
 window.addEventListener('resize', redraw);
-// A closer look: the stage grows (the page scrolls) and the hand is drawn sharper.
+// A closer look: the stage grows (the page scrolls) and the hands are drawn sharper.
 $<HTMLSelectElement>('zoom').addEventListener('change', (e) => {
   $('stage').style.setProperty('--zoom', (e.target as HTMLSelectElement).value);
   redraw();
@@ -1006,11 +1105,7 @@ window.addEventListener('keydown', (e) => {
   }
 });
 window.addEventListener('beforeunload', (e) => {
-  if (JSON.stringify(pose) !== saved) e.preventDefault();
+  if (SIDES.some((s) => JSON.stringify(poses[s]) !== saved[s])) e.preventDefault();
 });
 
-// Tapko's free typing opens the poser on the outline of the key typed last: `?pose=<side>/<name>`.
-const [wantSide, wantName] = (new URLSearchParams(location.search).get('pose') ?? '').split('/');
-if (wantSide === 'left' || wantSide === 'right') document.querySelector<HTMLInputElement>(`input[name=side][value=${wantSide}]`)!.checked = true;
-if (wantName && POSE_NAME.test(wantName)) nameInput.value = wantName;
-void chooseSide();
+void start();

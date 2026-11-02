@@ -7,41 +7,58 @@
   <link rel="stylesheet" href="./poser.css">
 </head>
 <body>
+  <aside class="panel" id="panelLeft">
+    <h2>Ľavá ruka</h2>
+    <section class="files">
+      <label>Názov <input id="nameLeft" list="names" value="home" spellcheck="false"></label>
+      <label>Uložené <select id="savedLeft"></select></label>
+      <button id="loadLeft">Načítať</button>
+      <button id="freshLeft" title="Zo svojej uloženej základnej pozície">Nová zo základnej</button>
+      <button id="resetLeft" title="Pevná základná pozícia HOME_CONSTANT (v kóde nástroja), ku ktorej sa dá vždy vrátiť">Reset na HOMECONSTANT</button>
+      <button id="removeLeft" title="Zmaže uloženú pózu s týmto názvom">Zmazať</button>
+    </section>
+    <div id="controlsLeft"></div>
+  </aside>
   <main class="stage-wrap">
     <div class="stage" id="stage">
       <svg class="keys" id="keys" aria-hidden="true"></svg>
       <canvas id="view"></canvas>
       <svg class="tips" id="tips" aria-hidden="true"></svg>
     </div>
-    <p class="hint">Ťahaj krúžok na končeku prsta: do strán ho natočíš, hore a dolu ho vystrieš alebo ohneš. Ťahaj dlaňou: posunieš ruku.
-      Shift a ťahanie dlaňou: otočíš ruku. Ctrl+Z vráti zmenu, Ctrl+S uloží.</p>
-  </main>
-  <aside class="panel">
-    <section class="row">
-      <label><input type="radio" name="side" value="left" checked> Ľavá</label>
-      <label><input type="radio" name="side" value="right"> Pravá</label>
-      <label>Priblíženie <select id="zoom"><option value="1">1×</option><option value="2">2×</option><option value="3">3×</option></select></label>
-      <label>Klávesnica <select id="layout"><option value="us-qwerty">EN</option><option value="sk-qwertz">SK</option></select></label>
-    </section>
-    <section class="files">
-      <label>Uložené <select id="saved"></select></label>
-      <button id="load">Načítať</button>
-      <label>Názov <input id="name" list="names" value="home" spellcheck="false"></label>
-      <datalist id="names"></datalist>
-      <button id="fresh" title="Nová póza zo základnej pozície tejto ruky">Nová zo základnej</button>
-      <button id="mirror" title="Póza druhej ruky s týmto názvom, zrkadlená">Zrkadliť z druhej ruky</button>
-      <button id="save" class="main">Uložiť SVG</button>
-      <button id="remove">Zmazať</button>
-      <button id="reset" title="Pevná základná pozícia HOME_CONSTANT (v kóde nástroja), ku ktorej sa dá vždy vrátiť">Reset na HOMECONSTANT</button>
-      <button id="steps" title="Uloží kroky rest1, rest2… tejto ruky medzi uloženými pózami rest a home">Prechod rest → home</button>
+    <section class="general">
+      <div class="buttons">
+        <button id="loadPair" title="Načíta pózy oboch rúk podľa názvov (nová póza začne zo základnej)">Načítať pár</button>
+        <button id="save" class="main" title="Uloží SVG oboch rúk (Ctrl+S)">Uložiť obe SVG</button>
+        <button id="mirrorLR" title="Pravá ruka ako zrkadlo ľavej">Zrkadliť ľavú → pravú</button>
+        <button id="mirrorRL" title="Ľavá ruka ako zrkadlo pravej">Zrkadliť pravú → ľavú</button>
+        <button id="steps" title="Uloží kroky rest1, rest2… oboch rúk medzi ich uloženými pózami rest a home">Prechod rest → home</button>
+        <button id="gemini" title="Uloží obrázok páru so stlmenou klávesnicou pre Gemini (assets-src/hands/gemini/ľavá+pravá/picture.png, 1376 × 768)">Vzor pre Gemini</button>
+        <button id="fromGemini" title="Odpoveď Gemini (answer.png pri obrázku páru) prekreslí do SVG oboch rúk">Z Gemini do SVG</button>
+      </div>
+      <div class="buttons">
+        <label><input type="checkbox" id="showShade" checked> Ruky</label>
+        <label><input type="checkbox" id="showLines" checked> Obrys</label>
+        <label><input type="checkbox" id="muted"> Stlmená klávesnica</label>
+        <label>Priblíženie <select id="zoom"><option value="1">1×</option><option value="2">2×</option><option value="3">3×</option></select></label>
+        <label>Klávesnica <select id="layout"><option value="us-qwerty">EN</option><option value="sk-qwertz">SK</option></select></label>
+      </div>
       <p id="status" class="status"></p>
+      <p class="hint">Ťahaj krúžok na končeku prsta ktorejkoľvek ruky: do strán ho natočíš, hore a dolu ho vystrieš alebo ohneš.
+        Ťahaj dlaňou: posunieš ruku, so Shiftom ju otočíš. Ctrl+Z vráti zmenu ruky, ktorú si upravoval naposledy, Ctrl+S uloží obe.</p>
     </section>
-    <section class="row">
-      <label><input type="checkbox" id="showShade" checked> Ruka</label>
-      <label><input type="checkbox" id="showLines" checked> Obrys</label>
-      <label><input type="checkbox" id="showOther" checked> Druhá ruka</label>
+    <datalist id="names"></datalist>
+  </main>
+  <aside class="panel" id="panelRight">
+    <h2>Pravá ruka</h2>
+    <section class="files">
+      <label>Názov <input id="nameRight" list="names" value="home" spellcheck="false"></label>
+      <label>Uložené <select id="savedRight"></select></label>
+      <button id="loadRight">Načítať</button>
+      <button id="freshRight" title="Zo svojej uloženej základnej pozície">Nová zo základnej</button>
+      <button id="resetRight" title="Pevná základná pozícia HOME_CONSTANT (v kóde nástroja), ku ktorej sa dá vždy vrátiť">Reset na HOMECONSTANT</button>
+      <button id="removeRight" title="Zmaže uloženú pózu s týmto názvom">Zmazať</button>
     </section>
-    <div id="controls"></div>
+    <div id="controlsRight"></div>
   </aside>
   <script type="module" src="./poser.ts"></script>
 </body>

@@ -1225,6 +1225,42 @@ starts; "Prechod rest → home" saves the steps `rest1`...`rest4` between them, 
 hands come onto the keys. A key without its own outline shows `home`. Gemini pictures and the 2D
 skeleton were dropped: Gemini drifted on small changes and a flat drawing cannot bend like a hand.
 
+### The hands' look through Gemini (plan `.todo/107-hands-gemini.md`)
+
+The 3D pose gives the position; Gemini gives the look. In the poser, pose both hands (each panel its own name), save
+both, then "Vzor pre Gemini": it writes `assets-src/hands/gemini/<left>+<right>/picture.png` (1376 x 768: the muted
+keyboard, both hands' 3D outlines, two magenta marks) and the hands' silhouettes. Send it with the approved style
+sample `assets-src/hands/style-sample.jpg` (the owner's choice, 2026-11-02), save the answer as `answer.png` in the
+same folder, then "Z Gemini do SVG" traces it into both hands' SVGs (the marks place it on the keyboard).
+
+- `answer.png`: **attach `picture.png`, then `style-sample.jpg`**:
+
+```
+Generate an image: Hands on the keyboard, redrawn in a line style
+
+The first attached image is a flat keyboard seen exactly from above with two adult hands resting on it in the
+touch-typing home position, drawn as rough outlines of a 3D model. Redraw ONLY the two hands, in exactly the drawing
+style of the second attached image: one clean, thin, uniform outline in warm grey-brown (#8a7b72), nothing filled
+inside, so every key shows through; each fingernail drawn as a thin rounded outline near the fingertip; short thin
+curved lines for the skin folds over the middle finger joints and over the knuckles; each thumb's outer side one
+straight line from the wrist to its tip, its pad turned slightly in towards the fingers. Take ONLY the line style from
+the second image, not its keyboard and not its hand positions.
+
+Keep the hands exactly where they are in the first image: every fingertip on the same key, the same hand size, the same
+slant of the hands, the same wrists, the same gaps between the fingers. The fingers are NOT equally long: seen from
+above a bent finger looks shorter. The middle and ring fingers are long but more bent (curled down onto their keys,
+their nails seen shorter); the little finger is short but straighter; so their tips lie in a gentle arc, the little
+fingers' tips a little lower. Draw that bend, do not make the fingers the same length. A bent finger's nail is seen
+from above at a steep slant: draw it clearly shorter (a short wide rounded shape just at the tip), never the long flat
+nail of a straight finger; whenever the middle or ring finger reaches no further than the index or little finger, it
+is bent and gets this short nail. Only a straight finger shows a longer nail. Keep everything else of the first image exactly
+as it is: the very light grey keyboard (same keys, same size, same place), the white background, and the two small
+solid magenta squares in the top left and bottom right corners (same place, same size, same colour). No shading, no
+fill, no skin colour, no shadows, no text added.
+
+Output exactly 1376 x 768 pixels, the same framing as the first image.
+```
+
 ### The owner's rules for the hands (keep every new pose to them)
 
 Look

@@ -77,10 +77,10 @@ const HOME_CONSTANT: PoseFile = {
     'ring-finger-phalanx-proximal': { bend: 18.3, spread: -7 },
     'ring-finger-phalanx-intermediate': { bend: 31.8 },
     'ring-finger-phalanx-distal': { bend: 6.8 },
-    'pinky-finger-phalanx-proximal': { bend: 13.7, spread: -12.2 },
-    'pinky-finger-phalanx-intermediate': { bend: 22.4 },
-    'pinky-finger-phalanx-distal': { bend: 1.4 },
-    'thumb-metacarpal': { bend: 20, spread: -16, twist: -15 },
+    'pinky-finger-phalanx-proximal': { bend: 12.1, spread: -11.8 },
+    'pinky-finger-phalanx-intermediate': { bend: 19.3 },
+    'pinky-finger-phalanx-distal': { bend: -0.5 },
+    'thumb-metacarpal': { bend: 24, spread: -16, twist: -15 },
     'thumb-phalanx-proximal': { bend: 4 },
     'thumb-phalanx-distal': { bend: 30 },
   },
@@ -992,7 +992,7 @@ const GEMINI = (() => {
 /** Magenta squares in two corners, which Gemini keeps: they place its answer back on the keyboard. */
 const MARKS = [[GEMINI.x + 8, GEMINI.y + 8], [GEMINI.x + GEMINI.w - 22, GEMINI.y + GEMINI.h - 22]].map(([x, y]) => ({ x, y, size: 14 }));
 
-/** The keyboard, muted: light keys with faint signs, so Gemini keeps it as a background and draws only the hands. */
+/** The keyboard, muted and pink: light keys with faint signs, so Gemini keeps it as a background and its answer splits easily from the hands. */
 function mutedKeyboard(): string {
   const layout = LAYOUTS[layoutSelect.value as 'us-qwerty' | 'sk-qwertz'];
   const parts: string[] = [];
@@ -1001,9 +1001,9 @@ function mutedKeyboard(): string {
     for (const d of row) {
       x += (d.x ?? 0) * UNIT;
       const w = (d.w ?? 1) * UNIT - GAP, y = r * (KEY_H + GAP);
-      parts.push(`<rect x="${x}" y="${y}" width="${w}" height="${KEY_H}" rx="6" fill="#fbfaf8" stroke="#e4e0da"/>`);
+      parts.push(`<rect x="${x}" y="${y}" width="${w}" height="${KEY_H}" rx="6" fill="#fdf4fb" stroke="#f0c8ea"/>`);
       const sign = d.base.length === 1 && d.base !== ' ' ? d.base.toUpperCase() : '';
-      if (sign) parts.push(`<text x="${x + w / 2}" y="${y + 20}" font-family="sans-serif" font-size="15" font-weight="600" fill="#d2ccd6" text-anchor="middle" dominant-baseline="central">${sign.replace('&', '&amp;').replace('<', '&lt;')}</text>`);
+      if (sign) parts.push(`<text x="${x + w / 2}" y="${y + 20}" font-family="sans-serif" font-size="15" font-weight="600" fill="#ecbde5" text-anchor="middle" dominant-baseline="central">${sign.replace('&', '&amp;').replace('<', '&lt;')}</text>`);
       x += (d.w ?? 1) * UNIT;
     }
   }
@@ -1032,7 +1032,7 @@ async function geminiPicture(): Promise<void> {
     body: JSON.stringify({
       pair: pair(), view: GEMINI, px: EXPORT_PX, marks: MARKS, keyboard: mutedKeyboard(),
       prompt: geminiPrompt(poses, { left: pressOf('left'), right: pressOf('right') }),
-      lines: SIDES.map((s) => hands[s].lines), silhouettes: Object.fromEntries(SIDES.map((s) => [s, hands[s].silhouette])),
+      lines: SIDES.map((s) => hands[s].lines), creases: SIDES.map((s) => hands[s].creases), silhouettes: Object.fromEntries(SIDES.map((s) => [s, hands[s].silhouette])),
     }),
   });
   const res = (await r.json()) as { ok: boolean; file?: string; error?: string };

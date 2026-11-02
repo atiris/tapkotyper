@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Side } from '../../src/ui/hand-svg';
-import { VIEW } from './pose-file';
+import { MIRROR_X, VIEW } from './pose-file';
 
 /**
  * The way through Gemini (dev server only): a pair's picture for Gemini (a muted keyboard, both hands' 3D outlines, two
@@ -27,16 +27,17 @@ export interface PictureBody {
   keyboard: string;
   /** The prompt for this pair (./gemini-prompt.ts), saved next to the picture. */
   prompt: string;
-  /** Each hand's outline and silhouette, black on white PNGs over VIEW. */
+  /** Each hand's outline, thin lines (folds, knuckles, nail beds) and silhouette, black on white PNGs over VIEW. */
   lines: string[];
+  creases: string[];
   silhouettes: Record<Side, string>;
 }
 
 const PAIR = /^[a-z0-9]+\+[a-z0-9]+$/;
 /** The silhouettes are kept at this many pixels per unit (enough to tell the hands apart). */
 const MASK_PX = 2;
-/** The hands' outlines in the picture: their colour and thickness (pixels at the picture's size). */
-const OUTLINE = { color: [70, 66, 74], width: 2 };
+/** The hands in the picture: a bold black outline (grown by this many pixels) and hairline black details. */
+const OUTLINE_GROW = 1;
 
 const pngOf = (dataUrl: string) => Buffer.from(dataUrl.slice(dataUrl.indexOf(',') + 1), 'base64');
 const sharpOf = async () => (await import('sharp')).default;
@@ -63,16 +64,19 @@ export async function savePicture(b: PictureBody): Promise<string> {
   const marks = b.marks.map((m) => `<rect x="${m.x}" y="${m.y}" width="${m.size}" height="${m.size}" fill="#ff00ff"/>`).join('');
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="${f.x} ${f.y} ${f.w} ${f.h}"><rect x="${f.x}" y="${f.y}" width="${f.w}" height="${f.h}" fill="#ffffff"/>${b.keyboard}${marks}</svg>`;
   const base = await sharp(Buffer.from(svg)).removeAlpha().raw().toBuffer();
-  // The outlines laid over the keyboard: a VIEW pixel per picture pixel, darkened where an outline is.
+  // The hands laid over the keyboard in black, a VIEW pixel per picture pixel: the outline bold (grown), the details as they are.
   const lines = await Promise.all(b.lines.map((l) => grey(l, f.px)));
+  const creases = await Promise.all(b.creases.map((l) => grey(l, f.px)));
   const ox = Math.round((f.x - VIEW.x) * f.px), oy = Math.round((f.y - VIEW.y) * f.px);
+  const inkAt = (maps: { data: Buffer; w: number; h: number }[], vx: number, vy: number) =>
+    vx < 0 || vy < 0 || vx >= maps[0].w || vy >= maps[0].h ? 0 : Math.max(...maps.map((l) => 255 - l.data[vy * l.w + vx])) / 255;
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
     const vx = x + ox, vy = y + oy;
-    if (vx < 0 || vy < 0 || vx >= lines[0].w || vy >= lines[0].h) continue;
-    const ink = Math.max(...lines.map((l) => 255 - l.data[vy * l.w + vx])) / 255;
+    let ink = inkAt(creases, vx, vy) * 0.85;
+    for (let dy = -OUTLINE_GROW; dy <= OUTLINE_GROW; dy++) for (let dx = -OUTLINE_GROW; dx <= OUTLINE_GROW; dx++) ink = Math.max(ink, inkAt(lines, vx + dx, vy + dy));
     if (!ink) continue;
     const o = (y * W + x) * 3;
-    for (let k = 0; k < 3; k++) base[o + k] = Math.round(base[o + k] * (1 - ink) + OUTLINE.color[k] * ink);
+    for (let k = 0; k < 3; k++) base[o + k] = Math.round(base[o + k] * (1 - ink));
   }
   const file = join(dir, 'picture.png');
   await sharp(base, { raw: { width: W, height: H, channels: 3 } }).png().toFile(file);
@@ -105,7 +109,7 @@ function distances(mask: Buffer, w: number, h: number): Float32Array {
   return d;
 }
 
-/** An outline pixel belongs to a hand only this near its 3D silhouette (keyboard units). */
+/** An outline pixel belongs to a hand near its 3D silhouette (keyboard units; up to twice as far on the hand's own side). */
 const NEAR_HAND = 30;
 /** Gemini's lines are drawn darker than this (0-255); the muted keyboard stays lighter. */
 const DARK = 200;
@@ -151,10 +155,14 @@ export async function traceAnswer(pair: string, trace: (png: Buffer, toUnits: (x
   const inks = SIDES.map(() => Buffer.alloc(W * H, 255));
   for (let i = 0; i < W * H; i++) {
     const [r, g, b] = at(i);
-    if (magenta(r, g, b) || 0.3 * r + 0.59 * g + 0.11 * b > DARK) continue;
+    // The keyboard is pink and the marks magenta: only grey and black is the hands.
+    if (r - g > 30 && b - g > 30) continue;
+    if (0.3 * r + 0.59 * g + 0.11 * b > DARK) continue;
     const [ux, uy] = toUnits(i % W, Math.floor(i / W));
-    const dl = distOf(0, ux, uy), dr = distOf(1, ux, uy), k = dl <= dr ? 0 : 1;
-    if (Math.min(dl, dr) <= NEAR_HAND) inks[k][i] = 0;
+    // A line goes to the hand on its side of the keyboard's middle (a thumb Gemini drew further out than the 3D one
+    // still belongs there), unless it is far from that hand and near the other one.
+    const d = [distOf(0, ux, uy), distOf(1, ux, uy)], own = ux < MIRROR_X ? 0 : 1, k = d[own] > NEAR_HAND && d[1 - own] <= NEAR_HAND ? 1 - own : own;
+    if (d[k] <= NEAR_HAND * 2) inks[k][i] = 0;
   }
   const out = {} as Record<Side, string>;
   for (const [k, s] of SIDES.entries()) {

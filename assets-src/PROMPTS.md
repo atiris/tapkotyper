@@ -1228,8 +1228,9 @@ skeleton were dropped: Gemini drifted on small changes and a flat drawing cannot
 ### The hands' look through Gemini (plan `.todo/107-hands-gemini.md`)
 
 The 3D pose gives the position; Gemini gives the look. In the poser, pose both hands (each panel its own name), save
-both, then "Vzor pre Gemini": it writes `assets-src/hands/gemini/<left>+<right>/picture.png` (1376 x 768: the muted
-keyboard, both hands' 3D outlines, two magenta marks) and the hands' silhouettes. Send it with the approved style
+both, then "Vzor pre Gemini": it writes `assets-src/hands/gemini/<left>+<right>/picture.png` (1376 x 768: the pale
+pink keyboard, both hands' bold black 3D outlines with hairline black knuckles, folds and nails, two magenta marks)
+and the hands' silhouettes. Gemini draws the hands in black; the pink keyboard is left out when tracing. Send it with the approved style
 sample `assets-src/hands/style-sample.jpg` (the owner's choice, 2026-11-02), save the answer as `answer.png` in the
 same folder, then "Z Gemini do SVG" traces it into both hands' SVGs (the marks place it on the keyboard). For a
 symmetric pair (home, rest) "Pravú zrkadliť z ľavej" puts the left hand's outline mirrored into the right one,

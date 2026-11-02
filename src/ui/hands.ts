@@ -1,30 +1,37 @@
-import { type KeyStep, type Layout, keyByCode } from '../keyboard/layouts';
-import { type HandPose, type Rig, type Side, blend, drawHand, keyMiddle, posesFor, restPose } from './hand-rig';
+import { type KeyStep, type Layout, keyByCode, shiftKeyFor } from '../keyboard/layouts';
+import { type HandIndex, type HandShape, type Side, VIEW, poseName, readHandSvg } from './hand-svg';
 
 /**
- * The outline hands on the on-screen keyboard: the drawing's lines on a skeleton (./hand-rig.ts, public/hands/rig.json), in
- * units of the full size keyboard (a key and its gap 58 wide, a row 50 high, the digit row on top). The SVG lies over `.kb` and
- * scales with it, so the hands keep to the keys at any size; inside `.kb` they also fade with it.
+ * The outline hands on the on-screen keyboard: one outline per hand and key, posed in the hand poser (tools/hand-poser) and
+ * saved in `public/hands/` (./hand-svg.ts), in units of the full size keyboard. The SVG lies over `.kb` and scales with it,
+ * so the hands keep to the keys at any size; inside `.kb` they also fade with it.
  */
 
 const UNIT = 58, GAP = 4, KEY_H = 46;
 /** Where a key's letter sits: the middle of the key above its finger stripe. */
 const LABEL_Y = (KEY_H - 9) / 2;
-/** The full size keyboard's width (15 units) and the room around it: the hands reach out and their wrists below. */
+/** The full size keyboard's width (15 units). */
 const WIDTH = 15 * UNIT - GAP;
-const VIEW = { x: -150, y: -20, w: WIDTH + 300, h: 460 };
 /** The wrists fade out between these heights. */
 const FADE = [283, 354];
 /** Seconds the hands wait at the sides before they come to the keys. */
 export const HANDS_ARRIVE_S = 1;
-/** Seconds a typed key's pose stays in free typing, and a move from one pose to the next. */
+/** Seconds a typed key's pose stays in free typing. */
 const PRESS_S = 0.3;
-const MOVE_S = 0.12;
+/** A hand's outline without its own pose for a key. */
+const HOME = 'home';
 
-let rigLoad: Promise<Rig | null> | null = null;
-function loadRig(): Promise<Rig | null> {
-  rigLoad ??= fetch(`${import.meta.env.BASE_URL}hands/rig.json`).then((r) => (r.ok ? r.json() as Promise<Rig> : null)).catch(() => null);
-  return rigLoad;
+const base = () => `${import.meta.env.BASE_URL}hands/`;
+let indexLoad: Promise<HandIndex | null> | null = null;
+const shapes = new Map<string, Promise<HandShape | null>>();
+function loadIndex(): Promise<HandIndex | null> {
+  indexLoad ??= fetch(`${base()}index.json`).then((r) => (r.ok ? (r.json() as Promise<HandIndex>) : null)).catch(() => null);
+  return indexLoad;
+}
+function loadShape(side: Side, name: string): Promise<HandShape | null> {
+  const key = `${side}/${name}`;
+  if (!shapes.has(key)) shapes.set(key, fetch(`${base()}${key}.svg`).then(async (r) => (r.ok ? readHandSvg(await r.text()) : null)).catch(() => null));
+  return shapes.get(key)!;
 }
 
 const NS = 'http://www.w3.org/2000/svg';
@@ -35,10 +42,42 @@ function el(name: string, attrs: Record<string, string | number> = {}, parent?: 
   return e;
 }
 
+/** The middle of a key in full size units (the same grid as the on-screen keyboard). */
+export function keyMiddle(layout: Layout, code: string): [number, number] | null {
+  for (const [r, row] of layout.rows.entries()) {
+    let x = 0;
+    for (const d of row) {
+      x += (d.x ?? 0) * UNIT;
+      if (d.code === code) return [x + ((d.w ?? 1) * UNIT - GAP) / 2, r * (KEY_H + GAP) + KEY_H / 2];
+      x += (d.w ?? 1) * UNIT;
+    }
+  }
+  return null;
+}
+
 /** The hand that types a key (null for the space bar's thumbs). */
 export function handOf(layout: Layout, code: string): Side | null {
   const f = keyByCode(layout, code)?.finger;
   return f == null || f === 4 || f === 5 ? null : f < 4 ? 'left' : 'right';
+}
+
+/**
+ * The key each hand presses for a step, which names its outline: the typing hand its key, the other hand Shift for a
+ * capital, the space bar the thumb of the hand that did not type the key before (`lastHand`); a hand with nothing to press
+ * rests in its home position.
+ */
+export function poseNames(layout: Layout, step: KeyStep | null, lastHand: Side | null): Record<Side, string> {
+  const names: Record<Side, string> = { left: HOME, right: HOME };
+  if (!step || !keyByCode(layout, step.code)) return names;
+  const hand = handOf(layout, step.code);
+  if (!hand) {
+    names[lastHand === 'right' ? 'left' : 'right'] = poseName(step.code);
+    return names;
+  }
+  names[hand] = poseName(step.code);
+  const shift = shiftKeyFor(layout, step);
+  if (shift) names[hand === 'left' ? 'right' : 'left'] = poseName(shift);
+  return names;
 }
 
 /** The key being typed: its sign and its finger's colour. */
@@ -50,8 +89,9 @@ export interface HandsKey {
 
 export class Hands {
   readonly el: SVGSVGElement;
-  private rig: Rig | null = null;
-  private side: Record<Side, { g: SVGElement; lines: SVGElement; creases: SVGElement; nails: SVGElement }>;
+  private index: HandIndex | null = null;
+  /** Per hand two layers: the outline shown and the one fading in over it. */
+  private side: Record<Side, { g: SVGElement; layers: SVGElement[]; shown: string }>;
   private focus: SVGElement;
   private disc: SVGElement;
   private letter: SVGElement;
@@ -62,12 +102,8 @@ export class Hands {
   private pressTimer = 0;
   /** The hand that typed the key before (the space bar's thumb is the other one's). */
   private lastHand: Side | null = null;
-  /** The poses shown, and the move under way to the target poses. */
-  private shown: Record<Side, HandPose> = { left: restPose('left'), right: restPose('right') };
-  private from = this.shown;
-  private target = this.shown;
-  private moveStart = 0;
-  private frame = 0;
+  /** Counts the changes, so an outline that loads late never replaces a newer one. */
+  private turn = 0;
 
   /** `fingerColor`: the colour of a finger (its nail). */
   constructor(private layout: Layout, private fingerColor: (finger: number) => string) {
@@ -88,10 +124,13 @@ export class Hands {
     const both = el('g', { mask: `url(#${id}-mask)` }, this.el);
     const make = (s: Side) => {
       const g = el('g', { class: `hand-${s}` }, both);
-      const nails = el('g', { class: 'hand-nails', filter: `url(#${id}-soft)` }, g);
-      const lines = el('path', { class: 'hand-lines' }, g);
-      const creases = el('path', { class: 'hand-creases' }, g);
-      return { g, lines, creases, nails };
+      const layers = [0, 1].map(() => {
+        const layer = el('g', { class: 'hand-pose' }, g);
+        el('g', { class: 'hand-nails', filter: `url(#${id}-soft)` }, layer);
+        el('path', { class: 'hand-lines' }, layer);
+        return layer;
+      });
+      return { g, layers, shown: '' };
     };
     this.side = { left: make('left'), right: make('right') };
     // The key being typed, over the hands: its letter with a thin outline in its finger's colour on a small disc of that
@@ -101,9 +140,8 @@ export class Hands {
     this.focus = el('g', { class: 'hand-focus', visibility: 'hidden' }, this.el);
     this.disc = el('circle', { r: (UNIT - GAP) / 4 + 2, fill: `url(#${id}-glow)` }, this.focus);
     this.letter = el('text', { class: 'hand-letter' }, this.focus);
-    void loadRig().then((rig) => {
-      this.rig = rig;
-      this.el.classList.toggle('ready', !!rig);
+    void loadIndex().then((index) => {
+      this.index = index;
       this.update();
     });
   }
@@ -113,14 +151,14 @@ export class Hands {
     this.el.classList.toggle('parked', on);
   }
 
-  /** Shows how `key` is typed: the hands' pose and its sign over them; null leaves both hands at rest. */
+  /** Shows how `key` is typed: the hands' outlines and its sign over them; null leaves both hands at home. */
   show(key: HandsKey | null): void {
     if (this.next && key?.step.code !== this.next.step.code) this.remember(this.next);
     this.next = key;
     this.update();
   }
 
-  /** Free typing: the key just typed, in its pose for a moment, then back to rest. */
+  /** Free typing: the key just typed, in its pose for a moment, then back home. */
   press(key: HandsKey): void {
     this.pressed = key;
     clearTimeout(this.pressTimer);
@@ -136,33 +174,32 @@ export class Hands {
     this.lastHand = handOf(this.layout, key.step.code) ?? this.lastHand;
   }
 
-  /** New target poses: the hands move to them (at once when motion is reduced). */
   private update(): void {
     const key = this.pressed ?? this.next;
     this.paintLetter(key);
-    if (!this.rig) return;
-    this.from = this.shown;
-    this.target = posesFor(this.rig, this.layout, key?.step ?? null, this.lastHand);
-    this.moveStart = performance.now();
-    cancelAnimationFrame(this.frame);
-    const step = (now: number) => {
-      // The app marks reduced motion on the body (its own setting or the system's): then the hands jump.
-      const t = document.body.classList.contains('reduce-motion') ? 1 : Math.min(1, (now - this.moveStart) / (MOVE_S * 1000));
-      this.shown = { left: blend(this.from.left, this.target.left, t), right: blend(this.from.right, this.target.right, t) };
-      this.draw();
-      if (t < 1) this.frame = requestAnimationFrame(step);
-    };
-    this.frame = requestAnimationFrame(step);
+    const index = this.index;
+    if (!index) return;
+    const turn = ++this.turn;
+    const names = poseNames(this.layout, key?.step ?? null, this.lastHand);
+    for (const s of ['left', 'right'] as Side[]) {
+      const name = index[s].includes(names[s]) ? names[s] : HOME;
+      if (name === this.side[s].shown) continue;
+      void loadShape(s, name).then((shape) => {
+        if (shape && turn === this.turn) this.draw(s, name, shape);
+      });
+    }
   }
 
-  private draw(): void {
-    const rig = this.rig!;
-    for (const s of ['left', 'right'] as Side[]) {
-      const drawn = drawHand(rig[s], s, this.shown[s]), side = this.side[s];
-      side.lines.setAttribute('d', drawn.lines);
-      side.creases.setAttribute('d', drawn.creases);
-      side.nails.replaceChildren(...drawn.nails.filter((n) => n.seen > 0).map((n) => el('path', { class: 'hand-nail', d: n.d, fill: this.fingerColor(n.f), opacity: n.seen })));
-    }
+  /** The new outline fades in over the old one, which fades out. */
+  private draw(s: Side, name: string, shape: HandShape): void {
+    const side = this.side[s];
+    side.shown = name;
+    const [old, layer] = side.layers[0].classList.contains('on') ? side.layers : [side.layers[1], side.layers[0]];
+    layer.querySelector('.hand-lines')!.setAttribute('d', shape.lines);
+    layer.querySelector('.hand-nails')!.replaceChildren(...shape.nails.map((n) => el('path', { class: 'hand-nail', d: n.d, fill: this.fingerColor(n.f) })));
+    old.classList.remove('on');
+    layer.classList.add('on');
+    this.el.classList.add('ready');
   }
 
   private paintLetter(key: HandsKey | null): void {

@@ -41,7 +41,7 @@ Notes from real Gemini runs; add new ones here.
 - Hands (section 12): a photo of real hands as a reference made Gemini redraw the keyboard (extra
   rows, the keys moved) and curl the fingertips into an arc; without photos, editing one finger of
   the finished home picture keeps the keyboard. "Bigger hands" made them chubby and broke the
-  keyboard: the size is set in `scripts/hands.mjs` instead. A follow-up in the bridge sometimes
+  keyboard (the hands now come from the 3D hand poser, section 12). A follow-up in the bridge sometimes
   runs in a new empty chat (an unrelated picture comes back): queue a new picture with the home
   picture attached instead.
 - With an attached character picture, "a new pose" keeps its stance and only changes the arms
@@ -1204,36 +1204,43 @@ kite were tried and turned down).
 | `ui-end-break.jpg` | one classic football (soccer ball), a perfect circle, white panels (#FFFDF6) with light grey-blue shading (#DCE3EA) and dark-brown pentagon patches (#5A3D2B), one small white shine upper left; no grass, no goal, no motion lines; strictly front view (Rozcvička hotová) |
 | `ui-end-task.jpg` | a chubby child's school backpack standing upright, strictly front view, symmetrical: rounded body in warm sky blue (#7FC4EA) with a lighter top, a big front flap with one golden buckle (#F2C14E), a small front pocket, a short carry handle, the shoulder straps just peeking out at the sides; a green pencil and a ruler stick out a little from the top; no face (Úloha splnená) |
 
-## 12. Hands on the keyboard (plan `.todo/104-hands-overlay.md`)
+## 12. Hands on the keyboard (no Gemini pictures any more)
 
-The outline hands over the on-screen keyboard. Save into `assets-src/hands/` and run
-`node scripts/hands.mjs`, which writes `public/hands/poses.json` (commit that file). The grey
-fill is dropped and only the black lines stay; their place comes from the coloured stripes under
-Q and Ä, so the keyboard in the picture must stay exactly as attached.
+The outline hands over the on-screen keyboard are posed by hand in the **hand poser**, a local page of
+the dev server: `npm run dev`, then open `/tools/hand-poser/`. It shows a 3D hand (the WebXR generic
+hand, MIT) from above over the keyboard; the owner drags the fingertips (sideways turns the finger,
+up and down stretches or bends it), drags the palm (Shift turns the hand) and tunes every joint with
+the sliders. "Uložiť SVG" writes `public/hands/<left|right>/<name>.svg` (the outline Tapko draws, the
+pose kept inside to load and tune later) and `public/hands/index.json`; commit them. A pose is named by
+the key the hand presses, as written on the poser's keyboard (`r`, `5`, `semi`, `spc`, `lsft`, `home`
+for the home position); Tapko shows the home outline for a key without its own. "Zrkadliť z druhej
+ruky" starts a pose from the other hand's pose of the same name. Gemini pictures and the 2D skeleton
+were dropped: Gemini drifted on small changes and a flat drawing cannot bend like a hand.
 
 ### The owner's rules for the hands (keep every new pose to them)
 
 Look
-- Lines only, nothing inside: every key shows through. The line is grey, not black, a little thinner
-  than Gemini draws it; the joint creases softer still. The wrists fade out below the keyboard.
-- Nails: the drawn nail's own shape, in its finger's colour, see-through and slightly blurred; each
-  pose has its own nails (where a finger moves, its nail moves with it).
+- Lines only, nothing inside: every key shows through. The line is grey, not black, thin. The wrists
+  fade out below the keyboard.
+- Nails: in the finger's colour, see-through and slightly blurred; a nail is seen only where the
+  finger shows it from above.
 - The key being typed is always readable: its letter is drawn over the hands (white, a thin solid
   outline in the finger's colour, on a small disc half a key wide that fades from its centre); the
   key's own letter underneath is hidden, never two letters.
-- Adult hands: fingers a little longer than Gemini drew them, but not flat and not chubby.
+- Adult hands, real proportions; the size the owner set (scale 2565 in the poser, 2026-11-02).
+- The hands are never square to the keyboard: the elbows are wide, so the left hand points up and to
+  the right, the right hand up and to the left (about 18 degrees).
+- The thumb lies close to the hand, its tip on the space bar; the thumb's root at the wrist must not
+  stick out from the back of the hand.
 - Home position: the fingertips in the middle of their keys, all eight in one row (the little fingers
-  only slightly tucked); the ring fingers' middle joints lie against the middle fingers (lines may
-  touch or overlap, as real fingers do). The Gemini base must already be like that
-  (`home-base.png`, made by `scripts/hands-base.mjs`), or every pose drawn from it keeps the fault.
+  only slightly tucked); the ring fingers' middle joints lie against the middle fingers.
 
 Motion: a pose is the outline of a real hand seen from above typing that key, the whole hand keeping
 its physical shape; never "one moved finger" or "one stretched finger".
 - A home key pressed: the finger bends a little, its tip AND its middle joint go a little towards the
-  palm (only the last joint moving looks broken); the little and ring fingers also come a little
-  towards the index, the ring finger as if sliding under the middle finger; the other fingers do not
-  deform. The index pressed brings the middle finger very slightly closer (its middle and its tip
-  very slightly). Mirrored on the right hand.
+  palm; the little and ring fingers also come a little towards the index, the ring finger as if
+  sliding under the middle finger; the other fingers do not deform. The index pressed brings the
+  middle finger very slightly closer. Mirrored on the right hand.
 - The space bar: only the thumb of the hand that did NOT type the last key presses (it goes a little lower).
 - A reach to the top letter row (R, T, U): the index stretches onto the key (its tip on the key, not
   beyond it); the middle finger bends a little after it, the ring finger hardly, the little finger
@@ -1247,54 +1254,3 @@ its physical shape; never "one moved finger" or "one stretched finger".
   second later (at once with the space bar); then they stay the whole level, no parking when idle.
   They fade with the on-screen keyboard. In free typing they show the key typed at the moment it is
   typed, not the next one.
-
-- `keyboard.png`: the keyboard to draw on (square keys on the real 15-unit grid, the finger
-  stripes under the letters). It is the base of `home.jpg` only.
-- `home.jpg`: **attach `keyboard.png`**. Both hands in the home position:
-
-```
-Generate an image: Hands on the keyboard
-
-Edit the attached image (a flat on-screen keyboard seen exactly from above) by drawing two adult
-hands resting on it in the touch-typing home position. Keep the keyboard exactly as it is: same
-keys, same size, same position, same white background, same canvas size and framing; only add the
-hands on top. Left fingertips on A, S, D, F, right fingertips on J, K, L, Ô, all eight in one
-straight line just below the letters; fingers gently curved; both thumbs on the space bar; the
-backs of the hands and the wrists come down to the bottom edge and are cut off by it. View strictly
-from above. Style: simple flat vector illustration, hands filled with one flat medium grey
-(#9a9a9a), no shading, no texture, no hair; a clean bold uniform black outline; inside only a few
-thin black lines between the fingers and one small curve for each fingernail. No shadows, no text.
-```
-
-- `<KeyCode>.jpg` (`KeyU.jpg`, `KeyM.jpg` ...): **attach `home.jpg`**. One hand typing one key; then
-  add the key to `POSES` in `scripts/hands.mjs` with its hand (`down` lowers a pose that reaches
-  too far):
-
-```
-Generate an image: Hands typing <KEY>
-
-Edit the attached image. Change ONLY the <right|left> hand, nothing else. Its <finger> currently
-rests on <HOME KEY>. Make it <lift and stretch forward | bend and pull back | reach sideways> so
-that its fingertip rests on the key <KEY> (<where the key is from the home key>), just below the
-letter <KEY>, which stays fully visible. <A stretched finger is a little longer and straighter / a
-bent finger looks shorter from above and its nail is not visible.> Everything else must stay
-exactly as it is: the keyboard (do not move, resize, redraw, add or remove any keys or rows), the
-other hand, the other fingers, both thumbs, the image size and framing, the flat grey fill, the
-bold black outline and the thin inner lines. Same flat vector style, no shading.
-```
-
-Gemini only manages a reach into another row; a home key pressed is too small a change (it
-stretched F, dropped D a whole row, moved other fingers), so `scripts/hands.mjs` makes the presses
-of A S D F J K L Ô itself from `home.jpg` (`PRESSES`). Sideways reaches (G, H) also failed: the
-index dropped to the bottom row. A drawing on the app's own keyboard (`keyboard-app.png`) put the
-hands a whole row too low.
-
-| file | state |
-|---|---|
-| `home.jpg` | done |
-| `KeyU.jpg`, `KeyR.jpg` | done (`KeyU` with `down: 5`) |
-| `KeyT.jpg` | in use; the other fingers curl a little |
-| A S D F J K L Ô pressed | made by the script |
-| `KeyG`, `KeyH` | open: the index dropped to the bottom row |
-| `KeyM.jpg` | open: the bent finger came too low, then straight with its nail |
-

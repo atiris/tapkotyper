@@ -67,3 +67,7 @@ The rig is in the app (first try, as the owner asked: the home presses, the spac
 §12 rules; other keys get the plain reach of their finger). Open: the owner's review, then the other rows
 and Shift tuned key by key; a curled fingertip still ends in a small point (linear skinning cannot round
 a knuckle).
+
+## Dropped - 2026-11-02
+The owner judged the 2D skeleton's poses not good enough (a flat drawing cannot bend like a hand). Replaced
+by `.todo/.done/106-hand-poser.md`: the owner poses a 3D hand and the outlines are saved as SVG.

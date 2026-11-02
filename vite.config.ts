@@ -6,6 +6,7 @@ import { join, relative, sep } from 'node:path';
 import { type Plugin, defineConfig } from 'vite';
 import { aboutPage, aboutPath, aboutRedirect } from './src/app/about-page';
 import { LANGS } from './src/i18n/i18n';
+import { handPoser } from './tools/hand-poser/server';
 
 function publicFiles(dir: string): string[] {
   return readdirSync(dir).flatMap((name) => {
@@ -71,6 +72,6 @@ function aboutPages(): Plugin {
 // GitHub Pages serves the site at the root of tapkotyper.com
 export default defineConfig({
   base: '/',
-  plugins: [aboutPages(), serviceWorker()],
+  plugins: [aboutPages(), serviceWorker(), handPoser()],
   test: { include: ['src/**/*.test.ts'] },
 });

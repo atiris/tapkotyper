@@ -45,3 +45,8 @@ base (fingertips centred). Moving a finger's pixels (`scripts/hands.mjs` moves) 
 hand and leaves torn lines; `public/hands/poses.json` stays the earlier set until a better way is chosen.
 The hands, their arrival and the paw help work with the home and U poses; every other key keeps the
 home position until its pose is drawn. Open: the poses of the other keys.
+
+## Done - 2026-11-02
+The hands on the keyboard, their arrival, the paw help and free typing shipped on `hands-overlay`. The
+poses are no longer drawn by Gemini: they come from the 3D hand poser (`.todo/.done/106-hand-poser.md`);
+the per-key poses are the owner's work in that tool.

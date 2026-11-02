@@ -8,7 +8,6 @@ export const FINGER_COLORS: Record<Finger, string> = {
   5: '#bbbbbb', 6: '#0072b2', 7: '#d55e00', 8: '#cc79a7', 9: '#8fbc3a',
 };
 /** 1 = thumb .. 5 = pinky, as children count fingers. */
-export const FINGER_NUMBER: Record<Finger, number> = { 0: 5, 1: 4, 2: 3, 3: 2, 4: 1, 5: 1, 6: 2, 7: 3, 8: 4, 9: 5 };
 export const FINGER_KEYS: Record<Finger, string> = {
   0: 'leftPinky', 1: 'leftRing', 2: 'leftMiddle', 3: 'leftIndex', 4: 'leftThumb',
   5: 'rightThumb', 6: 'rightIndex', 7: 'rightMiddle', 8: 'rightRing', 9: 'rightPinky',
@@ -120,7 +119,7 @@ export class KeyboardGuide {
         k.style.setProperty('--next-bg', textBg);
         k.style.setProperty('--next-ink', textInk);
         k.innerHTML = `<span class="kb-label">${zeroDot(label(def.base, def.shift))}</span>` +
-          (def.base !== ' ' && def.base !== 'shift' ? `<span class="kb-shift">${def.base.startsWith('dead') || def.shift.toLowerCase() === def.base ? '' : zeroDot(def.shift)}</span><span class="kb-num">${FINGER_NUMBER[def.finger]}</span>` : '');
+          (def.base !== ' ' && def.base !== 'shift' ? `<span class="kb-shift">${def.base.startsWith('dead') || def.shift.toLowerCase() === def.base ? '' : zeroDot(def.shift)}</span>` : '');
         r.appendChild(k);
         this.keys.set(def.code, k);
       }

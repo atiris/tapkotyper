@@ -8,7 +8,10 @@
 - Optional hands seen from above (soft palm, rounded fingers, a band in each finger's
   color, idle fingers faint); the finger that presses the key lifts and is fully opaque.
 - The guide fades as the child improves (per-key mastery) and can be shown or hidden by
-  the child, or locked by the parent. Colors also carry a pattern or label (colorblind-safe).
+  the child, or locked by the parent. The finger colors are a colorblind-safe palette; the keys
+  carry no finger numbers.
+- The keyboard keeps its proportions at every window size: it scales as a whole with the room it
+  has, and a low window makes it narrower, never its keys flatter.
 - "The adventure goes on!" card before every adventure (story level, hero's journey, own practice)
   and at breaks, the only card before a level apart from the key cards. Two panels side by side
   with a gap (one above the other on a narrow screen), no frames inside them: on the left a
@@ -87,6 +90,8 @@
 - Weak finger guidance is a frequent complaint (Dance Mat); masking or fading the keyboard
   is standard teacher advice
   ([research](../../.research/features/on-screen-keyboard-finger-guide.md)).
+- Finger numbers on every key were clutter beside the colors and the finger guide; a keyboard
+  whose keys got flatter in a low window no longer looked like a keyboard.
 - Enter comes rarely and is no lesson key, so the guide alone shows its finger; a new-key
   card for it would stop play for a key that does not open anything.
 - Story scenes and a map greeting before the first level were many clicks and much text

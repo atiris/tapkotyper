@@ -9,7 +9,7 @@
   chosen font. Lexend draws l and I alike, so on a key cap a learner could not tell which key
   is meant. The zero on the on-screen keyboard is always slashed, so the small 0 at a key's top
   is never taken for the letter O.
-- Colorblind-safe finger colors with patterns or labels; a high contrast mode.
+- Colorblind-safe finger colors (a palette made for it); a high contrast mode.
 - **A dark theme** for every screen: every text reaches WCAG AA contrast on its background in
   dark as in light. It follows the system's setting until a choice is stored. The high contrast
   mode keeps its own black on white and wins over the theme.

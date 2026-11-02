@@ -951,23 +951,24 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
 /* Keyboard guide */
 .kb-guide { --fade: 0; background: var(--kb-bg); padding: 0.4rem 0.6rem 0.6rem; display: grid; grid-template-columns: 1fr minmax(0, 760px) 1fr; grid-template-rows: auto auto; align-items: center; z-index: 3; box-shadow: 0 -6px 18px var(--soft-shadow); }
 .kb-hint { grid-column: 1 / -1; text-align: center; font-weight: 600; min-height: 1.3em; color: var(--brand-ink); font-size: 0.95rem; }
-.kb { grid-column: 2; display: flex; flex-direction: column; gap: 4px; opacity: calc(1 - var(--fade)); transition: opacity 0.4s; }
+/* The keyboard keeps its shape: every size follows its width; in a level a low window makes the whole keyboard narrower instead of the keys flatter. */
+.kb { grid-column: 2; justify-self: center; width: 100%; max-width: 760px; container-type: inline-size; display: flex; flex-direction: column; gap: 4px; opacity: calc(1 - var(--fade)); transition: opacity 0.4s; }
+.kb-guide:not(.heatmap, .picker) .kb { width: min(100%, 84vh); }
 .kb-row { display: flex; gap: 4px; justify-content: center; }
 .kb-row:nth-child(2) { padding-left: 1.5%; }
 .kb-row:nth-child(3) { padding-left: 3%; }
 .kb-key {
-  --w: 1; position: relative; flex: var(--w) 1 0; max-width: calc(var(--w) * 54px); height: clamp(30px, 5.2vh, 46px);
-  border-radius: 9px; background: var(--surface); display: grid; place-items: center; padding-bottom: 9px; font-family: var(--font-keys); font-weight: 600; font-size: clamp(0.8rem, 1.6vh, 1.05rem); line-height: 1;
+  --w: 1; position: relative; flex: var(--w) 1 0; max-width: calc(var(--w) * 54px); height: calc(100cqw * 46 / 760);
+  border-radius: 9px; background: var(--surface); display: grid; place-items: center; padding-bottom: 9px; font-family: var(--font-keys); font-weight: 600; font-size: clamp(0.7rem, 100cqw * 16.8 / 760, 1.05rem); line-height: 1;
   box-shadow: inset 0 -5px 0 var(--finger), 0 2px 0 var(--edge); border: 1px solid var(--key-line);
   transition: transform 0.12s, background 0.12s;
 }
 .kb-key.bump::after { content: ''; position: absolute; bottom: 7px; left: 50%; width: 12px; height: 3px; margin-left: -6px; border-radius: 2px; background: var(--bump); }
 .kb-shift { position: absolute; top: 2px; left: 5px; font-size: 0.62em; color: var(--ink-soft); }
-.kb-num { position: absolute; top: 2px; right: 5px; font-size: 0.55em; color: var(--ink-soft); }
 .kb-zero { position: relative; }
 .kb-zero::after { content: ''; position: absolute; left: 50%; top: 50%; width: max(1.5px, 0.11em); height: 0.8em; border-radius: 1px; background: currentColor; transform: translate(-50%, -50%) rotate(38deg); }
 .kb-key.next { background: var(--next-bg); color: var(--next-ink); transform: translateY(-3px) scale(1.08); box-shadow: 0 0 0 3px var(--surface), 0 0 0 6px var(--finger), 0 8px 14px rgba(0, 0, 0, 0.2); z-index: 1; animation: key-glow 1s ease-in-out infinite; }
-.kb-key.next .kb-shift, .kb-key.next .kb-num { color: var(--next-ink); opacity: 0.85; }
+.kb-key.next .kb-shift { color: var(--next-ink); opacity: 0.85; }
 .kb-key.next2 { box-shadow: inset 0 -5px 0 var(--finger), 0 0 0 3px var(--finger); background: var(--tint-yellow); }
 .kb-key.shift-next { background: var(--next-bg); color: var(--next-ink); }
 @keyframes key-glow { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.15); } }
@@ -1027,7 +1028,7 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
 /* A key not picked is a plain outline with soft text, still readable; one that cannot be picked fades. */
 .practice-picker .kb-key:not(.picked) { background: transparent; box-shadow: inset 0 0 0 1px var(--line); color: var(--ink-soft); }
 .practice-picker .kb-key.picked { background: var(--finger); color: var(--finger-ink); opacity: 1; }
-.practice-picker .kb-key.picked .kb-shift, .practice-picker .kb-key.picked .kb-num { color: var(--finger-ink); }
+.practice-picker .kb-key.picked .kb-shift { color: var(--finger-ink); }
 .practice-picker .kb-key.off { opacity: 0.25; cursor: default; }
 .practice-picker .kb-key:focus-visible { outline: 3px solid var(--brand-dark); outline-offset: 2px; opacity: 1; }
 .practice-keys h2 { margin-top: 0; }
@@ -1547,7 +1548,6 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-ink); }
 }
 @media (max-height: 640px) {
   .hand { display: none; }
-  .kb-key { height: 28px; }
 }
 
 /* A short note of what a function key changed, at the bottom middle. */

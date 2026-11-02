@@ -42,9 +42,10 @@
         <label title="Pri symetrickom páre (home, rest): obrys pravej ruky z Gemini nahradí zrkadlo ľavej"><input type="checkbox" id="mirrorTrace"> Pravú zrkadliť z ľavej</label>
         <label>Priblíženie <select id="zoom"><option value="1">1×</option><option value="2">2×</option><option value="3">3×</option></select></label>
         <label>Klávesnica <select id="layout"><option value="us-qwerty">EN</option><option value="sk-qwertz">SK</option></select></label>
+        <label title="Ktorý prst stláča ktorý kláves: štandardne, alebo ergonomicky (číselný rad posunutý o prst)">Prsty <select id="scheme"><option value="standard">štandard</option><option value="ergonomic">ergonomické</option></select></label>
       </div>
       <p id="status" class="status"></p>
-      <p class="hint">Ťahaj krúžok na končeku prsta ktorejkoľvek ruky: do strán ho natočíš, hore a dolu ho vystrieš alebo ohneš.
+      <p class="hint">Klik na kláves mimo rúk: ruka, ktorá ho stláča, dostane jeho pózu (druhá home). Ťahaj krúžok na končeku prsta ktorejkoľvek ruky: do strán ho natočíš, hore a dolu ho vystrieš alebo ohneš.
         Ťahaj dlaňou: posunieš ruku, so Shiftom ju otočíš. Ctrl+Z vráti zmenu ruky, ktorú si upravoval naposledy, Ctrl+S uloží obe.</p>
     </section>
     <datalist id="names"></datalist>

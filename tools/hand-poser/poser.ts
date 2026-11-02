@@ -3,7 +3,8 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import leftGlb from '@webxr-input-profiles/assets/dist/profiles/generic-hand/left.glb?url';
 import rightGlb from '@webxr-input-profiles/assets/dist/profiles/generic-hand/right.glb?url';
 import { type Finger, type KeyDef, LAYOUTS } from '../../src/keyboard/layouts';
-import { type HandIndex, POSE_NAME, type Side, VIEW, poseName } from '../../src/ui/hand-svg';
+import { type FingerScheme, fingerOf } from '../../src/keyboard/fingers';
+import { type HandIndex, POSE_NAME, type Side, VIEW, keyName, poseName } from '../../src/ui/hand-svg';
 import { HANDS_CHANNEL } from '../../src/ui/hands';
 import { FINGER_COLORS } from '../../src/ui/keyboard-guide';
 import { geminiPrompt } from './gemini-prompt';
@@ -115,13 +116,23 @@ const say = (text: string, error = false) => {
 // ---- the keyboard under the hand ----
 
 /**
- * Tapko's keyboard (English or Slovak, chosen on the page), every key named as its pose is saved (poseName), with the
- * bottom row's modifiers that Tapko leaves out.
+ * Tapko's keyboard (English or Slovak, chosen on the page), every key by its two-character name (keyName, the end of
+ * a pose's name), its stripe in the colour of the finger that types it (standard or ergonomic), with the bottom row's
+ * modifiers that Tapko leaves out.
  */
 const MODIFIERS: KeyDef[] = [
   ['ControlLeft', 0], ['MetaLeft', 0], ['AltLeft', 4], ['Space', 4, 6.25], ['AltRight', 5], ['MetaRight', 9], ['ContextMenu', 9], ['ControlRight', 9],
 ].map(([code, finger, w]) => ({ code: code as string, base: code === 'Space' ? ' ' : '', shift: '', finger: finger as Finger, w: (w as number) ?? 1.25 }));
 const layoutSelect = $<HTMLSelectElement>('layout');
+const schemeSelect = $<HTMLSelectElement>('scheme');
+const scheme = () => schemeSelect.value as FingerScheme;
+/** The keyboard shown, with the bottom row's modifiers. */
+function keyboard() {
+  const layout = LAYOUTS[layoutSelect.value as 'us-qwerty' | 'sk-qwertz'];
+  return { ...layout, rows: [...layout.rows.slice(0, 4), MODIFIERS] };
+}
+/** The keys under the keyboard's picture, each with its place (keyboard units). */
+const keyBoxes: { def: KeyDef; x: number; y: number; w: number }[] = [];
 const NS = 'http://www.w3.org/2000/svg';
 function svgEl(name: string, attrs: Record<string, string | number>, parent: Element): SVGElement {
   const e = document.createElementNS(NS, name);
@@ -134,11 +145,10 @@ const keysG = svgEl('g', {}, keysSvg);
 const keyRects = new Map<string, SVGElement>();
 const names = $<HTMLDataListElement>('names');
 function drawKeys(): void {
-  const layout = LAYOUTS[layoutSelect.value as 'us-qwerty' | 'sk-qwertz'];
-  const rows = [...layout.rows.slice(0, 4), MODIFIERS];
-  const layoutWithMods = { ...layout, rows };
+  const board = keyboard(), rows = board.rows;
   keysG.replaceChildren();
   keyRects.clear();
+  keyBoxes.length = 0;
   names.replaceChildren();
   for (const [value, label] of [['home', 'základná pozícia'], ['rest', 'ruky vedľa klávesnice']]) names.append(Object.assign(document.createElement('option'), { value, label }));
   for (const [r, row] of rows.entries()) {
@@ -146,14 +156,20 @@ function drawKeys(): void {
     for (const d of row) {
       x += (d.x ?? 0) * UNIT;
       const w = (d.w ?? 1) * UNIT - GAP, y = r * (KEY_H + GAP);
-      const name = poseName(layoutWithMods, d.code) ?? '';
+      const name = keyName(board, d.code) ?? '';
+      keyBoxes.push({ def: d, x, y, w });
       const rect = svgEl('rect', { x, y, width: w, height: KEY_H, rx: 6 }, keysG);
       // The ISO Enter's two parts are one key.
       if (!keyRects.has(name)) keyRects.set(name, rect);
       else rect.dataset.also = name;
-      svgEl('rect', { class: 'stripe', x: x + 4, y: y + KEY_H - 7, width: w - 8, height: 3, rx: 1.5, fill: FINGER_COLORS[d.finger] }, keysG);
-      svgEl('text', { x: x + w / 2, y: y + (KEY_H - 9) / 2, class: name.length > 1 ? 'word' : '' }, keysG).textContent = name;
-      if (!names.querySelector(`option[value="${name}"]`)) names.append(Object.assign(document.createElement('option'), { value: name, label: d.base.length === 1 ? d.base : '' }));
+      const finger = fingerOf(d, scheme());
+      svgEl('rect', { class: 'stripe', x: x + 4, y: y + KEY_H - 7, width: w - 8, height: 3, rx: 1.5, fill: FINGER_COLORS[finger] }, keysG);
+      svgEl('text', { x: x + w / 2, y: y + (KEY_H - 9) / 2 }, keysG).textContent = name;
+      // The pose names of this key: its finger's, both thumbs' for the space bar.
+      for (const f of d.code === 'Space' ? [4, 5] as Finger[] : [finger]) {
+        const pose = poseName(board, d.code, f);
+        if (pose && !names.querySelector(`option[value="${pose}"]`)) names.append(Object.assign(document.createElement('option'), { value: pose, label: d.base.length === 1 ? d.base : '' }));
+      }
       x += (d.w ?? 1) * UNIT;
     }
   }
@@ -166,13 +182,15 @@ const tipsSvg = document.getElementById('tips') as unknown as SVGSVGElement;
 tipsSvg.setAttribute('viewBox', `${VIEW.x} ${VIEW.y} ${VIEW.w} ${VIEW.h}`);
 
 function markKey(): void {
-  const on = new Set(['left', 'right'].map((side) => $<HTMLInputElement>(side === 'left' ? 'nameLeft' : 'nameRight').value.trim()));
+  // A pose's name ends with its key's name.
+  const on = new Set(['left', 'right'].map((side) => $<HTMLInputElement>(side === 'left' ? 'nameLeft' : 'nameRight').value.trim().slice(2)));
   for (const rect of keysG.querySelectorAll<SVGElement>('rect:not(.stripe)')) {
     const name = [...keyRects].find(([, r]) => r === rect)?.[0] ?? rect.dataset.also ?? '';
     rect.style.fill = on.has(name) ? '#fff3b8' : '';
   }
 }
 layoutSelect.addEventListener('change', drawKeys);
+schemeSelect.addEventListener('change', drawKeys);
 drawKeys();
 
 // ---- three.js ----
@@ -816,6 +834,18 @@ function dragFinger(f: FingerName, to: [number, number], start: PoseFile): void 
   at(s, c);
 }
 
+/** A click on a key: the hand that types it (its finger by the scheme) takes that key's pose, the other one its home. */
+function pickKey(at: [number, number]): void {
+  const box = keyBoxes.find((b) => at[0] >= b.x && at[0] <= b.x + b.w && at[1] >= b.y && at[1] <= b.y + KEY_H);
+  if (!box) return;
+  const board = keyboard();
+  const finger = box.def.code === 'Space' ? (active === 'left' ? 4 : 5) : fingerOf(box.def, scheme());
+  const name = poseName(board, box.def.code, finger);
+  if (!name) return;
+  const s: Side = finger <= 4 ? 'left' : 'right';
+  void open(s, name).then(() => open(otherSide(s), 'home')).then(() => activate(s));
+}
+
 let drag: { kind: 'finger' | 'hand' | 'turn'; f?: FingerName; from: [number, number]; start: PoseFile } | null = null;
 canvas.addEventListener('pointerdown', (e) => {
   const at = units(e);
@@ -830,7 +860,7 @@ canvas.addEventListener('pointerdown', (e) => {
     kind = 'finger';
   } else {
     const s = handUnder(e, at);
-    if (!s) return;
+    if (!s) return void pickKey(at);
     if (s !== active) activate(s);
     kind = e.shiftKey ? 'turn' : 'hand';
   }
@@ -912,7 +942,7 @@ async function post(s: Side): Promise<string | null> {
   return res.file ?? null;
 }
 
-const badName = () => say('Názov ako na klávese: malé písmená a číslice (napríklad r, spac, lshi, l1, home, rest)', true);
+const badName = () => say('Názov: ruka, prst a kláves (napríklad l2f0, r1sp, l520), alebo home, rest', true);
 
 async function save(): Promise<void> {
   if (!SIDES.every((s) => POSE_NAME.test(nameOf(s)))) return badName();
@@ -1012,14 +1042,17 @@ function mutedKeyboard(): string {
 
 const pair = () => `${nameOf('left')}+${nameOf('right')}`;
 
-const FINGER_WORD = ['little finger', 'ring finger', 'middle finger', 'index finger', 'thumb', 'thumb', 'index finger', 'middle finger', 'ring finger', 'little finger'];
-/** The finger and the key's sign a hand's pose types (none for home, rest and its steps). */
-function pressOf(s: Side): { finger: string; key: string } | null {
-  const layout = LAYOUTS[layoutSelect.value as 'us-qwerty' | 'sk-qwertz'];
-  const def = [...layout.rows.flat(), ...MODIFIERS].find((d) => poseName({ ...layout, rows: [...layout.rows, MODIFIERS] }, d.code) === nameOf(s));
-  if (!def) return null;
-  const key = def.base.length === 1 && def.base !== ' ' ? def.base.toUpperCase() : poseName(layout, def.code) ?? def.code;
-  return { finger: FINGER_WORD[def.finger], key: def.code === 'Space' ? 'space bar' : key };
+const FINGER_WORD = ['', 'thumb', 'index finger', 'middle finger', 'ring finger', 'little finger'];
+const KEY_WORD: Record<string, string> = { Space: 'space bar', ShiftLeft: 'left Shift', ShiftRight: 'right Shift', Tab: 'Tab', CapsLock: 'Caps Lock', Enter: 'Enter', Backspace: 'Backspace' };
+/** The finger and the key's sign a hand's pose types, read from its name (none for home, rest and its steps). */
+function pressOf(s: Side): { finger: string; key: string; row: number } | null {
+  const m = /^[lr]([1-5])([a-z0-9]{2})$/.exec(nameOf(s));
+  const board = keyboard();
+  const at = m && board.rows.findIndex((row) => row.some((d) => keyName(board, d.code) === m[2]));
+  const def = m && at != null && at >= 0 ? board.rows[at].find((d) => keyName(board, d.code) === m[2]) : undefined;
+  if (!m || !def || at == null) return null;
+  const key = KEY_WORD[def.code] ?? (def.base.length === 1 ? def.base.toUpperCase() : m[2]);
+  return { finger: FINGER_WORD[Number(m[1])], key, row: at };
 }
 
 /** Saves the pair's picture for Gemini (muted keyboard, both hands' outlines, the marks) and each hand's silhouette. */

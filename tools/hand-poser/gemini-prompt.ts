@@ -26,24 +26,29 @@ function bendWord(deg: number): string {
  * Where the fingers may be: in the home position each on its own key; when a key is typed the fingers may shift a little,
  * but so each can go back to its home key as simply as possible.
  */
-function restingRule(poses: Record<Side, PoseFile>, presses: Record<Side, { finger: string; key: string } | null>): string {
+function restingRule(poses: Record<Side, PoseFile>, presses: Record<Side, Press | null>): string {
   const home = (s: Side) => !presses[s] && /^(home|rest\d*)$/.test(poses[s].name);
   return home('left') && home('right')
     ? 'This is the home position: every finger rests on its own key (left hand on A S D F, right hand on J K L and the key right of L), both thumbs on the space bar.'
     : 'The fingers that do not type rest on or near their home keys (left hand A S D F, right hand J K L and the key right of L): they may shift a little with the typing finger, but only so far that each can go back to its home key as simply as possible.';
 }
 
-/** A hand's line of the prompt; `press`: the finger and the key's sign when the hand types a key. */
-function handLine(side: Side, p: PoseFile, press: { finger: string; key: string } | null): string {
+/** A key pressed: the finger, the key's sign and its row (0 the digit row). */
+export interface Press { finger: string; key: string; row: number }
+
+/** A hand's line of the prompt; `press`: the finger and the key when the hand types one. */
+function handLine(side: Side, p: PoseFile, press: Press | null): string {
   const fingers = FINGERS.map((f) => `${f} finger ${bendWord(bendOf(p, f))}`).join(', ');
-  const typing = press ? `; its ${press.finger} presses the key ${press.key}` : '';
+  // A key in the top rows is reached with a small move of the whole hand from the wrist, not by the finger alone.
+  const reach = press && press.row <= 1 ? ', the whole hand moved up a little from the wrist to reach it' : '';
+  const typing = press ? `; its ${press.finger} presses the key ${press.key}${reach}` : '';
   return `- ${side === 'left' ? 'Left' : 'Right'} hand: ${fingers}${typing}.`;
 }
 
-export function geminiPrompt(poses: Record<Side, PoseFile>, presses: Record<Side, { finger: string; key: string } | null>): string {
+export function geminiPrompt(poses: Record<Side, PoseFile>, presses: Record<Side, Press | null>): string {
   return `Generate an image: Hands on the keyboard, redrawn in a line style
 
-The first attached image is a flat pale pink keyboard seen exactly from above with two adult hands on it, drawn as rough black outlines of a 3D model with thin black marks for the knuckles, the joint folds and the nails; it gives the hands' position. Redraw the two hands as natural, real adult hands in the drawing style of the second attached image, but all in BLACK: one clean, bold, uniform black outline of each hand, nothing filled inside, so every key shows through; and, much thinner (hairline black lines), each fingernail as a rounded outline, short curved lines for the skin folds over the finger joints and a few short arcs over the knuckles; every finger has its nail and its joint folds. Each thumb's outer side is one straight line from the wrist to its tip, its pad turned slightly in towards the fingers, and both thumbs rest on the space bar. Take ONLY the line style from the second image, not its colour, its keyboard or its hand positions.
+The first attached image is a flat pale pink keyboard seen exactly from above with two adult hands on it, drawn as rough black outlines of a 3D model with thin black marks for the knuckles, the joint folds and the nails; it gives the hands' position. Redraw the two hands as natural, real adult hands in the drawing style of the second attached image, but all in BLACK: one clean, bold, uniform black outline of each hand, nothing filled inside, so every key shows through; and, much thinner (hairline black lines), each fingernail as a rounded outline, short curved lines for the skin folds over the finger joints and a few short arcs over the knuckles; every finger has its nail and its joint folds. Each thumb's outer side is one straight line from the wrist to its tip, its pad turned slightly in towards the fingers, and both thumbs rest on the space bar. Take ONLY the look of the hands from the second image, not its keyboard or its hand positions: the shape of real hands and their line style, the short arcs over the knuckles, the fold lines over the finger joints, the two short lines on the inner edge of each hand at the thumb, and each nail with a fine line of its nail bed; a bent finger shows its nail shortened, or no nail at all when it is bent so far that the nail turns away.
 
 Keep from the first image: the key each fingertip touches, the hands' size, their slant and the wrists. You may reshape the fingers' outlines freely so the hands look natural and real. ${restingRule(poses, presses)} The back of each hand is short, about as long as its middle finger, and the hand ends where it ends in the first image: do not draw a long back of the hand, a long wrist or a forearm.
 

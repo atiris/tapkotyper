@@ -1,4 +1,5 @@
 import { type KeyStep, type Layout, keyByCode, shiftKeyFor } from '../keyboard/layouts';
+import { type FingerScheme, fingerOf } from '../keyboard/fingers';
 import { type HandIndex, type HandShape, type Side, VIEW, poseName, readHandSvg } from './hand-svg';
 
 /**
@@ -68,22 +69,23 @@ export function handOf(layout: Layout, code: string): Side | null {
 }
 
 /**
- * The key each hand presses for a step, which names its outline: the typing hand its key, the other hand Shift for a
- * capital, the space bar the thumb of the hand that did not type the key before (`lastHand`); a hand with nothing to press
- * rests in its home position.
+ * The key each hand presses for a step, which names its outline (by the hand, finger and key: poseName): the typing hand
+ * its key with the finger of the `scheme`, the other hand Shift for a capital, the space bar the thumb of the hand that
+ * did not type the key before (`lastHand`); a hand with nothing to press rests in its home position.
  */
-export function poseNames(layout: Layout, step: KeyStep | null, lastHand: Side | null): Record<Side, string> {
+export function poseNames(layout: Layout, step: KeyStep | null, lastHand: Side | null, scheme: FingerScheme = 'standard'): Record<Side, string> {
   const names: Record<Side, string> = { left: HOME, right: HOME };
-  const name = step && poseName(layout, step.code);
-  if (!step || !name) return names;
-  const hand = handOf(layout, step.code);
-  if (!hand) {
-    names[lastHand === 'right' ? 'left' : 'right'] = name;
+  const def = step && keyByCode(layout, step.code);
+  if (!step || !def) return names;
+  if (def.finger === 4 || def.finger === 5) {
+    const thumb = lastHand === 'right' ? 4 : 5;
+    names[thumb === 4 ? 'left' : 'right'] = poseName(layout, step.code, thumb) ?? HOME;
     return names;
   }
-  names[hand] = name;
-  const shift = shiftKeyFor(layout, step);
-  if (shift) names[hand === 'left' ? 'right' : 'left'] = poseName(layout, shift) ?? HOME;
+  const finger = fingerOf(def, scheme), hand: Side = finger <= 4 ? 'left' : 'right';
+  names[hand] = poseName(layout, step.code, finger) ?? HOME;
+  const shift = shiftKeyFor(layout, step), shiftDef = shift ? keyByCode(layout, shift) : undefined;
+  if (shiftDef) names[hand === 'left' ? 'right' : 'left'] = poseName(layout, shiftDef.code, shiftDef.finger) ?? HOME;
   return names;
 }
 

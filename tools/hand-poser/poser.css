@@ -10,8 +10,7 @@ body { margin: 0; display: grid; grid-template-columns: 290px 1fr 290px; height:
 .stage canvas.dragging { cursor: grabbing; }
 .keys rect { fill: #f6f3ef; stroke: #d8d2ca; }
 .keys .stripe { stroke: none; }
-.keys text { font: 600 15px system-ui, sans-serif; fill: #8a8090; text-anchor: middle; dominant-baseline: central; }
-.keys text.word { font-size: 13px; }
+.keys text { font: 600 14px system-ui, sans-serif; fill: #8a8090; text-anchor: middle; dominant-baseline: central; }
 .keys .fade { stroke: #c9b; stroke-dasharray: 6 6; fill: none; }
 /* The keyboard as Gemini sees it: muted and pink, so it stays a background and splits easily from the hands. */
 .keys.muted rect { fill: #fdf4fb; stroke: #f0c8ea; }

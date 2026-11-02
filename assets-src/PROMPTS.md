@@ -1216,14 +1216,17 @@ the hand) and tunes every joint with the sliders. "Uložiť SVG" writes `public/
 an open Tapko shows it at once; commit them. "Zrkadliť z druhej ruky" starts a pose from the other hand's
 pose of the same name.
 
-Names (as written on the poser's keyboard): `tab`, `caps`, `lshi`, `rshi`, `spac`, `ente`, `back`; the
-plain range of each row by its key (`1`-`0`, `q`-`p`, `a`-`l`, `z`-`m`, English letters); any other key by
-the range's end and how many keys further out (`11` left of 1, `01` right of 0, `p1` right of P, `l1` = ô,
-`m1` right of M). `home` is the home position (it may be tuned; "Reset na HOMECONSTANT" brings back the
-one the owner approved, `HOME_CONSTANT` in `tools/hand-poser/poser.ts`), `rest` the hands lying beside the keyboard when a level
-starts; "Prechod rest → home" saves the steps `rest1`...`rest4` between them, which Tapko plays when the
-hands come onto the keys. A key without its own outline shows `home`. Gemini pictures and the 2D
-skeleton were dropped: Gemini drifted on small changes and a flat drawing cannot bend like a hand.
+Names: a pose is named by the hand (`l`, `r`), the finger (1 the thumb .. 5 the little finger) and the key it presses,
+the key by two characters as written on the poser's keyboard: two letters for a named key (`tb`, `cp`, `ls`, `rs`,
+`sp`, `en`, `bk`, and `lc`, `rc`, `lw`, `rw`, `la`, `ra`, `mn`), else a key of the row's plain range with `0` (`a0`,
+`f0`, `20`; ranges `1`-`0`, `q`-`p`, `a`-`l`, `z`-`m`, English letters) or the range's end and how many keys further
+out (`11` left of 1, `01` right of 0, `p1` right of P, `l1` = ô). So `l2f0` is the left index on F, `r1sp` the right
+thumb on the space bar, `l420` the left ring finger on 2 (standard) and `l520` the left little finger on 2
+(ergonomic: the digit row moved one finger over, see `src/keyboard/fingers.ts`; the poser's "Prsty" switch). A click
+on a key in the poser gives its hand that key's pose. `home` is the home position (it may be tuned; "Reset na
+HOMECONSTANT" brings back the one the owner approved, `HOME_CONSTANT` in `tools/hand-poser/poser.ts`), `rest` the
+hands lying beside the keyboard when a level starts; "Prechod rest → home" saves the steps `rest1`...`rest4`
+between them, which Tapko plays when the hands come onto the keys. A key without its own outline shows `home`.
 
 ### The hands' look through Gemini (plan `.todo/107-hands-gemini.md`)
 
@@ -1287,6 +1290,9 @@ its physical shape; never "one moved finger" or "one stretched finger".
 - T (the index far up and to the side): the other fingers of that hand curl so far that their last
   joints tuck under the middle ones and are hardly seen from above.
 - The digit row (ť, 5): there the whole back of the hand moves up; a top-row reach must not look like it.
+- Ergonomic fingering (the owner's way): ľ by the little finger, the left side of the digit row moved one finger
+  over up to ž by the left index, ý á by the right index, í by the middle finger and so on; the top rows are reached
+  with a small move of the whole hand from the wrist.
 - The bottom row (M): the finger bends, its nail is not visible, its tip on the lower part of the key
   (not below it, not on the space bar).
 - The hands rest beside the keyboard when a level starts and come onto the home position about a

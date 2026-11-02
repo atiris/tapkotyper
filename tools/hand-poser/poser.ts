@@ -307,6 +307,11 @@ const WEB = 0.3, WEB_THUMB = 0.7;
 const NAIL_BED = { width: 0.66, from: 0.4, to: 0.95 };
 /** Metres: a thin line lies this far over the skin; its thickness and the gap between folds. */
 const LIFT = 0.00015, FOLD_THICK = 0.0004, FOLD_GAP = 0.0011;
+/**
+ * A knuckle's arc: its width (of the finger's), its depth (of its width), where it sits and how far around the skin sets
+ * its height (metres towards the wrist from the joint), and how much higher it lies (the knuckle's bump is round).
+ */
+const KNUCKLE = { width: 0.7, depth: 0.2, at: 0.0015, reach: 0.0018, lift: 0.0004 };
 /** Metres along the bone from a joint whose skin sets the height of its folds (wider takes in the bulge of the bone before). */
 const FOLD_REACH = 0.0025;
 
@@ -370,17 +375,26 @@ function plate(w: number, l: number, round = 4): THREE.BufferGeometry {
   return new THREE.ShapeGeometry(shape);
 }
 
+/** Half an ellipse `w` across and `depth` deep around (0, `y`), bulging towards the tip (`depth` > 0) or the wrist. */
+const halfEllipse = (w: number, y: number, depth: number): [number, number][] =>
+  Array.from({ length: 25 }, (_, i) => [(w / 2) * Math.cos(Math.PI - (i / 24) * Math.PI), y + depth * Math.sin((i / 24) * Math.PI)]);
+
 /**
  * The nail bed's line as a flat band `thick` wide: the arc of the cuticle `from` along the bone, both sides on to `to`;
  * `w` across.
  */
 function nailBed(w: number, from: number, to: number, thick: number): THREE.BufferGeometry {
-  const rx = w / 2, ry = w * 0.32, pts: [number, number][] = [[-rx, to]];
-  for (let i = 0; i <= 24; i++) {
-    const a = Math.PI + (i / 24) * Math.PI;
-    pts.push([rx * Math.cos(a), from + ry + ry * Math.sin(a)]);
-  }
-  pts.push([rx, to]);
+  const ry = w * 0.32;
+  return band([[-w / 2, to], ...halfEllipse(w, from + ry, -ry), [w / 2, to]], thick);
+}
+
+/** A knuckle's line: a low arc over the joint, bulging towards the finger. */
+function knuckle(w: number, at: number, thick: number): THREE.BufferGeometry {
+  return band(halfEllipse(w, at, w * KNUCKLE.depth), thick);
+}
+
+/** A line through `pts` (across, along the bone) as a flat band `thick` wide. */
+function band(pts: [number, number][], thick: number): THREE.BufferGeometry {
   // Both edges of the band: the line moved half its thickness to each side.
   const side = (k: number) => pts.map(([x, y], i) => {
     const [px, py] = pts[Math.max(0, i - 1)], [nx, ny] = pts[Math.min(pts.length - 1, i + 1)];
@@ -489,6 +503,12 @@ async function buildHand(side: Side): Promise<Hand> {
     const distal = bones.get(distalOf(f))!, len = bones.get(tipOf(f))!.position.length();
     const nail = backAt(skinOf([distalOf(f), tipOf(f)], distal), -len * NAIL_BED.from, len * 0.2);
     mark(nailBed(nail.width * NAIL_BED.width, len * NAIL_BED.from, len * NAIL_BED.to, FOLD_THICK), distal, nail.width / 2, nail.top, 0, f);
+    // The knuckle: an arc over the joint where the finger leaves the hand.
+    if (f !== 'thumb') {
+      const first = bones.get(chain[1])!;
+      const over = backAt(skinOf([chain[1], chain[0]], first), KNUCKLE.at, KNUCKLE.reach);
+      mark(knuckle(over.width * KNUCKLE.width, -KNUCKLE.at, FOLD_THICK), first, over.width / 2, over.top + KNUCKLE.lift, 0, f);
+    }
     // The bone after each joint with folds, and how many lines.
     const folds: [string, number][] = f === 'thumb' ? [[chain[2], 2]] : [[chain[2], 3], [chain[3], 2]];
     for (const [after, count] of folds) {

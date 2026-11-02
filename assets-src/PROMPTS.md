@@ -1232,7 +1232,8 @@ Look
   fade out below the keyboard.
 - Nails: no colours (a coloured nail plate never looked right); only a thin line of the nail bed (the
   cuticle's arc and the sides), seen where the finger shows it from above. Thin lighter lines also mark
-  the folds of skin over the joints (three over the middle joint, two over the last, two on the thumb).
+  the folds of skin over the joints (three over the middle joint, two over the last, two on the thumb) and a
+  low arc over each knuckle.
 - The outline is thin (1 unit by default); a file's `stroke-width` on the outline makes it thicker in
   Tapko. The line is smoothed when saved, short broken bits are dropped.
 - The palm is 10 % shorter than the 3D model's (wrist to knuckles); the wrist is wider, mostly on the

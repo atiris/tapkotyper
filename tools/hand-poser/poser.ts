@@ -834,7 +834,7 @@ function dragFinger(f: FingerName, to: [number, number], start: PoseFile): void 
   at(s, c);
 }
 
-/** A click on a key: the hand that types it (its finger by the scheme) takes that key's pose, the other one its home. */
+/** A click on a key: the hand that types it (its finger by the scheme) takes that key's pose; the other hand stays (a capital: the letter, then Shift). */
 function pickKey(at: [number, number]): void {
   const box = keyBoxes.find((b) => at[0] >= b.x && at[0] <= b.x + b.w && at[1] >= b.y && at[1] <= b.y + KEY_H);
   if (!box) return;
@@ -843,7 +843,7 @@ function pickKey(at: [number, number]): void {
   const name = poseName(board, box.def.code, finger);
   if (!name) return;
   const s: Side = finger <= 4 ? 'left' : 'right';
-  void open(s, name).then(() => open(otherSide(s), 'home')).then(() => activate(s));
+  void open(s, name).then(() => activate(s));
 }
 
 let drag: { kind: 'finger' | 'hand' | 'turn'; f?: FingerName; from: [number, number]; start: PoseFile } | null = null;

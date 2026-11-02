@@ -34,7 +34,9 @@ export function geminiPrompt(poses: Record<Side, PoseFile>, presses: Record<Side
 
 The first attached image is a flat keyboard seen exactly from above with two adult hands on it, drawn as rough outlines of a 3D model; it gives the hands' position. Redraw the two hands as natural, real adult hands in exactly the drawing style of the second attached image: one clean, thin, uniform outline in warm grey-brown (#8a7b72), nothing filled inside, so every key shows through; each fingernail as a thin rounded outline; short thin curved lines for the skin folds over the finger joints and over the knuckles; each thumb's outer side one straight line from the wrist to its tip, its pad turned slightly in towards the fingers. Take ONLY the line style from the second image, not its keyboard and not its hand positions.
 
-Keep from the first image: the key each fingertip touches, the hands' size, their slant and the wrists. You may reshape the fingers' outlines freely so the hands look natural and real.
+Keep from the first image: the key each fingertip touches, the hands' size, their slant and the wrists. You may reshape the fingers' outlines freely so the hands look natural and real. The back of each hand is short, about as long as its middle finger, and the hand ends where it ends in the first image: do not draw a long back of the hand, a long wrist or a forearm.
+
+The palms and wrists are lifted about 3 cm above the keyboard, so every finger slopes down from its knuckle to its key and is bent downwards, and it must look so: none lies flat. Where a longer finger reaches only as far as a shorter one, the longer finger is bent more; the shorter fingers are straighter, but still bent.
 
 How the fingers are bent (the bend must show in the outline):
 ${handLine('left', poses.left, presses.left)}

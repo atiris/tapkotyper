@@ -21,6 +21,15 @@ export interface PoseFile {
   line: number;
 }
 
+/** Between the F and J keys: a pose (or an outline) mirrored over it lies on the other hand's home keys. */
+export const MIRROR_X = 389.5;
+
+/** An SVG path (absolute commands, x y pairs) mirrored over MIRROR_X. */
+export function mirrorPath(d: string): string {
+  let i = 0;
+  return d.replace(/-?\d+(\.\d+)?/g, (n) => (i++ % 2 ? n : (2 * MIRROR_X - Number(n)).toFixed(1)));
+}
+
 const POSE = /<metadata id="hand-pose">([\s\S]*?)<\/metadata>/;
 
 /** The SVG Tapko draws (src/ui/hand-svg.ts reads it), with the pose kept in its metadata for the poser. */

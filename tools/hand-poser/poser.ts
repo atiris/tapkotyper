@@ -7,7 +7,7 @@ import { type HandIndex, POSE_NAME, type Side, VIEW, poseName } from '../../src/
 import { HANDS_CHANNEL } from '../../src/ui/hands';
 import { FINGER_COLORS } from '../../src/ui/keyboard-guide';
 import { geminiPrompt } from './gemini-prompt';
-import { type JointTurn, type PoseFile, readPose } from './pose-file';
+import { type JointTurn, MIRROR_X, type PoseFile, readPose } from './pose-file';
 
 /**
  * The hand poser: a local page (dev server only, /tools/hand-poser/) where the owner poses a 3D hand (the WebXR generic hand,
@@ -66,20 +66,20 @@ const spreadJoint = (f: FingerName) => (f === 'thumb' ? 'thumb-metacarpal' : `${
  */
 const HOME_CONSTANT: PoseFile = {
   v: 1, side: 'left', name: 'home', line: 1,
-  hand: { x: 128, y: 447, yaw: 23, pitch: 8, roll: 0, scale: 2565 },
+  hand: { x: 140, y: 427, yaw: 23, pitch: 8, roll: 0, scale: 2565 },
   joints: {
-    'index-finger-phalanx-proximal': { bend: 14.3, spread: -1.9 },
-    'index-finger-phalanx-intermediate': { bend: 23.9 },
+    'index-finger-phalanx-proximal': { bend: 14.3, spread: -0.9 },
+    'index-finger-phalanx-intermediate': { bend: 24 },
     'index-finger-phalanx-distal': { bend: 2.4 },
-    'middle-finger-phalanx-proximal': { bend: 19.4, spread: -3.1 },
-    'middle-finger-phalanx-intermediate': { bend: 33.8 },
-    'middle-finger-phalanx-distal': { bend: 8.4 },
-    'ring-finger-phalanx-proximal': { bend: 18.4, spread: -4.3 },
-    'ring-finger-phalanx-intermediate': { bend: 31.9 },
-    'ring-finger-phalanx-distal': { bend: 6.9 },
-    'pinky-finger-phalanx-proximal': { bend: 13.9, spread: -7.4 },
-    'pinky-finger-phalanx-intermediate': { bend: 22.9 },
-    'pinky-finger-phalanx-distal': { bend: 1.7 },
+    'middle-finger-phalanx-proximal': { bend: 19.3, spread: -4 },
+    'middle-finger-phalanx-intermediate': { bend: 33.6 },
+    'middle-finger-phalanx-distal': { bend: 8.3 },
+    'ring-finger-phalanx-proximal': { bend: 18.3, spread: -7 },
+    'ring-finger-phalanx-intermediate': { bend: 31.8 },
+    'ring-finger-phalanx-distal': { bend: 6.8 },
+    'pinky-finger-phalanx-proximal': { bend: 13.7, spread: -12.2 },
+    'pinky-finger-phalanx-intermediate': { bend: 22.4 },
+    'pinky-finger-phalanx-distal': { bend: 1.4 },
     'thumb-metacarpal': { bend: 20, spread: -16, twist: -15 },
     'thumb-phalanx-proximal': { bend: 4 },
     'thumb-phalanx-distal': { bend: 30 },
@@ -92,8 +92,6 @@ function homeConstant(side: Side, name: string): PoseFile {
   return side === 'left' ? left : { ...mirrored(left), name };
 }
 
-/** Between the F and J keys: a pose mirrored over it lies on the other hand's home keys. */
-const MIRROR_X = 389.5;
 /** The same pose for the other hand: mirrored over MIRROR_X, sideways turns the other way. */
 function mirrored(p: PoseFile): PoseFile {
   const joints = Object.fromEntries(Object.entries(p.joints).map(([j, t]) => [j, { ...t, spread: t.spread && -t.spread, twist: t.twist && -t.twist }]));
@@ -286,7 +284,7 @@ const loader = new GLTFLoader();
 /** Ring and little fingers a little thicker than the model's (the owner's eye): their skin pushed out from the bones. */
 const THICK: Partial<Record<FingerName, number>> = { ring: 1.08, pinky: 1.12 };
 /** The palm's length (wrist to knuckles) against the model's. */
-const PALM = 0.9;
+const PALM = 0.8;
 /** The hand wider at the wrist, mostly on the thumb's side (to the sides only). */
 const WRIST_WIDE = { thumb: 1.4, out: 1.05 };
 /** The fingers' first bones a little thicker where they leave the palm, the extra fading out towards their next joint. */
@@ -1044,7 +1042,8 @@ async function geminiPicture(): Promise<void> {
 /** Traces Gemini's answer for the pair into both hands' SVGs (their poses stay). */
 async function fromGemini(): Promise<void> {
   say('Prekresľujem z Gemini…');
-  const r = await fetch('/__hand-poser/gemini-trace', { method: 'POST', body: JSON.stringify({ pair: pair(), names: { left: nameOf('left'), right: nameOf('right') } }) });
+  const mirror = $<HTMLInputElement>('mirrorTrace').checked;
+  const r = await fetch('/__hand-poser/gemini-trace', { method: 'POST', body: JSON.stringify({ pair: pair(), names: { left: nameOf('left'), right: nameOf('right') }, mirror }) });
   const res = (await r.json()) as { ok: boolean; files?: string[]; error?: string };
   if (!res.ok) return say(res.error ?? 'Nepodarilo sa', true);
   await loadIndex();

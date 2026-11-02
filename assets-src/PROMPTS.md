@@ -1231,7 +1231,9 @@ The 3D pose gives the position; Gemini gives the look. In the poser, pose both h
 both, then "Vzor pre Gemini": it writes `assets-src/hands/gemini/<left>+<right>/picture.png` (1376 x 768: the muted
 keyboard, both hands' 3D outlines, two magenta marks) and the hands' silhouettes. Send it with the approved style
 sample `assets-src/hands/style-sample.jpg` (the owner's choice, 2026-11-02), save the answer as `answer.png` in the
-same folder, then "Z Gemini do SVG" traces it into both hands' SVGs (the marks place it on the keyboard).
+same folder, then "Z Gemini do SVG" traces it into both hands' SVGs (the marks place it on the keyboard). For a
+symmetric pair (home, rest) "Pravú zrkadliť z ľavej" puts the left hand's outline mirrored into the right one,
+when Gemini drew one hand worse.
 
 - `answer.png`: **attach `picture.png`, then `style-sample.jpg`**, with the pair's `prompt.txt` (written by the poser
   from `tools/hand-poser/gemini-prompt.ts`: the line style, freedom to make the hands natural, each finger's bend read
@@ -1249,7 +1251,8 @@ Look
   low arc over each knuckle.
 - The outline is thin (1 unit by default); a file's `stroke-width` on the outline makes it thicker in
   Tapko. The line is smoothed when saved, short broken bits are dropped.
-- The palm is 10 % shorter than the 3D model's (wrist to knuckles); the wrist is wider, mostly on the
+- The palm is 20 % shorter than the 3D model's (wrist to knuckles), the back of the hand short; the palms and
+  wrists are lifted about 3 cm above the keys, so every finger slopes down and looks bent; the wrist is wider, mostly on the
   thumb's side.
 - The ring and little fingers are a little thicker than the 3D model's, every finger's base at the palm too; the gaps between the fingers
   end in a sharp V, not a soft U (between the thumb and the index the cut stays short); the thumb (two bones) lies nearly straight, its outer side smooth, not broken at its joints, its first bone not narrow in the middle.

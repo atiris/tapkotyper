@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import type { Plugin } from 'vite';
 import { POSE_NAME } from '../../src/ui/hand-svg';
 import { type PictureBody, savePicture, traceAnswer, writeOutline } from './gemini';
-import { type PoseFile, VIEW, poseSvg } from './pose-file';
+import { type PoseFile, VIEW, mirrorPath, poseSvg } from './pose-file';
 
 /**
  * The hand poser's save and delete, and its way through Gemini (./gemini.ts), on the dev server only (the poser is a
@@ -87,9 +87,11 @@ export function handPoser(): Plugin {
         try {
           if (path === '/__hand-poser/gemini-picture') return reply({ file: await savePicture(await body<PictureBody>(req)) });
           if (path === '/__hand-poser/gemini-trace') {
-            const { pair, names } = await body<{ pair: string; names: Record<'left' | 'right', string> }>(req);
+            const { pair, names, mirror } = await body<{ pair: string; names: Record<'left' | 'right', string>; mirror?: boolean }>(req);
             if (!Object.values(names).every((n) => POSE_NAME.test(n))) throw new Error('bad pose names');
             const outlines = await traceAnswer(pair, (png, toUnits) => trace(png, toUnits, GEMINI.specks, GEMINI.blur, GEMINI.ink));
+            // A symmetric pair (home, rest): the right hand as the left one's mirror, when Gemini drew it worse.
+            if (mirror) outlines.right = mirrorPath(outlines.left);
             return reply({ files: (['left', 'right'] as const).map((side) => writeOutline(join(DIR, side, `${names[side]}.svg`), outlines[side])) });
           }
           if (path !== '/__hand-poser/save' && path !== '/__hand-poser/delete') return next();

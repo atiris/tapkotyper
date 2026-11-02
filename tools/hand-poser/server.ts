@@ -27,7 +27,7 @@ const pngOf = (dataUrl: string) => Buffer.from(dataUrl.slice(dataUrl.indexOf(','
  * Bits of line smaller than this many pixels are dropped (short broken pieces where the model's facets meet); the thin
  * lines are short by nature, so they keep smaller ones.
  */
-const SPECKS = 160, CREASE_SPECKS = 12;
+const SPECKS = 520, CREASE_SPECKS = 12;
 /** The renders are blurred this much (pixels) before tracing: the model's facets and stair steps smooth out. */
 const BLUR = 1.4;
 

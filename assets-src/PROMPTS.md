@@ -1235,8 +1235,10 @@ Look
   the folds of skin over the joints (three over the middle joint, two over the last, two on the thumb).
 - The outline is thin (1 unit by default); a file's `stroke-width` on the outline makes it thicker in
   Tapko. The line is smoothed when saved, short broken bits are dropped.
+- The palm is 10 % shorter than the 3D model's (wrist to knuckles); the wrist is wider, mostly on the
+  thumb's side.
 - The ring and little fingers are a little thicker than the 3D model's, every finger's base at the palm too; the gaps between the fingers
-  end in a sharp V, not a soft U; the thumb (two bones) lies nearly straight, its outer side smooth, not broken at its joints, its first bone not narrow in the middle.
+  end in a sharp V, not a soft U (between the thumb and the index the cut stays short); the thumb (two bones) lies nearly straight, its outer side smooth, not broken at its joints, its first bone not narrow in the middle.
 - The key being typed is always readable: its letter is drawn over the hands (white, a thin solid
   outline in the finger's colour, on a small disc half a key wide that fades from its centre); the
   key's own letter underneath is hidden, never two letters.

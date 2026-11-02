@@ -21,6 +21,8 @@ const UNIT = 58, GAP = 4, KEY_H = 46;
 const EXPORT_PX = 4;
 /** The camera's depth range in keyboard units, and the depth step that draws a line (a finger over the palm). */
 const NEAR = 1, FAR = 3000, DEPTH_JUMP = 5;
+/** Between the thumb and the palm a depth step draws only when this many times bigger. */
+const THUMB_STEP = 5;
 /** A surface this steep (depth units per unit across) is a slope, not a step: it matters when a pixel is wider than a unit. */
 const SLOPE = 8;
 const LINE_COLOR = new THREE.Color('#5a5560');
@@ -63,12 +65,12 @@ const spreadJoint = (f: FingerName) => (f === 'thumb' ? 'thumb-metacarpal' : `${
  */
 const HOME_CONSTANT: PoseFile = {
   v: 1, side: 'left', name: 'home', line: 1,
-  hand: { x: 145, y: 446, yaw: 18, pitch: 8, roll: 0, scale: 2565 },
+  hand: { x: 146, y: 425, yaw: 18, pitch: 8, roll: 0, scale: 2565 },
   joints: {
-    'index-finger-phalanx-proximal': { bend: 19.6, spread: 0.7 },
+    'index-finger-phalanx-proximal': { bend: 19.6, spread: 6 },
     'index-finger-phalanx-intermediate': { bend: 34.4 },
     'index-finger-phalanx-distal': { bend: 8.7 },
-    'middle-finger-phalanx-proximal': { bend: 23.8, spread: 0.6 },
+    'middle-finger-phalanx-proximal': { bend: 23.8, spread: 3 },
     'middle-finger-phalanx-intermediate': { bend: 42.5 },
     'middle-finger-phalanx-distal': { bend: 13.6 },
     'ring-finger-phalanx-proximal': { bend: 22, spread: -1.5 },
@@ -77,7 +79,7 @@ const HOME_CONSTANT: PoseFile = {
     'pinky-finger-phalanx-proximal': { bend: 16.4, spread: -4.5 },
     'pinky-finger-phalanx-intermediate': { bend: 27.9 },
     'pinky-finger-phalanx-distal': { bend: 4.7 },
-    'thumb-metacarpal': { bend: 12, spread: -19, twist: 0 },
+    'thumb-metacarpal': { bend: 16, spread: -19, twist: 0 },
     'thumb-phalanx-proximal': { bend: 4 },
     'thumb-phalanx-distal': { bend: 6 },
   },
@@ -237,7 +239,9 @@ const edgeMaterial = new THREE.ShaderMaterial({
       if ((ia == 0.0) != (ib == 0.0)) return true;
       if (ia == 0.0) return false;
       float ba = baseOf(ia), bb = baseOf(ib);
-      return (ba != bb && ba != 1.0 && bb != 1.0) || abs(zOf(a) - zOf(b)) > jump;
+      // The thumb lies lower than the palm beside it: only a big step there draws (the cut between thumb and index short).
+      float step = (ba == 2.0 && bb == 1.0) || (ba == 1.0 && bb == 2.0) ? jump * ${THUMB_STEP}.0 : jump;
+      return (ba != bb && ba != 1.0 && bb != 1.0) || abs(zOf(a) - zOf(b)) > step;
     }
     bool edgeAt(vec2 uv) {
       vec4 c = texture2D(tPart, uv);
@@ -283,12 +287,22 @@ const hands: Partial<Record<Side, Promise<Hand>>> = {};
 
 /** Ring and little fingers a little thicker than the model's (the owner's eye): their skin pushed out from the bones. */
 const THICK: Partial<Record<FingerName, number>> = { ring: 1.08, pinky: 1.12 };
+/** The palm's length (wrist to knuckles) against the model's. */
+const PALM = 0.9;
+/** The hand wider at the wrist, mostly on the thumb's side (to the sides only). */
+const WRIST_WIDE = { thumb: 1.24, out: 1.05 };
 /** The fingers' first bones a little thicker where they leave the palm, the extra fading out towards their next joint. */
 const BASE = 1.08;
-/** The model's thumb is narrow in the middle of its first bone: filled out there, most in the middle. */
-const THUMB_WAIST = 1.1;
-/** A triangle belongs to a finger when that finger moves it at least this much (else to the palm). */
-const WEB = 0.3;
+/**
+ * The model's thumb dips in along its first bone; a real thumb's sides run straight from the hand to the tip. Filled out:
+ * the end of the thumb's bone in the hand, its first bone and its last bone's start.
+ */
+const THUMB_WAIST = 1.24;
+/**
+ * A triangle belongs to a finger when that finger moves it at least this much (else to the palm); the skin between the
+ * thumb and the index is wide, so the thumb's line into it stops sooner.
+ */
+const WEB = 0.3, WEB_THUMB = 0.7;
 /** The nail bed's line: its width (of the finger's), and where it starts and ends along the last bone (of its length). */
 const NAIL_BED = { width: 0.66, from: 0.4, to: 0.95 };
 /** Metres: a thin line lies this far over the skin; its thickness and the gap between folds. */
@@ -296,29 +310,44 @@ const LIFT = 0.00015, FOLD_THICK = 0.0004, FOLD_GAP = 0.0011;
 /** Metres along the bone from a joint whose skin sets the height of its folds (wider takes in the bulge of the bone before). */
 const FOLD_REACH = 0.0025;
 
-/** Pushes the skin of the fingers in THICK and of the fingers' bases (BASE) out from their bones (in the pose the model is bound in). */
-function thicken(mesh: THREE.SkinnedMesh, fingerOf: (bone: string) => FingerName | null): void {
+/**
+ * Pushes the skin out from the bones in the pose the model is bound in: the wrist wider (WRIST_WIDE), the fingers in
+ * THICK, the fingers' bases (BASE) and the thumb (THUMB_WAIST) thicker.
+ */
+function thicken(mesh: THREE.SkinnedMesh, side: Side, fingerOf: (bone: string) => FingerName | null): void {
   const geo = mesh.geometry, pos = geo.getAttribute('position'), index = geo.getAttribute('skinIndex'), weight = geo.getAttribute('skinWeight');
   const bones = mesh.skeleton.bones, inverses = mesh.skeleton.boneInverses;
+  const wristBone = bones.findIndex((b) => b.name === 'wrist');
   const p = new THREE.Vector3();
   for (let i = 0; i < pos.count; i++) {
-    let main = 0, best = -1;
+    let main = 0, best = -1, wrist = 0;
     const by = new Map<FingerName, number>();
     for (let k = 0; k < 4; k++) {
       const b = index.getComponent(i, k), w = weight.getComponent(i, k);
       if (w > best) [main, best] = [b, w];
+      if (bones[b].name === 'wrist') wrist += w;
       const f = fingerOf(bones[b].name);
       if (f) by.set(f, (by.get(f) ?? 0) + w);
     }
     const name = bones[main].name, f = fingerOf(name);
-    if (!f) continue;
+    if (wrist > 0) {
+      // The wrist wider to the sides, as much as the wrist moves the skin (+x is the thumb's side of the left hand).
+      p.fromBufferAttribute(pos, i).applyMatrix4(mesh.bindMatrix).applyMatrix4(inverses[wristBone]);
+      p.x *= 1 + ((p.x > 0 === (side === 'left') ? WRIST_WIDE.thumb : WRIST_WIDE.out) - 1) * wrist;
+      p.applyMatrix4(inverses[wristBone].clone().invert()).applyMatrix4(mesh.bindMatrixInverse);
+      pos.setXYZ(i, p.x, p.y, p.z);
+    }
+    if (!f && name !== 'thumb-metacarpal') continue;
     p.fromBufferAttribute(pos, i).applyMatrix4(mesh.bindMatrix).applyMatrix4(inverses[main]);
     // Where the finger meets the palm the finger's own push fades out; the base's push is strongest there.
-    let kk = 1 + ((THICK[f] ?? 1) - 1) * (by.get(f) ?? 0);
+    let kk = f ? 1 + ((THICK[f] ?? 1) - 1) * (by.get(f) ?? 0) : 1;
     const next = bones[main].children.find((c) => (c as THREE.Bone).isBone);
     const along = next ? -p.z / next.position.length() : 0;
     if (f !== 'thumb' && name.endsWith('phalanx-proximal') && next) kk *= 1 + (BASE - 1) * Math.max(0, 1 - along);
-    if (name === 'thumb-phalanx-proximal' && next) kk *= 1 + (THUMB_WAIST - 1) * Math.sin(Math.PI * Math.min(1, Math.max(0, along)));
+    const clamp = (v: number) => Math.min(1, Math.max(0, v));
+    if (name === 'thumb-metacarpal') kk *= 1 + (THUMB_WAIST - 1) * clamp((along - 0.35) / 0.45);
+    if (name === 'thumb-phalanx-proximal') kk *= 1 + (THUMB_WAIST - 1) * clamp(0.6 + along);
+    if (name === 'thumb-phalanx-distal') kk *= 1 + (THUMB_WAIST - 1) * clamp(1 - along / 0.45);
     if (kk === 1) continue;
     p.x *= kk;
     p.y *= kk;
@@ -385,6 +414,10 @@ async function buildHand(side: Side): Promise<Hand> {
   model.traverse((o) => { if ((o as THREE.Bone).isBone) bones.set(o.name, o as THREE.Bone); });
   // The WebXR hand's joints are all siblings (an XR system places each); here each joint turns the ones after it.
   for (const f of FINGERS) ['wrist', ...chainOf(f)].reduce((parent, child) => (bones.get(parent)!.attach(bones.get(child)!), child));
+  // The palm shorter: the knuckles (and the thumb's root) nearer the wrist; the skin between follows its bones.
+  for (const f of FINGERS) for (const j of f === 'thumb' ? ['thumb-metacarpal'] : [`${f}-finger-metacarpal`, `${f}-finger-phalanx-proximal`]) {
+    bones.get(j)!.position.multiplyScalar(PALM);
+  }
   const rest = new Map([...bones].map(([n, b]) => [n, b.quaternion.clone()]));
   // The wrist at the origin, its fingers up the page (-z) and the back of the hand to the camera (+y).
   const wrist = bones.get('wrist')!;
@@ -403,7 +436,7 @@ async function buildHand(side: Side): Promise<Hand> {
   skinned.frustumCulled = false;
   const boneNames = skinned.skeleton.bones.map((b) => b.name);
   const fingerOf = (bone: string): FingerName | null => (bone === 'wrist' || bone.includes('metacarpal') ? null : bone.split('-')[0] as FingerName);
-  thicken(skinned, fingerOf);
+  thicken(skinned, side, fingerOf);
   // Every triangle is one part, so a part's edge is sharp: the finger that moves it most once that finger moves it enough
   // (the skin between two fingers splits between them, so their line runs on into a sharp notch), else the palm.
   const geo = skinned.geometry.toNonIndexed();
@@ -417,7 +450,7 @@ async function buildHand(side: Side): Promise<Hand> {
       if (f) sum.set(f, (sum.get(f) ?? 0) + weight.getComponent(v, k) / 3);
     }
     const [f, w] = [...sum].sort((x, y) => y[1] - x[1])[0] ?? [null, 0];
-    part.fill(f && w >= WEB ? PART[f] : PART.palm, t, t + 3);
+    part.fill(f && w >= (f === 'thumb' ? WEB_THUMB : WEB) ? PART[f] : PART.palm, t, t + 3);
   }
   geo.setAttribute('partId', new THREE.BufferAttribute(part, 1));
   const shade = new THREE.MeshStandardMaterial({ color: 0xeac8ae, roughness: 0.75, transparent: true, opacity: 0.8 });

@@ -1,4 +1,5 @@
-// README pictures: `node scripts/readme-shots.mjs` builds the e2e app, plays it in Chromium and writes docs/*.png.
+// README pictures: `node scripts/readme-shots.mjs` builds the e2e app, plays it in Chromium and writes docs/*.png
+// and the link-preview picture public/og.png.
 import { chromium } from '@playwright/test';
 import { spawn, execSync } from 'node:child_process';
 import { createServer as freePort } from 'node:net';
@@ -8,6 +9,8 @@ import { createServer } from 'vite';
 
 /** Pictures larger than this are scaled down to `SMALL_W`, and to 256 colors if that is not enough. */
 const MAX_BYTES = 400 * 1024;
+/** The link-preview picture: the size Facebook, Slack and others ask for, and a smaller limit. */
+const OG = { width: 1200, height: 630, maxBytes: 300 * 1024 };
 const SMALL_W = 1200;
 
 // The lesson order and the keys the levels need, from the game's own code.
@@ -55,16 +58,15 @@ async function editStore(page, fn, arg) {
   await page.reload();
 }
 
-/** The viewport as a PNG in docs/, made smaller when it is too large; no focus, so no tooltip shows. */
-async function shot(page, name, settle = 300) {
+/** The viewport as a PNG in docs/ (or at `file`), made smaller when it is too large; no focus, so no tooltip shows. */
+async function shot(page, name, settle = 300, file = `docs/${name}.png`, maxBytes = MAX_BYTES) {
   await page.mouse.move(0, 0);
   await page.evaluate(() => document.activeElement?.blur());
   await page.waitForTimeout(settle);
   const png = await page.screenshot();
-  const file = `docs/${name}.png`;
   await sharp(png).png({ compressionLevel: 9 }).toFile(file);
-  if (statSync(file).size > MAX_BYTES) await sharp(png).resize({ width: SMALL_W }).png({ compressionLevel: 9 }).toFile(file);
-  if (statSync(file).size > MAX_BYTES) await sharp(png).resize({ width: SMALL_W }).png({ compressionLevel: 9, palette: true, effort: 10 }).toFile(file);
+  if (statSync(file).size > maxBytes) await sharp(png).resize({ width: SMALL_W }).png({ compressionLevel: 9 }).toFile(file);
+  if (statSync(file).size > maxBytes) await sharp(png).resize({ width: SMALL_W }).png({ compressionLevel: 9, palette: true, effort: 10 }).toFile(file);
   console.log(`${file}: ${Math.round(statSync(file).size / 1024)} KB`);
 }
 
@@ -143,6 +145,9 @@ try {
   await page.goto(`${BASE}#/`);
   await page.locator('.start-screen').waitFor();
   await shot(page, 'start');
+  await page.setViewportSize({ width: OG.width, height: OG.height });
+  await shot(page, 'og', 300, 'public/og.png', OG.maxBytes);
+  await page.setViewportSize({ width: 1366, height: 768 });
   await playShot(page, id, 'meadow', 2, 'meadow');
   await playShot(page, id, 'space', 0, 'space');
 } finally {

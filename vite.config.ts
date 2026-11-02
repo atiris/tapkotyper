@@ -15,7 +15,7 @@ function publicFiles(dir: string): string[] {
 /** Which build a browser runs: the commit and the build time, in the page's meta and at the top of sw.js. */
 const BUILD = `${execSync('git rev-parse --short HEAD').toString().trim()} ${new Date().toISOString().slice(0, 16).replace('T', ' ')} UTC`;
 
-/** Writes sw.js with the files to keep offline and their versions (music is cached as it plays) and stamps both with BUILD. */
+/** Writes sw.js with the files to keep offline and their versions and stamps both with BUILD. */
 function serviceWorker(): Plugin {
   return {
     name: 'tapkotyper-sw',
@@ -26,7 +26,9 @@ function serviceWorker(): Plugin {
       const short = (data: string | Uint8Array) => createHash('sha256').update(data).digest('hex').slice(0, 12);
       const files: Record<string, string> = { './': short(BUILD) };
       for (const [name, out] of Object.entries(bundle)) files[name] = short(out.type === 'chunk' ? out.code : out.source);
-      for (const f of publicFiles('public').filter((f) => !f.endsWith('.mp3') && !f.endsWith('.txt'))) files[f] = short(readFileSync(join('public', f)));
+      // Music is cached as it plays; robots.txt, the sitemap and the share picture are for crawlers, never needed offline.
+      const offline = (f: string) => !f.endsWith('.mp3') && !f.endsWith('.txt') && f !== 'sitemap.xml' && f !== 'og.png';
+      for (const f of publicFiles('public').filter(offline)) files[f] = short(readFileSync(join('public', f)));
       const version = short(JSON.stringify(files));
       const source = readFileSync('scripts/sw-template.js', 'utf8')
         .replace('__BUILD__', BUILD)

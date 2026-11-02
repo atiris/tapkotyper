@@ -12,3 +12,4 @@
 - [session-pacing.md](session-pacing.md) - session length and breaks
 - [privacy.md](privacy.md) - no ads, no accounts, no tracking
 - [offline.md](offline.md) - installable PWA
+- [discoverability.md](discoverability.md) - found by search, a clear preview when shared

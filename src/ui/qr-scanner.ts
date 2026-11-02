@@ -103,8 +103,9 @@ export async function startScan(video: HTMLVideoElement, onCode: (text: string) 
     video.srcObject = stream;
     await video.play().catch(() => undefined);
   };
-  await open();
+  // The decoder first: if it cannot load, no camera is left running behind the error.
   const { detect, multi } = await makeDetector();
+  await open();
   const scanner = makeScanner(detect, multi, onCode);
   const timer = setInterval(() => { if (!stopped && video.videoWidth) void scanner.tick(video, video.videoWidth, video.videoHeight); }, 1000 / SCAN_FPS / 2);
   const camera: Camera = {

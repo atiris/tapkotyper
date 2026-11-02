@@ -28,7 +28,7 @@ a unit test, `.specify/experience/`. No contracts, no stored data, no DB impact.
 
 ## Steps
 
-- [ ] **Head metadata in `index.html`** (keep the existing tags, the theme script and GoatCounter):
+- [x] **Head metadata in `index.html`** (keep the existing tags, the theme script and GoatCounter):
   - `<title>TapkoTyper – písanie všetkými desiatimi pre deti</title>`
   - `description` (Slovak, 140-160 characters): a peaceful story game that teaches children
     touch typing with all ten fingers, Slovak and English keyboard, free, no ads, no accounts.
@@ -48,29 +48,29 @@ a unit test, `.specify/experience/`. No contracts, no stored data, no DB impact.
     `author` (`Person`, the copyright holder in `LICENSE`), `license` (MIT URL).
   - `<noscript>`: replace the one line with a short paragraph in Slovak and one in English
     that says what the game is and that it needs JavaScript.
-- [ ] **`public/robots.txt`**: `User-agent: *`, `Allow: /`,
+- [x] **`public/robots.txt`**: `User-agent: *`, `Allow: /`,
   `Sitemap: https://tapkotyper.com/sitemap.xml`.
-- [ ] **`public/sitemap.xml`**: a valid sitemap with the one `<loc>https://tapkotyper.com/</loc>`
+- [x] **`public/sitemap.xml`**: a valid sitemap with the one `<loc>https://tapkotyper.com/</loc>`
   and no `lastmod`, `changefreq` or `priority` (search engines ignore them or distrust a value
   that changes on every deploy).
-- [ ] **Share image `public/og.png`**, 1200x630 PNG under 300 KB: `scripts/readme-shots.mjs`
+- [x] **Share image `public/og.png`**, 1200x630 PNG under 300 KB: `scripts/readme-shots.mjs`
   also takes the start screen at a 1200x630 viewport and writes it to `public/og.png` (same
   sharp size rule as the other shots). Run the script once and commit the image.
-- [ ] **Service worker list** (`vite.config.ts`): leave `og.png` and `sitemap.xml` out of the
+- [x] **Service worker list** (`vite.config.ts`): leave `og.png` and `sitemap.xml` out of the
   offline files (as `.txt` and `.mp3` already are); a player never needs them offline.
-- [ ] **Unit test** `src/app/seo.test.ts` reading `index.html`: canonical, `og:url` and the
+- [x] **Unit test** `src/app/seo.test.ts` reading `index.html`: canonical, `og:url` and the
   JSON-LD `url` are the same `https://tapkotyper.com/`; the JSON-LD parses; `og:image` is
   absolute; `public/robots.txt` names the sitemap; `public/sitemap.xml` holds the canonical.
   A domain change then cannot leave one of them behind.
-- [ ] **Spec**: new `.specify/experience/discoverability.md` (WHAT and WHY: parents and teachers
+- [x] **Spec**: new `.specify/experience/discoverability.md` (WHAT and WHY: parents and teachers
   find the game by search and see a clear preview when it is shared; Slovak first; one URL; no
   hidden text, no tracking, no verification tags) and its line in `.specify/experience/index.md`.
-- [ ] **Verify**: `npm run build` and `npm test`; `dist/` holds `robots.txt`, `sitemap.xml`,
+- [x] **Verify**: `npm run build` and `npm test`; `dist/` holds `robots.txt`, `sitemap.xml`,
   `og.png`; `sw.js` lists neither `og.png` nor `sitemap.xml`. Serve `dist` with `vite preview`,
   open it with the Playwright MCP: the game starts as before, no console errors, the head holds
   the new tags. Run `npx lighthouse <preview url> --only-categories=seo --quiet
   --chrome-flags=--headless` and fix everything below 100 that this plan covers.
-- [ ] After the deploy: `curl -sI https://tapkotyper.com/robots.txt`, `/sitemap.xml` and
+- [x] After the deploy: `curl -sI https://tapkotyper.com/robots.txt`, `/sitemap.xml` and
   `/og.png` return 200; `http://` and `www.` already return 301 to `https://tapkotyper.com/`
   (checked 2026-11-02), confirm it still holds.
 
@@ -81,3 +81,16 @@ a unit test, `.specify/experience/`. No contracts, no stored data, no DB impact.
    indexing of the root URL.
 2. Bing Webmaster Tools: import the site from Search Console (covers Bing, DuckDuckGo, Yahoo).
 3. Check the preview with the Facebook Sharing Debugger and Google's Rich Results Test.
+
+## Done - 2026-11-02
+
+Shipped: Slovak title and description, canonical, Open Graph and Twitter tags, robots meta,
+`WebApplication` JSON-LD, a two-language `<noscript>`, `public/robots.txt`, `public/sitemap.xml`,
+`public/og.png` (start screen at 1200x630, 122 KB, made by `scripts/readme-shots.mjs`), crawler
+files kept out of `sw.js`, `src/app/seo.test.ts`, spec `.specify/experience/discoverability.md`.
+Lighthouse SEO 100 on `vite preview`; after the deploy `robots.txt`, `sitemap.xml` and `og.png`
+return 200, `http://` and `www.` still 301 to `https://tapkotyper.com/`.
+
+Decisions: `og:image:alt` names Tapko as a friend (the start screen shows the fox); the README
+shots the script also rewrites were left as they were, only `og.png` was committed.
+Left out: nothing; the owner steps (Search Console, Bing, preview debuggers) stay with the owner.

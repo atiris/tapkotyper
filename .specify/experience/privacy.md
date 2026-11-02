@@ -9,9 +9,10 @@
   or lost progress cannot be recovered by us, so progress should be exported now and then; for a
   forgotten password it points to the readme on GitHub, which tells how the super player removes it.
 - A short, plain statement of this on the start screen and the help page's about tab, for parents.
-  On the start screen it is two of its promises: "no ads, no accounts" and "your data stays on
+  On the start screen it is two of its promises: "free, no ads, no accounts" and "your data stays on
   your device" (opens the about tab). The code's licence ("MIT · Atiris", linked to the code) sits
-  small at the bottom right; the visit count is only on the about tab.
+  small at the bottom right, after the link to the [about page](discoverability.md), which says the
+  same in more words; the visit count is only on the about tab.
 - Nothing leaves the browser except what a person copies themselves: task, result and
   move links carry their data in the address hash, which browsers never send to the server
   ([teacher links](../profiles/teacher-links.md)). A teacher's collected results stay in this

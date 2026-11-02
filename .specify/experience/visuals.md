@@ -79,7 +79,7 @@
 - **The start page** says what TapkoTyper is before anything else. From 900 px wide it has two
   columns: on the left the title **TapkoTyper**, the slogan on exactly two lines ("Desať prstov, /
   jedno veľké dobrodružstvo."), one sentence about the game and four short promises with green
-  icons ("Bez reklám a účtov"; data stays on the device, which opens the help's about tab;
+  icons ("Zadarmo, bez reklám a účtov"; data stays on the device, which opens the help's about tab;
   the wardrobe and stars for effort; "Sledovateľný pokrok"). On the right the card
   "Kto mi dnes napíše?" with the logo face (the fox head of the browser tab icon, on dark its picture
   drawn for a dark background) half above its top edge. The card is the page's main panel: its
@@ -92,8 +92,9 @@
   "Nový hráč", then trying without a profile and loading profiles. With players: the player
   cards in a row (balanced rows from six, never one card alone), with the dashed "Nový hráč" card
   while there are one to three; from four it is a button beside the other two. No footer:
-  "MIT · Atiris" (the code's licence and author) sits small and white at the bottom right of the
-  meadow, never underlined: by day it brightens to full white on hover and focus; on the night
+  "Základné informácie · MIT · Atiris" (the [about page](discoverability.md), then the code's licence
+  and author) sits small and white at the bottom right of the meadow, never underlined; the
+  installed app shows only "MIT · Atiris": by day it brightens to full white on hover and focus; on the night
   meadow it is a little quieter and lights up yellow-white. The about and teacher ways in are round buttons at
   the top right, so they stay reachable with any number of players.
 - A phone without a keyboard: the logo face above the title, the slogan, a short text, then the

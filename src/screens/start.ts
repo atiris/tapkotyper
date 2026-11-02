@@ -2,12 +2,13 @@ import { app, applyProfileLook, go, openRoute, saveProfile, selectProfile, useLa
 import { keyboardGated, onKeyboard, takeWaiting } from '../app/keyboard-gate';
 import { audio } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
-import { language, t, tList } from '../i18n/i18n';
+import { baseLanguage, language, t, tList } from '../i18n/i18n';
 import { addTask } from '../share/task';
 import type { Lang, Profile, TaskSpec } from '../storage/schema';
 import { type ICONS, arrowFocus, bigButton, button, h, icon, keyboardArt, modal, taskArt, teacherArt } from '../ui/dom';
 import { taskPanel } from '../ui/task-panel';
 import { cornerControls, languageButton, settingsButton } from '../ui/chrome';
+import { standalone } from '../ui/install';
 import { roundButton } from '../ui/hud';
 import { numberPick, profileCard } from '../ui/profile-card';
 import { MAX_PER_ROW, rowSplit } from '../ui/rows';
@@ -130,7 +131,10 @@ export function startScreen(root: HTMLElement, { task }: { task?: TaskOffer } = 
   screen.append(sky.el,
     cornerControls(lang, gated ? null : settingsButton(), roundButton('control', 'chart', t('teacher.title'), () => go('teacher'))),
     h('div', { class: `start-wrap${task ? ' task-wrap' : ''}` }, top, card, more),
-    h('a', { class: 'start-sig', href: 'https://github.com/atiris/tapkotyper', target: '_blank', rel: 'noopener' }, 'MIT · Atiris'));
+    // The about page is for visitors in a browser; the installed app already is the game.
+    h('div', { class: 'start-sig' },
+      ...(standalone() ? [] : [h('a', { href: `/about/${baseLanguage()}/` }, t('about.page.link')), ' · ']),
+      h('a', { href: 'https://github.com/atiris/tapkotyper', target: '_blank', rel: 'noopener' }, 'MIT · Atiris')));
   root.append(screen);
 
   // A key of a real keyboard lifts the gate at once: the start page (or a waiting task link) opens.

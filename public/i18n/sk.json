@@ -54,7 +54,7 @@
     "intro": "Tapko ťa prevedie pokojnými svetmi plnými príbehov. S každou úrovňou pribudne pár kláves, až kým nepíšeš všetkými desiatimi bez pozerania.",
     "phoneIntro": "Pokojná hra, v ktorej sa s Tapkom naučíš písať všetkými desiatimi. Bez reklám, bez účtu, údaje ostávajú v zariadení.",
     "promises": {
-      "ads": "Bez reklám a účtov",
+      "ads": "Zadarmo, bez reklám a účtov",
       "local": "Údaje ostávajú v zariadení",
       "wardrobe": "Šatník a hviezdičky za snahu",
       "mentors": "Sledovateľný pokrok"
@@ -1541,7 +1541,15 @@
     "authorReport": "nahláste mi to",
     "creditsTitle": "Licencie a zdroje",
     "credits": "Ťapko je publikovaný ako **otvorený kód** pod licenciou MIT. Názov TapkoTyper, postavička Ťapko a logo do licencie nepatria a v upravených kópiách sa nesmú použiť. Použité písma Lexend, Atkinson Hyperlegible a OpenDyslexic sú pod licenciou SIL Open Font License. Mediálne súbory sú generované prevažne pomocou modelov Gemini a niektoré sú doladené ručne.",
-    "open": "**Nič neskrývame!** Všetky údaje o používaní aplikácie Ťapko nájdete rovnako ako my na adrese"
+    "open": "**Nič neskrývame!** Všetky údaje o používaní aplikácie Ťapko nájdete rovnako ako my na adrese",
+    "page": {
+      "title": "Ťapko (TapkoTyper) – hra na písanie všetkými desiatimi pre deti",
+      "description": "Ťapko je pokojná príbehová hra, v ktorej sa deti naučia písať všetkými desiatimi prstami. Slovenská aj anglická klávesnica, zadarmo, bez reklám a bez účtov.",
+      "heading": "Ťapko: písanie všetkými desiatimi pre deti",
+      "play": "Hrať Ťapka",
+      "link": "Základné informácie",
+      "languages": "Jazyk"
+    }
   },
   "help": {
     "title": "Pomoc",

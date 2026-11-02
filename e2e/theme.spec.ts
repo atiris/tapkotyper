@@ -121,12 +121,13 @@ test('the phone without a keyboard fits in both looks', async ({ browser }) => {
   }
 });
 
-test('MIT · Atiris is white on the meadow and lights up on hover and focus, never underlined', async ({ page }) => {
+test('the about link and MIT · Atiris are white on the meadow and light up on hover and focus, never underlined', async ({ page }) => {
   await page.goto('./');
   for (const [theme, lit] of [['light', 'rgb(255, 255, 255)'], ['dark', 'rgb(255, 246, 204)']] as const) {
     await seed(page, 1, theme);
-    const sig = page.locator('.start-sig');
-    await expect(sig).toHaveText('MIT · Atiris');
+    await expect(page.locator('.start-sig')).toHaveText('Základné informácie · MIT · Atiris');
+    await expect(page.locator('.start-sig a').first()).toHaveAttribute('href', '/about/sk/');
+    const sig = page.locator('.start-sig a').last();
     await expect(sig).toHaveCSS('color', 'rgb(255, 255, 255)');
     await sig.hover();
     await expect(sig).toHaveCSS('color', lit);

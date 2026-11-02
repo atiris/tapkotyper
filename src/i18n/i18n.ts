@@ -11,11 +11,13 @@ export function langOptions(): [Lang, string][] {
 }
 
 /** Languages whose readers read a supported one well. */
-const CLOSE: Partial<Record<string, Lang>> = { cs: 'sk' };
+export const CLOSE: Partial<Record<string, Lang>> = { cs: 'sk' };
 
 /** The dictionaries a text is looked up in, first wins: an own language, its base, English. */
 let chain: Dict[] = [];
 let current: LangRef = 'en';
+/** The official language in use: an own language's base. */
+let base: Lang = 'en';
 /** The language asked for last; differs from `current` when an own language is missing on this device. */
 let asked: LangRef = 'en';
 let code = 'en';
@@ -74,6 +76,7 @@ export async function setLanguage(ref: LangRef): Promise<void> {
   if (asked !== ref) return;
   chain = [...(own ? [ownDict(own)] : []), d, ...(f ? [f] : [])];
   current = own ? ref : lang;
+  base = lang;
   code = own ? own.code : lang;
   ownName = own?.name ?? null;
   document.documentElement.lang = code;
@@ -89,6 +92,11 @@ export function useDictionaries(lang: LangRef, d: Dict, f: Dict = d, localeCode:
 /** The language in use. */
 export function language(): LangRef {
   return current;
+}
+
+/** The official language in use; for an own language, the one it is based on. */
+export function baseLanguage(): Lang {
+  return base;
 }
 
 /** The language asked for last (an own language missing on this device is asked but not in use). */

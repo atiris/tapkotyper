@@ -53,7 +53,7 @@ No contracts, no stored data, no DB impact.
 
 ## Steps
 
-- [ ] **Texts** in both dictionaries, new group `aboutPage` (Slovak first, natural English):
+- [x] **Texts** in both dictionaries, new group `aboutPage` (Slovak first, natural English):
   - `title`: "Ťapko (TapkoTyper) – hra na písanie všetkými desiatimi pre deti" / "Tapko
     (TapkoTyper) – a touch typing game for children"
   - `description` (140-160 characters, names Ťapko, ten fingers, children, free, no ads)
@@ -62,7 +62,7 @@ No contracts, no stored data, no DB impact.
   - `forParentsTitle`, `forTeachersTitle`, `howTitle` (section headings where existing headings
     do not fit)
   - `start.promises.ads` changed as decided above.
-- [ ] **Generator `scripts/about-pages.mjs`**: `aboutPage(lang, dict, langs)` returns the HTML
+- [x] **Generator `scripts/about-pages.mjs`**: `aboutPage(lang, dict, langs)` returns the HTML
   string. Sections, all from existing keys plus the new ones:
   1. h1 + `about.intro` + `start.intro` + a big "Play" link to `/` and the Tapko picture
      (`/icons/tapko-180.png` or an existing asset)
@@ -88,34 +88,34 @@ No contracts, no stored data, no DB impact.
     16px side gutter, no horizontal scroll on a phone. A top bar with the logo picture, the
     "Play" link and the language links (current one marked `aria-current`).
   - Also `redirectPage(langs)` for `/about/`.
-- [ ] **Vite plugin** in `vite.config.ts`: on build, `emitFile` `about/<lang>/index.html` and
+- [x] **Vite plugin** in `vite.config.ts`: on build, `emitFile` `about/<lang>/index.html` and
   `about/index.html`. In dev, a `configureServer` middleware serves the same HTML for
   `/about/...`, so the start link works in `npm run dev` too. Exclude every `about/` file
   from the service worker list.
-- [ ] **Start page** (`src/screens/start.ts`, `src/styles.css`): the signature becomes two links,
+- [x] **Start page** (`src/screens/start.ts`, `src/styles.css`): the signature becomes two links,
   `aboutPage.link` -> `/about/<lang>/` (the game's language, or the base of an own language),
   then `MIT · Atiris` as before, separated by ` · `, same small style and hover. In the
   installed web app (`standalone()` from `src/ui/install.ts`) the about link is not shown, only
   `MIT · Atiris` as today: the player already has the game, and the page would open outside the
   app window. Check it on a
   phone width and in the gated (phone without keyboard) layout so it never covers buttons.
-- [ ] **Root head** (`index.html`): title, `og:title`, description, `og:description`,
+- [x] **Root head** (`index.html`): title, `og:title`, description, `og:description`,
   `og:image:alt`, JSON-LD `alternateName` and description as decided. Keep the noscript in sync
   with the new description, and add links to `/about/sk/` and `/about/en/` in the noscript.
-- [ ] **Sitemap** `public/sitemap.xml`: the root plus `/about/sk/` and `/about/en/`, the about
+- [x] **Sitemap** `public/sitemap.xml`: the root plus `/about/sk/` and `/about/en/`, the about
   entries with `xhtml:link rel="alternate" hreflang` for every language and `x-default`.
   Still no `lastmod`, `changefreq` or `priority`.
-- [ ] **Tests** `src/app/seo.test.ts`: every official dictionary gives a page with no `{` left
+- [x] **Tests** `src/app/seo.test.ts`: every official dictionary gives a page with no `{` left
   in text, a canonical equal to its sitemap entry, hreflang for all languages, and parsing
   JSON-LD. The root title and JSON-LD contain "Ťapko". The sitemap lists exactly the root and
   one about page per dictionary.
-- [ ] **Spec**: `.specify/experience/discoverability.md`: the game keeps one address. Each
+- [x] **Spec**: `.specify/experience/discoverability.md`: the game keeps one address. Each
   language has a short static page with basic information, generated from the game's own texts,
   linked from the start page and listed for search engines. The game is findable as Ťapko too.
   Why: parents search in their own language and by the character's name, and the start page
   must stay a game, not a text page. Update the start-screen sentence in `privacy.md` (the
   signature now also holds the about link).
-- [ ] **Verify**: `npm run build`, `npm test`, lint. `dist/about/sk/index.html`,
+- [x] **Verify**: `npm run build`, `npm test`, lint. `dist/about/sk/index.html`,
   `dist/about/en/index.html` and `dist/about/index.html` exist, and `sw.js` lists none of them.
   `vite preview` + Playwright MCP: the start page looks as before apart from the signature. The
   link opens the about page in the game's language, the language links switch, "Play" opens the
@@ -124,8 +124,25 @@ No contracts, no stored data, no DB impact.
   the about page, not the game, also after the service worker is active.
   `npx lighthouse <preview>/about/sk/ --only-categories=seo,accessibility --quiet
   --chrome-flags=--headless`: fix everything below 100 that this plan covers.
-- [ ] After the deploy: `curl -sI https://tapkotyper.com/about/sk/` and `/about/en/` return 200.
+- [~] After the deploy: `curl -sI https://tapkotyper.com/about/sk/` and `/about/en/` return 200. (deferred: runs after the push deploys)
 
 ## Owner steps after the deploy (not for the runner)
 
 1. Search Console: resubmit `sitemap.xml`, request indexing of `/about/sk/` and `/about/en/`.
+
+## Done - 2026-11-02
+
+Shipped: `/about/sk/` and `/about/en/`, built from the dictionaries by `src/app/about-page.ts`
+(the dev server serves them too); `/about/` sends to the browser's language; hreflang between
+them; the sitemap with the three addresses; the start-page link before "MIT · Atiris" (not in the
+installed app); "Zadarmo" in the first promise; Ťapko in the root title, description and JSON-LD
+`alternateName`. Tests in `src/app/seo.test.ts`, translator guide lines for the new texts.
+Lighthouse SEO and accessibility 100 on both about pages (light and dark). Offline, an about
+address opens the game without errors.
+
+Deviations: the parents and teachers part uses only `help.teach`; the `help.mentor` lines describe
+the teacher page's buttons and read badly outside the game. The icon and manifest links in
+`index.html` became absolute, so the game served offline at an about address finds them. The new
+`baseLanguage()` in `src/i18n/i18n.ts` gives the official language under an own language for the link.
+The generator is `src/app/about-page.ts` (not `scripts/about-pages.mjs`), so `tsc` checks it and the tests import it; the texts are `about.page.*` (not a new `aboutPage` group), inside the translator's existing about group.
+Left out: the deploy check (curl) and the owner's Search Console step.

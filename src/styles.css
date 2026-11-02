@@ -499,12 +499,14 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
   .task-pick .wide { display: none; }
   .task-pick .narrow { display: inline; }
 }
-/* The licence at the bottom right of the meadow: white on the grass in both looks, on hover and focus too. */
-.start-screen .start-sig { position: absolute; z-index: 1; right: 20px; bottom: 12px; font-size: 12px; font-weight: 600; color: #fff; opacity: 0.7; text-decoration: none; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6); transition: opacity 0.2s, color 0.2s, text-shadow 0.2s; }
-.start-screen .start-sig:hover, .start-screen .start-sig:focus-visible { color: #fff; opacity: 1; text-decoration: none; }
+/* The about link and the licence at the bottom right of the meadow: white on the grass in both looks, on hover and focus too. */
+.start-screen .start-sig { position: absolute; z-index: 1; right: 20px; bottom: 12px; font-size: 12px; font-weight: 600; color: rgba(255, 255, 255, 0.7); text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6); }
+.start-screen .start-sig a { color: #fff; opacity: 0.7; text-decoration: none; transition: opacity 0.2s, color 0.2s, text-shadow 0.2s; }
+.start-screen .start-sig a:hover, .start-screen .start-sig a:focus-visible { color: #fff; opacity: 1; text-decoration: none; }
 /* On the night meadow it stays quieter and lights up yellow-white. */
-:root[data-theme='dark'] .start-screen .start-sig { opacity: 0.5; }
-:root[data-theme='dark'] .start-screen .start-sig:hover, :root[data-theme='dark'] .start-screen .start-sig:focus-visible { color: #fff6cc; opacity: 1; text-shadow: 0 0 6px rgba(255, 226, 120, 0.9), 0 0 14px rgba(255, 200, 90, 0.5); }
+:root[data-theme='dark'] .start-screen .start-sig { color: rgba(255, 255, 255, 0.5); }
+:root[data-theme='dark'] .start-screen .start-sig a { opacity: 0.5; }
+:root[data-theme='dark'] .start-screen .start-sig a:hover, :root[data-theme='dark'] .start-screen .start-sig a:focus-visible { color: #fff6cc; opacity: 1; text-shadow: 0 0 6px rgba(255, 226, 120, 0.9), 0 0 14px rgba(255, 200, 90, 0.5); }
 /* A phone without a keyboard: the logo face above the title, the mentors' way in first; none of its buttons is the default one. */
 .start-screen.gated .start-wrap { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'top' 'more'; justify-items: center; text-align: center; max-width: 600px; }
 .start-screen.gated .start-top, .start-screen.gated .start-more { align-items: center; }

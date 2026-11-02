@@ -79,9 +79,9 @@ const HOME_CONSTANT: PoseFile = {
     'pinky-finger-phalanx-proximal': { bend: 16.4, spread: -4.5 },
     'pinky-finger-phalanx-intermediate': { bend: 27.9 },
     'pinky-finger-phalanx-distal': { bend: 4.7 },
-    'thumb-metacarpal': { bend: 16, spread: -19, twist: 0 },
+    'thumb-metacarpal': { bend: 16, spread: -16, twist: -15 },
     'thumb-phalanx-proximal': { bend: 4 },
-    'thumb-phalanx-distal': { bend: 6 },
+    'thumb-phalanx-distal': { bend: 30 },
   },
 };
 
@@ -290,7 +290,7 @@ const THICK: Partial<Record<FingerName, number>> = { ring: 1.08, pinky: 1.12 };
 /** The palm's length (wrist to knuckles) against the model's. */
 const PALM = 0.9;
 /** The hand wider at the wrist, mostly on the thumb's side (to the sides only). */
-const WRIST_WIDE = { thumb: 1.24, out: 1.05 };
+const WRIST_WIDE = { thumb: 1.4, out: 1.05 };
 /** The fingers' first bones a little thicker where they leave the palm, the extra fading out towards their next joint. */
 const BASE = 1.08;
 /**
@@ -308,10 +308,14 @@ const NAIL_BED = { width: 0.66, from: 0.4, to: 0.95 };
 /** Metres: a thin line lies this far over the skin; its thickness and the gap between folds. */
 const LIFT = 0.00015, FOLD_THICK = 0.0004, FOLD_GAP = 0.0011;
 /**
- * A knuckle's arc: its width (of the finger's), its depth (of its width), where it sits and how far around the skin sets
+ * A knuckle's arc: its width (of the finger's; softer on the middle and ring fingers), its depth (of its width), where it
+ * sits (on the bump, a little past the joint) and how far around the skin sets
  * its height (metres towards the wrist from the joint), and how much higher it lies (the knuckle's bump is round).
  */
-const KNUCKLE = { width: 0.7, depth: 0.2, at: 0.0015, reach: 0.0018, lift: 0.0004 };
+const KNUCKLE = {
+  width: { index: 0.7, middle: 0.45, ring: 0.45, pinky: 0.65 } as Partial<Record<FingerName, number>>,
+  depth: 0.2, at: -0.0008, reach: 0.0018, lift: 0.0004,
+};
 /** Metres along the bone from a joint whose skin sets the height of its folds (wider takes in the bulge of the bone before). */
 const FOLD_REACH = 0.0025;
 
@@ -350,7 +354,8 @@ function thicken(mesh: THREE.SkinnedMesh, side: Side, fingerOf: (bone: string) =
     const along = next ? -p.z / next.position.length() : 0;
     if (f !== 'thumb' && name.endsWith('phalanx-proximal') && next) kk *= 1 + (BASE - 1) * Math.max(0, 1 - along);
     const clamp = (v: number) => Math.min(1, Math.max(0, v));
-    if (name === 'thumb-metacarpal') kk *= 1 + (THUMB_WAIST - 1) * clamp((along - 0.35) / 0.45);
+    // The thumb's bone in the hand all along, so its side runs straight from the wrist.
+    if (name === 'thumb-metacarpal') kk *= 1 + (THUMB_WAIST - 1) * clamp(0.5 + along);
     if (name === 'thumb-phalanx-proximal') kk *= 1 + (THUMB_WAIST - 1) * clamp(0.6 + along);
     if (name === 'thumb-phalanx-distal') kk *= 1 + (THUMB_WAIST - 1) * clamp(1 - along / 0.45);
     if (kk === 1) continue;
@@ -507,7 +512,7 @@ async function buildHand(side: Side): Promise<Hand> {
     if (f !== 'thumb') {
       const first = bones.get(chain[1])!;
       const over = backAt(skinOf([chain[1], chain[0]], first), KNUCKLE.at, KNUCKLE.reach);
-      mark(knuckle(over.width * KNUCKLE.width, -KNUCKLE.at, FOLD_THICK), first, over.width / 2, over.top + KNUCKLE.lift, 0, f);
+      mark(knuckle(over.width * (KNUCKLE.width[f] ?? 0.6), -KNUCKLE.at, FOLD_THICK), first, over.width / 2, over.top + KNUCKLE.lift, 0, f);
     }
     // The bone after each joint with folds, and how many lines.
     const folds: [string, number][] = f === 'thumb' ? [[chain[2], 2]] : [[chain[2], 3], [chain[3], 2]];

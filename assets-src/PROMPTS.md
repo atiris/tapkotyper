@@ -1246,6 +1246,9 @@ Look
 - Adult hands, real proportions; the size the owner set (scale 2565 in the poser, 2026-11-02).
 - The hands are never square to the keyboard: the elbows are wide, so the left hand points up and to
   the right, the right hand up and to the left (about 18 degrees).
+- The thumb's outer side runs in one straight line from the wrist to its tip (no dip at its root); the
+  thumb points up towards the keys and its pad turns in at the end, it does not run on in the hand's line.
+- The knuckles' arcs sit high on the knuckle bumps, fainter on the middle and ring fingers.
 - The thumb lies close to the hand, its tip on the space bar; the thumb's root at the wrist must not
   stick out from the back of the hand.
 - Home position: the fingertips in the middle of their keys, all eight in one row (the little fingers

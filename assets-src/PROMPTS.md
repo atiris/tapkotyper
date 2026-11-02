@@ -1236,7 +1236,7 @@ Look
 - The outline is thin (1 unit by default); a file's `stroke-width` on the outline makes it thicker in
   Tapko. The line is smoothed when saved, short broken bits are dropped.
 - The ring and little fingers are a little thicker than the 3D model's, every finger's base at the palm too; the gaps between the fingers
-  end in a sharp V, not a soft U; the thumb's outer side runs smoothly, not broken at its joints.
+  end in a sharp V, not a soft U; the thumb (two bones) lies nearly straight, its outer side smooth, not broken at its joints, its first bone not narrow in the middle.
 - The key being typed is always readable: its letter is drawn over the hands (white, a thin solid
   outline in the finger's colour, on a small disc half a key wide that fades from its centre); the
   key's own letter underneath is hidden, never two letters.

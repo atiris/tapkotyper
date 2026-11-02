@@ -77,9 +77,9 @@ const HOME_CONSTANT: PoseFile = {
     'pinky-finger-phalanx-proximal': { bend: 16.4, spread: -4.5 },
     'pinky-finger-phalanx-intermediate': { bend: 27.9 },
     'pinky-finger-phalanx-distal': { bend: 4.7 },
-    'thumb-metacarpal': { bend: 12, spread: -19, twist: 20 },
-    'thumb-phalanx-proximal': { bend: 10 },
-    'thumb-phalanx-distal': { bend: 20 },
+    'thumb-metacarpal': { bend: 12, spread: -19, twist: 0 },
+    'thumb-phalanx-proximal': { bend: 4 },
+    'thumb-phalanx-distal': { bend: 6 },
   },
 };
 
@@ -285,6 +285,8 @@ const hands: Partial<Record<Side, Promise<Hand>>> = {};
 const THICK: Partial<Record<FingerName, number>> = { ring: 1.08, pinky: 1.12 };
 /** The fingers' first bones a little thicker where they leave the palm, the extra fading out towards their next joint. */
 const BASE = 1.08;
+/** The model's thumb is narrow in the middle of its first bone: filled out there, most in the middle. */
+const THUMB_WAIST = 1.1;
 /** A triangle belongs to a finger when that finger moves it at least this much (else to the palm). */
 const WEB = 0.3;
 /** The nail bed's line: its width (of the finger's), and where it starts and ends along the last bone (of its length). */
@@ -314,7 +316,9 @@ function thicken(mesh: THREE.SkinnedMesh, fingerOf: (bone: string) => FingerName
     // Where the finger meets the palm the finger's own push fades out; the base's push is strongest there.
     let kk = 1 + ((THICK[f] ?? 1) - 1) * (by.get(f) ?? 0);
     const next = bones[main].children.find((c) => (c as THREE.Bone).isBone);
-    if (f !== 'thumb' && name.endsWith('phalanx-proximal') && next) kk *= 1 + (BASE - 1) * Math.max(0, 1 - -p.z / next.position.length());
+    const along = next ? -p.z / next.position.length() : 0;
+    if (f !== 'thumb' && name.endsWith('phalanx-proximal') && next) kk *= 1 + (BASE - 1) * Math.max(0, 1 - along);
+    if (name === 'thumb-phalanx-proximal' && next) kk *= 1 + (THUMB_WAIST - 1) * Math.sin(Math.PI * Math.min(1, Math.max(0, along)));
     if (kk === 1) continue;
     p.x *= kk;
     p.y *= kk;

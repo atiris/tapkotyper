@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import type { Plugin } from 'vite';
 import { POSE_NAME } from '../../src/ui/hand-svg';
 import { type PictureBody, STYLE_SAMPLE, answerFromDownloads, listPairs, pairFile, savePicture, traceAnswer, writeOutline } from './gemini';
-import { type PoseFile, VIEW, mirrorPath, poseSvg } from './pose-file';
+import { type PoseFile, VIEW, mirrorPath, poseSvg, withHomeConstant } from './pose-file';
 
 /**
  * The hand poser's save and delete, and its way through Gemini (./gemini.ts), on the dev server only (the poser is a
@@ -14,6 +14,8 @@ import { type PoseFile, VIEW, mirrorPath, poseSvg } from './pose-file';
  */
 
 const DIR = 'public/hands';
+/** The poser's source, where HOME_CONSTANT is written. */
+const POSER = 'tools/hand-poser/poser.ts';
 
 interface SaveBody {
   pose: PoseFile;
@@ -100,6 +102,11 @@ export function handPoser(): Plugin {
             return res.end(file.data);
           }
           if (req.method !== 'POST') return next();
+          if (path === '/__hand-poser/home-constant') {
+            const { pose } = await body<{ pose: PoseFile }>(req);
+            writeFileSync(POSER, withHomeConstant(readFileSync(POSER, 'utf8'), pose));
+            return reply({});
+          }
           if (path === '/__hand-poser/gemini-picture') return reply({ file: await savePicture(await body<PictureBody>(req)) });
           if (path === '/__hand-poser/gemini-trace') {
             const { pair, names, mirror } = await body<{ pair: string; names: Record<'left' | 'right', string>; mirror?: boolean }>(req);

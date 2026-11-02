@@ -49,3 +49,22 @@ export function readPose(svg: string): PoseFile | null {
   const m = POSE.exec(svg);
   return m ? (JSON.parse(m[1]) as PoseFile) : null;
 }
+
+/**
+ * The poser's source with HOME_CONSTANT set to a left hand's pose (the owner's "Uložiť ako HOMECONSTANT"), written as the
+ * constant is written by hand.
+ */
+export function withHomeConstant(source: string, p: PoseFile): string {
+  const obj = (o: object) => `{ ${Object.entries(o).map(([k, v]) => `${k}: ${v}`).join(', ')} }`;
+  const joints = Object.entries(p.joints).map(([j, t]) => `    '${j}': ${obj(t)},`).join('\n');
+  const block = `const HOME_CONSTANT: PoseFile = {
+  v: 1, side: 'left', name: 'home', line: ${p.line},
+  hand: ${obj(p.hand)},
+  joints: {
+${joints}
+  },
+};`;
+  const start = source.indexOf('const HOME_CONSTANT: PoseFile = {'), end = source.indexOf('\n};\n', start) + 3;
+  if (start < 0 || end < 3) throw new Error('HOME_CONSTANT not found');
+  return source.slice(0, start) + block + source.slice(end);
+}

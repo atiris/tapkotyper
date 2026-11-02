@@ -69,21 +69,21 @@ const HOME_CONSTANT: PoseFile = {
   v: 1, side: 'left', name: 'home', line: 1,
   hand: { x: 140, y: 427, yaw: 23, pitch: 8, roll: 0, scale: 2565 },
   joints: {
-    'index-finger-phalanx-proximal': { bend: 14.3, spread: -0.9 },
-    'index-finger-phalanx-intermediate': { bend: 24 },
-    'index-finger-phalanx-distal': { bend: 2.4 },
-    'middle-finger-phalanx-proximal': { bend: 19.3, spread: -4 },
-    'middle-finger-phalanx-intermediate': { bend: 33.6 },
-    'middle-finger-phalanx-distal': { bend: 8.3 },
-    'ring-finger-phalanx-proximal': { bend: 18.3, spread: -7 },
-    'ring-finger-phalanx-intermediate': { bend: 31.8 },
-    'ring-finger-phalanx-distal': { bend: 6.8 },
-    'pinky-finger-phalanx-proximal': { bend: 12.1, spread: -11.8 },
-    'pinky-finger-phalanx-intermediate': { bend: 19.3 },
-    'pinky-finger-phalanx-distal': { bend: -0.5 },
-    'thumb-metacarpal': { bend: 24, spread: -16, twist: -15 },
-    'thumb-phalanx-proximal': { bend: 4 },
-    'thumb-phalanx-distal': { bend: 30 },
+    'index-finger-phalanx-proximal': { bend: 14.8, spread: -0.3 },
+    'index-finger-phalanx-intermediate': { bend: 25.1 },
+    'index-finger-phalanx-distal': { bend: 3.1 },
+    'middle-finger-phalanx-proximal': { bend: 20.1, spread: -3.2 },
+    'middle-finger-phalanx-intermediate': { bend: 35.3 },
+    'middle-finger-phalanx-distal': { bend: 9.3 },
+    'ring-finger-phalanx-proximal': { bend: 18.6, spread: -7.7 },
+    'ring-finger-phalanx-intermediate': { bend: 32.4 },
+    'ring-finger-phalanx-distal': { bend: 7.2 },
+    'pinky-finger-phalanx-proximal': { bend: 13.6, spread: -13.1 },
+    'pinky-finger-phalanx-intermediate': { bend: 22.4 },
+    'pinky-finger-phalanx-distal': { bend: 1.3 },
+    'thumb-metacarpal': { bend: 24, spread: -18.6, twist: -15 },
+    'thumb-phalanx-proximal': { bend: -3.2 },
+    'thumb-phalanx-distal': { bend: 22.8 },
   },
 };
 
@@ -1218,6 +1218,14 @@ for (const s of SIDES) {
     say('HOMECONSTANT načítaná, ulož ju ako home, ak ju chceš späť');
   });
   own(s, 'remove').addEventListener('click', () => void remove(s));
+  // This hand's pose becomes HOME_CONSTANT (a right hand's mirrored to the left); the page reloads with the new code.
+  own(s, 'setHome').addEventListener('click', async () => {
+    if (!confirm('Prepísať HOMECONSTANT touto pózou?')) return;
+    const pose = s === 'left' ? poses.left : mirrored(poses.right);
+    const r = await fetch('/__hand-poser/home-constant', { method: 'POST', body: JSON.stringify({ pose }) });
+    const res = (await r.json()) as { ok: boolean; error?: string };
+    say(res.ok ? 'HOMECONSTANT prepísaná' : res.error ?? 'Nepodarilo sa', !res.ok);
+  });
   nameEl(s).addEventListener('change', () => void open(s, nameOf(s)));
 }
 $('loadPair').addEventListener('click', () => void Promise.all(SIDES.map((s) => open(s, nameOf(s)))));

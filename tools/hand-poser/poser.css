@@ -46,7 +46,7 @@ legend { font-weight: 700; padding: 0 4px; }
 .pair-list label { display: flex; gap: 6px; align-items: center; cursor: pointer; }
 .pair-list label.answered::after { content: '✓'; color: #2a9d4b; font-weight: 700; }
 .gemini-box { display: grid; justify-items: center; gap: 8px; width: 100%; max-width: 70em; }
-.gemini-pictures { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
+.gemini-pictures { display: grid; grid-template-columns: 3fr 1fr; gap: 10px; width: 100%; align-items: start; }
 .gemini-pictures figure { margin: 0; display: grid; gap: 4px; justify-items: center; }
 .gemini-pictures figcaption { color: #6a6070; }
 .gemini-box img { width: 100%; border: 1px solid #ddd; border-radius: 6px; cursor: copy; }

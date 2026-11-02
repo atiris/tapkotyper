@@ -335,15 +335,6 @@ const WEB = 0.3, WEB_THUMB = 0.7;
 const NAIL_BED = { width: 0.66, from: 0.4, to: 0.95 };
 /** Metres: a thin line lies this far over the skin; its thickness and the gap between folds. */
 const LIFT = 0.00015, FOLD_THICK = 0.0004, FOLD_GAP = 0.0011;
-/**
- * A knuckle's arc: its width (of the finger's; softer on the middle and ring fingers), its depth (of its width), where it
- * sits (on the bump, a little past the joint) and how far around the skin sets
- * its height (metres towards the wrist from the joint), and how much higher it lies (the knuckle's bump is round).
- */
-const KNUCKLE = {
-  width: { index: 0.7, middle: 0.45, ring: 0.45, pinky: 0.65 } as Partial<Record<FingerName, number>>,
-  depth: 0.2, at: -0.0008, reach: 0.0018, lift: 0.0004,
-};
 /** Metres along the bone from a joint whose skin sets the height of its folds (wider takes in the bulge of the bone before). */
 const FOLD_REACH = 0.0025;
 
@@ -419,11 +410,6 @@ const halfEllipse = (w: number, y: number, depth: number): [number, number][] =>
 function nailBed(w: number, from: number, to: number, thick: number): THREE.BufferGeometry {
   const ry = w * 0.32;
   return band([[-w / 2, to], ...halfEllipse(w, from + ry, -ry), [w / 2, to]], thick);
-}
-
-/** A knuckle's line: a low arc over the joint, bulging towards the finger. */
-function knuckle(w: number, at: number, thick: number): THREE.BufferGeometry {
-  return band(halfEllipse(w, at, w * KNUCKLE.depth), thick);
 }
 
 /** A line through `pts` (across, along the bone) as a flat band `thick` wide. */
@@ -523,7 +509,7 @@ async function buildHand(side: Side): Promise<Hand> {
   };
 
   // Thin strips on the back of the fingers, hidden by the depth render where the finger turns away: each nail bed, and the
-  // folds of skin over the joints (three over the middle one, two over the last).
+  // folds of skin over the joints (three over the middle one, two over the last). The knuckles are left to Gemini.
   const marks: THREE.Mesh[] = [];
   const mark = (geo: THREE.BufferGeometry, bone: THREE.Bone, radius: number, top: number, z: number, f: FingerName) => {
     const m = bent(geo, radius, () => top + LIFT, z, FOLD + PART[f]);
@@ -536,12 +522,6 @@ async function buildHand(side: Side): Promise<Hand> {
     const distal = bones.get(distalOf(f))!, len = bones.get(tipOf(f))!.position.length();
     const nail = backAt(skinOf([distalOf(f), tipOf(f)], distal), -len * NAIL_BED.from, len * 0.2);
     mark(nailBed(nail.width * NAIL_BED.width, len * NAIL_BED.from, len * NAIL_BED.to, FOLD_THICK), distal, nail.width / 2, nail.top, 0, f);
-    // The knuckle: an arc over the joint where the finger leaves the hand.
-    if (f !== 'thumb') {
-      const first = bones.get(chain[1])!;
-      const over = backAt(skinOf([chain[1], chain[0]], first), KNUCKLE.at, KNUCKLE.reach);
-      mark(knuckle(over.width * (KNUCKLE.width[f] ?? 0.6), -KNUCKLE.at, FOLD_THICK), first, over.width / 2, over.top + KNUCKLE.lift, 0, f);
-    }
     // The bone after each joint with folds, and how many lines.
     const folds: [string, number][] = f === 'thumb' ? [[chain[2], 2]] : [[chain[2], 3], [chain[3], 2]];
     for (const [after, count] of folds) {
@@ -1097,12 +1077,15 @@ async function geminiPicture(): Promise<void> {
 
 const previewSvg = $('preview') as unknown as SVGSVGElement;
 previewSvg.setAttribute('viewBox', `${VIEW.x} ${VIEW.y} ${VIEW.w} ${VIEW.h}`);
+/** A processed pair shown alone (its saved outlines, not the poses being edited); null: the poses' own outlines. */
+let shownPair: string | null = null;
 /** Both hands' saved outlines over the keyboard, as Tapko draws them (when "Náhľad SVG" is on). */
 async function showPreview(): Promise<void> {
   previewSvg.replaceChildren();
   if (!show.preview.checked) return;
-  for (const s of SIDES) {
-    const svg = await fetchSvg(s, nameOf(s));
+  const names = shownPair ? shownPair.split('+') : SIDES.map(nameOf);
+  for (const [k, s] of SIDES.entries()) {
+    const svg = await fetchSvg(s, names[k]);
     if (!svg) continue;
     const shape = readHandSvg(svg);
     svgEl('path', { class: 'creases', d: shape.creases }, previewSvg);
@@ -1135,30 +1118,57 @@ $('geminiPrompt').addEventListener('click', async () => {
   say('Prompt je v schránke');
 });
 
-/** The pairs sent to Gemini, newest first, to pick one (a tick: Gemini's answer is there). */
-async function loadPairs(): Promise<void> {
-  const r = await fetch('/__hand-poser/pairs');
-  const { pairs } = (await r.json()) as { pairs: { pair: string; answer: boolean }[] };
-  $('pairList').replaceChildren(...pairs.map(({ pair: p, answer }) => {
-    const label = Object.assign(document.createElement('label'), { className: answer ? 'answered' : '', title: answer ? 'má odpoveď Gemini' : 'bez odpovede Gemini' });
-    const radio = Object.assign(document.createElement('input'), { type: 'radio', name: 'pair', value: p, checked: p === pair() });
-    radio.addEventListener('change', () => void openPair(p));
+/** One list of pairs to pick from: a radio per pair, newest first. */
+function pairRadios(list: string, items: { pair: string; tick: boolean; title: string }[], pick: (p: string) => void): void {
+  $(list).replaceChildren(...items.map(({ pair: p, tick, title }) => {
+    const label = Object.assign(document.createElement('label'), { className: tick ? 'answered' : '', title });
+    const radio = Object.assign(document.createElement('input'), { type: 'radio', name: list, value: p });
+    radio.addEventListener('change', () => pick(p));
     label.append(radio, p);
     return label;
   }));
+}
+/** The pairs: prepared for Gemini on the left (a tick: its answer is there), traced into outlines on the right. */
+async function loadPairs(): Promise<void> {
+  const r = await fetch('/__hand-poser/pairs');
+  const { pairs } = (await r.json()) as { pairs: { pair: string; answer: boolean; traced: number }[] };
+  pairRadios('preparedList', pairs.map((x) => ({ pair: x.pair, tick: x.answer, title: x.answer ? 'má odpoveď Gemini' : 'bez odpovede Gemini' })), (p) => void openPair(p));
+  pairRadios('tracedList', pairs.filter((x) => x.traced).sort((a, b) => b.traced - a.traced).map((x) => ({ pair: x.pair, tick: false, title: 'obrys z Gemini' })), (p) => void showTraced(p));
   // The pair shown has a picture already: its pictures and prompt below.
   if ($('geminiBox').hidden && pairs.some((x) => x.pair === pair())) await showGemini(pair());
 }
-/** A pair: both hands' poses, its picture and prompt, and the saved outlines over the keyboard. */
+/** A prepared pair: both hands' poses, its pictures and prompt. */
 async function openPair(p: string): Promise<void> {
   const [left, right] = p.split('+');
   await open('left', left);
   await open('right', right);
-  show.preview.checked = true;
-  await showPreview();
   await showGemini(p);
   say(`Pár ${p}`);
 }
+/** A processed pair alone: its outlines over the keyboard, the 3D hands hidden. */
+async function showTraced(p: string): Promise<void> {
+  shownPair = p;
+  tipsSvg.style.visibility = 'hidden';
+  show.preview.checked = true;
+  show.shade.checked = show.lines.checked = false;
+  redraw();
+  await showPreview();
+  say(`Obrys ${p}`);
+}
+const unpick = (list: string) => { for (const r of $(list).querySelectorAll<HTMLInputElement>('input')) r.checked = false; };
+$('hidePrepared').addEventListener('click', () => {
+  unpick('preparedList');
+  $('geminiBox').hidden = true;
+});
+$('hideTraced').addEventListener('click', () => {
+  unpick('tracedList');
+  shownPair = null;
+  tipsSvg.style.visibility = '';
+  show.preview.checked = false;
+  show.shade.checked = show.lines.checked = true;
+  redraw();
+  void showPreview();
+});
 
 /** Traces Gemini's answer for the pair into both hands' SVGs (their poses stay). */
 async function fromGemini(): Promise<void> {
@@ -1170,11 +1180,9 @@ async function fromGemini(): Promise<void> {
   await loadIndex();
   tapko.postMessage(res.files!.join(' '));
   // The result as Tapko draws it, over the keyboard.
-  show.preview.checked = true;
-  show.shade.checked = show.lines.checked = false;
-  redraw();
-  await showPreview();
-  void loadPairs();
+  await loadPairs();
+  for (const r of $('tracedList').querySelectorAll<HTMLInputElement>('input')) r.checked = r.value === pair();
+  await showTraced(pair());
   say(`Z Gemini${res.fromDownloads ? ' (najnovší obrázok z Downloads)' : ''}: ${res.files!.join(', ')}`);
 }
 

@@ -27,9 +27,9 @@
       <svg class="tips" id="tips" aria-hidden="true"></svg>
     </div>
     <section class="general">
-      <div class="pairs" title="Páry poslané do Gemini, najnovšie hore: výber načíta pózy, obrázky s promptom a náhľad SVG">
-        <h3>Páry</h3>
-        <div id="pairList" class="pair-list"></div>
+      <div class="pairs" title="Pripravené kombinácie (vzor pre Gemini), najnovšie hore: výber načíta pózy, obrázky s promptom">
+        <h3>Pripravené <button id="hidePrepared" title="Zruší výber">Skryť</button></h3>
+        <div id="preparedList" class="pair-list"></div>
       </div>
       <div class="general-main">
         <div class="buttons">
@@ -61,6 +61,10 @@
         </div>
         <p class="hint">Klik na kláves mimo rúk: ruka, ktorá ho stláča, dostane jeho pózu (druhá ruka ostane, napr. veľké Q: klik na q0, potom na rs). Ťahaj krúžok na končeku prsta ktorejkoľvek ruky: do strán ho natočíš, hore a dolu ho vystrieš alebo ohneš.
           Ťahaj dlaňou: posunieš ruku, so Shiftom ju otočíš. Ctrl+Z vráti zmenu ruky, ktorú si upravoval naposledy, Ctrl+S uloží obe.</p>
+      </div>
+      <div class="pairs" title="Spracované SVG obrysy (z Gemini), najnovšie hore: výber ukáže na klávesnici iba obrys tejto kombinácie">
+        <h3>Spracované <button id="hideTraced" title="Zruší výber, vráti 3D ruky">Skryť</button></h3>
+        <div id="tracedList" class="pair-list"></div>
       </div>
     </section>
     <datalist id="names"></datalist>

@@ -188,14 +188,21 @@ export function writeOutline(file: string, lines: string): string {
   return file.replaceAll('\\', '/');
 }
 
-/** The pairs sent to Gemini, newest first: their names, when their picture was made and whether an answer is there. */
-export function listPairs(): { pair: string; time: number; answer: boolean }[] {
+/**
+ * The pairs sent to Gemini, newest first: their names, when their picture was made, whether an answer is there and when
+ * it was traced into the hands' SVGs (0: not yet).
+ */
+export function listPairs(): { pair: string; time: number; answer: boolean; traced: number }[] {
   if (!existsSync(GEMINI_DIR)) return [];
-  return readdirSync(GEMINI_DIR).filter((p) => PAIR.test(p) && existsSync(join(GEMINI_DIR, p, 'picture.png'))).map((pair) => ({
-    pair,
-    time: statSync(join(GEMINI_DIR, pair, 'picture.png')).mtimeMs,
-    answer: readdirSync(join(GEMINI_DIR, pair)).some((f) => ANSWER.test(f)),
-  })).sort((a, b) => b.time - a.time);
+  return readdirSync(GEMINI_DIR).filter((p) => PAIR.test(p) && existsSync(join(GEMINI_DIR, p, 'picture.png'))).map((pair) => {
+    const dir = join(GEMINI_DIR, pair), traced = join(dir, 'left-traced.png');
+    return {
+      pair,
+      time: statSync(join(dir, 'picture.png')).mtimeMs,
+      answer: readdirSync(dir).some((f) => ANSWER.test(f)),
+      traced: existsSync(traced) ? statSync(traced).mtimeMs : 0,
+    };
+  }).sort((a, b) => b.time - a.time);
 }
 
 /** A file of a pair the poser shows: its picture, its prompt or Gemini's answer. */

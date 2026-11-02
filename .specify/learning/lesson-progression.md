@@ -63,6 +63,8 @@
   Remember it ([mechanics](../game/mechanics.md)); each has a tooltip, and one line under
   them says what the chosen one asks. Nothing is stored: the picker opens
   with the active keys and Copy each time.
+- The [placement check](placement-check.md) may open many keys at once for a student who
+  already types with ten fingers; the levels within the keys it reached open without stars.
 - Just typing ([free typing](../game/free-typing.md)) has no key choice: every key of the
   layout may be typed and nothing of it counts in the statistics, so it never makes a key
   ready or opens new keys.

@@ -400,3 +400,44 @@ describe('parrot', () => {
     expect(minActiveS(parrotLevel(3))).toBe(minActiveS(parrotLevel(12)));
   });
 });
+
+describe('placement check', () => {
+  /** A profile the check placed at `n` keys of the lesson order. */
+  const placed = (n: number) => {
+    const p = newProfile('Ema', 'sk');
+    p.progress.unlockedKeys = lessonOrder(p.layout).slice(0, n);
+    p.progress.placementKeys = n;
+    return p;
+  };
+
+  it('opens the levels and worlds whose keys it reached, none of them done', () => {
+    const p = placed(15);
+    const reached = LEVELS.filter((l) => isLevelUnlocked(p, l)).map((l) => l.id);
+    // The dragon story up to its third world, the robot story up to the first level of its second world.
+    expect(reached).toEqual([...[1, 2, 3].flatMap((w) => [1, 2, 3, 4, 5].map((i) => `w${w}-${i}`)), 'w6-1', 'w6-2', 'w6-3', 'w6-4', 'w6-5', 'w7-1']);
+    expect(isWorldUnlocked(p, 3)).toBe(false);
+    expect(isWorldUnlocked(p, 10)).toBe(false);
+    expect(p.progress.levels).toEqual({});
+    expect(p.progress.worldsDone).toEqual([]);
+  });
+
+  it('continues with the most advanced level it opened, then with the one played to', () => {
+    const p = placed(15);
+    expect(nextLevel(p)?.id).toBe('w3-4');
+    p.progress.levels['w3-4'] = 3;
+    expect(nextLevel(p)?.id).toBe('w3-5');
+    p.progress.levels['w3-5'] = 3;
+    p.progress.worldsDone = [2];
+    // The next world needs one key more: the most advanced level the check opened waits elsewhere.
+    expect(nextLevel(p)?.id).toBe('w7-1');
+    p.progress.unlockedKeys = lessonOrder(p.layout).slice(0, 16);
+    expect(nextLevel(p)?.id).toBe('w4-1');
+  });
+
+  it('changes nothing without a check', () => {
+    const p = newProfile('Ema', 'sk');
+    p.progress.unlockedKeys = lessonOrder(p.layout).slice(0, 15);
+    expect(LEVELS.filter((l) => isLevelUnlocked(p, l)).map((l) => l.id)).toEqual(['w1-1', 'w6-1']);
+    expect(nextLevel(p)?.id).toBe('w1-1');
+  });
+});

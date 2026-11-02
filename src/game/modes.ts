@@ -37,6 +37,7 @@ const MODES: Record<LevelKind, (def: ModeDef) => Promise<ModeMaker>> = {
   freetype: () => import('./modes/freetype').then((m) => (L) => new m.FreeTypeMode(L)),
   aim: () => import('./modes/aim').then((m) => (L) => new m.AimMode(L)),
   parrot: () => import('./modes/parrot').then((m) => (L) => new m.ParrotMode(L)),
+  placement: () => import('./modes/placement').then((m) => (L) => new m.PlacementMode(L)),
   // A teacher's task plays its own game: the words games here, the text games beside them.
   task: (def) => {
     const game = def.task!.game;

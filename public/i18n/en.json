@@ -180,6 +180,16 @@
         "shareButton": "How to do it",
         "range": "Every world you finish opens the Target range and the Parrot on the map. At the range you practise the letters that are not easy yet.",
         "rangeButton": "More about the games"
+      },
+      "placement": {
+        "first": "Hi, {name}! Do you already know the keyboard a bit? Let's check, so we start where you are.",
+        "offer": "{name}, this goes very well! Maybe you already know more keys. Shall we check, so you can skip what you know?",
+        "fromStart": "Start from the beginning",
+        "check": "Check me",
+        "fingers": "Do you type with all fingers without looking at the keys?",
+        "yes": "Yes",
+        "no": "No",
+        "fromStartLine": "We will learn it from the start, it will go quickly."
       }
     }
   },
@@ -217,7 +227,10 @@
     "endAsk": "Really end it?",
     "endLevelText": "This level will not count.",
     "endPracticeText": "This exercise will not count.",
-    "stayStart": "We stay here. Type as long as you like. Press Esc when you want to stop."
+    "stayStart": "We stay here. Type as long as you like. Press Esc when you want to stop.",
+    "placement": "Keyboard check",
+    "placementStart": "Type what you see, calmly and with all fingers. There is no hurry: I only want to see which keys you already know.",
+    "placementDone": "Done!"
   },
   "guide": {
     "deadStep1": "{ch}: first the accent key, then the letter",
@@ -433,7 +446,25 @@
     },
     "journeyHome": {
       "dragon": "The rocket flies home with the little dragon on board!"
-    }
+    },
+    "placement": "Keyboard check",
+    "placementLetters": {
+      "one": "{n} key to use",
+      "few": "{n} keys to use",
+      "other": "{n} keys to use"
+    },
+    "placementOpened": {
+      "one": "{n} new key is open on the map",
+      "few": "{n} new keys are open on the map",
+      "other": "{n} new keys are open on the map"
+    },
+    "placementStrong": "Strong keys",
+    "placementWeak": "Keys to practise",
+    "placementNoWeak": "None, everything went well!",
+    "placementSignal": "Finger signal (fit · contrast)",
+    "placementContinue": "Continue",
+    "placementPractice": "Practise the weak keys",
+    "placementEyes": "It looks like your eyes still help you find the keys. The lessons will teach your fingers from the start, quickly."
   },
   "results": {
     "peek": "Look at the game (Esc)",
@@ -1107,7 +1138,9 @@
     "practiceKey": "Practice {key} (1 min)",
     "medals": "My medals",
     "medalsHint": "You get a medal each time you type accurately enough that the game steps up on its own: things move a bit faster or longer words come.",
-    "shifted": "⇧ symbols"
+    "shifted": "⇧ symbols",
+    "placement": "How am I doing?",
+    "placementTip": "A calm check of the keys from the start, about 4 minutes. It only ever adds keys."
   },
   "wardrobe": {
     "title": "Me and my wardrobe",
@@ -1344,7 +1377,9 @@
     "translate": "Translation",
     "translateGo": "Translate the game",
     "translateHint": "Every text of the game in one place: a new language or your own texts.",
-    "ownLangs": "Own languages"
+    "ownLangs": "Own languages",
+    "placement": "Check what the student knows",
+    "placementHint": "A calm typing check of about 4 minutes opens the keys the student already types with all fingers without looking. It never removes keys and marks no level as done."
   },
   "own": {
     "group": {

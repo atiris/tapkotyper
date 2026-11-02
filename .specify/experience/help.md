@@ -72,7 +72,7 @@
   worlds on the map now and then shows one thing about the app, from Ms Turtle the teacher (three
   pictures of her taking turns from tip to tip: with a raised finger and a pointer, sitting with
   a book and waving, holding a glowing light bulb and pointing to the right; no speech bubble). It is the only panel
-  above the worlds. The first two come one right after the other and introduce the app: hello
+  above the worlds; her [placement question](../learning/placement-check.md) goes before the tips. The first two come one right after the other and introduce the app: hello
   by nickname, the character on the left is the one the child picked for this typing adventure,
   with whom they go through several stories and many worlds; then what a click on the character
   shows (how much was typed, accuracy and speed, which keys go well and which need practice,

@@ -834,6 +834,8 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
 .ec-row:last-of-type { border-bottom: 0; }
 .ec-row span { color: var(--ink-soft); font-weight: 600; }
 .ec-row b { font-size: 1.15rem; font-weight: 800; text-align: right; overflow-wrap: anywhere; }
+.ec-keys { display: inline-flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.3em; }
+.ec-keys .kbd { padding: 0.1em 0.45em 0.25em; border: 1px solid var(--line); }
 .ec-news, .ec-tip { display: flex; align-items: center; gap: 0.5rem; margin: 0.6rem 0 0; padding: 0.55rem 0.9rem; border-radius: 14px; font-weight: 700; }
 .ec-news { background: var(--tint-green); color: var(--green-ink); }
 .ec-news .badge, .ec-news .medal, .ec-news .parrot-badge { flex: none; zoom: 0.7; }
@@ -867,6 +869,7 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
   .ec-row { flex-direction: column; align-items: flex-start; gap: 0; padding: 0.35rem 0.1rem; }
   .ec-row span { font-size: 0.85rem; }
   .ec-row b { font-size: 1rem; text-align: left; }
+  .ec-keys { justify-content: flex-start; }
   .ec-surprise { margin: 0.8rem 1rem 0; font-size: 0.95rem; }
   .ec-surprise img { width: 44px; height: 44px; }
   .ec-bot { padding: 1rem; }

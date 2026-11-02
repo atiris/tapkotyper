@@ -26,6 +26,10 @@ test('the whole game by keyboard only: a new player, a level, the results, endin
   await page.keyboard.press('Enter');
   await page.locator('.map-screen').waitFor();
 
+  // Ms Turtle asks whether to check the keys: Enter starts from the beginning and Continue takes the focus.
+  await expect(page.locator('.placement-ask .btn.primary')).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('.placement-ask')).toHaveCount(0);
   // Continue is focused; the card before the first key closes with the space bar.
   await expect(page.locator('.map-side .btn.primary')).toBeFocused();
   await page.keyboard.press('Enter');

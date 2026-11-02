@@ -43,6 +43,8 @@ export const app = {
   superPlayer: null as Profile | null,
   /** A task from a link that waits for the new player being created. */
   pendingTask: null as TaskSpec | null,
+  /** A level in the first world went very well: the turtle offers the placement check on the next map. */
+  placementOffer: false,
   /** The screen the help page was opened from, for its Back (memory only, not in the address). */
   helpReturn: null as { name: ScreenName; params: any } | null,
   /** A screen that still asks before it opens (the parent question); going to it again meanwhile is ignored. */

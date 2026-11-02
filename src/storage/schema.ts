@@ -154,6 +154,10 @@ export interface Progress {
   parrotPerched: boolean;
   /** The teacher turtle's tips read (ids) and when the last one was read (ms, 0 before any). */
   appTips: { seen: string[]; lastAt: number };
+  /** The turtle asked on the map whether to check what the student already knows. */
+  placementAsked: boolean;
+  /** Keys the placement check reached (the most of all checks): levels needing no more open without stars. */
+  placementKeys: number;
 }
 
 /** When a surprise tells its answer. */

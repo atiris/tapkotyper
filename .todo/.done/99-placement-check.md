@@ -135,21 +135,82 @@ never rewards: opened is not passed, stars still show who practised how much.
 
 ## Steps
 
-- [ ] Placement logic: stages from `lessonGroups`, stage pass rule, touch-typing signal (both measures, contrast pairs in the check words, synthetic typists) with its
+- [x] Placement logic: stages from `lessonGroups`, stage pass rule, touch-typing signal (both measures, contrast pairs in the check words, synthetic typists) with its
       constant and unit tests (synthetic pecking and touch-typing presses), result applied to the
       profile (`unlockedKeys`, `placementKeys`, difficulty); unit tests.
-- [ ] Levels: `isLevelReached` and `nextLevel` with `placementKeys`; unit tests (placed 15 keys
+- [x] Levels: `isLevelReached` and `nextLevel` with `placementKeys`; unit tests (placed 15 keys
       opens the right levels, none of them done, Continue picks the most advanced one).
-- [ ] The check run: level kind and mode (copy, no keyboard, no guide, stages, 4 min cap), no
+- [x] The check run: level kind and mode (copy, no keyboard, no guide, stages, 4 min cap), no
       stars, no rewards, presses recorded; the end card with the strong and weak keys and its
       two actions.
-- [ ] Turtle on the map: first-visit question, the honest fingers question, the later offer;
+- [x] Turtle on the map: first-visit question, the honest fingers question, the later offer;
       the parent's button; the How am I doing? button in the My progress keys tab; i18n sk and en.
-- [ ] Specs updated (WHAT and WHY).
-- [ ] Verify: build, lint, unit tests, e2e for the turtle's question and a check run. In the
+- [x] Specs updated (WHAT and WHY).
+- [x] Verify: build, lint, unit tests, e2e for the turtle's question and a check run. In the
       browser (playwright MCP, tester profile, `tapkoType` + `?fast`): a new profile answers
       "Start from the beginning" (nothing changes); a new profile types the check evenly and
       well (worlds open, no stars, Continue goes to the most advanced open level); a check typed
       with uneven, distance-dependent timing unlocks nothing and shows the kind line; the
       parent's button and the My progress button run it again, never remove keys, and the end card
       lists strong and weak keys with a working Practise the weak keys. Fix what is wrong.
+
+## Progress
+
+- Decisions taken while implementing (runner session, 2026-11-02):
+  - The pure logic lives in `src/learning/placement.ts` (`PlacementCheck`, `touchSignal`,
+    `strongWeak`, `placementDifficulty`, `offersPlacement`); applying the result is
+    `completePlacement` in `src/game/progress.ts`; the run is `src/game/modes/placement.ts`, which
+    shares the copy panel with the placeholder worlds (`copyPanel` in `copy-loop.ts`).
+  - Contrast pairs need one key off its finger's home key in both groups (near: same finger,
+    at most 1.5 key widths; far: two fingers of one hand, at least 2). With far pairs on the home
+    row only (`a f`, `j l`), a typist touch-typing the home row and pecking above it passed the
+    contrast; with an off-home key in both groups it fails, as the plan requires.
+  - Key geometry: standard row stagger (0, 1.5, 1.75, 2.25 key widths), only characters of one
+    key without Shift; capitals, dead-key letters and space take no part in the signal.
+  - A stage ends after a target once it has 25 presses and 5 right presses of its new keys, or
+    after 8 targets; with no right press of its new keys (a Shift stage) the reaction does not decide.
+  - Reaction excludes the first key of every target (reading time), for stages, strong/weak
+    keys and the difficulty.
+  - A check that passes only the first stage changes nothing: its keys are every new player's
+    and its presses prove nothing. Found in the browser: a two-finger run that slipped in stage 2
+    had set `placementKeys` to 3 (opening level 1-2 without a star) and raised the difficulty to 8.
+  - Worlds after the first of a story open when the check reached their first level's keys
+    (the plan's "the map shows the newly opened worlds"); the story itself still opens by keys.
+  - `nextLevel` after a check: the first open unstarred level reached by play (the star before it,
+    or the world before done; a story's first world counts as not played to), else the most
+    advanced level the check opened (largest key need, first in map order on a tie); without a
+    check the old rule stays.
+  - Placed keys also count as introduced, so a placed student does not get a row of key cards.
+  - The fingers question is asked only on the turtle's path; the parent's button and My
+    progress's "How am I doing?" start the check at once (the parent chose; it is a measurement).
+  - The later offer is kept once via `appTips.seen` (`placementOffer`) and a memory flag
+    (`app.placementOffer`) set by the runtime after a qualifying first-world level, so no third
+    stored field was needed; it is not offered after a check that opened keys.
+  - The turtle's question shows even with the app tips switched off (it is a one-time question,
+    not a tip); not for the guest or the super player.
+  - The end card's main button is Continue (to the map), "Practise the weak keys" second, and no
+    separate "To the map" (`showEnd` now takes `toMap: null`).
+  - Leaving the check early applies nothing; its presses are recorded like any run.
+  - e2e: keyboard-only.spec now answers the turtle's question on the first map; new
+    e2e/placement.spec.ts.
+
+## Done - 2026-11-02
+
+Shipped: the placement check ("Keyboard check" / "How am I doing?") with stages along the lesson
+groups, the stage rule, the speed-independent touch-typing signal (fit and contrast, limits in
+`TOUCH_SIGNAL`) and synthetic-typist unit tests (ten-finger and two-finger at two tempos and two
+seeds, a mixed typist), `placementAsked` / `placementKeys` with defaults, levels and worlds opened
+without stars, Continue to the most advanced placed level, the auto difficulty, the end card with
+strong and weak keys, Continue and Practise the weak keys, the super readout row, Ms Turtle's
+first-visit question with the honest fingers question and the later offer, the parent's button,
+the My progress button, i18n sk/en and translator notes, specs (`.specify/learning/placement-check.md`
+and links). Verified: build, 563 unit tests, e2e 80 of 86 before the fixes (keyboard-only fixed
+and passing, new placement.spec passing; the other 5 failures are old, see backlog), and in the
+browser: a new player answered Start from the beginning (nothing changed, the tips follow next
+visit); a ten-finger-timed run opened world 1 and the Rocket's first level without stars and
+Continue pointed at it; a two-finger-timed run (no slips) ended on the kind line and opened
+nothing; the parent's and My progress buttons start the check; Practise the weak keys opens the
+practice; no console errors.
+Left out: the super readout row was not seen in the browser (super mode needs the password,
+which is never scripted); it is plain code over `check.signal`. The 5 old e2e failures are in
+.todo/BACKLOG.md.

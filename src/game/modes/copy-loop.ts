@@ -15,8 +15,8 @@ const ACCENT: Record<string, string> = {
   robohome: '#d99a12', garden: '#d9587a', forestpath: '#4f9e3a', lilylake: '#2f86c4', musictree: '#8a5cc8', moonball: '#8b97b3',
 };
 /** The target's letter size, the panel's centre height and its smallest width. */
-const SIZE = 52;
-const PANEL_Y = VH * 0.36;
+export const SIZE = 52;
+export const PANEL_Y = VH * 0.36;
 const PANEL_MIN_W = 420;
 /** Room round the panel for its glow: a shadow blur of 26 reaches about 40 device pixels, inside this down to a stage 400 px high. */
 const GLOW = 60;
@@ -27,7 +27,7 @@ const END_TIME = 3;
 const INK = '#3d3355';
 
 /** A small text centred at (x, y); with `rim` a white rim keeps it readable on any background. */
-function text(g: G, s: string, x: number, y: number, size: number, weight: number, ink: string, alpha = 1, rim = false): void {
+export function text(g: G, s: string, x: number, y: number, size: number, weight: number, ink: string, alpha = 1, rim = false): void {
   g.save();
   g.globalAlpha = alpha;
   g.font = `${weight} ${size}px ${fontFamily()}`;
@@ -42,6 +42,31 @@ function text(g: G, s: string, x: number, y: number, size: number, weight: numbe
   g.fillStyle = ink;
   g.fillText(s, x, y);
   g.restore();
+}
+
+/**
+ * The glowing panel in the middle of the stage, wide enough for `need` (never wider than the stage);
+ * returns its height. Drawn once per width: a blur this big is slow to draw every frame.
+ */
+export function copyPanel(g: G, vw: number, need: number, accent: string): number {
+  const cx = vw / 2;
+  const w = Math.round(Math.min(vw - 80, Math.max(PANEL_MIN_W, need + 80))), h = SIZE * 1.45 + 56;
+  const simple = graphics.simple;
+  drawCached(g, `copy-panel ${accent} ${simple}`, cx - w / 2 - GLOW, PANEL_Y - h / 2 - GLOW, w + 2 * GLOW, h + 2 * GLOW, (pg) => {
+    if (!simple) {
+      pg.shadowColor = accent;
+      pg.shadowBlur = 26;
+    }
+    pg.fillStyle = 'rgba(252,250,255,0.93)';
+    pg.strokeStyle = accent;
+    pg.lineWidth = 5;
+    pg.beginPath();
+    pg.roundRect(GLOW, GLOW, w, h, 28);
+    pg.fill();
+    pg.shadowColor = 'transparent';
+    pg.stroke();
+  });
+  return h;
 }
 
 /**
@@ -116,25 +141,8 @@ export class CopyLoopMode extends Mode {
     g.font = `700 40px ${fontFamily()}`;
     const need = this.current ? wordBox(g, this.current.word, SIZE).w : Math.max(0, ...end.map((l) => g.measureText(l).width));
     g.restore();
-    // The panel fits the current target or the end line, never wider than the stage.
-    const w = Math.round(Math.min(this.L.vw - 80, Math.max(PANEL_MIN_W, need + 80))), h = SIZE * 1.45 + 56;
     this.drawSign(g, cx);
-    // The panel with its glow is drawn once per width: a blur this big is slow to draw every frame.
-    const simple = graphics.simple;
-    drawCached(g, `copy-panel ${this.accent} ${simple}`, cx - w / 2 - GLOW, PANEL_Y - h / 2 - GLOW, w + 2 * GLOW, h + 2 * GLOW, (pg) => {
-      if (!simple) {
-        pg.shadowColor = this.accent;
-        pg.shadowBlur = 26;
-      }
-      pg.fillStyle = 'rgba(252,250,255,0.93)';
-      pg.strokeStyle = this.accent;
-      pg.lineWidth = 5;
-      pg.beginPath();
-      pg.roundRect(GLOW, GLOW, w, h, 28);
-      pg.fill();
-      pg.shadowColor = 'transparent';
-      pg.stroke();
-    });
+    const h = copyPanel(g, this.L.vw, need, this.accent);
     for (const f of this.floating) {
       const k = Math.min(1, f.t / FLOAT);
       g.save();

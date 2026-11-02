@@ -180,6 +180,16 @@
         "shareButton": "Ako na to",
         "range": "Za každý prejdený svet sa na mape otvorí Strelnica a Papagáj. Na strelnici precvičíš písmená, ktoré ti ešte nejdú.",
         "rangeButton": "Viac o hrách"
+      },
+      "placement": {
+        "first": "Ahoj, {name}! Poznáš už trochu klávesnicu? Vyskúšajme to, nech začneme tam, kde si.",
+        "offer": "{name}, ide ti to výborne! Možno už vieš viac klávesov. Vyskúšame to, nech preskočíš, čo už vieš?",
+        "fromStart": "Začať od začiatku",
+        "check": "Vyskúšaj ma",
+        "fingers": "Píšeš všetkými prstami bez pozerania na klávesy?",
+        "yes": "Áno",
+        "no": "Nie",
+        "fromStartLine": "Naučíme sa to od začiatku, pôjde to rýchlo."
       }
     }
   },
@@ -217,7 +227,10 @@
     "endAsk": "Naozaj ukončiť?",
     "endLevelText": "Táto úroveň sa nezapočíta.",
     "endPracticeText": "Toto cvičenie sa nezapočíta.",
-    "stayStart": "Zostávame tu. Píš, koľko chceš. Keď budeš chcieť skončiť, stlač Esc."
+    "stayStart": "Zostávame tu. Píš, koľko chceš. Keď budeš chcieť skončiť, stlač Esc.",
+    "placement": "Skúška klávesnice",
+    "placementStart": "Píš, čo vidíš, pokojne a všetkými prstami. Neponáhľaj sa: chcem len vidieť, ktoré klávesy už vieš.",
+    "placementDone": "Hotovo!"
   },
   "guide": {
     "deadStep1": "{ch}: najprv kláves s mäkčeňom alebo dĺžňom, potom písmeno",
@@ -433,7 +446,25 @@
     },
     "journeyHome": {
       "dragon": "Raketa letí domov aj s dráčikom!"
-    }
+    },
+    "placement": "Skúška klávesnice",
+    "placementLetters": {
+      "one": "{n} kláves môžeš používať",
+      "few": "{n} klávesy môžeš používať",
+      "other": "{n} klávesov môžeš používať"
+    },
+    "placementOpened": {
+      "one": "{n} nový kláves je otvorený na mape",
+      "few": "{n} nové klávesy sú otvorené na mape",
+      "other": "{n} nových klávesov je otvorených na mape"
+    },
+    "placementStrong": "Silné klávesy",
+    "placementWeak": "Na precvičenie",
+    "placementNoWeak": "Žiadne, všetko išlo dobre!",
+    "placementSignal": "Signál prstov (zhoda · kontrast)",
+    "placementContinue": "Pokračovať",
+    "placementPractice": "Precvičiť slabé klávesy",
+    "placementEyes": "Zdá sa, že oči ti ešte pomáhajú hľadať klávesy. Lekcie naučia tvoje prsty všetko od začiatku, rýchlo."
   },
   "results": {
     "peek": "Pozrieť sa na hru (Esc)",
@@ -1107,7 +1138,9 @@
     "practiceKey": "Precvičiť {key} (1 min)",
     "medals": "Moje medaily",
     "medalsHint": "Medailu dostaneš vždy, keď už píšeš presne a hra sama pridá: veci sa hýbu o kúsok rýchlejšie alebo prídu dlhšie slová.",
-    "shifted": "⇧ znaky"
+    "shifted": "⇧ znaky",
+    "placement": "Ako mi to ide?",
+    "placementTip": "Pokojná skúška klávesov od začiatku, asi 4 minúty. Klávesy iba pridáva."
   },
   "wardrobe": {
     "title": "Ja a môj šatník",
@@ -1344,7 +1377,9 @@
     "translate": "Preklad",
     "translateGo": "Preložiť hru",
     "translateHint": "Všetky texty hry na jednom mieste: nový jazyk alebo vlastné texty.",
-    "ownLangs": "Vlastné jazyky"
+    "ownLangs": "Vlastné jazyky",
+    "placement": "Vyskúšať, čo hráč vie",
+    "placementHint": "Pokojná skúška písania (asi 4 minúty) otvorí klávesy, ktoré hráč už píše všetkými prstami bez pozerania. Klávesy nikdy neuberá a žiadnu úroveň neoznačí ako prejdenú."
   },
   "own": {
     "group": {

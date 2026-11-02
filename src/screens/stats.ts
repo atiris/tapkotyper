@@ -14,6 +14,7 @@ import { nickname } from '../storage/store';
 import { lineChart } from '../ui/charts';
 import { KeyboardGuide, fingerChip, keyLabel } from '../ui/keyboard-guide';
 import { button, h, modal } from '../ui/dom';
+import { tip } from '../ui/tooltip';
 import { tabBar } from '../ui/tabs';
 import { bigCode } from '../ui/big-code';
 import { badge } from '../ui/badge';
@@ -258,9 +259,13 @@ export function keysTab(p: Profile, close: () => void): HTMLElement {
   const showKey = (key: string) => detail.replaceChildren(keyDetail(p, key, () => practice([key])));
   const weak = weakKeys(p, activeKeys(p));
   const total = Object.values(p.stats.keys).reduce((a, s) => a + s.presses, 0);
+  // The placement check measures the keys from the start of the lesson order; it only ever adds keys, so it may run any time.
+  const check = button(t('stats.placement'), () => { close(); go('level', { id: 'placement' }); }, 'btn', 'keyboard');
+  tip(check, t('stats.placementTip'));
   return h('div', {},
     h('h3', {}, t('stats.title')),
     h('p', {}, total ? t('stats.intro', { n: STATS_WINDOW }) : t('stats.empty')),
+    h('div', { class: 'row' }, check),
     heat,
     h('p', { class: 'legend' },
       h('span', { class: 'lg heat-good' }, `✓ ${t('stats.good')}`),

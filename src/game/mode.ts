@@ -108,6 +108,8 @@ export abstract class Mode {
   }
   /** The level ended on its own or on request, not left early. */
   onFinish(): void {}
+  /** Every own key press for a target, before `onCorrect`, `onDone` or `onWrong`: the key expected, right or wrong, its reaction and time (ms). */
+  onKey(_expected: string, _ok: boolean, _rt: number, _at: number): void {}
   onCorrect(_t: Target): void {}
   onDone(_t: Target): void {}
   onWrong(_t: Target | null): void {}

@@ -48,7 +48,7 @@ export const PLURAL_FORMS = ['zero', 'one', 'two', 'few', 'many', 'other'] as co
 export const PLURAL_KEYS = new Set([
   'teacher.scan.count', 'teacher.n.sets', 'teacher.n.writers', 'teacher.n.results', 'teacher.n.handIns',
   'teacher.file.added', 'teacher.file.old', 'teacher.wipe.goSets', 'teacher.wipe.goResults', 'story.flightDone', 'story.copyLoopDone',
-  'end.letters', 'end.minutes', 'end.hits', 'end.words', 'end.exercises', 'end.moreRewards',
+  'end.letters', 'end.minutes', 'end.hits', 'end.words', 'end.exercises', 'end.moreRewards', 'end.placementLetters', 'end.placementOpened',
 ]);
 
 /** Arrays whose order and count matter; every other array is a pool read at random. */
@@ -76,6 +76,7 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
   ] },
   { id: 'typing', groups: [
     g('level-pause', 'level.pause', 'level.paused', 'level.pauseClose', 'level.slower', 'level.slowerSaid', 'level.stretch', 'level.stretchLong', 'level.stretchDone'),
+    g('placement', 'level.placement', 'level.placementStart', 'level.placementDone'),
     g('level', 'level.*'),
     g('keyboard', 'keys.*', 'layouts.*', 'layoutsShort.*', 'layoutSwitch.*', 'fingers.*', 'guide.*'),
     g('posture', 'posture.*'),
@@ -108,6 +109,8 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
   { id: 'results', groups: [
     g('end-titles', 'end.level', 'end.practice', 'end.stay', 'end.range', 'end.rangeRecord', 'end.journey', 'end.parrotHome', 'end.parrotLost', 'end.freeType', 'end.break', 'end.taskDone',
       'end.toMap', 'end.breakBtn', 'end.surpriseNew', 'end.surpriseSee'),
+    g('end-placement', 'end.placement', 'end.placementLetters', 'end.placementOpened', 'end.placementStrong', 'end.placementWeak', 'end.placementNoWeak',
+      'end.placementSignal', 'end.placementContinue', 'end.placementPractice', 'end.placementEyes'),
     g('end', 'end.*'),
     g('results', 'results.*'),
     g('badge', 'badge.*'),
@@ -146,7 +149,7 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
     g('parent-look', 'parent.sfx', 'parent.music', 'parent.speakTyped', 'parent.speakTypedHint', 'parent.font', 'parent.largeText', 'parent.reduceMotion',
       'parent.highContrast', 'parent.graphics', 'parent.graphicsAuto', 'parent.graphicsFull', 'parent.graphicsSimple', 'parent.graphicsHint', 'parent.autoFullscreen', 'parent.autoFullscreenHint', 'parent.keyFont', 'parent.keyFontHint'),
     g('parent-lock', 'parent.lock.*'),
-    g('parent-keys', 'parent.keysMode', 'parent.keysAuto', 'parent.keysManual', 'parent.keysHint', 'parent.punctuation', 'parent.unlocked', 'parent.preset.*'),
+    g('parent-keys', 'parent.placement', 'parent.placementHint', 'parent.keysMode', 'parent.keysAuto', 'parent.keysManual', 'parent.keysHint', 'parent.punctuation', 'parent.unlocked', 'parent.preset.*'),
     g('parent-data', 'parent.*'),
     g('own', 'own.*'),
     g('surprises-form', 'surprises.hint', 'surprises.empty', 'surprises.formTitle', 'surprises.q', 'surprises.a', 'surprises.qPlaceholder', 'surprises.aPlaceholder',

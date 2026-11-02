@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { LEVELS, STORIES, journeyLevel, worldLevels } from './levels';
-import { AUTO_DIFFICULTY_MAX, GROWTH_TYPED_SHARE, MIN_OWN_KEYS, completeLevel, completeStay, grow, growthNeed, joinRuns } from './progress';
+import { AUTO_DIFFICULTY_MAX, GROWTH_TYPED_SHARE, MIN_OWN_KEYS, completeLevel, completePlacement, completeStay, grow, growthNeed, joinRuns } from './progress';
 import { COMPANION_KINDS } from '../storage/schema';
+import { PlacementCheck } from '../learning/placement';
 import { KIND_STEP, MAX_CHEST, MAX_STARS, STORY_ACCESSORIES, badgeTier, chestPoints, friendStars, grantAccessories, grantCompanions, kindPrices, totalStars, unlockRules } from './rewards';
 
 describe('automatic growth', () => {
@@ -230,5 +231,49 @@ describe('the treasure chest and the stars of My progress', () => {
     expect(chestPoints(p)).toBe(8);
     p.progress.worldsDone.push(1);
     expect(chestPoints(p)).toBe(1);
+  });
+});
+
+describe('placement check result', () => {
+  const run = { accuracy: 1, chars: 100, errors: 0, cpm: 200, seconds: 60 };
+
+  /** A check that passed the first `n` stages with presses of `rt` ms. */
+  const check = (n: number, rt: number, end: PlacementCheck['end'] = 'stage') => {
+    const c = new PlacementCheck('sk-qwertz', false, 3);
+    for (let i = 0; i < 30; i++) c.press({ ch: 'f', ok: true, rt, at: i, target: 1, pos: 1 });
+    c.passed = n;
+    c.end = end;
+    return c;
+  };
+
+  it('unlocks the keys of the passed stages and raises the automatic difficulty', () => {
+    const p = newProfile('Ema', 'sk');
+    const r = completePlacement(p, check(4, 600), run);
+    expect(p.progress.unlockedKeys).toEqual(['f', 'j', ' ', 'd', 'k', 's', 'l', 'a', 'ô']);
+    expect(r.newKeys).toEqual(['d', 'k', 's', 'l', 'a', 'ô']);
+    expect(p.progress.introducedKeys).toEqual(p.progress.unlockedKeys);
+    expect(p.progress.placementKeys).toBe(9);
+    expect(p.settings.difficulty).toBe(AUTO_DIFFICULTY_MAX);
+    expect(r.stars).toBe(0);
+    expect(p.progress.levelsFinished).toBe(0);
+  });
+
+  it('never takes keys away and changes nothing when the signal failed', () => {
+    const p = newProfile('Ema', 'sk');
+    completePlacement(p, check(4, 600), run);
+    const r = completePlacement(p, check(2, 600), run);
+    expect(r.newKeys).toEqual([]);
+    // Only the first stage, the keys every new player has: nothing changes.
+    const q = newProfile('Ema', 'sk');
+    completePlacement(q, check(1, 300), run);
+    expect([q.progress.placementKeys, q.settings.difficulty]).toEqual([0, 3]);
+    expect(p.progress.unlockedKeys.length).toBe(9);
+    expect(p.progress.placementKeys).toBe(9);
+    completePlacement(p, check(10, 300, 'signal'), run);
+    expect(p.progress.placementKeys).toBe(9);
+    p.settings.difficulty = 4;
+    p.settings.autoDifficulty = false;
+    completePlacement(p, check(6, 300), run);
+    expect(p.settings.difficulty).toBe(4);
   });
 });

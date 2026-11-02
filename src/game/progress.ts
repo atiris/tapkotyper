@@ -1,4 +1,5 @@
 import { advanceLesson } from '../learning/lessons';
+import { type PlacementCheck, placementDifficulty, placementReaction } from '../learning/placement';
 import type { CompanionKind, Profile } from '../storage/schema';
 import { JOURNEY_STAR_STEPS, type LevelDef, STAR_STEPS, starsFor } from './levels';
 import { type BadgeTier, badgeTier, grantAccessories, grantCompanions } from './rewards';
@@ -156,4 +157,22 @@ export function completeStay(p: Profile, r: RunStats, typedShare: number): Level
   const newKeys = advanceLesson(p);
   const growth = grow(p, r.seconds, r.accuracy, typedShare);
   return { ...r, stars: 0, newKeys, newAccessories: [], newCompanions: [], worldDone: null, trend: rhythmTrend(p), growth, byTapko: false, badge: null };
+}
+
+/**
+ * The end of a placement check: every key of its passed stages is unlocked (and counts as introduced,
+ * the student typed it), the keys it reached are kept as the most of all checks, and the automatic
+ * difficulty may rise to the check's reaction. Nothing is marked done and nothing is ever taken
+ * away; a failed touch-typing signal changes nothing. The presses were recorded like any run's.
+ */
+export function completePlacement(p: Profile, check: PlacementCheck, r: RunStats): LevelResult {
+  const keys = check.keys;
+  const unlocked = p.progress.unlockedKeys;
+  const newKeys = keys.filter((k) => !unlocked.includes(k));
+  unlocked.push(...newKeys);
+  for (const k of keys) if (!p.progress.introducedKeys.includes(k)) p.progress.introducedKeys.push(k);
+  p.progress.placementKeys = Math.max(p.progress.placementKeys, keys.length);
+  const s = p.settings;
+  if (keys.length && s.autoDifficulty) s.difficulty = placementDifficulty(s.difficulty, placementReaction(check.presses), AUTO_DIFFICULTY_MAX);
+  return { ...r, stars: 0, newKeys, newAccessories: [], newCompanions: [], worldDone: null, trend: rhythmTrend(p), growth: null, byTapko: false, badge: null };
 }

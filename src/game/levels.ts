@@ -58,7 +58,7 @@ export type LevelKind =
   | 'flames' | 'thicket' | 'flight' | 'lullaby' | 'takeoff'
   | 'wind' | 'mud' | 'boulders' | 'spell'
   | 'copyloop'
-  | 'practice' | 'freetype' | 'aim' | 'parrot' | 'task';
+  | 'practice' | 'freetype' | 'aim' | 'parrot' | 'task' | 'placement';
 
 export interface LevelDef {
   id: string;
@@ -184,9 +184,9 @@ export function activityOf(l: LevelDef): Activity {
   return 'chase';
 }
 
-/** Practice, custom exercises, free typing and the target range keep their own length; every other level (a task too: its minutes, the parrot its round's) has the minimum. */
+/** Practice, custom exercises, free typing, the target range and the placement check keep their own length; every other level (a task too: its minutes, the parrot its round's) has the minimum. */
 export function hasMinLength(l: LevelDef): boolean {
-  return l.kind !== 'practice' && l.kind !== 'freetype' && l.kind !== 'aim';
+  return l.kind !== 'practice' && l.kind !== 'freetype' && l.kind !== 'aim' && l.kind !== 'placement';
 }
 
 /**
@@ -268,10 +268,10 @@ export function storyOpen(p: Profile, story: StoryDef): boolean {
   return story.opensAtKeys === null || p.id === SUPER_ID || activeKeys(p).length >= story.opensAtKeys;
 }
 
-/** The first world of a story opens with the story, every other one after the world before it. */
+/** The first world of a story opens with the story, every other one after the world before it, or when the placement check opened its first level. */
 export function isWorldUnlocked(p: Profile, world: number): boolean {
   const story = storyOf(world);
-  if (world !== story.worlds[0]) return p.progress.worldsDone.includes(world - 1);
+  if (world !== story.worlds[0]) return p.progress.worldsDone.includes(world - 1) || (storyOpen(p, story) && placedLevel(p, worldLevels(world)[0]));
   return storyOpen(p, story);
 }
 
@@ -303,13 +303,22 @@ export function keysMissing(p: Profile, l: LevelDef): number {
   return Math.max(0, keysNeeded(p, l) - activeKeys(p).length);
 }
 
-/** The level before it has its star (the first level opens with its world). */
+/** The placement check reached the keys the level needs: it is open without the stars before it. */
+function placedLevel(p: Profile, l: LevelDef): boolean {
+  return keysNeeded(p, l) <= p.progress.placementKeys;
+}
+
+/** The level before it has its star, earned by play: a level of a world opened by the world before, the next one after a star. */
+function playedTo(p: Profile, l: LevelDef): boolean {
+  if (l.index > 0) return (p.progress.levels[worldLevels(l.world)[l.index - 1].id] ?? 0) > 0;
+  return storyOf(l.world).worlds[0] !== l.world && p.progress.worldsDone.includes(l.world - 1);
+}
+
+/** The level before it has its star, or the placement check reached its keys (the first level opens with its world). */
 export function isLevelReached(p: Profile, l: LevelDef): boolean {
   if (p.id === SUPER_ID) return true;
   if (!isWorldUnlocked(p, l.world)) return false;
-  if (l.index === 0) return true;
-  const prev = worldLevels(l.world)[l.index - 1];
-  return (p.progress.levels[prev.id] ?? 0) > 0;
+  return l.index === 0 || playedTo(p, l) || placedLevel(p, l);
 }
 
 /** Reached and the child knows enough keys for it. */
@@ -317,10 +326,21 @@ export function isLevelUnlocked(p: Profile, l: LevelDef): boolean {
   return isLevelReached(p, l) && keysMissing(p, l) === 0;
 }
 
-/** The next level to play: the first open level without stars, else the last open one; null when none is open. */
+/**
+ * The next level to play: the first open level without stars, else the last open one; null when none
+ * is open. After a placement check the first one played to (its star before it earned by play) comes
+ * first, else the most advanced level the check opened (the largest key need).
+ */
 export function nextLevel(p: Profile): LevelDef | null {
   const open = LEVELS.filter((l) => isLevelUnlocked(p, l));
-  return open.find((l) => !p.progress.levels[l.id]) ?? open[open.length - 1] ?? null;
+  const fresh = open.filter((l) => !p.progress.levels[l.id]);
+  if (p.progress.placementKeys) {
+    const played = fresh.find((l) => playedTo(p, l));
+    if (played) return played;
+    const placed = fresh.filter((l) => placedLevel(p, l));
+    if (placed.length) return placed.reduce((best, l) => (keysNeeded(p, l) > keysNeeded(p, best) ? l : best));
+  }
+  return fresh[0] ?? open[open.length - 1] ?? null;
 }
 
 /** Most stars a level (and a hero's journey) gives. */
@@ -418,6 +438,11 @@ export function parrotKeys(p: Profile, world: number): string[] {
 /** A teacher's task played in `world` (only a backdrop): no map place, no stars. */
 export function taskLevel(spec: TaskSpec, world: number): LevelDef {
   return { id: 'task', world, index: -1, kind: 'task', count: 0, variant: spec.game, isSuper: false, task: spec };
+}
+
+/** The placement check: a calm copy run along the lesson order; no map place, no stars, no rewards. */
+export function placementLevel(): LevelDef {
+  return { id: 'placement', world: 0, index: -1, kind: 'placement', count: 0, variant: '', isSuper: false };
 }
 
 export function practiceLevel(seconds: number | null, phrases?: string[]): LevelDef & { seconds: number | null } {

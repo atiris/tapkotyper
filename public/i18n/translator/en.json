@@ -489,6 +489,14 @@
     "teacher-tasks": {
       "title": "Prepared tasks",
       "about": "The list of tasks made on the Tasks tab of the teacher page."
+    },
+    "placement": {
+      "title": "Keyboard check",
+      "about": "The calm placement check that finds the keys the player already types with all fingers without looking."
+    },
+    "end-placement": {
+      "title": "Keyboard check end",
+      "about": "The end card of the keyboard check: the keys the player can use, the strong and weak keys of the run and its buttons."
     }
   },
   "situations": {
@@ -1667,6 +1675,24 @@
     "note.noted": "Phone, under the camera: heading of the list of tasks noted so far.",
     "note.remove": "Phone, the list of noted tasks: the X that removes one (for screen readers).",
     "note.subject": "Subject of the e-mail with a noted task. {title} is the task name.",
-    "note.body": "The line before the task's link in the e-mail and the share sheet."
+    "note.body": "The line before the task's link in the e-mail and the share sheet.",
+    "map.teacher.placement.*": "Ms Turtle on the map asks whether to check what the player already knows: on the first visit of a new player (\"first\", {name} is the nickname) or once after a very good first level (\"offer\"). Then the buttons, the honest question about typing with all fingers without looking, Yes and No, and the kind line after No.",
+    "level.placement": "Title of the keyboard check in the top bar.",
+    "level.placementStart": "Line on the get-ready card before the keyboard check: type calmly, there is no hurry.",
+    "level.placementDone": "Short line on the panel when the keyboard check is over.",
+    "end.placement": "Title of the keyboard check end card.",
+    "end.placementLetters": "Under the picture: how many keys the player can use now. {n} is the number.",
+    "end.placementOpened": "Green line: how many new keys the check opened; the map shows the new worlds. {n} is the number.",
+    "end.placementStrong": "Row label: the keys that went best in this check (shown as key caps).",
+    "end.placementWeak": "Row label: the keys to practise after this check (shown as key caps).",
+    "end.placementNoWeak": "Row value when no key needs practice.",
+    "end.placementSignal": "Row label seen only in super mode: the two numbers of the finger signal. Short and technical.",
+    "end.placementContinue": "Main button of the end card: back to the map.",
+    "end.placementPractice": "Button: a one-minute practice of the weak keys.",
+    "end.placementEyes": "Yellow line when the timing looked like the eyes still look for the keys: kind, never \"you failed\".",
+    "stats.placement": "Button in My progress, Keys tab: starts the keyboard check.",
+    "stats.placementTip": "Tooltip of that button: how long it takes and that it only ever adds keys.",
+    "parent.placement": "Settings, Keys tab: button that starts the keyboard check for the player.",
+    "parent.placementHint": "Hint under that button: what the check does and what it never does."
   }
 }

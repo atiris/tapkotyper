@@ -34,7 +34,9 @@
   the child last trained (today, yesterday, n days ago) with the typing minutes of the last 7
   days. Below it a friendly view of the keys: a keyboard colored
   by how well each key goes, the 3 keys to practice, the growth medals earned, and a
-  button to practice them now. Clicking a key (or a key in the list) shows that key's
+  button to practice them now; above the keyboard **How am I doing?** starts the
+  [placement check](../learning/placement-check.md) (about 4 minutes, in the tooltip), whose end card
+  shows the strong and weak keys of that run. Clicking a key (or a key in the list) shows that key's
   details: its finger, accuracy, what it is mixed up with, its history, and a one-minute
   practice of just that key. A switch ("⇧ symbols") shows the shifted symbols of the keys
   instead (question mark, exclamation mark, colon, Slovak digits), each with its own

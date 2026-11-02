@@ -483,6 +483,9 @@ function keysTab(p: Profile): HTMLElement {
   kb.el.classList.toggle('disabled', s.activeKeysMode === 'auto');
   const presets: [string, string][] = [['home', 'fjdkslaô'], ['homeUs', 'fjdksla;'], ['top', 'qwertzuiop'], ['bottom', 'yxcvbnm']];
   return h('div', {},
+    // The placement check finds the keys the student already knows; it only ever adds keys.
+    h('div', { class: 'row' }, button(t('parent.placement'), () => go('level', { id: 'placement' }), 'btn', 'keyboard')),
+    h('p', { class: 'hint' }, t('parent.placementHint')),
     field(t('parent.keysMode'), mode, t('parent.keysHint')),
     h('p', { class: 'hint' }, t('parent.unlocked', { keys: p.progress.unlockedKeys.map(keyLabel).join(' ') })),
     kb.el,

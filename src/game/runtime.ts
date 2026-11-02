@@ -33,7 +33,9 @@ import type { ModeMaker } from './modes';
 import type { FreeTypeMode } from './modes/freetype';
 import { PressureValve, childPace, perChar } from './pace';
 import { GAUGE_DAYS, Rhythm, gaugeTop } from './rhythm';
-import { completeLevel, completeStay, joinRuns } from './progress';
+import { completeLevel, completePlacement, completeStay, joinRuns } from './progress';
+import type { PlacementMode } from './modes/placement';
+import { offersPlacement } from '../learning/placement';
 import { type Style, type Target, TypingCore } from './typing';
 import { giveUpJourney, pickTip, showCard, showJourneyPanel, showNewKey, showPosture } from './cards';
 import { splitSentences, taskContent } from './task-play';
@@ -159,6 +161,8 @@ export class LevelRuntime {
   private missesSeen = 0;
   /** Targets the child typed without a reveal (dictation) or a flash (memory). */
   private cleanTargets = 0;
+  /** Reaction ms of the child's correct presses that moved between keys. */
+  private okRts: number[] = [];
 
   constructor(root: HTMLElement, readonly def: LevelDef, makeMode: ModeMaker, private opts: RuntimeOptions) {
     const p = app.profile!;
@@ -179,9 +183,9 @@ export class LevelRuntime {
     // Practice (the custom exercise, key drills, tasks) has its own word language; story levels use the player's.
     this.words = wordSource(p, def.kind === 'practice' ? p.settings.ownWordLang : p.settings.wordLang, opts.keys, opts.chosen, def.focus, !!def.journey);
     // Enter comes with the right little finger's home key; drills, single letters, a teacher's task and the gate's code stay without it.
-    const enterOk = !opts.keys && !def.noSpace && def.kind !== 'freetype' && def.kind !== 'task' && def.kind !== 'aim' && def.kind !== 'parrot' && (opts.chosen ?? activeKeys(p)).includes(enterAfter(lay));
+    const enterOk = !opts.keys && !def.noSpace && def.kind !== 'freetype' && def.kind !== 'task' && def.kind !== 'aim' && def.kind !== 'parrot' && def.kind !== 'placement' && (opts.chosen ?? activeKeys(p)).includes(enterAfter(lay));
     this.enter = enterOk ? new EnterMarks(() => this.rng.next(), def.kind === 'practice' ? null : ENTER_MAX) : null;
-    this.surprise = opts.stay ? null : surpriseFor(p, def, !!opts.keys);
+    this.surprise = opts.stay || def.kind === 'placement' ? null : surpriseFor(p, def, !!opts.keys);
     this.count = def.count;
     // The e2e build may shorten the minimum (`?minActive=8`), so its tests finish levels in seconds.
     // Staying a while never reaches its minimum: the targets keep coming until Esc. A task's minutes are its own limit.
@@ -196,11 +200,14 @@ export class LevelRuntime {
     if (this.friends.fairy) this.el.dataset.fairy = 'melody';
     // A later part of a hero's journey starts with the bar where the parts before it left it.
     this.progressFill = h('div', { class: 'progress-fill', style: def.journey ? `width: ${Math.round(journeyProgress(def.journey, 0) * 100)}%` : '' });
-    const title = def.task ? def.task.title || t('task.untitled') : def.kind === 'practice' ? t(def.phrases ? 'level.ownText' : 'level.practice') : def.kind === 'freetype' ? t('level.freeType') : def.kind === 'aim' ? t('aim.title') : def.kind === 'parrot' ? t('parrot.title') : def.journey ? t('journey.title') : worldName(def.world);
+    const title = def.task ? def.task.title || t('task.untitled') : def.kind === 'placement' ? t('level.placement') : def.kind === 'practice' ? t(def.phrases ? 'level.ownText' : 'level.practice') : def.kind === 'freetype' ? t('level.freeType') : def.kind === 'aim' ? t('aim.title') : def.kind === 'parrot' ? t('parrot.title') : def.journey ? t('journey.title') : worldName(def.world);
     // Hiding the guide is the switch: the crossed keyboard, with the orange ring while the guide is hidden.
     const guideBtn = this.guideBtn = roundButton('control', 'keyboardOff', t('level.guide'), () => this.toggleGuide());
     tip(guideBtn, withKey(t('level.guide'), 'F2'));
     if (p.settings.guideLocked) guideBtn.disabled = true;
+    // The placement check measures without help: no on-screen keyboard and no finger guide (they would show where the keys are).
+    const unguided = def.kind === 'placement';
+    if (unguided) guideBtn.hidden = guideBtn.disabled = true;
     const helpBtn = roundButton('control', 'help', t('level.help'), () => this.openHelp());
     tip(helpBtn, withKey(t('level.help'), 'F1'));
     this.reading = new Reading(this.state, this, this.labels);
@@ -227,7 +234,7 @@ export class LevelRuntime {
       this.superHelp?.btn,
       def.kind === 'practice' || def.index < 0 ? null : placeRing(def),
       h('b', { class: 'hud-title' }, title),
-      ...(def.kind === 'freetype' ? [] : [opts.stay ? null : h('div', { class: 'progress', tip: t('level.progress') }, this.progressFill), ...this.accuracyPics.map((a) => a.pic.el), def.kind === 'parrot' ? null : this.gauge.el]),
+      ...(def.kind === 'freetype' ? [] : [opts.stay ? null : h('div', { class: 'progress', tip: t('level.progress') }, this.progressFill), ...this.accuracyPics.map((a) => a.pic.el), def.kind === 'parrot' || unguided ? null : this.gauge.el]),
       h('span', { class: 'hud-divider', 'aria-hidden': 'true' }),
       guideBtn, this.reading.btn, ...globalButtons(helpBtn));
     const stageWrap = h('div', { class: 'stage-wrap' });
@@ -243,7 +250,7 @@ export class LevelRuntime {
       this.opts.onLayout();
     });
     this.guide.el.append(this.layoutSwitch.el);
-    this.guideOn = p.settings.guide !== 'off';
+    this.guideOn = !unguided && p.settings.guide !== 'off';
     this.guide.setVisible(this.guideOn);
     guideBtn.setAttribute('aria-pressed', String(!this.guideOn));
     this.el.append(hud, stageWrap, this.guide.el);
@@ -286,7 +293,7 @@ export class LevelRuntime {
 
   /** Story levels and hero's journeys; free practice, a teacher's task, drills, the target range and the parrot count every key, and the valley's take-off is the child's own flight. */
   get pawsAllowed(): boolean {
-    return this.def.kind !== 'practice' && this.def.kind !== 'task' && this.def.kind !== 'freetype' && this.def.kind !== 'takeoff' && this.def.kind !== 'aim' && this.def.kind !== 'parrot' && !this.opts.keys;
+    return this.def.kind !== 'practice' && this.def.kind !== 'task' && this.def.kind !== 'freetype' && this.def.kind !== 'takeoff' && this.def.kind !== 'aim' && this.def.kind !== 'parrot' && this.def.kind !== 'placement' && !this.opts.keys;
   }
 
   get tapkoOnStage(): boolean {
@@ -317,13 +324,15 @@ export class LevelRuntime {
       return;
     }
     if (this.def.task) return this.prepareTask(host, this.def.task);
+    // The placement check teaches no keys and gives no tip: it only asks to type.
+    const teaches = !this.opts.keys && this.def.kind !== 'placement';
     let tip: string | undefined;
-    if (!app.tipShown && !this.opts.keys) {
+    if (!app.tipShown && teaches) {
       app.tipShown = true;
       tip = pickTip(p, this.style)?.text;
       saveProfile();
     }
-    if (!this.opts.keys) {
+    if (teaches) {
       const shown = await keyCards(host, this.guide, this.def.kind, () => this.disposed);
       if (!shown) return;
       this.shownKeys = shown;
@@ -341,7 +350,7 @@ export class LevelRuntime {
     const opening = this.def.kind !== 'copyloop' && levelById(this.def.id)?.index === 0 ? `world-${WORLDS[this.def.world]}` : null;
     const told = opening && !p.progress.scenesSeen.includes(opening) ? worldStory(this.def.world) : null;
     const story = [told ?? (journey?.line ? t(journey.line) : this.mode.startLine()), this.mode.intro()].filter(Boolean).join(' ') || null;
-    if (!this.opts.keys) await showPosture(host, p, tip, this.surprise, voiceNote, story, journey ? t('journey.harder') : null);
+    if (!this.opts.keys) await showPosture(host, p, tip, this.surprise, voiceNote, story, journey ? t('journey.harder') : null, teaches ? undefined : t('level.placement'));
     if (this.disposed) return;
     if (opening && told) {
       p.progress.scenesSeen.push(opening);
@@ -573,6 +582,7 @@ export class LevelRuntime {
     if (res.kind === 'wrong') {
       const { rt } = this.rhythm.press(null, c.time);
       if (res.expected) {
+        this.mode.onKey(res.expected, false, rt, c.time);
         recordPress(p, res.expected, c.ch, rt);
         this.errors++;
         this.trackWrong(res.expected);
@@ -583,6 +593,8 @@ export class LevelRuntime {
       this.mode.onWrong(res.target);
     } else {
       const { rt, repeat } = this.rhythm.press(res.expected, c.time);
+      this.mode.onKey(res.expected, true, rt, c.time);
+      if (!repeat) this.okRts.push(rt);
       recordPress(p, res.expected, c.ch, rt, repeat);
       this.checkShiftHand(res.expected, c.shiftCode);
       this.chars++;
@@ -1036,7 +1048,8 @@ export class LevelRuntime {
     const typedShare = resolved ? this.typedTargets / resolved : 1;
     const clean = this.cleanTargets;
     this.flushSession();
-    const noStars = this.opts.stay || this.def.kind === 'task' || this.def.kind === 'aim' || this.def.kind === 'parrot';
+    const placement = this.def.kind === 'placement';
+    const noStars = this.opts.stay || placement || this.def.kind === 'task' || this.def.kind === 'aim' || this.def.kind === 'parrot';
     if ((noStars || this.def.kind === 'practice' && !this.def.count) && total === 0) {
       this.opts.onFinish(null);
       return;
@@ -1055,7 +1068,10 @@ export class LevelRuntime {
         return;
       }
     }
-    const result = noStars ? completeStay(p, stats, typedShare)
+    // A very good level while still in the first world: the turtle offers the placement check on the map.
+    if (this.def.index >= 0 && this.def.world === 0 && !p.progress.worldsDone.length) app.placementOffer ||= offersPlacement(accuracy, this.okRts, this.difficulty);
+    const result = placement ? completePlacement(p, (this.mode as PlacementMode).check, stats)
+      : noStars ? completeStay(p, stats, typedShare)
       : run ? completeLevel(p, this.def, run.stats!, run.resolved ? run.typed / run.resolved : 1)
       : completeLevel(p, this.def, stats, typedShare);
     if (this.style !== 'copy') result.byStyle = { style: this.style, clean, total: resolved };

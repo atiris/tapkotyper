@@ -2,7 +2,7 @@ import { app, go, isBreakDue, saveProfile } from '../app/app';
 import { starRow } from '../ui/chrome';
 import { tapkoElement } from '../gfx/tapko';
 import { t, tn } from '../i18n/i18n';
-import { JOURNEYS, LEVELS, type LevelDef, STORIES, type StoryDef, WORLDS, aimLevel, aimOpen, aimWorld, freeTypeLevel, isLevelUnlocked, isWorldUnlocked, journeyLevel, journeyOpen, levelAt, levelById, nextLevel, parrotLevel, practiceLevel, taskLevel } from '../game/levels';
+import { JOURNEYS, LEVELS, type LevelDef, STORIES, type StoryDef, WORLDS, aimLevel, aimOpen, aimWorld, freeTypeLevel, isLevelUnlocked, isWorldUnlocked, journeyLevel, journeyOpen, levelAt, levelById, nextLevel, parrotLevel, placementLevel, practiceLevel, taskLevel } from '../game/levels';
 import { type LevelResult, newJourneyRun } from '../game/progress';
 import type { Style } from '../game/typing';
 import { WORLD_REWARDS } from '../game/rewards';
@@ -15,11 +15,14 @@ import { ownTextPhrases } from '../game/modes/practice';
 import type { AimMode } from '../game/modes/aim';
 import type { FreeTyped } from '../game/modes/freetype';
 import type { ParrotMode } from '../game/modes/parrot';
+import type { PlacementMode } from '../game/modes/placement';
+import { strongWeak } from '../learning/placement';
+import { activeKeys } from '../learning/lessons';
 import { loseParrot, winParrot } from '../game/parrots';
 import { THINGS } from '../game/modes/aim-things';
 import { imageUrl } from '../gfx/assets';
 import { compassElement } from '../gfx/compass';
-import type { Profile, Surprise, Task } from '../storage/schema';
+import { type Profile, SUPER_ID, type Surprise, type Task } from '../storage/schema';
 import { isFinished, recordTaskRun } from '../share/task';
 import { localDate, recentTyping } from '../learning/stats';
 import { type Child, closeButton, h } from '../ui/dom';
@@ -65,6 +68,7 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
   else if (params.id === 'aim') def = aimLevel(p, params.world != null && aimOpen(p, params.world) ? params.world : aimWorld(p, 0) ?? 0);
   else if (params.id === 'parrot') def = parrotLevel(params.world != null && aimOpen(p, params.world) ? params.world : aimWorld(p, 0) ?? 0);
   else if (params.id === 'journey' && journeyStory(params.story)) def = journeyLevel(journeyStory(params.story)!, 0);
+  else if (params.id === 'placement') def = placementLevel();
   else def = levelById(params.id) ?? LEVELS[0];
   // A super-obstacle has no endless form (the asteroids' has): staying plays the world's last regular level.
   const stayDef = params.stay && def.isSuper && def.kind !== 'asteroid' ? levelAt(def.world, def.index - 1) ?? def : def;
@@ -105,6 +109,7 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
         if (part) return showJourneyDone(root, level, result, params, asked, firstHome);
         if (def.kind === 'aim') return showAimDone(root, def, result, runtime.mode as AimMode, params, runtime.surprise);
         if (def.kind === 'parrot') return showParrotDone(root, def, result, runtime.mode as ParrotMode, params, runtime.surprise);
+        if (def.kind === 'placement') return showPlacementDone(root, result, runtime.mode as PlacementMode);
         if (params.stay) return showStayDone(root, def, result);
         if (task) return showTaskDone(root, task, result);
         showResults(root, def, result, params, runtime.surprise);
@@ -180,9 +185,9 @@ const letters = (n: number) => tn('end.letters', n);
 /** Whole minutes of typing; under a minute says so. */
 const minutes = (seconds: number) => seconds < 60 ? t('end.underMinute') : tn('end.minutes', Math.round(seconds / 60));
 
-/** The end card over the level's last frame, its main button focused; Esc and typing as in `peekable`. */
-function showEnd(root: HTMLElement, o: Omit<EndCardOpts, 'onBreak' | 'toMap'>, type?: () => void): void {
-  const card = endCard({ ...o, toMap, onBreak: isBreakDue() ? (back) => openBreak(back) : null });
+/** The end card over the level's last frame, its main button focused, "To the map" last unless the end has its own way there; Esc and typing as in `peekable`. */
+function showEnd(root: HTMLElement, o: Omit<EndCardOpts, 'onBreak'>, type?: () => void): void {
+  const card = endCard({ toMap, ...o, onBreak: isBreakDue() ? (back) => openBreak(back) : null });
   const overlay = h('div', { class: 'overlay results' }, card);
   root.querySelector('.level-screen')!.append(overlay);
   focusMain(card);
@@ -364,6 +369,41 @@ function showParrotDone(root: HTMLElement, def: LevelDef, r: LevelResult, mode: 
     tip: lost ? t('end.parrotTip') : null,
     surprises: toldSurprises(def, surprise, 'time'),
     actions: [{ label: t(lost ? 'results.replay' : 'parrot.again'), icon: 'replay', run: () => go('level', params) }],
+  });
+}
+
+/**
+ * The end of a placement check: the turtle, the letters the student can use now, the strong and weak
+ * keys of this run as key caps and how many letters opened (or, when the timing looked like eyes on
+ * the keys, the kind line); in super mode the touch-typing measures too. Continue goes to the map,
+ * which shows the opened worlds; with weak keys they can be practised at once.
+ */
+function showPlacementDone(root: HTMLElement, r: LevelResult, mode: PlacementMode): void {
+  const p = app.profile!, check = mode.check;
+  const { strong, weak } = strongWeak(check.presses, p.layout, check.difficulty);
+  const caps = (keys: string[]) => h('span', { class: 'ec-keys' }, ...keys.map((k) => h('kbd', { class: 'kbd' }, keyLabel(k))));
+  const rows: [string, Child][] = [
+    [t('end.placementStrong'), strong.length ? caps(strong) : '–'],
+    [t('end.placementWeak'), weak.length ? caps(weak) : t('end.placementNoWeak')],
+  ];
+  // The owner tunes the signal's limits from these numbers: two fingers and ten.
+  if (p.id === SUPER_ID) {
+    const n = (v: number | null) => (v === null ? '–' : v.toFixed(2));
+    rows.push([t('end.placementSignal'), `${n(check.signal.fit)} · ${n(check.signal.contrast)} · ${check.signal.pass ? '✓' : '✗'}`]);
+  }
+  const actions: EndAction[] = [{ label: t('end.placementContinue'), icon: 'next', run: toMap }];
+  if (weak.length) actions.push({ label: t('end.placementPractice'), icon: 'practice', run: () => go('level', { id: 'practice', keys: weak, seconds: 60 }) });
+  const opened = r.newKeys.length;
+  showEnd(root, {
+    cls: 'placement-done',
+    title: t('end.placement'),
+    picture: 'ui-teacher',
+    under: tn('end.placementLetters', activeKeys(p).length),
+    rows,
+    news: opened ? [h('span', {}, tn('end.placementOpened', opened))] : null,
+    tip: check.end === 'signal' ? t('end.placementEyes') : null,
+    actions,
+    toMap: null,
   });
 }
 

@@ -79,6 +79,77 @@ function teacherPanel(p: Profile): HTMLElement | null {
   return panel;
 }
 
+/** The id the later placement offer is kept under among the turtle's read tips, so it comes once. */
+const PLACEMENT_OFFER = 'placementOffer';
+
+/**
+ * Which placement question the turtle asks now, or null: the first map visit of a profile without a
+ * star, or once after a very good level while the student is still in the first world (and no check
+ * opened keys yet).
+ */
+function placementAsk(p: Profile): 'first' | 'offer' | null {
+  if (p.id === GUEST_ID || p.id === SUPER_ID) return null;
+  if (!p.progress.placementAsked && !p.progress.starsEarned) return 'first';
+  const offer = app.placementOffer && !p.progress.placementKeys && !p.progress.worldsDone.length && !p.progress.appTips.seen.includes(PLACEMENT_OFFER);
+  return offer ? 'offer' : null;
+}
+
+/**
+ * The turtle's placement question above the worlds: start from the beginning (the default) or be
+ * checked; checking first asks honestly whether the student types with all fingers without looking,
+ * and No ends with a kind line and changes nothing. Any answer, the X or Escape keeps it asked.
+ */
+function placementPanel(p: Profile): HTMLElement | null {
+  const kind = placementAsk(p);
+  if (!kind) return null;
+  const src = imageUrl(TEACHER_PICTURES[0]) ?? imageUrl('ui-mentor');
+  const panel = h('section', { class: 'panel teacher-tip placement-ask', 'aria-labelledby': 'teacher-name' });
+  const asked = () => {
+    window.removeEventListener('keydown', onKey, true);
+    p.progress.placementAsked = true;
+    if (kind === 'offer') p.progress.appTips.seen.push(PLACEMENT_OFFER);
+    app.placementOffer = false;
+    saveProfile();
+  };
+  const close = () => {
+    asked();
+    panel.remove();
+    document.querySelector<HTMLElement>('.map-side .btn.primary')?.focus();
+  };
+  const onKey = (e: KeyboardEvent) => {
+    if (!panel.isConnected) return window.removeEventListener('keydown', onKey, true);
+    if (e.key !== 'Escape' || document.querySelector('.modal-back') || tipShown()) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    close();
+  };
+  window.addEventListener('keydown', onKey, true);
+  const say = (text: string, buttons: [string, () => void, Parameters<typeof button>[3]][]) => {
+    panel.replaceChildren(...[
+      closeButton(close, t('map.teacher.close')),
+      src ? h('img', { class: 'teacher-img', src, alt: '' }) : null,
+      h('div', { class: 'teacher-text' },
+        h('h2', { id: 'teacher-name' }, t('map.teacher.name')),
+        h('p', {}, text),
+        h('div', { class: 'row' }, ...buttons.map(([label, run, ic], i) => button(label, run, i ? 'btn' : 'btn primary', ic)))),
+    ].filter((x) => x !== null));
+    panel.querySelector<HTMLElement>('.btn.primary')?.focus();
+  };
+  const check = () => {
+    asked();
+    go('level', { id: 'placement' });
+  };
+  const fingers = () => say(t('map.teacher.placement.fingers'), [
+    [t('map.teacher.placement.no'), () => say(t('map.teacher.placement.fromStartLine'), [[t('map.teacher.ok'), close, 'check']]), 'back'],
+    [t('map.teacher.placement.yes'), check, 'check'],
+  ]);
+  say(t(`map.teacher.placement.${kind}`, { name: nickname(p) }), [
+    [t('map.teacher.placement.fromStart'), close, 'play'],
+    [t('map.teacher.placement.check'), fingers, 'keyboard'],
+  ]);
+  return panel;
+}
+
 /** Milliseconds Aro waits after Tapko's line about flown parrots before he says goodbye. */
 const ARO_AFTER_MS = 1800;
 
@@ -131,7 +202,9 @@ export function mapScreen(root: HTMLElement): () => void {
   const play = button(t('map.continue'), start, 'btn primary big', 'play');
   // The map marks the level to continue with only while it is still to play: with everything played none is.
   const current = next && !p.progress.levels[next.id] ? next.id : undefined;
-  const teacher = teacherPanel(p);
+  // One turtle panel at a time: the placement question goes before the tips.
+  const placement = placementPanel(p);
+  const teacher = placement ?? teacherPanel(p);
   const nextName = next ? levelTitleWords(next.world, next.index) : t('map.practice');
   play.dataset.tip = nextName;
   play.setAttribute('aria-label', `${t('map.continue')}: ${nextName}`);
@@ -157,8 +230,9 @@ export function mapScreen(root: HTMLElement): () => void {
       h('div', { class: 'story-rows' }, teacher, ...STORIES.map((s) => storyRow(p, s, current, held, keysBubble, lockBubble))))));
   // The arrows walk the levels and the closed worlds like a grid.
   arrowFocus(root.querySelector('.story-rows')!, '.level-node, .island-art[tabindex]');
-  // Enter starts at once.
+  // Enter starts at once; the placement question takes the focus, starting from the beginning first.
   play.focus();
+  placement?.querySelector<HTMLElement>('.btn.primary')?.focus();
   if (flown.length) {
     const worlds = flown.map((w) => worldName(w)).join(', ');
     bubble.replaceChildren(h('p', {}, t(flown.length === 1 ? 'map.parrotFlown' : 'map.parrotsFlown', { worlds })));

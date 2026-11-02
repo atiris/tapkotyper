@@ -64,6 +64,10 @@
   ([free typing](../game/free-typing.md)), easy to tell letters on the keys
   ([accessibility](../experience/accessibility.md)), start in fullscreen. The help text says the start
   is slow and points to "no time pressure" for a child who still cannot keep up.
+- The Keys tab starts with **Check what the student knows**: the
+  [placement check](../learning/placement-check.md), any time, with one line on what it does (opens
+  the keys the student already types with ten fingers without looking) and never does (remove keys,
+  mark levels done). Parents rarely know which keys their child really knows; the check measures it.
 - An **own content** tab collects what the parent writes for the child:
   - own encouraging messages, mixed into the narrator's lines;
   - **own words** (up to 300) and **own text** (up to 4000 characters) with the share of

@@ -29,3 +29,6 @@
 
 ## Priority
 P2, effort M.
+
+## Spec
+Built as the [placement check](../../.specify/learning/placement-check.md): asked by Ms Turtle on the map, with an honest fingers question first and a timing signal against hunt-and-peck.

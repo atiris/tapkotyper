@@ -2,7 +2,7 @@ import { mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'nod
 import { join } from 'node:path';
 import type { Plugin } from 'vite';
 import { POSE_NAME } from '../../src/ui/hand-svg';
-import { type PictureBody, savePicture, traceAnswer, writeOutline } from './gemini';
+import { type PictureBody, answerFromDownloads, listPairs, pairFile, savePicture, traceAnswer, writeOutline } from './gemini';
 import { type PoseFile, VIEW, mirrorPath, poseSvg } from './pose-file';
 
 /**
@@ -78,21 +78,33 @@ export function handPoser(): Plugin {
     apply: 'serve',
     configureServer(server) {
       server.middlewares.use(async (req, res, next) => {
-        const path = req.url?.split('?')[0];
-        if (req.method !== 'POST' || !path?.startsWith('/__hand-poser/')) return next();
+        const [path, query] = (req.url ?? '').split('?');
+        if (!path.startsWith('/__hand-poser/')) return next();
         const reply = (data: object) => {
           res.setHeader('Content-Type', 'application/json');
           res.end(JSON.stringify({ ok: true, ...data }));
         };
         try {
+          if (req.method === 'GET') {
+            if (path === '/__hand-poser/pairs') return reply({ pairs: listPairs() });
+            const q = new URLSearchParams(query);
+            const file = path === '/__hand-poser/pair-file' && pairFile(q.get('pair') ?? '', q.get('name') ?? '');
+            if (!file) return next();
+            res.setHeader('Content-Type', file.type);
+            res.setHeader('Cache-Control', 'no-store');
+            return res.end(file.data);
+          }
+          if (req.method !== 'POST') return next();
           if (path === '/__hand-poser/gemini-picture') return reply({ file: await savePicture(await body<PictureBody>(req)) });
           if (path === '/__hand-poser/gemini-trace') {
             const { pair, names, mirror } = await body<{ pair: string; names: Record<'left' | 'right', string>; mirror?: boolean }>(req);
             if (!Object.values(names).every((n) => POSE_NAME.test(n))) throw new Error('bad pose names');
+            // Gemini's newest download (from the owner's own chat) becomes the pair's answer; else the one already there.
+            const fromDownloads = answerFromDownloads(pair);
             const outlines = await traceAnswer(pair, (png, toUnits) => trace(png, toUnits, GEMINI.specks, GEMINI.blur, GEMINI.ink));
             // A symmetric pair (home, rest): the right hand as the left one's mirror, when Gemini drew it worse.
             if (mirror) outlines.right = mirrorPath(outlines.left);
-            return reply({ files: (['left', 'right'] as const).map((side) => writeOutline(join(DIR, side, `${names[side]}.svg`), outlines[side])) });
+            return reply({ fromDownloads, files: (['left', 'right'] as const).map((side) => writeOutline(join(DIR, side, `${names[side]}.svg`), outlines[side])) });
           }
           if (path !== '/__hand-poser/save' && path !== '/__hand-poser/delete') return next();
           const data = await body<SaveBody>(req);

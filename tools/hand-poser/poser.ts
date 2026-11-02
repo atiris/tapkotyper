@@ -4,7 +4,7 @@ import leftGlb from '@webxr-input-profiles/assets/dist/profiles/generic-hand/lef
 import rightGlb from '@webxr-input-profiles/assets/dist/profiles/generic-hand/right.glb?url';
 import { type Finger, type KeyDef, LAYOUTS } from '../../src/keyboard/layouts';
 import { type FingerScheme, fingerOf } from '../../src/keyboard/fingers';
-import { type HandIndex, POSE_NAME, type Side, VIEW, keyName, poseName } from '../../src/ui/hand-svg';
+import { type HandIndex, POSE_NAME, type Side, VIEW, keyName, poseName, readHandSvg } from '../../src/ui/hand-svg';
 import { HANDS_CHANNEL } from '../../src/ui/hands';
 import { FINGER_COLORS } from '../../src/ui/keyboard-guide';
 import { geminiPrompt } from './gemini-prompt';
@@ -106,7 +106,7 @@ const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as 
 const canvas = $<HTMLCanvasElement>('view');
 const keysSvg = document.getElementById('keys') as unknown as SVGSVGElement;
 const status = $<HTMLParagraphElement>('status');
-const show = { shade: $<HTMLInputElement>('showShade'), lines: $<HTMLInputElement>('showLines') };
+const show = { shade: $<HTMLInputElement>('showShade'), lines: $<HTMLInputElement>('showLines'), preview: $<HTMLInputElement>('showPreview') };
 
 const say = (text: string, error = false) => {
   status.textContent = text;
@@ -924,6 +924,7 @@ async function open(s: Side, name: string): Promise<void> {
     setPose(s, { ...(await homeOf(s)), name }, false);
     say(`Nová póza ${s === 'left' ? 'ľavej' : 'pravej'} ruky ${name} zo základnej pozície`);
   }
+  void showPreview();
 }
 
 /** Tells an open Tapko (same dev server) that an outline changed, so it shows it at once. */
@@ -957,6 +958,7 @@ async function save(): Promise<void> {
   }
   await loadIndex();
   tapko.postMessage(files.join(' '));
+  void showPreview();
   say(`Uložené ${files.join(', ')}`);
 }
 
@@ -1070,6 +1072,70 @@ async function geminiPicture(): Promise<void> {
   });
   const res = (await r.json()) as { ok: boolean; file?: string; error?: string };
   say(res.ok ? `Obrázok pre Gemini: ${res.file}` : res.error ?? 'Nepodarilo sa', !res.ok);
+  if (!res.ok) return;
+  await loadPairs();
+  await showGemini(pair());
+}
+
+// ---- the pairs, their picture and prompt, the saved outlines ----
+
+const previewSvg = $('preview') as unknown as SVGSVGElement;
+previewSvg.setAttribute('viewBox', `${VIEW.x} ${VIEW.y} ${VIEW.w} ${VIEW.h}`);
+/** Both hands' saved outlines over the keyboard, as Tapko draws them (when "Náhľad SVG" is on). */
+async function showPreview(): Promise<void> {
+  previewSvg.replaceChildren();
+  if (!show.preview.checked) return;
+  for (const s of SIDES) {
+    const svg = await fetchSvg(s, nameOf(s));
+    if (!svg) continue;
+    const shape = readHandSvg(svg);
+    svgEl('path', { class: 'creases', d: shape.creases }, previewSvg);
+    svgEl('path', { class: 'lines', d: shape.lines }, previewSvg);
+  }
+}
+
+const pairUrl = (p: string, name: string) => `/__hand-poser/pair-file?pair=${encodeURIComponent(p)}&name=${name}&t=${Date.now()}`;
+/** A pair's picture for Gemini and its prompt, each copied by a click. */
+async function showGemini(p: string): Promise<void> {
+  const box = $('geminiBox'), img = $<HTMLImageElement>('geminiPicture'), text = $('geminiPrompt');
+  img.src = pairUrl(p, 'picture.png');
+  const r = await fetch(pairUrl(p, 'prompt.txt'));
+  text.textContent = r.ok ? await r.text() : '';
+  box.hidden = false;
+}
+$('geminiPicture').addEventListener('click', async () => {
+  const blob = await (await fetch($<HTMLImageElement>('geminiPicture').src)).blob();
+  await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
+  say('Obrázok pre Gemini je v schránke');
+});
+$('geminiPrompt').addEventListener('click', async () => {
+  await navigator.clipboard.writeText($('geminiPrompt').textContent ?? '');
+  say('Prompt je v schránke');
+});
+
+/** The pairs sent to Gemini: the last five as buttons, all in a list. */
+const RECENT = 5;
+async function loadPairs(): Promise<void> {
+  const r = await fetch('/__hand-poser/pairs');
+  const { pairs } = (await r.json()) as { pairs: { pair: string; answer: boolean }[] };
+  $('recentPairs').replaceChildren(...pairs.slice(0, RECENT).map(({ pair: p, answer }) => {
+    const b = Object.assign(document.createElement('button'), { textContent: p, className: answer ? 'answered' : '', title: answer ? 'má odpoveď Gemini' : 'bez odpovede Gemini' });
+    b.addEventListener('click', () => void openPair(p));
+    return b;
+  }));
+  const all = $<HTMLSelectElement>('allPairs');
+  all.replaceChildren(Object.assign(document.createElement('option'), { value: '', textContent: `všetky páry (${pairs.length})…` }),
+    ...pairs.map(({ pair: p }) => Object.assign(document.createElement('option'), { value: p, textContent: p })));
+}
+/** A pair: both hands' poses, its picture and prompt, and the saved outlines over the keyboard. */
+async function openPair(p: string): Promise<void> {
+  const [left, right] = p.split('+');
+  await open('left', left);
+  await open('right', right);
+  show.preview.checked = true;
+  await showPreview();
+  await showGemini(p);
+  say(`Pár ${p}`);
 }
 
 /** Traces Gemini's answer for the pair into both hands' SVGs (their poses stay). */
@@ -1077,11 +1143,17 @@ async function fromGemini(): Promise<void> {
   say('Prekresľujem z Gemini…');
   const mirror = $<HTMLInputElement>('mirrorTrace').checked;
   const r = await fetch('/__hand-poser/gemini-trace', { method: 'POST', body: JSON.stringify({ pair: pair(), names: { left: nameOf('left'), right: nameOf('right') }, mirror }) });
-  const res = (await r.json()) as { ok: boolean; files?: string[]; error?: string };
+  const res = (await r.json()) as { ok: boolean; files?: string[]; fromDownloads?: string | null; error?: string };
   if (!res.ok) return say(res.error ?? 'Nepodarilo sa', true);
   await loadIndex();
   tapko.postMessage(res.files!.join(' '));
-  say(`Z Gemini: ${res.files!.join(', ')}`);
+  // The result as Tapko draws it, over the keyboard.
+  show.preview.checked = true;
+  show.shade.checked = show.lines.checked = false;
+  redraw();
+  await showPreview();
+  void loadPairs();
+  say(`Z Gemini${res.fromDownloads ? ' (najnovší obrázok z Downloads)' : ''}: ${res.files!.join(', ')}`);
 }
 
 // ---- start ----
@@ -1100,6 +1172,7 @@ async function start(): Promise<void> {
   await loadIndex();
   for (const s of SIDES) await open(s, nameOf(s));
   activate(active);
+  void loadPairs();
 }
 
 for (const s of SIDES) {
@@ -1131,7 +1204,12 @@ $('save').addEventListener('click', () => void save());
 $('steps').addEventListener('click', () => void saveSteps());
 $('gemini').addEventListener('click', () => void geminiPicture());
 $('fromGemini').addEventListener('click', () => void fromGemini());
-for (const c of Object.values(show)) c.addEventListener('change', redraw);
+for (const c of [show.shade, show.lines]) c.addEventListener('change', redraw);
+show.preview.addEventListener('change', () => void showPreview());
+$<HTMLSelectElement>('allPairs').addEventListener('change', (e) => {
+  const p = (e.target as HTMLSelectElement).value;
+  if (p) void openPair(p);
+});
 window.addEventListener('resize', redraw);
 // A closer look: the stage grows (the page scrolls) and the hands are drawn sharper.
 $<HTMLSelectElement>('zoom').addEventListener('change', (e) => {

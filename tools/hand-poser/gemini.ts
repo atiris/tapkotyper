@@ -1,5 +1,6 @@
-import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { homedir } from 'node:os';
+import { extname, join } from 'node:path';
 import type { Side } from '../../src/ui/hand-svg';
 import { MIRROR_X, VIEW } from './pose-file';
 
@@ -34,6 +35,8 @@ export interface PictureBody {
 }
 
 const PAIR = /^[a-z0-9]+\+[a-z0-9]+$/;
+/** Gemini's answer for a pair. */
+const ANSWER = /^answer\.(png|jpe?g|webp)$/;
 /** The silhouettes are kept at this many pixels per unit (enough to tell the hands apart). */
 const MASK_PX = 2;
 /** The hands in the picture: a bold black outline (grown by this many pixels) and hairline black details. */
@@ -121,7 +124,7 @@ const DARK = 200;
 export async function traceAnswer(pair: string, trace: (png: Buffer, toUnits: (x: number, y: number) => [number, number]) => Promise<string>): Promise<Record<Side, string>> {
   const sharp = await sharpOf();
   const dir = dirOf(pair);
-  const answer = readdirSync(dir).find((f) => /^answer\.(png|jpe?g|webp)$/.test(f));
+  const answer = readdirSync(dir).find((f) => ANSWER.test(f));
   if (!answer) throw new Error(`v ${dir} chýba answer.png (odpoveď Gemini)`);
   const meta = JSON.parse(readFileSync(join(dir, 'meta.json'), 'utf8')) as Meta;
   const { data, info } = await sharp(join(dir, answer)).removeAlpha().raw().toBuffer({ resolveWithObject: true });
@@ -181,4 +184,40 @@ export function writeOutline(file: string, lines: string): string {
     .replace(/<path class="hand-lines" d="[^"]*"( data-source="[^"]*")?/, `<path class="hand-lines" d="${lines}" data-source="gemini"`);
   writeFileSync(file, svg);
   return file.replaceAll('\\', '/');
+}
+
+/** The pairs sent to Gemini, newest first: their names, when their picture was made and whether an answer is there. */
+export function listPairs(): { pair: string; time: number; answer: boolean }[] {
+  if (!existsSync(GEMINI_DIR)) return [];
+  return readdirSync(GEMINI_DIR).filter((p) => PAIR.test(p) && existsSync(join(GEMINI_DIR, p, 'picture.png'))).map((pair) => ({
+    pair,
+    time: statSync(join(GEMINI_DIR, pair, 'picture.png')).mtimeMs,
+    answer: readdirSync(join(GEMINI_DIR, pair)).some((f) => ANSWER.test(f)),
+  })).sort((a, b) => b.time - a.time);
+}
+
+/** A file of a pair the poser shows: its picture, its prompt or Gemini's answer. */
+export function pairFile(pair: string, name: string): { data: Buffer; type: string } | null {
+  const dir = dirOf(pair);
+  const file = name === 'answer' ? readdirSync(dir).find((f) => ANSWER.test(f)) : ['picture.png', 'prompt.txt'].includes(name) ? name : undefined;
+  if (!file || !existsSync(join(dir, file))) return null;
+  const type = file.endsWith('.txt') ? 'text/plain; charset=utf-8' : file.endsWith('.png') ? 'image/png' : file.endsWith('.webp') ? 'image/webp' : 'image/jpeg';
+  return { data: readFileSync(join(dir, file)), type };
+}
+
+/**
+ * Takes the newest picture in the owner's Downloads as the pair's answer, when it is newer than the pair's picture (Gemini's
+ * download from the owner's own chat); the answer's file name, or null when there is none newer.
+ */
+export function answerFromDownloads(pair: string): string | null {
+  const dir = dirOf(pair), downloads = join(homedir(), 'Downloads');
+  if (!existsSync(downloads)) return null;
+  const since = statSync(join(dir, 'picture.png')).mtimeMs;
+  const newest = readdirSync(downloads).filter((f) => /\.(png|jpe?g|webp)$/i.test(f))
+    .map((f) => ({ f, time: statSync(join(downloads, f)).mtimeMs })).filter((x) => x.time > since).sort((a, b) => b.time - a.time)[0];
+  if (!newest) return null;
+  for (const old of readdirSync(dir).filter((f) => ANSWER.test(f))) rmSync(join(dir, old));
+  const name = `answer${extname(newest.f).toLowerCase().replace('.jpeg', '.jpg')}`;
+  copyFileSync(join(downloads, newest.f), join(dir, name));
+  return name;
 }

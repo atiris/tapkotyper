@@ -1239,6 +1239,11 @@ same folder, then "Z Gemini do SVG" traces it into both hands' SVGs (the marks p
 symmetric pair (home, rest) "Pravú zrkadliť z ľavej" puts the left hand's outline mirrored into the right one,
 when Gemini drew one hand worse.
 
+The owner's own way, without the bridge: under the buttons the poser shows the pair's picture and prompt; a click
+copies each, to paste into Gemini. "Z Gemini do SVG" then takes the newest picture in Downloads (newer than the pair's
+picture) as the answer, traces it and shows the saved outlines over the keyboard ("Náhľad SVG"). The last five pairs
+are buttons below, all of them in a list; a click opens a pair (poses, picture, prompt, outlines).
+
 - `answer.png`: **attach `picture.png`, then `style-sample.jpg`**, with the pair's `prompt.txt` (written by the poser
   from `tools/hand-poser/gemini-prompt.ts`: the line style, freedom to make the hands natural, each finger's bend read
   from the pose and how a bend shows from above, the fingertips' arc, the marks, 1376 x 768).

@@ -4,7 +4,7 @@ import { captureKeys, homePinky } from '../game/cards';
 import { JOURNEY_STAR_STEPS, STAR_STEPS, type StarSteps } from '../game/levels';
 import { BADGE_STARS, MAX_WORLD_STARS } from '../game/rewards';
 import { PAW_MAX, PAW_STREAK, PAW_WORDS } from '../game/paw';
-import { type Child, ICONS, button, h, icon, richText } from '../ui/dom';
+import { type Child, ICONS, button, h, icon, linkedText, richText } from '../ui/dom';
 import { levelRing, pawRing, rhythmPic, roundPic, timerPic } from '../ui/hud';
 import { barTabLinks, tabBar } from '../ui/tabs';
 import { appInstalled, installApp, openApp, standalone } from '../ui/install';
@@ -85,12 +85,6 @@ const list = (key: string, params?: Record<string, string>) => h('ul', {}, ...tL
 function starSteps(): Record<string, string> {
   const percents = (steps: StarSteps, mark: string) => steps.map((s) => [`${mark}${s.stars}`, (s.from * 100).toLocaleString(locale(), { maximumFractionDigits: 2 })]);
   return Object.fromEntries([...percents(STAR_STEPS, 's'), ...percents(JOURNEY_STAR_STEPS, 'j')]);
-}
-
-/** The text of `line` with `{mark}` replaced by `link`. */
-function linkedText(line: string, mark: string, link: () => HTMLElement): Child[] {
-  const [before, after] = line.split(`{${mark}}`);
-  return after === undefined ? richText(line) : [...richText(before), link(), ...richText(after)];
 }
 
 /** The line about the installed app: inside the app it says so, in a browser tab "{open}" is a link that opens the app. */

@@ -1091,6 +1091,8 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
 /* Where the fingers go, under the picture: it keeps its room until it shows, so nothing jumps. */
 .posture-fingers { margin: 0.4rem 0 0; font-weight: 600; color: var(--ink-soft); text-align: center; text-wrap: pretty; }
 .posture-fingers.later { visibility: hidden; }
+.posture-fingers p { margin: 0; }
+.posture-fingers a.posture-link { text-decoration: underline; text-underline-offset: 2px; }
 .space-key { justify-self: center; display: block; margin: 0 auto; width: min(320px, 100%); height: 64px; font: inherit; font-size: 1.1rem; font-weight: 700; color: var(--ink-soft); border: 1px solid var(--key-line); border-radius: 18px; background: var(--surface); box-shadow: inset 0 -7px 0 var(--brand), 0 4px 10px rgba(0, 0, 0, 0.12); cursor: pointer; }
 .space-key:active { transform: translateY(3px); }
 .newkey-card { max-width: 760px; display: grid; grid-template-columns: auto 1fr; gap: 1.4rem; align-items: center; text-align: left; }

@@ -254,7 +254,9 @@
     "feet": "Obe chodidlá polož na zem.",
     "wrists": "Zápästia uvoľnené vo vzduchu, nie opreté o stôl.",
     "eyes": "Oči na obrazovke, nie na klávesnici.",
-    "space": "Prsty polož na základné miesta {keys} a stlač medzerník.",
+    "space": "Prsty na {link}!",
+    "spaceLink": "základnú pozíciu {keys}",
+    "spaceLook": "Nepozeraj na klávesnicu a stlač medzerník.",
     "spaceKey": "medzerník",
     "close": "Zavrieť a začať (Esc)"
   },
@@ -301,7 +303,7 @@
       "title": "Kláves Backspace",
       "close": "Preskočiť (Esc)",
       "text": [
-        "Ani **Backspace** sa nepočíta medzi naučené klávesy. Je vpravo hore nad Enterom, so šípkou doľava. Ostatné prsty pritom nechaj na základnom rade.",
+        "Ani **Backspace** sa nepočíta medzi naučené klávesy. Je vpravo hore nad Enterom, so šípkou doľava. Ostatné prsty pritom nechaj v základnej pozícii.",
         "V tejto hre Backspace **neopravuje písmenká**. Zmaže **celú rozpísanú voľbu** (smerovník, skupinu slov alebo slovo), aby si mohol **zmeniť rozhodnutie** a vybrať si inú.",
         "Pri bežnom písaní zmaže jedno písmeno a **Ctrl + Backspace** celé slovo. Oveľa dôležitejšie je však **písať bez chyby**: oprava stojí aspoň **tri stlačenia** (chyba, Backspace, správne písmeno) namiesto jedného."
       ],
@@ -309,9 +311,14 @@
     }
   },
   "homeRow": {
-    "title": "Základný rad",
-    "text": "Toto je základný rad. Ľavá ruka leží na {left}, pravá na {right}, palce nad medzerníkom. Na {f} a {j} nahmatáš malé výstupky: tam patria ukazováky. Odtiaľto prsty vyrážajú ku každému klávesu a vždy sa sem vrátia.",
-    "type": "Polož prsty na základný rad a napíš {keys}."
+    "title": "Základná pozícia",
+    "text": [
+      "Toto je **základná pozícia.** Na klávesnici nájdeš dve **klávesy s malými výstupkami**, určené pre písmená **{f}** a **{j}**. Vidíš ich?",
+      "Polož na ne ukazováky, zatvor oči a chvíľku sa s nimi pohraj tak, aby sa **ukazováky** vždy dokázali vrátiť na tieto klávesy **len podľa hmatu.** **Nepozeraj sa!**",
+      "Teraz vedľa nich na {left} a {right} polož ďalšie prsty, palce voľne polož na medzerník. Takto budeš začínať každé cvičenie a táto pozícia sa volá základná.",
+      "Po stlačení klávesu sa prsty vracajú do tejto pozície a už je dôležité vedieť len to, že pri tréningu sa nikdy nemáš pozerať na klávesnicu."
+    ],
+    "type": "Polož prsty na základnú pozíciu a napíš {keys}."
   },
   "practice": {
     "parts": "Časti: {n} z {total}",

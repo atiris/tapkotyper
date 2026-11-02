@@ -254,7 +254,9 @@
     "feet": "Both feet flat on the floor.",
     "wrists": "Wrists relaxed and floating, not resting on the desk.",
     "eyes": "Eyes on the screen, not on the keyboard.",
-    "space": "Put your fingers on the home keys {keys} and press the space bar.",
+    "space": "Fingers on the {link}!",
+    "spaceLink": "home position {keys}",
+    "spaceLook": "Do not look at the keyboard, and press the space bar.",
     "spaceKey": "space bar",
     "close": "Close and start (Esc)"
   },
@@ -301,7 +303,7 @@
       "title": "The Backspace key",
       "close": "Skip (Esc)",
       "text": [
-        "**Backspace** does not count among the learned keys either. It is at the top right above Enter, with an arrow pointing left. Keep the other fingers on the home row.",
+        "**Backspace** does not count among the learned keys either. It is at the top right above Enter, with an arrow pointing left. Keep the other fingers in the home position.",
         "In this game Backspace **does not fix letters**. It wipes **the whole choice you started** (a signpost, a group of words or a word), so you can **change your mind** and pick another.",
         "In normal typing it deletes one letter, and **Ctrl + Backspace** a whole word. But **typing without mistakes** matters much more: a fix costs at least **three presses** (the mistake, Backspace, the right letter) instead of one."
       ],
@@ -309,9 +311,14 @@
     }
   },
   "homeRow": {
-    "title": "The home row",
-    "text": "This is the home row. Your left hand rests on {left}, your right hand on {right}, your thumbs over the space bar. You can feel little bumps on {f} and {j}: that is where your index fingers go. From here your fingers reach every key and always come back.",
-    "type": "Put your fingers on the home row and type {keys}."
+    "title": "The home position",
+    "text": [
+      "This is the **home position.** On the keyboard you will find two **keys with little bumps**, for the letters **{f}** and **{j}**. Can you see them?",
+      "Put your index fingers on them, close your eyes and play with them for a while, so that your **index fingers** can always come back to these keys **by touch alone.** **Do not look!**",
+      "Now put your other fingers next to them on {left} and {right}, and rest your thumbs lightly on the space bar. You will start every exercise like this, and this is called the home position.",
+      "After each key your fingers come back to this position, and the only other thing to know is that while practising you never look at the keyboard."
+    ],
+    "type": "Put your fingers in the home position and type {keys}."
   },
   "practice": {
     "parts": "Parts: {n} of {total}",

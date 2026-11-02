@@ -20,20 +20,25 @@
   world, else the level's: what happens and what to type, with what the level asks in
   particular, such as the main gate's whole code without a mistake), no instructions in it;
   the story is not said again in a bubble when play starts. At the bottom, however short the
-  story, the space bar, a drawn key. Under the picture, below its line, "Put your
-  fingers on the home keys ASDF JKLÔ and press the space bar" (the keys of the child's layout)
-  shows only when the space bar has not been pressed for 10 seconds, so a child who reads the
-  story is not told twice; it keeps its room meanwhile, so nothing jumps. The space bar, Esc, a tap on the drawing or the round X (its tip says so) closes
+  story, the space bar, a drawn key. Under the picture, below its line, two lines "Fingers on
+  the home position ASDF JKLÔ!" (the keys of the child's layout) and "Do not look at the
+  keyboard, and press the space bar." show only when the space bar has not been pressed for
+  10 seconds, so a child who reads the story is not told twice; they keep their room meanwhile,
+  so nothing jumps. "home position ASDF JKLÔ" is a link: it opens the home position card again
+  over the get-ready card, and closing that card (typed or skipped) comes back to the get-ready card. The space bar, Esc, a tap on the drawing or the round X (its tip says so) closes
   it and starts: the card is only a reminder, so every way out of it is the start.
-- **The home row** is taught once, right after the new-key cards of F and J, before they are
-  used in play: a card shows the home row of the child's layout (ASDF JKLÔ) as keys in their
-  fingers' colors with the bumps on F and J, says that the left hand rests on the left four,
-  the right on the right four and the thumbs over the space bar, and that the fingers go out
-  from there and come back; the child confirms it by typing F and J by turns three times, a
+- **The home position** ("Základná pozícia") is taught once, right after the new-key cards of
+  F and J, before they are used in play: a card shows the home row of the child's layout (ASDF
+  JKLÔ) as keys in their fingers' colors with the bumps on F and J. Its text, in short
+  paragraphs: find the two keys with bumps for F and J; put the index fingers on them, close
+  the eyes and play until they always find them again by touch alone, without looking; then
+  the other fingers on A S D and K L Ô, the thumbs resting on the space bar; every exercise
+  starts like this, the fingers come back here after each key, and while practising one never
+  looks at the keyboard. The child confirms it by typing F and J by turns three times, a
   mark per key as on a new-key card (a space between them is fine). Esc skips it like a
   new-key card; no setting turns it off. Nowhere else does the game tell where the fingers go
   (not in the stories or the posture reminders), except the line under the picture of the
-  get-ready card.
+  get-ready card and the home position card it links to.
 - **Before the very first new key** one card on the new-key card's model says, once: welcome,
   you learn to type with all ten fingers without looking; new keys come one by one, when the
   known ones are typed accurately enough or when another letter is due, and their card shows
@@ -89,6 +94,9 @@
 - Where the fingers go was told in the intro scene, the welcome, the posture tips and the
   card at once, and long before the keys were met; taught once with the first keys and
   confirmed by typing, it is learned instead of read past.
+- Not looking at the keyboard is the habit that makes ten-finger typing; finding F and J by
+  touch with closed eyes shows the child that the eyes are not needed, and "home position" is
+  the name typing courses use. A child who forgot it finds the card again from the get-ready card.
 - Several cards and the same story in a bubble right after the card were too many pop-ups
   before play; one card says it all, and the finger line comes only to a child who waits.
 - Good habits (posture, hand position) are easier to build at the start than to fix

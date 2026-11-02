@@ -35,6 +35,12 @@ export function richText(text: string): Child[] {
   return parts.map((part, i) => (i % 2 ? h('strong', {}, part) : part)).filter((x) => x !== '');
 }
 
+/** The rich text of `line` with `{mark}` replaced by `link`. */
+export function linkedText(line: string, mark: string, link: () => HTMLElement): Child[] {
+  const [before, after] = line.split(`{${mark}}`);
+  return after === undefined ? richText(line) : [...richText(before), link(), ...richText(after)];
+}
+
 /** Inline SVG icon (24x24, stroke based). */
 export function icon(name: keyof typeof ICONS, cls = 'icon'): HTMLElement {
   const span = document.createElement('span');

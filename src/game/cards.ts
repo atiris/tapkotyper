@@ -6,7 +6,7 @@ import type { Profile, Surprise } from '../storage/schema';
 import { surpriseCount } from './own-content';
 import type { Style } from './typing';
 import { FINGER_COLORS, type KeyboardGuide, chipOf, fingerChip, lessonFinger, textColorsOn } from '../ui/keyboard-guide';
-import { button, closeButton, confirmDialog, h, icon, modal, richText } from '../ui/dom';
+import { button, closeButton, confirmDialog, h, icon, linkedText, modal, richText } from '../ui/dom';
 import { endCard, focusMain } from '../ui/end-card';
 import { pickStretch, stretchExercise } from './runtime/pause';
 import { tapkoElement } from '../gfx/tapko';
@@ -113,7 +113,8 @@ const POSTURE_PICTURES = ['ui-posture-boy', 'ui-posture-girl'];
  * Get-ready card before every adventure, the only one before a level apart from the key cards. Two
  * panels side by side on a wide enough screen: on the left the technical part, a posture picture with
  * the session's preparation tip when one is due (else a posture reminder) under it, where the fingers
- * go (shown only after a while without the space bar) and a note on the run when one is due; on the
+ * go (shown only after a while without the space bar; its link opens the home position's card again
+ * and comes back here) and a note on the run when one is due; on the
  * right the title (a task's own, else the usual) on the close button's line, in the middle the story (`**phrase**` marks highlight)
  * and the question of a parent's surprise asked in this run (with what is still left when it counts), the space bar's
  * drawing always at the bottom. The space bar, Enter or Escape (or a tap on the space
@@ -128,7 +129,20 @@ export function showPosture(host: HTMLElement, p: Profile, tip?: string, surpris
       resolve();
     };
     const space = h('button', { class: 'space-key', type: 'button', 'aria-label': t('posture.spaceKey'), onClick: close }, t('posture.spaceKey'));
-    const fingers = h('p', { class: 'posture-fingers later' }, t('posture.space', { keys: homeKeys(LAYOUTS[p.layout]) }));
+    // The home position's card over this one: the card hides meanwhile and its keys wait.
+    let away = false;
+    const homePosition = async () => {
+      away = true;
+      overlay.style.display = 'none';
+      await showHomeRow(host, LAYOUTS[p.layout], null, p);
+      overlay.style.display = '';
+      away = false;
+      space.focus();
+    };
+    const link = () => h('a', { class: 'posture-link', href: '#', onClick: (e: MouseEvent) => { e.preventDefault(); void homePosition(); } }, t('posture.spaceLink', { keys: homeKeys(LAYOUTS[p.layout]) }));
+    const fingers = h('div', { class: 'posture-fingers later' },
+      h('p', {}, ...linkedText(t('posture.space'), 'link', link)),
+      h('p', {}, t('posture.spaceLook')));
     const src = imageUrl(POSTURE_PICTURES[Math.floor(Math.random() * POSTURE_PICTURES.length)]);
     const reminder = POSTURE_TIPS[Math.floor(Math.random() * POSTURE_TIPS.length)];
     const side = h('div', { class: 'card posture-side' },
@@ -149,7 +163,7 @@ export function showPosture(host: HTMLElement, p: Profile, tip?: string, surpris
     const overlay = h('div', { class: 'overlay' }, h('div', { class: 'posture-cards' }, side, card));
     const timer = setTimeout(() => fingers.classList.remove('later'), FINGERS_AFTER_S * 1000);
     const onKey = (e: KeyboardEvent) => {
-      if (e.repeat || (e.key !== ' ' && e.key !== 'Enter' && e.key !== 'Escape')) return;
+      if (away || e.repeat || (e.key !== ' ' && e.key !== 'Enter' && e.key !== 'Escape')) return;
       e.preventDefault();
       e.stopPropagation();
       audio.sfx('pop');
@@ -458,6 +472,12 @@ const HOME_FINGERS: Finger[] = [0, 1, 2, 3, 6, 7, 8, 9];
 /** What the child types on the home-row card: F and J by turns. */
 const HOME_TYPE = 'fjfjfj';
 
+/** The keys the home position's text names: the index fingers' and the other three of each hand, spaced (`A S D`, `K L Ô`). */
+function homeParams(lay: Layout): Record<string, string> {
+  const key = (f: Finger) => (homeKey(lay, f) ?? '').toUpperCase();
+  return { f: key(3), j: key(6), left: [0, 1, 2].map((f) => key(f as Finger)).join(' '), right: [7, 8, 9].map((f) => key(f as Finger)).join(' ') };
+}
+
 /** The home row's keys as small keys in their fingers' colors, a gap between the hands. */
 function homeRow(lay: Layout): HTMLElement {
   return h('div', { class: 'home-row', 'aria-hidden': 'true' }, ...HOME_FINGERS.map((f) => {
@@ -470,12 +490,14 @@ function homeRow(lay: Layout): HTMLElement {
 }
 
 /**
- * The home row, taught once right after the new-key cards of F and J: where all eight fingers
- * rest (the keys of the child's layout, in the fingers' colors), the bumps on F and J, the thumbs
- * over the space bar; the child confirms it by typing F and J by turns three times. Escape skips
- * it, as on a new-key card.
+ * The home position, taught once right after the new-key cards of F and J, and again from the
+ * get-ready card's link: the bumps on F and J found by touch with closed eyes, where all eight
+ * fingers rest (the keys of the child's layout, in the fingers' colors), the thumbs on the space
+ * bar, never looking at the keyboard; the child confirms it by typing F and J by turns three
+ * times. Escape skips it, as on a new-key card. `guide` lights the next key when a level's
+ * keyboard is there.
  */
-export function showHomeRow(host: HTMLElement, lay: Layout, guide: KeyboardGuide, p: Profile): Promise<void> {
+export function showHomeRow(host: HTMLElement, lay: Layout, guide: KeyboardGuide | null, p: Profile): Promise<void> {
   return new Promise((resolve) => {
     const f = homeKey(lay, 3) ?? 'f', j = homeKey(lay, 6) ?? 'j';
     const target = HOME_TYPE.replace(/f/g, f).replace(/j/g, j);
@@ -487,12 +509,12 @@ export function showHomeRow(host: HTMLElement, lay: Layout, guide: KeyboardGuide
       h('div', { class: 'newkey-how' },
         h('h2', {}, t('homeRow.title')),
         row,
-        h('p', {}, t('homeRow.text', { left: homeKeys(lay).split(' ')[0], right: homeKeys(lay).split(' ')[1], f: f.toUpperCase(), j: j.toUpperCase() })),
+        ...tList('homeRow.text', homeParams(lay)).map((line) => h('p', {}, ...richText(line))),
         h('p', { class: 'hint newkey-type' }, h('span', {}, t('homeRow.type', { keys: `${f}${j} ${f}${j} ${f}${j}` })), ' ', marks)));
     const overlay = h('div', { class: 'overlay' }, card);
     host.append(overlay);
     let n = 0;
-    guide.show(target[0]);
+    guide?.show(target[0]);
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault();
@@ -509,7 +531,7 @@ export function showHomeRow(host: HTMLElement, lay: Layout, guide: KeyboardGuide
       if (!ok) return audio.sfx('wrong');
       n++;
       audio.sfx('pop');
-      guide.show(target[n] ?? null);
+      guide?.show(target[n] ?? null);
       if (n >= target.length) setTimeout(done, 350);
     };
     let finished = false;
@@ -518,7 +540,7 @@ export function showHomeRow(host: HTMLElement, lay: Layout, guide: KeyboardGuide
       finished = true;
       stop();
       overlay.remove();
-      guide.show(null);
+      guide?.show(null);
       resolve();
     };
     const stop = captureKeys(overlay, onKey);

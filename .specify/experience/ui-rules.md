@@ -16,7 +16,8 @@ One set of rules for where things sit and how they behave, so every screen feels
    **By width** (every screen but a level): from 600 px all buttons in the row; below 600 px one
    round **Menu** button opens a panel with each button as its round picture and its label (a
    screen's own buttons too, the language as an item that opens the same list). The panel closes
-   with Escape, a click outside or after an action. The red super star opens its own service
+   with Escape, a click outside or after an action. A waiting new version is never folded: its red
+   button stays in sight left of the Menu and is not in the panel. The red super star opens its own service
    menu panel of the same look and keys, under the star (or under the Menu it is folded in).
    The start page's title **TapkoTyper** always fits on one line under the buttons, from 320 px up.
 2. **Leaving.** A page you navigated to (settings, help, teacher view, wardrobe) closes with
@@ -94,7 +95,8 @@ One set of rules for where things sit and how they behave, so every screen feels
 - Native titles are slow, unstyled, missing on touch and keyboard, and look foreign in a
   children's game; one tooltip gives one look. A bar that stays keeps the way back in sight.
 - Five round buttons and a language switch do not fit beside a title on a phone; folding them
-  into one Menu keeps every control one tap away and the title whole.
+  into one Menu keeps every control one tap away and the title whole. A new version inside the
+  closed Menu is almost never found, so its red button stays outside.
 - A language switch with two letter chips does not grow past two languages; one button with the
   common language symbol and a list of native names does, and a visitor who reads neither
   language still finds it.

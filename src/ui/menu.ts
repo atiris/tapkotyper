@@ -2,6 +2,7 @@ import { t } from '../i18n/i18n';
 import { h } from './dom';
 import { paintRound, roundButton } from './hud';
 import { tip } from './tooltip';
+import { updateButton } from './update';
 
 /** One entry of a menu panel: a round picture and its label. */
 export interface MenuEntry {
@@ -61,7 +62,8 @@ export function menuPanel(btn: HTMLButtonElement, label: string, entries: MenuEn
 /**
  * Below 600 px the corner's round buttons fold into one Menu button. Its panel lists each
  * button of `row` as the same round picture with its label; picking one closes the panel
- * and clicks the real (hidden) button, so every button keeps its one behaviour.
+ * and clicks the real (hidden) button, so every button keeps its one behaviour. A waiting new
+ * version is not folded: its red button stays in sight left of the Menu.
  */
 export function cornerMenu(row: HTMLElement): HTMLElement {
   let close: ((refocus?: boolean) => void) | null = null;
@@ -72,10 +74,10 @@ export function cornerMenu(row: HTMLElement): HTMLElement {
   btn.setAttribute('aria-expanded', 'false');
 
   function open(): void {
-    const sources = [...row.querySelectorAll<HTMLButtonElement>('button.round-btn')].filter((b) => !b.hidden);
+    const sources = [...row.querySelectorAll<HTMLButtonElement>('button.round-btn')].filter((b) => !b.hidden && !b.classList.contains('update-btn'));
     const entries = sources.map((b) => ({
       label: b.getAttribute('aria-label') ?? '',
-      art: h('span', { class: `round-btn${['super', 'update'].filter((k) => b.classList.contains(k)).map((k) => ` ${k}`).join('')}`, 'aria-hidden': 'true', html: b.innerHTML }),
+      art: h('span', { class: `round-btn${b.classList.contains('super') ? ' super' : ''}`, 'aria-hidden': 'true', html: b.innerHTML }),
       pick: () => b.click(),
       disabled: b.disabled,
     }));
@@ -90,6 +92,6 @@ export function cornerMenu(row: HTMLElement): HTMLElement {
     tip(btn, t('common.menuClose'));
     paintRound(btn, 'close');
   }
-  wrap.append(btn);
+  wrap.append(updateButton(), btn);
   return wrap;
 }

@@ -291,7 +291,7 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
 .corner-menu { display: none; }
 @media (max-width: 599px) {
   .corner-row { display: none; }
-  .corner-menu { display: block; position: relative; }
+  .corner-menu { display: flex; gap: 0.6rem; align-items: center; position: relative; }
 }
 .round-btn.menu-btn[aria-expanded='true'] .rb-base, .round-btn.lang-btn[aria-expanded='true'] .rb-base { stroke: var(--brand); }
 /* The languages by their own names, under the corner controls. */
@@ -337,7 +337,10 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
   background: var(--page-bg) fixed; -webkit-mask-image: linear-gradient(#000, transparent); mask-image: linear-gradient(#000, transparent);
 }
 @media (min-width: 600px) { .screen:has(.update-btn:not([hidden])) > .bar { padding-right: calc(2rem + 6 * 52px + 5 * 0.6rem); } }
-@media (max-width: 599px) { .screen > .bar { padding-right: calc(2rem + 52px); } }
+@media (max-width: 599px) {
+  .screen > .bar { padding-right: calc(2rem + 52px); }
+  .screen:has(.update-btn:not([hidden])) > .bar { padding-right: calc(2rem + 2 * 52px + 0.6rem); }
+}
 .bar h1 { flex: 1; margin: 0; font-size: 1.6rem; }
 /*
  * The tabs as links after the title, once the tab row scrolled away; only on a desktop with room

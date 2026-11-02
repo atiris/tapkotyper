@@ -6,5 +6,5 @@ each in its own clean session. One line per plan in `.todo/`:
 listed here is never run. Lines whose plan has moved to `.todo/.done/` are
 skipped, and the session that finishes a plan removes its line.
 
-- [P2] 99-placement-check.md - only open plan; turtle check of known keys, speed-independent touch-typing signal
+- [P2] 99-placement-check.md - first; turtle check of known keys, speed-independent touch-typing signal
 - [P2] 100-seo-basics.md - after 99; independent technical SEO, no game changes

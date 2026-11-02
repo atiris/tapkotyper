@@ -1,4 +1,4 @@
-import { ENTER, type Finger, type Layout, type KeyStep, allKeys, fingerFor, shiftKeyFor, stepsFor } from '../keyboard/layouts';
+import { ENTER, type Finger, type Layout, type KeyStep, allKeys, fingerFor, shiftKeyFor, stepsFor, typesChar } from '../keyboard/layouts';
 import { t } from '../i18n/i18n';
 import { SHIFT_L, SHIFT_R, SPACE } from '../learning/lessons';
 
@@ -77,9 +77,13 @@ export function chipOf(f: Finger): HTMLElement {
   return chip;
 }
 
+/** Signs of the keys drawn only for the keyboard's shape (the upper part of an L-shaped Enter has none). */
+const SHAPE_LABELS: Record<string, string> = { tab: '⇥', caps: '⇪', backspace: '⌫', 'enter-top': '' };
+
 function label(base: string, shift: string): string {
   if (base === 'dead:acute') return '´ ˇ';
   if (base === 'shift') return '⇧';
+  if (base in SHAPE_LABELS) return SHAPE_LABELS[base];
   if (base === ' ') return '';
   if (base.length === 1 && base.toUpperCase() === shift) return base.toUpperCase();
   return base;
@@ -105,6 +109,7 @@ export class KeyboardGuide {
     const board = this.board = document.createElement('div');
     board.className = 'kb';
     board.setAttribute('aria-hidden', 'true');
+    const isoEnter = allKeys(layout).some((d) => d.base === 'enter-top');
     for (const row of layout.rows) {
       const r = document.createElement('div');
       r.className = 'kb-row';
@@ -113,13 +118,16 @@ export class KeyboardGuide {
         k.className = 'kb-key';
         if (def.bump) k.classList.add('bump');
         k.style.setProperty('--w', String(def.w ?? 1));
+        if (def.x) k.style.setProperty('--x', String(def.x));
+        if (def.base === 'enter-top') k.classList.add('kb-enter-top');
+        if (def.code === 'Enter' && isoEnter) k.classList.add('kb-enter-l');
         k.style.setProperty('--finger', FINGER_COLORS[def.finger]);
         k.style.setProperty('--finger-ink', inkOn(FINGER_COLORS[def.finger]));
         const [textBg, textInk] = textColorsOn(FINGER_COLORS[def.finger]);
         k.style.setProperty('--next-bg', textBg);
         k.style.setProperty('--next-ink', textInk);
         k.innerHTML = `<span class="kb-label">${zeroDot(label(def.base, def.shift))}</span>` +
-          (def.base !== ' ' && def.base !== 'shift' ? `<span class="kb-shift">${def.base.startsWith('dead') || def.shift.toLowerCase() === def.base ? '' : zeroDot(def.shift)}</span>` : '');
+          (typesChar(def) && def.base !== ' ' ? `<span class="kb-shift">${def.base.startsWith('dead') || def.shift.toLowerCase() === def.base ? '' : zeroDot(def.shift)}</span>` : '');
         r.appendChild(k);
         this.keys.set(def.code, k);
       }
@@ -161,6 +169,8 @@ export class KeyboardGuide {
   private mark(step: KeyStep, cls: string): void {
     const key = this.keys.get(step.code);
     key?.classList.add(cls);
+    // An L-shaped Enter lights up whole.
+    if (step.code === 'Enter') this.keys.get('EnterTop')?.classList.add(cls);
     const def = allKeys(this.layout).find((d) => d.code === step.code);
     if (def && cls === 'next') this.hands.querySelector(`[data-f="${def.finger}"]`)?.classList.add('active');
     const shift = shiftKeyFor(this.layout, step);

@@ -949,20 +949,24 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
 @keyframes pop-in { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
 /* Keyboard guide */
-.kb-guide { --fade: 0; background: var(--kb-bg); padding: 0.4rem 0.6rem 0.6rem; display: grid; grid-template-columns: 1fr minmax(0, 760px) 1fr; grid-template-rows: auto auto; align-items: center; z-index: 3; box-shadow: 0 -6px 18px var(--soft-shadow); }
+.kb-guide { --fade: 0; background: var(--kb-bg); padding: 0.4rem 0.6rem 0.6rem; display: grid; grid-template-columns: 1fr minmax(0, 866px) 1fr; grid-template-rows: auto auto; align-items: center; z-index: 3; box-shadow: 0 -6px 18px var(--soft-shadow); }
 .kb-hint { grid-column: 1 / -1; text-align: center; font-weight: 600; min-height: 1.3em; color: var(--brand-ink); font-size: 0.95rem; }
-/* The keyboard keeps its shape: every size follows its width; in a level a low window makes the whole keyboard narrower instead of the keys flatter. */
-.kb { grid-column: 2; justify-self: center; width: 100%; max-width: 760px; container-type: inline-size; display: flex; flex-direction: column; gap: 4px; opacity: calc(1 - var(--fade)); transition: opacity 0.4s; }
-.kb-guide:not(.heatmap, .picker) .kb { width: min(100%, 84vh); }
-.kb-row { display: flex; gap: 4px; justify-content: center; }
-.kb-row:nth-child(2) { padding-left: 1.5%; }
-.kb-row:nth-child(3) { padding-left: 3%; }
+/*
+ * The keyboard keeps a real keyboard's shape: every row is 15 key units, one unit (--p, a key and a gap) follows the
+ * keyboard's width, and in a level a low window makes the whole keyboard narrower instead of the keys flatter.
+ */
+.kb { --g: 4px; --p: calc((100cqw + var(--g)) / 15); grid-column: 2; justify-self: center; width: 100%; max-width: 866px; container-type: inline-size; display: flex; flex-direction: column; gap: var(--g); opacity: calc(1 - var(--fade)); transition: opacity 0.4s; }
+.kb-guide:not(.heatmap, .picker) .kb { width: min(100%, 98vh); }
+.kb-row { display: flex; gap: var(--g); }
 .kb-key {
-  --w: 1; position: relative; flex: var(--w) 1 0; max-width: calc(var(--w) * 54px); height: calc(100cqw * 46 / 760);
-  border-radius: 9px; background: var(--surface); display: grid; place-items: center; padding-bottom: 9px; font-family: var(--font-keys); font-weight: 600; font-size: clamp(0.7rem, 100cqw * 16.8 / 760, 1.05rem); line-height: 1;
+  --w: 1; --x: 0; position: relative; flex: none; width: calc(var(--w) * var(--p) - var(--g)); margin-left: calc(var(--x) * var(--p)); height: calc((var(--p) - var(--g)) * 46 / 54);
+  border-radius: 9px; background: var(--surface); display: grid; place-items: center; padding-bottom: 9px; font-family: var(--font-keys); font-weight: 600; font-size: clamp(0.7rem, var(--p) * 0.29, 1.05rem); line-height: 1;
   box-shadow: inset 0 -5px 0 var(--finger), 0 2px 0 var(--edge); border: 1px solid var(--key-line);
   transition: transform 0.12s, background 0.12s;
 }
+/* The L-shaped Enter: its upper part has no finger stripe, its lower part reaches up through the gap and covers the join. */
+.kb .kb-key.kb-enter-top { border-bottom-right-radius: 0; box-shadow: 0 2px 0 var(--edge); }
+.kb .kb-key.kb-enter-l { z-index: 1; height: calc((var(--p) - var(--g)) * 46 / 54 + var(--g) + 3px); margin-top: calc(-1 * var(--g) - 3px); border-top-color: transparent; border-top-left-radius: 0; border-top-right-radius: 0; }
 .kb-key.bump::after { content: ''; position: absolute; bottom: 7px; left: 50%; width: 12px; height: 3px; margin-left: -6px; border-radius: 2px; background: var(--bump); }
 .kb-shift { position: absolute; top: 2px; left: 5px; font-size: 0.62em; color: var(--ink-soft); }
 .kb-zero { position: relative; }

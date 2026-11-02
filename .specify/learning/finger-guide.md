@@ -10,8 +10,11 @@
 - The guide fades as the child improves (per-key mastery) and can be shown or hidden by
   the child, or locked by the parent. The finger colors are a colorblind-safe palette; the keys
   carry no finger numbers.
-- The keyboard keeps its proportions at every window size: it scales as a whole with the room it
-  has, and a low window makes it narrower, never its keys flatter.
+- The keyboard has a real keyboard's shape: every row is 15 key units wide, with Tab, Caps Lock
+  and Backspace drawn (they type nothing here), an L-shaped Enter on Slovak keyboards and a wide
+  one on US ones, the Shifts and the space bar in their real widths and places. It keeps its
+  proportions at every window size: it scales as a whole with the room it has, and a low window
+  makes it narrower, never its keys flatter.
 - "The adventure goes on!" card before every adventure (story level, hero's journey, own practice)
   and at breaks, the only card before a level apart from the key cards. Two panels side by side
   with a gap (one above the other on a narrow screen), no frames inside them: on the left a
@@ -91,7 +94,9 @@
   is standard teacher advice
   ([research](../../.research/features/on-screen-keyboard-finger-guide.md)).
 - Finger numbers on every key were clutter beside the colors and the finger guide; a keyboard
-  whose keys got flatter in a low window no longer looked like a keyboard.
+  whose keys got flatter in a low window no longer looked like a keyboard. Rows of different key
+  sizes put keys where no real keyboard has them (U right of J), so the fingers' reach shown on
+  screen did not match the child's own keyboard.
 - Enter comes rarely and is no lesson key, so the guide alone shows its finger; a new-key
   card for it would stop play for a key that does not open anything.
 - Story scenes and a map greeting before the first level were many clicks and much text

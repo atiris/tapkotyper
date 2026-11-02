@@ -11,9 +11,17 @@ export interface KeyDef {
   finger: Finger;
   /** Width in key units (1 = normal key). */
   w?: number;
+  /** Free key units before it in its row (the space bar sits where Ctrl, Win and Alt would be). */
+  x?: number;
   /** Home key with a bump (F, J). */
   bump?: boolean;
 }
+
+/** Keys drawn for the keyboard's real shape that type no character: Tab, Caps Lock, Backspace, the upper part of an L-shaped Enter. */
+export const SHAPE_KEYS = new Set(['tab', 'caps', 'backspace', 'enter-top']);
+
+/** A key that types something (not a Shift and not a key drawn only for the shape). */
+export const typesChar = (def: KeyDef): boolean => def.base !== 'shift' && !SHAPE_KEYS.has(def.base);
 
 /** One press on the way to a character. */
 export interface KeyStep {
@@ -38,19 +46,22 @@ const CARON: Record<string, string> = { c: 'č', d: 'ď', l: 'ľ', n: 'ň', s: '
 const withCapitals = (m: Record<string, string>) =>
   Object.fromEntries(Object.entries(m).flatMap(([a, b]) => [[a, b], [a.toUpperCase(), b.toUpperCase()]]));
 
+/** Every row is 15 key units wide, as on a real keyboard. */
 const SK: Layout = {
   id: 'sk-qwertz',
   dead: { acute: withCapitals(ACUTE), caron: withCapitals(CARON) },
   rows: [
     [k('Backquote', ';', '°', 0), k('Digit1', '+', '1', 0), k('Digit2', 'ľ', '2', 1), k('Digit3', 'š', '3', 2), k('Digit4', 'č', '4', 3), k('Digit5', 'ť', '5', 3),
-      k('Digit6', 'ž', '6', 6), k('Digit7', 'ý', '7', 6), k('Digit8', 'á', '8', 7), k('Digit9', 'í', '9', 8), k('Digit0', 'é', '0', 9), k('Minus', '=', '%', 9), k('Equal', 'dead:acute', 'dead:caron', 9)],
-    [k('KeyQ', 'q', 'Q', 0, { w: 1 }), k('KeyW', 'w', 'W', 1), k('KeyE', 'e', 'E', 2), k('KeyR', 'r', 'R', 3), k('KeyT', 't', 'T', 3), k('KeyY', 'z', 'Z', 6),
-      k('KeyU', 'u', 'U', 6), k('KeyI', 'i', 'I', 7), k('KeyO', 'o', 'O', 8), k('KeyP', 'p', 'P', 9), k('BracketLeft', 'ú', '/', 9), k('BracketRight', 'ä', '(', 9)],
-    [k('KeyA', 'a', 'A', 0), k('KeyS', 's', 'S', 1), k('KeyD', 'd', 'D', 2), k('KeyF', 'f', 'F', 3, { bump: true }), k('KeyG', 'g', 'G', 3), k('KeyH', 'h', 'H', 6),
-      k('KeyJ', 'j', 'J', 6, { bump: true }), k('KeyK', 'k', 'K', 7), k('KeyL', 'l', 'L', 8), k('Semicolon', 'ô', '"', 9), k('Quote', '§', '!', 9), k('Backslash', 'ň', ')', 9), k('Enter', ENTER, ENTER, 9, { w: 1.8 })],
-    [k('ShiftLeft', 'shift', 'shift', 0, { w: 1.6 }), k('KeyZ', 'y', 'Y', 0), k('KeyX', 'x', 'X', 1), k('KeyC', 'c', 'C', 2), k('KeyV', 'v', 'V', 3), k('KeyB', 'b', 'B', 3),
-      k('KeyN', 'n', 'N', 6), k('KeyM', 'm', 'M', 6), k('Comma', ',', '?', 7), k('Period', '.', ':', 8), k('Slash', '-', '_', 9), k('ShiftRight', 'shift', 'shift', 9, { w: 2.2 })],
-    [k('Space', ' ', ' ', 5, { w: 6 })],
+      k('Digit6', 'ž', '6', 6), k('Digit7', 'ý', '7', 6), k('Digit8', 'á', '8', 7), k('Digit9', 'í', '9', 8), k('Digit0', 'é', '0', 9), k('Minus', '=', '%', 9), k('Equal', 'dead:acute', 'dead:caron', 9),
+      k('Backspace', 'backspace', 'backspace', 9, { w: 2 })],
+    [k('Tab', 'tab', 'tab', 0, { w: 1.5 }), k('KeyQ', 'q', 'Q', 0), k('KeyW', 'w', 'W', 1), k('KeyE', 'e', 'E', 2), k('KeyR', 'r', 'R', 3), k('KeyT', 't', 'T', 3), k('KeyY', 'z', 'Z', 6),
+      k('KeyU', 'u', 'U', 6), k('KeyI', 'i', 'I', 7), k('KeyO', 'o', 'O', 8), k('KeyP', 'p', 'P', 9), k('BracketLeft', 'ú', '/', 9), k('BracketRight', 'ä', '(', 9),
+      k('EnterTop', 'enter-top', 'enter-top', 9, { w: 1.5 })],
+    [k('CapsLock', 'caps', 'caps', 0, { w: 1.75 }), k('KeyA', 'a', 'A', 0), k('KeyS', 's', 'S', 1), k('KeyD', 'd', 'D', 2), k('KeyF', 'f', 'F', 3, { bump: true }), k('KeyG', 'g', 'G', 3), k('KeyH', 'h', 'H', 6),
+      k('KeyJ', 'j', 'J', 6, { bump: true }), k('KeyK', 'k', 'K', 7), k('KeyL', 'l', 'L', 8), k('Semicolon', 'ô', '"', 9), k('Quote', '§', '!', 9), k('Backslash', 'ň', ')', 9), k('Enter', ENTER, ENTER, 9, { w: 1.25 })],
+    [k('ShiftLeft', 'shift', 'shift', 0, { w: 2.25 }), k('KeyZ', 'y', 'Y', 0), k('KeyX', 'x', 'X', 1), k('KeyC', 'c', 'C', 2), k('KeyV', 'v', 'V', 3), k('KeyB', 'b', 'B', 3),
+      k('KeyN', 'n', 'N', 6), k('KeyM', 'm', 'M', 6), k('Comma', ',', '?', 7), k('Period', '.', ':', 8), k('Slash', '-', '_', 9), k('ShiftRight', 'shift', 'shift', 9, { w: 2.75 })],
+    [k('Space', ' ', ' ', 5, { w: 6.25, x: 3.75 })],
   ],
 };
 
@@ -67,14 +78,16 @@ const US: Layout = {
   dead: {},
   rows: [
     [k('Backquote', '`', '~', 0), k('Digit1', '1', '!', 0), k('Digit2', '2', '@', 1), k('Digit3', '3', '#', 2), k('Digit4', '4', '$', 3), k('Digit5', '5', '%', 3),
-      k('Digit6', '6', '^', 6), k('Digit7', '7', '&', 6), k('Digit8', '8', '*', 7), k('Digit9', '9', '(', 8), k('Digit0', '0', ')', 9), k('Minus', '-', '_', 9), k('Equal', '=', '+', 9)],
-    [k('KeyQ', 'q', 'Q', 0), k('KeyW', 'w', 'W', 1), k('KeyE', 'e', 'E', 2), k('KeyR', 'r', 'R', 3), k('KeyT', 't', 'T', 3), k('KeyY', 'y', 'Y', 6),
-      k('KeyU', 'u', 'U', 6), k('KeyI', 'i', 'I', 7), k('KeyO', 'o', 'O', 8), k('KeyP', 'p', 'P', 9), k('BracketLeft', '[', '{', 9), k('BracketRight', ']', '}', 9)],
-    [k('KeyA', 'a', 'A', 0), k('KeyS', 's', 'S', 1), k('KeyD', 'd', 'D', 2), k('KeyF', 'f', 'F', 3, { bump: true }), k('KeyG', 'g', 'G', 3), k('KeyH', 'h', 'H', 6),
-      k('KeyJ', 'j', 'J', 6, { bump: true }), k('KeyK', 'k', 'K', 7), k('KeyL', 'l', 'L', 8), k('Semicolon', ';', ':', 9), k('Quote', "'", '"', 9), k('Backslash', '\\', '|', 9), k('Enter', ENTER, ENTER, 9, { w: 1.8 })],
-    [k('ShiftLeft', 'shift', 'shift', 0, { w: 1.6 }), k('KeyZ', 'z', 'Z', 0), k('KeyX', 'x', 'X', 1), k('KeyC', 'c', 'C', 2), k('KeyV', 'v', 'V', 3), k('KeyB', 'b', 'B', 3),
-      k('KeyN', 'n', 'N', 6), k('KeyM', 'm', 'M', 6), k('Comma', ',', '<', 7), k('Period', '.', '>', 8), k('Slash', '/', '?', 9), k('ShiftRight', 'shift', 'shift', 9, { w: 2.2 })],
-    [k('Space', ' ', ' ', 5, { w: 6 })],
+      k('Digit6', '6', '^', 6), k('Digit7', '7', '&', 6), k('Digit8', '8', '*', 7), k('Digit9', '9', '(', 8), k('Digit0', '0', ')', 9), k('Minus', '-', '_', 9), k('Equal', '=', '+', 9),
+      k('Backspace', 'backspace', 'backspace', 9, { w: 2 })],
+    [k('Tab', 'tab', 'tab', 0, { w: 1.5 }), k('KeyQ', 'q', 'Q', 0), k('KeyW', 'w', 'W', 1), k('KeyE', 'e', 'E', 2), k('KeyR', 'r', 'R', 3), k('KeyT', 't', 'T', 3), k('KeyY', 'y', 'Y', 6),
+      k('KeyU', 'u', 'U', 6), k('KeyI', 'i', 'I', 7), k('KeyO', 'o', 'O', 8), k('KeyP', 'p', 'P', 9), k('BracketLeft', '[', '{', 9), k('BracketRight', ']', '}', 9),
+      k('Backslash', '\\', '|', 9, { w: 1.5 })],
+    [k('CapsLock', 'caps', 'caps', 0, { w: 1.75 }), k('KeyA', 'a', 'A', 0), k('KeyS', 's', 'S', 1), k('KeyD', 'd', 'D', 2), k('KeyF', 'f', 'F', 3, { bump: true }), k('KeyG', 'g', 'G', 3), k('KeyH', 'h', 'H', 6),
+      k('KeyJ', 'j', 'J', 6, { bump: true }), k('KeyK', 'k', 'K', 7), k('KeyL', 'l', 'L', 8), k('Semicolon', ';', ':', 9), k('Quote', "'", '"', 9), k('Enter', ENTER, ENTER, 9, { w: 2.25 })],
+    [k('ShiftLeft', 'shift', 'shift', 0, { w: 2.25 }), k('KeyZ', 'z', 'Z', 0), k('KeyX', 'x', 'X', 1), k('KeyC', 'c', 'C', 2), k('KeyV', 'v', 'V', 3), k('KeyB', 'b', 'B', 3),
+      k('KeyN', 'n', 'N', 6), k('KeyM', 'm', 'M', 6), k('Comma', ',', '<', 7), k('Period', '.', '>', 8), k('Slash', '/', '?', 9), k('ShiftRight', 'shift', 'shift', 9, { w: 2.75 })],
+    [k('Space', ' ', ' ', 5, { w: 6.25, x: 3.75 })],
   ],
 };
 

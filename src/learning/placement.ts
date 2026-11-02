@@ -102,18 +102,19 @@ export interface KeySpot {
   finger: Finger;
 }
 
-/** The left edge of the first character key of each row (standard stagger); the left Shift is no character key. */
-const ROW_START = [0, 1.5, 1.75, 2.25];
-
-/** The spot of a character typed with one key and no Shift; null for anything else (capitals, dead keys, space). */
+/** The spot of a character typed with one key and no Shift (its middle, in key units from the row's left edge); null for anything else (capitals, dead keys, space). */
 export function keySpot(layout: Layout, ch: string): KeySpot | null {
   if (ch === SPACE) return null;
   const steps = stepsFor(layout, ch);
   if (steps.length !== 1 || steps[0].shift) return null;
-  for (let y = 0; y < ROW_START.length; y++) {
-    const row = layout.rows[y].filter((d) => d.base !== 'shift');
-    const i = row.findIndex((d) => d.code === steps[0].code);
-    if (i >= 0) return { x: ROW_START[y] + i + 0.5, y, finger: row[i].finger };
+  for (let y = 0; y < 4; y++) {
+    let x = 0;
+    for (const d of layout.rows[y]) {
+      x += d.x ?? 0;
+      const w = d.w ?? 1;
+      if (d.code === steps[0].code) return { x: x + w / 2, y, finger: d.finger };
+      x += w;
+    }
   }
   return null;
 }

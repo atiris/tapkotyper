@@ -105,7 +105,7 @@ function distances(mask: Buffer, w: number, h: number): Float32Array {
 /** An outline pixel belongs to a hand only this near its 3D silhouette (keyboard units). */
 const NEAR_HAND = 30;
 /** Gemini's lines are drawn darker than this (0-255); the muted keyboard stays lighter. */
-const DARK = 175;
+const DARK = 200;
 
 /**
  * Traces Gemini's answer for a pair into the two hands' outlines: the magenta marks place it on the keyboard, its dark

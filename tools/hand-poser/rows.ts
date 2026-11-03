@@ -925,6 +925,23 @@ function buildPanels(): void {
   }
 }
 $('baseReset').addEventListener('click', () => { st.base = structuredClone(BASE_DEFAULTS); st.palm = { left: 0, right: 0 }; st.palmSize = { left: 0, right: 0 }; st.handSize = { left: 0, right: 0 }; st.keepTips = { left: true, right: true }; st.metacarpus = { left: 0, right: 0 }; st.vee = { left: 0, right: 0 }; buildBase(); redraw(true); });
+// A pose's settings (both hands) copied, to paste over another pose.
+let copied: { name: string; left: HandPose; right: HandPose } | null = null;
+$('poseCopy').addEventListener('click', () => {
+  const p = poseById(current);
+  copied = { name: p.name, left: structuredClone(p.left), right: structuredClone(p.right) };
+  $<HTMLButtonElement>('posePaste').disabled = false;
+  say(`Póza ${p.name} skopírovaná`);
+});
+$('posePaste').addEventListener('click', () => {
+  if (!copied) return;
+  const p = poseById(current);
+  for (const s of SIDES) p[s] = structuredClone(copied[s]);
+  stageBox.classList.toggle('wide', SIDES.some((s) => p[s].row === 'off'));
+  buildPanels();
+  redraw();
+  say(`Póza ${copied.name} vložená do ${p.name}, ulož ju`);
+});
 $('poseReset').addEventListener('click', () => { const p = poseById(current); for (const s of SIDES) Object.assign(p[s], handPose(p[s].row)); buildPanels(); redraw(); });
 $('rowReset').addEventListener('click', () => {
   const p = poseById(current);

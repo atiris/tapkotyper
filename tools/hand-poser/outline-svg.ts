@@ -66,15 +66,44 @@ export function absolutePath(d: string): string {
 
 /** An outline read from an SVG: its paths, and its widths when they are middle lines. */
 export function readOutline(svg: string): Outline {
-  const paths = [...svg.matchAll(/<path\b([^>]*)>/g)].map((m) => attrsOf(m[1]));
-  const find = (cls: string) => paths.find((a) => (a.class ?? '').split(/\s+/).includes(cls));
-  const lines = find('hand-lines'), creases = find('hand-creases');
-  const o: Outline = { lines: absolutePath(lines?.d ?? ''), creases: absolutePath(creases?.d ?? '') };
-  const widthOf = (a?: Record<string, string>) => (a?.fill === 'none' ? Number.parseFloat(a['stroke-width'] ?? '') || 0 : 0);
-  const w = widthOf(lines);
-  if (w) o.width = { lines: w, creases: widthOf(creases) || w / 2 };
+  const k = drawingScale(svg);
+  const paths = [...svg.matchAll(/<path\b([^>]*)>/g)].map((m) => attrsOf(m[1])).filter((a) => a.d);
+  const width = (a?: Record<string, string>) => (a?.fill === 'none' ? (Number.parseFloat(a['stroke-width'] ?? '') || 0) * k : 0);
+  // The tool's own files name their paths by class; a drawing from an editor by its layer or id (lhand, support), else
+  // the thickest line is the outline and the thinner ones the folds.
+  const named = (re: RegExp) => paths.filter((a) => re.test(`${a.class ?? ''} ${a['inkscape:label'] ?? ''} ${a.id ?? ''}`));
+  let lines = named(/\bhand-lines\b/), creases = named(/\bhand-creases\b/);
+  if (!lines.length) {
+    creases = named(/crease|support|fold|zahyb|záhyb/i);
+    lines = paths.filter((a) => !creases.includes(a));
+    if (!creases.length && lines.length > 1) {
+      const most = Math.max(...lines.map((a) => width(a)));
+      creases = lines.filter((a) => width(a) < most);
+      lines = lines.filter((a) => width(a) === most);
+    }
+  }
+  const join = (list: Record<string, string>[]) => scalePath(list.map((a) => absolutePath(a.d)).join(' '), k);
+  const o: Outline = { lines: join(lines), creases: join(creases) };
+  const w = width(lines[0]);
+  if (w) o.width = { lines: Math.round(w * 10) / 10, creases: Math.round((width(creases[0]) || w / 2) * 10) / 10 };
   return o;
 }
+
+/** Pixels per unit of a length in an SVG file (an editor's page is often in millimetres). */
+const UNITS: Record<string, number> = { '': 1, px: 1, mm: 96 / 25.4, cm: 96 / 2.54, in: 96, pt: 96 / 72, pc: 16 };
+/**
+ * How many keyboard units one unit of the drawing is: an editor's page (`width="400"` over `viewBox="0 0 105.8 …"`,
+ * millimetres) is drawn in pixels, which are keyboard units here; a file without a width is in keyboard units already.
+ */
+function drawingScale(svg: string): number {
+  const root = attrsOf(/<svg\b([^>]*)>/.exec(svg)?.[1] ?? '');
+  const vb = (root.viewBox ?? '').trim().split(/[\s,]+/).map(Number);
+  const m = /^([\d.]+)\s*([a-z]*)$/i.exec((root.width ?? '').trim());
+  if (!m || vb.length !== 4 || !vb[2] || !(m[2].toLowerCase() in UNITS)) return 1;
+  return (Number(m[1]) * UNITS[m[2].toLowerCase()]) / vb[2];
+}
+/** A path (absolute commands, x y pairs) scaled by k. */
+const scalePath = (d: string, k: number) => (k === 1 ? d : d.replace(/-?\d*\.?\d+(?:e-?\d+)?/g, (n) => fmt(Number(n) * k)));
 
 /** An outline as the SVG Tapko draws (src/ui/hand-svg.ts reads it): filled bands, or middle lines with their width. */
 export function outlineSvg(s: Side, o: Outline, source: string): string {

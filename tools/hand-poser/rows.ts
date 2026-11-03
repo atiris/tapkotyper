@@ -718,7 +718,9 @@ for (const [id, s] of [['loadLeft', 'left'], ['loadRight', 'right']] as const) {
     const text = await openSvg();
     if (text == null) return;
     const o = readOutline(text);
-    if (!o.lines) return say('V súbore chýba cesta s triedou hand-lines', true);
+    if (!o.lines) return say('V súbore nie je žiadna cesta (path)', true);
+    // An editor's default hairline is no width meant for the hands: the present ones stay.
+    if (!o.width || o.width.lines < MIN_WIDTH) o.width = widths[s] ?? { lines: 3.2, creases: 1.4 };
     const moved = placeLike(s, o);
     // A drawn outline is the home position itself: the corrections made for the one before would bend it.
     st.base[s] = moves();
@@ -727,6 +729,8 @@ for (const [id, s] of [['loadLeft', 'left'], ['loadRight', 'right']] as const) {
     say(`${SIDE_NAME[s]}: obrys načítaný${moved ? `, posunutý o ${moved} podľa okraja palca` : ''}, opravy základnej polohy vynulované, ulož ho`);
   });
 }
+/** Thinner outline lines (keyboard units) than this come from an editor's default, not from the owner. */
+const MIN_WIDTH = 1.5;
 /** A drawing this far (keyboard units) from the hand's place was drawn elsewhere (another page area in the editor). */
 const ELSEWHERE = 40;
 /**

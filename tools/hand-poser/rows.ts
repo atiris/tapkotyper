@@ -111,17 +111,17 @@ const ROW_DEFAULTS: Record<RowName, Record<Side, RowMove>> = {
   off: { left: { up: -40, right: -330, tilt: -10, curl: -5, thumbRight: 0, thumbUp: 0, short: 0, spread: 0, vee: 0 }, right: { up: -40, right: 330, tilt: 10, curl: -5, thumbRight: 0, thumbUp: 0, short: 0, spread: 0, vee: 0 } },
 };
 /** The sliders' wider ranges beside the keyboard (the hands move far out). */
-const OFF_RANGE: Partial<Record<keyof RowMove, [number, number]>> = { up: [-200, 150], right: [-450, 450], tilt: [-45, 45] };
+const OFF_RANGE: Partial<Record<keyof RowMove, [number, number]>> = { up: [-200, 150], right: [-600, 600], tilt: [-45, 45] };
 /** A row's sliders: beside the keyboard with wider ranges. */
 const rowFields = (row: RowName): Field<keyof RowMove>[] => ROW_FIELDS.map(([k, label, lo, hi, step]) => [k, label, ...(row === 'off' ? OFF_RANGE[k] ?? [lo, hi] : [lo, hi]), step] as Field<keyof RowMove>);
 type Field<K> = [key: K, label: string, lo: number, hi: number, step: number];
 const ROW_FIELDS: Field<keyof RowMove>[] = [
-  ['up', 'Ruka hore', -60, 80, 1], ['right', 'Ruka vpravo', -40, 40, 1], ['tilt', 'Odklon ruky (° vpravo)', -20, 20, 0.5],
-  ['curl', 'Skrčenie prstov', -30, 60, 1], ['thumbRight', 'Palec vpravo', -40, 40, 1], ['thumbUp', 'Palec hore', -50, 40, 1],
-  ['short', 'Chrbát ruky kratší', -40, 80, 1], ['spread', 'Roztiahnutie prstov ← →', -120, 120, 1],
+  ['up', 'Ruka hore', -80, 120, 1], ['right', 'Ruka vpravo', -80, 80, 1], ['tilt', 'Odklon ruky (° vpravo)', -20, 20, 0.5],
+  ['curl', 'Skrčenie prstov', -60, 80, 1], ['thumbRight', 'Palec vpravo', -60, 60, 1], ['thumbUp', 'Palec hore', -50, 40, 1],
+  ['short', 'Chrbát ruky kratší', -40, 80, 1], ['spread', 'Roztiahnutie prstov ← →', -160, 160, 1],
   ['vee', 'Prsty do V (°)', -20, 60, 0.5],
 ];
-const FINGER_FIELDS: Field<keyof FingerMove>[] = [['bend', 'skrčiť / vystrieť', -40, 50, 1], ['x', 'koniec ← →', -40, 40, 1], ['y', 'koniec ↓ ↑', -40, 40, 1], ['mid', 'stred prsta ← →', -25, 25, 1]];
+const FINGER_FIELDS: Field<keyof FingerMove>[] = [['bend', 'skrčiť / vystrieť', -80, 80, 1], ['x', 'koniec ← →', -80, 80, 1], ['y', 'koniec ↓ ↑', -60, 60, 1], ['mid', 'stred prsta ← →', -25, 25, 1]];
 
 /**
  * The palette tried first (FINGER_COLORS order: left little finger .. left thumb, right thumb .. right little finger):

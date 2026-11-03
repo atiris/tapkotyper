@@ -375,6 +375,15 @@ function drawBoard(): void {
       key.style.setProperty('--finger-ink', inkOn(color));
       key.style.setProperty('--next-bg', bg);
       key.style.setProperty('--next-ink', ink);
+      // The space bar is pressed by either thumb: its two halves are the two hands' poses.
+      if (def.code === 'Space') {
+        key.title = 'Ľavá polovica: ľavý palec (l1sp), pravá: pravý palec (r1sp)';
+        for (const [side, pose] of [['left', 'l1sp'], ['right', 'r1sp']]) {
+          const half = Object.assign(document.createElement('span'), { className: `sp-half ${side}`, textContent: pose });
+          half.dataset.pose = pose;
+          key.append(half);
+        }
+      }
       const box = { def, name, row: r, key };
       key.addEventListener('click', (e) => { if (tool() === 'keys') pickKey(box, e); });
       keyBoxes.push(box);
@@ -391,8 +400,14 @@ const keyOfPose = (id: string) => (/^[lr][1-5]/.test(id) ? id.slice(2) : null);
 function markKeys(): void {
   const key = keyOfPose(current), have = new Set(st.poses.map((p) => keyOfPose(p.id)));
   for (const k of keyBoxes) {
-    k.key.classList.toggle('pose-key', k.name === key);
-    k.key.classList.toggle('has-pose', have.has(k.name));
+    const halves = k.key.querySelectorAll<HTMLElement>('.sp-half');
+    k.key.classList.toggle('pose-key', k.name === key && !halves.length);
+    k.key.classList.toggle('has-pose', have.has(k.name) && !halves.length);
+    // The space bar: each half for its own thumb's pose.
+    for (const h of halves) {
+      h.classList.toggle('pose-key', current === h.dataset.pose);
+      h.classList.toggle('has-pose', st.poses.some((p) => p.id === h.dataset.pose));
+    }
   }
 }
 /** A key clicked: the pose of the hand and finger that press it (the space bar: the thumb on the clicked half), opened or added. */

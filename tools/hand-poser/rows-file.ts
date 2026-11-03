@@ -6,7 +6,7 @@ import { type Outline, outlineSvg, readOutline } from './outline-svg';
 export type { Outline };
 
 /**
- * The row templates' files (the page tools/hand-poser/rows.html): the settings (rows.json), the source outline of each
+ * The hand tool's files (the page tools/hand-poser/index.html): the settings (rows.json), the source outline of each
  * hand's home position (outline/<side>.svg, the brush's edits written into it) and the outlines Tapko draws, made from
  * them (public/hands/<side>/<name>.svg: home and every key pose).
  */
@@ -45,11 +45,10 @@ export function readRows(): { state: RowsState | null; outline: Record<Side, Out
 
 const slashes = (file: string) => file.split('\\').join('/');
 
-/** A pose's outline for Tapko; a file already there keeps its 3D pose (for the poser). */
+/** A pose's outline for Tapko. */
 function writeHand(f: OutlineFile): string {
   const file = join(HANDS, f.side, `${f.name}.svg`);
-  const metadata = existsSync(file) ? /<metadata id="hand-pose">[\s\S]*?<\/metadata>/.exec(readFileSync(file, 'utf8'))?.[0] : undefined;
-  writeFileSync(file, outlineSvg(f.side, f, SOURCE, metadata));
+  writeFileSync(file, outlineSvg(f.side, f, SOURCE));
   return slashes(file);
 }
 

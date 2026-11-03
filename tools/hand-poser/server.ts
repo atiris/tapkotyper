@@ -1,69 +1,22 @@
-import { mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Plugin } from 'vite';
-import { POSE_NAME } from '../../src/ui/hand-svg';
-import { type PictureBody, STYLE_SAMPLE, answerFromDownloads, listPairs, pairFile, savePicture, traceAnswer, writeOutline } from './gemini';
-import { type PoseFile, VIEW, mirrorPath, poseSvg, withHomeConstant } from './pose-file';
 import { type Outline, type OutlineFile, type RowsState, readRows, saveRows } from './rows-file';
 
 /**
- * The hand poser's save and delete, its way through Gemini (./gemini.ts) and the row templates' save (./rows-file.ts), on the dev server only (the poser is a
- * local tool, never part of the built site).
- * A save gets the poser's renders (the outline and the thin lines as black on white PNGs, `px` pixels per keyboard unit over VIEW),
- * traces them into paths in keyboard units and writes `public/hands/<side>/<name>.svg` with the pose inside, then the list
+ * The hand tool's reading and saving (./rows-file.ts), on the dev server only (the tool is a local page at
+ * /tools/hand-poser/, never part of the built site). A save writes the outlines Tapko draws and then the list
  * `public/hands/index.json` that Tapko reads.
  */
 
 const DIR = 'public/hands';
-/** The poser's source, where HOME_CONSTANT is written. */
-const POSER = 'tools/hand-poser/poser.ts';
-
-interface SaveBody {
-  pose: PoseFile;
-  px: number;
-  lines: string;
-  creases: string;
-}
-
-const pngOf = (dataUrl: string) => Buffer.from(dataUrl.slice(dataUrl.indexOf(',') + 1), 'base64');
-
-/**
- * Bits of line smaller than this many pixels are dropped (short broken pieces where the model's facets meet); the thin
- * lines are short by nature, so they keep smaller ones.
- */
-const SPECKS = 520, CREASE_SPECKS = 12;
-/**
- * Gemini draws clean lines, its folds over the joints short and thin: small bits stay, a light blur only smooths the
- * edges, and a light grey after it still counts as line.
- */
-const GEMINI = { specks: 30, blur: 0.7, ink: 200 };
-/** The renders are blurred this much (pixels) before tracing: the model's facets and stair steps smooth out. */
-const BLUR = 1.4;
-
-/** Traced shapes of a black on white picture, in keyboard units (`toUnits` places a pixel). */
-async function trace(png: Buffer, toUnits: (x: number, y: number) => [number, number], specks = SPECKS, blur = BLUR, ink = 128): Promise<string> {
-  const [{ default: potrace }, { default: sharp }] = await Promise.all([import('potrace'), import('sharp')]);
-  const smooth = await sharp(png).blur(blur).threshold(ink).png().toBuffer();
-  const svg = await new Promise<string>((ok, fail) =>
-    potrace.trace(smooth, { turdSize: specks, alphaMax: 1.3, optTolerance: 0.6, threshold: 128 }, (err, out) => (err ? fail(err) : ok(out))));
-  const d = /\sd="([^"]*)"/.exec(svg)?.[1] ?? '';
-  // potrace writes absolute commands with x y pairs only.
-  const nums = [...d.matchAll(/-?\d+(\.\d+)?/g)].map((m) => Number(m[0]));
-  let i = 0;
-  return d.replace(/-?\d+(\.\d+)?/g, () => {
-    const k = i++, first = k - (k % 2), [x, y] = toUnits(nums[first], nums[first + 1]);
-    return (k % 2 ? y : x).toFixed(1);
-  }).replace(/\s+/g, ' ').trim();
-}
-/** A render over VIEW at `px` pixels per unit. */
-const overView = (px: number) => (x: number, y: number): [number, number] => [x / px + VIEW.x, y / px + VIEW.y];
 
 function writeIndex(): void {
   const list = Object.fromEntries(['left', 'right'].map((side) => {
     let names: string[] = [];
     try {
       names = readdirSync(join(DIR, side)).filter((f) => f.endsWith('.svg')).map((f) => f.slice(0, -4)).sort();
-    } catch { /* no poses of this hand yet */ }
+    } catch { /* no outlines of this hand yet */ }
     return [side, names];
   }));
   writeFileSync(join(DIR, 'index.json'), `${JSON.stringify(list, null, 2)}\n`);
@@ -81,65 +34,21 @@ export function handPoser(): Plugin {
     apply: 'serve',
     configureServer(server) {
       server.middlewares.use(async (req, res, next) => {
-        const [path, query] = (req.url ?? '').split('?');
+        const path = (req.url ?? '').split('?')[0];
         if (!path.startsWith('/__hand-poser/')) return next();
         const reply = (data: object) => {
           res.setHeader('Content-Type', 'application/json');
           res.end(JSON.stringify({ ok: true, ...data }));
         };
         try {
-          if (req.method === 'GET') {
-            if (path === '/__hand-poser/pairs') return reply({ pairs: listPairs() });
-            if (path === '/__hand-poser/rows') return reply(readRows());
-            if (path === '/__hand-poser/style') {
-              res.setHeader('Content-Type', 'image/jpeg');
-              res.setHeader('Cache-Control', 'no-store');
-              return res.end(readFileSync(STYLE_SAMPLE));
-            }
-            const q = new URLSearchParams(query);
-            const file = path === '/__hand-poser/pair-file' && pairFile(q.get('pair') ?? '', q.get('name') ?? '');
-            if (!file) return next();
-            res.setHeader('Content-Type', file.type);
-            res.setHeader('Cache-Control', 'no-store');
-            return res.end(file.data);
-          }
-          if (req.method !== 'POST') return next();
-          if (path === '/__hand-poser/home-constant') {
-            const { pose } = await body<{ pose: PoseFile }>(req);
-            writeFileSync(POSER, withHomeConstant(readFileSync(POSER, 'utf8'), pose));
-            return reply({});
-          }
-          if (path === '/__hand-poser/rows-save') {
+          if (req.method === 'GET' && path === '/__hand-poser/rows') return reply(readRows());
+          if (req.method === 'POST' && path === '/__hand-poser/rows-save') {
             const { state, outline, files } = await body<{ state: RowsState; outline: Record<'left' | 'right', Outline>; files: OutlineFile[] }>(req);
             const done = saveRows(state, outline, files);
             writeIndex();
             return reply(done);
           }
-          if (path === '/__hand-poser/gemini-picture') return reply({ file: await savePicture(await body<PictureBody>(req)) });
-          if (path === '/__hand-poser/gemini-trace') {
-            const { pair, names, mirror } = await body<{ pair: string; names: Record<'left' | 'right', string>; mirror?: boolean }>(req);
-            if (!Object.values(names).every((n) => POSE_NAME.test(n))) throw new Error('bad pose names');
-            // Gemini's newest download (from the owner's own chat) becomes the pair's answer; else the one already there.
-            const fromDownloads = answerFromDownloads(pair);
-            const outlines = await traceAnswer(pair, (png, toUnits) => trace(png, toUnits, GEMINI.specks, GEMINI.blur, GEMINI.ink));
-            // A symmetric pair (home, rest): the right hand as the left one's mirror, when Gemini drew it worse.
-            if (mirror) outlines.right = { lines: mirrorPath(outlines.left.lines), creases: mirrorPath(outlines.left.creases) };
-            return reply({ fromDownloads, files: (['left', 'right'] as const).map((side) => writeOutline(join(DIR, side, `${names[side]}.svg`), outlines[side])) });
-          }
-          if (path !== '/__hand-poser/save' && path !== '/__hand-poser/delete') return next();
-          const data = await body<SaveBody>(req);
-          const { side, name } = data.pose;
-          if ((side !== 'left' && side !== 'right') || !POSE_NAME.test(name)) throw new Error(`bad pose name ${side}/${name}`);
-          const file = join(DIR, side, `${name}.svg`);
-          if (path.endsWith('delete')) rmSync(file, { force: true });
-          else {
-            const lines = await trace(pngOf(data.lines), overView(data.px));
-            const creases = await trace(pngOf(data.creases), overView(data.px), CREASE_SPECKS);
-            mkdirSync(join(DIR, side), { recursive: true });
-            writeFileSync(file, poseSvg(data.pose, lines, creases));
-          }
-          writeIndex();
-          reply({ file: file.replaceAll('\\', '/'), index: JSON.parse(readFileSync(join(DIR, 'index.json'), 'utf8')) });
+          return next();
         } catch (e) {
           res.statusCode = 500;
           res.end(JSON.stringify({ ok: false, error: String(e) }));

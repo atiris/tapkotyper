@@ -3,87 +3,78 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Pózy rúk</title>
-  <link rel="stylesheet" href="./poser.css">
+  <title>Ruky podľa radov</title>
+  <link rel="stylesheet" href="./rows.css">
 </head>
 <body>
-  <aside class="panel" id="panelLeft">
-    <h2>Ľavá ruka</h2>
-    <section class="files">
-      <label>Názov <input id="nameLeft" list="names" value="home" spellcheck="false"></label>
-      <label>Uložené <select id="savedLeft"></select></label>
-      <button id="loadLeft">Načítať</button>
-      <button id="freshLeft" title="Zo svojej uloženej základnej pozície">Nová zo základnej</button>
-      <button id="resetLeft" title="Pevná základná pozícia HOME_CONSTANT (v kóde nástroja), ku ktorej sa dá vždy vrátiť">Reset na HOMECONSTANT</button>
-      <button id="removeLeft" title="Zmaže uloženú pózu s týmto názvom">Zmazať</button>
-      <button id="setHomeLeft" title="Táto póza sa stane pevnou základnou pozíciou HOME_CONSTANT (v kóde nástroja)">Uložiť ako HOMECONSTANT</button>
-    </section>
-    <div id="controlsLeft"></div>
-  </aside>
-  <main class="stage-wrap">
-    <p class="links"><a href="./rows.html" title="Domovský obrys z Gemini posúvaný podľa radov, s pózami klávesov">Ruky podľa radov</a></p>
-    <div class="stage" id="stage">
-      <svg class="keys" id="keys" aria-hidden="true"></svg>
-      <canvas id="view"></canvas>
-      <svg class="preview" id="preview" aria-hidden="true"></svg>
-      <svg class="tips" id="tips" aria-hidden="true"></svg>
+  <div class="main">
+    <div class="rows-left">
+      <header class="head">
+        <h1>Ruky podľa radov</h1>
+        <span class="sep"></span>
+        <button id="save" class="rows-save" title="Uloží nastavenia, obrys a SVG domovskej polohy a všetkých póz klávesov do public/hands (Ctrl+S)">Uložiť</button>
+      </header>
+      <p class="status" id="status" aria-live="polite"></p>
+      <div class="rows-stage" id="stageBox" aria-label="Ruky nad klávesnicou Tapka"></div>
+      <div class="rows-bar" id="poses"></div>
+      <div class="rows-bar">
+        <span class="note">Klik na kláves otvorí alebo pridá jeho pózu (ruka a prst, ktoré ho stláčajú).</span>
+        <span class="sep"></span>
+        <button id="play">Prehrať</button>
+        <label>sekundy <input type="number" id="step" min="0.2" max="5" step="0.1" value="1"></label>
+      </div>
+      <div class="rows-bar">
+        <label><input type="checkbox" id="smooth" checked> plynulý prechod</label>
+        <label><input type="checkbox" id="ghost" checked> tieň domovskej</label>
+        <label><input type="checkbox" id="axes"> osi prstov</label>
+        <label title="Farba bodu: prst, s ktorým sa bod hýbe"><input type="checkbox" id="dots"> body prstov</label>
+        <span class="sep"></span>
+        <label>Klávesnica <select id="layout"><option value="us-qwerty">EN</option><option value="sk-qwertz">SK</option></select></label>
+        <label>Prsty <select id="scheme"><option value="standard">štandard</option><option value="ergonomic">ergonomické</option></select></label>
+      </div>
+      <div class="tools">
+        <div class="rows-bar">
+          <h3>Myš na obryse</h3>
+          <label><input type="radio" name="tool" value="keys" checked> kláves</label>
+          <label title="Ťahaním posúvaš body obrysu domovskej polohy (platí vo všetkých pózach)"><input type="radio" name="tool" value="brush"> posúvať čiary</label>
+          <label title="Natieraním priradíš body vybranému prstu: hýbu sa iba s ním"><input type="radio" name="tool" value="paint"> priradiť body</label>
+          <select id="paintFinger" aria-label="Prst pre body">
+            <option value="1">ukazovák</option><option value="2">prostredník</option><option value="3">prstenník</option><option value="4">malíček</option>
+            <option value="0">palec</option><option value="5">dlaň (nehýbe sa)</option><option value="-1">automaticky</option>
+          </select>
+        </div>
+        <div class="rows-bar">
+          <div class="s grow"><label for="radius">Veľkosť štetca</label><output id="radiusOut">12</output><input type="range" id="radius" min="2" max="60" step="1" value="12"></div>
+          <button id="undo" disabled>Späť</button>
+          <button id="clearEdits">Zrušiť posuny čiar</button>
+          <button id="centerline" title="Vyplnené pásy z Gemini prevedie na stredové čiary s hrúbkou: posun prsta potom čiaru ohne, neroztrhne">Previesť na stredové čiary</button>
+        </div>
+        <div class="rows-bar">
+          <button id="copyLeft">Kopírovať ľavý obrys (SVG)</button>
+          <button id="copyRight">Kopírovať pravý obrys (SVG)</button>
+          <label class="file">Načítať ľavý<input type="file" id="loadLeft" accept=".svg,image/svg+xml"></label>
+          <label class="file">Načítať pravý<input type="file" id="loadRight" accept=".svg,image/svg+xml"></label>
+        </div>
+      </div>
     </div>
-    <section class="general">
-      <div class="pairs" title="Pripravené kombinácie (vzor pre Gemini), najnovšie hore: výber načíta pózy, obrázky s promptom">
-        <h3>Pripravené <button id="hidePrepared" title="Zruší výber">Skryť</button></h3>
-        <div id="preparedList" class="pair-list"></div>
-      </div>
-      <div class="general-main">
-        <div class="buttons">
-          <button id="loadPair" title="Načíta pózy oboch rúk podľa názvov (nová póza začne zo základnej)">Načítať pár</button>
-          <button id="save" class="main" title="Uloží pózy oboch rúk ako SVG (Ctrl+S); kláves s uloženou pózou má zelenú guličku">Uložiť vzor pre tento pár</button>
-          <button id="mirrorLR" title="Pravá ruka ako zrkadlo ľavej">Zrkadliť ľavú → pravú</button>
-          <button id="mirrorRL" title="Ľavá ruka ako zrkadlo pravej">Zrkadliť pravú → ľavú</button>
-          <button id="steps" title="Uloží kroky rest1, rest2… oboch rúk medzi ich uloženými pózami rest a home">Prechod rest → home</button>
-          <button id="gemini" title="Uloží obrázok páru so stlmenou klávesnicou pre Gemini (assets-src/hands/gemini/ľavá+pravá/picture.png, 1376 × 768)">Vzor pre Gemini</button>
-          <button id="fromGemini" title="Najnovší obrázok v Downloads (novší ako vzor) vezme ako odpoveď Gemini, prekreslí ho do SVG oboch rúk a ukáže náhľad">Z Gemini do SVG</button>
-        </div>
-        <div class="buttons">
-          <label><input type="checkbox" id="showShade" checked> Ruky</label>
-          <label><input type="checkbox" id="showLines" checked> Obrys</label>
-          <label title="Uložené SVG oboch rúk, ako ich kreslí Tapko"><input type="checkbox" id="showPreview"> Náhľad SVG</label>
-          <label><input type="checkbox" id="muted"> Stlmená klávesnica</label>
-          <label title="Pri symetrickom páre (home, rest): obrys pravej ruky z Gemini nahradí zrkadlo ľavej"><input type="checkbox" id="mirrorTrace"> Pravú zrkadliť z ľavej</label>
-          <label>Priblíženie <select id="zoom"><option value="1">1×</option><option value="1.5">1,5×</option><option value="2">2×</option><option value="3">3×</option></select></label>
-          <label>Klávesnica <select id="layout"><option value="us-qwerty">EN</option><option value="sk-qwertz">SK</option></select></label>
-          <label title="Ktorý prst stláča ktorý kláves: štandardne, alebo ergonomicky (číselný rad posunutý o prst)">Prsty <select id="scheme"><option value="standard">štandard</option><option value="ergonomic">ergonomické</option></select></label>
-        </div>
-        <p id="status" class="status"></p>
-        <div class="gemini-box" id="geminiBox" hidden>
-          <div class="gemini-pictures">
-            <figure><img id="geminiPicture" alt="Obrázok polohy pre Gemini" title="Klik: skopíruje obrázok do schránky"><figcaption>1. poloha (tento pár)</figcaption></figure>
-            <figure><img id="geminiStyle" alt="Vzorový vzhľad rúk" title="Klik: skopíruje obrázok do schránky"><figcaption>2. vzorový vzhľad</figcaption></figure>
-          </div>
-          <pre id="geminiPrompt" title="Klik: skopíruje prompt do schránky"></pre>
-        </div>
-        <p class="hint">Klik na kláves mimo rúk: ruka, ktorá ho stláča, dostane jeho pózu (druhá ruka ostane, napr. veľké Q: klik na q0, potom na rs). Ťahaj krúžok na končeku prsta ktorejkoľvek ruky: do strán ho natočíš, hore a dolu ho vystrieš alebo ohneš.
-          Ťahaj dlaňou: posunieš ruku, so Shiftom ju otočíš. Ctrl+Z vráti zmenu ruky, ktorú si upravoval naposledy, Ctrl+S uloží obe.</p>
-      </div>
-      <div class="pairs" title="Spracované SVG obrysy (z Gemini), najnovšie hore: výber ukáže na klávesnici iba obrys tejto kombinácie">
-        <h3>Spracované <button id="hideTraced" title="Zruší výber, vráti 3D ruky">Skryť</button></h3>
-        <div id="tracedList" class="pair-list"></div>
-      </div>
-    </section>
-    <datalist id="names"></datalist>
-  </main>
-  <aside class="panel" id="panelRight">
-    <h2>Pravá ruka</h2>
-    <section class="files">
-      <label>Názov <input id="nameRight" list="names" value="home" spellcheck="false"></label>
-      <label>Uložené <select id="savedRight"></select></label>
-      <button id="loadRight">Načítať</button>
-      <button id="freshRight" title="Zo svojej uloženej základnej pozície">Nová zo základnej</button>
-      <button id="resetRight" title="Pevná základná pozícia HOME_CONSTANT (v kóde nástroja), ku ktorej sa dá vždy vrátiť">Reset na HOMECONSTANT</button>
-      <button id="removeRight" title="Zmaže uloženú pózu s týmto názvom">Zmazať</button>
-      <button id="setHomeRight" title="Táto póza sa stane pevnou základnou pozíciou HOME_CONSTANT (v kóde nástroja)">Uložiť ako HOMECONSTANT</button>
-    </section>
-    <div id="controlsRight"></div>
-  </aside>
-  <script type="module" src="./poser.ts"></script>
+
+    <div class="rows-right">
+      <section class="rows-panel">
+        <div class="head"><h2>Základná poloha prstov</h2><span class="sep"></span><button id="baseReset">Pôvodné hodnoty</button></div>
+        <p class="note">Oprava domovskej polohy, platí pre všetky pózy aj pre tieň. Dvojklik na posuvník ho vráti.</p>
+        <div class="hands" id="baseHands"></div>
+      </section>
+      <section class="rows-panel">
+        <div class="head"><h2 id="rowTitle">Rad</h2><span class="sep"></span><button id="rowReset">Pôvodné hodnoty radu</button></div>
+        <p class="note">Spoločné pre všetky pózy, ktoré daná ruka píše na tomto rade.</p>
+        <div class="hands" id="rowHands"></div>
+      </section>
+      <section class="rows-panel">
+        <div class="head"><h2 id="poseTitle">Póza</h2><span class="sep"></span><button id="poseReset">Reset do základnej polohy radu</button></div>
+        <div class="hands" id="poseHands"></div>
+      </section>
+    </div>
+  </div>
+  <script type="module" src="./rows.ts"></script>
 </body>
 </html>

@@ -2,7 +2,7 @@ import { type Finger, type KeyDef, LAYOUTS } from '../../src/keyboard/layouts';
 import { type FingerScheme, fingerOf } from '../../src/keyboard/fingers';
 import { POSE_NAME, type Side, VIEW, keyName, poseName } from '../../src/ui/hand-svg';
 import { HANDS_CHANNEL } from '../../src/ui/hands';
-import { FINGER_COLORS, KeyboardGuide } from '../../src/ui/keyboard-guide';
+import { FINGER_COLORS, KeyboardGuide, inkOn, textColorsOn } from '../../src/ui/keyboard-guide';
 import '../../src/styles.css';
 import { GAP, UNIT, withModifiers } from './board';
 import { centerline } from './centerline';
@@ -10,8 +10,7 @@ import { outlineSvg, readOutline } from './outline-svg';
 import type { FingerMove, HandPose, Outline, OutlineFile, Owners, Pose, RowMove, RowName, RowsState } from './rows-file';
 
 /**
- * Row templates (dev server only, /tools/hand-poser/rows.html): the home outline (from Gemini) moved by rules instead of
- * a 3D pose. Each finger's points move with that finger only: a correction of the home position (base), the row the hand
+ * The hand tool (dev server only, /tools/hand-poser/): the home outline (once drawn by Gemini) moved by rules. Each finger's points move with that finger only: a correction of the home position (base), the row the hand
  * types on (it moves the whole hand and curls the fingers) and each key pose's own tilt and finger moves. The brush moves
  * the home outline's points; the paint gives points to a finger by hand. Saving writes the settings, the source outline
  * and the SVG of home and of every key pose for Tapko.
@@ -294,6 +293,12 @@ function drawBoard(): void {
       if (!key || def.base === 'enter-top') continue;
       const name = keyName(b, def.code) ?? '';
       key.title = name;
+      // The finger's colour by the chosen fingering (Tapko's keyboard colours the standard one).
+      const color = FINGER_COLORS[fingerOf(def, scheme())], [bg, ink] = textColorsOn(color);
+      key.style.setProperty('--finger', color);
+      key.style.setProperty('--finger-ink', inkOn(color));
+      key.style.setProperty('--next-bg', bg);
+      key.style.setProperty('--next-ink', ink);
       const box = { def, name, row: r, key };
       key.addEventListener('click', (e) => { if (tool() === 'keys') pickKey(box, e); });
       keyBoxes.push(box);
@@ -319,10 +324,14 @@ function pickKey(k: KeyBox, e: MouseEvent): void {
   const r = k.key.getBoundingClientRect();
   const finger: Finger = k.def.code === 'Space' ? (e.clientX < r.left + r.width / 2 ? 4 : 5) : fingerOf(k.def, scheme());
   const id = poseName(board(), k.def.code, finger);
-  if (!id || !POSE_NAME.test(id)) return;
+  if (id) openPose(id);
+}
+/** A key pose shown; one not here yet is added, its hand on the key's row. */
+function openPose(id: string): void {
+  if (!POSE_NAME.test(id) || !keyOfPose(id)) return;
   if (!st.poses.some((p) => p.id === id)) {
-    const pose = basePose(id, id, 'home');
-    pose[id[0] === 'l' ? 'left' : 'right'].row = ROW_OF[k.row];
+    const pose = basePose(id, id, 'home'), at = keyBoxes.find((k) => k.name === keyOfPose(id));
+    pose[id[0] === 'l' ? 'left' : 'right'].row = ROW_OF[at?.row ?? 2];
     st.poses.push(pose);
     changed();
     buildChips();
@@ -719,6 +728,9 @@ addEventListener('keydown', (e) => { if ((e.ctrlKey || e.metaKey) && e.key.toLow
   drawGhost();
   onTool();
   show('home', false);
+  // Tapko's paw button (dev server) opens the pose of the key typed last: ?pose=<side>/<name>.
+  const asked = new URLSearchParams(location.search).get('pose')?.split('/')[1];
+  if (asked) openPose(asked);
   dirty = false;
   say(res.state ? 'Nastavenia načítané' : 'Prvé spustenie: pôvodné hodnoty, ulož ich');
 })();

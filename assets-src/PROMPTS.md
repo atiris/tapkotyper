@@ -41,7 +41,7 @@ Notes from real Gemini runs; add new ones here.
 - Hands (section 12): a photo of real hands as a reference made Gemini redraw the keyboard (extra
   rows, the keys moved) and curl the fingertips into an arc; without photos, editing one finger of
   the finished home picture keeps the keyboard. "Bigger hands" made them chubby and broke the
-  keyboard (the hands now come from the 3D hand poser, section 12). A follow-up in the bridge sometimes
+  keyboard (the hands now come from the hand tool, section 12). A follow-up in the bridge sometimes
   runs in a new empty chat (an unrelated picture comes back): queue a new picture with the home
   picture attached instead.
 - With an attached character picture, "a new pose" keeps its stance and only changes the arms
@@ -1206,53 +1206,29 @@ kite were tried and turned down).
 
 ## 12. Hands on the keyboard (no Gemini pictures any more)
 
-The outline hands over the on-screen keyboard are posed by hand in the **hand poser**, a local page of
-the dev server: `npm run dev`, then open `/tools/hand-poser/`, or in Tapko's "Len chcem písať" press the
-paw button (dev server only), which opens the outline of the key typed last. It shows a 3D hand (the
-WebXR generic hand, MIT) from above over the keyboard (English or Slovak); the owner drags the
-fingertips (sideways turns the finger, up and down stretches or bends it), drags the palm (Shift turns
-the hand) and tunes every joint with the sliders. "Uložiť SVG" writes `public/hands/<left|right>/<name>.svg`
-(the outline Tapko draws, the pose kept inside to load and tune later) and `public/hands/index.json`, and
-an open Tapko shows it at once; commit them. "Zrkadliť z druhej ruky" starts a pose from the other hand's
-pose of the same name.
+The outline hands over the on-screen keyboard come from the **hand tool**, a local page of the dev server:
+`npm run dev`, then open `/tools/hand-poser/`, or in Tapko's "Len chcem písať" press the paw button (dev server
+only), which opens the pose of the key typed last. It draws one home outline per hand (once drawn by Gemini, now
+middle lines with a width) over Tapko's own keyboard and moves it by rules, nothing 3D:
+- the base corrections of the home position (each finger bent or moved, its middle sideways);
+- the row a hand types on (bottom, home, top, digit row) moves the whole hand, curls the fingers and moves the thumb;
+- each key pose's own hand tilt and finger moves.
+
+Each point of the outline moves with one finger only (the axes are fitted to the outline; "priradiť body" gives
+points to a finger by hand, "body prstov" shows them). The brush moves the outline's points; an outline can be
+copied as SVG, edited elsewhere and loaded back. "Uložiť" (Ctrl+S) writes `tools/hand-poser/rows.json` (the
+settings), `tools/hand-poser/outline/<side>.svg` (the source outline) and `public/hands/<side>/<name>.svg` (home and
+every key pose) with `public/hands/index.json`; an open Tapko shows them at once; commit them.
 
 Names: a pose is named by the hand (`l`, `r`), the finger (1 the thumb .. 5 the little finger) and the key it presses,
-the key by two characters as written on the poser's keyboard: two letters for a named key (`tb`, `cp`, `ls`, `rs`,
-`sp`, `en`, `bk`, and `lc`, `rc`, `lw`, `rw`, `la`, `ra`, `mn`), else a key of the row's plain range with `0` (`a0`,
-`f0`, `20`; ranges `1`-`0`, `q`-`p`, `a`-`l`, `z`-`m`, English letters) or the range's end and how many keys further
-out (`11` left of 1, `01` right of 0, `p1` right of P, `l1` = ô). So `l2f0` is the left index on F, `r1sp` the right
-thumb on the space bar, `l420` the left ring finger on 2 (standard) and `l520` the left little finger on 2
-(ergonomic: the digit row moved one finger over, see `src/keyboard/fingers.ts`; the poser's "Prsty" switch). A click
-on a key in the poser gives its hand that key's pose. `home` is the home position (it may be tuned; "Reset na
-HOMECONSTANT" brings back the one the owner approved, `HOME_CONSTANT` in `tools/hand-poser/poser.ts`), `rest` the
-hands lying beside the keyboard when a level starts; "Prechod rest → home" saves the steps `rest1`...`rest4`
-between them, which Tapko plays when the hands come onto the keys. A key without its own outline shows `home`.
-
-### The hands' look through Gemini (plan `.todo/107-hands-gemini.md`)
-
-The 3D pose gives the position; Gemini gives the look. In the poser, pose both hands (each panel its own name), save
-both, then "Vzor pre Gemini": it writes `assets-src/hands/gemini/<left>+<right>/picture.png` (1376 x 768: the pale
-pink keyboard, both hands' bold black 3D outlines with hairline black knuckles, folds and nails, two magenta marks)
-and the hands' silhouettes. Gemini draws the hands in black; the pink keyboard is left out when tracing. Send it with the approved style
-sample `assets-src/hands/style-sample.jpg` (the owner's choice, 2026-11-02), save the answer as `answer.png` in the
-same folder, then "Z Gemini do SVG" traces it into both hands' SVGs (the marks place it on the keyboard). For a
-symmetric pair (home, rest) "Pravú zrkadliť z ľavej" puts the left hand's outline mirrored into the right one,
-when Gemini drew one hand worse.
-
-The owner's own way, without the bridge: under the buttons the poser shows the pair's picture and prompt; a click
-copies each, to paste into Gemini. "Z Gemini do SVG" then takes the newest picture in Downloads (newer than the pair's
-picture) as the answer, traces it and shows the saved outlines over the keyboard ("Náhľad SVG"). The last five pairs
-are buttons below, all of them in a list; a click opens a pair (poses, picture, prompt, outlines).
-
-A press of a home key (A S D F, J K L Ô) is a small move and Gemini then copies the home position of the style
-sample: the prompt says in its own paragraph which finger presses its home key, how that shows from above (shorter,
-tip pulled back a third of a key, rounder middle joint, nail a slice or hidden, deeper fold), the neighbours' small
-move, and not to copy the sample's pose.
-
-- `answer.png`: **attach `picture.png`, then `style-sample.jpg`**, with the pair's `prompt.txt` (written by the poser
-  from `tools/hand-poser/gemini-prompt.ts`: the line style, freedom to make the hands natural, each finger's bend read
-  from the pose and how a bend shows from above, the fingertips' arc, the marks, 1376 x 768).
-
+the key by two characters: two letters for a named key (`tb`, `cp`, `ls`, `rs`, `sp`, `en`, `bk`, and `lc`, `rc`,
+`lw`, `rw`, `la`, `ra`, `mn`), else a key of the row's plain range with `0` (`a0`, `f0`, `20`; ranges `1`-`0`,
+`q`-`p`, `a`-`l`, `z`-`m`, English letters) or the range's end and how many keys further out (`11` left of 1, `01`
+right of 0, `p1` right of P, `l1` = ô). So `l2f0` is the left index on F, `r1sp` the right thumb on the space bar,
+`l420` the left ring finger on 2 (standard) and `l520` the left little finger on 2 (ergonomic: the digit row moved
+one finger over, see `src/keyboard/fingers.ts`; the tool's "Prsty" switch). A click on a key in the tool opens or
+adds its pose. `home` is the home position, `rest` the hands lying beside the keyboard when a level starts, with the
+steps `rest1`...`rest4` between them (kept from the earlier 3D tool). A key without its own outline shows `home`.
 
 ### The owner's rules for the hands (keep every new pose to them)
 
@@ -1273,7 +1249,7 @@ Look
 - The key being typed is always readable: its letter is drawn over the hands (white, a thin solid
   outline in the finger's colour, on a small disc half a key wide that fades from its centre); the
   key's own letter underneath is hidden, never two letters.
-- Adult hands, real proportions; the size the owner set (scale 2565 in the poser, 2026-11-02).
+- Adult hands, real proportions; the size the owner set (2026-11-02).
 - The hands are never square to the keyboard: the elbows are wide, so the left hand points up and to
   the right, the right hand up and to the left (about 18 degrees).
 - The thumb's outer side runs in one straight line from the wrist to its tip (no dip at its root); the

@@ -120,9 +120,9 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
       root.querySelector('.hud-title')!.after(roundButton('control', 'map', t('freeType.place'), () => openPlacePicker(def.world)));
     }
     if (def.kind === 'freetype' && import.meta.env.DEV) {
-      // Dev server only: the hand poser opens the outline of the key typed last; a save there shows here at once. Not translated.
+      // Dev server only: the hand tool opens the pose of the key typed last; a save there shows here at once. Not translated.
       const poser = () => window.open(`${import.meta.env.BASE_URL}tools/hand-poser/?pose=${runtime.handPose()}`, 'hand-poser');
-      root.querySelector('.hud-title')!.after(roundButton('control', 'paw', 'Pózy rúk (nástroj na modelovanie)', poser));
+      root.querySelector('.hud-title')!.after(roundButton('control', 'paw', 'Ruky (nástroj)', poser));
     }
     if (def.kind === 'practice' && !params.seconds) {
       // Untimed practice ends when the child wants: the round X, like in just typing, shows the results.

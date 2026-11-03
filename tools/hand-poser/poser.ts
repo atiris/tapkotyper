@@ -3,6 +3,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import leftGlb from '@webxr-input-profiles/assets/dist/profiles/generic-hand/left.glb?url';
 import rightGlb from '@webxr-input-profiles/assets/dist/profiles/generic-hand/right.glb?url';
 import { type Finger, type KeyDef, LAYOUTS } from '../../src/keyboard/layouts';
+import { GAP, KEY_H, MODIFIERS, UNIT, withModifiers } from './board';
 import { type FingerScheme, fingerOf } from '../../src/keyboard/fingers';
 import { type HandIndex, POSE_NAME, type Side, VIEW, keyName, poseName, readHandSvg } from '../../src/ui/hand-svg';
 import { HANDS_CHANNEL } from '../../src/ui/hands';
@@ -18,7 +19,6 @@ import { type JointTurn, MIRROR_X, type PoseFile, readPose } from './pose-file';
  * the SVG, so it can be loaded and tuned later.
  */
 
-const UNIT = 58, GAP = 4, KEY_H = 46;
 /** Export pixels per keyboard unit: the traced outline's precision. */
 const EXPORT_PX = 4;
 /** The camera's depth range in keyboard units, and the depth step that draws a line (a finger over the palm). */
@@ -120,17 +120,11 @@ const say = (text: string, error = false) => {
  * a pose's name), its stripe in the colour of the finger that types it (standard or ergonomic), with the bottom row's
  * modifiers that Tapko leaves out.
  */
-const MODIFIERS: KeyDef[] = [
-  ['ControlLeft', 0], ['MetaLeft', 0], ['AltLeft', 4], ['Space', 4, 6.25], ['AltRight', 5], ['MetaRight', 9], ['ContextMenu', 9], ['ControlRight', 9],
-].map(([code, finger, w]) => ({ code: code as string, base: code === 'Space' ? ' ' : '', shift: '', finger: finger as Finger, w: (w as number) ?? 1.25 }));
 const layoutSelect = $<HTMLSelectElement>('layout');
 const schemeSelect = $<HTMLSelectElement>('scheme');
 const scheme = () => schemeSelect.value as FingerScheme;
 /** The keyboard shown, with the bottom row's modifiers. */
-function keyboard() {
-  const layout = LAYOUTS[layoutSelect.value as 'us-qwerty' | 'sk-qwertz'];
-  return { ...layout, rows: [...layout.rows.slice(0, 4), MODIFIERS] };
-}
+const keyboard = () => withModifiers(LAYOUTS[layoutSelect.value as 'us-qwerty' | 'sk-qwertz']);
 /** The keys under the keyboard's picture, each with its place (keyboard units). */
 const keyBoxes: { def: KeyDef; x: number; y: number; w: number }[] = [];
 const NS = 'http://www.w3.org/2000/svg';

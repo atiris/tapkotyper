@@ -240,7 +240,10 @@ export class Hands {
     const lines = layer.querySelector('.hand-lines')!;
     lines.setAttribute('d', shape.lines);
     lines.setAttribute('stroke-width', String(shape.stroke));
-    layer.querySelector('.hand-creases')!.setAttribute('d', shape.creases);
+    const creases = layer.querySelector('.hand-creases')!;
+    creases.setAttribute('d', shape.creases);
+    creases.setAttribute('stroke-width', String(shape.creaseStroke));
+    layer.classList.toggle('centerline', shape.centerline);
     old.classList.remove('on');
     layer.classList.add('on');
     this.el.classList.add('ready');

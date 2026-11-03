@@ -986,6 +986,9 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
 .kb-hands.ready { opacity: 1; }
 .kb-hands .hand-lines { fill: var(--hand-line); fill-rule: evenodd; stroke: var(--hand-line); stroke-linejoin: round; }
 .kb-hands .hand-creases { fill: var(--hand-line); fill-rule: evenodd; opacity: 0.6; }
+/* Middle lines (the row templates' outlines) are strokes, not filled shapes. */
+.kb-hands .centerline .hand-lines { fill: none; stroke-linecap: round; }
+.kb-hands .centerline .hand-creases { fill: none; stroke: var(--hand-line); stroke-linecap: round; stroke-linejoin: round; }
 .kb-hands .hand-pose { opacity: 0; transition: opacity 0.12s; }
 .kb-hands .hand-pose.on { opacity: 1; }
 .kb-hands .hand-letter { fill: #fff; font: 700 17px var(--font-keys); text-anchor: middle; dominant-baseline: central; stroke: var(--hit); stroke-width: 3.5; stroke-linejoin: round; paint-order: stroke; }

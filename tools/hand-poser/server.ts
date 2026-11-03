@@ -4,9 +4,10 @@ import type { Plugin } from 'vite';
 import { POSE_NAME } from '../../src/ui/hand-svg';
 import { type PictureBody, STYLE_SAMPLE, answerFromDownloads, listPairs, pairFile, savePicture, traceAnswer, writeOutline } from './gemini';
 import { type PoseFile, VIEW, mirrorPath, poseSvg, withHomeConstant } from './pose-file';
+import { type Outline, type OutlineFile, type RowsState, readRows, saveRows } from './rows-file';
 
 /**
- * The hand poser's save and delete, and its way through Gemini (./gemini.ts), on the dev server only (the poser is a
+ * The hand poser's save and delete, its way through Gemini (./gemini.ts) and the row templates' save (./rows-file.ts), on the dev server only (the poser is a
  * local tool, never part of the built site).
  * A save gets the poser's renders (the outline and the thin lines as black on white PNGs, `px` pixels per keyboard unit over VIEW),
  * traces them into paths in keyboard units and writes `public/hands/<side>/<name>.svg` with the pose inside, then the list
@@ -89,6 +90,7 @@ export function handPoser(): Plugin {
         try {
           if (req.method === 'GET') {
             if (path === '/__hand-poser/pairs') return reply({ pairs: listPairs() });
+            if (path === '/__hand-poser/rows') return reply(readRows());
             if (path === '/__hand-poser/style') {
               res.setHeader('Content-Type', 'image/jpeg');
               res.setHeader('Cache-Control', 'no-store');
@@ -106,6 +108,12 @@ export function handPoser(): Plugin {
             const { pose } = await body<{ pose: PoseFile }>(req);
             writeFileSync(POSER, withHomeConstant(readFileSync(POSER, 'utf8'), pose));
             return reply({});
+          }
+          if (path === '/__hand-poser/rows-save') {
+            const { state, outline, files } = await body<{ state: RowsState; outline: Record<'left' | 'right', Outline>; files: OutlineFile[] }>(req);
+            const done = saveRows(state, outline, files);
+            writeIndex();
+            return reply(done);
           }
           if (path === '/__hand-poser/gemini-picture') return reply({ file: await savePicture(await body<PictureBody>(req)) });
           if (path === '/__hand-poser/gemini-trace') {

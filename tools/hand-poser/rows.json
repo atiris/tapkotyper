@@ -1,0 +1,462 @@
+{
+ "base": {
+  "left": [
+   {
+    "bend": 0,
+    "x": 0,
+    "y": 0,
+    "mid": 0
+   },
+   {
+    "bend": 6,
+    "x": 0,
+    "y": 0,
+    "mid": -6
+   },
+   {
+    "bend": 0,
+    "x": -5,
+    "y": 0,
+    "mid": 0
+   },
+   {
+    "bend": 0,
+    "x": -12,
+    "y": 0,
+    "mid": 0
+   },
+   {
+    "bend": 0,
+    "x": 0,
+    "y": 0,
+    "mid": 0
+   }
+  ],
+  "right": [
+   {
+    "bend": 0,
+    "x": 0,
+    "y": 0,
+    "mid": 0
+   },
+   {
+    "bend": 6,
+    "x": 0,
+    "y": 0,
+    "mid": 6
+   },
+   {
+    "bend": 0,
+    "x": 0,
+    "y": 0,
+    "mid": 0
+   },
+   {
+    "bend": 0,
+    "x": -2,
+    "y": 0,
+    "mid": 0
+   },
+   {
+    "bend": 0,
+    "x": 0,
+    "y": 0,
+    "mid": 0
+   }
+  ]
+ },
+ "rows": {
+  "bot": {
+   "left": {
+    "up": -15,
+    "right": 8,
+    "tilt": 0,
+    "curl": 20,
+    "thumbRight": 0,
+    "thumbUp": 10
+   },
+   "right": {
+    "up": -15,
+    "right": 8,
+    "tilt": 0,
+    "curl": 20,
+    "thumbRight": 0,
+    "thumbUp": 10
+   }
+  },
+  "home": {
+   "left": {
+    "up": 0,
+    "right": 0,
+    "tilt": 0,
+    "curl": 0,
+    "thumbRight": 0,
+    "thumbUp": 0
+   },
+   "right": {
+    "up": 0,
+    "right": 0,
+    "tilt": 0,
+    "curl": 0,
+    "thumbRight": 0,
+    "thumbUp": 0
+   }
+  },
+  "top": {
+   "left": {
+    "up": 25,
+    "right": 0,
+    "tilt": 0,
+    "curl": 17,
+    "thumbRight": 5,
+    "thumbUp": -13
+   },
+   "right": {
+    "up": 25,
+    "right": 0,
+    "tilt": 0,
+    "curl": 17,
+    "thumbRight": -5,
+    "thumbUp": -13
+   }
+  },
+  "num": {
+   "left": {
+    "up": 50,
+    "right": 0,
+    "tilt": 0,
+    "curl": 35,
+    "thumbRight": 10,
+    "thumbUp": -25
+   },
+   "right": {
+    "up": 50,
+    "right": 0,
+    "tilt": 0,
+    "curl": 35,
+    "thumbRight": -10,
+    "thumbUp": -25
+   }
+  }
+ },
+ "poses": [
+  {
+   "id": "home",
+   "name": "Domov",
+   "on": true,
+   "left": {
+    "row": "home",
+    "tilt": 0,
+    "f": [
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     }
+    ]
+   },
+   "right": {
+    "row": "home",
+    "tilt": 0,
+    "f": [
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     }
+    ]
+   }
+  },
+  {
+   "id": "top",
+   "name": "Horný rad",
+   "on": true,
+   "left": {
+    "row": "top",
+    "tilt": 0,
+    "f": [
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     }
+    ]
+   },
+   "right": {
+    "row": "top",
+    "tilt": 0,
+    "f": [
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     }
+    ]
+   }
+  },
+  {
+   "id": "num",
+   "name": "Číselný rad",
+   "on": true,
+   "left": {
+    "row": "num",
+    "tilt": 0,
+    "f": [
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     }
+    ]
+   },
+   "right": {
+    "row": "num",
+    "tilt": 0,
+    "f": [
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     }
+    ]
+   }
+  },
+  {
+   "id": "bot",
+   "name": "Dolný rad",
+   "on": true,
+   "left": {
+    "row": "bot",
+    "tilt": 0,
+    "f": [
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     }
+    ]
+   },
+   "right": {
+    "row": "bot",
+    "tilt": 0,
+    "f": [
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     }
+    ]
+   }
+  }
+ ],
+ "owners": {
+  "left": {
+   "lines": {},
+   "creases": {}
+  },
+  "right": {
+   "lines": {},
+   "creases": {}
+  }
+ }
+}

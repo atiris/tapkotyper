@@ -1,0 +1,718 @@
+import { type Finger, type KeyDef, LAYOUTS } from '../../src/keyboard/layouts';
+import { type FingerScheme, fingerOf } from '../../src/keyboard/fingers';
+import { POSE_NAME, type Side, keyName, poseName } from '../../src/ui/hand-svg';
+import { HANDS_CHANNEL } from '../../src/ui/hands';
+import { FINGER_COLORS } from '../../src/ui/keyboard-guide';
+import { GAP, KEY_H, UNIT, withModifiers } from './board';
+import { centerline } from './centerline';
+import { outlineSvg, readOutline } from './outline-svg';
+import type { FingerMove, HandPose, Outline, OutlineFile, Owners, Pose, RowMove, RowName, RowsState } from './rows-file';
+
+/**
+ * Row templates (dev server only, /tools/hand-poser/rows.html): the home outline (from Gemini) moved by rules instead of
+ * a 3D pose. Each finger's points move with that finger only: a correction of the home position (base), the row the hand
+ * types on (it moves the whole hand and curls the fingers) and each key pose's own tilt and finger moves. The brush moves
+ * the home outline's points; the paint gives points to a finger by hand. Saving writes the settings, the source outline
+ * and the SVG of home and of every key pose for Tapko.
+ */
+
+type Pt = [number, number];
+type Kind = 'lines' | 'creases' | 'tails';
+interface Reach { w: number; s: number }
+/** A path's commands and points; a curve's control point moves as the end point it belongs to (anchor). */
+interface Path { parts: (string | null)[]; xy: Pt[]; anchor: number[]; w: Reach[][] }
+
+const SIDES: Side[] = ['left', 'right'];
+const KINDS: Kind[] = ['lines', 'creases', 'tails'];
+const OWNED: ('lines' | 'creases')[] = ['lines', 'creases'];
+const SIDE_NAME: Record<Side, string> = { left: 'Ľavá ruka', right: 'Pravá ruka' };
+const FINGERS = ['palec', 'ukazovák', 'prostredník', 'prstenník', 'malíček'];
+const PALM = 5;
+const ROW_NAMES: Record<RowName, string> = { bot: 'dolný rad', home: 'domovský rad', top: 'horný rad', num: 'číselný rad' };
+/** The row a hand types on, by the keyboard's row (the bottom row's thumbs stay at home). */
+const ROW_OF: RowName[] = ['num', 'top', 'home', 'bot', 'home'];
+
+/** Each finger's axis on the home outline (knuckle, middle, tip), thumb first: a first guess, fitted to the outline (fitAxes). */
+const GUESS: Record<Side, Pt[][]> = {
+  left: [
+    [[275, 390], [318, 300], [352, 228]],
+    [[275, 240], [292, 160], [308, 125]],
+    [[219, 235], [230, 160], [250, 110]],
+    [[164, 238], [178, 160], [197, 120]],
+    [[125, 245], [131, 170], [133, 125]],
+  ],
+  right: [
+    [[500, 390], [471, 300], [455, 228]],
+    [[515, 240], [486, 155], [474, 130]],
+    [[574, 235], [551, 155], [531, 112]],
+    [[626, 240], [600, 155], [585, 115]],
+    [[664, 245], [656, 160], [653, 125]],
+  ],
+};
+/** The palm's line: points nearest to it never move with a finger. */
+const PALM_LINE: Record<Side, Pt[]> = { left: [[110, 420], [150, 270], [250, 265], [292, 312]], right: [[680, 420], [640, 270], [540, 265], [505, 312]] };
+/** The wrist, the hand's turning point. */
+const PIVOT: Record<Side, Pt> = { left: [145, 430], right: [636, 430] };
+/** How softly a point belongs to the nearer axes (keyboard units): small, so a finger moves its own points only. */
+const SIGMA = 5;
+/** The axes fitted to the loaded outlines. */
+const AXES = structuredClone(GUESS);
+/**
+ * Moves each finger's middle and tip point of its axis (not the thumb's) to the middle between that finger's outer
+ * edges at their height, a few times over: points then split between neighbouring fingers along the real gap.
+ */
+function fitAxes(side: Side, xy: Pt[]): void {
+  AXES[side] = structuredClone(GUESS[side]);
+  for (let round = 0; round < 4; round++) {
+    const own = xy.map((p) => {
+      const near = [...AXES[side], PALM_LINE[side]].map((l) => nearOnLine(p, l).d);
+      return near.indexOf(Math.min(...near));
+    });
+    for (let f = 1; f < 5; f++) {
+      for (const j of [1, 2]) {
+        const v = AXES[side][f][j];
+        const xs = xy.filter((p, i) => own[i] === f && Math.abs(p[1] - v[1]) < 12).map((p) => p[0]);
+        if (xs.length >= 4) v[0] = (Math.min(...xs) + Math.max(...xs)) / 2;
+      }
+    }
+  }
+}
+
+const move0 = (): FingerMove => ({ bend: 0, x: 0, y: 0, mid: 0 });
+const moves = (o: Record<number, Partial<FingerMove>> = {}): FingerMove[] => FINGERS.map((_, f) => ({ ...move0(), ...o[f] }));
+/** The home outline's corrections: index fingers bent more with their second joint towards the middle finger; L3, L4, R4 onto their keys. */
+const BASE_DEFAULTS: Record<Side, FingerMove[]> = {
+  left: moves({ 1: { bend: 6, mid: -6 }, 2: { x: -5 }, 3: { x: -12 } }),
+  right: moves({ 1: { bend: 6, mid: 6 }, 3: { x: -2 } }),
+};
+const zeroRow = (): RowMove => ({ up: 0, right: 0, tilt: 0, curl: 0, thumbRight: 0, thumbUp: 0 });
+const ROW_DEFAULTS: Record<RowName, Record<Side, RowMove>> = {
+  bot: { left: { up: -15, right: 8, tilt: 0, curl: 20, thumbRight: 0, thumbUp: 10 }, right: { up: -15, right: 8, tilt: 0, curl: 20, thumbRight: 0, thumbUp: 10 } },
+  home: { left: zeroRow(), right: zeroRow() },
+  top: { left: { up: 25, right: 0, tilt: 0, curl: 17, thumbRight: 5, thumbUp: -13 }, right: { up: 25, right: 0, tilt: 0, curl: 17, thumbRight: -5, thumbUp: -13 } },
+  num: { left: { up: 50, right: 0, tilt: 0, curl: 35, thumbRight: 10, thumbUp: -25 }, right: { up: 50, right: 0, tilt: 0, curl: 35, thumbRight: -10, thumbUp: -25 } },
+};
+type Field<K> = [key: K, label: string, lo: number, hi: number, step: number];
+const ROW_FIELDS: Field<keyof RowMove>[] = [
+  ['up', 'Ruka hore', -60, 80, 1], ['right', 'Ruka vpravo', -40, 40, 1], ['tilt', 'Odklon ruky (° vpravo)', -20, 20, 0.5],
+  ['curl', 'Skrčenie prstov', -30, 60, 1], ['thumbRight', 'Palec vpravo', -40, 40, 1], ['thumbUp', 'Palec hore', -50, 40, 1],
+];
+const FINGER_FIELDS: Field<keyof FingerMove>[] = [['bend', 'skrčiť / vystrieť', -40, 50, 1], ['x', 'koniec ← →', -40, 40, 1], ['y', 'koniec ↓ ↑', -40, 40, 1], ['mid', 'stred prsta ← →', -25, 25, 1]];
+
+const handPose = (row: RowName): HandPose => ({ row, tilt: 0, f: moves() });
+const basePose = (id: string, name: string, row: RowName): Pose => ({ id, name, on: true, left: handPose(row), right: handPose(row) });
+const startState = (): RowsState => ({
+  base: structuredClone(BASE_DEFAULTS),
+  rows: structuredClone(ROW_DEFAULTS),
+  poses: [basePose('home', 'Domov', 'home'), basePose('top', 'Horný rad', 'top'), basePose('num', 'Číselný rad', 'num'), basePose('bot', 'Dolný rad', 'bot')],
+  owners: { left: { lines: {}, creases: {} }, right: { lines: {}, creases: {} } },
+});
+
+const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+const statusEl = $('status');
+const say = (text: string, error = false) => { statusEl.textContent = text; statusEl.classList.toggle('error', error); };
+
+// ---- outlines: paths whose points move ----
+
+/**
+ * A path (absolute commands, x y pairs) split into its commands and points. A cubic curve's first control point belongs
+ * to the point the curve starts from, its second to the point it ends at: a long smooth edge has its control points far
+ * from the curve, nearer another finger, and they must not move with that finger.
+ */
+function parse(d: string): Omit<Path, 'w'> {
+  const parts: (string | null)[] = [], nums: number[] = [], cmds: string[] = [];
+  let cmd = 'M';
+  for (const m of d.matchAll(/([A-Za-z])|(-?\d*\.?\d+(?:e-?\d+)?)/g)) {
+    if (m[1]) { parts.push(m[1]); cmd = m[1]; continue; }
+    parts.push(null);
+    nums.push(Number(m[2]));
+    if (nums.length % 2 === 0) cmds.push(cmd);
+  }
+  const xy: Pt[] = [], anchor: number[] = [];
+  for (let i = 0; i + 1 < nums.length; i += 2) xy.push([nums[i], nums[i + 1]]);
+  let inCurve = 0;
+  cmds.forEach((c, i) => {
+    if (c !== 'C') { inCurve = 0; anchor.push(i); return; }
+    const at = inCurve++ % 3;
+    anchor.push(at === 0 ? Math.max(0, i - 1) : at === 1 ? i + 1 : i);
+  });
+  return { parts, xy, anchor };
+}
+function draw(path: { parts: (string | null)[] }, xy: Pt[]): string {
+  let k = 0, out = '';
+  for (const p of path.parts) {
+    if (p) { out += p; continue; }
+    const pt = xy[k >> 1];
+    out += `${(k % 2 ? pt[1] : pt[0]).toFixed(1)} `;
+    k++;
+  }
+  return out.trim();
+}
+/**
+ * The wrist lines go on past the picture's edge, so a raised or tilted hand never shows their cut ends (on this page
+ * only): a band as a thin filled strip, a middle line as a line.
+ */
+function wristTails(xy: Pt[], middle: boolean): string {
+  const low = xy.filter((p) => p[1] > 380).sort((a, b) => a[0] - b[0]);
+  const groups: Pt[][] = [];
+  for (const p of low) { const g = groups.at(-1); if (g && p[0] - g.at(-1)![0] < 25) g.push(p); else groups.push([p]); }
+  const mean = (ps: Pt[]): Pt => [ps.reduce((s, p) => s + p[0], 0) / ps.length, ps.reduce((s, p) => s + p[1], 0) / ps.length];
+  let d = '';
+  for (const g of groups) {
+    const maxY = Math.max(...g.map((p) => p[1]));
+    if (maxY < 405) continue;
+    const ends = g.filter((p) => p[1] > maxY - 8), upper = g.filter((p) => p[1] > maxY - 45 && p[1] < maxY - 20);
+    const e = mean(ends);
+    let dir: Pt = [0, 1];
+    if (upper.length) { const u = mean(upper), l = Math.hypot(e[0] - u[0], e[1] - u[1]) || 1; dir = [(e[0] - u[0]) / l, (e[1] - u[1]) / l]; }
+    const xs = ends.map((p) => p[0]), lo = Math.min(...xs), hi = Math.max(...xs);
+    const half = Math.min(3.2, Math.max(2.2, hi - lo)) / 2, c: Pt = [(lo + hi) / 2, e[1]], n: Pt = [-dir[1], dir[0]], L = 420;
+    const P = (k: number, s: number) => `${(c[0] + dir[0] * k + n[0] * s).toFixed(1)} ${(c[1] + dir[1] * k + n[1] * s).toFixed(1)}`;
+    d += middle ? `M${P(-2, 0)} L${P(L, 0)} ` : `M${P(-6, -half)} L${P(L, -half)} L${P(L, half)} L${P(-6, half)} Z `;
+  }
+  return d;
+}
+
+/** The nearest place on a polyline: the distance and how far along it (0 the start, 1 the end; beyond them outside). */
+function nearOnLine(p: Pt, line: Pt[]): { d: number; s: number } {
+  let best = { d: Infinity, s: 0 }, run = 0;
+  const lens = line.slice(1).map((q, i) => Math.hypot(q[0] - line[i][0], q[1] - line[i][1])), total = lens.reduce((a, b) => a + b, 0);
+  for (let i = 0; i < lens.length; i++) {
+    const a = line[i], b = line[i + 1], vx = b[0] - a[0], vy = b[1] - a[1];
+    const t = ((p[0] - a[0]) * vx + (p[1] - a[1]) * vy) / (lens[i] * lens[i]);
+    const tc = Math.min(1, Math.max(0, t)), d = Math.hypot(p[0] - a[0] - vx * tc, p[1] - a[1] - vy * tc);
+    let along = run + tc * lens[i];
+    if (i === 0 && t < 0) along = t * lens[i];
+    if (i === lens.length - 1 && t > 1) along = run + t * lens[i];
+    if (d < best.d) best = { d, s: along / total };
+    run += lens[i];
+  }
+  return best;
+}
+/** How much a point moves with each finger: the one given by hand, or the nearest axes (the palm's line never moves). */
+function reach(side: Side, p: Pt, owner?: number): Reach[] {
+  if (owner === PALM) return FINGERS.map(() => ({ w: 0, s: 0 }));
+  if (owner != null && owner >= 0) return FINGERS.map((_, f) => ({ w: f === owner ? 1 : 0, s: f === owner ? nearOnLine(p, AXES[side][f]).s : 0 }));
+  const near = [...AXES[side], PALM_LINE[side]].map((l) => nearOnLine(p, l)), dmin = Math.min(...near.map((n) => n.d));
+  const w = near.map((n) => Math.exp(-(n.d * n.d - dmin * dmin) / (SIGMA * SIGMA))), sum = w.reduce((a, b) => a + b, 0);
+  return near.slice(0, 5).map((n, i) => ({ w: w[i] / sum, s: n.s }));
+}
+
+let st = startState();
+/** Each hand's outline as the page edits it: the source paths, the brush's moves per point (x y pairs). */
+const src = {} as Record<Side, Record<Kind, Path>>;
+const edits = {} as Record<Side, Record<Kind, number[]>>;
+const axisReach = {} as Record<Side, Reach[][][]>;
+/** Each hand's line widths when its outline is middle lines (undefined: filled bands, as traced). */
+const widths = {} as Record<Side, Outline['width']>;
+function loadSide(s: Side, o: Outline): void {
+  const lines = parse(o.lines);
+  widths[s] = o.width;
+  // Middle lines lie in the middle of the bands they came from: the axes fit them as well.
+  fitAxes(s, lines.xy);
+  UNIT_DIR[s] = unitDirs(s);
+  const paths = { lines, creases: parse(o.creases), tails: parse(wristTails(lines.xy, !!o.width)) };
+  src[s] = Object.fromEntries(KINDS.map((k) => [k, { ...paths[k], w: [] }])) as unknown as Record<Kind, Path>;
+  edits[s] = Object.fromEntries(KINDS.map((k) => [k, new Array(paths[k].xy.length * 2).fill(0)])) as Record<Kind, number[]>;
+  for (const k of KINDS) weigh(s, k);
+  axisReach[s] = AXES[s].map((line) => line.map((p) => reach(s, p)));
+}
+const ownerOf = (s: Side, k: Kind, i: number): number | undefined => (k === 'tails' ? undefined : st.owners[s][k][i]);
+function weigh(s: Side, k: Kind): void {
+  const path = src[s][k];
+  for (const i of path.xy.keys()) { const a = path.anchor[i]; path.w[i] = reach(s, path.xy[a], ownerOf(s, k, a)); }
+}
+
+const smooth = (t: number) => t * t * (3 - 2 * t), clamp = (x: number) => Math.min(1, Math.max(0, x));
+/** Each finger's way from its tip to its knuckle (a unit vector): where a bend moves its points. */
+const unitDirs = (s: Side) => AXES[s].map((l) => {
+  const b = l[0], t = l.at(-1)!, n = Math.hypot(b[0] - t[0], b[1] - t[1]);
+  return [(b[0] - t[0]) / n, (b[1] - t[1]) / n] as Pt;
+});
+const UNIT_DIR = {} as Record<Side, Pt[]>;
+/** How much the "middle of the finger" move reaches a place along it: most at the second joint's knuckle end. */
+const midBump = (s: number) => Math.exp(-(((s - 0.5) / 0.18) ** 2));
+
+/** One point of a hand in a pose: the fingers move (base correction, row curl and thumb, the pose's own moves), then the hand tilts and shifts. */
+function movePoint(side: Side, p: Pt, w: Reach[], hp: HandPose): Pt {
+  const row = st.rows[hp.row][side];
+  let x = p[0], y = p[1];
+  for (let f = 0; f < 5; f++) {
+    const { w: wf, s } = w[f];
+    if (wf < 1e-4 || s <= 0) continue;
+    const mine = hp.f[f], base = st.base[side][f], u = UNIT_DIR[side][f];
+    const bend = mine.bend + base.bend + (f ? row.curl : 0);
+    const dx = mine.x + base.x + (f ? 0 : row.thumbRight), dy = mine.y + base.y + (f ? 0 : row.thumbUp);
+    const r = smooth(clamp(s)), m = (mine.mid + base.mid) * midBump(s);
+    x += wf * (u[0] * bend * s + dx * r + m);
+    y += wf * (u[1] * bend * s - dy * r);
+  }
+  const a = ((row.tilt + hp.tilt) * Math.PI) / 180, [cx, cy] = PIVOT[side];
+  return [cx + (x - cx) * Math.cos(a) - (y - cy) * Math.sin(a) + row.right, cy + (x - cx) * Math.sin(a) + (y - cy) * Math.cos(a) - row.up];
+}
+const edited = (s: Side, k: Kind, i: number): Pt => { const p = src[s][k].xy[i], e = edits[s][k]; return [p[0] + e[2 * i], p[1] + e[2 * i + 1]]; };
+type Posed = Record<Side, Record<Kind, Pt[]>>;
+const posedSide = (s: Side, hp: HandPose) => Object.fromEntries(KINDS.map((k) => [k, src[s][k].xy.map((_, i) => movePoint(s, edited(s, k, i), src[s][k].w[i], hp))])) as Record<Kind, Pt[]>;
+const posed = (pose: Pose): Posed => ({ left: posedSide('left', pose.left), right: posedSide('right', pose.right) });
+
+// ---- the keyboard ----
+
+const NS = 'http://www.w3.org/2000/svg';
+const svg = document.getElementById('stage') as unknown as SVGSVGElement;
+const el = (n: string, a: Record<string, string | number>, parent: Element = svg) => {
+  const e = document.createElementNS(NS, n);
+  for (const k in a) e.setAttribute(k, String(a[k]));
+  parent.append(e);
+  return e;
+};
+const layoutSel = $<HTMLSelectElement>('layout'), schemeSel = $<HTMLSelectElement>('scheme');
+try {
+  layoutSel.value = localStorage.getItem('hand-rows-layout') || layoutSel.value;
+  schemeSel.value = localStorage.getItem('hand-rows-scheme') || schemeSel.value;
+} catch { /* the defaults */ }
+const board = () => withModifiers(LAYOUTS[layoutSel.value as 'us-qwerty' | 'sk-qwertz']);
+const scheme = () => schemeSel.value as FingerScheme;
+interface KeyBox { def: KeyDef; name: string; row: number; x: number; y: number; w: number; rect: Element }
+let keyBoxes: KeyBox[] = [];
+const keysG = el('g', {}), hasG = el('g', {});
+function drawBoard(): void {
+  keysG.replaceChildren();
+  const b = board();
+  keyBoxes = [];
+  for (const [r, row] of b.rows.entries()) {
+    let x = 0;
+    for (const def of row) {
+      x += (def.x ?? 0) * UNIT;
+      const w = (def.w ?? 1) * UNIT - GAP, y = r * (KEY_H + GAP), name = keyName(b, def.code) ?? '';
+      const rect = el('rect', { class: 'key', x, y, width: w, height: KEY_H, rx: 6 }, keysG);
+      el('rect', { class: 'stripe', x: x + 4, y: y + KEY_H - 7, width: w - 8, height: 3, rx: 1.5, fill: FINGER_COLORS[fingerOf(def, scheme())] }, keysG);
+      el('text', { class: 'label', x: x + w / 2, y: y + (KEY_H - 9) / 2 }, keysG).textContent = name;
+      const box = { def, name, row: r, x, y, w, rect };
+      rect.addEventListener('click', (e) => { if (tool() === 'keys') pickKey(box, e as MouseEvent); });
+      keyBoxes.push(box);
+      x += (def.w ?? 1) * UNIT;
+    }
+  }
+  markKeys();
+}
+for (const sel of [layoutSel, schemeSel]) sel.addEventListener('change', () => {
+  try { localStorage.setItem('hand-rows-layout', layoutSel.value); localStorage.setItem('hand-rows-scheme', schemeSel.value); } catch { /* not kept */ }
+  drawBoard();
+});
+const keyOfPose = (id: string) => (/^[lr][1-5]/.test(id) ? id.slice(2) : null);
+/** The shown pose's key lit; a green dot on every key with a pose here. */
+function markKeys(): void {
+  const key = keyOfPose(current);
+  for (const k of keyBoxes) k.rect.classList.toggle('on', k.name === key);
+  hasG.replaceChildren();
+  const have = new Set(st.poses.map((p) => keyOfPose(p.id)));
+  for (const k of keyBoxes) if (have.has(k.name)) el('circle', { class: 'has', cx: k.x + k.w - 8, cy: k.y + 8, r: 4.5 }, hasG);
+}
+/** A key clicked: the pose of the hand and finger that press it (the space bar: the thumb on the clicked half), opened or added. */
+function pickKey(k: KeyBox, e: MouseEvent): void {
+  const at = toSvg(e);
+  const finger: Finger = k.def.code === 'Space' ? (at[0] < k.x + k.w / 2 ? 4 : 5) : fingerOf(k.def, scheme());
+  const id = poseName(board(), k.def.code, finger);
+  if (!id || !POSE_NAME.test(id)) return;
+  if (!st.poses.some((p) => p.id === id)) {
+    const pose = basePose(id, id, 'home');
+    pose[id[0] === 'l' ? 'left' : 'right'].row = ROW_OF[k.row];
+    st.poses.push(pose);
+    changed();
+    buildChips();
+  }
+  setPlaying(false);
+  show(id);
+}
+
+// ---- the hands ----
+
+const ghost = el('g', {}), hands = el('g', {}), dotsG = el('g', {}), axesG = el('g', { display: 'none' });
+const brushRing = el('circle', { class: 'brush', r: 12, cx: -999, cy: -999, display: 'none' });
+const paths = {} as Record<Side, Record<Kind, Element> & { axes: Element[] }>;
+const ghostPaths = {} as Record<Side, Element>;
+for (const s of SIDES) {
+  ghostPaths[s] = el('path', { class: 'ghost' }, ghost);
+  paths[s] = {
+    creases: el('path', { class: 'crease' }, hands), tails: el('path', { class: 'hand' }, hands), lines: el('path', { class: 'hand' }, hands),
+    axes: AXES[s].map(() => el('polyline', { class: 'axis' }, axesG)),
+  };
+}
+const homePose = basePose('home', 'Domov', 'home');
+/** How each hand's paths are drawn: filled bands, or middle lines as strokes of their width. */
+function styleHands(): void {
+  for (const s of SIDES) {
+    const w = widths[s];
+    for (const [e, width] of [[paths[s].lines, w?.lines], [paths[s].tails, w?.lines], [paths[s].creases, w?.creases], [ghostPaths[s], w?.lines]] as const) {
+      e.classList.toggle('middle', !!w);
+      if (w) e.setAttribute('stroke-width', String(width)); else e.removeAttribute('stroke-width');
+    }
+  }
+}
+function drawGhost(): void {
+  styleHands();
+  const g = posed(homePose);
+  for (const s of SIDES) ghostPaths[s].setAttribute('d', `${draw(src[s].lines, g[s].lines)} ${draw(src[s].tails, g[s].tails)}`);
+}
+
+let current = 'home', shown: Posed | null = null, anim = 0;
+const poseById = (id: string) => st.poses.find((p) => p.id === id) ?? st.poses[0];
+function render(xy: Posed): void {
+  for (const s of SIDES) for (const k of KINDS) paths[s][k].setAttribute('d', draw(src[s][k], xy[s][k]));
+  drawDots(xy);
+}
+function renderAxes(): void {
+  const pose = poseById(current);
+  for (const s of SIDES) AXES[s].forEach((line, f) => paths[s].axes[f].setAttribute('points', line.map((p, j) => movePoint(s, p, axisReach[s][f][j], pose[s]).join(',')).join(' ')));
+}
+/** Which finger each point moves with, in the finger's colour (grey: the palm). */
+const fingerColor = (s: Side, f: number) => (f === PALM ? '#777' : FINGER_COLORS[(s === 'left' ? 4 - f : 5 + f) as Finger]);
+const showDots = $<HTMLInputElement>('dots');
+function drawDots(xy: Posed): void {
+  dotsG.replaceChildren();
+  if (!showDots.checked) return;
+  for (const s of SIDES) for (const k of OWNED) {
+    src[s][k].w.forEach((w, i) => {
+      if (src[s][k].anchor[i] !== i) return;
+      let best = PALM, most = 0.5;
+      w.forEach((r, f) => { if (r.w > most && r.s > 0) { best = f; most = r.w; } });
+      const own = ownerOf(s, k, i) != null;
+      el('circle', { class: 'dot', cx: xy[s][k][i][0], cy: xy[s][k][i][1], r: own ? 2.2 : 1.6, fill: fingerColor(s, best) }, dotsG);
+    });
+  }
+}
+showDots.addEventListener('change', () => { if (shown) drawDots(shown); });
+function show(id: string, blend = $<HTMLInputElement>('smooth').checked): void {
+  const fresh = id !== current;
+  current = id;
+  markKeys();
+  for (const b of document.querySelectorAll<HTMLElement>('#poses .chip')) b.classList.toggle('now', b.dataset.id === id);
+  if (fresh) buildPanels();
+  renderAxes();
+  const from = shown, to = posed(poseById(id));
+  cancelAnimationFrame(anim);
+  if (!from || !blend || matchMedia('(prefers-reduced-motion: reduce)').matches) { shown = to; render(to); return; }
+  const t0 = performance.now(), dur = Math.min(280, stepS() * 500);
+  const mix = (t: number): Posed => Object.fromEntries(SIDES.map((s) => [s, Object.fromEntries(KINDS.map((k) => [k, from[s][k].map((p, i) => [p[0] + (to[s][k][i][0] - p[0]) * t, p[1] + (to[s][k][i][1] - p[1]) * t])]))])) as Posed;
+  const tick = (now: number) => {
+    const t = smooth(clamp((now - t0) / dur));
+    shown = mix(t);
+    render(shown);
+    if (t < 1) anim = requestAnimationFrame(tick);
+  };
+  anim = requestAnimationFrame(tick);
+}
+let dirty = false;
+function changed(): void {
+  if (!dirty) say('Neuložené zmeny');
+  dirty = true;
+}
+function redraw(ghostToo = false): void {
+  cancelAnimationFrame(anim);
+  shown = posed(poseById(current));
+  render(shown);
+  renderAxes();
+  if (ghostToo) drawGhost();
+  changed();
+}
+addEventListener('beforeunload', (e) => { if (dirty) e.preventDefault(); });
+
+// ---- poses: the strip and the cycle ----
+
+const posesEl = $('poses');
+function buildChips(): void {
+  posesEl.replaceChildren();
+  for (const p of st.poses) {
+    const chip = Object.assign(document.createElement('span'), { className: `chip${p.id === current ? ' now' : ''}`, tabIndex: 0 });
+    chip.dataset.id = p.id;
+    chip.setAttribute('role', 'button');
+    const box = Object.assign(document.createElement('input'), { type: 'checkbox', checked: p.on, title: 'V striedaní' });
+    box.addEventListener('click', (e) => { e.stopPropagation(); p.on = box.checked; changed(); });
+    chip.append(box, p.name);
+    if (keyOfPose(p.id)) {
+      const x = Object.assign(document.createElement('button'), { className: 'x', textContent: '×', title: 'Odstrániť pózu (pri uložení zmizne aj jej SVG)' });
+      x.addEventListener('click', (e) => {
+        e.stopPropagation();
+        st.poses = st.poses.filter((q) => q !== p);
+        if (current === p.id) current = '';
+        buildChips();
+        show(current || 'home', false);
+        changed();
+      });
+      chip.append(x);
+    }
+    const pick = () => { setPlaying(false); show(p.id); };
+    chip.addEventListener('click', pick);
+    chip.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
+    posesEl.append(chip);
+  }
+}
+let playing = false, timer = 0;
+const playBtn = $<HTMLButtonElement>('play'), stepIn = $<HTMLInputElement>('step');
+const stepS = () => Math.max(0.2, Number(stepIn.value) || 1);
+function next(): void {
+  const list = st.poses.filter((p) => p.on);
+  if (!list.length) return;
+  show(list[(list.findIndex((p) => p.id === current) + 1) % list.length].id);
+}
+function setPlaying(p: boolean): void {
+  playing = p;
+  playBtn.textContent = p ? 'Pauza' : 'Prehrať';
+  clearInterval(timer);
+  if (p) timer = window.setInterval(next, stepS() * 1000);
+}
+playBtn.addEventListener('click', () => setPlaying(!playing));
+stepIn.addEventListener('change', () => { if (playing) setPlaying(true); });
+$<HTMLInputElement>('ghost').addEventListener('change', (e) => ghost.setAttribute('display', (e.target as HTMLInputElement).checked ? 'inline' : 'none'));
+$<HTMLInputElement>('axes').addEventListener('change', (e) => axesG.setAttribute('display', (e.target as HTMLInputElement).checked ? 'inline' : 'none'));
+
+// ---- sliders ----
+
+function slider<T>(parent: Element, id: string, [key, label, lo, hi, step]: Field<keyof T>, obj: T, base: number, onChange: () => void): void {
+  const box = Object.assign(document.createElement('div'), { className: 's' });
+  box.innerHTML = `<label for="${id}">${label}</label><output for="${id}"></output><input type="range" id="${id}" min="${lo}" max="${hi}" step="${step}">`;
+  const input = box.querySelector('input')!, out = box.querySelector('output')!;
+  const get = () => obj[key] as number, set = (v: number) => { (obj[key] as number) = v; };
+  const sync = () => { input.value = String(get()); out.textContent = String(get()); box.classList.toggle('changed', get() !== base); };
+  sync();
+  input.addEventListener('input', () => { set(Number(input.value)); sync(); onChange(); });
+  input.addEventListener('dblclick', () => { set(base); sync(); onChange(); });
+  parent.append(box);
+}
+function fingerBlocks(parent: Element, side: Side, list: FingerMove[], bases: FingerMove[], idp: string, onChange: () => void): void {
+  FINGERS.forEach((name, f) => {
+    const box = Object.assign(document.createElement('div'), { className: 'finger' });
+    box.innerHTML = `<h3>${name}</h3>`;
+    const sl = Object.assign(document.createElement('div'), { className: 'sliders' });
+    for (const fld of FINGER_FIELDS) slider(sl, `${idp}-${side}-${f}-${fld[0]}`, fld, list[f], bases[f][fld[0]], onChange);
+    box.append(sl);
+    parent.append(box);
+  });
+}
+const column = (title: string) => {
+  const col = Object.assign(document.createElement('div'), { className: 'hand-col' });
+  col.innerHTML = `<h3>${title}</h3>`;
+  return col;
+};
+function buildBase(): void {
+  const host = $('baseHands');
+  host.replaceChildren();
+  for (const s of SIDES) {
+    const col = column(SIDE_NAME[s]);
+    fingerBlocks(col, s, st.base[s], BASE_DEFAULTS[s], 'base', () => redraw(true));
+    host.append(col);
+  }
+}
+function buildPanels(): void {
+  const pose = poseById(current);
+  $('poseTitle').textContent = `Póza ${pose.name}`;
+  const rowsEl = $('rowHands'), poseEl = $('poseHands');
+  rowsEl.replaceChildren();
+  poseEl.replaceChildren();
+  const names = SIDES.map((s) => ROW_NAMES[pose[s].row]);
+  $('rowTitle').textContent = names[0] === names[1] ? `Rad: ${names[0]}` : `Rady: ${names[0]} / ${names[1]}`;
+  for (const s of SIDES) {
+    const hp = pose[s];
+    const rc = column(`${SIDE_NAME[s]}, ${ROW_NAMES[hp.row]}`);
+    const rs = Object.assign(document.createElement('div'), { className: 'sliders' });
+    for (const fld of ROW_FIELDS) slider(rs, `row-${hp.row}-${s}-${fld[0]}`, fld, st.rows[hp.row][s], ROW_DEFAULTS[hp.row][s][fld[0]], redraw);
+    rc.append(rs);
+    rowsEl.append(rc);
+
+    const pc = Object.assign(document.createElement('div'), { className: 'hand-col' });
+    const head = Object.assign(document.createElement('div'), { className: 'head' });
+    head.innerHTML = `<h3>${SIDE_NAME[s]}</h3>`;
+    const sel = Object.assign(document.createElement('select'), { id: `row-of-${s}` });
+    sel.setAttribute('aria-label', `Rad, ${SIDE_NAME[s]}`);
+    for (const r of Object.keys(ROW_NAMES) as RowName[]) sel.append(new Option(ROW_NAMES[r], r, false, r === hp.row));
+    sel.addEventListener('change', () => { hp.row = sel.value as RowName; buildPanels(); redraw(); });
+    const reset = Object.assign(document.createElement('button'), { textContent: 'Reset ruky' });
+    reset.addEventListener('click', () => { Object.assign(hp, handPose(hp.row)); buildPanels(); redraw(); });
+    head.append(sel, reset);
+    const tilt = Object.assign(document.createElement('div'), { className: 'sliders' });
+    slider(tilt, `tilt-${s}`, ['tilt', 'Odklon ruky (° vpravo)', -25, 25, 0.5], hp, 0, redraw);
+    pc.append(head, tilt);
+    fingerBlocks(pc, s, hp.f, moves(), 'f', redraw);
+    poseEl.append(pc);
+  }
+}
+$('baseReset').addEventListener('click', () => { st.base = structuredClone(BASE_DEFAULTS); buildBase(); redraw(true); });
+$('poseReset').addEventListener('click', () => { const p = poseById(current); for (const s of SIDES) Object.assign(p[s], handPose(p[s].row)); buildPanels(); redraw(); });
+$('rowReset').addEventListener('click', () => {
+  const p = poseById(current);
+  for (const s of SIDES) st.rows[p[s].row][s] = structuredClone(ROW_DEFAULTS[p[s].row][s]);
+  buildPanels();
+  redraw(true);
+});
+
+// ---- the mouse on the outline: the brush moves points, the paint gives them to a finger ----
+
+const radiusIn = $<HTMLInputElement>('radius'), undoBtn = $<HTMLButtonElement>('undo'), stageBox = $('stageBox'), paintFinger = $<HTMLSelectElement>('paintFinger');
+const tool = () => (document.querySelector<HTMLInputElement>('input[name="tool"]:checked')?.value ?? 'keys') as 'keys' | 'brush' | 'paint';
+const undoStack: { edits: typeof edits; owners: RowsState['owners'] }[] = [];
+function onTool(): void {
+  const t = tool();
+  stageBox.classList.toggle('keys-tool', t === 'keys');
+  stageBox.classList.toggle('brush-tool', t !== 'keys');
+  brushRing.setAttribute('display', t === 'keys' ? 'none' : 'inline');
+  if (t === 'paint' && !showDots.checked) { showDots.checked = true; if (shown) drawDots(shown); }
+  if (t !== 'keys') setPlaying(false);
+}
+for (const r of document.querySelectorAll<HTMLInputElement>('input[name="tool"]')) r.addEventListener('change', onTool);
+radiusIn.addEventListener('input', () => { $('radiusOut').textContent = radiusIn.value; brushRing.setAttribute('r', radiusIn.value); });
+const toSvg = (e: MouseEvent): Pt => { const pt = new DOMPoint(e.clientX, e.clientY).matrixTransform(svg.getScreenCTM()!.inverse()); return [pt.x, pt.y]; };
+let dragAt: Pt | null = null;
+/** The points (of the shown pose) under the brush, with how strongly. */
+function* under(at: Pt, kinds: Kind[]): Generator<[Side, Kind, number, number]> {
+  const R = Number(radiusIn.value);
+  for (const s of SIDES) for (const k of kinds) {
+    const now = shown![s][k];
+    for (let i = 0; i < now.length; i++) {
+      const d = Math.hypot(now[i][0] - at[0], now[i][1] - at[1]);
+      if (d < R) yield [s, k, i, smooth(1 - d / R)];
+    }
+  }
+}
+function paint(at: Pt): void {
+  const f = Number(paintFinger.value), touched = new Set<string>();
+  for (const [s, k, i] of under(at, OWNED)) {
+    if (src[s][k].anchor[i] !== i) continue;
+    const owners = st.owners[s][k as 'lines' | 'creases'] as Owners;
+    if (f < 0) delete owners[i]; else owners[i] = f;
+    touched.add(`${s}.${k}`);
+  }
+  // A control point follows its end point's finger: the whole path is weighed again.
+  for (const key of touched) { const [s, k] = key.split('.') as [Side, Kind]; weigh(s, k); }
+}
+svg.addEventListener('pointermove', (e) => {
+  const p = toSvg(e);
+  brushRing.setAttribute('cx', String(p[0]));
+  brushRing.setAttribute('cy', String(p[1]));
+  if (!dragAt || !shown) return;
+  if (tool() === 'brush') {
+    const dx = p[0] - dragAt[0], dy = p[1] - dragAt[1];
+    for (const [s, k, i, w] of under(dragAt, KINDS)) { edits[s][k][2 * i] += dx * w; edits[s][k][2 * i + 1] += dy * w; }
+  } else paint(p);
+  dragAt = p;
+  shown = posed(poseById(current));
+  render(shown);
+});
+svg.addEventListener('pointerdown', (e) => {
+  if (tool() === 'keys') return;
+  e.preventDefault();
+  cancelAnimationFrame(anim);
+  shown = posed(poseById(current));
+  undoStack.push({ edits: structuredClone(edits), owners: structuredClone(st.owners) });
+  if (undoStack.length > 40) undoStack.shift();
+  undoBtn.disabled = false;
+  dragAt = toSvg(e);
+  if (tool() === 'paint') paint(dragAt);
+  svg.setPointerCapture(e.pointerId);
+});
+const endDrag = () => { if (!dragAt) return; dragAt = null; redraw(true); };
+svg.addEventListener('pointerup', endDrag);
+svg.addEventListener('pointercancel', endDrag);
+undoBtn.addEventListener('click', () => {
+  const last = undoStack.pop();
+  if (!last) return;
+  for (const s of SIDES) for (const k of KINDS) edits[s][k] = last.edits[s][k];
+  st.owners = last.owners;
+  for (const s of SIDES) for (const k of KINDS) weigh(s, k);
+  undoBtn.disabled = !undoStack.length;
+  redraw(true);
+});
+$('clearEdits').addEventListener('click', () => {
+  undoStack.push({ edits: structuredClone(edits), owners: structuredClone(st.owners) });
+  undoBtn.disabled = false;
+  for (const s of SIDES) for (const k of KINDS) edits[s][k].fill(0);
+  redraw(true);
+});
+
+// ---- the outline as an SVG, to edit elsewhere and load back ----
+
+const outlineOf = (s: Side): Outline => {
+  const d = (k: Kind) => draw(src[s][k], src[s][k].xy.map((_, i) => edited(s, k, i)));
+  return { lines: d('lines'), creases: d('creases'), ...(widths[s] ? { width: widths[s] } : {}) };
+};
+const outlineText = (s: Side) => outlineSvg(s, outlineOf(s), 'outline');
+for (const [id, s] of [['copyLeft', 'left'], ['copyRight', 'right']] as const) {
+  $(id).addEventListener('click', () => navigator.clipboard.writeText(outlineText(s)).then(() => say('Obrys je v schránke'), () => say('Kopírovanie nefunguje', true)));
+}
+for (const [id, s] of [['loadLeft', 'left'], ['loadRight', 'right']] as const) {
+  $<HTMLInputElement>(id).addEventListener('change', async (e) => {
+    const input = e.target as HTMLInputElement, file = input.files?.[0];
+    input.value = '';
+    if (!file) return;
+    const o = readOutline(await file.text());
+    if (!o.lines) return say('V súbore chýba cesta s triedou hand-lines', true);
+    replaceOutline(s, o);
+    say(`${SIDE_NAME[s]}: obrys načítaný, ulož ho`);
+  });
+}
+/** A hand's new outline: other points, so the fingers given by hand and the undo steps no longer fit. */
+function replaceOutline(s: Side, o: Outline): void {
+  undoStack.length = 0;
+  undoBtn.disabled = true;
+  st.owners[s] = { lines: {}, creases: {} };
+  loadSide(s, o);
+  redraw(true);
+}
+// Bands into middle lines: one stroke per line, so moving a finger bends its lines instead of tearing a band's two edges apart.
+$('centerline').addEventListener('click', () => {
+  for (const s of SIDES) {
+    if (widths[s]) continue;
+    const band = outlineOf(s), lines = centerline(band.lines), creases = centerline(band.creases);
+    replaceOutline(s, { lines: lines.d, creases: creases.d, width: { lines: lines.width, creases: creases.width } });
+  }
+  say('Obrys je zo stredových čiar; body prstom priraď prípadne znova a ulož ho');
+});
+
+// ---- saving ----
+
+const tapko = new BroadcastChannel(HANDS_CHANNEL);
+async function save(): Promise<void> {
+  const files: OutlineFile[] = [];
+  const out = (side: Side, name: string, hp: HandPose) => {
+    const xy = posedSide(side, hp);
+    files.push({ side, name, lines: draw(src[side].lines, xy.lines), creases: draw(src[side].creases, xy.creases), ...(widths[side] ? { width: widths[side] } : {}) });
+  };
+  for (const s of SIDES) out(s, 'home', homePose[s]);
+  for (const p of st.poses) {
+    const key = keyOfPose(p.id);
+    if (key) { const side: Side = p.id[0] === 'l' ? 'left' : 'right'; out(side, p.id, p[side]); }
+  }
+  const outline = { left: outlineOf('left'), right: outlineOf('right') };
+  say('Ukladám…');
+  const r = await fetch('/__hand-poser/rows-save', { method: 'POST', body: JSON.stringify({ state: st, outline, files }) });
+  const res = (await r.json()) as { ok: boolean; error?: string; written?: string[]; removed?: string[] };
+  if (!res.ok) return say(res.error ?? 'Nepodarilo sa uložiť', true);
+  // The brush's moves are now in the source outline.
+  for (const s of SIDES) loadSide(s, outline[s]);
+  undoStack.length = 0;
+  undoBtn.disabled = true;
+  dirty = false;
+  tapko.postMessage('saved');
+  redraw(true);
+  dirty = false;
+  say(`Uložené: ${res.written!.length} SVG${res.removed!.length ? `, zmazané ${res.removed!.join(', ')}` : ''}`);
+}
+$('save').addEventListener('click', () => void save());
+addEventListener('keydown', (e) => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); void save(); } });
+
+// ---- start ----
+
+(async () => {
+  const r = await fetch('/__hand-poser/rows');
+  const res = (await r.json()) as { ok: boolean; state: RowsState | null; outline: Record<Side, Outline> };
+  if (res.state) st = { ...startState(), ...res.state };
+  for (const s of SIDES) loadSide(s, res.outline[s]);
+  drawBoard();
+  buildChips();
+  buildBase();
+  buildPanels();
+  drawGhost();
+  onTool();
+  show('home', false);
+  dirty = false;
+  say(res.state ? 'Nastavenia načítané' : 'Prvé spustenie: pôvodné hodnoty, ulož ich');
+})();

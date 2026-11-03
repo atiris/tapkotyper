@@ -1,9 +1,14 @@
 * { box-sizing: border-box; }
-body { margin: 0; font: 13px system-ui, sans-serif; background: #f4f1ec; color: #2d2140; }
-.main { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(380px, 1fr); gap: 16px; padding: 12px 16px 40px; align-items: start; }
-.rows-left { position: sticky; top: 12px; display: grid; gap: 8px; min-width: 0; }
+/* The page scrolls in the body (Tapko's styles): its scrollbar keeps its room, so nothing moves when it shows or hides. */
+body { margin: 0; font: 13px system-ui, sans-serif; background: #f4f1ec; color: #2d2140; scrollbar-gutter: stable; }
+/* The bottom padding equals the left side's room below it, so the page's end never pushes the sticky left side up. */
+.main { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(380px, 1fr); gap: 16px; padding: 12px 16px; align-items: start; }
+/* The left side stays in view: its top (rows, keyboard, the key poses) never scrolls, the controls below it scroll on their own when the window is low. */
+.rows-left { position: sticky; top: 12px; display: flex; flex-direction: column; gap: 8px; min-width: 0; max-height: calc(100vh - 24px); }
+.rows-left > * { flex: none; }
+.rows-left > .rows-left-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; display: grid; gap: 8px; align-content: start; scrollbar-gutter: stable; }
 .rows-right { display: grid; gap: 12px; min-width: 0; }
-@media (max-width: 1000px) { .main { grid-template-columns: minmax(0, 1fr); } .rows-left { position: static; } }
+@media (max-width: 1000px) { .main { grid-template-columns: minmax(0, 1fr); } .rows-left { position: static; max-height: none; } }
 h1 { font-size: 18px; margin: 0; }
 h2 { font-size: 15px; margin: 0; }
 h3 { font-size: 13px; margin: 0; }

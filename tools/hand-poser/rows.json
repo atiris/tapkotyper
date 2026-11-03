@@ -149,6 +149,26 @@
     "thumbUp": -25,
     "short": 0
    }
+  },
+  "off": {
+   "left": {
+    "up": 42,
+    "right": -348,
+    "tilt": -12.5,
+    "curl": -11,
+    "thumbRight": -8,
+    "thumbUp": 0,
+    "short": -2
+   },
+   "right": {
+    "up": 30,
+    "right": 392,
+    "tilt": 13.5,
+    "curl": -11,
+    "thumbRight": 9,
+    "thumbUp": 0,
+    "short": -5
+   }
   }
  },
  "poses": [
@@ -157,8 +177,14 @@
    "name": "Domov",
    "on": true,
    "left": {
-    "row": "home",
+    "up": 0,
+    "right": 0,
     "tilt": 0,
+    "curl": 0,
+    "thumbRight": 0,
+    "thumbUp": 0,
+    "short": 0,
+    "row": "home",
     "f": [
      {
       "bend": 0,
@@ -190,12 +216,17 @@
       "y": 0,
       "mid": 0
      }
-    ],
-    "short": 0
+    ]
    },
    "right": {
-    "row": "home",
+    "up": 0,
+    "right": 0,
     "tilt": 0,
+    "curl": 0,
+    "thumbRight": 0,
+    "thumbUp": 0,
+    "short": 0,
+    "row": "home",
     "f": [
      {
       "bend": 0,
@@ -227,8 +258,7 @@
       "y": 0,
       "mid": 0
      }
-    ],
-    "short": 0
+    ]
    }
   },
   {
@@ -236,8 +266,14 @@
    "name": "Horný rad",
    "on": true,
    "left": {
-    "row": "top",
+    "up": 0,
+    "right": 0,
     "tilt": 0,
+    "curl": 0,
+    "thumbRight": 0,
+    "thumbUp": 0,
+    "short": 0,
+    "row": "top",
     "f": [
      {
       "bend": 0,
@@ -269,12 +305,17 @@
       "y": 0,
       "mid": 0
      }
-    ],
-    "short": 0
+    ]
    },
    "right": {
-    "row": "top",
+    "up": 0,
+    "right": 0,
     "tilt": 0,
+    "curl": 0,
+    "thumbRight": 0,
+    "thumbUp": 0,
+    "short": 0,
+    "row": "top",
     "f": [
      {
       "bend": 0,
@@ -306,8 +347,7 @@
       "y": 0,
       "mid": 0
      }
-    ],
-    "short": 0
+    ]
    }
   },
   {
@@ -315,8 +355,14 @@
    "name": "Číselný rad",
    "on": true,
    "left": {
-    "row": "num",
+    "up": 0,
+    "right": 0,
     "tilt": 0,
+    "curl": 0,
+    "thumbRight": 0,
+    "thumbUp": 0,
+    "short": 0,
+    "row": "num",
     "f": [
      {
       "bend": 0,
@@ -348,12 +394,17 @@
       "y": 0,
       "mid": 0
      }
-    ],
-    "short": 0
+    ]
    },
    "right": {
-    "row": "num",
+    "up": 0,
+    "right": 0,
     "tilt": 0,
+    "curl": 0,
+    "thumbRight": 0,
+    "thumbUp": 0,
+    "short": 0,
+    "row": "num",
     "f": [
      {
       "bend": 0,
@@ -385,8 +436,7 @@
       "y": 0,
       "mid": 0
      }
-    ],
-    "short": 0
+    ]
    }
   },
   {
@@ -394,8 +444,14 @@
    "name": "Dolný rad",
    "on": true,
    "left": {
-    "row": "bot",
+    "up": 0,
+    "right": 0,
     "tilt": 0,
+    "curl": 0,
+    "thumbRight": 0,
+    "thumbUp": 0,
+    "short": 0,
+    "row": "bot",
     "f": [
      {
       "bend": 0,
@@ -427,12 +483,17 @@
       "y": 0,
       "mid": 0
      }
-    ],
-    "short": 0
+    ]
    },
    "right": {
-    "row": "bot",
+    "up": 0,
+    "right": 0,
     "tilt": 0,
+    "curl": 0,
+    "thumbRight": 0,
+    "thumbUp": 0,
+    "short": 0,
+    "row": "bot",
     "f": [
      {
       "bend": 0,
@@ -464,8 +525,7 @@
       "y": 0,
       "mid": 0
      }
-    ],
-    "short": 0
+    ]
    }
   },
   {
@@ -473,9 +533,14 @@
    "name": "l5a0",
    "on": true,
    "left": {
-    "row": "home",
+    "up": 0,
+    "right": 0,
     "tilt": 0,
+    "curl": 0,
+    "thumbRight": 0,
+    "thumbUp": 0,
     "short": 0,
+    "row": "home",
     "f": [
      {
       "bend": 0,
@@ -510,9 +575,14 @@
     ]
    },
    "right": {
-    "row": "home",
+    "up": 0,
+    "right": 0,
     "tilt": 0,
+    "curl": 0,
+    "thumbRight": 0,
+    "thumbUp": 0,
     "short": 0,
+    "row": "home",
     "f": [
      {
       "bend": 0,
@@ -552,9 +622,14 @@
    "name": "l4s0",
    "on": true,
    "left": {
-    "row": "home",
+    "up": 0,
+    "right": 0,
     "tilt": 0,
+    "curl": 0,
+    "thumbRight": 0,
+    "thumbUp": 0,
     "short": 0,
+    "row": "home",
     "f": [
      {
       "bend": 0,
@@ -589,9 +664,14 @@
     ]
    },
    "right": {
-    "row": "home",
+    "up": 0,
+    "right": 0,
     "tilt": 0,
+    "curl": 0,
+    "thumbRight": 0,
+    "thumbUp": 0,
     "short": 0,
+    "row": "home",
     "f": [
      {
       "bend": 0,
@@ -631,9 +711,14 @@
    "name": "l3d0",
    "on": true,
    "left": {
-    "row": "home",
+    "up": 0,
+    "right": 0,
     "tilt": 0,
+    "curl": 0,
+    "thumbRight": 0,
+    "thumbUp": 0,
     "short": 0,
+    "row": "home",
     "f": [
      {
       "bend": 0,
@@ -668,9 +753,14 @@
     ]
    },
    "right": {
-    "row": "home",
+    "up": 0,
+    "right": 0,
     "tilt": 0,
+    "curl": 0,
+    "thumbRight": 0,
+    "thumbUp": 0,
     "short": 0,
+    "row": "home",
     "f": [
      {
       "bend": 0,
@@ -710,9 +800,14 @@
    "name": "l2f0",
    "on": true,
    "left": {
-    "row": "home",
+    "up": 0,
+    "right": 0,
     "tilt": 0,
+    "curl": 0,
+    "thumbRight": 0,
+    "thumbUp": 0,
     "short": 0,
+    "row": "home",
     "f": [
      {
       "bend": 0,
@@ -747,9 +842,14 @@
     ]
    },
    "right": {
-    "row": "home",
+    "up": 0,
+    "right": 0,
     "tilt": 0,
+    "curl": 0,
+    "thumbRight": 0,
+    "thumbUp": 0,
     "short": 0,
+    "row": "home",
     "f": [
      {
       "bend": 0,
@@ -789,9 +889,14 @@
    "name": "l2g0",
    "on": true,
    "left": {
-    "row": "home",
+    "up": 0,
+    "right": 0,
     "tilt": 0,
+    "curl": 0,
+    "thumbRight": 0,
+    "thumbUp": 0,
     "short": 14,
+    "row": "home",
     "f": [
      {
       "bend": 0,
@@ -826,8 +931,191 @@
     ]
    },
    "right": {
-    "row": "home",
+    "up": 0,
+    "right": 0,
     "tilt": 0,
+    "curl": 0,
+    "thumbRight": 0,
+    "thumbUp": 0,
+    "short": 0,
+    "row": "home",
+    "f": [
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     }
+    ]
+   }
+  },
+  {
+   "id": "off",
+   "name": "Mimo klávesnice",
+   "on": true,
+   "left": {
+    "up": 0,
+    "right": 0,
+    "tilt": 0,
+    "curl": 0,
+    "thumbRight": 0,
+    "thumbUp": 0,
+    "short": 0,
+    "row": "off",
+    "f": [
+     {
+      "bend": -5,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 1,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": -24,
+      "x": 0,
+      "y": 0,
+      "mid": 2
+     },
+     {
+      "bend": -20,
+      "x": 0,
+      "y": 0,
+      "mid": 2
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     }
+    ]
+   },
+   "right": {
+    "up": 0,
+    "right": 0,
+    "tilt": 0,
+    "curl": 0,
+    "thumbRight": 0,
+    "thumbUp": 0,
+    "short": 0,
+    "row": "off",
+    "f": [
+     {
+      "bend": -4,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 1,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": -23,
+      "x": 0,
+      "y": 0,
+      "mid": -2
+     },
+     {
+      "bend": -29,
+      "x": 0,
+      "y": 0,
+      "mid": -3
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     }
+    ]
+   }
+  },
+  {
+   "id": "l1sp",
+   "name": "l1sp",
+   "on": true,
+   "left": {
+    "row": "home",
+    "up": 0,
+    "right": 0,
+    "tilt": 0,
+    "curl": 0,
+    "thumbRight": 0,
+    "thumbUp": 0,
+    "short": 4.5,
+    "f": [
+     {
+      "bend": 1,
+      "x": -6,
+      "y": -1,
+      "mid": 1
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     }
+    ]
+   },
+   "right": {
+    "row": "home",
+    "up": 0,
+    "right": 0,
+    "tilt": 0,
+    "curl": 0,
+    "thumbRight": 0,
+    "thumbUp": 0,
     "short": 0,
     "f": [
      {
@@ -835,6 +1123,95 @@
       "x": 0,
       "y": 0,
       "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     }
+    ]
+   }
+  },
+  {
+   "id": "r1sp",
+   "name": "r1sp",
+   "on": true,
+   "left": {
+    "row": "home",
+    "up": 0,
+    "right": 0,
+    "tilt": 0,
+    "curl": 0,
+    "thumbRight": 0,
+    "thumbUp": 0,
+    "short": 0,
+    "f": [
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     }
+    ]
+   },
+   "right": {
+    "row": "home",
+    "up": 0,
+    "right": 0,
+    "tilt": 0,
+    "curl": 0,
+    "thumbRight": 0,
+    "thumbUp": 0,
+    "short": 5,
+    "f": [
+     {
+      "bend": 3,
+      "x": 4,
+      "y": -1,
+      "mid": 2
      },
      {
       "bend": 0,

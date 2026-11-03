@@ -1,6 +1,7 @@
 {
   "left": [
     "home",
+    "l1sp",
     "l2f0",
     "l2g0",
     "l3d0",
@@ -15,6 +16,7 @@
   ],
   "right": [
     "home",
+    "r1sp",
     "r2j0",
     "r5rs",
     "rest",

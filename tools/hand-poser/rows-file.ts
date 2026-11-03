@@ -45,8 +45,14 @@ export interface RowsState {
   owners: Record<Side, { lines: Owners; creases: Owners }>;
   /** Each finger's axis (its joints and tip; thumb first) and the back of the hand's line as the owner set them; none: fitted to the outline. */
   axes?: Partial<Record<Side, { fingers: [number, number][][]; palm: [number, number][] }>>;
+  /** The palette being tried (FINGER_COLORS order), until it is approved for Tapko. */
+  colors?: string[];
+  /** Which poses get filled nails: the whole rows, the keys' presses, the hands beside the keyboard. */
+  nails?: { rows: boolean; keys: boolean; off: boolean };
 }
-export interface OutlineFile extends Outline { side: Side; name: string }
+/** A nail filled in its finger's colour (Finger 0-9, as FINGER_COLORS). */
+export interface Nail { finger: number; d: string; color: string }
+export interface OutlineFile extends Outline { side: Side; name: string; nails?: Nail[] }
 
 /** The saved settings (null: none yet) and each hand's source outline (the home outline, until the first save). */
 export function readRows(): { state: RowsState | null; outline: Record<Side, Outline> } {
@@ -60,8 +66,22 @@ const slashes = (file: string) => file.split('\\').join('/');
 /** A pose's outline for Tapko. */
 function writeHand(f: OutlineFile): string {
   const file = join(HANDS, f.side, `${f.name}.svg`);
-  writeFileSync(file, outlineSvg(f.side, f, SOURCE));
+  writeFileSync(file, outlineSvg(f.side, f, SOURCE, f.nails));
   return slashes(file);
+}
+
+const COLORS_FILE = 'src/ui/finger-colors.ts';
+/** The approved palette written into Tapko (src/ui/finger-colors.ts), the file's words kept. */
+export function writeFingerColors(colors: string[]): void {
+  if (colors.length !== 10 || !colors.every((c) => /^#[0-9a-f]{6}$/i.test(c))) throw new Error('bad colours');
+  const body = `{
+  0: '${colors[0]}', 1: '${colors[1]}', 2: '${colors[2]}', 3: '${colors[3]}', 4: '${colors[4]}',
+  5: '${colors[5]}', 6: '${colors[6]}', 7: '${colors[7]}', 8: '${colors[8]}', 9: '${colors[9]}',
+}`;
+  const source = readFileSync(COLORS_FILE, 'utf8');
+  const start = source.indexOf('= {'), end = source.indexOf('};', start);
+  if (start < 0 || end < 0) throw new Error('FINGER_COLORS not found');
+  writeFileSync(COLORS_FILE, source.slice(0, start + 2) + body + source.slice(end + 1));
 }
 
 /** Saves the settings, the source outlines and every pose's outline; removes the outlines made here whose pose is gone. */

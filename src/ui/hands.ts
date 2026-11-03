@@ -1,5 +1,6 @@
 import { type KeyStep, type Layout, keyByCode, shiftKeyFor } from '../keyboard/layouts';
 import { type FingerScheme, fingerOf } from '../keyboard/fingers';
+import { FINGER_COLORS } from './finger-colors';
 import { type HandIndex, type HandShape, type Side, VIEW, poseName, readHandSvg } from './hand-svg';
 
 /**
@@ -136,6 +137,7 @@ export class Hands {
       const g = el('g', { class: `hand-${s}` }, both);
       const layers = [0, 1].map(() => {
         const layer = el('g', { class: 'hand-pose' }, g);
+        el('g', { class: 'hand-nails' }, layer);
         el('path', { class: 'hand-creases' }, layer);
         el('path', { class: 'hand-lines' }, layer);
         return layer;
@@ -244,6 +246,9 @@ export class Hands {
     creases.setAttribute('d', shape.creases);
     creases.setAttribute('stroke-width', String(shape.creaseStroke));
     layer.classList.toggle('centerline', shape.centerline);
+    const nails = layer.querySelector('.hand-nails')!;
+    nails.replaceChildren();
+    for (const n of shape.nails) el('path', { d: n.d, fill: FINGER_COLORS[n.finger] }, nails);
     old.classList.remove('on');
     layer.classList.add('on');
     this.el.classList.add('ready');

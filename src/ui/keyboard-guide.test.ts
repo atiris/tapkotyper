@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { FINGER_COLORS, contrast, textColorsOn } from './keyboard-guide';
+import { FINGER_COLORS } from './finger-colors';
+import { contrast, textColorsOn } from './keyboard-guide';
 
 describe('finger chip colors', () => {
   it('reach AA text contrast on every finger color', () => {

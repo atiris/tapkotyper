@@ -1,11 +1,11 @@
 import { readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Plugin } from 'vite';
-import { type Outline, type OutlineFile, type RowsState, readRows, saveRows } from './rows-file';
+import { type Outline, type OutlineFile, type RowsState, readRows, saveRows, writeFingerColors } from './rows-file';
 
 /**
  * The hand tool's reading and saving (./rows-file.ts), on the dev server only (the tool is a local page at
- * /tools/hand-poser/, never part of the built site). A save writes the outlines Tapko draws and then the list
+ * /tools/hand-poser/, never part of the built site), and the palette the owner approves there. A save writes the outlines Tapko draws and then the list
  * `public/hands/index.json` that Tapko reads.
  */
 
@@ -47,6 +47,10 @@ export function handPoser(): Plugin {
             const done = saveRows(state, outline, files);
             writeIndex();
             return reply(done);
+          }
+          if (req.method === 'POST' && path === '/__hand-poser/finger-colors') {
+            writeFingerColors((await body<{ colors: string[] }>(req)).colors);
+            return reply({});
           }
           return next();
         } catch (e) {

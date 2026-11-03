@@ -28,6 +28,8 @@ export interface HandShape {
   /** The lines are middle lines (drawn as strokes `stroke` and `creaseStroke` wide), not filled shapes. */
   centerline: boolean;
   creaseStroke: number;
+  /** Nails filled in their finger's colour (FINGER_COLORS), only in the poses the hand tool gives them to. */
+  nails: { finger: Finger; d: string }[];
 }
 
 /** The names of the saved outlines per hand. */
@@ -39,7 +41,8 @@ export function readHandSvg(svg: string): HandShape {
   const stroke = Number(/<path class="hand-lines"[^>]*stroke-width="([\d.]+)"/.exec(svg)?.[1] ?? 0);
   const centerline = /<path class="hand-lines"[^>]*fill="none"/.test(svg);
   const creaseStroke = Number(/<path class="hand-creases"[^>]*stroke-width="([\d.]+)"/.exec(svg)?.[1] ?? 0);
-  return { lines, creases, stroke, centerline, creaseStroke };
+  const nails = [...svg.matchAll(/<path class="hand-nail" data-finger="(\d)" d="([^"]*)"/g)].map((m) => ({ finger: Number(m[1]) as Finger, d: m[2] }));
+  return { lines, creases, stroke, centerline, creaseStroke, nails };
 }
 
 /** Keys named by two letters; the bottom row's modifiers only in the hand poser (Tapko's keyboard leaves them out). */

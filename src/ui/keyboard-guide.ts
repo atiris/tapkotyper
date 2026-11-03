@@ -1,13 +1,9 @@
 import { ENTER, type Finger, type Layout, type KeyStep, allKeys, fingerFor, keyByCode, shiftKeyFor, stepsFor, typesChar } from '../keyboard/layouts';
 import { t } from '../i18n/i18n';
+import { FINGER_COLORS } from './finger-colors';
 import { Hands } from './hands';
 import { SHIFT_L, SHIFT_R, SPACE } from '../learning/lessons';
 
-/** Finger colors (Okabe-Ito based, colorblind-safe). */
-export const FINGER_COLORS: Record<Finger, string> = {
-  0: '#e69f00', 1: '#56b4e9', 2: '#009e73', 3: '#f0c419', 4: '#bbbbbb',
-  5: '#bbbbbb', 6: '#0072b2', 7: '#d55e00', 8: '#cc79a7', 9: '#8fbc3a',
-};
 /** 1 = thumb .. 5 = pinky, as children count fingers. */
 export const FINGER_KEYS: Record<Finger, string> = {
   0: 'leftPinky', 1: 'leftRing', 2: 'leftMiddle', 3: 'leftIndex', 4: 'leftThumb',

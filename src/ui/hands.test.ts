@@ -64,8 +64,8 @@ describe('hands', () => {
     }
   });
 
-  it('reads middle lines and their widths', () => {
-    const svg = '<svg><path class="hand-creases" d="M0 0 L1 1" fill="none" stroke-width="1.2"/><path class="hand-lines" d="M2 2 L3 3" fill="none" stroke-width="2.6"/></svg>';
-    expect(readHandSvg(svg)).toEqual({ lines: 'M2 2 L3 3', creases: 'M0 0 L1 1', stroke: 2.6, centerline: true, creaseStroke: 1.2 });
+  it('reads middle lines, their widths and the nails', () => {
+    const svg = '<svg><path class="hand-nail" data-finger="3" d="M5 5 L6 6 Z" fill="#123456"/><path class="hand-creases" d="M0 0 L1 1" fill="none" stroke-width="1.2"/><path class="hand-lines" d="M2 2 L3 3" fill="none" stroke-width="2.6"/></svg>';
+    expect(readHandSvg(svg)).toEqual({ lines: 'M2 2 L3 3', creases: 'M0 0 L1 1', stroke: 2.6, centerline: true, creaseStroke: 1.2, nails: [{ finger: 3, d: 'M5 5 L6 6 Z' }] });
   });
 });

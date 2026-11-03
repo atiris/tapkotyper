@@ -106,10 +106,12 @@ function drawingScale(svg: string): number {
 const scalePath = (d: string, k: number) => (k === 1 ? d : d.replace(/-?\d*\.?\d+(?:e-?\d+)?/g, (n) => fmt(Number(n) * k)));
 
 /** An outline as the SVG Tapko draws (src/ui/hand-svg.ts reads it): filled bands, or middle lines with their width. */
-export function outlineSvg(s: Side, o: Outline, source: string): string {
+export function outlineSvg(s: Side, o: Outline, source: string, nails: { finger: number; d: string; color: string }[] = []): string {
   const w = o.width;
   return [
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${VIEW.x} ${VIEW.y} ${VIEW.w} ${VIEW.h}" data-side="${s}">`,
+    // Nails under the lines; Tapko fills them by the finger (its FINGER_COLORS), the colour here is for other viewers.
+    ...nails.map((n) => `<path class="hand-nail" data-finger="${n.finger}" d="${n.d}" fill="${n.color}"/>`),
     w
       ? `<path class="hand-creases" d="${o.creases}" fill="none" stroke="#5a5560" stroke-opacity="0.6" stroke-width="${w.creases}" stroke-linecap="round" stroke-linejoin="round"/>`
       : `<path class="hand-creases" d="${o.creases}" fill="#5a5560" fill-opacity="0.6" fill-rule="evenodd"/>`,

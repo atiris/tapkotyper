@@ -2,12 +2,14 @@ import { type Finger, type KeyDef, LAYOUTS } from '../../src/keyboard/layouts';
 import { type FingerScheme, fingerOf } from '../../src/keyboard/fingers';
 import { POSE_NAME, type Side, VIEW, keyName, poseName } from '../../src/ui/hand-svg';
 import { HANDS_CHANNEL } from '../../src/ui/hands';
-import { FINGER_COLORS, KeyboardGuide, inkOn, textColorsOn } from '../../src/ui/keyboard-guide';
+import { FINGER_COLORS } from '../../src/ui/finger-colors';
+import { KeyboardGuide, inkOn, textColorsOn } from '../../src/ui/keyboard-guide';
 import '../../src/styles.css';
 import { GAP, UNIT, withModifiers } from './board';
 import { centerline } from './centerline';
 import { outlineSvg, readOutline } from './outline-svg';
-import type { FingerMove, HandPose, Outline, OutlineFile, Owners, Pose, RowMove, RowName, RowsState } from './rows-file';
+import { findNail } from './nails';
+import type { FingerMove, HandPose, Nail, Outline, OutlineFile, Owners, Pose, RowMove, RowName, RowsState } from './rows-file';
 
 /**
  * The hand tool (dev server only, /tools/hand-poser/): the home outline (once drawn by Gemini) moved by rules. Each finger's points move with that finger only: a correction of the home position (base), the row the hand
@@ -119,6 +121,20 @@ const ROW_FIELDS: Field<keyof RowMove>[] = [
 ];
 const FINGER_FIELDS: Field<keyof FingerMove>[] = [['bend', 'skrčiť / vystrieť', -40, 50, 1], ['x', 'koniec ← →', -40, 40, 1], ['y', 'koniec ↓ ↑', -40, 40, 1], ['mid', 'stred prsta ← →', -25, 25, 1]];
 
+/**
+ * The palette tried first (FINGER_COLORS order: left little finger .. left thumb, right thumb .. right little finger):
+ * brown, light blue, dark green, pink; grey thumbs; dark blue, red, light green, violet (the owner's wish, 2026-11-03).
+ */
+const PROPOSED_COLORS = ['#8c5a2b', '#56b4e9', '#1b7f4b', '#e87fb5', '#bbbbbb', '#bbbbbb', '#1f4fa0', '#d1352b', '#8fd14f', '#8e44ad'];
+/** Filled nails only on the hands beside the keyboard, until the owner turns on more. */
+const NAILS_DEFAULT = { rows: false, keys: false, off: true };
+/** The palette in use here: the one being tried. */
+const palette = (): string[] => st.colors ?? Object.values(FINGER_COLORS);
+/** A hand's finger (0 the thumb .. 4 the little finger) as Tapko's Finger (0 left little finger .. 9 right little finger). */
+const fingerIndex = (s: Side, f: number) => (s === 'left' ? 4 - f : 5 + f);
+/** Which nails setting a pose follows: a key's press, the hands beside the keyboard, or a whole row. */
+const nailKind = (id: string): 'keys' | 'off' | 'rows' => (keyOfPose(id) ? 'keys' : id === 'off' ? 'off' : 'rows');
+
 /** The poses of whole rows (above the keyboard), each named by its row. */
 const ROW_POSES: [RowName, string][] = [['home', 'Domov'], ['top', 'Horný rad'], ['num', 'Číselný rad'], ['bot', 'Dolný rad'], ['off', 'Mimo klávesnice']];
 const handPose = (row: RowName): HandPose => ({ row, ...zeroRow(), f: moves() });
@@ -130,12 +146,16 @@ const startState = (): RowsState => ({
   rows: structuredClone(ROW_DEFAULTS),
   poses: ROW_POSES.map(([id, name]) => basePose(id, name, id)),
   owners: { left: { lines: {}, creases: {} }, right: { lines: {}, creases: {} } },
+  colors: [...PROPOSED_COLORS],
+  nails: { ...NAILS_DEFAULT },
 });
 
 /** Settings saved before a field existed get its default (no migrations: a new field starts at nothing). */
 function withDefaults(state: RowsState): RowsState {
   for (const r of Object.keys(ROW_DEFAULTS) as RowName[]) state.rows[r] ??= structuredClone(ROW_DEFAULTS[r]);
   state.size ??= { left: 0, right: 0 };
+  state.colors ??= [...PROPOSED_COLORS];
+  state.nails ??= { ...NAILS_DEFAULT };
   for (const r of Object.keys(state.rows) as RowName[]) for (const s of SIDES) state.rows[r][s] = { ...zeroRow(), ...state.rows[r][s] };
   for (const [id, name] of ROW_POSES) if (!state.poses.some((p) => p.id === id)) state.poses.push(basePose(id, name, id));
   for (const s of SIDES) {
@@ -308,6 +328,32 @@ function refreshAxes(s: Side): void {
   axisReach[s] = AXES[s].map((line) => line.map((p) => reach(s, p)));
   KNUCKLE_Y[s] = AXES[s].slice(1).reduce((sum, line) => sum + line[0][1], 0) / 4;
   TIPS_X[s] = AXES[s].slice(1).reduce((sum, line) => sum + line.at(-1)![0], 0) / 4;
+  findNails(s);
+}
+/** Each finger's nail on the home outline (keyboard units), with how its points move (with that finger only). */
+const NAILS = {} as Record<Side, ({ pts: Pt[]; w: Reach[][] } | null)[]>;
+/** The nails found again around each finger's tip point (after the outline, a brush stroke or the axes changed). */
+function findNails(s: Side): void {
+  const d = (k: Kind) => draw(src[s][k], src[s][k].xy.map((_, i) => edited(s, k, i)));
+  const lines = [{ d: d('lines'), width: widths[s]?.lines ?? 0 }, { d: d('creases'), width: widths[s]?.creases ?? 0 }];
+  NAILS[s] = AXES[s].map((axis, f) => {
+    const pts = findNail(lines, axis.at(-1)!);
+    return pts && { pts, w: pts.map((p) => FINGERS.map((_, g) => ({ w: g === f ? 1 : 0, s: g === f ? nearOnLine(p, axis).s : 0 }))) };
+  });
+}
+/** A nail's polygon as a closed path. */
+const nailPath = (pts: Pt[]) => `M${pts.map((p) => `${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(' L')} Z`;
+/** A pose's nails (both hands, or one hand in its own pose), as closed paths in their fingers' colours. */
+function posedNails(pose: Pose, side?: Side, hp?: HandPose): (Nail & { pts: Pt[] })[] {
+  const out: (Nail & { pts: Pt[] })[] = [];
+  for (const s of side ? [side] : SIDES) {
+    NAILS[s]?.forEach((n, f) => {
+      if (!n) return;
+      const pts = n.pts.map((p, i) => movePoint(s, p, n.w[i], hp ?? pose[s]));
+      out.push({ finger: fingerIndex(s, f), color: palette()[fingerIndex(s, f)], d: nailPath(pts), pts });
+    });
+  }
+  return out;
 }
 const ownerOf = (s: Side, k: Kind, i: number): number | undefined => st.owners[s][k][i];
 function weigh(s: Side, k: Kind): void {
@@ -402,7 +448,7 @@ function drawBoard(): void {
       const name = keyName(b, def.code) ?? '';
       key.title = name;
       // The finger's colour by the chosen fingering (Tapko's keyboard colours the standard one).
-      const color = FINGER_COLORS[fingerOf(def, scheme())], [bg, ink] = textColorsOn(color);
+      const color = palette()[fingerOf(def, scheme())], [bg, ink] = textColorsOn(color);
       key.style.setProperty('--finger', color);
       key.style.setProperty('--finger-ink', inkOn(color));
       key.style.setProperty('--next-bg', bg);
@@ -467,7 +513,7 @@ function openPose(id: string): void {
 
 // ---- the hands ----
 
-const ghost = el('g', {}), hands = el('g', {}), dotsG = el('g', {}), axesG = el('g', { display: 'none' });
+const ghost = el('g', {}), nailsG = el('g', {}), hands = el('g', {}), dotsG = el('g', {}), axesG = el('g', { display: 'none' });
 const brushRing = el('circle', { class: 'brush', r: 12, cx: -999, cy: -999, display: 'none' });
 const paths = {} as Record<Side, Record<Kind, Element> & { axes: Element[] }>;
 const ghostPaths = {} as Record<Side, Element>;
@@ -502,6 +548,13 @@ const poseById = (id: string) => st.poses.find((p) => p.id === id) ?? st.poses[0
 function render(xy: Posed): void {
   for (const s of SIDES) for (const k of KINDS) paths[s][k].setAttribute('d', draw(src[s][k], xy[s][k]));
   drawDots(xy);
+  drawNails();
+}
+/** The shown pose's nails, filled in their fingers' colours when its kind of pose has them. */
+function drawNails(): void {
+  nailsG.replaceChildren();
+  if (!st.nails?.[nailKind(current)]) return;
+  for (const n of posedNails(poseById(current))) el('path', { d: n.d, fill: n.color }, nailsG);
 }
 /** Where an axis point shows in the shown pose (the back of the hand's line never moves with a finger). */
 const axisAt = (s: Side, f: number, j: number): Pt => {
@@ -520,7 +573,7 @@ function renderAxes(): void {
   }
 }
 /** Which finger each point moves with, in the finger's colour (grey: the back of the hand). */
-const fingerColor = (s: Side, f: number) => (f === PALM ? '#777' : FINGER_COLORS[(s === 'left' ? 4 - f : 5 + f) as Finger]);
+const fingerColor = (s: Side, f: number) => (f === PALM ? '#777' : palette()[fingerIndex(s, f)]);
 const showDots = $<HTMLInputElement>('dots');
 function drawDots(xy: Posed): void {
   dotsG.replaceChildren();
@@ -569,6 +622,8 @@ function changed(): void {
 }
 function redraw(ghostToo = false): void {
   cancelAnimationFrame(anim);
+  // The home outline changed (brush, outline, base): the nails are found again.
+  if (ghostToo) for (const s of SIDES) findNails(s);
   shown = posed(poseById(current));
   render(shown);
   renderAxes();
@@ -794,14 +849,14 @@ function axisHint(f: number, j: number): string {
       'Palec, koreň: pri zápästí, kde palec vychádza z ruky. Tu sa pohyb palca začína.',
       'Palec, 1. kĺb: v strede palca na kĺbe, kde sa končí dlhá kosť pri zápästí.',
       'Palec, 2. kĺb: v strede palca na kĺbe pred posledným článkom.',
-      'Palec, špička: v strede bruška pri končeku. Tu je pohyb palca najväčší.',
+      'Palec, špička: v strede nechtu (okolo neho sa nájde a vyfarbí necht). Tu je pohyb palca najväčší.',
     ][j] + '<br><small>Os vedie stredom palca. Body obrysu najbližšie k nej sa hýbu s palcom.</small>';
   }
   return [
     `${Name}, kĺb pri chrbte ruky: v strede koreňa prsta, vo výške zárezov medzi prstami. Tu sa pohyb prsta začína.`,
     `${Name}, kĺb medzi 1. a 2. článkom: v strede prsta na tomto kĺbe. Tu pôsobí posuvník „stred prsta“.`,
     `${Name}, kĺb medzi 2. a 3. článkom: v strede prsta na tomto kĺbe.`,
-    `${Name}, špička: v strede bruška pri končeku. Tu je pohyb prsta najväčší.`,
+    `${Name}, špička: v strede nechtu (okolo neho sa nájde a vyfarbí necht). Tu je pohyb prsta najväčší.`,
   ][j] + '<br><small>Os vedie stredom prsta cez jeho kĺby. Body obrysu najbližšie k nej sa hýbu s týmto prstom.</small>';
 }
 const hintEl = Object.assign(document.createElement('div'), { className: 'axis-hint', hidden: true });
@@ -1015,6 +1070,45 @@ $('centerline').addEventListener('click', () => {
   say('Obrys je zo stredových čiar; body prstom priraď prípadne znova a ulož ho');
 });
 
+// ---- the fingers' colours and the nails ----
+
+const COLOR_NAMES = ['ľ. malíček', 'ľ. prstenník', 'ľ. prostredník', 'ľ. ukazovák', 'ľ. palec', 'p. palec', 'p. ukazovák', 'p. prostredník', 'p. prstenník', 'p. malíček'];
+/** The palette being tried: the keyboard here and the nails show it at once; Tapko gets it only when approved. */
+function buildColors(): void {
+  const host = $('colorInputs');
+  host.replaceChildren();
+  palette().forEach((c, i) => {
+    const label = document.createElement('label');
+    const input = Object.assign(document.createElement('input'), { type: 'color', value: c, id: `color-${i}` });
+    input.addEventListener('input', () => {
+      st.colors = palette().map((x, j) => (j === i ? input.value : x));
+      drawBoard();
+      redraw();
+    });
+    label.append(input, COLOR_NAMES[i]);
+    host.append(label);
+  });
+  for (const [id, kind] of [['nailsRows', 'rows'], ['nailsKeys', 'keys'], ['nailsOff', 'off']] as const) $<HTMLInputElement>(id).checked = !!st.nails?.[kind];
+}
+for (const [id, kind] of [['nailsRows', 'rows'], ['nailsKeys', 'keys'], ['nailsOff', 'off']] as const) {
+  $<HTMLInputElement>(id).addEventListener('change', (e) => {
+    st.nails = { ...(st.nails ?? NAILS_DEFAULT), [kind]: (e.target as HTMLInputElement).checked };
+    redraw();
+  });
+}
+$('colorsFromTapko').addEventListener('click', () => {
+  st.colors = Object.values(FINGER_COLORS);
+  buildColors();
+  drawBoard();
+  redraw();
+});
+$('colorsApply').addEventListener('click', async () => {
+  if (!confirm('Zapísať tieto farby do Tapka? Zmenia sa klávesy, označenia prstov aj nechty v hre.')) return;
+  const r = await fetch('/__hand-poser/finger-colors', { method: 'POST', body: JSON.stringify({ colors: palette() }) });
+  const res = (await r.json()) as { ok: boolean; error?: string };
+  say(res.ok ? 'Farby zapísané do Tapka (src/ui/finger-colors.ts); ulož aj nastavenia' : res.error ?? 'Nepodarilo sa', !res.ok);
+});
+
 // ---- saving ----
 
 const tapko = new BroadcastChannel(HANDS_CHANNEL);
@@ -1022,24 +1116,31 @@ const tapko = new BroadcastChannel(HANDS_CHANNEL);
 const REST_STEPS = 4;
 async function save(): Promise<void> {
   const files: OutlineFile[] = [];
-  const out = (side: Side, name: string, hp: HandPose) => {
+  const nailsOn = (kind: 'keys' | 'off' | 'rows') => !!st.nails?.[kind];
+  const out = (side: Side, name: string, hp: HandPose, kind: 'keys' | 'off' | 'rows') => {
     const xy = posedSide(side, hp);
-    files.push({ side, name, lines: draw(src[side].lines, xy.lines), creases: draw(src[side].creases, xy.creases), ...(widths[side] ? { width: widths[side] } : {}) });
+    files.push({
+      side, name, lines: draw(src[side].lines, xy.lines), creases: draw(src[side].creases, xy.creases),
+      ...(widths[side] ? { width: widths[side] } : {}), ...(nailsOn(kind) ? { nails: posedNails(homePose, side, hp).map(({ pts: _, ...n }) => n) } : {}),
+    });
   };
-  for (const s of SIDES) out(s, 'home', homePose[s]);
+  for (const s of SIDES) out(s, 'home', homePose[s], 'rows');
   // Beside the keyboard is Tapko's rest, and the steps on the way from it to home (rest1 nearest rest).
   const off = poseById('off');
   for (const s of SIDES) {
-    out(s, 'rest', off[s]);
+    out(s, 'rest', off[s], 'off');
     const from = posedSide(s, off[s]), to = posedSide(s, homePose[s]);
     for (let k = 1; k <= REST_STEPS; k++) {
       const t = k / (REST_STEPS + 1), mix = (a: Pt[], b: Pt[]) => a.map((p, i): Pt => [p[0] + (b[i][0] - p[0]) * t, p[1] + (b[i][1] - p[1]) * t]);
-      files.push({ side: s, name: `rest${k}`, lines: draw(src[s].lines, mix(from.lines, to.lines)), creases: draw(src[s].creases, mix(from.creases, to.creases)), ...(widths[s] ? { width: widths[s] } : {}) });
+      // The nails on the way: drawn while the hands are still beside the keyboard (the first half of the way).
+      const home = posedNails(homePose, s);
+      const nails = nailsOn('off') && t <= 0.5 ? posedNails(off, s).map((n, i) => ({ ...n, d: nailPath(mix(n.pts, home[i].pts)) })) : undefined;
+      files.push({ side: s, name: `rest${k}`, lines: draw(src[s].lines, mix(from.lines, to.lines)), creases: draw(src[s].creases, mix(from.creases, to.creases)), ...(widths[s] ? { width: widths[s] } : {}), ...(nails ? { nails: nails.map(({ pts: _, ...n }) => n) } : {}) });
     }
   }
   for (const p of st.poses) {
     const key = keyOfPose(p.id);
-    if (key) { const side: Side = p.id[0] === 'l' ? 'left' : 'right'; out(side, p.id, p[side]); }
+    if (key) { const side: Side = p.id[0] === 'l' ? 'left' : 'right'; out(side, p.id, p[side], 'keys'); }
   }
   const outline = { left: outlineOf('left'), right: outlineOf('right') };
   say('Ukladám…');
@@ -1070,6 +1171,7 @@ addEventListener('keydown', (e) => { if ((e.ctrlKey || e.metaKey) && e.key.toLow
   buildChips();
   buildBase();
   buildPanels();
+  buildColors();
   drawGhost();
   onTool();
   show('home', false);

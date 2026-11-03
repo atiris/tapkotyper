@@ -78,3 +78,7 @@ input[type=number] { width: 4.5em; }
 .sp-half.has-pose::before { content: ''; position: absolute; top: 4px; right: 4px; width: 8px; height: 8px; border-radius: 50%; background: #2a9d4b; }
 /* Beside the keyboard: a wider view, the keyboard smaller in the middle. */
 .rows-stage.wide { padding: 1% 24% 13%; }
+/* The palette: one colour per finger, left little finger to right little finger. */
+.colors { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px 10px; }
+.colors label { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #6a6070; }
+.colors input[type=color] { width: 34px; height: 24px; padding: 0; border: 1px solid #cfc7d6; border-radius: 4px; background: none; }

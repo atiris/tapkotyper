@@ -64,6 +64,22 @@
           <button id="loadRight" title="Načíta upravený obrys pravej ruky zo súboru SVG">Načítať pravý zo SVG</button>
         </div>
       </div>
+      <div class="tools">
+        <div class="rows-bar">
+          <h3>Farby prstov a nechty</h3>
+          <span class="sep"></span>
+          <button id="colorsFromTapko" title="Vráti farby, ktoré má Tapko teraz">Farby z Tapka</button>
+          <button id="colorsApply" title="Zapíše tieto farby do Tapka (src/ui/finger-colors.ts): klávesy, označenia prstov aj nechty">Použiť farby v Tapkovi</button>
+        </div>
+        <div class="colors" id="colorInputs"></div>
+        <div class="rows-bar">
+          <span>Vyfarbené nechty:</span>
+          <label title="Domov, horný, číselný a dolný rad"><input type="checkbox" id="nailsRows"> pokojové polohy</label>
+          <label title="Pózy klávesov (napr. l4s0)"><input type="checkbox" id="nailsKeys"> stlačenia</label>
+          <label title="Ruky vedľa klávesnice (rest a kroky z nej)"><input type="checkbox" id="nailsOff"> mimo klávesnice</label>
+        </div>
+        <p class="note">Necht sa nájde sám okolo bodu špičky na osi prsta (režim „upraviť osi“): daj ho do stredu nechtu.</p>
+      </div>
       </div>
     </div>
 

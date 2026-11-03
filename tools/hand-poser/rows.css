@@ -13,10 +13,9 @@ a { color: #0072b2; }
 .note { color: #6a6070; margin: 0; }
 .status { margin: 0; min-height: 1.3em; color: #0072b2; }
 .status.error { color: #b00; }
-button, select, .file { font: inherit; border: 1px solid #cfc7d6; background: #fff; border-radius: 6px; padding: 4px 9px; cursor: pointer; color: inherit; }
+button, select { font: inherit; border: 1px solid #cfc7d6; background: #fff; border-radius: 6px; padding: 4px 9px; cursor: pointer; color: inherit; }
 button:disabled { opacity: .45; cursor: default; }
 button.rows-save { font-weight: 700; background: #2d2140; color: #fff; border-color: #2d2140; }
-.file input { position: absolute; width: 1px; height: 1px; opacity: 0; }
 input[type=number] { width: 4.5em; }
 /* Tapko's own keyboard (its styles come with the page's script), with room below it for the wrists. */
 .rows-stage { position: relative; background: var(--kb-bg); border-radius: 8px; box-shadow: 0 1px 4px #0002; overflow: hidden; padding: 1% 6% 24%; }

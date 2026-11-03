@@ -664,22 +664,60 @@ const outlineOf = (s: Side): Outline => {
   const d = (k: Kind) => draw(src[s][k], src[s][k].xy.map((_, i) => edited(s, k, i)));
   return { lines: d('lines'), creases: d('creases'), ...(widths[s] ? { width: widths[s] } : {}) };
 };
-// The outline as a file in Downloads (hand-left.svg, hand-right.svg), to edit elsewhere and load back.
+// The outline as an SVG file, to edit elsewhere (Inkscape) and load back: the system's own open and save dialogs.
+type Picker = { getFile(): Promise<File>; createWritable(): Promise<{ write(d: Blob): Promise<void>; close(): Promise<void> }> };
+const pickers = window as unknown as {
+  showOpenFilePicker?: (o: object) => Promise<Picker[]>;
+  showSaveFilePicker?: (o: object) => Promise<Picker>;
+};
+const SVG_TYPE = { types: [{ description: 'SVG', accept: { 'image/svg+xml': ['.svg'] } }] };
+const cancelled = (e: unknown) => e instanceof DOMException && e.name === 'AbortError';
+/** An SVG file's text, chosen in the open dialog (null: none chosen). */
+async function openSvg(): Promise<string | null> {
+  if (pickers.showOpenFilePicker) {
+    try {
+      const [h] = await pickers.showOpenFilePicker(SVG_TYPE);
+      return await (await h.getFile()).text();
+    } catch (e) {
+      if (cancelled(e)) return null;
+    }
+  }
+  // Browsers without the dialog: a file input.
+  return new Promise((done) => {
+    const input = Object.assign(document.createElement('input'), { type: 'file', accept: '.svg,image/svg+xml' });
+    input.addEventListener('change', () => void (input.files?.[0]?.text() ?? Promise.resolve(null)).then(done));
+    input.click();
+  });
+}
+/** Writes an SVG where the save dialog says; true when saved. */
+async function saveSvg(text: string, name: string): Promise<boolean> {
+  const blob = new Blob([text], { type: 'image/svg+xml' });
+  if (pickers.showSaveFilePicker) {
+    try {
+      const h = await pickers.showSaveFilePicker({ suggestedName: name, ...SVG_TYPE });
+      const w = await h.createWritable();
+      await w.write(blob);
+      await w.close();
+      return true;
+    } catch (e) {
+      if (cancelled(e)) return false;
+    }
+  }
+  const url = URL.createObjectURL(blob);
+  Object.assign(document.createElement('a'), { href: url, download: name }).click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  return true;
+}
 for (const [id, s] of [['downloadLeft', 'left'], ['downloadRight', 'right']] as const) {
-  $(id).addEventListener('click', () => {
-    const url = URL.createObjectURL(new Blob([outlineSvg(s, outlineOf(s), 'outline')], { type: 'image/svg+xml' }));
-    const a = Object.assign(document.createElement('a'), { href: url, download: `hand-${s}.svg` });
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-    say(`Stiahnuté: hand-${s}.svg`);
+  $(id).addEventListener('click', async () => {
+    if (await saveSvg(outlineSvg(s, outlineOf(s), 'outline'), `hand-${s}.svg`)) say(`${SIDE_NAME[s]}: obrys uložený do súboru`);
   });
 }
 for (const [id, s] of [['loadLeft', 'left'], ['loadRight', 'right']] as const) {
-  $<HTMLInputElement>(id).addEventListener('change', async (e) => {
-    const input = e.target as HTMLInputElement, file = input.files?.[0];
-    input.value = '';
-    if (!file) return;
-    const o = readOutline(await file.text());
+  $(id).addEventListener('click', async () => {
+    const text = await openSvg();
+    if (text == null) return;
+    const o = readOutline(text);
     if (!o.lines) return say('V súbore chýba cesta s triedou hand-lines', true);
     const moved = placeLike(s, o);
     // A drawn outline is the home position itself: the corrections made for the one before would bend it.

@@ -332,7 +332,7 @@ function refreshAxes(s: Side): void {
   findNails(s);
 }
 /** How big a nail can be (keyboard units from its middle, along the finger and across). */
-const FINGER_NAIL = { along: 11, across: 11 }, THUMB_NAIL = { along: 17, across: 13 };
+const FINGER_NAIL = { along: 11, across: 11 }, THUMB_NAIL = { along: 17, across: 11 };
 /** Each finger's nail on the home outline (keyboard units), with how its points move (with that finger only). */
 const NAILS = {} as Record<Side, ({ pts: Pt[]; w: Reach[][] } | null)[]>;
 /** The nails found again around each finger's tip point (after the outline, a brush stroke or the axes changed). */

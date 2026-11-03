@@ -17,14 +17,13 @@ import type { FingerMove, HandPose, Outline, OutlineFile, Owners, Pose, RowMove,
  */
 
 type Pt = [number, number];
-type Kind = 'lines' | 'creases' | 'tails';
+type Kind = 'lines' | 'creases';
 interface Reach { w: number; s: number }
 /** A path's commands and points; a curve's control point moves as the end point it belongs to (anchor). */
 interface Path { parts: (string | null)[]; xy: Pt[]; anchor: number[]; w: Reach[][] }
 
 const SIDES: Side[] = ['left', 'right'];
-const KINDS: Kind[] = ['lines', 'creases', 'tails'];
-const OWNED: ('lines' | 'creases')[] = ['lines', 'creases'];
+const KINDS: Kind[] = ['lines', 'creases'];
 const SIDE_NAME: Record<Side, string> = { left: 'Ľavá ruka', right: 'Pravá ruka' };
 const FINGERS = ['palec', 'ukazovák', 'prostredník', 'prstenník', 'malíček'];
 const PALM = 5;
@@ -80,11 +79,8 @@ function fitAxes(side: Side, xy: Pt[]): void {
 
 const move0 = (): FingerMove => ({ bend: 0, x: 0, y: 0, mid: 0 });
 const moves = (o: Record<number, Partial<FingerMove>> = {}): FingerMove[] => FINGERS.map((_, f) => ({ ...move0(), ...o[f] }));
-/** The home outline's corrections: index fingers bent more with their second joint towards the middle finger; L3, L4, R4 onto their keys. */
-const BASE_DEFAULTS: Record<Side, FingerMove[]> = {
-  left: moves({ 1: { bend: 6, mid: -6 }, 2: { x: -5 }, 3: { x: -12 } }),
-  right: moves({ 1: { bend: 6, mid: 6 }, 3: { x: -2 } }),
-};
+/** The home outline's corrections start at none: the outline is drawn as the home position should look. */
+const BASE_DEFAULTS: Record<Side, FingerMove[]> = { left: moves(), right: moves() };
 const zeroRow = (): RowMove => ({ up: 0, right: 0, tilt: 0, curl: 0, thumbRight: 0, thumbUp: 0 });
 const ROW_DEFAULTS: Record<RowName, Record<Side, RowMove>> = {
   bot: { left: { up: -15, right: 8, tilt: 0, curl: 20, thumbRight: 0, thumbUp: 10 }, right: { up: -15, right: 8, tilt: 0, curl: 20, thumbRight: 0, thumbUp: 10 } },
@@ -148,58 +144,6 @@ function draw(path: { parts: (string | null)[] }, xy: Pt[]): string {
   }
   return out.trim();
 }
-/**
- * The wrist lines go on past the picture's edge, so a raised or tilted hand never shows their cut ends (on this page
- * only): a band as a thin filled strip, a middle line as a line.
- */
-function wristTails(path: Omit<Path, 'w'>, middle: boolean): string {
-  return middle ? lineTails(path) : bandTails(path.xy);
-}
-/** Middle lines: each line ending at the drawing's bottom goes on the way it ends. */
-function lineTails(path: Omit<Path, 'w'>): string {
-  // The lines: the points of each subpath (each M starts one), in order.
-  const strokes: number[][] = [];
-  let k = 0;
-  for (const p of path.parts) {
-    if (p === 'M') strokes.push([]);
-    else if (p === null) { if (k % 2 === 0) strokes.at(-1)?.push(k / 2); k++; }
-  }
-  const bottom = Math.max(...path.xy.map((p) => p[1]));
-  let d = '';
-  for (const s of strokes) {
-    if (s.length < 2) continue;
-    for (const [end, prev] of [[s.at(-1)!, s.at(-2)!], [s[0], s[1]]]) {
-      const e = path.xy[end], q = path.xy[prev], l = Math.hypot(e[0] - q[0], e[1] - q[1]);
-      if (e[1] < bottom - 12 || !l) continue;
-      const dir: Pt = [(e[0] - q[0]) / l, (e[1] - q[1]) / l];
-      if (dir[1] <= 0) continue;
-      d += `M${e[0].toFixed(1)} ${e[1].toFixed(1)} L${(e[0] + dir[0] * 420).toFixed(1)} ${(e[1] + dir[1] * 420).toFixed(1)} `;
-    }
-  }
-  return d;
-}
-/** Filled bands: the bands' low ends, grouped, go on as thin strips. */
-function bandTails(xy: Pt[]): string {
-  const low = xy.filter((p) => p[1] > 380).sort((a, b) => a[0] - b[0]);
-  const groups: Pt[][] = [];
-  for (const p of low) { const g = groups.at(-1); if (g && p[0] - g.at(-1)![0] < 25) g.push(p); else groups.push([p]); }
-  const mean = (ps: Pt[]): Pt => [ps.reduce((s, p) => s + p[0], 0) / ps.length, ps.reduce((s, p) => s + p[1], 0) / ps.length];
-  let d = '';
-  for (const g of groups) {
-    const maxY = Math.max(...g.map((p) => p[1]));
-    if (maxY < 405) continue;
-    const ends = g.filter((p) => p[1] > maxY - 8), upper = g.filter((p) => p[1] > maxY - 45 && p[1] < maxY - 20);
-    const e = mean(ends);
-    let dir: Pt = [0, 1];
-    if (upper.length) { const u = mean(upper), l = Math.hypot(e[0] - u[0], e[1] - u[1]) || 1; dir = [(e[0] - u[0]) / l, (e[1] - u[1]) / l]; }
-    const xs = ends.map((p) => p[0]), lo = Math.min(...xs), hi = Math.max(...xs);
-    const half = Math.min(3.2, Math.max(2.2, hi - lo)) / 2, c: Pt = [(lo + hi) / 2, e[1]], n: Pt = [-dir[1], dir[0]], L = 420;
-    const P = (k: number, s: number) => `${(c[0] + dir[0] * k + n[0] * s).toFixed(1)} ${(c[1] + dir[1] * k + n[1] * s).toFixed(1)}`;
-    d += `M${P(-6, -half)} L${P(L, -half)} L${P(L, half)} L${P(-6, half)} Z `;
-  }
-  return d;
-}
-
 /** The nearest place on a polyline: the distance and how far along it (0 the start, 1 the end; beyond them outside). */
 function nearOnLine(p: Pt, line: Pt[]): { d: number; s: number } {
   let best = { d: Infinity, s: 0 }, run = 0;
@@ -238,13 +182,13 @@ function loadSide(s: Side, o: Outline): void {
   // Middle lines lie in the middle of the bands they came from: the axes fit them as well.
   fitAxes(s, lines.xy);
   UNIT_DIR[s] = unitDirs(s);
-  const paths = { lines, creases: parse(o.creases), tails: parse(wristTails(lines, !!o.width)) };
+  const paths = { lines, creases: parse(o.creases) };
   src[s] = Object.fromEntries(KINDS.map((k) => [k, { ...paths[k], w: [] }])) as unknown as Record<Kind, Path>;
   edits[s] = Object.fromEntries(KINDS.map((k) => [k, new Array(paths[k].xy.length * 2).fill(0)])) as Record<Kind, number[]>;
   for (const k of KINDS) weigh(s, k);
   axisReach[s] = AXES[s].map((line) => line.map((p) => reach(s, p)));
 }
-const ownerOf = (s: Side, k: Kind, i: number): number | undefined => (k === 'tails' ? undefined : st.owners[s][k][i]);
+const ownerOf = (s: Side, k: Kind, i: number): number | undefined => st.owners[s][k][i];
 function weigh(s: Side, k: Kind): void {
   const path = src[s][k];
   for (const i of path.xy.keys()) { const a = path.anchor[i]; path.w[i] = reach(s, path.xy[a], ownerOf(s, k, a)); }
@@ -376,7 +320,7 @@ const ghostPaths = {} as Record<Side, Element>;
 for (const s of SIDES) {
   ghostPaths[s] = el('path', { class: 'ghost' }, ghost);
   paths[s] = {
-    creases: el('path', { class: 'crease' }, hands), tails: el('path', { class: 'hand' }, hands), lines: el('path', { class: 'hand' }, hands),
+    creases: el('path', { class: 'crease' }, hands), lines: el('path', { class: 'hand' }, hands),
     axes: AXES[s].map(() => el('polyline', { class: 'rows-axis' }, axesG)),
   };
 }
@@ -385,7 +329,7 @@ const homePose = basePose('home', 'Domov', 'home');
 function styleHands(): void {
   for (const s of SIDES) {
     const w = widths[s];
-    for (const [e, width] of [[paths[s].lines, w?.lines], [paths[s].tails, w?.lines], [paths[s].creases, w?.creases], [ghostPaths[s], w?.lines]] as const) {
+    for (const [e, width] of [[paths[s].lines, w?.lines], [paths[s].creases, w?.creases], [ghostPaths[s], w?.lines]] as const) {
       e.classList.toggle('middle', !!w);
       if (w) e.setAttribute('stroke-width', String(width)); else e.removeAttribute('stroke-width');
     }
@@ -394,7 +338,7 @@ function styleHands(): void {
 function drawGhost(): void {
   styleHands();
   const g = posed(homePose);
-  for (const s of SIDES) ghostPaths[s].setAttribute('d', `${draw(src[s].lines, g[s].lines)} ${draw(src[s].tails, g[s].tails)}`);
+  for (const s of SIDES) ghostPaths[s].setAttribute('d', draw(src[s].lines, g[s].lines));
 }
 
 let current = 'home', shown: Posed | null = null, anim = 0;
@@ -413,7 +357,7 @@ const showDots = $<HTMLInputElement>('dots');
 function drawDots(xy: Posed): void {
   dotsG.replaceChildren();
   if (!showDots.checked) return;
-  for (const s of SIDES) for (const k of OWNED) {
+  for (const s of SIDES) for (const k of KINDS) {
     src[s][k].w.forEach((w, i) => {
       if (src[s][k].anchor[i] !== i) return;
       let best = PALM, most = 0.5;
@@ -617,9 +561,9 @@ function* under(at: Pt, kinds: Kind[]): Generator<[Side, Kind, number, number]> 
 }
 function paint(at: Pt): void {
   const f = Number(paintFinger.value), touched = new Set<string>();
-  for (const [s, k, i] of under(at, OWNED)) {
+  for (const [s, k, i] of under(at, KINDS)) {
     if (src[s][k].anchor[i] !== i) continue;
-    const owners = st.owners[s][k as 'lines' | 'creases'] as Owners;
+    const owners: Owners = st.owners[s][k];
     if (f < 0) delete owners[i]; else owners[i] = f;
     touched.add(`${s}.${k}`);
   }
@@ -694,8 +638,11 @@ for (const [id, s] of [['loadLeft', 'left'], ['loadRight', 'right']] as const) {
     const o = readOutline(await file.text());
     if (!o.lines) return say('V súbore chýba cesta s triedou hand-lines', true);
     const moved = placeLike(s, o);
+    // A drawn outline is the home position itself: the corrections made for the one before would bend it.
+    st.base[s] = moves();
+    buildBase();
     replaceOutline(s, o);
-    say(`${SIDE_NAME[s]}: obrys načítaný${moved ? `, posunutý o ${moved} podľa okraja palca` : ''}, ulož ho`);
+    say(`${SIDE_NAME[s]}: obrys načítaný${moved ? `, posunutý o ${moved} podľa okraja palca` : ''}, opravy základnej polohy vynulované, ulož ho`);
   });
 }
 /** A drawing this far (keyboard units) from the hand's place was drawn elsewhere (another page area in the editor). */

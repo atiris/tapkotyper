@@ -81,28 +81,39 @@ const move0 = (): FingerMove => ({ bend: 0, x: 0, y: 0, mid: 0 });
 const moves = (o: Record<number, Partial<FingerMove>> = {}): FingerMove[] => FINGERS.map((_, f) => ({ ...move0(), ...o[f] }));
 /** The home outline's corrections start at none: the outline is drawn as the home position should look. */
 const BASE_DEFAULTS: Record<Side, FingerMove[]> = { left: moves(), right: moves() };
-const zeroRow = (): RowMove => ({ up: 0, right: 0, tilt: 0, curl: 0, thumbRight: 0, thumbUp: 0 });
+const zeroRow = (): RowMove => ({ up: 0, right: 0, tilt: 0, curl: 0, thumbRight: 0, thumbUp: 0, short: 0 });
 const ROW_DEFAULTS: Record<RowName, Record<Side, RowMove>> = {
-  bot: { left: { up: -15, right: 8, tilt: 0, curl: 20, thumbRight: 0, thumbUp: 10 }, right: { up: -15, right: 8, tilt: 0, curl: 20, thumbRight: 0, thumbUp: 10 } },
+  bot: { left: { up: -15, right: 8, tilt: 0, curl: 20, thumbRight: 0, thumbUp: 10, short: 0 }, right: { up: -15, right: 8, tilt: 0, curl: 20, thumbRight: 0, thumbUp: 10, short: 0 } },
   home: { left: zeroRow(), right: zeroRow() },
-  top: { left: { up: 25, right: 0, tilt: 0, curl: 17, thumbRight: 5, thumbUp: -13 }, right: { up: 25, right: 0, tilt: 0, curl: 17, thumbRight: -5, thumbUp: -13 } },
-  num: { left: { up: 50, right: 0, tilt: 0, curl: 35, thumbRight: 10, thumbUp: -25 }, right: { up: 50, right: 0, tilt: 0, curl: 35, thumbRight: -10, thumbUp: -25 } },
+  top: { left: { up: 25, right: 0, tilt: 0, curl: 17, thumbRight: 5, thumbUp: -13, short: 0 }, right: { up: 25, right: 0, tilt: 0, curl: 17, thumbRight: -5, thumbUp: -13, short: 0 } },
+  num: { left: { up: 50, right: 0, tilt: 0, curl: 35, thumbRight: 10, thumbUp: -25, short: 0 }, right: { up: 50, right: 0, tilt: 0, curl: 35, thumbRight: -10, thumbUp: -25, short: 0 } },
 };
 type Field<K> = [key: K, label: string, lo: number, hi: number, step: number];
 const ROW_FIELDS: Field<keyof RowMove>[] = [
   ['up', 'Ruka hore', -60, 80, 1], ['right', 'Ruka vpravo', -40, 40, 1], ['tilt', 'Odklon ruky (° vpravo)', -20, 20, 0.5],
   ['curl', 'Skrčenie prstov', -30, 60, 1], ['thumbRight', 'Palec vpravo', -40, 40, 1], ['thumbUp', 'Palec hore', -50, 40, 1],
+  ['short', 'Chrbát ruky kratší', -40, 80, 1],
 ];
 const FINGER_FIELDS: Field<keyof FingerMove>[] = [['bend', 'skrčiť / vystrieť', -40, 50, 1], ['x', 'koniec ← →', -40, 40, 1], ['y', 'koniec ↓ ↑', -40, 40, 1], ['mid', 'stred prsta ← →', -25, 25, 1]];
 
-const handPose = (row: RowName): HandPose => ({ row, tilt: 0, f: moves() });
+const handPose = (row: RowName): HandPose => ({ row, tilt: 0, short: 0, f: moves() });
 const basePose = (id: string, name: string, row: RowName): Pose => ({ id, name, on: true, left: handPose(row), right: handPose(row) });
 const startState = (): RowsState => ({
   base: structuredClone(BASE_DEFAULTS),
+  palm: { left: 0, right: 0 },
   rows: structuredClone(ROW_DEFAULTS),
   poses: [basePose('home', 'Domov', 'home'), basePose('top', 'Horný rad', 'top'), basePose('num', 'Číselný rad', 'num'), basePose('bot', 'Dolný rad', 'bot')],
   owners: { left: { lines: {}, creases: {} }, right: { lines: {}, creases: {} } },
 });
+
+/** Settings saved before a field existed get its default (no migrations: a new field starts at nothing). */
+function withDefaults(state: RowsState): RowsState {
+  for (const s of SIDES) {
+    for (const r of Object.keys(state.rows) as RowName[]) state.rows[r][s].short ??= 0;
+    for (const p of state.poses) p[s].short ??= 0;
+  }
+  return state;
+}
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const statusEl = $('status');
@@ -174,6 +185,9 @@ let st = startState();
 const src = {} as Record<Side, Record<Kind, Path>>;
 const edits = {} as Record<Side, Record<Kind, number[]>>;
 const axisReach = {} as Record<Side, Reach[][][]>;
+/** The line of the knuckles (the four fingers' axes start there) and the wrist at the picture's bottom: the back of the hand between them. */
+const KNUCKLE_Y = {} as Record<Side, number>;
+const WRIST_Y = VIEW.y + VIEW.h;
 /** Each hand's line widths when its outline is middle lines (undefined: filled bands, as traced). */
 const widths = {} as Record<Side, Outline['width']>;
 /** The longest piece of a line (keyboard units) the hand moves as one: about a fifth of a finger's length. */
@@ -231,6 +245,7 @@ function loadSide(s: Side, o: Outline): void {
   edits[s] = Object.fromEntries(KINDS.map((k) => [k, new Array(paths[k].xy.length * 2).fill(0)])) as Record<Kind, number[]>;
   for (const k of KINDS) weigh(s, k);
   axisReach[s] = AXES[s].map((line) => line.map((p) => reach(s, p)));
+  KNUCKLE_Y[s] = AXES[s].slice(1).reduce((sum, line) => sum + line[0][1], 0) / 4;
 }
 const ownerOf = (s: Side, k: Kind, i: number): number | undefined => st.owners[s][k][i];
 function weigh(s: Side, k: Kind): void {
@@ -252,6 +267,9 @@ const midBump = (s: number) => Math.exp(-(((s - 0.5) / 0.18) ** 2));
 function movePoint(side: Side, p: Pt, w: Reach[], hp: HandPose): Pt {
   const row = st.rows[hp.row][side];
   let x = p[0], y = p[1];
+  // The back of the hand looks shorter (lifted): below the knuckles it is pressed towards them, the most at the wrist.
+  const short = st.palm[side] + row.short + hp.short, knuckles = KNUCKLE_Y[side];
+  if (short && y > knuckles) y -= (short * (y - knuckles)) / (WRIST_Y - knuckles);
   for (let f = 0; f < 5; f++) {
     const { w: wf, s } = w[f];
     if (wf < 1e-4 || s <= 0) continue;
@@ -529,6 +547,9 @@ function buildBase(): void {
   host.replaceChildren();
   for (const s of SIDES) {
     const col = column(SIDE_NAME[s]);
+    const palm = Object.assign(document.createElement('div'), { className: 'sliders' });
+    slider(palm, `palm-${s}`, [s, 'Chrbát ruky kratší', -40, 80, 1], st.palm, 0, () => redraw(true));
+    col.append(palm);
     fingerBlocks(col, s, st.base[s], BASE_DEFAULTS[s], 'base', () => redraw(true));
     host.append(col);
   }
@@ -561,12 +582,13 @@ function buildPanels(): void {
     head.append(sel, reset);
     const tilt = Object.assign(document.createElement('div'), { className: 'sliders' });
     slider(tilt, `tilt-${s}`, ['tilt', 'Odklon ruky (° vpravo)', -25, 25, 0.5], hp, 0, redraw);
+    slider(tilt, `short-${s}`, ['short', 'Chrbát ruky kratší', -40, 80, 1], hp, 0, redraw);
     pc.append(head, tilt);
     fingerBlocks(pc, s, hp.f, moves(), 'f', redraw);
     poseEl.append(pc);
   }
 }
-$('baseReset').addEventListener('click', () => { st.base = structuredClone(BASE_DEFAULTS); buildBase(); redraw(true); });
+$('baseReset').addEventListener('click', () => { st.base = structuredClone(BASE_DEFAULTS); st.palm = { left: 0, right: 0 }; buildBase(); redraw(true); });
 $('poseReset').addEventListener('click', () => { const p = poseById(current); for (const s of SIDES) Object.assign(p[s], handPose(p[s].row)); buildPanels(); redraw(); });
 $('rowReset').addEventListener('click', () => {
   const p = poseById(current);
@@ -724,6 +746,7 @@ for (const [id, s] of [['loadLeft', 'left'], ['loadRight', 'right']] as const) {
     const moved = placeLike(s, o);
     // A drawn outline is the home position itself: the corrections made for the one before would bend it.
     st.base[s] = moves();
+    st.palm[s] = 0;
     buildBase();
     replaceOutline(s, o);
     say(`${SIDE_NAME[s]}: obrys načítaný${moved ? `, posunutý o ${moved} podľa okraja palca` : ''}, opravy základnej polohy vynulované, ulož ho`);
@@ -815,7 +838,7 @@ addEventListener('keydown', (e) => { if ((e.ctrlKey || e.metaKey) && e.key.toLow
 (async () => {
   const r = await fetch('/__hand-poser/rows');
   const res = (await r.json()) as { ok: boolean; state: RowsState | null; outline: Record<Side, Outline> };
-  if (res.state) st = { ...startState(), ...res.state };
+  if (res.state) st = withDefaults({ ...startState(), ...res.state });
   for (const s of SIDES) loadSide(s, res.outline[s]);
   drawBoard();
   buildChips();

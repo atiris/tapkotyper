@@ -21,15 +21,20 @@ const SOURCE = 'rows';
 
 /** One finger's moves in keyboard units: bend (+ curls, the tip towards the knuckle), the tip sideways and up, the middle sideways. */
 export interface FingerMove { bend: number; x: number; y: number; mid: number }
-/** Where a whole hand goes on a row: up, right, its tilt (degrees, + clockwise), the fingers' curl, the thumb's move. */
-export interface RowMove { up: number; right: number; tilt: number; curl: number; thumbRight: number; thumbUp: number }
+/**
+ * Where a whole hand goes on a row: up, right, its tilt (degrees, + clockwise), the fingers' curl, the thumb's move, and
+ * how much shorter the back of the hand looks (as if lifted; keyboard units at the wrist).
+ */
+export interface RowMove { up: number; right: number; tilt: number; curl: number; thumbRight: number; thumbUp: number; short: number }
 export type RowName = 'bot' | 'home' | 'top' | 'num';
-export interface HandPose { row: RowName; tilt: number; f: FingerMove[] }
+export interface HandPose { row: RowName; tilt: number; short: number; f: FingerMove[] }
 export interface Pose { id: string; name: string; on: boolean; left: HandPose; right: HandPose }
 /** The point numbers of an outline's path that belong to a finger by hand (0 the thumb .. 4 the little finger, 5 the palm). */
 export type Owners = Record<string, number>;
 export interface RowsState {
   base: Record<Side, FingerMove[]>;
+  /** The home position's back of the hand made shorter (keyboard units at the wrist). */
+  palm: Record<Side, number>;
   rows: Record<RowName, Record<Side, RowMove>>;
   poses: Pose[];
   owners: Record<Side, { lines: Owners; creases: Owners }>;

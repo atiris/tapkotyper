@@ -24,9 +24,10 @@ export interface FingerMove { bend: number; x: number; y: number; mid: number }
 /**
  * Where a whole hand goes on a row: up, right, its tilt (degrees, + clockwise), the fingers' curl, the thumb's move, and
  * how much shorter the back of the hand looks (as if lifted; keyboard units at the wrist), and the fingers spread
- * sideways (+ to the right: the leftmost finger stays, the others fan out; - to the left: the rightmost stays).
+ * sideways (+ to the right: the leftmost finger stays, the others fan out; - to the left: the rightmost stays), and
+ * apart in a V (degrees of the little finger's turn at its knuckle; the back of the hand widens at the knuckles).
  */
-export interface RowMove { up: number; right: number; tilt: number; curl: number; thumbRight: number; thumbUp: number; short: number; spread: number }
+export interface RowMove { up: number; right: number; tilt: number; curl: number; thumbRight: number; thumbUp: number; short: number; spread: number; vee: number }
 /** The keyboard's rows a hand types on, and `off`: the hands lying beside the keyboard (Tapko's `rest`). */
 export type RowName = 'bot' | 'home' | 'top' | 'num' | 'off';
 /** A hand in a key pose: its row, the small moves of the whole hand added to the row's, and its fingers' moves. */

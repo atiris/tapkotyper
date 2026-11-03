@@ -22,7 +22,7 @@ import type { FingerMove, HandLook, HandPose, Nail, Outline, OutlineFile, Owners
 type Pt = [number, number];
 type Kind = 'lines' | 'creases';
 interface Reach { w: number; s: number }
-/** A path's commands and points; a curve's control point moves as the end point it belongs to (anchor). */
+/** A path's commands and points; a curve's control point moves with the finger of the end point it belongs to (anchor). */
 interface Path { parts: (string | null)[]; xy: Pt[]; anchor: number[]; w: Reach[][] }
 
 const SIDES: Side[] = ['left', 'right'];
@@ -101,14 +101,14 @@ const move0 = (): FingerMove => ({ bend: 0, x: 0, y: 0, mid: 0 });
 const moves = (o: Record<number, Partial<FingerMove>> = {}): FingerMove[] => FINGERS.map((_, f) => ({ ...move0(), ...o[f] }));
 /** The home outline's corrections start at none: the outline is drawn as the home position should look. */
 const BASE_DEFAULTS: Record<Side, FingerMove[]> = { left: moves(), right: moves() };
-const zeroRow = (): RowMove => ({ up: 0, right: 0, tilt: 0, curl: 0, thumbRight: 0, thumbUp: 0, short: 0, spread: 0 });
+const zeroRow = (): RowMove => ({ up: 0, right: 0, tilt: 0, curl: 0, thumbRight: 0, thumbUp: 0, short: 0, spread: 0, vee: 0 });
 const ROW_DEFAULTS: Record<RowName, Record<Side, RowMove>> = {
-  bot: { left: { up: -15, right: 8, tilt: 0, curl: 20, thumbRight: 0, thumbUp: 10, short: 0, spread: 0 }, right: { up: -15, right: 8, tilt: 0, curl: 20, thumbRight: 0, thumbUp: 10, short: 0, spread: 0 } },
+  bot: { left: { up: -15, right: 8, tilt: 0, curl: 20, thumbRight: 0, thumbUp: 10, short: 0, spread: 0, vee: 0 }, right: { up: -15, right: 8, tilt: 0, curl: 20, thumbRight: 0, thumbUp: 10, short: 0, spread: 0, vee: 0 } },
   home: { left: zeroRow(), right: zeroRow() },
-  top: { left: { up: 25, right: 0, tilt: 0, curl: 17, thumbRight: 5, thumbUp: -13, short: 0, spread: 0 }, right: { up: 25, right: 0, tilt: 0, curl: 17, thumbRight: -5, thumbUp: -13, short: 0, spread: 0 } },
-  num: { left: { up: 50, right: 0, tilt: 0, curl: 35, thumbRight: 10, thumbUp: -25, short: 0, spread: 0 }, right: { up: 50, right: 0, tilt: 0, curl: 35, thumbRight: -10, thumbUp: -25, short: 0, spread: 0 } },
+  top: { left: { up: 25, right: 0, tilt: 0, curl: 17, thumbRight: 5, thumbUp: -13, short: 0, spread: 0, vee: 0 }, right: { up: 25, right: 0, tilt: 0, curl: 17, thumbRight: -5, thumbUp: -13, short: 0, spread: 0, vee: 0 } },
+  num: { left: { up: 50, right: 0, tilt: 0, curl: 35, thumbRight: 10, thumbUp: -25, short: 0, spread: 0, vee: 0 }, right: { up: 50, right: 0, tilt: 0, curl: 35, thumbRight: -10, thumbUp: -25, short: 0, spread: 0, vee: 0 } },
   // Beside the keyboard: each hand out to its side and a little lower, turned a little out, the fingers loose.
-  off: { left: { up: -40, right: -330, tilt: -10, curl: -5, thumbRight: 0, thumbUp: 0, short: 0, spread: 0 }, right: { up: -40, right: 330, tilt: 10, curl: -5, thumbRight: 0, thumbUp: 0, short: 0, spread: 0 } },
+  off: { left: { up: -40, right: -330, tilt: -10, curl: -5, thumbRight: 0, thumbUp: 0, short: 0, spread: 0, vee: 0 }, right: { up: -40, right: 330, tilt: 10, curl: -5, thumbRight: 0, thumbUp: 0, short: 0, spread: 0, vee: 0 } },
 };
 /** The sliders' wider ranges beside the keyboard (the hands move far out). */
 const OFF_RANGE: Partial<Record<keyof RowMove, [number, number]>> = { up: [-200, 150], right: [-450, 450], tilt: [-45, 45] };
@@ -118,7 +118,8 @@ type Field<K> = [key: K, label: string, lo: number, hi: number, step: number];
 const ROW_FIELDS: Field<keyof RowMove>[] = [
   ['up', 'Ruka hore', -60, 80, 1], ['right', 'Ruka vpravo', -40, 40, 1], ['tilt', 'Odklon ruky (° vpravo)', -20, 20, 0.5],
   ['curl', 'Skrčenie prstov', -30, 60, 1], ['thumbRight', 'Palec vpravo', -40, 40, 1], ['thumbUp', 'Palec hore', -50, 40, 1],
-  ['short', 'Chrbát ruky kratší', -40, 80, 1], ['spread', 'Roztiahnutie prstov ← →', -60, 60, 1],
+  ['short', 'Chrbát ruky kratší', -40, 80, 1], ['spread', 'Roztiahnutie prstov ← →', -120, 120, 1],
+  ['vee', 'Prsty do V (°)', -20, 60, 0.5],
 ];
 const FINGER_FIELDS: Field<keyof FingerMove>[] = [['bend', 'skrčiť / vystrieť', -40, 50, 1], ['x', 'koniec ← →', -40, 40, 1], ['y', 'koniec ↓ ↑', -40, 40, 1], ['mid', 'stred prsta ← →', -25, 25, 1]];
 
@@ -371,7 +372,12 @@ function posedNails(pose: Pose, side?: Side, hp?: HandPose): (Nail & { pts: Pt[]
 const ownerOf = (s: Side, k: Kind, i: number): number | undefined => st.owners[s][k][i];
 function weigh(s: Side, k: Kind): void {
   const path = src[s][k];
-  for (const i of path.xy.keys()) { const a = path.anchor[i]; path.w[i] = reach(s, path.xy[a], ownerOf(s, k, a)); }
+  for (const i of path.xy.keys()) {
+    const a = path.anchor[i], r = reach(s, path.xy[a], ownerOf(s, k, a));
+    // A control point moves with its end point's fingers, but as far as its own place along them: where a finger's
+    // move turns or stretches its lines, the curve's handles turn with them and the line stays smooth.
+    path.w[i] = a === i ? r : r.map((q, f) => ({ w: q.w, s: q.w ? nearOnLine(path.xy[i], AXES[s][f]).s : 0 }));
+  }
 }
 
 const smooth = (t: number) => t * t * (3 - 2 * t), clamp = (x: number) => Math.min(1, Math.max(0, x));
@@ -381,6 +387,18 @@ const unitDirs = (s: Side) => AXES[s].map((l) => {
   return [(b[0] - t[0]) / n, (b[1] - t[1]) / n] as Pt;
 });
 const UNIT_DIR = {} as Record<Side, Pt[]>;
+/** How far along a finger (from its knuckle) its turn into a V grows to all of it: the finger turns at its knuckle. */
+const VEE_ROOT = 0.3;
+/** How much wider the back of the hand gets at the knuckles per degree of the V. */
+const VEE_WIDEN = 0.003;
+/**
+ * How much each of the four fingers turns when they go apart in a V, against the little finger's turn: the middle finger
+ * stays, the others turn away from it the more the farther their knuckle is (+ the tip to the right).
+ */
+function veeShare(side: Side, f: number): number {
+  const k = (g: number) => AXES[side][g][0][0], far = k(4) - k(2);
+  return far ? (k(f) - k(2)) / Math.abs(far) : 0;
+}
 /** Where along each finger its joint between the 1st and 2nd bone lies (0 the knuckle, 1 the tip). */
 const MID_AT = {} as Record<Side, number[]>;
 /** How much the "middle of the finger" move reaches a place along it: most at the joint between the 1st and 2nd bone. */
@@ -404,6 +422,29 @@ function movePoint(side: Side, p: Pt, w: Reach[], hp: HandPose): Pt {
   }
   const short = st.palm[side] + both('short'), knuckles = KNUCKLE_Y[side];
   if (short && y > knuckles) y -= (short * (y - knuckles)) / (WRIST_Y - knuckles);
+  // Apart in a V: the back of the hand widens at the knuckles (less towards the wrist), each finger goes with its
+  // knuckle and turns around it; the thumb only at its root.
+  const vee = both('vee');
+  const knuckle = (f: number): Pt => {
+    const k = AXES[side][f][0];
+    return [k[0] + (k[0] - TIPS_X[side]) * size, k[1] + (k[1] - KNUCKLE_Y[side]) * size];
+  };
+  if (vee) {
+    const mid = (knuckle(1)[0] + knuckle(4)[0]) / 2, widen = vee * VEE_WIDEN;
+    const at = (px: number, py: number) => (px - mid) * widen * smooth(clamp((WRIST_Y - py) / (WRIST_Y - knuckles)));
+    let fingers = 0, shift = 0;
+    for (let f = 1; f < 5; f++) if (w[f].s > 0) { fingers += w[f].w; shift += w[f].w * at(...knuckle(f)); }
+    shift += (1 - fingers - (w[0].s > 0 ? w[0].w : 0)) * at(x, y) + (w[0].s > 0 ? w[0].w * at(x, y) * (1 - smooth(clamp(w[0].s))) : 0);
+    const px = x, py = y;
+    for (let f = 1; f < 5; f++) {
+      const { w: wf, s } = w[f];
+      if (wf < 1e-4 || s <= 0) continue;
+      const a = (wf * vee * veeShare(side, f) * smooth(clamp(s / VEE_ROOT)) * Math.PI) / 180, [cx, cy] = knuckle(f);
+      x += (px - cx) * (Math.cos(a) - 1) - (py - cy) * Math.sin(a);
+      y += (px - cx) * Math.sin(a) + (py - cy) * (Math.cos(a) - 1);
+    }
+    x += shift;
+  }
   for (let f = 0; f < 5; f++) {
     const { w: wf, s } = w[f];
     if (wf < 1e-4 || s <= 0) continue;

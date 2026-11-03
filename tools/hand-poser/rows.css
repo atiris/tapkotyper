@@ -61,3 +61,8 @@ input[type=number] { width: 4.5em; }
 /* What an axis point is and where it belongs, beside the mouse before a drag. */
 .axis-hint { position: fixed; z-index: 20; max-width: 320px; padding: 6px 9px; border-radius: 6px; background: rgba(45, 33, 64, 0.82); color: #fff; font-size: 12px; line-height: 1.35; pointer-events: none; box-shadow: 0 2px 8px #0003; }
 .axis-hint small { display: block; margin-top: 3px; opacity: 0.8; }
+/* A panel folds to its title (the base and row panels while a key pose is shown). */
+.fold-title { cursor: pointer; user-select: none; }
+.fold-title::before { content: '▾ '; color: #9a8fa6; }
+.rows-panel.folded .fold-title::before { content: '▸ '; }
+.rows-panel.folded > :not(.head) { display: none; }

@@ -492,7 +492,10 @@ function show(id: string, blend = $<HTMLInputElement>('smooth').checked): void {
   current = id;
   markKeys();
   for (const b of document.querySelectorAll<HTMLElement>('#poses .rows-chip')) b.classList.toggle('now', b.dataset.id === id);
-  if (fresh) buildPanels();
+  if (fresh) {
+    buildPanels();
+    foldPanels();
+  }
   renderAxes();
   const from = shown, to = posed(poseById(id));
   cancelAnimationFrame(anim);
@@ -521,6 +524,11 @@ function redraw(ghostToo = false): void {
   changed();
 }
 addEventListener('beforeunload', (e) => { if (dirty) e.preventDefault(); });
+
+// The base and row panels stay folded while a key pose is shown, open for a whole row's pose; a click on the title folds or opens one.
+const FOLDED = ['basePanel', 'rowPanel'];
+const foldPanels = () => { for (const id of FOLDED) $(id).classList.toggle('folded', !!keyOfPose(current)); };
+for (const id of FOLDED) $(id).querySelector('.fold-title')!.addEventListener('click', () => $(id).classList.toggle('folded'));
 
 // ---- poses: the strip and the cycle ----
 

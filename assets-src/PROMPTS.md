@@ -1221,7 +1221,8 @@ settings), `tools/hand-poser/outline/<side>.svg` (the source outline) and `publi
 every key pose) with `public/hands/index.json`; an open Tapko shows them at once; commit them.
 
 Names: a pose is named by the hand (`l`, `r`), the finger (1 the thumb .. 5 the little finger) and the key it presses,
-the key by two characters: two letters for a named key (`tb`, `cp`, `ls`, `rs`, `sp`, `en`, `bk`, and `lc`, `rc`,
+the key by two characters: two letters for a named key (`tb`, `cp`, `ls`, `rs`, `sp`, `bk`, Enter `en` flat
+(English) and `el` L-shaped (Slovak, further out), and `lc`, `rc`,
 `lw`, `rw`, `la`, `ra`, `mn`), else a key of the row's plain range with `0` (`a0`, `f0`, `20`; ranges `1`-`0`,
 `q`-`p`, `a`-`l`, `z`-`m`, English letters) or the range's end and how many keys further out (`11` left of 1, `01`
 right of 0, `p1` right of P, `l1` = ô). So `l2f0` is the left index on F, `r1sr` the right thumb on the space bar (its halves `sl`, `sr`; `sp` the whole key),

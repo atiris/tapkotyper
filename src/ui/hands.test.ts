@@ -22,11 +22,13 @@ describe('hands', () => {
   it('names a key by two characters: a word, the plain range of its row, or the end of the range and how many keys further out', () => {
     const name = (code: string) => keyName(sk, code);
     expect(['KeyR', 'KeyY', 'KeyZ', 'Digit5', 'ShiftLeft', 'ShiftRight', 'CapsLock', 'Space', 'Enter', 'EnterTop', 'Backspace'].map(name))
-      .toEqual(['r0', 'y0', 'z0', '50', 'ls', 'rs', 'cp', 'sp', 'en', 'en', 'bk']);
+      .toEqual(['r0', 'y0', 'z0', '50', 'ls', 'rs', 'cp', 'sp', 'el', 'el', 'bk']);
     expect(['Backquote', 'Minus', 'Equal', 'BracketLeft', 'BracketRight', 'Semicolon', 'Quote', 'Backslash', 'Comma', 'Slash'].map(name))
       .toEqual(['11', '01', '02', 'p1', 'p2', 'l1', 'l2', 'l3', 'm1', 'm3']);
     // The English keyboard's backslash sits in the top row.
     expect(keyName(LAYOUTS['us-qwerty'], 'Backslash')).toBe('p3');
+    // Its Enter is flat in the home row, nearer than the Slovak L-shaped one: a pose of its own.
+    expect(keyName(LAYOUTS['us-qwerty'], 'Enter')).toBe('en');
     for (const row of sk.rows) for (const d of row) expect(name(d.code)).toMatch(/^[a-z0-9]{2}$/);
   });
 

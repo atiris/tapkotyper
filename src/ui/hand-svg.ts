@@ -54,11 +54,12 @@ const WORDS: Record<string, string> = {
 const RANGES: [first: string, keys: string][] = [['Digit1', '1234567890'], ['KeyQ', 'qwertyuiop'], ['KeyA', 'asdfghjkl'], ['KeyZ', 'zxcvbnm']];
 
 /**
- * A key's two-character name by its place: two letters for a named key (`tb`, `ls`, `sp`), else a key of the row's
- * plain range and how many keys further out it is (`a0`, `20` the key itself; `11` left of 1, `01` right of 0, `p1`
- * right of P, `l1` the Slovak ô).
+ * A key's two-character name by its place: two letters for a named key (`tb`, `ls`, `sp`; Enter `en` flat in the
+ * home row, `el` L-shaped over two rows, further out), else a key of the row's plain range and how many keys further out
+ * it is (`a0`, `20` the key itself; `11` left of 1, `01` right of 0, `p1` right of P, `l1` the Slovak ô).
  */
 export function keyName(layout: Layout, code: string): string | null {
+  if (code === 'Enter' || code === 'EnterTop') return layout.rows.some((row) => row.some((d) => d.code === 'EnterTop')) ? 'el' : 'en';
   if (WORDS[code]) return WORDS[code];
   for (const [r, row] of layout.rows.entries()) {
     const keys = row.filter((d) => !WORDS[d.code]);

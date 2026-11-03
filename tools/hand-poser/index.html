@@ -3,18 +3,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ruky podľa radov</title>
+  <title>Ruky</title>
   <link rel="stylesheet" href="./rows.css">
 </head>
 <body>
   <div class="main">
     <div class="rows-left">
       <header class="head">
-        <h1>Ruky podľa radov</h1>
+        <h1>Ruky</h1>
+        <p class="status" id="status" aria-live="polite"></p>
         <span class="sep"></span>
         <button id="save" class="rows-save" title="Uloží nastavenia, obrys a SVG domovskej polohy a všetkých póz klávesov do public/hands (Ctrl+S)">Uložiť</button>
       </header>
-      <p class="status" id="status" aria-live="polite"></p>
       <div class="rows-bar" id="rowPoses" title="Polohy celých radov (základ pre pózy klávesov) a ruky mimo klávesnice"></div>
       <div class="rows-stage" id="stageBox" aria-label="Ruky nad klávesnicou Tapka"></div>
       <div class="rows-bar">

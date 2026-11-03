@@ -23,9 +23,10 @@ const SOURCE = 'rows';
 export interface FingerMove { bend: number; x: number; y: number; mid: number }
 /**
  * Where a whole hand goes on a row: up, right, its tilt (degrees, + clockwise), the fingers' curl, the thumb's move, and
- * how much shorter the back of the hand looks (as if lifted; keyboard units at the wrist).
+ * how much shorter the back of the hand looks (as if lifted; keyboard units at the wrist), and the fingers spread
+ * sideways (+ to the right: the leftmost finger stays, the others fan out; - to the left: the rightmost stays).
  */
-export interface RowMove { up: number; right: number; tilt: number; curl: number; thumbRight: number; thumbUp: number; short: number }
+export interface RowMove { up: number; right: number; tilt: number; curl: number; thumbRight: number; thumbUp: number; short: number; spread: number }
 /** The keyboard's rows a hand types on, and `off`: the hands lying beside the keyboard (Tapko's `rest`). */
 export type RowName = 'bot' | 'home' | 'top' | 'num' | 'off';
 /** A hand in a key pose: its row, the small moves of the whole hand added to the row's, and its fingers' moves. */
@@ -37,6 +38,8 @@ export interface RowsState {
   base: Record<Side, FingerMove[]>;
   /** The home position's back of the hand made shorter (keyboard units at the wrist). */
   palm: Record<Side, number>;
+  /** Each hand's size in per cent over the drawing: the back of the hand grows, the fingertips stay on their keys. */
+  size: Record<Side, number>;
   rows: Record<RowName, Record<Side, RowMove>>;
   poses: Pose[];
   owners: Record<Side, { lines: Owners; creases: Owners }>;

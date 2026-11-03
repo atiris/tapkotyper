@@ -6355,7 +6355,6 @@
    "name": "r390",
    "on": true,
    "left": {
-    "row": "home",
     "up": 0,
     "right": 0,
     "tilt": 0,
@@ -6365,6 +6364,7 @@
     "short": 0,
     "spread": 0,
     "vee": 0,
+    "row": "home",
     "f": [
      {
       "bend": 0,
@@ -6399,7 +6399,6 @@
     ]
    },
    "right": {
-    "row": "num",
     "up": 3.5,
     "right": 0,
     "tilt": 0,
@@ -6409,6 +6408,7 @@
     "short": 2.5,
     "spread": 0,
     "vee": 0,
+    "row": "num",
     "f": [
      {
       "bend": 0,
@@ -6448,7 +6448,6 @@
    "name": "r400",
    "on": true,
    "left": {
-    "row": "home",
     "up": 0,
     "right": 0,
     "tilt": 0,
@@ -6458,6 +6457,7 @@
     "short": 0,
     "spread": 0,
     "vee": 0,
+    "row": "home",
     "f": [
      {
       "bend": 0,
@@ -6492,7 +6492,6 @@
     ]
    },
    "right": {
-    "row": "num",
     "up": -0.5,
     "right": -4.5,
     "tilt": 1.5,
@@ -6502,6 +6501,7 @@
     "short": 0,
     "spread": 0,
     "vee": 0,
+    "row": "num",
     "f": [
      {
       "bend": 0,
@@ -6532,6 +6532,99 @@
       "x": 2,
       "y": 0,
       "mid": 0
+     }
+    ]
+   }
+  },
+  {
+   "id": "r5el",
+   "name": "r5el",
+   "on": true,
+   "left": {
+    "up": 0,
+    "right": 0,
+    "tilt": 0,
+    "curl": 0,
+    "thumbRight": 0,
+    "thumbUp": 0,
+    "short": 0,
+    "spread": 0,
+    "vee": 0,
+    "row": "home",
+    "f": [
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 0,
+      "x": 0,
+      "y": 0,
+      "mid": 0
+     }
+    ]
+   },
+   "right": {
+    "up": -0.5,
+    "right": 56,
+    "tilt": -1.5,
+    "curl": -4.5,
+    "thumbRight": 0,
+    "thumbUp": 2.5,
+    "short": 5.5,
+    "spread": 13.5,
+    "vee": 12.5,
+    "row": "home",
+    "f": [
+     {
+      "bend": 0,
+      "x": -3,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": -7,
+      "x": -22,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 4,
+      "x": -48,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": 5,
+      "x": -34,
+      "y": 0,
+      "mid": 0
+     },
+     {
+      "bend": -42,
+      "x": 70,
+      "y": -30,
+      "mid": -4
      }
     ]
    }
@@ -7566,7 +7659,7 @@
   }
  },
  "nails": {
-  "rows": true,
+  "rows": false,
   "keys": false,
   "off": true
  },

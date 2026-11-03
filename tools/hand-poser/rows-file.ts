@@ -26,7 +26,8 @@ export interface FingerMove { bend: number; x: number; y: number; mid: number }
  * how much shorter the back of the hand looks (as if lifted; keyboard units at the wrist).
  */
 export interface RowMove { up: number; right: number; tilt: number; curl: number; thumbRight: number; thumbUp: number; short: number }
-export type RowName = 'bot' | 'home' | 'top' | 'num';
+/** The keyboard's rows a hand types on, and `off`: the hands lying beside the keyboard (Tapko's `rest`). */
+export type RowName = 'bot' | 'home' | 'top' | 'num' | 'off';
 /** A hand in a key pose: its row, the small moves of the whole hand added to the row's, and its fingers' moves. */
 export interface HandPose extends RowMove { row: RowName; f: FingerMove[] }
 export interface Pose { id: string; name: string; on: boolean; left: HandPose; right: HandPose }

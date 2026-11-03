@@ -72,3 +72,5 @@ input[type=number] { width: 4.5em; }
 .sp-half.right { right: 0; border-top-left-radius: 0; border-bottom-left-radius: 0; }
 .sp-half.pose-key { outline: 3px solid #c9a400; outline-offset: -2px; }
 .sp-half.has-pose::before { content: ''; position: absolute; top: 4px; right: 4px; width: 8px; height: 8px; border-radius: 50%; background: #2a9d4b; }
+/* Beside the keyboard: a wider view, the keyboard smaller in the middle. */
+.rows-stage.wide { padding: 1% 24% 13%; }

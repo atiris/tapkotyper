@@ -27,7 +27,7 @@ const KINDS: Kind[] = ['lines', 'creases'];
 const SIDE_NAME: Record<Side, string> = { left: 'Ľavá ruka', right: 'Pravá ruka' };
 const FINGERS = ['palec', 'ukazovák', 'prostredník', 'prstenník', 'malíček'];
 const PALM = 5;
-const ROW_NAMES: Record<RowName, string> = { bot: 'dolný rad', home: 'domovský rad', top: 'horný rad', num: 'číselný rad' };
+const ROW_NAMES: Record<RowName, string> = { bot: 'dolný rad', home: 'domovský rad', top: 'horný rad', num: 'číselný rad', off: 'mimo klávesnice' };
 /** The row a hand types on, by the keyboard's row (the bottom row's thumbs stay at home). */
 const ROW_OF: RowName[] = ['num', 'top', 'home', 'bot', 'home'];
 
@@ -104,7 +104,13 @@ const ROW_DEFAULTS: Record<RowName, Record<Side, RowMove>> = {
   home: { left: zeroRow(), right: zeroRow() },
   top: { left: { up: 25, right: 0, tilt: 0, curl: 17, thumbRight: 5, thumbUp: -13, short: 0 }, right: { up: 25, right: 0, tilt: 0, curl: 17, thumbRight: -5, thumbUp: -13, short: 0 } },
   num: { left: { up: 50, right: 0, tilt: 0, curl: 35, thumbRight: 10, thumbUp: -25, short: 0 }, right: { up: 50, right: 0, tilt: 0, curl: 35, thumbRight: -10, thumbUp: -25, short: 0 } },
+  // Beside the keyboard: each hand out to its side and a little lower, turned a little out, the fingers loose.
+  off: { left: { up: -40, right: -330, tilt: -10, curl: -5, thumbRight: 0, thumbUp: 0, short: 0 }, right: { up: -40, right: 330, tilt: 10, curl: -5, thumbRight: 0, thumbUp: 0, short: 0 } },
 };
+/** The sliders' wider ranges beside the keyboard (the hands move far out). */
+const OFF_RANGE: Partial<Record<keyof RowMove, [number, number]>> = { up: [-200, 150], right: [-450, 450], tilt: [-45, 45] };
+/** A row's sliders: beside the keyboard with wider ranges. */
+const rowFields = (row: RowName): Field<keyof RowMove>[] => ROW_FIELDS.map(([k, label, lo, hi, step]) => [k, label, ...(row === 'off' ? OFF_RANGE[k] ?? [lo, hi] : [lo, hi]), step] as Field<keyof RowMove>);
 type Field<K> = [key: K, label: string, lo: number, hi: number, step: number];
 const ROW_FIELDS: Field<keyof RowMove>[] = [
   ['up', 'Ruka hore', -60, 80, 1], ['right', 'Ruka vpravo', -40, 40, 1], ['tilt', 'Odklon ruky (° vpravo)', -20, 20, 0.5],
@@ -113,18 +119,22 @@ const ROW_FIELDS: Field<keyof RowMove>[] = [
 ];
 const FINGER_FIELDS: Field<keyof FingerMove>[] = [['bend', 'skrčiť / vystrieť', -40, 50, 1], ['x', 'koniec ← →', -40, 40, 1], ['y', 'koniec ↓ ↑', -40, 40, 1], ['mid', 'stred prsta ← →', -25, 25, 1]];
 
+/** The poses of whole rows (above the keyboard), each named by its row. */
+const ROW_POSES: [RowName, string][] = [['home', 'Domov'], ['top', 'Horný rad'], ['num', 'Číselný rad'], ['bot', 'Dolný rad'], ['off', 'Mimo klávesnice']];
 const handPose = (row: RowName): HandPose => ({ row, ...zeroRow(), f: moves() });
 const basePose = (id: string, name: string, row: RowName): Pose => ({ id, name, on: true, left: handPose(row), right: handPose(row) });
 const startState = (): RowsState => ({
   base: structuredClone(BASE_DEFAULTS),
   palm: { left: 0, right: 0 },
   rows: structuredClone(ROW_DEFAULTS),
-  poses: [basePose('home', 'Domov', 'home'), basePose('top', 'Horný rad', 'top'), basePose('num', 'Číselný rad', 'num'), basePose('bot', 'Dolný rad', 'bot')],
+  poses: ROW_POSES.map(([id, name]) => basePose(id, name, id)),
   owners: { left: { lines: {}, creases: {} }, right: { lines: {}, creases: {} } },
 });
 
 /** Settings saved before a field existed get its default (no migrations: a new field starts at nothing). */
 function withDefaults(state: RowsState): RowsState {
+  for (const r of Object.keys(ROW_DEFAULTS) as RowName[]) state.rows[r] ??= structuredClone(ROW_DEFAULTS[r]);
+  for (const [id, name] of ROW_POSES) if (!state.poses.some((p) => p.id === id)) state.poses.push(basePose(id, name, id));
   for (const s of SIDES) {
     for (const r of Object.keys(state.rows) as RowName[]) state.rows[r][s].short ??= 0;
     for (const p of state.poses) p[s] = { ...zeroRow(), ...p[s] };
@@ -506,7 +516,9 @@ function show(id: string, blend = $<HTMLInputElement>('smooth').checked): void {
   const fresh = id !== current;
   current = id;
   markKeys();
-  for (const b of document.querySelectorAll<HTMLElement>('#poses .rows-chip')) b.classList.toggle('now', b.dataset.id === id);
+  for (const b of document.querySelectorAll<HTMLElement>('.rows-chip')) b.classList.toggle('now', b.dataset.id === id);
+  // Beside the keyboard the view is wider.
+  stageBox.classList.toggle('wide', SIDES.some((s) => poseById(id)[s].row === 'off'));
   if (fresh) {
     buildPanels();
     foldPanels();
@@ -547,17 +559,23 @@ for (const id of FOLDED) $(id).querySelector('.fold-title')!.addEventListener('c
 
 // ---- poses: the strip and the cycle ----
 
-const posesEl = $('poses');
+const posesEl = $('poses'), rowPosesEl = $('rowPoses');
+/** The poses: the whole rows above the keyboard, the keys' poses below it (with a tick: in the cycle). */
 function buildChips(): void {
   posesEl.replaceChildren();
+  rowPosesEl.replaceChildren();
   for (const p of st.poses) {
+    const key = !!keyOfPose(p.id);
     const chip = Object.assign(document.createElement('span'), { className: `rows-chip${p.id === current ? ' now' : ''}`, tabIndex: 0 });
     chip.dataset.id = p.id;
     chip.setAttribute('role', 'button');
-    const box = Object.assign(document.createElement('input'), { type: 'checkbox', checked: p.on, title: 'V striedaní' });
-    box.addEventListener('click', (e) => { e.stopPropagation(); p.on = box.checked; changed(); });
-    chip.append(box, p.name);
-    if (keyOfPose(p.id)) {
+    if (key) {
+      const box = Object.assign(document.createElement('input'), { type: 'checkbox', checked: p.on, title: 'V striedaní' });
+      box.addEventListener('click', (e) => { e.stopPropagation(); p.on = box.checked; changed(); });
+      chip.append(box);
+    }
+    chip.append(p.name);
+    if (key) {
       const x = Object.assign(document.createElement('button'), { className: 'x', textContent: '×', title: 'Odstrániť pózu (pri uložení zmizne aj jej SVG)' });
       x.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -572,14 +590,15 @@ function buildChips(): void {
     const pick = () => { setPlaying(false); show(p.id); };
     chip.addEventListener('click', pick);
     chip.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
-    posesEl.append(chip);
+    (key ? posesEl : rowPosesEl).append(chip);
   }
 }
 let playing = false, timer = 0;
 const playBtn = $<HTMLButtonElement>('play'), stepIn = $<HTMLInputElement>('step');
 const stepS = () => Math.max(0.2, Number(stepIn.value) || 1);
+/** The cycle plays the keys' poses only (ticked), not the whole rows. */
 function next(): void {
-  const list = st.poses.filter((p) => p.on);
+  const list = st.poses.filter((p) => p.on && keyOfPose(p.id));
   if (!list.length) return;
   show(list[(list.findIndex((p) => p.id === current) + 1) % list.length].id);
 }
@@ -646,7 +665,7 @@ function buildPanels(): void {
     const hp = pose[s];
     const rc = column(`${SIDE_NAME[s]}, ${ROW_NAMES[hp.row]}`);
     const rs = Object.assign(document.createElement('div'), { className: 'sliders' });
-    for (const fld of ROW_FIELDS) slider(rs, `row-${hp.row}-${s}-${fld[0]}`, fld, st.rows[hp.row][s], ROW_DEFAULTS[hp.row][s][fld[0]], redraw);
+    for (const fld of rowFields(hp.row)) slider(rs, `row-${hp.row}-${s}-${fld[0]}`, fld, st.rows[hp.row][s], ROW_DEFAULTS[hp.row][s][fld[0]], redraw);
     rc.append(rs);
     rowsEl.append(rc);
 
@@ -662,7 +681,7 @@ function buildPanels(): void {
     head.append(sel, reset);
     // The whole hand's small moves in this pose, added to its row's (the same kinds, finer steps).
     const whole = Object.assign(document.createElement('div'), { className: 'sliders' });
-    for (const [k, label, lo, hi] of ROW_FIELDS) slider(whole, `pose-${s}-${k}`, [k, label, lo / 2, hi / 2, 0.5], hp, 0, redraw);
+    for (const [k, label, lo, hi] of rowFields(hp.row)) slider(whole, `pose-${s}-${k}`, [k, label, lo / 2, hi / 2, 0.5], hp, 0, redraw);
     pc.append(head, whole);
     fingerBlocks(pc, s, hp.f, moves(), 'f', redraw);
     poseEl.append(pc);
@@ -975,6 +994,8 @@ $('centerline').addEventListener('click', () => {
 // ---- saving ----
 
 const tapko = new BroadcastChannel(HANDS_CHANNEL);
+/** The steps Tapko plays between rest and home. */
+const REST_STEPS = 4;
 async function save(): Promise<void> {
   const files: OutlineFile[] = [];
   const out = (side: Side, name: string, hp: HandPose) => {
@@ -982,6 +1003,16 @@ async function save(): Promise<void> {
     files.push({ side, name, lines: draw(src[side].lines, xy.lines), creases: draw(src[side].creases, xy.creases), ...(widths[side] ? { width: widths[side] } : {}) });
   };
   for (const s of SIDES) out(s, 'home', homePose[s]);
+  // Beside the keyboard is Tapko's rest, and the steps on the way from it to home (rest1 nearest rest).
+  const off = poseById('off');
+  for (const s of SIDES) {
+    out(s, 'rest', off[s]);
+    const from = posedSide(s, off[s]), to = posedSide(s, homePose[s]);
+    for (let k = 1; k <= REST_STEPS; k++) {
+      const t = k / (REST_STEPS + 1), mix = (a: Pt[], b: Pt[]) => a.map((p, i): Pt => [p[0] + (b[i][0] - p[0]) * t, p[1] + (b[i][1] - p[1]) * t]);
+      files.push({ side: s, name: `rest${k}`, lines: draw(src[s].lines, mix(from.lines, to.lines)), creases: draw(src[s].creases, mix(from.creases, to.creases)), ...(widths[s] ? { width: widths[s] } : {}) });
+    }
+  }
   for (const p of st.poses) {
     const key = keyOfPose(p.id);
     if (key) { const side: Side = p.id[0] === 'l' ? 'left' : 'right'; out(side, p.id, p[side]); }

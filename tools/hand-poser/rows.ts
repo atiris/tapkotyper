@@ -176,7 +176,51 @@ const edits = {} as Record<Side, Record<Kind, number[]>>;
 const axisReach = {} as Record<Side, Reach[][][]>;
 /** Each hand's line widths when its outline is middle lines (undefined: filled bands, as traced). */
 const widths = {} as Record<Side, Outline['width']>;
+/** The longest piece of a line (keyboard units) the hand moves as one: about a fifth of a finger's length. */
+const PIECE = 8;
+/**
+ * A path (absolute M, L, C, Z) with its long pieces split into short ones of the same shape. A finger's move grows
+ * from nothing at its knuckle to all of it at its tip; a long curve, moved only at its two ends, then bends into steps,
+ * many short ones follow the move smoothly.
+ */
+function subdivide(d: string): string {
+  const tokens = d.match(/[a-zA-Z]|[-+]?(?:\d*\.\d+|\d+\.?)(?:e[-+]?\d+)?/gi) ?? [];
+  const f = (n: number) => String(Math.round(n * 100) / 100);
+  const out: string[] = [];
+  let i = 0, cmd = '', p: Pt = [0, 0], start: Pt = [0, 0];
+  const num = () => Number(tokens[i++]);
+  const lerp = (a: Pt, b: Pt, t: number): Pt => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+  const dist = (a: Pt, b: Pt) => Math.hypot(b[0] - a[0], b[1] - a[1]);
+  while (i < tokens.length) {
+    if (/[a-zA-Z]/.test(tokens[i])) cmd = tokens[i++];
+    if (cmd === 'Z' || cmd === 'z') { out.push('Z'); p = start; cmd = ''; continue; }
+    if (cmd === 'M') { p = start = [num(), num()]; out.push(`M${f(p[0])} ${f(p[1])}`); cmd = 'L'; continue; }
+    if (cmd === 'L') {
+      const e: Pt = [num(), num()], n = Math.max(1, Math.ceil(dist(p, e) / PIECE));
+      for (let k = 1; k <= n; k++) { const q = lerp(p, e, k / n); out.push(`L${f(q[0])} ${f(q[1])}`); }
+      p = e;
+      continue;
+    }
+    if (cmd === 'C') {
+      let c: Pt[] = [p, [num(), num()], [num(), num()], [num(), num()]];
+      const n = Math.max(1, Math.ceil((dist(c[0], c[1]) + dist(c[1], c[2]) + dist(c[2], c[3]) + dist(c[0], c[3])) / 2 / PIECE));
+      // De Casteljau: cut off 1/k of what is left, n times.
+      for (let k = n; k >= 1; k--) {
+        const t = 1 / k, a = lerp(c[0], c[1], t), b = lerp(c[1], c[2], t), e = lerp(c[2], c[3], t);
+        const ab = lerp(a, b, t), be = lerp(b, e, t), m = lerp(ab, be, t);
+        out.push(`C${f(a[0])} ${f(a[1])} ${f(ab[0])} ${f(ab[1])} ${f(m[0])} ${f(m[1])}`);
+        c = [m, be, e, c[3]];
+      }
+      p = c[0];
+      continue;
+    }
+    i++;
+  }
+  return out.join(' ');
+}
 function loadSide(s: Side, o: Outline): void {
+  // Short pieces only (the shape stays): every finger's move then bends its lines smoothly.
+  o = { ...o, lines: subdivide(o.lines), creases: subdivide(o.creases) };
   const lines = parse(o.lines);
   widths[s] = o.width;
   // Middle lines lie in the middle of the bands they came from: the axes fit them as well.

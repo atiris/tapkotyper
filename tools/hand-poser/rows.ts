@@ -649,9 +649,15 @@ const outlineOf = (s: Side): Outline => {
   const d = (k: Kind) => draw(src[s][k], src[s][k].xy.map((_, i) => edited(s, k, i)));
   return { lines: d('lines'), creases: d('creases'), ...(widths[s] ? { width: widths[s] } : {}) };
 };
-const outlineText = (s: Side) => outlineSvg(s, outlineOf(s), 'outline');
-for (const [id, s] of [['copyLeft', 'left'], ['copyRight', 'right']] as const) {
-  $(id).addEventListener('click', () => navigator.clipboard.writeText(outlineText(s)).then(() => say('Obrys je v schránke'), () => say('Kopírovanie nefunguje', true)));
+// The outline as a file in Downloads (hand-left.svg, hand-right.svg), to edit elsewhere and load back.
+for (const [id, s] of [['downloadLeft', 'left'], ['downloadRight', 'right']] as const) {
+  $(id).addEventListener('click', () => {
+    const url = URL.createObjectURL(new Blob([outlineSvg(s, outlineOf(s), 'outline')], { type: 'image/svg+xml' }));
+    const a = Object.assign(document.createElement('a'), { href: url, download: `hand-${s}.svg` });
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    say(`Stiahnuté: hand-${s}.svg`);
+  });
 }
 for (const [id, s] of [['loadLeft', 'left'], ['loadRight', 'right']] as const) {
   $<HTMLInputElement>(id).addEventListener('change', async (e) => {

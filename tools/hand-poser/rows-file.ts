@@ -45,6 +45,11 @@ export interface RowsState {
   handSize: Record<Side, number>;
   /** A bigger hand's fingers turn towards each other (as a V) so that their tips stay about where they were. */
   keepTips: Record<Side, boolean>;
+  /**
+   * The home position's metacarpus shorter (keyboard units): the back of the hand between the knuckles and where the
+   * thumb joins the palm; the wrist comes nearer the knuckles and the thumb goes forward with it.
+   */
+  metacarpus: Record<Side, number>;
   /** The home position's fingers apart in a V (degrees, as a row's). */
   vee: Record<Side, number>;
   rows: Record<RowName, Record<Side, RowMove>>;

@@ -1,4 +1,4 @@
-import { ENTER, type Finger, type Layout, type KeyStep, allKeys, fingerFor, keyByCode, shiftKeyFor, stepsFor, typesChar } from '../keyboard/layouts';
+import { ENTER, type Finger, type KeyDef, type Layout, type KeyStep, allKeys, fingerFor, keyByCode, shiftKeyFor, stepsFor, typesChar } from '../keyboard/layouts';
 import { t } from '../i18n/i18n';
 import { FINGER_COLORS } from './finger-colors';
 import { Hands } from './hands';
@@ -91,6 +91,9 @@ function zeroDot(text: string): string {
   return text === '0' ? '<span class="kb-zero">0</span>' : text;
 }
 
+/** A key's colour: its finger's; the space bar, pressed by either thumb, has one colour, the left thumb's. */
+const keyColor = (def: KeyDef): string => FINGER_COLORS[def.code === 'Space' ? 4 : def.finger];
+
 /** On-screen keyboard with finger colors, next-key highlight and dead-key two-step hints. */
 export class KeyboardGuide {
   readonly el: HTMLElement;
@@ -118,9 +121,9 @@ export class KeyboardGuide {
         if (def.x) k.style.setProperty('--x', String(def.x));
         if (def.base === 'enter-top') k.classList.add('kb-enter-top');
         if (def.code === 'Enter' && isoEnter) k.classList.add('kb-enter-l');
-        k.style.setProperty('--finger', FINGER_COLORS[def.finger]);
-        k.style.setProperty('--finger-ink', inkOn(FINGER_COLORS[def.finger]));
-        const [textBg, textInk] = textColorsOn(FINGER_COLORS[def.finger]);
+        k.style.setProperty('--finger', keyColor(def));
+        k.style.setProperty('--finger-ink', inkOn(keyColor(def)));
+        const [textBg, textInk] = textColorsOn(keyColor(def));
         k.style.setProperty('--next-bg', textBg);
         k.style.setProperty('--next-ink', textInk);
         k.innerHTML = `<span class="kb-label">${zeroDot(label(def.base, def.shift))}</span>` +
@@ -170,7 +173,7 @@ export class KeyboardGuide {
     }
     const current: KeyStep = steps.length > 1 && deadDone ? steps[steps.length - 1] : steps[0];
     const def = keyByCode(this.layout, current.code)!;
-    this.handsView().show({ step: current, label: label(def.base, def.shift), color: FINGER_COLORS[def.finger] });
+    this.handsView().show({ step: current, label: label(def.base, def.shift), color: keyColor(def) });
     this.mark(current, 'next');
     if (steps.length > 1) {
       if (!deadDone) this.mark(steps[steps.length - 1], 'next2');
@@ -195,7 +198,7 @@ export class KeyboardGuide {
   press(code: string, shift: boolean): void {
     const def = keyByCode(this.layout, code);
     if (!def) return;
-    this.handsView().press({ step: { code, shift }, label: label(def.base, def.shift), color: FINGER_COLORS[def.finger] });
+    this.handsView().press({ step: { code, shift }, label: label(def.base, def.shift), color: keyColor(def) });
   }
 
   /** The keys of `ch` go down for a moment: the hands type it (the paw help). */

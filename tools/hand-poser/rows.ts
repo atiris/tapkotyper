@@ -1,13 +1,14 @@
 import { type Finger, type KeyDef, LAYOUTS } from '../../src/keyboard/layouts';
+import type { LayoutId } from '../../src/storage/schema';
 import { type FingerScheme, fingerOf } from '../../src/keyboard/fingers';
 import { POSE_NAME, type Side, VIEW, keyName, poseName } from '../../src/ui/hand-svg';
-import { HANDS_CHANNEL } from '../../src/ui/hands';
 import { FINGER_COLORS } from '../../src/ui/finger-colors';
 import { KeyboardGuide, inkOn, textColorsOn } from '../../src/ui/keyboard-guide';
 import '../../src/styles.css';
 import { GAP, UNIT, withModifiers } from './board';
 import { centerline } from './centerline';
 import { outlineSvg, readOutline } from './outline-svg';
+import { HANDS_CHANNEL, NAIL_SOFT } from '../../src/ui/hands';
 import { findNail } from './nails';
 import type { FingerMove, HandPose, Nail, Outline, OutlineFile, Owners, Pose, RowMove, RowName, RowsState } from './rows-file';
 
@@ -330,6 +331,8 @@ function refreshAxes(s: Side): void {
   TIPS_X[s] = AXES[s].slice(1).reduce((sum, line) => sum + line.at(-1)![0], 0) / 4;
   findNails(s);
 }
+/** How big a nail can be (keyboard units from its middle, along the finger and across). */
+const FINGER_NAIL = { along: 11, across: 11 }, THUMB_NAIL = { along: 17, across: 13 };
 /** Each finger's nail on the home outline (keyboard units), with how its points move (with that finger only). */
 const NAILS = {} as Record<Side, ({ pts: Pt[]; w: Reach[][] } | null)[]>;
 /** The nails found again around each finger's tip point (after the outline, a brush stroke or the axes changed). */
@@ -337,7 +340,9 @@ function findNails(s: Side): void {
   const d = (k: Kind) => draw(src[s][k], src[s][k].xy.map((_, i) => edited(s, k, i)));
   const lines = [{ d: d('lines'), width: widths[s]?.lines ?? 0 }, { d: d('creases'), width: widths[s]?.creases ?? 0 }];
   NAILS[s] = AXES[s].map((axis, f) => {
-    const pts = findNail(lines, axis.at(-1)!);
+    // The thumb's nail is longer and wider than the fingers'.
+    const tip = axis.at(-1)!, before = axis.at(-2)!, len = Math.hypot(tip[0] - before[0], tip[1] - before[1]) || 1;
+    const pts = findNail(lines, tip, [(tip[0] - before[0]) / len, (tip[1] - before[1]) / len], f === 0 ? THUMB_NAIL : FINGER_NAIL);
     return pts && { pts, w: pts.map((p) => FINGERS.map((_, g) => ({ w: g === f ? 1 : 0, s: g === f ? nearOnLine(p, axis).s : 0 }))) };
   });
 }
@@ -426,17 +431,24 @@ const el = (n: string, a: Record<string, string | number>, parent: Element = svg
   parent.append(e);
   return e;
 };
-const layoutSel = $<HTMLSelectElement>('layout'), schemeSel = $<HTMLSelectElement>('scheme');
+const layoutSel = $<HTMLSelectElement>('layout'), schemeSel = $<HTMLSelectElement>('scheme'), codesBox = $<HTMLInputElement>('codes'), lookSel = $<HTMLSelectElement>('kbLook');
 try {
   layoutSel.value = localStorage.getItem('hand-rows-layout') || layoutSel.value;
   schemeSel.value = localStorage.getItem('hand-rows-scheme') || schemeSel.value;
+  codesBox.checked = localStorage.getItem('hand-rows-codes') === '1';
+  lookSel.value = localStorage.getItem('hand-rows-look') || lookSel.value;
 } catch { /* the defaults */ }
-const board = () => withModifiers(LAYOUTS[layoutSel.value as 'us-qwerty' | 'sk-qwertz']);
+// A layout no longer offered (Slovak QWERTZ): the first one.
+if (!layoutSel.value) layoutSel.selectedIndex = 0;
+const board = () => withModifiers(LAYOUTS[layoutSel.value as LayoutId]);
 const scheme = () => schemeSel.value as FingerScheme;
 interface KeyBox { def: KeyDef; name: string; row: number; key: HTMLElement }
 let keyBoxes: KeyBox[] = [];
 const stageBox = $('stageBox');
 function drawBoard(): void {
+  // How the keyboard shows under the hands: as in Tapko, only the keys' outlines, grey, or not at all.
+  if (!lookSel.value) lookSel.selectedIndex = 0;
+  for (const o of lookSel.options) stageBox.classList.toggle(`kb-${o.value}`, o.value === lookSel.value);
   const b = board(), guide = new KeyboardGuide(b);
   stageBox.replaceChildren(guide.el);
   guide.el.querySelector('.kb')!.append(svg);
@@ -447,6 +459,11 @@ function drawBoard(): void {
       if (!key || def.base === 'enter-top') continue;
       const name = keyName(b, def.code) ?? '';
       key.title = name;
+      // The codes the poses' names use instead of the characters (by the key's place: the top row's Y is y0 on every layout).
+      if (codesBox.checked && def.code !== 'Space') {
+        key.querySelector('.kb-label')!.textContent = name;
+        key.querySelector('.kb-shift')?.remove();
+      }
       // The finger's colour by the chosen fingering (Tapko's keyboard colours the standard one).
       const color = palette()[fingerOf(def, scheme())], [bg, ink] = textColorsOn(color);
       key.style.setProperty('--finger', color);
@@ -469,8 +486,13 @@ function drawBoard(): void {
   }
   markKeys();
 }
-for (const sel of [layoutSel, schemeSel]) sel.addEventListener('change', () => {
-  try { localStorage.setItem('hand-rows-layout', layoutSel.value); localStorage.setItem('hand-rows-scheme', schemeSel.value); } catch { /* not kept */ }
+for (const sel of [layoutSel, schemeSel, codesBox, lookSel]) sel.addEventListener('change', () => {
+  try {
+    localStorage.setItem('hand-rows-look', lookSel.value);
+    localStorage.setItem('hand-rows-layout', layoutSel.value);
+    localStorage.setItem('hand-rows-scheme', schemeSel.value);
+    localStorage.setItem('hand-rows-codes', codesBox.checked ? '1' : '0');
+  } catch { /* not kept */ }
   drawBoard();
 });
 const keyOfPose = (id: string) => (/^[lr][1-5]/.test(id) ? id.slice(2) : null);
@@ -513,7 +535,9 @@ function openPose(id: string): void {
 
 // ---- the hands ----
 
-const ghost = el('g', {}), nailsG = el('g', {}), hands = el('g', {}), dotsG = el('g', {}), axesG = el('g', { display: 'none' });
+// The nails' edges a little soft, as in Tapko (src/ui/hands.ts).
+el('feGaussianBlur', { stdDeviation: NAIL_SOFT }, el('filter', { id: 'nail-soft' }, el('defs', {})));
+const ghost = el('g', {}), nailsG = el('g', { filter: 'url(#nail-soft)' }), hands = el('g', {}), dotsG = el('g', {}), axesG = el('g', { display: 'none' });
 const brushRing = el('circle', { class: 'brush', r: 12, cx: -999, cy: -999, display: 'none' });
 const paths = {} as Record<Side, Record<Kind, Element> & { axes: Element[] }>;
 const ghostPaths = {} as Record<Side, Element>;

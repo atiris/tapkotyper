@@ -82,3 +82,8 @@ input[type=number] { width: 4.5em; }
 .colors { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px 10px; }
 .colors label { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #6a6070; }
 .colors input[type=color] { width: 34px; height: 24px; padding: 0; border: 1px solid #cfc7d6; border-radius: 4px; background: none; }
+/* How the keyboard shows under the hands. */
+.rows-stage.kb-outline .kb-key { background: transparent; box-shadow: none; border: 1px solid #cfc7d6; color: #b7adc0; }
+.rows-stage.kb-outline .sp-half { border-color: #e2dce8; }
+.rows-stage.kb-grey .kb-key { --finger: #cfcac4 !important; color: #a49aab; }
+.rows-stage.kb-none .kb-key { visibility: hidden; }

@@ -1,15 +1,15 @@
 /**
  * A finger's nail found on the drawn outline: the area around the axis's tip point (the owner places it in the middle
  * of the nail) closed by the lines around it (the fingertip's outline, the nail bed's arc). A nail line drawn with a
- * gap still closes: the area reaches no farther than a nail can be big. Browser only (a canvas).
+ * gap still closes: the area reaches no farther than a nail can be big, an oval along the finger. Browser only (a canvas).
  */
 
 type Pt = [number, number];
 
 /** Canvas pixels per keyboard unit. */
 const PX = 5;
-/** How far a nail reaches from its middle (keyboard units): the area stops there where a line has a gap. */
-const REACH = 11;
+/** How far a nail reaches from its middle (keyboard units), along the finger and across: the area stops there where a line has a gap. */
+export interface NailSize { along: number; across: number }
 /** Rays from the nail's middle to its edge: the nail's outline. */
 const RAYS = 40;
 
@@ -17,8 +17,8 @@ const RAYS = 40;
 export interface Lines { d: string; width: number }
 
 /** The nail around `at` as a closed polygon (keyboard units); null when `at` lies on no free area. */
-export function findNail(lines: Lines[], at: Pt): Pt[] | null {
-  const half = REACH + 4, size = Math.ceil(2 * half * PX);
+export function findNail(lines: Lines[], at: Pt, dir: Pt, reach: NailSize): Pt[] | null {
+  const half = Math.max(reach.along, reach.across) + 4, size = Math.ceil(2 * half * PX);
   const canvas = document.createElement('canvas');
   canvas.width = canvas.height = size;
   const ctx = canvas.getContext('2d', { willReadFrequently: true })!;
@@ -30,7 +30,12 @@ export function findNail(lines: Lines[], at: Pt): Pt[] | null {
   }
   const ink = ctx.getImageData(0, 0, size, size).data;
   const wall = (x: number, y: number) => x < 0 || y < 0 || x >= size || y >= size || ink[4 * (y * size + x) + 3] > 60;
-  const c = size / 2, max = REACH * PX;
+  const c = size / 2, max = Math.max(reach.along, reach.across) * PX;
+  // Inside the oval along the finger (dir: a unit vector along it), from the nail's middle.
+  const inOval = (dx: number, dy: number) => {
+    const a = (dx * dir[0] + dy * dir[1]) / (reach.along * PX), b = (dy * dir[0] - dx * dir[1]) / (reach.across * PX);
+    return a * a + b * b <= 1;
+  };
   // The middle on a line: the nearest free pixel.
   let seed: [number, number] | null = null;
   for (let r = 0; r <= 3 * PX && !seed; r++) {
@@ -47,7 +52,7 @@ export function findNail(lines: Lines[], at: Pt): Pt[] | null {
     const i = todo.pop()!, x = i % size, y = (i - x) / size;
     for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
       const nx = x + dx, ny = y + dy, j = ny * size + nx;
-      if (wall(nx, ny) || inside[j] || Math.hypot(nx - seed[0], ny - seed[1]) > max) continue;
+      if (wall(nx, ny) || inside[j] || !inOval(nx - seed[0], ny - seed[1])) continue;
       inside[j] = 1;
       todo.push(j);
     }

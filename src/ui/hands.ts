@@ -14,6 +14,8 @@ const UNIT = 58, GAP = 4, KEY_H = 46;
 const LABEL_Y = (KEY_H - 9) / 2;
 /** The full size keyboard's width (15 units). */
 const WIDTH = 15 * UNIT - GAP;
+/** How soft the nails' edges are (a blur, keyboard units). */
+export const NAIL_SOFT = 0.6;
 /** The wrists fade out between these heights. */
 const FADE = [283, 354];
 /** Seconds the hands wait at the sides before they come to the keys. */
@@ -132,12 +134,13 @@ export class Hands {
     el('stop', { offset: 1, 'stop-color': '#000' }, grad);
     const mask = el('mask', { id: `${id}-mask`, maskUnits: 'userSpaceOnUse', x: VIEW.x - 500, y: VIEW.y, width: VIEW.w + 1000, height: VIEW.h }, defs);
     el('rect', { x: VIEW.x - 500, y: VIEW.y, width: VIEW.w + 1000, height: VIEW.h, fill: `url(#${id}-fade)` }, mask);
+    el('feGaussianBlur', { stdDeviation: NAIL_SOFT }, el('filter', { id: `${id}-nail` }, defs));
     const both = el('g', { mask: `url(#${id}-mask)` }, this.el);
     const make = (s: Side) => {
       const g = el('g', { class: `hand-${s}` }, both);
       const layers = [0, 1].map(() => {
         const layer = el('g', { class: 'hand-pose' }, g);
-        el('g', { class: 'hand-nails' }, layer);
+        el('g', { class: 'hand-nails', filter: `url(#${id}-nail)` }, layer);
         el('path', { class: 'hand-creases' }, layer);
         el('path', { class: 'hand-lines' }, layer);
         return layer;

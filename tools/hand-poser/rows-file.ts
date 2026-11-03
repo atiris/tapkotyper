@@ -49,7 +49,11 @@ export interface RowsState {
   colors?: string[];
   /** Which poses get filled nails: the whole rows, the keys' presses, the hands beside the keyboard. */
   nails?: { rows: boolean; keys: boolean; off: boolean };
+  /** The lines' widths while typing (the files' stroke-width) and their colours and transparency (src/ui/hand-style.ts). */
+  style?: HandLook;
 }
+export interface LineLook { width?: number; color: string; transparency: number }
+export interface HandLook { typing: { lines: LineLook; creases: LineLook }; off: { lines: LineLook; creases: LineLook } }
 /** A nail filled in its finger's colour (Finger 0-9, as FINGER_COLORS). */
 export interface Nail { finger: number; d: string; color: string }
 export interface OutlineFile extends Outline { side: Side; name: string; nails?: Nail[] }
@@ -70,6 +74,25 @@ function writeHand(f: OutlineFile): string {
   return slashes(file);
 }
 
+const STYLE_FILE = 'src/ui/hand-style.ts';
+/** The lines' colours and transparency written into Tapko (src/ui/hand-style.ts), the file's words kept. */
+export function writeHandStyle(look: HandLook): void {
+  const line = (l: LineLook) => {
+    if (!/^#[0-9a-f]{6}$/i.test(l.color) || !(l.transparency >= 0 && l.transparency <= 100)) throw new Error('bad line style');
+    return `{ color: '${l.color}', transparency: ${l.transparency} }`;
+  };
+  const body = [
+    '{',
+    `  typing: { lines: ${line(look.typing.lines)}, creases: ${line(look.typing.creases)} },`,
+    `  off: { lines: ${line(look.off.lines)}, creases: ${line(look.off.creases)} },`,
+    '}',
+  ].join('\n');
+  const source = readFileSync(STYLE_FILE, 'utf8');
+  const start = source.indexOf('} = {') + 4, end = source.indexOf('};', start);
+  if (start < 4 || end < 0) throw new Error('HAND_STYLE not found');
+  writeFileSync(STYLE_FILE, source.slice(0, start) + body + source.slice(end + 1));
+}
+
 const COLORS_FILE = 'src/ui/finger-colors.ts';
 /** The approved palette written into Tapko (src/ui/finger-colors.ts), the file's words kept. */
 export function writeFingerColors(colors: string[]): void {
@@ -88,6 +111,7 @@ export function writeFingerColors(colors: string[]): void {
 export function saveRows(state: RowsState, outline: Record<Side, Outline>, files: OutlineFile[]): { written: string[]; removed: string[] } {
   if (!files.every((f) => SIDES.includes(f.side) && POSE_NAME.test(f.name))) throw new Error('bad pose names');
   writeFileSync(STATE, `${JSON.stringify(state, null, 1)}\n`);
+  if (state.style) writeHandStyle(state.style);
   for (const s of SIDES) writeFileSync(OUTLINE(s), outlineSvg(s, outline[s], 'outline'));
   const written = files.map(writeHand);
   const removed: string[] = [];

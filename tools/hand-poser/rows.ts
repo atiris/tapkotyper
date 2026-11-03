@@ -10,7 +10,7 @@ import { centerline } from './centerline';
 import { outlineSvg, readOutline } from './outline-svg';
 import { HANDS_CHANNEL, NAIL_SOFT } from '../../src/ui/hands';
 import { findNail } from './nails';
-import type { FingerMove, HandPose, Nail, Outline, OutlineFile, Owners, Pose, RowMove, RowName, RowsState } from './rows-file';
+import type { FingerMove, HandLook, HandPose, Nail, Outline, OutlineFile, Owners, Pose, RowMove, RowName, RowsState } from './rows-file';
 
 /**
  * The hand tool (dev server only, /tools/hand-poser/): the home outline (once drawn by Gemini) moved by rules. Each finger's points move with that finger only: a correction of the home position (base), the row the hand
@@ -127,6 +127,11 @@ const FINGER_FIELDS: Field<keyof FingerMove>[] = [['bend', 'skrčiť / vystrieť
  * brown, light blue, dark green, pink; grey thumbs; dark blue, red, light green, violet (the owner's wish, 2026-11-03).
  */
 const PROPOSED_COLORS = ['#8c5a2b', '#56b4e9', '#1b7f4b', '#e87fb5', '#bbbbbb', '#bbbbbb', '#1f4fa0', '#d1352b', '#8fd14f', '#8e44ad'];
+/** The lines' look at first: as Tapko drew them (grey, the thin lines 40 % see-through). */
+const LOOK_DEFAULT: HandLook = {
+  typing: { lines: { width: 3.2, color: '#5a5560', transparency: 0 }, creases: { width: 1.4, color: '#5a5560', transparency: 40 } },
+  off: { lines: { color: '#5a5560', transparency: 0 }, creases: { color: '#5a5560', transparency: 40 } },
+};
 /** Filled nails only on the hands beside the keyboard, until the owner turns on more. */
 const NAILS_DEFAULT = { rows: false, keys: false, off: true };
 /** The palette in use here: the one being tried. */
@@ -148,6 +153,7 @@ const startState = (): RowsState => ({
   poses: ROW_POSES.map(([id, name]) => basePose(id, name, id)),
   owners: { left: { lines: {}, creases: {} }, right: { lines: {}, creases: {} } },
   colors: [...PROPOSED_COLORS],
+  style: structuredClone(LOOK_DEFAULT),
   nails: { ...NAILS_DEFAULT },
 });
 
@@ -157,6 +163,7 @@ function withDefaults(state: RowsState): RowsState {
   state.size ??= { left: 0, right: 0 };
   state.colors ??= [...PROPOSED_COLORS];
   state.nails ??= { ...NAILS_DEFAULT };
+  state.style ??= structuredClone(LOOK_DEFAULT);
   for (const r of Object.keys(state.rows) as RowName[]) for (const s of SIDES) state.rows[r][s] = { ...zeroRow(), ...state.rows[r][s] };
   for (const [id, name] of ROW_POSES) if (!state.poses.some((p) => p.id === id)) state.poses.push(basePose(id, name, id));
   for (const s of SIDES) {
@@ -561,7 +568,21 @@ function styleHands(): void {
     }
   }
 }
+/**
+ * The lines' look: their widths while typing (every hand's middle lines, so also the files'), and the shown pose's
+ * colours and transparency (beside the keyboard its own).
+ */
+function applyLook(): void {
+  const look = st.style ?? LOOK_DEFAULT, t = look.typing;
+  for (const s of SIDES) if (widths[s]) widths[s] = { lines: t.lines.width ?? 3.2, creases: t.creases.width ?? 1.4 };
+  const shown = nailKind(current) === 'off' ? look.off : look.typing;
+  for (const [part, l] of Object.entries(shown)) {
+    stageBox.style.setProperty(`--${part}-color`, l.color);
+    stageBox.style.setProperty(`--${part}-alpha`, String(1 - l.transparency / 100));
+  }
+}
 function drawGhost(): void {
+  applyLook();
   styleHands();
   const g = posed(homePose);
   for (const s of SIDES) ghostPaths[s].setAttribute('d', draw(src[s].lines, g[s].lines));
@@ -616,6 +637,7 @@ showDots.addEventListener('change', () => { if (shown) drawDots(shown); });
 function show(id: string, blend = $<HTMLInputElement>('smooth').checked): void {
   const fresh = id !== current;
   current = id;
+  applyLook();
   markKeys();
   for (const b of document.querySelectorAll<HTMLElement>('.rows-chip')) b.classList.toggle('now', b.dataset.id === id);
   deleteBtn.hidden = !keyOfPose(id);
@@ -1149,6 +1171,34 @@ $('colorsApply').addEventListener('click', async () => {
   say(res.ok ? 'Farby zapísané do Tapka (src/ui/finger-colors.ts); ulož aj nastavenia' : res.error ?? 'Nepodarilo sa', !res.ok);
 });
 
+// ---- the lines' look ----
+
+/** One kind of line's settings: width (typing only), colour, transparency in per cent. */
+function lookRow(host: Element, title: string, l: { width?: number; color: string; transparency: number }, id: string): void {
+  const row = Object.assign(document.createElement('div'), { className: 'look-row' });
+  row.append(Object.assign(document.createElement('span'), { textContent: title }));
+  const field = (label: string, input: HTMLInputElement, set: (v: string) => void) => {
+    const lab = document.createElement('label');
+    lab.append(label, input);
+    input.addEventListener('input', () => { set(input.value); redraw(true); });
+    row.append(lab);
+  };
+  // Beside the keyboard the width stays the typing one: an empty cell keeps the columns.
+  if (l.width == null) row.append(document.createElement('span'));
+  if (l.width != null) field('hrúbka', Object.assign(document.createElement('input'), { type: 'number', min: '0.2', max: '10', step: '0.1', value: String(l.width), id: `${id}-w` }), (v) => { l.width = Number(v) || l.width; });
+  field('farba', Object.assign(document.createElement('input'), { type: 'color', value: l.color, id: `${id}-c` }), (v) => { l.color = v; });
+  field('priehľadnosť %', Object.assign(document.createElement('input'), { type: 'number', min: '0', max: '100', step: '5', value: String(l.transparency), id: `${id}-t` }), (v) => { l.transparency = Math.min(100, Math.max(0, Number(v) || 0)); });
+  host.append(row);
+}
+function buildLook(): void {
+  const host = $('lookInputs'), look = (st.style ??= structuredClone(LOOK_DEFAULT));
+  host.replaceChildren();
+  lookRow(host, 'Písanie, hrubé čiary', look.typing.lines, 'look-typing-lines');
+  lookRow(host, 'Písanie, tenké čiary', look.typing.creases, 'look-typing-creases');
+  lookRow(host, 'Mimo klávesnice, hrubé', look.off.lines, 'look-off-lines');
+  lookRow(host, 'Mimo klávesnice, tenké', look.off.creases, 'look-off-creases');
+}
+
 // ---- saving ----
 
 const tapko = new BroadcastChannel(HANDS_CHANNEL);
@@ -1212,6 +1262,7 @@ addEventListener('keydown', (e) => { if ((e.ctrlKey || e.metaKey) && e.key.toLow
   buildBase();
   buildPanels();
   buildColors();
+  buildLook();
   drawGhost();
   onTool();
   show('home', false);

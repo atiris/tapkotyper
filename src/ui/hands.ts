@@ -1,6 +1,7 @@
 import { type KeyStep, type Layout, keyByCode, shiftKeyFor } from '../keyboard/layouts';
 import { type FingerScheme, fingerOf } from '../keyboard/fingers';
 import { FINGER_COLORS } from './finger-colors';
+import { HAND_STYLE } from './hand-style';
 import { type HandIndex, type HandShape, type Side, VIEW, poseName, readHandSvg } from './hand-svg';
 
 /**
@@ -128,6 +129,13 @@ export class Hands {
     this.el.style.setProperty('--vx', String(VIEW.x / WIDTH));
     this.el.style.setProperty('--vy', String(VIEW.y / WIDTH));
     this.el.style.setProperty('--vw', String(VIEW.w / WIDTH));
+    // The lines' colours and transparency (the hand tool sets them): typing, and beside the keyboard.
+    for (const [kind, style] of Object.entries(HAND_STYLE)) {
+      for (const [part, s] of Object.entries(style)) {
+        this.el.style.setProperty(`--${kind}-${part}`, s.color);
+        this.el.style.setProperty(`--${kind}-${part}-alpha`, String(1 - s.transparency / 100));
+      }
+    }
     const defs = el('defs', {}, this.el);
     const grad = el('linearGradient', { id: `${id}-fade`, x1: 0, x2: 0, y1: FADE[0], y2: FADE[1], gradientUnits: 'userSpaceOnUse' }, defs);
     el('stop', { offset: 0, 'stop-color': '#fff' }, grad);
@@ -242,6 +250,7 @@ export class Hands {
     const side = this.side[s];
     side.shown = name;
     const [old, layer] = side.layers[0].classList.contains('on') ? side.layers : [side.layers[1], side.layers[0]];
+    layer.classList.toggle('off', name.startsWith('rest'));
     const lines = layer.querySelector('.hand-lines')!;
     lines.setAttribute('d', shape.lines);
     lines.setAttribute('stroke-width', String(shape.stroke));

@@ -190,6 +190,12 @@ npm run assets   # turn raw images and music in assets-src/ into web files in pu
 npm run icons    # render the favicon and the PWA icons from ui-icon (after npm run assets)
 ```
 
+The outline hands over the on-screen keyboard are made in the hand tool, a page of the dev server only (never
+in the build): run `npm run dev` and open `/tools/hand-poser/` on the address it prints (e.g.
+`http://localhost:5173/tools/hand-poser/`). In free typing on the dev server, the paw button opens it on the
+pose of the key typed last. It saves straight into `public/hands/`, `src/ui/hand-style.ts` and, when a palette
+is approved, `src/ui/finger-colors.ts`; see [`assets-src/PROMPTS.md`](assets-src/PROMPTS.md), section 12.
+
 For quick manual testing, open the dev server with `?fast` before the hash
 (`http://localhost:5173/?fast#/`): level minimums, the stretch break and
 the play time before a break all take a sixth of their time. A browser driver types through

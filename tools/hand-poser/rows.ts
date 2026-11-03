@@ -592,13 +592,14 @@ for (const sel of [layoutSel, schemeSel, codesBox, extraBox, lookSel]) sel.addEv
   drawBoard();
 });
 const keyOfPose = (id: string) => (/^[lr][1-5]/.test(id) ? id.slice(2) : null);
-/** The shown pose's key lit; a green dot on every key with a pose here. */
+/** The shown pose's key lit; a green dot on every key with a pose of the finger that presses it in the chosen fingering. */
 function markKeys(): void {
-  const key = keyOfPose(current), have = new Set(st.poses.map((p) => keyOfPose(p.id)));
+  // A key has its pose only for the finger the chosen fingering presses it with (the other fingering's pose is another finger's).
+  const key = keyOfPose(current), have = new Set(st.poses.map((p) => p.id)), b = board();
   for (const k of keyBoxes) {
     const halves = k.key.querySelectorAll<HTMLElement>('.sp-half');
     k.key.classList.toggle('pose-key', k.name === key && !halves.length);
-    k.key.classList.toggle('has-pose', have.has(k.name) && !halves.length);
+    k.key.classList.toggle('has-pose', have.has(poseName(b, k.def.code, fingerOf(k.def, scheme())) ?? '') && !halves.length);
     // The space bar: each half for its own thumb's pose.
     for (const h of halves) {
       h.classList.toggle('pose-key', current === h.dataset.pose);

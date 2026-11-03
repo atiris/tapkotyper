@@ -681,10 +681,45 @@ function nearestHandle(at: Pt): typeof dragAxis {
   }));
   return best;
 }
+/** What an axis point is and where it belongs (the hint over it before it is dragged). */
+function axisHint(f: number, j: number): string {
+  if (f === PALM) {
+    return [
+      'Dlaň 1: pri zápästí na strane malíčka, vo vnútri dlane kúsok od jej okraja.',
+      'Dlaň 2: pod koreňom malíčka, kúsok pod zárezom medzi malíčkom a prstenníkom.',
+      'Dlaň 3: pod koreňmi prostredníka a ukazováka, kúsok pod zárezmi medzi prstami.',
+      'Dlaň 4: v záreze medzi ukazovákom a palcom.',
+    ][j] + '<br><small>Čiara dlane vedie dlaňou kúsok pod zárezmi medzi prstami. Body obrysu bližšie k nej ako k osi prsta sa s prstami nehýbu.</small>';
+  }
+  const name = FINGERS[f];
+  if (f === 0) {
+    return [
+      'Palec, koreň: pri zápästí, kde palec vychádza z dlane. Tu sa pohyb palca začína.',
+      'Palec, kĺb: v strede palca pri jeho kĺbe.',
+      'Palec, koniec: v strede bruška pri končeku. Tu je pohyb palca najväčší.',
+    ][j] + '<br><small>Os vedie stredom palca. Body obrysu najbližšie k nej sa hýbu s palcom.</small>';
+  }
+  return [
+    `${name[0].toUpperCase()}${name.slice(1)}, kĺb: v strede koreňa prsta, vo výške zárezov medzi prstami. Tu sa pohyb prsta začína.`,
+    `${name[0].toUpperCase()}${name.slice(1)}, stred: v strede prsta pri jeho strednom kĺbe.`,
+    `${name[0].toUpperCase()}${name.slice(1)}, koniec: v strede bruška pri končeku. Tu je pohyb prsta najväčší.`,
+  ][j] + '<br><small>Os vedie stredom prsta. Body obrysu najbližšie k nej sa hýbu s týmto prstom.</small>';
+}
+const hintEl = Object.assign(document.createElement('div'), { className: 'axis-hint', hidden: true });
+document.body.append(hintEl);
+svg.addEventListener('pointerleave', () => { hintEl.hidden = true; });
 svg.addEventListener('pointermove', (e) => {
   const p = toSvg(e);
   brushRing.setAttribute('cx', String(p[0]));
   brushRing.setAttribute('cy', String(p[1]));
+  // Over an axis point (not dragging it yet): what it is and where it belongs.
+  const over = tool() === 'axes' && !dragAt ? nearestHandle(p) : null;
+  hintEl.hidden = !over;
+  if (over) {
+    hintEl.innerHTML = `<b>${SIDE_NAME[over.s]}</b>: ${axisHint(over.f, over.j)}`;
+    hintEl.style.left = `${e.clientX + 14}px`;
+    hintEl.style.top = `${e.clientY + 14}px`;
+  }
   if (!dragAt || !shown) return;
   if (dragAxis) {
     const { s, f, j } = dragAxis, v = f === PALM ? PALM_LINE[s][j] : AXES[s][f][j];
@@ -719,6 +754,7 @@ svg.addEventListener('pointerdown', (e) => {
   svg.setPointerCapture(e.pointerId);
 });
 const endDrag = () => { if (!dragAt) return; dragAt = null; dragAxis = null; redraw(true); };
+svg.addEventListener('pointerdown', () => { hintEl.hidden = true; });
 svg.addEventListener('pointerup', endDrag);
 svg.addEventListener('pointercancel', endDrag);
 /** Each hand's axes as the state says (the owner's, or fitted to the outline again). */

@@ -58,3 +58,6 @@ input[type=number] { width: 4.5em; }
 .rows-axis.palm { stroke: #777; }
 .axis-handle { stroke: #fff; stroke-width: 1.5; }
 .rows-stage.axes-tool .rows-hands { pointer-events: auto; cursor: crosshair; }
+/* What an axis point is and where it belongs, beside the mouse before a drag. */
+.axis-hint { position: fixed; z-index: 20; max-width: 320px; padding: 6px 9px; border-radius: 6px; background: rgba(45, 33, 64, 0.82); color: #fff; font-size: 12px; line-height: 1.35; pointer-events: none; box-shadow: 0 2px 8px #0003; }
+.axis-hint small { display: block; margin-top: 3px; opacity: 0.8; }

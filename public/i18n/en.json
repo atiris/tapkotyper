@@ -254,9 +254,8 @@
     "feet": "Both feet flat on the floor.",
     "wrists": "Wrists relaxed and floating, not resting on the desk.",
     "eyes": "Eyes on the screen, not on the keyboard.",
-    "space": "Fingers on the {link}!",
-    "spaceLink": "home position {keys}",
-    "spaceLook": "Do not look at the keyboard, and press the space bar.",
+    "space": "Fingers on the {link}, do not look at the keyboard and press the space bar.",
+    "spaceLink": "home position",
     "spaceKey": "space bar",
     "close": "Close and start (Esc)"
   },
@@ -806,7 +805,7 @@
       "You have a special mission: explore a few planets, all the way to the Dragons' Planet, where they need your help. Your **typing in the right rhythm drives** the **spaceship** on this journey. When there is danger, **give** the right **command** to the ship's computer. If you enter the **right code** of the asteroid that crossed your way, you **switch on the laser**, which bounces the coming rock away like a billiard ball. But the Dragons' Planet is far away. What waits for you on this journey?"
     ],
     "world": {
-      "meadow": "It is a lovely afternoon on the meadow and there is a **football match** later! The animals train with you: they kick leaves like a ball and **you keep goal**. Catch the leaves with letters: **type the word on a leaf** and the leaf is yours.",
+      "meadow": "This afternoon there is a football match on the meadow. The animals would like to warm up first, so they decided to **train with you**. You catch every leaf they kick when you **type the word above it**. If some slip into the goal, never mind.",
       "space": "Three, two, one... **lift off!** You fly off to explore a few planets, all the way to the **Dragons' Planet**. **Your typing rhythm** drives the rocket and a soft beam pushes meteors out of the way.",
       "planet": "**Welcome** to the Dragons' Planet, where spells are real and crystals power life! But the **last crystal** of life has **gone dark.** The planet may lose its light. Luckily you **have a map**: cross the swamp and the meadow, **find** at least three **crystals of life** and wake them with a spell. When you **carry** them all the way **to the stone monolith**, life on the Dragons' Planet **will be saved.** **Accuracy** still matters more than speed.",
       "dragons": "The crystal of life lit up the planet, but **in the Dragons' Valley** the **warm fire is** still **out.** For the baby dragons to come back to the valley, you must light the dragon fire pit again. **Catch as many little flames as you can** and light the fire pit, so it brings warmth and light back to this valley. Then the baby dragons will surely come too.",

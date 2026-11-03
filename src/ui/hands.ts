@@ -19,11 +19,11 @@ const WIDTH = 15 * UNIT - GAP;
 export const NAIL_SOFT = 0.6;
 /** The wrists fade out between these heights. */
 const FADE = [283, 354];
-/** Seconds the hands wait at the sides before they come to the keys. */
-export const HANDS_ARRIVE_S = 1;
-/** Seconds a typed key's pose stays in free typing, and each step on the way from rest to home. */
+/** Seconds the hands wait at the sides before they come to the keys, and how long they glide there. */
+export const HANDS_ARRIVE_S = 2;
+export const HANDS_GLIDE_S = 1.5;
+/** Seconds a typed key's pose stays in free typing. */
 const PRESS_S = 0.3;
-const STEP_S = 0.1;
 /** A hand's outline without its own pose for a key; the hands beside the keyboard; the steps between (`rest1`, `rest2`...). */
 const HOME = 'home';
 const REST = 'rest';
@@ -51,6 +51,32 @@ function el(name: string, attrs: Record<string, string | number> = {}, parent?: 
   for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, String(v));
   parent?.append(e);
   return e;
+}
+
+/** A path split into its numbers and the text between them. */
+function pathNumbers(d: string): { text: string[]; nums: number[] } {
+  const parts = d.split(/(-?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?)/i);
+  return { text: parts.filter((_, i) => i % 2 === 0), nums: parts.filter((_, i) => i % 2 === 1).map(Number) };
+}
+/**
+ * One hand's outline at any point of a glide through `shapes` (0 the first, 1 the last), each path's numbers blended
+ * between the two shapes around that point. The hand tool makes every outline from the same drawing, so their paths
+ * match number for number; a shape whose path does not (another drawing) is left out.
+ */
+export function morphFrames(shapes: HandShape[]): { lines: (t: number) => string; creases: (t: number) => string } {
+  const at = (pick: (s: HandShape) => string) => {
+    const parsed = shapes.map((s) => pathNumbers(pick(s)));
+    const keys = parsed.filter((p) => p.nums.length === parsed.at(-1)!.nums.length);
+    return (t: number): string => {
+      if (keys.length < 2) return pick(shapes.at(-1)!);
+      const x = Math.min(1, Math.max(0, t)) * (keys.length - 1), i = Math.min(keys.length - 2, Math.floor(x)), u = x - i;
+      const a = keys[i].nums, b = keys[i + 1].nums, text = keys[0].text;
+      let d = text[0];
+      for (let k = 0; k < a.length; k++) d += (a[k] + (b[k] - a[k]) * u).toFixed(1) + text[k + 1];
+      return d;
+    };
+  };
+  return { lines: at((s) => s.lines), creases: at((s) => s.creases) };
 }
 
 /** The middle of a key in full size units (the same grid as the on-screen keyboard). */
@@ -117,9 +143,11 @@ export class Hands {
   private lastHand: Side | null = null;
   /** Counts the changes, so an outline that loads late never replaces a newer one. */
   private turn = 0;
-  /** Beside the keyboard (the level's start), on the way to the keys (the step), or on the keys. */
-  private place: 'rest' | number | 'keys' = 'keys';
-  private stepTimer = 0;
+  /** Beside the keyboard (the level's start, a pause), gliding between there and the keys, or on the keys. */
+  private place: 'rest' | 'gliding' | 'keys' = 'keys';
+  /** Where the glide goes (true: beside the keyboard), and its frame. */
+  private glideTo: boolean | null = null;
+  private glideFrame = 0;
   /** The outline of the key typed last, `<side>/<name>` (the hand poser opens it). */
   lastPose = `left/${HOME}`;
 
@@ -180,24 +208,60 @@ export class Hands {
     }
   }
 
-  /** The hands rest beside the keyboard (on) or come onto the keys (off), through the steps between when there are any. */
-  park(on: boolean): void {
-    // Already on the way: the steps go on.
-    if (!on && typeof this.place === 'number') return;
-    clearTimeout(this.stepTimer);
-    if (on) this.place = 'rest';
-    else if (this.place === 'rest' && !document.body.classList.contains('reduce-motion')) this.step(1);
-    else this.place = 'keys';
-    this.update();
+  /**
+   * The hands go beside the keyboard (on) or onto the keys (off): at once, or gliding for `glideS` seconds through the
+   * steps between (`rest1`, `rest2`...), every point of the outline moving smoothly. A glide already on its way there
+   * goes on.
+   */
+  park(on: boolean, glideS = 0): void {
+    if (this.place === (on ? 'rest' : 'keys') || this.glideTo === on) return;
+    cancelAnimationFrame(this.glideFrame);
+    this.glideTo = null;
+    if (!glideS || !this.index || document.body.classList.contains('reduce-motion')) {
+      this.place = on ? 'rest' : 'keys';
+      this.update();
+      return;
+    }
+    this.glideTo = on;
+    this.place = 'gliding';
+    void this.glide(on, glideS);
   }
 
-  private step(n: number): void {
-    const has = (s: Side) => this.index?.[s].includes(`${REST}${n}`);
-    this.place = has('left') || has('right') ? n : 'keys';
-    if (this.place !== 'keys') this.stepTimer = window.setTimeout(() => {
-      this.step(n + 1);
+  /** The glide: each hand's outline from the one shown through the steps to the end, its numbers blended frame by frame. */
+  private async glide(on: boolean, glideS: number): Promise<void> {
+    const index = this.index!, keys = poseNames(this.layout, (this.pressed ?? this.next)?.step ?? null, this.lastHand);
+    const plan = await Promise.all((['left', 'right'] as Side[]).map(async (s) => {
+      const steps = index[s].filter((n) => /^rest\d+$/.test(n)).sort((a, b) => Number(a.slice(4)) - Number(b.slice(4)));
+      // Onto the keys straight into the pose of the key due (home when it has none).
+      const end = on ? (index[s].includes(REST) ? REST : HOME) : index[s].includes(keys[s]) ? keys[s] : HOME;
+      const names = [this.side[s].shown || (on ? HOME : REST), ...(on ? [...steps].reverse() : steps), end];
+      const shapes = await Promise.all(names.map((n) => loadShape(s, n)));
+      return { s, frames: shapes.every(Boolean) ? morphFrames(shapes as HandShape[]) : null };
+    }));
+    if (this.glideTo !== on) return;
+    const t0 = performance.now();
+    const tick = (now: number) => {
+      if (this.glideTo !== on) return;
+      const t = Math.min(1, (now - t0) / (glideS * 1000)), eased = t * t * (3 - 2 * t);
+      for (const { s, frames } of plan) {
+        const layer = this.side[s].layers.find((l) => l.classList.contains('on'));
+        if (!frames || !layer) continue;
+        // The look of the hands beside the keyboard comes and goes half way; the nails come back at the end.
+        layer.classList.toggle('off', on ? eased > 0.5 : eased < 0.5);
+        layer.querySelector('.hand-lines')!.setAttribute('d', frames.lines(eased));
+        layer.querySelector('.hand-creases')!.setAttribute('d', frames.creases(eased));
+        layer.querySelector('.hand-nails')!.replaceChildren();
+      }
+      if (t < 1) {
+        this.glideFrame = requestAnimationFrame(tick);
+        return;
+      }
+      this.glideTo = null;
+      this.place = on ? 'rest' : 'keys';
+      for (const { s } of plan) this.side[s].shown = '';
       this.update();
-    }, STEP_S * 1000);
+    };
+    this.glideFrame = requestAnimationFrame(tick);
   }
 
   /** Shows how `key` is typed: the hands' outlines and its sign over them; null leaves both hands at home. */
@@ -229,14 +293,15 @@ export class Hands {
     const index = this.index;
     if (!index) return;
     const turn = ++this.turn;
-    const names = this.place === 'keys' ? poseNames(this.layout, key?.step ?? null, this.lastHand)
-      : { left: this.place === 'rest' ? REST : `${REST}${this.place}`, right: this.place === 'rest' ? REST : `${REST}${this.place}` };
+    // While gliding the glide draws the outlines.
+    if (this.place === 'gliding') return;
+    const names = this.place === 'keys' ? poseNames(this.layout, key?.step ?? null, this.lastHand) : { left: REST, right: REST };
     if (key && this.place === 'keys') {
       const hand = handOf(this.layout, key.step.code) ?? (names.left === HOME ? 'right' : 'left');
       this.lastPose = `${hand}/${names[hand]}`;
     }
     for (const s of ['left', 'right'] as Side[]) {
-      const fallback = this.place !== 'keys' && index[s].includes(REST) ? REST : HOME;
+      const fallback = this.place === 'rest' && index[s].includes(REST) ? REST : HOME;
       const name = index[s].includes(names[s]) ? names[s] : fallback;
       if (name === this.side[s].shown) continue;
       void loadShape(s, name).then((shape) => {

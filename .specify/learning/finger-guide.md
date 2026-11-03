@@ -11,11 +11,14 @@
   next key the hand that types it takes that key's pose (the other stays home; for a capital it
   takes its Shift; for the space bar the thumb of the hand that did not type the last key goes
   down); each pose is the outline of a real hand seen from above typing that key, posed by the owner
-  on a 3D hand, and one pose fades into the next. The hands lie slanted, as with the elbows wide. The key's letter is drawn over the hands (white, a thin outline in the
+  in the hand tool, and one pose fades into the next. The hands lie slanted, as with the elbows wide. The key's letter is drawn over the hands (white, a thin outline in the
   finger's color, a small disc of that color fading from its middle), so a finger never hides
   it. On the get-ready card that opens a
-  level the hands rest beside the keyboard and come onto the home position about a second
-  later, or at once when the card closes; they then stay the whole level. They fade and hide
+  level the hands rest beside the keyboard and, two seconds later, glide onto the home position
+  for about a second and a half, every line moving smoothly (quickly when the card closes before);
+  they then stay the whole level. In a pause the hands glide beside the keyboard a second later
+  and come back onto the keys at once when play goes on. In free typing a dead key (the accent
+  keys) shows its press like any other key. They fade and hide
   with the guide, and are not in the heat map, the key pickers or the placement check.
 - The guide fades as the child improves (per-key mastery) and can be shown or hidden by
   the child, or locked by the parent. The finger colors are a colorblind-safe palette; the keys
@@ -36,11 +39,11 @@
   world, else the level's: what happens and what to type, with what the level asks in
   particular, such as the main gate's whole code without a mistake), no instructions in it;
   the story is not said again in a bubble when play starts. At the bottom, however short the
-  story, the space bar, a drawn key. Under the picture, below its line, two lines "Fingers on
-  the home position ASDF JKLÔ!" (the keys of the child's layout) and "Do not look at the
-  keyboard, and press the space bar." show only when the space bar has not been pressed for
-  10 seconds, so a child who reads the story is not told twice; they keep their room meanwhile,
-  so nothing jumps. "home position ASDF JKLÔ" is a link: it opens the home position card again
+  story, the space bar, a drawn key. Under the picture, below its line and in its letters, "Fingers
+  on the home position, do not look at the keyboard and press the space bar." shows only when
+  the space bar has not been pressed by a second after the hands settled on the keys (about
+  four and a half seconds), so the child first sees the hands come there; it keeps its room
+  meanwhile, so nothing jumps. "home position" is a link: it opens the home position card again
   over the get-ready card, and closing that card (typed or skipped) comes back to the get-ready card. The space bar, Esc, a tap on the drawing or the round X (its tip says so) closes
   it and starts: the card is only a reminder, so every way out of it is the start.
 - **The home position** ("Základná pozícia") is taught once, right after the new-key cards of

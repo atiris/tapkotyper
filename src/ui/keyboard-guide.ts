@@ -147,9 +147,9 @@ export class KeyboardGuide {
     return this.hands;
   }
 
-  /** The hands rest beside the keyboard (on) or come onto the keys in the home position (off). */
-  parkHands(on: boolean): void {
-    this.handsView().park(on);
+  /** The hands rest beside the keyboard (on) or come onto the keys in the home position (off), at once or gliding for `glideS` seconds. */
+  parkHands(on: boolean, glideS = 0): void {
+    this.handsView().park(on, glideS);
   }
 
   /** The hands' outline of the key typed last, `<side>/<name>`. */

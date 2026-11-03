@@ -254,9 +254,8 @@
     "feet": "Obe chodidlá polož na zem.",
     "wrists": "Zápästia uvoľnené vo vzduchu, nie opreté o stôl.",
     "eyes": "Oči na obrazovke, nie na klávesnici.",
-    "space": "Prsty na {link}!",
-    "spaceLink": "základnú pozíciu {keys}",
-    "spaceLook": "Nepozeraj na klávesnicu a stlač medzerník.",
+    "space": "Prsty na {link}, nepozeraj sa na klávesnicu a stlač medzerník.",
+    "spaceLink": "základnú pozíciu",
     "spaceKey": "medzerník",
     "close": "Zavrieť a začať (Esc)"
   },
@@ -806,7 +805,7 @@
       "Dostal si špeciálnu úlohu: preskúmať zopár planét až k Planéte drakov, kde potrebujú tvoju pomoc. Tvoje **písanie v správnom rytme poháňa** vesmírnu **loď** na tejto ceste. V prípade nebezpečenstva **zadaj** správny **príkaz** palubnému počítaču. Ak uvedieš **správny kód** asteroidu, ktorý ti skrížil cestu, **aktivuješ laser**, ktorý blížiaci sa balvan odrazí ako biliardovú guľu. Planéta drakov je však ďaleko. Čo ťa na tejto ceste čaká?"
     ],
     "world": {
-      "meadow": "Na lúke je krásne popoludnie a poobede bude **futbalový zápas**! Zvieratká s tebou trénujú: kopú listy ako loptu a **ty si brankár**. Chytaj listy písmenami: **napíš slovo na liste** a list je tvoj.",
+      "meadow": "Popoludní bude na lúke futbalový zápas. Zvieratká by sa však chceli rozcvičiť a rozhodli sa, že si s tebou **zatrénujú**. Každý vykopnutý list môžeš chytiť tak, že **napíšeš slovo nad ním**. Ak ti niektoré prekĺznu až do brány, nevadí.",
       "space": "Tri, dva, jeden... **štart!** Letíš preskúmať zopár planét až k **Planéte drakov**. **Rytmus tvojho písania** poháňa raketu a jemný lúč odsúva meteority z cesty.",
       "planet": "**Vitaj** na Planéte drakov, na ktorej existujú kúzla a život poháňajú kryštály! **Posledný kryštál** života však už **vyhasol.** Hrozí, že planéta stratí svetlo. Našťastie **máš mapu**, podľa ktorej treba prejsť močiar a lúku, **nájsť** aspoň tri **kryštály života** a prebudiť ich kúzlom. Keď sa ti ich podarí **odniesť** až **ku kamennému monolitu**, život na Planéte drakov **bude zachránený.** **Presnosť** je stále dôležitejšia ako rýchlosť.",
       "dragons": "Kryštál života rozjasnil planétu, ale **v Údolí drakov je** stále **zhasnutý hrejivý plameň.** Aby sa dráčiky vrátili do údolia, musíš znova rozžiariť dračie ohnisko. **Chyť čo najviac plamienkov** a rozžiar ohnisko tak, aby znova prinieslo teplo a jas do tohto údolia. Potom sem určite prídu aj dráčiky.",

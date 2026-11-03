@@ -12,6 +12,7 @@ import { endCard, focusMain } from '../ui/end-card';
 import { pickStretch, stretchExercise } from './runtime/pause';
 import { tapkoElement } from '../gfx/tapko';
 import { imageUrl } from '../gfx/assets';
+import { HANDS_ARRIVE_S, HANDS_GLIDE_S } from '../ui/hands';
 import { SHIFT_L, SHIFT_R, SPACE } from '../learning/lessons';
 
 interface CardOpts {
@@ -98,14 +99,8 @@ export function pickTip(p: Profile, style: Style = 'copy'): { id: string; text: 
 
 const POSTURE_TIPS = ['back', 'feet', 'wrists', 'eyes'];
 
-/** Seconds without the space bar before the card says where the fingers go. */
-const FINGERS_AFTER_S = 10;
-
-/** The home keys of the layout as the child sees them on the keyboard: `ASDF JKLÔ`. */
-function homeKeys(lay: Layout): string {
-  const keys = (fingers: Finger[]) => fingers.map((f) => homeKey(lay, f) ?? '').join('').toUpperCase();
-  return `${keys([0, 1, 2, 3])} ${keys([6, 7, 8, 9])}`;
-}
+/** Seconds without the space bar before the card says where the fingers go: a second after the hands settled on the keys. */
+const FINGERS_AFTER_S = HANDS_ARRIVE_S + HANDS_GLIDE_S + 1;
 
 /** The posture pictures, a boy's and a girl's; the card takes one at random. */
 const POSTURE_PICTURES = ['ui-posture-boy', 'ui-posture-girl'];
@@ -140,10 +135,8 @@ export function showPosture(host: HTMLElement, p: Profile, tip?: string, surpris
       away = false;
       space.focus();
     };
-    const link = () => h('a', { class: 'posture-link', href: '#', onClick: (e: MouseEvent) => { e.preventDefault(); void homePosition(); } }, t('posture.spaceLink', { keys: homeKeys(LAYOUTS[p.layout]) }));
-    const fingers = h('div', { class: 'posture-fingers later' },
-      h('p', {}, ...linkedText(t('posture.space'), 'link', link)),
-      h('p', {}, t('posture.spaceLook')));
+    const link = () => h('a', { class: 'posture-link', href: '#', onClick: (e: MouseEvent) => { e.preventDefault(); void homePosition(); } }, t('posture.spaceLink'));
+    const fingers = h('p', { class: 'posture-fingers later' }, ...linkedText(t('posture.space'), 'link', link));
     const src = imageUrl(POSTURE_PICTURES[Math.floor(Math.random() * POSTURE_PICTURES.length)]);
     const reminder = POSTURE_TIPS[Math.floor(Math.random() * POSTURE_TIPS.length)];
     const side = h('div', { class: 'card posture-side' },

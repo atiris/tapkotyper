@@ -18,7 +18,7 @@ import { ENTER, LAYOUTS, LayoutMismatchDetector, enterAfter, fingerFor, stepsFor
 import { SHIFT_L, SPACE, activeKeys, aimKeys, isKeyReady, masteryLevel, recentAccuracy, shiftKeyOf, useLayout } from '../learning/lessons';
 import { recentTyping, recordPress, recordSession, typingStep } from '../learning/stats';
 import { FINGER_KEYS, KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
-import { HANDS_ARRIVE_S } from '../ui/hands';
+import { HANDS_ARRIVE_S, HANDS_GLIDE_S } from '../ui/hands';
 import { LayoutSwitch } from '../ui/layout-switch';
 import { closeModals, confirmDialog, h } from '../ui/dom';
 import { globalButtons } from '../ui/chrome';
@@ -73,6 +73,10 @@ const ENTER_GUARD_MS = 300;
 const JOURNEY_STEP = 1;
 const DIFFICULTY_MAX = 10;
 const JOURNEY_WORDS = 3;
+
+/** Seconds the hands glide beside the keyboard in a pause, and back onto the keys (also when the get-ready card closes early). */
+const HANDS_AWAY_S = 1;
+const HANDS_BACK_S = 0.5;
 
 /** Runs one level: input, typing state, mode, HUD, guide, Tapko, stats. */
 export class LevelRuntime {
@@ -389,16 +393,16 @@ export class LevelRuntime {
   }
 
   /**
-   * The get-ready card. When it is the level's first panel the hands rest beside the keyboard and come onto the home
-   * position a second later, or at once when the card closes; after key cards they are on the keys already.
+   * The get-ready card. When it is the level's first panel the hands rest beside the keyboard and glide onto the home
+   * position two seconds later, or quickly when the card closes before; after key cards they are on the keys already.
    */
   private async readyCard(show: () => Promise<void>): Promise<void> {
     if (this.shownKeys.length) return show();
     this.guide.parkHands(true);
-    const arrive = setTimeout(() => this.guide.parkHands(false), HANDS_ARRIVE_S * 1000);
+    const arrive = setTimeout(() => this.guide.parkHands(false, HANDS_GLIDE_S), HANDS_ARRIVE_S * 1000);
     await show();
     clearTimeout(arrive);
-    this.guide.parkHands(false);
+    this.guide.parkHands(false, HANDS_BACK_S);
   }
 
   /** A task with nothing left the child can type plays dictionary words instead: as many as its own words, or sentences for its text. */
@@ -436,7 +440,12 @@ export class LevelRuntime {
   private handlers(): InputHandlers {
     return {
       onChar: (c) => this.onChar(c),
-      onDead: () => { this.deadPending = true; this.updateGuide(); },
+      onDead: (code, shift) => {
+        this.deadPending = true;
+        this.updateGuide();
+        // Free typing shows the dead key's press too (the accent comes with the next letter).
+        if (this.free && this.freeOpen) this.guide.press(code, shift);
+      },
       onEscape: () => (this.state.paused ? this.resume() : this.free ? this.exit() : this.pause()),
       onRaw: (code, key, shift) => this.onRaw(code, key, shift),
       // A target waiting for Enter takes it; else the Enter that closed a card just before play is not a call for the paw.
@@ -453,6 +462,7 @@ export class LevelRuntime {
     // Leaving by the browser's back button still keeps the time and keys typed.
     if (this.state.started && !this.state.finished) this.flushSession();
     this.disposed = true;
+    clearTimeout(this.handsAway);
     this.pauseCard.dispose();
     speech.stop();
     this.reading.dispose();
@@ -838,13 +848,19 @@ export class LevelRuntime {
 
   // ---- pause -------------------------------------------------------------------
 
-  /** Also while the cards before play are open: their keys wait, and the pause card has no Slower then. */
+  /**
+   * Also while the cards before play are open: their keys wait, and the pause card has no Slower then. In play the hands
+   * glide beside the keyboard a second later, and come back at once when play goes on.
+   */
   pause(): void {
     if (this.state.paused || this.state.finished) return;
     this.state.paused = true;
     speech.stop();
     this.pauseCard.open();
+    if (this.state.started) this.handsAway = window.setTimeout(() => this.guide.parkHands(true, HANDS_AWAY_S), 1000);
   }
+
+  private handsAway = 0;
 
   /**
    * Leaving from the pause card; after a key of this level it asks first, Continue being the safe choice.
@@ -898,6 +914,8 @@ export class LevelRuntime {
     if (!this.state.paused || !this.pauseCard.el) return;
     this.state.paused = false;
     this.pauseCard.close();
+    clearTimeout(this.handsAway);
+    this.guide.parkHands(false, HANDS_BACK_S);
     this.rhythm.ready(performance.now());
     this.reading.again();
   }

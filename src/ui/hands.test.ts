@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { LAYOUTS } from '../keyboard/layouts';
 import { type HandIndex, POSE_NAME, keyName, poseName, readHandSvg } from './hand-svg';
-import { handOf, keyMiddle, poseNames } from './hands';
+import { handOf, keyMiddle, morphFrames, poseNames } from './hands';
 
 const sk = LAYOUTS['sk-qwertz'];
 
@@ -70,5 +70,13 @@ describe('hands', () => {
   it('reads middle lines, their widths and the nails', () => {
     const svg = '<svg><path class="hand-nail" data-finger="3" d="M5 5 L6 6 Z" fill="#123456"/><path class="hand-creases" d="M0 0 L1 1" fill="none" stroke-width="1.2"/><path class="hand-lines" d="M2 2 L3 3" fill="none" stroke-width="2.6"/></svg>';
     expect(readHandSvg(svg)).toEqual({ lines: 'M2 2 L3 3', creases: 'M0 0 L1 1', stroke: 2.6, centerline: true, creaseStroke: 1.2, nails: [{ finger: 3, d: 'M5 5 L6 6 Z' }] });
+  });
+
+  it('glides an outline through its steps, every number blended, a shape of another drawing left out', () => {
+    const shape = (lines: string) => ({ lines, creases: 'M0 0', stroke: 1, centerline: true, creaseStroke: 1, nails: [] });
+    const glide = morphFrames([shape('M0 0 L10 0'), shape('M10 10 L20 10 Z M1 1'), shape('M20 0 L30 -10')]);
+    expect(glide.lines(0)).toBe('M0.0 0.0 L10.0 0.0');
+    expect(glide.lines(0.25)).toBe('M5.0 0.0 L15.0 -2.5');
+    expect(glide.lines(1)).toBe('M20.0 0.0 L30.0 -10.0');
   });
 });

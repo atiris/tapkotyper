@@ -116,7 +116,7 @@ const OFF_RANGE: Partial<Record<keyof RowMove, [number, number]>> = { up: [-200,
 const rowFields = (row: RowName): Field<keyof RowMove>[] => ROW_FIELDS.map(([k, label, lo, hi, step]) => [k, label, ...(row === 'off' ? OFF_RANGE[k] ?? [lo, hi] : [lo, hi]), step] as Field<keyof RowMove>);
 type Field<K> = [key: K, label: string, lo: number, hi: number, step: number];
 const ROW_FIELDS: Field<keyof RowMove>[] = [
-  ['up', 'Ruka hore', -80, 120, 1], ['right', 'Ruka vpravo', -80, 80, 1], ['tilt', 'Odklon ruky (° vpravo)', -20, 20, 0.5],
+  ['up', 'Ruka hore', -80, 120, 1], ['right', 'Ruka vpravo', -160, 160, 1], ['tilt', 'Odklon ruky (° vpravo)', -20, 20, 0.5],
   ['curl', 'Skrčenie prstov', -60, 80, 1], ['thumbRight', 'Palec vpravo', -60, 60, 1], ['thumbUp', 'Palec hore', -50, 40, 1],
   ['short', 'Chrbát ruky kratší', -40, 80, 1], ['spread', 'Roztiahnutie prstov ← →', -160, 160, 1],
   ['vee', 'Prsty do V (°)', -20, 60, 0.5],

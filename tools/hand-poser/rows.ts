@@ -31,8 +31,24 @@ const ROW_NAMES: Record<RowName, string> = { bot: 'dolný rad', home: 'domovský
 /** The row a hand types on, by the keyboard's row (the bottom row's thumbs stay at home). */
 const ROW_OF: RowName[] = ['num', 'top', 'home', 'bot', 'home'];
 
-/** Each finger's axis on the home outline (knuckle, middle, tip), thumb first: a first guess, fitted to the outline (fitAxes). */
-const GUESS: Record<Side, Pt[][]> = {
+/**
+ * Where a finger's joints lie along it, from the knuckle (0) to the tip (1): the knuckle at the back of the hand, the
+ * joint between the 1st and 2nd bone, between the 2nd and 3rd, the tip (the thumb: its root at the wrist, its two
+ * joints, the tip). The bones are about 45 %, 30 % and 25 % of the finger.
+ */
+const JOINTS = [0, 0.45, 0.75, 1];
+/** A polyline's points at these fractions of its length. */
+function resample(line: Pt[], at: number[]): Pt[] {
+  const lens = line.slice(1).map((q, i) => Math.hypot(q[0] - line[i][0], q[1] - line[i][1])), total = lens.reduce((a, b) => a + b, 0);
+  return at.map((t) => {
+    let left = t * total, i = 0;
+    while (i < lens.length - 1 && left > lens[i]) left -= lens[i++];
+    const k = lens[i] ? left / lens[i] : 0;
+    return [line[i][0] + (line[i + 1][0] - line[i][0]) * k, line[i][1] + (line[i + 1][1] - line[i][1]) * k];
+  });
+}
+/** Each finger's axis on the home outline (its joints, JOINTS), thumb first: a first guess, fitted to the outline (fitAxes). */
+const GUESS: Record<Side, Pt[][]> = Object.fromEntries(Object.entries({
   left: [
     [[275, 390], [318, 300], [352, 228]],
     [[275, 240], [292, 160], [308, 125]],
@@ -47,8 +63,8 @@ const GUESS: Record<Side, Pt[][]> = {
     [[626, 240], [600, 155], [585, 115]],
     [[664, 245], [656, 160], [653, 125]],
   ],
-};
-/** The palm's line: points nearest to it never move with a finger. A first guess; the owner may move it (Axes). */
+} as Record<Side, Pt[][]>).map(([s, lines]) => [s, lines.map((l) => resample(l, JOINTS))])) as Record<Side, Pt[][]>;
+/** The back of the hand's line: points nearest to it never move with a finger. A first guess; the owner may move it. */
 const PALM_GUESS: Record<Side, Pt[]> = { left: [[110, 420], [150, 270], [250, 265], [292, 312]], right: [[680, 420], [640, 270], [540, 265], [505, 312]] };
 const PALM_LINE = structuredClone(PALM_GUESS);
 /** The wrist, the hand's turning point. */
@@ -69,7 +85,7 @@ function fitAxes(side: Side, xy: Pt[]): void {
       return near.indexOf(Math.min(...near));
     });
     for (let f = 1; f < 5; f++) {
-      for (const j of [1, 2]) {
+      for (const j of [1, 2, 3]) {
         const v = AXES[side][f][j];
         const xs = xy.filter((p, i) => own[i] === f && Math.abs(p[1] - v[1]) < 12).map((p) => p[0]);
         if (xs.length >= 4) v[0] = (Math.min(...xs) + Math.max(...xs)) / 2;
@@ -172,7 +188,7 @@ function nearOnLine(p: Pt, line: Pt[]): { d: number; s: number } {
   }
   return best;
 }
-/** How much a point moves with each finger: the one given by hand, or the nearest axes (the palm's line never moves). */
+/** How much a point moves with each finger: the one given by hand, or the nearest axes (the back of the hand's line never moves). */
 function reach(side: Side, p: Pt, owner?: number): Reach[] {
   if (owner === PALM) return FINGERS.map(() => ({ w: 0, s: 0 }));
   if (owner != null && owner >= 0) return FINGERS.map((_, f) => ({ w: f === owner ? 1 : 0, s: f === owner ? nearOnLine(p, AXES[side][f]).s : 0 }));
@@ -238,23 +254,34 @@ function loadSide(s: Side, o: Outline): void {
   o = { ...o, lines: subdivide(o.lines), creases: subdivide(o.creases) };
   const lines = parse(o.lines);
   widths[s] = o.width;
-  // The owner's own axes when set, else fitted to the outline (middle lines lie in the middle of their bands too).
-  const own = st.axes?.[s];
-  if (own) {
-    AXES[s] = structuredClone(own.fingers);
-    PALM_LINE[s] = structuredClone(own.palm);
-  } else {
-    PALM_LINE[s] = structuredClone(PALM_GUESS[s]);
-    fitAxes(s, lines.xy);
-  }
   const paths = { lines, creases: parse(o.creases) };
   src[s] = Object.fromEntries(KINDS.map((k) => [k, { ...paths[k], w: [] }])) as unknown as Record<Kind, Path>;
   edits[s] = Object.fromEntries(KINDS.map((k) => [k, new Array(paths[k].xy.length * 2).fill(0)])) as Record<Kind, number[]>;
+  setAxes(s);
+}
+/**
+ * A hand's axes: the owner's own when set (with a point on every joint), else fitted to the outline (middle lines lie
+ * in the middle of their bands too).
+ */
+function setAxes(s: Side): void {
+  const own = st.axes?.[s];
+  if (own && own.fingers.every((l) => l.length === JOINTS.length)) {
+    AXES[s] = structuredClone(own.fingers);
+    PALM_LINE[s] = structuredClone(own.palm);
+  } else {
+    if (st.axes) delete st.axes[s];
+    PALM_LINE[s] = structuredClone(PALM_GUESS[s]);
+    fitAxes(s, src[s].lines.xy);
+  }
   refreshAxes(s);
 }
 /** After the axes changed: each point's finger again, the fingers' directions, the line of the knuckles. */
 function refreshAxes(s: Side): void {
   UNIT_DIR[s] = unitDirs(s);
+  MID_AT[s] = AXES[s].map((l) => {
+    const lens = l.slice(1).map((q, i) => Math.hypot(q[0] - l[i][0], q[1] - l[i][1]));
+    return lens[0] / lens.reduce((a, b) => a + b, 0);
+  });
   for (const k of KINDS) weigh(s, k);
   axisReach[s] = AXES[s].map((line) => line.map((p) => reach(s, p)));
   KNUCKLE_Y[s] = AXES[s].slice(1).reduce((sum, line) => sum + line[0][1], 0) / 4;
@@ -272,8 +299,10 @@ const unitDirs = (s: Side) => AXES[s].map((l) => {
   return [(b[0] - t[0]) / n, (b[1] - t[1]) / n] as Pt;
 });
 const UNIT_DIR = {} as Record<Side, Pt[]>;
-/** How much the "middle of the finger" move reaches a place along it: most at the second joint's knuckle end. */
-const midBump = (s: number) => Math.exp(-(((s - 0.5) / 0.18) ** 2));
+/** Where along each finger its joint between the 1st and 2nd bone lies (0 the knuckle, 1 the tip). */
+const MID_AT = {} as Record<Side, number[]>;
+/** How much the "middle of the finger" move reaches a place along it: most at the joint between the 1st and 2nd bone. */
+const midBump = (s: number, at: number) => Math.exp(-(((s - at) / 0.18) ** 2));
 
 /** One point of a hand in a pose: the fingers move (base correction, row curl and thumb, the pose's own moves), then the hand tilts and shifts. */
 function movePoint(side: Side, p: Pt, w: Reach[], hp: HandPose): Pt {
@@ -288,7 +317,7 @@ function movePoint(side: Side, p: Pt, w: Reach[], hp: HandPose): Pt {
     const mine = hp.f[f], base = st.base[side][f], u = UNIT_DIR[side][f];
     const bend = mine.bend + base.bend + (f ? row.curl : 0);
     const dx = mine.x + base.x + (f ? 0 : row.thumbRight), dy = mine.y + base.y + (f ? 0 : row.thumbUp);
-    const r = smooth(clamp(s)), m = (mine.mid + base.mid) * midBump(s);
+    const r = smooth(clamp(s)), m = (mine.mid + base.mid) * midBump(s, MID_AT[side][f]);
     x += wf * (u[0] * bend * s + dx * r + m);
     y += wf * (u[1] * bend * s - dy * r);
   }
@@ -423,7 +452,7 @@ function render(xy: Posed): void {
   for (const s of SIDES) for (const k of KINDS) paths[s][k].setAttribute('d', draw(src[s][k], xy[s][k]));
   drawDots(xy);
 }
-/** Where an axis point shows in the shown pose (the palm's line never moves with a finger). */
+/** Where an axis point shows in the shown pose (the back of the hand's line never moves with a finger). */
 const axisAt = (s: Side, f: number, j: number): Pt => {
   const pose = poseById(current);
   return f === PALM ? movePoint(s, PALM_LINE[s][j], FINGERS.map(() => ({ w: 0, s: 0 })), pose[s]) : movePoint(s, AXES[s][f][j], axisReach[s][f][j], pose[s]);
@@ -439,7 +468,7 @@ function renderAxes(): void {
     });
   }
 }
-/** Which finger each point moves with, in the finger's colour (grey: the palm). */
+/** Which finger each point moves with, in the finger's colour (grey: the back of the hand). */
 const fingerColor = (s: Side, f: number) => (f === PALM ? '#777' : FINGER_COLORS[(s === 'left' ? 4 - f : 5 + f) as Finger]);
 const showDots = $<HTMLInputElement>('dots');
 function drawDots(xy: Posed): void {
@@ -671,7 +700,7 @@ function paint(at: Pt): void {
   // A control point follows its end point's finger: the whole path is weighed again.
   for (const key of touched) { const [s, k] = key.split('.') as [Side, Kind]; weigh(s, k); }
 }
-/** The axis point being dragged: its hand, finger (PALM: the palm's line) and number. */
+/** The axis point being dragged: its hand, finger (PALM: the back of the hand's line) and number. */
 let dragAxis: { s: Side; f: number; j: number } | null = null;
 function nearestHandle(at: Pt): typeof dragAxis {
   let best: typeof dragAxis = null, bestD = 10;
@@ -685,25 +714,27 @@ function nearestHandle(at: Pt): typeof dragAxis {
 function axisHint(f: number, j: number): string {
   if (f === PALM) {
     return [
-      'Dlaň 1: pri zápästí na strane malíčka, vo vnútri dlane kúsok od jej okraja.',
-      'Dlaň 2: pod koreňom malíčka, kúsok pod zárezom medzi malíčkom a prstenníkom.',
-      'Dlaň 3: pod koreňmi prostredníka a ukazováka, kúsok pod zárezmi medzi prstami.',
-      'Dlaň 4: v záreze medzi ukazovákom a palcom.',
-    ][j] + '<br><small>Čiara dlane vedie dlaňou kúsok pod zárezmi medzi prstami. Body obrysu bližšie k nej ako k osi prsta sa s prstami nehýbu.</small>';
+      'Chrbát ruky 1: pri zápästí na strane malíčka, na chrbte ruky asi pol klávesu od obrysu (nie na čiare obrysu).',
+      'Chrbát ruky 2: pod koreňom malíčka, kúsok pod zárezom medzi malíčkom a prstenníkom.',
+      'Chrbát ruky 3: pod koreňmi prostredníka a ukazováka, kúsok pod zárezmi medzi prstami.',
+      'Chrbát ruky 4: v záreze medzi ukazovákom a palcom.',
+    ][j] + '<br><small>Čiara chrbta ruky vedie po chrbte ruky kúsok pod koreňmi prstov. Body obrysu bližšie k nej ako k osi niektorého prsta patria chrbtu ruky: s prstami sa nehýbu.</small>';
   }
-  const name = FINGERS[f];
+  const name = FINGERS[f], Name = `${name[0].toUpperCase()}${name.slice(1)}`;
   if (f === 0) {
     return [
-      'Palec, koreň: pri zápästí, kde palec vychádza z dlane. Tu sa pohyb palca začína.',
-      'Palec, kĺb: v strede palca pri jeho kĺbe.',
-      'Palec, koniec: v strede bruška pri končeku. Tu je pohyb palca najväčší.',
+      'Palec, koreň: pri zápästí, kde palec vychádza z ruky. Tu sa pohyb palca začína.',
+      'Palec, 1. kĺb: v strede palca na kĺbe, kde sa končí dlhá kosť pri zápästí.',
+      'Palec, 2. kĺb: v strede palca na kĺbe pred posledným článkom.',
+      'Palec, špička: v strede bruška pri končeku. Tu je pohyb palca najväčší.',
     ][j] + '<br><small>Os vedie stredom palca. Body obrysu najbližšie k nej sa hýbu s palcom.</small>';
   }
   return [
-    `${name[0].toUpperCase()}${name.slice(1)}, kĺb: v strede koreňa prsta, vo výške zárezov medzi prstami. Tu sa pohyb prsta začína.`,
-    `${name[0].toUpperCase()}${name.slice(1)}, stred: v strede prsta pri jeho strednom kĺbe.`,
-    `${name[0].toUpperCase()}${name.slice(1)}, koniec: v strede bruška pri končeku. Tu je pohyb prsta najväčší.`,
-  ][j] + '<br><small>Os vedie stredom prsta. Body obrysu najbližšie k nej sa hýbu s týmto prstom.</small>';
+    `${Name}, kĺb pri chrbte ruky: v strede koreňa prsta, vo výške zárezov medzi prstami. Tu sa pohyb prsta začína.`,
+    `${Name}, kĺb medzi 1. a 2. článkom: v strede prsta na tomto kĺbe. Tu pôsobí posuvník „stred prsta“.`,
+    `${Name}, kĺb medzi 2. a 3. článkom: v strede prsta na tomto kĺbe.`,
+    `${Name}, špička: v strede bruška pri končeku. Tu je pohyb prsta najväčší.`,
+  ][j] + '<br><small>Os vedie stredom prsta cez jeho kĺby. Body obrysu najbližšie k nej sa hýbu s týmto prstom.</small>';
 }
 const hintEl = Object.assign(document.createElement('div'), { className: 'axis-hint', hidden: true });
 document.body.append(hintEl);
@@ -758,19 +789,7 @@ svg.addEventListener('pointerdown', () => { hintEl.hidden = true; });
 svg.addEventListener('pointerup', endDrag);
 svg.addEventListener('pointercancel', endDrag);
 /** Each hand's axes as the state says (the owner's, or fitted to the outline again). */
-function applyAxes(): void {
-  for (const s of SIDES) {
-    const own = st.axes?.[s];
-    if (own) {
-      AXES[s] = structuredClone(own.fingers);
-      PALM_LINE[s] = structuredClone(own.palm);
-    } else {
-      PALM_LINE[s] = structuredClone(PALM_GUESS[s]);
-      fitAxes(s, src[s].lines.xy);
-    }
-    refreshAxes(s);
-  }
-}
+const applyAxes = () => { for (const s of SIDES) setAxes(s); };
 undoBtn.addEventListener('click', () => {
   const last = undoStack.pop();
   if (!last) return;

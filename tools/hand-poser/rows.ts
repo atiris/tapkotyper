@@ -152,7 +152,34 @@ function draw(path: { parts: (string | null)[] }, xy: Pt[]): string {
  * The wrist lines go on past the picture's edge, so a raised or tilted hand never shows their cut ends (on this page
  * only): a band as a thin filled strip, a middle line as a line.
  */
-function wristTails(xy: Pt[], middle: boolean): string {
+function wristTails(path: Omit<Path, 'w'>, middle: boolean): string {
+  return middle ? lineTails(path) : bandTails(path.xy);
+}
+/** Middle lines: each line ending at the drawing's bottom goes on the way it ends. */
+function lineTails(path: Omit<Path, 'w'>): string {
+  // The lines: the points of each subpath (each M starts one), in order.
+  const strokes: number[][] = [];
+  let k = 0;
+  for (const p of path.parts) {
+    if (p === 'M') strokes.push([]);
+    else if (p === null) { if (k % 2 === 0) strokes.at(-1)?.push(k / 2); k++; }
+  }
+  const bottom = Math.max(...path.xy.map((p) => p[1]));
+  let d = '';
+  for (const s of strokes) {
+    if (s.length < 2) continue;
+    for (const [end, prev] of [[s.at(-1)!, s.at(-2)!], [s[0], s[1]]]) {
+      const e = path.xy[end], q = path.xy[prev], l = Math.hypot(e[0] - q[0], e[1] - q[1]);
+      if (e[1] < bottom - 12 || !l) continue;
+      const dir: Pt = [(e[0] - q[0]) / l, (e[1] - q[1]) / l];
+      if (dir[1] <= 0) continue;
+      d += `M${e[0].toFixed(1)} ${e[1].toFixed(1)} L${(e[0] + dir[0] * 420).toFixed(1)} ${(e[1] + dir[1] * 420).toFixed(1)} `;
+    }
+  }
+  return d;
+}
+/** Filled bands: the bands' low ends, grouped, go on as thin strips. */
+function bandTails(xy: Pt[]): string {
   const low = xy.filter((p) => p[1] > 380).sort((a, b) => a[0] - b[0]);
   const groups: Pt[][] = [];
   for (const p of low) { const g = groups.at(-1); if (g && p[0] - g.at(-1)![0] < 25) g.push(p); else groups.push([p]); }
@@ -168,7 +195,7 @@ function wristTails(xy: Pt[], middle: boolean): string {
     const xs = ends.map((p) => p[0]), lo = Math.min(...xs), hi = Math.max(...xs);
     const half = Math.min(3.2, Math.max(2.2, hi - lo)) / 2, c: Pt = [(lo + hi) / 2, e[1]], n: Pt = [-dir[1], dir[0]], L = 420;
     const P = (k: number, s: number) => `${(c[0] + dir[0] * k + n[0] * s).toFixed(1)} ${(c[1] + dir[1] * k + n[1] * s).toFixed(1)}`;
-    d += middle ? `M${P(-2, 0)} L${P(L, 0)} ` : `M${P(-6, -half)} L${P(L, -half)} L${P(L, half)} L${P(-6, half)} Z `;
+    d += `M${P(-6, -half)} L${P(L, -half)} L${P(L, half)} L${P(-6, half)} Z `;
   }
   return d;
 }
@@ -211,7 +238,7 @@ function loadSide(s: Side, o: Outline): void {
   // Middle lines lie in the middle of the bands they came from: the axes fit them as well.
   fitAxes(s, lines.xy);
   UNIT_DIR[s] = unitDirs(s);
-  const paths = { lines, creases: parse(o.creases), tails: parse(wristTails(lines.xy, !!o.width)) };
+  const paths = { lines, creases: parse(o.creases), tails: parse(wristTails(lines, !!o.width)) };
   src[s] = Object.fromEntries(KINDS.map((k) => [k, { ...paths[k], w: [] }])) as unknown as Record<Kind, Path>;
   edits[s] = Object.fromEntries(KINDS.map((k) => [k, new Array(paths[k].xy.length * 2).fill(0)])) as Record<Kind, number[]>;
   for (const k of KINDS) weigh(s, k);
@@ -666,10 +693,40 @@ for (const [id, s] of [['loadLeft', 'left'], ['loadRight', 'right']] as const) {
     if (!file) return;
     const o = readOutline(await file.text());
     if (!o.lines) return say('V súbore chýba cesta s triedou hand-lines', true);
+    const moved = placeLike(s, o);
     replaceOutline(s, o);
-    say(`${SIDE_NAME[s]}: obrys načítaný, ulož ho`);
+    say(`${SIDE_NAME[s]}: obrys načítaný${moved ? `, posunutý o ${moved} podľa okraja palca` : ''}, ulož ho`);
   });
 }
+/** A drawing this far (keyboard units) from the hand's place was drawn elsewhere (another page area in the editor). */
+const ELSEWHERE = 40;
+/**
+ * An outline drawn elsewhere is moved onto the hand's place: its outermost point on the thumb's side (the left hand's
+ * rightmost, the right hand's leftmost) onto the present outline's. Returns how far it moved ('' when in place).
+ */
+function placeLike(s: Side, o: Outline): string {
+  const thumbEdge = (path: Omit<Path, 'w'>, at: (i: number) => Pt) => {
+    let best: Pt | null = null;
+    path.xy.forEach((_, i) => {
+      if (path.anchor[i] !== i) return;
+      const p = at(i);
+      if (!best || (s === 'left' ? p[0] > best[0] : p[0] < best[0])) best = p;
+    });
+    return best as Pt | null;
+  };
+  const fresh = parse(o.lines);
+  const from = thumbEdge(fresh, (i) => fresh.xy[i]), to = thumbEdge(src[s].lines, (i) => edited(s, 'lines', i));
+  if (!from || !to || Math.hypot(to[0] - from[0], to[1] - from[1]) < ELSEWHERE) return '';
+  const dx = to[0] - from[0], dy = to[1] - from[1];
+  o.lines = shiftPath(o.lines, dx, dy);
+  o.creases = shiftPath(o.creases, dx, dy);
+  return `${Math.round(dx)}, ${Math.round(dy)}`;
+}
+/** A path (absolute commands, x y pairs) moved by dx, dy. */
+const shiftPath = (d: string, dx: number, dy: number) => {
+  let i = 0;
+  return d.replace(/-?\d*\.?\d+(?:e-?\d+)?/g, (n) => (Math.round((Number(n) + (i++ % 2 ? dy : dx)) * 100) / 100).toString());
+};
 /** A hand's new outline: other points, so the fingers given by hand and the undo steps no longer fit. */
 function replaceOutline(s: Side, o: Outline): void {
   undoStack.length = 0;

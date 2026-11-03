@@ -144,6 +144,8 @@ const nailKind = (id: string): 'keys' | 'off' | 'rows' => (keyOfPose(id) ? 'keys
 
 /** The poses of whole rows (above the keyboard), each named by its row. */
 const ROW_POSES: [RowName, string][] = [['home', 'Domov'], ['top', 'Horný rad'], ['num', 'Číselný rad'], ['bot', 'Dolný rad'], ['off', 'Mimo klávesnice']];
+/** Each row's colour: its shadow under the poses made from it, and the dot on its badge (beside the keyboard: none, no pose is made from it). */
+const ROW_COLOR: Partial<Record<RowName, string>> = { home: '#c75aa5', top: '#d0453a', bot: '#d0453a', num: '#3a6fd0' };
 const handPose = (row: RowName): HandPose => ({ row, ...zeroRow(), f: moves() });
 const basePose = (id: string, name: string, row: RowName): Pose => ({ id, name, on: true, left: handPose(row), right: handPose(row) });
 const startState = (): RowsState => ({
@@ -665,11 +667,19 @@ function applyLook(): void {
     stageBox.style.setProperty(`--${part}-alpha`, String(1 - l.transparency / 100));
   }
 }
+/**
+ * The shown pose's parent as a shadow, in its row's colour: a key's pose is made from its row's pose (each hand its
+ * own), a whole row's pose (and the hands beside the keyboard) from the home position.
+ */
 function drawGhost(): void {
   applyLook();
   styleHands();
-  const g = posed(homePose);
-  for (const s of SIDES) ghostPaths[s].setAttribute('d', draw(src[s].lines, g[s].lines));
+  const pose = poseById(current), key = !!keyOfPose(current);
+  for (const s of SIDES) {
+    const row = key ? pose[s].row : 'home';
+    ghostPaths[s].setAttribute('d', draw(src[s].lines, posedSide(s, poseById(row)[s]).lines));
+    (ghostPaths[s] as SVGElement).style.setProperty('--ghost-color', ROW_COLOR[row] ?? ROW_COLOR.home!);
+  }
 }
 
 let current = 'home', shown: Posed | null = null, anim = 0;
@@ -732,6 +742,7 @@ function show(id: string, blend = $<HTMLInputElement>('smooth').checked): void {
     foldPanels();
   }
   renderAxes();
+  drawGhost();
   const from = shown, to = posed(poseById(id));
   cancelAnimationFrame(anim);
   if (!from || !blend || matchMedia('(prefers-reduced-motion: reduce)').matches) { shown = to; render(to); return; }
@@ -757,7 +768,7 @@ function redraw(ghostToo = false): void {
   shown = posed(poseById(current));
   render(shown);
   renderAxes();
-  if (ghostToo) drawGhost();
+  drawGhost();
   changed();
 }
 addEventListener('beforeunload', (e) => { if (dirty) e.preventDefault(); });
@@ -784,6 +795,8 @@ function buildChips(): void {
       box.addEventListener('click', (e) => { e.stopPropagation(); p.on = box.checked; changed(); });
       chip.append(box);
     }
+    const color = key ? undefined : ROW_COLOR[p.id as RowName];
+    if (color) chip.append(Object.assign(document.createElement('span'), { className: 'rows-dot', style: `background: ${color}`, title: 'Farba tieňa pôz z tohto radu' }));
     chip.append(p.name);
     // The shown pose's badge again: back to the home position.
     const pick = () => { setPlaying(false); show(p.id === current && key ? 'home' : p.id); };
@@ -818,7 +831,11 @@ function setPlaying(p: boolean): void {
 }
 playBtn.addEventListener('click', () => setPlaying(!playing));
 stepIn.addEventListener('change', () => { if (playing) setPlaying(true); });
-$<HTMLInputElement>('ghost').addEventListener('change', (e) => ghost.setAttribute('display', (e.target as HTMLInputElement).checked ? 'inline' : 'none'));
+$<HTMLInputElement>('ghost').addEventListener('change', (e) => {
+  const on = (e.target as HTMLInputElement).checked;
+  ghost.setAttribute('display', on ? 'inline' : 'none');
+  rowPosesEl.classList.toggle('no-ghost', !on);
+});
 $<HTMLInputElement>('axes').addEventListener('change', (e) => axesG.setAttribute('display', (e.target as HTMLInputElement).checked ? 'inline' : 'none'));
 
 // ---- sliders ----

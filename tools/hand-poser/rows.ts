@@ -744,14 +744,25 @@ for (const [id, s] of [['loadLeft', 'left'], ['loadRight', 'right']] as const) {
     // An editor's default hairline is no width meant for the hands: the present ones stay.
     if (!o.width || o.width.lines < MIN_WIDTH) o.width = widths[s] ?? { lines: 3.2, creases: 1.4 };
     const moved = placeLike(s, o);
-    // A drawn outline is the home position itself: the corrections made for the one before would bend it.
-    st.base[s] = moves();
-    st.palm[s] = 0;
-    buildBase();
+    // The rows and the poses always stay (they move whatever outline there is). The home position's corrections were
+    // made for the outline before: a new drawing may already be the home position itself, or only a better line.
+    const asked = hasBase(s);
+    const keep = !asked || confirm(
+      `${SIDE_NAME[s]}: ponechať opravy základnej polohy (prsty, chrbát ruky) aj na novom obryse?\n\n` +
+      'OK: ponechať, všetko sa prepočíta s novým obrysom.\nZrušiť: vynulovať, nový obrys je domovská poloha tak, ako je nakreslený.\n\n' +
+      'Rady a pózy ostanú v každom prípade; body priradené prstom ručne sa zrušia (nový obrys má iné body).',
+    );
+    if (!keep) {
+      st.base[s] = moves();
+      st.palm[s] = 0;
+      buildBase();
+    }
     replaceOutline(s, o);
-    say(`${SIDE_NAME[s]}: obrys načítaný${moved ? `, posunutý o ${moved} podľa okraja palca` : ''}, opravy základnej polohy vynulované, ulož ho`);
+    say(`${SIDE_NAME[s]}: obrys načítaný${moved ? `, posunutý o ${moved} podľa okraja palca` : ''}, ${asked ? `, opravy základnej polohy ${keep ? 'ponechané' : 'vynulované'}` : ''}, ulož ho`);
   });
 }
+/** Whether a hand has any correction of its home position (a finger moved, the back of the hand shorter). */
+const hasBase = (s: Side) => !!st.palm[s] || st.base[s].some((m) => Object.values(m).some((v) => v !== 0));
 /** Thinner outline lines (keyboard units) than this come from an editor's default, not from the owner. */
 const MIN_WIDTH = 1.5;
 /** A drawing this far (keyboard units) from the hand's place was drawn elsewhere (another page area in the editor). */
@@ -770,7 +781,8 @@ function placeLike(s: Side, o: Outline): string {
     });
     return best as Pt | null;
   };
-  const fresh = parse(o.lines);
+  // Split as the hand is (loadSide), so the same drawing finds the same edge point and loads to the same place.
+  const fresh = parse(subdivide(o.lines));
   const from = thumbEdge(fresh, (i) => fresh.xy[i]), to = thumbEdge(src[s].lines, (i) => edited(s, 'lines', i));
   if (!from || !to || Math.hypot(to[0] - from[0], to[1] - from[1]) < ELSEWHERE) return '';
   const dx = to[0] - from[0], dy = to[1] - from[1];

@@ -48,8 +48,9 @@ const GUESS: Record<Side, Pt[][]> = {
     [[664, 245], [656, 160], [653, 125]],
   ],
 };
-/** The palm's line: points nearest to it never move with a finger. */
-const PALM_LINE: Record<Side, Pt[]> = { left: [[110, 420], [150, 270], [250, 265], [292, 312]], right: [[680, 420], [640, 270], [540, 265], [505, 312]] };
+/** The palm's line: points nearest to it never move with a finger. A first guess; the owner may move it (Axes). */
+const PALM_GUESS: Record<Side, Pt[]> = { left: [[110, 420], [150, 270], [250, 265], [292, 312]], right: [[680, 420], [640, 270], [540, 265], [505, 312]] };
+const PALM_LINE = structuredClone(PALM_GUESS);
 /** The wrist, the hand's turning point. */
 const PIVOT: Record<Side, Pt> = { left: [145, 430], right: [636, 430] };
 /** How softly a point belongs to the nearer axes (keyboard units): small, so a finger moves its own points only. */
@@ -237,12 +238,23 @@ function loadSide(s: Side, o: Outline): void {
   o = { ...o, lines: subdivide(o.lines), creases: subdivide(o.creases) };
   const lines = parse(o.lines);
   widths[s] = o.width;
-  // Middle lines lie in the middle of the bands they came from: the axes fit them as well.
-  fitAxes(s, lines.xy);
-  UNIT_DIR[s] = unitDirs(s);
+  // The owner's own axes when set, else fitted to the outline (middle lines lie in the middle of their bands too).
+  const own = st.axes?.[s];
+  if (own) {
+    AXES[s] = structuredClone(own.fingers);
+    PALM_LINE[s] = structuredClone(own.palm);
+  } else {
+    PALM_LINE[s] = structuredClone(PALM_GUESS[s]);
+    fitAxes(s, lines.xy);
+  }
   const paths = { lines, creases: parse(o.creases) };
   src[s] = Object.fromEntries(KINDS.map((k) => [k, { ...paths[k], w: [] }])) as unknown as Record<Kind, Path>;
   edits[s] = Object.fromEntries(KINDS.map((k) => [k, new Array(paths[k].xy.length * 2).fill(0)])) as Record<Kind, number[]>;
+  refreshAxes(s);
+}
+/** After the axes changed: each point's finger again, the fingers' directions, the line of the knuckles. */
+function refreshAxes(s: Side): void {
+  UNIT_DIR[s] = unitDirs(s);
   for (const k of KINDS) weigh(s, k);
   axisReach[s] = AXES[s].map((line) => line.map((p) => reach(s, p)));
   KNUCKLE_Y[s] = AXES[s].slice(1).reduce((sum, line) => sum + line[0][1], 0) / 4;
@@ -383,9 +395,11 @@ for (const s of SIDES) {
   ghostPaths[s] = el('path', { class: 'ghost' }, ghost);
   paths[s] = {
     creases: el('path', { class: 'crease' }, hands), lines: el('path', { class: 'hand' }, hands),
-    axes: AXES[s].map(() => el('polyline', { class: 'rows-axis' }, axesG)),
+    axes: [...AXES[s], PALM_LINE[s]].map((_, f) => el('polyline', { class: f === PALM ? 'rows-axis palm' : 'rows-axis' }, axesG)),
   };
 }
+/** The axes' points to drag (shown in the "upraviť osi" mode). */
+const handlesG = el('g', {});
 const homePose = basePose('home', 'Domov', 'home');
 /** How each hand's paths are drawn: filled bands, or middle lines as strokes of their width. */
 function styleHands(): void {
@@ -409,9 +423,21 @@ function render(xy: Posed): void {
   for (const s of SIDES) for (const k of KINDS) paths[s][k].setAttribute('d', draw(src[s][k], xy[s][k]));
   drawDots(xy);
 }
-function renderAxes(): void {
+/** Where an axis point shows in the shown pose (the palm's line never moves with a finger). */
+const axisAt = (s: Side, f: number, j: number): Pt => {
   const pose = poseById(current);
-  for (const s of SIDES) AXES[s].forEach((line, f) => paths[s].axes[f].setAttribute('points', line.map((p, j) => movePoint(s, p, axisReach[s][f][j], pose[s]).join(',')).join(' ')));
+  return f === PALM ? movePoint(s, PALM_LINE[s][j], FINGERS.map(() => ({ w: 0, s: 0 })), pose[s]) : movePoint(s, AXES[s][f][j], axisReach[s][f][j], pose[s]);
+};
+function renderAxes(): void {
+  handlesG.replaceChildren();
+  const editing = tool() === 'axes';
+  for (const s of SIDES) {
+    [...AXES[s], PALM_LINE[s]].forEach((line, f) => {
+      const pts = line.map((_, j) => axisAt(s, f, j));
+      paths[s].axes[f].setAttribute('points', pts.map((p) => p.join(',')).join(' '));
+      if (editing) for (const p of pts) el('circle', { class: 'axis-handle', cx: p[0], cy: p[1], r: 4, fill: fingerColor(s, f) }, handlesG);
+    });
+  }
 }
 /** Which finger each point moves with, in the finger's colour (grey: the palm). */
 const fingerColor = (s: Side, f: number) => (f === PALM ? '#777' : FINGER_COLORS[(s === 'left' ? 4 - f : 5 + f) as Finger]);
@@ -597,18 +623,27 @@ $('rowReset').addEventListener('click', () => {
   redraw(true);
 });
 
-// ---- the mouse on the outline: the brush moves points, the paint gives them to a finger ----
+// ---- the mouse on the outline: the brush moves points, the paint gives them to a finger, the axes are dragged ----
 
 const radiusIn = $<HTMLInputElement>('radius'), undoBtn = $<HTMLButtonElement>('undo'), paintFinger = $<HTMLSelectElement>('paintFinger');
-const tool = () => (document.querySelector<HTMLInputElement>('input[name="tool"]:checked')?.value ?? 'keys') as 'keys' | 'brush' | 'paint';
-const undoStack: { edits: typeof edits; owners: RowsState['owners'] }[] = [];
+const tool = () => (document.querySelector<HTMLInputElement>('input[name="tool"]:checked')?.value ?? 'keys') as 'keys' | 'brush' | 'paint' | 'axes';
+const undoStack: { edits: typeof edits; owners: RowsState['owners']; axes: RowsState['axes'] }[] = [];
+const snapshot = () => ({ edits: structuredClone(edits), owners: structuredClone(st.owners), axes: structuredClone(st.axes) });
 function onTool(): void {
   const t = tool();
   stageBox.classList.toggle('keys-tool', t === 'keys');
-  stageBox.classList.toggle('brush-tool', t !== 'keys');
-  brushRing.setAttribute('display', t === 'keys' ? 'none' : 'inline');
+  stageBox.classList.toggle('brush-tool', t === 'brush' || t === 'paint');
+  stageBox.classList.toggle('axes-tool', t === 'axes');
+  brushRing.setAttribute('display', t === 'brush' || t === 'paint' ? 'inline' : 'none');
   if (t === 'paint' && !showDots.checked) { showDots.checked = true; if (shown) drawDots(shown); }
+  // The axes are edited on the home position, their lines shown.
+  if (t === 'axes') {
+    $<HTMLInputElement>('axes').checked = true;
+    axesG.setAttribute('display', 'inline');
+    if (current !== 'home') show('home', false);
+  }
   if (t !== 'keys') setPlaying(false);
+  renderAxes();
 }
 for (const r of document.querySelectorAll<HTMLInputElement>('input[name="tool"]')) r.addEventListener('change', onTool);
 radiusIn.addEventListener('input', () => { $('radiusOut').textContent = radiusIn.value; brushRing.setAttribute('r', radiusIn.value); });
@@ -636,45 +671,89 @@ function paint(at: Pt): void {
   // A control point follows its end point's finger: the whole path is weighed again.
   for (const key of touched) { const [s, k] = key.split('.') as [Side, Kind]; weigh(s, k); }
 }
+/** The axis point being dragged: its hand, finger (PALM: the palm's line) and number. */
+let dragAxis: { s: Side; f: number; j: number } | null = null;
+function nearestHandle(at: Pt): typeof dragAxis {
+  let best: typeof dragAxis = null, bestD = 10;
+  for (const s of SIDES) [...AXES[s], PALM_LINE[s]].forEach((line, f) => line.forEach((_, j) => {
+    const p = axisAt(s, f, j), d = Math.hypot(p[0] - at[0], p[1] - at[1]);
+    if (d < bestD) { bestD = d; best = { s, f, j }; }
+  }));
+  return best;
+}
 svg.addEventListener('pointermove', (e) => {
   const p = toSvg(e);
   brushRing.setAttribute('cx', String(p[0]));
   brushRing.setAttribute('cy', String(p[1]));
   if (!dragAt || !shown) return;
-  if (tool() === 'brush') {
+  if (dragAxis) {
+    const { s, f, j } = dragAxis, v = f === PALM ? PALM_LINE[s][j] : AXES[s][f][j];
+    v[0] += p[0] - dragAt[0];
+    v[1] += p[1] - dragAt[1];
+    st.axes = { ...st.axes, [s]: { fingers: structuredClone(AXES[s]), palm: structuredClone(PALM_LINE[s]) } };
+    refreshAxes(s);
+  } else if (tool() === 'brush') {
     const dx = p[0] - dragAt[0], dy = p[1] - dragAt[1];
     for (const [s, k, i, w] of under(dragAt, KINDS)) { edits[s][k][2 * i] += dx * w; edits[s][k][2 * i + 1] += dy * w; }
   } else paint(p);
   dragAt = p;
   shown = posed(poseById(current));
   render(shown);
+  if (dragAxis) renderAxes();
 });
 svg.addEventListener('pointerdown', (e) => {
   if (tool() === 'keys') return;
   e.preventDefault();
   cancelAnimationFrame(anim);
   shown = posed(poseById(current));
-  undoStack.push({ edits: structuredClone(edits), owners: structuredClone(st.owners) });
+  const at = toSvg(e);
+  if (tool() === 'axes') {
+    dragAxis = nearestHandle(at);
+    if (!dragAxis) return;
+  }
+  undoStack.push(snapshot());
   if (undoStack.length > 40) undoStack.shift();
   undoBtn.disabled = false;
-  dragAt = toSvg(e);
+  dragAt = at;
   if (tool() === 'paint') paint(dragAt);
   svg.setPointerCapture(e.pointerId);
 });
-const endDrag = () => { if (!dragAt) return; dragAt = null; redraw(true); };
+const endDrag = () => { if (!dragAt) return; dragAt = null; dragAxis = null; redraw(true); };
 svg.addEventListener('pointerup', endDrag);
 svg.addEventListener('pointercancel', endDrag);
+/** Each hand's axes as the state says (the owner's, or fitted to the outline again). */
+function applyAxes(): void {
+  for (const s of SIDES) {
+    const own = st.axes?.[s];
+    if (own) {
+      AXES[s] = structuredClone(own.fingers);
+      PALM_LINE[s] = structuredClone(own.palm);
+    } else {
+      PALM_LINE[s] = structuredClone(PALM_GUESS[s]);
+      fitAxes(s, src[s].lines.xy);
+    }
+    refreshAxes(s);
+  }
+}
 undoBtn.addEventListener('click', () => {
   const last = undoStack.pop();
   if (!last) return;
   for (const s of SIDES) for (const k of KINDS) edits[s][k] = last.edits[s][k];
   st.owners = last.owners;
-  for (const s of SIDES) for (const k of KINDS) weigh(s, k);
+  st.axes = last.axes;
+  applyAxes();
   undoBtn.disabled = !undoStack.length;
   redraw(true);
 });
+$('axesAuto').addEventListener('click', () => {
+  undoStack.push(snapshot());
+  undoBtn.disabled = false;
+  st.axes = undefined;
+  applyAxes();
+  redraw(true);
+});
 $('clearEdits').addEventListener('click', () => {
-  undoStack.push({ edits: structuredClone(edits), owners: structuredClone(st.owners) });
+  undoStack.push(snapshot());
   undoBtn.disabled = false;
   for (const s of SIDES) for (const k of KINDS) edits[s][k].fill(0);
   redraw(true);

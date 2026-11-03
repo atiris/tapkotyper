@@ -55,3 +55,6 @@ input[type=number] { width: 4.5em; }
 /* Tapko's styles (for its keyboard) make form fields large: back to the tool's size. */
 .rows-left select, .rows-left input[type=number], .rows-right select { width: auto; min-height: 0; padding: 3px 8px; font-size: 13px; border-radius: 6px; }
 .rows-left input[type=number] { width: 4.5em; }
+.rows-axis.palm { stroke: #777; }
+.axis-handle { stroke: #fff; stroke-width: 1.5; }
+.rows-stage.axes-tool .rows-hands { pointer-events: auto; cursor: crosshair; }

@@ -38,6 +38,8 @@ export interface RowsState {
   rows: Record<RowName, Record<Side, RowMove>>;
   poses: Pose[];
   owners: Record<Side, { lines: Owners; creases: Owners }>;
+  /** Each finger's axis (knuckle, middle, tip; thumb first) and the palm's line as the owner set them; none: fitted to the outline. */
+  axes?: Partial<Record<Side, { fingers: [number, number][][]; palm: [number, number][] }>>;
 }
 export interface OutlineFile extends Outline { side: Side; name: string }
 

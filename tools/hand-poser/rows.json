@@ -1297,30 +1297,36 @@
   "#b5b5b5",
   "#b5b5b5",
   "#1256c4",
-  "#d62929",
-  "#68bb76",
+  "#ec5241",
+  "#68bb69",
   "#8c36ba"
  ],
  "style": {
   "typing": {
    "lines": {
-    "width": 3.2,
+    "width": 2,
     "color": "#5a5560",
-    "transparency": 0
+    "transparency": 30
    },
    "creases": {
-    "width": 1.4,
+    "width": 1,
     "color": "#5a5560",
-    "transparency": 40
+    "transparency": 50
+   },
+   "nails": {
+    "transparency": 30
    }
   },
   "off": {
    "lines": {
     "color": "#5a5560",
-    "transparency": 0
+    "transparency": 60
    },
    "creases": {
     "color": "#5a5560",
+    "transparency": 80
+   },
+   "nails": {
     "transparency": 40
    }
   }

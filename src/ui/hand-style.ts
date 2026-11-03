@@ -7,6 +7,6 @@
 export interface LineStyle { color: string; transparency: number }
 export interface HandKindStyle { lines: LineStyle; creases: LineStyle; nails: { transparency: number } }
 export const HAND_STYLE: { typing: HandKindStyle; off: HandKindStyle } = {
-  typing: { lines: { color: '#5a5560', transparency: 0 }, creases: { color: '#5a5560', transparency: 40 }, nails: { transparency: 0 } },
-  off: { lines: { color: '#5a5560', transparency: 0 }, creases: { color: '#5a5560', transparency: 40 }, nails: { transparency: 0 } },
+  typing: { lines: { color: '#5a5560', transparency: 30 }, creases: { color: '#5a5560', transparency: 50 }, nails: { transparency: 30 } },
+  off: { lines: { color: '#5a5560', transparency: 60 }, creases: { color: '#5a5560', transparency: 80 }, nails: { transparency: 40 } },
 };

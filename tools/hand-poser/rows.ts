@@ -1,4 +1,4 @@
-import { type Finger, type KeyDef, LAYOUTS } from '../../src/keyboard/layouts';
+import { type Finger, type KeyDef, type Layout, LAYOUTS } from '../../src/keyboard/layouts';
 import type { LayoutId } from '../../src/storage/schema';
 import { type FingerScheme, fingerOf } from '../../src/keyboard/fingers';
 import { POSE_NAME, type Side, VIEW, keyName, poseName } from '../../src/ui/hand-svg';
@@ -524,16 +524,18 @@ const el = (n: string, a: Record<string, string | number>, parent: Element = svg
   parent.append(e);
   return e;
 };
-const layoutSel = $<HTMLSelectElement>('layout'), schemeSel = $<HTMLSelectElement>('scheme'), codesBox = $<HTMLInputElement>('codes'), lookSel = $<HTMLSelectElement>('kbLook');
+const layoutSel = $<HTMLSelectElement>('layout'), schemeSel = $<HTMLSelectElement>('scheme'), codesBox = $<HTMLInputElement>('codes'), extraBox = $<HTMLInputElement>('extraKeys'), lookSel = $<HTMLSelectElement>('kbLook');
 try {
   layoutSel.value = localStorage.getItem('hand-rows-layout') || layoutSel.value;
   schemeSel.value = localStorage.getItem('hand-rows-scheme') || schemeSel.value;
   codesBox.checked = localStorage.getItem('hand-rows-codes') === '1';
+  extraBox.checked = localStorage.getItem('hand-rows-extra') === '1';
   lookSel.value = localStorage.getItem('hand-rows-look') || lookSel.value;
 } catch { /* the defaults */ }
 // A layout no longer offered (Slovak QWERTZ): the first one.
 if (!layoutSel.value) layoutSel.selectedIndex = 0;
-const board = () => withModifiers(LAYOUTS[layoutSel.value as LayoutId]);
+/** Tapko's keyboard, or with the bottom row's modifiers Tapko does not teach ("extra klávesy"). */
+const board = () => (extraBox.checked ? withModifiers : (l: Layout) => l)(LAYOUTS[layoutSel.value as LayoutId]);
 const scheme = () => schemeSel.value as FingerScheme;
 interface KeyBox { def: KeyDef; name: string; row: number; key: HTMLElement }
 let keyBoxes: KeyBox[] = [];
@@ -579,12 +581,13 @@ function drawBoard(): void {
   }
   markKeys();
 }
-for (const sel of [layoutSel, schemeSel, codesBox, lookSel]) sel.addEventListener('change', () => {
+for (const sel of [layoutSel, schemeSel, codesBox, extraBox, lookSel]) sel.addEventListener('change', () => {
   try {
     localStorage.setItem('hand-rows-look', lookSel.value);
     localStorage.setItem('hand-rows-layout', layoutSel.value);
     localStorage.setItem('hand-rows-scheme', schemeSel.value);
     localStorage.setItem('hand-rows-codes', codesBox.checked ? '1' : '0');
+    localStorage.setItem('hand-rows-extra', extraBox.checked ? '1' : '0');
   } catch { /* not kept */ }
   drawBoard();
 });

@@ -32,7 +32,8 @@ describe('hands', () => {
 
   it('names a pose by the hand, the finger and the key; every pose of a lesson key is a valid name', () => {
     expect(poseName(sk, 'KeyF', 3)).toBe('l2f0');
-    expect(poseName(sk, 'Space', 5)).toBe('r1sp');
+    expect(poseName(sk, 'Space', 5)).toBe('r1sr');
+    expect(poseName(sk, 'Space', 4)).toBe('l1sl');
     expect(poseName(sk, 'Digit2', 1)).toBe('l420');
     expect(poseName(sk, 'Digit2', 0)).toBe('l520');
     expect(poseName(sk, 'Backquote', 0)).toBe('l511');
@@ -52,8 +53,8 @@ describe('hands', () => {
   });
 
   it('the space bar takes the thumb of the hand that did not type the key before', () => {
-    expect(poseNames(sk, { code: 'Space', shift: false }, 'left')).toEqual({ left: 'home', right: 'r1sp' });
-    expect(poseNames(sk, { code: 'Space', shift: false }, 'right')).toEqual({ left: 'l1sp', right: 'home' });
+    expect(poseNames(sk, { code: 'Space', shift: false }, 'left')).toEqual({ left: 'home', right: 'r1sr' });
+    expect(poseNames(sk, { code: 'Space', shift: false }, 'right')).toEqual({ left: 'l1sl', right: 'home' });
   });
 
   it('every listed outline is there and reads as lines', () => {

@@ -472,9 +472,9 @@ function drawBoard(): void {
       key.style.setProperty('--next-ink', ink);
       // The space bar is pressed by either thumb: its two halves are the two hands' poses.
       if (def.code === 'Space') {
-        key.title = 'Ľavá polovica: ľavý palec (l1sp), pravá: pravý palec (r1sp)';
-        for (const [side, pose] of [['left', 'l1sp'], ['right', 'r1sp']]) {
-          const half = Object.assign(document.createElement('span'), { className: `sp-half ${side}`, textContent: pose });
+        key.title = 'sp, ľavá polovica sl: ľavý palec (l1sl), pravá sr: pravý palec (r1sr)';
+        for (const [side, pose] of [['left', 'l1sl'], ['right', 'r1sr']]) {
+          const half = Object.assign(document.createElement('span'), { className: `sp-half ${side}`, textContent: pose.slice(2) });
           half.dataset.pose = pose;
           key.append(half);
         }

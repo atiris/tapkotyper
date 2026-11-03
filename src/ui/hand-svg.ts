@@ -2,7 +2,7 @@ import type { Finger, Layout } from '../keyboard/layouts';
 
 /**
  * One hand's outline for one key, as the hand poser (tools/hand-poser) writes it: `public/hands/<side>/<name>.svg`, named
- * by the hand, finger and key it presses (poseName: `l4f0`, `r1sp`), `home` for the home position, `rest` beside the
+ * by the hand, finger and key it presses (poseName: `l4f0`, `r1sr`), `home` for the home position, `rest` beside the
  * keyboard and `rest1`, `rest2`... on the way from rest to home; the list of them in `public/hands/index.json`. Paths
  * are in units of the full size keyboard (a key and its gap 58 wide, a row 50 high, the digit row on top) over VIEW, so
  * every file lies on the keyboard as it is.
@@ -76,11 +76,12 @@ export const fingerNumber = (f: Finger): number => (f <= 4 ? 5 - f : f - 4);
 
 /**
  * A pose's name, its file's name: the hand (`l`, `r`), the finger (1 the thumb .. 5 the little finger) and the key it
- * presses (keyName): `l4f0` the left index on F, `r1sp` the right thumb on the space bar, `l520` the left little finger
- * on 2 (the ergonomic way; `l420` the standard way). The poses without a key: `home`, `rest` and the steps `rest1`...
+ * presses (keyName): `l4f0` the left index on F, `l520` the left little finger on 2 (the ergonomic way; `l420` the
+ * standard way). The space bar (`sp`) is pressed by either thumb on its own half: `l1sl` the left thumb, `r1sr` the
+ * right one. The poses without a key: `home`, `rest` and the steps `rest1`...
  */
 export function poseName(layout: Layout, code: string, finger: Finger): string | null {
-  const key = keyName(layout, code);
+  const key = code === 'Space' ? (finger <= 4 ? 'sl' : 'sr') : keyName(layout, code);
   return key && `${finger <= 4 ? 'l' : 'r'}${fingerNumber(finger)}${key}`;
 }
 

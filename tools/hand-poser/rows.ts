@@ -151,6 +151,8 @@ const startState = (): RowsState => ({
   palm: { left: 0, right: 0 },
   palmSize: { left: 0, right: 0 },
   handSize: { left: 0, right: 0 },
+  keepTips: { left: false, right: false },
+  vee: { left: 0, right: 0 },
   rows: structuredClone(ROW_DEFAULTS),
   poses: ROW_POSES.map(([id, name]) => basePose(id, name, id)),
   owners: { left: { lines: {}, creases: {} }, right: { lines: {}, creases: {} } },
@@ -163,6 +165,8 @@ const startState = (): RowsState => ({
 function withDefaults(state: RowsState): RowsState {
   for (const r of Object.keys(ROW_DEFAULTS) as RowName[]) state.rows[r] ??= structuredClone(ROW_DEFAULTS[r]);
   state.palmSize ??= { left: 0, right: 0 };
+  state.keepTips ??= { left: false, right: false };
+  state.vee ??= { left: 0, right: 0 };
   state.handSize ??= { left: 0, right: 0 };
   state.colors ??= [...PROPOSED_COLORS];
   state.nails ??= { ...NAILS_DEFAULT };
@@ -437,7 +441,10 @@ function movePoint(side: Side, p: Pt, w: Reach[], hp: HandPose): Pt {
   if (short && y > knuckles) y -= (short * (y - knuckles)) / (WRIST_Y - knuckles);
   // Apart in a V: the back of the hand widens at the knuckles (less towards the wrist), each finger with its knuckle;
   // the thumb only at its root.
-  const vee = both('vee');
+  const vee = st.vee[side] + both('vee');
+  // A bigger hand grows around the fingertips' middle (after the fingers' moves); with the tips kept, each finger turns
+  // back in by as much as its tip would go out.
+  const grow = st.handSize[side] / 100, keep = st.keepTips[side] && grow ? 1 / (1 + grow) - 1 : 0;
   const knuckle = (f: number): Pt => {
     const k = AXES[side][f][0];
     return [k[0] + (k[0] - TIPS_X[side]) * size, k[1] + (k[1] - KNUCKLE_Y[side]) * size];
@@ -463,7 +470,7 @@ function movePoint(side: Side, p: Pt, w: Reach[], hp: HandPose): Pt {
     const turnW = wf + near, turnAt = smooth(clamp((s + deep) / (TURN_ROOT + deep)));
     if (turnW < 1e-4 || turnAt <= 0) continue;
     const bend = mine.bend + base.bend + (f ? both('curl') : 0);
-    const dx = mine.x + base.x + (f ? fan(side, f, both('spread')) : both('thumbRight')), dy = mine.y + base.y + (f ? 0 : both('thumbUp'));
+    const dx = mine.x + base.x + (f ? fan(side, f, both('spread')) + (tip[0] - TIPS_X[side]) * keep : both('thumbRight')), dy = mine.y + base.y + (f ? 0 : both('thumbUp'));
     const pivot: Pt = [k[0] + u[0] * deep * len, k[1] + u[1] * deep * len];
     // The bent tip from the pivot, and where it should go.
     const from: Pt = [tip[0] + u[0] * bend - pivot[0], tip[1] + u[1] * bend - pivot[1]], to: Pt = [from[0] + dx, from[1] - dy];
@@ -477,7 +484,6 @@ function movePoint(side: Side, p: Pt, w: Reach[], hp: HandPose): Pt {
   }
   x += shift;
   // A bigger hand: all of it, the same in every direction around the fingertips' middle.
-  const grow = st.handSize[side] / 100;
   x += (x - TIPS_X[side]) * grow;
   y += (y - TIPS_Y[side]) * grow;
   const a = (both('tilt') * Math.PI) / 180, [cx, cy] = PIVOT[side];
@@ -841,6 +847,16 @@ function buildBase(): void {
     slider(palm, `palm-${s}`, [s, 'Chrbát ruky kratší', -40, 80, 1], st.palm, 0, () => redraw(true));
     slider(palm, `palm-size-${s}`, [s, 'Veľkosť dlane (%)', -15, 25, 0.5], st.palmSize, 0, () => redraw(true));
     slider(palm, `hand-size-${s}`, [s, 'Veľkosť ruky (%)', -15, 25, 0.5], st.handSize, 0, () => redraw(true));
+    const keep = Object.assign(document.createElement('label'), { className: 'rows-keep' });
+    const box = Object.assign(document.createElement('input'), { type: 'checkbox', id: `keep-tips-${s}`, checked: st.keepTips[s] });
+    box.addEventListener('change', () => { st.keepTips[s] = box.checked; redraw(true); });
+    keep.append(box, ' udržať špičky');
+    const hint = Object.assign(document.createElement('p'), {
+      className: 'rows-hint',
+      textContent: 'Ak je to zapnuté a ruka sa zväčší, prsty sa ako kompenzácia zúžia do V, aby poloha špičiek prstov ostala približne zachovaná.',
+    });
+    palm.append(keep, hint);
+    slider(palm, `vee-${s}`, [s, 'Prsty do V (°)', -20, 60, 0.5], st.vee, 0, () => redraw(true));
     col.append(palm);
     fingerBlocks(col, s, st.base[s], BASE_DEFAULTS[s], 'base', () => redraw(true));
     host.append(col);
@@ -880,7 +896,7 @@ function buildPanels(): void {
     poseEl.append(pc);
   }
 }
-$('baseReset').addEventListener('click', () => { st.base = structuredClone(BASE_DEFAULTS); st.palm = { left: 0, right: 0 }; st.palmSize = { left: 0, right: 0 }; st.handSize = { left: 0, right: 0 }; buildBase(); redraw(true); });
+$('baseReset').addEventListener('click', () => { st.base = structuredClone(BASE_DEFAULTS); st.palm = { left: 0, right: 0 }; st.palmSize = { left: 0, right: 0 }; st.handSize = { left: 0, right: 0 }; st.keepTips = { left: false, right: false }; st.vee = { left: 0, right: 0 }; buildBase(); redraw(true); });
 $('poseReset').addEventListener('click', () => { const p = poseById(current); for (const s of SIDES) Object.assign(p[s], handPose(p[s].row)); buildPanels(); redraw(); });
 $('rowReset').addEventListener('click', () => {
   const p = poseById(current);
@@ -1119,21 +1135,22 @@ for (const [id, s] of [['loadLeft', 'left'], ['loadRight', 'right']] as const) {
     // made for the outline before: a new drawing may already be the home position itself, or only a better line.
     const asked = hasBase(s);
     const keep = !asked || confirm(
-      `${SIDE_NAME[s]}: ponechať opravy základnej polohy (prsty, chrbát ruky) aj na novom obryse?\n\n` +
+      `${SIDE_NAME[s]}: ponechať opravy základnej polohy (prsty, chrbát ruky, V) aj na novom obryse?\n\n` +
       'OK: ponechať, všetko sa prepočíta s novým obrysom.\nZrušiť: vynulovať, nový obrys je domovská poloha tak, ako je nakreslený.\n\n' +
       'Rady a pózy ostanú v každom prípade; body priradené prstom ručne sa zrušia (nový obrys má iné body).',
     );
     if (!keep) {
       st.base[s] = moves();
       st.palm[s] = 0;
+      st.vee[s] = 0;
       buildBase();
     }
     replaceOutline(s, o);
     say(`${SIDE_NAME[s]}: obrys načítaný${moved ? `, posunutý o ${moved} podľa okraja palca` : ''}, ${asked ? `, opravy základnej polohy ${keep ? 'ponechané' : 'vynulované'}` : ''}, ulož ho`);
   });
 }
-/** Whether a hand has any correction of its home position (a finger moved, the back of the hand shorter). */
-const hasBase = (s: Side) => !!st.palm[s] || st.base[s].some((m) => Object.values(m).some((v) => v !== 0));
+/** Whether a hand has any correction of its home position (a finger moved, the back of the hand shorter, the fingers in a V). */
+const hasBase = (s: Side) => !!st.palm[s] || !!st.vee[s] || st.base[s].some((m) => Object.values(m).some((v) => v !== 0));
 /** Thinner outline lines (keyboard units) than this come from an editor's default, not from the owner. */
 const MIN_WIDTH = 1.5;
 /** A drawing this far (keyboard units) from the hand's place was drawn elsewhere (another page area in the editor). */

@@ -43,6 +43,10 @@ export interface RowsState {
   palmSize: Record<Side, number>;
   /** Each whole hand's size in per cent over the drawing, the same in every direction around the fingertips' middle. */
   handSize: Record<Side, number>;
+  /** A bigger hand's fingers turn towards each other (as a V) so that their tips stay about where they were. */
+  keepTips: Record<Side, boolean>;
+  /** The home position's fingers apart in a V (degrees, as a row's). */
+  vee: Record<Side, number>;
   rows: Record<RowName, Record<Side, RowMove>>;
   poses: Pose[];
   owners: Record<Side, { lines: Owners; creases: Owners }>;

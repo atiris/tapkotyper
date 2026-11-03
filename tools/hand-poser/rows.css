@@ -100,3 +100,5 @@ input[type=number] { width: 4.5em; }
 .hand.middle { stroke: var(--lines-color, #5a5560); stroke-opacity: var(--lines-alpha, 1); }
 .crease.middle { stroke: var(--creases-color, #5a5560); opacity: var(--creases-alpha, 0.6); }
 .nails-layer { opacity: var(--nails-alpha, 1); }
+.rows-keep { display: flex; align-items: center; gap: 4px; font-size: 12px; }
+.rows-hint { margin: 0 0 6px; font-size: 11px; opacity: 0.7; }

@@ -49,11 +49,13 @@ export interface RowsState {
   colors?: string[];
   /** Which poses get filled nails: the whole rows, the keys' presses, the hands beside the keyboard. */
   nails?: { rows: boolean; keys: boolean; off: boolean };
-  /** The lines' widths while typing (the files' stroke-width) and their colours and transparency (src/ui/hand-style.ts). */
+  /** The lines' widths while typing (the files' stroke-width), their colours and transparency and the nails' transparency (src/ui/hand-style.ts). */
   style?: HandLook;
 }
 export interface LineLook { width?: number; color: string; transparency: number }
-export interface HandLook { typing: { lines: LineLook; creases: LineLook }; off: { lines: LineLook; creases: LineLook } }
+/** The filled nails' transparency in per cent. */
+export interface NailLook { transparency: number }
+export interface HandLook { typing: { lines: LineLook; creases: LineLook; nails: NailLook }; off: { lines: LineLook; creases: LineLook; nails: NailLook } }
 /** A nail filled in its finger's colour (Finger 0-9, as FINGER_COLORS). */
 export interface Nail { finger: number; d: string; color: string }
 export interface OutlineFile extends Outline { side: Side; name: string; nails?: Nail[] }
@@ -75,16 +77,20 @@ function writeHand(f: OutlineFile): string {
 }
 
 const STYLE_FILE = 'src/ui/hand-style.ts';
-/** The lines' colours and transparency written into Tapko (src/ui/hand-style.ts), the file's words kept. */
+/** The lines' colours and transparency and the nails' transparency written into Tapko (src/ui/hand-style.ts), the file's words kept. */
 export function writeHandStyle(look: HandLook): void {
   const line = (l: LineLook) => {
     if (!/^#[0-9a-f]{6}$/i.test(l.color) || !(l.transparency >= 0 && l.transparency <= 100)) throw new Error('bad line style');
     return `{ color: '${l.color}', transparency: ${l.transparency} }`;
   };
+  const nails = (n: NailLook) => {
+    if (!(n.transparency >= 0 && n.transparency <= 100)) throw new Error('bad nail style');
+    return `{ transparency: ${n.transparency} }`;
+  };
   const body = [
     '{',
-    `  typing: { lines: ${line(look.typing.lines)}, creases: ${line(look.typing.creases)} },`,
-    `  off: { lines: ${line(look.off.lines)}, creases: ${line(look.off.creases)} },`,
+    `  typing: { lines: ${line(look.typing.lines)}, creases: ${line(look.typing.creases)}, nails: ${nails(look.typing.nails)} },`,
+    `  off: { lines: ${line(look.off.lines)}, creases: ${line(look.off.creases)}, nails: ${nails(look.off.nails)} },`,
     '}',
   ].join('\n');
   const source = readFileSync(STYLE_FILE, 'utf8');

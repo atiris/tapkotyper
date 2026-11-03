@@ -132,7 +132,7 @@ export class Hands {
     // The lines' colours and transparency (the hand tool sets them): typing, and beside the keyboard.
     for (const [kind, style] of Object.entries(HAND_STYLE)) {
       for (const [part, s] of Object.entries(style)) {
-        this.el.style.setProperty(`--${kind}-${part}`, s.color);
+        if ('color' in s) this.el.style.setProperty(`--${kind}-${part}`, s.color);
         this.el.style.setProperty(`--${kind}-${part}-alpha`, String(1 - s.transparency / 100));
       }
     }

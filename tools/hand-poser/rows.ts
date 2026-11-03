@@ -129,8 +129,8 @@ const FINGER_FIELDS: Field<keyof FingerMove>[] = [['bend', 'skrčiť / vystrieť
 const PROPOSED_COLORS = ['#8c5a2b', '#56b4e9', '#1b7f4b', '#e87fb5', '#bbbbbb', '#bbbbbb', '#1f4fa0', '#d1352b', '#8fd14f', '#8e44ad'];
 /** The lines' look at first: as Tapko drew them (grey, the thin lines 40 % see-through). */
 const LOOK_DEFAULT: HandLook = {
-  typing: { lines: { width: 3.2, color: '#5a5560', transparency: 0 }, creases: { width: 1.4, color: '#5a5560', transparency: 40 } },
-  off: { lines: { color: '#5a5560', transparency: 0 }, creases: { color: '#5a5560', transparency: 40 } },
+  typing: { lines: { width: 3.2, color: '#5a5560', transparency: 0 }, creases: { width: 1.4, color: '#5a5560', transparency: 40 }, nails: { transparency: 0 } },
+  off: { lines: { color: '#5a5560', transparency: 0 }, creases: { color: '#5a5560', transparency: 40 }, nails: { transparency: 0 } },
 };
 /** Filled nails only on the hands beside the keyboard, until the owner turns on more. */
 const NAILS_DEFAULT = { rows: false, keys: false, off: true };
@@ -164,6 +164,7 @@ function withDefaults(state: RowsState): RowsState {
   state.colors ??= [...PROPOSED_COLORS];
   state.nails ??= { ...NAILS_DEFAULT };
   state.style ??= structuredClone(LOOK_DEFAULT);
+  for (const kind of ['typing', 'off'] as const) state.style[kind].nails ??= { transparency: 0 };
   for (const r of Object.keys(state.rows) as RowName[]) for (const s of SIDES) state.rows[r][s] = { ...zeroRow(), ...state.rows[r][s] };
   for (const [id, name] of ROW_POSES) if (!state.poses.some((p) => p.id === id)) state.poses.push(basePose(id, name, id));
   for (const s of SIDES) {
@@ -544,7 +545,7 @@ function openPose(id: string): void {
 
 // The nails' edges a little soft, as in Tapko (src/ui/hands.ts).
 el('feGaussianBlur', { stdDeviation: NAIL_SOFT }, el('filter', { id: 'nail-soft' }, el('defs', {})));
-const ghost = el('g', {}), nailsG = el('g', { filter: 'url(#nail-soft)' }), hands = el('g', {}), dotsG = el('g', {}), axesG = el('g', { display: 'none' });
+const ghost = el('g', {}), nailsG = el('g', { class: 'nails-layer', filter: 'url(#nail-soft)' }), hands = el('g', {}), dotsG = el('g', {}), axesG = el('g', { display: 'none' });
 const brushRing = el('circle', { class: 'brush', r: 12, cx: -999, cy: -999, display: 'none' });
 const paths = {} as Record<Side, Record<Kind, Element> & { axes: Element[] }>;
 const ghostPaths = {} as Record<Side, Element>;
@@ -577,7 +578,7 @@ function applyLook(): void {
   for (const s of SIDES) if (widths[s]) widths[s] = { lines: t.lines.width ?? 3.2, creases: t.creases.width ?? 1.4 };
   const shown = nailKind(current) === 'off' ? look.off : look.typing;
   for (const [part, l] of Object.entries(shown)) {
-    stageBox.style.setProperty(`--${part}-color`, l.color);
+    if ('color' in l) stageBox.style.setProperty(`--${part}-color`, l.color);
     stageBox.style.setProperty(`--${part}-alpha`, String(1 - l.transparency / 100));
   }
 }
@@ -1173,8 +1174,8 @@ $('colorsApply').addEventListener('click', async () => {
 
 // ---- the lines' look ----
 
-/** One kind of line's settings: width (typing only), colour, transparency in per cent. */
-function lookRow(host: Element, title: string, l: { width?: number; color: string; transparency: number }, id: string): void {
+/** One kind of line's (or the nails') settings: width (typing lines only), colour (lines only), transparency in per cent. */
+function lookRow(host: Element, title: string, l: { width?: number; color?: string; transparency: number }, id: string): void {
   const row = Object.assign(document.createElement('div'), { className: 'look-row' });
   row.append(Object.assign(document.createElement('span'), { textContent: title }));
   const field = (label: string, input: HTMLInputElement, set: (v: string) => void) => {
@@ -1186,17 +1187,23 @@ function lookRow(host: Element, title: string, l: { width?: number; color: strin
   // Beside the keyboard the width stays the typing one: an empty cell keeps the columns.
   if (l.width == null) row.append(document.createElement('span'));
   if (l.width != null) field('hrúbka', Object.assign(document.createElement('input'), { type: 'number', min: '0.2', max: '10', step: '0.1', value: String(l.width), id: `${id}-w` }), (v) => { l.width = Number(v) || l.width; });
-  field('farba', Object.assign(document.createElement('input'), { type: 'color', value: l.color, id: `${id}-c` }), (v) => { l.color = v; });
+  if (l.color == null) row.append(document.createElement('span'));
+  else field('farba', Object.assign(document.createElement('input'), { type: 'color', value: l.color, id: `${id}-c` }), (v) => { l.color = v; });
   field('priehľadnosť %', Object.assign(document.createElement('input'), { type: 'number', min: '0', max: '100', step: '5', value: String(l.transparency), id: `${id}-t` }), (v) => { l.transparency = Math.min(100, Math.max(0, Number(v) || 0)); });
   host.append(row);
 }
 function buildLook(): void {
   const host = $('lookInputs'), look = (st.style ??= structuredClone(LOOK_DEFAULT));
   host.replaceChildren();
-  lookRow(host, 'Písanie, hrubé čiary', look.typing.lines, 'look-typing-lines');
-  lookRow(host, 'Písanie, tenké čiary', look.typing.creases, 'look-typing-creases');
-  lookRow(host, 'Mimo klávesnice, hrubé', look.off.lines, 'look-off-lines');
-  lookRow(host, 'Mimo klávesnice, tenké', look.off.creases, 'look-off-creases');
+  // Two columns: over the keyboard (typing) and beside it.
+  for (const [kind, title] of [['typing', 'Nad klávesnicou (písanie)'], ['off', 'Mimo klávesnice']] as const) {
+    const col = Object.assign(document.createElement('div'), { className: 'look-col' });
+    col.append(Object.assign(document.createElement('h4'), { textContent: title }));
+    lookRow(col, 'hrubé čiary', look[kind].lines, `look-${kind}-lines`);
+    lookRow(col, 'tenké čiary', look[kind].creases, `look-${kind}-creases`);
+    lookRow(col, 'nechty', look[kind].nails, `look-${kind}-nails`);
+    host.append(col);
+  }
 }
 
 // ---- saving ----

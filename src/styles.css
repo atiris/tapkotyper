@@ -992,6 +992,9 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
 /* Beside the keyboard (rest and the steps from it) the lines have their own colours and transparency. */
 .kb-hands .centerline.off .hand-lines { stroke: var(--off-lines, var(--hand-line)); stroke-opacity: var(--off-lines-alpha, 1); }
 .kb-hands .centerline.off .hand-creases { stroke: var(--off-creases, var(--hand-line)); opacity: var(--off-creases-alpha, 0.6); }
+/* The filled nails' transparency, typing and beside the keyboard. */
+.kb-hands .hand-nails { opacity: var(--typing-nails-alpha, 1); }
+.kb-hands .off .hand-nails { opacity: var(--off-nails-alpha, 1); }
 /* The dark theme keeps its own light line colour (the colours set for the hands are for the light page). */
 :root[data-theme='dark'] .kb-hands .centerline :is(.hand-lines, .hand-creases) { stroke: var(--hand-line); }
 .kb-hands .hand-pose { opacity: 0; transition: opacity 0.12s; }

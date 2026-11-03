@@ -89,10 +89,14 @@ input[type=number] { width: 4.5em; }
 .rows-stage.kb-none .kb-key { visibility: hidden; }
 .colors .copy-color { padding: 0 6px; font-size: 13px; line-height: 1.4; }
 /* The lines' look: one row per kind of line. */
-.look-row { display: grid; grid-template-columns: 14em repeat(3, auto) 1fr; gap: 4px 12px; align-items: center; font-size: 12px; }
+.look-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 8px 24px; }
+.look-col { display: grid; gap: 4px; align-content: start; }
+.look-col h4 { margin: 0; font-size: 12px; }
+.look-row { display: grid; grid-template-columns: 6.5em 7em 6.5em auto 1fr; gap: 4px 12px; align-items: center; font-size: 12px; }
 .look-row label { display: flex; align-items: center; gap: 5px; color: #6a6070; }
 .look-row input[type=number] { width: 4.5em; }
 .look-row input[type=color] { width: 34px; height: 22px; padding: 0; border: 1px solid #cfc7d6; border-radius: 4px; background: none; }
 /* The hands' lines as the look says (applyLook sets the shown pose's). */
 .hand.middle { stroke: var(--lines-color, #5a5560); stroke-opacity: var(--lines-alpha, 1); }
 .crease.middle { stroke: var(--creases-color, #5a5560); opacity: var(--creases-alpha, 0.6); }
+.nails-layer { opacity: var(--nails-alpha, 1); }

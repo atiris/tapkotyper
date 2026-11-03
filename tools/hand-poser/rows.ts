@@ -230,10 +230,14 @@ function nearOnLine(p: Pt, line: Pt[]): { d: number; s: number } {
   }
   return best;
 }
-/** How much a point moves with each finger: the one given by hand, or the nearest axes (the back of the hand's line never moves). */
+/**
+ * How much a point moves with each finger (the one given by hand, or the nearest axes; the back of the hand's line never
+ * moves) and where it lies along every finger.
+ */
 function reach(side: Side, p: Pt, owner?: number): Reach[] {
-  if (owner === PALM) return FINGERS.map(() => ({ w: 0, s: 0 }));
-  if (owner != null && owner >= 0) return FINGERS.map((_, f) => ({ w: f === owner ? 1 : 0, s: f === owner ? nearOnLine(p, AXES[side][f]).s : 0 }));
+  const along = (f: number) => nearOnLine(p, AXES[side][f]).s;
+  if (owner === PALM) return FINGERS.map((_, f) => ({ w: 0, s: along(f) }));
+  if (owner != null && owner >= 0) return FINGERS.map((_, f) => ({ w: f === owner ? 1 : 0, s: along(f) }));
   const near = [...AXES[side], PALM_LINE[side]].map((l) => nearOnLine(p, l)), dmin = Math.min(...near.map((n) => n.d));
   const w = near.map((n) => Math.exp(-(n.d * n.d - dmin * dmin) / (SIGMA * SIGMA))), sum = w.reduce((a, b) => a + b, 0);
   return near.slice(0, 5).map((n, i) => ({ w: w[i] / sum, s: n.s }));
@@ -376,7 +380,7 @@ function weigh(s: Side, k: Kind): void {
     const a = path.anchor[i], r = reach(s, path.xy[a], ownerOf(s, k, a));
     // A control point moves with its end point's fingers, but as far as its own place along them: where a finger's
     // move turns or stretches its lines, the curve's handles turn with them and the line stays smooth.
-    path.w[i] = a === i ? r : r.map((q, f) => ({ w: q.w, s: q.w ? nearOnLine(path.xy[i], AXES[s][f]).s : 0 }));
+    path.w[i] = a === i ? r : r.map((q, f) => ({ w: q.w, s: nearOnLine(path.xy[i], AXES[s][f]).s }));
   }
 }
 
@@ -387,8 +391,13 @@ const unitDirs = (s: Side) => AXES[s].map((l) => {
   return [(b[0] - t[0]) / n, (b[1] - t[1]) / n] as Pt;
 });
 const UNIT_DIR = {} as Record<Side, Pt[]>;
-/** How far along a finger (from its knuckle) its turn into a V grows to all of it: the finger turns at its knuckle. */
-const VEE_ROOT = 0.3;
+/**
+ * A finger's sideways move turns it (it keeps its width): the turn grows from nothing a little below its knuckle
+ * (TURN_DEEP of its length deep in the back of the hand, the thumb at its root) to all of it at TURN_ROOT along it.
+ */
+const TURN_ROOT = 0.35, TURN_DEEP = 0.25;
+/** How far around a finger's knuckle (of its length) the back of the hand turns a little with it. */
+const TURN_NEAR = 0.4;
 /** How much wider the back of the hand gets at the knuckles per degree of the V. */
 const VEE_WIDEN = 0.003;
 /**
@@ -422,39 +431,47 @@ function movePoint(side: Side, p: Pt, w: Reach[], hp: HandPose): Pt {
   }
   const short = st.palm[side] + both('short'), knuckles = KNUCKLE_Y[side];
   if (short && y > knuckles) y -= (short * (y - knuckles)) / (WRIST_Y - knuckles);
-  // Apart in a V: the back of the hand widens at the knuckles (less towards the wrist), each finger goes with its
-  // knuckle and turns around it; the thumb only at its root.
+  // Apart in a V: the back of the hand widens at the knuckles (less towards the wrist), each finger with its knuckle;
+  // the thumb only at its root.
   const vee = both('vee');
   const knuckle = (f: number): Pt => {
     const k = AXES[side][f][0];
     return [k[0] + (k[0] - TIPS_X[side]) * size, k[1] + (k[1] - KNUCKLE_Y[side]) * size];
   };
+  let shift = 0;
   if (vee) {
     const mid = (knuckle(1)[0] + knuckle(4)[0]) / 2, widen = vee * VEE_WIDEN;
     const at = (px: number, py: number) => (px - mid) * widen * smooth(clamp((WRIST_Y - py) / (WRIST_Y - knuckles)));
-    let fingers = 0, shift = 0;
+    let fingers = 0;
     for (let f = 1; f < 5; f++) if (w[f].s > 0) { fingers += w[f].w; shift += w[f].w * at(...knuckle(f)); }
     shift += (1 - fingers - (w[0].s > 0 ? w[0].w : 0)) * at(x, y) + (w[0].s > 0 ? w[0].w * at(x, y) * (1 - smooth(clamp(w[0].s))) : 0);
-    const px = x, py = y;
-    for (let f = 1; f < 5; f++) {
-      const { w: wf, s } = w[f];
-      if (wf < 1e-4 || s <= 0) continue;
-      const a = (wf * vee * veeShare(side, f) * smooth(clamp(s / VEE_ROOT)) * Math.PI) / 180, [cx, cy] = knuckle(f);
-      x += (px - cx) * (Math.cos(a) - 1) - (py - cy) * Math.sin(a);
-      y += (px - cx) * Math.sin(a) + (py - cy) * (Math.cos(a) - 1);
-    }
-    x += shift;
   }
+  // Each finger: bent (its tip towards the knuckle), then turned around a point a little below its knuckle so that its
+  // tip lands where the sideways moves and the V put it, and made longer or shorter along itself to reach it. A turn
+  // keeps the finger's width; the back of the hand near the knuckle turns a little with it.
+  const px = x, py = y, palm = 1 - w.reduce((sum, q) => sum + q.w, 0);
   for (let f = 0; f < 5; f++) {
     const { w: wf, s } = w[f];
-    if (wf < 1e-4 || s <= 0) continue;
     const mine = hp.f[f], base = st.base[side][f], u = UNIT_DIR[side][f];
+    const k = knuckle(f), tip = AXES[side][f].at(-1)!, len = Math.hypot(tip[0] - k[0], tip[1] - k[1]);
+    const deep = f ? TURN_DEEP : 0;
+    const near = f && palm > 1e-4 ? palm * Math.exp(-((Math.hypot(px - k[0], py - k[1]) / (TURN_NEAR * len)) ** 2)) : 0;
+    const turnW = wf + near, turnAt = smooth(clamp((s + deep) / (TURN_ROOT + deep)));
+    if (turnW < 1e-4 || turnAt <= 0) continue;
     const bend = mine.bend + base.bend + (f ? both('curl') : 0);
     const dx = mine.x + base.x + (f ? fan(side, f, both('spread')) : both('thumbRight')), dy = mine.y + base.y + (f ? 0 : both('thumbUp'));
-    const r = smooth(clamp(s)), m = (mine.mid + base.mid) * midBump(s, MID_AT[side][f]);
-    x += wf * (u[0] * bend * s + dx * r + m);
-    y += wf * (u[1] * bend * s - dy * r);
+    const pivot: Pt = [k[0] + u[0] * deep * len, k[1] + u[1] * deep * len];
+    // The bent tip from the pivot, and where it should go.
+    const from: Pt = [tip[0] + u[0] * bend - pivot[0], tip[1] + u[1] * bend - pivot[1]], to: Pt = [from[0] + dx, from[1] - dy];
+    const turn = Math.atan2(from[0] * to[1] - from[1] * to[0], from[0] * to[0] + from[1] * to[1]) + (f ? (vee * veeShare(side, f) * Math.PI) / 180 : 0);
+    const longer = Math.hypot(...to) - Math.hypot(...from), fingerAt = wf * (s > 0 ? 1 : 0);
+    const bx = px + fingerAt * u[0] * bend * s - pivot[0], by = py + fingerAt * u[1] * bend * s - pivot[1];
+    const a = turnW * turn * turnAt, c = Math.cos(a), sn = Math.sin(a);
+    const m = fingerAt * (mine.mid + base.mid) * midBump(s, MID_AT[side][f]), stretch = fingerAt * longer * clamp(s);
+    x += pivot[0] + bx * c - by * sn - px + stretch * -(u[0] * c - u[1] * sn) + m;
+    y += pivot[1] + bx * sn + by * c - py + stretch * -(u[0] * sn + u[1] * c);
   }
+  x += shift;
   const a = (both('tilt') * Math.PI) / 180, [cx, cy] = PIVOT[side];
   return [cx + (x - cx) * Math.cos(a) - (y - cy) * Math.sin(a) + both('right'), cy + (x - cx) * Math.sin(a) + (y - cy) * Math.cos(a) - both('up')];
 }

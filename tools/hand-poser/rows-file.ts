@@ -39,8 +39,10 @@ export interface RowsState {
   base: Record<Side, FingerMove[]>;
   /** The home position's back of the hand made shorter (keyboard units at the wrist). */
   palm: Record<Side, number>;
-  /** Each hand's size in per cent over the drawing: the back of the hand grows, the fingertips stay on their keys. */
-  size: Record<Side, number>;
+  /** Each hand's palm size in per cent over the drawing: the back of the hand grows, the fingertips stay on their keys. */
+  palmSize: Record<Side, number>;
+  /** Each whole hand's size in per cent over the drawing, the same in every direction around the fingertips' middle. */
+  handSize: Record<Side, number>;
   rows: Record<RowName, Record<Side, RowMove>>;
   poses: Pose[];
   owners: Record<Side, { lines: Owners; creases: Owners }>;

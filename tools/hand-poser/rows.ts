@@ -149,7 +149,8 @@ const basePose = (id: string, name: string, row: RowName): Pose => ({ id, name, 
 const startState = (): RowsState => ({
   base: structuredClone(BASE_DEFAULTS),
   palm: { left: 0, right: 0 },
-  size: { left: 0, right: 0 },
+  palmSize: { left: 0, right: 0 },
+  handSize: { left: 0, right: 0 },
   rows: structuredClone(ROW_DEFAULTS),
   poses: ROW_POSES.map(([id, name]) => basePose(id, name, id)),
   owners: { left: { lines: {}, creases: {} }, right: { lines: {}, creases: {} } },
@@ -161,7 +162,8 @@ const startState = (): RowsState => ({
 /** Settings saved before a field existed get its default (no migrations: a new field starts at nothing). */
 function withDefaults(state: RowsState): RowsState {
   for (const r of Object.keys(ROW_DEFAULTS) as RowName[]) state.rows[r] ??= structuredClone(ROW_DEFAULTS[r]);
-  state.size ??= { left: 0, right: 0 };
+  state.palmSize ??= { left: 0, right: 0 };
+  state.handSize ??= { left: 0, right: 0 };
   state.colors ??= [...PROPOSED_COLORS];
   state.nails ??= { ...NAILS_DEFAULT };
   state.style ??= structuredClone(LOOK_DEFAULT);
@@ -250,8 +252,9 @@ const edits = {} as Record<Side, Record<Kind, number[]>>;
 const axisReach = {} as Record<Side, Reach[][][]>;
 /** The line of the knuckles (the four fingers' axes start there) and the wrist at the picture's bottom: the back of the hand between them. */
 const KNUCKLE_Y = {} as Record<Side, number>;
-/** The middle of the four fingertips across: a bigger hand grows around it. */
+/** The middle of the four fingertips across and up: a bigger palm grows around its x, a bigger hand around both. */
 const TIPS_X = {} as Record<Side, number>;
+const TIPS_Y = {} as Record<Side, number>;
 /**
  * How far a finger's tip goes when the fingers spread: the finger on the far side of the move stays (to the right:
  * the leftmost one), the others go the more the farther they are from it, the opposite one all the way.
@@ -342,6 +345,7 @@ function refreshAxes(s: Side): void {
   axisReach[s] = AXES[s].map((line) => line.map((p) => reach(s, p)));
   KNUCKLE_Y[s] = AXES[s].slice(1).reduce((sum, line) => sum + line[0][1], 0) / 4;
   TIPS_X[s] = AXES[s].slice(1).reduce((sum, line) => sum + line.at(-1)![0], 0) / 4;
+  TIPS_Y[s] = AXES[s].slice(1).reduce((sum, line) => sum + line.at(-1)![1], 0) / 4;
   findNails(s);
 }
 /** How big a nail can be (keyboard units from its middle, along the finger and across). */
@@ -420,9 +424,9 @@ function movePoint(side: Side, p: Pt, w: Reach[], hp: HandPose): Pt {
   // The back of the hand looks shorter (lifted): below the knuckles it is pressed towards them, the most at the wrist.
   // The row's moves of the whole hand and the pose's small ones on top.
   const both = (k: keyof RowMove) => row[k] + hp[k];
-  // A bigger hand: the back of the hand grows from the line of the knuckles (around the fingertips' middle), each
+  // A bigger palm: the back of the hand grows from the line of the knuckles (around the fingertips' middle), each
   // finger only at its root, the fingertips stay on their keys.
-  const size = st.size[side] / 100;
+  const size = st.palmSize[side] / 100;
   if (size) {
     let grow = 1;
     for (let f = 0; f < 5; f++) grow -= w[f].w * clamp(w[f].s);
@@ -472,6 +476,10 @@ function movePoint(side: Side, p: Pt, w: Reach[], hp: HandPose): Pt {
     y += pivot[1] + bx * sn + by * c - py + stretch * -(u[0] * sn + u[1] * c);
   }
   x += shift;
+  // A bigger hand: all of it, the same in every direction around the fingertips' middle.
+  const grow = st.handSize[side] / 100;
+  x += (x - TIPS_X[side]) * grow;
+  y += (y - TIPS_Y[side]) * grow;
   const a = (both('tilt') * Math.PI) / 180, [cx, cy] = PIVOT[side];
   return [cx + (x - cx) * Math.cos(a) - (y - cy) * Math.sin(a) + both('right'), cy + (x - cx) * Math.sin(a) + (y - cy) * Math.cos(a) - both('up')];
 }
@@ -831,7 +839,8 @@ function buildBase(): void {
     const col = column(SIDE_NAME[s]);
     const palm = Object.assign(document.createElement('div'), { className: 'sliders' });
     slider(palm, `palm-${s}`, [s, 'Chrbát ruky kratší', -40, 80, 1], st.palm, 0, () => redraw(true));
-    slider(palm, `size-${s}`, [s, 'Veľkosť ruky (%)', -15, 25, 0.5], st.size, 0, () => redraw(true));
+    slider(palm, `palm-size-${s}`, [s, 'Veľkosť dlane (%)', -15, 25, 0.5], st.palmSize, 0, () => redraw(true));
+    slider(palm, `hand-size-${s}`, [s, 'Veľkosť ruky (%)', -15, 25, 0.5], st.handSize, 0, () => redraw(true));
     col.append(palm);
     fingerBlocks(col, s, st.base[s], BASE_DEFAULTS[s], 'base', () => redraw(true));
     host.append(col);
@@ -871,7 +880,7 @@ function buildPanels(): void {
     poseEl.append(pc);
   }
 }
-$('baseReset').addEventListener('click', () => { st.base = structuredClone(BASE_DEFAULTS); st.palm = { left: 0, right: 0 }; st.size = { left: 0, right: 0 }; buildBase(); redraw(true); });
+$('baseReset').addEventListener('click', () => { st.base = structuredClone(BASE_DEFAULTS); st.palm = { left: 0, right: 0 }; st.palmSize = { left: 0, right: 0 }; st.handSize = { left: 0, right: 0 }; buildBase(); redraw(true); });
 $('poseReset').addEventListener('click', () => { const p = poseById(current); for (const s of SIDES) Object.assign(p[s], handPose(p[s].row)); buildPanels(); redraw(); });
 $('rowReset').addEventListener('click', () => {
   const p = poseById(current);

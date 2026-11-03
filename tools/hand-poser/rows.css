@@ -87,3 +87,4 @@ input[type=number] { width: 4.5em; }
 .rows-stage.kb-outline .sp-half { border-color: #e2dce8; }
 .rows-stage.kb-grey .kb-key { --finger: #cfcac4 !important; color: #a49aab; }
 .rows-stage.kb-none .kb-key { visibility: hidden; }
+.colors .copy-color { padding: 0 6px; font-size: 13px; line-height: 1.4; }

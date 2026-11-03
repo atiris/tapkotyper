@@ -1110,6 +1110,22 @@ function buildColors(): void {
       redraw();
     });
     label.append(input, COLOR_NAMES[i]);
+    // The thumbs share the space bar: an arrow gives this thumb's colour to the other one.
+    if (i === 4 || i === 5) {
+      const other = i === 4 ? 5 : 4;
+      const copy = Object.assign(document.createElement('button'), {
+        type: 'button', className: 'copy-color', textContent: i === 4 ? '→' : '←',
+        title: `Preniesť túto farbu na ${COLOR_NAMES[other]}`,
+      });
+      copy.addEventListener('click', (e) => {
+        e.preventDefault();
+        st.colors = palette().map((x, j) => (j === other ? palette()[i] : x));
+        buildColors();
+        drawBoard();
+        redraw();
+      });
+      label.append(copy);
+    }
     host.append(label);
   });
   for (const [id, kind] of [['nailsRows', 'rows'], ['nailsKeys', 'keys'], ['nailsOff', 'off']] as const) $<HTMLInputElement>(id).checked = !!st.nails?.[kind];

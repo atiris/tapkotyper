@@ -35,7 +35,6 @@ input[type=number] { width: 4.5em; }
 .rows-chip { border: 1px solid #cfc7d6; background: #fff; border-radius: 999px; padding: 3px 10px; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; font-weight: 600; }
 .rows-chip.now { background: #2d2140; border-color: #2d2140; color: #fff; }
 .rows-chip input { margin: 0; }
-.rows-chip .x { border: 0; background: none; padding: 0 2px; font-size: 14px; line-height: 1; color: inherit; opacity: .7; }
 .tools, .rows-panel { background: #fff; border-radius: 8px; box-shadow: 0 1px 4px #0001; padding: 10px 12px; display: grid; gap: 8px; min-width: 0; }
 .hands { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px 18px; }
 .hand-col { display: grid; gap: 6px; min-width: 0; align-content: start; }

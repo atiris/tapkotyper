@@ -430,6 +430,8 @@ function pickKey(k: KeyBox, e: MouseEvent): void {
 /** A key pose shown; one not here yet is added, its hand on the key's row. */
 function openPose(id: string): void {
   if (!POSE_NAME.test(id) || !keyOfPose(id)) return;
+  // The shown pose's key again: back to the home position (to watch the move between them).
+  if (id === current) { setPlaying(false); show('home'); return; }
   if (!st.poses.some((p) => p.id === id)) {
     const pose = basePose(id, id, 'home'), at = keyBoxes.find((k) => k.name === keyOfPose(id));
     pose[id[0] === 'l' ? 'left' : 'right'].row = ROW_OF[at?.row ?? 2];
@@ -517,6 +519,7 @@ function show(id: string, blend = $<HTMLInputElement>('smooth').checked): void {
   current = id;
   markKeys();
   for (const b of document.querySelectorAll<HTMLElement>('.rows-chip')) b.classList.toggle('now', b.dataset.id === id);
+  deleteBtn.hidden = !keyOfPose(id);
   // Beside the keyboard the view is wider.
   stageBox.classList.toggle('wide', SIDES.some((s) => poseById(id)[s].row === 'off'));
   if (fresh) {
@@ -575,19 +578,8 @@ function buildChips(): void {
       chip.append(box);
     }
     chip.append(p.name);
-    if (key) {
-      const x = Object.assign(document.createElement('button'), { className: 'x', textContent: '×', title: 'Odstrániť pózu (pri uložení zmizne aj jej SVG)' });
-      x.addEventListener('click', (e) => {
-        e.stopPropagation();
-        st.poses = st.poses.filter((q) => q !== p);
-        if (current === p.id) current = '';
-        buildChips();
-        show(current || 'home', false);
-        changed();
-      });
-      chip.append(x);
-    }
-    const pick = () => { setPlaying(false); show(p.id); };
+    // The shown pose's badge again: back to the home position.
+    const pick = () => { setPlaying(false); show(p.id === current && key ? 'home' : p.id); };
     chip.addEventListener('click', pick);
     chip.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
     (key ? posesEl : rowPosesEl).append(chip);
@@ -596,6 +588,15 @@ function buildChips(): void {
 let playing = false, timer = 0;
 const playBtn = $<HTMLButtonElement>('play'), stepIn = $<HTMLInputElement>('step');
 const stepS = () => Math.max(0.2, Number(stepIn.value) || 1);
+// The shown key pose is removed by its own button at the end of the row (its SVG goes at the next save).
+const deleteBtn = $<HTMLButtonElement>('deletePose');
+deleteBtn.addEventListener('click', () => {
+  if (!keyOfPose(current) || !confirm(`Zmazať pózu ${current}? Pri uložení zmizne aj jej SVG.`)) return;
+  st.poses = st.poses.filter((p) => p.id !== current);
+  buildChips();
+  show('home', false);
+  changed();
+});
 /** The cycle plays the keys' poses only (ticked), not the whole rows. */
 function next(): void {
   const list = st.poses.filter((p) => p.on && keyOfPose(p.id));

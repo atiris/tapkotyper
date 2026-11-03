@@ -17,7 +17,11 @@
       <p class="status" id="status" aria-live="polite"></p>
       <div class="rows-bar" id="rowPoses" title="Polohy celých radov (základ pre pózy klávesov) a ruky mimo klávesnice"></div>
       <div class="rows-stage" id="stageBox" aria-label="Ruky nad klávesnicou Tapka"></div>
-      <div class="rows-bar" id="poses"></div>
+      <div class="rows-bar">
+        <div class="rows-bar" id="poses"></div>
+        <span class="sep"></span>
+        <button id="deletePose" hidden title="Zmaže zobrazenú pózu klávesu; pri uložení zmizne aj jej SVG">Zmazať túto pózu</button>
+      </div>
       <div class="rows-bar">
         <span class="note">Klik na kláves otvorí alebo pridá jeho pózu (ruka a prst, ktoré ho stláčajú).</span>
         <span class="sep"></span>

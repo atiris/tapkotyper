@@ -113,7 +113,7 @@ const ROW_FIELDS: Field<keyof RowMove>[] = [
 ];
 const FINGER_FIELDS: Field<keyof FingerMove>[] = [['bend', 'skrčiť / vystrieť', -40, 50, 1], ['x', 'koniec ← →', -40, 40, 1], ['y', 'koniec ↓ ↑', -40, 40, 1], ['mid', 'stred prsta ← →', -25, 25, 1]];
 
-const handPose = (row: RowName): HandPose => ({ row, tilt: 0, short: 0, f: moves() });
+const handPose = (row: RowName): HandPose => ({ row, ...zeroRow(), f: moves() });
 const basePose = (id: string, name: string, row: RowName): Pose => ({ id, name, on: true, left: handPose(row), right: handPose(row) });
 const startState = (): RowsState => ({
   base: structuredClone(BASE_DEFAULTS),
@@ -127,7 +127,7 @@ const startState = (): RowsState => ({
 function withDefaults(state: RowsState): RowsState {
   for (const s of SIDES) {
     for (const r of Object.keys(state.rows) as RowName[]) state.rows[r][s].short ??= 0;
-    for (const p of state.poses) p[s].short ??= 0;
+    for (const p of state.poses) p[s] = { ...zeroRow(), ...p[s] };
   }
   return state;
 }
@@ -309,20 +309,22 @@ function movePoint(side: Side, p: Pt, w: Reach[], hp: HandPose): Pt {
   const row = st.rows[hp.row][side];
   let x = p[0], y = p[1];
   // The back of the hand looks shorter (lifted): below the knuckles it is pressed towards them, the most at the wrist.
-  const short = st.palm[side] + row.short + hp.short, knuckles = KNUCKLE_Y[side];
+  // The row's moves of the whole hand and the pose's small ones on top.
+  const both = (k: keyof RowMove) => row[k] + hp[k];
+  const short = st.palm[side] + both('short'), knuckles = KNUCKLE_Y[side];
   if (short && y > knuckles) y -= (short * (y - knuckles)) / (WRIST_Y - knuckles);
   for (let f = 0; f < 5; f++) {
     const { w: wf, s } = w[f];
     if (wf < 1e-4 || s <= 0) continue;
     const mine = hp.f[f], base = st.base[side][f], u = UNIT_DIR[side][f];
-    const bend = mine.bend + base.bend + (f ? row.curl : 0);
-    const dx = mine.x + base.x + (f ? 0 : row.thumbRight), dy = mine.y + base.y + (f ? 0 : row.thumbUp);
+    const bend = mine.bend + base.bend + (f ? both('curl') : 0);
+    const dx = mine.x + base.x + (f ? 0 : both('thumbRight')), dy = mine.y + base.y + (f ? 0 : both('thumbUp'));
     const r = smooth(clamp(s)), m = (mine.mid + base.mid) * midBump(s, MID_AT[side][f]);
     x += wf * (u[0] * bend * s + dx * r + m);
     y += wf * (u[1] * bend * s - dy * r);
   }
-  const a = ((row.tilt + hp.tilt) * Math.PI) / 180, [cx, cy] = PIVOT[side];
-  return [cx + (x - cx) * Math.cos(a) - (y - cy) * Math.sin(a) + row.right, cy + (x - cx) * Math.sin(a) + (y - cy) * Math.cos(a) - row.up];
+  const a = (both('tilt') * Math.PI) / 180, [cx, cy] = PIVOT[side];
+  return [cx + (x - cx) * Math.cos(a) - (y - cy) * Math.sin(a) + both('right'), cy + (x - cx) * Math.sin(a) + (y - cy) * Math.cos(a) - both('up')];
 }
 const edited = (s: Side, k: Kind, i: number): Pt => { const p = src[s][k].xy[i], e = edits[s][k]; return [p[0] + e[2 * i], p[1] + e[2 * i + 1]]; };
 type Posed = Record<Side, Record<Kind, Pt[]>>;
@@ -635,10 +637,10 @@ function buildPanels(): void {
     const reset = Object.assign(document.createElement('button'), { textContent: 'Reset ruky' });
     reset.addEventListener('click', () => { Object.assign(hp, handPose(hp.row)); buildPanels(); redraw(); });
     head.append(sel, reset);
-    const tilt = Object.assign(document.createElement('div'), { className: 'sliders' });
-    slider(tilt, `tilt-${s}`, ['tilt', 'Odklon ruky (° vpravo)', -25, 25, 0.5], hp, 0, redraw);
-    slider(tilt, `short-${s}`, ['short', 'Chrbát ruky kratší', -40, 80, 1], hp, 0, redraw);
-    pc.append(head, tilt);
+    // The whole hand's small moves in this pose, added to its row's (the same kinds, finer steps).
+    const whole = Object.assign(document.createElement('div'), { className: 'sliders' });
+    for (const [k, label, lo, hi] of ROW_FIELDS) slider(whole, `pose-${s}-${k}`, [k, label, lo / 2, hi / 2, 0.5], hp, 0, redraw);
+    pc.append(head, whole);
     fingerBlocks(pc, s, hp.f, moves(), 'f', redraw);
     poseEl.append(pc);
   }

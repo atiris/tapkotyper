@@ -27,7 +27,8 @@ export interface FingerMove { bend: number; x: number; y: number; mid: number }
  */
 export interface RowMove { up: number; right: number; tilt: number; curl: number; thumbRight: number; thumbUp: number; short: number }
 export type RowName = 'bot' | 'home' | 'top' | 'num';
-export interface HandPose { row: RowName; tilt: number; short: number; f: FingerMove[] }
+/** A hand in a key pose: its row, the small moves of the whole hand added to the row's, and its fingers' moves. */
+export interface HandPose extends RowMove { row: RowName; f: FingerMove[] }
 export interface Pose { id: string; name: string; on: boolean; left: HandPose; right: HandPose }
 /** The point numbers of an outline's path that belong to a finger by hand (0 the thumb .. 4 the little finger, 5 the palm). */
 export type Owners = Record<string, number>;

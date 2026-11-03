@@ -1,9 +1,10 @@
 import { type Finger, type KeyDef, LAYOUTS } from '../../src/keyboard/layouts';
 import { type FingerScheme, fingerOf } from '../../src/keyboard/fingers';
-import { POSE_NAME, type Side, keyName, poseName } from '../../src/ui/hand-svg';
+import { POSE_NAME, type Side, VIEW, keyName, poseName } from '../../src/ui/hand-svg';
 import { HANDS_CHANNEL } from '../../src/ui/hands';
-import { FINGER_COLORS } from '../../src/ui/keyboard-guide';
-import { GAP, KEY_H, UNIT, withModifiers } from './board';
+import { FINGER_COLORS, KeyboardGuide } from '../../src/ui/keyboard-guide';
+import '../../src/styles.css';
+import { GAP, UNIT, withModifiers } from './board';
 import { centerline } from './centerline';
 import { outlineSvg, readOutline } from './outline-svg';
 import type { FingerMove, HandPose, Outline, OutlineFile, Owners, Pose, RowMove, RowName, RowsState } from './rows-file';
@@ -255,10 +256,17 @@ type Posed = Record<Side, Record<Kind, Pt[]>>;
 const posedSide = (s: Side, hp: HandPose) => Object.fromEntries(KINDS.map((k) => [k, src[s][k].xy.map((_, i) => movePoint(s, edited(s, k, i), src[s][k].w[i], hp))])) as Record<Kind, Pt[]>;
 const posed = (pose: Pose): Posed => ({ left: posedSide('left', pose.left), right: posedSide('right', pose.right) });
 
-// ---- the keyboard ----
+// ---- the keyboard: Tapko's own, with the bottom row's modifiers ----
 
 const NS = 'http://www.w3.org/2000/svg';
-const svg = document.getElementById('stage') as unknown as SVGSVGElement;
+/** The hands over the keys: placed on Tapko's keyboard as Tapko places them (src/ui/hands.ts). */
+const svg = document.createElementNS(NS, 'svg');
+svg.setAttribute('viewBox', `${VIEW.x} ${VIEW.y} ${VIEW.w} ${VIEW.h}`);
+svg.classList.add('rows-hands');
+const BOARD_W = 15 * UNIT - GAP;
+svg.style.left = `${(VIEW.x / BOARD_W) * 100}%`;
+svg.style.top = `calc(${VIEW.y / BOARD_W} * 100cqw)`;
+svg.style.width = `${(VIEW.w / BOARD_W) * 100}%`;
 const el = (n: string, a: Record<string, string | number>, parent: Element = svg) => {
   const e = document.createElementNS(NS, n);
   for (const k in a) e.setAttribute(k, String(a[k]));
@@ -272,25 +280,23 @@ try {
 } catch { /* the defaults */ }
 const board = () => withModifiers(LAYOUTS[layoutSel.value as 'us-qwerty' | 'sk-qwertz']);
 const scheme = () => schemeSel.value as FingerScheme;
-interface KeyBox { def: KeyDef; name: string; row: number; x: number; y: number; w: number; rect: Element }
+interface KeyBox { def: KeyDef; name: string; row: number; key: HTMLElement }
 let keyBoxes: KeyBox[] = [];
-const keysG = el('g', {}), hasG = el('g', {});
+const stageBox = $('stageBox');
 function drawBoard(): void {
-  keysG.replaceChildren();
-  const b = board();
+  const b = board(), guide = new KeyboardGuide(b);
+  stageBox.replaceChildren(guide.el);
+  guide.el.querySelector('.kb')!.append(svg);
   keyBoxes = [];
   for (const [r, row] of b.rows.entries()) {
-    let x = 0;
     for (const def of row) {
-      x += (def.x ?? 0) * UNIT;
-      const w = (def.w ?? 1) * UNIT - GAP, y = r * (KEY_H + GAP), name = keyName(b, def.code) ?? '';
-      const rect = el('rect', { class: 'key', x, y, width: w, height: KEY_H, rx: 6 }, keysG);
-      el('rect', { class: 'stripe', x: x + 4, y: y + KEY_H - 7, width: w - 8, height: 3, rx: 1.5, fill: FINGER_COLORS[fingerOf(def, scheme())] }, keysG);
-      el('text', { class: 'label', x: x + w / 2, y: y + (KEY_H - 9) / 2 }, keysG).textContent = name;
-      const box = { def, name, row: r, x, y, w, rect };
-      rect.addEventListener('click', (e) => { if (tool() === 'keys') pickKey(box, e as MouseEvent); });
+      const key = guide.keyEl(def.code);
+      if (!key || def.base === 'enter-top') continue;
+      const name = keyName(b, def.code) ?? '';
+      key.title = name;
+      const box = { def, name, row: r, key };
+      key.addEventListener('click', (e) => { if (tool() === 'keys') pickKey(box, e); });
       keyBoxes.push(box);
-      x += (def.w ?? 1) * UNIT;
     }
   }
   markKeys();
@@ -302,16 +308,16 @@ for (const sel of [layoutSel, schemeSel]) sel.addEventListener('change', () => {
 const keyOfPose = (id: string) => (/^[lr][1-5]/.test(id) ? id.slice(2) : null);
 /** The shown pose's key lit; a green dot on every key with a pose here. */
 function markKeys(): void {
-  const key = keyOfPose(current);
-  for (const k of keyBoxes) k.rect.classList.toggle('on', k.name === key);
-  hasG.replaceChildren();
-  const have = new Set(st.poses.map((p) => keyOfPose(p.id)));
-  for (const k of keyBoxes) if (have.has(k.name)) el('circle', { class: 'has', cx: k.x + k.w - 8, cy: k.y + 8, r: 4.5 }, hasG);
+  const key = keyOfPose(current), have = new Set(st.poses.map((p) => keyOfPose(p.id)));
+  for (const k of keyBoxes) {
+    k.key.classList.toggle('pose-key', k.name === key);
+    k.key.classList.toggle('has-pose', have.has(k.name));
+  }
 }
 /** A key clicked: the pose of the hand and finger that press it (the space bar: the thumb on the clicked half), opened or added. */
 function pickKey(k: KeyBox, e: MouseEvent): void {
-  const at = toSvg(e);
-  const finger: Finger = k.def.code === 'Space' ? (at[0] < k.x + k.w / 2 ? 4 : 5) : fingerOf(k.def, scheme());
+  const r = k.key.getBoundingClientRect();
+  const finger: Finger = k.def.code === 'Space' ? (e.clientX < r.left + r.width / 2 ? 4 : 5) : fingerOf(k.def, scheme());
   const id = poseName(board(), k.def.code, finger);
   if (!id || !POSE_NAME.test(id)) return;
   if (!st.poses.some((p) => p.id === id)) {
@@ -335,7 +341,7 @@ for (const s of SIDES) {
   ghostPaths[s] = el('path', { class: 'ghost' }, ghost);
   paths[s] = {
     creases: el('path', { class: 'crease' }, hands), tails: el('path', { class: 'hand' }, hands), lines: el('path', { class: 'hand' }, hands),
-    axes: AXES[s].map(() => el('polyline', { class: 'axis' }, axesG)),
+    axes: AXES[s].map(() => el('polyline', { class: 'rows-axis' }, axesG)),
   };
 }
 const homePose = basePose('home', 'Domov', 'home');
@@ -386,7 +392,7 @@ function show(id: string, blend = $<HTMLInputElement>('smooth').checked): void {
   const fresh = id !== current;
   current = id;
   markKeys();
-  for (const b of document.querySelectorAll<HTMLElement>('#poses .chip')) b.classList.toggle('now', b.dataset.id === id);
+  for (const b of document.querySelectorAll<HTMLElement>('#poses .rows-chip')) b.classList.toggle('now', b.dataset.id === id);
   if (fresh) buildPanels();
   renderAxes();
   const from = shown, to = posed(poseById(id));
@@ -423,7 +429,7 @@ const posesEl = $('poses');
 function buildChips(): void {
   posesEl.replaceChildren();
   for (const p of st.poses) {
-    const chip = Object.assign(document.createElement('span'), { className: `chip${p.id === current ? ' now' : ''}`, tabIndex: 0 });
+    const chip = Object.assign(document.createElement('span'), { className: `rows-chip${p.id === current ? ' now' : ''}`, tabIndex: 0 });
     chip.dataset.id = p.id;
     chip.setAttribute('role', 'button');
     const box = Object.assign(document.createElement('input'), { type: 'checkbox', checked: p.on, title: 'V striedaní' });
@@ -547,7 +553,7 @@ $('rowReset').addEventListener('click', () => {
 
 // ---- the mouse on the outline: the brush moves points, the paint gives them to a finger ----
 
-const radiusIn = $<HTMLInputElement>('radius'), undoBtn = $<HTMLButtonElement>('undo'), stageBox = $('stageBox'), paintFinger = $<HTMLSelectElement>('paintFinger');
+const radiusIn = $<HTMLInputElement>('radius'), undoBtn = $<HTMLButtonElement>('undo'), paintFinger = $<HTMLSelectElement>('paintFinger');
 const tool = () => (document.querySelector<HTMLInputElement>('input[name="tool"]:checked')?.value ?? 'keys') as 'keys' | 'brush' | 'paint';
 const undoStack: { edits: typeof edits; owners: RowsState['owners'] }[] = [];
 function onTool(): void {

@@ -71,7 +71,7 @@ export interface Settings {
   guide: 'auto' | 'on' | 'off';
   /** The parent locked the guide visibility; the child cannot toggle it. */
   guideLocked: boolean;
-  /** Which finger types the digit row: ergonomic (each finger the key nearly above its own, the default) or as most courses teach. */
+  /** Which finger types the digit row: ergonomic (each finger the key nearly above its own, the default) or the historically taught standard one. */
   fingering: 'ergonomic' | 'standard';
   /** The outline hands on the on-screen keyboard: shown, emphasized (full lines) or hidden. */
   hands: 'on' | 'bold' | 'off';

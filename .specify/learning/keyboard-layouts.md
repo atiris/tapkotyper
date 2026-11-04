@@ -17,7 +17,7 @@
 - **Fingering**: which finger presses the digit row, a profile setting beside the layout.
   **Ergonomic** (the default): each finger takes the key nearly straight above its key in the top
   row (left little finger 1 and 2, ring 3, middle 4, index 5 and 6; right index 7 and 8, middle 9,
-  ring 0, little finger the rest). **Standard**, as most courses teach it: left little finger 1,
+  ring 0, little finger the rest). **Standard**, the historically taught one: left little finger 1,
   ring 2, middle 3, index 4 and 5; right index 6 and 7, middle 8, ring 9, little finger 0 and the
   rest. Every other key is the same in both. Everything that names or colours a finger follows the
   choice: the guide's colours and highlights, the hands, the key cards, the key pickers and heat

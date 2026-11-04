@@ -140,13 +140,13 @@ Decisions:
 - The heat map's slots sit outside the board (`KeyboardGuide.bottomSlots`), which is aria-hidden, so the switch and the round button stay reachable.
 
 ## Done - 2026-11-04
-Shipped: statistics window 100 ( in lessons.ts,  reads it); the two-minute
-drill () with "Krátke cvičenie" / "Precvičiť kláves" and their tooltips; the drill's end card
+Shipped: statistics window 100 (STATS_WINDOW in lessons.ts, recentAccuracy reads it); the two-minute
+drill (DRILL_SECONDS) with "Krátke cvičenie" / "Precvičiť kláves" and their tooltips; the drill's end card
 (per-key rows with the up arrow or one "Trénované klávesy" row, the mastered-key green line, "Ešte raz");
 the Keys tab (outlined key caps, the ⇧ switch and the whole-keyboard button in the bottom row beside the
 space bar, under the keyboard on a phone, the check button beside the legend, the whole-keyboard view);
 the keyboard check judging each key on its own, failed keys out of later words, the 3-miss stop, gaps
 filled one by one by the last-pushed newest group, the new get-ready text and "Na mapu" on its card;
 names loaded with their capital. Specs updated. Browser-checked: the Keys tab wide and at phone width,
-a drill to its end card, the check with a weak  to its end card.
+a drill to its end card, the check with a weak d to its end card.
 Left out: nothing.

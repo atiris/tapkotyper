@@ -1699,7 +1699,8 @@
       "remember": "**Secret words**: a word shows only for a moment and hides. Remember it and type it from memory.",
       "aim": "**Target range**: words full of the letters you still miss. Each word throws a thing through the rings into the target.",
       "parrot": "**Parrot**: a few words many times in a row. The parrot repeats each one. A slip brings the word twice more.",
-      "super": "**Finale**: the last level of a world. Every world has its own."
+      "super": "**Finale**: the fifth, last game of a world. It is one of the kinds above, but it may be a little different from its usual variant.",
+      "timed": "Some words must be typed in time, for example at a crossroads. This clock shows how much time is left: the green ring runs down and blinks at the end. It can feel a bit exciting, but the time follows how fast you type: if you type slower, you get more time."
     },
     "journeyTitle": "Worlds, levels and stars",
     "journey": [

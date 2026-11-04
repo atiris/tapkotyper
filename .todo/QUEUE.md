@@ -8,3 +8,4 @@ skipped, and the session that finishes a plan removes its line.
 
 - [P2] 102-key-drill-and-check.md - first; drill card, Keys tab, per-key keyboard check, names
 - [P2] 103-panel-keyboard-shortcuts.md - after 102, which changes the end cards' buttons first
+- [P2] 104-sticky-finger.md - after 102 and 103, which change the input and the practice cards they share

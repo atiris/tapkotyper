@@ -9,6 +9,7 @@ import { levelRing, pawRing, rhythmPic, roundPic, timerPic } from '../ui/hud';
 import { barTabLinks, tabBar } from '../ui/tabs';
 import { appInstalled, installApp, openApp, standalone } from '../ui/install';
 import { imageUrl } from '../gfx/assets';
+import { CLOCK_R, drawClock } from '../game/modes/kit/clock';
 
 const TABS = ['ui', 'typing', 'progress', 'settings', 'mentoring', 'about'] as const;
 export type HelpTab = (typeof TABS)[number];
@@ -43,11 +44,23 @@ function mapIcons(): HTMLElement[] {
   ];
 }
 
-/** The game types, each with the picture the map shows for it. */
+/** The game types, each with the picture the map shows for it; the finale before the target range and the parrot. */
 const GAMES: [string, string][] = [
   ['chase', 'ui-act-chase'], ['catch', 'ui-act-catch'], ['crossroads', 'ui-act-crossroads'], ['clean', 'ui-act-clean'],
-  ['ribbon', 'ui-act-ribbon'], ['transcribe', 'ui-act-transcribe'], ['listen', 'ui-act-listen'], ['remember', 'ui-act-remember'], ['aim', 'obj-aim-target'], ['parrot', 'ui-act-parrot'], ['super', 'ui-act-super'],
+  ['ribbon', 'ui-act-ribbon'], ['transcribe', 'ui-act-transcribe'], ['listen', 'ui-act-listen'], ['remember', 'ui-act-remember'], ['super', 'ui-act-super'], ['aim', 'obj-aim-target'], ['parrot', 'ui-act-parrot'],
 ];
+
+/** The word's clock as the levels draw it, a bit more than half its time left. */
+function clockPic(): HTMLElement {
+  const size = 2 * (CLOCK_R + 2);
+  const c = h('canvas', { class: 'help-clock', width: String(size * 2), height: String(size * 2) }) as HTMLCanvasElement;
+  const g = c.getContext('2d');
+  if (g) {
+    g.scale(2, 2);
+    drawClock(g, size / 2, size / 2, 0.6, 0, false);
+  }
+  return c;
+}
 
 function gameIcons(): HTMLElement[] {
   return GAMES.map(([game, pic]) => {
@@ -168,7 +181,8 @@ function tabContent(tab: HelpTab, now: Child[] = []): HTMLElement[] {
     case 'progress': return [
       section(t('help.journeyTitle'), list('help.journey')),
       section(t('help.playTitle'), list('help.play')),
-      section(t('help.gamesTitle'), h('p', {}, t('help.games.intro')), h('ul', { class: 'help-icons' }, ...gameIcons())),
+      section(t('help.gamesTitle'), h('p', {}, t('help.games.intro')), h('ul', { class: 'help-icons' }, ...gameIcons()),
+        h('ul', { class: 'help-icons help-timed' }, iconLine(clockPic(), t('help.games.timed')))),
       section(t('help.progressTitle'), list('help.progress')),
       section(t('help.moreTitle'), list('help.more', { max: String(MAX_WORLD_STARS), bronze: String(BADGE_STARS.bronze), silver: String(BADGE_STARS.silver), gold: String(BADGE_STARS.gold) })),
     ];

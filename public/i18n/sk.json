@@ -1699,7 +1699,8 @@
       "remember": "**Tajné slová**: slovo sa ukáže len na chvíľu a schová sa. Zapamätaj si ho a napíš ho spamäti.",
       "aim": "**Strelnica**: slová plné písmen, ktoré ti ešte nejdú. Každé slovo hodí vec cez krúžky až do terča.",
       "parrot": "**Papagáj**: pár slov veľakrát za sebou. Papagáj každé zopakuje. Za chybu príde slovo ešte dvakrát.",
-      "super": "**Finále**: posledná úroveň sveta. Každý svet ju má inú."
+      "super": "**Finále**: piata, posledná hra sveta. Je to jeden z druhov hier vyššie, no môže byť trochu iný ako jeho bežný variant.",
+      "timed": "Niektoré slová treba napísať včas, napríklad na rázcestí. Koľko času ostáva, ukazujú tieto hodiny: zelený kruh sa míňa a na konci bliká. Môže to byť trochu napínavé, ale čas sa prispôsobí tomu, ako rýchlo píšeš: kto píše pomalšie, dostane viac času."
     },
     "journeyTitle": "Svety, úrovne a hviezdičky",
     "journey": [

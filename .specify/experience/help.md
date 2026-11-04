@@ -20,7 +20,10 @@
      accuracy, Esc pauses), the kinds of games by their standard names with one line each, each
      with the picture the map shows for it (the target range's target, the parrot and the finale's
      picture too; the same names as the map dots' tooltips; a new kind joins the list
-     when it is in the game; Transcribe is listed ahead of its levels, Ribbon names its first level, the spell on the egg mountain's summit) right above letters that open levels and stories, "My progress" (a page from the map's
+     when it is in the game; Transcribe is listed ahead of its levels, Ribbon names its first level, the spell on the egg mountain's summit;
+     the finale, the fifth game of a world that may be a little different from its kind's usual variant, comes before the target range and the parrot),
+     then apart from the list one line with the word's clock as the levels draw it: some words must be typed
+     in time, which can feel tense, but the time follows the child's own pace, right above letters that open levels and stories, "My progress" (a page from the map's
      button with four tabs, a quick look by a click on the character, the parrots, QR codes and
      the certificate), the hero's journey, the target range (where it opens, what it
      trains, the middle, a fall that costs nothing, the collection and Enter), the parrot (where it

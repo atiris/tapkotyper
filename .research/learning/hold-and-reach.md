@@ -1,6 +1,7 @@
 # Hold keys and reach: ideas for steady fingers
 
-Date: 2026-11-04. A brainstorm: main ideas, not a design yet.
+Date: 2026-11-04. A brainstorm: main ideas, not a design yet. Ideas 1 and 2 become the game kind
+*Sticky finger* (Lepkavý prst), planned in `.todo/104-sticky-finger.md`.
 
 ## 1. One hand holds, the other types (P1)
 - **Idea:** one hand holds its home key (F or J) down for the whole step, the other hand types words of
@@ -30,7 +31,8 @@ Date: 2026-11-04. A brainstorm: main ideas, not a design yet.
 - **Idea:** one finger goes from home up and down its own column and back, for example `jum`, `fvr`,
   `ki,`, and on the Slovak number row `ľ`, `š`, `č`.
 - **Why:** it trains the reach, not new keys.
-- **Games:** it fits a world where the third or fourth key of a column comes:
+- **Games:** not a kind of its own, but a variant of the word stream and the waiting words, for a
+  world where the third or fourth key of a column comes:
   - the keys move a magnet or crane up and down to catch or lift things;
   - music notes fly higher or lower to pass obstacles;
   - an elevator stops on the floor of the typed key.

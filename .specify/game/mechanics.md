@@ -223,8 +223,8 @@
   are the exception and keep coming, shielded pieces among them.
 - **Peeking under the results**: on every results card (level, practice, staying a while,
   target range, parrot) Esc or the round X hides the card and its dimming; the last frame of
-  the game stays in sight as it ended. Its top bar and the keyboard layout switch under the
-  on-screen keyboard work as in play (help, voice, sound, the layout). A typed letter while
+  the game stays in sight as it ended. Its top bar and the keyboard settings button under the
+  on-screen keyboard work as in play (help, voice, sound, the keyboard settings). A typed letter while
   peeking plays the same level again from its start without an end (staying a while; at the
   target range: staying there), where staying is offered. Esc, any other key, a click into the
   game or the pause button (nothing is left to pause) brings the card back as it was, with the same focus, and the key does nothing else;

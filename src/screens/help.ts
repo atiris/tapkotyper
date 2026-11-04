@@ -159,6 +159,7 @@ function tabContent(tab: HelpTab, now: Child[] = []): HTMLElement[] {
     case 'typing': return [
       ...(now.length ? [section(t('level.helpNow'), ...now)] : []),
       section(t('help.typeTitle'), list('help.type', { pinky: homePinky() })),
+      section(t('help.fingersTitle'), list('help.fingers')),
     ];
     case 'progress': return [
       section(t('help.journeyTitle'), list('help.journey')),

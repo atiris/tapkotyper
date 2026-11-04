@@ -222,6 +222,10 @@
       "title": "Keyboard and fingers",
       "about": "Names of keys, keyboard layouts and fingers, and the hints on the on-screen keyboard."
     },
+    "keyboard-settings": {
+      "title": "Keyboard settings",
+      "about": "The button under the on-screen keyboard with the layout and the fingering, and its small panel: layout, fingering, the on-screen keyboard and the hands."
+    },
     "posture": {
       "title": "Get ready to type",
       "about": "The card about sitting well that is shown before every level."
@@ -680,8 +684,6 @@
     "keys.*": "Name of a special key, used inside sentences and tooltips about keys.",
     "layouts.*": "Name of a keyboard layout, in the parent settings, the layout switch's menu and the different-keyboard notice.",
     "layoutsShort.*": "Short name of a keyboard layout on the quiet switch under the on-screen keyboard.",
-    "layoutSwitch.tip": "Tooltip of the keyboard layout switch under the on-screen keyboard, and the name of its menu.",
-    "layoutSwitch.label": "Screen reader name of that switch; {layout} is the layout's full name.",
     "fingers.*": "A finger's name used inside a sentence, for example in Tapko's hint or on the new key card.",
     "guide.deadStep1": "Hint above the on-screen keyboard for an accented letter; {ch} is the letter, the accent key comes first.",
     "guide.deadStep2": "Hint above the on-screen keyboard after the accent key; {ch} is the letter to type now.",
@@ -1700,6 +1702,32 @@
     "stats.placement": "Button in My progress, Keys tab: starts the keyboard check.",
     "stats.placementTip": "Tooltip of that button: how long it takes and that it only ever adds keys.",
     "parent.placement": "Settings, Keys tab: button that starts the keyboard check for the player.",
-    "parent.placementHint": "Hint under that button: what the check does and what it never does."
+    "parent.placementHint": "Hint under that button: what the check does and what it never does.",
+    "kbSettings.tip": "Tooltip of the keyboard settings button under the on-screen keyboard, the start of its name in the key-choosing window, and the name of its panel.",
+    "kbSettings.label": "Screen reader name of that button; {layout} is the layout's full name, {fingering} the fingering's name.",
+    "kbSettings.title": "Heading of the small panel that opens from the keyboard settings button.",
+    "kbSettings.layout": "In that panel: the label of the keyboard layout select.",
+    "kbSettings.layoutHint": "In that panel: one line under the layout select on how to tell the layouts apart.",
+    "kbSettings.fingering": "In that panel: the label of the two fingering choices.",
+    "kbSettings.ergonomicHint": "In that panel: one line under the fingering choices while the ergonomic one is chosen.",
+    "kbSettings.standardHint": "In that panel: one line under the fingering choices while the standard one is chosen.",
+    "kbSettings.guide": "In that panel: the switch that shows or hides the on-screen keyboard (as F2).",
+    "kbSettings.hands": "In that panel: the label of the choices for the outline hands on the keyboard.",
+    "kbSettings.more": "In that panel: the link to the help's paragraph on the fingerings.",
+    "kbSettings.ask": "Tooltip over the keyboard settings button for ten seconds when the keys typed look like another layout; {layout} is that layout's full name.",
+    "fingering.*": "Name of a fingering (which finger presses the digit keys) on its choice in the keyboard settings panel and in screen reader names.",
+    "fingeringShort.*": "Short name of a fingering after the layout's short name on the keyboard settings button (three capitals).",
+    "handsMode.*": "A choice for the outline hands on the keyboard, in the keyboard settings panel: show them, draw them bold, hide them.",
+    "parent.fingering": "Settings, Settings tab: the label of the fingering select.",
+    "parent.fingeringErgonomic": "Settings, Settings tab: an option in the fingering select.",
+    "parent.fingeringStandard": "Settings, Settings tab: an option in the fingering select.",
+    "parent.fingeringHint": "Settings, Settings tab: the note under the fingering select.",
+    "parent.hands": "Settings, Settings tab: the label of the select for the outline hands on the keyboard.",
+    "parent.handsOn": "Settings, Settings tab: an option in the hands select.",
+    "parent.handsBold": "Settings, Settings tab: an option in the hands select.",
+    "parent.handsOff": "Settings, Settings tab: an option in the hands select.",
+    "parent.handsHint": "Settings, Settings tab: the note under the hands select.",
+    "help.fingersTitle": "Help, Typing tab: the heading of the paragraph on keyboard layouts and fingerings.",
+    "help.fingers": "Help, Typing tab: bullet points that explain the layout and the two fingerings of the digit row."
   }
 }

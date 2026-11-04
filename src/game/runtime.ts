@@ -1,4 +1,4 @@
-import { app, isBreakDue, layout, pickLine, reduceMotion, saveProfile } from '../app/app';
+import { app, isBreakDue, layout, pickLine, profileLayout, reduceMotion, saveProfile } from '../app/app';
 import { fast } from '../app/fast';
 import { audio, type Sfx } from '../audio/audio';
 import { speech } from '../audio/speech';
@@ -14,12 +14,12 @@ import { locale, t } from '../i18n/i18n';
 import { nickname } from '../storage/store';
 import { type InputHandlers, KeyInput, type TypedChar } from '../input/input';
 import { setShortcuts, withKey } from '../input/shortcuts';
-import { ENTER, LAYOUTS, LayoutMismatchDetector, enterAfter, fingerFor, stepsFor } from '../keyboard/layouts';
+import { ENTER, LayoutMismatchDetector, enterAfter, fingerFor, stepsFor } from '../keyboard/layouts';
 import { SHIFT_L, SPACE, activeKeys, aimKeys, isKeyReady, masteryLevel, recentAccuracy, shiftKeyOf, useLayout } from '../learning/lessons';
 import { recentTyping, recordPress, recordSession, typingStep } from '../learning/stats';
 import { FINGER_KEYS, KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
 import { HANDS_ARRIVE_S, HANDS_GLIDE_S } from '../ui/hands';
-import { LayoutSwitch } from '../ui/layout-switch';
+import { KeyboardSettings } from '../ui/keyboard-settings';
 import { closeModals, confirmDialog, h } from '../ui/dom';
 import { globalButtons } from '../ui/chrome';
 import { tip } from '../ui/tooltip';
@@ -77,6 +77,8 @@ const JOURNEY_WORDS = 3;
 /** Seconds the hands glide beside the keyboard in a pause, and back onto the keys (also when the get-ready card closes early). */
 const HANDS_AWAY_S = 1;
 const HANDS_BACK_S = 0.5;
+/** Seconds free typing waits before the hands glide onto the keys. */
+const FREE_HANDS_S = 1;
 
 /** Runs one level: input, typing state, mode, HUD, guide, Tapko, stats. */
 export class LevelRuntime {
@@ -130,7 +132,7 @@ export class LevelRuntime {
   private breakSaid = false;
   private deadPending = false;
   private mismatch: LayoutMismatchDetector;
-  private layoutSwitch: LayoutSwitch;
+  private kbSettings: KeyboardSettings;
   private mismatchShown = false;
 
   /** Keys the child pressed for a target in this level, right or wrong; leaving after one asks first. */
@@ -184,7 +186,7 @@ export class LevelRuntime {
     this.lastCps = lastCpm ? lastCpm / 60 : 1;
     this.mismatch = new LayoutMismatchDetector(p.layout);
 
-    const lay = LAYOUTS[p.layout];
+    const lay = profileLayout(p);
     // Practice (the custom exercise, key drills, tasks) has its own word language; story levels use the player's.
     this.words = wordSource(p, def.kind === 'practice' ? p.settings.ownWordLang : p.settings.wordLang, opts.keys, opts.chosen, def.focus, !!def.journey);
     // Enter comes with the right little finger's home key; drills, single letters, a teacher's task and the gate's code stay without it.
@@ -249,12 +251,30 @@ export class LevelRuntime {
       this.opts.onTapko();
     });
     stageWrap.append(this.tapko.el, this.tapko.bubble);
-    this.layoutSwitch = new LayoutSwitch(p.layout, (id) => {
-      useLayout(p, id);
-      saveProfile();
-      this.opts.onLayout();
+    // A new layout or fingering starts the level again; the keyboard and the hands change at once.
+    this.kbSettings = new KeyboardSettings({
+      layout: p.layout,
+      fingering: p.settings.fingering,
+      pickLayout: (id) => {
+        useLayout(p, id);
+        saveProfile();
+        this.opts.onLayout();
+      },
+      pickFingering: (f) => {
+        p.settings.fingering = f;
+        saveProfile();
+        this.opts.onLayout();
+      },
+      guide: unguided ? undefined : { on: () => this.guideOn, locked: p.settings.guideLocked, toggle: () => this.toggleGuide() },
+      hands: { mode: () => p.settings.hands, set: (m) => {
+        p.settings.hands = m;
+        saveProfile();
+        this.guide.setHands(m);
+      } },
+      help: () => this.openHelp(),
     });
-    this.guide.el.append(this.layoutSwitch.el);
+    this.guide.el.append(this.kbSettings.el);
+    this.guide.setHands(p.settings.hands);
     this.guideOn = !unguided && p.settings.guide !== 'off';
     this.guide.setVisible(this.guideOn);
     guideBtn.setAttribute('aria-pressed', String(!this.guideOn));
@@ -316,6 +336,12 @@ export class LevelRuntime {
     if (this.disposed) return;
     audio.music(this.def.kind === 'practice' ? app.menuTrack : this.mode.world);
     // Free typing and staying a while start at once; the child has just played this level.
+    // Free typing has no card: the hands lie beside the keyboard and glide onto the keys a second later (sooner when a key
+    // comes first); without motion they are on the keys from the start.
+    if (this.free && !this.reduceMotion) {
+      this.guide.parkHands(true);
+      this.handsArrive = window.setTimeout(() => this.guide.parkHands(false, HANDS_GLIDE_S), FREE_HANDS_S * 1000);
+    }
     if (this.free || this.opts.stay) return this.begin();
     const host = this.el.querySelector<HTMLElement>('.stage-wrap')!;
     const journey = this.def.journey;
@@ -444,7 +470,10 @@ export class LevelRuntime {
         this.deadPending = true;
         this.updateGuide();
         // Free typing shows the dead key's press too (the accent comes with the next letter).
-        if (this.free && this.freeOpen) this.guide.press(code, shift);
+        if (this.free && this.freeOpen) {
+          this.handsNow();
+          this.guide.press(code, shift);
+        }
       },
       onEscape: () => (this.state.paused ? this.resume() : this.free ? this.exit() : this.pause()),
       onRaw: (code, key, shift) => this.onRaw(code, key, shift),
@@ -463,11 +492,12 @@ export class LevelRuntime {
     if (this.state.started && !this.state.finished) this.flushSession();
     this.disposed = true;
     clearTimeout(this.handsAway);
+    clearTimeout(this.handsArrive);
     this.pauseCard.dispose();
     speech.stop();
     this.reading.dispose();
     this.offShortcuts();
-    this.layoutSwitch.dispose();
+    this.kbSettings.dispose();
     this.loop.stop();
     this.input?.dispose();
     this.stage.dispose();
@@ -570,7 +600,7 @@ export class LevelRuntime {
     const other = this.mismatch.observe(code, key, shift);
     if (other) {
       this.mismatchShown = true;
-      this.layoutSwitch.flag();
+      this.kbSettings.flag(other);
       this.say(t('level.layoutHint', { layout: t(`layouts.${other}`) }), 7);
     }
   }
@@ -667,6 +697,7 @@ export class LevelRuntime {
   private freeChar(c: TypedChar, mode: FreeTypeMode): void {
     if (!this.freeOpen || !stepsFor(layout(), c.ch).length) return;
     this.ownKey();
+    this.handsNow();
     this.deadPending = false;
     this.sfx('key');
     mode.key(c.ch);
@@ -861,6 +892,13 @@ export class LevelRuntime {
   }
 
   private handsAway = 0;
+  private handsArrive = 0;
+
+  /** Free typing: a key typed before the hands came onto the keys brings them at once. */
+  private handsNow(): void {
+    clearTimeout(this.handsArrive);
+    this.guide.parkHands(false, HANDS_BACK_S);
+  }
 
   /**
    * Leaving from the pause card; after a key of this level it asks first, Continue being the safe choice.

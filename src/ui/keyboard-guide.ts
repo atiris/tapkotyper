@@ -142,9 +142,17 @@ export class KeyboardGuide {
   private handsView(): Hands {
     if (!this.hands) {
       this.hands = new Hands(this.layout);
+      this.hands.look(this.handsMode);
       this.board.append(this.hands.el);
     }
     return this.hands;
+  }
+
+  private handsMode: 'on' | 'bold' | 'off' = 'on';
+  /** The hands shown, emphasized or hidden (the profile's choice). */
+  setHands(mode: 'on' | 'bold' | 'off'): void {
+    this.handsMode = mode;
+    this.hands?.look(mode);
   }
 
   /** The hands rest beside the keyboard (on) or come onto the keys in the home position (off), at once or gliding for `glideS` seconds. */

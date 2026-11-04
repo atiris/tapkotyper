@@ -19,7 +19,9 @@
   they then stay the whole level. In a pause the hands glide beside the keyboard a second later
   and come back onto the keys at once when play goes on. In free typing a dead key (the accent
   keys) shows its press like any other key. They fade and hide
-  with the guide, and are not in the heat map, the key pickers or the placement check.
+  with the guide, and are not in the heat map, the key pickers or the placement check. The
+  profile (and the keyboard settings panel) shows them, draws them bold (every line and nail
+  fully drawn) or hides them.
 - The guide fades as the child improves (per-key mastery) and can be shown or hidden by
   the child, or locked by the parent. The finger colors are a colorblind-safe palette; the keys
   carry no finger numbers.

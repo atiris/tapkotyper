@@ -88,9 +88,32 @@
     "sk-qwerty": "SK QWERTY",
     "us-qwerty": "US QWERTY"
   },
-  "layoutSwitch": {
-    "tip": "Keyboard layout",
-    "label": "Keyboard layout: {layout}. Change"
+  "kbSettings": {
+    "tip": "Keyboard settings",
+    "label": "Keyboard settings: {layout}, {fingering}. Change",
+    "title": "Quick keyboard settings",
+    "layout": "Keyboard layout",
+    "layoutHint": "Pick the one on your real keyboard. Look at the key next to T: Z means QWERTZ, Y means QWERTY.",
+    "fingering": "Fingering",
+    "ergonomicHint": "Each digit key is pressed by the finger nearly straight below it: 6 by the left index finger, 0 by the right ring finger. Shorter, straighter moves.",
+    "standardHint": "As typing courses teach it: 6 by the right index finger, 0 by the right little finger. All other keys are the same.",
+    "guide": "On-screen keyboard",
+    "hands": "Hands on the keyboard",
+    "more": "Why ergonomic? More in the help",
+    "ask": "Do you want to use the {layout} layout?"
+  },
+  "fingering": {
+    "ergonomic": "Ergonomic",
+    "standard": "Standard"
+  },
+  "fingeringShort": {
+    "ergonomic": "ERG",
+    "standard": "STD"
+  },
+  "handsMode": {
+    "on": "Show",
+    "bold": "Bold",
+    "off": "Hide"
   },
   "kinds": {
     "fox": "Fox",
@@ -1276,6 +1299,10 @@
     "language": "Language",
     "layout": "Keyboard layout",
     "layoutHint": "Pick the layout of the real keyboard. The finger guide follows it.",
+    "fingering": "Fingering",
+    "fingeringErgonomic": "Ergonomic (recommended)",
+    "fingeringStandard": "Standard (as in courses)",
+    "fingeringHint": "Which finger presses the keys of the digit row. All other keys are the same. The help explains the difference under Typing.",
     "difficulty": "Difficulty",
     "wordLen": "Word length",
     "min": "min {n}",
@@ -1298,6 +1325,11 @@
     "guideOn": "Always on",
     "guideOff": "Off",
     "guideLocked": "The student cannot hide or show the guide",
+    "hands": "Hands on the keyboard",
+    "handsOn": "Shown",
+    "handsBold": "Bold",
+    "handsOff": "Hidden",
+    "handsHint": "The outline hands show which finger goes to the key. Bold ones have full lines.",
     "sfx": "Sound effects",
     "music": "Music",
     "speakTyped": "Read typed words aloud",
@@ -1579,6 +1611,14 @@
       "**First type correctly**, then fast. Speed comes by itself.",
       "After a little while of play, take a break: stand up, stretch and drink some water."
     ],
+    "fingersTitle": "Layout and fingering",
+    "fingers": [
+      "The **layout** says which characters are on the keys. Slovak keyboards are QWERTZ (Z next to T) or QWERTY (Y next to T). Pick the one you really have, or the on-screen keyboard shows other keys.",
+      "The **fingering** says which finger presses which key. The letters are the same in both, only the digit row differs.",
+      "**Ergonomic** (the default): the digit row sits further left, so each finger takes the key nearly straight above its own: left little finger 1 and 2, ring 3, middle 4, index 5 and 6; right index 7 and 8, middle 9, ring 0, little finger the rest. The moves are shorter and straighter.",
+      "**Standard**: as most courses teach it: left little finger 1, ring 2, middle 3, index 4 and 5; right index 6 and 7, middle 8, ring 9, little finger 0 and the rest. Pick it if you learn it at school too.",
+      "On a Slovak keyboard these keys also carry ľ š č ť ž ý á í é. You switch it at the bottom right under the keyboard or in the settings. The keys' colours and the hands follow."
+    ],
     "mapTitle": "Buttons on the map",
     "levelTitle": "Buttons in a level",
     "icons": {
@@ -1683,11 +1723,11 @@
     "settingsIntro": "The settings are for the teacher or parent. They open with the gear. Until you **lock them with a password**, anyone opens them by clicking a simple confirm button.",
     "settings": {
       "settings": [
-        "Student: nickname, character and optional name, game language, word language and keyboard layout. Pick the layout of the real keyboard; the finger guide follows it.",
+        "Student: nickname, character and optional name, game language, word language, keyboard layout and fingering. Pick the layout of the real keyboard; the finger guide follows it. The fingering (ergonomic or standard) changes only the digit row; the Typing tab explains the difference.",
         "Practice: difficulty and word length **grow automatically as the student types better**, but you can also set them by hand.",
         "Words without diacritics help beginners for a while. No time pressure makes moving things stop and wait for the student.",
         "Session length before a break: then the game invites the student to a short rest.",
-        "Finger guide: fades when keys are mastered, or always on or off. You can lock it for the student.",
+        "Finger guide: fades when keys are mastered, or always on or off. You can lock it for the student. The hands on the keyboard can be shown, bold or hidden.",
         "Wardrobe time earned by practice: 1 minute in the wardrobe for 5 minutes of practice, at most 7 minutes. Turned off, the wardrobe is always open.",
         "Sounds and interface: volumes, font, large text, reduced motion, high contrast, fullscreen. **Translate the game** opens the translator page: translate the game into a new language there, or change its texts to your own.",
         "The settings password locks the settings for every player on this device. We cannot recover a forgotten password.",

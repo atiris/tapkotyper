@@ -1,4 +1,4 @@
-import { app, applyProfileLook, go, loadPlayerWords, saveProfile, selectProfile, useLanguage } from '../app/app';
+import { app, applyProfileLook, go, loadPlayerWords, profileLayout, saveProfile, selectProfile, useLanguage } from '../app/app';
 import { langOptions, locale, t } from '../i18n/i18n';
 import { ownLangs, ownRef } from '../i18n/own-langs';
 import { ENTER, LAYOUTS, LAYOUT_IDS, allKeys } from '../keyboard/layouts';
@@ -146,7 +146,8 @@ function settingsTab(p: Profile): HTMLElement {
       field(t('parent.layout'), select<LayoutId>(p.layout, LAYOUT_IDS.map((id) => [id, t(`layouts.${id}`)]), (v) => {
         useLayout(p, v);
         save();
-      }), t('parent.layoutHint'))),
+      }), t('parent.layoutHint')),
+      field(t('parent.fingering'), select(s.fingering, [['ergonomic', t('parent.fingeringErgonomic')], ['standard', t('parent.fingeringStandard')]], (v) => { s.fingering = v; save(); }), t('parent.fingeringHint'))),
     h('fieldset', {}, h('legend', {}, t('parent.group.practice')),
       field(t('parent.difficulty'), autoField(
         [range(s.difficulty, 1, 10, 1, (v) => { s.difficulty = v; save(); })],
@@ -163,7 +164,8 @@ function settingsTab(p: Profile): HTMLElement {
       field(t('parent.sessionMinutes'), range(s.sessionMinutes, 5, 30, 5, (v) => { s.sessionMinutes = v; save(); }, (v) => t('parent.minutes', { n: v }))),
       switchField(t('parent.breaksLocked'), check(s.breaksLocked, (v) => { s.breaksLocked = v; save(); }), t('parent.breaksLockedHint')),
       field(t('parent.guide'), select(s.guide, [['auto', t('parent.guideAuto')], ['on', t('parent.guideOn')], ['off', t('parent.guideOff')]], (v) => { s.guide = v; save(); })),
-      switchField(t('parent.guideLocked'), check(s.guideLocked, (v) => { s.guideLocked = v; save(); }))),
+      switchField(t('parent.guideLocked'), check(s.guideLocked, (v) => { s.guideLocked = v; save(); })),
+      field(t('parent.hands'), select(s.hands, [['on', t('parent.handsOn')], ['bold', t('parent.handsBold')], ['off', t('parent.handsOff')]], (v) => { s.hands = v; save(); }), t('parent.handsHint'))),
     h('fieldset', {}, h('legend', {}, t('parent.group.look')),
       field(t('parent.sfx'), range(s.sfxVolume, 0, 1, 0.1, (v) => { s.sfxVolume = v; save(); }, (v) => `${Math.round(v * 100)} %`)),
       field(t('parent.music'), range(s.musicVolume, 0, 1, 0.1, (v) => { s.musicVolume = v; save(); }, (v) => `${Math.round(v * 100)} %`)),
@@ -450,7 +452,7 @@ function ownWordsEditors(p: Profile): HTMLElement[] {
 
 function keysTab(p: Profile): HTMLElement {
   const s = p.settings;
-  const lay = LAYOUTS[p.layout];
+  const lay = profileLayout(p);
   const kb = new KeyboardGuide(lay);
   kb.el.classList.add('picker');
   const picked = new Set(s.manualKeys.length ? s.manualKeys : p.progress.unlockedKeys);

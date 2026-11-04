@@ -1,7 +1,7 @@
 import { audio } from '../audio/audio';
 import { t, tList, tMap } from '../i18n/i18n';
-import { type Finger, LAYOUTS, type Layout, enterAfter, homeKey } from '../keyboard/layouts';
-import { layout } from '../app/app';
+import { type Finger, type Layout, enterAfter, homeKey } from '../keyboard/layouts';
+import { layout, profileLayout } from '../app/app';
 import type { Profile, Surprise } from '../storage/schema';
 import { surpriseCount } from './own-content';
 import type { Style } from './typing';
@@ -26,11 +26,11 @@ interface CardOpts {
  * Captures keys for a card while it is on screen. A card that leaves together with its
  * screen (back button, map) lets go by itself, so it never swallows the next level's keys.
  * While the level's pause card lies over the card (beside it on the stage) the keys are the pause's,
- * while the keyboard layout's menu is open they are the menu's.
+ * while the keyboard settings' panel is open they are the panel's.
  */
 export function captureKeys(overlay: HTMLElement, onKey: (e: KeyboardEvent) => void): () => void {
   const stop = () => window.removeEventListener('keydown', listener, true);
-  const paused = () => overlay.parentElement?.querySelector(':scope > .pause-card') || document.querySelector('.kb-layout-menu');
+  const paused = () => overlay.parentElement?.querySelector(':scope > .pause-card') || document.querySelector('.kb-panel');
   const listener = (e: KeyboardEvent) => (!overlay.isConnected ? stop() : paused() ? undefined : onKey(e));
   window.addEventListener('keydown', listener, true);
   return stop;
@@ -130,7 +130,7 @@ export function showPosture(host: HTMLElement, p: Profile, tip?: string, surpris
     const homePosition = async () => {
       away = true;
       overlay.style.display = 'none';
-      await showHomeRow(host, LAYOUTS[p.layout], null, p);
+      await showHomeRow(host, profileLayout(p), null, p);
       overlay.style.display = '';
       away = false;
       space.focus();

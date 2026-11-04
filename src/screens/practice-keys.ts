@@ -1,11 +1,12 @@
-import { app, go, layout } from '../app/app';
+import { app, go, layout, saveProfile } from '../app/app';
 import { speech } from '../audio/speech';
 import type { Style } from '../game/typing';
 import { locale, t } from '../i18n/i18n';
 import { allKeys } from '../keyboard/layouts';
-import { activeKeys, isLetterKey, practiceOrder, practiceSteps, stepHolding } from '../learning/lessons';
+import { activeKeys, isLetterKey, practiceOrder, practiceSteps, stepHolding, useLayout } from '../learning/lessons';
 import { KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
 import { button, h, modal } from '../ui/dom';
+import { KeyboardSettings } from '../ui/keyboard-settings';
 import { keyForCode } from './stats';
 
 /** Fewest letters free practice needs to build words. */
@@ -15,6 +16,7 @@ const MIN_LETTERS = 2;
  * Free practice starts here: the keyboard with the chosen keys lit, a slider that adds keys
  * in the lesson order three at a time, and single keys toggled by a click. It opens with
  * the child's active keys and copy typing; dictation shows only when the browser has a voice.
+ * Start sits on the left, the keyboard's settings on the right: a new layout or fingering opens the window again with it.
  */
 export function openPracticeKeys(): void {
   const p = app.profile!;
@@ -61,6 +63,23 @@ export function openPracticeKeys(): void {
     go('level', { id: 'practice', chosen: [...chosen], style });
   }, 'btn primary', 'play');
   start.autofocus = true;
+  const again = () => {
+    saveProfile();
+    close();
+    openPracticeKeys();
+  };
+  const settings = new KeyboardSettings({
+    layout: p.layout,
+    fingering: p.settings.fingering,
+    pickLayout: (id) => {
+      useLayout(p, id);
+      again();
+    },
+    pickFingering: (f) => {
+      p.settings.fingering = f;
+      again();
+    },
+  }, true);
 
   function paint(): void {
     styleBtns.forEach((b, i) => {
@@ -108,5 +127,5 @@ export function openPracticeKeys(): void {
     h('div', { class: 'pk-row' }, shiftChip, count),
     h('label', { class: 'pk-slider' }, h('span', {}, t('practiceKeys.slider')), slider, stepLabel),
     hint,
-    h('div', { class: 'row center' }, start)), { cls: 'practice-keys-modal' });
+    h('div', { class: 'row pk-actions' }, start, settings.el)), { cls: 'practice-keys-modal', onClose: () => settings.dispose() });
 }

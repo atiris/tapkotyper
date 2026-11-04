@@ -148,6 +148,9 @@ export class Hands {
   /** Where the glide goes (true: beside the keyboard), and its frame. */
   private glideTo: boolean | null = null;
   private glideFrame = 0;
+  /** When the glide started and how long it takes (a key typed early shortens it). */
+  private glideStart = 0;
+  private glideMs = 0;
   /** The outline of the key typed last, `<side>/<name>` (the hand poser opens it). */
   lastPose = `left/${HOME}`;
 
@@ -157,13 +160,7 @@ export class Hands {
     this.el.style.setProperty('--vx', String(VIEW.x / WIDTH));
     this.el.style.setProperty('--vy', String(VIEW.y / WIDTH));
     this.el.style.setProperty('--vw', String(VIEW.w / WIDTH));
-    // The lines' colours and transparency (the hand tool sets them): typing, and beside the keyboard.
-    for (const [kind, style] of Object.entries(HAND_STYLE)) {
-      for (const [part, s] of Object.entries(style)) {
-        if ('color' in s) this.el.style.setProperty(`--${kind}-${part}`, s.color);
-        this.el.style.setProperty(`--${kind}-${part}-alpha`, String(1 - s.transparency / 100));
-      }
-    }
+    this.look('on');
     const defs = el('defs', {}, this.el);
     const grad = el('linearGradient', { id: `${id}-fade`, x1: 0, x2: 0, y1: FADE[0], y2: FADE[1], gradientUnits: 'userSpaceOnUse' }, defs);
     el('stop', { offset: 0, 'stop-color': '#fff' }, grad);
@@ -209,12 +206,35 @@ export class Hands {
   }
 
   /**
+   * How the hands show: their lines' colours and transparency as the hand tool set them (typing, and beside the
+   * keyboard), emphasized (`bold`: every line and nail fully drawn) or hidden.
+   */
+  look(mode: 'on' | 'bold' | 'off'): void {
+    this.el.classList.toggle('hands-hidden', mode === 'off');
+    for (const [kind, style] of Object.entries(HAND_STYLE)) {
+      for (const [part, s] of Object.entries(style)) {
+        if ('color' in s) this.el.style.setProperty(`--${kind}-${part}`, s.color);
+        this.el.style.setProperty(`--${kind}-${part}-alpha`, String(mode === 'bold' ? 1 : 1 - s.transparency / 100));
+      }
+    }
+  }
+
+  /**
    * The hands go beside the keyboard (on) or onto the keys (off): at once, or gliding for `glideS` seconds through the
    * steps between (`rest1`, `rest2`...), every point of the outline moving smoothly. A glide already on its way there
    * goes on.
    */
   park(on: boolean, glideS = 0): void {
-    if (this.place === (on ? 'rest' : 'keys') || this.glideTo === on) return;
+    if (this.place === (on ? 'rest' : 'keys')) return;
+    // Already gliding there: it goes on, sped up to end within `glideS` (a key typed before the hands arrived).
+    if (this.glideTo === on) {
+      const now = performance.now(), done = Math.min(1, (now - this.glideStart) / this.glideMs);
+      if (glideS && (1 - done) * this.glideMs > glideS * 1000) {
+        this.glideMs = (glideS * 1000) / (1 - done);
+        this.glideStart = now - done * this.glideMs;
+      }
+      return;
+    }
     cancelAnimationFrame(this.glideFrame);
     this.glideTo = null;
     if (!glideS || !this.index || document.body.classList.contains('reduce-motion')) {
@@ -224,11 +244,13 @@ export class Hands {
     }
     this.glideTo = on;
     this.place = 'gliding';
-    void this.glide(on, glideS);
+    this.glideStart = performance.now();
+    this.glideMs = glideS * 1000;
+    void this.glide(on);
   }
 
   /** The glide: each hand's outline from the one shown through the steps to the end, its numbers blended frame by frame. */
-  private async glide(on: boolean, glideS: number): Promise<void> {
+  private async glide(on: boolean): Promise<void> {
     const index = this.index!, keys = poseNames(this.layout, (this.pressed ?? this.next)?.step ?? null, this.lastHand);
     const plan = await Promise.all((['left', 'right'] as Side[]).map(async (s) => {
       const steps = index[s].filter((n) => /^rest\d+$/.test(n)).sort((a, b) => Number(a.slice(4)) - Number(b.slice(4)));
@@ -239,10 +261,9 @@ export class Hands {
       return { s, frames: shapes.every(Boolean) ? morphFrames(shapes as HandShape[]) : null };
     }));
     if (this.glideTo !== on) return;
-    const t0 = performance.now();
     const tick = (now: number) => {
       if (this.glideTo !== on) return;
-      const t = Math.min(1, (now - t0) / (glideS * 1000)), eased = t * t * (3 - 2 * t);
+      const t = Math.min(1, Math.max(0, (now - this.glideStart) / this.glideMs)), eased = t * t * (3 - 2 * t);
       for (const { s, frames } of plan) {
         const layer = this.side[s].layers.find((l) => l.classList.contains('on'));
         if (!frames || !layer) continue;

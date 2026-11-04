@@ -71,6 +71,10 @@ export interface Settings {
   guide: 'auto' | 'on' | 'off';
   /** The parent locked the guide visibility; the child cannot toggle it. */
   guideLocked: boolean;
+  /** Which finger types the digit row: ergonomic (each finger the key nearly above its own, the default) or as most courses teach. */
+  fingering: 'ergonomic' | 'standard';
+  /** The outline hands on the on-screen keyboard: shown, emphasized (full lines) or hidden. */
+  hands: 'on' | 'bold' | 'off';
   sfxVolume: number;
   musicVolume: number;
   font: FontChoice;
@@ -324,6 +328,8 @@ export function defaultSettings(wordLang: LangRef): Settings {
     breaksLocked: false,
     guide: 'auto',
     guideLocked: false,
+    fingering: 'ergonomic',
+    hands: 'on',
     sfxVolume: 0.7,
     musicVolume: 0.5,
     font: 'lexend',

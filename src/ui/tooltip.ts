@@ -110,6 +110,22 @@ export function tip(el: Element, text: string): void {
   }
 }
 
+/**
+ * Shows `text` over `el` at once for `ms` (a question the game asks by itself), then the element's own tooltip again.
+ * A click, Esc or scrolling hides it sooner, like any tooltip.
+ */
+export function flashTip(el: HTMLElement, text: string, ms: number): void {
+  if (!machine || !el.isConnected) return;
+  const own = el.dataset.tip;
+  el.dataset.tip = text;
+  machine.open(el);
+  setTimeout(() => {
+    if (machine?.shown === el && el.dataset.tip === text) machine.close();
+    if (own) el.dataset.tip = own;
+    else delete el.dataset.tip;
+  }, ms);
+}
+
 /** Whether a tooltip shows now: its Esc comes before any other. */
 export function tipShown(): boolean {
   return !!machine?.shown;

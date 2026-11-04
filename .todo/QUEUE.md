@@ -8,4 +8,3 @@ skipped, and the session that finishes a plan removes its line.
 
 - [P2] 102-key-drill-and-check.md - first; drill card, Keys tab, per-key keyboard check, names
 - [P2] 103-panel-keyboard-shortcuts.md - after 102, which changes the end cards' buttons first
-- [P2] 108-finger-schemes.md - after 103; standard or ergonomic fingering per profile (the hand poses already carry the finger)

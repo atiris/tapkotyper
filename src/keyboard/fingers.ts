@@ -1,4 +1,4 @@
-import type { Finger, KeyDef } from './layouts';
+import type { Finger, KeyDef, Layout } from './layouts';
 
 /**
  * Which finger types a key: the standard way (each layout's own `finger`) or the ergonomic one, the standard with a few
@@ -11,4 +11,17 @@ const ERGONOMIC: Record<string, Finger> = { Digit2: 0, Digit3: 1, Digit4: 2, Dig
 
 export function fingerOf(def: KeyDef, scheme: FingerScheme = 'standard'): Finger {
   return scheme === 'ergonomic' ? ERGONOMIC[def.code] ?? def.finger : def.finger;
+}
+
+const fingeredCache = new Map<string, Layout>();
+/**
+ * The layout with every key's finger by the scheme, so whatever reads a key's `finger` (the guide, the hands, the key
+ * cards, the side of Shift) follows the profile's fingering. The same layout and scheme give the same object.
+ */
+export function fingered(layout: Layout, scheme: FingerScheme): Layout {
+  if (scheme === 'standard') return layout;
+  const key = `${layout.id}:${scheme}`;
+  let out = fingeredCache.get(key);
+  if (!out) fingeredCache.set(key, out = { ...layout, rows: layout.rows.map((row) => row.map((d) => ({ ...d, finger: fingerOf(d, scheme) }))) });
+  return out;
 }

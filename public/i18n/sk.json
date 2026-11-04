@@ -88,9 +88,32 @@
     "sk-qwerty": "SK QWERTY",
     "us-qwerty": "US QWERTY"
   },
-  "layoutSwitch": {
-    "tip": "Rozloženie klávesnice",
-    "label": "Rozloženie klávesnice: {layout}. Zmeniť"
+  "kbSettings": {
+    "tip": "Nastavenie klávesnice",
+    "label": "Nastavenie klávesnice: {layout}, {fingering}. Zmeniť",
+    "title": "Rýchle nastavenie klávesnice",
+    "layout": "Rozloženie klávesnice",
+    "layoutHint": "Vyber také, aké máš na skutočnej klávesnici. Pozri sa na kláves vedľa T: Z znamená QWERTZ, Y znamená QWERTY.",
+    "fingering": "Priradenie prstov",
+    "ergonomicHint": "Číselný rad stláča prst, ktorý je takmer rovno pod klávesom: 6 ľavý ukazovák, 0 pravý prstenník. Kratšie a rovnejšie pohyby.",
+    "standardHint": "Ako v kurzoch písania: 6 stláča pravý ukazovák, 0 pravý malíček. Ostatné klávesy sú rovnaké.",
+    "guide": "Klávesnica na obrazovke",
+    "hands": "Ruky na klávesnici",
+    "more": "Prečo ergonomické? Viac v pomoci",
+    "ask": "Chceš použiť rozloženie {layout}?"
+  },
+  "fingering": {
+    "ergonomic": "Ergonomické",
+    "standard": "Štandardné"
+  },
+  "fingeringShort": {
+    "ergonomic": "ERG",
+    "standard": "STN"
+  },
+  "handsMode": {
+    "on": "Ukázať",
+    "bold": "Zvýrazniť",
+    "off": "Skryť"
   },
   "kinds": {
     "fox": "Líška",
@@ -1276,6 +1299,10 @@
     "language": "Jazyk",
     "layout": "Rozloženie klávesnice",
     "layoutHint": "Vyberte rozloženie skutočnej klávesnice. Podľa neho sa riadi nápoveda prstov.",
+    "fingering": "Priradenie prstov",
+    "fingeringErgonomic": "Ergonomické (odporúčané)",
+    "fingeringStandard": "Štandardné (ako v kurzoch)",
+    "fingeringHint": "Ktorý prst stláča klávesy číselného radu. Ostatné klávesy sú rovnaké. Rozdiel vysvetľuje pomoc, časť Písanie.",
     "difficulty": "Náročnosť",
     "wordLen": "Dĺžka slov",
     "min": "min. {n}",
@@ -1298,6 +1325,11 @@
     "guideOn": "Vždy zapnutá",
     "guideOff": "Vypnutá",
     "guideLocked": "Študent nemôže nápovedu skryť ani zobraziť",
+    "hands": "Ruky na klávesnici",
+    "handsOn": "Ukázané",
+    "handsBold": "Zvýraznené",
+    "handsOff": "Skryté",
+    "handsHint": "Obrysy rúk ukazujú, ktorý prst ide na kláves. Zvýraznené majú plné čiary.",
     "sfx": "Zvukové efekty",
     "music": "Hudba",
     "speakTyped": "Čítať napísané slová",
@@ -1579,6 +1611,14 @@
       "**Najprv presne**, potom rýchlo. Rýchlosť príde sama.",
       "Po chvíľke hrania si oddýchni: vstaň, natiahni sa a napi sa vody."
     ],
+    "fingersTitle": "Rozloženie a priradenie prstov",
+    "fingers": [
+      "**Rozloženie** hovorí, aké znaky sú na klávesoch. Slovenské klávesnice bývajú QWERTZ (vedľa T je Z) alebo QWERTY (vedľa T je Y). Vyber to, ktoré máš naozaj, inak ti klávesnica na obrazovke ukáže iné klávesy.",
+      "**Priradenie prstov** hovorí, ktorý prst stláča ktorý kláves. Písmená sú v oboch rovnaké, líši sa len číselný rad.",
+      "**Ergonomické** (predvolené): číselný rad je posunutý doľava, preto každý prst berie kláves takmer rovno nad svojím: ľavý malíček 1 a 2, prstenník 3, prostredník 4, ukazovák 5 a 6; pravý ukazovák 7 a 8, prostredník 9, prstenník 0, malíček zvyšok. Pohyby sú kratšie a rovnejšie.",
+      "**Štandardné**: ako vo väčšine kurzov: ľavý malíček 1, prstenník 2, prostredník 3, ukazovák 4 a 5; pravý ukazovák 6 a 7, prostredník 8, prstenník 9, malíček 0 a zvyšok. Vyber ho, ak sa ho učíš aj v škole.",
+      "Na slovenskej klávesnici sú na týchto klávesoch aj ľ š č ť ž ý á í é. Prepneš to vpravo dole pod klávesnicou alebo v nastaveniach. Farby klávesov aj ruky sa prispôsobia."
+    ],
     "mapTitle": "Tlačidlá na mape",
     "levelTitle": "Tlačidlá v úrovni",
     "icons": {
@@ -1683,11 +1723,11 @@
     "settingsIntro": "Nastavenia sú pre učiteľa alebo rodiča. Otvoria sa ozubeným kolieskom. Kým ich **nezamknete heslom**, otvorí ich ktokoľvek, kliknutím na jednoduché potvrdzovacie tlačidlo.",
     "settings": {
       "settings": [
-        "Študent: prezývka, postavička a nepovinné meno, jazyk hry, jazyk slov a rozloženie klávesnice. Rozloženie vyberte podľa skutočnej klávesnice, sprievodca prstov sa podľa neho riadi.",
+        "Študent: prezývka, postavička a nepovinné meno, jazyk hry, jazyk slov, rozloženie klávesnice a priradenie prstov. Rozloženie vyberte podľa skutočnej klávesnice, sprievodca prstov sa podľa neho riadi. Priradenie prstov (ergonomické alebo štandardné) mení len číselný rad; rozdiel vysvetľuje časť Písanie.",
         "Cvičenie: náročnosť a dĺžka slov **automaticky rastú so zlepšovaním** písania študenta, ale môžete ich nastaviť aj ručne.",
         "Slová bez diakritiky pomôžu začiatočníkom na chvíľu. Bez časového tlaku veci zastanú a čakajú na študenta.",
         "Dĺžka hrania pred prestávkou: potom hra pozve študenta na krátky oddych.",
-        "Sprievodca prstov: zmizne, keď sú klávesy zvládnuté, alebo je stále zapnutý či vypnutý. Môžete ho študentovi zamknúť.",
+        "Sprievodca prstov: zmizne, keď sú klávesy zvládnuté, alebo je stále zapnutý či vypnutý. Môžete ho študentovi zamknúť. Ruky na klávesnici môžu byť ukázané, zvýraznené alebo skryté.",
         "Šatník za čas cvičenia: 1 minúta v šatníku za 5 minút cvičenia, najviac 7 minút. Po vypnutí je šatník stále otvorený.",
         "Zvuky a rozhranie: hlasitosť, písmo, veľký text, menej pohybu, vysoký kontrast, celá obrazovka. **Preložiť hru** otvorí stránku prekladu, kde preložíte hru do nového jazyka alebo si upravíte vlastné texty.",
         "Heslo na nastavenia zamkne nastavenia pre všetkých hráčov na tomto zariadení. Zabudnuté heslo nevieme obnoviť.",

@@ -4,6 +4,7 @@ import { resetFontFamily } from '../gfx/draw';
 import { askedLanguage, setLanguage, tList } from '../i18n/i18n';
 import { toggleTheme, useTheme } from './theme';
 import { LAYOUTS, type Layout } from '../keyboard/layouts';
+import { fingered } from '../keyboard/fingers';
 import { Store } from '../storage/store';
 import { GUEST_ID, type LangRef, type Profile, SUPER_ID, type TaskSpec } from '../storage/schema';
 import { loadWordsOf } from '../words/words';
@@ -58,8 +59,13 @@ export function isBreakDue(): boolean {
   return app.sessionSeconds >= fast(app.profile!.settings.sessionMinutes * 60);
 }
 
+/** A profile's keyboard layout with its fingering: what the guide, the hands and the cards show. */
+export function profileLayout(p: Profile): Layout {
+  return fingered(LAYOUTS[p.layout], p.settings.fingering);
+}
+
 export function layout(): Layout {
-  return LAYOUTS[app.profile?.layout ?? 'sk-qwertz'];
+  return app.profile ? profileLayout(app.profile) : LAYOUTS['sk-qwertz'];
 }
 
 export function registerScreen(name: ScreenName, s: Screen): void {

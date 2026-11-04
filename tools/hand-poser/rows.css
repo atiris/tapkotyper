@@ -31,9 +31,9 @@ input[type=number] { width: 4.5em; }
 .kb-key.has-pose::before { content: ''; position: absolute; top: 4px; right: 4px; width: 8px; height: 8px; border-radius: 50%; background: #2a9d4b; }
 .rows-hands { position: absolute; height: auto; overflow: visible; z-index: 2; pointer-events: none; touch-action: none; user-select: none; -webkit-user-select: none; }
 .rows-stage.brush-tool .rows-hands { pointer-events: auto; cursor: none; }
-.hand { fill: #2d2140; fill-rule: evenodd; pointer-events: none; }
-.crease { fill: #2d2140; fill-rule: evenodd; opacity: .6; pointer-events: none; }
-.ghost { fill: var(--ghost-color, #c75aa5); fill-rule: evenodd; opacity: .28; pointer-events: none; }
+/* The hands' middle lines: strokes of their width. */
+.hand, .crease, .ghost { fill: none; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+.ghost { stroke: var(--ghost-color, #c75aa5); opacity: .28; }
 .rows-axis { fill: none; stroke: #2f7fbf; stroke-width: 2; stroke-dasharray: 5 4; pointer-events: none; }
 .brush { fill: none; stroke: #2f7fbf; stroke-width: 1.5; pointer-events: none; }
 .dot { pointer-events: none; }
@@ -51,11 +51,6 @@ input[type=number] { width: 4.5em; }
 .s output { font: 600 12px ui-monospace, monospace; }
 .s input { grid-column: 1 / -1; width: 100%; margin: 0; }
 .s.changed label { color: #9a3f84; font-weight: 700; }
-/* Middle lines: strokes of their width instead of filled bands. */
-.hand.middle, .ghost.middle { fill: none; stroke-linecap: round; stroke-linejoin: round; }
-.hand.middle { stroke: #2d2140; }
-.ghost.middle { stroke: var(--ghost-color, #c75aa5); }
-.crease.middle { fill: none; stroke: #2d2140; stroke-linecap: round; stroke-linejoin: round; }
 /* Tapko's styles (for its keyboard) make form fields large: back to the tool's size. */
 .rows-left select, .rows-left input[type=number], .rows-right select { width: auto; min-height: 0; padding: 3px 8px; font-size: 13px; border-radius: 6px; }
 .rows-left input[type=number] { width: 4.5em; }
@@ -97,8 +92,8 @@ input[type=number] { width: 4.5em; }
 .look-row input[type=number] { width: 4.5em; }
 .look-row input[type=color] { width: 34px; height: 22px; padding: 0; border: 1px solid #cfc7d6; border-radius: 4px; background: none; }
 /* The hands' lines as the look says (applyLook sets the shown pose's). */
-.hand.middle { stroke: var(--lines-color, #5a5560); stroke-opacity: var(--lines-alpha, 1); }
-.crease.middle { stroke: var(--creases-color, #5a5560); opacity: var(--creases-alpha, 0.6); }
+.hand { stroke: var(--lines-color, #5a5560); stroke-opacity: var(--lines-alpha, 1); }
+.crease { stroke: var(--creases-color, #5a5560); opacity: var(--creases-alpha, 0.6); }
 .nails-layer { opacity: var(--nails-alpha, 1); }
 .rows-keep { display: flex; align-items: center; gap: 4px; font-size: 12px; }
 .rows-dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }

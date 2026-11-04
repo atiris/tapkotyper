@@ -11,7 +11,7 @@ const PX = 5;
 /** How far a nail reaches from its middle (keyboard units), along the finger and across: the area stops there where a line has a gap. */
 export interface NailSize { along: number; across: number }
 
-/** The lines of a hand (paths in keyboard units): middle lines stroked this wide, or filled bands (width 0). */
+/** The lines of a hand (paths in keyboard units): middle lines stroked this wide. */
 export interface Lines { d: string; width: number }
 
 /** The nail around `at` as a closed polygon (keyboard units); null when `at` lies on no free area. */
@@ -24,7 +24,8 @@ export function findNail(lines: Lines[], at: Pt, dir: Pt, reach: NailSize): Pt[]
   ctx.lineCap = ctx.lineJoin = 'round';
   for (const l of lines) {
     const path = new Path2D(l.d);
-    if (l.width) { ctx.lineWidth = l.width; ctx.stroke(path); } else ctx.fill(path, 'evenodd');
+    ctx.lineWidth = l.width;
+    ctx.stroke(path);
   }
   const ink = ctx.getImageData(0, 0, size, size).data;
   const wall = (x: number, y: number) => x < 0 || y < 0 || x >= size || y >= size || ink[4 * (y * size + x) + 3] > 60;

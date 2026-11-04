@@ -1204,12 +1204,12 @@ kite were tried and turned down).
 | `ui-end-break.jpg` | one classic football (soccer ball), a perfect circle, white panels (#FFFDF6) with light grey-blue shading (#DCE3EA) and dark-brown pentagon patches (#5A3D2B), one small white shine upper left; no grass, no goal, no motion lines; strictly front view (Rozcvička hotová) |
 | `ui-end-task.jpg` | a chubby child's school backpack standing upright, strictly front view, symmetrical: rounded body in warm sky blue (#7FC4EA) with a lighter top, a big front flap with one golden buckle (#F2C14E), a small front pocket, a short carry handle, the shoulder straps just peeking out at the sides; a green pencil and a ruler stick out a little from the top; no face (Úloha splnená) |
 
-## 12. Hands on the keyboard (no Gemini pictures any more)
+## 12. Hands on the keyboard (made in the hand tool, not by Gemini)
 
 The outline hands over the on-screen keyboard come from the **hand tool**, a local page of the dev server:
 `npm run dev`, then open `/tools/hand-poser/`, or in Tapko's "Len chcem písať" press the paw button (dev server
-only), which opens the pose of the key typed last. It draws one home outline per hand (once drawn by Gemini, now
-middle lines with a width) over Tapko's own keyboard and moves it by rules, nothing 3D:
+only), which opens the pose of the key typed last. It draws one home outline per hand (middle lines with a width,
+drawn in Inkscape: `tools/hand-poser/drawing/lx2.svg`, `rx2.svg`) over Tapko's own keyboard and moves it by rules:
 - the base corrections of the home position (each finger bent or moved, its middle sideways);
 - the row a hand types on (bottom, home, top, digit row) moves the whole hand, curls the fingers and moves the thumb;
 - each key pose's own hand tilt and finger moves.
@@ -1218,7 +1218,14 @@ Each point of the outline moves with one finger only (the axes are fitted to the
 points to a finger by hand, "body prstov" shows them). The brush moves the outline's points; an outline can be
 copied as SVG, edited elsewhere and loaded back. "Uložiť" (Ctrl+S) writes `tools/hand-poser/rows.json` (the
 settings), `tools/hand-poser/outline/<side>.svg` (the source outline) and `public/hands/<side>/<name>.svg` (home and
-every key pose) with `public/hands/index.json`; an open Tapko shows them at once; commit them.
+every key pose) with `public/hands/index.json`, and the lines' look into `src/ui/hand-style.ts` ("Dizajn rúk");
+"Použiť farby v Tapkovi" writes the palette being tried into `src/ui/finger-colors.ts`. An open Tapko shows them at
+once; commit them.
+
+On another computer: `npm install`, `npm run dev`, open `/tools/hand-poser/`; the tool reads
+`tools/hand-poser/rows.json` and `outline/<side>.svg` from the repository and saving makes the same files again. To
+start over from the drawings, "Načítať ľavý zo SVG" / "Načítať pravý zo SVG" take `tools/hand-poser/drawing/lx2.svg` and
+`rx2.svg` (their `lhand` layer is the outline, `support` the thin lines; millimetres are converted).
 
 Names: a pose is named by the hand (`l`, `r`), the finger (1 the thumb .. 5 the little finger) and the key it presses,
 the key by two characters: two letters for a named key (`tb`, `cp`, `ls`, `rs`, `sp`, `bk`, Enter `en` flat
@@ -1229,23 +1236,23 @@ right of 0, `p1` right of P, `l1` = ô). So `l2f0` is the left index on F, `r1sr
 `l420` the left ring finger on 2 (standard) and `l520` the left little finger on 2 (ergonomic: the digit row moved
 one finger over, see `src/keyboard/fingers.ts`; the tool's "Prsty" switch). A click on a key in the tool opens or
 adds its pose. `home` is the home position, `rest` the hands lying beside the keyboard when a level starts, with the
-steps `rest1`...`rest4` between them (kept from the earlier 3D tool). A key without its own outline shows `home`.
+steps `rest1`...`rest4` between them, which the tool makes on the way from beside the keyboard to `home`; Tapko glides
+through them. A key without its own outline shows `home`.
 
 ### The owner's rules for the hands (keep every new pose to them)
 
 Look
 - Lines only, nothing inside: every key shows through. The line is grey, not black, thin. The wrists
   fade out below the keyboard.
-- Nails: no colours (a coloured nail plate never looked right); only a thin line of the nail bed (the
-  cuticle's arc and the sides), seen where the finger shows it from above. Thin lighter lines also mark
+- Nails: a thin line of the nail bed (the cuticle's arc and the sides), seen where the finger shows it from above;
+  filled softly in the finger's colour only where the tool's nail switches say (by default only beside the keyboard). Thin lighter lines also mark
   the folds of skin over the joints (three over the middle joint, two over the last, two on the thumb); the knuckles are
   low arc over each knuckle.
-- The outline is thin (1 unit by default); a file's `stroke-width` on the outline makes it thicker in
-  Tapko. The line is smoothed when saved, short broken bits are dropped.
-- The palm is 20 % shorter than the 3D model's (wrist to knuckles), the back of the hand short; the palms and
+- The lines' widths, colours and transparency (typing, and beside the keyboard) are set in the tool's "Dizajn rúk".
+- The palm is short (wrist to knuckles), the back of the hand short; the palms and
   wrists are lifted about 3 cm above the keys, so every finger slopes down and looks bent; the wrist is wider, mostly on the
   thumb's side.
-- The ring and little fingers are a little thicker than the 3D model's, every finger's base at the palm too; the gaps between the fingers
+- The ring and little fingers are not thin, every finger's base at the palm neither; the gaps between the fingers
   end in a sharp V, not a soft U (between the thumb and the index the cut stays short); the thumb (two bones) lies nearly straight, its outer side smooth, not broken at its joints, its first bone not narrow in the middle.
 - The key being typed is always readable: its letter is drawn over the hands (white, a thin solid
   outline in the finger's colour, on a small disc half a key wide that fades from its centre); the
@@ -1282,7 +1289,8 @@ its physical shape; never "one moved finger" or "one stretched finger".
   with a small move of the whole hand from the wrist.
 - The bottom row (M): the finger bends, its nail is not visible, its tip on the lower part of the key
   (not below it, not on the space bar).
-- The hands rest beside the keyboard when a level starts and come onto the home position about a
-  second later (at once with the space bar); then they stay the whole level, no parking when idle.
+- The hands rest beside the keyboard when a level starts and glide onto the home position two seconds
+  later (about a second and a half; quickly with the space bar), in free typing a second after it starts;
+  in a pause they glide aside and come back when play goes on; no parking when idle.
   They fade with the on-screen keyboard. In free typing they show the key typed at the moment it is
   typed, not the next one.

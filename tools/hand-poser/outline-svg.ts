@@ -5,8 +5,12 @@ import { type Side, VIEW } from '../../src/ui/hand-svg';
  * takes the file back from an editor (Inkscape): attributes on several lines or in `style`, relative path commands.
  */
 
-/** A hand's outline and thin lines: filled bands (as traced), or middle lines drawn this wide (keyboard units). */
-export interface Outline { lines: string; creases: string; width?: { lines: number; creases: number } }
+/** How wide a hand's outline and its thin lines are drawn (keyboard units). */
+export interface Widths { lines: number; creases: number }
+/** A hand's outline and thin lines: middle lines drawn this wide. */
+export interface Outline { lines: string; creases: string; width: Widths }
+/** An outline as read from a drawing: its widths only when its lines have one. */
+export type Drawing = Omit<Outline, 'width'> & { width?: Widths };
 
 /** A path element's attributes, with the ones in its `style` as well. */
 function attrsOf(tag: string): Record<string, string> {
@@ -64,8 +68,8 @@ export function absolutePath(d: string): string {
   return out.join(' ');
 }
 
-/** An outline read from an SVG: its paths, and its widths when they are middle lines. */
-export function readOutline(svg: string): Outline {
+/** An outline read from an SVG: its paths, and its widths when its lines have one. */
+export function readOutline(svg: string): Drawing {
   const k = drawingScale(svg);
   const paths = [...svg.matchAll(/<path\b([^>]*)>/g)].map((m) => attrsOf(m[1])).filter((a) => a.d);
   const width = (a?: Record<string, string>) => (a?.fill === 'none' ? (Number.parseFloat(a['stroke-width'] ?? '') || 0) * k : 0);
@@ -83,7 +87,7 @@ export function readOutline(svg: string): Outline {
     }
   }
   const join = (list: Record<string, string>[]) => scalePath(list.map((a) => absolutePath(a.d)).join(' '), k);
-  const o: Outline = { lines: join(lines), creases: join(creases) };
+  const o: Drawing = { lines: join(lines), creases: join(creases) };
   const w = width(lines[0]);
   if (w) o.width = { lines: Math.round(w * 10) / 10, creases: Math.round((width(creases[0]) || w / 2) * 10) / 10 };
   return o;
@@ -105,19 +109,15 @@ function drawingScale(svg: string): number {
 /** A path (absolute commands, x y pairs) scaled by k. */
 const scalePath = (d: string, k: number) => (k === 1 ? d : d.replace(/-?\d*\.?\d+(?:e-?\d+)?/g, (n) => fmt(Number(n) * k)));
 
-/** An outline as the SVG Tapko draws (src/ui/hand-svg.ts reads it): filled bands, or middle lines with their width. */
+/** An outline as the SVG Tapko draws (src/ui/hand-svg.ts reads it): middle lines with their width. */
 export function outlineSvg(s: Side, o: Outline, source: string, nails: { finger: number; d: string; color: string }[] = []): string {
   const w = o.width;
   return [
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${VIEW.x} ${VIEW.y} ${VIEW.w} ${VIEW.h}" data-side="${s}">`,
     // Nails under the lines; Tapko fills them by the finger (its FINGER_COLORS), the colour here is for other viewers.
     ...nails.map((n) => `<path class="hand-nail" data-finger="${n.finger}" d="${n.d}" fill="${n.color}"/>`),
-    w
-      ? `<path class="hand-creases" d="${o.creases}" fill="none" stroke="#5a5560" stroke-opacity="0.6" stroke-width="${w.creases}" stroke-linecap="round" stroke-linejoin="round"/>`
-      : `<path class="hand-creases" d="${o.creases}" fill="#5a5560" fill-opacity="0.6" fill-rule="evenodd"/>`,
-    w
-      ? `<path class="hand-lines" d="${o.lines}" fill="none" stroke="#5a5560" stroke-width="${w.lines}" stroke-linecap="round" stroke-linejoin="round" data-source="${source}"/>`
-      : `<path class="hand-lines" d="${o.lines}" fill="#5a5560" fill-rule="evenodd" stroke="#5a5560" stroke-width="0" stroke-linejoin="round" data-source="${source}"/>`,
+    `<path class="hand-creases" d="${o.creases}" fill="none" stroke="#5a5560" stroke-opacity="0.6" stroke-width="${w.creases}" stroke-linecap="round" stroke-linejoin="round"/>`,
+    `<path class="hand-lines" d="${o.lines}" fill="none" stroke="#5a5560" stroke-width="${w.lines}" stroke-linecap="round" stroke-linejoin="round" data-source="${source}"/>`,
     '</svg>',
     '',
   ].join('\n');

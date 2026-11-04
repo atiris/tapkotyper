@@ -986,19 +986,17 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
 .kb-hands { position: absolute; left: calc(var(--vx) * 100%); top: calc(var(--vy) * 100cqw); width: calc(var(--vw) * 100%); height: auto; overflow: visible; pointer-events: none; z-index: 2; opacity: 0; transition: opacity 0.3s; }
 .kb-hands.ready { opacity: 1; }
 .kb-hands.hands-hidden { display: none; }
-.kb-hands .hand-lines { fill: var(--hand-line); fill-rule: evenodd; stroke: var(--hand-line); stroke-linejoin: round; }
-.kb-hands .hand-creases { fill: var(--hand-line); fill-rule: evenodd; opacity: 0.6; }
-/* Middle lines (the row templates' outlines) are strokes, not filled shapes. */
-.kb-hands .centerline .hand-lines { fill: none; stroke-linecap: round; stroke: var(--typing-lines, var(--hand-line)); stroke-opacity: var(--typing-lines-alpha, 1); }
-.kb-hands .centerline .hand-creases { fill: none; stroke: var(--typing-creases, var(--hand-line)); stroke-linecap: round; stroke-linejoin: round; opacity: var(--typing-creases-alpha, 0.6); }
+/* The outlines are middle lines drawn as strokes. */
+.kb-hands .hand-lines { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke: var(--typing-lines, var(--hand-line)); stroke-opacity: var(--typing-lines-alpha, 1); }
+.kb-hands .hand-creases { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke: var(--typing-creases, var(--hand-line)); opacity: var(--typing-creases-alpha, 0.6); }
 /* Beside the keyboard (rest and the steps from it) the lines have their own colours and transparency. */
-.kb-hands .centerline.off .hand-lines { stroke: var(--off-lines, var(--hand-line)); stroke-opacity: var(--off-lines-alpha, 1); }
-.kb-hands .centerline.off .hand-creases { stroke: var(--off-creases, var(--hand-line)); opacity: var(--off-creases-alpha, 0.6); }
+.kb-hands .off .hand-lines { stroke: var(--off-lines, var(--hand-line)); stroke-opacity: var(--off-lines-alpha, 1); }
+.kb-hands .off .hand-creases { stroke: var(--off-creases, var(--hand-line)); opacity: var(--off-creases-alpha, 0.6); }
 /* The filled nails' transparency, typing and beside the keyboard. */
 .kb-hands .hand-nails { opacity: var(--typing-nails-alpha, 1); }
 .kb-hands .off .hand-nails { opacity: var(--off-nails-alpha, 1); }
 /* The dark theme keeps its own light line colour (the colours set for the hands are for the light page). */
-:root[data-theme='dark'] .kb-hands .centerline :is(.hand-lines, .hand-creases) { stroke: var(--hand-line); }
+:root[data-theme='dark'] .kb-hands :is(.hand-lines, .hand-creases) { stroke: var(--hand-line); }
 .kb-hands .hand-pose { opacity: 0; transition: opacity 0.12s; }
 .kb-hands .hand-pose.on { opacity: 1; }
 .kb-hands .hand-letter { fill: #fff; font: 700 17px var(--font-keys); text-anchor: middle; dominant-baseline: central; stroke: var(--hit); stroke-width: 3.5; stroke-linejoin: round; paint-order: stroke; }

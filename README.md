@@ -190,11 +190,40 @@ npm run assets   # turn raw images and music in assets-src/ into web files in pu
 npm run icons    # render the favicon and the PWA icons from ui-icon (after npm run assets)
 ```
 
-The outline hands over the on-screen keyboard are made in the hand tool, a page of the dev server only (never
-in the build): run `npm run dev` and open `/tools/hand-poser/` on the address it prints (e.g.
-`http://localhost:5173/tools/hand-poser/`). In free typing on the dev server, the paw button opens it on the
-pose of the key typed last. It saves straight into `public/hands/`, `src/ui/hand-style.ts` and, when a palette
-is approved, `src/ui/finger-colors.ts`; see [`assets-src/PROMPTS.md`](assets-src/PROMPTS.md), section 12.
+### The hand tool
+
+The outline hands over the on-screen keyboard show for every key how a real hand types it. They are designed in
+the hand tool, a page of the dev server only (it never goes into the build):
+
+```sh
+npm run dev      # then open http://localhost:5173/tools/hand-poser/ (the address vite prints)
+```
+
+In free typing on the dev server, the paw button opens it on the pose of the key typed last.
+
+![The hand tool](docs/hand-tool.png)
+
+One drawing per hand (`tools/hand-poser/drawing/lx2.svg`, `rx2.svg`, Inkscape, middle lines with a width) is the
+home position; every other pose moves its points by rules, so the hands always keep one look:
+
+- **Základná poloha prstov**: corrections of the home position (each finger bent, moved, apart in a V), the
+  palm, the whole hand's size (with the fingertips kept on their keys), the metacarpus.
+- **Rows** (the badges above the keyboard: home, top, digit and bottom row, beside the keyboard): where the whole
+  hand goes and how the fingers curl on that row. A coloured dot on a badge is the colour of its shadow under the
+  poses made from it.
+- **Key poses** (the badges below the keyboard): a click on a key opens or adds the pose of the finger that presses
+  it (the layout and the fingering, standard or ergonomic, are switched above the tools); each pose adds its own
+  small moves of the hand and of every finger. "Kopírovať" and "Vložiť" copy one pose over another.
+- **Mouse tools**: move the outline's lines with a brush, give points to a finger by hand, edit the fingers' axes.
+- **Dizajn rúk**: the lines' widths, colours and transparency over and beside the keyboard; **Farby prstov a
+  nechty**: the palette being tried and which poses get coloured nails.
+
+"Uložiť" (Ctrl+S) writes the settings (`tools/hand-poser/rows.json`), the edited home outlines
+(`tools/hand-poser/outline/<side>.svg`), one SVG per pose (`public/hands/<side>/<name>.svg` with
+`public/hands/index.json`) and the look (`src/ui/hand-style.ts`); "Použiť farby v Tapkovi" writes the palette into
+`src/ui/finger-colors.ts`. An open Tapko on the dev server shows a save at once. On another computer the
+repository holds everything: `npm ci`, `npm run dev`, open the tool. Pose names and the owner's rules for the hands
+are in [`assets-src/PROMPTS.md`](assets-src/PROMPTS.md), section 12.
 
 For quick manual testing, open the dev server with `?fast` before the hash
 (`http://localhost:5173/?fast#/`): level minimums, the stretch break and

@@ -350,7 +350,6 @@ export class Hands {
     const creases = layer.querySelector('.hand-creases')!;
     creases.setAttribute('d', shape.creases);
     creases.setAttribute('stroke-width', String(shape.creaseStroke));
-    layer.classList.toggle('centerline', shape.centerline);
     const nails = layer.querySelector('.hand-nails')!;
     nails.replaceChildren();
     for (const n of shape.nails) el('path', { d: n.d, fill: FINGER_COLORS[n.finger] }, nails);

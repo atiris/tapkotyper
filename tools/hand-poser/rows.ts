@@ -6,14 +6,13 @@ import { FINGER_COLORS } from '../../src/ui/finger-colors';
 import { KeyboardGuide, inkOn, textColorsOn } from '../../src/ui/keyboard-guide';
 import '../../src/styles.css';
 import { GAP, UNIT, withModifiers } from './board';
-import { centerline } from './centerline';
 import { outlineSvg, readOutline } from './outline-svg';
 import { HANDS_CHANNEL, NAIL_SOFT } from '../../src/ui/hands';
 import { findNail } from './nails';
-import type { FingerMove, HandLook, HandPose, Nail, Outline, OutlineFile, Owners, Pose, RowMove, RowName, RowsState } from './rows-file';
+import type { Drawing, FingerMove, HandLook, HandPose, Nail, Outline, OutlineFile, Owners, Pose, RowMove, RowName, RowsState } from './rows-file';
 
 /**
- * The hand tool (dev server only, /tools/hand-poser/): the home outline (once drawn by Gemini) moved by rules. Each finger's points move with that finger only: a correction of the home position (base), the row the hand
+ * The hand tool (dev server only, /tools/hand-poser/): the home outline (drawn in Inkscape: tools/hand-poser/drawing/lx2.svg, rx2.svg) moved by rules. Each finger's points move with that finger only: a correction of the home position (base), the row the hand
  * types on (it moves the whole hand and curls the fingers) and each key pose's own tilt and finger moves. The brush moves
  * the home outline's points; the paint gives points to a finger by hand. Saving writes the settings, the source outline
  * and the SVG of home and of every key pose for Tapko.
@@ -272,8 +271,9 @@ function fan(side: Side, f: number, spread: number): number {
   return spread > 0 ? (spread * fromLeft) / 3 : (spread * (3 - fromLeft)) / 3;
 }
 const WRIST_Y = VIEW.y + VIEW.h;
-/** Each hand's line widths when its outline is middle lines (undefined: filled bands, as traced). */
+/** Each hand's line widths (the typing look's, which the files get). */
 const widths = {} as Record<Side, Outline['width']>;
+const WIDTH_DEFAULT: Outline['width'] = { lines: 3.2, creases: 1.4 };
 /** The longest piece of a line (keyboard units) the hand moves as one: about a fifth of a finger's length. */
 const PIECE = 8;
 /**
@@ -316,19 +316,18 @@ function subdivide(d: string): string {
   }
   return out.join(' ');
 }
-function loadSide(s: Side, o: Outline): void {
+function loadSide(s: Side, o: Drawing): void {
   // Short pieces only (the shape stays): every finger's move then bends its lines smoothly.
   o = { ...o, lines: subdivide(o.lines), creases: subdivide(o.creases) };
   const lines = parse(o.lines);
-  widths[s] = o.width;
+  widths[s] = o.width ?? widths[s] ?? WIDTH_DEFAULT;
   const paths = { lines, creases: parse(o.creases) };
   src[s] = Object.fromEntries(KINDS.map((k) => [k, { ...paths[k], w: [] }])) as unknown as Record<Kind, Path>;
   edits[s] = Object.fromEntries(KINDS.map((k) => [k, new Array(paths[k].xy.length * 2).fill(0)])) as Record<Kind, number[]>;
   setAxes(s);
 }
 /**
- * A hand's axes: the owner's own when set (with a point on every joint), else fitted to the outline (middle lines lie
- * in the middle of their bands too).
+ * A hand's axes: the owner's own when set (with a point on every joint), else fitted to the outline.
  */
 function setAxes(s: Side): void {
   const own = st.axes?.[s];
@@ -363,7 +362,7 @@ const NAILS = {} as Record<Side, ({ pts: Pt[]; w: Reach[][] } | null)[]>;
 /** The nails found again around each finger's tip point (after the outline, a brush stroke or the axes changed). */
 function findNails(s: Side): void {
   const d = (k: Kind) => draw(src[s][k], src[s][k].xy.map((_, i) => edited(s, k, i)));
-  const lines = [{ d: d('lines'), width: widths[s]?.lines ?? 0 }, { d: d('creases'), width: widths[s]?.creases ?? 0 }];
+  const lines = [{ d: d('lines'), width: widths[s].lines }, { d: d('creases'), width: widths[s].creases }];
   NAILS[s] = AXES[s].map((axis, f) => {
     // The thumb's nail is longer and wider than the fingers'.
     const tip = axis.at(-1)!, before = axis.at(-2)!, len = Math.hypot(tip[0] - before[0], tip[1] - before[1]) || 1;
@@ -648,14 +647,11 @@ for (const s of SIDES) {
 /** The axes' points to drag (shown in the "upraviť osi" mode). */
 const handlesG = el('g', {});
 const homePose = basePose('home', 'Domov', 'home');
-/** How each hand's paths are drawn: filled bands, or middle lines as strokes of their width. */
+/** Each hand's paths: middle lines as strokes of their width. */
 function styleHands(): void {
   for (const s of SIDES) {
     const w = widths[s];
-    for (const [e, width] of [[paths[s].lines, w?.lines], [paths[s].creases, w?.creases], [ghostPaths[s], w?.lines]] as const) {
-      e.classList.toggle('middle', !!w);
-      if (w) e.setAttribute('stroke-width', String(width)); else e.removeAttribute('stroke-width');
-    }
+    for (const [e, width] of [[paths[s].lines, w.lines], [paths[s].creases, w.creases], [ghostPaths[s], w.lines]] as const) e.setAttribute('stroke-width', String(width));
   }
 }
 /**
@@ -664,7 +660,7 @@ function styleHands(): void {
  */
 function applyLook(): void {
   const look = st.style ?? LOOK_DEFAULT, t = look.typing;
-  for (const s of SIDES) if (widths[s]) widths[s] = { lines: t.lines.width ?? 3.2, creases: t.creases.width ?? 1.4 };
+  for (const s of SIDES) widths[s] = { lines: t.lines.width ?? WIDTH_DEFAULT.lines, creases: t.creases.width ?? WIDTH_DEFAULT.creases };
   const shown = nailKind(current) === 'off' ? look.off : look.typing;
   for (const [part, l] of Object.entries(shown)) {
     if ('color' in l) stageBox.style.setProperty(`--${part}-color`, l.color);
@@ -1120,7 +1116,7 @@ $('clearEdits').addEventListener('click', () => {
 
 const outlineOf = (s: Side): Outline => {
   const d = (k: Kind) => draw(src[s][k], src[s][k].xy.map((_, i) => edited(s, k, i)));
-  return { lines: d('lines'), creases: d('creases'), ...(widths[s] ? { width: widths[s] } : {}) };
+  return { lines: d('lines'), creases: d('creases'), width: widths[s] };
 };
 // The outline as an SVG file, to edit elsewhere (Inkscape) and load back: the system's own open and save dialogs.
 type Picker = { getFile(): Promise<File>; createWritable(): Promise<{ write(d: Blob): Promise<void>; close(): Promise<void> }> };
@@ -1178,7 +1174,7 @@ for (const [id, s] of [['loadLeft', 'left'], ['loadRight', 'right']] as const) {
     const o = readOutline(text);
     if (!o.lines) return say('V súbore nie je žiadna cesta (path)', true);
     // An editor's default hairline is no width meant for the hands: the present ones stay.
-    if (!o.width || o.width.lines < MIN_WIDTH) o.width = widths[s] ?? { lines: 3.2, creases: 1.4 };
+    if (!o.width || o.width.lines < MIN_WIDTH) o.width = widths[s];
     const moved = placeLike(s, o);
     // The rows and the poses always stay (they move whatever outline there is). The home position's corrections were
     // made for the outline before: a new drawing may already be the home position itself, or only a better line.
@@ -1209,7 +1205,7 @@ const ELSEWHERE = 40;
  * An outline drawn elsewhere is moved onto the hand's place: its outermost point on the thumb's side (the left hand's
  * rightmost, the right hand's leftmost) onto the present outline's. Returns how far it moved ('' when in place).
  */
-function placeLike(s: Side, o: Outline): string {
+function placeLike(s: Side, o: Drawing): string {
   const thumbEdge = (path: Omit<Path, 'w'>, at: (i: number) => Pt) => {
     let best: Pt | null = null;
     path.xy.forEach((_, i) => {
@@ -1234,23 +1230,13 @@ const shiftPath = (d: string, dx: number, dy: number) => {
   return d.replace(/-?\d*\.?\d+(?:e-?\d+)?/g, (n) => (Math.round((Number(n) + (i++ % 2 ? dy : dx)) * 100) / 100).toString());
 };
 /** A hand's new outline: other points, so the fingers given by hand and the undo steps no longer fit. */
-function replaceOutline(s: Side, o: Outline): void {
+function replaceOutline(s: Side, o: Drawing): void {
   undoStack.length = 0;
   undoBtn.disabled = true;
   st.owners[s] = { lines: {}, creases: {} };
   loadSide(s, o);
   redraw(true);
 }
-// Bands into middle lines: one stroke per line, so moving a finger bends its lines instead of tearing a band's two edges apart.
-$('centerline').addEventListener('click', () => {
-  for (const s of SIDES) {
-    if (widths[s]) continue;
-    const band = outlineOf(s), lines = centerline(band.lines), creases = centerline(band.creases);
-    replaceOutline(s, { lines: lines.d, creases: creases.d, width: { lines: lines.width, creases: creases.width } });
-  }
-  say('Obrys je zo stredových čiar; body prstom priraď prípadne znova a ulož ho');
-});
-
 // ---- the fingers' colours and the nails ----
 
 const COLOR_NAMES = ['ľ. malíček', 'ľ. prstenník', 'ľ. prostredník', 'ľ. ukazovák', 'ľ. palec', 'p. palec', 'p. ukazovák', 'p. prostredník', 'p. prstenník', 'p. malíček'];
@@ -1352,7 +1338,7 @@ async function save(): Promise<void> {
     const xy = posedSide(side, hp);
     files.push({
       side, name, lines: draw(src[side].lines, xy.lines), creases: draw(src[side].creases, xy.creases),
-      ...(widths[side] ? { width: widths[side] } : {}), ...(nailsOn(kind) ? { nails: posedNails(homePose, side, hp).map(({ pts: _, ...n }) => n) } : {}),
+      width: widths[side], ...(nailsOn(kind) ? { nails: posedNails(homePose, side, hp).map(({ pts: _, ...n }) => n) } : {}),
     });
   };
   for (const s of SIDES) out(s, 'home', homePose[s], 'rows');
@@ -1366,7 +1352,7 @@ async function save(): Promise<void> {
       // The nails on the way: drawn while the hands are still beside the keyboard (the first half of the way).
       const home = posedNails(homePose, s);
       const nails = nailsOn('off') && t <= 0.5 ? posedNails(off, s).map((n, i) => ({ ...n, d: nailPath(mix(n.pts, home[i].pts)) })) : undefined;
-      files.push({ side: s, name: `rest${k}`, lines: draw(src[s].lines, mix(from.lines, to.lines)), creases: draw(src[s].creases, mix(from.creases, to.creases)), ...(widths[s] ? { width: widths[s] } : {}), ...(nails ? { nails: nails.map(({ pts: _, ...n }) => n) } : {}) });
+      files.push({ side: s, name: `rest${k}`, lines: draw(src[s].lines, mix(from.lines, to.lines)), creases: draw(src[s].creases, mix(from.creases, to.creases)), width: widths[s], ...(nails ? { nails: nails.map(({ pts: _, ...n }) => n) } : {}) });
     }
   }
   for (const p of st.poses) {

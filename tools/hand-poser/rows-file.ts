@@ -1,9 +1,9 @@
 import { existsSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { POSE_NAME, type Side } from '../../src/ui/hand-svg';
-import { type Outline, outlineSvg, readOutline } from './outline-svg';
+import { type Drawing, type Outline, outlineSvg, readOutline } from './outline-svg';
 
-export type { Outline };
+export type { Drawing, Outline };
 
 /**
  * The hand tool's files (the page tools/hand-poser/index.html): the settings (rows.json), the source outline of each
@@ -73,9 +73,9 @@ export interface Nail { finger: number; d: string; color: string }
 export interface OutlineFile extends Outline { side: Side; name: string; nails?: Nail[] }
 
 /** The saved settings (null: none yet) and each hand's source outline (the home outline, until the first save). */
-export function readRows(): { state: RowsState | null; outline: Record<Side, Outline> } {
+export function readRows(): { state: RowsState | null; outline: Record<Side, Drawing> } {
   const state = existsSync(STATE) ? (JSON.parse(readFileSync(STATE, 'utf8')) as RowsState) : null;
-  const outline = Object.fromEntries(SIDES.map((s) => [s, readOutline(readFileSync(existsSync(OUTLINE(s)) ? OUTLINE(s) : join(HANDS, s, 'home.svg'), 'utf8'))])) as Record<Side, Outline>;
+  const outline = Object.fromEntries(SIDES.map((s) => [s, readOutline(readFileSync(existsSync(OUTLINE(s)) ? OUTLINE(s) : join(HANDS, s, 'home.svg'), 'utf8'))])) as Record<Side, Drawing>;
   return { state, outline };
 }
 

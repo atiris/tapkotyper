@@ -17,16 +17,13 @@ export type Side = 'left' | 'right';
 export const VIEW = { x: -400, y: -20, w: 1666, h: 460 };
 
 /**
- * The hand's outline and its thin lines (folds of skin over the joints, the nail beds), as filled shapes (even-odd) with
- * the stroke that thickens the outline, or as middle lines (`fill="none"`) drawn as strokes; the widths are the files'
- * `stroke-width`, which can be changed there.
+ * The hand's outline and its thin lines (folds of skin over the joints, the nail beds), middle lines drawn as strokes;
+ * the widths are the files' `stroke-width`.
  */
 export interface HandShape {
   lines: string;
   creases: string;
   stroke: number;
-  /** The lines are middle lines (drawn as strokes `stroke` and `creaseStroke` wide), not filled shapes. */
-  centerline: boolean;
   creaseStroke: number;
   /** Nails filled in their finger's colour (FINGER_COLORS), only in the poses the hand tool gives them to. */
   nails: { finger: Finger; d: string }[];
@@ -39,10 +36,9 @@ export function readHandSvg(svg: string): HandShape {
   const lines = /<path class="hand-lines" d="([^"]*)"/.exec(svg)?.[1] ?? '';
   const creases = /<path class="hand-creases" d="([^"]*)"/.exec(svg)?.[1] ?? '';
   const stroke = Number(/<path class="hand-lines"[^>]*stroke-width="([\d.]+)"/.exec(svg)?.[1] ?? 0);
-  const centerline = /<path class="hand-lines"[^>]*fill="none"/.test(svg);
   const creaseStroke = Number(/<path class="hand-creases"[^>]*stroke-width="([\d.]+)"/.exec(svg)?.[1] ?? 0);
   const nails = [...svg.matchAll(/<path class="hand-nail" data-finger="(\d)" d="([^"]*)"/g)].map((m) => ({ finger: Number(m[1]) as Finger, d: m[2] }));
-  return { lines, creases, stroke, centerline, creaseStroke, nails };
+  return { lines, creases, stroke, creaseStroke, nails };
 }
 
 /** Keys named by two letters; the bottom row's modifiers only in the hand poser (Tapko's keyboard leaves them out). */

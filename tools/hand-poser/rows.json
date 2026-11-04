@@ -7633,12 +7633,12 @@
    "lines": {
     "width": 2,
     "color": "#5a5560",
-    "transparency": 30
+    "transparency": 20
    },
    "creases": {
     "width": 1,
     "color": "#5a5560",
-    "transparency": 50
+    "transparency": 40
    },
    "nails": {
     "transparency": 30
@@ -7647,14 +7647,14 @@
   "off": {
    "lines": {
     "color": "#5a5560",
-    "transparency": 60
+    "transparency": 50
    },
    "creases": {
     "color": "#5a5560",
-    "transparency": 80
+    "transparency": 70
    },
    "nails": {
-    "transparency": 40
+    "transparency": 30
    }
   }
  },

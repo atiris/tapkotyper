@@ -17,8 +17,10 @@ describe('SEO metadata', () => {
     expect(jsonLd(html).url).toBe(URL);
   });
 
-  it('is found by the name Ťapko too', () => {
-    expect(attr(html, /<title>([^<]+)<\/title>/)).toContain('Ťapko');
+  it('is titled by its name and slogan, and found by the name Ťapko in the description and the picture', () => {
+    expect(attr(html, /<title>([^<]+)<\/title>/)).toBe('TapkoTyper – zábavné písanie všetkými desiatimi');
+    expect(attr(html, /<meta name="description" content="([^"]+)"/)).toContain('Ťapko');
+    expect(attr(html, /<meta property="og:image:alt" content="([^"]+)"/)).toContain('Ťapk');
     expect(jsonLd(html).alternateName).toContain('Ťapko');
   });
 

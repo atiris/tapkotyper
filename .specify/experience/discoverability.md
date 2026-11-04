@@ -4,6 +4,9 @@
 - Parents and teachers who search for touch typing for children (in Slovak first) find the
   game, also by the character's name **Ťapko** (and "Tapko" without the caron). A shared link
   shows a clear preview: a title, a short description and a picture of the start screen.
+- The title is the game's name and its slogan, "TapkoTyper – zábavné písanie všetkými desiatimi"
+  (English "fun touch typing with all ten fingers"), without the character in brackets and not
+  "for children"; the name Ťapko is in the description, the picture's alt text and the alternate names.
 - Slovak first: the game's title, description and preview texts are Slovak; English is named as
   the second language. Without JavaScript the page says in both languages what the game is and
   links to the about pages.

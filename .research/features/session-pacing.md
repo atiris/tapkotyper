@@ -12,6 +12,6 @@
 
 ## Why
 - Advice: start with 5-10 min, break after about 20 min for primary age, move or stretch. [src: EANI, https://send.eani.org.uk/sites/default/files/2025-02/Touch%20Typing.docx]
-- Teachers/parents suggest 15-20 min daily; 5-10 min few times a week still works; once a week is not enough. [src: https://community.typesy.com/t/do-you-have-some-tips-in-doing-typing-lessons-for-us-homeschool-parents/4379 (vendor forum, treat with care)]
-- Competitive and score-chasing elements stress some learners. [src: Common Sense Media TypingClub parent reviews]
+- Teachers/parents suggest 15-20 min daily; 5-10 min few times a week still works; once a week is not enough. [src: vendor forum, treat with care]
+- Competitive and score-chasing elements stress some learners. [src: parent reviews]
 - Gamification addiction concerns: [bg] streaks, variable rewards and social comparison are the usual patterns to avoid.

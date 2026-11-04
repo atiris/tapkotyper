@@ -10,8 +10,8 @@
 - Guest mode leaves no stored data.
 
 ## Why
-- Ads are the top complaint: TypingClub parents "excessive ads"; Typing.com free "distracting banner ads". [src: Common Sense links in competitors.md]
-- TypingClub carries a privacy warning from Common Sense. [src]
-- Typing.com collects names, emails, cookies and allows third-party ad cookies; class rosters and SSO add burden for schools. [src: https://www.typing.com/dist/site_typing/images/resources/typingcom-take-home-agreement.docx ; https://www.rockford.k12.mn.us/district/departments/technology/digital-tools/typing]
-- Nitro Type: unmoderated chat flagged as risk for young kids (opinion source). [src]
+- Ads are the top complaint: parents report "excessive ads" and free versions show "distracting banner ads". [src]
+- Some typing sites carry a privacy warning from a review organisation. [src]
+- Typing sites collect names, emails and cookies and allow third-party ad cookies; class rosters and SSO add burden for schools. [src]
+- Unmoderated chat is flagged as a risk for young kids (opinion source). [src]
 - Our selling point against free-but-ad-heavy tools.

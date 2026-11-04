@@ -15,8 +15,7 @@
   "transcription typing" to "generative typing", which "helps student writing develop
   faster" (Zeitz, via https://blog.tcea.org/tag/tutorial/).
 - A Vanderbilt study saw a fast typist drop "from 78 to 45 words per minute" when typing
-  their own text instead of copying
-  (https://mentalfloss.com/article/87672/forget-mavis-beacon-self-taught-typists-are-nearly-fast-touch-typists),
+  their own text instead of copying,
   so composing is its own skill that needs practice.
 - A small study with special-needs pupils says keyboarding gives struggling writers "an
   alternative to the traditional paper and pencil method" (https://vtext.valdosta.edu/xmlui/handle/10428/142).

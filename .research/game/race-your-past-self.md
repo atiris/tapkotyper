@@ -9,13 +9,10 @@
 - Off by default; turned on by the child for a level.
 
 ## Why
-- Competition is the reason children love Nitro Type: kids "enjoy practicing typing with
-  their friends", and it "will definitely engage kids in typing practice more than the more
-  traditional, single-player typing trainers"
-  (https://www.commonsense.org/education/reviews/nitro-type).
-- The same tool is blamed because "students focus on speed not accuracy" and for chat and
-  ads (https://www.commonsense.org/education/website/nitro-type); racing yourself keeps the
-  thrill without strangers.
+- Competition is the reason children love typing races: kids enjoy practicing typing with
+  their friends, and races engage kids more than traditional single-player typing trainers.
+- Races are also blamed because students focus on speed not accuracy, and for chat and
+  ads; racing yourself keeps the thrill without strangers.
 - Showing growth against oneself is the healthy version of the speed trend the app
   already shows in numbers.
 

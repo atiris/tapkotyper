@@ -11,17 +11,12 @@
   a page waits for the child, nothing moves or runs out.
 
 ## Why
-- TypingClub's story mode, where "the narrative appears as you type" and "the story pauses
-  until you type the correct letters", is described as giving "the feeling of writing a
-  short story and bringing it to life"
-  (https://freetech4teach.teachermade.com/?p=8622).
-- Repetitive drills are the main complaint about Typing.com ("Repetitive Lesson
-  Structure", https://www.saasworthy.com/product/typing-com/reviews) and low replay value
-  about Dance Mat (https://www.commonsensemedia.org/website-reviews/dance-mat-typing).
-- Epistory is loved because typing is woven into a story, "a generally more relaxed typing
-  game than its peers" (https://techraptor.net/content/epistory-typing-chronicles-review).
-- Ratatype is criticised because "the sentences aren't always exactly kid friendly"
-  (https://www.commonsense.org/education/reviews/ratatype) - hand-written child-safe text
+- A story mode where the narrative appears as you type and pauses until you type the correct
+  letters is described as giving the feeling of writing a short story and bringing it to life.
+- Repetitive drills are the main complaint about typing sites ("repetitive lesson structure")
+  and low replay value is a top complaint about typing games.
+- Typing woven into a story is loved, as a more relaxed typing game than its peers.
+- Sentences that are not always kid friendly are criticised - hand-written child-safe text
   is a plus.
 
 ## Fit

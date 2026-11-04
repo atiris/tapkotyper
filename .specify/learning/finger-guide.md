@@ -105,7 +105,7 @@
   get-ready card. A pool of 40+ tips per language, no repeat of the last few shown.
 
 ## Why
-- Weak finger guidance is a frequent complaint (Dance Mat); masking or fading the keyboard
+- Weak finger guidance is a frequent complaint about typing games; masking or fading the keyboard
   is standard teacher advice
   ([research](../../.research/features/on-screen-keyboard-finger-guide.md)).
 - Hands lying on the keys show where every finger rests and how far it reaches, which small

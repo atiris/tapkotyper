@@ -10,15 +10,13 @@
 - The child can print the newest result as a certificate with Tapko and the date.
 
 ## Why
-- Certificates are a loved part of Ratatype; Common Sense says "certificates and speed
-  and accuracy challenges encourage students to keep improving"
-  (https://www.commonsense.org/education/reviews/ratatype). The Czech Psaní Hravě course
-  also ends with a certificate (https://loudavymkrokem.cz/psani-hrave-recenze/).
+- Certificates are a loved part of typing sites; reviewers say certificates and speed and
+  accuracy challenges encourage students to keep improving.
 - Parents ask "is my child getting better?"; the current trends come from mixed game play
   (different levels, difficulty), so they are hard to compare over months. A fixed check
   gives a fair number.
-- Ratatype users dislike that its test "only allows a fixed time to complete the text"
-  (https://www.trustpilot.com/review/ratatype.com?page=2) - hide the timer for children.
+- Users dislike typing tests that only allow a fixed time to complete the text - hide the timer
+  for children.
 
 ## Fit
 - Speed appears, but only against the child's own past and after accuracy, as in the

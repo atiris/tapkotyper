@@ -7,4 +7,4 @@
 - [fix-with-backspace.md](fix-with-backspace.md) - optional mode where mistakes are fixed with Backspace (P3)
 - [exercise-types.md](exercise-types.md) - other kinds of typing practice: dictation, memory flash, picture-to-word, accuracy runs (P2)
 - [one-hand-path.md](one-hand-path.md) - lesson path for typing with one hand (P3)
-- [typing-jungle-ideas.md](typing-jungle-ideas.md) - from edclub's Typing Jungle: hold J or F while the other hand types, finger column trips, tricky words, letter groups (P1-P3)
+- [hold-and-reach.md](hold-and-reach.md) - hold keys while another finger types, chords, column trips, levels that need exact keys (P1-P2)

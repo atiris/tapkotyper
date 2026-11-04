@@ -9,16 +9,11 @@
 - The check can be repeated from the parent area; "No" or skipping starts at `f j`.
 
 ## Why
-- Children who already know the home row get bored by repeated basics; TypingClub,
-  CodeHS and Typing Agent all have placement tests that "unlock skills students are
-  already proficient in"
-  (https://login.typingclub.com/docs/class-management/typing-tests/built-in-placement-tests.html,
-  https://help.codehs.com/en/articles/13719929-codehs-typing-placement-tests).
-- A Typing.com user "liked the placement test and started at their level right away"
-  (https://de.trustpilot.com/review/typing.com?page=6).
-- Lesson pacing that does not match the child "can discourage students" is a top parent
-  complaint about TypingClub
-  (https://www.commonsensemedia.org/website-reviews/typingclub/user-reviews/adult).
+- Children who already know the home row get bored by repeated basics; school typing
+  tools have placement tests that unlock skills students are already proficient in.
+- A user of a typing site liked the placement test and started at their level right away.
+- Lesson pacing that does not match the child can discourage students; it is a top parent
+  complaint about typing courses.
 - Today the parent can pick keys by hand, but most parents cannot judge which keys their
   child really knows.
 

@@ -55,7 +55,7 @@ Each world ends with a bigger, special challenge:
 - None of them can fail the level; the main gate can only start again.
 
 ## Why
-- Variety keeps children engaged; low replay value is a top complaint about Dance Mat.
+- Variety keeps children engaged; low replay value is a top complaint about typing games.
 - The last gate of the robot story asks for exact typing, the skill the story trains,
   and stays fair for every child because nothing hurries or ends the try.
 - The fairy story's super-obstacles grow listening and remembering from single words to

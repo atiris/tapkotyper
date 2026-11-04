@@ -9,12 +9,9 @@
 
 ## Why
 - The Czech market is about twice the size of the Slovak one and has the same gap: the
-  tools found are paid (Psaní Hravě, 790 CZK, online only,
-  https://loudavymkrokem.cz/psani-hrave-recenze/) or old Windows software (10prstu.cz, "only
-  for MS Windows", https://www.slevomat.cz/akce/2383678-online-kurz-psani-vsemi-deseti-45-lekci-a-certifikat).
-  No free, offline, child-friendly game was found.
-- Slovak and Czech families and schools often share materials; Czech children were also
-  the target of the only story-based competitor (Psaní Hravě / Písanie Hravo).
+  tools found are paid and online only, or old Windows-only software. No free, offline, child-friendly game was found.
+- Slovak and Czech families and schools often share materials, and a free story-based course
+  for both is missing.
 - The architecture already plans "adding a language means adding its text file, its word
   list and (if new) its layout".
 

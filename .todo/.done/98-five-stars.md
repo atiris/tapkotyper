@@ -6,8 +6,8 @@ Three stars (plus halves on the end card) are too coarse: a child who plays well
 plays almost without mistakes get the same. Levels move to **1-5 stars on a logarithmic scale of
 the error rate**: every further star needs half the mistakes. Finishing with any number of
 mistakes gives 1 star, 5 stars only for really good play, almost without mistakes. The scale
-stays accuracy-only (speed is handled by the automatic growth), like Typing.com; the 5-star top
-matches TypingClub's "5 = top accuracy".
+stays accuracy-only (speed is handled by the automatic growth); the 5-star top
+is top accuracy.
 
 ## Decisions (taken with the owner, 2026-11-01)
 

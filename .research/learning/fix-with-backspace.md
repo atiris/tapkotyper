@@ -11,12 +11,8 @@
 - In real typing (school work, messages) mistakes are not blocked; the child must notice
   and correct them. Today the game simply waits for the right key, so Backspace is never
   practised.
-- TypingClub lets teachers choose: Backspace on for beginners because "the inability to
-  correct mistakes could result in frustration", off for advanced typists
-  (https://jcles.typingclub.com/docs/user-guide/introduction/best-practices-for-teaching-keyboarding.html,
-  https://s.typingclub.com/docs/class-management/class-settings/backspace-behavior.html).
-- Mavis Beacon and Typing Master have similar settings
-  (https://docs.imsidesign.com/projects/Mavis-Beacon-Keyboarding-Kidz-2021/Mavis-Beacon-Keyboarding-Kids-2021/Settings/Typing-Settings.html).
+- School typing tools let teachers choose: Backspace on for beginners because the inability to
+  correct mistakes could result in frustration, off for advanced typists.
 
 ## Fit
 - Nothing is lost on a mistake, so "nothing bad happens" still holds.

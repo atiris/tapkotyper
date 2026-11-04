@@ -12,15 +12,10 @@
   that children import once.
 
 ## Why
-- Progress reports are what teachers praise most in school tools: Typing.com reviewers
-  call out "useful data on student progress" (https://ca.trustpilot.com/review/typing.com?page=6),
-  and Mavis Beacon, Typing Agent and Typing.com all have class reports
-  (https://support.typing.com/en/articles/9048385,
-  https://help.typingagent.com/en/articles/4151529-progress-report).
-- These reports need class codes or student accounts; Typing.com "will generate usernames
-  and passwords for students" (district guide,
-  https://sites.google.com/teachers.kusd.edu/instructional-tech-resources/home/keyboarding_1).
-  An account-free report is the privacy-friendly answer.
+- Progress reports are what teachers praise most in school tools: reviewers
+  call out useful data on student progress, and school typing tools all have class reports.
+- These reports need class codes or student accounts; a district guide notes the tool "will
+  generate usernames and passwords for students". An account-free report is the privacy-friendly answer.
 - Shared classroom devices are common (noted already in the profiles spec).
 
 ## Fit

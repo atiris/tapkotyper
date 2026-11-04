@@ -76,9 +76,9 @@
   is quick, the lit keyboard shows what is in, single clicks fine-tune it. The way to type
   is a choice for one run, so it is not stored. Children do not know what "Dictation" or
   "Remember it" mean, so the line under the buttons says it in their words.
-- Gradual unlocking with weak-key weighting (Keybr, Typing.com) is what users praise most
+- Gradual unlocking with weak-key weighting is what users praise most
   for real progress ([research](../../.research/features/lesson-progression.md)).
-- Space early is normal (Typing.com starts with "J, F and Space"); period and comma with the
+- Space early is normal (typing courses start with "J, F and Space"); period and comma with the
   letters make even short targets read like text; capitals at the end of the path are the
   block every big course has, and Shift chords are hard for children, so each Shift comes
   alone at a middle point with plenty of known words

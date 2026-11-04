@@ -11,8 +11,8 @@
 - Short posture card at session start: feet flat, back straight, wrists floating, eyes on screen. Shown again at breaks.
 
 ## Why
-- Dance Mat is criticized for weak finger guidance; teachers must police technique. [src: https://cdn.typingtournament.com/static/pdf/TTO-DanceMatTyping-Comparison.pdf]
-- Teacher guide: glancing at keys feels helpful but harms long-term skill; mask keys, use on-screen hand guide as reference. [src: https://docs.imsidesign.com/projects/Mavis-Beacon-Teaches-Typing-Classroom-Edition-Teacher-Guide/Mavis-Beacon-Teaches-Typing-Classroom-Edition-Teacher-Guide/Activities-and-Resources/Activity-1-Masking-the-Keys.html]
+- Weak finger guidance is a frequent complaint about children's typing games; teachers must police technique. [src]
+- Teacher guides: glancing at keys feels helpful but harms long-term skill; mask keys, use on-screen hand guide as reference. [src]
 - Home-row position should be taught from the start. [src: EANI document, https://send.eani.org.uk/sites/default/files/2025-02/Touch%20Typing.docx]
 - Hiding-keys evidence is mostly teacher practice; controlled study results not confirmed. [src gap]
 

@@ -14,9 +14,9 @@
 ## Why
 - Diacritics hidden behind digits is the known pain point for Slovak learners. [src: https://ddadsstornala.sk/aktuality/nacvik-pisania-na-pc-ucebna-pomocka/]
 - Position of AltGr characters differs between operating systems. [src: https://en.wikipedia.org/wiki/QWERTZ]
-- A paid Slovak course sells a dedicated diacritics level ("Bažina diakritiky"), so demand exists. [src: https://loudavymkrokem.cz/sk/pisanie-vsetkymi-desiatimi/]
-- Old school tools (ZAV, ATF) are Windows-era; no modern free kid tool found. [src]
-- Tux Typing and Klavaro show multi-language is expected, but Slovak coverage not confirmed. [src]
+- Diacritics are hard enough to deserve their own practice level.
+- Old school tools are Windows-era; no modern free kid tool found. [src]
+- Multi-language support is expected in children's typing programs, but Slovak coverage is not confirmed. [src]
 
 ## Open questions
 - Verify exact Slovak key map on Windows, macOS, Linux, ChromeOS before lesson design.

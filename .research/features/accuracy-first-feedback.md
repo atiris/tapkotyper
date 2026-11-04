@@ -11,10 +11,10 @@
 - No public leaderboards, no races.
 
 ## Why
-- Teachers say racing makes students chase speed over accuracy. [src: https://www.commonsense.org/education/reviews/nitro-type]
-- Kids on TypingClub complain speed is prioritized; parents call scoring rigid and pacing discouraging. [src: https://www.commonsensemedia.org/website-reviews/typingclub]
-- Nitro Type: competition invites cheating and bans. [src: https://nitro-type.fandom.com/wiki/Ban]
-- Epistory reviewers liked a relaxed typing game over "type or die". [src: https://techraptor.net/content/epistory-typing-chronicles-review]
+- Teachers say racing makes students chase speed over accuracy. [src]
+- Kids complain when speed is prioritized; parents call scoring rigid and pacing discouraging. [src]
+- Competition invites cheating and bans. [src]
+- Reviewers liked a relaxed typing game over "type or die". [src]
 
 ## Risk
 - Timed super-obstacles (tsunami, mole) can cause stress. Offer a "no timers" parent switch; timed events should slow down, never fail.

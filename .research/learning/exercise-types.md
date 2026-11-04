@@ -7,18 +7,18 @@ picture-to-word not wanted by the owner; the rest open. **Prio:** P2.
 | Type | What the child does | Where it is used |
 |---|---|---|
 | Copy typing (letters, words, phrases) | types the shown target | every course; all TapkoTyper story levels |
-| Block typing / new key drill | one character per box, slow, attention on the new key | TypingClub "Block Typing" [src] |
-| Adaptive drill | text built from the weakest letters and pairs | TypingClub dynamic lessons [src], Keybr [bg] |
-| Dictation (type what you hear) | hears a letter, word or phrase and types it without seeing it | Talking Typer dictation sections [src]; a study of 57 fourth-graders found copying and dictation measure different things, and reading speed drives both [src] |
+| Block typing / new key drill | one character per box, slow, attention on the new key | typing courses [src] |
+| Adaptive drill | text built from the weakest letters and pairs | adaptive typing courses [src, bg] |
+| Dictation (type what you hear) | hears a letter, word or phrase and types it without seeing it | dictation sections in accessible typing programs [src]; a study of 57 fourth-graders found copying and dictation measure different things, and reading speed drives both [src] |
 | Memory / flash typing | the word shows for a moment, hides, and is typed from memory | common in classroom drills [bg]; not found in the searched kids' products |
-| Accuracy run / block on error | no progress past a wrong key; a mistake restarts the line | TypingClub blind setting "block-on-error" [src]; accuracy challenges [bg] |
+| Accuracy run / block on error | no progress past a wrong key; a mistake restarts the line | a "block on error" teacher setting [src]; accuracy challenges [bg] |
 | Rhythm / metronome | type to a steady beat | music-style typing games [bg] |
-| Reaction / whack-a-mole | a short target pops up and hides again | arcade typing games, KidzType [src] |
-| Timed test | 1-3 minutes of text, speed and accuracy measured | KidzType timed drills [src], every test site |
-| Race (others or own ghost) | type against a pace car | Nitro Type [src], KidzType TypeRace [src] |
+| Reaction / whack-a-mole | a short target pops up and hides again | arcade typing games [src] |
+| Timed test | 1-3 minutes of text, speed and accuracy measured | timed drills [src], every test site |
+| Race (others or own ghost) | type against a pace car | typing race games [src] |
 | Composition / answer typing | types an answer, a picture's name or own sentence | school programs that mix typing with writing improved writing too [src: WoTIP study] |
 | Spelling / missing letters | fills the missing letters of a known word | spelling apps [bg] |
-| Continuous text | a longer story typed as one flow | Epistory [src in competitors.md] |
+| Continuous text | a longer story typed as one flow | story-based typing games [src] |
 
 ## What TapkoTyper has and does not have (2026-10-21)
 | Type | TapkoTyper |
@@ -61,9 +61,5 @@ picture-to-word not wanted by the owner; the rest open. **Prio:** P2.
 Timed test, ghost race and Backspace fixing already have their own research files.
 
 ## Sources
-- TypingClub lesson types: https://dimke.typingclub.com/docs/user-guide/class-student-setup/lesson-types.html
-- TypingClub accessibility (block on error): https://freetech4teach.teachermade.com/?p=7551
-- Talking Typer (dictation): https://tech.aph.org/tt_doc.htm
-- KidzType games: https://www.kidztype.com/tags/kids-typing-games/
 - Copy vs dictation, 57 fourth-graders: https://doaj.org/article/154f35499e2748c1a213978dc54534ce
 - Typing + composition program (WoTIP), Grade 4: https://cris.huji.ac.il/en/publications/effect-of-an-instructional-program-for-word-processing-and-effici/

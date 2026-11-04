@@ -44,7 +44,7 @@
   5 seconds, the clock stops until the next key, so a break in typing or words left to fly by
   never fill the minimum (the paws' help and the mode's own scenes without a word count). A calm step lasts a quarter less, a super level a quarter
   more; a hero's journey lasts twice a regular level of its story, split evenly over its parts. Even 4 minutes is well under the 10-15 minutes a day
-  usually recommended for children and under a KTouch lesson (5-10 minutes): a level is one part
+  usually recommended for children and under a typical course lesson (5-10 minutes): a level is one part
   of a session, not the whole of it.
 - A level also asks for a minimum of words: what a slow but practising child types in the
   minimum time, 8 / 10 / 12 words a minute in the three stories (children of 7-9 type about
@@ -260,7 +260,7 @@
   jumps after a slip loses the child's place, so it glides. On the wind level a slip that only counted made the gust
   meaningless; restarting the word and a stronger, faster gust make the slip felt, and a few
   words more at most keep it small.
-- Arcade-style typing (ZType, Typer Shark, Epistory) is praised as motivating; the peaceful
+- Arcade-style typing is praised as motivating; the peaceful
   variant keeps the fun without destruction or stress.
 - Overlapping words cannot be read, and a child who cannot read the word cannot type it.
   A word seen but not yet typable feels like a broken key.
@@ -282,7 +282,7 @@
 - Three stars were too coarse: a child who plays well and one who plays almost without a
   mistake got the same. Halving the mistakes for each star keeps the first stars easy and
   makes five a real goal; stars stay accuracy-only because speed already grows on its own
-  (as on typing.com, with TypingClub's five as the top of accuracy). A cap by the dragons that
+  (five is the top of accuracy). A cap by the dragons that
   flew made one game count differently from the rest.
 - Some levels ended in under a minute, super levels with a few words in seconds: too short
   to settle into a rhythm, and stars came cheap.

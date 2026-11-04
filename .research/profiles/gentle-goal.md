@@ -10,10 +10,9 @@
 - The dashboard shows weeks with the goal met, next to time per day.
 
 ## Why
-- Parents want regular practice; a Typing.com user, otherwise happy, "wished for a daily
-  goal setting" (https://de.trustpilot.com/review/typing.com?page=6), and Typing.com now
-  sells daily goals of "5 to 60 minutes a day" with a celebration when met
-  (https://support.typing.com/en/articles/9051073).
+- Parents want regular practice; a user of a typing site, otherwise happy, wished for a daily
+  goal setting, and paid typing tools now sell daily goals of 5 to 60 minutes a day with a
+  celebration when met.
 - Slovak teaching guides say training takes "about 3 months of regular practice, at least
   10 minutes a day" (https://zssambra.sk/blog/nacvik-pisania-na-pc-doc-ucebna-pomocka/), so
   regularity matters more than long sessions.

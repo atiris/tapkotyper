@@ -12,17 +12,15 @@
   list file with a class.
 
 ## Why
-- Parents and teachers want to connect typing with school work. Typesy sells "Word Work"
-  where parents "paste or type in words in any format to build a custom list"
-  (https://helpdesk.ereflect.com/portal/en/kb/articles/what-does-the-words-section-in-typesy-do).
-- Nessy Fingers (for dyslexic children) lets students "add their own words from school to
-  practice spelling" (https://www.nessy.com/us/product/nessy-fingers/?pp=1), and parent
-  quotes there praise exactly this mix.
+- Parents and teachers want to connect typing with school work. Paid typing
+  programs sell a word-list feature where parents paste or type in words in any format to
+  build a custom list.
+- Programs for dyslexic children let students add their own words from school to practice
+  spelling, and parents praise exactly this mix.
 - Typing spelling words "allows muscle memory to encode the spelling as a series of key
-  strokes" (https://readandspell.com/node/1263).
-- TypingClub lets teachers build custom lessons and assign them
-  (https://www.commonsensemedia.org/website-reviews/typingclub); keybr users ask for their
-  own text (https://groups.google.com/g/keybr/c/mU1BKlquv9Q).
+  strokes".
+- Teachers value building custom lessons and assigning them, and users of adaptive typing
+  tools ask for their own text.
 
 ## Fit
 - Fully local, no accounts; fits the parent area and the export file.

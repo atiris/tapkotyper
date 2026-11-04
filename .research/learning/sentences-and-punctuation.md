@@ -13,11 +13,9 @@
 ## Why
 - Today the space bar is never typed and punctuation is never taught, so a child who
   finishes the game still cannot type a normal sentence for school.
-- Every structured course ends with sentences and punctuation: Dance Mat Typing goes
-  "from individual keys to short words and sentences"
-  (https://www.commonsense.org/education/reviews/dance-mat-typing); KeyBlaze and others
-  continue "with capitalization, punctuation and numbers"; Monkeytype offers separate
-  punctuation and numbers modes (https://www.mintlify.com/monkeytypegame/monkeytype/community/faq).
+- Every structured course ends with sentences and punctuation: courses go
+  from individual keys to short words and sentences, then continue with capitalization,
+  punctuation and numbers; test tools offer separate punctuation and numbers modes.
 - A first-grade study counted it as success when children "could type words and short
   sentences without looking at the keyboard"
   (https://vtext.valdosta.edu/xmlui/handle/10428/406).

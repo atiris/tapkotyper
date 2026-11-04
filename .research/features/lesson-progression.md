@@ -11,8 +11,8 @@
 - Word generator keeps pronounceable pseudo-words when real words do not fit the key set (spec).
 
 ## Why
-- Keybr's core idea: adds letters gradually, targets weak keys, low stress. [src: https://www.educationalappstore.com/website/keybr ; https://dyslexiahelp.umich.edu/latest/keybrcom-simple-online-game-help-improve-typing-skills/]
-- Typing.com personalises to trouble letters. [src: Common Sense comparison]
-- Dance Mat: no progression management, low replay value, unskippable songs. [src: https://www.commonsensemedia.org/website-reviews/dance-mat-typing]
-- ZAV (Slovak school tool) uses graded lessons letters, words, sentences. [src: archiv.mpc-edu.sk PDF]
-- Epistory: late game felt repetitive; keep variety. [src]
+- Gradual unlocking of letters with weak-key weighting and low stress is what users praise most. [src]
+- Personalised practice for trouble letters is a valued feature. [src]
+- No progression management, low replay value and unskippable songs are frequent complaints. [src]
+- Slovak school programs use graded lessons: letters, words, sentences. [src]
+- A late game that feels repetitive is a common complaint; keep variety. [src]

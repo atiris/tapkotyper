@@ -9,7 +9,7 @@
 - The minimum time is 2 minutes everywhere today (calm steps 1 minute). The owner wants
   the difficulty to grow with the story: 2 / 3 / 4 minutes in stories 1 / 2 / 3. Even
   4 minutes is well under the 10-15 minutes a day usually recommended for children, and
-  the KDE course guidelines (in KTouch) put a lesson at 5-10 minutes; one level is one
+  course guidelines put a lesson at 5-10 minutes; one level is one
   part of a session, not the whole of it.
 - The planned target counts are hand-picked and not tied to any pace. Children of 7-9
   type about 5-15 words a minute (10-20 with practice); the owner chose a word minimum

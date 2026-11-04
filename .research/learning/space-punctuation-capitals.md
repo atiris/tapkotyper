@@ -45,7 +45,7 @@ pick them in manual mode.
   that fly or fall hold at most two words (about 9 letters); calm modes (stepping stones, free
   practice) use 3-4 word phrases once the comma is known.
 - **Period.** Ends a short phrase of 2-3 known words: `mama ide.` / `a red hat.` Before
-  capitals the phrase starts in lower case. This is fine: TypingClub also types simple
+  capitals the phrase starts in lower case. This is fine: courses also type simple
   sentences with periods and commas before capitals.
 - **Comma.** Inside 3-4 word phrases: lists and simple pauses, `ema, eva a jano.` (calm modes),
   short pairs in story targets.
@@ -59,34 +59,26 @@ pick them in manual mode.
 
 ## Why
 
-- **Space early is normal.** Typing.com's first key lesson is "J, F, and Space"
-  (https://www.typing.com/es/curriculum/keyboarding). Dance Mat Typing assigns the space bar to
-  the thumbs in stage 1, with the home row
-  (https://www.kidztype.com/blog/category/bbc-mat-typing-stage-1/). Today tapkotyper never
+- **Space early is normal.** Typing courses start with "J, F and Space", and some assign the
+  space bar to the thumbs in stage 1, with the home row. Today tapkotyper never
   types a space, so the thumb is never trained and words never join into text.
-- **Period and comma come with the letters, not after them.** Typing.com: "Period and Comma"
-  is lesson 12 of 16 letter lessons, after V, H, M and before W, X, Q, Y, P, Z
-  (https://www.typing.com/es/curriculum/keyboarding). Dance Mat Typing: comma with C in stage 9,
-  period in stage 11 of 12 (https://www.kidztype.com/blog/?p=302). TypingClub (Typing Jungle)
-  teaches `, .` with the bottom row (lessons 52-88), then "Basic Level 1": "simple sentences
-  using the whole alphabet, commas, and periods ... before introducing capital letters"
-  (https://login.typingclub.com/m/edclubdocs/media/pdf/typing-jungle-handbook.pdf). Our order
+- **Period and comma come with the letters, not after them.** One course puts "Period and
+  Comma" at lesson 12 of 16 letter lessons, after V, H, M and before W, X, Q, Y, P, Z; another
+  puts the comma with C in stage 9 and the period in stage 11 of 12; a third teaches `, .` with
+  the bottom row, then simple sentences using the whole alphabet, commas and periods before
+  introducing capital letters. Our order
   pulls them a bit earlier because they are close to the home row (`.` and `,` are one step
   down from `l` and `k`) and because a period makes even 2-word targets feel like real text.
 - **Capitals: big courses put them after all letters; that is the "end block" to avoid.**
-  Typing.com: "Shift Key and Capitalization" opens part 2, after all letters. TypingClub:
-  Shift after letters and basic sentences (lessons 192-202), then "Basic Level 2": "full
-  sentences using capitals and simple punctuation ... practice using the shift key in context"
-  (same handbook). Dance Mat: Shift is the last stage. Ratatype: "Using the Shift Key" is
-  lesson 10 of 12 (https://www.ratatype.com/faq/ratatype-curriculum/). At the other end,
-  typing-lessons.org teaches Shift as lesson 5, right after the home row
-  (https://www.typing-lessons.org/lesson_5.html). Our middle point (after the home and top rows
+  Some courses open a second part with the Shift key after all letters; others put Shift after
+  letters and basic sentences, then add full sentences with capitals and simple punctuation to
+  practise Shift in context; one makes Shift the last stage; another has it as lesson 10 of 12.
+  At the other end, one course teaches Shift as lesson 5, right after the home row. Our middle point (after the home and top rows
   are known) gives enough real words for names and sentence starts, and in Slovak it puts
   capitals before the long diacritics track, so they do not become the last block.
-- **Opposite-hand Shift** is the standard rule: "pressed by the pinky finger on the hand
-  opposite to the one hitting the key" (https://www.typing-lessons.org/lesson_5.html);
-  TypingClub uses it so "students maintain the correct finger placement and easily return to
-  the home row" (Typing Jungle handbook). Splitting it into left and right Shift halves the new
+- **Opposite-hand Shift** is the standard rule: Shift is pressed by the pinky finger on the hand
+  opposite to the one hitting the key, so students maintain the correct finger placement and
+  easily return to the home row. Splitting it into left and right Shift halves the new
   motor pattern at each step, like the mirrored pairs we already use.
 - **Shift chords are hard for children.** A study with children with special needs found
   "shift and letter ... is difficult, not only the physical movement (pressing two keys at a
@@ -98,13 +90,11 @@ pick them in manual mode.
   bilateral coordination and isolated finger use, like handwriting
   (https://geneseocsd.org/keyboarding). Hence: low starting rate, only at word start, longer
   time limit, one Shift side at a time.
-- **One key at a time, also for punctuation.** Keybr adds about ten punctuation keys at once
-  when the option is on, some needing Shift, and users ask for them one by one like letters
-  (https://alternativeto.net/software/keybr/about,
-  https://groups.google.com/g/keybr/c/5DcHT3oySXU).
-- **Slovak school method (ZAV)** goes from letters to words, word groups and sentences in
-  small steps and asks for "writing correct capital letters" as an outcome
-  (https://archiv.mpc-edu.sk/sites/default/files/projekty/vystup/9_ops_sotakova_tatiana_-_metodika_pisania_na_pocitaci_desatprstovou_hmatovou_metodou_v_programe_zav.pdf);
+- **One key at a time, also for punctuation.** Adaptive tools add about ten punctuation keys at
+  once when the option is on, some needing Shift, and users ask for them one by one like
+  letters.
+- **Slovak school method** goes from letters to words, word groups and sentences in
+  small steps and asks for "writing correct capital letters" as an outcome;
   no public source gave its exact key order.
 
 ## Fit

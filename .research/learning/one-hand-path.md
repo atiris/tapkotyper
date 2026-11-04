@@ -10,14 +10,12 @@
 
 ## Why
 - Children with hand differences or injuries are left out by ten-finger-only tools; there
-  are dedicated paid programs like Five Finger Typist for "children or adults", "left or
-  right hand", with an animated hand and gradual key introduction
-  (https://askjan.org/products/Five-Finger-Typist-2-2.cfm).
+  are dedicated paid programs for children or adults, left or right hand, with an animated
+  hand and gradual key introduction.
 - Parent groups for children with hand differences look for exactly this
   (https://aussiehands.org/resources/daily-living-gadgets/writing-typing/,
   https://forum.ubpn.org/viewtopic.php?p=198810).
-- TypingClub has left-hand-only and right-hand-only lessons (as part of its lesson types,
-  https://dimke.typingclub.com/docs/user-guide/class-student-setup/lesson-types.html).
+- Some typing courses have left-hand-only and right-hand-only lessons.
 
 ## Fit
 - Fits the "no child excluded" accessibility goal; no free, child-friendly one-hand course

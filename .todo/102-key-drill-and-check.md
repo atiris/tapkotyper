@@ -55,7 +55,8 @@ keeps its card.
 - [ ] Tests: the rows (≤3 keys, >3 keys, too few presses), the mastered news first.
 
 ### 4. Keys tab layout
-- [ ] "Klávesy na precvičenie": no bullets. Each line: the key cap (opens its details), the
+- [ ] "Klávesy na precvičenie": no bullets. Each line: the key cap, drawn as an outlined key like
+  the on-screen keyboard's (it opens its details), the
   accuracy in % and "stláčaj" with the finger chip. No "(často namiesto neho …)" here; remove
   `stats.instead`.
 - [ ] Key details, "Namiesto neho niekedy stlačíš:": show each confused key by `keyLabel`, so

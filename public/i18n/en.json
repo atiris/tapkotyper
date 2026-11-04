@@ -1575,6 +1575,7 @@
     "visitsFew": "So far we have recorded {n} visits.",
     "visitsMany": "So far we have recorded {n} visits.",
     "visitsWeek": "Of those, {n} in the last week.",
+    "visitsBlocked": "We cannot show the number of visits here, probably because you use a blocker of web counters and tracking. You can still see the whole page on the GoatCounter website.",
     "authorTitle": "About the author",
     "author": "Hello, typists. I designed **Tapko** **to support learning to type on a keyboard** for my children, because the usual apps could not hold them long enough to come back. Even with heavy use of a series of Anthropic's AI models, building this app until I was happy enough with its design, features, safety, speed and more took many hours. I hope that, just as it keeps my children typing a little longer, it does the same for you and your children (and if they enjoy it less, you can hide a surprise from the real world in the game for them to unlock by practising). Finally, I ask for your help: if you find a bug or have an idea for an improvement, please {report} on GitHub, where the code of this app lives.",
     "authorReport": "report it to me",

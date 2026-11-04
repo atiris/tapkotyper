@@ -118,11 +118,14 @@ async function visitCount(start?: 'week'): Promise<string | null> {
   }
 }
 
-/** The open-data bullet; the visits so far and those of the last week join it once the counter answers (not offline). */
+/** The open-data bullet; the visits so far and those of the last week join it once the counter answers, a note on a blocker when it does not while online (nothing offline). */
 function openData(): HTMLElement {
   const visits = h('span', {});
   void Promise.all([visitCount(), visitCount('week')]).then(([count, week]) => {
-    if (count === null) return;
+    if (count === null) {
+      if (navigator.onLine) visits.textContent = ` ${t('about.visitsBlocked')}`;
+      return;
+    }
     const n = Number(count.replace(/\D/g, ''));
     const all = t(n === 1 ? 'about.visitsOne' : n > 1 && n < 5 ? 'about.visitsFew' : 'about.visitsMany', { n: count });
     visits.textContent = ` ${all}${week === null ? '' : ` ${t('about.visitsWeek', { n: week })}`}`;

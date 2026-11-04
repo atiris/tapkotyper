@@ -45,7 +45,8 @@
      installed, the line says so instead and its word "otvárať" opens the installed app from a browser tab;
      inside the installed app the line only says that it runs as the app), data and one bullet with the open
      GoatCounter address (we hide nothing: anyone sees the same usage data we do) and the visits
-     recorded so far, about the author (why the game exists, with a link to report a bug
+     recorded so far (online with the counter blocked, a note that a blocker likely hides the number and the
+     GoatCounter page still shows it), about the author (why the game exists, with a link to report a bug
      or an idea), and licenses and sources: the licenses, that the name, the Tapko character and the logo are not part
      of the code's license, where the media come from, the code and a bug report. Links are in the app's
      orange, underlined only on hover.

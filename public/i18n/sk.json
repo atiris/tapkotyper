@@ -1575,6 +1575,7 @@
     "visitsFew": "Doteraz sme zaznamenali {n} návštevy.",
     "visitsMany": "Doteraz sme zaznamenali {n} návštev.",
     "visitsWeek": "Z toho za posledný týždeň: {n}.",
+    "visitsBlocked": "Počet návštev vám tu priamo uviesť nevieme, pretože pravdepodobne používate blokovač počítadiel a sledovania webov. Stále si však môžete pozrieť celú stránku na webe GoatCounter.",
     "authorTitle": "O autorovi",
     "author": "Ahojte, pisatelia. Aplikáciu **Ťapko** som navrhol **na podporu výučby písania na klávesnici** pre moje deti, ktoré bežné aplikácie nedokázali udržať natoľko, aby sa k nim vracali. Napriek intenzívnemu používaniu série modelov umelej inteligencie od Anthropic trval vývoj tejto aplikácie do podoby, s ktorou som bol dostatočne spokojný (dizajn, funkcie, bezpečnosť, rýchlosť a ďalšie), mnoho hodín. Dúfam, že podobne ako dokáže pri písaní o chvíľku dlhšie udržať moje deti, dokáže to aj pri vás a vašich deťoch (ak by ich to už bavilo menej, môžete im do hry schovať prekvapenie z fyzického sveta, ktoré si cvičením odomknú). Nakoniec vás prosím o pomoc: ak nájdete chybu alebo máte nápad na zlepšenie, {report} prosím na GitHube, kde je kód tejto aplikácie.",
     "authorReport": "nahláste mi to",

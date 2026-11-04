@@ -1286,10 +1286,10 @@ $('colorsFromTapko').addEventListener('click', () => {
   redraw();
 });
 $('colorsApply').addEventListener('click', async () => {
-  if (!confirm('Zapísať tieto farby do Tapka? Zmenia sa klávesy, označenia prstov aj nechty v hre.')) return;
+  if (!confirm('Zapísať tieto farby do Ťapka? Zmenia sa klávesy, označenia prstov aj nechty v hre.')) return;
   const r = await fetch('/__hand-poser/finger-colors', { method: 'POST', body: JSON.stringify({ colors: palette() }) });
   const res = (await r.json()) as { ok: boolean; error?: string };
-  say(res.ok ? 'Farby zapísané do Tapka (src/ui/finger-colors.ts); ulož aj nastavenia' : res.error ?? 'Nepodarilo sa', !res.ok);
+  say(res.ok ? 'Farby zapísané do Ťapka (src/ui/finger-colors.ts); ulož aj nastavenia' : res.error ?? 'Nepodarilo sa', !res.ok);
 });
 
 // ---- the lines' look ----

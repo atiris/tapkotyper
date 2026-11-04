@@ -220,7 +220,7 @@ home position; every other pose moves its points by rules, so the hands always k
 
 "Uložiť" (Ctrl+S) writes the settings (`tools/hand-poser/rows.json`), the edited home outlines
 (`tools/hand-poser/outline/<side>.svg`), one SVG per pose (`public/hands/<side>/<name>.svg` with
-`public/hands/index.json`) and the look (`src/ui/hand-style.ts`); "Použiť farby v Tapkovi" writes the palette into
+`public/hands/index.json`) and the look (`src/ui/hand-style.ts`); "Použiť farby v Ťapkovi" writes the palette into
 `src/ui/finger-colors.ts`. An open Tapko on the dev server shows a save at once. On another computer the
 repository holds everything: `npm ci`, `npm run dev`, open the tool. Pose names and the owner's rules for the hands
 are in [`assets-src/PROMPTS.md`](assets-src/PROMPTS.md), section 12.

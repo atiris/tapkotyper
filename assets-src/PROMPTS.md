@@ -1219,7 +1219,7 @@ points to a finger by hand, "body prstov" shows them). The brush moves the outli
 copied as SVG, edited elsewhere and loaded back. "Uložiť" (Ctrl+S) writes `tools/hand-poser/rows.json` (the
 settings), `tools/hand-poser/outline/<side>.svg` (the source outline) and `public/hands/<side>/<name>.svg` (home and
 every key pose) with `public/hands/index.json`, and the lines' look into `src/ui/hand-style.ts` ("Dizajn rúk");
-"Použiť farby v Tapkovi" writes the palette being tried into `src/ui/finger-colors.ts`. An open Tapko shows them at
+"Použiť farby v Ťapkovi" writes the palette being tried into `src/ui/finger-colors.ts`. An open Tapko shows them at
 once; commit them.
 
 On another computer: `npm install`, `npm run dev`, open `/tools/hand-poser/`; the tool reads

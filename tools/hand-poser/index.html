@@ -16,7 +16,7 @@
         <button id="save" class="rows-save" title="Uloží nastavenia, obrys a SVG domovskej polohy a všetkých póz klávesov do public/hands (Ctrl+S)">Uložiť</button>
       </header>
       <div class="rows-bar" id="rowPoses" title="Polohy celých radov (základ pre pózy klávesov) a ruky mimo klávesnice"></div>
-      <div class="rows-stage" id="stageBox" aria-label="Ruky nad klávesnicou Tapka"></div>
+      <div class="rows-stage" id="stageBox" aria-label="Ruky nad klávesnicou Ťapka"></div>
       <div class="rows-bar">
         <div class="rows-bar" id="poses"></div>
         <span class="sep"></span>
@@ -38,7 +38,7 @@
         <label>Klávesnica <select id="layout"><option value="us-qwerty">EN</option><option value="sk-qwerty">SK</option></select></label>
         <label title="Ako sa ukazuje klávesnica pod rukami">Zobraziť <select id="kbLook"><option value="normal">základná</option><option value="outline">obrysová</option><option value="grey">sivá</option><option value="none">žiadna</option></select></label>
         <label title="Na klávesoch kódy, ktoré používajú názvy póz (a0, j0, l1, en…), namiesto znakov"><input type="checkbox" id="codes"> kódy</label>
-        <label title="Aj klávesy, ktoré Tapko neučí (Ctrl, Win, Alt, Menu): ich pózy netreba"><input type="checkbox" id="extraKeys"> extra klávesy</label>
+        <label title="Aj klávesy, ktoré Ťapko neučí (Ctrl, Win, Alt, Menu): ich pózy netreba"><input type="checkbox" id="extraKeys"> extra klávesy</label>
         <label>Prsty <select id="scheme"><option value="standard">štandard</option><option value="ergonomic">ergonomické</option></select></label>
       </div>
       <div class="tools">
@@ -67,15 +67,15 @@
         </div>
       </div>
       <div class="tools">
-        <div class="rows-bar"><h3>Dizajn rúk</h3><span class="note">Hrúbky idú do SVG, farby a priehľadnosť do Tapka (src/ui/hand-style.ts) pri Uložení; tmavý režim Tapka si nechá svoju svetlú farbu čiar.</span></div>
+        <div class="rows-bar"><h3>Dizajn rúk</h3><span class="note">Hrúbky idú do SVG, farby a priehľadnosť do Ťapka (src/ui/hand-style.ts) pri Uložení; tmavý režim Ťapka si nechá svoju svetlú farbu čiar.</span></div>
         <div id="lookInputs" class="look-cols"></div>
       </div>
       <div class="tools">
         <div class="rows-bar">
           <h3>Farby prstov a nechty</h3>
           <span class="sep"></span>
-          <button id="colorsFromTapko" title="Vráti farby, ktoré má Tapko teraz">Farby z Tapka</button>
-          <button id="colorsApply" title="Zapíše tieto farby do Tapka (src/ui/finger-colors.ts): klávesy, označenia prstov aj nechty">Použiť farby v Tapkovi</button>
+          <button id="colorsFromTapko" title="Vráti farby, ktoré má Ťapko teraz">Farby z Ťapka</button>
+          <button id="colorsApply" title="Zapíše tieto farby do Ťapka (src/ui/finger-colors.ts): klávesy, označenia prstov aj nechty">Použiť farby v Ťapkovi</button>
         </div>
         <div class="colors" id="colorInputs"></div>
         <div class="rows-bar">

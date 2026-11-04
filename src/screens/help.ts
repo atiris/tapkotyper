@@ -107,10 +107,10 @@ function privacyList(): HTMLElement {
   }));
 }
 
-/** The visit count the public counter reports; null when offline or blocked. */
-async function visitCount(): Promise<string | null> {
+/** The visits the public counter reports (formatted, "1,234"), all or since `start` ("week": the last seven days); null when offline or blocked. */
+async function visitCount(start?: 'week'): Promise<string | null> {
   try {
-    const r = await fetch(`${COUNTER}/counter/TOTAL.json`);
+    const r = await fetch(`${COUNTER}/counter/TOTAL.json${start ? `?start=${start}` : ''}`);
     const { count } = await r.json();
     return typeof count === 'string' ? count : null;
   } catch {
@@ -118,13 +118,14 @@ async function visitCount(): Promise<string | null> {
   }
 }
 
-/** The open-data bullet; the visit count joins it once the counter answers (not offline). */
+/** The open-data bullet; the visits so far and those of the last week join it once the counter answers (not offline). */
 function openData(): HTMLElement {
   const visits = h('span', {});
-  void visitCount().then((count) => {
+  void Promise.all([visitCount(), visitCount('week')]).then(([count, week]) => {
     if (count === null) return;
     const n = Number(count.replace(/\D/g, ''));
-    visits.textContent = ` ${t(n === 1 ? 'about.visitsOne' : n > 1 && n < 5 ? 'about.visitsFew' : 'about.visitsMany', { n: count })}`;
+    const all = t(n === 1 ? 'about.visitsOne' : n > 1 && n < 5 ? 'about.visitsFew' : 'about.visitsMany', { n: count });
+    visits.textContent = ` ${all}${week === null ? '' : ` ${t('about.visitsWeek', { n: week })}`}`;
   });
   return h('li', {}, ...richText(t('about.open')), ' ', h('a', { href: `${COUNTER}/`, target: '_blank', rel: 'noopener' }, new URL(COUNTER).host), '.', visits);
 }

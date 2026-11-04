@@ -65,6 +65,8 @@
   with the active keys and Copy each time.
 - The [placement check](placement-check.md) may open many keys at once for a student who
   already types with ten fingers; the levels within the keys it reached open without stars.
+  It may leave gaps (a key it did not pass): the newest keys are the ones unlocked last, so a gap
+  comes as the next lesson only once they are ready, and one gap at a time.
 - Just typing ([free typing](../game/free-typing.md)) has no key choice: every key of the
   layout may be typed and nothing of it counts in the statistics, so it never makes a key
   ready or opens new keys.

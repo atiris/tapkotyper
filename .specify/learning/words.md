@@ -44,7 +44,8 @@
   joins two parts in about one in five, `?` ends about one in eight, `!` `:` `-` are rarer.
   While a punctuation key is the newest one, it appears in about half of the targets.
 - Capitals only at the start of a target: a child's name from a short list per language, or
-  the first word. About one target in six at first, growing to every start as that Shift is
+  the first word. A name never comes in lower case: the word list keeps its capital, so it comes
+  only once a Shift is known. About one target in six at first, growing to every start as that Shift is
   mastered; while a Shift is the newest key, most targets start with a capital it serves.
 - A target with a capital gets 1.5 s more time. On screen, a space shows as a light dot.
 - **Own words and own text** from a parent (for example this week's spelling words, or a

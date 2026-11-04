@@ -202,7 +202,15 @@
   several rewards at once the first and "a N ďalšie odmeny"), new keys, a new medal, new things or
   a new character in the wardrobe, a smoother rhythm than last week; at the range a thing new in
   the collection, then the trained letter that improved most; with the parrot faster repeating
-  than usual. A task still running shows as a row with its minutes left. Speeds are always
+  than usual.
+  - The **two-minute drill** of a few keys (from the keys to practise, a key's details or the
+    keyboard check's weak keys) shows how those keys got better: with up to three keys one row per
+    key pressed at least 5 times in the run, its key cap and "78 % → 91 %" with a small green up
+    arrow when it grew by a whole percent (never red); with more keys one row "Trénované klávesy"
+    with their mean before and after; then accuracy and rhythm. Under the picture the minutes. The
+    green line, after the rewards, names a drill key the run mastered ("Kláves x už ide skvele!"),
+    else the drill key that improved most. "Ešte raz" plays the same drill again. A practice from
+    the key picker keeps the practice card. A task still running shows as a row with its minutes left. Speeds are always
   letters per minute. The pause card and "Really end it?" are not ends and stay as they are.
 - **Leaving a level** is said the same everywhere: "Stop typing" on the pause card of a story,
   an exercise or a hero's journey, so the child learns one button; every end card leaves with "Na mapu". Once something was typed in

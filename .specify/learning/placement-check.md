@@ -1,8 +1,8 @@
-# Placement check ("How am I doing on the keyboard?")
+# Placement check ("Check how I know the keyboard")
 
 ## What
 - A calm check that finds the keys the student already knows, so the lessons start at the
-  right letters. It is also "How am I doing on the keyboard?": the same run any student may
+  right letters. It is also "Check how I know the keyboard": the same run any student may
   start at any time, which measures the keys from the start of the lesson order and shows
   the strong and the weak ones. It never takes anything away, so running it again does no harm.
 - Ways in:
@@ -18,22 +18,28 @@
     keys?" **No** ends with a kind line ("We will learn it from the start, it will go
     quickly.") and changes nothing; **Yes** starts the check.
   - The parent area's Keys tab: **Check what the student knows**, any time.
-  - My progress, Keys tab: **How am I doing?**, its length in the tooltip (about 4 minutes).
+  - My progress, Keys tab, under the keyboard: **Preveriť moje ovládanie klávesnice** ("Check how I
+    know the keyboard"), its length in the tooltip (about 4 minutes).
   - The parent's and the My progress button start the check at once, without the fingers
-    question: the parent chose it, and "How am I doing?" is a measurement for anyone.
+    question: the parent chose it, and the Keys tab's check is a measurement for anyone.
 - The run: one target at a time on a calm panel (two or three words), no story, no time
   pressure, no stars, no rewards, no growth time, no paw. The on-screen keyboard and the
   finger guide are hidden (they would show where the keys are), no key cards come before it,
-  only the get-ready card ("type calmly, there is no hurry").
-- Stages follow the lesson groups: stage n has words of every key up to group n, with
+  only the get-ready card: type the words calmly with all ten fingers; the check finds the keys
+  you know and may open some without their story introductions; no hurry, slow typing is fine.
+- Stages follow the lesson groups: stage n has words of the keys passed so far and group n, with
   group n in focus; diacritics, capitals and digits come when their groups come (no
-  diacritics when the parent turned them off). A stage takes at least 25 presses and 5 right
-  presses of its new keys, at most 8 targets. The check stops at the first stage that does
-  not pass, at the end of the order, or after about 4 minutes of typing (the stage being
-  typed then does not count).
-- A stage passes when its accuracy is at least 94 % (the three-star step), the median reaction
-  of right presses of its new keys is within the difficulty's limit (the first key of a target
-  is reading time and does not count), and the touch-typing signal holds.
+  diacritics when the parent turned them off). A stage takes at least 25 presses and 6 presses
+  of each new key, at most 8 targets.
+- **Each new key is judged on its own** presses in its stage: it passes with at least 90 % right
+  (the ready rule) and the median reaction of its right presses within the difficulty's limit
+  (the first key of a target is reading time and does not count). Errors on older keys do not
+  judge the new ones. A key that fails stays out of the later stages' words, so it costs the
+  other keys nothing; a failed Shift means no capitals later. The first group's keys (every new
+  player's) stay in the words.
+- The check goes on after a failed key. It ends after 3 stages in a row where no new key passed,
+  at the end of the order, after about 4 minutes of typing (the stage being typed then does not
+  count), or when the touch-typing signal fails.
 - **Touch-typing signal**: the eyes and two fingers cannot be seen, but the timing shows which
   finger model explains the student, compared only with the student's own times (ranks and
   ratios), so a fast two-finger typist and a slow ten-finger typist both come out right.
@@ -52,10 +58,12 @@
     can type the check with two fingers and with ten and tune the limits from real numbers.
   - When it fails, the check ends and opens nothing; the card says kindly that the eyes still
     help find the keys and the lessons will teach the fingers from the start, quickly.
-- **Result** of the passed stages: their keys are unlocked (only ever added) and count as
-  introduced, so no key cards follow; they are not mastered, their guide fades the normal way.
+- **Result**: every passed key is unlocked (only ever added), also after a failed one, and counts
+  as introduced, so no key cards follow; nothing opens when no key beyond the first group passed.
+  A failed key is a gap: it comes as a lesson once the newest keys are ready, one gap at a time
+  ([lesson progression](lesson-progression.md)). Passed keys are not mastered, their guide fades the normal way.
   The presses are the student's own typing and count in the statistics like any run's.
-  The most keys any check reached is kept; every level whose key need is within it opens
+  The most keys any check passed is kept; every level whose key need is within it opens
   without the stars before it (and its world with it), but nothing is marked done: no stars,
   no world done, no badge, no reward, no story scene. Continue on the map goes to the first
   open level without stars reached by play (the star before it earned); without one, to the
@@ -66,9 +74,10 @@
   strong and weak keys of this run as key caps (each key with at least 5 presses, ranked by
   accuracy, then reaction; at most 5 of each; weak means under 94 % or slower than the limit;
   "none" when no key is weak), the green line with how many new keys opened, or the kind line.
-  **Continue** goes to the map, which shows the opened worlds; **Practise the weak keys** (when
-  there are any) starts a minute of practice of them. The strong and weak keys come from this
-  run only, so the card answers "how did it go now".
+  With weak keys **Krátke cvičenie** (the two-minute drill of them) is the main button; "Na mapu"
+  is last as on every end card and goes to the map, which shows the opened worlds; without weak
+  keys it is the only button. The strong and weak keys come from this run only, so the card
+  answers "how did it go now".
 
 ## Why
 - A student who already types (an older child, an adult) is bored by `f j`, and most parents
@@ -83,3 +92,5 @@
 - The check measures, it never rewards: opened is not passed, and stars still show who
   practised how much. Scenes and rewards come by playing.
 - Asking about the fingers first is honest and saves a beginner a test they would not pass.
+- Judging each key on its own: one weak little finger used to stop the whole check, so keys of
+  good fingers later in the order were never reached. The child should get every key they know.

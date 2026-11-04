@@ -1,7 +1,8 @@
 # Statistics
 
 ## What
-- Per key: accuracy and typical reaction time from the **last 50 presses only**, the keys
+- Per key: accuracy and typical reaction time from the **last 100 presses only** (one press moves it by
+  a percent, not two), the keys
   typed instead of it lately, total presses, and a day-by-day history (accuracy and time
   to press).
 - **Typing time** is the only time of practice: every own key (right or wrong, Backspace too;
@@ -33,14 +34,27 @@
   colour, [target range](../game/target-practice.md)), and when
   the child last trained (today, yesterday, n days ago) with the typing minutes of the last 7
   days. Below it a friendly view of the keys: a keyboard colored
-  by how well each key goes, the 3 keys to practice, the growth medals earned, and a
-  button to practice them now; above the keyboard **How am I doing?** starts the
-  [placement check](../learning/placement-check.md) (about 4 minutes, in the tooltip), whose end card
-  shows the strong and weak keys of that run. Clicking a key (or a key in the list) shows that key's
-  details: its finger, accuracy, what it is mixed up with, its history, and a one-minute
-  practice of just that key. A switch ("⇧ symbols") shows the shifted symbols of the keys
-  instead (question mark, exclamation mark, colon, Slovak digits), each with its own
-  statistics; capitals count for their letter and its Shift.
+  by how well each key goes, the 3 keys to practice and the growth medals earned.
+  - Under the keyboard, in one row, **Preveriť moje ovládanie klávesnice** on the left starts the
+    [placement check](../learning/placement-check.md) (about 4 minutes, in the tooltip), whose end
+    card shows the strong and weak keys of that run, and the legend (✓ ide to ~ skoro ! poďme
+    cvičiť) on the right; on a phone the row wraps.
+  - The keys to practise are lines without bullets: the key drawn as an outlined key like the
+    on-screen keyboard's (it opens its details), its accuracy and the finger to press it with.
+    **Krátke cvičenie** under them starts the two-minute drill of those keys; its tooltip names them.
+  - Clicking a key shows that key's details: its finger, accuracy, what it is mixed up with (space,
+    Enter and the like by name), its history, and **Precvičiť kláves**, the two-minute drill of just
+    that key.
+  - The detail panel opens with the **whole keyboard**: the mean accuracy and the usual speed
+    (letters per minute) over every key with presses in its window, and how many keys that is,
+    with the hint to tap a key under it. The round keyboard button in the free room under the right
+    Shift brings it back.
+  - A switch ("⇧ symbols") in the free room under the left Shift shows the shifted symbols of the
+    keys instead (question mark, exclamation mark, colon, Slovak digits), each with its own
+    statistics; capitals count for their letter and its Shift. On a phone both controls sit under
+    the keyboard's edges.
+  - The **two-minute drill** of a few keys mostly trains those keys; its
+    [end card](../game/mechanics.md) shows how they got better.
 - **My progress** ("Môj postup") is a page of its own, opened by the map's button, with a top
   bar ("Back" to the map and the title) like the other pages, and two tabs: **Postup** and
   **Klávesy** (with the trends over the last sessions: accuracy, rhythm and time per day,

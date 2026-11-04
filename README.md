@@ -63,9 +63,6 @@ being made. No explosions, no punishment, no ads, no accounts.
   number row, `ú ä ô ň`, dead keys for `ó ĺ ŕ ď` and accented capitals, and a hint when
   the real keyboard looks different.
 
-![A capital R: the right hand's pinky holds Shift, the left index finger presses R](docs/capital.png)
-![A long á: its own key on the Slovak number row](docs/long-letter.png)
-
 ## The game
 
 **Story 1: Tapko and the Dragon Egg**
@@ -113,8 +110,8 @@ see on the map or in My progress.
 
 ![The map](docs/map.png)
 ![Tasks page](docs/tasks.png)
-![Meadow level](docs/meadow.png)
-![Space level](docs/space.png)
+![Meadow level: a long á, its own key on the Slovak number row](docs/meadow.png)
+![Space level: a capital R, the right pinky holds Shift](docs/space.png)
 
 ## For parents
 

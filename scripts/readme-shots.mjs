@@ -17,6 +17,7 @@ const SMALL_W = 1200;
 const vite = await createServer({ server: { middlewareMode: true }, appType: 'custom', logLevel: 'error' });
 const { lessonOrder } = await vite.ssrLoadModule('/src/learning/lessons.ts');
 const { STORIES } = await vite.ssrLoadModule('/src/game/levels.ts');
+const { COMPANION_KINDS } = await vite.ssrLoadModule('/src/storage/schema.ts');
 await vite.close();
 /** Worlds 1-4 done: every key their levels and the next level need is unlocked. */
 const DONE_WORLDS = [0, 1, 2, 3];
@@ -70,8 +71,12 @@ async function shot(page, name, settle = 300, file = `docs/${name}.png`, maxByte
   console.log(`${file}: ${Math.round(statSync(file).size / 1024)} KB`);
 }
 
-/** Opens a level from its map node, closes the cards before play, types `chars` characters and one more as the shot. */
-async function playShot(page, id, island, node, name, chars = 20) {
+/**
+ * Opens a level from its map node, closes the cards before play and types until at least `chars` characters
+ * are typed and `ch` is next, so the scene is busy; a moment later, its target well in sight, the picture
+ * catches the keyboard's guide for `ch` (Shift for a capital, the accent key for a long letter).
+ */
+async function playShot(page, id, island, node, name, ch, chars = 20) {
   await page.goto(`${BASE}?fast#/p/${id}`);
   await page.locator('.map-screen').waitFor();
   const isl = page.locator(`.island-${island}`);
@@ -79,7 +84,7 @@ async function playShot(page, id, island, node, name, chars = 20) {
   await isl.locator('.level-node').nth(node).click();
   await page.locator('.level-screen canvas').first().waitFor();
   let typed = 0;
-  for (let i = 0; i < 2000 && typed < chars; i++) {
+  for (let i = 0; i < 3000; i++) {
     const s = await page.evaluate(() => {
       if (document.querySelector('.posture-card, .keys-intro, .story-screen')) return 'space';
       const ck = document.querySelector('.controlkey-card');
@@ -88,50 +93,16 @@ async function playShot(page, id, island, node, name, chars = 20) {
       const next = document.querySelector('.kb-guide')?.dataset.next;
       return next ? `next:${next}` : 'wait';
     });
-    if (s === 'space') await page.keyboard.press('Space');
-    else if (s.startsWith('press:')) await page.keyboard.press(s.slice(6));
-    else if (s.startsWith('next:')) {
-      await page.evaluate((ch) => window.tapkoType(ch), s.slice(5));
-      typed++;
-    }
-    await page.waitForTimeout(s.startsWith('next:') ? 220 : 250);
-  }
-  // The next key; the picture catches what it sets off.
-  const next = await page.locator('.kb-guide').getAttribute('data-next');
-  await page.evaluate((ch) => window.tapkoType(ch), next);
-  await shot(page, name, 120);
-}
-
-/**
- * Plays the task titled `title` (its words all start with `ch`) until `ch` is next the second time, when the
- * first word is typed and the next one is in the scene, and catches the keyboard's guide for it (Shift for a
- * capital, the accent key first for a long letter).
- */
-async function keyShot(page, id, title, ch, name) {
-  await page.goto(`${BASE}?fast#/p/${id}/tasks`);
-  await page.locator('.my-task', { hasText: title }).locator('.btn.primary').click();
-  await page.locator('.level-screen canvas').first().waitFor();
-  let typedCh = 0;
-  for (let i = 0; i < 2000; i++) {
-    const s = await page.evaluate(() => {
-      if (document.querySelector('.posture-card, .keys-intro, .story-screen')) return 'space';
-      const ck = document.querySelector('.controlkey-card');
-      if (ck) return `press:${ck.dataset.key}`;
-      if (document.querySelector('.newkey-card')) return 'wait';
-      const next = document.querySelector('.kb-guide')?.dataset.next;
-      return next ? `next:${next}` : 'wait';
-    });
-    if (s === `next:${ch}` && typedCh > 0) break;
+    if (s === `next:${ch}` && typed >= chars) return shot(page, name, 1500);
     if (s === 'space') await page.keyboard.press('Space');
     else if (s.startsWith('press:')) await page.keyboard.press(s.slice(6));
     else if (s.startsWith('next:')) {
       await page.evaluate((c) => window.tapkoType(c), s.slice(5));
-      if (s === `next:${ch}`) typedCh++;
+      typed++;
     }
     await page.waitForTimeout(s.startsWith('next:') ? 220 : 250);
   }
-  await page.waitForTimeout(1500);
-  await shot(page, name, 120);
+  throw new Error(`${name}: "${ch}" never came next`);
 }
 
 const errors = [];
@@ -180,24 +151,20 @@ try {
   await page.setViewportSize({ width: OG.width, height: OG.height });
   await shot(page, 'og', 300, 'public/og.png', OG.maxBytes);
   await page.setViewportSize({ width: 1366, height: 768 });
-  await playShot(page, id, 'meadow', 2, 'meadow');
-  await playShot(page, id, 'space', 0, 'space');
-
-  // Every key known, the hands in full lines, a task whose words start with the key, played in the world
-  // after `done` (a task plays in the player's current world) by Tapko in a few accessories.
+  // Every key known, the hands in full lines, most targets the parent's own words with the key the picture
+  // shows, and Tapko a random animal in a few accessories.
   const all = lessonOrder('sk-qwertz');
-  const keyTask = async (title, words, done, accessories) => editStore(page, (d, a) => {
+  const playAs = (words, accessories) => editStore(page, (d, a) => {
     const p = d.profiles[0];
-    p.settings.hands = 'bold';
-    p.companion.accessories = a.accessories;
-    const levels = Object.fromEntries(a.done.flatMap((w) => [1, 2, 3, 4, 5].map((i) => [`w${w + 1}-${i}`, 3])));
-    Object.assign(p.progress, { levels, worldsDone: a.done, unlockedKeys: a.all, introducedKeys: a.all });
-    p.tasks = [{ id: 'readme-key', title: a.title, group: '3.A', game: 'chase', words: a.words, text: '', limit: 'time', minutes: 5, dictionary: false, knownOnly: true, world: 'current', finished: 0 }];
-  }, { title, words, done, accessories, all });
-  await keyTask('Veľké R', ['Raketa', 'Robot', 'Rýchlo'], [0], ['crown', 'star-glasses']);
-  await keyShot(page, id, 'Veľké R', 'R', 'capital');
-  await keyTask('Dlhé á', ['áno', 'ária', 'áčko'], [], ['cap', 'scarf']);
-  await keyShot(page, id, 'Dlhé á', 'á', 'long-letter');
+    Object.assign(p.settings, { hands: 'bold', ownWords: a.words, ownText: '', ownMix: 'most' });
+    p.avatar = a.kind;
+    Object.assign(p.companion, { kind: a.kind, accessories: a.accessories });
+    Object.assign(p.progress, { unlockedKeys: a.all, introducedKeys: a.all });
+  }, { words, accessories, all, kind: COMPANION_KINDS[Math.floor(Math.random() * COMPANION_KINDS.length)] });
+  await playAs(['áno', 'ária', 'áčko', 'mám', 'máj', 'pán', 'sláva'], ['cap', 'scarf']);
+  await playShot(page, id, 'meadow', 2, 'meadow', 'á');
+  await playAs(['Raketa', 'Robot', 'Rýchlo', 'Rak', 'Ruka'], ['crown', 'star-glasses']);
+  await playShot(page, id, 'space', 0, 'space', 'R');
 } finally {
   await browser?.close();
   stopServer();

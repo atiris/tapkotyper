@@ -38,15 +38,23 @@ export class KeyboardSettings {
   private panel: HTMLElement | null = null;
   private offKeys: (() => void) | null = null;
 
-  constructor(private host: KeyboardSettingsHost, labelled = false) {
-    const name = settingsName(host.layout, host.fingering);
+  private name = h('span', {});
+
+  constructor(private host: KeyboardSettingsHost, private labelled = false) {
     this.btn = h('button', {
       class: `kb-layout ${labelled ? 'labelled' : ''}`, type: 'button', 'aria-haspopup': 'dialog', 'aria-expanded': 'false',
-      'aria-label': t('kbSettings.label', { layout: t(`layouts.${host.layout}`), fingering: t(`fingering.${host.fingering}`) }),
       'data-tip': t('kbSettings.tip'),
       onClick: () => (this.panel ? this.close() : this.open()),
-    }, icon('keyboard'), h('span', {}, labelled ? `${t('kbSettings.tip')} · ${name}` : name));
+    }, icon('keyboard'), this.name);
     this.el = h('div', { class: 'kb-settings' }, this.btn);
+    this.paint();
+  }
+
+  /** The button's name and its screen reader name from the host's layout and fingering. */
+  private paint(): void {
+    const { layout, fingering } = this.host, name = settingsName(layout, fingering);
+    this.name.textContent = this.labelled ? `${t('kbSettings.tip')} · ${name}` : name;
+    this.btn.setAttribute('aria-label', t('kbSettings.label', { layout: t(`layouts.${layout}`), fingering: t(`fingering.${fingering}`) }));
   }
 
   /** The keys typed look like another layout: the button stands out until it is opened, and asks once for a while. */
@@ -59,16 +67,21 @@ export class KeyboardSettings {
     const host = this.host;
     this.btn.classList.remove('flagged');
     this.btn.setAttribute('aria-expanded', 'true');
+    // A new choice changes the keyboard in place; the panel stays open.
     const layout = select<LayoutId>(host.layout, LAYOUT_IDS.map((id) => [id, t(`layouts.${id}`)]), (id) => {
-      this.close();
-      if (id !== host.layout) host.pickLayout(id);
+      if (id === host.layout) return;
+      host.layout = id;
+      this.paint();
+      host.pickLayout(id);
     });
     layout.id = 'kb-settings-layout';
     const fingeringHint = h('p', { class: 'kb-panel-hint' }, t(`kbSettings.${host.fingering}Hint`));
     const fingering = segmented<Fingering>(t('kbSettings.fingering'), host.fingering, [['ergonomic', t('fingering.ergonomic')], ['standard', t('fingering.standard')]], (f) => {
       fingeringHint.textContent = t(`kbSettings.${f}Hint`);
-      this.close();
-      if (f !== host.fingering) host.pickFingering(f);
+      if (f === host.fingering) return;
+      host.fingering = f;
+      this.paint();
+      host.pickFingering(f);
     });
     const guide = host.guide;
     const board = guide ? check(guide.on(), () => guide.toggle()) : null;

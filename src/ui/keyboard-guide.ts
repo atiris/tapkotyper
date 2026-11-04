@@ -109,6 +109,28 @@ export class KeyboardGuide {
     const board = this.board = document.createElement('div');
     board.className = 'kb';
     board.setAttribute('aria-hidden', 'true');
+    this.drawKeys();
+    this.hint = document.createElement('div');
+    this.hint.className = 'kb-hint';
+    this.hint.setAttribute('aria-live', 'polite');
+    this.el.append(this.hint, board);
+  }
+
+  /**
+   * Another layout or fingering in place: the keys are drawn again (letters and finger colours) and the hands take
+   * their poses from it; nothing else of the level changes. The key due is shown again by whoever shows it.
+   */
+  relayout(layout: Layout): void {
+    this.layout = layout;
+    this.board.querySelectorAll(':scope > .kb-row').forEach((r) => r.remove());
+    this.keys.clear();
+    this.drawKeys();
+    this.hands?.setLayout(layout);
+  }
+
+  /** The rows of keys, before the hands' layer. */
+  private drawKeys(): void {
+    const layout = this.layout, board = this.board, before = this.hands?.el ?? null;
     const isoEnter = allKeys(layout).some((d) => d.base === 'enter-top');
     for (const row of layout.rows) {
       const r = document.createElement('div');
@@ -131,12 +153,8 @@ export class KeyboardGuide {
         r.appendChild(k);
         this.keys.set(def.code, k);
       }
-      board.appendChild(r);
+      board.insertBefore(r, before);
     }
-    this.hint = document.createElement('div');
-    this.hint.className = 'kb-hint';
-    this.hint.setAttribute('aria-live', 'polite');
-    this.el.append(this.hint, board);
   }
 
   private handsView(): Hands {

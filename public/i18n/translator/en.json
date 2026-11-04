@@ -1728,6 +1728,6 @@
     "parent.handsOff": "Settings, Settings tab: an option in the hands select.",
     "parent.handsHint": "Settings, Settings tab: the note under the hands select.",
     "help.fingersTitle": "Help, Typing tab: the heading of the paragraph on keyboard layouts and fingerings.",
-    "help.fingers": "Help, Typing tab: bullet points that explain the layout, the two fingerings (ergonomic and standard), their practical difference and why the ergonomic one is the default."
+    "help.fingers": "Help, Typing tab: bullet points that explain the layout, the two fingerings (ergonomic and standard), how their digit keys differ finger by finger, the standard one's gain and why the ergonomic one is the default."
   }
 }

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { fingerOf, fingered } from './fingers';
-import { LAYOUTS, fingerFor, keyByCode, shiftKeyFor } from './layouts';
+import { LAYOUTS, fingerFor, keyByCode, sameCharacters, shiftKeyFor } from './layouts';
 
 describe('fingerings', () => {
   const sk = LAYOUTS['sk-qwerty'];
@@ -10,6 +10,11 @@ describe('fingerings', () => {
     expect(['Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6', 'Digit7', 'Digit8', 'Digit9', 'Digit0'].map(digit)).toEqual([0, 0, 1, 2, 3, 3, 6, 6, 7, 8]);
     expect(['Digit1', 'Digit2', 'Digit6', 'Digit0'].map((c) => fingerOf(keyByCode(sk, c)!, 'standard'))).toEqual([0, 1, 6, 9]);
     expect(fingerOf(keyByCode(sk, 'KeyR')!, 'ergonomic')).toBe(3);
+  });
+
+  it('tells layouts that type the same characters on other keys', () => {
+    expect(sameCharacters(LAYOUTS['sk-qwertz'], LAYOUTS['sk-qwerty'])).toBe(true);
+    expect(sameCharacters(LAYOUTS['sk-qwerty'], LAYOUTS['us-qwerty'])).toBe(false);
   });
 
   it('gives a layout whose keys carry the fingering, the same object each time', () => {

@@ -30,8 +30,11 @@
   with one line that explains it, the on-screen keyboard on or off (as F2, not when the parent
   locked it) and the hands shown, bold or hidden, and a link to the help's paragraph on the
   fingerings. A round X, Esc or a click outside closes it; while it is open the keys are its own.
-  A new layout keeps the progress with the keys it teaches; a new layout or fingering starts the
-  level again. The practice key picker has the same panel behind a button "Nastavenie klávesnice"
+  The button and its panel lie over everything in the level, the get-ready card and the pause card
+  too, so the keyboard can be set before play or in a pause. A new choice only draws the keyboard
+  and the hands again and play goes on: a new fingering, or a layout that types the same characters
+  (Slovak QWERTZ and QWERTY); only a layout of other characters (Slovak and English) starts the level
+  again, its words might not be typable. A new layout keeps the progress with the keys it teaches. The practice key picker has the same panel behind a button "Nastavenie klávesnice"
   on the right of Start, and opens again with the new choice.
 - If typed characters suggest a different layout than the profile setting (for example
   `y`/`z` swapped, or digits instead of `ľščť`), Tapko says which one it looks like and points

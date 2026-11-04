@@ -1013,7 +1013,7 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
    quiet text at rest, a key under the pointer or with focus, marked when the keys typed fit another layout. */
 /* The keyboard's settings: a quiet button in the guide's bottom right corner (a plain one in the key picker) and its panel above it. */
 .kb-settings { position: relative; }
-.kb-guide > .kb-settings { position: absolute; right: 10px; bottom: 8px; z-index: 4; }
+.level-screen > .kb-settings { position: absolute; right: 10px; bottom: 8px; z-index: 12; }
 .kb-layout { display: flex; align-items: center; gap: 0.35rem; height: 32px; padding: 0 0.6rem; border: 1px solid transparent; border-radius: 999px; background: transparent; color: var(--ink-soft); font: inherit; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.15s; }
 .kb-layout .icon { width: 18px; height: 18px; }
 .kb-layout:hover, .kb-layout:focus-visible, .kb-layout[aria-expanded='true'], .kb-layout.labelled { background: var(--surface); color: var(--ink); border-color: var(--key-line); box-shadow: 0 2px 0 var(--edge); }

@@ -205,6 +205,13 @@ export class Hands {
     }
   }
 
+  /** Another layout or fingering: the poses are named from it again. */
+  setLayout(layout: Layout): void {
+    this.layout = layout;
+    for (const s of ['left', 'right'] as Side[]) this.side[s].shown = '';
+    this.update();
+  }
+
   /**
    * How the hands show: their lines' colours and transparency as the hand tool set them (typing, and beside the
    * keyboard), emphasized (`bold`: every line and nail fully drawn) or hidden.

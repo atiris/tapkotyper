@@ -14,7 +14,7 @@ import { locale, t } from '../i18n/i18n';
 import { nickname } from '../storage/store';
 import { type InputHandlers, KeyInput, type TypedChar } from '../input/input';
 import { setShortcuts, withKey } from '../input/shortcuts';
-import { ENTER, LayoutMismatchDetector, enterAfter, fingerFor, stepsFor } from '../keyboard/layouts';
+import { ENTER, LAYOUTS, LayoutMismatchDetector, enterAfter, fingerFor, sameCharacters, stepsFor } from '../keyboard/layouts';
 import { SHIFT_L, SPACE, activeKeys, aimKeys, isKeyReady, masteryLevel, recentAccuracy, shiftKeyOf, useLayout } from '../learning/lessons';
 import { recentTyping, recordPress, recordSession, typingStep } from '../learning/stats';
 import { FINGER_KEYS, KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
@@ -251,19 +251,23 @@ export class LevelRuntime {
       this.opts.onTapko();
     });
     stageWrap.append(this.tapko.el, this.tapko.bubble);
-    // A new layout or fingering starts the level again; the keyboard and the hands change at once.
+    // A new fingering, or a layout that types the same characters, only draws the keyboard and the hands again; a
+    // layout of other characters (Slovak and English) starts the level again, its words may not be typable.
     this.kbSettings = new KeyboardSettings({
       layout: p.layout,
       fingering: p.settings.fingering,
       pickLayout: (id) => {
+        const same = sameCharacters(LAYOUTS[p.layout], LAYOUTS[id]);
         useLayout(p, id);
         saveProfile();
-        this.opts.onLayout();
+        if (!same) return this.opts.onLayout();
+        this.mismatch = new LayoutMismatchDetector(id);
+        this.relayout();
       },
       pickFingering: (f) => {
         p.settings.fingering = f;
         saveProfile();
-        this.opts.onLayout();
+        this.relayout();
       },
       guide: unguided ? undefined : { on: () => this.guideOn, locked: p.settings.guideLocked, toggle: () => this.toggleGuide() },
       hands: { mode: () => p.settings.hands, set: (m) => {
@@ -273,12 +277,12 @@ export class LevelRuntime {
       } },
       help: () => this.openHelp(),
     });
-    this.guide.el.append(this.kbSettings.el);
     this.guide.setHands(p.settings.hands);
     this.guideOn = !unguided && p.settings.guide !== 'off';
     this.guide.setVisible(this.guideOn);
     guideBtn.setAttribute('aria-pressed', String(!this.guideOn));
-    this.el.append(hud, stageWrap, this.guide.el);
+    // The keyboard's settings lie over everything in the level, the cards before play and the pause card too.
+    this.el.append(hud, stageWrap, this.guide.el, this.kbSettings.el);
     root.append(this.el);
 
     this.stage = new Stage(stageWrap);
@@ -773,6 +777,12 @@ export class LevelRuntime {
       fade = masteryLevel(stat, p.settings.difficulty) >= 1 ? 0.5 : 0;
     }
     this.guide.show(ch, this.deadPending && stepsFor(layout(), ch ?? '').length > 1, fade);
+  }
+
+  /** The profile's layout or fingering changed: the keyboard and the hands are drawn from it again, play goes on. */
+  private relayout(): void {
+    this.guide.relayout(profileLayout(app.profile!));
+    this.updateGuide();
   }
 
   /** The on-screen keyboard on or off; the player keeps the choice for the next levels. */

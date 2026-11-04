@@ -99,6 +99,12 @@ export function allKeys(layout: Layout): KeyDef[] {
   return layout.rows.flat();
 }
 
+/** Whether two layouts type the same characters (Slovak QWERTZ and QWERTY), only on other keys. */
+export function sameCharacters(a: Layout, b: Layout): boolean {
+  const chars = (l: Layout) => [...new Set(allKeys(l).flatMap((d) => [d.base, d.shift]).concat(Object.values(l.dead).flatMap((t) => Object.values(t))))].sort().join('');
+  return chars(a) === chars(b);
+}
+
 export function keyByCode(layout: Layout, code: string): KeyDef | undefined {
   return allKeys(layout).find((d) => d.code === code);
 }

@@ -71,6 +71,12 @@ A child plays about one world per session, but levels 1-4 of a world are the sam
 Brainstorm with open questions: [game/world-rhythm.md](game/world-rhythm.md) (fixed roles
 per level: main game, calm step, harder main game with a surprise, twist, super-obstacle).
 
+## Typing Jungle 2026-11-04
+
+Ideas from edclub's 685-lesson course, with its lesson numbers: one hand types while the other holds
+J or F, finger column trips, tricky words (Slovak *vybrané slová*), letter groups. See
+[learning/typing-jungle-ideas.md](learning/typing-jungle-ideas.md).
+
 Areas: [learning/](learning/index.md), [game/](game/index.md),
 [profiles/](profiles/index.md), [experience/](experience/index.md).
 

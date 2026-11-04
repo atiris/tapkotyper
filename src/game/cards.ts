@@ -9,6 +9,7 @@ import { FINGER_COLORS } from '../ui/finger-colors';
 import { type KeyboardGuide, chipOf, fingerChip, lessonFinger, textColorsOn } from '../ui/keyboard-guide';
 import { button, closeButton, confirmDialog, h, icon, linkedText, modal, richText } from '../ui/dom';
 import { endCard, focusMain } from '../ui/end-card';
+import { focusDefault, panelHotkeys } from '../ui/hotkeys';
 import { pickStretch, stretchExercise } from './runtime/pause';
 import { tapkoElement } from '../gfx/tapko';
 import { imageUrl } from '../gfx/assets';
@@ -57,7 +58,8 @@ export function showCard(host: HTMLElement, content: HTMLElement, o: CardOpts = 
     if (o.button) {
       const b = button(o.button, done, 'btn primary');
       card.append(h('div', { class: 'row' }, b));
-      queueMicrotask(() => b.focus());
+      panelHotkeys(card, [b]);
+      queueMicrotask(() => focusDefault(card));
     }
     const stop = captureKeys(overlay, onKey);
     host.append(overlay);

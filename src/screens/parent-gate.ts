@@ -71,7 +71,7 @@ function passwordDialog(lock: ParentLock): Promise<boolean> {
       h('h2', {}, t('parent.checkTitle')),
       h('p', {}, t('parent.lock.ask')),
       input, msg,
-      h('div', { class: 'row center' }, button(t('common.back'), () => close(), 'btn'), open)), {
+      h('div', { class: 'row center' }, open, button(t('common.back'), () => close(), 'btn'))), {
       cls: 'confirm-modal',
       onClose: () => { clearInterval(timer); resolve(yes); },
     });

@@ -223,6 +223,10 @@ p { line-height: 1.5; }
   transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.2s;
 }
 .btn:disabled { opacity: 0.5; cursor: default; transform: none; }
+/* A panel button's own letter (ui/hotkeys): underlined, thick enough to see on the orange button. */
+.btn u.hk { text-decoration: underline; text-decoration-thickness: 0.12em; text-underline-offset: 0.16em; text-decoration-skip-ink: none; }
+/* The panel's default button shows its ring whenever it has the focus, also after a mouse click opened the panel. */
+.btn.kbd-default:focus { outline: 4px solid var(--focus); outline-offset: 3px; }
 .btn.primary { background: linear-gradient(180deg, var(--brand-top), var(--brand)); color: var(--on-brand); text-shadow: var(--on-brand-glow); }
 /* A plain button has the keys' thin line, so a pale face stays visible on a pale card. */
 .btn:not(.primary) { border: 1px solid var(--key-line); }

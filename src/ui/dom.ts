@@ -1,6 +1,7 @@
 /** Tiny DOM helpers. */
 import { imageUrl } from '../gfx/assets';
 import { t } from '../i18n/i18n';
+import { focusDefault, panelHotkeys } from './hotkeys';
 
 type Attrs = Record<string, string | number | boolean | ((e: any) => void) | undefined | null>;
 export type Child = Node | string | number | null | undefined | false;
@@ -220,7 +221,10 @@ export function closeModals(): void {
   document.querySelectorAll('.modal-back').forEach((m) => (closers.get(m) ?? (() => m.remove()))());
 }
 
-/** Modal dialog; returns a close function. */
+/** Fields a key typed into fills. */
+const TEXT_FIELD = 'input:not([readonly]):not([type=checkbox], [type=radio], [type=range], [type=file], [type=hidden], [type=color]), textarea:not([readonly])';
+
+/** Modal dialog; its action rows' buttons have letters (`ui/hotkeys`); returns a close function. */
 export function modal(content: HTMLElement, opts: { onClose?: () => void; cls?: string; closable?: boolean } = {}): () => void {
   const prev = document.activeElement as HTMLElement | null;
   const back = h('div', { class: 'modal-back' });
@@ -231,6 +235,7 @@ export function modal(content: HTMLElement, opts: { onClose?: () => void; cls?: 
     if (closed) return;
     closed = true;
     back.remove();
+    watch.disconnect();
     document.removeEventListener('keydown', onKey, true);
     opts.onClose?.();
     prev?.focus?.();
@@ -249,8 +254,26 @@ export function modal(content: HTMLElement, opts: { onClose?: () => void; cls?: 
   }
   closers.set(back, close);
   document.addEventListener('keydown', onKey, true);
+  // The buttons of the action rows take letters, again whenever they or their labels change (a tab, a step of the dialog).
+  let marked: HTMLButtonElement[] = [];
+  let labels = '';
+  const mark = () => {
+    const now = [...content.querySelectorAll<HTMLButtonElement>('.row button.btn')];
+    const text = now.map((b) => b.textContent).join('|');
+    if (text === labels && now.length === marked.length && now.every((b, i) => b === marked[i])) return;
+    [marked, labels] = [now, text];
+    if (now.length) panelHotkeys(content, now);
+  };
+  const watch = new MutationObserver(mark);
+  mark();
+  watch.observe(content, { childList: true, subtree: true });
   document.body.append(back);
-  queueMicrotask(() => (box.querySelector('[autofocus]') as HTMLElement | null ?? box.querySelector('button:not(.modal-x), input, select') as HTMLElement | null)?.focus());
+  // A field to fill takes the focus, else the default button.
+  queueMicrotask(() => {
+    const field = box.querySelector<HTMLElement>(`[autofocus], ${TEXT_FIELD}`);
+    if (field) field.focus();
+    else if (!focusDefault(content)) box.querySelector<HTMLElement>('button:not(.modal-x), input, select')?.focus();
+  });
   return close;
 }
 

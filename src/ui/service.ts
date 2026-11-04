@@ -101,7 +101,7 @@ function fillDialog(p: Profile): void {
       fillField(t('service.fillAccuracy'), accuracy.el, t('service.fillAccuracyHint')),
       fillField(t('service.fillRanges'), ranges.el, t('service.fillRangesHint')),
       h('div', { class: 'switch-field' }, h('label', {}, parrots, h('span', { class: 'switch-title' }, t('service.fillParrots'))), h('small', {}, t('service.fillParrotsHint')))),
-    h('div', { class: 'row center' }, button(t('common.back'), () => close(), 'btn'), button(t('service.fillApply'), apply, 'btn primary', 'check'))));
+    h('div', { class: 'row center' }, button(t('service.fillApply'), apply, 'btn primary', 'check'), button(t('common.back'), () => close(), 'btn'))));
 }
 
 /** Days the settings show that the password was removed or changed without the current one. */

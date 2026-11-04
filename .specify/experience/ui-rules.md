@@ -78,6 +78,18 @@ One set of rules for where things sit and how they behave, so every screen feels
 12. **One end card.** Every end of play (any level, practice, activity, break or hand-in,
    including ones added later) uses the one end card of [mechanics](../game/mechanics.md): the
    same parts in the same places, its own title, picture and rows. No end gets its own layout.
+13. **Panels by the keyboard.** Every panel with buttons (end cards, the pause card and its short
+   exercise, dialogs and their questions) works without the mouse. Its leftmost button is the
+   default: it has the focus with a visible ring as soon as the panel shows, so Enter or the space
+   bar presses it; the main or the safe choice is always that leftmost button. Every button has its
+   own letter, underlined in its label, and the letter presses it: the first letter of the label
+   that no button left of it has taken (a letter with a diacritic is its own letter, so á is not a),
+   in every language by itself; a button with no free letter is still reached with Tab. Only the
+   panel on top takes letters (a question over an end card has them, not the card), a letter typed
+   into a field stays the field's, and Escape keeps its meaning. Cards whose letters are the task
+   (a new key's card, the get-ready card, the typing itself) have none, and neither has a hidden
+   end card: typing under it plays on. Ms Turtle's panels on the map have none either: words
+   typed on the map call its visitors.
 - No decorative bursts (confetti, sparkles, flying petals or feathers) for success or at an
   end. Particles only show what happens in the scene: dust of a crumbling stone, splashes of a
   pushed log, sparks of a torch, leaves of a bush, what a thing at the target range is
@@ -102,5 +114,8 @@ One set of rules for where things sit and how they behave, so every screen feels
   language still finds it.
 - Bursts of confetti pull the eyes off the words and make a calm game loud; the joy is in
   the scene itself and in Tapko.
+- A child at the keyboard should never need the mouse to leave a panel, and one rule for every
+  panel means a learned letter works the same everywhere; the underline shows it without a word
+  of explanation, and the letters come from the labels, so they never need translating.
 - One end card means a child finds the result, the news and the way on in the same place after
   every kind of play, and a new activity cannot drift into its own crowded layout.

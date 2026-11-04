@@ -555,7 +555,7 @@ const exportAll = () => download('tapkotyper-profiles.json', app.store.exportJso
 /**
  * Every player goes, after two questions: the first says that whoever typed here starts again
  * without a backup and offers the backup instead; the second hides its one "Delete all" among
- * four Back buttons, so it is never pressed by habit; there the backup is the default button.
+ * four Back buttons, so it is never pressed by habit; there the backup is the default button, first.
  */
 async function deleteAll(): Promise<void> {
   const ask = (title: string, choices: [string, string, string][]) => new Promise<string | null>((resolve) => {
@@ -575,7 +575,7 @@ async function deleteAll(): Promise<void> {
   if (first !== 'next') return;
   const backs: [string, string, string][] = Array.from({ length: 4 }, () => ['back', t('common.back'), 'btn']);
   backs.splice(1 + Math.floor(Math.random() * 4), 0, ['delete', t('parent.deleteAllOk'), 'btn danger']);
-  const second = await ask(t('parent.deleteAllSure'), [...backs, ['backup', t('parent.deleteAllBackup'), 'btn primary']]);
+  const second = await ask(t('parent.deleteAllSure'), [['backup', t('parent.deleteAllBackup'), 'btn primary'], ...backs]);
   if (second === 'backup') return exportAll();
   if (second !== 'delete') return;
   app.store.removeAll();
@@ -623,7 +623,7 @@ export function importDialog(done: () => void): void {
       msg.textContent = t('import.found', { n: profiles.length, names: profiles.map(nickname).join(', ') });
       if (plan.conflicts.length) {
         msg.textContent += ` ${t('import.conflict', { names: plan.conflicts.map(nickname).join(', ') })}`;
-        actions.append(button(t('import.replace'), () => finish(true), 'btn'), button(t('import.keepBoth'), () => finish(false), 'btn primary'));
+        actions.append(button(t('import.keepBoth'), () => finish(false), 'btn primary'), button(t('import.replace'), () => finish(true), 'btn'));
       } else actions.append(button(t('import.do'), () => finish(false), 'btn primary'));
     } catch (e) {
       msg.className = 'error';

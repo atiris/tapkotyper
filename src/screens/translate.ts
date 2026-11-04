@@ -763,7 +763,7 @@ function translatorPage(screen: HTMLElement): () => void {
         lab(o.pick ? tr('editPick') : tr('fallback'), fallback),
         lab(tr('layout'), layout),
         error,
-        h('div', { class: 'row center' }, button(tr('cancel'), () => close(), 'btn'), h('button', { class: 'btn primary', type: 'submit' }, tr('create')))),
+        h('div', { class: 'row center' }, h('button', { class: 'btn primary', type: 'submit' }, tr('create')), button(tr('cancel'), () => close(), 'btn'))),
       { cls: 'tr-modal', onClose: () => resolve(made) });
     });
   }
@@ -899,7 +899,7 @@ function translatorPage(screen: HTMLElement): () => void {
       const close = modal(h('div', { class: 'tr-dialog' }, h('h2', {}, tr('importTitle')),
         h('p', {}, tr('importSummary', { applied: plan.applied, empty: plan.empty, skipped: plan.skipped.length })),
         plan.skipped.length ? h('ul', { class: 'tr-skipped hint' }, ...plan.skipped.slice(0, 12).map((s) => h('li', {}, h('code', {}, s.id), ` · ${why[s.why]}`)), plan.skipped.length > 12 ? h('li', {}, '…') : null) : null,
-        h('div', { class: 'row center' }, button(tr('cancel'), () => close(), 'btn'), button(tr('importDo'), () => { ok = true; close(); }, 'btn primary'))),
+        h('div', { class: 'row center' }, button(tr('importDo'), () => { ok = true; close(); }, 'btn primary'), button(tr('cancel'), () => close(), 'btn'))),
       { cls: 'tr-modal', onClose: () => resolve(ok) });
     });
     if (!yes) return;

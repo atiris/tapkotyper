@@ -36,17 +36,44 @@ No store or contract change.
 - **Translations**: letters come from the label at run time, so every language works by itself.
 
 ## Steps
-- [ ] `src/ui/hotkeys.ts`: `assignHotkeys(labels: string[]): (string | null)[]` (pure, tested
+- [x] `src/ui/hotkeys.ts`: `assignHotkeys(labels: string[]): (string | null)[]` (pure, tested
   with the example above, taken letters, diacritics, no letter left) and
   `panelHotkeys(panel: HTMLElement, buttons: HTMLButtonElement[]): () => void` (underline,
   `aria-keyshortcuts`, the listener, returns its stop).
-- [ ] Wire it into `modal` (buttons of the content, not `.modal-x`), the end card (`render`), the
+- [x] Wire it into `modal` (buttons of the content, not `.modal-x`), the end card (`render`), the
   pause card and the other overlay cards with button rows; stop it when the panel closes.
-- [ ] Default leftmost + focus on open everywhere; fix panels whose primary is not first.
-- [ ] CSS: `u.hk` (underline, thick enough to see on the orange button), the focus ring of the default.
-- [ ] Spec: `.specify/experience/ui-rules.md` (what and why: keyboard-only children, one rule for all panels).
-- [ ] Build, lint, tests; Playwright: an end card (Enter, letter, Esc), the pause card, a confirm
+- [x] Default leftmost + focus on open everywhere; fix panels whose primary is not first.
+- [x] CSS: `u.hk` (underline, thick enough to see on the orange button), the focus ring of the default.
+- [x] Spec: `.specify/experience/ui-rules.md` (what and why: keyboard-only children, one rule for all panels).
+- [x] Build, lint, tests; Playwright: an end card (Enter, letter, Esc), the pause card, a confirm
   dialog over a card, a modal with an input (letters go into the input).
 
 ## State
-Nothing implemented yet.
+All steps done.
+
+Decisions made while implementing:
+- `panelHotkeys` returns nothing instead of a stop: a panel is marked with `data-hotkeys` and its
+  letters live in a WeakMap, and one window keydown listener (capture, installed when the module
+  loads, so before every other key listener) asks the marked panels from the last in the page to
+  the first. A panel acts only when a hit test at its first visible button lands inside it: that
+  makes "only the topmost panel" hold for dialogs over cards, the help page over an end card, key
+  cards, and the peeked (hidden) end card without any per-panel bookkeeping or cleanup.
+- `modal` gives letters to the buttons of its `.row`s and watches its content (MutationObserver),
+  so dialogs whose buttons or labels come later or change (import after a file is picked, the
+  stats tabs, the teacher's wipe button) get letters too. Its first focus: `[autofocus]`, else a text field, else the default button.
+- Primary moved to the left: the parent password dialog (Open, Back), the service fill dialog,
+  the import conflict (Keep both, Replace), the second delete-all question (the backup first, the
+  hidden Delete never first), the translator's New language and import dialogs.
+- Ms Turtle's tip and placement panels on the map get no letters: words typed on the map call its
+  visitors (`onTypedWord`), and the panels' primary is already first and focused.
+- `showCard` (the one-button notices) gets its letter too; the key cards and the get-ready card none.
+
+## Done - 2026-11-04
+Shipped: `src/ui/hotkeys.ts` (letters, underline, default, one listener for the topmost panel)
+with its unit test; letters on dialogs, confirm questions, end cards, the pause card, its short
+exercise and the one-button notices; the default button focused with its ring; primary buttons
+moved left where they were not; the rule in `.specify/experience/ui-rules.md`; an e2e test in
+`e2e/keyboard-only.spec.ts` (pause card, a question over it, the end card with peeking, a dialog
+with a field).
+Left out: nothing of the plan. The e2e suite still has eight failing specs unrelated to this plan
+(BACKLOG, the e2e line).

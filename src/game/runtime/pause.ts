@@ -1,5 +1,6 @@
 import { t } from '../../i18n/i18n';
 import { button, closeButton, h } from '../../ui/dom';
+import { focusDefault, panelHotkeys } from '../../ui/hotkeys';
 import { paintRound } from '../../ui/hud';
 import { tip } from '../../ui/tooltip';
 import type { LevelDef } from '../levels';
@@ -16,7 +17,8 @@ export function pickStretch(): string {
 
 /**
  * The short exercise of a stretch in `el`: its name, what to do and a countdown; Done (or the end of
- * the countdown) calls `back`, the X `close`, the longer break `long`. Returns the countdown's stop.
+ * the countdown) calls `back`, the X `close`, the longer break `long`. Done is the default, both buttons
+ * have letters. Returns the countdown's stop.
  */
 export function stretchExercise(el: HTMLElement, name: string, back: () => void, close: () => void, long: () => void): () => void {
   let left = STRETCH_S;
@@ -26,15 +28,15 @@ export function stretchExercise(el: HTMLElement, name: string, back: () => void,
     stop();
     back();
   };
+  const buttons = [button(t('level.stretchDone'), done, 'btn primary', 'check'), button(t('level.stretchLong'), () => { stop(); long(); }, 'btn', 'wave')];
   el.replaceChildren(
     closeButton(() => { stop(); close(); }, t('level.pauseClose')),
     h('h2', {}, t('level.stretch')),
     h('p', { class: 'pause-tip' }, t(`break.${name}`)),
     count,
-    h('div', { class: 'row' },
-      button(t('level.stretchDone'), done, 'btn primary', 'check'),
-      button(t('level.stretchLong'), () => { stop(); long(); }, 'btn', 'wave')));
-  el.querySelector<HTMLButtonElement>('.btn.primary')?.focus();
+    h('div', { class: 'row' }, ...buttons));
+  panelHotkeys(el, buttons);
+  focusDefault(el);
   const timer = window.setInterval(() => {
     count.textContent = String(--left);
     if (left <= 0) done();
@@ -99,7 +101,7 @@ export class PauseCard {
 
   /** The card's first button: Continue, or staying a while the next level or the end. */
   focus(): void {
-    this.el?.querySelector<HTMLButtonElement>('.btn.primary')?.focus();
+    if (this.el) focusDefault(this.el);
   }
 
   /** The pause button shows what it does: pause while playing, play while paused. */
@@ -119,6 +121,7 @@ export class PauseCard {
    * A small card at the top (the words and the guide's next key stay in sight): a stretch to try,
    * the X (Esc too) to go on, and Continue, Slower (only in play), the short exercise of that stretch and the end.
    * Staying a while, the level is already done: the next level (when open), else the end comes first.
+   * The first button is the default, every one has its letter.
    */
   private card(): void {
     const host = this.host;
@@ -129,11 +132,13 @@ export class PauseCard {
     const end = button(t(host.ending.label), () => host.leave(), 'btn', 'close');
     const first = !host.stay ? keep : host.next ? button(t('results.next'), host.next, 'btn', 'next') : end;
     first.classList.add('primary');
+    const buttons = [first, ...[keep, slower, button(t('level.stretch'), () => this.stretch(stretch), 'btn', 'smile'), end].filter((b): b is HTMLButtonElement => b !== null && b !== first)];
     this.el!.replaceChildren(
       closeButton(() => host.resume(), t('level.pauseClose')),
       h('h2', {}, t('level.paused')),
       h('p', { class: 'pause-tip' }, t(`break.${stretch}`)),
-      h('div', { class: 'row' }, first, ...[keep, slower, button(t('level.stretch'), () => this.stretch(stretch), 'btn', 'smile'), end].filter((b) => b !== first)));
+      h('div', { class: 'row' }, ...buttons));
+    panelHotkeys(this.el!, buttons);
   }
 
   /** The short exercise on the pause card: the stretch with a countdown, then the pause again; or the longer break instead. */

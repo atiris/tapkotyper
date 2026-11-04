@@ -114,3 +114,65 @@ test('F4 steps the sound and says so, the tooltips name the keys', async ({ page
   await page.keyboard.press('Escape');
   await page.locator('.map-screen').waitFor();
 });
+
+test('panel buttons answer their underlined letters, the leftmost is the default', async ({ page }) => {
+  test.setTimeout(300_000);
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  await createProfile(page, 'Ida');
+  await page.keyboard.press('Enter');
+  await expect(page.locator('.placement-ask')).toHaveCount(0);
+  await page.locator('.map-side .btn.primary').click();
+  await untilPlay(page);
+  await expect.poll(() => page.locator('.kb-guide').getAttribute('data-next'), { timeout: 15_000 }).not.toBe('');
+  await typeChar(page, (await page.locator('.kb-guide').getAttribute('data-next'))!);
+
+  // The pause card: every button has its letter underlined, Continue (leftmost) is focused.
+  await page.locator('.hud').getByRole('button', { name: 'Pause' }).click();
+  const pause = page.locator('.pause-card');
+  const keep = pause.getByRole('button', { name: 'Continue', exact: true });
+  await expect(keep).toBeFocused();
+  await expect(keep).toHaveClass(/kbd-default/);
+  await expect(keep.locator('u.hk')).toHaveText('C');
+  await expect(pause.locator('.row .btn')).toHaveCount(4);
+  await expect(pause.locator('.row .btn u.hk')).toHaveCount(4);
+  await expect(pause.getByRole('button', { name: 'Stop typing' })).toHaveAttribute('aria-keyshortcuts', 't');
+
+  // Its letter asks first; the question takes the keys: the pause card's own letter does nothing under it.
+  await page.keyboard.press('t');
+  const ask = page.locator('.confirm-modal');
+  await expect(ask).toContainText('This level will not count.');
+  await expect(ask.getByRole('button', { name: 'Continue', exact: true })).toBeFocused();
+  await page.keyboard.press('q');
+  await expect(ask).toBeVisible();
+  await page.keyboard.press('c');
+  await expect(ask).toHaveCount(0);
+  await expect(pause.locator('h2')).toHaveText('Little pause');
+  await page.keyboard.press('c');
+  await expect(pause).toHaveCount(0);
+
+  // The end card: the main button is the default; Esc peeks, letters act only while the card shows.
+  await playLevel(page, false);
+  const card = page.locator('.end-card');
+  await expect(card.locator('.ec-bot .btn').first()).toBeFocused();
+  await expect(card.locator('.ec-bot .btn').first()).toHaveClass(/kbd-default/);
+  await page.keyboard.press('Escape');
+  await expect(card).toBeHidden();
+  await page.keyboard.press('ArrowDown');
+  await expect(card).toBeVisible();
+  const home = card.locator('.ec-bot .btn.home');
+  await page.keyboard.press((await home.getAttribute('aria-keyshortcuts'))!);
+  await expect(page.locator('.level-node.done')).toHaveCount(1);
+
+  // A dialog with a field: the field has the focus and keeps the letters.
+  await page.locator('.top-right .round-btn').first().click();
+  await page.locator('.confirm .btn:not(.primary)').last().click();
+  await page.getByRole('button', { name: /^(Preložiť hru|Translate the game)$/ }).click();
+  await page.getByRole('button', { name: /^New language$/ }).click();
+  const name = page.locator('.tr-dialog input').first();
+  await expect(name).toBeFocused();
+  await page.keyboard.type('Ciao');
+  await expect(name).toHaveValue('Ciao');
+  await expect(page.locator('.tr-dialog')).toBeVisible();
+  expect(errors).toEqual([]);
+});

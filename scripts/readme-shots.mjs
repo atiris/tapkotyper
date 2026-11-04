@@ -102,6 +102,38 @@ async function playShot(page, id, island, node, name, chars = 20) {
   await shot(page, name, 120);
 }
 
+/**
+ * Plays the task titled `title` (its words all start with `ch`) until `ch` is next the second time, when the
+ * first word is typed and the next one is in the scene, and catches the keyboard's guide for it (Shift for a
+ * capital, the accent key first for a long letter).
+ */
+async function keyShot(page, id, title, ch, name) {
+  await page.goto(`${BASE}?fast#/p/${id}/tasks`);
+  await page.locator('.my-task', { hasText: title }).locator('.btn.primary').click();
+  await page.locator('.level-screen canvas').first().waitFor();
+  let typedCh = 0;
+  for (let i = 0; i < 2000; i++) {
+    const s = await page.evaluate(() => {
+      if (document.querySelector('.posture-card, .keys-intro, .story-screen')) return 'space';
+      const ck = document.querySelector('.controlkey-card');
+      if (ck) return `press:${ck.dataset.key}`;
+      if (document.querySelector('.newkey-card')) return 'wait';
+      const next = document.querySelector('.kb-guide')?.dataset.next;
+      return next ? `next:${next}` : 'wait';
+    });
+    if (s === `next:${ch}` && typedCh > 0) break;
+    if (s === 'space') await page.keyboard.press('Space');
+    else if (s.startsWith('press:')) await page.keyboard.press(s.slice(6));
+    else if (s.startsWith('next:')) {
+      await page.evaluate((c) => window.tapkoType(c), s.slice(5));
+      if (s === `next:${ch}`) typedCh++;
+    }
+    await page.waitForTimeout(s.startsWith('next:') ? 220 : 250);
+  }
+  await page.waitForTimeout(1500);
+  await shot(page, name, 120);
+}
+
 const errors = [];
 let browser;
 try {
@@ -150,6 +182,22 @@ try {
   await page.setViewportSize({ width: 1366, height: 768 });
   await playShot(page, id, 'meadow', 2, 'meadow');
   await playShot(page, id, 'space', 0, 'space');
+
+  // Every key known, the hands in full lines, a task whose words start with the key, played in the world
+  // after `done` (a task plays in the player's current world) by Tapko in a few accessories.
+  const all = lessonOrder('sk-qwertz');
+  const keyTask = async (title, words, done, accessories) => editStore(page, (d, a) => {
+    const p = d.profiles[0];
+    p.settings.hands = 'bold';
+    p.companion.accessories = a.accessories;
+    const levels = Object.fromEntries(a.done.flatMap((w) => [1, 2, 3, 4, 5].map((i) => [`w${w + 1}-${i}`, 3])));
+    Object.assign(p.progress, { levels, worldsDone: a.done, unlockedKeys: a.all, introducedKeys: a.all });
+    p.tasks = [{ id: 'readme-key', title: a.title, group: '3.A', game: 'chase', words: a.words, text: '', limit: 'time', minutes: 5, dictionary: false, knownOnly: true, world: 'current', finished: 0 }];
+  }, { title, words, done, accessories, all });
+  await keyTask('Veľké R', ['Raketa', 'Robot', 'Rýchlo'], [0], ['crown', 'star-glasses']);
+  await keyShot(page, id, 'Veľké R', 'R', 'capital');
+  await keyTask('Dlhé á', ['áno', 'ária', 'áčko'], [], ['cap', 'scarf']);
+  await keyShot(page, id, 'Dlhé á', 'á', 'long-letter');
 } finally {
   await browser?.close();
   stopServer();

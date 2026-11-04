@@ -24,6 +24,12 @@ describe('SEO metadata', () => {
     expect(jsonLd(html).alternateName).toContain('Ťapko');
   });
 
+  it('has a favicon at the root and icons in multiples of 48 px for search results', () => {
+    expect(readFileSync('public/favicon.ico').subarray(0, 4)).toEqual(Buffer.from([0, 0, 1, 0]));
+    expect(html).toContain('<link rel="icon" href="/favicon.ico"');
+    for (const size of [48, 96, 192]) expect(html).toContain(`href="/icons/tapko-${size}.png" type="image/png" sizes="${size}x${size}"`);
+  });
+
   it('points the share picture at an absolute address', () => {
     expect(attr(html, /<meta property="og:image" content="([^"]+)"/)).toBe(`${URL}og.png`);
   });

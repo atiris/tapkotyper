@@ -94,7 +94,10 @@ export function aboutPage(lang: Lang, d: Dict, langs: readonly Lang[] = LANGS): 
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>
+    <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
     <link rel="icon" href="/icons/tapko-48.png" type="image/png" sizes="48x48">
+    <link rel="icon" href="/icons/tapko-96.png" type="image/png" sizes="96x96">
+    <link rel="icon" href="/icons/tapko-192.png" type="image/png" sizes="192x192">
     <link rel="apple-touch-icon" href="/icons/tapko-180.png">
     <style>${STYLE}</style>
   </head>

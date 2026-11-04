@@ -186,8 +186,9 @@
   phone without scrolling:
   - on top only the title of what ended and the round X;
   - in the middle on the left a square with one picture of what happened (the player's
-    character after a level, the end's own picture elsewhere) and under it the stars (a level)
-    or one short value (minutes, hits, words, exercises); on the right at most three rows
+    character after a level, the end's own picture elsewhere) and under it the stars (a level:
+    five of the same size in one even row with a little room between them, the earned ones
+    popping in one right after another as the card shows) or one short value (minutes, hits, words, exercises); on the right at most three rows
     "label - value" and at most one green line with the most important news; no narrator
     sentence, no chips, no exclamations besides the title;
   - when this run told a parent's surprise, a band with the open golden box and "Odomkol si

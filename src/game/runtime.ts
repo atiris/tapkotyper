@@ -1085,7 +1085,7 @@ export class LevelRuntime {
     this.particles.render(g);
     this.callouts.draw(g, this.labels.rects);
     this.mode.renderFront?.(this.stage.beginFront());
-    this.tapko.placeBubble(this.stage.scale, this.mode.bubbleSpot(), this.labels.rects);
+    this.tapko.placeBubble(this.stage.scale, this.labels.rects);
   }
 
 

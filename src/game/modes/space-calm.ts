@@ -221,11 +221,6 @@ export class HopMode extends Mode {
     return { x: s.x, y: s.y - s.size * 0.9 - 20 };
   }
 
-  bubbleSpot(): { x: number; y: number } {
-    const s = this.hero();
-    return { x: s.x, y: s.y - s.size * 0.9 - 10 };
-  }
-
   render(g: G): void {
     for (const r of this.rocks) {
       // A new meteor fades in and grows at its place.
@@ -350,11 +345,6 @@ export class CommandMode extends Mode {
   heroSpot(): { x: number; y: number } {
     const s = this.hero();
     return { x: s.x, y: s.y - s.size * 0.9 - 20 };
-  }
-
-  bubbleSpot(): { x: number; y: number } {
-    const s = this.hero();
-    return { x: s.x, y: s.y - s.size * 0.9 - 10 };
   }
 
   update(dt: number): void {

@@ -80,11 +80,6 @@ export class LaunchMode extends CommandMode {
     return { x: s.x, y: s.y - s.size * 1.2 - 20 };
   }
 
-  bubbleSpot(): { x: number; y: number } {
-    const s = this.climber();
-    return { x: s.x, y: s.y - s.size - 10 };
-  }
-
   /** The little dragon right behind him, then after him into the rocket. */
   friendSpot(): { x: number; y: number } {
     const s = this.climber();

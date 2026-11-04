@@ -291,11 +291,6 @@ export class SpaceMode extends ApproachMode {
     return { x: s.x, y: s.y - s.size * 0.9 - 20 };
   }
 
-  bubbleSpot(): { x: number; y: number } {
-    const s = this.seat();
-    return { x: s.x, y: s.y - s.size * 0.9 - 10 };
-  }
-
   render(g: G): void {
     const { x: rx, y: ry, rot } = this.rocket();
     if (this.beam > 0) {

@@ -71,14 +71,9 @@ export class StageTapko {
   }
 
   /** The word is the task, so the bubble never covers one (`labels`): over a label it hides until its spot is free. */
-  placeBubble(scale: number, at: { x: number; y: number } | null, labels: Rect[]): void {
+  placeBubble(scale: number, labels: Rect[]): void {
     const b = this.bubble, s = scale;
     if (b.classList.contains('hidden')) return;
-    // The tail's tip (40 px + half of its 16 px from the left, 8 px below) points to the mode's spot.
-    if (at) {
-      b.style.left = `${Math.max(8, at.x * s - 48)}px`;
-      b.style.top = `${Math.max(8, at.y * s - b.offsetHeight - 8)}px`;
-    }
     const covers = () => {
       const x0 = b.offsetLeft / s - LABEL_GAP, x1 = (b.offsetLeft + b.offsetWidth) / s + LABEL_GAP;
       const y0 = b.offsetTop / s - LABEL_GAP, y1 = (b.offsetTop + b.offsetHeight) / s + LABEL_GAP;

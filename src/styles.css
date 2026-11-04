@@ -843,7 +843,9 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
 .ec-row span { color: var(--ink-soft); font-weight: 600; }
 .ec-row b { font-size: 1.15rem; font-weight: 800; text-align: right; overflow-wrap: anywhere; }
 .ec-keys { display: inline-flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.3em; }
-.ec-keys .kbd { padding: 0.1em 0.45em 0.25em; border: 1px solid var(--line); }
+.ec-keys .kbd, .ec-row > span > .kbd { padding: 0.1em 0.45em 0.25em; border: 1px solid var(--line); }
+.ec-row > span > .kbd { font-size: 1.15rem; color: var(--ink); }
+.ec-row .ec-change { color: inherit; font-weight: inherit; }
 .ec-row .ec-up { margin-left: 0.35em; color: var(--green-ink); font-size: 0.75em; }
 .ec-news, .ec-tip { display: flex; align-items: center; gap: 0.5rem; margin: 0.6rem 0 0; padding: 0.55rem 0.9rem; border-radius: 14px; font-weight: 700; }
 .ec-news { background: var(--tint-green); color: var(--green-ink); }
@@ -1260,7 +1262,8 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
 .lg { padding: 0.2em 0.6em; border-radius: 10px; font-weight: 600; }
 .lg.heat-good { background: var(--heat-good); } .lg.heat-ok { background: var(--heat-ok); } .lg.heat-practice { background: var(--heat-practice); }
 .weak-list { list-style: none; margin: 0 0 0.8rem; padding: 0; display: grid; gap: 0.5rem; }
-.weak-list li { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+.weak-list li { display: flex; align-items: center; gap: 0.6rem; }
+.weak-list .key-cap { flex: none; }
 /* A key to practise drawn like a key of the on-screen keyboard: outlined, its finger's colour on the bottom edge. */
 .key-cap { min-width: 2.4em; height: 2.4em; padding: 0 0.5em 6px; border-radius: 9px; border: 1px solid var(--key-line); background: var(--surface); color: var(--ink); box-shadow: inset 0 -5px 0 var(--finger, var(--brand)), 0 2px 0 var(--edge); font-family: var(--font-keys); font-size: 1rem; font-weight: 700; cursor: pointer; transition: transform 0.12s; }
 .key-cap:hover { transform: translateY(-2px); }

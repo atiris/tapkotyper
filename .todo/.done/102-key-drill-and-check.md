@@ -72,7 +72,7 @@ keeps its card.
   keyboard" and moves under the keyboard into the legend's row: the button on the left, the
   legend (✓ ide to ~ skoro ! poďme cvičiť) on the right of the same row (wraps on a phone).
   The tooltip keeps the length (about 4 minutes).
-- [ ] Browser check with Playwright (tester profile, see memory): the tab on a wide and a phone width.
+- [x] Browser check with Playwright (tester profile, see memory): the tab on a wide and a phone width.
 
 ### 5. The keyboard check judges each key
 Today a stage passes only when all its presses (old keys too) reach 94 %, and the check stops at
@@ -123,13 +123,13 @@ names like "kika" or "martin" go into the word pool in lower case.
 - [x] Test: a dictionary with "Kika" never gives "kika", and gives "Kika" once the Shift is known.
 
 ### 7. Specs and finish
-- [ ] Specs (WHAT and WHY): statistics.md (window 100, Keys tab layout, whole-keyboard view, the
+- [x] Specs (WHAT and WHY): statistics.md (window 100, Keys tab layout, whole-keyboard view, the
   two-minute drill), mechanics.md (the drill's end card rows and green line), placement-check.md
   (per-key judging, the stop rule, gaps, the new intro), words.md (names only with a capital).
-- [ ] `npm run build`, lint, tests; browser play-through of a drill (`?fast`) and of the check.
+- [x] `npm run build`, lint, tests; browser play-through of a drill (`?fast`) and of the check.
 
 ## State
-Steps 1-6 implemented (code and tests); specs and the browser play-through open.
+All steps done.
 
 Decisions:
 - The first group's keys (f, j, space) stay in every stage's words even when one failed: the words cannot do without them, and they are every new player's keys anyway.
@@ -138,3 +138,15 @@ Decisions:
 - The drill's before-state is taken when the level screen opens (`drillStart` in level.ts), not in the mode, so the runtime's options stay private.
 - `STATS_WINDOW` lives in lessons.ts; stats.ts, super.ts and the Keys tab import it from there (no re-export).
 - The heat map's slots sit outside the board (`KeyboardGuide.bottomSlots`), which is aria-hidden, so the switch and the round button stay reachable.
+
+## Done - 2026-11-04
+Shipped: statistics window 100 ( in lessons.ts,  reads it); the two-minute
+drill () with "Krátke cvičenie" / "Precvičiť kláves" and their tooltips; the drill's end card
+(per-key rows with the up arrow or one "Trénované klávesy" row, the mastered-key green line, "Ešte raz");
+the Keys tab (outlined key caps, the ⇧ switch and the whole-keyboard button in the bottom row beside the
+space bar, under the keyboard on a phone, the check button beside the legend, the whole-keyboard view);
+the keyboard check judging each key on its own, failed keys out of later words, the 3-miss stop, gaps
+filled one by one by the last-pushed newest group, the new get-ready text and "Na mapu" on its card;
+names loaded with their capital. Specs updated. Browser-checked: the Keys tab wide and at phone width,
+a drill to its end card, the check with a weak  to its end card.
+Left out: nothing.

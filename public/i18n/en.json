@@ -95,8 +95,8 @@
     "layout": "Keyboard layout",
     "layoutHint": "Pick the one on your real keyboard. Look at the key next to T: Z means QWERTZ, Y means QWERTY.",
     "fingering": "Fingering",
-    "ergonomicHint": "Each digit key is pressed by the finger nearly straight below it: 6 by the left index finger, 0 by the right ring finger. Shorter, straighter moves.",
-    "standardHint": "As typing courses teach it: 6 by the right index finger, 0 by the right little finger. All other keys are the same.",
+    "ergonomicHint": "By the natural position of the hand: less twisting of the wrist, shorter and more natural finger moves.",
+    "standardHint": "By the shape of the keyboard, as most typing courses teach it.",
     "guide": "On-screen keyboard",
     "hands": "Hands on the keyboard",
     "more": "Why ergonomic? More in the help",
@@ -1614,10 +1614,11 @@
     "fingersTitle": "Layout and fingering",
     "fingers": [
       "The **layout** says which characters are on the keys. Slovak keyboards are QWERTZ (Z next to T) or QWERTY (Y next to T). Pick the one you really have, or the on-screen keyboard shows other keys.",
-      "The **fingering** says which finger presses which key. The letters are the same in both, only the digit row differs.",
-      "**Ergonomic** (the default): the digit row sits further left, so each finger takes the key nearly straight above its own: left little finger 1 and 2, ring 3, middle 4, index 5 and 6; right index 7 and 8, middle 9, ring 0, little finger the rest. The moves are shorter and straighter.",
-      "**Standard**: as most courses teach it: left little finger 1, ring 2, middle 3, index 4 and 5; right index 6 and 7, middle 8, ring 9, little finger 0 and the rest. Pick it if you learn it at school too.",
-      "On a Slovak keyboard these keys also carry ľ š č ť ž ý á í é. You switch it at the bottom right under the keyboard or in the settings. The keys' colours and the hands follow."
+      "The **fingering** says which finger presses which key. Tapko knows two.",
+      "The **ergonomic fingering** (the default) gives the keys to the fingers by the natural position of the hand, not by the shape of the keyboard. The keys each finger presses are chosen so that it moves in the natural direction in which the hand lies on the keyboard. The gain is less twisting and bending of the wrist, shorter and more natural finger moves and less risk of strain. It is also the way to type on split or angled ergonomic keyboards.",
+      "The **standard fingering** follows the shape of an ordinary keyboard: its keys stand in slanted columns and each finger presses its own column. Most textbooks and typing courses teach it this way.",
+      "**What is the difference in practice?** The letters and nearly all other keys are the same in both. Only the top row with the digits (and the Slovak ľ š č ť ž ý á í é) differs: with the standard fingering the left hand reaches for it at a slant against the way it lies, and the right little finger has more to do. With the ergonomic one the fingers get there with a shorter, straighter move.",
+      "**Why is the ergonomic one the default?** It is easier to learn, it tires the hands less, and the habit carries over to ergonomic keyboards. If you learn the standard one at school, switch to it at the bottom right under the keyboard or in the settings. The keys' colours and the hands follow."
     ],
     "mapTitle": "Buttons on the map",
     "levelTitle": "Buttons in a level",

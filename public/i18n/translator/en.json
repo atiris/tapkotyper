@@ -1709,8 +1709,8 @@
     "kbSettings.layout": "In that panel: the label of the keyboard layout select.",
     "kbSettings.layoutHint": "In that panel: one line under the layout select on how to tell the layouts apart.",
     "kbSettings.fingering": "In that panel: the label of the two fingering choices.",
-    "kbSettings.ergonomicHint": "In that panel: one line under the fingering choices while the ergonomic one is chosen.",
-    "kbSettings.standardHint": "In that panel: one line under the fingering choices while the standard one is chosen.",
+    "kbSettings.ergonomicHint": "In the keyboard settings panel: one line under the fingering choices while the ergonomic one is chosen, what it is in short.",
+    "kbSettings.standardHint": "In the keyboard settings panel: one line under the fingering choices while the standard one is chosen, what it is in short.",
     "kbSettings.guide": "In that panel: the switch that shows or hides the on-screen keyboard (as F2).",
     "kbSettings.hands": "In that panel: the label of the choices for the outline hands on the keyboard.",
     "kbSettings.more": "In that panel: the link to the help's paragraph on the fingerings.",
@@ -1728,6 +1728,6 @@
     "parent.handsOff": "Settings, Settings tab: an option in the hands select.",
     "parent.handsHint": "Settings, Settings tab: the note under the hands select.",
     "help.fingersTitle": "Help, Typing tab: the heading of the paragraph on keyboard layouts and fingerings.",
-    "help.fingers": "Help, Typing tab: bullet points that explain the layout and the two fingerings of the digit row."
+    "help.fingers": "Help, Typing tab: bullet points that explain the layout, the two fingerings (ergonomic and standard), their practical difference and why the ergonomic one is the default."
   }
 }

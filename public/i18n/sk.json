@@ -95,8 +95,8 @@
     "layout": "Rozloženie klávesnice",
     "layoutHint": "Vyber také, aké máš na skutočnej klávesnici. Pozri sa na kláves vedľa T: Z znamená QWERTZ, Y znamená QWERTY.",
     "fingering": "Priradenie prstov",
-    "ergonomicHint": "Číselný rad stláča prst, ktorý je takmer rovno pod klávesom: 6 ľavý ukazovák, 0 pravý prstenník. Kratšie a rovnejšie pohyby.",
-    "standardHint": "Ako v kurzoch písania: 6 stláča pravý ukazovák, 0 pravý malíček. Ostatné klávesy sú rovnaké.",
+    "ergonomicHint": "Podľa prirodzeného postavenia ruky: menej krútenia zápästia, kratšie a prirodzenejšie pohyby prstov.",
+    "standardHint": "Podľa tvaru klávesnice, ako ho učí väčšina kurzov písania.",
     "guide": "Klávesnica na obrazovke",
     "hands": "Ruky na klávesnici",
     "more": "Prečo ergonomické? Viac v pomoci",
@@ -1614,10 +1614,11 @@
     "fingersTitle": "Rozloženie a priradenie prstov",
     "fingers": [
       "**Rozloženie** hovorí, aké znaky sú na klávesoch. Slovenské klávesnice bývajú QWERTZ (vedľa T je Z) alebo QWERTY (vedľa T je Y). Vyber to, ktoré máš naozaj, inak ti klávesnica na obrazovke ukáže iné klávesy.",
-      "**Priradenie prstov** hovorí, ktorý prst stláča ktorý kláves. Písmená sú v oboch rovnaké, líši sa len číselný rad.",
-      "**Ergonomické** (predvolené): číselný rad je posunutý doľava, preto každý prst berie kláves takmer rovno nad svojím: ľavý malíček 1 a 2, prstenník 3, prostredník 4, ukazovák 5 a 6; pravý ukazovák 7 a 8, prostredník 9, prstenník 0, malíček zvyšok. Pohyby sú kratšie a rovnejšie.",
-      "**Štandardné**: ako vo väčšine kurzov: ľavý malíček 1, prstenník 2, prostredník 3, ukazovák 4 a 5; pravý ukazovák 6 a 7, prostredník 8, prstenník 9, malíček 0 a zvyšok. Vyber ho, ak sa ho učíš aj v škole.",
-      "Na slovenskej klávesnici sú na týchto klávesoch aj ľ š č ť ž ý á í é. Prepneš to vpravo dole pod klávesnicou alebo v nastaveniach. Farby klávesov aj ruky sa prispôsobia."
+      "**Priradenie prstov** hovorí, ktorý prst stláča ktorý kláves. Ťapko pozná dve.",
+      "**Ergonomické priradenie prstov** (predvolené) priraďuje prsty ku klávesom podľa prirodzeného postavenia ruky, a nie podľa tvaru klávesnice. Klávesy, ktoré daný prst stláča, sú vybrané tak, aby sa pohyboval v prirodzenom smere, ktorým ruka leží na klávesnici. Výhodou je menej krútenia a ohýbania zápästia, kratšie a prirodzenejšie pohyby prstov a menšie riziko preťaženia. Rovnako sa píše aj na špeciálnych delených alebo pravouhlých ergonomických klávesniciach.",
+      "**Štandardné priradenie prstov** vychádza z tvaru bežnej klávesnice: jej klávesy sú usporiadané v šikmých stĺpcoch a každý prst stláča svoj stĺpec. Takto ho učí väčšina učebníc a kurzov písania.",
+      "**Aký je medzi nimi rozdiel v praxi?** Písmená a skoro všetky ostatné klávesy sú v oboch rovnaké. Líši sa len horný rad s číslami a písmenami ľ š č ť ž ý á í é: pri štandardnom priradení na ne musí ľavá ruka siahať šikmo proti smeru, ktorým leží, a pravý malíček má viac práce. Pri ergonomickom na ne prsty dosiahnu kratším a rovnejším pohybom.",
+      "**Prečo je predvolené ergonomické?** Ľahšie sa učí, ruky sa pri ňom menej unavia a návyk z neho platí aj na ergonomických klávesniciach. Ak sa v škole učíš štandardné, prepni si ho vpravo dole pod klávesnicou alebo v nastaveniach. Farby klávesov aj ruky sa prispôsobia."
     ],
     "mapTitle": "Tlačidlá na mape",
     "levelTitle": "Tlačidlá v úrovni",

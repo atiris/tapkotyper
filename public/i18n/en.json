@@ -1705,7 +1705,7 @@
       "The game has stories. Each story has worlds, and each world has a few levels.",
       "You play the levels in order. At the end of a world a big challenge waits.",
       "Every level gives you up to **five stars**. The fewer mistakes, the more stars.",
-      "You can play a level again when you want more stars.",
+      "You can play a level again when you want more stars. Every finished level adds stars in My progress, but the level's own stars grow only with a better result.",
       "New letters come when the old ones go well. Some levels and stories open only when you know enough letters.",
       "When you miss a letter, practise it in Own typing."
     ],
@@ -1772,7 +1772,8 @@
       "Stars for a level come from **accuracy** only: the share of right keys among all pressed. Speed does not change them.",
       "**5 stars** from {s5} %, **4** from {s4} %, **3** from {s3} %, **2** from {s2} %, else 1. Each further star needs half the mistakes. A finished level always gives at least one.",
       "The hero's journey is a bit stricter: **5** from {j5} %, **4** from {j4} %, **3** from {j3} %, **2** from {j2} %.",
-      "A level keeps its best result; playing it again never takes stars away."
+      "A level keeps its best result; playing it again never takes stars away.",
+      "Every finished level, played again too, adds its stars to the stars **earned so far**, shown in My progress and on the certificate. The stars by the level on the map grow only with a result better than the best so far."
     ],
     "mentorTitle": "Results and QR codes",
     "mentor": [

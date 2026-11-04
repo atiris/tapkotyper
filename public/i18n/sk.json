@@ -1705,7 +1705,7 @@
       "Hra má príbehy. Každý príbeh má svety a každý svet má niekoľko úrovní.",
       "Úrovne hráš po poradí. Na konci sveta ťa čaká veľká výzva.",
       "Za každú úroveň dostaneš až **päť hviezdičiek**. Čím menej chýb, tým viac hviezdičiek.",
-      "Úroveň môžeš hrať znova, keď chceš viac hviezdičiek.",
+      "Úroveň môžeš hrať znova, keď chceš viac hviezdičiek. Každé dohranie ti pridá hviezdičky do Môjho postupu, no pri úrovni pribudnú len za lepší výsledok.",
       "Nové písmenká prídu, keď ti tie staré idú dobre. Niektoré úrovne a príbehy sa otvoria, až keď vieš dosť písmeniek.",
       "Keď ti chýba písmenko, precvič ho vo Vlastnom písaní."
     ],
@@ -1772,7 +1772,8 @@
       "Hviezdičky za úroveň sú len za **presnosť**: podiel správnych klávesov zo všetkých stlačených. Rýchlosť ich nemení.",
       "**5 hviezdičiek** od {s5} %, **4** od {s4} %, **3** od {s3} %, **2** od {s2} %, inak 1. Každá ďalšia hviezdička chce polovicu chýb. Za dokončenú úroveň je vždy aspoň jedna.",
       "Cesta hrdinu je o kúsok prísnejšia: **5** od {j5} %, **4** od {j4} %, **3** od {j3} %, **2** od {j2} %.",
-      "Z úrovne sa ráta najlepší výsledok, opakovanie hviezdičky nikdy nezoberie."
+      "Z úrovne sa ráta najlepší výsledok, opakovanie hviezdičky nikdy nezoberie.",
+      "Každé dohranie úrovne, aj opakované, pridá hviezdičky do súčtu **získaných od začiatku**, ktorý je v Mojom postupe a na certifikáte. Hviezdičky pri úrovni na mape pribudnú len za výsledok lepší ako doterajší najlepší."
     ],
     "mentorTitle": "Výsledky a QR kódy",
     "mentor": [

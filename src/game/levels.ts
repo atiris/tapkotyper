@@ -445,6 +445,9 @@ export function placementLevel(): LevelDef {
   return { id: 'placement', world: 0, index: -1, kind: 'placement', count: 0, variant: '', isSuper: false };
 }
 
+/** Seconds of the short drill of a few keys (the keys to practise, a key's details, the keyboard check's weak keys). */
+export const DRILL_SECONDS = 120;
+
 export function practiceLevel(seconds: number | null, phrases?: string[]): LevelDef & { seconds: number | null } {
   return { id: 'practice', world: 0, index: -1, kind: 'practice', count: 0, variant: '', isSuper: false, seconds, phrases };
 }

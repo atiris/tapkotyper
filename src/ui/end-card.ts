@@ -21,7 +21,7 @@ export interface EndCardOpts {
   /** Under the picture: the stars, or one short value. */
   under?: Child;
   /** At most three rows, label and value. */
-  rows?: [string, Child][];
+  rows?: [Child, Child][];
   /** Instead of the rows: a text with `**bold**` (the hero's journey's panel between parts). */
   text?: string | null;
   /** The one green line of news. */

@@ -2,7 +2,7 @@ import { app, go, isBreakDue, saveProfile } from '../app/app';
 import { starRow } from '../ui/chrome';
 import { tapkoElement } from '../gfx/tapko';
 import { t, tn } from '../i18n/i18n';
-import { JOURNEYS, LEVELS, type LevelDef, STORIES, type StoryDef, WORLDS, aimLevel, aimOpen, aimWorld, freeTypeLevel, isLevelUnlocked, isWorldUnlocked, journeyLevel, journeyOpen, levelAt, levelById, nextLevel, parrotLevel, placementLevel, practiceLevel, taskLevel } from '../game/levels';
+import { JOURNEYS, LEVELS, type LevelDef, STORIES, type StoryDef, WORLDS, DRILL_SECONDS, aimLevel, aimOpen, aimWorld, freeTypeLevel, isLevelUnlocked, isWorldUnlocked, journeyLevel, journeyOpen, levelAt, levelById, nextLevel, parrotLevel, placementLevel, practiceLevel, taskLevel } from '../game/levels';
 import { type LevelResult, newJourneyRun } from '../game/progress';
 import type { Style } from '../game/typing';
 import { WORLD_REWARDS } from '../game/rewards';
@@ -10,21 +10,21 @@ import { LevelRuntime } from '../game/runtime';
 import { loadMode } from '../game/modes';
 import { captureKeys } from '../game/cards';
 import { type SurpriseRun, surpriseOutcome, surpriseRun, surpriseWonIn, surprisesToldOn } from '../game/own-content';
-import { type News, bestLetter, greenLine, levelNews } from '../game/end-news';
+import { type DrillKey, type News, bestLetter, drillImproved, drillNews, drillRows, greenLine, levelNews } from '../game/end-news';
 import { ownTextPhrases } from '../game/modes/practice';
 import type { AimMode } from '../game/modes/aim';
 import type { FreeTyped } from '../game/modes/freetype';
 import type { ParrotMode } from '../game/modes/parrot';
 import type { PlacementMode } from '../game/modes/placement';
 import { strongWeak } from '../learning/placement';
-import { activeKeys } from '../learning/lessons';
+import { activeKeys, recentAccuracy } from '../learning/lessons';
 import { loseParrot, winParrot } from '../game/parrots';
 import { THINGS } from '../game/modes/aim-things';
 import { imageUrl } from '../gfx/assets';
 import { compassElement } from '../gfx/compass';
 import { type Profile, SUPER_ID, type Surprise, type Task } from '../storage/schema';
 import { isFinished, recordTaskRun } from '../share/task';
-import { localDate, recentTyping } from '../learning/stats';
+import { keyMastery, localDate, recentTyping } from '../learning/stats';
 import { type Child, closeButton, h } from '../ui/dom';
 import { type EndAction, type EndCardOpts, endCard, focusMain } from '../ui/end-card';
 import { keyLabel } from '../ui/keyboard-guide';
@@ -60,6 +60,8 @@ interface LevelParams {
 
 export function levelScreen(root: HTMLElement, params: LevelParams): () => void {
   const p = app.profile!;
+  // A drill of a few keys tells at its end how they got better since now.
+  const drill = params.id === 'practice' && params.keys ? drillStart(p, params.keys) : null;
   const task = p.tasks.find((x) => x.id === params.task) ?? null;
   let def: LevelDef;
   if (params.id === 'task' && task) def = taskLevel(task, taskWorld(p, task));
@@ -110,6 +112,7 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
         if (def.kind === 'aim') return showAimDone(root, def, result, runtime.mode as AimMode, params, runtime.surprise);
         if (def.kind === 'parrot') return showParrotDone(root, def, result, runtime.mode as ParrotMode, params, runtime.surprise);
         if (def.kind === 'placement') return showPlacementDone(root, result, runtime.mode as PlacementMode);
+        if (drill) return showDrillDone(root, result, drillReport(p, drill), params);
         if (params.stay) return showStayDone(root, def, result);
         if (task) return showTaskDone(root, task, result);
         showResults(root, def, result, params, runtime.surprise);
@@ -219,6 +222,7 @@ function newsLine(news: News[]): Child[] | null {
     : n.kind === 'companion' ? [null, t('results.newCompanion', { kind: t(`kinds.${n.companion}`) })]
     : n.kind === 'trend' ? [null, t('results.trendUp')]
     : n.kind === 'find' ? [findPic(n.thing), t('end.newFind')]
+    : n.kind === 'mastered' ? [null, t('end.keyMastered', { key: keyLabel(n.key) })]
     : n.kind === 'letter' ? [null, t('end.letterBetter', { key: keyLabel(n.key), before: pct(n.before), after: pct(n.after) })]
     : n.kind === 'journeyHome' ? [null, t(`end.journeyHome.${n.story}`)]
     : [null, t('end.faster')];
@@ -313,6 +317,44 @@ function nextOpen(def: LevelDef): LevelDef | undefined {
   return next && isLevelUnlocked(app.profile!, next) ? next : undefined;
 }
 
+/** The drill keys before the run: their recent accuracy, presses ever and whether they were mastered. */
+function drillStart(p: Profile, keys: string[]): DrillKey[] {
+  return keys.map((key) => ({ key, before: recentAccuracy(p.stats.keys[key]), after: 0, presses: p.stats.keys[key]?.presses ?? 0, mastered: !!keyMastery(p, key) }));
+}
+
+/** How the drill keys went: the accuracy now, the presses of this run, mastered in this run. */
+function drillReport(p: Profile, start: DrillKey[]): DrillKey[] {
+  return start.map((k) => ({
+    key: k.key,
+    before: k.before,
+    after: recentAccuracy(p.stats.keys[k.key]),
+    presses: (p.stats.keys[k.key]?.presses ?? 0) - k.presses,
+    mastered: !k.mastered && !!keyMastery(p, k.key),
+  }));
+}
+
+/**
+ * The end of a short drill: each key (up to three, pressed enough) with its accuracy before and after,
+ * a small green arrow when it grew, or the trained keys together; then accuracy and rhythm. The green
+ * line names a key the run mastered, else the most improved one. Once more plays the same drill.
+ */
+function showDrillDone(root: HTMLElement, r: LevelResult, report: DrillKey[], params: LevelParams): void {
+  const keyRows: [Child, Child][] = drillRows(report).map((row) => [
+    row.key === null ? t('end.drillKeys') : h('kbd', { class: 'kbd' }, keyLabel(row.key)),
+    h('span', { class: 'ec-change' }, `${pct(row.before)} % → ${pct(row.after)} %`,
+      drillImproved(row) ? h('span', { class: 'ec-up', role: 'img', 'aria-label': t('end.drillUp') }, '▲') : null),
+  ]);
+  showEnd(root, {
+    cls: 'practice-done drill-done',
+    title: t('end.practice'),
+    picture: 'ui-end-practice',
+    under: minutes(r.seconds),
+    rows: [...keyRows, ...typingRows(r)].slice(0, 3),
+    news: newsLine(drillNews(r, report)),
+    actions: [{ label: t('end.onceMore'), icon: 'replay', run: () => go('level', params) }],
+  });
+}
+
 /** The end of staying a while: accuracy and rhythm like after a practice, the next level first. */
 function showStayDone(root: HTMLElement, def: LevelDef, r: LevelResult): void {
   const next = nextOpen(def);
@@ -380,8 +422,8 @@ function showParrotDone(root: HTMLElement, def: LevelDef, r: LevelResult, mode: 
 /**
  * The end of a placement check: the turtle, the letters the student can use now, the strong and weak
  * keys of this run as key caps and how many letters opened (or, when the timing looked like eyes on
- * the keys, the kind line); in super mode the touch-typing measures too. Continue goes to the map,
- * which shows the opened worlds; with weak keys they can be practised at once.
+ * the keys, the kind line); in super mode the touch-typing measures too. With weak keys the short
+ * drill of them comes first; "To the map" shows the opened worlds.
  */
 function showPlacementDone(root: HTMLElement, r: LevelResult, mode: PlacementMode): void {
   const p = app.profile!, check = mode.check;
@@ -396,8 +438,10 @@ function showPlacementDone(root: HTMLElement, r: LevelResult, mode: PlacementMod
     const n = (v: number | null) => (v === null ? '–' : v.toFixed(2));
     rows.push([t('end.placementSignal'), `${n(check.signal.fit)} · ${n(check.signal.contrast)} · ${check.signal.pass ? '✓' : '✗'}`]);
   }
-  const actions: EndAction[] = [{ label: t('end.placementContinue'), icon: 'next', run: toMap }];
-  if (weak.length) actions.push({ label: t('end.placementPractice'), icon: 'practice', run: () => go('level', { id: 'practice', keys: weak, seconds: 60 }) });
+  const actions: EndAction[] = weak.length ? [{
+    label: t('stats.drill'), icon: 'practice', tip: t('stats.drillTip', { keys: weak.map(keyLabel).join(' ') }),
+    run: () => go('level', { id: 'practice', keys: weak, seconds: DRILL_SECONDS }),
+  }] : [];
   const opened = r.newKeys.length;
   showEnd(root, {
     cls: 'placement-done',
@@ -408,7 +452,6 @@ function showPlacementDone(root: HTMLElement, r: LevelResult, mode: PlacementMod
     news: opened ? [h('span', {}, tn('end.placementOpened', opened))] : null,
     tip: check.end === 'signal' ? t('end.placementEyes') : null,
     actions,
-    toMap: null,
   });
 }
 

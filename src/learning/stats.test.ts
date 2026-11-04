@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
-import { recentPractice, recentTyping, recordPress, recordSession, typingStep } from './stats';
+import { keyboardSummary, recentPractice, recentTyping, recordPress, recordSession, typingStep } from './stats';
 
 describe('recordSession', () => {
   it('counts the training time and earns wardrobe time from it, also with the limit off', () => {
@@ -69,5 +69,15 @@ describe('recordPress', () => {
     recordPress(p, 'f', 'g', 300);
     const day = p.stats.keys.f.days[0];
     expect(day).toMatchObject({ presses: 3, errors: 1, rtSum: 600, rtCount: 1 });
+  });
+});
+
+describe('keyboardSummary', () => {
+  it('takes the mean accuracy and the median speed of the keys with presses', () => {
+    const p = newProfile('Ema', 'sk');
+    expect(keyboardSummary(p)).toEqual({ keys: 0, accuracy: 0, cpm: 0 });
+    for (let i = 0; i < 4; i++) recordPress(p, 'f', 'f', 500);
+    for (let i = 0; i < 4; i++) recordPress(p, 'j', i ? 'j' : 'k', 500);
+    expect(keyboardSummary(p)).toEqual({ keys: 2, accuracy: 0.875, cpm: 120 });
   });
 });

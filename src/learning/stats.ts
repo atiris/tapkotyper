@@ -2,13 +2,11 @@ import { IDLE_STOP_S } from '../game/levels';
 import { earnWardrobe } from '../game/wardrobe-time';
 import { LAYOUTS } from '../keyboard/layouts';
 import { type KeyStat, type Profile, type SessionRecord, emptyKeyStat } from '../storage/schema';
-import { MASTERY_WINDOW, lessonOrder, median, reactionLimit, shiftKeyOf } from './lessons';
+import { MASTERY_WINDOW, STATS_WINDOW, lessonOrder, median, reactionLimit, shiftKeyOf } from './lessons';
 
-const RECENT_KEEP = MASTERY_WINDOW * 2;
+const RECENT_KEEP = Math.max(STATS_WINDOW, MASTERY_WINDOW * 2);
 export const RECENT_WRONG_KEEP = 30;
 const DAYS_KEEP = 60;
-/** Key statistics look at the last presses only, so old habits stop counting. */
-export const STATS_WINDOW = 50;
 /** Reaction times above this are pauses, not slowness. */
 const RT_CAP = 4000;
 
@@ -147,6 +145,27 @@ export function keyReport(profile: Profile, key: string): KeyReport | null {
   const confusions = [...counts].map(([ch, n]) => ({ ch, n })).sort((a, b) => b.n - a.n);
   const speed = avgMs ? Math.max(0, Math.min(1, (2000 - avgMs) / 1400)) : 0.5;
   return { key, presses: s.presses, window: win.length, accuracy, avgMs, confusions, score: accuracy * 0.75 + speed * 0.25 };
+}
+
+export interface KeyboardSummary {
+  /** Keys of the lesson order with presses in their window. */
+  keys: number;
+  /** Mean accuracy of those keys, 0 without any. */
+  accuracy: number;
+  /** Median speed of their right presses in letters per minute, 0 without any. */
+  cpm: number;
+}
+
+/** The whole keyboard by the keys' windows: their mean accuracy and the median speed of their right presses. */
+export function keyboardSummary(profile: Profile): KeyboardSummary {
+  const keys = lessonOrder(profile.layout);
+  const reports = keys.flatMap((k) => keyReport(profile, k) ?? []);
+  const rts = keys.flatMap((k) => (profile.stats.keys[k]?.recent.slice(-STATS_WINDOW) ?? []).filter((v) => v > 0));
+  return {
+    keys: reports.length,
+    accuracy: reports.length ? reports.reduce((s, r) => s + r.accuracy, 0) / reports.length : 0,
+    cpm: rts.length ? Math.round(60_000 / median(rts)) : 0,
+  };
 }
 
 /** Keys that need practice most, worst first (only keys with enough data). */

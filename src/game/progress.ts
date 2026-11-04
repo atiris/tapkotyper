@@ -160,8 +160,8 @@ export function completeStay(p: Profile, r: RunStats, typedShare: number): Level
 }
 
 /**
- * The end of a placement check: every key of its passed stages is unlocked (and counts as introduced,
- * the student typed it), the keys it reached are kept as the most of all checks, and the automatic
+ * The end of a placement check: every key it passed is unlocked in lesson order, also after a failed
+ * one (and counts as introduced, the student typed it), the keys it reached are kept as the most of all checks, and the automatic
  * difficulty may rise to the check's reaction. Nothing is marked done and nothing is ever taken
  * away; a failed touch-typing signal changes nothing. The presses were recorded like any run's.
  */

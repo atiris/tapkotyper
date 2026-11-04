@@ -252,7 +252,7 @@
     "endPracticeText": "Toto cvičenie sa nezapočíta.",
     "stayStart": "Zostávame tu. Píš, koľko chceš. Keď budeš chcieť skončiť, stlač Esc.",
     "placement": "Skúška klávesnice",
-    "placementStart": "Píš, čo vidíš, pokojne a všetkými prstami. Neponáhľaj sa: chcem len vidieť, ktoré klávesy už vieš.",
+    "placementStart": "Píš výrazy, ktoré sa ti zobrazia, **pokojne, všetkými desiatimi prstami.** Toto cvičenie zisťuje, ktoré klávesy už vieš, a niektoré klávesy ti odomkne aj bez ich uvádzania v príbehoch. **Neponáhľaj sa!** Pomalé písanie je v poriadku.",
     "placementDone": "Hotovo!"
   },
   "guide": {
@@ -443,6 +443,10 @@
     "sendHow": "odkaz alebo kód",
     "letterBetter": "Písmeno {key}: presnosť z {before} % na {after} %",
     "faster": "Rýchlejšie ako zvyčajne",
+    "keyMastered": "Kláves {key} už ide skvele!",
+    "drillKeys": "Trénované klávesy",
+    "drillUp": "lepšie",
+    "onceMore": "Ešte raz",
     "letters": {
       "one": "{n} písmeno",
       "few": "{n} písmená",
@@ -491,8 +495,6 @@
     "placementWeak": "Na precvičenie",
     "placementNoWeak": "Žiadne, všetko išlo dobre!",
     "placementSignal": "Signál prstov (zhoda · kontrast)",
-    "placementContinue": "Pokračovať",
-    "placementPractice": "Precvičiť slabé klávesy",
     "placementEyes": "Zdá sa, že oči ti ešte pomáhajú hľadať klávesy. Lekcie naučia tvoje prsty všetko od začiatku, rýchlo."
   },
   "results": {
@@ -1151,8 +1153,8 @@
     "practice": "poďme cvičiť",
     "practiceKeys": "Klávesy na precvičenie",
     "keyLine": "{acc} % správne, stláčaj",
-    "instead": "(často namiesto neho {key})",
-    "practiceNow": "Precvičiť ich teraz (1 min)",
+    "drill": "Krátke cvičenie",
+    "drillTip": "Počas dvojminútového cvičenia precvičí najmä klávesy: {keys}",
     "clickKey": "Ťukni na kláves na klávesnici a uvidíš, ako ti ide.",
     "fingerLine": "Stláčaj ho",
     "keyNoData": "Tento kláves zatiaľ nemá žiadne stlačenia.",
@@ -1164,11 +1166,22 @@
     "keyAccuracyTrend": "Presnosť po dňoch",
     "keySpeedTrend": "Čas na stlačenie po dňoch",
     "keyHistorySoon": "Vývoj po dňoch uvidíš, keď budeš hrať aspoň dva dni.",
-    "practiceKey": "Precvičiť {key} (1 min)",
+    "drillKey": "Precvičiť kláves",
+    "drillKeyTip": "Spustí dvojminútové cvičenie na precvičenie klávesu: {key}",
     "medals": "Moje medaily",
     "medalsHint": "Medailu dostaneš vždy, keď už píšeš presne a hra sama pridá: veci sa hýbu o kúsok rýchlejšie alebo prídu dlhšie slová.",
     "shifted": "⇧ znaky",
-    "placement": "Ako mi to ide?",
+    "shiftedTip": "Ukáže znaky, ktoré píšeš so Shiftom",
+    "whole": "Celá klávesnica",
+    "wholeTip": "Ukáže, ako ti ide celá klávesnica",
+    "wholeAccuracy": "{acc} % správne z posledných stlačení",
+    "wholeSpeed": "Zvyčajne {letters} za minútu",
+    "wholeKeys": {
+      "one": "Počíta sa {n} kláves",
+      "few": "Počítajú sa {n} klávesy",
+      "other": "Počíta sa {n} klávesov"
+    },
+    "placement": "Preveriť moje ovládanie klávesnice",
     "placementTip": "Pokojná skúška klávesov od začiatku, asi 4 minúty. Klávesy iba pridáva."
   },
   "wardrobe": {

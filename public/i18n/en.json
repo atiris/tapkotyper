@@ -252,7 +252,7 @@
     "endPracticeText": "This exercise will not count.",
     "stayStart": "We stay here. Type as long as you like. Press Esc when you want to stop.",
     "placement": "Keyboard check",
-    "placementStart": "Type what you see, calmly and with all fingers. There is no hurry: I only want to see which keys you already know.",
+    "placementStart": "Type the words you see **calmly, with all ten fingers.** This check finds the keys you already know and can open some keys without their story introductions. **No hurry!** Slow typing is fine.",
     "placementDone": "Done!"
   },
   "guide": {
@@ -443,6 +443,10 @@
     "sendHow": "the link or the code",
     "letterBetter": "Letter {key}: accuracy from {before} % to {after} %",
     "faster": "Faster than usual",
+    "keyMastered": "Key {key} goes great now!",
+    "drillKeys": "Trained keys",
+    "drillUp": "better",
+    "onceMore": "Once more",
     "letters": {
       "one": "{n} letter",
       "few": "{n} letters",
@@ -491,8 +495,6 @@
     "placementWeak": "Keys to practise",
     "placementNoWeak": "None, everything went well!",
     "placementSignal": "Finger signal (fit · contrast)",
-    "placementContinue": "Continue",
-    "placementPractice": "Practise the weak keys",
     "placementEyes": "It looks like your eyes still help you find the keys. The lessons will teach your fingers from the start, quickly."
   },
   "results": {
@@ -1151,8 +1153,8 @@
     "practice": "let's practise",
     "practiceKeys": "Keys to practise",
     "keyLine": "{acc} % right, press it with",
-    "instead": "(often {key} instead)",
-    "practiceNow": "Practise them now (1 min)",
+    "drill": "Short practice",
+    "drillTip": "Two minutes of practice, mostly of the keys: {keys}",
     "clickKey": "Tap a key on the keyboard to see how it goes.",
     "fingerLine": "Press it with",
     "keyNoData": "This key has no presses yet.",
@@ -1164,11 +1166,22 @@
     "keyAccuracyTrend": "Accuracy by day",
     "keySpeedTrend": "Time to press by day",
     "keyHistorySoon": "Play on at least two days to see how it changes.",
-    "practiceKey": "Practice {key} (1 min)",
+    "drillKey": "Practise the key",
+    "drillKeyTip": "Starts two minutes of practice of the key: {key}",
     "medals": "My medals",
     "medalsHint": "You get a medal each time you type accurately enough that the game steps up on its own: things move a bit faster or longer words come.",
     "shifted": "⇧ symbols",
-    "placement": "How am I doing?",
+    "shiftedTip": "Shows the symbols you type with Shift",
+    "whole": "Whole keyboard",
+    "wholeTip": "Shows how the whole keyboard goes",
+    "wholeAccuracy": "{acc} % right in the latest presses",
+    "wholeSpeed": "Usually {letters} a minute",
+    "wholeKeys": {
+      "one": "{n} key counts",
+      "few": "{n} keys count",
+      "other": "{n} keys count"
+    },
+    "placement": "Check how I know the keyboard",
     "placementTip": "A calm check of the keys from the start, about 4 minutes. It only ever adds keys."
   },
   "wardrobe": {

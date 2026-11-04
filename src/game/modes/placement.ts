@@ -21,9 +21,9 @@ const INK = '#3d3355';
 
 /**
  * The placement check: one target at a time on a calm panel, no time pressure. Stage after stage
- * along the lesson order (`PlacementCheck`), its words from every key up to the stage, its new keys
- * in focus, picked to hold the pairs the touch-typing signal compares; it ends at the first stage
- * that does not pass, at the end of the order or after about four minutes of typing.
+ * along the lesson order (`PlacementCheck`), its words from the keys passed so far and its new keys,
+ * the new ones in focus, picked to hold the pairs the touch-typing signal compares; it ends after three
+ * stages in a row without a passed key, at the end of the order or after about four minutes of typing.
  */
 export class PlacementMode extends Mode {
   readonly world = 'meadow';

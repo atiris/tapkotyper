@@ -237,11 +237,11 @@ describe('the treasure chest and the stars of My progress', () => {
 describe('placement check result', () => {
   const run = { accuracy: 1, chars: 100, errors: 0, cpm: 200, seconds: 60 };
 
-  /** A check that passed the first `n` stages with presses of `rt` ms. */
-  const check = (n: number, rt: number, end: PlacementCheck['end'] = 'stage') => {
+  /** A check whose keys of the first `n` stages passed (or the keys `passed`), with presses of `rt` ms. */
+  const check = (n: number, rt: number, end: PlacementCheck['end'] = 'misses', passed?: string[]) => {
     const c = new PlacementCheck('sk-qwertz', false, 3);
     for (let i = 0; i < 30; i++) c.press({ ch: 'f', ok: true, rt, at: i, target: 1, pos: 1 });
-    c.passed = n;
+    c.passed.push(...(passed ?? c.groups.slice(0, n).flat()));
     c.end = end;
     return c;
   };
@@ -275,5 +275,14 @@ describe('placement check result', () => {
     p.settings.autoDifficulty = false;
     completePlacement(p, check(6, 300), run);
     expect(p.settings.difficulty).toBe(4);
+  });
+
+  it('unlocks the passed keys also after a failed one, in lesson order', () => {
+    const p = newProfile('Ema', 'sk');
+    const r = completePlacement(p, check(0, 600, 'misses', ['f', 'j', ' ', 's', 'l', 'g']), run);
+    expect(r.newKeys).toEqual(['s', 'l', 'g']);
+    expect(p.progress.unlockedKeys).toEqual(['f', 'j', ' ', 's', 'l', 'g']);
+    expect(p.progress.introducedKeys).toEqual(p.progress.unlockedKeys);
+    expect(p.progress.placementKeys).toBe(6);
   });
 });

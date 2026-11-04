@@ -63,6 +63,8 @@ export function stepHolding(steps: string[][], keys: string[]): number {
   return Math.max(0, steps.findIndex((s) => inOrder.every((k) => s.includes(k))));
 }
 
+/** Key statistics look at the last presses only, so old habits stop counting. */
+export const STATS_WINDOW = 100;
 /** Recent presses window used by the mastery rule. */
 export const MASTERY_WINDOW = 40;
 /** A key is ready for the next one after fewer presses than full mastery. */
@@ -148,14 +150,20 @@ export function isKeyReady(profile: Profile, key: string): boolean {
   return isReady(profile.stats.keys[key], profile.settings.difficulty, readyWindow(key));
 }
 
+/** The lesson group of the key unlocked last (push order), so a gap the keyboard check left comes after the newest keys. */
+function newestUnlocked(profile: Profile): string[] | undefined {
+  const last = profile.progress.unlockedKeys[profile.progress.unlockedKeys.length - 1];
+  return lessonGroups(profile.layout).find((g) => g.includes(last));
+}
+
 /**
- * Unlocks the next lesson group when every key of the newest unlocked group is
- * ready. Returns the newly unlocked keys (empty when nothing changed).
+ * Unlocks the first lesson group with a locked key (a gap first) when every unlocked key of the
+ * newest group is ready. Returns the newly unlocked keys (empty when nothing changed).
  */
 export function advanceLesson(profile: Profile): string[] {
   const groups = lessonGroups(profile.layout);
   const unlocked = profile.progress.unlockedKeys;
-  const newest = [...groups].reverse().find((g) => g.some((k) => unlocked.includes(k)));
+  const newest = newestUnlocked(profile)?.filter((k) => unlocked.includes(k));
   if (newest && !newest.every((k) => isKeyReady(profile, k))) return [];
   const skip = (k: string) => profile.settings.noDiacritics && DIACRITICS.has(k);
   const next = groups.find((g) => g.some((k) => !unlocked.includes(k) && !skip(k)));
@@ -189,12 +197,11 @@ export function keysAccuracy(profile: Profile, keys: string[]): number {
   return keys.length ? keys.reduce((s, k) => s + recentAccuracy(profile.stats.keys[k]), 0) / keys.length : 0;
 }
 
-/** The most recently unlocked lesson group (the keys being learned now). */
+/** The unlocked keys of the most recently unlocked lesson group (the keys being learned now). */
 export function newestGroup(profile: Profile): string[] {
   if (profile.settings.activeKeysMode === 'manual') return [];
   const unlocked = profile.progress.unlockedKeys;
-  const group = [...lessonGroups(profile.layout)].reverse().find((g) => g.some((k) => unlocked.includes(k)));
-  return group ? group.filter((k) => unlocked.includes(k)) : [];
+  return newestUnlocked(profile)?.filter((k) => unlocked.includes(k)) ?? [];
 }
 
 /** Keys used for words right now: the parent's pick or the unlocked lesson keys. */
@@ -211,6 +218,7 @@ export function useLayout(profile: Profile, id: LayoutId): void {
   profile.progress.unlockedKeys = order.slice(0, Math.max(2, profile.progress.unlockedKeys.filter((k) => order.includes(k)).length));
 }
 
+/** Unlocked keys that were not introduced yet, in lesson order (each is shown alone first). */
 export function keysToIntroduce(profile: Profile): string[] {
   if (profile.settings.activeKeysMode === 'manual') return [];
   return profile.progress.unlockedKeys.filter((k) => !profile.progress.introducedKeys.includes(k));

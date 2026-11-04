@@ -2,27 +2,29 @@ import { describe, expect, it } from 'vitest';
 import { Rng } from '../engine/rng';
 import { LAYOUTS, homeKey } from '../keyboard/layouts';
 import type { LayoutId } from '../storage/schema';
-import { lessonOrder, reactionLimit } from './lessons';
+import { SHIFT_L, SHIFT_R, lessonGroups, lessonOrder, reactionLimit } from './lessons';
 import {
-  PlacementCheck, type PlacementPress, contrastGroup, contrastPairs, intervals, keySpot, offersPlacement, placementDifficulty,
-  placementStages, spearman, stagePasses, strongWeak, touchSignal,
+  PlacementCheck, type PlacementPress, STAGE_MISSES, contrastGroup, contrastPairs, intervals, keyPasses, keySpot, offersPlacement, placementDifficulty,
+  placementGroups, spearman, strongWeak, touchSignal,
 } from './placement';
 
 const SK: LayoutId = 'sk-qwertz';
 const lay = LAYOUTS[SK];
 
 describe('placement stages', () => {
-  it('follow the lesson groups, every stage with all keys up to it', () => {
-    const stages = placementStages(SK, false);
-    expect(stages[0]).toEqual({ group: ['f', 'j', ' '], keys: ['f', 'j', ' '] });
-    expect(stages[1].keys).toEqual(['f', 'j', ' ', 'd', 'k']);
-    expect(stages[stages.length - 1].keys).toEqual(lessonOrder(SK));
+  it('follow the lesson groups, the words from the first group, the passed keys and the stage', () => {
+    expect(placementGroups(SK, false)).toEqual(lessonGroups(SK));
+    const check = new PlacementCheck(SK, false, 3);
+    expect(check.current).toEqual({ group: ['f', 'j', ' '], keys: ['f', 'j', ' '] });
+    check.stage = 2;
+    check.passed.push('f', 'j', ' ', 'k');
+    expect(check.current).toEqual({ group: ['s', 'l'], keys: ['f', 'j', ' ', 'k', 's', 'l'] });
   });
 
   it('leave the diacritics out when the parent turned them off', () => {
-    const stages = placementStages(SK, true);
-    expect(stages.some((s) => s.group.includes('á'))).toBe(false);
-    expect(stages.length).toBe(placementStages(SK, false).length - 16);
+    const groups = placementGroups(SK, true);
+    expect(groups.some((g) => g.includes('á'))).toBe(false);
+    expect(groups.length).toBe(lessonGroups(SK).length - 16);
   });
 });
 
@@ -78,23 +80,32 @@ function noise(rng: Rng): number {
   return Math.exp(0.3 * z);
 }
 
+/** The character a typist types for a lesson key: a Shift as a capital of the other hand. */
+const charOf = (k: string) => (k === SHIFT_L ? 'J' : k === SHIFT_R ? 'F' : k);
+
 /**
  * Types the whole check as `model` would at `tempo`: targets of three made-up words from the stage's
- * single keys, the new keys in most of them, a reading pause before each target and now and then a pause in a word.
+ * keys, the new keys twice in most of them, a reading pause before each target and now and then a pause
+ * in a word. Keys without a single-key spot (capitals, dead keys) take 400 ms. A `weak` key is pressed
+ * wrong before every right press.
  */
-function typeCheck(model: Model, tempo: number, seed: number, upTo = Infinity): PlacementCheck {
+function typeCheck(model: Model, tempo: number, seed: number, upTo = Infinity, weak = new Set<string>()): PlacementCheck {
   const rng = new Rng(seed);
   const check = new PlacementCheck(SK, false, 3);
   let at = 0, target = 0;
   while (!check.end && check.stage < upTo) {
-    const keys = check.current.keys.filter((k) => keySpot(lay, k));
-    const focus = check.current.group.filter((k) => keySpot(lay, k));
-    const word = () => Array.from({ length: rng.int(3, 6) }, (_, i) => (focus.length && i === 1 ? rng.pick(focus) : rng.pick(keys))).join('');
+    const keys = check.current.keys.filter((k) => k !== ' ').map(charOf);
+    const focus = check.current.group.filter((k) => k !== ' ').map(charOf);
+    const word = () => Array.from({ length: rng.int(3, 6) }, (_, i) => (focus.length && (i === 1 || i === 3) ? rng.pick(focus) : rng.pick(keys))).join('');
     const text = [word(), word(), word()].join(' ');
     target++;
     [...text].forEach((ch, pos) => {
       const prev = text[pos - 1];
-      const ms = pos === 0 || prev === ' ' || ch === ' ' ? 700 * tempo * noise(rng) : rng.next() < 0.02 ? 3000 : model(prev, ch) * tempo * noise(rng);
+      const ms = pos === 0 || prev === ' ' ? 700 * tempo * noise(rng)
+        : ch === ' ' ? 300 * tempo * noise(rng)
+        : rng.next() < 0.02 ? 3000
+        : (keySpot(lay, prev) && keySpot(lay, ch) ? model(prev, ch) : 400) * tempo * noise(rng);
+      if ([...weak].some((k) => charOf(k) === ch || (k === ch.toLowerCase()))) check.press({ ch, ok: false, rt: ms, at, target, pos });
       at += ms;
       check.press({ ch, ok: true, rt: ms, at, target, pos });
     });
@@ -142,14 +153,34 @@ describe('touch-typing signal', () => {
 describe('stages and results', () => {
   const press = (ch: string, ok: boolean, rt: number, pos = 1): PlacementPress => ({ ch, ok, rt, at: 0, target: 1, pos });
 
-  it('passes a stage on accuracy and the reaction of its new keys', () => {
-    const good = [...Array.from({ length: 24 }, () => press('d', true, 400)), press('k', false, 400)];
-    expect(stagePasses(good, ['d', 'k'], SK, 3)).toBe(true);
-    expect(stagePasses([...good, press('k', false, 400)], ['d', 'k'], SK, 3)).toBe(false);
-    const slow = Array.from({ length: 25 }, () => press('d', true, reactionLimit(3) + 1));
-    expect(stagePasses(slow, ['d', 'k'], SK, 3)).toBe(false);
+  it('passes a key on its own accuracy and reaction', () => {
+    const good = [...Array.from({ length: 9 }, () => press('d', true, 400)), press('d', false, 400)];
+    expect(keyPasses(good, 'd', SK, 3)).toBe(true);
+    expect(keyPasses([...good, press('d', false, 400)], 'd', SK, 3)).toBe(false);
+    // Errors on other keys do not judge it, and a key without presses does not pass.
+    expect(keyPasses([...good, ...Array.from({ length: 10 }, () => press('f', false, 400))], 'd', SK, 3)).toBe(true);
+    expect(keyPasses(good, 'k', SK, 3)).toBe(false);
+    expect(keyPasses(Array.from({ length: 10 }, () => press('d', true, reactionLimit(3) + 1)), 'd', SK, 3)).toBe(false);
     // The first key of a target is reading time: it does not count.
-    expect(stagePasses(Array.from({ length: 25 }, () => press('d', true, 5000, 0)), ['d', 'k'], SK, 3)).toBe(true);
+    expect(keyPasses(Array.from({ length: 10 }, () => press('d', true, 5000, 0)), 'd', SK, 3)).toBe(true);
+    // A capital counts for its Shift.
+    expect(keyPasses(Array.from({ length: 6 }, () => press('J', true, 400)), SHIFT_L, SK, 3)).toBe(true);
+  });
+
+  it('goes on after a weak key, leaves it out of the later words and opens the good keys after it', () => {
+    const check = typeCheck(toucher, 1, 1, Infinity, new Set(['d']));
+    expect(check.end).toBe('all');
+    expect(check.keys).toEqual(lessonOrder(SK).filter((k) => k !== 'd'));
+    expect(check.current.keys).not.toContain('d');
+    const after = check.presses.slice(check.presses.findIndex((x) => x.ch === 's'));
+    expect(after.some((x) => x.ch === 'd')).toBe(false);
+  });
+
+  it(`ends after ${STAGE_MISSES} stages in a row without a passed key`, () => {
+    const check = typeCheck(toucher, 1, 1, Infinity, new Set(lessonOrder(SK).slice(3)));
+    expect(check.end).toBe('misses');
+    expect(check.stage).toBe(1 + STAGE_MISSES);
+    expect(check.keys).toEqual([]);
   });
 
   it('ranks the strong and weak keys of the run', () => {

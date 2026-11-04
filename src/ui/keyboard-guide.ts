@@ -63,6 +63,18 @@ export function fingerChip(layout: Layout, key: string): HTMLElement | null {
   return f == null ? null : chipOf(f);
 }
 
+/** A lesson key as a small outlined key like the on-screen keyboard's, its finger's colour on the bottom edge. */
+export function keyCap(layout: Layout, key: string, onClick: () => void): HTMLButtonElement {
+  const cap = document.createElement('button');
+  cap.type = 'button';
+  cap.className = 'key-cap';
+  const f = lessonFinger(layout, key);
+  if (f != null) cap.style.setProperty('--finger', FINGER_COLORS[f]);
+  cap.textContent = keyLabel(key);
+  cap.addEventListener('click', onClick);
+  return cap;
+}
+
 /** A finger's name on its own color. */
 export function chipOf(f: Finger): HTMLElement {
   const chip = document.createElement('b');
@@ -266,6 +278,23 @@ export class KeyboardGuide {
       e.preventDefault();
       key.click();
     });
+  }
+
+  /**
+   * Controls in the free room of the bottom row beside the space bar: `left` under the left Shift, `right` under
+   * the right one. They sit outside the board, which is hidden from screen readers.
+   */
+  bottomSlots(left: HTMLElement, right: HTMLElement): void {
+    const slot = (side: string, el: HTMLElement) => {
+      const s = document.createElement('div');
+      s.className = `kb-slot ${side}`;
+      s.append(el);
+      return s;
+    };
+    const slots = document.createElement('div');
+    slots.className = 'kb-slots';
+    slots.append(slot('left', left), slot('right', right));
+    this.el.append(slots);
   }
 
   keyEl(code: string): HTMLElement | undefined {

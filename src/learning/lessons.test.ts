@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { emptyKeyStat } from '../storage/schema';
 import { ENTER, LAYOUTS, enterAfter, fingerFor } from '../keyboard/layouts';
-import { activeKeys, advanceLesson, aimKeys, firstKeys, keysAccuracy, notReadyKeys, isMastered, keysToIntroduce, lessonOrder, practiceOrder, practiceSteps, punctuationKeys, reactionLimit, shiftKeyOf, stepHolding } from './lessons';
-import { STATS_WINDOW, keyMastery, keyReport, lastTraining, masterySummary, recordPress, weakKeys } from './stats';
+import { STATS_WINDOW, activeKeys, advanceLesson, aimKeys, firstKeys, keysAccuracy, notReadyKeys, isMastered, keysToIntroduce, lessonOrder, practiceOrder, practiceSteps, punctuationKeys, reactionLimit, shiftKeyOf, stepHolding } from './lessons';
+import { keyMastery, keyReport, lastTraining, masterySummary, recordPress, weakKeys } from './stats';
 
 describe('lesson order', () => {
   it('starts on the home row with the index fingers', () => {
@@ -76,6 +76,26 @@ describe('mastery and unlocking', () => {
     for (let i = 0; i < 12; i++) recordPress(p, ' ', ' ', 400);
     expect(advanceLesson(p)).toEqual(['d', 'k']);
     expect(p.progress.unlockedKeys).toEqual(['f', 'j', ' ', 'd', 'k']);
+  });
+
+  it('fills the gaps a keyboard check left one by one, each after the newest keys are ready', () => {
+    const p = newProfile('Ema', 'sk');
+    const ready = (...keys: string[]) => { for (const k of keys) for (let i = 0; i < 25; i++) recordPress(p, k, k, 400); };
+    // The check passed s, l and g but not d, k nor h.
+    p.progress.unlockedKeys = ['f', 'j', ' ', 's', 'l', 'g'];
+    ready('f', 'j', ' ', 's', 'l');
+    expect(notReadyKeys(p)).toEqual(['g']);
+    expect(advanceLesson(p)).toEqual([]);
+    ready('g');
+    expect(advanceLesson(p)).toEqual(['d', 'k']);
+    expect(notReadyKeys(p)).toEqual(['d', 'k']);
+    expect(advanceLesson(p)).toEqual([]);
+    ready('d', 'k');
+    expect(advanceLesson(p)).toEqual(['a', 'ô']);
+    ready('a', 'ô');
+    expect(advanceLesson(p)).toEqual(['h']);
+    ready('h');
+    expect(advanceLesson(p)).toEqual(['e', 'i']);
   });
 
   it('never waits for Enter: its presses count in the stats, not in the lesson', () => {

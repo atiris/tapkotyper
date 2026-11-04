@@ -5,8 +5,8 @@ import { WORLD_THINGS } from '../game/modes/aim-things';
 import { PAW_MAX } from '../game/paw';
 import { WORLD_REWARDS } from '../game/rewards';
 import { t } from '../i18n/i18n';
-import { lessonOrder } from '../learning/lessons';
-import { STATS_WINDOW, localDate, recordPress, recordSession } from '../learning/stats';
+import { STATS_WINDOW, lessonOrder } from '../learning/lessons';
+import { localDate, recordPress, recordSession } from '../learning/stats';
 import { COMPANION_KINDS, type LangRef, SUPER_ID, type Profile } from '../storage/schema';
 import { newProfile } from '../storage/store';
 

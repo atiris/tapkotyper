@@ -17,7 +17,7 @@ export function loadWords(lang: string): Promise<string[]> {
   if (!cache.has(lang)) {
     const p = fetch(`${import.meta.env.BASE_URL}words/${lang}.json`)
       .then((r) => (r.ok ? r.json() : { words: [] }))
-      .then((d: { words?: string[] }) => (d.words ?? []).map((w) => w.normalize('NFC').toLowerCase()))
+      .then((d: { words?: string[] }) => (d.words ?? []).map((w) => w.normalize('NFC')))
       .catch(() => [] as string[]);
     cache.set(lang, p);
   }

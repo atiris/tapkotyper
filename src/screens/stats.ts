@@ -1,21 +1,22 @@
 import { app, go, layout, reduceMotion } from '../app/app';
 import { imageUrl } from '../gfx/assets';
 import { type Mood, otherMood, renderTapkoInto, tapkoElement } from '../gfx/tapko';
-import { STORIES, type StoryDef, WORLDS, storyDone, storyOpen, worldName } from '../game/levels';
+import { DRILL_SECONDS, STORIES, type StoryDef, WORLDS, storyDone, storyOpen, worldName } from '../game/levels';
 import { BADGE_STARS, MAX_CHEST, MAX_STARS, badgeTier, chestPoints, totalStars, worldStars } from '../game/rewards';
-import { locale, t } from '../i18n/i18n';
+import { locale, t, tn } from '../i18n/i18n';
 import { allKeys } from '../keyboard/layouts';
-import { activeKeys, lessonKeyOf } from '../learning/lessons';
-import { STATS_WINDOW, keyHistory, keyReport, lastTraining, masterySummary, recentPractice, recentTyping, weakKeys } from '../learning/stats';
+import { STATS_WINDOW, activeKeys, lessonKeyOf } from '../learning/lessons';
+import { keyHistory, keyReport, keyboardSummary, lastTraining, masterySummary, recentPractice, recentTyping, weakKeys } from '../learning/stats';
 import { linkOf } from '../share/codec';
 import { makeOverallResult, resultCode } from '../share/result';
 import type { Profile } from '../storage/schema';
 import { nickname } from '../storage/store';
 import { lineChart } from '../ui/charts';
-import { KeyboardGuide, fingerChip, keyLabel } from '../ui/keyboard-guide';
+import { KeyboardGuide, fingerChip, keyCap, keyLabel } from '../ui/keyboard-guide';
 import { button, h, modal } from '../ui/dom';
 import { tip } from '../ui/tooltip';
 import { tabBar } from '../ui/tabs';
+import { roundButton } from '../ui/hud';
 import { bigCode } from '../ui/big-code';
 import { badge } from '../ui/badge';
 import { aroPerch } from '../ui/aro';
@@ -60,6 +61,8 @@ export function keyDetail(p: Profile, key: string, practice?: () => void): HTMLE
   if (!r) return h('div', { class: 'key-detail' }, head, h('p', { class: 'hint' }, t('stats.keyNoData')));
   const days = keyHistory(p, key).slice(-14);
   const labels = days.map((d) => d.date.slice(5));
+  const drill = practice ? button(t('stats.drillKey'), practice, 'btn primary', 'practice') : null;
+  if (drill) tip(drill, t('stats.drillKeyTip', { key: keyLabel(key) }));
   return h('div', { class: 'key-detail' },
     head,
     h('ul', { class: 'key-facts' },
@@ -67,32 +70,45 @@ export function keyDetail(p: Profile, key: string, practice?: () => void): HTMLE
       r.avgMs ? h('li', {}, t('stats.keySpeed', { s: (r.avgMs / 1000).toLocaleString(locale(), { minimumFractionDigits: 1, maximumFractionDigits: 1 }) })) : null,
       h('li', {}, t('stats.keyTotal', { n: r.presses })),
       h('li', {}, r.confusions.length
-        ? [t('stats.keyConfused'), ' ', ...r.confusions.slice(0, 3).flatMap((c) => [h('b', { class: 'kbd' }, c.ch), ` ${c.n}× `])]
+        ? [t('stats.keyConfused'), ' ', ...r.confusions.slice(0, 3).flatMap((c) => [h('b', { class: 'kbd' }, keyLabel(c.ch)), ` ${c.n}× `])]
         : t('stats.keyNoConfusion'))),
     days.length > 1 ? h('div', { class: 'key-charts' },
       h('div', {}, h('h4', {}, t('stats.keyAccuracyTrend')), lineChart(days.map((d) => Math.round(d.accuracy * 100)), labels, '%', '#3f8fd6')),
       h('div', {}, h('h4', {}, t('stats.keySpeedTrend')), lineChart(days.map((d) => Math.round(d.avgMs) / 1000), labels, 's', '#e08a3c')))
       : h('p', { class: 'hint' }, t('stats.keyHistorySoon')),
-    practice ? button(t('stats.practiceKey', { key: keyLabel(key) }), practice, 'btn primary', 'practice') : null);
+    drill);
+}
+
+/** The whole keyboard in the detail panel: the keys' mean accuracy, their usual speed and how many keys count; the hint to tap a key under it. */
+export function wholeKeyboard(p: Profile): HTMLElement {
+  const s = keyboardSummary(p);
+  return h('div', { class: 'key-detail whole-keyboard' },
+    h('h4', {}, t('stats.whole')),
+    s.keys ? h('ul', { class: 'key-facts' },
+      h('li', {}, t('stats.wholeAccuracy', { acc: Math.round(s.accuracy * 100) })),
+      s.cpm ? h('li', {}, t('stats.wholeSpeed', { letters: tn('end.letters', s.cpm) })) : null,
+      h('li', {}, tn('stats.wholeKeys', s.keys))) : null,
+    h('p', { class: 'hint' }, t('stats.clickKey')));
 }
 
 /**
- * Heat map keyboard whose keys open their detail in `detail`, with a switch between
- * the keys' base characters and their shifted symbols.
+ * Heat map keyboard whose keys open their detail in `detail`. Under the left Shift a switch between
+ * the keys' base characters and their shifted symbols, under the right one the whole keyboard's view.
  */
 export function clickableHeatmap(p: Profile, detail: HTMLElement, practice?: (key: string) => void): HTMLElement {
   const kb = new KeyboardGuide(layout());
   let shifted = false;
   kb.el.classList.add('heatmap', 'clickable');
+  const unselect = () => kb.el.querySelectorAll('.selected').forEach((k) => k.classList.remove('selected'));
   const paint = () => {
     kb.el.classList.toggle('shifted', shifted);
-    kb.el.querySelectorAll('.selected').forEach((k) => k.classList.remove('selected'));
+    unselect();
     kb.heat(heatScores(shifted), (code) => keyForCode(code, shifted));
   };
   kb.onKeyClick((code, el) => {
     const key = keyForCode(code, shifted);
     if (!key) return;
-    kb.el.querySelectorAll('.selected').forEach((k) => k.classList.remove('selected'));
+    unselect();
     el.classList.add('selected');
     detail.replaceChildren(keyDetail(p, key, practice && (() => practice(key))));
   });
@@ -102,8 +118,16 @@ export function clickableHeatmap(p: Profile, detail: HTMLElement, practice?: (ke
     toggle.setAttribute('aria-pressed', String(shifted));
     paint();
   } }, t('stats.shifted'));
+  tip(toggle, t('stats.shiftedTip'));
+  const whole = roundButton('control', 'keyboard', t('stats.whole'), () => {
+    unselect();
+    detail.replaceChildren(wholeKeyboard(p));
+  });
+  whole.dataset.tip = t('stats.wholeTip');
+  kb.bottomSlots(toggle, whole);
   paint();
-  return h('div', { class: 'heat-host' }, toggle, kb.el);
+  detail.replaceChildren(wholeKeyboard(p));
+  return h('div', { class: 'heat-host' }, kb.el);
 }
 
 /** An icon (or a glyph) with a number; the meaning is in the tooltip and the aria-label only. */
@@ -251,10 +275,10 @@ export function progressTab(p: Profile, title = true): HTMLElement {
       button(t('cert.button'), () => openCertificate(p), 'btn', 'print')));
 }
 
-/** The keyboard heat map, the keys to practice and the details of one key. */
+/** The keyboard heat map with the check and the legend under it, the keys to practise and the details of one key (or the whole keyboard). */
 export function keysTab(p: Profile, close: () => void): HTMLElement {
-  const practice = (keys: string[]) => { close(); go('level', { id: 'practice', keys, seconds: 60 }); };
-  const detail = h('div', { class: 'key-detail-host' }, h('p', { class: 'hint' }, t('stats.clickKey')));
+  const practice = (keys: string[]) => { close(); go('level', { id: 'practice', keys, seconds: DRILL_SECONDS }); };
+  const detail = h('div', { class: 'key-detail-host' });
   const heat = clickableHeatmap(p, detail, (key) => practice([key]));
   const showKey = (key: string) => detail.replaceChildren(keyDetail(p, key, () => practice([key])));
   const weak = weakKeys(p, activeKeys(p));
@@ -262,23 +286,24 @@ export function keysTab(p: Profile, close: () => void): HTMLElement {
   // The placement check measures the keys from the start of the lesson order; it only ever adds keys, so it may run any time.
   const check = button(t('stats.placement'), () => { close(); go('level', { id: 'placement' }); }, 'btn', 'keyboard');
   tip(check, t('stats.placementTip'));
+  const drill = weak.length ? button(t('stats.drill'), () => practice(weak.map((w) => w.key)), 'btn primary', 'practice') : null;
+  if (drill) tip(drill, t('stats.drillTip', { keys: weak.map((w) => keyLabel(w.key)).join(' ') }));
   return h('div', {},
     h('h3', {}, t('stats.title')),
     h('p', {}, total ? t('stats.intro', { n: STATS_WINDOW }) : t('stats.empty')),
-    h('div', { class: 'row' }, check),
     heat,
-    h('p', { class: 'legend' },
-      h('span', { class: 'lg heat-good' }, `✓ ${t('stats.good')}`),
-      h('span', { class: 'lg heat-ok' }, `~ ${t('stats.ok')}`),
-      h('span', { class: 'lg heat-practice' }, `! ${t('stats.practice')}`)),
+    h('div', { class: 'keys-foot' }, check,
+      h('p', { class: 'legend' },
+        h('span', { class: 'lg heat-good' }, `✓ ${t('stats.good')}`),
+        h('span', { class: 'lg heat-ok' }, `~ ${t('stats.ok')}`),
+        h('span', { class: 'lg heat-practice' }, `! ${t('stats.practice')}`))),
     h('div', { class: 'stats-split' },
       weak.length ? h('div', { class: 'weak' },
         h('h3', {}, t('stats.practiceKeys')),
-        h('ul', {}, ...weak.map((r) => h('li', {},
-          h('button', { class: 'kbd key-link', type: 'button', onClick: () => showKey(r.key) }, keyLabel(r.key)),
-          ' ', t('stats.keyLine', { acc: Math.round(r.accuracy * 100) }), ' ', fingerChip(layout(), r.key),
-          r.confusions[0] ? h('small', {}, ` ${t('stats.instead', { key: r.confusions[0].ch })}`) : null))),
-        button(t('stats.practiceNow'), () => practice(weak.map((w) => w.key)), 'btn primary', 'practice'))
+        h('ul', { class: 'weak-list' }, ...weak.map((r) => h('li', {},
+          keyCap(layout(), r.key, () => showKey(r.key)),
+          h('span', {}, t('stats.keyLine', { acc: Math.round(r.accuracy * 100) }), ' ', fingerChip(layout(), r.key))))),
+        drill)
         : null,
       detail));
 }

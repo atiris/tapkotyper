@@ -4,9 +4,10 @@ import type { LayoutId } from '../storage/schema';
 import { DIACRITICS, SPACE, lessonGroups, median, reactionLimit, shiftKeyOf } from './lessons';
 
 /**
- * The placement check ("How am I doing on the keyboard?"): a calm copy run in stages along the
- * lesson order. A stage passes on accuracy, the reaction of its new keys and the touch-typing
- * signal; the check stops at the first stage that does not pass.
+ * The placement check ("Check how I know the keyboard"): a calm copy run in stages along the lesson
+ * order. Each new key of a stage passes on its own presses (accuracy and reaction); a key that fails
+ * stays out of the later stages' words, and the check goes on until three stages in a row pass no key,
+ * the order ends, the time is up or the touch-typing signal fails.
  */
 
 /** One press of the check: the character the target expected, right or wrong, when (ms) and where in which target. */
@@ -22,30 +23,28 @@ export interface PlacementPress {
   pos: number;
 }
 
-/** One stage: the newest group in focus, the words from every key up to it. */
+/** One stage: the newest group in focus, the words from the keys passed so far and the group. */
 export interface PlacementStage {
   group: string[];
   keys: string[];
 }
 
-/** The stages of a layout: one per lesson group, without diacritics when the parent turned them off. */
-export function placementStages(layout: LayoutId, noDiacritics: boolean): PlacementStage[] {
-  const keys: string[] = [];
-  return lessonGroups(layout).flatMap((g) => {
-    const group = g.filter((k) => !(noDiacritics && DIACRITICS.has(k)));
-    if (!group.length) return [];
-    keys.push(...group);
-    return [{ group, keys: [...keys] }];
-  });
+/** The groups of the stages: one per lesson group, without diacritics when the parent turned them off. */
+export function placementGroups(layout: LayoutId, noDiacritics: boolean): string[][] {
+  return lessonGroups(layout).map((g) => g.filter((k) => !(noDiacritics && DIACRITICS.has(k)))).filter((g) => g.length);
 }
 
-/** Presses a stage needs at least, of them correct presses of its new keys, and the most targets it takes. */
+/** Presses a stage needs at least, presses of each of its new keys, and the most targets it takes. */
 export const STAGE_PRESSES = 25;
-export const STAGE_FOCUS_PRESSES = 5;
+export const STAGE_FOCUS_PRESSES = 6;
 export const STAGE_TARGETS = 8;
+/** Stages in a row without a passed key that end the check. */
+export const STAGE_MISSES = 3;
 /** Seconds of typing after which the check ends at the latest. */
 export const PLACEMENT_SECONDS = 240;
-/** A stage's accuracy: the three-star step. */
+/** A new key's accuracy in its stage: the ready rule's. */
+export const KEY_ACCURACY = 0.9;
+/** A key of this run is weak under the three-star accuracy. */
 export const STAGE_ACCURACY = STAR_STEPS.find((s) => s.stars === 3)!.from;
 
 /** The lesson keys a typed character trains: the letter (lower case) and, for a capital, its Shift. */
@@ -62,17 +61,19 @@ export function placementReaction(presses: PlacementPress[]): number {
   return median(typingRts(presses));
 }
 
-/** A stage's accuracy and the median reaction of its new keys (null when none was typed right). */
-export function stageScore(presses: PlacementPress[], group: string[], layout: LayoutId): { accuracy: number; reaction: number | null } {
-  const ok = presses.filter((x) => x.ok).length;
-  const own = typingRts(presses.filter((x) => lessonKeysOf(layout, x.ch).some((k) => group.includes(k))));
-  return { accuracy: presses.length ? ok / presses.length : 0, reaction: own.length ? median(own) : null };
-}
+/** The presses of a stage that train `key` (a capital trains its letter and its Shift). */
+const pressesOf = (presses: PlacementPress[], key: string, layout: LayoutId) => presses.filter((x) => lessonKeysOf(layout, x.ch).includes(key));
 
-/** The stage passes on accuracy and reaction; with no new key typed right the reaction does not decide. */
-export function stagePasses(presses: PlacementPress[], group: string[], layout: LayoutId, difficulty: number): boolean {
-  const s = stageScore(presses, group, layout);
-  return s.accuracy >= STAGE_ACCURACY && (s.reaction === null || s.reaction <= reactionLimit(difficulty));
+/**
+ * A new key passes on its own presses in the stage: at least 90 % right and the median reaction of its
+ * right presses (not the first key of a target) within the limit; without such presses the reaction
+ * does not decide. Presses of other keys do not count.
+ */
+export function keyPasses(presses: PlacementPress[], key: string, layout: LayoutId, difficulty: number): boolean {
+  const own = pressesOf(presses, key, layout);
+  if (!own.length) return false;
+  const rts = typingRts(own);
+  return own.filter((x) => x.ok).length / own.length >= KEY_ACCURACY && (!rts.length || median(rts) <= reactionLimit(difficulty));
 }
 
 // ---- the touch-typing signal ---------------------------------------------------------------
@@ -246,52 +247,64 @@ export function touchSignal(presses: PlacementPress[], layoutId: LayoutId): Touc
 
 // ---- the check -----------------------------------------------------------------------------
 
-/** How the check ended: every stage passed, a stage did not, the timing looked like eyes on the keys, or the time ran out. */
-export type PlacementEnd = 'all' | 'stage' | 'signal' | 'time';
+/** How the check ended: the order is through, three stages in a row passed no key, the timing looked like eyes on the keys, or the time ran out. */
+export type PlacementEnd = 'all' | 'misses' | 'signal' | 'time';
 
 /**
- * The check's course: presses come in, after each target it decides whether the stage goes on,
- * the next one starts or the check ends.
+ * The check's course: presses come in, after each target it decides whether the stage goes on, or
+ * judges its new keys one by one and the next stage starts or the check ends.
  */
 export class PlacementCheck {
-  readonly stages: PlacementStage[];
+  readonly groups: string[][];
   readonly presses: PlacementPress[] = [];
-  /** The current stage, and the stages passed. */
+  /** The current stage. */
   stage = 0;
-  passed = 0;
+  /** The keys passed so far, in lesson order. */
+  readonly passed: string[] = [];
+  /** Stages in a row that passed no key. */
+  misses = 0;
   end: PlacementEnd | null = null;
   signal: TouchSignal = { fit: null, contrast: null, pass: true };
   private stageFrom = 0;
   private targets = 0;
 
   constructor(readonly layout: LayoutId, noDiacritics: boolean, readonly difficulty: number) {
-    this.stages = placementStages(layout, noDiacritics);
+    this.groups = placementGroups(layout, noDiacritics);
   }
 
+  /**
+   * The current stage: its group, and the words from the keys passed so far and the group. The first
+   * group's keys (every new player's, the words cannot do without them) stay in the words even when one failed.
+   */
   get current(): PlacementStage {
-    return this.stages[Math.min(this.stage, this.stages.length - 1)];
+    const group = this.groups[Math.min(this.stage, this.groups.length - 1)];
+    const before = new Set([...this.groups[0], ...this.passed].filter((k) => !group.includes(k)));
+    return { group, keys: [...before, ...group] };
   }
 
   press(p: PlacementPress): void {
     if (!this.end) this.presses.push(p);
   }
 
-  /** A target is typed: the stage goes on, or it is judged and the next one starts or the check ends. Returns whether the check goes on. */
+  /** A target is typed: the stage goes on, or its new keys are judged and the next stage starts or the check ends. Returns whether the check goes on. */
   targetDone(): boolean {
     if (this.end) return false;
     this.targets++;
     const own = this.presses.slice(this.stageFrom);
-    const focus = own.filter((x) => x.ok && lessonKeysOf(this.layout, x.ch).some((k) => this.current.group.includes(k))).length;
-    if (this.targets < STAGE_TARGETS && (own.length < STAGE_PRESSES || focus < STAGE_FOCUS_PRESSES)) return true;
+    const { group } = this.current;
+    const enough = group.every((k) => pressesOf(own, k, this.layout).length >= STAGE_FOCUS_PRESSES);
+    if (this.targets < STAGE_TARGETS && (own.length < STAGE_PRESSES || !enough)) return true;
     this.signal = touchSignal(this.presses, this.layout);
     if (!this.signal.pass) this.end = 'signal';
-    else if (!stagePasses(own, this.current.group, this.layout, this.difficulty)) this.end = 'stage';
     else {
-      this.passed++;
+      const won = group.filter((k) => keyPasses(own, k, this.layout, this.difficulty));
+      this.passed.push(...won);
+      this.misses = won.length ? 0 : this.misses + 1;
       this.stage++;
       this.stageFrom = this.presses.length;
       this.targets = 0;
-      if (this.stage >= this.stages.length) this.end = 'all';
+      if (this.misses >= STAGE_MISSES) this.end = 'misses';
+      else if (this.stage >= this.groups.length) this.end = 'all';
     }
     return !this.end;
   }
@@ -304,16 +317,17 @@ export class PlacementCheck {
   }
 
   /**
-   * The keys the check opens: every key of the passed stages; none when the signal failed, and none
-   * when only the first stage passed (its keys are every new player's, and its few presses prove nothing).
+   * The keys the check opens: every passed key; none when the signal failed, and none when no key
+   * beyond the first group passed (its keys are every new player's, and its few presses prove nothing).
    */
   get keys(): string[] {
-    return this.end === 'signal' || this.passed < 2 ? [] : this.stages[this.passed - 1].keys;
+    if (this.end === 'signal' || !this.passed.some((k) => !this.groups[0].includes(k))) return [];
+    return [...this.passed];
   }
 
   /** Share of the stages done, for the progress bar. */
   get progress(): number {
-    return this.end ? 1 : this.stage / this.stages.length;
+    return this.end ? 1 : this.stage / this.groups.length;
   }
 }
 

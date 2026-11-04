@@ -49,6 +49,7 @@ export const PLURAL_KEYS = new Set([
   'teacher.scan.count', 'teacher.n.sets', 'teacher.n.writers', 'teacher.n.results', 'teacher.n.handIns',
   'teacher.file.added', 'teacher.file.old', 'teacher.wipe.goSets', 'teacher.wipe.goResults', 'story.flightDone', 'story.copyLoopDone',
   'end.letters', 'end.minutes', 'end.hits', 'end.words', 'end.exercises', 'end.moreRewards', 'end.placementLetters', 'end.placementOpened',
+  'stats.wholeKeys',
 ]);
 
 /** Arrays whose order and count matter; every other array is a pool read at random. */
@@ -111,7 +112,7 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
     g('end-titles', 'end.level', 'end.practice', 'end.stay', 'end.range', 'end.rangeRecord', 'end.journey', 'end.parrotHome', 'end.parrotLost', 'end.freeType', 'end.break', 'end.taskDone',
       'end.toMap', 'end.breakBtn', 'end.surpriseNew', 'end.surpriseSee'),
     g('end-placement', 'end.placement', 'end.placementLetters', 'end.placementOpened', 'end.placementStrong', 'end.placementWeak', 'end.placementNoWeak',
-      'end.placementSignal', 'end.placementContinue', 'end.placementPractice', 'end.placementEyes'),
+      'end.placementSignal', 'end.placementEyes'),
     g('end', 'end.*'),
     g('results', 'results.*'),
     g('badge', 'badge.*'),

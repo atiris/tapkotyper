@@ -1,8 +1,8 @@
 import { readFileSync } from 'node:fs';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { LAYOUTS } from '../keyboard/layouts';
 import { lessonOrder } from '../learning/lessons';
-import { WordSource, filterWords, heardSafe, isBlocked, parseOwnWords, textPhrases, typableText, untypableWords } from './words';
+import { WordSource, filterWords, loadWords, heardSafe, isBlocked, parseOwnWords, textPhrases, typableText, untypableWords } from './words';
 
 /** A dictionary big enough that no word's uses are limited: consonant, vowel, consonant. */
 const BIG = [...'dksltnhr'].flatMap((a) => [...'aeiou'].flatMap((v) => [...'dkstn'].map((b) => a + v + b)));
@@ -191,6 +191,21 @@ describe('phrases', () => {
     const caps = list.filter((w) => w[0] !== w[0].toLowerCase());
     expect(caps.length / list.length).toBeGreaterThan(0.4);
     expect(list.some((w) => w.startsWith('Jano') || w.startsWith('Ola'))).toBe(true);
+  });
+
+  it('never gives a name in lower case, only with its capital once the Shift is known', () => {
+    const dict = [...BIG, 'Kika'];
+    const words = (keys: string[]) => sample(new WordSource(dict, { keys, len: [2, 6], noDiacritics: false, layout: SK, focus: keys.slice(-1), seed: 17 }), 500, 3).join(' ').split(/[ .,]+/);
+    expect(words([...KNOWN, 'k']).includes('kika')).toBe(false);
+    const shifted = words([...KNOWN, 'ShiftL']);
+    expect(shifted.includes('kika')).toBe(false);
+    expect(shifted.includes('Kika')).toBe(true);
+  });
+
+  it('loads the names with their capital', async () => {
+    vi.stubGlobal('fetch', async () => ({ ok: true, json: async () => ({ words: ['Kika', 'les'] }) }));
+    expect(await loadWords('test')).toEqual(['Kika', 'les']);
+    vi.unstubAllGlobals();
   });
 });
 

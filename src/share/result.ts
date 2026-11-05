@@ -83,8 +83,10 @@ export function makeOverallResult(p: Profile, title: string, lockRemoved = false
   };
 }
 
-/** Fields in a fixed order, so the checksum does not depend on how the object was built. */
-/** The group, the levels, the removed password, the player id and the run join the sum only when set, so results without one keep verifying. */
+/**
+ * Fields in a fixed order, so the checksum does not depend on how the object was built. The group, the levels, the
+ * removed password, the player id and the run join the sum only when set, so results without one keep verifying.
+ */
 export const resultSum = (r: TaskResult): string => checksum(JSON.stringify([r.taskId, r.title, r.name, r.date, r.minutes, r.accuracy, r.cpm, r.weak, ...(r.group ? [r.group] : []), ...(r.levels === undefined ? [] : [r.levels]), ...(r.lockRemoved ? ['lockRemoved'] : []),
   ...(r.pid ? [`pid:${r.pid}`] : []), ...(r.try === undefined ? [] : [`try:${r.try}`])]));
 

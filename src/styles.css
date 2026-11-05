@@ -1890,7 +1890,7 @@ body.reduce-motion .round-btn.timer.ending { --rb: #d9661f; --rb-ring: #ff8a3d; 
 .scan-side { display: flex; flex-direction: column; gap: 12px; min-height: 0; }
 .scan-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
 .scan-count { font-weight: 700; white-space: nowrap; }
-.scan-list { flex: 1; min-height: 120px; overflow: auto; list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+.scan-list { flex: 1; min-height: 120px; overflow: auto; list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
 .scan-list li { display: flex; align-items: center; gap: 10px; padding: 8px 14px; }
 .scan-list li + li { border-top: 1px solid var(--line); }
 .scan-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
@@ -1904,6 +1904,7 @@ body.reduce-motion .round-btn.timer.ending { --rb: #d9661f; --rb-ring: #ff8a3d; 
 .link-col .btn { align-self: flex-start; }
 .link-col .teacher-msg { margin-top: auto; }
 /* Hodnotenie: a toolbar, the table on a computer and rows on a phone. */
+.teacher-body { display: flex; flex-direction: column; gap: 18px; }
 .teacher-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
 .teacher-choice { display: flex; flex-direction: column; gap: 6px; font-size: 0.92rem; font-weight: 600; }
 .teacher-choice.inline { flex-direction: row; align-items: center; gap: 10px; white-space: nowrap; }
@@ -1929,6 +1930,7 @@ body.reduce-motion .round-btn.timer.ending { --rb: #d9661f; --rb-ring: #ff8a3d; 
 .teacher-row-main .hint, .teacher-row-side .hint { font-size: 0.8rem; }
 .teacher-row-side { flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; font-size: 0.85rem; }
 .hand-in, .file-row { display: flex; flex-direction: column; gap: 2px; padding: 8px 12px; }
+.hand-in .hint, .file-row .hint { font-size: 0.8rem; }
 .hand-in.broken { color: var(--danger-ink); }
 .hand-in-top { display: flex; justify-content: space-between; gap: 8px; }
 /* A card or a page of its own: the path above it on a computer, the name and a round X on a phone. */
@@ -1941,6 +1943,7 @@ body.reduce-motion .round-btn.timer.ending { --rb: #d9661f; --rb-ring: #ff8a3d; 
 .own-title h1, .own-title h2 { margin: 0; font-size: 1.3rem; }
 .own-head .modal-x { position: static; flex: none; }
 .child-tiles.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.teacher-main .child-tile { border-radius: 12px; }
 .student-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 18px; align-items: start; }
 .student-trend { display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
 .student-trend .child-charts { grid-template-columns: 1fr; }
@@ -1949,7 +1952,6 @@ body.reduce-motion .round-btn.timer.ending { --rb: #d9661f; --rb-ring: #ff8a3d; 
 /* Dáta: three cards of buttons; the import page; the dialogs. */
 .data-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; align-items: start; }
 .data-card { display: flex; flex-direction: column; gap: 12px; padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
-.data-card.danger-card { border-color: var(--danger); }
 .data-pair, .data-buttons { display: flex; flex-direction: column; gap: 10px; }
 .drop-zone { height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; border: 2px dashed var(--line); border-radius: 12px; background: var(--surface); }
 .modal.teacher-modal { width: min(460px, 100%); padding: 28px; }
@@ -1988,7 +1990,11 @@ body.reduce-motion .round-btn.timer.ending { --rb: #d9661f; --rb-ring: #ff8a3d; 
   .move-bar { flex-wrap: nowrap; padding: 8px; gap: 8px; }
   .move-bar select { width: 100%; }
   .data-grid { grid-template-columns: 1fr; gap: 12px; }
-  .data-card { padding: 14px; gap: 10px; }
+  .teacher-body { gap: 10px; }
+  .recent-main { flex-direction: column; align-items: flex-start; gap: 0; }
+  .teacher-rows.pickable input[type='checkbox'] { flex: none; width: 22px; height: 22px; }
+  .data-card { padding: 0; gap: 8px; border: 0; background: none; }
+  .data-card h2 { font-size: 1rem; }
   .data-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
   .data-card .btn { min-height: 44px; padding-inline: 0.5em; font-size: 0.88rem; }
   .student-body { grid-template-columns: 1fr; }

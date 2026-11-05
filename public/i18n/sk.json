@@ -2157,6 +2157,7 @@
       "deleteAllText": "Zmažú sa všetky výsledky, skupiny a zoznam súborov v tomto prehliadači."
     },
     "tasks": {
+      "intro": "Pripravte úlohu, študentom ju pošlete ako odkaz alebo ukážete QR kód.",
       "empty": "Zatiaľ žiadne pripravené úlohy. Úloha, ktorú vytvoríte, sa tu uloží.",
       "col": {
         "task": "Úloha",

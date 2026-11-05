@@ -129,7 +129,7 @@ export function dataPart(store: TeacherStore): Part {
           action(t('teacher.data.rename'), rename, 'btn', groups > 0),
           action(t('teacher.data.mergeGroups'), mergeGroups, 'btn', groups > 1),
           action(t('teacher.data.mergeStudents'), mergeStudents, 'btn', students > 1))),
-      h('section', { class: 'data-card danger-card' }, h('h2', { class: 'danger-text' }, t('teacher.data.delete')),
+      h('section', { class: 'data-card' }, h('h2', { class: 'danger-text' }, t('teacher.data.delete')),
         h('div', { class: 'data-buttons' },
           action(t('teacher.data.deleteGroupStudents'), deleteGroupStudents, 'btn danger-line', has),
           action(t('teacher.data.deleteStudent'), deleteStudent, 'btn danger-line', students > 0),

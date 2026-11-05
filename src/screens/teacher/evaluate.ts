@@ -233,7 +233,7 @@ export function studentPart(store: TeacherStore, key: string): Part {
 export function filesPart(store: TeacherStore): Part {
   const when = (ms: number) => `${new Date(ms).toLocaleDateString(locale())} ${clock(ms)}`;
   const period = (from: string, to: string) => (from === to ? from : `${from} – ${to}`);
-  const added = (n: number) => (n ? `+${n}` : t('teacher.file.nothing'));
+  const added = (n: number) => (n ? h('b', { class: 'ok' }, `+${n}`) : t('teacher.file.nothing'));
   return {
     nodes: [
       h('p', { class: 'hint teacher-intro' }, t('teacher.eval.filesIntro')),
@@ -244,7 +244,7 @@ export function filesPart(store: TeacherStore): Part {
             h('td', { class: 'file-name' }, f.name), h('td', {}, when(f.loadedAt)), h('td', {}, period(f.from, f.to)),
             h('td', {}, f.groups.map(groupName).join(', ')), h('td', {}, String(f.results)), h('td', {}, added(f.added))))))),
         h('ul', { class: 'teacher-rows' }, ...store.files.map((f) => h('li', { class: 'file-row' },
-          h('span', { class: 'hand-in-top' }, h('b', { class: 'file-name' }, f.name), h('span', {}, added(f.added))),
+          h('span', { class: 'hand-in-top' }, h('b', { class: 'file-name' }, f.name), added(f.added)),
           h('span', { class: 'hint' }, [when(f.loadedAt), period(f.from, f.to), f.groups.map(groupName).join(', '), tn('teacher.n.results', f.results)].join(' · '))))),
       ] : [h('p', { class: 'hint' }, t('teacher.file.none'))]),
     ],

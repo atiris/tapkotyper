@@ -2157,6 +2157,7 @@
       "deleteAllText": "Every result, group and the list of files in this browser go."
     },
     "tasks": {
+      "intro": "Make a task, then send it to the students as a link or show them its QR code.",
       "empty": "No prepared tasks yet. A task you make is kept here.",
       "col": {
         "task": "Task",

@@ -40,7 +40,7 @@ export function newTaskPart(store: TeacherStore): Part {
   const f = theForm(store);
   f.refresh();
   if (f.editing()) requestAnimationFrame(() => f.focus());
-  return { nodes: [h('section', { class: 'task-make' }, f.el)] };
+  return { nodes: [h('p', { class: 'hint teacher-intro desk-only' }, t('teacher.tasks.intro')), h('section', { class: 'task-make' }, f.el)] };
 }
 
 /** One task to hand out: its QR code, copying (or sharing) its link, the big code, changing and removing it. */

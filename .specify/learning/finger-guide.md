@@ -55,8 +55,9 @@
   the eyes and play until they always find them again by touch alone, without looking; then
   the other fingers on A S D and K L Ô, the thumbs resting on the space bar; every exercise
   starts like this, the fingers come back here after each key, and while practising one never
-  looks at the keyboard. The child confirms it by typing F and J by turns three times, a
-  mark per key as on a new-key card (a space between them is fine). Esc skips it like a
+  looks at the keyboard. The child confirms it by typing F then J three times: one check
+  mark is the pair typed right, any wrong key a cross and the pair starts again (a space
+  between the pairs is fine). Esc skips it like a
   new-key card; no setting turns it off. Nowhere else does the game tell where the fingers go
   (not in the stories or the posture reminders), except the line under the picture of the
   get-ready card and the home position card it links to.

@@ -469,8 +469,8 @@ export function showControlKey(host: HTMLElement, id: ControlKey, lay: Layout, p
 
 /** The home row's fingers, left pinky to right pinky. */
 const HOME_FINGERS: Finger[] = [0, 1, 2, 3, 6, 7, 8, 9];
-/** What the child types on the home-row card: F and J by turns. */
-const HOME_TYPE = 'fjfjfj';
+/** Pairs of F then J the child types on the home-row card; each right pair is one check mark. */
+const HOME_PAIRS = 3;
 
 /** The keys the home position's text names: the index fingers' and the other three of each hand, spaced (`A S D`, `K L Ô`). */
 function homeParams(lay: Layout): Record<string, string> {
@@ -493,46 +493,56 @@ function homeRow(lay: Layout): HTMLElement {
  * The home position, taught once right after the new-key cards of F and J, and again from the
  * get-ready card's link: the bumps on F and J found by touch with closed eyes, where all eight
  * fingers rest (the keys of the child's layout, in the fingers' colors), the thumbs on the space
- * bar, never looking at the keyboard; the child confirms it by typing F and J by turns three
- * times. Escape skips it, as on a new-key card. `guide` lights the next key when a level's
- * keyboard is there.
+ * bar, never looking at the keyboard; the child confirms it by typing F then J three times:
+ * a right pair is one check mark, any wrong key a cross and the pair starts again. Escape
+ * skips it, as on a new-key card. `guide` lights the next key when a level's keyboard is there.
  */
 export function showHomeRow(host: HTMLElement, lay: Layout, guide: KeyboardGuide | null, p: Profile): Promise<void> {
   return new Promise((resolve) => {
     const f = homeKey(lay, 3) ?? 'f', j = homeKey(lay, 6) ?? 'j';
-    const target = HOME_TYPE.replace(/f/g, f).replace(/j/g, j);
+    const pair = f + j;
     const marks = h('span', { class: 'newkey-marks', 'aria-hidden': 'true' });
     const row = homeRow(lay);
-    const card = h('div', { class: 'card newkey-card homerow-card', 'data-sample': target },
+    const card = h('div', { class: 'card newkey-card homerow-card', 'data-sample': pair.repeat(HOME_PAIRS) },
       closeButton(() => done(), t('newKey.skip')),
       h('div', { class: 'newkey-tapko' }, tapkoElement(p.companion, 'happy', 220)),
       h('div', { class: 'newkey-how' },
         h('h2', {}, t('homeRow.title')),
         row,
         ...tList('homeRow.text', homeParams(lay)).map((line) => h('p', {}, ...richText(line))),
-        h('p', { class: 'hint newkey-type' }, h('span', {}, t('homeRow.type', { keys: `${f}${j} ${f}${j} ${f}${j}` })), ' ', marks)));
+        h('p', { class: 'hint newkey-type' }, h('span', {}, t('homeRow.type', { keys: Array(HOME_PAIRS).fill(pair).join(' ') })), ' ', marks)));
     const overlay = h('div', { class: 'overlay' }, card);
     host.append(overlay);
-    let n = 0;
-    guide?.show(target[0]);
+    // Right pairs so far, and how far into the current pair (0 waits for F, 1 for J).
+    let pairs = 0, at = 0;
+    guide?.show(f);
+    const mark = (ok: boolean) => {
+      if (marks.children.length >= MARKS_MAX) marks.firstElementChild!.remove();
+      marks.append(h('span', { class: `newkey-mark ${ok ? 'ok' : 'bad'}` }, icon(ok ? 'check' : 'close')));
+    };
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault();
         e.stopPropagation();
         return done();
       }
-      if (e.repeat || [...e.key].length !== 1 || n >= target.length) return;
+      if (e.repeat || [...e.key].length !== 1 || pairs >= HOME_PAIRS) return;
       e.preventDefault();
       // A space between the pairs is fine, it neither counts nor costs.
-      if (e.key === ' ') return;
-      const ok = e.key.normalize('NFC') === target[n];
-      if (marks.children.length >= MARKS_MAX) marks.firstElementChild!.remove();
-      marks.append(h('span', { class: `newkey-mark ${ok ? 'ok' : 'bad'}` }, icon(ok ? 'check' : 'close')));
-      if (!ok) return audio.sfx('wrong');
-      n++;
+      if (e.key === ' ' && at === 0) return;
+      if (e.key.normalize('NFC') !== pair[at]) {
+        at = 0;
+        mark(false);
+        guide?.show(f);
+        return audio.sfx('wrong');
+      }
       audio.sfx('pop');
-      guide?.show(target[n] ?? null);
-      if (n >= target.length) setTimeout(done, 350);
+      if (++at < pair.length) return guide?.show(j);
+      at = 0;
+      pairs++;
+      mark(true);
+      guide?.show(pairs < HOME_PAIRS ? f : null);
+      if (pairs >= HOME_PAIRS) setTimeout(done, 350);
     };
     let finished = false;
     const done = () => {

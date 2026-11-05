@@ -92,7 +92,7 @@ function openTask(spec: TaskSpec, store: TeacherStore): HTMLElement {
 export function readyPart(store: TeacherStore, id?: string): Part {
   const tasks = app.store.data.teacherTasks;
   const open = tasks.find((x) => x.id === id);
-  // Another task beside the list takes the open one's place, so X still goes back to the list.
+  // Another task beside the list takes the open one's place, so Esc still goes back to the list.
   const show = (x: TaskSpec) => () => (open ? swapPlace(`task/${x.id}`) : openPlace(`task/${x.id}`, true));
   const qrButton = (x: TaskSpec) => h('button', { type: 'button', class: 'qr-btn', 'aria-label': t('teacher.tasks.show'), tip: t('teacher.tasks.show'), onClick: show(x) }, icon('qr'));
   if (!tasks.length) return { nodes: [h('p', { class: 'hint' }, t('teacher.tasks.empty'))] };

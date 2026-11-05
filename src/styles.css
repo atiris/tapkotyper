@@ -731,6 +731,13 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .island.locked h3 { color: var(--ink-soft); }
 .lock { position: absolute; inset: auto; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: var(--surface); color: var(--ink-soft); }
 .lock .icon { width: 26px; height: 26px; }
+/* A world's keyboard button: under the badge's column at the picture's bottom; on a closed world beside the lock. */
+.world-kb-btn { position: absolute; bottom: 0; right: 0; z-index: 1; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%; display: grid; place-items: center; cursor: pointer;
+  background: var(--surface); color: var(--ink); box-shadow: inset 0 0 0 2px var(--line), 0 2px 4px rgba(40, 30, 20, 0.2); }
+.world-kb-btn .icon { width: 24px; height: 24px; }
+.world-kb-btn:hover { box-shadow: inset 0 0 0 2px var(--brand), 0 2px 4px rgba(40, 30, 20, 0.2); }
+.world-kb-btn:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
+.island.locked .world-kb-btn { top: 50%; left: 50%; bottom: auto; right: auto; transform: translate(32px, -50%); }
 .island h3 { font-size: 1.1rem; margin: var(--sp-2) 0; }
 .level-row { display: flex; gap: 0.4rem; justify-content: center; flex-wrap: wrap; }
 .level-node {
@@ -1075,6 +1082,17 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
 .practice-picker .kb-key.picked .kb-shift { color: var(--finger-ink); }
 .practice-picker .kb-key.off { opacity: 0.25; cursor: default; }
 .practice-picker .kb-key:focus-visible { outline: 3px solid var(--brand-dark); outline-offset: 2px; opacity: 1; }
+/* A world's keys: must-know keys filled in their finger's colour, the keys it teaches outlined, the rest faded; a mastered one has a check. */
+.world-kb .kb-key { background: transparent; box-shadow: inset 0 0 0 1px var(--line); color: var(--ink-soft); opacity: 0.35; }
+.world-kb .kb-key.wk-need { background: var(--finger); color: var(--finger-ink); box-shadow: 0 2px 0 var(--edge); opacity: 1; }
+.world-kb .kb-key.wk-need .kb-shift { color: var(--finger-ink); }
+.world-kb .kb-key.wk-learn { background: var(--surface); color: var(--ink); box-shadow: none; border: 2px dashed var(--finger); opacity: 1; }
+.world-kb .kb-key.wk-known::before { content: '✓'; position: absolute; bottom: 5px; right: 5px; font-size: 0.7em; font-weight: 800; }
+.wk-legend { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+.lg.wk-need { background: var(--heat-good); }
+.lg.wk-learn { background: var(--surface); border: 2px dashed var(--line); }
+.lg.wk-known { background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
+.wk-lock { display: flex; align-items: center; gap: 0.3rem; font-weight: 700; color: var(--danger-ink); }
 .practice-keys h2 { margin-top: 0; }
 .pk-row { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
 .pk-styles { display: flex; justify-content: center; flex-wrap: wrap; gap: 0.4rem; }

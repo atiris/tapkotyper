@@ -29,6 +29,12 @@
   the child's layout) and what mastered means, with the two-minute drill of them. The list guards
   the way in only: a world with a level already played stays open, so finished levels can always
   be replayed.
+- On the map every world card has a round **keyboard button**: on an open world at the bottom of
+  the picture, in the badge's column above the world's name; on a closed one beside the lock. It
+  opens the world's keys on the child's keyboard: the must-know keys filled in their finger's
+  colour, the keys it teaches outlined, the other keys faded, a check on every key the child
+  masters, a legend with the counts and one line on what mastered means. A world closed only by
+  keys says so above the keyboard.
 - Help, tab Progress, section **Worlds and keys**: every world, also one not built yet, with its
   island and two rows of key caps on the layout, "Musím vedieť" and "Naučím sa". It is the same
   for every player: nothing in it marks what this child masters (the map's keyboard button does).

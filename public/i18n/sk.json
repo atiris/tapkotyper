@@ -3592,5 +3592,14 @@
     "remove": "Odstrániť zo zoznamu",
     "subject": "TapkoTyper: {title}",
     "body": "Úloha z TapkoTypera. Otvorte tento odkaz v počítači s klávesnicou:"
+  },
+  "worldKeys": {
+    "open": "Klávesy sveta {world}",
+    "title": "{world}: klávesy",
+    "lockedByKeys": "Tento svet je zamknutý len kvôli klávesom. Ovládni klávesy, ktoré musíš vedieť a ešte nemajú ✓.",
+    "need": "Musím vedieť ({n})",
+    "learn": "Naučím sa ({n})",
+    "known": "už ovládam",
+    "mastered": "Kláves ovládaš, keď ho máš stlačený aspoň {n}-krát a z posledných {n} stlačení je aspoň {right} správne."
   }
 }

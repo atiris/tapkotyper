@@ -32,6 +32,7 @@ import { openBreak } from './break';
 import { openPracticeKeys } from './practice-keys';
 import { type TeacherTip, dueTip, tipSeen } from '../app/teacher-tips';
 import { openStats } from './stats';
+import { worldKeysButton } from './world-keys';
 import { taskCard } from './task';
 
 /** Ms Turtle's pictures, one after another with her tips. */
@@ -406,7 +407,7 @@ function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held:
         tabindex: '0',
         'aria-label': worldName(wi),
         tip: lock || null,
-      }) }, img ? h('img', { src: img, alt: '' }) : h('div', { class: 'island-fallback' }), open ? null : h('span', { class: 'lock', tip: lock || null }, icon('lock')),
+      }) }, img ? h('img', { src: img, alt: '' }) : h('div', { class: 'island-fallback' }), open ? null : h('span', { class: 'lock', tip: lock || null }, icon('lock')), worldKeysButton(p, wi),
         tier ? badge(wi, tier, true) : null, surprisesMark(p, wi)),
       h('h3', {}, `${wi + 1}. ${worldName(wi)}`),
       h('div', { class: 'level-row' }, ...levels, wi === story.worlds[story.worlds.length - 1] ? journeyNode(p, story) : null, aimNode(p, aimOpen(p, wi), wi), parrotNode(p, aimOpen(p, wi), wi)));

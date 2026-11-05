@@ -3569,5 +3569,14 @@
     "remove": "Remove from the list",
     "subject": "TapkoTyper: {title}",
     "body": "A task from TapkoTyper. Open this link on a computer with a keyboard:"
+  },
+  "worldKeys": {
+    "open": "Keys of {world}",
+    "title": "{world}: keys",
+    "lockedByKeys": "This world is closed only because of keys. Master the must-know keys that have no ✓ yet.",
+    "need": "Must know ({n})",
+    "learn": "I learn ({n})",
+    "known": "mastered",
+    "mastered": "You master a key once you have pressed it at least {n} times and at least {right} of the last {n} presses are right."
   }
 }

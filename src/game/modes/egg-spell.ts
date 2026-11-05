@@ -53,6 +53,8 @@ const LAND_DX = 95;
 const LAND_DY = 16;
 /** The flames grow with the spell from this glow; the egg cracks at half, and cracks open at three quarters. */
 const GLOW_START = 0.12;
+/** The fire starts with its two front flames: the egg in front hides the smallest one, the second shows above it from the first word. */
+const GROWTH_START = 0.71;
 const CRACK_AT = 0.5;
 const CRACKING_AT = 0.75;
 
@@ -226,7 +228,7 @@ export class SpellRibbonMode extends HeroMode {
     this.warmth = Math.max(this.warmth, Math.min(1, L.share()));
     // Weak low flames at first; they come one by one and grow with the spell.
     this.hearth.glow = GLOW_START + (1 - GLOW_START) * this.warmth;
-    this.hearth.growth = this.warmth;
+    this.hearth.growth = GROWTH_START + (1 - GROWTH_START) * this.warmth;
     this.hearth.update(dt);
     this.wobble = Math.max(0, this.wobble - dt);
     this.ribbon.update(dt);

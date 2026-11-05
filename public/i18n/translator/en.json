@@ -202,6 +202,10 @@
       "title": "The map",
       "about": "Texts of the main map: story names, level hints and hints about unlocking levels."
     },
+    "world-keys": {
+      "title": "A world's keys",
+      "about": "The window from the keyboard button on a world's card: the keys to master before the world opens, the keys it teaches and the ones already mastered."
+    },
     "surprise": {
       "title": "Parent's secret",
       "about": "Texts about a secret that a parent prepared as a reward."

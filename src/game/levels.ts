@@ -229,8 +229,8 @@ function plannedCount(l: LevelDef): number {
   return Math.max(1, Math.round(UNITS[l.kind]?.(w, l) ?? w));
 }
 
-/** What the child does in a level; the map shows it as the icon of the level's dot. */
-export type Activity = 'chase' | 'catch' | 'clean' | 'crossroads';
+/** What the child does in a level; the map shows it as the icon of the level's dot. Sticky finger has no level yet. */
+export type Activity = 'chase' | 'catch' | 'clean' | 'crossroads' | 'sticky';
 
 /** The super level shows its own game's picture too; the map adds its crown. */
 export function activityOf(l: LevelDef): Activity {

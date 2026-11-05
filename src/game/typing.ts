@@ -1,9 +1,12 @@
 /** Pure typing state of a level: targets with words, lock-on, letter fill and the style of the run. */
 
-/** How a run shows its targets: copied from the label, heard (dictation), remembered, or heard and remembered in turns (mixed). */
-export type Style = 'copy' | 'dictation' | 'memory' | 'mixed';
+/**
+ * How a run shows its targets: copied from the label, heard (dictation), remembered, heard and remembered in turns
+ * (mixed), or copied while a finger holds its key (sticky).
+ */
+export type Style = 'copy' | 'dictation' | 'memory' | 'mixed' | 'sticky';
 /** How one target is shown. */
-export type TargetStyle = Exclude<Style, 'mixed'>;
+export type TargetStyle = 'copy' | 'dictation' | 'memory';
 
 /** Seconds a memory target shows before its letters hide; shorter at a higher difficulty. */
 export function memoryShow(length: number, difficulty: number): number {
@@ -62,7 +65,7 @@ export class TypingCore {
 
   add(word: string, data: any = {}, selectable = true): Target {
     const id = this.nextId++;
-    const style: TargetStyle = this.style === 'mixed' ? (id % 2 ? 'dictation' : 'memory') : this.style;
+    const style: TargetStyle = this.style === 'mixed' ? (id % 2 ? 'dictation' : 'memory') : this.style === 'sticky' ? 'copy' : this.style;
     const t: Target = {
       id, word, typed: 0, done: false, gone: false, selectable, urgency: 0, wobble: 0, errors: 0, style,
       masked: style !== 'copy', showLeft: 0, showFor: 0, revealed: false, data,

@@ -933,6 +933,14 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
 .progress { flex: 1; min-width: 120px; height: 16px; border-radius: 999px; background: var(--track); overflow: hidden; }
 .progress-fill { height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, #8fd89f, var(--green)); transition: width 0.3s ease; }
 .stage-wrap { position: relative; flex: 1; min-height: 0; }
+/* Sticky finger: the line over the scene while a held key is up. */
+.stage-wrap > .hold-line { position: absolute; left: 50%; top: 1rem; z-index: 3; translate: -50% 0; max-width: calc(100% - 2rem); margin: 0; padding: 0.55em 1.1em; border-radius: 999px; background: var(--tint-yellow); color: var(--ink); border: 3px solid #e8a23a; font-weight: 700; font-size: 1.15rem; text-align: center; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18); }
+.stage-wrap > .hold-line:not(.on) { display: none; }
+.rollover-card { position: relative; }
+.rollover-keys { display: flex; justify-content: center; gap: 0.5rem; margin: 0.6rem 0 1rem; }
+.rollover-keys .kb-key { position: relative; width: 3rem; height: 3rem; display: grid; place-items: center; border-radius: 10px; background: var(--paper); border: 1px solid var(--key-line); box-shadow: 0 2px 0 var(--edge); font: 700 1.2rem var(--font-keys); }
+.rollover-keys .kb-key.held { background: var(--tint-yellow); box-shadow: 0 0 0 3px #f2c14e; transform: translateY(2px); }
+.chip[aria-disabled='true'] { opacity: 0.5; cursor: not-allowed; }
 .stage { position: absolute; inset: 0; display: block; }
 /* Over the DOM Tapko (same level, later in the page), under his bubble. */
 .stage-front { z-index: 2; pointer-events: none; }
@@ -1013,6 +1021,11 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
 /* A key the hands type (the paw help) goes down for a moment. */
 .kb-key.tap { animation: key-tap 0.14s ease; }
 @keyframes key-tap { 50% { transform: translateY(2px) scale(0.94); } }
+/* Sticky finger: a held key is pressed with a soft golden glow; one that must be held but is up blinks gently. */
+.kb-key.held { transform: translateY(2px) scale(0.95); background: var(--tint-yellow); box-shadow: inset 0 -2px 0 var(--finger), 0 0 0 3px #f2c14e, 0 0 14px 4px rgba(242, 193, 78, 0.7); z-index: 1; }
+.kb-key.hold-up { box-shadow: inset 0 -5px 0 var(--finger), 0 0 0 3px #f2c14e; animation: hold-blink 1.2s ease-in-out infinite; z-index: 1; }
+@keyframes hold-blink { 50% { box-shadow: inset 0 -5px 0 var(--finger), 0 0 0 3px transparent; background: var(--tint-yellow); } }
+.kb-hands .hand-hold-tip { fill: rgba(242, 193, 78, 0.45); stroke: #e8a23a; stroke-width: 2; }
 .kb-guide.hidden { display: none; }
 .kb-guide { position: relative; }
 /* The layout switch sits in the corner beside the space bar, where no key is, so the keyboard never moves for it:

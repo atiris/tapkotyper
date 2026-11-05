@@ -72,15 +72,15 @@ const QWERTZ_ONLY_TIPS = new Set(['yz-swap', 'z-finger']);
 /** Tips about keys far from the home row; shown once the child knows more keys. */
 const LATER_TIPS = new Set(['number-row', 'number-fingers', 'dead-keys', 'caron-shift', 'accent-pinky', 'diacritics-fun', 'shift-opposite', 'capital-a', 'yz-swap', 'z-finger', 'pinky-p', 'reach-t', 'middle-ei', 'ring-finger']);
 
-/** The style a tip is about: listening tips for dictation, remembering tips for memory; null = any run. */
+/** The style a tip is about: listening tips for dictation, remembering tips for memory, holding tips for sticky finger; null = any run. */
 function tipStyle(id: string): Style | null {
-  return id.startsWith('listen-') ? 'dictation' : id.startsWith('remember-') ? 'memory' : null;
+  return id.startsWith('listen-') ? 'dictation' : id.startsWith('remember-') ? 'memory' : id.startsWith('sticky-') ? 'sticky' : null;
 }
 
-/** A dictation or memory run gets a tip about its own way of typing, a copy run never does. */
+/** A dictation, memory or sticky run gets a tip about its own way of typing, a copy run never does. */
 function fitsStyle(id: string, style: Style): boolean {
   const own = tipStyle(id);
-  return style === 'copy' ? !own : style === 'mixed' ? !!own : own === style;
+  return style === 'copy' ? !own : style === 'mixed' ? own === 'dictation' || own === 'memory' : own === style;
 }
 
 /** The right little finger's home key of the player's layout, as printed on it (Ô, or ; on US keyboards). */

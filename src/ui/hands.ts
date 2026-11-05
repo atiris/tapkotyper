@@ -132,6 +132,7 @@ export class Hands {
   /** Per hand two layers: the outline shown and the one fading in over it. */
   private side: Record<Side, { g: SVGElement; layers: SVGElement[]; shown: string }>;
   private focus: SVGElement;
+  private holdG: SVGElement;
   private disc: SVGElement;
   private letter: SVGElement;
   private stops: SVGElement[];
@@ -181,6 +182,8 @@ export class Hands {
       return { g, layers, shown: '' };
     };
     this.side = { left: make('left'), right: make('right') };
+    // Held keys' fingertips, under the letter of the key being typed.
+    this.holdG = el('g', { class: 'hand-hold' }, this.el);
     // The key being typed, over the hands: its letter with a thin outline in its finger's colour on a small disc of that
     // colour fading from its centre, so a finger never hides it (the key's own letter is hidden meanwhile).
     const glow = el('radialGradient', { id: `${id}-glow` }, defs);
@@ -309,6 +312,15 @@ export class Hands {
       this.update();
     }, PRESS_S * 1000);
     this.update();
+  }
+
+  /** Sticky finger: a soft golden fingertip on each key held down (codes), where the holding finger rests. */
+  hold(codes: readonly string[]): void {
+    this.holdG.replaceChildren();
+    for (const code of codes) {
+      const at = keyMiddle(this.layout, code);
+      if (at) el('circle', { class: 'hand-hold-tip', cx: at[0], cy: at[1], r: (UNIT - GAP) / 3 }, this.holdG);
+    }
   }
 
   private remember(key: HandsKey): void {

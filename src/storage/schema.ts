@@ -307,6 +307,13 @@ export interface StoreData {
   teacherTasks: TeacherTask[];
   /** Tasks noted on a phone without a keyboard, newest first. */
   notedTasks: NotedTask[];
+  /** How many keys held at once this device's keyboard reports (sticky finger's check), and when it was checked (ISO time); none before the check. */
+  rollover?: Rollover;
+}
+
+export interface Rollover {
+  max: number;
+  checked: string;
 }
 
 export const GUEST_ID = 'guest';

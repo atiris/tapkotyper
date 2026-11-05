@@ -256,6 +256,18 @@ export class KeyboardGuide {
     if (shift && cls === 'next') this.keys.get(shift)?.classList.add('shift-next');
   }
 
+  /**
+   * Sticky finger: the keys a run holds (codes), drawn as pressed with a soft golden glow; those of them that are up
+   * (`up`) blink gently instead. The hands rest the holding finger on each key held down.
+   */
+  hold(codes: readonly string[], up: readonly string[]): void {
+    for (const [code, k] of this.keys) {
+      k.classList.toggle('held', codes.includes(code) && !up.includes(code));
+      k.classList.toggle('hold-up', up.includes(code));
+    }
+    if (codes.length || this.hands) this.handsView().hold(codes.filter((c) => !up.includes(c)));
+  }
+
   setVisible(on: boolean): void {
     this.el.classList.toggle('hidden', !on);
   }

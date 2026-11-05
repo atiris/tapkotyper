@@ -33,6 +33,9 @@
   A child who writes what was heard is always right. Fewer words is fine: below enough of them
   single letters are dictated, as with too few keys. English keeps dictionary words, its spelling
   never follows the ear alone.
+- **One hand's words** (sticky finger): only letters one hand types alone, with no Shift, no
+  accent key of the other hand and no space, so single words; when the dictionary has too few of
+  them, the usual letter groups and made-up words of those keys fill in, as with few keys.
 - No word may be offensive or scary; pseudo-words are checked against a small block list.
 - The first level asks one chunk per target, never two with a space; the second level is the
   first that asks for the space bar.

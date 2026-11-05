@@ -149,6 +149,7 @@
       "catch": "Čakajúce slová",
       "clean": "Odpis",
       "crossroads": "Rázcestie",
+      "sticky": "Lepkavý prst",
       "super": "Finále"
     },
     "ownText": "Môj text",
@@ -242,6 +243,11 @@
     "layoutHint": "Tvoja klávesnica vyzerá ako {layout}. Prepni ju vpravo dole pod klávesnicou.",
     "shiftOtherHand": "Shift stlač druhou rukou: malíčkom na opačnej strane ako písmeno.",
     "memoryWait": "Počkaj, kým sa skryje.",
+    "stickyWait": "Polož prst späť na {keys} a drž ho.",
+    "stickyWaitMany": "Polož prsty späť na {keys} a drž ich.",
+    "stickyCheckTitle": "Koľko klávesov naraz?",
+    "stickyCheck": "Drž {keys} a stlač {key}.",
+    "stickyCheckFewer": "Táto klávesnica nedokáže zachytiť toľko klávesov naraz, tak budeš držať menej.",
     "noVoice": "Tento prehliadač nevie čítať nahlas, preto dnes slová uvidíš a odpíšeš ich.",
     "noVoiceMemory": "Tento prehliadač nevie čítať nahlas, preto dnes každá nôtka najprv zasvieti a napíšeš ju z pamäti.",
     "end": "Ukončiť písanie",
@@ -366,6 +372,9 @@
     "copyTip": "Slovo vidíš a odpíšeš ho.",
     "dictationTip": "Slovo počuješ, ale nevidíš ho. Napíš, čo počuješ.",
     "memoryTip": "Slovo sa na chvíľu ukáže a skryje sa. Napíš ho spamäti.",
+    "sticky": "Lepkavý prst",
+    "stickyTip": "Jeden prst drží svoj kláves, ostatné píšu.",
+    "stickyNeeds": "Najprv si vyber aspoň {n} klávesy každej ruky.",
     "start": "Začať"
   },
   "freeType": {
@@ -1711,6 +1720,7 @@
       "transcribe": "**Prepis**: text je v jednom bloku a ty ho prepisuješ do druhého, ktorý je inak široký. Sleduj, kde v predlohe práve si.",
       "listen": "**Odposluch**: slovo nevidíš, iba počuješ. Napíš, čo počuješ. Keď chvíľu nepíšeš, zopakuje sa.",
       "remember": "**Tajné slová**: slovo sa ukáže len na chvíľu a schová sa. Zapamätaj si ho a napíš ho spamäti.",
+      "sticky": "**Lepkavý prst**: jeden prst sa prilepí na svoj kláves a drží ho, kým ostatné prsty píšu. Keď ho pustíš, hra počká, kým ho znova stlačíš.",
       "aim": "**Strelnica**: slová plné písmen, ktoré ti ešte nejdú. Každé slovo hodí vec cez krúžky až do terča.",
       "parrot": "**Papagáj**: pár slov veľakrát za sebou. Papagáj každé zopakuje. Za chybu príde slovo ešte dvakrát.",
       "super": "**Finále**: piata, posledná hra sveta. Je to jeden z druhov hier vyššie, no môže byť trochu iný ako jeho bežný variant.",
@@ -1863,7 +1873,10 @@
     "listen-sounds": "Potichu si slovo povedz, písmenko po písmenku.",
     "remember-picture": "Pozri sa na celé slovo ako na obrázok, kým sa skryje.",
     "remember-wait": "Počkaj, kým sa slovo skryje, a napíš ho z pamäti.",
-    "remember-slip": "Nevieš si spomenúť? Po chybe sa slovo na chvíľu ukáže znova."
+    "remember-slip": "Nevieš si spomenúť? Po chybe sa slovo na chvíľu ukáže znova.",
+    "sticky-rest": "Prst, ktorý drží kláves, na ňom len pokojne leží. Netreba tlačiť silno.",
+    "sticky-home": "Držaný prst ti ukazuje, kde je domov. Ostatné prsty sa k nemu vždy vrátia.",
+    "sticky-hands": "Najprv píše jedna ruka a druhá drží svoj kláves. Potom sa vymenia."
   },
   "super": {
     "help": {

@@ -1,5 +1,6 @@
-import { app, go, layout, saveProfile } from '../app/app';
+import { app, go, layout, profileLayout, saveProfile } from '../app/app';
 import { speech } from '../audio/speech';
+import { MIN_HAND_KEYS, holdRounds } from '../game/modes/kit/hold';
 import type { Style } from '../game/typing';
 import { locale, t } from '../i18n/i18n';
 import { allKeys } from '../keyboard/layouts';
@@ -15,7 +16,8 @@ const MIN_LETTERS = 2;
 /**
  * Free practice starts here: the keyboard with the chosen keys lit, a slider that adds keys
  * in the lesson order three at a time, and single keys toggled by a click. It opens with
- * the child's active keys and copy typing; dictation shows only when the browser has a voice.
+ * the child's active keys and copy typing; dictation shows only when the browser has a voice, sticky finger works only
+ * with enough keys of each hand.
  * Start sits on the left, the keyboard's settings on the right: a new layout or fingering opens the window again with it.
  */
 export function openPracticeKeys(): void {
@@ -26,8 +28,11 @@ export function openPracticeKeys(): void {
   let step = stepHolding(steps, [...chosen]);
   let shifted = false;
   let style: Style = 'copy';
-  const styles: Style[] = speech.available(locale()) ? ['copy', 'dictation', 'memory'] : ['copy', 'memory'];
+  const styles: Style[] = speech.available(locale()) ? ['copy', 'dictation', 'memory', 'sticky'] : ['copy', 'memory', 'sticky'];
+  // Sticky finger needs enough keys of each hand among the chosen ones; the chip says so instead.
+  const stickyOk = () => !!holdRounds([...chosen], profileLayout(p), null);
   const styleBtns = styles.map((s) => h('button', { class: 'chip', type: 'button', 'data-style': s, tip: t(`practiceKeys.${s}Tip`), onClick: () => {
+    if (s === 'sticky' && !stickyOk()) return;
     style = s;
     paint();
   } }, t(`practiceKeys.${s}`)));
@@ -82,7 +87,13 @@ export function openPracticeKeys(): void {
   }, true);
 
   function paint(): void {
+    const sticky = stickyOk();
+    if (style === 'sticky' && !sticky) style = 'copy';
     styleBtns.forEach((b, i) => {
+      if (styles[i] === 'sticky') {
+        b.setAttribute('aria-disabled', String(!sticky));
+        b.dataset.tip = sticky ? t('practiceKeys.stickyTip') : t('practiceKeys.stickyNeeds', { n: MIN_HAND_KEYS });
+      }
       b.classList.toggle('on', styles[i] === style);
       b.setAttribute('aria-pressed', String(styles[i] === style));
     });

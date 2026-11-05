@@ -9,6 +9,8 @@ export class LevelState {
   started = false;
   /** The level ended, or free typing left for its end card. */
   finished = false;
+  /** A sticky run waits for its held key: the scene stands still as on a pause, without the pause card. */
+  waiting = false;
   /** Seconds of play in this level, pauses not counted. */
   elapsed = 0;
   /** Level time of the child's last counted key. */
@@ -16,9 +18,9 @@ export class LevelState {
 
   constructor(readonly core: TypingCore, readonly guide: KeyboardGuide, readonly el: HTMLElement) {}
 
-  /** Play runs: begun, not paused, not over. */
+  /** Play runs: begun, not paused, not waiting, not over. */
   get playing(): boolean {
-    return this.started && !this.paused && !this.finished;
+    return this.started && !this.paused && !this.waiting && !this.finished;
   }
 
   /** Seconds of play since the child's last key (since play started before the first one). */

@@ -53,13 +53,15 @@ import { Reading } from './runtime/reading';
 import { LevelState } from './runtime/state';
 import { SuperHelp } from './runtime/super-helper';
 import { StageTapko } from './runtime/tapko';
+import { StickyHold, checkRollover, saveRollover } from './runtime/hold';
+import { ROUND_S, holdRounds, holdsSeveral } from './modes/kit/hold';
 
 /** Seconds every target gets to be read. */
 const READ_TIME = 3;
 /** Extra seconds a target with a capital letter gets (the Shift chord is hard). */
 const CAPITAL_EXTRA = 1.5;
 /** Travel time of dictated and remembered targets: hearing or recalling a target takes longer. */
-const STYLE_PACE: Record<Style, number> = { copy: 1, dictation: 1.5, memory: 1.8, mixed: 1.8 };
+const STYLE_PACE: Record<Style, number> = { copy: 1, dictation: 1.5, memory: 1.8, mixed: 1.8, sticky: 1 };
 /** The end of a level: Tapko hops HOPS times of HOP_TIME seconds, his tool fades in TOOL_FADE, then the results open. */
 const HOPS = 3;
 const HOP_TIME = 0.4;
@@ -118,6 +120,8 @@ export class LevelRuntime {
   private readonly paws: Paws | null = null;
   private readonly superHelp: SuperHelp | null = null;
   private readonly tapko: StageTapko;
+  /** A sticky run: the held keys, their rounds and the wait while one is up; null in every other run. */
+  private hold: StickyHold | null = null;
   private progressFill: HTMLElement;
   private gauge = rhythmPic();
   /** Characters per second that fill the gauge's ring. */
@@ -187,10 +191,13 @@ export class LevelRuntime {
     this.mismatch = new LayoutMismatchDetector(p.layout);
 
     const lay = profileLayout(p);
+    // Sticky finger needs enough keys of each hand; with fewer it plays as copy typing (the key picker never offers it then).
+    const rounds = this.style === 'sticky' ? holdRounds(opts.chosen ?? activeKeys(p), lay, app.store.data.rollover?.max ?? null) : null;
+    if (this.style === 'sticky' && !rounds) this.style = 'copy';
     // Practice (the custom exercise, key drills, tasks) has its own word language; story levels use the player's.
     this.words = wordSource(p, def.kind === 'practice' ? p.settings.ownWordLang : p.settings.wordLang, opts.keys, opts.chosen, def.focus, !!def.journey);
     // Enter comes with the right little finger's home key; drills, single letters, a teacher's task and the gate's code stay without it.
-    const enterOk = !opts.keys && !def.noSpace && def.kind !== 'freetype' && def.kind !== 'task' && def.kind !== 'aim' && def.kind !== 'parrot' && def.kind !== 'placement' && (opts.chosen ?? activeKeys(p)).includes(enterAfter(lay));
+    const enterOk = !opts.keys && !def.noSpace && this.style !== 'sticky' && def.kind !== 'freetype' && def.kind !== 'task' && def.kind !== 'aim' && def.kind !== 'parrot' && def.kind !== 'placement' && (opts.chosen ?? activeKeys(p)).includes(enterAfter(lay));
     this.enter = enterOk ? new EnterMarks(() => this.rng.next(), def.kind === 'practice' ? null : ENTER_MAX) : null;
     this.surprise = opts.stay || def.kind === 'placement' ? null : surpriseFor(p, def, !!opts.keys);
     this.count = def.count;
@@ -202,6 +209,7 @@ export class LevelRuntime {
     this.el = h('div', { class: `level-screen world-${WORLDS[def.world]}` });
     this.guide = new KeyboardGuide(lay);
     this.state = new LevelState(this.core, this.guide, this.el);
+    if (rounds) this.makeHold(rounds);
     this.friends = new Friends(this, def);
     if (this.friends.robot) this.el.dataset.bolt = this.friends.robot.look;
     if (this.friends.fairy) this.el.dataset.fairy = 'melody';
@@ -387,6 +395,13 @@ export class LevelRuntime {
     const story = [told ?? (journey?.line ? t(journey.line) : this.mode.startLine()), this.mode.intro()].filter(Boolean).join(' ') || null;
     if (!this.opts.keys) await this.readyCard(() => showPosture(host, p, tip, this.surprise, voiceNote, story, journey ? t('journey.harder') : null, teaches ? undefined : t('level.placement')));
     if (this.disposed) return;
+    // The first run on this device that holds several keys checks how many keys the keyboard reports at once.
+    if (this.hold && holdsSeveral(this.hold.run.rounds) && !app.store.data.rollover) {
+      const max = await checkRollover(host, profileLayout(p));
+      if (this.disposed) return;
+      if (max) saveRollover(max);
+      this.makeHold(holdRounds(this.opts.chosen ?? activeKeys(p), profileLayout(p), max ?? 2)!);
+    }
     if (opening && told) {
       p.progress.scenesSeen.push(opening);
       saveProfile();
@@ -441,6 +456,14 @@ export class LevelRuntime {
     return Array.from({ length: n }, () => (words ? this.word(undefined, 1) : this.word(undefined, 6, 4)));
   }
 
+  /** A sticky run's rounds: half of a timed run each, else ROUND_S of play; each round's words from its hand's keys. */
+  private makeHold(rounds: NonNullable<ReturnType<typeof holdRounds>>): void {
+    const p = app.profile!, seconds = this.opts.seconds;
+    const roundS = seconds ? seconds / rounds.length : fast(ROUND_S);
+    this.hold?.dispose();
+    this.hold = new StickyHold(rounds, roundS, this.state, this.guide, profileLayout(p), (keys) => wordSource(p, p.settings.ownWordLang, undefined, keys));
+  }
+
   /** A teacher's task: its words or sentences, set before play. */
   taskItems: string[] = [];
 
@@ -464,6 +487,7 @@ export class LevelRuntime {
     this.tapko.el.classList.remove('waiting');
     this.rhythm.ready(performance.now());
     this.input = new KeyInput(window, this.handlers());
+    this.hold?.start(this.el.querySelector<HTMLElement>('.stage-wrap')!);
     this.updateGuide();
   }
 
@@ -486,6 +510,9 @@ export class LevelRuntime {
       onBackspace: () => (this.free ? this.freeErase() : this.restartTarget()),
       // A pause or a dialog: the keys belong to its buttons.
       idle: () => this.state.paused || !!document.querySelector('.modal-back'),
+      // The wait ends with the held key down again: play goes on at once, the pause in reacting not counted.
+      onHold: (down) => { if (this.hold?.onHold(down)) this.rhythm.ready(performance.now()); },
+      holds: (code) => !!this.hold?.holds(code),
     };
   }
 
@@ -502,6 +529,7 @@ export class LevelRuntime {
     this.reading.dispose();
     this.offShortcuts();
     this.kbSettings.dispose();
+    this.hold?.dispose();
     this.loop.stop();
     this.input?.dispose();
     this.stage.dispose();
@@ -516,7 +544,9 @@ export class LevelRuntime {
     const avoid = new Set(this.core.active.map((t) => t.word[0].toLowerCase()));
     // A hero's journey makes phrases longer; a target of one word stays one (it may fly on a small thing).
     if (this.def.journey && words >= 2) words = Math.max(words, JOURNEY_WORDS);
-    const w = this.words.next(avoid, maxLen, this.def.noSpace ? 1 : words, minWords);
+    // A sticky run takes the next round between targets, and its words from that round's hand.
+    this.hold?.atTarget();
+    const w = (this.hold?.words ?? this.words).next(avoid, maxLen, this.def.noSpace ? 1 : words, minWords);
     return this.enter?.next() ? w + ENTER : w;
   }
 
@@ -994,8 +1024,9 @@ export class LevelRuntime {
   // ---- loop --------------------------------------------------------------------
 
   private update(dt: number): void {
-    if (this.state.paused || !this.state.started) {
-      this.tweens.update(this.state.paused ? 0 : dt);
+    // Waiting for a held key stands still as a pause does: no time of the level or the session passes.
+    if (this.state.paused || !this.state.started || (this.state.waiting && !this.state.finished)) {
+      this.tweens.update(this.state.paused || this.state.waiting ? 0 : dt);
       return;
     }
     this.state.elapsed += dt;
@@ -1003,6 +1034,7 @@ export class LevelRuntime {
       app.sessionSeconds += dt;
       // The paws typing for the child count as play.
       this.played += playedStep(dt, this.paws?.typing ? 0 : this.idleFor, this.core.active.some((tg) => tg.selectable));
+      this.hold?.tick(dt);
     }
     this.core.update(dt);
     this.tweens.update(dt);
@@ -1072,7 +1104,7 @@ export class LevelRuntime {
     this.tapko.size(this.stage.scale, this.mode.tapkoFeet);
     this.watchFrames();
     // A paused level, the cards before play and a blurring card do not move: the last frame stays unless a resize cleared it or a picture came.
-    const still = this.state.paused || (!this.state.started && !this.tweens.busy) || this.covered;
+    const still = this.state.paused || this.state.waiting || (!this.state.started && !this.tweens.busy) || this.covered;
     if (still && !this.stage.dirty && picturesReady() === this.drawnPictures) return;
     this.drawnPictures = picturesReady();
     const g = this.stage.begin();
@@ -1117,6 +1149,7 @@ export class LevelRuntime {
     if (this.paws?.typing) this.paws.stop();
     this.input?.dispose();
     this.input = null;
+    this.hold?.dispose();
     this.guide.show(null);
     const p = app.profile!;
     const total = this.chars + this.errors;
@@ -1155,7 +1188,7 @@ export class LevelRuntime {
       : noStars ? completeStay(p, stats, typedShare)
       : run ? completeLevel(p, this.def, run.stats!, run.resolved ? run.typed / run.resolved : 1)
       : completeLevel(p, this.def, stats, typedShare);
-    if (this.style !== 'copy') result.byStyle = { style: this.style, clean, total: resolved };
+    if (this.style !== 'copy' && this.style !== 'sticky') result.byStyle = { style: this.style, clean, total: resolved };
     saveProfile();
     if (!this.mode.lost) {
       this.sfx('reward');

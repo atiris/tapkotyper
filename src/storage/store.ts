@@ -6,6 +6,7 @@ import {
   type LayoutId,
   type ParentLock,
   type Profile,
+  type Rollover,
   type StoreData,
   type TaskSpec,
   type Theme,
@@ -48,6 +49,10 @@ const TASK_DEFAULTS: Omit<TaskSpec, 'id' | 'title'> = { game: 'chase', words: []
 const PLAY_DEFAULTS = { finished: 0 };
 const MADE_DEFAULT = { madeAt: 0 };
 
+function isRollover(x: any): x is Rollover {
+  return !!x && Number.isInteger(x.max) && x.max >= 2 && typeof x.checked === 'string';
+}
+
 function emptyStore(): StoreData {
   return { profiles: [], lastProfileId: null, language: null, theme: 'system', teacherTasks: [], notedTasks: [] };
 }
@@ -64,6 +69,7 @@ export function readStore(raw: any): StoreData {
   if (!isParentLock(store.parentLock)) delete store.parentLock;
   if (typeof store.lockRemovedAt !== 'number' || !Number.isFinite(store.lockRemovedAt)) delete store.lockRemovedAt;
   if (!THEMES.includes(store.theme)) store.theme = 'system';
+  if (!isRollover(store.rollover)) delete store.rollover;
   store.teacherTasks = Array.isArray(store.teacherTasks) ? store.teacherTasks.filter((x) => typeof x?.id === 'string').map((x) => ({ ...TASK_DEFAULTS, ...MADE_DEFAULT, ...x })) : [];
   store.notedTasks = Array.isArray(store.notedTasks) ? store.notedTasks.filter((x) => typeof x?.code === 'string' && typeof x.title === 'string' && typeof x.at === 'number') : [];
   return store;

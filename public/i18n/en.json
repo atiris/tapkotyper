@@ -149,6 +149,7 @@
       "catch": "Waiting words",
       "clean": "Copy",
       "crossroads": "Crossroads",
+      "sticky": "Sticky finger",
       "super": "Finale"
     },
     "ownText": "My text",
@@ -242,6 +243,11 @@
     "layoutHint": "Your keyboard looks like {layout}. Switch it at the bottom right, under the keyboard.",
     "shiftOtherHand": "Press Shift with the other hand: the little finger on the side away from the letter.",
     "memoryWait": "Wait until it hides.",
+    "stickyWait": "Put your finger back on {keys} and hold it.",
+    "stickyWaitMany": "Put your fingers back on {keys} and hold them.",
+    "stickyCheckTitle": "How many keys at once?",
+    "stickyCheck": "Hold {keys} and press {key}.",
+    "stickyCheckFewer": "This keyboard cannot catch that many keys at once, so you will hold fewer.",
     "noVoice": "This browser cannot read aloud, so today you will see the words and copy them.",
     "noVoiceMemory": "This browser cannot read aloud, so today every note glows first and you type it from memory.",
     "end": "Stop typing",
@@ -366,6 +372,9 @@
     "copyTip": "You see the word and type it.",
     "dictationTip": "You hear the word without seeing it. Type what you hear.",
     "memoryTip": "The word shows for a moment and hides. Type it from memory.",
+    "sticky": "Sticky finger",
+    "stickyTip": "One finger holds its key, the others type.",
+    "stickyNeeds": "First choose at least {n} keys of each hand.",
     "start": "Start"
   },
   "freeType": {
@@ -1711,6 +1720,7 @@
       "transcribe": "**Transcribe**: the text stands in one block and you copy it into another one of a different width. Keep track of where you are in the original.",
       "listen": "**Dictation**: you do not see the word, you only hear it. Type what you hear. When you wait a while, it is said again.",
       "remember": "**Secret words**: a word shows only for a moment and hides. Remember it and type it from memory.",
+      "sticky": "**Sticky finger**: one finger sticks to its key and holds it while the other fingers type. When you let go, the game waits until you press it again.",
       "aim": "**Target range**: words full of the letters you still miss. Each word throws a thing through the rings into the target.",
       "parrot": "**Parrot**: a few words many times in a row. The parrot repeats each one. A slip brings the word twice more.",
       "super": "**Finale**: the fifth, last game of a world. It is one of the kinds above, but it may be a little different from its usual variant.",
@@ -1863,7 +1873,10 @@
     "listen-sounds": "Say the word quietly to yourself, letter by letter.",
     "remember-picture": "Look at the whole word like a picture before it hides.",
     "remember-wait": "Wait until the word hides, then type it from memory.",
-    "remember-slip": "Forgot a letter? A mistake shows the word for a moment again."
+    "remember-slip": "Forgot a letter? A mistake shows the word for a moment again.",
+    "sticky-rest": "The finger that holds its key just rests on it. No need to press hard.",
+    "sticky-home": "The held finger shows you where home is. The other fingers always come back to it.",
+    "sticky-hands": "First one hand types while the other holds its key. Then they swap."
   },
   "super": {
     "help": {

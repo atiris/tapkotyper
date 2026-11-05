@@ -75,6 +75,8 @@ export interface Camera {
   devices: { id: string; label: string }[];
   /** Switches to another camera. */
   use(id: string): Promise<void>;
+  /** The camera in use now. */
+  current(): string | undefined;
   stop(): void;
 }
 
@@ -112,6 +114,7 @@ export async function startScan(video: HTMLVideoElement, onCode: (text: string) 
     multi,
     devices: [],
     use: open,
+    current: () => stream?.getVideoTracks()[0]?.getSettings().deviceId,
     stop() {
       stopped = true;
       clearInterval(timer);

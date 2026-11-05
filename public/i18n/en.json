@@ -1823,14 +1823,14 @@
     "mentorTitle": "Results and QR codes",
     "mentor": [
       "Open the **For teachers** page with the chart icon at the top right of the start page. Results are stored only in this browser.",
-      "Scanning is fastest: type a group (for example 5A), press **Scan QR** and walk around the room. The camera reads several QR codes at once and puts every new result into this group.",
+      "Scanning is fastest: on the **Results** tab press **Scan QR** and walk around the room. The camera reads several QR codes at once. A new student goes into the task's group; a student you know already stays in their group.",
       "A student shows a task's QR code on their Tasks page or after handing it in, and all their statistics in My progress. Without a camera, paste or open the **result link**.",
-      "A **set** is the results of one group that came together: one camera scan, or links added within **20 minutes** of the first. The **Groups** tab shows each group's sets; click a day to see the set's students, and download it all as CSV.",
-      "Every hand-in is kept. On the **Students** tab, find a student by name and see how accuracy and rhythm changed from the first hand-in to the last. Click a name to see the progress in charts and every hand-in.",
-      "**From a phone to a computer:** on the **Files** tab, press **Send to a computer** on the phone and send yourself the .tapko file (by e-mail, for example). On the computer, load it on the same tab or drop it on the page. What you already have is not added twice.",
-      "Results older than a **year** are deleted when the page opens. Old results loaded from a file stay for **7 days** more. Delete sooner with **Delete…**.",
+      "A **set** is the results of one group that came together: one camera scan, or links added within **20 minutes** of the first. **Evaluation**, tab **Groups**, shows every set; click a row to see the set's students, and download it all as CSV.",
+      "Every hand-in is kept. On the **Students** tab, find a student by name and move ticked students into a group. Click a name to see the progress in charts and every hand-in.",
+      "**From a phone to a computer:** on the **Data** tab press **Export** on the phone and send yourself the .tapko file (by e-mail, for example). On the computer, load it with **Import results** or drop it on the page. What you already have is not added twice.",
+      "Results older than a **year** are deleted when the page opens. Old results loaded from a file stay for **7 days** more. The **Data** tab renames and merges groups and deletes students, groups, files or everything.",
       "The checksum shows a damaged link (an exclamation mark by the name), not cheating.",
-      "Make tasks for students on this page, on the **New task** tab: pick the game, the words or text and the limit, and you get a link and a QR code. On a phone without a keyboard a student notes the task with **New task** and sends it home."
+      "Make tasks for students on the **Tasks** tab: pick the game, the words or text and the limit, and save it. In **Prepared tasks** show it as a QR code or copy its link. On a phone without a keyboard a student notes the task with **New task** and sends it home."
     ]
   },
   "tips": {
@@ -1953,19 +1953,55 @@
   },
   "teacher": {
     "title": "For teachers",
-    "intro": "Type a **group** (for example 5A) and press **Scan QR**. Every QR code read goes into that group, so a class's results stay **together** and can be filtered. The details are in **Help** (?).",
-    "paste": "Result link",
-    "pastePlaceholder": "Paste a result link",
-    "add": "Add",
+    "parts": "Parts",
+    "top": {
+      "results": "Results",
+      "eval": "Evaluation",
+      "tasks": "Tasks"
+    },
+    "sub": {
+      "groups": "Groups",
+      "students": "Students",
+      "files": "Files",
+      "data": "Data",
+      "new": "New task",
+      "ready": "Prepared tasks ({n})",
+      "readyShort": "Prepared ({n})"
+    },
+    "results": {
+      "intro": "Here you can read the students' results by scanning, or they appear here when a result link is opened. If you like, you can also paste a result link directly.",
+      "scan": "Scan QR",
+      "scanShort": "QR scan",
+      "link": "Load link",
+      "recent": "Recently added results",
+      "group": "Group {group}",
+      "none": "There are no results here yet."
+    },
     "added": "Result added: {name}, {title}.",
     "already": "This result is already here: {name}, {title}.",
     "notKept": "This browser does not allow saving the results; they are lost when the page is closed.",
     "notIntact": "The checksum does not match; the link was probably damaged when copied.",
     "lockRemoved": "The super account removed or changed the settings password on the child's device.",
-    "remove": "Remove",
-    "empty": "No results yet. Scan the QR codes or paste a **result link**.",
+    "status": {
+      "ok": "Mastered",
+      "practice": "Practice more"
+    },
     "csv": "Download CSV",
-    "privacy": "The camera picture goes nowhere and the results are stored **only in this browser**.",
+    "groupLabel": "Group",
+    "allGroups": "All groups",
+    "allShort": "All",
+    "noGroup": "No group",
+    "noGroupCount": "No group ({n})",
+    "newGroup": {
+      "option": "New group…",
+      "title": "New group",
+      "name": "Group name"
+    },
+    "dialog": {
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "delete": "Delete"
+    },
     "col": {
       "task": "Task",
       "child": "Student",
@@ -1981,86 +2017,11 @@
       "handIns": "Hand-ins",
       "last": "Last"
     },
-    "all": "All",
-    "noGroup": "No group",
-    "groupFilter": "Group filter",
-    "csvAll": "Download CSV (everything)",
-    "assign": "Assign to a group ({n})",
-    "assignPrompt": "Group name (empty clears it). Existing: {groups}",
-    "removePicked": "Remove selected ({n})",
-    "removeManyTitle": "Remove the selected sets?",
-    "removeManyText": "{sets} are removed, {results} in all.",
-    "scan": {
-      "start": "Scan QR",
-      "many": "Point the camera at one or more QR codes.",
-      "one": "Point at one code.",
-      "done": "Done",
-      "collected": "Collected",
-      "unknown": "Unknown code",
-      "undo": "Undo this result",
-      "group": "Group for this scan",
-      "groupPlaceholder": "Group, for example 5.A",
-      "title": "Scanning",
-      "count": {
-        "one": "{n} read",
-        "few": "{n} read",
-        "other": "{n} read"
-      }
-    },
-    "status": {
-      "ok": "Mastered",
-      "practice": "Practice more"
-    },
-    "sortBy": "Sort",
-    "sort": {
-      "child": "Name",
-      "date": "Date",
-      "minutes": "Minutes",
-      "accuracy": "Accuracy",
-      "rhythm": "Rhythm",
-      "levels": "Levels",
-      "status": "Status",
-      "group": "Group",
-      "handIns": "Hand-ins"
-    },
     "unit": {
       "cpm": "{n} cpm",
-      "min": "{n} min",
-      "levels": "levels: {n}"
-    },
-    "child": {
-      "accuracy": "average accuracy",
-      "cpm": "characters a minute",
-      "minutes": "minutes of practice",
-      "levels": "levels done",
-      "move": "Move to a group",
-      "remove": "Remove the student",
-      "removeTitle": "Remove {name}?",
-      "removeText": "All results of {name} ({n}) are removed from the table.",
-      "trend": "Progress",
-      "handIns": "Hand-ins",
-      "set": "set {day} {time}",
-      "cpmUnit": "cpm"
-    },
-    "pickSet": "Select the set {day} {time}",
-    "tab": {
-      "groups": "Groups",
-      "writers": "Students",
-      "files": "Files",
-      "newTask": "New task",
-      "tasks": "Prepared tasks"
+      "min": "{n} min"
     },
     "n": {
-      "sets": {
-        "one": "{n} set",
-        "few": "{n} sets",
-        "other": "{n} sets"
-      },
-      "writers": {
-        "one": "{n} student",
-        "few": "{n} students",
-        "other": "{n} students"
-      },
       "results": {
         "one": "{n} result",
         "few": "{n} results",
@@ -2072,38 +2033,85 @@
         "other": "{n} hand-ins"
       }
     },
-    "groups": {
-      "accuracy": "accuracy {n} %",
-      "rhythm": "rhythm {n}"
+    "eval": {
+      "groupsIntro": "Results by group and hand-in. Click a row to open its students.",
+      "studentsIntro": "Students and their hand-ins. Tick several to put them into a group at once.",
+      "filesIntro": "The .tapko files results were loaded from here.",
+      "dataIntro": "Managing the stored results. Every change asks first."
     },
     "sets": {
       "day": "Day",
       "time": "Time",
+      "group": "Group",
       "task": "Tasks",
       "results": "Results",
       "ok": "Mastered",
       "accuracy": "Accuracy",
       "rhythm": "Rhythm",
-      "okOf": "{ok} of {n} mastered"
+      "okOf": "{ok} of {n} mastered",
+      "okShort": "{ok}/{n} mastered"
     },
-    "writers": {
-      "search": "Find a student",
-      "none": "Nobody like that was found."
+    "set": {
+      "results": "results",
+      "ok": "mastered"
+    },
+    "students": {
+      "search": "Find a student (part of the name)",
+      "searchShort": "Find a name",
+      "none": "Nobody like that was found.",
+      "pick": "Pick {name}",
+      "pickAll": "Pick all",
+      "open": "Open the card",
+      "picked": "Picked: {n}",
+      "moveTo": "Move to",
+      "moveToShort": "To: {group}",
+      "move": "Move",
+      "moveN": "Move {n}"
+    },
+    "student": {
+      "crumbs": "Path",
+      "oneHandIn": "The progress shows from the second hand-in.",
+      "weak": "weak: {keys}"
+    },
+    "child": {
+      "accuracy": "average accuracy",
+      "cpm": "characters a minute",
+      "minutes": "minutes of practice",
+      "levels": "levels done",
+      "trend": "Progress",
+      "handIns": "Hand-ins",
+      "cpmUnit": "cpm"
+    },
+    "scan": {
+      "title": "Scanning",
+      "many": "Point the camera at one or more QR codes.",
+      "one": "Point at one code.",
+      "collected": "Collected",
+      "count": {
+        "one": "{n} read",
+        "few": "{n} read",
+        "other": "{n} read"
+      },
+      "unknown": "Unknown code",
+      "undo": "Undo this result",
+      "cancel": "Cancel",
+      "done": "Done",
+      "cancelTitle": "Cancel the reading?",
+      "cancelText": {
+        "one": "The result read will be removed.",
+        "few": "The {n} results read will be removed.",
+        "other": "The {n} results read will be removed."
+      },
+      "cancelOk": "Remove"
+    },
+    "link": {
+      "title": "Loading a link",
+      "label": "Result link",
+      "placeholder": "Paste the whole link",
+      "process": "Process",
+      "bad": "The link is not right, it could not be read."
     },
     "file": {
-      "intro": "A **.tapko** file carries results from a phone to a computer. Drop it here or load it.",
-      "load": "Load a file",
-      "saveAll": "Save everything as .tapko",
-      "added": {
-        "one": "{n} result added.",
-        "few": "{n} results added.",
-        "other": "{n} results added."
-      },
-      "old": {
-        "one": "{n} result is older than a year. It stays for 7 days, then it is deleted.",
-        "few": "{n} results are older than a year. They stay for 7 days, then they are deleted.",
-        "other": "{n} results are older than a year. They stay for 7 days, then they are deleted."
-      },
       "unknown": "this is not a TapkoTyper file, or it is from a newer version; nothing was loaded.",
       "col": {
         "name": "File",
@@ -2116,57 +2124,54 @@
       "nothing": "nothing new",
       "none": "No file has been loaded here yet."
     },
-    "send": {
-      "button": "Send to a computer",
-      "title": "Send to a computer",
-      "setTitle": "Send the set",
-      "setButton": "Send the set",
-      "all": "The whole history",
-      "new": "Only since the last send",
-      "file": "On the computer, open **{name}** on the For teachers page, on the **Files** tab.",
-      "share": "Share the file",
-      "save": "Save to the phone"
+    "import": {
+      "drop": "Drag a .tapko file here",
+      "pick": "Choose a file",
+      "ok": "The file {name} is fine, its results are loaded.",
+      "bad": "File {name}: {why}"
     },
-    "wipe": {
-      "button": "Delete…",
-      "title": "Delete results",
-      "first": "If you will need them again, **save them as .tapko** first.",
-      "older": "Older than",
-      "age": {
-        "m6": "6 months",
-        "m3": "3 months",
-        "m1": "a month",
-        "w2": "2 weeks",
-        "w1": "a week",
-        "d1": "a day",
-        "all": "All data"
-      },
-      "nothing": "nothing",
-      "goSets": {
-        "one": "Delete {n} set",
-        "few": "Delete {n} sets",
-        "other": "Delete {n} sets"
-      },
-      "goResults": {
-        "one": "Delete {n} result",
-        "few": "Delete {n} results",
-        "other": "Delete {n} results"
-      },
-      "all": "Delete everything"
-    },
-    "set": {
-      "results": "results",
-      "ok": "mastered",
-      "writers": "Students",
-      "remove": "Remove the set",
-      "removeTitle": "Remove the set?",
-      "removeText": "The whole set is removed: {n}."
+    "data": {
+      "transfer": "Transfer",
+      "export": "Export results",
+      "exportShort": "Export",
+      "import": "Import results",
+      "importShort": "Import",
+      "order": "Groups and students",
+      "rename": "Rename a group",
+      "newName": "New name",
+      "mergeGroups": "Merge groups",
+      "source": "Group to merge",
+      "into": "Merge into",
+      "mergeStudents": "Merge students",
+      "oldStudent": "Old profile",
+      "delete": "Deleting",
+      "deleteGroupStudents": "Delete a group's students",
+      "deleteStudent": "Delete a student",
+      "student": "Student",
+      "deleteGroup": "Delete a group",
+      "deleteGroupText": "Its students stay, without a group.",
+      "deleteFiles": "Delete files",
+      "file": "File",
+      "deleteFilesText": "The results that came only from this file go too.",
+      "deleteAll": "Delete all data",
+      "deleteAllText": "Every result, group and the list of files in this browser go."
     },
     "tasks": {
       "empty": "No prepared tasks yet. A task you make is kept here.",
-      "show": "Show",
+      "col": {
+        "task": "Task",
+        "game": "Game and limit",
+        "group": "Group",
+        "made": "Made",
+        "actions": "Actions"
+      },
+      "show": "Show the task",
+      "share": "Share link",
+      "copy": "Copy link",
       "edit": "Edit",
-      "remove": "Remove"
+      "remove": "Remove",
+      "removeTitle": "Remove the task?",
+      "removeText": "The task {title} leaves the prepared tasks. Students who have it already can still finish it."
     }
   },
   "task": {
@@ -2182,16 +2187,13 @@
     "doneToday": "Task done!",
     "handIn": "Hand in",
     "group": "Group (optional)",
-    "intro": "A task is a link and a QR code. Send it to your students (for example through your school system) or show it in class. A student adds the task on their Tasks page and sends you the result when it is done. Prepared tasks are kept in this browser only.",
     "title": "Task name",
     "titlePlaceholder": "For example: Farm animals",
     "minutes": "Length",
-    "make": "Create link",
+    "make": "Save as a new task",
     "needContent": "Write at least one word or a text.",
-    "linkHint": "Copy the link or show the QR code. The data is inside the link itself and stored nowhere.",
     "bigCode": "Big code",
-    "groupPlaceholder": "For example: 5.A",
-    "groupHint": "The teacher's table groups results by it.",
+    "groupHint": "The results of this task go into it when the student has no group yet.",
     "titleHint": "The student sees it on their Tasks page and on the card before typing.",
     "gameLabel": "Game",
     "game": {
@@ -3562,14 +3564,14 @@
   },
   "camera": {
     "preview": "Camera picture",
-    "pick": "Camera",
     "starting": "Starting the camera...",
     "error": {
       "denied": "Camera access is not allowed. Allow it in the browser settings.",
       "none": "No camera was found.",
       "insecure": "The camera works only on a secure page (HTTPS).",
       "failed": "The camera could not be started."
-    }
+    },
+    "switch": "Switch camera"
   },
   "note": {
     "send": "Send",

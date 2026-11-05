@@ -33,6 +33,18 @@ export function write(db: IDBDatabase, table: TeacherTable, put: unknown[], drop
   });
 }
 
+/** Replaces everything in `table` with `values`, in one transaction. */
+export function replace(db: IDBDatabase, table: TeacherTable, values: unknown[]): Promise<void> {
+  return new Promise((ok, fail) => {
+    const tx = db.transaction(table, 'readwrite');
+    const store = tx.objectStore(table);
+    store.clear();
+    for (const value of values) store.put(value);
+    tx.oncomplete = () => ok();
+    tx.onerror = tx.onabort = () => fail(tx.error);
+  });
+}
+
 /** Empties the given stores in one transaction. */
 export function clear(db: IDBDatabase, tables: TeacherTable[]): Promise<void> {
   return new Promise((ok, fail) => {

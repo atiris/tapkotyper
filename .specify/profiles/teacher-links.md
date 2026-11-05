@@ -4,9 +4,9 @@
 - **No server, links only.** Everything a link carries is inside its address hash
   (`#/task/…`, `#/result/…`, `#/move/…`), compressed, with a format version, so the data
   never reaches a web server and old links can still be told apart later.
-- **Making a task** happens only on the teacher page, tab **Nová úloha** (`#/teacher/newTask`): a
-  form; a saved task shows its link and waits on the next tab, **Pripravené úlohy**
-  (`#/teacher/tasks`), newest first, where editing one opens it in the form. The form asks, top to bottom: the task's name and group, both fields the same height, each with one line under it (the name: the student sees it on their Tasks page and on the card before typing; the group: the teacher's table groups results by it);
+- **Making a task** happens only on the teacher page, **Úlohy › Nová úloha** (`#/teacher/tasks/new`): a
+  form; a saved task opens among the prepared ones, **Úlohy › Pripravené úlohy** (`#/teacher/tasks/ready`,
+  the tab names how many there are), newest first. The form asks, top to bottom: the task's name and its group side by side, the same height, each with one line under it (the name: the student sees it on their Tasks page and on the card before typing; the group, a choice of the teacher's groups, **Nová skupina…** (asks the name) or **Bez skupiny**: the results of this task go into it when the student has no group yet);
   the **game** (Prúd slov, Čakajúce slová, Odpis, Pás, Prepis); the task's **words** (for the two
   words games) or its **text** (for the three text games), only the one the game uses; the
   **limit**: Čas (typing goes on until the time is up), Text (the task ends when the whole text
@@ -17,12 +17,15 @@
   **length** 1-30 minutes (only for a limit with time); the **world**: the student's current one
   or a random one (also one not open yet, only as a backdrop). Each choice has one line saying
   what it does. A task needs at least one word or some text.
-- Making a task keeps it in the list at once and shows it: the link to copy, its QR code and
-  "Veľký kód" (the task's title over the code, in a frame of its own colour). A row shows the
-  title, game, limit, group and the date made, with **Ukázať**, **Upraviť** (the form fills;
-  saving keeps the task's identity so its results stay together) and **Odstrániť**. The list
-  keeps the last 100 tasks in this browser and is never sent anywhere. How a task plays: its
-  [games](../game/task-games.md).
+- **Uložiť ako novú úlohu** keeps the task in the list at once and opens it. A row of the list shows
+  the title, game and limit, group and the day made, and a square QR button. On a computer the
+  task opens in a panel beside the list: its title and summary, its QR code, **Kopírovať odkaz**,
+  **Veľký kód** (the task's title over the code, in a frame of its own colour), **Upraviť** (the
+  form fills; saving keeps the task's identity so its results stay together) and **Odstrániť**
+  (asks first). On a phone it is a page of its own with the title, a round X (and Esc) to close,
+  the QR code, **Zdieľať odkaz** (only with a share sheet), **Kopírovať odkaz**, **Upraviť** and
+  **Odstrániť**. The list keeps the last 100 tasks in this browser and is never sent anywhere. How
+  a task plays: its [games](../game/task-games.md).
 - Opening a task link shows the start page with a task panel in place of its title and texts:
   **Nová úloha** with the task name, its game, limit and group, its words or text, a hint to pick
   a player, and **Zrušiť túto úlohu**. The player card asks **Pre koho je táto úloha?**; a player,
@@ -30,7 +33,7 @@
   until the task is finished.
 - **The player's Úlohy page** (`#/p/<id>/tasks`, the map's **Úlohy** button right under
   Pokračovať) is the child's place for tasks: **Naskenovať úlohu** (a camera window with only the
-  picture, the camera choice when there are several, and one status line; a task code flashes
+  square picture with its camera switch when there are several, and one status line; a task code flashes
   green, beeps, buzzes where it can and the window closes by itself) and a field for a pasted
   link or code with **Pridať**; anything else says "Toto nie je kód úlohy.". A task added again
   only refreshes what the teacher made. Under them **Moje úlohy**, unfinished first, a new one
@@ -60,75 +63,102 @@
 - **Teacher view** (`#/teacher`, from the start page footer, or by opening a result link):
   results are kept in this browser only (IndexedDB), apart from the players, so a large
   class's history does not crowd the players' storage. No accounts.
-  Every hand-in is kept, once: a fingerprint of what it says (task, name, group, date, minutes,
-  accuracy, rhythm, levels, weakest keys) is never stored twice, whether it came by a scan, a
-  link or a file. Where a table counts a child's task once, the newest hand-in counts.
+- **Three parts** as tabs over the page: **Výsledky** (results come in), **Hodnotenie** (sub tabs
+  Skupiny · Študenti · Súbory · Dáta) and **Úlohy** (Nová úloha · Pripravené úlohy). Each part,
+  sub tab, card and page has its own address (`#/teacher`, `/scan`, `/link`,
+  `/eval/groups|students|files|data|import`, `/student/<key>`, `/set/<id>`, `/tasks/new|ready`,
+  `/task/<id>`), so Back works; the tabs' older addresses lead to their parts. Each part has at
+  most one short line saying what it is for; the help's teachers and parents tab explains the
+  rest. Buttons with text carry no icons.
+- **Výsledky:** one line ("Tu môžete načítať výsledky študentov skenovaním alebo sa tu objavia po
+  kliknutí na odkaz s výsledkom…") with **Naskenovať QR** and **Načítať odkaz**; a phone shows only
+  **QR sken** across the page. Below, **Posledné pridané výsledky**: the results added last, by
+  group, the group with the newest addition first: a group row ("Skupina 5.A", "6 načítaných")
+  opens Skupiny filtered to it, a student row (name, task, accuracy, rhythm) the student's card.
+  A result link that opened the page says in one line under the buttons whether it was added,
+  was here already or is damaged.
+- **Every hand-in is kept, once.** A result carries the player's hidden id (a short hash of the
+  profile's id, telling nothing of the child) and which run of the task it is; the player id, the
+  task and the run name one hand-in. The same hand-in again adds nothing; another copy of the same
+  run that says something else (edited or damaged) is dropped and the stored one stays; another
+  run of the task is another hand-in. Older results without the id are told apart by a
+  fingerprint of what they say. Each hand-in remembers every way it came in: a scan, a link, a
+  loaded file. Where a table counts a child's task once, the newest hand-in counts.
+- **Students and groups:** a student is one player id (an older result without one: the name in
+  its group). All of a student's results are in one group. A result of a student here already
+  joins that student and its group, whatever group or name it carries; a new student takes the
+  task's group, else none ("Bez skupiny"). Group names that differ only in case, spaces or dots
+  ("5a", "5.A") are one group, spelt as it came first. A group exists while a student is in it.
+  Nothing asks for a group before scanning or loading a link.
 - **Sets:** results added to one group (or none) within 20 minutes of the set's first result
   form one set; later, or in another group, a new set starts. One camera scan is always one
-  set, however long. A set keeps its group, start and end time, where it came from (scan, link,
-  file) and its results.
-- **Tabs:** Skupiny · Študenti · Súbory · Úlohy, under the intro, the scan box (the group, then "Sken QR") and below it the paste field with "Add". One line at the bottom says the camera picture goes nowhere and the results stay in this browser.
-  Each tab, a set and a writer have their own address, so Back works.
-  - **Skupiny:** group chips; per group a line with sets, writers, accuracy and rhythm, then one
-    row per set: day, time from-to, tasks, results, "zvládli X z Y", accuracy, rhythm. On a
-    computer a click on the day opens the set's writers inline; on a phone a set is a card that
-    opens the set's page (tiles, "Poslať sadu", "Odstrániť sadu", sort chips, writers). CSV,
-    assigning chosen sets to a group and removing them stay here.
-  - **Študenti:** a search that filters while typing, the group chips, and every writer with
-    group, hand-ins, the last one, accuracy and rhythm with the change from the first hand-in to
-    the last (green up, red-brown down), minutes, levels, weakest keys and status; sortable
-    columns on a computer, cards with sort chips on a phone.
-  - **Súbory:** load a `.tapko` file (button, or dropped anywhere on the page), save everything
-    as `.tapko`, "Vymazať…", and the list of loaded files (name, when, period and groups inside,
-    results, what was added, "nič nové" when nothing).
-- **Moving results without a server:** a `.tapko` file (JSON with a format name and version;
-  each result keeps its checksum). On a phone, "Poslať do počítača" offers the whole history
-  or only what came since the last send, shares the file to another app when the phone can, or
-  saves it. On the computer the file is loaded whole; loading the same file or set twice adds
-  nothing and says nothing about it, the message counts only what was added. An installed app
-  in Chrome or Edge opens a `.tapko` file by a double click. An unknown format or version loads
-  nothing and says so.
+  set per group, however long. A set keeps its group, start and end time, where it came from
+  (scan, link, file) and its results; a set whose students all move to another group moves too.
+- **Skenovanie** (`#/teacher/scan`): the camera picture as a square from its middle, an aim frame,
+  and, with several cameras, a semi-transparent switch in its corner that moves to the next one.
+  Beside it (under it on a phone) "Načítané" with "7 načítaných", what this scan read, newest
+  first, each with a round button to take it back, and **Zrušiť** (asks, then takes this scan's
+  results back) and **Hotovo** (to Hodnotenie › Študenti, filtered to the scan's group when they
+  share one). A phone shows the scan as a page of its own: on its height the camera and its row
+  take at most the top three fifths, the list scrolls, the buttons stay at the bottom; on its
+  side the camera fills the left, the list and the buttons the right.
+- **Camera scan:** every new valid code is added at once (green flash, a short shop-scanner
+  beep, a buzz where the phone can). A code stays quiet while it is in sight and for about 7
+  seconds after; a code already here that comes back later blinks the frame orange twice, so the
+  teacher knows it is collected. An unknown code only shows a short hint. A browser that reads
+  several codes per picture reads several screens at once, otherwise one code at a time. The
+  camera stops when the scan ends, the page is left or the tab is hidden; clear messages say when
+  access is denied, there is no camera or the page is not secure.
+- **Načítanie odkazu** (`#/teacher/link`, a computer's way): the same page with a field for the
+  whole link and **Spracovať** in place of the camera. A read link joins the list and the field
+  empties; one that is not a result link says "Odkaz je nesprávny, nepodarilo sa ho spracovať."
+  at the bottom of the column, so the button never moves.
+- **Hodnotenie › Skupiny:** a group choice (Všetky skupiny, the groups, Bez skupiny) and
+  **Stiahnuť CSV** (what is shown), then one row per set: day, time from-to, group, tasks,
+  results, "zvládli X z Y", accuracy, rhythm. On a computer a click on a row opens the set's
+  students inline; on a phone a set is a row (tasks, day and time, group, results, accuracy,
+  "X/Y zvládli") that opens the set's page (tiles and its students, closed by a round X).
+- **Hodnotenie › Študenti:** a search by part of the name, the group choice (students without a
+  group counted: "Bez skupiny (4)") and **Stiahnuť CSV**; every student with a box to tick, the
+  name (opens the card), group, hand-ins, the last one, accuracy and rhythm, sortable on a
+  computer. Ticked students show "Vybraní: N" with **Preradiť do** (the groups, **Nová skupina…**
+  asking the name in a small dialog, **Bez skupiny**) and **Preradiť**. A phone shows rows.
+- **A student's card** (results only): on a computer the path "Študenti › group › name", on a
+  phone the name with the group under it and a round X (Esc closes it too), without the page's
+  bar and tabs. Four tiles (average accuracy, characters a minute, minutes of practice, levels
+  passed from the newest result that says them), "Vývoj" with accuracy and rhythm over the
+  hand-ins in two charts, and every hand-in with task, date, minutes, accuracy, rhythm and the
+  weakest keys. Moving and deleting students are done in Študenti and Dáta.
+- **Hodnotenie › Súbory:** the `.tapko` files loaded here (name, when, period and groups inside,
+  results, what was added, "nič nové" when nothing).
+- **Hodnotenie › Dáta:** **Prenos** (Export výsledkov, Import výsledkov), **Skupiny a študenti**
+  (Premenovať skupinu, Zlúčiť skupiny, Zlúčiť študentov) and **Mazanie** (Zmazať študentov
+  skupiny, Zmazať študenta, Zmazať skupinu, Zmazať súbory, Zmazať všetky dáta). Each opens a small
+  dialog (a sheet from the bottom on a phone) with a round X, its choices and **Zrušiť** /
+  **Potvrdiť** (a red **Zmazať** for deleting): renaming to a name spelt like another group
+  merges them; merging students moves the old profile's hand-ins to the other student (later
+  results of the old player id follow); deleting a group leaves its students without one;
+  deleting a file deletes the hand-ins that came only from deleted files. A button with nothing
+  to act on is off.
+- **Moving results without a server:** **Export výsledkov** saves every result as one
+  `tt-YYYYMMDDHHMMSS.tapko` file (JSON with a format name and version; each result keeps its
+  checksum and its student); a phone that can share files offers the share sheet instead.
+  **Import výsledkov** (`#/teacher/eval/import`) is a place to drop a file with **Vybrať súbor**;
+  a file dropped anywhere on the teacher page loads too, and an installed app in Chrome or Edge
+  opens a `.tapko` file by a double click. One line then says "Súbor … je v poriadku, výsledky
+  sú načítané." or why not (an unknown format or version loads nothing). Loading the same file
+  twice adds nothing; a student of the file joins the one here with the same player id.
 - **Cleanup:** on opening the page, hand-ins dated over a year ago are deleted once they have
-  been in this browser for 7 days, and empty sets go with them; a loaded file with such results
-  says how many and that they stay 7 days. "Vymazať…" deletes older than 6 months, 3 months, a
-  month, 2 weeks, a week or a day (each choice shows what it takes), or all data with the list
-  of files, and reminds to save as `.tapko` first.
-  Results come in three ways: scanning the result QR codes on the children's screens with the
-  camera, pasting a link, or opening a link.
-- The page itself stays short: one line on why to type a group (a class's results stay
-  together and can be filtered), the key words in bold, and a pointer to the help's teachers and parents
-  tab, where everything else is explained; a teacher in a classroom reads the page at a glance.
-- **Camera scan:** the teacher types the group being scanned (a class), one tap starts a
-  continuous scan, and every new valid code is written into that group at once
-  (green flash, a short shop-scanner beep, a buzz where the phone can). A code stays quiet
-  while it is in sight and for about 7 seconds after; a code already here that comes back later
-  blinks the frame orange twice, so the teacher knows it is collected. An unknown code only
-  shows a short hint. A browser that reads
-  several codes per picture reads several screens at once, otherwise one code at a time. A
-  list of what the scan collected lets the teacher undo a wrong read. The camera stops when
-  the scan ends, the screen is left or the tab is hidden; clear messages say when access is
-  denied, there is no camera or the page is not secure.
-- **Scanning on a phone:** after the scan starts the page scrolls so the heading
-  ("Skenovanie · group"), the camera preview and the done bar fill the screen; the done bar
-  counts this scan ("7 načítaných") next to "Hotovo", the list of this scan follows below.
-  Hotovo stops the camera and shows the scanned group with this scan's set open.
+  been in this browser for 7 days, and empty sets go with them.
 - **Big code:** the child's hand-in can show the QR over the whole screen so it can be scanned
   across a desk: the child's name and what it is first ("Ema · Štatistiky úlohy …" in a
   green frame, "Ema · Celé moje štatistiky" in an orange one; a task's own code has only its title, in a plum frame), the code as big as fits, then
   "Kopírovať kód" and "Zatvoriť klikom na obrazovku"; a click anywhere also closes it. The
   frame's padding and the gaps between caption, code and buttons are one size.
-- **A writer's page:** clicking a writer (the name in a table, the whole card on a phone)
-  opens the writer's own page: name, group, hand-ins, average accuracy and rhythm with their
-  change, minutes, levels (from the newest overall statistics), the four weakest keys, "Vývoj"
-  with accuracy and rhythm over the hand-ins in two charts (side by side on a computer, stacked
-  on a phone), and every hand-in with time, task, a link to its set, minutes, accuracy, rhythm,
-  levels and status; then "Presunúť do skupiny" and "Odstrániť študenta". Two children of one
-  name in two groups stay apart.
-- **Groups:** a task may carry a group label (a class such as "5.A", typed in the task form).
-  It travels in the task link and back in the result, with the number of levels the child has
-  finished. A child mastered a task from 88 % accuracy (two stars in the game). A later hand-in without a group keeps
-  the group the teacher gave that child. CSV exports what is shown, or everything, and has a
-  group column.
+- **Groups in tasks:** a task may carry a group label (a class such as "5.A", chosen in the task
+  form). It travels in the task link and back in the result, with the number of levels the child
+  has finished. A child mastered a task from 89 % accuracy, the game's lowest step of its accuracy
+  scale. CSV exports what is shown and has a group column.
 - **Move a player:** parent area, data tab, "Preniesť na iný počítač": a link (and QR when
   it fits) with the whole profile. A link stays under 8000 characters: older per-key day
   history (over 30 days) is dropped first, and a profile still too big goes by file export.
@@ -142,8 +172,15 @@
 - A year of history is enough for a school year; the 7 days let a teacher look at old results
   just loaded before they go.
 - A teacher scans walking through a classroom with a phone in one hand: the camera and the way
-  out must be on screen without scrolling. A nine-column table is unreadable on a phone;
-  sorting and one child's card answer what a teacher asks ("who needs help", "how is Jakub doing").
+  out must be on screen without scrolling. A nine-column table is unreadable on a phone; rows
+  and one child's card answer what a teacher asks ("who needs help", "how is Jakub doing").
+- The page had grown into one long screen of fields, tabs and dialogs; three parts (results in,
+  evaluation, tasks) with one line each let a teacher in a classroom read it at a glance, and the
+  tools that change data sit in one place, each asking first.
+- Asking for a group before every scan cost time and made mistakes; the task's group and the
+  student's own group place each result, and the teacher sorts only the new students without one.
+- A child who renames the profile or plays a task again stays one student, and an edited or
+  damaged copy of a hand-in can never replace the one the teacher has.
 - A teacher with 20-30 screens in a room cannot paste links one at a time; walking past the
   screens with a phone or webcam fills the table, and links stay for children working at home.
 - A teacher prepares the week's tasks in one place and gives the same task to a class again;

@@ -61,7 +61,7 @@ function scanDialog(onTask: (spec: TaskSpec) => void): void {
     onTask(spec);
     setTimeout(close, HIT_MS);
   }), () => t('task.scanHint'));
-  const close = modal(h('div', { class: 'task-scan' }, camera.frame, camera.picker, camera.status), { cls: 'task-scan-modal', onClose: () => camera.stop() });
+  const close = modal(h('div', { class: 'task-scan' }, camera.frame, camera.status), { cls: 'task-scan-modal', onClose: () => camera.stop() });
 }
 
 /**

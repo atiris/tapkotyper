@@ -1823,14 +1823,14 @@
     "mentorTitle": "Výsledky a QR kódy",
     "mentor": [
       "Stránku **Pre učiteľov** otvoríte ikonou grafu vpravo hore na úvodnej stránke. Výsledky sa ukladajú len v tomto prehliadači.",
-      "Najrýchlejšie je skenovať: napíšte skupinu (napríklad 5.A), stlačte **Sken QR** a obíďte miestnosť. Kamera načíta aj viac QR kódov naraz a každý nový výsledok zapíše do tejto skupiny.",
+      "Najrýchlejšie je skenovať: na karte **Výsledky** stlačte **Naskenovať QR** a obíďte miestnosť. Kamera načíta aj viac QR kódov naraz. Nový študent sa zaradí do skupiny úlohy; študent, ktorého už poznáte, ostane vo svojej skupine.",
       "Študent ukáže QR kód úlohy na svojej stránke Úlohy alebo po jej odovzdaní, všetky svoje štatistiky v Môj postup. Bez kamery stačí vložiť alebo otvoriť **odkaz s výsledkom**.",
-      "**Sada** sú výsledky jednej skupiny, ktoré prišli spolu: jeden sken kamerou, alebo odkazy pridané do **20 minút** od prvého. Na karte **Skupiny** sú sady každej skupiny. Kliknutím na deň uvidíte študentov sady a celé to stiahnete ako CSV.",
-      "Každé odovzdanie sa uchová. Na karte **Študenti** nájdete študenta podľa mena a uvidíte, ako sa mu zmenila presnosť a rytmus od prvého po posledné odovzdanie. Kliknutím na meno uvidíte vývoj v grafoch a všetky odovzdania.",
-      "**Z telefónu do počítača:** na karte **Súbory** stlačte na telefóne **Poslať do počítača** a pošlite si súbor .tapko (napríklad e-mailom). Na počítači ho na tej istej karte načítajte alebo ho na stránku pretiahnite. Čo už máte, sa nepridá druhýkrát.",
-      "Výsledky staršie ako **rok** sa pri otvorení stránky zmažú. Staré výsledky načítané zo súboru ostanú ešte **7 dní**. Skôr ich zmažete tlačidlom **Vymazať…**.",
+      "**Sada** sú výsledky jednej skupiny, ktoré prišli spolu: jeden sken kamerou, alebo odkazy pridané do **20 minút** od prvého. V **Hodnotení** na karte **Skupiny** sú všetky sady. Kliknutím na riadok uvidíte študentov sady a celé to stiahnete ako CSV.",
+      "Každé odovzdanie sa uchová. Na karte **Študenti** nájdete študenta podľa mena a zaškrtnutých študentov preradíte do skupiny. Kliknutím na meno uvidíte jeho vývoj v grafoch a všetky odovzdania.",
+      "**Z telefónu do počítača:** na karte **Dáta** stlačte na telefóne **Export** a pošlite si súbor .tapko (napríklad e-mailom). Na počítači ho načítajte cez **Import výsledkov** alebo ho na stránku pretiahnite. Čo už máte, sa nepridá druhýkrát.",
+      "Výsledky staršie ako **rok** sa pri otvorení stránky zmažú. Staré výsledky načítané zo súboru ostanú ešte **7 dní**. Na karte **Dáta** skupiny premenujete a zlúčite a zmažete študentov, skupiny, súbory alebo všetko.",
       "Kontrolný súčet ukáže poškodený odkaz (výkričník pri mene), nie podvádzanie.",
-      "Úlohy pre študentov vytvoríte na tejto stránke na karte **Nová úloha**: vyberiete hru, slová alebo text a limit a vznikne odkaz a QR kód. Na telefóne bez klávesnice si študent úlohu zaznačí tlačidlom **Nová úloha** a pošle si ju domov."
+      "Úlohy pre študentov vytvoríte na karte **Úlohy**: vyberiete hru, slová alebo text a limit a uložíte ju. V **Pripravených úlohách** ju ukážete ako QR kód alebo skopírujete jej odkaz. Na telefóne bez klávesnice si študent úlohu zaznačí tlačidlom **Nová úloha** a pošle si ju domov."
     ]
   },
   "tips": {
@@ -1953,19 +1953,55 @@
   },
   "teacher": {
     "title": "Pre učiteľov",
-    "intro": "Napíšte **skupinu** (napríklad 5.A) a stlačte **Sken QR**. Každý načítaný QR kód sa zapíše do tejto skupiny, takže výsledky triedy máte **pokope** a môžete ich filtrovať. Podrobnosti sú v **Pomoci** (?).",
-    "paste": "Odkaz s výsledkom",
-    "pastePlaceholder": "Vložte odkaz s výsledkom",
-    "add": "Pridať",
+    "parts": "Časti",
+    "top": {
+      "results": "Výsledky",
+      "eval": "Hodnotenie",
+      "tasks": "Úlohy"
+    },
+    "sub": {
+      "groups": "Skupiny",
+      "students": "Študenti",
+      "files": "Súbory",
+      "data": "Dáta",
+      "new": "Nová úloha",
+      "ready": "Pripravené úlohy ({n})",
+      "readyShort": "Pripravené ({n})"
+    },
+    "results": {
+      "intro": "Tu môžete načítať výsledky študentov skenovaním alebo sa tu objavia po kliknutí na odkaz s výsledkom. Ak chcete, môžete odkaz s výsledkom vložiť aj priamo.",
+      "scan": "Naskenovať QR",
+      "scanShort": "QR sken",
+      "link": "Načítať odkaz",
+      "recent": "Posledné pridané výsledky",
+      "group": "Skupina {group}",
+      "none": "Zatiaľ tu nie sú žiadne výsledky."
+    },
     "added": "Pridaný výsledok: {name}, {title}.",
     "already": "Tento výsledok tu už je: {name}, {title}.",
     "notKept": "Tento prehliadač nedovolí uložiť výsledky, po zatvorení stránky sa stratia.",
     "notIntact": "Kontrolný súčet nesedí, odkaz bol asi pri kopírovaní poškodený.",
     "lockRemoved": "Na zariadení dieťaťa zrušil alebo zmenil heslo nastavení super účet.",
-    "remove": "Odstrániť",
-    "empty": "Zatiaľ tu nie sú žiadne výsledky. Naskenujte QR kódy alebo vložte **odkaz s výsledkom**.",
+    "status": {
+      "ok": "Zvládnuté",
+      "practice": "Precvičiť"
+    },
     "csv": "Stiahnuť CSV",
-    "privacy": "Obraz z kamery sa nikam neposiela a výsledky sú uložené **len v tomto prehliadači**.",
+    "groupLabel": "Skupina",
+    "allGroups": "Všetky skupiny",
+    "allShort": "Všetky",
+    "noGroup": "Bez skupiny",
+    "noGroupCount": "Bez skupiny ({n})",
+    "newGroup": {
+      "option": "Nová skupina…",
+      "title": "Nová skupina",
+      "name": "Názov skupiny"
+    },
+    "dialog": {
+      "cancel": "Zrušiť",
+      "confirm": "Potvrdiť",
+      "delete": "Zmazať"
+    },
     "col": {
       "task": "Úloha",
       "child": "Študent",
@@ -1981,86 +2017,11 @@
       "handIns": "Odovzdania",
       "last": "Posledné"
     },
-    "all": "Všetky",
-    "noGroup": "Bez skupiny",
-    "groupFilter": "Filter skupiny",
-    "csvAll": "Stiahnuť CSV (všetko)",
-    "assign": "Priradiť do skupiny ({n})",
-    "assignPrompt": "Názov skupiny (prázdny ho zruší). Existujúce: {groups}",
-    "removePicked": "Odstrániť vybrané ({n})",
-    "removeManyTitle": "Odstrániť vybrané sady?",
-    "removeManyText": "Odstráni sa {sets}, spolu {results}.",
-    "scan": {
-      "start": "Sken QR",
-      "many": "Namier kameru na jeden alebo viac QR kódov.",
-      "one": "Zamier na jeden kód.",
-      "done": "Hotovo",
-      "collected": "Načítané",
-      "unknown": "Neznámy kód",
-      "undo": "Zrušiť tento výsledok",
-      "group": "Skupina pre tento sken",
-      "groupPlaceholder": "Skupina, napríklad 5.A",
-      "title": "Skenovanie",
-      "count": {
-        "one": "{n} načítaný",
-        "few": "{n} načítané",
-        "other": "{n} načítaných"
-      }
-    },
-    "status": {
-      "ok": "Zvládnuté",
-      "practice": "Precvičiť"
-    },
-    "sortBy": "Zoradiť",
-    "sort": {
-      "child": "Meno",
-      "date": "Dátum",
-      "minutes": "Minúty",
-      "accuracy": "Presnosť",
-      "rhythm": "Rytmus",
-      "levels": "Levely",
-      "status": "Stav",
-      "group": "Skupina",
-      "handIns": "Odovzdania"
-    },
     "unit": {
       "cpm": "{n} zn/min",
-      "min": "{n} min",
-      "levels": "levely: {n}"
-    },
-    "child": {
-      "accuracy": "priemerná presnosť",
-      "cpm": "znakov za minútu",
-      "minutes": "minút cvičenia",
-      "levels": "prejdených levelov",
-      "move": "Presunúť do skupiny",
-      "remove": "Odstrániť študenta",
-      "removeTitle": "Odstrániť študenta {name}?",
-      "removeText": "Z tabuľky sa odstránia všetky výsledky študenta {name} (počet: {n}).",
-      "trend": "Vývoj",
-      "handIns": "Odovzdania",
-      "set": "sada {day} {time}",
-      "cpmUnit": "zn/min"
-    },
-    "pickSet": "Vybrať sadu {day} {time}",
-    "tab": {
-      "groups": "Skupiny",
-      "writers": "Študenti",
-      "files": "Súbory",
-      "newTask": "Nová úloha",
-      "tasks": "Pripravené úlohy"
+      "min": "{n} min"
     },
     "n": {
-      "sets": {
-        "one": "{n} sada",
-        "few": "{n} sady",
-        "other": "{n} sád"
-      },
-      "writers": {
-        "one": "{n} študent",
-        "few": "{n} študenti",
-        "other": "{n} študentov"
-      },
       "results": {
         "one": "{n} výsledok",
         "few": "{n} výsledky",
@@ -2072,38 +2033,85 @@
         "other": "{n} odovzdaní"
       }
     },
-    "groups": {
-      "accuracy": "presnosť {n} %",
-      "rhythm": "rytmus {n}"
+    "eval": {
+      "groupsIntro": "Výsledky podľa skupín a odovzdaní. Kliknutím na riadok otvoríte jeho študentov.",
+      "studentsIntro": "Študenti a ich odovzdania. Viacerých naraz zaradíte do skupiny zaškrtnutím.",
+      "filesIntro": "Súbory .tapko, z ktorých sa sem načítali výsledky.",
+      "dataIntro": "Správa uložených výsledkov. Každá zmena sa pred vykonaním potvrdí."
     },
     "sets": {
       "day": "Deň",
       "time": "Čas",
+      "group": "Skupina",
       "task": "Úlohy",
       "results": "Výsledky",
       "ok": "Zvládli",
       "accuracy": "Presnosť",
       "rhythm": "Rytmus",
-      "okOf": "zvládli {ok} z {n}"
+      "okOf": "zvládli {ok} z {n}",
+      "okShort": "{ok}/{n} zvládli"
     },
-    "writers": {
-      "search": "Hľadať študenta",
-      "none": "Nikto taký sa nenašiel."
+    "set": {
+      "results": "výsledkov",
+      "ok": "zvládli"
+    },
+    "students": {
+      "search": "Hľadať študenta (časť mena)",
+      "searchShort": "Hľadať meno",
+      "none": "Nikto taký sa nenašiel.",
+      "pick": "Vybrať: {name}",
+      "pickAll": "Vybrať všetkých",
+      "open": "Otvoriť kartu",
+      "picked": "Vybraní: {n}",
+      "moveTo": "Preradiť do",
+      "moveToShort": "Do: {group}",
+      "move": "Preradiť",
+      "moveN": "Preradiť {n}"
+    },
+    "student": {
+      "crumbs": "Cesta",
+      "oneHandIn": "Vývoj sa ukáže od druhého odovzdania.",
+      "weak": "slabé: {keys}"
+    },
+    "child": {
+      "accuracy": "priemerná presnosť",
+      "cpm": "znakov za minútu",
+      "minutes": "minút cvičenia",
+      "levels": "prejdených levelov",
+      "trend": "Vývoj",
+      "handIns": "Odovzdania",
+      "cpmUnit": "zn/min"
+    },
+    "scan": {
+      "title": "Skenovanie",
+      "many": "Namier kameru na jeden alebo viac QR kódov.",
+      "one": "Zamier na jeden kód.",
+      "collected": "Načítané",
+      "count": {
+        "one": "{n} načítaný",
+        "few": "{n} načítané",
+        "other": "{n} načítaných"
+      },
+      "unknown": "Neznámy kód",
+      "undo": "Zrušiť tento výsledok",
+      "cancel": "Zrušiť",
+      "done": "Hotovo",
+      "cancelTitle": "Zrušiť načítanie?",
+      "cancelText": {
+        "one": "Načítaný výsledok sa odstráni.",
+        "few": "Načítané výsledky ({n}) sa odstránia.",
+        "other": "Načítaných výsledkov ({n}) sa odstráni."
+      },
+      "cancelOk": "Odstrániť"
+    },
+    "link": {
+      "title": "Načítanie odkazu",
+      "label": "Odkaz s výsledkom",
+      "placeholder": "Vložte celý text odkazu",
+      "process": "Spracovať",
+      "bad": "Odkaz je nesprávny, nepodarilo sa ho spracovať."
     },
     "file": {
-      "intro": "Súbor **.tapko** prenesie výsledky z telefónu do počítača. Stačí ho sem pretiahnuť alebo načítať.",
-      "load": "Načítať súbor",
-      "saveAll": "Uložiť všetko ako .tapko",
-      "added": {
-        "one": "pribudol {n} výsledok.",
-        "few": "pribudli {n} výsledky.",
-        "other": "pribudlo {n} výsledkov."
-      },
-      "old": {
-        "one": "{n} výsledok je starší ako rok. Bude dostupný ešte 7 dní, potom sa zmaže.",
-        "few": "{n} výsledky sú staršie ako rok. Budú dostupné ešte 7 dní, potom sa zmažú.",
-        "other": "{n} výsledkov je starších ako rok. Budú dostupné ešte 7 dní, potom sa zmažú."
-      },
       "unknown": "toto nie je súbor TapkoTyper alebo je z novšej verzie, nič sa nenačítalo.",
       "col": {
         "name": "Súbor",
@@ -2116,57 +2124,54 @@
       "nothing": "nič nové",
       "none": "Zatiaľ tu nebol načítaný žiadny súbor."
     },
-    "send": {
-      "button": "Poslať do počítača",
-      "title": "Poslať do počítača",
-      "setTitle": "Poslať sadu",
-      "setButton": "Poslať sadu",
-      "all": "Celá história",
-      "new": "Len od posledného poslania",
-      "file": "Súbor **{name}** na počítači otvorte na stránke Pre učiteľov, na karte **Súbory**.",
-      "share": "Zdieľať súbor",
-      "save": "Uložiť do telefónu"
+    "import": {
+      "drop": "Pretiahnite súbor .tapko sem",
+      "pick": "Vybrať súbor",
+      "ok": "Súbor {name} je v poriadku, výsledky sú načítané.",
+      "bad": "Súbor {name}: {why}"
     },
-    "wipe": {
-      "button": "Vymazať…",
-      "title": "Vymazať výsledky",
-      "first": "Ak ich budete ešte potrebovať, najprv ich **uložte ako .tapko**.",
-      "older": "Staršie ako",
-      "age": {
-        "m6": "6 mesiacov",
-        "m3": "3 mesiace",
-        "m1": "mesiac",
-        "w2": "2 týždne",
-        "w1": "týždeň",
-        "d1": "deň",
-        "all": "Všetky údaje"
-      },
-      "nothing": "nič",
-      "goSets": {
-        "one": "Vymazať {n} sadu",
-        "few": "Vymazať {n} sady",
-        "other": "Vymazať {n} sád"
-      },
-      "goResults": {
-        "one": "Vymazať {n} výsledok",
-        "few": "Vymazať {n} výsledky",
-        "other": "Vymazať {n} výsledkov"
-      },
-      "all": "Vymazať všetko"
-    },
-    "set": {
-      "results": "výsledkov",
-      "ok": "zvládli",
-      "writers": "Študenti",
-      "remove": "Odstrániť sadu",
-      "removeTitle": "Odstrániť sadu?",
-      "removeText": "Odstráni sa celá sada: {n}."
+    "data": {
+      "transfer": "Prenos",
+      "export": "Export výsledkov",
+      "exportShort": "Export",
+      "import": "Import výsledkov",
+      "importShort": "Import",
+      "order": "Skupiny a študenti",
+      "rename": "Premenovať skupinu",
+      "newName": "Nový názov",
+      "mergeGroups": "Zlúčiť skupiny",
+      "source": "Zdrojová skupina",
+      "into": "Zlúčiť do",
+      "mergeStudents": "Zlúčiť študentov",
+      "oldStudent": "Starý profil",
+      "delete": "Mazanie",
+      "deleteGroupStudents": "Zmazať študentov skupiny",
+      "deleteStudent": "Zmazať študenta",
+      "student": "Študent",
+      "deleteGroup": "Zmazať skupinu",
+      "deleteGroupText": "Študenti skupiny zostanú, budú bez skupiny.",
+      "deleteFiles": "Zmazať súbory",
+      "file": "Súbor",
+      "deleteFilesText": "Zmažú sa aj výsledky, ktoré prišli len z tohto súboru.",
+      "deleteAll": "Zmazať všetky dáta",
+      "deleteAllText": "Zmažú sa všetky výsledky, skupiny a zoznam súborov v tomto prehliadači."
     },
     "tasks": {
       "empty": "Zatiaľ žiadne pripravené úlohy. Úloha, ktorú vytvoríte, sa tu uloží.",
-      "show": "Ukázať",
+      "col": {
+        "task": "Úloha",
+        "game": "Hra a limit",
+        "group": "Skupina",
+        "made": "Vytvorená",
+        "actions": "Akcie"
+      },
+      "show": "Ukázať úlohu",
+      "share": "Zdieľať odkaz",
+      "copy": "Kopírovať odkaz",
       "edit": "Upraviť",
-      "remove": "Odstrániť"
+      "remove": "Odstrániť",
+      "removeTitle": "Odstrániť úlohu?",
+      "removeText": "Úloha {title} zmizne z pripravených úloh. Študenti, ktorí ju už majú, ju môžu dokončiť."
     }
   },
   "task": {
@@ -2182,17 +2187,14 @@
     "doneToday": "Úloha je splnená!",
     "handIn": "Odovzdať",
     "group": "Skupina (nepovinné)",
-    "intro": "Úloha je odkaz a QR kód. Pošlite ho študentom (napríklad cez Edupage) alebo ho ukážte v triede. Študent si úlohu pridá na svojej stránke Úlohy a po splnení vám pošle výsledok. Pripravené úlohy sa ukladajú len v tomto prehliadači.",
     "title": "Názov úlohy",
     "titlePlaceholder": "Napríklad: Zvieratá na farme",
     "titleHint": "Študent ho uvidí na svojej stránke Úlohy a na karte pred písaním.",
     "minutes": "Dĺžka",
-    "make": "Vytvoriť odkaz",
+    "make": "Uložiť ako novú úlohu",
     "needContent": "Napíšte aspoň jedno slovo alebo text.",
-    "linkHint": "Skopírujte odkaz alebo ukážte QR kód. Údaje sú v samotnom odkaze, nikde sa neukladajú.",
     "bigCode": "Veľký kód",
-    "groupPlaceholder": "Napríklad: 5.A",
-    "groupHint": "Učiteľ podľa nej v tabuľke zoskupí výsledky.",
+    "groupHint": "Výsledky tejto úlohy sa zaradia do nej, ak študent ešte nemá skupinu.",
     "gameLabel": "Hra",
     "game": {
       "chase": "Prúd slov",
@@ -3585,14 +3587,14 @@
   },
   "camera": {
     "preview": "Obraz z kamery",
-    "pick": "Kamera",
     "starting": "Zapínam kameru...",
     "error": {
       "denied": "Prístup ku kamere nie je povolený. Povoľte ho v nastaveniach prehliadača.",
       "none": "Nenašla sa žiadna kamera.",
       "insecure": "Kamera funguje len na zabezpečenej stránke (HTTPS).",
       "failed": "Kameru sa nepodarilo zapnúť."
-    }
+    },
+    "switch": "Prepnúť kameru"
   },
   "note": {
     "send": "Poslať",

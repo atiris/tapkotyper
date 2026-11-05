@@ -1,0 +1,41 @@
+{
+  "v": 3,
+  "createdOnFiles": { "v": 1, "at": "2026-11-05T13:40:00Z" },
+  "title": "Pre učiteľov – nové usporiadanie",
+  "launch": { "view": "canvas" },
+  "pages": [],
+  "boards": {
+    "Main.dc.html": { "x": 0, "y": 0, "w": 1280, "h": 900, "title": "1 · Výsledky" },
+    "Sken.dc.html": { "x": 1360, "y": 0, "w": 1280, "h": 900, "title": "1b · Skenovanie" },
+    "Odkaz.dc.html": { "x": 2720, "y": 0, "w": 1280, "h": 900, "title": "1c · Načítanie odkazu (chybný odkaz)" },
+    "Hodnotenie.dc.html": { "x": 4080, "y": 0, "w": 1280, "h": 900, "title": "2 · Hodnotenie › Skupiny" },
+    "Studenti.dc.html": { "x": 5440, "y": 0, "w": 1280, "h": 900, "title": "2b · Hodnotenie › Študenti (Bez skupiny)" },
+    "Student.dc.html": { "x": 6800, "y": 0, "w": 1280, "h": 900, "title": "2c · Karta študenta" },
+    "Subory.dc.html": { "x": 8160, "y": 0, "w": 1280, "h": 900, "title": "2d · Hodnotenie › Súbory" },
+    "Data.dc.html": { "x": 9520, "y": 0, "w": 1280, "h": 900, "title": "2e · Hodnotenie › Dáta" },
+    "Import.dc.html": { "x": 10880, "y": 0, "w": 1280, "h": 900, "title": "2f · Dáta › Import výsledkov" },
+    "OknoPremenovat.dc.html": { "x": 12240, "y": 0, "w": 1280, "h": 900, "title": "2g · Dáta › okno Premenovať skupinu" },
+    "OknoZlucitStudentov.dc.html": { "x": 13600, "y": 0, "w": 1280, "h": 900, "title": "2h · Dáta › okno Zlúčiť študentov" },
+    "Ulohy.dc.html": { "x": 14960, "y": 0, "w": 1280, "h": 900, "title": "3 · Úlohy › Nová úloha" },
+    "Pripravene.dc.html": { "x": 16320, "y": 0, "w": 1280, "h": 900, "title": "3b · Úlohy › Pripravené (otvorená úloha)" },
+    "MobilVysledky.dc.html": { "x": 0, "y": 1300, "w": 390, "h": 844, "title": "Mobil · Výsledky" },
+    "MobilSken2.dc.html": { "x": 470, "y": 1300, "w": 390, "h": 844, "title": "Mobil · Skenovanie" },
+    "MobilSkenSirka.dc.html": { "x": 940, "y": 1300, "w": 844, "h": 390, "title": "Mobil na šírku · Skenovanie" },
+    "MobilHodnotenie.dc.html": { "x": 1864, "y": 1300, "w": 390, "h": 844, "title": "Mobil · Hodnotenie › Skupiny" },
+    "MobilStudenti.dc.html": { "x": 2334, "y": 1300, "w": 390, "h": 844, "title": "Mobil · Hodnotenie › Študenti" },
+    "MobilStudent.dc.html": { "x": 2804, "y": 1300, "w": 390, "h": 844, "title": "Mobil · Karta študenta" },
+    "MobilSubory.dc.html": { "x": 3274, "y": 1300, "w": 390, "h": 844, "title": "Mobil · Hodnotenie › Súbory" },
+    "MobilData.dc.html": { "x": 3744, "y": 1300, "w": 390, "h": 844, "title": "Mobil · Hodnotenie › Dáta" },
+    "MobilOknoZlucitSkupiny.dc.html": { "x": 4214, "y": 1300, "w": 390, "h": 844, "title": "Mobil · okno Zlúčiť skupiny" },
+    "MobilOknoZmazat.dc.html": { "x": 4684, "y": 1300, "w": 390, "h": 844, "title": "Mobil · okno Zmazať študenta" },
+    "MobilUlohy.dc.html": { "x": 5154, "y": 1300, "w": 390, "h": 844, "title": "Mobil · Úlohy › Nová" },
+    "MobilPripravene.dc.html": { "x": 5624, "y": 1300, "w": 390, "h": 844, "title": "Mobil · Úlohy › Pripravené" },
+    "MobilUlohaQR.dc.html": { "x": 6094, "y": 1300, "w": 390, "h": 844, "title": "Mobil · Otvorená úloha" }
+  },
+  "order": ["Main.dc.html", "Sken.dc.html", "Odkaz.dc.html", "Hodnotenie.dc.html", "Studenti.dc.html", "Student.dc.html", "Subory.dc.html", "Data.dc.html", "Import.dc.html", "OknoPremenovat.dc.html", "OknoZlucitStudentov.dc.html", "Ulohy.dc.html", "Pripravene.dc.html", "MobilVysledky.dc.html", "MobilSken2.dc.html", "MobilSkenSirka.dc.html", "MobilHodnotenie.dc.html", "MobilStudenti.dc.html", "MobilStudent.dc.html", "MobilSubory.dc.html", "MobilData.dc.html", "MobilOknoZlucitSkupiny.dc.html", "MobilOknoZmazat.dc.html", "MobilUlohy.dc.html", "MobilPripravene.dc.html", "MobilUlohaQR.dc.html"],
+  "notes": {
+    "title": { "x": 0, "y": -300, "text": "Pre učiteľov: Výsledky · Hodnotenie · Úlohy", "kind": "title1", "maxW": 17600 },
+    "mobile": { "x": 0, "y": 1000, "text": "Mobil: kompaktné rozloženie", "kind": "title1", "maxW": 6484 }
+  },
+  "designSystems": []
+}

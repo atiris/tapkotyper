@@ -39,10 +39,10 @@
      direct access can read or change it, and anyone using the computer can clear the site's
      data, which removes every player, the progress, the results and the password.
   5. **Rodičia a učitelia** (Parents and teachers), in one place: the "For teachers" page, scanning
-     QR codes by group, result links, sets (one scan, or links within 20 minutes), the kept
-     history of every hand-in and a writer's progress, sending results from a phone to a
+     QR codes (a new student joins the task's group), result links, sets (one scan, or links within 20 minutes), the kept
+     history of every hand-in, moving students into a group and a student's progress, exporting results from a phone to a
      computer as a `.tapko` file, the yearly cleanup (7 more days for old results loaded from a
-     file), CSV, the checksum, how the game teaches typing, making a task, the task from the child's side, and the accuracy each count
+     file), the Data tab's renaming, merging and deleting, CSV, the checksum, how the game teaches typing, making a task, the task from the child's side, and the accuracy each count
      of stars needs, for a level and for the stricter hero's journey (the numbers from the game itself, so they never drift),
      and that every replay adds to the stars earned so far while the level's own stars grow only on a better result. The "?" (and F1) on the
      "For teachers" page opens this tab, since a teacher there needs exactly this.

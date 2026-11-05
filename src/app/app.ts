@@ -84,12 +84,8 @@ export function routeOf(name: ScreenName, params: { code?: string; tab?: string;
   if (name === 'newProfile') return '#/new';
   if (name === 'translate') return '#/translate';
   if (name === 'taskNote') return '#/note';
-  // A result link is read once into the teacher's page; each tab, a set and a child's card have their own address.
-  if (name === 'teacher') {
-    if (params.child) return `#/teacher/child/${encodeURIComponent(params.child)}`;
-    if (params.set) return `#/teacher/set/${encodeURIComponent(params.set)}`;
-    return params.tab && params.tab !== 'groups' ? `#/teacher/${params.tab}` : '#/teacher';
-  }
+  // A result link is read once into the teacher's page; each part, card and page of it has its own address (`tab`, a path).
+  if (name === 'teacher') return params.tab ? `#/teacher/${params.tab.split('/').map(encodeURIComponent).join('/')}` : '#/teacher';
   if (name === 'taskImport') return `#/task/${params.code ?? ''}`;
   if (name === 'moveImport') return `#/move/${params.code ?? ''}`;
   const id = app.profile?.id;
@@ -111,8 +107,9 @@ export function parseRoute(hash: string): { name: ScreenName; profileId: string 
   if (parts[0] === 'settings') return { name: 'parent', profileId: null };
   if (parts[0] === 'help') return { name: 'help', profileId: null, tab: parts[1] };
   if (parts[0] === 'teacher') {
-    if ((parts[1] === 'child' || parts[1] === 'set') && parts[2]) return { name: 'teacher', profileId: null, [parts[1]]: parts[2] };
-    return { name: 'teacher', profileId: null, ...(parts[1] && { tab: parts[1] }) };
+    // The cards' addresses from before the three parts.
+    if ((parts[1] === 'child' || parts[1] === 'set') && parts[2]) return { name: 'teacher', profileId: null, [parts[1]]: parts.slice(2).join('/') };
+    return { name: 'teacher', profileId: null, ...(parts[1] && { tab: parts.slice(1).join('/') }) };
   }
   const link = LINKS[parts[0]];
   if (link && parts[1]) return { name: link, profileId: null, code: parts[1] };

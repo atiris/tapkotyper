@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<title>Pre učiteľov – Úlohy</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#ad4f0e}a:hover{color:#7a2d00}
+</style>
+</helmet>
+<div style="width: 1280px; height: 900px; box-sizing: border-box; font-family: Lexend, system-ui, sans-serif; color: #3b2a3f; background: linear-gradient(180deg, #cfe9f7 0%, #e7f3e6 100%); padding: 24px 40px; display: flex; flex-direction: column; gap: 20px">
+  <header style="display: flex; align-items: center; gap: 16px">
+    <button type="button" style="height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid rgba(90,61,43,0.42); background: #fffdf7; font: 600 15px Lexend, sans-serif; color: #3b2a3f; box-shadow: 0 4px 0 rgba(90,61,43,0.18)">Späť</button>
+    <h1 style="margin: 0; font-size: 28px; font-weight: 700">Pre učiteľov</h1>
+  </header>
+
+  <main style="flex: 1; background: #fffdf7; border-radius: 24px; padding: 28px 36px; display: flex; flex-direction: column; gap: 18px; box-shadow: 0 10px 24px rgba(60,40,30,0.08)">
+    <nav aria-label="Časti" style="display: flex; gap: 6px; border-bottom: 2px solid rgba(90,61,43,0.12)">
+      <a href="Main.dc.html" style="padding: 12px 22px; font-weight: 600; font-size: 18px; color: #6b5a70; text-decoration: none">Výsledky</a>
+      <a href="Hodnotenie.dc.html" style="padding: 12px 22px; font-weight: 600; font-size: 18px; color: #6b5a70; text-decoration: none">Hodnotenie</a>
+      <a href="Ulohy.dc.html" style="padding: 12px 22px; font-weight: 700; font-size: 18px; color: #3b2a3f; text-decoration: none; border-bottom: 4px solid #ff8a3d; margin-bottom: -2px">Úlohy</a>
+    </nav>
+
+    <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap">
+      <p style="margin: 0; font-size: 16px; flex: 1; min-width: 320px">Pripravte úlohu, študentom ju pošlete ako odkaz alebo ukážete QR kód.</p>
+      <div role="tablist" style="display: flex; gap: 4px; background: #f3ece1; padding: 4px; border-radius: 999px">
+        <a href="Ulohy.dc.html" style="padding: 8px 18px; border-radius: 999px; background: #fff; font-weight: 700; font-size: 15px; color: #3b2a3f; text-decoration: none; box-shadow: 0 1px 3px rgba(60,40,30,0.15)">Nová úloha</a>
+        <a href="Pripravene.dc.html" style="padding: 8px 18px; border-radius: 999px; font-weight: 600; font-size: 15px; color: #6b5a70; text-decoration: none">Pripravené úlohy (3)</a>
+      </div>
+    </div>
+
+    <form style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 28px; background: #fff; border: 1px solid rgba(90,61,43,0.18); border-radius: 18px; padding: 22px 24px">
+      <label style="display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: 14px">Názov úlohy
+        <input type="text" placeholder="Napríklad: Zvieratá na farme" style="height: 46px; padding: 0 14px; border-radius: 12px; border: 1px solid rgba(90,61,43,0.42); font: 400 15px Lexend, sans-serif">
+        <small style="font-weight: 400; color: #6b5a70">Študent ho uvidí na svojej stránke Úlohy a na karte pred písaním.</small></label>
+      <label style="display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: 14px">Skupina (nepovinné)
+        <select style="height: 46px; padding: 0 12px; border-radius: 12px; border: 1px solid rgba(90,61,43,0.42); font: 400 15px Lexend, sans-serif; background: #fff; color: #3b2a3f"><option>Bez skupiny</option><option>[SKUPINA 1]</option><option>[SKUPINA 2]</option><option>Nová skupina…</option></select>
+        <small style="font-weight: 400; color: #6b5a70">Výsledky tejto úlohy sa zaradia do nej, ak študent ešte nemá skupinu.</small></label>
+
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <span style="font-weight: 600; font-size: 14px">Hra</span>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap">
+          <button type="button" style="height: 38px; padding: 0 14px; border-radius: 999px; border: 0; background: #ff8a3d; color: #3b1d05; font: 700 14px Lexend, sans-serif">Prúd slov</button>
+          <button type="button" style="height: 38px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(90,61,43,0.3); background: #fff; font: 600 14px Lexend, sans-serif; color: #3b2a3f">Čakajúce slová</button>
+          <button type="button" style="height: 38px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(90,61,43,0.3); background: #fff; font: 600 14px Lexend, sans-serif; color: #3b2a3f">Odpis</button>
+          <button type="button" style="height: 38px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(90,61,43,0.3); background: #fff; font: 600 14px Lexend, sans-serif; color: #3b2a3f">Pás</button>
+          <button type="button" style="height: 38px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(90,61,43,0.3); background: #fff; font: 600 14px Lexend, sans-serif; color: #3b2a3f">Prepis</button>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <span style="font-weight: 600; font-size: 14px">Limit</span>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center">
+          <button type="button" style="height: 38px; padding: 0 14px; border-radius: 999px; border: 0; background: #ff8a3d; color: #3b1d05; font: 700 14px Lexend, sans-serif">Čas</button>
+          <button type="button" style="height: 38px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(90,61,43,0.3); background: #fff; font: 600 14px Lexend, sans-serif; color: #3b2a3f">Text</button>
+          <button type="button" style="height: 38px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(90,61,43,0.3); background: #fff; font: 600 14px Lexend, sans-serif; color: #3b2a3f">Čas aj text</button>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; margin-left: 8px">Dĺžka
+            <input type="text" value="5 min" style="width: 80px; height: 38px; padding: 0 10px; border-radius: 10px; border: 1px solid rgba(90,61,43,0.42); font: 400 14px Lexend, sans-serif"></label>
+        </div>
+      </div>
+
+      <label style="grid-column: 1 / -1; display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: 14px">Slová
+        <textarea rows="4" style="padding: 10px 14px; border-radius: 12px; border: 1px solid rgba(90,61,43,0.42); font: 400 15px Lexend, sans-serif; resize: vertical">škola
+kamarát
+slnko</textarea>
+        <small style="font-weight: 400; color: #6b5a70">Jedno na riadok, alebo oddelené čiarkou či medzerou.</small></label>
+
+      <label style="grid-column: 1 / -1; display: flex; align-items: flex-start; gap: 10px; font-size: 14px">
+        <input type="checkbox" checked style="width: 22px; height: 22px; margin: 0; accent-color: #2e9d5b">
+        <span><b>Použiť slovník, keď sa minie text</b><br><span style="color: #6b5a70">Keď sa zadané slová minú, prídu slová zo slovníka, ktoré študent vie písať.</span></span></label>
+
+      <div style="grid-column: 1 / -1; display: flex; gap: 12px; align-items: center">
+        <button type="submit" style="height: 50px; padding: 0 26px; border-radius: 999px; border: 0; background: linear-gradient(180deg, #ffa25c, #ff8a3d); color: #3b1d05; font: 700 16px Lexend, sans-serif; box-shadow: 0 4px 0 #e56a1b">Uložiť ako novú úlohu</button>
+      </div>
+    </form>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

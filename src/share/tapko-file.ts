@@ -1,4 +1,3 @@
-import { localDate } from '../learning/stats';
 import { cleanResult, resultSum } from './result';
 import { TASK_GROUP_MAX } from './task';
 import { type ResultSet, type StoredResult, fingerprint } from './teacher';
@@ -8,9 +7,14 @@ export const TAPKO_FORMAT = 'tapkotyper-mentor';
 export const TAPKO_VERSION = 1;
 export const TAPKO_TYPE = 'application/x-tapkotyper';
 
-export const tapkoName = (now = Date.now()): string => `tapkotyper-${localDate(new Date(now))}.tapko`;
+const two = (n: number) => String(n).padStart(2, '0');
+/** `tt-YYYYMMDDHHMMSS.tapko` in local time. */
+export function tapkoName(now = Date.now()): string {
+  const d = new Date(now);
+  return `tt-${d.getFullYear()}${two(d.getMonth() + 1)}${two(d.getDate())}${two(d.getHours())}${two(d.getMinutes())}${two(d.getSeconds())}.tapko`;
+}
 
-/** The file's text: the sets and their results, each result with a checksum of its fields as they are now. */
+/** The file's text: the sets and their results, each result with its student and a checksum of its fields as they are now. */
 export function tapkoFile(sets: ResultSet[], results: StoredResult[], now = Date.now()): string {
   const ids = new Set(results.map((r) => r.id));
   return JSON.stringify({
@@ -18,7 +22,7 @@ export function tapkoFile(sets: ResultSet[], results: StoredResult[], now = Date
     version: TAPKO_VERSION,
     exportedAt: new Date(now).toISOString(),
     sets: sets.map((s) => ({ ...s, results: s.results.filter((id) => ids.has(id)) })).filter((s) => s.results.length),
-    results: results.map(({ addedAt: _, ...r }) => ({ ...r, sum: resultSum(r) })),
+    results: results.map(({ addedAt: _, from: __, ...r }) => ({ ...r, sum: resultSum(r) })),
   });
 }
 
@@ -32,8 +36,9 @@ export function parseTapko(text: string): { sets: ResultSet[]; results: StoredRe
     const r = cleanResult(x);
     if (!r) return [];
     const id = typeof x.id === 'string' && /^[0-9a-z]{1,16}$/.test(x.id) ? x.id : fingerprint(r);
+    const student = typeof x.student === 'string' && x.student ? x.student.slice(0, 120) : `${r.group ?? ''}\u0000${r.name}`;
     // A result keeps its own check: one changed in the file shows as damaged.
-    return [{ ...r, id, intact: x.intact === true && x.sum === resultSum(r), addedAt: 0 }];
+    return [{ ...r, id, intact: x.intact === true && x.sum === resultSum(r), addedAt: 0, student, from: [] }];
   });
   const ids = new Set(results.map((r) => r.id));
   const num = (x: unknown) => (typeof x === 'number' && Number.isFinite(x) ? x : 0);

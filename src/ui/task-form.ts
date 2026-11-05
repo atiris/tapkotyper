@@ -9,16 +9,32 @@ export interface TaskForm {
   el: HTMLElement;
   /** Fills the form with a task to change; saving keeps its id. */
   edit(spec: TaskSpec): void;
+  /** A task is being changed. */
+  editing(): boolean;
+  /** The form in view with its name field focused. */
+  focus(): void;
+  /** Reads the groups to offer again, keeping the chosen one. */
+  refresh(): void;
 }
+
+/** The groups a task can go to: the ones there are, and a way to name a new one (null when cancelled). */
+export interface TaskGroups {
+  list(): string[];
+  ask(): Promise<string | null>;
+}
+
+/** The value of the "new group" option. */
+const NEW = '\u0000new';
 
 const DEFAULT_MINUTES = 5;
 
 /**
- * The teacher's form for a task: name and group, the game, its words or text (only the one the
- * game uses), the limit, the dictionary, the known letters, the minutes (for a limit with time)
- * and the world. `onSave` gets a task with content; while editing, its id is kept.
+ * The teacher's form for a task: name and group (one of the teacher's, a new one or none), the
+ * game, its words or text (only the one the game uses), the limit, the dictionary, the known
+ * letters, the minutes (for a limit with time) and the world. `onSave` gets a task with content;
+ * while editing, its id is kept.
  */
-export function taskForm(onSave: (spec: TaskSpec) => void): TaskForm {
+export function taskForm(onSave: (spec: TaskSpec) => void, groups: TaskGroups): TaskForm {
   let editing: string | null = null;
   let game: TaskGame = 'chase';
   let limit: TaskLimit = 'time';
@@ -27,7 +43,19 @@ export function taskForm(onSave: (spec: TaskSpec) => void): TaskForm {
   let dictionary = true;
   let knownOnly = true;
   const title = h('input', { type: 'text', maxlength: TASK_TITLE_MAX, placeholder: t('task.titlePlaceholder') });
-  const group = h('input', { type: 'text', maxlength: TASK_GROUP_MAX, placeholder: t('task.groupPlaceholder') });
+  const group = h('select', { onChange: () => void pickGroup() });
+  let groupValue = '';
+  const fillGroups = (keep: string) => {
+    const names = [...new Set([...groups.list(), ...(keep ? [keep] : [])])].sort((a, b) => a.localeCompare(b));
+    group.replaceChildren(h('option', { value: '' }, t('teacher.noGroup')), ...names.map((g) => h('option', { value: g }, g)), h('option', { value: NEW }, t('teacher.newGroup.option')));
+    group.value = groupValue = keep;
+  };
+  /** "Nová skupina…" asks the name; cancelled, the choice before stays. */
+  const pickGroup = async () => {
+    if (group.value !== NEW) return void (groupValue = group.value);
+    const name = (await groups.ask())?.trim().slice(0, TASK_GROUP_MAX);
+    fillGroups(name || groupValue);
+  };
   const words = h('textarea', { rows: 3, placeholder: t('own.wordsPlaceholder') });
   const text = h('textarea', { rows: 4, maxlength: OWN_TEXT_MAX, placeholder: t('own.textPlaceholder') });
   const wordsField = field(t('task.words'), words, t('task.wordsHint'));
@@ -40,8 +68,8 @@ export function taskForm(onSave: (spec: TaskSpec) => void): TaskForm {
   const gameChoice = segmented(t('task.gameLabel'), game, TASK_GAMES.map((g) => [g, t(`task.game.${g}`)]), (v) => { game = v; show(); });
   const limitChoice = segmented(t('task.limit'), limit, TASK_LIMITS.map((l) => [l, t(`task.limits.${l}`)]), (v) => { limit = v; show(); });
   const worldChoice = segmented(t('task.world'), world, [['current', t('task.worlds.current')], ['random', t('task.worlds.random')]], (v) => (world = v));
-  const submit = button(t('task.make'), () => save(), 'btn primary', 'code');
-  const cancel = button(t('task.cancelEdit'), () => reset(), 'btn ghost', 'close');
+  const submit = button(t('task.make'), () => save(), 'btn primary');
+  const cancel = button(t('task.cancelEdit'), () => reset(), 'btn ghost');
 
   /** Only the source the game uses, and the minutes only for a limit with time. */
   const show = () => {
@@ -60,7 +88,7 @@ export function taskForm(onSave: (spec: TaskSpec) => void): TaskForm {
   const fill = (spec: TaskSpec | null) => {
     editing = spec?.id ?? null;
     title.value = spec?.title ?? '';
-    group.value = spec?.group ?? '';
+    fillGroups(spec?.group ?? '');
     words.value = spec?.words.join('\n') ?? '';
     text.value = spec?.text ?? '';
     gameChoice.set(game = spec?.game ?? 'chase');
@@ -77,7 +105,7 @@ export function taskForm(onSave: (spec: TaskSpec) => void): TaskForm {
     const spec: TaskSpec = {
       id: editing ?? newTaskId(),
       title: title.value.trim(),
-      ...(group.value.trim() && { group: group.value.trim() }),
+      ...(groupValue && { group: groupValue }),
       game,
       words: wordsGame(game) ? parseOwnWords(words.value) : [],
       text: wordsGame(game) ? '' : text.value.slice(0, OWN_TEXT_MAX).trim(),
@@ -107,10 +135,12 @@ export function taskForm(onSave: (spec: TaskSpec) => void): TaskForm {
   show();
   return {
     el,
-    edit(spec) {
-      fill(spec);
+    edit: fill,
+    editing: () => editing !== null,
+    focus() {
       el.scrollIntoView({ block: 'start' });
       title.focus();
     },
+    refresh: () => fillGroups(groupValue),
   };
 }

@@ -1,7 +1,7 @@
 import { audio } from '../audio/audio';
 import { t } from '../i18n/i18n';
 import { type Camera, type CameraError, startScan } from './qr-scanner';
-import { h } from './dom';
+import { h, icon } from './dom';
 
 /** Milliseconds a hint (an unknown code) stays before the ready line comes back, and the least time between two. */
 const HINT_MS = 1500;
@@ -10,10 +10,8 @@ const UNKNOWN_MS = 1000;
 export const HIT_MS = 400;
 
 export interface CameraView {
-  /** The live picture in its scan frame. */
+  /** The live picture, a square from its middle, with the aim and, with several cameras, the switch in its corner. */
   frame: HTMLElement;
-  /** The camera picker, shown when the device has several cameras. */
-  picker: HTMLSelectElement;
   /** One status line: starting, ready, the camera's errors, hints. */
   status: HTMLElement;
   /** Flashes the frame green, beeps like a shop scanner and buzzes where the device can. */
@@ -27,17 +25,23 @@ export interface CameraView {
 }
 
 /**
- * A camera that reads QR codes into `onText`: the picture in its frame, the camera picker and a
- * status line, for the caller to place. `ready` is the status once the camera runs. A hidden tab
- * turns the camera off and a visible one on again; `stop` ends it.
+ * A camera that reads QR codes into `onText`: the picture in its frame and a status line, for the
+ * caller to place. `ready` is the status once the camera runs. A hidden tab turns the camera off
+ * and a visible one on again; `stop` ends it.
  */
 export function cameraView(onText: (text: string) => void, ready: (multi: boolean) => string): CameraView {
   const video = h('video', { class: 'scan-video', playsinline: true, muted: true, 'aria-label': t('camera.preview') });
   video.muted = true;
   const status = h('p', { class: 'hint', role: 'status', 'aria-live': 'polite' });
-  const picker = h('select', { class: 'scan-camera', 'aria-label': t('camera.pick'), onChange: (e: Event) => void camera?.use((e.target as HTMLSelectElement).value).catch(fail) });
-  picker.hidden = true;
-  const frame = h('div', { class: 'scan-frame' }, video);
+  // The next camera of the device, in turn.
+  const switcher = h('button', { type: 'button', class: 'scan-switch', 'aria-label': t('camera.switch'), tip: t('camera.switch'), onClick: () => {
+    if (!camera) return;
+    const list = camera.devices;
+    const at = list.findIndex((d) => d.id === camera!.current());
+    void camera.use(list[(at + 1) % list.length].id).catch(fail);
+  } }, icon('cameraSwitch'));
+  switcher.hidden = true;
+  const frame = h('div', { class: 'scan-frame' }, video, h('div', { class: 'scan-aim', 'aria-hidden': 'true' }), switcher);
   let camera: Camera | null = null;
   let closed = false;
   let flash = 0;
@@ -66,8 +70,7 @@ export function cameraView(onText: (text: string) => void, ready: (multi: boolea
       camera = c;
       base = ready(c.multi);
       say(base);
-      picker.replaceChildren(...c.devices.map((d) => h('option', { value: d.id }, d.label)));
-      picker.hidden = c.devices.length < 2;
+      switcher.hidden = c.devices.length < 2;
     } catch (e) {
       fail(e);
     }
@@ -79,7 +82,6 @@ export function cameraView(onText: (text: string) => void, ready: (multi: boolea
 
   return {
     frame,
-    picker,
     status,
     hit() {
       frame.classList.remove('again');

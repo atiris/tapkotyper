@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<title>Pre učiteľov – Výsledky</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#ad4f0e}a:hover{color:#7a2d00}
+</style>
+</helmet>
+<div style="width: 1280px; height: 900px; box-sizing: border-box; font-family: Lexend, system-ui, sans-serif; color: #3b2a3f; background: linear-gradient(180deg, #cfe9f7 0%, #e7f3e6 100%); padding: 24px 40px; display: flex; flex-direction: column; gap: 20px">
+  <header style="display: flex; align-items: center; gap: 16px">
+    <button type="button" style="height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid rgba(90,61,43,0.42); background: #fffdf7; font: 600 15px Lexend, sans-serif; color: #3b2a3f; box-shadow: 0 4px 0 rgba(90,61,43,0.18)">Späť</button>
+    <h1 style="margin: 0; font-size: 28px; font-weight: 700">Pre učiteľov</h1>
+  </header>
+
+  <main style="flex: 1; min-height: 0; background: #fffdf7; border-radius: 24px; padding: 28px 36px; display: flex; flex-direction: column; gap: 22px; box-shadow: 0 10px 24px rgba(60,40,30,0.08)">
+    <nav aria-label="Časti" style="display: flex; gap: 6px; border-bottom: 2px solid rgba(90,61,43,0.12)">
+      <a href="Main.dc.html" style="padding: 12px 22px; font-weight: 700; font-size: 18px; color: #3b2a3f; text-decoration: none; border-bottom: 4px solid #ff8a3d; margin-bottom: -2px">Výsledky</a>
+      <a href="Hodnotenie.dc.html" style="padding: 12px 22px; font-weight: 600; font-size: 18px; color: #6b5a70; text-decoration: none">Hodnotenie</a>
+      <a href="Ulohy.dc.html" style="padding: 12px 22px; font-weight: 600; font-size: 18px; color: #6b5a70; text-decoration: none">Úlohy</a>
+    </nav>
+
+    <div style="display: flex; align-items: center; gap: 24px">
+      <p style="margin: 0; flex: 1; font-size: 15px; line-height: 1.5">Tu môžete načítať výsledky študentov skenovaním alebo sa tu objavia po kliknutí na odkaz s výsledkom. Ak chcete, môžete odkaz s výsledkom vložiť aj priamo.</p>
+      <a href="Sken.dc.html" style="flex: none; height: 48px; padding: 0 22px; border-radius: 999px; background: linear-gradient(180deg, #ffa25c, #ff8a3d); color: #3b1d05; font: 700 16px Lexend, sans-serif; box-shadow: 0 4px 0 #e56a1b; display: flex; align-items: center; text-decoration: none">Naskenovať QR</a>
+      <a href="Odkaz.dc.html" style="flex: none; height: 48px; padding: 0 22px; border-radius: 999px; border: 1px solid rgba(90,61,43,0.42); background: #fffdf7; color: #3b2a3f; font: 700 16px Lexend, sans-serif; box-shadow: 0 4px 0 rgba(90,61,43,0.18); display: flex; align-items: center; text-decoration: none; box-sizing: border-box">Načítať odkaz</a>
+    </div>
+
+    <section aria-label="Posledné pridané výsledky" style="flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 10px">
+      <h2 style="margin: 0; font-size: 18px">Posledné pridané výsledky</h2>
+      <div style="flex: 1; overflow: auto; border: 1px solid rgba(90,61,43,0.18); border-radius: 12px; background: #fff">
+        <a href="Hodnotenie.dc.html" style="display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: #f7f1e8; color: #3b2a3f; text-decoration: none">
+          <b style="font-size: 15px">Skupina [SKUPINA 2]</b><span style="margin-left: auto; font-size: 14px; font-weight: 600">[N] načítaných</span><span aria-hidden="true" style="font-size: 20px; color: #ad4f0e">›</span>
+        </a>
+        <a href="Student.dc.html" style="display: flex; align-items: center; gap: 12px; padding: 9px 16px; color: #3b2a3f; text-decoration: none">
+          <b style="font-size: 15px">[MENO ŠTUDENTA]</b><span style="font-size: 13px; color: #6b5a70">[NÁZOV ÚLOHY] · [X] % · [X] zn/min</span><span aria-hidden="true" style="margin-left: auto; font-size: 20px; color: #ad4f0e">›</span>
+        </a>
+        <a href="Student.dc.html" style="display: flex; align-items: center; gap: 12px; padding: 9px 16px; color: #3b2a3f; text-decoration: none; border-top: 1px solid rgba(90,61,43,0.12)">
+          <b style="font-size: 15px">[MENO ŠTUDENTA]</b><span style="font-size: 13px; color: #6b5a70">[NÁZOV ÚLOHY] · [X] % · [X] zn/min</span><span aria-hidden="true" style="margin-left: auto; font-size: 20px; color: #ad4f0e">›</span>
+        </a>
+        <a href="Student.dc.html" style="display: flex; align-items: center; gap: 12px; padding: 9px 16px; color: #3b2a3f; text-decoration: none; border-top: 1px solid rgba(90,61,43,0.12)">
+          <b style="font-size: 15px">[MENO ŠTUDENTA]</b><span style="font-size: 13px; color: #6b5a70">[NÁZOV ÚLOHY] · [X] % · [X] zn/min</span><span aria-hidden="true" style="margin-left: auto; font-size: 20px; color: #ad4f0e">›</span>
+        </a>
+        <a href="Hodnotenie.dc.html" style="display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: #f7f1e8; color: #3b2a3f; text-decoration: none; border-top: 1px solid rgba(90,61,43,0.12)">
+          <b style="font-size: 15px">Skupina [SKUPINA 1]</b><span style="margin-left: auto; font-size: 14px; font-weight: 600">[N] načítaných</span><span aria-hidden="true" style="font-size: 20px; color: #ad4f0e">›</span>
+        </a>
+        <a href="Student.dc.html" style="display: flex; align-items: center; gap: 12px; padding: 9px 16px; color: #3b2a3f; text-decoration: none">
+          <b style="font-size: 15px">[MENO ŠTUDENTA]</b><span style="font-size: 13px; color: #6b5a70">[NÁZOV ÚLOHY] · [X] % · [X] zn/min</span><span aria-hidden="true" style="margin-left: auto; font-size: 20px; color: #ad4f0e">›</span>
+        </a>
+        <a href="Student.dc.html" style="display: flex; align-items: center; gap: 12px; padding: 9px 16px; color: #3b2a3f; text-decoration: none; border-top: 1px solid rgba(90,61,43,0.12)">
+          <b style="font-size: 15px">[MENO ŠTUDENTA]</b><span style="font-size: 13px; color: #6b5a70">[NÁZOV ÚLOHY] · [X] % · [X] zn/min</span><span aria-hidden="true" style="margin-left: auto; font-size: 20px; color: #ad4f0e">›</span>
+        </a>
+      </div>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

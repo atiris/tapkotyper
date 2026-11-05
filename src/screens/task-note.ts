@@ -87,7 +87,7 @@ export function taskNoteScreen(root: HTMLElement): () => void {
     }));
     const listBox = h('section', { class: 'noted' }, h('h2', {}, t('note.noted')), list);
     listBox.hidden = !noted.length;
-    body.replaceChildren(h('section', { class: 'scan-card note-scan' }, view.frame, view.picker, view.status), listBox);
+    body.replaceChildren(h('section', { class: 'scan-card note-scan' }, view.frame, view.status), listBox);
   };
 
   scan();

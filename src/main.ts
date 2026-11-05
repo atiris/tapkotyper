@@ -95,7 +95,7 @@ async function boot(): Promise<void> {
   queue?.setConsumer((p) => void Promise.all(p.files.map((f) => f.getFile())).then((files) => {
     if (!files.length) return;
     app.openedFiles.push(...files);
-    go('teacher', { tab: 'files' }, false);
+    go('teacher', { tab: 'eval/import' }, false);
   }));
   // A reload never opens the guest: the start page shows the players again.
   if (location.hash.length > 2 && parseRoute(location.hash).profileId !== GUEST_ID) return openRoute(location.hash);

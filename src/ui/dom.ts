@@ -91,6 +91,8 @@ export const ICONS = {
   mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5"/>',
   tasks: '<path d="M10 6h10M10 12h10M10 18h10"/><path d="M3.5 6l1.6 1.6L8 4.6M3.5 12l1.6 1.6L8 10.6"/><circle cx="5.5" cy="18" r="1.3"/>',
   camera: '<path d="M3 8h4l2-3h6l2 3h4v11H3z"/><circle cx="12" cy="13" r="3.5"/>',
+  cameraSwitch: '<path d="M3 8h3l2-3h8l2 3h3v11H3z"/><path d="M9.5 12.5a3 3 0 0 1 5.2-1.5M14.5 14.5a3 3 0 0 1-5.2 1.5"/><path d="M14.7 9.5v1.5h-1.5M9.3 17.5V16h1.5"/>',
+  qr: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM18 18h3v3h-3zM14 20h2M20 14v2"/>',
   fullscreen: '<path d="M4 9V4h5M4 4l5 5M15 4h5v5M20 4l-5 5M4 15v5h5M4 20l5-5M20 15v5h-5M20 20l-5-5"/>',
   smile: '<path d="M6.5 13.5a6.5 6.5 0 0011 0"/><path d="M8.5 8.5v1.5M15.5 8.5v1.5"/>',
   sortDown: '<path d="M6 9l6 6 6-6"/>',

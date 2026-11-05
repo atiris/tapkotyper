@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<title>Pre učiteľov – Import výsledkov</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#ad4f0e}a:hover{color:#7a2d00}
+</style>
+</helmet>
+<div style="width: 1280px; height: 900px; box-sizing: border-box; font-family: Lexend, system-ui, sans-serif; color: #3b2a3f; background: linear-gradient(180deg, #cfe9f7 0%, #e7f3e6 100%); padding: 24px 40px; display: flex; flex-direction: column; gap: 20px">
+  <header style="display: flex; align-items: center; gap: 16px">
+    <button type="button" style="height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid rgba(90,61,43,0.42); background: #fffdf7; font: 600 15px Lexend, sans-serif; color: #3b2a3f; box-shadow: 0 4px 0 rgba(90,61,43,0.18)">Späť</button>
+    <h1 style="margin: 0; font-size: 28px; font-weight: 700">Pre učiteľov</h1>
+  </header>
+
+  <main style="flex: 1; background: #fffdf7; border-radius: 24px; padding: 28px 36px; display: flex; flex-direction: column; gap: 18px; box-shadow: 0 10px 24px rgba(60,40,30,0.08)">
+    <nav aria-label="Časti" style="display: flex; gap: 6px; border-bottom: 2px solid rgba(90,61,43,0.12)">
+      <a href="Main.dc.html" style="padding: 12px 22px; font-weight: 600; font-size: 18px; color: #6b5a70; text-decoration: none">Výsledky</a>
+      <a href="Hodnotenie.dc.html" style="padding: 12px 22px; font-weight: 700; font-size: 18px; color: #3b2a3f; text-decoration: none; border-bottom: 4px solid #ff8a3d; margin-bottom: -2px">Hodnotenie</a>
+      <a href="Ulohy.dc.html" style="padding: 12px 22px; font-weight: 600; font-size: 18px; color: #6b5a70; text-decoration: none">Úlohy</a>
+    </nav>
+
+    <div style="display: flex; align-items: center; gap: 14px">
+      <a href="Data.dc.html" style="font-size: 15px; font-weight: 600">Dáta</a>
+      <span aria-hidden="true" style="color: #6b5a70">›</span>
+      <h2 style="margin: 0; font-size: 22px">Import výsledkov</h2>
+    </div>
+
+    <div style="height: 200px; border: 2px dashed rgba(90,61,43,0.3); border-radius: 12px; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px">
+      <span style="font-size: 16px; color: #6b5a70">Pretiahnite súbor .tapko sem</span>
+      <button type="button" style="height: 48px; padding: 0 24px; border-radius: 999px; border: 0; background: linear-gradient(180deg, #ffa25c, #ff8a3d); color: #3b1d05; font: 700 16px Lexend, sans-serif; box-shadow: 0 4px 0 #e56a1b">Vybrať súbor</button>
+    </div>
+
+    <p role="status" style="margin: 0; padding: 14px 16px; border-radius: 12px; background: #e3f2e8; font-size: 15px; font-weight: 600">Súbor tt-[RRRRMMDDHHMMSS].tapko je v poriadku, výsledky sú načítané.</p>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

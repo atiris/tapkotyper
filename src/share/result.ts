@@ -1,7 +1,7 @@
 import { localDate, masterySummary, weakKeys } from '../learning/stats';
 import type { Profile } from '../storage/schema';
 import { nickname } from '../storage/store';
-import { checksum, decode, encode } from './codec';
+import { checksum, decode, encode, hash53 } from './codec';
 import { type FinishedTask, TASK_GROUP_MAX, runAccuracy } from './task';
 
 /** What a typist hands in after a task. */
@@ -25,12 +25,20 @@ export interface TaskResult {
   weak: [string, number][];
   /** The super player removed or changed the settings password on the child's device without the current one. */
   lockRemoved?: true;
+  /** The player's hidden id, a hash of the profile's id: one child's results stay together whatever name or group they carry. */
+  pid?: string;
+  /** Which finished run of the task it is, 1 for the first; with `pid` and the task it names one hand-in. */
+  try?: number;
 }
 
 export const RESULT_WEAK_KEYS = 5;
 
 /** The mentor sees the real name, or the nickname of a player without one. */
 const mentorName = (p: Profile): string => p.name || nickname(p);
+
+const PID_LENGTH = 6;
+/** The hidden id a player's results carry: the same on every result, telling nothing of the profile. */
+export const playerId = (profileId: string): string => hash53(`pid:${profileId}`).padStart(PID_LENGTH, '0').slice(0, PID_LENGTH);
 
 /** The result of a finished task's best run. `lockRemoved`: the super player removed or changed the device's settings password (`StoreData.lockRemovedAt`). */
 export function makeResult(p: Profile, task: FinishedTask, lockRemoved = false): TaskResult {
@@ -47,6 +55,8 @@ export function makeResult(p: Profile, task: FinishedTask, lockRemoved = false):
     levels: Object.keys(p.progress.levels).length,
     weak: weakKeys(p, Object.keys(p.stats.keys), RESULT_WEAK_KEYS).map((k) => [k.key, Math.round(k.accuracy * 100)]),
     ...(lockRemoved && { lockRemoved: true }),
+    pid: playerId(p.id),
+    try: best.try,
   };
 }
 
@@ -69,12 +79,14 @@ export function makeOverallResult(p: Profile, title: string, lockRemoved = false
     levels: Object.keys(p.progress.levels).length,
     weak: weakKeys(p, Object.keys(p.stats.keys), RESULT_WEAK_KEYS).map((k) => [k.key, Math.round(k.accuracy * 100)]),
     ...(lockRemoved && { lockRemoved: true }),
+    pid: playerId(p.id),
   };
 }
 
 /** Fields in a fixed order, so the checksum does not depend on how the object was built. */
-/** The group, the levels and the removed password join the sum only when set, so results without one keep verifying. */
-export const resultSum = (r: TaskResult): string => checksum(JSON.stringify([r.taskId, r.title, r.name, r.date, r.minutes, r.accuracy, r.cpm, r.weak, ...(r.group ? [r.group] : []), ...(r.levels === undefined ? [] : [r.levels]), ...(r.lockRemoved ? ['lockRemoved'] : [])]));
+/** The group, the levels, the removed password, the player id and the run join the sum only when set, so results without one keep verifying. */
+export const resultSum = (r: TaskResult): string => checksum(JSON.stringify([r.taskId, r.title, r.name, r.date, r.minutes, r.accuracy, r.cpm, r.weak, ...(r.group ? [r.group] : []), ...(r.levels === undefined ? [] : [r.levels]), ...(r.lockRemoved ? ['lockRemoved'] : []),
+  ...(r.pid ? [`pid:${r.pid}`] : []), ...(r.try === undefined ? [] : [`try:${r.try}`])]));
 
 export function resultCode(r: TaskResult): Promise<string> {
   return encode({ app: 'tapkotyper', type: 'result', ...r, sum: resultSum(r) });
@@ -96,6 +108,8 @@ export function cleanResult(v: any): TaskResult | null {
     ...(typeof v?.levels === 'number' && { levels: num(v.levels) }),
     weak: Array.isArray(v?.weak) ? v.weak.filter((w: unknown) => Array.isArray(w) && typeof w[0] === 'string').slice(0, RESULT_WEAK_KEYS).map((w: any[]) => [w[0].slice(0, 12), num(w[1])]) : [],
     ...(v?.lockRemoved === true && { lockRemoved: true }),
+    ...(typeof v?.pid === 'string' && /^[0-9a-z]{6}$/.test(v.pid) && { pid: v.pid }),
+    ...(Number.isInteger(v?.try) && v.try > 0 && { try: v.try }),
   };
   return result.name && result.taskId ? result : null;
 }

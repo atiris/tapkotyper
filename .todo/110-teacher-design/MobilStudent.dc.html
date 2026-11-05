@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<title>Pre učiteľov – karta študenta (mobil)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#ad4f0e}a:hover{color:#7a2d00}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; font-family: Lexend, system-ui, sans-serif; color: #3b2a3f; background: #fffdf7; display: flex; flex-direction: column">
+  <main style="flex: 1; min-height: 0; padding: 14px; display: flex; flex-direction: column; gap: 10px">
+    <div style="display: flex; align-items: center; gap: 10px">
+      <div style="flex: 1; min-width: 0; display: flex; flex-direction: column"><h1 style="margin: 0; font-size: 20px">[MENO ŠTUDENTA]</h1><span style="font-size: 13px; color: #6b5a70">[SKUPINA 1]</span></div>
+      <a href="MobilStudenti.dc.html" aria-label="Zavrieť (Esc)" style="flex: none; width: 44px; height: 44px; border-radius: 999px; border: 1px solid rgba(90,61,43,0.3); background: #fff; color: #3b2a3f; font: 600 20px Lexend, sans-serif; display: flex; align-items: center; justify-content: center; text-decoration: none; box-sizing: border-box">×</a>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+      <div style="border: 1px solid rgba(90,61,43,0.18); border-radius: 12px; padding: 8px 12px; background: #fff"><div style="font-size: 20px; font-weight: 700">[X] %</div><div style="font-size: 12px; color: #6b5a70">priemerná presnosť</div></div>
+      <div style="border: 1px solid rgba(90,61,43,0.18); border-radius: 12px; padding: 8px 12px; background: #fff"><div style="font-size: 20px; font-weight: 700">[X]</div><div style="font-size: 12px; color: #6b5a70">znakov za minútu</div></div>
+      <div style="border: 1px solid rgba(90,61,43,0.18); border-radius: 12px; padding: 8px 12px; background: #fff"><div style="font-size: 20px; font-weight: 700">[X]</div><div style="font-size: 12px; color: #6b5a70">minút cvičenia</div></div>
+      <div style="border: 1px solid rgba(90,61,43,0.18); border-radius: 12px; padding: 8px 12px; background: #fff"><div style="font-size: 20px; font-weight: 700">[X]</div><div style="font-size: 12px; color: #6b5a70">prejdených levelov</div></div>
+    </div>
+
+    <div role="img" aria-label="[GRAF VÝVOJA PRESNOSTI A RYTMU]" style="flex: none; height: 110px; border: 2px dashed rgba(90,61,43,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #6b5a70">[GRAF VÝVOJA]</div>
+
+    <b style="font-size: 14px">Odovzdania</b>
+    <ul style="list-style: none; margin: 0; padding: 0 12px; flex: 1; min-height: 0; overflow: auto; border: 1px solid rgba(90,61,43,0.18); border-radius: 12px; background: #fff">
+      <li style="padding: 8px 0; display: flex; flex-direction: column; gap: 2px">
+        <div style="display: flex; justify-content: space-between; gap: 8px"><b style="font-size: 14px">[NÁZOV ÚLOHY]</b><span style="font-size: 13px; font-weight: 700">[X] %</span></div>
+        <span style="font-size: 12px; color: #6b5a70">[DÁTUM] · [X] min · [X] zn/min · slabé: [K] [K] [K]</span>
+      </li>
+      <li style="padding: 8px 0; display: flex; flex-direction: column; gap: 2px; border-top: 1px solid rgba(90,61,43,0.12)">
+        <div style="display: flex; justify-content: space-between; gap: 8px"><b style="font-size: 14px">[NÁZOV ÚLOHY]</b><span style="font-size: 13px; font-weight: 700">[X] %</span></div>
+        <span style="font-size: 12px; color: #6b5a70">[DÁTUM] · [X] min · [X] zn/min · slabé: [K] [K] [K]</span>
+      </li>
+    </ul>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

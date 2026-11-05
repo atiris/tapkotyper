@@ -1,6 +1,9 @@
+import { ACCURACY } from '../learning/lessons';
 import { localDate } from '../learning/stats';
-import { OVERALL_ID, type TaskResult } from './result';
-import { clear, getAll, openTeacherDb, write } from './teacher-db';
+import { hash53 } from './codec';
+import type { TaskResult } from './result';
+import { TASK_GROUP_MAX } from './task';
+import { clear, getAll, openTeacherDb, replace, write } from './teacher-db';
 
 /** Where the teacher's results lived before IndexedDB; removed on sight. */
 const OLD_KEY = 'tapkotyper:teacher';
@@ -17,6 +20,10 @@ export interface StoredResult extends TaskResult {
   intact: boolean;
   /** When it came into this browser (ms). */
   addedAt: number;
+  /** The student it belongs to; every result of one student carries the same group. */
+  student: string;
+  /** Every way it came in: `scan`, `link` or a loaded file's id; a hand-in that came only from deleted files goes with them. */
+  from: string[];
 }
 
 export type SetSource = 'scan' | 'link' | 'file';
@@ -35,6 +42,7 @@ export interface ResultSet {
 
 /** A `.tapko` file loaded here. */
 export interface LoadedFile {
+  id: string;
   name: string;
   loadedAt: number;
   /** The hand-in dates inside, oldest and newest. */
@@ -48,32 +56,26 @@ export interface LoadedFile {
 
 /** A hash of what a hand-in says: the same hand-in from any source has the same one. */
 export function fingerprint(r: TaskResult): string {
-  // The removed password joins only when set, so earlier hand-ins keep their fingerprint.
-  const text = JSON.stringify([r.taskId, r.name, r.group ?? '', r.date, r.minutes, r.accuracy, r.cpm, r.levels ?? null, r.weak, ...(r.lockRemoved ? ['lockRemoved'] : [])]);
-  // cyrb53: 53 bits are plenty for a class's hand-ins.
-  let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
-  for (let i = 0; i < text.length; i++) {
-    const c = text.charCodeAt(i);
-    h1 = Math.imul(h1 ^ c, 2654435761);
-    h2 = Math.imul(h2 ^ c, 1597334677);
-  }
-  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
-  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
-  return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36);
+  // The removed password, the player id and the run join only when set, so earlier hand-ins keep their fingerprint.
+  return hash53(JSON.stringify([r.taskId, r.name, r.group ?? '', r.date, r.minutes, r.accuracy, r.cpm, r.levels ?? null, r.weak, ...(r.lockRemoved ? ['lockRemoved'] : []),
+    ...(r.pid ? [r.pid] : []), ...(r.try === undefined ? [] : [r.try])]));
 }
 
-/** The local date `months` and `days` before `now`; hand-ins dated before it are older. */
-export function dateBefore(now: number, months: number, days = 0): string {
+/** One hand-in whatever it says: the player, the task and the run; none for a result without them. */
+const handIn = (r: TaskResult): string | null => (r.pid && r.try !== undefined ? `${r.pid}\u0000${r.taskId}\u0000${r.try}` : null);
+
+/** A group name for comparing: "5a", "5.A" and "5 A" are one group. */
+export const foldGroup = (g: string): string => g.toLowerCase().replace(/[\s.]/g, '');
+
+/** A hand-in dated before the local date a year before `now`. */
+function isOld(r: TaskResult, now: number): boolean {
   const d = new Date(now);
-  d.setMonth(d.getMonth() - months, d.getDate() - days);
-  return localDate(d);
+  d.setFullYear(d.getFullYear() - 1);
+  return r.date < localDate(d);
 }
 
-/** A hand-in older than a year. */
-export const isOld = (r: TaskResult, now: number): boolean => r.date < dateBefore(now, 12);
-
-/** Accuracy in percent from which a child has mastered the task (two stars in the game). */
-export const MASTERED = 88;
+/** Accuracy in percent from which a child has mastered the task: the game's lowest step of its accuracy scale. */
+export const MASTERED = Math.round(ACCURACY.fair * 100);
 
 export const mastered = (r: Pick<TaskResult, 'accuracy'>): boolean => r.accuracy >= MASTERED;
 
@@ -96,9 +98,6 @@ export function nextSort<K extends string>(now: Sort<K>, key: K): Sort<K> {
   return now.key === key ? { key, desc: !now.desc } : { key, desc: key !== 'child' && key !== 'status' && key !== 'group' };
 }
 
-/** One child: two children of one name in two groups stay apart. */
-export const childKey = (r: Pick<TaskResult, 'group' | 'name'>): string => `${r.group ?? ''}\u0000${r.name}`;
-
 /** Newest first: by hand-in date, then by when it came in. */
 const newestFirst = (a: StoredResult, b: StoredResult) => b.date.localeCompare(a.date) || b.addedAt - a.addedAt;
 
@@ -106,7 +105,7 @@ const newestFirst = (a: StoredResult, b: StoredResult) => b.date.localeCompare(a
 export function newest(rows: StoredResult[]): StoredResult[] {
   const best = new Map<string, StoredResult>();
   for (const r of rows) {
-    const k = `${childKey(r)}\u0000${r.taskId}`;
+    const k = `${r.student}\u0000${r.taskId}`;
     const was = best.get(k);
     if (!was || newestFirst(r, was) < 0) best.set(k, r);
   }
@@ -117,7 +116,7 @@ export interface ChildSummary {
   accuracy: number;
   cpm: number;
   minutes: number;
-  /** From the newest result with the whole statistics; none without one. */
+  /** From the newest result that says them; none without one. */
   levels?: number;
   /** The four weakest keys over all results, each at its lowest accuracy. */
   weak: [string, number][];
@@ -128,12 +127,12 @@ export function childSummary(rows: TaskResult[]): ChildSummary {
   const avg = (pick: (r: TaskResult) => number) => (rows.length ? Math.round(rows.reduce((a, r) => a + pick(r), 0) / rows.length) : 0);
   const lowest = new Map<string, number>();
   for (const r of rows) for (const [k, a] of r.weak) lowest.set(k, Math.min(a, lowest.get(k) ?? Infinity));
-  const overall = rows.find((r) => r.taskId === OVERALL_ID);
+  const said = rows.find((r) => r.levels !== undefined);
   return {
     accuracy: avg((r) => r.accuracy),
     cpm: avg((r) => r.cpm),
     minutes: Math.round(rows.reduce((a, r) => a + r.minutes, 0) * 10) / 10,
-    ...(overall?.levels !== undefined && { levels: overall.levels }),
+    ...(said && { levels: said.levels }),
     weak: [...lowest].sort((a, b) => a[1] - b[1]).slice(0, 4),
   };
 }
@@ -161,7 +160,7 @@ export function writer(rows: StoredResult[]): Writer {
   const [last, first] = [all[0], all[all.length - 1]];
   return {
     ...sum,
-    key: childKey(last),
+    key: last.student,
     name: last.name,
     ...(last.group && { group: last.group }),
     rows: all,
@@ -197,6 +196,13 @@ export function sortWriters(list: Writer[], sort: Sort<WriterKey>): Writer[] {
 
 const randomId = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
 
+/** The results added last, by group: the group with the newest addition first, inside it the newest first. */
+export function recentByGroup(rows: StoredResult[], n: number): { group: string; rows: StoredResult[] }[] {
+  const by = new Map<string, StoredResult[]>();
+  for (const r of [...rows].sort((a, b) => b.addedAt - a.addedAt).slice(0, n)) by.set(r.group ?? '', [...(by.get(r.group ?? '') ?? []), r]);
+  return [...by].map(([group, list]) => ({ group, rows: list }));
+}
+
 /**
  * The teacher's hand-ins, sets and loaded files, kept in IndexedDB in this browser only.
  * `load()` reads them all once and drops what is old; the changes then land in memory at once
@@ -223,13 +229,14 @@ export class TeacherStore {
     if (!this.db) return;
     try {
       const [results, sets, files] = await Promise.all([
-        getAll<StoredResult & { child: string }>(this.db, 'results'),
+        getAll<Partial<StoredResult> & StoredResult & { child: string }>(this.db, 'results'),
         getAll<ResultSet>(this.db, 'sets'),
-        getAll<LoadedFile>(this.db, 'files'),
+        getAll<Partial<LoadedFile> & Omit<LoadedFile, 'id'>>(this.db, 'files'),
       ]);
-      this.results = results.map(({ child: _, ...r }) => r);
+      // Records from before the students and sources get their defaults: a student by name and group, no source.
+      this.results = results.map(({ child: _, ...r }) => ({ ...r, student: r.student ?? `${r.group ?? ''}\u0000${r.name}`, from: r.from ?? [] }));
       this.sets = sets;
-      this.files = files.sort((a, b) => b.loadedAt - a.loadedAt);
+      this.files = files.map((f) => ({ ...f, id: f.id ?? randomId() })).sort((a, b) => b.loadedAt - a.loadedAt);
     } catch { this.results = []; this.sets = []; this.files = []; }
     // Older than a year goes, but what was just loaded stays its 7 days.
     this.removeMany(this.results.filter((r) => isOld(r, now) && now - r.addedAt >= GRACE_MS));
@@ -252,11 +259,17 @@ export class TeacherStore {
   }
 
   private save(put: StoredResult[], drop: string[] = [], sets: ResultSet[] = [], dropSets: string[] = []): void {
-    const records = put.map((r) => ({ ...r, child: childKey(r) }));
+    const records = put.map((r) => ({ ...r, from: [...r.from], child: r.student }));
+    const setRecords = sets.map((x) => ({ ...x, results: [...x.results] }));
     this.queue(async (db) => {
       if (put.length || drop.length) await write(db, 'results', records, drop);
-      if (sets.length || dropSets.length) await write(db, 'sets', sets.map((x) => ({ ...x, results: [...x.results] })), dropSets);
+      if (sets.length || dropSets.length) await write(db, 'sets', setRecords, dropSets);
     });
+  }
+
+  private saveFiles(): void {
+    const files = this.files.map((f) => ({ ...f }));
+    this.queue((db) => replace(db, 'files', files));
   }
 
   /** A camera scan starts: what it adds forms one set per group until `endScan`. */
@@ -279,32 +292,65 @@ export class TeacherStore {
     return set;
   }
 
+  /** The group name as it is spelt here already ("5a" joins "5.A"), else as given, trimmed; `except` is a group that does not count. */
+  spelling(name: string, except?: string): string {
+    const g = name.trim().slice(0, TASK_GROUP_MAX);
+    return this.groups().find((x) => x !== except && foldGroup(x) === foldGroup(g)) ?? g;
+  }
+
   /**
-   * Adds a hand-in, into `group` when given (a scan's group), else its own; one without any keeps
-   * the group the teacher gave that child. Null when this hand-in is here already.
+   * The student a result belongs to, with that student's group: by the player id, or for a result
+   * without one by the name in the same group (or the only student of that name); null for a new one.
    */
-  add(r: TaskResult, intact: boolean, group?: string, now = Date.now()): StoredResult | null {
+  private studentOf(r: TaskResult): { student: string; group: string } | null {
+    const found = (x: StoredResult | undefined) => (x ? { student: x.student, group: x.group ?? '' } : null);
+    if (r.pid) return found(this.results.find((x) => x.pid === r.pid));
+    const same = this.results.filter((x) => !x.pid && x.name === r.name);
+    if (r.group) return found(same.find((x) => foldGroup(x.group ?? '') === foldGroup(r.group!)));
+    return new Set(same.map((x) => x.student)).size === 1 ? found(same[0]) : null;
+  }
+
+  /** The student and group of a result coming in; a new student takes the task's group. */
+  private placeOf(r: TaskResult, student?: string): { student: string; group: string } {
+    const known = this.studentOf(r);
+    if (known) return known;
+    const same = student ? this.results.find((x) => x.student === student) : undefined;
+    if (same) return { student: same.student, group: same.group ?? '' };
+    return { student: student ?? r.pid ?? randomId(), group: this.spelling(r.group ?? '') };
+  }
+
+  /** Is this hand-in here already: the same fingerprint, or the same player, task and run. */
+  private holds(id: string, r: TaskResult): StoredResult | true | null {
+    const same = this.results.find((x) => x.id === id);
+    if (same) return same;
+    const key = handIn(r);
+    return key && this.results.some((x) => handIn(x) === key) ? true : null;
+  }
+
+  /**
+   * Adds a hand-in to its student's group, a new student's into the task's group. Null when this
+   * hand-in is here already: the same one only notes the new way it came; another copy of the same
+   * player's run (changed or damaged) leaves the stored one as it is.
+   */
+  add(r: TaskResult, intact: boolean, source: 'scan' | 'link', now = Date.now()): StoredResult | null {
     const id = fingerprint(r);
-    if (this.results.some((x) => x.id === id)) return null;
-    const own = group || r.group || this.knownGroup(r.name);
+    const held = this.holds(id, r);
+    if (held) {
+      if (held !== true && !held.from.includes(source)) {
+        held.from.push(source);
+        this.save([held]);
+      }
+      return null;
+    }
+    const { student, group } = this.placeOf(r);
     const { group: _, ...rest } = r;
-    const next: StoredResult = { ...rest, ...(own && { group: own }), id, intact, addedAt: now };
-    const set = this.setFor(own ?? '', now);
+    const next: StoredResult = { ...rest, ...(group && { group }), id, intact, addedAt: now, student, from: [source] };
+    const set = this.setFor(group, now);
     set.results.push(id);
     set.end = Math.max(set.end, now);
     this.results.push(next);
     this.save([next], [], [set]);
     return next;
-  }
-
-  /** The one group the hand-ins of `name` are in; none when there are none or several. */
-  private knownGroup(name: string): string | undefined {
-    const groups = new Set(this.results.filter((x) => x.name === name).map((x) => x.group ?? ''));
-    return groups.size === 1 ? [...groups][0] || undefined : undefined;
-  }
-
-  remove(r: StoredResult): void {
-    this.removeMany([r]);
   }
 
   /** Removes the results, and the sets left empty. */
@@ -319,16 +365,51 @@ export class TeacherStore {
     this.save([], [...gone], touched.filter((s) => s.results.length), empty.map((s) => s.id));
   }
 
-  /** Puts the chosen rows into a group (an empty name clears it); a set whose results all moved moves too. */
-  assign(rows: StoredResult[], group: string): void {
+  /** Puts `rows` into `group` (the empty name clears it); a set whose results all share a group then takes it. */
+  private regroup(rows: StoredResult[], group: string, student?: string): void {
     for (const r of rows) {
       if (group) r.group = group;
       else delete r.group;
+      if (student) r.student = student;
     }
     const ids = new Set(rows.map((r) => r.id));
     const moved = this.sets.filter((s) => s.results.some((id) => ids.has(id)) && this.setResults(s).every((r) => (r.group ?? '') === group));
     for (const s of moved) s.group = group;
     this.save(rows, [], moved);
+  }
+
+  /** Moves whole students into a group, spelt as one here already; the empty name is "without a group". */
+  moveStudents(students: string[], group: string): void {
+    const keys = new Set(students);
+    this.regroup(this.results.filter((r) => keys.has(r.student)), this.spelling(group));
+  }
+
+  /** Renames a group, or merges it into another of that name; the empty name dissolves it (its students stay, without a group). */
+  renameGroup(from: string, to: string): void {
+    const target = this.spelling(to, from);
+    const rows = this.results.filter((r) => (r.group ?? '') === from);
+    for (const s of this.sets) if (s.group === from) s.group = target;
+    this.regroup(rows, target);
+    this.save([], [], this.sets.filter((s) => s.group === target));
+  }
+
+  /** The old student's hand-ins join the target student and its group. */
+  mergeStudents(old: string, target: string): void {
+    const into = this.results.find((r) => r.student === target);
+    if (!into || old === target) return;
+    this.regroup(this.results.filter((r) => r.student === old), into.group ?? '', target);
+  }
+
+  /** Removes a loaded file and the hand-ins that came only from deleted files. */
+  deleteFile(id: string): void {
+    this.files = this.files.filter((f) => f.id !== id);
+    const kept = new Set(this.files.map((f) => f.id));
+    const onlyFiles = (r: StoredResult) => r.from.length > 0 && r.from.every((s) => s !== 'scan' && s !== 'link' && !kept.has(s));
+    const touched = this.results.filter((r) => r.from.includes(id) && !onlyFiles(r));
+    for (const r of touched) r.from = r.from.filter((s) => s !== id);
+    this.save(touched);
+    this.removeMany(this.results.filter(onlyFiles));
+    this.saveFiles();
   }
 
   /** The group names in use, sorted. */
@@ -339,11 +420,6 @@ export class TeacherStore {
   setResults(set: ResultSet): StoredResult[] {
     const ids = new Set(set.results);
     return this.results.filter((r) => ids.has(r.id));
-  }
-
-  /** The set a result came in with. */
-  setOf(r: StoredResult): ResultSet | undefined {
-    return this.sets.find((s) => s.results.includes(r.id));
   }
 
   /** Results by group (none last), then task, then the children by `sort` (by name by default; ties by name). */
@@ -357,23 +433,16 @@ export class TeacherStore {
       || (sort.desc ? -by(a, b) : by(a, b)) || a.name.localeCompare(b.name));
   }
 
-  /** One child's hand-ins, newest first. */
-  childResults(key: string): StoredResult[] {
-    return this.results.filter((r) => childKey(r) === key).sort(newestFirst);
+  /** One student's hand-ins, newest first. */
+  childResults(student: string): StoredResult[] {
+    return this.results.filter((r) => r.student === student).sort(newestFirst);
   }
 
   /** Every writer of `rows`. */
   writers(rows: StoredResult[] = this.results): Writer[] {
     const by = new Map<string, StoredResult[]>();
-    for (const r of rows) by.set(childKey(r), [...(by.get(childKey(r)) ?? []), r]);
+    for (const r of rows) by.set(r.student, [...(by.get(r.student) ?? []), r]);
     return [...by.values()].map(writer);
-  }
-
-  /** What deleting the hand-ins dated before `date` takes: the results, and the sets it leaves empty. */
-  olderThan(date: string): { results: StoredResult[]; sets: ResultSet[] } {
-    const results = this.results.filter((r) => r.date < date);
-    const ids = new Set(results.map((r) => r.id));
-    return { results, sets: this.sets.filter((s) => s.results.length && s.results.every((id) => ids.has(id))) };
   }
 
   /** Everything goes, the list of loaded files too. */
@@ -385,13 +454,32 @@ export class TeacherStore {
   }
 
   /**
-   * Takes in the sets and results of a `.tapko` file: a hand-in already here is skipped, a set
-   * already here gets only what it lacks, results of no set form a new one per group. Returns what
-   * was added and how many of those are older than a year.
+   * Takes in the sets and results of a `.tapko` file: a hand-in already here only notes the file, a
+   * set already here gets only what it lacks, results of no set form a new one per group. A student
+   * of the file joins the one here with the same player id (or key); a new one keeps its group.
+   * Returns how many hand-ins were new.
    */
-  importFile(name: string, sets: ResultSet[], results: StoredResult[], now = Date.now()): { added: number; old: number } {
-    const have = new Set(this.results.map((r) => r.id));
-    const fresh = results.filter((r) => !have.has(r.id) && have.add(r.id)).map((r) => ({ ...r, addedAt: now }));
+  importFile(name: string, sets: ResultSet[], results: StoredResult[], now = Date.now()): number {
+    const file: LoadedFile = { id: randomId(), name, loadedAt: now, from: '', to: '', groups: [], results: results.length, added: 0 };
+    const fresh: StoredResult[] = [];
+    const noted: StoredResult[] = [];
+    const students = new Map<string, { student: string; group: string }>();
+    for (const r of results) {
+      const held = this.holds(r.id, r);
+      if (held) {
+        if (held !== true && !held.from.includes(file.id)) {
+          held.from.push(file.id);
+          if (!fresh.includes(held)) noted.push(held);
+        }
+        continue;
+      }
+      const place = students.get(r.student) ?? this.placeOf(r, r.student);
+      students.set(r.student, place);
+      const { group: _, ...rest } = r;
+      const next: StoredResult = { ...rest, ...(place.group && { group: place.group }), student: place.student, from: [file.id], addedAt: now };
+      fresh.push(next);
+      this.results.push(next);
+    }
     const freshIds = new Set(fresh.map((r) => r.id));
     const touched: ResultSet[] = [];
     const placed = new Set<string>();
@@ -412,13 +500,12 @@ export class TeacherStore {
       }
       set.results.push(r.id);
     }
-    this.results.push(...fresh);
     const dates = results.map((r) => r.date).sort();
-    const file: LoadedFile = { name, loadedAt: now, from: dates[0] ?? '', to: dates[dates.length - 1] ?? '', groups: [...new Set(results.map((r) => r.group ?? ''))].sort(), results: results.length, added: fresh.length };
+    Object.assign(file, { from: dates[0] ?? '', to: dates[dates.length - 1] ?? '', groups: [...new Set(results.map((r) => r.group ?? ''))].sort(), added: fresh.length });
     this.files.unshift(file);
-    this.save(fresh, [], touched);
-    this.queue((db) => write(db, 'files', [file]));
-    return { added: fresh.length, old: fresh.filter((r) => isOld(r, now)).length };
+    this.save([...fresh, ...noted], [], touched);
+    this.saveFiles();
+    return fresh.length;
   }
 
   /** CSV for a spreadsheet of `rows` (all by default); `head` are the translated column names, `names` the key and status words. */

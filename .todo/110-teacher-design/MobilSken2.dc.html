@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<title>Pre učiteľov – QR sken (mobil)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; font-family: Lexend, system-ui, sans-serif; color: #3b2a3f; background: #fffdf7; padding: 14px; display: flex; flex-direction: column; gap: 10px">
+  <div aria-label="Obraz kamery, orezaný na štvorec zo stredu" role="img" style="flex: none; width: 362px; height: 362px; border-radius: 12px; overflow: hidden; background: radial-gradient(circle at 50% 45%, #5b4f63 0%, #2b2430 70%); display: flex; align-items: center; justify-content: center; position: relative">
+    <div aria-hidden="true" style="width: 280px; height: 280px; border: 4px solid rgba(255,255,255,0.9); border-radius: 12px; box-sizing: border-box"></div>
+    <sc-if value="{{ switchable }}" hint-placeholder-val="{{ true }}">
+      <button type="button" aria-label="Prepnúť kameru" style="position: absolute; right: 12px; bottom: 12px; width: 44px; height: 44px; border-radius: 12px; border: 0; background: rgba(255,255,255,0.45); color: #fff; display: flex; align-items: center; justify-content: center">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h3l2-3h8l2 3h3v11H3z"/><path d="M9.5 12.5a3 3 0 0 1 5.2-1.5M14.5 14.5a3 3 0 0 1-5.2 1.5"/><path d="M14.7 9.5v1.5h-1.5M9.3 17.5V16h1.5"/></svg>
+      </button>
+    </sc-if>
+  </div>
+  <div style="flex: none; display: flex; align-items: center; justify-content: space-between; gap: 8px">
+    <b style="font-size: 16px">Skenovanie</b>
+    <span style="font-size: 15px; font-weight: 700; white-space: nowrap">[N] načítaných</span>
+  </div>
+
+  <ul aria-label="Posledné naskenované" style="list-style: none; margin: 0; padding: 0 12px; flex: 1; min-height: 0; overflow: auto; border: 1px solid rgba(90,61,43,0.18); border-radius: 12px; background: #fff">
+    <li style="display: flex; align-items: center; gap: 8px; padding: 4px 0">
+      <div style="flex: 1; min-width: 0; display: flex; flex-direction: column"><b style="font-size: 14px">[MENO ŠTUDENTA]</b><span style="font-size: 12px; color: #6b5a70">[NÁZOV ÚLOHY] · [X] % · [X]</span></div>
+      <button type="button" aria-label="Zrušiť tento výsledok" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid rgba(90,61,43,0.3); background: transparent; color: #6b5a70"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button>
+    </li>
+    <li style="display: flex; align-items: center; gap: 8px; padding: 4px 0; border-top: 1px solid rgba(90,61,43,0.12)">
+      <div style="flex: 1; min-width: 0; display: flex; flex-direction: column"><b style="font-size: 14px">[MENO ŠTUDENTA]</b><span style="font-size: 12px; color: #6b5a70">[NÁZOV ÚLOHY] · [X] % · [X]</span></div>
+      <button type="button" aria-label="Zrušiť tento výsledok" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid rgba(90,61,43,0.3); background: transparent; color: #6b5a70"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button>
+    </li>
+    <li style="display: flex; align-items: center; gap: 8px; padding: 4px 0; border-top: 1px solid rgba(90,61,43,0.12)">
+      <div style="flex: 1; min-width: 0; display: flex; flex-direction: column"><b style="font-size: 14px">[MENO ŠTUDENTA]</b><span style="font-size: 12px; color: #6b5a70">[NÁZOV ÚLOHY] · [X] % · [X]</span></div>
+      <button type="button" aria-label="Zrušiť tento výsledok" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid rgba(90,61,43,0.3); background: transparent; color: #6b5a70"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button>
+    </li>
+  </ul>
+
+  <div style="flex: none; display: flex; gap: 10px">
+    <a href="MobilVysledky.dc.html" style="flex: 1; height: 50px; border-radius: 999px; border: 1px solid rgba(90,61,43,0.42); background: #fffdf7; color: #3b2a3f; font: 700 16px Lexend, sans-serif; box-shadow: 0 3px 0 rgba(90,61,43,0.18); display: flex; align-items: center; justify-content: center; text-decoration: none; box-sizing: border-box">Zrušiť</a>
+    <a href="MobilHodnotenie.dc.html" style="flex: 2; height: 50px; border-radius: 999px; background: linear-gradient(180deg, #ffa25c, #ff8a3d); color: #3b1d05; font: 700 16px Lexend, sans-serif; box-shadow: 0 3px 0 #e56a1b; display: flex; align-items: center; justify-content: center; text-decoration: none">Hotovo</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"switchable":{"editor":"boolean","default":true},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { switchable: this.props.switchable ?? true };
+  }
+}
+</script>
+</body>
+</html>

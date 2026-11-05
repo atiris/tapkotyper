@@ -3,7 +3,7 @@ import { t } from '../i18n/i18n';
 import { cornerControls } from '../ui/chrome';
 import { button, h } from '../ui/dom';
 import { type Part, linkPart, resultsPart, scanPart } from './teacher/collect';
-import { type Place, openPlace, teacherStore, twoLabels } from './teacher/common';
+import { type Place, openPlace, teacherStore, twoLabels, view } from './teacher/common';
 import { dataPart, importPart, loadFiles } from './teacher/data';
 import { filesPart, groupsPart, setPart, studentPart, studentsPart } from './teacher/evaluate';
 import { newTaskPart, readyPart } from './teacher/tasks';
@@ -57,6 +57,7 @@ export function teacherScreen(root: HTMLElement, params: { code?: string; child?
   const visit = screenVisit();
   let stop: () => void = () => undefined;
   const place = params.child ? `student/${params.child}` : params.set ? `set/${params.set}` : OLD[params.tab ?? ''] ?? params.tab ?? '';
+  view.here = place;
   // The page paints once the results are read; a teacher who left meanwhile gets nothing.
   void teacherStore().then(async (store) => {
     const opened = app.openedFiles.splice(0);

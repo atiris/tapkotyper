@@ -28,19 +28,21 @@ export const view = {
   search: '',
   open: new Set<string>(),
   picked: new Set<string>(),
-  /** The teacher came to a card or a page from a list of this page, so closing it goes back there. */
-  fromList: false,
+  /** The card or page the teacher opened from a list of this page, so closing it goes back there. */
+  fromList: null as Place | null,
+  /** The place on screen now. */
+  here: '' as Place,
 };
 
 /** Opens a part of the teacher's page; a card or a page opened from a list closes back to it. */
 export function openPlace(place: Place, fromList = false): void {
-  view.fromList = fromList;
+  view.fromList = fromList ? place : null;
   go('teacher', { tab: place });
 }
 
-/** Closes a card or a page: back where the teacher came from, else to `fallback`. */
+/** Closes a card or a page: back to the list it was opened from, else to `fallback` (reached by its address, Back or Forward from elsewhere). */
 export function closePlace(fallback: Place): void {
-  if (view.fromList) history.back();
+  if (view.fromList === view.here) history.back();
   else openPlace(fallback);
 }
 

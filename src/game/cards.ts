@@ -312,8 +312,12 @@ function cardHint(key: string): string {
   return t('newKey.typeIt', { key });
 }
 
-/** How to press the key: its finger, and the key to go back to when the finger does not rest on it. */
+/** How to press the key: its finger, and the key to go back to when the finger does not rest on it; the space bar by the thumb of the hand that did not type last. */
 function fingerLine(layout: Layout, key: string): HTMLElement | null {
+  if (key === SPACE) {
+    const f = (homeKey(layout, 3) ?? 'f').toUpperCase(), j = (homeKey(layout, 6) ?? 'j').toUpperCase();
+    return h('p', { class: 'newkey-finger' }, t('newKey.spaceThumb', { f, j }));
+  }
   const finger = lessonFinger(layout, key), chip = fingerChip(layout, key);
   if (finger == null || !chip) return null;
   const home = homeKey(layout, finger);

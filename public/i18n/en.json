@@ -297,7 +297,8 @@
     "typeIt": "Type {key} three times.",
     "shiftL": "Hold the left Shift with your left little finger and type the capital with your right hand. Type a capital {sample} three times.",
     "shiftR": "Hold the right Shift with your right little finger and type the capital with your left hand. Type a capital {sample} three times.",
-    "space": "The other fingers stay at home. Press it three times."
+    "space": "The other fingers stay at home. Press it three times.",
+    "spaceThumb": "Press it with the thumb of the hand that did not type last: after {f} the right thumb, after {j} the left one."
   },
   "keysIntro": {
     "title": "Welcome to Tapko!",

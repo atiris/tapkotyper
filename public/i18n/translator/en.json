@@ -728,6 +728,7 @@
     "newKey.shiftL": "Card for the left Shift: how to hold it; {sample} is the letter typed as a capital.",
     "newKey.shiftR": "Card for the right Shift: how to hold it; {sample} is the letter typed as a capital.",
     "newKey.space": "Card for the space bar: how to press it.",
+    "newKey.spaceThumb": "Card for the space bar: which thumb presses it; {f} and {j} are the index fingers' home keys, for example F and J.",
     "practice.parts": "Counter in own-text practice; {n} is the part reached, {total} the number of parts.",
     "practice.left": "Counter in timed practice; {s} is the number of seconds left.",
     "practice.words": "Counter in untimed practice; {n} is the number of words typed.",

@@ -21,6 +21,8 @@
 - Space, punctuation and the Shifts get ready sooner than letters (fewer presses), so they do
   not hold the next letter back for long.
 - A new key is introduced alone first (where it is, which finger), then mixed with known keys.
+  The space bar's card says it is pressed by the thumb of the hand that did not type last:
+  after F the right thumb, after J the left one.
 - Home row keys and the first reaches come in mirrored pairs (same finger, other hand).
   When the newest keys are typed accurately and steadily, the next ones unlock; a key
   counts as mastered at a stricter target (more presses), which fades its guide.

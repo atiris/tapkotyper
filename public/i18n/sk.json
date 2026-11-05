@@ -297,7 +297,8 @@
     "typeIt": "Napíš {key} trikrát.",
     "shiftL": "Ľavý Shift drž ľavým malíčkom a pravou rukou napíš veľké písmeno. Napíš trikrát veľké {sample}.",
     "shiftR": "Pravý Shift drž pravým malíčkom a ľavou rukou napíš veľké písmeno. Napíš trikrát veľké {sample}.",
-    "space": "Ostatné prsty ostanú na základných miestach. Stlač ho trikrát."
+    "space": "Ostatné prsty ostanú na základných miestach. Stlač ho trikrát.",
+    "spaceThumb": "Stláčaj ho palcom ruky, ktorá práve nepísala: po {f} pravým palcom, po {j} ľavým."
   },
   "keysIntro": {
     "title": "Vitaj v Ťapkovi!",

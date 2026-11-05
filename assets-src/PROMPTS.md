@@ -639,6 +639,17 @@ key-colored gap is cut around the copy in front of it, so the stack still reads 
 Cute, soft 2D children's game icon, flat vector style with gentle gradients, soft dark-brown outline (not black), warm pastel palette, bold simple shapes that stay readable when very small. A single icon: one computer keyboard key, clearly recognizable as a key: a square key with rounded corners seen a little from above, a lighter cream square top surface with a slight dip, and darker peach sloping sides below it. The key top is completely empty: no letter, no symbol, no pattern. Centered, the whole icon visible, wide empty margin. No text, no letters, no numbers, no symbols, no watermark. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no other objects. Square image.
 ```
 
+### ui-world-keys.jpg (the keyboard button of an open world on the map, in a badge-sized grey-ringed disc; 2026-11-05)
+The first picture had three rows of small keys and read as a thin strip at 40 px; this follow-up in the same chat made it compact.
+```
+Generate an image: Keyboard
+
+Cute, soft 2D children's game icon, flat vector style with gentle gradients, soft dark-brown outline (not black), warm pastel palette, bold simple shapes that stay readable when very small. A single icon: a small simplified computer keyboard seen gently from above and a little from the side, so its front edge and one short side are visible. A chunky rounded cream body with a soft peach front edge; on top three rows of chunky rounded pastel keys (soft mint, sky blue, butter yellow and peach mixed) and one long wide space bar in the front row. The keys are completely empty: no letters, no symbols. Not a technical drawing, not a black line icon: a friendly colourful object like a toy. Centered, the whole keyboard visible, wide empty margin. No text, no letters, no numbers, no watermark. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no other objects. Square image.
+```
+```
+Same style and colours, but much simpler so it reads at 40 pixels inside a small round badge: a compact, almost square keyboard (only a little wider than tall), seen gently from above and a little from the side, with only two rows of three big chunky rounded keys (mint, sky blue, butter yellow, peach) and one big wide space bar below them. Thick soft dark-brown outline, big simple shapes, no small details. Keys empty, no letters. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow. Square image.
+```
+
 ### ui-keys-typed.jpg (letters typed in the last 14 days chip in the stats; a pile of pastel keys, one with a plus; the owner's picture 2026-10-23, replaced ui-key-star)
 
 ### ui-days-trained.jpg (days with practice in the last 14 days chip in the stats; a desk calendar page with a few days ticked off, plan 89)

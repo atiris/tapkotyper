@@ -25,7 +25,7 @@ export function wordSource(p: Profile, lang: LangRef, drill?: string[], chosen?:
     weights: keyWeights(p, keys),
     focus: drill ?? (focus ?? newestGroup(p)).filter((k) => keys.includes(k)),
     layout: LAYOUTS[p.layout],
-    shiftMastery: Object.fromEntries([SHIFT_L, SHIFT_R].map((k) => [k, masteryLevel(p.stats.keys[k], s.difficulty)])),
+    shiftMastery: Object.fromEntries([SHIFT_L, SHIFT_R].map((k) => [k, masteryLevel(p.stats.keys[k])])),
     lang,
     own: drill || chosen || focus ? undefined : { words: s.ownWords, text: s.ownText, share: OWN_SHARE[s.ownMix] },
     pseudo: !!drill,

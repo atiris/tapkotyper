@@ -1117,7 +1117,7 @@
   },
   "progress": {
     "title": "Môj postup",
-    "keys": "Klávesy, ktoré ti idú dobre a rýchlo: {n} z {total}",
+    "keys": "Klávesy, ktoré už ovládaš: {n} z {total}",
     "worlds": "Dokončené svety: {n} z {total}",
     "chest": "Truhlica vzácností: {n} z {total} bodov. Bronzový odznak sveta je 1 bod, strieborný 2, zlatý 3, každé ocenenie zo strelnice 1 bod a odznak Papagáj 7 bodov.",
     "stories": "Dokončené príbehy: {n} z {total}",
@@ -1160,6 +1160,7 @@
     "title": "Moje klávesy",
     "intro": "Počíta sa posledných {n} stlačení každého klávesu, staré chyby sa nepočítajú. Ťukni na kláves a uvidíš, ako ti ide.",
     "empty": "Zahraj si úroveň a uvidíš, ako ti idú klávesy.",
+    "super": "super",
     "good": "ide to",
     "ok": "skoro",
     "practice": "poďme cvičiť",
@@ -1684,7 +1685,7 @@
     ],
     "progressTitle": "Môj postup",
     "progress": [
-      "Kláves, svet a príbeh: koľko kláves ti ide dobre a rýchlo (aspoň 9 z 10 stlačení správne), koľko svetov a príbehov máš hotových.",
+      "Kláves, svet a príbeh: koľko kláves už ovládaš (aspoň 100 stlačení a z posledných 100 aspoň 89 správne), koľko svetov a príbehov máš hotových.",
       "Terč je tvoja presnosť za posledných 14 dní, šípka z kláves rýchlosť v znakoch za minútu, hviezdička všetky získané hviezdičky a kôpka kláves počet písmen napísaných za posledných 14 dní.",
       "V každom riadku príbehu sú jeho svety: hotové sú farebné, ostatné sivé, a hviezdičky z toho príbehu.",
       "Papagáj: koľko papagájov je teraz doma a koľko ich tam bolo najviac naraz. Uletené sa vrátia, keď si s nimi znova zahráš.",

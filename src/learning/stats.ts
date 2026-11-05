@@ -2,7 +2,7 @@ import { IDLE_STOP_S } from '../game/levels';
 import { earnWardrobe } from '../game/wardrobe-time';
 import { LAYOUTS } from '../keyboard/layouts';
 import { type KeyStat, type Profile, type SessionRecord, emptyKeyStat } from '../storage/schema';
-import { MASTERY_WINDOW, STATS_WINDOW, lessonOrder, median, reactionLimit, shiftKeyOf } from './lessons';
+import { ACCURACY, MASTERY_WINDOW, STATS_WINDOW, lessonOrder, median, shiftKeyOf } from './lessons';
 
 const RECENT_KEEP = Math.max(STATS_WINDOW, MASTERY_WINDOW * 2);
 export const RECENT_WRONG_KEEP = 30;
@@ -205,31 +205,25 @@ export function keyHistory(profile: Profile, key: string): KeyDayPoint[] {
   }));
 }
 
-/** Presses the long-term "mastered" verdict of a key looks at. */
-export const MASTERED_WINDOW = 30;
-/** Share of the last presses that must be right. */
-export const MASTERED_ACCURACY = 0.9;
-
 export interface KeyMastery {
-  /** Accuracy and median reaction time (ms) of the last MASTERED_WINDOW presses. */
+  /** Accuracy and median reaction time (ms) of the last STATS_WINDOW presses. */
   accuracy: number;
   medianMs: number;
 }
 
 /**
- * A key is mastered when, over its last 30 recorded presses, accuracy is at least 90 %
- * and the median reaction time is within the target of the child's difficulty
- * (the same speed limit that readies a key for the next lesson). Null while it is not.
+ * A key is mastered when it has at least 100 recorded presses and its last 100 are at least
+ * "almost" right (ACCURACY.fair): the presses the heat map judges it by. Speed does not decide;
+ * the median reaction is kept for showing. Null while it is not.
  */
 export function keyMastery(profile: Profile, key: string): KeyMastery | null {
   const recent = profile.stats.keys[key]?.recent;
-  if (!recent || recent.length < MASTERED_WINDOW) return null;
-  const win = recent.slice(-MASTERED_WINDOW);
+  if (!recent || recent.length < STATS_WINDOW) return null;
+  const win = recent.slice(-STATS_WINDOW);
   const ok = win.filter((v) => v > 0);
   const accuracy = ok.length / win.length;
-  const medianMs = ok.length ? median(ok) : Infinity;
-  if (accuracy < MASTERED_ACCURACY || medianMs > reactionLimit(profile.settings.difficulty)) return null;
-  return { accuracy, medianMs };
+  if (accuracy < ACCURACY.fair) return null;
+  return { accuracy, medianMs: median(ok) };
 }
 
 export interface MasterySummary {

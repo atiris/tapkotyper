@@ -804,7 +804,7 @@ export class LevelRuntime {
     let fade = 0;
     if (ch && p.settings.guide === 'auto') {
       const stat = p.stats.keys[ch.toLowerCase()];
-      fade = masteryLevel(stat, p.settings.difficulty) >= 1 ? 0.5 : 0;
+      fade = masteryLevel(stat) >= 1 ? 0.5 : 0;
     }
     this.guide.show(ch, this.deadPending && stepsFor(layout(), ch ?? '').length > 1, fade);
   }

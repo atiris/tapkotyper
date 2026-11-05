@@ -162,9 +162,9 @@ describe('stars', () => {
     expect(starsFor(0.2)).toBe(1);
   });
 
-  it('needs half the mistakes for each further star: 2 from 88 %, 3 from 94 %, 4 from 97 %, 5 from 98.5 %', () => {
-    expect(starsFor(0.879)).toBe(1);
-    expect(starsFor(0.88)).toBe(2);
+  it('follows the accuracy scale: 2 from 89 %, 3 from 94 %, 4 from 97 %, 5 from 98.5 %', () => {
+    expect(starsFor(0.889)).toBe(1);
+    expect(starsFor(0.89)).toBe(2);
     expect(starsFor(0.94)).toBe(3);
     expect(starsFor(0.97)).toBe(4);
     expect(starsFor(97 / 100)).toBe(4);

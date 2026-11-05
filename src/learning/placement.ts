@@ -1,7 +1,7 @@
 import { STAR_STEPS } from '../game/levels';
 import { type Finger, type Layout, LAYOUTS, homeKey, stepsFor } from '../keyboard/layouts';
 import type { LayoutId } from '../storage/schema';
-import { DIACRITICS, SPACE, lessonGroups, median, reactionLimit, shiftKeyOf } from './lessons';
+import { ACCURACY, DIACRITICS, SPACE, lessonGroups, median, reactionLimit, shiftKeyOf } from './lessons';
 
 /**
  * The placement check ("Check how I know the keyboard"): a calm copy run in stages along the lesson
@@ -43,7 +43,7 @@ export const STAGE_MISSES = 3;
 /** Seconds of typing after which the check ends at the latest. */
 export const PLACEMENT_SECONDS = 240;
 /** A new key's accuracy in its stage: the ready rule's. */
-export const KEY_ACCURACY = 0.9;
+export const KEY_ACCURACY = ACCURACY.fair;
 /** A key of this run is weak under the three-star accuracy. */
 export const STAGE_ACCURACY = STAR_STEPS.find((s) => s.stars === 3)!.from;
 
@@ -65,7 +65,7 @@ export function placementReaction(presses: PlacementPress[]): number {
 const pressesOf = (presses: PlacementPress[], key: string, layout: LayoutId) => presses.filter((x) => lessonKeysOf(layout, x.ch).includes(key));
 
 /**
- * A new key passes on its own presses in the stage: at least 90 % right and the median reaction of its
+ * A new key passes on its own presses in the stage: at least "almost" right (ACCURACY.fair) and the median reaction of its
  * right presses (not the first key of a target) within the limit; without such presses the reaction
  * does not decide. Presses of other keys do not count.
  */
@@ -365,7 +365,7 @@ export function placementDifficulty(current: number, reaction: number, max: numb
 }
 
 /** A level in the first world went so well (accuracy, reaction of correct presses) that the turtle offers the check. */
-export const OFFER_ACCURACY = 0.97;
+export const OFFER_ACCURACY = ACCURACY.great;
 export const OFFER_REACTION = 0.7;
 
 export function offersPlacement(accuracy: number, rts: number[], difficulty: number): boolean {

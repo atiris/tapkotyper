@@ -24,8 +24,14 @@
   The space bar's card says it is pressed by the thumb of the hand that did not type last:
   after F the right thumb, after J the left one.
 - Home row keys and the first reaches come in mirrored pairs (same finger, other hand).
-  When the newest keys are typed accurately and steadily, the next ones unlock; a key
-  counts as mastered at a stricter target (more presses), which fades its guide.
+  When every key of the newest group has its last 25 presses (12 for space, punctuation and
+  the Shifts) at least 89 % right, the next ones unlock; when its last 40 presses are at least
+  94 % right, its guide fades and, for a Shift, more capitals come. Speed never holds anything
+  back; it is only measured and shown.
+- **One accuracy scale** serves the whole game, only the windows (how many last presses)
+  differ: under 89 % "poďme cvičiť", from 89 % "skoro" (2 stars, a key ready for the next
+  one, a mastered key), from 94 % "ide to" (3 stars, the guide fades), from 97 % "super"
+  (4 stars). A hero's journey keeps its own star steps; 5 stars are from 98.5 %.
   The parent can override and pick the active keys by hand.
 - Enter now and then: once the key under the right little finger on the home row (`ô`,
   US `;`) is unlocked, about one target in 20 (a word or a phrase) ends with an Enter mark `↵`
@@ -77,6 +83,10 @@
   ready or opens new keys.
 
 ## Why
+- One scale of three bounds instead of a constant per rule: stars, key colours, the next key
+  and the world locks all speak the same language, so a child who sees a key in "skoro" knows
+  it is good enough to go on. Speed differs a lot between children and grows by itself;
+  accuracy is what to learn first, so speed never blocks.
 - New letters wait for accuracy, which a child cannot see; naming the letters and offering
   a fun way to train them turns a silent lock into a clear goal.
 - Own practice is for practising exactly what the child (or parent) wants: the slider

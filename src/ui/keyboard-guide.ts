@@ -3,7 +3,7 @@ import { t } from '../i18n/i18n';
 import { codeOfName } from '../keyboard/key-names';
 import { FINGER_COLORS } from './finger-colors';
 import { Hands } from './hands';
-import { SHIFT_L, SHIFT_R, SPACE } from '../learning/lessons';
+import { ACCURACY, SHIFT_L, SHIFT_R, SPACE } from '../learning/lessons';
 
 /** 1 = thumb .. 5 = pinky, as children count fingers. */
 export const FINGER_KEYS: Record<Finger, string> = {
@@ -34,6 +34,19 @@ export function inkOn(hex: string): string {
 
 /** WCAG AA contrast for normal-size text. */
 const TEXT_CONTRAST = 4.5;
+
+/** The heat map's bands, best first, on the accuracy scale: super, it goes, almost, let's practise. */
+export const HEAT_BANDS = [
+  { cls: 'heat-super', mark: '★', label: 'stats.super', from: ACCURACY.great },
+  { cls: 'heat-good', mark: '✓', label: 'stats.good', from: ACCURACY.good },
+  { cls: 'heat-ok', mark: '~', label: 'stats.ok', from: ACCURACY.fair },
+  { cls: 'heat-practice', mark: '!', label: 'stats.practice', from: 0 },
+] as const;
+
+/** The band of a key's accuracy. */
+export function heatBand(accuracy: number): (typeof HEAT_BANDS)[number] {
+  return HEAT_BANDS.find((b) => accuracy >= b.from)!;
+}
 
 /**
  * Background and ink for text on a finger color: the color itself when one ink reaches
@@ -290,17 +303,17 @@ export class KeyboardGuide {
     }
   }
 
-  /** Colors keys by score for the stats heat map (0 bad .. 1 good, null = no data). */
-  heat(scores: Record<string, number | null>, keyFor: (code: string) => string | null): void {
+  /** Colors keys by accuracy for the stats heat map, in the bands of the accuracy scale (null = no data). */
+  heat(accuracy: Record<string, number | null>, keyFor: (code: string) => string | null): void {
     for (const [code, el] of this.keys) {
       const key = keyFor(code);
-      const s = key ? scores[key] : undefined;
-      el.classList.remove('heat-good', 'heat-ok', 'heat-practice');
+      const a = key ? accuracy[key] : undefined;
+      el.classList.remove(...HEAT_BANDS.map((b) => b.cls));
       el.removeAttribute('data-heat');
-      if (s == null) continue;
-      const cls = s >= 0.85 ? 'heat-good' : s >= 0.65 ? 'heat-ok' : 'heat-practice';
-      el.classList.add(cls);
-      el.dataset.heat = s >= 0.85 ? '✓' : s >= 0.65 ? '~' : '!';
+      if (a == null) continue;
+      const band = heatBand(a);
+      el.classList.add(band.cls);
+      el.dataset.heat = band.mark;
     }
   }
 

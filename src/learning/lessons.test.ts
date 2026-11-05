@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { emptyKeyStat } from '../storage/schema';
 import { ENTER, LAYOUTS, enterAfter, fingerFor } from '../keyboard/layouts';
-import { SHIFT_L, STATS_WINDOW, activeKeys, knownKeyNames, lessonKeyNames, lessonKeysFor, advanceLesson, aimKeys, firstKeys, keysAccuracy, notReadyKeys, isMastered, keysToIntroduce, lessonOrder, practiceOrder, practiceSteps, punctuationKeys, reactionLimit, shiftKeyOf, stepHolding } from './lessons';
+import { SHIFT_L, STATS_WINDOW, activeKeys, knownKeyNames, lessonKeyNames, lessonKeysFor, advanceLesson, aimKeys, firstKeys, keysAccuracy, notReadyKeys, isFluent, isReady, keysToIntroduce, lessonOrder, practiceOrder, practiceSteps, punctuationKeys, reactionLimit, shiftKeyOf, stepHolding } from './lessons';
 import { keyMastery, keyReport, lastTraining, masterySummary, recordPress, weakKeys } from './stats';
 
 describe('lesson order', () => {
@@ -49,21 +49,26 @@ describe('lesson order', () => {
 });
 
 describe('mastery and unlocking', () => {
-  it('needs 40 accurate, quick presses', () => {
+  it('is fluent after 40 presses at least 94 % right, however slow', () => {
     const p = newProfile('Ema', 'sk');
-    for (let i = 0; i < 39; i++) recordPress(p, 'j', 'j', 500);
-    expect(isMastered(p.stats.keys.j, 5)).toBe(false);
-    recordPress(p, 'j', 'j', 500);
-    expect(isMastered(p.stats.keys.j, 5)).toBe(true);
+    for (let i = 0; i < 39; i++) recordPress(p, 'j', 'j', 2500);
+    expect(isFluent(p.stats.keys.j)).toBe(false);
+    recordPress(p, 'j', 'j', 2500);
+    expect(isFluent(p.stats.keys.j)).toBe(true);
   });
 
-  it('is not mastered with too many errors or slow presses', () => {
+  it('is not fluent with three mistakes in 40', () => {
     const p = newProfile('Ema', 'sk');
-    for (let i = 0; i < 40; i++) recordPress(p, 'f', i % 8 === 0 ? 'g' : 'f', 500);
-    expect(isMastered(p.stats.keys.f, 5)).toBe(false);
-    const q = newProfile('Ema', 'sk');
-    for (let i = 0; i < 40; i++) recordPress(q, 'f', 'f', 2500);
-    expect(isMastered(q.stats.keys.f, 5)).toBe(false);
+    for (let i = 0; i < 40; i++) recordPress(p, 'f', i % 14 === 0 ? 'g' : 'f', 500);
+    expect(isFluent(p.stats.keys.f)).toBe(false);
+  });
+
+  it('is ready at 89 % of its window, speed aside', () => {
+    const p = newProfile('Ema', 'sk');
+    for (let i = 0; i < 25; i++) recordPress(p, 'f', i >= 23 ? 'g' : 'f', 3000);
+    expect(isReady(p.stats.keys.f)).toBe(true);
+    recordPress(p, 'f', 'g', 400);
+    expect(isReady(p.stats.keys.f)).toBe(false);
   });
 
   it('unlocks the next mirrored pair only when both newest keys are ready', () => {
@@ -239,22 +244,23 @@ describe('mastered key', () => {
   };
   const fast = (n: number) => Array(n).fill(600);
 
-  it('needs 30 presses', () => {
-    expect(keyMastery(withRecent(fast(29)), 'f')).toBeNull();
-    expect(keyMastery(withRecent(fast(30)), 'f')).not.toBeNull();
+  it('needs 100 presses', () => {
+    expect(keyMastery(withRecent(fast(99)), 'f')).toBeNull();
+    expect(keyMastery(withRecent(fast(100)), 'f')).not.toBeNull();
   });
 
-  it('needs 90 % accuracy of the last 30 presses only', () => {
-    expect(keyMastery(withRecent([...fast(26), 0, 0, 0, 0]), 'f')).toBeNull();
-    expect(keyMastery(withRecent([0, 0, 0, 0, 0, ...fast(30)]), 'f')?.accuracy).toBe(1);
+  it('needs 89 % accuracy of the last 100 presses only', () => {
+    expect(keyMastery(withRecent([...fast(88), ...Array(12).fill(0)]), 'f')).toBeNull();
+    expect(keyMastery(withRecent([...fast(89), ...Array(11).fill(0)]), 'f')?.accuracy).toBe(0.89);
+    expect(keyMastery(withRecent([0, 0, 0, 0, 0, ...fast(100)]), 'f')?.accuracy).toBe(1);
   });
 
-  it('needs the median speed of the difficulty', () => {
-    expect(keyMastery(withRecent(Array(30).fill(reactionLimit(3) + 100)), 'f')).toBeNull();
+  it('does not ask for speed', () => {
+    expect(keyMastery(withRecent(Array(100).fill(reactionLimit(3) + 100)), 'f')).not.toBeNull();
   });
 
   it('sums up the mastered keys of the layout', () => {
-    const p = withRecent(fast(30));
+    const p = withRecent(fast(100));
     expect(masterySummary(p)).toMatchObject({ mastered: 1, total: lessonOrder('sk-qwertz').length, cpm: 100 });
     expect(masterySummary(newProfile('U', 'sk'))).toMatchObject({ mastered: 0, cpm: 0 });
   });

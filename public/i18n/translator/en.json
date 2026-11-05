@@ -1056,6 +1056,7 @@
     "stats.title": "Heading of the Keys tab: the keyboard map with coloured keys.",
     "stats.intro": "Intro of the Keys tab. {n} is how many of the latest presses count.",
     "stats.empty": "Intro of the Keys tab when the child has not played yet.",
+    "stats.super": "Key colour legend: the key goes very well, the best band.",
     "stats.good": "Key colour legend: the key goes well.",
     "stats.ok": "Key colour legend: the key is almost good.",
     "stats.practice": "Key colour legend: the key needs practice.",

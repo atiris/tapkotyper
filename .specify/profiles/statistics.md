@@ -34,10 +34,12 @@
   colour, [target range](../game/target-practice.md)), and when
   the child last trained (today, yesterday, n days ago) with the typing minutes of the last 7
   days. Below it a friendly view of the keys: a keyboard colored
-  by how well each key goes, the 3 keys to practice and the growth medals earned.
+  by each key's accuracy over its last 100 presses in the bands of the accuracy scale
+  ([lesson progression](../learning/lesson-progression.md)): super from 97 %, ide to from 94 %,
+  skoro from 89 %, poďme cvičiť under it; the 3 keys to practice and the growth medals earned.
   - Under the keyboard, in one row, **Preveriť moje ovládanie klávesnice** on the left starts the
     [placement check](../learning/placement-check.md) (about 4 minutes, in the tooltip), whose end
-    card shows the strong and weak keys of that run, and the legend (✓ ide to ~ skoro ! poďme
+    card shows the strong and weak keys of that run, and the legend (★ super ✓ ide to ~ skoro ! poďme
     cvičiť) on the right; on a phone the row wraps.
   - The keys to practise are lines without bullets: the key drawn as an outlined key like the
     on-screen keyboard's (it opens its details), its accuracy and the finger to press it with.
@@ -81,10 +83,12 @@
   all statistics is a result link like any other, so the teacher's table takes it as one row
   per child.
 
-- A key is **mastered** when, over its last 30 recorded presses, at least 90 % are right and
-  the median reaction time is within the speed limit of the child's difficulty (the same limit
-  that readies a key for the next lesson). This is long-term: it is computed from the stored
-  key statistics, so it fades when the child stops typing the key well.
+- A key is **mastered** when it has at least 100 recorded presses and at least 89 % of its
+  last 100 are right (the "skoro" band and up): a key the heat map does not show as "poďme
+  cvičiť" once it has its 100 presses. Speed is shown, never a condition. The same verdict
+  counts the keys on the certificate and the profile card and opens the worlds
+  ([world keys](../learning/world-keys.md)). It is long-term: computed from the stored key
+  statistics, so it fades when the child stops typing the key well.
 
 - **Maintenance:** the maxima shown (stars 390, chest 67) follow from the levels, worlds and
   range things; when their number changes, the new maximum must be shown and written here

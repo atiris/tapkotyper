@@ -12,7 +12,7 @@ import { makeOverallResult, resultCode } from '../share/result';
 import type { Profile } from '../storage/schema';
 import { nickname } from '../storage/store';
 import { lineChart } from '../ui/charts';
-import { KeyboardGuide, fingerChip, keyCap, keyLabel } from '../ui/keyboard-guide';
+import { HEAT_BANDS, KeyboardGuide, fingerChip, keyCap, keyLabel } from '../ui/keyboard-guide';
 import { button, h, modal } from '../ui/dom';
 import { tip } from '../ui/tooltip';
 import { tabBar } from '../ui/tabs';
@@ -38,14 +38,14 @@ export function keyForCode(code: string, shifted = false): string | null {
   return symbol ? def.shift : base;
 }
 
-export function heatScores(shifted = false): Record<string, number | null> {
+export function heatAccuracy(shifted = false): Record<string, number | null> {
   const p = app.profile!;
   const scores: Record<string, number | null> = {};
   for (const def of allKeys(layout())) {
     const key = keyForCode(def.code, shifted);
     if (!key) continue;
     const r = keyReport(p, key);
-    scores[key] = r && r.window >= 3 ? r.score : null;
+    scores[key] = r && r.window >= 3 ? r.accuracy : null;
   }
   return scores;
 }
@@ -103,7 +103,7 @@ export function clickableHeatmap(p: Profile, detail: HTMLElement, practice?: (ke
   const paint = () => {
     kb.el.classList.toggle('shifted', shifted);
     unselect();
-    kb.heat(heatScores(shifted), (code) => keyForCode(code, shifted));
+    kb.heat(heatAccuracy(shifted), (code) => keyForCode(code, shifted));
   };
   kb.onKeyClick((code, el) => {
     const key = keyForCode(code, shifted);
@@ -294,9 +294,7 @@ export function keysTab(p: Profile, close: () => void): HTMLElement {
     heat,
     h('div', { class: 'keys-foot' }, check,
       h('p', { class: 'legend' },
-        h('span', { class: 'lg heat-good' }, `✓ ${t('stats.good')}`),
-        h('span', { class: 'lg heat-ok' }, `~ ${t('stats.ok')}`),
-        h('span', { class: 'lg heat-practice' }, `! ${t('stats.practice')}`))),
+        ...HEAT_BANDS.map((b) => h('span', { class: `lg ${b.cls}` }, `${b.mark} ${t(b.label)}`)))),
     h('div', { class: 'stats-split' },
       weak.length ? h('div', { class: 'weak' },
         h('h3', {}, t('stats.practiceKeys')),

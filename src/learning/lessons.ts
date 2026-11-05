@@ -64,9 +64,17 @@ export function stepHolding(steps: string[][], keys: string[]): number {
   return Math.max(0, steps.findIndex((s) => inOrder.every((k) => s.includes(k))));
 }
 
-/** Key statistics look at the last presses only, so old habits stop counting. */
+/**
+ * The one accuracy scale of the game, the share of right presses: under `fair` "let's practise",
+ * from `fair` "almost" (2 stars, a key ready for the next one, a mastered key, a world's keys),
+ * from `good` "it goes" (3 stars, the finger guide fades), from `great` "super" (4 stars). Only the
+ * windows (how many last presses) differ; speed is measured and shown, never a condition.
+ */
+export const ACCURACY = { fair: 0.89, good: 0.94, great: 0.97 } as const;
+
+/** Key statistics look at the last presses only, so old habits stop counting; a key is mastered over this window. */
 export const STATS_WINDOW = 100;
-/** Recent presses window used by the mastery rule. */
+/** Recent presses window after which the finger guide fades for a key. */
 export const MASTERY_WINDOW = 40;
 /** A key is ready for the next one after fewer presses than full mastery. */
 export const READY_WINDOW = 25;
@@ -123,32 +131,33 @@ export function recentAccuracy(stat: KeyStat | undefined): number {
   return stat.recent.filter((v) => v > 0).length / stat.recent.length;
 }
 
-export function isMastered(stat: KeyStat | undefined, difficulty: number): boolean {
-  if (!stat || stat.recent.length < MASTERY_WINDOW) return false;
-  const window = stat.recent.slice(-MASTERY_WINDOW);
-  const ok = window.filter((v) => v > 0);
-  return ok.length / window.length >= 0.92 && median(ok) <= reactionLimit(difficulty);
+/** Share of right presses among a key's last `size` presses; null with fewer presses. */
+function windowAccuracy(stat: KeyStat | undefined, size: number): number | null {
+  if (!stat || stat.recent.length < size) return null;
+  return stat.recent.slice(-size).filter((v) => v > 0).length / size;
 }
 
-/** 0 (new) .. 1 (mastered) used to fade the finger guide. */
-export function masteryLevel(stat: KeyStat | undefined, difficulty: number): number {
+/** Typed surely: the last 40 presses at least "it goes" right; the finger guide fades for it. */
+export function isFluent(stat: KeyStat | undefined): boolean {
+  return (windowAccuracy(stat, MASTERY_WINDOW) ?? 0) >= ACCURACY.good;
+}
+
+/** 0 (new) .. 1 (fluent) used to fade the finger guide and to dose capitals by the Shifts. */
+export function masteryLevel(stat: KeyStat | undefined): number {
   if (!stat || !stat.recent.length) return 0;
-  if (isMastered(stat, difficulty)) return 1;
+  if (isFluent(stat)) return 1;
   const fill = Math.min(1, stat.recent.length / MASTERY_WINDOW);
   return Math.min(0.9, fill * recentAccuracy(stat));
 }
 
-/** Accurate and steady enough to move on: the last presses (25, or 12 for a light key), 90 % right, calm rhythm. */
-export function isReady(stat: KeyStat | undefined, difficulty: number, size = READY_WINDOW): boolean {
-  if (!stat || stat.recent.length < size) return false;
-  const window = stat.recent.slice(-size);
-  const ok = window.filter((v) => v > 0);
-  return ok.length / window.length >= 0.9 && median(ok) <= reactionLimit(difficulty);
+/** Accurate enough to move on: the last presses (25, or 12 for a light key) at least "almost" right; speed does not decide. */
+export function isReady(stat: KeyStat | undefined, size = READY_WINDOW): boolean {
+  return (windowAccuracy(stat, size) ?? 0) >= ACCURACY.fair;
 }
 
 /** The key is ready for the next one, by its own window. */
 export function isKeyReady(profile: Profile, key: string): boolean {
-  return isReady(profile.stats.keys[key], profile.settings.difficulty, readyWindow(key));
+  return isReady(profile.stats.keys[key], readyWindow(key));
 }
 
 /** The lesson group of the key unlocked last (push order), so a gap the keyboard check left comes after the newest keys. */

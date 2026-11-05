@@ -1117,7 +1117,7 @@
   },
   "progress": {
     "title": "My progress",
-    "keys": "Keys you type well and fast: {n} of {total}",
+    "keys": "Keys you have mastered: {n} of {total}",
     "worlds": "Finished worlds: {n} of {total}",
     "chest": "Treasure chest: {n} of {total} points. A bronze world badge is 1 point, silver 2, gold 3, every target range award 1 point and the Parrot badge 7 points.",
     "stories": "Finished stories: {n} of {total}",
@@ -1160,6 +1160,7 @@
     "title": "My keys",
     "intro": "Only the last {n} presses of every key count, so old mistakes drop out. Tap a key to see how it goes.",
     "empty": "Play a level to see how your keys are doing.",
+    "super": "super",
     "good": "going well",
     "ok": "almost",
     "practice": "let's practise",
@@ -1684,7 +1685,7 @@
     ],
     "progressTitle": "My progress",
     "progress": [
-      "Key, world and story: how many keys you type well and fast (at least 9 of 10 presses right), how many worlds and stories you have finished.",
+      "Key, world and story: how many keys you have mastered (at least 100 presses, and at least 89 of the last 100 right), how many worlds and stories you have finished.",
       "The target is your accuracy over the last 14 days, the arrow of keys your speed in characters per minute, the star all the stars you have earned, and the pile of keys the letters you typed in the last 14 days.",
       "Each story row shows its worlds: finished ones in colour, the rest grey, and the stars of that story.",
       "Parrot: how many parrots are at home now and the most there were at once. Flown ones come back when you play with them again.",

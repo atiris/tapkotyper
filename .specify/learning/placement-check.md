@@ -31,7 +31,7 @@
   group n in focus; diacritics, capitals and digits come when their groups come (no
   diacritics when the parent turned them off). A stage takes at least 25 presses and 6 presses
   of each new key, at most 8 targets.
-- **Each new key is judged on its own** presses in its stage: it passes with at least 90 % right
+- **Each new key is judged on its own** presses in its stage: it passes with at least 89 % right
   (the ready rule) and the median reaction of its right presses within the difficulty's limit
   (the first key of a target is reading time and does not count). Errors on older keys do not
   judge the new ones. A key that fails stays out of the later stages' words, so it costs the

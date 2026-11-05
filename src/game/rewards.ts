@@ -1,5 +1,5 @@
 import { Rng } from '../engine/rng';
-import { isMastered } from '../learning/lessons';
+import { isFluent } from '../learning/lessons';
 import { COMPANION_KINDS, type CompanionKind, type Profile } from '../storage/schema';
 import { LEVELS, MAX_LEVEL_STARS, STORIES, WORLDS, journeyId, worldLevels } from './levels';
 import { WORLD_THINGS } from './modes/aim-things';
@@ -77,7 +77,7 @@ export function unlockRules(p: Profile): UnlockRule[] {
 }
 
 export function masteredCount(p: Profile): number {
-  return p.progress.unlockedKeys.filter((k) => isMastered(p.stats.keys[k], p.settings.difficulty)).length;
+  return p.progress.unlockedKeys.filter((k) => isFluent(p.stats.keys[k])).length;
 }
 
 export function hasAccessory(p: Profile, id: string): boolean {

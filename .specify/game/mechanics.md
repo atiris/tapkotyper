@@ -79,8 +79,9 @@
   lowers a better result and adds no time toward automatic growth. Esc on the end screen
   peeks under it and a second Esc brings it back (see Peeking under the results).
 - **Stars**: 1 to 5 per level, from accuracy only, on a logarithmic scale of the mistakes:
-  every further star needs half the mistakes. 5 from 98.5 % accuracy, 4 from 97 %, 3 from
-  94 %, 2 from 88 %, else 1 (finishing always gives one, a flawless level five). Whole stars
+  two to four stars are the steps of the accuracy scale ([lesson progression](../learning/lesson-progression.md)),
+  five stars half the mistakes of four. 5 from 98.5 % accuracy, 4 from 97 %, 3 from
+  94 %, 2 from 89 %, else 1 (finishing always gives one, a flawless level five). Whole stars
   only; every game counts the same way (the valley's flying lessons too). The stars stand like
   the Olympic rings, three on top and two below in their gaps, filled in reading order, on the
   end card beside Tapko, where they stand small in one row. On the map's level cards only the

@@ -1,6 +1,6 @@
 import { t } from '../i18n/i18n';
 import { LAYOUTS } from '../keyboard/layouts';
-import { activeKeys, aimKeys, isLetterKey, knownKeyNames, lessonKeyNames, practiceOrder } from '../learning/lessons';
+import { ACCURACY, activeKeys, aimKeys, isLetterKey, knownKeyNames, lessonKeyNames, practiceOrder } from '../learning/lessons';
 import { type Profile, SUPER_ID, type TaskSpec } from '../storage/schema';
 import { PARROT_MIN_S, type ParrotSize, parrotSize } from './parrots';
 
@@ -410,11 +410,11 @@ export const MAX_LEVEL_STARS = 5;
 
 /**
  * Lowest accuracy for each count of stars, best first; below them 1 (finishing always gives one).
- * Every further star needs half the mistakes.
+ * Two to four stars are the steps of the game's accuracy scale (ACCURACY), five stars half the mistakes of four.
  */
 export type StarSteps = readonly { stars: number; from: number }[];
-export const STAR_STEPS: StarSteps = [{ stars: 5, from: 0.985 }, { stars: 4, from: 0.97 }, { stars: 3, from: 0.94 }, { stars: 2, from: 0.88 }];
-/** A hero's journey is a bit stricter: three quarters of the mistakes of a level for each step. */
+export const STAR_STEPS: StarSteps = [{ stars: 5, from: 0.985 }, { stars: 4, from: ACCURACY.great }, { stars: 3, from: ACCURACY.good }, { stars: 2, from: ACCURACY.fair }];
+/** A hero's journey is a bit stricter, its own steps apart from the accuracy scale. */
 export const JOURNEY_STAR_STEPS: StarSteps = [{ stars: 5, from: 0.99 }, { stars: 4, from: 0.9775 }, { stars: 3, from: 0.955 }, { stars: 2, from: 0.91 }];
 
 export function starsFor(accuracy: number, steps = STAR_STEPS): number {

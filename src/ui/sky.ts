@@ -13,17 +13,14 @@ const MELT_BLUR = 10;
 const ARC_STEPS = 24;
 /** Room kept between the sky pieces and the content or the corner controls. */
 const CLEAR = 14;
+/** The other look's pictures wait this long, so on a slow line the first screen's own pictures come first. */
+const OTHER_LOOK_AFTER_MS = 2000;
 
 /**
  * A sky piece: its width and center in units of the sun's size, from the band's left edge and
  * middle; `ratio` is its picture's height to width, `drift` how far it sails to the right.
  */
 interface Piece { el: HTMLElement; size: number; ratio: number; x: number; y: number; drift?: number }
-
-const piece = (cls: string, image: string): HTMLElement => {
-  const src = imageUrl(image);
-  return h('div', { class: `sky-piece ${cls}` }, src ? h('img', { src, alt: '' }) : null);
-};
 
 /**
  * The start page's scene: a day and a night sky, the repeating meadow, the sun with two clouds or
@@ -33,37 +30,65 @@ const piece = (cls: string, image: string): HTMLElement => {
  * change plays the night and day.
  */
 export function skyScene(screen: HTMLElement, under: () => (Element | null)[], beside: () => (Element | null)[]): { el: HTMLElement; destroy(): void } {
-  const sun = piece('sky-sun', 'ui-start-sun');
-  const moon = piece('sky-moon', 'ui-start-moon');
+  // Only the shown look's pictures load with the page; the other look's come later, or with a theme change.
+  const waiting: Record<Look, (() => void)[]> = { light: [], dark: [] };
+  const picture = (look: Look, show: () => void) => (look === shownLook() ? show() : waiting[look].push(show));
+  const loadLook = (look: Look) => { for (const show of waiting[look].splice(0)) show(); };
+  /** A picture of `look`; with `after`, it starts loading only once that has settled. */
+  const image = (look: Look, name: string, after?: Promise<void>): HTMLImageElement | null => {
+    const src = imageUrl(name);
+    if (!src) return null;
+    const img = h('img', { alt: '' });
+    const set = () => { img.src = src; };
+    picture(look, after ? () => void after.then(set) : set);
+    return img;
+  };
+  const piece = (cls: string, look: Look, name: string) => h('div', { class: `sky-piece ${cls}` }, image(look, name));
+  const sun = piece('sky-sun', 'light', 'ui-start-sun');
+  const moon = piece('sky-moon', 'dark', 'ui-start-moon');
   const pieces: Piece[] = [
     { el: sun, size: 1, ratio: 1.02, x: 1.3, y: 0 },
     { el: moon, size: 0.92, ratio: 1.09, x: 1.3, y: 0 },
-    { el: piece('sky-cloud', 'ui-start-cloud-1'), size: 1.3, ratio: 0.51, x: 2.1, y: 0.3, drift: 0.18 },
-    { el: piece('sky-cloud c2', 'ui-start-cloud-2'), size: 0.9, ratio: 0.51, x: 3.5, y: -0.2, drift: 0.18 },
-    { el: piece('sky-star', 'ui-start-star'), size: 0.26, ratio: 1, x: 2.6, y: -0.22 },
-    { el: piece('sky-star s2', 'ui-start-star'), size: 0.18, ratio: 1, x: 3.3, y: 0.24 },
-    { el: piece('sky-star s3', 'ui-start-star'), size: 0.2, ratio: 1, x: 0.25, y: -0.2 },
+    { el: piece('sky-cloud', 'light', 'ui-start-cloud-1'), size: 1.3, ratio: 0.51, x: 2.1, y: 0.3, drift: 0.18 },
+    { el: piece('sky-cloud c2', 'light', 'ui-start-cloud-2'), size: 0.9, ratio: 0.51, x: 3.5, y: -0.2, drift: 0.18 },
+    { el: piece('sky-star', 'dark', 'ui-start-star'), size: 0.26, ratio: 1, x: 2.6, y: -0.22 },
+    { el: piece('sky-star s2', 'dark', 'ui-start-star'), size: 0.18, ratio: 1, x: 3.3, y: 0.24 },
+    { el: piece('sky-star s3', 'dark', 'ui-start-star'), size: 0.2, ratio: 1, x: 0.25, y: -0.2 },
   ];
   const band = h('div', { class: 'sky-band' }, ...pieces.map((p) => p.el));
-  const meadow = (cls: string, image: string) => {
-    const src = imageUrl(image);
-    return h('div', { class: `meadow ${cls}`, style: src ? `background-image: url("${src}")` : '' });
+  /** A meadow strip; `ready` settles when its picture has come (or failed). */
+  const meadow = (cls: string, look: Look, name: string) => {
+    const el = h('div', { class: `meadow ${cls}` });
+    const src = imageUrl(name);
+    const ready = new Promise<void>((resolve) => {
+      if (!src) return resolve();
+      picture(look, () => {
+        // The start page's largest picture: it goes before the smaller ones.
+        const first = new Image();
+        first.fetchPriority = 'high';
+        first.onload = first.onerror = () => resolve();
+        first.src = src;
+        el.style.backgroundImage = `url("${src}")`;
+      });
+    });
+    return { el, ready };
   };
+  const night = meadow('meadow-night', 'dark', 'ui-start-meadow-night');
+  const day = meadow('meadow-day', 'light', 'ui-start-meadow');
   // One of each butterfly by day, up among the flower heads; each wanders off now and then, turns
   // round and comes back (`far` px in `trip` s). Fireflies are glowing dots (the sprite's edge shows at this size)
   // and stay in the meadow's lower part, where the content never reaches (its bottom 60 %).
   const butterflies = [['obj-butterfly', 0.07, 0.22, 48, 6.2, 140, 30], ['obj-butterfly-2', 0.36, 0.16, 40, 7.4, 110, 34], ['obj-butterfly-3', 0.6, 0.26, 44, 5.6, 160, 27]] as const;
   const fireflies = [[0.1, 0.6, 1.2], [0.3, 0.5, 1.5], [0.52, 0.66, 1.8], [0.74, 0.52, 2.1]] as const;
   const life = h('div', { class: 'meadow-life' },
-    ...butterflies.map(([image, x, y, w, t, far, trip], i) => {
-      const src = imageUrl(image);
-      return h('div', { class: 'bfly', style: `left: ${x * 100}%; top: ${y * 100}%; --w: calc(${w}px * var(--meadow-h) / 190px); --t: ${t}s; --d: ${-i * 1.7}s; --far: calc(${far}px * var(--meadow-h) / 190px); --trip: ${trip}s; --td: ${-i * 11}s` },
-        h('span', { class: 'bfly-trip' }, src ? h('img', { src, alt: '' }) : null));
-    }),
+    ...butterflies.map(([name, x, y, w, t, far, trip], i) =>
+      h('div', { class: 'bfly', style: `left: ${x * 100}%; top: ${y * 100}%; --w: calc(${w}px * var(--meadow-h) / 190px); --t: ${t}s; --d: ${-i * 1.7}s; --far: calc(${far}px * var(--meadow-h) / 190px); --trip: ${trip}s; --td: ${-i * 11}s` },
+        // They come after the day meadow, so they never hold it up.
+        h('span', { class: 'bfly-trip' }, image('light', name, day.ready)))),
     ...fireflies.map(([x, y, at], i) => h('div', { class: 'ffly', style: `left: ${x * 100}%; top: ${y * 100}%; --in: ${at}s; --d: ${-i * 1.3}s` }, h('i'))));
   const el = h('div', { class: 'start-sky still', 'aria-hidden': 'true', 'data-look': shownLook() },
     h('div', { class: 'sky-layer sky-day' }), h('div', { class: 'sky-layer sky-night' }),
-    band, meadow('meadow-night', 'ui-start-meadow-night'), meadow('meadow-day', 'ui-start-meadow'), life);
+    band, night.el, day.el, life);
   el.classList.toggle('calm', reduceMotion());
 
   /** The sun's size and where the sun and moon rest, for the arcs. */
@@ -114,6 +139,7 @@ export function skyScene(screen: HTMLElement, under: () => (Element | null)[], b
   };
 
   const change = (look: Look) => {
+    loadLook(look);
     el.dataset.look = look;
     if (el.classList.contains('calm') || sun.hidden) return;
     for (const a of [...sun.getAnimations(), ...moon.getAnimations()]) a.cancel();
@@ -128,9 +154,11 @@ export function skyScene(screen: HTMLElement, under: () => (Element | null)[], b
   observer.observe(screen);
   for (const e of [...under(), ...beside()]) if (e) observer.observe(e);
   const offTheme = onThemeChange(change);
+  const later = setTimeout(() => { loadLook('light'); loadLook('dark'); }, OTHER_LOOK_AFTER_MS);
   return {
     el,
     destroy() {
+      clearTimeout(later);
       observer.disconnect();
       offTheme();
     },

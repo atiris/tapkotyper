@@ -13,7 +13,7 @@ export function langOptions(): [Lang, string][] {
 /** Languages whose readers read a supported one well. */
 export const CLOSE: Partial<Record<string, Lang>> = { cs: 'sk' };
 
-/** The dictionaries a text is looked up in, first wins: an own language, its base, English. */
+/** The dictionaries a text is looked up in, first wins: an own language, its base, English; an official language alone. */
 let chain: Dict[] = [];
 let current: LangRef = 'en';
 /** The official language in use: an own language's base. */
@@ -72,7 +72,8 @@ export async function setLanguage(ref: LangRef): Promise<void> {
   asked = ref;
   const own = isOwnRef(ref) ? await ownLang(ownId(ref)).catch(() => null) : null;
   const lang: Lang = own ? own.base : isLang(ref) ? ref : detectLanguage();
-  const [d, f] = await Promise.all([officialDict(lang), lang === 'en' ? Promise.resolve(null) : officialDict('en').catch(() => null)]);
+  // An official language has every text (a test keeps the dictionaries' keys equal), so only an own language needs English behind it.
+  const [d, f] = await Promise.all([officialDict(lang), own && lang !== 'en' ? officialDict('en').catch(() => null) : null]);
   if (asked !== ref) return;
   chain = [...(own ? [ownDict(own)] : []), d, ...(f ? [f] : [])];
   current = own ? ref : lang;

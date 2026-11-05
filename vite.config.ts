@@ -5,7 +5,8 @@ import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { type Plugin, defineConfig } from 'vite';
 import { aboutPage, aboutPath, aboutRedirect } from './src/app/about-page';
-import { LANGS } from './src/i18n/i18n';
+import { CLOSE, LANGS } from './src/i18n/i18n';
+import { STORE_KEY } from './src/storage/store';
 import { handPoser } from './tools/hand-poser/server';
 
 function publicFiles(dir: string): string[] {
@@ -69,9 +70,35 @@ function aboutPages(): Plugin {
   };
 }
 
+/**
+ * Starts the data the first screen waits for (the asset list and the interface language's texts)
+ * with the page, not after the main script: the language is the stored one, else the one
+ * `detectLanguage` picks; an own language is left to the app.
+ */
+function firstFetches(): Plugin {
+  const pick = `(function () {
+  var langs = ${JSON.stringify(LANGS)}, close = ${JSON.stringify(CLOSE)}, lang;
+  try { lang = JSON.parse(localStorage.getItem(${JSON.stringify(STORE_KEY)}) || '{}').language; } catch (e) {}
+  if (lang && langs.indexOf(lang) < 0) return;
+  if (!lang) {
+    var codes = Array.prototype.map.call(navigator.languages || [], function (l) { return l.toLowerCase().split('-')[0]; });
+    lang = codes.filter(function (c) { return langs.indexOf(c) >= 0; })[0] || codes.map(function (c) { return close[c]; }).filter(Boolean)[0] || 'en';
+  }
+  var link = document.createElement('link');
+  link.rel = 'preload'; link.as = 'fetch'; link.crossOrigin = 'anonymous'; link.href = '/i18n/' + lang + '.json';
+  document.head.appendChild(link);
+})();`;
+  // At the placeholder above the stylesheet: an inline script after it waits until the stylesheet has loaded.
+  const tags = `<link rel="preload" href="/assets/manifest.json" as="fetch" crossorigin="anonymous" />\n    <script>${pick}</script>`;
+  return {
+    name: 'tapkotyper-first-fetches',
+    transformIndexHtml: (html) => html.replace('<!-- first-fetches -->', tags),
+  };
+}
+
 // GitHub Pages serves the site at the root of tapkotyper.com
 export default defineConfig({
   base: '/',
-  plugins: [aboutPages(), serviceWorker(), handPoser()],
+  plugins: [aboutPages(), firstFetches(), serviceWorker(), handPoser()],
   test: { include: ['src/**/*.test.ts'] },
 });

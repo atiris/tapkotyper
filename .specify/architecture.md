@@ -40,6 +40,10 @@
   - code and data the first screens do not need load on first use: each mode's code, the settings
     screen, the translator, and the QR decoder fallback (`jsqr`), which loads only when the teacher
     opens the camera scan in a browser without `BarcodeDetector`.
+  - the start page shows soon on a phone line: the page itself starts the asset list and the
+    interface texts, an official language loads only its own texts (no English behind them),
+    the meadow comes before the smaller sky pictures, and the other look's pictures (night by
+    day, day by night) load a moment later or with a theme change.
 - A scaled copy of the current scene's background tiles is cached at the drawn pixel size, and
   the HUD is written only when a value changes.
 - Adding worlds must not slow the game: memory and work at the start stay flat. A level decodes

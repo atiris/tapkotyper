@@ -10,7 +10,7 @@ const UNKNOWN_MS = 1000;
 export const HIT_MS = 400;
 
 export interface CameraView {
-  /** The live picture, a square from its middle, with the aim and, with several cameras, the switch in its corner. */
+  /** The live picture, a square from its middle, with the aim and in its corner the fullscreen switch (phones) and, with several cameras, the camera switch. */
   frame: HTMLElement;
   /** One status line: starting, ready, the camera's errors, hints. */
   status: HTMLElement;
@@ -41,7 +41,31 @@ export function cameraView(onText: (text: string) => void, ready: (multi: boolea
     void camera.use(list[(at + 1) % list.length].id).catch(fail);
   } }, icon('cameraSwitch'));
   switcher.hidden = true;
-  const frame = h('div', { class: 'scan-frame' }, video, h('div', { class: 'scan-aim', 'aria-hidden': 'true' }), switcher);
+  // On a phone the scan takes the whole screen; `auto`: this camera turned it on, so leaving gives it back.
+  const phone = document.fullscreenEnabled && matchMedia('(pointer: coarse) and (hover: none)').matches;
+  let auto = false;
+  const full = h('button', { type: 'button', class: 'scan-switch', onClick: () => {
+    auto = false;
+    void (document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen()).catch(() => undefined);
+  } });
+  const paintFull = () => {
+    const on = !!document.fullscreenElement;
+    if (!on) auto = false;
+    const label = t(on ? 'common.fullscreenExit' : 'common.fullscreen');
+    full.setAttribute('aria-label', label);
+    full.setAttribute('aria-pressed', String(on));
+    full.replaceChildren(icon(on ? 'fullscreenExit' : 'fullscreen'));
+  };
+  full.hidden = !phone;
+  if (phone) {
+    paintFull();
+    document.addEventListener('fullscreenchange', paintFull);
+    if (!document.fullscreenElement) void document.documentElement.requestFullscreen().then(() => {
+      if (!closed) auto = true;
+      else void document.exitFullscreen().catch(() => undefined);
+    }, () => undefined);
+  }
+  const frame = h('div', { class: 'scan-frame' }, video, h('div', { class: 'scan-aim', 'aria-hidden': 'true' }), h('div', { class: 'scan-tools' }, full, switcher));
   let camera: Camera | null = null;
   let closed = false;
   let flash = 0;
@@ -111,6 +135,9 @@ export function cameraView(onText: (text: string) => void, ready: (multi: boolea
       document.removeEventListener('visibilitychange', onVisibility);
       clearTimeout(restore);
       halt();
+      document.removeEventListener('fullscreenchange', paintFull);
+      if (auto && document.fullscreenElement) void document.exitFullscreen().catch(() => undefined);
+      auto = false;
     },
   };
 }

@@ -98,6 +98,9 @@
   (scan, link, file) and its results; a set whose students all move to another group moves too.
 - **Skenovanie** (`#/teacher/scan`): the camera picture as a square from its middle, an aim frame,
   and, with several cameras, a semi-transparent switch in its corner that moves to the next one.
+  On a phone a fullscreen button sits beside it, and any scan (also the child's) goes fullscreen on
+  its own so the picture is as large as can be; leaving gives the screen back only when the scan
+  turned it on and the user did not touch the button since.
   Beside it (under it on a phone) "Načítané" with "7 načítaných", what this scan read, newest
   first, each with a round button to take it back, and **Zrušiť** (asks, then takes this scan's
   results back) and **Hotovo** (to Hodnotenie › Študenti, filtered to the scan's group when they

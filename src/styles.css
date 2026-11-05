@@ -1342,6 +1342,7 @@ body.reduce-motion :is(.heatmap.clickable .kb .kb-key, .kb-slots .kb-tool, .key-
 /* A small keyboard shows only the main characters and the colours: no Shift symbols, no marks. */
 @container (max-width: 560px) {
   :is(.heatmap, .picker, .world-kb) .kb-shift { display: none; }
+  :is(.heatmap, .picker, .world-kb) .kb-key { font-weight: 400; }
   .heatmap .kb-key[data-heat]::before, .world-kb .kb-key.wk-known:is(.wk-need, .wk-learn)::before { display: none; }
 }
 .heat-host { display: grid; justify-items: start; gap: var(--sp-1); min-width: 0; }

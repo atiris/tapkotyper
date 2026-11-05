@@ -59,7 +59,7 @@
     place); a latched key stays down whatever the mouse does, until it is pressed again; the
     keyboard key goes down visibly on every press. The keys to practise move the same way.
   - A small keyboard (narrower than about 560 px) shows only each key's main character and its
-    colour: no Shift symbols and no marks.
+    colour, in a thinner font: no Shift symbols and no marks.
   - A key "⇧ znaky" under the left Shift, as wide as it, latches like Caps Lock: pressed it stays
     down and the keys show their shifted symbols instead (question mark, exclamation mark, colon,
     Slovak digits), each with its own statistics, until it is pressed again; capitals count for

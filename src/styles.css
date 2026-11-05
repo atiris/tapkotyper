@@ -1312,8 +1312,7 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
 .weak-list li { display: flex; align-items: center; gap: 0.6rem; }
 .weak-list .key-cap { flex: none; }
 /* A key to practise drawn like a key of the on-screen keyboard: outlined, its finger's colour on the bottom edge. */
-.key-cap { min-width: 2.4em; height: 2.4em; padding: 0 0.5em 6px; border-radius: 9px; border: 1px solid var(--key-line); background: var(--surface); color: var(--ink); box-shadow: inset 0 -5px 0 var(--finger, var(--brand)), 0 2px 0 var(--edge); font-family: var(--font-keys); font-size: 1rem; font-weight: 700; cursor: pointer; transition: transform 0.12s; }
-.key-cap:hover { transform: translateY(-2px); }
+.key-cap { min-width: 2.4em; height: 2.4em; padding: 0 0.5em 6px; border-radius: 9px; border: 1px solid var(--key-line); background: var(--surface); color: var(--ink); box-shadow: inset 0 -5px 0 var(--finger, var(--brand)), 0 2px 0 var(--edge); font-family: var(--font-keys); font-size: 1rem; font-weight: 700; cursor: pointer; }
 .keys-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.6rem; margin: 0.6rem 0 1rem; }
 .keys-foot .legend { margin: 0; }
 /*
@@ -1329,16 +1328,22 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
 .kb-slots .kb-tool:focus-visible { outline: 3px solid var(--brand-dark); outline-offset: 2px; }
 .kb-slots .kb-tool .icon { width: 1.5em; height: 1.5em; }
 /*
- * The clickable keys of My keys move like the raised buttons: the base (the coloured band and the edge under it) stays
- * put; hovered the top rises and the band grows, pressed the top sinks and the band shrinks; a latched tool key stays
- * down whatever the mouse does, until it is pressed again.
+ * The clickable keys of My keys and its keys to practise move like the raised buttons: the base (the coloured band
+ * and the edge under it) stays put; hovered the top rises a little and the band grows, pressed the top sinks and the
+ * band shrinks. A selected key stays in its normal place when hovered; a latched tool key stays down whatever the
+ * mouse does, until it is pressed again.
  */
-.heatmap.clickable .kb .kb-key, .kb-slots .kb-tool { cursor: pointer; transition: transform 0.12s ease, box-shadow 0.12s ease; }
+.heatmap.clickable .kb .kb-key, .kb-slots .kb-tool, .key-cap { cursor: pointer; transition: transform 0.12s ease, box-shadow 0.12s ease; }
 @media (hover: hover) {
-  .heatmap.clickable .kb .kb-key:hover, .kb-slots .kb-tool:not(.on):hover { transform: translateY(-3px); border-bottom-color: var(--finger); box-shadow: inset 0 -5px 0 var(--finger), 0 3px 0 var(--finger), 0 5px 0 var(--edge); }
+  :is(.heatmap.clickable .kb .kb-key:not(.selected), .kb-slots .kb-tool:not(.on, .pressed), .key-cap):not(:active):hover { transform: translateY(-2px); border-bottom-color: var(--finger); box-shadow: inset 0 -5px 0 var(--finger), 0 2px 0 var(--finger), 0 4px 0 var(--edge); }
 }
-.heatmap.clickable .kb .kb-key:active, .kb-slots .kb-tool:active, .kb-slots .kb-tool.pressed, .kb-slots .kb-tool.on { transform: translateY(2px); box-shadow: inset 0 -3px 0 var(--finger), 0 0 0 var(--edge); }
-body.reduce-motion :is(.heatmap.clickable .kb .kb-key, .kb-slots .kb-tool):is(:hover, :active, .pressed, .on) { transform: none; }
+:is(.heatmap.clickable .kb .kb-key, .kb-slots .kb-tool, .key-cap):active, .kb-slots .kb-tool:is(.pressed, .on) { transform: translateY(2px); box-shadow: inset 0 -3px 0 var(--finger), 0 0 0 var(--edge); }
+body.reduce-motion :is(.heatmap.clickable .kb .kb-key, .kb-slots .kb-tool, .key-cap):is(:hover, :active, .pressed, .on) { transform: none; }
+/* A small keyboard shows only the main characters and the colours: no Shift symbols, no marks. */
+@container (max-width: 560px) {
+  :is(.heatmap, .picker, .world-kb) .kb-shift { display: none; }
+  .heatmap .kb-key[data-heat]::before, .world-kb .kb-key.wk-known:is(.wk-need, .wk-learn)::before { display: none; }
+}
 .heat-host { display: grid; justify-items: start; gap: var(--sp-1); min-width: 0; }
 /* Out of a level the keyboard is a plain picture: it scrolls under the page bar. */
 .heat-host .heatmap { width: 100%; z-index: auto; }

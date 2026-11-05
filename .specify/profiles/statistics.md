@@ -54,8 +54,12 @@
     it back.
   - The keys move like the raised buttons: the base (the coloured band and the edge under it)
     stays put, never the whole key with a shadow; hovered the top rises and the band between it
-    and the base grows, pressed the top sinks and the band shrinks. A selected key keeps its ring;
-    a latched key stays down whatever the mouse does, until it is pressed again.
+    and the base grows a little, pressed the top sinks and the band shrinks. A selected key keeps
+    its ring and its normal place under the mouse (pressed, it comes back up only to its normal
+    place); a latched key stays down whatever the mouse does, until it is pressed again; the
+    keyboard key goes down visibly on every press. The keys to practise move the same way.
+  - A small keyboard (narrower than about 560 px) shows only each key's main character and its
+    colour: no Shift symbols and no marks.
   - A key "⇧ znaky" under the left Shift, as wide as it, latches like Caps Lock: pressed it stays
     down and the keys show their shifted symbols instead (question mark, exclamation mark, colon,
     Slovak digits), each with its own statistics, until it is pressed again; capitals count for

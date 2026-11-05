@@ -354,7 +354,7 @@ export class KeyboardGuide {
       } else {
         // A plain key goes down visibly for a moment, also when Enter or Space pressed it.
         b.classList.add('pressed');
-        setTimeout(() => b.classList.remove('pressed'), 180);
+        setTimeout(() => b.classList.remove('pressed'), 250);
       }
       onPress(on);
     });

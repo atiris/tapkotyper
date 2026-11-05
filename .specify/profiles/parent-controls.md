@@ -125,7 +125,7 @@
   out by the cheek), and every side is equally sharp (the pieces come turned for their place); "TapkoTyper" centred
   at the top, "Certifikát písania všetkými desiatimi prstami", the full name large when the profile has one, else the nickname (the praise line uses the same), the character in its
   outfit, the results with their pictures in one row (keys mastered, accuracy and speed of the last
-  14 days, stars (the best of each level), stars earned since the start (the stacked stars, labelled just "od začiatku" so it fits one line)), "Postup v príbehoch" with each story's picture, name and worlds done
+  14 days, stars (the best of each level, out of all, e.g. 225/390), stars earned since the start (the stacked stars, labelled just "od začiatku" so it fits one line)), "Postup v príbehoch" with each story's picture, name and worlds done
   (Dračie vajíčko 5/5, all alike), one line on how it goes (by the share of keys mastered, praising
   accuracy when it is high), the date at the left, and at the right the signatures, clear of the
   foxes: Aro the parrot (the macaw on its round branch, a little higher) only while the player holds

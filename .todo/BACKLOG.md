@@ -3,7 +3,7 @@
 Everything found outside the current task, one line each, most important first:
 `- [P1|P2|P3] <title> - <one line: what is wrong and where>`.
 Search before adding; an entry is worked only when it is named.
-- [P2] Mobile LCP still about 9 s in Lighthouse - the main chunk (319 KB) holds every screen (game/runtime.ts, level, teacher/*, stats, help, qrcode-generator) and public/i18n/sk.json is 157 KB, all needed before the start page draws; load the non-start screens on first use like parent/translate in src/main.ts
+- [P3] Interface texts are one 157 KB file - public/i18n/sk.json (and en.json) holds every screen's texts and the start page waits for all of it; split off the texts of screens other than the start (teacher, help, parent, translate) and load them with their screen
 - [P2] Sticky finger: its first level - decide which world's level first plays the Sticky finger kind (plan 104 builds it for own practice only); it needs at least 4 known keys of each hand, so not before the rocket's third level (src/game/levels.ts LEVELS)
 - [P3] Profile PIN - optional PIN a child sets on their profile; anything beyond the map and the progress popup asks for it until the player switches profile or locks the map; the parent removes it with the device password (src/screens/start.ts, map.ts)
 - [P3] Check .tapko sharing and opening on real devices - src/screens/teacher.ts sendDialog uses Web Share with files (Android, iPhone) and main.ts launchQueue opens a double-clicked .tapko in installed Chrome/Edge (plan 59); neither is testable here

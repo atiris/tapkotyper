@@ -28,21 +28,20 @@ export const view = {
   search: '',
   open: new Set<string>(),
   picked: new Set<string>(),
-  /** The card or page the teacher opened from a list of this page, so closing it goes back there. */
-  fromList: null as Place | null,
-  /** The place on screen now. */
-  here: '' as Place,
 };
 
-/** Opens a part of the teacher's page; a card or a page opened from a list closes back to it. */
+/**
+ * Opens a part of the teacher's page. A card or a page opened from a list marks its history entry,
+ * so closing it goes back to that list, also after Back, Forward or a reload.
+ */
 export function openPlace(place: Place, fromList = false): void {
-  view.fromList = fromList ? place : null;
   go('teacher', { tab: place });
+  if (fromList) history.replaceState({ fromList: true }, '');
 }
 
-/** Closes a card or a page: back to the list it was opened from, else to `fallback` (reached by its address, Back or Forward from elsewhere). */
+/** Closes a card or a page: back to the list it was opened from, else (reached by its address) to `fallback`. */
 export function closePlace(fallback: Place): void {
-  if (view.fromList === view.here) history.back();
+  if ((history.state as { fromList?: boolean } | null)?.fromList) history.back();
   else openPlace(fallback);
 }
 

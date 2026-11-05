@@ -1,9 +1,9 @@
 import { app, applyProfileLook, go, screenVisit } from '../app/app';
 import { t } from '../i18n/i18n';
 import { cornerControls } from '../ui/chrome';
-import { button, h } from '../ui/dom';
+import { button, h, onEscape } from '../ui/dom';
 import { type Part, linkPart, resultsPart, scanPart } from './teacher/collect';
-import { type Place, openPlace, teacherStore, twoLabels, view } from './teacher/common';
+import { type Place, openPlace, teacherStore, twoLabels } from './teacher/common';
 import { dataPart, importPart, loadFiles } from './teacher/data';
 import { filesPart, groupsPart, setPart, studentPart, studentsPart } from './teacher/evaluate';
 import { newTaskPart, readyPart } from './teacher/tasks';
@@ -48,16 +48,15 @@ function tabRow(cls: string, label: string, tabs: [string, Node | string, Place]
  * The teacher's page, kept in this browser only, in three parts: Výsledky (the camera, links and
  * the results added last), Hodnotenie (groups, students, loaded files and the data tools) and
  * Úlohy (making tasks and the prepared ones). Each part, card and page has its own address
- * (`tab`, or the old `child` and `set`); a result link (`code`) is added on the way in, and
- * `.tapko` files the app was opened with load. Returns the cleanup that stops the camera.
+ * (`tab`); a result link (`code`) is added on the way in, and `.tapko` files the app was opened
+ * with load. Returns the cleanup that stops the camera.
  */
-export function teacherScreen(root: HTMLElement, params: { code?: string; child?: string; set?: string; tab?: string }): () => void {
+export function teacherScreen(root: HTMLElement, params: { code?: string; tab?: string }): () => void {
   app.profile = null;
   applyProfileLook(null);
   const visit = screenVisit();
   let stop: () => void = () => undefined;
-  const place = params.child ? `student/${params.child}` : params.set ? `set/${params.set}` : OLD[params.tab ?? ''] ?? params.tab ?? '';
-  view.here = place;
+  const place = OLD[params.tab ?? ''] ?? params.tab ?? '';
   // The page paints once the results are read; a teacher who left meanwhile gets nothing.
   void teacherStore().then(async (store) => {
     const opened = app.openedFiles.splice(0);
@@ -65,12 +64,9 @@ export function teacherScreen(root: HTMLElement, params: { code?: string; child?
     if (visit !== screenVisit()) return;
     const { top, sub, part } = partOf(store, place, params.code);
     // Esc closes a card or a page of its own, unless a dialog over it takes the key.
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && part.close && !document.querySelector('.modal-back')) part.close();
-    };
-    document.addEventListener('keydown', onKey);
+    const offEscape = part.close ? onEscape(part.close) : () => undefined;
     stop = () => {
-      document.removeEventListener('keydown', onKey);
+      offEscape();
       part.stop?.();
     };
     const ready = app.store.data.teacherTasks.length;

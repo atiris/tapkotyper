@@ -80,7 +80,7 @@ const OWN_ROUTE: ScreenName[] = ['map', 'wardrobe', 'progress', 'tasks', 'parent
 const LINKS: Partial<Record<string, ScreenName>> = { task: 'taskImport', move: 'moveImport', result: 'teacher' };
 
 /** Address of a screen, so a player's map can be bookmarked or put on the desktop. */
-export function routeOf(name: ScreenName, params: { code?: string; tab?: string; child?: string; set?: string } = {}): string {
+export function routeOf(name: ScreenName, params: { code?: string; tab?: string } = {}): string {
   if (name === 'newProfile') return '#/new';
   if (name === 'translate') return '#/translate';
   if (name === 'taskNote') return '#/note';
@@ -99,7 +99,7 @@ export function routeOf(name: ScreenName, params: { code?: string; tab?: string;
   return `#/p/${encodeURIComponent(id)}${sub ? `/${sub}` : ''}${tab}`;
 }
 
-export function parseRoute(hash: string): { name: ScreenName; profileId: string | null; code?: string; tab?: string; child?: string; set?: string } {
+export function parseRoute(hash: string): { name: ScreenName; profileId: string | null; code?: string; tab?: string } {
   const parts = hash.replace(/^#\/?/, '').split('/').filter(Boolean).map(decodeURIComponent);
   if (parts[0] === 'new') return { name: 'newProfile', profileId: null };
   if (parts[0] === 'translate') return { name: 'translate', profileId: null };
@@ -107,8 +107,8 @@ export function parseRoute(hash: string): { name: ScreenName; profileId: string 
   if (parts[0] === 'settings') return { name: 'parent', profileId: null };
   if (parts[0] === 'help') return { name: 'help', profileId: null, tab: parts[1] };
   if (parts[0] === 'teacher') {
-    // The cards' addresses from before the three parts.
-    if ((parts[1] === 'child' || parts[1] === 'set') && parts[2]) return { name: 'teacher', profileId: null, [parts[1]]: parts.slice(2).join('/') };
+    // A student's card had the address `child/<key>` before the three parts.
+    if (parts[1] === 'child' && parts[2]) return { name: 'teacher', profileId: null, tab: ['student', ...parts.slice(2)].join('/') };
     return { name: 'teacher', profileId: null, ...(parts[1] && { tab: parts.slice(1).join('/') }) };
   }
   const link = LINKS[parts[0]];
@@ -124,7 +124,7 @@ export async function openRoute(hash: string): Promise<void> {
   const p = r.profileId === SUPER_ID ? app.superPlayer : r.profileId ? app.store.get(r.profileId) : null;
   if (r.profileId && !p) return go('start', {}, false);
   if (p && app.profile?.id !== p.id) await selectProfile(p);
-  go(r.name, r.code ? { code: r.code } : r.tab ? { tab: r.tab } : r.child ? { child: r.child } : r.set ? { set: r.set } : {}, false);
+  go(r.name, r.code ? { code: r.code } : r.tab ? { tab: r.tab } : {}, false);
 }
 
 /** Screens a touch-only device reaches before a keyboard is connected: the teacher, the translator and noting a task need none. */

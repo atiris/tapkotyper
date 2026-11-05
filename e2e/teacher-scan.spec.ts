@@ -205,6 +205,20 @@ test('students: sorting, search, moving ticked ones into a new group, and a card
   await expect(page.locator('.teacher-top')).toBeHidden();
   await page.keyboard.press('Escape');
   await expect(page).toHaveURL(/#\/teacher\/eval\/students$/);
+
+  // Opened from the list, a reload still closes back to it.
+  await page.locator('.teacher-rows .teacher-row', { hasText: 'Adam' }).click();
+  await expect(page.locator('.phone-head h1')).toHaveText('Adam');
+  const card = new URL(page.url()).hash;
+  await page.reload();
+  await page.locator('.phone-head .modal-x').click();
+  await expect(page).toHaveURL(/#\/teacher\/eval\/students$/);
+  // Reached by its address after leaving the page, the X opens the list instead of going back out.
+  await page.getByRole('button', { name: 'Späť' }).click();
+  await expect(page).toHaveURL(/#\/$/);
+  await page.evaluate((hash) => { location.hash = hash; }, card);
+  await page.locator('.phone-head .modal-x').click();
+  await expect(page).toHaveURL(/#\/teacher\/eval\/students$/);
 });
 
 test('data: export as tt-….tapko, delete all, import it back, again adds nothing; a deleted file takes its results; groups merge', async ({ page }) => {

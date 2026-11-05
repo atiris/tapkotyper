@@ -67,7 +67,9 @@
   Skupiny · Študenti · Súbory · Dáta) and **Úlohy** (Nová úloha · Pripravené úlohy). Each part,
   sub tab, card and page has its own address (`#/teacher`, `/scan`, `/link`,
   `/eval/groups|students|files|data|import`, `/student/<key>`, `/set/<id>`, `/tasks/new|ready`,
-  `/task/<id>`), so Back works; the tabs' older addresses lead to their parts. Each part has at
+  `/task/<id>`), so Back, Forward and a reload work; the tabs' older addresses lead to their parts.
+  Closing a card or a page goes back to the list it was opened from, else (reached by its address)
+  to the list it belongs to, never out of the teacher's page. Each part has at
   most one short line saying what it is for; the help's teachers and parents tab explains the
   rest. Buttons with text carry no icons.
 - **Výsledky:** one line ("Tu môžete načítať výsledky študentov skenovaním alebo sa tu objavia po

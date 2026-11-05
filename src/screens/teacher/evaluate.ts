@@ -116,6 +116,7 @@ export function studentsPart(store: TeacherStore): Part {
     const q = fold(view.search.trim());
     return sortWriters(store.writers().filter((w) => (view.students === null || (w.group ?? '') === view.students) && (!q || fold(w.name).includes(q))), studentSort);
   };
+  let target = '';
   const pick = (key: string, on: boolean) => {
     if (on) view.picked.add(key);
     else view.picked.delete(key);
@@ -152,8 +153,12 @@ export function studentsPart(store: TeacherStore): Part {
     all.indeterminate = picked.length > 0 && picked.length < list.length;
     const open = (w: Writer) => () => openPlace(`student/${w.key}`, true);
     const targets = groupTargets(store);
-    const deskTarget = choice(t('teacher.students.moveTo'), targets, targets[0][0], true);
+    // The chosen group stays while more students are ticked.
+    if (!targets.some(([v]) => v === target)) target = targets[0][0];
+    const deskTarget = choice(t('teacher.students.moveTo'), targets, target, true);
     const phoneTarget = h('select', { 'aria-label': t('teacher.students.moveTo') }, ...targets.map(([v, text]) => h('option', { value: v }, t('teacher.students.moveToShort', { group: text }))));
+    phoneTarget.value = target;
+    for (const s of [deskTarget.select, phoneTarget]) s.addEventListener('change', () => { target = s.value; });
     body.replaceChildren(...(list.length ? ([
       h('div', { class: 'teacher-table' }, h('table', { class: 'writers-table' },
         h('thead', {}, h('tr', {}, h('th', { scope: 'col', class: 'pick-col' }, all), ...STUDENT_KEYS.map(th), h('th', { scope: 'col' }, h('span', { class: 'sr-only' }, t('teacher.students.open'))))),
@@ -175,7 +180,7 @@ export function studentsPart(store: TeacherStore): Part {
         h('span', { class: 'desk-only' }, deskTarget.el),
         h('span', { class: 'phone-only grow' }, phoneTarget),
         button(h('span', {}, h('span', { class: 'desk-only' }, t('teacher.students.move')), h('span', { class: 'phone-only' }, t('teacher.students.moveN', { n: picked.length }))),
-          () => void move(picked.map((w) => w.key), isPhone() ? phoneTarget.value : deskTarget.select.value), 'btn primary')) : null,
+          () => void move(picked.map((w) => w.key), target), 'btn primary')) : null,
     ] as (HTMLElement | null)[]) : [h('p', { class: 'hint' }, t(store.results.length ? 'teacher.students.none' : 'teacher.results.none'))]).filter((x): x is HTMLElement => !!x));
   };
   paintHead();

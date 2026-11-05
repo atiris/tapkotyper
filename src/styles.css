@@ -1094,7 +1094,7 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
 .lg.wk-known { background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
 .wk-lock { display: flex; align-items: center; gap: 0.3rem; font-weight: 700; color: var(--danger-ink); }
 .practice-keys h2 { margin-top: 0; }
-.pk-row { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
+.pk-row { display: flex; align-items: center; justify-content: flex-end; gap: 0.6rem; }
 .pk-styles { display: flex; justify-content: center; flex-wrap: wrap; gap: 0.4rem; }
 .pk-count { font-weight: 700; }
 .pk-slider { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 0.8rem; margin: 0.8rem 0 0.4rem; font-weight: 600; }
@@ -1306,20 +1306,18 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
 .keys-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.6rem; margin: 0.6rem 0 1rem; }
 .keys-foot .legend { margin: 0; }
 /*
- * The heat map's controls in the free room of the bottom row: the same key unit as the board (15 units a row), left of
- * the space bar 3.75 units, right of it 5. On a phone they go under the keyboard's edges.
+ * Tool keys in the free room of the bottom row, under the Shifts: a strip as wide as the board over its last row, its
+ * keys in the board's key unit (15 units a row, measured on the strip), as wide as the Shift above them.
  */
-.heatmap > .kb { grid-row: 2; }
-.kb-slots { --g: 4px; --p: calc((100cqw + var(--g)) / 15); grid-column: 2; grid-row: 2; align-self: end; justify-self: center; position: relative; width: 100%; max-width: 866px; height: calc((var(--p) - var(--g)) * 46 / 54); container-type: inline-size; pointer-events: none; z-index: 1; }
-.kb-slot { position: absolute; bottom: 0; height: 100%; display: flex; align-items: center; justify-content: center; pointer-events: auto; }
-.kb-slot.left { left: 0; width: calc(3.75 * var(--p) - var(--g)); }
-.kb-slot.right { right: 0; width: calc(5 * var(--p) - var(--g)); }
-.kb-slot .chip { min-height: 0; padding: 0.25em 0.7em; font-size: 0.85rem; white-space: nowrap; }
-.kb-slot .round-btn { width: 40px; height: 40px; }
-@media (max-width: 599px) {
-  .kb-slots { grid-row: 3; height: auto; display: flex; justify-content: space-between; margin-top: 0.4rem; }
-  .kb-slot { position: static; width: auto; }
-}
+.heatmap > .kb, .picker > .kb { grid-row: 2; }
+.kb-slots { grid-column: 2; grid-row: 2; align-self: end; justify-self: center; width: 100%; max-width: 866px; container-type: inline-size; display: flex; justify-content: space-between; align-items: flex-end; pointer-events: none; z-index: 1; }
+.kb-slot { --g: 4px; --p: calc((100cqw + var(--g)) / 15); display: flex; pointer-events: auto; }
+/* A latched tool stays pressed down. */
+.kb-slots .kb-tool { --finger: var(--line); background: var(--surface); color: var(--ink); cursor: pointer; white-space: nowrap; font-family: inherit; font-size: clamp(0.6rem, var(--p) * 0.26, 0.95rem); opacity: 1; }
+.kb-slots .kb-tool:hover { transform: translateY(-2px); }
+.kb-slots .kb-tool.on { --finger: var(--brand-dark); background: var(--brand); color: #fff; transform: translateY(3px); box-shadow: inset 0 3px 4px rgba(0, 0, 0, 0.25); }
+.kb-slots .kb-tool:focus-visible { outline: 3px solid var(--brand-dark); outline-offset: 2px; }
+.kb-slots .kb-tool .icon { width: 1.5em; height: 1.5em; }
 .heatmap.clickable .kb-key { cursor: pointer; }
 .heatmap.clickable .kb-key:hover { transform: translateY(-2px); }
 .heat-host { display: grid; justify-items: start; gap: var(--sp-1); min-width: 0; }

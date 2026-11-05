@@ -13,10 +13,9 @@ import type { Profile } from '../storage/schema';
 import { nickname } from '../storage/store';
 import { lineChart } from '../ui/charts';
 import { HEAT_BANDS, KeyboardGuide, fingerChip, keyCap, keyLabel } from '../ui/keyboard-guide';
-import { button, h, modal } from '../ui/dom';
+import { button, h, icon, modal } from '../ui/dom';
 import { tip } from '../ui/tooltip';
 import { tabBar } from '../ui/tabs';
-import { roundButton } from '../ui/hud';
 import { bigCode } from '../ui/big-code';
 import { badge } from '../ui/badge';
 import { aroPerch } from '../ui/aro';
@@ -92,8 +91,9 @@ export function wholeKeyboard(p: Profile): HTMLElement {
 }
 
 /**
- * Heat map keyboard whose keys open their detail in `detail`. Under the left Shift a switch between
- * the keys' base characters and their shifted symbols, under the right one the whole keyboard's view.
+ * Heat map keyboard whose keys open their detail in `detail`. Under the left Shift a key that latches
+ * the shifted symbols instead of the keys' base characters, under the right one a key with a keyboard
+ * that unselects the keys and shows the whole keyboard's view.
  */
 export function clickableHeatmap(p: Profile, detail: HTMLElement, practice?: (key: string) => void): HTMLElement {
   const kb = new KeyboardGuide(layout());
@@ -112,18 +112,14 @@ export function clickableHeatmap(p: Profile, detail: HTMLElement, practice?: (ke
     el.classList.add('selected');
     detail.replaceChildren(keyDetail(p, key, practice && (() => practice(key))));
   });
-  const toggle = h('button', { class: 'chip shift-toggle', type: 'button', 'aria-pressed': 'false', onClick: () => {
-    shifted = !shifted;
-    toggle.classList.toggle('on', shifted);
-    toggle.setAttribute('aria-pressed', String(shifted));
+  const toggle = kb.toolKey('ShiftLeft', t('stats.shifted'), t('stats.shiftedTip'), (on) => {
+    shifted = on;
     paint();
-  } }, t('stats.shifted'));
-  tip(toggle, t('stats.shiftedTip'));
-  const whole = roundButton('control', 'keyboard', t('stats.whole'), () => {
+  }, true);
+  const whole = kb.toolKey('ShiftRight', icon('keyboard'), t('stats.wholeTip'), () => {
     unselect();
     detail.replaceChildren(wholeKeyboard(p));
   });
-  whole.dataset.tip = t('stats.wholeTip');
   kb.bottomSlots(toggle, whole);
   paint();
   detail.replaceChildren(wholeKeyboard(p));

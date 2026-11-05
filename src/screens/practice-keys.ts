@@ -54,12 +54,10 @@ export function openPracticeKeys(): void {
     chosen = new Set(steps[step]);
     paint();
   });
-  const shiftChip = h('button', { class: 'chip shift-toggle', type: 'button', 'aria-pressed': 'false', onClick: () => {
-    shifted = !shifted;
-    shiftChip.classList.toggle('on', shifted);
-    shiftChip.setAttribute('aria-pressed', String(shifted));
+  kb.bottomSlots(kb.toolKey('ShiftLeft', t('stats.shifted'), t('stats.shiftedTip'), (on) => {
+    shifted = on;
     paint();
-  } }, t('stats.shifted'));
+  }, true));
   const stepLabel = h('span', { class: 'pk-step' });
   const count = h('span', { class: 'pk-count' });
   const hint = h('p', { class: 'hint pk-hint', role: 'status' });
@@ -136,7 +134,7 @@ export function openPracticeKeys(): void {
     h('div', { class: 'pk-styles', role: 'group', 'aria-label': t('practiceKeys.style') }, ...styleBtns),
     styleHint,
     kb.el,
-    h('div', { class: 'pk-row' }, shiftChip, count),
+    h('div', { class: 'pk-row' }, count),
     h('label', { class: 'pk-slider' }, h('span', {}, t('practiceKeys.slider')), slider, stepLabel),
     hint,
     h('div', { class: 'row pk-actions' }, start, settings.el)), { cls: 'practice-keys-modal', onClose: () => settings.dispose() });

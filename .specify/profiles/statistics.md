@@ -49,12 +49,13 @@
     that key.
   - The detail panel opens with the **whole keyboard**: the mean accuracy and the usual speed
     (letters per minute) over every key with presses in its window, and how many keys that is,
-    with the hint to tap a key under it. The round keyboard button in the free room under the right
-    Shift brings it back.
-  - A switch ("⇧ symbols") in the free room under the left Shift shows the shifted symbols of the
-    keys instead (question mark, exclamation mark, colon, Slovak digits), each with its own
-    statistics; capitals count for their letter and its Shift. On a phone both controls sit under
-    the keyboard's edges.
+    with the hint to tap a key under it. A key with a keyboard picture under the right Shift, as
+    wide as it, unselects the keys and brings it back.
+  - A key "⇧ znaky" under the left Shift, as wide as it, latches like Caps Lock: pressed it stays
+    down and the keys show their shifted symbols instead (question mark, exclamation mark, colon,
+    Slovak digits), each with its own statistics, until it is pressed again; capitals count for
+    their letter and its Shift. Own practice's key picker has the same key. Both tool keys sit in
+    the free room beside the space bar and shrink with the keyboard.
   - The **two-minute drill** of a few keys mostly trains those keys; its
     [end card](../game/mechanics.md) shows how they got better.
 - **My progress** ("Môj postup") is a page of its own, opened by the map's button, with a top

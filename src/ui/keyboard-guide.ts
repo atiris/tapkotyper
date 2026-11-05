@@ -334,19 +334,43 @@ export class KeyboardGuide {
   }
 
   /**
-   * Controls in the free room of the bottom row beside the space bar: `left` under the left Shift, `right` under
-   * the right one. They sit outside the board, which is hidden from screen readers.
+   * A key cap for a tool under a Shift (`under`), as wide as that Shift: a latch (`latch`, it stays pressed until
+   * pressed again, as Caps Lock) or a plain key. The content is its label or picture, `label` its tooltip and name.
    */
-  bottomSlots(left: HTMLElement, right: HTMLElement): void {
-    const slot = (side: string, el: HTMLElement) => {
+  toolKey(under: 'ShiftLeft' | 'ShiftRight', content: Node | string, label: string, onPress: (on: boolean) => void, latch = false): HTMLButtonElement {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'kb-key kb-tool';
+    b.style.setProperty('--w', String(keyByCode(this.layout, under)?.w ?? 1));
+    b.setAttribute('aria-label', label);
+    b.dataset.tip = label;
+    if (latch) b.setAttribute('aria-pressed', 'false');
+    b.append(content);
+    b.addEventListener('click', () => {
+      const on = latch && b.getAttribute('aria-pressed') !== 'true';
+      if (latch) {
+        b.setAttribute('aria-pressed', String(on));
+        b.classList.toggle('on', on);
+      }
+      onPress(on);
+    });
+    return b;
+  }
+
+  /**
+   * Tool keys in the free room of the bottom row beside the space bar: `left` under the left Shift and, optionally,
+   * `right` under the right one. They sit outside the board, which is hidden from screen readers.
+   */
+  bottomSlots(left: HTMLElement, right?: HTMLElement): void {
+    const slot = (el: HTMLElement) => {
       const s = document.createElement('div');
-      s.className = `kb-slot ${side}`;
+      s.className = 'kb-slot';
       s.append(el);
       return s;
     };
     const slots = document.createElement('div');
     slots.className = 'kb-slots';
-    slots.append(slot('left', left), slot('right', right));
+    slots.append(slot(left), ...(right ? [slot(right)] : []));
     this.el.append(slots);
   }
 

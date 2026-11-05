@@ -3603,7 +3603,7 @@
     "open": "Klávesy sveta {world}",
     "titleLocked": "Podmienky odomknutia sveta {world}",
     "titleOpen": "Klávesnica v svete {world}",
-    "lockedByKeys": "Tento svet je zamknutý len kvôli klávesom. Ovládni klávesy, ktoré musíš vedieť a ešte nemajú ✓.",
+    "lockedByKeys": "Tento svet je zamknutý len kvôli tomu, že ešte neovládaš všetky klávesy, ktoré sú potrebné na jeho hranie. Ak chýbajúce klávesy zvládneš, tento svet sa ti odomkne.",
     "need": "Musím vedieť ({n})",
     "learn": "Naučím sa ({n})",
     "known": "už ovládam",

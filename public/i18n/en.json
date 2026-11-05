@@ -3580,7 +3580,7 @@
     "open": "Keys of {world}",
     "titleLocked": "How to open the world {world}",
     "titleOpen": "The keyboard in the world {world}",
-    "lockedByKeys": "This world is closed only because of keys. Master the must-know keys that have no ✓ yet.",
+    "lockedByKeys": "This world is closed only because you do not master all the keys it needs yet. Once you master the missing keys, the world opens for you.",
     "need": "Must know ({n})",
     "learn": "I learn ({n})",
     "known": "mastered",

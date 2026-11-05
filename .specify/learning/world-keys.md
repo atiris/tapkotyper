@@ -24,20 +24,23 @@
   100 right ([statistics](../profiles/statistics.md)). Presses of the keyboard check count like any
   presses, so a world the check reached still waits for enough presses.
 - A world opens when its story is open and the world before it is done (or the keyboard check
-  reached it) **and** the child masters its must-know keys. When only keys hold it, the map's lock
-  card says so plainly: the world is closed only because of keys, which keys (small key caps of
-  the child's layout) and what mastered means, with the two-minute drill of them. The list guards
-  the way in only: a world with a level already played stays open, so finished levels can always
-  be replayed.
-- On the map every world card has a round **keyboard button**: on an open world at the bottom of
-  the picture, in the badge's column above the world's name; on a closed one beside the lock. It
-  opens the world's keys on the child's keyboard: the must-know keys filled in their finger's
-  colour, the keys it teaches outlined, the other keys faded, a check on every key the child
-  masters, a legend with the counts and one line on what mastered means. A world closed only by
-  keys says so above the keyboard.
+  reached it) **and** the child masters its must-know keys. The list guards the way in only: a
+  world with a level already played stays open, so finished levels can always be replayed.
+- **The world's keys panel**, the same for an open and a closed world. An open world opens it by
+  a round keyboard button at the bottom of its picture, in the badge's column above the world's
+  name, drawn like the small badge (same size) with a grey ring and a keyboard picture; a closed
+  world has only its lock: hovering it tells why the world is closed (and which keys, when only
+  keys hold it), a click opens the panel. Heading: "<lock> Podmienky odomknutia sveta NAME" for a
+  closed world, "Klávesnica v svete NAME" for an open one. A closed world says why above the
+  keyboard (plainly "only because of keys" when so), with the two-minute drill of its missing
+  keys, or own practice while its story waits for more keys. On the child's keyboard the keys are
+  outlined by their part, not by finger: must know green, I learn orange, dashed while not
+  mastered, solid with a check once mastered; a mastered key outside the world solid grey; the
+  rest faded. A legend, one line on what mastered means and, for a closed world, the keys still
+  to master as small key caps close it.
 - Help, tab Progress, section **Worlds and keys**: every world, also one not built yet, with its
   island and two rows of key caps on the layout, "Musím vedieť" and "Naučím sa". It is the same
-  for every player: nothing in it marks what this child masters (the map's keyboard button does).
+  for every player: nothing in it marks what this child masters (the world's keys panel on the map does).
 
 ## The lists
 The source a world is designed with. "+" adds to the world before it in the same story; "Naučím sa"
@@ -76,6 +79,6 @@ index columns `r0 f0 v0` and `u0 j0 m0` from world 9 on (column games,
 - The parent sees in Help what each world expects, and why a world waits.
 - Must know = mastered keys of the worlds before, not the keys a world's first level brings: a key
   the world itself teaches cannot be asked for at its door. Mastered, not only met: a world builds
-  on keys the fingers already find, and the drill on the lock card is a short way there.
+  on keys the fingers already find, and the drill in the world's keys panel is a short way there.
 - Help is a description of the game, the same for everyone; what this child masters belongs on the
   map, next to the world.

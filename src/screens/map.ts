@@ -5,11 +5,10 @@ import { compassElement } from '../gfx/compass';
 import { tapkoElement } from '../gfx/tapko';
 import { t, tList } from '../i18n/i18n';
 import { nickname } from '../storage/store';
-import { DRILL_SECONDS, LEVELS, STORIES, type StoryDef, WORLDS, activityOf, aimOpen, aimWorld, isLevelReached, isWorldUnlocked, journeyId, journeyOpen, keysMissing, levelById, nextLevel, storyOpen, worldLevels, worldLock, worldName } from '../game/levels';
+import { LEVELS, STORIES, type StoryDef, WORLDS, activityOf, aimOpen, aimWorld, isLevelReached, isWorldUnlocked, journeyId, journeyOpen, keysMissing, levelById, nextLevel, storyOpen, worldLevels, worldLock, worldName } from '../game/levels';
 import { GUEST_ID, type Profile, SUPER_ID, type Surprise } from '../storage/schema';
-import { LAYOUTS } from '../keyboard/layouts';
-import { MASTERED_TEXT, activeKeys, lessonKeysFor, masteredKeyNames, notReadyKeys } from '../learning/lessons';
-import { keyLabel, namedKeyCaps, namedKeyLabel } from '../ui/keyboard-guide';
+import { activeKeys, notReadyKeys } from '../learning/lessons';
+import { keyLabel } from '../ui/keyboard-guide';
 import { badgeTier } from '../game/rewards';
 import { badge } from '../ui/badge';
 import { flyAway, hasParrotBadge } from '../game/parrots';
@@ -32,7 +31,7 @@ import { openBreak } from './break';
 import { openPracticeKeys } from './practice-keys';
 import { type TeacherTip, dueTip, tipSeen } from '../app/teacher-tips';
 import { openStats } from './stats';
-import { worldKeysButton } from './world-keys';
+import { openWorldKeys, worldKeysButton, worldLockText } from './world-keys';
 import { taskCard } from './task';
 
 /** Ms Turtle's pictures, one after another with her tips. */
@@ -190,17 +189,6 @@ export function mapScreen(root: HTMLElement): () => void {
       practiceOffer(world));
     bubble.hidden = false;
   };
-  // A closed world: what is still needed to open it.
-  const lockBubble = (world: number) => {
-    const lock = worldLock(p, world);
-    if (!lock) return;
-    // Keys the world counts on: as caps, with the short drill of them.
-    const need = lock.kind === 'need' ? [namedKeyCaps(LAYOUTS[p.layout], lock.keys, masteredKeyNames(p)),
-      h('div', { class: 'bubble-actions' }, button(t('stats.drill'), () => go('level', { id: 'practice', keys: lessonKeysFor(p, lock.keys), seconds: DRILL_SECONDS }), 'btn small', 'practice'))] : [];
-    bubble.replaceChildren(h('p', {}, lock.kind === 'need' ? t('map.lockNeed', MASTERED_TEXT) : lockText(p, world)), ...need,
-      ...(lock.kind === 'keys' ? [...(held ? [h('p', { class: 'held-keys' }, held)] : []), practiceOffer(world)] : []));
-    bubble.hidden = false;
-  };
   const next = nextLevel(p);
   // Nothing open for the child's keys: continue means practice, which brings new keys.
   const start = () => (next ? go('level', { id: next.id }) : openPracticeKeys());
@@ -232,7 +220,7 @@ export function mapScreen(root: HTMLElement): () => void {
         button(t('map.freeType'), startFreeType, 'btn', 'keyboard'),
         button(t('map.wardrobe'), () => go('wardrobe'), 'btn', 'shirt'),
         button(t('progress.title'), () => go('progress'), 'btn', 'chart')),
-      h('div', { class: 'story-rows' }, teacher, ...STORIES.map((s) => storyRow(p, s, current, held, keysBubble, lockBubble))))));
+      h('div', { class: 'story-rows' }, teacher, ...STORIES.map((s) => storyRow(p, s, current, held, keysBubble))))));
   // The arrows walk the levels and the closed worlds like a grid.
   arrowFocus(root.querySelector('.story-rows')!, '.level-node, .island-art[tabindex]');
   // Enter starts at once; the placement question takes the focus, starting from the beginning first.
@@ -262,15 +250,6 @@ export function mapScreen(root: HTMLElement): () => void {
 function heldText(p: Profile): string {
   const keys = notReadyKeys(p);
   return keys.length ? t('map.heldKeys', { keys: keys.map(keyLabel).join(', ') }) : '';
-}
-
-/** What a closed world still needs; empty for an open one. */
-function lockText(p: Profile, world: number): string {
-  const lock = worldLock(p, world);
-  if (!lock) return '';
-  if (lock.kind === 'world') return t('map.lockWorld', { world: worldName(lock.prev) });
-  if (lock.kind === 'need') return `${t('map.lockNeed', MASTERED_TEXT)} ${lock.keys.map((n) => namedKeyLabel(LAYOUTS[p.layout], n).main).join(', ')}`;
-  return t('map.lockKeys', { n: lock.need, have: lock.have });
 }
 
 /** The key on a level still short of letters; its tooltip names the letters that need accuracy. */
@@ -371,7 +350,7 @@ function surprisesMark(p: Profile, world: number): HTMLElement | null {
  * and which letters need accuracy (`held`); every world shows its target range and its parrot, open once the world is finished,
  * and the story's last world its hero's journey after the crown.
  */
-function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held: string, keysBubble: (n: number, world: number) => void, lockBubble: (world: number) => void): HTMLElement {
+function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held: string, keysBubble: (n: number, world: number) => void): HTMLElement {
   const islands = story.worlds.map((wi) => {
     const w = WORLDS[wi];
     const open = isWorldUnlocked(p, wi);
@@ -398,16 +377,16 @@ function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held:
       return b;
     });
     const tier = badgeTier(p, wi);
-    const lock = open ? '' : [lockText(p, wi), worldLock(p, wi)?.kind === 'keys' ? held : ''].filter(Boolean).join(' ');
+    const lock = open ? '' : [worldLockText(p, wi), worldLock(p, wi)?.kind === 'keys' ? held : ''].filter(Boolean).join(' ');
     return h('div', { class: `island ${open ? '' : 'locked'} island-${w}` },
       h('div', { class: 'island-art', ...(open ? {} : {
-        onClick: () => lockBubble(wi),
-        onKeydown: (e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') lockBubble(wi); },
+        onClick: () => openWorldKeys(p, wi),
+        onKeydown: (e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') openWorldKeys(p, wi); },
         role: 'button',
         tabindex: '0',
         'aria-label': worldName(wi),
         tip: lock || null,
-      }) }, img ? h('img', { src: img, alt: '' }) : h('div', { class: 'island-fallback' }), open ? null : h('span', { class: 'lock', tip: lock || null }, icon('lock')), worldKeysButton(p, wi),
+      }) }, img ? h('img', { src: img, alt: '' }) : h('div', { class: 'island-fallback' }), open ? worldKeysButton(p, wi) : h('span', { class: 'lock', tip: lock || null }, icon('lock')),
         tier ? badge(wi, tier, true) : null, surprisesMark(p, wi)),
       h('h3', {}, `${wi + 1}. ${worldName(wi)}`),
       h('div', { class: 'level-row' }, ...levels, wi === story.worlds[story.worlds.length - 1] ? journeyNode(p, story) : null, aimNode(p, aimOpen(p, wi), wi), parrotNode(p, aimOpen(p, wi), wi)));

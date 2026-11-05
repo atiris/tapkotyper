@@ -3578,11 +3578,14 @@
   },
   "worldKeys": {
     "open": "Keys of {world}",
-    "title": "{world}: keys",
+    "titleLocked": "How to open the world {world}",
+    "titleOpen": "The keyboard in the world {world}",
     "lockedByKeys": "This world is closed only because of keys. Master the must-know keys that have no ✓ yet.",
     "need": "Must know ({n})",
     "learn": "I learn ({n})",
     "known": "mastered",
+    "other": "mastered, outside this world",
+    "missing": "To open it, you still have to master:",
     "mastered": "You master a key once you have pressed it at least {n} times and at least {right} of the last {n} presses are right."
   }
 }

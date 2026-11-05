@@ -3601,11 +3601,14 @@
   },
   "worldKeys": {
     "open": "Klávesy sveta {world}",
-    "title": "{world}: klávesy",
+    "titleLocked": "Podmienky odomknutia sveta {world}",
+    "titleOpen": "Klávesnica v svete {world}",
     "lockedByKeys": "Tento svet je zamknutý len kvôli klávesom. Ovládni klávesy, ktoré musíš vedieť a ešte nemajú ✓.",
     "need": "Musím vedieť ({n})",
     "learn": "Naučím sa ({n})",
     "known": "už ovládam",
+    "other": "ovládam, mimo tohto sveta",
+    "missing": "Na odomknutie ešte musíš ovládať:",
     "mastered": "Kláves ovládaš, keď ho máš stlačený aspoň {n}-krát a z posledných {n} stlačení je aspoň {right} správne."
   }
 }

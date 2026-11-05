@@ -1,7 +1,7 @@
 # 110 Teacher page redesign: Výsledky · Hodnotenie · Úlohy
 
 The owner's redesign of `#/teacher`, agreed in chat on 2026-11-05 and drawn on the canvas
-https://claude.ai/artifact/ATuwt3CJ4kAPHPom1MrKT1 (a copy of every board is in `.todo/110-teacher-design/`,
+https://claude.ai/artifact/ATuwt3CJ4kAPHPom1MrKT1 (a copy of every board is in `.todo/.done/110-teacher-design/`,
 `canvas.json` lists them with titles). The result must look and behave as close to the boards as the app allows.
 **Where a board contradicts how the app works correctly today, the app wins**: e.g. the mobile boards draw an icon-only
 "‹" where the app uses its back button with text, the boards inline colours the app takes from its CSS tokens (dark
@@ -115,12 +115,12 @@ change except what a result carries.
 - [x] 8. i18n sk/en, translator notes, catalog; specs (`teacher-links.md`, `help.md`, the help tab texts); e2e specs
   updated; `npm run build`, unit tests, the two teacher e2e specs; browser check of every board (desktop 1280, phone
   390×844 and 844×390, dark mode once) with the playwright MCP. Commit.
-- [ ] 9. **Independent review**: a fresh agent (model opus) with only this plan, the boards in
-  `.todo/110-teacher-design/` and the repo compares the running app with every board and every decision above,
+- [x] 9. **Independent review**: a fresh agent (model opus) with only this plan, the boards in
+  `.todo/.done/110-teacher-design/` and the repo compares the running app with every board and every decision above,
   reports each mismatch or quality problem (look, behaviour, texts, accessibility, dead code, specs), and fixes them.
   If it fixed anything substantial (behaviour, a screen's structure, data rules), a second fresh agent reviews again
   the same way; repeat until a review finds nothing substantial. Commit the fixes.
-- [ ] 10. Move this plan and `110-teacher-design/` to `.todo/.done/`, `## Done` notes, queue line removed. Commit, push.
+- [x] 10. Move this plan and `110-teacher-design/` to `.todo/.done/`, `## Done` notes, queue line removed. Commit, push.
 
 ## State
 - Steps 1-8 landed in one commit: the screens could not build on the old data layer, so data, routes, parts, texts,
@@ -130,3 +130,14 @@ change except what a result carries.
   from the app's tokens; the phone's "Skupiny a študenti" buttons stand in one column (two columns broke their words);
   the board's Študenti line "jednotlivo na ich karte" is gone because the card holds results only; the camera switch
   replaced the camera select on the other two camera screens too, so the app has one camera.
+
+## Done - 2026-11-05
+- Shipped: the teacher page in three parts (Výsledky, Hodnotenie, Úlohy) with scan and link pages, Skupiny, Študenti
+  with moving ticked students, the student card, Súbory, Dáta with its dialogs and the import page, the task form's group
+  choice and Pripravené úlohy with the QR panel / phone page; the hidden player id and run in results, sources per
+  hand-in, group folding, merges and file deletion; texts sk/en, help, the about page line, README, specs, unit and e2e
+  tests (2ca921b, 249b814, 5ed0085).
+- Independent reviews: round 1 (395840c, 7477520) and round 2 (dc4132f, eb53419) fixed card navigation, so a further
+  round followed; round 3 (2643f1e, 668161e) found only a small history fix, nothing substantial.
+- Left out on purpose: the two delete dialogs' explaining lines (the owner's no-hint rule), the task panel's line between
+  its button rows and the Študenti "Skupina" label (minor, kept as the app has them).

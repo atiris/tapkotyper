@@ -351,6 +351,10 @@ export class KeyboardGuide {
       if (latch) {
         b.setAttribute('aria-pressed', String(on));
         b.classList.toggle('on', on);
+      } else {
+        // A plain key goes down visibly for a moment, also when Enter or Space pressed it.
+        b.classList.add('pressed');
+        setTimeout(() => b.classList.remove('pressed'), 180);
       }
       onPress(on);
     });

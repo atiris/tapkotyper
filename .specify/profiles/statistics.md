@@ -50,7 +50,11 @@
   - The detail panel opens with the **whole keyboard**: the mean accuracy and the usual speed
     (letters per minute) over every key with presses in its window, and how many keys that is,
     with the hint to tap a key under it. A key with a keyboard picture under the right Shift, as
-    wide as it, unselects the keys and brings it back.
+    wide as it, goes down visibly when pressed, releases "⇧ znaky", unselects the keys and brings
+    it back.
+  - The keys move like the raised buttons: the base stays put, hovered a key lifts and shows more
+    of its bottom edge, pressed it sinks with its edge and gets a little smaller; a selected key
+    keeps its ring, a latched key stays down.
   - A key "⇧ znaky" under the left Shift, as wide as it, latches like Caps Lock: pressed it stays
     down and the keys show their shifted symbols instead (question mark, exclamation mark, colon,
     Slovak digits), each with its own statistics, until it is pressed again; capitals count for

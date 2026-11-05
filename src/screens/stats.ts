@@ -93,7 +93,7 @@ export function wholeKeyboard(p: Profile): HTMLElement {
 /**
  * Heat map keyboard whose keys open their detail in `detail`. Under the left Shift a key that latches
  * the shifted symbols instead of the keys' base characters, under the right one a key with a keyboard
- * that unselects the keys and shows the whole keyboard's view.
+ * that releases the Shift symbols, unselects the keys and shows the whole keyboard's view.
  */
 export function clickableHeatmap(p: Profile, detail: HTMLElement, practice?: (key: string) => void): HTMLElement {
   const kb = new KeyboardGuide(layout());
@@ -117,6 +117,8 @@ export function clickableHeatmap(p: Profile, detail: HTMLElement, practice?: (ke
     paint();
   }, true);
   const whole = kb.toolKey('ShiftRight', icon('keyboard'), t('stats.wholeTip'), () => {
+    // Everything back to the start: the Shift symbols released too.
+    if (shifted) toggle.click();
     unselect();
     detail.replaceChildren(wholeKeyboard(p));
   });

@@ -40,7 +40,8 @@
   - Under the keyboard, in one row, **Preveriť moje ovládanie klávesnice** on the left starts the
     [placement check](../learning/placement-check.md) (about 4 minutes, in the tooltip), whose end
     card shows the strong and weak keys of that run, and the legend (★ super ✓ ide to ~ skoro ! poďme
-    cvičiť) on the right; on a phone the row wraps.
+    cvičiť) on the right, each item's tooltip with the accuracy over a key's last 100 presses it
+    stands for (at least 97 %, 94 to under 97 %, 89 to under 94 %, under 89 %); on a phone the row wraps.
   - The keys to practise are lines without bullets: the key drawn as an outlined key like the
     on-screen keyboard's (it opens its details), its accuracy and the finger to press it with.
     **Krátke cvičenie** under them starts the two-minute drill of those keys; its tooltip names them.

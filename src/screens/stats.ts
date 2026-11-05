@@ -128,6 +128,15 @@ export function clickableHeatmap(p: Profile, detail: HTMLElement, practice?: (ke
   return h('div', { class: 'heat-host' }, kb.el);
 }
 
+/** The accuracy a heat band asks over a key's last presses: from its bound up to the next band's, the top one at least, the lowest under. */
+function bandTip(from: number, below: number | undefined): string {
+  const pct = (v: number) => Math.round(v * 100);
+  const n = STATS_WINDOW;
+  if (below === undefined) return t('stats.bandFrom', { from: pct(from), n });
+  if (!from) return t('stats.bandUnder', { to: pct(below), n });
+  return t('stats.bandBetween', { from: pct(from), to: pct(below), n });
+}
+
 /** An icon (or a glyph) with a number; the meaning is in the tooltip and the aria-label only. */
 function chip(pic: string | null, glyph: string, text: string, label: string): HTMLElement {
   return h('li', { class: 'sum-chip', tip: label, 'aria-label': label, role: 'img' },
@@ -292,7 +301,7 @@ export function keysTab(p: Profile, close: () => void): HTMLElement {
     heat,
     h('div', { class: 'keys-foot' }, check,
       h('p', { class: 'legend' },
-        ...HEAT_BANDS.map((b) => h('span', { class: `lg ${b.cls}` }, `${b.mark} ${t(b.label)}`)))),
+        ...HEAT_BANDS.map((b, i) => h('span', { class: `lg ${b.cls}`, tip: bandTip(b.from, HEAT_BANDS[i - 1]?.from) }, `${b.mark} ${t(b.label)}`)))),
     h('div', { class: 'stats-split' },
       weak.length ? h('div', { class: 'weak' },
         h('h3', {}, t('stats.practiceKeys')),

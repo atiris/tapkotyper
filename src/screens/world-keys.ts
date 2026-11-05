@@ -7,6 +7,7 @@ import { keyName } from '../keyboard/key-names';
 import { MASTERED_TEXT, lessonKeysFor, masteredKeyNames, notReadyKeys } from '../learning/lessons';
 import type { Profile } from '../storage/schema';
 import { button, h, icon, modal } from '../ui/dom';
+import { tip } from '../ui/tooltip';
 import { KeyboardGuide, keyLabel, namedKeyCaps, namedKeyLabel } from '../ui/keyboard-guide';
 import { openPracticeKeys } from './practice-keys';
 
@@ -53,22 +54,23 @@ export function openWorldKeys(p: Profile, world: number): void {
   const lock = worldLock(p, world);
   const missing = worldKeysMissing(p, world);
   const close = () => closeModal();
-  const actions = [
-    ...(missing.length ? [button(t('stats.drill'), () => { close(); go('level', { id: 'practice', keys: lessonKeysFor(p, missing), seconds: DRILL_SECONDS }); }, 'btn small', 'practice')] : []),
-    ...(lock?.kind === 'keys' ? [button(t('map.practice'), () => { close(); openPracticeKeys(); }, 'btn small', 'practice')] : []),
-  ];
+  // The drill of the missing keys, named in its tooltip as on My keys; own practice while the story waits for keys.
+  const drillKeys = lessonKeysFor(p, missing);
+  const drill = missing.length ? button(t('stats.drill'), () => { close(); go('level', { id: 'practice', keys: drillKeys, seconds: DRILL_SECONDS }); }, 'btn primary', 'practice') : null;
+  if (drill) tip(drill, t('stats.drillTip', { keys: drillKeys.map(keyLabel).join(' ') }));
+  const actions = [drill, lock?.kind === 'keys' ? button(t('map.practice'), () => { close(); openPracticeKeys(); }, 'btn', 'practice') : null].filter((b) => !!b);
   const held = lock?.kind === 'keys' && notReadyKeys(p).length ? t('map.heldKeys', { keys: notReadyKeys(p).map(keyLabel).join(', ') }) : '';
   const closeModal = modal(h('div', { class: 'world-keys-panel' },
     h('h2', {}, ...(lock ? [icon('lock'), ' ', t('worldKeys.titleLocked', { world: worldName(world) })] : [t('worldKeys.titleOpen', { world: worldName(world) })])),
     lock ? h('p', { class: 'wk-lock' }, lock.kind === 'need' ? t('worldKeys.lockedByKeys') : worldLockText(p, world)) : null,
     held ? h('p', { class: 'held-keys' }, held) : null,
-    actions.length ? h('div', { class: 'row wk-actions' }, ...actions) : null,
     kb.el,
     h('p', { class: 'legend wk-legend' },
       h('span', { class: 'lg wk-need' }, t('worldKeys.need', { n: need.size })),
       h('span', { class: 'lg wk-learn' }, t('worldKeys.learn', { n: learn.size })),
       h('span', { class: 'lg wk-known' }, `✓ ${t('worldKeys.known')}`),
       h('span', { class: 'lg wk-other' }, t('worldKeys.other'))),
-    h('p', { class: 'hint' }, t('worldKeys.mastered', MASTERED_TEXT)),
-    missing.length ? h('div', { class: 'wk-missing' }, h('p', {}, t('worldKeys.missing')), namedKeyCaps(lay, missing, mastered)) : null), { cls: 'world-keys-modal' });
+    h('p', { class: 'hint wk-mastered' }, t('worldKeys.solid'), h('br'), t('worldKeys.mastered', MASTERED_TEXT)),
+    missing.length ? h('div', { class: 'wk-missing' }, h('p', {}, t('worldKeys.missing')), namedKeyCaps(lay, missing, mastered)) : null,
+    actions.length ? h('div', { class: 'row wk-actions' }, ...actions) : null), { cls: 'world-keys-modal' });
 }

@@ -3609,6 +3609,7 @@
     "known": "už ovládam",
     "other": "ovládam, mimo tohto sveta",
     "missing": "Na odomknutie ešte musíš ovládať:",
-    "mastered": "Kláves ovládaš, keď ho máš stlačený aspoň {n}-krát a z posledných {n} stlačení je aspoň {right} správne."
+    "solid": "Klávesy, ktoré ovládaš, sú označené plnými čiarami.",
+    "mastered": "Z posledných {n} stlačení klávesu musíš mať {right} stlačení správne."
   }
 }

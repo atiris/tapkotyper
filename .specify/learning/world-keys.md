@@ -32,12 +32,13 @@
   world has only its lock: hovering it tells why the world is closed (and which keys, when only
   keys hold it), a click opens the panel. Heading: "<lock> Podmienky odomknutia sveta NAME" for a
   closed world, "Klávesnica v svete NAME" for an open one. A closed world says why above the
-  keyboard (plainly "only because of keys" when so), with the two-minute drill of its missing
-  keys, or own practice while its story waits for more keys. On the child's keyboard the keys are
+  keyboard (plainly "only because of keys" when so). On the child's keyboard the keys are
   outlined by their part, not by finger: must know green, I learn orange, dashed while not
   mastered, solid with a check once mastered; a mastered key outside the world solid grey; the
-  rest faded. A legend, one line on what mastered means and, for a closed world, the keys still
-  to master as small key caps close it.
+  rest faded. Under it a legend, two lines ("Keys you master have solid lines." and how many of
+  a key's last presses must be right), for a closed world the keys still to master as small key
+  caps, and at the bottom the two-minute drill of them (its tooltip names the keys, as on My
+  keys), or own practice while its story waits for more keys.
 - Help, tab Progress, section **Worlds and keys**: every world, also one not built yet, with its
   island and two rows of key caps on the layout, "Musím vedieť" and "Naučím sa". It is the same
   for every player: nothing in it marks what this child masters (the world's keys panel on the map does).

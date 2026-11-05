@@ -3,7 +3,7 @@ import { locale, t, tList } from '../i18n/i18n';
 import { captureKeys, homePinky } from '../game/cards';
 import { JOURNEY_STAR_STEPS, STAR_STEPS, type StarSteps, WORLDS, worldKeys, worldName, worldNewKeys } from '../game/levels';
 import { LAYOUTS } from '../keyboard/layouts';
-import { knownKeyNames } from '../learning/lessons';
+import { MASTERED_TEXT } from '../learning/lessons';
 import { newProfile } from '../storage/store';
 import { namedKeyCaps } from '../ui/keyboard-guide';
 import { BADGE_STARS, MAX_WORLD_STARS } from '../game/rewards';
@@ -55,21 +55,20 @@ const GAMES: [string, string][] = [
 ];
 
 /**
- * Every world (built or not) with its island, the keys it counts on and the keys it adds, as caps on the child's layout:
- * a key the child knows full, one still to learn as an outline. Without a player, the keyboard of the language, all full.
+ * Every world (built or not) with its island, the keys to master before it opens and the keys it teaches, as caps on
+ * the keyboard of the language. The same for every player: nothing marks what a child masters (the map does).
  */
 function worldKeysList(): HTMLElement {
-  const p = app.profile ?? newProfile('', locale() === 'sk' ? 'sk' : 'en');
+  const p = newProfile('', locale() === 'sk' ? 'sk' : 'en');
   const layout = LAYOUTS[p.layout];
-  const known = app.profile ? knownKeyNames(p) : null;
-  const caps = (names: string[]) => namedKeyCaps(layout, names, known ?? new Set(names));
+  const caps = (names: string[]) => (names.length ? namedKeyCaps(layout, names, new Set(names)) : h('span', {}, t('help.worldKeys.none')));
   const row = (label: string, names: string[]) => h('div', { class: 'world-keys-row' }, h('span', {}, label), caps(names));
   return h('ul', { class: 'world-keys' }, ...WORLDS.map((w, i) => {
     const src = imageUrl(`ui-map-${w}`);
     const fresh = worldNewKeys(p, i);
     return h('li', {}, src ? h('img', { class: 'world-keys-pic', src, alt: '' }) : h('span', { class: 'world-keys-pic' }),
-      h('div', {}, h('h3', {}, `${i + 1}. ${worldName(i)}`), row(t('help.worldKeys.start'), worldKeys(p, i)),
-        fresh.length ? row(t('help.worldKeys.new'), fresh) : null));
+      h('div', {}, h('h3', {}, `${i + 1}. ${worldName(i)}`), row(t('help.worldKeys.need'), worldKeys(p, i)),
+        fresh.length ? row(t('help.worldKeys.learn'), fresh) : null));
   }));
 }
 
@@ -206,7 +205,7 @@ function tabContent(tab: HelpTab, now: Child[] = []): HTMLElement[] {
       section(t('help.playTitle'), list('help.play')),
       section(t('help.gamesTitle'), h('p', {}, t('help.games.intro')), h('ul', { class: 'help-icons' }, ...gameIcons()),
         h('ul', { class: 'help-icons help-timed' }, iconLine(clockPic(), t('help.games.timed')))),
-      section(t('help.worldKeysTitle'), h('p', {}, t('help.worldKeys.intro')), worldKeysList()),
+      section(t('help.worldKeysTitle'), h('p', {}, ...richText(t('help.worldKeys.intro', MASTERED_TEXT))), worldKeysList()),
       section(t('help.progressTitle'), list('help.progress')),
       section(t('help.moreTitle'), list('help.more', { max: String(MAX_WORLD_STARS), bronze: String(BADGE_STARS.bronze), silver: String(BADGE_STARS.silver), gold: String(BADGE_STARS.gold) })),
     ];

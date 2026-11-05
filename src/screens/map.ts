@@ -8,7 +8,7 @@ import { nickname } from '../storage/store';
 import { DRILL_SECONDS, LEVELS, STORIES, type StoryDef, WORLDS, activityOf, aimOpen, aimWorld, isLevelReached, isWorldUnlocked, journeyId, journeyOpen, keysMissing, levelById, nextLevel, storyOpen, worldLevels, worldLock, worldName } from '../game/levels';
 import { GUEST_ID, type Profile, SUPER_ID, type Surprise } from '../storage/schema';
 import { LAYOUTS } from '../keyboard/layouts';
-import { activeKeys, knownKeyNames, lessonKeysFor, notReadyKeys } from '../learning/lessons';
+import { MASTERED_TEXT, activeKeys, lessonKeysFor, masteredKeyNames, notReadyKeys } from '../learning/lessons';
 import { keyLabel, namedKeyCaps, namedKeyLabel } from '../ui/keyboard-guide';
 import { badgeTier } from '../game/rewards';
 import { badge } from '../ui/badge';
@@ -194,9 +194,9 @@ export function mapScreen(root: HTMLElement): () => void {
     const lock = worldLock(p, world);
     if (!lock) return;
     // Keys the world counts on: as caps, with the short drill of them.
-    const need = lock.kind === 'need' ? [namedKeyCaps(LAYOUTS[p.layout], lock.keys, knownKeyNames(p)),
+    const need = lock.kind === 'need' ? [namedKeyCaps(LAYOUTS[p.layout], lock.keys, masteredKeyNames(p)),
       h('div', { class: 'bubble-actions' }, button(t('stats.drill'), () => go('level', { id: 'practice', keys: lessonKeysFor(p, lock.keys), seconds: DRILL_SECONDS }), 'btn small', 'practice'))] : [];
-    bubble.replaceChildren(h('p', {}, lock.kind === 'need' ? t('map.lockNeed') : lockText(p, world)), ...need,
+    bubble.replaceChildren(h('p', {}, lock.kind === 'need' ? t('map.lockNeed', MASTERED_TEXT) : lockText(p, world)), ...need,
       ...(lock.kind === 'keys' ? [...(held ? [h('p', { class: 'held-keys' }, held)] : []), practiceOffer(world)] : []));
     bubble.hidden = false;
   };
@@ -268,7 +268,7 @@ function lockText(p: Profile, world: number): string {
   const lock = worldLock(p, world);
   if (!lock) return '';
   if (lock.kind === 'world') return t('map.lockWorld', { world: worldName(lock.prev) });
-  if (lock.kind === 'need') return `${t('map.lockNeed')} ${lock.keys.map((n) => namedKeyLabel(LAYOUTS[p.layout], n).main).join(', ')}`;
+  if (lock.kind === 'need') return `${t('map.lockNeed', MASTERED_TEXT)} ${lock.keys.map((n) => namedKeyLabel(LAYOUTS[p.layout], n).main).join(', ')}`;
   return t('map.lockKeys', { n: lock.need, have: lock.have });
 }
 

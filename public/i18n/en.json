@@ -179,7 +179,7 @@
     "storyOpens": "Opens when you know {n} letters. Now you know {have}.",
     "lockWorld": "Finish {world} first.",
     "lockKeys": "This story opens when you know {n} letters. Now you know {have}.",
-    "lockNeed": "First learn these keys:",
+    "lockNeed": "This world is closed only because of keys. First master these keys, each pressed at least {n} times with at least {right} of the last {n} presses right:",
     "keysOne": "You need one more letter for this level. You get new letters by playing or in Own typing.",
     "keysFew": "You need {n} more letters for this level. You get new letters by playing or in Own typing.",
     "keysMany": "You need {n} more letters for this level. You get new letters by playing or in Own typing.",
@@ -1731,9 +1731,10 @@
     },
     "worldKeysTitle": "Worlds and keys",
     "worldKeys": {
-      "intro": "Each world counts on the keys you know when you enter it: all its games may use them. More keys come level by level. Keys you know are full, keys still to learn are only an outline. A world opens once you know all its keys.",
-      "start": "You start with",
-      "new": "New here"
+      "intro": "Each world has two lists of keys. **Must know**: keys of the worlds before, which you must master for the world to open. You master a key once you have pressed it at least {n} times and at least {right} of the last {n} presses are right. **I learn**: the keys that come in this world, level by level. The keyboard button by the world on the map shows what you have mastered.",
+      "need": "Must know",
+      "learn": "I learn",
+      "none": "nothing, this is the start"
     },
     "journeyTitle": "Worlds, levels and stars",
     "journey": [

@@ -74,6 +74,8 @@ export const ACCURACY = { fair: 0.89, good: 0.94, great: 0.97 } as const;
 
 /** Key statistics look at the last presses only, so old habits stop counting; a key is mastered over this window. */
 export const STATS_WINDOW = 100;
+/** What a mastered key takes, for texts: `n` presses, and `right` right ones among the last `n`. */
+export const MASTERED_TEXT = { n: STATS_WINDOW, right: Math.round(ACCURACY.fair * STATS_WINDOW) };
 /** Recent presses window after which the finger guide fades for a key. */
 export const MASTERY_WINDOW = 40;
 /** A key is ready for the next one after fewer presses than full mastery. */
@@ -155,6 +157,33 @@ export function isReady(stat: KeyStat | undefined, size = READY_WINDOW): boolean
   return (windowAccuracy(stat, size) ?? 0) >= ACCURACY.fair;
 }
 
+export interface KeyMastery {
+  /** Accuracy and median reaction time (ms) of the last STATS_WINDOW presses. */
+  accuracy: number;
+  medianMs: number;
+}
+
+/**
+ * A key is mastered when it has at least 100 recorded presses and its last 100 are at least
+ * "almost" right (ACCURACY.fair): the presses the heat map judges it by. Speed does not decide;
+ * the median reaction is kept for showing. Null while it is not.
+ */
+export function keyMastery(profile: Profile, key: string): KeyMastery | null {
+  const recent = profile.stats.keys[key]?.recent;
+  if (!recent || recent.length < STATS_WINDOW) return null;
+  const win = recent.slice(-STATS_WINDOW);
+  const ok = win.filter((v) => v > 0);
+  const accuracy = ok.length / win.length;
+  if (accuracy < ACCURACY.fair) return null;
+  return { accuracy, medianMs: median(ok) };
+}
+
+/** The names of the keys the child masters: every key (and Shift) a mastered key of the practice order is typed with. */
+export function masteredKeyNames(profile: Profile): Set<string> {
+  const layout = LAYOUTS[profile.layout];
+  return new Set(practiceOrder(profile).filter((k) => keyMastery(profile, k)).flatMap((k) => lessonKeyNames(layout, k)));
+}
+
 /** The key is ready for the next one, by its own window. */
 export function isKeyReady(profile: Profile, key: string): boolean {
   return isReady(profile.stats.keys[key], readyWindow(key));
@@ -229,12 +258,6 @@ export function lessonKeyNames(layout: Layout, key: string): string[] {
   if (key === SHIFT_R) return ['rs'];
   return stepsFor(layout, key).flatMap((step) => [shiftKeyFor(layout, step), step.code])
     .flatMap((code) => (code ? [keyName(layout, code)] : [])).filter((n): n is string => n !== null);
-}
-
-/** The names of the keys the child knows: every key (and Shift) the active keys are typed with on the profile's layout. */
-export function knownKeyNames(profile: Profile): Set<string> {
-  const layout = LAYOUTS[profile.layout];
-  return new Set(activeKeys(profile).flatMap((k) => lessonKeyNames(layout, k)));
 }
 
 /** The profile types on another layout: the progress stays, but only with keys the new layout teaches. */

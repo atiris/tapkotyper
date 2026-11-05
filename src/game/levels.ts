@@ -1,6 +1,6 @@
 import { t } from '../i18n/i18n';
 import { LAYOUTS } from '../keyboard/layouts';
-import { ACCURACY, activeKeys, aimKeys, isLetterKey, knownKeyNames, lessonKeyNames, practiceOrder } from '../learning/lessons';
+import { ACCURACY, activeKeys, aimKeys, isLetterKey, lessonKeyNames, masteredKeyNames, practiceOrder } from '../learning/lessons';
 import { type Profile, SUPER_ID, type TaskSpec } from '../storage/schema';
 import { PARROT_MIN_S, type ParrotSize, parrotSize } from './parrots';
 
@@ -10,57 +10,60 @@ export const WORLDS: WorldId[] = ['meadow', 'space', 'planet', 'dragons', 'egg',
   'garden', 'forestpath', 'lilylake', 'musictree', 'moonball'];
 
 /**
- * The keys a world counts on, by place (keyName): the child knows them on entering it, every game of the world may use
- * them. Each holds the keys every layout's lesson order reaches by the world's entry (`STORIES[].keys`), or never
- * teaches; the source the worlds are designed with is `.specify/learning/world-keys.md`.
+ * The keys a world asks the child to master before it opens, by place (keyName): the keys of the worlds before it. Every
+ * game of the world may use them. Each holds the keys every layout's lesson order reaches by the world's need count
+ * (`needCount`), or never teaches; the source the worlds are designed with is `.specify/learning/world-keys.md`.
  */
-const W2 = ['f0', 'j0', 'sp', 'd0', 'k0', 's0', 'l0'];
-const W3 = [...W2, 'a0', 'l1', 'g0', 'h0', 'e0'];
-const W4 = [...W3, 'i0', 'r0', 'u0', 'm2'];
-const W6 = [...W2, 'a0', 'l1', 'g0'];
-const W7 = [...W6, 'h0', 'e0', 'i0', 'r0', 'u0'];
-const W8 = [...W7, 'm2', 'o0', 't0', 'n0', 'm1'];
-const W9 = [...W8, 'c0', 'v0', 'm0', 'p0'];
-const W12 = [...W9, 'ls', 'b0', 'y0', 'rs'];
-const W13 = [...W12, 'z0', 'w0', 'x0', 'q0', 'm3', 'l2'];
-const W14 = [...W13, '80', '90', '00', '70', '60', '50', '40', '30', '20', 'p1'];
+const N2 = ['f0', 'j0', 'sp', 'd0', 'k0'];
+const N3 = [...N2, 's0', 'l0', 'a0', 'l1', 'g0'];
+const N4 = [...N3, 'h0', 'e0', 'i0', 'r0', 'u0'];
+const N7 = [...N3, 'h0', 'e0', 'i0', 'r0'];
+const N8 = [...N7, 'u0', 'm2', 'o0', 't0', 'n0'];
+const N9 = [...N8, 'm1', 'c0', 'v0', 'm0'];
+const N11 = [...N8, 'm1'];
+const N12 = [...N11, 'c0', 'v0', 'm0', 'p0', 'ls', 'b0'];
+const N13 = [...N12, 'y0', 'rs', 'z0', 'w0', 'x0', 'q0', 'm3', 'l2'];
+const N14 = [...N13, '80', '90', '70', '60', '50', '40', '30', '20'];
 export const WORLD_KEYS: readonly (readonly string[])[] = [
-  ['f0', 'j0', 'sp'], W2, W3, W4, [...W4, 'o0', 't0', 'n0'],
-  W6, W7, W8, W9, [...W12, 'w0'],
-  W8, W12, W13, W14, [...W14, 'p2', 'l3', '02', '10', '01'],
+  [], N2, N3, N4, [...N4, 'm2', 'o0', 't0'],
+  N3, N7, N8, N9, [...N9, 'p0', 'ls', 'b0', 'y0', 'rs'],
+  N11, N12, N13, N14, [...N14, '00', 'p1', 'p2', 'l3', '02', '10', '01'],
 ];
 
-/** The world's keys the profile's practice order teaches: a key it never has (no diacritics, another layout) is left out. */
+/** How many keys of the lesson order the worlds before teach: the story's opening count for its first world (none for the first story), else the last level's of the world before. */
+export function needCount(p: Profile, world: number): number {
+  const story = storyOf(world);
+  if (world === story.worlds[0]) return Math.min(story.opensAtKeys ?? 0, practiceOrder(p).length);
+  const before = worldLevels(world - 1);
+  return keysNeeded(p, before[before.length - 1]);
+}
+
+/** The world's keys to master (its need) the profile's practice order teaches: a key it never has (no diacritics, another layout) is left out. */
 export function worldKeys(p: Profile, world: number): string[] {
   const layout = LAYOUTS[p.layout];
   const taught = new Set(practiceOrder(p).flatMap((k) => lessonKeyNames(layout, k)));
   return WORLD_KEYS[world].filter((n) => taught.has(n));
 }
 
-/** The world's keys the child does not know yet; none for the super profile. */
+/** The world's keys the child does not master yet; none for the super profile. */
 export function worldKeysMissing(p: Profile, world: number): string[] {
   if (p.id === SUPER_ID) return [];
-  const known = knownKeyNames(p);
+  const known = masteredKeyNames(p);
   return worldKeys(p, world).filter((n) => !known.has(n));
 }
 
-/** The keys the profile's practice order adds in the world, from its first level's keys to its last level's. */
+/** The keys the profile's practice order teaches in the world: from the keys of the worlds before to its last level's, its first level's own new keys too. */
 export function worldNewKeys(p: Profile, world: number): string[] {
   const layout = LAYOUTS[p.layout];
-  const [first, last] = [worldLevels(world)[0], worldLevels(world)[4]];
-  const names = (l: LevelDef) => new Set(practiceOrder(p).slice(0, keysNeeded(p, l)).flatMap((k) => lessonKeyNames(layout, k)));
-  const before = names(first);
-  return [...names(last)].filter((n) => !before.has(n));
+  const levels = worldLevels(world);
+  const names = (n: number) => new Set(practiceOrder(p).slice(0, n).flatMap((k) => lessonKeyNames(layout, k)));
+  const before = names(needCount(p, world));
+  return [...names(keysNeeded(p, levels[levels.length - 1]))].filter((n) => !before.has(n));
 }
 
-/**
- * The world's keys that hold it closed: missing ones, once the child knows as many keys as its first level needs (with
- * fewer, that level's own key count holds the child back, as along the lesson order). They guard the way in: a world
- * with a level played stays open.
- */
+/** The world's keys that hold it closed: the ones not mastered. They guard the way in: a world with a level played stays open. */
 function keysHolding(p: Profile, world: number): string[] {
   if (worldLevels(world).some((l) => p.progress.levels[l.id])) return [];
-  if (activeKeys(p).length < keysNeeded(p, worldLevels(world)[0])) return [];
   return worldKeysMissing(p, world);
 }
 

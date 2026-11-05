@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { emptyKeyStat } from '../storage/schema';
 import { ENTER, LAYOUTS, enterAfter, fingerFor } from '../keyboard/layouts';
-import { SHIFT_L, STATS_WINDOW, activeKeys, knownKeyNames, lessonKeyNames, lessonKeysFor, advanceLesson, aimKeys, firstKeys, keysAccuracy, notReadyKeys, isFluent, isReady, keysToIntroduce, lessonOrder, practiceOrder, practiceSteps, punctuationKeys, reactionLimit, shiftKeyOf, stepHolding } from './lessons';
-import { keyMastery, keyReport, lastTraining, masterySummary, recordPress, weakKeys } from './stats';
+import { SHIFT_L, STATS_WINDOW, activeKeys, keyMastery, lessonKeyNames, masteredKeyNames, lessonKeysFor, advanceLesson, aimKeys, firstKeys, keysAccuracy, notReadyKeys, isFluent, isReady, keysToIntroduce, lessonOrder, practiceOrder, practiceSteps, punctuationKeys, reactionLimit, shiftKeyOf, stepHolding } from './lessons';
+import { keyReport, lastTraining, masterySummary, recordPress, weakKeys } from './stats';
 
 describe('lesson order', () => {
   it('starts on the home row with the index fingers', () => {
@@ -322,12 +322,12 @@ describe('keys by name', () => {
     expect(lessonKeyNames(LAYOUTS['us-qwerty'], ';')).toEqual(['l1']);
   });
 
-  it("knows the keys of the active keys, the parent's pick too", () => {
+  it('masters the keys of mastered lesson keys, a digit with its Shift', () => {
     const p = newProfile('Ema', 'sk');
-    expect([...knownKeyNames(p)].sort()).toEqual(['f0', 'j0', 'sp']);
-    p.settings.activeKeysMode = 'manual';
-    p.settings.manualKeys = ['a', '7'];
-    expect([...knownKeyNames(p)].sort()).toEqual(['70', 'a0', 'ls']);
+    expect([...masteredKeyNames(p)]).toEqual([]);
+    for (const k of ['a', '7']) p.stats.keys[k] = { ...emptyKeyStat(), presses: 100, recent: Array(100).fill(500) };
+    expect(keyMastery(p, 'a')).not.toBeNull();
+    expect([...masteredKeyNames(p)].sort()).toEqual(['70', 'a0', 'ls']);
   });
 
   it('finds the lesson keys that teach named keys along the practice order', () => {

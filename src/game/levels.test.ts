@@ -2,22 +2,28 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { LAYOUTS, LAYOUT_IDS } from '../keyboard/layouts';
 import { newProfile } from '../storage/store';
-import { SUPER_ID } from '../storage/schema';
+import { type Profile, SUPER_ID, emptyKeyStat } from '../storage/schema';
 import { lessonKeyNames, lessonOrder, practiceOrder } from '../learning/lessons';
-import { LEVELS, STORIES, WORLDS, activityOf, minActiveS, minWords, playedStep, aimLevel, aimOpen, aimWorld, freeTypeLevel, grownCount, hasMinLength, isLevelUnlocked, isWorldUnlocked, keysNeeded, levelById, levelOver, nextLevel, parrotKeys, parrotLevel, parrotSizeOf, practiceLevel, JOURNEYS, JOURNEY_STAR_STEPS, journeyId, journeyLevel, journeyOpen, journeyProgress, starsFor, shownProgress, worldLevels, worldLock, WORLD_KEYS, worldKeys, worldKeysMissing, worldNewKeys } from './levels';
+import { LEVELS, STORIES, WORLDS, needCount, activityOf, minActiveS, minWords, playedStep, aimLevel, aimOpen, aimWorld, freeTypeLevel, grownCount, hasMinLength, isLevelUnlocked, isWorldUnlocked, keysNeeded, levelById, levelOver, nextLevel, parrotKeys, parrotLevel, parrotSizeOf, practiceLevel, JOURNEYS, JOURNEY_STAR_STEPS, journeyId, journeyLevel, journeyOpen, journeyProgress, starsFor, shownProgress, worldLevels, worldLock, WORLD_KEYS, worldKeys, worldKeysMissing, worldNewKeys } from './levels';
 
 /** Keys along the Slovak lesson order, so every world's keys come with their count. */
 const KEYS = lessonOrder('sk-qwertz').slice(0, 26);
+
+/** The child knows these keys and masters them: 100 right presses each. */
+const know = (p: Profile, keys: string[]) => {
+  p.progress.unlockedKeys = [...keys];
+  for (const k of keys) p.stats.keys[k] = { ...emptyKeyStat(), presses: 100, recent: Array(100).fill(500) };
+};
 
 describe('story unlocks', () => {
   it('opens the robot story when the child knows ten keys', () => {
     const p = newProfile('Ema', 'sk');
     expect(isWorldUnlocked(p, 0)).toBe(true);
     expect(isWorldUnlocked(p, 5)).toBe(false);
-    p.progress.unlockedKeys = KEYS.slice(0, 9);
+    know(p, KEYS.slice(0, 9));
     p.progress.worldsDone = [0, 1];
     expect(isWorldUnlocked(p, 5)).toBe(false);
-    p.progress.unlockedKeys = KEYS.slice(0, 10);
+    know(p, KEYS.slice(0, 10));
     p.progress.worldsDone = [];
     expect(isWorldUnlocked(p, 5)).toBe(true);
     expect(isWorldUnlocked(p, 6)).toBe(false);
@@ -25,16 +31,16 @@ describe('story unlocks', () => {
 
   it('opens the fairy story at twenty keys', () => {
     const p = newProfile('Ema', 'sk');
-    p.progress.unlockedKeys = lessonOrder(p.layout).slice(0, 19);
+    know(p, lessonOrder(p.layout).slice(0, 19));
     expect(isWorldUnlocked(p, 10)).toBe(false);
-    p.progress.unlockedKeys = lessonOrder(p.layout).slice(0, 20);
+    know(p, lessonOrder(p.layout).slice(0, 20));
     expect(isWorldUnlocked(p, 10)).toBe(true);
     expect(isWorldUnlocked(p, 11)).toBe(false);
   });
 
   it('lets both stories go on independently', () => {
     const p = newProfile('Ema', 'sk');
-    p.progress.unlockedKeys = KEYS.slice(0, 10);
+    know(p, KEYS.slice(0, 19));
     p.progress.worldsDone = [0, 1, 5, 6];
     expect(isWorldUnlocked(p, 2)).toBe(true);
     expect(isWorldUnlocked(p, 3)).toBe(false);
@@ -44,7 +50,7 @@ describe('story unlocks', () => {
 
   it('plays the dragon story first, then the robot story', () => {
     const p = newProfile('Ema', 'sk');
-    p.progress.unlockedKeys = KEYS;
+    know(p, KEYS);
     p.progress.worldsDone = [0, 1];
     for (const l of LEVELS.filter((x) => x.world < 2)) p.progress.levels[l.id] = 3;
     expect(nextLevel(p)?.id).toBe('w3-1');
@@ -77,7 +83,7 @@ describe('keys needed per level', () => {
     const p = newProfile('Ema', 'sk');
     p.progress.worldsDone = [0];
     for (const l of LEVELS.filter((x) => x.world <= 1)) p.progress.levels[l.id] = 2;
-    p.progress.unlockedKeys = KEYS.slice(0, n);
+    know(p, KEYS.slice(0, n));
     return p;
   };
   const open = (p: ReturnType<typeof withKeys>) => worldLevels(1).map((l) => isLevelUnlocked(p, l));
@@ -104,9 +110,9 @@ describe('keys needed per level', () => {
     const robot = () => worldLevels(6).map((l) => isLevelUnlocked(p, l));
     expect(worldLevels(5).map((l) => keysNeeded(p, l))).toEqual([10, 11, 12, 13, 14]);
     expect(worldLevels(6).map((l) => keysNeeded(p, l))).toEqual([15, 16, 17, 18, 19]);
-    p.progress.unlockedKeys = KEYS.slice(0, 17);
+    know(p, KEYS.slice(0, 17));
     expect(robot()).toEqual([true, true, true, false, false]);
-    p.progress.unlockedKeys = KEYS.slice(0, 19);
+    know(p, KEYS.slice(0, 19));
     expect(robot()).toEqual([true, true, true, true, true]);
   });
 
@@ -119,7 +125,7 @@ describe('keys needed per level', () => {
     expect(Math.max(...LEVELS.map((l) => keysNeeded(p, l)))).toBeLessThanOrEqual(path);
     p.progress.worldsDone = [10];
     for (const l of worldLevels(11)) p.progress.levels[l.id] = 2;
-    p.progress.unlockedKeys = lessonOrder('us-qwerty');
+    know(p, lessonOrder('us-qwerty'));
     expect(worldLevels(11).every((l) => isLevelUnlocked(p, l))).toBe(true);
   });
 
@@ -145,7 +151,7 @@ describe('keys needed per level', () => {
     expect(nextLevel(p)?.id).toBe('w1-3');
     delete p.progress.levels['w1-3'];
     expect(nextLevel(p)?.id).toBe('w1-3');
-    p.progress.unlockedKeys = ['f'];
+    know(p, ['f']);
     expect(nextLevel(p)).toBeNull();
   });
 });
@@ -298,14 +304,15 @@ describe('world locks', () => {
     expect(worldLock(p, 0)).toBeNull();
     expect(worldLock(p, 1)).toEqual({ kind: 'world', prev: 0 });
     p.progress.worldsDone = [0];
+    know(p, KEYS.slice(0, 5));
     expect(worldLock(p, 1)).toBeNull();
   });
 
   it('counts the keys a closed story still needs', () => {
     const p = newProfile('Ema', 'sk');
-    p.progress.unlockedKeys = KEYS.slice(0, 7);
+    know(p, KEYS.slice(0, 7));
     expect(worldLock(p, 5)).toEqual({ kind: 'keys', need: 10, have: 7 });
-    p.progress.unlockedKeys = KEYS.slice(0, 10);
+    know(p, KEYS.slice(0, 10));
     expect(worldLock(p, 5)).toBeNull();
   });
 });
@@ -408,7 +415,7 @@ describe('placement check', () => {
   /** A profile the check placed at `n` keys of the lesson order. */
   const placed = (n: number) => {
     const p = newProfile('Ema', 'sk');
-    p.progress.unlockedKeys = lessonOrder(p.layout).slice(0, n);
+    know(p, lessonOrder(p.layout).slice(0, n));
     p.progress.placementKeys = n;
     return p;
   };
@@ -433,13 +440,13 @@ describe('placement check', () => {
     p.progress.worldsDone = [2];
     // The next world needs one key more: the most advanced level the check opened waits elsewhere.
     expect(nextLevel(p)?.id).toBe('w7-1');
-    p.progress.unlockedKeys = lessonOrder(p.layout).slice(0, 16);
+    know(p, lessonOrder(p.layout).slice(0, 16));
     expect(nextLevel(p)?.id).toBe('w4-1');
   });
 
   it('changes nothing without a check', () => {
     const p = newProfile('Ema', 'sk');
-    p.progress.unlockedKeys = lessonOrder(p.layout).slice(0, 15);
+    know(p, lessonOrder(p.layout).slice(0, 15));
     expect(LEVELS.filter((l) => isLevelUnlocked(p, l)).map((l) => l.id)).toEqual(['w1-1', 'w6-1']);
     expect(nextLevel(p)?.id).toBe('w1-1');
   });
@@ -454,25 +461,33 @@ describe('world keys', () => {
   };
   const names = (p: ReturnType<typeof profile>, n: number) => new Set(practiceOrder(p).slice(0, n).flatMap((k) => lessonKeyNames(LAYOUTS[p.layout], k)));
 
-  it('is reached by every lesson order by the world entry count, so the count and the list never disagree', () => {
+  it('is reached by every lesson order by the need count, so the count and the list never disagree', () => {
     for (const layout of LAYOUT_IDS) for (const off of [false, true]) {
       const p = profile(layout, off);
       for (const w of WORLDS.keys()) {
-        const known = names(p, keysNeeded(p, worldLevels(w)[0]));
+        const known = names(p, needCount(p, w));
         expect(worldKeys(p, w).filter((n) => !known.has(n)), `${layout} ${off} world ${w + 1}`).toEqual([]);
       }
     }
   });
 
-  it('holds every key all layouts reach by the entry or never teach', () => {
+  it('holds every key all layouts reach by the need count or never teach', () => {
     for (const w of WORLDS.keys()) {
       const per = LAYOUT_IDS.map((id) => {
         const p = profile(id);
-        return { entry: names(p, keysNeeded(p, worldLevels(w)[0])), all: names(p, Infinity) };
+        return { need: names(p, needCount(p, w)), all: names(p, Infinity) };
       });
-      const every = [...new Set(per.flatMap((x) => [...x.all]))].filter((n) => per.every((x) => x.entry.has(n) || !x.all.has(n)) && per.some((x) => x.entry.has(n)));
+      const every = [...new Set(per.flatMap((x) => [...x.all]))].filter((n) => per.every((x) => x.need.has(n) || !x.all.has(n)) && per.some((x) => x.need.has(n)));
       expect([...WORLD_KEYS[w]].sort(), `world ${w + 1}`).toEqual(every.sort());
     }
+  });
+
+  it("asks the keys of the worlds before: none for the first world, the story opening count for a story's first world", () => {
+    const sk = profile('sk-qwertz');
+    expect(WORLD_KEYS[0]).toEqual([]);
+    expect(worldNewKeys(sk, 0)).toEqual(['f0', 'j0', 'sp', 'd0', 'k0']);
+    expect(needCount(sk, 1)).toBe(keysNeeded(sk, worldLevels(0)[4]));
+    expect(needCount(sk, 5)).toBe(STORIES[1].opensAtKeys);
   });
 
   it('matches the table of the spec', () => {
@@ -481,32 +496,34 @@ describe('world keys', () => {
     expect(rows).toHaveLength(WORLDS.length);
     const sk = profile('sk-qwertz');
     let before: string[] = [];
-    for (const [w, [, enters, fresh]] of rows.entries()) {
-      const list = enters.startsWith('+') ? [...before, ...enters.slice(1).trim().split(' ')] : enters.split(' ');
+    const split = (cell: string) => (cell ? cell.split(' ') : []);
+    for (const [w, [, need, fresh]] of rows.entries()) {
+      const list = need.startsWith('+') ? [...before, ...split(need.slice(1).trim())] : split(need);
       expect(list, `world ${w + 1}`).toEqual([...WORLD_KEYS[w]]);
-      expect(fresh ? fresh.split(' ') : [], `world ${w + 1} new`).toEqual(worldNewKeys(sk, w));
+      expect(split(fresh), `world ${w + 1} new`).toEqual(worldNewKeys(sk, w));
       before = list;
     }
   });
 
-  it("closes a world whose keys the parent's own pick misses, once the count is there", () => {
+  it('closes a world until the child masters its keys; a world already played in stays open', () => {
     const p = newProfile('Ema', 'sk');
     p.progress.worldsDone = [0];
-    p.settings.activeKeysMode = 'manual';
-    // Seven keys, as the rocket world's first level needs, but the space bar left out.
-    p.settings.manualKeys = ['f', 'j', 'd', 'k', 's', 'l', 'a'];
+    know(p, KEYS.slice(0, 5));
+    // The space bar typed often but not accurately enough: 88 of the last 100 right.
+    p.stats.keys[' '] = { ...emptyKeyStat(), presses: 300, recent: [...Array(88).fill(500), ...Array(12).fill(0)] };
     expect(worldKeysMissing(p, 1)).toEqual(['sp']);
     expect(worldLock(p, 1)).toEqual({ kind: 'need', keys: ['sp'] });
     expect(isWorldUnlocked(p, 1)).toBe(false);
-    // A world already played in stays open: the meadow needs the space bar too.
-    p.progress.levels['w1-1'] = 3;
-    expect(isWorldUnlocked(p, 0)).toBe(true);
-    p.settings.manualKeys = ['f', 'j', ' ', 'd', 'k', 's', 'l'];
-    expect(worldLock(p, 1)).toBeNull();
-    // Fewer keys than the first level needs: the level's own count holds the child back, the world is open.
-    p.settings.manualKeys = ['f', 'j', 'd'];
+    // Too few presses do not count either, however right.
+    p.stats.keys[' '] = { ...emptyKeyStat(), presses: 99, recent: Array(99).fill(500) };
+    expect(worldKeysMissing(p, 1)).toEqual(['sp']);
+    p.progress.levels['w2-1'] = 1;
     expect(isWorldUnlocked(p, 1)).toBe(true);
+    delete p.progress.levels['w2-1'];
+    p.stats.keys[' '] = { ...emptyKeyStat(), presses: 100, recent: [...Array(89).fill(500), ...Array(11).fill(0)] };
+    expect(worldLock(p, 1)).toBeNull();
     // The super profile needs none.
+    p.stats.keys[' '] = emptyKeyStat();
     p.id = SUPER_ID;
     expect(worldKeysMissing(p, 1)).toEqual([]);
   });
@@ -517,7 +534,7 @@ describe('world keys', () => {
     p.settings.noDiacritics = true;
     expect(worldKeys(p, 2)).not.toContain('l1');
     p.progress.worldsDone = [0, 1];
-    p.progress.unlockedKeys = practiceOrder(p).slice(0, 12);
+    know(p, practiceOrder(p).slice(0, 12));
     expect(worldLock(p, 2)).toBeNull();
     expect(worldKeys(profile('us-qwerty'), 14)).not.toContain('p1');
     expect(worldKeys(profile('sk-qwertz'), 14)).toContain('p1');

@@ -179,7 +179,7 @@
     "storyOpens": "Otvorí sa, keď budeš vedieť {n} písmen. Teraz vieš {have}.",
     "lockWorld": "Najprv dokonči svet {world}.",
     "lockKeys": "Tento príbeh sa otvorí, keď budeš vedieť {n} písmen. Teraz vieš {have}.",
-    "lockNeed": "Najprv sa nauč tieto klávesy:",
+    "lockNeed": "Tento svet je zamknutý len kvôli klávesom. Najprv musíš ovládať tieto klávesy, každý aspoň {n}-krát stlačený a z posledných {n} stlačení aspoň {right} správne:",
     "keysOne": "Na túto úroveň potrebuješ ešte jedno písmeno. Nové písmenká získaš hraním alebo vo Vlastnom písaní.",
     "keysFew": "Na túto úroveň potrebuješ ešte {n} písmená. Nové písmenká získaš hraním alebo vo Vlastnom písaní.",
     "keysMany": "Na túto úroveň potrebuješ ešte {n} písmen. Nové písmenká získaš hraním alebo vo Vlastnom písaní.",
@@ -1731,9 +1731,10 @@
     },
     "worldKeysTitle": "Svety a klávesy",
     "worldKeys": {
-      "intro": "Každý svet počíta s klávesmi, ktoré už vieš, keď doň vstúpiš: jeho hry ich všetky môžu použiť. Ďalšie klávesy pribúdajú úroveň po úrovni. Klávesy, ktoré už vieš, sú plné, tie, ktoré sa ešte naučíš, len obrysom. Svet sa otvorí, až keď vieš všetky jeho klávesy.",
-      "start": "Na začiatku vieš",
-      "new": "Pribudne"
+      "intro": "Každý svet má dva zoznamy klávesov. **Musím vedieť**: klávesy z predchádzajúcich svetov, ktoré treba ovládať, aby sa svet otvoril. Kláves ovládaš, keď ho máš stlačený aspoň {n}-krát a z posledných {n} stlačení je aspoň {right} správne. **Naučím sa**: klávesy, ktoré pribudnú v tomto svete, úroveň po úrovni. Čo už ovládaš, ukáže tlačidlo s klávesnicou pri svete na mape.",
+      "need": "Musím vedieť",
+      "learn": "Naučím sa",
+      "none": "nič, tu sa začína"
     },
     "journeyTitle": "Svety, úrovne a hviezdičky",
     "journey": [

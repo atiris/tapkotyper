@@ -2,7 +2,7 @@ import { IDLE_STOP_S } from '../game/levels';
 import { earnWardrobe } from '../game/wardrobe-time';
 import { LAYOUTS } from '../keyboard/layouts';
 import { type KeyStat, type Profile, type SessionRecord, emptyKeyStat } from '../storage/schema';
-import { ACCURACY, MASTERY_WINDOW, STATS_WINDOW, lessonOrder, median, shiftKeyOf } from './lessons';
+import { MASTERY_WINDOW, STATS_WINDOW, keyMastery, lessonOrder, median, shiftKeyOf } from './lessons';
 
 const RECENT_KEEP = Math.max(STATS_WINDOW, MASTERY_WINDOW * 2);
 export const RECENT_WRONG_KEEP = 30;
@@ -203,27 +203,6 @@ export function keyHistory(profile: Profile, key: string): KeyDayPoint[] {
     avgMs: d.rtCount ? d.rtSum / d.rtCount : 0,
     presses: d.presses,
   }));
-}
-
-export interface KeyMastery {
-  /** Accuracy and median reaction time (ms) of the last STATS_WINDOW presses. */
-  accuracy: number;
-  medianMs: number;
-}
-
-/**
- * A key is mastered when it has at least 100 recorded presses and its last 100 are at least
- * "almost" right (ACCURACY.fair): the presses the heat map judges it by. Speed does not decide;
- * the median reaction is kept for showing. Null while it is not.
- */
-export function keyMastery(profile: Profile, key: string): KeyMastery | null {
-  const recent = profile.stats.keys[key]?.recent;
-  if (!recent || recent.length < STATS_WINDOW) return null;
-  const win = recent.slice(-STATS_WINDOW);
-  const ok = win.filter((v) => v > 0);
-  const accuracy = ok.length / win.length;
-  if (accuracy < ACCURACY.fair) return null;
-  return { accuracy, medianMs: median(ok) };
 }
 
 export interface MasterySummary {

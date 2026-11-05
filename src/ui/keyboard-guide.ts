@@ -151,6 +151,8 @@ const keyColor = (def: KeyDef): string => FINGER_COLORS[def.code === 'Space' ? 4
 export class KeyboardGuide {
   readonly el: HTMLElement;
   private keys = new Map<string, HTMLElement>();
+  /** The keys `show` lit, so the next one clears only them: a change on every key restyles the whole keyboard. */
+  private lit: HTMLElement[] = [];
   private board: HTMLElement;
   /** The outline hands on the keys, made the first time a key is shown (heat maps and pickers never show one). */
   private hands: Hands | null = null;
@@ -181,9 +183,9 @@ export class KeyboardGuide {
     this.hands?.setLayout(layout);
   }
 
-  /** The rows of keys, before the hands' layer. */
+  /** The rows of keys, after the hands' layer: the hands come first, so a sibling rule can hide the lit key's letter under them. */
   private drawKeys(): void {
-    const layout = this.layout, board = this.board, before = this.hands?.el ?? null;
+    const layout = this.layout, board = this.board;
     const isoEnter = allKeys(layout).some((d) => d.base === 'enter-top');
     for (const row of layout.rows) {
       const r = document.createElement('div');
@@ -206,7 +208,7 @@ export class KeyboardGuide {
         r.appendChild(k);
         this.keys.set(def.code, k);
       }
-      board.insertBefore(r, before);
+      board.append(r);
     }
   }
 
@@ -214,7 +216,7 @@ export class KeyboardGuide {
     if (!this.hands) {
       this.hands = new Hands(this.layout);
       this.hands.look(this.handsMode);
-      this.board.append(this.hands.el);
+      this.board.prepend(this.hands.el);
     }
     return this.hands;
   }
@@ -241,8 +243,10 @@ export class KeyboardGuide {
    * `fade`: 0 full guide .. 1 almost hidden (the key is mastered).
    */
   show(ch: string | null, deadDone = false, fade = 0): void {
-    for (const k of this.keys.values()) k.classList.remove('next', 'next2', 'shift-next');
-    this.el.style.setProperty('--fade', String(fade));
+    for (const k of this.lit) k.classList.remove('next', 'next2', 'shift-next');
+    this.lit = [];
+    // `--fade` is inherited by every key: set only when it changes.
+    if (this.el.style.getPropertyValue('--fade') !== String(fade)) this.el.style.setProperty('--fade', String(fade));
     this.hint.textContent = '';
     this.el.dataset.next = ch ?? '';
     const steps = ch ? stepsFor(this.layout, ch) : [];
@@ -261,12 +265,16 @@ export class KeyboardGuide {
   }
 
   private mark(step: KeyStep, cls: string): void {
-    const key = this.keys.get(step.code);
-    key?.classList.add(cls);
+    const light = (k: HTMLElement | undefined, c: string) => {
+      if (!k) return;
+      k.classList.add(c);
+      this.lit.push(k);
+    };
+    light(this.keys.get(step.code), cls);
     // An L-shaped Enter lights up whole.
-    if (step.code === 'Enter') this.keys.get('EnterTop')?.classList.add(cls);
+    if (step.code === 'Enter') light(this.keys.get('EnterTop'), cls);
     const shift = shiftKeyFor(this.layout, step);
-    if (shift && cls === 'next') this.keys.get(shift)?.classList.add('shift-next');
+    if (shift && cls === 'next') light(this.keys.get(shift), 'shift-next');
   }
 
   /**

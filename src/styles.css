@@ -831,10 +831,10 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .stats-hero .aro-perch { margin-top: calc(var(--p) * 0.82 + 1.4rem); }
 /* Peeking under the results: the last frame of the game without the card and its dimming; a click brings them back. */
 .overlay.results.peek { background: none; backdrop-filter: none; pointer-events: none; }
-.level-screen:has(> .overlay.results.peek) .stage-wrap { cursor: pointer; }
+.level-screen.peeking .stage-wrap { cursor: pointer; }
 .overlay.results.peek > .card { visibility: hidden; }
 /* Under a blurring card the scene stands still (the canvas is not redrawn either), and so does Tapko on the card: any move there would blur the stage again each frame. */
-body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *, .overlay .tapko-stack) { animation-play-state: paused; }
+body:not(.gfx-simple) .level-screen.covered :is(.stage-wrap *, .overlay .tapko-stack) { animation-play-state: paused; }
 /* The one end card: the title on top, a square picture panel beside the rows, the surprise band, the buttons at the bottom. */
 .card.end-card { position: relative; width: min(660px, 100%); max-width: none; padding: 0; display: grid; grid-template-rows: auto auto auto auto; }
 .ec-top { display: flex; align-items: center; justify-content: center; min-height: 72px; padding: 0.8rem 4rem; }
@@ -1024,7 +1024,7 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
 .kb-hands .hand-pose.on { opacity: 1; }
 .kb-hands .hand-letter { fill: #fff; font: 700 17px var(--font-keys); text-anchor: middle; dominant-baseline: central; stroke: var(--hit); stroke-width: 3.5; stroke-linejoin: round; paint-order: stroke; }
 /* The hands draw the next key's letter over themselves; the key's own letter would show beside it. Hidden hands draw nothing, so the key keeps its letter. */
-.kb:has(> .kb-hands.ready:not(.hands-hidden)) .kb-key.next .kb-label { visibility: hidden; }
+.kb-hands.ready:not(.hands-hidden) ~ .kb-row .kb-key.next .kb-label { visibility: hidden; }
 /* A key the hands type (the paw help) goes down for a moment. */
 .kb-key.tap { animation: key-tap 0.14s ease; }
 @keyframes key-tap { 50% { transform: translateY(2px) scale(0.94); } }

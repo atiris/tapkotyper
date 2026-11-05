@@ -1097,14 +1097,19 @@ export class LevelRuntime {
    * would re-blur it every frame for nothing seen. The simple drawing has no blur and stays live.
    */
   private get covered(): boolean {
-    return !graphics.simple && !!this.el.querySelector(':scope > .overlay:not(.peek)');
+    const on = !!this.el.querySelector(':scope > .overlay:not(.peek)');
+    // The class stops the scene's CSS animations; a `:has()` rule would restyle the whole level on every change inside it.
+    if (this.el.classList.contains('covered') !== on) this.el.classList.toggle('covered', on);
+    return !graphics.simple && on;
   }
 
   private render(): void {
     this.tapko.size(this.stage.scale, this.mode.tapkoFeet);
+    // Read every frame, also before play, so the level's `covered` class follows the cards.
+    const covered = this.covered;
     this.watchFrames();
     // A paused level, the cards before play and a blurring card do not move: the last frame stays unless a resize cleared it or a picture came.
-    const still = this.state.paused || this.state.waiting || (!this.state.started && !this.tweens.busy) || this.covered;
+    const still = this.state.paused || this.state.waiting || (!this.state.started && !this.tweens.busy) || covered;
     if (still && !this.stage.dirty && picturesReady() === this.drawnPictures) return;
     this.drawnPictures = picturesReady();
     const g = this.stage.begin();

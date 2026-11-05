@@ -170,6 +170,7 @@ function peekable(overlay: HTMLElement, card: HTMLElement, type?: () => void): v
   const peek = (on: boolean) => {
     if (on) focused = document.activeElement as HTMLElement | null;
     overlay.classList.toggle('peek', on);
+    overlay.parentElement!.classList.toggle('peeking', on);
     if (!on) focused?.focus();
   };
   card.prepend(closeButton(() => peek(true), t('results.peek')));

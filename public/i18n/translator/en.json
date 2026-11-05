@@ -1536,6 +1536,7 @@
     "task.group": "New task form: label of the optional group field.",
     "task.groupPlaceholder": "New task form: the hint shown in the empty group field.",
     "task.groupHint": "New task form: the explanation under the group field.",
+    "task.titleHint": "New task form: the explanation under the task name field.",
     "task.bigCode": "Button that shows a QR code full screen (a task's link, or a result in the hand-in window).",
     "task.importTitle": "Small label above a task's name in the task panel (a task link on the start page, a task noted on a phone), and the title of the phone's page for noting a task.",
     "task.whoTakes": "Start page opened by a task link: the heading above the player choice, in place of the usual question.",

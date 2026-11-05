@@ -2192,6 +2192,7 @@
     "bigCode": "Big code",
     "groupPlaceholder": "For example: 5.A",
     "groupHint": "The teacher's table groups results by it.",
+    "titleHint": "The student sees it on their Tasks page and on the card before typing.",
     "gameLabel": "Game",
     "game": {
       "chase": "Word stream",

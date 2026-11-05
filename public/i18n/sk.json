@@ -2185,6 +2185,7 @@
     "intro": "Úloha je odkaz a QR kód. Pošlite ho študentom (napríklad cez Edupage) alebo ho ukážte v triede. Študent si úlohu pridá na svojej stránke Úlohy a po splnení vám pošle výsledok. Pripravené úlohy sa ukladajú len v tomto prehliadači.",
     "title": "Názov úlohy",
     "titlePlaceholder": "Napríklad: Zvieratá na farme",
+    "titleHint": "Študent ho uvidí na svojej stránke Úlohy a na karte pred písaním.",
     "minutes": "Dĺžka",
     "make": "Vytvoriť odkaz",
     "needContent": "Napíšte aspoň jedno slovo alebo text.",

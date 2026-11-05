@@ -93,7 +93,7 @@ export function taskForm(onSave: (spec: TaskSpec) => void): TaskForm {
   };
 
   const el = h('form', { class: 'task-form', onSubmit: (e: Event) => { e.preventDefault(); save(); } },
-    h('div', { class: 'task-form-names' }, field(t('task.title'), title), field(t('task.group'), group, t('task.groupHint'))),
+    h('div', { class: 'task-form-names' }, field(t('task.title'), title, t('task.titleHint')), field(t('task.group'), group, t('task.groupHint'))),
     field(t('task.gameLabel'), gameChoice.el, undefined, 'div'),
     wordsField,
     textField,

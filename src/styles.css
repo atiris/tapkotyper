@@ -1743,7 +1743,7 @@ body.reduce-motion .round-btn.timer.ending { --rb: #d9661f; --rb-ring: #ff8a3d; 
 /* The teacher's task form and the tasks made with it. */
 .task-make { background: var(--paper-2); border-radius: 18px; padding: 16px; margin-bottom: 1rem; }
 .task-make h2 { margin: 0 0 0.4rem; font-size: 1.2rem; }
-.task-form-names { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 0 1rem; }
+.task-form-names { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 0 1rem; align-items: start; }
 @media (max-width: 600px) { .task-form-names { grid-template-columns: minmax(0, 1fr); } }
 .task-form .chips.seg { margin-top: 0; }
 .task-form .chips.seg .chip { background: var(--paper); }

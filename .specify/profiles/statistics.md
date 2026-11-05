@@ -52,9 +52,10 @@
     with the hint to tap a key under it. A key with a keyboard picture under the right Shift, as
     wide as it, goes down visibly when pressed, releases "⇧ znaky", unselects the keys and brings
     it back.
-  - The keys move like the raised buttons: the base stays put, hovered a key lifts and shows more
-    of its bottom edge, pressed it sinks with its edge and gets a little smaller; a selected key
-    keeps its ring, a latched key stays down.
+  - The keys move like the raised buttons: the base (the coloured band and the edge under it)
+    stays put, never the whole key with a shadow; hovered the top rises and the band between it
+    and the base grows, pressed the top sinks and the band shrinks. A selected key keeps its ring;
+    a latched key stays down whatever the mouse does, until it is pressed again.
   - A key "⇧ znaky" under the left Shift, as wide as it, latches like Caps Lock: pressed it stays
     down and the keys show their shifted symbols instead (question mark, exclamation mark, colon,
     Slovak digits), each with its own statistics, until it is pressed again; capitals count for

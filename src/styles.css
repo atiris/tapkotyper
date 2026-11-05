@@ -1325,19 +1325,20 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
 .kb-slot { --g: 4px; --p: calc((100cqw + var(--g)) / 15); display: flex; pointer-events: auto; }
 /* A latched tool stays pressed down. */
 .kb-slots .kb-tool { --finger: var(--line); background: var(--surface); color: var(--ink); cursor: pointer; white-space: nowrap; font-family: inherit; font-size: clamp(0.6rem, var(--p) * 0.26, 0.95rem); opacity: 1; }
-.kb-slots .kb-tool.on { --finger: var(--brand-dark); background: var(--brand); color: #fff; transform: translateY(2px) scale(0.96); box-shadow: inset 0 -2px 0 var(--finger), inset 0 3px 4px rgba(0, 0, 0, 0.25); }
+.kb-slots .kb-tool.on { --finger: var(--brand-dark); background: var(--brand); color: #fff; }
 .kb-slots .kb-tool:focus-visible { outline: 3px solid var(--brand-dark); outline-offset: 2px; }
 .kb-slots .kb-tool .icon { width: 1.5em; height: 1.5em; }
 /*
- * The clickable keys of My keys move like the raised buttons: the base stays put, lifted the face shows more of its
- * bottom edge, pressed it sinks with its edge and gets a little smaller; a latched tool key stays down.
+ * The clickable keys of My keys move like the raised buttons: the base (the coloured band and the edge under it) stays
+ * put; hovered the top rises and the band grows, pressed the top sinks and the band shrinks; a latched tool key stays
+ * down whatever the mouse does, until it is pressed again.
  */
-.heatmap.clickable .kb-key, .kb-slots .kb-tool { cursor: pointer; transition: transform 0.12s ease, box-shadow 0.12s ease; }
+.heatmap.clickable .kb .kb-key, .kb-slots .kb-tool { cursor: pointer; transition: transform 0.12s ease, box-shadow 0.12s ease; }
 @media (hover: hover) {
-  .heatmap.clickable .kb-key:hover, .kb-slots .kb-tool:not(.on):hover { transform: translateY(-2px); box-shadow: inset 0 -5px 0 var(--finger), 0 4px 0 var(--edge), 0 7px 8px -3px var(--soft-shadow); }
+  .heatmap.clickable .kb .kb-key:hover, .kb-slots .kb-tool:not(.on):hover { transform: translateY(-3px); border-bottom-color: var(--finger); box-shadow: inset 0 -5px 0 var(--finger), 0 3px 0 var(--finger), 0 5px 0 var(--edge); }
 }
-.heatmap.clickable .kb-key:active, .kb-slots .kb-tool:active, .kb-slots .kb-tool.pressed { transform: translateY(2px) scale(0.96); box-shadow: inset 0 -2px 0 var(--finger), 0 0 0 var(--edge); }
-body.reduce-motion :is(.heatmap.clickable .kb-key, .kb-slots .kb-tool):is(:hover, :active, .pressed) { transform: none; }
+.heatmap.clickable .kb .kb-key:active, .kb-slots .kb-tool:active, .kb-slots .kb-tool.pressed, .kb-slots .kb-tool.on { transform: translateY(2px); box-shadow: inset 0 -3px 0 var(--finger), 0 0 0 var(--edge); }
+body.reduce-motion :is(.heatmap.clickable .kb .kb-key, .kb-slots .kb-tool):is(:hover, :active, .pressed, .on) { transform: none; }
 .heat-host { display: grid; justify-items: start; gap: var(--sp-1); min-width: 0; }
 /* Out of a level the keyboard is a plain picture: it scrolls under the page bar. */
 .heat-host .heatmap { width: 100%; z-index: auto; }

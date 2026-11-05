@@ -298,7 +298,7 @@
     "shiftL": "Hold the left Shift with your left little finger and type the capital with your right hand. Type a capital {sample} three times.",
     "shiftR": "Hold the right Shift with your right little finger and type the capital with your left hand. Type a capital {sample} three times.",
     "space": "The other fingers stay at home. Press it three times.",
-    "spaceThumb": "Press it with the thumb of the hand that did not type last: after {f} the right thumb, after {j} the left one."
+    "spaceThumb": "The **space bar** is pressed with the thumb of the hand that did **not** type last: if you typed the last character with your right hand and now want a space, use your left hand. If the space follows a character typed with your left hand, press the space bar with your right hand. For example, after the last “{j}” of the exercise before, typed with your right hand, press the space bar with your left hand."
   },
   "keysIntro": {
     "title": "Welcome to Tapko!",

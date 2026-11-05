@@ -22,7 +22,8 @@
   not hold the next letter back for long.
 - A new key is introduced alone first (where it is, which finger), then mixed with known keys.
   The space bar's card says it is pressed by the thumb of the hand that did not type last:
-  after F the right thumb, after J the left one.
+  a character typed by the right hand means the left thumb and the other way round, with the
+  example of the last J of the exercise before, typed by the right hand, so the left thumb.
 - Home row keys and the first reaches come in mirrored pairs (same finger, other hand).
   When every key of the newest group has its last 25 presses (12 for space, punctuation and
   the Shifts) at least 89 % right, the next ones unlock; when its last 40 presses are at least

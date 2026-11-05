@@ -298,7 +298,7 @@
     "shiftL": "Ľavý Shift drž ľavým malíčkom a pravou rukou napíš veľké písmeno. Napíš trikrát veľké {sample}.",
     "shiftR": "Pravý Shift drž pravým malíčkom a ľavou rukou napíš veľké písmeno. Napíš trikrát veľké {sample}.",
     "space": "Ostatné prsty ostanú na základných miestach. Stlač ho trikrát.",
-    "spaceThumb": "Stláčaj ho palcom ruky, ktorá práve nepísala: po {f} pravým palcom, po {j} ľavým."
+    "spaceThumb": "**Medzerník** sa stláča palcom ruky, ktorá naposledy **nepísala**, takže ak si posledný znak písal pravou rukou a teraz chceš stlačiť medzeru, použi ľavú ruku. Ak medzera nasleduje po znaku, ktorý sa píše ľavou rukou, použi na stlačenie medzerníka pravú ruku. Napríklad po poslednom „{j}“ z predchádzajúceho cvičenia, ktorý sa písal pravou, máš stlačiť medzerník ľavou rukou."
   },
   "keysIntro": {
     "title": "Vitaj v Ťapkovi!",

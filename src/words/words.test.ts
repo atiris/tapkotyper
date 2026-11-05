@@ -80,11 +80,20 @@ describe('WordSource', () => {
   });
 
   it('takes only dictionary words once the known letters make enough of them; key drills mix in made-up ones', () => {
-    const keys = [...'fjdkslaeiruotnh'];
+    const keys = [...'dkslaeiruotnh'];
     const real = new WordSource(BIG, { keys, len: [2, 6], noDiacritics: false, seed: 7 });
     expect(Array.from({ length: 300 }, () => real.next()).every((w) => BIG.includes(w))).toBe(true);
     const drill = new WordSource(BIG, { keys, len: [2, 6], noDiacritics: false, seed: 7, pseudo: true });
     expect(Array.from({ length: 300 }, () => drill.next()).some((w) => !BIG.includes(w))).toBe(true);
+  });
+
+  it('brings a known letter no dictionary word holds in made-up words now and then', () => {
+    const src = new WordSource(BIG, { keys: [...'dkslaeiuotnhô'], len: [2, 6], noDiacritics: false, seed: 3 });
+    const words = Array.from({ length: 300 }, () => src.next());
+    const stray = words.filter((w) => w.includes('ô'));
+    expect(stray.length).toBeGreaterThan(20);
+    expect(stray.length).toBeLessThan(120);
+    expect(words.filter((w) => !w.includes('ô')).every((w) => BIG.includes(w))).toBe(true);
   });
 
   it('gives a word of a small dictionary at most twice, then made-up words', () => {

@@ -36,7 +36,7 @@ test('a finished world\'s parrot learns the words and brings the badge', async (
   }
   await expect(page.locator('.parrot-done h2')).toHaveText('The parrot is at home!');
   await expect(page.locator('.parrot-done .ec-news')).toContainText('Parrot badge');
-  await expect(page.locator('.parrot-done .ec-row', { hasText: 'Repeating, per minute' })).toContainText('letters');
+  await expect(page.locator('.parrot-done .ec-row', { hasText: 'Second half, per minute' })).toContainText('letters');
   await expect(page.locator('.parrot-done .modal-x')).toBeVisible();
   await page.locator('.end-card .ec-bot .btn').last().click();
   await expect(node).toHaveClass(/home/);

@@ -36,7 +36,7 @@ test('the check runs without the keyboard and ends on its card; it opens no star
   const card = page.locator('.placement-done');
   await expect(card.locator('h2')).toHaveText('Keyboard check');
   await expect(card.locator('.ec-row').first()).toContainText('Strong keys');
-  await card.locator('.ec-bot .btn.primary').click();
+  await card.locator('.ec-bot .btn').last().click();
   await page.locator('.map-screen').waitFor();
   const p = await progress(page);
   expect(p.levels).toEqual({});

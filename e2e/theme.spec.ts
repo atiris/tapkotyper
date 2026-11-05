@@ -16,6 +16,8 @@ async function seed(page: Page, players: number, theme: 'light' | 'dark'): Promi
   }, { players, theme });
   await page.reload();
   await page.locator('.start-screen').waitFor();
+  // The sky places its pieces in a resize observer: two frames let it catch up with the last layout change.
+  await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
 }
 
 test('the theme follows the system until the button picks one, which stays after a reload', async ({ page }) => {
@@ -64,7 +66,7 @@ for (const theme of ['light', 'dark'] as const) {
       await page.setViewportSize(size);
       for (const players of [0, 1, 3, 5, 7]) {
         await seed(page, players, theme);
-        const r = await page.evaluate(() => {
+        const measure = () => page.evaluate(() => {
           const texts = [...document.querySelectorAll('.start-wrap h1, .start-wrap p, .start-wrap li, .start-wrap h2, .start-card')].map((e) => e.getBoundingClientRect());
           const pieces = [...document.querySelectorAll('.sky-piece:not([hidden])')].map((e) => e.getBoundingClientRect());
           const lines = [...document.querySelectorAll<HTMLElement>('.slogan > span')].map((s) => s.getBoundingClientRect().height / parseFloat(getComputedStyle(s).lineHeight));
@@ -76,8 +78,10 @@ for (const theme of ['light', 'dark'] as const) {
           };
         });
         // A tablet's one column may scroll with five or seven players (two rows of cards).
-        const scroll = size.width < 900 && players >= 5 ? r.scroll : false;
-        expect(r, `${size.width}x${size.height}, ${players} players`).toEqual({ scroll, lines: [1, 1], hit: false, sun: true });
+        const mayScroll = size.width < 900 && players >= 5;
+        // Polled: on a busy machine the sky places its pieces a few frames after the last layout change.
+        await expect.poll(async () => { const r = await measure(); return { ...r, scroll: r.scroll && !mayScroll }; }, { message: `${size.width}x${size.height}, ${players} players` })
+          .toEqual({ scroll: false, lines: [1, 1], hit: false, sun: true });
       }
     }
   });

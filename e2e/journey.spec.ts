@@ -12,7 +12,8 @@ test("the dragon story's hero's journey goes back down to the rocket with a pane
   await egg.locator('.journey-node').waitFor();
   // The compass comes right after the crown, before the target range and the parrot.
   const nodes = await egg.locator('.level-node').evaluateAll((els) => els.map((e) => e.className));
-  expect(nodes.findIndex((c) => c.includes('journey-node'))).toBe(nodes.findIndex((c) => c.includes('super')) + 1);
+  const crown = nodes.findLastIndex((c) => !/journey-node|aim-node|parrot-node/.test(c));
+  expect(nodes.findIndex((c) => c.includes('journey-node'))).toBe(crown + 1);
   expect(nodes.findIndex((c) => c.includes('aim-node'))).toBe(nodes.findIndex((c) => c.includes('journey-node')) + 1);
   await egg.locator('.journey-node').click();
   await expect(page.locator('.hud-title')).toHaveText("Hero's journey");

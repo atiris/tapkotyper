@@ -18,6 +18,8 @@
   then made-up words fill in (a level asks about 12-16 words at a slow child's pace, a quick
   child types two or three times as many). Made-up words are only that fallback, and a regular
   mix only in key drills. A dictation keeps its few real words instead.
+- A known letter that none of the language's words holds (a Slovak ô with English words)
+  still comes now and then, in made-up words, so a key the child learns or picks is never left out.
 - Fallback generator: when too few real words match, pronounceable pseudo-words are made
   from the allowed keys (alternating consonants and vowels, rhythmic syllables). With very
   small key sets (for example only `f j`), short letter patterns like `fff jjj fj jf` are

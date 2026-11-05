@@ -156,7 +156,6 @@ export function bigButton(art: HTMLElement, title: string, sub: string, onClick:
       h('span', {}, sub)));
 }
 
-/** A keyboard drawn for the card that asks for one. */
 /** Escape goes back, like the screen's Back button; a dialog over the screen closes first. Returns the cleanup. */
 export function onEscape(back: () => void): () => void {
   const onKey = (e: KeyboardEvent) => {

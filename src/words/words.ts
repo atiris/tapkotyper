@@ -171,12 +171,28 @@ const REAL_MIN = 8;
 /** Below this many dictionary words a word comes at most USES_MAX times; then made-up words fill in. */
 const SMALL_POOL = 40;
 const USES_MAX = 2;
+/** Share of targets that are made-up words with a known letter none of the dictionary words holds. */
+const STRAY_SHARE = 0.2;
+
+/** Every lower-case letter some word of a dictionary holds, worked out once per dictionary. */
+const heldLetters = new WeakMap<string[], Set<string>>();
+function lettersOf(dict: string[]): Set<string> {
+  let set = heldLetters.get(dict);
+  if (!set) {
+    set = new Set();
+    for (const w of dict) for (const c of w.normalize('NFC').toLowerCase()) set.add(c);
+    heldLetters.set(dict, set);
+  }
+  return set;
+}
 
 /** Endless supply of practice targets for a key set: words, and phrases once space is known. */
 export class WordSource {
   readonly rng: Rng;
   private letters: string[];
   private pool: string[];
+  /** Known letters that no word of the dictionary holds (ô among English words): they come only in made-up words. */
+  private strays: string[];
   /** Dictionary words a dictation says: no apostrophe, spelled as heard; made when first needed. */
   private heardWords: string[] | null = null;
   private digits: string[];
@@ -212,6 +228,8 @@ export class WordSource {
     this.names = dict.filter((w) => w[0] !== w[0].toLowerCase()).map((n) => n.normalize('NFC').toLowerCase()).filter((n) => [...n].every((c) => set.has(c)));
     if (this.keys.has("'")) set.add("'");
     this.pool = filterWords(dict, set, len);
+    const held = lettersOf(dict);
+    this.strays = this.letters.filter((c) => !held.has(c));
     this.digits = opts.keys.filter((k) => DIGITS.has(k));
     this.space = this.keys.has(SPACE);
     const lay = opts.layout;
@@ -329,6 +347,7 @@ export class WordSource {
       if (own.length) return r.pick(own);
     }
     const real = this.pool.length >= REAL_MIN;
+    if (real && this.strays.length && r.chance(STRAY_SHARE)) return this.strayWord(maxLen);
     if (real && (!this.opts.pseudo || r.chance(this.pool.length >= 40 ? 0.9 : 0.6))) return this.pickReal(maxLen, focus);
     return this.pseudo(maxLen, focus);
   }
@@ -423,6 +442,16 @@ export class WordSource {
     const patterns = [a.repeat(3), a + b, a + b + a, a + a + b, a + b + a + b, a + a + b + b];
     const w = patterns[r.int(0, patterns.length - 1)];
     return w.slice(0, Math.max(1, maxLen));
+  }
+
+  /** A made-up word holding one of the stray letters. */
+  private strayWord(maxLen: number): string {
+    const ch = this.rng.pick(this.strays);
+    for (let i = 0; i < 8; i++) {
+      const w = this.pseudo(maxLen, ch);
+      if (w.includes(ch)) return w;
+    }
+    return this.drill(maxLen, ch);
   }
 
   /** Pronounceable pseudo-word from the allowed letters (consonant / vowel alternation). */

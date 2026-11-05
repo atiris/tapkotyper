@@ -46,10 +46,22 @@ export function contrastMisses(page: Page): Promise<ContrastMiss[]> {
       const cs = stops.map(parse);
       return [0, 1, 2, 3].map((i) => cs.reduce((s, c) => s + c[i], 0) / cs.length) as C;
     };
-    /** What is behind `el`: null over a picture. */
+    /**
+     * What is behind `el`: null over a picture. Past a box placed on its own (absolute or fixed),
+     * the walk goes on with what is painted under it at the text's middle, not with its parent.
+     */
     const background = (el: Element): C | null => {
       const layers: C[] = [];
-      for (let e: Element | null = el; e; e = e.parentElement) {
+      const box = el.getBoundingClientRect(), x = box.left + box.width / 2, y = box.top + box.height / 2;
+      const seen = new Set<Element>();
+      const next = (e: Element): Element | null => {
+        seen.add(e);
+        const pos = getComputedStyle(e).position;
+        if (pos !== 'absolute' && pos !== 'fixed') return e.parentElement;
+        const below = document.elementsFromPoint(x, y).find((b) => !e.contains(b) && !seen.has(b) && !b.contains(e));
+        return below ?? e.parentElement;
+      };
+      for (let e: Element | null = el; e; e = next(e)) {
         const st = getComputedStyle(e);
         const bg = parse(st.backgroundColor);
         if (bg[3] > 0) layers.push(bg);
@@ -67,7 +79,7 @@ export function contrastMisses(page: Page): Promise<ContrastMiss[]> {
     const misses: { text: string; ratio: number; need: number; color: string; bg: string }[] = [];
     for (const el of document.querySelectorAll<HTMLElement>('body *')) {
       const own = [...el.childNodes].some((n) => n.nodeType === Node.TEXT_NODE && n.textContent!.trim());
-      if (!own || !el.getClientRects().length || el.closest('.start-sky, .start-sig, canvas, svg, [aria-hidden="true"], :disabled, .kb-key.off, .tip:not(.show), .toast:not(.show)')) continue;
+      if (!own || !el.getClientRects().length || el.closest('.start-sky, .start-sig, canvas, svg, [aria-hidden="true"], :disabled, [aria-disabled="true"], .kb-key.off, .tip:not(.show), .toast:not(.show)')) continue;
       const st = getComputedStyle(el);
       if (st.visibility !== 'visible') continue;
       let alpha = 1;

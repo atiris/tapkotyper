@@ -89,12 +89,12 @@ export async function createProfile(page: Page, name: string, layout?: string): 
   await page.locator('.map-screen').waitFor();
 }
 
-/** Closes the cards told before the very first key card (a new player's first level): the intro with the space bar, Esc's card with Esc. */
+/** Closes the cards told before the very first key card (a new player's first level): the intro with the space bar, Esc's card with three presses of Esc. */
 export async function closeKeysIntro(page: Page): Promise<void> {
   await page.locator('.keys-intro').waitFor();
   await page.keyboard.press('Space');
   await page.locator('.keys-intro').waitFor({ state: 'detached' });
   await page.locator('.controlkey-card').waitFor();
-  await page.keyboard.press('Escape');
+  for (let i = 0; i < 3; i++) await page.keyboard.press('Escape');
   await page.locator('.controlkey-card').waitFor({ state: 'detached' });
 }

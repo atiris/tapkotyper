@@ -164,19 +164,22 @@ see on the map or in My progress.
 No accounts and no server: tasks and results travel as links you send yourself (Edupage,
 e-mail), with the data inside the link.
 
-- **Give a task:** parent area, tab "Task": a name, the words and/or a text, 1-20 minutes,
-  and free practice or story levels with those words. Copy the link or show the QR code.
-- **The child** opens the link, picks their player (or makes a new one) and sees
-  "Today's task" first on the map. When the minutes are played, "Hand in" gives a result
-  link to send back.
-- **Your table:** "For teachers", the chart button at the top right of the start page (no
-  keyboard needed, so a phone works). Type a group (for example 5A) and scan the QR codes on
-  the children's screens with the camera, several at once, or open or paste result links.
-  Each result (minutes, accuracy, rhythm, five weakest keys) is kept in your browser only;
-  filter by group and task, sort, open one child's results, and export CSV. A checksum
-  shows damaged links; it does not stop cheating. Results can also be saved and loaded as
-  `.tapko` files (double-click opens one in Chrome or Edge), so a class's history stays on one
-  computer. The help's "Parents and teachers" tab explains it all.
+- **Give a task:** "For teachers", tab **Tasks**: a name, the group, the game, the words or a
+  text, the limit (time, text or both) and a few options. **Prepared tasks** shows its QR code,
+  copies its link or opens the big code.
+- **The child** opens the link (or scans the code on its Tasks page), picks their player (or makes
+  a new one) and sees "Today's task" first on the map. When the task is done, "Hand in" gives a
+  result link and a QR code for the teacher.
+- **Results:** "For teachers", the chart button at the top right of the start page (no keyboard
+  needed, so a phone works). **Scan QR** reads the codes on the children's screens with the
+  camera, several at once; a result link opened or pasted is added too. A new student goes into
+  the task's group, a student you know stays in their group, and a child stays one student even
+  after renaming the profile. Everything is kept in your browser only.
+- **Evaluation:** the sets of each group, the students (move several into a group at once, open
+  one student's progress) and CSV export. The **Data** tab exports and imports `.tapko` files
+  (double-click opens one in Chrome or Edge), so a class's history scanned on a phone moves to
+  one computer, and renames, merges or deletes groups, students and files. A checksum shows
+  damaged links; it does not stop cheating. The help's "Parents and teachers" tab explains it all.
 
 ## Development
 

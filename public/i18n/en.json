@@ -358,6 +358,7 @@
   },
   "practiceKeys": {
     "title": "Which keys will you practise?",
+    "about": "This game is not part of going through the worlds. In own typing you make a short exercise yourself, to type more accurately and to warm up a little. It is like a short warm-up before you set off on a hard mission.",
     "intro": "Move the slider to add keys in the lesson order. Click a key to add it or take it away.",
     "slider": "Keys",
     "step": "step {n} of {total}",

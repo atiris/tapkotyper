@@ -163,6 +163,9 @@
     own words; letting the key go makes the run wait. See [sticky finger](sticky-finger.md).
   - The mark `↵` of a target waiting for Enter stays visible in all of them, and the voice
     never says it.
+  - Own practice opens with a short general line: it is not part of going through the worlds,
+    the child makes a short exercise to type more accurately and warm up, like a warm-up before
+    a hard mission.
   - In own practice the child picks the way to type; each button has a tooltip and one line
     under them says what the chosen one asks: Copy "You see the word and type it.",
     Dictation "You hear the word without seeing it. Type what you hear.", Remember it "The

@@ -734,6 +734,7 @@
     "practice.words": "Counter in untimed practice; {n} is the number of words typed.",
     "practice.backTip": "Tooltip of the round X button in untimed practice.",
     "practiceKeys.title": "Heading of the window for choosing keys before own typing.",
+    "practiceKeys.about": "First paragraph of the key-choosing window: what own typing is, apart from the worlds.",
     "practiceKeys.intro": "Explanation under the heading of the key-choosing window.",
     "practiceKeys.slider": "Label and tooltip of the slider that adds keys in lesson order.",
     "practiceKeys.step": "Counter next to the slider; {n} is the step, {total} the number of steps.",

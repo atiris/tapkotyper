@@ -358,6 +358,7 @@
   },
   "practiceKeys": {
     "title": "Ktoré klávesy si precvičíš?",
+    "about": "Táto hra nie je súčasťou prechádzania jednotlivými svetmi. Vlastné písanie znamená, že si sám pripravíš krátke cvičenie, ktoré ti umožní zlepšiť si presnosť a trocha si zacvičiť. Je to ako krátka rozcvička predtým, ako sa pustíš do náročnej misie.",
     "intro": "Posuň jazdec, pridá ďalšie klávesy v poradí lekcií. Klikni na kláves a pridáš ho alebo zoberieš.",
     "slider": "Klávesy",
     "step": "krok {n} z {total}",

@@ -131,6 +131,7 @@ export function openPracticeKeys(): void {
 
   const close = modal(h('div', { class: 'practice-keys' },
     h('h2', {}, t('practiceKeys.title')),
+    h('p', {}, t('practiceKeys.about')),
     h('p', { class: 'hint' }, t('practiceKeys.intro')),
     h('div', { class: 'pk-styles', role: 'group', 'aria-label': t('practiceKeys.style') }, ...styleBtns),
     styleHint,

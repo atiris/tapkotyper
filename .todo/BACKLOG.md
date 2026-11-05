@@ -11,3 +11,4 @@ Search before adding; an entry is worked only when it is named.
 - [P3] Egg mountain far band shows light streaks in its sky - public/assets/bg-egg-far.webp has pale vertical bands in the sky (about x 250 and x 1100 of 1376) left by Gemini's seam repaint and the local tone fix; repaint the sky or regenerate the far layer (assets-src/PROMPTS.md section 3)
 - [P3] Simple graphics slow-profile p95 sits at 50 ms in valley-1 and space-5 - after the 0.75 canvas (plan 90) p95 is the 50 ms frame step, not under it (`node scripts/perf.mjs --machine slow --low`); look at what else those scenes redraw per frame
 - [P3] Spell hearth looks cold early - in w5-5 the egg covers the hearth's only small front flame until the spell is well along (src/game/modes/egg-spell.ts render, Firepit growth)
+- [P3] Stray comment above onEscape - src/ui/dom.ts has a leftover "A keyboard drawn for the card that asks for one." doc line stacked over the onEscape doc comment

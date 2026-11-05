@@ -1761,7 +1761,7 @@
       "**Najprv presnosť!** Rýchlosť sa ukazuje len ako osobný pokrok.",
       "Slabšie klávesy sa objavujú častejšie a krátke prestávky chránia zdravie.",
       "Hrá sa na skutočnej klávesnici, mobil alebo tablet potrebuje pripojenú klávesnicu.",
-      "Rodič alebo učiteľ môže pomocou mobilu rýchlo naskenovať výsledky aj väčšej skupiny študentov."
+      "Učiteľ pripraví úlohu ako odkaz alebo QR kód a výsledky aj väčšej skupiny študentov rýchlo naskenuje mobilom. Výsledky ostávajú len v jeho prehliadači."
     ],
     "taskTitle": "Úloha od učiteľa",
     "task": [
@@ -2149,10 +2149,8 @@
       "deleteStudent": "Zmazať študenta",
       "student": "Študent",
       "deleteGroup": "Zmazať skupinu",
-      "deleteGroupText": "Študenti skupiny zostanú, budú bez skupiny.",
       "deleteFiles": "Zmazať súbory",
       "file": "Súbor",
-      "deleteFilesText": "Zmažú sa aj výsledky, ktoré prišli len z tohto súboru.",
       "deleteAll": "Zmazať všetky dáta",
       "deleteAllText": "Zmažú sa všetky výsledky, skupiny a zoznam súborov v tomto prehliadači."
     },

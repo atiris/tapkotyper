@@ -102,11 +102,11 @@ export function dataPart(store: TeacherStore): Part {
   };
   const deleteGroup = () => {
     const group = choice(t('teacher.groupLabel'), groupOptions());
-    deleting(t('teacher.data.deleteGroup'), [group.el, h('p', { class: 'hint' }, t('teacher.data.deleteGroupText'))], () => store.renameGroup(group.select.value, ''));
+    deleting(t('teacher.data.deleteGroup'), [group.el], () => store.renameGroup(group.select.value, ''));
   };
   const deleteFiles = () => {
     const file = choice(t('teacher.data.file'), store.files.map((f) => [f.id, `${f.name} · ${new Date(f.loadedAt).toLocaleDateString(locale())} ${clock(f.loadedAt)}`]));
-    deleting(t('teacher.data.deleteFiles'), [file.el, h('p', { class: 'hint' }, t('teacher.data.deleteFilesText'))], () => store.deleteFile(file.select.value));
+    deleting(t('teacher.data.deleteFiles'), [file.el], () => store.deleteFile(file.select.value));
   };
   const deleteAll = () => deleting(t('teacher.data.deleteAll'), [h('p', {}, t('teacher.data.deleteAllText'))], () => store.clearAll());
 

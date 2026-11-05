@@ -1761,7 +1761,7 @@
       "**Accuracy comes first!** Speed is only shown as a personal trend.",
       "Weak keys appear more often, and short breaks keep sessions healthy.",
       "It is played on a real keyboard; a phone or tablet needs a keyboard connected.",
-      "A parent or a teacher can quickly scan the results of even a larger group of students with a phone."
+      "A teacher gives a task as a link or a QR code and quickly scans the results of even a larger group of students with a phone. The results stay in the teacher's browser only."
     ],
     "taskTitle": "A task from your teacher",
     "task": [
@@ -2149,10 +2149,8 @@
       "deleteStudent": "Delete a student",
       "student": "Student",
       "deleteGroup": "Delete a group",
-      "deleteGroupText": "Its students stay, without a group.",
       "deleteFiles": "Delete files",
       "file": "File",
-      "deleteFilesText": "The results that came only from this file go too.",
       "deleteAll": "Delete all data",
       "deleteAllText": "Every result, group and the list of files in this browser go."
     },

@@ -10,7 +10,7 @@ import { copyLink, fitsQr, qr } from '../../ui/link-box';
 import { type TaskForm, taskForm } from '../../ui/task-form';
 import { taskSummary } from '../../ui/task-panel';
 import type { Part } from './collect';
-import { askGroupName, closePlace, openPlace } from './common';
+import { askGroupName, closePlace, openPlace, swapPlace } from './common';
 
 /** The form lives for the whole visit of the app, so what is typed into it stays while the teacher looks elsewhere; a new language builds it again. */
 let form: { el: TaskForm; lang: string } | null = null;
@@ -55,7 +55,7 @@ function openTask(spec: TaskSpec, store: TeacherStore): HTMLElement {
     if (!yes) return;
     app.store.data.teacherTasks = app.store.data.teacherTasks.filter((x) => x.id !== spec.id);
     app.store.save();
-    openPlace('tasks/ready');
+    closePlace('tasks/ready');
   };
   void taskCode(spec).then((c) => {
     const link = linkOf('task', c);
@@ -92,7 +92,8 @@ function openTask(spec: TaskSpec, store: TeacherStore): HTMLElement {
 export function readyPart(store: TeacherStore, id?: string): Part {
   const tasks = app.store.data.teacherTasks;
   const open = tasks.find((x) => x.id === id);
-  const show = (x: TaskSpec) => () => openPlace(`task/${x.id}`, true);
+  // Another task beside the list takes the open one's place, so X still goes back to the list.
+  const show = (x: TaskSpec) => () => (open ? swapPlace(`task/${x.id}`) : openPlace(`task/${x.id}`, true));
   const qrButton = (x: TaskSpec) => h('button', { type: 'button', class: 'qr-btn', 'aria-label': t('teacher.tasks.show'), tip: t('teacher.tasks.show'), onClick: show(x) }, icon('qr'));
   if (!tasks.length) return { nodes: [h('p', { class: 'hint' }, t('teacher.tasks.empty'))] };
   return {

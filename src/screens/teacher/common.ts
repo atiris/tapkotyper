@@ -39,6 +39,13 @@ export function openPlace(place: Place, fromList = false): void {
   if (fromList) history.replaceState({ fromList: true }, '');
 }
 
+/** Opens another card in the open one's place (a task beside its list): closing it goes where the open one's would. */
+export function swapPlace(place: Place): void {
+  const state: unknown = history.state;
+  go('teacher', { tab: place }, false);
+  history.replaceState(state, '');
+}
+
 /** Closes a card or a page: back to the list it was opened from, else (reached by its address) to `fallback`. */
 export function closePlace(fallback: Place): void {
   if ((history.state as { fromList?: boolean } | null)?.fromList) history.back();

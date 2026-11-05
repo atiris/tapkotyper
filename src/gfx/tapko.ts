@@ -2,6 +2,9 @@ import type { Companion, CompanionKind } from '../storage/schema';
 import { accessories, hasImage, imageUrl, sprite, type Slot } from './assets';
 import { drawFace, drawSprite, evictOldest, type G } from './draw';
 
+/** What a character's picture needs of it: a preview has no random choices. */
+export type Look = Pick<Companion, 'name' | 'kind' | 'accessories'>;
+
 /** `surprised` is optional art, used only in story 2's meeting scene. */
 export type Mood = 'idle' | 'happy' | 'thinking' | 'surprised';
 
@@ -16,13 +19,16 @@ export function otherMood(kind: CompanionKind, current: Mood): Mood {
 export const SLOT_ORDER: (Slot | 'companion')[] = ['back', 'companion', 'feet', 'body', 'neck', 'hand', 'eyes', 'head'];
 export const SLOTS: Slot[] = ['head', 'eyes', 'neck', 'body', 'back', 'hand', 'feet'];
 
-/** For every body area: half the time nothing, else one of the items of that area that `has` allows. */
+/** For one body area: half the time nothing, else one of the items of that area that `has` allows. */
+export function randomItem(slot: Slot, has: (id: string) => boolean, rand: () => number = Math.random): string[] {
+  const owned = accessories().filter((a) => a.slot === slot && has(a.id));
+  if (!owned.length || rand() < 0.5) return [];
+  return [owned[Math.floor(rand() * owned.length)].id];
+}
+
+/** A random item (or nothing) for every body area. */
 export function randomOutfit(has: (id: string) => boolean, rand: () => number = Math.random): string[] {
-  return SLOTS.flatMap((slot) => {
-    const owned = accessories().filter((a) => a.slot === slot && has(a.id));
-    if (!owned.length || rand() < 0.5) return [];
-    return [owned[Math.floor(rand() * owned.length)].id];
-  });
+  return SLOTS.flatMap((slot) => randomItem(slot, has, rand));
 }
 
 const KIND_COLORS: Record<CompanionKind, [string, string]> = {
@@ -37,7 +43,7 @@ export function slotOf(accId: string): Slot | null {
 }
 
 /** Image names of the stack, back to front. */
-export function tapkoStack(c: Companion, mood: Mood): { name: string; slot: Slot | 'companion' }[] {
+export function tapkoStack(c: Look, mood: Mood): { name: string; slot: Slot | 'companion' }[] {
   const bySlot = new Map<Slot, string>();
   for (const id of c.accessories) {
     const slot = slotOf(id);
@@ -55,7 +61,7 @@ export function tapkoStack(c: Companion, mood: Mood): { name: string; slot: Slot
 }
 
 /** Every picture of the companion in a level: each mood and everything it wears. */
-export function tapkoPictures(c: Companion): string[] {
+export function tapkoPictures(c: Look): string[] {
   return (['idle', 'happy', 'thinking', 'surprised'] as Mood[]).flatMap((mood) => tapkoStack(c, mood).map((l) => l.name));
 }
 
@@ -170,7 +176,7 @@ export function ovalMask(ovals: Oval[], n: number, mask = new Uint8Array(n * n))
 const eggPlaces = new Map<string, { rest: number; peek: number }>();
 
 /** The egg's place for this outfit, from the union of everything he wears: drawn pictures, else their fallbacks' ovals. */
-function eggPlace(c: Companion): { rest: number; peek: number } {
+function eggPlace(c: Look): { rest: number; peek: number } {
   const layers = tapkoStack(c, 'idle');
   const imgs = layers.map((l) => sprite(l.name));
   const key = layers.map((l, i) => `${l.name}${imgs[i] ? '' : '?'}`).join(' ');
@@ -195,12 +201,12 @@ function eggPlace(c: Companion): { rest: number; peek: number } {
 }
 
 /** Where the egg's middle is on the stage for Tapko standing at (x, y) at `size` (no sway): where it is lifted off his back. */
-export function eggSpot(c: Companion, x: number, y: number, size: number): { x: number; y: number; h: number; rot: number } {
+export function eggSpot(c: Look, x: number, y: number, size: number): { x: number; y: number; h: number; rot: number } {
   return { x: x + (eggPlace(c).rest - 0.5) * size, y: y + (EGG_Y - 0.9) * size, h: EGG_H * size, rot: EGG_TILT };
 }
 
 /** The egg in his picture's own units (the stack's square, `size` high), behind the stack. */
-function drawEgg(g: G, c: Companion, size: number, m: TapkoMotion): void {
+function drawEgg(g: G, c: Look, size: number, m: TapkoMotion): void {
   const place = eggPlace(c), k = m.peek ?? 0;
   const cx = place.rest + (place.peek - place.rest) * k;
   drawSprite(g, EGG, cx * size, EGG_Y * size, EGG_H * size, { rot: EGG_TILT + (m.wobble ?? 0) }, eggFallback);
@@ -229,7 +235,7 @@ export function eggFallback(g: G, w: number, h: number): void {
  * Draws the companion with its accessories. (x, y) is the point between the feet;
  * `size` is the height of the square template image.
  */
-export function drawTapko(g: G, c: Companion, mood: Mood, x: number, y: number, size: number, m: TapkoMotion): void {
+export function drawTapko(g: G, c: Look, mood: Mood, x: number, y: number, size: number, m: TapkoMotion): void {
   const t0 = g.getTransform();
   const px = Math.ceil(size * Math.hypot(t0.a, t0.b));
   const breathe = Math.sin(m.t * 2.4) * 0.018;
@@ -310,7 +316,7 @@ function drawFallbackAccessory(g: G, slot: Slot, s: number): void {
 }
 
 /** DOM version for menus: stacked images with CSS animation; fallback renders a small canvas. */
-export function tapkoElement(c: Companion, mood: Mood = 'idle', size = 160): HTMLElement {
+export function tapkoElement(c: Look, mood: Mood = 'idle', size = 160): HTMLElement {
   const el = document.createElement('div');
   el.className = 'tapko-stack';
   el.style.setProperty('--size', `${size}px`);
@@ -318,7 +324,7 @@ export function tapkoElement(c: Companion, mood: Mood = 'idle', size = 160): HTM
   return el;
 }
 
-export function renderTapkoInto(el: HTMLElement, c: Companion, mood: Mood): void {
+export function renderTapkoInto(el: HTMLElement, c: Look, mood: Mood): void {
   const stack = tapkoStack(c, mood);
   if (stack.every((l) => imageUrl(l.name))) {
     el.replaceChildren(...stack.map((l) => {

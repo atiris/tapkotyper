@@ -5,7 +5,7 @@ import { t, tn } from '../i18n/i18n';
 import { JOURNEYS, LEVELS, type LevelDef, STORIES, type StoryDef, WORLDS, DRILL_SECONDS, aimLevel, aimOpen, aimWorld, freeTypeLevel, isLevelUnlocked, isWorldUnlocked, journeyLevel, journeyOpen, levelAt, levelById, nextLevel, parrotLevel, placementLevel, practiceLevel, taskLevel } from '../game/levels';
 import { type LevelResult, newJourneyRun } from '../game/progress';
 import type { Style } from '../game/typing';
-import { WORLD_REWARDS } from '../game/rewards';
+import { WORLD_REWARDS, dressForMission } from '../game/rewards';
 import { LevelRuntime } from '../game/runtime';
 import { loadMode } from '../game/modes';
 import { captureKeys } from '../game/cards';
@@ -72,6 +72,11 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
   else if (params.id === 'journey' && journeyStory(params.story)) def = journeyLevel(journeyStory(params.story)!, 0);
   else if (params.id === 'placement') def = placementLevel();
   else def = levelById(params.id) ?? LEVELS[0];
+  // A mission (a story level or a hero's journey, not staying on) dresses the character by its random choices first.
+  if (!params.stay && (def.journey || LEVELS.includes(def))) {
+    dressForMission(p, def.world);
+    saveProfile();
+  }
   // A super-obstacle has no endless form (the asteroids' has): staying plays the world's last regular level.
   const stayDef = params.stay && def.isSuper && def.kind !== 'asteroid' ? levelAt(def.world, def.index - 1) ?? def : def;
   const next = params.stay ? nextOpen(def) : undefined;

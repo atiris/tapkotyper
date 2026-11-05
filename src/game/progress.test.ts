@@ -1,10 +1,14 @@
-import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 import { newProfile } from '../storage/store';
 import { LEVELS, STORIES, journeyLevel, worldLevels } from './levels';
 import { AUTO_DIFFICULTY_MAX, GROWTH_TYPED_SHARE, MIN_OWN_KEYS, completeLevel, completePlacement, completeStay, grow, growthNeed, joinRuns } from './progress';
-import { COMPANION_KINDS } from '../storage/schema';
+import { COMPANION_KINDS, emptyKeyStat } from '../storage/schema';
 import { PlacementCheck } from '../learning/placement';
-import { KIND_STEP, MAX_CHEST, MAX_STARS, STORY_ACCESSORIES, badgeTier, chestPoints, friendStars, grantAccessories, grantCompanions, kindPrices, totalStars, unlockRules } from './rewards';
+import { KIND_STEP, LEVEL_STARS, MAX_CHEST, MAX_STARS, RANDOM_KIND_STARS, STORY_ACCESSORIES, badgeTier, chestPoints, dressForMission, friendStars, grantAccessories, grantCompanions, hasAccessory, kindPrices, perfectWorlds, randomKindOpen, randomSlotKeys, totalStars, unlockRules } from './rewards';
+import { accessories, loadManifest } from '../gfx/assets';
+import { SLOTS } from '../gfx/tapko';
+import { practiceOrder } from '../learning/lessons';
 
 describe('automatic growth', () => {
   it('steps up after enough good play, difficulty and word length in turn', () => {
@@ -155,6 +159,74 @@ describe('accessories dealt per player', () => {
     const p = newProfile('Jano', 'sk');
     p.progress.levels['w1-1'] = 2;
     expect(grantAccessories(p)).toEqual([unlockRules(p).find((r) => r.rule.kind === 'level' && r.rule.id === 'w1-1')!.acc]);
+  });
+
+  it('grants four accessories by the stars earned in all: 50, 90, 120 and 150 % of the levels\' stars', () => {
+    const p = newProfile('Jano', 'sk');
+    const stars = unlockRules(p).filter((r) => r.rule.kind === 'stars').map((r) => r.rule.kind === 'stars' ? r.rule.stars : 0);
+    expect(stars).toEqual([0.5, 0.9, 1.2, 1.5].map((s) => Math.round(s * LEVEL_STARS)));
+    p.progress.starsEarned = stars[1];
+    expect(grantAccessories(p)).toHaveLength(2);
+  });
+
+  it('opens the fairy levels\' accessories also by 1, 2 and 3 worlds with every star', () => {
+    const p = newProfile('Jano', 'sk');
+    const perfect = unlockRules(p).filter((r) => r.rule.kind === 'level' && r.rule.perfect);
+    expect(perfect.map((r) => r.rule)).toEqual([{ kind: 'level', id: 'w13-2', perfect: 1 }, { kind: 'level', id: 'w14-2', perfect: 2 }, { kind: 'level', id: 'w15-2', perfect: 3 }]);
+    for (const l of worldLevels(0)) p.progress.levels[l.id] = 5;
+    expect(perfectWorlds(p)).toBe(1);
+    expect(grantAccessories(p)).toContain(perfect[0].acc);
+    expect(hasAccessory(p, perfect[1].acc)).toBe(false);
+  });
+});
+
+describe('random outfit on a mission', () => {
+  beforeAll(async () => {
+    const manifest = readFileSync('public/assets/manifest.json', 'utf8');
+    vi.stubGlobal('fetch', async () => new Response(manifest));
+    await loadManifest();
+    vi.unstubAllGlobals();
+  });
+
+  /** A player who earned the random character and masters every key, with two characters and the given items. */
+  const player = () => {
+    const p = newProfile('Jano', 'sk');
+    p.progress.starsEarned = RANDOM_KIND_STARS;
+    p.progress.companionsUnlocked = ['fox', 'cat'];
+    for (const k of practiceOrder(p)) p.stats.keys[k] = { ...emptyKeyStat(), presses: 100, recent: Array(100).fill(500) };
+    return p;
+  };
+
+  it('spreads the areas\' key steps evenly up to 0.9 of the practice order, one per area', () => {
+    const p = newProfile('Jano', 'sk');
+    const max = Math.round(0.9 * practiceOrder(p).length);
+    expect(Object.values(randomSlotKeys(p)).sort((a, b) => a - b)).toEqual(SLOTS.map((_, i) => Math.round((max * (i + 1)) / SLOTS.length)));
+    expect(randomKindOpen(p)).toBe(false);
+  });
+
+  it('changes the character only when the mission goes to another world', () => {
+    const p = player();
+    p.companion.randomKind = true;
+    dressForMission(p, 0);
+    expect(p.companion.kind).toBe('cat');
+    dressForMission(p, 0);
+    expect(p.companion.kind).toBe('cat');
+    dressForMission(p, 1);
+    expect(p.companion.kind).toBe('fox');
+    expect(p.progress.missionWorld).toBe(1);
+  });
+
+  it('picks each random area anew and leaves the others as chosen', () => {
+    const p = player();
+    const head = accessories().find((a) => a.slot === 'head')!.id, eyes = accessories().find((a) => a.slot === 'eyes')!.id;
+    p.progress.rewards.push(`acc:${head}`, `acc:${eyes}`);
+    p.companion.accessories = [eyes];
+    p.companion.randomSlots = ['head'];
+    dressForMission(p, 0, () => 0.9);
+    expect(p.companion.accessories.sort()).toEqual([eyes, head].sort());
+    dressForMission(p, 0, () => 0.1);
+    expect(p.companion.accessories).toEqual([eyes]);
+    expect(p.companion.kind).toBe('fox');
   });
 });
 

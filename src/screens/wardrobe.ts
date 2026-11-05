@@ -3,7 +3,7 @@ import { accessories, imageUrl } from '../gfx/assets';
 import { type Mood, SLOTS, otherMood, randomOutfit, tapkoElement, renderTapkoInto } from '../gfx/tapko';
 import { t } from '../i18n/i18n';
 import { levelById } from '../game/levels';
-import { friendStars, grantCompanions, hasAccessory, hasCompanion, totalStars, unlockRules } from '../game/rewards';
+import { RANDOM_KIND_STARS, friendStars, grantCompanions, hasAccessory, hasCompanion, masteredKeys, randomKindOpen, randomSlotKeys, randomSlotOpen, totalStars, unlockRules } from '../game/rewards';
 import { practiceToOpen, spendWardrobe, wardrobeLimited, wardrobeLocked } from '../game/wardrobe-time';
 import { COMPANION_KINDS } from '../storage/schema';
 import { NICK_MAX } from '../storage/store';
@@ -16,7 +16,9 @@ const SAVE_EVERY = 10;
 
 /**
  * The child's character and wardrobe: the nickname and a kind earned by stars; then one
- * item per body area, mixed freely; locked things show how this player earns them. With the
+ * item per body area, mixed freely; locked things show how this player earns them. A random tile
+ * beside the kinds and in every body area, once earned, lets each mission choose anew; it stays on
+ * beside the child's own pick, which "clear" and "random outfit" change without touching it. With the
  * wardrobe limit the time here is earned by practice and runs out; then nothing can change.
  */
 export function wardrobeScreen(root: HTMLElement): () => void {
@@ -55,16 +57,37 @@ export function wardrobeScreen(root: HTMLElement): () => void {
     if (!r) return '';
     if (r.kind === 'level') {
       const l = levelById(r.id);
-      return l ? t('wardrobe.byLevel', { level: levelTitleWords(l.world, l.index) }) : '';
+      const level = l ? levelTitleWords(l.world, l.index) : '';
+      return r.perfect ? t('wardrobe.byLevelOrPerfect', { level, n: r.perfect }) : t('wardrobe.byLevel', { level });
     }
     if (r.kind === 'world') return t('wardrobe.byWorld', { world: r.world + 1 });
-    return t('wardrobe.byMastery', { n: r.keys });
+    return t('wardrobe.byStars', { n: r.stars, have: p.progress.starsEarned });
   };
   const grid = h('div', { class: 'wardrobe-grid' });
   const clear = button(t('wardrobe.clear'), () => { p.companion.accessories = []; saveProfile(); render(); }, 'btn ghost small');
   const random = button(t('wardrobe.random'), () => { p.companion.accessories = randomOutfit((id) => hasAccessory(p, id)); saveProfile(); render(); }, 'btn ghost small');
+  // A random tile: earned or locked with what it still needs; on, it stays checked beside the child's own pick.
+  const randomTile = (cls: string, on: boolean, open: boolean, tipText: string, toggle: () => void) => h('button', {
+    class: `${cls} random ${on ? 'on' : ''} ${open ? '' : 'locked'}`,
+    type: 'button',
+    'aria-pressed': open ? String(on) : null,
+    'aria-disabled': open ? null : 'true',
+    'aria-label': `${t('wardrobe.randomTile')}: ${tipText}`,
+    tip: tipText,
+    disabled: locked,
+    onClick: () => {
+      if (!open) return;
+      toggle();
+      saveProfile();
+      render();
+    },
+  }, h('span', { class: 'random-mark', 'aria-hidden': 'true' }, '?'), open ? null : h('span', { class: 'lock' }, icon('lock')));
   const render = () => {
     renderTapkoInto(preview, p.companion, mood);
+    const kindOpen = randomKindOpen(p);
+    const kindTile = randomTile('kind', p.companion.randomKind, kindOpen,
+      kindOpen ? t('wardrobe.randomKind') : t('wardrobe.randomKindNeed', { n: RANDOM_KIND_STARS - p.progress.starsEarned }),
+      () => { p.companion.randomKind = !p.companion.randomKind; });
     nick.disabled = clear.disabled = random.disabled = locked;
     kinds.replaceChildren(...COMPANION_KINDS.map((k) => {
       const owned = hasCompanion(p, k);
@@ -90,13 +113,20 @@ export function wardrobeScreen(root: HTMLElement): () => void {
         },
       }, tapkoElement({ name: '', kind: k, accessories: [] }, 'idle', 72), owned ? null : h('span', { class: 'lock', tip: need }, icon('lock')),
         h('span', { class: 'kind-name' }, name));
-    }));
+    }), kindTile);
+    const mastered = masteredKeys(p), slotKeys = randomSlotKeys(p);
+    const slotTile = (slot: (typeof SLOTS)[number]) => {
+      const open = randomSlotOpen(p, slot), on = p.companion.randomSlots.includes(slot);
+      return randomTile('item', on, open,
+        open ? t('wardrobe.randomSlot') : t('wardrobe.randomSlotNeed', { n: slotKeys[slot], have: mastered }),
+        () => { p.companion.randomSlots = on ? p.companion.randomSlots.filter((x) => x !== slot) : [...p.companion.randomSlots, slot]; });
+    };
     grid.replaceChildren(...SLOTS.flatMap((slot) => {
       const items = accessories().filter((a) => a.slot === slot);
       if (!items.length) return [];
       return [h('section', { class: 'slot' },
         h('h3', {}, t(`slots.${slot}`)),
-        h('div', { class: 'items' }, ...items.map((a) => {
+        h('div', { class: 'items' }, slotTile(slot), ...items.map((a) => {
           const owned = hasAccessory(p, a.id);
           const on = p.companion.accessories.includes(a.id);
           const src = imageUrl(`acc-${a.id}-thumb`) ?? imageUrl(`acc-${a.id}`);

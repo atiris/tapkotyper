@@ -135,6 +135,8 @@ export interface Progress {
   starsEarned: number;
   /** Wardrobe time left in seconds, earned by training (`0..WARDROBE_MAX`, may hold fractions). */
   wardrobeSeconds: number;
+  /** The world of the last mission (a story level or a hero's journey); -1 before any. */
+  missionWorld: number;
   /** Ids of the world things hit in the middle at the target range (its collection). */
   rangeFinds: string[];
   /** The most points in one run of the target range (its base time), and when it was set (ms, null before any). */
@@ -204,6 +206,10 @@ export interface Companion {
   kind: CompanionKind;
   /** Equipped accessory ids. */
   accessories: string[];
+  /** A random owned character on a mission into another world than the last one (`progress.missionWorld`). */
+  randomKind: boolean;
+  /** Body areas (`Slot`) that get a random owned item, or none, on every mission. */
+  randomSlots: string[];
 }
 
 /** The game a task plays: the words games use the task's words, the text games its text. */

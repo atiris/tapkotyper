@@ -29,6 +29,17 @@
 - **Random outfit**: a button next to "Remove accessories" dresses the character at random:
   for each body area half the time nothing, otherwise one of the owned items of that area.
   The kind and the nickname stay.
+- **Random on a mission**: a tile with a question mark after the characters and first in every
+  body area. Turned on, it stays checked beside the child's own pick and chooses anew when the
+  child sets off on a mission (a story level or a hero's journey; own practice, free typing and
+  the other games change nothing), and the choice lasts until the next mission:
+  - the character: another owned character when the mission goes to another world than the
+    last one; it opens with a fifth of all stars of the levels and journeys earned in all;
+  - a body area: an owned item of it or none (half the time, as the random outfit); each area
+    opens with a number of mastered keys, steps spread evenly up to 0.9 of the practice order's
+    keys and dealt to the areas at random per player, fixed from the start.
+  "Remove accessories" and "Random outfit" change only the current look, never these switches.
+  The tile's tooltip says when it changes, locked what it still needs.
 
 ## Why
 - Dressing up is the reward, not the activity; time earned by practice keeps typing first
@@ -36,5 +47,8 @@
 - A visible countdown with a smile and then numbers a young child can read avoids a sudden
   lock; the blinking warns before the end.
 - Clicking the character and a random outfit are quick fun inside the earned time.
+- Random on a mission keeps an earned wardrobe fresh without a visit each time; it is earned by
+  stars and by mastered keys, so it rewards the long run, and the child's own look stays
+  theirs to come back to.
 - A child who sees a lock wants to know what to do, not only that it is closed; the name on
   the tile makes the goal concrete.

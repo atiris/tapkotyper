@@ -1,12 +1,14 @@
 import { Rng } from '../engine/rng';
-import { isFluent } from '../learning/lessons';
+import { accessories, type Slot } from '../gfx/assets';
+import { SLOTS, randomItem } from '../gfx/tapko';
+import { keyMastery, practiceOrder } from '../learning/lessons';
 import { COMPANION_KINDS, type CompanionKind, type Profile } from '../storage/schema';
 import { LEVELS, MAX_LEVEL_STARS, STORIES, WORLDS, journeyId, worldLevels } from './levels';
 import { WORLD_THINGS } from './modes/aim-things';
 import { PARROT_POINTS, hasParrotBadge } from './parrots';
 
 /**
- * Accessory unlock positions: levels, worlds and key mastery. The accessories listed here are
+ * Accessory unlock positions: levels, worlds and the stars earned in all. The accessories listed here are
  * dealt onto the positions at random per player (see `unlockRules`), fixed from the start.
  */
 const BY_LEVEL: Record<string, string> = {
@@ -24,7 +26,10 @@ const BY_WORLD: Record<number, string> = {
   5: 'hard-hat', 6: 'goggles', 7: 'umbrella', 8: 'jetpack', 9: 'antenna-band',
   11: 'feather', 13: 'harp', 14: 'fairy-wings',
 };
-const BY_MASTERY: [number, string][] = [[8, 'heart-glasses'], [16, 'star-shirt'], [24, 'pink-sneakers'], [32, 'sunglasses']];
+/** Level positions that also open with this many worlds whose every level has all its stars, whichever comes first. */
+const BY_PERFECT: Record<string, number> = { 'w13-2': 1, 'w14-2': 2, 'w15-2': 3 };
+/** Positions by the stars earned in all (`starsEarned`, replays add), as shares of all story levels' stars. */
+const BY_STARS: [number, string][] = [[0.5, 'heart-glasses'], [0.9, 'star-shirt'], [1.2, 'pink-sneakers'], [1.5, 'sunglasses']];
 /** Accessories a story scene names; they stay on their position for every player. */
 export const STORY_ACCESSORIES = ['flower-wreath', 'umbrella', 'raincoat', 'feather', 'harp', 'fairy-wings'];
 
@@ -52,7 +57,7 @@ export function badgeTier(p: Profile, world: number): BadgeTier | null {
 
 export interface UnlockRule {
   acc: string;
-  rule: { kind: 'level'; id: string } | { kind: 'world'; world: number } | { kind: 'mastery'; keys: number };
+  rule: { kind: 'level'; id: string; perfect?: number } | { kind: 'world'; world: number } | { kind: 'stars'; stars: number };
 }
 
 function shuffle<T>(list: T[], rng: Rng): T[] {
@@ -67,17 +72,21 @@ function shuffle<T>(list: T[], rng: Rng): T[] {
 /** Which position gives which accessory for this player: story accessories fixed, the rest dealt by the seed. */
 export function unlockRules(p: Profile): UnlockRule[] {
   const positions: UnlockRule[] = [
-    ...Object.entries(BY_LEVEL).map(([id, acc]) => ({ acc, rule: { kind: 'level' as const, id } })),
+    ...Object.entries(BY_LEVEL).map(([id, acc]) => ({ acc, rule: { kind: 'level' as const, id, ...(BY_PERFECT[id] ? { perfect: BY_PERFECT[id] } : {}) } })),
     ...Object.entries(BY_WORLD).map(([world, acc]) => ({ acc, rule: { kind: 'world' as const, world: Number(world) } })),
-    ...BY_MASTERY.map(([keys, acc]) => ({ acc, rule: { kind: 'mastery' as const, keys } })),
+    ...BY_STARS.map(([share, acc]) => ({ acc, rule: { kind: 'stars' as const, stars: Math.round(share * LEVEL_STARS) } })),
   ];
   // Its own stream, so the accessory deal does not depend on the character prices.
   const dealt = shuffle(positions.map((r) => r.acc).filter((a) => !STORY_ACCESSORIES.includes(a)), new Rng(p.seed ^ 0x9e3779b9));
   return positions.map((r) => (STORY_ACCESSORIES.includes(r.acc) ? r : { ...r, acc: dealt.pop()! }));
 }
 
-export function masteredCount(p: Profile): number {
-  return p.progress.unlockedKeys.filter((k) => isFluent(p.stats.keys[k])).length;
+/** All stars of the story levels, without the journeys. */
+export const LEVEL_STARS = LEVELS.length * MAX_LEVEL_STARS;
+
+/** Worlds whose every level has all its stars. */
+export function perfectWorlds(p: Profile): number {
+  return WORLDS.filter((_, w) => worldLevels(w).every((l) => (p.progress.levels[l.id] ?? 0) >= MAX_LEVEL_STARS)).length;
 }
 
 export function hasAccessory(p: Profile, id: string): boolean {
@@ -135,17 +144,61 @@ export function grantCompanions(p: Profile): CompanionKind[] {
 
 /** Grants every accessory whose rule is met; returns the newly unlocked ids. */
 export function grantAccessories(p: Profile): string[] {
-  const mastered = masteredCount(p);
+  const perfect = perfectWorlds(p);
   const fresh: string[] = [];
   for (const { acc, rule } of unlockRules(p)) {
     if (hasAccessory(p, acc)) continue;
-    const ok = rule.kind === 'level' ? (p.progress.levels[rule.id] ?? 0) > 0
+    const ok = rule.kind === 'level' ? (p.progress.levels[rule.id] ?? 0) > 0 || (!!rule.perfect && perfect >= rule.perfect)
       : rule.kind === 'world' ? p.progress.worldsDone.includes(rule.world)
-      : mastered >= rule.keys;
+      : p.progress.starsEarned >= rule.stars;
     if (ok) {
       p.progress.rewards.push(`acc:${acc}`);
       fresh.push(acc);
     }
   }
   return fresh;
+}
+
+/** The random character opens with this many stars earned in all: a fifth of all stars of the levels and journeys. */
+export const RANDOM_KIND_STARS = Math.round(MAX_STARS / 5);
+/** The random choice of the body areas opens step by step up to this share of the practice order's keys mastered. */
+const RANDOM_SLOTS_SHARE = 0.9;
+
+export function randomKindOpen(p: Profile): boolean {
+  return p.progress.starsEarned >= RANDOM_KIND_STARS;
+}
+
+/** Mastered keys each body area's random choice opens at: even steps up to 0.9 of the practice order, dealt to the areas by the player's seed. */
+export function randomSlotKeys(p: Profile): Record<Slot, number> {
+  const max = Math.round(RANDOM_SLOTS_SHARE * practiceOrder(p).length);
+  const steps = shuffle(SLOTS.map((_, i) => Math.round((max * (i + 1)) / SLOTS.length)), new Rng(p.seed ^ 0x5bd1e995));
+  return Object.fromEntries(SLOTS.map((slot, i) => [slot, steps[i]])) as Record<Slot, number>;
+}
+
+/** Keys of the practice order the child masters. */
+export function masteredKeys(p: Profile): number {
+  return practiceOrder(p).filter((k) => keyMastery(p, k)).length;
+}
+
+export function randomSlotOpen(p: Profile, slot: Slot): boolean {
+  return masteredKeys(p) >= randomSlotKeys(p)[slot];
+}
+
+/**
+ * Dresses the character for a mission (a story level or a hero's journey) into `world`: a random owned character when
+ * its random choice is on and the world is another than last time, a random owned item or none for every body area whose
+ * random choice is on. Areas without it keep what the child picked.
+ */
+export function dressForMission(p: Profile, world: number, rand: () => number = Math.random): void {
+  const c = p.companion;
+  if (c.randomKind && randomKindOpen(p) && world !== p.progress.missionWorld) {
+    const others = p.progress.companionsUnlocked.filter((k) => k !== c.kind);
+    if (others.length) c.kind = p.avatar = others[Math.floor(rand() * others.length)];
+  }
+  p.progress.missionWorld = world;
+  const slotOf = (id: string) => accessories().find((a) => a.id === id)?.slot;
+  for (const slot of SLOTS) {
+    if (!c.randomSlots.includes(slot) || !randomSlotOpen(p, slot)) continue;
+    c.accessories = [...c.accessories.filter((id) => slotOf(id) !== slot), ...randomItem(slot, (id) => hasAccessory(p, id), rand)];
+  }
 }

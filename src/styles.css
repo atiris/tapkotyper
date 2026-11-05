@@ -1407,6 +1407,12 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
 .item.on { border-color: var(--green); background: var(--item-on); }
 .item.locked img { filter: grayscale(1) brightness(0.3) opacity(0.35); }
 .item .lock { top: 50%; left: 50%; transform: translate(-50%, -50%); width: 36px; height: 36px; }
+/* The random tile: a big question mark on a dashed tile; on, it is checked beside the child's own pick. */
+.random { border-style: dashed; border-color: var(--line); display: grid; place-items: center; justify-content: center; }
+.random-mark { font-family: var(--font-keys); font-weight: 800; font-size: 2.6rem; line-height: 1; color: var(--brand-ink); }
+.kind.random { min-height: 6.5rem; }
+.random.on { border-style: solid; border-color: var(--brand); background: var(--tint-orange); }
+.random.locked .random-mark { opacity: 0.3; }
 
 /* Dragons */
 .dragon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; }

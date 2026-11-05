@@ -14,12 +14,15 @@
   character as someone other than the child. Messages come from a localized pool plus the
   parent's own custom encouraging messages. Slovak texts never use a gendered past tense
   or gendered adjectives about the child, whose gender the game does not know.
-- Accessories unlock by progress (finishing levels and worlds, mastering keys): hats,
+- Accessories unlock by progress (finishing levels and worlds, stars): hats,
   glasses, scarves and bows, vests and shirts, wings, capes and backpacks, shoes, things to
   hold (wand, balloon, lantern, a walking stick), gloves, necklaces (a chain, a medallion
   on a cord), hair clips, a simple eye mask and a festive carnival mask. Story 2 adds a hard hat, safety goggles, a raincoat, an
-  umbrella worn as a hat, a small jetpack and an antenna headband. Which level, world or
-  mastery step gives which accessory is **random per player, fixed from the start**, and
+  umbrella worn as a hat, a small jetpack and an antenna headband. Four positions open by the
+  stars earned in all (every play adds, replays too): 50, 90, 120 and 150 % of all the story
+  levels' stars. The second level of worlds 13, 14 and 15 also opens with 1, 2 and 3 worlds
+  whose every level has all five stars, whichever comes first. Which position gives which
+  accessory is **random per player, fixed from the start**, and
   the wardrobe shows how to earn each one. The same name always gives the same layout;
   different names give different ones. Accessories a story scene names stay on their
   place for everyone: the flower wreath (world 1), the umbrella (world 8), the raincoat

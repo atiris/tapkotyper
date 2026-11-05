@@ -1312,7 +1312,7 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
 .weak-list li { display: flex; align-items: center; gap: 0.6rem; }
 .weak-list .key-cap { flex: none; }
 /* A key to practise drawn like a key of the on-screen keyboard: outlined, its finger's colour on the bottom edge. */
-.key-cap { min-width: 2.4em; height: 2.4em; padding: 0 0.5em 6px; border-radius: 9px; border: 1px solid var(--key-line); background: var(--surface); color: var(--ink); box-shadow: inset 0 -5px 0 var(--finger, var(--brand)), 0 2px 0 var(--edge); font-family: var(--font-keys); font-size: 1rem; font-weight: 700; cursor: pointer; }
+.key-cap { min-width: 2.4em; height: calc(2.4em - 4px); margin-bottom: 4px; padding: 0 0.5em; border-radius: 9px; border: 1px solid var(--key-line); background: var(--surface); color: var(--ink); font-family: var(--font-keys); font-size: 1rem; font-weight: 700; cursor: pointer; }
 .keys-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.6rem; margin: 0.6rem 0 1rem; }
 .keys-foot .legend { margin: 0; }
 /*
@@ -1328,17 +1328,24 @@ body:not(.gfx-simple) .level-screen:has(> .overlay:not(.peek)) :is(.stage-wrap *
 .kb-slots .kb-tool:focus-visible { outline: 3px solid var(--brand-dark); outline-offset: 2px; }
 .kb-slots .kb-tool .icon { width: 1.5em; height: 1.5em; }
 /*
- * The clickable keys of My keys and its keys to practise move like the raised buttons: the base (the coloured band
- * and the edge under it) stays put; hovered the top rises a little and the band grows, pressed the top sinks and the
- * band shrinks. A selected key stays in its normal place when hovered; a latched tool key stays down whatever the
- * mouse does, until it is pressed again.
+ * The clickable keys of My keys and its keys to practise are built like the raised buttons: only the face has the
+ * outline, and the finger's band (`--band` high) with the edge under it is drawn below the face, so the base stays put
+ * and nothing is redrawn: hovered the face rises a little over a longer band, pressed it sinks onto a shorter one. The
+ * face is the band shorter than a key of the guide and keeps the room under it, so the rows stay as they are. A selected
+ * key keeps its normal place under the mouse; a latched tool key stays down whatever the mouse does.
  */
-.heatmap.clickable .kb .kb-key, .kb-slots .kb-tool, .key-cap { cursor: pointer; transition: transform 0.12s ease, box-shadow 0.12s ease; }
+.heatmap.clickable .kb .kb-key, .kb-slots .kb-tool, .key-cap { --band: 4px; box-shadow: 0 var(--band) 0 var(--finger, var(--brand)), 0 calc(var(--band) + 2px) 0 var(--edge); cursor: pointer; transition: transform 0.12s ease, box-shadow 0.12s ease; }
+.heatmap.clickable .kb .kb-key, .kb-slots .kb-tool { height: calc((var(--p) - var(--g)) * 46 / 54 - 4px); margin-bottom: 4px; padding-bottom: 2px; }
+.heatmap.clickable .kb .kb-key.bump::after { bottom: 3px; }
+/* The ISO Enter's two pieces stay one key: the top piece has no band of its own, the lower one reaches up over the shorter face. */
+.heatmap.clickable .kb .kb-key.kb-enter-top { box-shadow: none; }
+.heatmap.clickable .kb .kb-key.kb-enter-l { height: calc((var(--p) - var(--g)) * 46 / 54 + var(--g) + 3px); margin-top: calc(-1 * var(--g) - 7px); }
+.heatmap.clickable .kb .kb-key[data-heat]::before { bottom: 2px; }
 @media (hover: hover) {
-  :is(.heatmap.clickable .kb .kb-key:not(.selected), .kb-slots .kb-tool:not(.on, .pressed), .key-cap):not(:active):hover { transform: translateY(-2px); border-bottom-color: var(--finger); box-shadow: inset 0 -5px 0 var(--finger), 0 2px 0 var(--finger), 0 4px 0 var(--edge); }
+  :is(.heatmap.clickable .kb .kb-key:not(.selected, .kb-enter-top, .kb-enter-l), .kb-slots .kb-tool:not(.on, .pressed), .key-cap):not(:active):hover { --band: 6px; transform: translateY(-2px); }
 }
-:is(.heatmap.clickable .kb .kb-key, .kb-slots .kb-tool, .key-cap):active, .kb-slots .kb-tool:is(.pressed, .on) { transform: translateY(2px); box-shadow: inset 0 -3px 0 var(--finger), 0 0 0 var(--edge); }
-body.reduce-motion :is(.heatmap.clickable .kb .kb-key, .kb-slots .kb-tool, .key-cap):is(:hover, :active, .pressed, .on) { transform: none; }
+:is(.heatmap.clickable .kb .kb-key, .kb-slots .kb-tool, .key-cap):active, .kb-slots .kb-tool:is(.pressed, .on) { --band: 2px; transform: translateY(2px); }
+body.reduce-motion :is(.heatmap.clickable .kb .kb-key, .kb-slots .kb-tool, .key-cap):is(:hover, :active, .pressed, .on) { --band: 4px; transform: none; }
 /* A small keyboard shows only the main characters and the colours: no Shift symbols, no marks. */
 @container (max-width: 560px) {
   :is(.heatmap, .picker, .world-kb) .kb-shift { display: none; }

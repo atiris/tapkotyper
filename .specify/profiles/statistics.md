@@ -52,8 +52,8 @@
     with the hint to tap a key under it. A key with a keyboard picture under the right Shift, as
     wide as it, goes down visibly when pressed, releases "⇧ znaky", unselects the keys and brings
     it back.
-  - The keys move like the raised buttons: the base (the coloured band and the edge under it)
-    stays put, never the whole key with a shadow; hovered the top rises and the band between it
+  - The keys are built and move like the raised buttons: only the face has the outline, the
+    finger's band and the edge are drawn under it, so the base stays put and nothing is redrawn; hovered the face rises and the band between it
     and the base grows a little, pressed the top sinks and the band shrinks. A selected key keeps
     its ring and its normal place under the mouse (pressed, it comes back up only to its normal
     place); a latched key stays down whatever the mouse does, until it is pressed again; the

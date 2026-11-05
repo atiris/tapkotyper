@@ -38,6 +38,8 @@ being made. No explosions, no punishment, no ads, no accounts.
 - **Levels open with keys.** Each level needs a few more known keys than the one before
   (the first story starts at 3 and ends at 20), so every new key opens new levels with
   varied words.
+- **Worlds count on keys, not letters.** Each world has a fixed list of keys, named by place,
+  that the child knows on entering it; Help (Progress, "Worlds and keys") shows them all.
 - **Side activities per world.** When a world's big challenge is done, two voluntary cards
   open on the map. The **target range** throws funny things through rings of words that train
   exactly the letters holding the next ones back. The **parrot** makes the fingers learn a few

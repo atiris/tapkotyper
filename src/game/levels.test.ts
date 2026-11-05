@@ -1,10 +1,13 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { LAYOUTS, LAYOUT_IDS } from '../keyboard/layouts';
 import { newProfile } from '../storage/store';
 import { SUPER_ID } from '../storage/schema';
-import { lessonOrder } from '../learning/lessons';
-import { LEVELS, STORIES, WORLDS, activityOf, minActiveS, minWords, playedStep, aimLevel, aimOpen, aimWorld, freeTypeLevel, grownCount, hasMinLength, isLevelUnlocked, isWorldUnlocked, keysNeeded, levelById, levelOver, nextLevel, parrotKeys, parrotLevel, parrotSizeOf, practiceLevel, JOURNEYS, JOURNEY_STAR_STEPS, journeyId, journeyLevel, journeyOpen, journeyProgress, starsFor, shownProgress, worldLevels, worldLock } from './levels';
+import { lessonKeyNames, lessonOrder, practiceOrder } from '../learning/lessons';
+import { LEVELS, STORIES, WORLDS, activityOf, minActiveS, minWords, playedStep, aimLevel, aimOpen, aimWorld, freeTypeLevel, grownCount, hasMinLength, isLevelUnlocked, isWorldUnlocked, keysNeeded, levelById, levelOver, nextLevel, parrotKeys, parrotLevel, parrotSizeOf, practiceLevel, JOURNEYS, JOURNEY_STAR_STEPS, journeyId, journeyLevel, journeyOpen, journeyProgress, starsFor, shownProgress, worldLevels, worldLock, WORLD_KEYS, worldKeys, worldKeysMissing, worldNewKeys } from './levels';
 
-const KEYS = ['f', 'j', 'd', 'k', 's', 'l', 'a', ';', 'g', 'h', 'r', 'u', 'e', 'i', 't', 'y', 'w', 'o', 'q', 'p', 'v', 'm', 'c', ',', 'x', '.'];
+/** Keys along the Slovak lesson order, so every world's keys come with their count. */
+const KEYS = lessonOrder('sk-qwertz').slice(0, 26);
 
 describe('story unlocks', () => {
   it('opens the robot story when the child knows ten keys', () => {
@@ -439,5 +442,84 @@ describe('placement check', () => {
     p.progress.unlockedKeys = lessonOrder(p.layout).slice(0, 15);
     expect(LEVELS.filter((l) => isLevelUnlocked(p, l)).map((l) => l.id)).toEqual(['w1-1', 'w6-1']);
     expect(nextLevel(p)?.id).toBe('w1-1');
+  });
+});
+
+describe('world keys', () => {
+  /** A profile on the layout, diacritics on or off. */
+  const profile = (layout: (typeof LAYOUT_IDS)[number], noDiacritics = false) => {
+    const p = newProfile('Ema', 'sk', layout);
+    p.settings.noDiacritics = noDiacritics;
+    return p;
+  };
+  const names = (p: ReturnType<typeof profile>, n: number) => new Set(practiceOrder(p).slice(0, n).flatMap((k) => lessonKeyNames(LAYOUTS[p.layout], k)));
+
+  it('is reached by every lesson order by the world entry count, so the count and the list never disagree', () => {
+    for (const layout of LAYOUT_IDS) for (const off of [false, true]) {
+      const p = profile(layout, off);
+      for (const w of WORLDS.keys()) {
+        const known = names(p, keysNeeded(p, worldLevels(w)[0]));
+        expect(worldKeys(p, w).filter((n) => !known.has(n)), `${layout} ${off} world ${w + 1}`).toEqual([]);
+      }
+    }
+  });
+
+  it('holds every key all layouts reach by the entry or never teach', () => {
+    for (const w of WORLDS.keys()) {
+      const per = LAYOUT_IDS.map((id) => {
+        const p = profile(id);
+        return { entry: names(p, keysNeeded(p, worldLevels(w)[0])), all: names(p, Infinity) };
+      });
+      const every = [...new Set(per.flatMap((x) => [...x.all]))].filter((n) => per.every((x) => x.entry.has(n) || !x.all.has(n)) && per.some((x) => x.entry.has(n)));
+      expect([...WORLD_KEYS[w]].sort(), `world ${w + 1}`).toEqual(every.sort());
+    }
+  });
+
+  it('matches the table of the spec', () => {
+    const rows = readFileSync('.specify/learning/world-keys.md', 'utf8').split(/\r?\n/).filter((l) => /^\| \d+ /.test(l))
+      .map((l) => l.split('|').slice(1, -1).map((c) => c.trim()));
+    expect(rows).toHaveLength(WORLDS.length);
+    const sk = profile('sk-qwertz');
+    let before: string[] = [];
+    for (const [w, [, enters, fresh]] of rows.entries()) {
+      const list = enters.startsWith('+') ? [...before, ...enters.slice(1).trim().split(' ')] : enters.split(' ');
+      expect(list, `world ${w + 1}`).toEqual([...WORLD_KEYS[w]]);
+      expect(fresh ? fresh.split(' ') : [], `world ${w + 1} new`).toEqual(worldNewKeys(sk, w));
+      before = list;
+    }
+  });
+
+  it("closes a world whose keys the parent's own pick misses, once the count is there", () => {
+    const p = newProfile('Ema', 'sk');
+    p.progress.worldsDone = [0];
+    p.settings.activeKeysMode = 'manual';
+    // Seven keys, as the rocket world's first level needs, but the space bar left out.
+    p.settings.manualKeys = ['f', 'j', 'd', 'k', 's', 'l', 'a'];
+    expect(worldKeysMissing(p, 1)).toEqual(['sp']);
+    expect(worldLock(p, 1)).toEqual({ kind: 'need', keys: ['sp'] });
+    expect(isWorldUnlocked(p, 1)).toBe(false);
+    // A world already played in stays open: the meadow needs the space bar too.
+    p.progress.levels['w1-1'] = 3;
+    expect(isWorldUnlocked(p, 0)).toBe(true);
+    p.settings.manualKeys = ['f', 'j', ' ', 'd', 'k', 's', 'l'];
+    expect(worldLock(p, 1)).toBeNull();
+    // Fewer keys than the first level needs: the level's own count holds the child back, the world is open.
+    p.settings.manualKeys = ['f', 'j', 'd'];
+    expect(isWorldUnlocked(p, 1)).toBe(true);
+    // The super profile needs none.
+    p.id = SUPER_ID;
+    expect(worldKeysMissing(p, 1)).toEqual([]);
+  });
+
+  it('leaves out a key the practice order never teaches: no diacritics, the English keyboard', () => {
+    const p = newProfile('Ema', 'sk');
+    expect(worldKeys(p, 2)).toContain('l1');
+    p.settings.noDiacritics = true;
+    expect(worldKeys(p, 2)).not.toContain('l1');
+    p.progress.worldsDone = [0, 1];
+    p.progress.unlockedKeys = practiceOrder(p).slice(0, 12);
+    expect(worldLock(p, 2)).toBeNull();
+    expect(worldKeys(profile('us-qwerty'), 14)).not.toContain('p1');
+    expect(worldKeys(profile('sk-qwertz'), 14)).toContain('p1');
   });
 });

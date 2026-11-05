@@ -5,10 +5,11 @@ import { compassElement } from '../gfx/compass';
 import { tapkoElement } from '../gfx/tapko';
 import { t, tList } from '../i18n/i18n';
 import { nickname } from '../storage/store';
-import { LEVELS, STORIES, type StoryDef, WORLDS, activityOf, aimOpen, aimWorld, isLevelReached, isWorldUnlocked, journeyId, journeyOpen, keysMissing, levelById, nextLevel, storyOpen, worldLevels, worldLock, worldName } from '../game/levels';
+import { DRILL_SECONDS, LEVELS, STORIES, type StoryDef, WORLDS, activityOf, aimOpen, aimWorld, isLevelReached, isWorldUnlocked, journeyId, journeyOpen, keysMissing, levelById, nextLevel, storyOpen, worldLevels, worldLock, worldName } from '../game/levels';
 import { GUEST_ID, type Profile, SUPER_ID, type Surprise } from '../storage/schema';
-import { activeKeys, notReadyKeys } from '../learning/lessons';
-import { keyLabel } from '../ui/keyboard-guide';
+import { LAYOUTS } from '../keyboard/layouts';
+import { activeKeys, knownKeyNames, lessonKeysFor, notReadyKeys } from '../learning/lessons';
+import { keyLabel, namedKeyCaps, namedKeyLabel } from '../ui/keyboard-guide';
 import { badgeTier } from '../game/rewards';
 import { badge } from '../ui/badge';
 import { flyAway, hasParrotBadge } from '../game/parrots';
@@ -192,7 +193,10 @@ export function mapScreen(root: HTMLElement): () => void {
   const lockBubble = (world: number) => {
     const lock = worldLock(p, world);
     if (!lock) return;
-    bubble.replaceChildren(h('p', {}, lockText(p, world)),
+    // Keys the world counts on: as caps, with the short drill of them.
+    const need = lock.kind === 'need' ? [namedKeyCaps(LAYOUTS[p.layout], lock.keys, knownKeyNames(p)),
+      h('div', { class: 'bubble-actions' }, button(t('stats.drill'), () => go('level', { id: 'practice', keys: lessonKeysFor(p, lock.keys), seconds: DRILL_SECONDS }), 'btn small', 'practice'))] : [];
+    bubble.replaceChildren(h('p', {}, lock.kind === 'need' ? t('map.lockNeed') : lockText(p, world)), ...need,
       ...(lock.kind === 'keys' ? [...(held ? [h('p', { class: 'held-keys' }, held)] : []), practiceOffer(world)] : []));
     bubble.hidden = false;
   };
@@ -263,9 +267,9 @@ function heldText(p: Profile): string {
 function lockText(p: Profile, world: number): string {
   const lock = worldLock(p, world);
   if (!lock) return '';
-  return lock.kind === 'world'
-    ? t('map.lockWorld', { world: worldName(lock.prev) })
-    : t('map.lockKeys', { n: lock.need, have: lock.have });
+  if (lock.kind === 'world') return t('map.lockWorld', { world: worldName(lock.prev) });
+  if (lock.kind === 'need') return `${t('map.lockNeed')} ${lock.keys.map((n) => namedKeyLabel(LAYOUTS[p.layout], n).main).join(', ')}`;
+  return t('map.lockKeys', { n: lock.need, have: lock.have });
 }
 
 /** The key on a level still short of letters; its tooltip names the letters that need accuracy. */

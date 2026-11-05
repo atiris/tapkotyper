@@ -178,6 +178,7 @@
     "storyOpens": "Otvorí sa, keď budeš vedieť {n} písmen. Teraz vieš {have}.",
     "lockWorld": "Najprv dokonči svet {world}.",
     "lockKeys": "Tento príbeh sa otvorí, keď budeš vedieť {n} písmen. Teraz vieš {have}.",
+    "lockNeed": "Najprv sa nauč tieto klávesy:",
     "keysOne": "Na túto úroveň potrebuješ ešte jedno písmeno. Nové písmenká získaš hraním alebo vo Vlastnom písaní.",
     "keysFew": "Na túto úroveň potrebuješ ešte {n} písmená. Nové písmenká získaš hraním alebo vo Vlastnom písaní.",
     "keysMany": "Na túto úroveň potrebuješ ešte {n} písmen. Nové písmenká získaš hraním alebo vo Vlastnom písaní.",
@@ -1714,6 +1715,12 @@
       "parrot": "**Papagáj**: pár slov veľakrát za sebou. Papagáj každé zopakuje. Za chybu príde slovo ešte dvakrát.",
       "super": "**Finále**: piata, posledná hra sveta. Je to jeden z druhov hier vyššie, no môže byť trochu iný ako jeho bežný variant.",
       "timed": "Niektoré slová treba napísať včas, napríklad na rázcestí. Koľko času ostáva, ukazujú tieto hodiny: zelený kruh sa míňa a na konci bliká. Môže to byť trochu napínavé, ale čas sa prispôsobí tomu, ako rýchlo píšeš: kto píše pomalšie, dostane viac času."
+    },
+    "worldKeysTitle": "Svety a klávesy",
+    "worldKeys": {
+      "intro": "Každý svet počíta s klávesmi, ktoré už vieš, keď doň vstúpiš: jeho hry ich všetky môžu použiť. Ďalšie klávesy pribúdajú úroveň po úrovni. Klávesy, ktoré už vieš, sú plné, tie, ktoré sa ešte naučíš, len obrysom. Svet sa otvorí, až keď vieš všetky jeho klávesy.",
+      "start": "Na začiatku vieš",
+      "new": "Pribudne"
     },
     "journeyTitle": "Svety, úrovne a hviezdičky",
     "journey": [

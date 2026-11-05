@@ -1,7 +1,8 @@
 import { type Finger, type KeyDef, type Layout, LAYOUTS } from '../../src/keyboard/layouts';
 import type { LayoutId } from '../../src/storage/schema';
 import { type FingerScheme, fingerOf } from '../../src/keyboard/fingers';
-import { POSE_NAME, type Side, VIEW, keyName, poseName } from '../../src/ui/hand-svg';
+import { keyName } from '../../src/keyboard/key-names';
+import { POSE_NAME, type Side, VIEW, poseName } from '../../src/ui/hand-svg';
 import { FINGER_COLORS } from '../../src/ui/finger-colors';
 import { KeyboardGuide, inkOn, textColorsOn } from '../../src/ui/keyboard-guide';
 import '../../src/styles.css';

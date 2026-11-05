@@ -1,4 +1,5 @@
-import { type Layout, type KeyDef, fingerFor, stepsFor, keyByCode } from '../keyboard/layouts';
+import { keyName } from '../keyboard/key-names';
+import { type Layout, type KeyDef, LAYOUTS, fingerFor, keyByCode, shiftKeyFor, stepsFor } from '../keyboard/layouts';
 import type { KeyStat, LayoutId, Profile } from '../storage/schema';
 
 /** Lesson key of the space bar (typed with a thumb). */
@@ -210,7 +211,23 @@ export function activeKeys(profile: Profile): string[] {
   return profile.progress.unlockedKeys;
 }
 
-/** Unlocked keys that were not introduced yet, in lesson order (each is shown alone first). */
+/**
+ * The names of the keys (keyName) a lesson key is typed with, its own key last: the Shift of a shifted character, the
+ * dead key of a composed letter; a Shift pseudo-key is its Shift.
+ */
+export function lessonKeyNames(layout: Layout, key: string): string[] {
+  if (key === SHIFT_L) return ['ls'];
+  if (key === SHIFT_R) return ['rs'];
+  return stepsFor(layout, key).flatMap((step) => [shiftKeyFor(layout, step), step.code])
+    .flatMap((code) => (code ? [keyName(layout, code)] : [])).filter((n): n is string => n !== null);
+}
+
+/** The names of the keys the child knows: every key (and Shift) the active keys are typed with on the profile's layout. */
+export function knownKeyNames(profile: Profile): Set<string> {
+  const layout = LAYOUTS[profile.layout];
+  return new Set(activeKeys(profile).flatMap((k) => lessonKeyNames(layout, k)));
+}
+
 /** The profile types on another layout: the progress stays, but only with keys the new layout teaches. */
 export function useLayout(profile: Profile, id: LayoutId): void {
   profile.layout = id;
@@ -222,4 +239,14 @@ export function useLayout(profile: Profile, id: LayoutId): void {
 export function keysToIntroduce(profile: Profile): string[] {
   if (profile.settings.activeKeysMode === 'manual') return [];
   return profile.progress.unlockedKeys.filter((k) => !profile.progress.introducedKeys.includes(k));
+}
+
+/** The lesson keys that teach these named keys (keyName): for each the first key of the practice order typed on it, else the first one needing it (a Shift, a dead key). */
+export function lessonKeysFor(profile: Profile, names: string[]): string[] {
+  const layout = LAYOUTS[profile.layout];
+  const order = practiceOrder(profile).map((k) => ({ k, names: lessonKeyNames(layout, k) }));
+  return [...new Set(names.flatMap((n) => {
+    const key = order.find((o) => o.names.at(-1) === n) ?? order.find((o) => o.names.includes(n));
+    return key ? [key.k] : [];
+  }))];
 }

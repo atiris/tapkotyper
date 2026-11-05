@@ -1,5 +1,6 @@
 import { t } from '../i18n/i18n';
-import { activeKeys, aimKeys, isLetterKey, practiceOrder } from '../learning/lessons';
+import { LAYOUTS } from '../keyboard/layouts';
+import { activeKeys, aimKeys, isLetterKey, knownKeyNames, lessonKeyNames, practiceOrder } from '../learning/lessons';
 import { type Profile, SUPER_ID, type TaskSpec } from '../storage/schema';
 import { PARROT_MIN_S, type ParrotSize, parrotSize } from './parrots';
 
@@ -7,6 +8,61 @@ export type WorldId = 'meadow' | 'space' | 'planet' | 'dragons' | 'egg' | 'junky
   | 'garden' | 'forestpath' | 'lilylake' | 'musictree' | 'moonball';
 export const WORLDS: WorldId[] = ['meadow', 'space', 'planet', 'dragons', 'egg', 'junkyard', 'workshop', 'raintown', 'robocity', 'robohome',
   'garden', 'forestpath', 'lilylake', 'musictree', 'moonball'];
+
+/**
+ * The keys a world counts on, by place (keyName): the child knows them on entering it, every game of the world may use
+ * them. Each holds the keys every layout's lesson order reaches by the world's entry (`STORIES[].keys`), or never
+ * teaches; the source the worlds are designed with is `.specify/learning/world-keys.md`.
+ */
+const W2 = ['f0', 'j0', 'sp', 'd0', 'k0', 's0', 'l0'];
+const W3 = [...W2, 'a0', 'l1', 'g0', 'h0', 'e0'];
+const W4 = [...W3, 'i0', 'r0', 'u0', 'm2'];
+const W6 = [...W2, 'a0', 'l1', 'g0'];
+const W7 = [...W6, 'h0', 'e0', 'i0', 'r0', 'u0'];
+const W8 = [...W7, 'm2', 'o0', 't0', 'n0', 'm1'];
+const W9 = [...W8, 'c0', 'v0', 'm0', 'p0'];
+const W12 = [...W9, 'ls', 'b0', 'y0', 'rs'];
+const W13 = [...W12, 'z0', 'w0', 'x0', 'q0', 'm3', 'l2'];
+const W14 = [...W13, '80', '90', '00', '70', '60', '50', '40', '30', '20', 'p1'];
+export const WORLD_KEYS: readonly (readonly string[])[] = [
+  ['f0', 'j0', 'sp'], W2, W3, W4, [...W4, 'o0', 't0', 'n0'],
+  W6, W7, W8, W9, [...W12, 'w0'],
+  W8, W12, W13, W14, [...W14, 'p2', 'l3', '02', '10', '01'],
+];
+
+/** The world's keys the profile's practice order teaches: a key it never has (no diacritics, another layout) is left out. */
+export function worldKeys(p: Profile, world: number): string[] {
+  const layout = LAYOUTS[p.layout];
+  const taught = new Set(practiceOrder(p).flatMap((k) => lessonKeyNames(layout, k)));
+  return WORLD_KEYS[world].filter((n) => taught.has(n));
+}
+
+/** The world's keys the child does not know yet; none for the super profile. */
+export function worldKeysMissing(p: Profile, world: number): string[] {
+  if (p.id === SUPER_ID) return [];
+  const known = knownKeyNames(p);
+  return worldKeys(p, world).filter((n) => !known.has(n));
+}
+
+/** The keys the profile's practice order adds in the world, from its first level's keys to its last level's. */
+export function worldNewKeys(p: Profile, world: number): string[] {
+  const layout = LAYOUTS[p.layout];
+  const [first, last] = [worldLevels(world)[0], worldLevels(world)[4]];
+  const names = (l: LevelDef) => new Set(practiceOrder(p).slice(0, keysNeeded(p, l)).flatMap((k) => lessonKeyNames(layout, k)));
+  const before = names(first);
+  return [...names(last)].filter((n) => !before.has(n));
+}
+
+/**
+ * The world's keys that hold it closed: missing ones, once the child knows as many keys as its first level needs (with
+ * fewer, that level's own key count holds the child back, as along the lesson order). They guard the way in: a world
+ * with a level played stays open.
+ */
+function keysHolding(p: Profile, world: number): string[] {
+  if (worldLevels(world).some((l) => p.progress.levels[l.id])) return [];
+  if (activeKeys(p).length < keysNeeded(p, worldLevels(world)[0])) return [];
+  return worldKeysMissing(p, world);
+}
 
 /** A world's name. */
 export function worldName(world: number): string {
@@ -268,21 +324,27 @@ export function storyOpen(p: Profile, story: StoryDef): boolean {
   return story.opensAtKeys === null || p.id === SUPER_ID || activeKeys(p).length >= story.opensAtKeys;
 }
 
-/** The first world of a story opens with the story, every other one after the world before it, or when the placement check opened its first level. */
-export function isWorldUnlocked(p: Profile, world: number): boolean {
+/** The first world of a story is reached with the story, every other one after the world before it, or when the placement check opened its first level. */
+function worldReached(p: Profile, world: number): boolean {
   const story = storyOf(world);
   if (world !== story.worlds[0]) return p.progress.worldsDone.includes(world - 1) || (storyOpen(p, story) && placedLevel(p, worldLevels(world)[0]));
   return storyOpen(p, story);
 }
 
-/** Why a world is closed: the world before it is not done, or its story needs more keys; null when open. */
-export type WorldLock = { kind: 'world'; prev: number } | { kind: 'keys'; need: number; have: number };
+/** A world opens once it is reached and the child knows the keys it counts on. */
+export function isWorldUnlocked(p: Profile, world: number): boolean {
+  return worldReached(p, world) && !keysHolding(p, world).length;
+}
+
+/** Why a world is closed: its story needs more keys, the world before it is not done, or the child does not know its keys (by name); null when open. */
+export type WorldLock = { kind: 'world'; prev: number } | { kind: 'keys'; need: number; have: number } | { kind: 'need'; keys: string[] };
 
 export function worldLock(p: Profile, world: number): WorldLock | null {
-  if (isWorldUnlocked(p, world)) return null;
   const story = storyOf(world);
-  if (world !== story.worlds[0]) return { kind: 'world', prev: world - 1 };
-  return { kind: 'keys', need: story.opensAtKeys!, have: activeKeys(p).length };
+  if (!storyOpen(p, story)) return { kind: 'keys', need: story.opensAtKeys!, have: activeKeys(p).length };
+  if (!worldReached(p, world)) return { kind: 'world', prev: world - 1 };
+  const keys = keysHolding(p, world);
+  return keys.length ? { kind: 'need', keys } : null;
 }
 
 /**

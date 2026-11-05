@@ -15,6 +15,9 @@
   or brings a proper noun: the dictionary holds names, and the Slovak one also the best-known
   towns and places of Slovakia (Bratislava, Tatry, Dunaj); they never come in lower case, so
   they wait for their Shift.
+- Each world counts on a fixed list of keys, named by place, that the child knows on
+  entering it ([world keys](world-keys.md)); the lesson order reaches every list by the
+  world's key count.
 - Space, punctuation and the Shifts get ready sooner than letters (fewer presses), so they do
   not hold the next letter back for long.
 - A new key is introduced alone first (where it is, which finger), then mixed with known keys.

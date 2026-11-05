@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { emptyKeyStat } from '../storage/schema';
 import { ENTER, LAYOUTS, enterAfter, fingerFor } from '../keyboard/layouts';
-import { STATS_WINDOW, activeKeys, advanceLesson, aimKeys, firstKeys, keysAccuracy, notReadyKeys, isMastered, keysToIntroduce, lessonOrder, practiceOrder, practiceSteps, punctuationKeys, reactionLimit, shiftKeyOf, stepHolding } from './lessons';
+import { SHIFT_L, STATS_WINDOW, activeKeys, knownKeyNames, lessonKeyNames, lessonKeysFor, advanceLesson, aimKeys, firstKeys, keysAccuracy, notReadyKeys, isMastered, keysToIntroduce, lessonOrder, practiceOrder, practiceSteps, punctuationKeys, reactionLimit, shiftKeyOf, stepHolding } from './lessons';
 import { keyMastery, keyReport, lastTraining, masterySummary, recordPress, weakKeys } from './stats';
 
 describe('lesson order', () => {
@@ -298,5 +298,36 @@ describe('keys the target range trains', () => {
   it('measure the mean recent accuracy', () => {
     expect(keysAccuracy(holding(), ['k', 'f'])).toBeCloseTo(0.9);
     expect(keysAccuracy(holding(), [])).toBe(0);
+  });
+});
+
+describe('keys by name', () => {
+  const sk = LAYOUTS['sk-qwertz'];
+
+  it('names the keys a lesson key is typed with, its own key last', () => {
+    expect(lessonKeyNames(sk, 'f')).toEqual(['f0']);
+    expect(lessonKeyNames(sk, ' ')).toEqual(['sp']);
+    // A digit is the Slovak key with a letter on it, on Shift (the other hand's).
+    expect(lessonKeyNames(sk, '7')).toEqual(['ls', '70']);
+    expect(lessonKeyNames(sk, 'ý')).toEqual(['70']);
+    // A composed letter needs its dead key.
+    expect(lessonKeyNames(sk, 'ó')).toEqual(['02', 'o0']);
+    expect(lessonKeyNames(sk, SHIFT_L)).toEqual(['ls']);
+    expect(lessonKeyNames(LAYOUTS['us-qwerty'], ';')).toEqual(['l1']);
+  });
+
+  it("knows the keys of the active keys, the parent's pick too", () => {
+    const p = newProfile('Ema', 'sk');
+    expect([...knownKeyNames(p)].sort()).toEqual(['f0', 'j0', 'sp']);
+    p.settings.activeKeysMode = 'manual';
+    p.settings.manualKeys = ['a', '7'];
+    expect([...knownKeyNames(p)].sort()).toEqual(['70', 'a0', 'ls']);
+  });
+
+  it('finds the lesson keys that teach named keys along the practice order', () => {
+    const p = newProfile('Ema', 'sk');
+    expect(lessonKeysFor(p, ['s0', 'l1', 'ls', '70'])).toEqual(['s', 'ô', SHIFT_L, 'ý']);
+    p.settings.noDiacritics = true;
+    expect(lessonKeysFor(p, ['l1', '70'])).toEqual(['7']);
   });
 });

@@ -431,6 +431,8 @@ story stays playable in any browser ([mechanics](mechanics.md)).
   the robot story.
 - Worlds of a story unlock in order; finished levels can always be replayed. A level also
   needs a few known keys ([lesson progression](../learning/lesson-progression.md)).
+- Each world counts on the keys of its own row in [world keys](../learning/world-keys.md)
+  (by the world's number): its games may use all of them, and a new world is designed with them.
 - On the map each story is one row with its name above its world cards, left aligned with
   the first card; a closed story shows when it opens. World numbers run on across stories.
 - The last world of each story ends with a hero's journey, one long, harder trip through the

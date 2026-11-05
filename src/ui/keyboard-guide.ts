@@ -1,5 +1,6 @@
 import { ENTER, type Finger, type KeyDef, type Layout, type KeyStep, allKeys, fingerFor, keyByCode, shiftKeyFor, stepsFor, typesChar } from '../keyboard/layouts';
 import { t } from '../i18n/i18n';
+import { codeOfName } from '../keyboard/key-names';
 import { FINGER_COLORS } from './finger-colors';
 import { Hands } from './hands';
 import { SHIFT_L, SHIFT_R, SPACE } from '../learning/lessons';
@@ -50,6 +51,33 @@ export function textColorsOn(hex: string): [string, string] {
 /** How a lesson key is named in texts: space, Enter and the Shifts by name, other keys as they are. */
 export function keyLabel(key: string): string {
   return key === SPACE ? t('keys.space') : key === ENTER ? t('keys.enter') : key === SHIFT_L ? t('keys.shiftL') : key === SHIFT_R ? t('keys.shiftR') : key;
+}
+
+/** The marks of the dead keys, as their caps show them. */
+const DEAD_MARKS: Record<string, string> = { 'dead:acute': '´', 'dead:caron': 'ˇ' };
+
+/** A key named by place (keyName) as its cap on the layout: its character, a digit on Shift small under it, the Shifts and space by name. */
+export function namedKeyLabel(layout: Layout, name: string): { main: string; small: string } {
+  const def = keyByCode(layout, codeOfName(layout, name) ?? '');
+  if (!def) return { main: name, small: '' };
+  if (def.base === 'shift') return { main: keyLabel(def.code === 'ShiftLeft' ? SHIFT_L : SHIFT_R), small: '' };
+  const main = DEAD_MARKS[def.base] ?? keyLabel(def.base);
+  return { main, small: /^\d$/.test(def.shift) && !/^\d$/.test(def.base) ? def.shift : '' };
+}
+
+/** Keys named by place as small caps in a row: a key the child knows full, one still to learn (not in `known`) as an outline. */
+export function namedKeyCaps(layout: Layout, names: readonly string[], known: Set<string>): HTMLElement {
+  const row = document.createElement('span');
+  row.className = 'named-keys';
+  for (const name of names) {
+    const { main, small } = namedKeyLabel(layout, name);
+    const cap = document.createElement('kbd');
+    cap.className = known.has(name) ? 'kbd' : 'kbd to-learn';
+    cap.textContent = main;
+    if (small) cap.append(Object.assign(document.createElement('small'), { textContent: small }));
+    row.append(cap);
+  }
+  return row;
 }
 
 /** Finger of a lesson key; each Shift is pressed by its own hand's pinky. */

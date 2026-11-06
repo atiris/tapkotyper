@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { FrameWatch, SLOW_P95_MS, graphics, markSlowDevice, p95, useGraphics } from './graphics';
+import { FrameWatch, SLOW_MS, graphics, markSlowDevice, median, useGraphics } from './graphics';
 
 /** Frames `ms` apart for `seconds`, from `start`; returns what the watch said last and the time after. */
 function run(w: FrameWatch, ms: number, seconds: number, start = 1000): { slow: boolean; at: number } {
@@ -11,34 +11,45 @@ function run(w: FrameWatch, ms: number, seconds: number, start = 1000): { slow: 
 describe('the frame watch', () => {
   it('finds a smooth computer fast enough', () => {
     const w = new FrameWatch();
-    expect(run(w, 16.7, 8).slow).toBe(false);
+    expect(run(w, 16.7, 12).slow).toBe(false);
     expect(w.done).toBe(true);
   });
 
-  it('finds a computer slow when its frames are over the limit', () => {
-    expect(run(new FrameWatch(), SLOW_P95_MS + 15, 8).slow).toBe(true);
+  it('finds a computer slow when its frames are slow all the time', () => {
+    expect(run(new FrameWatch(), SLOW_MS + 10, 12).slow).toBe(true);
   });
 
   it('does not count the slow start or a pause', () => {
     const w = new FrameWatch();
-    // The first second decodes pictures.
-    const { at } = run(w, 200, 1);
+    // The first seconds load pictures.
+    const { at } = run(w, 200, 3);
     w.pause();
     // A long pause card, then smooth play.
-    expect(run(w, 16.7, 8, at + 60_000).slow).toBe(false);
+    expect(run(w, 16.7, 12, at + 60_000).slow).toBe(false);
+  });
+
+  it('does not step down for one long hiccup or a short burst of slow frames', () => {
+    const w = new FrameWatch();
+    let { at } = run(w, 16.7, 5);
+    // A frozen tab or a long clean-up of memory: one gap of two seconds.
+    w.frame(at += 2000);
+    // A picture decoding: a second of slow frames.
+    ({ at } = run(w, 60, 1, at));
+    expect(run(w, 16.7, 8, at).slow).toBe(false);
+    expect(w.done).toBe(true);
   });
 
   it('decides only once', () => {
     const w = new FrameWatch();
-    expect(run(w, 50, 8).slow).toBe(true);
-    expect(run(w, 50, 8, 100_000).slow).toBe(false);
+    expect(run(w, 50, 12).slow).toBe(true);
+    expect(run(w, 50, 12, 100_000).slow).toBe(false);
   });
 });
 
-describe('p95', () => {
-  it('is the frame time the slowest 5 % are over', () => {
-    expect(p95([...Array(95).fill(10), ...Array(5).fill(100)])).toBe(100);
-    expect(p95([...Array(96).fill(10), ...Array(4).fill(100)])).toBe(10);
+describe('median', () => {
+  it('is the middle frame time', () => {
+    expect(median([10, 100, 20])).toBe(20);
+    expect(median([...Array(51).fill(10), ...Array(49).fill(100)])).toBe(10);
   });
 });
 
@@ -65,8 +76,14 @@ describe('the automatic steps', () => {
   });
 
   it('leave a chosen simple drawing at its own resolution', () => {
-    stored.set('tapkotyper:slow-device', '2');
+    stored.set('tapkotyper:slow-device', JSON.stringify({ step: 2, at: Date.now() }));
     useGraphics('simple');
     expect(graphics).toEqual({ simple: true, lowRes: false });
+  });
+
+  it('measure again after a week', () => {
+    stored.set('tapkotyper:slow-device', JSON.stringify({ step: 2, at: Date.now() - 8 * 864e5 }));
+    useGraphics('auto');
+    expect(graphics).toEqual({ simple: false, lowRes: false });
   });
 });

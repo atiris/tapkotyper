@@ -3,14 +3,15 @@
 // times, long tasks and JS heap; a Chrome trace of each scene goes to test-results/perf/.
 //
 //   node scripts/perf.mjs [--machine normal|slow|big|all] [--only meadow-1,map] [--seconds 30]
-//                         [--no-build] [--no-trace] [--load] [--leak] [--budget] [--low | --lowres] [--results]
+//                         [--no-build] [--no-trace] [--load] [--leak] [--budget] [--low | --lowres | --auto [--hiccup]] [--gpu] [--results]
 //
 // Machines: normal = 1366 x 768 at DPR 1; slow = the same with CPU throttling x 6; big = 1920 x 1080
 // at DPR 2 (the largest canvas the stage makes). `--load` measures a cold first load and a level
 // open on "Fast 3G"; `--leak` opens and leaves ten levels and compares the heap; `--budget` fails
 // (exit code 1) when a story level is over the budget of .specify/architecture.md (normal, and slow
 // with `--low`); `--low` sets the simple graphics, `--lowres` the simple ones at the lower resolution of a device
-// still slow with them, else the full ones; `--results` adds a row of
+// still slow with them, `--auto` the automatic choice on a device not measured yet (the row's `gfx` tells where it
+// ended; `--hiccup` adds a frozen second and a second of slow frames to its watch), else the full ones; `--results` adds a row of
 // the frames under the results card of a level that ended within the time. Needs the tester profile
 // `.e2e/tester-profile.json` (git-ignored).
 import { chromium } from '@playwright/test';
@@ -105,16 +106,16 @@ const SAMPLER = () => {
 };
 
 /** The graphics of a run: '' full, 'low' simple, 'lowres' simple at the lower resolution. */
-const GFX = flag('lowres') ? 'lowres' : flag('low') ? 'low' : '';
+const GFX = flag('lowres') ? 'lowres' : flag('low') ? 'low' : flag('auto') ? 'auto' : '';
 
 async function newPage(browser, m, low) {
   const context = await browser.newContext({ viewport: m.viewport, deviceScaleFactor: m.dpr, serviceWorkers: 'block' });
   await context.addInitScript(SAMPLER);
-  // The tester profile, opened directly, with the graphics pinned: the automatic choice would switch during a run.
+  // The tester profile, opened directly, with the graphics pinned (the automatic choice would switch during a run) unless `--auto` watches it.
   const profile = structuredClone(tester);
-  profile.settings.graphics = low === 'lowres' ? 'auto' : low ? 'simple' : 'full';
+  profile.settings.graphics = low === 'lowres' || low === 'auto' ? 'auto' : low ? 'simple' : 'full';
   // The lower resolution is the automatic choice's second step, as a device measured slow twice keeps it.
-  if (low === 'lowres') await context.addInitScript(() => localStorage.setItem('tapkotyper:slow-device', '2'));
+  if (low === 'lowres') await context.addInitScript(() => localStorage.setItem('tapkotyper:slow-device', JSON.stringify({ step: 2, at: Date.now() })));
   await context.addInitScript((p) => {
     const raw = JSON.parse(localStorage.getItem('tapkotyper:v1') ?? 'null') ?? { profiles: [] };
     raw.profiles = [...(raw.profiles ?? []).filter((x) => x.id !== p.id), p];
@@ -204,7 +205,19 @@ async function measure(browser, machine, sc, low) {
   const t0 = Date.now();
   const end = t0 + SECONDS * 1000;
   let endedAt = null;
+  // In the automatic choice's watch (after its warm-up): the page freezes for two seconds, then draws slowly for one.
+  const hiccup = flag('hiccup') ? [t0 + 4000, t0 + 7000] : [];
   while (Date.now() < end) {
+    if (hiccup.length && Date.now() > hiccup[0]) {
+      hiccup.shift();
+      await page.evaluate((freeze) => {
+        const busyFor = (ms) => { const t = performance.now(); while (performance.now() - t < ms); };
+        if (freeze) return busyFor(2000);
+        const until = performance.now() + 1000;
+        const slow = () => { busyFor(45); if (performance.now() < until) requestAnimationFrame(slow); };
+        requestAnimationFrame(slow);
+      }, hiccup.length === 1);
+    }
     // Play only: the results card is a still card over the scene, not play.
     if (level && (await step(page)) === 'results') {
       endedAt = Math.round(SECONDS - (end - Date.now()) / 1000);
@@ -227,8 +240,9 @@ async function measure(browser, machine, sc, low) {
     rows.push(row(`${sc.name}-results`, pr, r0, await busy(cdp), RESULTS_S, null, false));
   }
   const heapEnd = await heap(cdp);
+  const gfx = await page.evaluate(() => (document.body.classList.contains('gfx-simple') ? JSON.parse(localStorage.getItem('tapkotyper:slow-device') ?? '{}').step === 2 ? 'lowres' : 'simple' : 'full'));
   await context.close();
-  return rows.map((r) => ({ ...r, machine: machine + (low ? `-${low}` : ''), heapStart, heapEnd }));
+  return rows.map((r) => ({ ...r, machine: machine + (low ? `-${low}` : ''), heapStart, heapEnd, gfx }));
 }
 
 /** A table row of sampled frames `p` over `wall` seconds, with the main thread's busy times `b0` to `b1`. */
@@ -316,15 +330,16 @@ async function leak(browser) {
 }
 
 function table(rows) {
-  const head = '| scene | machine | frames | p50 | p95 | p99 | >33 ms | long tasks (ms) | busy % (script/style/layout) | heap MB start/end | ended at s |';
-  const lines = rows.map((r) => `| ${r.scene} | ${r.machine} | ${r.frames} | ${r.p50} | ${r.p95} | ${r.p99} | ${r.over33} | ${r.long} (${r.longMs}) | ${r.busy} (${r.script}/${r.style}/${r.layout}) | ${r.heapStart}/${r.heapEnd} | ${r.endedAt ?? '-'} |`);
-  return [head, '|---|---|---|---|---|---|---|---|---|---|---|', ...lines].join('\n');
+  const head = '| scene | machine | frames | p50 | p95 | p99 | >33 ms | long tasks (ms) | busy % (script/style/layout) | heap MB start/end | ended at s | gfx at end |';
+  const lines = rows.map((r) => `| ${r.scene} | ${r.machine} | ${r.frames} | ${r.p50} | ${r.p95} | ${r.p99} | ${r.over33} | ${r.long} (${r.longMs}) | ${r.busy} (${r.script}/${r.style}/${r.layout}) | ${r.heapStart}/${r.heapEnd} | ${r.endedAt ?? '-'} | ${r.gfx} |`);
+  return [head, '|---|---|---|---|---|---|---|---|---|---|---|---|', ...lines].join('\n');
 }
 
 let failed = false;
 try {
   await waitForServer();
-  const browser = await chromium.launch();
+  // `--gpu`: the installed Chrome with its graphics card, a strong computer instead of software drawing.
+  const browser = await chromium.launch(flag('gpu') ? { channel: 'chrome', args: ['--enable-gpu', '--ignore-gpu-blocklist'] } : {});
   const only = opt('only', '').split(',').filter(Boolean);
   const scenes = only.length ? SCENES.filter((s) => only.includes(s.name)) : SCENES;
   const which = opt('machine', 'normal');
@@ -334,7 +349,7 @@ try {
     for (const machine of machines) {
       for (const sc of scenes) {
         for (const r of await measure(browser, machine, sc, GFX)) {
-          console.log(`${r.machine} ${r.scene}: p50 ${r.p50} p95 ${r.p95} p99 ${r.p99} >33 ${r.over33} long ${r.long} busy ${r.busy}% heap ${r.heapStart}/${r.heapEnd}`);
+          console.log(`${r.machine} ${r.scene}: p50 ${r.p50} p95 ${r.p95} p99 ${r.p99} >33 ${r.over33} long ${r.long} busy ${r.busy}% heap ${r.heapStart}/${r.heapEnd} gfx ${r.gfx}`);
           rows.push(r);
           const budget = BUDGET[r.machine];
           if (flag('budget') && budget && r.level && (r.p50 > budget.p50 || r.p95 > budget.p95)) {

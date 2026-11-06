@@ -81,7 +81,7 @@
 - **Simple graphics:** a teacher can set Graphics to Automatic (default), Full or Simple in the
   settings. Simple draws the scene at three quarters of the screen's resolution (scaled up; Tapko,
   the keyboard and the cards are page elements and stay sharp), fewer particles, no blurred
-  shadows and no blur behind cards, moving bands on whole pixels and the start page's sky
+  shadows (the word labels keep theirs) and no blur behind cards, moving bands on whole pixels and the start page's sky
   without its butterflies and fireflies. Its background bands stand still, except the near band
   of a scene Tapko travels through (the planet's swamp and shore, the crossroads, the valley's
   thicket, the egg world's mud path), where things stand on that ground and the shore must come;
@@ -91,11 +91,21 @@
   every frame on a weak graphics chip, so there it has hard edges instead of soft shadows; the next
   key does not pulse and the hands change pose at once, as both would restyle the page every frame.
   For the same reason the keys light up and the progress bar grows at once, without easing in.
-  Automatic switches to it by itself when the first seconds of play are slow (the slowest 5 % of
-  frames over 25 ms) and remembers that for the device. When the next seconds are still that slow,
-  it takes a second step: the scene at half the screen's resolution. The scene and the word labels
-  on it get softer but stay clear, and a softer picture is better than a stuttering one; a teacher
-  who picks Simple keeps its three quarters. It never changes
+  Automatic switches to it by itself only when play is slow all the time: after three seconds of
+  play (pictures and fonts still load) it watches six seconds, and the middle frame of each two of
+  them must be over 24 ms (under about 42 frames a second). A strong computer must never step down
+  for a moment of trouble, so a gap over a quarter of a second (a hidden or frozen tab, a long
+  clean-up of memory) counts neither as a frame nor as time, and a short burst of slow frames
+  cannot move a middle frame. The device keeps the decision for a week, then measures again, so a
+  wrong one or a computer that got faster recovers. When the next seconds are still that slow,
+  it takes a second step: the scene at half the screen's resolution. The scene gets softer, and a
+  softer picture is better than a stuttering one; a teacher who picks Simple keeps its three quarters.
+  The word labels are the task, so at every step they look exactly as with Full graphics, sharp and
+  with their soft shadow: in Simple they lie on a layer of their own at the screen's resolution,
+  over the smaller scene, and only what they covered in the last frame is cleared. In every drawing
+  a label is drawn once per look (word, letters typed, size, style) into a picture of its own and
+  copied on whole pixels, as its letters and shadow cost far more than a copy; a shaking label and a
+  memory ring that empties are drawn directly. It never changes
   the game's pace, word timing or results: a slow computer gets the same lesson.
 - **A slow frame does not slow the next one:** the game takes at most four update steps per
   frame (longer steps instead of more), so the game clock stays right without piling work up.

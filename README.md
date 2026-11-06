@@ -8,7 +8,7 @@ being made. No explosions, no punishment, no ads, no accounts.
 
 *Pokojná príbehová hra pre deti na nácvik písania všetkými desiatimi. Po slovensky aj po anglicky.*
 
-**Play:** https://tapkotyper.com/
+**Play:** https://tapkotyper.com/ · **Support:** [Ko-fi](#support)
 
 ![Start screen](docs/start.png)
 
@@ -251,6 +251,17 @@ Every push to `main` builds the site and deploys it to GitHub Pages
 - [`.todo/`](.todo/) - implementation plans, queue and backlog
 - [`.scenarios/`](.scenarios/) - end-to-end test scenarios
 - [`assets-src/PROMPTS.md`](assets-src/PROMPTS.md) - Gemini prompts for images and music
+
+## Support
+
+TapkoTyper is free and made in my free time; the only real cost is the domain. If you want to
+help, buy me a "coffee": it pays the domain for another year, and anything left over goes to
+real coffee :) Thank you.
+
+*Ak chcete podporiť tento projekt (reálne platím len za doménu, čas mu venujem zadarmo), môžete
+mi poslať „kávu“. Kúpim za to doménu na ďalší rok a čo zvýši, pôjde na skutočnú kávu :) Ďakujem.*
+
+<a href="https://ko-fi.com/atiris"><img src="https://storage.ko-fi.com/cdn/brandasset/v2/kofi_logo.png" alt="Support me on Ko-fi" height="40"></a>
 
 ## License
 

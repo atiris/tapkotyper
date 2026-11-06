@@ -1,5 +1,5 @@
 import { VH } from '../../engine/loop';
-import { type G, drawWord, wordBox } from '../../gfx/draw';
+import { type G, WORD_SHADOW_PX, drawWord, wordBox } from '../../gfx/draw';
 import { CLOCK_R, drawClock } from '../modes/kit/clock';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
@@ -32,7 +32,7 @@ const LABEL_EDGE = 8;
 const LABEL_MIN_SIZE = 28;
 /** The gap between a word and its countdown clock. */
 const CLOCK_GAP = 10;
-/** Room around a label for its shadow and its shake after a slip. */
+/** Room around a label for its shake after a slip and its line (stage units); its shadow adds `WORD_SHADOW_PX`. */
 const LABEL_BLEED = 20;
 
 /** The word labels of a frame: the modes ask for them, they are drawn after the mode, so labels never overlap. */
@@ -80,6 +80,7 @@ export class Labels {
     const shifts = new Map<number, number>();
     const icon = L.style !== 'copy';
     const area = { x0: Infinity, x1: -Infinity, y0: Infinity, y1: -Infinity };
+    const bleed = LABEL_BLEED + WORD_SHADOW_PX / g.getTransform().a;
     for (const l of [...this.pending].sort((a, b) => rank(b) - rank(a))) {
       // Phrases shrink to fit: in calm modes the stage around their place, moving targets half of it.
       const room = L.mode.phraseWords > 2 ? Math.min(L.vw * 0.9, 2 * Math.min(l.x, L.vw - l.x) - 20) : L.vw * 0.5;
@@ -121,10 +122,10 @@ export class Labels {
         icon: l.tg.style === 'dictation' ? { kind: 'speaker' } : l.tg.style === 'memory' ? { kind: 'ring', left: l.tg.showFor ? l.tg.showLeft / l.tg.showFor : 0 } : undefined,
       });
       const y0 = Math.min(l.y, l.y + shift - h / 2), y1 = Math.max(l.y, l.y + shift + h / 2);
-      area.x0 = Math.min(area.x0, l.x - w / 2 - LABEL_BLEED);
-      area.x1 = Math.max(area.x1, l.x + w / 2 + tail + LABEL_BLEED);
-      area.y0 = Math.min(area.y0, y0 - LABEL_BLEED);
-      area.y1 = Math.max(area.y1, y1 + LABEL_BLEED);
+      area.x0 = Math.min(area.x0, l.x - w / 2 - bleed);
+      area.x1 = Math.max(area.x1, l.x + w / 2 + tail + bleed);
+      area.y0 = Math.min(area.y0, y0 - bleed);
+      area.y1 = Math.max(area.y1, y1 + bleed);
       if (l.clock !== undefined) drawClock(g, l.x + w / 2 + CLOCK_GAP + CLOCK_R + 2, l.y + shift, l.clock, now / 1000, !L.reduceMotion);
     }
     this.shift = shifts;

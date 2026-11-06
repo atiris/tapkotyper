@@ -455,8 +455,8 @@ export function wordBox(word: string, size = 40, icon = false): { w: number; h: 
  */
 const drawnWords = new Map<string, HTMLCanvasElement>();
 const DRAWN_WORDS_KEEP = 32;
-/** Room around a label's picture for its shadow. */
-const WORD_BLEED = 14;
+/** How far a label's soft shadow reaches past its plate, in device pixels: a canvas shadow ignores the scale. */
+export const WORD_SHADOW_PX = 16;
 
 /** Word label on a target: typed letters in green, the next letter highlighted, gentle wobble on a mistake. */
 export function drawWord(g: G, word: string, typed: number, x: number, y: number, wobble: number, st: WordStyle = {}): void {
@@ -469,18 +469,18 @@ export function drawWord(g: G, word: string, typed: number, x: number, y: number
   if (c) drawnWords.delete(key);
   else {
     c = document.createElement('canvas');
-    c.width = Math.ceil((w + 2 * WORD_BLEED) * m.a);
-    c.height = Math.ceil((h + 2 * WORD_BLEED) * m.a);
+    c.width = Math.ceil(w * m.a) + 2 * WORD_SHADOW_PX;
+    c.height = Math.ceil(h * m.a) + 2 * WORD_SHADOW_PX;
     const cg = c.getContext('2d')!;
-    cg.scale(m.a, m.a);
-    paintWord(cg, word, typed, WORD_BLEED + w / 2, WORD_BLEED + h / 2, 0, st);
+    cg.setTransform(m.a, 0, 0, m.a, WORD_SHADOW_PX, WORD_SHADOW_PX);
+    paintWord(cg, word, typed, w / 2, h / 2, 0, st);
     if (drawnWords.size >= DRAWN_WORDS_KEEP) evictOldest(drawnWords);
   }
   drawnWords.set(key, c);
   // On whole device pixels: a copy between them would blur the letters.
   g.save();
   g.setTransform(1, 0, 0, 1, 0, 0);
-  g.drawImage(c, Math.round(m.a * (x - w / 2 - WORD_BLEED) + m.e), Math.round(m.d * (y - h / 2 - WORD_BLEED) + m.f));
+  g.drawImage(c, Math.round(m.a * (x - w / 2) + m.e) - WORD_SHADOW_PX, Math.round(m.d * (y - h / 2) + m.f) - WORD_SHADOW_PX);
   g.restore();
 }
 

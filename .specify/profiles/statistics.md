@@ -3,7 +3,8 @@
 ## What
 - Per key: accuracy and typical reaction time from the **last 100 presses only** (one press moves it by
   a percent, not two), the keys
-  typed instead of it lately, total presses, and a day-by-day history (accuracy and time
+  typed instead of it lately (drawn like the keys to practise, a bit smaller, each opening its own
+  details, so a mix-up is looked at from both sides), total presses, and a day-by-day history (accuracy and time
   to press).
 - **Typing time** is the only time of practice: every own key (right or wrong, Backspace too;
   never the paws' or the helper's keys) adds the time since the previous own key, or since play

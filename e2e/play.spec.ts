@@ -261,7 +261,7 @@ test('free practice with a diacritic key is played to the results card', async (
     const state = await page.evaluate(() => ({
       control: document.querySelector<HTMLElement>('.controlkey-card')?.dataset.key ?? '',
       newkey: document.querySelector<HTMLElement>('.newkey-card')?.dataset.sample ?? '',
-      ready: !!document.querySelector('.posture-card, .keys-intro'),
+      ready: !!document.querySelector('.posture-card, .keys-intro, .homerow-card'),
       next: document.querySelector<HTMLElement>('.kb-guide')?.dataset.next ?? '',
     }));
     if (state.ready) await page.keyboard.press('Space');

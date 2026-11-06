@@ -51,31 +51,32 @@ export function heatAccuracy(shifted = false): Record<string, number | null> {
 
 /**
  * How one key goes: the last presses only (old habits fade out), what it is
- * mistaken for, and its days over time.
+ * mistaken for (each such key opens its own detail here), and its days over time.
  */
-export function keyDetail(p: Profile, key: string, practice?: () => void): HTMLElement {
+export function keyDetail(p: Profile, key: string, practice?: (key: string) => void): HTMLElement {
   const r = keyReport(p, key);
   const head = h('div', { class: 'key-detail-head' }, h('span', { class: `big-key small ${keyLabel(key) !== key ? 'named' : ''}` }, keyLabel(key)),
     h('p', {}, t('stats.fingerLine'), ' ', fingerChip(layout(), key)));
   if (!r) return h('div', { class: 'key-detail' }, head, h('p', { class: 'hint' }, t('stats.keyNoData')));
   const days = keyHistory(p, key).slice(-14);
   const labels = days.map((d) => d.date.slice(5));
-  const drill = practice ? button(t('stats.drillKey'), practice, 'btn primary', 'practice') : null;
+  const drill = practice ? button(t('stats.drillKey'), () => practice(key), 'btn primary', 'practice') : null;
   if (drill) tip(drill, t('stats.drillKeyTip', { key: keyLabel(key) }));
-  return h('div', { class: 'key-detail' },
+  const el = h('div', { class: 'key-detail' },
     head,
     h('ul', { class: 'key-facts' },
       h('li', {}, t('stats.keyAccuracy', { n: r.window, acc: Math.round(r.accuracy * 100) })),
       r.avgMs ? h('li', {}, t('stats.keySpeed', { s: (r.avgMs / 1000).toLocaleString(locale(), { minimumFractionDigits: 1, maximumFractionDigits: 1 }) })) : null,
       h('li', {}, t('stats.keyTotal', { n: r.presses })),
       h('li', {}, r.confusions.length
-        ? [t('stats.keyConfused'), ' ', ...r.confusions.slice(0, 3).flatMap((c) => [h('b', { class: 'kbd' }, keyLabel(c.ch)), ` ${c.n}× `])]
+        ? [t('stats.keyConfused'), ' ', ...r.confusions.slice(0, 3).flatMap((c) => [keyCap(layout(), c.ch, () => el.replaceWith(keyDetail(p, c.ch, practice))), ` ${c.n}× `])]
         : t('stats.keyNoConfusion'))),
     days.length > 1 ? h('div', { class: 'key-charts' },
       h('div', {}, h('h4', {}, t('stats.keyAccuracyTrend')), lineChart(days.map((d) => Math.round(d.accuracy * 100)), labels, '%', '#3f8fd6')),
       h('div', {}, h('h4', {}, t('stats.keySpeedTrend')), lineChart(days.map((d) => Math.round(d.avgMs) / 1000), labels, 's', '#e08a3c')))
       : h('p', { class: 'hint' }, t('stats.keyHistorySoon')),
     drill);
+  return el;
 }
 
 /** The whole keyboard in the detail panel: the keys' mean accuracy, their usual speed and how many keys count; the hint to tap a key under it. */
@@ -110,7 +111,7 @@ export function clickableHeatmap(p: Profile, detail: HTMLElement, practice?: (ke
     if (!key) return;
     unselect();
     el.classList.add('selected');
-    detail.replaceChildren(keyDetail(p, key, practice && (() => practice(key))));
+    detail.replaceChildren(keyDetail(p, key, practice));
   });
   const toggle = kb.toolKey('ShiftLeft', t('stats.shifted'), t('stats.shiftedTip'), (on) => {
     shifted = on;
@@ -288,7 +289,7 @@ export function keysTab(p: Profile, close: () => void): HTMLElement {
   const practice = (keys: string[]) => { close(); go('level', { id: 'practice', keys, seconds: DRILL_SECONDS }); };
   const detail = h('div', { class: 'key-detail-host' });
   const heat = clickableHeatmap(p, detail, (key) => practice([key]));
-  const showKey = (key: string) => detail.replaceChildren(keyDetail(p, key, () => practice([key])));
+  const showKey = (key: string) => detail.replaceChildren(keyDetail(p, key, (k) => practice([k])));
   const weak = weakKeys(p, activeKeys(p));
   const total = Object.values(p.stats.keys).reduce((a, s) => a + s.presses, 0);
   // The placement check measures the keys from the start of the lesson order; it only ever adds keys, so it may run any time.

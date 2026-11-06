@@ -730,20 +730,20 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .island { min-width: 0; background: var(--glass); border-radius: 26px; padding: 0.6rem 0.5rem 0.9rem; text-align: center; box-shadow: var(--shadow); position: relative; }
 .island:nth-child(even) { transform: translateY(18px); }
 .island-art { position: relative; height: 150px; display: grid; place-items: center; }
-.island-art img { height: 150px; width: auto; max-width: 100%; object-fit: contain; animation: float 5s ease-in-out infinite; filter: drop-shadow(0 12px 10px rgba(60, 40, 30, 0.2)); }
-.island:nth-child(2) .island-art img { animation-delay: -1s; }
-.island:nth-child(3) .island-art img { animation-delay: -2s; }
-.island:nth-child(4) .island-art img { animation-delay: -3s; }
+.island-art > img { height: 150px; width: auto; max-width: 100%; object-fit: contain; animation: float 5s ease-in-out infinite; filter: drop-shadow(0 12px 10px rgba(60, 40, 30, 0.2)); }
+.island:nth-child(2) .island-art > img { animation-delay: -1s; }
+.island:nth-child(3) .island-art > img { animation-delay: -2s; }
+.island:nth-child(4) .island-art > img { animation-delay: -3s; }
 .island-fallback { width: 120px; height: 80px; border-radius: 50% 50% 40% 40%; background: var(--green); }
 .island.locked .island-art { cursor: pointer; }
-.island.locked .island-art img { filter: grayscale(0.85) opacity(0.55); }
+.island.locked .island-art > img { filter: grayscale(0.85) opacity(0.55); }
 .island.locked h3 { color: var(--ink-soft); }
 .lock { position: absolute; inset: auto; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: var(--surface); color: var(--ink-soft); }
 .lock .icon { width: 26px; height: 26px; }
 /* An open world's keyboard button: under the badge's column at the picture's bottom, drawn like the small badge with a grey ring. */
 .world-kb-btn { position: absolute; bottom: 0; right: 0; z-index: 1; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%; overflow: hidden; display: grid; place-items: center; cursor: pointer;
   background: radial-gradient(circle at 35% 30%, #fff, #e6eaef 75%); color: var(--ink); box-shadow: inset 0 0 0 3px #a3abb5, 0 2px 4px rgba(40, 30, 20, 0.2); }
-.world-kb-btn img { width: 82%; height: auto; max-height: 82%; object-fit: contain; animation: none; filter: none; }
+.world-kb-btn img { width: 82%; height: auto; max-height: 82%; object-fit: contain; }
 .world-kb-btn .icon { width: 24px; height: 24px; }
 .world-kb-btn:hover { box-shadow: inset 0 0 0 3px var(--brand), 0 2px 4px rgba(40, 30, 20, 0.2); }
 .world-kb-btn:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
@@ -918,7 +918,7 @@ body:not(.gfx-simple) .level-screen.covered :is(.stage-wrap *, .overlay .tapko-s
 @container story (max-width: 999px) {
   .islands { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .island { padding: 0.5rem 0.3rem 0.7rem; border-radius: 20px; }
-  .island-art, .island-art img { height: max(96px, calc((100cqi - 4rem) / 5 * 0.75)); }
+  .island-art, .island-art > img { height: max(96px, calc((100cqi - 4rem) / 5 * 0.75)); }
   .island h3 { font-size: 0.95rem; }
   .level-row { gap: 0.2rem; }
   .level-node { flex: 0 1 34px; min-width: 22px; height: 58px; border-radius: 11px; font-size: 1rem; }
@@ -928,11 +928,11 @@ body:not(.gfx-simple) .level-screen.covered :is(.stage-wrap *, .overlay .tapko-s
 @container story (max-width: 639px) {
   .islands { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: var(--sp-3); }
   .island:nth-child(even) { transform: none; }
-  .island-art, .island-art img { height: min(150px, max(96px, calc((100cqi - 2rem) / 3 * 0.75))); }
+  .island-art, .island-art > img { height: min(150px, max(96px, calc((100cqi - 2rem) / 3 * 0.75))); }
 }
 @container story (max-width: 439px) {
   .islands { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .island-art, .island-art img { height: min(150px, max(96px, calc((100cqi - 1rem) / 2 * 0.75))); }
+  .island-art, .island-art > img { height: min(150px, max(96px, calc((100cqi - 1rem) / 2 * 0.75))); }
 }
 
 /* ---------- Level ---------- */
@@ -1150,7 +1150,7 @@ body:not(.gfx-simple) .level-screen.covered :is(.stage-wrap *, .overlay .tapko-s
 .posture-img svg { width: 100%; height: auto; }
 .posture-pic { margin: 0; }
 .posture-tip { margin: 0.5rem 0 0; font-size: 1rem; color: var(--ink-soft); text-align: center; text-wrap: pretty; }
-.posture-card, .newkey-card { position: relative; }
+.posture-card, .newkey-card, .homerow-card { position: relative; }
 /* Get-ready card: two panels side by side with a gap, how to sit on the left, the story and the space bar on the right. */
 .posture-cards { display: flex; gap: 1.2rem; align-items: stretch; width: 100%; max-width: 1080px; max-height: 100%; }
 .posture-side { flex: 0 1 400px; display: flex; flex-direction: column; justify-content: center; }
@@ -1200,13 +1200,19 @@ body:not(.gfx-simple) .level-screen.covered :is(.stage-wrap *, .overlay .tapko-s
 .newkey-mark svg { stroke-width: 3.2; }
 .newkey-mark.ok { background: var(--green-dark); }
 .newkey-mark.bad { background: var(--danger); }
-/* A typed character jumps off Tapko's head and fades. */
-.home-row { display: flex; gap: 0.35rem; margin: 0.2rem 0 0.7rem; }
+/* The home position: the only wide intro card, its text in full, the home keys on a row of their own between its paragraphs. */
+.homerow-card { max-width: 1040px; padding-block: 1.3rem; text-align: left; }
+.homerow-card h2 { margin: 0 3rem 0.8rem 0; }
+.homerow-card p { margin: 0 0 0.5rem; font-size: 1.05rem; line-height: 1.45; text-wrap: pretty; }
+.homerow-card strong { color: var(--brand-ink); }
+.homerow-card .space-key { margin: 0.7rem auto 0; height: 48px; }
+.home-row { display: flex; justify-content: center; gap: 0.35rem; margin: 0.6rem 0 0.9rem; }
 /* The hands apart: a gap after the left index finger. */
 .home-row .home-key:nth-child(4) { margin-right: 1.2rem; }
 .home-key { display: inline-grid; place-items: center; width: 46px; height: 46px; padding-bottom: 6px; font-family: var(--font-keys); font-size: 1.5rem; font-weight: 700; border-radius: 12px; background: var(--finger); color: var(--finger-ink); box-shadow: inset 0 -5px 0 rgba(0, 0, 0, 0.18); }
 /* The bumps on F and J. */
 .home-key.bump { background-image: linear-gradient(currentColor, currentColor); background-size: 14px 3px; background-repeat: no-repeat; background-position: 50% 78%; }
+/* A typed character jumps off Tapko's head and fades. */
 .newkey-jump { position: absolute; left: 50%; top: 18%; font-family: var(--font-keys); font-size: 2rem; font-weight: 700; color: var(--brand); pointer-events: none; animation: newkey-jump 1.6s ease-out forwards; }
 @keyframes newkey-jump { from { transform: translate(-50%, -50%) scale(0.6); opacity: 1; } 60% { opacity: 1; } to { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.2); opacity: 0; } }
 .finger-chip { display: inline-block; padding: 0.05em 0.5em; border-radius: 10px; background: var(--finger); color: var(--finger-ink); font-weight: 700; }
@@ -1297,11 +1303,10 @@ body:not(.gfx-simple) .level-screen.covered :is(.stage-wrap *, .overlay .tapko-s
 .badge.small.none { box-shadow: inset 0 0 0 2px var(--line); }
 .badge.small .badge-num { font-size: 1rem; }
 .island-art .badge { position: absolute; top: 0; right: 0; }
-.island-art .badge img { animation: none; filter: none; height: 78%; }
 /* The surprises won in a world: an open golden box on a round gold-rimmed disc at the island's top left (the badge sits top right). */
 .surprises-mark { position: absolute; top: 0; left: 0; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%; cursor: pointer; display: grid; place-items: center;
   background: radial-gradient(circle at 35% 30%, #fff, #ffe7a3 75%); box-shadow: inset 0 0 0 3px #e0a92e, 0 0 8px rgba(245, 179, 1, 0.6); }
-.surprises-mark img { width: 80%; height: 80%; object-fit: contain; animation: none; filter: none; }
+.surprises-mark img { width: 80%; height: 80%; object-fit: contain; }
 .surprises-mark:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
 .surprises-won { display: grid; gap: 0.8rem; }
 .surprises-won h2 { margin: 0 2.5rem 0 0; }
@@ -1323,6 +1328,8 @@ body:not(.gfx-simple) .level-screen.covered :is(.stage-wrap *, .overlay .tapko-s
 .weak-list .key-cap { flex: none; }
 /* A key to practise drawn like a key of the on-screen keyboard: outlined, its finger's colour on the bottom edge. */
 .key-cap { min-width: 2.4em; height: calc(2.4em - 4px); margin-bottom: 4px; padding: 0 0.5em; border-radius: 9px; border: 1px solid var(--key-line); background: var(--surface); color: var(--ink); font-family: var(--font-keys); font-size: 1rem; font-weight: 700; cursor: pointer; }
+/* The keys a key is mistaken for, in its facts: the same letters on a smaller key. */
+.key-facts .key-cap { min-width: 1.9em; height: calc(1.9em - 4px); padding: 0 0.3em; vertical-align: middle; }
 .keys-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.6rem; margin: 0.6rem 0 1rem; }
 .keys-foot .legend { margin: 0; }
 /*

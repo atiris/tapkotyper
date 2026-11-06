@@ -15,7 +15,7 @@ async function controlKey(host: HTMLElement, id: ControlKey): Promise<void> {
 }
 
 /**
- * The cards before play that teach keys: each new key, the home row once F and J are known, Tab
+ * The cards before play that teach keys: each new key, the home position before the first of F and J, Tab
  * and Backspace. Returns the new keys shown (they count as introduced once play begins), or null
  * when the level was left (`gone`) in between.
  */
@@ -32,10 +32,11 @@ export async function keyCards(host: HTMLElement, guide: KeyboardGuide, kind: Le
     // Esc comes before the first key: it stops the game and closes every card.
     if (!gone()) await controlKey(host, 'escape');
     if (gone()) return null;
+    // The home position comes on its own card before the first of F and J.
+    if (homeKeys.includes(key) && !homeKeys.some(known)) await showHomeRow(host, lay);
+    if (gone()) return null;
     await showNewKey(host, key, lay, guide, p);
     shown.push(key);
-    // Once F and J are both known, the home row is taught, before they are used in play.
-    if (homeKeys.includes(key) && homeKeys.every(known)) await showHomeRow(host, lay, guide, p);
   }
   if (gone()) return null;
   // Tab comes a level after Enter (which comes with the right little finger's home key): together they get around any page without a mouse.

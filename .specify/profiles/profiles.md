@@ -11,13 +11,13 @@
   the last card, so it never shifts the order of the real players.
 - The new player form has Back at the top left like every page, and closes with the round X too: "pick your character", the nine
   animals as a 3 x 3 grid, with beside it (below it on a narrow screen), in this order: the
-  **nickname** (required, up to 16 characters; hint: shown with the character in the game),
+  **nickname** (labelled "your name or nickname"; required, up to 16 characters; hint: shown with the character in the game),
   the **typist's name** (optional; hint: shown to the teacher in the results), the interface
   language, the word language and the keyboard layout. Without a nickname the form says so.
 - A new player lands on the map, not in a level, so a parent can set things up first; the map
   greets by nickname in its side column and has no welcome card. The first level starts with
   the card before the first key ([finger guide](../learning/finger-guide.md)); where the
-  fingers go is taught by the home-row card when F and J are learned. The form speaks to the
+  fingers go is taught by the home position card right before F and J. The form speaks to the
   child only: a note for the parent about the settings is no use to a child who reads it.
 - Profile data: nickname and character kind, an optional real name, a seed, custom
   messages, layout, interface language, word language, settings, progress, unlocked items,

@@ -132,7 +132,7 @@ export function showPosture(host: HTMLElement, p: Profile, tip?: string, surpris
     const homePosition = async () => {
       away = true;
       overlay.style.display = 'none';
-      await showHomeRow(host, profileLayout(p), null, p);
+      await showHomeRow(host, profileLayout(p));
       overlay.style.display = '';
       away = false;
       space.focus();
@@ -315,7 +315,7 @@ function cardHint(key: string): string {
 /** How to press the key: its finger, and the key to go back to when the finger does not rest on it; the space bar by the thumb of the hand that did not type last. */
 function fingerLine(layout: Layout, key: string): HTMLElement | null {
   if (key === SPACE) {
-    return h('p', { class: 'newkey-finger' }, ...richText(t('newKey.spaceThumb', { j: homeKey(layout, 6) ?? 'j' })));
+    return h('p', { class: 'newkey-finger' }, ...richText(t('newKey.spaceThumb')));
   }
   const finger = lessonFinger(layout, key), chip = fingerChip(layout, key);
   if (finger == null || !chip) return null;
@@ -468,8 +468,6 @@ export function showControlKey(host: HTMLElement, id: ControlKey, lay: Layout, p
 
 /** The home row's fingers, left pinky to right pinky. */
 const HOME_FINGERS: Finger[] = [0, 1, 2, 3, 6, 7, 8, 9];
-/** Pairs of F then J the child types on the home-row card; each right pair is one check mark. */
-const HOME_PAIRS = 3;
 
 /** The keys the home position's text names: the index fingers' and the other three of each hand, spaced (`A S D`, `K L Ô`). */
 function homeParams(lay: Layout): Record<string, string> {
@@ -489,70 +487,37 @@ function homeRow(lay: Layout): HTMLElement {
 }
 
 /**
- * The home position, taught once right after the new-key cards of F and J, and again from the
- * get-ready card's link: the bumps on F and J found by touch with closed eyes, where all eight
- * fingers rest (the keys of the child's layout, in the fingers' colors), the thumbs on the space
- * bar, never looking at the keyboard; the child confirms it by typing F then J three times:
- * a right pair is one check mark, any wrong key a cross and the pair starts again. Escape
- * skips it, as on a new-key card. `guide` lights the next key when a level's keyboard is there.
+ * The home position, its own wide card taught once right before the new-key card of the first of
+ * F and J, and again from the get-ready card's link: the bumps on F and J found by touch with
+ * closed eyes and where all eight fingers rest, then the home keys of the child's layout in the
+ * fingers' colors on a row of their own, then fingers coming back, sitting straight, only
+ * accuracy counting and never looking at the keyboard. No picture and nothing to type: the space
+ * bar, Enter or Escape (or a tap on the space bar's drawing or the close button) closes it.
  */
-export function showHomeRow(host: HTMLElement, lay: Layout, guide: KeyboardGuide | null, p: Profile): Promise<void> {
+export function showHomeRow(host: HTMLElement, lay: Layout): Promise<void> {
   return new Promise((resolve) => {
-    const f = homeKey(lay, 3) ?? 'f', j = homeKey(lay, 6) ?? 'j';
-    const pair = f + j;
-    const marks = h('span', { class: 'newkey-marks', 'aria-hidden': 'true' });
-    const row = homeRow(lay);
-    const card = h('div', { class: 'card newkey-card homerow-card', 'data-sample': pair.repeat(HOME_PAIRS) },
-      closeButton(() => done(), t('newKey.skip')),
-      h('div', { class: 'newkey-tapko' }, tapkoElement(p.companion, 'happy', 220)),
-      h('div', { class: 'newkey-how' },
-        h('h2', {}, t('homeRow.title')),
-        row,
-        ...tList('homeRow.text', homeParams(lay)).map((line) => h('p', {}, ...richText(line))),
-        h('p', { class: 'hint newkey-type' }, h('span', {}, t('homeRow.type', { keys: Array(HOME_PAIRS).fill(pair).join(' ') })), ' ', marks)));
-    const overlay = h('div', { class: 'overlay' }, card);
-    host.append(overlay);
-    // Right pairs so far, and how far into the current pair (0 waits for F, 1 for J).
-    let pairs = 0, at = 0;
-    guide?.show(f);
-    const mark = (ok: boolean) => {
-      if (marks.children.length >= MARKS_MAX) marks.firstElementChild!.remove();
-      marks.append(h('span', { class: `newkey-mark ${ok ? 'ok' : 'bad'}` }, icon(ok ? 'check' : 'close')));
-    };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        e.stopPropagation();
-        return done();
-      }
-      if (e.repeat || [...e.key].length !== 1 || pairs >= HOME_PAIRS) return;
-      e.preventDefault();
-      // A space between the pairs is fine, it neither counts nor costs.
-      if (e.key === ' ' && at === 0) return;
-      if (e.key.normalize('NFC') !== pair[at]) {
-        at = 0;
-        mark(false);
-        guide?.show(f);
-        return audio.sfx('wrong');
-      }
-      audio.sfx('pop');
-      if (++at < pair.length) return guide?.show(j);
-      at = 0;
-      pairs++;
-      mark(true);
-      guide?.show(pairs < HOME_PAIRS ? f : null);
-      if (pairs >= HOME_PAIRS) setTimeout(done, 350);
-    };
-    let finished = false;
-    const done = () => {
-      if (finished) return;
-      finished = true;
+    const close = () => {
       stop();
       overlay.remove();
-      guide?.show(null);
       resolve();
     };
+    const card = h('div', { class: 'card homerow-card' },
+      closeButton(close, t('homeRow.close')),
+      h('h2', {}, t('homeRow.title')),
+      ...tList('homeRow.before', homeParams(lay)).map((line) => h('p', {}, ...richText(line))),
+      homeRow(lay),
+      ...tList('homeRow.after').map((line) => h('p', {}, ...richText(line))),
+      h('button', { class: 'space-key', type: 'button', 'aria-label': t('posture.spaceKey'), onClick: close }, t('posture.spaceKey')));
+    const overlay = h('div', { class: 'overlay' }, card);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.repeat || (e.key !== ' ' && e.key !== 'Enter' && e.key !== 'Escape')) return;
+      e.preventDefault();
+      e.stopPropagation();
+      audio.sfx('pop');
+      close();
+    };
     const stop = captureKeys(overlay, onKey);
+    host.append(overlay);
   });
 }
 

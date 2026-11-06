@@ -30,7 +30,7 @@ test('free practice starts with a key picker and uses only the chosen keys', asy
   const typed: string[] = [];
   for (let i = 0; i < 400 && typed.length < 30; i++) {
     const state = await page.evaluate(() => {
-      if (document.querySelector('.keys-intro')) return { kind: 'ready', key: '' };
+      if (document.querySelector('.keys-intro, .homerow-card')) return { kind: 'ready', key: '' };
       const ck = document.querySelector<HTMLElement>('.controlkey-card');
       if (ck) return { kind: 'control', key: ck.dataset.key ?? '' };
       const nk = document.querySelector<HTMLElement>('.newkey-card');

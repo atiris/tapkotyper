@@ -73,7 +73,7 @@
     "layout": "Keyboard",
     "create": "Let's go!",
     "nameHint": "Shown to your teacher in the results.",
-    "nickname": "Nickname",
+    "nickname": "Your name or nickname",
     "nicknameHint": "Shown with your character in the game.",
     "nickMissing": "Please write your nickname.",
     "wordLang": "Word language"
@@ -298,7 +298,7 @@
     "shiftL": "Hold the left Shift with your left little finger and type the capital with your right hand. Type a capital {sample} three times.",
     "shiftR": "Hold the right Shift with your right little finger and type the capital with your left hand. Type a capital {sample} three times.",
     "space": "The other fingers stay at home. Press it three times.",
-    "spaceThumb": "The **space bar** is pressed with the thumb of the hand that did **not** type last: if you typed the last character with your right hand and now want a space, use your left hand. If the space follows a character typed with your left hand, press the space bar with your right hand. For example, after the last “{j}” of the exercise before, typed with your right hand, press the space bar with your left hand."
+    "spaceThumb": "The **space bar** is pressed with the thumb of the hand that did **not** type last: if you typed the last character with your right hand and now want a space, use your left hand. If the space follows a character typed with your left hand, press the space bar with your right hand. Try pressing the space bar with your left, your right and again your left hand in turn."
   },
   "keysIntro": {
     "title": "Welcome to Tapko!",
@@ -341,14 +341,14 @@
     }
   },
   "homeRow": {
-    "title": "The home position",
-    "text": [
-      "This is the **home position.** On the keyboard you will find two **keys with little bumps**, for the letters **{f}** and **{j}**. Can you see them?",
-      "Put your index fingers on them, close your eyes and play with them for a while, so that your **index fingers** can always come back to these keys **by touch alone.** **Do not look!**",
-      "Now put your other fingers next to them on {left} and {right}, and rest your thumbs lightly on the space bar. You will start every exercise like this, and this is called the home position.",
-      "After each key your fingers come back to this position, and the only other thing to know is that while practising you never look at the keyboard."
+    "title": "The home position of the fingers",
+    "close": "Close (Esc)",
+    "before": [
+      "On the keyboard you will find the keys **{f}** and **{j}** with **little bumps**. Can you see them? They are the only keys with these bumps. Put your **index fingers** on them, close your eyes and play with them for a while, so that your index fingers can **come back** to these keys **by touch alone. Do not look!** Now put your other fingers next to them on {left} and {right}, and rest your thumbs lightly on the space bar. This way of placing the fingers is called the **home position**, and you will start every exercise like this."
     ],
-    "type": "Put your fingers in the home position and type {keys}."
+    "after": [
+      "**After pressing** a key, your **fingers come back to this position.** Sit up straight and keep your elbows close to your body. In all exercises only accuracy counts, so feel free to type slowly; it does not matter if a word disappears or you do not manage to type it, only mistakes matter. The last, very important rule: apart from the moment a new key is introduced, never look at the keyboard again."
+    ]
   },
   "practice": {
     "parts": "Parts: {n} of {total}",
@@ -580,7 +580,7 @@
   "story": {
     "next": "Next",
     "meadowStart": [
-      "This afternoon there is a football match on the meadow. The animals would like to warm up first, so they decided to **train with you**. You catch every leaf they kick when you **type the word above it**. If some slip into the goal, never mind."
+      "This afternoon there is a football match on the meadow. The animals would like to warm up first, so they decided to **train with you**. You catch every leaf they kick when you **type the word above it**. If some slip into the goal, never mind. In all exercises the most important thing is to type accurately. A missed word does not matter, slow typing does not matter either, only a mistake matters. So let us go! **Slowly and accurately!**"
     ],
     "commandStart": [
       "This planet is explored too, but it is not the Dragons' Planet, where they need your help. You can go on, you just **have to call the rocket.** Luckily you have a radio linked to the ship's computer: just **send a few commands without a mistake** and the ship will surely come closer. **There is no need to hurry**, what matters is to **type the commands exactly.**"
@@ -842,7 +842,7 @@
       "You have a special mission: explore a few planets, all the way to the Dragons' Planet, where they need your help. Your **typing in the right rhythm drives** the **spaceship** on this journey. When there is danger, **give** the right **command** to the ship's computer. If you enter the **right code** of the asteroid that crossed your way, you **switch on the laser**, which bounces the coming rock away like a billiard ball. But the Dragons' Planet is far away. What waits for you on this journey?"
     ],
     "world": {
-      "meadow": "This afternoon there is a football match on the meadow. The animals would like to warm up first, so they decided to **train with you**. You catch every leaf they kick when you **type the word above it**. If some slip into the goal, never mind.",
+      "meadow": "This afternoon there is a football match on the meadow. The animals would like to warm up first, so they decided to **train with you**. You catch every leaf they kick when you **type the word above it**. If some slip into the goal, never mind. In all exercises the most important thing is to type accurately. A missed word does not matter, slow typing does not matter either, only a mistake matters. So let us go! **Slowly and accurately!**",
       "space": "Three, two, one... **lift off!** You fly off to explore a few planets, all the way to the **Dragons' Planet**. **Your typing rhythm** drives the rocket and a soft beam pushes meteors out of the way.",
       "planet": "**Welcome** to the Dragons' Planet, where spells are real and crystals power life! But the **last crystal** of life has **gone dark.** The planet may lose its light. Luckily you **have a map**: cross the swamp and the meadow, **find** at least three **crystals of life** and wake them with a spell. When you **carry** them all the way **to the stone monolith**, life on the Dragons' Planet **will be saved.** **Accuracy** still matters more than speed.",
       "dragons": "The crystal of life lit up the planet, but **in the Dragons' Valley** the **warm fire is** still **out.** For the baby dragons to come back to the valley, you must light the dragon fire pit again. **Catch as many little flames as you can** and light the fire pit, so it brings warmth and light back to this valley. Then the baby dragons will surely come too.",

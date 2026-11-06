@@ -73,7 +73,7 @@
     "layout": "Klávesnica",
     "create": "Poďme na to!",
     "nameHint": "Zobrazí sa učiteľovi vo výsledkoch.",
-    "nickname": "Prezývka",
+    "nickname": "Tvoje meno alebo prezývka",
     "nicknameHint": "Bude pri tvojej postavičke v hre.",
     "nickMissing": "Napíš, prosím, svoju prezývku.",
     "wordLang": "Jazyk slov"
@@ -298,7 +298,7 @@
     "shiftL": "Ľavý Shift drž ľavým malíčkom a pravou rukou napíš veľké písmeno. Napíš trikrát veľké {sample}.",
     "shiftR": "Pravý Shift drž pravým malíčkom a ľavou rukou napíš veľké písmeno. Napíš trikrát veľké {sample}.",
     "space": "Ostatné prsty ostanú na základných miestach. Stlač ho trikrát.",
-    "spaceThumb": "**Medzerník** sa stláča palcom ruky, ktorá naposledy **nepísala**, takže ak si posledný znak písal pravou rukou a teraz chceš stlačiť medzeru, použi ľavú ruku. Ak medzera nasleduje po znaku, ktorý sa píše ľavou rukou, použi na stlačenie medzerníka pravú ruku. Napríklad po poslednom „{j}“ z predchádzajúceho cvičenia, ktorý sa písal pravou, máš stlačiť medzerník ľavou rukou."
+    "spaceThumb": "**Medzerník** sa stláča palcom ruky, ktorá naposledy **nepísala**, takže ak si posledný znak písal pravou rukou a teraz chceš napísať medzeru, použi ľavú ruku. Ak medzera nasleduje po znaku, ktorý sa píše ľavou rukou, použi na stlačenie medzerníka pravú ruku. Skús striedavo stláčať medzerník ľavou, pravou a opäť ľavou rukou."
   },
   "keysIntro": {
     "title": "Vitaj v Ťapkovi!",
@@ -306,7 +306,7 @@
     "text": [
       "Naučíš sa tu písať **všetkými desiatimi prstami** a bez pozerania na klávesnicu.",
       "Začneš len s pár klávesmi. Keď už nimi píšeš **dosť presne**, alebo keď je čas na ďalšie písmeno, ukáže sa okienko **Nový kláves**. Povie ti, kde kláves je a **ktorým prstom** ho stláčať, a klávesnica dole ti ho ukáže.",
-      "Okienko s novým klávesom zatvoríš, keď kláves **trikrát správne napíšeš** (preklepy sa nepočítajú), alebo klávesom **Esc**.",
+      "Okienko s novým klávesom zatvoríš, keď kláves **trikrát správne stlačíš** (preklepy sa nepočítajú), alebo klávesom **Esc**.",
       "Toto okienko potvrď **medzerníkom**, najdlhším klávesom na klávesnici."
     ]
   },
@@ -341,14 +341,14 @@
     }
   },
   "homeRow": {
-    "title": "Základná pozícia",
-    "text": [
-      "Toto je **základná pozícia.** Na klávesnici nájdeš dve **klávesy s malými výstupkami**, určené pre písmená **{f}** a **{j}**. Vidíš ich?",
-      "Polož na ne ukazováky, zatvor oči a chvíľku sa s nimi pohraj tak, aby sa **ukazováky** vždy dokázali vrátiť na tieto klávesy **len podľa hmatu.** **Nepozeraj sa!**",
-      "Teraz vedľa nich na {left} a {right} polož ďalšie prsty, palce voľne polož na medzerník. Takto budeš začínať každé cvičenie a táto pozícia sa volá základná.",
-      "Po stlačení klávesu sa prsty vracajú do tejto pozície a už je dôležité vedieť len to, že pri tréningu sa nikdy nemáš pozerať na klávesnicu."
+    "title": "Základná pozícia prstov",
+    "close": "Zavrieť (Esc)",
+    "before": [
+      "Na klávesnici nájdeš klávesy **{f}** a **{j}** s **malými hrbolčekmi**. Vidíš ich? Sú jediné ktoré tieto výstupky majú. Polož na ne **ukazováky,** zatvor oči a chvíľku sa s nimi hraj tak, aby sa tvoje ukazováky dokázali **vrátiť** na tieto klávesy **len podľa hmatu. Nepozeraj sa!** Teraz vedľa nich na {left} a {right} polož ďalšie prsty, palce voľne polož na medzerník. Toto položenie prstov sa volá **základná pozícia** a takto budeš začínať každé cvičenie."
     ],
-    "type": "Polož prsty na základnú pozíciu a napíš {keys}."
+    "after": [
+      "**Po stlačení** klávesu sa **prsty vracajú do tejto pozície.** Sadnite si vzpriamene a lakte držte pri tele. Vo všetkých cvičeniach sa hodnotí len presnosť, pokojne píšte pomaly, nevadí keď vám nejaké slovo zmizne alebo ho nestihnete napísať, vadia len chyby. Posledné, veľmi dôležité pravidlo je, že okrem času keď sa predstavuje nový kláves, sa už na klávesnicu nikdy nepozerajte."
+    ]
   },
   "practice": {
     "parts": "Časti: {n} z {total}",
@@ -580,7 +580,7 @@
   "story": {
     "next": "Ďalej",
     "meadowStart": [
-      "Popoludní bude na lúke futbalový zápas. Zvieratká by sa však chceli rozcvičiť a rozhodli sa, že si s tebou **zatrénujú**. Každý vykopnutý list môžeš chytiť tak, že **napíšeš slovo nad ním**. Ak ti niektoré prekĺznu až do brány, nevadí."
+      "Popoludní bude na lúke futbalový zápas. Zvieratká by sa však chceli rozcvičiť a rozhodli sa, že si s tebou **zatrénujú**. Každý vykopnutý list môžeš chytiť tak, že **napíšeš slovo nad ním**. Ak ti niektoré prekĺznu až do brány, nevadí. Vo všetkých cvičeniach je najdôležitejšie písať presne. Nestihnuté slovo nevadí, ani pomalé písanie nevadí, vadí len chyba. Tak poď na to! **Pomaly a presne!**"
     ],
     "commandStart": [
       "Aj táto planéta je preskúmaná, nie je to však Planéta drakov, kde potrebujú tvoju pomoc. Môžeš pokračovať, len **si musíš privolať raketu.** Našťastie máš so sebou vysielač spojený s palubným počítačom, ktorému stačí **odoslať zopár bezchybných príkazov**, a loď sa ti určite priblíži. **Nemusíš sa nikam ponáhľať**, dôležité je **zadať príkazy presne.**"
@@ -842,7 +842,7 @@
       "Dostal si špeciálnu úlohu: preskúmať zopár planét až k Planéte drakov, kde potrebujú tvoju pomoc. Tvoje **písanie v správnom rytme poháňa** vesmírnu **loď** na tejto ceste. V prípade nebezpečenstva **zadaj** správny **príkaz** palubnému počítaču. Ak uvedieš **správny kód** asteroidu, ktorý ti skrížil cestu, **aktivuješ laser**, ktorý blížiaci sa balvan odrazí ako biliardovú guľu. Planéta drakov je však ďaleko. Čo ťa na tejto ceste čaká?"
     ],
     "world": {
-      "meadow": "Popoludní bude na lúke futbalový zápas. Zvieratká by sa však chceli rozcvičiť a rozhodli sa, že si s tebou **zatrénujú**. Každý vykopnutý list môžeš chytiť tak, že **napíšeš slovo nad ním**. Ak ti niektoré prekĺznu až do brány, nevadí.",
+      "meadow": "Popoludní bude na lúke futbalový zápas. Zvieratká by sa však chceli rozcvičiť a rozhodli sa, že si s tebou **zatrénujú**. Každý vykopnutý list môžeš chytiť tak, že **napíšeš slovo nad ním**. Ak ti niektoré prekĺznu až do brány, nevadí. Vo všetkých cvičeniach je najdôležitejšie písať presne. Nestihnuté slovo nevadí, ani pomalé písanie nevadí, vadí len chyba. Tak poď na to! **Pomaly a presne!**",
       "space": "Tri, dva, jeden... **štart!** Letíš preskúmať zopár planét až k **Planéte drakov**. **Rytmus tvojho písania** poháňa raketu a jemný lúč odsúva meteority z cesty.",
       "planet": "**Vitaj** na Planéte drakov, na ktorej existujú kúzla a život poháňajú kryštály! **Posledný kryštál** života však už **vyhasol.** Hrozí, že planéta stratí svetlo. Našťastie **máš mapu**, podľa ktorej treba prejsť močiar a lúku, **nájsť** aspoň tri **kryštály života** a prebudiť ich kúzlom. Keď sa ti ich podarí **odniesť** až **ku kamennému monolitu**, život na Planéte drakov **bude zachránený.** **Presnosť** je stále dôležitejšia ako rýchlosť.",
       "dragons": "Kryštál života rozjasnil planétu, ale **v Údolí drakov je** stále **zhasnutý hrejivý plameň.** Aby sa dráčiky vrátili do údolia, musíš znova rozžiariť dračie ohnisko. **Chyť čo najviac plamienkov** a rozžiar ohnisko tak, aby znova prinieslo teplo a jas do tohto údolia. Potom sem určite prídu aj dráčiky.",

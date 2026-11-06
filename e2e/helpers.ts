@@ -7,12 +7,12 @@ export async function playLevel(page: Page, mistakes = true, typed: string[] = [
     const state = await page.evaluate(() => {
       const res = document.querySelector<HTMLElement>('.end-card:not(.journey-panel)');
       if (res) return { kind: 'results', text: res.innerText };
-      if (document.querySelector('.keys-intro')) return { kind: 'ready' };
+      if (document.querySelector('.keys-intro, .homerow-card')) return { kind: 'ready' };
       const ck = document.querySelector<HTMLElement>('.controlkey-card');
       if (ck) return { kind: 'control', key: ck.dataset.key ?? '' };
       const nk = document.querySelector<HTMLElement>('.newkey-card');
       // A key card typed right three times closes a moment later; a key meanwhile would land on the next card.
-      if (nk && !nk.matches('.homerow-card') && nk.querySelectorAll('.newkey-mark.ok').length >= 3) return { kind: 'closing', key: '' };
+      if (nk && nk.querySelectorAll('.newkey-mark.ok').length >= 3) return { kind: 'closing', key: '' };
       if (nk) return { kind: 'newkey', key: nk.dataset.sample ?? '' };
       if (document.querySelector('.posture-card, .journey-panel')) return { kind: 'ready' };
       return { kind: 'play', next: document.querySelector<HTMLElement>('.kb-guide')?.dataset.next ?? '' };
@@ -38,21 +38,21 @@ export async function playLevel(page: Page, mistakes = true, typed: string[] = [
  */
 export async function untilPlay(page: Page, until: 'ready' | 'play' = 'play'): Promise<void> {
   for (;;) {
-    await page.locator('.newkey-card, .posture-card, .level-tapko:not(.waiting)').first().waitFor({ state: 'attached' });
+    await page.locator('.newkey-card, .homerow-card, .posture-card, .level-tapko:not(.waiting)').first().waitFor({ state: 'attached' });
     const state = await page.evaluate(() => {
-      if (document.querySelector('.keys-intro')) return { kind: 'intro', key: '' };
+      if (document.querySelector('.keys-intro, .homerow-card')) return { kind: 'intro', key: '' };
       const ck = document.querySelector<HTMLElement>('.controlkey-card');
       if (ck) return { kind: 'control', key: ck.dataset.key ?? '' };
       const nk = document.querySelector<HTMLElement>('.newkey-card');
       // A key card typed right three times closes a moment later; a key meanwhile would land on the next card.
-      if (nk && !nk.matches('.homerow-card') && nk.querySelectorAll('.newkey-mark.ok').length >= 3) return { kind: 'closing', key: '' };
+      if (nk && nk.querySelectorAll('.newkey-mark.ok').length >= 3) return { kind: 'closing', key: '' };
       if (nk) return { kind: 'newkey', key: nk.dataset.sample ?? '' };
       if (document.querySelector('.posture-card')) return { kind: 'ready', key: '' };
       return { kind: 'play', key: '' };
     });
     if (state.kind === until) return;
     if (state.kind === 'play') throw new Error('play started without a get-ready card');
-    if (state.kind === 'closing') await page.waitForFunction(() => ![...document.querySelectorAll('.newkey-card:not(.homerow-card)')].some((c) => c.querySelectorAll('.newkey-mark.ok').length >= 3));
+    if (state.kind === 'closing') await page.waitForFunction(() => ![...document.querySelectorAll('.newkey-card')].some((c) => c.querySelectorAll('.newkey-mark.ok').length >= 3));
     else if (state.kind === 'newkey') await typeChar(page, state.key);
     else if (state.kind === 'control') await page.keyboard.press(state.key);
     else await page.keyboard.press('Space');
@@ -89,7 +89,7 @@ export async function createProfile(page: Page, name: string, layout?: string): 
   await page.locator('.map-screen').waitFor();
 }
 
-/** Closes the cards told before the very first key card (a new player's first level): the intro with the space bar, Esc's card with three presses of Esc. */
+/** Closes the cards told before the very first key card (a new player's first level): the intro with the space bar, Esc's card with three presses of Esc, the home position with the space bar. */
 export async function closeKeysIntro(page: Page): Promise<void> {
   await page.locator('.keys-intro').waitFor();
   await page.keyboard.press('Space');
@@ -97,4 +97,7 @@ export async function closeKeysIntro(page: Page): Promise<void> {
   await page.locator('.controlkey-card').waitFor();
   for (let i = 0; i < 3; i++) await page.keyboard.press('Escape');
   await page.locator('.controlkey-card').waitFor({ state: 'detached' });
+  await page.locator('.homerow-card').waitFor();
+  await page.keyboard.press('Space');
+  await page.locator('.homerow-card').waitFor({ state: 'detached' });
 }

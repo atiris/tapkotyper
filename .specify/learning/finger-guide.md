@@ -46,19 +46,20 @@
   the space bar has not been pressed by a second after the hands settled on the keys (about
   four and a half seconds), so the child first sees the hands come there; it keeps its room
   meanwhile, so nothing jumps. "home position" is a link: it opens the home position card again
-  over the get-ready card, and closing that card (typed or skipped) comes back to the get-ready card. The space bar, Esc, a tap on the drawing or the round X (its tip says so) closes
+  over the get-ready card, and closing that card comes back to the get-ready card. The space bar, Esc, a tap on the drawing or the round X (its tip says so) closes
   it and starts: the card is only a reminder, so every way out of it is the start.
-- **The home position** ("Základná pozícia") is taught once, right after the new-key cards of
-  F and J, before they are used in play: a card shows the home row of the child's layout (ASDF
-  JKLÔ) as keys in their fingers' colors with the bumps on F and J. Its text, in short
-  paragraphs: find the two keys with bumps for F and J; put the index fingers on them, close
-  the eyes and play until they always find them again by touch alone, without looking; then
-  the other fingers on A S D and K L Ô, the thumbs resting on the space bar; every exercise
-  starts like this, the fingers come back here after each key, and while practising one never
-  looks at the keyboard. The child confirms it by typing F then J three times: one check
-  mark is the pair typed right, any wrong key a cross and the pair starts again (a space
-  between the pairs is fine). Esc skips it like a
-  new-key card; no setting turns it off. Nowhere else does the game tell where the fingers go
+- **The home position** ("Základná pozícia prstov") is taught once, on its own card right
+  before the new-key card of the first of F and J. Its text: find F and J, the only keys with
+  little bumps; put the index fingers on them, close the eyes and play until they find them
+  again by touch alone, without looking; then the other fingers on A S D and K L Ô, the thumbs
+  resting on the space bar; this is the home position and every exercise starts like this. Then
+  the home row of the child's layout (ASDF JKLÔ) on a row of its own, as keys in their fingers'
+  colors with the bumps on F and J, and a second paragraph: the fingers come back here after
+  each key; sit up straight with the elbows close to the body; only accuracy counts, so typing
+  slowly or missing a word is fine, only mistakes matter; and apart from a new key's card one
+  never looks at the keyboard. It is the only wide intro card, so the whole text fits; it has no
+  picture and nothing to type. The space bar, Enter, Esc, the drawn space bar or the round X
+  closes it; no setting turns it off. Nowhere else does the game tell where the fingers go
   (not in the stories or the posture reminders), except the line under the picture of the
   get-ready card and the home position card it links to.
 - **Before the very first new key** one card on the new-key card's model says, once: welcome,
@@ -120,8 +121,9 @@
 - Story scenes and a map greeting before the first level were many clicks and much text
   before the child typed anything; key cards and one get-ready card with the story are enough.
 - Where the fingers go was told in the intro scene, the welcome, the posture tips and the
-  card at once, and long before the keys were met; taught once with the first keys and
-  confirmed by typing, it is learned instead of read past.
+  card at once, and long before the keys were met; taught once right before the first keys,
+  on a card of its own, it is read where it is needed. Typing F and J on it came before those
+  keys were taught, so the card asks for nothing.
 - Not looking at the keyboard is the habit that makes ten-finger typing; finding F and J by
   touch with closed eyes shows the child that the eyes are not needed, and "home position" is
   the name typing courses use. A child who forgot it finds the card again from the get-ready card.

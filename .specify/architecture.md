@@ -41,8 +41,8 @@
     mode's code, and the QR decoder fallback (`jsqr`), which loads only when the teacher
     opens the camera scan in a browser without `BarcodeDetector`.
   - the start page shows soon on a phone line: the page itself starts the asset list and the
-    interface texts, an official language loads only its own texts (no English behind them),
-    the meadow comes before the smaller sky pictures, and the other look's pictures (night by
+    interface texts, and the meadow behind them, so it is on its way before the code asks for
+    it; an official language loads only its own texts (no English behind them), the meadow comes before the smaller sky pictures, and the other look's pictures (night by
     day, day by night) load a moment later or with a theme change; the map's and the level's
     code load then too, so the first level opens at once.
 - A scaled copy of the current scene's background tiles is cached at the drawn pixel size, and

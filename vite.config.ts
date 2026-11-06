@@ -7,6 +7,7 @@ import { type Plugin, defineConfig } from 'vite';
 import { aboutPage, aboutPath, aboutRedirect } from './src/app/about-page';
 import { CLOSE, LANGS } from './src/i18n/i18n';
 import { STORE_KEY } from './src/storage/store';
+import { MEADOW } from './src/ui/meadow';
 import { handPoser } from './tools/hand-poser/server';
 
 function publicFiles(dir: string): string[] {
@@ -71,12 +72,18 @@ function aboutPages(): Plugin {
 }
 
 /**
- * Starts the data the first screen waits for (the asset list and the interface language's texts)
- * with the page, not after the main script: the language is the stored one, else the one
- * `detectLanguage` picks; an own language is left to the app.
+ * Starts the data the first screen waits for (the asset list, the interface language's texts and,
+ * on the start page, the meadow of the shown look) with the page, not after the main script: the
+ * language is the stored one, else the one `detectLanguage` picks; an own language is left to the app.
  */
 function firstFetches(): Plugin {
   const pick = `(function () {
+  if (location.hash.length <= 2) {
+    var meadow = document.createElement('link');
+    meadow.rel = 'preload'; meadow.as = 'image';
+    meadow.href = '/assets/' + ${JSON.stringify(MEADOW)}[document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light'] + '.webp';
+    document.head.appendChild(meadow);
+  }
   var langs = ${JSON.stringify(LANGS)}, close = ${JSON.stringify(CLOSE)}, lang;
   try { lang = JSON.parse(localStorage.getItem(${JSON.stringify(STORE_KEY)}) || '{}').language; } catch (e) {}
   if (lang && langs.indexOf(lang) < 0) return;

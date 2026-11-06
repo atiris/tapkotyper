@@ -3,6 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      // The theme before the first paint, so a dark reload never flashes light; src/app/theme.ts keeps it after.
+      (function () {
+        var theme;
+        try { theme = JSON.parse(localStorage.getItem('tapkotyper:v1') || '{}').theme; } catch (e) {}
+        document.documentElement.dataset.theme = theme === 'dark' || (theme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+      })();
+    </script>
     <!-- first-fetches -->
     <meta name="description" content="Ťapko (TapkoTyper) je pokojná príbehová hra, v ktorej sa deti naučia písať všetkými desiatimi. Slovenská aj anglická klávesnica, zadarmo, bez reklám a účtov." />
     <meta name="robots" content="index, follow, max-image-preview:large" />
@@ -46,14 +54,6 @@
     <link rel="icon" href="/icons/tapko-192.png" type="image/png" sizes="192x192" />
     <link rel="apple-touch-icon" href="/icons/tapko-180.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
-    <script>
-      // The theme before the first paint, so a dark reload never flashes light; src/app/theme.ts keeps it after.
-      (function () {
-        var theme;
-        try { theme = JSON.parse(localStorage.getItem('tapkotyper:v1') || '{}').theme; } catch (e) {}
-        document.documentElement.dataset.theme = theme === 'dark' || (theme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
-      })();
-    </script>
     <style>html[data-theme='dark'] { background: #171631; color-scheme: dark; }</style>
   </head>
   <body class="booting">

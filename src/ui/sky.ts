@@ -2,6 +2,7 @@ import { reduceMotion } from '../app/app';
 import { type Look, onThemeChange, shownLook } from '../app/theme';
 import { imageUrl } from '../gfx/assets';
 import { h } from './dom';
+import { MEADOW } from './meadow';
 
 /** Length of the day and night change, and the share of it the setting light takes. */
 const CHANGE_MS = 2500;
@@ -73,8 +74,8 @@ export function skyScene(screen: HTMLElement, under: () => (Element | null)[], b
     });
     return { el, ready };
   };
-  const night = meadow('meadow-night', 'dark', 'ui-start-meadow-night');
-  const day = meadow('meadow-day', 'light', 'ui-start-meadow');
+  const night = meadow('meadow-night', 'dark', MEADOW.dark);
+  const day = meadow('meadow-day', 'light', MEADOW.light);
   // One of each butterfly by day, up among the flower heads; each wanders off now and then, turns
   // round and comes back (`far` px in `trip` s). Fireflies are glowing dots (the sprite's edge shows at this size)
   // and stay in the meadow's lower part, where the content never reaches (its bottom 60 %).

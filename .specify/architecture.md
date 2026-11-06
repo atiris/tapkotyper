@@ -61,7 +61,9 @@
   frame is copying and filtering pixels; game logic is a few per cent. So the rules are about
   pixels: background bands are scaled once to the screen and copied on whole pixels whenever
   they stand still (or always where a pixel is too small to see a jump, at a device pixel
-  ratio of 2 and more); the layer in front of Tapko is only as wide as what he holds; big
+  ratio of 2 and more); two or more bands that stand still at the back (a hero who stops, a calm
+  scene, reduced motion) are drawn once into one picture that each frame copies in one go, the same
+  pixels for fewer full-screen copies; the layer in front of Tapko is only as wide as what he holds; big
   blurred glows are drawn once per size and then copied; a scene that does not move (cards
   before play, the pause) is not drawn again, and with Full graphics a scene under a blurring
   card (the end card) stands still, Tapko on the card too: any move there would blur the stage
@@ -83,8 +85,8 @@
   without its butterflies and fireflies. Its background bands stand still, except the near band
   of a scene Tapko travels through (the planet's swamp and shore, the crossroads, the valley's
   thicket, the egg world's mud path), where things stand on that ground and the shore must come;
-  the still bands are copied as one picture, so a frame copies one or two full-screen pictures
-  instead of three or four. The bands' slow drift stops too: it only makes a still scene look alive.
+  so the still bands are always copied as one picture and a frame copies one or two full-screen
+  pictures instead of three or four. The bands' slow drift stops too: it only makes a still scene look alive.
   What lies over the moving scene (Tapko, his bubble, the keyboard's top edge) is painted again with
   every frame on a weak graphics chip, so there it has hard edges instead of soft shadows; the next
   key does not pulse and the hands change pose at once, as both would restyle the page every frame.

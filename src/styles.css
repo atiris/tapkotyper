@@ -571,7 +571,7 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
 .bfly { width: var(--w); transition: transform 1.2s cubic-bezier(0.3, 0, 0.3, 1) 1.3s, opacity 0.8s ease 1.3s; }
 /* A trip: out (a little up), a turn, back the same way, another turn; the rest of the time it flutters in place. */
 .bfly-trip { display: block; animation: trip var(--trip, 30s) ease-in-out infinite; animation-delay: var(--td, 0s); }
-.bfly-trip > img { display: block; width: 100%; animation: flutter var(--t, 6s) ease-in-out infinite; animation-delay: var(--d, 0s); }
+.bfly-trip > img { display: block; width: 100%; animation: flutter var(--t, 6s) linear infinite; animation-delay: var(--d, 0s); }
 @keyframes trip {
   0%, 30% { translate: 0 0; scale: 1 1; }
   48% { translate: var(--far) calc(var(--w) * -0.4); scale: 1 1; }
@@ -580,11 +580,20 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
   74%, 100% { translate: 0 0; scale: 1 1; }
 }
 .start-sky[data-look='dark'] .bfly { transform: translateY(calc(var(--meadow-h) * 0.5)) scale(0.6); opacity: 0; transition-delay: 0s, 0.3s; }
+/* One even loop round an ellipse, a point every 30°: an eased step between a few points stopped it at each one. */
 @keyframes flutter {
   0%, 100% { transform: translate(0, 0) rotate(-6deg) scaleX(1); }
-  25% { transform: translate(14px, -10px) rotate(4deg) scaleX(0.82); }
-  50% { transform: translate(26px, 2px) rotate(8deg) scaleX(1); }
-  75% { transform: translate(10px, 8px) rotate(-2deg) scaleX(0.82); }
+  8.33% { transform: translate(1.7px, -4.5px) rotate(-5.1deg) scaleX(0.955); }
+  16.67% { transform: translate(6.5px, -7.8px) rotate(-2.5deg) scaleX(0.865); }
+  25% { transform: translate(13px, -9px) rotate(1deg) scaleX(0.82); }
+  33.33% { transform: translate(19.5px, -7.8px) rotate(4.5deg) scaleX(0.865); }
+  41.67% { transform: translate(24.3px, -4.5px) rotate(7.1deg) scaleX(0.955); }
+  50% { transform: translate(26px, 0) rotate(8deg) scaleX(1); }
+  58.33% { transform: translate(24.3px, 4.5px) rotate(7.1deg) scaleX(0.955); }
+  66.67% { transform: translate(19.5px, 7.8px) rotate(4.5deg) scaleX(0.865); }
+  75% { transform: translate(13px, 9px) rotate(1deg) scaleX(0.82); }
+  83.33% { transform: translate(6.5px, 7.8px) rotate(-2.5deg) scaleX(0.865); }
+  91.67% { transform: translate(1.7px, 4.5px) rotate(-5.1deg) scaleX(0.955); }
 }
 .ffly { width: 10px; height: 10px; opacity: 0; transform: translateY(calc(var(--meadow-h) * 0.4)); transition: transform 1s ease, opacity 0.7s ease; }
 .ffly > i { display: block; width: 100%; height: 100%; border-radius: 50%; background: #fff6b8; box-shadow: 0 0 6px 3px rgba(255, 226, 120, 0.85), 0 0 18px 8px rgba(255, 200, 90, 0.35); animation: drift 6s ease-in-out infinite, glow 2.4s ease-in-out infinite; animation-delay: var(--d, 0s); }

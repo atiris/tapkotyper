@@ -46,6 +46,8 @@ export abstract class Mode {
   readonly phraseMin: number = 2;
   /** Only the background's middle strip moves with the scroll (calm scenes: the target range, the parrot). */
   readonly midOnly: boolean = false;
+  /** The near band carries the scene: things stand on it at x - scroll, or the hero walks through it (it keeps moving in the simple drawing). */
+  readonly scene: boolean = false;
   /** The band that drifts on its own while the scene stands still, also where `midOnly` holds the others. */
   readonly drift: Drift | null = null;
   /** The sound of a wrong key. */

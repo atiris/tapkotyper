@@ -10,6 +10,7 @@ import type { Target } from '../../typing';
 /** Tapko as the hero walking and hopping through the planet (and Bolt's robot city and home, Melody's garden and lake). */
 export abstract class HeroMode extends Mode {
   readonly world: string = 'planet';
+  readonly scene: boolean = true;
   protected heroX = 220;
   protected heroY = VH * 0.78;
   /** Height of his picture: as big as the meadow's Tapko in every world. */

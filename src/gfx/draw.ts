@@ -259,21 +259,68 @@ export function bandScale(world: string, ground: string): number {
  * The world's layers; `ground` picks another middle and near band of the world (the planet's swamp:
  * `-swamp`), the far one stays; `shore` is the near layer's x where the ground's shore picture
  * (`bg-<world><ground>-shore`, the swamp's grassy bank, drawn at the band's scale on its bottom and
- * lowered with it) stands in front of the band, null for none.
+ * lowered with it) stands in front of the band, null for none; `scene`: the near band carries the scene (things stand on it at x - scroll, the hero walks through it).
+ * In the simple drawing only such a near band moves; the other bands and every drift stand still,
+ * drawn once into a backdrop that each frame copies in one go.
  */
-export function drawBackground(g: G, world: string, vw: number, scroll: number, motion = true, midOnly = false, drift: { layer: 'mid' | 'near'; offset: number } | null = null, ground = '', shore: number | null = null): void {
-  const still = midOnly || !motion;
-  const midDrift = drift?.layer === 'mid' ? drift.offset : 0, nearDrift = drift?.layer === 'near' ? drift.offset : 0;
+export function drawBackground(g: G, world: string, vw: number, scroll: number, motion = true, midOnly = false, drift: { layer: 'mid' | 'near'; offset: number } | null = null, ground = '', shore: number | null = null, scene = false): void {
+  const simple = graphics.simple, still = midOnly || !motion;
+  const midDrift = drift?.layer === 'mid' && !simple ? drift.offset : 0, nearDrift = drift?.layer === 'near' && !simple ? drift.offset : 0;
+  // The space's near rocks drift at half speed, calmer behind the words.
+  const nearAt = (still || (simple && !scene) ? 0 : scroll * (world === 'space' ? 0.5 : 1)) + nearDrift;
+  if (!simple) {
+    farBands(g, world, vw, still ? 0 : scroll * 0.1, (motion ? scroll * 0.35 : 0) + midDrift, ground);
+    nearBand(g, world, vw, nearAt, ground, shore);
+    return;
+  }
+  // The near band joins the backdrop while it stands still; a scene's near band that moves is drawn over it.
+  const withNear = nearAt === lastNearAt;
+  lastNearAt = nearAt;
+  const m = g.getTransform();
+  const pics = ['far', 'mid', 'near', 'shore'].map((b) => (sprite(`bg-${world}${b === 'far' ? '' : ground}-${b}`) ? 1 : 0)).join('');
+  const key = `${world}${ground}|${g.canvas.width}x${g.canvas.height}|${m.a},${m.d}|${pics}|${withNear ? `${nearAt},${shore}` : ''}`;
+  if (backdropKey !== key) {
+    backdropKey = key;
+    backdrop ??= document.createElement('canvas');
+    backdrop.width = g.canvas.width;
+    backdrop.height = g.canvas.height;
+    const b = backdrop.getContext('2d')!;
+    b.setTransform(m);
+    farBands(b, world, vw, 0, 0, ground);
+    if (withNear) nearBand(b, world, vw, nearAt, ground, shore);
+  }
+  g.save();
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  g.globalCompositeOperation = 'copy';
+  g.drawImage(backdrop!, 0, 0);
+  g.restore();
+  if (!withNear) nearBand(g, world, vw, nearAt, ground, shore);
+}
+
+/** The simple drawing's still bands, drawn once while their world, size and pictures stay; the near band's offset last frame. */
+let backdrop: HTMLCanvasElement | null = null;
+let backdropKey = '';
+let lastNearAt = NaN;
+
+/** Leaving the levels: the backdrop's memory goes. */
+export function releaseBackdrop(): void {
+  if (backdrop) release(backdrop);
+  backdrop = null;
+  backdropKey = '';
+}
+
+/** The sky, the far band and the middle one. */
+function farBands(g: G, world: string, vw: number, farAt: number, midAt: number, ground: string): void {
   const pal = PALETTES[world] ?? PALETTES.meadow;
   const far = sprite(`bg-${world}-far`);
-  if (far) tiled(g, far, vw, still ? 0 : scroll * 0.1);
+  if (far) tiled(g, far, vw, farAt);
   else {
     const grad = g.createLinearGradient(0, 0, 0, VH);
     grad.addColorStop(0, pal.sky[0]);
     grad.addColorStop(1, pal.sky[1]);
     g.fillStyle = grad;
     g.fillRect(0, 0, vw, VH);
-    if (world === 'space') starField(g, vw, midOnly ? 0 : scroll * 0.1);
+    if (world === 'space') starField(g, vw, farAt);
   }
   if (world === 'space') {
     // Calm the busy sky so words stay readable.
@@ -281,11 +328,13 @@ export function drawBackground(g: G, world: string, vw: number, scroll: number, 
     g.fillRect(0, 0, vw, VH);
   }
   const mid = sprite(`bg-${world}${ground}-mid`);
-  if (mid) tiled(g, mid, vw, (motion ? scroll * 0.35 : 0) + midDrift);
-  else hills(g, vw, scroll * 0.35 + midDrift, VH * 0.62, 70, pal.hills[0]);
+  if (mid) tiled(g, mid, vw, midAt);
+  else hills(g, vw, midAt, VH * 0.62, 70, pal.hills[0]);
+}
+
+/** The near band at `nearAt` with the ground's shore picture. */
+function nearBand(g: G, world: string, vw: number, nearAt: number, ground: string, shore: number | null): void {
   const near = sprite(`bg-${world}${ground}-near`);
-  // The space's near rocks drift at half speed, calmer behind the words.
-  const nearAt = (still ? 0 : scroll * (world === 'space' ? 0.5 : 1)) + nearDrift;
   if (near) {
     tiled(g, near, vw, nearAt, NEAR_DROP[ground] ?? 0);
     const bank = shore === null ? null : sprite(`bg-${world}${ground}-shore`);
@@ -293,7 +342,7 @@ export function drawBackground(g: G, world: string, vw: number, scroll: number, 
       const s = VH / near.naturalHeight, w = bank.naturalWidth * s, h = bank.naturalHeight * s, x = shore! - nearAt;
       if (x < vw && x + w > 0) g.drawImage(bank, x, VH - h + (NEAR_DROP[ground] ?? 0), w, h);
     }
-  } else if (world !== 'space') hills(g, vw, (midOnly ? 0 : scroll) + nearDrift, VH * 0.82, 30, pal.hills[1]);
+  } else if (world !== 'space') hills(g, vw, nearAt, VH * 0.82, 30, (PALETTES[world] ?? PALETTES.meadow).hills[1]);
 }
 
 function hills(g: G, vw: number, offset: number, base: number, amp: number, color: string): void {

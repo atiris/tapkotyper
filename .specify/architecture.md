@@ -72,7 +72,11 @@
   settings. Simple draws the scene at three quarters of the screen's resolution (scaled up; the
   words are not on the canvas and stay sharp), fewer particles, no blurred
   shadows and no blur behind cards, moving bands on whole pixels and the start page's sky
-  without its butterflies and fireflies. Automatic switches to it by itself when the first seconds of play are slow
+  without its butterflies and fireflies. Its background bands stand still, except the near band
+  of a scene Tapko travels through (the planet's swamp and shore, the crossroads, the valley's
+  thicket, the egg world's mud path), where things stand on that ground and the shore must come;
+  the still bands are copied as one picture, so a frame copies one or two full-screen pictures
+  instead of three or four. The bands' slow drift stops too: it only makes a still scene look alive. Automatic switches to it by itself when the first seconds of play are slow
   (the slowest 5 % of frames over 25 ms) and remembers that for the device. It never changes
   the game's pace, word timing or results: a slow computer gets the same lesson.
 - **A slow frame does not slow the next one:** the game takes at most four update steps per

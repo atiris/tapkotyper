@@ -635,6 +635,7 @@ interface Bush {
 export class ThicketMode extends Mode {
   readonly pictures = [...BUSHES, ...DRAGONS];
   readonly world = 'dragons';
+  readonly scene = true;
   readonly phraseWords = 1;
   private bushes: Bush[] = [];
   private cleared = 0;

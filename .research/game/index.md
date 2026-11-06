@@ -6,4 +6,5 @@
 - [story-pages.md](story-pages.md) - type pages of Tapko's story book and short fact cards (P2)
 - [tapko-questions.md](tapko-questions.md) - Tapko asks a question, the child types a free answer (P2)
 - [bubble.md](bubble.md) - put a thing in a bubble with a word: it floats away or pops and falls (P2)
+- [rhythm-game.md](rhythm-game.md) - Rytmus: letters fall in finger columns, one lands on every beat; tempo follows the child (P1-P2)
 - [race-your-past-self.md](race-your-past-self.md) - optional shadow of the child's own earlier run (P3)

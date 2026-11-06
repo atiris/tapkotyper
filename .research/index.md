@@ -78,6 +78,14 @@ trips, tricky words (Slovak *vybrané slová*), letter groups.
 - [learning/hold-and-reach.md](learning/hold-and-reach.md) - hold keys while another finger types, chords, column trips, levels that need exact keys (P1-P2)
 - [game/bubble.md](game/bubble.md) - put a thing in a bubble with a word: it floats away or pops and falls (P2)
 
+## Rhythm 2026-11-07
+
+The top bar calls speed "rhythm". Rhythm should be how even the key presses are; the order of goals
+is accuracy > rhythm > speed.
+
+- [learning/rhythm-measure.md](learning/rhythm-measure.md) - a 0-100 rhythm score from successive interval changes, capped by accuracy; speed becomes its own number (P1)
+- [game/rhythm-game.md](game/rhythm-game.md) - Rytmus: a beat game with finger columns, a catch zone on the beat and a tempo that follows the child (P1-P2)
+
 Areas: [learning/](learning/index.md), [game/](game/index.md),
 [profiles/](profiles/index.md), [experience/](experience/index.md).
 

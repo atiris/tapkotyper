@@ -8,3 +8,4 @@
 - [exercise-types.md](exercise-types.md) - other kinds of typing practice: dictation, memory flash, picture-to-word, accuracy runs (P2)
 - [one-hand-path.md](one-hand-path.md) - lesson path for typing with one hand (P3)
 - [hold-and-reach.md](hold-and-reach.md) - hold keys while another finger types, chords, column trips, levels that need exact keys (P1-P2)
+- [rhythm-measure.md](rhythm-measure.md) - rhythm as evenness of key presses (0-100), not speed; accuracy caps it (P1)

@@ -31,7 +31,7 @@
   name, its worlds' pictures (done in colour, the rest grey) and the stars earned in it, the
   shelf of world badges ("Odznaky svetov": gold, silver and bronze sections with the stars each needs, [story](../game/story.md)) with the row of target
   range awards under it ("Ocenenia zo strelníc": every world's rare thing, found ones in
-  colour, [target range](../game/target-practice.md)), and when
+  colour, missing ones a grey range sight, [target range](../game/target-practice.md)), and when
   the child last trained (today, yesterday, n days ago) with the typing minutes of the last 7
   days. Below it a friendly view of the keys: a keyboard colored
   by each key's accuracy over its last 100 presses in the bands of the accuracy scale

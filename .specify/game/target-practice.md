@@ -74,8 +74,10 @@
   careless throw the run goes without it. Hitting it in the middle (no
   wrong key, every word in time) the first time makes it a find, and Tapko says it is yours if
   you throw to the end: it joins the collection only when the run ends, not when it is left
-  early. The end card shows all 15, found ones in color, the rest grey with a question mark
-  whose tooltip names the world where it waits; the progress overview counts them too.
+  early. My progress (the page and the popup) shows all 15, found ones in color; each one still
+  missing is the same grey range sight (rings and a cross), turned at random so the row does
+  not look stiff, and gives nothing away; its tooltip names the world where it waits. The
+  progress overview counts them too.
 - With something in the collection, Enter swaps the thing in Tapko's paw (before its throw) for
   a random one of the collection, and Tapko names it; the rules at the start say so. The
   world's own thing still to be found cannot be swapped away.

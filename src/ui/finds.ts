@@ -6,15 +6,15 @@ import type { Profile } from '../storage/schema';
 import { h } from './dom';
 import { tip } from './tooltip';
 
-/** Every world's own range thing: the found ones in color, the rest grey with a question mark naming the world where they wait. */
+/** Every world's own range thing: the found ones in color, the rest a grey range sight turned at random, naming the world where they wait. */
 export function rangeFinds(p: Profile): HTMLElement {
+  const sight = imageUrl('ui-aim-sight');
   return h('ul', { class: 'aim-finds' }, ...WORLD_THINGS.map((th) => {
     const has = p.progress.rangeFinds.includes(th.id);
-    const src = imageUrl(th.pics[0]);
+    const src = has ? imageUrl(th.pics[0]) : sight;
     const say = has ? t(`aim.things.${th.id}.name`) : t('aim.collection.waiting', { world: worldName(th.world!) });
-    const el = h('li', { class: `aim-find ${has ? 'found' : 'waiting'}`, role: 'img', 'aria-label': say },
-      src ? h('img', { src, alt: '' }) : null,
-      has ? null : h('span', { class: 'aim-find-q', 'aria-hidden': 'true' }, '?'));
+    const el = h('li', { class: `aim-find ${has ? 'found' : 'waiting'}`, role: 'img', 'aria-label': say, style: has ? '' : `--turn:${Math.round(Math.random() * 360)}deg` },
+      src ? h('img', { src, alt: '' }) : has ? null : h('span', { class: 'aim-find-sight', 'aria-hidden': 'true' }, '⌖'));
     tip(el, say);
     return el;
   }));

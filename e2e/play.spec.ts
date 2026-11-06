@@ -195,6 +195,7 @@ test('world badges sit on the map, grow with stars and line up on the progress s
     const d = JSON.parse(localStorage.getItem('tapkotyper:v1')!);
     const p = d.profiles[0];
     p.progress.worldsDone = [0, 1, 2, 3];
+    p.progress.rangeFinds = ['ladybug'];
     // 18, 17 and 10 world stars: silver, silver, bronze; the done dragon world with 5 has none.
     Object.assign(p.progress.levels, {
       'w1-1': 2, 'w1-2': 4, 'w1-3': 4, 'w1-4': 4, 'w1-5': 4,
@@ -222,6 +223,12 @@ test('world badges sit on the map, grow with stars and line up on the progress s
   await expect(rows.nth(2).locator('.badge.bronze')).toHaveCount(1);
   await expect(page.locator('.badge-shelf h5')).toHaveCount(0);
   await expect(page.locator('.badge-shelf .badge.none')).toHaveCount(0);
+  // A found range award in color; every other one the same grey sight, giving nothing away.
+  await expect(page.locator('.aim-find.found')).toHaveCount(1);
+  const waiting = page.locator('.aim-find.waiting img');
+  await expect(waiting.first()).toHaveAttribute('src', /ui-aim-sight/);
+  expect(new Set(await waiting.evaluateAll((els) => els.map((e) => e.getAttribute('src')))).size).toBe(1);
+  await page.locator('.badge-shelf').last().screenshot({ path: 'test-results/range-awards.png' });
 });
 
 test('the fairy story is a third row; Melody floats with the child', async ({ page }) => {

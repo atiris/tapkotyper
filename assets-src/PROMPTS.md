@@ -668,6 +668,13 @@ Cute, soft 2D children's game icon, flat vector style with gentle gradients, sof
 
 ### ui-accuracy.jpg (accuracy in 14 days chip in the stats; an arrow in the middle of a target; the owner's picture)
 
+### ui-aim-sight.jpg (a range award not found yet on My progress: a grey sight, turned at random by the game; 2026-11-06)
+```
+Generate an image: Grey target sight
+
+Cute, soft 2D children's game icon, flat vector style with gentle gradients, soft dark-grey outline (not black), bold simple shapes that stay readable when very small. A single icon: a friendly rifle-scope style target sight, strictly front view: two thick concentric circles (a big outer ring and a smaller inner ring with even space between them) and a bold cross of two straight lines through the exact center, the four arms of the cross reaching a little past the outer ring, a small round dot in the very center. Everything in soft calm greys only: rings and cross light grey #B8BEC6 with a darker grey outline #7D858F, the space inside the rings empty. Perfectly symmetrical, not tilted. No color other than grey, no face, no eyes, no gun, no target board, no shadow, no glow. Centered, the whole sight visible, wide empty margin. No text, no letters, no numbers, no watermark. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no other objects. Square image.
+```
+
 ### ui-chest.jpg (range finds chip in the stats, between worlds and accuracy; a pastel treasure chest with gems and leaves; the owner's picture 2026-10-24)
 
 ### ui-typing-speed.jpg (speed in 14 days chip in the stats; an arrow made of keys; the owner's picture 2026-10-23, replaced ui-speed)

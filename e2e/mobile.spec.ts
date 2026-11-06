@@ -112,6 +112,9 @@ test('the QR screen: the name first, one size for the padding and the gaps, clos
     await page.locator('.stats-code .btn').first().click();
     const view = page.locator('.big-code');
     await expect(view.locator('.big-code-caption')).toHaveText(/^Ema\s*·\s*Celé moje štatistiky$/);
+    // The click leaves the mouse where a button of the view may now be: its hover lift would move it while measured.
+    await page.mouse.move(0, 0);
+    await page.waitForFunction(() => !document.querySelector('.big-code')!.getAnimations({ subtree: true }).length);
     const m = await page.evaluate(() => {
       const v = document.querySelector('.big-code')!;
       const border = parseFloat(getComputedStyle(v).borderTopWidth);

@@ -15,6 +15,8 @@ export class StageTapko {
   private moodTimer = 0;
   private bubbleTimer = 0;
   private px = 0;
+  /** The shown bubble's box in stage units and the stage size it was read at: read once, as a read lays out the page. */
+  private box: Rect & { at: string } | null = null;
 
   constructor(private reduceMotion: boolean, onClick: () => void) {
     this.el = tapkoElement(app.profile!.companion, 'idle');
@@ -33,6 +35,7 @@ export class StageTapko {
     if (this.bubbleTimer > 0) return;
     this.bubble.replaceChildren(h('p', {}, text));
     this.bubble.classList.remove('hidden');
+    this.box = null;
     this.bubbleTimer = Math.max(seconds, sayTime(text));
   }
 
@@ -71,15 +74,18 @@ export class StageTapko {
   }
 
   /** The word is the task, so the bubble never covers one (`labels`): over a label it hides until its spot is free. */
-  placeBubble(scale: number, labels: Rect[]): void {
-    const b = this.bubble, s = scale;
+  placeBubble(scale: number, width: number, labels: Rect[]): void {
+    const b = this.bubble, s = scale, at = `${scale} ${width}`;
     if (b.classList.contains('hidden')) return;
-    const covers = () => {
-      const x0 = b.offsetLeft / s - LABEL_GAP, x1 = (b.offsetLeft + b.offsetWidth) / s + LABEL_GAP;
-      const y0 = b.offsetTop / s - LABEL_GAP, y1 = (b.offsetTop + b.offsetHeight) / s + LABEL_GAP;
-      return labels.some((r) => r.x0 < x1 && r.x1 > x0 && r.y0 < y1 && r.y1 > y0);
-    };
-    b.classList.toggle('covered', covers());
+    if (this.box?.at !== at) {
+      this.box = {
+        x0: b.offsetLeft / s - LABEL_GAP, x1: (b.offsetLeft + b.offsetWidth) / s + LABEL_GAP,
+        y0: b.offsetTop / s - LABEL_GAP, y1: (b.offsetTop + b.offsetHeight) / s + LABEL_GAP, at,
+      };
+    }
+    const { x0, x1, y0, y1 } = this.box;
+    const covered = labels.some((r) => r.x0 < x1 && r.x1 > x0 && r.y0 < y1 && r.y1 > y0);
+    if (b.classList.contains('covered') !== covered) b.classList.toggle('covered', covered);
   }
 
   private show(mood: Mood): void {

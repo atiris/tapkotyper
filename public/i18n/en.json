@@ -1137,11 +1137,6 @@
     "week": "Last 7 days: {n} min",
     "storiesTitle": "Stories",
     "badges": "World badges",
-    "badgeTier": {
-      "gold": "Gold, from {n} ★",
-      "silver": "Silver, from {n} ★",
-      "bronze": "Bronze, from {n} ★"
-    },
     "badgeNone": "None yet",
     "rangeAwards": "Target range awards",
     "parrots": "Parrots at home: {n}, most at once: {best}",

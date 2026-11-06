@@ -1137,11 +1137,6 @@
     "week": "Za posledných 7 dní: {n} min",
     "storiesTitle": "Príbehy",
     "badges": "Odznaky svetov",
-    "badgeTier": {
-      "gold": "Zlaté, od {n} ★",
-      "silver": "Strieborné, od {n} ★",
-      "bronze": "Bronzové, od {n} ★"
-    },
     "badgeNone": "Zatiaľ žiadny",
     "rangeAwards": "Ocenenia zo strelníc",
     "parrots": "Papagáje doma: {n}, najviac naraz: {best}",

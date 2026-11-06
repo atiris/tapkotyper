@@ -2,7 +2,7 @@ import { app, go, layout, reduceMotion } from '../app/app';
 import { imageUrl } from '../gfx/assets';
 import { type Mood, otherMood, renderTapkoInto, tapkoElement } from '../gfx/tapko';
 import { DRILL_SECONDS, STORIES, type StoryDef, WORLDS, storyDone, storyOpen, worldName } from '../game/levels';
-import { BADGE_STARS, MAX_CHEST, MAX_STARS, badgeTier, chestPoints, totalStars, worldStars } from '../game/rewards';
+import { MAX_CHEST, MAX_STARS, badgeTier, chestPoints, totalStars, worldStars } from '../game/rewards';
 import { locale, t, tn } from '../i18n/i18n';
 import { allKeys } from '../keyboard/layouts';
 import { STATS_WINDOW, activeKeys, lessonKeyOf } from '../learning/lessons';
@@ -207,13 +207,13 @@ function storyRow(p: Profile, story: StoryDef): HTMLElement {
       h('b', {}, String(stars)), star ? h('img', { src: star, alt: '' }) : '★'));
 }
 
-/** The badges by tier, gold first, each with the stars it needs; worlds without a badge are not listed. */
+/** A row of badges per tier, gold first, without headings; a tier nobody holds has no row, no badge at all says so. */
 function badgeTiers(p: Profile): HTMLElement[] {
-  return (['gold', 'silver', 'bronze'] as const).map((tier) => {
+  const rows = (['gold', 'silver', 'bronze'] as const).flatMap((tier) => {
     const worlds = WORLDS.map((_, w) => w).filter((w) => badgeTier(p, w) === tier);
-    return h('div', { class: `badge-tier ${tier}` }, h('h5', {}, t(`progress.badgeTier.${tier}`, { n: BADGE_STARS[tier] })),
-      worlds.length ? h('div', { class: 'badge-row' }, ...worlds.map((w) => badge(w, tier, true))) : h('p', { class: 'badge-none' }, t('progress.badgeNone')));
+    return worlds.length ? [h('div', { class: 'badge-row' }, ...worlds.map((w) => badge(w, tier, true)))] : [];
   });
+  return rows.length ? rows : [h('p', { class: 'badge-none' }, t('progress.badgeNone'))];
 }
 
 /** The summary rows, a row per story under their heading, the badge shelf and the range awards, and when the child last trained. */

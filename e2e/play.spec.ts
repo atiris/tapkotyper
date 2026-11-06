@@ -214,11 +214,13 @@ test('world badges sit on the map, grow with stars and line up on the progress s
   await page.locator('.end-card .ec-bot .btn').last().click();
   await expect(page.locator('.island-meadow .badge.gold')).toBeVisible();
   await page.locator('.map-tapko').click();
-  // Gold, silver and bronze each list their worlds; a world without a badge is not on the shelf.
-  await expect(page.locator('.badge-tier.gold .badge.gold')).toHaveCount(1);
-  await expect(page.locator('.badge-tier.gold h5')).toHaveText('Gold, from 20 ★');
-  await expect(page.locator('.badge-tier.silver .badge.silver')).toHaveCount(1);
-  await expect(page.locator('.badge-tier.bronze .badge.bronze')).toHaveCount(1);
+  // A row per held tier, gold, silver, bronze, no headings; a world without a badge is not on the shelf.
+  const rows = page.locator('.badge-shelf .badge-row');
+  await expect(rows).toHaveCount(3);
+  await expect(rows.nth(0).locator('.badge.gold')).toHaveCount(1);
+  await expect(rows.nth(1).locator('.badge.silver')).toHaveCount(1);
+  await expect(rows.nth(2).locator('.badge.bronze')).toHaveCount(1);
+  await expect(page.locator('.badge-shelf h5')).toHaveCount(0);
   await expect(page.locator('.badge-shelf .badge.none')).toHaveCount(0);
 });
 

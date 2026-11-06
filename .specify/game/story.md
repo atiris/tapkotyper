@@ -463,9 +463,10 @@ story stays playable in any browser ([mechanics](mechanics.md)).
   replay of any of its levels can bring one. The tier is the colour of its ring.
 - The end screen says "New badge!" or "Your badge is silver / gold now!" when a level
   earns or improves one. The badge sits in the corner of its world card on the map, and
-  the progress view has a badge shelf in three sections, gold, silver and bronze, each with the
-  stars it needs ("from 20 ★") and the worlds that hold that tier; a section without one says
-  "none yet", and worlds without a badge are not listed (the chest counts them all).
+  the progress view has a badge shelf of up to three rows without headings, gold, then silver,
+  then bronze; a tier no world holds has no row, so the shelf stays short. The stars a tier needs
+  live only in the badge's tooltip. With no badge at all the shelf says "none yet"; worlds
+  without a badge are not listed (the chest counts them all).
 - A badge's tooltip shows the way to the next tier: bronze names what silver needs, silver
   what gold needs, each with the stars the child has in that world; a world without a badge
   says to finish it and get 10 stars in it.

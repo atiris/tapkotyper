@@ -27,7 +27,8 @@ interface Piece { el: HTMLElement; size: number; ratio: number; x: number; y: nu
  * The start page's scene: a day and a night sky, the repeating meadow, the sun with two clouds or
  * the moon with three stars in a band above the title, butterflies or fireflies low over the meadow.
  * The band ends above the `under` boxes (the title) and left of the `beside` ones that reach into
- * it (the card, its logo, the corner controls); a piece that does not fit is left out. A theme
+ * it (the card, its logo, the corner controls), placed anew when any box beside the `under` ones
+ * changes its size, as that moves them; a piece that does not fit is left out. A theme
  * change plays the night and day.
  */
 export function skyScene(screen: HTMLElement, under: () => (Element | null)[], beside: () => (Element | null)[]): { el: HTMLElement; destroy(): void } {
@@ -151,7 +152,11 @@ export function skyScene(screen: HTMLElement, under: () => (Element | null)[], b
 
   place();
   requestAnimationFrame(() => requestAnimationFrame(() => el.classList.remove('still')));
-  const observer = new ResizeObserver(() => place());
+  // A centered column moves the title when a box beside it grows; those boxes are in place once the screen is on the page.
+  const observer = new ResizeObserver(() => {
+    for (const e of under()) for (const next of e?.parentElement?.children ?? []) observer.observe(next);
+    place();
+  });
   observer.observe(screen);
   for (const e of [...under(), ...beside()]) if (e) observer.observe(e);
   const offTheme = onThemeChange(change);

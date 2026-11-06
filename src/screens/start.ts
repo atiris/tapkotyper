@@ -3,7 +3,7 @@ import { keyboardGated, onKeyboard, takeWaiting } from '../app/keyboard-gate';
 import { audio } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
 import { small } from '../ui/start-pictures';
-import { baseLanguage, language, t, tList } from '../i18n/i18n';
+import { allTexts, baseLanguage, language, t, tList } from '../i18n/i18n';
 import { addTask } from '../share/task';
 import type { Lang, Profile, TaskSpec } from '../storage/schema';
 import { type ICONS, arrowFocus, bigButton, button, h, icon, keyboardArt, modal, taskArt, teacherArt } from '../ui/dom';
@@ -111,7 +111,7 @@ export function startScreen(root: HTMLElement, { task }: { task?: TaskOffer } = 
         h('p', { class: 'start-first' }, t('start.first')),
         button(t('start.newFirst'), newPlayer, 'btn primary big new-player', 'plus'),
         h('div', { class: 'start-ghosts' }, guest,
-          task ? null : button(t('start.import'), () => void import('./parent').then((m) => m.importDialog(() => go('start'))), 'btn ghost', 'upload')),
+          task ? null : button(t('start.import'), () => void Promise.all([import('./parent'), allTexts()]).then(([m]) => m.importDialog(() => go('start'))), 'btn ghost', 'upload')),
       ]));
     offPick = pickByNumber(players.length, (i) => void play(players[i]));
   }
@@ -149,6 +149,8 @@ export function startScreen(root: HTMLElement, { task }: { task?: TaskOffer } = 
   // The first player (or the new player) waits for Enter; a number key picks one too.
   if (!gated) (root.querySelector<HTMLElement>('.profile-card') ?? root.querySelector<HTMLElement>('.start-card .btn.primary'))?.focus();
   const offSuper = task ? () => undefined : listenForSuperPassword(async () => {
+    // Super Tapko's name comes from the texts a first visit's start page has not loaded yet.
+    await allTexts();
     app.superMode = true;
     app.superPlayer = superProfile(language());
     await selectProfile(app.superPlayer);

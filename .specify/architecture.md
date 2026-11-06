@@ -43,9 +43,12 @@
   - the start page shows soon on a phone line: the page itself starts the asset list and the
     interface texts, and the meadow behind them, so it is on its way before the code asks for
     it; its pictures are small copies at twice their drawn size, and a first visit gets a
-    coarser meadow (later visits have the full one offline); an official language loads only its own texts (no English behind them), the meadow comes before the smaller sky pictures, and the other look's pictures (night by
-    day, day by night) load a moment later or with a theme change; the map's and the level's
-    code load then too, so the first level opens at once.
+    coarser meadow (later visits have the full one offline); an official language loads only
+    its own texts (no English behind them), and a first visit (no player, nothing offline)
+    only the few its start page shows, the rest a moment later or as soon as anything else
+    opens; the meadow comes before the smaller sky pictures, and the other look's pictures
+    (night by day, day by night) load a moment later or with a theme change; the map's and
+    the level's code load then too, so the first level opens at once.
 - A scaled copy of the current scene's background tiles is cached at the drawn pixel size, and
   the HUD is written only when a value changes.
 - Adding worlds must not slow the game: memory and work at the start stay flat. A level decodes

@@ -6,6 +6,7 @@ import { join, relative, sep } from 'node:path';
 import { type Plugin, defineConfig } from 'vite';
 import { aboutPage, aboutPath, aboutRedirect } from './src/app/about-page';
 import { CLOSE, LANGS } from './src/i18n/i18n';
+import { START_TEXTS } from './src/i18n/start-texts';
 import { STORE_KEY } from './src/storage/store';
 import { LOW, MEADOW } from './src/ui/start-pictures';
 import { handPoser } from './tools/hand-poser/server';
@@ -72,42 +73,70 @@ function aboutPages(): Plugin {
   };
 }
 
+/** Cuts the start texts (START_TEXTS) out of each official language: `i18n/<lang>.start.json`. */
+function startTexts(): Plugin {
+  return {
+    name: 'tapkotyper-start-texts',
+    apply: 'build',
+    generateBundle() {
+      for (const lang of LANGS) {
+        const all = JSON.parse(readFileSync(`public/i18n/${lang}.json`, 'utf8')) as Record<string, unknown>;
+        const part: Record<string, any> = {};
+        for (const key of START_TEXTS) {
+          const path = key.split('.');
+          let from: any = all, to = part;
+          for (const name of path.slice(0, -1)) {
+            from = from[name];
+            to = to[name] ??= {};
+          }
+          to[path.at(-1)!] = from[path.at(-1)!];
+        }
+        this.emitFile({ type: 'asset', fileName: `i18n/${lang}.start.json`, source: JSON.stringify(part) });
+      }
+    },
+  };
+}
+
 /**
  * Starts the data the first screen waits for (the asset list, the interface language's texts and,
  * on the start page, the meadow of the shown look) with the page, not after the main script: the
  * language is the stored one, else the one `detectLanguage` picks; an own language is left to the app.
+ * A build's start page on a first visit (no player, nothing offline) takes only the start texts (startTexts).
  */
 function firstFetches(): Plugin {
-  const pick = `(function () {
-  if (location.hash.length <= 2) {
+  let build = false;
+  const pick = () => `(function () {
+  var store = {}, start = location.hash.length <= 2, first = !(navigator.serviceWorker && navigator.serviceWorker.controller);
+  try { store = JSON.parse(localStorage.getItem(${JSON.stringify(STORE_KEY)}) || '{}') || {}; } catch (e) {}
+  if (start) {
     var meadow = document.createElement('link');
     meadow.rel = 'preload'; meadow.as = 'image';
-    var first = !(navigator.serviceWorker && navigator.serviceWorker.controller);
     meadow.href = '/assets/' + ${JSON.stringify(MEADOW)}[document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light'] + (first ? '${LOW}' : '') + '.webp';
     document.head.appendChild(meadow);
   }
-  var langs = ${JSON.stringify(LANGS)}, close = ${JSON.stringify(CLOSE)}, lang;
-  try { lang = JSON.parse(localStorage.getItem(${JSON.stringify(STORE_KEY)}) || '{}').language; } catch (e) {}
+  var langs = ${JSON.stringify(LANGS)}, close = ${JSON.stringify(CLOSE)}, lang = store.language;
   if (lang && langs.indexOf(lang) < 0) return;
   if (!lang) {
     var codes = Array.prototype.map.call(navigator.languages || [], function (l) { return l.toLowerCase().split('-')[0]; });
     lang = codes.filter(function (c) { return langs.indexOf(c) >= 0; })[0] || codes.map(function (c) { return close[c]; }).filter(Boolean)[0] || 'en';
   }
   var link = document.createElement('link');
-  link.rel = 'preload'; link.as = 'fetch'; link.crossOrigin = 'anonymous'; link.href = '/i18n/' + lang + '.json';
+  link.rel = 'preload'; link.as = 'fetch'; link.crossOrigin = 'anonymous'; link.href = '/i18n/' + lang + (${build} && start && first && !(store.profiles && store.profiles.length) ? '.start' : '') + '.json';
   document.head.appendChild(link);
 })();`;
   // At the placeholder above the stylesheet: an inline script after it waits until the stylesheet has loaded.
-  const tags = `<link rel="preload" href="/assets/manifest.json" as="fetch" crossorigin="anonymous" />\n    <script>${pick}</script>`;
+  const tags = () => `<link rel="preload" href="/assets/manifest.json" as="fetch" crossorigin="anonymous" />\n    <script>${pick()}</script>`;
   return {
     name: 'tapkotyper-first-fetches',
-    transformIndexHtml: (html) => html.replace('<!-- first-fetches -->', tags),
+    configResolved: (config) => { build = config.command === 'build'; },
+    transformIndexHtml: (html) => html.replace('<!-- first-fetches -->', tags()),
   };
 }
 
 // GitHub Pages serves the site at the root of tapkotyper.com
 export default defineConfig({
   base: '/',
-  plugins: [aboutPages(), firstFetches(), serviceWorker(), handPoser()],
+  // startTexts before serviceWorker, so the offline list has the start texts.
+  plugins: [aboutPages(), startTexts(), firstFetches(), serviceWorker(), handPoser()],
   test: { include: ['src/**/*.test.ts'] },
 });

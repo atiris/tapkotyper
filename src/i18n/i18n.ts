@@ -33,18 +33,45 @@ export function detectLanguage(navLangs: readonly string[] = globalThis.navigato
 }
 
 const fetched = new Map<Lang, Promise<Dict>>();
+const fetchedStart = new Map<Lang, Promise<Dict>>();
+
+/** A dictionary file in `i18n/`, loaded once. */
+function load(files: Map<Lang, Promise<Dict>>, lang: Lang, file: string): Promise<Dict> {
+  if (!files.has(lang)) {
+    const p = fetch(`${import.meta.env.BASE_URL}i18n/${file}`).then((res) => {
+      if (!res.ok) throw new Error(`i18n ${file}: ${res.status}`);
+      return res.json() as Promise<Dict>;
+    });
+    p.catch(() => files.delete(lang));
+    files.set(lang, p);
+  }
+  return files.get(lang)!;
+}
 
 /** An official dictionary (`public/i18n/<lang>.json`), loaded once. */
 export function officialDict(lang: Lang): Promise<Dict> {
-  if (!fetched.has(lang)) {
-    const p = fetch(`${import.meta.env.BASE_URL}i18n/${lang}.json`).then((res) => {
-      if (!res.ok) throw new Error(`i18n ${lang}: ${res.status}`);
-      return res.json() as Promise<Dict>;
-    });
-    p.catch(() => fetched.delete(lang));
-    fetched.set(lang, p);
-  }
-  return fetched.get(lang)!;
+  return load(fetched, lang, `${lang}.json`);
+}
+
+/** Whether a language's texts are in use yet. */
+export const hasTexts = (): boolean => chain.length > 0;
+
+let whole: Promise<void> = Promise.resolve();
+/** Starts loading the rest of the texts: only when asked, so it never holds up the start page's own files. */
+let rest: (() => void) | null = null;
+/** Settles once the language in use has every text; a screen past the start page waits for it. */
+export function allTexts(): Promise<void> {
+  rest?.();
+  return whole;
+}
+
+/** Whether only the start part is in use, and the texts looked up that it lacks. */
+let partial = false;
+const late = new Set<string>();
+let onLate: () => void = () => undefined;
+/** Calls `fn` once every text is here after a text the start part lacks was shown as its key (the screen draws again). */
+export function onLateTexts(fn: () => void): void {
+  onLate = fn;
 }
 
 /** The texts of an own language as a dictionary: empty texts and variants left out, ordered lists only when whole. */
@@ -67,15 +94,34 @@ export function ownDict(l: Pick<OwnLang, 'texts'>): Dict {
   return d;
 }
 
-/** Switches the texts to a language; an own language missing on this device falls back to the browser's language. */
-export async function setLanguage(ref: LangRef): Promise<void> {
+/**
+ * Switches the texts to a language; an own language missing on this device falls back to the browser's language.
+ * With `startPart` (a first visit's start page), an official language of a build shows from its start part,
+ * `i18n/<lang>.start.json` (START_TEXTS); the rest comes when asked for (allTexts).
+ */
+export async function setLanguage(ref: LangRef, startPart = false): Promise<void> {
   asked = ref;
   const own = isOwnRef(ref) ? await ownLang(ownId(ref)).catch(() => null) : null;
   const lang: Lang = own ? own.base : isLang(ref) ? ref : detectLanguage();
+  const part = startPart && !own && import.meta.env.PROD && !fetched.has(lang);
+  const first = part ? load(fetchedStart, lang, `${lang}.start.json`).catch(() => officialDict(lang)) : officialDict(lang);
   // An official language has every text (a test keeps the dictionaries' keys equal), so only an own language needs English behind it.
-  const [d, f] = await Promise.all([officialDict(lang), own && lang !== 'en' ? officialDict('en').catch(() => null) : null]);
+  const [d, f] = await Promise.all([first, own && lang !== 'en' ? officialDict('en').catch(() => null) : null]);
   if (asked !== ref) return;
   chain = [...(own ? [ownDict(own)] : []), d, ...(f ? [f] : [])];
+  partial = part;
+  rest = null;
+  whole = Promise.resolve();
+  if (part) {
+    let go!: () => void;
+    whole = new Promise<void>((resolve) => (go = resolve)).then(() => officialDict(lang)).then((all) => {
+      if (chain[0] !== d) return;
+      chain = [all];
+      partial = false;
+      if (late.size) onLate();
+    }, () => undefined);
+    rest = () => { rest = null; go(); };
+  }
   current = own ? ref : lang;
   base = lang;
   code = own ? own.code : lang;
@@ -124,10 +170,17 @@ function lookup(d: Dict, key: string): string | string[] | Dict | undefined {
   return node;
 }
 
-const find = (key: string) => {
+/** A text from the first dictionary that has it; `report`: a key the start part lacks counts as late. */
+const find = (key: string, report = true) => {
   for (const d of chain) {
     const v = lookup(d, key);
     if (v !== undefined) return v;
+  }
+  if (report && partial && !late.has(key)) {
+    // START_TEXTS lacks it: the rest comes now and the screen draws again (an e2e test watches for this).
+    late.add(key);
+    console.warn(`i18n: ${key} is not in the start texts`);
+    rest?.();
   }
   return undefined;
 };
@@ -162,6 +215,7 @@ export function tMap(key: string): Record<string, string> {
 /** A count in words: `key.one`, `key.few` or `key.other` by the language's plural rules, with `{n}` filled. */
 export function tn(key: string, n: number, params: Record<string, string | number> = {}): string {
   const form = new Intl.PluralRules(code).select(n);
-  const v = find(`${key}.${form}`);
+  // A language without this form (English has no "few") takes `other`, so a missing form is no late text.
+  const v = find(`${key}.${form}`, false);
   return typeof v === 'string' ? fill(v, { n, ...params }) : t(`${key}.other`, { n, ...params });
 }

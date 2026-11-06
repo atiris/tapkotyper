@@ -1,7 +1,7 @@
 import { audio } from '../audio/audio';
 import { useGraphics } from '../engine/graphics';
 import { resetFontFamily } from '../gfx/draw';
-import { askedLanguage, setLanguage, tList } from '../i18n/i18n';
+import { askedLanguage, hasTexts, setLanguage, tList } from '../i18n/i18n';
 import { toggleTheme, useTheme } from './theme';
 import { LAYOUTS, type Layout } from '../keyboard/layouts';
 import { fingered } from '../keyboard/fingers';
@@ -168,9 +168,9 @@ export function saveProfile(): void {
   if (app.profile && app.profile.id !== SUPER_ID) app.store.update(app.profile);
 }
 
-/** Switches the UI language; the words keep the player's word language. */
-export async function useLanguage(lang: LangRef): Promise<void> {
-  if (askedLanguage() !== lang || !tList('tips').length) await setLanguage(lang);
+/** Switches the UI language; the words keep the player's word language. `startPart`: see setLanguage. */
+export async function useLanguage(lang: LangRef, startPart = false): Promise<void> {
+  if (askedLanguage() !== lang || !hasTexts()) await setLanguage(lang, startPart);
 }
 
 /** Loads the word lists of a player's levels and custom exercise. */

@@ -4,23 +4,24 @@ import { installTheme } from './app/theme';
 import { installTestTyping } from './app/test-typing';
 import { loadManifest, preloadPlay } from './gfx/assets';
 import { GUEST_ID, SUPER_ID } from './storage/schema';
-import { detectLanguage } from './i18n/i18n';
+import { allTexts, detectLanguage, onLateTexts } from './i18n/i18n';
 import { appShortcuts, watchAutoFullscreen } from './ui/chrome';
 import { noteVisit } from './ui/install';
+import { firstVisit } from './ui/start-pictures';
 import { installTooltips } from './ui/tooltip';
 import { installing, watchUpdates } from './ui/update';
 import { startScreen } from './screens/start';
 
 /**
  * A screen whose code loads on first use, so the start page draws without the rest of the app;
- * until it is there the page shows the loading look. `before` runs while the code loads and
+ * until it and every text are there the page shows the loading look. `before` runs while the code loads and
  * says whether to go on (the parent question). A chunk that will not load (an update replaced
  * it) comes anew with the page.
  */
 const lazy = (load: () => Promise<Screen>, before?: (params: any) => Promise<boolean>): Screen => (root, params) => {
   const visit = screenVisit();
   root.append(Object.assign(document.createElement('div'), { className: 'boot', textContent: 'TapkoTyper' }));
-  const page = load().catch(() => null);
+  const page = Promise.all([load(), allTexts()]).then(([screen]) => screen, () => null);
   let stop: ReturnType<Screen>;
   void (async () => {
     if (before && !(await before(params))) return;
@@ -44,7 +45,7 @@ const askParent = (name: 'parent' | 'translate') => async (params: any): Promise
   if (params.granted) return true;
   const visit = screenVisit();
   app.asking = name;
-  const { parentAccess } = await import('./screens/parent-gate');
+  const [{ parentAccess }] = await Promise.all([import('./screens/parent-gate'), allTexts()]);
   const yes = await parentAccess();
   if (visit !== screenVisit()) return false;
   app.asking = null;
@@ -79,7 +80,10 @@ const PRELOAD_AFTER_MS = 1500;
 async function boot(): Promise<void> {
   installTheme(app.store);
   const lang = app.store.data.language ?? detectLanguage();
-  await Promise.all([loadManifest(), useLanguage(lang)]);
+  // A first visit's start page (no player, nothing offline yet) draws from the start texts; a text it lacks draws again later.
+  const firstStart = location.hash.length <= 2 && firstVisit() && !app.store.profiles.length;
+  onLateTexts(() => void openRoute(location.hash));
+  await Promise.all([loadManifest(), useLanguage(lang, firstStart)]);
   document.body.classList.remove('booting');
   installTooltips();
   installTestTyping();
@@ -87,8 +91,9 @@ async function boot(): Promise<void> {
   window.addEventListener('popstate', () => void openRoute(location.hash));
   watchAutoFullscreen();
   noteVisit();
-  // The map's and the level's code and pictures load while the child picks a player; the first screen's own go first.
+  // The rest of the texts and the map's and the level's code and pictures load while the child picks a player; the first screen's own go first.
   setTimeout(() => {
+    void allTexts();
     void loadMap().catch(() => {});
     void loadLevel().catch(() => {});
     void preloadPlay();

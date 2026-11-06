@@ -617,6 +617,8 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
 .gfx-simple .kb-guide { box-shadow: 0 -2px 0 var(--soft-shadow); }
 .gfx-simple .stage-wrap > .hold-line { box-shadow: 0 2px 0 rgba(0, 0, 0, 0.18); }
 .gfx-simple .kb-key.next { animation: none; }
+.gfx-simple .kb-key { transition: none; }
+.gfx-simple .progress-fill { transition: none; }
 .gfx-simple .kb-hands .hand-pose { transition: none; }
 
 /* Room above the cards for the lift and the focus ring, which the scrolling list would clip. */

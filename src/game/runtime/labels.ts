@@ -78,9 +78,9 @@ export class Labels {
     for (const l of [...this.pending].sort((a, b) => rank(b) - rank(a))) {
       // Phrases shrink to fit: in calm modes the stage around their place, moving targets half of it.
       const room = L.mode.phraseWords > 2 ? Math.min(L.vw * 0.9, 2 * Math.min(l.x, L.vw - l.x) - 20) : L.vw * 0.5;
-      const full = wordBox(g, l.tg.word, l.size, icon).w;
+      const full = wordBox(l.tg.word, l.size, icon).w;
       if (full > room) l.size = Math.max(LABEL_MIN_SIZE, Math.min(l.size, l.size * room / full));
-      const { w, h } = wordBox(g, l.tg.word, l.size, icon);
+      const { w, h } = wordBox(l.tg.word, l.size, icon);
       // A word near an edge moves inward: the whole word, and its countdown, is always in sight.
       const tail = l.clock === undefined ? 0 : CLOCK_GAP + 2 * (CLOCK_R + 2);
       l.x = Math.max(w / 2 + LABEL_EDGE, Math.min(L.vw - w / 2 - LABEL_EDGE - tail, l.x));

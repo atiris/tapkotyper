@@ -742,7 +742,7 @@ export class LullabyMode extends Mode {
   private drawPanel(g: G): void {
     const L = this.L;
     const maxW = this.pit.x - this.circleRx() - PANEL_CLEAR - PANEL_LEFT, bottom = TAPKO_FEET - TAPKO_H - PANEL_ABOVE;
-    const widest = (size: number) => Math.max(1, ...this.lines.map((l) => wordBox(g, l, size).w));
+    const widest = (size: number) => Math.max(1, ...this.lines.map((l) => wordBox(l, size).w));
     const size = Math.min(LINE_SIZE, (LINE_SIZE * (maxW - 60)) / widest(LINE_SIZE));
     const w = Math.min(maxW, widest(size) + 80), gap = size * 1.5, h = gap * VERSE + 30;
     const cx = PANEL_LEFT + w / 2, top = bottom - h;

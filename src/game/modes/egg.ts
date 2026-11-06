@@ -744,7 +744,7 @@ export class MudMode extends HeroMode {
 
   /** Dripping mud stuck behind the muddy word's lower right corner (drawn before the word, so the word stays on top). */
   private drawDrip(g: G, p: Place): void {
-    const { w, h } = wordBox(g, p.tg!.word, WORD_SIZE, this.L.style !== 'copy'), dh = h * DRIP_H;
+    const { w, h } = wordBox(p.tg!.word, WORD_SIZE, this.L.style !== 'copy'), dh = h * DRIP_H;
     drawSprite(g, MUD_DRIP, p.x - this.scroll + w / 2 - dh * (0.5 - DRIP_OUT), FEET - WORD_UP + h / 2 + dh * (0.5 - DRIP_OUT), dh, {}, dripFallback);
   }
 

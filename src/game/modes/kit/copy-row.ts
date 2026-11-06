@@ -110,7 +110,7 @@ export class CopyRow {
  * (its label), the ones before it in `ink`, the next ones faint; a slipped word (`slip` seconds) fades red to a trace. Returns its width.
  */
 export function drawRow(g: G, L: LevelRuntime, row: { word: string; slip: number }[], at: number, current: Target | null, cx: number, y: number, width: number, ink: string): number {
-  const widths = (size: number) => row.map((s) => wordBox(g, s.word, size).w);
+  const widths = (size: number) => row.map((s) => wordBox(s.word, size).w);
   const total = (size: number) => widths(size).reduce((a, b) => a + b, 0) + WORD_GAP * (row.length - 1);
   const size = total(WORD_SIZE) > width ? Math.max(24, (WORD_SIZE * width) / total(WORD_SIZE)) : WORD_SIZE;
   let x = cx - total(size) / 2;

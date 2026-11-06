@@ -152,9 +152,9 @@ export class FreeTypeMode extends HeroMode {
     const pop = Math.min(1, this.shown.age * 5);
     const fade = Math.min(1, (SHOW - this.shown.age) * 2);
     const room = this.L.vw * 0.9;
-    const full = wordBox(g, this.shown.text, SHOW_SIZE).w;
+    const full = wordBox(this.shown.text, SHOW_SIZE).w;
     const size = full > room ? SHOW_SIZE * room / full : SHOW_SIZE;
-    const w = wordBox(g, this.shown.text, size).w;
+    const w = wordBox(this.shown.text, size).w;
     const x = Math.max(w / 2 + 10, Math.min(this.L.vw - w / 2 - 10, this.heroX));
     g.save();
     g.globalAlpha = fade;

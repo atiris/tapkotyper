@@ -139,7 +139,7 @@ export class CopyLoopMode extends Mode {
     const end = this.endT === null ? [] : tn('story.copyLoopDone', this.typedWords).split('\n');
     g.save();
     g.font = `700 40px ${fontFamily()}`;
-    const need = this.current ? wordBox(g, this.current.word, SIZE).w : Math.max(0, ...end.map((l) => g.measureText(l).width));
+    const need = this.current ? wordBox(this.current.word, SIZE).w : Math.max(0, ...end.map((l) => g.measureText(l).width));
     g.restore();
     this.drawSign(g, cx);
     const h = copyPanel(g, this.L.vw, need, this.accent);

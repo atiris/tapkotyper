@@ -97,7 +97,7 @@ export class PlacementMode extends Mode {
     const end = this.endT === null ? null : t('level.placementDone');
     g.save();
     g.font = `700 40px ${fontFamily()}`;
-    const need = this.current ? wordBox(g, this.current.word, SIZE).w : g.measureText(end ?? '').width;
+    const need = this.current ? wordBox(this.current.word, SIZE).w : g.measureText(end ?? '').width;
     g.restore();
     copyPanel(g, this.L.vw, need, ACCENT);
     if (this.current) this.L.label(g, this.current, cx, PANEL_Y, SIZE);

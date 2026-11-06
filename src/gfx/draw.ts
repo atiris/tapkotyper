@@ -380,6 +380,7 @@ export function fontFamily(): string {
 
 export function resetFontFamily(): void {
   font = '';
+  measured.clear();
 }
 
 export interface WordStyle {
@@ -392,10 +393,29 @@ export interface WordStyle {
   icon?: { kind: 'speaker' } | { kind: 'ring'; left: number };
 }
 
-function letterWidths(g: G, word: string, size: number): number[] {
-  g.font = `600 ${size}px ${fontFamily()}`;
-  // A space is wide enough to see its dot and to be its own step.
-  return [...word].map((c) => (c === ' ' ? size * 0.5 : g.measureText(c).width + size * 0.08));
+/**
+ * A label's letters are measured once per word and size, on a canvas off the page: labels are laid
+ * out every frame, and every measure on the stage first brought the page's styles up to date.
+ */
+let measurer: CanvasRenderingContext2D | null = null;
+const measured = new Map<string, number[]>();
+/** Measured words kept; a longer list starts again. */
+const MEASURED_MAX = 500;
+// A font that finishes loading changes the widths.
+if (typeof document !== 'undefined') document.fonts?.addEventListener('loadingdone', () => measured.clear());
+
+function letterWidths(word: string, size: number): number[] {
+  const key = `${size} ${word}`;
+  let w = measured.get(key);
+  if (!w) {
+    measurer ??= document.createElement('canvas').getContext('2d')!;
+    measurer.font = `600 ${size}px ${fontFamily()}`;
+    // A space is wide enough to see its dot and to be its own step.
+    w = [...word].map((c) => (c === ' ' ? size * 0.5 : measurer!.measureText(c).width + size * 0.08));
+    if (measured.size >= MEASURED_MAX) measured.clear();
+    measured.set(key, w);
+  }
+  return w;
 }
 
 /**
@@ -408,10 +428,8 @@ export const WORD = { plate: 'rgba(255,253,246,0.94)', edge: 'rgba(90,61,43,0.55
 const ICON_W = 0.85;
 
 /** Width and height of a word label as `drawWord` draws it. */
-export function wordBox(g: G, word: string, size = 40, icon = false): { w: number; h: number } {
-  g.save();
-  const total = letterWidths(g, word, size).reduce((a, b) => a + b, 0);
-  g.restore();
+export function wordBox(word: string, size = 40, icon = false): { w: number; h: number } {
+  const total = letterWidths(word, size).reduce((a, b) => a + b, 0);
   return { w: total + size * (0.9 + (icon ? ICON_W : 0)), h: size * 1.45 };
 }
 
@@ -421,7 +439,8 @@ export function drawWord(g: G, word: string, typed: number, x: number, y: number
   const c = WORD;
   g.save();
   const chars = [...word];
-  const widths = letterWidths(g, word, size);
+  const widths = letterWidths(word, size);
+  g.font = `600 ${size}px ${fontFamily()}`;
   g.textBaseline = 'middle';
   g.textAlign = 'left';
   const total = widths.reduce((a, b) => a + b, 0);

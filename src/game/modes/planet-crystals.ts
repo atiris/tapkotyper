@@ -545,10 +545,10 @@ export class SpellMode extends Mode {
   }
 
   /** The page's words in lines that fit the panel: each word's center and line. */
-  private layout(g: G, width: number): { x: number; line: number; w: number }[] {
+  private layout(width: number): { x: number; line: number; w: number }[] {
     const out: { x: number; line: number; w: number }[] = [];
     let x = 0, line = 0;
-    for (const w of this.page.map((word) => wordBox(g, word, SPELL_SIZE).w)) {
+    for (const w of this.page.map((word) => wordBox(word, SPELL_SIZE).w)) {
       if (x > 0 && x + w > width) {
         x = 0;
         line++;
@@ -564,7 +564,7 @@ export class SpellMode extends Mode {
     if (this.take !== null) return;
     const p = this.panel();
     const width = p.x1 - p.x0 - 60;
-    const lay = this.layout(g, width);
+    const lay = this.layout(width);
     const lines = (lay[lay.length - 1]?.line ?? 0) + 1;
     const h = lines * SPELL_LINE + 70;
     g.save();

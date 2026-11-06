@@ -69,6 +69,9 @@
   the canvas's size (the stage keeps its pixel ratio from its last resize): after the frame's
   word labels moved, such a read makes the browser lay out the page once more. For the same reason
   Tapko's bubble is measured once when it shows a line (and again after a resize), not every frame.
+  A word label's letters are measured once per word and size, on a canvas off the page: a label is
+  laid out every frame, and measuring on the stage made the browser bring the page's styles up to
+  date each time.
 - **Small page changes stay small:** what changes during play (the next key, its fading as the
   key is mastered) changes only the elements it concerns, never a value that every
   key of the keyboard inherits: such a change made the browser recompute the whole keyboard

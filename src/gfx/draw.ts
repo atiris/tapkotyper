@@ -224,7 +224,7 @@ function tiled(g: G, img: HTMLImageElement, vw: number, offset: number, dy = 0):
   // to see (device pixel ratio under 2), else slow layers move in visible jumps.
   const still = lastOffset.get(img) === offset;
   lastOffset.set(img, offset);
-  const snap = still || graphics.simple || g.canvas.width >= 2 * g.canvas.clientWidth;
+  const snap = still || graphics.simple || window.devicePixelRatio >= 2;
   const { xs, w: copyW } = bandCopies(m.a * from + m.e, m.a * vw + m.e, tile.width, snap);
   const y = Math.round(m.d * (VH + dy) + m.f) - tile.height;
   g.save();

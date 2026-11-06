@@ -56,6 +56,8 @@ export class Stage {
   /** Virtual width. */
   vw = 1280;
   scale = 1;
+  /** Canvas pixels per screen pixel; kept from the resize, as reading the canvas's size every frame forces a layout. */
+  private dpr = 1;
   /** The canvas was cleared by a resize and needs a redraw even when nothing moves. */
   dirty = true;
   private observer: ResizeObserver;
@@ -72,7 +74,7 @@ export class Stage {
 
   resize(): void {
     const r = this.canvas.parentElement!.getBoundingClientRect();
-    const dpr = graphics.simple ? SIMPLE_RES : Math.min(2, window.devicePixelRatio || 1);
+    const dpr = (this.dpr = graphics.simple ? SIMPLE_RES : Math.min(2, window.devicePixelRatio || 1));
     const w = Math.max(1, Math.round(r.width));
     const h = Math.max(1, Math.round(r.height));
     this.scale = h / VH;
@@ -101,8 +103,7 @@ export class Stage {
   }
 
   private clear(g: CanvasRenderingContext2D): CanvasRenderingContext2D {
-    const dpr = g.canvas.width / Math.max(1, g.canvas.clientWidth || 1);
-    g.setTransform(this.scale * dpr, 0, 0, this.scale * dpr, 0, 0);
+    g.setTransform(this.scale * this.dpr, 0, 0, this.scale * this.dpr, 0, 0);
     g.clearRect(0, 0, this.vw, VH);
     return g;
   }

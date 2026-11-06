@@ -65,7 +65,9 @@
   blurred glows are drawn once per size and then copied; a scene that does not move (cards
   before play, the pause) is not drawn again, and with Full graphics a scene under a blurring
   card (the end card) stands still, Tapko on the card too: any move there would blur the stage
-  again every frame. Peeking under the end card shows it live again.
+  again every frame. Peeking under the end card shows it live again. Drawing a frame never reads
+  the canvas's size (the stage keeps its pixel ratio from its last resize): after the frame's
+  word labels moved, such a read makes the browser lay out the page once more.
 - **Simple graphics:** a teacher can set Graphics to Automatic (default), Full or Simple in the
   settings. Simple draws the scene at three quarters of the screen's resolution (scaled up; the
   words are not on the canvas and stay sharp), fewer particles, no blurred

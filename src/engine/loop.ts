@@ -1,4 +1,4 @@
-import { SIMPLE_RES, graphics } from './graphics';
+import { LOW_RES, SIMPLE_RES, graphics } from './graphics';
 
 /**
  * Update and render once per animation frame with the real frame time, split into equal
@@ -74,7 +74,7 @@ export class Stage {
 
   resize(): void {
     const r = this.canvas.parentElement!.getBoundingClientRect();
-    const dpr = (this.dpr = graphics.simple ? SIMPLE_RES : Math.min(2, window.devicePixelRatio || 1));
+    const dpr = (this.dpr = graphics.simple ? (graphics.lowRes ? LOW_RES : SIMPLE_RES) : Math.min(2, window.devicePixelRatio || 1));
     const w = Math.max(1, Math.round(r.width));
     const h = Math.max(1, Math.round(r.height));
     this.scale = h / VH;

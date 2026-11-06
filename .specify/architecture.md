@@ -77,8 +77,8 @@
   key of the keyboard inherits: such a change made the browser recompute the whole keyboard
   (about two hundred elements) on every new key.
 - **Simple graphics:** a teacher can set Graphics to Automatic (default), Full or Simple in the
-  settings. Simple draws the scene at three quarters of the screen's resolution (scaled up; the
-  words are not on the canvas and stay sharp), fewer particles, no blurred
+  settings. Simple draws the scene at three quarters of the screen's resolution (scaled up; Tapko,
+  the keyboard and the cards are page elements and stay sharp), fewer particles, no blurred
   shadows and no blur behind cards, moving bands on whole pixels and the start page's sky
   without its butterflies and fireflies. Its background bands stand still, except the near band
   of a scene Tapko travels through (the planet's swamp and shore, the crossroads, the valley's
@@ -88,8 +88,12 @@
   What lies over the moving scene (Tapko, his bubble, the keyboard's top edge) is painted again with
   every frame on a weak graphics chip, so there it has hard edges instead of soft shadows; the next
   key does not pulse and the hands change pose at once, as both would restyle the page every frame.
-  For the same reason the keys light up and the progress bar grows at once, without easing in. Automatic switches to it by itself when the first seconds of play are slow
-  (the slowest 5 % of frames over 25 ms) and remembers that for the device. It never changes
+  For the same reason the keys light up and the progress bar grows at once, without easing in.
+  Automatic switches to it by itself when the first seconds of play are slow (the slowest 5 % of
+  frames over 25 ms) and remembers that for the device. When the next seconds are still that slow,
+  it takes a second step: the scene at half the screen's resolution. The scene and the word labels
+  on it get softer but stay clear, and a softer picture is better than a stuttering one; a teacher
+  who picks Simple keeps its three quarters. It never changes
   the game's pace, word timing or results: a slow computer gets the same lesson.
 - **A slow frame does not slow the next one:** the game takes at most four update steps per
   frame (longer steps instead of more), so the game clock stays right without piling work up.

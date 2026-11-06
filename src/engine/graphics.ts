@@ -1,6 +1,6 @@
 import type { GraphicsChoice } from '../storage/schema';
 
-/** This device was measured too slow for the full drawing; kept across visits and players. */
+/** This device was measured too slow for the full drawing ('1'), then for the simple one too ('2'); kept across visits and players. */
 const SLOW_KEY = 'tapkotyper:slow-device';
 
 /** Seconds of play before the frames count (pictures still decode at the start), and the seconds of frames that decide. */
@@ -10,33 +10,42 @@ const WATCH_S = 4;
 export const SLOW_P95_MS = 25;
 
 /**
- * The simple drawing for slow computers: the canvas at `SIMPLE_RES` canvas pixels per screen pixel, fewer particles,
+ * The simple drawing for slow computers: the canvas at `SIMPLE_RES` canvas pixels per screen pixel (`LOW_RES` with `lowRes`), fewer particles,
  * no blurred shadows or blur behind cards, background bands on whole pixels, the start page's sky without its small life.
  * It changes only how the game is drawn, never its pace, word timing or results.
  */
-export const graphics = { simple: false };
+export const graphics = { simple: false, lowRes: false };
 
-/** Canvas pixels per screen pixel in the simple drawing: a full-screen canvas drawn without a graphics card costs by its pixels; word labels are DOM and stay sharp. */
+/** Canvas pixels per screen pixel in the simple drawing: a full-screen canvas drawn without a graphics card costs by its pixels. */
 export const SIMPLE_RES = 0.75;
+/**
+ * The second step on a device still slow with the simple drawing: half the pixels again. The scene and
+ * the word labels on it get softer but stay clear; Tapko, the keyboard and the cards are page elements and stay sharp.
+ */
+export const LOW_RES = 0.5;
 
-function measuredSlow(): boolean {
+/** How slow this device was measured: 0 not, 1 for the full drawing, 2 for the simple one too. */
+function measuredSlow(): number {
   try {
-    return localStorage.getItem(SLOW_KEY) === '1';
+    return Number(localStorage.getItem(SLOW_KEY)) || 0;
   } catch {
-    return false;
+    return 0;
   }
 }
 
 /** Applies the player's choice (the start page has none: automatic). */
 export function useGraphics(choice: GraphicsChoice): void {
-  graphics.simple = choice === 'simple' || (choice === 'auto' && measuredSlow());
+  const slow = choice === 'auto' ? measuredSlow() : 0;
+  graphics.simple = choice === 'simple' || slow > 0;
+  graphics.lowRes = slow > 1;
   document.body.classList.toggle('gfx-simple', graphics.simple);
 }
 
-/** Remembers that this device is slow and switches to the simple drawing. */
+/** Remembers that this device is slow and takes the next step: the simple drawing, then its lower resolution. */
 export function markSlowDevice(): void {
+  if (graphics.simple) graphics.lowRes = true;
   try {
-    localStorage.setItem(SLOW_KEY, '1');
+    localStorage.setItem(SLOW_KEY, graphics.lowRes ? '2' : '1');
   } catch {
     // Without storage the next visit measures again.
   }

@@ -3,13 +3,14 @@
 // times, long tasks and JS heap; a Chrome trace of each scene goes to test-results/perf/.
 //
 //   node scripts/perf.mjs [--machine normal|slow|big|all] [--only meadow-1,map] [--seconds 30]
-//                         [--no-build] [--no-trace] [--load] [--leak] [--budget] [--low] [--results]
+//                         [--no-build] [--no-trace] [--load] [--leak] [--budget] [--low | --lowres] [--results]
 //
 // Machines: normal = 1366 x 768 at DPR 1; slow = the same with CPU throttling x 6; big = 1920 x 1080
 // at DPR 2 (the largest canvas the stage makes). `--load` measures a cold first load and a level
 // open on "Fast 3G"; `--leak` opens and leaves ten levels and compares the heap; `--budget` fails
 // (exit code 1) when a story level is over the budget of .specify/architecture.md (normal, and slow
-// with `--low`); `--low` sets the simple graphics, else the full ones; `--results` adds a row of
+// with `--low`); `--low` sets the simple graphics, `--lowres` the simple ones at the lower resolution of a device
+// still slow with them, else the full ones; `--results` adds a row of
 // the frames under the results card of a level that ended within the time. Needs the tester profile
 // `.e2e/tester-profile.json` (git-ignored).
 import { chromium } from '@playwright/test';
@@ -103,12 +104,17 @@ const SAMPLER = () => {
   } catch { /* no long task timing */ }
 };
 
+/** The graphics of a run: '' full, 'low' simple, 'lowres' simple at the lower resolution. */
+const GFX = flag('lowres') ? 'lowres' : flag('low') ? 'low' : '';
+
 async function newPage(browser, m, low) {
   const context = await browser.newContext({ viewport: m.viewport, deviceScaleFactor: m.dpr, serviceWorkers: 'block' });
   await context.addInitScript(SAMPLER);
   // The tester profile, opened directly, with the graphics pinned: the automatic choice would switch during a run.
   const profile = structuredClone(tester);
-  profile.settings.graphics = low ? 'simple' : 'full';
+  profile.settings.graphics = low === 'lowres' ? 'auto' : low ? 'simple' : 'full';
+  // The lower resolution is the automatic choice's second step, as a device measured slow twice keeps it.
+  if (low === 'lowres') await context.addInitScript(() => localStorage.setItem('tapkotyper:slow-device', '2'));
   await context.addInitScript((p) => {
     const raw = JSON.parse(localStorage.getItem('tapkotyper:v1') ?? 'null') ?? { profiles: [] };
     raw.profiles = [...(raw.profiles ?? []).filter((x) => x.id !== p.id), p];
@@ -192,7 +198,7 @@ async function measure(browser, machine, sc, low) {
   }
   const heapStart = await heap(cdp);
   const trace = !flag('no-trace');
-  if (trace) await browser.startTracing(page, { path: `${OUT}/${machine}${low ? '-low' : ''}-${sc.name}.json`, screenshots: false });
+  if (trace) await browser.startTracing(page, { path: `${OUT}/${machine}${low ? `-${low}` : ''}-${sc.name}.json`, screenshots: false });
   await page.evaluate(() => { window.__perf.frames = []; window.__perf.long = 0; window.__perf.longMs = 0; window.__perf.on = true; });
   const b0 = await busy(cdp);
   const t0 = Date.now();
@@ -222,7 +228,7 @@ async function measure(browser, machine, sc, low) {
   }
   const heapEnd = await heap(cdp);
   await context.close();
-  return rows.map((r) => ({ ...r, machine: machine + (low ? '-low' : ''), heapStart, heapEnd }));
+  return rows.map((r) => ({ ...r, machine: machine + (low ? `-${low}` : ''), heapStart, heapEnd }));
 }
 
 /** A table row of sampled frames `p` over `wall` seconds, with the main thread's busy times `b0` to `b1`. */
@@ -327,7 +333,7 @@ try {
   if (!flag('load') && !flag('leak') || only.length) {
     for (const machine of machines) {
       for (const sc of scenes) {
-        for (const r of await measure(browser, machine, sc, flag('low'))) {
+        for (const r of await measure(browser, machine, sc, GFX)) {
           console.log(`${r.machine} ${r.scene}: p50 ${r.p50} p95 ${r.p95} p99 ${r.p99} >33 ${r.over33} long ${r.long} busy ${r.busy}% heap ${r.heapStart}/${r.heapEnd}`);
           rows.push(r);
           const budget = BUDGET[r.machine];

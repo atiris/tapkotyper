@@ -1,6 +1,6 @@
 // Turns the raw Gemini images and music in assets-src/ into web files in
 // public/assets/ and writes public/assets/manifest.json. Run with `npm run assets`.
-import { readdir, mkdir, writeFile, rm } from 'node:fs/promises';
+import { readdir, readFile, mkdir, writeFile, rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { join, parse } from 'node:path';
 import { execFile } from 'node:child_process';
@@ -43,6 +43,16 @@ const MEADOW_SEAM = 0.1;
 // The night meadow is the day one with its flowers closed, drawn in day colors: scaled to the day
 // picture's size (so its plants lie on the day ones) and recolored to the night palette.
 const MEADOW_CLOSED = 'ui-start-meadow-closed';
+// The start page's pictures again as `<name>-small`, at twice their largest drawn size over phone to
+// 1440p windows (src/ui/start-pictures.ts): the first screen on a phone line loads only these.
+const START_SMALL = {
+  'ui-start-sun': 256, 'ui-start-moon': 256, 'ui-start-cloud-1': 320, 'ui-start-cloud-2': 320, 'ui-start-star': 64,
+  'obj-butterfly': 160, 'obj-butterfly-2': 160, 'obj-butterfly-3': 160, 'ui-icon-hr': 300, 'ui-icon-hr-darkbg': 300,
+  'ui-mentor': 240, 'ui-missing-keyboard': 240, 'ui-new-task': 240,
+};
+// The meadows keep their size for later visits; a first visit gets a coarser copy, `<name>-low`, at
+// this share of the height (still above the drawn size on most phones) and quality.
+const MEADOW_LOW = { scale: 0.75, quality: 60 };
 
 // Outfit sets: item ids, slots and a pixel classifier (normalized x, y in 0..1).
 // The first rule that matches wins; the last rule is the fallback.
@@ -337,6 +347,23 @@ async function processOutfit(set, data, w, h, manifest) {
   }
 }
 
+/** The start page's small copies and the meadows' first-visit ones, made from the finished pictures. */
+async function writeStartCopies(manifest) {
+  const write = async (img, name) => {
+    const info = await img.toFile(join(OUT, `${name}.webp`));
+    manifest.images[name] = { w: info.width, h: info.height };
+    console.log('ok', name);
+  };
+  for (const [name, max] of Object.entries(START_SMALL)) {
+    await write(webp(sharp(join(OUT, `${name}.webp`)).resize(max, max, { fit: 'inside', withoutEnlargement: true })), `${name}-small`);
+  }
+  for (const name of [MEADOW, `${MEADOW}-night`]) {
+    const img = sharp(join(OUT, `${name}.webp`));
+    const { height } = await img.metadata();
+    await write(img.resize({ height: Math.round(height * MEADOW_LOW.scale) }).webp({ quality: MEADOW_LOW.quality, alphaQuality: MEADOW_LOW.quality, effort: 6 }), `${name}-low`);
+  }
+}
+
 async function processMusic(name, file, manifest) {
   const out = join(OUT, `${name}.mp3`);
   await run(ffmpeg, ['-y', '-loglevel', 'error', '-i', file, '-ac', '1', '-ar', '44100', '-b:a', '64k', '-af', 'loudnorm=I=-20:TP=-2:LRA=11', '-map_metadata', '-1', out]);
@@ -366,7 +393,10 @@ async function main() {
     console.log('ok', name);
   }
   if (!only || only.startsWith('ui-cert')) await processCertFrame(manifest);
-  if (!only) await writeFile(join(OUT, 'manifest.json'), JSON.stringify(manifest, null, 1) + '\n');
+  // The start copies follow every run; a run for a prefix adds them to the kept manifest.
+  const kept = only ? JSON.parse(await readFile(join(OUT, 'manifest.json'), 'utf8')) : manifest;
+  await writeStartCopies(kept);
+  await writeFile(join(OUT, 'manifest.json'), JSON.stringify(kept, null, 1) + '\n');
 }
 
 await main();

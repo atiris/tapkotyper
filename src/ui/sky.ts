@@ -2,7 +2,7 @@ import { reduceMotion } from '../app/app';
 import { type Look, onThemeChange, shownLook } from '../app/theme';
 import { imageUrl } from '../gfx/assets';
 import { h } from './dom';
-import { MEADOW } from './meadow';
+import { meadowPicture, small } from './start-pictures';
 
 /** Length of the day and night change, and the share of it the setting light takes. */
 const CHANGE_MS = 2500;
@@ -37,7 +37,7 @@ export function skyScene(screen: HTMLElement, under: () => (Element | null)[], b
   const loadLook = (look: Look) => { for (const show of waiting[look].splice(0)) show(); };
   /** A picture of `look`; with `after`, it starts loading only once that has settled. */
   const image = (look: Look, name: string, after?: Promise<void>): HTMLImageElement | null => {
-    const src = imageUrl(name);
+    const src = imageUrl(small(name));
     if (!src) return null;
     const img = h('img', { alt: '' });
     const set = () => { img.src = src; };
@@ -58,9 +58,9 @@ export function skyScene(screen: HTMLElement, under: () => (Element | null)[], b
   ];
   const band = h('div', { class: 'sky-band' }, ...pieces.map((p) => p.el));
   /** A meadow strip; `ready` settles when its picture has come (or failed). */
-  const meadow = (cls: string, look: Look, name: string) => {
+  const meadow = (cls: string, look: Look) => {
     const el = h('div', { class: `meadow ${cls}` });
-    const src = imageUrl(name);
+    const src = imageUrl(meadowPicture(look));
     const ready = new Promise<void>((resolve) => {
       if (!src) return resolve();
       picture(look, () => {
@@ -74,8 +74,8 @@ export function skyScene(screen: HTMLElement, under: () => (Element | null)[], b
     });
     return { el, ready };
   };
-  const night = meadow('meadow-night', 'dark', MEADOW.dark);
-  const day = meadow('meadow-day', 'light', MEADOW.light);
+  const night = meadow('meadow-night', 'dark');
+  const day = meadow('meadow-day', 'light');
   // One of each butterfly by day, up among the flower heads; each wanders off now and then, turns
   // round and comes back (`far` px in `trip` s). Fireflies are glowing dots (the sprite's edge shows at this size)
   // and stay in the meadow's lower part, where the content never reaches (its bottom 60 %).

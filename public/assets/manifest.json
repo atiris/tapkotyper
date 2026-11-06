@@ -1975,6 +1975,66 @@
   "ui-cert-band-left": {
    "w": 142,
    "h": 8
+  },
+  "ui-start-sun-small": {
+   "w": 251,
+   "h": 256
+  },
+  "ui-start-moon-small": {
+   "w": 235,
+   "h": 256
+  },
+  "ui-start-cloud-1-small": {
+   "w": 320,
+   "h": 164
+  },
+  "ui-start-cloud-2-small": {
+   "w": 320,
+   "h": 164
+  },
+  "ui-start-star-small": {
+   "w": 64,
+   "h": 64
+  },
+  "obj-butterfly-small": {
+   "w": 145,
+   "h": 160
+  },
+  "obj-butterfly-2-small": {
+   "w": 159,
+   "h": 160
+  },
+  "obj-butterfly-3-small": {
+   "w": 160,
+   "h": 153
+  },
+  "ui-icon-hr-small": {
+   "w": 300,
+   "h": 264
+  },
+  "ui-icon-hr-darkbg-small": {
+   "w": 300,
+   "h": 264
+  },
+  "ui-mentor-small": {
+   "w": 201,
+   "h": 240
+  },
+  "ui-missing-keyboard-small": {
+   "w": 201,
+   "h": 240
+  },
+  "ui-new-task-small": {
+   "w": 192,
+   "h": 240
+  },
+  "ui-start-meadow-low": {
+   "w": 692,
+   "h": 294
+  },
+  "ui-start-meadow-night-low": {
+   "w": 692,
+   "h": 294
   }
  },
  "accessories": [

@@ -7,7 +7,7 @@ import { type Plugin, defineConfig } from 'vite';
 import { aboutPage, aboutPath, aboutRedirect } from './src/app/about-page';
 import { CLOSE, LANGS } from './src/i18n/i18n';
 import { STORE_KEY } from './src/storage/store';
-import { MEADOW } from './src/ui/meadow';
+import { LOW, MEADOW } from './src/ui/start-pictures';
 import { handPoser } from './tools/hand-poser/server';
 
 function publicFiles(dir: string): string[] {
@@ -32,8 +32,9 @@ function serviceWorker(): Plugin {
       const files: Record<string, string> = { './': short(BUILD) };
       // The about pages are for visitors and crawlers; offline, a visit to them opens the game instead.
       for (const [name, out] of Object.entries(bundle)) if (!name.startsWith('about/')) files[name] = short(out.type === 'chunk' ? out.code : out.source);
-      // Music is cached as it plays; robots.txt, the sitemap and the share picture are for crawlers, never needed offline.
-      const offline = (f: string) => !f.endsWith('.mp3') && !f.endsWith('.txt') && f !== 'sitemap.xml' && f !== 'og.png';
+      // Music is cached as it plays; robots.txt, the sitemap and the share picture are for crawlers, never needed offline;
+      // the meadow's first-visit copy is never shown once the files are offline.
+      const offline = (f: string) => !f.endsWith('.mp3') && !f.endsWith('.txt') && f !== 'sitemap.xml' && f !== 'og.png' && !f.endsWith(`${LOW}.webp`);
       for (const f of publicFiles('public').filter(offline)) files[f] = short(readFileSync(join('public', f)));
       const version = short(JSON.stringify(files));
       const source = readFileSync('scripts/sw-template.js', 'utf8')
@@ -81,7 +82,8 @@ function firstFetches(): Plugin {
   if (location.hash.length <= 2) {
     var meadow = document.createElement('link');
     meadow.rel = 'preload'; meadow.as = 'image';
-    meadow.href = '/assets/' + ${JSON.stringify(MEADOW)}[document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light'] + '.webp';
+    var first = !(navigator.serviceWorker && navigator.serviceWorker.controller);
+    meadow.href = '/assets/' + ${JSON.stringify(MEADOW)}[document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light'] + (first ? '${LOW}' : '') + '.webp';
     document.head.appendChild(meadow);
   }
   var langs = ${JSON.stringify(LANGS)}, close = ${JSON.stringify(CLOSE)}, lang;

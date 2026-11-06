@@ -1,5 +1,6 @@
 /** Tiny DOM helpers. */
 import { imageUrl } from '../gfx/assets';
+import { small } from './start-pictures';
 import { t } from '../i18n/i18n';
 import { focusDefault, panelHotkeys } from './hotkeys';
 
@@ -132,9 +133,9 @@ const TASK_ART = '<svg viewBox="0 0 120 64" aria-hidden="true"><rect x="4" y="30
   '<rect x="30" y="16" width="60" height="14" rx="4" fill="#fff6e6" stroke="#3b2a3f" stroke-width="3"/><g fill="#3b2a3f">' +
   [36, 46, 56, 66, 76].map((x) => `<rect x="${x}" y="20" width="7" height="6" rx="1.5"/>`).join('') + '</g></svg>';
 
-/** A big button's picture when there is one, else the drawn one. */
+/** A big button's picture (the start page's small copy) when there is one, else the drawn one. */
 function bigArt(name: string, drawn: string): HTMLElement {
-  const src = imageUrl(name);
+  const src = imageUrl(small(name));
   return src ? h('span', { class: 'teacher-art' }, h('img', { src, alt: '' })) : h('span', { class: 'teacher-art', html: drawn });
 }
 

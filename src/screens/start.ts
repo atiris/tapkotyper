@@ -2,6 +2,7 @@ import { app, applyProfileLook, go, openRoute, saveProfile, selectProfile, useLa
 import { keyboardGated, onKeyboard, takeWaiting } from '../app/keyboard-gate';
 import { audio } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
+import { small } from '../ui/start-pictures';
 import { baseLanguage, language, t, tList } from '../i18n/i18n';
 import { addTask } from '../share/task';
 import type { Lang, Profile, TaskSpec } from '../storage/schema';
@@ -167,7 +168,7 @@ export function startScreen(root: HTMLElement, { task }: { task?: TaskOffer } = 
 
 /** The logo face: its picture for a light page and the one drawn for a dark page (the CSS shows one), with `tip` on hover. */
 function logoFace(cls: string, tip?: string): HTMLElement | null {
-  const light = imageUrl('ui-icon-hr'), dark = imageUrl('ui-icon-hr-darkbg');
+  const light = imageUrl(small('ui-icon-hr')), dark = imageUrl(small('ui-icon-hr-darkbg'));
   if (!light) return null;
   return h('span', { class: `logo-face ${cls}`, tip: tip ?? null }, h('img', { class: 'on-light', src: light, alt: '' }), h('img', { class: 'on-dark', src: dark ?? light, alt: '' }));
 }

@@ -1312,7 +1312,8 @@ body:not(.gfx-simple) .level-screen.covered :is(.stage-wrap *, .overlay .tapko-s
 .badge-shelf h4 { margin: 0.2rem 0; font-size: 0.95rem; color: var(--ink-soft); }
 .badge-row { display: flex; flex-wrap: wrap; gap: 0.35rem; }
 .badge-row + .badge-row { margin-top: 0.35rem; }
-.badge-none { margin: 0; font-size: 0.85rem; font-style: italic; color: var(--ink-soft); }
+.badge-none { margin: 0; display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; font-style: italic; color: var(--ink-soft); }
+.badge-none img { width: 2.4rem; height: 2.4rem; object-fit: contain; opacity: 0.7; }
 .badge-shelf .aim-finds { justify-content: flex-start; margin: 0; }
 .legend { display: flex; gap: 0.6rem; flex-wrap: wrap; font-size: 0.9rem; }
 .lg { padding: 0.2em 0.6em; border-radius: 10px; font-weight: 600; }

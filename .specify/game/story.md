@@ -465,7 +465,7 @@ story stays playable in any browser ([mechanics](mechanics.md)).
   earns or improves one. The badge sits in the corner of its world card on the map, and
   the progress view has a badge shelf of up to three rows without headings, gold, then silver,
   then bronze; a tier no world holds has no row, so the shelf stays short. The stars a tier needs
-  live only in the badge's tooltip. With no badge at all the shelf says "none yet"; worlds
+  live only in the badge's tooltip. With no badge at all the shelf shows a grey empty badge (a shield in a ring) and says "none yet"; worlds
   without a badge are not listed (the chest counts them all).
 - A badge's tooltip shows the way to the next tier: bronze names what silver needs, silver
   what gold needs, each with the stars the child has in that world; a world without a badge

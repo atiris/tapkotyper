@@ -2476,6 +2476,9 @@
           "Presne tam, kde má byť!",
           "Šíp v desiatke!",
           "Pravý lukostrelec!"
+        ],
+        "expect": [
+          "Konečne dôstojný predmet!"
         ]
       },
       "duck": {
@@ -3042,7 +3045,6 @@
         "hit": [
           "Som celý mokrý!",
           "Osvieženie!",
-          "Kto zabudol dáždnik?",
           "Už sa nemusím kúpať."
         ]
       },
@@ -3096,9 +3098,10 @@
         ],
         "hit": [
           "Toto ma nabilo!",
-          "Mám plnú energiu!",
+          "Energia na 100 percent!",
           "Skrat!",
-          "Ja nie som na baterky!"
+          "Ja nie som na baterky!",
+          "Som pozitívne nabitý!"
         ]
       },
       "magnet": {
@@ -3377,11 +3380,11 @@
         ]
       },
       "flower": {
-        "name": "Kvietok",
+        "name": "Ruža",
         "launch": [
-          "Kvietok pre teba!",
-          "Hádžem kvietok!",
-          "Leť, kvietok!",
+          "Ruža pre teba!",
+          "Hádžem ružu!",
+          "Leť, ruža!",
           "K tvojmu sviatku."
         ],
         "sound": [
@@ -3481,6 +3484,75 @@
           "Bol medzi nami magnetizmus!",
           "Už sa nestratím!",
           "Konečne trafím domov!"
+        ]
+      },
+      "poppy": {
+        "name": "Zrnko maku",
+        "launch": [
+          "Makové zrniečko, leť!",
+          "Hádžem zrnko maku!",
+          "Zrnko maku, čo ostalo z makovníka!"
+        ],
+        "sound": [
+          "???"
+        ],
+        "hit": [
+          "Myslím, že si trafil!",
+          "Ups, spadlo mi na zem.",
+          "Bol to zásah?",
+          "Nevidím to jasne."
+        ],
+        "expect": [
+          "Stále nič nevidím.",
+          "Podajte mi mikroskop!",
+          "Určite zbadáme, či trafíš?"
+        ]
+      },
+      "map": {
+        "name": "Mapa pokladu",
+        "launch": [
+          "Mapa pokladu!",
+          "Nájdi poklad podľa mapy!",
+          "Mapa od piráta!",
+          "Prastará mapa."
+        ],
+        "sound": [
+          "Arrrgh!"
+        ],
+        "hit": [
+          "Začína v Karibiku.",
+          "Truhlicu už niekto vykopal.",
+          "Končí na opustenom ostrove.",
+          "Toto si odložím."
+        ]
+      },
+      "snowflake": {
+        "name": "Snehová vločka",
+        "launch": [
+          "Vločka, leť!",
+          "Snehová vločka, vpred!",
+          "Začína snežiť!"
+        ],
+        "sound": [
+          "Pff."
+        ],
+        "hit": [
+          "Bŕŕŕ, studená!",
+          "Štípe ma na nose!",
+          "Zasnežilo ma!"
+        ],
+        "melt": [
+          "Globálne oteplenie!",
+          "Náhla zmena skupenstva!"
+        ],
+        "dropSound": [
+          "Ťap!"
+        ],
+        "dropHit": [
+          "A kde je vločka?",
+          "Topím sa!",
+          "Kolobeh vody v prírode!",
+          "Ešte som smädný."
         ]
       }
     }

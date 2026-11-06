@@ -121,6 +121,9 @@ interface Flight {
   egg: EggEnd | null;
   /** Seconds since the egg hatched in flight (0 = not hatched). */
   hatched: number;
+  /** The snowflake melts at ring 2 (decided at the throw), and has melted into a water drop. */
+  melt: boolean;
+  melted: boolean;
   /** When the target says something before the hit: a second after the throw call, or at ring 1 or 2. */
   expect: 'call' | 'ring1' | 'ring2' | null;
   /** A streak line the target says once its hit line is gone. */
@@ -188,10 +191,11 @@ const CHICK = 'obj-aim-chick';
 const CRACKED = 'obj-aim-egg-cracked';
 const FRIED = 'obj-aim-fried-egg';
 const BULB_LIT = 'obj-aim-bulb-lit';
+const DROP = 'obj-aim-drop';
 
 const BURST_SHAPE: Record<Burst, ParticleShape> = {
   sparkle: 'sparkle', ketchup: 'dot', smoke: 'puff', stink: 'puff', dust: 'puff', sparks: 'sparkle', feathers: 'leaf',
-  splash: 'dot', splinters: 'leaf', steam: 'puff', rain: 'dot', magic: 'sparkle',
+  splash: 'dot', splinters: 'leaf', steam: 'puff', rain: 'dot', magic: 'sparkle', snow: 'sparkle',
 };
 
 /** The e2e and dev builds may pick the things (`?aimThing=<id>,<id>`, or `all` for every one in turn). */
@@ -272,7 +276,7 @@ export class AimMode extends HeroMode {
     this.worldSlot = L.rng.chance(0.5) ? 1 : 2;
     this.worldAt = L.rng.int(...STAY_WORLD_EVERY);
     const things = new Set([...storyPool(L.def.world), worldThing(L.def.world), ...this.rare(), ...this.forcedList()]);
-    this.pictures = [...[...things].flatMap((th) => th?.pics ?? []), 'obj-aim-target', 'obj-aim-ring', CHICK, CRACKED, FRIED, BULB_LIT];
+    this.pictures = [...[...things].flatMap((th) => th?.pics ?? []), 'obj-aim-target', 'obj-aim-ring', CHICK, CRACKED, FRIED, BULB_LIT, DROP];
   }
 
   /** What the range is for; with something in the collection, also how to swap the thing in the paw for one of it. */
@@ -387,6 +391,7 @@ export class AimMode extends HeroMode {
     f.th = th;
     f.pic = this.L.rng.pick(pics.length ? pics : th.pics);
     f.egg = th.effect === 'egg' ? (roll < 0.5 ? 'splat' : roll < 0.75 ? 'hatch' : 'flight') : null;
+    f.melt = roll < (th.melt ?? 0);
   }
 
   /**
@@ -418,7 +423,7 @@ export class AimMode extends HeroMode {
     const f: Flight = {
       th, pic: '', launch: null, stops, s: 0, speed: 0, next: 0, errors: 0, slips: 0, sink: 0, from: 0, drift: 0, lift: 0,
       phase: 'ready', counts: false, letters: 0, drop: 0, vy: 0, landed: false, after: 0, spin: 0,
-      egg: null, hatched: 0, expect: null, then: null, flown: 0, smoke: 0,
+      egg: null, hatched: 0, melt: false, melted: false, expect: null, then: null, flown: 0, smoke: 0,
     };
     this.dress(f, th);
     this.flight = f;
@@ -482,6 +487,7 @@ export class AimMode extends HeroMode {
     stop.passed = 0.0001;
     if ((f.next === 0 && f.expect === 'ring1') || (f.next === 1 && f.expect === 'ring2')) this.expectLine(f);
     if (f.next === 1 && f.egg === 'flight') this.hatchInFlight(f);
+    if (f.next === 1 && f.melt) this.meltInFlight(f);
     f.next++;
     this.arm(f);
   }
@@ -522,6 +528,16 @@ export class AimMode extends HeroMode {
     const p = this.point(f.s);
     this.L.particles.emit(p.x, p.y + f.sink + f.lift, 8, 'dot', ['#fff3dc', '#ebd9b8'], 90, 6);
     this.tapkoSays(this.line('aim.things.egg.hatchedCall'));
+  }
+
+  /** The snowflake melts into a water drop at ring 2; the target wonders aloud. */
+  private meltInFlight(f: Flight): void {
+    f.melted = true;
+    this.L.sfx('plop');
+    const p = this.point(f.s);
+    this.L.particles.emit(p.x, p.y + f.sink + f.lift, 8, 'dot', BURST_COLORS.snow, 90, 6);
+    this.targetSays(this.line(`aim.things.${f.th.id}.melt`));
+    this.eyesUp('wide');
   }
 
   update(dt: number): void {
@@ -627,10 +643,19 @@ export class AimMode extends HeroMode {
       effect = mark.effect;
       pic = mark.pic;
     }
+    // A melted snowflake bursts like a water balloon.
+    if (f.melted) {
+      Object.assign(mark, { effect: 'burst', pic: DROP });
+      effect = 'burst';
+      pic = DROP;
+      own = `aim.things.${th.id}.dropHit`;
+      sound = `aim.things.${th.id}.dropSound`;
+      sfx = 'plop';
+    }
     if (effect === 'top' && !mark.leave) mark.leave = th.leave;
     this.marks.push(mark);
     this.L.sfx(sfx);
-    const burst = th.burst ?? 'sparkle';
+    const burst = f.melted ? 'splash' : th.burst ?? 'sparkle';
     this.L.particles.emit(tg.x + dx, tg.y + dy, center ? 28 : 14, BURST_SHAPE[burst], BURST_COLORS[burst], 180, 8);
     if (effect === 'burst') this.L.particles.emit(tg.x + dx, tg.y + dy, 12, 'puff', ['#ffffff', '#f2f2f2'], 120, 16);
     this.pop(sound);
@@ -1105,8 +1130,9 @@ export class AimMode extends HeroMode {
     if (r.tg) this.L.label(g, r.tg, x, y - ry - 34, 38);
   }
 
-  /** The egg after it hatched in flight: cracked for a moment, then the chick. */
+  /** The egg after it hatched in flight: cracked for a moment, then the chick; the melted snowflake a water drop. */
   private flightPic(f: Flight): string {
+    if (f.melted) return DROP;
     return !f.hatched ? f.pic : f.hatched < CRACK_TIME ? CRACKED : CHICK;
   }
 
@@ -1115,7 +1141,7 @@ export class AimMode extends HeroMode {
     const y = p.y + f.sink + f.lift + f.drop;
     // An arrow or a rocket points along the path, winged things stay upright, the rest tumbles slowly. A fallen one lies on the grass and fades before the next throw.
     const next = this.point(Math.min(1, f.s + 0.01));
-    const rot = f.th.spin === 'point' ? Math.atan2(next.y - p.y, next.x - p.x) : f.th.spin || this.L.reduceMotion || f.hatched ? 0 : f.spin;
+    const rot = f.th.spin === 'point' ? Math.atan2(next.y - p.y, next.x - p.x) : f.th.spin || this.L.reduceMotion || f.hatched || f.melted ? 0 : f.spin;
     const flap = f.hatched && !this.L.reduceMotion ? Math.sin(this.t * 18) * 4 : 0;
     this.drawThing(g, f.th, this.flightPic(f), p.x, y + flap, THING_SIZE * (f.th.scale ?? 1), rot, f.landed ? 1 - f.after / PAUSE_AFTER : 1);
   }

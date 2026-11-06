@@ -207,13 +207,14 @@ function storyRow(p: Profile, story: StoryDef): HTMLElement {
       h('b', {}, String(stars)), star ? h('img', { src: star, alt: '' }) : '★'));
 }
 
-/** A row of badges per tier, gold first, without headings; a tier nobody holds has no row, no badge at all says so. */
+/** A row of badges per tier, gold first, without headings; a tier nobody holds has no row, no badge at all shows a grey empty badge and says so. */
 function badgeTiers(p: Profile): HTMLElement[] {
   const rows = (['gold', 'silver', 'bronze'] as const).flatMap((tier) => {
     const worlds = WORLDS.map((_, w) => w).filter((w) => badgeTier(p, w) === tier);
     return worlds.length ? [h('div', { class: 'badge-row' }, ...worlds.map((w) => badge(w, tier, true)))] : [];
   });
-  return rows.length ? rows : [h('p', { class: 'badge-none' }, t('progress.badgeNone'))];
+  const none = imageUrl('ui-badge-none');
+  return rows.length ? rows : [h('p', { class: 'badge-none' }, none ? h('img', { src: none, alt: '' }) : null, t('progress.badgeNone'))];
 }
 
 /** The summary rows, a row per story under their heading, the badge shelf and the range awards, and when the child last trained. */

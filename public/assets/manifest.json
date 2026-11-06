@@ -536,9 +536,17 @@
    "w": 512,
    "h": 170
   },
+  "obj-aim-asteroid": {
+   "w": 512,
+   "h": 458
+  },
   "obj-aim-banana": {
    "w": 512,
    "h": 331
+  },
+  "obj-aim-battery": {
+   "w": 512,
+   "h": 179
   },
   "obj-aim-boomerang": {
    "w": 512,
@@ -608,6 +616,10 @@
    "w": 512,
    "h": 504
   },
+  "obj-aim-drop": {
+   "w": 377,
+   "h": 512
+  },
   "obj-aim-duck": {
    "w": 512,
    "h": 476
@@ -632,6 +644,10 @@
    "w": 512,
    "h": 473
   },
+  "obj-aim-gear": {
+   "w": 512,
+   "h": 511
+  },
   "obj-aim-hockey": {
    "w": 512,
    "h": 497
@@ -644,8 +660,16 @@
    "w": 463,
    "h": 512
   },
+  "obj-aim-map": {
+   "w": 512,
+   "h": 405
+  },
   "obj-aim-mouse": {
    "w": 344,
+   "h": 512
+  },
+  "obj-aim-note": {
+   "w": 422,
    "h": 512
   },
   "obj-aim-pacifier": {
@@ -661,15 +685,27 @@
    "h": 440
   },
   "obj-aim-pinecone": {
-   "w": 367,
+   "w": 434,
    "h": 512
   },
   "obj-aim-pingpong": {
    "w": 512,
    "h": 512
   },
+  "obj-aim-planet": {
+   "w": 512,
+   "h": 397
+  },
+  "obj-aim-poppy": {
+   "w": 500,
+   "h": 512
+  },
   "obj-aim-ring": {
    "w": 388,
+   "h": 512
+  },
+  "obj-aim-rose": {
+   "w": 418,
    "h": 512
   },
   "obj-aim-screw": {
@@ -680,8 +716,16 @@
    "w": 470,
    "h": 512
   },
+  "obj-aim-snowflake": {
+   "w": 452,
+   "h": 512
+  },
   "obj-aim-sock": {
    "w": 404,
+   "h": 512
+  },
+  "obj-aim-spring": {
+   "w": 428,
    "h": 512
   },
   "obj-aim-target": {
@@ -703,6 +747,10 @@
   "obj-aim-tomato": {
    "w": 505,
    "h": 512
+  },
+  "obj-aim-umbrella": {
+   "w": 512,
+   "h": 499
   },
   "obj-aim-wand": {
    "w": 512,
@@ -1705,6 +1753,10 @@
    "h": 474
   },
   "ui-aim-sight": {
+   "w": 512,
+   "h": 508
+  },
+  "ui-badge-none": {
    "w": 512,
    "h": 508
   },

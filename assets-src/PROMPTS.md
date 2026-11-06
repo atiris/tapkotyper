@@ -30,6 +30,12 @@ them in any order, skip some, or redo one later with the same name.
 
 ### Lessons from generating
 Notes from real Gemini runs; add new ones here.
+- **Less detail is often better** (the owner, 2026-11-06). For an everyday object, name it and
+  let Gemini draw it as it really looks ("one ordinary brown pine cone, as it really looks").
+  A precise description of its shape bends the picture into something wrong: "a short stem at
+  the top" made the pine cone stand on its tip, and "kidney-shaped" made the poppy seed a bean.
+  Do not describe where the stem, tip or parts go; give colors only where they matter, and keep
+  only the rules about face, background and margin. The owner regenerates odd pictures.
 - An object standing on the ground (the upright rocket on its fins) came with a dark floor
   shadow despite "no shadow, no floor"; one follow-up "remove the shadow under it completely,
   the background one flat color everywhere" fixed it.
@@ -668,6 +674,9 @@ Cute, soft 2D children's game icon, flat vector style with gentle gradients, sof
 
 ### ui-accuracy.jpg (accuracy in 14 days chip in the stats; an arrow in the middle of a target; the owner's picture)
 
+### ui-badge-none.jpg (the world badges shelf on My progress with no badge yet, beside "none yet"; 2026-11-06)
+The ui-aim-sight prompt below with "Grey empty badge" and as the icon: "an empty medal badge not earned yet, strictly front view: a thick round ring, and inside it a plain shield shape, the shield empty with no picture and no symbol on it", the same greys, "no ribbon, no star".
+
 ### ui-aim-sight.jpg (a range award not found yet on My progress: a grey sight, turned at random by the game; 2026-11-06)
 ```
 Generate an image: Grey target sight
@@ -1163,7 +1172,7 @@ the side, alone and readable at a small size (it flies at about 46 px).
 ### Things to throw (plan `.todo/62-range-shouts-and-throws.md`, section 4 prompt)
 Each prompt also carried, after OBJECT: "No face, no eyes, no arms, no legs. A bold, simple shape
 with a clear outline, so it is easy to recognise as a tiny icon of about 46 pixels." (the chick
-and the fish keep their faces). Checked at 46 px on a light and a dark band before use.
+and the fish keep their faces). Checked at 46 px on a light and a dark band before use. The range never shows a face, even where the same object has one in a story (2026-11-06: own `obj-aim-*` pictures for those).
 
 | File | OBJECT | BG | Status |
 |---|---|---|---|
@@ -1199,12 +1208,24 @@ and the fish keep their faces). Checked at 46 px on a light and a dark band befo
 | `obj-aim-banana.jpg` | one whole ripe banana curved like a smile, yellow #F9D84A with lighter top and darker underside, brown stem and tip, unpeeled | magenta | done 2026-10-24 |
 | `obj-aim-wrench.jpg` | one chunky adjustable wrench lying diagonally, oval hole in the handle, open C jaw, ridged wheel, blue-grey steel #8FA3B8/#C9D6E3/#5E7286 | magenta | done 2026-10-24 |
 | `obj-aim-toast.jpg` | one slice of toast from the front, rounded puffy top, golden middle #EBB563, darker crust #B9772F, a small pat of butter #FFE9A0, strictly front view | magenta | done 2026-10-24 |
-| `obj-aim-pinecone.jpg` | one plump pine cone standing upright, rows of open rounded scales, brown #A8693A with lighter tips #D49A62, short stem, no needles | magenta | done 2026-10-24 |
+| `obj-aim-pinecone.jpg` | (redone 2026-11-06, the old one stood on its tip) only "one ordinary brown pine cone, as it really looks. No face, no eyes, no needles, no branch", without the 46 px line | magenta | done 2026-11-06 |
 | `obj-aim-fish.jpg` | a small round chubby friendly fish facing right, orange #F7934C with a lighter belly, fan tail #FFB070, one big eye, rosy cheek, small smile, no water | magenta | done 2026-10-24 |
 | `obj-aim-crown.jpg` | a small chunky golden crown from the front, three rounded points with balls, gold #F6C945/#FFE58A/#D9A520, three pink gems #F48FB1, strictly front view (the wardrobe's `acc-crown` is too small at 46 px) | magenta | done 2026-10-24 |
 | `obj-aim-crystal.jpg` | (plan 84, the owner's wish: one crystal, not the planet's three points) **attach `obj-aim-crown.jpg`** for the style: one single six-sided gem crystal, upright and slightly tilted, pointed at both ends like a double-terminated quartz, no side points, no base, no rock; translucent ruby red #D7263D, facets #FF5A6E, edges #8E1426, one soft white highlight; no face, no glow | magenta | done 2026-10-30 |
 | `obj-aim-mouse.jpg` | (the owner's wish, 2026-10-30) **attach `obj-aim-crown.jpg`** for the style: one classic wired computer mouse seen from above at a slight angle, rounded, light grey-white plastic #E9ECF0 (shade #C5CBD3), two buttons and a small dark scroll wheel #4A5260, a short curly grey cable out of its front end; no face, no eyes, no hand | magenta | done 2026-10-30 |
 | `obj-aim-compass.jpg` | (plan 86, the hero's journey's picture and a range thing; redone 2026-10-31: the ring on top and the upright needle read as a stopwatch from afar) **attach `obj-aim-crown.jpg`** for the style, "a completely different object": a round flat brass compass strictly from the front, a chunky golden case #E2B33C (light #F6D77A, shade #B5862A) with NO ring, loop, button or crown on top, a cream face #FFF6DC filled by a compass rose (four long brown #B07A45 points to the sides of the world, four shorter between them), one big wide diamond needle turned 45 degrees, red #E5534B to the upper right, grey #9AA5B1 to the lower left, a dark-brown pin; "clearly a compass, not a watch or stopwatch even when small"; no letters, no numbers, no face, no clock hands | magenta | done 2026-10-31 |
+| `obj-aim-poppy.jpg` | (2026-11-06, the owner's pick after four tries) without the word seed, only the short prompt: "one small grain like a black peppercorn, a slightly irregular little ball, dark slate blue-grey. Its surface is wrinkled into a honeycomb shape: only about 7 to 10 big shallow cells cover the whole visible surface, divided by soft lighter ridges. One small white shine. No face, no eyes". "Poppy seed" came as a bean; a fine net of tiny cells looked like a honeycomb. The game draws it at 35 % | magenta | done 2026-11-06 |
+| `obj-aim-map.jpg` | an old pirate treasure map, aged parchment #EED9A8 with darker torn and curled edges, rolled up a little at both ends, slightly tilted: an island, a dashed red path to a big red X, a tiny compass rose of lines; no letters, no numbers, no skull | magenta | done 2026-11-06 |
+| `obj-aim-snowflake.jpg` | one big six-fold snowflake, strictly front view, chunky rounded arms with short side branches, icy white with sky-blue #BFE6F7 shading and a soft blue #7FC3E8 outline, no glow | magenta | done 2026-11-06 |
+| `obj-aim-drop.jpg` | (the melted snowflake) one big teardrop of water, strictly front view, solid sky-blue #5FB7EA with a lighter area and a big white shine, never pink, never see-through, no splash | magenta | done 2026-11-06 |
+| `obj-aim-battery.jpg` | (the range's own; `obj-battery` keeps its face for the robot story) one ordinary AA battery on its side, green #4FB477 body, silver-grey caps, a white plus sign and nothing else; no charge bars, no meter | magenta | done 2026-11-06 |
+| `obj-aim-gear.jpg` | (the range's own) one flat golden brass gear #E2B33C, strictly front view, twelve rounded teeth, a hole in the middle and four around it | magenta | done 2026-11-06 |
+| `obj-aim-note.jpg` | (the range's own) one glossy deep violet #6B4FC8 eighth note, no glow, no staff lines | magenta | done 2026-11-06 |
+| `obj-aim-rose.jpg` | (the fairy world's range thing, before a flower with a face) one red garden rose #E5484D with a short stem, two leaves and a thorn | magenta | done 2026-11-06 |
+| `obj-aim-umbrella.jpg` | (the range's own) one big open red #E5534B umbrella from the side, a wooden J handle, no hand, no rain | green | done 2026-11-06 |
+| `obj-aim-spring.jpg` | (the range's own) one big coiled blue-grey steel spring #8FA3B8 standing upright, about seven loops | magenta | done 2026-11-06 |
+| `obj-aim-asteroid.jpg` | (the range's own) one small lumpy grey-brown #8E7F72 space rock with soft round craters, no fire trail | magenta | done 2026-11-06 |
+| `obj-aim-planet.jpg` | (the range's own, instead of the five pastel planets) one small planet like the Earth, blue oceans, green and sandy continents, white cloud swirls, a thin cream ring in front at the bottom and behind at the top | magenta | done 2026-11-06 |
 
 ## 11. End cards (plan `.todo/85-one-end-card.md`)
 

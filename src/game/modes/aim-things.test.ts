@@ -18,6 +18,7 @@ describe('things to throw', () => {
         expect(texts.name, `${lang} ${th.id}.name`).toBeTruthy();
         for (const list of ['launch', 'sound', 'hit']) expect(texts[list]?.length, `${lang} ${th.id}.${list}`).toBeGreaterThan(0);
         if (th.expect != null) expect(texts.expect?.length, `${lang} ${th.id}.expect`).toBeGreaterThan(0);
+        if (th.melt != null) for (const list of ['melt', 'dropSound', 'dropHit']) expect(texts[list]?.length, `${lang} ${th.id}.${list}`).toBeGreaterThan(0);
       }
       for (const list of ['hatchSound', 'hatch', 'hatchedCall', 'hatchFlight']) expect(d.aim.things.egg[list]?.length, `${lang} egg.${list}`).toBeGreaterThan(0);
       expect(d.aim.things.boomerang.caught?.length).toBeGreaterThan(0);

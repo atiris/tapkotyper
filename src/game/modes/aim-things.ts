@@ -16,7 +16,7 @@ import { COMPASS } from '../../gfx/compass';
 export type Effect = 'bounce' | 'bounces' | 'splat' | 'stick' | 'top' | 'away' | 'hop' | 'boomerang' | 'slide' | 'burst' | 'dangle' | 'light' | 'egg';
 
 /** Particles at the impact. */
-export type Burst = 'sparkle' | 'ketchup' | 'smoke' | 'stink' | 'dust' | 'sparks' | 'feathers' | 'splash' | 'splinters' | 'steam' | 'rain' | 'magic';
+export type Burst = 'sparkle' | 'ketchup' | 'smoke' | 'stink' | 'dust' | 'sparks' | 'feathers' | 'splash' | 'splinters' | 'steam' | 'rain' | 'magic' | 'snow';
 
 /** How the target's eyes look when they pop up. */
 export type Eyes = 'worry' | 'wide' | 'happy' | 'dizzy' | 'squeeze';
@@ -39,6 +39,8 @@ export interface Thing {
   /** `bounces`: high hops (a spring), else smaller each time. */
   high?: boolean;
   burst?: Burst;
+  /** The chance it melts into a water drop at ring 2 (the snowflake): then it bursts like a water balloon. */
+  melt?: number;
   /** The target wobbles; `stars` circle over it. */
   wobble?: boolean;
   stars?: boolean;
@@ -65,10 +67,10 @@ export const THINGS: Thing[] = [
   { id: 'screw', pics: ['obj-aim-screw'], story: 0, sfx: 'pop', effect: 'bounce', drawn: true },
   { id: 'fly', pics: ['obj-aim-fly'], story: 0, sfx: 'bzzt', effect: 'stick', hold: 6, jitter: 'buzz', spin: 'none', drawn: true },
   { id: 'tomato', pics: ['obj-aim-tomato'], story: 0, sfx: 'plop', effect: 'splat', burst: 'ketchup', drawn: true },
-  { id: 'arrow', pics: ['obj-aim-arrow'], story: 0, sfx: 'pop', effect: 'bounce', spin: 'point', drawn: true },
+  { id: 'arrow', pics: ['obj-aim-arrow'], story: 0, sfx: 'pop', effect: 'bounce', spin: 'point', expect: 0.3, eyes: 'happy', drawn: true },
   { id: 'duck', pics: ['obj-aim-duck'], story: 0, sfx: 'squeak', effect: 'bounce', drawn: true },
   { id: 'sock', pics: ['obj-aim-sock'], story: 0, sfx: 'pop', effect: 'bounce', drawn: true },
-  { id: 'planet', pics: ['obj-planet-1', 'obj-planet-2', 'obj-planet-3', 'obj-planet-4', 'obj-planet-5'], story: 0, sfx: 'thud', effect: 'bounce', wobble: true, stars: true, scale: 1.15 },
+  { id: 'planet', pics: ['obj-aim-planet'], story: 0, sfx: 'thud', effect: 'bounce', wobble: true, stars: true, scale: 1.15 },
   { id: 'egg', pics: ['obj-aim-egg'], story: 0, sfx: 'plop', effect: 'egg', spin: 'none' },
   { id: 'clock', pics: ['obj-aim-clock'], story: 0, sfx: 'ring', effect: 'stick', hold: 1.2, jitter: 'shake' },
   { id: 'cactus', pics: ['obj-aim-cactus'], story: 0, sfx: 'pop', effect: 'bounce', expect: 0.6, eyes: 'worry' },
@@ -97,13 +99,16 @@ export const THINGS: Thing[] = [
   { id: 'water-balloon', pics: ['obj-aim-water-balloon'], story: 0, sfx: 'plop', effect: 'burst', burst: 'splash' },
   { id: 'banana', pics: ['obj-aim-banana'], story: 0, sfx: 'plop', effect: 'bounce' },
   { id: 'mouse', pics: ['obj-aim-mouse'], story: 0, sfx: 'pop', effect: 'bounce', expect: 0.4, eyes: 'wide' },
-  { id: 'asteroid', pics: ['obj-asteroid-small'], story: 0, sfx: 'thud', effect: 'bounce', wobble: true, burst: 'dust' },
+  { id: 'asteroid', pics: ['obj-aim-asteroid'], story: 0, sfx: 'thud', effect: 'bounce', wobble: true, burst: 'dust' },
+  { id: 'poppy', pics: ['obj-aim-poppy'], story: 0, sfx: 'pop', effect: 'bounce', scale: 0.35, expect: 0.5, eyes: 'squeeze' },
+  { id: 'map', pics: ['obj-aim-map'], story: 0, sfx: 'whoosh', effect: 'bounce', scale: 1.15 },
+  { id: 'snowflake', pics: ['obj-aim-snowflake'], story: 0, sfx: 'whoosh', effect: 'bounce', burst: 'snow', melt: 0.4, scale: 0.7 },
   // The hero's journey's compass; drawn in code until its picture is there.
   { id: 'compass', pics: [COMPASS], story: 0, sfx: 'ring', effect: 'bounce', wobble: true, burst: 'sparkle', drawn: true },
-  { id: 'battery', pics: ['obj-battery'], story: 1, sfx: 'bzzt', effect: 'bounce', burst: 'sparks' },
+  { id: 'battery', pics: ['obj-aim-battery'], story: 1, sfx: 'bzzt', effect: 'bounce', burst: 'sparks' },
   { id: 'magnet', pics: ['obj-aim-magnet'], story: 1, sfx: 'pop', effect: 'stick', hold: 1.5 },
-  { id: 'gear', pics: ['obj-gear'], story: 1, sfx: 'pop', effect: 'bounce' },
-  { id: 'note', pics: ['obj-note1', 'obj-note2'], story: 2, sfx: 'note', effect: 'bounce', spin: 'none', expect: 0.4, eyes: 'wide' },
+  { id: 'gear', pics: ['obj-aim-gear'], story: 1, sfx: 'pop', effect: 'bounce' },
+  { id: 'note', pics: ['obj-aim-note'], story: 2, sfx: 'note', effect: 'bounce', spin: 'none', expect: 0.4, eyes: 'wide' },
   { id: 'frog', pics: ['obj-frog'], story: 2, sfx: 'squeak', effect: 'hop', spin: 'none' },
   { id: 'wand', pics: ['obj-aim-wand'], story: 2, sfx: 'note', effect: 'bounce', burst: 'magic', flash: '#f3d1ff' },
   // One thing of its own for every world.
@@ -112,12 +117,12 @@ export const THINGS: Thing[] = [
   { id: 'crystal', pics: ['obj-aim-crystal'], story: 0, world: 2, sfx: 'note', effect: 'bounce', burst: 'magic', flash: '#ffd0d6' },
   { id: 'flame', pics: ['obj-flame-1', 'obj-flame-2', 'obj-flame-3', 'obj-flame-4'], story: 0, world: 3, sfx: 'whoosh', effect: 'bounce', burst: 'sparks', flash: '#ffb27a', spin: 'none', expect: 0.4, eyes: 'worry' },
   { id: 'nest', pics: ['obj-nest'], story: 0, world: 4, sfx: 'plop', effect: 'top', hold: 2, spin: 'none' },
-  { id: 'spring', pics: ['obj-spring'], story: 1, world: 5, sfx: 'squeak', effect: 'bounces', hold: 3, high: true },
+  { id: 'spring', pics: ['obj-aim-spring'], story: 1, world: 5, sfx: 'squeak', effect: 'bounces', hold: 3, high: true },
   { id: 'wrench', pics: ['obj-aim-wrench'], story: 1, world: 6, sfx: 'pop', effect: 'bounce', scale: 1.1 },
-  { id: 'umbrella', pics: ['obj-umbrella'], story: 1, world: 7, sfx: 'whoosh', effect: 'top', hold: 2, spin: 'none', scale: 1.2 },
+  { id: 'umbrella', pics: ['obj-aim-umbrella'], story: 1, world: 7, sfx: 'whoosh', effect: 'top', hold: 2, spin: 'none', scale: 1.2 },
   { id: 'robot', pics: ['obj-robot-small-3'], story: 1, world: 8, sfx: 'bzzt', effect: 'away', spin: 'none' },
   { id: 'toast', pics: ['obj-aim-toast'], story: 1, world: 9, sfx: 'pop', effect: 'bounce' },
-  { id: 'flower', pics: ['obj-flower-open'], story: 2, world: 10, sfx: 'whoosh', effect: 'stick', hold: 2, expect: 0.4, eyes: 'happy' },
+  { id: 'flower', pics: ['obj-aim-rose'], story: 2, world: 10, sfx: 'whoosh', effect: 'stick', hold: 2, expect: 0.4, eyes: 'happy' },
   { id: 'pinecone', pics: ['obj-aim-pinecone'], story: 2, world: 11, sfx: 'pop', effect: 'bounce' },
   { id: 'fish', pics: ['obj-aim-fish'], story: 2, world: 12, sfx: 'plop', effect: 'hop', burst: 'splash', spin: 'none' },
   { id: 'bird', pics: ['obj-bird'], story: 2, world: 13, sfx: 'note', effect: 'top', hold: 1.5, leave: 'fly', spin: 'none', expect: 0.4, eyes: 'wide' },
@@ -138,6 +143,7 @@ export const BURST_COLORS: Record<Burst, string[]> = {
   steam: ['#ffffff', '#f0f0f0', '#ffd6cf'],
   rain: ['#8fd3f4', '#bfe8ff', '#ffffff'],
   magic: ['#f3d1ff', '#c9f2d4', '#bfe8ff', '#fff6a8'],
+  snow: ['#ffffff', '#e6f6ff', '#bfe6f7'],
 };
 
 export const thing = (id: string): Thing => THINGS.find((th) => th.id === id)!;

@@ -116,6 +116,28 @@ describe('target range', () => {
     expect(mode.progress()).toBeGreaterThan(0);
   });
 
+  it('a snowflake that melts at ring 2 flies on as a water drop, and the target says so', () => {
+    vi.stubGlobal('location', { search: '?aimThing=snowflake' });
+    pictures.all = true;
+    const L = fakeRuntime();
+    // A low roll melts it.
+    L.rng.next = () => 0.1;
+    const mode = new AimMode(L);
+    mode.start();
+    typeRing(mode, L);
+    for (let stop = 0; stop <= RINGS; stop++) {
+      run(mode, L, 0.5);
+      typeRing(mode, L);
+    }
+    run(mode, L, 0.5);
+    vi.unstubAllGlobals();
+    pictures.all = false;
+    const said = vi.mocked(L.speak).mock.calls.filter((c) => c[0] === 'target').map((c) => c[1]);
+    expect(said[0]).toBeOneOf(tList('aim.things.snowflake.melt'));
+    expect(said.at(-1)).toBeOneOf([...tList('aim.lines.center'), ...tList('aim.things.snowflake.dropHit')]);
+    expect(mode.pictures).toContain('obj-aim-drop');
+  });
+
   it('a word pops out of the target at a hit when its chance comes, above or left of it', () => {
     const L = fakeRuntime();
     // Only the even chances (the pop's among them) come true.

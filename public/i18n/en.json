@@ -2475,6 +2475,9 @@
           "Right where it belongs!",
           "Arrow in the gold!",
           "A true archer!"
+        ],
+        "expect": [
+          "Finally, a dignified object!"
         ]
       },
       "duck": {
@@ -3030,7 +3033,6 @@
         "hit": [
           "I'm soaked!",
           "So refreshing!",
-          "Who forgot the umbrella?",
           "No bath for me tonight."
         ]
       },
@@ -3083,9 +3085,10 @@
         ],
         "hit": [
           "That charged me up!",
-          "Full power!",
+          "Energy at 100 percent!",
           "Short circuit!",
-          "I don't run on batteries!"
+          "I don't run on batteries!",
+          "I'm positively charged!"
         ]
       },
       "magnet": {
@@ -3357,10 +3360,10 @@
         ]
       },
       "flower": {
-        "name": "Flower",
+        "name": "Rose",
         "launch": [
-          "A flower for you!",
-          "Flower away!",
+          "A rose for you!",
+          "Rose away!",
           "For your name day."
         ],
         "sound": [
@@ -3458,6 +3461,75 @@
           "There was magnetism between us!",
           "I will never get lost again!",
           "Finally I find my way home!"
+        ]
+      },
+      "poppy": {
+        "name": "Poppy seed",
+        "launch": [
+          "Poppy seed, fly!",
+          "Throwing a poppy seed!",
+          "A poppy seed left over from the cake!"
+        ],
+        "sound": [
+          "???"
+        ],
+        "hit": [
+          "I think you hit me!",
+          "Oops, I dropped it.",
+          "Was that a hit?",
+          "I can't see it clearly."
+        ],
+        "expect": [
+          "I still can't see a thing.",
+          "Pass me a microscope!",
+          "Will we even see if you hit?"
+        ]
+      },
+      "map": {
+        "name": "Treasure map",
+        "launch": [
+          "A treasure map!",
+          "Follow the map to the treasure!",
+          "A pirate's map!",
+          "An ancient map."
+        ],
+        "sound": [
+          "Arrrgh!"
+        ],
+        "hit": [
+          "It starts in the Caribbean.",
+          "Someone already dug up the chest.",
+          "It ends on a desert island.",
+          "I'll keep this one."
+        ]
+      },
+      "snowflake": {
+        "name": "Snowflake",
+        "launch": [
+          "Snowflake, fly!",
+          "Snowflake, go!",
+          "It's starting to snow!"
+        ],
+        "sound": [
+          "Pff."
+        ],
+        "hit": [
+          "Brrr, it's cold!",
+          "It tickles my nose!",
+          "I'm all snowy!"
+        ],
+        "melt": [
+          "Global warming!",
+          "A sudden change of state!"
+        ],
+        "dropSound": [
+          "Plip!"
+        ],
+        "dropHit": [
+          "Where did the snowflake go?",
+          "I'm melting!",
+          "The water cycle in action!",
+          "I'm still thirsty."
         ]
       }
     }

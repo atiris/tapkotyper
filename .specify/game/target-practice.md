@@ -14,8 +14,8 @@
 - The scene is the world's background with only its middle strip drifting very slowly; nothing
   casts a shadow. Tapko stands at the far left, his feet level with the target's legs.
 - Tapko stands at the left and throws something funny at a target at the right, picked at
-  random for each throw (never the same twice in a row) from about 35 things open in every
-  world (a pebble, a tomato, an egg, an alarm clock, a cactus, a boomerang, a planet, a computer mouse, ...),
+  random for each throw (never the same twice in a row) from about 40 things open in every
+  world (a pebble, a tomato, an egg, an alarm clock, a cactus, a boomerang, a planet, a computer mouse, a poppy seed, a treasure map, a snowflake, ...),
   three more in the robot story's worlds (a battery, a magnet, a gear) and three more in the
   fairy story's (a music note, a frog, a magic wand). The compass, the same picture as the node of the
   [hero's journey](heros-journey.md), is one of the things of every world: it bounces with a
@@ -41,7 +41,10 @@
   Tapko's paw, the butterfly flutters away, the ice cube slides down and melts, the light bulb
   lights up, a planet makes the target wobble under circling stars; the rest bounce off. An egg
   ends one of three ways: it splats, it hatches on the target (only in the middle), or it
-  hatches in flight and the chick flies on.
+  hatches in flight and the chick flies on. A snowflake sometimes melts into a water drop in
+  flight (the target wonders aloud) and then bursts on the target like a water balloon. A
+  poppy seed is tiny, so the target cannot see it coming. The range draws its things as plain
+  objects without faces, even where the same object has a face in a story.
 - The range talks. The moment the launch word throws, Tapko names the thing in a small bubble
   ("Mucha vpred!"). About every other hit makes a word pop out of the target, above or left of it at a random angle: the thing's impact sound ("Pľac!") or a general one ("Bum!", "Kaboom!", "Auuuu!"). At every hit the target
   says how good the throw was in a bubble left of it, below the flight path: in the middle (no

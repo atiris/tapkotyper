@@ -608,6 +608,16 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
 .gfx-simple .start-sky .meadow-life { display: none; }
 .gfx-simple .sky-cloud > img, .gfx-simple .sky-star > img { filter: none; }
 .gfx-simple .overlay, .gfx-simple .hud { backdrop-filter: none; }
+/*
+ * What lies over the stage is drawn again with every frame of the scene, so there it has no soft shadows (hard
+ * edges instead); the next key does not pulse and the hands change pose at once (each a restyle every frame).
+ */
+.gfx-simple .level-tapko { filter: none; }
+.gfx-simple .stage-wrap > .bubble { filter: none; opacity: 0.85; box-shadow: 0 2px 0 var(--soft-shadow); animation: none; }
+.gfx-simple .kb-guide { box-shadow: 0 -2px 0 var(--soft-shadow); }
+.gfx-simple .stage-wrap > .hold-line { box-shadow: 0 2px 0 rgba(0, 0, 0, 0.18); }
+.gfx-simple .kb-key.next { animation: none; }
+.gfx-simple .kb-hands .hand-pose { transition: none; }
 
 /* Room above the cards for the lift and the focus ring, which the scrolling list would clip. */
 .profile-list { display: flex; flex-direction: column; gap: 0.8rem; align-items: center; padding: 14px 12px 20px; }

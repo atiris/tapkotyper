@@ -81,7 +81,10 @@
   of a scene Tapko travels through (the planet's swamp and shore, the crossroads, the valley's
   thicket, the egg world's mud path), where things stand on that ground and the shore must come;
   the still bands are copied as one picture, so a frame copies one or two full-screen pictures
-  instead of three or four. The bands' slow drift stops too: it only makes a still scene look alive. Automatic switches to it by itself when the first seconds of play are slow
+  instead of three or four. The bands' slow drift stops too: it only makes a still scene look alive.
+  What lies over the moving scene (Tapko, his bubble, the keyboard's top edge) is painted again with
+  every frame on a weak graphics chip, so there it has hard edges instead of soft shadows; the next
+  key does not pulse and the hands change pose at once, as both would restyle the page every frame. Automatic switches to it by itself when the first seconds of play are slow
   (the slowest 5 % of frames over 25 ms) and remembers that for the device. It never changes
   the game's pace, word timing or results: a slow computer gets the same lesson.
 - **A slow frame does not slow the next one:** the game takes at most four update steps per

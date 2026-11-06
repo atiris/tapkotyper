@@ -154,6 +154,8 @@ export class KeyboardGuide {
   /** The keys `show` lit, so the next one clears only them: a change on every key restyles the whole keyboard. */
   private lit: HTMLElement[] = [];
   private board: HTMLElement;
+  /** How far the board is faded (`show`). */
+  private fade = 0;
   /** The outline hands on the keys, made the first time a key is shown (heat maps and pickers never show one). */
   private hands: Hands | null = null;
   private hint: HTMLElement;
@@ -245,8 +247,8 @@ export class KeyboardGuide {
   show(ch: string | null, deadDone = false, fade = 0): void {
     for (const k of this.lit) k.classList.remove('next', 'next2', 'shift-next');
     this.lit = [];
-    // `--fade` is inherited by every key: set only when it changes.
-    if (this.el.style.getPropertyValue('--fade') !== String(fade)) this.el.style.setProperty('--fade', String(fade));
+    // The board's own opacity, not an inherited value: a change then restyles one element, not every key.
+    if (fade !== this.fade) this.board.style.opacity = String(1 - (this.fade = fade));
     this.hint.textContent = '';
     this.el.dataset.next = ch ?? '';
     const steps = ch ? stepsFor(this.layout, ch) : [];

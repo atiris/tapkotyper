@@ -68,6 +68,10 @@
   again every frame. Peeking under the end card shows it live again. Drawing a frame never reads
   the canvas's size (the stage keeps its pixel ratio from its last resize): after the frame's
   word labels moved, such a read makes the browser lay out the page once more.
+- **Small page changes stay small:** what changes during play (the next key, its fading as the
+  key is mastered) changes only the elements it concerns, never a value that every
+  key of the keyboard inherits: such a change made the browser recompute the whole keyboard
+  (about two hundred elements) on every new key.
 - **Simple graphics:** a teacher can set Graphics to Automatic (default), Full or Simple in the
   settings. Simple draws the scene at three quarters of the screen's resolution (scaled up; the
   words are not on the canvas and stay sharp), fewer particles, no blurred

@@ -308,11 +308,13 @@ let backdropKey = '';
 let lastAt: number[] = [];
 let lastKey = '';
 
-/** Leaving the levels: the backdrop's memory goes. */
-export function releaseBackdrop(): void {
+/** Leaving the levels: the memory of the backdrop and the drawn labels goes. */
+export function releaseLevelPictures(): void {
   if (backdrop) release(backdrop);
   backdrop = null;
   backdropKey = '';
+  for (const c of drawnWords.values()) release(c);
+  drawnWords.clear();
 }
 
 /** Band `i` at `offset`: 0 the sky and the far band, 1 the middle one, 2 the near one with the ground's shore picture. */
@@ -388,7 +390,7 @@ export function fontFamily(): string {
 
 export function resetFontFamily(): void {
   font = '';
-  measured.clear();
+  forgetWords();
 }
 
 export interface WordStyle {
@@ -409,8 +411,13 @@ let measurer: CanvasRenderingContext2D | null = null;
 const measured = new Map<string, number[]>();
 /** Measured words kept; a longer list starts again. */
 const MEASURED_MAX = 500;
-// A font that finishes loading changes the widths.
-if (typeof document !== 'undefined') document.fonts?.addEventListener('loadingdone', () => measured.clear());
+// A font that finishes loading changes the widths and the letters.
+if (typeof document !== 'undefined') document.fonts?.addEventListener('loadingdone', forgetWords);
+
+function forgetWords(): void {
+  measured.clear();
+  releaseLevelPictures();
+}
 
 function letterWidths(word: string, size: number): number[] {
   const key = `${size} ${word}`;
@@ -441,8 +448,43 @@ export function wordBox(word: string, size = 40, icon = false): { w: number; h: 
   return { w: total + size * (0.9 + (icon ? ICON_W : 0)), h: size * 1.45 };
 }
 
+/**
+ * Labels drawn once per look into a picture of their own with their soft shadow, least recently drawn first: a label
+ * is drawn every frame, and its letters and shadow cost far more than a copy. A shaking label (a slip) and a memory
+ * ring that empties change every frame and are drawn directly.
+ */
+const drawnWords = new Map<string, HTMLCanvasElement>();
+const DRAWN_WORDS_KEEP = 32;
+/** Room around a label's picture for its shadow. */
+const WORD_BLEED = 14;
+
 /** Word label on a target: typed letters in green, the next letter highlighted, gentle wobble on a mistake. */
 export function drawWord(g: G, word: string, typed: number, x: number, y: number, wobble: number, st: WordStyle = {}): void {
+  if (wobble > 0 || st.icon?.kind === 'ring') return paintWord(g, word, typed, x, y, wobble, st);
+  const size = st.size ?? 40;
+  const { w, h } = wordBox(word, size, !!st.icon);
+  const m = g.getTransform();
+  const key = `${word}|${typed}|${size}|${st.highContrast}|${st.locked}|${st.masked}|${st.icon?.kind}|${m.a}|${fontFamily()}`;
+  let c = drawnWords.get(key);
+  if (c) drawnWords.delete(key);
+  else {
+    c = document.createElement('canvas');
+    c.width = Math.ceil((w + 2 * WORD_BLEED) * m.a);
+    c.height = Math.ceil((h + 2 * WORD_BLEED) * m.a);
+    const cg = c.getContext('2d')!;
+    cg.scale(m.a, m.a);
+    paintWord(cg, word, typed, WORD_BLEED + w / 2, WORD_BLEED + h / 2, 0, st);
+    if (drawnWords.size >= DRAWN_WORDS_KEEP) evictOldest(drawnWords);
+  }
+  drawnWords.set(key, c);
+  // On whole device pixels: a copy between them would blur the letters.
+  g.save();
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  g.drawImage(c, Math.round(m.a * (x - w / 2 - WORD_BLEED) + m.e), Math.round(m.d * (y - h / 2 - WORD_BLEED) + m.f));
+  g.restore();
+}
+
+function paintWord(g: G, word: string, typed: number, x: number, y: number, wobble: number, st: WordStyle): void {
   const size = st.size ?? 40;
   const c = WORD;
   g.save();
@@ -456,11 +498,10 @@ export function drawWord(g: G, word: string, typed: number, x: number, y: number
   const padX = size * 0.45, h = size * 1.45;
   const shake = wobble > 0 ? Math.sin(wobble * 60) * 5 * (wobble / 0.35) : 0;
   const bx = x - (total + iconW) / 2 - padX + shake;
-  if (!graphics.simple) {
-    g.shadowColor = 'rgba(40,30,20,0.25)';
-    g.shadowBlur = 8;
-    g.shadowOffsetY = 3;
-  }
+  // The word is the task: its label looks the same in every drawing, soft shadow included.
+  g.shadowColor = 'rgba(40,30,20,0.25)';
+  g.shadowBlur = 8;
+  g.shadowOffsetY = 3;
   g.fillStyle = st.highContrast ? '#ffffff' : c.plate;
   roundRect(g, bx, y - h / 2, total + iconW + padX * 2, h, h / 2);
   g.fill();

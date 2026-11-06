@@ -53,11 +53,18 @@ export class Stage {
   /** A layer over the DOM Tapko, for what the scene holds in front of him; made on its first use. */
   private front: HTMLCanvasElement | null = null;
   private fg: CanvasRenderingContext2D | null = null;
+  /**
+   * The simple drawing's layer for the word labels, at the screen's own resolution: the scene under them
+   * is drawn at fewer pixels, but the words are the task and stay sharp. Made on its first use.
+   */
+  private words: HTMLCanvasElement | null = null;
+  private wg: CanvasRenderingContext2D | null = null;
   /** Virtual width. */
   vw = 1280;
   scale = 1;
-  /** Canvas pixels per screen pixel; kept from the resize, as reading the canvas's size every frame forces a layout. */
+  /** Canvas pixels per screen pixel, of the scene and of the screen; kept from the resize, as reading the canvas's size every frame forces a layout. */
   private dpr = 1;
+  private screenDpr = 1;
   /** The canvas was cleared by a resize and needs a redraw even when nothing moves. */
   dirty = true;
   private observer: ResizeObserver;
@@ -74,20 +81,41 @@ export class Stage {
 
   resize(): void {
     const r = this.canvas.parentElement!.getBoundingClientRect();
-    const dpr = (this.dpr = graphics.simple ? (graphics.lowRes ? LOW_RES : SIMPLE_RES) : Math.min(2, window.devicePixelRatio || 1));
+    this.screenDpr = Math.min(2, window.devicePixelRatio || 1);
+    const dpr = (this.dpr = graphics.simple ? (graphics.lowRes ? LOW_RES : SIMPLE_RES) : this.screenDpr);
     const w = Math.max(1, Math.round(r.width));
     const h = Math.max(1, Math.round(r.height));
     this.scale = h / VH;
     this.vw = w / this.scale;
     size(this.canvas, w, h, dpr);
     if (this.front) size(this.front, Math.min(w, Math.ceil(FRONT_W * this.scale)), h, dpr);
+    if (this.words) size(this.words, w, h, this.screenDpr);
     this.dirty = true;
   }
 
   /** Prepares the context for drawing in virtual units. */
   begin(): CanvasRenderingContext2D {
     this.dirty = false;
-    return this.clear(this.g);
+    return this.clear(this.g, this.dpr);
+  }
+
+  /**
+   * Where the word labels go: the scene's canvas, or in the simple drawing their own sharp layer with `last`
+   * cleared, what the labels covered in the last frame (stage units): a whole screen cleared every frame costs.
+   */
+  beginWords(last: { x0: number; x1: number; y0: number; y1: number } | null): CanvasRenderingContext2D {
+    if (!graphics.simple) return this.g;
+    if (!this.words) {
+      this.words = document.createElement('canvas');
+      this.words.className = 'stage stage-words';
+      this.canvas.after(this.words);
+      this.wg = this.words.getContext('2d')!;
+      this.resize();
+    }
+    const g = this.wg!;
+    g.setTransform(this.scale * this.screenDpr, 0, 0, this.scale * this.screenDpr, 0, 0);
+    if (last) g.clearRect(last.x0, last.y0, last.x1 - last.x0, last.y1 - last.y0);
+    return g;
   }
 
   /** The front layer's context, cleared and in virtual units. */
@@ -99,11 +127,11 @@ export class Stage {
       this.fg = this.front.getContext('2d')!;
       this.resize();
     }
-    return this.clear(this.fg!);
+    return this.clear(this.fg!, this.dpr);
   }
 
-  private clear(g: CanvasRenderingContext2D): CanvasRenderingContext2D {
-    g.setTransform(this.scale * this.dpr, 0, 0, this.scale * this.dpr, 0, 0);
+  private clear(g: CanvasRenderingContext2D, dpr: number): CanvasRenderingContext2D {
+    g.setTransform(this.scale * dpr, 0, 0, this.scale * dpr, 0, 0);
     g.clearRect(0, 0, this.vw, VH);
     return g;
   }
@@ -112,6 +140,7 @@ export class Stage {
     this.observer.disconnect();
     this.canvas.remove();
     this.front?.remove();
+    this.words?.remove();
   }
 }
 

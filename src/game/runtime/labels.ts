@@ -32,12 +32,16 @@ const LABEL_EDGE = 8;
 const LABEL_MIN_SIZE = 28;
 /** The gap between a word and its countdown clock. */
 const CLOCK_GAP = 10;
+/** Room around a label for its shadow and its shake after a slip. */
+const LABEL_BLEED = 20;
 
 /** The word labels of a frame: the modes ask for them, they are drawn after the mode, so labels never overlap. */
 export class Labels {
   private pending: PendingLabel[] = [];
   /** Where this frame's labels were drawn, in stage units. */
   rects: Rect[] = [];
+  /** All the last drawn labels cover, their lines, clocks and shadows too, in stage units; null for none. */
+  area: Rect | null = null;
   /** Vertical shift of each target's label, smoothed over frames. */
   private shift = new Map<number, number>();
   private time = 0;
@@ -75,6 +79,7 @@ export class Labels {
     const placed: Rect[] = [];
     const shifts = new Map<number, number>();
     const icon = L.style !== 'copy';
+    const area = { x0: Infinity, x1: -Infinity, y0: Infinity, y1: -Infinity };
     for (const l of [...this.pending].sort((a, b) => rank(b) - rank(a))) {
       // Phrases shrink to fit: in calm modes the stage around their place, moving targets half of it.
       const room = L.mode.phraseWords > 2 ? Math.min(L.vw * 0.9, 2 * Math.min(l.x, L.vw - l.x) - 20) : L.vw * 0.5;
@@ -115,8 +120,14 @@ export class Labels {
         masked: !core.letters(l.tg),
         icon: l.tg.style === 'dictation' ? { kind: 'speaker' } : l.tg.style === 'memory' ? { kind: 'ring', left: l.tg.showFor ? l.tg.showLeft / l.tg.showFor : 0 } : undefined,
       });
+      const y0 = Math.min(l.y, l.y + shift - h / 2), y1 = Math.max(l.y, l.y + shift + h / 2);
+      area.x0 = Math.min(area.x0, l.x - w / 2 - LABEL_BLEED);
+      area.x1 = Math.max(area.x1, l.x + w / 2 + tail + LABEL_BLEED);
+      area.y0 = Math.min(area.y0, y0 - LABEL_BLEED);
+      area.y1 = Math.max(area.y1, y1 + LABEL_BLEED);
       if (l.clock !== undefined) drawClock(g, l.x + w / 2 + CLOCK_GAP + CLOCK_R + 2, l.y + shift, l.clock, now / 1000, !L.reduceMotion);
     }
     this.shift = shifts;
+    this.area = area.x0 < area.x1 ? area : null;
   }
 }

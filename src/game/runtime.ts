@@ -7,7 +7,7 @@ import { Loop, Stage } from '../engine/loop';
 import { Particles } from '../engine/particles';
 import { Rng } from '../engine/rng';
 import { Tweens } from '../engine/tween';
-import { drawBackground, releaseBackdrop, type G } from '../gfx/draw';
+import { drawBackground, releaseLevelPictures, type G } from '../gfx/draw';
 import { type Mood, tapkoPictures } from '../gfx/tapko';
 import { friendPictures, picturesReady, preload } from '../gfx/assets';
 import { locale, t } from '../i18n/i18n';
@@ -533,7 +533,7 @@ export class LevelRuntime {
     this.loop.stop();
     this.input?.dispose();
     this.stage.dispose();
-    releaseBackdrop();
+    releaseLevelPictures();
     document.removeEventListener('visibilitychange', this.onVisibility);
     window.removeEventListener('pointerdown', this.onTouch);
   }
@@ -1121,7 +1121,7 @@ export class LevelRuntime {
     this.friends.draw(g);
     this.labels.begin();
     this.mode.render(g);
-    this.labels.draw(g);
+    this.labels.draw(this.stage.beginWords(this.labels.area));
     this.particles.render(g);
     this.callouts.draw(g, this.labels.rects);
     this.mode.renderFront?.(this.stage.beginFront());

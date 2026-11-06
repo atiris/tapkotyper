@@ -263,6 +263,15 @@ mi poslať „kávu“. Kúpim za to doménu na ďalší rok a čo zvýši, pôj
 
 <a href="https://ko-fi.com/atiris"><img src="https://storage.ko-fi.com/cdn/brandasset/v2/kofi_logo.png" alt="Support me on Ko-fi" height="40"></a>
 
+<details>
+<summary>Bank transfer / Prevod na účet (PAY by square)</summary>
+
+<img src="docs/pay-qr.png" alt="PAY by square QR code" width="180">
+
+IBAN: `SK7283605207004200851983` (Jozef Pažin)
+
+</details>
+
 ## License
 
 [MIT](LICENSE). Fonts: SIL Open Font License (see `public/fonts/`). The name TapkoTyper, the Ťapko character and the logo are not part of the MIT license, see [TRADEMARKS.md](TRADEMARKS.md).

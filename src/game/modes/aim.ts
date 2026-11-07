@@ -174,12 +174,15 @@ const EYES_SQUEEZE = 0.15;
 /** Seconds the eyes stay after the flight ended (or after a hit brought them up), and to rise or sink. */
 const EYES_AFTER = 1.8;
 const EYES_RISE = 0.3;
-/** Seconds a line stays: per character, at least and at most (Tapko's calls are shorter); the next throw waits for the target's line this long at most. */
-const LINE_PER_CHAR = 0.085;
-const LINE_MIN = 2.2;
-const LINE_MAX = 4.2;
-const CALL_MAX = 3;
-const LINE_HOLD = 2.4;
+/**
+ * Seconds a line stays, for a child who reads slowly (about seven letters a second): per character, at
+ * least and at most (Tapko's calls are shorter); the next throw waits for the target's line this long at most.
+ */
+const LINE_PER_CHAR = 0.15;
+const LINE_MIN = 3.5;
+const LINE_MAX = 8;
+const CALL_MAX = 6;
+const LINE_HOLD = 4;
 /** The common size of a thing in flight. */
 const THING_SIZE = 46;
 /** Seconds the cracked egg shows before the chick. */

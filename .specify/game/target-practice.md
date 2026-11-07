@@ -58,8 +58,9 @@
   of the base time and a target that steps back (shrinks) a line of their own. Now and then
   (about one throw in four, more for a cactus or a spider) the target reacts while the thing is
   on its way: worried, wondering or cheering. No line comes twice in a row. Every line stays long
-  enough for a slow reader (longer lines longer); the next throw waits for the target's line a
-  little, not until it is gone. The bubbles never cover a word; screen readers hear them, the
+  enough for a child who reads slowly, about seven letters a second (longer lines longer, at least
+  three and a half seconds); the next throw waits for the target's line up to four seconds, not until
+  it is gone. The bubbles never cover a word; screen readers hear them, the
   voice never reads them.
 - The things come in shuffled rounds: every thing of the range once before any comes again, a
   new order every run, never the same twice in a row.

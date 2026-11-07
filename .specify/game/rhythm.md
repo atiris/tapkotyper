@@ -65,9 +65,11 @@
   band grows upwards, and adds one phrase to the round, at most a third of it in all (a minute). A phrase that steps
   up narrows it again by 0.05, back to the start.
 - **Order of the letters:** first the two index fingers in turn, then mirror pairs of the hands (d k
-  f j), then neighbours of one hand, then free, the letters with the lowest recent accuracy (a third of
-  them, at most three) a little more often; the same letter twice in a row only in the second half of
-  the round.
+  f j), then neighbours of one hand, then free. A free phrase is made of **dictionary words** (two to six
+  letters, from the child's word language) that use only the lanes' letters at that moment, whole words
+  one after another, when at least three such words exist; otherwise, and for a tail no word fits, single
+  letters, the ones with the lowest recent accuracy (a third of them, at most three) a little more often,
+  the same letter twice in a row only in the second half of the round.
 - **Changing letters** (story 2 and 3 worlds, and story 1's worlds with more letters per finger): a
   lane's letter changes once a round in the dragon story, twice in the robot story and three times in
   the fairy story, to another ready letter of the same finger: the cloud dissolves and a new cloud

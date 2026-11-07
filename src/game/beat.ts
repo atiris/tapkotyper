@@ -135,12 +135,37 @@ export function laneWeights(accuracy: readonly number[]): number[] {
 /** `n` items of `motif`, round and round. */
 const cycle = (motif: number[], n = PHRASE) => Array.from({ length: n }, (_, i) => motif[i % motif.length]);
 
+/** Dictionary words a free phrase needs before it is made of words. */
+const WORDS_MIN = 3;
+
+/**
+ * A free phrase made of dictionary words: whole words one after another that only use the lanes'
+ * letters now (`letters`, one per lane), the rest filled by `fill`; null with too few such words.
+ */
+function wordLanes(words: readonly string[], letters: readonly string[], rand: () => number, fill: (out: number[]) => number): number[] | null {
+  const fit = words.filter((w) => [...w].every((c) => letters.includes(c)));
+  if (fit.length < WORDS_MIN) return null;
+  const out: number[] = [];
+  const shortest = Math.min(...fit.map((w) => w.length));
+  while (PHRASE - out.length >= shortest) {
+    const left = fit.filter((w) => w.length <= PHRASE - out.length);
+    const word = left[Math.floor(rand() * left.length)];
+    for (const c of word) out.push(letters.indexOf(c));
+  }
+  while (out.length < PHRASE) out.push(fill(out));
+  return out;
+}
+
 /**
  * The lanes of one phrase's letters, from easy to harder: the two index fingers in turn, mirror
- * pairs of the hands, neighbours of one hand, then free (weighted, never the same letter twice in
- * a row unless `repeats`). A pattern the lanes cannot make is free too.
+ * pairs of the hands, neighbours of one hand, then free: dictionary words of the lanes' letters now
+ * (`words`, `letters`) when there are enough of them, else weighted letters, never the same twice
+ * in a row unless `repeats`. A pattern the lanes cannot make is free too.
  */
-export function phraseLanes(phrase: number, lanes: readonly Lane[], weights: readonly number[], rand: () => number, repeats: boolean): number[] {
+export function phraseLanes(
+  phrase: number, lanes: readonly Lane[], weights: readonly number[], rand: () => number, repeats: boolean,
+  words: readonly string[] = [], letters: readonly string[] = lanes.map((l) => l.letters[0]),
+): number[] {
   const left = lanes.map((_, i) => i).filter((i) => isLeft(lanes[i].finger));
   const right = lanes.map((_, i) => i).filter((i) => !isLeft(lanes[i].finger));
   if (phrase === 0 && left.length && right.length) return cycle([left[left.length - 1], right[0]]);
@@ -151,15 +176,18 @@ export function phraseLanes(phrase: number, lanes: readonly Lane[], weights: rea
     const l = left.slice(-2), r = right.slice(0, 2);
     return cycle([l[0], l[1], l[0], l[1], r[1], r[0], r[1], r[0]]);
   }
-  const out: number[] = [];
-  for (let k = 0; k < PHRASE; k++) {
-    const prev = out[k - 1];
+  const pick = (out: number[]) => {
+    const prev = out[out.length - 1];
     const open = weights.map((w, i) => (repeats || i !== prev || lanes.length < 2 ? w : 0));
     const sum = open.reduce((a, b) => a + b, 0);
     let x = rand() * sum, i = 0;
     while (i < open.length - 1 && (x -= open[i]) >= 0) i++;
-    out.push(i);
-  }
+    return i;
+  };
+  const fromWords = wordLanes(words, letters, rand, pick);
+  if (fromWords) return fromWords;
+  const out: number[] = [];
+  while (out.length < PHRASE) out.push(pick(out));
   return out;
 }
 
@@ -235,6 +263,8 @@ export interface SongSetup {
   tempo: number;
   rand: () => number;
   roundS?: number;
+  /** Dictionary words the free phrases are made of where the lanes' letters allow. */
+  words?: readonly string[];
 }
 
 /**
@@ -290,7 +320,8 @@ export class Song {
     const phrase = this.phrases.length;
     const T = beatOf(tempo), F = fallSeconds(T), bpl = beatsPerLetter(tempo);
     this.phrases.push({ tempo, w, start, first: this.drops.length });
-    const lanes = phraseLanes(phrase, this.s.lanes, this.s.weights, this.s.rand, start >= this.roundS / 2);
+    const letters = this.s.lanes.map((_, i) => laneLetter(this.s.lanes, this.s.changes, i, Math.max(now, start - F)));
+    const lanes = phraseLanes(phrase, this.s.lanes, this.s.weights, this.s.rand, start >= this.roundS / 2, this.s.words, letters);
     let landed = 0;
     for (let i = 0; i < PHRASE; i++) {
       const land = start + i * T;

@@ -10,7 +10,7 @@ vi.mock('../../app/app', async () => {
   p.progress.unlockedKeys = ['f', 'j', ' ', 'd', 'k'];
   // Four ready letters: their last presses all right.
   for (const k of ['f', 'j', 'd', 'k']) p.stats.keys[k] = { presses: 40, errors: 0, recent: Array(40).fill(300), days: [] } as never;
-  return { app: { profile: p }, pickLine: () => '', profileLayout: (x: typeof p) => LAYOUTS[x.layout] };
+  return { app: { profile: p, words: { sk: [], en: [] } }, pickLine: () => '', profileLayout: (x: typeof p) => LAYOUTS[x.layout] };
 });
 vi.mock('../../audio/audio', () => ({ audio: { beatOut: () => null } }));
 vi.mock('../../ui/dom', async (real) => ({ ...(await real<object>()), h: () => ({ setAttribute: () => {}, className: '', innerHTML: '' }) }));

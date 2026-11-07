@@ -11,6 +11,7 @@ import { fingerFor } from '../../keyboard/layouts';
 import { recentAccuracy } from '../../learning/lessons';
 import { localDate, recentTyping } from '../../learning/stats';
 import { FINGER_COLORS } from '../../ui/finger-colors';
+import { filterWords, isBlocked } from '../../words/words';
 import { accuracyFill, fillRing, roundSvg, roundTextSvg } from '../../ui/hud';
 import { h } from '../../ui/dom';
 import { tip } from '../../ui/tooltip';
@@ -192,7 +193,10 @@ export class RhythmMode extends HeroMode {
     this.changes = planChanges(this.lanes, storyOf(L.def.world).tier + 1, roundS);
     const tempo = startTempo(p.progress.rhythm[L.def.world], recentTyping(p, 14).cpm, localDate());
     const weights = laneWeights(this.lanes.map((l) => recentAccuracy(p.stats.keys[l.letters[0]])));
-    this.song = new Song({ lanes: this.lanes, changes: this.changes, weights, tempo, rand: () => L.rng.next(), roundS });
+    // Words of the lanes' letters only, from the child's word language.
+    const all = new Set(this.lanes.flatMap((l) => l.letters));
+    const words = filterWords(app.words[p.settings.wordLang] ?? [], all, [2, 6]).filter((w) => !isBlocked(w));
+    this.song = new Song({ lanes: this.lanes, changes: this.changes, weights, tempo, rand: () => L.rng.next(), roundS, words });
     this.target = rhythmTarget(L.def.world);
     this.flash = this.lanes.map(() => -9);
     this.basket = { from: this.L.vw / 2, lane: null, at: -1, end: -1 };

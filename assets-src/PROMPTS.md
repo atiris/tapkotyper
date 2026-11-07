@@ -1350,11 +1350,14 @@ empty and the basket's letters are only toy shapes.
 The basket is one empty picture: the full basket first, then a follow-up in its chat that removes
 all letters ("Same picture, exactly the same basket at exactly the same size and position. Only
 remove the letters: the basket is empty, its empty inside shows."). The basket is flat and shallow
-like a low tray, with no handles. The game keeps only its front: `.old/obj-rhythm-basket-with-back.jpg`
-is the empty picture, and the back rim and the inside above the lower arc of the inner opening are
-painted magenta by a small sharp script (centre 512, 449, half-axes 388 x 39 px, the rim's round ends
-cut at y 455). Letters sunk into the basket (only their upper half showing) could not be drawn: five
-tries of a redraw with the full basket attached only changed the colours.
+like a low tray, with no handles. The game keeps only its front, so a letter drops behind the rim:
+`.old/obj-rhythm-basket-with-back.jpg` is the empty picture; its back rim and inside were painted magenta
+(a rough cut along the lower arc of the inner opening), and a new chat with that cut picture attached
+finished the edge: "Redraw the attached picture exactly the same ... its upper edge was cut off roughly,
+so finish it nicely: a clean, smooth, rounded upper edge ... round off the two ends of the rim. Do NOT
+add anything behind or above it." The rough cut alone looked bad in the game. A lower point of view,
+straight at the rim, would hide the back by itself (an idea for a later redraw). Letters sunk into the basket (only their upper half showing) could
+not be drawn: five tries of a redraw with the full basket attached only changed the colours.
 `obj-rhythm-basket-full` (the end card) is a new chat with the empty basket attached: the same basket
 full of a heap of letters.
 The three clouds are compact, so a cloud drawn only a little wider than its lane stays off the

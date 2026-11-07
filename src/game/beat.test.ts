@@ -131,6 +131,21 @@ describe('song', () => {
     expect(lanes(3)).toHaveLength(PHRASE);
   });
 
+  it('free phrases are dictionary words of the lanes\' letters when there are enough of them', () => {
+    const lanes = laneSetup(['a', 's', 'd', 'f', 'j', 'k', 'l'], finger);
+    const letters = lanes.map((l) => l.letters[0]);
+    const spell = (out: number[]) => out.map((i) => letters[i]).join('');
+    const rng = new Rng(5);
+    const free = spell(phraseLanes(5, lanes, lanes.map(() => 1), () => rng.next(), false, ['sad', 'las', 'kal', 'zub'], letters));
+    expect(free).toHaveLength(PHRASE);
+    // Only the words the letters make: never "zub"; a short tail fills with letters.
+    expect(free.slice(0, 15)).toMatch(/^(sad|las|kal)+$/);
+    // Too few words: letters as before.
+    const few = spell(phraseLanes(5, lanes, lanes.map(() => 1), () => rng.next(), false, ['sad', 'zub'], letters));
+    expect(few).toHaveLength(PHRASE);
+    expect(few).not.toMatch(/^(sad)+/);
+  });
+
   it('free phrases never repeat a letter right away in the first half of the round', () => {
     const rng = new Rng(7);
     const free = phraseLanes(5, world1, [1, 1.5, 1, 1], () => rng.next(), false);

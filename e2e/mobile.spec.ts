@@ -99,8 +99,8 @@ test('the menu carries a screen\'s own buttons on a phone', async ({ page }) => 
   await createProfile(page, 'Ema');
   await page.setViewportSize({ width: 390, height: 844 });
   await page.locator('.top-right .menu-btn').click();
-  await page.locator('.corner-menu-panel [role=menuitem]').first().click();
-  // The map's first corner button is the parent's settings.
+  await page.locator('.corner-menu-panel [role=menuitem]', { hasText: 'Nastavenia pre rodičov' }).click();
+  // The map's corner carries the language and the parent's settings.
   await expect(page.locator('.confirm, .parent-screen').first()).toBeVisible();
 });
 

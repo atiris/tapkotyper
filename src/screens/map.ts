@@ -1,4 +1,4 @@
-import { app, go, saveProfile } from '../app/app';
+import { app, go, saveProfile, useLanguage } from '../app/app';
 import { audio } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
 import { compassElement } from '../gfx/compass';
@@ -16,7 +16,7 @@ import { localDate } from '../learning/stats';
 import { arrowFocus, button, closeButton, h, icon, modal } from '../ui/dom';
 import { openSurprises, surpriseAsk } from '../game/cards';
 import { TRIGGERS, surpriseAnnounced, surpriseCount, surprisesToldOn, surprisesWonIn } from '../game/own-content';
-import { cornerControls, settingsButton } from '../ui/chrome';
+import { cornerControls, focusLanguageButton, languageButton, settingsButton } from '../ui/chrome';
 import { offerInstall } from '../ui/install';
 import { tipShown } from '../ui/tooltip';
 import { firstWord, onTypedWord } from '../ui/typed-word';
@@ -154,7 +154,7 @@ function placementPanel(p: Profile): HTMLElement | null {
 /** Milliseconds Aro waits after Tapko's line about flown parrots before he says goodbye. */
 const ARO_AFTER_MS = 1800;
 
-export function mapScreen(root: HTMLElement): () => void {
+export function mapScreen(root: HTMLElement, { focus }: { focus?: 'language' } = {}): () => void {
   const p = app.profile!;
   audio.music(app.menuTrack);
   // Won parrots may fly away over the days; the map tells it once.
@@ -205,7 +205,14 @@ export function mapScreen(root: HTMLElement): () => void {
     h('header', { class: 'bar' },
       button(t('map.switchProfile'), () => go('start'), 'btn ghost small', 'back'),
       h('h1', {}, t('map.title'))),
-    cornerControls(settingsButton()),
+    cornerControls(languageButton(async (l) => {
+      // The player's own interface language, as in the settings; the map comes back as it was.
+      p.language = l;
+      saveProfile();
+      await useLanguage(l);
+      if (root.dataset.screen !== 'map') return;
+      go('map', { focus: 'language' }, false);
+    }), settingsButton()),
     h('main', { class: 'map-body' },
       h('aside', { class: 'map-side' },
         h('h2', { class: 'map-hello' }, t('map.hello', { name: nickname(p) })),
@@ -226,6 +233,8 @@ export function mapScreen(root: HTMLElement): () => void {
   // Enter starts at once; the placement question takes the focus, starting from the beginning first.
   play.focus();
   placement?.querySelector<HTMLElement>('.btn.primary')?.focus();
+  // Back from a language switch: the focus stays on the language.
+  if (focus === 'language') focusLanguageButton(root);
   if (flown.length) {
     const worlds = flown.map((w) => worldName(w)).join(', ');
     bubble.replaceChildren(h('p', {}, t(flown.length === 1 ? 'map.parrotFlown' : 'map.parrotsFlown', { worlds })));

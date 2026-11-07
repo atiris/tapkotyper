@@ -165,7 +165,7 @@ test('panel buttons answer their underlined letters, the leftmost is the default
   await expect(page.locator('.level-node.done')).toHaveCount(1);
 
   // A dialog with a field: the field has the focus and keeps the letters.
-  await page.locator('.top-right .round-btn').first().click();
+  await page.locator('.top-right .settings-btn').click();
   await page.locator('.confirm .btn:not(.primary)').last().click();
   await page.getByRole('button', { name: /^(Preložiť hru|Translate the game)$/ }).click();
   await page.getByRole('button', { name: /^New language$/ }).click();

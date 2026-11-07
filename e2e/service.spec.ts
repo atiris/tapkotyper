@@ -42,7 +42,7 @@ test('the super player removes the settings password without it, and the setting
   await expect(page.locator('.service-menu .menu-item')).toHaveCount(4);
   await page.keyboard.press('Escape');
   // The super player's settings ask nothing and offer the removal.
-  await page.locator('.top-right .round-btn').first().click();
+  await page.locator('.top-right .settings-btn').click();
   const group = page.locator('.lock-group');
   await expect(group.locator('.lock-note')).toHaveCount(0);
   await group.locator('.btn.danger').click();
@@ -56,7 +56,7 @@ test('the super player removes the settings password without it, and the setting
   await page.reload();
   await page.locator('.profile-card', { hasText: 'Lea' }).click();
   await page.locator('.map-screen').waitFor();
-  await page.locator('.top-right .round-btn').first().click();
+  await page.locator('.top-right .settings-btn').click();
   await page.locator('.confirm .btn:not(.primary)').last().click();
   await expect(page.locator('.lock-group .lock-note')).toBeVisible();
 
@@ -70,7 +70,7 @@ test('the super player removes the settings password without it, and the setting
   await page.reload();
   await page.locator('.profile-card', { hasText: 'Lea' }).click();
   await page.locator('.map-screen').waitFor();
-  await page.locator('.top-right .round-btn').first().click();
+  await page.locator('.top-right .settings-btn').click();
   await page.locator('.confirm .btn:not(.primary)').last().click();
   await page.locator('.lock-group').waitFor();
   await expect(page.locator('.lock-group .lock-note')).toHaveCount(0);

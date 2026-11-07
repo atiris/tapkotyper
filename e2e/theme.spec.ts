@@ -1,6 +1,6 @@
 import { type Page, expect, test } from '@playwright/test';
 import { contrastMisses } from './contrast';
-import { playLevel, untilPlay } from './helpers';
+import { createProfile, playLevel, untilPlay } from './helpers';
 
 test.use({ locale: 'sk-SK' });
 
@@ -143,6 +143,20 @@ test('the about link and MIT · Atiris are white on the meadow and light up on h
   }
 });
 
+test('the map has the language button: a switch keeps the map and stays with the player', async ({ page }) => {
+  await createProfile(page, 'Ema');
+  await expect(page.locator('.map-screen h1')).toHaveText('Mapa svetov');
+  await expect(page.locator('.placement-ask')).toBeVisible();
+  await page.locator('.top-right .lang-btn').click();
+  await page.locator('.lang-list [role=option]', { hasText: 'English' }).click();
+  await expect(page.locator('.map-screen h1')).toHaveText('World map');
+  await expect(page.locator('.top-right .lang-btn')).toBeFocused();
+  await expect(page.locator('.placement-ask')).toContainText('Do you already know the keyboard');
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('tapkotyper:v1')!).profiles[0].language)).toBe('en');
+  await page.reload();
+  await expect(page.locator('.map-screen h1')).toHaveText('World map');
+});
+
 test('the language button lists the languages by their own names', async ({ page }) => {
   await page.goto('./');
   const button = page.locator('.top-right .lang-btn');
@@ -216,7 +230,7 @@ test('in the dark look every screen reads well', async ({ page }) => {
   }
   await page.evaluate(() => { location.hash = location.hash.replace(/^(#\/p\/[^/]+).*$/, '$1'); });
   await page.locator('.map-screen').waitFor();
-  await page.locator('.top-right .round-btn.control').first().click();
+  await page.locator('.top-right .settings-btn').click();
   await page.locator('.modal').waitFor();
   await readable(page, 'parent question');
   await page.locator('.modal .btn', { hasText: 'Áno, otvoriť' }).click();

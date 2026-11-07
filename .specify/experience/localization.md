@@ -8,8 +8,11 @@
 - Default when nothing is stored: the browser's languages in their order, the first one that is
   supported, else the first whose close language is; else English. A stored choice wins.
 - Changeable with the language button on every screen (the language symbol, a list of the
-  languages by their own names) and per profile.
-- All texts, story lines and Tapko messages come from per-language JSON files loaded on demand.
+  languages by their own names) and per profile. On the start screen it sets the device's
+  language; on the world map it sets the player's own interface language (the same as in the
+  settings), and the map comes back as it was, only in the new language, so a child who
+  picked a player in the wrong language does not have to look for the settings.
+- All texts, story lines and character messages come from per-language JSON files loaded on demand.
 - Adding a language means adding its text file, one row in the language table, its word list
   and (if new) its layout.
 - The word list language is chosen per player, apart from the interface language

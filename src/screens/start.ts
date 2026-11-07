@@ -8,7 +8,7 @@ import { addTask } from '../share/task';
 import type { Lang, Profile, TaskSpec } from '../storage/schema';
 import { type ICONS, arrowFocus, bigButton, button, h, icon, keyboardArt, modal, taskArt, teacherArt } from '../ui/dom';
 import { taskPanel } from '../ui/task-panel';
-import { cornerControls, languageButton, settingsButton } from '../ui/chrome';
+import { cornerControls, focusLanguageButton, languageButton, settingsButton } from '../ui/chrome';
 import { standalone } from '../ui/install';
 import { roundButton } from '../ui/hud';
 import { numberPick, profileCard } from '../ui/profile-card';
@@ -40,7 +40,7 @@ export function startScreen(root: HTMLElement, { task }: { task?: TaskOffer } = 
     const here = task ? 'taskImport' : 'start';
     if (root.dataset.screen !== here) return;
     go(here, task ? { code: task.code } : {});
-    [...root.querySelectorAll<HTMLElement>('.top-right .lang-btn, .top-right .menu-btn')].find((e) => e.offsetParent)?.focus();
+    focusLanguageButton(root);
   });
   const gated = keyboardGated();
 

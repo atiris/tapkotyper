@@ -14,7 +14,7 @@ test('the translator asks the parent question on its own address', async ({ page
 
 test('a parent starts a language, translates, exports, imports and plays it', async ({ page }, info) => {
   await createProfile(page, 'Ema');
-  await page.locator('.top-right .round-btn').first().click();
+  await page.locator('.top-right .settings-btn').click();
   await page.locator('.confirm .btn:not(.primary)').last().click();
   await page.getByRole('button', { name: /^(Preložiť hru|Translate the game)$/ }).click();
   await expect(page.locator('.translate-screen')).toBeVisible();

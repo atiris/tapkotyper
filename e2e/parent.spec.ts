@@ -3,7 +3,7 @@ import { createProfile } from './helpers';
 
 test('parent changes settings, exports and imports into a fresh browser', async ({ page, browser }) => {
   await createProfile(page, 'Tomas');
-  await page.locator('.top-right .round-btn').first().click();
+  await page.locator('.top-right .settings-btn').click();
   await page.locator('.confirm .btn.danger, .confirm .btn:not(.primary)').last().click();
   await expect(page.locator('.parent-screen')).toBeVisible();
   await page.getByRole('checkbox', { name: /^(Bez časového tlaku|No time pressure)/ }).check();
@@ -26,7 +26,7 @@ test('parent changes settings, exports and imports into a fresh browser', async 
 
 test('a settings password locks every way into the parent screen', async ({ page }) => {
   await createProfile(page, 'Ema');
-  await page.locator('.top-right .round-btn').first().click();
+  await page.locator('.top-right .settings-btn').click();
   await page.locator('.confirm .btn:not(.primary)').last().click();
   const group = page.locator('.lock-group');
   await group.locator('input[type=password]').nth(0).fill('mama1');
@@ -41,7 +41,7 @@ test('a settings password locks every way into the parent screen', async ({ page
   expect(JSON.stringify(stored)).not.toContain('mama1');
 
   await page.locator('.parent-screen .bar .btn').first().click();
-  await page.locator('.top-right .round-btn').first().click();
+  await page.locator('.top-right .settings-btn').click();
   await page.locator('.lock-input').fill('wrong');
   await page.keyboard.press('Enter');
   await expect(page.locator('.lock-dialog .error')).not.toBeEmpty();
@@ -60,7 +60,7 @@ test('a settings password locks every way into the parent screen', async ({ page
 test('the parent area switches to another child and keeps the tab', async ({ page }) => {
   await createProfile(page, 'Anna');
   await createProfile(page, 'Boris');
-  await page.locator('.top-right .round-btn').first().click();
+  await page.locator('.top-right .settings-btn').click();
   await page.locator('.confirm .btn:not(.primary)').last().click();
   await expect(page.locator('.switch-btn')).toContainText('Boris');
   await page.locator('.tab[data-tab=data]').click();
@@ -74,7 +74,7 @@ test('the parent area switches to another child and keeps the tab', async ({ pag
 
 test('with one profile the switch button is hidden', async ({ page }) => {
   await createProfile(page, 'Sam');
-  await page.locator('.top-right .round-btn').first().click();
+  await page.locator('.top-right .settings-btn').click();
   await page.locator('.confirm .btn:not(.primary)').last().click();
   await expect(page.locator('.parent-screen')).toBeVisible();
   await expect(page.locator('.switch-btn')).toHaveCount(0);
@@ -86,7 +86,7 @@ test('the parent question shows once on a double click, also while the settings 
     await new Promise((r) => setTimeout(r, 1500));
     await route.continue();
   });
-  await page.locator('.map-screen .top-right .round-btn').first().dblclick();
+  await page.locator('.map-screen .top-right .settings-btn').dblclick();
   const dialog = page.locator('.confirm');
   await expect(dialog).toHaveCount(1);
   // The page under the question is the loading look, never blank.
@@ -99,7 +99,7 @@ test('the parent question shows once on a double click, also while the settings 
 
 test('settings: nickname first and required, name optional, word language, key font, no task tab, progress by story', async ({ page }) => {
   await createProfile(page, 'Ema');
-  await page.locator('.top-right .round-btn').first().click();
+  await page.locator('.top-right .settings-btn').click();
   await page.locator('.confirm .btn:not(.primary)').last().click();
   const stored = () => page.evaluate(() => JSON.parse(localStorage.getItem('tapkotyper:v1')!).profiles[0]);
   const typist = page.locator('.settings-grid fieldset').first();

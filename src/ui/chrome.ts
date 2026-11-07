@@ -139,7 +139,9 @@ export function globalButtons(help: HTMLButtonElement = helpButton(), theme: HTM
 
 /** The settings gear: the player's settings, or before a player is chosen the ones without a profile. */
 export function settingsButton(): HTMLButtonElement {
-  return roundButton('control', 'gear', t('map.settings'), () => go('parent'));
+  const b = roundButton('control', 'gear', t('map.settings'), () => go('parent'));
+  b.classList.add('settings-btn');
+  return b;
 }
 
 /** Dark or light: a moon in the light look, a sun in the dark one. */
@@ -168,6 +170,11 @@ export function languageButton(pick: (l: Lang) => void): HTMLButtonElement {
   b.setAttribute('aria-haspopup', 'listbox');
   b.setAttribute('aria-expanded', 'false');
   return b;
+}
+
+/** After a screen re-rendered in the picked language: the focus goes back to its language button (or the Menu holding it). */
+export function focusLanguageButton(root: HTMLElement): void {
+  [...root.querySelectorAll<HTMLElement>('.top-right .lang-btn, .top-right .menu-btn')].find((e) => e.offsetParent)?.focus();
 }
 
 /** Closes the open language list; null while none is open. */

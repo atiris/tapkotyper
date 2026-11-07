@@ -84,7 +84,7 @@ test('help opens from the start page on the about tab, without a player', async 
 
 test('help from the settings opens on their tab and goes back to them without the question', async ({ page }) => {
   await createProfile(page, 'Ema');
-  await page.locator('.map-screen .top-right .round-btn').first().click();
+  await page.locator('.map-screen .top-right .settings-btn').click();
   await page.locator('.confirm .btn:not(.primary)').last().click();
   await page.locator('.parent-screen').waitFor();
   await page.locator('.parent-screen .help-btn').click();

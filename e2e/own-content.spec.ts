@@ -5,7 +5,7 @@ test('own words and a surprise from the parent reach the child\'s next level', a
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await createProfile(page, 'Ema');
-  await page.locator('.top-right .round-btn').first().click();
+  await page.locator('.top-right .settings-btn').click();
   await page.locator('.confirm .btn.danger, .confirm .btn:not(.primary)').last().click();
   await page.locator('.tab[data-tab=own]').click();
 

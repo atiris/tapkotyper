@@ -39,6 +39,9 @@
   rephrased ("tvoje", "hráč") where it reads better. Slovak never uses a gendered
   second-person past tense. Code names and addresses
   (`teacher`, `#/teacher/child/<id>`) stay, nobody reads them.
+- **Address**: Slovak texts say "ty" to everyone, children, parents and teachers alike, never the
+  formal "vy"; plural forms only where someone speaks to several (the child with a friend, the
+  author's letter to all readers on the about page).
 
 ## Why
 - The main audience is Slovak; English opens the project to everyone else.
@@ -49,5 +52,7 @@
   but reads a second one we do.
 - "Študent" names the role, not the age: older players, adults included, use the game, and
   "dieťa" talks about the player instead of to them.
+- "Ty" makes the app a friend beside the child, not an authority; one way of address for everyone
+  keeps the texts from mixing the two.
 - "Mentor" is a word nobody uses at school or at home; everyone understands "učiteľ", and the
   parent is named where a parent really does the same job.

@@ -25,7 +25,7 @@
     "logoTip": "Ahoj, táto stránka sa volá Ťapko.",
     "visit": {
       "hello": "Ahoj,",
-      "intro": "ja som jedna z postavičiek ktorú môžeš používať počas dobrodružstiev na tejto stránke.",
+      "intro": "ja som jedna z postavičiek, ktoré môžeš používať počas dobrodružstiev na tejto stránke.",
       "invite": "Ak ešte nemáš profil, klikni na tlačidlo „Nový hráč“ a jeden si vytvor. Dúfam, že sa spolu naučíme správne písať na klávesnici."
     },
     "whoPlays": "Kto mi dnes napíše?",
@@ -349,7 +349,7 @@
       "Na klávesnici nájdeš klávesy **{f}** a **{j}** s **malými hrbolčekmi**. Vidíš ich? Sú jediné ktoré tieto výstupky majú. Polož na ne **ukazováky,** zatvor oči a chvíľku sa s nimi hraj tak, aby sa tvoje ukazováky dokázali **vrátiť** na tieto klávesy **len podľa hmatu. Nepozeraj sa!** Teraz vedľa nich na {left} a {right} polož ďalšie prsty, palce voľne polož na medzerník. Toto položenie prstov sa volá **základná pozícia** a takto budeš začínať každé cvičenie."
     ],
     "after": [
-      "**Po stlačení** klávesu sa **prsty vracajú do tejto pozície.** Sadnite si vzpriamene a lakte držte pri tele. Vo všetkých cvičeniach sa hodnotí len presnosť, pokojne píšte pomaly, nevadí keď vám nejaké slovo zmizne alebo ho nestihnete napísať, vadia len chyby. Posledné, veľmi dôležité pravidlo je, že okrem času keď sa predstavuje nový kláves, sa už na klávesnicu nikdy nepozerajte."
+      "**Po stlačení** klávesu sa **prsty vracajú do tejto pozície.** Sadni si vzpriamene a lakte drž pri tele. Vo všetkých cvičeniach sa hodnotí len presnosť, pokojne píš pomaly, nevadí, keď ti nejaké slovo zmizne alebo ho nestihneš napísať, vadia len chyby. Posledné, veľmi dôležité pravidlo je, že okrem času, keď sa predstavuje nový kláves, sa už na klávesnicu nikdy nepozeraj."
     ]
   },
   "practice": {
@@ -1335,14 +1335,14 @@
     "childName": "Meno študenta (nepovinné)",
     "switchTitle": "Prepnúť na iného študenta",
     "pickChild": "Vybrať študenta",
-    "noChild": "Bez vybraného študenta sú tu len nastavenia celého zariadenia. Študenta vyberiete tlačidlom hore.",
+    "noChild": "Bez vybraného študenta sú tu len nastavenia celého zariadenia. Študenta vyberieš tlačidlom hore.",
     "companionKind": "Postavička",
-    "messages": "Vaše vlastné povzbudenia",
+    "messages": "Tvoje vlastné povzbudenia",
     "messagesHint": "Jedno na riadok. Hra ich občas použije.",
     "messagesPlaceholder": "Som na teba hrdá!",
     "language": "Jazyk",
     "layout": "Rozloženie klávesnice",
-    "layoutHint": "Vyberte rozloženie skutočnej klávesnice. Podľa neho sa riadi nápoveda prstov.",
+    "layoutHint": "Vyber rozloženie skutočnej klávesnice. Podľa neho sa riadi nápoveda prstov.",
     "fingering": "Priradenie prstov",
     "fingeringErgonomic": "Ergonomické (odporúčané)",
     "fingeringStandard": "Štandardné (historicky vyučované)",
@@ -1407,7 +1407,7 @@
     "cpm": "písmen/min",
     "timePerDay": "Čas za deň",
     "noData": "Zatiaľ bez údajov.",
-    "dataText": "Všetky údaje sú uložené len v tomto prehliadači. Exportom ich prenesiete do iného zariadenia.",
+    "dataText": "Všetky údaje sú uložené len v tomto prehliadači. Exportom ich prenesieš do iného zariadenia.",
     "exportOne": "Exportovať tento profil",
     "exportAll": "Exportovať všetky profily",
     "import": "Importovať",
@@ -1428,13 +1428,13 @@
     "autoDifficultyHint": "Rastie s pokrokom študenta po niekoľkých minútach presného písania. Každý krok je medaila.",
     "autoWordLen": "Automatická dĺžka slov",
     "autoWordLenHint": "Rastie s pokrokom študenta, spolu s náročnosťou.",
-    "autoHint": "Začiatok je pomalý: krátke slovo putuje k postavičke asi 10 sekúnd a na obrazovke sú najviac dve. Ak študent ani tak nestíha, zapnite Bez časového tlaku.",
+    "autoHint": "Začiatok je pomalý: krátke slovo putuje k postavičke asi 10 sekúnd a na obrazovke sú najviac dve. Ak študent ani tak nestíha, zapni Bez časového tlaku.",
     "lock": {
-      "ask": "Nastavenia sú zamknuté heslom. Zadajte ho, prosím.",
+      "ask": "Nastavenia sú zamknuté heslom. Zadaj ho, prosím.",
       "password": "Heslo",
       "open": "Otvoriť",
       "wrong": "Nesprávne heslo",
-      "wait": "Priveľa pokusov. Skúste znova o {n} s.",
+      "wait": "Priveľa pokusov. Skús znova o {n} s.",
       "off": "Nastavenia otvára jedna otázka. Heslo ich zamkne pre všetkých hráčov na tomto zariadení.",
       "on": "Nastavenia sú zamknuté heslom pre všetkých hráčov na tomto zariadení.",
       "current": "Súčasné heslo",
@@ -1443,7 +1443,7 @@
       "set": "Nastaviť heslo",
       "change": "Zmeniť heslo",
       "remove": "Odstrániť heslo",
-      "empty": "Zadajte heslo.",
+      "empty": "Zadaj heslo.",
       "mismatch": "Heslá sa nezhodujú.",
       "saved": "Heslo je uložené.",
       "removed": "Heslo je odstránené."
@@ -1493,7 +1493,7 @@
     "wordLangHint": "Bežné slová vo Vlastnom písaní a v ukážke nižšie."
   },
   "surprises": {
-    "hint": "Schovajte skutočnú odmenu (sladkosť, výlet, herný večer) za pravidlo. Hra položí otázku pred úrovňou a odpoveď prezradí spolu s otázkou, keď sa pravidlo splní. V jednej úrovni je najviac jedno prekvapenie.",
+    "hint": "Schovaj skutočnú odmenu (sladkosť, výlet, herný večer) za pravidlo. Hra položí otázku pred úrovňou a odpoveď prezradí spolu s otázkou, keď sa pravidlo splní. V jednej úrovni je najviac jedno prekvapenie.",
     "empty": "Zatiaľ žiadne prekvapenie.",
     "formTitle": "Nové prekvapenie",
     "q": "Otázka",
@@ -1531,9 +1531,9 @@
     "cancel": "Zrušiť",
     "edit": "Upraviť",
     "remove": "Odstrániť",
-    "needBoth": "Vyplňte otázku aj odpoveď.",
-    "badN": "Zadajte celé číslo od 1 do {max}.",
-    "tooMany": "Najviac {n} prekvapení. Najprv nejaké odstráňte.",
+    "needBoth": "Vyplň otázku aj odpoveď.",
+    "badN": "Zadaj celé číslo od 1 do {max}.",
+    "tooMany": "Najviac {n} prekvapení. Najprv nejaké odstráň.",
     "yes": "áno",
     "no": "nie",
     "col": {
@@ -1560,7 +1560,7 @@
   },
   "import": {
     "title": "Import profilov",
-    "text": "Vyberte súbor .json z TapkoTypera.",
+    "text": "Vyber súbor .json z TapkoTypera.",
     "found": "Nájdené: {names} ({n}).",
     "conflict": "Tieto tu už existujú: {names}.",
     "replace": "Nahradiť ich",
@@ -1598,34 +1598,34 @@
     "report": "Nahlásiť chybu alebo nápad",
     "intro": "TapkoTyper (Ťapko) je bezplatná pokojná hra, ktorá učí písať všetkými desiatimi prstami. Študent písania na klávesnici cestuje ako zvieratko podľa vlastného výberu po svetoch plných dobrodružstiev. Snažili sme sa o pokojnú nenásilnú hru. Časový tlak sme skúsili obmedziť len na niektoré typy hier a akcie sú vysvetľované ako pomáhajúce.",
     "privacyTitle": "Náš sľub rodičom",
-    "install": "nainštalujete",
+    "install": "nainštaluješ",
     "installHelp": "https://support.google.com/chrome/answer/9658361?hl=sk",
-    "privacyInstalled": "Funguje aj bez internetu. Keďže ste ju nainštalovali ako desktopovú webovú aplikáciu, môžete si ju {open} priamo vo vlastnom okne, bez celého prehliadača, je to rýchle a jednoduché na spustenie.",
+    "privacyInstalled": "Funguje aj bez internetu. Keďže je nainštalovaná ako desktopová webová aplikácia, môžeš si ju {open} priamo vo vlastnom okne, bez celého prehliadača, je to rýchle a jednoduché na spustenie.",
     "openApp": "otvárať",
     "privacyApp": "Práve ju používate ako desktopovú webovú aplikáciu: otvára sa vo vlastnom okne bez celého prehliadača, funguje aj bez internetu a rýchlo sa spúšťa.",
     "readme": "readme",
     "privacy": [
       "Bez reklám, nákupov, prihlasovania či cookies. Tento web nemá na pozadí vlastný server.",
-      "Aplikácia vám nikdy nemôže poslať žiaden e-mail a nevyžaduje konto ani žiadny iný **osobný údaj**, preto ich v aplikácii **nepoužívajte**.",
-      "Všetky pokroky sú uložené **len v tomto prehliadači**, a nikto k nim nemá prístup, ale môžete ich exportovať do súboru a zálohovať alebo preniesť na iný počítač.",
+      "Aplikácia ti nikdy nemôže poslať žiaden e-mail a nevyžaduje konto ani žiadny iný **osobný údaj**, preto ich v aplikácii **nepoužívaj**.",
+      "Všetky pokroky sú uložené **len v tomto prehliadači**, a nikto k nim nemá prístup, ale môžeš ich exportovať do súboru a zálohovať alebo preniesť na iný počítač.",
       "Po prvej návšteve, alebo ako desktopová aplikácia, funguje aj bez internetu. Ak ju {install} ako desktopovú webovú aplikáciu, otvorí sa bez celého prehliadača vo vlastnom okne, pracuje offline, je to rýchle a jednoduché na spustenie."
     ],
-    "dataTitle": "Vaše údaje a počítadlo návštev",
+    "dataTitle": "Tvoje údaje a počítadlo návštev",
     "data": [
-      "Keďže všetko je len na vašom počítači, nevieme vám zistiť zabudnuté heslo k nastaveniam ani vaše nastavenia a pokrok, keď sa vám počítač pokazí. Preto si pokrok občas exportujte do súboru. Ak predsa len zabudnete heslo, prečítajte si {readme} súbor na GitHube.",
+      "Keďže všetko je len na tvojom počítači, nevieme ti zistiť zabudnuté heslo k nastaveniam ani tvoje nastavenia a pokrok, keď sa ti počítač pokazí. Preto si pokrok občas exportuj do súboru. Ak predsa len zabudneš heslo, prečítaj si {readme} súbor na GitHube.",
       "Počítame len **anonymné návštevy**, bez cookies a bez akýchkoľvek údajov o používateľoch (samozrejme nezapočítame nič, ak to používate offline). Počíta ich služba GoatCounter, ktorá nepoužíva cookies ani nezbiera osobné údaje. Nevýhodou je, že nedokážeme určiť, ktoré časti aplikácie sa používajú a ktoré nie."
     ],
     "visitsOne": "Doteraz sme zaznamenali {n} návštevu.",
     "visitsFew": "Doteraz sme zaznamenali {n} návštevy.",
     "visitsMany": "Doteraz sme zaznamenali {n} návštev.",
     "visitsWeek": "Z toho za posledný týždeň: {n}.",
-    "visitsBlocked": "Počet návštev vám tu priamo uviesť nevieme, pretože pravdepodobne používate blokovač počítadiel a sledovania webov. Stále si však môžete pozrieť celú stránku na webe GoatCounter.",
+    "visitsBlocked": "Počet návštev ti tu priamo uviesť nevieme, pretože pravdepodobne používaš blokovač počítadiel a sledovania webov. Stále si však môžeš pozrieť celú stránku na webe GoatCounter.",
     "authorTitle": "O autorovi",
     "author": "Ahojte, pisatelia. Aplikáciu **Ťapko** som navrhol **na podporu výučby písania na klávesnici** pre moje deti, ktoré bežné aplikácie nedokázali udržať natoľko, aby sa k nim vracali. Napriek intenzívnemu používaniu série modelov umelej inteligencie od Anthropic trval vývoj tejto aplikácie do podoby, s ktorou som bol dostatočne spokojný (dizajn, funkcie, bezpečnosť, rýchlosť a ďalšie), mnoho hodín. Dúfam, že podobne ako dokáže pri písaní o chvíľku dlhšie udržať moje deti, dokáže to aj pri vás a vašich deťoch (ak by ich to už bavilo menej, môžete im do hry schovať prekvapenie z fyzického sveta, ktoré si cvičením odomknú). Nakoniec vás prosím o pomoc: ak nájdete chybu alebo máte nápad na zlepšenie, {report} prosím na GitHube, kde je kód tejto aplikácie.",
     "authorReport": "nahláste mi to",
     "creditsTitle": "Licencie a zdroje",
     "credits": "Ťapko je publikovaný ako **otvorený kód** pod licenciou MIT. Názvy TapkoTyper a Ťapko a logo aplikácie do licencie nepatria a v upravených kópiách sa nesmú použiť. Použité písma Lexend, Atkinson Hyperlegible a OpenDyslexic sú pod licenciou SIL Open Font License. Mediálne súbory sú generované prevažne pomocou modelov Gemini a niektoré sú doladené ručne.",
-    "open": "**Nič neskrývame!** Všetky údaje o používaní aplikácie Ťapko nájdete rovnako ako my na adrese",
+    "open": "**Nič neskrývame!** Všetky údaje o používaní aplikácie Ťapko nájdeš rovnako ako my na adrese",
     "page": {
       "title": "TapkoTyper – zábavné písanie všetkými desiatimi",
       "description": "Ťapko je pokojná príbehová hra, v ktorej sa deti naučia písať všetkými desiatimi prstami. Slovenská aj anglická klávesnica, zadarmo, bez reklám a bez účtov.",
@@ -1779,19 +1779,19 @@
       "Na stránke Úlohy ju spustíš tlačidlom Hrať, alebo na mape v Úlohe na dnes. Píš, kým neuplynie čas.",
       "Keď je hotová, stlač Odovzdať a pošli učiteľovi **odkaz s výsledkom**. Úlohu môžeš zopakovať: počíta sa lepší výsledok."
     ],
-    "settingsIntro": "Nastavenia sú pre učiteľa alebo rodiča. Otvoria sa ozubeným kolieskom. Kým ich **nezamknete heslom**, otvorí ich ktokoľvek, kliknutím na jednoduché potvrdzovacie tlačidlo.",
+    "settingsIntro": "Nastavenia sú pre učiteľa alebo rodiča. Otvoria sa ozubeným kolieskom. Kým ich **nezamkneš heslom**, otvorí ich ktokoľvek, kliknutím na jednoduché potvrdzovacie tlačidlo.",
     "settings": {
       "settings": [
-        "Študent: prezývka, postavička a nepovinné meno, jazyk hry, jazyk slov, rozloženie klávesnice a priradenie prstov. Rozloženie vyberte podľa skutočnej klávesnice, sprievodca prstov sa podľa neho riadi. Priradenie prstov (ergonomické alebo štandardné) mení len číselný rad; rozdiel vysvetľuje časť Písanie.",
-        "Cvičenie: náročnosť a dĺžka slov **automaticky rastú so zlepšovaním** písania študenta, ale môžete ich nastaviť aj ručne.",
+        "Študent: prezývka, postavička a nepovinné meno, jazyk hry, jazyk slov, rozloženie klávesnice a priradenie prstov. Rozloženie vyber podľa skutočnej klávesnice, sprievodca prstov sa podľa neho riadi. Priradenie prstov (ergonomické alebo štandardné) mení len číselný rad; rozdiel vysvetľuje časť Písanie.",
+        "Cvičenie: náročnosť a dĺžka slov **automaticky rastú so zlepšovaním** písania študenta, ale môžeš ich nastaviť aj ručne.",
         "Slová bez diakritiky pomôžu začiatočníkom na chvíľu. Bez časového tlaku veci zastanú a čakajú na študenta.",
         "Dĺžka hrania pred prestávkou: potom hra pozve študenta na krátky oddych.",
-        "Sprievodca prstov: zmizne, keď sú klávesy zvládnuté, alebo je stále zapnutý či vypnutý. Môžete ho študentovi zamknúť. Ruky na klávesnici môžu byť ukázané, zvýraznené alebo skryté.",
+        "Sprievodca prstov: zmizne, keď sú klávesy zvládnuté, alebo je stále zapnutý či vypnutý. Môžeš ho študentovi zamknúť. Ruky na klávesnici môžu byť ukázané, zvýraznené alebo skryté.",
         "Šatník za čas cvičenia: 1 minúta v šatníku za 5 minút cvičenia, najviac 7 minút. Po vypnutí je šatník stále otvorený.",
-        "Zvuky a rozhranie: hlasitosť, písmo, veľký text, menej pohybu, vysoký kontrast, celá obrazovka. **Preložiť hru** otvorí stránku prekladu, kde preložíte hru do nového jazyka alebo si upravíte vlastné texty.",
+        "Zvuky a rozhranie: hlasitosť, písmo, veľký text, menej pohybu, vysoký kontrast, celá obrazovka. **Preložiť hru** otvorí stránku prekladu, kde preložíš hru do nového jazyka alebo si upravíš vlastné texty.",
         "Heslo na nastavenia zamkne nastavenia pre všetkých hráčov na tomto zariadení. Zabudnuté heslo nevieme obnoviť.",
         "Heslo chráni nastavenia len v hre. Všetky údaje (hráči, pokrok aj nastavenia) sú uložené v tomto prehliadači a heslo ich nešifruje. Kto sa k nim dostane priamo, napríklad cez nástroje prehliadača, môže ich prečítať aj zmeniť. Preto v aplikácii **nezadávajte** nikdy žiadne **citlivé údaje**. Pri uložení nie sú chránené a je to tak zámerne.",
-        "Ktokoľvek, kto používa tento počítač, môže v prehliadači vymazať údaje stránky. Tým sa odstránia všetci hráči, ich pokrok, výsledky aj heslo. Preto si pokrok občas exportujte do súboru."
+        "Ktokoľvek, kto používa tento počítač, môže v prehliadači vymazať údaje stránky. Tým sa odstránia všetci hráči, ich pokrok, výsledky aj heslo. Preto si pokrok občas exportuj do súboru."
       ],
       "own": [
         "Vlastné slová: napríklad slovíčka na tento týždeň. Použijú sa aj s klávesmi, ktoré študent ešte nepozná.",
@@ -1800,18 +1800,18 @@
         "Koľko vlastných slov a textu: aký diel cieľov v úrovniach budú tvoriť."
       ],
       "surprises": [
-        "Schovajte **skutočnú odmenu** za pravidlo: po úrovni, po minútach cvičenia, po ďalších úrovniach či hviezdičkách, alebo náhodou.",
+        "Schovaj **skutočnú odmenu** za pravidlo: po úrovni, po minútach cvičenia, po ďalších úrovniach či hviezdičkách, alebo náhodou.",
         "Hra položí otázku pred úrovňou a odpoveď prezradí, keď sa pravidlo splní."
       ],
       "keys": [
         "Automaticky prídu klávesy po jednom, od základného radu F a J. Ďalšie klávesy pribúdajú podľa toho, ako **presne** a plynulo študent používa tie predchádzajúce.",
         "Hra naučí aj ovládacie klávesy ako Esc, Tab, Backspace a Enter, ale do pokroku ich nezapočítava.",
-        "Ručne vyberiete, ktoré klávesy sa študent učí, aj interpunkciu."
+        "Ručne vyberieš, ktoré klávesy sa študent učí, aj interpunkciu."
       ],
       "data": [
         "Všetko je uložené **len v tomto prehliadači**. Keď sa vymažú údaje prehliadača alebo sa pokazí počítač, pokrok sa stratí, ak nemáte zálohu.",
-        "Preto občas **exportujte profil** do súboru. Import ho načíta späť alebo na inom zariadení.",
-        "Preniesť na iný počítač: hráč aj s pokrokom sa uloží do odkazu, ktorý otvoríte na druhom počítači. Keď je profil na odkaz príliš veľký, použite export do súboru. Hosťovský profil sa zabudne po zatvorení karty."
+        "Preto občas **exportuj profil** do súboru. Import ho načíta späť alebo na inom zariadení.",
+        "Preniesť na iný počítač: hráč aj s pokrokom sa uloží do odkazu, ktorý otvoríš na druhom počítači. Keď je profil na odkaz príliš veľký, použi export do súboru. Hosťovský profil sa zabudne po zatvorení karty."
       ]
     },
     "keysTitle": "Hraj len s klávesnicou",
@@ -1832,15 +1832,15 @@
     ],
     "mentorTitle": "Výsledky a QR kódy",
     "mentor": [
-      "Stránku **Pre učiteľov** otvoríte ikonou grafu vpravo hore na úvodnej stránke. Výsledky sa ukladajú len v tomto prehliadači.",
-      "Najrýchlejšie je skenovať: na karte **Výsledky** stlačte **Naskenovať QR** a obíďte miestnosť. Kamera načíta aj viac QR kódov naraz. Nový študent sa zaradí do skupiny úlohy; študent, ktorého už poznáte, ostane vo svojej skupine.",
+      "Stránku **Pre učiteľov** otvoríš ikonou grafu vpravo hore na úvodnej stránke. Výsledky sa ukladajú len v tomto prehliadači.",
+      "Najrýchlejšie je skenovať: na karte **Výsledky** stlač **Naskenovať QR** a obíď miestnosť. Kamera načíta aj viac QR kódov naraz. Nový študent sa zaradí do skupiny úlohy; študent, ktorého už poznáš, ostane vo svojej skupine.",
       "Študent ukáže QR kód úlohy na svojej stránke Úlohy alebo po jej odovzdaní, všetky svoje štatistiky v Môj postup. Bez kamery stačí vložiť alebo otvoriť **odkaz s výsledkom**.",
-      "**Sada** sú výsledky jednej skupiny, ktoré prišli spolu: jeden sken kamerou, alebo odkazy pridané do **20 minút** od prvého. V **Hodnotení** na karte **Skupiny** sú všetky sady. Kliknutím na riadok uvidíte študentov sady a celé to stiahnete ako CSV.",
-      "Každé odovzdanie sa uchová. Na karte **Študenti** nájdete študenta podľa mena a zaškrtnutých študentov preradíte do skupiny. Kliknutím na meno uvidíte jeho vývoj v grafoch a všetky odovzdania.",
-      "**Z telefónu do počítača:** na karte **Dáta** stlačte na telefóne **Export** a pošlite si súbor .tapko (napríklad e-mailom). Na počítači ho načítajte cez **Import výsledkov** alebo ho na stránku pretiahnite. Čo už máte, sa nepridá druhýkrát.",
-      "Výsledky staršie ako **rok** sa pri otvorení stránky zmažú. Staré výsledky načítané zo súboru ostanú ešte **7 dní**. Na karte **Dáta** skupiny premenujete a zlúčite a zmažete študentov, skupiny, súbory alebo všetko.",
+      "**Sada** sú výsledky jednej skupiny, ktoré prišli spolu: jeden sken kamerou, alebo odkazy pridané do **20 minút** od prvého. V **Hodnotení** na karte **Skupiny** sú všetky sady. Kliknutím na riadok uvidíš študentov sady a celé to stiahneš ako CSV.",
+      "Každé odovzdanie sa uchová. Na karte **Študenti** nájdeš študenta podľa mena a zaškrtnutých študentov preradíš do skupiny. Kliknutím na meno uvidíš jeho vývoj v grafoch a všetky odovzdania.",
+      "**Z telefónu do počítača:** na karte **Dáta** stlač na telefóne **Export** a pošli si súbor .tapko (napríklad e-mailom). Na počítači ho načítaj cez **Import výsledkov** alebo ho na stránku pretiahni. Čo už máš, sa nepridá druhýkrát.",
+      "Výsledky staršie ako **rok** sa pri otvorení stránky zmažú. Staré výsledky načítané zo súboru ostanú ešte **7 dní**. Na karte **Dáta** skupiny premenuješ a zlúčiš a zmažeš študentov, skupiny, súbory alebo všetko.",
       "Kontrolný súčet ukáže poškodený odkaz (výkričník pri mene), nie podvádzanie.",
-      "Úlohy pre študentov vytvoríte na karte **Úlohy**: vyberiete hru, slová alebo text a limit a uložíte ju. V **Pripravených úlohách** ju ukážete ako QR kód alebo skopírujete jej odkaz. Na telefóne bez klávesnice si študent úlohu zaznačí tlačidlom **Nová úloha** a pošle si ju domov."
+      "Úlohy pre študentov vytvoríš na karte **Úlohy**: vyberieš hru, slová alebo text a limit a uložíš ju. V **Pripravených úlohách** ju ukážeš ako QR kód alebo skopíruješ jej odkaz. Na telefóne bez klávesnice si študent úlohu zaznačí tlačidlom **Nová úloha** a pošle si ju domov."
     ]
   },
   "tips": {
@@ -1955,8 +1955,8 @@
     "copyCode": "Kopírovať kód",
     "copied": "Skopírované.",
     "qr": "QR kód odkazu",
-    "noQr": "Odkaz je na QR kód príliš dlhý, skopírujte ho.",
-    "broken": "Odkaz je poškodený alebo neúplný. Skúste ho skopírovať celý ešte raz.",
+    "noQr": "Odkaz je na QR kód príliš dlhý, skopíruj ho.",
+    "broken": "Odkaz je poškodený alebo neúplný. Skús ho skopírovať celý ešte raz.",
     "brokenTitle": "Tento odkaz sa nedá otvoriť",
     "reading": "Čítam odkaz…",
     "closeByClick": "Zatvoriť klikom na obrazovku"
@@ -1979,7 +1979,7 @@
       "readyShort": "Pripravené ({n})"
     },
     "results": {
-      "intro": "Tu môžete načítať výsledky študentov skenovaním alebo sa tu objavia po kliknutí na odkaz s výsledkom. Ak chcete, môžete odkaz s výsledkom vložiť aj priamo.",
+      "intro": "Tu môžeš načítať výsledky študentov skenovaním alebo sa tu objavia po kliknutí na odkaz s výsledkom. Ak chceš, môžeš odkaz s výsledkom vložiť aj priamo.",
       "scan": "Naskenovať QR",
       "scanShort": "QR sken",
       "link": "Načítať odkaz",
@@ -2044,8 +2044,8 @@
       }
     },
     "eval": {
-      "groupsIntro": "Výsledky podľa skupín a odovzdaní. Kliknutím na riadok otvoríte jeho študentov.",
-      "studentsIntro": "Študenti a ich odovzdania. Viacerých naraz zaradíte do skupiny zaškrtnutím.",
+      "groupsIntro": "Výsledky podľa skupín a odovzdaní. Kliknutím na riadok otvoríš jeho študentov.",
+      "studentsIntro": "Študenti a ich odovzdania. Viacerých naraz zaradíš do skupiny zaškrtnutím.",
       "filesIntro": "Súbory .tapko, z ktorých sa sem načítali výsledky.",
       "dataIntro": "Správa uložených výsledkov. Každá zmena sa pred vykonaním potvrdí."
     },
@@ -2117,7 +2117,7 @@
     "link": {
       "title": "Načítanie odkazu",
       "label": "Odkaz s výsledkom",
-      "placeholder": "Vložte celý text odkazu",
+      "placeholder": "Vlož celý text odkazu",
       "process": "Spracovať",
       "bad": "Odkaz je nesprávny, nepodarilo sa ho spracovať."
     },
@@ -2135,7 +2135,7 @@
       "none": "Zatiaľ tu nebol načítaný žiadny súbor."
     },
     "import": {
-      "drop": "Pretiahnite súbor .tapko sem",
+      "drop": "Pretiahni súbor .tapko sem",
       "pick": "Vybrať súbor",
       "ok": "Súbor {name} je v poriadku, výsledky sú načítané.",
       "bad": "Súbor {name}: {why}"
@@ -2165,8 +2165,8 @@
       "deleteAllText": "Zmažú sa všetky výsledky, skupiny a zoznam súborov v tomto prehliadači."
     },
     "tasks": {
-      "intro": "Pripravte úlohu, študentom ju pošlete ako odkaz alebo ukážete QR kód.",
-      "empty": "Zatiaľ žiadne pripravené úlohy. Úloha, ktorú vytvoríte, sa tu uloží.",
+      "intro": "Priprav úlohu, študentom ju pošleš ako odkaz alebo ukážeš QR kód.",
+      "empty": "Zatiaľ žiadne pripravené úlohy. Úloha, ktorú vytvoríš, sa tu uloží.",
       "col": {
         "task": "Úloha",
         "game": "Hra a limit",
@@ -2186,8 +2186,8 @@
   "task": {
     "importTitle": "Nová úloha",
     "whoTakes": "Pre koho je táto úloha?",
-    "pickRight": "Úlohu priradíte výberom hráča vpravo.",
-    "pickBelow": "Úlohu priradíte výberom hráča nižšie.",
+    "pickRight": "Úlohu priradíš výberom hráča vpravo.",
+    "pickBelow": "Úlohu priradíš výberom hráča nižšie.",
     "cancel": "Zrušiť túto úlohu",
     "untitled": "Úloha",
     "today": "Úloha na dnes",
@@ -2201,7 +2201,7 @@
     "titleHint": "Študent ho uvidí na svojej stránke Úlohy a na karte pred písaním.",
     "minutes": "Dĺžka",
     "make": "Uložiť ako novú úlohu",
-    "needContent": "Napíšte aspoň jedno slovo alebo text.",
+    "needContent": "Napíš aspoň jedno slovo alebo text.",
     "bigCode": "Veľký kód",
     "groupHint": "Výsledky tejto úlohy sa zaradia do nej, ak študent ešte nemá skupinu.",
     "gameLabel": "Hra",
@@ -2238,7 +2238,7 @@
     "resultCaption": "Štatistiky úlohy {title}",
     "pageTitle": "Úlohy",
     "scan": "Naskenovať úlohu",
-    "scanHint": "Namierte kameru na QR kód úlohy.",
+    "scanHint": "Namier kameru na QR kód úlohy.",
     "paste": "Odkaz alebo kód úlohy",
     "pastePlaceholder": "Vložiť odkaz alebo kód úlohy",
     "add": "Pridať",
@@ -2268,9 +2268,9 @@
   "move": {
     "button": "Preniesť na iný počítač",
     "title": "Preniesť na iný počítač",
-    "text": "Otvorte tento odkaz na druhom počítači a hráč {name} sa tam načíta aj s pokrokom.",
-    "privacy": "Celý profil je v samotnom odkaze. Pošlite ho len sebe alebo rodine.",
-    "tooLong": "Tento profil je na odkaz príliš veľký. Exportujte ho do súboru a súbor načítajte na druhom počítači.",
+    "text": "Otvor tento odkaz na druhom počítači a hráč {name} sa tam načíta aj s pokrokom.",
+    "privacy": "Celý profil je v samotnom odkaze. Pošli ho len sebe alebo rodine.",
+    "tooLong": "Tento profil je na odkaz príliš veľký. Exportuj ho do súboru a súbor načítaj na druhom počítači.",
     "importTitle": "Hráč z iného počítača",
     "importText": "Načítať hráča {name} ({n} hviezdičiek) do tohto prehliadača?"
   },
@@ -3693,7 +3693,7 @@
       "launchNo": [
         "Chyba!",
         "Nerozumiem!",
-        "Zopakujte!",
+        "Zopakuj!",
         "Prosím, znova!",
         "Preklep!",
         "Neznámy príkaz!"
@@ -3704,7 +3704,7 @@
     "preview": "Obraz z kamery",
     "starting": "Zapínam kameru...",
     "error": {
-      "denied": "Prístup ku kamere nie je povolený. Povoľte ho v nastaveniach prehliadača.",
+      "denied": "Prístup ku kamere nie je povolený. Povoľ ho v nastaveniach prehliadača.",
       "none": "Nenašla sa žiadna kamera.",
       "insecure": "Kamera funguje len na zabezpečenej stránke (HTTPS).",
       "failed": "Kameru sa nepodarilo zapnúť."
@@ -3718,7 +3718,7 @@
     "noted": "Zaznačené úlohy",
     "remove": "Odstrániť zo zoznamu",
     "subject": "TapkoTyper: {title}",
-    "body": "Úloha z TapkoTypera. Otvorte tento odkaz v počítači s klávesnicou:"
+    "body": "Úloha z TapkoTypera. Otvor tento odkaz v počítači s klávesnicou:"
   },
   "worldKeys": {
     "open": "Klávesy sveta {world}",

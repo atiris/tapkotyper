@@ -28,4 +28,5 @@ counts only on its own, not inside another word. Not mentioned in the help: find
   "Fairy", "badges", ...) darkens the screen: a random world's badge in a random tier rises
   in rotating golden rays and a pulsing glow with twinkling sparkles, a random range award
   lands on its rim, and the caption names both. It is a show only, the child's real badges do
-  not change. It has no close button: it fades after ten seconds, on a click or on Esc.
+  not change. It has no close button: it fades after ten seconds, on a click or on Esc. The map
+  shows the same show for a world's real badge when its badge is clicked ([story](../game/story.md)).

@@ -9,13 +9,13 @@ test("the dragon story's hero's journey goes back down to the rocket with a pane
   await page.locator('.start-screen').waitFor();
   await page.keyboard.type('supertapkotyper', { delay: 40 });
   const egg = page.locator('.story-dragon .island-egg .level-row');
-  await egg.locator('.journey-node').waitFor();
-  // The compass comes right after the crown, before the target range and the parrot.
-  const nodes = await egg.locator('.level-node').evaluateAll((els) => els.map((e) => e.className));
-  const crown = nodes.findLastIndex((c) => !/journey-node|aim-node|parrot-node/.test(c));
-  expect(nodes.findIndex((c) => c.includes('journey-node'))).toBe(crown + 1);
-  expect(nodes.findIndex((c) => c.includes('aim-node'))).toBe(nodes.findIndex((c) => c.includes('journey-node')) + 1);
-  await egg.locator('.journey-node').click();
+  // The compass is a badge at the bottom right of the story's last island; the level row has no journey node.
+  const badge = page.locator('.story-dragon .island-egg .island-art .journey-badge');
+  await badge.waitFor();
+  await expect(egg.locator('.journey-node')).toHaveCount(0);
+  await expect(page.locator('.story-dragon .journey-badge')).toHaveCount(1);
+  await expect(badge).toHaveAttribute('data-tip', /Bronze for 1 ★, silver for 3 ★, gold for 5 ★/);
+  await badge.click();
   await expect(page.locator('.hud-title')).toHaveText("Hero's journey");
   await expect(page.locator('.posture-card .posture-under')).toContainText('five stars need almost no mistakes');
   await expect(page.locator('.posture-card')).toContainText('The little dragon has hatched and wants to stay with you!');
@@ -38,8 +38,10 @@ test("the dragon story's hero's journey goes back down to the rocket with a pane
   await expect(page.locator('.journey-done h2')).toHaveText("Hero's journey done!");
   const stars = Math.floor(Number((await page.locator('.journey-done .ec-under .stars').getAttribute('aria-label'))!.replace(/\D*([\d.]+).*/, '$1')));
   await page.locator('.end-card .ec-bot .btn').last().click();
-  await egg.locator('.journey-node').waitFor();
-  // The node keeps the best stars (the super player's filled progress may have more).
-  expect(await egg.locator('.journey-node .mini-stars i').count()).toBeGreaterThanOrEqual(stars);
+  await badge.waitFor();
+  // The badge's tier follows the best stars (the super player's filled progress may have more): bronze 1, silver 3, gold 5.
+  const order = ['bronze', 'silver', 'gold'];
+  const cls = (await badge.getAttribute('class'))!;
+  expect(order.findIndex((x) => cls.includes(x))).toBeGreaterThanOrEqual(stars >= 5 ? 2 : stars >= 3 ? 1 : 0);
   expect(errors).toEqual([]);
 });

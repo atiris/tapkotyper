@@ -2,7 +2,7 @@ import { t } from '../i18n/i18n';
 import { LAYOUTS } from '../keyboard/layouts';
 import { ACCURACY, activeKeys, aimKeys, isKeyReady, isLetterKey, lessonKeyNames, masteredKeyNames, practiceOrder } from '../learning/lessons';
 import { type Profile, SUPER_ID, type TaskSpec } from '../storage/schema';
-import { targetTempo } from './beat';
+import { changeCount, laneCount, targetTempo } from './beat';
 import { PARROT_MIN_S, type ParrotSize, parrotSize } from './parrots';
 
 export type WorldId = 'meadow' | 'space' | 'planet' | 'dragons' | 'egg' | 'junkyard' | 'workshop' | 'raintown' | 'robocity' | 'robohome'
@@ -501,21 +501,24 @@ export function parrotKeys(p: Profile, world: number): string[] {
   return practiceOrder(p).slice(0, keysNeeded(p, last)).filter(isLetterKey);
 }
 
-/** Worlds whose Rytmus is built; every world but the last of each story gets one (`.specify/game/rhythm.md`). */
-export const RHYTHM_WORLDS: readonly number[] = [0];
-/** Ready letters Rytmus needs: one lane for each of four fingers at least. */
-export const RHYTHM_MIN_LETTERS = 4;
-
 /** The letters of a world's Rytmus: the parrot's letters (the world's last level) that are ready; the super profile takes them all. */
 export function rhythmLetters(p: Profile, world: number): string[] {
   const keys = parrotKeys(p, world);
   return p.id === SUPER_ID ? keys : keys.filter((k) => isKeyReady(p, k));
 }
 
-/** A world's Rytmus is open: built, with four ready letters; the first world's opens with them, a later one with its world finished, like the range. */
-export function rhythmOpen(p: Profile, world: number): boolean {
-  if (!RHYTHM_WORLDS.includes(world) || (world > 0 && !aimOpen(p, world))) return false;
-  return rhythmLetters(p, world).length >= RHYTHM_MIN_LETTERS;
+/** A world's Rytmus opens with the world finished, like its target range and parrot. */
+export const rhythmOpen = aimOpen;
+
+/** Seconds of song a world's Rytmus round lasts: half of its story's regular level. */
+export function rhythmRoundS(world: number): number {
+  return STORY_MIN_S[storyOf(world).tier] / 2;
+}
+
+/** A world's Rytmus lanes and letter changes, by its place in its story (`.specify/game/rhythm.md`). */
+export function rhythmShape(world: number): { lanes: number; changes: number } {
+  const story = storyOf(world), place = story.worlds.indexOf(world);
+  return { lanes: laneCount(story.tier, place, story.worlds.length), changes: changeCount(story.tier, place, story.worlds.length) };
 }
 
 /** The tempo a world's Rytmus aims at: its story's slow pace, as letters a minute on a tempo step. */

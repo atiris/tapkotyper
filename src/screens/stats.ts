@@ -1,8 +1,7 @@
-import { app, go, layout, reduceMotion } from '../app/app';
+import { app, go, layout, reduceMotion, saveProfile } from '../app/app';
 import { audio } from '../audio/audio';
-import { Rng } from '../engine/rng';
-import { notesNow } from '../game/beat';
-import { imageUrl, musicTracks } from '../gfx/assets';
+import { rhythmNotes } from '../game/rhythm-notes';
+import { imageUrl } from '../gfx/assets';
 import { type Mood, otherMood, renderTapkoInto, tapkoElement } from '../gfx/tapko';
 import { DRILL_SECONDS, STORIES, type StoryDef, WORLDS, storyDone, storyOpen, worldName } from '../game/levels';
 import { MAX_CHEST, MAX_STARS, badgeTier, chestPoints, totalStars, worldStars } from '../game/rewards';
@@ -225,29 +224,39 @@ function badgeTiers(p: Profile): HTMLElement[] {
 /** Notes drawn at most in the row: more never fit, the count says the rest. */
 const NOTES_SHOWN = 60;
 
-/** The worlds whose music a profile's notes play, in the profile's own shuffled order. */
-function noteTunes(seed: number): string[] {
-  const rng = new Rng(seed);
-  const tunes = WORLDS.filter((w) => musicTracks().includes(w));
-  for (let i = tunes.length - 1; i > 0; i--) {
-    const j = Math.floor(rng.next() * (i + 1));
-    [tunes[i], tunes[j]] = [tunes[j], tunes[i]];
-  }
-  return tunes;
-}
-
-/** My rhythm: the notes left today in one row, as many as fit, the exact count at its end; a click on a note plays a world's tune. */
+/**
+ * My rhythm: the notes left today in one row, as many as fit, the exact count at its end. Each note
+ * has the music of the world it was earned in: a click plays it and chooses it for the World map
+ * (the line under the row says whose plays there); a click on the chosen one goes back to the usual music.
+ */
 function rhythmShelf(p: Profile): HTMLElement {
-  const n = notesNow(p.progress.rhythmNotes, p.progress.rhythmNotesAt, localDate());
+  const { notes, changed } = rhythmNotes(p, localDate());
+  if (changed) saveProfile();
   const head = h('h4', {}, t('progress.rhythmTitle'));
-  if (!n) return h('div', { class: 'badge-shelf' }, head, h('p', { class: 'badge-none' }, t('progress.rhythmNone')));
-  const tunes = noteTunes(p.seed);
-  const notes = Array.from({ length: Math.min(n, NOTES_SHOWN) }, (_, i) =>
-    h('button', { class: 'note-btn', type: 'button', tip: t('progress.rhythmNoteTip'), 'aria-label': t('progress.rhythmNoteTip'), onClick: () => tunes.length && audio.tune(tunes[i % tunes.length]) },
-      notePic(i, p.seed)));
-  const count = t('progress.rhythmNotes', { n });
+  if (!notes.length) return h('div', { class: 'badge-shelf' }, head, h('p', { class: 'badge-none' }, t('progress.rhythmNone')));
+  const line = h('p', { class: 'rhythm-tune' });
+  const buttons = notes.slice(-NOTES_SHOWN).map((n) => {
+    const label = t('progress.rhythmNoteTip', { world: worldName(n.world) });
+    const b = h('button', { class: 'note-btn', type: 'button', tip: label, 'aria-label': label, onClick: () => {
+      const pr = p.progress;
+      pr.rhythmTune = pr.rhythmTune === n.world ? null : n.world;
+      saveProfile();
+      if (pr.rhythmTune !== null) audio.tune(WORLDS[n.world]);
+      show();
+    } }, notePic(n.n, p.seed));
+    b.dataset.world = String(n.world);
+    return b;
+  });
+  const show = () => {
+    const w = p.progress.rhythmTune;
+    for (const b of buttons) b.classList.toggle('chosen', w !== null && b.dataset.world === String(w));
+    line.textContent = w === null ? t('progress.rhythmTuneNone') : t('progress.rhythmTune', { world: worldName(w) });
+  };
+  show();
+  const count = t('progress.rhythmNotes', { n: notes.length });
   return h('div', { class: 'badge-shelf' }, head,
-    h('div', { class: 'rhythm-notes' }, h('div', { class: 'rhythm-note-list' }, ...notes), h('b', { class: 'rhythm-count', tip: count, 'aria-label': count }, String(n))));
+    h('div', { class: 'rhythm-notes' }, h('div', { class: 'rhythm-note-list' }, ...buttons), h('b', { class: 'rhythm-count', tip: count, 'aria-label': count }, String(notes.length))),
+    line);
 }
 
 /** The summary rows, a row per story under their heading, the badge shelf, the range awards and the rhythm notes, and when the child last trained. */

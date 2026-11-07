@@ -27,6 +27,7 @@ import { accuracyPic, placeRing, roundButton, speedPic } from '../ui/hud';
 import type { WordSource } from '../words/words';
 import { SUPER_ID, type Surprise, type TaskSpec } from '../storage/schema';
 import type { LevelDef } from './levels';
+import { menuMusic } from './rhythm-notes';
 import { WORLDS, grownCount, hasMinLength, journeyProgress, levelById, levelOver, minActiveS, playedStep, shownProgress, worldName, worldStory } from './levels';
 import { type Mode, driftOffset } from './mode';
 import { ENTER_MAX, EnterMarks } from './enter';
@@ -346,7 +347,7 @@ export class LevelRuntime {
     const own = [`bg-${world}-far`, `bg-${world}${ground}-mid`, `bg-${world}${ground}-near`, `bg-${world}${ground}-shore`, ...this.mode.pictures, ...tapkoPictures(p.companion), ...friendPictures(), ...this.friends.pictures];
     await Promise.race([preload(own), new Promise((r) => setTimeout(r, PICTURES_WAIT_S * 1000))]);
     if (this.disposed) return;
-    audio.music(this.def.kind === 'practice' ? app.menuTrack : this.mode.ownMusic ? null : this.mode.world);
+    audio.music(this.def.kind === 'practice' ? menuMusic(app.profile) : this.mode.ownMusic ? null : this.mode.world);
     // Free typing and staying a while start at once; the child has just played this level.
     // Free typing has no card: the hands lie beside the keyboard and glide onto the keys a second later (sooner when a key
     // comes first); without motion they are on the keys from the start.

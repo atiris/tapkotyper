@@ -165,7 +165,6 @@
     "aimTip": "Target range: practise the letters you do not type accurately enough yet. When only accuracy stands between you and the next letter, this is where you get it.",
     "parrotTip": "Parrot: type a few words many times in a row, until your fingers know them by themselves. Speed does not matter.",
     "rhythmTip": "Rhythm: letters fall from the clouds. Press the key while the letter is in the glowing band and the basket catches it. That is how you learn to type evenly.",
-    "rhythmOpens": "Opens once you know at least {n} letters.",
     "journeyTip": "Hero's journey: a longer, harder trip through every world of this story.",
     "parrotHome": "the parrot is at home",
     "sideOpens": "Opens when you finish this world.",
@@ -218,6 +217,13 @@
         "no": "No",
         "fromStartLine": "We will learn it from the start, it will go quickly."
       }
+    },
+    "journey": {
+      "bronze": "Your result: a bronze journey ({n} ★).",
+      "silver": "Your result: a silver journey ({n} ★).",
+      "gold": "Your result: a gold journey ({n} ★).",
+      "none": "No result yet. Click and set off.",
+      "needs": "Bronze for 1 ★, silver for 3 ★, gold for 5 ★."
     }
   },
   "level": {
@@ -517,7 +523,7 @@
     "caught": "Letters caught",
     "rhythmTop": "A new top tempo: {n} letters per minute!",
     "rhythmBetter": "Your rhythm is better than last time.",
-    "rhythmNote": "Great rhythm! You have a new rhythm note."
+    "rhythmNote": "Great rhythm! You have a new rhythm note with the music of {world}."
   },
   "results": {
     "peek": "Look at the game (Esc)",
@@ -1150,9 +1156,9 @@
     "badgeNone": "None yet",
     "rangeAwards": "Target range awards",
     "rhythmTitle": "My rhythm",
-    "rhythmNotes": "Rhythm notes: {n}. One fades for every three days without Rhythm.",
+    "rhythmNotes": "Rhythm notes: {n}. One at random fades for every three days without Rytmus.",
     "rhythmNone": "A great rhythm in the Rhythm game earns you a rhythm note.",
-    "rhythmNoteTip": "Click to hear the tune of one world.",
+    "rhythmNoteTip": "A note from {world}. Click and its music plays on the World map.",
     "parrots": "Parrots at home: {n}, most at once: {best}",
     "parrotCount": "{n} max {best}",
     "parrotsEarned": "Parrots won since the start: {n}",
@@ -1163,7 +1169,9 @@
     "time14": "Typing time in the last 14 days: {time}",
     "timeMin": "{m} min",
     "timeHours": "{h} h {m}",
-    "timeHoursFull": "{h} h {m} min"
+    "timeHoursFull": "{h} h {m} min",
+    "rhythmTune": "The music of {world} plays on the World map.",
+    "rhythmTuneNone": "Click a note and the music of its world plays on the World map."
   },
   "stats": {
     "title": "My keys",

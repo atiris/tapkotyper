@@ -2,15 +2,16 @@ import { describe, expect, it } from 'vitest';
 import { LAYOUTS, fingerFor } from '../keyboard/layouts';
 import { Rng } from '../engine/rng';
 import {
-  CHANGE_S, PHRASE, TEMPI, W_START, accuracyCap, beatScore, beatsPerLetter, earnsNote, fallSeconds, judge, laneLetter, laneSetup,
-  laneWeights, notesNow, phraseLanes, phraseStep, planChanges, rhythmWord, Song, startTempo, stepTempo, stepWindow, targetTempo, timing, type Landing,
+  CHANGE_S, PHRASE, W_START, accuracyCap, beatScore, beatsPerLetter, changeCount, earnsNote, fadeNotes, fallSeconds, judge, laneCount, laneNow,
+  laneSetup, laneWeights, nextBase, notesDue, phraseLanes, phraseStep, pickLanes, planChanges, rhythmWord, Song, startTempo, stepLevel, stepWindow,
+  targetTempo, tempoAt, timing, type Landing,
   type Lane,
 } from './beat';
 
 const sk = LAYOUTS['sk-qwertz'];
 const finger = (ch: string) => fingerFor(sk, ch);
 const world1 = laneSetup(['f', 'j', ' ', 'd', 'k'], finger);
-const song = (lanes: Lane[], tempo: number, roundS = 60, changes = planChanges(lanes, 0, roundS)) =>
+const song = (lanes: Lane[], tempo: number, roundS = 60, changes = planChanges(lanes, [], 0, roundS)) =>
   new Song({ lanes, changes, weights: lanes.map(() => 1), tempo, rand: () => 0.42, roundS });
 /** Plays the song to its end, the tempo going `dir` at every phrase. */
 const playOut = (s: Song, dir: -1 | 0 | 1 = 0) => {
@@ -26,6 +27,19 @@ describe('lanes', () => {
     expect(more.map((l) => l.letters.join(''))).toEqual(['a', 's', 'd', 'fg', 'jh', 'k', 'l']);
   });
 
+  it('a story plays more lanes world by world: 2 to 4, 4 to 6, 4 to 8', () => {
+    expect([0, 1, 2, 3, 4].map((w) => laneCount(0, w, 5))).toEqual([2, 2, 3, 3, 4]);
+    expect([0, 1, 2, 3, 4].map((w) => laneCount(1, w, 5))).toEqual([4, 4, 5, 5, 6]);
+    expect([0, 1, 2, 3, 4].map((w) => laneCount(2, w, 5))).toEqual([4, 5, 6, 7, 8]);
+  });
+
+  it('plays the lanes of the newest letters, still left to right as the fingers sit', () => {
+    const all = laneSetup(['f', 'j', 'd', 'k', 'a', 'p'], finger);
+    const { lanes, spare } = pickLanes(all, 2, ['f', 'j', 'd', 'k', 'a', 'p']);
+    expect(lanes.map((l) => l.letters[0])).toEqual(['a', 'p']);
+    expect(spare.map((l) => l.letters[0])).toEqual(['d', 'f', 'j', 'k']);
+  });
+
   it('the weakest third of the letters (at most three) comes a little more often', () => {
     expect(laneWeights([0.99, 0.9, 0.95, 0.97])).toEqual([1, 1.5, 1.5, 1]);
     expect(laneWeights([0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.96, 0.97, 0.98, 0.99]).filter((w) => w > 1)).toHaveLength(3);
@@ -33,17 +47,28 @@ describe('lanes', () => {
 });
 
 describe('tempo', () => {
-  it('a new child starts at 30, others at 70 % of their usual speed, at most 60', () => {
-    expect(startTempo(undefined, 0, '2026-11-07')).toBe(30);
-    expect(startTempo(undefined, 60, '2026-11-07')).toBe(42);
-    expect(startTempo(undefined, 300, '2026-11-07')).toBe(60);
+  it('a new child starts at 30, others at 70 % of their usual speed, at most the world\'s target', () => {
+    expect(startTempo(undefined, 0, '2026-11-07', 40)).toBe(30);
+    expect(startTempo(undefined, 50, '2026-11-07', 40)).toBe(35);
+    expect(startTempo(undefined, 300, '2026-11-07', 40)).toBe(40);
   });
 
-  it('a kept tempo is the next start, one step lower after a week without playing', () => {
+  it('a kept tempo is the next base, a step lower after a week without playing', () => {
     const kept = { tempo: 48, at: '2026-11-01', rhythm: 70, top: 48 };
-    expect(startTempo(kept, 0, '2026-11-07')).toBe(48);
-    expect(startTempo(kept, 0, '2026-11-20')).toBe(42);
-    expect(startTempo({ ...kept, tempo: 30 }, 0, '2026-12-20')).toBe(30);
+    expect(startTempo(kept, 0, '2026-11-07', 40)).toBe(48);
+    expect(startTempo(kept, 0, '2026-11-20', 40)).toBe(46);
+    expect(startTempo({ ...kept, tempo: 30 }, 0, '2026-12-20', 40)).toBe(30);
+  });
+
+  it('a round steps 5 % of its base, at most four steps either way; the next base moves one step', () => {
+    expect([-4, -1, 0, 1, 4].map((l) => tempoAt(40, l))).toEqual([32, 38, 40, 42, 48]);
+    expect(stepLevel(4, 1)).toBe(4);
+    expect(stepLevel(-4, -1)).toBe(-4);
+    expect(nextBase(40, 3, 40)).toBe(42);
+    expect(nextBase(40, -2, 40)).toBe(38);
+    expect(nextBase(40, 0, 40)).toBe(40);
+    // Never over one and a half times the target.
+    expect(nextBase(60, 4, 40)).toBe(60);
   });
 
   it('steps up only with high accuracy and catches, down with errors or misses; errors weigh more', () => {
@@ -51,17 +76,14 @@ describe('tempo', () => {
     expect(phraseStep(0.94, 1)).toBe(0);
     expect(phraseStep(0.84, 1)).toBe(-1);
     expect(phraseStep(1, 0.69)).toBe(-1);
-    expect(stepTempo(120, 1)).toBe(120);
-    expect(stepTempo(30, -1)).toBe(30);
-    expect(stepTempo(60, 1)).toBe(70);
   });
 
-  it('the target tempo is the story\'s words a minute as letters, on a step', () => {
-    expect([8, 10, 12].map(targetTempo)).toEqual([42, 54, 60]);
+  it('the target tempo is the story\'s words a minute as letters', () => {
+    expect([8, 10, 12].map(targetTempo)).toEqual([40, 50, 60]);
   });
 
   it('the next letter is always in the air when one lands, and music below 60 plays double time', () => {
-    for (const tempo of TEMPI) expect(fallSeconds(60 / tempo)).toBeGreaterThan(60 / tempo);
+    for (let tempo = 30; tempo <= 120; tempo++) expect(fallSeconds(60 / tempo)).toBeGreaterThan(60 / tempo);
     expect(beatsPerLetter(54)).toBe(2);
     expect(beatsPerLetter(60)).toBe(1);
   });
@@ -77,10 +99,10 @@ describe('catch window', () => {
     expect(judge(10.49, 11, 1, 0.5)).toBe('early');
   });
 
-  it('grows after a step down, up to half a beat, and narrows back after a step up', () => {
+  it('grows after a step down, up to half a beat; a step up keeps it', () => {
     expect(stepWindow(W_START, -1)).toBe(0.4);
     expect(stepWindow(0.5, -1)).toBe(0.5);
-    expect(stepWindow(0.4, 1)).toBe(W_START);
+    expect(stepWindow(0.4, 1)).toBe(0.4);
     expect(stepWindow(W_START, 1)).toBe(W_START);
     expect(stepWindow(0.45, 0)).toBe(0.45);
   });
@@ -101,9 +123,9 @@ describe('song', () => {
     expect(s.bars[1].beat).toBeCloseTo(T / 2);
   });
 
-  it('changes the tempo only between phrases, by one step each', () => {
-    const s = playOut(song(world1, 30, 120), 1);
-    expect(s.phrases.map((p) => p.tempo).slice(0, 4)).toEqual([30, 36, 42, 48]);
+  it('changes the tempo only between phrases, by 5 % of the base each, at most four steps up', () => {
+    const s = playOut(song(world1, 40, 240), 1);
+    expect(s.phrases.map((p) => p.tempo).slice(0, 7)).toEqual([40, 42, 44, 46, 48, 48, 48]);
     for (const d of s.drops) expect(d.T).toBeCloseTo(60 / s.phrases[d.phrase].tempo);
     for (const p of s.phrases.slice(1)) {
       const prev = s.drops[p.first - 1];
@@ -154,13 +176,31 @@ describe('song', () => {
 });
 
 describe('lane changes', () => {
-  it('needs a second letter of the same finger: the first world has none', () => {
-    expect(planChanges(world1, 1)).toEqual([]);
+  it('only in the second half of a story\'s worlds: one, two or three by the story', () => {
+    expect([0, 1, 2, 3, 4].map((w) => changeCount(0, w, 5))).toEqual([0, 0, 0, 1, 1]);
+    expect(changeCount(1, 4, 5)).toBe(2);
+    expect(changeCount(2, 3, 5)).toBe(3);
+  });
+
+  it('needs a letter that fits between the neighbours: four lanes of four fingers have none', () => {
+    expect(planChanges(world1, [], 1)).toEqual([]);
+  });
+
+  it('a lane may take a spare finger\'s letter between its neighbours, so the lanes stay in keyboard order', () => {
+    const all = laneSetup(['a', 's', 'f', 'j', 'l', 'p'], finger);
+    const { lanes, spare } = pickLanes(all, 3, ['a', 's', 'f', 'j', 'l', 'p']);
+    expect(lanes.map((l) => l.letters[0])).toEqual(['j', 'l', 'p']);
+    const changes = planChanges(lanes, spare, 1, 60);
+    // The first lane (j) may only take a finger left of l's: a, s or f.
+    expect(changes).toHaveLength(1);
+    expect(changes[0].lane).toBe(0);
+    expect(['a', 's', 'f']).toContain(changes[0].letter);
+    expect(changes[0].finger).toBeLessThan(8);
   });
 
   it('spreads the story\'s changes over the round and keeps the lane empty while its cloud changes', () => {
     const lanes = laneSetup(['f', 'j', 'd', 'k', 'g'], finger);
-    const changes = planChanges(lanes, 2, 120);
+    const changes = planChanges(lanes, [], 2, 120);
     expect(changes.map((c) => [Math.round(c.at), lanes[c.lane].letters[0], c.letter])).toEqual([[40, 'f', 'g'], [80, 'f', 'f']]);
     const s = playOut(song(lanes, 60, 120, changes));
     for (const c of changes) {
@@ -169,7 +209,7 @@ describe('lane changes', () => {
     const after = s.drops.filter((d) => d.lane === changes[0].lane && d.release > changes[0].at && d.release < changes[1].at);
     expect(after.length).toBeGreaterThan(0);
     expect(new Set(after.map((d) => d.letter))).toEqual(new Set(['g']));
-    expect(laneLetter(lanes, changes, changes[0].lane, 10)).toBe('f');
+    expect(laneNow(lanes, changes, changes[0].lane, 10).letter).toBe('f');
   });
 });
 
@@ -229,12 +269,14 @@ describe('rhythm notes', () => {
 
   it('one fades for every three days without a round: played Monday, all on Thursday, one fewer on Friday', () => {
     const monday = '2026-11-02';
-    expect(notesNow(5, monday, '2026-11-05')).toBe(5);
-    expect(notesNow(5, monday, '2026-11-06')).toBe(4);
-    expect(notesNow(5, monday, '2026-11-08')).toBe(4);
-    expect(notesNow(5, monday, '2026-11-09')).toBe(3);
-    expect(notesNow(5, monday, '2026-11-12')).toBe(2);
-    expect(notesNow(1, monday, '2026-12-30')).toBe(0);
-    expect(notesNow(0, null, '2026-11-06')).toBe(0);
+    expect(['2026-11-05', '2026-11-06', '2026-11-08', '2026-11-09', '2026-11-12'].map((d) => notesDue(monday, d))).toEqual([0, 1, 1, 2, 3]);
+    expect(notesDue(null, '2026-11-06')).toBe(0);
+  });
+
+  it('a fading note is a random one, and a fade already taken is not taken again', () => {
+    const notes = [1, 2, 3, 4, 5];
+    expect(fadeNotes(notes, 0, '2026-11-02', '2026-11-06', () => 0.5)).toEqual([1, 2, 4, 5]);
+    expect(fadeNotes(notes, 1, '2026-11-02', '2026-11-06', () => 0.5)).toEqual(notes);
+    expect(fadeNotes(notes, 0, '2026-11-02', '2026-12-30', () => 0)).toEqual([]);
   });
 });

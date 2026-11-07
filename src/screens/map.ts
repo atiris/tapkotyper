@@ -5,12 +5,14 @@ import { compassElement } from '../gfx/compass';
 import { tapkoElement } from '../gfx/tapko';
 import { t, tList } from '../i18n/i18n';
 import { nickname } from '../storage/store';
-import { LEVELS, RHYTHM_MIN_LETTERS, RHYTHM_WORLDS, STORIES, type StoryDef, WORLDS, activityOf, aimOpen, aimWorld, isLevelReached, isWorldUnlocked, journeyId, journeyOpen, keysMissing, levelById, nextLevel, rhythmOpen, storyOpen, worldLevels, worldLock, worldName } from '../game/levels';
+import { LEVELS, STORIES, type StoryDef, WORLDS, activityOf, aimOpen, aimWorld, isLevelReached, isWorldUnlocked, journeyId, journeyOpen, keysMissing, levelById, nextLevel, rhythmOpen, storyOpen, worldLevels, worldLock, worldName } from '../game/levels';
 import { GUEST_ID, type Profile, SUPER_ID, type Surprise } from '../storage/schema';
 import { activeKeys, notReadyKeys } from '../learning/lessons';
 import { keyLabel } from '../ui/keyboard-guide';
 import { badgeTier } from '../game/rewards';
 import { badge } from '../ui/badge';
+import { badgeShow } from '../ui/badge-show';
+import { type BadgeTier, journeyTier } from '../game/rewards';
 import { flyAway, hasParrotBadge } from '../game/parrots';
 import { localDate } from '../learning/stats';
 import { arrowFocus, button, closeButton, h, icon, modal } from '../ui/dom';
@@ -33,6 +35,7 @@ import { type TeacherTip, dueTip, tipSeen } from '../app/teacher-tips';
 import { openStats } from './stats';
 import { openWorldKeys, worldKeysButton, worldLockText } from './world-keys';
 import { taskCard } from './task';
+import { menuMusic, rhythmNotes } from '../game/rhythm-notes';
 
 /** Ms Turtle's pictures, one after another with her tips. */
 const TEACHER_PICTURES = ['ui-teacher', 'ui-teacher-2', 'ui-teacher-3'];
@@ -156,7 +159,9 @@ const ARO_AFTER_MS = 1800;
 
 export function mapScreen(root: HTMLElement, { focus }: { focus?: 'language' } = {}): () => void {
   const p = app.profile!;
-  audio.music(app.menuTrack);
+  // Notes fade away over the days; a chosen note's world music plays here.
+  if (rhythmNotes(p, localDate()).changed) saveProfile();
+  audio.music(menuMusic(p));
   // Won parrots may fly away over the days; the map tells it once.
   flyAway(p, localDate());
   const flown = [...p.progress.parrotFlown].sort((a, b) => a - b);
@@ -293,29 +298,57 @@ function parrotNode(p: Profile, open: boolean, world: number): HTMLElement {
   }, pic ? h('img', { class: 'level-act', src: pic, alt: '' }) : icon('star', 'icon'), miniCheck(p.progress.parrotsWon.includes(world)));
 }
 
-/** Rytmus of a world: the metronome, and a check once its target tempo was held accurately; faded and closed until four letters are ready (the first world) or the world is finished. */
-function rhythmNode(p: Profile, world: number): HTMLElement {
-  const open = rhythmOpen(p, world);
+/** Rytmus of a world: the metronome, and a check once its target tempo was held accurately; faded and closed until the world is finished. */
+function rhythmNode(p: Profile, open: boolean, world: number): HTMLElement {
   const won = p.progress.rhythmWon.includes(world);
   const pic = imageUrl('ui-act-rhythm');
-  const tip = open ? t('map.rhythmTip') : `${t('map.rhythmTip')} ${t(world === 0 ? 'map.rhythmOpens' : 'map.sideOpens', { n: RHYTHM_MIN_LETTERS })}`;
-  return h('button', { class: `level-node rhythm-node ${won ? 'done' : ''}`, type: 'button', disabled: !open, 'aria-label': t('rhythm.title'), tip, onClick: () => go('level', { id: 'rhythm', world }) },
+  return h('button', { class: `level-node rhythm-node ${won ? 'done' : ''}`, type: 'button', disabled: !open, 'aria-label': t('rhythm.title'), tip: sideTip(open, 'map.rhythmTip'), onClick: () => go('level', { id: 'rhythm', world }) },
     pic ? h('img', { class: 'level-act', src: pic, alt: '' }) : icon('wave', 'icon'), miniCheck(won));
+}
+
+/** What the journey badge's tooltip tells: what the journey is, how far it went, and what each tier needs. */
+function journeyTip(open: boolean, stars: number, tier: BadgeTier | null): string {
+  if (!open) return `${t('map.journeyTip')} ${t('map.sideOpens')}`;
+  const result = tier ? t(`map.journey.${tier}`, { n: stars }) : t('map.journey.none');
+  return [t('map.journeyTip'), result, t('map.journey.needs')].join('\n');
+}
+
+/**
+ * The story's hero's journey as a badge at the bottom right of its last world's island: the compass
+ * in a ring of its tier (bronze, silver, gold by its best stars); a click starts it. Faded and closed
+ * until that world is finished.
+ */
+function journeyBadge(p: Profile, story: StoryDef): HTMLElement {
+  const open = journeyOpen(p, story);
+  const stars = p.progress.levels[journeyId(story)] ?? 0;
+  const tier = journeyTier(stars);
+  const name = `${t('journey.title')}${tier ? `, ${t(`map.journey.${tier}`, { n: stars })}` : ''}`;
+  return h('button', {
+    class: `journey-badge badge small ${tier ?? 'none'} ${open ? '' : 'closed'}`, type: 'button', disabled: !open,
+    'aria-label': name, tip: journeyTip(open, stars, tier),
+    onClick: (e: MouseEvent) => {
+      e.stopPropagation();
+      go('level', { id: 'journey', story: story.id });
+    },
+  }, compassElement('journey-compass'));
+}
+
+/** The world's badge at the island's top right: a click shows it big in the middle of the screen. */
+function worldBadge(world: number, tier: BadgeTier): HTMLElement {
+  const b = badge(world, tier, true);
+  // The button carries the badge's name and tooltip.
+  const label = b.getAttribute('aria-label') ?? '', tip = b.dataset.tip ?? '';
+  b.removeAttribute('aria-label');
+  b.removeAttribute('role');
+  delete b.dataset.tip;
+  return h('button', { class: 'world-badge-btn', type: 'button', 'aria-label': label, tip, onClick: (e: MouseEvent) => {
+    e.stopPropagation();
+    badgeShow({ world, tier });
+  } }, b);
 }
 
 /** A node's best stars, small, only the earned ones: one in the middle, two side by side, three as a triangle, four two over two, five like the rings; none before the first finish, so the picture stands in the middle. */
 const miniStars = (stars: number) => (stars ? h('span', { class: `mini-stars n${stars}` }, ...Array.from({ length: stars }, () => h('i'))) : null);
-
-/** The story's hero's journey: the compass with its best stars, right after the crown of the story's last world; faded and closed until that world is finished. */
-function journeyNode(p: Profile, story: StoryDef): HTMLElement {
-  const open = journeyOpen(p, story);
-  const stars = p.progress.levels[journeyId(story)] ?? 0;
-  return h('button', {
-    class: `level-node journey-node ${stars ? 'done' : ''}`, type: 'button', disabled: !open,
-    'aria-label': `${t('journey.title')}${stars ? `, ${t('map.starsAria', { n: stars })}` : ''}`, tip: sideTip(open, 'map.journeyTip'),
-    onClick: () => go('level', { id: 'journey', story: story.id }),
-  }, compassElement('level-act'), miniStars(stars));
-}
 
 /** Story levels still to finish up to the level `id`, counted from the next one (at least that level itself). */
 function levelsToGo(p: Profile, id: string): number {
@@ -367,7 +400,7 @@ function surprisesMark(p: Profile, world: number): HTMLElement | null {
  * One story: its title and its worlds as islands; a story still closed says when it opens.
  * A level reached without enough keys shows a key and lets the bubble say how many are missing
  * and which letters need accuracy (`held`); every world shows its target range and its parrot, open once the world is finished, a world with Rytmus its metronome,
- * and the story's last world its hero's journey after the crown.
+ * and the story's last world its hero's journey as a badge on its island.
  */
 function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held: string, keysBubble: (n: number, world: number) => void): HTMLElement {
   const islands = story.worlds.map((wi) => {
@@ -406,10 +439,9 @@ function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held:
         'aria-label': worldName(wi),
         tip: lock || null,
       }) }, img ? h('img', { src: img, alt: '' }) : h('div', { class: 'island-fallback' }), open ? worldKeysButton(p, wi) : h('span', { class: 'lock', tip: lock || null }, icon('lock')),
-        tier ? badge(wi, tier, true) : null, surprisesMark(p, wi)),
+        tier ? worldBadge(wi, tier) : null, surprisesMark(p, wi), open && wi === story.worlds[story.worlds.length - 1] ? journeyBadge(p, story) : null),
       h('h3', {}, `${wi + 1}. ${worldName(wi)}`),
-      h('div', { class: 'level-row' }, ...levels, wi === story.worlds[story.worlds.length - 1] ? journeyNode(p, story) : null, aimNode(p, aimOpen(p, wi), wi), parrotNode(p, aimOpen(p, wi), wi),
-        RHYTHM_WORLDS.includes(wi) ? rhythmNode(p, wi) : null));
+      h('div', { class: 'level-row' }, ...levels, aimNode(p, aimOpen(p, wi), wi), parrotNode(p, aimOpen(p, wi), wi), rhythmNode(p, rhythmOpen(p, wi), wi)));
   });
   const closed = !storyOpen(p, story);
   return h('section', { class: `story-row story-${story.id}` },

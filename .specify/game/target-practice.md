@@ -17,7 +17,7 @@
   random for each throw (never the same twice in a row) from about 40 things open in every
   world (a pebble, a tomato, an egg, an alarm clock, a cactus, a boomerang, a planet, a computer mouse, a poppy seed, a treasure map, a snowflake, ...),
   three more in the robot story's worlds (a battery, a magnet, a gear) and three more in the
-  fairy story's (a music note, a frog, a magic wand). The compass, the same picture as the node of the
+  fairy story's (a music note, a frog, a magic wand). The compass, the same picture as the badge of the
   [hero's journey](heros-journey.md), is one of the things of every world: it bounces with a
   wobble and a sparkle, and rings. The child does not know what flies until
   it is thrown. A short word over the character's paw starts each throw, with no hurry; the rules said at the start

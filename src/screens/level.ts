@@ -2,7 +2,7 @@ import { app, go, isBreakDue, saveProfile } from '../app/app';
 import { starRow } from '../ui/chrome';
 import { tapkoElement } from '../gfx/tapko';
 import { t, tn } from '../i18n/i18n';
-import { JOURNEYS, LEVELS, type LevelDef, STORIES, type StoryDef, WORLDS, DRILL_SECONDS, aimLevel, aimOpen, aimWorld, freeTypeLevel, isLevelUnlocked, isWorldUnlocked, journeyLevel, journeyOpen, levelAt, levelById, nextLevel, parrotLevel, placementLevel, practiceLevel, rhythmLevel, rhythmOpen, taskLevel } from '../game/levels';
+import { JOURNEYS, LEVELS, type LevelDef, STORIES, type StoryDef, WORLDS, DRILL_SECONDS, worldName, aimLevel, aimOpen, aimWorld, freeTypeLevel, isLevelUnlocked, isWorldUnlocked, journeyLevel, journeyOpen, levelAt, levelById, nextLevel, parrotLevel, placementLevel, practiceLevel, rhythmLevel, rhythmOpen, taskLevel } from '../game/levels';
 import { type LevelResult, newJourneyRun } from '../game/progress';
 import type { Style } from '../game/typing';
 import { WORLD_REWARDS, dressForMission } from '../game/rewards';
@@ -16,7 +16,8 @@ import type { AimMode } from '../game/modes/aim';
 import type { FreeTyped } from '../game/modes/freetype';
 import type { ParrotMode } from '../game/modes/parrot';
 import type { RhythmMode } from '../game/modes/rhythm';
-import { earnsNote, notesNow, rhythmWord } from '../game/beat';
+import { earnsNote, rhythmWord } from '../game/beat';
+import { addRhythmRound } from '../game/rhythm-notes';
 import type { PlacementMode } from '../game/modes/placement';
 import { strongWeak } from '../learning/placement';
 import { activeKeys, keyMastery, recentAccuracy } from '../learning/lessons';
@@ -236,7 +237,7 @@ function newsLine(news: News[]): Child[] | null {
     : n.kind === 'mastered' ? [null, t('end.keyMastered', { key: keyLabel(n.key) })]
     : n.kind === 'letter' ? [null, t('end.letterBetter', { key: keyLabel(n.key), before: pct(n.before), after: pct(n.after) })]
     : n.kind === 'journeyHome' ? [null, t(`end.journeyHome.${n.story}`)]
-    : n.kind === 'rhythmNote' ? [notePic(n.n, app.profile!.seed), t('end.rhythmNote')]
+    : n.kind === 'rhythmNote' ? [notePic(n.n, app.profile!.seed), t('end.rhythmNote', { world: worldName(n.world) })]
     : n.kind === 'tempoTop' ? [null, t('end.rhythmTop', { n: n.tempo })]
     : n.kind === 'beatBetter' ? [null, t('end.rhythmBetter')]
     : [null, t('end.faster')];
@@ -492,16 +493,12 @@ function showRhythmDone(root: HTMLElement, def: LevelDef, r: LevelResult, mode: 
   const p = app.profile!;
   const before = p.progress.rhythm[def.world];
   const score = mode.score, held = mode.held || mode.song.phrases[0].tempo;
-  p.progress.rhythm[def.world] = { tempo: mode.tempo, at: localDate(), rhythm: score, top: Math.max(before?.top ?? 0, mode.held) };
+  p.progress.rhythm[def.world] = { tempo: mode.nextTempo, at: localDate(), rhythm: score, top: Math.max(before?.top ?? 0, mode.held) };
   if (mode.reached && !p.progress.rhythmWon.includes(def.world)) p.progress.rhythmWon.push(def.world);
-  const today = localDate();
-  const kept = notesNow(p.progress.rhythmNotes, p.progress.rhythmNotesAt, today);
-  const note = earnsNote(score, r.accuracy);
-  p.progress.rhythmNotes = kept + (note ? 1 : 0);
-  p.progress.rhythmNotesAt = today;
+  const note = addRhythmRound(p, def.world, earnsNote(score, r.accuracy), localDate());
   saveProfile();
   const news: News[] = [
-    ...(note ? [{ kind: 'rhythmNote', n: kept } as const] : []),
+    ...(note ? [{ kind: 'rhythmNote', n: note.n, world: note.world } as const] : []),
     ...(before && mode.held > before.top ? [{ kind: 'tempoTop', tempo: mode.held } as const] : []),
     ...(before?.rhythm != null && score !== null && score > before.rhythm ? [{ kind: 'beatBetter' } as const] : []),
     ...levelNews({ ...r, growth: null, trend: null }),

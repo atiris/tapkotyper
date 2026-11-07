@@ -27,8 +27,8 @@
   reached it) **and** the child masters its must-know keys. The list guards the way in only: a
   world with a level already played stays open, so finished levels can always be replayed.
 - **The world's keys panel**, the same for an open and a closed world. An open world opens it by
-  a round keyboard button at the bottom of its picture, in the badge's column above the world's
-  name, drawn like the small badge (same size) with a grey ring and a keyboard picture; a closed
+  a round keyboard button at the bottom left of its picture, under the surprises' corner,
+  drawn like the small badge (same size) with a grey ring and a keyboard picture; a closed
   world has only its lock: hovering it tells why the world is closed (and which keys, when only
   keys hold it), a click opens the panel. Heading: "<lock> Podmienky odomknutia sveta NAME" for a
   closed world, "Klávesnica v svete NAME" for an open one. A closed world says why above the

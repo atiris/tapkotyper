@@ -1069,7 +1069,7 @@
     "progress.rhythmTitle": "Heading of the My progress section with the rhythm notes from the Rytmus game.",
     "progress.rhythmNotes": "The count at the end of the rhythm notes row and its tooltip; {n} notes; one fades for every three days without a Rytmus round.",
     "progress.rhythmNone": "Line in the rhythm section while the child has no note: how to earn one.",
-    "progress.rhythmNoteTip": "Tooltip of a rhythm note: a click plays the music of one world.",
+    "progress.rhythmNoteTip": "Tooltip of a rhythm note: the world it was earned in; a click plays that world's music and chooses it for the World map.",
     "progress.parrots": "Tooltip over the parrot count in the progress's top row: {n} at home now, {best} the most at once.",
     "progress.parrotCount": "Short text next to the parrot icon in the progress's top row, e.g. \"2 max 5\": {n} at home now, {best} the most at once.",
     "progress.parrotsEarned": "Tooltip over the count of all parrots won in the progress's third row: every parrot round won since the start. {n} is the count.",
@@ -1837,7 +1837,6 @@
     "rhythm.words.smooth": "Word for a rhythm score of 70-89.",
     "rhythm.words.clockwork": "Word for a rhythm score of 90-100: as even as a clock.",
     "map.rhythmTip": "Tooltip of the Rytmus node on the map: what the game trains (typing evenly to a beat).",
-    "map.rhythmOpens": "Added to the Rytmus node's tooltip in the first world while it is closed; {n} is the number of letters the child must know (4).",
     "end.rhythmDone": "Title of the end card after a Rytmus round.",
     "end.rhythm": "Row label on the Rytmus end card: the rhythm score (how even the presses were to the beat).",
     "end.rhythmScore": "Value of the rhythm row: {n} of 100 and {word}, one of rhythm.words.",
@@ -1845,7 +1844,14 @@
     "end.caught": "Row label on the Rytmus end card: letters caught of the letters that fell (end.ofTotal).",
     "end.rhythmTop": "Green news line on the Rytmus end card: a new highest tempo in this world; {n} letters per minute.",
     "end.rhythmBetter": "Green news line on the Rytmus end card: the rhythm score is higher than in the last round of this world.",
-    "end.rhythmNote": "Green news line on the Rytmus end card: the round earned a rhythm note (rhythm 80 or more at 95 % accuracy).",
-    "help.games.rhythm": "Help, Games tab: what the Rytmus game is, next to its metronome picture."
+    "end.rhythmNote": "Green news line on the Rytmus end card: the round earned a rhythm note (rhythm 80 or more at 95 % accuracy); {world} is the world it was played in, whose music the note brings to the World map.",
+    "help.games.rhythm": "Help, Games tab: what the Rytmus game is, next to its metronome picture.",
+    "map.journey.bronze": "Hero's journey badge tooltip (and its name): the best result is bronze; {n} best stars (1-2).",
+    "map.journey.silver": "Hero's journey badge tooltip: the best result is silver; {n} best stars (3-4).",
+    "map.journey.gold": "Hero's journey badge tooltip: the best result is gold (5 stars).",
+    "map.journey.none": "Hero's journey badge tooltip while it was never finished: a click starts it.",
+    "map.journey.needs": "Hero's journey badge tooltip: the stars each tier needs.",
+    "progress.rhythmTune": "Line under the rhythm notes: whose world music the World map plays (while a note of that world is left).",
+    "progress.rhythmTuneNone": "Line under the rhythm notes while none is chosen."
   }
 }

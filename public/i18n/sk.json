@@ -165,7 +165,6 @@
     "aimTip": "Strelnica: tu si precvičíš písmená, ktoré ešte nepíšeš dosť presne. Keď ti k ďalšiemu písmenu chýba už len presnosť, tu ju získaš.",
     "parrotTip": "Papagáj: napíšeš pár slov veľakrát za sebou, kým ich prsty nebudú vedieť samy. Na rýchlosti nezáleží.",
     "rhythmTip": "Rytmus: písmená padajú z obláčikov. Stlač kláves, keď je písmeno v žiarivom páse, a košík ho chytí. Tak sa naučíš písať rovnomerne.",
-    "rhythmOpens": "Otvorí sa, keď budeš vedieť aspoň {n} písmená.",
     "journeyTip": "Cesta hrdinu: dlhšia a ťažšia výprava cez všetky svety tohto príbehu.",
     "parrotHome": "papagáj je doma",
     "sideOpens": "Otvorí sa, keď dokončíš tento svet.",
@@ -218,6 +217,13 @@
         "no": "Nie",
         "fromStartLine": "Naučíme sa to od začiatku, pôjde to rýchlo."
       }
+    },
+    "journey": {
+      "bronze": "Tvoj výsledok: bronzová cesta ({n} ★).",
+      "silver": "Tvoj výsledok: strieborná cesta ({n} ★).",
+      "gold": "Tvoj výsledok: zlatá cesta ({n} ★).",
+      "none": "Zatiaľ bez výsledku. Klikni a vydaj sa na cestu.",
+      "needs": "Bronzová za 1 ★, strieborná za 3 ★, zlatá za 5 ★."
     }
   },
   "level": {
@@ -517,7 +523,7 @@
     "caught": "Chytené písmená",
     "rhythmTop": "Nové najvyššie tempo: {n} písmen za minútu!",
     "rhythmBetter": "Rytmus je lepší ako minule.",
-    "rhythmNote": "Výborný rytmus! Máš novú rytmickú notu."
+    "rhythmNote": "Výborný rytmus! Máš novú rytmickú notu s hudbou sveta {world}."
   },
   "results": {
     "peek": "Pozrieť sa na hru (Esc)",
@@ -1150,9 +1156,9 @@
     "badgeNone": "Zatiaľ žiadny",
     "rangeAwards": "Ocenenia zo strelníc",
     "rhythmTitle": "Môj rytmus",
-    "rhythmNotes": "Rytmické noty: {n}. Jedna zmizne za každé tri dni bez Rytmu.",
+    "rhythmNotes": "Rytmické noty: {n}. Za každé tri dni bez Rytmu jedna náhodná zmizne.",
     "rhythmNone": "Za výborný rytmus v hre Rytmus získaš rytmickú notu.",
-    "rhythmNoteTip": "Klikni a zahrá ti melódia jedného sveta.",
+    "rhythmNoteTip": "Nota zo sveta {world}. Klikni a jeho hudba bude hrať na Mape svetov.",
     "parrots": "Papagáje doma: {n}, najviac naraz: {best}",
     "parrotCount": "{n} max {best}",
     "parrotsEarned": "Papagáje získané od začiatku: {n}",
@@ -1163,7 +1169,9 @@
     "time14": "Čas písania za posledných 14 dní: {time}",
     "timeMin": "{m} min",
     "timeHours": "{h} h {m}",
-    "timeHoursFull": "{h} h {m} min"
+    "timeHoursFull": "{h} h {m} min",
+    "rhythmTune": "Hudba sveta {world} bude použitá na Mape svetov.",
+    "rhythmTuneNone": "Klikni na notu a hudba jej sveta bude hrať na Mape svetov."
   },
   "stats": {
     "title": "Moje klávesy",

@@ -6,12 +6,18 @@
 import type { Finger } from '../keyboard/layouts';
 import type { RhythmRecord } from '../storage/schema';
 
-/** Tempo steps in letters a minute. */
-export const TEMPI = [30, 36, 42, 48, 54, 60, 70, 80, 90, 100, 110, 120] as const;
+/** The slowest and the fastest tempo, letters a minute (the tempo ring is full at the fastest). */
+export const TEMPO_MIN = 30;
+export const TEMPO_MAX = 120;
+/** A phrase's tempo step: this share of the round's base tempo, at most this many steps either way. */
+const TEMPO_STEP = 0.05;
+const TEMPO_REACH = 4;
+/** A round's base tempo never goes over this many times the world's target tempo. */
+const BASE_MAX = 1.5;
 /** Landings in one phrase: the tempo changes only between phrases. */
 export const PHRASE = 16;
-/** Seconds of song a round lasts, and the share of it a hard round grows by at most (a phrase for each step down: a minute of three). */
-export const ROUND_S = 180;
+/** Seconds of song a round lasts by default, and the share of it a hard round grows by at most (a phrase for each step down). */
+export const ROUND_S = 60;
 const EXTRA_SHARE = 1 / 3;
 /** The catch window: this many letter beats on each side of the beat, at the start, per step and at most. */
 export const W_START = 0.35;
@@ -28,9 +34,8 @@ const PLAN_AHEAD_S = 0.2;
 const LEAD_S = 0.6;
 /** A kept tempo older than this many days starts one step lower. */
 const KEPT_DAYS = 7;
-/** The first round's tempo: this share of the usual speed, between the first step and this one. */
+/** The first round's tempo: this share of the usual speed, at most the world's target tempo. */
 const START_SHARE = 0.7;
-const START_MAX = 60;
 /** Seconds around a lane's letter change in which none of its letters may be in the air (the cloud dissolves, a new one comes). */
 export const CHANGE_S = 1.2;
 /** Weight of a weak letter (the lowest third by recent accuracy, at most three) in the free phrases. */
@@ -70,6 +75,31 @@ export function laneSetup(letters: readonly string[], fingerOf: (ch: string) => 
   return [...lanes.entries()].sort((a, b) => a[0] - b[0]).map(([finger, l]) => ({ finger, letters: l }));
 }
 
+/** Lanes of a story's Rytmus, its first world to its last: story 1 two to four, story 2 four to six, story 3 four to eight. */
+const LANES_BY_TIER: readonly (readonly [number, number])[] = [[2, 4], [4, 6], [4, 8]];
+
+/** How many lanes the world at `place` of a story with `worlds` worlds (its `tier`) plays: spread from the story's first count to its last. */
+export function laneCount(tier: number, place: number, worlds: number): number {
+  const [from, to] = LANES_BY_TIER[tier];
+  return from + Math.floor(((to - from) * place) / Math.max(1, worlds - 1));
+}
+
+/** Letter changes a round of the world at `place` has: none in the first half of the story's worlds, else the story's tier + 1. */
+export function changeCount(tier: number, place: number, worlds: number): number {
+  return place >= worlds / 2 ? tier + 1 : 0;
+}
+
+/**
+ * The `n` lanes a round plays, of all the fingers' lanes: those with the newest letters (latest in
+ * `order`, the lesson order), still in keyboard order from the left; the others are the spare lanes
+ * the letter changes may take letters from.
+ */
+export function pickLanes(all: readonly Lane[], n: number, order: readonly string[]): { lanes: Lane[]; spare: Lane[] } {
+  const newest = (l: Lane) => Math.max(...l.letters.map((c) => order.indexOf(c)));
+  const picked = new Set([...all].sort((a, b) => newest(b) - newest(a)).slice(0, n));
+  return { lanes: all.filter((l) => picked.has(l)), spare: all.filter((l) => !picked.has(l)) };
+}
+
 /** Seconds per letter at a tempo. */
 export const beatOf = (tempo: number) => 60 / tempo;
 
@@ -81,15 +111,25 @@ export function fallSeconds(T: number): number {
   return Math.max(1.6, Math.min(3, 2.5 * T), 1.3 * T);
 }
 
-/** The tempo one step up (+1) or down (-1), within the steps. */
-export function stepTempo(tempo: number, dir: -1 | 0 | 1): number {
-  const i = TEMPI.findIndex((x) => x >= tempo);
-  const at = i < 0 ? TEMPI.length - 1 : i;
-  return TEMPI[Math.max(0, Math.min(TEMPI.length - 1, at + dir))];
+const clampTempo = (x: number) => Math.round(Math.max(TEMPO_MIN, Math.min(TEMPO_MAX, x)));
+
+/** A phrase's tempo `level` steps (-4 to 4) away from the round's `base`: 5 % of the base each. */
+export function tempoAt(base: number, level: number): number {
+  return clampTempo(base * (1 + TEMPO_STEP * level));
 }
 
-/** The highest step at or below `x`, at least the first. */
-const stepAtOrBelow = (x: number) => [...TEMPI].reverse().find((s) => s <= x) ?? TEMPI[0];
+/** The next phrase's level: one step `dir`, never more than four steps from the base. */
+export function stepLevel(level: number, dir: -1 | 0 | 1): number {
+  return Math.max(-TEMPO_REACH, Math.min(TEMPO_REACH, level + dir));
+}
+
+/**
+ * The next round's base: one step (5 %) from this round's base towards where its last phrase went,
+ * never over 1.5 times the world's `target` tempo.
+ */
+export function nextBase(base: number, level: number, target: number): number {
+  return Math.min(Math.round(target * BASE_MAX), tempoAt(base, Math.sign(level)));
+}
 
 /** Days from `from` to `to`, both local dates `YYYY-MM-DD`. */
 function days(from: string, to: string): number {
@@ -98,12 +138,12 @@ function days(from: string, to: string): number {
 }
 
 /**
- * A round's first tempo: the world's kept tempo (one step lower after a week without playing),
- * else the step at or below 70 % of the usual speed (letters a minute), at most 60; a new child 30.
+ * A round's base tempo: the world's kept tempo (one step lower after a week without playing), else
+ * 70 % of the usual speed (letters a minute), at most the world's `target`; a new child 30.
  */
-export function startTempo(kept: RhythmRecord | undefined, usualCpm: number, today: string): number {
-  if (kept) return days(kept.at, today) > KEPT_DAYS ? stepTempo(kept.tempo, -1) : stepTempo(kept.tempo, 0);
-  return Math.min(START_MAX, stepAtOrBelow(usualCpm * START_SHARE));
+export function startTempo(kept: RhythmRecord | undefined, usualCpm: number, today: string, target: number): number {
+  if (kept) return days(kept.at, today) > KEPT_DAYS ? tempoAt(kept.tempo, -1) : clampTempo(kept.tempo);
+  return clampTempo(Math.min(target, usualCpm * START_SHARE));
 }
 
 /** A phrase's step: up with accuracy >= 95 % and caught >= 90 %, down with accuracy < 85 % or caught < 70 %; errors weigh more than misses. */
@@ -112,9 +152,9 @@ export function phraseStep(accuracy: number, caught: number): -1 | 0 | 1 {
   return accuracy >= 0.95 && caught >= 0.9 ? 1 : 0;
 }
 
-/** The world's target tempo: the smallest step at or above its story's words a minute as letters (five a word). */
+/** The world's target tempo: its story's words a minute as letters (five a word). */
 export function targetTempo(wordsPerMinute: number): number {
-  return TEMPI.find((s) => s >= wordsPerMinute * 5) ?? TEMPI[TEMPI.length - 1];
+  return clampTempo(wordsPerMinute * 5);
 }
 
 /** Where a press at `at` stands to a beat at `land` with letter beat `T` and window `w` (beats each side): before the window, in it, or after it. */
@@ -135,10 +175,9 @@ export function timing(offset: number, w: number, T: number): 'inTime' | 'slower
   return r < 0 ? 'early' : 'late';
 }
 
-/** The next phrase's window: wider after a step down, narrower again after a step up. */
+/** The next phrase's window: wider after a step down; a step up keeps it (a good rhythm is never made harder to hit). */
 export function stepWindow(w: number, dir: -1 | 0 | 1): number {
-  const next = dir < 0 ? w + W_STEP : dir > 0 ? w - W_STEP : w;
-  return Math.round(Math.max(W_START, Math.min(W_MAX, next)) * 100) / 100;
+  return Math.round(Math.min(W_MAX, dir < 0 ? w + W_STEP : w) * 100) / 100;
 }
 
 /** Weights of the lanes in the free phrases: the lowest third by recent accuracy (at most three) a little more often. */
@@ -207,35 +246,51 @@ export function phraseLanes(
   return out;
 }
 
-/** A lane's letter changes at `at` (song seconds) to `letter`. */
-export interface LaneChange {
+/** A letter on a lane, and the finger that types it (the lane's colour). */
+export interface LaneLetter {
+  letter: string;
+  finger: Finger;
+}
+
+/** A lane's letter changes at `at` (song seconds) to `letter`, typed by `finger`. */
+export interface LaneChange extends LaneLetter {
   at: number;
   lane: number;
-  letter: string;
 }
 
 /**
- * The round's letter changes: `count` of them (a story's tier + 1) spread evenly over the round,
- * taking turns on the lanes whose finger has another letter; none when no lane has one.
+ * The round's letter changes: `count` of them spread evenly over the round, the lanes taking turns.
+ * A lane takes a letter not on any lane now, of its own finger or of a spare lane's (`spare`), whose
+ * finger sits between its neighbours' so the lanes stay in keyboard order; one not shown yet first.
+ * A change no lane can take is left out.
  */
-export function planChanges(lanes: readonly Lane[], count: number, roundS = ROUND_S): LaneChange[] {
-  const open = lanes.map((_, i) => i).filter((i) => lanes[i].letters.length > 1);
-  if (!open.length) return [];
-  const turns = new Map<number, number>();
-  return Array.from({ length: count }, (_, k) => {
-    const lane = open[k % open.length];
-    const n = (turns.get(lane) ?? 0) + 1;
-    turns.set(lane, n);
-    const letters = lanes[lane].letters;
-    return { at: (roundS * (k + 1)) / (count + 1), lane, letter: letters[n % letters.length] };
-  });
+export function planChanges(lanes: readonly Lane[], spare: readonly Lane[], count: number, roundS = ROUND_S): LaneChange[] {
+  const now: LaneLetter[] = lanes.map((l) => ({ letter: l.letters[0], finger: l.finger }));
+  const pool: LaneLetter[] = [...lanes, ...spare].flatMap((l) => l.letters.map((letter) => ({ letter, finger: l.finger })));
+  const shown = new Set(now.map((c) => c.letter));
+  const out: LaneChange[] = [];
+  let turn = 0;
+  for (let k = 0; k < count; k++) {
+    for (let tries = 0; tries < now.length; tries++) {
+      const lane = turn++ % now.length;
+      const lo = lane ? now[lane - 1].finger : -1, hi = lane < now.length - 1 ? now[lane + 1].finger : 10;
+      const fits = pool.filter((c) => c.finger > lo && c.finger < hi && !now.some((x) => x.letter === c.letter));
+      if (!fits.length) continue;
+      const next = fits.find((c) => !shown.has(c.letter)) ?? fits[0];
+      now[lane] = next;
+      shown.add(next.letter);
+      out.push({ at: (roundS * (k + 1)) / (count + 1), lane, ...next });
+      break;
+    }
+  }
+  return out;
 }
 
-/** The letter of a lane for a drop that leaves its cloud at `release`: the last change before it. */
-export function laneLetter(lanes: readonly Lane[], changes: readonly LaneChange[], lane: number, release: number): string {
-  let letter = lanes[lane].letters[0];
-  for (const c of changes) if (c.lane === lane && c.at <= release) letter = c.letter;
-  return letter;
+/** A lane's letter and finger for a drop that leaves its cloud at `release`: the last change before it. */
+export function laneNow(lanes: readonly Lane[], changes: readonly LaneChange[], lane: number, release: number): LaneLetter {
+  let now: LaneLetter = { letter: lanes[lane].letters[0], finger: lanes[lane].finger };
+  for (const c of changes) if (c.lane === lane && c.at <= release) now = c;
+  return now;
 }
 
 /** No letter of the lane may be in the air while its cloud changes. */
@@ -243,11 +298,12 @@ function blocked(changes: readonly LaneChange[], lane: number, release: number, 
   return changes.some((c) => c.lane === lane && release <= c.at + CHANGE_S && land >= c.at);
 }
 
-/** One letter of the song: its lane and letter, when it leaves its cloud and is on its beat, its letter beat, window and phrase. */
+/** One letter of the song: its lane, letter and finger, when it leaves its cloud and is on its beat, its letter beat, window and phrase. */
 export interface Drop {
   index: number;
   lane: number;
   letter: string;
+  finger: Finger;
   release: number;
   land: number;
   T: number;
@@ -264,9 +320,10 @@ export interface Bar {
   kind: 'count' | 'play' | 'end';
 }
 
-/** A phrase: its tempo, its catch window (beats each side), its first beat and its first drop. */
+/** A phrase: its tempo and its steps from the round's base, its catch window (beats each side), its first beat and its first drop. */
 export interface Phrase {
   tempo: number;
+  level: number;
   w: number;
   start: number;
   first: number;
@@ -276,6 +333,7 @@ export interface SongSetup {
   lanes: readonly Lane[];
   changes: readonly LaneChange[];
   weights: readonly number[];
+  /** The round's base tempo: the phrases step around it. */
   tempo: number;
   rand: () => number;
   roundS?: number;
@@ -286,9 +344,9 @@ export interface SongSetup {
 /**
  * The round's song on one clock (seconds from the start): a count-in bar, then phrases of 16
  * landings, each at its own tempo, until the round's time; a closing bar after the last landing.
- * A phrase is planned just before its first letter leaves its cloud; its tempo and window follow the
- * step `decide` gives then (the phrase before, judged on its letters resolved by then), and a step
- * down makes the round a phrase longer, up to a third (a minute of three).
+ * A phrase is planned just before its first letter leaves its cloud; its tempo (5 % of the base a
+ * step, at most four steps away) and window follow the step `decide` gives then (the phrase before,
+ * judged on its letters resolved by then), and a step down makes the round a phrase longer, up to a third.
  */
 export class Song {
   readonly drops: Drop[] = [];
@@ -303,7 +361,7 @@ export class Song {
     this.roundS = this.baseS = s.roundS ?? ROUND_S;
     const b = beatOf(s.tempo) / beatsPerLetter(s.tempo);
     this.bars.push({ index: 0, start: LEAD_S, beat: b, phrase: 0, kind: 'count' });
-    this.addPhrase(s.tempo, W_START, LEAD_S + 4 * b);
+    this.addPhrase(0, W_START, LEAD_S + 4 * b);
   }
 
   /** When the song is over: the end of its closing bar. */
@@ -328,15 +386,16 @@ export class Song {
     if (start > this.roundS) return this.close();
     const dir = decide();
     if (dir < 0) this.roundS = Math.min(this.baseS * (1 + EXTRA_SHARE), this.roundS + PHRASE * beatOf(p.tempo));
-    this.addPhrase(stepTempo(p.tempo, dir), stepWindow(p.w, dir), start, now);
+    this.addPhrase(stepLevel(p.level, dir), stepWindow(p.w, dir), start, now);
   }
 
   /** A phrase from `start`; no letter leaves its cloud before `now` (a slower next tempo falls a little longer than the time left). */
-  private addPhrase(tempo: number, w: number, start: number, now = 0): void {
+  private addPhrase(level: number, w: number, start: number, now = 0): void {
     const phrase = this.phrases.length;
+    const tempo = tempoAt(this.s.tempo, level);
     const T = beatOf(tempo), F = fallSeconds(T), bpl = beatsPerLetter(tempo);
-    this.phrases.push({ tempo, w, start, first: this.drops.length });
-    const letters = this.s.lanes.map((_, i) => laneLetter(this.s.lanes, this.s.changes, i, Math.max(now, start - F)));
+    this.phrases.push({ tempo, level, w, start, first: this.drops.length });
+    const letters = this.s.lanes.map((_, i) => laneNow(this.s.lanes, this.s.changes, i, Math.max(now, start - F)).letter);
     const lanes = phraseLanes(phrase, this.s.lanes, this.s.weights, this.s.rand, start >= this.roundS / 2, this.s.words, letters);
     let landed = 0;
     for (let i = 0; i < PHRASE; i++) {
@@ -349,7 +408,7 @@ export class Song {
         const free = this.s.lanes.map((_, j) => j).filter((j) => !blocked(this.s.changes, j, release, land)).sort((a, b) => Math.abs(a - lane) - Math.abs(b - lane));
         if (free.length) lane = free[0];
       }
-      this.drops.push({ index: this.drops.length, lane, letter: laneLetter(this.s.lanes, this.s.changes, lane, release), release, land, T, w, phrase });
+      this.drops.push({ index: this.drops.length, lane, ...laneNow(this.s.lanes, this.s.changes, lane, release), release, land, T, w, phrase });
       landed++;
     }
     const bars = Math.ceil((landed * bpl) / 4);
@@ -416,8 +475,14 @@ export function earnsNote(score: number | null, accuracy: number): boolean {
   return score !== null && score >= NOTE_RHYTHM && accuracy >= NOTE_ACCURACY;
 }
 
-/** The notes left today of `count` kept at the last round on `at` (played Monday: all on Thursday, one fewer on Friday). */
-export function notesNow(count: number, at: string | null, today: string): number {
-  if (!at || !count) return count;
-  return Math.max(0, count - Math.max(0, Math.floor((days(at, today) - 1) / NOTE_FADE_DAYS)));
+/** Notes faded by `today` since the last round on `at` (played Monday: none on Thursday, one on Friday, two on Monday). */
+export function notesDue(at: string | null, today: string): number {
+  return at ? Math.max(0, Math.floor((days(at, today) - 1) / NOTE_FADE_DAYS)) : 0;
+}
+
+/** The notes left after the fades due by today (`faded` of them already gone since the last round): each fade takes a random note. */
+export function fadeNotes<N>(notes: readonly N[], faded: number, at: string | null, today: string, rand: () => number): N[] {
+  const left = [...notes];
+  for (let k = faded; k < notesDue(at, today) && left.length; k++) left.splice(Math.floor(rand() * left.length), 1);
+  return left;
 }

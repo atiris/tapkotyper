@@ -10,6 +10,9 @@ vi.mock('../../app/app', async () => {
   p.progress.unlockedKeys = ['f', 'j', ' ', 'd', 'k'];
   // Four ready letters: their last presses all right.
   for (const k of ['f', 'j', 'd', 'k']) p.stats.keys[k] = { presses: 40, errors: 0, recent: Array(40).fill(300), days: [] } as never;
+  // The first world finished; its Rytmus starts at the world's target tempo.
+  p.progress.worldsDone = [0];
+  p.progress.rhythm = { 0: { tempo: 40, at: '2999-01-01', rhythm: null, top: 0 } };
   return { app: { profile: p, words: { sk: [], en: [] } }, pickLine: () => '', profileLayout: (x: typeof p) => LAYOUTS[x.layout] };
 });
 vi.mock('../../audio/audio', () => ({ audio: { beatOut: () => null } }));
@@ -64,11 +67,13 @@ function play(L: LevelRuntime, child?: (mode: InstanceType<typeof RhythmMode>) =
 }
 
 describe('rhythm', () => {
-  it('opens in the first world with four ready letters, the lanes d f j k', () => {
+  it('opens with the world finished; the first world plays two lanes of its newest letters, left to right', () => {
     expect(rhythmLetters(app.profile!, 0).sort()).toEqual(['d', 'f', 'j', 'k']);
     expect(rhythmOpen(app.profile!, 0)).toBe(true);
     expect(rhythmOpen(app.profile!, 1)).toBe(false);
-    expect(new RhythmMode(fakeRuntime()).lanes.map((l) => l.letters[0])).toEqual(['d', 'f', 'j', 'k']);
+    const lanes = new RhythmMode(fakeRuntime()).lanes;
+    expect(lanes).toHaveLength(2);
+    expect(lanes[0].finger).toBeLessThan(lanes[1].finger);
   });
 
   it('a missed letter stops everything: the keys wait, the next letter glides into the band and waits for its key', () => {
@@ -121,11 +126,12 @@ describe('rhythm', () => {
     expect(mode.accuracy).toBe(1);
     expect(mode.caught).toBe(mode.due);
     expect(mode.score).toBeGreaterThanOrEqual(90);
-    expect(mode.song.phrases.length).toBeGreaterThan(3);
+    expect(mode.song.phrases.length).toBeGreaterThan(2);
     expect(mode.held).toBeGreaterThan(mode.song.phrases[0].tempo);
     expect(mode.reached).toBe(true);
-    // Never a step down: the round keeps its length.
-    expect(mode.song.roundS).toBe(180);
+    // Never a step down: the round keeps its length, half of the story's level; the next round starts a step higher.
+    expect(mode.song.roundS).toBe(60);
+    expect(mode.nextTempo).toBe(42);
   });
 
   it('the right key before the band and any other key are errors; the letter can still be caught in the band', () => {

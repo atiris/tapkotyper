@@ -55,6 +55,14 @@ export function badgeTier(p: Profile, world: number): BadgeTier | null {
   return stars >= BADGE_STARS.gold ? 'gold' : stars >= BADGE_STARS.silver ? 'silver' : stars >= BADGE_STARS.bronze ? 'bronze' : null;
 }
 
+/** The hero's journey's badge: bronze, silver and gold from these best stars (of 5). */
+export const JOURNEY_STARS: Record<BadgeTier, number> = { bronze: 1, silver: 3, gold: 5 };
+
+/** The journey badge of a story's best stars, null before the journey was ever finished. */
+export function journeyTier(stars: number): BadgeTier | null {
+  return stars >= JOURNEY_STARS.gold ? 'gold' : stars >= JOURNEY_STARS.silver ? 'silver' : stars >= JOURNEY_STARS.bronze ? 'bronze' : null;
+}
+
 export interface UnlockRule {
   acc: string;
   rule: { kind: 'level'; id: string; perfect?: number } | { kind: 'world'; world: number } | { kind: 'stars'; stars: number };

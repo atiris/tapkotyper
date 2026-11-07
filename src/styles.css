@@ -748,8 +748,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .island.locked h3 { color: var(--ink-soft); }
 .lock { position: absolute; inset: auto; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: var(--surface); color: var(--ink-soft); }
 .lock .icon { width: 26px; height: 26px; }
-/* An open world's keyboard button: under the badge's column at the picture's bottom, drawn like the small badge with a grey ring. */
-.world-kb-btn { position: absolute; bottom: 0; right: 0; z-index: 1; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%; overflow: hidden; display: grid; place-items: center; cursor: pointer;
+/* An open world's keyboard button: at the picture's bottom left, under the surprises, drawn like the small badge with a grey ring. */
+.world-kb-btn { position: absolute; bottom: 0; left: 0; z-index: 1; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%; overflow: hidden; display: grid; place-items: center; cursor: pointer;
   background: radial-gradient(circle at 35% 30%, #fff, #e6eaef 75%); color: var(--ink); box-shadow: inset 0 0 0 3px #a3abb5, 0 2px 4px rgba(40, 30, 20, 0.2); }
 .world-kb-btn img { width: 82%; height: auto; max-height: 82%; object-fit: contain; }
 .world-kb-btn .icon { width: 24px; height: 24px; }
@@ -1312,7 +1312,15 @@ body:not(.gfx-simple) .level-screen.covered :is(.stage-wrap *, .overlay .tapko-s
 .badge.small.gold { box-shadow: inset 0 0 0 3px var(--ring), 0 0 8px rgba(245, 179, 1, 0.6); }
 .badge.small.none { box-shadow: inset 0 0 0 2px var(--line); }
 .badge.small .badge-num { font-size: 1rem; }
-.island-art .badge { position: absolute; top: 0; right: 0; }
+/* The island's corners: the world badge top right (a click shows it big), the hero's journey badge bottom right (a click starts it). */
+.world-badge-btn { position: absolute; top: 0; right: 0; z-index: 1; padding: 0; border: 0; border-radius: 50%; background: none; cursor: pointer; display: grid; transition: transform 0.15s; }
+.world-badge-btn:hover, .journey-badge:not(:disabled):hover { transform: scale(1.08); }
+.world-badge-btn:focus-visible, .journey-badge:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
+.journey-badge { position: absolute; bottom: 0; right: 0; z-index: 1; padding: 0; border: 0; cursor: pointer; transition: transform 0.15s; }
+.journey-badge.none { background: radial-gradient(circle at 35% 30%, #fff, #e8e2d6 75%); }
+.journey-badge.none img { filter: none; opacity: 1; }
+.journey-badge.closed { cursor: default; opacity: 0.55; filter: grayscale(0.8); }
+.journey-badge .journey-compass { width: 80%; height: 80%; object-fit: contain; }
 /* The surprises won in a world: an open golden box on a round gold-rimmed disc at the island's top left (the badge sits top right). */
 .surprises-mark { position: absolute; top: 0; left: 0; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%; cursor: pointer; display: grid; place-items: center;
   background: radial-gradient(circle at 35% 30%, #fff, #ffe7a3 75%); box-shadow: inset 0 0 0 3px #e0a92e, 0 0 8px rgba(245, 179, 1, 0.6); }
@@ -1336,6 +1344,9 @@ body:not(.gfx-simple) .level-screen.covered :is(.stage-wrap *, .overlay .tapko-s
 .rhythm-note-list { display: flex; flex-wrap: wrap; flex: 1; min-width: 0; height: 2.7rem; overflow: hidden; gap: 0 0.15rem; }
 .note-btn { flex: none; padding: 0.3rem; border: 0; border-radius: 10px; background: none; cursor: pointer; }
 .note-btn:hover, .note-btn:focus-visible { background: var(--tint-green); }
+/* The note whose world music plays on the map, and the line saying whose it is. */
+.note-btn.chosen { box-shadow: inset 0 0 0 2px var(--green); background: var(--tint-green); }
+.rhythm-tune { margin: 0.3rem 0 0; color: var(--ink-soft); font-size: 0.9rem; }
 .rhythm-note { display: block; width: 2.1rem; height: 2.1rem; object-fit: contain; font-size: 1.6rem; line-height: 2.1rem; text-align: center; }
 .rhythm-count { flex: none; font-size: 1.1rem; }
 .ec-news .rhythm-note { flex: none; width: 2rem; height: 2rem; }

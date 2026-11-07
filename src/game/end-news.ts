@@ -16,7 +16,7 @@ export type News =
   | { kind: 'letter'; key: string; before: number; after: number }
   | { kind: 'faster' }
   | { kind: 'journeyHome'; story: string }
-  | { kind: 'rhythmNote'; n: number }
+  | { kind: 'rhythmNote'; n: number; world: number }
   | { kind: 'tempoTop'; tempo: number }
   | { kind: 'beatBetter' };
 

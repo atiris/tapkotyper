@@ -462,7 +462,8 @@ story stays playable in any browser ([mechanics](mechanics.md)).
   10, silver from 15, gold from 20. A done world with fewer than 10 stars has no badge yet; a
   replay of any of its levels can bring one. The tier is the colour of its ring.
 - The end screen says "New badge!" or "Your badge is silver / gold now!" when a level
-  earns or improves one. The badge sits in the corner of its world card on the map, and
+  earns or improves one. The badge sits in the top right corner of its world's picture on the map (a click shows it big
+  in the middle, in the badge show's rays and glow, with the world's range award once found), and
   the progress view has a badge shelf of up to three rows without headings, gold, then silver,
   then bronze; a tier no world holds has no row, so the shelf stays short. The stars a tier needs
   live only in the badge's tooltip. With no badge at all the shelf shows a grey empty badge (a shield in a ring) and says "none yet"; worlds

@@ -2,11 +2,14 @@
 
 ## What
 - **Cesta hrdinu** / **Hero's journey**: one long, harder trip that closes each story. Its
-  symbol is the **compass**, the picture of its map node.
-- It sits in the card of the story's last world, right after the crown of its super level
-  and before the target range and the parrot. It opens with that world done, the same moment
-  as the range and the parrot; before that the node is there, faded, with the tooltip "opens
-  when the world is finished".
+  symbol is the **compass**.
+- On the map it is a **badge** at the bottom right of the picture of the story's last world (the
+  island's corners: the surprises top left, the world badge top right, the keyboard bottom left): the
+  compass in a ring of its result, **bronze** from 1 star, **silver** from 3, **gold** with 5 (the
+  journey's best stars), a plain ring before the first finish. A click starts it. Its tooltip says what
+  the journey is, the result ("Tvoj výsledok: strieborná cesta (3 ★).", or none yet) and what each tier
+  needs. It opens with that world done, the same moment as the range and the parrot; before that the
+  badge is there, faded, with the tooltip "opens when the world is finished".
 - It plays one part for every world of the story, in world order. Each part is the game of
   that world's first level, on that world's background. A story may define its own journey
   instead. A world not built yet plays its placeholder ([story](story.md)).
@@ -34,8 +37,8 @@
   else 1. The paw rule (fewer than 5 own keys gives one star) holds over
   the whole journey.
 - It counts like a level: its keys, time and speed go into the [statistics](../profiles/statistics.md),
-  and growth and the lesson advance as after a story level. The best stars show as mini stars
-  on its node and add to the star total (390).
+  and growth and the lesson advance as after a story level. The best stars give the badge its tier
+  and add to the star total (390).
 - It is not a level of its world: it gives no badge, does not finish the world and opens
   nothing. The parent's surprises count it as a level of the story's last world
   ([parent controls](../profiles/parent-controls.md)).

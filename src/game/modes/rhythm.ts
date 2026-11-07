@@ -7,7 +7,7 @@ import { ease } from '../../engine/tween';
 import { sprite } from '../../gfx/assets';
 import { type G, drawSprite, fontFamily } from '../../gfx/draw';
 import { t } from '../../i18n/i18n';
-import { fingerFor } from '../../keyboard/layouts';
+import { type Finger, fingerFor } from '../../keyboard/layouts';
 import { recentAccuracy } from '../../learning/lessons';
 import { localDate, recentTyping } from '../../learning/stats';
 import { FINGER_COLORS } from '../../ui/finger-colors';
@@ -16,10 +16,10 @@ import { accuracyFill, fillRing, roundSvg, roundTextSvg } from '../../ui/hud';
 import { h } from '../../ui/dom';
 import { tip } from '../../ui/tooltip';
 import {
-  CHANGE_S, type Drop, type Landing, type Lane, type LaneChange, PHRASE, RING_MIN, RING_WINDOW, Song,
-  beatScore, judge, laneSetup, laneWeights, phraseStep, planChanges, rhythmWord, startTempo, timing,
+  CHANGE_S, type Drop, type Landing, type Lane, type LaneChange, PHRASE, RING_MIN, RING_WINDOW, Song, TEMPO_MAX,
+  beatScore, judge, laneNow, laneSetup, laneWeights, nextBase, phraseStep, pickLanes, planChanges, rhythmWord, startTempo, timing,
 } from '../beat';
-import { WORLDS, parrotKeys, rhythmLetters, rhythmTarget, storyOf } from '../levels';
+import { WORLDS, parrotKeys, rhythmLetters, rhythmRoundS, rhythmShape, rhythmTarget } from '../levels';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
 import { HeroMode, sideFeet } from './kit/hero';
@@ -44,9 +44,15 @@ const MID_OUT = 14;
 const MID_W = 3;
 const LETTER = 38;
 const CLOUD_LETTER = 50;
-/** Width of a lane's stripe, and the widest gap between two lanes. */
+/** Width of a lane's stripe, and the gap between two lanes' middles (the clouds close together). */
 const STRIPE_W = 76;
-const LANE_GAP = 170;
+const LANE_GAP = 130;
+/** Where the lanes may stand: right of the character, and off the stage's right edge; with many lanes from the left edge too. */
+const LANES_LEFT = 320;
+const LANES_LEFT_TIGHT = 70;
+const LANES_RIGHT = 60;
+/** A gap below this many units scales the lanes, clouds, letters and the basket down to fit. */
+const GAP_FULL = 120;
 /** Seconds of the basket's slide under a lane, of a caught letter dropping in, a lane's flash, a feedback word. */
 const SLIDE_S = 0.12;
 const DROP_IN_S = 0.15;
@@ -56,9 +62,14 @@ const WORD_S = 0.9;
 const PRAISE_SHARE = 0.5;
 /** The colours of the words over the basket: praise, too early (calm blue), too late (warm orange). */
 const WORD_COLOR = { inTime: '#ffffff', slower: '#bfe3ff', early: '#bfe3ff', faster: '#ffd08a', late: '#ffd08a' } as const;
-/** After a miss: seconds everything stands still (the keys wait), and the most the next letter takes to glide into the band's middle. */
+/**
+ * After a miss: seconds everything stands still (the keys wait); then the next letter glides into the
+ * band's middle at half the song's speed, taking at most a few seconds; the pause sign blinks this often (seconds).
+ */
 const HOLD_S = 0.9;
-const GLIDE_S = 0.6;
+const GLIDE_SPEED = 0.5;
+const GLIDE_MAX_S = 3;
+const BLINK_S = 0.5;
 /** Seconds the song plays on after its closing bar before the round ends, and how far ahead its notes are scheduled. */
 const TAIL_S = 0.6;
 const AHEAD_S = 0.25;
@@ -181,6 +192,10 @@ export class RhythmMode extends HeroMode {
   private tempoEl = h('div', { class: 'round-btn speed tempo-ring', role: 'img' });
   private shown = { acc: '', beat: '', tempo: '' };
   private readonly target: number;
+  /** The round's base tempo: the phrases step around it. */
+  private readonly base: number;
+  /** Real seconds since the last miss, for the blinking pause sign. */
+  private blink = 0;
   private over = false;
 
   constructor(L: LevelRuntime) {
@@ -189,18 +204,21 @@ export class RhythmMode extends HeroMode {
     this.world = WORLDS[L.def.world];
     this.heroY = sideFeet(this.world, VH * 0.95);
     const lay = profileLayout(p);
+    const shape = rhythmShape(L.def.world);
+    // The world's ready letters; with too few of them, all the world's letters.
     let letters = rhythmLetters(p, L.def.world);
-    if (letters.length < 2) letters = parrotKeys(p, L.def.world);
-    this.lanes = laneSetup(letters, (ch) => fingerFor(lay, ch));
-    const roundS = fast(180);
-    this.changes = planChanges(this.lanes, storyOf(L.def.world).tier + 1, roundS);
-    const tempo = startTempo(p.progress.rhythm[L.def.world], recentTyping(p, 14).cpm, localDate());
-    const weights = laneWeights(this.lanes.map((l) => recentAccuracy(p.stats.keys[l.letters[0]])));
-    // Words of the lanes' letters only, from the child's word language.
-    const all = new Set(this.lanes.flatMap((l) => l.letters));
-    const words = filterWords(app.words[p.settings.wordLang] ?? [], all, [2, 6]).filter((w) => !isBlocked(w));
-    this.song = new Song({ lanes: this.lanes, changes: this.changes, weights, tempo, rand: () => L.rng.next(), roundS, words });
+    if (letters.length < shape.lanes) letters = parrotKeys(p, L.def.world);
+    const { lanes, spare } = pickLanes(laneSetup(letters, (ch) => fingerFor(lay, ch)), shape.lanes, letters);
+    this.lanes = lanes;
+    const roundS = fast(rhythmRoundS(L.def.world));
+    this.changes = planChanges(this.lanes, spare, shape.changes, roundS);
     this.target = rhythmTarget(L.def.world);
+    this.base = startTempo(p.progress.rhythm[L.def.world], recentTyping(p, 14).cpm, localDate(), this.target);
+    const weights = laneWeights(this.lanes.map((l) => recentAccuracy(p.stats.keys[l.letters[0]])));
+    // Words of the round's letters only, from the child's word language.
+    const all = new Set([...this.lanes.map((l) => l.letters[0]), ...this.changes.map((c) => c.letter)]);
+    const words = filterWords(app.words[p.settings.wordLang] ?? [], all, [2, 6]).filter((w) => !isBlocked(w));
+    this.song = new Song({ lanes: this.lanes, changes: this.changes, weights, tempo: this.base, rand: () => L.rng.next(), roundS, words });
     this.flash = this.lanes.map(() => -9);
     this.basket = { from: this.L.vw / 2, lane: null, at: -1, end: -1 };
     stamps.clear();
@@ -218,6 +236,11 @@ export class RhythmMode extends HeroMode {
   /** The tempo playing now, letters a minute. */
   get tempo(): number {
     return this.song.phrases[this.dueDrop?.phrase ?? 0].tempo;
+  }
+
+  /** The next round's base: a step from this round's towards where its last phrase went. */
+  get nextTempo(): number {
+    return nextBase(this.base, this.song.phrases[this.dueDrop?.phrase ?? 0].level, this.target);
   }
 
   /** The next drop due, else the last one. */
@@ -240,11 +263,42 @@ export class RhythmMode extends HeroMode {
     return this.L.noPressure ? null : beatScore(this.landings, this.accuracy);
   }
 
-  /** The middle of lane `i`: the lanes spread over the middle of the stage. */
+  /**
+   * The lanes' layout: the gap between their middles, the middle of the first, and the scale of what
+   * is drawn on them. They stand right of the character around the stage's middle; when they do not
+   * fit there they may reach in front of the character, and below a full gap everything gets smaller.
+   */
+  private get fit(): { gap: number; x0: number; k: number } {
+    const n = this.lanes.length, vw = this.L.vw, right = vw - LANES_RIGHT;
+    if (n < 2) return { gap: 0, x0: vw / 2, k: 1 };
+    const left = (right - LANES_LEFT) / (n - 1) >= GAP_FULL ? LANES_LEFT : LANES_LEFT_TIGHT;
+    const gap = Math.min(LANE_GAP, (right - left) / (n - 1));
+    const span = gap * (n - 1);
+    const mid = Math.max(left + span / 2, Math.min(right - span / 2, vw / 2));
+    return { gap, x0: mid - span / 2, k: Math.min(1, gap / GAP_FULL) };
+  }
+
+  /** The middle of lane `i`. */
   private laneX(i: number): number {
-    const n = this.lanes.length;
-    const gap = Math.min(LANE_GAP, (this.L.vw * 0.6) / Math.max(1, n - 1));
-    return this.L.vw / 2 + (i - (n - 1) / 2) * gap;
+    const { gap, x0 } = this.fit;
+    return x0 + i * gap;
+  }
+
+  /** The scale of the lanes, clouds, letters and basket: 1 unless many lanes need less room. */
+  private get k(): number {
+    return this.fit.k;
+  }
+
+  /** Draws `fn` at (x, y) at the lanes' scale, around that point. */
+  private scaled(g: G, x: number, y: number, fn: () => void): void {
+    const k = this.k;
+    if (k === 1) return fn();
+    g.save();
+    g.translate(x, y);
+    g.scale(k, k);
+    g.translate(-x, -y);
+    fn();
+    g.restore();
   }
 
   /** The basket's bottom: at the character's feet. */
@@ -252,10 +306,10 @@ export class RhythmMode extends HeroMode {
     return this.heroY - 4;
   }
 
-  /** The basket's height, from its picture's shape at its width. */
+  /** The basket's height, from its picture's shape at its width (at the lanes' scale). */
   private get basketH(): number {
-    const img = sprite(BASKET);
-    return img ? (BASKET_W * img.naturalHeight) / img.naturalWidth : BASKET_W / 1.5;
+    const img = sprite(BASKET), w = BASKET_W * this.k;
+    return img ? (w * img.naturalHeight) / img.naturalWidth : w / 1.5;
   }
 
   /** The catch band's lower edge: it stays there while the band grows upwards. */
@@ -304,6 +358,7 @@ export class RhythmMode extends HeroMode {
   update(dt: number): void {
     super.update(dt);
     this.scroll += dt * SWAY;
+    this.blink += dt;
     if (this.over) return;
     const a = this.active;
     // Without time pressure, and after a miss, the song waits while the due letter is in the middle of the band.
@@ -336,7 +391,7 @@ export class RhythmMode extends HeroMode {
     if (this.song.closed && !this.active && this.songT >= this.song.end + TAIL_S) this.over = true;
   }
 
-  /** Song seconds for `dt` real ones: none while everything stands still after a miss, faster while the next letter glides into the band. */
+  /** Song seconds for `dt` real ones: none while everything stands still after a miss, half as many while the next letter glides into the band. */
   private advance(dt: number): number {
     const r = this.recover;
     if (!r || r.phase === 'ready') return dt;
@@ -345,7 +400,7 @@ export class RhythmMode extends HeroMode {
       const a = this.active;
       const gap = a ? Math.max(0, a.d.land - this.songT) : 0;
       r.phase = 'glide';
-      r.speed = Math.max(1, gap / GLIDE_S);
+      r.speed = Math.max(GLIDE_SPEED, gap / GLIDE_MAX_S);
     }
     return dt * r.speed;
   }
@@ -360,7 +415,9 @@ export class RhythmMode extends HeroMode {
     this.resolve(f, null);
     if (this.active) {
       this.recover = { phase: 'hold', left: HOLD_S, speed: 1 };
-      this.tell(t('rhythm.hold'), 2);
+      this.blink = 0;
+      // "Wait" stays until the letter is in place and "go on" replaces it.
+      this.tell(t('rhythm.hold'), HOLD_S + GLIDE_MAX_S + 1);
     }
   }
 
@@ -495,7 +552,7 @@ export class RhythmMode extends HeroMode {
     const tempo = this.tempo;
     if (`${tempo}` !== this.shown.tempo) {
       this.shown.tempo = `${tempo}`;
-      this.tempoEl.innerHTML = roundSvg('wave', fillRing(tempo / 120));
+      this.tempoEl.innerHTML = roundSvg('wave', fillRing(tempo / TEMPO_MAX));
       this.label(this.tempoEl, t('rhythm.tempo', { n: tempo }));
     }
   }
@@ -507,13 +564,17 @@ export class RhythmMode extends HeroMode {
 
   render(g: G): void {
     const a = this.active;
-    this.lanes.forEach((lane, i) => {
-      const x = this.laneX(i);
+    this.lanes.forEach((_, i) => {
+      const x = this.laneX(i), w = STRIPE_W * this.k, top = CLOUD_Y + 30;
       const flash = Math.max(0, 1 - (this.songT - this.flash[i]) / FLASH_S);
+      // While the lane's letter changes, its beam fades with the old cloud and grows down again from the new one.
+      const c = this.changing(i);
+      const fade = c === null ? 1 : c < 0.5 ? 1 - c * 2 : 1;
+      const grow = c === null || c < 0.5 ? 1 : ease.outQuad((c - 0.5) * 2);
       g.save();
-      g.globalAlpha = 0.26 + (a?.d.lane === i ? 0.1 : 0) + 0.3 * flash;
-      g.fillStyle = FINGER_COLORS[lane.finger];
-      g.fillRect(x - STRIPE_W / 2, CLOUD_Y + 30, STRIPE_W, VH - CLOUD_Y - 30);
+      g.globalAlpha = (0.26 + (a?.d.lane === i ? 0.1 : 0) + 0.3 * flash) * fade;
+      g.fillStyle = FINGER_COLORS[laneNow(this.lanes, this.changes, i, c !== null && c < 0.5 ? this.songT - CHANGE_S : this.songT).finger];
+      g.fillRect(x - w / 2, top, w, (VH - top) * grow);
       g.restore();
     });
     this.drawBand(g);
@@ -528,10 +589,11 @@ export class RhythmMode extends HeroMode {
       const y = this.fallY(f);
       if (y > VH + DISC_R) continue;
       const x = this.laneX(f.d.lane);
-      const color = FINGER_COLORS[this.lanes[f.d.lane].finger];
       const inBand = f === a && judge(this.songT, f.d.land, f.d.T, f.d.w) === 'catch';
-      if (inBand) this.drawRinged(g, f.d.letter, color, x, y);
-      else this.drawSoft(g, f.d.letter, x, y);
+      this.scaled(g, x, y, () => {
+        if (inBand) this.drawRinged(g, f.d.letter, FINGER_COLORS[f.d.finger], x, y);
+        else this.drawSoft(g, f.d.letter, x, y);
+      });
     }
     this.drawHero(g);
     this.drawBasket(g);
@@ -544,7 +606,7 @@ export class RhythmMode extends HeroMode {
     const d = this.dueDrop;
     if (!d) return;
     const { top, bottom } = this.band(d);
-    const left = this.laneX(0) - STRIPE_W, right = this.laneX(this.lanes.length - 1) + STRIPE_W;
+    const left = this.laneX(0) - STRIPE_W * this.k, right = this.laneX(this.lanes.length - 1) + STRIPE_W * this.k;
     const glow = this.L.reduceMotion ? 0 : 0.15 * this.pulse();
     const grad = g.createLinearGradient(0, top, 0, bottom);
     grad.addColorStop(0, `rgba(${BAND_COLOR}, 0.12)`);
@@ -593,11 +655,29 @@ export class RhythmMode extends HeroMode {
     });
   }
 
-  /** After a miss the bubble's line also stands over the band, by the letter that comes: "wait", then "go on". */
+  /**
+   * After a miss the bubble's line also stands over the band, by the letter that comes: "wait" with a
+   * blinking pause sign while the letter glides into place, then "go on".
+   */
   private drawStopLine(g: G): void {
     const r = this.recover, d = this.active?.d;
     if (!r || !d) return;
-    letterAt(g, t(r.phase === 'ready' ? 'rhythm.goOn' : 'rhythm.hold'), this.laneX(d.lane), this.band(d).top - 34, 34, '#ffffff', '#3b2416', 7);
+    const x = this.laneX(d.lane), y = this.band(d).top - 34;
+    if (r.phase === 'ready') return letterAt(g, t('rhythm.goOn'), x, y, 34, '#ffffff', '#3b2416', 7);
+    letterAt(g, t('rhythm.hold'), x, y, 34, '#ffffff', '#3b2416', 7);
+    if (Math.floor(this.blink / BLINK_S) % 2) return;
+    // The pause sign over the word: two bars.
+    g.save();
+    g.fillStyle = '#ffffff';
+    g.strokeStyle = '#3b2416';
+    g.lineWidth = 4;
+    for (const dx of [-11, 11]) {
+      g.beginPath();
+      g.roundRect(x + dx - 6, y - 74, 12, 36, 3);
+      g.stroke();
+      g.fill();
+    }
+    g.restore();
   }
 
   /** The word after a catch, rising over the basket and fading. */
@@ -614,7 +694,7 @@ export class RhythmMode extends HeroMode {
   private drawDroppingIn(g: G, f: Fall): void {
     const k = Math.min(1, (this.songT - f.caught!) / DROP_IN_S);
     const x = this.laneX(f.d.lane), y = f.caughtY + (this.basketBottom - this.basketH * 0.5 - f.caughtY) * k;
-    this.drawRinged(g, f.d.letter, FINGER_COLORS[this.lanes[f.d.lane].finger], x, y, 1 - k);
+    this.scaled(g, x, y, () => this.drawRinged(g, f.d.letter, FINGER_COLORS[f.d.finger], x, y, 1 - k));
   }
 
   /** The music's beat now: 1 on a beat, fading to 0 before the next. */
@@ -629,31 +709,36 @@ export class RhythmMode extends HeroMode {
 
   /** The letter a lane's cloud carries now. */
   private cloudLetter(i: number): string {
-    const done = this.changes.filter((c) => c.lane === i && c.at <= this.songT);
-    return done.length ? done[done.length - 1].letter : this.lanes[i].letters[0];
+    return laneNow(this.lanes, this.changes, i, this.songT).letter;
   }
 
-  /** A lane's cloud with its letter; while the lane's letter changes, the old cloud dissolves and a new one comes down. */
+  /** How far lane `i`'s letter change is now (0 to 1), null while none is going on. */
+  private changing(i: number): number | null {
+    const c = this.changes.find((x) => x.lane === i && x.at <= this.songT && this.songT < x.at + CHANGE_S);
+    return c ? (this.songT - c.at) / CHANGE_S : null;
+  }
+
+  /** A lane's cloud with its letter; while the lane's letter changes, the old cloud fades out and a new one comes down. */
   private drawCloud(g: G, i: number): void {
     const x = this.laneX(i);
-    const changes = this.changes.filter((c) => c.lane === i);
-    const done = changes.filter((c) => c.at <= this.songT);
-    const now = done[done.length - 1];
-    const k = now ? (this.songT - now.at) / CHANGE_S : 1;
+    const done = this.changes.filter((c) => c.lane === i && c.at <= this.songT).length;
+    const k = this.changing(i);
     const look = (n: number) => ({ pic: (i * 2 + n * 3) % CLOUDS.length, flip: (i + n) % 2 === 1 });
-    const letter = (n: number) => (n ? done[n - 1].letter : this.lanes[i].letters[0]);
-    if (now && k < 0.5) {
-      // Dissolving: the cloud before this change fades as it swells.
-      return this.cloudStamp(g, x, CLOUD_Y, letter(done.length - 1), look(done.length - 1), i, 1 - k * 2);
+    if (k !== null && k < 0.5) {
+      // Fading out: the cloud before this change.
+      const before = laneNow(this.lanes, this.changes, i, this.songT - CHANGE_S);
+      return this.scaled(g, x, CLOUD_Y, () => this.cloudStamp(g, x, CLOUD_Y, before.letter, before.finger, look(done - 1), 1 - k * 2));
     }
-    const come = now && k < 1 ? (k - 0.5) * 2 : 1;
-    this.cloudStamp(g, x, CLOUD_Y - (1 - ease.outQuad(come)) * 70, letter(done.length), look(done.length), i, come);
+    const come = k === null ? 1 : (k - 0.5) * 2;
+    const now = laneNow(this.lanes, this.changes, i, this.songT);
+    const y = CLOUD_Y - (1 - ease.outQuad(come)) * 70;
+    this.scaled(g, x, CLOUD_Y, () => this.cloudStamp(g, x, y, now.letter, now.finger, look(done), come));
   }
 
-  private cloudStamp(g: G, x: number, y: number, letter: string, look: { pic: number; flip: boolean }, lane: number, alpha: number): void {
+  private cloudStamp(g: G, x: number, y: number, letter: string, finger: Finger, look: { pic: number; flip: boolean }, alpha: number): void {
     const name = CLOUDS[look.pic], img = sprite(name);
     const w = CLOUD_W, h = img ? (w * img.naturalHeight) / img.naturalWidth : w / 1.5;
-    const color = FINGER_COLORS[this.lanes[lane].finger];
+    const color = FINGER_COLORS[finger];
     stamp(g, `cloud|${name}|${!!img}|${look.flip}|${letter}|${color}`, x, y, w + 8, h + 8, (c) => {
       drawSprite(c, name, w / 2 + 4, h / 2 + 4, h, { flip: look.flip }, (cc, ww, hh) => {
         cc.fillStyle = '#ffffff';

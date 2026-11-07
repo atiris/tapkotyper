@@ -40,5 +40,5 @@ export function progressScreen(root: HTMLElement): () => void {
   const bar = h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'), h('h1', {}, t('progress.title')));
   barTabLinks(bar, nav);
   root.append(h('div', { class: 'screen progress-screen' }, bar, cornerControls(), nav, body));
-  return onTypedWord(showWords(), badgeShow);
+  return onTypedWord(showWords(), () => badgeShow());
 }

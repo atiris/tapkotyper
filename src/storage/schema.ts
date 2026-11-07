@@ -40,8 +40,14 @@ export interface KeyStat {
 }
 
 /** What a world keeps of its last Rytmus round. */
+/** One rhythm note: the world whose Rytmus earned it, and its number (its picture and lean). */
+export interface RhythmNote {
+  world: number;
+  n: number;
+}
+
 export interface RhythmRecord {
-  /** The tempo (letters a minute) the round ended at: the next round's start. */
+  /** The base tempo (letters a minute) of the next round. */
   tempo: number;
   /** Local date `YYYY-MM-DD` of that round. */
   at: string;
@@ -174,9 +180,15 @@ export interface Progress {
   rhythm: Record<string, RhythmRecord>;
   /** Worlds whose Rytmus held the world's target tempo for a whole phrase, accurately (the check under its node). */
   rhythmWon: number[];
-  /** Rhythm notes (one per great Rytmus round) as counted at the last round, and that round's local date `YYYY-MM-DD`; one fades for every three days since (beat.ts notesNow). */
-  rhythmNotes: number;
+  /**
+   * Rhythm notes (one per great Rytmus round, of the world it was played in), the last round's local
+   * date `YYYY-MM-DD` and the notes faded since then: a random one fades for every three days (beat.ts fadeNotes).
+   */
+  rhythmNoteList: RhythmNote[];
   rhythmNotesAt: string | null;
+  rhythmNotesFaded: number;
+  /** The world whose music the menus play while a note of it is left, null for the usual menu music. */
+  rhythmTune: number | null;
   /** The teacher turtle's tips read (ids) and when the last one was read (ms, 0 before any). */
   appTips: { seen: string[]; lastAt: number };
   /** The turtle asked on the map whether to check what the student already knows. */

@@ -59,6 +59,9 @@ const SLIDE_S = 0.12;
 const DROP_IN_S = 0.15;
 const FLASH_S = 0.45;
 const WORD_S = 0.9;
+/** The band's beat flash: its width (seconds to a beat at which it is down to about a third) and how early it is drawn (about a frame). */
+const PULSE_S = 0.07;
+const PULSE_LEAD_S = 0.017;
 /** How often a catch in time shows praise over the basket; a catch off the beat always says which way. */
 const PRAISE_SHARE = 0.5;
 /** The colours of the words over the basket: praise, too early (calm blue), too late (warm orange). */
@@ -236,12 +239,18 @@ export class RhythmMode extends HeroMode {
 
   /** The tempo playing now, letters a minute. */
   get tempo(): number {
-    return this.song.phrases[this.dueDrop?.phrase ?? 0].tempo;
+    return Math.round(this.tempoNow);
   }
 
-  /** The next round's base: a step from this round's towards where its last phrase went. */
+  /** The exact tempo of the due letter. */
+  private get tempoNow(): number {
+    const d = this.dueDrop;
+    return d ? 60 / d.T : this.song.phrases[0].tempo;
+  }
+
+  /** The next round's base: a step from this round's towards where its tempo went. */
   get nextTempo(): number {
-    return nextBase(this.base, this.song.phrases[this.dueDrop?.phrase ?? 0].level, this.target);
+    return nextBase(this.base, this.tempoNow, this.target);
   }
 
   /** The next drop due, else the last one. */
@@ -708,14 +717,19 @@ export class RhythmMode extends HeroMode {
     this.scaled(g, x, y, () => this.drawRinged(g, f.d.letter, FINGER_COLORS[f.d.finger], x, y, 1 - k));
   }
 
-  /** The music's beat now: 1 on a beat, fading to 0 before the next. */
+  /**
+   * The music's beat now: a short flash centred on each beat, as bright just before it as just after
+   * (a flash that only fades after the beat looks late), a frame early for the time the picture takes to show.
+   */
   private pulse(): number {
+    const now = this.songT + PULSE_LEAD_S;
     const bars = this.song.bars;
     let bar = bars[0];
-    for (const b of bars) if (b.start <= this.songT) bar = b;
-    if (this.songT < bar.start) return 0;
-    const k = ((this.songT - bar.start) / bar.beat) % 1;
-    return (1 - k) ** 2;
+    for (const b of bars) if (b.start <= now) bar = b;
+    if (now < bar.start - bar.beat / 2) return 0;
+    const k = (((now - bar.start) / bar.beat) % 1 + 1) % 1;
+    const off = Math.min(k, 1 - k) * bar.beat;
+    return Math.exp(-((off / PULSE_S) ** 2));
   }
 
   /** The letter a lane's cloud carries now. */

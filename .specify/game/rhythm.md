@@ -31,7 +31,9 @@
   colour (white, which no finger lane uses). Its lower edge lies at two thirds of the basket's height
   from its bottom and stays there; the band reaches up by the distance a letter falls during the
   catch window, framed by an opaque white line 3 pixels wide, with one more such line across its middle. The best moment, the beat of the music,
-  is a letter in the middle of the band.
+  is a letter in the middle of the band. On each beat the band flashes briefly, the flash centred on
+  the beat (as bright just before it as just after), so a key pressed with the flash is the middle of
+  the band: a flash that only fades after the beat looks late.
 - **Fall:** letters leave their clouds and fall down their lanes at an even speed; exactly one is in the
   middle of the band on each beat. They fall fast enough that the next one is always in the air. A
   falling letter is a white disc with a soft blurred edge and a dark letter, a solid white line
@@ -62,13 +64,15 @@
   and inside, so a caught letter drops behind the front rim into it and is gone.
 - **Tempo** (letters a minute, 30 to 120): each round has its own **base** and follows it. The base is
   the world's kept tempo (5 % lower after a week without playing); the first round's is 70 % of the
-  child's usual speed of the last 14 days, at most the world's target tempo (a new child 30). The tempo
-  changes only between **phrases** of 16 landings, by a small step of 5 % of the base, at most four steps
-  (20 %) above or below it: up when the phrase went at 95 % accuracy or more and nine in ten caught, down
-  below 85 % accuracy or with fewer than seven in ten caught (errors weigh more than misses); it is
-  decided as the next phrase's first letter leaves its cloud. The next round's base moves only one step
-  (5 %) from this round's, towards where its last phrase went, and never above one and a half times the
-  world's target tempo. A faster phrase is announced by a short run in the music. Below 60 the music
+  child's usual speed of the last 14 days, at most the world's target tempo (a new child 30). Where the
+  tempo goes is decided for each **phrase** of 16 landings: up when the phrase before went at 95 %
+  accuracy or more and nine in ten caught, down below 85 % accuracy or with fewer than seven in ten
+  caught (errors weigh more than misses), else it stays; it is decided as the next phrase's first letter
+  leaves its cloud. The first phrase plays at the base. The tempo then drifts smoothly bar by bar, never
+  faster than 10 % of the base in half the round (from the base to 110 % takes at least half the round),
+  and never more than 20 % above or below the base. The next round's base moves only one step (5 %) from
+  this round's, towards where its tempo went, and never above one and a half times the world's target
+  tempo. A phrase going faster is announced by a short run in the music. Below 60 the music
   plays twice as fast and a letter lands on every second beat.
 - **When it goes badly** the game helps: the catch window is a third of a beat (0.35) each side of the
   beat at the start; each phrase that steps the tempo down widens it by 0.05, up to half a beat, so the
@@ -140,7 +144,7 @@
   letters in one burst and wait, which trains reading ahead, not rhythm.
 - Lanes in finger colours tell which finger types the letter without looking at the keyboard.
 - One clock for the music and the letters keeps the beat exact on a slow computer: a slow frame never
-  moves a landing. Generated music changes tempo at any phrase end and never drags.
+  moves a landing. Generated music changes tempo at any bar and never drags.
 - Misses cost nothing but the catch: a child who cannot keep up lets a letter fall, gets a moment to
   find the next key while everything stands still, and the tempo steps down and the band grows by
   itself. Letters falling on after a miss would be too many to catch and would only pile up misses.
@@ -153,7 +157,8 @@
   kept by practice. A note's own world music on the map makes it something to keep.
 - Two lanes are enough to start: four clouds at a fast tempo were too hard for the first world. The
   lanes grow with the stories, and the letter changes come only once a story's letters are known.
-- Small tempo steps around the round's own base keep the round steady: a rhythm game follows the
+- A slow, smooth drift around the round's own base keeps the round steady (a step of 5 % at once was
+  felt as a jump): a rhythm game follows the
   child's rhythm and swings around it instead of racing up to extremes; a good phrase never narrows the
   band. A round half as long as a level keeps it a short side game.
 - After a miss the slow glide and the blinking pause sign show that the game waits; "go on" comes only

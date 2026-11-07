@@ -127,7 +127,9 @@ describe('rhythm', () => {
     expect(mode.caught).toBe(mode.due);
     expect(mode.score).toBeGreaterThanOrEqual(90);
     expect(mode.song.phrases.length).toBeGreaterThan(2);
-    expect(mode.held).toBeGreaterThan(mode.song.phrases[0].tempo);
+    // The tempo climbs gently once the first phrase went well; a whole phrase was held at the base.
+    expect(mode.song.phrases[2].tempo).toBeGreaterThan(mode.song.phrases[0].tempo);
+    expect(mode.held).toBe(mode.song.phrases[0].tempo);
     expect(mode.reached).toBe(true);
     // Never a step down: the round keeps its length, half of the story's level; the next round starts a step higher.
     expect(mode.song.roundS).toBe(60);

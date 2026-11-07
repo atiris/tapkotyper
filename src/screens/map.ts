@@ -333,15 +333,31 @@ function journeyBadge(p: Profile, story: StoryDef): HTMLElement {
   }, rose);
 }
 
-/** Turns `el` like a compass needle: every 10 to 30 s to a random heading, settling there with a swing of 3 s. */
+/** The swing's length (s), how fast it dies out and how fast it swings (per second), and its frames. */
+const SWING_S = 3.2;
+const SWING_DAMP = 1.5;
+const SWING_FREQ = 3.4;
+const SWING_FRAMES = 64;
+
+/**
+ * Share of the turn done after `s` seconds: a needle on a spring let go from rest, so it starts
+ * slowly, swings past the heading and back ever less, and ends exactly on it.
+ */
+function swingShare(s: number): number {
+  const spring = (x: number) => 1 - Math.exp(-SWING_DAMP * x) * (Math.cos(SWING_FREQ * x) + (SWING_DAMP / SWING_FREQ) * Math.sin(SWING_FREQ * x));
+  return spring(s) + (1 - spring(SWING_S)) * (s / SWING_S);
+}
+
+/** Turns `el` like a compass needle: every 10 to 30 s to a random heading, settling there with a smooth swing. */
 function swing(el: HTMLElement): void {
   if (reduceMotion()) return;
   let at = 0;
   const later = () => window.setTimeout(turn, 10_000 + Math.random() * 20_000);
   const turn = () => {
     if (!el.isConnected) return;
-    const by = (Math.random() < 0.5 ? -1 : 1) * (60 + Math.random() * 240);
-    el.animate([0, 1.25, 0.88, 1.06, 0.97, 1].map((k) => ({ transform: `rotate(${at + by * k}deg)` })), { duration: 3000, easing: 'ease-in-out', fill: 'forwards' });
+    const by = (Math.random() < 0.5 ? -1 : 1) * (50 + Math.random() * 150);
+    const frames = Array.from({ length: SWING_FRAMES + 1 }, (_, i) => ({ transform: `rotate(${at + by * swingShare((i / SWING_FRAMES) * SWING_S)}deg)` }));
+    el.animate(frames, { duration: SWING_S * 1000, easing: 'linear', fill: 'forwards' });
     at = (at + by) % 360;
     later();
   };

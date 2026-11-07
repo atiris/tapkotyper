@@ -33,8 +33,6 @@ export interface EndCardOpts {
   extra?: HTMLElement | null;
   /** Surprises told today, when this run told one: the band and its button. */
   surprises?: Surprise[];
-  /** A break is due: its button goes first, and `back` brings the card back without it. */
-  onBreak?: ((back: () => void) => void) | null;
   /** The end's own buttons, its main one first; at most two others are shown. */
   actions: EndAction[];
   /** "World map" last; none on a card that goes on in the level. */
@@ -49,13 +47,12 @@ const PLAIN_MAX = 2;
 /**
  * The one card of every end: the title on top; a square with one picture and the stars or one
  * value under it, beside at most three rows and one green line; the band of a surprise told in
- * this run; one main button, at most two plain ones and "World map" last. A due break, then the
- * surprise, take the main button before the end's own; back from either, the card goes on without it.
+ * this run; one main button, at most two plain ones and "World map" last. A surprise takes the
+ * main button before the end's own; back from it, the card goes on without it.
  * Every button has its letter (`ui/hotkeys`), the main one is the default.
  */
 export function endCard(o: EndCardOpts): HTMLElement {
   const bot = h('div', { class: 'ec-bot' });
-  let breakDue = !!o.onBreak;
   let surprise = !!o.surprises?.length;
   const again = () => {
     render();
@@ -67,7 +64,6 @@ export function endCard(o: EndCardOpts): HTMLElement {
   });
   const render = () => {
     const list = [
-      breakDue ? { label: t('end.breakBtn'), icon: 'wave', run: () => o.onBreak!(() => { breakDue = false; again(); }) } satisfies EndAction : null,
       surprise ? { label: t('end.surpriseSee'), icon: 'star', run: seeSurprises } satisfies EndAction : null,
       ...o.actions,
     ].filter((a) => a !== null);

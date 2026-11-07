@@ -1,68 +1,45 @@
-import { app, go } from '../app/app';
+import { app } from '../app/app';
 import { fast } from '../app/fast';
 import { audio } from '../audio/audio';
 import { tapkoElement } from '../gfx/tapko';
-import { t, tn } from '../i18n/i18n';
+import { t } from '../i18n/i18n';
 import { button, closeButton, h, modal } from '../ui/dom';
 import { cornerControls } from '../ui/chrome';
-import { endCard, focusMain } from '../ui/end-card';
 
-/** The short break's stretches, 20 seconds each. */
-const SMALL = { title: 'break.title', exercises: ['arms', 'fists', 'shoulders'], seconds: 20 };
-/** The big break the child may add: longer, on the feet too, 30 seconds each. */
-const BIG = { title: 'break.bigTitle', exercises: ['stand', 'march', 'neck', 'wrists', 'eyes', 'water'], seconds: 30 };
-/** Every exercise, for "another exercise" in the short break. */
-const ALL = [...SMALL.exercises, ...BIG.exercises];
+/** The warm-up's exercises on the feet, three of them at random, 30 seconds each. */
+const EXERCISES = ['stand', 'march', 'squat', 'jump', 'twist', 'water'];
+const COUNT = 3;
+const SECONDS = 30;
 
 /**
- * Stretch break led by the narrator over the screen it was opened from: three short exercises,
- * then the end card (the exercises done and the time; Continue, once more, the map), and `onDone`
- * back on that screen. Under the countdown the big
- * break can be added: six longer exercises, after which the short break goes on where it was; a
- * short exercise can be swapped for another one. Anyone may skip either (Esc too), unless the
- * profile's breaks cannot be skipped: then only the big one can.
- * With `play` it is the map's warm-up, the child's own choice: "Continue typing" (`play`) is there
- * all along and is the end's main button, and "Cancel", the round X and Esc go back to the map; it
- * is never locked.
+ * The warm-up ("Rozcvička") led by the narrator in a popup over the screen it was opened from: three
+ * random exercises on the feet, with another exercise, once more and the end under them. At the end
+ * of its time, or ended (the button, the round X, Esc or a click beside the card), the popup closes
+ * and `onDone` goes back. The due warm-up (`due`) of a profile whose breaks cannot be skipped has no
+ * way to end early.
  */
-export function openBreak(onDone: () => void, play?: () => void): void {
-  const p = app.profile!;
-  const locked = p.settings.breaksLocked && !play;
+export function openBreak(onDone: () => void, due = false): void {
+  const locked = due && app.profile!.settings.breaksLocked;
   const track = audio.playing;
   app.breakCount++;
   audio.music(app.breakCount % 2 ? 'break' : 'relaxing');
-  const tapko = tapkoElement(p.companion, 'happy', 240);
   const title = h('h2', {});
   const text = h('p', { class: 'break-text' });
   const timer = h('div', { class: 'break-timer' });
-  const stage = h('div', { class: 'break-stage' }, tapko);
-  /** This run's short break (its exercises change when one is swapped). */
-  let small = { ...SMALL, exercises: [...SMALL.exercises] };
-  let plan = small;
+  const stage = h('div', { class: 'break-stage' }, tapkoElement(app.profile!.companion, 'happy', 240));
+  const plan = pick(EXERCISES, COUNT);
+  const length = () => Math.ceil(fast(SECONDS));
   let i = 0;
-  /** Seconds of one exercise of the plan now. */
-  const length = () => Math.ceil(fast(plan.seconds));
   let left = length();
-  /** Where the short break was when the big one started. */
-  let paused: { i: number; left: number } | null = null;
-  let finished = false;
-  /** Exercises done to their end, and when the break began. */
-  let done = 0;
-  let begun = Date.now();
-  let endEl: HTMLElement | null = null;
-  const bigButton = button(t('break.big'), () => startBig(), 'btn', 'play');
-  bigButton.autofocus = true;
   const otherButton = button(t('break.other'), () => other(), 'btn', 'replay');
-  const skipLabel = h('span', {});
-  const skipButton = button(skipLabel, () => skip(), 'btn', play ? 'close' : 'next');
-  const playButton = play ? button(t('break.play'), () => leave(play), 'btn primary', 'play') : null;
-  const actions = h('div', { class: 'row center break-actions' }, bigButton, otherButton, playButton, skipButton);
-  // The warm-up closes with the round X too.
-  const x = () => (play ? closeButton(() => leave(), t('break.closeTip')) : null);
-  const box = h('div', { class: 'card break-card' });
-  const exercise = () => box.replaceChildren(...[x(), title, stage, text, timer, actions].filter((c) => c !== null));
-  exercise();
-  const close = modal(h('div', { class: 'break-screen' }, cornerControls(), box), {
+  otherButton.autofocus = true;
+  const endButton = button(t('break.end'), () => leave(), 'btn', 'close');
+  endButton.hidden = locked;
+  const actions = h('div', { class: 'row center break-actions' }, otherButton, button(t('break.again'), () => restart(), 'btn', 'replay'), endButton);
+  const box = h('div', { class: 'card break-card' }, locked ? null : closeButton(() => leave(), t('break.closeTip')), title, stage, text, timer, actions);
+  const screen = h('div', { class: 'break-screen' }, cornerControls(), box);
+  screen.addEventListener('pointerdown', (e) => { if (e.target === screen && !locked) leave(); });
+  const close = modal(screen, {
     cls: 'break-modal',
     closable: false,
     onClose: () => {
@@ -70,114 +47,55 @@ export function openBreak(onDone: () => void, play?: () => void): void {
       document.removeEventListener('keydown', onKey, true);
     },
   });
-  /** Back to the screen it came from, then `then` (the warm-up's next level). */
-  const leave = (then = onDone) => {
+  /** Back to the screen it came from; the play time before the next warm-up starts again. */
+  const leave = () => {
+    app.sessionSeconds = 0;
     close();
     audio.music(track);
-    then();
-  };
-  const end = () => {
-    clearInterval(tick);
-    finished = true;
-    app.sessionSeconds = 0;
-    const card = endEl = endCard({
-      cls: 'break-done',
-      title: t('end.break'),
-      picture: 'ui-end-break',
-      under: tn('end.exercises', done),
-      rows: [[t('end.time'), tn('end.minutes', Math.max(1, Math.round((Date.now() - begun) / 60_000)))]],
-      actions: [
-        play ? { label: t('break.play'), icon: 'play', run: () => leave(play) } : { label: t('common.continue'), icon: 'next', run: () => leave() },
-        { label: t('break.again'), icon: 'replay', run: () => again() },
-      ],
-      toMap: () => leave(() => go('map')),
-    });
-    card.prepend(closeButton(() => leave(), t('break.closeTip')));
-    box.replaceWith(card);
-    focusMain(card);
-  };
-  /** The warm-up once more, from its first short exercise. */
-  const again = () => {
-    small = { ...SMALL, exercises: [...SMALL.exercises] };
-    plan = small;
-    i = 0;
-    left = length();
-    finished = false;
-    done = 0;
-    begun = Date.now();
-    endEl?.replaceWith(box);
-    endEl = null;
-    exercise();
-    show();
-    tick = setInterval(step, 1000);
-    bigButton.focus();
+    onDone();
   };
   const show = () => {
-    const ex = plan.exercises[i];
-    stage.dataset.ex = ex;
-    title.textContent = t(plan.title, { n: i + 1, total: plan.exercises.length });
-    text.textContent = t(`break.${ex}`);
+    stage.dataset.ex = plan[i];
+    title.textContent = t('break.title', { n: i + 1, total: plan.length });
+    text.textContent = t(`break.${plan[i]}`);
     timer.textContent = String(left);
-    bigButton.hidden = !!paused;
-    otherButton.hidden = !!paused;
-    skipButton.hidden = locked && !paused;
-    skipLabel.textContent = t(paused ? 'break.bigSkip' : play ? 'break.cancel' : 'break.skip');
   };
-  /** Another exercise in place of this short one, its full time again. */
-  const other = () => {
-    small.exercises[i] = pickOther(small.exercises);
-    left = length();
-    audio.sfx('pop');
-    show();
-  };
-  const startBig = () => {
-    paused = { i, left };
-    plan = BIG;
+  /** Once more, from the first exercise. */
+  const restart = () => {
     i = 0;
     left = length();
     audio.sfx('pop');
     show();
   };
-  const backToSmall = () => {
-    plan = small;
-    ({ i, left } = paused!);
-    paused = null;
+  /** Another exercise in place of this one, its full time again. */
+  const other = () => {
+    plan[i] = pick(EXERCISES.filter((e) => !plan.includes(e)), 1)[0];
+    left = length();
     audio.sfx('pop');
     show();
   };
-  const skip = () => {
-    if (paused) backToSmall();
-    else if (play) leave();
-    else if (!locked) end();
-  };
-  // Escape skips (the warm-up: cancels) like the button; on the last card it goes back.
   const onKey = (e: KeyboardEvent) => {
     if (e.key !== 'Escape') return;
     e.preventDefault();
     e.stopPropagation();
-    if (finished) leave();
-    else skip();
+    if (!locked) leave();
   };
   document.addEventListener('keydown', onKey, true);
   const step = () => {
     left--;
     timer.textContent = String(left);
     if (left > 0) return;
-    done++;
-    i++;
+    if (++i >= plan.length) return leave();
     left = length();
-    if (i < plan.exercises.length) {
-      audio.sfx('pop');
-      show();
-    } else if (paused) backToSmall();
-    else end();
+    audio.sfx('pop');
+    show();
   };
-  let tick = setInterval(step, 1000);
+  const tick = setInterval(step, 1000);
   show();
 }
 
-/** A random exercise not in the short break yet. */
-function pickOther(taken: string[]): string {
-  const free = ALL.filter((e) => !taken.includes(e));
-  return free[Math.floor(Math.random() * free.length)];
+/** `n` different exercises of `pool` at random. */
+function pick(pool: readonly string[], n: number): string[] {
+  const free = [...pool];
+  return Array.from({ length: n }, () => free.splice(Math.floor(Math.random() * free.length), 1)[0]);
 }

@@ -1,8 +1,10 @@
 import { imageUrl } from './assets';
 import type { G } from './draw';
 
-/** The compass: the hero's journey's picture (its map node and end card) and a thing at the target range. */
+/** The compass: the hero's journey's picture (its end card) and a thing at the target range. */
 export const COMPASS = 'obj-aim-compass';
+/** The compass rose alone, without the case: the hero's journey's badge on the map, whose own ring is round. */
+export const ROSE = 'ui-journey-rose';
 
 /** A gold compass with a compass rose and a diagonal red needle in a box of `w` x `h` around (0, 0), until its picture is there. */
 export function drawCompass(g: G, w: number, h: number): void {
@@ -49,9 +51,9 @@ export function drawCompass(g: G, w: number, h: number): void {
   g.restore();
 }
 
-/** The compass as a DOM picture: its image, else a small canvas with the drawn one. */
-export function compassElement(cls: string): HTMLElement {
-  const src = imageUrl(COMPASS);
+/** The compass (or another of its pictures) as a DOM picture: its image, else a small canvas with the drawn compass. */
+export function compassElement(cls: string, pic = COMPASS): HTMLElement {
+  const src = imageUrl(pic);
   if (src) {
     const img = document.createElement('img');
     img.className = cls;

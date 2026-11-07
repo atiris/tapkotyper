@@ -6,42 +6,12 @@ import { tip } from '../../ui/tooltip';
 import type { LevelDef } from '../levels';
 import type { LevelState } from './state';
 
-/** Stretches done sitting, one of them shown on the pause card; its short exercise lasts STRETCH_S seconds. */
+/** Stretches done sitting, one of them shown on the pause card. */
 const STRETCHES = ['arms', 'fists', 'shoulders', 'neck', 'wrists', 'eyes'];
-const STRETCH_S = 20;
 
 /** One stretch to try, at random. */
 export function pickStretch(): string {
   return STRETCHES[Math.floor(Math.random() * STRETCHES.length)];
-}
-
-/**
- * The short exercise of a stretch in `el`: its name, what to do and a countdown; Done (or the end of
- * the countdown) calls `back`, the X `close`, the longer break `long`. Done is the default, both buttons
- * have letters. Returns the countdown's stop.
- */
-export function stretchExercise(el: HTMLElement, name: string, back: () => void, close: () => void, long: () => void): () => void {
-  let left = STRETCH_S;
-  const count = h('div', { class: 'break-timer' }, String(left));
-  const stop = () => clearInterval(timer);
-  const done = () => {
-    stop();
-    back();
-  };
-  const buttons = [button(t('level.stretchDone'), done, 'btn primary', 'check'), button(t('level.stretchLong'), () => { stop(); long(); }, 'btn', 'wave')];
-  el.replaceChildren(
-    closeButton(() => { stop(); close(); }, t('level.pauseClose')),
-    h('h2', {}, t('level.stretch')),
-    h('p', { class: 'pause-tip' }, t(`break.${name}`)),
-    count,
-    h('div', { class: 'row' }, ...buttons));
-  panelHotkeys(el, buttons);
-  focusDefault(el);
-  const timer = window.setInterval(() => {
-    count.textContent = String(--left);
-    if (left <= 0) done();
-  }, 1000);
-  return stop;
 }
 
 /** What leaving and going on are called, and what the question before leaving says is lost. */
@@ -70,15 +40,13 @@ export interface PauseHost {
   resume(): void;
   slowDown(): void;
   leave(): void;
-  /** The map's warm-up over the paused level: `back` returns to the pause card, `play` goes on typing. */
-  onBreak(back: () => void, play: () => void): void;
+  /** The warm-up over the paused level; `back` returns to the pause card. */
+  onBreak(back: () => void): void;
 }
 
 /** The pause card over the scene and the HUD's pause button (none in free typing, whose X leaves). */
 export class PauseCard {
   el: HTMLElement | null = null;
-  /** Stops the countdown of the short exercise. */
-  private stopTimer = () => {};
 
   constructor(private state: LevelState, private host: PauseHost, private btn: HTMLButtonElement | null) {}
 
@@ -93,7 +61,6 @@ export class PauseCard {
   }
 
   close(): void {
-    this.stopTimer();
     this.el?.remove();
     this.el = null;
     this.paint();
@@ -113,13 +80,9 @@ export class PauseCard {
     tip(this.btn, label);
   }
 
-  dispose(): void {
-    this.stopTimer();
-  }
-
   /**
    * A small card at the top (the words and the guide's next key stay in sight): a stretch to try,
-   * the X (Esc too) to go on, and Continue, Slower (only in play), the short exercise of that stretch and the end.
+   * the X (Esc too) to go on, and Continue, Slower (only in play), the warm-up and the end.
    * Staying a while, the level is already done: the next level (when open), else the end comes first.
    * The first button is the default, every one has its letter.
    */
@@ -132,7 +95,7 @@ export class PauseCard {
     const end = button(t(host.ending.label), () => host.leave(), 'btn', 'close');
     const first = !host.stay ? keep : host.next ? button(t('results.next'), host.next, 'btn', 'next') : end;
     first.classList.add('primary');
-    const buttons = [first, ...[keep, slower, button(t('level.stretch'), () => this.stretch(stretch), 'btn', 'smile'), end].filter((b): b is HTMLButtonElement => b !== null && b !== first)];
+    const buttons = [first, ...[keep, slower, button(t('level.stretch'), () => this.warmUp(), 'btn', 'smile'), end].filter((b): b is HTMLButtonElement => b !== null && b !== first)];
     this.el!.replaceChildren(
       closeButton(() => host.resume(), t('level.pauseClose')),
       h('h2', {}, t('level.paused')),
@@ -141,13 +104,12 @@ export class PauseCard {
     panelHotkeys(this.el!, buttons);
   }
 
-  /** The short exercise on the pause card: the stretch with a countdown, then the pause again; or the longer break instead. */
-  private stretch(name: string): void {
-    const back = () => {
+  /** The warm-up over the paused level, then the pause card again. */
+  private warmUp(): void {
+    this.host.onBreak(() => {
       if (!this.el) return;
       this.card();
       this.focus();
-    };
-    this.stopTimer = stretchExercise(this.el!, name, back, () => this.host.resume(), () => this.host.onBreak(back, () => this.host.resume()));
+    });
   }
 }

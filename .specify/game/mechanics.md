@@ -181,14 +181,13 @@
   The pause is a small card at the top: the words and the guide's next key stay in sight.
   "Small break" with one stretch to try, the round X (Escape too) to go on, and Continue,
   "Slower" (one step lower difficulty, the narrator confirms; automatic growth may raise it
-  again after accurate play; not before play), "Quick exercise" (that stretch with a 20 s
-  countdown on the card, then the pause again, the level waiting where it was; "Longer
-  exercise" there opens the map's warm-up, where going on typing continues the level and
-  cancelling returns to the pause) and the end of the level. The title and the stretch center on
+  again after accurate play; not before play), "Rozcvička" (the warm-up popup, then the pause
+  again, the level waiting where it was; see
+  [session pacing](../experience/session-pacing.md)) and the end of the level. The title and the stretch center on
   the whole card, with room above and below the stretch. Help is the level's "?", not a button
   here.
 - **The end card** is one fixed card for every end (a level, a practice, staying a while, the
-  target range, the parrot, Rytmus, free typing, the stretch break and a finished task), so a child
+  target range, the parrot, Rytmus, free typing and a finished task; the breaks have none), so a child
   always finds the same things in the same place. It fits a small laptop screen (1024x600) and a
   phone without scrolling:
   - on top only the title of what ended and the round X;
@@ -202,8 +201,8 @@
     nové prekvapenie!"; its button opens the surprises told today over the card;
   - at the bottom one orange main button first, at most two plain ones, and "Mapa svetov" always
     last on the right.
-  The main button is, in order: "Prestávka" when a break is due (back from it the card goes on
-  without it), "Pozrieť prekvapenie", "Odovzdať" when a task was finished in this run, then the
+  When a break is due the warm-up opens over the card by itself (see
+  [session pacing](../experience/session-pacing.md)). The main button is, in order: "Pozrieť prekvapenie", "Odovzdať" when a task was finished in this run, then the
   end's own (the next level, the reward of a finished world, the next mission, play again). The
   green line takes the first that applies: a new or better world badge (with
   several rewards at once the first and "a N ďalšie odmeny"), new keys, a new medal, new things or

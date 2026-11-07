@@ -47,7 +47,7 @@ export const PLURAL_FORMS = ['zero', 'one', 'two', 'few', 'many', 'other'] as co
 /** Keys read by `tn`: an object of plural forms. */
 export const PLURAL_KEYS = new Set([
   'teacher.scan.count', 'teacher.scan.cancelText', 'teacher.n.results', 'teacher.n.handIns', 'story.flightDone', 'story.copyLoopDone',
-  'end.letters', 'end.minutes', 'end.hits', 'end.words', 'end.exercises', 'end.moreRewards', 'end.placementLetters', 'end.placementOpened',
+  'end.letters', 'end.minutes', 'end.hits', 'end.words', 'end.moreRewards', 'end.placementLetters', 'end.placementOpened',
   'stats.wholeKeys', 'map.journey.again',
 ]);
 
@@ -76,7 +76,7 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
     g('tracks', 'tracks.*'),
   ] },
   { id: 'typing', groups: [
-    g('level-pause', 'level.pause', 'level.paused', 'level.pauseClose', 'level.slower', 'level.slowerSaid', 'level.stretch', 'level.stretchLong', 'level.stretchDone'),
+    g('level-pause', 'level.pause', 'level.paused', 'level.pauseClose', 'level.slower', 'level.slowerSaid', 'level.stretch'),
     g('placement', 'level.placement', 'level.placementStart', 'level.placementDone'),
     g('level', 'level.*'),
     g('keyboard', 'keys.*', 'layouts.*', 'layoutsShort.*', 'fingers.*', 'guide.*'),
@@ -110,8 +110,8 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
     g('rhythm', 'rhythm.*'),
   ] },
   { id: 'results', groups: [
-    g('end-titles', 'end.level', 'end.practice', 'end.stay', 'end.range', 'end.rangeRecord', 'end.journey', 'end.parrotHome', 'end.parrotLost', 'end.rhythmDone', 'end.freeType', 'end.break', 'end.taskDone',
-      'end.toMap', 'end.breakBtn', 'end.surpriseNew', 'end.surpriseSee'),
+    g('end-titles', 'end.level', 'end.practice', 'end.stay', 'end.range', 'end.rangeRecord', 'end.journey', 'end.parrotHome', 'end.parrotLost', 'end.rhythmDone', 'end.freeType', 'end.taskDone',
+      'end.toMap', 'end.surpriseNew', 'end.surpriseSee'),
     g('end-placement', 'end.placement', 'end.placementLetters', 'end.placementOpened', 'end.placementStrong', 'end.placementWeak', 'end.placementNoWeak',
       'end.placementSignal', 'end.placementEyes'),
     g('end-rhythm', 'end.rhythm', 'end.rhythmScore', 'end.tempo', 'end.caught', 'end.rhythmTop', 'end.rhythmBetter', 'end.rhythmNote'),

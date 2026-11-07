@@ -1,7 +1,7 @@
-import { app, go, saveProfile, useLanguage } from '../app/app';
+import { app, go, reduceMotion, saveProfile, useLanguage } from '../app/app';
 import { audio } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
-import { compassElement } from '../gfx/compass';
+import { ROSE, compassElement } from '../gfx/compass';
 import { tapkoElement } from '../gfx/tapko';
 import { t, tList, tn } from '../i18n/i18n';
 import { nickname } from '../storage/store';
@@ -224,7 +224,7 @@ export function mapScreen(root: HTMLElement, { focus }: { focus?: 'language' } =
         h('div', { class: `map-hero ${aro ? 'with-aro' : ''}` }, aro?.el ?? null, tapko, surprisesBox(p)),
         bubble,
         taskCard(p),
-        button(t('map.warmUp'), () => openBreak(() => undefined, start), 'btn', 'wave'),
+        button(t('map.warmUp'), () => openBreak(() => undefined), 'btn', 'wave'),
         play,
         button(t('task.pageTitle'), () => go('tasks'), 'btn', 'tasks'),
         button(t('map.practice'), () => openPracticeKeys(), 'btn', 'practice'),
@@ -313,14 +313,16 @@ function journeyTip(open: boolean, stars: number): string {
 }
 
 /**
- * The story's hero's journey as a badge at the bottom right of its last world's island: the compass in
+ * The story's hero's journey as a badge at the bottom right of its last world's island: the compass rose in
  * a ring coloured by its best stars (none white-grey, then grey, pink, light blue, light green, golden
- * yellow); a click starts it. Faded and closed until that world is finished.
+ * yellow); a click starts it. Faded and closed until that world is finished; open, the rose turns now and then.
  */
 function journeyBadge(p: Profile, story: StoryDef): HTMLElement {
   const open = journeyOpen(p, story);
   const stars = p.progress.levels[journeyId(story)] ?? 0;
   const name = `${t('journey.title')}${stars ? `, ${t('map.starsAria', { n: stars })}` : ''}`;
+  const rose = compassElement('journey-compass', ROSE);
+  if (open) swing(rose);
   return h('button', {
     class: `journey-badge badge small stars-${stars} ${open ? '' : 'closed'}`, type: 'button', disabled: !open,
     'aria-label': name, tip: journeyTip(open, stars),
@@ -328,7 +330,22 @@ function journeyBadge(p: Profile, story: StoryDef): HTMLElement {
       e.stopPropagation();
       go('level', { id: 'journey', story: story.id });
     },
-  }, compassElement('journey-compass'));
+  }, rose);
+}
+
+/** Turns `el` like a compass needle: every 10 to 30 s to a random heading, settling there with a swing of 3 s. */
+function swing(el: HTMLElement): void {
+  if (reduceMotion()) return;
+  let at = 0;
+  const later = () => window.setTimeout(turn, 10_000 + Math.random() * 20_000);
+  const turn = () => {
+    if (!el.isConnected) return;
+    const by = (Math.random() < 0.5 ? -1 : 1) * (60 + Math.random() * 240);
+    el.animate([0, 1.25, 0.88, 1.06, 0.97, 1].map((k) => ({ transform: `rotate(${at + by * k}deg)` })), { duration: 3000, easing: 'ease-in-out', fill: 'forwards' });
+    at = (at + by) % 360;
+    later();
+  };
+  later();
 }
 
 /** The world's badge at the island's top right: a click shows it big in the middle of the screen. */

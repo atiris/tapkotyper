@@ -367,8 +367,8 @@
       "about": "Names of things held in the hand, gloves and shoes."
     },
     "break": {
-      "title": "Stretch and big break",
-      "about": "The break screen with short exercises, an optional big break and the skip button."
+      "title": "Warm-up",
+      "about": "The warm-up popup with three exercises on the feet, its buttons and the exercises."
     },
     "tips-body": {
       "title": "Posture tips",
@@ -605,7 +605,7 @@
     "map.hello": "Heading of the map. {name} is the player's nickname.",
     "map.title": "Title of the map in the top bar, right of the Players button.",
     "map.continue": "Big map button that starts the next level.",
-    "map.warmUp": "Map button above Continue that starts the short stretch break (the big one can be added); after it the next level starts.",
+    "map.warmUp": "Map button above Continue that opens the warm-up popup: three exercises on the feet with a countdown.",
     "map.practice": "Button for practising chosen letters; also used in bubbles and in the Continue button's description.",
     "map.wardrobe": "Map button that opens the wardrobe.",
     "map.switchProfile": "Top left map button that returns to the player picker.",
@@ -683,9 +683,7 @@
     "level.paused": "Heading of the small card shown when the level is paused.",
     "level.pauseClose": "Name of the X on the pause card; goes on playing, like Esc.",
     "level.slower": "Button on the pause card that lowers the difficulty so the game goes slower.",
-    "level.stretch": "Button on the pause card, and the title of the short stretch with a countdown.",
-    "level.stretchLong": "Button on the short stretch that opens the map's warm-up (several exercises); going on typing from it continues the level, cancelling returns to the pause card.",
-    "level.stretchDone": "Button that ends the short stretch and brings the pause card back.",
+    "level.stretch": "Button on the pause card and on a hero's journey's panel that opens the warm-up popup (three exercises on the feet).",
     "level.slowerSaid": "The character, right after the child presses Slower on the pause card.",
     "level.leave": "Tooltip of the X button in free typing that leaves the game.",
     "level.progress": "Tooltip of the progress bar in the level's top bar.",
@@ -973,10 +971,8 @@
     "end.parrotHome": "Title of the end card when the parrot stayed: it is at home now.",
     "end.parrotLost": "Title of the end card when the parrot flew off after too many mistakes. No exclamation: a calm line.",
     "end.freeType": "Title of the end card when the child leaves free typing after typing something.",
-    "end.break": "Title of the end card after the stretch break.",
     "end.taskDone": "Title of the card with the result link of a finished task.",
     "end.toMap": "Last button of every end card: back to the map.",
-    "end.breakBtn": "Main button of an end card when a break is due: the stretch break.",
     "end.surpriseNew": "Band on an end card when this run unlocked a parent's surprise.",
     "end.surpriseSee": "Main button of an end card with a surprise: opens the surprises won today.",
     "end.accuracy": "Row label on an end card; the value is the accuracy in percent.",
@@ -1012,7 +1008,6 @@
     "end.minutes": "A time value under the picture or in a row: {n} minutes.",
     "end.hits": "Under the range's picture: all target hits of the run.",
     "end.words": "Under the parrot's or free typing's picture: the words learned or typed.",
-    "end.exercises": "Under the break's picture: the exercises done.",
     "end.moreRewards": "Added after the first reward in the green line when more came at once: \"Gold badge and 2 more rewards\".",
     "results.peek": "Name of the X on a results card; hides the card to look at the game under it, like Esc. Any key brings the card back.",
     "results.starsAria": "Hidden label of the stars (read by screen readers). {n} is the number earned, {max} the most a level gives.",
@@ -1185,16 +1180,10 @@
     "wardrobe.starsEarnedTip": "Tooltip of the wardrobe's count under the stacked stars: every star ever earned, replays included.",
     "slots.*": "Heading of a wardrobe part by the place on the body.",
     "items.*": "Name of an accessory: its tooltip and label in the wardrobe.",
-    "break.title": "Stretch break: the heading above one of the three short exercises. {n} is the exercise number, {total} how many there are (3).",
-    "break.bigTitle": "Big break: the heading above one of the six longer exercises. {n} is the exercise number, {total} how many there are (6).",
-    "break.big": "Break screen: the button that adds the big break with longer exercises.",
-    "break.bigSkip": "Break screen: the button shown during the big break that goes back to the short break.",
-    "break.play": "Map warm-up: the button that starts the next level at once, during the warm-up and at its end.",
-    "break.cancel": "Map warm-up: the button that closes the warm-up and goes back to the map (Esc does the same).",
-    "break.other": "Break screen: button under a short exercise that swaps it for another one with its full time again.",
-    "break.again": "Map warm-up, last card: button that starts the short warm-up once more.",
-    "break.closeTip": "Map warm-up: tooltip of the round X that closes the warm-up and goes back to the map.",
-    "break.skip": "Break screen: the button under the countdown that skips the short break (Esc does the same).",
+    "break.title": "Warm-up popup: the heading above one of its three exercises on the feet. {n} is the exercise number, {total} how many there are (3).",
+    "break.other": "Warm-up: the button that swaps the exercise for another one with its full time again.",
+    "break.again": "Warm-up: the button that starts it again from its first exercise.",
+    "break.closeTip": "Warm-up: tooltip of the round X that ends it and goes back.",
     "break.*": "Break screen: the instruction for one movement exercise, shown under the character while the seconds count down.",
     "tips.*": "Tip before a level: one piece of advice on the get-ready card, once per session; also shown in the help during a level.",
     "tips.listen-whole": "Tip only for dictation runs (words are heard): shown on the get-ready card before a level or in its help.",
@@ -1271,7 +1260,7 @@
     "parent.wardrobeBalance": "Settings, Settings tab: the line under the wardrobe switch. {m} is the minutes and {s} the seconds of time left.",
     "parent.sessionMinutes": "Settings, Settings tab: the label of the slider for play time before a break.",
     "parent.breaksLocked": "Settings, Settings tab: the title of the switch that stops the child skipping the break.",
-    "parent.breaksLockedHint": "Settings, Settings tab: the note under the switch that stops the child skipping the break.",
+    "parent.breaksLockedHint": "Settings, Settings tab: the note under the switch that stops the child ending the warm-up that starts by itself after the play time.",
     "parent.minutes": "Settings: the value of a slider in minutes (play time, task minutes). {n} is the number of minutes.",
     "parent.guide": "Settings, Settings tab: the label of the finger guide select.",
     "parent.guideAuto": "Settings, Settings tab: an option in the finger guide select.",
@@ -1849,6 +1838,7 @@
     "progress.rhythmTuneNone": "Line under the rhythm notes while none is chosen.",
     "map.journey.welcome": "Hero's journey badge tooltip before the journey was ever finished: a welcome to the longer, harder trip through every world of the story.",
     "map.journey.again": "Hero's journey badge tooltip after a finish: {n} best stars (plural forms); asks to beat or repeat it.",
-    "map.journey.about": "Hero's journey badge tooltip, always after the line before: stars come harder there; the help tells how hard."
+    "map.journey.about": "Hero's journey badge tooltip, always after the line before: stars come harder there; the help tells how hard.",
+    "break.end": "Warm-up: the button that ends it early and goes back where it was opened (Esc does the same)."
   }
 }

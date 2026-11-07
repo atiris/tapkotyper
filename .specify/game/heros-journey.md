@@ -5,8 +5,10 @@
   symbol is the **compass**.
 - On the map it is a **badge** at the bottom right of the picture of the story's last world (the
   island's corners: the surprises top left, the world badge top right, the keyboard bottom left): the
-  compass in a ring coloured by the journey's best stars: not finished white-grey, 1 star grey, 2 pink,
-  3 light blue, 4 light green, 5 golden yellow. A click starts it. Its tooltip: before the first finish
+  compass rose alone (no case: the badge's ring is round) in a ring coloured by the journey's best stars: not finished white-grey, 1 star grey, 2 pink,
+  3 light blue, 4 light green, 5 golden yellow. Like a compass needle the rose turns now and then
+  (every 10 to 30 s) to a random heading and settles there with a swing of about 3 s (not with
+  reduced motion, not while closed). A click starts it. Its tooltip: before the first finish
   "Vitaj, hrdina, na tejto výprave, ktorá je dlhšia a náročnejšia a prevedie ťa všetkými svetmi tohto
   príbehu. Vstúp a začni toto posledné dobrodružstvo."; after it "Znovu sa stretávame! Dokázal si
   prejsť túto cestu hrdinu na N hviezd. Dokážeš to ešte prekonať, alebo zopakovať?" (the stars in their
@@ -20,8 +22,8 @@
 - Only the get-ready card comes before the first part. Between parts a panel on the card of every
   end ([mechanics](mechanics.md)): "Cesta hrdinu pokračuje!" with the round X; on the left the map
   picture of the world the next part goes to, on the right the next part's own story instead of
-  stats. Buttons: "Ideme ďalej" (focused; the X, Esc, Space and Enter too), "Krátke cvičenie" (the
-  pause card's short stretch, then the panel again) and "Vzdať to" apart at the right end of the row. No other intro cards and
+  stats. Buttons: "Ideme ďalej" (focused; the X, Esc, Space and Enter too), "Rozcvička" (the
+  warm-up popup, then the panel again) and "Vzdať to" apart at the right end of the row. No other intro cards and
   no key cards.
 - Leaving a journey, from the panel's "Vzdať to" or the pause card's "Ukončiť písanie", asks one
   question: "Hrdina, vydrž to!", that the journey is a tough nut even for the best heroes, to try

@@ -205,7 +205,7 @@ kryštálov a močiar** sa dostať až k rakete, ktorá čaká na brehu, priprav
 dostane kryštálové palivo. Z hory sa kotúľajú kamienky, ktorým je potrebné sa vyhnúť, tak to
 skúste spolu!" a pod tým riadok o ťažšej hre. Medzi časťami panel "Cesta hrdinu pokračuje!"
 (karta konca): vľavo obrázok sveta ďalšej časti z mapy, vpravo jej text, tlačidlá "Ideme
-ďalej", "Krátke cvičenie" a "Vzdať to" (pýta sa "Hrdina, vydrž to!").
+ďalej", "Rozcvička" a "Vzdať to" (pýta sa "Hrdina, vydrž to!").
 
 1. **Dolu z hory** (pozadie hory) - malé kamienky zo 4. úrovne sveta 5 sa kotúľajú sprava za
    ňou; napísaný zíde z cesty, nenapísaný sa od postavičky odrazí, ona sa zakolíše a cesta sa trochu

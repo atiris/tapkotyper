@@ -4,29 +4,24 @@
 - Sessions are short: a soft end after the parent-set length (default 15 minutes). The narrator
   suggests a stretch break with a short animated exercise; the child may finish the
   current level first.
-- The short break is three stretches of 20 seconds. During it the child may add the **big
-  break** ("Veľká prestávka"): six longer exercises of 30 seconds (standing up, marching on the
-  spot, the neck, the wrists, the eyes far and near, a drink of water and deep breaths). Under the
-  countdown sit the big break's button and "Preskočiť" (Esc does the same); during the big break the skip
-  ("Preskočiť veľkú prestávku", Esc too) goes back to the short break where it was. Anyone may skip
-  the short break, unless the parent switched on **unskippable breaks** for the profile: then
-  neither the button nor Esc skips it (the big break may still end early).
-- The break opens over the screen it was taken from and always returns there: from a level's
-  results the child is back on the same results, with the reward still to look at.
-- Any short exercise can be swapped for another one ("Iné cvičenie": a different exercise, its
-  full 20 seconds again).
-- The map has a **Rozcvička** (warm-up) button above Continue (which stays the map's main
-  button): the same short break with the big one to add, the child's own choice, so never
-  locked. Its buttons sit in one row: "Veľká prestávka", "Iné cvičenie", "Pokračovať v písaní"
-  (starts the next level at any moment) and "Zrušiť"; a round X top right (its tooltip says it
-  closes the warm-up and goes back, Esc does the same) goes back to the map. It ends with the
-  end card "Rozcvička hotová!" (the one card of every end, see [mechanics](../game/mechanics.md)):
-  the football, the exercises done, the time, "Pokračovať v písaní", "Ešte sa rozcvičiť" (the
-  short warm-up once more) and "Mapa svetov"; the round X and Esc go back. A break ends the same way,
-  with "Pokračovať" (back where it came from) in place of "Pokračovať v písaní", and no posture
-  card of its own: the level's get-ready card shows it anyway.
+- The break is the **Rozcvička** (warm-up): a popup over the screen it was opened from, the
+  narrator leading three random exercises on the feet (standing up on the tiptoes, marching on the
+  spot, squats, hopping, turning, a drink of water and deep breaths) for 30 seconds each: the title
+  "Rozcvička 1/3", the character doing the exercise, what to do, a countdown and the round X.
+  Buttons in one row: "Iné cvičenie" (another exercise, its full time again), "Znova" (from the first
+  exercise again) and "Ukončiť".
+- It has no end card: at the end of its time, or ended early ("Ukončiť", the round X, Esc or a click
+  beside the card), the popup closes and the child is back where it was opened (the pause card, a
+  hero's journey's panel, the map, a level's results with the reward still to look at). Closing it
+  starts the play time before the next one again.
+- The child may open it any time: "Rozcvička" on the pause card (which itself shows one stretch to
+  try sitting), on a hero's journey's panel and on the map above Continue (which stays the map's main
+  button). Opened by the child it is never locked.
+- When the play time is used up it opens by itself over the level's results. With **unskippable
+  breaks** switched on by the parent for the profile that one cannot end early: no "Ukončiť", no
+  round X, no Esc, no click beside it.
 - Runs without an end of their own (free typing, staying a while in a level) say the break in
-  the character's bubble when it is due; the card after staying a while offers the break first.
+  the character's bubble when it is due; the warm-up opens by itself over the card after staying a while.
 - No daily streaks, no "come back or lose" messages, no random loot.
 - Before play only the key cards and one get-ready card; the reward scenes after a world are
   always skippable.
@@ -39,5 +34,7 @@
   create unhealthy pressure ([research](../../.research/features/session-pacing.md)).
 - A run that never ends by itself could carry a child far past the break; the reminder has to
   reach them inside the run.
-- After a long session one minute of stretching is not enough; standing up and moving helps more,
-  but it stays the child's choice.
+- After a long session one stretch is not enough; standing up and moving helps more. The pause card
+  already shows one short stretch, so the warm-up is the longer one on the feet.
+- A popup that closes by itself back where it was keeps a break from becoming a screen of its own to
+  click through.

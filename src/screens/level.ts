@@ -112,7 +112,7 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
       onFreeDone: (typed) => showFreeDone(root, typed, params),
       onTapko: openStats,
       onHelp: (back, now) => openHelp(root.querySelector('.level-screen')!, back, now),
-      onBreak: (back, play) => openBreak(back, play),
+      onBreak: (back) => openBreak(back),
       onLayout: () => go('level', params, false),
       journey,
       onPart: part && (() => play(journeyLevel(journeyStory(part.story)!, part.part + 1))),
@@ -205,13 +205,17 @@ const letters = (n: number) => tn('end.letters', n);
 /** Whole minutes of typing; under a minute says so. */
 const minutes = (seconds: number) => seconds < 60 ? t('end.underMinute') : tn('end.minutes', Math.round(seconds / 60));
 
-/** The end card over the level's last frame, its main button focused, "World map" last unless the end has its own way there; Esc and typing as in `peekable`. */
-function showEnd(root: HTMLElement, o: Omit<EndCardOpts, 'onBreak'>, type?: () => void): void {
-  const card = endCard({ toMap, ...o, onBreak: isBreakDue() ? (back) => openBreak(back) : null });
+/**
+ * The end card over the level's last frame, its main button focused, "World map" last unless the end has its own way there; Esc and typing as in `peekable`.
+ * When the play time before a break is used up, the warm-up opens over it at once and goes back to it.
+ */
+function showEnd(root: HTMLElement, o: EndCardOpts, type?: () => void): void {
+  const card = endCard({ toMap, ...o });
   const overlay = h('div', { class: 'overlay results' }, card);
   root.querySelector('.level-screen')!.append(overlay);
   focusMain(card);
   peekable(overlay, card, type);
+  if (isBreakDue()) openBreak(() => focusMain(card), true);
 }
 
 /** Accuracy and speed, the rows every typing end starts with. */

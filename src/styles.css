@@ -1588,12 +1588,11 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-ink); }
 .break-actions { flex-wrap: nowrap; }
 @media (max-width: 760px) { .break-actions { flex-wrap: wrap; } }
 .break-stage { display: flex; justify-content: center; }
-.break-stage[data-ex='arms'] .tapko-stack { animation: stretch-up 4s ease-in-out infinite; }
-.break-stage[data-ex='fists'] .tapko-stack { animation: squeeze 1.4s ease-in-out infinite; }
-.break-stage[data-ex='shoulders'] .tapko-stack, .break-stage[data-ex='neck'] .tapko-stack { animation: sway 3s ease-in-out infinite; }
 .break-stage[data-ex='stand'] .tapko-stack { animation: stretch-up 4s ease-in-out infinite; }
 .break-stage[data-ex='march'] .tapko-stack { animation: jump-small 0.8s ease-in-out infinite; }
-.break-stage[data-ex='wrists'] .tapko-stack { animation: squeeze 1.4s ease-in-out infinite; }
+.break-stage[data-ex='squat'] .tapko-stack { animation: squeeze 2.4s ease-in-out infinite; }
+.break-stage[data-ex='jump'] .tapko-stack { animation: jump-small 0.6s ease-in-out infinite; }
+.break-stage[data-ex='twist'] .tapko-stack { animation: sway 2s ease-in-out infinite; }
 @keyframes stretch-up { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(0.94, 1.12); } }
 @keyframes squeeze { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08, 0.94); } }
 @keyframes sway { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }

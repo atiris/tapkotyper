@@ -10,7 +10,6 @@ import { type KeyboardGuide, chipOf, fingerChip, lessonFinger, textColorsOn } fr
 import { button, closeButton, confirmDialog, h, icon, linkedText, modal, richText } from '../ui/dom';
 import { endCard, focusMain } from '../ui/end-card';
 import { focusDefault, panelHotkeys } from '../ui/hotkeys';
-import { pickStretch, stretchExercise } from './runtime/pause';
 import { tapkoElement } from '../gfx/tapko';
 import { imageUrl } from '../gfx/assets';
 import { HANDS_ARRIVE_S, HANDS_GLIDE_S } from '../ui/hands';
@@ -181,14 +180,12 @@ export function giveUpJourney(): Promise<boolean> {
 /**
  * Between two parts of a hero's journey, on the card of every end: the map picture of the world the
  * next part goes to and the part's own story. "On we go" (focused; the X, Esc, the space bar and
- * Enter too), the pause card's short stretch exercise (then the panel again) and giving up, which
+ * Enter too), the warm-up (then the panel again) and giving up, which
  * asks first. Resolves true to play on, false to leave the journey.
  */
-export function showJourneyPanel(host: HTMLElement, world: string, text: string, onBreak: (back: () => void, go: () => void) => void): Promise<boolean> {
+export function showJourneyPanel(host: HTMLElement, world: string, text: string, onBreak: (back: () => void) => void): Promise<boolean> {
   return new Promise((resolve) => {
-    let stopStretch = () => {};
     const close = (on: boolean) => {
-      stopStretch();
       stop();
       overlay.remove();
       resolve(on);
@@ -197,11 +194,6 @@ export function showJourneyPanel(host: HTMLElement, world: string, text: string,
     const show = () => {
       overlay.replaceChildren(panel);
       focusMain(panel);
-    };
-    const stretch = () => {
-      const card = h('div', { class: 'card pause-card journey-stretch', role: 'dialog', 'aria-label': t('level.stretch') });
-      overlay.replaceChildren(card);
-      stopStretch = stretchExercise(card, pickStretch(), show, go, () => onBreak(show, go));
     };
     const giveUp = async () => {
       if (await giveUpJourney()) close(false);
@@ -214,7 +206,7 @@ export function showJourneyPanel(host: HTMLElement, world: string, text: string,
       text,
       actions: [
         { label: t('journey.go'), icon: 'next', run: go },
-        { label: t('level.stretch'), icon: 'smile', run: stretch },
+        { label: t('level.stretch'), icon: 'smile', run: () => onBreak(show) },
         { label: t('journey.giveUp.button'), icon: 'close', run: () => void giveUp() },
       ],
       onClose: go,

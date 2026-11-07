@@ -238,7 +238,7 @@ export class LevelRuntime {
       resume: () => this.resume(),
       slowDown: () => this.slowDown(),
       leave: () => void this.leave(),
-      onBreak: (back, play) => opts.onBreak(back, play),
+      onBreak: (back) => opts.onBreak(back),
     }, def.kind === 'freetype' ? null : pauseBtn);
     if (this.pawsAllowed) this.paws = new Paws(this.state, this);
     if (p.id === SUPER_ID && def.kind !== 'freetype') this.superHelp = new SuperHelp(this.state, { rng: this.rng, noPressure: this.noPressure, share: () => this.share(), type: (c) => this.onChar(c), beat: () => this.mode.beat, beatDue: () => this.mode.beatDue() });
@@ -361,7 +361,7 @@ export class LevelRuntime {
     // A later part of a hero's journey: only the panel with the next world and its story; giving up there leaves the journey.
     if (journey && journey.part > 0) {
       this.core.style = this.style;
-      const on = await showJourneyPanel(host, WORLDS[journey.picture], journey.line ? t(journey.line) : '', (back, go) => this.opts.onBreak(back, go));
+      const on = await showJourneyPanel(host, WORLDS[journey.picture], journey.line ? t(journey.line) : '', (back) => this.opts.onBreak(back));
       if (this.disposed) return;
       if (on) this.begin();
       else this.exit();
@@ -525,7 +525,6 @@ export class LevelRuntime {
     this.disposed = true;
     clearTimeout(this.handsAway);
     clearTimeout(this.handsArrive);
-    this.pauseCard.dispose();
     speech.stop();
     this.reading.dispose();
     this.offShortcuts();

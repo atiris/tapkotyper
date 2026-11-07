@@ -53,8 +53,8 @@ export interface RuntimeOptions {
   onTapko(): void;
   /** The help page over the paused or ended level, with what this level asks (`now`); `back` returns to the paused level. */
   onHelp(back: () => void, now: HTMLElement[]): void;
-  /** The map's warm-up over the paused level: `back` returns to the pause card, `play` goes on typing. */
-  onBreak(back: () => void, play: () => void): void;
+  /** The warm-up over the paused level or a journey's panel; `back` returns there. */
+  onBreak(back: () => void): void;
   /** The player switched the keyboard layout under the on-screen keyboard: the level starts again with it. */
   onLayout(): void;
   /** A hero's journey part: the journey's parts so far, this one is added at its end. */

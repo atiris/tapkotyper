@@ -78,7 +78,7 @@
   "2 max 5", the parrots at home now and the most that were home at once; the tooltip says it
   in words ([parrot](../game/parrot.md)). Secret words on the page start the badge show
   ([easter eggs](../experience/easter-eggs.md)).
-- The overlay (a quick look, only by a click on the character) has two tabs: **Postup** (the progress above, a big Tapko, the growth
+- The overlay (a quick look, only by a click on the character) has two tabs: **Postup** (the progress above, a big picture of the character, the growth
   medals and the stars as the last chip; stories come before worlds) and
   **Klávesy** (the key map and the key details).
 - Tasks from a teacher, their results and their QR codes are on the player's **Úlohy** page

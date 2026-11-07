@@ -36,7 +36,7 @@
   with a countdown keeps its clock beside it, and the clock is always in sight too.
 - Word labels never overlap: the most urgent word keeps its place, the others glide aside
   (up, or down near the top), and a far-moved word gets a thin line to its object.
-- The start is slow: at difficulty 3 a short word needs about 10 seconds to reach Tapko
+- The start is slow: at difficulty 3 a short word needs about 10 seconds to reach the character
   and one word is on screen at a time.
 - Every story level, super level lasts a minimum of active play that grows
   with the story: 2 minutes in the dragon story, 3 in the robot story, 4 in the fairy story.
@@ -60,18 +60,18 @@
   test plays the level at both paces and checks that it appears.
 - **The stage's width changes during play** (the on-screen keyboard hidden or shown, the window
   resized, fullscreen on or off; the height stays). Everything placed by the stage's width (rings
-  on a path, a target, Tapko by the edge) keeps its place in the scene's own terms (a share of the
+  on a path, a target, the character by the edge) keeps its place in the scene's own terms (a share of the
   path, a share of the width) and follows the new width at once; nothing keeps the place it had
   when it came.
   The valley's flight levels count dragons (three, one more while the minimum is not played,
   at most five) and the fifth ends the level even below the minimum ([story](story.md)).
-  Two mountain levels make the way longer: a gust that rushes into Tapko after a second slip
+  Two mountain levels make the way longer: a gust that rushes into the character after a second slip
   adds 2 planned words and their time at the story's pace (at most 10 words in a level), and a
   missed boulder adds 7 % of the level's planned words and of its minimum (at most 70 %).
   The progress bar shows the slower of the two shares, the targets done
   and the minimum time played, so it never runs ahead of either, ends exactly when the level
   ends and never goes back when more targets come. Practice,
-  custom exercises and free typing keep their own length. At the end Tapko stays where he is and jumps happily
+  custom exercises and free typing keep their own length. At the end the character stays where he is and jumps happily
   three times (Bolt hops with him in story 2, Melody hops in story 3; a super level adds a cheer), and any tool he held in the level (gloves,
   torch, umbrella) fades away; with reduced motion he only smiles and the tool is gone
   at once. About 1.4 seconds later the end card comes (see The end card). Accuracy counts only the child's own keys: a level where the child
@@ -84,7 +84,7 @@
   94 %, 2 from 89 %, else 1 (finishing always gives one, a flawless level five). Whole stars
   only; every game counts the same way (the valley's flying lessons too). The stars stand like
   the Olympic rings, three on top and two below in their gaps, filled in reading order, on the
-  end card beside Tapko, where they stand small in one row. On the map's level cards only the
+  end card beside the character, where they stand small in one row. On the map's level cards only the
   earned stars show, in a fixed box of two rows: one in the middle, two side by side, three as a
   triangle (two over one), four two over two, five like the rings. The target range's and the
   parrot's cards look the same: the game on top, a check under it once it is won. A card keeps
@@ -121,16 +121,16 @@
     a gap that lights up when it is the key. Spaces and the period are typed like letters. What
     the child has written fills a frame right below it, as wide as the band and from the same
     left edge (up to three lines, the oldest scrolling away); band and frame take the right half
-    of the stage (the right two thirds on a narrow one), Tapko and the scene stay on the left.
+    of the stage (the right two thirds on a narrow one), the character and the scene stay on the left.
     A slip (a wrong letter, a letter where the space belongs, a space inside a word) erases
     nothing written: the word in progress starts again from its first letter, and one new word
     of the same kind joins the text right after it, the minimum time growing by one word's share
     (at most 10 words in a level; after that a slip only restarts the word). Sentences of 4-6
     known words come until both minimums are met; a restarted word counts once.
   - *Cyclic copy* (the placeholder of every level of a world not built yet, see
-    [story](story.md)): the world's own background bands, the near one drifting slowly, Tapko
+    [story](story.md)): the world's own background bands, the near one drifting slowly, the character
     at his usual place, and a small sign at the top with the world's name and "Coming soon".
-    One target at a time on a large panel in the middle, above Tapko's head, soft white with
+    One target at a time on a large panel in the middle, above the character's head, soft white with
     the world's accent colour as its border and glow. Levels 1-2 a word, 3-4 a phrase of 2-3
     words, the super level a sentence of 3-5 words once space and period are known (else a
     phrase); the level's keys give the letters. A finished target floats up out of the panel
@@ -228,7 +228,7 @@
   every other screen: it ends the exercise and shows its results. Escape still pauses.
 - **Staying a while**: the results card of a story level offers "Stay a while" after the main
   action, which keeps the focus. The same level, mode and background run again without an
-  end: targets keep coming at the level's pace and Tapko says that Esc ends it; there is no
+  end: targets keep coming at the level's pace and the character says that Esc ends it; there is no
   progress bar. Esc pauses as anywhere, but the level is already done, so the pause card's
   first (focused) button is "Ďalšia úroveň" (when open), else "Ukončiť písanie": Enter after Esc
   goes on, the child need not look for the way out. Ending it shows
@@ -247,7 +247,7 @@
   peeking never ends anything, so a child looking around loses no card.
 - **Calm scenes breathe**: a scene that stands still (the calm steps of a world) lets one
   background band drift slowly on its own; with reduced motion nothing drifts. In a scene that
-  moves with Tapko (its near band scrolls as he goes), the middle band never drifts: it moves
+  moves with the character (its near band scrolls as he goes), the middle band never drifts: it moves
   only when he does.
 
 ## Why

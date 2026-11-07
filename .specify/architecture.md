@@ -66,14 +66,14 @@
   they stand still (or always where a pixel is too small to see a jump, at a device pixel
   ratio of 2 and more); two or more bands that stand still at the back (a hero who stops, a calm
   scene, reduced motion) are drawn once into one picture that each frame copies in one go, the same
-  pixels for fewer full-screen copies; the layer in front of Tapko is only as wide as what he holds; big
+  pixels for fewer full-screen copies; the layer in front of the character is only as wide as what he holds; big
   blurred glows are drawn once per size and then copied; a scene that does not move (cards
   before play, the pause) is not drawn again, and with Full graphics a scene under a blurring
-  card (the end card) stands still, Tapko on the card too: any move there would blur the stage
+  card (the end card) stands still, the character on the card too: any move there would blur the stage
   again every frame. Peeking under the end card shows it live again. Drawing a frame never reads
   the canvas's size (the stage keeps its pixel ratio from its last resize): after the frame's
   word labels moved, such a read makes the browser lay out the page once more. For the same reason
-  Tapko's bubble is measured once when it shows a line (and again after a resize), not every frame.
+  the character's bubble is measured once when it shows a line (and again after a resize), not every frame.
   A word label's letters are measured once per word and size, on a canvas off the page: a label is
   laid out every frame, and measuring on the stage made the browser bring the page's styles up to
   date each time.
@@ -82,15 +82,15 @@
   key of the keyboard inherits: such a change made the browser recompute the whole keyboard
   (about two hundred elements) on every new key.
 - **Simple graphics:** a teacher can set Graphics to Automatic (default), Full or Simple in the
-  settings. Simple draws the scene at three quarters of the screen's resolution (scaled up; Tapko,
+  settings. Simple draws the scene at three quarters of the screen's resolution (scaled up; the character,
   the keyboard and the cards are page elements and stay sharp), fewer particles, no blurred
   shadows (the word labels keep theirs) and no blur behind cards, moving bands on whole pixels and the start page's sky
   without its butterflies and fireflies. Its background bands stand still, except the near band
-  of a scene Tapko travels through (the planet's swamp and shore, the crossroads, the valley's
+  of a scene the character travels through (the planet's swamp and shore, the crossroads, the valley's
   thicket, the egg world's mud path), where things stand on that ground and the shore must come;
   so the still bands are always copied as one picture and a frame copies one or two full-screen
   pictures instead of three or four. The bands' slow drift stops too: it only makes a still scene look alive.
-  What lies over the moving scene (Tapko, his bubble, the keyboard's top edge) is painted again with
+  What lies over the moving scene (the character, his bubble, the keyboard's top edge) is painted again with
   every frame on a weak graphics chip, so there it has hard edges instead of soft shadows; the next
   key does not pulse and the hands change pose at once, as both would restyle the page every frame.
   For the same reason the keys light up and the progress bar grows at once, without easing in.
@@ -135,7 +135,7 @@ for a computer without canvas acceleration): `normal` is 1366 x 768 at device pi
 - **Mode contract:** a level kind maps to a `Mode` subclass in `src/game/modes.ts` (loaded on
   demand). The mode draws its scene on the stage (600 units high, width follows the screen),
   asks for word labels through the runtime (`label`), lists its `pictures` (the level opens when
-  they are loaded) and may draw in front of Tapko (`renderFront`, within 640 units of the left
+  they are loaded) and may draw in front of the character (`renderFront`, within 640 units of the left
   edge). Shared pieces used by two or more modes live in `src/game/modes/kit/` (approach,
   catcher, copy row, hero); a mode never imports another world's mode.
 - **Pictures:** prompts in `assets-src/PROMPTS.md`, raw files in `assets-src/`, `npm run assets`

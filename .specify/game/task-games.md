@@ -10,7 +10,7 @@ How a teacher's task plays (its making and hand-in: [teacher links](../profiles/
   the task's name: "Po stlačení medzerníka sa ti spustí úloha na písanie, ktorú si dostal. Píš
   pozorne a snaž sa písať čo najpresnejšie. Rýchlosť nie je taká dôležitá ako presnosť. Ak sa ti
   cvičenie nepodarí podľa tvojich predstáv, môžeš to potom skúsiť znova. Veľa šťastia pri písaní."
-- **The scene:** Tapko stands on the left and does not move; the world's background is drawn as
+- **The scene:** The character stands on the left and does not move; the world's background is drawn as
   in its levels, without its obstacles or other things. The world is the one of the child's next
   level, or for a random task any world of the game, a locked one too (only as a backdrop; nothing
   opens).
@@ -39,9 +39,9 @@ How a teacher's task plays (its making and hand-in: [teacher links](../profiles/
   sitting: leaving early keeps nothing. Leaving goes back to the Tasks page.
 
 ## The five games
-- **Prúd slov:** words fly in from the right edge toward Tapko one after another, at the pace and
+- **Prúd slov:** words fly in from the right edge toward the character one after another, at the pace and
   spacing of the levels' stream for this child; nothing but the words. A typed word bursts; a word
-  reaching Tapko just passes, without harm.
+  reaching the character just passes, without harm.
 - **Čakajúce slová:** three to five words (more for a quicker child) wait at free places in the
   right two thirds of the stage; the child types them in any order, the first letter picks the
   word. A typed word fades and a new one comes to a free place.
@@ -51,7 +51,7 @@ How a teacher's task plays (its making and hand-in: [teacher links](../profiles/
   it; then the next line lights up, and after the last a page of the next sentences comes.
 - **Pás:** the ribbon of the egg's spell in the right half, the text as one endless ribbon, spaces
   and periods too, with the frame of what is written under it; no hearth, egg or fire.
-- **Prepis:** two panels side by side right of Tapko: the text to copy on the narrower left one,
+- **Prepis:** two panels side by side right of the character: the text to copy on the narrower left one,
   its next word softly lit, and what is written on the wider right one, wrapping at its own width
   with a cursor. The same words fall on other lines, so the child copies by reading, not by
   matching lines. The left page turns when it is copied.

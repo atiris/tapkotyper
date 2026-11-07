@@ -9,13 +9,13 @@
 - Like a level, it starts with the hands beside the keyboard: a second later they glide onto the home
   position (about a second and a half), at once faster when the child types first; with reduced
   motion they are on the keys from the start. It shows the children where the fingers go.
-- Tapko walks through the chosen world (its background and music). He starts in the bottom
+- The character walks through the chosen world (its background and music). He starts in the bottom
   left corner, where he stands in other levels, so the bubble at the top left reads as his;
   from there he strolls on the ground into the left part and back. Every key makes him
   hop happily with a small sound; with reduced motion he only smiles.
 - The typed characters collect in a quiet line at the top. After about 1.5 seconds without
   a key (fixed, not a setting), or at once with Enter, the text is shown as a word or short
-  phrase above Tapko for a few seconds, and the line is cleared. A full line (32 characters)
+  phrase above the character for a few seconds, and the line is cleared. A full line (32 characters)
   is shown as soon as the next key comes. Backspace removes the last typed character.
   While nothing is typed or shown, the line says what to do.
 - The text is read aloud when reading aloud is on, the browser has a voice for the
@@ -24,7 +24,7 @@
 - Only keys the layout types count (letters, digits, space, punctuation, diacritics).
   Free typing has no task, so it cannot tell good typing from mashing one or two keys:
   nothing typed here counts in the statistics (no key presses, readiness, speed, accuracy,
-  training time or wardrobe time), and Tapko says so in the bubble at the start. The time
+  training time or wardrobe time), and the character says so in the bubble at the start. The time
   counts only toward the break reminder: when a break is due, the narrator says so in the bubble. It never gives stars,
   levels, keys or task time.
 - No game cards: no get-ready card, no new key, no tip, no paw help. Esc or the round X

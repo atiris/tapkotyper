@@ -12,9 +12,9 @@
   on top, the marks under it); its tooltip says what it trains. Before the world is finished the node is already there, grey and closed like a
   level not reached yet (the tooltip adds when it opens). It starts only when the child picks
   it, never by "Continue".
-- **Scene:** the world's own background, only its middle strip drifting very slowly. Tapko
-  stands at the left; at the right a wooden T-perch stands on the ground at the level of Tapko's
-  feet, the parrot in front of it with its claws on the bar. The word to type is Tapko's bubble
+- **Scene:** the world's own background, only its middle strip drifting very slowly. The character
+  stands at the left; at the right a wooden T-perch stands on the ground at the level of the character's
+  feet, the parrot in front of it with its claws on the bar. The word to type is the character's bubble
   between them, without a tail, alone: no words ahead, so the child keeps to the one word. The perch is about as tall as the parrot. When a word is typed, the parrot repeats it
   in its own bubble with a short squawk, and every third word with a small hop.
 - **Mistakes:** the third wrong key of a round sends the parrot up on a short flight round the
@@ -28,7 +28,7 @@
 - **Round:** 2 minutes of play in every world (the world only makes the words longer and more of
   them). The words come in pairs, each pair twice, round and round the list (A B A B C D C D E F
   E F G A G A B C B C ...), never one word many times in a row; the round ends with a whole pair.
-  The first half measures how fast each word goes; in the second half (Tapko says when it
+  The first half measures how fast each word goes; in the second half (the character says when it
   starts) the child tries to type some word faster than before.
 - **Size** by the world's story and its place in it (worlds 1-2 of a story shorter words):
 
@@ -43,7 +43,7 @@
 - The typing counts in the statistics and in the lesson like at the target range; paws and Enter
   marks stay out, the parent's surprises counting training time are asked and told.
 - **End:** a learned round ends with the parrot's praise ("Suuperr", "Parraáda", ...), then its
-  "I am coming" ("Prrilletiím", "Maáš to", ...), and it flies down to Tapko and sits on the grass
+  "I am coming" ("Prrilletiím", "Maáš to", ...), and it flies down to the character and sits on the grass
   beside him (in front of him, should its way cross him): the parrot goes home with the child. It
   is back on the end card (the one card of every end, see [mechanics](mechanics.md)): "Papagáj je
   doma!", the parrot in colour with the number of words under it, the rows the words (the first
@@ -82,7 +82,7 @@
     on the perch again. His lines stay long enough to read before he takes off, and he flies
     at a leisurely pace.
   - When the badge is lost (a parrot flew away or a round was lost) the next map shows him on the
-    perch once more: after Tapko's line about the flown parrots he says goodbye ("Frrčiíím
+    perch once more: after the character's line about the flown parrots he says goodbye ("Frrčiíím
     prreč!", "Odlieétam!", "Zdrrhaáám!", "Mizznemm!", "Guúúd baáj") and flies off to the right. The empty perch stays while that map
     is shown; the next map has no perch.
   - When the badge is won the first map after it shows the empty perch; Aro flies in from the

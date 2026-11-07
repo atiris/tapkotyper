@@ -1,9 +1,9 @@
-# The character (Tapko)
+# The character
 
 ## What
+- Ťapko / Tapko is the name of the app (short for TapkoTyper); the animal is the player's character ("tvoja postavička"), so texts never call the character Ťapko. Each child picks their own animal, and the app name should not compete with it.
 - The child plays **as** a cute animal character shown on screen during play: the character
-  is the child, not a friend beside them. "Tapko" is only the game's name for the figure;
-  in play the character carries the child's **nickname**, or the child's name when the
+  is the child, not a friend beside them. In play the character carries the child's **nickname**, or the child's name when the
   nickname is empty. The child picks the animal kind when creating the profile (free
   choice); a parent can change nickname and kind in the settings. Kinds: fox (default),
   cat, bunny, owl, dog, bear, panda, penguin, lion. All kinds share one front-view body

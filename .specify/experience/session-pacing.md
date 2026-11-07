@@ -26,7 +26,7 @@
   with "Pokračovať" (back where it came from) in place of "Pokračovať v písaní", and no posture
   card of its own: the level's get-ready card shows it anyway.
 - Runs without an end of their own (free typing, staying a while in a level) say the break in
-  Tapko's bubble when it is due; the card after staying a while offers the break first.
+  the character's bubble when it is due; the card after staying a while offers the break first.
 - No daily streaks, no "come back or lose" messages, no random loot.
 - Before play only the key cards and one get-ready card; the reward scenes after a world are
   always skippable.

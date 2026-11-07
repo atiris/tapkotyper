@@ -28,7 +28,7 @@ test('secret words: the logo hint brings Tapko, the range hint a flying thing, t
   // The first word of the logo's hint ("Hi, I'm Tapko.").
   await expect(page.locator('.card-logo')).toHaveAttribute('data-tip', "Hi, I'm Tapko.");
   await page.keyboard.type('hi');
-  await expect(page.locator('.tapko-visit')).toContainText('I am Tapko');
+  await expect(page.locator('.tapko-visit')).toContainText('I am one of the characters');
   await expect(page.locator('.start-screen')).toBeVisible();
   expect(errors).toEqual([]);
 });

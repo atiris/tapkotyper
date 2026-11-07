@@ -12,15 +12,15 @@
   ([lesson progression](../learning/lesson-progression.md)); when none holds the lesson back,
   the three known letters with the lowest recent accuracy.
 - The scene is the world's background with only its middle strip drifting very slowly; nothing
-  casts a shadow. Tapko stands at the far left, his feet level with the target's legs.
-- Tapko stands at the left and throws something funny at a target at the right, picked at
+  casts a shadow. The character stands at the far left, his feet level with the target's legs.
+- The character stands at the left and throws something funny at a target at the right, picked at
   random for each throw (never the same twice in a row) from about 40 things open in every
   world (a pebble, a tomato, an egg, an alarm clock, a cactus, a boomerang, a planet, a computer mouse, a poppy seed, a treasure map, a snowflake, ...),
   three more in the robot story's worlds (a battery, a magnet, a gear) and three more in the
   fairy story's (a music note, a frog, a magic wand). The compass, the same picture as the node of the
   [hero's journey](heros-journey.md), is one of the things of every world: it bounces with a
   wobble and a sparkle, and rings. The child does not know what flies until
-  it is thrown. A short word over Tapko's paw starts each throw, with no hurry; the rules said at the start
+  it is thrown. A short word over the character's paw starts each throw, with no hurry; the rules said at the start
   stay up until the first throw, so a child has time to read them.
   It flies slowly and steadily through 4 soap-bubble rings toward the target; each ring and
   the target carry a word rich in the trained letters (5 words a throw), never of those
@@ -38,14 +38,14 @@
   happens and the next throw comes.
 - Passing every ring hits the target with a funny effect of the thing: the tomato splats, the
   fly sticks and buzzes, the alarm clock shakes and rings, the boomerang flies back into
-  Tapko's paw, the butterfly flutters away, the ice cube slides down and melts, the light bulb
+  the character's paw, the butterfly flutters away, the ice cube slides down and melts, the light bulb
   lights up, a planet makes the target wobble under circling stars; the rest bounce off. An egg
   ends one of three ways: it splats, it hatches on the target (only in the middle), or it
   hatches in flight and the chick flies on. A snowflake sometimes melts into a water drop in
   flight (the target wonders aloud) and then bursts on the target like a water balloon. A
   poppy seed is tiny, so the target cannot see it coming. The range draws its things as plain
   objects without faces, even where the same object has a face in a story.
-- The range talks. The moment the launch word throws, Tapko names the thing in a small bubble
+- The range talks. The moment the launch word throws, the character names the thing in a small bubble
   ("Mucha vpred!"). About every other hit makes a word pop out of the target, above or left of it at a random angle: the thing's impact sound ("Pľac!") or a general one ("Bum!", "Kaboom!", "Auuuu!"). At every hit the target
   says how good the throw was in a bubble left of it, below the flight path: in the middle (no
   wrong key) mostly a funny line of the thing ("100-percentný kečup!"), one time in five a
@@ -75,18 +75,18 @@
   reach; while staying a while it comes every 6 to 10 throws. It never comes before the fourth
   throw, and only while every throw before went without a wrong key or a late word: after one
   careless throw the run goes without it. Hitting it in the middle (no
-  wrong key, every word in time) the first time makes it a find, and Tapko says it is yours if
+  wrong key, every word in time) the first time makes it a find, and the character says it is yours if
   you throw to the end: it joins the collection only when the run ends, not when it is left
   early. My progress (the page and the popup) shows all 15, found ones in color; each one still
   missing is the same grey range sight (rings and a cross), turned at random so the row does
   not look stiff, and gives nothing away; its tooltip names the world where it waits. The
   progress overview counts them too.
-- With something in the collection, Enter swaps the thing in Tapko's paw (before its throw) for
-  a random one of the collection, and Tapko names it; the rules at the start say so. The
+- With something in the collection, Enter swaps the thing in the character's paw (before its throw) for
+  a random one of the collection, and the character names it; the rules at the start say so. The
   world's own thing still to be found cannot be swapped away.
 - The target's size shows the recent accuracy on the trained letters: big at low accuracy,
   smaller as it improves. When a trained letter becomes ready during the run, the target
-  shrinks with a little bounce, Tapko cheers, the narrator says so, and the letter leaves the
+  shrinks with a little bounce, the character cheers, the narrator says so, and the letter leaves the
   list. The trained letters are said at the start, not shown in the HUD.
 - At least two and a half minutes (the base time), counted from the first throw (reading the rules takes none of them): the
   run ends with the throw in the air after them, the same in every world (the range is
@@ -96,7 +96,7 @@
   enough that the target's eyes peeking out over its top stay in sight. The most points of a run
   are the range's record (kept per player with the day it was set, staying a while does not count;
   the progress's third row, the totals since the start, shows it and its day); the first time a
-  run beats it Tapko says "Nový svetový rekord!". The end card (the one card of every end, see
+  run beats it the character says "Nový svetový rekord!". The end card (the one card of every end, see
   [mechanics](mechanics.md)) is "Strelnica hotová!" with the target, or "Nový svetový rekord!"
   with the winner's cup when the run set the record; under the picture all hits of the run, the
   rows the points, accuracy and the hits in the middle. Its green line tells a thing new in the

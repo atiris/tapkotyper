@@ -44,25 +44,25 @@
   the map. Staying a while is not offered.
 
 ## The dragon story's journey
-- The egg has hatched on the summit. Tapko takes the **little dragon** (the hatched baby, out
+- The egg has hatched on the summit. The character takes the **little dragon** (the hatched baby, out
   of its shell) back **down from the Mountain of Awakening to his rocket** and takes off. The
-  little dragon walks and flutters right behind Tapko in every part, never a target: glad at a
+  little dragon walks and flutters right behind the character in every part, never a target: glad at a
   word and at a finished part, worried at a slip or a stumble. In the flight it is the one
-  flying, and at the take-off it climbs into the rocket after Tapko.
+  flying, and at the take-off it climbs into the rocket after the character.
 - The get-ready card tells the whole way: the little dragon hatched and stays, down from the
   Mountain of Awakening through the Dragons' Valley, the Crystal Meadow and the swamp to the
   rocket waiting on the shore for its crystal fuel, and the little stones rolling down; then the
   line about the harder play. Each panel between parts tells the next part's goal. Its picture is
   the next part's world; the take-off shows the rocket world's (it is the way into space), though
   it plays on the planet's shore.
-- The parts, in the order of the way home (Tapko always goes to the right, as everywhere):
+- The parts, in the order of the way home (the character always goes to the right, as everywhere):
   1. **Down the mountain** (the mountain's bands): the small stones of the mountain's fourth
      level roll after him, exactly as there; a missed one makes the way longer by the part's own
      share, at most ten times. A slip in a stone's word brings one more stone and one planned
      word's time, once a stone, at most seven times.
   2. **Through the valley** (the valley's bands, the burning pit on the right): the little
-     dragon learns to fly over the two bushes, always between Tapko and the pit: to the pit,
-     back to Tapko, and on. Only a flight that lands where it aimed counts; one that lands in the
+     dragon learns to fly over the two bushes, always between the character and the pit: to the pit,
+     back to the character, and on. Only a flight that lands where it aimed counts; one that lands in the
      bushes or hard walks back and is flown again the same way, a little easier each time. It
      needs two good flights, and more while the part's minimum is not nearly played. A failed
      flight costs no stars.
@@ -72,13 +72,13 @@
      the back of the meadow (they flew here at the valley's take-off) and wave.
   4. **The swamp** (the planet's swamp): the great swamp's fragile stones (three stones and the
      firm fourth, a slip cracks one and he goes back), without the log and the monolith, at
-     least four sets before the shore. The little dragon flies, hovering over Tapko's head. It
+     least four sets before the shore. The little dragon flies, hovering over the character's head. It
      ends on the shore, where the rocket stands ready on the grass.
   5. **The take-off** (the same shore): the rocket world's command game on the ground. The
-     rocket stands away from the water, wholly in sight, Tapko beside it with a step of room. It accepts at least seven
+     rocket stands away from the water, wholly in sight, the character beside it with a step of room. It accepts at least seven
      commands, each answered with a short "Potvrdzujem!", "Rozumiem!" or the like, the last one
      with the countdown; a rejected one is answered "Chyba!", "Preklep!" or the like and nothing
-     happens. After the last one Tapko and the little dragon climb in, "3, 2, 1, štart!", and the
+     happens. After the last one the character and the little dragon climb in, "3, 2, 1, štart!", and the
      rocket rises off the top of the stage with its flame and smoke.
 - Counted parts keep their own units scaled to the part: the flight counts its good flights.
 - The end card is the journey's; the first finish says in its green line "Raketa letí domov aj
@@ -108,6 +108,6 @@
   each time, so no child is stuck in the valley.
 - The dragon story's journey is the story's own ending: the hatched dragon goes home, and the
   way back passes the story's key places in the order of the trip, so it reads as one journey,
-  not five replays. World 1's meadow is Tapko's home, not on this planet, so the planet comes
+  not five replays. World 1's meadow is the character's home, not on this planet, so the planet comes
   twice (its meadow and its swamp), and the shore where the swamp ends is where the rocket
   waits.

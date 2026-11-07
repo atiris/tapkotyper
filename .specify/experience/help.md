@@ -53,7 +53,7 @@
      GoatCounter address (we hide nothing: anyone sees the same usage data we do) and the visits
      recorded so far (online with the counter blocked, a note that a blocker likely hides the number and the
      GoatCounter page still shows it), about the author (why the game exists, with a link to report a bug
-     or an idea), and licenses and sources: the licenses, that the name, the Tapko character and the logo are not part
+     or an idea), and licenses and sources: the licenses, that the name, the characters and the logo are not part
      of the code's license, where the media come from, the code and a bug report. Links are in the app's
      orange, underlined only on hover.
 - The tab is part of the address (`#/p/<id>/help/<tab>`, `#/help/<tab>`), so a tab can be linked.
@@ -95,7 +95,7 @@
 
 ## Why
 - Children do not guess what symbols mean, and the parent is not always next to them.
-- Much of the app is out of sight (My progress behind Tapko, sharing, tasks and their result
+- Much of the app is out of sight (My progress behind the character, sharing, tasks and their result
   links, the keyboard shortcuts); one short tip at a time, when it fits and rarely, shows it
   without a manual and without nagging.
 - One place to look: the child, the parent and the teacher find every explanation behind the

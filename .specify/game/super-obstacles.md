@@ -3,7 +3,7 @@
 ## What
 Each world ends with a bigger, special challenge:
 - **Hedgehog** (meadow): a hedgehog shakes volleys of two or three leaves at once off its
-  back toward Tapko, each with its own word, a bit slower than in normal levels; the next
+  back toward the character, each with its own word, a bit slower than in normal levels; the next
   volley comes when every leaf of the last one is saved or scored. Saved leaves fly back
   onto its back, goals are cheered as in the meadow. Several words at once train choosing
   a target without any failure. At the end it hops happily on the spot and shouts a cheer.

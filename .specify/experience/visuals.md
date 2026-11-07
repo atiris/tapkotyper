@@ -71,8 +71,8 @@
   window they go three and two.
 - Small laptop screens (1366 x 768, 1024 x 600) never scroll on the start screen (up to five
   players), the new-key card or the get-ready card: children use small screens, and a
-  scrolling card hides the button they need. The new-key card has its heading above Tapko, the
-  finger guide beside Tapko and Esc to skip. The get-ready card has the picture's panel beside
+  scrolling card hides the button they need. The new-key card has its heading above the character, the
+  finger guide beside the character and Esc to skip. The get-ready card has the picture's panel beside
   the story's panel and always shows its space bar; the card before the first key fits too.
 - Keys drawn on screen (the keyboard guide, the big key and the space bar of the cards) have an
   outline that stands apart from the paper on every side, in the light and the dark look. A
@@ -129,10 +129,10 @@
   wardrobe item sits on a light tile, so dark items (black glasses) stay visible. The certificate
   stays light, as it is printed. The meaning colors and the brand orange stay; a shade that is
   too dark for text on dark gets a lighter variant.
-- In a level Tapko stands at the bottom left, or the scene draws him itself: walking as
+- In a level the character stands at the bottom left, or the scene draws him itself: walking as
   the hero, or seated in its vehicle (the suited astronaut in the rocket's window). His shouts and bubble then point
   to where he is.
-- A level opens with all its pictures: every world's pictures load in the background from the start, and a level waits for the ones it draws (its things, Tapko in every mood and outfit, the story friends), so on a slow connection no thing shows its drawn stand-in first. Only a stalled connection opens it after half a minute with the stand-ins.
+- A level opens with all its pictures: every world's pictures load in the background from the start, and a level waits for the ones it draws (its things, the character in every mood and outfit, the story friends), so on a slow connection no thing shows its drawn stand-in first. Only a stalled connection opens it after half a minute with the stand-ins.
 - The super star (super mode) and the wardrobe's star count are normal members of the layout: the star sits in the top row before the sound button on every screen; the wardrobe's counts sit under the animal picture: the stars and, right beside them, the stars earned since the start; a hover says which is which ("Aktuálny stav hviezd vo všetkých svetoch.", "Celkový počet hviezd získaných počas písania s Ťapkom.").
 - A password removed or changed by the super player shows as a round red "!" button inside the password panel's top right corner (the text beside it kept clear) for a month, and as a small red lock by the child's name in the teacher's views.
 - The results card's three buttons (next level, replay, map) share one style; only the next level is accented.
@@ -147,7 +147,7 @@
 - Children judge quality visually; a calm, cute style supports the peaceful philosophy.
 - A map that repeats itself or wastes its top area hides what matters: where to go next.
 - Cards that wrap into two rows on a common laptop break the story's path into pieces.
-- A Tapko standing on nothing below his own flying rocket did not read as one story.
+- A character standing on nothing below his own flying rocket did not read as one story.
 - Mixed shapes in the top bar looked untidy; fullscreen hides the browser's distractions.
 - A sun in a repeating sky showed twice on wide screens. The image generator cannot keep
   a picture to the bottom part of an image, but draws a full close-up strip well.

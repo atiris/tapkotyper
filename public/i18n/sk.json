@@ -25,7 +25,7 @@
     "logoTip": "Ahoj, ja som Ťapko.",
     "visit": {
       "hello": "Ahoj!",
-      "intro": "Ja som Ťapko. Teším sa na teba!",
+      "intro": "Som jedna z postavičiek, ktoré si tu môžeš vybrať. Teším sa na teba!",
       "invite": "Vyber si hráča a poďme si chvíľku spolu trénovať písanie."
     },
     "whoPlays": "Kto mi dnes napíše?",
@@ -52,7 +52,7 @@
       "jedno veľké dobrodružstvo."
     ],
     "intro": "Ťapko ťa prevedie pokojnými svetmi plnými príbehov. S každou úrovňou pribudne pár kláves, až kým nepíšeš všetkými desiatimi bez pozerania.",
-    "phoneIntro": "Pokojná hra, v ktorej sa s Ťapkom naučíš písať všetkými desiatimi. Bez reklám, bez účtu, údaje ostávajú v zariadení.",
+    "phoneIntro": "Ťapko je pokojná hra, v ktorej sa naučíš písať všetkými desiatimi. Bez reklám, bez účtu, údaje ostávajú v zariadení.",
     "promises": {
       "ads": "Zadarmo, bez reklám a účtov",
       "local": "Údaje ostávajú v zariadení",
@@ -193,13 +193,13 @@
       "ok": "Dobre",
       "close": "Zavrieť (Esc)",
       "tips": {
-        "hello": "Ahoj, {name}! Ja som pani učiteľka Korytnačka. Vľavo je tvoj Ťapko, postavička, ktorú si si vybral pre toto pisateľské dobrodružstvo. Spolu prejdete viacero príbehov a budete cestovať mnohými svetmi. Občas ti tu poviem, čo všetko Ťapko vie.",
+        "hello": "Ahoj, {name}! Ja som pani učiteľka Korytnačka. Táto aplikácia, ktorú máš práve otvorenú, sa volá Ťapko. Vľavo je tvoja postavička, ktorú si si vybral pre toto pisateľské dobrodružstvo. Pomocou nej prejdeš viacero príbehov a budeš cestovať mnohými svetmi. Občas ti tu poviem, čo všetko Ťapko vie.",
         "character": "Keď klikneš na svoju postavičku vľavo, ukáže ti, ako sa ti darí: koľko si toho napísal, ako presne a rýchlo píšeš, ktoré klávesy ti už idú a ktoré ešte potrebujú cvik, a tvoje cvičenia od učiteľa.",
         "help": "Keď nevieš ako ďalej, klikni na otáznik vpravo hore alebo stlač F1. Pomoc ti ukáže, čo ktoré tlačidlo robí.",
         "helpButton": "Otvoriť pomoc",
         "keyboard": "Celého Ťapka ovládaš aj bez myši: Tab a šípky prechádzajú po tlačidlách, Enter potvrdí, Esc zavrie okno a v úrovni F2 skryje klávesnicu na obrazovke.",
         "keyboardButton": "Viac o klávesoch",
-        "progress": "Klikni na Ťapka alebo na Môj pokrok. Uvidíš, ktoré klávesy už vieš, svoje odznaky a ako sa zlepšuješ.",
+        "progress": "Klikni na svoju postavičku alebo na Môj pokrok. Uvidíš, ktoré klávesy už vieš, svoje odznaky a ako sa zlepšuješ.",
         "progressButton": "Môj pokrok",
         "task": "Máš úlohu od učiteľa! Nájdeš ju na mape. Keď ju dokončíš, Ťapko ti dá odkaz s výsledkom: pošli ho späť učiteľovi.",
         "taskButton": "Ako na úlohy",
@@ -1619,7 +1619,7 @@
     "author": "Ahojte, pisatelia. Aplikáciu **Ťapko** som navrhol **na podporu výučby písania na klávesnici** pre moje deti, ktoré bežné aplikácie nedokázali udržať natoľko, aby sa k nim vracali. Napriek intenzívnemu používaniu série modelov umelej inteligencie od Anthropic trval vývoj tejto aplikácie do podoby, s ktorou som bol dostatočne spokojný (dizajn, funkcie, bezpečnosť, rýchlosť a ďalšie), mnoho hodín. Dúfam, že podobne ako dokáže pri písaní o chvíľku dlhšie udržať moje deti, dokáže to aj pri vás a vašich deťoch (ak by ich to už bavilo menej, môžete im do hry schovať prekvapenie z fyzického sveta, ktoré si cvičením odomknú). Nakoniec vás prosím o pomoc: ak nájdete chybu alebo máte nápad na zlepšenie, {report} prosím na GitHube, kde je kód tejto aplikácie.",
     "authorReport": "nahláste mi to",
     "creditsTitle": "Licencie a zdroje",
-    "credits": "Ťapko je publikovaný ako **otvorený kód** pod licenciou MIT. Názov TapkoTyper, postavička Ťapko a logo do licencie nepatria a v upravených kópiách sa nesmú použiť. Použité písma Lexend, Atkinson Hyperlegible a OpenDyslexic sú pod licenciou SIL Open Font License. Mediálne súbory sú generované prevažne pomocou modelov Gemini a niektoré sú doladené ručne.",
+    "credits": "Ťapko je publikovaný ako **otvorený kód** pod licenciou MIT. Názvy TapkoTyper a Ťapko, postavičky a logo do licencie nepatria a v upravených kópiách sa nesmú použiť. Použité písma Lexend, Atkinson Hyperlegible a OpenDyslexic sú pod licenciou SIL Open Font License. Mediálne súbory sú generované prevažne pomocou modelov Gemini a niektoré sú doladené ručne.",
     "open": "**Nič neskrývame!** Všetky údaje o používaní aplikácie Ťapko nájdete rovnako ako my na adrese",
     "page": {
       "title": "TapkoTyper – zábavné písanie všetkými desiatimi",
@@ -1710,9 +1710,9 @@
     "more": [
       "Cesta hrdinu: keď dokončíš posledný svet príbehu, hneď za jeho veľkou výzvou pribudne kompas. Je to dlhá výprava cez všetky svety príbehu. Je ťažšia: slová sú ťažšie, všetko je o kúsok rýchlejšie a hviezdičky chcú menej chýb.",
       "Odznak: dokončený svet ti ho dá, keď v ňom zbieraš dosť z jeho {max} hviezdičiek: **bronzový** od {bronze}, **strieborný** od {silver}, **zlatý** od {gold}.",
-      "Strelnica: keď dokončíš svet, pri jeho veľkej výzve na mape pribudne terč. Ťapko hádže na terč vtipné veci a ty píšeš slová na kruhoch, ktorými vec preletí. Trénuješ písmená, ktoré ešte nepíšeš dosť presne.",
+      "Strelnica: keď dokončíš svet, pri jeho veľkej výzve na mape pribudne terč. Tvoja postavička hádže na terč vtipné veci a ty píšeš slová na kruhoch, ktorými vec preletí. Trénuješ písmená, ktoré ešte nepíšeš dosť presne.",
       "Keď napíšeš každé slovo načas a bez chyby, trafíš do stredu. Chyba vec trochu zníži, po troch chybách spadne na zem. Nič zlé sa nestane, príde ďalšia.",
-      "Každý svet má na strelnici svoju vzácnu vec. Keď ju trafíš do stredu a dohádžeš do konca, pribudne do tvojej zbierky. Potom si ju môžeš **Enterom** vziať do labky namiesto veci, ktorú Ťapko práve drží.",
+      "Každý svet má na strelnici svoju vzácnu vec. Keď ju trafíš do stredu a dohádžeš do konca, pribudne do tvojej zbierky. Potom si ju môžeš **Enterom** vziať do labky namiesto veci, ktorú tvoja postavička práve drží.",
       "Papagáj: keď dokončíš svet, pri terči pribudne papagáj. Napíšeš pár slov veľakrát za sebou a papagáj ich po tebe opakuje, kým ich prsty nebudú vedieť samy. Na rýchlosti nezáleží.",
       "Papagáje časom uletia, tak sa za nimi vráť a zahraj si znova. Keď sú doma papagáje zo všetkých tvojich hotových svetov, máš **odznak Papagáj** pri svojom mene."
     ],

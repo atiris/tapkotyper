@@ -20,7 +20,7 @@ test('Ms Turtle asks once whether to check the keys; No changes nothing', async 
   await page.reload();
   await page.locator('.map-screen').waitFor();
   await expect(page.locator('.placement-ask')).toHaveCount(0);
-  await expect(page.locator('.teacher-tip')).toBeVisible();
+  await expect(page.locator('.teacher-tip')).toContainText('The app you have open right now is called Tapko. On the left is your character');
 });
 
 test('the check runs without the keyboard and ends on its card; it opens no stars', async ({ page }) => {

@@ -1,7 +1,7 @@
 # TapkoTyper
 
 A peaceful, story-driven touch-typing adventure for children (about 10-15 years).
-Kids learn to type with **all ten fingers** as their friend **Tapko**: they keep goal for the
+Kids learn to type with **all ten fingers** as their own **character**: they keep goal for the
 meadow animals, fly a rocket through a meteor belt, bring the light back to the dragons' planet
 and teach the baby dragons to fly. Later stories (the little robot Bolt, the fairy Melody) are
 being made. No explosions, no punishment, no ads, no accounts.
@@ -27,9 +27,9 @@ being made. No explosions, no punishment, no ads, no accounts.
   show which finger to use. The guide fades for keys the child already masters.
 - **Accuracy before speed.** Stars come from accuracy, 1 to 5, each further star for half the mistakes; speed is
   only a personal trend. Mistakes never cost anything: the letter wobbles, the right key glows,
-  and after three misses on one key Tapko shows which key it is and which finger presses it.
+  and after three misses on one key the character shows which key it is and which finger presses it.
   Backspace wipes a started word, so the child can start another one.
-- **Weak keys come more often**, and "My progress" (click Tapko) shows which keys to
+- **Weak keys come more often**, and "My progress" (click the character) shows which keys to
   practise, with a one-minute drill.
 - **Grows with the child.** Difficulty and word length go up in small automatic steps
   after a few minutes of accurate play where few words floated by, and every step earns a
@@ -43,15 +43,15 @@ being made. No explosions, no punishment, no ads, no accounts.
 - **Side activities per world.** When a world's big challenge is done, two voluntary cards
   open on the map. The **target range** throws funny things through rings of words that train
   exactly the letters holding the next ones back. The **parrot** makes the fingers learn a few
-  words by typing them many times over; keep the Parrot badge and Aro the parrot joins Tapko.
-  **Just typing** is a free sandbox: type anything, Tapko shows and says it, nothing is counted.
+  words by typing them many times over; keep the Parrot badge and Aro the parrot joins the character.
+  **Just typing** is a free sandbox: type anything, the character shows and says it, nothing is counted.
 - **A story worth following.** Each level opens with one get-ready card that tells what
   happens and what to type; nothing else stands between the child and play except the key
   cards. Each world has its own twists (a hop across meteors, a crossroads where the chosen
   sign changes the road, a lullaby copied word by word), and the parent's own surprises
   (below) give real rewards.
 - **Paw help.** Fifteen words in a row without a mistake charge a paw (three at most): on
-  Enter, Tapko's paws replace the hands and type the three closest words, which never count
+  Enter, the character's paws replace the hands and type the three closest words, which never count
   in the stats.
 - **Per-key stats** count only the last 50 presses, show what a key is mixed up with and
   how it changed day by day; click any key on the stats keyboard. "My progress" is its own
@@ -67,11 +67,11 @@ being made. No explosions, no punishment, no ads, no accounts.
 
 ## The game
 
-**Story 1: Tapko and the Dragon Egg**
+**Story 1: The Dragon Egg**
 
 | World | What happens | Big challenge | Reward |
 |---|---|---|---|
-| 1. Training Meadow | goalkeeper Tapko catches the leaves bees, ladybugs and mice kick at him (a miss is a cheered goal); a poppy bouquet, the match, party invitations | hedgehog throwing leaf volleys | invitation to space |
+| 1. Training Meadow | the goalkeeper character catches the leaves bees, ladybugs and mice kick at him (a miss is a cheered goal); a poppy bouquet, the match, party invitations | hedgehog throwing leaf volleys | invitation to space |
 | 2. Rocket Flight | typing speed drives the speedometer (slower without mistakes is better), a beam pushes rocks away; hops across meteors, commands to the rocket | fractured asteroid | landing clearance |
 | 3. New Planet | stones across a swamp, crystals on the meadow, crossroads that change the road, spells for the crystals of life | the great swamp and a floating log | the Force |
 | 4. Dragon Valley | flames light the dragons' fire, spells clear the overgrown path, flying lessons, a lullaby | the take-off: every dragon flies away | a dragon egg |
@@ -80,17 +80,17 @@ being made. No explosions, no punishment, no ads, no accounts.
 Worlds 5-15 are still being made: until a world is built, its levels play one simple copying
 game, so the child keeps progressing and new keys keep coming. The tables below are the plan.
 
-**Story 2: Tapko and Bolt the Robot** (opens at 10 known keys; Bolt walks next to Tapko)
+**Story 2: Bolt the Robot** (opens at 10 known keys; Bolt walks next to the character)
 
 | World | What happens | Big challenge | Reward |
 |---|---|---|---|
 | 6. Junkyard | a magnet crane lifts junk off the pile where Bolt beeps | tangled cable knot | Bolt becomes a friend |
 | 7. Workshop | parts on a conveyor belt go into Bolt's basket | battery charged by rhythm | new legs and antenna |
-| 8. Rain | Tapko's umbrella catches raindrops before Bolt gets wet | grumpy storm cloud | a raincoat and an umbrella |
+| 8. Rain | The character's umbrella catches raindrops before Bolt gets wet | grumpy storm cloud | a raincoat and an umbrella |
 | 9. City | doors open with passwords typed on their panels | main gate: a long code without a mistake | the home key card |
 | 10. Home | lamps switch on and helper robots wake up | little robots popping out of boxes | Bolt's family, little robots in rescue missions |
 
-**Story 3: Tapko and Melody the Fairy** (opens at 20 known keys; Melody floats next to Tapko)
+**Story 3: Melody the Fairy** (opens at 20 known keys; Melody floats next to the character)
 
 | World | What happens | Big challenge | Reward |
 |---|---|---|---|
@@ -103,7 +103,7 @@ game, so the child keeps progressing and new keys keep coming. The tables below 
 Every finished world gives a badge that turns silver and gold with more stars.
 Rescued dragons, repaired robots and forest friends guided home collect on the Little friends screen.
 
-Tapko can be one of nine animals and wears 47 accessories earned by progress (never by chance).
+The character can be one of nine animals and wears 47 accessories earned by progress (never by chance).
 Time in the wardrobe is earned by practice: a fifth of the training time, with a calm countdown.
 A printable certificate (portrait, with a fox frame; Aro signs it with the badge) comes with the
 progress card.
@@ -274,4 +274,4 @@ IBAN: `SK7283605207004200851983` (Jozef Pažin)
 
 ## License
 
-[MIT](LICENSE). Fonts: SIL Open Font License (see `public/fonts/`). The name TapkoTyper, the Ťapko character and the logo are not part of the MIT license, see [TRADEMARKS.md](TRADEMARKS.md).
+[MIT](LICENSE). Fonts: SIL Open Font License (see `public/fonts/`). The names TapkoTyper and Ťapko, the characters and the logo are not part of the MIT license, see [TRADEMARKS.md](TRADEMARKS.md).

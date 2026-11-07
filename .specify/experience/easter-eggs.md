@@ -9,9 +9,9 @@ do not matter ("Dračie", "dračie" and "dracie" are one word), and a short word
 counts only on its own, not inside another word. Not mentioned in the help: finding them is the fun.
 
 - **Start page: a greeting.** The fox head of the logo says on hover "Ahoj, ja som Ťapko." /
-  "Hi, I'm Tapko.". Typing its first word ("ahoj" / "hi") brings Tapko of a random kind in a
+  "Hi, I'm Tapko.". Typing its first word ("ahoj" / "hi") brings a character of a random kind in a
   random outfit (any item of the wardrobe, like its random button), as tall as the grass,
-  walking in from the left. It hops, says hello, says it is Tapko and invites the child to pick
+  walking in from the left. It hops, says hello and invites the child to pick
   a player and train for a while, then walks away after a few seconds or on a click.
 - **Map: the target range.** Typing the first word of the range's hint ("strelnica" /
   "target") sends a random thing of the target range drifting across the page from left to

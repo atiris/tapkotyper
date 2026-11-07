@@ -2,7 +2,7 @@
 
 ## What
 - A page **Translate the game** (`#/translate`) where a parent sees every text of the game and
-  translates it: screens, Tapko's, the fairy's and the narrator's lines, the target range's
+  translates it: screens, the character's, the fairy's and the narrator's lines, the target range's
   lines and things, keyboard words (keys, fingers, posture, tips), help, settings, the
   teacher's pages, and the **word list** the typing targets are
   built from.

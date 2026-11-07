@@ -50,7 +50,7 @@ as they are. The world descriptions below marked *not built yet* are the design 
    grows elsewhere; some poppies grow mirrored so they do not all look alike; every typed letter
    adds a poppy to the bouquet that gathers in the middle at the end, once the last poppy is gone,
    with praise for the bouquet ("Krásna kytica vlčích makov!"). The poppies stand about three
-   quarters of Tapko's height. In the
+   quarters of the character's height. In the
    calm meadow levels the middle band of the background drifts slowly; level 3 is the leaf game again with a gust of
    wind half way; level 4 is the twist, the invitation to the meadow party written word by
    word without a slip, and every finished card flies as an envelope to a meadow friend. At
@@ -58,15 +58,15 @@ as they are. The world descriptions below marked *not built yet* are the design 
    animals got an invitation (one per word typed right) and came for the treat after the match. On the meadow a
    leaf's word shows only once the animal carrying it is wholly in sight.
    Super-obstacle: a hedgehog shakes volleys of leaves off its back; they scatter around him,
-   some forward, some behind him, and fly on toward Tapko from there, each word showing once
+   some forward, some behind him, and fly on toward the character from there, each word showing once
    its leaf has landed from the toss.
    Reward: a secret invitation to space. Before the first level the narrator
    shows the child their character: "This is you."
-2. **Space Rocket Flight** - Tapko is sent to explore a few planets and reach the dragons' planet,
+2. **Space Rocket Flight** - the character is sent to explore a few planets and reach the dragons' planet,
    avoiding every danger on the way: a long flight fast enough between the meteors (level 1),
    back to the rocket across the meteors after exploring the first planet (2), the flight to the
    second planet (3), calling the rocket with commands after exploring it (4), and the last part
-   of the journey with the dragons' planet in sight (5). Tapko suits up where he stands: his things fade away, a white
+   of the journey with the dragons' planet in sight (5). The character suits up where he stands: his things fade away, a white
    space suit grows up from the boots and a helmet with an opaque visor comes down over his
    head. The astronaut hops into the rocket, which from then on shows him in its round window.
    Typing speed drives the speedometer (the story says that flying slower without mistakes is much better than fast with mistakes), the rocket's own instrument, which sits still near the
@@ -108,15 +108,15 @@ as they are. The world descriptions below marked *not built yet* are the design 
    rocks drift at half the usual near-layer speed.
    Super-obstacle: fractured asteroid.
    Reward: landing clearance.
-3. **New Planet** (the dragons' planet) - its Crystal of Life lost its light, and Tapko brings
+3. **New Planet** (the dragons' planet) - its Crystal of Life lost its light, and the character brings
    it back. The planet looks almost like the Earth (green hills, a river), with giant mushroom
    trees, big pale crystals and small orange sawtooth clouds; one far background for the world
    and two sets of closer bands with little detail, so the game's things stand out: a swamp of
    calm blue-green water with mossy islands, reeds and a willow (levels 1 and 5), and a meadow of
    open grass with a few trees and mushroom trees and a sandy path in front with about five small
    crystals and mushrooms along its upper edge per screen (levels 2 to 4 and the side
-   activities). On the meadow Tapko stands in the middle of the path in every level and side
-   activity; the molehills stand on the path too. Tapko is as big as on the meadow; the word he types is well above his head, never
+   activities). On the meadow the character stands in the middle of the path in every level and side
+   activity; the molehills stand on the path too. The character is as big as on the meadow; the word he types is well above his head, never
    over him or touching it.
    1 the swamp after the landing (waiting words, a calm minute): one word at a time above him,
    a ring on the water where the next stone comes; typed, the stone is there and he jumps onto
@@ -133,13 +133,13 @@ as they are. The world descriptions below marked *not built yet* are the design 
    with pebbles at their foot that sit anywhere low on the ground; a crystal of one of three kinds,
    turned a little its own way and glowing softly in its own color, grows slowly out from
    behind a heap (three kinds, each also mirrored) while its word sinks two thirds of the way
-   down, stays big (about 30 % of Tapko's height) and cracks; a cracked one stays
+   down, stays big (about 30 % of the character's height) and cracks; a cracked one stays
    a moment longer before it fades. Its word shows high above it as it starts and sinks to
-   its tip; typed in time, the crystal flies into Tapko's pocket (the rocket needs this energy
+   its tip; typed in time, the crystal flies into the character's pocket (the rocket needs this energy
    for the way home); not typed, it cracks, its word goes, it fades and later a new one grows
    there. Only collected crystals count; the end says how many he has.
    3 crossroads: five places from left to right on the path, he and the posts in the middle of
-   it; Tapko's words come one at a time above him
+   it; the character's words come one at a time above him
    and none can be skipped, each typed word a step on. At a crossroads his word goes and up to
    four signposts (three at the first one) grow almost together in the other places: posts of
    three heights, alternated so that no two within two places share one, each with its
@@ -160,7 +160,7 @@ as they are. The world descriptions below marked *not built yet* are the design 
    words, more words and time), a wide easy road (a harder word; easier words, a few more of
    them, fewer crossroads), the dark forest (less time; some words echo, coming again up to
    twice in a row, and one is extreme), the unknown road (word length, road length and word
-   difficulty each drawn at random, and Tapko says what happened) and the stony practice path
+   difficulty each drawn at random, and the character says what happened) and the stony practice path
    (its words train the keys the child still practises, as the target range does).
    4 spells (copy twist): three crystals of life of three kinds, asleep (grey), peek out of a
    big molehill on the right, and now and then one of them gives a little shake. A spell of
@@ -168,14 +168,14 @@ as they are. The world descriptions below marked *not built yet* are the design 
    (at most 14 words at once). Three slips break a page: three
    different small mushrooms grow from the top edge of the panel (high in the scene) and one goes at each slip; when the third
    goes, the page breaks and new words come in it. Each spell cast lights the next crystal with a shout
-   ("Jupí!", "Zipp!", "Juchú!"); all three lit, the crystals fly to Tapko. The spells are long enough to fill the level's
+   ("Jupí!", "Zipp!", "Juchú!"); all three lit, the crystals fly to the character. The spells are long enough to fill the level's
    minimum time at the child's pace; the last one gets another page while the minimum is not played.
-   5 the great swamp (super level): from a firm stone Tapko jumps three stones on, the fourth
+   5 the great swamp (super level): from a firm stone the character jumps three stones on, the fourth
    jump reaches the next firm stone and the view moves on. A slip on the firm stone is only a
    slip; a slip on any other stone cracks it (the stone shakes),
    he jumps back stone by stone (each one left crumbles, half broken, and the
    next one cracks) and on the firm stone a new word comes. Twice (the bar at about a third and
-   past half) a little mossy log floats where a firm stone would be, bobbing gently on the water; Tapko says
+   past half) a little mossy log floats where a firm stone would be, bobbing gently on the water; the character says
    it would not hold him and he has to wait until it floats away. Words push it away (an eighth of
    the level's planned words, 3 to 6; a word with a slip pushes half), each a bit to the right,
    the last off the stage; a stone comes up where it lay and he jumps onto it. A log comes only
@@ -192,16 +192,16 @@ as they are. The world descriptions below marked *not built yet* are the design 
 4. **Dragon Valley** - the baby dragons' home is a big fire pit at the valley's entrance. Its
    fire went out when the crystal of life lost its light: the little flames scattered, the path
    into the valley grew over and the babies, cold and scared, hid deep in it. They never learned
-   to fly, and their place is the crystal meadow (the planet's level 2). Tapko lights the fire,
+   to fly, and their place is the crystal meadow (the planet's level 2). The character lights the fire,
    clears the path, teaches them to fly, sings them to sleep and in the morning helps them fly
    off. The babies are never targets: words sit on flames, bushes, a panel or a bubble high up.
-   Tapko stands on the left as everywhere; in levels 3-5 the burning pit stands on the ground on
+   the character stands on the left as everywhere; in levels 3-5 the burning pit stands on the ground on
    the right (about 0.8 of the stage) and the dragons sit round it. There are four baby dragons,
    mint, sky blue, sunny yellow and red; their colours take turns (a fifth repeats the first), and
    each sleeps in its own colour.
    1 the flames (a word stream): little flames of four sizes (one look, a bigger one for a longer
    word, some mirrored) fly from the right in soft arcs; a flame's word shows once it is wholly in
-   sight. Tapko holds an unlit torch upright just right of him, the dead fire pit a little further
+   sight. The character holds an unlit torch upright just right of him, the dead fire pit a little further
    right. A typed flame speeds into the torch, which rises to meet it and always catches it; the
    first one lights the torch, whose small flame never grows. The torch then tips over in an arc
    and hands the flame to the fire. A burning pit is the pit with the four flames standing close
@@ -220,7 +220,7 @@ as they are. The world descriptions below marked *not built yet* are the design 
    when the torch hands it over.
    2 the overgrown path (a calm step, waiting words): bushes and branches (four kinds in random
    order, some mirrored) stand on the path one after another; the nearest has its spell, one
-   word, above it, and the view glides as Tapko walks to it. Typed without a slip, the bush
+   word, above it, and the view glides as the character walks to it. Typed without a slip, the bush
    shrinks away. A slip turns the word red, it fades, two more bushes grow on the path ahead and
    the same spell shows again; bushes grow at most three times (6 words), after that a slip only
    shows the spell again. Once space is known, one big bush (several stacked) about two thirds
@@ -229,12 +229,12 @@ as they are. The world descriptions below marked *not built yet* are the design 
    nears the screen, the path is final: the bushes the minimum still needs at the child's pace
    are planted out of sight, and after that no bush grows, not for a slip, not for the minimum,
    however fast or with however many slips the rest is typed (the level then ends with its last
-   bush). Only then do the four dragons take their place, once, past the last bush, facing Tapko
+   bush). Only then do the four dragons take their place, once, past the last bush, facing the character
    and calm (only breathing); they come into sight with the path, never faded in, and never
    move back. End: the path is open, the dragons are glad (they
-   hop and cheer) and Tapko walks on to them. Its map dot is the copy envelope.
+   hop and cheer) and the character walks on to them. Its map dot is the copy envelope.
    3 flying lessons (a stream with speed): a dragon (the colours take turns) waits right of
-   Tapko, two round leafy bushes stand together left of the middle (random two of three, some
+   the character, two round leafy bushes stand together left of the middle (random two of three, some
    mirrored), the burning pit stands at the right edge (about 0.95 of the stage, wholly on it)
    and the dragons sit left of it, out of its fire, each a little further left and higher,
    overlapping. Words come one at a time high in the middle, in the
@@ -263,7 +263,7 @@ as they are. The world descriptions below marked *not built yet* are the design 
    the same way round (clockwise from above): the lean stays and comes out mirrored, quick (about
    half a second), never a
    sudden jump, never a long thin phase, stretching up and rising a little through the turn; a
-   landing dragon keeps its size. A panel top left, above Tapko's head and left of the circling dragons,
+   landing dragon keeps its size. A panel top left, above the character's head and left of the circling dragons,
    shows a verse of the lullaby: two lines one under the other, each a sentence of four or five
    short words ending with a period (the period is new in this world). Only the line to type is
    a target; a typed one stays in ink, the one to come is faint. A verse copied puts one dragon
@@ -288,10 +288,10 @@ as they are. The world descriptions below marked *not built yet* are the design 
    and the flight starts again with new sets. After its third return a dragon's tries have one
    set less and 1.25 times the time; after the sixth its sets have two words and a slip or a late
    word only starts that word again, so every child finishes. After its last set the dragon flies
-   off to the left. The paws are off. When the last is gone Tapko calls after them ("Ahojte!"),
+   off to the left. The paws are off. When the last is gone the character calls after them ("Ahojte!"),
    a quiet moment, then the fire flares up and an egg (without a face) is laid in it under the
    big flames; the fire is blown out with a burst of sparks and the egg sits in the dead pit with
-   a soft glow. It greets Tapko ("Ahoj, ty budeš môj kamarát?"), and Tapko is glad and cheers.
+   a soft glow. It greets the character ("Ahoj, ty budeš môj kamarát?"), and the character is glad and cheers.
    In the take-off a dragon that comes later flies in from behind the right edge, starting at
    half to three quarters of the stage's height, in one simple arc like the left side of an
    umbrella (level at first, then down onto its seat), slowing as it lands; it is never seen
@@ -302,18 +302,18 @@ as they are. The world descriptions below marked *not built yet* are the design 
    Reward: the **Dragon Egg** that came from the dragons' fire. The valley's own thing at the
    target range is a flame (kept although the world got new things).
 5. **Egg** (the Mountain of Awakening) - the flames the egg was born in are too weak to wake it:
-   Tapko carries it up the mountain to the **dragons' hearth** on the summit and wakes the baby
+   the character carries it up the mountain to the **dragons' hearth** on the summit and wakes the baby
    with a long spell. Levels 1-4 he carries the egg on his back: it sits behind him and peeks
    out past his left side (not over his head), behind everything he wears, a third of it at rest
    whatever the outfit (wings, a cape and a jetpack included), and now and then and at story
    moments (a gust, a mud step, a stumble) it slides out to show about two thirds, wobbles and
    slides back (still with reduced motion). The
    mountain's three background bands are the same in all five levels: rocky peaks with pale
-   crystals far back, low mossy rocks in the middle, a rocky path in front with Tapko in its middle.
+   crystals far back, low mossy rocks in the middle, a rocky path in front with the character in its middle.
    1 wind on the slope (a stream): each word comes from the right in a gust, a swirl of white
-   air with a leaf or two, starting at any height and from half its way sinking to Tapko so it
+   air with a leaf or two, starting at any height and from half its way sinking to the character so it
    really blows into him; one at a time, two from the second half. Typed, the gust breaks up
-   and Tapko walks a few steps on; untyped, it pushes him and the egg a few steps back ("Uf, to
+   and the character walks a few steps on; untyped, it pushes him and the egg a few steps back ("Uf, to
    fúka!"). He leans into the wind while a gust flies. A slip makes the gust bigger and faster
    and starts its word again; a second slip in the same gust sends it into him at once, pushes
    him further back and makes the way longer by two words (the first time the narrator says
@@ -349,7 +349,7 @@ as they are. The world descriptions below marked *not built yet* are the design 
    the path and falls down before it reaches him; missed, it bounces off him and falls down off
    the path ("Hups!"), his top wobbles left and right with a small hop, and the way gets a little
    longer (the first time the narrator says why). End: the summit in sight.
-   5 the spell of awakening (super level, the first ribbon): Tapko lays the egg off his back into
+   5 the spell of awakening (super level, the first ribbon): the character lays the egg off his back into
    the dragons' hearth just right of him, a ring of old carved stones with weak low flames, and
    says the spell: one long text on a ribbon, what he has written in a stone frame with glowing
    rune stones right below it, both in the right part of the stage so the scene and the spell
@@ -358,8 +358,8 @@ as they are. The world descriptions below marked *not built yet* are the design 
    what is written. Each finished sentence makes the flames grow and the egg glow warmer; at
    half the level it cracks a little, at three quarters it cracks open. End (about 4 s): the
    fire flares up, the egg breaks, the flames go out and the little dragon hops out of the cold
-   hearth to land right of Tapko ("Ahoj!"), Tapko cheers. A real hatching that ends next to
-   Tapko leads straight into the hero's journey, where the two walk together.
+   hearth to land right of the character ("Ahoj!"), the character cheers. A real hatching that ends next to
+   the character leads straight into the hero's journey, where the two walk together.
    Reward: the hatched baby dragon (the scene `hatched`) and the **hero's journey** opens
    ([hero's journey](heros-journey.md)). The range's thing stays the egg.
 
@@ -438,15 +438,15 @@ story stays playable in any browser ([mechanics](mechanics.md)).
 - The last world of each story ends with a hero's journey, one long, harder trip through the
   story's worlds ([hero's journey](heros-journey.md)).
 - Every level can be finished by any child: obstacles that are not cleared in time just
-  pass by or are helped by Tapko; they never cause failure.
+  pass by or are helped by the character; they never cause failure.
 - World names are short words a young child reads at once, at most 12 characters (Lúka,
   Raketa, Planéta, Údolie, Vajíčko, Dážď, Mesto, Domov, Jazero); the scenes use the longer
   names (the Lily Lake).
 
 ### Cheers
-- When a creature or Tapko is glad, a short cheer pops up over the scene with a cheer
+- When a creature or the character is glad, a short cheer pops up over the scene with a cheer
   sound: "Hurá!", "Jupí!" or "Super!" ("Hooray!", "Yippee!", "Great!"). It comes when a
-  super-obstacle is beaten (the hedgehog shouts it while it hops, Tapko when the world is
+  super-obstacle is beaten (the hedgehog shouts it while it hops, the character when the world is
   done, also after the valley's take-off), when the owl's riddle is solved, a lake phrase is sung and the city gate opens.
 - Once per such moment, never on every target: a cheer on every word would turn into
   noise and lose its joy.
@@ -478,7 +478,7 @@ story stays playable in any browser ([mechanics](mechanics.md)).
   stars a level, a badge from 10, 15 and 20 of the world's 25 stars makes a world worth
   replaying.
 - The planet's levels were the same swamp twice with signs and a boulder in a mint and purple
-  world; Tapko was smaller than in the worlds before and his word covered him. One story per
+  world; the character was smaller than in the worlds before and his word covered him. One story per
   level, the rules of the first two worlds and paths that change the level make each level
   its own; a slip that sends him back stone by stone makes the super level's accuracy visible.
   The stony practice path was added to the owner's paths: no other path trains the keys the
@@ -498,10 +498,10 @@ story stays playable in any browser ([mechanics](mechanics.md)).
   play and confused children. Goalkeeper gloves fit the animals' football game; a leaf kicked
   up to them is caught where the child looks, above their character.
 - The egg was left in the valley's dead fire; carrying it up a mountain to a stronger fire gives
-  world 5 one way with five steps and a reason for each. Words never sit on the egg or on Tapko,
+  world 5 one way with five steps and a reason for each. Words never sit on the egg or on the character,
   pushes back and stumbles are small and funny, and the egg never falls. An egg drawn at a fixed
   height vanished behind tall wings or a jetpack, so its height follows what he wears.
-- Tapko drawn small inside the rocket's window flickered; one picture of the suited pilot
+- The character drawn small inside the rocket's window flickered; one picture of the suited pilot
   stays steady and looks the same for every companion. A speedometer bobbing with the rocket
   was hard to read.
 - Things kept flying at full speed while the child stopped to think, and the speedometer

@@ -4,8 +4,8 @@ The code of TapkoTyper is free under the [MIT license](LICENSE): anyone may use,
 publish it.
 
 The MIT license covers the code, not the identity of the app. The name **TapkoTyper**, the name
-**Ťapko** (Tapko), the Ťapko character and the logo (the app icons in `public/icons/` and the
-pictures of Ťapko) are reserved by Jozef Pažin. They are not licensed for use in modified
+**Ťapko** (Tapko), the characters and the logo (the app icons in `public/icons/` and the
+pictures of the characters) are reserved by Jozef Pažin. They are not licensed for use in modified
 copies, so that no other app can pass itself off as this one.
 
 If you publish a modified copy:

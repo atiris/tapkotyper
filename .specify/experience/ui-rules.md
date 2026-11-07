@@ -113,7 +113,7 @@ One set of rules for where things sit and how they behave, so every screen feels
   common language symbol and a list of native names does, and a visitor who reads neither
   language still finds it.
 - Bursts of confetti pull the eyes off the words and make a calm game loud; the joy is in
-  the scene itself and in Tapko.
+  the scene itself and in the character.
 - A child at the keyboard should never need the mouse to leave a panel, and one rule for every
   panel means a learned letter works the same everywhere; the underline shows it without a word
   of explanation, and the letters come from the labels, so they never need translating.

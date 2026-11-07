@@ -25,7 +25,7 @@
     "logoTip": "Hi, I'm Tapko.",
     "visit": {
       "hello": "Hi there!",
-      "intro": "I am Tapko. Nice to see you!",
+      "intro": "I am one of the characters you can pick here. Nice to see you!",
       "invite": "Pick a player and let's practise typing together for a little while."
     },
     "whoPlays": "Who will type to me today?",
@@ -52,7 +52,7 @@
       "one big adventure."
     ],
     "intro": "Tapko guides you through calm worlds full of stories. Each level adds a few keys, until you type with all ten fingers without looking.",
-    "phoneIntro": "A calm game in which Tapko teaches you to type with all ten fingers. No ads, no account, your data stays on your device.",
+    "phoneIntro": "Tapko is a calm game that teaches you to type with all ten fingers. No ads, no account, your data stays on your device.",
     "promises": {
       "ads": "Free, no ads, no accounts",
       "local": "Your data stays on your device",
@@ -193,13 +193,13 @@
       "ok": "OK",
       "close": "Close (Esc)",
       "tips": {
-        "hello": "Hi, {name}! I am Ms Turtle the teacher. On the left is your Tapko, the character you picked for this typing adventure. Together you will go through several stories and travel through many worlds. Now and then I will tell you here what Tapko can do.",
+        "hello": "Hi, {name}! I am Ms Turtle the teacher. The app you have open right now is called Tapko. On the left is your character, the one you picked for this typing adventure. With it you will go through several stories and travel through many worlds. Now and then I will tell you here what Tapko can do.",
         "character": "When you click your character on the left, it shows you how you are doing: how much you have typed, how accurately and fast you type, which keys you know well and which still need practice, and your exercises from the teacher.",
         "help": "When you are not sure what to do, click the question mark at the top right or press F1. Help shows what each button does.",
         "helpButton": "Open help",
         "keyboard": "You can use all of Tapko without a mouse: Tab and the arrows move between buttons, Enter confirms, Esc closes a window, and in a level F2 hides the keyboard on the screen.",
         "keyboardButton": "More about keys",
-        "progress": "Click Tapko or My progress. You will see which keys you know, your badges and how you are getting better.",
+        "progress": "Click your character or My progress. You will see which keys you know, your badges and how you are getting better.",
         "progressButton": "My progress",
         "task": "You have a task from your teacher! You will find it on the map. When you finish it, Tapko gives you a link with the result: send it back to your teacher.",
         "taskButton": "How tasks work",
@@ -1619,7 +1619,7 @@
     "author": "Hello, typists. I designed **Tapko** **to support learning to type on a keyboard** for my children, because the usual apps could not hold them long enough to come back. Even with heavy use of a series of Anthropic's AI models, building this app until I was happy enough with its design, features, safety, speed and more took many hours. I hope that, just as it keeps my children typing a little longer, it does the same for you and your children (and if they enjoy it less, you can hide a surprise from the real world in the game for them to unlock by practising). Finally, I ask for your help: if you find a bug or have an idea for an improvement, please {report} on GitHub, where the code of this app lives.",
     "authorReport": "report it to me",
     "creditsTitle": "Licenses and sources",
-    "credits": "Tapko is published as **open source** under the MIT license. The name TapkoTyper, the Tapko character and the logo are not part of the license and may not be used in modified copies. The fonts Lexend, Atkinson Hyperlegible and OpenDyslexic are under the SIL Open Font License. Media files are generated mostly with Gemini models, and some are touched up by hand.",
+    "credits": "Tapko is published as **open source** under the MIT license. The names TapkoTyper and Tapko, the characters and the logo are not part of the license and may not be used in modified copies. The fonts Lexend, Atkinson Hyperlegible and OpenDyslexic are under the SIL Open Font License. Media files are generated mostly with Gemini models, and some are touched up by hand.",
     "open": "**We hide nothing!** You can see all usage data of the Tapko app, just as we do, at",
     "page": {
       "title": "TapkoTyper – fun touch typing with all ten fingers",
@@ -1710,9 +1710,9 @@
     "more": [
       "Hero's journey: when you finish the last world of a story, a compass appears right after its big challenge. It is a long trip through every world of the story. It is harder: the words are harder, everything is a bit faster, and the stars need fewer mistakes.",
       "Badge: a finished world gives one when you collect enough of its {max} stars: **bronze** from {bronze}, **silver** from {silver}, **gold** from {gold}.",
-      "Target range: when you finish a world, a target appears on the map next to its big challenge. Tapko throws funny things at the target and you type the words on the rings they fly through. You practise the letters you do not type accurately enough yet.",
+      "Target range: when you finish a world, a target appears on the map next to its big challenge. Your character throws funny things at the target and you type the words on the rings they fly through. You practise the letters you do not type accurately enough yet.",
       "Type every word in time and without a mistake and you hit the middle. A mistake makes the thing fly a little lower, and after three it falls to the ground. Nothing bad happens, the next one comes.",
-      "Every world has a rare thing of its own at the range. Hit it in the middle and throw to the end, and it joins your collection. Then **Enter** puts it in Tapko's paw instead of the thing that is there.",
+      "Every world has a rare thing of its own at the range. Hit it in the middle and throw to the end, and it joins your collection. Then **Enter** puts it in your character's paw instead of the thing that is there.",
       "Parrot: when you finish a world, a parrot joins its target. You type a few words many times in a row and the parrot repeats them after you, until your fingers know them by themselves. Speed does not matter.",
       "Parrots fly away after a while, so come back and play again. When the parrots of all your finished worlds are at home, you have the **Parrot badge** next to your name."
     ],

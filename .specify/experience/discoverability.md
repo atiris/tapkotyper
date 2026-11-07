@@ -2,7 +2,7 @@
 
 ## What
 - Parents and teachers who search for touch typing for children (in Slovak first) find the
-  game, also by the character's name **Ťapko** (and "Tapko" without the caron). A shared link
+  game, also by the app's short name **Ťapko** (and "Tapko" without the caron). A shared link
   shows a clear preview: a title, a short description and a picture of the start screen.
 - The title is the game's name and its slogan, "TapkoTyper – zábavné písanie všetkými desiatimi"
   (English "fun touch typing with all ten fingers"), without the character in brackets and not
@@ -27,7 +27,7 @@
 ## Why
 - Most players come through a parent or a teacher; a search result or a link in a school chat
   is often the first thing they see, and a bare link without text or picture is easy to skip.
-- Children and parents call the game by its character, Ťapko, and search for it that way.
+- Children and parents call the game by its short name, Ťapko, and search for it that way.
 - The start page must stay a game, not a text page, so the longer text lives on its own page,
   one per language, which search engines can read and offer in the reader's language.
 - Hidden text is punished by search engines and would not be honest to people either.

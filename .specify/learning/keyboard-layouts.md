@@ -37,7 +37,7 @@
   again, its words might not be typable. A new layout keeps the progress with the keys it teaches. The practice key picker has the same panel behind a button "Nastavenie klávesnice"
   on the right of Start, and opens again with the new choice.
 - If typed characters suggest a different layout than the profile setting (for example
-  `y`/`z` swapped, or digits instead of `ľščť`), Tapko says which one it looks like and points
+  `y`/`z` swapped, or digits instead of `ľščť`), the character says which one it looks like and points
   to the button, which stands out until it is opened, and a tooltip over it asks "Chceš použiť
   rozloženie …?" for ten seconds, once per run of a level.
 - Parent toggle "words without diacritics" for beginners.

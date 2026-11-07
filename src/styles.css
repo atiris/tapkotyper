@@ -757,7 +757,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .island h3 { font-size: 1.1rem; margin: var(--sp-2) 0; }
 .level-row { display: flex; gap: 0.4rem; justify-content: center; flex-wrap: wrap; }
 .level-node {
-  width: 40px; height: 64px; border-radius: 14px; border: 0; cursor: pointer; background: var(--surface); font-weight: 700; font-size: 1.1rem;
+  width: 40px; height: 64px; border-radius: 8px; border: 1px solid color-mix(in srgb, currentColor 14%, transparent); cursor: pointer; background: var(--surface); font-weight: 700; font-size: 1.1rem;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
   box-shadow: 0 3px 0 var(--edge);
 }
@@ -1319,9 +1319,12 @@ body:not(.gfx-simple) .level-screen.covered :is(.stage-wrap *, .overlay .tapko-s
 .badge.small .badge-num { font-size: 1rem; }
 /* The island's corners: the world badge top right (a click shows it big), the hero's journey badge bottom right (a click starts it). */
 .world-badge-btn { position: absolute; top: 0; right: 0; z-index: 1; padding: 0; border: 0; border-radius: 50%; background: none; cursor: pointer; display: grid; }
-/* The four buttons in an island's corners (surprises, world badge, keyboard, hero's journey) share one hover: they come a little towards the viewer (a little bigger, a soft shadow). */
-.surprises-mark, .world-badge-btn, .world-kb-btn, .journey-badge { transition: scale 0.2s ease-out, filter 0.2s ease-out; }
-.surprises-mark:hover, .world-badge-btn:hover, .world-kb-btn:hover, .journey-badge:not(:disabled):hover { scale: 1.08; filter: drop-shadow(0 3px 5px rgba(40, 30, 20, 0.3)); }
+/*
+ * The four buttons in an island's corners (surprises, world badge, keyboard, hero's journey) and its
+ * level cards share one hover: they come a little towards the viewer (a little bigger, a soft shadow).
+ */
+.surprises-mark, .world-badge-btn, .world-kb-btn, .journey-badge, .level-node { transition: scale 0.2s ease-out, filter 0.2s ease-out; }
+.surprises-mark:hover, .world-badge-btn:hover, .world-kb-btn:hover, .journey-badge:not(:disabled):hover, .level-node:not(:disabled):hover { scale: 1.04; filter: drop-shadow(0 2px 3px rgba(40, 30, 20, 0.25)); }
 .world-badge-btn:focus-visible, .journey-badge:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
 .journey-badge { position: absolute; bottom: 0; right: 0; z-index: 1; padding: 0; border: 0; cursor: pointer; }
 /* The journey badge's ring by its best stars: none white-grey, 1 grey, 2 pink, 3 light blue, 4 light green, 5 golden yellow. */

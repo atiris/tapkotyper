@@ -23,7 +23,7 @@ import { KeyboardSettings } from '../ui/keyboard-settings';
 import { closeModals, confirmDialog, h } from '../ui/dom';
 import { globalButtons } from '../ui/chrome';
 import { tip } from '../ui/tooltip';
-import { accuracyPic, placeRing, rhythmPic, roundButton } from '../ui/hud';
+import { accuracyPic, placeRing, roundButton, speedPic } from '../ui/hud';
 import type { WordSource } from '../words/words';
 import { SUPER_ID, type Surprise, type TaskSpec } from '../storage/schema';
 import type { LevelDef } from './levels';
@@ -33,7 +33,7 @@ import { ENTER_MAX, EnterMarks } from './enter';
 import type { ModeMaker } from './modes';
 import type { FreeTypeMode } from './modes/freetype';
 import { PressureValve, childPace, perChar } from './pace';
-import { GAUGE_DAYS, Rhythm, gaugeTop } from './rhythm';
+import { GAUGE_DAYS, Speed, gaugeTop } from './speed';
 import { completeLevel, completePlacement, completeStay, joinRuns } from './progress';
 import type { PlacementMode } from './modes/placement';
 import { offersPlacement } from '../learning/placement';
@@ -123,10 +123,10 @@ export class LevelRuntime {
   /** A sticky run: the held keys, their rounds and the wait while one is up; null in every other run. */
   private hold: StickyHold | null = null;
   private progressFill: HTMLElement;
-  private gauge = rhythmPic();
+  private gauge = speedPic();
   /** Characters per second that fill the gauge's ring. */
   private readonly gaugeFull: number;
-  /** Own practice and the target range: a ring of accuracy for each key in focus, before the rhythm. */
+  /** Own practice and the target range: a ring of accuracy for each key in focus, before the speed. */
   private accuracyPics: { key: string; pic: ReturnType<typeof accuracyPic> }[] = [];
   /** Seconds until the gauge's spoken label may change again. */
   private gaugeLabelIn = 0;
@@ -154,13 +154,13 @@ export class LevelRuntime {
   /** Seconds of active play (no pause, no card, no long wait over a word: `playedStep`) and the minimum before the level may end; 0 = no minimum. */
   private played = 0;
   private minActive: number;
-  /** The child's rhythm; it also measures each press's reaction time. */
-  readonly rhythm: Rhythm;
+  /** The child's speed; it also measures each press's reaction time. */
+  readonly speed: Speed;
   private wrongStreak = { ch: '', n: 0 };
   private wordStreak = 0;
   private lastCheer = 0;
   private hadKeydown = false;
-  /** Rhythm of the last session (characters per second), the pace before the child's own words. */
+  /** Speed of the last session (characters per second), the pace before the child's own words. */
   private readonly lastCps: number;
   /** Seconds per character of each target the child finished, reading and the first key included. */
   private paceSamples: number[] = [];
@@ -185,7 +185,7 @@ export class LevelRuntime {
     this.tweens.speed = this.reduceMotion ? 0.5 : 1;
     this.particles.enabled = !this.reduceMotion && !graphics.simple;
     const lastCpm = p.stats.sessions[p.stats.sessions.length - 1]?.cpm ?? 0;
-    this.rhythm = new Rhythm(lastCpm, this.difficulty);
+    this.speed = new Speed(lastCpm, this.difficulty);
     this.gaugeFull = gaugeTop(recentTyping(p, GAUGE_DAYS).cpm, this.difficulty);
     this.lastCps = lastCpm ? lastCpm / 60 : 1;
     this.mismatch = new LayoutMismatchDetector(p.layout);
@@ -485,7 +485,7 @@ export class LevelRuntime {
     else if (this.opts.stay) this.say(t(this.def.kind === 'aim' ? 'aim.stayStart' : 'level.stayStart'), 6);
     else if (this.friends.fairy) this.say(pickLine('fairy.start'), 3);
     this.tapko.el.classList.remove('waiting');
-    this.rhythm.ready(performance.now());
+    this.speed.ready(performance.now());
     this.input = new KeyInput(window, this.handlers());
     this.hold?.start(this.el.querySelector<HTMLElement>('.stage-wrap')!);
     this.updateGuide();
@@ -511,7 +511,7 @@ export class LevelRuntime {
       // A pause or a dialog: the keys belong to its buttons.
       idle: () => this.state.paused || !!document.querySelector('.modal-back'),
       // The wait ends with the held key down again: play goes on at once, the pause in reacting not counted.
-      onHold: (down) => { if (this.hold?.onHold(down)) this.rhythm.ready(performance.now()); },
+      onHold: (down) => { if (this.hold?.onHold(down)) this.speed.ready(performance.now()); },
       holds: (code) => !!this.hold?.holds(code),
     };
   }
@@ -669,7 +669,7 @@ export class LevelRuntime {
     const p = app.profile!;
     this.state.keyAt = this.state.elapsed;
     if (res.kind === 'wrong') {
-      const { rt } = this.rhythm.press(null, c.time);
+      const { rt } = this.speed.press(null, c.time);
       if (res.expected) {
         this.mode.onKey(res.expected, false, rt, c.time);
         recordPress(p, res.expected, c.ch, rt);
@@ -681,7 +681,7 @@ export class LevelRuntime {
       this.friends.wrong();
       this.mode.onWrong(res.target);
     } else {
-      const { rt, repeat } = this.rhythm.press(res.expected, c.time);
+      const { rt, repeat } = this.speed.press(res.expected, c.time);
       this.mode.onKey(res.expected, true, rt, c.time);
       if (!repeat) this.okRts.push(rt);
       recordPress(p, res.expected, c.ch, rt, repeat);
@@ -995,7 +995,7 @@ export class LevelRuntime {
     this.pauseCard.close();
     clearTimeout(this.handsAway);
     this.guide.parkHands(false, HANDS_BACK_S);
-    this.rhythm.ready(performance.now());
+    this.speed.ready(performance.now());
     this.reading.again();
   }
 
@@ -1044,7 +1044,7 @@ export class LevelRuntime {
     if (this.minActive && !this.countFixed) this.count = grownCount(this.count, this.mode.progress() * this.count, this.played, Math.max(3, this.maxActive + 1), this.minActive);
     this.mode.t += dt;
     this.mode.update(dt);
-    if (!hadFocus && this.core.focus()) this.rhythm.ready(performance.now());
+    if (!hadFocus && this.core.focus()) this.speed.ready(performance.now());
     this.trackPace();
     if (this.paws?.typing) this.paws.tick(dt);
     else this.superHelp?.tick(dt);
@@ -1065,13 +1065,13 @@ export class LevelRuntime {
       this.progressPct = pct;
       this.progressFill.style.width = `${pct}%`;
     }
-    this.gauge.set(this.rhythm.ema / this.gaugeFull);
+    this.gauge.set(this.speed.ema / this.gaugeFull);
     if ((this.gaugeLabelIn -= dt) <= 0) {
       this.gaugeLabelIn = 1;
-      this.gauge.label(t('level.rhythm', { n: this.rhythm.cpm }));
+      this.gauge.label(t('level.speed', { n: this.speed.cpm }));
       this.paintAccuracy();
     }
-    this.rhythm.idle(dt, performance.now());
+    this.speed.idle(dt, performance.now());
     if (this.core.shownChar() !== this.lastExpected) this.updateGuide();
     if (!this.state.finished && levelOver(this.mode.finished, this.played, this.minActive)) this.finish();
   }
@@ -1142,7 +1142,7 @@ export class LevelRuntime {
 
   private flushSession(): void {
     const p = app.profile!;
-    if (this.chars + this.errors > 0) recordSession(p, this.typedSeconds, this.chars, this.errors, this.rhythm.cpm);
+    if (this.chars + this.errors > 0) recordSession(p, this.typedSeconds, this.chars, this.errors, this.speed.cpm);
     this.state.elapsed = 0;
     this.typedSeconds = 0;
     this.ownKeyAt = 0;
@@ -1163,7 +1163,7 @@ export class LevelRuntime {
     const total = this.chars + this.errors;
     const accuracy = total ? this.chars / total : 1;
     const seconds = this.typedSeconds;
-    const cpm = this.rhythm.cpm;
+    const cpm = this.speed.cpm;
     const chars = this.chars, errors = this.errors;
     // Targets the paw typed count neither way.
     const resolved = this.typedTargets + this.core.missed;

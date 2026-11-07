@@ -3,7 +3,7 @@ import type { Rng } from '../../engine/rng';
 import { t } from '../../i18n/i18n';
 import type { TypedChar } from '../../input/input';
 import { SHIFT_L, activeKeys, isLetterKey, shiftKeyOf } from '../../learning/lessons';
-import { paintRound, rhythmRing, roundButton, roundPic } from '../../ui/hud';
+import { fillRing, paintRound, roundButton, roundPic } from '../../ui/hud';
 import { type MenuEntry, menuPanel } from '../../ui/menu';
 import { HELP_PLANS, type HelpHost, type HelpPlan, SuperHelper } from '../super-help';
 import type { LevelState } from './state';
@@ -67,7 +67,7 @@ export class SuperHelp {
 
   /** A full ring around the button while the super help types, like the other round buttons show their state. */
   private paint(): void {
-    paintRound(this.btn, 'lifebuoy', this.helper ? rhythmRing(1) : '');
+    paintRound(this.btn, 'lifebuoy', this.helper ? fillRing(1) : '');
     this.btn.setAttribute('aria-pressed', String(!!this.helper));
   }
 

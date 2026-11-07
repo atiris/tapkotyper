@@ -25,17 +25,17 @@
 - One button set everywhere: every round button is the same white circle with a ring, a colored
   disc and a white symbol in one of three colors: controls purple; what belongs to the round
   being played green (the paw with a ring of three charge segments and no badge, the place in
-  the world, the rhythm with a ring that fills from calm to excellent, a key's accuracy, the
+  the world, the speed with a ring that fills from calm to excellent, a key's accuracy, the
   target's hits next to the range's title); what calls for attention red (the super star at the
   far right, the update button). The wardrobe's time stays teal.
-  The rhythm is a picture, not a button. The help page shows these same buttons.
+  The speed is a picture, not a button. The help page shows these same buttons.
 - Orange buttons, chips and group headers carry the fox logo's dark outline color with a soft
   white shine, like its eyes: white on the orange is too faint to read (WCAG AA). Every raised
   button (orange or not) behaves like a key: on hover it rises and shows more edge over a wider,
   softer shadow, pressed it sinks into its base, which never moves; with reduced motion it does
   not move. Flat (outlined) buttons are only for tight places such as Back at the top left; a
   second choice beside the main one (Skip beside Next) is the same raised button, only not orange.
-- The level's top bar, left to right: pause, paw, title block, progress bar, rhythm, a divider,
+- The level's top bar, left to right: pause, paw, title block, progress bar, speed, a divider,
   help, keyboard, read aloud, sound, fullscreen. The pause button turns into play while paused. A round
   switch that is on has an orange ring: hidden keyboard (its button is a crossed keyboard), reading
   aloud, full sound and fullscreen; help is no switch and has none. The title block is the world's name as a word

@@ -33,14 +33,14 @@
   of a level's mistakes for each step): 5 from 99 %, 4 from 97.75 %, 3 from 95.5 %, 2 from 91 %,
   else 1. The paw rule (fewer than 5 own keys gives one star) holds over
   the whole journey.
-- It counts like a level: its keys, time and rhythm go into the [statistics](../profiles/statistics.md),
+- It counts like a level: its keys, time and speed go into the [statistics](../profiles/statistics.md),
   and growth and the lesson advance as after a story level. The best stars show as mini stars
   on its node and add to the star total (390).
 - It is not a level of its world: it gives no badge, does not finish the world and opens
   nothing. The parent's surprises count it as a level of the story's last world
   ([parent controls](../profiles/parent-controls.md)).
 - The end card (the one card of every end, see [mechanics](mechanics.md)) is "Cesta hrdinu
-  prejdená!" with the compass, the stars, accuracy, rhythm and minutes. Buttons: "Hrať znova" and
+  prejdená!" with the compass, the stars, accuracy, speed and minutes. Buttons: "Hrať znova" and
   the map. Staying a while is not offered.
 
 ## The dragon story's journey

@@ -96,7 +96,7 @@ export function randomFill(p: Profile, rand: () => number = Math.random): Progre
 const FILL_PRESSES = STATS_WINDOW;
 /** A key's accuracy may differ from the asked one by up to this much either way. */
 const FILL_SPREAD = 0.05;
-/** The rhythm of the filled session, correct characters per minute. */
+/** The speed of the filled session, correct characters per minute. */
 const FILL_CPM = 100;
 
 /** `n` items of `list` picked at random. */

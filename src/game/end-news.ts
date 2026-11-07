@@ -20,7 +20,7 @@ export type News =
 /** News that are rewards: several at once are told as the first and "and N more rewards". */
 const REWARDS = new Set<News['kind']>(['badge', 'parrotBadge', 'keys', 'medal', 'wardrobe', 'companion']);
 
-/** A rhythm this much better than a week ago is news. */
+/** A speed this much better than a week ago is news. */
 const TREND_UP = 1.05;
 
 /** The news of a level, a practice or staying a while, in the green line's order. */

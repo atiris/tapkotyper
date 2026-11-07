@@ -29,7 +29,7 @@ Koniec sveta: popoludnie na lúke sa končí a v tráve sa nájde tajná pozván
 ## Svet 2: Raketa - cesta k planéte drakov
 
 Ťapka vyšlú preskúmať zopár planét a dostať sa až na planétu drakov, a cestou sa vyhnúť
-všetkým nebezpečenstvám. Oblečie si skafander a nasadne do rakety; rytmus písania poháňa
+všetkým nebezpečenstvám. Oblečie si skafander a nasadne do rakety; rýchlosť písania poháňa
 raketu a jemný lúč odsúva meteority z cesty.
 
 1. **Dlhý let** - treba prekonať veľkú vzdialenosť dostatočne rýchlo a vyhýbať sa meteoritom.
@@ -109,8 +109,8 @@ tréningu nevedia zaspať, ráno odlietajú na lúku kryštálov.
    dráčiky sa tešia a Ťapko k nim dôjde.
 3. **Lietanie** - dráčiky sa učia lietať: jeden po druhom štartujú pri Ťapkovi, v strede stoja
    vždy tri kríky a pristáť majú pri ohnisku, ktoré stojí celkom vpravo (dráčiky sedia mimo jeho
-   ohňa). Slová prichádzajú v bubline hore; keď dieťa píše pekne v rytme, dráčik letí vysoko
-   ponad kríky. Keď rytmus klesne, pristane v kríkoch ("Júj, to šteklí!", "Šteklivé!",
+   ohňa). Slová prichádzajú v bubline hore; keď dieťa píše plynulo, dráčik letí vysoko
+   ponad kríky. Keď rýchlosť klesne, pristane v kríkoch ("Júj, to šteklí!", "Šteklivé!",
    "Prásk!", "Kríčky!"), vylezie a k ohnisku dôjde pešo. Pri druhej chybe počas letu dráčik
    vykríkne ("Jaj!", "Pozor!", "Opatrne!") a zakolíše sa, pri tretej let skončí: pred kríkmi
    alebo nad nimi spadne do kríkov, za nimi tvrdo pristane. Dráčik sedí rovnako veľký ako letí a

@@ -53,7 +53,7 @@
   lets the hands on the keyboard type the three closest words with their own rhythm: each key
   in its pose, the key going down as it is typed, so the child sees how the words are typed and
   need not type meanwhile (the on-screen keyboard shows while they type). These keys never count
-  in the child's statistics, accuracy or rhythm, and the child's own keys wait meanwhile. The paw comes
+  in the child's statistics, accuracy or speed, and the child's own keys wait meanwhile. The paw comes
   only when the child calls it: there is no automatic paw, and Backspace does nothing in a
   level (only in [free typing](../game/free-typing.md)). A target waiting for its Enter
   takes the Enter instead of calling the paw.

@@ -37,7 +37,7 @@ function fakeRuntime(count = 4): LevelRuntime {
     noPressure: false,
     difficulty: 5,
     idleFor: 99,
-    rhythm: { ema: 0.5, ratio: () => 0.3, ready: () => {} },
+    speed: { ema: 0.5, ratio: () => 0.3, ready: () => {} },
     robot: null,
     toolAlpha: 1,
     rng: { pick: <T>(a: T[]) => a[0], range: (a: number) => a, chance: () => false, int: (a: number) => a, next: () => 0.5, shuffle: <T>(a: T[]) => [...a] },
@@ -704,10 +704,10 @@ describe('the torch', () => {
 });
 
 describe('flying lessons', () => {
-  it('a dragon that flew over the bushes and lost its rhythm falls and lands hard; it still counts as flown', () => {
+  it('a dragon that flew over the bushes and lost its speed falls and lands hard; it still counts as flown', () => {
     const L = fakeRuntime(3);
     let shouts = 0;
-    Object.assign(L, { idleFor: 0, rhythm: { ema: 2, ratio: () => 1, ready: () => {} }, shout: () => shouts++ });
+    Object.assign(L, { idleFor: 0, speed: { ema: 2, ratio: () => 1, ready: () => {} }, shout: () => shouts++ });
     const mode = new FlightMode(L);
     mode.start();
     typeWord(L, mode);
@@ -726,7 +726,7 @@ describe('flying lessons', () => {
 
   it('a pause in typing takes the lift away', () => {
     const L = fakeRuntime(3);
-    Object.assign(L, { idleFor: 0, rhythm: { ema: 2, ratio: () => 1, ready: () => {} } });
+    Object.assign(L, { idleFor: 0, speed: { ema: 2, ratio: () => 1, ready: () => {} } });
     const mode = new FlightMode(L);
     expect((mode as any).liftAim()).toBe(1);
     Object.assign(L, { idleFor: 2.2 });
@@ -735,7 +735,7 @@ describe('flying lessons', () => {
 
   it("on the hero's journey the little dragon flies alone to the pit and back; a failed flight is flown again and counts nothing", () => {
     const L = fakeRuntime(2);
-    Object.assign(L, { def: { ...L.def, variant: 'journey' }, idleFor: 0, rhythm: { ema: 2, ratio: () => 1, ready: () => {} } });
+    Object.assign(L, { def: { ...L.def, variant: 'journey' }, idleFor: 0, speed: { ema: 2, ratio: () => 1, ready: () => {} } });
     const mode = new FlightMode(L);
     mode.start();
     const d = (mode as any).dragons[0];
@@ -802,7 +802,7 @@ describe('the take-off', () => {
 
   it('the dragon flies on smoothly as the letters are typed', () => {
     const L = fakeRuntime(3);
-    Object.assign(L, { idleFor: 0, rhythm: { ema: 2, ratio: () => 1, ready: () => {} } });
+    Object.assign(L, { idleFor: 0, speed: { ema: 2, ratio: () => 1, ready: () => {} } });
     const mode = new TakeoffMode(L);
     mode.start();
     run(L, mode, 1);
@@ -844,7 +844,7 @@ describe('slips in a flight', () => {
   it('the second slip makes the dragon cry out and fly on, the third drops it into the bushes', () => {
     const L = fakeRuntime(3);
     const shouts: string[] = [];
-    Object.assign(L, { idleFor: 0, rhythm: { ema: 2, ratio: () => 1, ready: () => {} }, shout: (s: string) => shouts.push(s) });
+    Object.assign(L, { idleFor: 0, speed: { ema: 2, ratio: () => 1, ready: () => {} }, shout: (s: string) => shouts.push(s) });
     const mode = new FlightMode(L);
     mode.start();
     expect((mode as any).bushes).toHaveLength(2);
@@ -864,7 +864,7 @@ describe('slips in a flight', () => {
 
   it('the third slip past the bushes ends in a hard landing that still counts as flown; the next dragon starts at 0', () => {
     const L = fakeRuntime(3);
-    Object.assign(L, { idleFor: 0, rhythm: { ema: 2, ratio: () => 1, ready: () => {} } });
+    Object.assign(L, { idleFor: 0, speed: { ema: 2, ratio: () => 1, ready: () => {} } });
     const mode = new FlightMode(L);
     mode.start();
     typeWord(L, mode);
@@ -881,7 +881,7 @@ describe('slips in a flight', () => {
 
   it('a dragon lands upright at its flying size', () => {
     const L = fakeRuntime(3);
-    Object.assign(L, { idleFor: 0, rhythm: { ema: 2, ratio: () => 1, ready: () => {} } });
+    Object.assign(L, { idleFor: 0, speed: { ema: 2, ratio: () => 1, ready: () => {} } });
     const mode = new FlightMode(L);
     mode.start();
     typeWord(L, mode);

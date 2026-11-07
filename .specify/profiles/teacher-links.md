@@ -38,12 +38,12 @@
   link or code with **Pridať**; anything else says "Toto nie je kód úlohy.". A task added again
   only refreshes what the teacher made. Under them **Moje úlohy**, unfinished first, a new one
   marked for a moment: title, game, group, and what it asks (its minutes or its whole text) or the best run (date, minutes,
-  accuracy, rhythm). **Hrať** or **Zopakovať**, and for a finished task **Odovzdať**, **QR kód**
+  accuracy, speed). **Hrať** or **Zopakovať**, and for a finished task **Odovzdať**, **QR kód**
   (the result's big code) and **Výsledok** (the best run and whether playing again improved it);
   **Odstrániť** asks first. A player keeps the last 30 tasks.
 - **Best run:** a task is played in one sitting, its limit ends it; leaving early keeps nothing.
   A finished task keeps its best run. Playing it again starts from zero and replaces the best only
-  when it is better (higher accuracy, at equal accuracy a higher rhythm). The hand-in and the QR
+  when it is better (higher accuracy, at equal accuracy a higher speed). The hand-in and the QR
   code always carry the best run.
 - **Noting a task on a phone:** a phone without a keyboard has **Nová úloha** on its start page
   ([devices](../experience/devices.md)): a page with the same camera. A task code stops the camera
@@ -56,7 +56,7 @@
   one card of every end, see [mechanics](../game/mechanics.md)) with the backpack, the minutes, the
   task, "Pošli učiteľovi: odkaz alebo kód", the result link, "Kopírovať odkaz" and "Veľký kód". The link holds the player's real name
   (or the nickname when there is none),
-  the task, the date, minutes played of its best run (typing time, [statistics](statistics.md)), accuracy, rhythm and the five weakest keys, a yes/no
+  the task, the date, minutes played of its best run (typing time, [statistics](statistics.md)), accuracy, speed and the five weakest keys, a yes/no
   flag that the super player removed or changed the settings password on the child's device
   ([profiles](profiles.md)), plus a checksum; the teacher's views and the QR scan show a red
   lock by that child's name. The teacher's help says plainly that the checksum finds damaged copies, not cheating.
@@ -76,7 +76,7 @@
   kliknutí na odkaz s výsledkom…") with **Naskenovať QR** and **Načítať odkaz**; a phone shows only
   **QR sken** across the page. Below, **Posledné pridané výsledky**: the results added last, by
   group, the group with the newest addition first: a group row ("Skupina 5.A", "6 načítaných")
-  opens Skupiny filtered to it, a student row (name, task, accuracy, rhythm) the student's card.
+  opens Skupiny filtered to it, a student row (name, task, accuracy, speed) the student's card.
   A result link that opened the page says in one line under the buttons whether it was added,
   was here already or is damaged.
 - **Every hand-in is kept, once.** A result carries the player's hidden id (a short hash of the
@@ -120,19 +120,19 @@
   at the bottom of the column, so the button never moves.
 - **Hodnotenie › Skupiny:** a group choice (Všetky skupiny, the groups, Bez skupiny) and
   **Stiahnuť CSV** (what is shown), then one row per set: day, time from-to, group, tasks,
-  results, "zvládli X z Y", accuracy, rhythm. On a computer a click on a row opens the set's
+  results, "zvládli X z Y", accuracy, speed. On a computer a click on a row opens the set's
   students inline; on a phone a set is a row (tasks, day and time, group, results, accuracy,
   "X/Y zvládli") that opens the set's page (tiles and its students, closed by a round X).
 - **Hodnotenie › Študenti:** a search by part of the name, the group choice (students without a
   group counted: "Bez skupiny (4)") and **Stiahnuť CSV**; every student with a box to tick, the
-  name (opens the card), group, hand-ins, the last one, accuracy and rhythm, sortable on a
+  name (opens the card), group, hand-ins, the last one, accuracy and speed, sortable on a
   computer. Ticked students show "Vybraní: N" with **Preradiť do** (the groups, **Nová skupina…**
   asking the name in a small dialog, **Bez skupiny**) and **Preradiť**. A phone shows rows.
 - **A student's card** (results only): on a computer the path "Študenti › group › name", on a
   phone the name with the group under it and a round X (Esc closes it too), without the page's
   bar and tabs. Four tiles (average accuracy, characters a minute, minutes of practice, levels
-  passed from the newest result that says them), "Vývoj" with accuracy and rhythm over the
-  hand-ins in two charts, and every hand-in with task, date, minutes, accuracy, rhythm and the
+  passed from the newest result that says them), "Vývoj" with accuracy and speed over the
+  hand-ins in two charts, and every hand-in with task, date, minutes, accuracy, speed and the
   weakest keys. Moving and deleting students are done in Študenti and Dáta.
 - **Hodnotenie › Súbory:** the `.tapko` files loaded here (name, when, period and groups inside,
   results, what was added, "nič nové" when nothing).

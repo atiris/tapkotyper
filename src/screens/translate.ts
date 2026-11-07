@@ -13,7 +13,7 @@ import type { Lang, LangRef, LayoutId } from '../storage/schema';
 import { cornerControls } from '../ui/chrome';
 import { button, confirmDialog, download, h, icon, modal } from '../ui/dom';
 import { tipMachine } from '../ui/tooltip';
-import { rhythmRing, roundButton, roundTextSvg } from '../ui/hud';
+import { fillRing, roundButton, roundTextSvg } from '../ui/hud';
 import { loadWords } from '../words/words';
 
 /** Where approved translations are asked for: a new issue of the project. */
@@ -667,7 +667,7 @@ function translatorPage(screen: HTMLElement): () => void {
   function paintProgress(): void {
     const p = target ? progressOf(target, fields) : 0;
     const n = pct(p);
-    ring.innerHTML = roundTextSvg(String(n), rhythmRing(p));
+    ring.innerHTML = roundTextSvg(String(n), fillRing(p));
     const label = p >= 1 ? tr('progressDone') : tr('progress', { n });
     ring.dataset.tip = label;
     ring.setAttribute('aria-label', label);

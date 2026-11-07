@@ -46,7 +46,7 @@ export interface SessionRecord {
   seconds: number;
   chars: number;
   errors: number;
-  /** Smoothed rhythm, correct characters per minute. */
+  /** Smoothed speed, correct characters per minute. */
   cpm: number;
 }
 
@@ -244,7 +244,7 @@ export interface TaskRun {
   seconds: number;
   chars: number;
   errors: number;
-  /** Rhythm, correct characters per minute. */
+  /** Speed, correct characters per minute. */
   cpm: number;
   /** Local date the run finished. */
   doneAt: string;

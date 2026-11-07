@@ -47,7 +47,7 @@ One set of rules for where things sit and how they behave, so every screen feels
    top of the panel they switch, with no gap. A window with tabs is aligned to the top so
    that switching tabs changes only its lower edge, never its position.
 5. **Position in the world.** In a level, the place inside the world is a ring beside the
-   pause button, drawn like the rhythm ring: the ring fills up to the current level (the third
+   pause button, drawn like the speed ring: the ring fills up to the current level (the third
    of five fills three pieces, the last one, the big challenge, all five), the number of the
    current level (1-5) is inside. The world's name is
    the title; there are no dots under it.
@@ -102,7 +102,7 @@ One set of rules for where things sit and how they behave, so every screen feels
   already work; a third way at the bottom makes the child hunt for the exit.
 - Scrolling inside a window keeps the title and the way out in sight, and a page that
   scrolls as a whole is what a browser user expects.
-- The ring in the bar reuses a picture the child already reads (the rhythm ring), and frees the
+- The ring in the bar reuses a picture the child already reads (the speed ring), and frees the
   space under the title. It is one of the bar's round buttons and looks exactly like them.
 - Native titles are slow, unstyled, missing on touch and keyboard, and look foreign in a
   children's game; one tooltip gives one look. A bar that stays keeps the way back in sight.

@@ -95,7 +95,7 @@ test('memory: keys wait while the target shows, a mistake shows it again', async
   expect(errors).toEqual([]);
 });
 
-test('the place ring in a story level looks like the rhythm ring', async ({ page }) => {
+test('the place ring in a story level looks like the speed ring', async ({ page }) => {
   await createProfile(page, 'Ring');
   await page.locator('.level-node.current').first().click({ force: true });
   const look = (sel: string) => page.locator(sel).evaluate((el) => {
@@ -103,5 +103,5 @@ test('the place ring in a story level looks like the rhythm ring', async ({ page
     return { radius: s.borderRadius, padding: s.padding, width: s.width, height: s.height, background: s.backgroundColor };
   });
   await page.locator('.hud .round-btn.place').waitFor();
-  expect(await look('.hud .round-btn.place')).toEqual(await look('.hud .round-btn.rhythm'));
+  expect(await look('.hud .round-btn.place')).toEqual(await look('.hud .round-btn.speed'));
 });

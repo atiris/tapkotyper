@@ -103,7 +103,7 @@ export function drawAstronaut(g: G, helmet: boolean, x: number, y: number, size:
 
 /**
  * World 2: Tapko puts on a space suit and hops into the rocket's window, its soft beam pushes rocks and planets out of the path,
- * and rhythm drives the speedometer docked under the rocket.
+ * and speed drives the speedometer docked under the rocket.
  */
 export class SpaceMode extends ApproachMode {
   readonly pictures = PICTURES;
@@ -118,7 +118,7 @@ export class SpaceMode extends ApproachMode {
   private flow = 0;
   /** Meteors made so far (the first ones of a strong run are never strong). */
   private made = 0;
-  /** The background's speed, eased: the rhythm changes in steps with each key, and a step jerked the whole sky. */
+  /** The background's speed, eased: the speed changes in steps with each key, and a step jerked the whole sky. */
   private scrollV = 40;
 
   constructor(L: LevelRuntime) {
@@ -198,14 +198,14 @@ export class SpaceMode extends ApproachMode {
       const need = Math.max(...needs);
       this.flow = this.flow ? this.flow + (need - this.flow) * Math.min(1, dt * FLOW_EASE) : need;
     }
-    this.scrollV += ((40 + this.L.rhythm.ema * 70) * this.pace - this.scrollV) * Math.min(1, dt * SKY_EASE);
+    this.scrollV += ((40 + this.L.speed.ema * 70) * this.pace - this.scrollV) * Math.min(1, dt * SKY_EASE);
     super.update(dt);
     this.beam = Math.max(0, this.beam - dt * 3);
     this.speedShown += (this.speedPct() * this.pace - this.speedShown) * Math.min(1, dt * SKY_EASE);
   }
 
   protected speedPct(): number {
-    return Math.min(1, this.L.rhythm.ratio(this.L.difficulty));
+    return Math.min(1, this.L.speed.ratio(this.L.difficulty));
   }
 
   drawMover(g: G, m: Mover): void {

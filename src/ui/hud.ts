@@ -6,8 +6,8 @@ import { ICONS, h } from './dom';
 import { keyLabel } from './keyboard-guide';
 import { tip } from './tooltip';
 
-/** Colors of the round buttons: controls purple; the paw, rhythm, place in the world, a key's accuracy green (the round being played); the super star and a new version red; the wardrobe's time teal. */
-export type RoundKind = 'control' | 'paw' | 'rhythm' | 'super' | 'place' | 'timer' | 'accuracy' | 'update';
+/** Colors of the round buttons: controls purple; the paw, speed, place in the world, a key's accuracy green (the round being played); the super star and a new version red; the wardrobe's time teal. */
+export type RoundKind = 'control' | 'paw' | 'speed' | 'super' | 'place' | 'timer' | 'accuracy' | 'update';
 
 const RING_LEN = 2 * Math.PI * 21;
 /** Glyphs drawn filled in white; the others are white lines. */
@@ -51,7 +51,7 @@ export function pawRing(charged: number, max: number): string {
 }
 
 /**
- * The place in the world, drawn like the rhythm ring: one segment per level, filled up to this
+ * The place in the world, drawn like the speed ring: one segment per level, filled up to this
  * one (the third of five fills three, the last one all); the level's number inside.
  */
 export function levelRing(total: number, current: number): HTMLElement {
@@ -65,8 +65,8 @@ export function placeRing(def: LevelDef): HTMLElement {
   return levelRing(worldLevels(def.world).length, def.index);
 }
 
-/** The rhythm's ring: filled from the top by `fraction`. */
-export function rhythmRing(fraction: number): string {
+/** A round picture's ring: filled from the top by `fraction`. */
+export function fillRing(fraction: number): string {
   const f = Math.max(0, Math.min(1, fraction));
   return `<circle class="rb-arc on" cx="24" cy="24" r="21" transform="rotate(-90 24 24)" stroke-dasharray="${(f * RING_LEN).toFixed(1)} ${RING_LEN.toFixed(1)}"/>`;
 }
@@ -88,9 +88,9 @@ export function roundPic(kind: RoundKind, glyph: keyof typeof ICONS, ring = ''):
   return h('span', { class: `round-btn ${kind}`, html: roundSvg(glyph, ring) });
 }
 
-/** Rhythm (a picture, not a button): the green ring fills from calm to excellent. */
-export function rhythmPic(): { el: HTMLElement; set(ratio: number): void; label(text: string): void } {
-  const el = h('div', { class: 'round-btn rhythm', role: 'img', html: roundSvg('wave', rhythmRing(0.25)) });
+/** Speed (a picture, not a button): the green ring fills from calm to excellent. */
+export function speedPic(): { el: HTMLElement; set(ratio: number): void; label(text: string): void } {
+  const el = h('div', { class: 'round-btn speed', role: 'img', html: roundSvg('wave', fillRing(0.25)) });
   // The ring is redrawn only when its 1/40 step changes, not on every frame.
   let step = -1;
   return {
@@ -99,7 +99,7 @@ export function rhythmPic(): { el: HTMLElement; set(ratio: number): void; label(
       const next = Math.round(Math.max(0, Math.min(1, ratio)) * 40);
       if (next === step) return;
       step = next;
-      paintRound(el, 'wave', rhythmRing(0.25 + 0.7 * (next / 40)));
+      paintRound(el, 'wave', fillRing(0.25 + 0.7 * (next / 40)));
     },
     label(text) {
       tip(el, text);
@@ -130,7 +130,7 @@ export function accuracyPic(key: string): { el: HTMLElement; set(accuracy: numbe
       if (`${pct}${band}` === shown) return;
       shown = `${pct}${band}`;
       el.className = `round-btn accuracy acc-${band}`;
-      el.innerHTML = roundTextSvg(glyph, rhythmRing(accuracyFill(accuracy)));
+      el.innerHTML = roundTextSvg(glyph, fillRing(accuracyFill(accuracy)));
       const label = t('level.keyAccuracy', { key: keyLabel(key), n: pct });
       tip(el, label);
       el.setAttribute('aria-label', label);
@@ -158,7 +158,7 @@ export function timerPic(left: number, note = ''): { el: HTMLElement; set(left: 
     if (next === step) return;
     step = next;
     const face = countdownFace(s);
-    const ring = rhythmRing(s / WARDROBE_MAX);
+    const ring = fillRing(s / WARDROBE_MAX);
     el.innerHTML = face === 'smile' ? roundSvg('smile', ring) : roundTextSvg(String(face), ring);
   };
   /** The time is up: a lock in the ring, and its tip says how to open it again. */

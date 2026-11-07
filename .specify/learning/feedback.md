@@ -9,12 +9,12 @@
 - Results show accuracy first (stars for clean words), speed only as a personal trend
   ("faster than last week"), never compared with other children.
 - A parent switch "no time pressure" turns every timed element into an untimed one.
-- Rhythm and speed count only real moves between keys: pressing the same key again
-  ("ffff") adds nothing to the rhythm gauge, the session's characters per minute or the
+- Speed counts only real moves between keys: pressing the same key again
+  ("ffff") adds nothing to the speed gauge, the session's characters per minute or the
   day's reaction times. The gauge opens below its top, follows the real pace and sinks
   within a few seconds once typing slows down or stops.
 - Own practice and the target range show a small accuracy ring for each key in focus next
-  to the rhythm gauge (the key on the disc, a space or Shift as a sign). The ring uses a log
+  to the speed gauge (the key on the disc, a space or Shift as a sign). The ring uses a log
   scale of the errors, so 80 to 100 % fill most of it, and its color says how far the key is:
   red below 80 %, orange below 90 %, yellow above, green once the key is ready.
 

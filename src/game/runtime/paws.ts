@@ -5,7 +5,7 @@ import { t } from '../../i18n/i18n';
 import { paintRound, pawRing, roundButton } from '../../ui/hud';
 import type { Mode } from '../mode';
 import { PAW_MAX, PAW_STREAK, PAW_WORDS } from '../paw';
-import type { Rhythm } from '../rhythm';
+import type { Speed } from '../speed';
 import type { LevelState } from './state';
 
 /** What the paws need of the level besides its state. */
@@ -19,7 +19,7 @@ export interface PawHost {
   setMood(mood: Mood, seconds: number): void;
   sfx(s: Sfx): void;
   updateGuide(): void;
-  readonly rhythm: Rhythm;
+  readonly speed: Speed;
 }
 
 /** The paw help: a mistake-free streak charges it, its HUD button (or Enter) lets the hands on the keyboard type the next words for the child, so the child sees how they are typed. */
@@ -89,11 +89,11 @@ export class Paws {
     this.render();
     if (this.host.guideOn !== this.guideBefore) this.host.toggleGuide();
     // The child's next reaction time starts now, not with the paw's last key.
-    this.host.rhythm.ready(performance.now());
+    this.host.speed.ready(performance.now());
     this.host.updateGuide();
   }
 
-  /** One key at a time, with Tapko's rhythm; none of it counts in the child's statistics. */
+  /** One key at a time, at Tapko's speed; none of it counts in the child's statistics. */
   tick(dt: number): void {
     if ((this.timer -= dt) > 0) return;
     const { core, guide } = this.state;

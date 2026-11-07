@@ -26,7 +26,7 @@ export function groupsPart(store: TeacherStore): Part {
     const sets = store.sets.filter((s) => store.setResults(s).length && (view.groups === null || s.group === view.groups)).sort((a, b) => b.start - a.start);
     const csv = () => exportCsv(store, sets.flatMap((s) => store.setResults(s)));
     const table = h('table', { class: 'sets-table' },
-      h('thead', {}, h('tr', {}, ...['day', 'time', 'group', 'task', 'results', 'ok', 'accuracy', 'rhythm'].map((c) => h('th', { scope: 'col' }, t(`teacher.sets.${c}`))))),
+      h('thead', {}, h('tr', {}, ...['day', 'time', 'group', 'task', 'results', 'ok', 'accuracy', 'speed'].map((c) => h('th', { scope: 'col' }, t(`teacher.sets.${c}`))))),
       h('tbody', {}, ...sets.flatMap((s) => {
         const rs = store.setResults(s);
         const st = setStats(rs);
@@ -44,7 +44,7 @@ export function groupsPart(store: TeacherStore): Part {
           h('td', {}, String(rs.length)),
           h('td', {}, t('teacher.sets.okOf', { ok: st.ok, n: rs.length })),
           h('td', {}, `${st.accuracy} %`),
-          h('td', {}, t('teacher.unit.cpm', { n: st.rhythm })));
+          h('td', {}, t('teacher.unit.cpm', { n: st.speed })));
         if (!open) return [row];
         return [row, h('tr', { class: 'set-detail' }, h('td', { colspan: 8 }, h('table', { class: 'set-writers' },
           h('tbody', {}, ...store.sorted(rs).map((r) => h('tr', { class: r.intact ? '' : 'broken' },
@@ -88,7 +88,7 @@ export function setPart(store: TeacherStore, set: ResultSet): Part {
         tile(String(rows.length), t('teacher.set.results')),
         tile(`${st.ok} / ${rows.length}`, t('teacher.set.ok')),
         tile(`${st.accuracy} %`, t('teacher.child.accuracy')),
-        tile(String(st.rhythm), t('teacher.child.cpm'))),
+        tile(String(st.speed), t('teacher.child.cpm'))),
       h('ul', { class: 'teacher-rows' }, ...store.sorted(rows, sort).map((r) => h('li', {}, h('button', { type: 'button', class: `teacher-row${r.intact ? '' : ' broken'}`, onClick: () => openPlace(`student/${r.student}`, true) },
         h('span', { class: 'teacher-row-main' }, h('b', {}, r.name, brokenMark(r), lockMark(r)), h('span', { class: 'hint' }, [r.title, t('teacher.unit.min', { n: r.minutes }), t('teacher.unit.cpm', { n: r.cpm })].join(' · '))),
         h('span', { class: 'teacher-row-side' }, h('b', {}, `${r.accuracy} %`), statusPill(mastered(r))),
@@ -98,8 +98,8 @@ export function setPart(store: TeacherStore, set: ResultSet): Part {
 }
 
 /** The students' columns a teacher sorts by, in the table's order. */
-const STUDENT_KEYS: WriterKey[] = ['child', 'group', 'handIns', 'date', 'accuracy', 'rhythm'];
-const COL: Partial<Record<WriterKey, string>> = { child: 'col.child', group: 'col.group', handIns: 'col.handIns', date: 'col.last', accuracy: 'col.accuracy', rhythm: 'sets.rhythm' };
+const STUDENT_KEYS: WriterKey[] = ['child', 'group', 'handIns', 'date', 'accuracy', 'speed'];
+const COL: Partial<Record<WriterKey, string>> = { child: 'col.child', group: 'col.group', handIns: 'col.handIns', date: 'col.last', accuracy: 'col.accuracy', speed: 'sets.speed' };
 let studentSort: Sort<WriterKey> = { key: 'child', desc: false };
 
 /** Študenti: a search, the group, every student with a box to pick; the picked ones move into a group together. */
@@ -224,7 +224,7 @@ export function studentPart(store: TeacherStore, key: string): Part {
             lineChart(oldest.map((r) => r.cpm), labels, t('teacher.child.cpmUnit'), '#d9661f')) : h('p', { class: 'hint' }, t('teacher.student.oneHandIn'))),
         h('section', { class: 'student-hand-ins' }, h('h3', {}, t('teacher.child.handIns')),
           h('div', { class: 'teacher-table' }, h('table', {},
-            h('thead', {}, h('tr', {}, ...['task', 'date', 'minutes', 'accuracy', 'rhythm', 'weak'].map((c) => h('th', { scope: 'col' }, t(c === 'rhythm' ? 'teacher.sets.rhythm' : `teacher.col.${c}`))))),
+            h('thead', {}, h('tr', {}, ...['task', 'date', 'minutes', 'accuracy', 'speed', 'weak'].map((c) => h('th', { scope: 'col' }, t(c === 'speed' ? 'teacher.sets.speed' : `teacher.col.${c}`))))),
             h('tbody', {}, ...rows.map((r) => h('tr', { class: r.intact ? '' : 'broken' },
               h('td', {}, r.title, brokenMark(r)), h('td', {}, r.date), h('td', {}, String(r.minutes)), h('td', {}, `${r.accuracy} %`), h('td', {}, String(r.cpm)), h('td', {}, weakLine(r.weak.slice(0, 3)))))))),
           h('ul', { class: 'teacher-rows' }, ...rows.map((r) => h('li', { class: `hand-in${r.intact ? '' : ' broken'}` },

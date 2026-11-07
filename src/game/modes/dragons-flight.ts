@@ -36,10 +36,10 @@ const FLIGHT_PIT_H = 64;
 const SEAT_FIRST = 80;
 const SEAT_GAP = 62;
 const SEAT_LIFT = [0, 24, 8, 32, 14];
-/** Seconds a dragon flies from its start to its seat; with 80 % of the rhythm goal its arc is full. */
+/** Seconds a dragon flies from its start to its seat; with 80 % of the speed goal its arc is full. */
 const FLIGHT_S = 22;
 const LIFT_RATIO = 0.8;
-/** How fast the lift follows the rhythm, per second. */
+/** How fast the lift follows the speed, per second. */
 const LIFT_EASE = 0.9;
 /** A pause in typing takes the lift away: after this many seconds it starts to go, and in this many more it is gone. */
 const IDLE_GRACE = 1.2;
@@ -121,9 +121,9 @@ interface Flyer {
 }
 
 /**
- * Valley 3, flying lessons (a word stream with rhythm): a dragon waits right of Tapko, three bushes
+ * Valley 3, flying lessons (a word stream with speed): a dragon waits right of Tapko, three bushes
  * stand in the middle, the burning pit on the right. Words come one at a time in a bubble high in
- * the middle; the first typed word starts the flight, a slow arc whose height follows the rhythm.
+ * the middle; the first typed word starts the flight, a slow arc whose height follows the speed.
  * Too low over the bushes it lands in them with a giggle and walks on. A second slip in a flight
  * makes it cry out and wobble, a third ends the flight (into the bushes, or a hard landing past
  * them). Every dragon reaches the fire, and the end counts how many flew. On the dragon story's hero's
@@ -221,8 +221,8 @@ export class FlightMode extends Mode {
       pic: this.journey ? littleDragonImage() : DRAGONS[i % DRAGONS.length], x: START_X, alt: 0, state: 'wait', p: 0, lift: 0, climb: false, tilt: 0, vy: 0, squash: 0, t: 0,
       fromX: START_X, fromAlt: 0, fromTilt: 0, toX: START_X, drop: DROP, flew: false, seat: this.journey ? 0 : i, slips: 0, wobble: 0, back: false, retry: false,
     });
-    // The wait between flights is not rhythm.
-    this.L.rhythm.ready(performance.now());
+    // The wait between flights is not typing speed.
+    this.L.speed.ready(performance.now());
   }
 
   /** The little dragon waits on the ground for the first word of its flight (`back`: from the pit to Tapko). */
@@ -286,10 +286,10 @@ export class FlightMode extends Mode {
     this.L.sfx('plop');
   }
 
-  /** The lift the rhythm asks for, full from 80 % of the goal (on the journey a little more after each failed try); a pause in typing takes it away. */
+  /** The lift the speed asks for, full from 80 % of the goal (on the journey a little more after each failed try); a pause in typing takes it away. */
   private liftAim(): number {
     const idle = Math.max(0, Math.min(1, (this.L.idleFor - IDLE_GRACE) / IDLE_FALL));
-    return Math.min(1, this.L.rhythm.ratio(this.L.difficulty) / LIFT_RATIO + this.failed * RETRY_HELP) * (1 - idle);
+    return Math.min(1, this.L.speed.ratio(this.L.difficulty) / LIFT_RATIO + this.failed * RETRY_HELP) * (1 - idle);
   }
 
   update(dt: number): void {
@@ -379,7 +379,7 @@ export class FlightMode extends Mode {
       if (d.x !== to) return;
       if (d.retry) {
         this.ready(d, d.back);
-        L.rhythm.ready(performance.now());
+        L.speed.ready(performance.now());
       } else this.hop(d);
     } else if (d.state === 'hop') {
       const k = Math.min(1, d.t / HOP), to = arrive;
@@ -873,7 +873,7 @@ const ARRIVE = 2.8;
 const ARRIVE_HIGH = [0.5, 0.75];
 /** The share of the arrival in which it sits up for landing. */
 const ARRIVE_UPRIGHT = 0.35;
-/** How fast a flying dragon follows the typing: slow with a calm rhythm, quick with a good one (per second). */
+/** How fast a flying dragon follows the typing: slow with a calm speed, quick with a good one (per second). */
 const FOLLOW = [0.8, 3];
 /** How far a dragon sinks while the typing pauses, per second, and at most. */
 const SINK = 10;
@@ -914,7 +914,7 @@ interface Sitter {
 /**
  * Valley 5, the take-off (super-obstacle): in the morning the dragons sit by the pit and one by one
  * fly to the left, to the crystal meadow. A flight is a few sets of short words: the dragon flies on
- * smoothly as the words are typed, quicker with a good rhythm; a set typed without a slip and every
+ * smoothly as the words are typed, quicker with a good speed; a set typed without a slip and every
  * word in its time takes it a step higher and further. A late word or a slip counts as a mistake and
  * sends it back to the pit to try again, easier after a few returns. When the last is gone Tapko
  * calls after them, the fire flares up and is blown out, and an egg sits in the pit and greets him.
@@ -1125,11 +1125,11 @@ export class TakeoffMode extends Mode {
       d.alt = 0;
       d.rot = 0;
     } else if (d.state === 'fly') {
-      // It follows the typing smoothly, quicker with a better rhythm, and sinks a little while the typing pauses.
+      // It follows the typing smoothly, quicker with a better speed, and sinks a little while the typing pauses.
       const k = this.way(), left = TAPKO_X + 220;
       d.sink = Math.max(0, Math.min(SINK_MAX, d.sink + (L.idleFor > 0.8 ? SINK : -SINK * 3) * dt));
       const tx = home - (home - left) * k, talt = TAKE_LOW + (TAKE_TOP - TAKE_LOW) * k - d.sink;
-      const rate = FOLLOW[0] + (FOLLOW[1] - FOLLOW[0]) * Math.max(0, Math.min(1, L.rhythm.ratio(L.difficulty)));
+      const rate = FOLLOW[0] + (FOLLOW[1] - FOLLOW[0]) * Math.max(0, Math.min(1, L.speed.ratio(L.difficulty)));
       const f = Math.min(1, dt * rate);
       d.x += (tx - d.x) * f;
       d.alt += (talt - d.alt) * f;

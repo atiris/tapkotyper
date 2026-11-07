@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { PACE_MAX, PACE_MIN, PressureValve, perChar, sayTime } from './pace';
 
 describe('word pace', () => {
-  it('uses the last session rhythm until five targets are finished', () => {
+  it('uses the last session speed until five targets are finished', () => {
     expect(perChar([], 1)).toBeCloseTo(1 / 0.85);
     expect(perChar([0.1, 0.1, 0.1, 0.1], 5)).toBe(PACE_MIN);
   });

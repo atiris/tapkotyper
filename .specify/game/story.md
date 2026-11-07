@@ -69,7 +69,7 @@ as they are. The world descriptions below marked *not built yet* are the design 
    of the journey with the dragons' planet in sight (5). Tapko suits up where he stands: his things fade away, a white
    space suit grows up from the boots and a helmet with an opaque visor comes down over his
    head. The astronaut hops into the rocket, which from then on shows him in its round window.
-   Typing rhythm drives the speedometer, the rocket's own instrument, which sits still near the
+   Typing speed drives the speedometer (the story says that flying slower without mistakes is much better than fast with mistakes), the rocket's own instrument, which sits still near the
    bottom edge (half its height above it) under the rocket while the rocket bobs; a soft energy
    beam pushes asteroids and planets out of the path, some of them mirrored so they do not all
    look alike. The stream flies as one: all things in it keep one speed, the one its slowest
@@ -233,14 +233,14 @@ as they are. The world descriptions below marked *not built yet* are the design 
    and calm (only breathing); they come into sight with the path, never faded in, and never
    move back. End: the path is open, the dragons are glad (they
    hop and cheer) and Tapko walks on to them. Its map dot is the copy envelope.
-   3 flying lessons (a stream with rhythm): a dragon (the colours take turns) waits right of
+   3 flying lessons (a stream with speed): a dragon (the colours take turns) waits right of
    Tapko, two round leafy bushes stand together left of the middle (random two of three, some
    mirrored), the burning pit stands at the right edge (about 0.95 of the stage, wholly on it)
    and the dragons sit left of it, out of its fire, each a little further left and higher,
    overlapping. Words come one at a time high in the middle, in the
    usual word box (no second frame around it). The first typed word starts the flight to its seat
    (about 22 seconds), a high flight flat on top, not a half circle: it climbs fast, flies nearly
-   level through the middle and comes down fast; its height follows the rhythm, full from 80 % of the rhythm goal; a pause in typing takes
+   level through the middle and comes down fast; its height follows the speed, full from 80 % of the speed goal; a pause in typing takes
    the lift away (from 1.2 seconds on, all of it in 2 more). The dragon leans nose up while it
    rises (its body never stretches or squeezes in flight), leans nose down and glides while it sinks, and rocks gently. Too low over the
    bushes it lands in them, giggles ("Júj, to šteklí!"), climbs out and walks to its seat; past
@@ -282,7 +282,7 @@ as they are. The world descriptions below marked *not built yet* are the design 
    no clock (a slip only starts that word again) and the dragon does not turn; typed, it lifts
    off to about the middle of the stage and the clock runs from then on. The flying dragon turns
    so its back is about level, sways gently round that and pulses a very little narrower (no
-   bobbing up and down), follows the typing smoothly, letter by letter, quicker with a better rhythm, and
+   bobbing up and down), follows the typing smoothly, letter by letter, quicker with a better speed, and
    sinks a little while the typing pauses. A set typed without a slip, every word in time, lifts the dragon a
    step up and on; a late word (it counts as a mistake) or a slip sends it gliding back to the pit ("Skúsime to znova!")
    and the flight starts again with new sets. After its third return a dragon's tries have one

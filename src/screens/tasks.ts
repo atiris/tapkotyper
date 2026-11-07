@@ -25,7 +25,7 @@ async function specOf(text: string): Promise<TaskSpec | null> {
   }
 }
 
-/** The best run in one line: the date, the minutes, the accuracy and the rhythm. */
+/** The best run in one line: the date, the minutes, the accuracy and the speed. */
 const bestLine = (task: FinishedTask) => t('task.bestLine', {
   date: dateOf(task.best.doneAt),
   min: Math.max(1, Math.round(task.best.seconds / 60)),
@@ -42,7 +42,7 @@ function resultDialog(task: FinishedTask): void {
       h('dt', {}, t('task.result.date')), h('dd', {}, dateOf(b.doneAt)),
       h('dt', {}, t('task.result.minutes')), h('dd', {}, t('parent.minutes', { n: Math.max(1, Math.round(b.seconds / 60)) })),
       h('dt', {}, t('task.result.accuracy')), h('dd', {}, `${runAccuracy(b)} %`),
-      h('dt', {}, t('task.result.rhythm')), h('dd', {}, String(b.cpm))),
+      h('dt', {}, t('task.result.speed')), h('dd', {}, String(b.cpm))),
     task.finished > 1 ? h('p', { class: 'hint' }, t(b.try > 1 ? 'task.result.improved' : 'task.result.kept')) : null));
 }
 

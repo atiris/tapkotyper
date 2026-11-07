@@ -18,7 +18,7 @@ export interface LevelResult {
   newCompanions: CompanionKind[];
   /** The world finished with this level (super-obstacle), else null. */
   worldDone: number | null;
-  /** Rhythm compared with the sessions of a week ago, as a ratio (null = no data). */
+  /** Speed compared with the sessions of a week ago, as a ratio (null = no data). */
   trend: number | null;
   /** An automatic step up earned with this level (a new medal), else null. */
   growth: GrowthStep | null;
@@ -42,7 +42,7 @@ export interface JourneyRun {
 
 export const newJourneyRun = (): JourneyRun => ({ stats: null, typed: 0, resolved: 0 });
 
-/** Two runs as one: keys and typing time added up, the accuracy of all keys, the rhythm weighted by typing time. */
+/** Two runs as one: keys and typing time added up, the accuracy of all keys, the speed weighted by typing time. */
 export function joinRuns(a: RunStats, b: RunStats): RunStats {
   const chars = a.chars + b.chars, errors = a.errors + b.errors, seconds = a.seconds + b.seconds;
   return {
@@ -132,11 +132,11 @@ export function completeLevel(p: Profile, def: LevelDef, r: RunStats, typedShare
   const newAccessories = grantAccessories(p);
   const newCompanions = grantCompanions(p);
   const growth = byTapko ? null : grow(p, r.seconds, r.accuracy, typedShare);
-  return { ...r, stars, newKeys, newAccessories, newCompanions, worldDone, trend: rhythmTrend(p), growth, byTapko, badge };
+  return { ...r, stars, newKeys, newAccessories, newCompanions, worldDone, trend: speedTrend(p), growth, byTapko, badge };
 }
 
-/** Current rhythm vs. a week ago (only positive framing is shown). */
-export function rhythmTrend(p: Profile): number | null {
+/** Current speed vs. a week ago (only positive framing is shown). */
+export function speedTrend(p: Profile): number | null {
   const s = p.stats.sessions;
   if (s.length < 2) return null;
   const now = s[s.length - 1];
@@ -156,7 +156,7 @@ export function rhythmTrend(p: Profile): number | null {
 export function completeStay(p: Profile, r: RunStats, typedShare: number): LevelResult {
   const newKeys = advanceLesson(p);
   const growth = grow(p, r.seconds, r.accuracy, typedShare);
-  return { ...r, stars: 0, newKeys, newAccessories: [], newCompanions: [], worldDone: null, trend: rhythmTrend(p), growth, byTapko: false, badge: null };
+  return { ...r, stars: 0, newKeys, newAccessories: [], newCompanions: [], worldDone: null, trend: speedTrend(p), growth, byTapko: false, badge: null };
 }
 
 /**
@@ -174,5 +174,5 @@ export function completePlacement(p: Profile, check: PlacementCheck, r: RunStats
   p.progress.placementKeys = Math.max(p.progress.placementKeys, keys.length);
   const s = p.settings;
   if (keys.length && s.autoDifficulty) s.difficulty = placementDifficulty(s.difficulty, placementReaction(check.presses), AUTO_DIFFICULTY_MAX);
-  return { ...r, stars: 0, newKeys, newAccessories: [], newCompanions: [], worldDone: null, trend: rhythmTrend(p), growth: null, byTapko: false, badge: null };
+  return { ...r, stars: 0, newKeys, newAccessories: [], newCompanions: [], worldDone: null, trend: speedTrend(p), growth: null, byTapko: false, badge: null };
 }

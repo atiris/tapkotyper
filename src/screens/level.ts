@@ -208,9 +208,9 @@ function showEnd(root: HTMLElement, o: Omit<EndCardOpts, 'onBreak'>, type?: () =
   peekable(overlay, card, type);
 }
 
-/** Accuracy and rhythm, the rows every typing end starts with. */
+/** Accuracy and speed, the rows every typing end starts with. */
 function typingRows(r: LevelResult): [string, Child][] {
-  return [[t('end.accuracy'), `${pct(r.accuracy)} %`], r.cpm > 0 ? [t('end.rhythm'), letters(r.cpm)] : null].filter((x): x is [string, string] => x !== null);
+  return [[t('end.accuracy'), `${pct(r.accuracy)} %`], r.cpm > 0 ? [t('end.speed'), letters(r.cpm)] : null].filter((x): x is [string, string] => x !== null);
 }
 
 /** The green line's content: the first news with its picture, and how many more rewards came with it. */
@@ -280,7 +280,7 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
 
 /**
  * The end of a teacher's task: the run is recorded (the best stays unless this one is better),
- * accuracy, rhythm and minutes, whether it is the best; handing in the best and playing again.
+ * accuracy, speed and minutes, whether it is the best; handing in the best and playing again.
  */
 function showTaskDone(root: HTMLElement, task: Task, r: LevelResult): void {
   const p = app.profile!;
@@ -300,7 +300,7 @@ function showTaskDone(root: HTMLElement, task: Task, r: LevelResult): void {
   });
 }
 
-/** The end of a hero's journey: its compass, the stars of all its parts together, accuracy, rhythm and minutes; no staying a while. A story's own journey finished the first time says how its story ends. */
+/** The end of a hero's journey: its compass, the stars of all its parts together, accuracy, speed and minutes; no staying a while. A story's own journey finished the first time says how its story ends. */
 function showJourneyDone(root: HTMLElement, def: LevelDef, r: LevelResult, params: LevelParams, surprise: Surprise | null, firstHome: boolean): void {
   const news = levelNews(r);
   if (firstHome) news.unshift({ kind: 'journeyHome', story: def.journey!.story });
@@ -341,7 +341,7 @@ function drillReport(p: Profile, start: DrillKey[]): DrillKey[] {
 
 /**
  * The end of a short drill: each key (up to three, pressed enough) with its accuracy before and after,
- * a small green arrow when it grew, or the trained keys together; then accuracy and rhythm. The green
+ * a small green arrow when it grew, or the trained keys together; then accuracy and speed. The green
  * line names a key the run mastered, else the most improved one. Once more plays the same drill.
  */
 function showDrillDone(root: HTMLElement, r: LevelResult, report: DrillKey[], params: LevelParams): void {
@@ -361,7 +361,7 @@ function showDrillDone(root: HTMLElement, r: LevelResult, report: DrillKey[], pa
   });
 }
 
-/** The end of staying a while: accuracy and rhythm like after a practice, the next level first. */
+/** The end of staying a while: accuracy and speed like after a practice, the next level first. */
 function showStayDone(root: HTMLElement, def: LevelDef, r: LevelResult): void {
   const next = nextOpen(def);
   const stay = () => go('level', { id: def.id, stay: true });

@@ -74,7 +74,7 @@ export function setStats(rows: StoredResult[]) {
     tasks: [...new Set(rows.map((r) => r.title))].join(', '),
     ok: rows.filter(mastered).length,
     accuracy: average(rows, (r) => r.accuracy),
-    rhythm: average(rows, (r) => r.cpm),
+    speed: average(rows, (r) => r.cpm),
   };
 }
 
@@ -89,7 +89,7 @@ export const brokenMark = (r: { intact: boolean }): HTMLElement | null => (r.int
 
 export const statusPill = (ok: boolean): HTMLElement => h('span', { class: `status-pill ${ok ? 'mastered' : 'practice'}` }, t(ok ? 'teacher.status.ok' : 'teacher.status.practice'));
 
-const csvHead = () => [t('teacher.col.group'), ...['task', 'child', 'date', 'minutes', 'accuracy', 'rhythm', 'level', 'status', 'weak'].map((c) => t(`teacher.col.${c}`)), t('teacher.col.broken')];
+const csvHead = () => [t('teacher.col.group'), ...['task', 'child', 'date', 'minutes', 'accuracy', 'speed', 'level', 'status', 'weak'].map((c) => t(`teacher.col.${c}`)), t('teacher.col.broken')];
 const csvNames = { key: keyLabel, status: (ok: boolean) => t(ok ? 'teacher.status.ok' : 'teacher.status.practice') };
 export const exportCsv = (store: TeacherStore, rows: StoredResult[]): void => download('tapkotyper-results.csv', `﻿${store.csv(csvHead(), csvNames, rows)}`, 'text/csv');
 

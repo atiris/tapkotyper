@@ -17,7 +17,7 @@ export interface TaskResult {
   minutes: number;
   /** Percent of correct presses. */
   accuracy: number;
-  /** Rhythm, correct characters per minute. */
+  /** Speed, correct characters per minute. */
   cpm: number;
   /** Levels the child has finished so far, their current level. */
   levels?: number;

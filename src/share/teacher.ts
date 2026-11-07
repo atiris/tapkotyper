@@ -79,7 +79,7 @@ export const MASTERED = Math.round(ACCURACY.fair * 100);
 
 export const mastered = (r: Pick<TaskResult, 'accuracy'>): boolean => r.accuracy >= MASTERED;
 
-export type SortKey = 'child' | 'date' | 'minutes' | 'accuracy' | 'rhythm' | 'levels' | 'status';
+export type SortKey = 'child' | 'date' | 'minutes' | 'accuracy' | 'speed' | 'levels' | 'status';
 export type WriterKey = SortKey | 'group' | 'handIns';
 export interface Sort<K extends string = SortKey> { key: K; desc: boolean }
 
@@ -88,7 +88,7 @@ const SORT_VALUE: Record<Exclude<SortKey, 'child'>, (r: StoredResult) => string 
   date: (r) => r.date,
   minutes: (r) => r.minutes,
   accuracy: (r) => r.accuracy,
-  rhythm: (r) => r.cpm,
+  speed: (r) => r.cpm,
   levels: (r) => r.levels ?? -1,
   status: (r) => (mastered(r) ? 1 : 0),
 };
@@ -178,7 +178,7 @@ const WRITER_VALUE: Record<Exclude<WriterKey, 'child' | 'group'>, (w: Writer) =>
   date: (w) => w.last,
   minutes: (w) => w.minutes,
   accuracy: (w) => w.accuracy,
-  rhythm: (w) => w.cpm,
+  speed: (w) => w.cpm,
   levels: (w) => w.levels ?? -1,
   status: (w) => (w.mastered ? 1 : 0),
 };

@@ -401,7 +401,7 @@ describe('results', () => {
     // Bea and Cyril tie on accuracy: by name.
     expect(names('accuracy', true)).toEqual(['Ema', 'Zora', 'Adam', 'Bea', 'Cyril']);
     expect(names('accuracy', false)).toEqual(['Ema', 'Zora', 'Bea', 'Cyril', 'Adam']);
-    expect(names('rhythm', true)).toEqual(['Ema', 'Zora', 'Cyril', 'Bea', 'Adam']);
+    expect(names('speed', true)).toEqual(['Ema', 'Zora', 'Cyril', 'Bea', 'Adam']);
     // No levels count as the fewest.
     expect(names('levels', true)).toEqual(['Ema', 'Zora', 'Cyril', 'Adam', 'Bea']);
     // Ascending status: "practice more" first.

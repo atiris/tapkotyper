@@ -8,7 +8,7 @@ export const PACE_MAX = 2.4;
 
 /**
  * The child's own seconds per character. From the last finished targets (reading and finding the
- * first key included); before there are enough, from the last session's rhythm.
+ * first key included); before there are enough, from the last session's speed.
  */
 export function childPace(samples: number[], lastCps: number): number {
   const recent = samples.slice(-PACE_WORDS);

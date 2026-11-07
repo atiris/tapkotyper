@@ -9,7 +9,7 @@ import { namedKeyCaps } from '../ui/keyboard-guide';
 import { BADGE_STARS, MAX_WORLD_STARS } from '../game/rewards';
 import { PAW_MAX, PAW_STREAK, PAW_WORDS } from '../game/paw';
 import { type Child, ICONS, button, h, icon, linkedText, richText } from '../ui/dom';
-import { levelRing, pawRing, rhythmPic, roundPic, timerPic } from '../ui/hud';
+import { levelRing, pawRing, roundPic, speedPic, timerPic } from '../ui/hud';
 import { barTabLinks, tabBar } from '../ui/tabs';
 import { appInstalled, installApp, openApp, standalone } from '../ui/install';
 import { imageUrl } from '../gfx/assets';
@@ -93,7 +93,7 @@ function gameIcons(): HTMLElement[] {
 
 /** The buttons of a level, and the super star. */
 function levelIcons(): HTMLElement[] {
-  const gauge = rhythmPic();
+  const gauge = speedPic();
   gauge.set(0.6);
   return [
     iconLine(round('pause'), t('help.icons.pause')),

@@ -66,7 +66,7 @@ describe('a level the paw typed for the child', () => {
 });
 
 describe("a hero's journey", () => {
-  it('joins its parts into one run: keys and time added up, accuracy of all keys, rhythm by typing time', () => {
+  it('joins its parts into one run: keys and time added up, accuracy of all keys, speed by typing time', () => {
     const r = joinRuns({ accuracy: 1, chars: 90, errors: 0, cpm: 60, seconds: 60 }, { accuracy: 0.5, chars: 10, errors: 10, cpm: 120, seconds: 30 });
     expect(r).toEqual({ accuracy: 100 / 110, chars: 100, errors: 10, cpm: 80, seconds: 90 });
   });

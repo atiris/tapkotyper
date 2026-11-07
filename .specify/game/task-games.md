@@ -34,7 +34,7 @@ How a teacher's task plays (its making and hand-in: [teacher links](../profiles/
   text is written whole.
 - **Slips never send back:** a wrong key counts and the same place waits for the right key; in the
   copy games the place turns red a moment.
-- **The end:** the end card "Úloha splnená!" with accuracy, rhythm, the minutes and whether this
+- **The end:** the end card "Úloha splnená!" with accuracy, speed, the minutes and whether this
   run became the best; **Odovzdať** (the best run) and **Hrať znova**. A task is played in one
   sitting: leaving early keeps nothing. Leaving goes back to the Tasks page.
 

@@ -18,7 +18,7 @@ describe('the green line of an end card', () => {
     expect(greenLine(levelNews(result({ growth: { kind: 'difficulty', value: 4, medal: 1 }, newCompanions: ['cat'] })))?.more).toBe(1);
   });
 
-  it('tells a better rhythm only without rewards and only when it is clearly better', () => {
+  it('tells a better speed only without rewards and only when it is clearly better', () => {
     expect(greenLine(levelNews(result({ trend: 1.2 }))))
       .toEqual({ news: { kind: 'trend' }, more: 0 });
     expect(greenLine(levelNews(result({ trend: 1.02 })))).toBeNull();

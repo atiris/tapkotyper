@@ -79,7 +79,7 @@ export function runAccuracy(r: { chars: number; errors: number }): number {
   return total ? Math.round((r.chars / total) * 100) : 100;
 }
 
-/** A finished run is better than another: higher accuracy, at equal accuracy a higher rhythm. */
+/** A finished run is better than another: higher accuracy, at equal accuracy a higher speed. */
 export function betterRun(a: TaskRun, b: TaskRun): boolean {
   const accA = runAccuracy(a), accB = runAccuracy(b);
   return accA !== accB ? accA > accB : a.cpm > b.cpm;

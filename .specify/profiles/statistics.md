@@ -71,7 +71,7 @@
     [end card](../game/mechanics.md) shows how they got better.
 - **My progress** ("Môj postup") is a page of its own, opened by the map's button, with a top
   bar ("Back" to the map and the title) like the other pages, and two tabs: **Postup** and
-  **Klávesy** (with the trends over the last sessions: accuracy, rhythm and time per day,
+  **Klávesy** (with the trends over the last sessions: accuracy, speed and time per day,
   side by side on wide screens); every level's stars are on the map. Under the progress sit
   "QR kód celého postupu" and "Certifikát" ([parent controls](parent-controls.md)).
 - Once a parrot was ever won, the summary row has a **parrot** chip: the parrot's picture and

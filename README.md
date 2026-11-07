@@ -72,7 +72,7 @@ being made. No explosions, no punishment, no ads, no accounts.
 | World | What happens | Big challenge | Reward |
 |---|---|---|---|
 | 1. Training Meadow | goalkeeper Tapko catches the leaves bees, ladybugs and mice kick at him (a miss is a cheered goal); a poppy bouquet, the match, party invitations | hedgehog throwing leaf volleys | invitation to space |
-| 2. Rocket Flight | typing rhythm drives the speedometer, a beam pushes rocks away; hops across meteors, commands to the rocket | fractured asteroid | landing clearance |
+| 2. Rocket Flight | typing speed drives the speedometer (slower without mistakes is better), a beam pushes rocks away; hops across meteors, commands to the rocket | fractured asteroid | landing clearance |
 | 3. New Planet | stones across a swamp, crystals on the meadow, crossroads that change the road, spells for the crystals of life | the great swamp and a floating log | the Force |
 | 4. Dragon Valley | flames light the dragons' fire, spells clear the overgrown path, flying lessons, a lullaby | the take-off: every dragon flies away | a dragon egg |
 | 5. Egg Journey *(being made)* | the egg jumps over rocks and stumps | friendly mole | a baby dragon, endless rescue missions |
@@ -127,7 +127,7 @@ see on the map or in My progress.
   about the app on the map, volumes, fonts (Lexend, Atkinson Hyperlegible, OpenDyslexic), large
   text, reduced motion, high contrast, and graphics (Automatic, Full or Simple: Simple draws
   less for slow computers and plays the same; Automatic switches to it when the game runs
-  slowly). A dashboard shows a per-key heat map, accuracy and rhythm trends, time per day, and
+  slowly). A dashboard shows a per-key heat map, accuracy and speed trends, time per day, and
   a printable progress card. All profiles can be deleted at once.
 - **Own content** (its own tab): encouraging messages, own words (for example this week's
   spelling words) and an own text, mixed into the levels by a share you pick. The text can

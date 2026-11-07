@@ -25,10 +25,10 @@
   (and typed accurately); a level where many targets floated by unread adds no time. The time it
   adds is typing time ([statistics](../profiles/statistics.md)), so long reading or waiting delays
   growth a little.
-- A small round rhythm gauge in the top bar (calm blue to green, never red; in the space world
-  also the rocket's speedometer, without a caption) shows the current smooth typing rhythm, not raw WPM.
+- A small round speed gauge ("Rýchlosť") in the top bar (calm blue to green, never red; in the space world
+  also the rocket's speedometer, without a caption) shows the current smoothed typing speed in letters per minute, not raw WPM. Rhythm (how even the presses are) is a different measure, kept apart and never called speed ([Rytmus](rhythm.md)).
   Its ring is full a fifth above the child's usual pace of the last two weeks (before any typing,
-  at the difficulty's rhythm), so a quick child does not sit at the top all the time.
+  at the difficulty's speed), so a quick child does not sit at the top all the time.
 - A word the child can see can be typed at once; a target that cannot be typed yet shows
   no word.
 - A word label is always wholly in sight with its bubble: a word near an edge of the stage moves
@@ -207,14 +207,14 @@
   end's own (the next level, the reward of a finished world, the next mission, play again). The
   green line takes the first that applies: a new or better world badge (with
   several rewards at once the first and "a N ďalšie odmeny"), new keys, a new medal, new things or
-  a new character in the wardrobe, a smoother rhythm than last week; at the range a thing new in
+  a new character in the wardrobe, a higher speed than last week; at the range a thing new in
   the collection, then the trained letter that improved most; with the parrot faster repeating
   than usual.
   - The **two-minute drill** of a few keys (from the keys to practise, a key's details or the
     keyboard check's weak keys) shows how those keys got better: with up to three keys one row per
     key pressed at least 5 times in the run, its key cap and "78 % → 91 %" with a small green up
     arrow when it grew by a whole percent (never red); with more keys one row "Trénované klávesy"
-    with their mean before and after; then accuracy and rhythm. Under the picture the minutes. The
+    with their mean before and after; then accuracy and speed. Under the picture the minutes. The
     green line, after the rewards, names a drill key the run mastered ("Kláves x už ide skvele!"),
     else the drill key that improved most. "Ešte raz" plays the same drill again. A practice from
     the key picker keeps the practice card. A task still running shows as a row with its minutes left. Speeds are always
@@ -232,7 +232,7 @@
   progress bar. Esc pauses as anywhere, but the level is already done, so the pause card's
   first (focused) button is "Ďalšia úroveň" (when open), else "Ukončiť písanie": Enter after Esc
   goes on, the child need not look for the way out. Ending it shows
-  the end card "Oddychové kolo hotové!" with the minutes, accuracy and rhythm, with Next
+  the end card "Oddychové kolo hotové!" with the minutes, accuracy and speed, with Next
   level first (when open), A while more and the map. The run gives no stars, rewards, level result or unlocks; its keys and time count in
   the statistics and the lesson may advance, as after a practice. A super-obstacle has no
   endless form, so staying there plays the world's last regular level; the rocket's asteroids

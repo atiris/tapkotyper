@@ -16,8 +16,8 @@ import { accuracyFill, fillRing, roundSvg, roundTextSvg } from '../../ui/hud';
 import { h } from '../../ui/dom';
 import { tip } from '../../ui/tooltip';
 import {
-  CHANGE_S, type Drop, IN_TIME, type Landing, type Lane, type LaneChange, PHRASE, RING_MIN, RING_WINDOW, Song,
-  beatScore, judge, laneSetup, laneWeights, phraseStep, planChanges, rhythmWord, startTempo,
+  CHANGE_S, type Drop, type Landing, type Lane, type LaneChange, PHRASE, RING_MIN, RING_WINDOW, Song,
+  beatScore, judge, laneSetup, laneWeights, phraseStep, planChanges, rhythmWord, startTempo, timing,
 } from '../beat';
 import { WORLDS, parrotKeys, rhythmLetters, rhythmTarget, storyOf } from '../levels';
 import type { LevelRuntime } from '../runtime';
@@ -49,9 +49,10 @@ const SLIDE_S = 0.12;
 const DROP_IN_S = 0.15;
 const FLASH_S = 0.45;
 const WORD_S = 0.9;
-/** How often a catch shows a word over the basket: near the beat, and anywhere else in the band. */
-const GREAT_SHARE = 0.5;
-const GOOD_SHARE = 0.3;
+/** How often a catch in time shows praise over the basket; a catch off the beat always says which way. */
+const PRAISE_SHARE = 0.5;
+/** The colours of the words over the basket: praise, too early (calm blue), too late (warm orange). */
+const WORD_COLOR = { inTime: '#ffffff', slower: '#bfe3ff', early: '#bfe3ff', faster: '#ffd08a', late: '#ffd08a' } as const;
 /** After a miss: seconds everything stands still (the keys wait), and the most the next letter takes to glide into the band's middle. */
 const HOLD_S = 0.9;
 const GLIDE_S = 0.6;
@@ -155,9 +156,8 @@ export class RhythmMode extends HeroMode {
   /** Keys right and wrong in the whole round. */
   private ok = 0;
   private wrong = 0;
-  /** Letters caught, and caught in time (within `IN_TIME` of the beat). */
+  /** Letters caught. */
   caught = 0;
-  inTime = 0;
   /** The highest tempo held for a whole phrase, and whether a phrase at the world's target tempo went accurately. */
   held = 0;
   reached = false;
@@ -170,8 +170,8 @@ export class RhythmMode extends HeroMode {
   /** The basket's slide: from which x to which lane (null: the middle), from when to when (song seconds). */
   private basket: { from: number; lane: number | null; at: number; end: number };
   private flash: number[];
-  /** The word over the basket after a catch, and when it came. */
-  private word = { text: '', at: -9 };
+  /** The word over the basket after a catch, its colour, and when it came. */
+  private word = { text: '', color: '#ffffff', at: -9 };
   private hudAt = 0;
   private accEl = h('div', { class: 'round-btn accuracy', role: 'img' });
   private beatEl = h('div', { class: 'round-btn place beat-ring', role: 'img' });
@@ -432,13 +432,15 @@ export class RhythmMode extends HeroMode {
     const c = this.count(f.d.phrase);
     c.ok++;
     c.caught++;
-    const near = Math.abs(offset) <= IN_TIME * T;
-    if (near) {
-      this.inTime++;
+    const how = timing(offset, f.d.w, T);
+    if (how === 'inTime') {
       this.happy();
       this.L.particles.emit(this.laneX(f.d.lane), this.bandBottom, 6, 'sparkle', ['#ffd54a', '#fff3b0'], 90, 9, 0.6);
     }
-    if (this.L.rng.next() < (near ? GREAT_SHARE : GOOD_SHARE)) this.word = { text: pickLine(near ? 'rhythm.great' : 'rhythm.good'), at: this.songT };
+    // Praise now and then; off the beat always which way (a catch after a wait is right on it and says nothing).
+    if (!waited && (how !== 'inTime' || this.L.rng.next() < PRAISE_SHARE)) {
+      this.word = { text: how === 'inTime' ? pickLine('rhythm.great') : t(`rhythm.${how}`), color: WORD_COLOR[how], at: this.songT };
+    }
     const o = audio.beatOut();
     if (o) this.music.bell(o, this.song.bars, Math.max(f.d.land, this.songT), this.perf);
     this.L.core.prune();
@@ -579,7 +581,7 @@ export class RhythmMode extends HeroMode {
     if (k < 0 || k >= 1 || !this.word.text) return;
     g.save();
     g.globalAlpha = 1 - k * k;
-    letterAt(g, this.word.text, this.basketX(), this.bandBottom - 40 - k * 30, 30, '#ffffff', '#3b2416', 6);
+    letterAt(g, this.word.text, this.basketX(), this.bandBottom - 40 - k * 30, 30, this.word.color, '#3b2416', 6);
     g.restore();
   }
 

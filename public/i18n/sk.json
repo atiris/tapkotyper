@@ -3636,11 +3636,10 @@
     "wait": "Počkaj, kým písmeno doletí do žiarivého pásu.",
     "hold": "Počkaj…",
     "goOn": "Teraz pokračuj.",
-    "good": [
-      "Dobre",
-      "OK",
-      "Áno"
-    ],
+    "slower": "Spomaľ",
+    "faster": "Pridaj",
+    "early": "Skoro",
+    "late": "Neskoro",
     "great": [
       "Super",
       "Paráda",

@@ -17,8 +17,9 @@ const EXTRA_SHARE = 1 / 3;
 export const W_START = 0.35;
 const W_STEP = 0.05;
 const W_MAX = 0.5;
-/** A catch this close to its landing (in letter beats) is "in time". */
-export const IN_TIME = 0.12;
+/** Where in the window a catch is "in time" (the middle half), and where it is only a little off (up to three quarters). */
+const IN_TIME = 0.5;
+const NEAR = 0.75;
 /** Below this tempo the music plays twice as fast and a letter lands on every second beat. */
 const DOUBLE_BELOW = 60;
 /** Seconds before its first letter leaves the cloud that a phrase is planned (and its tempo decided). */
@@ -36,6 +37,9 @@ export const CHANGE_S = 1.2;
 const WEAK_WEIGHT = 1.5;
 /** Landings the HUD's rhythm ring looks back at, the fewest it shows a number for, and the fewest a round's score needs. */
 export const RING_WINDOW = 16;
+/** The beat measure: a mean distance from the child's own steady moment of this many beats or less is 100, this many or more 0. */
+const MAO_FULL = 0.1;
+const MAO_ZERO = 0.3;
 export const RING_MIN = 8;
 export const SCORE_MIN = 12;
 
@@ -117,6 +121,18 @@ export function targetTempo(wordsPerMinute: number): number {
 export function judge(at: number, land: number, T: number, w: number): 'early' | 'catch' | 'late' {
   if (at < land - w * T) return 'early';
   return at <= land + w * T ? 'catch' : 'late';
+}
+
+/**
+ * How a catch `offset` seconds from its beat stands in its window (`w` beats each side, letter beat `T`), as
+ * dance games tell it: in the middle half "in time", a little early or late "slower" or "faster", at the
+ * window's edges "early" or "late".
+ */
+export function timing(offset: number, w: number, T: number): 'inTime' | 'slower' | 'faster' | 'early' | 'late' {
+  const r = offset / (w * T);
+  if (Math.abs(r) <= IN_TIME) return 'inTime';
+  if (Math.abs(r) <= NEAR) return r < 0 ? 'slower' : 'faster';
+  return r < 0 ? 'early' : 'late';
 }
 
 /** The next phrase's window: wider after a step down, narrower again after a step up. */
@@ -371,7 +387,7 @@ const median = (xs: number[]) => {
 /**
  * The beat measure of rhythm, 0-100, or null with fewer than `min` landings: the catches' offsets
  * relative to the beat, around their median (the child's own steady lean), their mean distance
- * (MAO) from 0.06 beat (100) to 0.25 (0), times the share caught, never above the accuracy's cap.
+ * (MAO) from 0.1 beat (100) to 0.3 (0), times the share caught, never above the accuracy's cap.
  */
 export function beatScore(landings: readonly Landing[], accuracy: number, min = SCORE_MIN): number | null {
   if (landings.length < min) return null;
@@ -379,7 +395,7 @@ export function beatScore(landings: readonly Landing[], accuracy: number, min = 
   if (!rel.length) return 0;
   const bias = median(rel);
   const mao = rel.reduce((s, o) => s + Math.abs(o - bias), 0) / rel.length;
-  const raw = 100 * clamp01((0.25 - mao) / (0.25 - 0.06)) * (rel.length / landings.length);
+  const raw = 100 * clamp01((MAO_ZERO - mao) / (MAO_ZERO - MAO_FULL)) * (rel.length / landings.length);
   return Math.round(Math.min(raw, accuracyCap(accuracy)));
 }
 

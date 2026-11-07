@@ -3,7 +3,7 @@ import { LAYOUTS, fingerFor } from '../keyboard/layouts';
 import { Rng } from '../engine/rng';
 import {
   CHANGE_S, PHRASE, TEMPI, W_START, accuracyCap, beatScore, beatsPerLetter, earnsNote, fallSeconds, judge, laneLetter, laneSetup,
-  laneWeights, notesNow, phraseLanes, phraseStep, planChanges, rhythmWord, Song, startTempo, stepTempo, stepWindow, targetTempo, type Landing,
+  laneWeights, notesNow, phraseLanes, phraseStep, planChanges, rhythmWord, Song, startTempo, stepTempo, stepWindow, targetTempo, timing, type Landing,
   type Lane,
 } from './beat';
 
@@ -187,7 +187,7 @@ describe('beat measure', () => {
   });
 
   it('scattered catches score low, misses cost their share', () => {
-    const scattered = beatScore(run(jitter(40, 0.35)), 1)!;
+    const scattered = beatScore(run(jitter(40, 0.45)), 1)!;
     expect(scattered).toBeLessThan(30);
     const steady = beatScore(run(jitter(40, 0.04)), 1)!;
     const half = beatScore(run(jitter(40, 0.04).map((o, i) => (i % 2 ? null : o))), 1)!;
@@ -203,6 +203,15 @@ describe('beat measure', () => {
   it('needs enough landings for a score', () => {
     expect(beatScore(run(jitter(11, 0.02)), 1)).toBeNull();
     expect(beatScore(run([null, null, null, null, null, null, null, null, null, null, null, null]), 1)).toBe(0);
+  });
+
+  it('tells a catch like a dance game: the middle half in time, a little off slower or faster, the edges early or late', () => {
+    expect([-0.17, 0, 0.17].map((o) => timing(o, 0.35, 1))).toEqual(['inTime', 'inTime', 'inTime']);
+    expect([-0.25, 0.25].map((o) => timing(o, 0.35, 1))).toEqual(['slower', 'faster']);
+    expect([-0.34, 0.34].map((o) => timing(o, 0.35, 1))).toEqual(['early', 'late']);
+    // In seconds at any tempo and window.
+    expect(timing(0.5, 0.5, 2)).toBe('inTime');
+    expect(timing(0.9, 0.5, 2)).toBe('late');
   });
 
   it('names the score in a child\'s words', () => {

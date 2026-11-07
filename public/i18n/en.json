@@ -3613,11 +3613,10 @@
     "wait": "Wait until the letter reaches the glowing band.",
     "hold": "Wait…",
     "goOn": "Now go on.",
-    "good": [
-      "Good",
-      "OK",
-      "Yes"
-    ],
+    "slower": "Slower",
+    "faster": "Faster",
+    "early": "Early",
+    "late": "Late",
     "great": [
       "Super",
       "Great",

@@ -36,8 +36,8 @@
   is in the band, has a ring in its lane's colour instead (its lane is a little brighter all along).
 - **Keys:** a lane's letter slides the basket under that lane, where it stays until the next key.
   - The next letter's key while that letter is in the band **catches** it: it drops into the basket
-    with a note of the music. A catch within an eighth of a beat of the beat is "in time" and sparkles
-    (not with Simple graphics or less motion).
+    with a note of the music. A catch in the middle half of the band is "in time" and sparkles (not
+    with Simple graphics or less motion).
   - The right key **before or after the band**, and **any other key**, at any time, is an **error**:
     accuracy and the key statistics count it, the lane flashes. The first early press says once to wait
     until the letter is in the band. The letter can still be caught.
@@ -46,8 +46,11 @@
     still, the keys wait (nothing counts) and the character says "Počkaj…". After a moment the next
     letter glides into the middle of the band, the character says "Teraz pokračuj." and the song waits
     there for its key; that catch counts as caught but not in the rhythm, a wrong key there is an error.
-- **Words over the basket:** after a catch in time one of "Super", "Paráda", "Presne", "Skvelé" rises over
-  the basket in half of the cases; after any other catch one of "Dobre", "OK", "Áno" in three of ten.
+- **Words over the basket**, as dance games tell the timing: a catch in the middle half of the band is
+  in time and in half of the cases one of "Super", "Paráda", "Presne", "Skvelé" rises over the basket
+  (white); a little before it, up to three quarters of the way to the band's edge, "Spomaľ" (light
+  blue), a little after it "Pridaj" (orange); in the last quarter "Skoro" (light blue) or "Neskoro"
+  (orange). The timing words come every time. A catch while the song waited says nothing.
 - **Nobody types:** after the first miss the song waits at the next letter, so the round never runs on
   without the child.
 - **The basket** is one picture: only its front part (the front rim and side), without its back rim
@@ -95,7 +98,7 @@
   until it is typed; such a round keeps no rhythm score.
 - **The rhythm score** (0-100) is measured against the beat: each catch's offset from its landing in
   beats, around the child's own steady lean (their median: a child who is always a little early is
-  even), their mean distance from 0.06 beat (100) to 0.25 beat (0), times the share caught, and never
+  even), their mean distance from 0.1 beat (100) to 0.3 beat (0), times the share caught, and never
   more than accuracy allows (no cap from 95 %, 50 at 85 %, 0 at 75 %). It is the same at every tempo.
   Words: 0-39 "hľadáme rytmus", 40-69 "pekný rytmus", 70-89 "plynulý", 90-100 "ako hodinky". A round
   needs 12 landings for a score.

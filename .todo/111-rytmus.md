@@ -105,7 +105,7 @@ does nothing). Play-testing decides whether it feels bad for children; the repor
 
 ## Steps
 - [x] 1. Speed is speed: rename code and texts, story lines of the rocket, slow-and-accurate line; tests
-- [ ] 2. `beat.ts` rules and beat measure with unit tests; backlog entry narrowed
+- [x] 2. `beat.ts` rules and beat measure with unit tests; backlog entry narrowed
 - [ ] 3. Mode, music, runtime hooks, levels/map/level screen, storage, i18n, catalog; idle test
 - [ ] 4. Pictures: process the Gemini set (`npm run assets`, basket set), lessons in PROMPTS.md
 - [ ] 5. e2e for the node and one round; perf (`node scripts/perf.mjs` normal and `--machine slow --low`)

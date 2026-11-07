@@ -3,7 +3,7 @@
 Everything found outside the current task, one line each, most important first:
 `- [P1|P2|P3] <title> - <one line: what is wrong and where>`.
 Search before adding; an entry is worked only when it is named.
-- [P1] Rhythm is shown as speed - the header (public/i18n/sk.json rhythm "Rytmus: {n} písmen za minútu", rhythm gauge, stats rhythmTrend) reports letters per minute, which is speed; rhythm needs its own measure (evenness of key intervals), ranked above speed, with accuracy ranked above both in all feedback and scores (src/game/pace.ts)
+- [P1] Rhythm of the levels - speed is now called speed everywhere and the beat game measures rhythm against its beat (src/game/beat.ts); still missing for the story levels: the evenness measure of key intervals (pairwise variability, .research/learning/rhythm-measure.md) with its top-bar ring, the session record's rhythm field and the parent statistics' rhythm line between accuracy and speed (src/game/speed.ts, src/learning/stats.ts, src/screens/progress.ts)
 - [P2] Sticky finger: its first level - decide which world's level first plays the Sticky finger kind (plan 104 builds it for own practice only); it needs at least 4 known keys of each hand, so not before the rocket's third level (src/game/levels.ts LEVELS)
 - [P3] Profile PIN - optional PIN a child sets on their profile; anything beyond the map and the progress popup asks for it until the player switches profile or locks the map; the parent removes it with the device password (src/screens/start.ts, map.ts)
 - [P3] Check .tapko sharing and opening on real devices - src/screens/teacher.ts sendDialog uses Web Share with files (Android, iPhone) and main.ts launchQueue opens a double-clicked .tapko in installed Chrome/Edge (plan 59); neither is testable here

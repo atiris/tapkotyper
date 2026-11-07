@@ -1334,3 +1334,33 @@ its physical shape; never "one moved finger" or "one stretched finger".
   in a pause they glide aside and come back when play goes on; no parking when idle.
   They fade with the on-screen keyboard. In free typing they show the key typed at the moment it is
   typed, not the next one.
+
+## 13. Rytmus (the beat game, `.specify/game/rhythm.md`)
+
+The basket Tapko holds and the letter clouds the letters fall from. The game draws every
+letter itself (in front of its cloud, falling, in the basket's heap it only shows the
+pictures), so the clouds stay empty and the basket's letters are only toy shapes.
+
+### Game objects (section 4 prompt)
+The basket's five fill levels are one set (`SETS` in `scripts/assets.mjs`: one crop, so the
+pictures swap without a jump): make `-0` first, then each other one in a new chat with `-0`
+attached and "Redraw the attached basket in exactly the same style, size and position, the
+same flat magenta background. Change only one thing: FILL." The clouds are drawn mirrored too.
+
+| File | OBJECT / FILL | BG |
+|---|---|---|
+| `obj-rhythm-basket-0.jpg` | ONE single wide, low, round woven wicker basket, empty, warm honey wicker (#D9A35B, lighter #F0C985, darker #B07B3A), a thick rolled rim, one small woven handle on the left and one on the right side of the rim, no handle over the top, seen from the front and a little from above so the empty inside shows; strictly front view, symmetrical; NO face, no eyes, no arms, no legs; NOTHING else: no letters, no fruit, no cloth, no ground | magenta |
+| `obj-rhythm-basket-1.jpg` | two chunky wooden toy letters lie inside, only their tops peeking over the rim, one orange (#E69F00) and one sky blue (#56B4E9) | magenta |
+| `obj-rhythm-basket-2.jpg` | four chunky wooden toy letters lie inside, peeking over the rim, orange (#E69F00), sky blue (#56B4E9), green (#009E73) and yellow (#F0C419) | magenta |
+| `obj-rhythm-basket-3.jpg` | six chunky wooden toy letters fill it up to the rim, orange (#E69F00), sky blue (#56B4E9), green (#009E73), yellow (#F0C419), blue (#0072B2) and pink (#CC79A7) | magenta |
+| `obj-rhythm-basket-4.jpg` | it is full: a heap of about twelve chunky wooden toy letters rises above the rim, in orange (#E69F00), sky blue (#56B4E9), green (#009E73), yellow (#F0C419), blue (#0072B2), red-orange (#D55E00), pink (#CC79A7) and lime (#8FBC3A); the heap stays inside the width of the basket (also the end card's picture) | magenta |
+| `obj-rhythm-cloud-1.jpg` | ONE single fluffy cartoon cloud, wide and low with three round puffs on top, soft white (#FFFFFF) with light blue-grey shading underneath (#DCE6F2), a soft dark-brown outline, a gently rounded flat bottom; NO face, no eyes, no rain, no sun; NOTHING else | magenta |
+| `obj-rhythm-cloud-2.jpg` | the same kind of cloud, round and taller: one big puff in the middle and a smaller one on each side | magenta |
+| `obj-rhythm-cloud-3.jpg` | the same kind of cloud, long and low: five small puffs in a row | magenta |
+| `obj-rhythm-cloud-4.jpg` | the same kind of cloud, lopsided: one big puff on the left and two smaller ones going down to the right | magenta |
+| `obj-rhythm-cloud-5.jpg` | the same kind of cloud, small and chubby: two round puffs side by side | magenta |
+
+### Icon (section 9 icon prompt, attach `ui-act-super.jpg`)
+| File | ACTIVITY |
+|---|---|
+| `ui-act-rhythm.jpg` | a classic wooden pyramid metronome, front view: a tall narrow wooden body in warm honey wood (#D9A35B) with darker edges (#B07B3A), a cream front panel (#FFF3DC) with a few short dark tick marks, a thin dark pendulum arm with a small golden weight (#F2C14E) tilted a little to the right, a small square base; no face, no eyes, no numbers (the Rytmus node on the map and the get-ready card) |

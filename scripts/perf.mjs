@@ -39,7 +39,7 @@ const MACHINES = {
 /** Frame time budget in ms (.specify/architecture.md, Performance budget): normal with full graphics, slow with simple. */
 const BUDGET = { normal: { p50: 17, p95: 20 }, 'slow-low': { p50: 34, p95: 80 } };
 
-/** Scenes: a level (its map island and node, or the target range of a world), the map or the start page. */
+/** Scenes: a level (its map island and node, the target range of a world or another side node), the map or the start page. */
 const SCENES = [
   { name: 'meadow-1', island: 'meadow', node: 0 },
   { name: 'meadow-5', island: 'meadow', node: 4 },
@@ -53,6 +53,7 @@ const SCENES = [
   { name: 'valley-5', island: 'dragons', node: 4 },
   { name: 'placeholder', island: 'egg', node: 0 },
   { name: 'range', island: 'meadow', aim: true },
+  { name: 'rhythm', island: 'meadow', side: '.rhythm-node' },
   { name: 'map', screen: 'map' },
   { name: 'start', screen: 'start' },
 ];
@@ -183,7 +184,7 @@ async function openScene(page, sc) {
   if (sc.screen === 'map') return;
   const island = page.locator(`.island-${sc.island}`);
   await island.scrollIntoViewIfNeeded();
-  await (sc.aim ? island.locator('.aim-node') : island.locator('.level-node').nth(sc.node)).click();
+  await (sc.aim ? island.locator('.aim-node') : sc.side ? island.locator(sc.side) : island.locator('.level-node').nth(sc.node)).click();
   await page.locator('.level-screen canvas').first().waitFor();
 }
 

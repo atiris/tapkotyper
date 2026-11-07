@@ -50,7 +50,8 @@ export function tapkoStack(c: Look, mood: Mood): { name: string; slot: Slot | 'c
     if (slot) bySlot.set(slot, `acc-${id}`);
   }
   return SLOT_ORDER.flatMap((slot): { name: string; slot: Slot | 'companion' }[] => {
-    if (slot === 'companion') return [{ name: `tapko-${c.kind}-${mood}`, slot }];
+    // A kind without the optional surprised art looks thoughtful instead.
+    if (slot === 'companion') return [{ name: `tapko-${c.kind}-${mood === 'surprised' && !hasImage(`tapko-${c.kind}-surprised`) ? 'thinking' : mood}`, slot }];
     const name = bySlot.get(slot);
     const layers: { name: string; slot: Slot | 'companion' }[] = name ? [{ name, slot }] : [];
     // A back item's front part (a cape's clasp) lies over the body.

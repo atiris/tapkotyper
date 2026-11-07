@@ -108,8 +108,19 @@ does nothing). Play-testing decides whether it feels bad for children; the repor
 ## Steps
 - [x] 1. Speed is speed: rename code and texts, story lines of the rocket, slow-and-accurate line; tests
 - [x] 2. `beat.ts` rules and beat measure with unit tests; backlog entry narrowed
-- [ ] 3. Mode, music, runtime hooks, levels/map/level screen, storage, i18n, catalog; idle test
-- [ ] 4. Pictures: process the Gemini set (`npm run assets`, basket set), lessons in PROMPTS.md
-- [ ] 5. e2e for the node and one round; perf (`node scripts/perf.mjs` normal and `--machine slow --low`)
-- [ ] 6. MCP play-through: Full and Simple, sound on and off; screenshots in `.playwright-mcp/`
-- [ ] 7. Specs: `.specify/game/rhythm.md` and the touched specs; plan to `.todo/.done/`
+- [x] 3. Mode, music, runtime hooks, levels/map/level screen, storage, i18n, catalog; idle test
+- [x] 4. Pictures: process the Gemini set (`npm run assets`, basket set), lessons in PROMPTS.md
+- [x] 5. e2e for the node and one round; perf (`node scripts/perf.mjs` normal and `--machine slow --low`)
+- [x] 6. MCP play-through: Full and Simple, sound on and off; screenshots in `.playwright-mcp/`
+- [x] 7. Specs: `.specify/game/rhythm.md` and the touched specs; plan to `.todo/.done/`
+
+## Done - 2026-11-07
+Shipped: speed is called speed everywhere (code, texts, specs) and the rocket's story says speed drives it,
+slower without mistakes being better; `src/game/beat.ts` (rules, song, beat measure) with unit tests; the
+Rytmus mode with its pattern music, the meadow's node (open with 4 ready letters), the end card, progress per
+world; pictures (a handle-less tray basket in five fills made by removing letters from the full one, three
+compact clouds, the metronome); e2e `e2e/rhythm.spec.ts`; perf scene `rhythm` (normal p50 16.7 / p95 16.8,
+slow Simple p50 16.7 / p95 16.8, under meadow-1). Catch window kept as researched; a bot played it, no child yet.
+Left for later (spec `.specify/game/rhythm.md`): the other worlds (`RHYTHM_WORLDS`; their unlock with the super
+level is coded), letters falling over the edge in space worlds, the tap calibration, other themes and music
+styles; the free-typing evenness measure stays in the backlog (P1 "Rhythm of the levels").

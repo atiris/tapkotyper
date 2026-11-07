@@ -662,7 +662,7 @@ Same style and colours, but much simpler so it reads at 40 pixels inside a small
 ```
 
 ### ui-journey-rose.jpg (the hero's journey's badge on the map: a simple four-point compass rose, the badge's ring is round; turned by the game; 2026-11-07)
-A new picture, nothing attached. The first prompt ("only four long pointed star points ..., nothing between them") still came with four small diagonal points; this one, saying the diagonals are empty, was right.
+The owner chose the first picture of this prompt (2026-11-07, with four small grey diagonal points): the one in use. Drawn in the badge at 72 %. A new picture, nothing attached. The first prompt ("only four long pointed star points ..., nothing between them") came with four small diagonal points; the prompt below, saying the diagonals are empty, drops them.
 ```
 Generate an image: Four-point compass star
 

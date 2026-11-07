@@ -165,7 +165,6 @@
     "aimTip": "Target range: practise the letters you do not type accurately enough yet. When only accuracy stands between you and the next letter, this is where you get it.",
     "parrotTip": "Parrot: type a few words many times in a row, until your fingers know them by themselves. Speed does not matter.",
     "rhythmTip": "Rhythm: letters fall from the clouds. Press the key while the letter is in the glowing band and the basket catches it. That is how you learn to type evenly.",
-    "journeyTip": "Hero's journey: a longer, harder trip through every world of this story.",
     "parrotHome": "the parrot is at home",
     "sideOpens": "Opens when you finish this world.",
     "surpriseHere": "A surprise waits for you here!",
@@ -219,11 +218,13 @@
       }
     },
     "journey": {
-      "bronze": "Your result: a bronze journey ({n} ★).",
-      "silver": "Your result: a silver journey ({n} ★).",
-      "gold": "Your result: a gold journey ({n} ★).",
-      "none": "No result yet. Click and set off.",
-      "needs": "Bronze for 1 ★, silver for 3 ★, gold for 5 ★."
+      "welcome": "Welcome, hero, to this journey: it is longer and harder and takes you through every world of this story. Step in and start this last adventure.",
+      "again": {
+        "one": "We meet again! You made it through this hero's journey with {n} star. Can you beat it, or do it again?",
+        "few": "We meet again! You made it through this hero's journey with {n} stars. Can you beat it, or do it again?",
+        "other": "We meet again! You made it through this hero's journey with {n} stars. Can you beat it, or do it again?"
+      },
+      "about": "The hero's journey is a harder, longer story, and its stars do not come so easily. To know exactly how hard it is, look in the help."
     }
   },
   "level": {
@@ -1721,7 +1722,7 @@
     ],
     "moreTitle": "Hero's journey, target range, parrot and badge",
     "more": [
-      "Hero's journey: when you finish the last world of a story, a compass appears right after its big challenge. It is a long trip through every world of the story. It is harder: the words are harder, everything is a bit faster, and the stars need fewer mistakes.",
+      "Hero's journey: when you finish the last world of a story, the compass at the bottom right of the world's picture wakes up. Its ring takes the colour of your stars from the journey, and those stars are a bonus outside the stars of the levels. It is a long trip through every world of the story. It is harder: the words are harder, everything is a bit faster, and the stars need fewer mistakes.",
       "Badge: a finished world gives one when you collect enough of its {max} stars: **bronze** from {bronze}, **silver** from {silver}, **gold** from {gold}.",
       "Target range: when you finish a world, a target appears on the map next to its big challenge. Your character throws funny things at the target and you type the words on the rings they fly through. You practise the letters you do not type accurately enough yet.",
       "Type every word in time and without a mistake and you hit the middle. A mistake makes the thing fly a little lower, and after three it falls to the ground. Nothing bad happens, the next one comes.",

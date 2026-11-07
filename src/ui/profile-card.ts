@@ -1,7 +1,7 @@
 import { tapkoElement } from '../gfx/tapko';
 import { hasParrotBadge } from '../game/parrots';
 import { WORLDS } from '../game/levels';
-import { MAX_STARS, totalStars } from '../game/rewards';
+import { LEVEL_STARS, totalStars } from '../game/rewards';
 import { imageUrl } from '../gfx/assets';
 import { masterySummary, recentTyping } from '../learning/stats';
 import { t } from '../i18n/i18n';
@@ -51,7 +51,7 @@ function cardStats(p: Profile): HTMLElement {
     stat('ui-key', '⌨', String(m.mastered), t('progress.keys', { n: m.mastered, total: m.total })),
     stat('ui-earth', '●', String(worlds), t('progress.worlds', { n: worlds, total: WORLDS.length })),
     stat('ui-accuracy', '✓', acc, t('progress.quality', { n: acc })),
-    stat('ui-star', '★', String(stars), t('progress.stars', { n: stars, total: MAX_STARS })));
+    stat('ui-star', '★', String(stars), t('progress.stars', { n: stars, total: LEVEL_STARS })));
 }
 
 /**

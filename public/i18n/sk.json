@@ -165,7 +165,6 @@
     "aimTip": "Strelnica: tu si precvičíš písmená, ktoré ešte nepíšeš dosť presne. Keď ti k ďalšiemu písmenu chýba už len presnosť, tu ju získaš.",
     "parrotTip": "Papagáj: napíšeš pár slov veľakrát za sebou, kým ich prsty nebudú vedieť samy. Na rýchlosti nezáleží.",
     "rhythmTip": "Rytmus: písmená padajú z obláčikov. Stlač kláves, keď je písmeno v žiarivom páse, a košík ho chytí. Tak sa naučíš písať rovnomerne.",
-    "journeyTip": "Cesta hrdinu: dlhšia a ťažšia výprava cez všetky svety tohto príbehu.",
     "parrotHome": "papagáj je doma",
     "sideOpens": "Otvorí sa, keď dokončíš tento svet.",
     "surpriseHere": "Tu na teba čaká prekvapenie!",
@@ -219,11 +218,13 @@
       }
     },
     "journey": {
-      "bronze": "Tvoj výsledok: bronzová cesta ({n} ★).",
-      "silver": "Tvoj výsledok: strieborná cesta ({n} ★).",
-      "gold": "Tvoj výsledok: zlatá cesta ({n} ★).",
-      "none": "Zatiaľ bez výsledku. Klikni a vydaj sa na cestu.",
-      "needs": "Bronzová za 1 ★, strieborná za 3 ★, zlatá za 5 ★."
+      "welcome": "Vitaj, hrdina, na tejto výprave, ktorá je dlhšia a náročnejšia a prevedie ťa všetkými svetmi tohto príbehu. Vstúp a začni toto posledné dobrodružstvo.",
+      "again": {
+        "one": "Znovu sa stretávame! Dokázal si prejsť túto cestu hrdinu na {n} hviezdu. Dokážeš to ešte prekonať, alebo zopakovať?",
+        "few": "Znovu sa stretávame! Dokázal si prejsť túto cestu hrdinu na {n} hviezdy. Dokážeš to ešte prekonať, alebo zopakovať?",
+        "other": "Znovu sa stretávame! Dokázal si prejsť túto cestu hrdinu na {n} hviezd. Dokážeš to ešte prekonať, alebo zopakovať?"
+      },
+      "about": "Cesta hrdinu je náročnejší, dlhší príbeh, za ktorý nezískaš hviezdy tak jednoducho. Ak chceš presne vedieť, aký je náročný, informácie nájdeš v nápovede."
     }
   },
   "level": {
@@ -1721,7 +1722,7 @@
     ],
     "moreTitle": "Cesta hrdinu, strelnica, papagáj a odznak",
     "more": [
-      "Cesta hrdinu: keď dokončíš posledný svet príbehu, hneď za jeho veľkou výzvou pribudne kompas. Je to dlhá výprava cez všetky svety príbehu. Je ťažšia: slová sú ťažšie, všetko je o kúsok rýchlejšie a hviezdičky chcú menej chýb.",
+      "Cesta hrdinu: keď dokončíš posledný svet príbehu, ožije kompas vpravo dole na obrázku sveta. Jeho okraj má farbu podľa tvojich hviezdičiek z cesty a tie sa rátajú navyše, mimo hviezdičiek levelov. Je to dlhá výprava cez všetky svety príbehu. Je ťažšia: slová sú ťažšie, všetko je o kúsok rýchlejšie a hviezdičky chcú menej chýb.",
       "Odznak: dokončený svet ti ho dá, keď v ňom zbieraš dosť z jeho {max} hviezdičiek: **bronzový** od {bronze}, **strieborný** od {silver}, **zlatý** od {gold}.",
       "Strelnica: keď dokončíš svet, pri jeho veľkej výzve na mape pribudne terč. Tvoja postavička hádže na terč vtipné veci a ty píšeš slová na kruhoch, ktorými vec preletí. Trénuješ písmená, ktoré ešte nepíšeš dosť presne.",
       "Keď napíšeš každé slovo načas a bez chyby, trafíš do stredu. Chyba vec trochu zníži, po troch chybách spadne na zem. Nič zlé sa nestane, príde ďalšia.",

@@ -613,7 +613,6 @@
     "map.super": "Label of a world's last, big level instead of a number, for example \"Meadow: finale\".",
     "map.aimTip": "Tooltip on the Target range node on the map; explains what the range is for. Its first word (the range's name), typed on the map, sends a thing of the range flying across the page.",
     "map.parrotTip": "Tooltip of the Parrot node on the map; says what it is for. Its first word (the parrot's name), typed on the map, calls a parrot that flies around the page.",
-    "map.journeyTip": "Tooltip of the hero's journey's compass on the map, after the big challenge of a story's last world.",
     "map.parrotHome": "Hidden addition to the Parrot node label (screen reader) when the parrot is won.",
     "map.sideOpens": "Added to the tooltip of the grey Target range and Parrot nodes on the map while the world is not finished.",
     "map.surpriseHere": "Tooltip of a level on the map where a parent announced a surprise ahead (a golden box stands in place of the game's picture).",
@@ -1846,12 +1845,10 @@
     "end.rhythmBetter": "Green news line on the Rytmus end card: the rhythm score is higher than in the last round of this world.",
     "end.rhythmNote": "Green news line on the Rytmus end card: the round earned a rhythm note (rhythm 80 or more at 95 % accuracy); {world} is the world it was played in, whose music the note brings to the World map.",
     "help.games.rhythm": "Help, Games tab: what the Rytmus game is, next to its metronome picture.",
-    "map.journey.bronze": "Hero's journey badge tooltip (and its name): the best result is bronze; {n} best stars (1-2).",
-    "map.journey.silver": "Hero's journey badge tooltip: the best result is silver; {n} best stars (3-4).",
-    "map.journey.gold": "Hero's journey badge tooltip: the best result is gold (5 stars).",
-    "map.journey.none": "Hero's journey badge tooltip while it was never finished: a click starts it.",
-    "map.journey.needs": "Hero's journey badge tooltip: the stars each tier needs.",
     "progress.rhythmTune": "Line under the rhythm notes: whose world music the World map plays (while a note of that world is left).",
-    "progress.rhythmTuneNone": "Line under the rhythm notes while none is chosen."
+    "progress.rhythmTuneNone": "Line under the rhythm notes while none is chosen.",
+    "map.journey.welcome": "Hero's journey badge tooltip before the journey was ever finished: a welcome to the longer, harder trip through every world of the story.",
+    "map.journey.again": "Hero's journey badge tooltip after a finish: {n} best stars (plural forms); asks to beat or repeat it.",
+    "map.journey.about": "Hero's journey badge tooltip, always after the line before: stars come harder there; the help tells how hard."
   }
 }

@@ -1,7 +1,7 @@
 import { imageUrl } from '../gfx/assets';
 import { tapkoElement } from '../gfx/tapko';
 import { STORIES } from '../game/levels';
-import { MAX_STARS, totalStars } from '../game/rewards';
+import { LEVEL_STARS, totalStars } from '../game/rewards';
 import { hasParrotBadge } from '../game/parrots';
 import { locale, t, tList } from '../i18n/i18n';
 import { masterySummary, recentTyping } from '../learning/stats';
@@ -70,7 +70,7 @@ function certificate(p: Profile): HTMLElement {
     stat('ui-key', `${m.mastered}/${m.total}`, t('cert.keys')),
     recent.chars ? stat('ui-accuracy', `${Math.round(recent.accuracy * 100)} %`, t('cert.accuracy')) : null,
     recent.cpm ? stat('ui-typing-speed', String(recent.cpm), t('cert.speed')) : null,
-    stat('ui-star', `${totalStars(p)}/${MAX_STARS}`, t('cert.stars')),
+    stat('ui-star', `${totalStars(p)}/${LEVEL_STARS}`, t('cert.stars')),
     stat('ui-stars-earned', String(p.progress.starsEarned), t('cert.starsEarned')),
   ];
   const stories = STORIES.map((s) => {

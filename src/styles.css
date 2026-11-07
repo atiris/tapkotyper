@@ -1317,8 +1317,14 @@ body:not(.gfx-simple) .level-screen.covered :is(.stage-wrap *, .overlay .tapko-s
 .world-badge-btn:hover, .journey-badge:not(:disabled):hover { transform: scale(1.08); }
 .world-badge-btn:focus-visible, .journey-badge:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
 .journey-badge { position: absolute; bottom: 0; right: 0; z-index: 1; padding: 0; border: 0; cursor: pointer; transition: transform 0.15s; }
-.journey-badge.none { background: radial-gradient(circle at 35% 30%, #fff, #e8e2d6 75%); }
-.journey-badge.none img { filter: none; opacity: 1; }
+/* The journey badge's ring by its best stars: none white-grey, 1 grey, 2 pink, 3 light blue, 4 light green, 5 golden yellow. */
+.journey-badge { --c: #f3efe8; background: radial-gradient(circle at 35% 30%, #fff, var(--c) 75%); }
+.journey-badge.stars-0 { --ring: #dcd8d2; }
+.journey-badge.stars-1 { --ring: #9aa1a9; }
+.journey-badge.stars-2 { --ring: #f19bbd; }
+.journey-badge.stars-3 { --ring: #8fcdf2; }
+.journey-badge.stars-4 { --ring: #9edc8c; }
+.journey-badge.stars-5 { --ring: #f5c518; box-shadow: inset 0 0 0 3px var(--ring), 0 0 8px rgba(245, 197, 24, 0.6); }
 .journey-badge.closed { cursor: default; opacity: 0.55; filter: grayscale(0.8); }
 .journey-badge .journey-compass { width: 80%; height: 80%; object-fit: contain; }
 /* The surprises won in a world: an open golden box on a round gold-rimmed disc at the island's top left (the badge sits top right). */

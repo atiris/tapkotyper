@@ -4,7 +4,7 @@ import { rhythmNotes } from '../game/rhythm-notes';
 import { imageUrl } from '../gfx/assets';
 import { type Mood, otherMood, renderTapkoInto, tapkoElement } from '../gfx/tapko';
 import { DRILL_SECONDS, STORIES, type StoryDef, WORLDS, storyDone, storyOpen, worldName } from '../game/levels';
-import { MAX_CHEST, MAX_STARS, badgeTier, chestPoints, totalStars, worldStars } from '../game/rewards';
+import { MAX_CHEST, LEVEL_STARS, badgeTier, chestPoints, totalStars, worldStars } from '../game/rewards';
 import { locale, t, tn } from '../i18n/i18n';
 import { allKeys } from '../keyboard/layouts';
 import { STATS_WINDOW, activeKeys, lessonKeyOf } from '../learning/lessons';
@@ -175,7 +175,7 @@ export function summaryRow(p: Profile): HTMLElement {
     chip(imageUrl('ui-earth'), '●', `${p.progress.worldsDone.length}/${WORLDS.length}`, t('progress.worlds', { n: p.progress.worldsDone.length, total: WORLDS.length })),
     chip(imageUrl('ui-chest'), '◆', `${chest}/${MAX_CHEST}`, t('progress.chest', { n: chest, total: MAX_CHEST })),
     parrots.best ? chip(imageUrl('ui-act-parrot-head'), 'P', t('progress.parrotCount', parrots), t('progress.parrots', parrots)) : null,
-    chip(imageUrl('ui-star'), '★', `${stars}/${MAX_STARS}`, t('progress.stars', { n: stars, total: MAX_STARS }))),
+    chip(imageUrl('ui-star'), '★', `${stars}/${LEVEL_STARS}`, t('progress.stars', { n: stars, total: LEVEL_STARS }))),
   h('ul', { class: 'progress-sum' },
     recent.chars ? chip(imageUrl('ui-accuracy'), '✓', `${percent} %`, t('progress.quality', { n: percent })) : null,
     recent.cpm ? chip(imageUrl('ui-typing-speed'), '»', String(recent.cpm), t('progress.speed', { n: recent.cpm })) : null,

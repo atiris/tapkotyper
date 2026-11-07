@@ -48,7 +48,7 @@ export const PLURAL_FORMS = ['zero', 'one', 'two', 'few', 'many', 'other'] as co
 export const PLURAL_KEYS = new Set([
   'teacher.scan.count', 'teacher.scan.cancelText', 'teacher.n.results', 'teacher.n.handIns', 'story.flightDone', 'story.copyLoopDone',
   'end.letters', 'end.minutes', 'end.hits', 'end.words', 'end.exercises', 'end.moreRewards', 'end.placementLetters', 'end.placementOpened',
-  'stats.wholeKeys',
+  'stats.wholeKeys', 'map.journey.again',
 ]);
 
 /** Arrays whose order and count matter; every other array is a pool read at random. */

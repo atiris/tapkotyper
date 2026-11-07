@@ -34,7 +34,7 @@
   child sets off on a mission (a story level or a hero's journey; own practice, free typing and
   the other games change nothing), and the choice lasts until the next mission:
   - the character: another owned character when the mission goes to another world than the
-    last one; it opens with a fifth of all stars of the levels and journeys earned in all;
+    last one; it opens with a fifth of all stars of the levels earned in all;
   - a body area: an owned item of it or none (half the time, as the random outfit); each area
     opens with a number of mastered keys, steps spread evenly up to 0.9 of the practice order's
     keys and dealt to the areas at random per player, fixed from the start.

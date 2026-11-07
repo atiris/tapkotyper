@@ -5,11 +5,15 @@
   symbol is the **compass**.
 - On the map it is a **badge** at the bottom right of the picture of the story's last world (the
   island's corners: the surprises top left, the world badge top right, the keyboard bottom left): the
-  compass in a ring of its result, **bronze** from 1 star, **silver** from 3, **gold** with 5 (the
-  journey's best stars), a plain ring before the first finish. A click starts it. Its tooltip says what
-  the journey is, the result ("Tvoj výsledok: strieborná cesta (3 ★).", or none yet) and what each tier
-  needs. It opens with that world done, the same moment as the range and the parrot; before that the
-  badge is there, faded, with the tooltip "opens when the world is finished".
+  compass in a ring coloured by the journey's best stars: not finished white-grey, 1 star grey, 2 pink,
+  3 light blue, 4 light green, 5 golden yellow. A click starts it. Its tooltip: before the first finish
+  "Vitaj, hrdina, na tejto výprave, ktorá je dlhšia a náročnejšia a prevedie ťa všetkými svetmi tohto
+  príbehu. Vstúp a začni toto posledné dobrodružstvo."; after it "Znovu sa stretávame! Dokázal si
+  prejsť túto cestu hrdinu na N hviezd. Dokážeš to ešte prekonať, alebo zopakovať?" (the stars in their
+  plural form); then always "Cesta hrdinu je náročnejší, dlhší príbeh, za ktorý nezískaš hviezdy tak
+  jednoducho. Ak chceš presne vedieť, aký je náročný, informácie nájdeš v nápovede." It opens with that
+  world done, the same moment as the range and the parrot; before that the badge is there, faded, its
+  tooltip ending with "opens when the world is finished" instead.
 - It plays one part for every world of the story, in world order. Each part is the game of
   that world's first level, on that world's background. A story may define its own journey
   instead. A world not built yet plays its placeholder ([story](story.md)).
@@ -37,8 +41,9 @@
   else 1. The paw rule (fewer than 5 own keys gives one star) holds over
   the whole journey.
 - It counts like a level: its keys, time and speed go into the [statistics](../profiles/statistics.md),
-  and growth and the lesson advance as after a story level. The best stars give the badge its tier
-  and add to the star total (390).
+  and growth and the lesson advance as after a story level. The best stars give the badge its colour.
+  Its stars count among the stars earned since the start, but never in the stars of the levels and
+  their maximum (375, [statistics](../profiles/statistics.md)): they are a bonus above it.
 - It is not a level of its world: it gives no badge, does not finish the world and opens
   nothing. The parent's surprises count it as a level of the story's last world
   ([parent controls](../profiles/parent-controls.md)).

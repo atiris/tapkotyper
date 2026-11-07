@@ -3,7 +3,7 @@ import { audio } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
 import { compassElement } from '../gfx/compass';
 import { tapkoElement } from '../gfx/tapko';
-import { t, tList } from '../i18n/i18n';
+import { t, tList, tn } from '../i18n/i18n';
 import { nickname } from '../storage/store';
 import { LEVELS, STORIES, type StoryDef, WORLDS, activityOf, aimOpen, aimWorld, isLevelReached, isWorldUnlocked, journeyId, journeyOpen, keysMissing, levelById, nextLevel, rhythmOpen, storyOpen, worldLevels, worldLock, worldName } from '../game/levels';
 import { GUEST_ID, type Profile, SUPER_ID, type Surprise } from '../storage/schema';
@@ -12,7 +12,7 @@ import { keyLabel } from '../ui/keyboard-guide';
 import { badgeTier } from '../game/rewards';
 import { badge } from '../ui/badge';
 import { badgeShow } from '../ui/badge-show';
-import { type BadgeTier, journeyTier } from '../game/rewards';
+import type { BadgeTier } from '../game/rewards';
 import { flyAway, hasParrotBadge } from '../game/parrots';
 import { localDate } from '../learning/stats';
 import { arrowFocus, button, closeButton, h, icon, modal } from '../ui/dom';
@@ -306,26 +306,24 @@ function rhythmNode(p: Profile, open: boolean, world: number): HTMLElement {
     pic ? h('img', { class: 'level-act', src: pic, alt: '' }) : icon('wave', 'icon'), miniCheck(won));
 }
 
-/** What the journey badge's tooltip tells: what the journey is, how far it went, and what each tier needs. */
-function journeyTip(open: boolean, stars: number, tier: BadgeTier | null): string {
-  if (!open) return `${t('map.journeyTip')} ${t('map.sideOpens')}`;
-  const result = tier ? t(`map.journey.${tier}`, { n: stars }) : t('map.journey.none');
-  return [t('map.journeyTip'), result, t('map.journey.needs')].join('\n');
+/** The journey badge's tooltip: a welcome before the first finish, the best stars after it, and what the journey is; before it opens, when it opens. */
+function journeyTip(open: boolean, stars: number): string {
+  const hello = stars ? tn('map.journey.again', stars) : t('map.journey.welcome');
+  return [hello, open ? t('map.journey.about') : t('map.sideOpens')].join('\n');
 }
 
 /**
- * The story's hero's journey as a badge at the bottom right of its last world's island: the compass
- * in a ring of its tier (bronze, silver, gold by its best stars); a click starts it. Faded and closed
- * until that world is finished.
+ * The story's hero's journey as a badge at the bottom right of its last world's island: the compass in
+ * a ring coloured by its best stars (none white-grey, then grey, pink, light blue, light green, golden
+ * yellow); a click starts it. Faded and closed until that world is finished.
  */
 function journeyBadge(p: Profile, story: StoryDef): HTMLElement {
   const open = journeyOpen(p, story);
   const stars = p.progress.levels[journeyId(story)] ?? 0;
-  const tier = journeyTier(stars);
-  const name = `${t('journey.title')}${tier ? `, ${t(`map.journey.${tier}`, { n: stars })}` : ''}`;
+  const name = `${t('journey.title')}${stars ? `, ${t('map.starsAria', { n: stars })}` : ''}`;
   return h('button', {
-    class: `journey-badge badge small ${tier ?? 'none'} ${open ? '' : 'closed'}`, type: 'button', disabled: !open,
-    'aria-label': name, tip: journeyTip(open, stars, tier),
+    class: `journey-badge badge small stars-${stars} ${open ? '' : 'closed'}`, type: 'button', disabled: !open,
+    'aria-label': name, tip: journeyTip(open, stars),
     onClick: (e: MouseEvent) => {
       e.stopPropagation();
       go('level', { id: 'journey', story: story.id });

@@ -14,7 +14,7 @@ test("the dragon story's hero's journey goes back down to the rocket with a pane
   await badge.waitFor();
   await expect(egg.locator('.journey-node')).toHaveCount(0);
   await expect(page.locator('.story-dragon .journey-badge')).toHaveCount(1);
-  await expect(badge).toHaveAttribute('data-tip', /Bronze for 1 ★, silver for 3 ★, gold for 5 ★/);
+  await expect(badge).toHaveAttribute('data-tip', /harder, longer story/);
   await badge.click();
   await expect(page.locator('.hud-title')).toHaveText("Hero's journey");
   await expect(page.locator('.posture-card .posture-under')).toContainText('five stars need almost no mistakes');
@@ -39,9 +39,9 @@ test("the dragon story's hero's journey goes back down to the rocket with a pane
   const stars = Math.floor(Number((await page.locator('.journey-done .ec-under .stars').getAttribute('aria-label'))!.replace(/\D*([\d.]+).*/, '$1')));
   await page.locator('.end-card .ec-bot .btn').last().click();
   await badge.waitFor();
-  // The badge's tier follows the best stars (the super player's filled progress may have more): bronze 1, silver 3, gold 5.
-  const order = ['bronze', 'silver', 'gold'];
-  const cls = (await badge.getAttribute('class'))!;
-  expect(order.findIndex((x) => cls.includes(x))).toBeGreaterThanOrEqual(stars >= 5 ? 2 : stars >= 3 ? 1 : 0);
+  // The badge's colour follows the best stars (the super player's filled progress may have more), and its tooltip says them.
+  const shown = Number((await badge.getAttribute('class'))!.replace(/.*stars-(\d).*/, '$1'));
+  expect(shown).toBeGreaterThanOrEqual(stars);
+  await expect(badge).toHaveAttribute('data-tip', /We meet again!/);
   expect(errors).toEqual([]);
 });

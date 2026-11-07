@@ -3,7 +3,7 @@ import { accessories, type Slot } from '../gfx/assets';
 import { SLOTS, randomItem } from '../gfx/tapko';
 import { keyMastery, practiceOrder } from '../learning/lessons';
 import { COMPANION_KINDS, type CompanionKind, type Profile } from '../storage/schema';
-import { LEVELS, MAX_LEVEL_STARS, STORIES, WORLDS, journeyId, worldLevels } from './levels';
+import { LEVELS, MAX_LEVEL_STARS, WORLDS, worldLevels } from './levels';
 import { WORLD_THINGS } from './modes/aim-things';
 import { PARROT_POINTS, hasParrotBadge } from './parrots';
 
@@ -55,14 +55,6 @@ export function badgeTier(p: Profile, world: number): BadgeTier | null {
   return stars >= BADGE_STARS.gold ? 'gold' : stars >= BADGE_STARS.silver ? 'silver' : stars >= BADGE_STARS.bronze ? 'bronze' : null;
 }
 
-/** The hero's journey's badge: bronze, silver and gold from these best stars (of 5). */
-export const JOURNEY_STARS: Record<BadgeTier, number> = { bronze: 1, silver: 3, gold: 5 };
-
-/** The journey badge of a story's best stars, null before the journey was ever finished. */
-export function journeyTier(stars: number): BadgeTier | null {
-  return stars >= JOURNEY_STARS.gold ? 'gold' : stars >= JOURNEY_STARS.silver ? 'silver' : stars >= JOURNEY_STARS.bronze ? 'bronze' : null;
-}
-
 export interface UnlockRule {
   acc: string;
   rule: { kind: 'level'; id: string; perfect?: number } | { kind: 'world'; world: number } | { kind: 'stars'; stars: number };
@@ -89,7 +81,7 @@ export function unlockRules(p: Profile): UnlockRule[] {
   return positions.map((r) => (STORY_ACCESSORIES.includes(r.acc) ? r : { ...r, acc: dealt.pop()! }));
 }
 
-/** All stars of the story levels, without the journeys. */
+/** All stars of the story levels, the most "My progress" shows; the journeys' stars are a bonus outside it. */
 export const LEVEL_STARS = LEVELS.length * MAX_LEVEL_STARS;
 
 /** Worlds whose every level has all its stars. */
@@ -104,13 +96,14 @@ export function hasAccessory(p: Profile, id: string): boolean {
 /** Stars each next character kind costs on top of the previous one, at random per player. */
 export const KIND_STEP: [number, number] = [30, 43];
 
-/** Stars of the built-in story levels and the built-in stories' journeys; stars kept under any other id buy nothing here. */
+/**
+ * The best stars of the built-in story levels, out of `LEVEL_STARS`; stars kept under any other id
+ * (a hero's journey too) do not count here. The journeys' stars count among the stars earned since the
+ * start (`starsEarned`).
+ */
 export function totalStars(p: Profile): number {
-  return [...LEVELS.map((l) => l.id), ...STORIES.map(journeyId)].reduce((a, id) => a + (p.progress.levels[id] ?? 0), 0);
+  return LEVELS.reduce((a, l) => a + (p.progress.levels[l.id] ?? 0), 0);
 }
-
-/** All stars in every story level and every story's hero's journey. A new level, world or range thing changes the maxima shown in "My progress". */
-export const MAX_STARS = (LEVELS.length + STORIES.length) * MAX_LEVEL_STARS;
 
 /** Points of the treasure chest: a world badge by its tier, one for each rare thing found at a range, and the Parrot badge. */
 export const BADGE_POINTS: Record<BadgeTier, number> = { bronze: 1, silver: 2, gold: 3 };
@@ -168,7 +161,7 @@ export function grantAccessories(p: Profile): string[] {
 }
 
 /** The random character opens with this many stars earned in all: a fifth of all stars of the levels and journeys. */
-export const RANDOM_KIND_STARS = Math.round(MAX_STARS / 5);
+export const RANDOM_KIND_STARS = Math.round(LEVEL_STARS / 5);
 /** The random choice of the body areas opens step by step up to this share of the practice order's keys mastered. */
 const RANDOM_SLOTS_SHARE = 0.9;
 

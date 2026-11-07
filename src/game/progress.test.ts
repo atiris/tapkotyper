@@ -5,7 +5,7 @@ import { LEVELS, STORIES, journeyLevel, worldLevels } from './levels';
 import { AUTO_DIFFICULTY_MAX, GROWTH_TYPED_SHARE, MIN_OWN_KEYS, completeLevel, completePlacement, completeStay, grow, growthNeed, joinRuns } from './progress';
 import { COMPANION_KINDS, emptyKeyStat } from '../storage/schema';
 import { PlacementCheck } from '../learning/placement';
-import { KIND_STEP, LEVEL_STARS, MAX_CHEST, MAX_STARS, RANDOM_KIND_STARS, STORY_ACCESSORIES, badgeTier, chestPoints, dressForMission, friendStars, grantAccessories, grantCompanions, hasAccessory, kindPrices, perfectWorlds, randomKindOpen, randomSlotKeys, totalStars, unlockRules } from './rewards';
+import { KIND_STEP, LEVEL_STARS, MAX_CHEST, RANDOM_KIND_STARS, STORY_ACCESSORIES, badgeTier, chestPoints, dressForMission, friendStars, grantAccessories, grantCompanions, hasAccessory, kindPrices, perfectWorlds, randomKindOpen, randomSlotKeys, totalStars, unlockRules } from './rewards';
 import { accessories, loadManifest } from '../gfx/assets';
 import { SLOTS } from '../gfx/tapko';
 import { practiceOrder } from '../learning/lessons';
@@ -98,7 +98,7 @@ describe('characters earned by stars', () => {
         expect(step).toBeGreaterThanOrEqual(KIND_STEP[0]);
         expect(step).toBeLessThanOrEqual(KIND_STEP[1]);
       }
-      expect(prices[prices.length - 1][1]).toBeLessThanOrEqual(MAX_STARS);
+      expect(prices[prices.length - 1][1]).toBeLessThanOrEqual(LEVEL_STARS);
       expect(friendStars(p, 'cat')).toBe(0);
     }
   });
@@ -122,11 +122,11 @@ describe('characters earned by stars', () => {
     expect(p.progress.companionsUnlocked).toEqual(['cat', first]);
   });
 
-  it('counts only the built-in levels and journeys', () => {
+  it('counts only the built-in levels: a journey\'s stars are a bonus outside the stars of My progress', () => {
     const p = newProfile('Ema', 'sk', undefined, 'cat');
     const [, [, need]] = kindPrices(p);
-    p.progress.levels = { 'journey-dragon': 3, 'pack:x:w1-1': need };
-    expect(totalStars(p)).toBe(3);
+    p.progress.levels = { 'journey-dragon': 3, 'pack:x:w1-1': need, 'w1-1': 2 };
+    expect(totalStars(p)).toBe(2);
     expect(grantCompanions(p)).toEqual([]);
   });
 });
@@ -280,7 +280,7 @@ describe('staying a while', () => {
 describe('the treasure chest and the stars of My progress', () => {
   // These maxima are shown to the player; a new level, world or range thing changes them on purpose.
   it('has fixed maxima', () => {
-    expect(MAX_STARS).toBe(390);
+    expect(LEVEL_STARS).toBe(375);
     expect(MAX_CHEST).toBe(67);
   });
 

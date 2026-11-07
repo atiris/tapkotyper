@@ -1,4 +1,3 @@
-import { app } from '../app/app';
 import { audio } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
 import { WORLDS, worldName } from '../game/levels';
@@ -17,16 +16,14 @@ const SHOW_S = 10;
 const pick = <T>(list: readonly T[]): T => list[Math.floor(Math.random() * list.length)];
 
 /**
- * The screen goes dark and a world's badge rises in rotating rays and a glow, a range award landing
- * on its rim. On the map a click on an island's badge shows that badge, with the world's own award
- * when it was found; just for fun (a secret word on My progress) a random badge in a random tier
- * with a random award. A click, Esc or ten seconds put it away.
+ * The screen goes dark and a world's badge rises in rotating rays and a glow. On the map a click on an
+ * island's badge shows that badge alone; just for fun (a secret word on My progress) a random badge
+ * in a random tier with a random range award landing on its rim. A click, Esc or ten seconds put it away.
  */
 export function badgeShow(chosen?: { world: number; tier: BadgeTier }): void {
   const world = chosen?.world ?? pick(WORLDS.map((_, i) => i));
   const tier = chosen?.tier ?? pick(TIERS);
-  const found = app.profile?.progress.rangeFinds ?? [];
-  const thing = chosen ? WORLD_THINGS.find((th) => th.world === world && found.includes(th.id)) : pick(WORLD_THINGS);
+  const thing = chosen ? null : pick(WORLD_THINGS);
   const award = thing ? imageUrl(thing.pics[0]) : null;
   const title = t('badge.aria', { world: worldName(world), tier: t(`badge.${tier}`) });
   const awardName = thing ? t(`aim.things.${thing.id}.name`) : '';

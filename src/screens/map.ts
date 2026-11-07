@@ -322,7 +322,7 @@ function journeyBadge(p: Profile, story: StoryDef): HTMLElement {
   const stars = p.progress.levels[journeyId(story)] ?? 0;
   const name = `${t('journey.title')}${stars ? `, ${t('map.starsAria', { n: stars })}` : ''}`;
   const rose = compassElement('journey-compass', ROSE);
-  if (open) swing(rose);
+  swing(rose, open);
   return h('button', {
     class: `journey-badge badge small stars-${stars} ${open ? '' : 'closed'}`, type: 'button', disabled: !open,
     'aria-label': name, tip: journeyTip(open, stars),
@@ -348,10 +348,11 @@ function swingShare(s: number): number {
   return spring(s) + (1 - spring(SWING_S)) * (s / SWING_S);
 }
 
-/** Turns `el` like a compass needle: every 10 to 30 s to a random heading, settling there with a smooth swing. */
-function swing(el: HTMLElement): void {
-  if (reduceMotion()) return;
-  let at = 0;
+/** Turns `el` like a compass needle: a random heading when the map opens, then every 10 to 30 s another one, settling there with a smooth swing. */
+function swing(el: HTMLElement, open: boolean): void {
+  let at = Math.random() * 360;
+  el.style.transform = `rotate(${at}deg)`;
+  if (!open || reduceMotion()) return;
   const later = () => window.setTimeout(turn, 10_000 + Math.random() * 20_000);
   const turn = () => {
     if (!el.isConnected) return;

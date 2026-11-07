@@ -1330,6 +1330,15 @@ body:not(.gfx-simple) .level-screen.covered :is(.stage-wrap *, .overlay .tapko-s
 .badge-none { margin: 0; display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; font-style: italic; color: var(--ink-soft); }
 .badge-none img { width: 2.4rem; height: 2.4rem; object-fit: contain; opacity: 0.7; }
 .badge-shelf .aim-finds { justify-content: flex-start; margin: 0; }
+/* My rhythm: one row of notes, as many as fit, the exact count at its end. */
+.rhythm-notes { display: flex; align-items: center; gap: 0.6rem; }
+/* Notes that do not fit wrap into a hidden second row, so no note shows cut. */
+.rhythm-note-list { display: flex; flex-wrap: wrap; flex: 1; min-width: 0; height: 2.7rem; overflow: hidden; gap: 0 0.15rem; }
+.note-btn { flex: none; padding: 0.3rem; border: 0; border-radius: 10px; background: none; cursor: pointer; }
+.note-btn:hover, .note-btn:focus-visible { background: var(--tint-green); }
+.rhythm-note { display: block; width: 2.1rem; height: 2.1rem; object-fit: contain; font-size: 1.6rem; line-height: 2.1rem; text-align: center; }
+.rhythm-count { flex: none; font-size: 1.1rem; }
+.ec-news .rhythm-note { flex: none; width: 2rem; height: 2rem; }
 .legend { display: flex; gap: 0.6rem; flex-wrap: wrap; font-size: 0.9rem; }
 .lg { padding: 0.2em 0.6em; border-radius: 10px; font-weight: 600; }
 .lg.heat-super { background: var(--heat-super); } .lg.heat-good { background: var(--heat-good); } .lg.heat-ok { background: var(--heat-ok); } .lg.heat-practice { background: var(--heat-practice); }

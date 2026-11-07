@@ -1268,25 +1268,13 @@
    "w": 433,
    "h": 512
   },
-  "obj-rhythm-basket-0": {
+  "obj-rhythm-basket-full": {
    "w": 512,
-   "h": 231
+   "h": 310
   },
-  "obj-rhythm-basket-1": {
+  "obj-rhythm-basket": {
    "w": 512,
-   "h": 231
-  },
-  "obj-rhythm-basket-2": {
-   "w": 512,
-   "h": 231
-  },
-  "obj-rhythm-basket-3": {
-   "w": 512,
-   "h": 231
-  },
-  "obj-rhythm-basket-4": {
-   "w": 512,
-   "h": 231
+   "h": 156
   },
   "obj-rhythm-cloud-1": {
    "w": 512,
@@ -1934,6 +1922,22 @@
   },
   "ui-new-task": {
    "w": 410,
+   "h": 512
+  },
+  "ui-note-beamed": {
+   "w": 493,
+   "h": 512
+  },
+  "ui-note-eighth": {
+   "w": 422,
+   "h": 512
+  },
+  "ui-note-half": {
+   "w": 287,
+   "h": 512
+  },
+  "ui-note-quarter": {
+   "w": 309,
    "h": 512
   },
   "ui-parrots-earned": {

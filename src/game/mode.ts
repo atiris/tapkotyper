@@ -110,9 +110,13 @@ export abstract class Mode {
   }
   /** The level ended on its own or on request, not left early. */
   onFinish(): void {}
-  /** A key the mode lets wait (`at`: its time, ms): neither right nor wrong yet, nothing counts it (Rytmus: the right letter before its catch window). */
-  waitKey(_ch: string, _at: number): boolean {
-    return false;
+  /**
+   * The mode's look at a key before the target does (`at`: its time, ms): 'pass' lets the target judge it,
+   * 'wait' drops it uncounted, 'wrong' counts it as a wrong key of the expected letter (Rytmus: the right
+   * letter outside its catch band).
+   */
+  checkKey(_ch: string, _at: number): 'pass' | 'wait' | 'wrong' {
+    return 'pass';
   }
   /** Every own key press for a target, before `onCorrect`, `onDone` or `onWrong`: the key expected, right or wrong, its reaction and time (ms). */
   onKey(_expected: string, _ok: boolean, _rt: number, _at: number): void {}

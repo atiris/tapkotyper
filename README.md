@@ -274,4 +274,4 @@ IBAN: `SK7283605207004200851983` (Jozef Pažin)
 
 ## License
 
-[MIT](LICENSE). Fonts: SIL Open Font License (see `public/fonts/`). The names TapkoTyper and Ťapko, the characters and the logo are not part of the MIT license, see [TRADEMARKS.md](TRADEMARKS.md).
+[MIT](LICENSE). Fonts: SIL Open Font License (see `public/fonts/`). The names TapkoTyper and Ťapko and the app's logo are not part of the MIT license, see [TRADEMARKS.md](TRADEMARKS.md).

@@ -16,11 +16,12 @@ export type News =
   | { kind: 'letter'; key: string; before: number; after: number }
   | { kind: 'faster' }
   | { kind: 'journeyHome'; story: string }
+  | { kind: 'rhythmNote'; n: number }
   | { kind: 'tempoTop'; tempo: number }
   | { kind: 'beatBetter' };
 
 /** News that are rewards: several at once are told as the first and "and N more rewards". */
-const REWARDS = new Set<News['kind']>(['badge', 'parrotBadge', 'keys', 'medal', 'wardrobe', 'companion']);
+const REWARDS = new Set<News['kind']>(['badge', 'parrotBadge', 'keys', 'medal', 'wardrobe', 'companion', 'rhythmNote']);
 
 /** A speed this much better than a week ago is news. */
 const TREND_UP = 1.05;

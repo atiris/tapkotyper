@@ -22,11 +22,11 @@
     "close": "Close (Esc)"
   },
   "start": {
-    "logoTip": "Hi, I'm Tapko.",
+    "logoTip": "Hi, this site is called Tapko.",
     "visit": {
-      "hello": "Hi there!",
-      "intro": "I am one of the characters you can pick here. Nice to see you!",
-      "invite": "Pick a player and let's practise typing together for a little while."
+      "hello": "Hi,",
+      "intro": "I am one of the characters you can use on your adventures on this site.",
+      "invite": "If you do not have a profile yet, click the “New player” button and make one. I hope we will learn to type properly on the keyboard together."
     },
     "whoPlays": "Who will type to me today?",
     "pickByNumber": "You can also pick this profile by typing the number {n}",
@@ -164,7 +164,7 @@
     "super": "finale",
     "aimTip": "Target range: practise the letters you do not type accurately enough yet. When only accuracy stands between you and the next letter, this is where you get it.",
     "parrotTip": "Parrot: type a few words many times in a row, until your fingers know them by themselves. Speed does not matter.",
-    "rhythmTip": "Rhythm: letters fall into Tapko's basket. Press the key just when the letter arrives. That is how you learn to type evenly.",
+    "rhythmTip": "Rhythm: letters fall from the clouds. Press the key while the letter is in the glowing band and the basket catches it. That is how you learn to type evenly.",
     "rhythmOpens": "Opens once you know at least {n} letters.",
     "journeyTip": "Hero's journey: a longer, harder trip through every world of this story.",
     "parrotHome": "the parrot is at home",
@@ -510,13 +510,14 @@
     "placementNoWeak": "None, everything went well!",
     "placementSignal": "Finger signal (fit · contrast)",
     "placementEyes": "It looks like your eyes still help you find the keys. The lessons will teach your fingers from the start, quickly.",
-    "rhythmDone": "Rhythm round done!",
+    "rhythmDone": "Typing in rhythm!",
     "rhythm": "Rhythm",
     "rhythmScore": "{n} of 100, {word}",
     "tempo": "Tempo per minute",
     "caught": "Letters caught",
     "rhythmTop": "A new top tempo: {n} letters per minute!",
-    "rhythmBetter": "Your rhythm is better than last time."
+    "rhythmBetter": "Your rhythm is better than last time.",
+    "rhythmNote": "Great rhythm! You have a new rhythm note."
   },
   "results": {
     "peek": "Look at the game (Esc)",
@@ -1148,6 +1149,10 @@
     "badges": "World badges",
     "badgeNone": "None yet",
     "rangeAwards": "Target range awards",
+    "rhythmTitle": "My rhythm",
+    "rhythmNotes": "Rhythm notes: {n}. One fades for every three days without Rhythm.",
+    "rhythmNone": "A great rhythm in the Rhythm game earns you a rhythm note.",
+    "rhythmNoteTip": "Click to hear the tune of one world.",
     "parrots": "Parrots at home: {n}, most at once: {best}",
     "parrotCount": "{n} max {best}",
     "parrotsEarned": "Parrots won since the start: {n}",
@@ -1619,7 +1624,7 @@
     "author": "Hello, typists. I designed **Tapko** **to support learning to type on a keyboard** for my children, because the usual apps could not hold them long enough to come back. Even with heavy use of a series of Anthropic's AI models, building this app until I was happy enough with its design, features, safety, speed and more took many hours. I hope that, just as it keeps my children typing a little longer, it does the same for you and your children (and if they enjoy it less, you can hide a surprise from the real world in the game for them to unlock by practising). Finally, I ask for your help: if you find a bug or have an idea for an improvement, please {report} on GitHub, where the code of this app lives.",
     "authorReport": "report it to me",
     "creditsTitle": "Licenses and sources",
-    "credits": "Tapko is published as **open source** under the MIT license. The names TapkoTyper and Tapko, the characters and the logo are not part of the license and may not be used in modified copies. The fonts Lexend, Atkinson Hyperlegible and OpenDyslexic are under the SIL Open Font License. Media files are generated mostly with Gemini models, and some are touched up by hand.",
+    "credits": "Tapko is published as **open source** under the MIT license. The names TapkoTyper and Tapko and the app's logo are not part of the license and may not be used in modified copies. The fonts Lexend, Atkinson Hyperlegible and OpenDyslexic are under the SIL Open Font License. Media files are generated mostly with Gemini models, and some are touched up by hand.",
     "open": "**We hide nothing!** You can see all usage data of the Tapko app, just as we do, at",
     "page": {
       "title": "TapkoTyper – fun touch typing with all ten fingers",
@@ -1739,7 +1744,7 @@
       "sticky": "**Sticky finger**: one finger sticks to its key and holds it while the other fingers type. When you let go, the game waits until you press it again.",
       "aim": "**Target range**: words full of the letters you still miss. Each word throws a thing through the rings into the target.",
       "parrot": "**Parrot**: a few words many times in a row. The parrot repeats each one. A slip brings the word twice more.",
-      "rhythm": "**Rhythm**: letters fall from the clouds into Tapko's basket, each on a beat of the music. Press the key when the letter arrives. Accurate first, then in rhythm.",
+      "rhythm": "**Rhythm**: letters fall from the clouds, each on a beat of the music. Press the key while the letter is in the glowing band over the basket and the basket catches it. A great rhythm earns you a rhythm note. Accurate first, then in rhythm.",
       "super": "**Finale**: the fifth, last game of a world. It is one of the kinds above, but it may be a little different from its usual variant.",
       "timed": "Some words must be typed in time, for example at a crossroads. This clock shows how much time is left: the green ring runs down and blinks at the end. It can feel a bit exciting, but the time follows how fast you type: if you type slower, you get more time."
     },
@@ -3604,8 +3609,21 @@
   },
   "rhythm": {
     "title": "Rhythm",
-    "start": "**Letters** fall from the clouds. When a letter reaches the basket, press its key and **Tapko catches it** in his basket. Not sooner: listen to the music and type **to the beat**. Accurate first, then in rhythm.",
-    "wait": "Wait until the letter reaches the basket.",
+    "start": "Here you practise a steady rhythm. You move a basket that catches the letters falling from the clouds. Catch them at the right moment, or they fall to the ground. Still, being accurate matters most. If you miss one, never mind. A great rhythm earns you one rhythm note.",
+    "wait": "Wait until the letter reaches the glowing band.",
+    "hold": "Wait…",
+    "goOn": "Now go on.",
+    "good": [
+      "Good",
+      "OK",
+      "Yes"
+    ],
+    "great": [
+      "Super",
+      "Great",
+      "Spot on",
+      "Brilliant"
+    ],
     "phrase": [
       "Lovely rhythm!",
       "Like clockwork!",

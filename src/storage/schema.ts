@@ -174,6 +174,9 @@ export interface Progress {
   rhythm: Record<string, RhythmRecord>;
   /** Worlds whose Rytmus held the world's target tempo for a whole phrase, accurately (the check under its node). */
   rhythmWon: number[];
+  /** Rhythm notes (one per great Rytmus round) as counted at the last round, and that round's local date `YYYY-MM-DD`; one fades for every three days since (beat.ts notesNow). */
+  rhythmNotes: number;
+  rhythmNotesAt: string | null;
   /** The teacher turtle's tips read (ids) and when the last one was read (ms, 0 before any). */
   appTips: { seen: string[]; lastAt: number };
   /** The turtle asked on the map whether to check what the student already knows. */

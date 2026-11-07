@@ -1342,28 +1342,45 @@ its physical shape; never "one moved finger" or "one stretched finger".
 
 ## 13. Rytmus (the beat game, `.specify/game/rhythm.md`)
 
-The basket Tapko holds and the letter clouds the letters fall from. The game draws every
-letter itself (in front of its cloud, falling), so the clouds stay empty and the basket's letters
-are only toy shapes.
+The basket the child moves, the letter clouds the letters fall from, and the rhythm notes a great
+round earns. The game draws every letter itself (in front of its cloud, falling), so the clouds stay
+empty and the basket's letters are only toy shapes.
 
 ### Game objects (section 4 prompt, without its "friendly faces" sentence; "strictly front view, not tilted" instead of "side view facing right")
-The basket's five fill levels are one set (`SETS` in `scripts/assets.mjs`: one crop, so the
-pictures swap without a jump). Make the **full** basket `-4` first, then each smaller fill as a
-follow-up in the **same chat**, saved to its own file, that only removes letters from that picture:
-"Same picture, exactly the same basket and the same letters at exactly the same size and position.
-Only remove letters so that about N remain; where a letter was, the empty inside of the basket
-shows. Change nothing else." (N = 6 for `-3`, 4 for `-2`, 2 for `-1`; `-0` "remove all
-letters"). The basket is flat and shallow like a low tray, with no handles.
+The basket is one empty picture: the full basket first, then a follow-up in its chat that removes
+all letters ("Same picture, exactly the same basket at exactly the same size and position. Only
+remove the letters: the basket is empty, its empty inside shows."). The basket is flat and shallow
+like a low tray, with no handles. The game keeps only its front: `.old/obj-rhythm-basket-with-back.jpg`
+is the empty picture, and the back rim and the inside above the lower arc of the inner opening are
+painted magenta by a small sharp script (centre 512, 449, half-axes 388 x 39 px, the rim's round ends
+cut at y 455). Letters sunk into the basket (only their upper half showing) could not be drawn: five
+tries of a redraw with the full basket attached only changed the colours.
+`obj-rhythm-basket-full` (the end card) is a new chat with the empty basket attached: the same basket
+full of a heap of letters.
 The three clouds are compact, so a cloud drawn only a little wider than its lane stays off the
 lanes beside it; the game draws them mirrored too, for more variety.
 
 | File | OBJECT | BG |
 |---|---|---|
-| `obj-rhythm-basket-4.jpg` | ONE flat, shallow, wide woven wicker basket shaped like a low tray, warm honey wicker (#D9A35B, lighter #F0C985, darker #B07B3A), a thick rolled rim, NO handles at all, seen from the front and a little from above. In it lie about ten chunky wooden toy letters, each in its own color: orange #E69F00, sky blue #56B4E9, green #009E73, yellow #F0C419, blue #0072B2, red-orange #D55E00, pink #CC79A7, lime #8FBC3A; they stand loosely side by side, their tops peeking a little over the rim, all inside the basket's width. The basket symmetrical, not tilted; NO face, no eyes, no arms, no legs; nothing else: no fruit, no cloth, no ground (also the end card's picture) | magenta |
-| `obj-rhythm-basket-3.jpg`, `-2`, `-1`, `-0` | follow-ups of `-4` in its chat, removing letters (about 6, 4, 2, none) | magenta |
+| `obj-rhythm-basket.jpg` | made from the full basket: ONE flat, shallow, wide woven wicker basket shaped like a low tray, warm honey wicker (#D9A35B, lighter #F0C985, darker #B07B3A), a thick rolled rim, NO handles at all, seen from the front and a little from above. In it lie about ten chunky wooden toy letters, each in its own color: orange #E69F00, sky blue #56B4E9, green #009E73, yellow #F0C419, blue #0072B2, red-orange #D55E00, pink #CC79A7, lime #8FBC3A; they stand loosely side by side, their tops peeking a little over the rim, all inside the basket's width. The basket symmetrical, not tilted; NO face, no eyes, no arms, no legs; nothing else: no fruit, no cloth, no ground (also the end card's picture) | magenta |
 | `obj-rhythm-cloud-1.jpg` | ONE single compact fluffy cartoon cloud, only about one and a half times as wide as it is tall, three round puffs with the middle one highest, soft white (#FFFFFF) with light blue-grey shading underneath (#DCE6F2), a soft dark-brown outline, a gently rounded flat bottom; NO face, no eyes, no rain, no sun; NOTHING else | magenta |
 | `obj-rhythm-cloud-2.jpg` | the same, one big round puff in the middle with one small puff on each side | magenta |
 | `obj-rhythm-cloud-3.jpg` | the same, two round puffs, a bigger one on the left and a smaller one on the right | magenta |
+
+### Rhythm notes (one picture each, magenta)
+"Generate an image: a single music note, NOTE, chunky, rounded and friendly, like a sticker reward
+for children. Strictly front view, centered, filling about 70 % of the image height. Same style:
+cute, soft 2D children's storybook illustration, flat vector style with gentle gradients, soft
+dark-brown outlines. No face, no eyes, no staff lines, no text, no sparkles, nothing else.
+Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no floor, no
+shadow. Square image." The game turns each note by its own angle.
+
+| File | NOTE |
+|---|---|
+| `ui-note-half.jpg` | a HALF NOTE (minim): a hollow oval note head tilted a little, with a white inside, a straight upright stem on its right side, no flag; warm orange (#E69F00), highlight #F6C66B |
+| `ui-note-quarter.jpg` | a QUARTER NOTE (crotchet): a filled solid oval note head tilted a little, a straight upright stem on its right side, no flag; blue (#0072B2), highlight #5FA8D9 |
+| `ui-note-eighth.jpg` | an EIGHTH NOTE (quaver): a filled oval head, an upright stem and one curved flag at its top; green (#009E73), highlight #5CC9A7 |
+| `ui-note-beamed.jpg` | TWO BEAMED EIGHTH NOTES: two filled oval heads side by side, each with an upright stem, the stems' tops joined by one thick straight beam; red-orange (#D55E00), highlight #F09A5C |
 
 ### Icon (section 9 icon prompt, attach `ui-act-super.jpg`)
 | File | ACTIVITY |

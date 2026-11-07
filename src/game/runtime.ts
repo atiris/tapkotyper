@@ -662,26 +662,22 @@ export class LevelRuntime {
     this.ownKey();
     // A space between targets is a habit, not a mistake.
     if (c.ch === SPACE && !this.core.locked) return;
-    if (this.mode.waitKey(c.ch, c.time)) return;
+    const check = this.mode.checkKey(c.ch, c.time);
+    if (check === 'wait') return;
     this.deadPending = false;
+    if (check === 'wrong') {
+      this.pressed++;
+      this.state.keyAt = this.state.elapsed;
+      this.wrongKey(c, this.core.expectedChar(), this.core.locked);
+      return this.updateGuide();
+    }
     const res = this.core.type(c.ch);
     if (res.kind === 'ignored') return this.say(t('level.memoryWait'), 2);
     this.pressed++;
     const p = app.profile!;
     this.state.keyAt = this.state.elapsed;
-    if (res.kind === 'wrong') {
-      const { rt } = this.speed.press(null, c.time);
-      if (res.expected) {
-        this.mode.onKey(res.expected, false, rt, c.time);
-        recordPress(p, res.expected, c.ch, rt);
-        this.errors++;
-        this.trackWrong(res.expected);
-      }
-      this.sfx(this.mode.wrongSfx);
-      this.setMood('thinking', 1.2);
-      this.friends.wrong();
-      this.mode.onWrong(res.target);
-    } else {
+    if (res.kind === 'wrong') this.wrongKey(c, res.expected, res.target);
+    else {
       const { rt, repeat } = this.speed.press(res.expected, c.time);
       this.mode.onKey(res.expected, true, rt, c.time);
       if (!repeat) this.okRts.push(rt);
@@ -704,6 +700,21 @@ export class LevelRuntime {
       }
     }
     this.updateGuide();
+  }
+
+  /** A wrong key for `expected` (the target's or the mode's verdict): it counts against the letter, the mode hears it. */
+  private wrongKey(c: TypedChar, expected: string | null, target: Target | null): void {
+    const { rt } = this.speed.press(null, c.time);
+    if (expected) {
+      this.mode.onKey(expected, false, rt, c.time);
+      recordPress(app.profile!, expected, c.ch, rt);
+      this.errors++;
+      this.trackWrong(expected);
+    }
+    this.sfx(this.mode.wrongSfx);
+    this.setMood('thinking', 1.2);
+    this.friends.wrong();
+    this.mode.onWrong(target);
   }
 
   /** Backspace in a level: the started word is wiped and the child may start any word again. */

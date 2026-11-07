@@ -31,6 +31,9 @@ class AudioEngine {
   private track: string | null = null;
   private current: { el?: HTMLAudioElement; gain: GainNode; stop: () => void } | null = null;
   private listeners: (() => void)[] = [];
+  /** A tune playing (a rhythm note's): its timer and the track that comes back after it. */
+  private tuneTimer = 0;
+  private tuneBack: string | null = null;
 
   constructor() {
     try {
@@ -184,6 +187,17 @@ class AudioEngine {
         return ctx.currentTime + (perf - performance.now()) / 1000 - (ctx.outputLatency || ctx.baseLatency || 0);
       },
     };
+  }
+
+  /** Plays a track for `seconds` (a rhythm note's tune), then the track before it comes back unless another one was set meanwhile. */
+  tune(name: string, seconds = 20): void {
+    if (!this.tuneTimer) this.tuneBack = this.track;
+    clearTimeout(this.tuneTimer);
+    this.music(name);
+    this.tuneTimer = window.setTimeout(() => {
+      this.tuneTimer = 0;
+      if (this.track === name) this.music(this.tuneBack);
+    }, seconds * 1000);
   }
 
   /** Plays the next random track of the whole library and returns its name; the next screen or level sets its own track again. */

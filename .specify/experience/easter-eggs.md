@@ -8,11 +8,13 @@ the words follow the interface language without a list of their own; capitals an
 do not matter ("Dračie", "dračie" and "dracie" are one word), and a short word (such as "hi")
 counts only on its own, not inside another word. Not mentioned in the help: finding them is the fun.
 
-- **Start page: a greeting.** The fox head of the logo says on hover "Ahoj, ja som Ťapko." /
-  "Hi, I'm Tapko.". Typing its first word ("ahoj" / "hi") brings a character of a random kind in a
-  random outfit (any item of the wardrobe, like its random button), as tall as the grass,
-  walking in from the left. It hops, says hello and invites the child to pick
-  a player and train for a while, then walks away after a few seconds or on a click.
+- **Start page: a greeting.** The fox head of the logo says on hover "Ahoj, táto stránka sa volá
+  Ťapko." / "Hi, this site is called Tapko." (Ťapko is the app, not a character). Typing its first
+  word ("ahoj" / "hi") brings a character of a random kind in a random outfit (any item of the
+  wardrobe, like its random button), as tall as the grass, walking in from the left. It hops, says
+  it is one of the characters the child can use on the adventures here, that without a profile
+  "Nový hráč" makes one, and that it hopes they learn to type properly together; then it walks
+  away after a few seconds or on a click.
 - **Map: the target range.** Typing the first word of the range's hint ("strelnica" /
   "target") sends a random thing of the target range drifting across the page from left to
   right at an easy pace, turning slowly, with a whoosh. With reduced motion it does not come.

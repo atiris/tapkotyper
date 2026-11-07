@@ -1,6 +1,6 @@
 /**
  * Rytmus, the beat game, without drawing or sound: the finger lanes, the tempo and its steps, the
- * catch window around each landing, the letters' order, the lanes' letter changes, the song's bars
+ * catch window around each beat, the letters' order, the lanes' letter changes, the song's bars
  * and drops on one clock, and the beat measure of rhythm (`.specify/game/rhythm.md`).
  */
 import type { Finger } from '../keyboard/layouts';
@@ -10,11 +10,13 @@ import type { RhythmRecord } from '../storage/schema';
 export const TEMPI = [30, 36, 42, 48, 54, 60, 70, 80, 90, 100, 110, 120] as const;
 /** Landings in one phrase: the tempo changes only between phrases. */
 export const PHRASE = 16;
-/** Seconds of song a round lasts. */
+/** Seconds of song a round lasts, and the share of it a hard round grows by at most (a phrase for each step down: a minute of three). */
 export const ROUND_S = 180;
-/** The catch window around a landing, in letter beats: from half a beat before to a quarter after. */
-export const ZONE_BEFORE = 0.5;
-export const ZONE_AFTER = 0.25;
+const EXTRA_SHARE = 1 / 3;
+/** The catch window: this many letter beats on each side of the beat, at the start, per step and at most. */
+export const W_START = 0.35;
+const W_STEP = 0.05;
+const W_MAX = 0.5;
 /** A catch this close to its landing (in letter beats) is "in time". */
 export const IN_TIME = 0.12;
 /** Below this tempo the music plays twice as fast and a letter lands on every second beat. */
@@ -111,10 +113,16 @@ export function targetTempo(wordsPerMinute: number): number {
   return TEMPI.find((s) => s >= wordsPerMinute * 5) ?? TEMPI[TEMPI.length - 1];
 }
 
-/** Where a press at `at` stands to a landing at `land` with letter beat `T`: before the window, in it, or after it. */
-export function judge(at: number, land: number, T: number): 'early' | 'catch' | 'late' {
-  if (at < land - ZONE_BEFORE * T) return 'early';
-  return at <= land + ZONE_AFTER * T ? 'catch' : 'late';
+/** Where a press at `at` stands to a beat at `land` with letter beat `T` and window `w` (beats each side): before the window, in it, or after it. */
+export function judge(at: number, land: number, T: number, w: number): 'early' | 'catch' | 'late' {
+  if (at < land - w * T) return 'early';
+  return at <= land + w * T ? 'catch' : 'late';
+}
+
+/** The next phrase's window: wider after a step down, narrower again after a step up. */
+export function stepWindow(w: number, dir: -1 | 0 | 1): number {
+  const next = dir < 0 ? w + W_STEP : dir > 0 ? w - W_STEP : w;
+  return Math.round(Math.max(W_START, Math.min(W_MAX, next)) * 100) / 100;
 }
 
 /** Weights of the lanes in the free phrases: the lowest third by recent accuracy (at most three) a little more often. */
@@ -191,7 +199,7 @@ function blocked(changes: readonly LaneChange[], lane: number, release: number, 
   return changes.some((c) => c.lane === lane && release <= c.at + CHANGE_S && land >= c.at);
 }
 
-/** One letter of the song: its lane and letter, when it leaves its cloud and lands, its letter beat and phrase. */
+/** One letter of the song: its lane and letter, when it leaves its cloud and is on its beat, its letter beat, window and phrase. */
 export interface Drop {
   index: number;
   lane: number;
@@ -199,6 +207,7 @@ export interface Drop {
   release: number;
   land: number;
   T: number;
+  w: number;
   phrase: number;
 }
 
@@ -211,9 +220,10 @@ export interface Bar {
   kind: 'count' | 'play' | 'end';
 }
 
-/** A phrase: its tempo, its first landing and its first drop. */
+/** A phrase: its tempo, its catch window (beats each side), its first beat and its first drop. */
 export interface Phrase {
   tempo: number;
+  w: number;
   start: number;
   first: number;
 }
@@ -230,22 +240,24 @@ export interface SongSetup {
 /**
  * The round's song on one clock (seconds from the start): a count-in bar, then phrases of 16
  * landings, each at its own tempo, until the round's time; a closing bar after the last landing.
- * A phrase is planned just before its first letter leaves its cloud; its tempo is the one
- * `decide` gives then (the step of the phrase before, judged on its letters resolved by then).
+ * A phrase is planned just before its first letter leaves its cloud; its tempo and window follow the
+ * step `decide` gives then (the phrase before, judged on its letters resolved by then), and a step
+ * down makes the round a phrase longer, up to a third (a minute of three).
  */
 export class Song {
   readonly drops: Drop[] = [];
   readonly bars: Bar[] = [];
   readonly phrases: Phrase[] = [];
-  readonly roundS: number;
+  roundS: number;
+  private readonly baseS: number;
   /** The song is planned to its end: no phrase comes any more. */
   closed = false;
 
   constructor(private s: SongSetup) {
-    this.roundS = s.roundS ?? ROUND_S;
+    this.roundS = this.baseS = s.roundS ?? ROUND_S;
     const b = beatOf(s.tempo) / beatsPerLetter(s.tempo);
     this.bars.push({ index: 0, start: LEAD_S, beat: b, phrase: 0, kind: 'count' });
-    this.addPhrase(s.tempo, LEAD_S + 4 * b);
+    this.addPhrase(s.tempo, W_START, LEAD_S + 4 * b);
   }
 
   /** When the song is over: the end of its closing bar. */
@@ -268,14 +280,16 @@ export class Song {
     const p = this.phrases[this.phrases.length - 1];
     const start = p.start + PHRASE * beatOf(p.tempo);
     if (start > this.roundS) return this.close();
-    this.addPhrase(stepTempo(p.tempo, decide()), start, now);
+    const dir = decide();
+    if (dir < 0) this.roundS = Math.min(this.baseS * (1 + EXTRA_SHARE), this.roundS + PHRASE * beatOf(p.tempo));
+    this.addPhrase(stepTempo(p.tempo, dir), stepWindow(p.w, dir), start, now);
   }
 
   /** A phrase from `start`; no letter leaves its cloud before `now` (a slower next tempo falls a little longer than the time left). */
-  private addPhrase(tempo: number, start: number, now = 0): void {
+  private addPhrase(tempo: number, w: number, start: number, now = 0): void {
     const phrase = this.phrases.length;
     const T = beatOf(tempo), F = fallSeconds(T), bpl = beatsPerLetter(tempo);
-    this.phrases.push({ tempo, start, first: this.drops.length });
+    this.phrases.push({ tempo, w, start, first: this.drops.length });
     const lanes = phraseLanes(phrase, this.s.lanes, this.s.weights, this.s.rand, start >= this.roundS / 2);
     let landed = 0;
     for (let i = 0; i < PHRASE; i++) {
@@ -288,7 +302,7 @@ export class Song {
         const free = this.s.lanes.map((_, j) => j).filter((j) => !blocked(this.s.changes, j, release, land)).sort((a, b) => Math.abs(a - lane) - Math.abs(b - lane));
         if (free.length) lane = free[0];
       }
-      this.drops.push({ index: this.drops.length, lane, letter: laneLetter(this.s.lanes, this.s.changes, lane, release), release, land, T, phrase });
+      this.drops.push({ index: this.drops.length, lane, letter: laneLetter(this.s.lanes, this.s.changes, lane, release), release, land, T, w, phrase });
       landed++;
     }
     const bars = Math.ceil((landed * bpl) / 4);
@@ -343,8 +357,20 @@ export function rhythmWord(score: number): 'searching' | 'nice' | 'smooth' | 'cl
   return score >= 90 ? 'clockwork' : score >= 70 ? 'smooth' : score >= 40 ? 'nice' : 'searching';
 }
 
-/** The basket's picture (0 empty .. 4 full) for `caught` letters of the `planned` a round at its start tempo brings. */
-export function basketFill(caught: number, planned: number): number {
-  if (!caught) return 0;
-  return Math.min(4, Math.max(1, Math.floor((5 * caught) / Math.max(1, planned))));
+
+/** A round earns a rhythm note with this rhythm score and accuracy, and with time pressure. */
+const NOTE_RHYTHM = 80;
+const NOTE_ACCURACY = 0.95;
+/** One note fades for every this many days without a Rytmus round, counted from the day after the last. */
+const NOTE_FADE_DAYS = 3;
+
+/** Whether a round (its rhythm score, null without one, and its accuracy) earns a note. */
+export function earnsNote(score: number | null, accuracy: number): boolean {
+  return score !== null && score >= NOTE_RHYTHM && accuracy >= NOTE_ACCURACY;
+}
+
+/** The notes left today of `count` kept at the last round on `at` (played Monday: all on Thursday, one fewer on Friday). */
+export function notesNow(count: number, at: string | null, today: string): number {
+  if (!at || !count) return count;
+  return Math.max(0, count - Math.max(0, Math.floor((days(at, today) - 1) / NOTE_FADE_DAYS)));
 }

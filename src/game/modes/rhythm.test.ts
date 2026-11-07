@@ -13,7 +13,7 @@ vi.mock('../../app/app', async () => {
   return { app: { profile: p }, pickLine: () => '', profileLayout: (x: typeof p) => LAYOUTS[x.layout] };
 });
 vi.mock('../../audio/audio', () => ({ audio: { beatOut: () => null } }));
-vi.mock('../../ui/dom', () => ({ h: () => ({ setAttribute: () => {}, className: '', innerHTML: '' }) }));
+vi.mock('../../ui/dom', async (real) => ({ ...(await real<object>()), h: () => ({ setAttribute: () => {}, className: '', innerHTML: '' }) }));
 vi.mock('../../ui/tooltip', () => ({ tip: () => {} }));
 
 const { RhythmMode } = await import('./rhythm');
@@ -29,10 +29,16 @@ function fakeRuntime(noPressure = false): LevelRuntime {
   return new Proxy(base, { get: (o, k) => (k in o ? o[k as string] : () => {}) }) as unknown as LevelRuntime;
 }
 
-/** The runtime's way with a key: the mode may let it wait, else the core judges it. */
+/** The runtime's way with a key: the mode may let it wait or call it wrong, else the core judges it. */
 function press(L: LevelRuntime, mode: InstanceType<typeof RhythmMode>, ch: string): 'wait' | 'ok' | 'wrong' {
   const at = performance.now();
-  if (mode.waitKey(ch, at)) return 'wait';
+  const check = mode.checkKey(ch, at);
+  if (check === 'wait') return 'wait';
+  if (check === 'wrong') {
+    mode.onKey(ch, false, 300, at);
+    mode.onWrong(L.core.locked);
+    return 'wrong';
+  }
   const res = L.core.type(ch);
   if (res.kind === 'done') {
     mode.onKey(ch, true, 300, at);
@@ -65,46 +71,76 @@ describe('rhythm', () => {
     expect(new RhythmMode(fakeRuntime()).lanes.map((l) => l.letters[0])).toEqual(['d', 'f', 'j', 'k']);
   });
 
-  it('without typing the song plays to its end: every letter splats, no errors, no rhythm', () => {
+  it('a missed letter stops everything: the keys wait, the next letter glides into the band and waits for its key', () => {
+    const L = fakeRuntime();
+    const mode = new RhythmMode(L);
+    mode.start();
+    const songT = () => (mode as unknown as { songT: number }).songT;
+    const second = mode.song.drops[1];
+    while (mode.due < 1) mode.update(0.02);
+    // Standing still: no song time passes and a key waits, uncounted.
+    const stopped = songT();
+    mode.update(0.3);
+    expect(songT()).toBe(stopped);
+    expect(press(L, mode, second.letter)).toBe('wait');
+    // The next letter comes to its beat, the middle of the band, and the song waits there.
+    for (let i = 0; i < 200; i++) mode.update(0.02);
+    expect(songT()).toBeCloseTo(second.land);
+    expect(mode.due).toBe(1);
+    expect(press(L, mode, second.letter)).toBe('ok');
+    // The song runs on; the letter drops into the basket.
+    mode.update(0.2);
+    expect(songT()).toBeGreaterThan(second.land);
+    expect(mode.caught).toBe(1);
+    expect(mode.due).toBe(2);
+    expect(mode.accuracy).toBe(1);
+  });
+
+  it('without typing the song stands at the second letter: one miss, no errors', () => {
     const L = fakeRuntime();
     const mode = play(L);
-    expect(mode.finished).toBe(true);
-    expect(mode.progress()).toBe(1);
+    expect(mode.finished).toBe(false);
+    expect(mode.due).toBe(1);
     expect(mode.caught).toBe(0);
-    expect(mode.due).toBe(mode.song.drops.length);
     expect(mode.accuracy).toBe(1);
-    expect(mode.score).toBe(0);
-    expect(L.core.active).toHaveLength(0);
+    expect(L.core.active).toHaveLength(1);
   });
 
   it('a child on the beat catches every letter, scores high and the tempo steps up', () => {
     const L = fakeRuntime();
+    // Each letter once, on the first frame at or after its beat: a second press would be an error.
+    const pressed = new Set<number>();
     const mode = play(L, (m) => {
       const tg = L.core.focus();
-      const d = m.song.drops.find((x) => x.letter === tg?.word && x.land <= (m as unknown as { songT: number }).songT + 0.001 && x.land > (m as unknown as { songT: number }).songT - 0.03);
-      if (tg && d) press(L, m, tg.word);
+      const songT = (m as unknown as { songT: number }).songT;
+      const d = m.song.drops.find((x) => x.letter === tg?.word && x.land <= songT + 0.001 && x.land > songT - 0.03 && !pressed.has(x.index));
+      if (!tg || !d) return;
+      pressed.add(d.index);
+      press(L, m, tg.word);
     });
+    expect(mode.accuracy).toBe(1);
     expect(mode.caught).toBe(mode.due);
     expect(mode.score).toBeGreaterThanOrEqual(90);
     expect(mode.song.phrases.length).toBeGreaterThan(3);
     expect(mode.held).toBeGreaterThan(mode.song.phrases[0].tempo);
     expect(mode.reached).toBe(true);
-    expect(mode.fill).toBe(4);
+    // Never a step down: the round keeps its length.
+    expect(mode.song.roundS).toBe(180);
   });
 
-  it('the right key too early waits, any other key is an error, the letter can still be caught', () => {
+  it('the right key before the band and any other key are errors; the letter can still be caught in the band', () => {
     const L = fakeRuntime();
     const mode = new RhythmMode(L);
     mode.start();
     const songT = () => (mode as unknown as { songT: number }).songT;
     const first = mode.song.drops[0];
     while (songT() < first.release + 0.05) mode.update(0.02);
-    expect(press(L, mode, first.letter)).toBe('wait');
+    expect(press(L, mode, first.letter)).toBe('wrong');
     expect(press(L, mode, first.letter === 'k' ? 'd' : 'k')).toBe('wrong');
     while (songT() < first.land) mode.update(0.02);
     expect(press(L, mode, first.letter)).toBe('ok');
-    expect(mode.caught + mode.due).toBeGreaterThan(0);
-    expect(mode.accuracy).toBe(0.5);
+    expect(mode.due).toBe(1);
+    expect(mode.accuracy).toBeCloseTo(1 / 3);
   });
 
   it('without time pressure the song waits for the due letter', () => {

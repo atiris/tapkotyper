@@ -31,12 +31,12 @@ test('Rytmus opens in the meadow with four ready letters and a round ends on its
   await node.click();
   await expect(page.locator('.level-screen.world-meadow .hud-title')).toHaveText('Rhythm');
   await untilPlay(page, 'ready');
-  await expect(page.locator('.posture-card')).toContainText('Tapko catches it');
+  await expect(page.locator('.posture-card')).toContainText('one rhythm note');
   await page.keyboard.press('Space');
-  // The top bar: accuracy, rhythm, tempo; no speed gauge here.
+  // The top bar: accuracy, rhythm, and the tempo drawn like the speed gauge, which itself is not here.
   await expect(page.locator('.hud .tempo-ring')).toHaveAttribute('aria-label', 'Tempo: 30 letters per minute');
-  await expect(page.locator('.hud .round-btn.speed')).toHaveCount(0);
-  // A child who presses the next letter's key again and again: early presses wait, each letter is caught as its window opens.
+  await expect(page.locator('.hud .round-btn.speed:not(.tempo-ring)')).toHaveCount(0);
+  // A child who presses the next letter's key again and again: presses before the band are errors, one in the band catches.
   let wrong = false;
   for (let i = 0; i < 1500 && !(await page.locator('.rhythm-done').count()); i++) {
     const next = await page.evaluate(() => document.querySelector<HTMLElement>('.kb-guide')?.dataset.next ?? '');
@@ -46,16 +46,16 @@ test('Rytmus opens in the meadow with four ready letters and a round ends on its
     }
     await page.waitForTimeout(60);
   }
-  await expect(page.locator('.rhythm-done h2')).toHaveText('Rhythm round done!');
+  await expect(page.locator('.rhythm-done h2')).toHaveText('Typing in rhythm!');
   const rows = page.locator('.rhythm-done .ec-row');
   await expect(rows).toHaveCount(4);
   await expect(rows.nth(0)).toContainText('Accuracy');
   await expect(rows.nth(1)).toContainText(/Rhythm\s*\d+ of 100/);
   await expect(rows.nth(2)).toContainText('30 letters');
   await expect(rows.nth(3)).toContainText(/Letters caught\s*\d+ of \d+/);
-  // The basket at its fill, once its pictures are made (the card keeps its square without them).
+  // The basket full of letters (the card keeps its square without its picture).
   const pic = page.locator('.rhythm-done .ec-img');
-  if (await pic.count()) await expect(pic).toHaveAttribute('src', /obj-rhythm-basket-/);
+  if (await pic.count()) await expect(pic).toHaveAttribute('src', /obj-rhythm-basket-full/);
   const kept = await page.evaluate(() => JSON.parse(localStorage.getItem('tapkotyper:v1')!).profiles[0].progress.rhythm['0']);
   expect(kept.tempo).toBeGreaterThanOrEqual(30);
   await page.locator('.end-card .ec-bot .btn').last().click();

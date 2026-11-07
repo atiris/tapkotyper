@@ -22,11 +22,11 @@
     "close": "Zavrieť (Esc)"
   },
   "start": {
-    "logoTip": "Ahoj, ja som Ťapko.",
+    "logoTip": "Ahoj, táto stránka sa volá Ťapko.",
     "visit": {
-      "hello": "Ahoj!",
-      "intro": "Som jedna z postavičiek, ktoré si tu môžeš vybrať. Teším sa na teba!",
-      "invite": "Vyber si hráča a poďme si chvíľku spolu trénovať písanie."
+      "hello": "Ahoj,",
+      "intro": "ja som jedna z postavičiek ktorú môžeš používať počas dobrodružstiev na tejto stránke.",
+      "invite": "Ak ešte nemáš profil, klikni na tlačidlo „Nový hráč“ a jeden si vytvor. Dúfam, že sa spolu naučíme správne písať na klávesnici."
     },
     "whoPlays": "Kto mi dnes napíše?",
     "pickByNumber": "Profil môžeš aktivovať aj napísaním číslice {n}",
@@ -164,7 +164,7 @@
     "super": "finále",
     "aimTip": "Strelnica: tu si precvičíš písmená, ktoré ešte nepíšeš dosť presne. Keď ti k ďalšiemu písmenu chýba už len presnosť, tu ju získaš.",
     "parrotTip": "Papagáj: napíšeš pár slov veľakrát za sebou, kým ich prsty nebudú vedieť samy. Na rýchlosti nezáleží.",
-    "rhythmTip": "Rytmus: písmená padajú do Ťapkovho košíka. Stlač kláves presne vtedy, keď písmeno doletí. Tak sa naučíš písať rovnomerne.",
+    "rhythmTip": "Rytmus: písmená padajú z obláčikov. Stlač kláves, keď je písmeno v žiarivom páse, a košík ho chytí. Tak sa naučíš písať rovnomerne.",
     "rhythmOpens": "Otvorí sa, keď budeš vedieť aspoň {n} písmená.",
     "journeyTip": "Cesta hrdinu: dlhšia a ťažšia výprava cez všetky svety tohto príbehu.",
     "parrotHome": "papagáj je doma",
@@ -510,13 +510,14 @@
     "placementNoWeak": "Žiadne, všetko išlo dobre!",
     "placementSignal": "Signál prstov (zhoda · kontrast)",
     "placementEyes": "Zdá sa, že oči ti ešte pomáhajú hľadať klávesy. Lekcie naučia tvoje prsty všetko od začiatku, rýchlo.",
-    "rhythmDone": "Rytmus dohraný!",
+    "rhythmDone": "Písanie v rytme!",
     "rhythm": "Rytmus",
     "rhythmScore": "{n} zo 100, {word}",
     "tempo": "Tempo za minútu",
     "caught": "Chytené písmená",
     "rhythmTop": "Nové najvyššie tempo: {n} písmen za minútu!",
-    "rhythmBetter": "Rytmus je lepší ako minule."
+    "rhythmBetter": "Rytmus je lepší ako minule.",
+    "rhythmNote": "Výborný rytmus! Máš novú rytmickú notu."
   },
   "results": {
     "peek": "Pozrieť sa na hru (Esc)",
@@ -1148,6 +1149,10 @@
     "badges": "Odznaky svetov",
     "badgeNone": "Zatiaľ žiadny",
     "rangeAwards": "Ocenenia zo strelníc",
+    "rhythmTitle": "Môj rytmus",
+    "rhythmNotes": "Rytmické noty: {n}. Jedna zmizne za každé tri dni bez Rytmu.",
+    "rhythmNone": "Za výborný rytmus v hre Rytmus získaš rytmickú notu.",
+    "rhythmNoteTip": "Klikni a zahrá ti melódia jedného sveta.",
     "parrots": "Papagáje doma: {n}, najviac naraz: {best}",
     "parrotCount": "{n} max {best}",
     "parrotsEarned": "Papagáje získané od začiatku: {n}",
@@ -1619,7 +1624,7 @@
     "author": "Ahojte, pisatelia. Aplikáciu **Ťapko** som navrhol **na podporu výučby písania na klávesnici** pre moje deti, ktoré bežné aplikácie nedokázali udržať natoľko, aby sa k nim vracali. Napriek intenzívnemu používaniu série modelov umelej inteligencie od Anthropic trval vývoj tejto aplikácie do podoby, s ktorou som bol dostatočne spokojný (dizajn, funkcie, bezpečnosť, rýchlosť a ďalšie), mnoho hodín. Dúfam, že podobne ako dokáže pri písaní o chvíľku dlhšie udržať moje deti, dokáže to aj pri vás a vašich deťoch (ak by ich to už bavilo menej, môžete im do hry schovať prekvapenie z fyzického sveta, ktoré si cvičením odomknú). Nakoniec vás prosím o pomoc: ak nájdete chybu alebo máte nápad na zlepšenie, {report} prosím na GitHube, kde je kód tejto aplikácie.",
     "authorReport": "nahláste mi to",
     "creditsTitle": "Licencie a zdroje",
-    "credits": "Ťapko je publikovaný ako **otvorený kód** pod licenciou MIT. Názvy TapkoTyper a Ťapko, postavičky a logo do licencie nepatria a v upravených kópiách sa nesmú použiť. Použité písma Lexend, Atkinson Hyperlegible a OpenDyslexic sú pod licenciou SIL Open Font License. Mediálne súbory sú generované prevažne pomocou modelov Gemini a niektoré sú doladené ručne.",
+    "credits": "Ťapko je publikovaný ako **otvorený kód** pod licenciou MIT. Názvy TapkoTyper a Ťapko a logo aplikácie do licencie nepatria a v upravených kópiách sa nesmú použiť. Použité písma Lexend, Atkinson Hyperlegible a OpenDyslexic sú pod licenciou SIL Open Font License. Mediálne súbory sú generované prevažne pomocou modelov Gemini a niektoré sú doladené ručne.",
     "open": "**Nič neskrývame!** Všetky údaje o používaní aplikácie Ťapko nájdete rovnako ako my na adrese",
     "page": {
       "title": "TapkoTyper – zábavné písanie všetkými desiatimi",
@@ -1739,7 +1744,7 @@
       "sticky": "**Lepkavý prst**: jeden prst sa prilepí na svoj kláves a drží ho, kým ostatné prsty píšu. Keď ho pustíš, hra počká, kým ho znova stlačíš.",
       "aim": "**Strelnica**: slová plné písmen, ktoré ti ešte nejdú. Každé slovo hodí vec cez krúžky až do terča.",
       "parrot": "**Papagáj**: pár slov veľakrát za sebou. Papagáj každé zopakuje. Za chybu príde slovo ešte dvakrát.",
-      "rhythm": "**Rytmus**: písmená padajú z obláčikov do Ťapkovho košíka, každé na úder hudby. Stlač kláves, keď písmeno doletí. Najprv presne, potom do rytmu.",
+      "rhythm": "**Rytmus**: písmená padajú z obláčikov, každé na úder hudby. Stlač kláves, keď je písmeno v žiarivom páse nad košíkom, a košík ho chytí. Za výborný rytmus získaš rytmickú notu. Najprv presne, potom do rytmu.",
       "super": "**Finále**: piata, posledná hra sveta. Je to jeden z druhov hier vyššie, no môže byť trochu iný ako jeho bežný variant.",
       "timed": "Niektoré slová treba napísať včas, napríklad na rázcestí. Koľko času ostáva, ukazujú tieto hodiny: zelený kruh sa míňa a na konci bliká. Môže to byť trochu napínavé, ale čas sa prispôsobí tomu, ako rýchlo píšeš: kto píše pomalšie, dostane viac času."
     },
@@ -3627,8 +3632,21 @@
   },
   "rhythm": {
     "title": "Rytmus",
-    "start": "Z obláčikov padajú **písmená**. Keď písmeno doletí ku košíku, stlač jeho kláves a **Ťapko ho chytí** do košíka. Skôr to nejde: počúvaj hudbu a píš **do rytmu**. Najprv presne, potom do rytmu.",
-    "wait": "Počkaj, kým písmeno doletí ku košíku.",
+    "start": "V tomto písaní si precvičíš pravidelný rytmus. Ovládaš košík, ktorý chytá písmenká padajúce z obláčikov. Tie musíš chytiť v správnom čase, ináč spadnú na zem. Stále je však dôležité aby to bolo presne. Ak niečo nechytíš, nevadí. Za výborný rytmus získaš jednu rytmickú notu.",
+    "wait": "Počkaj, kým písmeno doletí do žiarivého pásu.",
+    "hold": "Počkaj…",
+    "goOn": "Teraz pokračuj.",
+    "good": [
+      "Dobre",
+      "OK",
+      "Áno"
+    ],
+    "great": [
+      "Super",
+      "Paráda",
+      "Presne",
+      "Skvelé"
+    ],
     "phrase": [
       "Krásne v rytme!",
       "Ako hodinky!",

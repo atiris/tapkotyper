@@ -11,9 +11,9 @@ const VISIT_SIZE = 260;
 const STAY_S = 10;
 
 /**
- * Just for fun (a greeting typed on the start page): a Tapko of a random kind in a random outfit walks in from the left
- * into `host`, hops, says hello, that it is Tapko, and invites the child to train for a while; a click or
- * a few seconds send it back.
+ * Just for fun (a greeting typed on the start page): a character of a random kind in a random outfit walks in from the
+ * left into `host`, hops, says it is one of the characters of the app's adventures and how to make a profile; a
+ * click or a few seconds send it back.
  */
 export function tapkoVisit(host: HTMLElement): void {
   if (host.querySelector('.tapko-visit')) return;

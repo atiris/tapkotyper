@@ -53,7 +53,7 @@
      GoatCounter address (we hide nothing: anyone sees the same usage data we do) and the visits
      recorded so far (online with the counter blocked, a note that a blocker likely hides the number and the
      GoatCounter page still shows it), about the author (why the game exists, with a link to report a bug
-     or an idea), and licenses and sources: the licenses, that the name, the characters and the logo are not part
+     or an idea), and licenses and sources: the licenses, that the names and the app's logo are not part
      of the code's license, where the media come from, the code and a bug report. Links are in the app's
      orange, underlined only on hover.
 - The tab is part of the address (`#/p/<id>/help/<tab>`, `#/help/<tab>`), so a tab can be linked.

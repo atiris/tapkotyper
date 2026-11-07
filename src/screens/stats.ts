@@ -1,12 +1,15 @@
 import { app, go, layout, reduceMotion } from '../app/app';
-import { imageUrl } from '../gfx/assets';
+import { audio } from '../audio/audio';
+import { Rng } from '../engine/rng';
+import { notesNow } from '../game/beat';
+import { imageUrl, musicTracks } from '../gfx/assets';
 import { type Mood, otherMood, renderTapkoInto, tapkoElement } from '../gfx/tapko';
 import { DRILL_SECONDS, STORIES, type StoryDef, WORLDS, storyDone, storyOpen, worldName } from '../game/levels';
 import { MAX_CHEST, MAX_STARS, badgeTier, chestPoints, totalStars, worldStars } from '../game/rewards';
 import { locale, t, tn } from '../i18n/i18n';
 import { allKeys } from '../keyboard/layouts';
 import { STATS_WINDOW, activeKeys, lessonKeyOf } from '../learning/lessons';
-import { keyHistory, keyReport, keyboardSummary, lastTraining, masterySummary, recentPractice, recentTyping, weakKeys } from '../learning/stats';
+import { keyHistory, keyReport, keyboardSummary, lastTraining, localDate, masterySummary, recentPractice, recentTyping, weakKeys } from '../learning/stats';
 import { linkOf } from '../share/codec';
 import { makeOverallResult, resultCode } from '../share/result';
 import type { Profile } from '../storage/schema';
@@ -22,6 +25,7 @@ import { aroPerch } from '../ui/aro';
 import { hasParrotBadge } from '../game/parrots';
 import { medal } from '../ui/medal';
 import { rangeFinds } from '../ui/finds';
+import { notePic } from '../ui/notes';
 import { openCertificate } from './certificate';
 
 /**
@@ -218,7 +222,35 @@ function badgeTiers(p: Profile): HTMLElement[] {
   return rows.length ? rows : [h('p', { class: 'badge-none' }, none ? h('img', { src: none, alt: '' }) : null, t('progress.badgeNone'))];
 }
 
-/** The summary rows, a row per story under their heading, the badge shelf and the range awards, and when the child last trained. */
+/** Notes drawn at most in the row: more never fit, the count says the rest. */
+const NOTES_SHOWN = 60;
+
+/** The worlds whose music a profile's notes play, in the profile's own shuffled order. */
+function noteTunes(seed: number): string[] {
+  const rng = new Rng(seed);
+  const tunes = WORLDS.filter((w) => musicTracks().includes(w));
+  for (let i = tunes.length - 1; i > 0; i--) {
+    const j = Math.floor(rng.next() * (i + 1));
+    [tunes[i], tunes[j]] = [tunes[j], tunes[i]];
+  }
+  return tunes;
+}
+
+/** My rhythm: the notes left today in one row, as many as fit, the exact count at its end; a click on a note plays a world's tune. */
+function rhythmShelf(p: Profile): HTMLElement {
+  const n = notesNow(p.progress.rhythmNotes, p.progress.rhythmNotesAt, localDate());
+  const head = h('h4', {}, t('progress.rhythmTitle'));
+  if (!n) return h('div', { class: 'badge-shelf' }, head, h('p', { class: 'badge-none' }, t('progress.rhythmNone')));
+  const tunes = noteTunes(p.seed);
+  const notes = Array.from({ length: Math.min(n, NOTES_SHOWN) }, (_, i) =>
+    h('button', { class: 'note-btn', type: 'button', tip: t('progress.rhythmNoteTip'), 'aria-label': t('progress.rhythmNoteTip'), onClick: () => tunes.length && audio.tune(tunes[i % tunes.length]) },
+      notePic(i, p.seed)));
+  const count = t('progress.rhythmNotes', { n });
+  return h('div', { class: 'badge-shelf' }, head,
+    h('div', { class: 'rhythm-notes' }, h('div', { class: 'rhythm-note-list' }, ...notes), h('b', { class: 'rhythm-count', tip: count, 'aria-label': count }, String(n))));
+}
+
+/** The summary rows, a row per story under their heading, the badge shelf, the range awards and the rhythm notes, and when the child last trained. */
 function progressSection(p: Profile): HTMLElement {
   const { daysAgo, weekMinutes } = lastTraining(p);
   const last = daysAgo === null ? t('progress.never') : daysAgo === 0 ? t('progress.lastToday') : daysAgo === 1 ? t('progress.lastYesterday') : t('progress.lastDays', { n: daysAgo });
@@ -228,6 +260,7 @@ function progressSection(p: Profile): HTMLElement {
     ...STORIES.map((s) => storyRow(p, s)),
     h('div', { class: 'badge-shelf' }, h('h4', {}, t('progress.badges')), ...badgeTiers(p)),
     h('div', { class: 'badge-shelf' }, h('h4', {}, t('progress.rangeAwards')), rangeFinds(p)),
+    rhythmShelf(p),
     h('p', { class: 'progress-last' }, last, daysAgo === null ? null : [' ', t('progress.week', { n: weekMinutes })]));
 }
 

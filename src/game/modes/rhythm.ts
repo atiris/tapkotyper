@@ -11,12 +11,12 @@ import { fingerFor } from '../../keyboard/layouts';
 import { recentAccuracy } from '../../learning/lessons';
 import { localDate, recentTyping } from '../../learning/stats';
 import { FINGER_COLORS } from '../../ui/finger-colors';
-import { accuracyFill, fillRing, roundTextSvg } from '../../ui/hud';
+import { accuracyFill, fillRing, roundSvg, roundTextSvg } from '../../ui/hud';
 import { h } from '../../ui/dom';
 import { tip } from '../../ui/tooltip';
 import {
-  CHANGE_S, type Drop, IN_TIME, type Landing, type Lane, type LaneChange, PHRASE, RING_MIN, RING_WINDOW, Song, ZONE_AFTER, ZONE_BEFORE,
-  basketFill, beatScore, judge, laneSetup, laneWeights, phraseStep, planChanges, rhythmWord, startTempo,
+  CHANGE_S, type Drop, IN_TIME, type Landing, type Lane, type LaneChange, PHRASE, RING_MIN, RING_WINDOW, Song,
+  beatScore, judge, laneSetup, laneWeights, phraseStep, planChanges, rhythmWord, startTempo,
 } from '../beat';
 import { WORLDS, parrotKeys, rhythmLetters, rhythmTarget, storyOf } from '../levels';
 import type { LevelRuntime } from '../runtime';
@@ -27,27 +27,33 @@ import { HeroMode, sideFeet } from './kit/hero';
 const CLOUD_Y = 84;
 const CLOUD_W = 106;
 const CLOUDS = [1, 2, 3].map((n) => `obj-rhythm-cloud-${n}`);
-/** The basket's five fill levels, its height, and where its rim lies in the picture (share of its height from the top). */
-const BASKETS = [0, 1, 2, 3, 4].map((n) => `obj-rhythm-basket-${n}`);
-const BASKET_H = 92;
-const RIM_AT = 0.42;
-/** Where Tapko holds the basket's rim, above his feet (share of his height). */
-const HOLD_AT = 0.36;
-/** A falling letter's disc radius, its letter size, and the letter's size on its cloud. */
-const DISC_R = 30;
-const LETTER = 40;
+/** Where a letter leaves its cloud. */
+const FALL_TOP = CLOUD_Y + 14;
+/** The basket's picture and its height. */
+const BASKET = 'obj-rhythm-basket';
+const BASKET_H = 50;
+/** The catch band's lower edge: this share of the basket's height above its bottom. */
+const BAND_AT = 2 / 3;
+/** The band glows in the space bar's colour, which no finger lane uses. */
+const BAND_COLOR = '255, 255, 255';
+/** A falling letter's disc radius and its letter size, and the letter's size on its cloud. */
+const DISC_R = 28;
+const LETTER = 38;
 const CLOUD_LETTER = 50;
-/** The next letter is the runtime's word label, this big. */
-const LABEL = 58;
 /** Width of a lane's stripe, and the widest gap between two lanes. */
 const STRIPE_W = 76;
-const LANE_GAP = 200;
-/** Seconds of Tapko's dash under a lane, of a bounce off his basket, a splat on the ground, a wait blink, a lane's flash after a wrong key. */
-const DASH_S = 0.16;
-const BOUNCE_S = 0.5;
-const SPLAT_S = 0.8;
-const BLINK_S = 0.35;
+const LANE_GAP = 170;
+/** Seconds of the basket's slide under a lane, of a caught letter dropping in, a lane's flash, a feedback word. */
+const SLIDE_S = 0.12;
+const DROP_IN_S = 0.15;
 const FLASH_S = 0.45;
+const WORD_S = 0.9;
+/** How often a catch shows a word over the basket: near the beat, and anywhere else in the band. */
+const GREAT_SHARE = 0.5;
+const GOOD_SHARE = 0.3;
+/** After a miss: seconds everything stands still (the keys wait), and the most the next letter takes to glide into the band's middle. */
+const HOLD_S = 0.9;
+const GLIDE_S = 0.6;
 /** Seconds the song plays on after its closing bar before the round ends, and how far ahead its notes are scheduled. */
 const TAIL_S = 0.6;
 const AHEAD_S = 0.25;
@@ -58,18 +64,13 @@ const SWAY = 2;
 interface Fall {
   d: Drop;
   tg: Target | null;
-  /** When it was caught, or null. */
+  /** When it was caught, and where it was then, or null. */
   caught: number | null;
-  /** The zone passed without a catch. */
+  caughtY: number;
+  /** The window passed without a catch: it falls on below the stage. */
   missed: boolean;
-  /** It reached the basket (the basket counts it). */
+  /** It dropped into the basket (the basket counts it). */
   inBasket: boolean;
-  /** A missed letter bounces off Tapko's basket to this side (-1, 1), or 0. */
-  bounce: number;
-  /** It splatted on the ground then, or null. */
-  splat: number | null;
-  /** The right key came too early then (it blinks). */
-  blink: number;
 }
 
 /** A phrase's count: letters due and caught, right and wrong keys. */
@@ -121,11 +122,12 @@ function letterAt(c: G, ch: string, x: number, y: number, size: number, fill: st
 }
 
 /**
- * Rytmus: letters fall from the lane clouds, one lane per finger in its colour, and exactly one lands
- * on each beat of the music. The right key in the catch window around the landing makes Tapko dash
- * under the lane and the letter drops into his basket with a note; earlier it only blinks, any other
- * key is an error; an uncaught letter splats on the ground. The tempo steps between phrases of
- * sixteen landings; the round is three minutes of song (`.specify/game/rhythm.md`).
+ * Rytmus: letters fall from the lane clouds, one lane per finger in its colour, and each is in the
+ * middle of the glowing catch band on its beat of the music. A lane's letter slides the basket under
+ * the lane; the next letter's key while it is in the band catches it, any other key is an error. An
+ * uncaught letter falls on below the stage and everything stops; the next letter glides into the band
+ * and waits for its key. The character stands at the left. The tempo and the band's height step
+ * between phrases of sixteen letters (`.specify/game/rhythm.md`).
  */
 export class RhythmMode extends HeroMode {
   readonly world: string;
@@ -134,13 +136,13 @@ export class RhythmMode extends HeroMode {
   readonly phraseWords = 1;
   readonly ownMusic = true;
   readonly doneSfx = null;
-  readonly pictures = [...CLOUDS, ...BASKETS];
+  readonly pictures = [...CLOUDS, BASKET];
   readonly lanes: Lane[];
   readonly changes: LaneChange[];
   readonly song: Song;
   private music = new BeatMusic();
   private falls: Fall[] = [];
-  /** The next letter to land (the first not caught or missed). */
+  /** The next letter due (the first not caught or missed). */
   private cur = 0;
   /** Song seconds, and `performance.now()` when it was last advanced. */
   private songT = 0;
@@ -158,16 +160,21 @@ export class RhythmMode extends HeroMode {
   /** The highest tempo held for a whole phrase, and whether a phrase at the world's target tempo went accurately. */
   held = 0;
   reached = false;
-  /** Letters a round at its start tempo brings: the basket is full at about all of them. */
-  private planned: number;
   private toldWait = false;
-  /** Tapko's dash: from where to which lane, from when to when (song seconds); the lane, not its x, so a resize keeps him under it. */
-  private dash = { from: 0, lane: 0, at: -1, end: -1 };
+  /**
+   * After a miss: everything stands still ('hold'), then the next letter glides into the band's
+   * middle ('glide', song time runs on to its beat at `speed`), where the song waits for its key ('ready').
+   */
+  private recover: { phase: 'hold' | 'glide' | 'ready'; left: number; speed: number } | null = null;
+  /** The basket's slide: from which x to which lane (null: the middle), from when to when (song seconds). */
+  private basket: { from: number; lane: number | null; at: number; end: number };
   private flash: number[];
+  /** The word over the basket after a catch, and when it came. */
+  private word = { text: '', at: -9 };
   private hudAt = 0;
   private accEl = h('div', { class: 'round-btn accuracy', role: 'img' });
   private beatEl = h('div', { class: 'round-btn place beat-ring', role: 'img' });
-  private tempoEl = h('div', { class: 'round-btn place tempo-ring', role: 'img' });
+  private tempoEl = h('div', { class: 'round-btn speed tempo-ring', role: 'img' });
   private shown = { acc: '', beat: '', tempo: '' };
   private readonly target: number;
   private over = false;
@@ -186,11 +193,9 @@ export class RhythmMode extends HeroMode {
     const tempo = startTempo(p.progress.rhythm[L.def.world], recentTyping(p, 14).cpm, localDate());
     const weights = laneWeights(this.lanes.map((l) => recentAccuracy(p.stats.keys[l.letters[0]])));
     this.song = new Song({ lanes: this.lanes, changes: this.changes, weights, tempo, rand: () => L.rng.next(), roundS });
-    this.planned = Math.round((roundS * tempo) / 60);
     this.target = rhythmTarget(L.def.world);
     this.flash = this.lanes.map(() => -9);
-    // He starts under the right index finger's lane.
-    this.dash.lane = Math.max(0, this.lanes.findIndex((l) => l.finger > 4));
+    this.basket = { from: this.L.vw / 2, lane: null, at: -1, end: -1 };
     stamps.clear();
   }
 
@@ -205,44 +210,59 @@ export class RhythmMode extends HeroMode {
 
   /** The tempo playing now, letters a minute. */
   get tempo(): number {
-    const d = this.falls[this.cur]?.d ?? this.song.drops[this.song.drops.length - 1];
-    return this.song.phrases[d?.phrase ?? 0].tempo;
+    return this.song.phrases[this.dueDrop?.phrase ?? 0].tempo;
   }
 
-  /** Right keys of all keys pressed (early ones do not count); 1 before any. */
+  /** The next drop due, else the last one. */
+  private get dueDrop(): Drop | undefined {
+    return this.falls[this.cur]?.d ?? this.song.drops[this.song.drops.length - 1];
+  }
+
+  /** Right keys of all keys pressed; 1 before any. */
   get accuracy(): number {
     return this.ok + this.wrong ? this.ok / (this.ok + this.wrong) : 1;
   }
 
   /** Letters due so far (caught or missed). */
   get due(): number {
-    return this.landings.length;
+    return this.cur;
   }
 
-  /** The round's rhythm (0-100), null with too few landings or without time pressure. */
+  /** The round's rhythm (0-100), null with too few letters or without time pressure. */
   get score(): number | null {
     return this.L.noPressure ? null : beatScore(this.landings, this.accuracy);
-  }
-
-  /** The basket's fill picture now (0-4). */
-  get fill(): number {
-    return basketFill(this.caught, this.planned);
   }
 
   /** The middle of lane `i`: the lanes spread over the middle of the stage. */
   private laneX(i: number): number {
     const n = this.lanes.length;
-    const gap = Math.min(LANE_GAP, (this.L.vw * 0.7) / Math.max(1, n - 1));
+    const gap = Math.min(LANE_GAP, (this.L.vw * 0.6) / Math.max(1, n - 1));
     return this.L.vw / 2 + (i - (n - 1) / 2) * gap;
   }
 
-  /** The basket's rim: where letters land. */
-  private get rimY(): number {
-    return this.heroY - this.heroSize * HOLD_AT;
+  /** The basket's bottom: at the character's feet. */
+  private get basketBottom(): number {
+    return this.heroY - 4;
   }
 
-  private get groundY(): number {
-    return this.heroY - 6;
+  /** The catch band's lower edge: it stays there while the band grows upwards. */
+  private get bandBottom(): number {
+    return this.basketBottom - BASKET_H * BAND_AT;
+  }
+
+  /** A drop's fall speed (units a second): it is in the middle of the band on its beat. */
+  private speed(d: Drop): number {
+    return (this.bandBottom - FALL_TOP) / (d.land - d.release + d.w * d.T);
+  }
+
+  /** The catch band of a drop: its top and bottom. */
+  private band(d: Drop): { top: number; bottom: number } {
+    return { top: this.bandBottom - 2 * this.speed(d) * d.w * d.T, bottom: this.bandBottom };
+  }
+
+  /** How high a letter is now: from its cloud through the band and on below the stage. */
+  private fallY(f: Fall): number {
+    return FALL_TOP + this.speed(f.d) * (this.songT - f.d.release);
   }
 
   /** Song seconds at a key's time (`performance.now()` ms). */
@@ -273,20 +293,29 @@ export class RhythmMode extends HeroMode {
     this.scroll += dt * SWAY;
     if (this.over) return;
     const a = this.active;
-    // Without time pressure the song waits while the due letter sits on the basket's rim.
-    const next = this.songT + dt;
-    this.songT = this.L.noPressure && a && a.caught === null && next > a.d.land ? Math.max(this.songT, a.d.land) : next;
+    // Without time pressure, and after a miss, the song waits while the due letter is in the middle of the band.
+    const next = this.songT + this.advance(dt);
+    const waits = (this.L.noPressure || this.recover) && a && a.caught === null && next > a.d.land;
+    this.songT = waits ? Math.max(this.songT, a.d.land) : next;
+    if (waits && this.recover?.phase === 'glide') {
+      this.recover.phase = 'ready';
+      this.tell(t('rhythm.goOn'), 3);
+    }
     this.perfAt = performance.now();
     this.song.tick(this.songT, () => this.decide());
-    while (this.falls.length < this.song.drops.length) this.falls.push({ d: this.song.drops[this.falls.length], tg: null, caught: null, missed: false, inBasket: false, bounce: 0, splat: null, blink: -9 });
-    // The window passed: the letter is missed (no error), the next one is due.
-    for (let f = this.active; f && f.caught === null && !this.L.noPressure && this.songT > f.d.land + ZONE_AFTER * f.d.T; f = this.active) this.miss(f);
-    for (const f of this.falls) this.settle(f);
+    while (this.falls.length < this.song.drops.length) this.falls.push({ d: this.song.drops[this.falls.length], tg: null, caught: null, caughtY: 0, missed: false, inBasket: false });
+    // The window passed: the letter is missed (no error) and falls on, the next one is due.
+    for (let f = this.active; f && f.caught === null && !this.L.noPressure && this.songT > f.d.land + f.d.w * f.d.T; f = this.active) this.miss(f);
+    for (const f of this.falls) {
+      if (f.caught !== null && !f.inBasket && this.songT >= f.caught + DROP_IN_S) {
+        f.inBasket = true;
+        this.caught++;
+      }
+    }
     const now = this.active;
     if (now && !now.tg && this.songT >= now.d.release) now.tg = this.L.core.add(now.d.letter, {});
-    const o = audio.beatOut();
+    const o = this.recover ? null : audio.beatOut();
     if (o) this.music.schedule(o, this.song.bars, this.songT, this.songT + AHEAD_S, this.perf);
-    this.heroX = this.tapkoX();
     if ((this.hudAt -= dt) <= 0) {
       this.hudAt = 0.25;
       this.paintHud();
@@ -294,33 +323,48 @@ export class RhythmMode extends HeroMode {
     if (this.song.closed && !this.active && this.songT >= this.song.end + TAIL_S) this.over = true;
   }
 
-  /** A caught letter reaches the basket on its landing; a missed one splats when it reaches the ground. */
-  private settle(f: Fall): void {
-    if (f.caught !== null && !f.inBasket && this.songT >= Math.max(f.d.land, f.caught)) {
-      f.inBasket = true;
-      this.caught++;
+  /** Song seconds for `dt` real ones: none while everything stands still after a miss, faster while the next letter glides into the band. */
+  private advance(dt: number): number {
+    const r = this.recover;
+    if (!r || r.phase === 'ready') return dt;
+    if (r.phase === 'hold') {
+      if ((r.left -= dt) > 0) return 0;
+      const a = this.active;
+      const gap = a ? Math.max(0, a.d.land - this.songT) : 0;
+      r.phase = 'glide';
+      r.speed = Math.max(1, gap / GLIDE_S);
     }
-    if (f.missed && f.splat === null && this.fallY(f) >= this.groundY) {
-      f.splat = this.songT;
-      this.L.sfx('plop');
-    }
+    return dt * r.speed;
   }
 
+  /** A letter passed the band: it falls on, everything stops, and the next one comes into the band to wait for its key. */
   private miss(f: Fall): void {
     f.missed = true;
     if (f.tg) this.L.core.release(f.tg);
     this.L.core.prune();
-    const x = this.laneX(f.d.lane);
-    if (!this.L.reduceMotion && Math.abs(this.tapkoX() - x) < 70) f.bounce = x <= this.tapkoX() ? -1 : 1;
+    this.flash[f.d.lane] = this.songT;
     this.surprised(0.7);
     this.resolve(f, null);
+    if (this.active) {
+      this.recover = { phase: 'hold', left: HOLD_S, speed: 1 };
+      this.tell(t('rhythm.hold'), 2);
+    }
   }
 
-  /** A letter is caught (offset from its landing, seconds) or missed (null): the beat measure and the phrase count take it, the next one is due. */
-  private resolve(f: Fall, offset: number | null): void {
+  /** A line that must be seen now: it replaces whatever the bubble says. */
+  private tell(text: string, seconds: number): void {
+    this.L.hideBubble();
+    this.L.say(text, seconds);
+  }
+
+  /**
+   * A letter is caught (offset from its beat, seconds) or missed (null): the beat measure and the phrase
+   * count take it, the next one is due. `measured` false: caught while the song waited, out of rhythm's count.
+   */
+  private resolve(f: Fall, offset: number | null, measured = true): void {
     const c = this.count(f.d.phrase);
     c.due++;
-    this.landings.push({ offset, T: f.d.T });
+    if (measured) this.landings.push({ offset, T: f.d.T });
     this.cur++;
     const n = this.active;
     if (n && !n.tg && this.songT >= n.d.release) n.tg = this.L.core.add(n.d.letter, {});
@@ -334,15 +378,36 @@ export class RhythmMode extends HeroMode {
     }
   }
 
-  waitKey(ch: string, at: number): boolean {
+  /** The lane whose letter `ch` is now, or -1. */
+  private laneOf(ch: string): number {
+    return this.lanes.findIndex((_, i) => this.cloudLetter(i) === ch);
+  }
+
+  /**
+   * A lane's letter slides the basket under its lane. The next letter's key counts only while the
+   * letter is in the band: before or after it, it is an error (the first early one says to wait).
+   */
+  checkKey(ch: string, at: number): 'pass' | 'wait' | 'wrong' {
+    // After a miss the keys wait until the next letter is in the band.
+    if (this.recover && this.recover.phase !== 'ready') return 'wait';
+    const lane = this.laneOf(ch);
+    if (lane >= 0) this.slideTo(lane);
     const f = this.active;
-    if (!f?.tg || ch !== f.d.letter || judge(this.songAt(at), f.d.land, f.d.T) !== 'early') return false;
-    f.blink = this.songT;
-    if (!this.toldWait) {
+    if (!f?.tg) return lane >= 0 ? 'wait' : 'pass';
+    if (ch !== f.d.letter) return 'pass';
+    const when = judge(this.songAt(at), f.d.land, f.d.T, f.d.w);
+    if (when === 'catch') return 'pass';
+    if (when === 'early' && !this.toldWait) {
       this.toldWait = true;
       this.L.say(t('rhythm.wait'), 4);
     }
-    return true;
+    return 'wrong';
+  }
+
+  private slideTo(lane: number): void {
+    if (this.basket.lane === lane && this.songT >= this.basket.end) return;
+    const end = this.L.reduceMotion ? this.songT : this.songT + SLIDE_S;
+    this.basket = { from: this.basketX(), lane, at: this.songT, end };
   }
 
   onKey(_expected: string, _ok: boolean, _rt: number, at: number): void {
@@ -353,25 +418,27 @@ export class RhythmMode extends HeroMode {
     const f = this.active;
     if (!f || f.tg !== tg) return;
     const T = f.d.T;
-    const at = this.songAt(this.keyAt);
-    const offset = Math.max(-ZONE_BEFORE * T, Math.min(ZONE_AFTER * T, at - f.d.land));
-    f.caught = f.d.land + offset;
+    // Caught while the song waited (after a miss, or without time pressure): right on its beat, out of rhythm's count.
+    const waited = !!this.recover || this.L.noPressure;
+    this.recover = null;
+    const offset = waited ? 0 : Math.max(-f.d.w * T, Math.min(f.d.w * T, this.songAt(this.keyAt) - f.d.land));
+    f.caught = this.songT;
+    f.caughtY = this.fallY(f);
     this.ok++;
     const c = this.count(f.d.phrase);
     c.ok++;
     c.caught++;
-    if (Math.abs(offset) <= IN_TIME * T) {
+    const near = Math.abs(offset) <= IN_TIME * T;
+    if (near) {
       this.inTime++;
       this.happy();
-      this.L.particles.emit(this.laneX(f.d.lane), this.rimY - 20, 6, 'sparkle', ['#ffd54a', '#fff3b0'], 90, 9, 0.6);
+      this.L.particles.emit(this.laneX(f.d.lane), this.bandBottom, 6, 'sparkle', ['#ffd54a', '#fff3b0'], 90, 9, 0.6);
     }
-    // Tapko dashes under the lane, there by the landing (or at once after it).
-    const end = Math.max(this.songT + 0.05, Math.min(f.d.land, this.songT + DASH_S));
-    this.dash = { from: this.tapkoX(), lane: f.d.lane, at: this.songT, end: this.L.reduceMotion ? this.songT : end };
+    if (this.L.rng.next() < (near ? GREAT_SHARE : GOOD_SHARE)) this.word = { text: pickLine(near ? 'rhythm.great' : 'rhythm.good'), at: this.songT };
     const o = audio.beatOut();
     if (o) this.music.bell(o, this.song.bars, Math.max(f.d.land, this.songT), this.perf);
     this.L.core.prune();
-    this.resolve(f, offset);
+    this.resolve(f, offset, !waited);
   }
 
   onWrong(tg: Target | null): void {
@@ -383,51 +450,37 @@ export class RhythmMode extends HeroMode {
     this.flash[f.d.lane] = this.songT;
   }
 
-  /** Tapko's x: on his way under a lane, or where his last dash ended. */
-  private tapkoX(): number {
-    const { from, lane, at, end } = this.dash;
-    const to = this.laneX(lane);
+  /** The basket's x: on its way under a lane, or where its last slide ended. */
+  private basketX(): number {
+    const { from, lane, at, end } = this.basket;
+    const to = lane === null ? this.L.vw / 2 : this.laneX(lane);
     if (this.songT >= end) return to;
     return from + (to - from) * ease.outQuad(Math.max(0, (this.songT - at) / (end - at)));
   }
 
-  /** How high a letter is now: from its cloud down to the basket's rim at its landing, on at the same speed below. */
-  private fallY(f: Fall): number {
-    const top = CLOUD_Y + 14, rim = this.rimY - 8;
-    const k = (this.songT - f.d.release) / (f.d.land - f.d.release);
-    return top + (rim - top) * k;
-  }
-
-  /** Where a letter is drawn: in its lane, a missed one bouncing off the basket first. */
-  private fallAt(f: Fall): { x: number; y: number } {
-    const x = this.laneX(f.d.lane), y = Math.min(this.groundY, this.fallY(f));
-    if (!f.bounce || this.songT <= f.d.land) return { x, y };
-    const k = Math.min(1, (this.songT - f.d.land) / BOUNCE_S);
-    const rim = this.rimY - 8;
-    return { x: x + f.bounce * 110 * k, y: Math.min(this.groundY, k < 1 ? rim - Math.sin(Math.PI * k) * 60 + (this.groundY - rim) * k * k : this.fallY(f)) };
-  }
-
-  /** The top bar: accuracy, rhythm (over the last landings; "listening" before enough) and the tempo. */
+  /** The top bar: accuracy and rhythm (a check at 100) and the tempo as the wave's ring. */
   private paintHud(): void {
     const acc = Math.round(this.accuracy * 100);
     if (`${acc}` !== this.shown.acc) {
       this.shown.acc = `${acc}`;
       const band = acc < 80 ? 'low' : acc < 90 ? 'mid' : 'high';
       this.accEl.className = `round-btn accuracy acc-${band}`;
-      this.accEl.innerHTML = roundTextSvg(`${acc}`, fillRing(accuracyFill(this.accuracy)));
+      const ring = fillRing(accuracyFill(this.accuracy));
+      this.accEl.innerHTML = acc === 100 ? roundSvg('check', ring) : roundTextSvg(`${acc}`, ring);
       this.label(this.accEl, t('rhythm.accuracy', { n: acc }));
     }
     const recent = this.landings.slice(-RING_WINDOW);
     const beat = this.L.noPressure ? null : beatScore(recent, this.accuracy, RING_MIN);
     if (`${beat}` !== this.shown.beat) {
       this.shown.beat = `${beat}`;
-      this.beatEl.innerHTML = roundTextSvg(beat === null ? '…' : `${beat}`, fillRing(beat === null ? 0 : beat / 100));
+      const ring = fillRing(beat === null ? 0 : beat / 100);
+      this.beatEl.innerHTML = beat === 100 ? roundSvg('check', ring) : roundTextSvg(beat === null ? '…' : `${beat}`, ring);
       this.label(this.beatEl, beat === null ? t('rhythm.listening') : t('rhythm.ring', { n: beat, word: t(`rhythm.words.${rhythmWord(beat)}`) }));
     }
     const tempo = this.tempo;
     if (`${tempo}` !== this.shown.tempo) {
       this.shown.tempo = `${tempo}`;
-      this.tempoEl.innerHTML = roundTextSvg(`${tempo}`, fillRing(tempo / 120));
+      this.tempoEl.innerHTML = roundSvg('wave', fillRing(tempo / 120));
       this.label(this.tempoEl, t('rhythm.tempo', { n: tempo }));
     }
   }
@@ -438,51 +491,64 @@ export class RhythmMode extends HeroMode {
   }
 
   render(g: G): void {
-    const pulse = this.L.reduceMotion ? 0 : this.pulse();
-    const rim = this.rimY, top = CLOUD_Y + 30;
     const a = this.active;
     this.lanes.forEach((lane, i) => {
-      const x = this.laneX(i), color = FINGER_COLORS[lane.finger];
+      const x = this.laneX(i);
       const flash = Math.max(0, 1 - (this.songT - this.flash[i]) / FLASH_S);
       g.save();
-      g.globalAlpha = 0.16 + (a?.d.lane === i ? 0.1 : 0) + 0.25 * flash;
-      g.fillStyle = color;
-      g.fillRect(x - STRIPE_W / 2, top, STRIPE_W, rim - top);
-      // The landing spot on the rim's height, beating with the music.
-      g.globalAlpha = 0.45 + 0.4 * pulse;
-      g.beginPath();
-      g.ellipse(x, rim, STRIPE_W / 2, 9, 0, 0, Math.PI * 2);
-      g.fill();
+      g.globalAlpha = 0.26 + (a?.d.lane === i ? 0.1 : 0) + 0.3 * flash;
+      g.fillStyle = FINGER_COLORS[lane.finger];
+      g.fillRect(x - STRIPE_W / 2, CLOUD_Y + 30, STRIPE_W, VH - CLOUD_Y - 30);
       g.restore();
     });
+    this.drawBand(g);
     this.lanes.forEach((_, i) => this.drawCloud(g, i));
     for (let k = Math.max(0, this.cur - 12); k < this.falls.length; k++) {
       const f = this.falls[k];
       if (this.songT < f.d.release || f.inBasket) continue;
-      if (f.splat !== null) {
-        this.drawSplat(g, f);
+      if (f.caught !== null) {
+        this.drawDroppingIn(g, f);
         continue;
       }
-      const { x, y } = this.fallAt(f);
-      if (f === a && f.tg) {
-        // The next letter: the word label, a soft white ring while it blinks "wait".
-        const blink = this.songT - f.blink < BLINK_S ? 1 - (this.songT - f.blink) / BLINK_S : 0;
-        if (blink > 0) {
-          g.save();
-          g.globalAlpha = blink;
-          g.strokeStyle = '#ffffff';
-          g.lineWidth = 6;
-          g.beginPath();
-          g.arc(x, y, DISC_R + 14 + (1 - blink) * 10, 0, Math.PI * 2);
-          g.stroke();
-          g.restore();
-        }
-        this.L.label(g, f.tg, x, y, LABEL);
-      } else this.drawLetter(g, f.d.letter, FINGER_COLORS[this.lanes[f.d.lane].finger], x, y);
+      const y = this.fallY(f);
+      if (y > VH + DISC_R) continue;
+      const x = this.laneX(f.d.lane);
+      const color = FINGER_COLORS[this.lanes[f.d.lane].finger];
+      const inBand = f === a && judge(this.songT, f.d.land, f.d.T, f.d.w) === 'catch';
+      if (inBand) this.drawRinged(g, f.d.letter, color, x, y);
+      else this.drawSoft(g, f.d.letter, x, y);
     }
     this.drawHero(g);
-    const bx = this.tapkoX(), by = rim - BASKET_H * RIM_AT;
-    drawSprite(g, BASKETS[this.fill], bx, by + BASKET_H / 2, BASKET_H, {}, (c, w, hh) => {
+    this.drawBasket(g);
+    this.drawWord(g);
+    this.drawStopLine(g);
+  }
+
+  /** The glowing catch band behind the basket, across the lanes, a little brighter on the beat. */
+  private drawBand(g: G): void {
+    const d = this.dueDrop;
+    if (!d) return;
+    const { top, bottom } = this.band(d);
+    const left = this.laneX(0) - STRIPE_W, right = this.laneX(this.lanes.length - 1) + STRIPE_W;
+    const glow = this.L.reduceMotion ? 0 : 0.15 * this.pulse();
+    const grad = g.createLinearGradient(0, top, 0, bottom);
+    grad.addColorStop(0, `rgba(${BAND_COLOR}, 0.12)`);
+    grad.addColorStop(0.5, `rgba(${BAND_COLOR}, ${0.62 + glow})`);
+    grad.addColorStop(1, `rgba(${BAND_COLOR}, 0.25)`);
+    g.save();
+    g.fillStyle = grad;
+    g.fillRect(left, top, right - left, bottom - top);
+    // Its edges: a white frame, 3 screen pixels at any stage size.
+    const w = 3 / g.getTransform().a;
+    g.strokeStyle = `rgb(${BAND_COLOR})`;
+    g.lineWidth = w;
+    g.strokeRect(left + w / 2, top + w / 2, right - left - w, bottom - top - w);
+    g.restore();
+  }
+
+  /** The basket, sliding under the lanes at the character's feet. */
+  private drawBasket(g: G): void {
+    drawSprite(g, BASKET, this.basketX(), this.basketBottom - BASKET_H / 2, BASKET_H, {}, (c, w, hh) => {
       c.fillStyle = '#d9a35b';
       c.strokeStyle = '#7a4a1e';
       c.lineWidth = 4;
@@ -496,6 +562,30 @@ export class RhythmMode extends HeroMode {
     });
   }
 
+  /** After a miss the bubble's line also stands over the band, by the letter that comes: "wait", then "go on". */
+  private drawStopLine(g: G): void {
+    const r = this.recover, d = this.active?.d;
+    if (!r || !d) return;
+    letterAt(g, t(r.phase === 'ready' ? 'rhythm.goOn' : 'rhythm.hold'), this.laneX(d.lane), this.band(d).top - 34, 34, '#ffffff', '#3b2416', 7);
+  }
+
+  /** The word after a catch, rising over the basket and fading. */
+  private drawWord(g: G): void {
+    const k = (this.songT - this.word.at) / WORD_S;
+    if (k < 0 || k >= 1 || !this.word.text) return;
+    g.save();
+    g.globalAlpha = 1 - k * k;
+    letterAt(g, this.word.text, this.basketX(), this.bandBottom - 40 - k * 30, 30, '#ffffff', '#3b2416', 6);
+    g.restore();
+  }
+
+  /** A caught letter dropping into the basket. */
+  private drawDroppingIn(g: G, f: Fall): void {
+    const k = Math.min(1, (this.songT - f.caught!) / DROP_IN_S);
+    const x = this.laneX(f.d.lane), y = f.caughtY + (this.basketBottom - BASKET_H * 0.5 - f.caughtY) * k;
+    this.drawRinged(g, f.d.letter, FINGER_COLORS[this.lanes[f.d.lane].finger], x, y, 1 - k);
+  }
+
   /** The music's beat now: 1 on a beat, fading to 0 before the next. */
   private pulse(): number {
     const bars = this.song.bars;
@@ -504,6 +594,12 @@ export class RhythmMode extends HeroMode {
     if (this.songT < bar.start) return 0;
     const k = ((this.songT - bar.start) / bar.beat) % 1;
     return (1 - k) ** 2;
+  }
+
+  /** The letter a lane's cloud carries now. */
+  private cloudLetter(i: number): string {
+    const done = this.changes.filter((c) => c.lane === i && c.at <= this.songT);
+    return done.length ? done[done.length - 1].letter : this.lanes[i].letters[0];
   }
 
   /** A lane's cloud with its letter; while the lane's letter changes, the old cloud dissolves and a new one comes down. */
@@ -543,10 +639,23 @@ export class RhythmMode extends HeroMode {
     }, alpha);
   }
 
-  /** A falling letter: a white disc ringed in its lane's colour, the letter dark on it. */
-  private drawLetter(g: G, letter: string, color: string, x: number, y: number): void {
+  /** A falling letter: a white disc with a soft blurred edge, the letter dark on it. */
+  private drawSoft(g: G, letter: string, x: number, y: number): void {
+    const s = DISC_R * 2 + 24;
+    stamp(g, `soft|${letter}`, x, y, s, s, (c) => {
+      const glow = c.createRadialGradient(s / 2, s / 2, DISC_R * 0.7, s / 2, s / 2, DISC_R + 11);
+      glow.addColorStop(0, 'rgba(255, 253, 246, 1)');
+      glow.addColorStop(1, 'rgba(255, 253, 246, 0)');
+      c.fillStyle = glow;
+      c.fillRect(0, 0, s, s);
+      letterAt(c, letter, s / 2, s / 2 + 2, LETTER, '#3b2416', 'rgba(0,0,0,0)', 0);
+    });
+  }
+
+  /** The next letter in the band: a white disc ringed in its lane's colour. */
+  private drawRinged(g: G, letter: string, color: string, x: number, y: number, alpha = 1): void {
     const s = DISC_R * 2 + 8;
-    stamp(g, `drop|${letter}|${color}`, x, y, s, s, (c) => {
+    stamp(g, `ring|${letter}|${color}`, x, y, s, s, (c) => {
       c.fillStyle = '#fffdf6';
       c.strokeStyle = color;
       c.lineWidth = 6;
@@ -555,21 +664,7 @@ export class RhythmMode extends HeroMode {
       c.fill();
       c.stroke();
       letterAt(c, letter, s / 2, s / 2 + 2, LETTER, '#3b2416', 'rgba(0,0,0,0)', 0);
-    });
-  }
-
-  /** A missed letter flat on the ground in its lane's colour, fading. */
-  private drawSplat(g: G, f: Fall): void {
-    const k = (this.songT - f.splat!) / SPLAT_S;
-    if (k >= 1) return;
-    const { x } = this.fallAt(f);
-    g.save();
-    g.globalAlpha = 1 - k;
-    g.fillStyle = FINGER_COLORS[this.lanes[f.d.lane].finger];
-    g.beginPath();
-    g.ellipse(x, this.groundY, DISC_R * (1.3 + 0.4 * k), DISC_R * 0.32, 0, 0, Math.PI * 2);
-    g.fill();
-    g.restore();
+    }, alpha);
   }
 
   progress(): number {

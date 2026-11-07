@@ -2,8 +2,9 @@ import { describe, expect, it } from 'vitest';
 import { LAYOUTS, fingerFor } from '../keyboard/layouts';
 import { Rng } from '../engine/rng';
 import {
-  CHANGE_S, PHRASE, TEMPI, accuracyCap, basketFill, beatScore, beatsPerLetter, fallSeconds, judge, laneLetter, laneSetup, laneWeights,
-  phraseLanes, phraseStep, planChanges, rhythmWord, Song, startTempo, stepTempo, targetTempo, type Landing, type Lane,
+  CHANGE_S, PHRASE, TEMPI, W_START, accuracyCap, beatScore, beatsPerLetter, earnsNote, fallSeconds, judge, laneLetter, laneSetup,
+  laneWeights, notesNow, phraseLanes, phraseStep, planChanges, rhythmWord, Song, startTempo, stepTempo, stepWindow, targetTempo, type Landing,
+  type Lane,
 } from './beat';
 
 const sk = LAYOUTS['sk-qwertz'];
@@ -67,13 +68,21 @@ describe('tempo', () => {
 });
 
 describe('catch window', () => {
-  it('counts from half a beat before the landing to a quarter after', () => {
-    expect(judge(9.49, 10, 1)).toBe('early');
-    expect(judge(9.5, 10, 1)).toBe('catch');
-    expect(judge(10.25, 10, 1)).toBe('catch');
-    expect(judge(10.26, 10, 1)).toBe('late');
-    // Windows of two landings never overlap.
-    expect(judge(10.4, 11, 1)).toBe('early');
+  it('reaches as far before the beat as after it', () => {
+    expect(judge(9.64, 10, 1, 0.35)).toBe('early');
+    expect(judge(9.65, 10, 1, 0.35)).toBe('catch');
+    expect(judge(10.35, 10, 1, 0.35)).toBe('catch');
+    expect(judge(10.36, 10, 1, 0.35)).toBe('late');
+    // Even the widest windows of two beats never overlap.
+    expect(judge(10.49, 11, 1, 0.5)).toBe('early');
+  });
+
+  it('grows after a step down, up to half a beat, and narrows back after a step up', () => {
+    expect(stepWindow(W_START, -1)).toBe(0.4);
+    expect(stepWindow(0.5, -1)).toBe(0.5);
+    expect(stepWindow(0.4, 1)).toBe(W_START);
+    expect(stepWindow(W_START, 1)).toBe(W_START);
+    expect(stepWindow(0.45, 0)).toBe(0.45);
   });
 });
 
@@ -102,6 +111,16 @@ describe('song', () => {
     }
     // Every letter leaves its cloud before it lands and after the song started.
     for (const d of s.drops) expect(d.land - d.release).toBeGreaterThan(d.T * 0.9);
+  });
+
+  it('a hard round grows a phrase for each step down, a third at most, and widens its window', () => {
+    const easy = playOut(song(world1, 60, 60), 0);
+    const hard = playOut(song(world1, 60, 60), -1);
+    expect(hard.roundS).toBeGreaterThan(easy.roundS);
+    expect(hard.roundS).toBeLessThanOrEqual(80);
+    expect(hard.drops[hard.drops.length - 1].land).toBeGreaterThan(easy.drops[easy.drops.length - 1].land);
+    expect(hard.phrases.map((p) => p.w).slice(0, 4)).toEqual([0.35, 0.4, 0.45, 0.5]);
+    for (const d of hard.drops) expect(d.w).toBe(hard.phrases[d.phrase].w);
   });
 
   it('starts with the index fingers in turn, then mirror pairs, then neighbours of one hand', () => {
@@ -176,8 +195,22 @@ describe('beat measure', () => {
   });
 });
 
-describe('basket', () => {
-  it('fills with the share caught and shows letters from the first catch', () => {
-    expect([0, 1, 20, 40, 60, 85, 200].map((c) => basketFill(c, 90))).toEqual([0, 1, 1, 2, 3, 4, 4]);
+describe('rhythm notes', () => {
+  it('a round with rhythm 80 and accuracy 95 % earns one', () => {
+    expect(earnsNote(80, 0.95)).toBe(true);
+    expect(earnsNote(79, 1)).toBe(false);
+    expect(earnsNote(100, 0.94)).toBe(false);
+    expect(earnsNote(null, 1)).toBe(false);
+  });
+
+  it('one fades for every three days without a round: played Monday, all on Thursday, one fewer on Friday', () => {
+    const monday = '2026-11-02';
+    expect(notesNow(5, monday, '2026-11-05')).toBe(5);
+    expect(notesNow(5, monday, '2026-11-06')).toBe(4);
+    expect(notesNow(5, monday, '2026-11-08')).toBe(4);
+    expect(notesNow(5, monday, '2026-11-09')).toBe(3);
+    expect(notesNow(5, monday, '2026-11-12')).toBe(2);
+    expect(notesNow(1, monday, '2026-12-30')).toBe(0);
+    expect(notesNow(0, null, '2026-11-06')).toBe(0);
   });
 });

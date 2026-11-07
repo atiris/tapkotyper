@@ -16,7 +16,7 @@ import type { AimMode } from '../game/modes/aim';
 import type { FreeTyped } from '../game/modes/freetype';
 import type { ParrotMode } from '../game/modes/parrot';
 import type { RhythmMode } from '../game/modes/rhythm';
-import { rhythmWord } from '../game/beat';
+import { earnsNote, notesNow, rhythmWord } from '../game/beat';
 import type { PlacementMode } from '../game/modes/placement';
 import { strongWeak } from '../learning/placement';
 import { activeKeys, keyMastery, recentAccuracy } from '../learning/lessons';
@@ -28,6 +28,7 @@ import { type Profile, SUPER_ID, type Surprise, type Task } from '../storage/sch
 import { isFinished, recordTaskRun } from '../share/task';
 import { localDate, recentTyping } from '../learning/stats';
 import { type Child, closeButton, h } from '../ui/dom';
+import { notePic } from '../ui/notes';
 import { type EndAction, type EndCardOpts, endCard, focusMain } from '../ui/end-card';
 import { keyLabel } from '../ui/keyboard-guide';
 import { badge, parrotBadge } from '../ui/badge';
@@ -235,6 +236,7 @@ function newsLine(news: News[]): Child[] | null {
     : n.kind === 'mastered' ? [null, t('end.keyMastered', { key: keyLabel(n.key) })]
     : n.kind === 'letter' ? [null, t('end.letterBetter', { key: keyLabel(n.key), before: pct(n.before), after: pct(n.after) })]
     : n.kind === 'journeyHome' ? [null, t(`end.journeyHome.${n.story}`)]
+    : n.kind === 'rhythmNote' ? [notePic(n.n, app.profile!.seed), t('end.rhythmNote')]
     : n.kind === 'tempoTop' ? [null, t('end.rhythmTop', { n: n.tempo })]
     : n.kind === 'beatBetter' ? [null, t('end.rhythmBetter')]
     : [null, t('end.faster')];
@@ -481,9 +483,10 @@ function showFreeDone(root: HTMLElement, typed: FreeTyped, params: LevelParams):
 }
 
 /**
- * The end of a Rytmus round: the basket at its fill; accuracy, rhythm with its word, the tempo held
+ * The end of a Rytmus round: the basket full of letters; accuracy, rhythm with its word, the tempo held
  * and the letters caught. The world keeps the tempo to start with next time, the rhythm and the
- * highest tempo; the node's check comes with the world's target tempo held accurately. No stars.
+ * highest tempo; the node's check comes with the world's target tempo held accurately; a great
+ * round adds a rhythm note to those left today. No stars.
  */
 function showRhythmDone(root: HTMLElement, def: LevelDef, r: LevelResult, mode: RhythmMode, params: LevelParams, surprise: Surprise | null): void {
   const p = app.profile!;
@@ -491,8 +494,14 @@ function showRhythmDone(root: HTMLElement, def: LevelDef, r: LevelResult, mode: 
   const score = mode.score, held = mode.held || mode.song.phrases[0].tempo;
   p.progress.rhythm[def.world] = { tempo: mode.tempo, at: localDate(), rhythm: score, top: Math.max(before?.top ?? 0, mode.held) };
   if (mode.reached && !p.progress.rhythmWon.includes(def.world)) p.progress.rhythmWon.push(def.world);
+  const today = localDate();
+  const kept = notesNow(p.progress.rhythmNotes, p.progress.rhythmNotesAt, today);
+  const note = earnsNote(score, r.accuracy);
+  p.progress.rhythmNotes = kept + (note ? 1 : 0);
+  p.progress.rhythmNotesAt = today;
   saveProfile();
   const news: News[] = [
+    ...(note ? [{ kind: 'rhythmNote', n: kept } as const] : []),
     ...(before && mode.held > before.top ? [{ kind: 'tempoTop', tempo: mode.held } as const] : []),
     ...(before?.rhythm != null && score !== null && score > before.rhythm ? [{ kind: 'beatBetter' } as const] : []),
     ...levelNews({ ...r, growth: null, trend: null }),
@@ -500,7 +509,7 @@ function showRhythmDone(root: HTMLElement, def: LevelDef, r: LevelResult, mode: 
   showEnd(root, {
     cls: 'rhythm-done',
     title: t('end.rhythmDone'),
-    picture: `obj-rhythm-basket-${mode.fill}`,
+    picture: 'obj-rhythm-basket-full',
     rows: [
       [t('end.accuracy'), `${pct(r.accuracy)} %`],
       [t('end.rhythm'), score === null ? '–' : t('end.rhythmScore', { n: score, word: t(`rhythm.words.${rhythmWord(score)}`) })],

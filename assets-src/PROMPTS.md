@@ -214,6 +214,11 @@ Notes from real Gemini runs; add new ones here.
   wide") changed almost nothing: the mud puddles stay 2.3 and 2.7 times wider than tall, the poles 1.7,
   3.3 and 3.9 times taller (the planet's posts are 3.1, 5.8 and 6.1). An object of a square picture keeps
   about its shape; plan for the game to scale it or accept the shape.
+- Fill levels of one container (Rytmus's basket, 2026-11-07): drawing each fill again from the empty
+  basket attached kept the basket but put the letters anywhere, so the steps did not follow each other.
+  Make the **full** picture first and each smaller fill by removing things from it in follow-ups of the
+  same chat ("only remove letters so that about N remain, change nothing else"), not by drawing each
+  variant again: what stays keeps its size and position.
 - Swapping one thing in a picture (the badger's notebook for a keyboard, the squirrel's backpack for a
   basket, 2026-10-31) worked best as a new picture in a new chat with the old one attached: "Redraw the
   attached picture with exactly the same ... Change only one thing: ...". Two animals made from the same
@@ -1338,29 +1343,29 @@ its physical shape; never "one moved finger" or "one stretched finger".
 ## 13. Rytmus (the beat game, `.specify/game/rhythm.md`)
 
 The basket Tapko holds and the letter clouds the letters fall from. The game draws every
-letter itself (in front of its cloud, falling, in the basket's heap it only shows the
-pictures), so the clouds stay empty and the basket's letters are only toy shapes.
+letter itself (in front of its cloud, falling), so the clouds stay empty and the basket's letters
+are only toy shapes.
 
-### Game objects (section 4 prompt)
+### Game objects (section 4 prompt, without its "friendly faces" sentence; "strictly front view, not tilted" instead of "side view facing right")
 The basket's five fill levels are one set (`SETS` in `scripts/assets.mjs`: one crop, so the
-pictures swap without a jump): make `-0` first, then each other one in a new chat with `-0`
-attached and "Redraw the attached basket in exactly the same style, size and position, the
-same flat magenta background. Change only one thing: FILL." The clouds are drawn mirrored too.
+pictures swap without a jump). Make the **full** basket `-4` first, then each smaller fill as a
+follow-up in the **same chat**, saved to its own file, that only removes letters from that picture:
+"Same picture, exactly the same basket and the same letters at exactly the same size and position.
+Only remove letters so that about N remain; where a letter was, the empty inside of the basket
+shows. Change nothing else." (N = 6 for `-3`, 4 for `-2`, 2 for `-1`; `-0` "remove all
+letters"). The basket is flat and shallow like a low tray, with no handles.
+The three clouds are compact, so a cloud drawn only a little wider than its lane stays off the
+lanes beside it; the game draws them mirrored too, for more variety.
 
-| File | OBJECT / FILL | BG |
+| File | OBJECT | BG |
 |---|---|---|
-| `obj-rhythm-basket-0.jpg` | ONE single wide, low, round woven wicker basket, empty, warm honey wicker (#D9A35B, lighter #F0C985, darker #B07B3A), a thick rolled rim, one small woven handle on the left and one on the right side of the rim, no handle over the top, seen from the front and a little from above so the empty inside shows; strictly front view, symmetrical; NO face, no eyes, no arms, no legs; NOTHING else: no letters, no fruit, no cloth, no ground | magenta |
-| `obj-rhythm-basket-1.jpg` | two chunky wooden toy letters lie inside, only their tops peeking over the rim, one orange (#E69F00) and one sky blue (#56B4E9) | magenta |
-| `obj-rhythm-basket-2.jpg` | four chunky wooden toy letters lie inside, peeking over the rim, orange (#E69F00), sky blue (#56B4E9), green (#009E73) and yellow (#F0C419) | magenta |
-| `obj-rhythm-basket-3.jpg` | six chunky wooden toy letters fill it up to the rim, orange (#E69F00), sky blue (#56B4E9), green (#009E73), yellow (#F0C419), blue (#0072B2) and pink (#CC79A7) | magenta |
-| `obj-rhythm-basket-4.jpg` | it is full: a heap of about twelve chunky wooden toy letters rises above the rim, in orange (#E69F00), sky blue (#56B4E9), green (#009E73), yellow (#F0C419), blue (#0072B2), red-orange (#D55E00), pink (#CC79A7) and lime (#8FBC3A); the heap stays inside the width of the basket (also the end card's picture) | magenta |
-| `obj-rhythm-cloud-1.jpg` | ONE single fluffy cartoon cloud, wide and low with three round puffs on top, soft white (#FFFFFF) with light blue-grey shading underneath (#DCE6F2), a soft dark-brown outline, a gently rounded flat bottom; NO face, no eyes, no rain, no sun; NOTHING else | magenta |
-| `obj-rhythm-cloud-2.jpg` | the same kind of cloud, round and taller: one big puff in the middle and a smaller one on each side | magenta |
-| `obj-rhythm-cloud-3.jpg` | the same kind of cloud, long and low: five small puffs in a row | magenta |
-| `obj-rhythm-cloud-4.jpg` | the same kind of cloud, lopsided: one big puff on the left and two smaller ones going down to the right | magenta |
-| `obj-rhythm-cloud-5.jpg` | the same kind of cloud, small and chubby: two round puffs side by side | magenta |
+| `obj-rhythm-basket-4.jpg` | ONE flat, shallow, wide woven wicker basket shaped like a low tray, warm honey wicker (#D9A35B, lighter #F0C985, darker #B07B3A), a thick rolled rim, NO handles at all, seen from the front and a little from above. In it lie about ten chunky wooden toy letters, each in its own color: orange #E69F00, sky blue #56B4E9, green #009E73, yellow #F0C419, blue #0072B2, red-orange #D55E00, pink #CC79A7, lime #8FBC3A; they stand loosely side by side, their tops peeking a little over the rim, all inside the basket's width. The basket symmetrical, not tilted; NO face, no eyes, no arms, no legs; nothing else: no fruit, no cloth, no ground (also the end card's picture) | magenta |
+| `obj-rhythm-basket-3.jpg`, `-2`, `-1`, `-0` | follow-ups of `-4` in its chat, removing letters (about 6, 4, 2, none) | magenta |
+| `obj-rhythm-cloud-1.jpg` | ONE single compact fluffy cartoon cloud, only about one and a half times as wide as it is tall, three round puffs with the middle one highest, soft white (#FFFFFF) with light blue-grey shading underneath (#DCE6F2), a soft dark-brown outline, a gently rounded flat bottom; NO face, no eyes, no rain, no sun; NOTHING else | magenta |
+| `obj-rhythm-cloud-2.jpg` | the same, one big round puff in the middle with one small puff on each side | magenta |
+| `obj-rhythm-cloud-3.jpg` | the same, two round puffs, a bigger one on the left and a smaller one on the right | magenta |
 
 ### Icon (section 9 icon prompt, attach `ui-act-super.jpg`)
 | File | ACTIVITY |
 |---|---|
-| `ui-act-rhythm.jpg` | a classic wooden pyramid metronome, front view: a tall narrow wooden body in warm honey wood (#D9A35B) with darker edges (#B07B3A), a cream front panel (#FFF3DC) with a few short dark tick marks, a thin dark pendulum arm with a small golden weight (#F2C14E) tilted a little to the right, a small square base; no face, no eyes, no numbers (the Rytmus node on the map and the get-ready card) |
+| `ui-act-rhythm.jpg` | a classic wooden pyramid metronome, front view: a tall narrow wooden body in warm honey wood (#D9A35B) with darker edges (#B07B3A), a cream front panel (#FFF3DC) with a few short dark tick marks, a thin dark pendulum arm with a small golden weight (#F2C14E) tilted a little to the right, a small square base; no face, no eyes, no numbers (the Rytmus node on the map and its game on the help page) |

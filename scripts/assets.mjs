@@ -31,10 +31,11 @@ const BAND_ROWS = 8;
 const STAMP_MAX = 640;
 const BG_WIDTH = 1920;
 // Picture sets that take one shared size and crop, so their frames lie on each other: the flying
-// parrot's wing beats (obj-parrot-flying, -2, -3, -4) and the poppy's phases (the stem stays put).
+// parrot's wing beats (obj-parrot-flying, -2, -3, -4), the poppy's phases (the stem stays put) and Rytmus's basket
+// in its five fills (its rim stays where the letters land).
 // `tone`: Gemini drew the frames apart, so they get one tone; the poppy's phases are edited from one
 // base and fade on purpose, and toning them would dull the flower's red.
-const SETS = [{ prefix: 'obj-parrot-flying', tone: true }, { prefix: 'obj-poppy-', tone: false }];
+const SETS = [{ prefix: 'obj-parrot-flying', tone: true }, { prefix: 'obj-poppy-', tone: false }, { prefix: 'obj-rhythm-basket-', tone: false }];
 // The start page's meadow (day and night) repeats across the window: its left and right edges are
 // blended into each other over this part of its width.
 const MEADOW = 'ui-start-meadow';

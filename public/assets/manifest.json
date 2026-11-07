@@ -1268,6 +1268,38 @@
    "w": 433,
    "h": 512
   },
+  "obj-rhythm-basket-0": {
+   "w": 512,
+   "h": 231
+  },
+  "obj-rhythm-basket-1": {
+   "w": 512,
+   "h": 231
+  },
+  "obj-rhythm-basket-2": {
+   "w": 512,
+   "h": 231
+  },
+  "obj-rhythm-basket-3": {
+   "w": 512,
+   "h": 231
+  },
+  "obj-rhythm-basket-4": {
+   "w": 512,
+   "h": 231
+  },
+  "obj-rhythm-cloud-1": {
+   "w": 512,
+   "h": 314
+  },
+  "obj-rhythm-cloud-2": {
+   "w": 512,
+   "h": 274
+  },
+  "obj-rhythm-cloud-3": {
+   "w": 512,
+   "h": 315
+  },
   "obj-robot-small-1": {
    "w": 438,
    "h": 512
@@ -1734,6 +1766,10 @@
   },
   "ui-act-remember": {
    "w": 502,
+   "h": 512
+  },
+  "ui-act-rhythm": {
+   "w": 338,
    "h": 512
   },
   "ui-act-ribbon": {

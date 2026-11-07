@@ -19,7 +19,9 @@
 - **Letters:** the world's letters (those of its last level) that are ready. **Lanes:** one per finger
   of them, never the thumbs, in keyboard order from the left little finger; each lane is coloured like
   its finger on the on-screen keyboard. On top of each lane a white cloud carries the lane's letter.
-  The clouds are pictures (five shapes, also mirrored), the letters are drawn on them.
+  The clouds are pictures (three compact shapes, also mirrored), each only a little wider than its
+  lane so it never reaches over the lanes beside it; the letters are drawn on them. The basket is a
+  flat, shallow tray without handles.
 - **Fall:** letters leave their clouds and fall down their lanes at an even speed; exactly one lands on
   each beat of the music, on the basket's rim. They fall fast enough that the next one is always in the
   air when one lands. The next letter to land is clearly marked: it is a word label like the targets

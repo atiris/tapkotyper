@@ -23,14 +23,14 @@ import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
 import { HeroMode, sideFeet } from './kit/hero';
 
-/** Clouds: their middle's height, their picture's height and the pictures (five, also drawn mirrored). */
+/** Clouds: their middle's height, their width (a little wider than a lane, never over the lanes beside it) and the pictures (three, also drawn mirrored). */
 const CLOUD_Y = 84;
-const CLOUD_H = 100;
-const CLOUDS = [1, 2, 3, 4, 5].map((n) => `obj-rhythm-cloud-${n}`);
+const CLOUD_W = 106;
+const CLOUDS = [1, 2, 3].map((n) => `obj-rhythm-cloud-${n}`);
 /** The basket's five fill levels, its height, and where its rim lies in the picture (share of its height from the top). */
 const BASKETS = [0, 1, 2, 3, 4].map((n) => `obj-rhythm-basket-${n}`);
-const BASKET_H = 118;
-const RIM_AT = 0.32;
+const BASKET_H = 92;
+const RIM_AT = 0.42;
 /** Where Tapko holds the basket's rim, above his feet (share of his height). */
 const HOLD_AT = 0.36;
 /** A falling letter's disc radius, its letter size, and the letter's size on its cloud. */
@@ -161,8 +161,8 @@ export class RhythmMode extends HeroMode {
   /** Letters a round at its start tempo brings: the basket is full at about all of them. */
   private planned: number;
   private toldWait = false;
-  /** Tapko's dash: from where to where, from when to when (song seconds). */
-  private dash = { from: 0, to: 0, at: -1, end: -1 };
+  /** Tapko's dash: from where to which lane, from when to when (song seconds); the lane, not its x, so a resize keeps him under it. */
+  private dash = { from: 0, lane: 0, at: -1, end: -1 };
   private flash: number[];
   private hudAt = 0;
   private accEl = h('div', { class: 'round-btn accuracy', role: 'img' });
@@ -189,7 +189,8 @@ export class RhythmMode extends HeroMode {
     this.planned = Math.round((roundS * tempo) / 60);
     this.target = rhythmTarget(L.def.world);
     this.flash = this.lanes.map(() => -9);
-    this.dash.from = this.dash.to = this.heroX = this.laneX(this.lanes.findIndex((l) => l.finger > 4) || 0);
+    // He starts under the right index finger's lane.
+    this.dash.lane = Math.max(0, this.lanes.findIndex((l) => l.finger > 4));
     stamps.clear();
   }
 
@@ -365,9 +366,8 @@ export class RhythmMode extends HeroMode {
       this.L.particles.emit(this.laneX(f.d.lane), this.rimY - 20, 6, 'sparkle', ['#ffd54a', '#fff3b0'], 90, 9, 0.6);
     }
     // Tapko dashes under the lane, there by the landing (or at once after it).
-    const from = this.tapkoX(), to = this.laneX(f.d.lane);
     const end = Math.max(this.songT + 0.05, Math.min(f.d.land, this.songT + DASH_S));
-    this.dash = { from, to, at: this.songT, end: this.L.reduceMotion ? this.songT : end };
+    this.dash = { from: this.tapkoX(), lane: f.d.lane, at: this.songT, end: this.L.reduceMotion ? this.songT : end };
     const o = audio.beatOut();
     if (o) this.music.bell(o, this.song.bars, Math.max(f.d.land, this.songT), this.perf);
     this.L.core.prune();
@@ -385,7 +385,8 @@ export class RhythmMode extends HeroMode {
 
   /** Tapko's x: on his way under a lane, or where his last dash ended. */
   private tapkoX(): number {
-    const { from, to, at, end } = this.dash;
+    const { from, lane, at, end } = this.dash;
+    const to = this.laneX(lane);
     if (this.songT >= end) return to;
     return from + (to - from) * ease.outQuad(Math.max(0, (this.songT - at) / (end - at)));
   }
@@ -524,10 +525,10 @@ export class RhythmMode extends HeroMode {
 
   private cloudStamp(g: G, x: number, y: number, letter: string, look: { pic: number; flip: boolean }, lane: number, alpha: number): void {
     const name = CLOUDS[look.pic], img = sprite(name);
-    const w = img ? (CLOUD_H * img.naturalWidth) / img.naturalHeight : CLOUD_H * 1.6;
+    const w = CLOUD_W, h = img ? (w * img.naturalHeight) / img.naturalWidth : w / 1.5;
     const color = FINGER_COLORS[this.lanes[lane].finger];
-    stamp(g, `cloud|${name}|${!!img}|${look.flip}|${letter}|${color}`, x, y, w + 8, CLOUD_H + 8, (c) => {
-      drawSprite(c, name, w / 2 + 4, CLOUD_H / 2 + 4, CLOUD_H, { flip: look.flip }, (cc, ww, hh) => {
+    stamp(g, `cloud|${name}|${!!img}|${look.flip}|${letter}|${color}`, x, y, w + 8, h + 8, (c) => {
+      drawSprite(c, name, w / 2 + 4, h / 2 + 4, h, { flip: look.flip }, (cc, ww, hh) => {
         cc.fillStyle = '#ffffff';
         cc.strokeStyle = '#8a6a55';
         cc.lineWidth = 3;
@@ -538,7 +539,7 @@ export class RhythmMode extends HeroMode {
           cc.stroke();
         }
       });
-      letterAt(c, letter, w / 2 + 4, CLOUD_H / 2 + 8, CLOUD_LETTER, color, '#3b2416', 7);
+      letterAt(c, letter, w / 2 + 4, h / 2 + 8, Math.min(CLOUD_LETTER, h * 0.7), color, '#3b2416', 7);
     }, alpha);
   }
 

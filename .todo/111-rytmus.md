@@ -15,7 +15,9 @@ The owner's decisions of 2026-11-07 on the research `.research/learning/rhythm-m
    lands exactly when a letter lands (music generated from patterns on one clock); the catch window
    around the landing from the research; an uncaught letter splats on the ground (space worlds: falls
    over the edge - later); Tapko holds a basket and catches the letters in it.
-4. Generated pictures (not composed at runtime): the basket in 5 fill levels, at least 5 clouds (also
+4. Generated pictures (not composed at runtime): the basket in 5 fill levels (flat and shallow, no handles; the
+   full one with about 10 letters first, the others by removing letters from it in the same chat), 3 compact
+   clouds, each drawn only a little wider than its lane (also
    drawn mirrored). The falling letter is drawn in front of its cloud, readable.
 5. Higher stories: a lane's letter changes once (story 1), twice (story 2), three times (story 3) per
    round: the cloud dissolves and a new cloud with the new letter comes in.

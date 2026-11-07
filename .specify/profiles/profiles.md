@@ -76,6 +76,10 @@
   where nothing flies by, it is skipped. Four more choices aim at an accuracy instead, about
   98 % (4 stars), 97 % (3 or 4 stars), 92 % (2 stars) and 75 % (1 star), with wrong keys at random all
   through the level.
+  In [Rytmus](../game/rhythm.md) it presses each letter on its beat instead: without a mistake
+  every letter in the middle half of the band; a mistake lets a letter fall, a hesitation catches
+  one at the band's late edge; an accuracy choice catches that share in the middle half and the
+  rest out towards the band's edges, early or late (no wrong keys).
   Everything counts as the player's own typing:
   statistics, stars and paw charges. While it types, the button has a full red ring, like
   the other round buttons show their state; the same menu stops it. Only the temporary player has

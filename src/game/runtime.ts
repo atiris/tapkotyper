@@ -241,7 +241,7 @@ export class LevelRuntime {
       onBreak: (back, play) => opts.onBreak(back, play),
     }, def.kind === 'freetype' ? null : pauseBtn);
     if (this.pawsAllowed) this.paws = new Paws(this.state, this);
-    if (p.id === SUPER_ID && def.kind !== 'freetype') this.superHelp = new SuperHelp(this.state, { rng: this.rng, noPressure: this.noPressure, share: () => this.share(), type: (c) => this.onChar(c) });
+    if (p.id === SUPER_ID && def.kind !== 'freetype') this.superHelp = new SuperHelp(this.state, { rng: this.rng, noPressure: this.noPressure, share: () => this.share(), type: (c) => this.onChar(c), beat: () => this.mode.beat, beatDue: () => this.mode.beatDue() });
     if (def.kind === 'practice' || def.kind === 'aim') this.accuracyPics = [...this.words.focus].map((key) => ({ key, pic: accuracyPic(key) }));
     this.paintAccuracy();
     const hud = h('div', { class: 'hud' },

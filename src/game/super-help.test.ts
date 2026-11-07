@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { Rng } from '../engine/rng';
-import { type HelpHost, SuperHelper, slipMarks } from './super-help';
+import { BeatHelper, type HelpHost, type HelpPlan, SuperHelper, slipMarks } from './super-help';
 
 /** A level of `words` words that ends when they are typed or flown by; one flies by after a few seconds untyped. */
 function fakeLevel(words: string[], canMiss = true) {
@@ -80,5 +80,52 @@ describe('super help', () => {
 
   it('skips a hesitation where nothing flies by', () => {
     expect(play('m1h1', false).log).toEqual(['wrong@7']);
+  });
+});
+
+/**
+ * A beat game of `n` letters, one a second, window 0.35 beat each side: the helper's presses as
+ * offsets from their beats (in beats), or 'miss' for a letter the window passed without one.
+ */
+function beatRun(plan: HelpPlan, n = 40) {
+  const rng = new Rng(4);
+  const h = new BeatHelper(plan, () => rng.next());
+  const out: (number | 'miss')[] = [];
+  let i = 0, t = 0;
+  while (i < n) {
+    t += 0.01;
+    const land = i + 1;
+    if (t > land + 0.35) {
+      out.push('miss');
+      i++;
+      continue;
+    }
+    h.tick({ index: i, letter: 'f', untilBeat: land - t, w: 0.35, T: 1, waiting: false }, i / n, () => {
+      out.push(Math.round((t - land) * 100) / 100);
+      i++;
+    });
+  }
+  return out;
+}
+
+describe('beat help', () => {
+  const middle = (o: number | 'miss') => o !== 'miss' && Math.abs(o) <= 0.35 / 2 + 0.01;
+  it('without mistakes catches every letter in the middle of the band', () => {
+    expect(beatRun('clean').every(middle)).toBe(true);
+  });
+
+  it('a mistake lets one letter fall; a hesitation catches one at the band\'s late edge', () => {
+    expect(beatRun('m2').filter((o) => o === 'miss')).toHaveLength(2);
+    const run = beatRun('m1h1');
+    expect(run.filter((o) => o === 'miss')).toHaveLength(1);
+    expect(run.filter((o) => o !== 'miss' && o > 0.3)).toHaveLength(1);
+  });
+
+  it('an accuracy plan catches about that share in the middle and the rest out in the band', () => {
+    const run = beatRun('acc75', 200);
+    expect(run.every((o) => o !== 'miss' && Math.abs(o) <= 0.35)).toBe(true);
+    const share = run.filter(middle).length / run.length;
+    expect(share).toBeGreaterThan(0.65);
+    expect(share).toBeLessThan(0.85);
   });
 });

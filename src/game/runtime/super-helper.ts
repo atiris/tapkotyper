@@ -5,7 +5,7 @@ import type { TypedChar } from '../../input/input';
 import { SHIFT_L, activeKeys, isLetterKey, shiftKeyOf } from '../../learning/lessons';
 import { fillRing, paintRound, roundButton, roundPic } from '../../ui/hud';
 import { type MenuEntry, menuPanel } from '../../ui/menu';
-import { HELP_PLANS, type HelpHost, type HelpPlan, SuperHelper } from '../super-help';
+import { BeatHelper, type BeatDue, HELP_PLANS, type HelpHost, type HelpPlan, SuperHelper } from '../super-help';
 import type { LevelState } from './state';
 
 /** What the super help needs of the level besides its state. */
@@ -16,13 +16,16 @@ export interface SuperHost {
   share(): number;
   /** A key through the same handler as the child's, so everything counts as typed. */
   type(c: TypedChar): void;
+  /** A beat game (Rytmus): its letters are pressed on their beat; and the letter due now. */
+  beat(): boolean;
+  beatDue(): BeatDue | null;
 }
 
 /** The super player's help: the HUD button, its menu of how the game types for them, and the helper while it types. */
 export class SuperHelp {
   readonly btn: HTMLButtonElement;
   private closeMenu: ((refocus?: boolean) => void) | null = null;
-  private helper: SuperHelper | null = null;
+  private helper: SuperHelper | BeatHelper | null = null;
 
   constructor(private state: LevelState, private host: SuperHost) {
     this.btn = roundButton('super', 'lifebuoy', t('super.help.title'), () => this.toggleMenu());
@@ -33,7 +36,9 @@ export class SuperHelp {
 
   /** The helper types its next keys while the level runs. */
   tick(dt: number): void {
-    if (this.helper && !this.state.finished) this.helper.tick(dt, this.helpHost);
+    if (!this.helper || this.state.finished) return;
+    if (this.helper instanceof BeatHelper) this.helper.tick(this.host.beatDue(), this.host.share(), this.helpHost.press);
+    else this.helper.tick(dt, this.helpHost);
   }
 
   /** The menu: how the game types for the super player, or stop it. */
@@ -56,7 +61,8 @@ export class SuperHelp {
   }
 
   private start(plan: HelpPlan): void {
-    this.helper = new SuperHelper(plan, () => this.host.rng.next());
+    const rand = () => this.host.rng.next();
+    this.helper = this.host.beat() ? new BeatHelper(plan, rand) : new SuperHelper(plan, rand);
     this.paint();
   }
 

@@ -1,6 +1,7 @@
 import type { Sfx } from '../audio/audio';
 import { VH } from '../engine/loop';
 import type { G } from '../gfx/draw';
+import type { BeatDue } from './super-help';
 import type { Target } from './typing';
 import type { LevelRuntime } from './runtime';
 
@@ -118,6 +119,12 @@ export abstract class Mode {
   checkKey(_ch: string, _at: number): 'pass' | 'wait' | 'wrong' {
     return 'pass';
   }
+  /** A beat game (Rytmus): the letter due now for the super help to press on time; null in other games, and while nothing can be pressed. */
+  beatDue(): BeatDue | null {
+    return null;
+  }
+  /** The mode plays to a beat: the super help presses its letters on time instead of typing ahead. */
+  readonly beat: boolean = false;
   /** Every own key press for a target, before `onCorrect`, `onDone` or `onWrong`: the key expected, right or wrong, its reaction and time (ms). */
   onKey(_expected: string, _ok: boolean, _rt: number, _at: number): void {}
   onCorrect(_t: Target): void {}

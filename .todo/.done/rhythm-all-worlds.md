@@ -40,5 +40,8 @@ Owner's list in the chat of 2026-11-07, implemented right away in that session.
 - [x] Notes per world, random fade, chosen world music on menus
 - [x] Map: journey badge bottom right, keyboard bottom left, clickable world badge show
 - [x] Specs, texts, tests, browser check
-- [ ] Super help plays Rytmus (owner's later request): no mistakes = every catch in the band's middle;
+- [x] Super help plays Rytmus (owner's later request): no mistakes = every catch in the band's middle;
   N mistakes = N misses; an accuracy share = that share in the middle, the rest elsewhere in the band
+
+## Done - 2026-11-07
+Everything above shipped. Left out: no new art per world (Rytmus uses each world's own background).

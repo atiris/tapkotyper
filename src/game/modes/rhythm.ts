@@ -21,6 +21,7 @@ import {
 } from '../beat';
 import { WORLDS, parrotKeys, rhythmLetters, rhythmRoundS, rhythmShape, rhythmTarget } from '../levels';
 import type { LevelRuntime } from '../runtime';
+import type { BeatDue } from '../super-help';
 import type { Target } from '../typing';
 import { HeroMode, sideFeet } from './kit/hero';
 
@@ -472,6 +473,16 @@ export class RhythmMode extends HeroMode {
       this.L.say(t('rhythm.wait'), 4);
     }
     return 'wrong';
+  }
+
+  readonly beat = true;
+
+  /** The letter the super help presses next: none while everything stands still after a miss; waiting while the song stands at it. */
+  beatDue(): BeatDue | null {
+    const f = this.active;
+    if (!f?.tg || this.over || (this.recover && this.recover.phase !== 'ready')) return null;
+    const waiting = (!!this.recover || this.L.noPressure) && this.songT >= f.d.land;
+    return { index: f.d.index, letter: f.d.letter, untilBeat: f.d.land - this.songT, w: f.d.w, T: f.d.T, waiting };
   }
 
   private slideTo(lane: number): void {

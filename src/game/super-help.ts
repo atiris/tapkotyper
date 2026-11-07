@@ -48,6 +48,60 @@ export interface HelpHost {
   canMiss(): boolean;
 }
 
+/** The letter a beat game (Rytmus) waits for: its number, its key, song seconds to its beat, its catch window (beats each side) and letter beat; `waiting`: the song stands at it until its key comes. */
+export interface BeatDue {
+  index: number;
+  letter: string;
+  untilBeat: number;
+  w: number;
+  T: number;
+  waiting: boolean;
+}
+
+/** Where a beat catch of the super help lands, as a share of the window from the beat: the middle half, or out towards the band's edges. */
+const BEAT_MIDDLE = 0.3;
+const BEAT_EDGE: [number, number] = [0.6, 0.95];
+
+/**
+ * Plays a beat game like a child of its plan: every letter caught in the middle of the band; a mistake
+ * lets a letter fall, a hesitation catches one at the band's late edge, an accuracy plan catches that
+ * share in the middle and the rest out towards the edges. The slips are spread evenly over the round.
+ */
+export class BeatHelper {
+  private slips: Slip[];
+  private marks: number[];
+  private middleShare: number;
+  /** The letter decided last, where in its window it is pressed (beats from its beat, null: let it fall), and whether it was pressed. */
+  private aim = { index: -1, at: 0 as number | null, done: false };
+
+  constructor(readonly plan: HelpPlan, private rand: () => number = Math.random) {
+    this.slips = [...HELP_PLANS[plan]];
+    this.marks = slipMarks(this.slips.length);
+    this.middleShare = HELP_ACCURACY[plan] ?? 1;
+  }
+
+  /** Where the next letter is pressed, in beats from its beat (null: it falls). */
+  private decide(progress: number, w: number): number | null {
+    if (this.marks.length && progress >= this.marks[0]) {
+      this.marks.shift();
+      return this.slips.shift() === 'mistake' ? null : BEAT_EDGE[1] * w;
+    }
+    if (this.rand() < this.middleShare) return (this.rand() * 2 - 1) * BEAT_MIDDLE * w;
+    const k = BEAT_EDGE[0] + this.rand() * (BEAT_EDGE[1] - BEAT_EDGE[0]);
+    return (this.rand() < 0.5 ? -k : k) * w;
+  }
+
+  tick(due: BeatDue | null, progress: number, press: (ch: string) => void): void {
+    if (!due) return;
+    if (due.index !== this.aim.index) this.aim = { index: due.index, at: this.decide(progress, due.w), done: false };
+    if (this.aim.done) return;
+    // A letter let fall is still pressed when the song stands waiting for it (after a miss, or without time pressure).
+    if (!due.waiting && (this.aim.at === null || -due.untilBeat < this.aim.at * due.T)) return;
+    this.aim.done = true;
+    press(due.letter);
+  }
+}
+
 /** Types a level like a child at about 200 characters per minute, with the slips of its plan spread evenly. */
 export class SuperHelper {
   private slips: Slip[];

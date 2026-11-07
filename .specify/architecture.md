@@ -12,7 +12,10 @@
   files in `public/assets/` (committed). Every asset has a procedural fallback (Canvas
   paths, gradients, CSS), so the app is complete and polished with any subset of assets.
 - Audio: sound effects are always synthesized with the Web Audio API; background music
-  uses the generated tracks when present, otherwise a synthesized calm loop.
+  uses the generated tracks when present, otherwise a synthesized calm loop. Rytmus makes its
+  own music from patterns, scheduled a moment ahead on the same clock as its falling letters and
+  aligned to the speaker with the audio output's time stamp; a key press is timed by its own
+  event time, not by when the page handled it.
 - Data: players' profiles in `localStorage`, versioned schema, export/import as `.json`;
   they are small and the game reads them synchronously everywhere.
   Tasks, results and moving a player travel as links with compressed data in the address

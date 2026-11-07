@@ -7,6 +7,7 @@
 - [target-practice.md](target-practice.md) - the target range: throws through rings of words that train the letters holding the next ones back
 - [heros-journey.md](heros-journey.md) - the hero's journey: one long, harder trip through the worlds of a story, closing it
 - [parrot.md](parrot.md) - the parrot: a few words many times over, parrots that fly away, the Parrot badge
+- [rhythm.md](rhythm.md) - Rytmus: letters fall to the beat into Tapko's basket in finger lanes; the beat measure of rhythm; built for the meadow
 - [sticky-finger.md](sticky-finger.md) - sticky finger: one finger holds its home key while the other hand types, the wait when it lets go, the keyboard's limit
 - [task-games.md](task-games.md) - how a teacher's task plays: its five games, its limit, dictionary, known letters and world
 - [super-obstacles.md](super-obstacles.md) - hedgehog volleys, fractured asteroid, great swamp, the dragons' take-off, the spell of awakening

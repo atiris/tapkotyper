@@ -188,14 +188,14 @@
   the whole card, with room above and below the stretch. Help is the level's "?", not a button
   here.
 - **The end card** is one fixed card for every end (a level, a practice, staying a while, the
-  target range, the parrot, free typing, the stretch break and a finished task), so a child
+  target range, the parrot, Rytmus, free typing, the stretch break and a finished task), so a child
   always finds the same things in the same place. It fits a small laptop screen (1024x600) and a
   phone without scrolling:
   - on top only the title of what ended and the round X;
   - in the middle on the left a square with one picture of what happened (the player's
     character after a level, the end's own picture elsewhere) and under it the stars (a level:
     five of the same size in one even row with a little room between them, the earned ones
-    popping in one right after another as the card shows) or one short value (minutes, hits, words, exercises); on the right at most three rows
+    popping in one right after another as the card shows) or one short value (minutes, hits, words, exercises); on the right at most three rows (four at the parrot and at Rytmus, whose order the owner set)
     "label - value" and at most one green line with the most important news; no narrator
     sentence, no chips, no exclamations besides the title;
   - when this run told a parent's surprise, a band with the open golden box and "Odomkol si

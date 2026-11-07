@@ -39,6 +39,9 @@ const BAND_AT = 2 / 3;
 const BAND_COLOR = '255, 255, 255';
 /** A falling letter's disc radius and its letter size, and the letter's size on its cloud. */
 const DISC_R = 28;
+/** The white line behind a letter's disc: how far it reaches past the disc on each side, and its width (units). */
+const MID_OUT = 14;
+const MID_W = 3;
 const LETTER = 38;
 const CLOUD_LETTER = 50;
 /** Width of a lane's stripe, and the widest gap between two lanes. */
@@ -549,7 +552,23 @@ export class RhythmMode extends HeroMode {
     g.strokeStyle = `rgb(${BAND_COLOR})`;
     g.lineWidth = w;
     g.strokeRect(left + w / 2, top + w / 2, right - left - w, bottom - top - w);
+    // Its middle, the beat: a solid white line to hold a letter's own middle line against.
+    const mid = (top + bottom) / 2;
+    g.beginPath();
+    g.moveTo(left, mid);
+    g.lineTo(right, mid);
+    g.stroke();
     g.restore();
+  }
+
+  /** A solid white line through a letter's middle, a little wider than its disc, to see how its middle stands to the band's. */
+  private midLine(c: G, s: number): void {
+    c.strokeStyle = '#ffffff';
+    c.lineWidth = MID_W;
+    c.beginPath();
+    c.moveTo(s / 2 - DISC_R - MID_OUT, s / 2);
+    c.lineTo(s / 2 + DISC_R + MID_OUT, s / 2);
+    c.stroke();
   }
 
   /** The basket, sliding under the lanes at the character's feet. */
@@ -645,10 +664,11 @@ export class RhythmMode extends HeroMode {
     }, alpha);
   }
 
-  /** A falling letter: a white disc with a soft blurred edge, the letter dark on it. */
+  /** A falling letter: a white disc with a soft blurred edge, the letter dark on it, its middle line behind. */
   private drawSoft(g: G, letter: string, x: number, y: number): void {
-    const s = DISC_R * 2 + 24;
+    const s = (DISC_R + MID_OUT) * 2 + 4;
     stamp(g, `soft|${letter}`, x, y, s, s, (c) => {
+      this.midLine(c, s);
       const glow = c.createRadialGradient(s / 2, s / 2, DISC_R * 0.7, s / 2, s / 2, DISC_R + 11);
       glow.addColorStop(0, 'rgba(255, 253, 246, 1)');
       glow.addColorStop(1, 'rgba(255, 253, 246, 0)');
@@ -658,10 +678,11 @@ export class RhythmMode extends HeroMode {
     });
   }
 
-  /** The next letter in the band: a white disc ringed in its lane's colour. */
+  /** The next letter in the band: a white disc ringed in its lane's colour, its middle line behind. */
   private drawRinged(g: G, letter: string, color: string, x: number, y: number, alpha = 1): void {
-    const s = DISC_R * 2 + 8;
+    const s = (DISC_R + MID_OUT) * 2 + 4;
     stamp(g, `ring|${letter}|${color}`, x, y, s, s, (c) => {
+      this.midLine(c, s);
       c.fillStyle = '#fffdf6';
       c.strokeStyle = color;
       c.lineWidth = 6;

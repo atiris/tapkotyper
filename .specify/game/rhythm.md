@@ -28,11 +28,12 @@
 - **The catch band:** behind the basket, across the lanes, a soft glowing band in the space bar's
   colour (white, which no finger lane uses). Its lower edge lies at two thirds of the basket's height
   from its bottom and stays there; the band reaches up by the distance a letter falls during the
-  catch window, framed by an opaque white line 3 pixels wide. The best moment, the beat of the music,
+  catch window, framed by an opaque white line 3 pixels wide, with one more such line across its middle. The best moment, the beat of the music,
   is a letter in the middle of the band.
 - **Fall:** letters leave their clouds and fall down their lanes at an even speed; exactly one is in the
   middle of the band on each beat. They fall fast enough that the next one is always in the air. A
-  falling letter is a white disc with a soft blurred edge and a dark letter; the next letter, while it
+  falling letter is a white disc with a soft blurred edge and a dark letter, a solid white line
+  through its middle a little wider than the disc, to hold against the band's middle line; the next letter, while it
   is in the band, has a ring in its lane's colour instead (its lane is a little brighter all along).
 - **Keys:** a lane's letter slides the basket under that lane, where it stays until the next key.
   - The next letter's key while that letter is in the band **catches** it: it drops into the basket

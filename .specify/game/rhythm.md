@@ -79,7 +79,7 @@
   this order: accuracy, rhythm ("82 zo 100, plynulý"), the highest tempo held for a whole phrase
   ("Tempo za minútu: 42 písmen") and "Chytené písmená: 80 z 90". The green line: a new highest tempo of
   this world, else a rhythm better than the world's last round, else the usual news (new letters).
-  "Hrať znova" and "Na mapu".
+  "Hrať znova" and "Mapa svetov".
 - **Kept per world:** the tempo to start with, the day, the last round's rhythm and the highest tempo
   held; the worlds with the check.
 

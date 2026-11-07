@@ -22,7 +22,7 @@
   closes the warm-up and goes back, Esc does the same) goes back to the map. It ends with the
   end card "Rozcvička hotová!" (the one card of every end, see [mechanics](../game/mechanics.md)):
   the football, the exercises done, the time, "Pokračovať v písaní", "Ešte sa rozcvičiť" (the
-  short warm-up once more) and "Na mapu"; the round X and Esc go back. A break ends the same way,
+  short warm-up once more) and "Mapa svetov"; the round X and Esc go back. A break ends the same way,
   with "Pokračovať" (back where it came from) in place of "Pokračovať v písaní", and no posture
   card of its own: the level's get-ready card shows it anyway.
 - Runs without an end of their own (free typing, staying a while in a level) say the break in

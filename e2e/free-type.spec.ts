@@ -57,7 +57,7 @@ test('just typing shows what was typed after a pause and counts nothing', async 
   await expect(card.locator('.ec-under')).toHaveText('2 words');
   await expect(card.locator('.ec-row', { hasText: 'Last sentence' })).toContainText('pes');
   await expect(card.locator('.ec-bot .btn.primary')).toContainText('Keep typing');
-  await expect(card.locator('.ec-bot .btn').last()).toContainText('To the map');
+  await expect(card.locator('.ec-bot .btn').last()).toContainText('World map');
   await page.locator('.end-card .ec-bot .btn').last().click();
   await expect(page.locator('.map-screen')).toBeVisible();
   const stats = await page.evaluate(() => JSON.parse(localStorage.getItem('tapkotyper:v1')!).profiles[0].stats);

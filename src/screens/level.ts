@@ -203,7 +203,7 @@ const letters = (n: number) => tn('end.letters', n);
 /** Whole minutes of typing; under a minute says so. */
 const minutes = (seconds: number) => seconds < 60 ? t('end.underMinute') : tn('end.minutes', Math.round(seconds / 60));
 
-/** The end card over the level's last frame, its main button focused, "To the map" last unless the end has its own way there; Esc and typing as in `peekable`. */
+/** The end card over the level's last frame, its main button focused, "World map" last unless the end has its own way there; Esc and typing as in `peekable`. */
 function showEnd(root: HTMLElement, o: Omit<EndCardOpts, 'onBreak'>, type?: () => void): void {
   const card = endCard({ toMap, ...o, onBreak: isBreakDue() ? (back) => openBreak(back) : null });
   const overlay = h('div', { class: 'overlay results' }, card);
@@ -435,7 +435,7 @@ function showParrotDone(root: HTMLElement, def: LevelDef, r: LevelResult, mode: 
  * The end of a placement check: the turtle, the letters the student can use now, the strong and weak
  * keys of this run as key caps and how many letters opened (or, when the timing looked like eyes on
  * the keys, the kind line); in super mode the touch-typing measures too. With weak keys the short
- * drill of them comes first; "To the map" shows the opened worlds.
+ * drill of them comes first; "World map" shows the opened worlds.
  */
 function showPlacementDone(root: HTMLElement, r: LevelResult, mode: PlacementMode): void {
   const p = app.profile!, check = mode.check;

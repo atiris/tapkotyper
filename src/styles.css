@@ -884,7 +884,7 @@ body:not(.gfx-simple) .level-screen.covered :is(.stage-wrap *, .overlay .tapko-s
 .ec-text { margin: 0; font-size: 1.15rem; line-height: 1.5; text-wrap: pretty; }
 .ec-text strong { color: var(--brand-ink); }
 .journey-panel .ec-pic .ec-img { width: 100%; height: 100%; }
-/* Giving up stands apart at the right end of the row, where the other ends have "To the map". */
+/* Giving up stands apart at the right end of the row, where the other ends have "World map". */
 .journey-panel .ec-bot .btn:last-child { margin-left: auto; }
 .ec-link { display: grid; gap: 0.3rem; margin-top: 0.4rem; }
 .ec-link .hint { min-height: 1.2em; }

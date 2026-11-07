@@ -32,7 +32,7 @@
   straight to the map; after something was typed the end card "Koniec voľného písania!" (the
   one card of every end, see [mechanics](mechanics.md)) shows the paper pinwheel, the words
   typed, the time and the last text shown, with "Písať ďalej" (a new free typing in the same
-  place) and "Na mapu". The end counts nothing in the statistics either.
+  place) and "Mapa svetov". The end counts nothing in the statistics either.
 - The typed text is never kept in the profile, the results or exported files; the end card
   shows the last text only until it closes.
 

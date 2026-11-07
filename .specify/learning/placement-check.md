@@ -74,7 +74,7 @@
   strong and weak keys of this run as key caps (each key with at least 5 presses, ranked by
   accuracy, then reaction; at most 5 of each; weak means under 94 % or slower than the limit;
   "none" when no key is weak), the green line with how many new keys opened, or the kind line.
-  With weak keys **Krátke cvičenie** (the two-minute drill of them) is the main button; "Na mapu"
+  With weak keys **Krátke cvičenie** (the two-minute drill of them) is the main button; "Mapa svetov"
   is last as on every end card and goes to the map, which shows the opened worlds; without weak
   keys it is the only button. The strong and weak keys come from this run only, so the card
   answers "how did it go now".

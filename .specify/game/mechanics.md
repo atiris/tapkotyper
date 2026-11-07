@@ -200,7 +200,7 @@
     sentence, no chips, no exclamations besides the title;
   - when this run told a parent's surprise, a band with the open golden box and "Odomkol si
     nové prekvapenie!"; its button opens the surprises told today over the card;
-  - at the bottom one orange main button first, at most two plain ones, and "Na mapu" always
+  - at the bottom one orange main button first, at most two plain ones, and "Mapa svetov" always
     last on the right.
   The main button is, in order: "Prestávka" when a break is due (back from it the card goes on
   without it), "Pozrieť prekvapenie", "Odovzdať" when a task was finished in this run, then the
@@ -220,7 +220,7 @@
     the key picker keeps the practice card. A task still running shows as a row with its minutes left. Speeds are always
   letters per minute. The pause card and "Really end it?" are not ends and stay as they are.
 - **Leaving a level** is said the same everywhere: "Stop typing" on the pause card of a story,
-  an exercise or a hero's journey, so the child learns one button; every end card leaves with "Na mapu". Once something was typed in
+  an exercise or a hero's journey, so the child learns one button; every end card leaves with "Mapa svetov". Once something was typed in
   the level (a right or a wrong key) it asks first: "Really end it? This level will not
   count.", with "Stop typing" and "Continue", Continue focused. Ending keeps the time and keys typed in
   the statistics. Free typing keeps its X and leaves without asking, nothing is scored there.

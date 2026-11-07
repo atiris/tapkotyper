@@ -30,9 +30,9 @@ const CLOUD_W = 106;
 const CLOUDS = [1, 2, 3].map((n) => `obj-rhythm-cloud-${n}`);
 /** Where a letter leaves its cloud. */
 const FALL_TOP = CLOUD_Y + 14;
-/** The basket's picture and its height. */
+/** The basket's picture and its width: a little wider than a lane's stripe. */
 const BASKET = 'obj-rhythm-basket';
-const BASKET_H = 50;
+const BASKET_W = 90;
 /** The catch band's lower edge: this share of the basket's height above its bottom. */
 const BAND_AT = 2 / 3;
 /** The band glows in the space bar's colour, which no finger lane uses. */
@@ -252,9 +252,15 @@ export class RhythmMode extends HeroMode {
     return this.heroY - 4;
   }
 
+  /** The basket's height, from its picture's shape at its width. */
+  private get basketH(): number {
+    const img = sprite(BASKET);
+    return img ? (BASKET_W * img.naturalHeight) / img.naturalWidth : BASKET_W / 1.5;
+  }
+
   /** The catch band's lower edge: it stays there while the band grows upwards. */
   private get bandBottom(): number {
-    return this.basketBottom - BASKET_H * BAND_AT;
+    return this.basketBottom - this.basketH * BAND_AT;
   }
 
   /** A drop's fall speed (units a second): it is in the middle of the band on its beat. */
@@ -573,7 +579,7 @@ export class RhythmMode extends HeroMode {
 
   /** The basket, sliding under the lanes at the character's feet. */
   private drawBasket(g: G): void {
-    drawSprite(g, BASKET, this.basketX(), this.basketBottom - BASKET_H / 2, BASKET_H, {}, (c, w, hh) => {
+    drawSprite(g, BASKET, this.basketX(), this.basketBottom - this.basketH / 2, this.basketH, {}, (c, w, hh) => {
       c.fillStyle = '#d9a35b';
       c.strokeStyle = '#7a4a1e';
       c.lineWidth = 4;
@@ -607,7 +613,7 @@ export class RhythmMode extends HeroMode {
   /** A caught letter dropping into the basket. */
   private drawDroppingIn(g: G, f: Fall): void {
     const k = Math.min(1, (this.songT - f.caught!) / DROP_IN_S);
-    const x = this.laneX(f.d.lane), y = f.caughtY + (this.basketBottom - BASKET_H * 0.5 - f.caughtY) * k;
+    const x = this.laneX(f.d.lane), y = f.caughtY + (this.basketBottom - this.basketH * 0.5 - f.caughtY) * k;
     this.drawRinged(g, f.d.letter, FINGER_COLORS[this.lanes[f.d.lane].finger], x, y, 1 - k);
   }
 

@@ -1356,7 +1356,7 @@ like a low tray, with no handles. The game keeps only its front, so a letter dro
 finished the edge: "Redraw the attached picture exactly the same ... its upper edge was cut off roughly,
 so finish it nicely: a clean, smooth, rounded upper edge ... round off the two ends of the rim. Do NOT
 add anything behind or above it." The rough cut alone looked bad in the game. A lower point of view,
-straight at the rim, would hide the back by itself (an idea for a later redraw). Letters sunk into the basket (only their upper half showing) could
+straight at the rim, would hide the back by itself (an idea for a later redraw). The game's basket is narrow (a little wider than a lane): a new chat with the front-only basket attached, "much NARROWER and a little deeper ... like a small round basket" (Gemini drew the back again), then a follow-up "remove the back half of the rim and the dark inside ... round off its two ends". Letters sunk into the basket (only their upper half showing) could
 not be drawn: five tries of a redraw with the full basket attached only changed the colours.
 `obj-rhythm-basket-full` (the end card) is a new chat with the empty basket attached: the same basket
 full of a heap of letters.

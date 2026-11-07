@@ -23,8 +23,8 @@
   compact shapes, also mirrored), each only a little wider than its lane so it never reaches over the
   lanes beside it, and they stand fairly close together; the letters are drawn on them.
 - **The character** stands at the left, as in the other levels, and does not move. The child moves
-  only the **basket**: a small, flat, shallow tray without handles at the height of the character's
-  feet.
+  only the **basket**: a small basket without handles, only a little wider than a lane, at the height
+  of the character's feet.
 - **The catch band:** behind the basket, across the lanes, a soft glowing band in the space bar's
   colour (white, which no finger lane uses). Its lower edge lies at two thirds of the basket's height
   from its bottom and stays there; the band reaches up by the distance a letter falls during the

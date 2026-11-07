@@ -5,7 +5,7 @@ import { compassElement } from '../gfx/compass';
 import { tapkoElement } from '../gfx/tapko';
 import { t, tList } from '../i18n/i18n';
 import { nickname } from '../storage/store';
-import { LEVELS, STORIES, type StoryDef, WORLDS, activityOf, aimOpen, aimWorld, isLevelReached, isWorldUnlocked, journeyId, journeyOpen, keysMissing, levelById, nextLevel, storyOpen, worldLevels, worldLock, worldName } from '../game/levels';
+import { LEVELS, RHYTHM_MIN_LETTERS, RHYTHM_WORLDS, STORIES, type StoryDef, WORLDS, activityOf, aimOpen, aimWorld, isLevelReached, isWorldUnlocked, journeyId, journeyOpen, keysMissing, levelById, nextLevel, rhythmOpen, storyOpen, worldLevels, worldLock, worldName } from '../game/levels';
 import { GUEST_ID, type Profile, SUPER_ID, type Surprise } from '../storage/schema';
 import { activeKeys, notReadyKeys } from '../learning/lessons';
 import { keyLabel } from '../ui/keyboard-guide';
@@ -284,6 +284,16 @@ function parrotNode(p: Profile, open: boolean, world: number): HTMLElement {
   }, pic ? h('img', { class: 'level-act', src: pic, alt: '' }) : icon('star', 'icon'), miniCheck(p.progress.parrotsWon.includes(world)));
 }
 
+/** Rytmus of a world: the metronome, and a check once its target tempo was held accurately; faded and closed until four letters are ready (the first world) or the world is finished. */
+function rhythmNode(p: Profile, world: number): HTMLElement {
+  const open = rhythmOpen(p, world);
+  const won = p.progress.rhythmWon.includes(world);
+  const pic = imageUrl('ui-act-rhythm');
+  const tip = open ? t('map.rhythmTip') : `${t('map.rhythmTip')} ${t(world === 0 ? 'map.rhythmOpens' : 'map.sideOpens', { n: RHYTHM_MIN_LETTERS })}`;
+  return h('button', { class: `level-node rhythm-node ${won ? 'done' : ''}`, type: 'button', disabled: !open, 'aria-label': t('rhythm.title'), tip, onClick: () => go('level', { id: 'rhythm', world }) },
+    pic ? h('img', { class: 'level-act', src: pic, alt: '' }) : icon('wave', 'icon'), miniCheck(won));
+}
+
 /** A node's best stars, small, only the earned ones: one in the middle, two side by side, three as a triangle, four two over two, five like the rings; none before the first finish, so the picture stands in the middle. */
 const miniStars = (stars: number) => (stars ? h('span', { class: `mini-stars n${stars}` }, ...Array.from({ length: stars }, () => h('i'))) : null);
 
@@ -347,7 +357,7 @@ function surprisesMark(p: Profile, world: number): HTMLElement | null {
 /**
  * One story: its title and its worlds as islands; a story still closed says when it opens.
  * A level reached without enough keys shows a key and lets the bubble say how many are missing
- * and which letters need accuracy (`held`); every world shows its target range and its parrot, open once the world is finished,
+ * and which letters need accuracy (`held`); every world shows its target range and its parrot, open once the world is finished, a world with Rytmus its metronome,
  * and the story's last world its hero's journey after the crown.
  */
 function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held: string, keysBubble: (n: number, world: number) => void): HTMLElement {
@@ -389,7 +399,8 @@ function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held:
       }) }, img ? h('img', { src: img, alt: '' }) : h('div', { class: 'island-fallback' }), open ? worldKeysButton(p, wi) : h('span', { class: 'lock', tip: lock || null }, icon('lock')),
         tier ? badge(wi, tier, true) : null, surprisesMark(p, wi)),
       h('h3', {}, `${wi + 1}. ${worldName(wi)}`),
-      h('div', { class: 'level-row' }, ...levels, wi === story.worlds[story.worlds.length - 1] ? journeyNode(p, story) : null, aimNode(p, aimOpen(p, wi), wi), parrotNode(p, aimOpen(p, wi), wi)));
+      h('div', { class: 'level-row' }, ...levels, wi === story.worlds[story.worlds.length - 1] ? journeyNode(p, story) : null, aimNode(p, aimOpen(p, wi), wi), parrotNode(p, aimOpen(p, wi), wi),
+        RHYTHM_WORLDS.includes(wi) ? rhythmNode(p, wi) : null));
   });
   const closed = !storyOpen(p, story);
   return h('section', { class: `story-row story-${story.id}` },

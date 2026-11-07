@@ -164,6 +164,8 @@
     "super": "finále",
     "aimTip": "Strelnica: tu si precvičíš písmená, ktoré ešte nepíšeš dosť presne. Keď ti k ďalšiemu písmenu chýba už len presnosť, tu ju získaš.",
     "parrotTip": "Papagáj: napíšeš pár slov veľakrát za sebou, kým ich prsty nebudú vedieť samy. Na rýchlosti nezáleží.",
+    "rhythmTip": "Rytmus: písmená padajú do Ťapkovho košíka. Stlač kláves presne vtedy, keď písmeno doletí. Tak sa naučíš písať rovnomerne.",
+    "rhythmOpens": "Otvorí sa, keď budeš vedieť aspoň {n} písmená.",
     "journeyTip": "Cesta hrdinu: dlhšia a ťažšia výprava cez všetky svety tohto príbehu.",
     "parrotHome": "papagáj je doma",
     "sideOpens": "Otvorí sa, keď dokončíš tento svet.",
@@ -507,7 +509,14 @@
     "placementWeak": "Na precvičenie",
     "placementNoWeak": "Žiadne, všetko išlo dobre!",
     "placementSignal": "Signál prstov (zhoda · kontrast)",
-    "placementEyes": "Zdá sa, že oči ti ešte pomáhajú hľadať klávesy. Lekcie naučia tvoje prsty všetko od začiatku, rýchlo."
+    "placementEyes": "Zdá sa, že oči ti ešte pomáhajú hľadať klávesy. Lekcie naučia tvoje prsty všetko od začiatku, rýchlo.",
+    "rhythmDone": "Rytmus dohraný!",
+    "rhythm": "Rytmus",
+    "rhythmScore": "{n} zo 100, {word}",
+    "tempo": "Tempo za minútu",
+    "caught": "Chytené písmená",
+    "rhythmTop": "Nové najvyššie tempo: {n} písmen za minútu!",
+    "rhythmBetter": "Rytmus je lepší ako minule."
   },
   "results": {
     "peek": "Pozrieť sa na hru (Esc)",
@@ -1730,6 +1739,7 @@
       "sticky": "**Lepkavý prst**: jeden prst sa prilepí na svoj kláves a drží ho, kým ostatné prsty píšu. Keď ho pustíš, hra počká, kým ho znova stlačíš.",
       "aim": "**Strelnica**: slová plné písmen, ktoré ti ešte nejdú. Každé slovo hodí vec cez krúžky až do terča.",
       "parrot": "**Papagáj**: pár slov veľakrát za sebou. Papagáj každé zopakuje. Za chybu príde slovo ešte dvakrát.",
+      "rhythm": "**Rytmus**: písmená padajú z obláčikov do Ťapkovho košíka, každé na úder hudby. Stlač kláves, keď písmeno doletí. Najprv presne, potom do rytmu.",
       "super": "**Finále**: piata, posledná hra sveta. Je to jeden z druhov hier vyššie, no môže byť trochu iný ako jeho bežný variant.",
       "timed": "Niektoré slová treba napísať včas, napríklad na rázcestí. Koľko času ostáva, ukazujú tieto hodiny: zelený kruh sa míňa a na konci bliká. Môže to byť trochu napínavé, ale čas sa prispôsobí tomu, ako rýchlo píšeš: kto píše pomalšie, dostane viac času."
     },
@@ -3614,6 +3624,27 @@
       "Prristaávam!",
       "Maááš krrekrry?"
     ]
+  },
+  "rhythm": {
+    "title": "Rytmus",
+    "start": "Z obláčikov padajú **písmená**. Keď písmeno doletí ku košíku, stlač jeho kláves a **Ťapko ho chytí** do košíka. Skôr to nejde: počúvaj hudbu a píš **do rytmu**. Najprv presne, potom do rytmu.",
+    "wait": "Počkaj, kým písmeno doletí ku košíku.",
+    "phrase": [
+      "Krásne v rytme!",
+      "Ako hodinky!",
+      "Tak sa to robí!",
+      "Pekne do taktu!"
+    ],
+    "accuracy": "Presnosť: {n} %",
+    "listening": "Rytmus: počúvam…",
+    "ring": "Rytmus: {n} zo 100, {word}",
+    "tempo": "Tempo: {n} písmen za minútu",
+    "words": {
+      "searching": "hľadáme rytmus",
+      "nice": "pekný rytmus",
+      "smooth": "plynulý",
+      "clockwork": "ako hodinky"
+    }
   },
   "journey": {
     "title": "Cesta hrdinu",

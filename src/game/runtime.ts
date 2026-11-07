@@ -197,7 +197,7 @@ export class LevelRuntime {
     // Practice (the custom exercise, key drills, tasks) has its own word language; story levels use the player's.
     this.words = wordSource(p, def.kind === 'practice' ? p.settings.ownWordLang : p.settings.wordLang, opts.keys, opts.chosen, def.focus, !!def.journey);
     // Enter comes with the right little finger's home key; drills, single letters, a teacher's task and the gate's code stay without it.
-    const enterOk = !opts.keys && !def.noSpace && this.style !== 'sticky' && def.kind !== 'freetype' && def.kind !== 'task' && def.kind !== 'aim' && def.kind !== 'parrot' && def.kind !== 'placement' && (opts.chosen ?? activeKeys(p)).includes(enterAfter(lay));
+    const enterOk = !opts.keys && !def.noSpace && this.style !== 'sticky' && def.kind !== 'freetype' && def.kind !== 'task' && def.kind !== 'aim' && def.kind !== 'parrot' && def.kind !== 'rhythm' && def.kind !== 'placement' && (opts.chosen ?? activeKeys(p)).includes(enterAfter(lay));
     this.enter = enterOk ? new EnterMarks(() => this.rng.next(), def.kind === 'practice' ? null : ENTER_MAX) : null;
     this.surprise = opts.stay || def.kind === 'placement' ? null : surpriseFor(p, def, !!opts.keys);
     this.count = def.count;
@@ -215,7 +215,7 @@ export class LevelRuntime {
     if (this.friends.fairy) this.el.dataset.fairy = 'melody';
     // A later part of a hero's journey starts with the bar where the parts before it left it.
     this.progressFill = h('div', { class: 'progress-fill', style: def.journey ? `width: ${Math.round(journeyProgress(def.journey, 0) * 100)}%` : '' });
-    const title = def.task ? def.task.title || t('task.untitled') : def.kind === 'placement' ? t('level.placement') : def.kind === 'practice' ? t(def.phrases ? 'level.ownText' : 'level.practice') : def.kind === 'freetype' ? t('level.freeType') : def.kind === 'aim' ? t('aim.title') : def.kind === 'parrot' ? t('parrot.title') : def.journey ? t('journey.title') : worldName(def.world);
+    const title = def.task ? def.task.title || t('task.untitled') : def.kind === 'placement' ? t('level.placement') : def.kind === 'practice' ? t(def.phrases ? 'level.ownText' : 'level.practice') : def.kind === 'freetype' ? t('level.freeType') : def.kind === 'aim' ? t('aim.title') : def.kind === 'parrot' ? t('parrot.title') : def.kind === 'rhythm' ? t('rhythm.title') : def.journey ? t('journey.title') : worldName(def.world);
     // Hiding the guide is the switch: the crossed keyboard, with the orange ring while the guide is hidden.
     const guideBtn = this.guideBtn = roundButton('control', 'keyboardOff', t('level.guide'), () => this.toggleGuide());
     tip(guideBtn, withKey(t('level.guide'), 'F2'));
@@ -249,7 +249,7 @@ export class LevelRuntime {
       this.superHelp?.btn,
       def.kind === 'practice' || def.index < 0 ? null : placeRing(def),
       h('b', { class: 'hud-title' }, title),
-      ...(def.kind === 'freetype' ? [] : [opts.stay ? null : h('div', { class: 'progress', tip: t('level.progress') }, this.progressFill), ...this.accuracyPics.map((a) => a.pic.el), def.kind === 'parrot' || unguided ? null : this.gauge.el]),
+      ...(def.kind === 'freetype' ? [] : [opts.stay ? null : h('div', { class: 'progress', tip: t('level.progress') }, this.progressFill), ...this.accuracyPics.map((a) => a.pic.el), def.kind === 'parrot' || def.kind === 'rhythm' || unguided ? null : this.gauge.el]),
       h('span', { class: 'hud-divider', 'aria-hidden': 'true' }),
       guideBtn, this.reading.btn, ...globalButtons(helpBtn));
     const stageWrap = h('div', { class: 'stage-wrap' });
@@ -300,7 +300,7 @@ export class LevelRuntime {
     const extra = this.mode.hud();
     if (extra) hud.querySelector('.hud-title')!.after(extra);
     hud.querySelector('.hud-title')!.after(...this.mode.rings());
-    if (this.free || def.kind === 'aim' || def.kind === 'parrot') {
+    if (this.free || def.kind === 'aim' || def.kind === 'parrot' || def.kind === 'rhythm') {
       this.saidEl = h('p', { class: 'sr-only', role: 'status', 'aria-live': 'polite' });
       stageWrap.append(this.saidEl);
     }
@@ -328,13 +328,13 @@ export class LevelRuntime {
     return this.state.started;
   }
 
-  /** Story levels and hero's journeys; free practice, a teacher's task, drills, the target range and the parrot count every key, and the valley's take-off is the child's own flight. */
+  /** Story levels and hero's journeys; free practice, a teacher's task, drills, the target range, the parrot and Rytmus count every key, and the valley's take-off is the child's own flight. */
   get pawsAllowed(): boolean {
-    return this.def.kind !== 'practice' && this.def.kind !== 'task' && this.def.kind !== 'freetype' && this.def.kind !== 'takeoff' && this.def.kind !== 'aim' && this.def.kind !== 'parrot' && this.def.kind !== 'placement' && !this.opts.keys;
+    return this.def.kind !== 'practice' && this.def.kind !== 'task' && this.def.kind !== 'freetype' && this.def.kind !== 'takeoff' && this.def.kind !== 'aim' && this.def.kind !== 'parrot' && this.def.kind !== 'rhythm' && this.def.kind !== 'placement' && !this.opts.keys;
   }
 
   get tapkoOnStage(): boolean {
-    return ['freetype', 'aim', 'swamp', 'crossroads', 'greatswamp', 'wind', 'mud', 'boulders', 'spell', 'doors', 'gate', 'rooms', 'buds', 'flower', 'owl', 'lilies', 'reflection', 'space', 'hop', 'command', 'asteroid'].includes(this.def.kind);
+    return ['freetype', 'aim', 'rhythm', 'swamp', 'crossroads', 'greatswamp', 'wind', 'mud', 'boulders', 'spell', 'doors', 'gate', 'rooms', 'buds', 'flower', 'owl', 'lilies', 'reflection', 'space', 'hop', 'command', 'asteroid'].includes(this.def.kind);
   }
 
   /** Preparation: assets, new keys, the get-ready card with the tip and its password, then play. */
@@ -346,7 +346,7 @@ export class LevelRuntime {
     const own = [`bg-${world}-far`, `bg-${world}${ground}-mid`, `bg-${world}${ground}-near`, `bg-${world}${ground}-shore`, ...this.mode.pictures, ...tapkoPictures(p.companion), ...friendPictures(), ...this.friends.pictures];
     await Promise.race([preload(own), new Promise((r) => setTimeout(r, PICTURES_WAIT_S * 1000))]);
     if (this.disposed) return;
-    audio.music(this.def.kind === 'practice' ? app.menuTrack : this.mode.world);
+    audio.music(this.def.kind === 'practice' ? app.menuTrack : this.mode.ownMusic ? null : this.mode.world);
     // Free typing and staying a while start at once; the child has just played this level.
     // Free typing has no card: the hands lie beside the keyboard and glide onto the keys a second later (sooner when a key
     // comes first); without motion they are on the keys from the start.
@@ -662,6 +662,7 @@ export class LevelRuntime {
     this.ownKey();
     // A space between targets is a habit, not a mistake.
     if (c.ch === SPACE && !this.core.locked) return;
+    if (this.mode.waitKey(c.ch, c.time)) return;
     this.deadPending = false;
     const res = this.core.type(c.ch);
     if (res.kind === 'ignored') return this.say(t('level.memoryWait'), 2);
@@ -689,7 +690,7 @@ export class LevelRuntime {
       this.chars++;
       this.wrongStreak.n = 0;
       if (res.kind === 'done') {
-        this.sfx('word');
+        if (this.mode.doneSfx) this.sfx(this.mode.doneSfx);
         this.targetTyped(res.target);
         this.wordStreak++;
         this.setMood('happy', 1.4);
@@ -1171,7 +1172,7 @@ export class LevelRuntime {
     const clean = this.cleanTargets;
     this.flushSession();
     const placement = this.def.kind === 'placement';
-    const noStars = this.opts.stay || placement || this.def.kind === 'task' || this.def.kind === 'aim' || this.def.kind === 'parrot';
+    const noStars = this.opts.stay || placement || this.def.kind === 'task' || this.def.kind === 'aim' || this.def.kind === 'parrot' || this.def.kind === 'rhythm';
     if ((noStars || this.def.kind === 'practice' && !this.def.count) && total === 0) {
       this.opts.onFinish(null);
       return;

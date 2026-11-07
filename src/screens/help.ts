@@ -48,10 +48,10 @@ function mapIcons(): HTMLElement[] {
   ];
 }
 
-/** The game types, each with the picture the map shows for it; the finale before the target range and the parrot. */
+/** The game types, each with the picture the map shows for it; the finale before the target range, the parrot and Rytmus. */
 const GAMES: [string, string][] = [
   ['chase', 'ui-act-chase'], ['catch', 'ui-act-catch'], ['crossroads', 'ui-act-crossroads'], ['clean', 'ui-act-clean'],
-  ['ribbon', 'ui-act-ribbon'], ['transcribe', 'ui-act-transcribe'], ['listen', 'ui-act-listen'], ['remember', 'ui-act-remember'], ['sticky', 'ui-act-sticky'], ['super', 'ui-act-super'], ['aim', 'obj-aim-target'], ['parrot', 'ui-act-parrot'],
+  ['ribbon', 'ui-act-ribbon'], ['transcribe', 'ui-act-transcribe'], ['listen', 'ui-act-listen'], ['remember', 'ui-act-remember'], ['sticky', 'ui-act-sticky'], ['super', 'ui-act-super'], ['aim', 'obj-aim-target'], ['parrot', 'ui-act-parrot'], ['rhythm', 'ui-act-rhythm'],
 ];
 
 /**

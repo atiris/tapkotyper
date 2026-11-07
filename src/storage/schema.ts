@@ -39,6 +39,18 @@ export interface KeyStat {
   days: KeyDay[];
 }
 
+/** What a world keeps of its last Rytmus round. */
+export interface RhythmRecord {
+  /** The tempo (letters a minute) the round ended at: the next round's start. */
+  tempo: number;
+  /** Local date `YYYY-MM-DD` of that round. */
+  at: string;
+  /** Its rhythm score (0-100), null without one (too few landings, no time pressure). */
+  rhythm: number | null;
+  /** The highest tempo ever held for a whole phrase in this world. */
+  top: number;
+}
+
 export interface SessionRecord {
   /** Local date `YYYY-MM-DD`. */
   date: string;
@@ -158,6 +170,10 @@ export interface Progress {
   parrotFlown: number[];
   /** Aro (the Parrot badge) sits on the map's perch: he landed there and has not flown off since. */
   parrotPerched: boolean;
+  /** Rytmus per world (by its index): the tempo to start with, the last round's rhythm, the highest tempo held. */
+  rhythm: Record<string, RhythmRecord>;
+  /** Worlds whose Rytmus held the world's target tempo for a whole phrase, accurately (the check under its node). */
+  rhythmWon: number[];
   /** The teacher turtle's tips read (ids) and when the last one was read (ms, 0 before any). */
   appTips: { seen: string[]; lastAt: number };
   /** The turtle asked on the map whether to check what the student already knows. */

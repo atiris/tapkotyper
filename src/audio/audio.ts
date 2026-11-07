@@ -2,6 +2,13 @@ import { musicTracks, musicUrl } from '../gfx/assets';
 import { nextTrack } from './tracks';
 import type { SoundLevel } from '../storage/schema';
 
+/** The beat game's way to the speaker (AudioEngine.beatOut). */
+export interface BeatOut {
+  ctx: AudioContext;
+  out: AudioNode;
+  at(perf: number): number;
+}
+
 export type Sfx = 'key' | 'wrong' | 'word' | 'reward' | 'whoosh' | 'pop' | 'cheer' | 'bzzt' | 'note' | 'plop' | 'squeak' | 'ring' | 'whistle' | 'crack' | 'thud' | 'squawk' | 'beep';
 /** Quick sound switch: normal, quiet (20 % of normal) or off. */
 export const SOUND_LEVELS: SoundLevel[] = ['normal', 'quiet', 'off'];
@@ -159,6 +166,24 @@ class AudioEngine {
       const stop = synthLoop(ctx, gain, name);
       this.current = { gain, stop: () => { stop(); gain.disconnect(); } };
     }
+  }
+
+  /**
+   * Where Rytmus plays its music, or null in silence: the audio context, the music's volume, and the
+   * context time at which a sound reaches the speaker at a moment of performance.now() (ms).
+   */
+  beatOut(): BeatOut | null {
+    const ctx = this.ctx;
+    if (!ctx || this.level === 'off' || ctx.state !== 'running') return null;
+    return {
+      ctx,
+      out: this.musicGain,
+      at: (perf) => {
+        const ts = ctx.getOutputTimestamp?.();
+        if (ts?.contextTime && ts.performanceTime) return ts.contextTime + (perf - ts.performanceTime) / 1000;
+        return ctx.currentTime + (perf - performance.now()) / 1000 - (ctx.outputLatency || ctx.baseLatency || 0);
+      },
+    };
   }
 
   /** Plays the next random track of the whole library and returns its name; the next screen or level sets its own track again. */

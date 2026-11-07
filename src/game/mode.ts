@@ -52,6 +52,10 @@ export abstract class Mode {
   readonly drift: Drift | null = null;
   /** The sound of a wrong key. */
   readonly wrongSfx: Sfx = 'wrong';
+  /** The sound of a finished target, null when the mode sounds it itself (Rytmus: a note of its music on the beat). */
+  readonly doneSfx: Sfx | null = 'word';
+  /** The mode plays its own music (Rytmus), not the world's track. */
+  readonly ownMusic: boolean = false;
 
   constructor(protected L: LevelRuntime) {}
 
@@ -106,6 +110,10 @@ export abstract class Mode {
   }
   /** The level ended on its own or on request, not left early. */
   onFinish(): void {}
+  /** A key the mode lets wait (`at`: its time, ms): neither right nor wrong yet, nothing counts it (Rytmus: the right letter before its catch window). */
+  waitKey(_ch: string, _at: number): boolean {
+    return false;
+  }
   /** Every own key press for a target, before `onCorrect`, `onDone` or `onWrong`: the key expected, right or wrong, its reaction and time (ms). */
   onKey(_expected: string, _ok: boolean, _rt: number, _at: number): void {}
   onCorrect(_t: Target): void {}

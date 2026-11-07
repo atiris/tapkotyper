@@ -4,7 +4,7 @@ export interface TypedChar {
   shift: boolean;
   /** Which Shift is held (`ShiftLeft` / `ShiftRight`), null without Shift. */
   shiftCode: string | null;
-  /** `performance.now()` of the key press. */
+  /** When the key went down, on the clock of `performance.now()`. */
   time: number;
 }
 
@@ -113,6 +113,12 @@ export class KeyInput {
     if ([...key].length !== 1) return;
     e.preventDefault();
     this.pendingDead = null;
-    this.handlers.onChar?.({ ch: key.normalize('NFC'), code: e.code, shift: e.shiftKey, shiftCode: e.shiftKey ? this.shiftCode : null, time: performance.now() });
+    this.handlers.onChar?.({ ch: key.normalize('NFC'), code: e.code, shift: e.shiftKey, shiftCode: e.shiftKey ? this.shiftCode : null, time: pressTime(e) });
   }
+}
+
+/** When the key went down: the event's own time (the press itself, not when the handler ran), unless a browser gives none on the page's clock. */
+function pressTime(e: KeyboardEvent): number {
+  const now = performance.now();
+  return e.timeStamp > 0 && e.timeStamp <= now && now - e.timeStamp < 1000 ? e.timeStamp : now;
 }

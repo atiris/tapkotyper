@@ -1,7 +1,8 @@
 import { t } from '../i18n/i18n';
 import { LAYOUTS } from '../keyboard/layouts';
-import { ACCURACY, activeKeys, aimKeys, isLetterKey, lessonKeyNames, masteredKeyNames, practiceOrder } from '../learning/lessons';
+import { ACCURACY, activeKeys, aimKeys, isKeyReady, isLetterKey, lessonKeyNames, masteredKeyNames, practiceOrder } from '../learning/lessons';
 import { type Profile, SUPER_ID, type TaskSpec } from '../storage/schema';
+import { targetTempo } from './beat';
 import { PARROT_MIN_S, type ParrotSize, parrotSize } from './parrots';
 
 export type WorldId = 'meadow' | 'space' | 'planet' | 'dragons' | 'egg' | 'junkyard' | 'workshop' | 'raintown' | 'robocity' | 'robohome'
@@ -117,7 +118,7 @@ export type LevelKind =
   | 'flames' | 'thicket' | 'flight' | 'lullaby' | 'takeoff'
   | 'wind' | 'mud' | 'boulders' | 'spell'
   | 'copyloop'
-  | 'practice' | 'freetype' | 'aim' | 'parrot' | 'task' | 'placement';
+  | 'practice' | 'freetype' | 'aim' | 'parrot' | 'rhythm' | 'task' | 'placement';
 
 export interface LevelDef {
   id: string;
@@ -243,9 +244,9 @@ export function activityOf(l: LevelDef): Activity {
   return 'chase';
 }
 
-/** Practice, custom exercises, free typing, the target range and the placement check keep their own length; every other level (a task too: its minutes, the parrot its round's) has the minimum. */
+/** Practice, custom exercises, free typing, the target range, Rytmus (its song) and the placement check keep their own length; every other level (a task too: its minutes, the parrot its round's) has the minimum. */
 export function hasMinLength(l: LevelDef): boolean {
-  return l.kind !== 'practice' && l.kind !== 'freetype' && l.kind !== 'aim' && l.kind !== 'placement';
+  return l.kind !== 'practice' && l.kind !== 'freetype' && l.kind !== 'aim' && l.kind !== 'rhythm' && l.kind !== 'placement';
 }
 
 /**
@@ -498,6 +499,33 @@ export function parrotSizeOf(world: number): ParrotSize {
 export function parrotKeys(p: Profile, world: number): string[] {
   const last = worldLevels(world)[4];
   return practiceOrder(p).slice(0, keysNeeded(p, last)).filter(isLetterKey);
+}
+
+/** Worlds whose Rytmus is built; every world but the last of each story gets one (`.specify/game/rhythm.md`). */
+export const RHYTHM_WORLDS: readonly number[] = [0];
+/** Ready letters Rytmus needs: one lane for each of four fingers at least. */
+export const RHYTHM_MIN_LETTERS = 4;
+
+/** The letters of a world's Rytmus: the parrot's letters (the world's last level) that are ready; the super profile takes them all. */
+export function rhythmLetters(p: Profile, world: number): string[] {
+  const keys = parrotKeys(p, world);
+  return p.id === SUPER_ID ? keys : keys.filter((k) => isKeyReady(p, k));
+}
+
+/** A world's Rytmus is open: built, with four ready letters; the first world's opens with them, a later one with its world finished, like the range. */
+export function rhythmOpen(p: Profile, world: number): boolean {
+  if (!RHYTHM_WORLDS.includes(world) || (world > 0 && !aimOpen(p, world))) return false;
+  return rhythmLetters(p, world).length >= RHYTHM_MIN_LETTERS;
+}
+
+/** The tempo a world's Rytmus aims at: its story's slow pace, as letters a minute on a tempo step. */
+export function rhythmTarget(world: number): number {
+  return targetTempo(STORY_WPM[storyOf(world).tier]);
+}
+
+/** Rytmus of a world: letters fall to the beat into Tapko's basket; no stars. */
+export function rhythmLevel(world: number): LevelDef {
+  return { id: 'rhythm', world, index: -1, kind: 'rhythm', count: 0, variant: '', isSuper: false };
 }
 
 /** A teacher's task played in `world` (only a backdrop): no map place, no stars. */

@@ -4,6 +4,7 @@
  * and drops on one clock, and the beat measure of rhythm (`.specify/game/rhythm.md`).
  */
 import type { Finger } from '../keyboard/layouts';
+import type { RhythmRecord } from '../storage/schema';
 
 /** Tempo steps in letters a minute. */
 export const TEMPI = [30, 36, 42, 48, 54, 60, 70, 80, 90, 100, 110, 120] as const;
@@ -84,18 +85,6 @@ export function stepTempo(tempo: number, dir: -1 | 0 | 1): number {
 /** The highest step at or below `x`, at least the first. */
 const stepAtOrBelow = (x: number) => [...TEMPI].reverse().find((s) => s <= x) ?? TEMPI[0];
 
-/** What a world keeps of its last round. */
-export interface RhythmRecord {
-  /** The tempo the round ended at: the next round's start. */
-  tempo: number;
-  /** Local date `YYYY-MM-DD` of that round. */
-  at: string;
-  /** Its rhythm score (0-100), null without one (too few landings, no time pressure). */
-  rhythm: number | null;
-  /** The highest tempo ever held for a whole phrase in this world. */
-  top: number;
-}
-
 /** Days from `from` to `to`, both local dates `YYYY-MM-DD`. */
 function days(from: string, to: string): number {
   const d = (s: string) => Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10));
@@ -144,8 +133,8 @@ const cycle = (motif: number[], n = PHRASE) => Array.from({ length: n }, (_, i) 
  * a row unless `repeats`). A pattern the lanes cannot make is free too.
  */
 export function phraseLanes(phrase: number, lanes: readonly Lane[], weights: readonly number[], rand: () => number, repeats: boolean): number[] {
-  const left = lanes.map((l, i) => i).filter((i) => isLeft(lanes[i].finger));
-  const right = lanes.map((l, i) => i).filter((i) => !isLeft(lanes[i].finger));
+  const left = lanes.map((_, i) => i).filter((i) => isLeft(lanes[i].finger));
+  const right = lanes.map((_, i) => i).filter((i) => !isLeft(lanes[i].finger));
   if (phrase === 0 && left.length && right.length) return cycle([left[left.length - 1], right[0]]);
   // Mirror pairs: the left finger f with the right finger 9 - f, outside in.
   const pairs = left.flatMap((i) => right.filter((j) => lanes[j].finger === 9 - lanes[i].finger).map((j) => [i, j]));
@@ -178,7 +167,7 @@ export interface LaneChange {
  * taking turns on the lanes whose finger has another letter; none when no lane has one.
  */
 export function planChanges(lanes: readonly Lane[], count: number, roundS = ROUND_S): LaneChange[] {
-  const open = lanes.map((l, i) => i).filter((i) => lanes[i].letters.length > 1);
+  const open = lanes.map((_, i) => i).filter((i) => lanes[i].letters.length > 1);
   if (!open.length) return [];
   const turns = new Map<number, number>();
   return Array.from({ length: count }, (_, k) => {

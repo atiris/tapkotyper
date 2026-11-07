@@ -2,7 +2,7 @@ import { app, go, isBreakDue, saveProfile } from '../app/app';
 import { starRow } from '../ui/chrome';
 import { tapkoElement } from '../gfx/tapko';
 import { t, tn } from '../i18n/i18n';
-import { JOURNEYS, LEVELS, type LevelDef, STORIES, type StoryDef, WORLDS, DRILL_SECONDS, aimLevel, aimOpen, aimWorld, freeTypeLevel, isLevelUnlocked, isWorldUnlocked, journeyLevel, journeyOpen, levelAt, levelById, nextLevel, parrotLevel, placementLevel, practiceLevel, taskLevel } from '../game/levels';
+import { JOURNEYS, LEVELS, type LevelDef, STORIES, type StoryDef, WORLDS, DRILL_SECONDS, aimLevel, aimOpen, aimWorld, freeTypeLevel, isLevelUnlocked, isWorldUnlocked, journeyLevel, journeyOpen, levelAt, levelById, nextLevel, parrotLevel, placementLevel, practiceLevel, rhythmLevel, rhythmOpen, taskLevel } from '../game/levels';
 import { type LevelResult, newJourneyRun } from '../game/progress';
 import type { Style } from '../game/typing';
 import { WORLD_REWARDS, dressForMission } from '../game/rewards';
@@ -15,6 +15,8 @@ import { ownTextPhrases } from '../game/modes/practice';
 import type { AimMode } from '../game/modes/aim';
 import type { FreeTyped } from '../game/modes/freetype';
 import type { ParrotMode } from '../game/modes/parrot';
+import type { RhythmMode } from '../game/modes/rhythm';
+import { rhythmWord } from '../game/beat';
 import type { PlacementMode } from '../game/modes/placement';
 import { strongWeak } from '../learning/placement';
 import { activeKeys, keyMastery, recentAccuracy } from '../learning/lessons';
@@ -50,7 +52,7 @@ interface LevelParams {
   task?: string;
   /** Free practice: copy typing, dictation or memory, chosen in the key picker. */
   style?: Style;
-  /** Just typing: the world index chosen in the place picker; the target range and the parrot: its world. */
+  /** Just typing: the world index chosen in the place picker; the target range, the parrot and Rytmus: its world. */
   world?: number;
   /** Staying a while in this story level: no end, no stars. */
   stay?: boolean;
@@ -68,6 +70,7 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
   else if (params.id === 'practice') def = practiceLevel(params.seconds ?? null, params.text ? ownTextPhrases(p) : undefined);
   else if (params.id === 'freetype') def = freeTypeLevel(params.world != null && isWorldUnlocked(p, params.world) ? params.world : 0);
   else if (params.id === 'aim') def = aimLevel(p, params.world != null && aimOpen(p, params.world) ? params.world : aimWorld(p, 0) ?? 0);
+  else if (params.id === 'rhythm') def = rhythmLevel(params.world != null && rhythmOpen(p, params.world) ? params.world : 0);
   else if (params.id === 'parrot') def = parrotLevel(params.world != null && aimOpen(p, params.world) ? params.world : aimWorld(p, 0) ?? 0);
   else if (params.id === 'journey' && journeyStory(params.story)) def = journeyLevel(journeyStory(params.story)!, 0);
   else if (params.id === 'placement') def = placementLevel();
@@ -115,6 +118,7 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
         if (!result) return exit();
         if (part) return showJourneyDone(root, level, result, params, asked, firstHome);
         if (def.kind === 'aim') return showAimDone(root, def, result, runtime.mode as AimMode, params, runtime.surprise);
+        if (def.kind === 'rhythm') return showRhythmDone(root, def, result, runtime.mode as RhythmMode, params, runtime.surprise);
         if (def.kind === 'parrot') return showParrotDone(root, def, result, runtime.mode as ParrotMode, params, runtime.surprise);
         if (def.kind === 'placement') return showPlacementDone(root, result, runtime.mode as PlacementMode);
         if (drill) return showDrillDone(root, result, drillReport(p, drill), params);
@@ -231,6 +235,8 @@ function newsLine(news: News[]): Child[] | null {
     : n.kind === 'mastered' ? [null, t('end.keyMastered', { key: keyLabel(n.key) })]
     : n.kind === 'letter' ? [null, t('end.letterBetter', { key: keyLabel(n.key), before: pct(n.before), after: pct(n.after) })]
     : n.kind === 'journeyHome' ? [null, t(`end.journeyHome.${n.story}`)]
+    : n.kind === 'tempoTop' ? [null, t('end.rhythmTop', { n: n.tempo })]
+    : n.kind === 'beatBetter' ? [null, t('end.rhythmBetter')]
     : [null, t('end.faster')];
   return [pic, h('span', {}, line.more ? `${text} ${tn('end.moreRewards', line.more)}` : text)];
 }
@@ -472,4 +478,37 @@ function showFreeDone(root: HTMLElement, typed: FreeTyped, params: LevelParams):
     rows: [[t('end.time'), minutes(typed.seconds)], [t('end.lastText'), typed.last]],
     actions: [{ label: t('level.keepTyping'), icon: 'play', run: again }],
   }, again);
+}
+
+/**
+ * The end of a Rytmus round: the basket at its fill; accuracy, rhythm with its word, the tempo held
+ * and the letters caught. The world keeps the tempo to start with next time, the rhythm and the
+ * highest tempo; the node's check comes with the world's target tempo held accurately. No stars.
+ */
+function showRhythmDone(root: HTMLElement, def: LevelDef, r: LevelResult, mode: RhythmMode, params: LevelParams, surprise: Surprise | null): void {
+  const p = app.profile!;
+  const before = p.progress.rhythm[def.world];
+  const score = mode.score, held = mode.held || mode.song.phrases[0].tempo;
+  p.progress.rhythm[def.world] = { tempo: mode.tempo, at: localDate(), rhythm: score, top: Math.max(before?.top ?? 0, mode.held) };
+  if (mode.reached && !p.progress.rhythmWon.includes(def.world)) p.progress.rhythmWon.push(def.world);
+  saveProfile();
+  const news: News[] = [
+    ...(before && mode.held > before.top ? [{ kind: 'tempoTop', tempo: mode.held } as const] : []),
+    ...(before?.rhythm != null && score !== null && score > before.rhythm ? [{ kind: 'beatBetter' } as const] : []),
+    ...levelNews({ ...r, growth: null, trend: null }),
+  ];
+  showEnd(root, {
+    cls: 'rhythm-done',
+    title: t('end.rhythmDone'),
+    picture: `obj-rhythm-basket-${mode.fill}`,
+    rows: [
+      [t('end.accuracy'), `${pct(r.accuracy)} %`],
+      [t('end.rhythm'), score === null ? '–' : t('end.rhythmScore', { n: score, word: t(`rhythm.words.${rhythmWord(score)}`) })],
+      [t('end.tempo'), letters(held)],
+      [t('end.caught'), t('end.ofTotal', { n: mode.caught, total: mode.due })],
+    ],
+    news: newsLine(news),
+    surprises: toldSurprises(def, surprise, 'time'),
+    actions: [{ label: t('results.replay'), icon: 'replay', run: () => go('level', params) }],
+  });
 }

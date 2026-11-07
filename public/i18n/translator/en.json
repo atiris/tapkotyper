@@ -505,6 +505,14 @@
     "end-placement": {
       "title": "Keyboard check end",
       "about": "The end card of the keyboard check: the keys the player can use, the strong and weak keys of the run and its buttons."
+    },
+    "rhythm": {
+      "title": "Rhythm",
+      "about": "The beat game next to the parrot: letters fall to the beat of generated music into Tapko's basket; it trains even typing (rhythm), after accuracy and before speed."
+    },
+    "end-rhythm": {
+      "title": "Rhythm end card",
+      "about": "The rows and news of the end card after a Rytmus round: accuracy, rhythm, tempo, letters caught."
     }
   },
   "situations": {
@@ -1804,6 +1812,28 @@
     "help.fingers": "Help, Typing tab: bullet points that explain the layout, the two fingerings (ergonomic and standard), how their digit keys differ finger by finger, the standard one's gain and why the ergonomic one is the default.",
     "about.visitsWeek": "Help, About tab: after the number of visits so far, how many of them were in the last seven days; {n} is that number.",
     "about.visitsBlocked": "Help, About tab: instead of the number of visits when the counter cannot be reached while online, most likely because of a blocker; the counter's link is just before it.",
-    "camera.switch": "Name of the round button in the corner of the camera picture that switches to the next camera, when the device has several."
+    "camera.switch": "Name of the round button in the corner of the camera picture that switches to the next camera, when the device has several.",
+    "rhythm.title": "Name of the beat game Rytmus: the node on the map and the level title at the top while playing.",
+    "rhythm.start": "Tapko explains the game on the card before it starts: letters fall into his basket; press the key when a letter arrives, not sooner.",
+    "rhythm.wait": "Tapko in a bubble the first time the child presses the right key too early: wait until the letter reaches the basket.",
+    "rhythm.phrase": "Tapko in a bubble after a phrase of 16 letters all caught without a wrong key; short praise for typing to the beat.",
+    "rhythm.accuracy": "Tooltip of the accuracy ring in the top bar during the game; {n} is the percent.",
+    "rhythm.listening": "Tooltip of the rhythm ring before enough letters have landed to measure the rhythm.",
+    "rhythm.ring": "Tooltip of the rhythm ring in the top bar: {n} is the rhythm score 0-100, {word} one of rhythm.words.",
+    "rhythm.tempo": "Tooltip of the tempo ring in the top bar: {n} letters land per minute now.",
+    "rhythm.words.searching": "Word for a rhythm score of 0-39 (the presses are not even yet); kind, never a reproach.",
+    "rhythm.words.nice": "Word for a rhythm score of 40-69.",
+    "rhythm.words.smooth": "Word for a rhythm score of 70-89.",
+    "rhythm.words.clockwork": "Word for a rhythm score of 90-100: as even as a clock.",
+    "map.rhythmTip": "Tooltip of the Rytmus node on the map: what the game trains (typing evenly to a beat).",
+    "map.rhythmOpens": "Added to the Rytmus node's tooltip in the first world while it is closed; {n} is the number of letters the child must know (4).",
+    "end.rhythmDone": "Title of the end card after a Rytmus round.",
+    "end.rhythm": "Row label on the Rytmus end card: the rhythm score (how even the presses were to the beat).",
+    "end.rhythmScore": "Value of the rhythm row: {n} of 100 and {word}, one of rhythm.words.",
+    "end.tempo": "Row label on the Rytmus end card: the highest tempo held for a whole phrase; the value is letters (end.letters).",
+    "end.caught": "Row label on the Rytmus end card: letters caught of the letters that fell (end.ofTotal).",
+    "end.rhythmTop": "Green news line on the Rytmus end card: a new highest tempo in this world; {n} letters per minute.",
+    "end.rhythmBetter": "Green news line on the Rytmus end card: the rhythm score is higher than in the last round of this world.",
+    "help.games.rhythm": "Help, Games tab: what the Rytmus game is, next to its metronome picture."
   }
 }

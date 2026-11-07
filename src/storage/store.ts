@@ -150,6 +150,8 @@ export function newProfile(name: string, language: LangRef, layout?: LayoutId, k
       parrotCheckedAt: null,
       parrotFlown: [],
       parrotPerched: false,
+      rhythm: {},
+      rhythmWon: [],
       appTips: { seen: [], lastAt: 0 },
       placementAsked: false,
       placementKeys: 0,

@@ -58,13 +58,13 @@ function countingOpen(p: Profile): Surprise[] {
 
 /**
  * Which rules a run may ask and tell: every one, only those counting typing time (the target
- * range and the parrot give no levels or stars), or none (drills, a teacher's task).
+ * range, the parrot and Rytmus give no levels or stars), or none (drills, a teacher's task).
  */
 export type SurpriseRun = 'all' | 'time' | 'none';
 
 export function surpriseRun(def: LevelDef, drill: boolean): SurpriseRun {
   // A teacher's task is the teacher's: the parent's surprises wait for the child's own play.
-  return drill || def.kind === 'task' ? 'none' : def.kind === 'aim' || def.kind === 'parrot' ? 'time' : 'all';
+  return drill || def.kind === 'task' ? 'none' : def.kind === 'aim' || def.kind === 'parrot' || def.kind === 'rhythm' ? 'time' : 'all';
 }
 
 /** Counting rules still waiting that a run of this kind may tell. */

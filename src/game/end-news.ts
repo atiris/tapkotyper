@@ -15,7 +15,9 @@ export type News =
   | { kind: 'mastered'; key: string }
   | { kind: 'letter'; key: string; before: number; after: number }
   | { kind: 'faster' }
-  | { kind: 'journeyHome'; story: string };
+  | { kind: 'journeyHome'; story: string }
+  | { kind: 'tempoTop'; tempo: number }
+  | { kind: 'beatBetter' };
 
 /** News that are rewards: several at once are told as the first and "and N more rewards". */
 const REWARDS = new Set<News['kind']>(['badge', 'parrotBadge', 'keys', 'medal', 'wardrobe', 'companion']);

@@ -164,6 +164,8 @@
     "super": "finale",
     "aimTip": "Target range: practise the letters you do not type accurately enough yet. When only accuracy stands between you and the next letter, this is where you get it.",
     "parrotTip": "Parrot: type a few words many times in a row, until your fingers know them by themselves. Speed does not matter.",
+    "rhythmTip": "Rhythm: letters fall into Tapko's basket. Press the key just when the letter arrives. That is how you learn to type evenly.",
+    "rhythmOpens": "Opens once you know at least {n} letters.",
     "journeyTip": "Hero's journey: a longer, harder trip through every world of this story.",
     "parrotHome": "the parrot is at home",
     "sideOpens": "Opens when you finish this world.",
@@ -507,7 +509,14 @@
     "placementWeak": "Keys to practise",
     "placementNoWeak": "None, everything went well!",
     "placementSignal": "Finger signal (fit · contrast)",
-    "placementEyes": "It looks like your eyes still help you find the keys. The lessons will teach your fingers from the start, quickly."
+    "placementEyes": "It looks like your eyes still help you find the keys. The lessons will teach your fingers from the start, quickly.",
+    "rhythmDone": "Rhythm round done!",
+    "rhythm": "Rhythm",
+    "rhythmScore": "{n} of 100, {word}",
+    "tempo": "Tempo per minute",
+    "caught": "Letters caught",
+    "rhythmTop": "A new top tempo: {n} letters per minute!",
+    "rhythmBetter": "Your rhythm is better than last time."
   },
   "results": {
     "peek": "Look at the game (Esc)",
@@ -1730,6 +1739,7 @@
       "sticky": "**Sticky finger**: one finger sticks to its key and holds it while the other fingers type. When you let go, the game waits until you press it again.",
       "aim": "**Target range**: words full of the letters you still miss. Each word throws a thing through the rings into the target.",
       "parrot": "**Parrot**: a few words many times in a row. The parrot repeats each one. A slip brings the word twice more.",
+      "rhythm": "**Rhythm**: letters fall from the clouds into Tapko's basket, each on a beat of the music. Press the key when the letter arrives. Accurate first, then in rhythm.",
       "super": "**Finale**: the fifth, last game of a world. It is one of the kinds above, but it may be a little different from its usual variant.",
       "timed": "Some words must be typed in time, for example at a crossroads. This clock shows how much time is left: the green ring runs down and blinks at the end. It can feel a bit exciting, but the time follows how fast you type: if you type slower, you get more time."
     },
@@ -3591,6 +3601,27 @@
       "Landing!",
       "Got crrrackers?"
     ]
+  },
+  "rhythm": {
+    "title": "Rhythm",
+    "start": "**Letters** fall from the clouds. When a letter reaches the basket, press its key and **Tapko catches it** in his basket. Not sooner: listen to the music and type **to the beat**. Accurate first, then in rhythm.",
+    "wait": "Wait until the letter reaches the basket.",
+    "phrase": [
+      "Lovely rhythm!",
+      "Like clockwork!",
+      "That's the way!",
+      "Right on the beat!"
+    ],
+    "accuracy": "Accuracy: {n} %",
+    "listening": "Rhythm: listening…",
+    "ring": "Rhythm: {n} of 100, {word}",
+    "tempo": "Tempo: {n} letters per minute",
+    "words": {
+      "searching": "finding the beat",
+      "nice": "nice rhythm",
+      "smooth": "smooth",
+      "clockwork": "like clockwork"
+    }
   },
   "journey": {
     "title": "Hero's journey",

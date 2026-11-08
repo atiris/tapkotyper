@@ -71,7 +71,7 @@ Affected: `src/game/beat.ts` (tempo rules), `src/game/modes/rhythm.ts`, `src/scr
   path (a sine sideways sway, a slightly different angle and speed each), and fading out over about
   1.6 s. Pure CSS/WAAPI on DOM elements over the figure, no sound, pointer events off; nothing with
   reduced motion or simple graphics; timers stop when the map is left.
-- [ ] **9. Checks.** `npx tsc --noEmit`, `npx vitest run`, `npm run build`, the e2e specs touching
+- [x] **9. Checks.** `npx tsc --noEmit`, `npx vitest run`, `npm run build`, the e2e specs touching
   Rytmus, the progress popup, the service fill and the map (`rhythm`, `play`, `service`, `parrot`,
   `layout`). Browser check with the Playwright MCP: a round in one world then another starts from the
   saved tempo; My rhythm with the clef, coloured notes, the tempo chip; the chest tooltip; the map line
@@ -87,3 +87,8 @@ Affected: `src/game/beat.ts` (tempo rules), `src/game/modes/rhythm.ts`, `src/scr
 - Step 6: the eight hues are target hues (15, 60, ... 330 degrees); each picture is turned from its own colour to it, so "never the same hue" holds for what the child sees. A note the same kind or hue as the one before takes the next one; the end card's single note has no note before it.
 - Step 7: the tempo chip shows also while no note is kept (after the line on how to earn one), as the tempo is kept without notes.
 - Step 8: the mouth is one fixed point of the figure's box (53 %, 38 %) for every companion kind; whether the clef is held is decided as the map opens.
+- Step 9: tsc, vitest (697), build and the e2e specs rhythm, play, service, parrot, layout (30) pass. Browser (MCP, tester profile): a meadow round started at the saved 50 (above the meadow's target 40) and Raintown's next round started at 50 too; My rhythm shows the clef, coloured notes (light, dark, high contrast without filter), the count and the tempo chip; the chest tooltip names the clef (x/72); the map told "Bez Rytmu ti uletela nota a s ňou aj husľový kľúč..." once, not on the next visit; the figure whistled 3-5 notes from its face up to the right, none with less motion, gone when the map was left; the super fill opened on the tempo kept and set 88 and all but one note with their checks. A ?fast round is too short to step the tempo, so its change between worlds was shown by the store.
+
+## Done - 2026-11-08
+Shipped: one Rytmus tempo per child for every world (no per-world tempo, no week drop, no cap by a world's target); tempo steps of 10 % between rounds and phrase steps by catches and timing (up, keep, gently down, down), typos no longer lower the tempo; the super fill's tempo field and "Všetky noty"; the treble clef in My rhythm and the chest (5 points, 72 in all); the map's line when notes flew away (with the clef), told once; notes in eight hues, never the kind or hue of the one before; the tempo chip in My rhythm; the whistling figure on the map.
+Left out: no `rhythmTempoAt` (see Step 1); a clef lost by fades taken on another screen than the map is not told (the map only sees fades it takes itself).

@@ -44,8 +44,10 @@
   typed line of the word levels: the letters caught (green) and missed (grey), the due letter
   marked, the coming ones after it. It moves on letter by letter, the due letter stays near one
   point, its ends fade out.
-- **Keys:** a lane's letter slides the basket under that lane, where it stays until the next key; a
-  catch sends it back at once to rest between the middle lanes, under none of them.
+- **Keys:** a lane's letter slides the basket under that lane, where it stays until the next key; after
+  a catch it goes back to rest between the middle lanes, under none of them: once the letter dropped in it
+  glides back softly (about a quarter of a second), at once with Simple graphics or less motion. A short
+  slide out and a soft way back stay calm for children; no quick shaking movement.
   - The next letter's key while that letter is in the band **catches** it: it drops into the basket
     with a note of the music. A catch in the middle half of the band is "in time" and sparkles (not
     with Simple graphics or less motion).

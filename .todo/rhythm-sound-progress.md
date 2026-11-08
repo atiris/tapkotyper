@@ -69,7 +69,7 @@ No DB, no server contract.
   no phrase count; the next letter glides into the band (`recover` phases glide -> ready, the same
   "Počkaj" / "Pokračuj" line and pause sign) and the song waits until the child presses it. A
   letter that was already in the band when Esc came stays the due one.
-- [ ] **8. The basket follows the catch.** Today a lane's key slides the basket under the lane
+- [x] **8. The basket follows the catch.** Today a lane's key slides the basket under the lane
   (`SLIDE_S` 0.12 s) and after the catch it jumps back to rest at once. New: after the catch the
   basket glides back to rest (ease out, about 0.25 s, after the drop-in animation) instead of jumping.
   Only in the full graphics (not `gfx-simple`) and not with reduced motion; there it stays as today.

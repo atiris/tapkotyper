@@ -3,7 +3,6 @@
 Everything found outside the current task, one line each, most important first:
 `- [P1|P2|P3] <title> - <one line: what is wrong and where>`.
 Search before adding; an entry is worked only when it is named.
-- [P1] Rhythm of the levels - speed is now called speed everywhere and the beat game measures rhythm against its beat (src/game/beat.ts); still missing for the story levels: the evenness measure of key intervals (pairwise variability, .research/learning/rhythm-measure.md) with its top-bar ring, the session record's rhythm field and the parent statistics' rhythm line between accuracy and speed (src/game/speed.ts, src/learning/stats.ts, src/screens/progress.ts)
 - [P2] Level keyboard label shows "fingeringShort.undefined" - the layout label at the level's bottom right reads "SK QWERTZ fingeringShort.undefined" for the tester and the super player (seen 2026-11-07); a profile without settings.fingering gets no name (src/ui/keyboard-settings.ts settingsName)
 - [P2] Sticky finger: its first level - decide which world's level first plays the Sticky finger kind (plan 104 builds it for own practice only); it needs at least 4 known keys of each hand, so not before the rocket's third level (src/game/levels.ts LEVELS)
 - [P3] Profile PIN - optional PIN a child sets on their profile; anything beyond the map and the progress popup asks for it until the player switches profile or locks the map; the parent removes it with the device password (src/screens/start.ts, map.ts)

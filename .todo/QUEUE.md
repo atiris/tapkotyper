@@ -6,4 +6,3 @@ each in its own clean session. One line per plan in `.todo/`:
 listed here is never run. Lines whose plan has moved to `.todo/.done/` are
 skipped, and the session that finishes a plan removes its line.
 
-- [P2] rhythm-tempo-clef.md - after rhythm-sound-progress (done): shared Rytmus tempo, fairer steps, the treble clef and the whistle

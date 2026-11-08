@@ -59,10 +59,10 @@ describe('tempo', () => {
     expect(startTempo(200, 0, 40)).toBe(120);
   });
 
-  it('the next base moves one step of 5 % towards where the round\'s tempo went', () => {
-    expect([-4, -1, 0, 1, 4].map((l) => tempoAt(40, l))).toEqual([32, 38, 40, 42, 48]);
-    expect(nextBase(40, 43.5)).toBe(42);
-    expect(nextBase(40, 36)).toBe(38);
+  it('the next base moves one step of 10 % towards where the round\'s tempo went', () => {
+    expect([-4, -1, 0, 1, 4].map((l) => tempoAt(50, l))).toEqual([30, 45, 50, 55, 70]);
+    expect(nextBase(40, 43.5)).toBe(44);
+    expect(nextBase(40, 36)).toBe(36);
     expect(nextBase(40, 40.2)).toBe(40);
     // Only the tempo range bounds it.
     expect(nextBase(118, 125)).toBe(120);
@@ -74,13 +74,16 @@ describe('tempo', () => {
     expect(drift(40, 0, 30, 40, 60)).toBe(40);
     expect(drift(47, 1, 30, 40, 60)).toBe(48);
     expect(drift(33, -1, 30, 40, 60)).toBe(32);
+    // A gentle step down drifts at half the speed.
+    expect(drift(40, -0.5, 30, 40, 60)).toBeCloseTo(38);
   });
 
-  it('steps up only with high accuracy and catches, down with errors or misses; errors weigh more', () => {
-    expect(phraseStep(0.96, 0.95)).toBe(1);
-    expect(phraseStep(0.94, 1)).toBe(0);
-    expect(phraseStep(0.84, 1)).toBe(-1);
-    expect(phraseStep(1, 0.69)).toBe(-1);
+  it('steps by the catches and their timing: up in time, kept when shaky, gently down when very shaky, down with misses', () => {
+    expect(phraseStep(0.9, 0.7)).toBe(1);
+    expect(phraseStep(1, 0.69)).toBe(0);
+    expect(phraseStep(1, 0.4)).toBe(0);
+    expect(phraseStep(1, 0.39)).toBe(-0.5);
+    expect(phraseStep(0.89, 1)).toBe(-1);
   });
 
   it('the target tempo is the story\'s words a minute as letters', () => {
@@ -104,12 +107,13 @@ describe('catch window', () => {
     expect(judge(10.49, 11, 1, 0.5)).toBe('early');
   });
 
-  it('grows after a step down, up to half a beat; a step up keeps it', () => {
+  it('grows after a full step down, up to half a beat; other steps keep it', () => {
     expect(stepWindow(W_START, -1)).toBe(0.4);
     expect(stepWindow(0.5, -1)).toBe(0.5);
     expect(stepWindow(0.4, 1)).toBe(0.4);
     expect(stepWindow(W_START, 1)).toBe(W_START);
     expect(stepWindow(0.45, 0)).toBe(0.45);
+    expect(stepWindow(W_START, -0.5)).toBe(W_START);
   });
 });
 

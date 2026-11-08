@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { TypingCore } from '../typing';
 import type { LevelRuntime } from '../runtime';
 import { Rng } from '../../engine/rng';
+import { W_START } from '../beat';
 
 vi.mock('../../app/app', async () => {
   const { newProfile } = await import('../../storage/store');
@@ -64,6 +65,26 @@ function play(L: LevelRuntime, child?: (mode: InstanceType<typeof RhythmMode>) =
     child?.(mode);
   }
   return mode;
+}
+
+/**
+ * A child who presses each letter once, on the first frame at or after `lag` of its window past its beat
+ * (0: on the beat), lets the letters `skip` picks fall, and after each catch presses a wrong key when `typo`.
+ */
+function child(L: LevelRuntime, lag = 0, skip = (_i: number) => false, typo = false) {
+  const pressed = new Set<number>();
+  return play(L, (m) => {
+    const tg = L.core.focus();
+    const songT = (m as unknown as { songT: number }).songT;
+    const d = m.song.drops[m.due];
+    if (!tg || !d || d.letter !== tg.word || pressed.has(d.index) || skip(d.index)) return;
+    const at = d.land + lag * d.w * d.T;
+    // While the song waits at the letter (after a miss) it is pressed there.
+    if (!(at <= songT + 0.001 && at > songT - 0.03) && !m.beatDue()?.waiting) return;
+    const res = press(L, m, tg.word);
+    if (res !== 'wait') pressed.add(d.index);
+    if (res === 'ok' && typo) press(L, m, 'x');
+  });
 }
 
 describe('rhythm', () => {
@@ -133,16 +154,7 @@ describe('rhythm', () => {
 
   it('a child on the beat catches every letter, scores high and the tempo steps up', () => {
     const L = fakeRuntime();
-    // Each letter once, on the first frame at or after its beat: a second press would be an error.
-    const pressed = new Set<number>();
-    const mode = play(L, (m) => {
-      const tg = L.core.focus();
-      const songT = (m as unknown as { songT: number }).songT;
-      const d = m.song.drops.find((x) => x.letter === tg?.word && x.land <= songT + 0.001 && x.land > songT - 0.03 && !pressed.has(x.index));
-      if (!tg || !d) return;
-      pressed.add(d.index);
-      press(L, m, tg.word);
-    });
+    const mode = child(L);
     expect(mode.accuracy).toBe(1);
     expect(mode.caught).toBe(mode.due);
     expect(mode.score).toBeGreaterThanOrEqual(90);
@@ -153,7 +165,38 @@ describe('rhythm', () => {
     expect(mode.reached).toBe(true);
     // Never a step down: the round keeps its length, 80 % of the story's level; the next round starts a step higher.
     expect(mode.song.roundS).toBe(96);
-    expect(mode.nextTempo).toBe(42);
+    expect(mode.nextTempo).toBe(44);
+  });
+
+  it('typos alone never lower the tempo: a child on the beat still climbs', () => {
+    const L = fakeRuntime();
+    const mode = child(L, 0, () => false, true);
+    expect(mode.accuracy).toBeCloseTo(0.5, 1);
+    expect(mode.song.phrases[2].tempo).toBeGreaterThan(mode.song.phrases[0].tempo);
+    expect(mode.song.phrases.every((p) => p.dir === 1 || p === mode.song.phrases[0])).toBe(true);
+    expect(mode.song.roundS).toBe(96);
+  });
+
+  it('very shaky catches lower the tempo gently, the window and the round stay', () => {
+    const L = fakeRuntime();
+    // Every catch a little late, out of the window's middle half.
+    const mode = child(L, 0.6);
+    expect(mode.caught).toBe(mode.due);
+    expect(mode.song.phrases.slice(1).every((p) => p.dir === -0.5)).toBe(true);
+    expect(mode.song.phrases[2].tempo).toBeLessThan(mode.song.phrases[0].tempo);
+    expect(mode.song.phrases.every((p) => p.w === W_START)).toBe(true);
+    expect(mode.song.roundS).toBe(96);
+    expect(mode.nextTempo).toBe(36);
+  });
+
+  it('misses lower the tempo, widen the window and lengthen the round', () => {
+    const L = fakeRuntime();
+    // Two letters of each phrase fall.
+    const mode = child(L, 0, (i) => i % 8 === 3);
+    expect(mode.song.phrases[1].dir).toBe(-1);
+    expect(mode.song.phrases[1].w).toBeGreaterThan(W_START);
+    expect(mode.song.phrases[2].tempo).toBeLessThan(mode.song.phrases[0].tempo);
+    expect(mode.song.roundS).toBeGreaterThan(96);
   });
 
   it('the right key before the band and any other key are errors; the letter can still be caught in the band', () => {

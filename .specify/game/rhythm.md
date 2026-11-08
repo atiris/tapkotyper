@@ -77,19 +77,21 @@
 - **Tempo** (letters a minute, 30 to 120): each round has its own **base** and follows it. The base is the
   child's **one tempo**, shared by the Rytmus of every world: a better round in one world is where the
   next round in any world starts, and it never drops by itself. The first round ever starts at 70 % of
-  the child's usual speed of the last 14 days, at most the played world's target tempo (a new child 30). Where the
-  tempo goes is decided for each **phrase** of 16 landings: up when the phrase before went at 95 %
-  accuracy or more and nine in ten caught, down below 85 % accuracy or with fewer than seven in ten
-  caught (errors weigh more than misses), else it stays; it is decided as the next phrase's first letter
-  leaves its cloud. The first phrase plays at the base. The tempo then drifts smoothly bar by bar, never
+  the child's usual speed of the last 14 days, at most the played world's target tempo (a new child 30).
+  Where the tempo goes is decided for each **phrase** of 16 landings, by the timing of the phrase
+  before, never by its wrong keys: with nine in ten letters caught it goes **up** when seven in ten of
+  the catches were in time (the middle half of the band), **stays** from four in ten, and goes **gently
+  down** (at half the speed) below that; with fewer than nine in ten caught it goes **down**. Catches
+  while the song waited count as caught but not for the timing. Wrong keys still count in accuracy, the
+  statistics and the rhythm score. It is decided as the next phrase's first letter leaves its cloud. The first phrase plays at the base. The tempo then drifts smoothly bar by bar, never
   faster than 10 % of the base in half the round (from the base to 110 % takes at least half the round),
-  and never more than 20 % above or below the base. The next round's base moves only one step (5 %) from
-  this round's, towards where its tempo went; only the tempo range bounds it, no world's target. A phrase going faster is announced by a short run in the music. Below 60 the music
-  plays twice as fast and a letter lands on every second beat.
+  and never more than 20 % above or below the base. The next round's base moves only one step (10 %) from
+  this round's, towards where its tempo went; only the tempo range bounds it, no world's target. A
+  phrase going faster is announced by a short run in the music. Below 60 the music plays twice as fast and a letter lands on every second beat.
 - **When it goes badly** the game helps: the catch window is a third of a beat (0.35) each side of the
-  beat at the start; each phrase that steps the tempo down widens it by 0.05, up to half a beat, so the
-  band grows upwards, and adds one phrase to the round, at most a third of it in all. A phrase that
-  steps up keeps the window: a good rhythm is never made harder to hit.
+  beat at the start; each phrase that steps the tempo down (not gently) widens it by 0.05, up to half a beat,
+  so the band grows upwards, and adds one phrase to the round, at most a third of it in all. Other
+  steps keep the window: a good rhythm is never made harder to hit.
 - **Order of the letters:** first the two index fingers in turn, then mirror pairs of the hands (d k
   f j), then neighbours of one hand, then free. A free phrase is made of **dictionary words** (two to six
   letters, from the child's word language) that use only the lanes' letters at that moment, whole words
@@ -185,5 +187,9 @@
 - One tempo for all worlds: rhythm is the child's skill, not a world's; a tempo kept per world made a
   child who had found a good pace start slow again in every new world. It never drops by itself, as a
   slower start after a break only made the child climb back up.
+- The tempo follows the timing, not typos: a child who keeps the beat but hits a wrong key now and
+  then is still in rhythm, and slowing down would not fix the wrong key. A very shaky beat slows the
+  tempo only gently, as the catches still came. Steps of 10 % between rounds let a child who is on
+  the beat reach their pace in a few rounds.
 - After a miss the slow glide and the blinking pause sign show that the game waits; "go on" comes only
   when the letter is where it should be caught.

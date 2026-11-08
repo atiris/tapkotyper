@@ -17,7 +17,7 @@ import { accuracyFill, fillRing, roundSvg, roundTextSvg } from '../../ui/hud';
 import { h } from '../../ui/dom';
 import { tip } from '../../ui/tooltip';
 import {
-  CHANGE_S, type Drop, type Landing, type Lane, type LaneChange, PHRASE, RING_MIN, RING_WINDOW, Song, TEMPO_MAX,
+  CHANGE_S, type Drop, type Landing, type Lane, type LaneChange, PHRASE, RING_MIN, RING_WINDOW, Song, type Step, TEMPO_MAX,
   beatScore, judge, laneNow, laneSetup, laneWeights, nextBase, phraseStep, pickLanes, planChanges, rhythmWord, startTempo, timing,
 } from '../beat';
 import { WORLDS, parrotKeys, rhythmLetters, rhythmRoundS, rhythmShape, rhythmTarget } from '../levels';
@@ -110,10 +110,12 @@ interface Fall {
   inBasket: boolean;
 }
 
-/** A phrase's count: letters due and caught, right and wrong keys. */
+/** A phrase's count: letters due and caught, catches on the beat (not while the song waited) and those in time, right and wrong keys. */
 interface PhraseCount {
   due: number;
   caught: number;
+  timed: number;
+  inTime: number;
   ok: number;
   wrong: number;
 }
@@ -385,15 +387,15 @@ export class RhythmMode extends HeroMode {
     return this.falls[this.cur];
   }
 
-  /** The step of the phrase playing, on its letters resolved so far. */
-  private decide(): -1 | 0 | 1 {
+  /** The step of the phrase playing, on its letters resolved so far: their catches and timing, not wrong keys. */
+  private decide(): Step {
     const c = this.counts[this.song.phrases.length - 1];
     if (!c || !c.due) return 0;
-    return phraseStep(c.ok + c.wrong ? c.ok / (c.ok + c.wrong) : 1, c.caught / c.due);
+    return phraseStep(c.caught / c.due, c.timed ? c.inTime / c.timed : 1);
   }
 
   private count(phrase: number): PhraseCount {
-    return (this.counts[phrase] ??= { due: 0, caught: 0, ok: 0, wrong: 0 });
+    return (this.counts[phrase] ??= { due: 0, caught: 0, timed: 0, inTime: 0, ok: 0, wrong: 0 });
   }
 
   update(dt: number): void {
@@ -570,6 +572,10 @@ export class RhythmMode extends HeroMode {
     c.ok++;
     c.caught++;
     const how = timing(offset, f.d.w, T);
+    if (!waited) {
+      c.timed++;
+      if (how === 'inTime') c.inTime++;
+    }
     if (how === 'inTime') {
       this.happy();
       this.L.particles.emit(this.laneX(f.d.lane), this.bandBottom, 6, 'sparkle', ['#ffd54a', '#fff3b0'], 90, 9, 0.6);

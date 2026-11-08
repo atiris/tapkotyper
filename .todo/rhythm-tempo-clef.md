@@ -22,7 +22,7 @@ Affected: `src/game/beat.ts` (tempo rules), `src/game/modes/rhythm.ts`, `src/scr
   bound it. Keep per world only what is still per world: the last score `rhythm`, the highest tempo
   held `top`, and `rhythmWon` (the node's check). Drop `RhythmRecord.tempo`/`at` and the
   "one step lower after a week without Rytmus" rule (`KEPT_DAYS`): the tempo never drops by itself.
-- [ ] **2. Tempo steps of 10 % and judged by timing, not typos.** `TEMPO_STEP` 0.10 (a round's base to
+- [x] **2. Tempo steps of 10 % and judged by timing, not typos.** `TEMPO_STEP` 0.10 (a round's base to
   the next). The phrase step (`phraseStep`) takes the phrase's caught letters' timing and its misses,
   not wrong keys:
   - **up** (+1): at least 90 % of the due letters caught and at least 70 % of the catches "in time"
@@ -80,3 +80,4 @@ Affected: `src/game/beat.ts` (tempo rules), `src/game/modes/rhythm.ts`, `src/scr
 
 ## State
 - Step 1: no `rhythmTempoAt`: nothing reads a tempo date once the week rule is gone, and `rhythmNotesAt` already keeps the last round's day.
+- Step 2: catches while the song waited (after a miss or a pause, without time pressure) count as caught but not in the in-time share; a phrase with no timed catch counts as in time. A gentle step down keeps the round's length too (only a full step down adds a phrase).

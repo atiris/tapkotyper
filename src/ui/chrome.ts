@@ -263,15 +263,17 @@ export function watchAutoFullscreen(): void {
   window.addEventListener('pointerdown', ask, true);
 }
 
-/** The 1-5 places of a level's stars, filled in reading order (three on top, two below). */
+/** The 1-5 places of a level's stars, filled from the left. */
 const STAR_PLACES = Array.from({ length: MAX_LEVEL_STARS }, (_, i) => i + 1);
 
-/** A level's stars in the ring layout (`.stars`), `n` of them filled. */
+/** One star picture, or a drawn star when the picture is missing. */
+const starPic = (src: string | null, cls: string) => (src ? h('img', { class: cls, src, alt: '' }) : h('span', { class: `${cls} star-fallback` }, '★'));
+
+/** A level's stars in one row: all places empty from the start, `n` gold ones popping onto them one after another. */
 export function starRow(n: number): HTMLElement {
   const star = imageUrl('ui-star'), empty = imageUrl('ui-star-empty');
   return h('div', { class: 'stars', role: 'img', 'aria-label': t('results.starsAria', { n, max: MAX_LEVEL_STARS }) },
-    ...STAR_PLACES.map((i) => {
-      const on = i <= n, src = on ? star : empty;
-      return src ? h('img', { class: `star ${on ? 'on' : ''}`, src, alt: '', style: `--i:${i}` }) : h('span', { class: `star-fallback ${on ? 'on' : ''}`, style: `--i:${i}` }, '★');
-    }));
+    ...STAR_PLACES.map((i) => h('span', { class: 'star', style: `--i:${i}` },
+      starPic(empty, 'star-empty'),
+      i <= n ? starPic(star, 'star-gold') : null)));
 }

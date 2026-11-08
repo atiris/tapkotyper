@@ -82,9 +82,9 @@
   two to four stars are the steps of the accuracy scale ([lesson progression](../learning/lesson-progression.md)),
   five stars half the mistakes of four. 5 from 98.5 % accuracy, 4 from 97 %, 3 from
   94 %, 2 from 89 %, else 1 (finishing always gives one, a flawless level five). Whole stars
-  only; every game counts the same way (the valley's flying lessons too). The stars stand like
-  the Olympic rings, three on top and two below in their gaps, filled in reading order, on the
-  end card beside the character, where they stand small in one row. On the map's level cards only the
+  only; every game counts the same way (the valley's flying lessons too). On the end card the
+  stars stand small in one row beside the character: all five grey places show at once, then the
+  earned gold stars pop onto them from the left, one after another. On the map's level cards only the
   earned stars show, in a fixed box of two rows: one in the middle, two side by side, three as a
   triangle (two over one), four two over two, five like the rings. The target range's and the
   parrot's cards look the same: the game on top, a check under it once it is won. A card keeps

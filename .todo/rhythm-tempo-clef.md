@@ -13,7 +13,7 @@ Affected: `src/game/beat.ts` (tempo rules), `src/game/modes/rhythm.ts`, `src/scr
 
 ## Steps
 
-- [ ] **1. One tempo for the whole platform.** Replace the per-world `progress.rhythm[world].tempo`
+- [x] **1. One tempo for the whole platform.** Replace the per-world `progress.rhythm[world].tempo`
   with one `progress.rhythmTempo: number | null` (null: never played) and its date
   `progress.rhythmTempoAt`. Every Rytmus round of every world starts from it and saves its next base
   into it; a better round in one world is where the next round in any world starts. The first round
@@ -79,4 +79,4 @@ Affected: `src/game/beat.ts` (tempo rules), `src/game/modes/rhythm.ts`, `src/scr
   (a screenshot sequence); the super fill's tempo and notes.
 
 ## State
-Nothing implemented yet.
+- Step 1: no `rhythmTempoAt`: nothing reads a tempo date once the week rule is gone, and `rhythmNotesAt` already keeps the last round's day.

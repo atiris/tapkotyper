@@ -65,8 +65,9 @@ test('Rytmus is open with the meadow and a round ends on its card', async ({ pag
   // The basket full of letters (the card keeps its square without its picture).
   const pic = page.locator('.rhythm-done .ec-img');
   if (await pic.count()) await expect(pic).toHaveAttribute('src', /obj-rhythm-basket-full/);
-  const kept = await page.evaluate(() => JSON.parse(localStorage.getItem('tapkotyper:v1')!).profiles[0].progress.rhythm['0']);
-  expect(kept.tempo).toBeGreaterThanOrEqual(30);
+  // The child's one tempo, where every world's next round starts.
+  const kept = await page.evaluate(() => JSON.parse(localStorage.getItem('tapkotyper:v1')!).profiles[0].progress.rhythmTempo);
+  expect(kept).toBeGreaterThanOrEqual(30);
   await page.locator('.end-card .ec-bot .btn').last().click();
   await expect(node).toBeEnabled();
   expect(errors).toEqual([]);

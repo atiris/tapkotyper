@@ -39,18 +39,14 @@ export interface KeyStat {
   days: KeyDay[];
 }
 
-/** What a world keeps of its last Rytmus round. */
 /** One rhythm note: the world whose Rytmus earned it, and its number (its picture and lean). */
 export interface RhythmNote {
   world: number;
   n: number;
 }
 
+/** What a world keeps of its last Rytmus round. */
 export interface RhythmRecord {
-  /** The base tempo (letters a minute) of the next round. */
-  tempo: number;
-  /** Local date `YYYY-MM-DD` of that round. */
-  at: string;
   /** Its rhythm score (0-100), null without one (too few landings, no time pressure). */
   rhythm: number | null;
   /** The highest tempo ever held for a whole phrase in this world. */
@@ -176,8 +172,10 @@ export interface Progress {
   parrotFlown: number[];
   /** Aro (the Parrot badge) sits on the map's perch: he landed there and has not flown off since. */
   parrotPerched: boolean;
-  /** Rytmus per world (by its index): the tempo to start with, the last round's rhythm, the highest tempo held. */
+  /** Rytmus per world (by its index): the last round's rhythm, the highest tempo held. */
   rhythm: Record<string, RhythmRecord>;
+  /** The base tempo (letters a minute) every world's next Rytmus round starts from, null before the first round. */
+  rhythmTempo: number | null;
   /** Worlds whose Rytmus held the world's target tempo for a whole phrase, accurately (the check under its node). */
   rhythmWon: number[];
   /**

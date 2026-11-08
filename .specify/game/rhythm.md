@@ -74,17 +74,17 @@
   without the child.
 - **The basket** is one picture: only its front part (the front rim and side), without its back rim
   and inside, so a caught letter drops behind the front rim into it and is gone.
-- **Tempo** (letters a minute, 30 to 120): each round has its own **base** and follows it. The base is
-  the world's kept tempo (5 % lower after a week without playing); the first round's is 70 % of the
-  child's usual speed of the last 14 days, at most the world's target tempo (a new child 30). Where the
+- **Tempo** (letters a minute, 30 to 120): each round has its own **base** and follows it. The base is the
+  child's **one tempo**, shared by the Rytmus of every world: a better round in one world is where the
+  next round in any world starts, and it never drops by itself. The first round ever starts at 70 % of
+  the child's usual speed of the last 14 days, at most the played world's target tempo (a new child 30). Where the
   tempo goes is decided for each **phrase** of 16 landings: up when the phrase before went at 95 %
   accuracy or more and nine in ten caught, down below 85 % accuracy or with fewer than seven in ten
   caught (errors weigh more than misses), else it stays; it is decided as the next phrase's first letter
   leaves its cloud. The first phrase plays at the base. The tempo then drifts smoothly bar by bar, never
   faster than 10 % of the base in half the round (from the base to 110 % takes at least half the round),
   and never more than 20 % above or below the base. The next round's base moves only one step (5 %) from
-  this round's, towards where its tempo went, and never above one and a half times the world's target
-  tempo. A phrase going faster is announced by a short run in the music. Below 60 the music
+  this round's, towards where its tempo went; only the tempo range bounds it, no world's target. A phrase going faster is announced by a short run in the music. Below 60 the music
   plays twice as fast and a letter lands on every second beat.
 - **When it goes badly** the game helps: the catch window is a third of a beat (0.35) each side of the
   beat at the start; each phrase that steps the tempo down widens it by 0.05, up to half a beat, so the
@@ -150,9 +150,9 @@
   one fewer on Friday morning, then on Monday, Thursday ...). A note is a picture of a half note, a
   quarter note, an eighth note or two beamed eighths, each note always the same kind and turned by its
   own angle.
-- **Kept per world:** the base tempo of the next round, the day, the last round's rhythm and the highest
-  tempo held; the worlds with the check. **Kept per child:** the notes with their worlds, the day of the
-  last round and the fades taken since.
+- **Kept per world:** the last round's rhythm and the highest tempo held; the worlds with the check.
+  **Kept per child:** the base tempo of the next round (of any world), the notes with their worlds, the
+  day of the last round and the fades taken since.
 
 ## Why
 - Accuracy comes first, then rhythm, then speed. The story levels can measure speed; a beat can
@@ -182,5 +182,8 @@
   felt as a jump): a rhythm game follows the
   child's rhythm and swings around it instead of racing up to extremes; a good phrase never narrows the
   band. A round half as long as a level keeps it a short side game.
+- One tempo for all worlds: rhythm is the child's skill, not a world's; a tempo kept per world made a
+  child who had found a good pace start slow again in every new world. It never drops by itself, as a
+  slower start after a break only made the child climb back up.
 - After a miss the slow glide and the blinking pause sign show that the game waits; "go on" comes only
   when the letter is where it should be caught.

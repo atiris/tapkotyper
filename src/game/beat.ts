@@ -4,7 +4,6 @@
  * and drops on one clock, and the beat measure of rhythm (`.specify/game/rhythm.md`).
  */
 import type { Finger } from '../keyboard/layouts';
-import type { RhythmRecord } from '../storage/schema';
 
 /** The slowest and the fastest tempo, letters a minute (the tempo ring is full at the fastest). */
 export const TEMPO_MIN = 30;
@@ -17,8 +16,6 @@ const TEMPO_STEP = 0.05;
  */
 const DRIFT_PER_HALF = 0.1;
 const DRIFT_MAX = 0.2;
-/** A round's base tempo never goes over this many times the world's target tempo. */
-const BASE_MAX = 1.5;
 /** Landings in one phrase: the tempo's direction and the window change only between phrases. */
 export const PHRASE = 16;
 /** Seconds of song a round lasts by default, and the share of it a hard round grows by at most (a phrase for each step down). */
@@ -37,8 +34,6 @@ const DOUBLE_BELOW = 60;
 const PLAN_AHEAD_S = 0.2;
 /** Seconds of quiet before the count-in bar. */
 const LEAD_S = 0.6;
-/** A kept tempo older than this many days starts one step lower. */
-const KEPT_DAYS = 7;
 /** The first round's tempo: this share of the usual speed, at most the world's target tempo. */
 const START_SHARE = 0.7;
 /** Seconds around a lane's letter change in which none of its letters may be in the air (the cloud dissolves, a new one comes). */
@@ -133,13 +128,10 @@ export function drift(tempo: number, dir: -1 | 0 | 1, seconds: number, base: num
   return Math.max(Math.min(lo, tempo), Math.min(Math.max(hi, tempo), to));
 }
 
-/**
- * The next round's base: one step (5 %) from this round's base towards where its tempo went (`now`),
- * never over 1.5 times the world's `target` tempo.
- */
-export function nextBase(base: number, now: number, target: number): number {
+/** The next round's base: one step (5 %) from this round's base towards where its tempo went (`now`). */
+export function nextBase(base: number, now: number): number {
   const dir = Math.abs(now - base) < 0.5 ? 0 : Math.sign(now - base);
-  return Math.min(Math.round(target * BASE_MAX), tempoAt(base, dir));
+  return tempoAt(base, dir);
 }
 
 /** Days from `from` to `to`, both local dates `YYYY-MM-DD`. */
@@ -149,11 +141,11 @@ function days(from: string, to: string): number {
 }
 
 /**
- * A round's base tempo: the world's kept tempo (one step lower after a week without playing), else
- * 70 % of the usual speed (letters a minute), at most the world's `target`; a new child 30.
+ * A round's base tempo: the child's one kept tempo of all worlds (null before the first round), else
+ * 70 % of the usual speed (letters a minute), at most the played world's `target`; a new child 30.
  */
-export function startTempo(kept: RhythmRecord | undefined, usualCpm: number, today: string, target: number): number {
-  if (kept) return days(kept.at, today) > KEPT_DAYS ? tempoAt(kept.tempo, -1) : clampTempo(kept.tempo);
+export function startTempo(kept: number | null, usualCpm: number, target: number): number {
+  if (kept !== null) return clampTempo(kept);
   return clampTempo(Math.min(target, usualCpm * START_SHARE));
 }
 

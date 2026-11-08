@@ -503,15 +503,16 @@ function showFreeDone(root: HTMLElement, typed: FreeTyped, params: LevelParams):
 
 /**
  * The end of a Rytmus round: the basket full of letters; accuracy, rhythm with its word, the tempo held
- * and the letters caught. The world keeps the tempo to start with next time, the rhythm and the
- * highest tempo; the node's check comes with the world's target tempo held accurately; a great
+ * and the letters caught. The child keeps the tempo every world starts from next time, the world
+ * the rhythm and the highest tempo; the node's check comes with the world's target tempo held accurately; a great
  * round adds a rhythm note to those left today. No stars.
  */
 function showRhythmDone(root: HTMLElement, def: LevelDef, r: LevelResult, mode: RhythmMode, params: LevelParams, surprise: Surprise | null): void {
   const p = app.profile!;
   const before = p.progress.rhythm[def.world];
   const score = mode.score, held = mode.held || mode.song.phrases[0].tempo;
-  p.progress.rhythm[def.world] = { tempo: mode.nextTempo, at: localDate(), rhythm: score, top: Math.max(before?.top ?? 0, mode.held) };
+  p.progress.rhythmTempo = mode.nextTempo;
+  p.progress.rhythm[def.world] = { rhythm: score, top: Math.max(before?.top ?? 0, mode.held) };
   if (mode.reached && !p.progress.rhythmWon.includes(def.world)) p.progress.rhythmWon.push(def.world);
   const note = addRhythmRound(p, def.world, earnsNote(score, r.accuracy), localDate());
   saveProfile();

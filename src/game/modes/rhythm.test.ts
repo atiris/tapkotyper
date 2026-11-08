@@ -10,9 +10,9 @@ vi.mock('../../app/app', async () => {
   p.progress.unlockedKeys = ['f', 'j', ' ', 'd', 'k'];
   // Four ready letters: their last presses all right.
   for (const k of ['f', 'j', 'd', 'k']) p.stats.keys[k] = { presses: 40, errors: 0, recent: Array(40).fill(300), days: [] } as never;
-  // The first world finished; its Rytmus starts at the world's target tempo.
+  // The first world finished; Rytmus starts at the child's tempo, the world's target.
   p.progress.worldsDone = [0];
-  p.progress.rhythm = { 0: { tempo: 40, at: '2999-01-01', rhythm: null, top: 0 } };
+  p.progress.rhythmTempo = 40;
   return { app: { profile: p, words: { sk: [], en: [] } }, pickLine: () => '', profileLayout: (x: typeof p) => LAYOUTS[x.layout] };
 });
 vi.mock('../../audio/audio', () => ({ audio: { beatOut: () => null } }));

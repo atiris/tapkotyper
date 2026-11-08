@@ -151,6 +151,7 @@ export function newProfile(name: string, language: LangRef, layout?: LayoutId, k
       parrotFlown: [],
       parrotPerched: false,
       rhythm: {},
+      rhythmTempo: null,
       rhythmWon: [],
       rhythmNoteList: [],
       rhythmNotesAt: null,

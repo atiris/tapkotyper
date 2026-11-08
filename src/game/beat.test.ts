@@ -48,25 +48,24 @@ describe('lanes', () => {
 
 describe('tempo', () => {
   it('a new child starts at 30, others at 70 % of their usual speed, at most the world\'s target', () => {
-    expect(startTempo(undefined, 0, '2026-11-07', 40)).toBe(30);
-    expect(startTempo(undefined, 50, '2026-11-07', 40)).toBe(35);
-    expect(startTempo(undefined, 300, '2026-11-07', 40)).toBe(40);
+    expect(startTempo(null, 0, 40)).toBe(30);
+    expect(startTempo(null, 50, 40)).toBe(35);
+    expect(startTempo(null, 300, 40)).toBe(40);
   });
 
-  it('a kept tempo is the next base, a step lower after a week without playing', () => {
-    const kept = { tempo: 48, at: '2026-11-01', rhythm: 70, top: 48 };
-    expect(startTempo(kept, 0, '2026-11-07', 40)).toBe(48);
-    expect(startTempo(kept, 0, '2026-11-20', 40)).toBe(46);
-    expect(startTempo({ ...kept, tempo: 30 }, 0, '2026-12-20', 40)).toBe(30);
+  it('the kept tempo is the next base of every world, above any world\'s target too', () => {
+    expect(startTempo(48, 0, 40)).toBe(48);
+    expect(startTempo(90, 0, 40)).toBe(90);
+    expect(startTempo(200, 0, 40)).toBe(120);
   });
 
   it('the next base moves one step of 5 % towards where the round\'s tempo went', () => {
     expect([-4, -1, 0, 1, 4].map((l) => tempoAt(40, l))).toEqual([32, 38, 40, 42, 48]);
-    expect(nextBase(40, 43.5, 40)).toBe(42);
-    expect(nextBase(40, 36, 40)).toBe(38);
-    expect(nextBase(40, 40.2, 40)).toBe(40);
-    // Never over one and a half times the target.
-    expect(nextBase(60, 70, 40)).toBe(60);
+    expect(nextBase(40, 43.5)).toBe(42);
+    expect(nextBase(40, 36)).toBe(38);
+    expect(nextBase(40, 40.2)).toBe(40);
+    // Only the tempo range bounds it.
+    expect(nextBase(118, 125)).toBe(120);
   });
 
   it('within a round the tempo drifts at most 10 % of the base in half the round, 20 % in all', () => {

@@ -10,7 +10,7 @@ import { type G, WORD, drawSprite, fontFamily, roundRect } from '../../gfx/draw'
 import { t } from '../../i18n/i18n';
 import { type Finger, fingerFor } from '../../keyboard/layouts';
 import { recentAccuracy } from '../../learning/lessons';
-import { localDate, recentTyping } from '../../learning/stats';
+import { recentTyping } from '../../learning/stats';
 import { FINGER_COLORS } from '../../ui/finger-colors';
 import { filterWords, isBlocked } from '../../words/words';
 import { accuracyFill, fillRing, roundSvg, roundTextSvg } from '../../ui/hud';
@@ -237,7 +237,7 @@ export class RhythmMode extends HeroMode {
     const roundS = fast(rhythmRoundS(L.def.world));
     this.changes = planChanges(this.lanes, spare, shape.changes, roundS);
     this.target = rhythmTarget(L.def.world);
-    this.base = startTempo(p.progress.rhythm[L.def.world], recentTyping(p, 14).cpm, localDate(), this.target);
+    this.base = startTempo(p.progress.rhythmTempo, recentTyping(p, 14).cpm, this.target);
     const weights = laneWeights(this.lanes.map((l) => recentAccuracy(p.stats.keys[l.letters[0]])));
     // Words of the round's letters only, from the child's word language.
     const all = new Set([...this.lanes.map((l) => l.letters[0]), ...this.changes.map((c) => c.letter)]);
@@ -270,7 +270,7 @@ export class RhythmMode extends HeroMode {
 
   /** The next round's base: a step from this round's towards where its tempo went. */
   get nextTempo(): number {
-    return nextBase(this.base, this.tempoNow, this.target);
+    return nextBase(this.base, this.tempoNow);
   }
 
   /** The next drop due, else the last one. */

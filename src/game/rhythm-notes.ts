@@ -4,6 +4,16 @@
  */
 import type { Profile, RhythmNote } from '../storage/schema';
 import { fadeNotes } from './beat';
+import { WORLDS, isWorldUnlocked } from './levels';
+
+/** Points of the treble clef in the treasure chest. */
+export const CLEF_POINTS = 5;
+
+/** The treble clef is held while every open world has a note among those kept, and there is one. */
+export function hasClef(p: Profile): boolean {
+  const notes = p.progress.rhythmNoteList;
+  return notes.length > 0 && WORLDS.every((_, w) => !isWorldUnlocked(p, w) || notes.some((n) => n.world === w));
+}
 
 /** The notes left today; the fades due since the last round are taken now (true: the profile changed and wants saving). */
 export function rhythmNotes(p: Profile, today: string): { notes: RhythmNote[]; changed: boolean } {

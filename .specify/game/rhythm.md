@@ -152,6 +152,10 @@
   one fewer on Friday morning, then on Monday, Thursday ...). A note is a picture of a half note, a
   quarter note, an eighth note or two beamed eighths, each note always the same kind and turned by its
   own angle.
+- **The treble clef:** held while every open world has at least one of the notes kept (and there is
+  one). It stands before the notes in "Môj rytmus" and counts 5 points in the treasure chest
+  ([statistics](../profiles/statistics.md)); a fading note can take it away, the next note of that
+  world brings it back.
 - **Kept per world:** the last round's rhythm and the highest tempo held; the worlds with the check.
   **Kept per child:** the base tempo of the next round (of any world), the notes with their worlds, the
   day of the last round and the fades taken since.
@@ -184,6 +188,8 @@
   felt as a jump): a rhythm game follows the
   child's rhythm and swings around it instead of racing up to extremes; a good phrase never narrows the
   band. A round half as long as a level keeps it a short side game.
+- The clef asks for Rytmus in every world, not only in the child's favourite, and gives the notes a
+  goal beyond their count.
 - One tempo for all worlds: rhythm is the child's skill, not a world's; a tempo kept per world made a
   child who had found a good pace start slow again in every new world. It never drops by itself, as a
   slower start after a break only made the child climb back up.

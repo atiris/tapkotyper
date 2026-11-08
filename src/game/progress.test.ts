@@ -9,6 +9,7 @@ import { KIND_STEP, LEVEL_STARS, MAX_CHEST, RANDOM_KIND_STARS, STORY_ACCESSORIES
 import { accessories, loadManifest } from '../gfx/assets';
 import { SLOTS } from '../gfx/tapko';
 import { practiceOrder } from '../learning/lessons';
+import { hasClef } from './rhythm-notes';
 
 describe('automatic growth', () => {
   it('steps up after enough good play, difficulty and word length in turn', () => {
@@ -281,7 +282,7 @@ describe('the treasure chest and the stars of My progress', () => {
   // These maxima are shown to the player; a new level, world or range thing changes them on purpose.
   it('has fixed maxima', () => {
     expect(LEVEL_STARS).toBe(375);
-    expect(MAX_CHEST).toBe(67);
+    expect(MAX_CHEST).toBe(72);
   });
 
   it('counts a badge by its tier and a range find as one point', () => {
@@ -303,6 +304,21 @@ describe('the treasure chest and the stars of My progress', () => {
     expect(chestPoints(p)).toBe(8);
     p.progress.worldsDone.push(1);
     expect(chestPoints(p)).toBe(1);
+  });
+
+  it('adds five points for the treble clef: a note from every open world', () => {
+    const p = newProfile('Ema', 'sk');
+    expect(hasClef(p)).toBe(false);
+    // Only the first world is open: its note is enough.
+    p.progress.rhythmNoteList = [{ world: 0, n: 0 }];
+    expect(hasClef(p)).toBe(true);
+    expect(chestPoints(p)).toBe(5);
+    // The second world opens with the first done (a level of it played): it needs a note too.
+    p.progress.worldsDone = [0];
+    p.progress.levels[worldLevels(1)[0].id] = 1;
+    expect(hasClef(p)).toBe(false);
+    p.progress.rhythmNoteList.push({ world: 1, n: 1 });
+    expect(hasClef(p)).toBe(true);
   });
 });
 

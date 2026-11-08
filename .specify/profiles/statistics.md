@@ -19,7 +19,7 @@
   the meaning only in the tooltip. The first row is the long run: keys mastered of the layout's
   total, stories finished, worlds finished, the **treasure chest** of rarities in points of its
   maximum (a world badge bronze 1, silver 2, gold 3; each target range award 1; the
-  [Parrot badge](../game/parrot.md) 7: 15 x 3 + 15 + 7 = 67), the parrots at home against the most
+  [Parrot badge](../game/parrot.md) 7; the treble clef 5: 15 x 3 + 15 + 7 + 5 = 72), the parrots at home against the most
   ever at home (the parrot's head), and the stars (the best of every level) of the maximum (5 in
   75 levels: 375; the hero's journeys' stars count only among the stars earned since the start). The second row is the last 14 days: accuracy and speed in
   characters per minute once something was typed, the letters typed, the **days trained** (a desk
@@ -34,7 +34,8 @@
   shelf of world badges ("Odznaky svetov": gold, silver and bronze sections with the stars each needs, [story](../game/story.md)) with the row of target
   range awards under it ("Ocenenia zo strelníc": every world's rare thing, found ones in
   colour, missing ones a grey range sight, [target range](../game/target-practice.md)), and "Môj
-  rytmus" with the rhythm notes left today in one row, as many as fit, each a little over the one before,
+  rytmus" with the **treble clef** first while it is held (a note from every open world kept, its
+  tooltip says so), then the rhythm notes left today in one row, as many as fit, each a little over the one before,
   and the exact count right after the last in the summary chips' style (without a note a line saying how
   to earn one, [Rytmus](../game/rhythm.md)); the notes are only pictures (not buttons), each of the
   world it was earned in, which its tooltip names. Below it a friendly view of the keys: a keyboard colored
@@ -108,7 +109,7 @@
   ([world keys](../learning/world-keys.md)). It is long-term: computed from the stored key
   statistics, so it fades when the child stops typing the key well.
 
-- **Maintenance:** the maxima shown (stars 375, chest 67) follow from the levels, worlds and
+- **Maintenance:** the maxima shown (stars 375, chest 72) follow from the levels, worlds and
   range things; when their number changes, the new maximum must be shown and written here
   (a unit test pins both numbers, so a change cannot slip by).
 

@@ -1,5 +1,5 @@
 import { app, go, layout, reduceMotion, saveProfile } from '../app/app';
-import { rhythmNotes } from '../game/rhythm-notes';
+import { hasClef, rhythmNotes } from '../game/rhythm-notes';
 import { imageUrl } from '../gfx/assets';
 import { type Mood, otherMood, renderTapkoInto, tapkoElement } from '../gfx/tapko';
 import { DRILL_SECONDS, STORIES, type StoryDef, WORLDS, storyDone, storyOpen, worldName } from '../game/levels';
@@ -10,7 +10,7 @@ import { STATS_WINDOW, activeKeys, lessonKeyOf } from '../learning/lessons';
 import { agoOf, keyHistory, keyReport, keyboardSummary, lastTraining, localDate, masterySummary, recentPractice, recentTyping, weakKeys } from '../learning/stats';
 import { linkOf } from '../share/codec';
 import { makeOverallResult, resultCode } from '../share/result';
-import type { Profile } from '../storage/schema';
+import type { Profile, RhythmNote } from '../storage/schema';
 import { nickname } from '../storage/store';
 import { lineChart } from '../ui/charts';
 import { HEAT_BANDS, KeyboardGuide, fingerChip, keyCap, keyLabel } from '../ui/keyboard-guide';
@@ -224,12 +224,11 @@ function badgeTiers(p: Profile): HTMLElement[] {
 const NOTES_SHOWN = 60;
 
 /**
- * My rhythm: the notes left today in one row, as many as fit, each a little over the one before,
- * the exact count right after the last; a note's tooltip names the world it was earned in.
+ * My rhythm: the treble clef while held, then the notes left today in one row, as many as fit, each a
+ * little over the one before, the exact count right after the last; a note's tooltip names the world it
+ * was earned in.
  */
-function rhythmShelf(p: Profile): HTMLElement {
-  const { notes, changed } = rhythmNotes(p, localDate());
-  if (changed) saveProfile();
+function rhythmShelf(p: Profile, notes: RhythmNote[]): HTMLElement {
   const head = h('h4', {}, t('progress.rhythmTitle'));
   if (!notes.length) return h('div', { class: 'badge-shelf' }, head, h('p', { class: 'badge-none' }, t('progress.rhythmNone')));
   const pics = notes.slice(-NOTES_SHOWN).map((n) => {
@@ -237,19 +236,24 @@ function rhythmShelf(p: Profile): HTMLElement {
     return h('span', { class: 'note-pic', tip: label, 'aria-label': label, role: 'img' }, notePic(n.n, p.seed));
   });
   const count = t('progress.rhythmNotes', { n: notes.length });
+  const clefPic = imageUrl('ui-treble-clef'), clefTip = t('progress.clef');
+  const clef = hasClef(p) ? h('span', { class: 'rhythm-clef', tip: clefTip, 'aria-label': clefTip, role: 'img' }, clefPic ? h('img', { src: clefPic, alt: '' }) : '𝄞') : null;
   return h('div', { class: 'badge-shelf' }, head,
-    h('div', { class: 'rhythm-notes' }, h('div', { class: 'rhythm-note-list' }, ...pics), h('b', { class: 'rhythm-count', tip: count, 'aria-label': count }, String(notes.length))));
+    h('div', { class: 'rhythm-notes' }, clef, h('div', { class: 'rhythm-note-list' }, ...pics), h('b', { class: 'rhythm-count', tip: count, 'aria-label': count }, String(notes.length))));
 }
 
 /** The summary rows, a row per story under their heading, the badge shelf, the range awards and the rhythm notes. */
 function progressSection(p: Profile): HTMLElement {
+  // The fades due come first: the chest counts the treble clef by the notes left.
+  const { notes, changed } = rhythmNotes(p, localDate());
+  if (changed) saveProfile();
   return h('section', { class: 'progress-view' },
     summaryRow(p),
     h('div', { class: 'badge-shelf' }, h('h4', {}, t('progress.storiesTitle'))),
     ...STORIES.map((s) => storyRow(p, s)),
     h('div', { class: 'badge-shelf' }, h('h4', {}, t('progress.badges')), ...badgeTiers(p)),
     h('div', { class: 'badge-shelf' }, h('h4', {}, t('progress.rangeAwards')), rangeFinds(p)),
-    rhythmShelf(p));
+    rhythmShelf(p, notes));
 }
 
 /** When the child last typed, under the character: the keyboard picture and "včera"; the picture's tooltip says the day too. */

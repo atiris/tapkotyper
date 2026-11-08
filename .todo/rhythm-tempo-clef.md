@@ -41,7 +41,7 @@ Affected: `src/game/beat.ts` (tempo rules), `src/game/modes/rhythm.ts`, `src/scr
   for every filled finished world, all of them or all but one at random (like the parrots, a new
   checkbox "Všetky noty" with its hint), each dated today so none fades at once; `rhythmWon` for those
   worlds.
-- [ ] **4. The treble clef.** Held while every **open** world (`isWorldUnlocked`) has at least one note
+- [x] **4. The treble clef.** Held while every **open** world (`isWorldUnlocked`) has at least one note
   in `rhythmNoteList` and there is at least one note. Picture `ui-treble-clef` (made 2026-11-08,
   already in `public/assets`, prompt in `assets-src/PROMPTS.md`). In My rhythm it stands before the
   notes' row while held (tooltip "Husľový kľúč: máš notu z každého otvoreného sveta." / en). It is in
@@ -82,3 +82,4 @@ Affected: `src/game/beat.ts` (tempo rules), `src/game/modes/rhythm.ts`, `src/scr
 - Step 1: no `rhythmTempoAt`: nothing reads a tempo date once the week rule is gone, and `rhythmNotesAt` already keeps the last round's day.
 - Step 2: catches while the song waited (after a miss or a pause, without time pressure) count as caught but not in the in-time share; a phrase with no timed catch counts as in time. A gentle step down keeps the round's length too (only a full step down adds a phrase).
 - Step 3: `rhythmWon` goes to the worlds with a filled note (the same all-or-all-but-one pick); the tempo field takes whole numbers and is clamped to the range on fill.
+- Step 4: `CLEF_POINTS` and `hasClef` live in `src/game/rhythm-notes.ts` with the notes (not in parrots.ts); the clef is judged on the notes kept, and My progress takes the due fades before its chips so the chest and the shelf agree.

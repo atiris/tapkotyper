@@ -87,8 +87,11 @@
   ([teacher links](teacher-links.md)), not here: one place for everything about tasks.
 - The Parrot badge, when held, sits just under the child's character and its last-training line on the Postup tab.
 - The child's character on the Postup tab is big (beside the summary, above it on a phone), in
-  its outfit, with a line right under it, after a round keyboard sign: when the child last trained
-  (today, yesterday, n days ago) and the typing minutes of the last 7 days (above Aro when he sits there); and lively: every 5 to 20 seconds its big smile turns into the usual one and back.
+  its outfit, with a line right under it, after the world keyboard picture (`ui-world-keys`): when the
+  child last typed, in a child's words only ("dnes", "včera", "pred 3 dňami", "minulý týždeň", "pred 2
+  týždňami", "minulý mesiac", "pred 3 mesiacmi", "pred viac ako rokom"); the picture's tooltip adds the
+  day ("Posledný tréning písania bol včera, dňa 7. 11. 2026."); the week's minutes are in the second
+  summary row, not here (above Aro when he sits there); and lively: every 5 to 20 seconds its big smile turns into the usual one and back.
   Clicked or pressed with Enter or Space it pulls another face at once (wondering too, never the
   same twice in a row), half the time with a hop; the smiles then go on. With reduced motion it
   only changes its face.

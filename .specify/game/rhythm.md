@@ -121,7 +121,7 @@
   **Zapnúť všade** (the default: sound everywhere), **Zapnúť kde je potrebné** (sound only where it
   matters) and **Nezapínať** (also the round X and Escape: nothing changes). The round starts only after it.
   With any other sound level the card is not shown.
-- **Round:** half of a regular level of the world's story (1, 1.5 and 2 minutes) of song after the
+- **Round:** 80 % of a regular level of the world's story (1.6, 2.4 and 3.2 minutes) of song after the
   count-in bar (pauses stop it), longer when it goes badly.
   No points, no stars, no paws, no Enter marks. The keys count in the statistics and the lesson like the parrot's, and the
   parent's surprises counting time are asked and told.

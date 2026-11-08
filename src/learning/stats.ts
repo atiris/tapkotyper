@@ -83,13 +83,25 @@ function daysBetween(from: string, to: string): number {
   return Math.round((day(to) - day(from)) / 86_400_000);
 }
 
-/** When the child last trained (days ago, null = never) and the typing minutes of the last 7 days. */
-export function lastTraining(profile: Profile, now = new Date()): { daysAgo: number | null; weekMinutes: number } {
-  const today = localDate(now);
+/** When the child last trained: its local date and the days since (both null = never). */
+export function lastTraining(profile: Profile, now = new Date()): { date: string | null; daysAgo: number | null } {
   const sessions = profile.stats.sessions.filter((s) => s.seconds > 0);
   const last = sessions[sessions.length - 1];
-  const week = sessions.filter((s) => daysBetween(s.date, today) < 7).reduce((a, s) => a + s.seconds, 0);
-  return { daysAgo: last ? Math.max(0, daysBetween(last.date, today)) : null, weekMinutes: Math.round(week / 60) };
+  return last ? { date: last.date, daysAgo: Math.max(0, daysBetween(last.date, localDate(now))) } : { date: null, daysAgo: null };
+}
+
+export type Ago = { key: 'agoToday' | 'agoYesterday' | 'agoLastWeek' | 'agoLastMonth' | 'agoLong' } | { key: 'agoDays' | 'agoWeeks' | 'agoMonths'; n: number };
+
+/** How long ago in a child's words: today, yesterday, 2-6 days, last week, 2-4 weeks, last month, 2-12 months, over a year. */
+export function agoOf(days: number): Ago {
+  if (days <= 0) return { key: 'agoToday' };
+  if (days === 1) return { key: 'agoYesterday' };
+  if (days < 7) return { key: 'agoDays', n: days };
+  if (days < 14) return { key: 'agoLastWeek' };
+  if (days < 30) return { key: 'agoWeeks', n: Math.floor(days / 7) };
+  if (days < 60) return { key: 'agoLastMonth' };
+  if (days < 365) return { key: 'agoMonths', n: Math.floor(days / 30) };
+  return { key: 'agoLong' };
 }
 
 /**

@@ -7,7 +7,7 @@ import { MAX_CHEST, LEVEL_STARS, badgeTier, chestPoints, totalStars, worldStars 
 import { locale, t, tn } from '../i18n/i18n';
 import { allKeys } from '../keyboard/layouts';
 import { STATS_WINDOW, activeKeys, lessonKeyOf } from '../learning/lessons';
-import { keyHistory, keyReport, keyboardSummary, lastTraining, localDate, masterySummary, recentPractice, recentTyping, weakKeys } from '../learning/stats';
+import { agoOf, keyHistory, keyReport, keyboardSummary, lastTraining, localDate, masterySummary, recentPractice, recentTyping, weakKeys } from '../learning/stats';
 import { linkOf } from '../share/codec';
 import { makeOverallResult, resultCode } from '../share/result';
 import type { Profile } from '../storage/schema';
@@ -252,11 +252,16 @@ function progressSection(p: Profile): HTMLElement {
     rhythmShelf(p));
 }
 
-/** When the child last trained and the typing minutes of the last 7 days, under the character. */
+/** When the child last typed, under the character: the keyboard picture and "včera"; the picture's tooltip says the day too. */
 function lastTrainingLine(p: Profile): HTMLElement {
-  const { daysAgo, weekMinutes } = lastTraining(p);
-  const last = daysAgo === null ? t('progress.never') : daysAgo === 0 ? t('progress.lastToday') : daysAgo === 1 ? t('progress.lastYesterday') : t('progress.lastDays', { n: daysAgo });
-  return h('p', { class: 'progress-last' }, icon('keyboard'), h('span', {}, last, daysAgo === null ? null : [' ', t('progress.week', { n: weekMinutes })]));
+  const { date, daysAgo } = lastTraining(p);
+  const ago = daysAgo === null ? null : agoOf(daysAgo);
+  const when = ago ? t(`progress.${ago.key}`, 'n' in ago ? { n: ago.n } : {}) : t('progress.agoNever');
+  const tipText = date ? t('progress.lastTip', { when, date: new Date(`${date}T12:00`).toLocaleDateString(locale()) }) : t('progress.lastNever');
+  const pic = imageUrl('ui-world-keys');
+  return h('p', { class: 'progress-last' },
+    pic ? h('img', { src: pic, alt: tipText, tip: tipText }) : h('span', { tip: tipText, 'aria-label': tipText }, icon('keyboard')),
+    h('span', {}, when));
 }
 
 type StatsTab = 'progress' | 'keys';

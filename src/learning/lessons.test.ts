@@ -3,7 +3,7 @@ import { newProfile } from '../storage/store';
 import { emptyKeyStat } from '../storage/schema';
 import { ENTER, LAYOUTS, enterAfter, fingerFor } from '../keyboard/layouts';
 import { SHIFT_L, STATS_WINDOW, activeKeys, keyMastery, lessonKeyNames, masteredKeyNames, lessonKeysFor, advanceLesson, aimKeys, firstKeys, keysAccuracy, notReadyKeys, isFluent, isReady, keysToIntroduce, lessonOrder, practiceOrder, practiceSteps, punctuationKeys, reactionLimit, shiftKeyOf, stepHolding } from './lessons';
-import { keyReport, lastTraining, masterySummary, recordPress, weakKeys } from './stats';
+import { agoOf, keyReport, lastTraining, masterySummary, recordPress, weakKeys } from './stats';
 
 describe('lesson order', () => {
   it('starts on the home row with the index fingers', () => {
@@ -175,18 +175,25 @@ describe('statistics', () => {
 });
 
 describe('last training', () => {
-  it('counts days since the last session and the minutes of the last 7 days', () => {
+  it('gives the date of the last session and the days since', () => {
     const p = newProfile('Ema', 'sk');
     const now = new Date(2026, 9, 21, 9);
-    expect(lastTraining(p, now)).toEqual({ daysAgo: null, weekMinutes: 0 });
+    expect(lastTraining(p, now)).toEqual({ date: null, daysAgo: null });
     p.stats.sessions.push(
       { date: '2026-10-10', seconds: 600, chars: 0, errors: 0, cpm: 0 },
       { date: '2026-10-15', seconds: 300, chars: 0, errors: 0, cpm: 0 },
       { date: '2026-10-19', seconds: 150, chars: 0, errors: 0, cpm: 0 },
     );
-    expect(lastTraining(p, now)).toEqual({ daysAgo: 2, weekMinutes: 8 });
+    expect(lastTraining(p, now)).toEqual({ date: '2026-10-19', daysAgo: 2 });
     p.stats.sessions.push({ date: '2026-10-21', seconds: 0, chars: 0, errors: 0, cpm: 0 });
     expect(lastTraining(p, now).daysAgo).toBe(2);
+  });
+
+  it('says how long ago in a child\'s words', () => {
+    expect([0, 1, 3, 7, 13, 14, 29, 30, 59, 60, 364, 365].map(agoOf)).toEqual([
+      { key: 'agoToday' }, { key: 'agoYesterday' }, { key: 'agoDays', n: 3 }, { key: 'agoLastWeek' }, { key: 'agoLastWeek' },
+      { key: 'agoWeeks', n: 2 }, { key: 'agoWeeks', n: 4 }, { key: 'agoLastMonth' }, { key: 'agoLastMonth' },
+      { key: 'agoMonths', n: 2 }, { key: 'agoMonths', n: 12 }, { key: 'agoLong' }]);
   });
 });
 

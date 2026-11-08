@@ -511,9 +511,12 @@ export function rhythmLetters(p: Profile, world: number): string[] {
 /** A world's Rytmus is open with the world, like its target range and parrot. */
 export const rhythmOpen = aimOpen;
 
-/** Seconds of song a world's Rytmus round lasts: half of its story's regular level. */
+/** A Rytmus round is this share of its story's regular level. */
+const RHYTHM_SHARE = 0.8;
+
+/** Seconds of song a world's Rytmus round lasts. */
 export function rhythmRoundS(world: number): number {
-  return STORY_MIN_S[storyOf(world).tier] / 2;
+  return STORY_MIN_S[storyOf(world).tier] * RHYTHM_SHARE;
 }
 
 /** A world's Rytmus lanes and letter changes, by its place in its story (`.specify/game/rhythm.md`). */

@@ -244,7 +244,10 @@ test('world badges sit on the map, grow with stars and line up on the progress s
   await expect(third.first()).toHaveAttribute('aria-label', /^Medals: 2\. /);
   await expect(third.first().locator('b')).toHaveText('2');
   await expect(page.locator('.stats-modal .medals')).toHaveCount(0);
-  await expect(page.locator('.stats-hero .progress-last .icon')).toBeVisible();
+  // When in a child's words; the keyboard picture's tooltip adds the day.
+  const last = page.locator('.stats-hero .progress-last');
+  await expect(last.locator('img')).toHaveAttribute('data-tip', /^Your last typing training was today, on \S/);
+  await expect(last).toHaveText('today');
 });
 
 test('the fairy story is a third row; Melody floats with the child', async ({ page }) => {

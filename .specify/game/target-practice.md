@@ -54,7 +54,7 @@
   in its flight, in percent, after a penalty that grows with the mistakes (wrong keys and late
   words): n mistakes cost n x (n + 1) letters, so 21 letters give 100, with one mistake 19/21
   (90), with two 15/21 (71); a miss or a fall gives 0. A miss
-  and a fall get only a kind line of the target ("Vedľa!" among them, no word pops up); at the third and fifth bullseye in a row a streak line follows the hit line, so the thing's joke is not lost. The last throw
+  and a fall get only a kind line of the target ("Vedľa!" among them, no word pops up); a run of bullseyes gets no line of its own. The last throw
   of the base time and a target that steps back (shrinks) a line of their own. Now and then
   (about one throw in four, more for a cactus or a spider) the target reacts while the thing is
   on its way: worried, wondering or cheering. No line comes twice in a row. Every line stays long

@@ -105,7 +105,7 @@ export const THINGS: Thing[] = [
   { id: 'snowflake', pics: ['obj-aim-snowflake'], story: 0, sfx: 'whoosh', effect: 'bounce', burst: 'snow', melt: 0.4, scale: 0.7 },
   // The hero's journey's compass; drawn in code until its picture is there.
   { id: 'compass', pics: [COMPASS], story: 0, sfx: 'ring', effect: 'bounce', wobble: true, burst: 'sparkle', drawn: true },
-  { id: 'battery', pics: ['obj-aim-battery'], story: 1, sfx: 'bzzt', effect: 'bounce', burst: 'sparks' },
+  { id: 'battery', pics: ['obj-aim-battery'], story: 1, sfx: 'bzzt', effect: 'bounce', burst: 'sparks', scale: 0.55 },
   { id: 'magnet', pics: ['obj-aim-magnet'], story: 1, sfx: 'pop', effect: 'stick', hold: 1.5 },
   { id: 'gear', pics: ['obj-aim-gear'], story: 1, sfx: 'pop', effect: 'bounce' },
   { id: 'note', pics: ['obj-aim-note'], story: 2, sfx: 'note', effect: 'bounce', spin: 'none', expect: 0.4, eyes: 'wide' },

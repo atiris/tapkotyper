@@ -127,8 +127,6 @@ interface Flight {
   melted: boolean;
   /** When the target says something before the hit: a second after the throw call, or at ring 1 or 2. */
   expect: 'call' | 'ring1' | 'ring2' | null;
-  /** A streak line the target says once its hit line is gone. */
-  then: string | null;
   /** Seconds since the throw. */
   flown: number;
   smoke: number;
@@ -250,8 +248,6 @@ export class AimMode extends HeroMode {
   private finds: string[] = [];
   /** Things this run added to the collection, once it ended. */
   won: string[] = [];
-  /** Bullseyes in a row. */
-  private streak = 0;
   private eyes: EyesUp | null = null;
   /** The throw the eyes last came up in. */
   private eyesThrow = -2;
@@ -426,7 +422,7 @@ export class AimMode extends HeroMode {
     const f: Flight = {
       th, pic: '', launch: null, stops, s: 0, speed: 0, next: 0, errors: 0, slips: 0, sink: 0, from: 0, drift: 0, lift: 0,
       phase: 'ready', counts: false, letters: 0, drop: 0, vy: 0, landed: false, after: 0, spin: 0,
-      egg: null, hatched: 0, melt: false, melted: false, expect: null, then: null, flown: 0, smoke: 0,
+      egg: null, hatched: 0, melt: false, melted: false, expect: null, flown: 0, smoke: 0,
     };
     this.dress(f, th);
     this.flight = f;
@@ -585,9 +581,6 @@ export class AimMode extends HeroMode {
         f.drop = Math.min(ground, f.drop + f.vy * dt);
         if (f.drop >= ground) this.land(f);
       } else if ((f.after += dt) >= PAUSE_AFTER && !this.L.speaking('target', LINE_HOLD)) this.done1();
-    } else if (f.then) {
-      f.after += dt;
-      if (!this.L.speaking('target')) this.targetSays(f.then), (f.then = null);
     } else if ((f.after += dt) >= PAUSE_AFTER && !this.L.speaking('target', LINE_HOLD)) this.done1();
     this.L.core.prune();
   }
@@ -611,7 +604,6 @@ export class AimMode extends HeroMode {
   /** A word came too late, so it drifted off: the projectile whizzes past behind the board; no harm, just no hit. */
   private miss(f: Flight): void {
     f.phase = 'miss';
-    this.streak = 0;
     this.L.sfx('whoosh');
     this.targetSays(this.line('aim.lines.miss'));
     this.eyesReact('happy');
@@ -668,7 +660,7 @@ export class AimMode extends HeroMode {
     if (this.eyes) this.eyesReact(th.wobble ? 'dizzy' : center ? 'squeeze' : 'wide');
     else if (th.wobble && this.L.rng.chance(EYES_DIZZY)) this.eyesUp('dizzy');
     else if (center && this.L.rng.chance(EYES_SQUEEZE)) this.eyesUp('squeeze');
-    this.targetSays(this.hitLine(f, tier, own, points));
+    this.targetSays(this.hitLine(tier, own, points));
     if (center && f.counts && th.world != null) this.find(th);
     this.happy();
     this.L.setMood('happy', 1.2);
@@ -676,14 +668,9 @@ export class AimMode extends HeroMode {
 
   /**
    * The target's line for a hit: in the middle mostly the thing's own line, else a common one; `{n}` in a line is the hit's points.
-   * A third and a fifth bullseye in a row add a streak line after it.
    */
-  private hitLine(f: Flight, tier: Tier, own: string, points: number): string {
-    if (tier !== 'center') {
-      this.streak = 0;
-      return this.line(`aim.lines.${tier}`, points);
-    }
-    if (++this.streak === 3 || this.streak === 5) f.then = this.line(`aim.lines.streak${this.streak}`);
+  private hitLine(tier: Tier, own: string, points: number): string {
+    if (tier !== 'center') return this.line(`aim.lines.${tier}`, points);
     return tList(own).length && this.L.rng.chance(OWN_HIT) ? this.line(own) : this.line('aim.lines.center', points);
   }
 
@@ -722,7 +709,6 @@ export class AimMode extends HeroMode {
 
   private land(f: Flight): void {
     f.landed = true;
-    this.streak = 0;
     this.L.sfx('plop');
     const p = this.point(f.s);
     this.L.particles.emit(p.x, VH * 0.9, 8, 'puff', ['#ffffff', '#e8e2d6'], 80, 10, 0.6);

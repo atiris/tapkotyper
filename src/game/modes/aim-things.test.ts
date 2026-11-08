@@ -22,7 +22,7 @@ describe('things to throw', () => {
       }
       for (const list of ['hatchSound', 'hatch', 'hatchedCall', 'hatchFlight']) expect(d.aim.things.egg[list]?.length, `${lang} egg.${list}`).toBeGreaterThan(0);
       expect(d.aim.things.boomerang.caught?.length).toBeGreaterThan(0);
-      for (const list of ['center', 'one', 'two', 'miss', 'fall', 'expectWorry', 'expectWonder', 'expectCheer', 'streak3', 'streak5', 'shrink', 'last']) {
+      for (const list of ['center', 'one', 'two', 'miss', 'fall', 'expectWorry', 'expectWonder', 'expectCheer', 'shrink', 'last']) {
         expect(d.aim.lines[list]?.length, `${lang} lines.${list}`).toBeGreaterThan(0);
       }
       expect(Object.keys(d.aim.things).sort()).toEqual(THINGS.map((th) => th.id).sort());

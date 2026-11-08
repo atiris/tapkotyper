@@ -31,7 +31,7 @@
   started picking players before the word was complete.
 - **Function keys** wherever they make sense: F1 the help that fits the moment (in a level the
   help page for this level, on a screen its help tab), F2 the keyboard guide (hidden or shown, the player keeps it for the next levels, as the parent's guide setting), F3 reading aloud,
-  F4 the sound (normal, quiet, off), F8 the next song. F4 and F8 say the new sound level or song
+  F4 the sound (normal, quiet, only where it matters, off), F8 the next song. F4 and F8 say the new sound level or song
   in a short note at the bottom. Each of these buttons' tooltips ends with its key ("Help (F1)").
   In a text field the keys type text, only F1 still opens help; the browser's own F-key actions
   (its help, search, reload of these keys) do not happen. The fullscreen button's tooltip names

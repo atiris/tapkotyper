@@ -58,6 +58,8 @@ export const ICONS = {
   sound: '<path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 010 7"/><path d="M19 6a8.5 8.5 0 010 12"/>',
   soundLow: '<path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 9.5a3.5 3.5 0 010 5"/>',
   mute: '<path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9l5 6M22 9l-5 6"/>',
+  // The sound with a small "!" badge at its top right: sound only where it matters.
+  soundImportant: '<path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 010 7"/><path d="M19 6a8.5 8.5 0 010 12"/><circle class="icon-badge" cx="21" cy="3.5" r="5"/><path class="icon-badge-mark" d="M21 1v3.2M21 6.3v.01"/>',
   read: '<path d="M2.5 12c1.8-2.6 3.7-3.6 5.5-2.8 1.8-.8 3.7.2 5.5 2.8-1.8 2.8-3.7 4-5.5 4s-3.7-1.2-5.5-4z"/><path d="M2.5 12h11"/><path d="M17 9a4.2 4.2 0 010 6"/><path d="M19.8 6.3a8 8 0 010 11.4"/>',
   keyboard: '<rect x="2" y="6" width="20" height="12" rx="2.5"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/>',
   keyboardOff: '<rect x="2" y="6" width="20" height="12" rx="2.5"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10M3 3l18 18"/>',

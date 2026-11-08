@@ -8,8 +8,8 @@ export type GraphicsChoice = 'auto' | 'full' | 'simple';
 export type LangRef = Lang | `own:${string}`;
 /** The look of the whole device: `system` follows the browser's color scheme. */
 export type Theme = 'system' | 'light' | 'dark';
-/** The quick sound switch: full, quiet or off. */
-export type SoundLevel = 'normal' | 'quiet' | 'off';
+/** The quick sound switch: full, quiet, only where sound matters (Rytmus, dictation) or off. */
+export type SoundLevel = 'normal' | 'quiet' | 'important' | 'off';
 export type LayoutId = 'sk-qwertz' | 'sk-qwerty' | 'us-qwerty';
 export type CompanionKind = 'fox' | 'cat' | 'bunny' | 'owl' | 'dog' | 'bear' | 'panda' | 'penguin' | 'lion';
 export type FontChoice = 'lexend' | 'atkinson' | 'opendyslexic';

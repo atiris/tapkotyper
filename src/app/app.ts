@@ -1,4 +1,5 @@
 import { audio } from '../audio/audio';
+import { nextLevel } from '../audio/levels';
 import { useGraphics } from '../engine/graphics';
 import { resetFontFamily } from '../gfx/draw';
 import { askedLanguage, hasTexts, setLanguage, tList } from '../i18n/i18n';
@@ -6,7 +7,7 @@ import { toggleTheme, useTheme } from './theme';
 import { LAYOUTS, type Layout } from '../keyboard/layouts';
 import { fingered } from '../keyboard/fingers';
 import { Store } from '../storage/store';
-import { GUEST_ID, type LangRef, type Profile, SUPER_ID, type TaskSpec } from '../storage/schema';
+import { GUEST_ID, type LangRef, type Profile, SUPER_ID, type SoundLevel, type TaskSpec } from '../storage/schema';
 import { loadWordsOf } from '../words/words';
 import { closeModals } from '../ui/dom';
 import { hideTip } from '../ui/tooltip';
@@ -190,12 +191,17 @@ export async function selectProfile(p: Profile): Promise<void> {
   audio.setLevel(p.settings.sound);
 }
 
-/** The quick sound switch (its button and F4): the player keeps the level. */
-export function cycleSound(): void {
-  audio.cycleLevel();
+/** The quick sound switch (its list and the Rytmus popup): the player keeps the level. */
+export function setSound(level: SoundLevel): void {
+  audio.setLevel(level);
   if (!app.profile) return;
   app.profile.settings.sound = audio.level;
   saveProfile();
+}
+
+/** F4: the next sound level. */
+export function cycleSound(): void {
+  setSound(nextLevel(audio.level));
 }
 
 /** The theme button: the player keeps the look. */

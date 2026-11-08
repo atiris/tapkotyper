@@ -386,6 +386,8 @@ export class LevelRuntime {
     if (noVoice) this.style = this.style === 'mixed' ? 'memory' : 'copy';
     this.core.style = this.style;
     this.words.heard = this.reading.dictating;
+    // The `important` sound level plays here: Rytmus is played to its music, a dictation is heard.
+    audio.setImportant(this.def.kind === 'rhythm' || this.reading.dictating);
     this.reading.paint();
     // The level's story and what it asks in particular, both on the one get-ready card; the first
     // level of a world tells the world's story instead of its own the first time.
@@ -525,6 +527,7 @@ export class LevelRuntime {
     clearTimeout(this.handsAway);
     clearTimeout(this.handsArrive);
     speech.stop();
+    audio.setImportant(false);
     this.reading.dispose();
     this.offShortcuts();
     this.kbSettings.dispose();

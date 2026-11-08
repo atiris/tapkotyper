@@ -106,8 +106,23 @@ test('F4 steps the sound and says so, the tooltips name the keys', async ({ page
   await expect(page.locator('.map-screen .top-right .help-btn')).toHaveAttribute('data-tip', 'Help (F1)');
   await page.keyboard.press('F4');
   await expect(sound).toHaveAttribute('data-level', 'normal');
-  await expect(page.locator('.toast')).toHaveText('Sound: normal');
-  await expect(sound).toHaveAttribute('data-tip', /^Sound: normal \(F4\)\nMusic: \S.*\nF8 plays another song$/);
+  await expect(page.locator('.toast')).toHaveText('Sounds');
+  await expect(sound).toHaveAttribute('data-tip', /^Sounds \(F4\)\nMusic: \S.*\nF8 plays another song$/);
+  // F4 steps through all four levels; "only where it matters" says where sound plays and is silent on the map.
+  await page.keyboard.press('F4');
+  await page.keyboard.press('F4');
+  await expect(sound).toHaveAttribute('data-level', 'important');
+  await expect(sound).toHaveAttribute('data-tip', /^Only where it matters \(F4\)\nSound plays only in Rhythm and in dictation\.\nF8 plays another song$/);
+  // A click opens the list of the levels, the current one chosen; Escape closes it.
+  await sound.click();
+  const items = page.locator('.sound-list [role=option]');
+  await expect(items).toHaveText(['Sounds', 'Quiet sounds', 'Only where it matters', 'No sounds']);
+  await expect(page.locator('.sound-list [aria-selected=true]')).toHaveAttribute('data-level', 'important');
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.sound-list')).toHaveCount(0);
+  await sound.click();
+  await page.locator('.sound-list [data-level=normal]').click();
+  await expect(sound).toHaveAttribute('data-level', 'normal');
   // F1 on the map opens help on its buttons; Escape goes back.
   await page.keyboard.press('F1');
   await expect(page.locator('.help-page .tab[aria-selected="true"]')).toHaveText('Interface');

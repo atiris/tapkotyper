@@ -34,7 +34,7 @@ No DB, no server contract.
   the end of the progress section to right under the character picture in `stats-hero` (above Aro if
   he sits there), with the round `keyboard` icon from `ICONS` (`src/ui/dom.ts`, the one on
   "Len chcem písať") in front of it, same text as now.
-- [ ] **4. Sound modes and their menu.** `SoundLevel` gets `'important'`:
+- [x] **4. Sound modes and their menu.** `SoundLevel` gets `'important'`:
   `normal` "Zvuky" | `quiet` "Tiché zvuky" | `important` "Len kde je to dôležité" | `off` "Bez zvukov"
   (en: "Sounds" | "Quiet sounds" | "Only where it matters" | "No sounds"). A click on the sound button
   opens a list like the language list (`languageList` in chrome.ts: same look, keyboard and Esc, round X

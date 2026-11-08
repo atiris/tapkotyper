@@ -1,4 +1,5 @@
 import { musicTracks, musicUrl } from '../gfx/assets';
+import { SOUND_LEVELS, levelGain } from './levels';
 import { nextTrack } from './tracks';
 import type { SoundLevel } from '../storage/schema';
 
@@ -10,9 +11,6 @@ export interface BeatOut {
 }
 
 export type Sfx = 'key' | 'wrong' | 'word' | 'reward' | 'whoosh' | 'pop' | 'cheer' | 'bzzt' | 'note' | 'plop' | 'squeak' | 'ring' | 'whistle' | 'crack' | 'thud' | 'squawk' | 'beep';
-/** Quick sound switch: normal, quiet (20 % of normal) or off. */
-export const SOUND_LEVELS: SoundLevel[] = ['normal', 'quiet', 'off'];
-const LEVEL_GAIN: Record<SoundLevel, number> = { normal: 1, quiet: 0.2, off: 0 };
 const SOUND_KEY = 'tapkotyper:sound';
 const FADE = 1.2;
 
@@ -28,6 +26,8 @@ class AudioEngine {
   private musicVolume = 0.5;
   /** The game starts silent until the player turns the sound on (the choice is kept). */
   level: SoundLevel = 'off';
+  /** A level runs whose sound matters (Rytmus, dictation): the `important` level plays there. */
+  private important = false;
   private track: string | null = null;
   private current: { el?: HTMLAudioElement; gain: GainNode; stop: () => void } | null = null;
   private listeners: (() => void)[] = [];
@@ -40,8 +40,8 @@ class AudioEngine {
     // iOS Safari takes only a tap's end (pointerup, touchend, click) as the gesture that may start sound.
     const events = ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown'];
     const unlock = () => {
-      // Sound off stays silent; the switch's own click wakes it later.
-      if (this.level === 'off') return;
+      // Silence stays silent; the switch's own click (or a level whose sound matters) wakes it later.
+      if (this.silent) return;
       const ctx = this.ensure();
       if (!ctx) return;
       const unlocked = () => {
@@ -69,7 +69,7 @@ class AudioEngine {
     this.sfxGain.connect(this.ctx.destination);
     this.musicGain.connect(this.ctx.destination);
     this.applyVolumes();
-    if (this.level === 'off') void this.ctx.suspend().catch(() => undefined);
+    if (this.silent) void this.ctx.suspend().catch(() => undefined);
     if (this.track) {
       const t = this.track;
       this.track = null;
@@ -87,15 +87,24 @@ class AudioEngine {
   private applyVolumes(): void {
     if (!this.ctx) return;
     const now = this.ctx.currentTime;
-    const k = LEVEL_GAIN[this.level];
+    const k = levelGain(this.level, this.important);
     this.sfxGain.gain.setTargetAtTime(this.sfxVolume * 0.6 * k, now, 0.05);
     this.musicGain.gain.setTargetAtTime(this.musicVolume * 0.55 * k, now, 0.2);
   }
 
-  /** Next quick sound level: normal -> quiet -> off -> normal. */
-  cycleLevel(): SoundLevel {
-    this.setLevel(SOUND_LEVELS[(SOUND_LEVELS.indexOf(this.level) + 1) % SOUND_LEVELS.length]);
-    return this.level;
+  /** Nothing plays now: the level is off, or `important` outside a level whose sound matters. */
+  get silent(): boolean {
+    return levelGain(this.level, this.important) === 0;
+  }
+
+  /** A level whose sound matters starts (true) or ends (false); the `important` level wakes or sleeps with it. */
+  setImportant(on: boolean): void {
+    if (on === this.important) return;
+    this.important = on;
+    if (this.level !== 'important') return;
+    this.applyVolumes();
+    this.silence();
+    this.listeners.forEach((l) => l());
   }
 
   /** The quick sound level, kept on this device for the start page. */
@@ -109,13 +118,13 @@ class AudioEngine {
   }
 
   /**
-   * Off is silence, not volume zero: the audio context sleeps and the track pauses, so a phone
+   * Silence is not volume zero: the audio context sleeps and the track pauses, so a phone
    * plays nothing and shows no playing tab. Any other level wakes them (the switch is a gesture).
    */
   private silence(): void {
-    const ctx = this.level === 'off' ? this.ctx : this.ensure();
+    const ctx = this.silent ? this.ctx : this.ensure();
     if (!ctx) return;
-    if (this.level === 'off') {
+    if (this.silent) {
       this.current?.el?.pause();
       void ctx.suspend().catch(() => undefined);
     } else {
@@ -160,7 +169,7 @@ class AudioEngine {
       el.crossOrigin = 'anonymous';
       const src = ctx.createMediaElementSource(el);
       src.connect(gain);
-      if (this.level !== 'off') void el.play().catch(() => undefined);
+      if (!this.silent) void el.play().catch(() => undefined);
       this.current = { el, gain, stop: () => { el.pause(); el.src = ''; src.disconnect(); gain.disconnect(); } };
     } else {
       const stop = synthLoop(ctx, gain, name);
@@ -174,7 +183,7 @@ class AudioEngine {
    */
   beatOut(): BeatOut | null {
     const ctx = this.ctx;
-    if (!ctx || this.level === 'off' || ctx.state !== 'running') return null;
+    if (!ctx || this.silent || ctx.state !== 'running') return null;
     return {
       ctx,
       out: this.musicGain,
@@ -195,7 +204,7 @@ class AudioEngine {
 
   sfx(kind: Sfx): void {
     const ctx = this.ctx;
-    if (!ctx || this.level === 'off' || ctx.state !== 'running') return;
+    if (!ctx || this.silent || ctx.state !== 'running') return;
     const t = ctx.currentTime;
     const tone = (freq: number, start: number, dur: number, type: OscillatorType = 'sine', vol = 0.3, slide?: number, flat = false) => {
       const o = ctx.createOscillator();

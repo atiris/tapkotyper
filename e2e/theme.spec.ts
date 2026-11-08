@@ -286,6 +286,7 @@ test('a player keeps the look, the sound and a hidden keyboard; the start page s
   // The device keeps the last player's look for the start page.
   expect(await stored(page)).toBe('dark');
   await page.locator('.sound-btn').click();
+  await page.locator('.sound-list [data-level=off]').click();
   expect((await settings()).sound).toBe('off');
   await page.locator('.theme-btn').click();
   expect((await settings()).theme).toBe('light');

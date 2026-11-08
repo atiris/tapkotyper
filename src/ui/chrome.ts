@@ -1,6 +1,7 @@
-import { type ScreenName, app, cycleSound, go, shownScreen, toggleLook } from '../app/app';
+import { type ScreenName, app, cycleSound, go, setSound, shownScreen, toggleLook } from '../app/app';
 import { onThemeChange, shownLook } from '../app/theme';
 import { audio } from '../audio/audio';
+import { SOUND_LEVELS } from '../audio/levels';
 import { imageUrl } from '../gfx/assets';
 import { MAX_LEVEL_STARS, WORLDS, worldName } from '../game/levels';
 import { LANGS, LANGUAGES, language, languageName, t } from '../i18n/i18n';
@@ -14,14 +15,21 @@ import { toast } from './toast';
 import { hideTip, tip } from './tooltip';
 import { updateButton } from './update';
 
-const LEVEL_ICON: Record<SoundLevel, keyof typeof ICONS> = { normal: 'sound', quiet: 'soundLow', off: 'mute' };
+const LEVEL_ICON: Record<SoundLevel, keyof typeof ICONS> = { normal: 'sound', quiet: 'soundLow', important: 'soundImportant', off: 'mute' };
 
-const soundLabel = () => `${t('common.sound')}: ${t(`common.sound_${audio.level}`)}`;
+const levelName = (level: SoundLevel) => t(`common.sound_${level}`);
+const soundLabel = () => levelName(audio.level);
 
-/** Quick sound switch (on every screen): normal, quiet, off; F4 too. Full sound has the orange ring; the tooltip names the song playing. */
+/**
+ * Quick sound switch (on every screen): a click opens the list of the levels (normal, quiet, only
+ * where it matters, off), F4 steps through them. Full sound has the orange ring; the tooltip names the
+ * song playing, and with `important` where sound plays.
+ */
 export function soundButton(): HTMLButtonElement {
-  const b = roundButton('control', LEVEL_ICON[audio.level], '', cycleSound);
+  const b: HTMLButtonElement = roundButton('control', LEVEL_ICON[audio.level], '', () => (openDrop?.btn === b ? openDrop.close() : soundList(b)));
   b.classList.add('sound-btn');
+  b.setAttribute('aria-haspopup', 'listbox');
+  b.setAttribute('aria-expanded', 'false');
   // Right click: another track from the whole library.
   b.addEventListener('contextmenu', (e) => {
     e.preventDefault();
@@ -30,8 +38,9 @@ export function soundButton(): HTMLButtonElement {
   const paint = (b: HTMLButtonElement) => {
     const label = soundLabel();
     b.setAttribute('aria-label', label);
-    const song = audio.playing && audio.level !== 'off' ? `\n${t('common.song', { name: trackName(audio.playing) })}` : '';
-    tip(b, `${withKey(label, 'F4')}${song}\n${t('common.nextSong')}`);
+    const where = audio.level === 'important' ? `\n${t('common.soundImportantTip')}` : '';
+    const song = audio.playing && !audio.silent ? `\n${t('common.song', { name: trackName(audio.playing) })}` : '';
+    tip(b, `${withKey(label, 'F4')}${where}${song}\n${t('common.nextSong')}`);
     b.dataset.level = audio.level;
     b.setAttribute('aria-pressed', String(audio.level === 'normal'));
     paintRound(b, LEVEL_ICON[audio.level]);
@@ -179,7 +188,7 @@ onThemeChange(() => document.querySelectorAll<HTMLButtonElement>('.theme-btn').f
 
 /** The language: the language symbol; a click opens the list of the official languages by their own names (own ones are picked in the settings), a second click closes it. */
 export function languageButton(pick: (l: Lang) => void): HTMLButtonElement {
-  const b: HTMLButtonElement = roundButton('control', 'language', t('start.langNow', { name: languageName() }), () => (closeLanguages && document.querySelector('.lang-list') ? closeLanguages() : languageList(b, pick)));
+  const b: HTMLButtonElement = roundButton('control', 'language', t('start.langNow', { name: languageName() }), () => (openDrop?.btn === b ? openDrop.close() : languageList(b, pick)));
   b.classList.add('lang-btn');
   b.setAttribute('aria-haspopup', 'listbox');
   b.setAttribute('aria-expanded', 'false');
@@ -191,20 +200,43 @@ export function focusLanguageButton(root: HTMLElement): void {
   [...root.querySelectorAll<HTMLElement>('.top-right .lang-btn, .top-right .menu-btn')].find((e) => e.offsetParent)?.focus();
 }
 
-/** Closes the open language list; null while none is open. */
-let closeLanguages: (() => void) | null = null;
+function languageList(b: HTMLButtonElement, pick: (l: Lang) => void): void {
+  const now = language();
+  dropList(b, 'lang-list', t('start.language'), LANGS.map((l) => ({
+    content: [h('span', {}, LANGUAGES[l])], selected: l === now, attrs: { lang: l }, pick: () => { if (l !== now) pick(l); },
+  })));
+}
+
+function soundList(b: HTMLButtonElement): void {
+  dropList(b, 'sound-list', t('common.sound'), SOUND_LEVELS.map((l) => ({
+    content: [icon(LEVEL_ICON[l]), h('span', {}, levelName(l))], selected: l === audio.level, attrs: { 'data-level': l },
+    tip: l === 'important' ? t('common.soundImportantTip') : undefined, pick: () => setSound(l),
+  })));
+}
+
+/** One choice of a drop list: what it shows, whether it is the current one, and what picking it does. */
+interface DropItem {
+  content: Child[];
+  selected: boolean;
+  pick(): void;
+  attrs?: Record<string, string>;
+  tip?: string;
+}
+
+/** The drop list open now (one at a time) with its button; null while none is open. */
+let openDrop: { btn: HTMLButtonElement; close: () => void } | null = null;
 
 /**
- * The list under the language button (under the corner controls when the button sits in the
- * Menu), the current language marked. The arrows move, Enter picks, Escape, a click outside or
- * Tab away closes; focus returns to the button (or to the Menu it was opened from).
+ * A list under its round button (under the corner controls when the button sits in the Menu, under
+ * the bar in a level), the current choice marked. The arrows move, Enter picks, Escape, a click
+ * outside or Tab away closes; focus returns to the button (or to the Menu it was opened from).
  */
-function languageList(b: HTMLButtonElement, pick: (l: Lang) => void): void {
-  const corner = b.closest<HTMLElement>('.top-right')!;
-  const now = language();
-  const items = LANGS.map((l) => h('button', { class: 'lang-item', type: 'button', role: 'option', lang: l, 'aria-selected': String(l === now), onClick: () => { close(); if (l !== now) pick(l); } },
-    h('span', {}, LANGUAGES[l]), l === now ? icon('check') : null));
-  const list = h('div', { class: 'lang-list', role: 'listbox', 'aria-label': t('start.language') }, ...items);
+function dropList(b: HTMLButtonElement, cls: string, label: string, choices: DropItem[]): void {
+  openDrop?.close();
+  const corner = b.closest<HTMLElement>('.top-right, .hud')!;
+  const items = choices.map((c) => h('button', { class: 'drop-item', type: 'button', role: 'option', 'aria-selected': String(c.selected), tip: c.tip, ...c.attrs, onClick: () => { close(); c.pick(); } },
+    ...c.content, c.selected ? icon('check') : null));
+  const list = h('div', { class: `drop-list ${cls}`, role: 'listbox', 'aria-label': label }, ...items);
   const onKey = (e: KeyboardEvent) => {
     // The screen went away with the list in it.
     if (!list.isConnected) return close(false);
@@ -231,7 +263,7 @@ function languageList(b: HTMLButtonElement, pick: (l: Lang) => void): void {
     // Removing the focused list fires its focusout, which closes again.
     if (closed) return;
     closed = true;
-    if (closeLanguages === close) closeLanguages = null;
+    if (openDrop?.close === close) openDrop = null;
     list.remove();
     document.removeEventListener('keydown', onKey, true);
     document.removeEventListener('pointerdown', onPointer, true);
@@ -239,7 +271,7 @@ function languageList(b: HTMLButtonElement, pick: (l: Lang) => void): void {
     // Below 600 px the button itself is hidden in the Menu.
     if (refocus) (b.offsetParent ? b : corner.querySelector<HTMLElement>('.menu-btn'))?.focus();
   }
-  closeLanguages = close;
+  openDrop = { btn: b, close };
   hideTip();
   if (b.offsetParent) list.style.right = `${corner.getBoundingClientRect().right - b.getBoundingClientRect().right}px`;
   list.addEventListener('focusout', onFocusOut);
@@ -247,7 +279,7 @@ function languageList(b: HTMLButtonElement, pick: (l: Lang) => void): void {
   b.setAttribute('aria-expanded', 'true');
   document.addEventListener('keydown', onKey, true);
   document.addEventListener('pointerdown', onPointer, true);
-  items[Math.max(0, LANGS.indexOf(now as Lang))].focus();
+  items[Math.max(0, choices.findIndex((c) => c.selected))].focus();
 }
 
 /**

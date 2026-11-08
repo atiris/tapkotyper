@@ -296,12 +296,20 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
   .corner-row { display: none; }
   .corner-menu { display: flex; gap: 0.6rem; align-items: center; position: relative; }
 }
-.round-btn.menu-btn[aria-expanded='true'] .rb-base, .round-btn.lang-btn[aria-expanded='true'] .rb-base { stroke: var(--brand); }
+.round-btn.menu-btn[aria-expanded='true'] .rb-base, .round-btn.lang-btn[aria-expanded='true'] .rb-base, .round-btn.sound-btn[aria-expanded='true'] .rb-base { stroke: var(--brand); }
 /* The languages by their own names, under the corner controls. */
-.lang-list { position: absolute; top: calc(52px + 10px); right: 0; min-width: 200px; background: var(--paper); border-radius: var(--radius); box-shadow: var(--shadow); padding: 0.5rem; display: flex; flex-direction: column; gap: 0.2rem; }
-.lang-item { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; min-height: 44px; border: 0; background: none; padding: 0 0.9rem; border-radius: 999px; font: inherit; font-weight: 600; color: var(--ink); text-align: left; cursor: pointer; }
-.lang-item:hover, .lang-item:focus-visible { background: var(--paper-2); outline: none; }
-.lang-item[aria-selected='true'] { color: var(--brand-ink); }
+.drop-list { position: absolute; top: calc(52px + 10px); right: 0; min-width: 200px; background: var(--paper); border-radius: var(--radius); box-shadow: var(--shadow); padding: 0.5rem; display: flex; flex-direction: column; gap: 0.2rem; }
+.drop-item { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; min-height: 44px; border: 0; background: none; padding: 0 0.9rem; border-radius: 999px; font: inherit; font-weight: 600; color: var(--ink); text-align: left; cursor: pointer; }
+.drop-item:hover, .drop-item:focus-visible { background: var(--paper-2); outline: none; }
+.drop-item[aria-selected='true'] { color: var(--brand-ink); }
+/* The sound levels' signs before their names; in a level the list hangs under the bar. */
+.drop-item > .icon:first-child { flex: none; margin-right: -0.35rem; }
+.drop-item > span { flex: 1; }
+.hud { position: relative; }
+.hud > .drop-list { top: calc(100% + 6px); z-index: 6; }
+/* The "!" badge of the sound level `important`: a white mark on red, in a ring of the paper colour (one look in every theme). */
+.icon-badge { fill: #d63a32; stroke: var(--paper); stroke-width: 1.4; }
+.icon-badge-mark { stroke: #fff; stroke-width: 2; }
 .corner-menu-panel { position: absolute; top: calc(100% + 10px); right: 0; min-width: 240px; max-width: calc(100vw - 2rem); background: var(--paper); border-radius: var(--radius); box-shadow: var(--shadow); padding: 0.75rem; display: flex; flex-direction: column; gap: 0.4rem; }
 .menu-item { display: flex; align-items: center; gap: 0.75rem; border: 0; background: none; padding: 4px 0.75rem 4px 4px; border-radius: 999px; font: inherit; font-weight: 600; color: var(--ink); text-align: left; cursor: pointer; }
 .menu-item:hover, .menu-item:focus-visible { background: var(--paper-2); outline: none; }

@@ -25,8 +25,8 @@
   right of the character; when many lanes do not fit there they reach over the character, and when even
   that is too narrow the lanes, clouds, letters and basket all get smaller to fit.
 - **The character** stands at the left, as in the other levels, and does not move. The child moves
-  only the **basket**: a small basket without handles, only a little wider than a lane, at the height
-  of the character's feet.
+  only the **basket**: a small basket without handles, only a little wider than a lane, right over
+  the letter strip at the stage's bottom.
 - **The catch band:** behind the basket, across the lanes, a soft glowing band in the space bar's
   colour (white, which no finger lane uses). Its lower edge lies at two thirds of the basket's height
   from its bottom and stays there; the band reaches up by the distance a letter falls during the
@@ -39,7 +39,12 @@
   falling letter is a white disc with a soft blurred edge and a dark letter, a solid white line
   through its middle a little wider than the disc, to hold against the band's middle line; the next letter, while it
   is in the band, has a ring in its lane's colour instead (its lane is a little brighter all along).
-- **Keys:** a lane's letter slides the basket under that lane, where it stays until the next key.
+- **The letter strip:** under the basket, across the lanes like the band, a rounded field like the
+  typed line of the word levels: the letters caught (green) and missed (grey), the due letter
+  marked, the coming ones after it. It moves on letter by letter, the due letter stays near one
+  point, its ends fade out.
+- **Keys:** a lane's letter slides the basket under that lane, where it stays until the next key; a
+  catch sends it back at once to rest between the middle lanes, under none of them.
   - The next letter's key while that letter is in the band **catches** it: it drops into the basket
     with a note of the music. A catch in the middle half of the band is "in time" and sparkles (not
     with Simple graphics or less motion).
@@ -48,7 +53,7 @@
     until the letter is in the band. The letter can still be caught.
   - **Missed:** the band passes; the letter falls on through its lane and disappears below the stage's
     edge, its lane flashes. A miss is not an error, but everything **stops**: the other letters stand
-    still, the keys wait (nothing counts) and "Počkaj…" stands in front over the band, with a blinking
+    still, the keys wait (nothing counts) and "Počkaj…" stands in front by the coming letter, halfway between the clouds and the band, with a blinking
     pause sign (two bars) above it, and in the character's bubble. After a moment the letters move on at
     half the speed (at most three seconds) until the next letter is in the middle of the band; only then
     "Teraz pokračuj." replaces "Počkaj…" and the song waits there for its key; that catch counts as

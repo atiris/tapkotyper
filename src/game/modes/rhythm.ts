@@ -5,7 +5,7 @@ import { BeatMusic } from '../../audio/beat-music';
 import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
 import { sprite } from '../../gfx/assets';
-import { type G, drawSprite, fontFamily } from '../../gfx/draw';
+import { type G, WORD, drawSprite, fontFamily, roundRect } from '../../gfx/draw';
 import { t } from '../../i18n/i18n';
 import { type Finger, fingerFor } from '../../keyboard/layouts';
 import { recentAccuracy } from '../../learning/lessons';
@@ -29,6 +29,8 @@ import { HeroMode, sideFeet } from './kit/hero';
 const CLOUD_Y = 84;
 const CLOUD_W = 106;
 const CLOUDS = [1, 2, 3].map((n) => `obj-rhythm-cloud-${n}`);
+/** About where a cloud's bottom edge is. */
+const CLOUD_BOTTOM = CLOUD_Y + 36;
 /** Where a letter leaves its cloud. */
 const FALL_TOP = CLOUD_Y + 14;
 /** The basket's picture and its width: a little wider than a lane's stripe. */
@@ -79,6 +81,18 @@ const TAIL_S = 0.6;
 const AHEAD_S = 0.25;
 /** Speed of the background's middle strip. */
 const SWAY = 2;
+/**
+ * The letter strip under the basket: its bottom's gap above the stage's bottom, its height, its letters'
+ * size and spacing, where the due letter stays (a share of its width), the gap up to the basket, and
+ * the seconds of its glide to the next letter.
+ */
+const STRIP_BOTTOM = 10;
+const STRIP_H = 52;
+const STRIP_SIZE = 32;
+const STRIP_CELL = 34;
+const STRIP_AT = 0.42;
+const STRIP_GAP = 8;
+const STRIP_GLIDE_S = 0.12;
 
 /** One letter in play: its drop, its target while it is the next one, and what became of it (song seconds). */
 interface Fall {
@@ -185,7 +199,9 @@ export class RhythmMode extends HeroMode {
    * middle ('glide', song time runs on to its beat at `speed`), where the song waits for its key ('ready').
    */
   private recover: { phase: 'hold' | 'glide' | 'ready'; left: number; speed: number } | null = null;
-  /** The basket's slide: from which x to which lane (null: the middle), from when to when (song seconds). */
+  /** The letter strip's position (letters along it), gliding to the due letter. */
+  private stripAt = 0;
+  /** The basket's slide: from which x to which lane (null: between the middle lanes), from when to when (song seconds). */
   private basket: { from: number; lane: number | null; at: number; end: number };
   private flash: number[];
   /** The word over the basket after a catch, its colour, and when it came. */
@@ -224,7 +240,7 @@ export class RhythmMode extends HeroMode {
     const words = filterWords(app.words[p.settings.wordLang] ?? [], all, [2, 6]).filter((w) => !isBlocked(w));
     this.song = new Song({ lanes: this.lanes, changes: this.changes, weights, tempo: this.base, rand: () => L.rng.next(), roundS, words });
     this.flash = this.lanes.map(() => -9);
-    this.basket = { from: this.L.vw / 2, lane: null, at: -1, end: -1 };
+    this.basket = { from: this.restX(), lane: null, at: -1, end: -1 };
     stamps.clear();
   }
 
@@ -311,9 +327,20 @@ export class RhythmMode extends HeroMode {
     g.restore();
   }
 
-  /** The basket's bottom: at the character's feet. */
+  /** The basket's resting place: between the two middle lanes (with an odd number, right of the middle one), under none of them. */
+  private restX(): number {
+    const n = this.lanes.length;
+    return n < 2 ? this.L.vw / 2 : (this.laneX(0) + this.laneX(n - 1)) / 2 + (n % 2 ? this.fit.gap / 2 : 0);
+  }
+
+  /** The letter strip's top: at the stage's bottom. */
+  private get stripTop(): number {
+    return VH - STRIP_BOTTOM - STRIP_H;
+  }
+
+  /** The basket's bottom: right over the letter strip. */
   private get basketBottom(): number {
-    return this.heroY - 4;
+    return this.stripTop - STRIP_GAP;
   }
 
   /** The basket's height, from its picture's shape at its width (at the lanes' scale). */
@@ -369,6 +396,7 @@ export class RhythmMode extends HeroMode {
     super.update(dt);
     this.scroll += dt * SWAY;
     this.blink += dt;
+    this.stripAt += (this.cur - this.stripAt) * (this.L.reduceMotion ? 1 : 1 - Math.exp(-dt / STRIP_GLIDE_S));
     if (this.over) return;
     const a = this.active;
     // Without time pressure, and after a miss, the song waits while the due letter is in the middle of the band.
@@ -494,7 +522,7 @@ export class RhythmMode extends HeroMode {
     return { index: f.d.index, letter: f.d.letter, untilBeat: f.d.land - this.songT, w: f.d.w, T: f.d.T, waiting };
   }
 
-  private slideTo(lane: number): void {
+  private slideTo(lane: number | null): void {
     if (this.basket.lane === lane && this.songT >= this.basket.end) return;
     const end = this.L.reduceMotion ? this.songT : this.songT + SLIDE_S;
     this.basket = { from: this.basketX(), lane, at: this.songT, end };
@@ -514,6 +542,8 @@ export class RhythmMode extends HeroMode {
     const offset = waited ? 0 : Math.max(-f.d.w * T, Math.min(f.d.w * T, this.songAt(this.keyAt) - f.d.land));
     f.caught = this.songT;
     f.caughtY = this.fallY(f);
+    // The basket goes back to rest at once, under no lane: the next letter's key slides it again.
+    this.slideTo(null);
     this.ok++;
     const c = this.count(f.d.phrase);
     c.ok++;
@@ -545,7 +575,7 @@ export class RhythmMode extends HeroMode {
   /** The basket's x: on its way under a lane, or where its last slide ended. */
   private basketX(): number {
     const { from, lane, at, end } = this.basket;
-    const to = lane === null ? this.L.vw / 2 : this.laneX(lane);
+    const to = lane === null ? this.restX() : this.laneX(lane);
     if (this.songT >= end) return to;
     return from + (to - from) * ease.outQuad(Math.max(0, (this.songT - at) / (end - at)));
   }
@@ -617,16 +647,57 @@ export class RhythmMode extends HeroMode {
     }
     this.drawHero(g);
     this.drawBasket(g);
+    this.drawStrip(g);
     this.drawWord(g);
     this.drawStopLine(g);
+  }
+
+  /** The band's ends: a lane's stripe past the outer lanes. */
+  private get across(): { left: number; right: number } {
+    return { left: this.laneX(0) - STRIPE_W * this.k, right: this.laneX(this.lanes.length - 1) + STRIPE_W * this.k };
+  }
+
+  /**
+   * The letter strip under the basket, a rounded field like a typed word's: the letters caught (green)
+   * and missed (grey), the due one marked, the coming ones after it. It glides letter by letter, so
+   * the due letter stays near one point; its ends fade out.
+   */
+  private drawStrip(g: G): void {
+    const { left, right } = this.across, top = this.stripTop, y = top + STRIP_H / 2, w = right - left, hc = this.L.highContrast;
+    g.save();
+    g.fillStyle = hc ? '#ffffff' : WORD.plate;
+    roundRect(g, left, top, w, STRIP_H, STRIP_H / 2);
+    g.fill();
+    g.lineWidth = 4;
+    g.strokeStyle = '#ffb23e';
+    g.stroke();
+    g.clip();
+    g.font = `600 ${STRIP_SIZE}px ${fontFamily()}`;
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+    const at = left + w * STRIP_AT, fade = STRIP_H / 2 + 10;
+    const from = Math.max(0, Math.floor(this.stripAt - (at - left) / STRIP_CELL) - 1);
+    const to = Math.min(this.falls.length, Math.ceil(this.stripAt + (right - at) / STRIP_CELL) + 1);
+    for (let i = from; i < to; i++) {
+      const f = this.falls[i], x = at + (i - this.stripAt) * STRIP_CELL;
+      g.globalAlpha = Math.max(0, Math.min(1, (x - left) / fade, (right - x) / fade));
+      if (i === this.cur) {
+        g.fillStyle = hc ? '#ffe066' : WORD.next;
+        roundRect(g, x - STRIP_CELL / 2 + 2, y - STRIP_SIZE * 0.62, STRIP_CELL - 4, STRIP_SIZE * 1.24, STRIP_SIZE * 0.2);
+        g.fill();
+        g.fillStyle = WORD.nextInk;
+      } else if (i < this.cur) g.fillStyle = f.missed ? (hc ? '#5a5f68' : '#8a8f98') : (hc ? '#006b2e' : WORD.typed);
+      else g.fillStyle = hc ? '#000' : WORD.ink;
+      g.fillText(f.d.letter, x, y + 2);
+    }
+    g.restore();
   }
 
   /** The glowing catch band behind the basket, across the lanes, a little brighter on the beat. */
   private drawBand(g: G): void {
     const d = this.dueDrop;
     if (!d) return;
-    const { top, bottom } = this.band(d);
-    const left = this.laneX(0) - STRIPE_W * this.k, right = this.laneX(this.lanes.length - 1) + STRIPE_W * this.k;
+    const { top, bottom } = this.band(d), { left, right } = this.across;
     const glow = this.L.reduceMotion ? 0 : 0.15 * this.pulse();
     const grad = g.createLinearGradient(0, top, 0, bottom);
     grad.addColorStop(0, `rgba(${BAND_COLOR}, 0.12)`);
@@ -676,13 +747,13 @@ export class RhythmMode extends HeroMode {
   }
 
   /**
-   * After a miss the bubble's line also stands over the band, by the letter that comes: "wait" with a
-   * blinking pause sign while the letter glides into place, then "go on".
+   * After a miss the bubble's line also stands by the letter that comes, halfway between the clouds
+   * and the band: "wait" with a blinking pause sign while the letter glides into place, then "go on".
    */
   private drawStopLine(g: G): void {
     const r = this.recover, d = this.active?.d;
     if (!r || !d) return;
-    const x = this.laneX(d.lane), y = this.band(d).top - 34;
+    const x = this.laneX(d.lane), y = (CLOUD_BOTTOM + this.band(d).top) / 2;
     if (r.phase === 'ready') return letterAt(g, t('rhythm.goOn'), x, y, 34, '#ffffff', '#3b2416', 7);
     letterAt(g, t('rhythm.hold'), x, y, 34, '#ffffff', '#3b2416', 7);
     if (Math.floor(this.blink / BLINK_S) % 2) return;
@@ -710,10 +781,10 @@ export class RhythmMode extends HeroMode {
     g.restore();
   }
 
-  /** A caught letter dropping into the basket. */
+  /** A caught letter dropping into the basket, which goes back to rest meanwhile. */
   private drawDroppingIn(g: G, f: Fall): void {
-    const k = Math.min(1, (this.songT - f.caught!) / DROP_IN_S);
-    const x = this.laneX(f.d.lane), y = f.caughtY + (this.basketBottom - this.basketH * 0.5 - f.caughtY) * k;
+    const k = Math.min(1, (this.songT - f.caught!) / DROP_IN_S), x0 = this.laneX(f.d.lane);
+    const x = x0 + (this.basketX() - x0) * k, y = f.caughtY + (this.basketBottom - this.basketH * 0.5 - f.caughtY) * k;
     this.scaled(g, x, y, () => this.drawRinged(g, f.d.letter, FINGER_COLORS[f.d.finger], x, y, 1 - k));
   }
 

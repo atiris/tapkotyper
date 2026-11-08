@@ -3612,7 +3612,7 @@
   },
   "rhythm": {
     "title": "Rhythm",
-    "start": "Here you practise a steady rhythm. You move a basket that catches the letters falling from the clouds. Catch them at the right moment, or they fall to the ground. Still, being accurate matters most. If you miss one, never mind. A great rhythm earns you one rhythm note.",
+    "start": "Here you practise a **steady rhythm.** You move a basket that catches the letters falling from the clouds. **Catch them at the right moment,** or they fall to the ground. Still, being **accurate** matters **most.** If you miss one, never mind. A great rhythm earns you one rhythm note.",
     "wait": "Wait until the letter reaches the glowing band.",
     "hold": "Wait…",
     "goOn": "Now go on.",

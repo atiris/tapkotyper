@@ -57,12 +57,14 @@ test('Rytmus is open with the meadow and a round ends on its card', async ({ pag
   }
   await expect(page.locator('.rhythm-done h2')).toHaveText('Typing in rhythm!');
   const rows = page.locator('.rhythm-done .ec-row');
-  await expect(rows).toHaveCount(4);
+  await expect(rows).toHaveCount(5);
   await expect(rows.nth(0)).toContainText('Accuracy');
   // A short ?fast round may be too short for a score.
   await expect(rows.nth(1)).toContainText(/Rhythm\s*(\d+ of 100|–)/);
   await expect(rows.nth(2)).toContainText('30 letters');
   await expect(rows.nth(3)).toContainText(/Letters caught\s*\d+ of \d+/);
+  // What the round did to the tempo: the next round faster, the same or slower, with its tempo.
+  await expect(rows.nth(4)).toContainText(/Next round\s*(faster|same tempo|slower): \d+ letters/);
   // The basket full of letters (the card keeps its square without its picture).
   const pic = page.locator('.rhythm-done .ec-img');
   if (await pic.count()) await expect(pic).toHaveAttribute('src', /obj-rhythm-basket-full/);

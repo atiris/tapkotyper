@@ -25,8 +25,9 @@
   mirrored), each only a little wider than its lane, and they stand close together. The lanes stand
   right of the character; when many lanes do not fit there they reach over the character, and when even
   that is too narrow the lanes, clouds, letters and basket all get smaller to fit.
-- **The character** stands at the left, as in the other levels, and does not move. The child moves
-  only the **basket**: a small basket without handles, only a little wider than a lane, right over
+- **The character** stands at the left, as in the other levels, and does not move. Every 10 to 20
+  seconds (at random) it hums a short tune in its bubble ("♪ Tra-la-la ♪", "♪ Hm-hm-hm ♪" ...) when the
+  bubble is free and the song runs (not while it waits after a miss). The child moves only the **basket**: a small basket without handles, only a little wider than a lane, right over
   the letter strip at the stage's bottom.
 - **The catch band:** behind the basket, across the lanes, a soft glowing band in the space bar's
   colour (white, which no finger lane uses). Its lower edge lies at two thirds of the basket's height
@@ -74,22 +75,21 @@
   without the child.
 - **The basket** is one picture: only its front part (the front rim and side), without its back rim
   and inside, so a caught letter drops behind the front rim into it and is gone.
-- **Tempo** (letters a minute, 30 to 120): each round has its own **base** and follows it. The base is the
-  child's **one tempo**, shared by the Rytmus of every world: a better round in one world is where the
-  next round in any world starts, and it never drops by itself. The first round ever starts at 70 % of
-  the child's usual speed of the last 14 days, at most the played world's target tempo (a new child 30).
-  Where the tempo goes is decided for each **phrase** of 16 landings, by the timing of the phrase
-  before, never by its wrong keys: with nine in ten letters caught it goes **up** when seven in ten of
-  the catches were in time (the middle half of the band), **stays** from four in ten, and goes **gently
-  down** (at half the speed) below that; with fewer than nine in ten caught it goes **down**. Catches
-  while the song waited count as caught but not for the timing. Wrong keys still count in accuracy, the
-  statistics and the rhythm score. It is decided as the next phrase's first letter leaves its cloud. The first phrase plays at the base. The tempo then drifts smoothly bar by bar, never
-  faster than 10 % of the base in half the round (from the base to 110 % takes at least half the round),
-  and never more than 20 % above or below the base. The next round's base moves only one step (10 %) from
-  this round's, towards where its tempo went; only the tempo range bounds it, no world's target. A
-  phrase going faster is announced by a short run in the music. Below 60 the music plays twice as fast and a letter lands on every second beat.
-- **When it goes badly** the game helps: the catch window is a third of a beat (0.35) each side of the
-  beat at the start; each phrase that steps the tempo down (not gently) widens it by 0.05, up to half a beat,
+- **Tempo** (letters a minute, 30 to 120): each round plays at **one tempo** from its first letter to
+  its last; it never changes during the song. It is the child's **one tempo**, shared by the Rytmus of
+  every world: a better round in one world is where the next round in any world starts, and it never
+  drops by itself. The first round ever starts at 70 % of the child's usual speed of the last 14 days,
+  at most the played world's target tempo (a new child 30).
+  How the **whole round** went moves the next round's tempo one step (10 %), by its timing, never by
+  its wrong keys: with nine in ten letters caught and seven in ten of the catches in time (the middle
+  half of the band) the rhythm was very even and the next round goes **faster**; with four in ten in
+  time it **stays**; below that, or with fewer than nine in ten caught, the next round goes **slower**.
+  Catches while the song waited count as caught but not for the timing. Wrong keys still count in
+  accuracy, the statistics and the rhythm score. Only the tempo range bounds the step, no world's
+  target. Below 60 the music plays twice as fast and a letter lands on every second beat.
+- **When it goes badly** the game helps, without changing the tempo: the catch window is a third of a
+  beat (0.35) each side of the beat at the start; each **phrase** of 16 landings with fewer than nine in
+  ten letters caught (judged as the next phrase's first letter leaves its cloud) widens it by 0.05, up to half a beat,
   so the band grows upwards, and adds one phrase to the round, at most a third of it in all. Other
   steps keep the window: a good rhythm is never made harder to hit.
 - **Order of the letters:** first the two index fingers in turn, then mirror pairs of the hands (d k
@@ -141,8 +141,9 @@
   Words: 0-39 "hľadáme rytmus", 40-69 "pekný rytmus", 70-89 "plynulý", 90-100 "ako hodinky". A round
   needs 12 landings for a score.
 - **End card** (the one card of every end): "Písanie v rytme!" with the basket full of a heap of letters; four rows in
-  this order: accuracy, rhythm ("82 zo 100, plynulý"), the highest tempo held for a whole phrase
-  ("Tempo za minútu: 42 písmen") and "Chytené písmená: 80 z 90". The green line: a new highest tempo of
+  this order: accuracy, rhythm ("82 zo 100, plynulý"), the round's tempo ("Tempo za minútu: 42 písmen"),
+  "Chytené písmená: 80 z 90" and what the round did to the tempo: "Ďalšie kolo: rýchlejšie: 46 písmen"
+  (or "rovnaké tempo: 42 písmen", "pomalšie: 38 písmen"). The green line: a new highest tempo of
   this world, else a rhythm better than the world's last round, else the usual news (new letters).
   "Hrať znova" and "Mapa svetov".
 - **Rhythm notes:** a round with rhythm 80 or more at 95 % accuracy or more (with time pressure) earns
@@ -194,18 +195,19 @@
 - Rytmus is hard to play without its music, and a child who switched the sound off long ago does not
   think of it: the card before the round asks once per round, and offers sound for this game only. It is
   the owner's one exception to "only the key cards and one get-ready card before play".
-- A slow, smooth drift around the round's own base keeps the round steady (a step of 5 % at once was
-  felt as a jump): a rhythm game follows the
-  child's rhythm and swings around it instead of racing up to extremes; a good phrase never narrows the
-  band. A round half as long as a level keeps it a short side game.
+- One tempo through the whole song: a beat that changes while the child plays, even by a slow drift,
+  takes away the steady pulse the game is there to teach. The round's result is told on the end card,
+  so the child knows what the next round brings. A good phrase never narrows the band. A round shorter
+  than a level keeps it a short side game.
+- The character's humming every 10 to 20 seconds keeps it alive next to the falling letters without
+  asking for the child's eyes.
 - The clef asks for Rytmus in every world, not only in the child's favourite, and gives the notes a
   goal beyond their count.
 - One tempo for all worlds: rhythm is the child's skill, not a world's; a tempo kept per world made a
   child who had found a good pace start slow again in every new world. It never drops by itself, as a
   slower start after a break only made the child climb back up.
 - The tempo follows the timing, not typos: a child who keeps the beat but hits a wrong key now and
-  then is still in rhythm, and slowing down would not fix the wrong key. A very shaky beat slows the
-  tempo only gently, as the catches still came. Steps of 10 % between rounds let a child who is on
+  then is still in rhythm, and slowing down would not fix the wrong key. Steps of 10 % between rounds let a child who is on
   the beat reach their pace in a few rounds.
 - After a miss the slow glide and the blinking pause sign show that the game waits; "go on" comes only
   when the letter is where it should be caught.

@@ -152,50 +152,51 @@ describe('rhythm', () => {
     expect(L.core.active).toHaveLength(1);
   });
 
-  it('a child on the beat catches every letter, scores high and the tempo steps up', () => {
+  it('a child on the beat catches every letter, scores high and the next round goes faster', () => {
     const L = fakeRuntime();
     const mode = child(L);
     expect(mode.accuracy).toBe(1);
     expect(mode.caught).toBe(mode.due);
     expect(mode.score).toBeGreaterThanOrEqual(90);
     expect(mode.song.phrases.length).toBeGreaterThan(2);
-    // The tempo climbs gently once the first phrase went well; whole phrases were held above the base too.
-    expect(mode.song.phrases[2].tempo).toBeGreaterThan(mode.song.phrases[0].tempo);
-    expect(mode.held).toBeGreaterThan(mode.song.phrases[0].tempo);
+    // The tempo stays all through the round; whole phrases were held at it.
+    expect(mode.song.phrases.every((p) => p.tempo === 40)).toBe(true);
+    expect(mode.held).toBe(40);
     expect(mode.reached).toBe(true);
     // Never a step down: the round keeps its length, 80 % of the story's level; the next round starts a step higher.
     expect(mode.song.roundS).toBe(96);
+    expect(mode.step).toBe(1);
     expect(mode.nextTempo).toBe(44);
   });
 
-  it('typos alone never lower the tempo: a child on the beat still climbs', () => {
+  it('typos alone never lower the tempo: a child on the beat still goes faster next time', () => {
     const L = fakeRuntime();
     const mode = child(L, 0, () => false, true);
     expect(mode.accuracy).toBeCloseTo(0.5, 1);
-    expect(mode.song.phrases[2].tempo).toBeGreaterThan(mode.song.phrases[0].tempo);
+    expect(mode.nextTempo).toBe(44);
     expect(mode.song.phrases.every((p) => p.dir === 1 || p === mode.song.phrases[0])).toBe(true);
     expect(mode.song.roundS).toBe(96);
   });
 
-  it('very shaky catches lower the tempo gently, the window and the round stay', () => {
+  it('very shaky catches lower the next round\'s tempo, the window and the round stay', () => {
     const L = fakeRuntime();
     // Every catch a little late, out of the window's middle half.
     const mode = child(L, 0.6);
     expect(mode.caught).toBe(mode.due);
     expect(mode.song.phrases.slice(1).every((p) => p.dir === -0.5)).toBe(true);
-    expect(mode.song.phrases[2].tempo).toBeLessThan(mode.song.phrases[0].tempo);
-    expect(mode.song.phrases.every((p) => p.w === W_START)).toBe(true);
+    expect(mode.song.phrases.every((p) => p.tempo === 40 && p.w === W_START)).toBe(true);
     expect(mode.song.roundS).toBe(96);
     expect(mode.nextTempo).toBe(36);
   });
 
-  it('misses lower the tempo, widen the window and lengthen the round', () => {
+  it('misses lower the next round\'s tempo, widen the window and lengthen the round', () => {
     const L = fakeRuntime();
     // Two letters of each phrase fall.
     const mode = child(L, 0, (i) => i % 8 === 3);
     expect(mode.song.phrases[1].dir).toBe(-1);
     expect(mode.song.phrases[1].w).toBeGreaterThan(W_START);
-    expect(mode.song.phrases[2].tempo).toBeLessThan(mode.song.phrases[0].tempo);
+    expect(mode.song.phrases[2].tempo).toBe(40);
+    expect(mode.nextTempo).toBe(36);
     expect(mode.song.roundS).toBeGreaterThan(96);
   });
 

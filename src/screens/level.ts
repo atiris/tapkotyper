@@ -502,16 +502,17 @@ function showFreeDone(root: HTMLElement, typed: FreeTyped, params: LevelParams):
 }
 
 /**
- * The end of a Rytmus round: the basket full of letters; accuracy, rhythm with its word, the tempo held
- * and the letters caught. The child keeps the tempo every world starts from next time, the world
+ * The end of a Rytmus round: the basket full of letters; accuracy, rhythm with its word, the round's tempo,
+ * the letters caught and the next round's tempo (faster, the same or slower by how the round went). The
+ * child keeps the tempo every world starts from next time, the world
  * the rhythm and the highest tempo; the node's check comes with the world's target tempo held accurately; a great
  * round adds a rhythm note to those left today. No stars.
  */
 function showRhythmDone(root: HTMLElement, def: LevelDef, r: LevelResult, mode: RhythmMode, params: LevelParams, surprise: Surprise | null): void {
   const p = app.profile!;
   const before = p.progress.rhythm[def.world];
-  const score = mode.score, held = mode.held || mode.song.phrases[0].tempo;
-  p.progress.rhythmTempo = mode.nextTempo;
+  const score = mode.score, next = mode.nextTempo;
+  p.progress.rhythmTempo = next;
   p.progress.rhythm[def.world] = { rhythm: score, top: Math.max(before?.top ?? 0, mode.held) };
   if (mode.reached && !p.progress.rhythmWon.includes(def.world)) p.progress.rhythmWon.push(def.world);
   const note = addRhythmRound(p, def.world, earnsNote(score, r.accuracy), localDate());
@@ -529,8 +530,9 @@ function showRhythmDone(root: HTMLElement, def: LevelDef, r: LevelResult, mode: 
     rows: [
       [t('end.accuracy'), `${pct(r.accuracy)} %`],
       [t('end.rhythm'), score === null ? '–' : t('end.rhythmScore', { n: score, word: t(`rhythm.words.${rhythmWord(score)}`) })],
-      [t('end.tempo'), letters(held)],
+      [t('end.tempo'), letters(mode.tempo)],
       [t('end.caught'), t('end.ofTotal', { n: mode.caught, total: mode.due })],
+      [t('end.next'), t(next > mode.tempo ? 'end.nextUp' : next < mode.tempo ? 'end.nextDown' : 'end.nextSame', { tempo: letters(next) })],
     ],
     news: newsLine(news),
     surprises: toldSurprises(def, surprise, 'time'),

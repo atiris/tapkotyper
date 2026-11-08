@@ -80,6 +80,9 @@ const BLINK_S = 0.5;
 /** Seconds the song plays on after its closing bar before the round ends, and how far ahead its notes are scheduled. */
 const TAIL_S = 0.6;
 const AHEAD_S = 0.25;
+/** The character hums a line every 10 to 20 seconds, shown at least this long. */
+const humGap = () => 10 + 10 * Math.random();
+const HUM_S = 2.5;
 /** Speed of the background's middle strip. */
 const SWAY = 2;
 /**
@@ -163,8 +166,9 @@ function letterAt(c: G, ch: string, x: number, y: number, size: number, fill: st
  * middle of the glowing catch band on its beat of the music. A lane's letter slides the basket under
  * the lane; the next letter's key while it is in the band catches it, any other key is an error. An
  * uncaught letter falls on below the stage and everything stops; the next letter glides into the band
- * and waits for its key. The character stands at the left. The tempo and the band's height step
- * between phrases of sixteen letters (`.specify/game/rhythm.md`).
+ * and waits for its key. The character stands at the left and hums now and then. The tempo stays all
+ * through the round; the band's height steps between phrases of sixteen letters, and how the whole
+ * round went moves the next round's tempo (`.specify/game/rhythm.md`).
  */
 export class RhythmMode extends HeroMode {
   readonly world: string;
@@ -214,8 +218,10 @@ export class RhythmMode extends HeroMode {
   private hudAt = 0;
   private shownMeter: Meter | null = null;
   private readonly target: number;
-  /** The round's base tempo: the phrases step around it. */
+  /** The round's tempo, the same all through the song. */
   private readonly base: number;
+  /** Real seconds until the character hums again. */
+  private humIn = humGap();
   /** Real seconds since the last miss, for the blinking pause sign. */
   private blink = 0;
   private over = false;
@@ -258,20 +264,21 @@ export class RhythmMode extends HeroMode {
     return this.score;
   }
 
-  /** The tempo playing now, letters a minute. */
+  /** The round's tempo, letters a minute. */
   get tempo(): number {
-    return Math.round(this.tempoNow);
+    return this.base;
   }
 
-  /** The exact tempo of the due letter. */
-  private get tempoNow(): number {
-    const d = this.dueDrop;
-    return d ? 60 / d.T : this.song.phrases[0].tempo;
+  /** How the whole round went, by its catches and their timing (not wrong keys): up, kept or down. */
+  get step(): Step {
+    const all = this.counts.reduce((s, c) => ({ due: s.due + c.due, caught: s.caught + c.caught, timed: s.timed + c.timed, inTime: s.inTime + c.inTime }), { due: 0, caught: 0, timed: 0, inTime: 0 });
+    // Without a catch on the beat (every one while the song waited) the timing says nothing: the tempo stays.
+    return all.timed ? (Math.sign(phraseStep(all.caught / all.due, all.inTime / all.timed)) as Step) : 0;
   }
 
-  /** The next round's base: a step from this round's towards where its tempo went. */
+  /** The next round's tempo: a step from this round's by how it went. */
   get nextTempo(): number {
-    return nextBase(this.base, this.tempoNow);
+    return nextBase(this.base, this.step);
   }
 
   /** The next drop due, else the last one. */
@@ -403,6 +410,7 @@ export class RhythmMode extends HeroMode {
     this.blink += dt;
     this.stripAt += (this.cur - this.stripAt) * (this.L.reduceMotion ? 1 : 1 - Math.exp(-dt / STRIP_GLIDE_S));
     if (this.over) return;
+    this.hum(dt);
     const a = this.active;
     // Without time pressure, and after a miss, the song waits while the due letter is in the middle of the band.
     const next = this.songT + this.advance(dt);
@@ -475,6 +483,13 @@ export class RhythmMode extends HeroMode {
     this.recover = { phase: 'glide', left: 0, speed: Math.max(GLIDE_SPEED, Math.max(0, a.d.land - this.songT) / GLIDE_MAX_S) };
     this.blink = 0;
     this.tell(t('rhythm.hold'), GLIDE_MAX_S + 1);
+  }
+
+  /** Now and then the character hums along, when the bubble is free and the song runs. */
+  private hum(dt: number): void {
+    if ((this.humIn -= dt) > 0) return;
+    this.humIn = humGap();
+    if (!this.recover) this.L.say(pickLine('rhythm.hum'), HUM_S);
   }
 
   /** A line that must be seen now: it replaces whatever the bubble says. */

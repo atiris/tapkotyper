@@ -3,7 +3,7 @@ import { LAYOUTS, fingerFor } from '../keyboard/layouts';
 import { Rng } from '../engine/rng';
 import {
   CHANGE_S, PHRASE, W_START, accuracyCap, beatScore, beatsPerLetter, changeCount, earnsNote, fadeNotes, fallSeconds, judge, laneCount, laneNow,
-  drift, laneSetup, laneWeights, nextBase, notesDue, phraseLanes, phraseStep, pickLanes, planChanges, rhythmWord, Song, startTempo, stepWindow,
+  laneSetup, laneWeights, nextBase, notesDue, phraseLanes, phraseStep, pickLanes, planChanges, rhythmWord, Song, startTempo, stepWindow,
   targetTempo, tempoAt, timing, type Landing,
   type Lane,
 } from './beat';
@@ -59,23 +59,14 @@ describe('tempo', () => {
     expect(startTempo(200, 0, 40)).toBe(120);
   });
 
-  it('the next base moves one step of 10 % towards where the round\'s tempo went', () => {
+  it('the next base moves one step of 10 % by how the round went', () => {
     expect([-4, -1, 0, 1, 4].map((l) => tempoAt(50, l))).toEqual([30, 45, 50, 55, 70]);
-    expect(nextBase(40, 43.5)).toBe(44);
-    expect(nextBase(40, 36)).toBe(36);
-    expect(nextBase(40, 40.2)).toBe(40);
+    expect(nextBase(40, 1)).toBe(44);
+    expect(nextBase(40, -1)).toBe(36);
+    expect(nextBase(40, -0.5)).toBe(36);
+    expect(nextBase(40, 0)).toBe(40);
     // Only the tempo range bounds it.
-    expect(nextBase(118, 125)).toBe(120);
-  });
-
-  it('within a round the tempo drifts at most 10 % of the base in half the round, 20 % in all', () => {
-    expect(drift(40, 1, 30, 40, 60)).toBeCloseTo(44);
-    expect(drift(40, -1, 15, 40, 60)).toBeCloseTo(38);
-    expect(drift(40, 0, 30, 40, 60)).toBe(40);
-    expect(drift(47, 1, 30, 40, 60)).toBe(48);
-    expect(drift(33, -1, 30, 40, 60)).toBe(32);
-    // A gentle step down drifts at half the speed.
-    expect(drift(40, -0.5, 30, 40, 60)).toBeCloseTo(38);
+    expect(nextBase(118, 1)).toBe(120);
   });
 
   it('steps by the catches and their timing: up in time, kept when shaky, gently down when very shaky, down with misses', () => {
@@ -132,23 +123,14 @@ describe('song', () => {
     expect(s.bars[1].beat).toBeCloseTo(T / 2);
   });
 
-  it('drifts the tempo bar by bar, at most 10 % of the base in half the round, never over 20 %', () => {
-    const s = playOut(song(world1, 40, 60), 1);
-    const tempos = s.drops.map((d) => 60 / d.T);
-    // The first phrase plays at the base; later ones climb gently, bar after bar.
-    expect(tempos[0]).toBeCloseTo(40);
-    for (let i = 1; i < s.drops.length; i++) {
-      const a = s.drops[i - 1], b = s.drops[i];
-      expect(b.land - a.land).toBeCloseTo(a.T);
-      const up = tempos[i] - tempos[i - 1];
-      expect(up).toBeGreaterThanOrEqual(-1e-9);
-      // At most 10 % of the base per half round (30 s), here over one bar of four letters.
-      expect(up).toBeLessThanOrEqual(40 * 0.1 * (4 * a.T) / 30 + 1e-9);
+  it('keeps the round\'s tempo all through the song, however the phrases go', () => {
+    for (const dir of [1, -1] as const) {
+      const s = playOut(song(world1, 40, 60), dir);
+      for (const d of s.drops) expect(60 / d.T).toBeCloseTo(40);
+      for (const p of s.phrases) expect(p.tempo).toBe(40);
     }
-    const half = s.drops.filter((d) => d.land <= 30 + s.drops[0].land);
-    expect(60 / half[half.length - 1].T).toBeLessThanOrEqual(44 + 1e-9);
-    expect(Math.max(...tempos)).toBeLessThanOrEqual(48 + 1e-9);
-    // Bars follow the drift: a bar starts on a landing with a beat of its letters'.
+    const s = playOut(song(world1, 40, 60), 1);
+    // A bar starts on a landing with a beat of its letters'.
     for (const bar of s.bars.filter((x) => x.kind === 'play')) {
       const d = s.drops.find((x) => Math.abs(x.land - bar.start) < 1e-9)!;
       expect(bar.beat).toBeCloseTo(d.T / (60 / d.T < 60 ? 2 : 1));

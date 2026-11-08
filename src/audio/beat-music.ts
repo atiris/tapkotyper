@@ -40,7 +40,7 @@ type Note = [number, (at: number) => void];
 /**
  * Rytmus's music, generated from patterns on the song's clock so every landing is exactly on a
  * beat: a soft kick, shaker eighths, a bass on the chord's root, a marimba melody per section, a
- * woodblock count-in, a run before a faster phrase and a closing chord. A caught letter rings a bell
+ * woodblock count-in, and a closing chord. A caught letter rings a bell
  * note of the bar's chord on its landing. At most about six sounds at once, for weak computers.
  */
 export class BeatMusic {
@@ -54,7 +54,7 @@ export class BeatMusic {
       const bar = bars[i];
       if (bar.start > to) break;
       if (bar.start + 4 * bar.beat <= this.until) continue;
-      for (const [t, play] of this.notes(o, bar, bars[i + 1])) {
+      for (const [t, play] of this.notes(o, bar)) {
         if (t > this.until && t <= to && t >= from - 0.05) play(o.at(perf(t)));
       }
     }
@@ -72,7 +72,7 @@ export class BeatMusic {
   }
 
   /** The bar's notes as (song time, play at context time). */
-  private notes(o: BeatOut, bar: Bar, next: Bar | undefined): Note[] {
+  private notes(o: BeatOut, bar: Bar): Note[] {
     const b = bar.beat, out: Note[] = [];
     const add = (t: number, play: (at: number) => void) => out.push([bar.start + t, play]);
     if (bar.kind === 'count') {
@@ -97,10 +97,6 @@ export class BeatMusic {
     MELODY[section].slice(half * 8, half * 8 + 8).forEach((step, e) => {
       if (step >= 0) add((e * b) / 2, (at) => tone(o, at, semis(ROOT * 2, penta(step)), 0.4, 0.07, 'triangle'));
     });
-    // A faster phrase comes: a quick run up on the last beat.
-    if (next?.kind === 'play' && next.phrase !== bar.phrase && next.beat < b - 1e-6) {
-      for (let k = 0; k < 4; k++) add(3 * b + (k * b) / 4, (at) => tone(o, at, semis(ROOT * 2, penta(5 + k)), 0.18, 0.05, 'sine'));
-    }
     return out;
   }
 

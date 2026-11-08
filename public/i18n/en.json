@@ -527,6 +527,10 @@
     "rhythmScore": "{n} of 100, {word}",
     "tempo": "Tempo per minute",
     "caught": "Letters caught",
+    "next": "Next round",
+    "nextUp": "faster: {tempo}",
+    "nextSame": "same tempo: {tempo}",
+    "nextDown": "slower: {tempo}",
     "rhythmTop": "A new top tempo: {n} letters per minute!",
     "rhythmBetter": "Your rhythm is better than last time.",
     "rhythmNote": "Great rhythm! You have a new rhythm note from {world}."
@@ -2396,15 +2400,6 @@
         "Aim true!",
         "Show me what you've got!"
       ],
-      "streak3": [
-        "Hat trick!",
-        "Three bullseyes in a row!"
-      ],
-      "streak5": [
-        "Five in the middle!",
-        "Sharpshooter five!",
-        "Unbelievable, five straight!"
-      ],
       "shrink": [
         "I'm moving back, your aim is too good!",
         "Better step back, you hit way too well!",
@@ -3652,6 +3647,13 @@
       "Like clockwork!",
       "That's the way!",
       "Right on the beat!"
+    ],
+    "hum": [
+      "♪ Tra-la-la ♪",
+      "♪ Boom, boom, tap ♪",
+      "♪ Hm-hm-hm ♪",
+      "♪ Tappy-tap-tap ♪",
+      "♪ Dum-di-dum ♪"
     ],
     "words": {
       "searching": "finding the beat",

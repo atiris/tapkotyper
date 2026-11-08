@@ -527,6 +527,10 @@
     "rhythmScore": "{n} zo 100, {word}",
     "tempo": "Tempo za minútu",
     "caught": "Chytené písmená",
+    "next": "Ďalšie kolo",
+    "nextUp": "rýchlejšie: {tempo}",
+    "nextSame": "rovnaké tempo: {tempo}",
+    "nextDown": "pomalšie: {tempo}",
     "rhythmTop": "Nové najvyššie tempo: {n} písmen za minútu!",
     "rhythmBetter": "Rytmus je lepší ako minule.",
     "rhythmNote": "Výborný rytmus! Máš novú rytmickú notu zo sveta {world}."
@@ -2396,15 +2400,6 @@
         "Mier presne!",
         "Ukáž, čo vieš!"
       ],
-      "streak3": [
-        "Hetrik!",
-        "Tri do stredu za sebou!"
-      ],
-      "streak5": [
-        "Päť do stredu!",
-        "Ostrostrelecká päťka!",
-        "Neuveriteľné, päť za sebou!"
-      ],
       "shrink": [
         "Idem ďalej, strieľaš veľmi presne!",
         "Musím cúvnuť, príliš dobre triafaš!",
@@ -3675,6 +3670,13 @@
       "Ako hodinky!",
       "Tak sa to robí!",
       "Pekne do taktu!"
+    ],
+    "hum": [
+      "♪ Tra-la-la ♪",
+      "♪ Bum, bum, ťap ♪",
+      "♪ Hm-hm-hm ♪",
+      "♪ Ťapi-ťapi-ťap ♪",
+      "♪ Dum-di-dum ♪"
     ],
     "words": {
       "searching": "hľadáme rytmus",

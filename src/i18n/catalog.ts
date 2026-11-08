@@ -113,7 +113,7 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
       'end.toMap', 'end.surpriseNew', 'end.surpriseSee'),
     g('end-placement', 'end.placement', 'end.placementLetters', 'end.placementOpened', 'end.placementStrong', 'end.placementWeak', 'end.placementNoWeak',
       'end.placementSignal', 'end.placementEyes'),
-    g('end-rhythm', 'end.rhythm', 'end.rhythmScore', 'end.tempo', 'end.caught', 'end.rhythmTop', 'end.rhythmBetter', 'end.rhythmNote'),
+    g('end-rhythm', 'end.rhythm', 'end.rhythmScore', 'end.tempo', 'end.caught', 'end.next', 'end.nextUp', 'end.nextSame', 'end.nextDown', 'end.rhythmTop', 'end.rhythmBetter', 'end.rhythmNote'),
     g('end', 'end.*'),
     g('results', 'results.*'),
     g('badge', 'badge.*'),

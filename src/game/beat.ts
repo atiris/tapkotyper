@@ -10,13 +10,7 @@ export const TEMPO_MIN = 30;
 export const TEMPO_MAX = 120;
 /** A round's base tempo step between rounds: this share of the base. */
 const TEMPO_STEP = 0.1;
-/**
- * Within a round the tempo drifts bar by bar, at most this share of the base in half a round (10 %
- * up or down in half of it), and never further than this share from the base either way.
- */
-const DRIFT_PER_HALF = 0.1;
-const DRIFT_MAX = 0.2;
-/** Landings in one phrase: the tempo's direction and the window change only between phrases. */
+/** Landings in one phrase: the window changes only between phrases. */
 export const PHRASE = 16;
 /** Seconds of song a round lasts by default, and the share of it a hard round grows by at most (a phrase for each step down). */
 export const ROUND_S = 60;
@@ -34,7 +28,7 @@ const IN_TIME = 0.5;
 const NEAR = 0.75;
 /** Below this tempo the music plays twice as fast and a letter lands on every second beat. */
 const DOUBLE_BELOW = 60;
-/** Seconds before its first letter leaves the cloud that a phrase is planned (and its tempo decided). */
+/** Seconds before its first letter leaves the cloud that a phrase is planned (and its window decided). */
 const PLAN_AHEAD_S = 0.2;
 /** Seconds of quiet before the count-in bar. */
 const LEAD_S = 0.6;
@@ -122,23 +116,12 @@ export function tempoAt(base: number, level: number): number {
   return clampTempo(base * (1 + TEMPO_STEP * level));
 }
 
-/** Where a phrase's tempo goes: up, kept, gently down (half the drift speed) or down. */
+/** How a phrase or a round went: up (very even), kept, down by its timing alone, or down with misses (the help widens the window). */
 export type Step = -1 | -0.5 | 0 | 1;
 
-/**
- * The tempo `seconds` later going `dir` from `tempo`: at most 10 % of the round's `base` in half the
- * round (`roundS`, half of that on a gentle step), never further than 20 % from the base, nor out of the tempo range.
- */
-export function drift(tempo: number, dir: Step, seconds: number, base: number, roundS: number): number {
-  const to = tempo + dir * base * DRIFT_PER_HALF * (seconds / (roundS / 2));
-  const lo = Math.max(TEMPO_MIN, base * (1 - DRIFT_MAX)), hi = Math.min(TEMPO_MAX, base * (1 + DRIFT_MAX));
-  return Math.max(Math.min(lo, tempo), Math.min(Math.max(hi, tempo), to));
-}
-
-/** The next round's base: one step (10 %) from this round's base towards where its tempo went (`now`). */
-export function nextBase(base: number, now: number): number {
-  const dir = Math.abs(now - base) < 0.5 ? 0 : Math.sign(now - base);
-  return tempoAt(base, dir);
+/** The next round's base: one step (10 %) from this round's, up, kept or down by how the round went. */
+export function nextBase(base: number, step: Step): number {
+  return tempoAt(base, Math.sign(step));
 }
 
 /** Days from `from` to `to`, both local dates `YYYY-MM-DD`. */
@@ -157,8 +140,8 @@ export function startTempo(kept: number | null, usualCpm: number, target: number
 }
 
 /**
- * A phrase's step by its timing, never by wrong keys: with 90 % of its letters `caught` it goes up when
- * 70 % of the catches were in time (`inTime`), stays from 40 %, goes gently down below; misses step it down.
+ * A phrase's or a round's step by its timing, never by wrong keys: with 90 % of its letters `caught` it goes
+ * up when 70 % of the catches were in time (`inTime`), stays from 40 %, goes down by its timing below; misses step it down.
  */
 export function phraseStep(caught: number, inTime: number): Step {
   if (caught < STEP_CAUGHT) return -1;
@@ -334,13 +317,12 @@ export interface Bar {
 }
 
 /**
- * A phrase: its tempo at its start (letters a minute, rounded), where its tempo is going and the exact
- * tempo after it, its catch window (beats each side), its first beat, the beat after its last and its first drop.
+ * A phrase: its tempo (letters a minute, the round's), the step of the phrase before that set its catch
+ * window (beats each side), its first beat, the beat after its last and its first drop.
  */
 export interface Phrase {
   tempo: number;
   dir: Step;
-  after: number;
   w: number;
   start: number;
   end: number;
@@ -351,7 +333,7 @@ export interface SongSetup {
   lanes: readonly Lane[];
   changes: readonly LaneChange[];
   weights: readonly number[];
-  /** The round's base tempo: the phrases step around it. */
+  /** The round's tempo: it stays the same all through the song. */
   tempo: number;
   rand: () => number;
   roundS?: number;
@@ -361,10 +343,10 @@ export interface SongSetup {
 
 /**
  * The round's song on one clock (seconds from the start): a count-in bar, then phrases of 16
- * landings, each at its own tempo, until the round's time; a closing bar after the last landing.
- * A phrase is planned just before its first letter leaves its cloud; its tempo drifts (see `drift`) and
- * its window follows the step `decide` gives then (the phrase before, judged on its letters resolved by
- * then), and a full step down makes the round a phrase longer, up to a third.
+ * landings, all at the round's one tempo, until the round's time; a closing bar after the last landing.
+ * A phrase is planned just before its first letter leaves its cloud; its window follows the step `decide`
+ * gives then (the phrase before, judged on its letters resolved by then), and a full step down makes the
+ * round a phrase longer, up to a third.
  */
 export class Song {
   readonly drops: Drop[] = [];
@@ -392,7 +374,7 @@ export class Song {
   get due(): number {
     if (this.closed) return Infinity;
     const p = this.phrases[this.phrases.length - 1];
-    return p.end - fallSeconds(beatOf(p.after)) - PLAN_AHEAD_S;
+    return p.end - fallSeconds(beatOf(this.s.tempo)) - PLAN_AHEAD_S;
   }
 
   /** At song time `now`, plans the next phrase when it is due; `decide` gives the step from the current phrase. */
@@ -403,27 +385,21 @@ export class Song {
     if (start > this.roundS) return this.close();
     const dir = decide();
     if (dir === -1) this.roundS = Math.min(this.baseS * (1 + EXTRA_SHARE), this.roundS + (p.end - p.start));
-    this.addPhrase(p.after, dir, stepWindow(p.w, dir), start, now);
+    this.addPhrase(this.s.tempo, dir, stepWindow(p.w, dir), start, now);
   }
 
-  /**
-   * A phrase from `start` at `tempo`, drifting `dir` bar by bar (see `drift`); no letter leaves its
-   * cloud before `now` (a slower next tempo falls a little longer than the time left).
-   */
+  /** A phrase from `start` at `tempo`; no letter leaves its cloud before `now`. */
   private addPhrase(tempo: number, dir: Step, w: number, start: number, now = 0): void {
     const phrase = this.phrases.length;
     const bpl = beatsPerLetter(tempo), perBar = 4 / bpl;
-    const ph: Phrase = { tempo: Math.round(tempo), dir, after: tempo, w, start, end: start, first: this.drops.length };
+    const ph: Phrase = { tempo: Math.round(tempo), dir, w, start, end: start, first: this.drops.length };
     this.phrases.push(ph);
-    const F0 = fallSeconds(beatOf(tempo));
-    const letters = this.s.lanes.map((_, i) => laneNow(this.s.lanes, this.s.changes, i, Math.max(now, start - F0)).letter);
+    const T = beatOf(tempo), F = fallSeconds(T);
+    const letters = this.s.lanes.map((_, i) => laneNow(this.s.lanes, this.s.changes, i, Math.max(now, start - F)).letter);
     const lanes = phraseLanes(phrase, this.s.lanes, this.s.weights, this.s.rand, start >= this.roundS / 2, this.s.words, letters);
     let landed = 0;
     let at = start;
     for (let i = 0; i < PHRASE; i++) {
-      // A bar keeps one tempo; the next one drifts a little.
-      if (i > 0 && i % perBar === 0) tempo = drift(tempo, dir, perBar * beatOf(tempo), this.s.tempo, this.baseS);
-      const T = beatOf(tempo), F = fallSeconds(T);
       const land = at;
       if (land > this.roundS) break;
       if (i % perBar === 0) this.bars.push({ index: this.bars.length, start: land, beat: T / bpl, phrase, kind: 'play' });
@@ -439,7 +415,6 @@ export class Song {
       landed++;
     }
     ph.end = at;
-    ph.after = drift(tempo, dir, perBar * beatOf(tempo), this.s.tempo, this.baseS);
     if (landed < PHRASE) this.close();
   }
 

@@ -1,5 +1,6 @@
 import { musicTracks, musicUrl } from '../gfx/assets';
 import { SOUND_LEVELS, levelGain } from './levels';
+import { type MusicContext, type MusicEvent, emptyMusicContext, musicFor } from './context';
 import { nextTrack } from './tracks';
 import type { SoundLevel } from '../storage/schema';
 
@@ -37,6 +38,7 @@ class AudioEngine {
   /** A level runs whose sound matters (Rytmus, dictation): the `important` level plays there. */
   private important = false;
   private track: string | null = null;
+  private context: MusicContext = emptyMusicContext;
   private current: { el?: HTMLAudioElement; gain: GainNode; stop: () => void } | null = null;
   private listeners: (() => void)[] = [];
 
@@ -206,10 +208,17 @@ class AudioEngine {
     };
   }
 
-  /** Plays the next random track of the whole library and returns its name; the next screen or level sets its own track again. */
-  shuffleTrack(): string | null {
+  /** Moves the music context (context.ts) and plays the track it asks for. */
+  enter(ev: MusicEvent): void {
+    const { ctx, play } = musicFor(this.context, ev);
+    this.context = ctx;
+    this.music(play);
+  }
+
+  /** Plays the next random track of the whole library as the context's music and returns its name; `inLevel` while a level runs. */
+  shuffleTrack(inLevel: boolean): string | null {
     const next = nextTrack(musicTracks(), this.track);
-    if (next) this.music(next);
+    if (next) this.enter({ kind: 'pick', track: next, inLevel });
     return next;
   }
 

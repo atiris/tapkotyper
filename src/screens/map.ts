@@ -160,7 +160,7 @@ export function mapScreen(root: HTMLElement, { focus }: { focus?: 'language' } =
   const p = app.profile!;
   // Notes and parrots flew away when the player became active (selectProfile); the map tells it once.
   const notesFlown = untoldFades(p);
-  audio.music(app.menuTrack);
+  audio.enter({ kind: 'resume', menuTrack: app.menuTrack });
   const flown = [...p.progress.parrotFlown].sort((a, b) => a - b);
   p.progress.parrotFlown = [];
   // Aro (the Parrot badge) sits on his perch left of Tapko: he flies off once when the badge is lost,

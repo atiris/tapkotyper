@@ -14,9 +14,16 @@
   is picked; the start page keeps the last player's; a new player starts with what the device has); audio starts only after the
   first user interaction (on phones the first tap; see [devices.md](devices.md)). Off is real
   silence: nothing plays at all, not even at zero volume; so is "only where it matters" outside those levels.
-- A right click on the sound button plays another random track from the whole library; the
-  next screen or level sets its own track again. The sound button's tooltip names the song
+- The music goes on until something really changes it. The start page and own practice play the
+  menu track. A level plays its world's track, and that track goes on over the map, the wardrobe and
+  the other screens and into the next level of the same world without starting again; only a level
+  of another world switches it. A reload straight onto the map starts the menu track.
+- A right click on the sound button (F8) plays another random track from the whole library; it stays
+  until a level of another world starts (or the start page). A track picked outside a level also
+  plays in the next level, whatever its world. The sound button's tooltip names the song
   playing now (its world's name, or menu, relaxing, break), unless the sound is off.
+- Rytmus, the warm-up and the story scenes play their own music while shown; after them the
+  music from before comes back.
 
 ## Why
 - Sound supports rhythm and reward; noisy or forced audio is a common classroom complaint.
@@ -26,3 +33,6 @@
 - Starting silent never surprises a class, a library or a sleeping house with sound.
 - A phone shows a tab that plays sound even at zero volume, which looks like the switch does
   not work and keeps the audio output awake.
+- A track that starts again after every level, or jumps back to the menu between levels, cuts the
+  music into pieces; one track per world that keeps playing feels like one place, and a song the
+  child picked is the child's until the game really moves on.

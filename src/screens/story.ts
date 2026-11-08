@@ -51,7 +51,7 @@ export function storyScreen(root: HTMLElement, params: StoryParams): () => void 
   const p = app.profile!;
   const def = SCENES[params.scene];
   const lines = tList(`story.scenes.${params.scene}`, { name: nickname(p) });
-  audio.music(def.world);
+  audio.enter({ kind: 'level', world: def.world, own: def.world });
   let i = 0;
   const bg = imageUrl(`bg-${def.world}-far`);
   const text = h('p', { class: 'story-text', 'aria-live': 'polite' });

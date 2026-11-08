@@ -344,7 +344,7 @@ export class LevelRuntime {
     const own = [`bg-${world}-far`, `bg-${world}${ground}-mid`, `bg-${world}${ground}-near`, `bg-${world}${ground}-shore`, ...this.mode.pictures, ...tapkoPictures(p.companion), ...friendPictures(), ...this.friends.pictures];
     await Promise.race([preload(own), new Promise((r) => setTimeout(r, PICTURES_WAIT_S * 1000))]);
     if (this.disposed) return;
-    audio.music(this.def.kind === 'practice' ? app.menuTrack : this.mode.ownMusic ? null : this.mode.world);
+    audio.enter(this.def.kind === 'practice' ? { kind: 'menu', menuTrack: app.menuTrack } : { kind: 'level', world: this.mode.world, own: this.mode.ownMusic ? null : undefined });
     // Free typing and staying a while start at once; the child has just played this level.
     // Free typing has no card: the hands lie beside the keyboard and glide onto the keys a second later (sooner when a key
     // comes first); without motion they are on the keys from the start.

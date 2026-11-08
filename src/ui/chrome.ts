@@ -33,7 +33,7 @@ export function soundButton(): HTMLButtonElement {
   // Right click: another track from the whole library.
   b.addEventListener('contextmenu', (e) => {
     e.preventDefault();
-    audio.shuffleTrack();
+    audio.shuffleTrack(shownScreen() === 'level');
   });
   const paint = (b: HTMLButtonElement) => {
     const label = soundLabel();
@@ -145,7 +145,7 @@ export function appShortcuts(): void {
       toast(soundLabel());
     },
     track: () => {
-      const track = audio.shuffleTrack();
+      const track = audio.shuffleTrack(shownScreen() === 'level');
       if (track) toast(t('common.song', { name: trackName(track) }));
     },
   });

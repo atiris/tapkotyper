@@ -31,7 +31,7 @@ export interface TaskOffer { spec: TaskSpec; code: string }
 export function startScreen(root: HTMLElement, { task }: { task?: TaskOffer } = {}): () => void {
   app.profile = null;
   applyProfileLook(null);
-  audio.music(app.menuTrack);
+  audio.enter({ kind: 'menu', menuTrack: app.menuTrack });
   const lang = languageButton(async (l: Lang) => {
     app.store.data.language = l;
     app.store.save();

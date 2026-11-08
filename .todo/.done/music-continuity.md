@@ -30,12 +30,33 @@ Affected: `src/audio/audio.ts` (maybe a small `src/audio/context.ts` for the rul
 
 ## Steps
 
-- [ ] **1. The rule as a pure function** (screen or level entered + the current context and track ->
+- [x] **1. The rule as a pure function** (screen or level entered + the current context and track ->
   the track to play and the new context), unit tests for every case above.
-- [ ] **2. Wire it** into the places above; remove the direct `audio.music(...)` calls they replace.
-- [ ] **3. Checks.** tsc, vitest, build, e2e specs touching music (search `music` in `e2e/`); browser
+- [x] **2. Wire it** into the places above; remove the direct `audio.music(...)` calls they replace.
+- [x] **3. Checks.** tsc, vitest, build, e2e specs touching music (search `music` in `e2e/`); browser
   check: level of the meadow -> map (meadow track goes on) -> next meadow level (no restart) -> a level of
   another world (switches) -> start page (menu track); a picked track on the map stays into the next level.
 
 ## State
-Nothing implemented yet.
+All steps done.
+
+Decisions:
+- The context is keyed by the world's track name (the level mode's world key, which is also its track), not a number.
+- The map does not "keep what plays" blindly: it plays the context's track, which is what already plays in every
+  normal case (no change, no restart), and brings it back after Rytmus or a story scene. A reload onto the map has
+  an empty context and starts the menu track.
+- A pick made in a level stays until another world; a pick made outside a level (map, start page, any screen)
+  waits and carries into the next level of any world. "In a level" = the level screen is shown.
+- The warm-up keeps its old way back: it restores exactly the track that played before it (this is the context's
+  music in every normal case, and stays silent when it was opened over Rytmus).
+- Story scenes play their world's track while shown and set the context like a level does (a pick of the same
+  world comes back after the scene).
+
+Checks: tsc, vitest (716), build, e2e keyboard-only + rhythm passed. Browser (own headless Chrome, the MCP browser was
+in use by another session): start (menu) -> meadow level (meadow) -> map (goes on) -> meadow level (no switch) ->
+space level (switches) -> F8 on map (junkyard) -> meadow levels keep it -> space level switches -> Rytmus (silent) ->
+map (meadow back) -> start page (menu).
+
+## Done - 2026-11-08
+Shipped: `src/audio/context.ts` (the rule, unit-tested), wired into the level runtime, start page, map, story scenes
+and the track pick; spec `.specify/experience/audio.md` updated. Left out: nothing.

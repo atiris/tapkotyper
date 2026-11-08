@@ -59,7 +59,7 @@ No DB, no server contract.
   off with the speaker button." | "Turn on everywhere" | "Turn on where needed" | "Keep it off". The
   button click is the user gesture that wakes the audio context. The round does not start before the
   popup is closed. This is an owner's explicit exception to "only key cards + one get-ready card".
-- [ ] **6. Rytmus louder.** Its music and effects go through `audio.beatOut()` (the music gain). Raise
+- [x] **6. Rytmus louder.** Its music and effects go through `audio.beatOut()` (the music gain). Raise
   the base level of everything Rytmus plays (beat notes, catch/miss sounds) so that, at the same
   sound level, it is about as loud as the story levels' effects: add a gain node for Rytmus with a
   factor (start with 2.5, check by ear-free measure: compare peak gain values of a caught note vs. the

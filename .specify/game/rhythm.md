@@ -102,6 +102,8 @@
   a woodblock count-in bar, a closing chord), on the same clock as the falling letters, so every
   landing is exactly on a beat and the sound reaches the speaker when the letter reaches the basket.
   It replaces the world's track during the round, and the sound level "only where it matters" plays it.
+  Everything Rytmus plays (the song and the caught letters' notes) is about as loud as the story levels'
+  effects at the same sound level, louder than the menus' music.
   With the sound off there is no sound at all; the letters keep the same beat.
 - **Before the round** the get-ready card says: "V tomto písaní si precvičíš pravidelný rytmus. Ovládaš
   košík, ktorý chytá písmenká padajúce z obláčikov. Tie musíš chytiť v správnom čase, ináč spadnú na

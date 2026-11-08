@@ -12,6 +12,12 @@ export interface BeatOut {
 
 export type Sfx = 'key' | 'wrong' | 'word' | 'reward' | 'whoosh' | 'pop' | 'cheer' | 'bzzt' | 'note' | 'plop' | 'squeak' | 'ring' | 'whistle' | 'crack' | 'thud' | 'squawk' | 'beep';
 const SOUND_KEY = 'tapkotyper:sound';
+/**
+ * Rytmus plays through the music's volume, which is lower than the effects': a caught letter's bell peaks at
+ * 0.09 x music 0.5 x 0.55 = 0.025, the story levels' key sound at 0.12 x effects 0.7 x 0.6 = 0.05 and a word at
+ * 0.084. Raised by this factor, the bell (0.062) and the song sit between the two at the same sound level.
+ */
+const BEAT_BOOST = 2.5;
 const FADE = 1.2;
 
 /**
@@ -22,6 +28,8 @@ class AudioEngine {
   private ctx: AudioContext | null = null;
   private sfxGain!: GainNode;
   private musicGain!: GainNode;
+  /** Rytmus's way into the music's volume, raised by BEAT_BOOST. */
+  private beatGain!: GainNode;
   private sfxVolume = 0.7;
   private musicVolume = 0.5;
   /** The game starts silent until the player turns the sound on (the choice is kept). */
@@ -68,6 +76,9 @@ class AudioEngine {
     this.musicGain = this.ctx.createGain();
     this.sfxGain.connect(this.ctx.destination);
     this.musicGain.connect(this.ctx.destination);
+    this.beatGain = this.ctx.createGain();
+    this.beatGain.gain.value = BEAT_BOOST;
+    this.beatGain.connect(this.musicGain);
     this.applyVolumes();
     if (this.silent) void this.ctx.suspend().catch(() => undefined);
     if (this.track) {
@@ -178,7 +189,7 @@ class AudioEngine {
   }
 
   /**
-   * Where Rytmus plays its music, or null in silence: the audio context, the music's volume, and the
+   * Where Rytmus plays its music, or null in silence: the audio context, the music's volume raised for Rytmus, and the
    * context time at which a sound reaches the speaker at a moment of performance.now() (ms).
    */
   beatOut(): BeatOut | null {
@@ -186,7 +197,7 @@ class AudioEngine {
     if (!ctx || this.silent || ctx.state !== 'running') return null;
     return {
       ctx,
-      out: this.musicGain,
+      out: this.beatGain,
       at: (perf) => {
         const ts = ctx.getOutputTimestamp?.();
         if (ts?.contextTime && ts.performanceTime) return ts.contextTime + (perf - ts.performanceTime) / 1000;

@@ -5,7 +5,7 @@ import { installTestTyping } from './app/test-typing';
 import { loadManifest, preloadPlay } from './gfx/assets';
 import { GUEST_ID, SUPER_ID } from './storage/schema';
 import { allTexts, detectLanguage, onLateTexts } from './i18n/i18n';
-import { appShortcuts, watchAutoFullscreen } from './ui/chrome';
+import { appShortcuts, blockPinchZoom, watchAutoFullscreen } from './ui/chrome';
 import { noteVisit } from './ui/install';
 import { firstVisit } from './ui/start-pictures';
 import { installTooltips } from './ui/tooltip';
@@ -88,6 +88,7 @@ async function boot(): Promise<void> {
   installTooltips();
   installTestTyping();
   appShortcuts();
+  blockPinchZoom();
   window.addEventListener('popstate', () => void openRoute(location.hash));
   watchAutoFullscreen();
   noteVisit();

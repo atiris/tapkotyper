@@ -185,7 +185,8 @@ body.high-contrast {
  * never shifts the page against a long one; the start page and the game never show one (a phone
  * still scrolls the start page).
  */
-html { font-size: calc(16px * var(--scale)); height: 100%; overflow: hidden; background: var(--page-bg) fixed; }
+/* No pinch zoom on a touch screen either (see blockPinchZoom): it hides the page's right side. */
+html { font-size: calc(16px * var(--scale)); height: 100%; overflow: hidden; background: var(--page-bg) fixed; touch-action: pan-x pan-y; }
 body:has(.parent-screen, .help-screen, .progress-screen, .tasks-screen) { scrollbar-gutter: stable; }
 body:has(.start-screen, .level-screen, .story-screen, .break-screen) { scrollbar-width: none; }
 body {

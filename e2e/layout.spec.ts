@@ -131,3 +131,20 @@ async function noScrollX(page: Page): Promise<void> {
   const [scroll, inner] = await page.evaluate(() => [document.documentElement.scrollWidth, innerWidth]);
   expect(scroll).toBeLessThanOrEqual(inner);
 }
+
+test('a touchpad pinch never zooms the map past its right edge, Ctrl with the wheel still reaches the browser', async ({ page }) => {
+  await createProfile(page, 'Pinch');
+  const cdp = await page.context().newCDPSession(page);
+  await cdp.send('Input.synthesizePinchGesture', { x: 300, y: 300, scaleFactor: 1.5, gestureSourceType: 'mouse' });
+  expect(await page.evaluate(() => visualViewport!.scale)).toBe(1);
+  for (const b of await page.locator('.top-right .round-btn:visible').all()) await expect(b).toBeInViewport({ ratio: 1 });
+  // With the Ctrl key held the wheel is the browser's own page zoom, which keeps the layout whole.
+  await page.keyboard.down('Control');
+  const prevented = await page.evaluate(() => {
+    const e = new WheelEvent('wheel', { ctrlKey: true, deltaY: -100, cancelable: true });
+    window.dispatchEvent(e);
+    return e.defaultPrevented;
+  });
+  await page.keyboard.up('Control');
+  expect(prevented).toBe(false);
+});

@@ -107,6 +107,20 @@ function trackName(track: string): string {
   return world >= 0 ? worldName(world) : t(`tracks.${track}`);
 }
 
+/**
+ * No pinch zoom: a touchpad pinch enlarges only what the window shows and pushes the page's right
+ * side (a word to type too) out of sight with no scrollbar. The browser sends it as a wheel marked
+ * with Ctrl while no Ctrl key is down; Ctrl with the wheel or + and - still zoom the whole page.
+ */
+export function blockPinchZoom(): void {
+  let ctrlDown = false;
+  const track = (e: KeyboardEvent) => { ctrlDown = e.ctrlKey; };
+  window.addEventListener('keydown', track, true);
+  window.addEventListener('keyup', track, true);
+  window.addEventListener('blur', () => { ctrlDown = false; });
+  window.addEventListener('wheel', (e) => { if (e.ctrlKey && !ctrlDown) e.preventDefault(); }, { passive: false });
+}
+
 /** The app's function keys: F1 the screen's help, F4 the sound level, F8 the next song, F11 fullscreen; a level adds its own. */
 export function appShortcuts(): void {
   // F11 takes the page's fullscreen instead of the browser's own, so the fullscreen button can leave it again.

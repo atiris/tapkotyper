@@ -51,11 +51,23 @@ export class PressureValve {
   }
 }
 
-/** Seconds a narrator line stays in the bubble at least, and per character of it. */
+/**
+ * The reading rule for every text the game shows over play (a shout, a speech bubble, the
+ * narrator's line): a child reads about seven characters a second, so a text stays
+ * READ_PER_CHAR seconds per character and READ_MIN at least. Callouts and Tapko's bubble apply
+ * it themselves, so a mode's own shorter time never cuts a text.
+ */
+export const READ_PER_CHAR = 0.15;
+export const READ_MIN = 1.5;
+/** The narrator's line, read beside the game, stays a while longer at least. */
 export const SAY_MIN = 3.5;
-export const SAY_PER_CHAR = 0.08;
 
-/** How long a narrator line is shown, so a child can read it. */
+/** Seconds a child needs to read `text` over the game. */
+export function readTime(text: string): number {
+  return Math.max(READ_MIN, [...text].length * READ_PER_CHAR);
+}
+
+/** How long a narrator line is shown. */
 export function sayTime(text: string): number {
-  return Math.max(SAY_MIN, text.length * SAY_PER_CHAR);
+  return Math.max(SAY_MIN, readTime(text));
 }

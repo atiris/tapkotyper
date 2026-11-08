@@ -11,6 +11,16 @@ import { tip } from '../ui/tooltip';
 import { KeyboardGuide, keyLabel, namedKeyCaps, namedKeyLabel } from '../ui/keyboard-guide';
 import { openPracticeKeys } from './practice-keys';
 
+/**
+ * Which letters still need accuracy before new ones open, and where to train them: a target
+ * range once a world is done (it opens one), else any level already open; empty when none holds them back.
+ */
+export function heldText(p: Profile): string {
+  const keys = notReadyKeys(p);
+  if (!keys.length) return '';
+  return t(p.progress.worldsDone.length ? 'map.heldKeys' : 'map.heldKeysReplay', { keys: keys.map(keyLabel).join(', ') });
+}
+
 /** What a closed world still needs, in one line (the lock's tooltip); empty for an open one. */
 export function worldLockText(p: Profile, world: number): string {
   const lock = worldLock(p, world);
@@ -59,7 +69,7 @@ export function openWorldKeys(p: Profile, world: number): void {
   const drill = missing.length ? button(t('stats.drill'), () => { close(); go('level', { id: 'practice', keys: drillKeys, seconds: DRILL_SECONDS }); }, 'btn primary', 'practice') : null;
   if (drill) tip(drill, t('stats.drillTip', { keys: drillKeys.map(keyLabel).join(' ') }));
   const actions = [drill, lock?.kind === 'keys' ? button(t('map.practice'), () => { close(); openPracticeKeys(); }, 'btn', 'practice') : null].filter((b) => !!b);
-  const held = lock?.kind === 'keys' && notReadyKeys(p).length ? t('map.heldKeys', { keys: notReadyKeys(p).map(keyLabel).join(', ') }) : '';
+  const held = lock?.kind === 'keys' ? heldText(p) : '';
   const closeModal = modal(h('div', { class: 'world-keys-panel' },
     h('h2', {}, ...(lock ? [icon('lock'), ' ', t('worldKeys.titleLocked', { world: worldName(world) })] : [t('worldKeys.titleOpen', { world: worldName(world) })])),
     lock ? h('p', { class: 'wk-lock' }, lock.kind === 'need' ? t('worldKeys.lockedByKeys') : worldLockText(p, world)) : null,

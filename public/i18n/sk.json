@@ -31,7 +31,7 @@
     "whoPlays": "Kto mi dnes napíše?",
     "pickByNumber": "Profil môžeš aktivovať aj napísaním číslice {n}",
     "newProfile": "Nový hráč",
-    "newFirst": "Nový študent písania",
+    "newFirst": "Nový hráč",
     "guest": "Vyskúšať",
     "guestName": "Hosť",
     "import": "Načítať profily",
@@ -187,7 +187,8 @@
     "keysOne": "Na túto úroveň potrebuješ ešte jedno písmeno. Nové písmenká získaš hraním alebo vo Vlastnom písaní.",
     "keysFew": "Na túto úroveň potrebuješ ešte {n} písmená. Nové písmenká získaš hraním alebo vo Vlastnom písaní.",
     "keysMany": "Na túto úroveň potrebuješ ešte {n} písmen. Nové písmenká získaš hraním alebo vo Vlastnom písaní.",
-    "heldKeys": "Aby sa otvorila ďalšia úroveň, potrebuješ presnejšie písať: {keys}. Precvič ich na Strelnici.",
+    "heldKeys": "Aby sa otvorila ďalšia úroveň, potrebuješ presnejšie písať: {keys}. Precvičíš to na Strelnici.",
+    "heldKeysReplay": "Aby sa otvorila ďalšia úroveň, potrebuješ presnejšie písať: {keys}. Precvičíš to, keď si znova zahráš niektorú úroveň, ktorú už máš otvorenú.",
     "keysLocked": "potrebuješ viac písmen",
     "storyFairy": "Víla Melódia",
     "teacher": {

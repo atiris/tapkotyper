@@ -7,8 +7,7 @@ import { t, tList, tn } from '../i18n/i18n';
 import { nickname } from '../storage/store';
 import { LEVELS, STORIES, type StoryDef, WORLDS, activityOf, aimOpen, aimWorld, isLevelReached, isWorldUnlocked, journeyId, journeyOpen, keysMissing, levelById, nextLevel, rhythmOpen, storyOpen, worldLevels, worldLock, worldName } from '../game/levels';
 import { GUEST_ID, type Profile, SUPER_ID, type Surprise } from '../storage/schema';
-import { activeKeys, notReadyKeys } from '../learning/lessons';
-import { keyLabel } from '../ui/keyboard-guide';
+import { activeKeys } from '../learning/lessons';
 import { badgeTier } from '../game/rewards';
 import { badge } from '../ui/badge';
 import { badgeShow } from '../ui/badge-show';
@@ -33,7 +32,7 @@ import { openBreak } from './break';
 import { openPracticeKeys } from './practice-keys';
 import { type TeacherTip, dueTip, tipSeen } from '../app/teacher-tips';
 import { openStats } from './stats';
-import { openWorldKeys, worldKeysButton, worldLockText } from './world-keys';
+import { heldText, openWorldKeys, worldKeysButton, worldLockText } from './world-keys';
 import { taskCard } from './task';
 import { menuMusic, rhythmNotes } from '../game/rhythm-notes';
 
@@ -262,12 +261,6 @@ export function keysLines(n: number, held: string): HTMLElement[] {
   return [
     h('p', {}, t(n === 1 ? 'map.keysOne' : n < 5 ? 'map.keysFew' : 'map.keysMany', { n })),
     ...(held ? [h('p', { class: 'held-keys' }, held)] : [])];
-}
-
-/** Which letters still need accuracy before new ones open; empty when none holds them back. */
-export function heldText(p: Profile): string {
-  const keys = notReadyKeys(p);
-  return keys.length ? t('map.heldKeys', { keys: keys.map(keyLabel).join(', ') }) : '';
 }
 
 /** The key on a level still short of letters; its tooltip names the letters that need accuracy. */

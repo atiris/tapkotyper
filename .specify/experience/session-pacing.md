@@ -26,8 +26,13 @@
 - Before play only the key cards and one get-ready card; the reward scenes after a world are
   always skippable.
 
-- The narrator's lines stay at least 3.5 seconds (0.08 s per character), are not replaced while shown,
-  and wait while a target would be covered.
+- **One reading rule** for every text shown over play (a shout, a speech bubble, the narrator's
+  line), in every level, new ones too: a child reads about seven characters a second, so a text
+  stays 0.15 s per character and at least 1.5 s ("Kytica ako pre kráľovnú!" about 3.6 s). A
+  level may ask for longer, never for shorter. A new shout makes the ones still up fade out, so
+  it is read alone, and the results wait until the last shout is read.
+- The narrator's lines stay at least 3.5 seconds, are not replaced while shown, and wait while a
+  target would be covered.
 
 ## Why
 - 5-15 minute sessions with breaks keep focus high and fatigue low; streaks and variable rewards

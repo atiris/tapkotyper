@@ -4,7 +4,7 @@
 - Several local profiles on one device, picked on the start screen (the character with the
   nickname only, never the real name, which belongs to the teacher, with room between the nickname and the counts).
   Before the first player the card says "Pick a nickname, choose your helper and start training." with one big
-  **New typing student** button, and under it **Try it** and **Import profiles**; once there is a player, the cards
+  **New player** button, and under it **Try it** and **Import profiles**; once there is a player, the cards
   and under them only **Try it** with **New player** to its right (importing moves to the settings, it is rare
   once someone plays). **Try it** is a guest that keeps nothing after the browser tab closes and that a reload never opens (it shows the start page); the
   guest is named in the game's language ("Hosť" / "Guest"). The super player, while on, is

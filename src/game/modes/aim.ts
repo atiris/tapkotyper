@@ -10,6 +10,7 @@ import { t, tList } from '../../i18n/i18n';
 import { SHIFT_L, SHIFT_R, SPACE, isKeyReady, keysAccuracy, notReadyKeys, recentAccuracy } from '../../learning/lessons';
 import { keyLabel } from '../../ui/keyboard-guide';
 import { WORLDS } from '../levels';
+import { readTime } from '../pace';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
 import { BURST_COLORS, Bags, type Burst, type Effect, type Eyes, STAY_WORLD_EVERY, THINGS, type Thing, type Tier, WORLD_THINGS, storyPool, throwPoints, tierOf, worldDue, worldThing } from './aim-things';
@@ -175,10 +176,9 @@ const EYES_SQUEEZE = 0.15;
 const EYES_AFTER = 1.8;
 const EYES_RISE = 0.3;
 /**
- * Seconds a line stays, for a child who reads slowly (about seven letters a second): per character, at
- * least and at most (Tapko's calls are shorter); the next throw waits for the target's line this long at most.
+ * Seconds a line stays: its reading time (`readTime`), at least and at most (Tapko's calls are shorter);
+ * the next throw waits for the target's line this long at most.
  */
-const LINE_PER_CHAR = 0.15;
 const LINE_MIN = 3.5;
 const LINE_MAX = 8;
 const CALL_MAX = 6;
@@ -345,13 +345,13 @@ export class AimMode extends HeroMode {
   private targetSays(text: string): void {
     if (!text) return;
     const { x, y } = this.target, r = this.radius;
-    this.L.speak('target', text, x - r - 24, VH * 0.71, x - r * 0.6, y + r * 0.6, Math.min(LINE_MAX, Math.max(LINE_MIN, text.length * LINE_PER_CHAR)), true);
+    this.L.speak('target', text, x - r - 24, VH * 0.71, x - r * 0.6, y + r * 0.6, Math.min(LINE_MAX, Math.max(LINE_MIN, readTime(text))), true);
   }
 
   /** Tapko's line in a small bubble above him. */
   private tapkoSays(text: string): void {
     if (!text) return;
-    this.L.speak('tapko', text, this.heroX + 30, this.heroY - this.heroSize - 55, this.heroX + 10, this.heroY - this.heroSize, Math.min(CALL_MAX, Math.max(LINE_MIN, text.length * LINE_PER_CHAR)));
+    this.L.speak('tapko', text, this.heroX + 30, this.heroY - this.heroSize - 55, this.heroX + 10, this.heroY - this.heroSize, Math.min(CALL_MAX, Math.max(LINE_MIN, readTime(text))));
   }
 
   /**

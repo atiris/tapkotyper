@@ -10,7 +10,7 @@ test('a new child plays the first level by typing and sees stars', async ({ page
   expect(text).toMatch(/%/);
   // The character celebrated in place, not running off.
   await expect(page.locator('.level-tapko.celebrate')).toHaveCount(1);
-  await expect(page.locator('.end-card .star.on').first()).toBeVisible();
+  await expect(page.locator('.end-card .star-gold').first()).toBeVisible();
   // Esc peeks at the last frame of the game under the card; a key that types nothing brings the card back with its focus (a letter would stay a while).
   const overlay = page.locator('.overlay.results');
   const first = page.locator('.end-card .ec-bot button').first();
@@ -286,7 +286,7 @@ test('staying a while after a level keeps typing until it is ended on the pause 
   await playLevel(page);
   const node = page.locator('.level-node').first();
   // Whole stars only: the card shows a half star too, which is never saved.
-  const stars = await page.locator('.end-card .star.on:not([src*="half"])').count();
+  const stars = await page.locator('.end-card .star-gold:not([src*="half"])').count();
   // The main action keeps the focus; staying is one of the other buttons.
   await expect(page.locator('.end-card .ec-bot button').first()).toBeFocused();
   await page.locator('.end-card button', { hasText: 'A while more' }).click();

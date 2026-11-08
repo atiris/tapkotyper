@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { PACE_MAX, PACE_MIN, PressureValve, perChar, sayTime } from './pace';
+import { PACE_MAX, PACE_MIN, PressureValve, perChar, readTime, sayTime } from './pace';
 
 describe('word pace', () => {
   it('uses the last session speed until five targets are finished', () => {
@@ -53,9 +53,14 @@ describe('pressure valve', () => {
   });
 });
 
-describe('narrator line time', () => {
-  it('is at least 3.5 seconds and 0.08 seconds per character', () => {
+describe('reading time', () => {
+  it('gives a shout 0.15 seconds per character, 1.5 at least', () => {
+    expect(readTime('Hurá!')).toBe(1.5);
+    expect(readTime('Kytica ako pre kráľovnú!')).toBeCloseTo(3.6);
+  });
+
+  it('keeps a narrator line at least 3.5 seconds', () => {
     expect(sayTime('Hi')).toBe(3.5);
-    expect(sayTime('x'.repeat(100))).toBeCloseTo(8);
+    expect(sayTime('x'.repeat(100))).toBeCloseTo(15);
   });
 });

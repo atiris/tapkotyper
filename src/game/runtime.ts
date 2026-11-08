@@ -1198,7 +1198,7 @@ export class LevelRuntime {
       const j = this.def.journey!;
       if (j.part < j.parts - 1) {
         if (!this.mode.lost) this.celebrate();
-        setTimeout(() => { if (!this.disposed) this.opts.onPart?.(); }, RESULTS_AFTER * 1000);
+        setTimeout(() => { if (!this.disposed) this.opts.onPart?.(); }, this.resultsAfter() * 1000);
         return;
       }
     }
@@ -1215,7 +1215,12 @@ export class LevelRuntime {
       this.celebrate();
     }
     // Leaving during the celebration (back button, map) must not open the results.
-    setTimeout(() => { if (!this.disposed) this.opts.onFinish(result); }, RESULTS_AFTER * 1000);
+    setTimeout(() => { if (!this.disposed) this.opts.onFinish(result); }, this.resultsAfter() * 1000);
+  }
+
+  /** Seconds before the results cover the scene: the celebration, longer while a shout is still being read. */
+  private resultsAfter(): number {
+    return Math.max(RESULTS_AFTER, this.callouts.shoutLeft);
   }
 
   private endAt = 0;

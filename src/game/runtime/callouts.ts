@@ -1,6 +1,7 @@
 import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
 import { type G, SPEECH_W, type SpeechLayout, drawSpeech, fontFamily, speechLayout } from '../../gfx/draw';
+import { readTime } from '../pace';
 import type { LevelRuntime } from '../runtime';
 import { LABEL_GAP, type Rect } from './labels';
 
@@ -10,6 +11,8 @@ interface Shout {
   x: number;
   y: number;
   age: number;
+  /** Its reading time; a newer shout cuts it to a short fade. */
+  life: number;
 }
 
 /** A speech bubble in the scene: who says it, centered near (x, y) (or ending at x), its tail toward (tx, ty). */
@@ -29,8 +32,8 @@ interface Speech {
   lay?: SpeechLayout;
 }
 
-/** Seconds a shout stays over the scene. */
-const SHOUT_TIME = 1.1;
+/** Seconds a shout fades out at its end, or when a newer one comes to be read. */
+const SHOUT_FADE = 0.3;
 /** How far a speech bubble may move up or down to stay clear of the word labels. */
 const SPEECH_ROOM = 160;
 
@@ -52,14 +55,21 @@ export class Callouts {
     return this.shouts.length > 0;
   }
 
-  shout(text: string, x: number, y: number): void {
-    this.shouts.push({ text, x, y, age: 0 });
+  /** Seconds until the last shout is read and gone. */
+  get shoutLeft(): number {
+    return Math.max(0, ...this.shouts.map((s) => s.life - s.age));
   }
 
-  /** A new line of the same speaker replaces the old one. */
+  /** A shout stays its reading time; the ones still up fade out, so the new one is read alone. */
+  shout(text: string, x: number, y: number): void {
+    for (const s of this.shouts) s.life = Math.min(s.life, s.age + SHOUT_FADE);
+    this.shouts.push({ text, x, y, age: 0, life: readTime(text) });
+  }
+
+  /** A new line of the same speaker replaces the old one; a line stays its reading time at least. */
   speak(who: string, text: string, x: number, y: number, tx: number, ty: number, seconds: number, right: boolean): void {
     this.speeches = this.speeches.filter((s) => s.who !== who);
-    this.speeches.push({ who, right, text, x, y, tx, ty, age: 0, life: seconds, dy: 0 });
+    this.speeches.push({ who, right, text, x, y, tx, ty, age: 0, life: Math.max(seconds, readTime(text)), dy: 0 });
   }
 
   speaking(who: string, within: number): boolean {
@@ -68,7 +78,7 @@ export class Callouts {
 
   update(dt: number): void {
     for (const s of this.shouts) s.age += dt;
-    this.shouts = this.shouts.filter((s) => s.age < SHOUT_TIME);
+    this.shouts = this.shouts.filter((s) => s.age < s.life);
     for (const s of this.speeches) s.age += dt;
     this.speeches = this.speeches.filter((s) => s.age < s.life);
   }
@@ -99,7 +109,7 @@ export class Callouts {
   private drawShout(g: G, s: Shout): void {
     const k = ease.outBack(Math.min(1, s.age / 0.35));
     g.save();
-    g.globalAlpha = Math.max(0, Math.min(1, (SHOUT_TIME - s.age) / 0.3));
+    g.globalAlpha = Math.max(0, Math.min(1, (s.life - s.age) / SHOUT_FADE));
     g.font = `800 58px ${fontFamily()}`;
     // Room for its pop (it grows a little past its size) keeps it wholly on the stage.
     const half = (g.measureText(s.text).width / 2) * 1.12 + 10;

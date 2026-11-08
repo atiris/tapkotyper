@@ -105,6 +105,8 @@ export interface Settings {
   sound: SoundLevel;
   /** Ask for fullscreen on the first key press or click after the app starts. */
   autoFullscreen: boolean;
+  /** After the next finished level (not a map game) the turtle offers the keyboard check; any answer turns it off. */
+  offerPlacement: boolean;
   /** The parent's own words and text, mixed into the targets by `ownMix`. */
   ownWords: string[];
   ownText: string;
@@ -389,6 +391,7 @@ export function defaultSettings(wordLang: LangRef): Settings {
     theme: 'system',
     sound: 'off',
     autoFullscreen: false,
+    offerPlacement: false,
     ownWords: [],
     ownText: '',
     ownMix: 'some',

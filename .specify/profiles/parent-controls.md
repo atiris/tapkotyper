@@ -4,9 +4,9 @@
 - A parent area behind a gear button and one calm question ("do you really want to open
   the settings?"). Deleting a profile asks in the app's own style.
 - The gear is on the start page too. Before a player is chosen the settings hold only what
-  needs no profile: the translator, the settings password, and on the data tab exporting all
+  needs no profile: the translator, the parental lock, and on the data tab exporting all
   profiles and importing them. "Pick a student" at the top opens a player's whole settings.
-- An optional **settings password**, one for the whole device (every profile and the
+- An optional **parental lock** ("Rodičovský zámok"), a settings password, one for the whole device (every profile and the
   guest). While it is set, every way into the parent area (the gear, the settings address)
   asks for it instead of the question; a wrong one says so, and after five wrong tries in a
   row the next try waits 30 seconds. An unlock lasts until the parent area is left. The
@@ -47,9 +47,12 @@
   by habit; there the backup is the default (focused) button. Deleting everything leads to the
   start page.
 - The settings group **Sounds and interface** ("Zvuky a rozhranie": volumes, reading aloud,
-  fonts, large text, motion, contrast, the top bar's rings, fullscreen) ends with **Translate the game**: its
-  heading, what it is for, then a button of the usual size that opens the translator. The
-  translator changes the interface, so it sits with the interface settings.
+  fonts, large text, motion, contrast, the top bar's rings, fullscreen) holds only sound and interface.
+- The tab **Data and security** ("Údaje a bezpečnosť") has three columns, one under the other on a
+  phone: **Profiles** (export, move, import, delete), **Translation** (what it is for and the
+  **Translate the game** button that opens the translator) and the **parental lock**. These change
+  the whole device rather than how the child practises, so they stay apart from the daily settings.
+  The settings without a player show the translation and the lock in the same order.
 - **The top bar's rings** are three switches of the profile in that group: Presnosť (on by default),
   Rytmus (off) and Rýchlosť (off), with one hint saying what each measures and that Rytmus (the game)
   always shows all three. The super player has all three on. A young child sees only accuracy by
@@ -68,10 +71,12 @@
   ([free typing](../game/free-typing.md)), easy to tell letters on the keys
   ([accessibility](../experience/accessibility.md)), start in fullscreen. The help text says the start
   is slow and points to "no time pressure" for a child who still cannot keep up.
-- The Keys tab starts with **Check what the student knows**: the
-  [placement check](../learning/placement-check.md), any time, with one line on what it does (opens
-  the keys the student already types with ten fingers without looking) and never does (remove keys,
-  mark levels done). Parents rarely know which keys their child really knows; the check measures it.
+- The Keys tab starts with a switch **Offer the keyboard check after the next finished level**
+  (off by default) with one hint: after the next finished level Ms Turtle offers the child the
+  [placement check](../learning/placement-check.md). Parents rarely know which keys their child really
+  knows; the check measures it, but the child chooses to take it, so it is never started for them from
+  the settings. The child starts it any time in My progress.
+- The planned profile PIN (not built yet) will be set in the **Student** group of the Settings tab.
 - An **own content** tab collects what the parent writes for the child:
   - own encouraging messages, mixed into the narrator's lines;
   - **own words** (up to 300) and **own text** (up to 4000 characters) with the share of

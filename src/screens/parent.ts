@@ -179,9 +179,7 @@ function settingsTab(p: Profile): HTMLElement {
       switchField(t('parent.hudRhythm'), check(s.hudRhythm, (v) => { s.hudRhythm = v; save(); })),
       switchField(t('parent.hudSpeed'), check(s.hudSpeed, (v) => { s.hudSpeed = v; save(); }), t('parent.hudHint')),
       field(t('parent.graphics'), select<GraphicsChoice>(s.graphics, [['auto', t('parent.graphicsAuto')], ['full', t('parent.graphicsFull')], ['simple', t('parent.graphicsSimple')]], (v) => { s.graphics = v; save(); }), t('parent.graphicsHint')),
-      switchField(t('parent.autoFullscreen'), check(s.autoFullscreen, (v) => { s.autoFullscreen = v; save(); }), t('parent.autoFullscreenHint')),
-      ...translateTool()),
-    lockGroup());
+      switchField(t('parent.autoFullscreen'), check(s.autoFullscreen, (v) => { s.autoFullscreen = v; save(); }), t('parent.autoFullscreenHint'))));
 }
 
 /**
@@ -488,9 +486,8 @@ function keysTab(p: Profile): HTMLElement {
   kb.el.classList.toggle('disabled', s.activeKeysMode === 'auto');
   const presets: [string, string][] = [['home', 'fjdkslaô'], ['homeUs', 'fjdksla;'], ['top', 'qwertzuiop'], ['bottom', 'yxcvbnm']];
   return h('div', {},
-    // The placement check finds the keys the student already knows; it only ever adds keys.
-    h('div', { class: 'row' }, button(t('parent.placement'), () => go('level', { id: 'placement' }), 'btn', 'keyboard')),
-    h('p', { class: 'hint' }, t('parent.placementHint')),
+    // The keyboard check itself starts from My progress; here the turtle is only asked to offer it after the next level.
+    switchField(t('parent.offerPlacement'), check(s.offerPlacement, (v) => { s.offerPlacement = v; saveProfile(); }), t('parent.offerPlacementHint')),
     field(t('parent.keysMode'), mode, t('parent.keysHint')),
     h('p', { class: 'hint' }, t('parent.unlocked', { keys: p.progress.unlockedKeys.map(keyLabel).join(' ') })),
     kb.el,
@@ -508,20 +505,20 @@ function keysTab(p: Profile): HTMLElement {
       button(t('parent.preset.clear'), () => { picked.clear(); s.manualKeys = []; paint(); saveProfile(); }, 'btn small ghost')));
 }
 
-/** The way to the translator, at the end of the sounds and interface group. */
-const translateTool = (): HTMLElement[] => [
-  h('h3', {}, t('parent.translate')),
+/** The way to the translator. */
+const translateGroup = (): HTMLElement => h('fieldset', { class: 'translate-group' }, h('legend', {}, t('parent.translate')),
   h('p', { class: 'hint' }, t('parent.translateHint')),
-  h('div', { class: 'row' }, button(t('parent.translateGo'), () => go('translate', { granted: true }), 'btn', 'language')),
-];
+  h('div', { class: 'row' }, button(t('parent.translateGo'), () => go('translate', { granted: true }), 'btn', 'language')));
 
 /** The settings without a player: the translator and the device's password; a player is picked by the button at the top. */
 function deviceTab(): HTMLElement {
-  return h('div', {}, h('p', { class: 'hint' }, t('parent.noChild')), h('div', { class: 'settings-grid' },
-    h('fieldset', {}, h('legend', {}, t('parent.group.look')), ...translateTool()), lockGroup()));
+  return h('div', {}, h('p', { class: 'hint' }, t('parent.noChild')), h('div', { class: 'settings-grid' }, translateGroup(), lockGroup()));
 }
 
-/** The profiles: export, move, import and delete; without a player only all profiles out and in. */
+/**
+ * Data and security: the profiles (export, move, import and delete; without a player only all
+ * profiles out and in), the translator and the device's password.
+ */
 function dataTab(p: Profile | null): HTMLElement {
   const guest = p?.id === GUEST_ID;
   const own = p && !guest ? p : null;
@@ -550,7 +547,9 @@ function dataTab(p: Profile | null): HTMLElement {
           app.profile = null;
           go('start');
         }, 'btn danger', 'trash') : null,
-        app.store.profiles.length ? button(t('parent.deleteAll'), () => void deleteAll(), 'btn danger', 'trash') : null)) : null));
+        app.store.profiles.length ? button(t('parent.deleteAll'), () => void deleteAll(), 'btn danger', 'trash') : null)) : null),
+    translateGroup(),
+    lockGroup());
 }
 
 const exportAll = () => download('tapkotyper-profiles.json', app.store.exportJson());

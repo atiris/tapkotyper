@@ -17,10 +17,16 @@
   - **Check me** first asks honestly: "Do you type with all fingers without looking at the
     keys?" **No** ends with a kind line ("We will learn it from the start, it will go
     quickly.") and changes nothing; **Yes** starts the check.
-  - The parent area's Keys tab: **Check what the student knows**, any time.
+  - Asked for by the parent (the Keys tab's switch **Offer the keyboard check after the next
+    finished level**): after the next level with an end card (not one of the map's games: the range,
+    the parrot, the rhythm) the turtle says "Hi {name}, I can see you are trying very hard. Shall we
+    check which keys you already know, so you can go on at the pace that suits you best? ..." (a calm
+    check of about 4 minutes, not part of the story, that can open keys the child types well enough,
+    so the typing is not boring; or go on as before). **Check me** (the default) starts the check at
+    once, **Go on** closes it; any answer, the X and Esc turn the parent's switch off again.
   - My progress, Keys tab, under the keyboard: **Preveriť moje ovládanie klávesnice** ("Check how I
     know the keyboard"), its length in the tooltip (about 4 minutes).
-  - The parent's and the My progress button start the check at once, without the fingers
+  - The parent's offer and the My progress button start the check at once, without the fingers
     question: the parent chose it, and the Keys tab's check is a measurement for anyone.
 - The run: one target at a time on a calm panel (two or three words), no story, no time
   pressure, no stars, no rewards, no growth time. The on-screen keyboard and the

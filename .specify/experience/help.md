@@ -33,7 +33,8 @@
      opens, why it repeats words, parrots that fly away and the Parrot badge) and badges.
   4. **Settings**, for the teacher or parent: under the Settings heading, that they are for the teacher or
      parent, open with the gear, and until locked with a password open for anyone by one confirm button, what each settings tab does (child, practice, sounds and interface,
-     password, own words and text, surprises, tasks, keys, data and the translator), with one section per
+     own words and text, surprises, tasks, keys with the switch that has the turtle offer the keyboard check,
+     data and security: profiles, the translator and the parental lock), with one section per
      settings tab, and what is lost without a backup. By the password, plainly: it guards the
      settings only inside the game; the data in the browser is not encrypted and anyone with
      direct access can read or change it, and anyone using the computer can clear the site's

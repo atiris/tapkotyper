@@ -50,6 +50,8 @@ export const app = {
   pendingTask: null as TaskSpec | null,
   /** A level in the first world went very well: the turtle offers the placement check on the next map. */
   placementOffer: false,
+  /** A level ended while the parent asked to offer the keyboard check: the turtle asks on the next map. */
+  placementAsk: false,
   /** The screen the help page was opened from, for its Back (memory only, not in the address). */
   helpReturn: null as { name: ScreenName; params: any } | null,
   /** A screen that still asks before it opens (the parent question); going to it again meanwhile is ignored. */

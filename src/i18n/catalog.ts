@@ -153,7 +153,7 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
       'parent.highContrast', 'parent.graphics', 'parent.graphicsAuto', 'parent.graphicsFull', 'parent.graphicsSimple', 'parent.graphicsHint', 'parent.autoFullscreen', 'parent.autoFullscreenHint', 'parent.keyFont', 'parent.keyFontHint',
       'parent.hudAccuracy', 'parent.hudRhythm', 'parent.hudSpeed', 'parent.hudHint'),
     g('parent-lock', 'parent.lock.*'),
-    g('parent-keys', 'parent.placement', 'parent.placementHint', 'parent.keysMode', 'parent.keysAuto', 'parent.keysManual', 'parent.keysHint', 'parent.punctuation', 'parent.unlocked', 'parent.preset.*'),
+    g('parent-keys', 'parent.offerPlacement', 'parent.offerPlacementHint', 'parent.keysMode', 'parent.keysAuto', 'parent.keysManual', 'parent.keysHint', 'parent.punctuation', 'parent.unlocked', 'parent.preset.*'),
     g('parent-data', 'parent.*'),
     g('own', 'own.*'),
     g('surprises-form', 'surprises.hint', 'surprises.empty', 'surprises.formTitle', 'surprises.q', 'surprises.a', 'surprises.qPlaceholder', 'surprises.aPlaceholder',

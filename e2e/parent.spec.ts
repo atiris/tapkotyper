@@ -28,6 +28,8 @@ test('a settings password locks every way into the parent screen', async ({ page
   await createProfile(page, 'Ema');
   await page.locator('.top-right .settings-btn').click();
   await page.locator('.confirm .btn:not(.primary)').last().click();
+  // The parental lock sits on the Data and security tab.
+  await page.locator('.tab[data-tab=data]').click();
   const group = page.locator('.lock-group');
   await group.locator('input[type=password]').nth(0).fill('mama1');
   await group.locator('input[type=password]').nth(1).fill('mama2');
@@ -126,10 +128,12 @@ test('settings: nickname first and required, name optional, word language, key f
   await expect(page.locator('.tab[data-tab=task]')).toHaveCount(0);
 
   await page.locator('.tab[data-tab=data]').click();
-  await expect(page.locator('.data-tab legend')).toHaveText(['Profiles']);
+  // Data and security: the profiles, the translator and the parental lock.
+  await expect(page.locator('.data-tab legend')).toHaveText(['Profiles', 'Translation', 'Parental lock']);
+  await expect(page.locator('.data-tab').getByRole('button', { name: 'Translate the game' })).toBeVisible();
   await page.locator('.tab[data-tab=settings]').click();
-  const look = page.locator('fieldset', { has: page.locator('legend', { hasText: 'Sounds and interface' }) });
-  await expect(look.getByRole('button', { name: 'Translate the game' })).toBeVisible();
+  await expect(page.locator('.lock-group')).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Translate the game' })).toHaveCount(0);
 });
 
 test('the gear on the start page opens the settings without a profile; a student picked there opens the rest', async ({ page }) => {

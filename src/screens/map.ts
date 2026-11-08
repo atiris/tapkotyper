@@ -87,10 +87,11 @@ const PLACEMENT_OFFER = 'placementOffer';
 
 /**
  * Which placement question the turtle asks now, or null: the first map visit of a profile without a
- * star, or once after a very good level while the student is still in the first world (and no check
- * opened keys yet).
+ * star, after a finished level when the parent asked for it in the settings, or once after a very
+ * good level while the student is still in the first world (and no check opened keys yet).
  */
-function placementAsk(p: Profile): 'first' | 'offer' | null {
+function placementAsk(p: Profile): 'first' | 'parent' | 'offer' | null {
+  if (app.placementAsk && p.settings.offerPlacement) return 'parent';
   if (p.id === GUEST_ID || p.id === SUPER_ID) return null;
   if (!p.progress.placementAsked && !p.progress.starsEarned) return 'first';
   const offer = app.placementOffer && !p.progress.placementKeys && !p.progress.worldsDone.length && !p.progress.appTips.seen.includes(PLACEMENT_OFFER);
@@ -101,6 +102,7 @@ function placementAsk(p: Profile): 'first' | 'offer' | null {
  * The turtle's placement question above the worlds: start from the beginning (the default) or be
  * checked; checking first asks honestly whether the student types with all fingers without looking,
  * and No ends with a kind line and changes nothing. Any answer, the X or Escape keeps it asked.
+ * Asked for by the parent, it checks at once or goes on, and either way the parent's wish is done.
  */
 function placementPanel(p: Profile): HTMLElement | null {
   const kind = placementAsk(p);
@@ -111,7 +113,9 @@ function placementPanel(p: Profile): HTMLElement | null {
     window.removeEventListener('keydown', onKey, true);
     p.progress.placementAsked = true;
     if (kind === 'offer') p.progress.appTips.seen.push(PLACEMENT_OFFER);
+    if (kind === 'parent') p.settings.offerPlacement = false;
     app.placementOffer = false;
+    app.placementAsk = false;
     saveProfile();
   };
   const close = () => {
@@ -146,7 +150,11 @@ function placementPanel(p: Profile): HTMLElement | null {
     [t('map.teacher.placement.no'), () => say(t('map.teacher.placement.fromStartLine'), [[t('map.teacher.ok'), close, 'check']]), 'back'],
     [t('map.teacher.placement.yes'), check, 'check'],
   ]);
-  say(t(`map.teacher.placement.${kind}`, { name: nickname(p) }), [
+  if (kind === 'parent') say(t('map.teacher.placement.parent', { name: nickname(p) }), [
+    [t('map.teacher.placement.check'), check, 'keyboard'],
+    [t('map.teacher.placement.goOn'), close, 'play'],
+  ]);
+  else say(t(`map.teacher.placement.${kind}`, { name: nickname(p) }), [
     [t('map.teacher.placement.fromStart'), close, 'play'],
     [t('map.teacher.placement.check'), fingers, 'keyboard'],
   ]);

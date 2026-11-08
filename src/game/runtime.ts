@@ -1244,6 +1244,8 @@ export class LevelRuntime {
     }
     // A very good level while still in the first world: the turtle offers the placement check on the map.
     if (this.def.index >= 0 && this.def.world === 0 && !p.progress.worldsDone.length) app.placementOffer ||= offersPlacement(accuracy, this.okRts, this.difficulty);
+    // The parent asked for the keyboard check after the next finished level; the map games do not count.
+    if (p.settings.offerPlacement && !placement && this.def.kind !== 'aim' && this.def.kind !== 'parrot' && this.def.kind !== 'rhythm') app.placementAsk = true;
     const result = placement ? completePlacement(p, (this.mode as PlacementMode).check, stats)
       : noStars ? completeStay(p, stats, typedShare)
       : run ? completeLevel(p, this.def, run.stats!, run.resolved ? run.typed / run.resolved : 1)

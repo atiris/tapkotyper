@@ -40,7 +40,7 @@
   and five stars need almost no mistakes.
 - Stars come from the accuracy of the whole journey, a bit stricter than a level (three quarters
   of a level's mistakes for each step): 5 from 99 %, 4 from 97.75 %, 3 from 95.5 %, 2 from 91 %,
-  else 1. The paw rule (fewer than 5 own keys gives one star) holds over
+  else 1. The few-keys rule (fewer than 5 keys gives one star) holds over
   the whole journey.
 - It counts like a level: its keys, time and speed go into the [statistics](../profiles/statistics.md),
   and growth and the lesson advance as after a story level. The best stars give the badge its colour.

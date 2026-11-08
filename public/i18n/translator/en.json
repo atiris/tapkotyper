@@ -130,7 +130,7 @@
     },
     "typing": {
       "title": "Typing on the keyboard",
-      "about": "Everything the child sees and reads while typing: the level screen, the cards before play, a new key, own typing, free typing and the paw help."
+      "about": "Everything the child sees and reads while typing: the level screen, the cards before play, a new key, own typing and free typing."
     },
     "story": {
       "title": "Story and storytellers",
@@ -245,10 +245,6 @@
     "free-type": {
       "title": "Free typing",
       "about": "Typing with no goal, and the notice that a real keyboard is needed."
-    },
-    "helpers": {
-      "title": "Typing helpers",
-      "about": "The paw help: the character types a word for the child."
     },
     "journey": {
       "title": "Hero's journey",
@@ -791,10 +787,6 @@
     "freeType.pick": "Heading of the place picker window in free typing.",
     "touch.title": "Heading of the notice shown when the child taps the touch screen in a level without having used a keyboard.",
     "touch.text": "Text of the notice shown when the child taps the touch screen and has not used a keyboard yet.",
-    "paw.title": "Tooltip of the paw button in a level; {n} is the words without a mistake needed to charge, {words} the words the paw types.",
-    "paw.aria": "Screen-reader label of the paw button; {n} is the number of charged paws.",
-    "paw.start": "The character, when the paw starts typing for the child.",
-    "paw.charged": "The character, when a paw gets charged; {n} is the words without a mistake, {words} the words the paw will type.",
     "tapko.statsHint": "Tooltip of the character on the map and in a level; clicking opens the statistics.",
     "tapko.correct_streak": "The character during play after a run of right words; one line is picked at random. {name} is the player's nickname.",
     "tapko.mistake": "The character during play after two mistakes in a row; one line is picked at random.",
@@ -1021,7 +1013,7 @@
     "end.moreRewards": "Added after the first reward in the green line when more came at once: \"Gold badge and 2 more rewards\".",
     "results.peek": "Name of the X on a results card; hides the card to look at the game under it, like Esc. Any key brings the card back.",
     "results.starsAria": "Hidden label of the stars (read by screen readers). {n} is the number earned, {max} the most a level gives.",
-    "results.byTapko": "Fact shown instead of accuracy when mostly the paw played the level.",
+    "results.fewKeys": "Fact shown instead of accuracy when the child typed only a few keys in a story level (it earns one star).",
     "results.trendUp": "Fact on the results card when the typing speed grew since last week.",
     "results.newKey": "Fact on the results card when one new key opened. {key} is the key.",
     "results.newKeys": "Fact on the results card when several new keys opened. {keys} are the keys.",
@@ -1620,7 +1612,6 @@
     "help.icons.update": "Help, Interface tab: describes the red button that shows up when a new version of the game is ready.",
     "help.icons.timer": "Help, Interface tab: describes the clock in the wardrobe that shows the time left.",
     "help.icons.pause": "Help, Interface tab: describes the pause button in a level; the **Esc key** is bold.",
-    "help.icons.paw": "Help, Interface tab: describes the help paw in a level; {n} is the number of mistake-free words that charge it.",
     "help.icons.ring": "Help, Interface tab: describes the ring with the world level number in a level.",
     "help.icons.progress": "Help, Interface tab: describes the progress bar in a level.",
     "help.icons.accuracy": "Help, Interface tab: describes the accuracy ring in a level's top bar.",

@@ -19,7 +19,7 @@ Each world ends with a bigger, special challenge:
   short words, each word in its own time (the child's pace). A clean set lifts the dragon a step
   on; a late word or a slip sends it back to the fire to try again. After three returns a try has
   one set less and more time, after six a miss only starts that word again, so every child
-  finishes. The paws are off (they would type the sets). When the last is gone the fire goes out
+  finishes. When the last is gone the fire goes out
   and the egg shows.
 - **Spell of awakening** (egg mountain): one long spell on a ribbon, spaces and periods typed like
   letters; a slip starts the word in progress again and adds one word to the spell (at most 10).
@@ -38,8 +38,7 @@ Each world ends with a bigger, special challenge:
   gate's ring. A wrong key starts the code again: the lit groups go dark with a soft
   buzz and the same code starts from its first group. A card says so before the first
   group, and after three restarts the narrator says once to go slowly and exactly, since no clock
-  runs. There is no timer and no other loss, the paws are off (they would type the
-  code for the child), and the stars come from the accuracy as usual.
+  runs. There is no timer and no other loss, and the stars come from the accuracy as usual.
 - **Family welcome** (robot home): little robots pop out of boxes with short words, like
   the friendly mole.
 - **Sleeping flower** (garden): six short dictated words, one at a time; each wakes the

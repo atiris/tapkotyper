@@ -99,23 +99,6 @@ test('the robot story is a second row on the map, and Bolt walks with the child 
   expect(errors).toEqual([]);
 });
 
-test('Enter sends the hands to type a few words', async ({ page }) => {
-  await page.goto('./');
-  await page.locator('.start-screen').waitFor();
-  await page.keyboard.type('supertapkotyper', { delay: 40 });
-  // The super player's progress is filled: Continue would go on.
-  await page.locator('.level-node').first().click();
-  await page.locator('.posture-card').waitFor();
-  await page.keyboard.press('Space');
-  await expect(page.locator('.paw-btn')).toHaveAttribute('data-charged', '3');
-  await page.locator('.level-tapko:not(.waiting)').waitFor();
-  await expect.poll(() => page.locator('.kb-guide').getAttribute('data-next')).not.toBe('');
-  await page.keyboard.press('Enter');
-  await expect(page.locator('.paw-btn')).toHaveAttribute('data-charged', '2');
-  // The hands on the on-screen keyboard tap the keys of the next words without the child.
-  await expect(page.locator('.kb-guide .tap').first()).toBeAttached();
-});
-
 test('a level left during its get-ready card does not swallow the next level\'s keys', async ({ page }) => {
   await page.goto('./');
   await page.locator('.start-screen').waitFor();

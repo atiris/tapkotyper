@@ -51,8 +51,8 @@ One set of rules for where things sit and how they behave, so every screen feels
    of five fills three pieces, the last one, the big challenge, all five), the number of the
    current level (1-5) is inside. The world's name is
    the title; there are no dots under it.
-6. **Play controls stay together.** Pause and the paw sit side by side at the start of the play
-   bar; nothing from the bar is drawn over the play field.
+6. **Play controls stay together.** Pause sits at the start of the play bar; nothing from the bar
+   is drawn over the play field.
 7. **The narrator's lines in a level.** A tip or a narrator line appears in one fixed spot at the top
    left of the play field, slightly see-through, and never moves with the character's jumps. It never
    covers a word to type.

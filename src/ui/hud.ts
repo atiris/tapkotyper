@@ -4,12 +4,12 @@ import { t } from '../i18n/i18n';
 import { ICONS, h } from './dom';
 import { tip } from './tooltip';
 
-/** Colors of the round buttons: controls purple; the paw, the place in the world and the three measures green (the round being played); the super star and a new version red; the wardrobe's time teal. */
-export type RoundKind = 'control' | 'paw' | 'speed' | 'rhythm' | 'super' | 'place' | 'timer' | 'accuracy' | 'update';
+/** Colors of the round buttons: controls purple; the place in the world and the three measures green (the round being played); the super star and a new version red; the wardrobe's time teal. */
+export type RoundKind = 'control' | 'speed' | 'rhythm' | 'super' | 'place' | 'timer' | 'accuracy' | 'update';
 
 const RING_LEN = 2 * Math.PI * 21;
 /** Glyphs drawn filled in white; the others are white lines. */
-const FILLED: (keyof typeof ICONS)[] = ['paw', 'star', 'play'];
+const FILLED: (keyof typeof ICONS)[] = ['star', 'play'];
 
 /** Point on a circle around the button's center, 0 degrees at the top, clockwise. */
 function at(r: number, deg: number): string {
@@ -41,11 +41,6 @@ function segments(classes: string[]): string {
     const from = (i * 360) / n + gap / 2, to = ((i + 1) * 360) / n - gap / 2;
     return `<path class="rb-arc${cls ? ` ${cls}` : ''}" d="M${at(21, from)} A21 21 0 0 1 ${at(21, to)}"/>`;
   }).join('');
-}
-
-/** The paw's ring: one segment per charge. */
-export function pawRing(charged: number, max: number): string {
-  return segments(Array.from({ length: max }, (_, i) => (i < charged ? 'on' : '')));
 }
 
 /**

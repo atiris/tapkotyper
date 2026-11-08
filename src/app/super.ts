@@ -2,7 +2,6 @@ import { accessories } from '../gfx/assets';
 import { randomOutfit } from '../gfx/tapko';
 import { LEVELS, MAX_LEVEL_STARS, STORIES, WORLDS, journeyId } from '../game/levels';
 import { WORLD_THINGS } from '../game/modes/aim-things';
-import { PAW_MAX } from '../game/paw';
 import { TEMPO_MAX, TEMPO_MIN } from '../game/beat';
 import { WORLD_REWARDS } from '../game/rewards';
 import { t } from '../i18n/i18n';
@@ -50,7 +49,6 @@ export function superProfile(lang: LangRef, rand: () => number = Math.random): P
   p.progress.worldsDone = WORLDS.map((_, i) => i);
   p.progress.rewards = [...accessories().map((a) => `acc:${a.id}`), ...WORLD_REWARDS];
   p.progress.levels = Object.fromEntries(LEVELS.map((l) => [l.id, 0]));
-  p.progress.pawHelp = PAW_MAX;
   p.progress.companionsUnlocked = [...COMPANION_KINDS];
   p.settings.wardrobeLimit = false;
   p.settings.hudAccuracy = p.settings.hudRhythm = p.settings.hudSpeed = true;

@@ -103,7 +103,7 @@
   rows the points, accuracy and the hits in the middle. Its green line tells a thing new in the
   collection (its picture and "Do zbierky ti pribudol nový predmet."), else new letters when the
   lesson advanced, else the trained letter whose accuracy grew most. Buttons: "Hrať znova",
-  "Ešte chvíľu" and "Mapa svetov". No stars, no paw help, no Enter marks, no story friends; the
+  "Ešte chvíľu" and "Mapa svetov". No stars, no Enter marks, no story friends; the
   parent's surprises counting training time are asked and told like after a practice (see
   [parent controls](../profiles/parent-controls.md)), never while staying. Typing while peeking
   under the card or "Ešte chvíľu" keeps throwing without an end (every hit counts); Esc there

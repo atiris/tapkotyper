@@ -1394,7 +1394,7 @@ addEventListener('keydown', (e) => { if ((e.ctrlKey || e.metaKey) && e.key.toLow
   drawGhost();
   onTool();
   show('home', false);
-  // Tapko's paw button (dev server) opens the pose of the key typed last: ?pose=<side>/<name>.
+  // The free-typing pencil button (dev server) opens the pose of the key typed last: ?pose=<side>/<name>.
   const asked = new URLSearchParams(location.search).get('pose')?.split('/')[1];
   if (asked) openPose(asked);
   dirty = false;

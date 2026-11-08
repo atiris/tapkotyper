@@ -23,7 +23,7 @@
   - The parent's and the My progress button start the check at once, without the fingers
     question: the parent chose it, and the Keys tab's check is a measurement for anyone.
 - The run: one target at a time on a calm panel (two or three words), no story, no time
-  pressure, no stars, no rewards, no growth time, no paw. The on-screen keyboard and the
+  pressure, no stars, no rewards, no growth time. The on-screen keyboard and the
   finger guide are hidden (they would show where the keys are), no key cards come before it,
   only the get-ready card: type the words calmly with all ten fingers; the check finds the keys
   you know and may open some without their story introductions; no hurry, slow typing is fine.

@@ -23,7 +23,7 @@ export interface Target {
   word: string;
   typed: number;
   done: boolean;
-  /** Left the scene without being typed (passed by, typed by the paw). */
+  /** Left the scene without being typed (passed by). */
   gone: boolean;
   /** Can be locked on (e.g. not hidden behind a web). */
   selectable: boolean;
@@ -40,7 +40,7 @@ export interface Target {
   /** Memory: seconds the whole target still shows (keys wait), and how long this showing lasts. */
   showLeft: number;
   showFor: number;
-  /** A wrong key or the paw showed the hidden target again. */
+  /** A wrong key showed the hidden target again. */
   revealed: boolean;
   /** Free data for the level mode (sprite, position...). */
   data: any;
@@ -106,13 +106,6 @@ export class TypingCore {
   /** Keys reach the target: a memory target waits until it has shown and hidden. */
   typable(t: Target): boolean {
     return t.selectable && (t.style !== 'memory' || !t.masked || (t.showFor > 0 && t.showLeft <= 0));
-  }
-
-  /** Shows a hidden target for good (the paw types it). */
-  reveal(t: Target): void {
-    t.masked = false;
-    t.showLeft = 0;
-    t.revealed = true;
   }
 
   /** Lets a target leave without being typed; `missed` = false when the child chose another one. */

@@ -25,7 +25,7 @@
   time between two correct key strokes is compared with the one before it, so a steady slow child
   and a steady fast child score alike, a slow drift over the level costs nothing, and bursts and long
   hunts for a key show. Not measured: reading a new target (its first letter), the time across a
-  pause, a card or the paws' help, the time around a wrong key or a Backspace, the same key again,
+  pause or a card, the time around a wrong key or a Backspace, the same key again,
   and the time inside a combo (a dead key with its letter, Shift with a capital: one stroke from the
   first press). The natural difference between key pairs (two hands, one hand, one finger) does not
   count as unevenness. One long hunt makes one bounded mark. The ring shows "…" until about ten pairs

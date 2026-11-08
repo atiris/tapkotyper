@@ -50,9 +50,6 @@ being made. No explosions, no punishment, no ads, no accounts.
   cards. Each world has its own twists (a hop across meteors, a crossroads where the chosen
   sign changes the road, a lullaby copied word by word), and the parent's own surprises
   (below) give real rewards.
-- **Paw help.** Fifteen words in a row without a mistake charge a paw (three at most): on
-  Enter, the character's paws replace the hands and type the three closest words, which never count
-  in the stats.
 - **Per-key stats** count only the last 50 presses, show what a key is mixed up with and
   how it changed day by day; click any key on the stats keyboard. "My progress" is its own
   page with badges, the treasure chest and range awards.
@@ -204,7 +201,7 @@ the hand tool, a page of the dev server only (it never goes into the build):
 npm run dev      # then open http://localhost:5173/tools/hand-poser/ (the address vite prints)
 ```
 
-In free typing on the dev server, the paw button opens it on the pose of the key typed last.
+In free typing on the dev server, the pencil button opens it on the pose of the key typed last.
 
 ![The hand tool](docs/hand-tool.png)
 

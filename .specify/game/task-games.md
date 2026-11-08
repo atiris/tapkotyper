@@ -5,7 +5,7 @@ How a teacher's task plays (its making and hand-in: [teacher links](../profiles/
 ## What
 - A task is one level of its own, outside the story: no map place, no stars, no level progress;
   only the task's run is kept (its best run counts). The lesson path may still advance after it,
-  as after a practice. The parent's surprises, the story friends and the paw help stay out of it.
+  as after a practice. The parent's surprises and the story friends stay out of it.
 - **Before play:** the new-key cards the levels would show, then the get-ready card titled with
   the task's name: "Po stlačení medzerníka sa ti spustí úloha na písanie, ktorú si dostal. Píš
   pozorne a snaž sa písať čo najpresnejšie. Rýchlosť nie je taká dôležitá ako presnosť. Ak sa ti

@@ -132,7 +132,6 @@ export function newProfile(name: string, language: LangRef, layout?: LayoutId, k
       scenesSeen: [],
       growth: 0,
       growthSeconds: 0,
-      pawHelp: 0,
       companionsUnlocked: [start],
       trainedSeconds: 0,
       levelsFinished: 0,

@@ -1,7 +1,7 @@
 import type { KeyboardGuide } from '../../ui/keyboard-guide';
 import type { TypingCore } from '../typing';
 
-/** What the level's parts (the pause card, the paws, the super help) share with the runtime, which owns it. */
+/** What the level's parts (the pause card, the super help) share with the runtime, which owns it. */
 export class LevelState {
   /** The pause card is open (also over the cards before play). */
   paused = false;

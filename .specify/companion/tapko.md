@@ -45,18 +45,8 @@
 - No fixed curious questions lure the child to the next level: children did not care, playing
   is reason enough. Only a parent's surprises ([parent controls](../profiles/parent-controls.md))
   ask a question and tell its answer.
-- **Paw help**: fifteen words in a row without a mistake charge one paw (three at most,
-  kept between levels). In story levels and hero's journeys (not at the main gate, whose
-  code must be the child's own), Enter (or the round paw button next to pause: a paw in
-  the character's color, ringed by three arcs for the charges; its label names Enter; with no
-  charge it keeps its colors, only its arcs are empty, never dimmed like a disabled button)
-  lets the hands on the keyboard type the three closest words with their own rhythm: each key
-  in its pose, the key going down as it is typed, so the child sees how the words are typed and
-  need not type meanwhile (the on-screen keyboard shows while they type). These keys never count
-  in the child's statistics, accuracy or speed, and the child's own keys wait meanwhile. The paw comes
-  only when the child calls it: there is no automatic paw, and Backspace does nothing in a
-  level (only in [free typing](../game/free-typing.md)). A target waiting for its Enter
-  takes the Enter instead of calling the paw.
+- Nothing types for the child in a level: every key of a level is the child's own (only the
+  owner's temporary player has the super help, see [profiles](../profiles/profiles.md)).
 - Everything the character says in a level is in one speech bubble with one fixed spot at
   the top left of the scene, slightly see-through, without a tail: the character moves and
   can be anywhere, so the bubble points at nobody and does not move with the jumps. It never
@@ -89,7 +79,6 @@
   stories, and different prices and accessories per player make siblings compare and
   talk about what they got.
 - The word is the child's task, so it must always be readable.
-- Paw help is a reward for accuracy that makes play more fun and takes the edge off a
-  crowded moment, without blurring what the child really typed.
-- The paw stays on Enter alone: Backspace is the key a child presses to fix a typo, so it
-  must never change a setting or start help the child did not ask for.
+- The paw help (the hands typing a few words for the child after a mistake-free streak) was
+  removed on 2026-11-08: the owner decided the level is the child's own typing, and the on-screen
+  keyboard with its hands already shows how each key is typed.

@@ -150,8 +150,8 @@ as they are. The world descriptions below marked *not built yet* are the design 
    card before the level teaches it ([finger guide](../learning/finger-guide.md)).
    Each post carries a long wooden arrow board (two kinds) pinned by its middle, with the path's
    name written along it, as long as the name needs, turned around its middle its own way (never
-   straight up or down, the name always upright). The paws never type a sign: at a crossroads
-   they stop and the child chooses. The chosen sign's arrow spins and stops pointing up, the
+   straight up or down, the name always upright). At a crossroads
+   the child chooses. The chosen sign's arrow spins and stops pointing up, the
    other signs go and that one vanishes last; then he walks to its place and the road goes on
    there. The paths: an ordinary path
    (cesta, chodník, alej...; ordinary words), a shortcut (a harder word; shorter words, a bit
@@ -289,7 +289,7 @@ as they are. The world descriptions below marked *not built yet* are the design 
    and the flight starts again with new sets. After its third return a dragon's tries have one
    set less and 1.25 times the time; after the sixth its sets have two words and a slip or a late
    word only starts that word again, so every child finishes. After its last set the dragon flies
-   off to the left. The paws are off. When the last is gone the character calls after them ("Ahojte!"),
+   off to the left. When the last is gone the character calls after them ("Ahojte!"),
    a quiet moment, then the fire flares up and an egg (without a face) is laid in it under the
    big flames; the fire is blown out with a burst of sparks and the egg sits in the dead pit with
    a soft glow. It greets the character ("Ahoj, ty budeš môj kamarát?"), and the character is glad and cheers.

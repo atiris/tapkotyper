@@ -147,13 +147,6 @@ describe('styles', () => {
     expect(memoryShow(5, 20)).toBeCloseTo(0.8 + 0.15 * 5);
   });
 
-  it('the paw reveals a hidden target and can type it at once', () => {
-    const c = new TypingCore();
-    c.style = 'memory';
-    const t = c.add('mak');
-    c.reveal(t);
-    expect(c.type('m').kind).toBe('ok');
-  });
 });
 
 describe('stars', () => {

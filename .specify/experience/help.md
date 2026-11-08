@@ -70,12 +70,12 @@
   player numbers and nickname, F1-F4 and F8, Esc).
 - Works on a 1024x600 screen; the page scrolls and the bar with Back stays in sight.
 - A few key points per tab are in bold (about a dozen in all, a phrase, never a whole
-  sentence): the home keys, Esc pauses, stars from accuracy, the paw's Enter, the parent's
+  sentence): the home keys, Esc pauses, stars from accuracy, the parent's
   password, results sent as a link or code, progress kept only in this browser.
 - Explains that on a small screen the top buttons hide under one Menu button, and (in how to
   type and in about) that a real keyboard is needed, also on a phone or tablet.
 - Explains the wardrobe's countdown (a smile, then a number that drops every 10 seconds, blinking at the end, a lock when the time is up, time earned by practice) next to the map's buttons.
-- Explains the paw (what it shows, when to press Enter; no other key calls it, Backspace neither), the ring with the level's number beside the pause button (filled up to this level, full at the big challenge), the hero's journey and the badge, each in one short sentence.
+- Explains the ring with the level's number beside the pause button (filled up to this level, full at the big challenge), the hero's journey and the badge, each in one short sentence.
 
 - **Ms Turtle's tips**: with "Introduce the app's features" on (the default), a panel above the
   worlds on the map now and then shows one thing about the app, from Ms Turtle the teacher (three

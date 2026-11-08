@@ -125,7 +125,7 @@
   With any other sound level the card is not shown.
 - **Round:** 80 % of a regular level of the world's story (1.6, 2.4 and 3.2 minutes) of song after the
   count-in bar (pauses stop it), longer when it goes badly.
-  No points, no stars, no paws, no Enter marks. The keys count in the statistics and the lesson like the parrot's, and the
+  No points, no stars, no Enter marks. The keys count in the statistics and the lesson like the parrot's, and the
   parent's surprises counting time are asked and told.
 - **Top bar:** the pause, the title, the progress, then the three rings every level has
   ([feedback](../learning/feedback.md)), always all three here whatever the settings, as the beat is

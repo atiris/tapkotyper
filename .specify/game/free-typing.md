@@ -27,7 +27,7 @@
   training time or wardrobe time), and the character says so in the bubble at the start. The time
   counts only toward the break reminder: when a break is due, the narrator says so in the bubble. It never gives stars,
   levels, keys or task time.
-- No game cards: no get-ready card, no new key, no tip, no paw help. Esc or the round X
+- No game cards: no get-ready card, no new key, no tip. Esc or the round X
   leaves; the keyboard guide can be shown as in other levels. With nothing typed it goes
   straight to the map; after something was typed the end card "Koniec voľného písania!" (the
   one card of every end, see [mechanics](mechanics.md)) shows the paper pinwheel, the words

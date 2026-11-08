@@ -113,11 +113,7 @@ export abstract class Mode {
   heroSpot(): { x: number; y: number } {
     return { x: TAPKO_X, y: this.tapkoFeet - TAPKO_H * 1.25 - 40 };
   }
-  /** The paws may type this target; a decision (a crossroads' sign) is the child's. */
-  pawMay(_t: Target): boolean {
-    return true;
-  }
-  /** Enter that no word waits for; true when the mode took it (else it may call the paws). */
+  /** Enter that no word waits for; true when the mode took it. */
   onEnter(): boolean {
     return false;
   }

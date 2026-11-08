@@ -7,7 +7,7 @@
   details, so a mix-up is looked at from both sides), total presses, and a day-by-day history (accuracy and time
   to press).
 - **Typing time** is the only time of practice: every own key (right or wrong, Backspace too;
-  never the paws' or the helper's keys) adds the time since the previous own key, or since play
+  never the helper's keys) adds the time since the previous own key, or since play
   began for the first one, at most 5 seconds. Waiting without keys, pauses, cards and a hidden
   tab add nothing, so a level left open counts no practice. It fills the day's time, all the
   minutes trained (the parent's "minutes" surprises, the teacher's results, the task's played

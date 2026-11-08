@@ -47,7 +47,7 @@ export class Speed {
   private correctAt = 0;
   /** The previous press, right or wrong. */
   private pressAt = 0;
-  /** When the child could start typing (play start, a resume, the paws stopped); 0 = not known. */
+  /** When the child could start typing (play start, a resume); 0 = not known. */
   private readyAt = 0;
   /** The last press that counted. */
   private countedAt = 0;

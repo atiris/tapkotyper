@@ -302,17 +302,6 @@ export class KeyboardGuide {
     this.handsView().press({ step: { code, shift }, label: label(def.base, def.shift), color: keyColor(def) });
   }
 
-  /** The keys of `ch` go down for a moment: the hands type it (the paw help). */
-  tap(ch: string): void {
-    for (const step of stepsFor(this.layout, ch)) {
-      const key = this.keys.get(step.code);
-      if (!key) continue;
-      key.classList.remove('tap');
-      void key.offsetWidth;
-      key.classList.add('tap');
-    }
-  }
-
   /** Colors keys by accuracy for the stats heat map, in the bands of the accuracy scale (null = no data). */
   heat(accuracy: Record<string, number | null>, keyFor: (code: string) => string | null): void {
     for (const [code, el] of this.keys) {

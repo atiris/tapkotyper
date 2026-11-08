@@ -532,7 +532,7 @@
   "results": {
     "peek": "Look at the game (Esc)",
     "starsAria": "{n} of {max} stars",
-    "byTapko": "The paw did most of this level.",
+    "fewKeys": "Type a few more letters in a level to earn more stars.",
     "trendUp": "You type faster than last week",
     "newKey": "New key unlocked: {key}",
     "newKeys": "New keys unlocked: {keys}",
@@ -590,12 +590,6 @@
       "starsFew": "{n} more stars and you will find out.",
       "starsMany": "{n} more stars and you will find out."
     }
-  },
-  "paw": {
-    "title": "Paw help: {n} words without a mistake charge a paw (3 at most). Enter: the hands on the keyboard show you how to type {words} words.",
-    "aria": "Paw help (Enter), charged paws: {n}",
-    "start": "Watch how it is typed. You can rest your fingers for a moment.",
-    "charged": "{n} words without a mistake! A paw is charged. Press Enter and the hands show you how to type {words} words."
   },
   "story": {
     "next": "Next",
@@ -1700,7 +1694,6 @@
       "update": "The red button at the far right shows up when a new version of the game is ready. Click it to install it.",
       "timer": "The clock in the wardrobe shows how much time you have left. While there is plenty, it smiles; then a number drops by one every 10 seconds. When it blinks, the time is nearly over. When the time is up, it shows a lock, and its tip says how much more practice you need. You earn wardrobe time by practising.",
       "pause": "Pause. The **Esc key** pauses too. In the pause you can end the level; once something is typed it asks first, because the level will not count.",
-      "paw": "The paw shows whether your help is ready: every word without a mistake fills a bit of the ring, after {n} words the paw is charged. Press **Enter** when you are stuck and the hands on the keyboard show you how to type {words} words; you need not type meanwhile.",
       "ring": "The ring with the number shows which level of the world this is. Green pieces fill up to this level, empty ones are still to come. At the last one, the big challenge, it is full.",
       "progress": "The bar shows how much of the level is behind you.",
       "accuracy": "Accuracy: how many keys you press right. At 100 % the ring shows a check.",

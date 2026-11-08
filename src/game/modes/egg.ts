@@ -699,11 +699,6 @@ export class MudMode extends HeroMode {
     this.L.tweens.add(0.5, (k) => { this.jump = Math.sin(k * Math.PI) * 0.3; }, ease.linear, () => { this.jump = 0; });
   }
 
-  /** The child picks the place: the paws never choose for him (they may type his very hard words). */
-  pawMay(tg: Target): boolean {
-    return tg === this.hard;
-  }
-
   update(dt: number): void {
     super.update(dt);
     this.egg.update(dt);

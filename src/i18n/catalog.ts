@@ -85,7 +85,6 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
     g('new-key', 'keysIntro.*', 'controlKey.*', 'newKey.*', 'homeRow.*'),
     g('practice', 'practice.*', 'practiceKeys.*'),
     g('free-type', 'freeType.*', 'touch.*'),
-    g('helpers', 'paw.*'),
     g('journey', 'journey.*'),
   ] },
   { id: 'story', groups: [

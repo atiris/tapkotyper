@@ -22,8 +22,8 @@ export interface LevelResult {
   trend: number | null;
   /** An automatic step up earned with this level (a new medal), else null. */
   growth: GrowthStep | null;
-  /** The child typed too few keys; the paw did most of the level. */
-  byTapko: boolean;
+  /** The child typed too few keys for the accuracy to say anything. */
+  fewKeys: boolean;
   /** The world's badge, when this level earned it (`upgrade` false) or made it better. */
   badge: { world: number; tier: BadgeTier; upgrade: boolean } | null;
   /** A dictation or memory run: targets the child typed without the target shown again, of all. */
@@ -67,7 +67,7 @@ export const AUTO_WORD_MAX = 9;
 const GROWTH_ACCURACY = 0.9;
 /** Share of a level's targets the child typed (not let pass) for its time to count. */
 export const GROWTH_TYPED_SHARE = 0.85;
-/** Fewer keys of the child's own in a story level: the paw did most of it. */
+/** Fewer keys in a story level earn one star: their accuracy says nothing. */
 export const MIN_OWN_KEYS = 5;
 
 /** Seconds of good play for the next step: 4 minutes, then one more for each step. */
@@ -106,10 +106,10 @@ export function grow(p: Profile, seconds: number, accuracy: number, typedShare: 
  */
 export function completeLevel(p: Profile, def: LevelDef, r: RunStats, typedShare: number): LevelResult {
   // Accuracy of a handful of keys says nothing; such a level earns one star and no growth time.
-  const byTapko = def.kind !== 'practice' && r.chars + r.errors < MIN_OWN_KEYS;
+  const fewKeys = def.kind !== 'practice' && r.chars + r.errors < MIN_OWN_KEYS;
   // A hero's journey (`r` is all its parts together) has stricter stars.
   const steps = def.journey ? JOURNEY_STAR_STEPS : STAR_STEPS;
-  const stars = byTapko ? 1 : starsFor(r.accuracy, steps);
+  const stars = fewKeys ? 1 : starsFor(r.accuracy, steps);
   let worldDone: number | null = null;
   let badge: LevelResult['badge'] = null;
   if (def.kind !== 'practice') {
@@ -131,8 +131,8 @@ export function completeLevel(p: Profile, def: LevelDef, r: RunStats, typedShare
   const newKeys = advanceLesson(p);
   const newAccessories = grantAccessories(p);
   const newCompanions = grantCompanions(p);
-  const growth = byTapko ? null : grow(p, r.seconds, r.accuracy, typedShare);
-  return { ...r, stars, newKeys, newAccessories, newCompanions, worldDone, trend: speedTrend(p), growth, byTapko, badge };
+  const growth = fewKeys ? null : grow(p, r.seconds, r.accuracy, typedShare);
+  return { ...r, stars, newKeys, newAccessories, newCompanions, worldDone, trend: speedTrend(p), growth, fewKeys, badge };
 }
 
 /** Current speed vs. a week ago (only positive framing is shown). */
@@ -156,7 +156,7 @@ export function speedTrend(p: Profile): number | null {
 export function completeStay(p: Profile, r: RunStats, typedShare: number): LevelResult {
   const newKeys = advanceLesson(p);
   const growth = grow(p, r.seconds, r.accuracy, typedShare);
-  return { ...r, stars: 0, newKeys, newAccessories: [], newCompanions: [], worldDone: null, trend: speedTrend(p), growth, byTapko: false, badge: null };
+  return { ...r, stars: 0, newKeys, newAccessories: [], newCompanions: [], worldDone: null, trend: speedTrend(p), growth, fewKeys: false, badge: null };
 }
 
 /**
@@ -174,5 +174,5 @@ export function completePlacement(p: Profile, check: PlacementCheck, r: RunStats
   p.progress.placementKeys = Math.max(p.progress.placementKeys, keys.length);
   const s = p.settings;
   if (keys.length && s.autoDifficulty) s.difficulty = placementDifficulty(s.difficulty, placementReaction(check.presses), AUTO_DIFFICULTY_MAX);
-  return { ...r, stars: 0, newKeys, newAccessories: [], newCompanions: [], worldDone: null, trend: speedTrend(p), growth: null, byTapko: false, badge: null };
+  return { ...r, stars: 0, newKeys, newAccessories: [], newCompanions: [], worldDone: null, trend: speedTrend(p), growth: null, fewKeys: false, badge: null };
 }

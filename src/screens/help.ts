@@ -7,9 +7,8 @@ import { MASTERED_TEXT } from '../learning/lessons';
 import { newProfile } from '../storage/store';
 import { namedKeyCaps } from '../ui/keyboard-guide';
 import { BADGE_STARS, MAX_WORLD_STARS } from '../game/rewards';
-import { PAW_MAX, PAW_STREAK, PAW_WORDS } from '../game/paw';
 import { type Child, ICONS, button, h, icon, linkedText, richText } from '../ui/dom';
-import { accuracyRing, levelRing, pawRing, rhythmRing, roundPic, speedRing, timerPic } from '../ui/hud';
+import { accuracyRing, levelRing, rhythmRing, roundPic, speedRing, timerPic } from '../ui/hud';
 import { barTabLinks, tabBar } from '../ui/tabs';
 import { appInstalled, installApp, openApp, standalone } from '../ui/install';
 import { imageUrl } from '../gfx/assets';
@@ -99,8 +98,6 @@ function levelIcons(): HTMLElement[] {
   speed.set(0.6, 64);
   return [
     iconLine(round('pause'), t('help.icons.pause')),
-    iconLine(roundPic('paw', 'paw', pawRing(2, PAW_MAX)),
-      t('help.icons.paw', { n: PAW_STREAK, words: PAW_WORDS })),
     iconLine(levelRing(5, 2), t('help.icons.ring')),
     iconLine(h('div', { class: 'progress' }, h('div', { class: 'progress-fill', style: 'width: 60%' })), t('help.icons.progress')),
     iconLine(accuracy.el, t('help.icons.accuracy')),

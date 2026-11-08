@@ -138,7 +138,7 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
     if (def.kind === 'freetype' && import.meta.env.DEV) {
       // Dev server only: the hand tool opens the pose of the key typed last; a save there shows here at once. Not translated.
       const poser = () => window.open(`${import.meta.env.BASE_URL}tools/hand-poser/?pose=${runtime.handPose()}`, 'hand-poser');
-      root.querySelector('.hud-title')!.after(roundButton('control', 'paw', 'Ruky (nástroj)', poser));
+      root.querySelector('.hud-title')!.after(roundButton('control', 'edit', 'Ruky (nástroj)', poser));
     }
     if (def.kind === 'practice' && !params.seconds) {
       // Untimed practice ends when the child wants: the round X, like in just typing, shows the results.
@@ -287,7 +287,7 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
     under: practice ? minutes(r.seconds) : starRow(r.stars),
     rows: rows.slice(0, 3),
     news: newsLine(levelNews(r)),
-    tip: r.byTapko ? t('results.byTapko') : null,
+    tip: r.fewKeys ? t('results.fewKeys') : null,
     surprises: toldSurprises(def, surprise, surpriseRun(def, !!params.keys)),
     actions,
   }, stay);
@@ -326,7 +326,7 @@ function showJourneyDone(root: HTMLElement, def: LevelDef, r: LevelResult, param
     under: starRow(r.stars),
     rows: [...typingRows(r), [t('end.time'), minutes(r.seconds)]],
     news: newsLine(news),
-    tip: r.byTapko ? t('results.byTapko') : null,
+    tip: r.fewKeys ? t('results.fewKeys') : null,
     surprises: toldSurprises(def, surprise, 'all'),
     actions: [{ label: t('results.replay'), icon: 'replay', run: () => go('level', params) }],
   });

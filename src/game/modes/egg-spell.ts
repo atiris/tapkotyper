@@ -213,10 +213,6 @@ export class SpellRibbonMode extends HeroMode {
     this.happy();
   }
 
-  pawMay(): boolean {
-    return this.spellOn;
-  }
-
   update(dt: number): void {
     super.update(dt);
     const L = this.L;

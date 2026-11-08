@@ -41,8 +41,8 @@
   The words use the letters of the world's last level: real words where the letters allow it
   (letter drills in the meadow's tiny set), all different and starting with different letters
   where possible, new ones each round.
-- The typing counts in the statistics and in the lesson like at the target range; paws and Enter
-  marks stay out, the parent's surprises counting training time are asked and told.
+- The typing counts in the statistics and in the lesson like at the target range; Enter marks stay
+  out, the parent's surprises counting training time are asked and told.
 - **End:** a learned round ends with the parrot's praise ("Suuperr", "Parraáda", ...), then its
   "I am coming" ("Prrilletiím", "Maáš to", ...), and it flies down to the character and sits on the grass
   beside him (in front of him, should its way cross him): the parrot goes home with the child. It

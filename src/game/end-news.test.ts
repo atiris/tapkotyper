@@ -4,7 +4,7 @@ import { type DrillKey, bestLetter, drillNews, drillRows, greenLine, levelNews }
 
 const result = (extra: Partial<LevelResult> = {}): LevelResult => ({
   stars: 3, accuracy: 0.95, chars: 100, errors: 5, cpm: 60, seconds: 120, newKeys: [], newAccessories: [], newCompanions: [],
-  worldDone: null, trend: null, growth: null, byTapko: false, badge: null, ...extra,
+  worldDone: null, trend: null, growth: null, fewKeys: false, badge: null, ...extra,
 });
 
 describe('the green line of an end card', () => {

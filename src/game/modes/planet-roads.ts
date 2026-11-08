@@ -405,11 +405,6 @@ export class CrossroadsMode extends HeroMode {
     });
   }
 
-  /** The child chooses the path: the paws never type a sign. */
-  pawMay(tg: Target): boolean {
-    return !this.signs.some((s) => s.tg === tg);
-  }
-
   onWrong(tg: Target | null): void {
     super.onWrong(tg);
     if (this.mountain && tg && tg === this.current && this.L.core.locked === tg && ++this.slips >= EASIER_AFTER) return this.easier();

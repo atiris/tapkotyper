@@ -77,7 +77,7 @@
     parrot of a random finished world that misses it, so Aro's flights on the map can be seen
     without waiting for days.
 - In a level, the temporary player has a **super help** button (a red lifebuoy) right of the
-  paw help. Its menu starts the game typing like a real player at about 200 characters a
+  pause button. Its menu starts the game typing like a real player at about 200 characters a
   minute: without a mistake, with 1 or 2 mistakes, with 1 mistake and 1 hesitation, or with 2
   mistakes and 2 hesitations. The slips are spread evenly over the level: the level is cut
   into one part more than there are slips, and a slip comes at each cut, in the listed order.
@@ -90,7 +90,7 @@
   one at the band's late edge; an accuracy choice catches that share in the middle half and the
   rest out towards the band's edges, early or late (no wrong keys).
   Everything counts as the player's own typing:
-  statistics, stars and paw charges. While it types, the button has a full red ring, like
+  statistics and stars. While it types, the button has a full red ring, like
   the other round buttons show their state; the same menu stops it. Only the temporary player has
   it, so a stored player's statistics are always typed by the child.
 - Stored players' progress is never changed by the service menu: there is no simulated or
@@ -101,7 +101,7 @@
   ([teacher links](teacher-links.md)).
 
 ## Why
-- The owner tests levels, results and paw charges many times; the super help plays a level
+- The owner tests levels and results many times; the super help plays a level
   like a child with a known number of slips, so the results can be checked without typing
   every word by hand.
 - Families and classrooms share devices; export/import gives portability without accounts.

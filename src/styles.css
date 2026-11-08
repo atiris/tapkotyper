@@ -254,11 +254,11 @@ body.reduce-motion :is(.btn, .teacher-big):is(:hover, :active) { transform: none
 }
 .round-btn svg { width: 100%; height: 100%; display: block; }
 /*
- * Three colors: controls purple, what belongs to the round being played green (the paw, the place
- * in the world, the rhythm, a key's accuracy, the target's hits), and what calls for attention red
+ * Three colors: controls purple, what belongs to the round being played green (the place in the
+ * world, the rhythm, a key's accuracy, the target's hits), and what calls for attention red
  * (the super star, a new version). The wardrobe's time is its own teal.
  */
-.round-btn.paw, .round-btn.speed, .round-btn.rhythm, .round-btn.place, .round-btn.accuracy { --rb: #2f8a4c; --rb-ring: #4fb57a; }
+.round-btn.speed, .round-btn.rhythm, .round-btn.place, .round-btn.accuracy { --rb: #2f8a4c; --rb-ring: #4fb57a; }
 .round-btn.speed, .round-btn.rhythm, .round-btn.place, .round-btn.accuracy { cursor: default; }
 .round-btn.super, .round-btn.update { --rb: #d63a32; --rb-ring: #d63a32; }
 .round-btn.timer { --rb: #1f8a86; --rb-ring: #3cc0b8; cursor: default; }
@@ -977,8 +977,6 @@ body:not(.gfx-simple) .level-screen.covered :is(.stage-wrap *, .overlay .tapko-s
 .hud-title { font-size: 17px; white-space: nowrap; }
 /* The divider and the buttons after it keep to the right, also without a progress bar (just typing). */
 .hud-divider { width: 2px; align-self: stretch; margin: 0.2rem 0 0.2rem auto; background: var(--track); border-radius: 2px; }
-.paw-btn.empty { cursor: default; }
-.paw-btn.charged { animation: pop-in 0.5s ease; }
 /* The target range: each weak key with a small bar of its recent accuracy. */
 .progress { flex: 1; min-width: 120px; height: 16px; border-radius: 999px; background: var(--track); overflow: hidden; }
 .progress-fill { height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, #8fd89f, var(--green)); transition: width 0.3s ease; }
@@ -1070,9 +1068,6 @@ body:not(.gfx-simple) .level-screen.covered :is(.stage-wrap *, .overlay .tapko-s
 .kb-hands .hand-letter { fill: #fff; font: 700 17px var(--font-keys); text-anchor: middle; dominant-baseline: central; stroke: var(--hit); stroke-width: 3.5; stroke-linejoin: round; paint-order: stroke; }
 /* The hands draw the next key's letter over themselves; the key's own letter would show beside it. Hidden hands draw nothing, so the key keeps its letter. */
 .kb-hands.ready:not(.hands-hidden) ~ .kb-row .kb-key.next .kb-label { visibility: hidden; }
-/* A key the hands type (the paw help) goes down for a moment. */
-.kb-key.tap { animation: key-tap 0.14s ease; }
-@keyframes key-tap { 50% { transform: translateY(2px) scale(0.94); } }
 /* Sticky finger: a held key is pressed with a soft golden glow; one that must be held but is up blinks gently. */
 .kb-key.held { transform: translateY(2px) scale(0.95); background: var(--tint-yellow); box-shadow: inset 0 -2px 0 var(--finger), 0 0 0 3px #f2c14e, 0 0 14px 4px rgba(242, 193, 78, 0.7); z-index: 1; }
 .kb-key.hold-up { box-shadow: inset 0 -5px 0 var(--finger), 0 0 0 3px #f2c14e; animation: hold-blink 1.2s ease-in-out infinite; z-index: 1; }

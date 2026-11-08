@@ -49,7 +49,6 @@ import { keyCards } from './runtime/key-cards';
 import { Labels } from './runtime/labels';
 import { type RuntimeOptions, wordSource } from './runtime/options';
 import { type Ending, PauseCard, endingOf } from './runtime/pause';
-import { Paws } from './runtime/paws';
 import { Reading } from './runtime/reading';
 import { LevelState } from './runtime/state';
 import { SuperHelp } from './runtime/super-helper';
@@ -117,11 +116,10 @@ export class LevelRuntime {
   private input: KeyInput | null = null;
   private guide: KeyboardGuide;
   /** The on-screen keyboard is shown; the player keeps the choice for the next levels. */
-  guideOn: boolean;
+  private guideOn: boolean;
   private readonly state: LevelState;
   private readonly ending: Ending;
   private readonly pauseCard: PauseCard;
-  private readonly paws: Paws | null = null;
   private readonly superHelp: SuperHelp | null = null;
   private readonly tapko: StageTapko;
   /** A sticky run: the held keys, their rounds and the wait while one is up; null in every other run. */
@@ -244,7 +242,6 @@ export class LevelRuntime {
       leave: () => void this.leave(),
       onBreak: (back) => opts.onBreak(back),
     }, def.kind === 'freetype' ? null : pauseBtn);
-    if (this.pawsAllowed) this.paws = new Paws(this.state, this);
     if (p.id === SUPER_ID && def.kind !== 'freetype') this.superHelp = new SuperHelp(this.state, { rng: this.rng, noPressure: this.noPressure, share: () => this.share(), type: (c) => this.onChar(c), beat: () => this.mode.beat, beatDue: () => this.mode.beatDue() });
     // Rytmus always shows all three: its game is the beat.
     const all = def.kind === 'rhythm', s = p.settings;
@@ -252,7 +249,6 @@ export class LevelRuntime {
     const { accuracy, rhythm, speed } = this.rings;
     const hud = h('div', { class: 'hud' },
       pauseBtn,
-      this.paws?.btn,
       this.superHelp?.btn,
       def.kind === 'practice' || def.index < 0 ? null : placeRing(def),
       h('b', { class: 'hud-title' }, title),
@@ -333,11 +329,6 @@ export class LevelRuntime {
   /** Play began (the preparation cards are done). */
   get started(): boolean {
     return this.state.started;
-  }
-
-  /** Story levels and hero's journeys; free practice, a teacher's task, drills, the target range, the parrot and Rytmus count every key, and the valley's take-off is the child's own flight. */
-  get pawsAllowed(): boolean {
-    return this.def.kind !== 'practice' && this.def.kind !== 'task' && this.def.kind !== 'freetype' && this.def.kind !== 'takeoff' && this.def.kind !== 'aim' && this.def.kind !== 'parrot' && this.def.kind !== 'rhythm' && this.def.kind !== 'placement' && !this.opts.keys;
   }
 
   get tapkoOnStage(): boolean {
@@ -487,7 +478,7 @@ export class LevelRuntime {
   /** Keys whose cards were shown before this level; they count as introduced only once play begins. */
   private shownKeys: string[] = [];
 
-  /** The child can type again (play begins, a resume, the paws stopped, a new target in focus): nothing is measured across the wait. */
+  /** The child can type again (play begins, a resume, a new target in focus): nothing is measured across the wait. */
   typingReady(): void {
     this.speed.ready(performance.now());
     this.evenness.break();
@@ -526,8 +517,8 @@ export class LevelRuntime {
       },
       onEscape: () => (this.state.paused ? this.resume() : this.free ? this.exit() : this.pause()),
       onRaw: (code, key, shift) => this.onRaw(code, key, shift),
-      // A target waiting for Enter takes it; else the Enter that closed a card just before play is not a call for the paw.
-      onEnter: () => (this.free ? this.freeSend() : this.waitsEnter ? this.typeEnter() : performance.now() - this.begunAt >= ENTER_GUARD_MS && (this.modeEnter() || !!this.paws?.start())),
+      // A target waiting for Enter takes it; else the Enter that closed a card just before play is not one for the mode.
+      onEnter: () => (this.free ? this.freeSend() : this.waitsEnter ? this.typeEnter() : performance.now() - this.begunAt >= ENTER_GUARD_MS && this.modeEnter()),
       onBackspace: () => (this.free ? this.freeErase() : this.restartTarget()),
       // A pause or a dialog: the keys belong to its buttons.
       idle: () => this.state.paused || !!document.querySelector('.modal-back'),
@@ -621,7 +612,7 @@ export class LevelRuntime {
     for (; this.missesSeen < this.core.missed; this.missesSeen++) this.valve.miss();
   }
 
-  /** A target the child typed (not the paw). */
+  /** A target the child typed. */
   private targetTyped(tg: Target): void {
     const since = this.shownAt.get(tg.id);
     if (since != null) this.paceSamples.push((this.state.elapsed - since) / tg.word.length);
@@ -674,7 +665,7 @@ export class LevelRuntime {
 
   private onChar(c: TypedChar): void {
     if (this.free) return this.freeChar(c, this.free);
-    if (!this.state.playing || this.paws?.typing) return;
+    if (!this.state.playing) return;
     this.ownKey();
     // A space between targets is a habit, not a mistake.
     if (c.ch === SPACE && !this.core.locked) return;
@@ -712,7 +703,6 @@ export class LevelRuntime {
         this.friends.done();
         this.mode.onDone(res.target);
         this.cheer();
-        this.paws?.wordDone(this.wordStreak);
       } else {
         this.sfx('key');
         this.mode.onCorrect(res.target);
@@ -739,13 +729,13 @@ export class LevelRuntime {
 
   /** Backspace in a level: the started word is wiped and the child may start any word again. */
   private restartTarget(): void {
-    if (!this.state.playing || this.paws?.typing) return;
+    if (!this.state.playing) return;
     this.ownKey();
     this.evenness.break();
     if (this.core.restart()) this.updateGuide();
   }
 
-  /** A key of the child's own (never the paws' or the helper's) adds to the typing time. */
+  /** A key of the child's own (never the helper's) adds to the typing time. */
   private ownKey(): void {
     this.typedSeconds += typingStep(this.state.elapsed - this.ownKeyAt);
     this.ownKeyAt = this.state.elapsed;
@@ -1073,8 +1063,7 @@ export class LevelRuntime {
     this.state.elapsed += dt;
     if (!this.state.finished) {
       app.sessionSeconds += dt;
-      // The paws typing for the child count as play.
-      this.played += playedStep(dt, this.paws?.typing ? 0 : this.idleFor, this.core.active.some((tg) => tg.selectable));
+      this.played += playedStep(dt, this.idleFor, this.core.active.some((tg) => tg.selectable));
       this.hold?.tick(dt);
     }
     this.core.update(dt);
@@ -1086,9 +1075,8 @@ export class LevelRuntime {
     this.mode.update(dt);
     if (!hadFocus && this.core.focus()) this.typingReady();
     this.trackPace();
-    if (this.paws?.typing) this.paws.tick(dt);
-    else this.superHelp?.tick(dt);
-    if (!this.paws?.typing) this.reading.focus();
+    this.superHelp?.tick(dt);
+    this.reading.focus();
     // Free typing and staying a while have no end on their own: the bubble says when a break is due.
     if ((this.free || this.opts.stay) && !this.breakSaid && isBreakDue()) {
       this.breakSaid = true;
@@ -1220,7 +1208,6 @@ export class LevelRuntime {
     // Saved below: leaving the site no longer asks.
     this.el.classList.add('ended');
     this.mode.onFinish();
-    if (this.paws?.typing) this.paws.stop();
     this.input?.dispose();
     this.input = null;
     this.hold?.dispose();
@@ -1231,7 +1218,6 @@ export class LevelRuntime {
     const seconds = this.typedSeconds;
     const cpm = this.speed.cpm;
     const chars = this.chars, errors = this.errors;
-    // Targets the paw typed count neither way.
     const resolved = this.typedTargets + this.core.missed;
     const typedShare = resolved ? this.typedTargets / resolved : 1;
     const clean = this.cleanTargets;

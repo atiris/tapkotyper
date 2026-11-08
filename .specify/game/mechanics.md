@@ -44,7 +44,7 @@
   with the story: 2 minutes in the dragon story, 3 in the robot story, 4 in the fairy story.
   Pauses and cards do not count, nor waiting over a word: once a word waits and no key came for
   5 seconds, the clock stops until the next key, so a break in typing or words left to fly by
-  never fill the minimum (the paws' help and the mode's own scenes without a word count). A calm step lasts a quarter less, a super level a quarter
+  never fill the minimum (the mode's own scenes without a word count). A calm step lasts a quarter less, a super level a quarter
   more; a hero's journey lasts twice a regular level of its story, split evenly over its parts. Even 4 minutes is well under the 10-15 minutes a day
   usually recommended for children and under a typical course lesson (5-10 minutes): a level is one part
   of a session, not the whole of it.
@@ -77,7 +77,7 @@
   three times (Bolt hops with him in story 2, Melody hops in story 3; a super level adds a cheer), and any tool he held in the level (gloves,
   torch, umbrella) fades away; with reduced motion he only smiles and the tool is gone
   at once. About 1.4 seconds later the end card comes (see The end card). Accuracy counts only the child's own keys: a level where the child
-  typed fewer than 5 keys (the paw did the rest) says so in a yellow tip line, gives one star, never
+  typed fewer than 5 keys says so in a yellow tip line (their accuracy says nothing), gives one star, never
   lowers a better result and adds no time toward automatic growth. Esc on the end screen
   peeks under it and a second Esc brings it back (see Peeking under the results).
 - **Stars**: 1 to 5 per level, from accuracy only, on a logarithmic scale of the mistakes:
@@ -174,8 +174,7 @@
     Dictation "You hear the word without seeing it. Type what you hear.", Remember it "The
     word shows for a moment and hides. Type it from memory.", Sticky finger "One finger holds
     its key, the others type." (greyed out with too few keys of a hand).
-  - In all of them, the finger guide does not light the key of a hidden letter, the paws
-    show the target and type it as usual, and the end screen adds how many targets the
+  - In all of them, the finger guide does not light the key of a hidden letter, and the end screen adds how many targets the
     child typed without the target being shown again ("by ear" / "from memory" / "by
     ear and from memory"). The get-ready tip of such a run is about listening or
     remembering.

@@ -1396,4 +1396,4 @@ shadow. Square image." The game turns each note by its own angle.
 ### Icon (section 9 icon prompt, attach `ui-act-super.jpg`)
 | File | ACTIVITY |
 |---|---|
-| `ui-act-rhythm.jpg` | a classic wooden pyramid metronome, front view: a tall narrow wooden body in warm honey wood (#D9A35B) with darker edges (#B07B3A), a cream front panel (#FFF3DC) with a few short dark tick marks, a thin dark pendulum arm with a small golden weight (#F2C14E) tilted a little to the right, a small square base; no face, no eyes, no numbers (the Rytmus node on the map and its game on the help page) |
+| `ui-act-rhythm.jpg` | one small toy drum with two wooden drumsticks crossed on top of it, as a toy drum really looks; no face, no eyes (the Rytmus node on the map and its game on the help page; redone 2026-11-08: the owner wanted a drum instead of the metronome; the plain wording came out right at once) |

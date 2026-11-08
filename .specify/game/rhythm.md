@@ -2,13 +2,14 @@
 
 ## What
 - **Rytmus** / **Rhythm**: a voluntary side game that teaches typing **evenly**, to a beat. Its card is
-  a metronome. Rhythm is the second goal of the game, after accuracy and before speed, and it is a
+  a toy drum. Rhythm is the second goal of the game, after accuracy and before speed, and it is a
   measure of its own: how even the presses are, never letters per minute (that is speed,
   "Rýchlosť", see [mechanics](mechanics.md)).
 - **Where:** in every world, the last world of each story too (no exceptions); its node stands after
   the parrot's, on the world's own background. It starts only when the child picks it, never by "Continue".
-- **When it opens:** with the world finished, like the [target range](target-practice.md) and the
-  parrot. Before that the node is grey and closed and its tooltip says it opens with the world finished.
+- **When it opens:** with the world itself, like the [target range](target-practice.md) and the
+  parrot, so a child can try it at any moment in the world. In a closed world the node is grey and closed
+  and its tooltip says it opens with the world.
   A check under the node once a phrase at the world's target tempo went at 95 % accuracy or more with at
   least nine in ten letters caught; the target tempo is the story's slow pace as letters (8, 10, 12
   words a minute: 40, 50, 60 letters a minute).

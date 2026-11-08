@@ -16,18 +16,17 @@ async function editProfile(page: Page, change: string): Promise<void> {
 const READY = `p.progress.unlockedKeys = ['f', 'j', ' ', 'd', 'k']; p.progress.introducedKeys = ['f', 'j', ' ', 'd', 'k'];
   for (const k of ['f', 'j', 'd', 'k']) p.stats.keys[k] = { presses: 40, errors: 0, recent: Array(40).fill(400), recentWrong: [], days: [] };`;
 
-test('Rytmus opens with the meadow finished and a round ends on its card', async ({ page }) => {
+test('Rytmus is open with the meadow and a round ends on its card', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await createProfile(page, 'Ema');
   const node = page.locator('.island-meadow .rhythm-node');
-  // Closed at first, after the parrot; its tooltip says when it opens. Every world has one.
-  await expect(node).toBeDisabled();
-  await expect(node).toHaveAttribute('data-tip', /when you finish this world/);
+  // Open with the meadow, after the parrot; a closed world's says it opens with that world. Every world has one.
+  await expect(node).toBeEnabled();
+  await expect(page.locator('.island-space .rhythm-node')).toHaveAttribute('data-tip', /Opens with this world/);
   await expect(page.locator('.island-meadow .level-row > *').last()).toHaveClass(/rhythm-node/);
   await expect(page.locator('.rhythm-node')).toHaveCount(15);
   await editProfile(page, `${READY} p.progress.worldsDone = [0];`);
-  await expect(node).toBeEnabled();
   await node.click();
   await expect(page.locator('.level-screen.world-meadow .hud-title')).toHaveText('Rhythm');
   await untilPlay(page, 'ready');

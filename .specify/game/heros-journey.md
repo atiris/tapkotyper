@@ -14,7 +14,7 @@
   prejsť túto cestu hrdinu na N hviezd. Dokážeš to ešte prekonať, alebo zopakovať?" (the stars in their
   plural form); then always "Cesta hrdinu je náročnejší, dlhší príbeh, za ktorý nezískaš hviezdy tak
   jednoducho. Ak chceš presne vedieť, aký je náročný, informácie nájdeš v nápovede." It opens with that
-  world done, the same moment as the range and the parrot; before that the badge is there, faded, its
+  world done (the range and the parrot are open from the world's start); before that the badge is there, faded, its
   tooltip ending with "opens when the world is finished" instead.
 - It plays one part for every world of the story, in world order. Each part is the game of
   that world's first level, on that world's background. A story may define its own journey

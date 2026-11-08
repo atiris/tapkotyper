@@ -5,12 +5,13 @@
   child types the same few words many times over, so the fingers learn them (muscle memory).
   There are no stars; slow typing is fine, the point is the practice. Speed only shows the child
   which words got quicker.
-- It opens with the world's super level, like the [target range](target-practice.md): a small
+- It is open the whole time its world is, like the [target range](target-practice.md): a small
   parrot node after the range's target on the map. Its picture tells the parrot's state: its
   head while it is at home, else an empty short wooden perch (closed, not won yet, or flown
   away); under it a check once the world's round was ever won (like the range's card: the game
-  on top, the marks under it); its tooltip says what it trains. Before the world is finished the node is already there, grey and closed like a
-  level not reached yet (the tooltip adds when it opens). It starts only when the child picks
+  on top, the marks under it); its tooltip says what it trains. In a closed world the node is already there, grey and closed like a
+  level not reached yet (the tooltip adds that it opens with the world). Its words take only the
+  letters of the world's last level the child already knows, so it works from the world's start. It starts only when the child picks
   it, never by "Continue".
 - **Scene:** the world's own background, only its middle strip drifting very slowly. The character
   stands at the left; at the right a wooden T-perch stands on the ground at the level of the character's

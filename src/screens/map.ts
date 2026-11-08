@@ -178,13 +178,11 @@ export function mapScreen(root: HTMLElement, { focus }: { focus?: 'language' } =
   // The narrator's bubble on the map: why a level waits for more keys.
   const bubble = h('div', { class: 'bubble static map-bubble', role: 'status', 'aria-live': 'polite' });
   bubble.hidden = true;
-  // Letters not accurate enough yet: which ones, and the way out (the target range once a world is done, else own practice).
+  // Letters not accurate enough yet: which ones, and the way out (the target range of the world, or of the furthest open one).
   const held = heldText(p);
   const practiceOffer = (world: number) => {
     const aim = aimWorld(p, world);
-    return h('div', { class: 'bubble-actions' }, aim === null
-      ? button(t('map.practice'), () => openPracticeKeys(), 'btn small', 'practice')
-      : button(t('aim.title'), () => go('level', { id: 'aim', world: aim }), 'btn small', 'target'));
+    return h('div', { class: 'bubble-actions' }, button(t('aim.title'), () => go('level', { id: 'aim', world: aim }), 'btn small', 'target'));
   };
   const keysBubble = (n: number, world: number) => {
     bubble.replaceChildren(...keysLines(n, held), practiceOffer(world));
@@ -270,13 +268,13 @@ function keyIcon(held: string): HTMLElement {
   return k;
 }
 
-/** A node's tooltip; before the world is finished it also says when the node opens. */
+/** A node's tooltip; in a closed world it also says when the node opens. */
 const sideTip = (open: boolean, key: string) => (open ? t(key) : `${t(key)} ${t('map.sideOpens')}`);
 
 /** A node's mark under its picture: a check once its game is won (the target range's thing found, the parrot's round won); none before, so the picture stands in the middle. */
 const miniCheck = (on: boolean) => (on ? h('span', { class: 'mini-marks' }, icon('check', 'mini-check')) : null);
 
-/** The target range of a world: a card like a level's with the range's target and a check once the world's own thing is found there; faded and closed until the world is finished. */
+/** The target range of a world: a card like a level's with the range's target and a check once the world's own thing is found there; faded and closed while the world is closed. */
 function aimNode(p: Profile, open: boolean, world: number): HTMLElement {
   const pic = imageUrl('obj-aim-target');
   const found = WORLD_THINGS.some((th) => th.world === world && p.progress.rangeFinds.includes(th.id));
@@ -284,7 +282,7 @@ function aimNode(p: Profile, open: boolean, world: number): HTMLElement {
     pic ? h('img', { class: 'level-act', src: pic, alt: '' }) : icon('target', 'icon aim-icon'), miniCheck(found));
 }
 
-/** The parrot of a world: its head while it is at home, else its empty short perch, and a check once its round was ever won; faded and closed until the world is finished. */
+/** The parrot of a world: its head while it is at home, else its empty short perch, and a check once its round was ever won; faded and closed while the world is closed. */
 function parrotNode(p: Profile, open: boolean, world: number): HTMLElement {
   const home = p.progress.parrots.includes(world);
   const pic = imageUrl(home ? 'ui-act-parrot-head' : 'obj-parrot-perch-short');
@@ -295,7 +293,7 @@ function parrotNode(p: Profile, open: boolean, world: number): HTMLElement {
   }, pic ? h('img', { class: 'level-act', src: pic, alt: '' }) : icon('star', 'icon'), miniCheck(p.progress.parrotsWon.includes(world)));
 }
 
-/** Rytmus of a world: the metronome, and a check once its target tempo was held accurately; faded and closed until the world is finished. */
+/** Rytmus of a world: the drum, and a check once its target tempo was held accurately; faded and closed while the world is closed. */
 function rhythmNode(p: Profile, open: boolean, world: number): HTMLElement {
   const won = p.progress.rhythmWon.includes(world);
   const pic = imageUrl('ui-act-rhythm');
@@ -428,7 +426,7 @@ function surprisesMark(p: Profile, world: number): HTMLElement | null {
 /**
  * One story: its title and its worlds as islands; a story still closed says when it opens.
  * A level reached without enough keys shows a key and lets the bubble say how many are missing
- * and which letters need accuracy (`held`); every world shows its target range and its parrot, open once the world is finished, a world with Rytmus its metronome,
+ * and which letters need accuracy (`held`); every world shows its target range and its parrot, open with the world, a world with Rytmus its drum,
  * and the story's last world its hero's journey as a badge on its island.
  */
 function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held: string, keysBubble: (n: number, world: number) => void): HTMLElement {

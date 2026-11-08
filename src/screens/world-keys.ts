@@ -11,14 +11,10 @@ import { tip } from '../ui/tooltip';
 import { KeyboardGuide, keyLabel, namedKeyCaps, namedKeyLabel } from '../ui/keyboard-guide';
 import { openPracticeKeys } from './practice-keys';
 
-/**
- * Which letters still need accuracy before new ones open, and where to train them: a target
- * range once a world is done (it opens one), else any level already open; empty when none holds them back.
- */
+/** Which letters still need accuracy before new ones open (the target range trains them); empty when none holds them back. */
 export function heldText(p: Profile): string {
   const keys = notReadyKeys(p);
-  if (!keys.length) return '';
-  return t(p.progress.worldsDone.length ? 'map.heldKeys' : 'map.heldKeysReplay', { keys: keys.map(keyLabel).join(', ') });
+  return keys.length ? t('map.heldKeys', { keys: keys.map(keyLabel).join(', ') }) : '';
 }
 
 /** What a closed world still needs, in one line (the lock's tooltip); empty for an open one. */

@@ -318,15 +318,18 @@ describe('world locks', () => {
 });
 
 describe('target range', () => {
-  it('opens with the world done and trains the weak keys', () => {
+  it('is open with its world from the start and trains the weak keys', () => {
     const p = newProfile('Ema', 'sk');
-    expect(aimOpen(p, 0)).toBe(false);
-    expect(aimWorld(p, 0)).toBeNull();
-    p.progress.worldsDone = [0, 1];
+    expect(aimOpen(p, 0)).toBe(true);
+    expect(aimOpen(p, 1)).toBe(false);
+    expect(aimWorld(p, 3)).toBe(0);
+    expect(aimLevel(p, 0)).toMatchObject({ id: 'aim', kind: 'aim', world: 0, index: -1, focus: ['f', 'j', ' '] });
+    p.progress.worldsDone = [0];
+    know(p, KEYS.slice(0, 10));
     expect(aimOpen(p, 1)).toBe(true);
     expect(aimWorld(p, 1)).toBe(1);
-    expect(aimWorld(p, 3)).toBe(1);
-    expect(aimLevel(p, 1)).toMatchObject({ id: 'aim', kind: 'aim', world: 1, index: -1, focus: ['f', 'j', ' '] });
+    // The robot story opens at 10 keys: its first world is the furthest open one.
+    expect(aimWorld(p, 3)).toBe(5);
   });
 });
 
@@ -400,10 +403,12 @@ describe('minimum level length', () => {
 });
 
 describe('parrot', () => {
-  it('sizes the round by story and place, and takes the letters of the world\'s last level', () => {
+  it('sizes the round by story and place, and takes the known letters of the world\'s last level', () => {
     expect(parrotSizeOf(0).words).toBe(5);
     expect(parrotSizeOf(7)).toEqual({ words: 6, len: [4, 6] });
     const p = newProfile('Ema', 'sk');
+    expect(parrotKeys(p, 0)).toEqual(['f', 'j']);
+    p.progress.unlockedKeys.push('d', 'k');
     expect(parrotKeys(p, 0)).toEqual(['f', 'j', 'd', 'k']);
     expect(parrotLevel(3)).toMatchObject({ id: 'parrot', kind: 'parrot', world: 3, index: -1 });
     expect(hasMinLength(parrotLevel(3))).toBe(true);

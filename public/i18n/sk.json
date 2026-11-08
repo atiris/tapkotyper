@@ -166,11 +166,11 @@
     "wardrobe": "Ja a môj šatník",
     "switchProfile": "Hráči",
     "super": "finále",
-    "aimTip": "Strelnica: tu si precvičíš písmená, ktoré ešte nepíšeš dosť presne. Keď ti k ďalšiemu písmenu chýba už len presnosť, tu ju získaš.",
-    "parrotTip": "Papagáj: napíšeš pár slov veľakrát za sebou, kým ich prsty nebudú vedieť samy. Na rýchlosti nezáleží.",
-    "rhythmTip": "Rytmus: písmená padajú z obláčikov. Stlač kláves, keď je písmeno v žiarivom páse, a košík ho chytí. Tak sa naučíš písať rovnomerne.",
+    "aimTip": "Strelnica. Vstúp a precvič si písmená, ktoré ešte nepíšeš dosť presne. Keď ti k ďalšiemu písmenu chýba už len presnosť, tu ju získaš.",
+    "parrotTip": "Papagáj. Má rád keksy a opakovanie. Ak dokážeš zopakovať niekoľko slov, môžeš ho prilákať, aby ťa sprevádzal pri tvojej postavičke.",
+    "rhythmTip": "Rytmus. Dokážeš písať v rovnakom rytme? Vyskúšaj si to v tomto cvičení, môžeš získať notu tohto sveta.",
     "parrotHome": "papagáj je doma",
-    "sideOpens": "Otvorí sa, keď dokončíš tento svet.",
+    "sideOpens": "Otvorí sa spolu s týmto svetom.",
     "surpriseHere": "Tu na teba čaká prekvapenie!",
     "surprisesWon": "Prekvapenia, ktoré na teba čakali v tomto svete",
     "surprisesTitle": "Prekvapenia zo sveta {world}",
@@ -188,7 +188,6 @@
     "keysFew": "Na túto úroveň potrebuješ ešte {n} písmená. Nové písmenká získaš hraním alebo vo Vlastnom písaní.",
     "keysMany": "Na túto úroveň potrebuješ ešte {n} písmen. Nové písmenká získaš hraním alebo vo Vlastnom písaní.",
     "heldKeys": "Aby sa otvorila ďalšia úroveň, potrebuješ presnejšie písať: {keys}. Precvičíš to na Strelnici.",
-    "heldKeysReplay": "Aby sa otvorila ďalšia úroveň, potrebuješ presnejšie písať: {keys}. Precvičíš to, keď si znova zahráš niektorú úroveň, ktorú už máš otvorenú.",
     "keysLocked": "potrebuješ viac písmen",
     "storyFairy": "Víla Melódia",
     "teacher": {
@@ -208,7 +207,7 @@
         "taskButton": "Ako na úlohy",
         "share": "Svoje výsledky môžeš ukázať učiteľovi alebo rodičom: v Mojom pokroku ich pošleš odkazom alebo QR kódom.",
         "shareButton": "Ako na to",
-        "range": "Za každý prejdený svet sa na mape otvorí Strelnica a Papagáj. Na strelnici precvičíš písmená, ktoré ti ešte nejdú.",
+        "range": "V každom otvorenom svete máš na mape Strelnicu, Papagája a Rytmus. Na strelnici precvičíš písmená, ktoré ti ešte nejdú.",
         "rangeButton": "Viac o hrách"
       },
       "placement": {
@@ -1718,10 +1717,10 @@
     "more": [
       "Cesta hrdinu: keď dokončíš posledný svet príbehu, ožije kompas vpravo dole na obrázku sveta. Jeho okraj má farbu podľa tvojich hviezdičiek z cesty a tie sa rátajú navyše, mimo hviezdičiek levelov. Je to dlhá výprava cez všetky svety príbehu. Je ťažšia: slová sú ťažšie, všetko je o kúsok rýchlejšie a hviezdičky chcú menej chýb.",
       "Odznak: dokončený svet ti ho dá, keď v ňom zbieraš dosť z jeho {max} hviezdičiek: **bronzový** od {bronze}, **strieborný** od {silver}, **zlatý** od {gold}.",
-      "Strelnica: keď dokončíš svet, pri jeho veľkej výzve na mape pribudne terč. Tvoja postavička hádže na terč vtipné veci a ty píšeš slová na kruhoch, ktorými vec preletí. Trénuješ písmená, ktoré ešte nepíšeš dosť presne.",
+      "Strelnica: každý otvorený svet má na mape pri svojej veľkej výzve terč. Tvoja postavička hádže na terč vtipné veci a ty píšeš slová na kruhoch, ktorými vec preletí. Trénuješ písmená, ktoré ešte nepíšeš dosť presne.",
       "Keď napíšeš každé slovo načas a bez chyby, trafíš do stredu. Chyba vec trochu zníži, po troch chybách spadne na zem. Nič zlé sa nestane, príde ďalšia.",
       "Každý svet má na strelnici svoju vzácnu vec. Keď ju trafíš do stredu a dohádžeš do konca, pribudne do tvojej zbierky. Potom si ju môžeš **Enterom** vziať do labky namiesto veci, ktorú tvoja postavička práve drží.",
-      "Papagáj: keď dokončíš svet, pri terči pribudne papagáj. Napíšeš pár slov veľakrát za sebou a papagáj ich po tebe opakuje, kým ich prsty nebudú vedieť samy. Na rýchlosti nezáleží.",
+      "Papagáj: každý otvorený svet má pri terči papagája. Napíšeš pár slov veľakrát za sebou a papagáj ich po tebe opakuje, kým ich prsty nebudú vedieť samy. Na rýchlosti nezáleží.",
       "Papagáje časom uletia, tak sa za nimi vráť a zahraj si znova. Keď sú doma papagáje zo všetkých tvojich hotových svetov, máš **odznak Papagáj** pri svojom mene."
     ],
     "playTitle": "Ako hrať",

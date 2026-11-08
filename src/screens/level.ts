@@ -73,9 +73,9 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
   if (params.id === 'task' && task) def = taskLevel(task, taskWorld(p, task));
   else if (params.id === 'practice') def = practiceLevel(params.seconds ?? null, params.text ? ownTextPhrases(p) : undefined);
   else if (params.id === 'freetype') def = freeTypeLevel(params.world != null && isWorldUnlocked(p, params.world) ? params.world : 0);
-  else if (params.id === 'aim') def = aimLevel(p, params.world != null && aimOpen(p, params.world) ? params.world : aimWorld(p, 0) ?? 0);
+  else if (params.id === 'aim') def = aimLevel(p, params.world != null && aimOpen(p, params.world) ? params.world : aimWorld(p, 0));
   else if (params.id === 'rhythm') def = rhythmLevel(params.world != null && rhythmOpen(p, params.world) ? params.world : 0);
-  else if (params.id === 'parrot') def = parrotLevel(params.world != null && aimOpen(p, params.world) ? params.world : aimWorld(p, 0) ?? 0);
+  else if (params.id === 'parrot') def = parrotLevel(params.world != null && aimOpen(p, params.world) ? params.world : aimWorld(p, 0));
   else if (params.id === 'journey' && journeyStory(params.story)) def = journeyLevel(journeyStory(params.story)!, 0);
   else if (params.id === 'placement') def = placementLevel();
   else def = levelById(params.id) ?? LEVELS[0];

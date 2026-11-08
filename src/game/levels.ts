@@ -449,9 +449,9 @@ function journeySteps(story: StoryDef): JourneyStep[] {
 /** The id the journey's best stars are kept under in `progress.levels`. */
 export const journeyId = (story: StoryDef): string => `journey-${story.id}`;
 
-/** The story's hero's journey opens with its last world done, like that world's target range and parrot. */
+/** The story's hero's journey opens with its last world done. */
 export function journeyOpen(p: Profile, story: StoryDef): boolean {
-  return aimOpen(p, story.worlds[story.worlds.length - 1]);
+  return p.progress.worldsDone.includes(story.worlds[story.worlds.length - 1]);
 }
 
 /** One part of the story's hero's journey: a regular run of its kind with the part's share of the journey's minimum. */
@@ -468,15 +468,15 @@ export function freeTypeLevel(world: number): LevelDef {
   return { id: 'freetype', world, index: -1, kind: 'freetype', count: 0, variant: '', isSuper: false };
 }
 
-/** The world's target range opens with its super level done. */
+/** The world's target range, parrot and Rytmus are open the whole time the world is. */
 export function aimOpen(p: Profile, world: number): boolean {
-  return p.progress.worldsDone.includes(world);
+  return isWorldUnlocked(p, world);
 }
 
-/** Where the narrator's practice offer goes: this world's range, else the last finished world's; null before any. */
-export function aimWorld(p: Profile, world: number): number | null {
+/** Where the narrator's practice offer goes: this world's range, else the furthest open world's (the first one is always open). */
+export function aimWorld(p: Profile, world: number): number {
   if (aimOpen(p, world)) return world;
-  return p.progress.worldsDone.length ? Math.max(...p.progress.worldsDone) : null;
+  return WORLDS.reduce((best, _, w) => (aimOpen(p, w) ? w : best), 0);
 }
 
 /** The target range of a world: throws at a target through words with the weak keys; no stars. */
@@ -484,7 +484,7 @@ export function aimLevel(p: Profile, world: number): LevelDef {
   return { id: 'aim', world, index: -1, kind: 'aim', count: 0, variant: '', isSuper: false, focus: aimKeys(p) };
 }
 
-/** The parrot of a world: the same few words many times over, until the fingers know them; no stars. Opens with the target range. */
+/** The parrot of a world: the same few words many times over, until the fingers know them; no stars. Open with the target range. */
 export function parrotLevel(world: number): LevelDef {
   return { id: 'parrot', world, index: -1, kind: 'parrot', count: 0, variant: '', isSuper: false };
 }
@@ -495,10 +495,11 @@ export function parrotSizeOf(world: number): ParrotSize {
   return parrotSize(story.tier, story.worlds.indexOf(world));
 }
 
-/** Letters of the parrot's words: the keys of the world's last level. */
+/** Letters of the parrot's words: the keys of the world's last level the child knows already (the world is open before they all come). */
 export function parrotKeys(p: Profile, world: number): string[] {
   const last = worldLevels(world)[4];
-  return practiceOrder(p).slice(0, keysNeeded(p, last)).filter(isLetterKey);
+  const known = new Set(activeKeys(p));
+  return practiceOrder(p).slice(0, keysNeeded(p, last)).filter((k) => isLetterKey(k) && (p.id === SUPER_ID || known.has(k)));
 }
 
 /** The letters of a world's Rytmus: the parrot's letters (the world's last level) that are ready; the super profile takes them all. */
@@ -507,7 +508,7 @@ export function rhythmLetters(p: Profile, world: number): string[] {
   return p.id === SUPER_ID ? keys : keys.filter((k) => isKeyReady(p, k));
 }
 
-/** A world's Rytmus opens with the world finished, like its target range and parrot. */
+/** A world's Rytmus is open with the world, like its target range and parrot. */
 export const rhythmOpen = aimOpen;
 
 /** Seconds of song a world's Rytmus round lasts: half of its story's regular level. */

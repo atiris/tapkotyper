@@ -3,11 +3,11 @@
 ## What
 - A fun, voluntary place to train exactly the letters that hold the next ones back:
   **Strelnica** / **Target range**. One for every world, on the world's own background and
-  music; a world's range opens when its super level is done, and a small target node next to the
+  music; a world's range is open the whole time the world is, and a small target node next to the
   super level's star on the map starts it; its tooltip says it trains the letters that lack
-  accuracy, the way to the next letter when only accuracy is missing. Before that the node is
+  accuracy, the way to the next letter when only accuracy is missing. In a closed world the node is
   already there, grey and closed like a level not reached yet, its tooltip adding that it opens
-  when the world is finished.
+  with the world.
 - The letters trained are the keys of the newest lesson group that are not ready yet
   ([lesson progression](../learning/lesson-progression.md)); when none holds the lesson back,
   the three known letters with the lowest recent accuracy.

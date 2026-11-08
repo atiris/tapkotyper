@@ -55,7 +55,7 @@
   crossroads, dictation, secret words, finale) with its five mini stars under it
   (three on top, two below in their gaps, like the end card's); its
   tooltip says the number and the activity. A dot without its picture shows the number.
-- A finished world adds two side cards after its super star: the target range (a red target)
+- Every world has side cards after its super star, open with the world: the target range (a red target)
   and the parrot (its head `ui-act-parrot-head` while it is at home, else the empty short perch
   `obj-parrot-perch-short`, grey while closed). The Parrot badge is Aro, the sitting macaw
   `ui-act-parrot` on the short perch, about 70 px wide on the map and 90 px on "Môj postup"; on

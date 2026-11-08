@@ -67,7 +67,7 @@ function play(L: LevelRuntime, child?: (mode: InstanceType<typeof RhythmMode>) =
 }
 
 describe('rhythm', () => {
-  it('opens with the world finished; the first world plays two lanes of its newest letters, left to right', () => {
+  it('opens with its world; the first world plays two lanes of its newest letters, left to right', () => {
     expect(rhythmLetters(app.profile!, 0).sort()).toEqual(['d', 'f', 'j', 'k']);
     expect(rhythmOpen(app.profile!, 0)).toBe(true);
     expect(rhythmOpen(app.profile!, 1)).toBe(false);

@@ -16,14 +16,15 @@ async function editProfile(page: Page, change: string): Promise<void> {
 test('a level waiting for letters names the ones that need accuracy', async ({ page }) => {
   await createProfile(page, 'Ema');
   await editProfile(page, 'p.progress.levels = { "w1-1": 3, "w1-2": 3 };');
-  // No world is done yet: every target range is grey and closed, the bubble offers own practice.
-  await expect(page.locator('.aim-node:not(:disabled)')).toHaveCount(0);
-  await expect(page.locator('.island-meadow .aim-node')).toBeDisabled();
+  // No world is done yet, but the meadow's target range is open with the meadow; the next world's is closed with its world.
+  await expect(page.locator('.aim-node:not(:disabled)')).toHaveCount(1);
+  await expect(page.locator('.island-meadow .aim-node')).toBeEnabled();
+  await expect(page.locator('.island-space .aim-node')).toHaveAttribute('data-tip', /Opens with this world/);
   const locked = page.locator('.level-node.keys').first();
   await expect(locked.locator('.level-key')).toHaveAttribute('data-tip', /type these more accurately: f, j/);
   await locked.click();
   await expect(page.locator('.map-bubble .held-keys')).toContainText('type these more accurately: f, j');
-  await expect(page.locator('.map-bubble .bubble-actions .btn')).toHaveText('Own typing');
+  await expect(page.locator('.map-bubble .bubble-actions .btn')).toHaveText('Target range');
 });
 
 test('a finished world opens its target range from the map', async ({ page }) => {

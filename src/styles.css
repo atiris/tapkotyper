@@ -524,7 +524,8 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
 :root[data-theme='dark'] .start-screen .start-sig a:hover, :root[data-theme='dark'] .start-screen .start-sig a:focus-visible { color: #fff6cc; opacity: 1; text-shadow: 0 0 6px rgba(255, 226, 120, 0.9), 0 0 14px rgba(255, 200, 90, 0.5); }
 /* A phone without a keyboard: the logo face above the title, the mentors' way in first; none of its buttons is the default one. */
 .start-screen.gated .start-wrap { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'top' 'more'; justify-items: center; text-align: center; max-width: 600px; }
-.start-screen.gated .start-top, .start-screen.gated .start-more { align-items: center; }
+/* Their own width: a size container shrinks to nothing in a centred column (a wide tablet). */
+.start-screen.gated .start-top, .start-screen.gated .start-more { align-items: center; width: 100%; }
 .gate-logo { width: calc(var(--logo) * 0.9); filter: drop-shadow(0 8px 12px var(--soft-shadow)); animation: float 4s ease-in-out infinite; }
 .start-screen.gated .start-more { gap: 12px; }
 .start-screen.gated .start-more .teacher-big { max-width: none; padding-block: 0.7rem; }

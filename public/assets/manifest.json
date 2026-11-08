@@ -2135,6 +2135,10 @@
   "obj-egg-crack": {
    "w": 400,
    "h": 512
+  },
+  "ui-medals": {
+   "w": 352,
+   "h": 512
   }
  },
  "accessories": [

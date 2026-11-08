@@ -48,8 +48,8 @@ export interface Thing {
   flash?: string;
   /** Smoke trails behind it in flight. */
   trail?: 'smoke';
-  /** It points along its path instead of tumbling (an arrow, a rocket), or keeps upright (things with wings). */
-  spin?: 'point' | 'none';
+  /** It points along its path instead of tumbling (an arrow, a rocket), keeps upright (things with wings), or turns slowly (heavy things). */
+  spin?: 'point' | 'none' | 'slow';
   /** The chance of its own `expect` lines (it has some in the texts) and the eyes they bring. */
   expect?: number;
   eyes?: Eyes;
@@ -89,7 +89,7 @@ export const THINGS: Thing[] = [
   { id: 'pacifier', pics: ['obj-aim-pacifier'], story: 0, sfx: 'squeak', effect: 'bounce' },
   { id: 'chalk', pics: ['obj-aim-chalk'], story: 0, sfx: 'pop', effect: 'bounce', burst: 'dust', scale: 1.2 },
   { id: 'whistle', pics: ['obj-aim-whistle'], story: 0, sfx: 'whistle', effect: 'bounce' },
-  { id: 'pingpong', pics: ['obj-aim-pingpong'], story: 0, sfx: 'pop', effect: 'bounces', hold: 3, scale: 0.75 },
+  { id: 'pingpong', pics: ['obj-aim-pingpong'], story: 0, sfx: 'pop', effect: 'bounces', hold: 3, scale: 0.6 },
   { id: 'bowling', pics: ['obj-aim-bowling'], story: 0, sfx: 'thud', effect: 'bounce', wobble: true, burst: 'splinters', expect: 0.4, eyes: 'worry' },
   { id: 'butterfly', pics: ['obj-butterfly', 'obj-butterfly-2', 'obj-butterfly-3'], story: 0, sfx: 'whoosh', effect: 'away', spin: 'none' },
   { id: 'spider', pics: ['obj-spider'], story: 0, sfx: 'pop', effect: 'dangle', hold: 1.5, spin: 'none', expect: 0.4, eyes: 'worry' },
@@ -110,13 +110,14 @@ export const THINGS: Thing[] = [
   { id: 'gear', pics: ['obj-aim-gear'], story: 1, sfx: 'pop', effect: 'bounce' },
   { id: 'note', pics: ['obj-aim-note'], story: 2, sfx: 'note', effect: 'bounce', spin: 'none', expect: 0.4, eyes: 'wide' },
   { id: 'frog', pics: ['obj-frog'], story: 2, sfx: 'squeak', effect: 'hop', spin: 'none' },
+  { id: 'beethoven', pics: ['obj-aim-beethoven'], story: 2, sfx: 'fate', effect: 'bounce', wobble: true, spin: 'slow', expect: 0.4, eyes: 'wide', scale: 1.3 },
   { id: 'wand', pics: ['obj-aim-wand'], story: 2, sfx: 'note', effect: 'bounce', burst: 'magic', flash: '#f3d1ff' },
   // One thing of its own for every world.
   { id: 'ladybug', pics: ['obj-ladybug'], story: 0, world: 0, sfx: 'pop', effect: 'away', spin: 'none' },
   { id: 'rocket', pics: ['obj-rocket'], story: 0, world: 1, sfx: 'whoosh', effect: 'bounce', trail: 'smoke', spin: 'point', scale: 1.15 },
   { id: 'crystal', pics: ['obj-aim-crystal'], story: 0, world: 2, sfx: 'note', effect: 'bounce', burst: 'magic', flash: '#ffd0d6' },
   { id: 'flame', pics: ['obj-flame-1', 'obj-flame-2', 'obj-flame-3', 'obj-flame-4'], story: 0, world: 3, sfx: 'whoosh', effect: 'bounce', burst: 'sparks', flash: '#ffb27a', spin: 'none', expect: 0.4, eyes: 'worry' },
-  { id: 'nest', pics: ['obj-nest'], story: 0, world: 4, sfx: 'plop', effect: 'top', hold: 2, spin: 'none' },
+  { id: 'antler', pics: ['obj-aim-antler'], story: 0, world: 4, sfx: 'thud', effect: 'top', hold: 2, spin: 'slow', expect: 0.4, eyes: 'wide' },
   { id: 'spring', pics: ['obj-aim-spring'], story: 1, world: 5, sfx: 'squeak', effect: 'bounces', hold: 3, high: true },
   { id: 'wrench', pics: ['obj-aim-wrench'], story: 1, world: 6, sfx: 'pop', effect: 'bounce', scale: 1.1 },
   { id: 'umbrella', pics: ['obj-aim-umbrella'], story: 1, world: 7, sfx: 'whoosh', effect: 'top', hold: 2, spin: 'none', scale: 1.2 },

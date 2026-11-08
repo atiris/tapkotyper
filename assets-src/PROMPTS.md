@@ -178,6 +178,9 @@ Notes from real Gemini runs; add new ones here.
   opaque.
 - Black outlines on soft space objects looked like stickers; "soft gentle shading, no dark
   outlines" fits painted space.
+- The key colour takes everything near it: a bronze bust with "a hint of green patina" on green lost
+  its greenish folds to holes (2026-11-09). Pick the background the object has no shade of, and say
+  "never green or teal" (or pink) for the object when it could drift there.
 - Small throwables (46 px): "a bold, simple shape with a clear outline, easy to recognise as a
   tiny icon of about 46 pixels" plus hex colors gave 36 of 36 clean pictures on the first try.
   A second state of a thing (a cracked egg, a lit bulb) kept its size and outline when the
@@ -697,6 +700,15 @@ Cute, soft 2D children's game icon, flat vector style with gentle gradients, sof
 ### ui-badge-none.jpg (the world badges shelf on My progress with no badge yet, beside "none yet"; 2026-11-06)
 The ui-aim-sight prompt below with "Grey empty badge" and as the icon: "an empty medal badge not earned yet, strictly front view: a thick round ring, and inside it a plain shield shape, the shield empty with no picture and no symbol on it", the same greys, "no ribbon, no star".
 
+### ui-story-dragon.jpg, ui-story-robot.jpg, ui-story-fairy.jpg (a story's row on My progress and the certificate, shown at 36 px; 2026-11-09)
+The whole figures (`obj-dragon-hatched`, `robot-happy`, `fairy-happy`) had too many details at 36 px. Each is a close-up head
+made from the figure's picture, attached: "redraw the [figure] from the attached picture in exactly the same drawing style,
+outline, shading and colours, but as a close-up portrait: only its head and the top of its shoulders, filling most of the
+picture", then the figure's own parts named plainly (the robot's face screen with smiling turquoise eyes and the antenna;
+the fairy's lavender hair with the yellow flower and the wing tips behind her shoulders; the dragon's horns, ears and big
+eyes, no eggshell), and "Keep it simple and bold so it reads clearly as a tiny icon of about 36 pixels: big clear shapes,
+no small details, no arms. Front view, centered". Robot and dragon on magenta, the fairy on green.
+
 ### ui-aim-sight.jpg (a range award not found yet on My progress: a grey sight, turned at random by the game; 2026-11-06)
 ```
 Generate an image: Grey target sight
@@ -1101,7 +1113,6 @@ at a small size, since many of them stand still on screen with a word next to th
 | `obj-poppy-seedhead.jpg` | **not the common prompt:** attach `obj-poppy-flower.jpg`: "Edit the attached picture (a red poppy flower on a green stem). All petals have fallen off, no petals at all. At the top of the stem there is only a ripe round poppy seed head: a smooth round capsule, a bit bigger than the flower's center was, in soft grey-green (#A9B98E) turning light straw beige (#D8CBA0) at the top, with a flat star-shaped crown of fine ridges on top and a short neck where it meets the stem. The stem gently bends under the seed head and is a little shorter: the seed head sits about one tenth lower than the flower did. Keep the stem's little hairs and both toothed leaves, same style, same position and the same bottom end of the stem, only the greens are a little paler and drier. Keep the same flat magenta background (#FF00FF), no shadow, no grass, no fallen petals, no other objects. No face, no eyes, no text. Same image size and same tall portrait shape as the attached picture." | magenta |
 | `obj-invitation.jpg` | a small folded paper party invitation card tied with a green ribbon and a tiny daisy, front view, no face | magenta |
 | **Dragons** | | |
-| `obj-nest.jpg` | a big round cozy nest of woven twigs and soft moss, empty, seen a little from above | magenta |
 | `obj-dragon-sleeping-1.jpg` | a chubby baby dragon, mint green, curled up asleep with closed eyes and a tiny smile (renamed from `obj-dragon-sleeping` 2026-10-30: baby N sleeps as sleeping N) | magenta |
 | `obj-dragon-sleeping-2.jpg` | (plan 83, done 2026-10-30) **attach `obj-dragon-sleeping-1.jpg`**: "redraw the attached sleeping baby dragon in exactly the same drawing style, outline, shading, size, position and exactly the same lying, curled-up sleeping pose with closed eyes and a tiny smile, only change its colour: the body is sky blue (#8EC5F0, darker shade #5E9FD6), the belly a lighter pale blue-cream (#DDEFFB), the tiny wings a slightly darker blue" | magenta |
 | `obj-dragon-sleeping-3.jpg` | (done 2026-10-30) as -2 with "sunny yellow (#F6D55C, darker shade #E2B43A), the belly a lighter pale cream-yellow (#FFF2C2), the tiny wings a slightly darker warm yellow. Never green" | magenta |
@@ -1244,6 +1255,8 @@ and the fish keep their faces). Checked at 46 px on a light and a dark band befo
 | `obj-aim-umbrella.jpg` | (the range's own) one big open red #E5534B umbrella from the side, a wooden J handle, no hand, no rain | green | done 2026-11-06 |
 | `obj-aim-spring.jpg` | (the range's own) one big coiled blue-grey steel spring #8FA3B8 standing upright, about seven loops | magenta | done 2026-11-06 |
 | `obj-aim-asteroid.jpg` | (the range's own) one small lumpy grey-brown #8E7F72 space rock with soft round craters, no fire trail | magenta | done 2026-11-06 |
+| `obj-aim-antler.jpg` | (2026-11-09, the egg mountain's range thing instead of the nest, too detailed to throw) one single deer antler, one half of a pair, a long curved main beam and five short rounded points, light bone brown #C9A57A, cream tips #EFDDBE, darker #8C6A45 base with a knobbly ring, lying diagonally; no skull, no deer | magenta | done 2026-11-09 |
+| `obj-aim-beethoven.jpg` | (2026-11-09, the owner's wish) a small classic bronze bust of Ludwig van Beethoven on a short round pedestal, three-quarter view facing right, wild wavy hair, stern sculpted face, a scarf; bronze #B87333, highlights #E0A86A, shade #7A4A22, never green or teal (a green patina on a green background was keyed out of its folds, see the lessons); a statue, so no cartoon eyes and no other colours | magenta | done 2026-11-09 |
 | `obj-aim-planet.jpg` | (the range's own, instead of the five pastel planets) one small planet like the Earth, blue oceans, green and sandy continents, white cloud swirls, a thin cream ring in front at the bottom and behind at the top | magenta | done 2026-11-06 |
 
 ## 11. End cards (plan `.todo/85-one-end-card.md`)

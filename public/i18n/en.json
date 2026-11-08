@@ -3177,6 +3177,27 @@
           "Do re mi fa!"
         ]
       },
+      "beethoven": {
+        "name": "Beethoven bust",
+        "launch": [
+          "Beethoven!",
+          "Fly, Beethoven!",
+          "Beethoven's bust, go!"
+        ],
+        "sound": [
+          "Ta-ta-ta-daaa!"
+        ],
+        "hit": [
+          "I'm falling to pieces!",
+          "Fateful precision!",
+          "Anything for Elise?",
+          "A virtuoso hit!",
+          "A symphony!"
+        ],
+        "expect": [
+          "Ludwig, is that you?"
+        ]
+      },
       "frog": {
         "name": "Frog",
         "launch": [
@@ -3301,19 +3322,26 @@
           "I hope it's just a tiny flame."
         ]
       },
-      "nest": {
-        "name": "Nest",
+      "antler": {
+        "name": "Antler",
         "launch": [
-          "Nest away!",
-          "A home for birds, coming up!"
+          "The deer didn't want it any more!",
+          "An antler from a twelve-pointer!",
+          "Straight from the forest!",
+          "A deer left it to me!"
         ],
         "sound": [
-          "Rustle!"
+          "Grooooh!"
         ],
         "hit": [
-          "Who's moving in?",
-          "Add an egg and I'm a hen!",
-          "Cozy!"
+          "I'm stag-gered!",
+          "I'm the king of the forest!",
+          "Lord of the beasts!",
+          "I'd rather have a golden crown!"
+        ],
+        "expect": [
+          "And where's the rest?",
+          "Did he give it up freely?"
         ]
       },
       "spring": {

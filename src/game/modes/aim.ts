@@ -157,8 +157,9 @@ interface EyesUp {
 /** Chance of a line before the hit for things without lines of their own; share of bullseyes with the thing's own line. */
 const EXPECT_CHANCE = 0.25;
 const OWN_HIT = 0.8;
-/** Chance of a word popping out of the target at a hit, this far beyond its edge. */
+/** Chance of a word popping out of the target at a hit, this far beyond its edge; the share of general words among them (else the thing's own). */
 const POP_CHANCE = 0.5;
+const POP_GENERAL = 0.25;
 const POP_OUT = 60;
 /** The last word's height over the target's top. */
 const WORD_OVER = 62;
@@ -181,6 +182,9 @@ const LINE_MIN = 3.5;
 const LINE_MAX = 8;
 const CALL_MAX = 6;
 const LINE_HOLD = 4;
+/** How fast a thing tumbles in flight, and a slowly turning one (radians a second). */
+const SPIN = 3;
+const SLOW_SPIN = 0.8;
 /** The common size of a thing in flight. */
 const THING_SIZE = 46;
 /** Seconds the cracked egg shows before the chick. */
@@ -562,7 +566,7 @@ export class AimMode extends HeroMode {
     this.marks = this.marks.filter((m) => m.age < markLife(m));
     const f = this.flight;
     if (!f || f.phase === 'ready') return;
-    if (!f.landed && !f.th.spin) f.spin += dt * 3;
+    if (!f.landed && (!f.th.spin || f.th.spin === 'slow')) f.spin += dt * (f.th.spin ? SLOW_SPIN : SPIN);
     if (f.hatched) f.hatched += dt;
     f.lift += (this.liftGoal(f) - f.lift) * Math.min(1, dt * 4);
     for (const r of f.stops) if (r.passed) r.passed += dt;
@@ -683,7 +687,7 @@ export class AimMode extends HeroMode {
   }
 
   /**
-   * At every other hit or so a word pops out of the target (the thing's own sound or a general one), in a
+   * At every other hit or so a word pops out of the target (the thing's own sound, a general one in a quarter of them), in a
    * random direction over its top-left side: from toward the top-right corner round to toward the bottom-left one.
    */
   private pop(sound: string | null): void {
@@ -691,8 +695,10 @@ export class AimMode extends HeroMode {
     const { x, y } = this.target, d = this.radius + POP_OUT;
     // Screen angles (y down): the top-right corner lies above (negative), the bottom-left one past the left (below pi).
     const a = this.L.rng.range(Math.atan2(VH - y, -x) - 2 * Math.PI, Math.atan2(-y, this.L.vw - x));
-    const words = [...(sound ? tList(sound) : []), ...tList('aim.lines.pop')];
-    this.L.shout(this.bags.draw(`pop ${sound}`, words), x + Math.cos(a) * d, y + Math.sin(a) * d);
+    const own = sound ? tList(sound) : [];
+    const general = !own.length || this.L.rng.chance(POP_GENERAL);
+    const words = general ? tList('aim.lines.pop') : own;
+    this.L.shout(this.bags.draw(general ? 'pop' : `pop ${sound}`, words), x + Math.cos(a) * d, y + Math.sin(a) * d);
   }
 
   /** The run ended (not left early): what was found joins the collection; the runtime saves the profile. */
@@ -764,7 +770,7 @@ export class AimMode extends HeroMode {
     const f = this.flight;
     if (f?.phase === 'miss') {
       const k = Math.min(1, f.after / PAUSE_AFTER), tg = this.target;
-      this.drawThing(g, f.th, this.flightPic(f), tg.x + k * this.L.vw * 0.3, tg.y + f.lift + k * 40, THING_SIZE * (f.th.scale ?? 1), f.th.spin ? 0 : f.spin, 1 - k);
+      this.drawThing(g, f.th, this.flightPic(f), tg.x + k * this.L.vw * 0.3, tg.y + f.lift + k * 40, THING_SIZE * (f.th.scale ?? 1), f.th.spin && f.th.spin !== 'slow' ? 0 : f.spin, 1 - k);
     }
     this.drawTarget(g);
     if (f) {
@@ -1128,9 +1134,9 @@ export class AimMode extends HeroMode {
   private drawProjectile(g: G, f: Flight): void {
     const p = this.point(f.s);
     const y = p.y + f.sink + f.lift + f.drop;
-    // An arrow or a rocket points along the path, winged things stay upright, the rest tumbles slowly. A fallen one lies on the grass and fades before the next throw.
+    // An arrow or a rocket points along the path, winged things stay upright, heavy ones turn slowly, the rest tumbles. A fallen one lies on the grass and fades before the next throw.
     const next = this.point(Math.min(1, f.s + 0.01));
-    const rot = f.th.spin === 'point' ? Math.atan2(next.y - p.y, next.x - p.x) : f.th.spin || this.L.reduceMotion || f.hatched || f.melted ? 0 : f.spin;
+    const rot = f.th.spin === 'point' ? Math.atan2(next.y - p.y, next.x - p.x) : f.th.spin === 'none' || this.L.reduceMotion || f.hatched || f.melted ? 0 : f.spin;
     const flap = f.hatched && !this.L.reduceMotion ? Math.sin(this.t * 18) * 4 : 0;
     this.drawThing(g, f.th, this.flightPic(f), p.x, y + flap, THING_SIZE * (f.th.scale ?? 1), rot, f.landed ? 1 - f.after / PAUSE_AFTER : 1);
   }

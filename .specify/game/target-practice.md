@@ -46,7 +46,7 @@
   poppy seed is tiny, so the target cannot see it coming. The range draws its things as plain
   objects without faces, even where the same object has a face in a story.
 - The range talks. The moment the launch word throws, the character names the thing in a small bubble
-  ("Mucha vpred!"). About every other hit makes a word pop out of the target, above or left of it at a random angle: the thing's impact sound ("Pľac!") or a general one ("Bum!", "Kaboom!", "Auuuu!"). At every hit the target
+  ("Mucha vpred!"). About every other hit makes a word pop out of the target, above or left of it at a random angle: the thing's impact sound ("Pľac!"), and only in a quarter of them a general one ("Bum!", "Kaboom!", "Auuuu!"), so the word fits the thing. At every hit the target
   says how good the throw was in a bubble left of it, below the flight path: in the middle (no
   wrong key) mostly a funny line of the thing ("100-percentný kečup!"), one time in five a
   bullseye line; one mistake a near miss, two or more a decent hit; when a line names the points

@@ -3192,6 +3192,27 @@
           "Do re mi fa!"
         ]
       },
+      "beethoven": {
+        "name": "Busta Beethovena",
+        "launch": [
+          "Beethoven!",
+          "Leť, Beethoven!",
+          "Beethovenova busta vpred!"
+        ],
+        "sound": [
+          "Ta ta ta dáá!"
+        ],
+        "hit": [
+          "Poskladám sa z toho!",
+          "Osudová presnosť!",
+          "Nemáš niečo pre Elišku?",
+          "Virtuózny zásah!",
+          "Symfónia!"
+        ],
+        "expect": [
+          "Ludwig, si to ty?"
+        ]
+      },
       "frog": {
         "name": "Žabka",
         "launch": [
@@ -3317,20 +3338,26 @@
           "Dúfam, že je to len malý ohník."
         ]
       },
-      "nest": {
-        "name": "Hniezdo",
+      "antler": {
+        "name": "Parohy",
         "launch": [
-          "Hniezdo letí!",
-          "Hádžem hniezdočko!",
-          "Domček pre vtáčiky!"
+          "Jeleň ich už nechcel!",
+          "Parohy z dvanástoráka!",
+          "Parožie z lesa!",
+          "Mám ich po jeleňovi!"
         ],
         "sound": [
-          "Šuch!"
+          "Grooóó!"
         ],
         "hit": [
-          "Kto tu bude bývať?",
-          "Ešte vajíčko a som sliepka!",
-          "Útulné!"
+          "Som z toho jeleň!",
+          "Som kráľ lesa!",
+          "Ako pán zverov!",
+          "Radšej chcem zlatú korunu!"
+        ],
+        "expect": [
+          "A kde je zvyšok?",
+          "Získal si ich dobrovoľne?"
         ]
       },
       "spring": {

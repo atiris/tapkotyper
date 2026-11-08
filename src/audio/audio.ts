@@ -11,7 +11,7 @@ export interface BeatOut {
   at(perf: number): number;
 }
 
-export type Sfx = 'key' | 'wrong' | 'word' | 'reward' | 'whoosh' | 'pop' | 'cheer' | 'bzzt' | 'note' | 'plop' | 'squeak' | 'ring' | 'whistle' | 'crack' | 'thud' | 'squawk' | 'beep';
+export type Sfx = 'key' | 'wrong' | 'word' | 'reward' | 'whoosh' | 'pop' | 'cheer' | 'bzzt' | 'note' | 'plop' | 'squeak' | 'ring' | 'whistle' | 'crack' | 'thud' | 'squawk' | 'beep' | 'fate';
 const SOUND_KEY = 'tapkotyper:sound';
 /**
  * Rytmus plays through the music's volume, which is lower than the effects': a caught letter's bell peaks at
@@ -256,6 +256,8 @@ class AudioEngine {
       case 'crack': tone(1800, 0, 0.03, 'square', 0.05, 900); tone(1400, 0.05, 0.03, 'square', 0.04, 700); break;
       case 'squawk': tone(950, 0, 0.11, 'sawtooth', 0.06, 1500); tone(1250, 0.12, 0.14, 'sawtooth', 0.05, 750); break;
       case 'thud': tone(110, 0, 0.3, 'sine', 0.3, 50); tone(70, 0.02, 0.25, 'triangle', 0.15, 40); break;
+      // Three short notes and a long one a third lower: "ta ta ta daa".
+      case 'fate': for (let i = 0; i < 3; i++) tone(392, i * 0.16, 0.12, 'triangle', 0.18); tone(311, 0.5, 0.8, 'triangle', 0.2); tone(156, 0.5, 0.8, 'sine', 0.12); break;
       // A bell-like note of a pentatonic scale, a little song as the notes add up.
       case 'note': { const f = [523, 587, 659, 784, 880][Math.floor(Math.random() * 5)]; tone(f, 0, 0.5, 'sine', 0.16); tone(f * 2, 0, 0.3, 'sine', 0.05); break; }
       case 'cheer': [587, 740, 880, 1175].forEach((f, i) => tone(f, i * 0.07, 0.2, 'triangle', 0.12)); break;

@@ -189,9 +189,9 @@ export function summaryRow(p: Profile): HTMLElement {
       t('progress.rangeRecord', { n: p.progress.rangeRecord, date: new Date(rangeRecordAt).toLocaleDateString(locale()) })) : null));
 }
 
-/** Who a story is about, for its row. */
+/** Who a story is about, for its row: a close-up head that still reads at a small size. */
 export function storyPicture(story: StoryDef): string | null {
-  return imageUrl(story.id === 'robot' ? 'robot-happy' : story.id === 'fairy' ? 'fairy-happy' : 'obj-dragon-hatched');
+  return imageUrl(`ui-story-${story.id}`);
 }
 
 /** One row per story: its picture and name, its worlds (done in colour), and its stars. */

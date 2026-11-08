@@ -1384,6 +1384,12 @@ lanes beside it; the game draws them mirrored too, for more variety.
 | `obj-rhythm-cloud-2.jpg` | the same, one big round puff in the middle with one small puff on each side | magenta |
 | `obj-rhythm-cloud-3.jpg` | the same, two round puffs, a bigger one on the left and a smaller one on the right | magenta |
 
+### ui-treble-clef.jpg (the golden treble clef before My rhythm's notes; 2026-11-08, first try)
+Attach `ui-note-quarter.jpg` for the style.
+```
+Generate an image: a single music treble clef (G clef), chunky, rounded and friendly, like a sticker reward for children, in the same style as the attached music note. Warm deep gold color (#D9A520 with lighter #F2C14E highlights and darker #A8740F shading), not pale yellow, so it reads well on a light background, with a soft dark-brown outline. Strictly front view, upright, centered, filling about 75 % of the image height. Cute, soft 2D children's storybook illustration, flat vector style with gentle gradients. No face, no eyes, no staff lines, no notes, no text, no sparkles, nothing else. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no floor, no shadow. Square image.
+```
+
 ### Rhythm notes (one picture each, magenta)
 "Generate an image: a single music note, NOTE, chunky, rounded and friendly, like a sticker reward
 for children. Strictly front view, centered, filling about 70 % of the image height. Same style:

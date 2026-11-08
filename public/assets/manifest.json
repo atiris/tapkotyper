@@ -2139,6 +2139,10 @@
   "ui-medals": {
    "w": 352,
    "h": 512
+  },
+  "ui-treble-clef": {
+   "w": 235,
+   "h": 512
   }
  },
  "accessories": [

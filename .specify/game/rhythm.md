@@ -147,18 +147,21 @@
 - **Rhythm notes:** a round with rhythm 80 or more at 95 % accuracy or more (with time pressure) earns
   one rhythm note of the world it was played in; the end card's green line says so with the note's
   picture and its world. The notes stand in "Môj rytmus" ([statistics](../profiles/statistics.md)) as
-  pictures to look at; they bring no music. They fade: a **random** note goes for every three days without a
-  Rytmus round, counted from the day after the last one (played on Monday: all still there on Thursday,
-  one fewer on Friday morning, then on Monday, Thursday ...). A note is a picture of a half note, a
+  pictures to look at; they bring no music. They fly away like the parrots: a **random** note goes for every
+  three days without a Rytmus round, counted from the day after the last one (played on Monday: all
+  still there on Thursday, one fewer on Friday morning, then on Monday, Thursday ...). The map tells it
+  once, in the character's bubble: "Bez Rytmu ti uletela nota." ("... uleteli noty." for more), and
+  when the treble clef went with it: "Bez Rytmu ti uletela nota a s ňou aj husľový kľúč. Zahraj si
+  Rytmus a získaš ho späť." A note is a picture of a half note, a
   quarter note, an eighth note or two beamed eighths, each note always the same kind and turned by its
   own angle.
 - **The treble clef:** held while every open world has at least one of the notes kept (and there is
   one). It stands before the notes in "Môj rytmus" and counts 5 points in the treasure chest
-  ([statistics](../profiles/statistics.md)); a fading note can take it away, the next note of that
-  world brings it back.
+  ([statistics](../profiles/statistics.md)); a note flying away can take it away, the next note of
+  that world brings it back.
 - **Kept per world:** the last round's rhythm and the highest tempo held; the worlds with the check.
   **Kept per child:** the base tempo of the next round (of any world), the notes with their worlds, the
-  day of the last round and the fades taken since.
+  day of the last round, the fades taken since and how many of them the map has told.
 
 ## Why
 - Accuracy comes first, then rhythm, then speed. The story levels can measure speed; a beat can

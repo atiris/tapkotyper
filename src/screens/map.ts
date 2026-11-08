@@ -34,7 +34,7 @@ import { type TeacherTip, dueTip, tipSeen } from '../app/teacher-tips';
 import { openStats } from './stats';
 import { heldText, openWorldKeys, worldKeysButton, worldLockText } from './world-keys';
 import { taskCard } from './task';
-import { rhythmNotes } from '../game/rhythm-notes';
+import { hasClef, rhythmNotes, untoldFades } from '../game/rhythm-notes';
 
 /** Ms Turtle's pictures, one after another with her tips. */
 const TEACHER_PICTURES = ['ui-teacher', 'ui-teacher-2', 'ui-teacher-3'];
@@ -158,8 +158,10 @@ const ARO_AFTER_MS = 1800;
 
 export function mapScreen(root: HTMLElement, { focus }: { focus?: 'language' } = {}): () => void {
   const p = app.profile!;
-  // Notes fade away over the days.
-  if (rhythmNotes(p, localDate()).changed) saveProfile();
+  // Notes fly away over the days (the clef may go with them); the map tells it once.
+  const hadClef = hasClef(p);
+  rhythmNotes(p, localDate());
+  const notesFlown = untoldFades(p, hadClef);
   audio.music(app.menuTrack);
   // Won parrots may fly away over the days; the map tells it once.
   flyAway(p, localDate());
@@ -234,9 +236,12 @@ export function mapScreen(root: HTMLElement, { focus }: { focus?: 'language' } =
   placement?.querySelector<HTMLElement>('.btn.primary')?.focus();
   // Back from a language switch: the focus stays on the language.
   if (focus === 'language') focusLanguageButton(root);
-  if (flown.length) {
-    const worlds = flown.map((w) => worldName(w)).join(', ');
-    bubble.replaceChildren(h('p', {}, t(flown.length === 1 ? 'map.parrotFlown' : 'map.parrotsFlown', { worlds })));
+  const flownLines = [
+    ...(flown.length ? [t(flown.length === 1 ? 'map.parrotFlown' : 'map.parrotsFlown', { worlds: flown.map((w) => worldName(w)).join(', ') })] : []),
+    ...(notesFlown.notes ? [t(`map.${notesFlown.notes === 1 ? 'note' : 'notes'}Flown${notesFlown.clef ? 'Clef' : ''}`)] : []),
+  ];
+  if (flownLines.length) {
+    bubble.replaceChildren(...flownLines.map((line) => h('p', {}, line)));
     bubble.hidden = false;
   }
   // Tapko tells which parrots flew away first, then Aro says goodbye and leaves.

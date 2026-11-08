@@ -158,7 +158,7 @@ export function fillProgress(p: Profile, f: ProgressFill, rand: () => number = M
   const noted = f.allNotes ? [...pr.worldsDone] : pick(pr.worldsDone, pr.worldsDone.length - 1, rand).sort((a, b) => a - b);
   pr.rhythmNoteList = noted.map((world, n) => ({ world, n }));
   pr.rhythmNotesAt = noted.length ? today : null;
-  pr.rhythmNotesFaded = 0;
+  pr.rhythmNotesFaded = pr.rhythmNotesTold = 0;
   pr.rhythmWon = [...noted];
   p.stats = { keys: {}, sessions: [] };
   pr.trainedSeconds = 0;

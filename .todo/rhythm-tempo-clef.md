@@ -48,7 +48,7 @@ Affected: `src/game/beat.ts` (tempo rules), `src/game/modes/rhythm.ts`, `src/scr
   the treasure chest for **5 points**: `CLEF_POINTS = 5` next to `PARROT_POINTS`, in `MAX_CHEST` and
   `chestPoints`, and the chest's tooltip text (`progress.chest`, sk/en/translator) names it: "...,
   odznak Papagáj 7 bodov a husľový kľúč 5 bodov."
-- [ ] **5. Notes fly away like parrots, and the character says so.** Keep the fading rule (a random note
+- [x] **5. Notes fly away like parrots, and the character says so.** Keep the fading rule (a random note
   every `NOTE_FADE_DAYS` days without Rytmus). New: the map tells it once, in the character's map
   bubble (the narrator line on the map, like the lines that already appear there): "Bez Rytmu ti uletela
   nota." / with the clef lost by it: "Bez Rytmu ti uletela nota a s ňou aj husľový kľúč. Zahraj si
@@ -83,3 +83,4 @@ Affected: `src/game/beat.ts` (tempo rules), `src/game/modes/rhythm.ts`, `src/scr
 - Step 2: catches while the song waited (after a miss or a pause, without time pressure) count as caught but not in the in-time share; a phrase with no timed catch counts as in time. A gentle step down keeps the round's length too (only a full step down adds a phrase).
 - Step 3: `rhythmWon` goes to the worlds with a filled note (the same all-or-all-but-one pick); the tempo field takes whole numbers and is clamped to the range on fill.
 - Step 4: `CLEF_POINTS` and `hasClef` live in `src/game/rhythm-notes.ts` with the notes (not in parrots.ts); the clef is judged on the notes kept, and My progress takes the due fades before its chips so the chest and the shelf agree.
+- Step 5: plural lines for more notes at once (`map.notesFlown`, `map.notesFlownClef`) beside the plan's singular ones; the clef counts as lost when it was held as the map opened and is not after the fades (fades already taken on another screen tell no clef); `rhythmNotesTold` resets with `rhythmNotesFaded` at each round. The line shares the bubble with the flown parrots' line.

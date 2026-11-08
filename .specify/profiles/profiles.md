@@ -44,8 +44,9 @@
   get their defaults on load and broken parts are dropped.
 - Every player has an address (`#/p/<id>`, plus `/wardrobe`, `/settings`), so a
   link or desktop shortcut opens that child's map directly; the browser's back and forward
-  buttons move between screens. Leaving the whole app asks first only from a paused level (its
-  game is not saved); from the map, the wardrobe, the tasks or the start page it never asks.
+  buttons move between screens. Leaving the whole app asks first only during a level, running or
+  paused (its game is not saved yet); once it ended and its results are saved (the end card), and
+  from the map, the wardrobe, the tasks or the start page, it never asks.
 - **Super mode** for parents and testers: typing `supertapkotyper` fast (within 4 seconds,
   no field) on the start screen turns on a switch for the session and opens a temporary
   player with every key and accessory and every world finished (so everything is open), in a

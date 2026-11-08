@@ -1028,6 +1028,8 @@ export class LevelRuntime {
     const typed = this.free && { ...this.free.summary(), seconds };
     if (!typed?.words) return this.opts.onExit();
     this.state.finished = true;
+    // Saved: leaving the site no longer asks.
+    this.el.classList.add('ended');
     this.input?.dispose();
     this.input = null;
     this.guide.show(null);
@@ -1174,6 +1176,8 @@ export class LevelRuntime {
 
   private finish(): void {
     this.state.finished = true;
+    // Saved below: leaving the site no longer asks.
+    this.el.classList.add('ended');
     this.mode.onFinish();
     if (this.paws?.typing) this.paws.stop();
     this.input?.dispose();

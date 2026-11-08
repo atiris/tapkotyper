@@ -196,6 +196,11 @@ test('world badges sit on the map, grow with stars and line up on the progress s
     const p = d.profiles[0];
     p.progress.worldsDone = [0, 1, 2, 3];
     p.progress.rangeFinds = ['ladybug'];
+    // Three rhythm notes from today (none fades yet) and two growth medals.
+    const now = new Date();
+    p.progress.rhythmNoteList = [{ world: 0, n: 0 }, { world: 1, n: 1 }, { world: 1, n: 2 }];
+    p.progress.rhythmNotesAt = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    p.progress.growth = 2;
     // 18, 17 and 10 world stars: silver, silver, bronze; the done dragon world with 5 has none.
     Object.assign(p.progress.levels, {
       'w1-1': 2, 'w1-2': 4, 'w1-3': 4, 'w1-4': 4, 'w1-5': 4,
@@ -229,6 +234,17 @@ test('world badges sit on the map, grow with stars and line up on the progress s
   await expect(waiting.first()).toHaveAttribute('src', /ui-aim-sight/);
   expect(new Set(await waiting.evaluateAll((els) => els.map((e) => e.getAttribute('src')))).size).toBe(1);
   await page.locator('.badge-shelf').last().screenshot({ path: 'test-results/range-awards.png' });
+  // The rhythm notes are pictures, not buttons, each naming its world; the count stands after the last.
+  await expect(page.locator('.rhythm-notes button')).toHaveCount(0);
+  await expect(page.locator('.rhythm-notes .note-pic')).toHaveCount(3);
+  await expect(page.locator('.rhythm-notes .note-pic').first()).toHaveAttribute('data-tip', /^A note from \S.*\.$/);
+  await expect(page.locator('.rhythm-count')).toHaveText('3');
+  // The medals are a chip of the third row, before the parrots won; the last training stands under the character.
+  const third = page.locator('.progress-sum').nth(2).locator('.sum-chip');
+  await expect(third.first()).toHaveAttribute('aria-label', /^Medals: 2\. /);
+  await expect(third.first().locator('b')).toHaveText('2');
+  await expect(page.locator('.stats-modal .medals')).toHaveCount(0);
+  await expect(page.locator('.stats-hero .progress-last .icon')).toBeVisible();
 });
 
 test('the fairy story is a third row; Melody floats with the child', async ({ page }) => {
@@ -315,7 +331,7 @@ test('staying a while after a level keeps typing until it is ended on the pause 
   expect(errors).toEqual([]);
 });
 
-test('leaving the site asks only from a paused level, never from the map', async ({ page }) => {
+test('leaving the site asks only during a level, not from the map nor from its saved results', async ({ page }) => {
   const asks = () => page.evaluate(() => {
     const e = new Event('beforeunload', { cancelable: true });
     window.dispatchEvent(e);
@@ -325,8 +341,12 @@ test('leaving the site asks only from a paused level, never from the map', async
   expect(await asks()).toBe(false);
   await page.locator('.map-side .btn.primary').click();
   await untilPlay(page);
-  expect(await asks()).toBe(false);
+  expect(await asks()).toBe(true);
   await page.keyboard.press('Escape');
   await expect(page.locator('.pause-card')).toBeVisible();
   expect(await asks()).toBe(true);
+  await page.keyboard.press('Escape');
+  await playLevel(page);
+  await expect(page.locator('.end-card')).toBeVisible();
+  expect(await asks()).toBe(false);
 });

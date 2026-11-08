@@ -806,7 +806,7 @@ Beautiful, richly detailed 2D game achievement icon for teenagers aged 10 to 15,
 |---|---|---|
 | `badge-meadow.jpg` | a sealed envelope with a small star seal, a secret invitation | new |
 | `badge-space.jpg` | a cute round red rocket flying up with a small flame | new |
-| `badge-planet.jpg` | an open paw-like hand with a soft glowing turquoise light around it (the Force) | new |
+| `badge-planet.jpg` | (the owner's wish, 2026-11-08: a fly agaric, not the hand) a fly agaric mushroom, a red cap with white spots on a white stem, with a small tuft of grass and two tiny leaves at its foot; add "no face" | done 2026-11-08 |
 | `badge-dragons.jpg` | a big spotted dragon egg in pastel green and cream | new |
 | `badge-egg.jpg` | a happy baby dragon peeking out of a cracked egg shell | new |
 | `badge-junkyard.jpg` | a small friendly round robot waving one arm, a bit rusty | new |

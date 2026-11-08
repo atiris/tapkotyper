@@ -29,7 +29,7 @@ import { type Profile, SUPER_ID, type Surprise, type Task } from '../storage/sch
 import { isFinished, recordTaskRun } from '../share/task';
 import { localDate, recentTyping } from '../learning/stats';
 import { type Child, button, closeButton, h, modal } from '../ui/dom';
-import { notePic } from '../ui/notes';
+import { noteLook, notePic } from '../ui/notes';
 import { type EndAction, type EndCardOpts, endCard, focusMain } from '../ui/end-card';
 import { keyLabel } from '../ui/keyboard-guide';
 import { badge, parrotBadge } from '../ui/badge';
@@ -243,7 +243,7 @@ function newsLine(news: News[]): Child[] | null {
     : n.kind === 'mastered' ? [null, t('end.keyMastered', { key: keyLabel(n.key) })]
     : n.kind === 'letter' ? [null, t('end.letterBetter', { key: keyLabel(n.key), before: pct(n.before), after: pct(n.after) })]
     : n.kind === 'journeyHome' ? [null, t(`end.journeyHome.${n.story}`)]
-    : n.kind === 'rhythmNote' ? [notePic(n.n, app.profile!.seed), t('end.rhythmNote', { world: worldName(n.world) })]
+    : n.kind === 'rhythmNote' ? [notePic(noteLook(n.n, app.profile!.seed)), t('end.rhythmNote', { world: worldName(n.world) })]
     : n.kind === 'tempoTop' ? [null, t('end.rhythmTop', { n: n.tempo })]
     : n.kind === 'beatBetter' ? [null, t('end.rhythmBetter')]
     : [null, t('end.faster')];

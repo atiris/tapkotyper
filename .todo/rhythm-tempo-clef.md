@@ -55,7 +55,7 @@ Affected: `src/game/beat.ts` (tempo rules), `src/game/modes/rhythm.ts`, `src/scr
   Rytmus a získaš ho späť." (en likewise). A new field `rhythmNotesTold` (the faded count already told)
   keeps it to once. Update the old count tooltip text (`progress.rhythmNotes`) so it says notes fly
   away, not disappear.
-- [ ] **6. Livelier note colours.** The four note pictures each have one fixed colour, so a row can show
+- [x] **6. Livelier note colours.** The four note pictures each have one fixed colour, so a row can show
   three blue ones in a row. `notePic` gets a colour of its own per note: a CSS `filter: hue-rotate()`
   (plus a small `saturate`) picked from a palette of 8 well-spread hues by the note's own random
   source (stable for that note), never the same hue or the same kind as the note before it in the row
@@ -84,3 +84,4 @@ Affected: `src/game/beat.ts` (tempo rules), `src/game/modes/rhythm.ts`, `src/scr
 - Step 3: `rhythmWon` goes to the worlds with a filled note (the same all-or-all-but-one pick); the tempo field takes whole numbers and is clamped to the range on fill.
 - Step 4: `CLEF_POINTS` and `hasClef` live in `src/game/rhythm-notes.ts` with the notes (not in parrots.ts); the clef is judged on the notes kept, and My progress takes the due fades before its chips so the chest and the shelf agree.
 - Step 5: plural lines for more notes at once (`map.notesFlown`, `map.notesFlownClef`) beside the plan's singular ones; the clef counts as lost when it was held as the map opened and is not after the fades (fades already taken on another screen tell no clef); `rhythmNotesTold` resets with `rhythmNotesFaded` at each round. The line shares the bubble with the flown parrots' line.
+- Step 6: the eight hues are target hues (15, 60, ... 330 degrees); each picture is turned from its own colour to it, so "never the same hue" holds for what the child sees. A note the same kind or hue as the one before takes the next one; the end card's single note has no note before it.

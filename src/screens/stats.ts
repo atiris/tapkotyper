@@ -22,7 +22,7 @@ import { badge } from '../ui/badge';
 import { aroPerch } from '../ui/aro';
 import { hasParrotBadge } from '../game/parrots';
 import { rangeFinds } from '../ui/finds';
-import { notePic } from '../ui/notes';
+import { type NoteLook, noteLook, notePic } from '../ui/notes';
 import { openCertificate } from './certificate';
 
 /**
@@ -231,9 +231,11 @@ const NOTES_SHOWN = 60;
 function rhythmShelf(p: Profile, notes: RhythmNote[]): HTMLElement {
   const head = h('h4', {}, t('progress.rhythmTitle'));
   if (!notes.length) return h('div', { class: 'badge-shelf' }, head, h('p', { class: 'badge-none' }, t('progress.rhythmNone')));
+  let prev: NoteLook | undefined;
   const pics = notes.slice(-NOTES_SHOWN).map((n) => {
+    prev = noteLook(n.n, p.seed, prev);
     const label = t('progress.rhythmNoteTip', { world: worldName(n.world) });
-    return h('span', { class: 'note-pic', tip: label, 'aria-label': label, role: 'img' }, notePic(n.n, p.seed));
+    return h('span', { class: 'note-pic', tip: label, 'aria-label': label, role: 'img' }, notePic(prev));
   });
   const count = t('progress.rhythmNotes', { n: notes.length });
   const clefPic = imageUrl('ui-treble-clef'), clefTip = t('progress.clef');

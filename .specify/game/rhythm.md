@@ -153,8 +153,10 @@
   once, in the character's bubble: "Bez Rytmu ti uletela nota." ("... uleteli noty." for more), and
   when the treble clef went with it: "Bez Rytmu ti uletela nota a s ňou aj husľový kľúč. Zahraj si
   Rytmus a získaš ho späť." A note is a picture of a half note, a
-  quarter note, an eighth note or two beamed eighths, each note always the same kind and turned by its
-  own angle.
+  quarter note, an eighth note or two beamed eighths, each note always the same kind, turned by its
+  own angle and in a colour of its own, one of eight well spread hues; in a row a note never has the
+  kind or the colour of the one before it, so the row looks lively. High contrast shows the pictures'
+  own colours.
 - **The treble clef:** held while every open world has at least one of the notes kept (and there is
   one). It stands before the notes in "Môj rytmus" and counts 5 points in the treasure chest
   ([statistics](../profiles/statistics.md)); a note flying away can take it away, the next note of
@@ -180,6 +182,8 @@
   the time would catch everything.
 - The character stays put and only the basket moves: the eye follows the letters and the basket, not
   a running figure.
+- Four pictures of one fixed colour each could show three blue notes in a row; a colour of each
+  note's own keeps a row of rewards lively.
 - Notes reward a great rhythm, and fading notes ask for a little Rytmus every few days, as rhythm is
   kept by practice.
 - Two lanes are enough to start: four clouds at a fast tempo were too hard for the first world. The

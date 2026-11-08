@@ -519,7 +519,7 @@
     "caught": "Chytené písmená",
     "rhythmTop": "Nové najvyššie tempo: {n} písmen za minútu!",
     "rhythmBetter": "Rytmus je lepší ako minule.",
-    "rhythmNote": "Výborný rytmus! Máš novú rytmickú notu s hudbou sveta {world}."
+    "rhythmNote": "Výborný rytmus! Máš novú rytmickú notu zo sveta {world}."
   },
   "results": {
     "peek": "Pozrieť sa na hru (Esc)",
@@ -1154,7 +1154,7 @@
     "rhythmTitle": "Môj rytmus",
     "rhythmNotes": "Rytmické noty: {n}. Za každé tri dni bez Rytmu jedna náhodná zmizne.",
     "rhythmNone": "Za výborný rytmus v hre Rytmus získaš rytmickú notu.",
-    "rhythmNoteTip": "Nota zo sveta {world}. Klikni a jeho hudba bude hrať na Mape svetov.",
+    "rhythmNoteTip": "Nota zo sveta {world}.",
     "parrots": "Papagáje doma: {n}, najviac naraz: {best}",
     "parrotCount": "{n} max {best}",
     "parrotsEarned": "Papagáje získané od začiatku: {n}",
@@ -1165,9 +1165,7 @@
     "time14": "Čas písania za posledných 14 dní: {time}",
     "timeMin": "{m} min",
     "timeHours": "{h} h {m}",
-    "timeHoursFull": "{h} h {m} min",
-    "rhythmTune": "Hudba sveta {world} bude použitá na Mape svetov.",
-    "rhythmTuneNone": "Klikni na notu a hudba jej sveta bude hrať na Mape svetov."
+    "timeHoursFull": "{h} h {m} min"
   },
   "stats": {
     "title": "Moje klávesy",

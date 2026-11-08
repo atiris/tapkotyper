@@ -13,7 +13,7 @@ No DB, no server contract.
 
 ## Steps
 
-- [ ] **1. Rhythm notes are pictures, not buttons.** In My progress (`rhythmShelf`, stats.ts) the notes
+- [x] **1. Rhythm notes are pictures, not buttons.** In My progress (`rhythmShelf`, stats.ts) the notes
   are plain images, no click, no music choice. They overlap a little (each next one shifted left over
   the previous by about a quarter of its width), and the count stands right after the last note in the
   same chip style as the target range's record in the third row (number after the picture, bold).

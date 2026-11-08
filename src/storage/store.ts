@@ -155,7 +155,6 @@ export function newProfile(name: string, language: LangRef, layout?: LayoutId, k
       rhythmNoteList: [],
       rhythmNotesAt: null,
       rhythmNotesFaded: 0,
-      rhythmTune: null,
       appTips: { seen: [], lastAt: 0 },
       placementAsked: false,
       placementKeys: 0,

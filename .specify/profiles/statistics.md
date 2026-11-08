@@ -33,11 +33,10 @@
   shelf of world badges ("Odznaky svetov": gold, silver and bronze sections with the stars each needs, [story](../game/story.md)) with the row of target
   range awards under it ("Ocenenia zo strelníc": every world's rare thing, found ones in
   colour, missing ones a grey range sight, [target range](../game/target-practice.md)), "Môj
-  rytmus" with the rhythm notes left today in one row, as many as fit, the exact count at the row's
-  end (without a note a line saying how to earn one, [Rytmus](../game/rhythm.md)); each note is of the
-  world it was earned in (its tooltip names it): a click plays that world's music and chooses it for the
-  World map, the chosen note is marked, and a line under the row says "Hudba sveta Lúka bude použitá na
-  Mape svetov." (a click on the chosen note goes back to the usual music); and when
+  rytmus" with the rhythm notes left today in one row, as many as fit, each a little over the one before,
+  and the exact count right after the last in the summary chips' style (without a note a line saying how
+  to earn one, [Rytmus](../game/rhythm.md)); the notes are only pictures (not buttons), each of the
+  world it was earned in, which its tooltip names; and when
   the child last trained (today, yesterday, n days ago) with the typing minutes of the last 7
   days. Below it a friendly view of the keys: a keyboard colored
   by each key's accuracy over its last 100 presses in the bands of the accuracy scale

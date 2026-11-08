@@ -34,7 +34,7 @@ import { type TeacherTip, dueTip, tipSeen } from '../app/teacher-tips';
 import { openStats } from './stats';
 import { heldText, openWorldKeys, worldKeysButton, worldLockText } from './world-keys';
 import { taskCard } from './task';
-import { menuMusic, rhythmNotes } from '../game/rhythm-notes';
+import { rhythmNotes } from '../game/rhythm-notes';
 
 /** Ms Turtle's pictures, one after another with her tips. */
 const TEACHER_PICTURES = ['ui-teacher', 'ui-teacher-2', 'ui-teacher-3'];
@@ -158,9 +158,9 @@ const ARO_AFTER_MS = 1800;
 
 export function mapScreen(root: HTMLElement, { focus }: { focus?: 'language' } = {}): () => void {
   const p = app.profile!;
-  // Notes fade away over the days; a chosen note's world music plays here.
+  // Notes fade away over the days.
   if (rhythmNotes(p, localDate()).changed) saveProfile();
-  audio.music(menuMusic(p));
+  audio.music(app.menuTrack);
   // Won parrots may fly away over the days; the map tells it once.
   flyAway(p, localDate());
   const flown = [...p.progress.parrotFlown].sort((a, b) => a - b);

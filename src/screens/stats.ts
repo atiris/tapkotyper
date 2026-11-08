@@ -1,5 +1,4 @@
 import { app, go, layout, reduceMotion, saveProfile } from '../app/app';
-import { audio } from '../audio/audio';
 import { rhythmNotes } from '../game/rhythm-notes';
 import { imageUrl } from '../gfx/assets';
 import { type Mood, otherMood, renderTapkoInto, tapkoElement } from '../gfx/tapko';
@@ -225,38 +224,21 @@ function badgeTiers(p: Profile): HTMLElement[] {
 const NOTES_SHOWN = 60;
 
 /**
- * My rhythm: the notes left today in one row, as many as fit, the exact count at its end. Each note
- * has the music of the world it was earned in: a click plays it and chooses it for the World map
- * (the line under the row says whose plays there); a click on the chosen one goes back to the usual music.
+ * My rhythm: the notes left today in one row, as many as fit, each a little over the one before,
+ * the exact count right after the last; a note's tooltip names the world it was earned in.
  */
 function rhythmShelf(p: Profile): HTMLElement {
   const { notes, changed } = rhythmNotes(p, localDate());
   if (changed) saveProfile();
   const head = h('h4', {}, t('progress.rhythmTitle'));
   if (!notes.length) return h('div', { class: 'badge-shelf' }, head, h('p', { class: 'badge-none' }, t('progress.rhythmNone')));
-  const line = h('p', { class: 'rhythm-tune' });
-  const buttons = notes.slice(-NOTES_SHOWN).map((n) => {
+  const pics = notes.slice(-NOTES_SHOWN).map((n) => {
     const label = t('progress.rhythmNoteTip', { world: worldName(n.world) });
-    const b = h('button', { class: 'note-btn', type: 'button', tip: label, 'aria-label': label, onClick: () => {
-      const pr = p.progress;
-      pr.rhythmTune = pr.rhythmTune === n.world ? null : n.world;
-      saveProfile();
-      if (pr.rhythmTune !== null) audio.tune(WORLDS[n.world]);
-      show();
-    } }, notePic(n.n, p.seed));
-    b.dataset.world = String(n.world);
-    return b;
+    return h('span', { class: 'note-pic', tip: label, 'aria-label': label, role: 'img' }, notePic(n.n, p.seed));
   });
-  const show = () => {
-    const w = p.progress.rhythmTune;
-    for (const b of buttons) b.classList.toggle('chosen', w !== null && b.dataset.world === String(w));
-    line.textContent = w === null ? t('progress.rhythmTuneNone') : t('progress.rhythmTune', { world: worldName(w) });
-  };
-  show();
   const count = t('progress.rhythmNotes', { n: notes.length });
   return h('div', { class: 'badge-shelf' }, head,
-    h('div', { class: 'rhythm-notes' }, h('div', { class: 'rhythm-note-list' }, ...buttons), h('b', { class: 'rhythm-count', tip: count, 'aria-label': count }, String(notes.length))),
-    line);
+    h('div', { class: 'rhythm-notes' }, h('div', { class: 'rhythm-note-list' }, ...pics), h('b', { class: 'rhythm-count', tip: count, 'aria-label': count }, String(notes.length))));
 }
 
 /** The summary rows, a row per story under their heading, the badge shelf, the range awards and the rhythm notes, and when the child last trained. */

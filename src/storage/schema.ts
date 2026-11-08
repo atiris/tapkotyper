@@ -187,8 +187,6 @@ export interface Progress {
   rhythmNoteList: RhythmNote[];
   rhythmNotesAt: string | null;
   rhythmNotesFaded: number;
-  /** The world whose music the menus play while a note of it is left, null for the usual menu music. */
-  rhythmTune: number | null;
   /** The teacher turtle's tips read (ids) and when the last one was read (ms, 0 before any). */
   appTips: { seen: string[]; lastAt: number };
   /** The turtle asked on the map whether to check what the student already knows. */

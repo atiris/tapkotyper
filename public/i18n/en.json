@@ -519,7 +519,7 @@
     "caught": "Letters caught",
     "rhythmTop": "A new top tempo: {n} letters per minute!",
     "rhythmBetter": "Your rhythm is better than last time.",
-    "rhythmNote": "Great rhythm! You have a new rhythm note with the music of {world}."
+    "rhythmNote": "Great rhythm! You have a new rhythm note from {world}."
   },
   "results": {
     "peek": "Look at the game (Esc)",
@@ -1154,7 +1154,7 @@
     "rhythmTitle": "My rhythm",
     "rhythmNotes": "Rhythm notes: {n}. One at random fades for every three days without Rytmus.",
     "rhythmNone": "A great rhythm in the Rhythm game earns you a rhythm note.",
-    "rhythmNoteTip": "A note from {world}. Click and its music plays on the World map.",
+    "rhythmNoteTip": "A note from {world}.",
     "parrots": "Parrots at home: {n}, most at once: {best}",
     "parrotCount": "{n} max {best}",
     "parrotsEarned": "Parrots won since the start: {n}",
@@ -1165,9 +1165,7 @@
     "time14": "Typing time in the last 14 days: {time}",
     "timeMin": "{m} min",
     "timeHours": "{h} h {m}",
-    "timeHoursFull": "{h} h {m} min",
-    "rhythmTune": "The music of {world} plays on the World map.",
-    "rhythmTuneNone": "Click a note and the music of its world plays on the World map."
+    "timeHoursFull": "{h} h {m} min"
   },
   "stats": {
     "title": "My keys",

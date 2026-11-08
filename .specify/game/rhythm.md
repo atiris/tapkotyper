@@ -130,17 +130,15 @@
   "Hrať znova" and "Mapa svetov".
 - **Rhythm notes:** a round with rhythm 80 or more at 95 % accuracy or more (with time pressure) earns
   one rhythm note of the world it was played in; the end card's green line says so with the note's
-  picture and that it brings the world's music. A note brings its world's **music to the menus**: the
-  new note's world music plays on the World map (and in the free practice) instead of the usual menu
-  music, until the child picks another note in "Môj rytmus" ([statistics](../profiles/statistics.md)) or
-  the last note of that world fades. They fade: a **random** note goes for every three days without a
+  picture and its world. The notes stand in "Môj rytmus" ([statistics](../profiles/statistics.md)) as
+  pictures to look at; they bring no music. They fade: a **random** note goes for every three days without a
   Rytmus round, counted from the day after the last one (played on Monday: all still there on Thursday,
   one fewer on Friday morning, then on Monday, Thursday ...). A note is a picture of a half note, a
   quarter note, an eighth note or two beamed eighths, each note always the same kind and turned by its
   own angle.
 - **Kept per world:** the base tempo of the next round, the day, the last round's rhythm and the highest
   tempo held; the worlds with the check. **Kept per child:** the notes with their worlds, the day of the
-  last round and the fades taken since, and the world whose music the menus play.
+  last round and the fades taken since.
 
 ## Why
 - Accuracy comes first, then rhythm, then speed. The story levels can measure speed; a beat can
@@ -160,7 +158,7 @@
 - The character stays put and only the basket moves: the eye follows the letters and the basket, not
   a running figure.
 - Notes reward a great rhythm, and fading notes ask for a little Rytmus every few days, as rhythm is
-  kept by practice. A note's own world music on the map makes it something to keep.
+  kept by practice.
 - Two lanes are enough to start: four clouds at a fast tempo were too hard for the first world. The
   lanes grow with the stories, and the letter changes come only once a story's letters are known.
 - A slow, smooth drift around the round's own base keeps the round steady (a step of 5 % at once was

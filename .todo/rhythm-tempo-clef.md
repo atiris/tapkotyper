@@ -61,7 +61,7 @@ Affected: `src/game/beat.ts` (tempo rules), `src/game/modes/rhythm.ts`, `src/scr
   source (stable for that note), never the same hue or the same kind as the note before it in the row
   (pass the previous note's choice). Check the result stays readable on the light and the dark look
   and in high contrast (there: no filter).
-- [ ] **7. The tempo in My rhythm.** After the notes' count, the child's tempo as a chip like the
+- [x] **7. The tempo in My rhythm.** After the notes' count, the child's tempo as a chip like the
   others: the small Rytmus drum `ui-act-rhythm` and the number (`rhythmTempo`), tooltip "Tvoje tempo v
   Rytme: {n} písmen za minútu." / en; hidden before the first round.
 - [ ] **8. The character whistles.** With the clef held, the child's character on the World map (the
@@ -85,3 +85,4 @@ Affected: `src/game/beat.ts` (tempo rules), `src/game/modes/rhythm.ts`, `src/scr
 - Step 4: `CLEF_POINTS` and `hasClef` live in `src/game/rhythm-notes.ts` with the notes (not in parrots.ts); the clef is judged on the notes kept, and My progress takes the due fades before its chips so the chest and the shelf agree.
 - Step 5: plural lines for more notes at once (`map.notesFlown`, `map.notesFlownClef`) beside the plan's singular ones; the clef counts as lost when it was held as the map opened and is not after the fades (fades already taken on another screen tell no clef); `rhythmNotesTold` resets with `rhythmNotesFaded` at each round. The line shares the bubble with the flown parrots' line.
 - Step 6: the eight hues are target hues (15, 60, ... 330 degrees); each picture is turned from its own colour to it, so "never the same hue" holds for what the child sees. A note the same kind or hue as the one before takes the next one; the end card's single note has no note before it.
+- Step 7: the tempo chip shows also while no note is kept (after the line on how to earn one), as the tempo is kept without notes.

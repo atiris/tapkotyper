@@ -1168,6 +1168,7 @@
     "rhythmNone": "Za výborný rytmus v hre Rytmus získaš rytmickú notu.",
     "rhythmNoteTip": "Nota zo sveta {world}.",
     "clef": "Husľový kľúč: máš notu z každého otvoreného sveta.",
+    "rhythmTempo": "Tvoje tempo v Rytme: {n} písmen za minútu.",
     "parrots": "Papagáje doma: {n}, najviac naraz: {best}",
     "parrotCount": "{n} max {best}",
     "parrotsEarned": "Papagáje získané od začiatku: {n}",

@@ -225,12 +225,14 @@ const NOTES_SHOWN = 60;
 
 /**
  * My rhythm: the treble clef while held, then the notes left today in one row, as many as fit, each a
- * little over the one before, the exact count right after the last; a note's tooltip names the world it
- * was earned in.
+ * little over the one before, the exact count right after the last, and the child's Rytmus tempo once
+ * played; a note's tooltip names the world it was earned in.
  */
 function rhythmShelf(p: Profile, notes: RhythmNote[]): HTMLElement {
   const head = h('h4', {}, t('progress.rhythmTitle'));
-  if (!notes.length) return h('div', { class: 'badge-shelf' }, head, h('p', { class: 'badge-none' }, t('progress.rhythmNone')));
+  const n = p.progress.rhythmTempo;
+  const tempo = n === null ? null : h('ul', { class: 'progress-sum rhythm-tempo' }, chip(imageUrl('ui-act-rhythm'), '♩', String(n), t('progress.rhythmTempo', { n })));
+  if (!notes.length) return h('div', { class: 'badge-shelf' }, head, h('div', { class: 'rhythm-notes' }, h('p', { class: 'badge-none' }, t('progress.rhythmNone')), tempo));
   let prev: NoteLook | undefined;
   const pics = notes.slice(-NOTES_SHOWN).map((n) => {
     prev = noteLook(n.n, p.seed, prev);
@@ -241,7 +243,7 @@ function rhythmShelf(p: Profile, notes: RhythmNote[]): HTMLElement {
   const clefPic = imageUrl('ui-treble-clef'), clefTip = t('progress.clef');
   const clef = hasClef(p) ? h('span', { class: 'rhythm-clef', tip: clefTip, 'aria-label': clefTip, role: 'img' }, clefPic ? h('img', { src: clefPic, alt: '' }) : '𝄞') : null;
   return h('div', { class: 'badge-shelf' }, head,
-    h('div', { class: 'rhythm-notes' }, clef, h('div', { class: 'rhythm-note-list' }, ...pics), h('b', { class: 'rhythm-count', tip: count, 'aria-label': count }, String(notes.length))));
+    h('div', { class: 'rhythm-notes' }, clef, h('div', { class: 'rhythm-note-list' }, ...pics), h('b', { class: 'rhythm-count', tip: count, 'aria-label': count }, String(notes.length)), tempo));
 }
 
 /** The summary rows, a row per story under their heading, the badge shelf, the range awards and the rhythm notes. */

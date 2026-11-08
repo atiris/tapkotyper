@@ -37,7 +37,8 @@
   rytmus" with the **treble clef** first while it is held (a note from every open world kept, its
   tooltip says so), then the rhythm notes left today in one row, as many as fit, each a little over the one before,
   and the exact count right after the last in the summary chips' style (without a note a line saying how
-  to earn one, [Rytmus](../game/rhythm.md)); the notes are only pictures (not buttons), each of the
+  to earn one, [Rytmus](../game/rhythm.md)), then once a Rytmus round was played the child's tempo as
+  a chip: the small drum and the number, "letters a minute" in its tooltip; the notes are only pictures (not buttons), each of the
   world it was earned in, which its tooltip names. Below it a friendly view of the keys: a keyboard colored
   by each key's accuracy over its last 100 presses in the bands of the accuracy scale
   ([lesson progression](../learning/lesson-progression.md)): super from 97 %, ide to from 94 %,

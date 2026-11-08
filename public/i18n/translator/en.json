@@ -1079,6 +1079,7 @@
     "progress.rhythmNone": "Line in the rhythm section while the child has no note: how to earn one.",
     "progress.rhythmNoteTip": "Tooltip of a rhythm note picture: the world it was earned in.",
     "progress.clef": "Tooltip of the treble clef before the rhythm notes: held while every open world has a note.",
+    "progress.rhythmTempo": "Tooltip of the drum chip after the rhythm notes: the tempo every Rhythm round starts from. {n} letters a minute, always 30 or more.",
     "progress.parrots": "Tooltip over the parrot count in the progress's top row: {n} at home now, {best} the most at once.",
     "progress.parrotCount": "Short text next to the parrot icon in the progress's top row, e.g. \"2 max 5\": {n} at home now, {best} the most at once.",
     "progress.parrotsEarned": "Tooltip over the count of all parrots won in the progress's third row: every parrot round won since the start. {n} is the count.",

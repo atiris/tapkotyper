@@ -1381,6 +1381,7 @@ body:not(.gfx-simple) .level-screen.covered :is(.stage-wrap *, .overlay .tapko-s
 .rhythm-note { display: block; width: 2.1rem; height: 2.1rem; object-fit: contain; font-size: 1.6rem; line-height: 2.1rem; text-align: center; filter: hue-rotate(var(--note-hue, 0deg)) saturate(1.15); }
 body.high-contrast .rhythm-note { filter: none; }
 .rhythm-count { flex: none; font-size: 1.15rem; }
+.rhythm-tempo { flex: none; margin: 0 0 0 0.6rem; }
 .rhythm-clef { flex: none; display: block; width: 2.4rem; height: 2.7rem; font-size: 2rem; line-height: 2.7rem; text-align: center; }
 .rhythm-clef img { display: block; width: 100%; height: 100%; object-fit: contain; }
 .ec-news .rhythm-note { flex: none; width: 2rem; height: 2rem; }

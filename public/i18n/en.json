@@ -1168,6 +1168,7 @@
     "rhythmNone": "A great rhythm in the Rhythm game earns you a rhythm note.",
     "rhythmNoteTip": "A note from {world}.",
     "clef": "Treble clef: you have a note from every open world.",
+    "rhythmTempo": "Your tempo in Rhythm: {n} letters a minute.",
     "parrots": "Parrots at home: {n}, most at once: {best}",
     "parrotCount": "{n} max {best}",
     "parrotsEarned": "Parrots won since the start: {n}",

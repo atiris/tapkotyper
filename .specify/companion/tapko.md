@@ -64,6 +64,11 @@
 - Clicking the character, on the map or in a level, opens the progress and statistics
   overlay ([statistics](../profiles/statistics.md)); its title says "Click yourself to see
   how you are doing".
+- With the treble clef ([Rytmus](../game/rhythm.md)) the character on the World map
+  **whistles** now and then (every 10-30 seconds at random): 3-5 small notes in their colours
+  leave its mouth one after another, grow, rise up and to the right on a gently wavy path, each
+  a little differently, and fade out. No sound, nothing to click, nothing with less motion or
+  Simple graphics. A quiet sign that the child keeps up the rhythm in every world.
 - On the egg mountain (world 5, levels 1-4) the character carries the dragon egg on its back:
   it is drawn behind everything the character wears and always peeks out past its left side
   (not over its head), at least about a third of it at rest, whatever the outfit; it slides

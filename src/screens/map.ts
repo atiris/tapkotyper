@@ -35,6 +35,7 @@ import { openStats } from './stats';
 import { heldText, openWorldKeys, worldKeysButton, worldLockText } from './world-keys';
 import { taskCard } from './task';
 import { hasClef, rhythmNotes, untoldFades } from '../game/rhythm-notes';
+import { whistle } from '../ui/whistle';
 
 /** Ms Turtle's pictures, one after another with her tips. */
 const TEACHER_PICTURES = ['ui-teacher', 'ui-teacher-2', 'ui-teacher-3'];
@@ -177,6 +178,8 @@ export function mapScreen(root: HTMLElement, { focus }: { focus?: 'language' } =
   const aro = hasBadge || aroLeaves ? aroPerch(!aroArrives, (a) => a.flyOff(tList('parrot.takeoff'), true)) : null;
   const tapko = h('button', { class: 'map-tapko', type: 'button', tip: t('tapko.statsHint'), 'aria-label': t('progress.title'), onClick: () => openStats() },
     tapkoElement(p.companion, 'idle', 163));
+  // With the treble clef the figure whistles now and then.
+  const stopWhistle = hasClef(p) ? whistle(tapko, p.seed) : null;
   // The narrator's bubble on the map: why a level waits for more keys.
   const bubble = h('div', { class: 'bubble static map-bubble', role: 'status', 'aria-live': 'polite' });
   bubble.hidden = true;
@@ -256,6 +259,7 @@ export function mapScreen(root: HTMLElement, { focus }: { focus?: 'language' } =
     offParrot();
     offRange();
     aro?.stop();
+    stopWhistle?.();
   };
 }
 

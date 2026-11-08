@@ -1840,6 +1840,10 @@
     "map.journey.welcome": "Hero's journey badge tooltip before the journey was ever finished: a welcome to the longer, harder trip through every world of the story.",
     "map.journey.again": "Hero's journey badge tooltip after a finish: {n} best stars (plural forms); asks to beat or repeat it.",
     "map.journey.about": "Hero's journey badge tooltip, always after the line before: stars come harder there; the help tells how hard.",
-    "break.end": "Warm-up: the button that ends it early and goes back where it was opened (Esc does the same)."
+    "break.end": "Warm-up: the button that ends it early and goes back where it was opened (Esc does the same).",
+    "rhythm.soundAsk": "Card after the Rytmus get-ready card when the sound is off: the rhythm comes with music, so it asks to turn the sound on; the speaker button turns it off again.",
+    "rhythm.soundAll": "Default button of the Rytmus sound card: turns the sound on for the whole site.",
+    "rhythm.soundWhere": "Button of the Rytmus sound card: turns the sound on only where it matters (the Rytmus game and dictation).",
+    "rhythm.soundKeep": "Button of the Rytmus sound card, and the label of its round X: the sound stays off."
   }
 }

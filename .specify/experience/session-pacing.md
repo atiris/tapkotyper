@@ -23,7 +23,8 @@
 - Runs without an end of their own (free typing, staying a while in a level) say the break in
   the character's bubble when it is due; the warm-up opens by itself over the card after staying a while.
 - No daily streaks, no "come back or lose" messages, no random loot.
-- Before play only the key cards and one get-ready card; the reward scenes after a world are
+- Before play only the key cards and one get-ready card (one exception: Rytmus asks to turn the sound
+  on when it is off, [Rytmus](../game/rhythm.md)); the reward scenes after a world are
   always skippable.
 
 - **One reading rule** for every text shown over play (a shout, a speech bubble, the narrator's

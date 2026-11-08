@@ -32,6 +32,15 @@ test('Rytmus is open with the meadow and a round ends on its card', async ({ pag
   await untilPlay(page, 'ready');
   await expect(page.locator('.posture-card')).toContainText('one rhythm note');
   await page.keyboard.press('Space');
+  // The sound is off: a card asks to turn it on, "everywhere" is the default and Enter takes it.
+  const ask = page.locator('.rhythm-sound');
+  await expect(ask).toContainText('the rhythm comes with music');
+  await expect(ask.locator('.modal-x')).toBeVisible();
+  await expect(ask.locator('.btn.kbd-default')).toHaveText(/Turn on everywhere/);
+  await page.keyboard.press('Enter');
+  await expect(ask).toHaveCount(0);
+  await expect(page.locator('.hud .sound-btn')).toHaveAttribute('data-level', 'normal');
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('tapkotyper:v1')!).profiles[0].settings.sound)).toBe('normal');
   // The top bar: accuracy, rhythm, and the tempo drawn like the speed gauge, which itself is not here.
   await expect(page.locator('.hud .tempo-ring')).toHaveAttribute('aria-label', 'Tempo: 30 letters per minute');
   await expect(page.locator('.hud .round-btn.speed:not(.tempo-ring)')).toHaveCount(0);
@@ -61,4 +70,29 @@ test('Rytmus is open with the meadow and a round ends on its card', async ({ pag
   await page.locator('.end-card .ec-bot .btn').last().click();
   await expect(node).toBeEnabled();
   expect(errors).toEqual([]);
+});
+
+test('with the sound only where it matters Rytmus starts without asking', async ({ page }) => {
+  await createProfile(page, 'Ema');
+  await editProfile(page, `${READY} p.progress.worldsDone = [0]; p.settings.sound = 'important';`);
+  const node = page.locator('.island-meadow .rhythm-node');
+  await node.click();
+  await untilPlay(page, 'ready');
+  await page.keyboard.press('Space');
+  await page.waitForTimeout(800);
+  await expect(page.locator('.rhythm-sound')).toHaveCount(0);
+  await expect(page.locator('.hud .sound-btn')).toHaveAttribute('data-level', 'important');
+});
+
+test('Escape on the sound card keeps the sound off and the round goes on', async ({ page }) => {
+  await createProfile(page, 'Ema');
+  await editProfile(page, `${READY} p.progress.worldsDone = [0];`);
+  await page.locator('.island-meadow .rhythm-node').click();
+  await untilPlay(page, 'ready');
+  await page.keyboard.press('Space');
+  await expect(page.locator('.rhythm-sound')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.rhythm-sound')).toHaveCount(0);
+  await page.waitForFunction(() => !!document.querySelector<HTMLElement>('.kb-guide')?.dataset.next);
+  await expect(page.locator('.hud .sound-btn')).toHaveAttribute('data-level', 'off');
 });

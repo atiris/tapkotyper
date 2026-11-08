@@ -48,7 +48,7 @@ No DB, no server contract.
   engine (`audio.setImportant(true)` at start, `false` on dispose); the engine's effective gain and its
   suspend/resume use `normal` gain while important, `off` behaviour otherwise. Saved per profile
   (`settings.sound`) and on the device like the other levels.
-- [ ] **5. Popup before Rytmus without sound.** After the get-ready card of Rytmus (before the first
+- [x] **5. Popup before Rytmus without sound.** After the get-ready card of Rytmus (before the first
   letter), when the effective sound is silent (`off`, or nothing of `important` - i.e. never when
   `important`, `normal` or `quiet`), one popup (round X top right, Esc = "Nezapínať"):
   "V tejto hre je rytmus sprevádzaný hudbou. Odporúčam ti zapnúť si hudbu pre celú stránku, alebo

@@ -3662,7 +3662,11 @@
       "nice": "pekný rytmus",
       "smooth": "plynulý",
       "clockwork": "ako hodinky"
-    }
+    },
+    "soundAsk": "V tejto hre je rytmus sprevádzaný hudbou. Odporúčam ti zapnúť si hudbu pre celú stránku, alebo aspoň pre túto hru. Hudbu a efekty na stránke si môžeš vypnúť kliknutím na tlačidlo reproduktora.",
+    "soundAll": "Zapnúť všade",
+    "soundWhere": "Zapnúť kde je potrebné",
+    "soundKeep": "Nezapínať"
   },
   "journey": {
     "title": "Cesta hrdinu",

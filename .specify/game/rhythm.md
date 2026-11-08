@@ -101,12 +101,18 @@
 - **Music** is made by the game from patterns (soft kick, shaker, bass, a marimba melody in sections,
   a woodblock count-in bar, a closing chord), on the same clock as the falling letters, so every
   landing is exactly on a beat and the sound reaches the speaker when the letter reaches the basket.
-  It replaces the world's track during the round. With the sound off there is no sound at all; the
-  letters keep the same beat.
+  It replaces the world's track during the round, and the sound level "only where it matters" plays it.
+  With the sound off there is no sound at all; the letters keep the same beat.
 - **Before the round** the get-ready card says: "V tomto písaní si precvičíš pravidelný rytmus. Ovládaš
   košík, ktorý chytá písmenká padajúce z obláčikov. Tie musíš chytiť v správnom čase, ináč spadnú na
   zem. Stále je však dôležité aby to bolo presne. Ak niečo nechytíš, nevadí. Za výborný rytmus získaš
   jednu rytmickú notu."
+  With the sound off ("Bez zvukov", [audio](../experience/audio.md)) one more card follows, before the first
+  letter: "V tejto hre je rytmus sprevádzaný hudbou. Odporúčam ti zapnúť si hudbu pre celú stránku, alebo
+  aspoň pre túto hru. Hudbu a efekty na stránke si môžeš vypnúť kliknutím na tlačidlo reproduktora." with
+  **Zapnúť všade** (the default: sound everywhere), **Zapnúť kde je potrebné** (sound only where it
+  matters) and **Nezapínať** (also the round X and Escape: nothing changes). The round starts only after it.
+  With any other sound level the card is not shown.
 - **Round:** half of a regular level of the world's story (1, 1.5 and 2 minutes) of song after the
   count-in bar (pauses stop it), longer when it goes badly.
   No points, no stars, no paws, no Enter marks. The keys count in the statistics and the lesson like the parrot's, and the
@@ -161,6 +167,9 @@
   kept by practice.
 - Two lanes are enough to start: four clouds at a fast tempo were too hard for the first world. The
   lanes grow with the stories, and the letter changes come only once a story's letters are known.
+- Rytmus is hard to play without its music, and a child who switched the sound off long ago does not
+  think of it: the card before the round asks once per round, and offers sound for this game only. It is
+  the owner's one exception to "only the key cards and one get-ready card before play".
 - A slow, smooth drift around the round's own base keeps the round steady (a step of 5 % at once was
   felt as a jump): a rhythm game follows the
   child's rhythm and swings around it instead of racing up to extremes; a good phrase never narrows the

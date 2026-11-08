@@ -3639,7 +3639,11 @@
       "nice": "nice rhythm",
       "smooth": "smooth",
       "clockwork": "like clockwork"
-    }
+    },
+    "soundAsk": "In this game the rhythm comes with music. Turn the music on for the whole site, or at least for this game. You can turn the site's music and effects off with the speaker button.",
+    "soundAll": "Turn on everywhere",
+    "soundWhere": "Turn on where needed",
+    "soundKeep": "Keep it off"
   },
   "journey": {
     "title": "Hero's journey",

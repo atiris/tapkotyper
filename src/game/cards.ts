@@ -2,7 +2,7 @@ import { audio } from '../audio/audio';
 import { t, tList, tMap } from '../i18n/i18n';
 import { type Finger, type Layout, enterAfter, homeKey } from '../keyboard/layouts';
 import { layout, profileLayout } from '../app/app';
-import type { Profile, Surprise } from '../storage/schema';
+import type { Profile, SoundLevel, Surprise } from '../storage/schema';
 import { surpriseCount } from './own-content';
 import type { Style } from './typing';
 import { FINGER_COLORS } from '../ui/finger-colors';
@@ -62,6 +62,38 @@ export function showCard(host: HTMLElement, content: HTMLElement, o: CardOpts = 
     }
     const stop = captureKeys(overlay, onKey);
     host.append(overlay);
+  });
+}
+
+/**
+ * Before Rytmus while the sound is off: its rhythm comes with music, so the card offers the sound for
+ * the whole site (the default) or only where it matters; "Keep it off", the round X and Escape leave it.
+ * Resolves with the level picked, null for none; the click is the gesture that wakes the audio.
+ */
+export function rhythmSoundCard(host: HTMLElement): Promise<SoundLevel | null> {
+  return new Promise((resolve) => {
+    const done = (level: SoundLevel | null) => {
+      stop();
+      overlay.remove();
+      resolve(level);
+    };
+    const buttons = [
+      button(t('rhythm.soundAll'), () => done('normal'), 'btn primary'),
+      button(t('rhythm.soundWhere'), () => done('important')),
+      button(t('rhythm.soundKeep'), () => done(null)),
+    ];
+    const card = h('div', { class: 'card rhythm-sound' }, closeButton(() => done(null), t('rhythm.soundKeep')),
+      h('p', {}, t('rhythm.soundAsk')), h('div', { class: 'row center' }, ...buttons));
+    const overlay = h('div', { class: 'overlay' }, card);
+    const stop = captureKeys(overlay, (e) => {
+      if (e.key !== 'Escape') return;
+      e.preventDefault();
+      e.stopPropagation();
+      done(null);
+    });
+    panelHotkeys(card, buttons);
+    host.append(overlay);
+    queueMicrotask(() => focusDefault(card));
   });
 }
 

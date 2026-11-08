@@ -1,4 +1,4 @@
-import { app, isBreakDue, layout, pickLine, profileLayout, reduceMotion, saveProfile } from '../app/app';
+import { app, isBreakDue, layout, pickLine, profileLayout, reduceMotion, saveProfile, setSound } from '../app/app';
 import { fast } from '../app/fast';
 import { audio, type Sfx } from '../audio/audio';
 import { speech } from '../audio/speech';
@@ -38,7 +38,7 @@ import { completeLevel, completePlacement, completeStay, joinRuns } from './prog
 import type { PlacementMode } from './modes/placement';
 import { offersPlacement } from '../learning/placement';
 import { type Style, type Target, TypingCore } from './typing';
-import { giveUpJourney, pickTip, showCard, showJourneyPanel, showNewKey, showPosture } from './cards';
+import { giveUpJourney, pickTip, rhythmSoundCard, showCard, showJourneyPanel, showNewKey, showPosture } from './cards';
 import { splitSentences, taskContent } from './task-play';
 import { wordsGame } from '../share/task';
 import { surpriseFor } from './own-content';
@@ -403,6 +403,12 @@ export class LevelRuntime {
       if (this.disposed) return;
       if (max) saveRollover(max);
       this.makeHold(holdRounds(this.opts.chosen ?? activeKeys(p), profileLayout(p), max ?? 2)!);
+    }
+    // Rytmus is played to its music: with the sound off the child is asked to turn it on first.
+    if (this.def.kind === 'rhythm' && audio.level === 'off') {
+      const level = await rhythmSoundCard(host);
+      if (this.disposed) return;
+      if (level) setSound(level);
     }
     if (opening && told) {
       p.progress.scenesSeen.push(opening);

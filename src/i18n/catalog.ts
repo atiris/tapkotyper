@@ -120,7 +120,7 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
     g('badge', 'badge.*'),
     g('progress-sums', 'progress.keys', 'progress.stories', 'progress.worlds', 'progress.chest', 'progress.parrots', 'progress.parrotCount', 'progress.stars',
       'progress.quality', 'progress.speed', 'progress.chars14', 'progress.days14', 'progress.time14', 'progress.timeMin', 'progress.timeHours', 'progress.timeHoursFull',
-      'progress.parrotsEarned', 'progress.starsEarned', 'progress.rangeRecord'),
+      'progress.medals', 'progress.parrotsEarned', 'progress.starsEarned', 'progress.rangeRecord'),
     g('progress', 'progress.*'),
     g('stats', 'stats.*'),
     g('cert', 'cert.*'),

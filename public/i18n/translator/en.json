@@ -336,7 +336,7 @@
     },
     "stats": {
       "title": "My keys",
-      "about": "The tab with statistics for single keys, and the medals."
+      "about": "The tab with statistics for single keys."
     },
     "cert": {
       "title": "Certificate",
@@ -1071,6 +1071,7 @@
     "progress.parrotsEarned": "Tooltip over the count of all parrots won in the progress's third row: every parrot round won since the start. {n} is the count.",
     "progress.starsEarned": "Tooltip over the count of all stars earned in the progress's third row: every run counts, replays too. {n} is the count.",
     "progress.rangeRecord": "Tooltip over the target range record in the progress's third row (shown once there is one). {n} is the points, {date} the day it was set.",
+    "progress.medals": "Tooltip over the growth medals count in the progress's third row (shown also at 0): {n} is the count, then what a medal is given for.",
     "progress.chars14": "Tooltip of the letters counter. {n} is the letters in 14 days.",
     "progress.days14": "Tooltip of the days counter in the progress's 14-day row. {n} is the days with any typing in the last 14 days, today included.",
     "progress.time14": "Tooltip of the typing time counter in the progress's 14-day row. {time} is the time in full, e.g. \"45 min\" or \"1 h 25 min\".",
@@ -1104,8 +1105,6 @@
     "stats.keyHistorySoon": "Key detail until there is data for at least two days.",
     "stats.drillKey": "Button in the key detail: a two-minute practice of that key.",
     "stats.drillKeyTip": "Tooltip of that button. {key} is the key.",
-    "stats.medals": "Heading of the medals shelf in the progress.",
-    "stats.medalsHint": "One line under the medals heading in the progress: what a medal is given for.",
     "stats.shifted": "Label of the key under the left Shift that latches the symbols typed with Shift, like Caps Lock.",
     "stats.shiftedTip": "Tooltip of that key.",
     "stats.whole": "Heading of the view of how the whole keyboard goes (opened by the key with a keyboard under the right Shift).",

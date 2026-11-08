@@ -26,7 +26,8 @@
   calendar: days with at least one own key of the 14, today included, e.g. `9/14`) and the
   **typing time** (an alarm clock: `45 min`, from an hour `1 h 25`, in full in the tooltip);
   both always show, also at 0. The third row is the totals
-  since the start, so a replay never takes anything away: every parrot round won (two parrot heads)
+  since the start, so a replay never takes anything away: the growth medals (a medal, also at 0; the tooltip
+  says what a medal is given for), every parrot round won (two parrot heads)
   and every star earned, replays included (a stack of stars), and once there is one the target
   range's record: the most points of one run, its day in the tooltip (the target). Under the heading "Príbehy" one row per story (all stories, closed ones grey) with its picture and
   name, its worlds' pictures (done in colour, the rest grey) and the stars earned in it, the
@@ -41,7 +42,7 @@
   days. Below it a friendly view of the keys: a keyboard colored
   by each key's accuracy over its last 100 presses in the bands of the accuracy scale
   ([lesson progression](../learning/lesson-progression.md)): super from 97 %, ide to from 94 %,
-  skoro from 89 %, poďme cvičiť under it; the 3 keys to practice and the growth medals earned.
+  skoro from 89 %, poďme cvičiť under it; the 3 keys to practice.
   - Under the keyboard, in one row, **Preveriť moje ovládanie klávesnice** on the left starts the
     [placement check](../learning/placement-check.md) (about 4 minutes, in the tooltip), whose end
     card shows the strong and weak keys of that run, and the legend (★ super ✓ ide to ~ skoro ! poďme
@@ -82,8 +83,7 @@
   "2 max 5", the parrots at home now and the most that were home at once; the tooltip says it
   in words ([parrot](../game/parrot.md)). Secret words on the page start the badge show
   ([easter eggs](../experience/easter-eggs.md)).
-- The overlay (a quick look, only by a click on the character) has two tabs: **Postup** (the progress above, a big picture of the character, the growth
-  medals and the stars as the last chip; stories come before worlds) and
+- The overlay (a quick look, only by a click on the character) has two tabs: **Postup** (the progress above, a big picture of the character, the stars as the last chip of the first row; stories come before worlds) and
   **Klávesy** (the key map and the key details).
 - Tasks from a teacher, their results and their QR codes are on the player's **Úlohy** page
   ([teacher links](teacher-links.md)), not here: one place for everything about tasks.

@@ -21,7 +21,6 @@ import { bigCode } from '../ui/big-code';
 import { badge } from '../ui/badge';
 import { aroPerch } from '../ui/aro';
 import { hasParrotBadge } from '../game/parrots';
-import { medal } from '../ui/medal';
 import { rangeFinds } from '../ui/finds';
 import { notePic } from '../ui/notes';
 import { openCertificate } from './certificate';
@@ -157,7 +156,7 @@ function typingTime(seconds: number): { short: string; full: string } {
   return { short: t('progress.timeHours', hm), full: t('progress.timeHoursFull', hm) };
 }
 
-/** The long-term picture in one row (mastered keys, finished stories and worlds, the chest's points, the parrots at home against their best count, the best stars of all levels), the last 14 days in the next (accuracy, speed, letters, days with practice, typing time), the totals ever in the third (parrot rounds won, stars earned, the target range's record and its day). */
+/** The long-term picture in one row (mastered keys, finished stories and worlds, the chest's points, the parrots at home against their best count, the best stars of all levels), the last 14 days in the next (accuracy, speed, letters, days with practice, typing time), the totals ever in the third (growth medals, parrot rounds won, stars earned, the target range's record and its day). */
 export function summaryRow(p: Profile): HTMLElement {
   const m = masterySummary(p);
   const stories = STORIES.filter((x) => storyDone(p, x)).length;
@@ -182,6 +181,7 @@ export function summaryRow(p: Profile): HTMLElement {
     chip(imageUrl('ui-days-trained'), '▦', `${practice.days}/14`, t('progress.days14', { n: practice.days })),
     chip(imageUrl('ui-typing-time'), '◷', time.short, t('progress.time14', { time: time.full }))),
   h('ul', { class: 'progress-sum' },
+    chip(imageUrl('ui-medals'), '◉', String(p.progress.growth), t('progress.medals', { n: p.progress.growth })),
     chip(imageUrl('ui-parrots-earned'), 'P', String(p.progress.parrotsEarned), t('progress.parrotsEarned', { n: p.progress.parrotsEarned })),
     chip(imageUrl('ui-stars-earned'), '★', String(p.progress.starsEarned), t('progress.starsEarned', { n: p.progress.starsEarned })),
     rangeRecordAt ? chip(imageUrl('obj-aim-target'), '◎', String(p.progress.rangeRecord),
@@ -297,13 +297,11 @@ function playfulTapko(p: Profile): HTMLElement {
   } }, fig);
 }
 
-/** Progress: the summary rows and badges, the growth medals, the code of all statistics and the certificate; `title` off where the page already says it. */
+/** Progress: the summary rows and badges, the code of all statistics and the certificate; `title` off where the page already says it. */
 export function progressTab(p: Profile, title = true): HTMLElement {
   return h('div', {},
     h('div', { class: 'stats-head' }, h('div', { class: 'stats-hero' }, playfulTapko(p), hasParrotBadge(p) ? aroPerch(true, (aro) => aro.hop())?.el ?? null : null),
       h('div', {}, title ? h('h2', {}, t('progress.title')) : null, progressSection(p))),
-    p.progress.growth ? h('div', { class: 'medals' }, h('h3', {}, t('stats.medals')), h('p', { class: 'hint' }, t('stats.medalsHint')),
-      h('div', { class: 'medal-row' }, ...Array.from({ length: p.progress.growth }, (_, i) => medal(i + 1, true)))) : null,
     h('div', { class: 'row stats-code' }, button(t('progress.showCode'), () => void showOverallCode(p), 'btn', 'code'),
       button(t('cert.button'), () => openCertificate(p), 'btn', 'print')));
 }

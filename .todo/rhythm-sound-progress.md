@@ -22,7 +22,7 @@ No DB, no server contract.
   other caller, the texts `progress.rhythmNoteTip`, `rhythmTune`, `rhythmTuneNone` (sk, en, translator,
   catalog) and the field in schema/store. Keep the note tooltip only as a plain `tip` naming the world
   ("Nota zo sveta {world}." / "A note from {world}.").
-- [ ] **2. Medals in the third row.** Drop the separate "Moje medaily" block under My progress. In the
+- [x] **2. Medals in the third row.** Drop the separate "Moje medaily" block under My progress. In the
   third summary row (`summaryRow`, the totals ever) put a chip **before** the parrots-earned chip:
   picture `ui-medals` (already in `public/assets`, made 2026-11-08, prompt in `assets-src/PROMPTS.md`),
   the number `p.progress.growth`, tooltip from `stats.medalsHint` with the count in front

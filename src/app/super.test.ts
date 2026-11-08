@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { LEVELS, MAX_LEVEL_STARS } from '../game/levels';
+import { LEVELS, MAX_LEVEL_STARS, aimOpen, isLevelUnlocked, levelAt, rhythmOpen } from '../game/levels';
 import { WORLD_THINGS } from '../game/modes/aim-things';
 import { lessonOrder } from '../learning/lessons';
 import { fillProgress, randomFill, superProfile } from './super';
@@ -47,6 +47,17 @@ describe('service menu progress filling', () => {
     expect(p.progress.worldsDone).toEqual([]);
     expect(Object.values(p.progress.levels).every((s) => s === 0)).toBe(true);
     expect(p.progress.rangeFinds).toEqual([]);
+  });
+
+  it('opens only what the filled progress opens: the next world\'s first level and its side games', () => {
+    const p = superProfile('sk');
+    expect(isLevelUnlocked(p, levelAt(14, 4)!)).toBe(true);
+    fillProgress(p, { keys: lessonOrder(p.layout).length, lastWorld: 1, stars: 1, accuracy: 1, ranges: 0, allParrots: true }, seeded(6));
+    expect(isLevelUnlocked(p, levelAt(1, 4)!)).toBe(true);
+    expect(isLevelUnlocked(p, levelAt(2, 0)!)).toBe(true);
+    expect(isLevelUnlocked(p, levelAt(2, 1)!)).toBe(false);
+    expect(isLevelUnlocked(p, levelAt(3, 0)!)).toBe(false);
+    expect([aimOpen(p, 2), rhythmOpen(p, 2), aimOpen(p, 3), rhythmOpen(p, 3)]).toEqual([true, true, false, false]);
   });
 
   it("puts every finished world's parrot at home, or all but one", () => {

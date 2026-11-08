@@ -140,10 +140,11 @@ describe('keys needed per level', () => {
     }
   });
 
-  it('does not gate the super profile', () => {
+  it('gates the super player by its progress like any child', () => {
     const p = withKeys(2);
+    const child = open(p);
     p.id = SUPER_ID;
-    expect(open(p)).toEqual([true, true, true, true, true]);
+    expect(open(p)).toEqual(child);
   });
 
   it('skips key-locked levels for the next level, and offers none when nothing is open', () => {
@@ -527,10 +528,6 @@ describe('world keys', () => {
     delete p.progress.levels['w2-1'];
     p.stats.keys[' '] = { ...emptyKeyStat(), presses: 100, recent: [...Array(89).fill(500), ...Array(11).fill(0)] };
     expect(worldLock(p, 1)).toBeNull();
-    // The super profile needs none.
-    p.stats.keys[' '] = emptyKeyStat();
-    p.id = SUPER_ID;
-    expect(worldKeysMissing(p, 1)).toEqual([]);
   });
 
   it('leaves out a key the practice order never teaches: no diacritics, the English keyboard', () => {

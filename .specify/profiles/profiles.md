@@ -47,9 +47,12 @@
   buttons move between screens. Leaving the whole app asks first while a player is active.
 - **Super mode** for parents and testers: typing `supertapkotyper` fast (within 4 seconds,
   no field) on the start screen turns on a switch for the session and opens a temporary
-  player with every world, level, key and accessory open, in a random outfit, and with the
-  progress filled at random just as the fill dialog first offers it, so it looks like a
-  real child's from the first moment. That player lives in memory only
+  player with every key and accessory and every world finished (so everything is open), in a
+  random outfit, and with the progress filled at random just as the fill dialog first offers it,
+  so it looks like a real child's from the first moment. It opens worlds, levels, the target
+  ranges, parrots and Rytmus by the same rules as a child: after a fill with fewer finished
+  worlds only what that progress opens is open (the next world's first level and its side games,
+  nothing further). That player lives in memory only
   and never touches real players' statistics. The switch stays on when a stored player is
   picked on the start page; a reload or "Koniec super režimu" turns it off and drops the
   temporary player. While it is on, a red star in the top right corner (it never pushes the

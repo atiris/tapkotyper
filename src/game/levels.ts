@@ -46,9 +46,8 @@ export function worldKeys(p: Profile, world: number): string[] {
   return WORLD_KEYS[world].filter((n) => taught.has(n));
 }
 
-/** The world's keys the child does not master yet; none for the super profile. */
+/** The world's keys the child does not master yet. */
 export function worldKeysMissing(p: Profile, world: number): string[] {
-  if (p.id === SUPER_ID) return [];
   const known = masteredKeyNames(p);
   return worldKeys(p, world).filter((n) => !known.has(n));
 }
@@ -323,9 +322,9 @@ export function worldLevels(world: number): LevelDef[] {
   return LEVELS.filter((l) => l.world === world);
 }
 
-/** The story opens with enough known keys (the super profile needs none). */
+/** The story opens with enough known keys. */
 export function storyOpen(p: Profile, story: StoryDef): boolean {
-  return story.opensAtKeys === null || p.id === SUPER_ID || activeKeys(p).length >= story.opensAtKeys;
+  return story.opensAtKeys === null || activeKeys(p).length >= story.opensAtKeys;
 }
 
 /** The first world of a story is reached with the story, every other one after the world before it, or when the placement check opened its first level. */
@@ -363,9 +362,8 @@ export function keysNeeded(p: Profile, l: LevelDef): number {
   return Math.min(need, practiceOrder(p).length);
 }
 
-/** Keys the child still needs for a level (0 = enough); the super profile needs none. */
+/** Keys the child still needs for a level (0 = enough). */
 export function keysMissing(p: Profile, l: LevelDef): number {
-  if (p.id === SUPER_ID) return 0;
   return Math.max(0, keysNeeded(p, l) - activeKeys(p).length);
 }
 
@@ -380,9 +378,11 @@ function playedTo(p: Profile, l: LevelDef): boolean {
   return storyOf(l.world).worlds[0] !== l.world && p.progress.worldsDone.includes(l.world - 1);
 }
 
-/** The level before it has its star, or the placement check reached its keys (the first level opens with its world). */
+/**
+ * The level before it has its star, or the placement check reached its keys (the first level opens
+ * with its world). The super player is no exception: it opens what its filled progress opens.
+ */
 export function isLevelReached(p: Profile, l: LevelDef): boolean {
-  if (p.id === SUPER_ID) return true;
   if (!isWorldUnlocked(p, l.world)) return false;
   return l.index === 0 || playedTo(p, l) || placedLevel(p, l);
 }
@@ -499,7 +499,7 @@ export function parrotSizeOf(world: number): ParrotSize {
 export function parrotKeys(p: Profile, world: number): string[] {
   const last = worldLevels(world)[4];
   const known = new Set(activeKeys(p));
-  return practiceOrder(p).slice(0, keysNeeded(p, last)).filter((k) => isLetterKey(k) && (p.id === SUPER_ID || known.has(k)));
+  return practiceOrder(p).slice(0, keysNeeded(p, last)).filter((k) => isLetterKey(k) && known.has(k));
 }
 
 /** The letters of a world's Rytmus: the parrot's letters (the world's last level) that are ready; the super profile takes them all. */

@@ -59,9 +59,9 @@
   letters are missing. When keys of the newest group are not ready yet, the key's tooltip,
   the narrator and a story still closed for keys also name them ("type these more
   accurately: k, l"), and the narrator offers the [target range](../game/target-practice.md)
-  once a world is done (that world's, else the last finished one), own practice before. "Continue" skips such levels: it replays
-  the last open one, or starts own practice when none is open. The hero's journey and the
-  super profile have no key need.
+  of that world (else of the furthest open one; every open world has one). "Continue" skips such levels: it replays
+  the last open one, or starts own practice when none is open. The hero's journey has no
+  key need; the super player has the keys and worlds its filled progress gives it, like any child.
 - Own practice mode: calm typing of words from the chosen keys, no story. Every way into
   it (the practice button, "Continue" with nothing open, the narrator's offer on the map) first
   opens a key picker; a drill from the stats and the parent's own text

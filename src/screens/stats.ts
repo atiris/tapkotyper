@@ -241,18 +241,22 @@ function rhythmShelf(p: Profile): HTMLElement {
     h('div', { class: 'rhythm-notes' }, h('div', { class: 'rhythm-note-list' }, ...pics), h('b', { class: 'rhythm-count', tip: count, 'aria-label': count }, String(notes.length))));
 }
 
-/** The summary rows, a row per story under their heading, the badge shelf, the range awards and the rhythm notes, and when the child last trained. */
+/** The summary rows, a row per story under their heading, the badge shelf, the range awards and the rhythm notes. */
 function progressSection(p: Profile): HTMLElement {
-  const { daysAgo, weekMinutes } = lastTraining(p);
-  const last = daysAgo === null ? t('progress.never') : daysAgo === 0 ? t('progress.lastToday') : daysAgo === 1 ? t('progress.lastYesterday') : t('progress.lastDays', { n: daysAgo });
   return h('section', { class: 'progress-view' },
     summaryRow(p),
     h('div', { class: 'badge-shelf' }, h('h4', {}, t('progress.storiesTitle'))),
     ...STORIES.map((s) => storyRow(p, s)),
     h('div', { class: 'badge-shelf' }, h('h4', {}, t('progress.badges')), ...badgeTiers(p)),
     h('div', { class: 'badge-shelf' }, h('h4', {}, t('progress.rangeAwards')), rangeFinds(p)),
-    rhythmShelf(p),
-    h('p', { class: 'progress-last' }, last, daysAgo === null ? null : [' ', t('progress.week', { n: weekMinutes })]));
+    rhythmShelf(p));
+}
+
+/** When the child last trained and the typing minutes of the last 7 days, under the character. */
+function lastTrainingLine(p: Profile): HTMLElement {
+  const { daysAgo, weekMinutes } = lastTraining(p);
+  const last = daysAgo === null ? t('progress.never') : daysAgo === 0 ? t('progress.lastToday') : daysAgo === 1 ? t('progress.lastYesterday') : t('progress.lastDays', { n: daysAgo });
+  return h('p', { class: 'progress-last' }, icon('keyboard'), h('span', {}, last, daysAgo === null ? null : [' ', t('progress.week', { n: weekMinutes })]));
 }
 
 type StatsTab = 'progress' | 'keys';
@@ -300,7 +304,7 @@ function playfulTapko(p: Profile): HTMLElement {
 /** Progress: the summary rows and badges, the code of all statistics and the certificate; `title` off where the page already says it. */
 export function progressTab(p: Profile, title = true): HTMLElement {
   return h('div', {},
-    h('div', { class: 'stats-head' }, h('div', { class: 'stats-hero' }, playfulTapko(p), hasParrotBadge(p) ? aroPerch(true, (aro) => aro.hop())?.el ?? null : null),
+    h('div', { class: 'stats-head' }, h('div', { class: 'stats-hero' }, playfulTapko(p), lastTrainingLine(p), hasParrotBadge(p) ? aroPerch(true, (aro) => aro.hop())?.el ?? null : null),
       h('div', {}, title ? h('h2', {}, t('progress.title')) : null, progressSection(p))),
     h('div', { class: 'row stats-code' }, button(t('progress.showCode'), () => void showOverallCode(p), 'btn', 'code'),
       button(t('cert.button'), () => openCertificate(p), 'btn', 'print')));

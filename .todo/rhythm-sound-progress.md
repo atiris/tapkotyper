@@ -30,7 +30,7 @@ No DB, no server contract.
   pridá: veci sa hýbu o kúsok rýchlejšie alebo prídu dlhšie slová." / English likewise). Shown also with
   0. Remove texts that only the old block used (`stats.medals`, `stats.medalsHint` if unused), and
   `medal()` in `src/ui/medal.ts` only if nothing else uses it.
-- [ ] **3. Last training under the character.** The line "naposledy ..." (`progress-last`) moves from
+- [x] **3. Last training under the character.** The line "naposledy ..." (`progress-last`) moves from
   the end of the progress section to right under the character picture in `stats-hero` (above Aro if
   he sits there), with the round `keyboard` icon from `ICONS` (`src/ui/dom.ts`, the one on
   "Len chcem písať") in front of it, same text as now.

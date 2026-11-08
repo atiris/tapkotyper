@@ -1308,7 +1308,9 @@ body:not(.gfx-simple) .level-screen.covered :is(.stage-wrap *, .overlay .tapko-s
 .world-icons .done { filter: none; opacity: 1; }
 .world-dot { display: inline-block; border-radius: 50%; background: var(--line); }
 .world-dot.done { background: var(--green); }
-.progress-last { color: var(--ink-soft); font-weight: 600; }
+/* Under the character: the round keyboard sign, then when the child last trained. */
+.progress-last { display: flex; align-items: center; gap: 0.45rem; max-width: 220px; margin: 0; color: var(--ink-soft); font-weight: 600; font-size: 0.95rem; }
+.progress-last .icon { flex: none; width: 2rem; height: 2rem; padding: 0.4rem; border-radius: 50%; background: var(--paper-2); color: var(--ink); }
 /* World badges: the world's picture on a disc, the ring shows the tier. */
 .badge { --ring: #c98a4b; --c: #ccc; position: relative; display: inline-grid; place-items: center; flex: none; width: 64px; height: 64px; border-radius: 50%; overflow: hidden; background: radial-gradient(circle at 35% 30%, #fff, var(--c) 75%); box-shadow: inset 0 0 0 5px var(--ring), 0 3px 6px rgba(40, 30, 20, 0.2); }
 .badge img { width: 78%; height: 78%; object-fit: contain; }

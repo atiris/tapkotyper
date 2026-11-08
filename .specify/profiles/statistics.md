@@ -33,13 +33,11 @@
   name, its worlds' pictures (done in colour, the rest grey) and the stars earned in it, the
   shelf of world badges ("Odznaky svetov": gold, silver and bronze sections with the stars each needs, [story](../game/story.md)) with the row of target
   range awards under it ("Ocenenia zo strelníc": every world's rare thing, found ones in
-  colour, missing ones a grey range sight, [target range](../game/target-practice.md)), "Môj
+  colour, missing ones a grey range sight, [target range](../game/target-practice.md)), and "Môj
   rytmus" with the rhythm notes left today in one row, as many as fit, each a little over the one before,
   and the exact count right after the last in the summary chips' style (without a note a line saying how
   to earn one, [Rytmus](../game/rhythm.md)); the notes are only pictures (not buttons), each of the
-  world it was earned in, which its tooltip names; and when
-  the child last trained (today, yesterday, n days ago) with the typing minutes of the last 7
-  days. Below it a friendly view of the keys: a keyboard colored
+  world it was earned in, which its tooltip names. Below it a friendly view of the keys: a keyboard colored
   by each key's accuracy over its last 100 presses in the bands of the accuracy scale
   ([lesson progression](../learning/lesson-progression.md)): super from 97 %, ide to from 94 %,
   skoro from 89 %, poďme cvičiť under it; the 3 keys to practice.
@@ -87,9 +85,10 @@
   **Klávesy** (the key map and the key details).
 - Tasks from a teacher, their results and their QR codes are on the player's **Úlohy** page
   ([teacher links](teacher-links.md)), not here: one place for everything about tasks.
-- The Parrot badge, when held, sits just under the child's character on the Postup tab.
+- The Parrot badge, when held, sits just under the child's character and its last-training line on the Postup tab.
 - The child's character on the Postup tab is big (beside the summary, above it on a phone), in
-  its outfit, and lively: every 5 to 20 seconds its big smile turns into the usual one and back.
+  its outfit, with a line right under it, after a round keyboard sign: when the child last trained
+  (today, yesterday, n days ago) and the typing minutes of the last 7 days (above Aro when he sits there); and lively: every 5 to 20 seconds its big smile turns into the usual one and back.
   Clicked or pressed with Enter or Space it pulls another face at once (wondering too, never the
   same twice in a row), half the time with a hop; the smiles then go on. With reduced motion it
   only changes its face.

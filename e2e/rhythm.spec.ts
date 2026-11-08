@@ -41,9 +41,10 @@ test('Rytmus is open with the meadow and a round ends on its card', async ({ pag
   await expect(ask).toHaveCount(0);
   await expect(page.locator('.hud .sound-btn')).toHaveAttribute('data-level', 'normal');
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem('tapkotyper:v1')!).profiles[0].settings.sound)).toBe('normal');
-  // The top bar: accuracy, rhythm, and the tempo drawn like the speed gauge, which itself is not here.
-  await expect(page.locator('.hud .tempo-ring')).toHaveAttribute('aria-label', 'Tempo: 30 letters per minute');
-  await expect(page.locator('.hud .round-btn.speed:not(.tempo-ring)')).toHaveCount(0);
+  // The top bar: all three rings whatever the settings, the speed ring with the tempo.
+  await expect(page.locator('.hud .round-btn.accuracy')).toHaveAttribute('aria-label', 'Accuracy: 100 %');
+  await expect(page.locator('.hud .round-btn.rhythm')).toHaveAttribute('aria-label', /^Rhythm: listening/);
+  await expect(page.locator('.hud .round-btn.speed')).toHaveAttribute('aria-label', 'Speed: 30 letters per minute');
   // A child who presses the next letter's key again and again: presses before the band are errors, one in the band catches.
   let wrong = false;
   for (let i = 0; i < 1500 && !(await page.locator('.rhythm-done').count()); i++) {

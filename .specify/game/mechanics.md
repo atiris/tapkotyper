@@ -25,10 +25,12 @@
   (and typed accurately); a level where many targets floated by unread adds no time. The time it
   adds is typing time ([statistics](../profiles/statistics.md)), so long reading or waiting delays
   growth a little.
-- A small round speed gauge ("Rýchlosť") in the top bar (calm blue to green, never red; in the space world
-  also the rocket's speedometer, without a caption) shows the current smoothed typing speed in letters per minute, not raw WPM. Rhythm (how even the presses are) is a different measure, kept apart and never called speed ([Rytmus](rhythm.md)).
-  Its ring is full a fifth above the child's usual pace of the last two weeks (before any typing,
-  at the difficulty's speed), so a quick child does not sit at the top all the time.
+- The top bar shows three measure rings after the progress bar: Presnosť, Rytmus, Rýchlosť
+  ([feedback](../learning/feedback.md)); which of them show is a per-profile setting. The speed ring
+  ("Rýchlosť", calm green, never red) shows the current smoothed typing speed in letters per minute,
+  not raw WPM. Rhythm (how even the presses are) is a different measure, kept apart and never called
+  speed. The speed ring is full a fifth above the child's usual pace of the last two weeks (before
+  any typing, at the difficulty's speed), so a quick child does not sit at the top all the time.
 - A word the child can see can be typed at once; a target that cannot be typed yet shows
   no word.
 - A word label is always wholly in sight with its bubble: a word near an edge of the stage moves

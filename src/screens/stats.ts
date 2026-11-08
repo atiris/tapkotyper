@@ -156,7 +156,7 @@ function typingTime(seconds: number): { short: string; full: string } {
   return { short: t('progress.timeHours', hm), full: t('progress.timeHoursFull', hm) };
 }
 
-/** The long-term picture in one row (mastered keys, finished stories and worlds, the chest's points, the parrots at home against their best count, the best stars of all levels), the last 14 days in the next (accuracy, speed, letters, days with practice, typing time), the totals ever in the third (growth medals, parrot rounds won, stars earned, the target range's record and its day). */
+/** The long-term picture in one row (mastered keys, finished stories and worlds, the chest's points, the parrots at home against their best count, the best stars of all levels), the last 14 days in the next (accuracy, rhythm, speed, letters, days with practice, typing time), the totals ever in the third (growth medals, parrot rounds won, stars earned, the target range's record and its day). */
 export function summaryRow(p: Profile): HTMLElement {
   const m = masterySummary(p);
   const stories = STORIES.filter((x) => storyDone(p, x)).length;
@@ -176,6 +176,7 @@ export function summaryRow(p: Profile): HTMLElement {
     chip(imageUrl('ui-star'), '★', `${stars}/${LEVEL_STARS}`, t('progress.stars', { n: stars, total: LEVEL_STARS }))),
   h('ul', { class: 'progress-sum' },
     recent.chars ? chip(imageUrl('ui-accuracy'), '✓', `${percent} %`, t('progress.quality', { n: percent })) : null,
+    recent.rhythm !== null ? chip(imageUrl('ui-act-rhythm'), '♩', String(recent.rhythm), t('progress.rhythm14', { n: recent.rhythm })) : null,
     recent.cpm ? chip(imageUrl('ui-typing-speed'), '»', String(recent.cpm), t('progress.speed', { n: recent.cpm })) : null,
     chip(imageUrl('ui-keys-typed'), 'Aa', String(recent.chars), t('progress.chars14', { n: recent.chars })),
     chip(imageUrl('ui-days-trained'), '▦', `${practice.days}/14`, t('progress.days14', { n: practice.days })),

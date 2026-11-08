@@ -62,6 +62,9 @@ export interface SessionRecord {
   errors: number;
   /** Smoothed speed, correct characters per minute. */
   cpm: number;
+  /** How even the typing was (0-100), weighted by `rhythmChars`, the characters of the levels that had a score; absent or null = none. */
+  rhythm?: number | null;
+  rhythmChars?: number;
 }
 
 /** Share of targets taken from the parent's own words and text. */
@@ -118,6 +121,10 @@ export interface Settings {
   ownWordLang: LangRef;
   /** Key caps and key marks use a font that tells l, I and 1 apart. */
   keyFont: boolean;
+  /** Which measures the levels' top bar shows: Presnosť, Rytmus, Rýchlosť (Rytmus the game always shows all three). */
+  hudAccuracy: boolean;
+  hudRhythm: boolean;
+  hudSpeed: boolean;
 }
 
 export interface Progress {
@@ -393,6 +400,9 @@ export function defaultSettings(wordLang: LangRef): Settings {
     wordLang,
     ownWordLang: wordLang,
     keyFont: true,
+    hudAccuracy: true,
+    hudRhythm: false,
+    hudSpeed: false,
   };
 }
 

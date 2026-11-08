@@ -6,6 +6,8 @@ export interface TypedChar {
   shiftCode: string | null;
   /** When the key went down, on the clock of `performance.now()`. */
   time: number;
+  /** When the stroke began, if a combo's first press (the Shift, the dead key) came before the letter. */
+  start?: number;
 }
 
 export interface InputHandlers {
@@ -48,6 +50,10 @@ export class KeyInput {
   private onVisibility = () => { if (document.hidden) this.letGo(); };
   private pendingDead: string | null = null;
   private shiftCode: string | null = null;
+  /** When the Shift and the dead key went down, and the last typed character. */
+  private shiftAt = 0;
+  private deadAt = 0;
+  private charAt = 0;
   /** Keys held down now, by `code`. */
   readonly held = new Set<string>();
 
@@ -93,7 +99,10 @@ export class KeyInput {
       if (!e.repeat && this.handlers.onEnter?.()) e.preventDefault();
       return;
     }
-    if (key === 'Shift' && !e.repeat) this.shiftCode = e.code;
+    if (key === 'Shift' && !e.repeat) {
+      this.shiftCode = e.code;
+      this.shiftAt = pressTime(e);
+    }
     if (e.repeat || IGNORED.has(key)) return;
     // Shortcuts like Ctrl+R stay with the browser; AltGr (Ctrl+Alt) still types characters.
     if ((e.ctrlKey || e.metaKey) && !(e.ctrlKey && e.altKey)) return;
@@ -104,6 +113,7 @@ export class KeyInput {
     }
     if (key === 'Dead') {
       e.preventDefault();
+      if (this.pendingDead === null) this.deadAt = pressTime(e);
       this.pendingDead = e.code;
       this.handlers.onDead?.(e.code, e.shiftKey);
       return;
@@ -112,8 +122,12 @@ export class KeyInput {
     // Unicode-aware length: one code point is one typed character.
     if ([...key].length !== 1) return;
     e.preventDefault();
+    const time = pressTime(e);
+    // A combo's stroke begins with its first press after the character before it.
+    const start = Math.min(time, this.pendingDead !== null ? this.deadAt : time, e.shiftKey && this.shiftAt > this.charAt ? this.shiftAt : time);
     this.pendingDead = null;
-    this.handlers.onChar?.({ ch: key.normalize('NFC'), code: e.code, shift: e.shiftKey, shiftCode: e.shiftKey ? this.shiftCode : null, time: pressTime(e) });
+    this.charAt = time;
+    this.handlers.onChar?.({ ch: key.normalize('NFC'), code: e.code, shift: e.shiftKey, shiftCode: e.shiftKey ? this.shiftCode : null, time, start });
   }
 }
 

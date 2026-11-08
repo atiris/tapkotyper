@@ -14,6 +14,14 @@ export const TAPKO_H = 265;
 /** Where the DOM Tapko's feet are when he stands on the stage's bottom edge (the template's feet are at 90 % of its height). */
 export const TAPKO_FEET = VH - TAPKO_H * 0.1;
 
+/** The top bar's measures: accuracy (0-1), rhythm (0-100, null before a score), speed in letters a minute and its ring's fill (0-1). */
+export interface Meter {
+  accuracy: number;
+  rhythm: number | null;
+  speed: number;
+  speedFill: number;
+}
+
 /** A background band that moves slowly on its own, so a scene that stands still feels alive. */
 export interface Drift {
   layer: 'mid' | 'near';
@@ -72,9 +80,13 @@ export abstract class Mode {
   hud(): HTMLElement | null {
     return null;
   }
-  /** Round pictures of the mode, right after the title. */
-  rings(): HTMLElement[] {
-    return [];
+  /** What the top bar's three measures show when the mode measures them itself (Rytmus: its beat), else null. */
+  meter(): Meter | null {
+    return null;
+  }
+  /** The level's rhythm (0-100, null without one) when the mode measures it itself; undefined = the evenness of the keys. */
+  sessionRhythm(): number | null | undefined {
+    return undefined;
   }
   /** Called once after construction, when the stage size is known. */
   start(): void {}

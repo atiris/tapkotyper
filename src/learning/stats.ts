@@ -59,7 +59,7 @@ export function typingStep(gap: number): number {
 }
 
 /** Adds typing time and characters to today's session record, and the time to all the training and the wardrobe time. */
-export function recordSession(profile: Profile, seconds: number, chars: number, errors: number, cpm: number): void {
+export function recordSession(profile: Profile, seconds: number, chars: number, errors: number, cpm: number, rhythm: number | null = null): void {
   const date = localDate();
   const sessions = profile.stats.sessions;
   let s: SessionRecord | undefined = sessions[sessions.length - 1];
@@ -74,6 +74,11 @@ export function recordSession(profile: Profile, seconds: number, chars: number, 
   s.chars += chars;
   s.errors += errors;
   if (cpm > 0) s.cpm = Math.round((s.cpm * prevChars + cpm * chars) / Math.max(1, prevChars + chars));
+  if (rhythm !== null && chars > 0) {
+    const had = s.rhythm == null ? 0 : s.rhythmChars ?? 0;
+    s.rhythm = Math.round(((s.rhythm ?? 0) * had + rhythm * chars) / (had + chars));
+    s.rhythmChars = had + chars;
+  }
   if (sessions.length > 365) sessions.splice(0, sessions.length - 365);
 }
 
@@ -108,17 +113,20 @@ export function agoOf(days: number): Ago {
  * Characters typed in the last `days` local calendar days, today included, with their accuracy
  * (0..1) and characters per minute (weighted by the characters); both 0 without any.
  */
-export function recentTyping(profile: Profile, days: number, now = new Date()): { chars: number; accuracy: number; cpm: number } {
+export function recentTyping(profile: Profile, days: number, now = new Date()): { chars: number; accuracy: number; cpm: number; rhythm: number | null } {
   const today = localDate(now);
   const recent = profile.stats.sessions.filter((s) => daysBetween(s.date, today) < days);
   const chars = recent.reduce((a, s) => a + s.chars, 0);
   const errors = recent.reduce((a, s) => a + s.errors, 0);
   const timed = recent.filter((s) => s.cpm > 0);
   const timedChars = timed.reduce((a, s) => a + s.chars, 0);
+  const even = recent.filter((s) => s.rhythm != null && s.rhythmChars);
+  const evenChars = even.reduce((a, s) => a + s.rhythmChars!, 0);
   return {
     chars,
     accuracy: chars + errors ? chars / (chars + errors) : 0,
     cpm: timedChars ? Math.round(timed.reduce((a, s) => a + s.cpm * s.chars, 0) / timedChars) : 0,
+    rhythm: evenChars ? Math.round(even.reduce((a, s) => a + s.rhythm! * s.rhythmChars!, 0) / evenChars) : null,
   };
 }
 

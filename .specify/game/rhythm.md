@@ -127,10 +127,11 @@
   count-in bar (pauses stop it), longer when it goes badly.
   No points, no stars, no paws, no Enter marks. The keys count in the statistics and the lesson like the parrot's, and the
   parent's surprises counting time are asked and told.
-- **Top bar:** the pause, the title, the progress, then three rings: accuracy (%, a check while it is
-  100 %), rhythm (a number of the last 16 landings, a check at 100; "…" while it listens, before 8) and
-  the tempo, shown like the speed gauge: the wave, the tempo only as the ring's fill (full at 120) and
-  in its tooltip. The speed gauge itself is not shown.
+- **Top bar:** the pause, the title, the progress, then the three rings every level has
+  ([feedback](../learning/feedback.md)), always all three here whatever the settings, as the beat is
+  the game: Presnosť (its keys, a check while it is 100 %), Rytmus (the beat score of the last 16
+  landings, a check at 100; "…" while it listens, before 8) and Rýchlosť (the tempo in letters a
+  minute, the ring full at 120).
 - **No time pressure** (parent switch): the song waits while the due letter sits on the basket's rim
   until it is typed; such a round keeps no rhythm score.
 - **The rhythm score** (0-100) is measured against the beat: each catch's offset from its landing in
@@ -163,6 +164,7 @@
   ([statistics](../profiles/statistics.md)); a note flying away can take it away, the next note of
   that world brings it back.
 - **Kept per world:** the last round's rhythm and the highest tempo held; the worlds with the check.
+  The round's rhythm score also goes into the day's statistics, like the evenness of the other levels.
   **Kept per child:** the base tempo of the next round (of any world), the notes with their worlds, the
   day of the last round, the fades taken since and how many of them the map has told.
 

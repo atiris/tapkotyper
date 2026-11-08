@@ -5,7 +5,6 @@ import { t } from '../../i18n/i18n';
 import { paintRound, pawRing, roundButton } from '../../ui/hud';
 import type { Mode } from '../mode';
 import { PAW_MAX, PAW_STREAK, PAW_WORDS } from '../paw';
-import type { Speed } from '../speed';
 import type { LevelState } from './state';
 
 /** What the paws need of the level besides its state. */
@@ -19,7 +18,7 @@ export interface PawHost {
   setMood(mood: Mood, seconds: number): void;
   sfx(s: Sfx): void;
   updateGuide(): void;
-  readonly speed: Speed;
+  typingReady(): void;
 }
 
 /** The paw help: a mistake-free streak charges it, its HUD button (or Enter) lets the hands on the keyboard type the next words for the child, so the child sees how they are typed. */
@@ -89,7 +88,7 @@ export class Paws {
     this.render();
     if (this.host.guideOn !== this.guideBefore) this.host.toggleGuide();
     // The child's next reaction time starts now, not with the paw's last key.
-    this.host.speed.ready(performance.now());
+    this.host.typingReady();
     this.host.updateGuide();
   }
 

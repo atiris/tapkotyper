@@ -13,18 +13,16 @@ import { recentAccuracy } from '../../learning/lessons';
 import { recentTyping } from '../../learning/stats';
 import { FINGER_COLORS } from '../../ui/finger-colors';
 import { filterWords, isBlocked } from '../../words/words';
-import { accuracyFill, fillRing, roundSvg, roundTextSvg } from '../../ui/hud';
-import { h } from '../../ui/dom';
-import { tip } from '../../ui/tooltip';
 import {
   CHANGE_S, type Drop, type Landing, type Lane, type LaneChange, PHRASE, RING_MIN, RING_WINDOW, Song, type Step, TEMPO_MAX,
-  beatScore, judge, laneNow, laneSetup, laneWeights, nextBase, phraseStep, pickLanes, planChanges, rhythmWord, startTempo, timing,
+  beatScore, judge, laneNow, laneSetup, laneWeights, nextBase, phraseStep, pickLanes, planChanges, startTempo, timing,
 } from '../beat';
 import { WORLDS, parrotKeys, rhythmLetters, rhythmRoundS, rhythmShape, rhythmTarget } from '../levels';
 import type { LevelRuntime } from '../runtime';
 import type { BeatDue } from '../super-help';
 import type { Target } from '../typing';
 import { HeroMode, sideFeet } from './kit/hero';
+import type { Meter } from '../mode';
 
 /** Clouds: their middle's height, their width (a little wider than a lane, never over the lanes beside it) and the pictures (three, also drawn mirrored). */
 const CLOUD_Y = 84;
@@ -212,11 +210,9 @@ export class RhythmMode extends HeroMode {
   private flash: number[];
   /** The word over the basket after a catch, its colour, and when it came. */
   private word = { text: '', color: '#ffffff', at: -9 };
+  /** The top bar's measures, worked out four times a second. */
   private hudAt = 0;
-  private accEl = h('div', { class: 'round-btn accuracy', role: 'img' });
-  private beatEl = h('div', { class: 'round-btn place beat-ring', role: 'img' });
-  private tempoEl = h('div', { class: 'round-btn speed tempo-ring', role: 'img' });
-  private shown = { acc: '', beat: '', tempo: '' };
+  private shownMeter: Meter | null = null;
   private readonly target: number;
   /** The round's base tempo: the phrases step around it. */
   private readonly base: number;
@@ -254,9 +250,12 @@ export class RhythmMode extends HeroMode {
     return t('rhythm.start');
   }
 
-  rings(): HTMLElement[] {
-    this.paintHud();
-    return [this.accEl, this.beatEl, this.tempoEl];
+  meter(): Meter {
+    return (this.shownMeter ??= this.measure());
+  }
+
+  sessionRhythm(): number | null {
+    return this.score;
   }
 
   /** The tempo playing now, letters a minute. */
@@ -430,7 +429,7 @@ export class RhythmMode extends HeroMode {
     if (o) this.music.schedule(o, this.song.bars, this.songT, this.songT + AHEAD_S, this.perf);
     if ((this.hudAt -= dt) <= 0) {
       this.hudAt = 0.25;
-      this.paintHud();
+      this.shownMeter = this.measure();
     }
     if (this.song.closed && !this.active && this.songT >= this.song.end + TAIL_S) this.over = true;
   }
@@ -607,36 +606,11 @@ export class RhythmMode extends HeroMode {
     return from + (to - from) * ease.outQuad(Math.max(0, (this.songT - at) / (end - at)));
   }
 
-  /** The top bar: accuracy and rhythm (a check at 100) and the tempo as the wave's ring. */
-  private paintHud(): void {
-    const acc = Math.round(this.accuracy * 100);
-    if (`${acc}` !== this.shown.acc) {
-      this.shown.acc = `${acc}`;
-      const band = acc < 80 ? 'low' : acc < 90 ? 'mid' : 'high';
-      this.accEl.className = `round-btn accuracy acc-${band}`;
-      const ring = fillRing(accuracyFill(this.accuracy));
-      this.accEl.innerHTML = acc === 100 ? roundSvg('check', ring) : roundTextSvg(`${acc}`, ring);
-      this.label(this.accEl, t('rhythm.accuracy', { n: acc }));
-    }
-    const recent = this.landings.slice(-RING_WINDOW);
-    const beat = this.L.noPressure ? null : beatScore(recent, this.accuracy, RING_MIN);
-    if (`${beat}` !== this.shown.beat) {
-      this.shown.beat = `${beat}`;
-      const ring = fillRing(beat === null ? 0 : beat / 100);
-      this.beatEl.innerHTML = beat === 100 ? roundSvg('check', ring) : roundTextSvg(beat === null ? '…' : `${beat}`, ring);
-      this.label(this.beatEl, beat === null ? t('rhythm.listening') : t('rhythm.ring', { n: beat, word: t(`rhythm.words.${rhythmWord(beat)}`) }));
-    }
+  /** The top bar: the accuracy, the beat score of the last landings and the tempo. */
+  private measure(): Meter {
     const tempo = this.tempo;
-    if (`${tempo}` !== this.shown.tempo) {
-      this.shown.tempo = `${tempo}`;
-      this.tempoEl.innerHTML = roundSvg('wave', fillRing(tempo / TEMPO_MAX));
-      this.label(this.tempoEl, t('rhythm.tempo', { n: tempo }));
-    }
-  }
-
-  private label(el: HTMLElement, text: string): void {
-    tip(el, text);
-    el.setAttribute('aria-label', text);
+    const rhythm = this.L.noPressure ? null : beatScore(this.landings.slice(-RING_WINDOW), this.accuracy, RING_MIN);
+    return { accuracy: this.accuracy, rhythm, speed: tempo, speedFill: tempo / TEMPO_MAX };
   }
 
   render(g: G): void {

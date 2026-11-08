@@ -13,13 +13,16 @@ import { keysTab, progressTab } from './stats';
 const TABS = ['progress', 'keys'] as const;
 type Tab = (typeof TABS)[number];
 
-/** The trends over the last sessions: accuracy, speed and time per day. */
+/** The trends over the last sessions: accuracy, rhythm (the days with a score, once there is one), speed and time per day. */
 function trendCharts(p: Profile): HTMLElement {
   const sessions = p.stats.sessions.slice(-14);
   const labels = sessions.map((s) => s.date.slice(5));
+  const even = sessions.filter((s) => s.rhythm != null);
   return h('div', { class: 'chart-grid' },
     h('section', {}, h('h3', {}, t('parent.accuracyTrend')),
       lineChart(sessions.map((s) => Math.round((s.chars / Math.max(1, s.chars + s.errors)) * 100)), labels, '%', '#3f8fd6')),
+    even.length ? h('section', {}, h('h3', {}, t('parent.rhythmTrend')),
+      lineChart(even.map((s) => s.rhythm!), even.map((s) => s.date.slice(5)), '/100', '#2f8a4c')) : null,
     h('section', {}, h('h3', {}, t('parent.speedTrend')),
       lineChart(sessions.map((s) => s.cpm), labels, t('parent.cpm'), '#e08a3c')),
     h('section', {}, h('h3', {}, t('parent.timePerDay')),

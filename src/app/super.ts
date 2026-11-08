@@ -53,6 +53,7 @@ export function superProfile(lang: LangRef, rand: () => number = Math.random): P
   p.progress.pawHelp = PAW_MAX;
   p.progress.companionsUnlocked = [...COMPANION_KINDS];
   p.settings.wardrobeLimit = false;
+  p.settings.hudAccuracy = p.settings.hudRhythm = p.settings.hudSpeed = true;
   p.companion.accessories = randomOutfit(() => true, rand);
   fillProgress(p, randomFill(p, rand), rand);
   return p;
@@ -106,6 +107,8 @@ const FILL_PRESSES = STATS_WINDOW;
 const FILL_SPREAD = 0.05;
 /** The speed of the filled session, correct characters per minute. */
 const FILL_CPM = 100;
+/** The rhythm of the filled session. */
+const FILL_RHYTHM = 80;
 
 /** `n` items of `list` picked at random. */
 function pick<T>(list: T[], n: number, rand: () => number): T[] {
@@ -172,5 +175,5 @@ export function fillProgress(p: Profile, f: ProgressFill, rand: () => number = M
     chars += FILL_PRESSES - wrong.size;
     errors += wrong.size;
   }
-  if (chars + errors) recordSession(p, ((chars + errors) / FILL_CPM) * 60, chars, errors, FILL_CPM);
+  if (chars + errors) recordSession(p, ((chars + errors) / FILL_CPM) * 60, chars, errors, FILL_CPM, FILL_RHYTHM);
 }

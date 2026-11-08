@@ -222,7 +222,7 @@ export class FlightMode extends Mode {
       fromX: START_X, fromAlt: 0, fromTilt: 0, toX: START_X, drop: DROP, flew: false, seat: this.journey ? 0 : i, slips: 0, wobble: 0, back: false, retry: false,
     });
     // The wait between flights is not typing speed.
-    this.L.speed.ready(performance.now());
+    this.L.typingReady();
   }
 
   /** The little dragon waits on the ground for the first word of its flight (`back`: from the pit to Tapko). */
@@ -379,7 +379,7 @@ export class FlightMode extends Mode {
       if (d.x !== to) return;
       if (d.retry) {
         this.ready(d, d.back);
-        L.speed.ready(performance.now());
+        L.typingReady();
       } else this.hop(d);
     } else if (d.state === 'hop') {
       const k = Math.min(1, d.t / HOP), to = arrive;

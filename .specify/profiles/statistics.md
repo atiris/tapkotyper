@@ -14,6 +14,10 @@
   minutes), the wardrobe time, automatic growth and the end cards' time (under a minute it says
   "menej ako 1 min"). The break reminder still counts screen time in a level, and a level's
   minimum and a timed practice's length keep their own clocks.
+- **Rhythm** of a day: each level with enough measured strokes gives its evenness score 0-100
+  ([feedback](../learning/feedback.md)), Rytmus its beat score; the day keeps their average weighted
+  by the letters typed. Days without a score have no rhythm and leave it out of every average. The
+  overall result code carries no rhythm (it carries no per-session values).
 - An overlay opened by clicking the child's character (on the map, or in a level, which pauses first)
   starts with "My progress": two rows of icon and number chips, each with its own picture and
   the meaning only in the tooltip. The first row is the long run: keys mastered of the layout's
@@ -21,8 +25,10 @@
   maximum (a world badge bronze 1, silver 2, gold 3; each target range award 1; the
   [Parrot badge](../game/parrot.md) 7; the treble clef 5: 15 x 3 + 15 + 7 + 5 = 72), the parrots at home against the most
   ever at home (the parrot's head), and the stars (the best of every level) of the maximum (5 in
-  75 levels: 375; the hero's journeys' stars count only among the stars earned since the start). The second row is the last 14 days: accuracy and speed in
-  characters per minute once something was typed, the letters typed, the **days trained** (a desk
+  75 levels: 375; the hero's journeys' stars count only among the stars earned since the start). The second row is the last 14 days: accuracy, the **rhythm**
+  (0-100, how evenly the child types; the Rytmus drum, its tooltip "Rytmus za 14 dní: 82 zo 100 – ako
+  rovnomerne píšeš"; hidden while no level had a score) and speed in characters per minute once
+  something was typed, the letters typed, the **days trained** (a desk
   calendar: days with at least one own key of the 14, today included, e.g. `9/14`) and the
   **typing time** (an alarm clock: `45 min`, from an hour `1 h 25`, in full in the tooltip);
   both always show, also at 0. The third row is the totals
@@ -76,7 +82,7 @@
     [end card](../game/mechanics.md) shows how they got better.
 - **My progress** ("Môj postup") is a page of its own, opened by the map's button, with a top
   bar ("Back" to the map and the title) like the other pages, and two tabs: **Postup** and
-  **Klávesy** (with the trends over the last sessions: accuracy, speed and time per day,
+  **Klávesy** (with the trends over the last sessions: accuracy, rhythm (the days with a score), speed and time per day,
   side by side on wide screens); every level's stars are on the map. Under the progress sit
   "QR kód celého postupu" and "Certifikát" ([parent controls](parent-controls.md)).
 - Once a parrot was ever won, the summary row has a **parrot** chip: the parrot's picture and

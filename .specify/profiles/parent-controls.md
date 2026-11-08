@@ -47,9 +47,13 @@
   by habit; there the backup is the default (focused) button. Deleting everything leads to the
   start page.
 - The settings group **Sounds and interface** ("Zvuky a rozhranie": volumes, reading aloud,
-  fonts, large text, motion, contrast, fullscreen) ends with **Translate the game**: its
+  fonts, large text, motion, contrast, the top bar's rings, fullscreen) ends with **Translate the game**: its
   heading, what it is for, then a button of the usual size that opens the translator. The
   translator changes the interface, so it sits with the interface settings.
+- **The top bar's rings** are three switches of the profile in that group: Presnosť (on by default),
+  Rytmus (off) and Rýchlosť (off), with one hint saying what each measures and that Rytmus (the game)
+  always shows all three. The super player has all three on. A young child sees only accuracy by
+  default, the first goal; a parent turns on more when the child is ready for them.
 - The settings have no progress tab: the progress, the charts and the levels are on the
   typist's own "My progress" page ([statistics](statistics.md)).
 - The settings have no task tab: tasks are made on the teacher page and kept by the player on

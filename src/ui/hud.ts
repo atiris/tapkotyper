@@ -1,13 +1,11 @@
 import { type LevelDef, worldLevels, worldName } from '../game/levels';
 import { WARDROBE_MAX, countdownFace } from '../game/wardrobe-time';
 import { t } from '../i18n/i18n';
-import { SHIFT_L, SHIFT_R, SPACE } from '../learning/lessons';
 import { ICONS, h } from './dom';
-import { keyLabel } from './keyboard-guide';
 import { tip } from './tooltip';
 
-/** Colors of the round buttons: controls purple; the paw, speed, place in the world, a key's accuracy green (the round being played); the super star and a new version red; the wardrobe's time teal. */
-export type RoundKind = 'control' | 'paw' | 'speed' | 'super' | 'place' | 'timer' | 'accuracy' | 'update';
+/** Colors of the round buttons: controls purple; the paw, the place in the world and the three measures green (the round being played); the super star and a new version red; the wardrobe's time teal. */
+export type RoundKind = 'control' | 'paw' | 'speed' | 'rhythm' | 'super' | 'place' | 'timer' | 'accuracy' | 'update';
 
 const RING_LEN = 2 * Math.PI * 21;
 /** Glyphs drawn filled in white; the others are white lines. */
@@ -88,52 +86,64 @@ export function roundPic(kind: RoundKind, glyph: keyof typeof ICONS, ring = ''):
   return h('span', { class: `round-btn ${kind}`, html: roundSvg(glyph, ring) });
 }
 
-/** Speed (a picture, not a button): the green ring fills from calm to excellent. */
-export function speedPic(): { el: HTMLElement; set(ratio: number): void; label(text: string): void } {
-  const el = h('div', { class: 'round-btn speed', role: 'img', html: roundSvg('wave', fillRing(0.25)) });
-  // The ring is redrawn only when its 1/40 step changes, not on every frame.
-  let step = -1;
-  return {
-    el,
-    set(ratio) {
-      const next = Math.round(Math.max(0, Math.min(1, ratio)) * 40);
-      if (next === step) return;
-      step = next;
-      paintRound(el, 'wave', fillRing(0.25 + 0.7 * (next / 40)));
-    },
-    label(text) {
-      tip(el, text);
-      el.setAttribute('aria-label', text);
-    },
-  };
-}
-
 /** Share of the ring an accuracy fills: the errors on a log scale, so 80 to 100 % takes two thirds of the ring. */
 export function accuracyFill(accuracy: number): number {
   const errors = 1 - Math.max(0, Math.min(1, accuracy));
   return Math.max(0, 1 - Math.log10(1 + 99 * errors) / 2);
 }
 
-/**
- * Accuracy of one trained key (a picture): the key on the disc, the ring by `accuracyFill`;
- * red below 80 %, orange below 90 %, yellow above, green once the key is ready.
- */
-export function accuracyPic(key: string): { el: HTMLElement; set(accuracy: number, ready: boolean): void } {
-  const glyph = key === SPACE ? '␣' : key === SHIFT_L || key === SHIFT_R ? '⇧' : key;
-  const el = h('div', { class: 'round-btn accuracy', role: 'img' });
+/** A measure of the top bar (a picture, not a button); `paint` redraws it (and its `band` class) only when `key` changed. */
+function measure(kind: RoundKind): { el: HTMLElement; paint(key: string, html: string, label: string, band?: string): void } {
+  const el = h('div', { class: `round-btn ${kind}`, role: 'img' });
   let shown = '';
   return {
     el,
-    set(accuracy, ready) {
-      const pct = Math.round(accuracy * 100);
-      const band = ready ? 'ready' : pct < 80 ? 'low' : pct < 90 ? 'mid' : 'high';
-      if (`${pct}${band}` === shown) return;
-      shown = `${pct}${band}`;
-      el.className = `round-btn accuracy acc-${band}`;
-      el.innerHTML = roundTextSvg(glyph, fillRing(accuracyFill(accuracy)));
-      const label = t('level.keyAccuracy', { key: keyLabel(key), n: pct });
+    paint(key, html, label, band) {
+      if (key === shown) return;
+      shown = key;
+      if (band) el.className = `round-btn ${kind} ${band}`;
+      el.innerHTML = html;
       tip(el, label);
       el.setAttribute('aria-label', label);
+    },
+  };
+}
+
+/** Presnosť: the share of right keys, the ring by `accuracyFill`; red below 80 %, orange below 90 %, yellow above; a check at 100. */
+export function accuracyRing(): { el: HTMLElement; set(accuracy: number): void } {
+  const m = measure('accuracy');
+  return {
+    el: m.el,
+    set(accuracy) {
+      const pct = Math.round(accuracy * 100);
+      const ring = fillRing(accuracyFill(accuracy));
+      m.paint(String(pct), pct === 100 ? roundSvg('check', ring) : roundTextSvg(String(pct), ring), t('level.accuracy', { n: pct }), `acc-${pct < 80 ? 'low' : pct < 90 ? 'mid' : 'high'}`);
+    },
+  };
+}
+
+/** Rytmus: how even the typing is (0-100), the ring by the score; "…" while there is none yet; a check at 100. */
+export function rhythmRing(): { el: HTMLElement; set(score: number | null): void } {
+  const m = measure('rhythm');
+  return {
+    el: m.el,
+    set(score) {
+      const ring = fillRing(score === null ? 0 : score / 100);
+      const html = score === 100 ? roundSvg('check', ring) : roundTextSvg(score === null ? '…' : String(score), ring);
+      m.paint(String(score), html, score === null ? t('level.rhythmListening') : t('level.rhythm', { n: score }));
+    },
+  };
+}
+
+/** Rýchlosť: letters a minute, the wave's ring filling from calm (`fill` 0) to its top (1). */
+export function speedRing(): { el: HTMLElement; set(fill: number, cpm: number): void } {
+  const m = measure('speed');
+  return {
+    el: m.el,
+    set(fill, cpm) {
+      // The ring is redrawn only when its 1/40 step changes, not on every frame.
+      const step = Math.round(Math.max(0, Math.min(1, fill)) * 40);
+      m.paint(`${step}|${cpm}`, roundSvg('wave', fillRing(0.25 + 0.7 * (step / 40))), t('level.speed', { n: cpm }));
     },
   };
 }

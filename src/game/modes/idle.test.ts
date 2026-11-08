@@ -42,7 +42,7 @@ function fakeRuntime(count = 4): LevelRuntime {
     toolAlpha: 1,
     rng: { pick: <T>(a: T[]) => a[0], range: (a: number) => a, chance: () => false, int: (a: number) => a, next: () => 0.5, shuffle: <T>(a: T[]) => [...a] },
     word: () => 'ab',
-    words: { knows: () => true },
+    words: { knows: () => true, focus: new Set() },
     weakWord: () => 'ab',
     playedS: 0,
     share: () => 0.5,

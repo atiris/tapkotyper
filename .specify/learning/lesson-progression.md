@@ -25,7 +25,7 @@
   a character typed by the right hand means the left thumb and the other way round, and the
   child tries the left, the right and again the left thumb in turn.
 - Home row keys and the first reaches come in mirrored pairs (same finger, other hand).
-  When every key of the newest group has its last 25 presses (12 for space, punctuation and
+  When every key of the newest group has its last 25 presses (8 for space, 12 for punctuation and
   the Shifts) at least 89 % right, the next ones unlock; when its last 40 presses are at least
   94 % right, its guide fades and, for a Shift, more capitals come. Speed never holds anything
   back; it is only measured and shown.

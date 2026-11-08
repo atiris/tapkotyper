@@ -44,7 +44,8 @@ as they are. The world descriptions below marked *not built yet* are the design 
    is the wrong message for small children; playing with them is better.
    The meadow plays the world rhythm (see [mechanics](mechanics.md)): level 1 is the leaf
    game with single chunks; level 2 is the calm step, growing a bouquet of corn poppies: a bud
-   grows out of the near grass with a letter above it (up to three at once, each with another
+   grows out of the near grass with a letter above it, two letters with a space between while the
+   space bar is new, as level 1 has no spaces (up to three at once, each with another
    first letter); the typed letter makes it bloom (half of the buds open slowly first), the
    flower stays a while, fades and drops its petals, and its seed head goes, while a new bud
    grows elsewhere; some poppies grow mirrored so they do not all look alike; every typed letter

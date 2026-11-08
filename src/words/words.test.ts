@@ -14,6 +14,11 @@ describe('word filter', () => {
     for (let i = 0; i < 40; i++) expect(src.next(new Set(), undefined, 1)).not.toContain(' ');
   });
 
+  it('trains a new space between two letters, as the poppies ask', () => {
+    const src = new WordSource(WORDS, { keys: ['f', 'j', ' '], len: [2, 6], noDiacritics: false, seed: 9, focus: ['f', 'j', ' '] });
+    for (let i = 0; i < 40; i++) expect(src.next(new Set(), 1, 2)).toMatch(/^[fj] [fj]$/);
+  });
+
   it('keeps only words made of allowed keys and in the length range', () => {
     expect(filterWords(WORDS, new Set([...'asdfjkl']), [2, 5])).toEqual(['sad', 'lak', 'las', 'ja']);
   });

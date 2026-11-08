@@ -3,6 +3,7 @@ import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
 import { blob, drawSprite, fontFamily, type G } from '../../gfx/draw';
 import { t } from '../../i18n/i18n';
+import { SPACE } from '../../learning/lessons';
 import { type Drift, Mode, TAPKO_X } from '../mode';
 import type { Target } from '../typing';
 import { CopyRow } from './kit/copy-row';
@@ -130,7 +131,8 @@ export class PoppyMode extends Mode {
   }
 
   private grow(): void {
-    const word = this.L.word(2, 1);
+    // While space is a new key every bud asks for it between two letters (`f j`), else a short word.
+    const word = this.L.words.focus.has(SPACE) ? this.L.word(1, 2) : this.L.word(2, 1);
     const at = this.spot();
     // Every waiting word starts with its own letter, so the first key picks the word.
     if (!at || this.L.core.active.some((t) => t.word[0] === word[0])) {

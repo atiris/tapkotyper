@@ -80,8 +80,10 @@ export const MASTERED_TEXT = { n: STATS_WINDOW, right: Math.round(ACCURACY.fair 
 export const MASTERY_WINDOW = 40;
 /** A key is ready for the next one after fewer presses than full mastery. */
 export const READY_WINDOW = 25;
-/** Space, punctuation and the Shifts come up less often than letters, so they get ready sooner. */
+/** Punctuation and the Shifts come up less often than letters, so they get ready sooner. */
 export const LIGHT_READY_WINDOW = 12;
+/** Space, a thumb's easy key, gets ready soonest: after the first words it comes between every two. */
+export const SPACE_READY_WINDOW = 8;
 
 /** A letter key (not space, punctuation, a digit or a Shift). */
 export function isLetterKey(key: string): boolean {
@@ -89,6 +91,7 @@ export function isLetterKey(key: string): boolean {
 }
 
 function readyWindow(key: string): number {
+  if (key === SPACE) return SPACE_READY_WINDOW;
   return isLetterKey(key) || /^\d$/.test(key) ? READY_WINDOW : LIGHT_READY_WINDOW;
 }
 

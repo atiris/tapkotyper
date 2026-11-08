@@ -78,7 +78,10 @@ describe('mastery and unlocking', () => {
     expect(advanceLesson(p)).toEqual([]);
     for (let i = 0; i < 25; i++) recordPress(p, 'f', 'f', 400);
     expect(advanceLesson(p)).toEqual([]);
-    for (let i = 0; i < 12; i++) recordPress(p, ' ', ' ', 400);
+    // Space is ready after its own 8 presses, a third of a letter's.
+    for (let i = 0; i < 7; i++) recordPress(p, ' ', ' ', 400);
+    expect(advanceLesson(p)).toEqual([]);
+    recordPress(p, ' ', ' ', 400);
     expect(advanceLesson(p)).toEqual(['d', 'k']);
     expect(p.progress.unlockedKeys).toEqual(['f', 'j', ' ', 'd', 'k']);
   });

@@ -75,7 +75,7 @@ No DB, no server contract.
   Only in the full graphics (not `gfx-simple`) and not with reduced motion; there it stays as today.
   Decision on children: a 0.12 s slide out and a 0.25 s soft way back is calm enough; no faster
   shaking movement is added.
-- [ ] **9. Tests and checks.** Unit: SoundLevel cycle with four levels, `important` gain on/off,
+- [x] **9. Tests and checks.** Unit: SoundLevel cycle with four levels, `important` gain on/off,
   rhythm `onResume` (no miss counted, letter waits), notes shelf has no buttons. E2E: update
   `e2e/rhythm.spec.ts` (popup when sound off: default button turns sound on; with `important` no popup)
   and any spec that clicks a note or reads `rhythmTune`. `npm run build`, `npx vitest run`, the touched
@@ -83,4 +83,20 @@ No DB, no server contract.
   last training under the figure), sound menu (four items, "!" icon), Rytmus popup and Esc/back.
 
 ## State
-Nothing implemented yet.
+All steps done. Choices where the plan was silent:
+- The note tooltip keeps its key `progress.rhythmNoteTip` with the new plain text; `end.rhythmNote` no longer says the note brings music.
+- The sound list reuses the language list's code (one `dropList` in chrome.ts, classes `drop-list`/`drop-item`); in a level it hangs under the top bar.
+- The level names replace the old `common.sound_*` texts; the button's label is the level's name alone ("Zvuky"), `common.sound` names the list.
+- `important` turns on for kind `rhythm` and for runs that dictate after the voice check (a dictation without a voice plays as copy and stays silent).
+- The Rytmus sound card lives in `src/game/cards.ts` (`rhythmSoundCard`) beside the other level cards, not in screens/level.ts; it shows only with `off`.
+- The pure level helpers (`SOUND_LEVELS`, `nextLevel`, `levelGain`) sit in `src/audio/levels.ts`, so they are unit-tested without the audio engine.
+- Rytmus boost: `BEAT_BOOST = 2.5` (bell 0.025 -> 0.062, between the key sound 0.05 and a word 0.084).
+
+## Done - 2026-11-08
+Shipped: rhythm notes as overlapping pictures with the count after them and no menu tune (field `rhythmTune` gone);
+the medal chip first in the third summary row (separate medals block gone); the last-training line under the
+character with the round keyboard sign; four sound levels in a list (F4 cycles all four, "!" badge for
+"Len kde je to dôležité", which plays only in Rytmus and dictation); the card before Rytmus without sound;
+Rytmus 2.5x louder; Esc and back in Rytmus glides the due letter in without a miss; the basket glides back after
+a catch. Unit tests (levels, onResume) and e2e (rhythm sound card, sound list, progress shelf) added.
+Left out: nothing. Not measured: the loudness by ear (only the gain values in code).

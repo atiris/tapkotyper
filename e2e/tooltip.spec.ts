@@ -14,7 +14,7 @@ test('one tooltip: after a hover delay, at once for the next one, on Tab focus, 
   await page.waitForTimeout(200);
   await expect(tip).not.toHaveClass(/show/);
   await expect(tip).toHaveClass(/show/);
-  await expect(tip).toHaveText(/^Sound/);
+  await expect(tip).toHaveText(/^No sounds/);
   // Right after, the neighbour shows at once.
   await corner.nth(1).hover();
   await page.waitForTimeout(150);

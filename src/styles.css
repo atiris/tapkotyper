@@ -305,6 +305,7 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
 /* The sound levels' signs before their names; in a level the list hangs under the bar. */
 .drop-item > .icon:first-child { flex: none; margin-right: -0.35rem; }
 .drop-item > span { flex: 1; }
+.sound-list .drop-item { white-space: nowrap; }
 .hud { position: relative; }
 .hud > .drop-list { top: calc(100% + 6px); z-index: 6; }
 /* The "!" badge of the sound level `important`: a white mark on red, in a ring of the paper colour (one look in every theme). */
@@ -1184,6 +1185,8 @@ body:not(.gfx-simple) .level-screen.covered :is(.stage-wrap *, .overlay .tapko-s
 .posture-pic { margin: 0; }
 .posture-tip { margin: 0.5rem 0 0; font-size: 1rem; color: var(--ink-soft); text-align: center; text-wrap: pretty; }
 .posture-card, .newkey-card, .homerow-card { position: relative; }
+/* The Rytmus sound card: its round X top right, the text under it. */
+.rhythm-sound { position: relative; padding-top: 3.4rem; }
 /* Get-ready card: two panels side by side with a gap, how to sit on the left, the story and the space bar on the right. */
 .posture-cards { display: flex; gap: 1.2rem; align-items: stretch; width: 100%; max-width: 1080px; max-height: 100%; }
 .posture-side { flex: 0 1 400px; display: flex; flex-direction: column; justify-content: center; }

@@ -49,6 +49,10 @@ test.describe('an Android phone that reports a mouse-like pointer', () => {
     await page.goto('./');
     await expect(page.locator('.start-screen.gated')).toBeVisible();
     await expect(page.locator('.device-switch')).toHaveCount(0);
+    // A connected keyboard opens the game; a phone the detection is sure of offers no switch.
+    await page.keyboard.press('a');
+    await expect(page.locator(NEW_PLAYER).first()).toBeVisible();
+    await expect(page.locator('.device-switch')).toHaveCount(0);
   });
 });
 

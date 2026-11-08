@@ -20,7 +20,7 @@ let forced = (() => {
  * hover, so the browser's own word on a mobile device and the system's name count first; an iPad
  * calls itself a Mac but has touch points.
  */
-function touchOnly(): boolean {
+export function phoneDetected(): boolean {
   if (navigator.maxTouchPoints < 1 && !('ontouchstart' in window)) return false;
   const ua = navigator.userAgent;
   const mobile = (navigator as Navigator & { userAgentData?: { mobile?: boolean } }).userAgentData?.mobile === true
@@ -30,7 +30,7 @@ function touchOnly(): boolean {
 
 /** The game cannot be played here yet: a phone or tablet and no physical key seen in this session. */
 export function keyboardGated(): boolean {
-  return !seen && (forced || touchOnly());
+  return !seen && (forced || phoneDetected());
 }
 
 /** The player switched this device to a phone by hand. */

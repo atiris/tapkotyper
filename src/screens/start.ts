@@ -1,5 +1,5 @@
 import { app, applyProfileLook, go, openRoute, saveProfile, selectProfile, useLanguage } from '../app/app';
-import { forcePhone, keyboardGated, onKeyboard, phoneForced, takeWaiting } from '../app/keyboard-gate';
+import { forcePhone, keyboardGated, onKeyboard, phoneDetected, phoneForced, takeWaiting } from '../app/keyboard-gate';
 import { audio } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
 import { small } from '../ui/start-pictures';
@@ -122,11 +122,11 @@ export function startScreen(root: HTMLElement, { task }: { task?: TaskOffer } = 
       bigButton(taskArt(), t('start.note.title'), t('start.note.sub'), () => go('taskNote')),
       bigButton(teacherArt(), t('start.teacher.title'), t('start.teacher.sub'), () => go('teacher')),
       keyboardButton(),
-      phoneForced() ? deviceButton(false) : null,
+      phoneForced() && !phoneDetected() ? deviceButton(false) : null,
     ] : [
       h('p', { class: 'start-intro' }, t('start.intro')),
       promises(),
-      deviceButton(true),
+      phoneForced() || phoneDetected() ? null : deviceButton(true),
     ]));
 
   const screen = h('div', { class: `screen start-screen${gated ? ' gated' : ''}${task ? ' task-start' : ''}` });
@@ -206,7 +206,7 @@ function pickByNumber(count: number, pick: (i: number) => void): () => void {
 
 /**
  * When the detection takes a phone for a computer, the player says it is a phone (shown only on a
- * narrow upright page, by the CSS); a phone switched by hand can go back.
+ * narrow upright page, by the CSS); a phone switched by hand can go back. A detected phone has neither.
  */
 function deviceButton(phone: boolean): HTMLButtonElement {
   return button(t(phone ? 'start.device.phone' : 'start.device.computer'), () => {

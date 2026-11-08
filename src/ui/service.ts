@@ -1,5 +1,6 @@
 import { app, go, saveProfile, shownScreen } from '../app/app';
 import { fillProgress, randomFill } from '../app/super';
+import { TEMPO_MAX, TEMPO_MIN } from '../game/beat';
 import { MAX_LEVEL_STARS, WORLDS, worldName } from '../game/levels';
 import { bringParrotHome, sendParrotAway } from '../game/parrots';
 import { localDate } from '../learning/stats';
@@ -74,7 +75,7 @@ function percent(value: number, min = 0): { el: HTMLElement; get: () => number }
   return { el: h('span', { class: 'range' }, input, out), get: () => Number(input.value) / 100 };
 }
 
-/** The super player's progress, set by hand: keys and the last finished world exactly, the rest spread at random; it opens on a fresh random fill. */
+/** The super player's progress, set by hand: keys, the last finished world and the Rytmus tempo exactly, the rest spread at random; it opens on a fresh random fill. */
 function fillDialog(p: Profile): void {
   const f = randomFill(p);
   const most = lessonOrder(p.layout).length;
@@ -86,8 +87,14 @@ function fillDialog(p: Profile): void {
   const ranges = percent(f.ranges);
   const parrots = h('input', { type: 'checkbox' });
   parrots.checked = f.allParrots;
+  const tempo = h('input', { type: 'number', min: TEMPO_MIN, max: TEMPO_MAX, step: 1, value: f.tempo });
+  const notes = h('input', { type: 'checkbox' });
+  notes.checked = f.allNotes;
   const apply = () => {
-    fillProgress(p, { keys: Math.min(most, Math.max(0, Number(keys.value) || 0)), lastWorld: Number(world.value), stars: stars.get(), accuracy: accuracy.get(), ranges: ranges.get(), allParrots: parrots.checked });
+    fillProgress(p, {
+      keys: Math.min(most, Math.max(0, Number(keys.value) || 0)), lastWorld: Number(world.value), stars: stars.get(), accuracy: accuracy.get(), ranges: ranges.get(),
+      allParrots: parrots.checked, tempo: Number(tempo.value) || f.tempo, allNotes: notes.checked,
+    });
     close();
     go('map', {}, false);
     toast(t('service.filled'));
@@ -100,7 +107,9 @@ function fillDialog(p: Profile): void {
       fillField(t('service.fillStars'), stars.el, t('service.fillStarsHint', { n: MAX_LEVEL_STARS })),
       fillField(t('service.fillAccuracy'), accuracy.el, t('service.fillAccuracyHint')),
       fillField(t('service.fillRanges'), ranges.el, t('service.fillRangesHint')),
-      h('div', { class: 'switch-field' }, h('label', {}, parrots, h('span', { class: 'switch-title' }, t('service.fillParrots'))), h('small', {}, t('service.fillParrotsHint')))),
+      h('div', { class: 'switch-field' }, h('label', {}, parrots, h('span', { class: 'switch-title' }, t('service.fillParrots'))), h('small', {}, t('service.fillParrotsHint'))),
+      fillField(t('service.fillTempo', { min: TEMPO_MIN, max: TEMPO_MAX }), tempo, t('service.fillTempoHint')),
+      h('div', { class: 'switch-field' }, h('label', {}, notes, h('span', { class: 'switch-title' }, t('service.fillNotes'))), h('small', {}, t('service.fillNotesHint')))),
     h('div', { class: 'row center' }, button(t('service.fillApply'), apply, 'btn primary', 'check'), button(t('common.back'), () => close(), 'btn'))));
 }
 

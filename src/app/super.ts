@@ -3,6 +3,7 @@ import { randomOutfit } from '../gfx/tapko';
 import { LEVELS, MAX_LEVEL_STARS, STORIES, WORLDS, journeyId } from '../game/levels';
 import { WORLD_THINGS } from '../game/modes/aim-things';
 import { PAW_MAX } from '../game/paw';
+import { TEMPO_MAX, TEMPO_MIN } from '../game/beat';
 import { WORLD_REWARDS } from '../game/rewards';
 import { t } from '../i18n/i18n';
 import { STATS_WINDOW, lessonOrder } from '../learning/lessons';
@@ -71,6 +72,10 @@ export interface ProgressFill {
   ranges: number;
   /** Every finished world's parrot at home; else one of them is missing. */
   allParrots: boolean;
+  /** The Rytmus tempo every world's next round starts from, letters a minute. */
+  tempo: number;
+  /** A rhythm note of every finished world; else one of them is missing. */
+  allNotes: boolean;
 }
 
 /** Whole percents from `lo` to `hi` at random, as a share. */
@@ -79,7 +84,8 @@ const between = (lo: number, hi: number, rand: () => number) => Math.round(lo + 
 /**
  * What the progress dialog offers when it opens, and what a new super player gets: the keys and
  * the finished worlds it has, 70-95 % of the stars, 90-100 % accuracy, 40-100 % of the range
- * finds and every parrot or all but one.
+ * finds, every parrot or all but one, the Rytmus tempo kept (40-80 letters a minute before any) and
+ * every note or all but one.
  */
 export function randomFill(p: Profile, rand: () => number = Math.random): ProgressFill {
   return {
@@ -89,6 +95,8 @@ export function randomFill(p: Profile, rand: () => number = Math.random): Progre
     accuracy: between(90, 100, rand),
     ranges: between(40, 100, rand),
     allParrots: rand() < 0.5,
+    tempo: p.progress.rhythmTempo ?? Math.round(40 + rand() * 40),
+    allNotes: rand() < 0.5,
   };
 }
 
@@ -108,8 +116,9 @@ function pick<T>(list: T[], n: number, rand: () => number): T[] {
 /**
  * Fills the super player's progress for a test or a demonstration: exactly the asked keys and
  * finished worlds; the stars, the range finds and each key's accuracy spread at random to give
- * the asked shares; the finished worlds' parrots at home, all or all but a random one. Every finished level keeps at least one star. Only for the super player,
- * which is never stored.
+ * the asked shares; the finished worlds' parrots at home and their rhythm notes (with the node's
+ * check), each all or all but a random one; the Rytmus tempo. Every finished level keeps at least one
+ * star. Only for the super player, which is never stored.
  */
 export function fillProgress(p: Profile, f: ProgressFill, rand: () => number = Math.random): void {
   const pr = p.progress;
@@ -144,6 +153,13 @@ export function fillProgress(p: Profile, f: ProgressFill, rand: () => number = M
   pr.parrotBest = pr.parrots.length;
   pr.parrotWonAt = pr.parrotCheckedAt = pr.parrots.length ? today : null;
   pr.parrotFlown = [];
+  pr.rhythmTempo = Math.round(Math.max(TEMPO_MIN, Math.min(TEMPO_MAX, f.tempo)));
+  // Earned today too, so none fades before the map is even seen.
+  const noted = f.allNotes ? [...pr.worldsDone] : pick(pr.worldsDone, pr.worldsDone.length - 1, rand).sort((a, b) => a - b);
+  pr.rhythmNoteList = noted.map((world, n) => ({ world, n }));
+  pr.rhythmNotesAt = noted.length ? today : null;
+  pr.rhythmNotesFaded = 0;
+  pr.rhythmWon = [...noted];
   p.stats = { keys: {}, sessions: [] };
   pr.trainedSeconds = 0;
   let chars = 0;

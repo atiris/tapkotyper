@@ -35,7 +35,7 @@ Affected: `src/game/beat.ts` (tempo rules), `src/game/modes/rhythm.ts`, `src/scr
   today. `drift` and `stepWindow` accept the half step (the window widens only on a full step down).
   Update the unit tests in `beat.test.ts` / `rhythm.test.ts` for the new rules (a child on the beat
   climbs, typos alone never lower it, misses do, very shaky catches lower it gently).
-- [ ] **3. Super player sets the tempo.** The service fill dialog gets a field "Tempo Rytmu" (letters a
+- [x] **3. Super player sets the tempo.** The service fill dialog gets a field "Tempo Rytmu" (letters a
   minute, `TEMPO_MIN`-`TEMPO_MAX`, one line hint), opening on the current tempo (or a random 40-80 for
   a new super player); `fillProgress` writes `rhythmTempo`. The fill also gives rhythm notes: one note
   for every filled finished world, all of them or all but one at random (like the parrots, a new
@@ -81,3 +81,4 @@ Affected: `src/game/beat.ts` (tempo rules), `src/game/modes/rhythm.ts`, `src/scr
 ## State
 - Step 1: no `rhythmTempoAt`: nothing reads a tempo date once the week rule is gone, and `rhythmNotesAt` already keeps the last round's day.
 - Step 2: catches while the song waited (after a miss or a pause, without time pressure) count as caught but not in the in-time share; a phrase with no timed catch counts as in time. A gentle step down keeps the round's length too (only a full step down adds a phrase).
+- Step 3: `rhythmWon` goes to the worlds with a filled note (the same all-or-all-but-one pick); the tempo field takes whole numbers and is clamped to the range on fill.

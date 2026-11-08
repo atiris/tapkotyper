@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { LEVELS, MAX_LEVEL_STARS, aimOpen, isLevelUnlocked, levelAt, rhythmOpen } from '../game/levels';
 import { WORLD_THINGS } from '../game/modes/aim-things';
 import { lessonOrder } from '../learning/lessons';
+import { localDate } from '../learning/stats';
 import { fillProgress, randomFill, superProfile } from './super';
 
 /** A repeatable random source. */
@@ -10,7 +11,7 @@ const seeded = (seed: number) => () => ((seed = (seed * 16807) % 2147483647) / 2
 describe('service menu progress filling', () => {
   it('sets the keys and the finished worlds exactly', () => {
     const p = superProfile('sk');
-    fillProgress(p, { keys: 12, lastWorld: 2, stars: 0.5, accuracy: 0.9, ranges: 0.5, allParrots: true }, seeded(1));
+    fillProgress(p, { keys: 12, lastWorld: 2, stars: 0.5, accuracy: 0.9, ranges: 0.5, allParrots: true, tempo: 50, allNotes: true }, seeded(1));
     expect(p.progress.unlockedKeys).toEqual(lessonOrder(p.layout).slice(0, 12));
     expect(p.progress.introducedKeys).toEqual(p.progress.unlockedKeys);
     expect(p.progress.worldsDone).toEqual([0, 1, 2]);
@@ -18,19 +19,19 @@ describe('service menu progress filling', () => {
 
   it('spreads the stars over the finished worlds, at least one per level', () => {
     const p = superProfile('sk');
-    fillProgress(p, { keys: 20, lastWorld: 1, stars: 0.6, accuracy: 0.9, ranges: 0, allParrots: true }, seeded(2));
+    fillProgress(p, { keys: 20, lastWorld: 1, stars: 0.6, accuracy: 0.9, ranges: 0, allParrots: true, tempo: 50, allNotes: true }, seeded(2));
     const done = LEVELS.filter((l) => l.world <= 1);
     const stars = done.map((l) => p.progress.levels[l.id]);
     expect(stars.every((s) => s >= 1 && s <= MAX_LEVEL_STARS)).toBe(true);
     expect(stars.reduce((a, b) => a + b, 0)).toBe(Math.round(0.6 * MAX_LEVEL_STARS * done.length));
     expect(LEVELS.filter((l) => l.world > 1).every((l) => p.progress.levels[l.id] === 0)).toBe(true);
-    fillProgress(p, { keys: 20, lastWorld: 1, stars: 0, accuracy: 0.9, ranges: 0, allParrots: true }, seeded(2));
+    fillProgress(p, { keys: 20, lastWorld: 1, stars: 0, accuracy: 0.9, ranges: 0, allParrots: true, tempo: 50, allNotes: true }, seeded(2));
     expect(done.every((l) => p.progress.levels[l.id] === 1)).toBe(true);
   });
 
   it('gives each known key about the asked accuracy and collects the asked share of range finds', () => {
     const p = superProfile('sk');
-    fillProgress(p, { keys: 10, lastWorld: 3, stars: 1, accuracy: 0.8, ranges: 0.5, allParrots: true }, seeded(3));
+    fillProgress(p, { keys: 10, lastWorld: 3, stars: 1, accuracy: 0.8, ranges: 0.5, allParrots: true, tempo: 50, allNotes: true }, seeded(3));
     const keys = Object.entries(p.stats.keys).filter(([k]) => p.progress.unlockedKeys.includes(k));
     expect(keys).toHaveLength(10);
     for (const [, s] of keys) expect(1 - s.errors / s.presses).toBeGreaterThanOrEqual(0.74);
@@ -43,7 +44,7 @@ describe('service menu progress filling', () => {
 
   it('with no finished world leaves no stars and no finds', () => {
     const p = superProfile('sk');
-    fillProgress(p, { keys: 3, lastWorld: -1, stars: 1, accuracy: 1, ranges: 1, allParrots: false }, seeded(4));
+    fillProgress(p, { keys: 3, lastWorld: -1, stars: 1, accuracy: 1, ranges: 1, allParrots: false, tempo: 50, allNotes: true }, seeded(4));
     expect(p.progress.worldsDone).toEqual([]);
     expect(Object.values(p.progress.levels).every((s) => s === 0)).toBe(true);
     expect(p.progress.rangeFinds).toEqual([]);
@@ -52,7 +53,7 @@ describe('service menu progress filling', () => {
   it('opens only what the filled progress opens: the next world\'s first level and its side games', () => {
     const p = superProfile('sk');
     expect(isLevelUnlocked(p, levelAt(14, 4)!)).toBe(true);
-    fillProgress(p, { keys: lessonOrder(p.layout).length, lastWorld: 1, stars: 1, accuracy: 1, ranges: 0, allParrots: true }, seeded(6));
+    fillProgress(p, { keys: lessonOrder(p.layout).length, lastWorld: 1, stars: 1, accuracy: 1, ranges: 0, allParrots: true, tempo: 50, allNotes: true }, seeded(6));
     expect(isLevelUnlocked(p, levelAt(1, 4)!)).toBe(true);
     expect(isLevelUnlocked(p, levelAt(2, 0)!)).toBe(true);
     expect(isLevelUnlocked(p, levelAt(2, 1)!)).toBe(false);
@@ -62,12 +63,28 @@ describe('service menu progress filling', () => {
 
   it("puts every finished world's parrot at home, or all but one", () => {
     const p = superProfile('sk');
-    fillProgress(p, { keys: 10, lastWorld: 4, stars: 1, accuracy: 1, ranges: 0, allParrots: true }, seeded(5));
+    fillProgress(p, { keys: 10, lastWorld: 4, stars: 1, accuracy: 1, ranges: 0, allParrots: true, tempo: 50, allNotes: true }, seeded(5));
     expect(p.progress.parrots).toEqual([0, 1, 2, 3, 4]);
-    fillProgress(p, { keys: 10, lastWorld: 4, stars: 1, accuracy: 1, ranges: 0, allParrots: false }, seeded(5));
+    fillProgress(p, { keys: 10, lastWorld: 4, stars: 1, accuracy: 1, ranges: 0, allParrots: false, tempo: 50, allNotes: true }, seeded(5));
     expect(p.progress.parrots).toHaveLength(4);
     expect(p.progress.parrots.every((w) => w <= 4)).toBe(true);
     expect(p.progress.parrotBest).toBe(4);
+  });
+
+  it('sets the Rytmus tempo and every finished world\'s note earned today, or all but one, with its check', () => {
+    const p = superProfile('sk');
+    fillProgress(p, { keys: 10, lastWorld: 4, stars: 1, accuracy: 1, ranges: 0, allParrots: true, tempo: 95, allNotes: true }, seeded(7));
+    expect(p.progress.rhythmTempo).toBe(95);
+    expect(p.progress.rhythmNoteList.map((x) => x.world)).toEqual([0, 1, 2, 3, 4]);
+    expect(p.progress.rhythmNotesAt).toBe(localDate());
+    expect(p.progress.rhythmWon).toEqual([0, 1, 2, 3, 4]);
+    fillProgress(p, { keys: 10, lastWorld: 4, stars: 1, accuracy: 1, ranges: 0, allParrots: true, tempo: 500, allNotes: false }, seeded(7));
+    expect(p.progress.rhythmTempo).toBe(120);
+    expect(p.progress.rhythmNoteList).toHaveLength(4);
+    expect(new Set(p.progress.rhythmNoteList.map((x) => x.n)).size).toBe(4);
+    expect(p.progress.rhythmWon).toEqual(p.progress.rhythmNoteList.map((x) => x.world));
+    // The dialog opens on the tempo kept.
+    expect(randomFill(p, seeded(8)).tempo).toBe(120);
   });
 
   it('offers a random fill in the asked ranges, the one a new super player starts with', () => {
@@ -84,6 +101,9 @@ describe('service menu progress filling', () => {
       expect(share).toBeGreaterThanOrEqual(0.69);
       expect(share).toBeLessThanOrEqual(0.96);
       expect(p.progress.parrots.length).toBeGreaterThanOrEqual(p.progress.worldsDone.length - 1);
+      expect(p.progress.rhythmTempo).toBeGreaterThanOrEqual(40);
+      expect(p.progress.rhythmTempo).toBeLessThanOrEqual(80);
+      expect(p.progress.rhythmNoteList.length).toBeGreaterThanOrEqual(p.progress.worldsDone.length - 1);
     }
   });
 });

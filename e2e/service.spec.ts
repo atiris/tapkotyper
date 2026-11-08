@@ -11,15 +11,19 @@ test('the star menu fills in the super player\'s progress', async ({ page }) => 
   await page.locator('.top-right .round-btn.super').click();
   await page.locator('.service-menu .menu-item', { hasText: 'Fill in progress' }).click();
   const dialog = page.locator('.service-dialog');
-  await dialog.locator('input[type=number]').fill('15');
+  await dialog.locator('input[type=number]').first().fill('15');
   await dialog.locator('select').selectOption('1');
   const sliders = dialog.locator('input[type=range]');
   for (const [i, v] of [[0, '60'], [1, '80'], [2, '50']] as const) await sliders.nth(i).fill(v);
+  // The Rytmus tempo and every finished world's note, with its node's check.
+  await dialog.locator('input[type=number]').last().fill('77');
+  await dialog.locator('input[type=checkbox]').last().check();
   await dialog.locator('.btn.primary').click();
   await expect(page.locator('.toast')).toHaveText('The progress is filled in.');
+  await expect(page.locator('.rhythm-node.done')).toHaveCount(2);
   // Meadow and Rocket are finished: every level has a star, 60 % of their 50 stars in all.
-  // The story levels only: the range and the parrot beside a finished world are level nodes too.
-  const levels = page.locator('.level-node.done:not(.aim-node, .parrot-node)');
+  // The story levels only: the range, the parrot and Rytmus beside a finished world are level nodes too.
+  const levels = page.locator('.level-node.done:not(.aim-node, .parrot-node, .rhythm-node)');
   await expect(levels).toHaveCount(10);
   const stars = await levels.locator('.mini-stars i').count();
   expect(stars).toBe(30);

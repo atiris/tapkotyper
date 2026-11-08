@@ -64,9 +64,13 @@
     on a wide screen, each field with one line on what it sets: the number of mastered keys,
     the last finished world, the shares of earned stars, accuracy (70-100 % in whole percents)
     and rare things found at the target ranges, and "Všetky papagáje" (unchecked, one finished
-    world's parrot is missing). It opens on the player's keys and last world and a fresh random
-    pick of the rest: stars 70-95 %, accuracy 90-100 %, range finds 40-100 %, all parrots or all
-    but one. The keys and the finished worlds are set exactly; the stars, the range finds
+    world's parrot is missing), "Tempo Rytmu" (letters a minute, 30-120: where every world's
+    next Rytmus round starts) and "Všetky noty" (a rhythm note of every finished world, earned
+    today so none fades at once, with the Rytmus node's check; unchecked, one is missing). It
+    opens on the player's keys, last world and Rytmus tempo (a new super player gets 40-80) and a
+    fresh random pick of the rest: stars 70-95 %, accuracy 90-100 %, range finds 40-100 %, all
+    parrots or all but one, all notes or all but one. The keys, the finished worlds and the
+    tempo are set exactly; the stars, the range finds
     and each key's accuracy are spread at random over the finished worlds (every finished level
     keeps at least one star), so the map, badges and statistics look like a real child's;
     "Uletí papagáj" sends a random parrot at home away and "Priletí papagáj" brings home the

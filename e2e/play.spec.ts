@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { createProfile, playLevel, typeChar } from './helpers';
+import { createProfile, playLevel, typeChar, untilPlay } from './helpers';
 
 test('a new child plays the first level by typing and sees stars', async ({ page }) => {
   const errors: string[] = [];
@@ -313,4 +313,20 @@ test('staying a while after a level keeps typing until it is ended on the pause 
   await card.locator('.ec-bot button').last().click();
   await expect(node.locator('.mini-stars i')).toHaveCount(stars);
   expect(errors).toEqual([]);
+});
+
+test('leaving the site asks only from a paused level, never from the map', async ({ page }) => {
+  const asks = () => page.evaluate(() => {
+    const e = new Event('beforeunload', { cancelable: true });
+    window.dispatchEvent(e);
+    return e.defaultPrevented;
+  });
+  await createProfile(page, 'Ema');
+  expect(await asks()).toBe(false);
+  await page.locator('.map-side .btn.primary').click();
+  await untilPlay(page);
+  expect(await asks()).toBe(false);
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.pause-card')).toBeVisible();
+  expect(await asks()).toBe(true);
 });

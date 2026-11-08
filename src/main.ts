@@ -113,9 +113,9 @@ async function boot(): Promise<void> {
 
 void boot();
 
-// Leaving the whole app by accident (a stray shortcut, the back button) asks first.
+// Leaving the whole app by accident (a stray shortcut, the back button) asks first, only from a paused level: everything else is saved.
 window.addEventListener('beforeunload', (e) => {
-  if (!app.profile || app.profile.id === SUPER_ID || installing) return;
+  if (!app.profile || app.profile.id === SUPER_ID || installing || !document.querySelector('.level-screen .pause-card')) return;
   e.preventDefault();
   e.returnValue = '';
 });

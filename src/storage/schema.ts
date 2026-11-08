@@ -187,6 +187,8 @@ export interface Progress {
   rhythmNotesFaded: number;
   /** Of the notes faded since the last round, how many the map has told. */
   rhythmNotesTold: number;
+  /** The treble clef went with notes flown since the map told it last. */
+  rhythmClefLost: boolean;
   /** The teacher turtle's tips read (ids) and when the last one was read (ms, 0 before any). */
   appTips: { seen: string[]; lastAt: number };
   /** The turtle asked on the map whether to check what the student already knows. */

@@ -149,7 +149,8 @@
   picture and its world. The notes stand in "Môj rytmus" ([statistics](../profiles/statistics.md)) as
   pictures to look at; they bring no music. They fly away like the parrots: a **random** note goes for every
   three days without a Rytmus round, counted from the day after the last one (played on Monday: all
-  still there on Thursday, one fewer on Friday morning, then on Monday, Thursday ...). The map tells it
+  still there on Thursday, one fewer on Friday morning, then on Monday, Thursday ...). Like the parrots
+  they fly out of sight, checked once a day when the player becomes active; the World map tells it
   once, in the character's bubble: "Bez Rytmu ti uletela nota." ("... uleteli noty." for more), and
   when the treble clef went with it: "Bez Rytmu ti uletela nota a s ňou aj husľový kľúč. Zahraj si
   Rytmus a získaš ho späť." A note is a picture of a half note, a

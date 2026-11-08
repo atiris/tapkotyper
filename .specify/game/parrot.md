@@ -64,7 +64,8 @@
   - never below the floor: the most parrots ever at home minus 3, and at least 1 (the last one
     stays);
   - 21 days after the last win the parrots drop straight to the floor.
-  The roll runs when a player's map opens. The map then says it once in the narrator's bubble
+  The roll runs out of sight once a day, when the player becomes active (picked or opened), never
+  while another screen is shown. The World map then says it once in the narrator's bubble
   ("Uletel ti papagáj zo sveta Lúka. Choď poň!", several worlds in one line); the nodes already
   show their empty perches, no parrot flies from them.
 - **Parrot badge** (Odznak Papagáj): held while the parrot of every finished world is at home

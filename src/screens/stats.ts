@@ -1,5 +1,5 @@
-import { app, go, layout, reduceMotion, saveProfile } from '../app/app';
-import { hasClef, rhythmNotes } from '../game/rhythm-notes';
+import { app, go, layout, reduceMotion } from '../app/app';
+import { hasClef } from '../game/rhythm-notes';
 import { imageUrl } from '../gfx/assets';
 import { type Mood, otherMood, renderTapkoInto, tapkoElement } from '../gfx/tapko';
 import { DRILL_SECONDS, STORIES, type StoryDef, WORLDS, storyDone, storyOpen, worldName } from '../game/levels';
@@ -7,7 +7,7 @@ import { MAX_CHEST, LEVEL_STARS, badgeTier, chestPoints, totalStars, worldStars 
 import { locale, t, tn } from '../i18n/i18n';
 import { allKeys } from '../keyboard/layouts';
 import { STATS_WINDOW, activeKeys, lessonKeyOf } from '../learning/lessons';
-import { agoOf, keyHistory, keyReport, keyboardSummary, lastTraining, localDate, masterySummary, recentPractice, recentTyping, weakKeys } from '../learning/stats';
+import { agoOf, keyHistory, keyReport, keyboardSummary, lastTraining, masterySummary, recentPractice, recentTyping, weakKeys } from '../learning/stats';
 import { linkOf } from '../share/codec';
 import { makeOverallResult, resultCode } from '../share/result';
 import type { Profile, RhythmNote } from '../storage/schema';
@@ -248,9 +248,7 @@ function rhythmShelf(p: Profile, notes: RhythmNote[]): HTMLElement {
 
 /** The summary rows, a row per story under their heading, the badge shelf, the range awards and the rhythm notes. */
 function progressSection(p: Profile): HTMLElement {
-  // The fades due come first: the chest counts the treble clef by the notes left.
-  const { notes, changed } = rhythmNotes(p, localDate());
-  if (changed) saveProfile();
+  const notes = p.progress.rhythmNoteList;
   return h('section', { class: 'progress-view' },
     summaryRow(p),
     h('div', { class: 'badge-shelf' }, h('h4', {}, t('progress.storiesTitle'))),

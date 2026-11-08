@@ -12,8 +12,7 @@ import { badgeTier } from '../game/rewards';
 import { badge } from '../ui/badge';
 import { badgeShow } from '../ui/badge-show';
 import type { BadgeTier } from '../game/rewards';
-import { flyAway, hasParrotBadge } from '../game/parrots';
-import { localDate } from '../learning/stats';
+import { hasParrotBadge } from '../game/parrots';
 import { arrowFocus, button, closeButton, h, icon, modal } from '../ui/dom';
 import { openSurprises, surpriseAsk } from '../game/cards';
 import { TRIGGERS, surpriseAnnounced, surpriseCount, surprisesToldOn, surprisesWonIn } from '../game/own-content';
@@ -34,7 +33,7 @@ import { type TeacherTip, dueTip, tipSeen } from '../app/teacher-tips';
 import { openStats } from './stats';
 import { heldText, openWorldKeys, worldKeysButton, worldLockText } from './world-keys';
 import { taskCard } from './task';
-import { hasClef, rhythmNotes, untoldFades } from '../game/rhythm-notes';
+import { hasClef, untoldFades } from '../game/rhythm-notes';
 import { whistle } from '../ui/whistle';
 
 /** Ms Turtle's pictures, one after another with her tips. */
@@ -159,13 +158,9 @@ const ARO_AFTER_MS = 1800;
 
 export function mapScreen(root: HTMLElement, { focus }: { focus?: 'language' } = {}): () => void {
   const p = app.profile!;
-  // Notes fly away over the days (the clef may go with them); the map tells it once.
-  const hadClef = hasClef(p);
-  rhythmNotes(p, localDate());
-  const notesFlown = untoldFades(p, hadClef);
+  // Notes and parrots flew away when the player became active (selectProfile); the map tells it once.
+  const notesFlown = untoldFades(p);
   audio.music(app.menuTrack);
-  // Won parrots may fly away over the days; the map tells it once.
-  flyAway(p, localDate());
   const flown = [...p.progress.parrotFlown].sort((a, b) => a - b);
   p.progress.parrotFlown = [];
   // Aro (the Parrot badge) sits on his perch left of Tapko: he flies off once when the badge is lost,

@@ -1,10 +1,13 @@
 import { audio } from '../audio/audio';
 import { nextLevel } from '../audio/levels';
 import { useGraphics } from '../engine/graphics';
+import { flyAway } from '../game/parrots';
+import { fadeNotesToday } from '../game/rhythm-notes';
 import { resetFontFamily } from '../gfx/draw';
 import { askedLanguage, hasTexts, setLanguage, tList } from '../i18n/i18n';
 import { toggleTheme, useTheme } from './theme';
 import { LAYOUTS, type Layout } from '../keyboard/layouts';
+import { localDate } from '../learning/stats';
 import { fingered } from '../keyboard/fingers';
 import { Store } from '../storage/store';
 import { GUEST_ID, type LangRef, type Profile, SUPER_ID, type SoundLevel, type TaskSpec } from '../storage/schema';
@@ -189,6 +192,11 @@ export async function selectProfile(p: Profile): Promise<void> {
   applyProfileLook(p);
   useTheme(p.settings.theme);
   audio.setLevel(p.settings.sound);
+  // Parrots and rhythm notes fly away out of sight, once a day when the player becomes active; the map tells it.
+  const today = localDate();
+  flyAway(p, today);
+  fadeNotesToday(p, today);
+  saveProfile();
 }
 
 /** The quick sound switch (its list and the Rytmus popup): the player keeps the level. */

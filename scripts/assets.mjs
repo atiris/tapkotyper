@@ -395,6 +395,11 @@ async function main() {
   if (!only || only.startsWith('ui-cert')) await processCertFrame(manifest);
   // The start copies follow every run; a run for a prefix adds them to the kept manifest.
   const kept = only ? JSON.parse(await readFile(join(OUT, 'manifest.json'), 'utf8')) : manifest;
+  if (only) {
+    // A new picture of the prefix joins the kept manifest.
+    Object.assign(kept.images, manifest.images);
+    for (const k of ['accessories', 'music']) kept[k] = [...new Set([...kept[k], ...manifest[k]])];
+  }
   await writeStartCopies(kept);
   await writeFile(join(OUT, 'manifest.json'), JSON.stringify(kept, null, 1) + '\n');
 }

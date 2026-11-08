@@ -972,10 +972,6 @@
    "w": 389,
    "h": 512
   },
-  "obj-egg-glow": {
-   "w": 413,
-   "h": 512
-  },
   "obj-egg-plain": {
    "w": 401,
    "h": 512
@@ -2135,6 +2131,10 @@
   "ui-start-meadow-night-low": {
    "w": 692,
    "h": 294
+  },
+  "obj-egg-crack": {
+   "w": 401,
+   "h": 512
   }
  },
  "accessories": [

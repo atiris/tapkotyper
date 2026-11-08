@@ -51,7 +51,7 @@ const END_AT = 3.9;
 /** Where the little dragon lands: this far right of Tapko, a little in front of him. */
 const LAND_DX = 95;
 const LAND_DY = 16;
-/** The flames grow with the spell from this glow; the egg cracks at half, and cracks open at three quarters. */
+/** The flames grow with the spell from this glow; the egg gets a fine crack at half, and cracks open at three quarters. */
 const GLOW_START = 0.12;
 /** The fire starts with its two front flames: the egg in front hides the smallest one, the second shows above it from the first word. */
 const GROWTH_START = 0.71;
@@ -98,12 +98,12 @@ export function spellArea(vw: number): { x: number; w: number } {
  * periods too; what he has written fills a stone frame under it, both in the right part of the
  * stage. A slip starts the word in progress again and adds one word to the spell right after it
  * (the minimum grows with it, at most `GROW_MAX` words). Each sentence makes the fire grow; the egg
- * glows and cracks, and at the end it hatches, the flames go out and the little dragon hops out to
+ * cracks, and at the end it hatches, the flames go out and the little dragon hops out to
  * Tapko.
  */
 export class SpellRibbonMode extends HeroMode {
   readonly world = 'egg';
-  readonly pictures = ['obj-hearth', ...FLAMES, 'obj-egg-plain', 'obj-egg-glow', 'obj-egg-cracking', ...LITTLE_DRAGON_PICTURES];
+  readonly pictures = ['obj-hearth', ...FLAMES, 'obj-egg-plain', 'obj-egg-crack', 'obj-egg-cracking', ...LITTLE_DRAGON_PICTURES];
   private ribbon: Ribbon;
   /** The most words ever written (the progress). */
   private best = 0;
@@ -305,7 +305,7 @@ export class SpellRibbonMode extends HeroMode {
     drawSprite(g, 'obj-egg-plain', x, y, from.h + (EGG_IN - from.h) * k, { rot: from.rot * (1 - k) }, eggFallback);
   }
 
-  /** The egg in the hearth: it glows warmer with the spell, cracks at half, cracks open at three quarters, and hatches at the end. */
+  /** The egg in the hearth, only its pictures: it gets a fine crack at half, cracks open at three quarters, and hatches at the end. */
   private drawEgg(g: G): void {
     if (this.lay < LAY_S && !this.spellOn) return;
     const x = this.hearth.x, y = this.eggY();
@@ -316,24 +316,8 @@ export class SpellRibbonMode extends HeroMode {
       return;
     }
     const rot = this.L.reduceMotion ? 0 : Math.sin(this.wobble * 18) * 0.12 * this.wobble;
-    const pic = this.warmth >= CRACKING_AT ? 'obj-egg-cracking' : 'obj-egg-plain';
+    const pic = this.warmth >= CRACKING_AT ? 'obj-egg-cracking' : this.warmth >= CRACK_AT ? 'obj-egg-crack' : 'obj-egg-plain';
     drawSprite(g, pic, x, y, EGG_IN, { ay: 1, rot }, eggFallback);
-    if (this.warmth < CRACKING_AT) drawSprite(g, 'obj-egg-glow', x, y, EGG_IN, { ay: 1, rot, alpha: this.warmth }, eggFallback);
-    if (this.warmth >= CRACK_AT && this.warmth < CRACKING_AT) {
-      // The first crack: a small zigzag on its shell.
-      g.save();
-      g.translate(x, y - EGG_IN * 0.55);
-      g.rotate(rot);
-      g.strokeStyle = '#6d5040';
-      g.lineWidth = 2;
-      g.beginPath();
-      g.moveTo(-EGG_IN * 0.18, -EGG_IN * 0.05);
-      g.lineTo(-EGG_IN * 0.06, EGG_IN * 0.04);
-      g.lineTo(EGG_IN * 0.03, -EGG_IN * 0.06);
-      g.lineTo(EGG_IN * 0.14, EGG_IN * 0.03);
-      g.stroke();
-      g.restore();
-    }
   }
 
   /** The little dragon, out of its shell, hops out of the cold hearth in an arc and lands on Tapko's right, where it stays. */

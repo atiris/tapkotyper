@@ -355,8 +355,9 @@ as they are. The world descriptions below marked *not built yet* are the design 
    rune stones right below it, both in the right part of the stage so the scene and the spell
    never crowd each other ([mechanics](mechanics.md), Ribbon). The card asks for exact typing: a
    slip adds a new word to the spell ("Chybička! Do kúzla pribudlo slovo."), it never takes away
-   what is written. Each finished sentence makes the flames grow and the egg glow warmer; at
-   half the level it cracks a little, at three quarters it cracks open. End (about 4 s): the
+   what is written. Each finished sentence makes the flames grow. The egg is only ever its own
+   pictures, in the colours of the hatched shell, never a face or eyes on it: at half the level it
+   gets a fine crack, at three quarters it cracks open. End (about 4 s): the
    fire flares up, the egg breaks, the flames go out and the little dragon hops out of the cold
    hearth to land right of the character ("Ahoj!"), the character cheers. A real hatching that ends next to
    the character leads straight into the hero's journey, where the two walk together.

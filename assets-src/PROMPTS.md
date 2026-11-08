@@ -600,7 +600,8 @@ BG is `magenta color (#FF00FF)` unless the table says `green`, then use `green c
 | **Egg journey** | | |
 | `obj-egg.jpg` | a big oval dragon egg, cream with turquoise spots, front view | magenta |
 | `obj-egg-cracking.jpg` | (redone 2026-10-31: the old one had eyes) **attach `obj-egg-plain.jpg`**, "redraw ... in exactly the same drawing style": the egg half cracked, a big jagged zigzag crack around its middle, the upper shell slightly lifted and tilted, a thin warm golden light out of the crack, two or three small shell chips; NO face, NO eyes, nothing peeking out | magenta |
-| `obj-egg-plain.jpg` | (plan 83, done 2026-10-30; the valley's take-off end and the `egg` scene) **attach `obj-egg.jpg`**: "redraw the attached dragon egg in exactly the same drawing style, outline, shading, colours, size, position and shape (the same cream egg with the same turquoise spots), but with NO face at all: no eyes, no eyebrows, no mouth, no cheeks. Where the face was, the egg shell simply continues in cream with turquoise spots like the rest", front view | magenta |
+| `obj-egg-plain.jpg` | (redone 2026-11-08, so it matches the cracked and the hatched shell) **attach `obj-egg-cracking.jpg`**: "redraw the attached cracked dragon egg in exactly the same drawing style, outline, shading, colours, size, position and shape (the same cream egg with the same turquoise spots in the same places), but whole and undamaged: no crack at all, no gap, no light, no lifted shell, no shell chips on the ground; where the crack was, the cream shell with turquoise spots simply continues. NO face, NO eyes", front view | magenta |
+| `obj-egg-crack.jpg` | (2026-11-08, egg 5 at half the spell) **attach `obj-egg-cracking.jpg`**: as `obj-egg-plain.jpg`, but "the egg is still whole and closed: there is only one thin fine crack, a short delicate zigzag line on the upper part of the shell, no gap, no light coming out, no lifted shell, no shell chips on the ground. NO face, NO eyes, nothing peeking out" | magenta |
 | `obj-stump.jpg` | a short round tree stump with a small mushroom | magenta |
 | `obj-rock-round.jpg` | a smooth round grey rock with a small tuft of grass | magenta |
 | `obj-mole.jpg` | a friendly mole peeking out of a small dirt hole, waving with one paw, front view | magenta |
@@ -1100,7 +1101,6 @@ at a small size, since many of them stand still on screen with a word next to th
 | `obj-dragon-sleeping-3.jpg` | (done 2026-10-30) as -2 with "sunny yellow (#F6D55C, darker shade #E2B43A), the belly a lighter pale cream-yellow (#FFF2C2), the tiny wings a slightly darker warm yellow. Never green" | magenta |
 | `obj-dragon-sleeping-4.jpg` | (done 2026-10-30) as -2 with "a warm soft cherry red (#E0565B, darker shade #B83E45), never orange, never pink or magenta; the belly lighter warm cream-rose (#F7C9B8); the tiny wings a slightly darker red" | magenta |
 | **Egg journey** | | |
-| `obj-egg-glow.jpg` | the cream dragon egg with turquoise spots, glowing warmly like a little lantern at night | green |
 | **Junkyard** | | |
 | `obj-screw.jpg` | a single shiny silver screw lying on its side, no face | magenta |
 | `obj-nut.jpg` | a single hexagonal silver nut, front view, no face | magenta |

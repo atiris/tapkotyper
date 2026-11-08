@@ -64,7 +64,7 @@ No DB, no server contract.
   sound level, it is about as loud as the story levels' effects: add a gain node for Rytmus with a
   factor (start with 2.5, check by ear-free measure: compare peak gain values of a caught note vs. the
   `key` sfx in code) and name the constant.
-- [ ] **7. Esc and back in Rytmus.** A new optional `Mode.onResume()` hook, called by `runtime.resume()`.
+- [x] **7. Esc and back in Rytmus.** A new optional `Mode.onResume()` hook, called by `runtime.resume()`.
   Rytmus implements it like its miss recovery but **without a miss**: no point lost, no "surprised",
   no phrase count; the next letter glides into the band (`recover` phases glide -> ready, the same
   "Počkaj" / "Pokračuj" line and pause sign) and the song waits until the child presses it. A

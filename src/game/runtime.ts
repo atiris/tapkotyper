@@ -1017,6 +1017,7 @@ export class LevelRuntime {
     this.guide.parkHands(false, HANDS_BACK_S);
     this.speed.ready(performance.now());
     this.reading.again();
+    this.mode.onResume();
   }
 
   /** Leaving: free typing after something was typed ends with its card, everything else goes to the map. */

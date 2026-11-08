@@ -101,6 +101,26 @@ describe('rhythm', () => {
     expect(mode.accuracy).toBe(1);
   });
 
+  it('back from a pause the due letter glides into the band and waits for its key, nothing missed', () => {
+    const L = fakeRuntime();
+    const mode = new RhythmMode(L);
+    mode.start();
+    const songT = () => (mode as unknown as { songT: number }).songT;
+    const first = mode.song.drops[0];
+    while (songT() < first.release) mode.update(0.02);
+    mode.onResume();
+    // The keys wait while it glides; then the song stands at its beat, long after its window would have passed.
+    expect(press(L, mode, first.letter)).toBe('wait');
+    for (let i = 0; i < 500; i++) mode.update(0.02);
+    expect(songT()).toBeCloseTo(first.land);
+    expect(mode.due).toBe(0);
+    expect(press(L, mode, first.letter)).toBe('ok');
+    mode.update(0.2);
+    expect(mode.caught).toBe(1);
+    expect(mode.due).toBe(1);
+    expect(mode.accuracy).toBe(1);
+  });
+
   it('without typing the song stands at the second letter: one miss, no errors', () => {
     const L = fakeRuntime();
     const mode = play(L);

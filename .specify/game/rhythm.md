@@ -59,6 +59,10 @@
     half the speed (at most three seconds) until the next letter is in the middle of the band; only then
     "Teraz pokračuj." replaces "Počkaj…" and the song waits there for its key; that catch counts as
     caught but not in the rhythm, a wrong key there is an error.
+- **Back from a pause** (Esc and back, or the pause button): no miss and nothing counted, but the child
+  gets time to find the key again: the due letter glides into the middle of the band (a letter already in
+  the band stays the due one) with "Počkaj…" and the blinking pause sign, then "Teraz pokračuj." and the
+  song waits for its key, as after a miss; that catch counts as caught but not in the rhythm.
 - **Words over the basket**, as dance games tell the timing: a catch in the middle half of the band is
   in time and in half of the cases one of "Super", "Paráda", "Presne", "Skvelé" rises over the basket
   (white); a little before it, up to three quarters of the way to the band's edge, "Spomaľ" (light

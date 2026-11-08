@@ -197,6 +197,7 @@ export class RhythmMode extends HeroMode {
   /**
    * After a miss: everything stands still ('hold'), then the next letter glides into the band's
    * middle ('glide', song time runs on to its beat at `speed`), where the song waits for its key ('ready').
+   * Back from a pause the same from 'glide' on, without the miss.
    */
   private recover: { phase: 'hold' | 'glide' | 'ready'; left: number; speed: number } | null = null;
   /** The letter strip's position (letters along it), gliding to the due letter. */
@@ -457,6 +458,19 @@ export class RhythmMode extends HeroMode {
       // "Wait" stays until the letter is in place and "go on" replaces it.
       this.tell(t('rhythm.hold'), HOLD_S + GLIDE_MAX_S + 1);
     }
+  }
+
+  /**
+   * Back from a pause: no miss, nothing counted, but the child gets time to find the key again: the due
+   * letter glides into the band's middle (one already in the band stays the due one), the song waits
+   * there for its key, with the same "wait" and "go on" lines and the pause sign as after a miss.
+   */
+  onResume(): void {
+    const a = this.active;
+    if (!a || this.over || this.recover) return;
+    this.recover = { phase: 'glide', left: 0, speed: Math.max(GLIDE_SPEED, Math.max(0, a.d.land - this.songT) / GLIDE_MAX_S) };
+    this.blink = 0;
+    this.tell(t('rhythm.hold'), GLIDE_MAX_S + 1);
   }
 
   /** A line that must be seen now: it replaces whatever the bubble says. */

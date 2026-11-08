@@ -111,6 +111,8 @@ export abstract class Mode {
   }
   /** The level ended on its own or on request, not left early. */
   onFinish(): void {}
+  /** The pause ended (Rytmus: the next letter glides into the band and waits for its key). */
+  onResume(): void {}
   /**
    * The mode's look at a key before the target does (`at`: its time, ms): 'pass' lets the target judge it,
    * 'wait' drops it uncounted, 'wrong' counts it as a wrong key of the expected letter (Rytmus: the right

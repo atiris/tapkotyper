@@ -547,6 +547,8 @@
     "start.guest": "Button to try the game without a profile (a guest).",
     "start.guestName": "The name given to a player without a profile.",
     "start.import": "Button that loads profiles from a file.",
+    "start.device.phone": "Small button on a narrow upright screen taken for a computer: the player says the device is a phone.",
+    "start.device.computer": "Button on the phone start screen after the player switched to the phone by hand: switches back to the computer view.",
     "start.language": "Name of the language list opened by the language button (for screen readers).",
     "start.langNow": "Tooltip of the language button. {name} is the current language.",
     "start.gate.title": "Big button on the start screen when the device has no keyboard.",

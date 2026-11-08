@@ -452,6 +452,16 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
   .start-card { padding-inline: 18px; }
   .start-card h2 { font-size: 1.6rem; }
 }
+/* A phone: the card keeps inside the page's margins, its buttons one under the other. */
+.start-card { max-width: 100%; }
+@media (max-width: 599px) {
+  .start-ghosts { flex-direction: column; }
+  .start-ghosts .btn { white-space: normal; }
+}
+/* "This is a phone" only where a phone could be taken for a computer: a narrow upright page. */
+.device-switch { align-self: center; }
+.device-switch.to-phone { display: none; }
+@media (max-width: 599px) and (orientation: portrait) { .device-switch.to-phone { display: inline-flex; } }
 .start-first { margin: 0 0 4px; color: var(--ink-soft); }
 .start-card .btn.primary.big { width: 100%; }
 .start-ghosts { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }

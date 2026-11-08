@@ -42,6 +42,32 @@ test.describe('a phone without a keyboard', () => {
   });
 });
 
+test.describe('an Android phone that reports a mouse-like pointer', () => {
+  test.use({ hasTouch: true, viewport: { width: 384, height: 854 }, userAgent: 'Mozilla/5.0 (Linux; Android 16; SM-G990B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Mobile Safari/537.36' });
+
+  test('is still taken for a phone', async ({ page }) => {
+    await page.goto('./');
+    await expect(page.locator('.start-screen.gated')).toBeVisible();
+    await expect(page.locator('.device-switch')).toHaveCount(0);
+  });
+});
+
+test('a narrow upright computer page can be switched to a phone and back, and never scrolls sideways', async ({ page }) => {
+  await page.setViewportSize({ width: 384, height: 854 });
+  await page.goto('./');
+  await expect(page.locator(NEW_PLAYER).first()).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(384);
+  const card = await page.locator('.start-card').boundingBox();
+  expect(card!.x).toBeGreaterThanOrEqual(12);
+  expect(card!.x + card!.width).toBeLessThanOrEqual(384 - 12);
+  await page.locator('.device-switch', { hasText: 'Toto je telefón' }).click();
+  await expect(page.locator('.start-screen.gated')).toBeVisible();
+  await page.locator('.device-switch', { hasText: 'Toto je počítač' }).click();
+  await expect(page.locator(NEW_PLAYER).first()).toBeVisible();
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await expect(page.locator('.device-switch')).toBeHidden();
+});
+
 test('a computer is never gated', async ({ page }) => {
   await page.goto('./');
   await expect(page.locator(NEW_PLAYER).first()).toBeVisible();

@@ -35,6 +35,10 @@
     "guest": "Try it",
     "guestName": "Guest",
     "import": "Import profiles",
+    "device": {
+      "phone": "This is a phone",
+      "computer": "This is a computer"
+    },
     "language": "Language",
     "langNow": "Language: {name}",
     "gate": {

@@ -35,6 +35,10 @@
     "guest": "Vyskúšať",
     "guestName": "Hosť",
     "import": "Načítať profily",
+    "device": {
+      "phone": "Toto je telefón",
+      "computer": "Toto je počítač"
+    },
     "language": "Jazyk",
     "langNow": "Jazyk: {name}",
     "gate": {

@@ -2,7 +2,7 @@ import { app, go, isBreakDue, saveProfile } from '../app/app';
 import { starRow } from '../ui/chrome';
 import { tapkoElement } from '../gfx/tapko';
 import { t, tn } from '../i18n/i18n';
-import { JOURNEYS, LEVELS, type LevelDef, STORIES, type StoryDef, WORLDS, DRILL_SECONDS, worldName, aimLevel, aimOpen, aimWorld, freeTypeLevel, isLevelUnlocked, isWorldUnlocked, journeyLevel, journeyOpen, levelAt, levelById, nextLevel, parrotLevel, placementLevel, practiceLevel, rhythmLevel, rhythmOpen, taskLevel } from '../game/levels';
+import { JOURNEYS, LEVELS, type LevelDef, STORIES, type StoryDef, WORLDS, DRILL_SECONDS, worldName, aimLevel, aimOpen, aimWorld, freeTypeLevel, isLevelUnlocked, isWorldUnlocked, journeyLevel, keysMissing, journeyOpen, levelAt, levelById, nextLevel, parrotLevel, placementLevel, practiceLevel, rhythmLevel, rhythmOpen, taskLevel } from '../game/levels';
 import { type LevelResult, newJourneyRun } from '../game/progress';
 import type { Style } from '../game/typing';
 import { WORLD_REWARDS, dressForMission } from '../game/rewards';
@@ -28,7 +28,7 @@ import { compassElement } from '../gfx/compass';
 import { type Profile, SUPER_ID, type Surprise, type Task } from '../storage/schema';
 import { isFinished, recordTaskRun } from '../share/task';
 import { localDate, recentTyping } from '../learning/stats';
-import { type Child, closeButton, h } from '../ui/dom';
+import { type Child, button, closeButton, h, modal } from '../ui/dom';
 import { notePic } from '../ui/notes';
 import { type EndAction, type EndCardOpts, endCard, focusMain } from '../ui/end-card';
 import { keyLabel } from '../ui/keyboard-guide';
@@ -37,6 +37,7 @@ import { medal } from '../ui/medal';
 import { roundButton } from '../ui/hud';
 import { openPlacePicker, openWorlds } from './free-type';
 import { openHelp } from './help';
+import { heldText, keysLines } from './map';
 import { openStats } from './stats';
 import { handInDialog, startTask } from './task';
 import { openBreak } from './break';
@@ -274,7 +275,7 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
   const actions: EndAction[] = [];
   const nextDef = def.index >= 0 && !def.isSuper ? levelAt(def.world, def.index + 1) : undefined;
   if (r.worldDone !== null) actions.push({ label: t('results.reward'), icon: 'star', run: () => go('story', { scene: WORLD_REWARDS[r.worldDone!], next: 'map' }) });
-  else if (nextDef) actions.push({ label: t('results.next'), icon: 'next', run: () => go('level', { id: nextDef.id }) });
+  else if (nextDef) actions.push({ label: t('results.next'), icon: 'next', run: () => nextOrKeys(p, nextDef) });
   actions.push({ label: t('results.replay'), icon: 'replay', run: () => go('level', params) });
   const stay = def.index >= 0 ? () => go('level', { id: def.id, stay: true }) : undefined;
   if (stay) actions.push({ label: t('results.stay'), icon: 'play', run: stay });
@@ -328,6 +329,18 @@ function showJourneyDone(root: HTMLElement, def: LevelDef, r: LevelResult, param
     surprises: toldSurprises(def, surprise, 'all'),
     actions: [{ label: t('results.replay'), icon: 'replay', run: () => go('level', params) }],
   });
+}
+
+/** Starts the next level, or when it still needs letters says so over the end card with the one way to the map (Esc back to the card). */
+function nextOrKeys(p: Profile, next: LevelDef): void {
+  const n = keysMissing(p, next);
+  if (!n) {
+    go('level', { id: next.id });
+    return;
+  }
+  modal(h('div', { class: 'confirm' },
+    ...keysLines(n, heldText(p)),
+    h('div', { class: 'row center' }, button(t('end.toMap'), () => go('map'), 'btn primary', 'map'))), { cls: 'confirm-modal' });
 }
 
 /** The level after a story level, when open: staying a while goes on to it. */

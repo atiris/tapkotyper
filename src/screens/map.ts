@@ -188,10 +188,7 @@ export function mapScreen(root: HTMLElement, { focus }: { focus?: 'language' } =
       : button(t('aim.title'), () => go('level', { id: 'aim', world: aim }), 'btn small', 'target'));
   };
   const keysBubble = (n: number, world: number) => {
-    bubble.replaceChildren(
-      h('p', {}, t(n === 1 ? 'map.keysOne' : n < 5 ? 'map.keysFew' : 'map.keysMany', { n })),
-      ...(held ? [h('p', { class: 'held-keys' }, held)] : []),
-      practiceOffer(world));
+    bubble.replaceChildren(...keysLines(n, held), practiceOffer(world));
     bubble.hidden = false;
   };
   const next = nextLevel(p);
@@ -260,8 +257,15 @@ export function mapScreen(root: HTMLElement, { focus }: { focus?: 'language' } =
   };
 }
 
+/** Why a level waits: the count of letters still missing, then the letters that need accuracy. */
+export function keysLines(n: number, held: string): HTMLElement[] {
+  return [
+    h('p', {}, t(n === 1 ? 'map.keysOne' : n < 5 ? 'map.keysFew' : 'map.keysMany', { n })),
+    ...(held ? [h('p', { class: 'held-keys' }, held)] : [])];
+}
+
 /** Which letters still need accuracy before new ones open; empty when none holds them back. */
-function heldText(p: Profile): string {
+export function heldText(p: Profile): string {
   const keys = notReadyKeys(p);
   return keys.length ? t('map.heldKeys', { keys: keys.map(keyLabel).join(', ') }) : '';
 }

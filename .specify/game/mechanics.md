@@ -203,7 +203,10 @@
     last on the right.
   When a break is due the warm-up opens over the card by itself (see
   [session pacing](../experience/session-pacing.md)). The main button is, in order: "Pozrieť prekvapenie", "Odovzdať" when a task was finished in this run, then the
-  end's own (the next level, the reward of a finished world, the next mission, play again). The
+  end's own (the next level, the reward of a finished world, the next mission, play again). When
+  the next level still needs letters the child does not know, "Ďalšia úroveň" does not start it:
+  a popup tells how many letters are missing and which ones need more accuracy, with one button to
+  the map, where the child picks a game to earn them; Esc goes back to the end card. The
   green line takes the first that applies: a new or better world badge (with
   several rewards at once the first and "a N ďalšie odmeny"), new keys, a new medal, new things or
   a new character in the wardrobe, a higher speed than last week; at the range a thing new in

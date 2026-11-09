@@ -17,7 +17,7 @@ counts only on its own, not inside another word. Not mentioned in the help: find
   after 20 seconds or on a click; the character stays on the start page until the child leaves the
   page, reloads it or types the greeting again, which sends it walking away. Fifteen clicks on the
   character bring Aro the parrot: he flies in, lands on a short perch beside its feet and greets;
-  then every half a minute or so he says he is off, flies a round over the page and lands there
+  then 5 to 15 seconds after each landing he says he is off, flies a round over the page and lands there
   again. A click on him makes him hop. He leaves with the character.
 - **Map: the target range.** Typing the first word of the range's hint ("strelnica" /
   "target") sends a random thing of the target range drifting across the page from left to

@@ -11,8 +11,8 @@ const VISIT_SIZE = 260;
 const BUBBLE_S = 20;
 /** Clicks on the visitor that bring Aro to sit beside it. */
 const PARROT_CLICKS = 15;
-/** Seconds between Aro's rounds over the page, at random within. */
-const ROUND_S = [25, 40];
+/** Seconds Aro sits after landing before his next round over the page, at random within. */
+const ROUND_S = [5, 15];
 
 /** Sends a visitor away: it walks out to the left. */
 function walkAway(visit: Element): void {
@@ -63,11 +63,11 @@ async function parrotJoins(visit: HTMLElement, fig: HTMLElement): Promise<void> 
   const aro = visit.isConnected ? aroPerch(false, (a) => a.hop(), false) : null;
   if (!aro) return;
   fig.after(aro.el);
-  aro.arrive(tList('parrot.arrive'));
+  // Each landing sets the next round.
+  const sit = () => window.setTimeout(round, (ROUND_S[0] + Math.random() * (ROUND_S[1] - ROUND_S[0])) * 1000);
   const round = () => {
     if (!visit.isConnected || visit.classList.contains('out')) return aro.stop();
-    aro.flyOff(tList('parrot.takeoff'), true);
-    window.setTimeout(round, (ROUND_S[0] + Math.random() * (ROUND_S[1] - ROUND_S[0])) * 1000);
+    aro.flyOff(tList('parrot.takeoff'), true, 0, sit);
   };
-  window.setTimeout(round, ROUND_S[0] * 1000);
+  aro.arrive(tList('parrot.arrive'), sit);
 }

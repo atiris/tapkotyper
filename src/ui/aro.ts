@@ -18,10 +18,13 @@ export interface AroPerch {
   el: HTMLElement;
   /** A small hop on the perch. */
   hop(): void;
-  /** After `wait` ms says one of `lines`, spreads his wings and flies off to the right across the window; `back`: he flies round and lands again. */
-  flyOff(lines: string[], back: boolean, wait?: number): void;
-  /** Flies in from the right onto the empty perch and says one of `lines`. */
-  arrive(lines: string[]): void;
+  /**
+   * After `wait` ms says one of `lines`, spreads his wings and flies off to the right across the window; `back`: he
+   * flies round and lands again, then calls `landed`.
+   */
+  flyOff(lines: string[], back: boolean, wait?: number, landed?: () => void): void;
+  /** Flies in from the right onto the empty perch and says one of `lines`, then calls `landed`. */
+  arrive(lines: string[], landed?: () => void): void;
   /** Ends every flight and timer (the page is left). */
   stop(): void;
 }
@@ -78,24 +81,28 @@ export function aroPerch(seated: boolean, onClick: (aro: AroPerch) => void, badg
       void bird.offsetWidth;
       bird.classList.add('hop');
     },
-    flyOff: (lines, back, wait = 0) => {
+    flyOff: (lines, back, wait = 0, onLanded) => {
       if (busy) return;
       busy = true;
       later(wait, () => say(lines, SAY_MS + 400));
       later(wait + SAY_MS, () => {
         const from = seat();
         bird.classList.add('away');
-        const landed = () => (busy = false);
+        const landed = () => {
+          busy = false;
+          onLanded?.();
+        };
         if (reduceMotion()) return back ? later(AWAY_MS, () => { bird.classList.remove('away'); landed(); }) : undefined;
         // Up and to the right, over the page down to its bottom part, out of the right edge.
         fly([from, { x: from.x + innerWidth * 0.12, y: from.y - innerHeight * 0.25 }, somewhere(0.35, 0.6, 0.1, 0.85), somewhere(0.6, 0.85, 0.15, 0.88), { x: innerWidth + 120, y: innerHeight * (0.1 + Math.random() * 0.3) }],
           () => back && later(AWAY_MS, () => comeBack(landed)));
       });
     },
-    arrive: (lines) => {
+    arrive: (lines, onLanded) => {
       const landed = () => {
         busy = false;
         say(lines, SAID_MS);
+        onLanded?.();
       };
       if (reduceMotion()) {
         bird.classList.remove('away');

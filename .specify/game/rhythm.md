@@ -45,10 +45,11 @@
   typed line of the word levels: the letters caught (green) and missed (grey), the due letter
   marked, the coming ones after it. It moves on letter by letter, the due letter stays near one
   point, its ends fade out.
-- **Keys:** a lane's letter slides the basket under that lane, where it stays until the next key; after
-  a catch it goes back to rest between the middle lanes, under none of them: once the letter dropped in it
-  glides back softly (about a quarter of a second), at once with Simple graphics or less motion. A short
-  slide out and a soft way back stay calm for children; no quick shaking movement.
+- **Keys:** the basket rests between the middle lanes, under none of them, while nobody types. A lane's
+  letter slides it quickly under that lane and back: with the right key in the band it takes the letter
+  there and goes back once the letter dropped in; with a wrong key, or the right one too early, it waits
+  a moment under that lane and goes back empty. The way back is soft (about a quarter of a second), at
+  once with Simple graphics or less motion. The basket moves also while the song stands still.
   - The next letter's key while that letter is in the band **catches** it: it drops into the basket
     with a note of the music. A catch in the middle half of the band is "in time" and sparkles (not
     with Simple graphics or less motion).
@@ -57,11 +58,11 @@
     until the letter is in the band. The letter can still be caught.
   - **Missed:** the band passes; the letter falls on through its lane and disappears below the stage's
     edge, its lane flashes. A miss is not an error, but everything **stops**: the other letters stand
-    still, the keys wait (nothing counts) and "Počkaj…" stands in front by the coming letter, halfway between the clouds and the band, with a blinking
+    still, the keys wait (nothing counts) and "Počkaj…" stands in front over the middle of the band, halfway between the clouds and the band, with a blinking
     pause sign (two bars) above it, and in the character's bubble. After a moment the letters move on at
     half the speed (at most three seconds) until the next letter is in the middle of the band; only then
     "Teraz pokračuj." replaces "Počkaj…" and the song waits there for its key; that catch counts as
-    caught but not in the rhythm, a wrong key there is an error.
+    caught but not in the rhythm, and another key there counts for nothing (the game is not running).
 - **Back from a pause** (Esc and back, or the pause button): no miss and nothing counted, but the child
   gets time to find the key again: the due letter glides into the middle of the band (a letter already in
   the band stays the due one) with "Počkaj…" and the blinking pause sign, then "Teraz pokračuj." and the
@@ -133,7 +134,7 @@
   landings, a check at 100; "…" while it listens, before 8) and Rýchlosť (the tempo in letters a
   minute, the ring full at 120).
 - **No time pressure** (parent switch): the song waits while the due letter sits on the basket's rim
-  until it is typed; such a round keeps no rhythm score.
+  until it is typed (other keys meanwhile count for nothing); such a round keeps no rhythm score.
 - **The rhythm score** (0-100) is measured against the beat: each catch's offset from its landing in
   beats, around the child's own steady lean (their median: a child who is always a little early is
   even), their mean distance from 0.1 beat (100) to 0.3 beat (0), times the share caught, and never

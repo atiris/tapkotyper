@@ -58,7 +58,8 @@ const GAP_FULL = 120;
 /** Seconds of the basket's slide under a lane, of a caught letter dropping in, a lane's flash, a feedback word. */
 const SLIDE_S = 0.12;
 const DROP_IN_S = 0.15;
-/** Seconds of the basket's soft way back to rest after a catch, once the letter dropped in (full graphics with motion). */
+/** Seconds the basket waits under a lane after a key that caught nothing, and of its soft way back to rest. */
+const STAY_S = 0.2;
 const RETURN_S = 0.25;
 const FLASH_S = 0.45;
 const WORD_S = 0.9;
@@ -209,8 +210,13 @@ export class RhythmMode extends HeroMode {
   private recover: { phase: 'hold' | 'glide' | 'ready'; left: number; speed: number } | null = null;
   /** The letter strip's position (letters along it), gliding to the due letter. */
   private stripAt = 0;
-  /** The basket's slide: from which x to which lane (null: between the middle lanes), from when to when (song seconds; it waits at `from` until `at`). */
-  private basket: { from: number; lane: number | null; at: number; end: number };
+  /**
+   * The basket's trip (real seconds of `clock`, so it moves while the song waits): from `from` under `lane`
+   * (null: it rests between the middle lanes) from `at`, and back to rest from `back`.
+   */
+  private basket: { from: number; lane: number | null; at: number; back: number };
+  /** Real seconds since the round began, for the basket. */
+  private clock = 0;
   private flash: number[];
   /** The word over the basket after a catch, its colour, and when it came. */
   private word = { text: '', color: '#ffffff', at: -9 };
@@ -248,7 +254,7 @@ export class RhythmMode extends HeroMode {
     const words = filterWords(app.words[p.settings.wordLang] ?? [], all, [2, 6]).filter((w) => !isBlocked(w));
     this.song = new Song({ lanes: this.lanes, changes: this.changes, weights, tempo: this.base, rand: () => L.rng.next(), roundS, words });
     this.flash = this.lanes.map(() => -9);
-    this.basket = { from: this.restX(), lane: null, at: -1, end: -1 };
+    this.basket = { from: this.restX(), lane: null, at: -1, back: -1 };
     stamps.clear();
   }
 
@@ -408,6 +414,7 @@ export class RhythmMode extends HeroMode {
     super.update(dt);
     this.scroll += dt * SWAY;
     this.blink += dt;
+    this.clock += dt;
     this.stripAt += (this.cur - this.stripAt) * (this.L.reduceMotion ? 1 : 1 - Math.exp(-dt / STRIP_GLIDE_S));
     if (this.over) return;
     this.hum(dt);
@@ -525,8 +532,10 @@ export class RhythmMode extends HeroMode {
   }
 
   /**
-   * A lane's letter slides the basket under its lane. The next letter's key counts only while the
-   * letter is in the band: before or after it, it is an error (the first early one says to wait).
+   * A lane's letter slides the basket under its lane and back (a catch takes the letter on the way). The
+   * next letter's key counts only while the letter is in the band: before or after it, it is an error
+   * (the first early one says to wait). While the song stands and waits for the due letter, other keys
+   * count for nothing.
    */
   checkKey(ch: string, at: number): 'pass' | 'wait' | 'wrong' {
     // After a miss the keys wait until the next letter is in the band.
@@ -535,7 +544,8 @@ export class RhythmMode extends HeroMode {
     if (lane >= 0) this.slideTo(lane);
     const f = this.active;
     if (!f?.tg) return lane >= 0 ? 'wait' : 'pass';
-    if (ch !== f.d.letter) return 'pass';
+    const waiting = (!!this.recover || this.L.noPressure) && this.songT >= f.d.land;
+    if (ch !== f.d.letter) return waiting ? 'wait' : 'pass';
     const when = judge(this.songAt(at), f.d.land, f.d.T, f.d.w);
     if (when === 'catch') return 'pass';
     if (when === 'early' && !this.toldWait) {
@@ -555,12 +565,10 @@ export class RhythmMode extends HeroMode {
     return { index: f.d.index, letter: f.d.letter, untilBeat: f.d.land - this.songT, w: f.d.w, T: f.d.T, waiting };
   }
 
-  /** Slides the basket under `lane` (null: back to rest), starting `after` song seconds from now and taking `seconds`. */
-  private slideTo(lane: number | null, after = 0, seconds = SLIDE_S): void {
-    if (this.basket.lane === lane && this.songT >= this.basket.end) return;
-    const at = this.songT + after;
-    const end = this.L.reduceMotion ? this.songT : at + seconds;
-    this.basket = { from: this.basketX(), lane, at, end };
+  /** Slides the basket under `lane` and back to rest after `stay` seconds there. */
+  private slideTo(lane: number, stay = STAY_S): void {
+    const slide = this.L.reduceMotion ? 0 : SLIDE_S;
+    this.basket = { from: this.basketX(), lane, at: this.clock, back: this.clock + slide + stay };
   }
 
   onKey(_expected: string, _ok: boolean, _rt: number, at: number): void {
@@ -577,10 +585,8 @@ export class RhythmMode extends HeroMode {
     const offset = waited ? 0 : Math.max(-f.d.w * T, Math.min(f.d.w * T, this.songAt(this.keyAt) - f.d.land));
     f.caught = this.songT;
     f.caughtY = this.fallY(f);
-    // The basket goes back to rest, under no lane: the next letter's key slides it again. In the full drawing with
-    // motion it waits for the letter to drop in and glides back softly, else it goes at once.
-    if (this.L.reduceMotion || graphics.simple) this.slideTo(null);
-    else this.slideTo(null, DROP_IN_S, RETURN_S);
+    // The basket takes the letter under its lane and goes back to rest once it dropped in.
+    this.slideTo(f.d.lane, DROP_IN_S);
     this.ok++;
     const c = this.count(f.d.phrase);
     c.ok++;
@@ -613,12 +619,17 @@ export class RhythmMode extends HeroMode {
     this.flash[f.d.lane] = this.songT;
   }
 
-  /** The basket's x: on its way under a lane, or where its last slide ended. */
+  /** The basket's x: on its way under a lane, waiting there, or on its way back to rest (at once with Simple graphics or less motion). */
   private basketX(): number {
-    const { from, lane, at, end } = this.basket;
-    const to = lane === null ? this.restX() : this.laneX(lane);
-    if (this.songT >= end) return to;
-    return from + (to - from) * ease.outQuad(Math.max(0, (this.songT - at) / (end - at)));
+    const { from, lane, at, back } = this.basket, rest = this.restX();
+    if (lane === null) return rest;
+    const to = this.laneX(lane), now = this.clock;
+    if (now >= back) {
+      const home = this.L.reduceMotion || graphics.simple ? 1 : Math.min(1, (now - back) / RETURN_S);
+      return to + (rest - to) * ease.outQuad(home);
+    }
+    const out = this.L.reduceMotion ? 1 : Math.min(1, Math.max(0, (now - at) / SLIDE_S));
+    return from + (to - from) * ease.outQuad(out);
   }
 
   /** The top bar: the accuracy, the beat score of the last landings and the tempo. */
@@ -763,13 +774,13 @@ export class RhythmMode extends HeroMode {
   }
 
   /**
-   * After a miss the bubble's line also stands by the letter that comes, halfway between the clouds
+   * After a miss the bubble's line also stands over the middle of the band, halfway between the clouds
    * and the band: "wait" with a blinking pause sign while the letter glides into place, then "go on".
    */
   private drawStopLine(g: G): void {
     const r = this.recover, d = this.active?.d;
     if (!r || !d) return;
-    const x = this.laneX(d.lane), y = (CLOUD_BOTTOM + this.band(d).top) / 2;
+    const { left, right } = this.across, x = (left + right) / 2, y = (CLOUD_BOTTOM + this.band(d).top) / 2;
     if (r.phase === 'ready') return letterAt(g, t('rhythm.goOn'), x, y, 34, '#ffffff', '#3b2416', 7);
     letterAt(g, t('rhythm.hold'), x, y, 34, '#ffffff', '#3b2416', 7);
     if (Math.floor(this.blink / BLINK_S) % 2) return;

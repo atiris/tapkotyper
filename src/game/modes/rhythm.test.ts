@@ -113,6 +113,9 @@ describe('rhythm', () => {
     for (let i = 0; i < 200; i++) mode.update(0.02);
     expect(songT()).toBeCloseTo(second.land);
     expect(mode.due).toBe(1);
+    // While the song waits for its key, another key counts for nothing.
+    const other = mode.lanes.map((l) => l.letters[0]).find((c) => c !== second.letter)!;
+    expect(press(L, mode, other)).toBe('wait');
     expect(press(L, mode, second.letter)).toBe('ok');
     // The song runs on; the letter drops into the basket.
     mode.update(0.2);
@@ -213,6 +216,36 @@ describe('rhythm', () => {
     expect(press(L, mode, first.letter)).toBe('ok');
     expect(mode.due).toBe(1);
     expect(mode.accuracy).toBeCloseTo(1 / 3);
+  });
+
+  it('the basket rests while nobody types, goes under the key\'s lane and comes back, with the letter or empty', () => {
+    const L = fakeRuntime();
+    const mode = new RhythmMode(L);
+    mode.start();
+    const m = mode as unknown as { songT: number; basketX(): number; restX(): number; laneX(lane: number): number };
+    const first = mode.song.drops[0];
+    const other = mode.lanes.findIndex((l) => l.letters[0] !== first.letter);
+    while (m.songT < first.release + 0.05) mode.update(0.02);
+    expect(m.basketX()).toBeCloseTo(m.restX());
+    // Too early: under the letter's lane, then back empty.
+    expect(press(L, mode, first.letter)).toBe('wrong');
+    mode.update(0.15);
+    expect(m.basketX()).toBeCloseTo(m.laneX(first.lane));
+    mode.update(0.5);
+    expect(m.basketX()).toBeCloseTo(m.restX());
+    // A wrong key: under its own lane, then back.
+    press(L, mode, mode.lanes[other].letters[0]);
+    mode.update(0.15);
+    expect(m.basketX()).toBeCloseTo(m.laneX(other));
+    mode.update(0.5);
+    expect(m.basketX()).toBeCloseTo(m.restX());
+    // A catch: under the letter's lane, it takes the letter and goes back.
+    while (m.songT < first.land) mode.update(0.02);
+    expect(press(L, mode, first.letter)).toBe('ok');
+    mode.update(0.13);
+    expect(m.basketX()).toBeCloseTo(m.laneX(first.lane));
+    mode.update(0.6);
+    expect(m.basketX()).toBeCloseTo(m.restX());
   });
 
   it('without time pressure the song waits for the due letter', () => {

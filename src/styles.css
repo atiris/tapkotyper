@@ -785,10 +785,11 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .world-lock-btn > * { filter: grayscale(1) opacity(0.8); transform-origin: 50% 8%; transition: filter 0.25s ease; }
 .world-lock-btn img { width: 62%; height: auto; max-height: 62%; object-fit: contain; }
 .world-lock-btn .icon { width: 22px; height: 22px; }
-.world-lock-btn:is(:hover, :focus-visible, :active) > * { filter: none; animation: lock-swing 1.6s ease-in-out infinite; }
+/* One swing side to side and back, slowing only at its ends; it starts mid-swing, from straight. */
+.world-lock-btn:is(:hover, :focus-visible, :active) > * { filter: none; animation: lock-swing 0.8s ease-in-out -0.4s infinite alternate; }
 .world-lock-btn:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
 .reduce-motion .world-lock-btn > * { animation: none; }
-@keyframes lock-swing { 0%, 100% { rotate: 0deg; } 25% { rotate: 9deg; } 75% { rotate: -9deg; } }
+@keyframes lock-swing { from { rotate: -9deg; } to { rotate: 9deg; } }
 /* An open world's keyboard button: at the picture's bottom left, under the surprises, drawn like the small badge with a grey ring. */
 .world-kb-btn { position: absolute; bottom: 0; left: 0; z-index: 1; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%; overflow: hidden; display: grid; place-items: center; cursor: pointer;
   background: radial-gradient(circle at 35% 30%, #fff, #e6eaef 75%); color: var(--ink); box-shadow: inset 0 0 0 3px #a3abb5, 0 2px 4px rgba(40, 30, 20, 0.2); }

@@ -227,6 +227,13 @@ Notes from real Gemini runs; add new ones here.
   attached picture with exactly the same ... Change only one thing: ...". Two animals made from the same
   prompt and style sample came out in the same pose and layout; moving the desk to the other side for a
   difference was not wanted, a different prop (a basket of acorns) was enough.
+- A treasure map with a dashed route through eight places (2026-11-09): only the first, simplest prompt
+  gave one unbroken line; every richer prompt (obstacles, a river, positions, the line split into named
+  segments A to B ...) broke it into pieces or drew places twice. A follow-up "make the parchment bigger"
+  laid a second sheet around the first (two torn edges). The anime background style on a map came out
+  worst (the owner); the storybook vector style suits it. "A town beside a cloud" put the town on the
+  cloud; say "standing on green grass, the cloud floating behind it". A "wooden table" around the paper
+  needs a magenta background from the start.
 
 ---
 
@@ -684,6 +691,28 @@ In use: the owner's own picture (2026-11-07), with four small grey diagonal poin
 Generate an image: Four-point compass star
 
 Cute, soft 2D children's game icon, flat vector style with gentle gradients, soft dark-brown outline (not black), bold simple shapes that stay readable when very small. A single icon: a simple four-pointed star shaped like a plus sign with sharp tips, exactly FOUR points in total: one up, one down, one left, one right. There is nothing at all in the diagonal directions: no small points, no rays, no second layer of points behind, only empty background between the four points. The top point is red #E5534B; the bottom, left and right points are soft blue #5B8DD6. Each point is split lengthwise into a lighter and a darker half. A small round dark-brown pin in the middle. Strictly front view, perfectly symmetrical, not tilted. No circle, no ring, no letters, no numbers, no face, no shadow. Centered, the whole shape visible, wide empty margin. No text, no watermark. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no other objects. Square image.
+```
+
+### ui-treasure-map.jpg (easter egg: typing "mapa" on the world map shows it, the figure walks the red line to the treasure; 2026-11-09, sixth try)
+The owner kept this picture although its red line has gaps and the town, forest and scrap appear twice.
+```
+Generate an image: Treasure map
+
+Cute, soft 2D children's storybook illustration, flat vector style with gentle gradients, rounded friendly shapes, soft dark-brown outlines (not black), warm pastel palette, light soft shading. Calm and friendly, suitable for children aged 6 to 15. No text, no letters, no numbers, no watermark, no characters, no people, no animals.
+
+A pirate-style treasure map drawn on one sheet of old warm cream parchment paper with softly torn, slightly curled edges, lying flat. The parchment is big and fills almost the whole image, only a thin magenta border remains around it. The map is seen straight from above. On the map, small cute pictures of places stand along a route, spread evenly over the whole map, each clearly separate with calm parchment between them:
+1. bottom left: a small cute rocket standing upright on a little launch pad (the start),
+2. a big cream egg with soft brown spots lying in a little nest,
+3. a small junkyard: a yellow crane whose cable holds a big red horseshoe magnet that lifts an old tire and a tin can above a small scrap pile,
+4. a small town of a few colorful houses with pointed roofs standing on green grass, with a fluffy white cloud floating behind it,
+5. a small green forest of a few round trees,
+6. a little blue lake with water lilies,
+7. one big lonely tree with a wide round crown,
+8. top right: a wooden treasure chest, open, full of gold coins and gems, standing on a big red X (the end).
+
+A thick dashed red line runs from the rocket to the treasure chest, winding gently past every place in this order, never crossing itself, passing right beside each place. The line is clear and easy to follow. In the free spaces between the bends of the line stand small obstacles, so there is no shortcut: little grey rocky mountains, thorny bushes, a few boulders. No compass rose.
+
+Background around the parchment: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no table. Landscape image, slightly wider than tall (4:3).
 ```
 
 ### ui-keys-typed.jpg (letters typed in the last 14 days chip in the stats; a pile of pastel keys, one with a plus; the owner's picture 2026-10-23, replaced ui-key-star)

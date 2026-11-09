@@ -211,10 +211,10 @@ test('world badges sit on the map, grow with stars and line up on the progress s
   await expect(rows.nth(2).locator('.badge.bronze')).toHaveCount(1);
   await expect(page.locator('.badge-shelf h5')).toHaveCount(0);
   await expect(page.locator('.badge-shelf .badge.none')).toHaveCount(0);
-  // A found range award in color; every other one the same grey sight, giving nothing away.
+  // A found range award in color; every other open range's one the same grey arrows, giving nothing away.
   await expect(page.locator('.aim-find.found')).toHaveCount(1);
   const waiting = page.locator('.aim-find.waiting img');
-  await expect(waiting.first()).toHaveAttribute('src', /ui-aim-sight/);
+  await expect(waiting.first()).toHaveAttribute('src', /ui-aim-arrows/);
   expect(new Set(await waiting.evaluateAll((els) => els.map((e) => e.getAttribute('src')))).size).toBe(1);
   await page.locator('.badge-shelf').last().screenshot({ path: 'test-results/range-awards.png' });
   // The rhythm notes are pictures, not buttons, each naming its world; the count stands after the last.

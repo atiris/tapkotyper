@@ -3,6 +3,7 @@ import { nextLevel } from '../audio/levels';
 import { useGraphics } from '../engine/graphics';
 import { flyAway } from '../game/parrots';
 import { fadeNotesToday } from '../game/rhythm-notes';
+import { magpieVisit } from '../game/magpie';
 import { resetFontFamily } from '../gfx/draw';
 import { askedLanguage, hasTexts, setLanguage, tList } from '../i18n/i18n';
 import { toggleTheme, useTheme } from './theme';
@@ -201,10 +202,11 @@ export async function selectProfile(p: Profile): Promise<void> {
   applyProfileLook(p);
   useTheme(p.settings.theme);
   audio.setLevel(p.settings.sound);
-  // Parrots and rhythm notes fly away out of sight, once a day when the player becomes active; the map tells it.
+  // Parrots and rhythm notes fly away out of sight, and the magpie takes a range thing, when the player becomes active; the map tells it.
   const today = localDate();
   flyAway(p, today);
   fadeNotesToday(p, today);
+  magpieVisit(p, today);
   saveProfile();
 }
 

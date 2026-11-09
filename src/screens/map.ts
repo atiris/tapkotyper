@@ -34,6 +34,7 @@ import { openStats } from './stats';
 import { heldText, openWorldKeys, worldKeysButton, worldLockText } from './world-keys';
 import { taskCard } from './task';
 import { hasClef, untoldFades } from '../game/rhythm-notes';
+import { untoldMagpie } from '../game/magpie';
 import { whistle } from '../ui/whistle';
 
 /** Ms Turtle's pictures, one after another with her tips. */
@@ -166,8 +167,10 @@ const ARO_AFTER_MS = 1800;
 
 export function mapScreen(root: HTMLElement, { focus }: { focus?: 'language' } = {}): () => void {
   const p = app.profile!;
-  // Notes and parrots flew away when the player became active (selectProfile); the map tells it once.
+  // Notes and parrots flew away, and the magpie came, when the player became active (selectProfile); the map tells it once.
   const notesFlown = untoldFades(p);
+  const takenId = untoldMagpie(p);
+  const taken = WORLD_THINGS.find((th) => th.id === takenId);
   audio.enter({ kind: 'resume', menuTrack: app.menuTrack });
   const flown = [...p.progress.parrotFlown].sort((a, b) => a - b);
   p.progress.parrotFlown = [];
@@ -245,6 +248,7 @@ export function mapScreen(root: HTMLElement, { focus }: { focus?: 'language' } =
   const flownLines = [
     ...(flown.length ? [t(flown.length === 1 ? 'map.parrotFlown' : 'map.parrotsFlown', { worlds: flown.map((w) => worldName(w)).join(', ') })] : []),
     ...(notesFlown.notes ? [t(`map.${notesFlown.notes === 1 ? 'note' : 'notes'}Flown${notesFlown.clef ? 'Clef' : ''}`)] : []),
+    ...(taken ? [t('map.magpie', { world: worldName(taken.world!) })] : []),
   ];
   if (flownLines.length) {
     bubble.replaceChildren(...flownLines.map((line) => h('p', {}, line)));

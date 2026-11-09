@@ -154,6 +154,7 @@ export function fillProgress(p: Profile, f: ProgressFill, rand: () => number = M
   pr.parrotBest = pr.parrots.length;
   pr.parrotWonAt = pr.parrotCheckedAt = pr.parrots.length ? today : null;
   pr.parrotFlown = [];
+  pr.magpieDue = pr.magpieTaken = '';
   pr.rhythmTempo = Math.round(Math.max(TEMPO_MIN, Math.min(TEMPO_MAX, f.tempo)));
   // Earned today too, so none fades before the map is even seen.
   const noted = f.allNotes ? [...pr.worldsDone] : pick(pr.worldsDone, pr.worldsDone.length - 1, rand).sort((a, b) => a - b);

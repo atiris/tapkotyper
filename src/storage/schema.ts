@@ -160,6 +160,13 @@ export interface Progress {
   missionWorld: number;
   /** Ids of the world things hit in the middle at the target range (its collection). */
   rangeFinds: string[];
+  /**
+   * The magpie (game/magpie.ts): the local date of its next visit ('' before the first check), the typing
+   * time (`trainedSeconds`) when it took a thing last (-1 before any), and the thing taken the map has not told ('').
+   */
+  magpieDue: string;
+  magpieTrained: number;
+  magpieTaken: string;
   /** The most points in one run of the target range (its base time), and when it was set (ms, null before any). */
   rangeRecord: number;
   rangeRecordAt: number | null;

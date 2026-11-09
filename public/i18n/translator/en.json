@@ -620,6 +620,7 @@
     "map.surprisesTitle": "Title of the window with the surprises won in one world; {world} is the world's name.",
     "map.parrotFlown": "Narrator on the map when one parrot flew away. {worlds} is the world name.",
     "map.parrotsFlown": "Narrator on the map when several parrots flew away. {worlds} are world names separated by commas.",
+    "map.magpie": "Narrator on the map when a magpie took one rare thing of the target ranges. {world} is the world whose range gives it back.",
     "map.noteFlown": "Narrator on the map when one rhythm note flew away because the child did not play the Rhythm game for days.",
     "map.notesFlown": "Narrator on the map when several rhythm notes flew away because the child did not play the Rhythm game for days.",
     "map.noteFlownClef": "Narrator on the map when one rhythm note flew away and the treble clef (a note from every open world) was lost with it; playing Rhythm brings it back.",

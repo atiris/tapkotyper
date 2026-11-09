@@ -716,7 +716,9 @@ the fairy's lavender hair with the yellow flower and the wing tips behind her sh
 eyes, no eggshell), and "Keep it simple and bold so it reads clearly as a tiny icon of about 36 pixels: big clear shapes,
 no small details, no arms. Front view, centered". Robot and dragon on magenta, the fairy on green.
 
-### ui-aim-sight.jpg (a range award not found yet on My progress: a grey sight, turned at random by the game; 2026-11-06)
+### ui-aim-arrows.jpg (a range award not found yet on My progress: two crossed arrows, greyed and turned at random by the game; the owner's picture 2026-11-09, replaced ui-aim-sight)
+
+### ui-aim-sight.jpg (no longer in the game; its prompt is the base of ui-badge-none above; 2026-11-06)
 ```
 Generate an image: Grey target sight
 

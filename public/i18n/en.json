@@ -178,6 +178,7 @@
     "surprisesTitle": "Surprises from {world}",
     "parrotFlown": "Your parrot flew away from {worlds}. Go and get it!",
     "parrotsFlown": "Your parrots flew away from {worlds}. Go and get them!",
+    "magpie": "A magpie flew by and snatched one of your rare finds from the target range. You can win it back at the target range of {world}.",
     "noteFlown": "Without Rhythm, one of your notes flew away.",
     "notesFlown": "Without Rhythm, some of your notes flew away.",
     "noteFlownClef": "Without Rhythm, one of your notes flew away, and the treble clef went with it. Play Rhythm and you will get it back.",

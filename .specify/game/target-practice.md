@@ -78,10 +78,16 @@
   careless throw the run goes without it. Hitting it in the middle (no
   wrong key, every word in time) the first time makes it a find, and the character says it is yours if
   you throw to the end: it joins the collection only when the run ends, not when it is left
-  early. My progress (the page and the popup) shows all 15, found ones in color; each one still
-  missing is the same grey range sight (rings and a cross), turned at random so the row does
-  not look stiff, and gives nothing away; its tooltip names the world where it waits. The
-  progress overview counts them too.
+  early. My progress (the page and the popup) shows one place per open target range (4 open worlds,
+  4 places), found ones in color; each one still missing is the same two crossed arrows in grey,
+  turned at random so the row does not look stiff, and gives nothing away; its tooltip names the
+  world where it waits. The progress overview counts them too.
+- **The magpie.** Like the parrots and the notes, the collection does not stay put: about every ten
+  days (7 to 14 at random) a magpie takes one random thing of it, checked when the player becomes
+  active. It takes one at most until the child types again, so a child back after a month has lost
+  one thing, not four. The magpie is never seen: the figure's bubble on the map says once
+  "Priletela straka a uchmatla ti jednu vzácnosť zo strelnice. Znova ju môžeš získať na strelnici
+  sveta X." The thing is again the world's own to find at its range.
 - With something in the collection, Enter swaps the thing in the character's paw (before its throw) for
   a random one of the collection, and the character names it; the rules at the start say so. The
   world's own thing still to be found cannot be swapped away.
@@ -120,5 +126,8 @@
 - A talking target and a surprise in every throw make a clean throw feel like a bullseye and
   keep the range funny for long; points and lines tell a child how good a throw was without a
   score to chase. The world things make the range worth playing in every world.
+- A collection that can lose a thing brings the child back to the ranges; one loss per absence,
+  never a pile, keeps it a nudge and not a punishment. Places only for open ranges make a full row
+  reachable now, not a wall of grey for worlds far ahead.
 - A steady flight and growing words add a gentle time pressure, and the bullseye rewards a
   whole clean throw, so the range stays a game and not a drill.

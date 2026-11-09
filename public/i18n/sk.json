@@ -2198,10 +2198,8 @@
         "task": "Úloha",
         "game": "Hra a limit",
         "group": "Skupina",
-        "made": "Vytvorená",
-        "actions": "Akcie"
+        "made": "Vytvorená"
       },
-      "show": "Ukázať úlohu",
       "share": "Zdieľať odkaz",
       "copy": "Kopírovať odkaz",
       "edit": "Upraviť",

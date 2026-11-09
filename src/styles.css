@@ -2061,12 +2061,15 @@ body.reduce-motion .round-btn.timer.ending { --rb: #d9661f; --rb-ring: #ff8a3d; 
 .ready.has-open { grid-template-columns: minmax(0, 1fr) 400px; }
 .ready-table tr.on td { background: var(--tint-orange); }
 .ready-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; }
-.qr-btn { flex: none; width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); display: grid; place-items: center; cursor: pointer; }
-.qr-btn:hover { color: var(--brand-ink); }
+/* A prepared task's name opens it, like a link. */
+.ready-open { display: flex; flex-direction: column; gap: 2px; min-width: 0; padding: 0; border: 0; background: none; color: var(--brand-ink); font: inherit; text-align: left; cursor: pointer; }
+.ready-open .hint { font-size: 0.8rem; }
+.ready-open:hover b, .ready-open:focus-visible b { text-decoration: underline; }
+.task-open-qr { display: block; width: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; }
 .task-open { display: flex; flex-direction: column; gap: 14px; padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
 .task-open .own-head .modal-x { display: none; }
 .task-open-code .qr { display: block; width: 100%; max-width: 320px; margin: 0 auto; }
-.task-open-actions { display: flex; flex-direction: column; gap: 8px; }
+.task-open-actions { display: flex; flex-direction: column; gap: 18px; }
 .task-open-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 .task-open-actions .hint:empty { display: none; }
 @media (max-width: 699px) {

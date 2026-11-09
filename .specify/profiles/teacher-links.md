@@ -18,9 +18,10 @@
   or a random one (also one not open yet, only as a backdrop). Each choice has one line saying
   what it does. A task needs at least one word or some text.
 - **Uložiť ako novú úlohu** keeps the task in the list at once and opens it. A row of the list shows
-  the title, game and limit, group and the day made, and a square QR button. On a computer the
-  task opens in a panel beside the list: its title and summary, its QR code, **Kopírovať odkaz**,
-  **Veľký kód** (the task's title over the code, in a frame of its own colour), **Upraviť** (the
+  the title, game and limit, group and the day made; a click on the title opens the task. On a
+  computer the task opens in a panel beside the list: its title and summary, its QR code (a click
+  on it shows the big code), a plain **Kopírovať odkaz** and **Veľký kód** (the task's title over the
+  code, in a frame of its own colour), and below them, a clear gap apart, **Upraviť** (the
   form fills; saving keeps the task's identity so its results stay together) and **Odstrániť**
   (asks first). On a phone it is a page of its own with the title, a round X (and Esc) to close,
   the QR code, **Zdieľať odkaz** (only with a share sheet), **Kopírovať odkaz**, **Upraviť** and

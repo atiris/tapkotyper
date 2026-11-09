@@ -30,6 +30,13 @@ test('a task travels by link to a child, and the result back to the teacher\'s t
   expect(taskLink).toMatch(/#\/task\/[A-Za-z0-9_-]+$/);
   await parent.keyboard.press('Escape');
   await expect(parent.locator('.ready-table tbody tr')).toContainText('Zvieratá');
+  // The task's name opens it again; a click on its code shows the big code.
+  await parent.locator('.ready-table .ready-open', { hasText: 'Zvieratá' }).click();
+  await expect(parent.locator('.task-open .btn.primary:visible')).toHaveCount(0);
+  await parent.locator('.task-open-qr').click();
+  await expect(parent.locator('.big-code-copy')).toBeVisible();
+  await parent.keyboard.press('Escape');
+  await parent.keyboard.press('Escape');
 
   // A child on another computer opens it as a new player and plays it.
   const child = await open();

@@ -2198,10 +2198,8 @@
         "task": "Task",
         "game": "Game and limit",
         "group": "Group",
-        "made": "Made",
-        "actions": "Actions"
+        "made": "Made"
       },
-      "show": "Show the task",
       "share": "Share link",
       "copy": "Copy link",
       "edit": "Edit",

@@ -1561,8 +1561,6 @@
     "teacher.tasks.col.game": "Prepared tasks: column of the game and its limit.",
     "teacher.tasks.col.group": "Prepared tasks: column of the task's group.",
     "teacher.tasks.col.made": "Prepared tasks: column of the day it was made.",
-    "teacher.tasks.col.actions": "Prepared tasks: screen-reader name of the column of the QR button.",
-    "teacher.tasks.show": "Prepared tasks: name of the QR button that opens a task.",
     "teacher.tasks.share": "Open task on a phone: shares the task's link to another app.",
     "teacher.tasks.copy": "Open task: copies the task's link.",
     "teacher.tasks.edit": "Open task: opens it in the form to change.",

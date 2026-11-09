@@ -5,7 +5,7 @@ import { keepTeacherTask, taskCode } from '../../share/task';
 import type { TeacherStore } from '../../share/teacher';
 import type { TaskSpec } from '../../storage/schema';
 import { bigCode } from '../../ui/big-code';
-import { button, closeButton, confirmDialog, h, icon } from '../../ui/dom';
+import { button, closeButton, confirmDialog, h } from '../../ui/dom';
 import { copyLink, fitsQr, qr } from '../../ui/link-box';
 import { type TaskForm, taskForm } from '../../ui/task-form';
 import { taskSummary } from '../../ui/task-panel';
@@ -60,18 +60,21 @@ function openTask(spec: TaskSpec, store: TeacherStore): HTMLElement {
   void taskCode(spec).then((c) => {
     const link = linkOf('task', c);
     area.value = link;
-    code.replaceChildren(fitsQr(link) ? qr(link) : h('p', { class: 'hint' }, t('share.noQr')));
+    const big = () => bigCode(link, '', title, 'task');
+    // A click on the code shows it big too.
+    code.replaceChildren(fitsQr(link)
+      ? h('button', { type: 'button', class: 'task-open-qr', 'aria-label': t('task.bigCode'), tip: t('task.bigCode'), onClick: big }, qr(link))
+      : h('p', { class: 'hint' }, t('share.noQr')));
     const share = !!navigator.share;
-    const copy = (cls: string) => button(t('teacher.tasks.copy'), async () => {
-      await copyLink(link, area);
-      done.textContent = t('share.copied');
-    }, cls);
     actions.replaceChildren(
       h('div', { class: 'task-open-pair' },
+        // With a share sheet the phone's main button shares.
         share ? button(t('teacher.tasks.share'), () => void navigator.share({ url: link, title }).catch(() => undefined), 'btn primary phone-only') : null,
-        // With a share sheet the phone's main button shares; a computer copies.
-        ...(share ? [copy('btn primary desk-only'), copy('btn phone-only')] : [copy('btn primary')]),
-        fitsQr(link) ? button(t('task.bigCode'), () => bigCode(link, '', title, 'task'), 'btn desk-only') : null),
+        button(t('teacher.tasks.copy'), async () => {
+          await copyLink(link, area);
+          done.textContent = t('share.copied');
+        }, 'btn'),
+        fitsQr(link) ? button(t('task.bigCode'), big, 'btn desk-only') : null),
       h('div', { class: 'task-open-pair' },
         button(t('teacher.tasks.edit'), () => {
           theForm(store).edit(spec);
@@ -94,7 +97,8 @@ export function readyPart(store: TeacherStore, id?: string): Part {
   const open = tasks.find((x) => x.id === id);
   // Another task beside the list takes the open one's place, so Esc still goes back to the list.
   const show = (x: TaskSpec) => () => (open ? swapPlace(`task/${x.id}`) : openPlace(`task/${x.id}`, true));
-  const qrButton = (x: TaskSpec) => h('button', { type: 'button', class: 'qr-btn', 'aria-label': t('teacher.tasks.show'), tip: t('teacher.tasks.show'), onClick: show(x) }, icon('qr'));
+  // The task's name opens it.
+  const name = (x: TaskSpec, ...more: (Node | null)[]) => h('button', { type: 'button', class: 'ready-open', onClick: show(x) }, h('b', {}, x.title || t('task.untitled')), ...more);
   if (!tasks.length) return { nodes: [h('p', { class: 'hint' }, t('teacher.tasks.empty'))] };
   return {
     own: !!open,
@@ -102,13 +106,12 @@ export function readyPart(store: TeacherStore, id?: string): Part {
     nodes: [h('div', { class: `ready${open ? ' has-open' : ''}` },
       h('div', { class: 'ready-list' },
         h('div', { class: 'teacher-table' }, h('table', { class: 'ready-table' },
-          h('thead', {}, h('tr', {}, ...['task', 'game', 'group', 'made'].map((c) => h('th', { scope: 'col' }, t(`teacher.tasks.col.${c}`))), h('th', { scope: 'col' }, h('span', { class: 'sr-only' }, t('teacher.tasks.col.actions'))))),
+          h('thead', {}, h('tr', {}, ...['task', 'game', 'group', 'made'].map((c) => h('th', { scope: 'col' }, t(`teacher.tasks.col.${c}`))))),
           h('tbody', {}, ...tasks.map((x) => h('tr', { class: x === open ? 'on' : '' },
-            h('td', {}, h('b', {}, x.title || t('task.untitled'))), h('td', {}, taskSummary(x)), h('td', {}, x.group || '—'),
-            h('td', {}, new Date(x.madeAt).toLocaleDateString(locale())), h('td', {}, qrButton(x))))))),
+            h('td', {}, name(x)), h('td', {}, taskSummary(x)), h('td', {}, x.group || '—'),
+            h('td', {}, new Date(x.madeAt).toLocaleDateString(locale()))))))),
         h('ul', { class: 'teacher-rows' }, ...tasks.map((x) => h('li', { class: 'ready-row' },
-          h('span', { class: 'teacher-row-main' }, h('b', {}, x.title || t('task.untitled')), h('span', { class: 'hint' }, taskLine(x))),
-          qrButton(x))))),
+          name(x, h('span', { class: 'hint' }, taskLine(x))))))),
       open ? openTask(open, store) : null)],
   };
 }

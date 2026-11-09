@@ -29,6 +29,12 @@ test('secret words: the logo hint brings Tapko, the range hint a flying thing, t
   await expect(page.locator('.card-logo')).toHaveAttribute('data-tip', 'Hi, this site is called Tapko.');
   await page.keyboard.type('hi');
   await expect(page.locator('.tapko-visit')).toContainText('I am one of the characters');
+  // A click fades the bubble only; the greeting again sends the character away.
+  await page.locator('.tapko-visit').click();
+  await expect(page.locator('.tapko-visit .bubble')).toHaveCount(0);
+  await expect(page.locator('.tapko-visit .tapko-stack')).toBeVisible();
+  await page.keyboard.type('hi');
+  await expect(page.locator('.tapko-visit')).toHaveCount(0);
   await expect(page.locator('.start-screen')).toBeVisible();
   expect(errors).toEqual([]);
 });

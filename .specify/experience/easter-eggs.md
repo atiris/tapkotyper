@@ -13,8 +13,9 @@ counts only on its own, not inside another word. Not mentioned in the help: find
   word ("ahoj" / "hi") brings a character of a random kind in a random outfit (any item of the
   wardrobe, like its random button), as tall as the grass, walking in from the left. It hops, says
   it is one of the characters the child can use on the adventures here, that without a profile
-  "Nový hráč" makes one, and that it hopes they learn to type properly together; then it walks
-  away after a few seconds or on a click.
+  "Nový hráč" makes one, and that it hopes they learn to type properly together. The bubble fades
+  after 20 seconds or on a click; the character stays on the start page until the child leaves the
+  page, reloads it or types the greeting again, which sends it walking away.
 - **Map: the target range.** Typing the first word of the range's hint ("strelnica" /
   "target") sends a random thing of the target range drifting across the page from left to
   right at an easy pace, turning slowly, with a whoosh. With reduced motion it does not come.

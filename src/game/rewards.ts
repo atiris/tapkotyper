@@ -32,12 +32,12 @@ const BY_PERFECT: Record<string, number> = { 'w13-2': 1, 'w14-2': 2, 'w15-2': 3 
 /** Positions by the stars earned in all (`starsEarned`, replays add), as shares of all story levels' stars. */
 const BY_STARS: [number, string][] = [[0.5, 'heart-glasses'], [0.9, 'star-shirt'], [1.2, 'pink-sneakers'], [1.5, 'sunglasses']];
 /**
- * Secret beards: hidden in the wardrobe until found by clicking the character there, each one after
+ * Secret moustache and beard: hidden in the wardrobe until found by clicking the character there, each one after
  * the one before, with this many clicks in one visit counted from the previous find. The child has
  * at most one of them: a find takes the other one away.
  */
-export const SECRET_ACCESSORIES: [string, number][] = [['beard', 15], ['big-beard', 30]];
-/** Days a found beard stays the child's. */
+export const SECRET_ACCESSORIES: [string, number][] = [['moustache', 15], ['big-beard', 30]];
+/** Days a found secret stays the child's. */
 const SECRET_DAYS = 30;
 const isSecret = (id: string) => SECRET_ACCESSORIES.some(([a]) => a === id);
 

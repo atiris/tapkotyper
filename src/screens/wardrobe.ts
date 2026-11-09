@@ -31,7 +31,7 @@ export function wardrobeScreen(root: HTMLElement): () => void {
   const preview = tapkoElement(p.companion, mood, 280);
   // Clicks in this visit since the last secret accessory was found.
   let clicks = 0;
-  /** Enough clicks find the next secret beard: it replaces the one owned and, unless the wardrobe is locked, is worn at once. */
+  /** Enough clicks find the next secret (a moustache, then a big beard): it replaces the one owned and, unless the wardrobe is locked, is worn at once. */
   const findSecret = (): boolean => {
     const next = nextSecret(p);
     if (!next || !accessories().some((a) => a.id === next[0]) || ++clicks < next[1]) return false;

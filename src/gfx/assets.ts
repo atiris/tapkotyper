@@ -4,7 +4,7 @@ export interface AccessoryInfo {
   id: string;
   slot: Slot;
   set: string;
-  /** Drawn over every other item (a beard over a scarf or a vest). */
+  /** Drawn over every other item (a beard over a vest or a cape's clasp). */
   top?: boolean;
 }
 

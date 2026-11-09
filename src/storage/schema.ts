@@ -156,7 +156,7 @@ export interface Progress {
   starsEarned: number;
   /** Wardrobe time left in seconds, earned by training (`0..WARDROBE_MAX`, may hold fractions). */
   wardrobeSeconds: number;
-  /** When the secret beard the child owns was found (ms, null with none); it leaves 30 days later (`expireSecrets`). */
+  /** When the secret moustache or beard the child owns was found (ms, null with none); it leaves 30 days later (`expireSecrets`). */
   beardAt: number | null;
   /** The world of the last mission (a story level or a hero's journey); -1 before any. */
   missionWorld: number;

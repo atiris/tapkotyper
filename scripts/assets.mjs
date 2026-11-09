@@ -100,7 +100,7 @@ const SINGLES = {
   'eye-mask': { slot: 'eyes' },
   'carnival-mask': { slot: 'eyes' },
   // Secret: found by clicking the character in the wardrobe; `top`: drawn over every other item.
-  beard: { slot: 'neck', top: true },
+  moustache: { slot: 'neck', top: true },
   'big-beard': { slot: 'neck', top: true },
 };
 

@@ -128,7 +128,7 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
   { id: 'wardrobe', groups: [
     g('wardrobe', 'wardrobe.*', 'slots.*'),
     g('items-head', ...['antenna-band', 'feather', 'hair-clip', 'hard-hat', 'umbrella', 'cap', 'crown', 'wizard-hat', 'flower-wreath', 'beanie', 'hair-bow', 'explorer-hat'].map((i) => `items.${i}`)),
-    g('items-face', ...['carnival-mask', 'eye-mask', 'goggles', 'round-glasses', 'star-glasses', 'sunglasses', 'heart-glasses', 'chain', 'medallion', 'scarf', 'bow-tie', 'neckerchief', 'beard', 'big-beard'].map((i) => `items.${i}`)),
+    g('items-face', ...['carnival-mask', 'eye-mask', 'goggles', 'round-glasses', 'star-glasses', 'sunglasses', 'heart-glasses', 'chain', 'medallion', 'scarf', 'bow-tie', 'neckerchief', 'moustache', 'big-beard'].map((i) => `items.${i}`)),
     g('items-body', ...['knit-vest', 'raincoat', 'star-shirt', 'explorer-vest', 'backpack', 'butterfly-wings', 'dragon-wings', 'fairy-wings', 'hero-cape', 'jetpack', 'star-cape'].map((i) => `items.${i}`)),
     g('items-hand', 'items.*'),
   ] },

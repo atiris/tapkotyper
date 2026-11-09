@@ -2168,19 +2168,19 @@
    "w": 1094,
    "h": 812
   },
-  "acc-beard": {
-   "w": 640,
-   "h": 640
-  },
-  "acc-beard-thumb": {
-   "w": 160,
-   "h": 160
-  },
   "acc-big-beard": {
    "w": 640,
    "h": 640
   },
   "acc-big-beard-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-moustache": {
+   "w": 640,
+   "h": 640
+  },
+  "acc-moustache-thumb": {
    "w": 160,
    "h": 160
   }
@@ -2428,7 +2428,7 @@
    "top": true
   },
   {
-   "id": "beard",
+   "id": "moustache",
    "slot": "neck",
    "set": "single",
    "top": true

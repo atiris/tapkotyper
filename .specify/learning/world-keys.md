@@ -29,8 +29,13 @@
 - **The world's keys panel**, the same for an open and a closed world. An open world opens it by
   a round keyboard button at the bottom left of its picture, under the surprises' corner,
   drawn like the small badge (same size) with a grey ring and a keyboard picture; a closed
-  world has only its lock: hovering it tells why the world is closed (and which keys, when only
-  keys hold it), a click opens the panel. Heading: "<lock> Podmienky odomknutia sveta NAME" for a
+  world has only its lock in the middle of its picture: a round button drawn like the picture's
+  corner buttons, a little bigger, with a padlock turned at random that turns straight when
+  pointed at or focused. Only hovering the lock tells why the world is closed (and which keys,
+  when only keys hold it); a click on it or on the picture opens the panel.
+- **Why a world is closed** is named by the first reason that holds: the world before it in its
+  story is not done (a later world of a story never names keys while the world before it waits),
+  then the story's keys, then the world's own must-know keys. Heading: "<lock> Podmienky odomknutia sveta NAME" for a
   closed world, "Klávesnica v svete NAME" for an open one. A closed world says why above the
   keyboard (plainly "only because of keys" when so). On the child's keyboard the keys are
   outlined by their part, not by finger: must know green, I learn orange, dashed while not
@@ -85,3 +90,6 @@ index columns `r0 f0 v0` and `u0 j0 m0` from world 9 on (column games,
   on keys the fingers already find, and the drill in the world's keys panel is a short way there.
 - Help is a description of the game, the same for everyone; what this child masters belongs on the
   map, next to the world.
+- The next step first: keys named for a world two steps away send the child after the wrong goal,
+  while the world before it is the one to play now. A reason shown over the whole picture covers it;
+  on the lock it answers only who asks. A turned lock invites a point, and straightens when it is touched.

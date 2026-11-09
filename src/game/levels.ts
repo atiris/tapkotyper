@@ -339,13 +339,17 @@ export function isWorldUnlocked(p: Profile, world: number): boolean {
   return worldReached(p, world) && !keysHolding(p, world).length;
 }
 
-/** Why a world is closed: its story needs more keys, the world before it is not done, or the child does not know its keys (by name); null when open. */
+/**
+ * Why a world is closed, the first reason that holds: the world before it in its story is not done, its story needs
+ * more keys, or the child does not know its keys (by name); null when open.
+ */
 export type WorldLock = { kind: 'world'; prev: number } | { kind: 'keys'; need: number; have: number } | { kind: 'need'; keys: string[] };
 
 export function worldLock(p: Profile, world: number): WorldLock | null {
   const story = storyOf(world);
+  // The first world of a story is reached once its story is open.
+  if (world !== story.worlds[0] && !worldReached(p, world)) return { kind: 'world', prev: world - 1 };
   if (!storyOpen(p, story)) return { kind: 'keys', need: story.opensAtKeys!, have: activeKeys(p).length };
-  if (!worldReached(p, world)) return { kind: 'world', prev: world - 1 };
   const keys = keysHolding(p, world);
   return keys.length ? { kind: 'need', keys } : null;
 }

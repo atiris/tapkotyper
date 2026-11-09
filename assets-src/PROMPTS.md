@@ -671,6 +671,13 @@ Cute, soft 2D children's game icon, flat vector style with gentle gradients, sof
 Same style and colours, but much simpler so it reads at 40 pixels inside a small round badge: a compact, almost square keyboard (only a little wider than tall), seen gently from above and a little from the side, with only two rows of three big chunky rounded keys (mint, sky blue, butter yellow, peach) and one big wide space bar below them. Thick soft dark-brown outline, big simple shapes, no small details. Keys empty, no letters. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow. Square image.
 ```
 
+### ui-lock.jpg (a closed world's lock button on the map, in a grey-ringed disc a little bigger than the badge; turned at random by the game; 2026-11-09, first try)
+```
+Generate an image: Padlock
+
+Cute, soft 2D children's game icon, flat vector style with gentle gradients, soft dark-brown outline (not black), warm pastel palette, bold simple shapes that stay readable when very small. A single icon: a chubby friendly padlock, strictly front view, upright and not tilted. A rounded soft golden-yellow body (a little wider than tall) with a lighter top highlight, and a thick rounded light-grey metal shackle arch on top, closed. In the middle of the body one simple dark-brown keyhole: a small circle with a short narrow slot under it. No face, no eyes, no mouth, no key, no chain, no decorations. Perfectly symmetrical. Centered, the whole padlock visible, wide empty margin. No text, no letters, no numbers, no watermark. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no other objects. Square image.
+```
+
 ### ui-journey-rose.jpg (the hero's journey's badge on the map: a simple four-point compass rose, the badge's ring is round; turned by the game; 2026-11-07)
 In use: the owner's own picture (2026-11-07), with four small grey diagonal points between the main ones. Drawn in the badge at 72 %. A new picture, nothing attached. The first prompt ("only four long pointed star points ..., nothing between them") came with four small diagonal points; the prompt below, saying the diagonals are empty, drops them.
 ```

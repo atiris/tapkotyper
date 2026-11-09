@@ -313,6 +313,8 @@ describe('world locks', () => {
     const p = newProfile('Ema', 'sk');
     know(p, KEYS.slice(0, 7));
     expect(worldLock(p, 5)).toEqual({ kind: 'keys', need: 10, have: 7 });
+    // A later world of the closed story waits for the world before it first.
+    expect(worldLock(p, 6)).toEqual({ kind: 'world', prev: 5 });
     know(p, KEYS.slice(0, 10));
     expect(worldLock(p, 5)).toBeNull();
   });

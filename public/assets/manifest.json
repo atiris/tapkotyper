@@ -532,6 +532,10 @@
    "w": 640,
    "h": 640
   },
+  "obj-aim-antler": {
+   "w": 512,
+   "h": 493
+  },
   "obj-aim-arrow": {
    "w": 512,
    "h": 170
@@ -547,6 +551,10 @@
   "obj-aim-battery": {
    "w": 512,
    "h": 179
+  },
+  "obj-aim-beethoven": {
+   "w": 324,
+   "h": 512
   },
   "obj-aim-boomerang": {
    "w": 512,
@@ -967,6 +975,10 @@
   "obj-dragon-sleeping-4": {
    "w": 512,
    "h": 396
+  },
+  "obj-egg-crack": {
+   "w": 400,
+   "h": 512
   },
   "obj-egg-cracking": {
    "w": 389,
@@ -1848,6 +1860,10 @@
    "w": 470,
    "h": 512
   },
+  "ui-lock": {
+   "w": 386,
+   "h": 512
+  },
   "ui-map-dragons": {
    "w": 512,
    "h": 497
@@ -1906,6 +1922,10 @@
   },
   "ui-map-workshop": {
    "w": 453,
+   "h": 512
+  },
+  "ui-medals": {
+   "w": 352,
    "h": 512
   },
   "ui-mentor": {
@@ -1988,6 +2008,18 @@
    "w": 502,
    "h": 512
   },
+  "ui-story-dragon": {
+   "w": 491,
+   "h": 512
+  },
+  "ui-story-fairy": {
+   "w": 512,
+   "h": 440
+  },
+  "ui-story-robot": {
+   "w": 444,
+   "h": 512
+  },
   "ui-surprise-open": {
    "w": 459,
    "h": 512
@@ -2006,6 +2038,10 @@
   },
   "ui-teacher": {
    "w": 431,
+   "h": 512
+  },
+  "ui-treble-clef": {
+   "w": 235,
    "h": 512
   },
   "ui-typing-speed": {
@@ -2127,38 +2163,6 @@
   "ui-start-meadow-night-low": {
    "w": 692,
    "h": 294
-  },
-  "obj-egg-crack": {
-   "w": 400,
-   "h": 512
-  },
-  "ui-medals": {
-   "w": 352,
-   "h": 512
-  },
-  "ui-treble-clef": {
-   "w": 235,
-   "h": 512
-  },
-  "obj-aim-antler": {
-   "w": 512,
-   "h": 493
-  },
-  "obj-aim-beethoven": {
-   "w": 324,
-   "h": 512
-  },
-  "ui-story-robot": {
-   "w": 444,
-   "h": 512
-  },
-  "ui-story-fairy": {
-   "w": 512,
-   "h": 440
-  },
-  "ui-story-dragon": {
-   "w": 491,
-   "h": 512
   }
  },
  "accessories": [

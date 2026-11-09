@@ -373,6 +373,16 @@ function swing(el: HTMLElement, open: boolean): void {
 }
 
 /** The world's badge at the island's top right: a click shows it big in the middle of the screen. */
+/** A closed world's lock: a round button turned at random that straightens when pointed at or focused; it tells why and opens the world's keys. */
+function worldLockButton(p: Profile, world: number, why: string): HTMLElement {
+  const src = imageUrl('ui-lock');
+  const turn = (Math.random() < 0.5 ? -1 : 1) * Math.round(20 + Math.random() * 25);
+  return h('button', { class: 'world-lock-btn', type: 'button', 'aria-label': `${worldName(world)}: ${why}`, tip: why || null, style: `--turn:${turn}deg`, onClick: (e: MouseEvent) => {
+    e.stopPropagation();
+    openWorldKeys(p, world);
+  } }, src ? h('img', { src, alt: '' }) : icon('lock'));
+}
+
 function worldBadge(world: number, tier: BadgeTier): HTMLElement {
   const b = badge(world, tier, true);
   // The button carries the badge's name and tooltip.
@@ -470,14 +480,8 @@ function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, held:
     const tier = badgeTier(p, wi);
     const lock = open ? '' : [worldLockText(p, wi), worldLock(p, wi)?.kind === 'keys' ? held : ''].filter(Boolean).join(' ');
     return h('div', { class: `island ${open ? '' : 'locked'} island-${w}` },
-      h('div', { class: 'island-art', ...(open ? {} : {
-        onClick: () => openWorldKeys(p, wi),
-        onKeydown: (e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') openWorldKeys(p, wi); },
-        role: 'button',
-        tabindex: '0',
-        'aria-label': worldName(wi),
-        tip: lock || null,
-      }) }, img ? h('img', { src: img, alt: '' }) : h('div', { class: 'island-fallback' }), open ? worldKeysButton(p, wi) : h('span', { class: 'lock', tip: lock || null }, icon('lock')),
+      h('div', { class: 'island-art', ...(open ? {} : { onClick: () => openWorldKeys(p, wi) }) },
+        img ? h('img', { src: img, alt: '' }) : h('div', { class: 'island-fallback' }), open ? worldKeysButton(p, wi) : worldLockButton(p, wi, lock),
         tier ? worldBadge(wi, tier) : null, surprisesMark(p, wi), open && wi === story.worlds[story.worlds.length - 1] ? journeyBadge(p, story) : null),
       h('h3', {}, `${wi + 1}. ${worldName(wi)}`),
       h('div', { class: 'level-row' }, ...levels, aimNode(p, aimOpen(p, wi), wi), parrotNode(p, aimOpen(p, wi), wi), rhythmNode(p, rhythmOpen(p, wi), wi)));

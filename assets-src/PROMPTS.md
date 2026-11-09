@@ -817,18 +817,22 @@ Cute, soft 2D children's game illustration, flat vector style with gentle gradie
 One round badge picture per world, shown in a medal on the map, the results and the
 progress view. The ring (bronze, silver, gold) is drawn by the game, so the picture has
 no ring or frame. Replace BADGE with the text from the table.
+Since 2026-11-09 the prompt also attaches `badge-space.jpg` ("in exactly the same drawing style as the attached rocket
+badge") and asks for the rocket's ornaments: "decorated like the rocket: small golden laurel sprigs and curly golden swirl
+ornaments painted on [the object], a few soft cream wisps curling around its foot like the rocket's smoke", and "There is no
+glow, haze, halo, shadow or light around [the object]": a glow or a shadow on the magenta does not key out cleanly.
 ```
 Beautiful, richly detailed 2D game achievement icon for teenagers aged 10 to 15, polished vector illustration with layered gradients, soft glossy highlights, rim light, subtle texture and fine decorative details, rounded friendly shapes, soft dark-brown outlines (not black), harmonious saturated pastel palette with a few brighter accents. A single badge picture: BADGE. Make it look like a precious collectible emblem: a main object with several small supporting details (for example tiny sparkles, small leaves or stars, an inner glow, small ornaments) that belong to the same theme, never cluttered. Sparkles and small ornaments are only gold, white or pale yellow, never pink, purple or magenta, and there is no glow, haze or halo around the object: the flat background color reaches the object's outline directly. The object stands alone with a compact, roughly round overall shape; do not draw any circle, disc, medal, coin or plate behind it. Front view, centered, the whole composition visible, wide empty margin around it. No ring, no frame, no ribbon, no text, no letters, no watermark. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no other objects. Square image.
 ```
 
 | File | BADGE | Status |
 |---|---|---|
-| `badge-meadow.jpg` | a sealed envelope with a small star seal, a secret invitation | new |
+| `badge-meadow.jpg` | (2026-11-09) a lucky four-leaf clover with a short curved stem, golden laurel sprigs and swirls painted on the leaves, a golden dot in the middle | done 2026-11-09 |
 | `badge-space.jpg` | a cute round red rocket flying up with a small flame | new |
-| `badge-planet.jpg` | (the owner's wish, 2026-11-08: a fly agaric, not the hand) a fly agaric mushroom, a red cap with white spots on a white stem, with a small tuft of grass and two tiny leaves at its foot; add "no face" | done 2026-11-08 |
-| `badge-dragons.jpg` | a big spotted dragon egg in pastel green and cream | new |
-| `badge-egg.jpg` | a happy baby dragon peeking out of a cracked egg shell | new |
-| `badge-junkyard.jpg` | a small friendly round robot waving one arm, a bit rusty | new |
+| `badge-planet.jpg` | (2026-11-09, more ornate) a fly agaric mushroom, a red cap with white spots on a white stem with a frilly ring, a golden band with laurel sprigs and swirls along the cap's rim and on the stem, a small tuft of grass with two tiny leaves; add "no face" | done 2026-11-09 |
+| `badge-dragons.jpg` | (2026-11-09, the first one had a glow that did not key out) a big dragon egg in cream with pastel green spots, a teal band around its middle, golden laurel sprigs and swirls painted on the shell | done 2026-11-09 |
+| `badge-egg.jpg` | (2026-11-09, without the glow) a happy mint green baby dragon peeking out of a cracked egg shell, wings open, golden wavy lines, dots and swirls on the shell | done 2026-11-09 |
+| `badge-junkyard.jpg` | (2026-11-09, instead of a sad robot) one old car tyre standing upright, slate grey rubber, a teal and silver rim, golden laurel sprigs and swirls on its side, a small golden bolt at its foot; no shadow under it (a follow-up removed one) | done 2026-11-09 |
 | `badge-workshop.jpg` | a silver gear standing on one springy coil leg | new |
 | `badge-raintown.jpg` | an open red umbrella with a few raindrops | new |
 | `badge-robocity.jpg` | a blue key card with a small chip and a key symbol | new |
@@ -1082,9 +1086,9 @@ the jetpack). The lines in `SINGLES` of `scripts/assets.mjs` are done with the p
 |---|---|
 | `badge-garden.jpg` | an open pastel pink flower with a yellow middle |
 | `badge-forestpath.jpg` | a soft long feather in blue and white |
-| `badge-lilylake.jpg` | a pink water lily on a round green pad |
-| `badge-musictree.jpg` | a golden music note with a small glow |
-| `badge-moonball.jpg` | a smiling crescent moon with a tiny firefly |
+| `badge-lilylake.jpg` | (2026-11-09, badge prompt of section 4) a small sky-blue garden watering can facing right, a teal band, golden laurel sprigs and swirls on its side, three water drops | done 2026-11-09 |
+| `badge-musictree.jpg` | (2026-11-09, badge prompt of section 4, the old one did not key out) one big rounded oak-like tree leaf, golden laurel sprigs and swirls along its middle vein, a thin golden edge line | done 2026-11-09 |
+| `badge-moonball.jpg` | (2026-11-09, badge prompt of section 4, only the moon: the firefly's glow did not key out) a pale golden crescent moon with soft craters, golden laurel sprigs and swirls along its curve; "no firefly, no insect, no face" | done 2026-11-09 |
 
 ### Music (section 6 prompt)
 | File | MOOD |

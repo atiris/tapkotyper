@@ -261,11 +261,11 @@
    "h": 160
   },
   "badge-dragons": {
-   "w": 512,
-   "h": 481
+   "w": 511,
+   "h": 512
   },
   "badge-egg": {
-   "w": 485,
+   "w": 494,
    "h": 512
   },
   "badge-forestpath": {
@@ -277,28 +277,28 @@
    "h": 491
   },
   "badge-junkyard": {
-   "w": 473,
-   "h": 512
+   "w": 512,
+   "h": 490
   },
   "badge-lilylake": {
    "w": 512,
-   "h": 438
-  },
-  "badge-meadow": {
-   "w": 512,
    "h": 432
   },
+  "badge-meadow": {
+   "w": 490,
+   "h": 512
+  },
   "badge-moonball": {
-   "w": 512,
-   "h": 490
+   "w": 503,
+   "h": 512
   },
   "badge-musictree": {
    "w": 512,
-   "h": 490
+   "h": 507
   },
   "badge-planet": {
-   "w": 512,
-   "h": 510
+   "w": 448,
+   "h": 512
   },
   "badge-raintown": {
    "w": 493,
@@ -2149,7 +2149,7 @@
    "h": 512
   },
   "ui-story-robot": {
-   "w": 457,
+   "w": 444,
    "h": 512
   },
   "ui-story-fairy": {
@@ -2157,7 +2157,7 @@
    "h": 440
   },
   "ui-story-dragon": {
-   "w": 500,
+   "w": 491,
    "h": 512
   }
  },

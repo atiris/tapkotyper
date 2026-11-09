@@ -156,7 +156,7 @@ function typingTime(seconds: number): { short: string; full: string } {
   return { short: t('progress.timeHours', hm), full: t('progress.timeHoursFull', hm) };
 }
 
-/** The long-term picture in one row (mastered keys, finished stories and worlds, the chest's points, the parrots at home against their best count, the best stars of all levels), the last 14 days in the next (accuracy, rhythm, speed, letters, days with practice, typing time), the totals ever in the third (growth medals, parrot rounds won, stars earned, the target range's record and its day). */
+/** The long-term picture in one row (mastered keys, finished stories and worlds, the chest's points, the parrots at home against their best count, the best stars of all levels), the last 14 days in the next (accuracy, rhythm, speed, letters, days with practice, typing time), the totals ever in the third (growth medals, parrot rounds won, stars earned, the target range's record and its day, and when the child last typed). */
 export function summaryRow(p: Profile): HTMLElement {
   const m = masterySummary(p);
   const stories = STORIES.filter((x) => storyDone(p, x)).length;
@@ -186,7 +186,8 @@ export function summaryRow(p: Profile): HTMLElement {
     chip(imageUrl('ui-parrots-earned'), 'P', String(p.progress.parrotsEarned), t('progress.parrotsEarned', { n: p.progress.parrotsEarned })),
     chip(imageUrl('ui-stars-earned'), '★', String(p.progress.starsEarned), t('progress.starsEarned', { n: p.progress.starsEarned })),
     rangeRecordAt ? chip(imageUrl('obj-aim-target'), '◎', String(p.progress.rangeRecord),
-      t('progress.rangeRecord', { n: p.progress.rangeRecord, date: new Date(rangeRecordAt).toLocaleDateString(locale()) })) : null));
+      t('progress.rangeRecord', { n: p.progress.rangeRecord, date: new Date(rangeRecordAt).toLocaleDateString(locale()) })) : null,
+    lastTrainingChip(p)));
 }
 
 /** Who a story is about, for its row: a close-up head that still reads at a small size. */
@@ -259,16 +260,13 @@ function progressSection(p: Profile): HTMLElement {
     rhythmShelf(p, notes));
 }
 
-/** When the child last typed, under the character: the keyboard picture and "včera"; the picture's tooltip says the day too. */
-function lastTrainingLine(p: Profile): HTMLElement {
+/** When the child last typed, a chip of the totals: the keyboard picture and "včera"; its tooltip says the day too. */
+function lastTrainingChip(p: Profile): HTMLElement {
   const { date, daysAgo } = lastTraining(p);
   const ago = daysAgo === null ? null : agoOf(daysAgo);
   const when = ago ? t(`progress.${ago.key}`, 'n' in ago ? { n: ago.n } : {}) : t('progress.agoNever');
   const tipText = date ? t('progress.lastTip', { when, date: new Date(`${date}T12:00`).toLocaleDateString(locale()) }) : t('progress.lastNever');
-  const pic = imageUrl('ui-world-keys');
-  return h('p', { class: 'progress-last' },
-    pic ? h('img', { src: pic, alt: tipText, tip: tipText }) : h('span', { tip: tipText, 'aria-label': tipText }, icon('keyboard')),
-    h('span', {}, when));
+  return chip(imageUrl('ui-world-keys'), '⌨', when, tipText);
 }
 
 type StatsTab = 'progress' | 'keys';
@@ -316,7 +314,7 @@ function playfulTapko(p: Profile): HTMLElement {
 /** Progress: the summary rows and badges, the code of all statistics and the certificate; `title` off where the page already says it. */
 export function progressTab(p: Profile, title = true): HTMLElement {
   return h('div', {},
-    h('div', { class: 'stats-head' }, h('div', { class: 'stats-hero' }, playfulTapko(p), lastTrainingLine(p), hasParrotBadge(p) ? aroPerch(true, (aro) => aro.hop())?.el ?? null : null),
+    h('div', { class: 'stats-head' }, h('div', { class: 'stats-hero' }, playfulTapko(p), hasParrotBadge(p) ? aroPerch(true, (aro) => aro.hop())?.el ?? null : null),
       h('div', {}, title ? h('h2', {}, t('progress.title')) : null, progressSection(p))),
     h('div', { class: 'row stats-code' }, button(t('progress.showCode'), () => void showOverallCode(p), 'btn', 'code'),
       button(t('cert.button'), () => openCertificate(p), 'btn', 'print')));

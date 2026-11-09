@@ -1170,7 +1170,7 @@
     "rhythmNotes": "Rhythm notes: {n}. One at random flies away for every three days without Rhythm.",
     "rhythmNone": "A great rhythm in the Rhythm game earns you a rhythm note.",
     "rhythmNoteTip": "A note from {world}.",
-    "clef": "Treble clef: you have a note from every open world.",
+    "clef": "Treble clef! You earned a note from every world you visited. Your character sings now and then on the World map.",
     "rhythmTempo": "Your tempo in Rhythm: {n} letters a minute.",
     "parrots": "Parrots at home: {n}, most at once: {best}",
     "parrotCount": "{n} max {best}",

@@ -35,7 +35,11 @@
   since the start, so a replay never takes anything away: the growth medals (a medal, also at 0; the tooltip
   says what a medal is given for), every parrot round won (two parrot heads)
   and every star earned, replays included (a stack of stars), and once there is one the target
-  range's record: the most points of one run, its day in the tooltip (the target). Under the heading "Príbehy" one row per story (all stories, closed ones grey) with its picture and
+  range's record: the most points of one run, its day in the tooltip (the target); last, when the child
+  last typed, after the world keyboard picture (`ui-world-keys`), in a child's words only ("dnes",
+  "včera", "pred 3 dňami", "minulý týždeň", "pred 2 týždňami", "minulý mesiac", "pred 3 mesiacmi",
+  "pred viac ako rokom"), the tooltip adding the day ("Posledný tréning písania bol včera, dňa 7. 11.
+  2026."). Under the heading "Príbehy" one row per story (all stories, closed ones grey) with its picture (a close-up head of the story's figure) and
   name, its worlds' pictures (done in colour, the rest grey) and the stars earned in it, the
   shelf of world badges ("Odznaky svetov": gold, silver and bronze sections with the stars each needs, [story](../game/story.md)) with the row of target
   range awards under it ("Ocenenia zo strelníc": every world's rare thing, found ones in
@@ -93,13 +97,9 @@
   **Klávesy** (the key map and the key details).
 - Tasks from a teacher, their results and their QR codes are on the player's **Úlohy** page
   ([teacher links](teacher-links.md)), not here: one place for everything about tasks.
-- The Parrot badge, when held, sits just under the child's character and its last-training line on the Postup tab.
+- The Parrot badge, when held, sits just under the child's character on the Postup tab.
 - The child's character on the Postup tab is big (beside the summary, above it on a phone), in
-  its outfit, with a line right under it, after the world keyboard picture (`ui-world-keys`): when the
-  child last typed, in a child's words only ("dnes", "včera", "pred 3 dňami", "minulý týždeň", "pred 2
-  týždňami", "minulý mesiac", "pred 3 mesiacmi", "pred viac ako rokom"); the picture's tooltip adds the
-  day ("Posledný tréning písania bol včera, dňa 7. 11. 2026."); the week's minutes are in the second
-  summary row, not here (above Aro when he sits there); and lively: every 5 to 20 seconds its big smile turns into the usual one and back.
+  its outfit, and lively: every 5 to 20 seconds its big smile turns into the usual one and back.
   Clicked or pressed with Enter or Space it pulls another face at once (wondering too, never the
   same twice in a row), half the time with a hop; the smiles then go on. With reduced motion it
   only changes its face.

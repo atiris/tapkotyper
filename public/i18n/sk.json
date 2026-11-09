@@ -1310,7 +1310,9 @@
     "white-gloves": "Biele rukavice",
     "black-gloves": "Čierne rukavice",
     "eye-mask": "Škraboška",
-    "carnival-mask": "Karnevalová maska"
+    "carnival-mask": "Karnevalová maska",
+    "beard": "Brada",
+    "big-beard": "Veľká brada"
   },
   "break": {
     "title": "Rozcvička {n}/{total}",

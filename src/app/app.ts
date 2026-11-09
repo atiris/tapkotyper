@@ -4,6 +4,7 @@ import { useGraphics } from '../engine/graphics';
 import { flyAway } from '../game/parrots';
 import { fadeNotesToday } from '../game/rhythm-notes';
 import { magpieVisit } from '../game/magpie';
+import { expireSecrets } from '../game/rewards';
 import { resetFontFamily } from '../gfx/draw';
 import { askedLanguage, hasTexts, setLanguage, tList } from '../i18n/i18n';
 import { toggleTheme, useTheme } from './theme';
@@ -203,10 +204,12 @@ export async function selectProfile(p: Profile): Promise<void> {
   useTheme(p.settings.theme);
   audio.setLevel(p.settings.sound);
   // Parrots and rhythm notes fly away out of sight, and the magpie takes a range thing, when the player becomes active; the map tells it.
+  // A secret beard found a month ago leaves quietly.
   const today = localDate();
   flyAway(p, today);
   fadeNotesToday(p, today);
   magpieVisit(p, today);
+  expireSecrets(p);
   saveProfile();
 }
 

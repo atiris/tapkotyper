@@ -1,9 +1,10 @@
 import { app, go, reduceMotion, saveProfile } from '../app/app';
+import { audio } from '../audio/audio';
 import { accessories, imageUrl } from '../gfx/assets';
 import { type Mood, SLOTS, otherMood, randomOutfit, tapkoElement, renderTapkoInto } from '../gfx/tapko';
 import { t } from '../i18n/i18n';
 import { levelById } from '../game/levels';
-import { RANDOM_KIND_STARS, friendStars, grantCompanions, hasAccessory, hasCompanion, masteredKeys, randomKindOpen, randomSlotKeys, randomSlotOpen, totalStars, unlockRules } from '../game/rewards';
+import { RANDOM_KIND_STARS, accessoryShown, friendStars, grantSecret, nextSecret, grantCompanions, hasAccessory, hasCompanion, masteredKeys, randomKindOpen, randomSlotKeys, randomSlotOpen, totalStars, unlockRules } from '../game/rewards';
 import { practiceToOpen, spendWardrobe, wardrobeLimited, wardrobeLocked } from '../game/wardrobe-time';
 import { COMPANION_KINDS } from '../storage/schema';
 import { NICK_MAX } from '../storage/store';
@@ -28,8 +29,28 @@ export function wardrobeScreen(root: HTMLElement): () => void {
   let locked = wardrobeLocked(p);
   let mood: Mood = 'happy';
   const preview = tapkoElement(p.companion, mood, 280);
+  // Clicks in this visit since the last secret accessory was found.
+  let clicks = 0;
+  /** Enough clicks find the next secret beard: it replaces the one owned and, unless the wardrobe is locked, is worn at once. */
+  const findSecret = (): boolean => {
+    const next = nextSecret(p);
+    if (!next || !accessories().some((a) => a.id === next[0]) || ++clicks < next[1]) return false;
+    clicks = 0;
+    const [id] = next;
+    grantSecret(p, id);
+    if (!locked) {
+      const slot = accessories().find((a) => a.id === id)!.slot;
+      p.companion.accessories = [...p.companion.accessories.filter((x) => accessories().find((a) => a.id === x)?.slot !== slot), id];
+    }
+    saveProfile();
+    audio.sfx('reward');
+    mood = 'happy';
+    render();
+    return true;
+  };
   // A click makes the character jump or pull a face, also while locked; the face is never stored.
   const tickle = h('button', { class: 'wardrobe-tapko', type: 'button', 'aria-label': t('wardrobe.tickle'), onClick: () => {
+    if (findSecret()) return;
     if (!reduceMotion() && Math.random() < 0.5) {
       preview.classList.remove('jump');
       void preview.offsetWidth;
@@ -122,7 +143,7 @@ export function wardrobeScreen(root: HTMLElement): () => void {
         () => { p.companion.randomSlots = on ? p.companion.randomSlots.filter((x) => x !== slot) : [...p.companion.randomSlots, slot]; });
     };
     grid.replaceChildren(...SLOTS.flatMap((slot) => {
-      const items = accessories().filter((a) => a.slot === slot);
+      const items = accessories().filter((a) => a.slot === slot && accessoryShown(p, a.id));
       if (!items.length) return [];
       return [h('section', { class: 'slot' },
         h('h3', {}, t(`slots.${slot}`)),
@@ -148,7 +169,10 @@ export function wardrobeScreen(root: HTMLElement): () => void {
           }, src ? h('img', { src, alt: '' }) : null, owned ? null : h('span', { class: 'lock', tip: howTo(a.id) }, icon('lock')));
         })))];
     }));
+    const shown = accessories().filter((a) => accessoryShown(p, a.id));
+    count.textContent = t('wardrobe.count', { n: shown.filter((a) => hasAccessory(p, a.id)).length, total: shown.length });
   };
+  const count = h('p', {});
   render();
   // The countdown runs only while the wardrobe is shown and the page is visible; at 0 it locks in place
   // and the clock turns into a lock that says how to open the wardrobe again.
@@ -171,7 +195,6 @@ export function wardrobeScreen(root: HTMLElement): () => void {
     render();
   };
   const interval = timer && !locked ? setInterval(tick, 1000) : undefined;
-  const owned = accessories().filter((a) => hasAccessory(p, a.id)).length;
   const star = imageUrl('ui-star'), earned = imageUrl('ui-stars-earned');
   root.append(h('div', { class: 'screen wardrobe-screen' },
     h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'), h('h1', {}, t('wardrobe.title'))),
@@ -181,7 +204,7 @@ export function wardrobeScreen(root: HTMLElement): () => void {
         h('div', { class: 'star-counts' },
           h('span', { class: 'star-count', role: 'img', 'aria-label': t('wardrobe.stars', { n: stars }), tip: t('wardrobe.starsTip') }, star ? h('img', { src: star, alt: '' }) : '★', String(stars)),
           h('span', { class: 'star-count', role: 'img', 'aria-label': t('progress.starsEarned', { n: p.progress.starsEarned }), tip: t('wardrobe.starsEarnedTip') }, earned ? h('img', { src: earned, alt: '' }) : '★', String(p.progress.starsEarned))),
-        h('p', {}, t('wardrobe.count', { n: owned, total: accessories().length })),
+        count,
         h('div', { class: 'row' }, clear, random)),
       h('div', { class: 'wardrobe-main' },
         h('section', { class: 'buddy' },

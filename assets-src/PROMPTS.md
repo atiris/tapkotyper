@@ -234,6 +234,9 @@ Notes from real Gemini runs; add new ones here.
   worst (the owner); the storybook vector style suits it. "A town beside a cloud" put the town on the
   cloud; say "standing on green grass, the cloud floating behind it". A "wooden table" around the paper
   needs a magenta background from the start.
+- A cut-out of a beard (2026-11-09) once came with a second, pixelated copy of it around the first; asking
+  again with "keep ONE beard, do not add a second beard or any other shape, smooth, not pixelated" was
+  clean. A beard on the template gets its own drawn mouth in the moustache; ask for "only hair, no mouth".
 
 ---
 
@@ -434,6 +437,8 @@ the lens highlight: the eye holes are only flat green):
 | `acc-black-gloves.jpg` | hand: `acc-white-gloves.jpg` attached and recolored black (#2A2A2E) with dark grey highlights | done 2026-10-23 |
 | `acc-eye-mask.jpg` | eyes: a simple black eye mask like a masked hero wears, a smooth band with two almond-shaped eye holes and slightly pointed outer ends | done 2026-10-23 |
 | `acc-carnival-mask.jpg` | eyes: a festive carnival masquerade mask, deep purple (#5B2A86) with golden swirls along the edges, small gems at the outer corners and three short gold and teal feathers from its upper left corner | done 2026-10-23 |
+| `acc-beard.jpg` | neck (secret, drawn over everything): a small, short, fluffy chin beard, only on the chin and the lower cheeks below the mouth, ending just under the chin, dark charcoal almost black (#3A3836, strands #55524F, highlight #6A6763) | done 2026-11-09: made light grey, then redrawn dark from the dressed picture attached; cut out in a new chat with the dressed picture attached; moved 40 px down locally, so a laughing mouth shows above it |
+| `acc-big-beard.jpg` | neck (secret, drawn over everything): a full fluffy grey beard (#A9A6A2, strands #85827E, highlight #C8C5C0) from the lower cheeks and the chin, over the top of the chest, ending in a soft point at the upper chest; big and bushy but not very long | done 2026-11-09: the cut-out came with the moustache's mouth curve, removed in a new chat ("only hair, no mouth") |
 
 Fixed in code, no new picture needed: green spots in `heart-glasses` lenses (done 2026-10-21). Pink sneakers: their back side showed; fixed by hand in GIMP in `outfit-f.jpg` (done 2026-10-21).
 

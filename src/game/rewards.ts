@@ -31,6 +31,47 @@ const BY_WORLD: Record<number, string> = {
 const BY_PERFECT: Record<string, number> = { 'w13-2': 1, 'w14-2': 2, 'w15-2': 3 };
 /** Positions by the stars earned in all (`starsEarned`, replays add), as shares of all story levels' stars. */
 const BY_STARS: [number, string][] = [[0.5, 'heart-glasses'], [0.9, 'star-shirt'], [1.2, 'pink-sneakers'], [1.5, 'sunglasses']];
+/**
+ * Secret beards: hidden in the wardrobe until found by clicking the character there, each one after
+ * the one before, with this many clicks in one visit counted from the previous find. The child has
+ * at most one of them: a find takes the other one away.
+ */
+export const SECRET_ACCESSORIES: [string, number][] = [['beard', 15], ['big-beard', 30]];
+/** Days a found beard stays the child's. */
+const SECRET_DAYS = 30;
+const isSecret = (id: string) => SECRET_ACCESSORIES.some(([a]) => a === id);
+
+/** Whether the wardrobe shows this accessory: every one but a secret not owned. */
+export function accessoryShown(p: Profile, id: string): boolean {
+  return hasAccessory(p, id) || !isSecret(id);
+}
+
+/** The secret the clicks look for now and the clicks it takes: the one after the owned one, none after the last. */
+export function nextSecret(p: Profile): [string, number] | null {
+  const owned = SECRET_ACCESSORIES.findIndex(([id]) => hasAccessory(p, id));
+  return SECRET_ACCESSORIES[owned + 1] ?? null;
+}
+
+/** Takes every secret away from the child and off the character. */
+function dropSecrets(p: Profile): void {
+  p.progress.rewards = p.progress.rewards.filter((r) => !(r.startsWith('acc:') && isSecret(r.slice(4))));
+  p.companion.accessories = p.companion.accessories.filter((id) => !isSecret(id));
+}
+
+/** The child finds a secret: it replaces the one owned and stays for `SECRET_DAYS` from now. */
+export function grantSecret(p: Profile, id: string, now = Date.now()): void {
+  dropSecrets(p);
+  p.progress.rewards.push(`acc:${id}`);
+  p.progress.beardAt = now;
+}
+
+/** A secret found more than `SECRET_DAYS` ago leaves the wardrobe and the character; true when it did. */
+export function expireSecrets(p: Profile, now = Date.now()): boolean {
+  if (p.progress.beardAt === null || now - p.progress.beardAt < SECRET_DAYS * 86_400_000) return false;
+  dropSecrets(p);
+  p.progress.beardAt = null;
+  return true;
+}
 /** Accessories a story scene names; they stay on their position for every player. */
 export const STORY_ACCESSORIES = ['flower-wreath', 'umbrella', 'raincoat', 'feather', 'harp', 'fairy-wings'];
 

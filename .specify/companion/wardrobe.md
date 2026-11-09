@@ -24,6 +24,15 @@
 - **Playful character**: clicking the big character (or Enter or Space on it) makes it jump
   or pull another face, at random; also while locked. With reduced motion it only changes
   its face. The face is never stored.
+- **Secret beards**: two items are not in the wardrobe at all until found. The 15th click on the
+  big character in one visit gives a small white beard, and the 30th click after that a big grey
+  beard in its place (counted anew in each visit, from the last find); the child has at most one
+  of them. The character puts it on at once with a happy face and a reward sound (locked, it only
+  gets it). A beard lies over every other item (a vest, a cape's clasp). Found, it is an ordinary
+  item of the neck area (worn or taken off by hand, in random
+  outfits and random picks) and the count of items grows by it. A month after the find it leaves
+  quietly, from the wardrobe and from the character, and can be found again. Not mentioned
+  anywhere: finding them is the fun.
 - **Locks explain themselves**: hovering or focusing a locked character or item shows in
   the tooltip what is still missing (stars for a character, the unlock rule for an item).
 - **Random outfit**: a button next to "Remove accessories" dresses the character at random:
@@ -46,7 +55,9 @@
   and makes the wardrobe a goal. A parent who does not want this can turn it off.
 - A visible countdown with a smile and then numbers a young child can read avoids a sudden
   lock; the blinking warns before the end.
-- Clicking the character and a random outfit are quick fun inside the earned time.
+- Clicking the character and a random outfit are quick fun inside the earned time; the secret
+  beards reward a child who keeps clicking out of curiosity; leaving after a month keeps them a
+  surprise to find again rather than a permanent item.
 - Random on a mission keeps an earned wardrobe fresh without a visit each time; it is earned by
   stars and by mastered keys, so it rewards the long run, and the child's own look stays
   theirs to come back to.

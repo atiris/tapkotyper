@@ -99,6 +99,9 @@ const SINGLES = {
   'black-gloves': { slot: 'hand' },
   'eye-mask': { slot: 'eyes' },
   'carnival-mask': { slot: 'eyes' },
+  // Secret: found by clicking the character in the wardrobe; `top`: drawn over every other item.
+  beard: { slot: 'neck', top: true },
+  'big-beard': { slot: 'neck', top: true },
 };
 
 const run = promisify(execFile);
@@ -310,19 +313,19 @@ async function processAccessory(id, data, w, h, manifest) {
     keyOut(data, w, h);
     return writeThumb(id.slice(0, -5), data, w, h, manifest);
   }
-  const single = SINGLES[id] && { rid: id, slot: SINGLES[id].slot, set: 'single', tint: SINGLES[id].tint };
+  const single = SINGLES[id] && { rid: id, slot: SINGLES[id].slot, set: 'single', tint: SINGLES[id].tint, top: SINGLES[id].top };
   const entry = single ?? Object.entries(OUTFITS).flatMap(([set, rules]) => rules.map(([rid, slot]) => ({ rid, slot, set }))).find((r) => r.rid === id);
   if (!entry) { console.warn(`acc-${id}: not in an outfit table nor in SINGLES, skipped`); return; }
   // Only glasses have lenses; elsewhere the lens rules would eat thin key-mixed lines (a chain).
   keyOut(data, w, h, { glass: entry.slot === 'eyes', tint: entry.tint ?? null });
   singleAccessories.add(id);
-  await writeAccessory(id, entry.slot, entry.set, data, w, h, manifest);
+  await writeAccessory(id, entry.slot, entry.set, data, w, h, manifest, entry.top);
 }
 
-async function writeAccessory(id, slot, set, data, w, h, manifest) {
+async function writeAccessory(id, slot, set, data, w, h, manifest, top = false) {
   await writeSquare(`acc-${id}`, data, w, h, manifest);
   if (!fullThumbs.has(id)) await writeThumb(id, data, w, h, manifest);
-  manifest.accessories.push({ id, slot, set });
+  manifest.accessories.push({ id, slot, set, ...(top ? { top } : {}) });
 }
 
 /** Trimmed thumbnail for the wardrobe. */
@@ -399,7 +402,10 @@ async function main() {
   if (only) {
     // A new picture of the prefix joins the kept manifest.
     Object.assign(kept.images, manifest.images);
-    for (const k of ['accessories', 'music']) kept[k] = [...new Set([...kept[k], ...manifest[k]])];
+    // A redone accessory replaces its old entry.
+    const redone = new Set(manifest.accessories.map((x) => x.id));
+    kept.accessories = [...kept.accessories.filter((x) => !redone.has(x.id)), ...manifest.accessories];
+    kept.music = [...new Set([...kept.music, ...manifest.music])];
   }
   await writeStartCopies(kept);
   await writeFile(join(OUT, 'manifest.json'), JSON.stringify(kept, null, 1) + '\n');

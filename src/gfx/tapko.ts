@@ -49,7 +49,8 @@ export function tapkoStack(c: Look, mood: Mood): { name: string; slot: Slot | 'c
     const slot = slotOf(id);
     if (slot) bySlot.set(slot, `acc-${id}`);
   }
-  return SLOT_ORDER.flatMap((slot): { name: string; slot: Slot | 'companion' }[] => {
+  const top = new Set(accessories().filter((a) => a.top).map((a) => `acc-${a.id}`));
+  const stack = SLOT_ORDER.flatMap((slot): { name: string; slot: Slot | 'companion' }[] => {
     // A kind without the optional surprised art looks thoughtful instead.
     if (slot === 'companion') return [{ name: `tapko-${c.kind}-${mood === 'surprised' && !hasImage(`tapko-${c.kind}-surprised`) ? 'thinking' : mood}`, slot }];
     const name = bySlot.get(slot);
@@ -59,6 +60,8 @@ export function tapkoStack(c: Look, mood: Mood): { name: string; slot: Slot | 'c
     if (slot === 'body' && back && hasImage(`${back}-front`)) layers.push({ name: `${back}-front`, slot: 'back' });
     return layers;
   });
+  // An item marked `top` (a beard) lies over everything else.
+  return [...stack.filter((l) => !top.has(l.name)), ...stack.filter((l) => top.has(l.name))];
 }
 
 /** Every picture of the companion in a level: each mood and everything it wears. */

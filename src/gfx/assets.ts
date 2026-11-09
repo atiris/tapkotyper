@@ -4,6 +4,8 @@ export interface AccessoryInfo {
   id: string;
   slot: Slot;
   set: string;
+  /** Drawn over every other item (a beard over a scarf or a vest). */
+  top?: boolean;
 }
 
 export type Slot = 'head' | 'eyes' | 'neck' | 'body' | 'back' | 'hand' | 'feet';

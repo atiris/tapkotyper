@@ -1310,7 +1310,9 @@
     "white-gloves": "White gloves",
     "black-gloves": "Black gloves",
     "eye-mask": "Eye mask",
-    "carnival-mask": "Carnival mask"
+    "carnival-mask": "Carnival mask",
+    "beard": "Beard",
+    "big-beard": "Big beard"
   },
   "break": {
     "title": "Warm-up {n}/{total}",

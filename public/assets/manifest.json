@@ -2167,6 +2167,22 @@
   "ui-treasure-map": {
    "w": 1094,
    "h": 812
+  },
+  "acc-beard": {
+   "w": 640,
+   "h": 640
+  },
+  "acc-beard-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-big-beard": {
+   "w": 640,
+   "h": 640
+  },
+  "acc-big-beard-thumb": {
+   "w": 160,
+   "h": 160
   }
  },
  "accessories": [
@@ -2404,6 +2420,18 @@
    "id": "green-boots",
    "slot": "feet",
    "set": "g"
+  },
+  {
+   "id": "big-beard",
+   "slot": "neck",
+   "set": "single",
+   "top": true
+  },
+  {
+   "id": "beard",
+   "slot": "neck",
+   "set": "single",
+   "top": true
   }
  ],
  "music": [

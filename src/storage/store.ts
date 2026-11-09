@@ -137,6 +137,7 @@ export function newProfile(name: string, language: LangRef, layout?: LayoutId, k
       levelsFinished: 0,
       starsEarned: 0,
       wardrobeSeconds: 0,
+      beardAt: null,
       missionWorld: -1,
       rangeFinds: [],
       magpieDue: '',

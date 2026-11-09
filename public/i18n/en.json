@@ -1351,7 +1351,6 @@
     "childName": "Student's name (optional)",
     "switchTitle": "Switch to another student",
     "pickChild": "Pick a student",
-    "noChild": "With no student picked, only the settings of the whole device are here. Pick a student with the button at the top.",
     "companionKind": "Character",
     "messages": "Your own encouraging messages",
     "messagesHint": "One per line. The game mixes them in sometimes.",

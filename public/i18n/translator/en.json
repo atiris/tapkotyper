@@ -1238,7 +1238,6 @@
     "parent.nickMissing": "Settings, Settings tab: the error under the nickname when the field is empty.",
     "parent.switchTitle": "Settings: the heading of the window and the tooltip of the button for switching to another student.",
     "parent.pickChild": "Settings without a player: the top button that opens the student picker.",
-    "parent.noChild": "Settings without a player: says only the whole device's settings are here.",
     "parent.companionKind": "Settings, Settings tab: the label of the character picker (also its accessible name).",
     "parent.messages": "Settings, Own content tab: the label of the field for own encouraging messages.",
     "parent.messagesHint": "Settings, Own content tab: the note under the encouraging messages field.",

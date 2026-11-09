@@ -142,8 +142,8 @@ test('the gear on the start page opens the settings without a profile; a student
   await page.locator('.start-screen .top-right').getByRole('button', { name: 'Settings for parents' }).click();
   await page.locator('.confirm .btn:not(.primary)').last().click();
   await expect(page).toHaveURL(/#\/settings$/);
-  await expect(page.locator('.parent-screen .tabs .tab')).toHaveCount(2);
-  await expect(page.locator('.lock-group')).toBeVisible();
+  await expect(page.locator('.parent-screen .tabs .tab')).toHaveCount(1);
+  await expect(page.locator('.data-tab legend')).toHaveText(['Profiles', 'Translation', 'Parental lock']);
   await page.locator('.switch-btn').click();
   await page.locator('.switch-dialog .profile-card', { hasText: 'Nina' }).click();
   await expect(page.locator('.parent-screen .tabs .tab')).toHaveCount(5);

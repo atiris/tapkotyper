@@ -4,8 +4,8 @@
 - A parent area behind a gear button and one calm question ("do you really want to open
   the settings?"). Deleting a profile asks in the app's own style.
 - The gear is on the start page too. Before a player is chosen the settings hold only what
-  needs no profile: the translator, the parental lock, and on the data tab exporting all
-  profiles and importing them. "Pick a student" at the top opens a player's whole settings.
+  needs no profile: only the data and security tab, with exporting all profiles and importing
+  them, the translator and the parental lock. "Pick a student" at the top opens a player's whole settings.
 - An optional **parental lock** ("Rodičovský zámok"), a settings password, one for the whole device (every profile and the
   guest). While it is set, every way into the parent area (the gear, the settings address)
   asks for it instead of the question; a wrong one says so, and after five wrong tries in a
@@ -52,7 +52,8 @@
   phone: **Profiles** (export, move, import, delete), **Translation** (what it is for and the
   **Translate the game** button that opens the translator) and the **parental lock**. These change
   the whole device rather than how the child practises, so they stay apart from the daily settings.
-  The settings without a player show the translation and the lock in the same order.
+  The settings without a player (opened from the start page) have only this tab: nothing else
+  there works without a profile.
 - **The top bar's rings** are three switches of the profile in that group: Presnosť (on by default),
   Rytmus (off) and Rýchlosť (off), with one hint saying what each measures and that Rytmus (the game)
   always shows all three. The super player has all three on. A young child sees only accuracy by

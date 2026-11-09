@@ -30,17 +30,16 @@ type Tab = (typeof TABS)[number];
 
 /**
  * The parent area, once `parentAccess` let the parent in; `tab`: the tab to open. Without a
- * player (opened from the start page) only what needs no profile: the device's settings and the data.
+ * player (opened from the start page) only what needs no profile: the data and security tab.
  */
 export function parentScreen(root: HTMLElement, params: { tab?: string }): void {
   const p = app.profile;
   const others = app.store.profiles.filter((q) => q.id !== p?.id);
-  const tabs: readonly Tab[] = p ? TABS : ['settings', 'data'];
+  const tabs: readonly Tab[] = p ? TABS : ['data'];
   const body = h('div', { class: 'tab-panel' });
-  let current: Tab = tabs.find((x) => x === params.tab) ?? 'settings';
+  let current: Tab = tabs.find((x) => x === params.tab) ?? tabs[0];
   const panel = (tab: Tab): HTMLElement => {
-    if (tab === 'data') return dataTab(p);
-    if (!p) return deviceTab();
+    if (tab === 'data' || !p) return dataTab(p);
     return tab === 'settings' ? settingsTab(p) : tab === 'own' ? ownTab(p) : tab === 'surprises' ? surprisesTab(p) : keysTab(p);
   };
   const nav = tabBar(tabs.map((tab) => [tab, t(`parent.tab.${tab}`)] as const), current, (tab) => {
@@ -509,11 +508,6 @@ function keysTab(p: Profile): HTMLElement {
 const translateGroup = (): HTMLElement => h('fieldset', { class: 'translate-group' }, h('legend', {}, t('parent.translate')),
   h('p', { class: 'hint' }, t('parent.translateHint')),
   h('div', { class: 'row' }, button(t('parent.translateGo'), () => go('translate', { granted: true }), 'btn', 'language')));
-
-/** The settings without a player: the translator and the device's password; a player is picked by the button at the top. */
-function deviceTab(): HTMLElement {
-  return h('div', {}, h('p', { class: 'hint' }, t('parent.noChild')), h('div', { class: 'settings-grid' }, translateGroup(), lockGroup()));
-}
 
 /**
  * Data and security: the profiles (export, move, import and delete; without a player only all

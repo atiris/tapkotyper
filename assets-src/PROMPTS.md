@@ -671,7 +671,7 @@ Cute, soft 2D children's game icon, flat vector style with gentle gradients, sof
 Same style and colours, but much simpler so it reads at 40 pixels inside a small round badge: a compact, almost square keyboard (only a little wider than tall), seen gently from above and a little from the side, with only two rows of three big chunky rounded keys (mint, sky blue, butter yellow, peach) and one big wide space bar below them. Thick soft dark-brown outline, big simple shapes, no small details. Keys empty, no letters. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow. Square image.
 ```
 
-### ui-lock.jpg (a closed world's lock button on the map, in a grey-ringed disc a little bigger than the badge; turned at random by the game; 2026-11-09, first try)
+### ui-lock.jpg (a closed world's lock button on the map, in a grey-ringed disc a little bigger than the badge; grey, coloured and swinging when pointed at; 2026-11-09, first try)
 ```
 Generate an image: Padlock
 

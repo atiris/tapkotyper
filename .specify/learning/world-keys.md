@@ -30,7 +30,7 @@
   a round keyboard button at the bottom left of its picture, under the surprises' corner,
   drawn like the small badge (same size) with a grey ring and a keyboard picture; a closed
   world has only its lock in the middle of its picture: a round button drawn like the picture's
-  corner buttons, a little bigger, with a padlock turned at random that turns straight when
+  corner buttons, a little bigger, with a small grey padlock that turns coloured and swings gently when
   pointed at or focused. Only hovering the lock tells why the world is closed (and which keys,
   when only keys hold it); a click on it or on the picture opens the panel.
 - **Why a world is closed** is named by the first reason that holds: the world before it in its
@@ -92,4 +92,4 @@ index columns `r0 f0 v0` and `u0 j0 m0` from world 9 on (column games,
   map, next to the world.
 - The next step first: keys named for a world two steps away send the child after the wrong goal,
   while the world before it is the one to play now. A reason shown over the whole picture covers it;
-  on the lock it answers only who asks. A turned lock invites a point, and straightens when it is touched.
+  on the lock it answers only who asks. A grey lock stays quiet among the pictures and wakes when it is pointed at.

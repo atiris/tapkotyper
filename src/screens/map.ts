@@ -372,17 +372,16 @@ function swing(el: HTMLElement, open: boolean): void {
   later();
 }
 
-/** The world's badge at the island's top right: a click shows it big in the middle of the screen. */
-/** A closed world's lock: a round button turned at random that straightens when pointed at or focused; it tells why and opens the world's keys. */
+/** A closed world's lock: a round button with a grey padlock that turns coloured and swings gently when pointed at or focused; it tells why and opens the world's keys. */
 function worldLockButton(p: Profile, world: number, why: string): HTMLElement {
   const src = imageUrl('ui-lock');
-  const turn = (Math.random() < 0.5 ? -1 : 1) * Math.round(20 + Math.random() * 25);
-  return h('button', { class: 'world-lock-btn', type: 'button', 'aria-label': `${worldName(world)}: ${why}`, tip: why || null, style: `--turn:${turn}deg`, onClick: (e: MouseEvent) => {
+  return h('button', { class: 'world-lock-btn', type: 'button', 'aria-label': `${worldName(world)}: ${why}`, tip: why || null, onClick: (e: MouseEvent) => {
     e.stopPropagation();
     openWorldKeys(p, world);
   } }, src ? h('img', { src, alt: '' }) : icon('lock'));
 }
 
+/** The world's badge at the island's top right: a click shows it big in the middle of the screen. */
 function worldBadge(world: number, tier: BadgeTier): HTMLElement {
   const b = badge(world, tier, true);
   // The button carries the badge's name and tooltip.

@@ -107,8 +107,8 @@ export function aboutPage(lang: Lang, d: Dict, langs: readonly Lang[] = LANGS): 
       <nav aria-label="${navLabel}">${langLinks}</nav>
     </header>
     <main>
-      <h1>${esc(text(d, 'about.page.heading'))}</h1>
       ${p('about.intro')}
+      <h2>${esc(text(d, 'about.page.heading'))}</h2>
       ${p('start.intro')}
       <ul class="promises">${promises.map((l) => `<li>${rich(l, marks)}</li>`).join('')}</ul>
       ${play}

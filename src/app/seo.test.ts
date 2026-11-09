@@ -57,6 +57,13 @@ describe('about pages', () => {
     expect(jsonLd(page).inLanguage).toBe(lang);
   });
 
+  it('is titled like the game with an addition, and opens with the name, then the slogan', () => {
+    const [[, sk], [, en]] = pages;
+    expect(attr(sk, /<title>([^<]+)<\/title>/)).toBe('TapkoTyper – zábavné písanie všetkými desiatimi – o hre');
+    expect(attr(en, /<title>([^<]+)<\/title>/)).toBe('TapkoTyper – fun touch typing with all ten fingers – about the game');
+    expect(sk).toMatch(/<main>\s*<p>TapkoTyper \(Ťapko\) [^<]*<\/p>\s*<h2>Zábavné písanie všetkými desiatimi<\/h2>/);
+  });
+
   it('the language pick sends to a page and is not indexed', () => {
     const page = aboutRedirect();
     expect(page).toContain('noindex');

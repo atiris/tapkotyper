@@ -16,7 +16,9 @@
   taught, the promise to parents, the author and the licences. Its text comes from the game's own
   help, so the two never say different things. The pages link to each other by language and
   to the game, and search engines get them as language versions of one page. `/about/` opens the
-  page in the browser's language.
+  page in the browser's language. Its title is the game's title with " – o hre" (en " – about the
+  game"); the page opens with the paragraph "TapkoTyper (Ťapko) …", then the slogan as a subheading,
+  so a search shows the page and the game under one name.
 - The start page links to the about page in the game's language, small, before "MIT · Atiris".
   The installed web app does not show the link.
 - No hidden text for robots, no extra tracking and no verification tags in the page: search

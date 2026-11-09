@@ -47,6 +47,7 @@ test('the super player removes the settings password without it, and the setting
   await page.keyboard.press('Escape');
   // The super player's settings ask nothing and offer the removal.
   await page.locator('.top-right .settings-btn').click();
+  await page.locator('.tab[data-tab=data]').click();
   const group = page.locator('.lock-group');
   await expect(group.locator('.lock-note')).toHaveCount(0);
   await group.locator('.btn.danger').click();
@@ -62,6 +63,7 @@ test('the super player removes the settings password without it, and the setting
   await page.locator('.map-screen').waitFor();
   await page.locator('.top-right .settings-btn').click();
   await page.locator('.confirm .btn:not(.primary)').last().click();
+  await page.locator('.tab[data-tab=data]').click();
   await expect(page.locator('.lock-group .lock-note')).toBeVisible();
 
   // A month later the warning is gone.
@@ -76,6 +78,7 @@ test('the super player removes the settings password without it, and the setting
   await page.locator('.map-screen').waitFor();
   await page.locator('.top-right .settings-btn').click();
   await page.locator('.confirm .btn:not(.primary)').last().click();
+  await page.locator('.tab[data-tab=data]').click();
   await page.locator('.lock-group').waitFor();
   await expect(page.locator('.lock-group .lock-note')).toHaveCount(0);
 });

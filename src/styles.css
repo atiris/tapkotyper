@@ -224,25 +224,31 @@ p { line-height: 1.5; }
 .btn u.hk { text-decoration: underline; text-decoration-thickness: 0.12em; text-underline-offset: 0.16em; text-decoration-skip-ink: none; }
 /* The panel's default button shows its ring whenever it has the focus, also after a mouse click opened the panel. */
 .btn.kbd-default:focus { outline: 4px solid var(--focus); outline-offset: 3px; }
-.btn.primary { background: linear-gradient(180deg, var(--brand-top), var(--brand)); color: var(--on-brand); text-shadow: var(--on-brand-glow); }
+/*
+ * Three kinds of button: a plain key (white face, grey line; a dangerous action is the same key with red text,
+ * `.danger`), the orange main action (`.primary`) and the red key of a critical action that cannot be undone and
+ * takes much (everything deleted, `.critical`: white text on red, raised like the main action).
+ */
+.btn.primary { --base: var(--brand-dark); background: linear-gradient(180deg, var(--brand-top), var(--brand)); color: var(--on-brand); text-shadow: var(--on-brand-glow); }
+.btn.critical { --base: color-mix(in srgb, var(--danger) 62%, #000); background: var(--danger); color: #fff; }
+.btn.danger { color: var(--danger-ink); }
 /* A plain button has the keys' thin line, so a pale face stays visible on a pale card. */
-.btn:not(.primary) { border: 1px solid var(--key-line); }
+.btn:not(.primary, .critical) { border: 1px solid var(--key-line); }
 /*
  * A raised button is a key: its base stays put. Lifted it shows more of its edge over a wider,
  * softer ground shadow; pressed it sinks into the base. Its own layer keeps the text's shine steady
  * while it moves. A touch leaves no lift behind.
  */
-.btn.primary { box-shadow: 0 4px 0 var(--brand-dark), 0 7px 10px -2px var(--key-shadow); will-change: transform; }
+.btn:is(.primary, .critical) { box-shadow: 0 4px 0 var(--base), 0 7px 10px -2px var(--key-shadow); will-change: transform; }
 @media (hover: hover) {
-  .btn:not(.primary):hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 7px 0 var(--edge), 0 12px 18px -3px var(--soft-shadow); }
-  .btn.primary:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 7px 0 var(--brand-dark), 0 13px 18px -3px var(--key-shadow-up); }
+  .btn:not(.primary, .critical):hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 7px 0 var(--edge), 0 12px 18px -3px var(--soft-shadow); }
+  .btn:is(.primary, .critical):hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 7px 0 var(--base), 0 13px 18px -3px var(--key-shadow-up); }
 }
-.btn:not(.primary):active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 var(--edge), 0 2px 3px var(--soft-shadow); }
-.btn.primary:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 var(--brand-dark), 0 2px 3px var(--key-shadow-down); }
+.btn:not(.primary, .critical):active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 var(--edge), 0 2px 3px var(--soft-shadow); }
+.btn:is(.primary, .critical):active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 var(--base), 0 2px 3px var(--key-shadow-down); }
 /* A ghost button is a lighter raised key: see-through face, the same edge, lift and press. */
 .btn.ghost { background: var(--glass); }
 body.reduce-motion :is(.btn, .teacher-big):is(:hover, :active) { transform: none; }
-.btn.danger { background: var(--tint-red); color: var(--red-ink); }
 .btn.small { min-height: 40px; padding: 0.4em 0.9em; font-size: 0.9rem; }
 .btn.big { min-height: 64px; font-size: 1.2rem; padding: 0.7em 1.6em; }
 .icon { display: inline-flex; width: 1.3em; height: 1.3em; }
@@ -773,6 +779,15 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .island.locked h3 { color: var(--ink-soft); }
 .lock { position: absolute; inset: auto; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: var(--surface); color: var(--ink-soft); }
 .lock .icon { width: 26px; height: 26px; }
+/* A closed world's lock in the middle of its picture: drawn like the picture's round corner buttons, a little bigger; turned at random, straight when pointed at. */
+.world-lock-btn { position: absolute; z-index: 1; width: 52px; height: 52px; padding: 0; border: 0; border-radius: 50%; display: grid; place-items: center; cursor: pointer;
+  background: radial-gradient(circle at 35% 30%, #fff, #e6eaef 75%); color: var(--ink-soft); box-shadow: inset 0 0 0 3px #a3abb5, 0 2px 4px rgba(40, 30, 20, 0.2); }
+.world-lock-btn > * { rotate: var(--turn, 0deg); transition: rotate 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.world-lock-btn img { width: 78%; height: auto; max-height: 78%; object-fit: contain; }
+.world-lock-btn .icon { width: 28px; height: 28px; }
+.world-lock-btn:is(:hover, :focus-visible, :active) > * { rotate: 0deg; }
+.world-lock-btn:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
+.reduce-motion .world-lock-btn > * { transition: none; }
 /* An open world's keyboard button: at the picture's bottom left, under the surprises, drawn like the small badge with a grey ring. */
 .world-kb-btn { position: absolute; bottom: 0; left: 0; z-index: 1; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%; overflow: hidden; display: grid; place-items: center; cursor: pointer;
   background: radial-gradient(circle at 35% 30%, #fff, #e6eaef 75%); color: var(--ink); box-shadow: inset 0 0 0 3px #a3abb5, 0 2px 4px rgba(40, 30, 20, 0.2); }
@@ -834,6 +849,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .tapko-visit { position: fixed; left: 2vw; bottom: 3vh; z-index: 40; display: flex; align-items: center; gap: 0.6rem; max-width: calc(100vw - 4vw); cursor: pointer; animation: visit-in 1.1s cubic-bezier(0.3, 1.2, 0.5, 1) both; }
 .tapko-visit .tapko-stack { flex: none; animation: jump 0.6s ease 1.1s 2; }
 .tapko-visit .bubble { animation: pop-in 0.35s ease 1s both; }
+.tapko-visit .bubble.fade { animation: fade-in 0.6s ease reverse forwards; }
 .bubble.static.side { text-align: left; max-width: 340px; font-size: 0.98rem; }
 .bubble.static.side::before { left: -8px; top: calc(50% - 8px); }
 .tapko-visit.out { animation: visit-out 0.8s ease-in forwards; }
@@ -1932,8 +1948,6 @@ body.reduce-motion .round-btn.timer.ending { --rb: #d9661f; --rb-ring: #ff8a3d; 
 .teacher-note.bad { background: var(--tint-red); color: var(--red-ink); }
 .grow { flex: 1; }
 .btn.wide { width: 100%; }
-.btn.danger-line { background: none; color: var(--danger-ink); box-shadow: inset 0 0 0 1px var(--danger); }
-.btn.danger-solid { background: var(--danger); color: #fff; box-shadow: 0 4px 0 var(--red-ink); }
 .chev { flex: none; font-size: 1.3rem; line-height: 1; color: var(--brand-ink); }
 .chev-btn { border: 0; background: none; padding: 0 6px; font: inherit; font-size: 1.3rem; color: var(--brand-ink); cursor: pointer; }
 .round-btn { flex: none; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: none; color: var(--ink-soft); display: grid; place-items: center; cursor: pointer; }

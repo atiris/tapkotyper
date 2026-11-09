@@ -541,7 +541,7 @@ function dataTab(p: Profile | null): HTMLElement {
           app.profile = null;
           go('start');
         }, 'btn danger', 'trash') : null,
-        app.store.profiles.length ? button(t('parent.deleteAll'), () => void deleteAll(), 'btn danger', 'trash') : null)) : null),
+        app.store.profiles.length ? button(t('parent.deleteAll'), () => void deleteAll(), 'btn critical', 'trash') : null)) : null),
     translateGroup(),
     lockGroup());
 }
@@ -566,11 +566,11 @@ async function deleteAll(): Promise<void> {
     { cls: 'confirm-modal', onClose: () => resolve(picked) });
   });
   const backup: [string, string, string] = ['backup', t('parent.deleteAllBackup'), 'btn'];
-  const first = await ask(t('parent.deleteAllTitle'), [['back', t('common.back'), 'btn primary'], backup, ['next', t('parent.deleteAllNext'), 'btn danger']]);
+  const first = await ask(t('parent.deleteAllTitle'), [['back', t('common.back'), 'btn primary'], backup, ['next', t('parent.deleteAllNext'), 'btn critical']]);
   if (first === 'backup') return exportAll();
   if (first !== 'next') return;
   const backs: [string, string, string][] = Array.from({ length: 4 }, () => ['back', t('common.back'), 'btn']);
-  backs.splice(1 + Math.floor(Math.random() * 4), 0, ['delete', t('parent.deleteAllOk'), 'btn danger']);
+  backs.splice(1 + Math.floor(Math.random() * 4), 0, ['delete', t('parent.deleteAllOk'), 'btn critical']);
   const second = await ask(t('parent.deleteAllSure'), [['backup', t('parent.deleteAllBackup'), 'btn primary'], ...backs]);
   if (second === 'backup') return exportAll();
   if (second !== 'delete') return;

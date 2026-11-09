@@ -91,7 +91,8 @@ export function dataPart(store: TeacherStore): Part {
       done();
     } });
   };
-  const deleting = (title: string, fields: HTMLElement[], go: () => void) => teacherDialog({ title, fields, danger: true, ok: () => { go(); done(); } });
+  const deleting = (title: string, fields: HTMLElement[], go: () => void, danger: 'danger' | 'critical' = 'danger') =>
+    teacherDialog({ title, fields, danger, ok: () => { go(); done(); } });
   const deleteGroupStudents = () => {
     const group = choice(t('teacher.groupLabel'), groupOptions(true));
     deleting(t('teacher.data.deleteGroupStudents'), [group.el], () => store.removeMany(store.results.filter((r) => (r.group ?? '') === group.select.value)));
@@ -108,7 +109,7 @@ export function dataPart(store: TeacherStore): Part {
     const file = choice(t('teacher.data.file'), store.files.map((f) => [f.id, `${f.name} · ${new Date(f.loadedAt).toLocaleDateString(locale())} ${clock(f.loadedAt)}`]));
     deleting(t('teacher.data.deleteFiles'), [file.el], () => store.deleteFile(file.select.value));
   };
-  const deleteAll = () => deleting(t('teacher.data.deleteAll'), [h('p', {}, t('teacher.data.deleteAllText'))], () => store.clearAll());
+  const deleteAll = () => deleting(t('teacher.data.deleteAll'), [h('p', {}, t('teacher.data.deleteAllText'))], () => store.clearAll(), 'critical');
 
   const action = (label: string | Node, run: () => void, cls: string, can: boolean) => {
     const b = button(label, run, cls);
@@ -131,11 +132,11 @@ export function dataPart(store: TeacherStore): Part {
           action(t('teacher.data.mergeStudents'), mergeStudents, 'btn', students > 1))),
       h('section', { class: 'data-card' }, h('h2', { class: 'danger-text' }, t('teacher.data.delete')),
         h('div', { class: 'data-buttons' },
-          action(t('teacher.data.deleteGroupStudents'), deleteGroupStudents, 'btn danger-line', has),
-          action(t('teacher.data.deleteStudent'), deleteStudent, 'btn danger-line', students > 0),
-          action(t('teacher.data.deleteGroup'), deleteGroup, 'btn danger-line', groups > 0),
-          action(t('teacher.data.deleteFiles'), deleteFiles, 'btn danger-line', store.files.length > 0),
-          action(t('teacher.data.deleteAll'), deleteAll, 'btn danger-solid', has || store.files.length > 0))));
+          action(t('teacher.data.deleteGroupStudents'), deleteGroupStudents, 'btn danger', has),
+          action(t('teacher.data.deleteStudent'), deleteStudent, 'btn danger', students > 0),
+          action(t('teacher.data.deleteGroup'), deleteGroup, 'btn danger', groups > 0),
+          action(t('teacher.data.deleteFiles'), deleteFiles, 'btn danger', store.files.length > 0),
+          action(t('teacher.data.deleteAll'), deleteAll, 'btn critical', has || store.files.length > 0))));
   };
   paint();
   return { nodes: [h('p', { class: 'hint teacher-intro desk-only' }, t('teacher.eval.dataIntro')), body] };

@@ -104,11 +104,11 @@ export function choice(label: string, options: [string, string][], value = optio
 }
 
 /**
- * The page's small dialog: a title, its fields, Zrušiť and Potvrdiť (a red Zmazať for a deletion).
- * A modal on a computer, a sheet from the bottom on a phone; the round X and Esc close it.
- * `ok` returns false to keep it open (a field left empty).
+ * The page's small dialog: a title, its fields, Zrušiť and Potvrdiť (Zmazať for a deletion: in red letters, or a
+ * red key for a critical one). A modal on a computer, a sheet from the bottom on a phone; the round X and Esc close
+ * it. `ok` returns false to keep it open (a field left empty).
  */
-export function teacherDialog(o: { title: string; fields: HTMLElement[]; ok: () => boolean | void; danger?: boolean; onClose?: () => void }): void {
+export function teacherDialog(o: { title: string; fields: HTMLElement[]; ok: () => boolean | void; danger?: 'danger' | 'critical'; onClose?: () => void }): void {
   const confirm = () => { if (o.ok() !== false) close(); };
   // The first field takes the focus, not Zrušiť.
   o.fields[0]?.querySelector('select, input')?.setAttribute('autofocus', '');
@@ -118,7 +118,7 @@ export function teacherDialog(o: { title: string; fields: HTMLElement[]; ok: () 
     ...o.fields,
     h('div', { class: 'row teacher-dialog-actions' },
       button(t('teacher.dialog.cancel'), () => close(), 'btn'),
-      button(t(o.danger ? 'teacher.dialog.delete' : 'teacher.dialog.confirm'), confirm, o.danger ? 'btn danger-solid' : 'btn primary'))), { cls: 'teacher-modal', onClose: o.onClose });
+      button(t(o.danger ? 'teacher.dialog.delete' : 'teacher.dialog.confirm'), confirm, `btn ${o.danger ?? 'primary'}`))), { cls: 'teacher-modal', onClose: o.onClose });
 }
 
 /** Asks for a new group's name; resolves with it, or null when cancelled or left empty. */

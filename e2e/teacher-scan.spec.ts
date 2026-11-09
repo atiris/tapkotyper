@@ -232,7 +232,7 @@ test('data: export as tt-….tapko, delete all, import it back, again adds nothi
   const file = (await d.path())!;
 
   await page.getByRole('button', { name: 'Zmazať všetky dáta' }).click();
-  await page.locator('.teacher-dialog .btn.danger-solid').click();
+  await page.locator('.teacher-dialog .btn.critical').click();
   await page.locator('.teacher-top button', { hasText: 'Výsledky' }).click();
   await expect(page.locator('.recent-none')).toBeVisible();
 
@@ -263,7 +263,7 @@ test('data: export as tt-….tapko, delete all, import it back, again adds nothi
   for (let i = 0; i < 2; i++) {
     await page.goto('./#/teacher/eval/data');
     await page.getByRole('button', { name: 'Zmazať súbory' }).click();
-    await page.locator('.teacher-dialog .btn.danger-solid').click();
+    await page.locator('.teacher-dialog .btn.danger').click();
   }
   await page.goto('./#/teacher');
   await expect(page.locator('.recent-none')).toBeVisible();

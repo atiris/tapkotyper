@@ -59,7 +59,11 @@ One set of rules for where things sit and how they behave, so every screen feels
 8. **Buttons.** The one main action of a view is the orange button ("primary"); everything
    else is plain or ghost. A view never has two orange buttons. Every button looks pressable
    (a raised key that lifts and sinks); a ghost one is only lighter, never flat. A plain button
-   carries the keys' thin outline, so a pale face stays visible on a pale card.
+   carries the keys' thin outline, so a pale face stays visible on a pale card. A **dangerous**
+   action (delete a profile, a task, a file, a group, the password) is a plain key with red text.
+   A **critical** action, one that deletes everything at once ("Vymazať všetky profily" and both its
+   questions' going-on buttons, the teacher's "Zmazať všetky dáta" and its confirmation), is a red
+   raised key with white text, lifting like the orange one. No other button colours exist.
 9. **Panels.** Content sits on paper-coloured panels of one maximum width with the same
    padding and heading style; the page background is the world's sky gradient. A card or window
    laid over the blurred game or page is lifted off it by a clear shadow, never flat on it.
@@ -100,6 +104,8 @@ One set of rules for where things sit and how they behave, so every screen feels
   that jump by a few pixels between screens feel broken.
 - Two ways of closing (a back arrow on pages, an X on windows) match how phones and computers
   already work; a third way at the bottom makes the child hunt for the exit.
+- Red buttons everywhere wear out: when every delete shouts, the one that wipes all the data looks
+  like the rest. Red letters warn quietly; the red key is kept for what cannot be won back.
 - Scrolling inside a window keeps the title and the way out in sight, and a page that
   scrolls as a whole is what a browser user expects.
 - The ring in the bar reuses a picture the child already reads (the speed ring), and frees the

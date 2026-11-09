@@ -77,7 +77,7 @@ function openTask(spec: TaskSpec, store: TeacherStore): HTMLElement {
           theForm(store).edit(spec);
           openPlace('tasks/new');
         }, 'btn'),
-        button(t('teacher.tasks.remove'), () => void remove(), 'btn danger-line')),
+        button(t('teacher.tasks.remove'), () => void remove(), 'btn danger')),
       done, area);
   });
   return h('section', { class: 'task-open', 'aria-labelledby': 'task-open-title' },

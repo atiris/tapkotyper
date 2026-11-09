@@ -187,7 +187,7 @@ body.high-contrast {
  */
 /* No pinch zoom on a touch screen either (see blockPinchZoom): it hides the page's right side. */
 html { font-size: calc(16px * var(--scale)); height: 100%; overflow: hidden; background: var(--page-bg) fixed; touch-action: pan-x pan-y; }
-body:has(.parent-screen, .help-screen, .progress-screen, .tasks-screen) { scrollbar-gutter: stable; }
+body:has(.parent-screen, .help-screen, .progress-screen, .tasks-screen, .teacher-screen) { scrollbar-gutter: stable; }
 body:has(.start-screen, .level-screen, .story-screen, .break-screen) { scrollbar-width: none; }
 body {
   margin: 0;
@@ -723,6 +723,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .np-pick { display: grid; grid-template-columns: auto minmax(220px, 1fr); gap: 0 var(--sp-5); align-items: start; }
 .np-pick .kind-picker { grid-template-columns: repeat(3, 108px); }
 .np-col { display: flex; flex-direction: column; gap: 0.4rem; }
+/* A field's hint sits close under it; the next label keeps the same gap as after a field. */
+.np-col .hint { margin: -0.2rem 0 0; }
 @media (max-width: 640px) {
   .np-pick { grid-template-columns: 1fr; }
   .np-pick .kind-picker { grid-template-columns: repeat(3, 1fr); }
@@ -1143,7 +1145,8 @@ body:not(.gfx-simple) .level-screen.covered :is(.stage-wrap *, .overlay .tapko-s
 .world-keys-panel h2 { display: flex; align-items: center; gap: 0.4rem; }
 .world-keys-panel h2 .icon { flex: none; }
 .wk-actions { justify-content: flex-start; }
-.wk-missing p { margin: 0.6rem 0 0.3rem; font-weight: 700; }
+.wk-missing { margin: 0.6rem 0 0.3rem; line-height: 2.1; }
+.wk-missing b { margin-right: 0.3em; }
 .practice-keys h2 { margin-top: 0; }
 .pk-row { display: flex; align-items: center; justify-content: flex-end; gap: 0.6rem; }
 .pk-styles { display: flex; justify-content: center; flex-wrap: wrap; gap: 0.4rem; }
@@ -1387,8 +1390,10 @@ body.high-contrast .rhythm-note { filter: none; }
 .weak-list .key-cap { flex: none; }
 /* A key to practise drawn like a key of the on-screen keyboard: outlined, its finger's colour on the bottom edge. */
 .key-cap { min-width: 2.4em; height: calc(2.4em - 4px); margin-bottom: 4px; padding: 0 0.5em; border-radius: 9px; border: 1px solid var(--key-line); background: var(--surface); color: var(--ink); font-family: var(--font-keys); font-size: 1rem; font-weight: 700; cursor: pointer; }
-/* The keys a key is mistaken for, in its facts: the same letters on a smaller key. */
-.key-facts .key-cap { min-width: 1.9em; height: calc(1.9em - 4px); padding: 0 0.3em; vertical-align: middle; }
+a.key-cap { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+/* The keys a key is mistaken for, in its facts, and a closed world's missing keys: the same letters on a smaller key. */
+:is(.key-facts, .wk-missing) .key-cap { min-width: 1.9em; height: calc(1.9em - 4px); padding: 0 0.3em; vertical-align: middle; }
+.world-kb .kb-key[data-stat] { cursor: pointer; }
 .keys-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.6rem; margin: 0.6rem 0 1rem; }
 .keys-foot .legend { margin: 0; }
 /*

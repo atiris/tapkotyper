@@ -73,7 +73,7 @@
   },
   "newProfile": {
     "title": "Ahoj, vitaj!",
-    "name": "Meno študenta (nepovinné)",
+    "name": "Meno pre učiteľa (nepovinné)",
     "companion": "Vyber si svoju postavičku",
     "language": "Jazyk",
     "layout": "Klávesnica",
@@ -1348,7 +1348,7 @@
       "lock": "Rodičovský zámok",
       "profiles": "Profily"
     },
-    "childName": "Meno študenta (nepovinné)",
+    "childName": "Meno pre učiteľa (nepovinné)",
     "switchTitle": "Prepnúť na iného študenta",
     "pickChild": "Vybrať študenta",
     "companionKind": "Postavička",

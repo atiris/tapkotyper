@@ -73,7 +73,7 @@
   },
   "newProfile": {
     "title": "Hello and welcome!",
-    "name": "Student's name (optional)",
+    "name": "Name for the teacher (optional)",
     "companion": "Pick your character",
     "language": "Language",
     "layout": "Keyboard",
@@ -1348,7 +1348,7 @@
       "lock": "Parental lock",
       "profiles": "Profiles"
     },
-    "childName": "Student's name (optional)",
+    "childName": "Name for the teacher (optional)",
     "switchTitle": "Switch to another student",
     "pickChild": "Pick a student",
     "companionKind": "Character",

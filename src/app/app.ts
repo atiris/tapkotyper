@@ -88,7 +88,7 @@ const OWN_ROUTE: ScreenName[] = ['map', 'wardrobe', 'progress', 'tasks', 'parent
 const LINKS: Partial<Record<string, ScreenName>> = { task: 'taskImport', move: 'moveImport', result: 'teacher' };
 
 /** Address of a screen, so a player's map can be bookmarked or put on the desktop. */
-export function routeOf(name: ScreenName, params: { code?: string; tab?: string } = {}): string {
+export function routeOf(name: ScreenName, params: { code?: string; tab?: string; key?: string } = {}): string {
   if (name === 'newProfile') return '#/new';
   if (name === 'translate') return '#/translate';
   if (name === 'taskNote') return '#/note';
@@ -97,7 +97,10 @@ export function routeOf(name: ScreenName, params: { code?: string; tab?: string 
   if (name === 'taskImport') return `#/task/${params.code ?? ''}`;
   if (name === 'moveImport') return `#/move/${params.code ?? ''}`;
   const id = app.profile?.id;
-  const tab = name === 'help' && params.tab ? `/${params.tab}` : '';
+  // Help's tab; My progress's tab and the key whose statistics it shows (`keys/f`).
+  const tab = (name === 'help' || name === 'progress') && params.tab
+    ? [params.tab, ...(name === 'progress' && params.key ? [params.key] : [])].map((s) => `/${encodeURIComponent(s)}`).join('')
+    : '';
   // Help works before a player is chosen too.
   if (name === 'help' && !id) return `#/help${tab}`;
   // The settings without a profile: the device's own, opened from the start page.
@@ -107,7 +110,7 @@ export function routeOf(name: ScreenName, params: { code?: string; tab?: string 
   return `#/p/${encodeURIComponent(id)}${sub ? `/${sub}` : ''}${tab}`;
 }
 
-export function parseRoute(hash: string): { name: ScreenName; profileId: string | null; code?: string; tab?: string } {
+export function parseRoute(hash: string): { name: ScreenName; profileId: string | null; code?: string; tab?: string; key?: string } {
   const parts = hash.replace(/^#\/?/, '').split('/').filter(Boolean).map(decodeURIComponent);
   if (parts[0] === 'new') return { name: 'newProfile', profileId: null };
   if (parts[0] === 'translate') return { name: 'translate', profileId: null };
@@ -123,7 +126,8 @@ export function parseRoute(hash: string): { name: ScreenName; profileId: string 
   if (link && parts[1]) return { name: link, profileId: null, code: parts[1] };
   if (parts[0] !== 'p' || !parts[1]) return { name: 'start', profileId: null };
   const name = (Object.keys(ROUTES) as ScreenName[]).find((n) => ROUTES[n] === parts[2] && OWN_ROUTE.includes(n)) ?? 'map';
-  return { name, profileId: parts[1], ...(name === 'help' && parts[3] ? { tab: parts[3] } : {}) };
+  const tab = (name === 'help' || name === 'progress') && parts[3] ? { tab: parts[3], ...(name === 'progress' && parts[4] ? { key: parts[4] } : {}) } : {};
+  return { name, profileId: parts[1], ...tab };
 }
 
 /** Opens the screen of an address (on start and on the browser's back and forward). */
@@ -132,7 +136,7 @@ export async function openRoute(hash: string): Promise<void> {
   const p = r.profileId === SUPER_ID ? app.superPlayer : r.profileId ? app.store.get(r.profileId) : null;
   if (r.profileId && !p) return go('start', {}, false);
   if (p && app.profile?.id !== p.id) await selectProfile(p);
-  go(r.name, r.code ? { code: r.code } : r.tab ? { tab: r.tab } : {}, false);
+  go(r.name, r.code ? { code: r.code } : r.tab ? { tab: r.tab, key: r.key } : {}, false);
 }
 
 /** Screens a touch-only device reaches before a keyboard is connected: the teacher, the translator and noting a task need none. */

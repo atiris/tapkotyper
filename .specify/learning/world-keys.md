@@ -37,8 +37,10 @@
   mastered, solid with a check once mastered; a mastered key outside the world solid grey; the
   rest faded. Under it a legend, two lines ("Keys you master have solid lines." and how many of
   a key's last presses must be right), for a closed world the keys still to master as small key
-  caps, and at the bottom the two-minute drill of them (its tooltip names the keys, as on My
-  keys), or own practice while its story waits for more keys.
+  caps in the line of "Na odomknutie ešte musíš ovládať:" (drawn like the keys a key is mistaken
+  for on My keys, wrapping only when they do not fit), and at the bottom the two-minute drill of them (its tooltip names the keys, as on My
+  keys), or own practice while its story waits for more keys. Every key there, on the keyboard and
+  in the list, opens its own statistics ([statistics](../profiles/statistics.md)).
 - Help, tab Progress, section **Worlds and keys**: every world, also one not built yet, with its
   island and two rows of key caps on the layout, "Musím vedieť" and "Naučím sa". It is the same
   for every player: nothing in it marks what this child masters (the world's keys panel on the map does).

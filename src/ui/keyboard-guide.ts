@@ -104,15 +104,21 @@ export function fingerChip(layout: Layout, key: string): HTMLElement | null {
   return f == null ? null : chipOf(f);
 }
 
-/** A lesson key as a small outlined key like the on-screen keyboard's, its finger's colour on the bottom edge. */
-export function keyCap(layout: Layout, key: string, onClick: () => void): HTMLButtonElement {
-  const cap = document.createElement('button');
-  cap.type = 'button';
+/**
+ * A lesson key as a small outlined key like the on-screen keyboard's, its finger's colour on the bottom edge. With
+ * `href` it is a link (a new tab on a modified click), a plain click still runs `onClick`.
+ */
+export function keyCap(layout: Layout, key: string, onClick: () => void, href?: string): HTMLElement {
+  const cap: HTMLElement = href ? Object.assign(document.createElement('a'), { href }) : Object.assign(document.createElement('button'), { type: 'button' });
   cap.className = 'key-cap';
   const f = lessonFinger(layout, key);
   if (f != null) cap.style.setProperty('--finger', FINGER_COLORS[f]);
   cap.textContent = keyLabel(key);
-  cap.addEventListener('click', onClick);
+  cap.addEventListener('click', (e) => {
+    if (href && (e.ctrlKey || e.metaKey || e.shiftKey || e.button)) return;
+    e.preventDefault();
+    onClick();
+  });
   return cap;
 }
 

@@ -89,6 +89,10 @@
   **Klávesy** (with the trends over the last sessions: accuracy, rhythm (the days with a score), speed and time per day,
   side by side on wide screens); every level's stars are on the map. Under the progress sit
   "QR kód celého postupu" and "Certifikát" ([parent controls](parent-controls.md)).
+- **Each key's statistics have a link of their own** (the player's My progress, tab Klávesy, that
+  key picked). Picking a key on the page (on the heat map, in the keys to practise, among the keys it
+  is mistaken for) moves the address to it; the whole keyboard and the other tab drop the key. The
+  world's keys panel ([world keys](../learning/world-keys.md)) links each key there.
 - Once a parrot was ever won, the summary row has a **parrot** chip: the parrot's picture and
   "2 max 5", the parrots at home now and the most that were home at once; the tooltip says it
   in words ([parrot](../game/parrot.md)). Secret words on the page start the badge show
@@ -130,5 +134,7 @@
 - The Levels tab repeated the map's stars in a table; the map already shows every level's
   stars, and one place is easier to read.
 - Knowing the problem keys turns mistakes into a clear, small next step.
+- A key named anywhere (a world still waits for it) is one click from how it goes, and a link to it
+  can be kept or sent.
 - Old mistakes must not weigh on a key the child already fixed: only recent presses
   count, while the history still shows the way there.

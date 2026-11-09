@@ -1,4 +1,4 @@
-import { app, go, layout, reduceMotion } from '../app/app';
+import { app, go, layout, reduceMotion, routeOf } from '../app/app';
 import { hasClef } from '../game/rhythm-notes';
 import { imageUrl } from '../gfx/assets';
 import { type Mood, otherMood, renderTapkoInto, tapkoElement } from '../gfx/tapko';
@@ -50,11 +50,17 @@ export function heatAccuracy(shifted = false): Record<string, number | null> {
   return scores;
 }
 
+/** A key as a link to its statistics on My progress's keys tab. */
+export function keyStatsCap(key: string): HTMLElement {
+  const params = { tab: 'keys', key };
+  return keyCap(layout(), key, () => go('progress', params), routeOf('progress', params));
+}
+
 /**
  * How one key goes: the last presses only (old habits fade out), what it is
- * mistaken for (each such key opens its own detail here), and its days over time.
+ * mistaken for (each such key opens its own detail by `open`), and its days over time.
  */
-export function keyDetail(p: Profile, key: string, practice?: (key: string) => void): HTMLElement {
+export function keyDetail(p: Profile, key: string, open: (key: string) => void, practice?: (key: string) => void): HTMLElement {
   const r = keyReport(p, key);
   const head = h('div', { class: 'key-detail-head' }, h('span', { class: `big-key small ${keyLabel(key) !== key ? 'named' : ''}` }, keyLabel(key)),
     h('p', {}, t('stats.fingerLine'), ' ', fingerChip(layout(), key)));
@@ -70,7 +76,7 @@ export function keyDetail(p: Profile, key: string, practice?: (key: string) => v
       r.avgMs ? h('li', {}, t('stats.keySpeed', { s: (r.avgMs / 1000).toLocaleString(locale(), { minimumFractionDigits: 1, maximumFractionDigits: 1 }) })) : null,
       h('li', {}, t('stats.keyTotal', { n: r.presses })),
       h('li', {}, r.confusions.length
-        ? [t('stats.keyConfused'), ' ', ...r.confusions.slice(0, 3).flatMap((c) => [keyCap(layout(), c.ch, () => el.replaceWith(keyDetail(p, c.ch, practice))), ` ${c.n}× `])]
+        ? [t('stats.keyConfused'), ' ', ...r.confusions.slice(0, 3).flatMap((c) => [keyCap(layout(), c.ch, () => open(c.ch)), ` ${c.n}× `])]
         : t('stats.keyNoConfusion'))),
     days.length > 1 ? h('div', { class: 'key-charts' },
       h('div', {}, h('h4', {}, t('stats.keyAccuracyTrend')), lineChart(days.map((d) => Math.round(d.accuracy * 100)), labels, '%', '#3f8fd6')),
@@ -93,11 +99,11 @@ export function wholeKeyboard(p: Profile): HTMLElement {
 }
 
 /**
- * Heat map keyboard whose keys open their detail in `detail`. Under the left Shift a key that latches
- * the shifted symbols instead of the keys' base characters, under the right one a key with a keyboard
- * that releases the Shift symbols, unselects the keys and shows the whole keyboard's view.
+ * Heat map keyboard whose keys are picked by `pick`; `select` marks a key (latching the Shift symbols for a
+ * shifted one), null marks none. Under the left Shift a key that latches the shifted symbols instead of the keys'
+ * base characters, under the right one a key with a keyboard that releases them and picks the whole keyboard (null).
  */
-export function clickableHeatmap(p: Profile, detail: HTMLElement, practice?: (key: string) => void): HTMLElement {
+function clickableHeatmap(pick: (key: string | null) => void): { el: HTMLElement; select: (key: string | null) => void } {
   const kb = new KeyboardGuide(layout());
   let shifted = false;
   kb.el.classList.add('heatmap', 'clickable');
@@ -107,27 +113,28 @@ export function clickableHeatmap(p: Profile, detail: HTMLElement, practice?: (ke
     unselect();
     kb.heat(heatAccuracy(shifted), (code) => keyForCode(code, shifted));
   };
-  kb.onKeyClick((code, el) => {
+  kb.onKeyClick((code) => {
     const key = keyForCode(code, shifted);
-    if (!key) return;
-    unselect();
-    el.classList.add('selected');
-    detail.replaceChildren(keyDetail(p, key, practice));
+    if (key) pick(key);
   });
   const toggle = kb.toolKey('ShiftLeft', t('stats.shifted'), t('stats.shiftedTip'), (on) => {
     shifted = on;
     paint();
   }, true);
-  const whole = kb.toolKey('ShiftRight', icon('keyboard'), t('stats.wholeTip'), () => {
-    // Everything back to the start: the Shift symbols released too.
-    if (shifted) toggle.click();
-    unselect();
-    detail.replaceChildren(wholeKeyboard(p));
-  });
+  // Everything back to the start: the Shift symbols released too.
+  const whole = kb.toolKey('ShiftRight', icon('keyboard'), t('stats.wholeTip'), () => pick(null));
   kb.bottomSlots(toggle, whole);
   paint();
-  detail.replaceChildren(wholeKeyboard(p));
-  return h('div', { class: 'heat-host' }, kb.el);
+  const codeOf = (key: string, shift: boolean) => allKeys(layout()).find((d) => keyForCode(d.code, shift) === key)?.code;
+  const select = (key: string | null) => {
+    const code = key ? codeOf(key, shifted) : undefined;
+    const other = key && !code ? codeOf(key, !shifted) : undefined;
+    if (other || (!key && shifted)) toggle.click();
+    unselect();
+    const at = code ?? other;
+    if (at) kb.keyEl(at)?.classList.add('selected');
+  };
+  return { el: h('div', { class: 'heat-host' }, kb.el), select };
 }
 
 /** The accuracy a heat band asks over a key's last presses: from its bound up to the next band's, the top one at least, the lowest under. */
@@ -321,11 +328,16 @@ export function progressTab(p: Profile, title = true): HTMLElement {
 }
 
 /** The keyboard heat map with the check and the legend under it, the keys to practise and the details of one key (or the whole keyboard). */
-export function keysTab(p: Profile, close: () => void): HTMLElement {
+export function keysTab(p: Profile, close: () => void, start: string | null = null, onKey?: (key: string | null) => void): HTMLElement {
   const practice = (keys: string[]) => { close(); go('level', { id: 'practice', keys, seconds: DRILL_SECONDS }); };
   const detail = h('div', { class: 'key-detail-host' });
-  const heat = clickableHeatmap(p, detail, (key) => practice([key]));
-  const showKey = (key: string) => detail.replaceChildren(keyDetail(p, key, (k) => practice([k])));
+  const showKey = (key: string | null) => {
+    heat.select(key);
+    detail.replaceChildren(key ? keyDetail(p, key, showKey, (k) => practice([k])) : wholeKeyboard(p));
+    onKey?.(key);
+  };
+  const heat = clickableHeatmap(showKey);
+  showKey(start);
   const weak = weakKeys(p, activeKeys(p));
   const total = Object.values(p.stats.keys).reduce((a, s) => a + s.presses, 0);
   // The placement check measures the keys from the start of the lesson order; it only ever adds keys, so it may run any time.
@@ -336,7 +348,7 @@ export function keysTab(p: Profile, close: () => void): HTMLElement {
   return h('div', {},
     h('h3', {}, t('stats.title')),
     h('p', {}, total ? t('stats.intro', { n: STATS_WINDOW }) : t('stats.empty')),
-    heat,
+    heat.el,
     h('div', { class: 'keys-foot' }, check,
       h('p', { class: 'legend' },
         ...HEAT_BANDS.map((b, i) => h('span', { class: `lg ${b.cls}`, tip: bandTip(b.from, HEAT_BANDS[i - 1]?.from) }, `${b.mark} ${t(b.label)}`)))),

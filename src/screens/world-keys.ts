@@ -3,13 +3,14 @@ import { DRILL_SECONDS, worldKeys, worldKeysMissing, worldLock, worldName, world
 import { imageUrl } from '../gfx/assets';
 import { t } from '../i18n/i18n';
 import { LAYOUTS, allKeys } from '../keyboard/layouts';
-import { keyName } from '../keyboard/key-names';
+import { codeOfName, keyName } from '../keyboard/key-names';
 import { MASTERED_TEXT, lessonKeysFor, masteredKeyNames, notReadyKeys } from '../learning/lessons';
 import type { Profile } from '../storage/schema';
 import { button, h, icon, modal } from '../ui/dom';
 import { tip } from '../ui/tooltip';
 import { KeyboardGuide, keyLabel, namedKeyCaps, namedKeyLabel } from '../ui/keyboard-guide';
 import { openPracticeKeys } from './practice-keys';
+import { keyForCode, keyStatsCap } from './stats';
 
 /** Which letters still need accuracy before new ones open (the target range trains them); empty when none holds them back. */
 export function heldText(p: Profile): string {
@@ -40,7 +41,8 @@ export function worldKeysButton(p: Profile, world: number): HTMLElement {
  * A world's keys on the child's keyboard, and for a closed world the conditions to open it. Keys are outlined by their
  * part, not by finger: must know green, I learn orange, dashed while not mastered, solid with a check once mastered; a
  * mastered key outside the world grey. A closed world says why above the keyboard (with the short drill of its missing
- * keys, or own practice while its story waits for keys) and lists its missing keys under it.
+ * keys, or own practice while its story waits for keys) and lists its missing keys under it. A key with statistics,
+ * on the keyboard or in the list, opens them on My progress.
  */
 export function openWorldKeys(p: Profile, world: number): void {
   const need = new Set(worldKeys(p, world)), learn = new Set(worldNewKeys(p, world));
@@ -48,9 +50,14 @@ export function openWorldKeys(p: Profile, world: number): void {
   const lay = layout();
   const kb = new KeyboardGuide(lay);
   kb.el.classList.add('world-kb');
+  kb.onKeyClick((code) => {
+    const key = keyForCode(code);
+    if (key) go('progress', { tab: 'keys', key });
+  });
   for (const def of allKeys(lay)) {
     const name = keyName(lay, def.code), el = kb.keyEl(def.code);
     if (!name || !el) continue;
+    if (keyForCode(def.code)) el.dataset.stat = '';
     const known = mastered.has(name);
     if (need.has(name)) el.classList.add('wk-need');
     else if (learn.has(name)) el.classList.add('wk-learn');
@@ -66,6 +73,11 @@ export function openWorldKeys(p: Profile, world: number): void {
   if (drill) tip(drill, t('stats.drillTip', { keys: drillKeys.map(keyLabel).join(' ') }));
   const actions = [drill, lock?.kind === 'keys' ? button(t('map.practice'), () => { close(); openPracticeKeys(); }, 'btn', 'practice') : null].filter((b) => !!b);
   const held = lock?.kind === 'keys' ? heldText(p) : '';
+  // Each missing key links to its statistics, in the line of the sentence; a key without them (a dead key) is a plain cap.
+  const missingCaps = missing.flatMap((name) => {
+    const key = keyForCode(codeOfName(lay, name) ?? '');
+    return [key ? keyStatsCap(key) : namedKeyCaps(lay, [name], mastered), ' '];
+  });
   const closeModal = modal(h('div', { class: 'world-keys-panel' },
     h('h2', {}, ...(lock ? [icon('lock'), ' ', t('worldKeys.titleLocked', { world: worldName(world) })] : [t('worldKeys.titleOpen', { world: worldName(world) })])),
     lock ? h('p', { class: 'wk-lock' }, lock.kind === 'need' ? t('worldKeys.lockedByKeys') : worldLockText(p, world)) : null,
@@ -77,6 +89,6 @@ export function openWorldKeys(p: Profile, world: number): void {
       h('span', { class: 'lg wk-known' }, `✓ ${t('worldKeys.known')}`),
       h('span', { class: 'lg wk-other' }, t('worldKeys.other'))),
     h('p', { class: 'hint wk-mastered' }, t('worldKeys.solid'), h('br'), t('worldKeys.mastered', MASTERED_TEXT)),
-    missing.length ? h('div', { class: 'wk-missing' }, h('p', {}, t('worldKeys.missing')), namedKeyCaps(lay, missing, mastered)) : null,
+    missing.length ? h('p', { class: 'wk-missing' }, h('b', {}, t('worldKeys.missing')), ...missingCaps) : null,
     actions.length ? h('div', { class: 'row wk-actions' }, ...actions) : null), { cls: 'world-keys-modal' });
 }

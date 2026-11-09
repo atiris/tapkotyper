@@ -111,7 +111,7 @@ test('settings: nickname first and required, name optional, word language, key f
   await nick.blur();
   await expect(typist.locator('.child-summary .error')).not.toBeEmpty();
   expect((await stored()).companion.name).toBe('Ema');
-  const name = page.getByLabel(/^(Meno študenta|Student's name)/);
+  const name = page.getByLabel(/^(Meno pre učiteľa|Name for the teacher)/);
   await name.fill('Emka');
   await name.blur();
   expect((await stored()).name).toBe('Emka');

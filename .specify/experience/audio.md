@@ -24,6 +24,9 @@
   playing now (its world's name, or menu, relaxing, break), unless the sound is off.
 - Rytmus, the warm-up and the story scenes play their own music while shown; after them the
   music from before comes back.
+- The settings (and the translator opened from them) play nothing and have no sound button, F4 and F8
+  do nothing there; a player picked there keeps the sound level for later. On leaving, the screen
+  after them plays with the player's level, and the music from before goes on.
 
 ## Why
 - Sound supports rhythm and reward; noisy or forced audio is a common classroom complaint.
@@ -31,6 +34,8 @@
   the page silent but still plays the sound that a game needs: Rytmus is played to its music, a
   dictation is heard. Four levels are too many to guess by clicking round, so the button shows them in a list.
 - Starting silent never surprises a class, a library or a sleeping house with sound.
+- A parent changing settings, or switching between children there, should not set off one child's
+  music after another; the sound belongs to playing.
 - A phone shows a tab that plays sound even at zero volume, which looks like the switch does
   not work and keeps the audio output awake.
 - A track that starts again after every level, or jumps back to the menu between levels, cuts the

@@ -182,6 +182,7 @@ test('panel buttons answer their underlined letters, the leftmost is the default
   // A dialog with a field: the field has the focus and keeps the letters.
   await page.locator('.top-right .settings-btn').click();
   await page.locator('.confirm .btn:not(.primary)').last().click();
+  await page.locator('.tab[data-tab=data]').click();
   await page.getByRole('button', { name: /^(Preložiť hru|Translate the game)$/ }).click();
   await page.getByRole('button', { name: /^New language$/ }).click();
   const name = page.locator('.tr-dialog input').first();

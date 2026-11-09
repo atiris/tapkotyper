@@ -28,6 +28,8 @@ let shown: { name: ScreenName; params: any } | null = null;
 let visits = 0;
 /** Screens help never returns to: a level or a story would start over. */
 const NO_HELP_RETURN: ScreenName[] = ['level', 'story', 'help'];
+/** The settings and the translator opened from them play nothing; the music goes on after them. */
+const HUSHED: ScreenName[] = ['parent', 'translate'];
 
 /** App-wide state. */
 export const app = {
@@ -161,6 +163,7 @@ export function go(name: ScreenName, params: any = {}, push = true): void {
   if (name === 'help' && shown?.name !== 'help') app.helpReturn = shown && !NO_HELP_RETURN.includes(shown.name) ? shown : null;
   shown = { name, params };
   visits++;
+  audio.hush(HUSHED.includes(name));
   try { cleanup?.(); } catch (e) { console.error(e); }
   hideTip();
   closeModals();

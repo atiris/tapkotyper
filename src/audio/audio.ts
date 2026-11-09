@@ -37,6 +37,8 @@ class AudioEngine {
   level: SoundLevel = 'off';
   /** A level runs whose sound matters (Rytmus, dictation): the `important` level plays there. */
   private important = false;
+  /** A screen without sound is shown (the settings): silent whatever the level, the track waits. */
+  hushed = false;
   private track: string | null = null;
   private context: MusicContext = emptyMusicContext;
   private current: { el?: HTMLAudioElement; gain: GainNode; stop: () => void } | null = null;
@@ -100,14 +102,22 @@ class AudioEngine {
   private applyVolumes(): void {
     if (!this.ctx) return;
     const now = this.ctx.currentTime;
-    const k = levelGain(this.level, this.important);
+    const k = this.hushed ? 0 : levelGain(this.level, this.important);
     this.sfxGain.gain.setTargetAtTime(this.sfxVolume * 0.6 * k, now, 0.05);
     this.musicGain.gain.setTargetAtTime(this.musicVolume * 0.55 * k, now, 0.2);
   }
 
-  /** Nothing plays now: the level is off, or `important` outside a level whose sound matters. */
+  /** Nothing plays now: a hushed screen, the level is off, or `important` outside a level whose sound matters. */
   get silent(): boolean {
-    return levelGain(this.level, this.important) === 0;
+    return this.hushed || levelGain(this.level, this.important) === 0;
+  }
+
+  /** A screen without sound opens (true) or closes (false); the level and the track stay for later. */
+  hush(on: boolean): void {
+    if (on === this.hushed) return;
+    this.hushed = on;
+    this.applyVolumes();
+    this.silence();
   }
 
   /** A level whose sound matters starts (true) or ends (false); the `important` level wakes or sleeps with it. */

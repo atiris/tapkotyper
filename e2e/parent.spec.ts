@@ -148,3 +148,18 @@ test('the gear on the start page opens the settings without a profile; a student
   await page.locator('.switch-dialog .profile-card', { hasText: 'Nina' }).click();
   await expect(page.locator('.parent-screen .tabs .tab')).toHaveCount(5);
 });
+
+test('the settings play no sound and have no sound button; the map plays again', async ({ page }) => {
+  await createProfile(page, 'Mia');
+  await page.keyboard.press('F4');
+  await expect(page.locator('.map-screen .sound-btn')).toHaveAttribute('data-level', 'normal');
+  await page.locator('.top-right .settings-btn').click();
+  await page.locator('.confirm .btn:not(.primary)').last().click();
+  await expect(page.locator('.parent-screen')).toBeVisible();
+  await expect(page.locator('.sound-btn')).toHaveCount(0);
+  // F4 changes nothing here.
+  await page.keyboard.press('F4');
+  await page.keyboard.press('F4');
+  await page.locator('.parent-screen .bar .btn.ghost').first().click();
+  await expect(page.locator('.map-screen .sound-btn')).toHaveAttribute('data-level', 'normal');
+});

@@ -141,10 +141,12 @@ export function appShortcuts(): void {
   setDefaultShortcuts({
     help: openScreenHelp,
     sound: () => {
+      if (audio.hushed) return;
       cycleSound();
       toast(soundLabel());
     },
     track: () => {
+      if (audio.hushed) return;
       const track = audio.shuffleTrack(shownScreen() === 'level');
       if (track) toast(t('common.song', { name: trackName(track) }));
     },
@@ -157,7 +159,7 @@ export function appShortcuts(): void {
  * one), help, the theme (outside a level), fullscreen, sound. A level passes its own help.
  */
 export function globalButtons(help: HTMLButtonElement = helpButton(), theme: HTMLButtonElement | null = null): (HTMLButtonElement | null)[] {
-  return [soundButton(), fullscreenButton(), theme, help, updateButton(), superStar()];
+  return [audio.hushed ? null : soundButton(), fullscreenButton(), theme, help, updateButton(), superStar()];
 }
 
 /** The settings gear: the player's settings, or before a player is chosen the ones without a profile. */

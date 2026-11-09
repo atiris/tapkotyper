@@ -22,6 +22,7 @@ import { tipShown } from '../ui/tooltip';
 import { firstWord, onTypedWord } from '../ui/typed-word';
 import { parrotVisit } from '../ui/parrot-visit';
 import { rangeVisit } from '../ui/range-visit';
+import { treasureMap } from '../ui/treasure-map';
 import { aroPerch } from '../ui/aro';
 import { WORLD_THINGS } from '../game/modes/aim-things';
 import { ownTextPhrases } from '../game/modes/practice';
@@ -259,12 +260,14 @@ export function mapScreen(root: HTMLElement, { focus }: { focus?: 'language' } =
   if (aroArrives) aro?.arrive(tList('parrot.arrive'));
   // One greeting at a time: the install offer waits for a map without the teacher's tip.
   if (p.id !== SUPER_ID && !teacher) offerInstall(p.companion);
-  // The first word of the parrot's hint typed on the map calls a parrot over the page, the range's sends one of its things across.
+  // The first word of the parrot's hint typed on the map calls a parrot over the page, the range's sends one of its things across, the map title's opens the treasure map.
   const offParrot = onTypedWord([firstWord(t('map.parrotTip'))], parrotVisit);
   const offRange = onTypedWord([firstWord(t('map.aimTip'))], rangeVisit);
+  const offMap = onTypedWord([firstWord(t('map.title'))], treasureMap);
   return () => {
     offParrot();
     offRange();
+    offMap();
     aro?.stop();
     stopWhistle?.();
   };

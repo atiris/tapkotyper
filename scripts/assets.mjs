@@ -16,7 +16,8 @@ const OUT = 'public/assets';
 const SPRITE_MAX = 512;
 // The companions' square layers (Tapko is drawn 265 units of the 600-unit stage).
 const BIG_MAX = 640;
-// The planet's far bank is a long strip drawn at the swamp band's scale, as wide as the stage.
+// The planet's far bank is a long strip drawn at the swamp band's scale, as wide as the stage; the
+// treasure map (an easter egg on the world map) is shown almost as large as the window.
 const WIDE_MAX = 1376;
 const ICON_MAX = 512; // ui-icon is also the app icon (scripts/icons.mjs), ui-icon-hr the start page's large logo
 // The certificate frame's pieces, in assets-src/cert-src as lossless PNGs already turned for their
@@ -199,7 +200,7 @@ async function processImage(name, file, manifest) {
     return;
   }
   const box = bbox(data, w, h);
-  const max = name.startsWith('ui-icon') ? ICON_MAX : name === 'ui-cert-parrot' ? STAMP_MAX : name === 'obj-planet-bank' ? WIDE_MAX : SPRITE_MAX;
+  const max = name.startsWith('ui-icon') ? ICON_MAX : name === 'ui-cert-parrot' ? STAMP_MAX : name === 'obj-planet-bank' || name === 'ui-treasure-map' ? WIDE_MAX : SPRITE_MAX;
   const info = await webp(sharp(data, { raw: { width: w, height: h, channels: 4 } }).extract(box).resize(max, max, { fit: 'inside', withoutEnlargement: true })).toFile(join(OUT, `${name}.webp`));
   manifest.images[name] = { w: info.width, h: info.height };
 }

@@ -863,6 +863,15 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .parrot-visit { position: fixed; left: 0; top: 0; z-index: 90; width: 110px; margin: -55px 0 0 -55px; pointer-events: none; filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.25)); }
 /* A thing of the target range drifting across the page (its word typed on the map), above everything, clicks pass through. */
 .range-visit { position: fixed; left: 0; top: 0; z-index: 90; width: 90px; height: 90px; margin: -45px 0 0 -45px; object-fit: contain; pointer-events: none; filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.25)); }
+/* The treasure map (its word typed on the map): the picture almost as large as the window, the figure placed by its feet in shares of the map. */
+.modal-back > .modal.treasure-modal { width: auto; max-height: none; padding: 0; background: none; box-shadow: none; overflow: visible; }
+.modal.treasure-modal > .modal-x { z-index: 1; }
+.treasure-map { position: relative; cursor: pointer; }
+.treasure-map > img { display: block; width: min(94vw, calc(86vh * 1094 / 812)); height: auto; user-select: none; filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.3)); }
+.treasure-map > .tapko-stack { position: absolute; width: 12%; height: auto; aspect-ratio: 1; translate: -50% -92%; pointer-events: none; transform-origin: 50% 92%; }
+.treasure-map > .tapko-stack.walking { animation: waddle 0.8s ease-in-out infinite; }
+@keyframes waddle { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
+.treasure-map > .tapko-stack.rejoice { animation: jump 0.6s ease-out 3; }
 /* A flying parrot beating its wings: its four pictures in one place, each shown for a quarter of the beat; the body lifts on the downstroke and sinks while the wings rise. */
 .flying-parrot { display: grid; animation: flap-lift var(--beat) ease-in-out infinite; }
 .flying-parrot img { grid-area: 1 / 1; display: block; width: 100%; height: auto; animation: flap var(--beat) steps(1, end) infinite; animation-delay: calc(var(--beat) * (var(--i) / 4 - 1)); }

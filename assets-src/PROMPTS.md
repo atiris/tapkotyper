@@ -693,7 +693,7 @@ Generate an image: Four-point compass star
 Cute, soft 2D children's game icon, flat vector style with gentle gradients, soft dark-brown outline (not black), bold simple shapes that stay readable when very small. A single icon: a simple four-pointed star shaped like a plus sign with sharp tips, exactly FOUR points in total: one up, one down, one left, one right. There is nothing at all in the diagonal directions: no small points, no rays, no second layer of points behind, only empty background between the four points. The top point is red #E5534B; the bottom, left and right points are soft blue #5B8DD6. Each point is split lengthwise into a lighter and a darker half. A small round dark-brown pin in the middle. Strictly front view, perfectly symmetrical, not tilted. No circle, no ring, no letters, no numbers, no face, no shadow. Centered, the whole shape visible, wide empty margin. No text, no watermark. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no other objects. Square image.
 ```
 
-### ui-treasure-map.jpg (easter egg: typing "mapa" on the world map shows it, the figure walks the red line to the treasure; 2026-11-09, sixth try)
+### ui-treasure-map.jpg (easter egg: typing "mapa" on the world map shows it, the figure strolls over it and rejoices at its places; 2026-11-09, sixth try)
 The owner kept this picture although its red line has gaps and the town, forest and scrap appear twice.
 ```
 Generate an image: Treasure map

@@ -2163,6 +2163,10 @@
   "ui-start-meadow-night-low": {
    "w": 692,
    "h": 294
+  },
+  "ui-treasure-map": {
+   "w": 1094,
+   "h": 812
   }
  },
  "accessories": [

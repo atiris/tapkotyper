@@ -22,6 +22,13 @@ counts only on its own, not inside another word. Not mentioned in the help: find
 - **Map: the target range.** Typing the first word of the range's hint ("strelnica" /
   "target") sends a random thing of the target range drifting across the page from left to
   right at an easy pace, turning slowly, with a whoosh. With reduced motion it does not come.
+- **Map: the treasure map.** Typing the first word of the map's title ("mapa" / "world") opens an
+  old pirate treasure map almost as large as the window, with places of the game's worlds on it (a
+  rocket, an egg, a junkyard crane with a magnet, a town under a cloud, forests, a lake, a big tree)
+  and a red dashed line to a treasure chest. The child's own figure stands at the rocket and strolls
+  slowly over the map at random; whenever it comes to one of the places it stops and rejoices with
+  a few hops, at the treasure the most. It does not have to follow the line. It ends on a click, on
+  its close button or on Esc. With reduced motion the figure stands happy at the treasure.
 - **Map: the parrot.** Typing the first word of the parrot's hint ("papagáj" / "parrot") calls a parrot that
   flies in from one side, flutters through a few random places over the page beating its
   wings (three pictures, wings up, middle and down, played there and back, the body lifting a

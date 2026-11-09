@@ -849,6 +849,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .tapko-visit { position: fixed; left: 2vw; bottom: 3vh; z-index: 40; display: flex; align-items: center; gap: 0.6rem; max-width: calc(100vw - 4vw); cursor: pointer; animation: visit-in 1.1s cubic-bezier(0.3, 1.2, 0.5, 1) both; }
 .tapko-visit .tapko-stack { flex: none; animation: jump 0.6s ease 1.1s 2; }
 .tapko-visit .bubble { animation: pop-in 0.35s ease 1s both; }
+/* Aro, brought by clicks on the visitor, on his perch beside its feet. */
+.tapko-visit .aro-perch { --p: 110px; align-self: flex-end; margin-left: -1.2rem; }
 .tapko-visit .bubble.fade { animation: fade-in 0.6s ease reverse forwards; }
 .bubble.static.side { text-align: left; max-width: 340px; font-size: 0.98rem; }
 .bubble.static.side::before { left: -8px; top: calc(50% - 8px); }

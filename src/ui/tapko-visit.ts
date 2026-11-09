@@ -1,7 +1,7 @@
 import { reduceMotion } from '../app/app';
 import { audio } from '../audio/audio';
 import { randomOutfit, tapkoElement } from '../gfx/tapko';
-import { t } from '../i18n/i18n';
+import { allTexts, t, tList } from '../i18n/i18n';
 import { COMPANION_KINDS } from '../storage/schema';
 import { h } from './dom';
 
@@ -9,6 +9,10 @@ import { h } from './dom';
 const VISIT_SIZE = 260;
 /** Seconds the visitor's bubble stays before it fades; the visitor itself stays. */
 const BUBBLE_S = 20;
+/** Clicks on the visitor that bring Aro to sit beside it. */
+const PARROT_CLICKS = 15;
+/** Seconds between Aro's rounds over the page, at random within. */
+const ROUND_S = [25, 40];
 
 /** Sends a visitor away: it walks out to the left. */
 function walkAway(visit: Element): void {
@@ -41,6 +45,29 @@ export function tapkoVisit(host: HTMLElement): void {
   };
   const timer = window.setTimeout(hush, BUBBLE_S * 1000);
   visit.addEventListener('click', hush);
+  let clicks = 0;
+  fig.addEventListener('click', () => {
+    if (++clicks === PARROT_CLICKS) void parrotJoins(visit, fig);
+  });
   host.append(visit);
   audio.sfx('pop');
+}
+
+/**
+ * Aro flies in and sits on a perch beside the visitor; then, every while, he flies round the page and lands there
+ * again. A click on him makes him hop. It all ends when the visitor leaves.
+ */
+async function parrotJoins(visit: HTMLElement, fig: HTMLElement): Promise<void> {
+  // A first visit's start page has only its own texts and code; Aro's lines and Aro himself come only now.
+  const [{ aroPerch }] = await Promise.all([import('./aro'), allTexts()]);
+  const aro = visit.isConnected ? aroPerch(false, (a) => a.hop(), false) : null;
+  if (!aro) return;
+  fig.after(aro.el);
+  aro.arrive(tList('parrot.arrive'));
+  const round = () => {
+    if (!visit.isConnected || visit.classList.contains('out')) return aro.stop();
+    aro.flyOff(tList('parrot.takeoff'), true);
+    window.setTimeout(round, (ROUND_S[0] + Math.random() * (ROUND_S[1] - ROUND_S[0])) * 1000);
+  };
+  window.setTimeout(round, ROUND_S[0] * 1000);
 }

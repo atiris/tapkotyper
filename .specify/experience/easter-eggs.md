@@ -15,7 +15,10 @@ counts only on its own, not inside another word. Not mentioned in the help: find
   it is one of the characters the child can use on the adventures here, that without a profile
   "Nový hráč" makes one, and that it hopes they learn to type properly together. The bubble fades
   after 20 seconds or on a click; the character stays on the start page until the child leaves the
-  page, reloads it or types the greeting again, which sends it walking away.
+  page, reloads it or types the greeting again, which sends it walking away. Fifteen clicks on the
+  character bring Aro the parrot: he flies in, lands on a short perch beside its feet and greets;
+  then every half a minute or so he says he is off, flies a round over the page and lands there
+  again. A click on him makes him hop. He leaves with the character.
 - **Map: the target range.** Typing the first word of the range's hint ("strelnica" /
   "target") sends a random thing of the target range drifting across the page from left to
   right at an easy pace, turning slowly, with a whoosh. With reduced motion it does not come.

@@ -28,13 +28,15 @@ export interface AroPerch {
 
 /**
  * Aro sitting on his short wooden perch (`seated` false: the perch is empty until he arrives); `onClick`
- * gets the clicks on him. Null without the pictures.
+ * gets the clicks on him; `badge` false: he is only a visitor, not the Parrot badge. Null without the pictures.
  */
-export function aroPerch(seated: boolean, onClick: (aro: AroPerch) => void): AroPerch | null {
+export function aroPerch(seated: boolean, onClick: (aro: AroPerch) => void, badge = true): AroPerch | null {
   const wood = imageUrl('obj-parrot-perch-short');
   const sitting = imageUrl('ui-act-parrot');
   if (!wood || !sitting) return null;
-  const bird = h('button', { class: `aro ${seated ? '' : 'away'}`, type: 'button', 'aria-label': `${t('parrot.name')}: ${t('parrot.badge')}`, tip: t('parrot.badge'), onClick: () => onClick(aro) },
+  const name = t('parrot.name');
+  const label = badge ? `${name}: ${t('parrot.badge')}` : name;
+  const bird = h('button', { class: `aro ${seated ? '' : 'away'}`, type: 'button', 'aria-label': label, tip: badge ? t('parrot.badge') : name, onClick: () => onClick(aro) },
     h('img', { src: sitting, alt: '' }));
   bird.addEventListener('animationend', () => bird.classList.remove('hop'));
   const line = h('p', { class: 'tip show aro-say' });

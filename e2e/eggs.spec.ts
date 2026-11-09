@@ -38,3 +38,15 @@ test('secret words: the logo hint brings Tapko, the range hint a flying thing, t
   await expect(page.locator('.start-screen')).toBeVisible();
   expect(errors).toEqual([]);
 });
+
+
+test('fifteen clicks on the greeting character bring Aro beside it', async ({ page }) => {
+  await page.goto('./');
+  await page.locator('.start-screen').waitFor();
+  await page.keyboard.type('hi');
+  const fig = page.locator('.tapko-visit .tapko-stack');
+  for (let i = 0; i < 14; i++) await fig.click();
+  await expect(page.locator('.tapko-visit .aro-perch')).toHaveCount(0);
+  await fig.click();
+  await expect(page.locator('.tapko-visit .aro-perch .aro:not(.away)')).toBeVisible({ timeout: 15_000 });
+});

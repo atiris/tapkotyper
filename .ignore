@@ -1,0 +1,7 @@
+# Kept out of code searches (ripgrep and Claude Code's Grep honour this file); search them by naming the path.
+# Finished plans: history, never the current truth.
+.todo/.done/
+# The hand tool's generated pose data (thousands of lines of numbers).
+tools/hand-poser/rows.json
+# Word lists: thousands of words that match almost any short search.
+public/words/

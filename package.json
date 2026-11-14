@@ -6,11 +6,13 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc --noEmit && vite build",
-    "preview": "vite preview",
+    "dev": "vite --configLoader runner",
+    "build": "tsc --noEmit && vite build --configLoader runner",
+    "preview": "vite preview --configLoader runner",
     "test": "vitest run",
+    "test:affected": "node scripts/test-affected.mjs",
     "test:e2e": "playwright test",
+    "i18n": "node scripts/i18n.mjs",
     "assets": "node scripts/assets.mjs",
     "icons": "node scripts/icons.mjs"
   },

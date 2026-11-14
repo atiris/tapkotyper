@@ -1,0 +1,65 @@
+# Later stories
+
+The stories after the first, part of [the story](story.md); designed, not built yet.
+
+## What
+
+### Story 2: Bolt the Robot (*not built yet*)
+A more technical story for children who like machines. **Bolt** (Šróbik in Slovak), a
+small robot, walks next to the child in every level of this story, a second figure that never
+replaces the child's character: rusty and broken in the junkyard, repaired after it, with new legs and a
+bright antenna after the workshop, in a yellow raincoat after the rainy town. He looks
+worried at a mistake and happy at a finished word.
+
+6. **Junkyard** - Bolt beeps sadly under a pile of old things. Typed junk (tires, crates,
+   cans, springs) is lifted away by a soft magnet crane, untyped junk slides aside; the
+   pile over Bolt shrinks through the world. Super-obstacle: a big tangled cable knot,
+   untied piece by piece. Reward: Bolt climbs out, can only beep his thanks, and he and
+   the child are friends.
+7. **Workshop** - parts (gears, bolts, wheels, springs, an antenna) ride on a conveyor
+   belt; a typed part lands in Bolt's basket, the others ride on. Super-obstacle: Bolt's
+   battery, charged bar by bar by a steady rhythm. Reward: new legs and antenna.
+8. **Rain** (Dážď) - raindrops fall toward Bolt, who must not rust; a typed drop is caught
+   under the child's umbrella, a missed one lands on Bolt, who shakes like a dog and giggles
+   (no failure). Super-obstacle: a grumpy storm cloud calmed by rhythm. Reward: a raincoat
+   for Bolt and an umbrella for the child.
+9. **City** (Mesto) - locked doors with one to three password panels; typing every panel's
+   password opens the door with a chime. Super-obstacle: the main gate, whose long code
+   must be typed without a single mistake. Reward: Bolt's home key card.
+10. **Home** (Domov) - dark rooms; each typed word switches on a lamp and wakes a helper
+    robot that waves. Super-obstacle: Bolt's family welcome, little robots popping out of
+    boxes (like the friendly mole). Reward: the family thanks the child, and the
+    hero's journey opens.
+
+### Story 3: Melody the Fairy (*not built yet*)
+A gentle, musical story that is meant to appeal more to girls than the technical robot
+story, while staying open to every child, and the story where listening and remembering
+make sense: the forest has forgotten its songs and fell quiet, and each world brings one
+song back. **Melody** (Melódia in Slovak), a small fairy with shimmering wings, floats
+next to the child in every level, a second figure like Bolt that never replaces the child's character. She sings
+the words she dictates, looks curious at a mistake and hops at a finished word, and has
+a short line at the start of a level, after repeated mistakes and at its end.
+
+11. **Garden** (Záhrada) - closed buds stand along the path; a typed word opens a bud,
+    which hums one note (copy typing). Super-obstacle: the big sleeping flower, woken by
+    six short dictated words, the first taste of listening. Reward: the garden's song and
+    a flower wreath for the child.
+12. **Path** (Cestička) - birds on branches sing their words (dictation); a typed word
+    lets the bird fly along with the child, a missed one keeps singing in its tree. Super-
+    obstacle: the owl's riddles, short sentences dictated word by word. Reward: a feather.
+13. **Lake** (Jazero) - a word is reflected on the water, then a ripple washes it away
+    (memory); a word typed from memory makes a lily bloom and a frog hop across.
+    Super-obstacle: the long reflection, a whole sentence shown once and typed word by
+    word from memory. Reward: a water lily.
+14. **Tree** (Strom) - notes hang on the music tree; some sing (dictation), some glow and
+    fade (memory), in turns; a typed note flies up and the tree plays. Super-obstacle:
+    the tree's song, dictated short words to a calm steady beat. Reward: a little harp.
+15. **Ball** (Ples) - fireflies drift down carrying short sentences of three to six words
+    that Melody sings; each typed one lights the dance floor more. Super-obstacle: the
+    last song, short sentences dictated one after another, and at the end the whole
+    forest sings. Reward: the forest thanks the child and Melody gives them fairy wings, and the
+    hero's journey opens.
+
+The first level of the path and the lake starts with single short words. Without a voice
+for the language the dictation worlds play as copy typing and the tree as memory, so the
+story stays playable in any browser ([mechanics](mechanics.md)).

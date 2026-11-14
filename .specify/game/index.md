@@ -1,6 +1,8 @@
 # Game
 
 - [story.md](story.md) - the worlds and the story arc; worlds 5-15 play a placeholder until built
+- [story-dragon-egg.md](story-dragon-egg.md) - story 1, world by world: the meadow, the rocket, the planet, the valley, the egg mountain
+- [story-later.md](story-later.md) - stories 2 and 3 (Bolt the Robot, Melody the Fairy), not built yet
 - [story-1-scenario.md](story-1-scenario.md) - the story of the meadow, the rocket, the planet, the valley and the egg mountain level by level (in Slovak)
 - [mechanics.md](mechanics.md) - targets, pushing away, speedometer, pacing inside a level, the placeholder's cyclic copy
 - [free-typing.md](free-typing.md) - "Just typing": free typing in an open world, the typed word shown and said

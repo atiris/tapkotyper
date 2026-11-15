@@ -18,10 +18,16 @@
      played (type the word on the object, nothing bad happens when it gets away, every replay adds to the stars in My progress
      while the level's own stars grow only on a better result, stars come from
      accuracy, Esc pauses), the kinds of games by their standard names with one line each, each
-     with the picture the map shows for it (the target range's target, the parrot and the finale's
-     picture too; the same names as the map dots' tooltips; a new kind joins the list
-     when it is in the game; Transcribe names its first level, Bolt's program in the junkyard, Sticky finger is listed ahead of its levels (after Secret words: one finger sticks to its key while the others type, and the game waits when it lets go), Ribbon names its first level, the spell on the egg mountain's summit;
-     the finale, the fifth game of a world that may be a little different from its kind's usual variant, comes before the target range and the parrot),
+     with the picture the map shows for it (the target range's target, the parrot and the hero's
+     journey's compass too; the same names as the map dots' tooltips; a new kind joins the list
+     when it is in the game; Sticky finger is listed ahead of its levels, after Secret words). The
+     lines say what the kind trains, never which level plays it, since a kind's levels change: waiting
+     words wait, each starts with another letter and a started one is finished or dropped with
+     Backspace; copy is a row left to right where a mistake adds a few words to practise; ribbon is
+     one long continuous text with spaces and punctuation, for smooth typing of a bigger block;
+     transcribe trains keeping one's place in the original, the block typed into having another
+     width. The hero's journey (a longer, harder game combining several kinds) comes before the
+     target range and the parrot; the finale has no line of its own, it plays one of the kinds),
      then apart from the list one line with the word's clock as the levels draw it: some words must be typed
      in time, which can feel tense, but the time follows the child's own pace, then **Worlds and keys**: every
      world (also one not built yet) with its island and two rows of key caps on the language's keyboard, "Musím

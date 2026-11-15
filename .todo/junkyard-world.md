@@ -258,14 +258,14 @@ first level.
   speech bubble covers the top-left corner of the ribbon and the source screen while it shows.
 
 ### Step 5b - The pictures Gemini's limit left out
-- [ ] `obj-gear-4` (`obj-gear-box` done in step 3: the owner's closed wooden crate), `obj-tire-pile-1..3`, `obj-bin`, `obj-screw-pile`,
+- [x] `obj-gear-4` (`obj-gear-box` done in step 3: the owner's closed wooden crate), `obj-tire-pile-1..3`, `obj-bin`, `obj-screw-pile`,
   `obj-junk-pile-1..3`, `robot-broken-lying` (prompts in `assets-src/PROMPTS.md` section 7,
   "World 6 rework"). Seven were queued in the bridge on 2026-11-15 (gemini_status job ids
   gmwi4xykq24a3d8, gmwi4hrjl7383c5, gmwi4htpg27fd3f, gmwi4hvz9a6f022, gmwi4hydi6accd7,
   gmwi4i0ub180d84, gmwi4i40e408266) and may already be saved unreviewed in `assets-src/`: review
   each (subject, no face, clean magenta, whole object), redo bad ones, then the piles' stages 2-3
   with stage 1 attached; `npm run assets`, PROMPTS.md status. In a subagent.
-- [ ] Checks: the modes pick up the pictures (a screenshot of 6:1, 6:2, 6:4 in the browser).
+- [x] Checks: the modes pick up the pictures (a screenshot of 6:1, 6:2, 6:4 in the browser).
 
 - Progress (2026-11-15 20:50): Gemini's limit again; the owner paused the picture work until
   22:22. Meanwhile the gemini-bridge plugin changed (claude-workflow e55ac8b): a job that hits the
@@ -273,6 +273,10 @@ first level.
   `gemini_wait` returns at once with `limit: true`; failed jobs get **Retry** in the popup. The six
   raw pictures in `assets-src/` were partly reviewed by a stopped subagent (no verdicts kept): review
   them again from the start.
+- Progress (2026-11-15): done. Every picture reviewed; `obj-tire-pile-2` and `obj-junk-pile-2..3`
+  redone without an attachment (with stage 1 attached Gemini returned it almost unchanged), lesson
+  in PROMPTS.md. Played headless in the dev server: all five levels draw the webps (all fetched
+  200), no page errors; the piles' stages and the lying Bolt sit on the path without overlaps.
 
 ### Step 6 - Full verification and done
 - [ ] `npm run build`, `npm test`, `npm run test:affected -- --base <commit before step 1>`, the

@@ -58,7 +58,7 @@ export function contrastMisses(page: Page): Promise<ContrastMiss[]> {
         seen.add(e);
         const pos = getComputedStyle(e).position;
         if (pos !== 'absolute' && pos !== 'fixed') return e.parentElement;
-        const below = document.elementsFromPoint(x, y).find((b) => !e.contains(b) && !seen.has(b) && !b.contains(e));
+        const below = document.elementsFromPoint(x, y).find((b) => !e.contains(b) && !seen.has(b));
         return below ?? e.parentElement;
       };
       for (let e: Element | null = el; e; e = next(e)) {

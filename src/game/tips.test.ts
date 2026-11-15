@@ -10,11 +10,14 @@ describe('tips', () => {
     expect(fitting('sk-qwertz')).toEqual(LAYOUT_TIPS);
     expect(fitting('sk-qwerty')).toEqual(LAYOUT_TIPS.filter((tip) => tip !== 'yz-swap' && tip !== 'z-finger'));
     expect(fitting('us-qwerty')).toEqual([]);
+    expect(fitting('cz-qwertz')).toEqual(LAYOUT_TIPS);
+    expect(fitting('cz-qwerty')).toEqual(fitting('sk-qwerty'));
     expect(tipFits('back', LAYOUTS['us-qwerty'])).toBe(true);
   });
 
   it('names the keys of the layout', () => {
     expect(tipKeys(LAYOUTS['sk-qwertz'])).toEqual({ pinky: 'Ô', numberRow: 'ľ š č ť ž ý á í é', pinkyKeys: 'ú ä ô ň' });
     expect(tipKeys(LAYOUTS['us-qwerty']).pinky).toBe(';');
+    expect(tipKeys(LAYOUTS['cz-qwertz'])).toEqual({ pinky: 'Ů', numberRow: 'ě š č ř ž ý á í é', pinkyKeys: 'ú ů' });
   });
 });

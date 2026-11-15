@@ -28,8 +28,16 @@ const US_GROUPS = [
   ['1'], ['!'], ['2'], ['3'], ['4'], ['5'], ['6'], ['7'], ['8'], ['9'], ['0'], ['-'],
 ];
 
-/** The lesson groups of every layout; Slovak QWERTY teaches the same keys as Slovak QWERTZ. */
-const GROUPS: Record<LayoutId, string[][]> = { 'sk-qwertz': SK_GROUPS, 'sk-qwerty': SK_GROUPS, 'us-qwerty': US_GROUPS };
+/** The Slovak path with the Czech keys: `ů` on the home row, the letters on their own keys, then the dead-key ones; `)` and the diaeresis are not taught. */
+const CZ_GROUPS = [
+  ['f', 'j', SPACE], ['d', 'k'], ['s', 'l'], ['a', 'ů'], ['g', 'h'], ['e', 'i'], ['r', 'u'], ['.'], ['o'], ['t'], ['n'], [','], ['c'], ['v'], ['m'], ['p'], [SHIFT_L],
+  ['b'], ['z'], [SHIFT_R], ['y'], ['w'], ['x'], ['q'], ['?'], ['-'],
+  ['á'], ['!'], [':'], ['í'], ['é'], ['ý'], ['ž'], ['ř'], ['č'], ['š'], ['ě'], ['ú'], ['ď'], ['ť'], ['ň'], ['ó'],
+  ['1'], ['2'], ['3'], ['4'], ['5'], ['6'], ['7'], ['8'], ['9'], ['0'],
+];
+
+/** The lesson groups of every layout; the QWERTY layouts teach the same keys as their QWERTZ ones. */
+const GROUPS: Record<LayoutId, string[][]> = { 'sk-qwertz': SK_GROUPS, 'sk-qwerty': SK_GROUPS, 'cz-qwertz': CZ_GROUPS, 'cz-qwerty': CZ_GROUPS, 'us-qwerty': US_GROUPS };
 
 /** Every letter beyond plain `a-z` that some layout types: what "words without diacritics" leaves out. */
 export const DIACRITICS = new Set(Object.values(LAYOUTS).flatMap((l) => [...diacritics(l)]));

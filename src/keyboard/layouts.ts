@@ -46,6 +46,11 @@ const CARON: Record<string, string> = { c: 'č', d: 'ď', l: 'ľ', n: 'ň', s: '
 const withCapitals = (m: Record<string, string>) =>
   Object.fromEntries(Object.entries(m).flatMap(([a, b]) => [[a, b], [a.toUpperCase(), b.toUpperCase()]]));
 
+/** A layout drawn on another one's keys: the same rows and fingers, these keys typing other characters. */
+function relabel(from: Layout, id: LayoutId, dead: Layout['dead'], keys: Record<string, [base: string, shift: string]>): Layout {
+  return { id, dead, rows: from.rows.map((row) => row.map((d) => (keys[d.code] ? { ...d, base: keys[d.code][0], shift: keys[d.code][1] } : d))) };
+}
+
 /** Every row is 15 key units wide, as on a real keyboard. */
 const SK: Layout = {
   id: 'sk-qwertz',
@@ -66,12 +71,22 @@ const SK: Layout = {
 };
 
 /** Slovak QWERTY: the Slovak layout with Y and Z in the English places. */
-const SK_QWERTY: Layout = {
-  id: 'sk-qwerty',
-  dead: SK.dead,
-  rows: SK.rows.map((row) => row.map((d) =>
-    d.code === 'KeyY' ? { ...d, base: 'y', shift: 'Y' } : d.code === 'KeyZ' ? { ...d, base: 'z', shift: 'Z' } : d)),
-};
+const SK_QWERTY = relabel(SK, 'sk-qwerty', SK.dead, { KeyY: ['y', 'Y'], KeyZ: ['z', 'Z'] });
+
+const CS_ACUTE: Record<string, string> = { a: 'á', e: 'é', i: 'í', o: 'ó', u: 'ú', y: 'ý' };
+const CS_CARON: Record<string, string> = { c: 'č', d: 'ď', e: 'ě', n: 'ň', r: 'ř', s: 'š', t: 'ť', z: 'ž' };
+
+/**
+ * Czech QWERTZ (Windows "Czech", KBDCZ) on the Slovak keys: other letters on the digit row, `ú ) ů` and a dead
+ * diaeresis for the right little finger, the ring for `Ů` on Shift left of 1. The diaeresis composes no Czech letter.
+ */
+const CZ = relabel(SK, 'cz-qwertz', { acute: withCapitals(CS_ACUTE), caron: withCapitals(CS_CARON), ring: withCapitals({ u: 'ů' }), diaeresis: {} }, {
+  Backquote: [';', 'dead:ring'], Digit2: ['ě', '2'], Digit5: ['ř', '5'],
+  BracketRight: [')', '('], Semicolon: ['ů', '"'], Backslash: ['dead:diaeresis', "'"],
+});
+
+/** Czech QWERTY (Windows "Czech (QWERTY)", KBDCZ1): the Czech layout with Y and Z in the English places. */
+const CZ_QWERTY = relabel(CZ, 'cz-qwerty', CZ.dead, { KeyY: ['y', 'Y'], KeyZ: ['z', 'Z'] });
 
 const US: Layout = {
   id: 'us-qwerty',
@@ -91,7 +106,7 @@ const US: Layout = {
   ],
 };
 
-export const LAYOUTS: Record<LayoutId, Layout> = { 'sk-qwertz': SK, 'sk-qwerty': SK_QWERTY, 'us-qwerty': US };
+export const LAYOUTS: Record<LayoutId, Layout> = { 'sk-qwertz': SK, 'sk-qwerty': SK_QWERTY, 'cz-qwertz': CZ, 'cz-qwerty': CZ_QWERTY, 'us-qwerty': US };
 
 export const LAYOUT_IDS = Object.keys(LAYOUTS) as LayoutId[];
 
@@ -109,7 +124,7 @@ export function keyByCode(layout: Layout, code: string): KeyDef | undefined {
   return allKeys(layout).find((d) => d.code === code);
 }
 
-/** The key under the right little finger on the home row (`ô`, `;`): targets end with Enter once it is known. */
+/** The key under the right little finger on the home row (`ô`, `ů`, `;`): targets end with Enter once it is known. */
 export function enterAfter(layout: Layout): string {
   return layout.rows[2].find((d) => d.finger === 9)!.base;
 }

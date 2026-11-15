@@ -3,9 +3,9 @@ import { detectLanguage, isLang } from '../i18n/i18n';
 import { isOwnRef, ownId, ownLang } from '../i18n/own-langs';
 import { LAYOUTS, type Layout, canType } from '../keyboard/layouts';
 import { DIACRITICS, SHIFT_L, SHIFT_R, SPACE, isLetterKey, shiftKeyOf } from '../learning/lessons';
-import type { Lang, LangRef, OwnMix } from '../storage/schema';
+import type { LangRef, OwnMix } from '../storage/schema';
 
-const VOWELS = new Set([...'aeiouyáéíóúýäô']);
+const VOWELS = new Set([...'aeiouyáéíóúýäôěů']);
 export const DIGITS = new Set([...'0123456789']);
 /** Pseudo-words must not contain these (sk + en). */
 const BLOCK = ['sex', 'fuck', 'shit', 'piss', 'kurv', 'pič', 'kokot', 'jeb', 'hovn', 'debil', 'srat', 'prd', 'ass', 'dick', 'cock', 'fag', 'nazi', 'kill', 'dead', 'hitl', 'nig', 'cum', 'tit', 'pis', 'kret', 'idiot', 'hnus', 'smrt'];
@@ -38,36 +38,44 @@ export function gameWords(words: string[], layout: Layout): string[] {
   return [...new Set(words.map((w) => w.normalize('NFC').toLowerCase()))].filter((w) => w && [...w].every((c) => canType(layout, c)));
 }
 
-/** Slovak sounds as a dictation hears them: `ch`, `dz` and `dž` are one sound each. */
-const SK_SOUND = /ch|dz|dž|./gu;
+/** Sounds as a dictation hears them (Slovak and Czech): `ch`, `dz` and `dž` are one sound each. */
+const SOUND = /ch|dz|dž|./gu;
 /** Voiced consonants with a voiceless pair; they sound voiceless at the end of a word or before a voiceless one. */
-const SK_VOICED = new Set(['b', 'd', 'ď', 'g', 'h', 'z', 'ž', 'dz', 'dž']);
-const SK_VOICELESS = new Set(['p', 't', 'ť', 'k', 'ch', 's', 'š', 'c', 'č', 'f']);
-/** Consonants after which the ear cannot tell i from y. */
-const SK_BOTH_WAYS = new Set([...'bflmprsvz']);
-const SK_IY = new Set([...'iíyý']);
+const VOICED = new Set(['b', 'd', 'ď', 'g', 'h', 'z', 'ž', 'dz', 'dž']);
+const VOICELESS = new Set(['p', 't', 'ť', 'k', 'ch', 's', 'š', 'c', 'č', 'f']);
+const IY = new Set([...'iíyý']);
 
-/** Slovak: no voiced consonant at the end, no voicing pair of mixed voicing side by side, and no i or y after a consonant that takes both. */
-function skHeardSafe(word: string): boolean {
-  const sounds = word.match(SK_SOUND) ?? [];
+/**
+ * No voiced consonant at the end, no voicing pair of mixed voicing side by side, and no i or y after a consonant that
+ * takes both (`bothWays`). `v` turns voiceless itself but voices nothing before it; `ř` counts as neither.
+ */
+function voicingSafe(word: string, bothWays: Set<string>): boolean {
+  const sounds = word.match(SOUND) ?? [];
   const last = sounds[sounds.length - 1];
-  if (last && (SK_VOICED.has(last) || last === 'v')) return false;
+  if (last && (VOICED.has(last) || last === 'v')) return false;
   for (let i = 1; i < sounds.length; i++) {
     const [a, b] = [sounds[i - 1], sounds[i]];
-    if ((SK_VOICED.has(a) || a === 'v') && SK_VOICELESS.has(b)) return false;
-    if (SK_VOICELESS.has(a) && SK_VOICED.has(b)) return false;
-    if (SK_BOTH_WAYS.has(a) && SK_IY.has(b)) return false;
+    if ((VOICED.has(a) || a === 'v') && VOICELESS.has(b)) return false;
+    if (VOICELESS.has(a) && VOICED.has(b)) return false;
+    if (bothWays.has(a) && IY.has(b)) return false;
   }
   return true;
 }
 
-/** The dictation rules per language; a language without rules says every word. */
-const HEARD_SAFE: Partial<Record<Lang, (word: string) => boolean>> = { sk: skHeardSafe };
+const SK_BOTH_WAYS = new Set([...'bflmprsvz']);
+const CS_BOTH_WAYS = new Set([...'bflmpsvz']);
+/** Czech letters the ear cannot tell from another spelling: `ů` and `ú` (one sound), `ě` after b p v f m (`oběd` and `objem`). */
+const CS_UNHEARD = /[ůú]|[bpvfm]ě/u;
+
+/** The dictation rules per language code; a language without rules says every word. */
+const HEARD_SAFE: Record<string, (word: string) => boolean> = {
+  sk: (w) => voicingSafe(w, SK_BOTH_WAYS),
+  cs: (w) => !CS_UNHEARD.test(w) && voicingSafe(w, CS_BOTH_WAYS),
+};
 
 /** The spelling of a word follows from hearing it, so a dictation may say it. */
-export function heardSafe(word: string, lang?: LangRef): boolean {
-  const rule = lang && isLang(lang) ? HEARD_SAFE[lang] : undefined;
-  return rule ? rule(word) : true;
+export function heardSafe(word: string, lang?: string): boolean {
+  return lang && Object.hasOwn(HEARD_SAFE, lang) ? HEARD_SAFE[lang](word) : true;
 }
 
 export function isBlocked(word: string): boolean {

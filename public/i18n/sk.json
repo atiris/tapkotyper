@@ -87,11 +87,15 @@
   "layouts": {
     "sk-qwertz": "slovenská (QWERTZ)",
     "sk-qwerty": "slovenská (QWERTY)",
+    "cz-qwertz": "česká (QWERTZ)",
+    "cz-qwerty": "česká (QWERTY)",
     "us-qwerty": "anglická US (QWERTY)"
   },
   "layoutsShort": {
     "sk-qwertz": "SK QWERTZ",
     "sk-qwerty": "SK QWERTY",
+    "cz-qwertz": "CZ QWERTZ",
+    "cz-qwerty": "CZ QWERTY",
     "us-qwerty": "US QWERTY"
   },
   "kbSettings": {

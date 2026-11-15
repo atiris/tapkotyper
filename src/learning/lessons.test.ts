@@ -37,6 +37,20 @@ describe('lesson order', () => {
     expect(shiftKeyOf(LAYOUTS['sk-qwertz'], '?')).toBeNull();
   });
 
+  it('walks the Slovak path with the Czech keys, every key typable', () => {
+    const cz = lessonOrder('cz-qwertz');
+    expect(cz.slice(0, 9)).toEqual(['f', 'j', ' ', 'd', 'k', 's', 'l', 'a', 'ů']);
+    expect(lessonOrder('cz-qwerty')).toEqual(cz);
+    expect(cz.slice(cz.indexOf('á'))).toEqual([...'á!:íéýžřčšěúďťňó1234567890']);
+    expect(enterAfter(LAYOUTS['cz-qwertz'])).toBe('ů');
+    for (const id of ['cz-qwertz', 'cz-qwerty'] as const) {
+      const keys = lessonOrder(id).filter((k) => k.length === 1);
+      expect(new Set(keys).size).toBe(keys.length);
+      for (const k of keys) expect(fingerFor(LAYOUTS[id], k), k).not.toBeNull();
+    }
+    expect(cz).not.toContain(')');
+  });
+
   it('teaches Slovak diacritics but not on the US layout', () => {
     expect(lessonOrder('sk-qwertz')).toContain('ľ');
     expect(lessonOrder('us-qwerty')).not.toContain('ľ');

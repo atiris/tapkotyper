@@ -67,7 +67,7 @@ export function keyLabel(key: string): string {
 }
 
 /** The marks of the dead keys, as their caps show them. */
-const DEAD_MARKS: Record<string, string> = { 'dead:acute': '´', 'dead:caron': 'ˇ' };
+const DEAD_MARKS: Record<string, string> = { 'dead:acute': '´', 'dead:caron': 'ˇ', 'dead:ring': '°', 'dead:diaeresis': '¨' };
 
 /** A key named by place (keyName) as its cap on the layout: its character, a digit on Shift small under it, the Shifts and space by name. */
 export function namedKeyLabel(layout: Layout, name: string): { main: string; small: string } {
@@ -136,8 +136,11 @@ export function chipOf(f: Finger): HTMLElement {
 /** Signs of the keys drawn only for the keyboard's shape (the upper part of an L-shaped Enter has none). */
 const SHAPE_LABELS: Record<string, string> = { tab: '⇥', caps: '⇪', backspace: '⌫', 'enter-top': '' };
 
+const isDead = (ch: string): boolean => ch.startsWith('dead:');
+const deadMark = (ch: string): string => DEAD_MARKS[ch] ?? ch;
+
 function label(base: string, shift: string): string {
-  if (base === 'dead:acute') return '´ ˇ';
+  if (isDead(base)) return isDead(shift) ? `${deadMark(base)} ${deadMark(shift)}` : deadMark(base);
   if (base === 'shift') return '⇧';
   if (base in SHAPE_LABELS) return SHAPE_LABELS[base];
   if (base === ' ') return '';
@@ -212,7 +215,7 @@ export class KeyboardGuide {
         k.style.setProperty('--next-bg', textBg);
         k.style.setProperty('--next-ink', textInk);
         k.innerHTML = `<span class="kb-label">${zeroDot(label(def.base, def.shift))}</span>` +
-          (typesChar(def) && def.base !== ' ' ? `<span class="kb-shift">${def.base.startsWith('dead') || def.shift.toLowerCase() === def.base ? '' : zeroDot(def.shift)}</span>` : '');
+          (typesChar(def) && def.base !== ' ' ? `<span class="kb-shift">${isDead(def.base) && isDead(def.shift) || def.shift.toLowerCase() === def.base ? '' : zeroDot(deadMark(def.shift))}</span>` : '');
         r.appendChild(k);
         this.keys.set(def.code, k);
       }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { LAYOUTS, LayoutMismatchDetector, diacritics, fingerFor, hasDeadKeys, homeKey, lettersOnDigitRow, pinkyLetters, rowPresets, stepsFor, swapsYZ } from './layouts';
+import { LAYOUTS, LayoutMismatchDetector, allKeys, canType, diacritics, fingerFor, hasDeadKeys, homeKey, keyByCode, lettersOnDigitRow, pinkyLetters, rowPresets, sameCharacters, stepsFor, swapsYZ } from './layouts';
 
 const sk = LAYOUTS['sk-qwertz'];
 const us = LAYOUTS['us-qwerty'];
@@ -81,5 +81,56 @@ describe('layouts', () => {
     expect(rowPresets(sk)).toEqual({ home: 'fjdkslaô', top: 'qwertzuiop', bottom: 'yxcvbnm' });
     expect(rowPresets(LAYOUTS['sk-qwerty'])).toEqual({ home: 'fjdkslaô', top: 'qwertyuiop', bottom: 'zxcvbnm' });
     expect(rowPresets(us)).toEqual({ home: 'fjdksla;', top: 'qwertyuiop', bottom: 'zxcvbnm' });
+    expect(rowPresets(cz)).toEqual({ home: 'fjdkslaů', top: 'qwertzuiop', bottom: 'yxcvbnm' });
+    expect(rowPresets(czY)).toEqual({ home: 'fjdkslaů', top: 'qwertyuiop', bottom: 'zxcvbnm' });
+  });
+});
+
+const cz = LAYOUTS['cz-qwertz'];
+const czY = LAYOUTS['cz-qwerty'];
+
+describe('Czech layouts', () => {
+  it('type every Czech letter, small and capital', () => {
+    for (const l of [cz, czY]) for (const ch of 'aábcčdďeéěfghiíjklmnňoópqrřsštťuúůvwxyýzž') {
+      expect(canType(l, ch), ch).toBe(true);
+      expect(canType(l, ch.toUpperCase()), ch.toUpperCase()).toBe(true);
+    }
+  });
+
+  it('put ě and ř on the digit row and the Slovak fingers on the same keys', () => {
+    expect(stepsFor(cz, 'ě')).toEqual([{ code: 'Digit2', shift: false }]);
+    expect(stepsFor(cz, 'ř')).toEqual([{ code: 'Digit5', shift: false }]);
+    expect(stepsFor(cz, '2')).toEqual([{ code: 'Digit2', shift: true }]);
+    expect(lettersOnDigitRow(cz).join('')).toBe('ěščřžýáíé');
+    for (const d of allKeys(cz)) expect(d.finger, d.code).toBe(keyByCode(sk, d.code)!.finger);
+    expect(homeKey(cz, 9)).toBe('ů');
+    expect(pinkyLetters(cz).join('')).toBe('úů');
+  });
+
+  it('type the dead-key letters in two steps, Ů through the ring on Shift left of 1', () => {
+    expect(stepsFor(cz, 'ď')).toEqual([{ code: 'Equal', shift: true }, { code: 'KeyD', shift: false }]);
+    expect(stepsFor(cz, 'ó')).toEqual([{ code: 'Equal', shift: false }, { code: 'KeyO', shift: false }]);
+    expect(stepsFor(cz, 'Ě')).toEqual([{ code: 'Equal', shift: true }, { code: 'KeyE', shift: true }]);
+    expect(stepsFor(cz, 'Ů')).toEqual([{ code: 'Backquote', shift: true }, { code: 'KeyU', shift: true }]);
+    expect(stepsFor(cz, ')')).toEqual([{ code: 'BracketRight', shift: false }]);
+    expect(canType(cz, 'ľ')).toBe(false);
+  });
+
+  it('differ only by Y and Z', () => {
+    expect(sameCharacters(cz, czY)).toBe(true);
+    expect(sameCharacters(cz, sk)).toBe(false);
+    expect([cz, czY].map(swapsYZ)).toEqual([true, false]);
+    expect(stepsFor(czY, 'z')).toEqual([{ code: 'KeyZ', shift: false }]);
+  });
+
+  it('tell a Czech keyboard on a Slovak profile and back', () => {
+    const onSk = new LayoutMismatchDetector('sk-qwertz');
+    expect(onSk.observe('Digit2', 'ě', false)).toBeNull();
+    expect(onSk.observe('Digit5', 'ř', false)).toBeNull();
+    expect(onSk.observe('Semicolon', 'ů', false)).toBe('cz-qwertz');
+    const onCz = new LayoutMismatchDetector('cz-qwertz');
+    expect(onCz.observe('Digit2', 'ľ', false)).toBeNull();
+    expect(onCz.observe('Digit5', 'ť', false)).toBeNull();
+    expect(onCz.observe('Semicolon', 'ô', false)).toBe('sk-qwertz');
   });
 });

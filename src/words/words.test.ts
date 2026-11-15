@@ -276,7 +276,15 @@ describe('heardSafe', () => {
     for (const w of ['mama', 'noha', 'sklo', 'stĺp', 'ruka', 'kino', 'tyč', 'tvoj', 'chata', 'medzi']) expect(heardSafe(w, 'sk'), w).toBe(true);
   });
 
-  it('checks only Slovak', () => {
+  it('rejects Czech words whose spelling the ear cannot decide', () => {
+    for (const w of ['dub', 'hrad', 'lev', 'vtip', 'kde', 'byt', 'mile', 'sýr', 'dům', 'úkol', 'oběd', 'město', 'pěna', 'svět']) expect(heardSafe(w, 'cs'), w).toBe(false);
+  });
+
+  it('keeps Czech words the ear spells, ř and r with y included', () => {
+    for (const w of ['mama', 'noha', 'sklo', 'ruka', 'kino', 'ryba', 'řeka', 'tři', 'keř', 'chata', 'dělat', 'těla', 'nese']) expect(heardSafe(w, 'cs'), w).toBe(true);
+  });
+
+  it('checks only Slovak and Czech', () => {
     expect(heardSafe('dub', 'en')).toBe(true);
     expect(heardSafe('dub')).toBe(true);
   });

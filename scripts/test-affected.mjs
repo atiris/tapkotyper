@@ -22,7 +22,7 @@ const RULES = [
   [/^src\/game\/(modes\/parrot|parrots)|^src\/ui\/parrot-visit/, ['parrot']],
   [/^src\/(game\/modes|learning)\/placement/, ['placement']],
   [/^src\/game\/modes\/(practice|copy-loop)|^src\/screens\/practice-keys/, ['practice-keys']],
-  [/^src\/game\/modes\/(dragons|egg|space|planet|meadow|launch)|^src\/game\/modes\/kit\//, ['journey', 'play']],
+  [/^src\/game\/modes\/(dragons|egg|space|planet|meadow|launch|junkyard)|^src\/game\/modes\/kit\//, ['journey', 'play']],
   [/^src\/game\/(modes\/kit\/hold|runtime\/hold)/, ['sticky']],
   [/^src\/game\/(modes\/task|task-play)|^src\/screens\/(task|tasks|teacher)|^src\/share\/|^src\/ui\/task-/, ['teacher-links', 'teacher-scan']],
   [/^src\/ui\/(camera|qr-scanner|big-code)/, ['teacher-scan']],

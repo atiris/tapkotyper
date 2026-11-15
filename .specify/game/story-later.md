@@ -18,10 +18,10 @@ he lies under the pile, and only the levels that find and wake him draw him.
    of its own that ends in the level; the same junkyard background (rows of piles, a crane far
    back, springs and bolts in front) in all five.
    1. *Sorting the gears* (word stream): gears of four kinds roll in along the path toward a
-      cardboard box with a gear sign, under a magnet on a crane cable. A typed gear hops up and
+      wooden crate with a gear sign, under a magnet on a crane cable. A typed gear hops up and
       rolls into the box; a missed one rolls past the character and away, and two more gears
       join the level (at most 10 words added), which the narrator explains the first time. A
-      missed gear is more practice, never a failure. At the end the box closes its flaps.
+      missed gear is more practice, never a failure. At the end the crate is full.
    2. *The pile of tires* (waiting words, calm step): a big pile of old tires blocks the path,
       a bin stands behind it. Two or three tires at its foot carry a word each; a typed tire
       rolls into the bin and a new one rolls down. The pile shrinks in three stages with the

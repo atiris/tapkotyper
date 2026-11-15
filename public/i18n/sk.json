@@ -1096,6 +1096,19 @@
     "spellSlip": "Chybička! Do kúzla pribudlo slovo.",
     "spellCareful": "Pozor, kúzlo musí byť presné!",
     "spellHello": "Ahoj!",
+    "gearsStart": [
+      "Prvá úloha na šrotisku: **roztrieď kolieska**. Kotúľajú sa k tebe po chodníku a nad každým je slovo. Keď ho napíšeš, magnet koliesko nadvihne a to sa skotúľa rovno do debny. Ak ti nejaké ujde, nič sa nedeje, len pribudnú ďalšie."
+    ],
+    "gearsLonger": "Koliesko ušlo, pribudnú dve ďalšie.",
+    "gearsDone": [
+      "Debna je plná koliesok!"
+    ],
+    "tiresStart": [
+      "Cestu ďalej zatarasila **veľká kopa starých pneumatík**. Pri jej päte ležia pneumatiky so slovami. Vyber si ktorúkoľvek a napíš jej slovo: pneumatika sa odkotúľa do koša a z kopy sa skotúľa ďalšia. Nikam sa neponáhľaj, pneumatiky počkajú."
+    ],
+    "tiresDone": [
+      "Kopa je preč, cesta je voľná!"
+    ],
     "copyLoopStart": "Táto úroveň sa ešte pripravuje. Zatiaľ si tu precvičíš odpis: píš slová zo stredu, kým neuplynie čas.",
     "copyLoopSoon": "Pripravuje sa",
     "copyLoopCount": "napísané: {n}",

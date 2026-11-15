@@ -278,6 +278,10 @@
       "title": "Lines of the egg mountain",
       "about": "Opening lines, shouts and end lines of the egg mountain's levels: the wind on the slope, sticky puddles, the mountain crossroads, rolling boulders and the spell of awakening on the summit."
     },
+    "story-junkyard": {
+      "title": "Lines of the junkyard",
+      "about": "Opening lines, the narrator's lines and end lines of the junkyard's levels, where the child sorts the junk and finds Bolt: the gears, the tire pile."
+    },
     "story-placeholder": {
       "title": "Worlds still being made",
       "about": "The card line, the small sign, the counter and the end line of the copying game that every level of a world not built yet plays for now."
@@ -909,6 +913,11 @@
     "story.spellSlip": "The narrator, the first time the spell has a slip: the word starts again and one new word was added to the spell.",
     "story.spellCareful": "A rare reminder after later slips in the spell: it must be exact.",
     "story.spellHello": "What the little dragon says when it hatches and hops out of the hearth to the character at the end of the spell: just a short hello.",
+    "story.gearsStart": "Opening line of the gears level in the junkyard (world 6, level 1): gears roll toward the character along the path; a typed one is lifted by the magnet and rolls into the wooden crate, a missed one just rolls away and two more come.",
+    "story.gearsLonger": "The narrator, the first time a gear rolls past the crate untyped: two more gears were added to the level.",
+    "story.gearsDone": "Line at the end of the gears level: the last gear dropped into the crate, which is full now; one is picked at random.",
+    "story.tiresStart": "Opening line of the tire pile level (world 6, level 2, a calm step): a big pile of old tires blocks the path; tires with a word each lie at its foot, a typed one rolls off into a bin and another rolls down from the pile; nothing hurries the child.",
+    "story.tiresDone": "Line at the end of the tire pile level: the pile is gone and the way is clear, the character walks on; one is picked at random.",
     "story.copyLoopStart": "Line on the get-ready card of every level of a world not built yet: the level is still being made, for now the child copies the words in the middle until the time is up.",
     "story.copyLoopSoon": "Small words on the sign at the top of such a level, under the world's name: the world is still being made.",
     "story.copyLoopCount": "Small counter under the panel of such a level; {n} is the number of words typed.",

@@ -332,7 +332,7 @@ export class LevelRuntime {
   }
 
   get tapkoOnStage(): boolean {
-    return ['freetype', 'aim', 'rhythm', 'swamp', 'crossroads', 'greatswamp', 'wind', 'mud', 'boulders', 'spell', 'doors', 'gate', 'rooms', 'buds', 'flower', 'owl', 'lilies', 'reflection', 'space', 'hop', 'command', 'asteroid'].includes(this.def.kind);
+    return ['freetype', 'aim', 'rhythm', 'swamp', 'crossroads', 'greatswamp', 'wind', 'mud', 'boulders', 'spell', 'gears', 'tires', 'doors', 'gate', 'rooms', 'buds', 'flower', 'owl', 'lilies', 'reflection', 'space', 'hop', 'command', 'asteroid'].includes(this.def.kind);
   }
 
   /** Preparation: assets, new keys, the get-ready card with the tip and its password, then play. */

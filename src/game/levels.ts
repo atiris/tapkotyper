@@ -116,6 +116,7 @@ export type LevelKind =
   | 'swamp' | 'crystals' | 'crossroads' | 'spells' | 'greatswamp'
   | 'flames' | 'thicket' | 'flight' | 'lullaby' | 'takeoff'
   | 'wind' | 'mud' | 'boulders' | 'spell'
+  | 'gears' | 'tires'
   | 'copyloop'
   | 'practice' | 'freetype' | 'aim' | 'parrot' | 'rhythm' | 'task' | 'placement';
 
@@ -169,8 +170,8 @@ const SUPER_SHARE = 1.25;
 /** Words a minute of a slow but practising child, by the story's tier: the words a level asks for in its minimum. */
 const STORY_WPM = [8, 10, 12];
 
-/** The calm steps of the world rhythm: waiting words (the meadow's poppies, the rocket world's meteors to hop on, the planet's swamp, the mountain's sticky puddles) and the valley's overgrown path. */
-const CALM_KINDS: LevelKind[] = ['poppies', 'hop', 'swamp', 'thicket', 'mud'];
+/** The calm steps of the world rhythm: waiting words (the meadow's poppies, the rocket world's meteors to hop on, the planet's swamp, the mountain's sticky puddles, the junkyard's tire pile) and the valley's overgrown path. */
+const CALM_KINDS: LevelKind[] = ['poppies', 'hop', 'swamp', 'thicket', 'mud', 'tires'];
 /** Copy levels: a growing or a clean line, and the mountain's spell ribbon. */
 const COPY_KINDS: LevelKind[] = ['invitation', 'command', 'spells', 'lullaby', 'spell', 'copyloop'];
 
@@ -306,8 +307,10 @@ export const LEVELS: LevelDef[] = [
   def(3, 0, 'flames'), def(3, 1, 'thicket'), def(3, 2, 'flight'), def(3, 3, 'lullaby'), def(3, 4, 'takeoff'),
   // The egg's mountain: the wind on the slope, sticky puddles (calm), crossroads, boulders, the spell of awakening (the first ribbon).
   def(4, 0, 'wind'), def(4, 1, 'mud'), def(4, 2, 'crossroads', 'mountain'), def(4, 3, 'boulders'), def(4, 4, 'spell'),
-  // Worlds 6-15 are not built yet: every level plays the placeholder, cyclic copy, until its world is redone.
-  ...WORLDS.slice(5).flatMap((_, w) => [0, 1, 2, 3, 4].map((i) => def(w + 5, i, 'copyloop'))),
+  // The junkyard: sorting the gears (a stream), the tire pile (calm); its other levels still play the placeholder.
+  def(5, 0, 'gears'), def(5, 1, 'tires'), def(5, 2, 'copyloop'), def(5, 3, 'copyloop'), def(5, 4, 'copyloop'),
+  // Worlds 7-15 are not built yet: every level plays the placeholder, cyclic copy, until its world is redone.
+  ...WORLDS.slice(6).flatMap((_, w) => [0, 1, 2, 3, 4].map((i) => def(w + 6, i, 'copyloop'))),
 ];
 
 export function levelById(id: string): LevelDef | undefined {

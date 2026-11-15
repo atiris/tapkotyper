@@ -32,6 +32,8 @@ const MODES: Record<LevelKind, (def: ModeDef) => Promise<ModeMaker>> = {
   mud: () => import('./modes/egg').then((m) => (L) => new m.MudMode(L)),
   boulders: () => import('./modes/egg').then((m) => (L) => new m.BouldersMode(L)),
   spell: () => import('./modes/egg-spell').then((m) => (L) => new m.SpellRibbonMode(L)),
+  gears: () => import('./modes/junkyard').then((m) => (L) => new m.GearsMode(L)),
+  tires: () => import('./modes/junkyard').then((m) => (L) => new m.TiresMode(L)),
   copyloop: () => import('./modes/copy-loop').then((m) => (L) => new m.CopyLoopMode(L)),
   practice: (def) => import('./modes/practice').then((m) => (L) => new m.PracticeMode(L, def.seconds ?? null, def.phrases ?? null)),
   freetype: () => import('./modes/freetype').then((m) => (L) => new m.FreeTypeMode(L)),

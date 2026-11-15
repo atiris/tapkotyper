@@ -22,6 +22,7 @@ const { FlightMode, LullabyMode, TakeoffMode, shortenLine, takeoffPlan } = await
 const { BouldersMode, MudMode, WindMode } = await import('./egg');
 const { SpellRibbonMode } = await import('./egg-spell');
 const { LaunchMode } = await import('./launch');
+const { GearsMode, TiresMode } = await import('./junkyard');
 
 /** A level runtime with just enough to run a mode: words are fixed, every other call does nothing. */
 function fakeRuntime(count = 4): LevelRuntime {
@@ -65,6 +66,7 @@ const MODES: [string, new (L: LevelRuntime) => Mode][] = [
   ['swamp', SwampMode], ['crystals', CrystalsMode], ['crossroads', CrossroadsMode], ['spells', SpellMode], ['greatswamp', GreatSwampMode], ['copyloop', CopyLoopMode],
   ['flames', FlamesMode], ['thicket', ThicketMode], ['flight', FlightMode], ['lullaby', LullabyMode], ['takeoff', TakeoffMode],
   ['wind', WindMode], ['mud', MudMode], ['boulders', BouldersMode], ['spell', SpellRibbonMode],
+  ['gears', GearsMode], ['tires', TiresMode],
 ];
 
 describe('no typing, no progress', () => {
@@ -1116,5 +1118,32 @@ describe('the egg mountain', () => {
     const word = 60 / WPM[0];
     const slow = play(def, CrossroadsMode, word / 5, word);
     expect(slow.end).toBeGreaterThanOrEqual(slow.min);
+  });
+});
+
+describe('the junkyard', () => {
+  it('a missed gear adds two gears and their time, at most ten words in the level', async () => {
+    const { MISS_GEARS, GEARS_MAX_WORDS } = await import('./junkyard');
+    const { secondsPerWord } = await import('./kit/egg');
+    const L = levelRuntime(levelById('w6-1')!);
+    L.countFixed = true;
+    const m = new GearsMode(L);
+    mode = m;
+    m.start();
+    const count = L.count, min = L.min, perWord = secondsPerWord(L);
+    // Nobody types: the gears roll by one after another.
+    for (let i = 0; i < 6000; i++) {
+      L.core.update(0.05);
+      m.update(0.05);
+    }
+    expect(MISS_GEARS).toBe(2);
+    expect(L.count - count).toBe(GEARS_MAX_WORDS);
+    expect(L.min - min).toBeCloseTo(GEARS_MAX_WORDS * perWord);
+    expect(m.progress()).toBe(0);
+  });
+
+  it('the tire pile shrinks at a third and two thirds of the level', async () => {
+    const { pileStage } = await import('./junkyard');
+    expect([0, 0.32, 1 / 3, 0.5, 2 / 3, 1].map(pileStage)).toEqual([0, 0, 1, 1, 2, 2]);
   });
 });

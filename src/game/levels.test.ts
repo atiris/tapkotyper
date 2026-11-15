@@ -289,10 +289,20 @@ describe('the egg mountain', () => {
   });
 });
 
+describe('the junkyard', () => {
+  it('sorts the gears (a stream at the full minimum of the robot story), then the tire pile (a calm step, a quarter shorter)', () => {
+    const [gears, tires] = ['w6-1', 'w6-2'].map((id) => levelById(id)!);
+    expect([gears.kind, tires.kind]).toEqual(['gears', 'tires']);
+    expect([gears, tires].map(activityOf)).toEqual(['chase', 'catch']);
+    expect([gears, tires].map((l) => minActiveS(l))).toEqual([180, 135]);
+    expect([gears, tires].map((l) => minWords(l))).toEqual([30, 23]);
+  });
+});
+
 describe('worlds not built yet', () => {
-  it('every level of worlds 6-15 plays the cyclic copy, a copy dot with the full minimum', () => {
-    const later = LEVELS.filter((l) => l.world >= 5);
-    expect(later).toHaveLength(50);
+  it('every level of worlds 7-15 and the rest of the junkyard plays the cyclic copy, a copy dot with the full minimum', () => {
+    const later = LEVELS.filter((l) => l.world >= 6 || (l.world === 5 && l.index >= 2));
+    expect(later).toHaveLength(48);
     expect(later.every((l) => l.kind === 'copyloop')).toBe(true);
     expect(later.filter((l) => !l.isSuper).every((l) => activityOf(l) === 'clean')).toBe(true);
     expect(LEVELS.filter((l) => l.world < 5).some((l) => l.kind === 'copyloop')).toBe(false);

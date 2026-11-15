@@ -300,3 +300,33 @@ describe('heardSafe', () => {
     expect(counts[2].heard).toBeGreaterThanOrEqual(8);
   });
 });
+
+describe('Czech word list', () => {
+  const raw = (JSON.parse(readFileSync('public/words/cs.json', 'utf8')) as { words: string[] }).words;
+  const dict = raw.map((w) => w.normalize('NFC'));
+  const letters = (n: number) => new Set(lessonOrder('cz-qwertz').filter((k) => k.length === 1).slice(0, n));
+
+  it('holds lower-case words, each once, none blocked, all typable on both Czech layouts', () => {
+    expect(dict.length).toBeGreaterThan(6000);
+    expect(new Set(dict).size).toBe(dict.length);
+    for (const w of dict) {
+      expect(w, w).toBe(w.toLowerCase());
+      expect(isBlocked(w), w).toBe(false);
+      expect(untypableWords([w], LAYOUTS['cz-qwertz']).concat(untypableWords([w], LAYOUTS['cz-qwerty'])), w).toEqual([]);
+    }
+  });
+
+  it('gives the first lessons about as many real words as the Slovak list does', () => {
+    const sk = (JSON.parse(readFileSync('public/words/sk.json', 'utf8')) as { words: string[] }).words;
+    const skLetters = (n: number) => new Set(lessonOrder('sk-qwertz').filter((k) => k.length === 1).slice(0, n));
+    for (const n of [9, 11, 13, 16, 19]) {
+      expect(filterWords(dict, letters(n), [2, 8]).length, `${n} keys`).toBeGreaterThanOrEqual(0.8 * filterWords(sk, skLetters(n), [2, 8]).length);
+    }
+  });
+
+  it('leaves enough Czech words for a dictation as keys come', () => {
+    const heard = [10, 20, 30].map((n) => filterWords(dict, letters(n), [2, 8]).filter((w) => heardSafe(w, 'cs')).length);
+    console.log('Czech dictation words by keys:', heard);
+    expect(heard[2]).toBeGreaterThanOrEqual(8);
+  });
+});

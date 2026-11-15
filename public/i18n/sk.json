@@ -1109,6 +1109,13 @@
     "tiresDone": [
       "Kopa je preč, cesta je voľná!"
     ],
+    "magnetStart": [
+      "Nad **kopou skrutiek** visí magnet na lane žeriava. Pri každej šípke je slovo: napíš ho a magnet sa pohne tým smerom a niečo vytiahne. Nad stredom kopy vytiahne najviac, pri kraji menej a úplne na kraji nič."
+    ],
+    "magnetBack": "Vyber smer, ktorý ho vráti k stredu. Je ťažší, ale vytiahne viac.",
+    "magnetDone": [
+      "Magnet vytiahol aj posledné veľké koliesko!"
+    ],
     "copyLoopStart": "Táto úroveň sa ešte pripravuje. Zatiaľ si tu precvičíš odpis: píš slová zo stredu, kým neuplynie čas.",
     "copyLoopSoon": "Pripravuje sa",
     "copyLoopCount": "napísané: {n}",

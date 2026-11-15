@@ -23,6 +23,7 @@ const { BouldersMode, MudMode, WindMode } = await import('./egg');
 const { SpellRibbonMode } = await import('./egg-spell');
 const { LaunchMode } = await import('./launch');
 const { GearsMode, TiresMode } = await import('./junkyard');
+const { MagnetMode } = await import('./junkyard-magnet');
 
 /** A level runtime with just enough to run a mode: words are fixed, every other call does nothing. */
 function fakeRuntime(count = 4): LevelRuntime {
@@ -66,7 +67,7 @@ const MODES: [string, new (L: LevelRuntime) => Mode][] = [
   ['swamp', SwampMode], ['crystals', CrystalsMode], ['crossroads', CrossroadsMode], ['spells', SpellMode], ['greatswamp', GreatSwampMode], ['copyloop', CopyLoopMode],
   ['flames', FlamesMode], ['thicket', ThicketMode], ['flight', FlightMode], ['lullaby', LullabyMode], ['takeoff', TakeoffMode],
   ['wind', WindMode], ['mud', MudMode], ['boulders', BouldersMode], ['spell', SpellRibbonMode],
-  ['gears', GearsMode], ['tires', TiresMode],
+  ['gears', GearsMode], ['tires', TiresMode], ['magnet', MagnetMode],
 ];
 
 describe('no typing, no progress', () => {
@@ -147,7 +148,7 @@ function play(def: LevelDef, Ctor: new (L: LevelRuntime) => Mode, letter: number
   let now = 0, keyAt = 0, next = 0, wordAt = 0, started: number | null = null, idleFrom: number | null = null, gap = 0, gapAt = 0, words = 0, minAt: number | null = null;
   while (now < 900 && !levelOver(mode.finished, L.clock, L.min)) {
     if (!L.countFixed) L.count = grownCount(L.count, mode.progress() * L.count, L.clock, Math.max(3, L.maxActive + 1), L.min);
-    L.clock += playedStep(dt, now - keyAt, L.core.active.some((tg) => tg.selectable));
+    if (!mode.clockHeld) L.clock += playedStep(dt, now - keyAt, L.core.active.some((tg) => tg.selectable));
     now += dt;
     L.core.update(dt);
     mode.t += dt;
@@ -1145,5 +1146,43 @@ describe('the junkyard', () => {
   it('the tire pile shrinks at a third and two thirds of the level', async () => {
     const { pileStage } = await import('./junkyard');
     expect([0, 0.32, 1 / 3, 0.5, 2 / 3, 1].map(pileStage)).toEqual([0, 0, 1, 1, 2, 2]);
+  });
+
+  it("the magnet's plates: easy sideways at the centre, the way out tiny and the way back hard off it, no way out at the edge", async () => {
+    const { platesAt, moved, pullAt } = await import('./junkyard-magnet');
+    expect(platesAt(0)).toEqual({ left: 'easy', right: 'easy', up: 'twoLong', down: 'twoLong' });
+    expect(platesAt(-1)).toEqual({ left: 'tiny', right: 'extreme', up: 'normal', down: 'normal' });
+    expect(platesAt(1)).toEqual({ right: 'tiny', left: 'extreme', up: 'normal', down: 'normal' });
+    expect(platesAt(-2)).toEqual({ right: 'twoLong', up: 'normal', down: 'normal' });
+    expect(platesAt(2)).toEqual({ left: 'twoLong', up: 'normal', down: 'normal' });
+    expect([moved(0, 'left'), moved(-1, 'left'), moved(1, 'up'), moved(2, 'down'), moved(-2, 'right')]).toEqual([-1, -2, 1, 2, -1]);
+    expect([-2, -1, 0, 1, 2].map(pullAt)).toEqual([null, 'small', 'big', 'small', null]);
+  });
+
+  it("the magnet two steps off holds the level's clock until it is back, and the hint comes every third time", async () => {
+    const { hintAt } = await import('./junkyard-magnet');
+    expect([1, 2, 3, 4, 5, 6, 7].map(hintAt)).toEqual([true, false, false, true, false, false, true]);
+    const L = levelRuntime(levelById('w6-3')!);
+    const m = new MagnetMode(L);
+    mode = m;
+    m.start();
+    const typeWord = (dir: string) => {
+      const tg = L.core.active.find((o) => o.selectable && (m as any).plates.some((p: { dir: string; tg: unknown }) => p.dir === dir && p.tg === o))!;
+      for (const ch of tg.word) {
+        const res = L.core.type(ch);
+        if (res.kind === 'done') m.onDone(res.target);
+      }
+    };
+    expect(m.clockHeld).toBe(false);
+    typeWord('left');
+    expect(m.clockHeld).toBe(false);
+    typeWord('left');
+    expect(m.clockHeld).toBe(true);
+    // Up keeps the magnet at the edge; the words still count.
+    typeWord('up');
+    expect(m.clockHeld).toBe(true);
+    expect(m.progress()).toBeGreaterThan(0);
+    typeWord('right');
+    expect(m.clockHeld).toBe(false);
   });
 });

@@ -1109,6 +1109,13 @@
     "tiresDone": [
       "Hromada je pryč, cesta je volná!"
     ],
+    "magnetStart": [
+      "Nad **hromadou šroubů** visí magnet na laně jeřábu. U každé šipky je slovo: napiš ho a magnet se pohne tím směrem a něco vytáhne. Nad středem hromady vytáhne nejvíc, u kraje méně a úplně na kraji nic."
+    ],
+    "magnetBack": "Vyber směr, který ho vrátí ke středu. Je těžší, ale vytáhne víc.",
+    "magnetDone": [
+      "Magnet vytáhl i poslední velké kolečko!"
+    ],
     "copyLoopStart": "Tahle úroveň se ještě připravuje. Zatím si tu procvičíš opis: piš slova ze středu, dokud neuplyne čas.",
     "copyLoopSoon": "Připravuje se",
     "copyLoopCount": "napsáno: {n}",

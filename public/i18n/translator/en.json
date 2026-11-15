@@ -280,7 +280,7 @@
     },
     "story-junkyard": {
       "title": "Lines of the junkyard",
-      "about": "Opening lines, the narrator's lines and end lines of the junkyard's levels, where the child sorts the junk and finds Bolt: the gears, the tire pile."
+      "about": "Opening lines, the narrator's lines and end lines of the junkyard's levels, where the child sorts the junk and finds Bolt: the gears, the tire pile, the magnet over the screws."
     },
     "story-placeholder": {
       "title": "Worlds still being made",
@@ -904,7 +904,7 @@
     "story.mountainStart": "Opening line of the crossroads level on the mountain (world 5, level 3): pick a signpost and type its word.",
     "story.mountainEnd": "The character at the end of the mountain crossroads: he can see the summit; one is picked at random.",
     "story.roadClosed": "The character when the countdown of the best path on the mountain runs out and its signpost vanishes; one is picked at random.",
-    "story.roadCareful": "The character's short call on the mountain crossroads level when the child slips twice in one road word and gets a slightly easier one; one is picked at random.",
+    "story.roadCareful": "The character's short call when the child slips twice in one word and gets a slightly easier one: a road word on the mountain crossroads level, or an arrow's word on the junkyard's magnet level; one is picked at random.",
     "story.bouldersStart": "Opening text of the boulders level: small stones fall from the rocks and roll down the path at the character; a typed word over a stone makes it fall off the path before it reaches him.",
     "story.boulderOops": "What the character says when a stone rolls into him and bounces off (short, funny, never hurt); one is picked at random.",
     "story.bouldersLonger": "The narrator, the first time a boulder is missed: the way to the summit got a little longer.",
@@ -918,6 +918,9 @@
     "story.gearsDone": "Line at the end of the gears level: the last gear dropped into the crate, which is full now; one is picked at random.",
     "story.tiresStart": "Opening line of the tire pile level (world 6, level 2, a calm step): a big pile of old tires blocks the path; tires with a word each lie at its foot, a typed one rolls off into a bin and another rolls down from the pile; nothing hurries the child.",
     "story.tiresDone": "Line at the end of the tire pile level: the pile is gone and the way is clear, the character walks on; one is picked at random.",
+    "story.magnetStart": "Opening line of the magnet level in the junkyard (world 6, level 3, a crossroads): a magnet on a crane cable hangs over a pile of screws; typing the word at an arrow moves it that way, and after each move it pulls a piece out: the most over the middle, less near the edge, nothing right at the edge.",
+    "story.magnetBack": "The character, when the magnet hangs right at the edge of the screw pile (the level's time stands still there): the arrow back toward the middle has a harder word but pulls out more; said the first time and then every third time at most.",
+    "story.magnetDone": "Line at the end of the magnet level: the magnet rises with the last big gear; one is picked at random.",
     "story.copyLoopStart": "Line on the get-ready card of every level of a world not built yet: the level is still being made, for now the child copies the words in the middle until the time is up.",
     "story.copyLoopSoon": "Small words on the sign at the top of such a level, under the world's name: the world is still being made.",
     "story.copyLoopCount": "Small counter under the panel of such a level; {n} is the number of words typed.",

@@ -209,11 +209,28 @@ first level.
   came from the stale tester profile without `settings.theme` (`src/ui/sky.ts`), not the modes.
 
 ### Step 4 - 6:3 the magnet
-- [ ] The ask ladder moved into `kit/` (planet and mountain crossroads unchanged), the `magnet`
+- [x] The ask ladder moved into `kit/` (planet and mountain crossroads unchanged), the `magnet`
   mode, the held clock two steps off, the hint line.
-- [ ] Tests: unit test of the hardness by place and of the held clock, idle test,
+- [x] Tests: unit test of the hardness by place and of the held clock, idle test,
   `npm run test:affected` (the planet crossroads specs too); played in the browser, magnet walked
   to both edges and back.
+
+- Progress (2026-11-15): done. Decisions: the magnet lives in its own file
+  `src/game/modes/junkyard-magnet.ts` (junkyard.ts would have passed ~800 lines); what the gears
+  and the magnet share (the junkyard's feet and his place, the gear fallback, the magnet on the
+  crane cable) moved to `kit/junk.ts`, the ask ladder with `EASIER_AFTER` to `kit/ask.ts`. The clock
+  stop is a mode getter `clockHeld` read by the runtime (and by the idle test's play harness). A
+  slip does not make a plate vanish as at the planet's crossroads (the plates are the magnet's
+  only ways back): two slips in one plate's word give it a word one step easier on the ladder, with
+  the mountain's `story.roadCareful` call (its situation now names the magnet too). The plates are
+  arrow signs (drawn) beside the magnet with the word beyond them; the side words sit by their
+  width so a long word never covers the magnet. perf.mjs got the scenes junkyard-1..3 (4 and 5
+  come with step 5). Browser: played headless to the end card; a probe showed the centre's four
+  plates and the left edge with only the way back, up, down and the hint line. Mid-step the owner
+  replaced `obj-gear-box` with their own picture (raw in `assets-src/`, webp rebuilt).
+  `npm run assets` also found six step-5b raw pictures saved by the bridge (`obj-bin`,
+  `obj-gear-4`, `obj-junk-pile-1`, `obj-screw-pile`, `obj-tire-pile-1`, `robot-broken-lying`);
+  they are not reviewed, so their webps were left out of this commit for 5b.
 
 ### Step 5 - 6:4 the beeping pile and 6:5 Bolt's program
 - [ ] `junkpile` on the ribbon kit (top placement), things rolling to the bins, slips dropping

@@ -297,12 +297,19 @@ describe('the junkyard', () => {
     expect([gears, tires].map((l) => minActiveS(l))).toEqual([180, 135]);
     expect([gears, tires].map((l) => minWords(l))).toEqual([30, 23]);
   });
+
+  it('the magnet over the screws is a crossroads at the full minimum', () => {
+    const magnet = levelById('w6-3')!;
+    expect(magnet.kind).toBe('magnet');
+    expect(activityOf(magnet)).toBe('crossroads');
+    expect(minActiveS(magnet)).toBe(180);
+  });
 });
 
 describe('worlds not built yet', () => {
   it('every level of worlds 7-15 and the rest of the junkyard plays the cyclic copy, a copy dot with the full minimum', () => {
-    const later = LEVELS.filter((l) => l.world >= 6 || (l.world === 5 && l.index >= 2));
-    expect(later).toHaveLength(48);
+    const later = LEVELS.filter((l) => l.world >= 6 || (l.world === 5 && l.index >= 3));
+    expect(later).toHaveLength(47);
     expect(later.every((l) => l.kind === 'copyloop')).toBe(true);
     expect(later.filter((l) => !l.isSuper).every((l) => activityOf(l) === 'clean')).toBe(true);
     expect(LEVELS.filter((l) => l.world < 5).some((l) => l.kind === 'copyloop')).toBe(false);
@@ -369,7 +376,7 @@ describe('minimum level length', () => {
     expect(levelById('w2-5')?.count).toBe(4);
     expect(levelById('w3-5')?.count).toBe(17);
     expect(levelById('w6-1')?.count).toBe(30);
-    expect(levelById('w6-3')?.count).toBe(12);
+    expect(levelById('w6-4')?.count).toBe(12);
     expect(levelById('w6-5')?.count).toBe(10);
     expect(journeyLevel(STORIES[0], 0).count).toBe(10);
   });

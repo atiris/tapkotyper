@@ -332,7 +332,7 @@ export class LevelRuntime {
   }
 
   get tapkoOnStage(): boolean {
-    return ['freetype', 'aim', 'rhythm', 'swamp', 'crossroads', 'greatswamp', 'wind', 'mud', 'boulders', 'spell', 'gears', 'tires', 'doors', 'gate', 'rooms', 'buds', 'flower', 'owl', 'lilies', 'reflection', 'space', 'hop', 'command', 'asteroid'].includes(this.def.kind);
+    return ['freetype', 'aim', 'rhythm', 'swamp', 'crossroads', 'greatswamp', 'wind', 'mud', 'boulders', 'spell', 'gears', 'tires', 'magnet', 'doors', 'gate', 'rooms', 'buds', 'flower', 'owl', 'lilies', 'reflection', 'space', 'hop', 'command', 'asteroid'].includes(this.def.kind);
   }
 
   /** Preparation: assets, new keys, the get-ready card with the tip and its password, then play. */
@@ -1063,7 +1063,7 @@ export class LevelRuntime {
     this.state.elapsed += dt;
     if (!this.state.finished) {
       app.sessionSeconds += dt;
-      this.played += playedStep(dt, this.idleFor, this.core.active.some((tg) => tg.selectable));
+      if (!this.mode.clockHeld) this.played += playedStep(dt, this.idleFor, this.core.active.some((tg) => tg.selectable));
       this.hold?.tick(dt);
     }
     this.core.update(dt);

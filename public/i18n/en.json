@@ -1109,6 +1109,13 @@
     "tiresDone": [
       "The pile is gone, the way is clear!"
     ],
+    "magnetStart": [
+      "A magnet hangs from the crane cable over a **pile of screws**. Each arrow has a word: type it and the magnet moves that way and pulls something out. Over the middle of the pile it pulls the most, near the edge less, and right at the edge nothing."
+    ],
+    "magnetBack": "Pick the way that brings it back to the middle. It is harder, but it pulls out more.",
+    "magnetDone": [
+      "The magnet pulled out the last big gear too!"
+    ],
     "copyLoopStart": "This level is still being made. For now you practise copying here: type the words in the middle until the time is up.",
     "copyLoopSoon": "Coming soon",
     "copyLoopCount": "typed: {n}",

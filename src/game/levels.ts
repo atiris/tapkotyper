@@ -116,7 +116,7 @@ export type LevelKind =
   | 'swamp' | 'crystals' | 'crossroads' | 'spells' | 'greatswamp'
   | 'flames' | 'thicket' | 'flight' | 'lullaby' | 'takeoff'
   | 'wind' | 'mud' | 'boulders' | 'spell'
-  | 'gears' | 'tires'
+  | 'gears' | 'tires' | 'magnet'
   | 'copyloop'
   | 'practice' | 'freetype' | 'aim' | 'parrot' | 'rhythm' | 'task' | 'placement';
 
@@ -241,7 +241,7 @@ export function activityOf(l: LevelDef): Activity {
   if (l.kind === 'spell') return 'ribbon';
   if (COPY_KINDS.includes(l.kind)) return 'clean';
   if (CALM_KINDS.includes(l.kind)) return 'catch';
-  if (l.kind === 'crossroads') return 'crossroads';
+  if (l.kind === 'crossroads' || l.kind === 'magnet') return 'crossroads';
   return 'chase';
 }
 
@@ -307,8 +307,8 @@ export const LEVELS: LevelDef[] = [
   def(3, 0, 'flames'), def(3, 1, 'thicket'), def(3, 2, 'flight'), def(3, 3, 'lullaby'), def(3, 4, 'takeoff'),
   // The egg's mountain: the wind on the slope, sticky puddles (calm), crossroads, boulders, the spell of awakening (the first ribbon).
   def(4, 0, 'wind'), def(4, 1, 'mud'), def(4, 2, 'crossroads', 'mountain'), def(4, 3, 'boulders'), def(4, 4, 'spell'),
-  // The junkyard: sorting the gears (a stream), the tire pile (calm); its other levels still play the placeholder.
-  def(5, 0, 'gears'), def(5, 1, 'tires'), def(5, 2, 'copyloop'), def(5, 3, 'copyloop'), def(5, 4, 'copyloop'),
+  // The junkyard: sorting the gears (a stream), the tire pile (calm), the magnet's crossroads; its other levels still play the placeholder.
+  def(5, 0, 'gears'), def(5, 1, 'tires'), def(5, 2, 'magnet'), def(5, 3, 'copyloop'), def(5, 4, 'copyloop'),
   // Worlds 7-15 are not built yet: every level plays the placeholder, cyclic copy, until its world is redone.
   ...WORLDS.slice(6).flatMap((_, w) => [0, 1, 2, 3, 4].map((i) => def(w + 6, i, 'copyloop'))),
 ];

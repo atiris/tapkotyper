@@ -6,6 +6,7 @@ import { t, tList } from '../../i18n/i18n';
 import type { TapkoMotion } from '../../gfx/tapko';
 import { WORLDS } from '../levels';
 import type { Target } from '../typing';
+import { type Ask, EASIER_AFTER, askWord } from './kit/ask';
 import { EggPeek } from './kit/egg';
 import { HeroMode, PATH_FEET, wordAbove } from './kit/hero';
 
@@ -16,7 +17,6 @@ import { HeroMode, PATH_FEET, wordAbove } from './kit/hero';
  */
 export type PathKind = 'plain' | 'short' | 'fast' | 'teleport' | 'detour' | 'hard' | 'wide' | 'dark' | 'unknown' | 'practice'
   | 'left' | 'right' | 'obstacles' | 'cablecar' | 'muddy';
-type Ask = 'tiny' | 'easy' | 'normal' | 'two' | 'twoLong' | 'extreme';
 export type Len = 'short' | 'normal' | 'long';
 export type Diff = 'easy' | 'normal' | 'hard';
 
@@ -64,8 +64,6 @@ export const QUICK_SIGNS = 3;
 const QUICK_READ = 2;
 const QUICK_PACE = 1.5;
 const QUICK_MIN = 4;
-/** On the mountain, this many slips in one road word bring a slightly easier one instead (and a call to slow down). */
-export const EASIER_AFTER = 2;
 
 /** The sign of the best path among `kinds` (the lowest time x words), when it is a quick one; else null. */
 export function quickSign(kinds: PathKind[]): number | null {
@@ -273,19 +271,6 @@ export class CrossroadsMode extends HeroMode {
     return this.L.word(r.len === 'long' ? LEN_MAX.normal : r.len === 'normal' ? LEN_MAX.short : 3, Math.max(1, DIFF_WORDS[r.diff] - 1), 1);
   }
 
-  /** An activation word of the asked difficulty. */
-  private askWord(ask: Ask): string {
-    const w = (n: number) => this.L.word(n, 1);
-    switch (ask) {
-      case 'tiny': return w(2);
-      case 'easy': return w(3);
-      case 'normal': return w(5);
-      case 'two': return `${w(5)} ${w(5)}`;
-      case 'twoLong': return `${w(8)} ${w(8)}`;
-      case 'extreme': return this.L.word(undefined, 4, 3);
-    }
-  }
-
   private nextWord(): void {
     if (this.done >= this.L.count) {
       this.endT = 0;
@@ -302,7 +287,7 @@ export class CrossroadsMode extends HeroMode {
       this.echoes++;
     } else {
       this.echoes = 0;
-      word = this.road.echo && this.legLeft === this.extremeAt ? this.askWord('extreme') : this.roadWord();
+      word = this.road.echo && this.legLeft === this.extremeAt ? askWord(this.L, 'extreme') : this.roadWord();
     }
     this.slips = 0;
     this.current = this.L.core.add(word, {});
@@ -324,8 +309,8 @@ export class CrossroadsMode extends HeroMode {
     const quick = this.mountain && !this.L.noPressure ? quickSign(kinds) : null;
     this.signs = slots.map((slot, i) => {
       const kind = kinds[i];
-      let word = this.askWord(PATHS[kind].ask);
-      for (let k = 0; k < 8 && this.L.core.active.some((o) => o.word[0] === word[0]); k++) word = this.askWord(PATHS[kind].ask);
+      let word = askWord(this.L, PATHS[kind].ask);
+      for (let k = 0; k < 8 && this.L.core.active.some((o) => o.word[0] === word[0]); k++) word = askWord(this.L, PATHS[kind].ask);
       const arrow = { pic: r.pick(ARROWS), rot: r.range(-ARROW_TURN, ARROW_TURN), left: r.chance(0.5) };
       const clock = i === quick ? { spent: 0, full: quickTime(word.length, this.L.letterPace) } : null;
       return { slot, kind, name: r.pick(tList(`story.path.${kind}.names`)), tg: this.L.core.add(word, {}), age: -i * POST_STAGGER, gone: null, arrow, spin: null, clock };

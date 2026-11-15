@@ -101,6 +101,10 @@ export abstract class Mode {
   get lost(): boolean {
     return false;
   }
+  /** The level's clock of active play stands still (the junkyard's magnet at the edge); its words still count. */
+  get clockHeld(): boolean {
+    return false;
+  }
   /** Where the story friend stands (feet; Bolt in story 2, Melody floats above it in story 3), or null for the place next to Tapko; `lift` holds the little dragon that high above its shadow. */
   friendSpot(): { x: number; y: number; lift?: number } | null {
     return null;

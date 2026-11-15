@@ -1,5 +1,4 @@
 import { pickLine } from '../../app/app';
-import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
 import { drawSprite, type G } from '../../gfx/draw';
 import { t } from '../../i18n/i18n';
@@ -9,35 +8,11 @@ import type { Target } from '../typing';
 import { ApproachMode, type Mover } from './kit/approach';
 import { Detour, drawCarrier, lengthen, secondsPerWord } from './kit/egg';
 import { HeroMode } from './kit/hero';
+import { JUNK_FEET, JUNK_HERO_X, MAGNET, drawCraneMagnet, gearFallback } from './kit/junk';
 
-/** He stands on the junkyard's sandy path, at his usual place on the left. */
-const FEET = VH * 0.91;
-const HERO_X = 200;
+const FEET = JUNK_FEET;
+const HERO_X = JUNK_HERO_X;
 const END_TIME = 3;
-
-/** An old gear while its picture is missing: a toothed disc with a hole in the middle, in the gear's own colours. */
-function gearFallback(body: string, dark: string) {
-  return (g: G, w: number, h: number): void => {
-    const r = Math.min(w, h) * 0.42, teeth = 10;
-    g.save();
-    g.fillStyle = body;
-    g.strokeStyle = dark;
-    g.lineWidth = Math.max(2, r * 0.08);
-    g.beginPath();
-    for (let i = 0; i < teeth * 2; i++) {
-      const a = (i / (teeth * 2)) * Math.PI * 2, rr = i % 2 ? r * 0.82 : r;
-      g.lineTo(Math.cos(a) * rr, Math.sin(a) * rr);
-    }
-    g.closePath();
-    g.fill();
-    g.stroke();
-    g.fillStyle = dark;
-    g.beginPath();
-    g.arc(0, 0, r * 0.22, 0, Math.PI * 2);
-    g.fill();
-    g.restore();
-  };
-}
 
 /** A wooden crate while its picture is missing: planks with a narrow strip of its left side and a gear sign on its front. */
 function crateFallback(g: G, w: number, h: number): void {
@@ -67,21 +42,6 @@ function crateFallback(g: G, w: number, h: number): void {
   g.restore();
 }
 
-/** A red horseshoe magnet while its picture is missing. */
-function magnetFallback(g: G, w: number, h: number): void {
-  const r = Math.min(w, h * 0.6) * 0.42;
-  g.save();
-  g.lineWidth = r * 0.55;
-  g.strokeStyle = '#d23a32';
-  g.beginPath();
-  g.arc(0, -h * 0.1, r, Math.PI, 0, true);
-  g.stroke();
-  g.fillStyle = '#d8dde3';
-  g.fillRect(-r - g.lineWidth / 2, -h * 0.1, g.lineWidth, h * 0.25);
-  g.fillRect(r - g.lineWidth / 2, -h * 0.1, g.lineWidth, h * 0.25);
-  g.restore();
-}
-
 /** The four kinds of gears and their colours while a picture is missing. */
 const GEARS = ['obj-gear-1', 'obj-gear-2', 'obj-gear-3', 'obj-gear-4'];
 const GEAR_INKS: [string, string][] = [['#e8b848', '#b8862e'], ['#a9b7c6', '#6f7f92'], ['#c8743e', '#8e4a24'], ['#3f7fd0', '#2a5a9e']];
@@ -93,7 +53,6 @@ const CRATE_X = HERO_X + 240;
 const CRATE_H = 140;
 const CRATE_IN = 0.15;
 /** The magnet hangs over the path in front of the crate, on the crane's cable from the top. */
-const MAGNET = 'obj-magnet';
 const MAGNET_X = CRATE_X + 170;
 const MAGNET_Y = FEET - 270;
 const MAGNET_H = 110;
@@ -243,18 +202,10 @@ export class GearsMode extends ApproachMode {
     }
   }
 
-  /** The crane's cable from the top and the magnet on it; it shakes when it lifts a gear. */
+  /** The magnet on the crane's cable; it shakes when it lifts a gear. */
   private drawMagnet(g: G): void {
-    const dx = this.shake > 0 ? Math.sin(this.shake * 50) * 5 : 0, top = MAGNET_Y - MAGNET_H / 2;
-    g.save();
-    g.strokeStyle = '#4a4a4a';
-    g.lineWidth = 3;
-    g.beginPath();
-    g.moveTo(MAGNET_X, 0);
-    g.lineTo(MAGNET_X + dx, top + 4);
-    g.stroke();
-    g.restore();
-    drawSprite(g, MAGNET, MAGNET_X + dx, MAGNET_Y, MAGNET_H, {}, magnetFallback);
+    const dx = this.shake > 0 ? Math.sin(this.shake * 50) * 5 : 0;
+    drawCraneMagnet(g, MAGNET_X + dx, MAGNET_Y, MAGNET_H, MAGNET_X);
   }
 
   get finished(): boolean {

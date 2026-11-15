@@ -233,11 +233,29 @@ first level.
   they are not reviewed, so their webps were left out of this commit for 5b.
 
 ### Step 5 - 6:4 the beeping pile and 6:5 Bolt's program
-- [ ] `junkpile` on the ribbon kit (top placement), things rolling to the bins, slips dropping
+- [x] `junkpile` on the ribbon kit (top placement), things rolling to the bins, slips dropping
   onto the pile, the beep, Bolt lying at the end; `code` with the two screens of different widths,
   the slip adding a word, Bolt's lights and getting up.
-- [ ] Tests: unit test of the transcribe line breaking and the added words cap, idle tests,
+- [x] Tests: unit test of the transcribe line breaking and the added words cap, idle tests,
   `npm run test:affected`; both played in the browser to the reward scene.
+
+- Progress (2026-11-15): done, both kinds in `src/game/modes/junkyard-wake.ts`. Decisions: the
+  ribbon and its frame start just right of his head (`HERO_X + TAPKO_H * 0.45`, as the spell's
+  never-over-Tapko rule) and run to the right margin, since the frame's bottom reaches his head's
+  height; the bins, pile picture helpers and `pileStage` moved to `kit/junk.ts`, the sentence of
+  known words and the slip's inner word (`knownSentence`, `innerWord`) to `kit/ribbon.ts`, shared
+  with the egg's spell. The pile shrinks with `L.share()` as the tires do. The beep is a new sfx
+  `robotSad` (two falling square notes; `robotHappy` rises when he wakes) with little sound waves
+  drawn at the pile, so it shows with sound off too. The transcribe is monospace and breaks lines by
+  letter count (`breakLines`, 0.62 em a letter at most, so it never overflows), pure and unit-tested;
+  the screens stand side by side (source 44 %) on a wide stage and stacked (source 78 % wide) on a
+  narrow one. A slip on the program's last word adds a word and gives that word its space. A slip
+  in the transcribe keeps the typed letters (nothing erased); Backspace still restarts the word as
+  in every level. Bolt's lying fallback is his standing picture turned on its back until 5b's
+  picture is reviewed; his eye glow sits where the raw lying picture's face is (5b may tune
+  `FACE_DX`). The e2e placeholder test moved to the workshop and a junkyard spec plays all five
+  levels. Played headless (shared MCP browser in use) to both end cards: no page errors; the hero's
+  speech bubble covers the top-left corner of the ribbon and the source screen while it shows.
 
 ### Step 5b - The pictures Gemini's limit left out
 - [ ] `obj-gear-4` (`obj-gear-box` done in step 3: the owner's closed wooden crate), `obj-tire-pile-1..3`, `obj-bin`, `obj-screw-pile`,

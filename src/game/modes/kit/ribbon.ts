@@ -1,5 +1,6 @@
 import { graphics } from '../../../engine/graphics';
 import { WORD, fontFamily, type G, roundRect } from '../../../gfx/draw';
+import { ENTER } from '../../../keyboard/layouts';
 import type { LevelRuntime } from '../../runtime';
 import type { Target } from '../../typing';
 
@@ -41,6 +42,17 @@ export interface RibbonWord {
   start: number;
   /** Where it shows along the ribbon: it glides to its start, from a little further right when new. */
   x: number;
+}
+
+/** A sentence of 4-6 known words, ending with a period when the period is known; empty when none came. */
+export function knownSentence(L: LevelRuntime): string[] {
+  return L.word(undefined, 6, 4).replace(ENTER, '').split(' ').filter(Boolean);
+}
+
+/** A word from inside a known sentence (no capital, no period): the word a slip adds to a long text. */
+export function innerWord(L: LevelRuntime): string {
+  const list = knownSentence(L);
+  return L.rng.pick(list.length > 2 ? list.slice(1, -1) : list);
 }
 
 /** `text` broken into lines that fit `width`, at whole words; each line keeps its start in the text. */

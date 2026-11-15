@@ -24,6 +24,7 @@ const { SpellRibbonMode } = await import('./egg-spell');
 const { LaunchMode } = await import('./launch');
 const { GearsMode, TiresMode } = await import('./junkyard');
 const { MagnetMode } = await import('./junkyard-magnet');
+const { CodeMode, JunkpileMode } = await import('./junkyard-wake');
 
 /** A level runtime with just enough to run a mode: words are fixed, every other call does nothing. */
 function fakeRuntime(count = 4): LevelRuntime {
@@ -67,7 +68,7 @@ const MODES: [string, new (L: LevelRuntime) => Mode][] = [
   ['swamp', SwampMode], ['crystals', CrystalsMode], ['crossroads', CrossroadsMode], ['spells', SpellMode], ['greatswamp', GreatSwampMode], ['copyloop', CopyLoopMode],
   ['flames', FlamesMode], ['thicket', ThicketMode], ['flight', FlightMode], ['lullaby', LullabyMode], ['takeoff', TakeoffMode],
   ['wind', WindMode], ['mud', MudMode], ['boulders', BouldersMode], ['spell', SpellRibbonMode],
-  ['gears', GearsMode], ['tires', TiresMode], ['magnet', MagnetMode],
+  ['gears', GearsMode], ['tires', TiresMode], ['magnet', MagnetMode], ['junkpile', JunkpileMode], ['code', CodeMode],
 ];
 
 describe('no typing, no progress', () => {
@@ -1144,7 +1145,7 @@ describe('the junkyard', () => {
   });
 
   it('the tire pile shrinks at a third and two thirds of the level', async () => {
-    const { pileStage } = await import('./junkyard');
+    const { pileStage } = await import('./kit/junk');
     expect([0, 0.32, 1 / 3, 0.5, 2 / 3, 1].map(pileStage)).toEqual([0, 0, 1, 1, 2, 2]);
   });
 
@@ -1184,5 +1185,48 @@ describe('the junkyard', () => {
     expect(m.progress()).toBeGreaterThan(0);
     typeWord('right');
     expect(m.clockHeld).toBe(false);
+  });
+
+  it('the transcribe breaks lines at whole words by the screen, and counts the source lines copied', async () => {
+    const { breakLines, linesCopied, codeScreens, screenColumns } = await import('./junkyard-wake');
+    const words = ['abc', 'de', 'fgh', 'ijklmnop', 'q'];
+    expect(breakLines(words, 6)).toEqual([{ from: 0, to: 2 }, { from: 2, to: 3 }, { from: 3, to: 4 }, { from: 4, to: 5 }]);
+    expect(breakLines(words, 10)).toEqual([{ from: 0, to: 3 }, { from: 3, to: 5 }]);
+    expect(breakLines([], 10)).toEqual([]);
+    expect([0, 2, 3, 5].map((at) => linesCopied(breakLines(words, 10), at))).toEqual([0, 0, 1, 2]);
+    // The two screens are of different widths on a wide and on a narrow stage, so the lines break elsewhere.
+    for (const vw of [1280, 781]) {
+      const { src, dst } = codeScreens(vw);
+      expect(screenColumns(src.w)).not.toBe(screenColumns(dst.w));
+      expect(dst.x + dst.w).toBeLessThanOrEqual(vw);
+    }
+  });
+
+  it("a wrong letter in Bolt's program is not written and adds one word at its end, at most ten, nothing erased", async () => {
+    const { secondsPerWord } = await import('./kit/egg');
+    const L = levelRuntime(levelById('w6-5')!);
+    const m = new CodeMode(L);
+    mode = m;
+    m.start();
+    const prog = m as unknown as { words: string[]; at: number };
+    typeWord(L, m);
+    typeWord(L, m);
+    expect(prog.at).toBe(2);
+    const count = L.count, min = L.min, words = prog.words.length;
+    L.core.type(L.core.focus()!.word[0]);
+    const res = L.core.type('#');
+    if (res.kind !== 'wrong') throw new Error('a wrong key');
+    m.onWrong(res.target);
+    expect(L.core.focus()!.typed).toBe(1);
+    expect(prog.words.length).toBe(words + 1);
+    expect(L.count).toBe(count + 1);
+    expect(L.min).toBeCloseTo(min + secondsPerWord(L));
+    for (let i = 0; i < 12; i++) {
+      const r = L.core.type('#');
+      m.onWrong(r.kind === 'wrong' ? r.target : null);
+    }
+    expect(L.count).toBe(count + 10);
+    expect(prog.words.length).toBe(words + 10);
+    expect(L.core.focus()!.typed).toBe(1);
   });
 });

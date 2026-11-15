@@ -149,9 +149,9 @@ test('a world not built yet plays the cyclic copy and its level is finished by c
   await page.goto('./');
   await page.locator('.start-screen').waitFor();
   await page.keyboard.type('supertapkotyper', { delay: 40 });
-  await page.locator('.island-junkyard .level-node:nth-child(5)').click();
+  await page.locator('.island-workshop .level-node:nth-child(5)').click();
   await expect(page.locator('.posture-card')).toContainText('This level is still being made');
-  await expect(page.locator('.level-screen.world-junkyard')).toBeVisible();
+  await expect(page.locator('.level-screen.world-workshop')).toBeVisible();
   expect(await playLevel(page)).toMatch(/%/);
   expect(errors).toEqual([]);
 });
@@ -166,6 +166,23 @@ test('the egg mountain: each of its five levels is played to its end', async ({ 
   for (let i = 0; i < 5; i++) {
     await page.locator('.island-egg .level-row .level-node').nth(i).click();
     await expect(page.locator('.level-screen.world-egg')).toBeVisible();
+    expect(await playLevel(page, i === 0)).toMatch(/%/);
+    await page.locator('.end-card .ec-bot .btn').last().click();
+    await page.locator('.map-screen').waitFor();
+  }
+  expect(errors).toEqual([]);
+});
+
+test('the junkyard: each of its five levels is played to its end', async ({ page }) => {
+  test.setTimeout(600_000);
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  await page.goto('./?minActive=8');
+  await page.locator('.start-screen').waitFor();
+  await page.keyboard.type('supertapkotyper', { delay: 40 });
+  for (let i = 0; i < 5; i++) {
+    await page.locator('.island-junkyard .level-row .level-node').nth(i).click();
+    await expect(page.locator('.level-screen.world-junkyard')).toBeVisible();
     expect(await playLevel(page, i === 0)).toMatch(/%/);
     await page.locator('.end-card .ec-bot .btn').last().click();
     await page.locator('.map-screen').waitFor();

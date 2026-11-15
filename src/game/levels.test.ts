@@ -263,8 +263,8 @@ describe('first level', () => {
 
   it('every level has an activity for its map dot', () => {
     expect(activityOf(levelById('w3-3')!)).toBe('crossroads');
-    // The super levels show their own game: the hedgehog and the asteroid chase, the mountain's spell is the ribbon, the placeholder copies.
-    expect(['w1-5', 'w2-5', 'w5-5', 'w6-5'].map((id) => activityOf(levelById(id)!))).toEqual(['chase', 'chase', 'ribbon', 'clean']);
+    // The super levels show their own game: the hedgehog and the asteroid chase, the mountain's spell is the ribbon, Bolt's program the transcribe, the placeholder copies.
+    expect(['w1-5', 'w2-5', 'w5-5', 'w6-5', 'w7-5'].map((id) => activityOf(levelById(id)!))).toEqual(['chase', 'chase', 'ribbon', 'transcribe', 'clean']);
   });
 });
 
@@ -304,15 +304,22 @@ describe('the junkyard', () => {
     expect(activityOf(magnet)).toBe('crossroads');
     expect(minActiveS(magnet)).toBe(180);
   });
+
+  it("the beeping pile is a ribbon at the full minimum, Bolt's program the transcribe super level a quarter longer", () => {
+    const [pile, code] = ['w6-4', 'w6-5'].map((id) => levelById(id)!);
+    expect([pile.kind, code.kind]).toEqual(['junkpile', 'code']);
+    expect([pile, code].map(activityOf)).toEqual(['ribbon', 'transcribe']);
+    expect([pile, code].map((l) => minActiveS(l))).toEqual([180, 225]);
+  });
 });
 
 describe('worlds not built yet', () => {
-  it('every level of worlds 7-15 and the rest of the junkyard plays the cyclic copy, a copy dot with the full minimum', () => {
-    const later = LEVELS.filter((l) => l.world >= 6 || (l.world === 5 && l.index >= 3));
-    expect(later).toHaveLength(47);
+  it('every level of worlds 7-15 plays the cyclic copy, a copy dot with the full minimum', () => {
+    const later = LEVELS.filter((l) => l.world >= 6);
+    expect(later).toHaveLength(45);
     expect(later.every((l) => l.kind === 'copyloop')).toBe(true);
     expect(later.filter((l) => !l.isSuper).every((l) => activityOf(l) === 'clean')).toBe(true);
-    expect(LEVELS.filter((l) => l.world < 5).some((l) => l.kind === 'copyloop')).toBe(false);
+    expect(LEVELS.filter((l) => l.world < 6).some((l) => l.kind === 'copyloop')).toBe(false);
   });
 });
 
@@ -376,8 +383,8 @@ describe('minimum level length', () => {
     expect(levelById('w2-5')?.count).toBe(4);
     expect(levelById('w3-5')?.count).toBe(17);
     expect(levelById('w6-1')?.count).toBe(30);
-    expect(levelById('w6-4')?.count).toBe(12);
-    expect(levelById('w6-5')?.count).toBe(10);
+    expect(levelById('w7-4')?.count).toBe(12);
+    expect(levelById('w7-5')?.count).toBe(10);
     expect(journeyLevel(STORIES[0], 0).count).toBe(10);
   });
 

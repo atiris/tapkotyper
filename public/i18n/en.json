@@ -1116,6 +1116,21 @@
     "magnetDone": [
       "The magnet pulled out the last big gear too!"
     ],
+    "junkpileStart": [
+      "Here is a **big pile of junk**, and something in it beeps sadly. Words run along the ribbon at the top: type them, spaces and periods too. For each word one thing pops off the pile and rolls into a bin. At a slip the word starts again and one more word is added, so **type exactly**."
+    ],
+    "junkpileSlip": "Oops! One more word was added.",
+    "junkpileCareful": "Careful, type exactly!",
+    "junkpileDone": [
+      "A little robot lies under the pile! He beeped, but he does not move."
+    ],
+    "codeStart": [
+      "The little robot does not react. His **old screen** shows a program that will wake him: **copy it** onto the empty screen. The lines break differently there, so keep track of where you are in the program. A wrong letter is not written, but a word is added to the program."
+    ],
+    "codeSlip": "Oops! A word was added to the program.",
+    "codeDone": [
+      "The robot woke up and stood up! He is happy to see you."
+    ],
     "copyLoopStart": "This level is still being made. For now you practise copying here: type the words in the middle until the time is up.",
     "copyLoopSoon": "Coming soon",
     "copyLoopCount": "typed: {n}",

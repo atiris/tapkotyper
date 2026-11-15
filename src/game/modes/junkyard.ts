@@ -8,7 +8,7 @@ import type { Target } from '../typing';
 import { ApproachMode, type Mover } from './kit/approach';
 import { Detour, drawCarrier, lengthen, secondsPerWord } from './kit/egg';
 import { HeroMode } from './kit/hero';
-import { JUNK_FEET, JUNK_HERO_X, MAGNET, drawCraneMagnet, gearFallback } from './kit/junk';
+import { BIN, JUNK_FEET, JUNK_HERO_X, MAGNET, binFallback, drawCraneMagnet, gearFallback, pileStage, tireFallback } from './kit/junk';
 
 const FEET = JUNK_FEET;
 const HERO_X = JUNK_HERO_X;
@@ -219,12 +219,10 @@ const PILE_H = [300, 220, 140];
 /** The pile stands this far right of him at most (on a wide stage the scene stays together), the bin this far right of the pile. */
 const PILE_FROM_HERO = 820;
 const BIN_FROM_PILE = 220;
-const BIN = 'obj-bin';
 const BIN_H = 130;
 const TIRE = 'obj-tire';
 const TIRE_H = 72;
-/** The pile shrinks at these shares of the level, and fades away at its end in this many seconds. */
-export const PILE_STAGES = [1 / 3, 2 / 3];
+/** The pile fades away at its end in this many seconds. */
 const PILE_FADE_S = 0.8;
 /** Seconds of a tire's roll down from the pile to its place, and its roll to the bin per stage width. */
 const ROLL_DOWN_S = 0.8;
@@ -240,23 +238,6 @@ const SLOT_GAP: [number, number] = [160, 210];
 const WALK_ON = 260;
 const WALK_S = 1.4;
 
-/** An old tire while its picture is missing: a dark ring with a grey rim. */
-function tireFallback(g: G, w: number, h: number): void {
-  const r = Math.min(w, h) * 0.45;
-  g.save();
-  g.lineWidth = r * 0.45;
-  g.strokeStyle = '#3a3a3e';
-  g.beginPath();
-  g.arc(0, 0, r * 0.75, 0, Math.PI * 2);
-  g.stroke();
-  g.lineWidth = 3;
-  g.strokeStyle = '#8a8f98';
-  g.beginPath();
-  g.arc(0, 0, r * 0.5, 0, Math.PI * 2);
-  g.stroke();
-  g.restore();
-}
-
 /** A pile of tires while its pictures are missing: rows of tires lying on each other, fewer by the stage. */
 function pileFallback(stage: number) {
   return (g: G, _w: number, h: number): void => {
@@ -271,35 +252,6 @@ function pileFallback(stage: number) {
       }
     }
   };
-}
-
-/** A round metal bin while its picture is missing. */
-function binFallback(g: G, w: number, h: number): void {
-  const bw = Math.min(w, h * 0.75);
-  g.save();
-  g.fillStyle = '#a9b7c6';
-  g.strokeStyle = '#6f7f92';
-  g.lineWidth = 3;
-  g.beginPath();
-  g.moveTo(-bw * 0.45, -h * 0.4);
-  g.lineTo(bw * 0.45, -h * 0.4);
-  g.lineTo(bw * 0.38, h * 0.48);
-  g.lineTo(-bw * 0.38, h * 0.48);
-  g.closePath();
-  g.fill();
-  g.stroke();
-  for (const k of [-0.15, 0.15]) {
-    g.beginPath();
-    g.moveTo(k * bw, -h * 0.3);
-    g.lineTo(k * bw * 0.9, h * 0.4);
-    g.stroke();
-  }
-  g.restore();
-}
-
-/** The pile's stage (0-2) at a share of the level. */
-export function pileStage(share: number): number {
-  return PILE_STAGES.filter((s) => share >= s).length;
 }
 
 /** A tire at the pile's foot, in the scene (the screen shows it at x - scroll): rolling down, waiting with its word, or rolling to the bin. */

@@ -54,6 +54,8 @@ const SCENES = [
   { name: 'junkyard-1', island: 'junkyard', node: 0 },
   { name: 'junkyard-2', island: 'junkyard', node: 1 },
   { name: 'junkyard-3', island: 'junkyard', node: 2 },
+  { name: 'junkyard-4', island: 'junkyard', node: 3 },
+  { name: 'junkyard-5', island: 'junkyard', node: 4 },
   { name: 'placeholder', island: 'egg', node: 0 },
   { name: 'range', island: 'meadow', aim: true },
   { name: 'rhythm', island: 'meadow', side: '.rhythm-node' },

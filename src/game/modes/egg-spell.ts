@@ -5,13 +5,12 @@ import { drawSprite, type G } from '../../gfx/draw';
 import { LITTLE_DRAGON_PICTURES, drawLittleDragon, littleDragonFallback, littleDragonImage } from '../../gfx/little-dragon';
 import { eggFallback, eggSpot } from '../../gfx/tapko';
 import { t } from '../../i18n/i18n';
-import { ENTER } from '../../keyboard/layouts';
 import { TAPKO_H } from '../mode';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
 import { FLAMES, Firepit, type PitLook } from './dragons';
 import { Detour, lengthen, secondsPerWord } from './kit/egg';
-import { Ribbon } from './kit/ribbon';
+import { Ribbon, innerWord, knownSentence } from './kit/ribbon';
 import { HeroMode, PATH_FEET } from './kit/hero';
 
 const FEET = PATH_FEET;
@@ -142,7 +141,7 @@ export class SpellRibbonMode extends HeroMode {
 
   /** The next sentence of 4-6 known words, ending with a period when the period is known; false when it came empty. */
   private sentence(): boolean {
-    const list = this.L.word(undefined, 6, 4).replace(ENTER, '').split(' ').filter(Boolean);
+    const list = knownSentence(this.L);
     list.forEach((w, i) => this.ribbon.words.push(this.ribbon.word(w, i === list.length - 1)));
     return list.length > 0;
   }
@@ -201,10 +200,7 @@ export class SpellRibbonMode extends HeroMode {
   /** One word more right after the word in progress, a word of the spell's own kind; the minimum grows by its share. */
   private grow(): void {
     if (!lengthen(this.L, this.detour, 1)) return;
-    const list = this.L.word(undefined, 6, 4).replace(ENTER, '').split(' ').filter(Boolean);
-    // A word from inside a sentence: no capital, no period.
-    const pool = list.length > 2 ? list.slice(1, -1) : list;
-    this.ribbon.words.splice(this.ribbon.at + 1, 0, this.ribbon.word(this.L.rng.pick(pool), false));
+    this.ribbon.words.splice(this.ribbon.at + 1, 0, this.ribbon.word(innerWord(this.L), false));
   }
 
   /** The spell is said: the fire flares up, the egg breaks and the little dragon comes out. */

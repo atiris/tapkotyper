@@ -58,3 +58,54 @@ export function drawCraneMagnet(g: G, x: number, y: number, h: number, cableX = 
   g.restore();
   drawSprite(g, MAGNET, x, y, h, {}, magnetFallback);
 }
+
+/** An old tire while its picture is missing: a dark ring with a grey rim. */
+export function tireFallback(g: G, w: number, h: number): void {
+  const r = Math.min(w, h) * 0.45;
+  g.save();
+  g.lineWidth = r * 0.45;
+  g.strokeStyle = '#3a3a3e';
+  g.beginPath();
+  g.arc(0, 0, r * 0.75, 0, Math.PI * 2);
+  g.stroke();
+  g.lineWidth = 3;
+  g.strokeStyle = '#8a8f98';
+  g.beginPath();
+  g.arc(0, 0, r * 0.5, 0, Math.PI * 2);
+  g.stroke();
+  g.restore();
+}
+
+export const BIN = 'obj-bin';
+
+/** A round metal bin while its picture is missing. */
+export function binFallback(g: G, w: number, h: number): void {
+  const bw = Math.min(w, h * 0.75);
+  g.save();
+  g.fillStyle = '#a9b7c6';
+  g.strokeStyle = '#6f7f92';
+  g.lineWidth = 3;
+  g.beginPath();
+  g.moveTo(-bw * 0.45, -h * 0.4);
+  g.lineTo(bw * 0.45, -h * 0.4);
+  g.lineTo(bw * 0.38, h * 0.48);
+  g.lineTo(-bw * 0.38, h * 0.48);
+  g.closePath();
+  g.fill();
+  g.stroke();
+  for (const k of [-0.15, 0.15]) {
+    g.beginPath();
+    g.moveTo(k * bw, -h * 0.3);
+    g.lineTo(k * bw * 0.9, h * 0.4);
+    g.stroke();
+  }
+  g.restore();
+}
+
+/** A pile shrinks at these shares of its level (the tire pile, the beeping pile). */
+export const PILE_STAGES = [1 / 3, 2 / 3];
+
+/** The pile's stage (0-2) at a share of the level. */
+export function pileStage(share: number): number {
+  return PILE_STAGES.filter((s) => share >= s).length;
+}

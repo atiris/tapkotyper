@@ -1116,6 +1116,21 @@
     "magnetDone": [
       "Magnet vytiahol aj posledné veľké koliesko!"
     ],
+    "junkpileStart": [
+      "Tu je **veľká kopa haraburdia** a niečo v nej smutne pípa. Hore beží pás so slovami: píš ich, aj medzery a bodky. Za každé slovo vyskočí z kopy jedna vec a skotúľa sa do koša. Pri chybe začne slovo odznova a pribudne jedno slovo navyše, tak **píš presne**."
+    ],
+    "junkpileSlip": "Chybička! Pribudlo jedno slovo.",
+    "junkpileCareful": "Pozor, píš presne!",
+    "junkpileDone": [
+      "Pod kopou leží malý robot! Pípol, ale nehýbe sa."
+    ],
+    "codeStart": [
+      "Malý robot nereaguje. Na jeho **starej obrazovke** je program, ktorý ho zobudí: **prepíš ho** na prázdnu obrazovku. Riadky sa tam lámu inak, tak si dávaj pozor, kde v programe práve si. Chybné písmeno sa nenapíše, ale do programu pribudne slovo."
+    ],
+    "codeSlip": "Chybička! Do programu pribudlo slovo.",
+    "codeDone": [
+      "Robot sa zobudil a postavil sa! Teší sa, že ťa vidí."
+    ],
     "copyLoopStart": "Táto úroveň sa ešte pripravuje. Zatiaľ si tu precvičíš odpis: píš slová zo stredu, kým neuplynie čas.",
     "copyLoopSoon": "Pripravuje sa",
     "copyLoopCount": "napísané: {n}",

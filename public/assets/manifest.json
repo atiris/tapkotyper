@@ -28,6 +28,14 @@
    "w": 160,
    "h": 160
   },
+  "acc-big-beard": {
+   "w": 640,
+   "h": 640
+  },
+  "acc-big-beard-thumb": {
+   "w": 160,
+   "h": 160
+  },
   "acc-black-gloves": {
    "w": 640,
    "h": 640
@@ -181,6 +189,14 @@
    "h": 640
   },
   "acc-medallion-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-moustache": {
+   "w": 640,
+   "h": 640
+  },
+  "acc-moustache-thumb": {
    "w": 160,
    "h": 160
   },
@@ -1047,6 +1063,18 @@
   "obj-gate": {
    "w": 512,
    "h": 511
+  },
+  "obj-gear-1": {
+   "w": 512,
+   "h": 511
+  },
+  "obj-gear-2": {
+   "w": 508,
+   "h": 512
+  },
+  "obj-gear-3": {
+   "w": 512,
+   "h": 512
   },
   "obj-gear": {
    "w": 451,
@@ -2040,6 +2068,10 @@
    "w": 431,
    "h": 512
   },
+  "ui-treasure-map": {
+   "w": 1094,
+   "h": 812
+  },
   "ui-treble-clef": {
    "w": 235,
    "h": 512
@@ -2163,26 +2195,6 @@
   "ui-start-meadow-night-low": {
    "w": 692,
    "h": 294
-  },
-  "ui-treasure-map": {
-   "w": 1094,
-   "h": 812
-  },
-  "acc-big-beard": {
-   "w": 640,
-   "h": 640
-  },
-  "acc-big-beard-thumb": {
-   "w": 160,
-   "h": 160
-  },
-  "acc-moustache": {
-   "w": 640,
-   "h": 640
-  },
-  "acc-moustache-thumb": {
-   "w": 160,
-   "h": 160
   }
  },
  "accessories": [
@@ -2200,6 +2212,12 @@
    "id": "balloon",
    "slot": "hand",
    "set": "e"
+  },
+  {
+   "id": "big-beard",
+   "slot": "neck",
+   "set": "single",
+   "top": true
   },
   {
    "id": "black-gloves",
@@ -2290,6 +2308,12 @@
    "id": "medallion",
    "slot": "neck",
    "set": "single"
+  },
+  {
+   "id": "moustache",
+   "slot": "neck",
+   "set": "single",
+   "top": true
   },
   {
    "id": "raincoat",
@@ -2420,18 +2444,6 @@
    "id": "green-boots",
    "slot": "feet",
    "set": "g"
-  },
-  {
-   "id": "big-beard",
-   "slot": "neck",
-   "set": "single",
-   "top": true
-  },
-  {
-   "id": "moustache",
-   "slot": "neck",
-   "set": "single",
-   "top": true
   }
  ],
  "music": [

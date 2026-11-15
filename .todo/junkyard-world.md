@@ -177,10 +177,18 @@ first level.
   story" spec now checks Bolt walking in the workshop's first level.
 
 ### Step 2 - Pictures and backgrounds
-- [ ] Prompts into section 7, generation via skill `gemini-images` in a subagent, backgrounds by
+- [x] Prompts into section 7, generation via skill `gemini-images` in a subagent, backgrounds by
   the section 3 procedure, the magenta pixel check, `npm run assets`; lessons recorded.
-- [ ] Checks: `npm run assets` clean, a screenshot of a world 6 level (still the placeholder) with
-  the new bands, the seams looked at in `preview`.
+- [x] Checks: `npm run assets` clean, the seams looked at in `preview`.
+
+- Progress (2026-11-15): backgrounds and `obj-gear-1..3` done; Gemini's daily limit stopped the
+  rest, which moved to step 5b (the modes draw their fallbacks until then). Decisions: the far
+  seam was joined by `quilt` with the far picture as its own donor (no Gemini repaint, limit);
+  mid is strip 1 of the redrawn sheet lifted 81 px, near strip 3; the near band keeps the old
+  height (sand from row 675, the character's path unchanged). Seam scores far 7.1 (old 11.0),
+  mid 2.5, near 0.2; magenta pixels in the final webp 0 in every layer (the old mid had 22).
+  Old raw layers kept in `assets-src/bg-work/junkyard/old/`. The in-game look of the bands is
+  checked with the step 3 play-through.
 
 ### Step 3 - 6:1 gears and 6:2 tires
 - [ ] Kinds `gears`, `tires` in `levels.ts`, modes in `junkyard.ts`, registered in `modes.ts`,
@@ -201,6 +209,16 @@ first level.
   the slip adding a word, Bolt's lights and getting up.
 - [ ] Tests: unit test of the transcribe line breaking and the added words cap, idle tests,
   `npm run test:affected`; both played in the browser to the reward scene.
+
+### Step 5b - The pictures Gemini's limit left out
+- [ ] `obj-gear-4`, `obj-gear-box`, `obj-tire-pile-1..3`, `obj-bin`, `obj-screw-pile`,
+  `obj-junk-pile-1..3`, `robot-broken-lying` (prompts in `assets-src/PROMPTS.md` section 7,
+  "World 6 rework"). Seven were queued in the bridge on 2026-11-15 (gemini_status job ids
+  gmwi4xykq24a3d8, gmwi4hrjl7383c5, gmwi4htpg27fd3f, gmwi4hvz9a6f022, gmwi4hydi6accd7,
+  gmwi4i0ub180d84, gmwi4i40e408266) and may already be saved unreviewed in `assets-src/`: review
+  each (subject, no face, clean magenta, whole object), redo bad ones, then the piles' stages 2-3
+  with stage 1 attached; `npm run assets`, PROMPTS.md status. In a subagent.
+- [ ] Checks: the modes pick up the pictures (a screenshot of 6:1, 6:2, 6:4 in the browser).
 
 ### Step 6 - Full verification and done
 - [ ] `npm run build`, `npm test`, `npm run test:affected -- --base <commit before step 1>`, the

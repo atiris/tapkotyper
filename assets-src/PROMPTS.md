@@ -237,7 +237,16 @@ Notes from real Gemini runs; add new ones here.
 - A cut-out of a beard (2026-11-09) once came with a second, pixelated copy of it around the first; asking
   again with "keep ONE beard, do not add a second beard or any other shape, smooth, not pixelated" was
   clean. A beard on the template gets its own drawn mouth in the moustache; ask for "only hair, no mouth".
-
+- Redrawing a world's layers clean (junkyard, 2026-11-15): the old layer (far) or the old sheet of strips
+  (mid, near) attached with "redraw clean, copying the composition is wanted" came back with the same
+  content and style on the first try. Attach the old **sheet**, not the processed layer (a strip at the
+  bottom of a tall magenta frame), so the answer is a sheet again. The mid sheet came on a dull pink key
+  (233,61,184) again although "pure magenta #FF00FF, not dull pink" was asked, and the near strips again
+  stopped about 30 px short of both side edges; `strips` + `quilt` handle both.
+- The far layer can be joined without Gemini: `prep <far> <dir> 0.14` and `quilt <dir> <far> <out>` with the
+  far itself as donor filled the middle with a slice of the same scene, the sky one tone across the gap
+  (junkyard, 2026-11-15, when the daily limit stopped the seam repaint). A few barrels show twice, which
+  reads as a row of barrels; a scene with one big landmark in the slice would show it twice.
 ---
 
 ## 1. Tapko and friends (companions)
@@ -952,9 +961,9 @@ first, then attach it to the other prompts ("the same robot as in the attached i
 ### Backgrounds (section 3 prompts)
 | File | SCENE / LAYER | Height | Status |
 |---|---|---|---|
-| `bg-junkyard-far.jpg` | a friendly junkyard in soft daylight with soft hills of old things far away, a rusty but cheerful crane and a light blue sky | full | done 2026-10-22 |
-| `bg-junkyard-mid.jpg` | soft piles of old tires, wooden crates and round metal cans | 45 % | |
-| `bg-junkyard-near.jpg` | a few big coiled metal springs, large bolts and nuts and thick grass tufts | 25 % | done 2026-10-22 (reference for the strip prompt) |
+| `bg-junkyard-far.jpg` | a friendly junkyard in soft daylight with soft hills of old things far away, a rusty but cheerful crane and a light blue sky | full | redone 2026-11-15 (the old layer attached, "redraw clean, copying the composition is wanted"; seam by `quilt` from itself with a 14 % gap, as the daily limit was reached before a Gemini seam repaint: the sky stays one tone) |
+| `bg-junkyard-mid.jpg` | soft piles of old tires, wooden crates and round metal cans | 45 % | redone 2026-11-15 (the old sheet attached; sheet of two strips on a dull pink key, turned to #FF00FF locally; strip 1 quilted with itself, lifted 81 px) |
+| `bg-junkyard-near.jpg` | a few big coiled metal springs, large bolts and nuts and thick grass tufts | 25 % | redone 2026-11-15 (the old sheet attached; strip 3 of three quilted with itself; its sand from row 675 as before) |
 | `bg-workshop-far.jpg` | the inside of a warm cozy workshop with wooden walls, shelves with jars of screws, hanging tools and a round window | full | |
 | `bg-workshop-mid.jpg` | a workbench with drawers and a vise, a tool cabinet, a mint toolbox, stacked crates, a pegboard with tools, a drill press, a stool and a barrel with rods | 45 % | done 2026-10-23 |
 | `bg-workshop-near.jpg` | a conveyor belt across the whole image with rollers below, and on it in one row a gear, an open crate, a robot arm part, copper wire, a box of bolts, a wheel, a battery and a small robot head; nothing behind them | 25 % | done 2026-10-23 |
@@ -978,6 +987,19 @@ first, then attach it to the other prompts ("the same robot as in the attached i
 | `obj-spring.jpg` | a big coiled metal spring with a friendly face, bouncing | magenta |
 | `obj-magnet.jpg` | a red and silver horseshoe magnet hanging on a short chain from above | green |
 | `obj-cable-knot.jpg` | a big tangled knot of soft colorful cables with a friendly face | magenta |
+| | **World 6 rework (plan `.todo/junkyard-world.md`, 2026-11-15):** the section 4 prompt with "NO face, NO eyes, no mouth: it is a plain thing." instead of its friendly-faces sentence, and "no numbers" added to its no-text sentence | |
+| `obj-gear-1.jpg` | ONE old golden gear (warm gold #E8B848, darker #B8862E), a little worn, with a round hole in the middle. Strictly front view, not tilted; NOTHING else (done, first try) | magenta |
+| `obj-gear-2.jpg` | ONE old steel gear in blue-grey steel (#A9B7C6, darker #6F7F92, light #DCE4EC), with more and smaller teeth and a few round holes in its body; as gear 1 otherwise (done, first try) | magenta |
+| `obj-gear-3.jpg` | ONE old copper gear (warm copper #C8743E, darker #8E4A24, light #E9A06A) with a few big chunky teeth and spokes in the middle; as gear 1 otherwise (done, first try) | magenta |
+| `obj-gear-4.jpg` | ONE old gear painted bright blue (#3F7FD0, darker #2A5A9E), the paint a little chipped at the teeth so grey metal shows, with a round hole in the middle; as gear 1 otherwise | magenta |
+| `obj-gear-box.jpg` | ONE brown cardboard box, its four top flaps standing open upward, empty, with a simple dark brown gear sign printed on its front side. Front view, a little from above; NOTHING else, nothing in or around the box | magenta |
+| `obj-tire-pile-1.jpg` | ONE big pile of old dark grey rubber car tires stacked and leaning on each other, about as wide as tall. Side view; NOTHING else: no grass, no ground, no other junk | magenta |
+| `obj-tire-pile-2.jpg`, `-3` | **attach `obj-tire-pile-1.jpg`**: "draw a pile of old tires in exactly the same drawing style, colors and outline as the attached pile, but smaller: about half as big (2) / a small pile of only two or three tires (3); NO face, NOTHING else" | magenta |
+| `obj-bin.jpg` | ONE old round metal rubbish bin in blue-grey steel (#A9B7C6, darker #6F7F92), open: its round lid leans tilted on the bin's rim, empty inside. Side view, a little from above; NOTHING else, no rubbish around it | magenta |
+| `obj-screw-pile.jpg` | ONE low wide pile of old screws, nuts and small gears in blue-grey steel (#A9B7C6, darker #6F7F92) with a few copper and brass ones, about three times wider than tall. Side view; NOTHING else: no ground, no grass | magenta |
+| `obj-junk-pile-1.jpg` | ONE big pile of mixed old things in a junkyard: a wooden crate, an old tire, a rusty tin can, a bent pipe, a wheel, a spring and a metal plate, heaped together, a bit wider than tall. Side view; NOTHING else: no grass, no ground | magenta |
+| `obj-junk-pile-2.jpg`, `-3` | **attach `obj-junk-pile-1.jpg`**: as the tire piles 2 and 3, "a pile of mixed old things ... about half as big (2) / a small heap of only three or four things (3)" | magenta |
+| `robot-broken-lying.jpg` | **attach `robot-broken.jpg`**, the section 4 prompt without its face sentence: "the same small round robot as in the attached picture, in exactly the same drawing style and colors (light grey-blue metal body, soft rust spots, one leg missing, bent antenna with a tiny orange ball, small claw hands, rivets), but switched off and lying flat on his back on the ground, seen from the side: his head on the left, his one leg on the right, his body horizontal, arms resting at his sides. The body pose must be completely different from the attached picture: clearly lying, not standing, not sitting. His dark glass face is dark and empty: the eyes are switched off, no glowing eyes, no light"; "no ground line" added to the background sentence | magenta |
 | **Workshop** | | |
 | `obj-gear.jpg` | a shiny golden gear | magenta |
 | `obj-bolt.jpg` | a big silver bolt with a nut | magenta |

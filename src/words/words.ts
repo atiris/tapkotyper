@@ -3,7 +3,7 @@ import { detectLanguage, isLang } from '../i18n/i18n';
 import { isOwnRef, ownId, ownLang } from '../i18n/own-langs';
 import { LAYOUTS, type Layout, canType } from '../keyboard/layouts';
 import { DIACRITICS, SHIFT_L, SHIFT_R, SPACE, isLetterKey, shiftKeyOf } from '../learning/lessons';
-import type { LangRef, OwnMix } from '../storage/schema';
+import type { Lang, LangRef, OwnMix } from '../storage/schema';
 
 const VOWELS = new Set([...'aeiouyáéíóúýäô']);
 export const DIGITS = new Set([...'0123456789']);
@@ -47,13 +47,8 @@ const SK_VOICELESS = new Set(['p', 't', 'ť', 'k', 'ch', 's', 'š', 'c', 'č', '
 const SK_BOTH_WAYS = new Set([...'bflmprsvz']);
 const SK_IY = new Set([...'iíyý']);
 
-/**
- * The spelling of a word follows from hearing it, so a dictation may say it. Only Slovak is
- * checked: no voiced consonant at the end, no voicing pair of mixed voicing side by side, and
- * no i or y after a consonant that takes both.
- */
-export function heardSafe(word: string, lang?: LangRef): boolean {
-  if (lang !== 'sk') return true;
+/** Slovak: no voiced consonant at the end, no voicing pair of mixed voicing side by side, and no i or y after a consonant that takes both. */
+function skHeardSafe(word: string): boolean {
   const sounds = word.match(SK_SOUND) ?? [];
   const last = sounds[sounds.length - 1];
   if (last && (SK_VOICED.has(last) || last === 'v')) return false;
@@ -64,6 +59,15 @@ export function heardSafe(word: string, lang?: LangRef): boolean {
     if (SK_BOTH_WAYS.has(a) && SK_IY.has(b)) return false;
   }
   return true;
+}
+
+/** The dictation rules per language; a language without rules says every word. */
+const HEARD_SAFE: Partial<Record<Lang, (word: string) => boolean>> = { sk: skHeardSafe };
+
+/** The spelling of a word follows from hearing it, so a dictation may say it. */
+export function heardSafe(word: string, lang?: LangRef): boolean {
+  const rule = lang && isLang(lang) ? HEARD_SAFE[lang] : undefined;
+  return rule ? rule(word) : true;
 }
 
 export function isBlocked(word: string): boolean {

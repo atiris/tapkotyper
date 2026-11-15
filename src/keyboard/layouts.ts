@@ -158,6 +158,39 @@ export function homeKey(layout: Layout, finger: Finger): string | null {
   return code ? keyByCode(layout, code)?.base ?? null : null;
 }
 
+/** The letters of the Latin alphabet without marks: what every layout types and no tip needs to name. */
+const PLAIN = /^[a-z]$/;
+const isLetter = (ch: string): boolean => /^\p{L}$/u.test(ch);
+
+/** The letter keys of a row, as printed (unshifted). */
+const rowLetters = (layout: Layout, row: number): string[] => layout.rows[row].map((d) => d.base).filter(isLetter);
+
+/** Whether the layout has dead keys (an accent pressed before its letter). */
+export const hasDeadKeys = (layout: Layout): boolean => Object.keys(layout.dead).length > 0;
+
+/** The letters on the digit row without Shift (`ľ š č ť ž ý á í é` on Slovak keyboards), empty on US. */
+export const lettersOnDigitRow = (layout: Layout): string[] => rowLetters(layout, 0);
+
+/** Whether Y and Z sit swapped against the US keyboard (QWERTZ). */
+export const swapsYZ = (layout: Layout): boolean => keyByCode(layout, 'KeyY')?.base === 'z';
+
+/** The right little finger's letter keys beyond `p` and `l` (`ú ä ô ň` on Slovak keyboards), the digit row not counted. */
+export const pinkyLetters = (layout: Layout): string[] =>
+  layout.rows.slice(1).flatMap((row) => row.filter((d) => d.finger === 9 && isLetter(d.base) && !PLAIN.test(d.base)).map((d) => d.base));
+
+/** Every letter the layout types that is not plain `a-z`: on its own key, on a shifted key or through a dead key. */
+export function diacritics(layout: Layout): Set<string> {
+  const chars = allKeys(layout).flatMap((d) => [d.base, d.shift]).concat(Object.values(layout.dead).flatMap((t) => Object.values(t)));
+  return new Set(chars.filter((c) => isLetter(c) && !PLAIN.test(c.toLowerCase())).map((c) => c.toLowerCase()));
+}
+
+/** The keys a parent adds with one button: the home row under the fingers, the plain letters of the top and of the bottom row. */
+export function rowPresets(layout: Layout): { home: string; top: string; bottom: string } {
+  const home = ([3, 6, 2, 7, 1, 8, 0, 9] as Finger[]).map((f) => homeKey(layout, f)).join('');
+  const plain = (row: number) => rowLetters(layout, row).filter((c) => PLAIN.test(c)).join('');
+  return { home, top: plain(1), bottom: plain(3) };
+}
+
 export function canType(layout: Layout, ch: string): boolean {
   return stepsFor(layout, ch).length > 0;
 }

@@ -1,13 +1,23 @@
-import type { Lang, LangRef } from '../storage/schema';
+import type { Lang, LangRef, LayoutId } from '../storage/schema';
 import { type Dict, isLines } from './catalog';
 import { type OwnLang, isOwnRef, ownId, ownLang } from './own-langs';
 
-/** The supported languages, each by its own name. A new language is its text file, one row here, its word list and layout. */
-export const LANGUAGES: Record<Lang, string> = { sk: 'Slovenčina', en: 'English' };
+/** A supported language: its own name, the keyboard its players get first, its `og:locale`. */
+export interface LangInfo {
+  name: string;
+  layout: LayoutId;
+  locale: string;
+}
+
+/** The supported languages. A new language is its text file, one row here, its word list and layout. */
+export const LANGUAGES: Record<Lang, LangInfo> = {
+  sk: { name: 'Slovenčina', layout: 'sk-qwertz', locale: 'sk_SK' },
+  en: { name: 'English', layout: 'us-qwerty', locale: 'en_US' },
+};
 export const LANGS = Object.keys(LANGUAGES) as Lang[];
 /** The choices of a language select: every supported language by its own name. */
 export function langOptions(): [Lang, string][] {
-  return LANGS.map((l) => [l, LANGUAGES[l]]);
+  return LANGS.map((l) => [l, LANGUAGES[l].name]);
 }
 
 /** Languages whose readers read a supported one well. */
@@ -26,10 +36,16 @@ let ownName: string | null = null;
 
 export const isLang = (ref: string): ref is Lang => (LANGS as string[]).includes(ref);
 
+/** The language everything falls back to: the one most readers read. */
+export const FALLBACK: Lang = 'en';
+
+/** The keyboard a language's players get first; anything but a supported language gets English's. */
+export const defaultLayout = (lang: LangRef): LayoutId => LANGUAGES[isLang(lang) ? lang : FALLBACK].layout;
+
 /** The browser's first supported language, else the first close one, else English. */
 export function detectLanguage(navLangs: readonly string[] = globalThis.navigator?.languages ?? []): Lang {
   const codes = navLangs.map((l) => l.toLowerCase().split('-')[0]);
-  return codes.find((c): c is Lang => LANGS.includes(c as Lang)) ?? codes.map((c) => CLOSE[c]).find((l) => l) ?? 'en';
+  return codes.find((c): c is Lang => LANGS.includes(c as Lang)) ?? codes.map((c) => CLOSE[c]).find((l) => l) ?? FALLBACK;
 }
 
 const fetched = new Map<Lang, Promise<Dict>>();
@@ -158,7 +174,7 @@ export function locale(): string {
 
 /** The name of the language in use, by its own name. */
 export function languageName(): string {
-  return ownName ?? LANGUAGES[current as Lang] ?? current;
+  return ownName ?? LANGUAGES[current as Lang]?.name ?? current;
 }
 
 function lookup(d: Dict, key: string): string | string[] | Dict | undefined {

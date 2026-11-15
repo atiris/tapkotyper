@@ -1,7 +1,7 @@
 import { app, go, selectProfile } from '../app/app';
 import { audio } from '../audio/audio';
 import { tapkoElement } from '../gfx/tapko';
-import { langOptions, language, t } from '../i18n/i18n';
+import { defaultLayout, langOptions, language, t } from '../i18n/i18n';
 import { COMPANION_KINDS, type CompanionKind, type Lang, type LayoutId } from '../storage/schema';
 import { NICK_MAX, newProfile } from '../storage/store';
 import { addTask } from '../share/task';
@@ -20,11 +20,11 @@ export function newProfileScreen(root: HTMLElement): () => void {
   const lang = langSelect('np-lang');
   const wordLang = langSelect('np-wordlang');
   const lay = h('select', { id: 'np-layout' },
-    ...LAYOUT_IDS.map((id) => h('option', { value: id, selected: id === (language() === 'sk' ? 'sk-qwertz' : 'us-qwerty') }, t(`layouts.${id}`))));
+    ...LAYOUT_IDS.map((id) => h('option', { value: id, selected: id === defaultLayout(language()) }, t(`layouts.${id}`))));
   // A new language brings its words and keyboard along; both can still be chosen apart after it.
   lang.addEventListener('change', () => {
     wordLang.value = lang.value;
-    lay.value = lang.value === 'sk' ? 'sk-qwertz' : 'us-qwerty';
+    lay.value = defaultLayout(lang.value as Lang);
   });
   const kinds = h('div', { class: 'kind-picker', role: 'radiogroup', 'aria-label': t('newProfile.companion') },
     ...COMPANION_KINDS.map((k) => {

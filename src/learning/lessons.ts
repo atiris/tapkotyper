@@ -1,5 +1,5 @@
 import { keyName } from '../keyboard/key-names';
-import { type Layout, type KeyDef, LAYOUTS, fingerFor, keyByCode, shiftKeyFor, stepsFor } from '../keyboard/layouts';
+import { type Layout, type KeyDef, LAYOUTS, diacritics, fingerFor, keyByCode, shiftKeyFor, stepsFor } from '../keyboard/layouts';
 import type { KeyStat, LayoutId, Profile } from '../storage/schema';
 
 /** Lesson key of the space bar (typed with a thumb). */
@@ -28,10 +28,14 @@ const US_GROUPS = [
   ['1'], ['!'], ['2'], ['3'], ['4'], ['5'], ['6'], ['7'], ['8'], ['9'], ['0'], ['-'],
 ];
 
-export const DIACRITICS = new Set([...'áäčďéíĺľňóôŕšťúýž']);
+/** The lesson groups of every layout; Slovak QWERTY teaches the same keys as Slovak QWERTZ. */
+const GROUPS: Record<LayoutId, string[][]> = { 'sk-qwertz': SK_GROUPS, 'sk-qwerty': SK_GROUPS, 'us-qwerty': US_GROUPS };
+
+/** Every letter beyond plain `a-z` that some layout types: what "words without diacritics" leaves out. */
+export const DIACRITICS = new Set(Object.values(LAYOUTS).flatMap((l) => [...diacritics(l)]));
 
 export function lessonGroups(layout: LayoutId): string[][] {
-  return layout === 'us-qwerty' ? US_GROUPS : SK_GROUPS;
+  return GROUPS[layout];
 }
 
 export function lessonOrder(layout: LayoutId): string[] {

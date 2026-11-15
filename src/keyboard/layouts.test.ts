@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { LAYOUTS, LayoutMismatchDetector, fingerFor, homeKey, stepsFor } from './layouts';
+import { LAYOUTS, LayoutMismatchDetector, diacritics, fingerFor, hasDeadKeys, homeKey, lettersOnDigitRow, pinkyLetters, rowPresets, stepsFor, swapsYZ } from './layouts';
 
 const sk = LAYOUTS['sk-qwertz'];
 const us = LAYOUTS['us-qwerty'];
@@ -63,5 +63,23 @@ describe('layouts', () => {
   it('does not complain when the layout matches', () => {
     const d = new LayoutMismatchDetector('sk-qwertz');
     for (let i = 0; i < 10; i++) expect(d.observe('KeyY', 'z', false)).toBeNull();
+  });
+
+  it('tells what a layout has', () => {
+    const skY = LAYOUTS['sk-qwerty'];
+    expect([sk, skY, us].map(hasDeadKeys)).toEqual([true, true, false]);
+    expect([sk, skY, us].map(swapsYZ)).toEqual([true, false, false]);
+    expect(lettersOnDigitRow(sk).join('')).toBe('ľščťžýáíé');
+    expect(lettersOnDigitRow(us)).toEqual([]);
+    expect(pinkyLetters(sk).join('')).toBe('úäôň');
+    expect(pinkyLetters(us)).toEqual([]);
+    expect([...diacritics(sk)].sort().join('')).toBe([...'áäčďéíĺľňóôŕšťúýž'].sort().join(''));
+    expect(diacritics(us).size).toBe(0);
+  });
+
+  it('gives the row presets of each layout', () => {
+    expect(rowPresets(sk)).toEqual({ home: 'fjdkslaô', top: 'qwertzuiop', bottom: 'yxcvbnm' });
+    expect(rowPresets(LAYOUTS['sk-qwerty'])).toEqual({ home: 'fjdkslaô', top: 'qwertyuiop', bottom: 'zxcvbnm' });
+    expect(rowPresets(us)).toEqual({ home: 'fjdksla;', top: 'qwertyuiop', bottom: 'zxcvbnm' });
   });
 });

@@ -6,7 +6,7 @@ import { fadeNotesToday } from '../game/rhythm-notes';
 import { magpieVisit } from '../game/magpie';
 import { expireSecrets } from '../game/rewards';
 import { resetFontFamily } from '../gfx/draw';
-import { askedLanguage, hasTexts, setLanguage, tList } from '../i18n/i18n';
+import { LANGS, askedLanguage, baseLanguage, defaultLayout, hasTexts, setLanguage, tList } from '../i18n/i18n';
 import { toggleTheme, useTheme } from './theme';
 import { LAYOUTS, type Layout } from '../keyboard/layouts';
 import { localDate } from '../learning/stats';
@@ -38,7 +38,7 @@ export const app = {
   store: new Store(),
   profile: null as Profile | null,
   /** Word lists by language; the chosen player's word languages are loaded (`loadPlayerWords`). */
-  words: { sk: [], en: [] } as Record<LangRef, string[]>,
+  words: Object.fromEntries(LANGS.map((l) => [l, [] as string[]])) as Record<LangRef, string[]>,
   /** Active play seconds since the session started (or the last break). */
   sessionSeconds: 0,
   /** A preparation tip was shown in this session. */
@@ -75,7 +75,7 @@ export function profileLayout(p: Profile): Layout {
 }
 
 export function layout(): Layout {
-  return app.profile ? profileLayout(app.profile) : LAYOUTS['sk-qwertz'];
+  return app.profile ? profileLayout(app.profile) : LAYOUTS[defaultLayout(baseLanguage())];
 }
 
 export function registerScreen(name: ScreenName, s: Screen): void {

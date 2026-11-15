@@ -1,3 +1,5 @@
+import { defaultLayout, detectLanguage, isLang } from '../i18n/i18n';
+import { isOwnRef } from '../i18n/own-langs';
 import { LAYOUT_IDS } from '../keyboard/layouts';
 import { firstKeys } from '../learning/lessons';
 import {
@@ -78,10 +80,12 @@ export function readStore(raw: any): StoreData {
 /** Fills fields that are missing in a stored or hand-edited profile from the defaults. */
 export function normalizeProfile(p: Profile): Profile {
   const layout = LAYOUT_IDS.includes(p.layout) ? p.layout : undefined;
-  const base = newProfile(p.name, p.language === 'en' ? 'en' : 'sk', layout, p.avatar);
+  const language = typeof p.language === 'string' && (isLang(p.language) || isOwnRef(p.language)) ? p.language : detectLanguage();
+  const base = newProfile(p.name, language, layout, p.avatar);
   return {
     ...base,
     ...p,
+    language,
     layout: base.layout,
     seed: typeof p.seed === 'number' ? p.seed >>> 0 : base.seed,
     companion: { ...base.companion, ...p.companion, name: p.companion?.name?.trim() || base.companion.name },
@@ -106,7 +110,7 @@ export function isProfile(p: any): p is Profile {
 
 /** A new player; without a nickname the name gives one. */
 export function newProfile(name: string, language: LangRef, layout?: LayoutId, kind: CompanionKind = 'fox', nick = ''): Profile {
-  const lay: LayoutId = layout ?? (language === 'sk' ? 'sk-qwertz' : 'us-qwerty');
+  const lay: LayoutId = layout ?? defaultLayout(language);
   const start: CompanionKind = COMPANION_KINDS.includes(kind) ? kind : 'fox';
   const real = name.trim();
   const nickname = nick.trim().slice(0, NICK_MAX) || nickFrom(real);

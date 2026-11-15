@@ -1,7 +1,7 @@
 import { go } from '../app/app';
 import { imageUrl } from '../gfx/assets';
 import { type Dict, type Group, type Item, type Section, WORDS, buildCatalog, lookup, thumbs } from '../i18n/catalog';
-import { LANGS, LANGUAGES, askedLanguage, isLang, language, officialDict, ownDict, setLanguage } from '../i18n/i18n';
+import { LANGS, LANGUAGES, askedLanguage, defaultLayout, isLang, language, officialDict, ownDict, setLanguage } from '../i18n/i18n';
 import { type OwnLang, canonicalCode, deleteOwnLang, isOwnRef, newOwnLang, ownId, ownLangs, ownRef, ownStoreWorks, saveOwnLang } from '../i18n/own-langs';
 import {
   type Field, type GuideFile, type ImportPlan, type Source, addVariant, exportJson, exportPairs, fieldValue, fieldsOf, flatGuide, formExample, guideText, itemNames,
@@ -47,7 +47,6 @@ const icons = new Map<string, HTMLElement>();
 /** An icon for the many items of the sheet: parsed once, then cloned. */
 const icon1 = (name: Parameters<typeof icon>[0]) => (icons.get(name) ?? icons.set(name, icon(name)).get(name)!).cloneNode(true) as HTMLElement;
 
-const defaultLayout = (lang: Lang): LayoutId => (lang === 'sk' ? 'sk-qwertz' : 'us-qwerty');
 /** A share as a whole percentage: the first field done shows 1 %, only everything done shows 100 %. */
 const pct = (p: number) => (p > 0 && p < 0.01 ? 1 : Math.floor(p * 100));
 const placeholders = (s: string) => [...new Set([...s.matchAll(/\{(\w+)\}/g)].map((m) => `{${m[1]}}`))];
@@ -78,7 +77,7 @@ async function loadTranslator(): Promise<void> {
 
 async function officialSource(lang: Lang): Promise<Source> {
   const [dict, words] = await Promise.all([officialDict(lang), loadWords(lang)]);
-  return { code: lang, name: LANGUAGES[lang], dict, words };
+  return { code: lang, name: LANGUAGES[lang].name, dict, words };
 }
 
 /** Deep copy of `base` with `over` laid on top. */
@@ -237,15 +236,15 @@ function translatorPage(screen: HTMLElement): () => void {
   }
 
   function fillSelects(): void {
-    const official = LANGS.map((l) => h('option', { value: l }, LANGUAGES[l]));
+    const official = LANGS.map((l) => h('option', { value: l }, LANGUAGES[l].name));
     const own = (skip?: string) => owns.filter((l) => l.id !== skip).map((l) => h('option', { value: ownRef(l.id) }, l.name));
     sampleSelect.replaceChildren(...official, ...own(target?.id));
     sampleSelect.value = sampleRef;
-    sample2Select.replaceChildren(h('option', { value: '' }, tr('none')), ...LANGS.map((l) => h('option', { value: l }, LANGUAGES[l])), ...own(target?.id));
+    sample2Select.replaceChildren(h('option', { value: '' }, tr('none')), ...LANGS.map((l) => h('option', { value: l }, LANGUAGES[l].name)), ...own(target?.id));
     sample2Select.value = sample2Ref;
     targetSelect.replaceChildren(h('option', { value: '' }, tr('none')), ...owns.map((l) => h('option', { value: l.id }, l.name)));
     targetSelect.value = target?.id ?? '';
-    prefillSelect.replaceChildren(...LANGS.map((l) => h('option', { value: l }, LANGUAGES[l])), ...own(target?.id));
+    prefillSelect.replaceChildren(...LANGS.map((l) => h('option', { value: l }, LANGUAGES[l].name)), ...own(target?.id));
     if (target) prefillSelect.value = target.correctionOf ?? target.base;
     for (const b of needTarget) b.disabled = !target;
   }
@@ -736,7 +735,7 @@ function translatorPage(screen: HTMLElement): () => void {
       let made: OwnLang | null = null;
       const name = h('input', { type: 'text', maxlength: 40, autofocus: true });
       const code = h('input', { type: 'text', maxlength: 20, spellcheck: 'false', autocomplete: 'off' });
-      const fallback = h('select', {}, ...LANGS.map((l) => h('option', { value: l }, LANGUAGES[l])));
+      const fallback = h('select', {}, ...LANGS.map((l) => h('option', { value: l }, LANGUAGES[l].name)));
       const layout = h('select', {}, ...LAYOUT_IDS.map((id) => h('option', { value: id }, layoutName(id))));
       const asked = language();
       fallback.value = isLang(asked) ? asked : 'en';
@@ -746,7 +745,7 @@ function translatorPage(screen: HTMLElement): () => void {
       const create = () => {
         const lang = fallback.value as Lang;
         if (o.pick) {
-          made = newOwnLang({ code: lang, name: tr('correctionName', { name: LANGUAGES[lang] }), base: lang, layout: layout.value as LayoutId, correctionOf: lang });
+          made = newOwnLang({ code: lang, name: tr('correctionName', { name: LANGUAGES[lang].name }), base: lang, layout: layout.value as LayoutId, correctionOf: lang });
           return close();
         }
         const c = canonicalCode(code.value);
@@ -852,7 +851,7 @@ function translatorPage(screen: HTMLElement): () => void {
     const close = modal(h('div', { class: 'tr-dialog tr-menu' }, h('h2', {}, tr('export')),
       button(tr('exportAll'), pairs('full'), 'btn', 'download'),
       button(tr('exportOpen'), pairs('open'), 'btn', 'download'),
-      l.correctionOf ? button(tr('exportChanges', { name: LANGUAGES[l.correctionOf] }), pairs('changes'), 'btn', 'download') : null,
+      l.correctionOf ? button(tr('exportChanges', { name: LANGUAGES[l.correctionOf].name }), pairs('changes'), 'btn', 'download') : null,
       button(tr('exportJson'), () => { close(); download(fileName(l, 'json'), exportJson(l)); }, 'btn', 'download')), { cls: 'tr-modal' });
   }
 
@@ -918,10 +917,10 @@ function translatorPage(screen: HTMLElement): () => void {
     const touched = fields.filter((f) => l.touched.includes(f.id)).length;
     const lines = [
       tr('issue.author', { name: l.author || '?' }), tr('issue.contact', { contact: l.contact || '?' }),
-      tr('issue.base', { name: LANGUAGES[l.base] }),
+      tr('issue.base', { name: LANGUAGES[l.base].name }),
       tr('issue.progress', { n: Math.floor(progressOf(l, fields) * 100), touched, total: fields.length }), '',
     ];
-    const title = l.correctionOf ? tr('issue.fix', { name: LANGUAGES[l.correctionOf] }) : tr('issue.new', { name: l.name, code: l.code });
+    const title = l.correctionOf ? tr('issue.fix', { name: LANGUAGES[l.correctionOf].name }) : tr('issue.new', { name: l.name, code: l.code });
     const url = (body: string) => `${ISSUES}?${new URLSearchParams({ title, body })}`;
     let address = '';
     if (l.correctionOf) {

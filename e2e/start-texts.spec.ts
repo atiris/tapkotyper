@@ -1,4 +1,5 @@
 import { type Page, expect, test } from '@playwright/test';
+import { LANGS } from '../src/i18n/i18n';
 
 // A first visit's start page shows from the start texts alone (src/i18n/start-texts.ts): with the
 // whole files held back, the page and what opens on it look up no text the start texts lack.
@@ -23,7 +24,7 @@ async function tips(page: Page): Promise<void> {
   }
 }
 
-for (const lang of ['sk', 'en']) {
+for (const lang of LANGS) {
   test.describe(lang, () => {
     test(`a computer's start page has all its texts (${lang})`, async ({ page }) => {
       const late = await firstVisit(page, lang);

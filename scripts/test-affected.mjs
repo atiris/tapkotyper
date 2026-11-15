@@ -28,7 +28,7 @@ const RULES = [
   [/^src\/ui\/(camera|qr-scanner|big-code)/, ['teacher-scan']],
   [/^src\/game\/own-content/, ['own-content']],
   [/^src\/game\/wardrobe|^src\/screens\/wardrobe/, ['wardrobe']],
-  [/^src\/game\/(runtime|typing|typed-line|cards|enter|pace|speed|progress|rewards|levels|end-news|super-help)|^src\/ui\/(keyboard-guide|hands|hand-|hud|end-card|finger-colors|keyboard-settings)|^src\/keyboard\/|^src\/learning\//, ['play', 'keyboard-only', 'styles', 'layout']],
+  [/^src\/game\/(runtime|typing|typed-line|cards|tips|enter|pace|speed|progress|rewards|levels|end-news|super-help)|^src\/ui\/(keyboard-guide|hands|hand-|hud|end-card|finger-colors|keyboard-settings)|^src\/keyboard\/|^src\/learning\//, ['play', 'keyboard-only', 'styles', 'layout']],
   [/^src\/screens\/(map|world-keys|story|progress|stats|level)|^src\/ui\/(treasure-map|badge|medal|finds|rows)/, ['play', 'journey', 'key-links']],
   [/^src\/screens\/(start|new-profile|break|certificate)|^src\/ui\/(profile-card|install|update|start-pictures)/, ['play', 'layout', 'mobile']],
   [/^src\/screens\/(parent|parent-gate|link-import)|^src\/ui\/(form|tabs|notes)/, ['parent']],

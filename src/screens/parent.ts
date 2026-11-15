@@ -1,7 +1,7 @@
 import { app, applyProfileLook, go, loadPlayerWords, profileLayout, saveProfile, selectProfile, useLanguage } from '../app/app';
 import { langOptions, locale, t } from '../i18n/i18n';
 import { ownLangs, ownRef } from '../i18n/own-langs';
-import { ENTER, LAYOUTS, LAYOUT_IDS, allKeys } from '../keyboard/layouts';
+import { ENTER, LAYOUTS, LAYOUT_IDS, allKeys, rowPresets } from '../keyboard/layouts';
 import { LEVELS, type LevelDef, WORLDS, levelById, worldName } from '../game/levels';
 import { SHOW_DAYS, SHOW_DAYS_MAX, SURPRISES_MAX, SURPRISE_LEN, SURPRISE_N_DEFAULT, SURPRISE_N_MAX, TRIGGERS, newSurprise, restartSurprise, surpriseCount } from '../game/own-content';
 import { wordSource } from '../game/runtime/options';
@@ -483,7 +483,7 @@ function keysTab(p: Profile): HTMLElement {
   paint();
   const mode = select(s.activeKeysMode, [['auto', t('parent.keysAuto')], ['manual', t('parent.keysManual')]], (v) => { s.activeKeysMode = v; if (v === 'manual') s.manualKeys = [...picked]; saveProfile(); kb.el.classList.toggle('disabled', v === 'auto'); });
   kb.el.classList.toggle('disabled', s.activeKeysMode === 'auto');
-  const presets: [string, string][] = [['home', 'fjdkslaô'], ['homeUs', 'fjdksla;'], ['top', 'qwertzuiop'], ['bottom', 'yxcvbnm']];
+  const presets = Object.entries(rowPresets(lay));
   return h('div', {},
     // The keyboard check itself starts from My progress; here the turtle is only asked to offer it after the next level.
     switchField(t('parent.offerPlacement'), check(s.offerPlacement, (v) => { s.offerPlacement = v; saveProfile(); }), t('parent.offerPlacementHint')),
@@ -492,7 +492,7 @@ function keysTab(p: Profile): HTMLElement {
     kb.el,
     h('div', { class: 'row picker-punct' }, h('b', {}, t('parent.punctuation')), ...marks),
     h('div', { class: 'row' },
-      ...presets.filter(([id]) => (p.layout === 'us-qwerty' ? id !== 'home' : id !== 'homeUs')).map(([id, keys]) => button(t(`parent.preset.${id}`), () => {
+      ...presets.map(([id, keys]) => button(t(`parent.preset.${id}`), () => {
         for (const c of keys) if (allKeys(lay).some((d) => d.base === c)) picked.add(c);
         s.manualKeys = [...picked];
         s.activeKeysMode = 'manual';

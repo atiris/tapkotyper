@@ -74,6 +74,6 @@ if (!correction) {
   console.log('\nTo add the language, in src/storage/schema.ts extend Lang with');
   console.log(`  '${code}'`);
   console.log('and in src/i18n/i18n.ts add to LANGUAGES:');
-  console.log(`  '${code}': '${String(meta.name ?? code).replace(/'/g, "\\'")}',`);
-  console.log(`Its keyboard: ${meta.layout ?? '?'}. Author: ${meta.author || '?'} (${meta.contact || 'no contact'}).`);
+  console.log(`  '${code}': { name: '${String(meta.name ?? code).replace(/'/g, "\\'")}', layout: '${meta.layout ?? '?'}', locale: '<og:locale, e.g. de_DE>' },`);
+  console.log(`Author: ${meta.author || '?'} (${meta.contact || 'no contact'}).`);
 }

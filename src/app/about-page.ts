@@ -1,6 +1,6 @@
-import { CLOSE, LANGS, LANGUAGES } from '../i18n/i18n';
+import { CLOSE, FALLBACK, LANGS, LANGUAGES } from '../i18n/i18n';
 import { LAYOUTS, enterAfter } from '../keyboard/layouts';
-import type { Lang, LayoutId } from '../storage/schema';
+import type { Lang } from '../storage/schema';
 
 /**
  * The static about pages, `/about/<lang>/`: basic information for parents, teachers and search
@@ -13,8 +13,6 @@ export const aboutPath = (lang: Lang) => `about/${lang}/`;
 
 type Dict = Record<string, unknown>;
 
-/** The keyboard a language's texts assume, for the home-row pinky in the typing tips. */
-const LAYOUT_OF: Record<Lang, LayoutId> = { sk: 'sk-qwertz', en: 'us-qwerty' };
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -51,7 +49,7 @@ export function aboutPage(lang: Lang, d: Dict, langs: readonly Lang[] = LANGS): 
     install: link(text(d, 'about.installHelp'), text(d, 'about.install')),
     readme: link(`${REPO}#readme`, text(d, 'about.readme')),
     report: link(`${REPO}/issues/new`, text(d, 'about.authorReport')),
-    pinky: esc(enterAfter(LAYOUTS[LAYOUT_OF[lang]]).toUpperCase()),
+    pinky: esc(enterAfter(LAYOUTS[LANGUAGES[lang].layout]).toUpperCase()),
   };
   const p = (key: string) => `<p>${rich(text(d, key), marks)}</p>`;
   const ul = (items: string[]) => `<ul>${items.map((l) => `<li>${rich(l, marks)}</li>`).join('')}</ul>`;
@@ -63,12 +61,12 @@ export function aboutPage(lang: Lang, d: Dict, langs: readonly Lang[] = LANGS): 
   const title = text(d, 'about.page.title');
   const description = text(d, 'about.page.description');
   const alternates = [...langs.map((l) => `<link rel="alternate" hreflang="${l}" href="${SITE}${aboutPath(l)}">`),
-    `<link rel="alternate" hreflang="x-default" href="${SITE}${aboutPath('en')}">`].join('\n    ');
+    `<link rel="alternate" hreflang="x-default" href="${SITE}${aboutPath(FALLBACK)}">`].join('\n    ');
   const ld = { '@context': 'https://schema.org', '@type': 'WebPage', name: title, url, description, inLanguage: lang,
     about: { '@type': 'WebApplication', name: 'TapkoTyper', alternateName: ['Ťapko', 'Tapko'], url: SITE } };
   const langLinks = langs.map((l) => (l === lang
-    ? `<a href="/${aboutPath(l)}" lang="${l}" aria-current="page">${esc(LANGUAGES[l])}</a>`
-    : `<a href="/${aboutPath(l)}" lang="${l}" hreflang="${l}">${esc(LANGUAGES[l])}</a>`)).join('');
+    ? `<a href="/${aboutPath(l)}" lang="${l}" aria-current="page">${esc(LANGUAGES[l].name)}</a>`
+    : `<a href="/${aboutPath(l)}" lang="${l}" hreflang="${l}">${esc(LANGUAGES[l].name)}</a>`)).join('');
   const play = `<a class="play" href="/">${esc(text(d, 'about.page.play'))}</a>`;
   const navLabel = esc(text(d, 'about.page.languages'));
 
@@ -88,7 +86,7 @@ export function aboutPage(lang: Lang, d: Dict, langs: readonly Lang[] = LANGS): 
     <meta property="og:url" content="${url}">
     <meta property="og:title" content="${esc(title)}">
     <meta property="og:description" content="${esc(description)}">
-    <meta property="og:locale" content="${lang === 'sk' ? 'sk_SK' : 'en_US'}">
+    <meta property="og:locale" content="${LANGUAGES[lang].locale}">
     <meta property="og:image" content="${SITE}og.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -130,7 +128,7 @@ export function aboutPage(lang: Lang, d: Dict, langs: readonly Lang[] = LANGS): 
 
 /** `/about/`: sends the visitor to the page of the browser's language (the game's own rule); links for no JavaScript. */
 export function aboutRedirect(langs: readonly Lang[] = LANGS): string {
-  const links = langs.map((l) => `<li><a href="/${aboutPath(l)}" lang="${l}" hreflang="${l}">${esc(LANGUAGES[l])}</a></li>`).join('');
+  const links = langs.map((l) => `<li><a href="/${aboutPath(l)}" lang="${l}" hreflang="${l}">${esc(LANGUAGES[l].name)}</a></li>`).join('');
   return `<!doctype html>
 <html lang="en">
   <head>

@@ -205,7 +205,7 @@ export function focusLanguageButton(root: HTMLElement): void {
 function languageList(b: HTMLButtonElement, pick: (l: Lang) => void): void {
   const now = language();
   dropList(b, 'lang-list', t('start.language'), LANGS.map((l) => ({
-    content: [h('span', {}, LANGUAGES[l])], selected: l === now, attrs: { lang: l }, pick: () => { if (l !== now) pick(l); },
+    content: [h('span', {}, LANGUAGES[l].name)], selected: l === now, attrs: { lang: l }, pick: () => { if (l !== now) pick(l); },
   })));
 }
 

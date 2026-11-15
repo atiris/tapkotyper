@@ -1,5 +1,5 @@
 import { app, go, routeOf } from '../app/app';
-import { locale, t, tList } from '../i18n/i18n';
+import { baseLanguage, locale, t, tList } from '../i18n/i18n';
 import { captureKeys, homePinky } from '../game/cards';
 import { JOURNEY_STAR_STEPS, STAR_STEPS, type StarSteps, WORLDS, worldKeys, worldName, worldNewKeys } from '../game/levels';
 import { LAYOUTS } from '../keyboard/layouts';
@@ -58,7 +58,7 @@ const GAMES: [string, string][] = [
  * the keyboard of the language. The same for every player: nothing marks what a child masters (the map does).
  */
 function worldKeysList(): HTMLElement {
-  const p = newProfile('', locale() === 'sk' ? 'sk' : 'en');
+  const p = newProfile('', baseLanguage());
   const layout = LAYOUTS[p.layout];
   const caps = (names: string[]) => (names.length ? namedKeyCaps(layout, names, new Set(names)) : h('span', {}, t('help.worldKeys.none')));
   const row = (label: string, names: string[]) => h('div', { class: 'world-keys-row' }, h('span', {}, label), caps(names));

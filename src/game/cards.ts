@@ -4,6 +4,7 @@ import { type Finger, type Layout, enterAfter, homeKey } from '../keyboard/layou
 import { layout, profileLayout } from '../app/app';
 import type { Profile, SoundLevel, Surprise } from '../storage/schema';
 import { surpriseCount } from './own-content';
+import { tipFits, tipKeys } from './tips';
 import type { Style } from './typing';
 import { FINGER_COLORS } from '../ui/finger-colors';
 import { type KeyboardGuide, chipOf, fingerChip, lessonFinger, textColorsOn } from '../ui/keyboard-guide';
@@ -97,9 +98,6 @@ export function rhythmSoundCard(host: HTMLElement): Promise<SoundLevel | null> {
   });
 }
 
-/** Tips that only make sense on a Slovak keyboard, and those only on Slovak QWERTZ. */
-const SK_ONLY_TIPS = new Set(['yz-swap', 'z-finger', 'number-row', 'dead-keys', 'caron-shift', 'accent-pinky', 'diacritics-fun']);
-const QWERTZ_ONLY_TIPS = new Set(['yz-swap', 'z-finger']);
 /** Tips about keys far from the home row; shown once the child knows more keys. */
 const LATER_TIPS = new Set(['number-row', 'number-fingers', 'dead-keys', 'caron-shift', 'accent-pinky', 'diacritics-fun', 'shift-opposite', 'capital-a', 'yz-swap', 'z-finger', 'pinky-p', 'reach-t', 'middle-ei', 'ring-finger']);
 
@@ -122,12 +120,13 @@ export function homePinky(): string {
 /** One random preparation tip for a run of this style, never one of the last five shown. */
 export function pickTip(p: Profile, style: Style = 'copy'): { id: string; text: string } | null {
   const tips = tMap('tips');
-  const ids = Object.keys(tips).filter((id) => fitsStyle(id, style) && (p.layout !== 'us-qwerty' || !SK_ONLY_TIPS.has(id)) && (p.layout === 'sk-qwertz' || !QWERTZ_ONLY_TIPS.has(id)) && (p.progress.unlockedKeys.length >= 12 || !LATER_TIPS.has(id)));
+  const lay = profileLayout(p);
+  const ids = Object.keys(tips).filter((id) => fitsStyle(id, style) && tipFits(id, lay) && (p.progress.unlockedKeys.length >= 12 || !LATER_TIPS.has(id)));
   if (!ids.length) return null;
   const fresh = ids.filter((id) => !p.progress.lastTips.includes(id));
   const id = (fresh.length ? fresh : ids)[Math.floor(Math.random() * (fresh.length || ids.length))];
   p.progress.lastTips = [...p.progress.lastTips, id].slice(-5);
-  return { id, text: t(`tips.${id}`, { pinky: homePinky() }) };
+  return { id, text: t(`tips.${id}`, { ...tipKeys(lay), layout: t(`layoutsShort.${p.layout}`) }) };
 }
 
 const POSTURE_TIPS = ['back', 'feet', 'wrists', 'eyes'];

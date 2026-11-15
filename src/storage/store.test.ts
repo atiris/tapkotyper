@@ -132,4 +132,14 @@ describe('stored data', () => {
     expect(readStore({ profiles: [], theme: 'light', lockRemovedAt: 5 }).lockRemovedAt).toBe(5);
     expect('lockRemovedAt' in readStore({ profiles: [], theme: 'light', lockRemovedAt: 'x' })).toBe(false);
   });
+
+  it('gives a profile without a known language the browser language and its keyboard', () => {
+    const stored = (language: unknown) => readStore({ profiles: [{ id: 'a', name: 'A', progress: {}, settings: {}, language }], theme: 'light' }).profiles[0];
+    for (const language of [undefined, 'xx']) {
+      const p = stored(language);
+      expect(['sk', 'en']).toContain(p.language);
+      expect(p.layout).toBe(p.language === 'sk' ? 'sk-qwertz' : 'us-qwerty');
+    }
+    expect(stored('sk').layout).toBe('sk-qwertz');
+  });
 });

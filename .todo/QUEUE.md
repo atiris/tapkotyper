@@ -6,3 +6,5 @@ each in its own clean session. One line per plan in `.todo/`:
 listed here is never run. Lines whose plan has moved to `.todo/.done/` are
 skipped, and the session that finishes a plan removes its line.
 
+
+- [P1] junkyard-world.md - world 6 designed by the owner 2026-11-15, next in the robot story

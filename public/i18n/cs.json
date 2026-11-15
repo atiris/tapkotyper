@@ -2317,684 +2317,684 @@
     "break": "Přestávka"
   },
   "aim": {
-    "title": "Strelnica",
-    "start": "**Toto je strelnica.** Je určená **na zlepšenie presnosti** a nachádza sa v každom svete, cez ktorý pôjdeš. Na trénovanie presnosti je potrebné spraviť **čo najmenej chýb.** Ak je tvoja presnosť dostatočná, odomkneš si prístup k ďalším písmenám a do ďalších svetov. V každej strelnici, ktorú dokážeš prejsť bez chyby, sa ti objaví **vzácny predmet**, ktorý sa nenachádza v žiadnej inej strelnici v iných svetoch. **Dokážeš získať všetky** vzácne predmety strelníc? Skontroluješ si to na karte **Môj postup.**",
-    "swapHint": "Enterom vymeníš vec v labke za vzácnu zo zbierky.",
-    "swap": "Zo zbierky: {name}!",
-    "ready": "Výborne! {keys} už píšeš presne.",
+    "title": "Střelnice",
+    "start": "**Tohle je střelnice.** Je určená **na zlepšení přesnosti** a najdeš ji v každém světě, kterým půjdeš. Na trénink přesnosti je potřeba udělat **co nejméně chyb.** Když je tvoje přesnost dostatečná, odemkneš si přístup k dalším písmenům a do dalších světů. V každé střelnici, kterou dokážeš projít bez chyby, se ti objeví **vzácný předmět**, který není v žádné jiné střelnici v jiných světech. **Dokážeš získat všechny** vzácné předměty střelnic? Zkontroluješ si to na kartě **Můj postup.**",
+    "swapHint": "Enterem vyměníš věc v tlapce za vzácnou ze sbírky.",
+    "swap": "Ze sbírky: {name}!",
+    "ready": "Výborně! {keys} už píšeš přesně.",
     "score": "Zásahy: {hits}   Body: {points}",
-    "record": "Nový svetový rekord!",
-    "stayTip": "Strieľaš ďalej bez konca. Esc dá pauzu.",
-    "stayStart": "Strieľame ďalej. Keď budeš chcieť skončiť, stlač Esc.",
+    "record": "Nový světový rekord!",
+    "stayTip": "Střílíš dál bez konce. Esc dá pauzu.",
+    "stayStart": "Střílíme dál. Když budeš chtít skončit, stiskni Esc.",
     "lines": {
       "center": [
-        "Zásah do čierneho!",
-        "{n} bodov!",
-        "Úplný stred!",
-        "Presná trefa!",
-        "Rovno do stredu!",
-        "Ani o milimeter vedľa!",
-        "Desiatka!",
-        "Majstrovský zásah!"
+        "Zásah do černého!",
+        "{n} bodů!",
+        "Úplný střed!",
+        "Přesná trefa!",
+        "Rovnou do středu!",
+        "Ani o milimetr vedle!",
+        "Desítka!",
+        "Mistrovský zásah!"
       ],
       "one": [
-        "Tesne vedľa stredu!",
-        "{n} bodov!",
-        "Chýbal len kúsok!",
-        "Takmer v strede!",
-        "O chlp vedľa.",
+        "Těsně vedle středu!",
+        "{n} bodů!",
+        "Chyběl jen kousek!",
+        "Skoro ve středu!",
+        "O chlup vedle.",
         "Skoro dokonalé!"
       ],
       "two": [
-        "{n} bodov!",
+        "{n} bodů!",
         "Dobrá trefa!",
         "Slušný zásah!",
         "Je to tam!",
-        "Pekne!",
+        "Pěkně!",
         "Na terči!"
       ],
       "miss": [
-        "Vedľa!",
-        "Fíha, preletelo to!",
-        "Tesne nad hlavou!",
-        "Uf, vedľa.",
-        "Nabudúce to vyjde!",
+        "Vedle!",
+        "Páni, přeletělo to!",
+        "Těsně nad hlavou!",
+        "Uf, vedle.",
+        "Příště to vyjde!",
         "Skoro!",
-        "Tesne vedľa ucha!",
-        "Hej! Skoro si ma trafil!",
-        "Mal som šťastie."
+        "Těsně vedle ucha!",
+        "Hej! Málem mě to trefilo!",
+        "Měl jsem štěstí."
       ],
       "fall": [
-        "Nevadí, ďalší!",
-        "To nič, skús znova.",
-        "Počkám na ďalší!",
+        "Nevadí, další!",
+        "To nic, zkus to znovu.",
+        "Počkám na další!",
         "Hups, spadlo to.",
-        "Nedoletel.",
+        "Nedoletělo.",
         "Slabota."
       ],
       "pop": [
         "Bum!",
         "Plop!",
-        "Kaboom!",
+        "Kabum!",
         "Zzzzzz…",
         "Vrrrr!",
         "Auuuu!"
       ],
       "expectWorry": [
-        "Čo to letí?!",
-        "Len nie paradajku!",
-        "Mamííí!",
-        "Hádam to nebude bolieť.",
-        "Nevidím to dobre.",
-        "Ide mi darček."
+        "Co to letí?!",
+        "Jen ne rajče!",
+        "Mamíí!",
+        "Snad to nebude bolet.",
+        "Nevidím to dobře.",
+        "Letí mi dárek."
       ],
       "expectWonder": [
-        "Hm, čo to bude?",
-        "Je to vták, či lietadlo?",
-        "Zaujímavé…",
-        "Kuknem sa na to.",
-        "Prekvapujúce…",
-        "Nejaká chuťovka?"
+        "Hm, co to bude?",
+        "Je to pták, nebo letadlo?",
+        "Zajímavé…",
+        "Mrknu se na to.",
+        "Překvapivé…",
+        "Nějaká dobrota?"
       ],
       "expectCheer": [
-        "Som pripravený!",
-        "Len do mňa!",
+        "Jsem připravený!",
+        "Jen do mě!",
         "Do toho!",
-        "Mier presne!",
-        "Ukáž, čo vieš!"
+        "Miř přesně!",
+        "Ukaž, co umíš!"
       ],
       "shrink": [
-        "Idem ďalej, strieľaš veľmi presne!",
-        "Musím cúvnuť, príliš dobre triafaš!",
-        "Odchádzam preč, mieriš veľmi presne!",
-        "Zmenšujem sa, lebo píšeš presnejšie!"
+        "Jdu dál, střílíš moc přesně!",
+        "Musím couvnout, trefuješ se až moc dobře!",
+        "Odcházím pryč, míříš moc přesně!",
+        "Zmenšuju se, protože píšeš přesněji!"
       ],
       "last": [
-        "Posledná šanca!",
-        "Viac si neprosím!",
-        "Ešte toto a idem domov!",
-        "Toto je posledná vec, čo zvládnem!"
+        "Poslední šance!",
+        "Víc si nepřeju!",
+        "Ještě tohle a jdu domů!",
+        "Tohle je poslední věc, co zvládnu!"
       ]
     },
     "collection": {
-      "new": "Vzácna vec! Dohádž do konca a je tvoja.",
-      "waiting": "Čaká v svete {world}"
+      "new": "Vzácná věc! Doházej do konce a je tvoje.",
+      "waiting": "Čeká ve světě {world}"
     },
     "things": {
       "pebble": {
-        "name": "Kamienok",
+        "name": "Kamínek",
         "launch": [
-          "Kamienok, leť!",
-          "Hádžem kamienok!",
-          "Letí kamienok!",
+          "Kamínku, leť!",
+          "Házím kamínek!",
+          "Letí kamínek!",
           "Malý, ale šikovný!"
         ],
         "sound": [
           "Ťuk!"
         ],
         "hit": [
-          "Kamienok v strede!",
-          "Ťuk-ťuk, kto je tam?",
-          "Malý kameň, veľká presnosť!",
-          "Ešte že to nie je balvan."
+          "Kamínek ve středu!",
+          "Ťuk-ťuk, kdo je tam?",
+          "Malý kámen, velká přesnost!",
+          "Ještě že to není balvan."
         ]
       },
       "screw": {
-        "name": "Skrutka",
+        "name": "Šroub",
         "launch": [
-          "Skrutka letí!",
-          "Hádžem skrutku!",
+          "Šroub letí!",
+          "Házím šroub!",
           "Zatoč to!"
         ],
         "sound": [
           "Cink!"
         ],
         "hit": [
-          "Zaskrutkované!",
-          "Drží to pevne!",
-          "Kto mi tu vŕta?",
-          "Konečne mám skrutku!",
-          "Pošli zvyšok skrinky!",
-          "Ešte skrutkovač, prosím."
+          "Zašroubováno!",
+          "Drží to pevně!",
+          "Kdo mi tu vrtá?",
+          "Konečně mám šroub!",
+          "Pošli zbytek skříňky!",
+          "Ještě šroubovák, prosím."
         ]
       },
       "fly": {
-        "name": "Mucha",
+        "name": "Moucha",
         "launch": [
-          "Mucha vpred!",
-          "Hádžem muchu!",
-          "Mucha!",
-          "Letí mucha!",
+          "Moucha vpřed!",
+          "Házím mouchu!",
+          "Moucha!",
+          "Letí moucha!",
           "Chyť mušku!",
-          "Leť, muška!"
+          "Leť, muško!"
         ],
         "sound": [
           "Bzzz!"
         ],
         "hit": [
-          "Čo som, mucholapka?",
+          "Co jsem, mucholapka?",
           "Brrr, hmyz!",
           "Bzučí mi v uchu!",
           "Nelez mi po nose!",
-          "Nechutila mi."
+          "Nechutnala mi."
         ]
       },
       "tomato": {
-        "name": "Paradajka",
+        "name": "Rajče",
         "launch": [
-          "Paradajka letí!",
-          "Hádžem paradajku!",
-          "Pozor, paradajka!",
-          "Paradajková strela!"
+          "Rajče letí!",
+          "Házím rajče!",
+          "Pozor, rajče!",
+          "Rajčatová střela!"
         ],
         "sound": [
-          "Pľac!"
+          "Plác!"
         ],
         "hit": [
-          "100-percentný kečup!",
+          "Stoprocentní kečup!",
           "Kečup!",
-          "Tak toto je omáčka!",
-          "Som pizza terč!",
+          "Tak tohle je omáčka!",
+          "Jsem pizza terč!",
           "Pizza margherita!"
         ]
       },
       "arrow": {
         "name": "Šíp",
         "launch": [
-          "Šíp, leť!",
-          "Ako Robin Hood!",
-          "Strieľam!"
+          "Šípe, leť!",
+          "Jako Robin Hood!",
+          "Střílím!"
         ],
         "sound": [
           "Fuk!"
         ],
         "hit": [
-          "Robin Hood by sa tešil!",
-          "Presne tam, kde má byť!",
-          "Šíp v desiatke!",
-          "Pravý lukostrelec!"
+          "Robin Hood by měl radost!",
+          "Přesně tam, kde má být!",
+          "Šíp v desítce!",
+          "Pravý lukostřelec!"
         ],
         "expect": [
-          "Konečne dôstojný predmet!"
+          "Konečně důstojný předmět!"
         ]
       },
       "duck": {
-        "name": "Gumená kačička",
+        "name": "Gumová kachnička",
         "launch": [
-          "Kačička, leť!",
-          "Hádžem kačičku!",
+          "Kachničko, leť!",
+          "Házím kachničku!",
           "Kvak, do vzduchu!"
         ],
         "sound": [
-          "Pííp!"
+          "Píísk!"
         ],
         "hit": [
-          "Kvak kvak!",
-          "Ideme sa kúpať?",
-          "Kde je moja vaňa?",
-          "Kačka v strede!"
+          "Kvák kvák!",
+          "Jdeme se koupat?",
+          "Kde je moje vana?",
+          "Kachna ve středu!"
         ]
       },
       "sock": {
         "name": "Ponožka",
         "launch": [
           "Ponožka letí!",
-          "Hádžem ponožku!",
+          "Házím ponožku!",
           "Pozor, ponožka!",
           "Voňavka letí!",
-          "Smradľavá ponožka!"
+          "Smradlavá ponožka!"
         ],
         "sound": [
           "Plesk!"
         ],
         "hit": [
           "Fuj, smrdí!",
-          "Druhá zostala v práčke?",
-          "Kto ju nosil týždeň?",
-          "Kde je jej dvojička?",
-          "Ešte že to neboli trenky."
+          "Druhá zůstala v pračce?",
+          "Kdo ji nosil týden?",
+          "Kde je její dvojče?",
+          "Ještě že to nebyly trenky."
         ]
       },
       "planet": {
-        "name": "Planéta",
+        "name": "Planeta",
         "launch": [
-          "Planéta letí!",
-          "Hádžem planétu!",
-          "Do vesmíru a späť!",
+          "Planeta letí!",
+          "Házím planetu!",
+          "Do vesmíru a zpátky!",
           "Jupiter!",
-          "Saturn, leť!",
-          "Neptún vyráža!"
+          "Saturne, leť!",
+          "Neptun vyráží!"
         ],
         "sound": [
           "Bum!"
         ],
         "hit": [
-          "Trafila ma planéta!",
-          "Vidím hviezdičky!",
-          "Gravitácia funguje!",
-          "Som teraz mesiac?",
-          "Veľký tresk!"
+          "Trefila mě planeta!",
+          "Vidím hvězdičky!",
+          "Gravitace funguje!",
+          "Jsem teď měsíc?",
+          "Velký třesk!"
         ]
       },
       "egg": {
         "name": "Vajíčko",
         "launch": [
-          "Vajíčko, opatrne!",
-          "Hádžem vajíčko!",
-          "Letí vajce!",
-          "Len ho nerozbi!"
+          "Vajíčko, opatrně!",
+          "Házím vajíčko!",
+          "Letí vejce!",
+          "Jen ho nerozbij!"
         ],
         "sound": [
-          "Čľap!"
+          "Čvach!"
         ],
         "hit": [
-          "Praženica!",
+          "Míchaná vajíčka!",
           "Volské oko!",
-          "Raňajky sú hotové!"
+          "Snídaně je hotová!"
         ],
         "hatchSound": [
           "Krak!"
         ],
         "hatch": [
-          "Aha, kuriatko!",
-          "Píp! Ty si moja mama?",
-          "Môžem byť jeho mamička?",
+          "Hele, kuřátko!",
+          "Píp! Ty jsi moje máma?",
+          "Můžu být jeho maminka?",
           "Zázrak!",
-          "Maličké, milučké, žltučké."
+          "Maličké, milinké, žlutinké."
         ],
         "hatchedCall": [
-          "Vyliahlo sa!",
+          "Vylíhlo se!",
           "Ono letí samo!"
         ],
         "hatchFlight": [
-          "Kuriatko priletelo samo!",
-          "Píp-píp, prvý let!"
+          "Kuřátko přiletělo samo!",
+          "Píp-píp, první let!"
         ]
       },
       "clock": {
         "name": "Budík",
         "launch": [
           "Budík letí!",
-          "Hádžem budík!",
-          "Čas vstávať!",
+          "Házím budík!",
+          "Čas vstávat!",
           "Tik-tak, leť!"
         ],
         "sound": [
-          "Cŕŕŕŕn!"
+          "Crrrrn!"
         ],
         "hit": [
-          "Ešte 5 minút!",
-          "Už je ránko?",
-          "Vstávať a cvičiť!",
-          "Dnes nejdem do školy!"
+          "Ještě 5 minut!",
+          "Už je ráno?",
+          "Vstávat a cvičit!",
+          "Dneska nejdu do školy!"
         ]
       },
       "cactus": {
         "name": "Kaktus",
         "launch": [
           "Kaktus letí!",
-          "Hádžem kaktus!",
-          "Pozor, pichá!",
-          "Pichľavá zásielka!"
+          "Házím kaktus!",
+          "Pozor, píchá!",
+          "Pichlavá zásilka!"
         ],
         "sound": [
           "Au!"
         ],
         "hit": [
-          "Jaj, pichá!",
+          "Jau, píchá!",
           "Auvajs!",
-          "Chytil som ježka?",
-          "Kto mi povyťahuje pichliače?"
+          "Chytil jsem ježka?",
+          "Kdo mi povytahá bodliny?"
         ],
         "expect": [
-          "Ach, to hádam nie!",
-          "To nemyslíš vážne!",
-          "Len nie kaktus!"
+          "Ach, to snad ne!",
+          "To nemyslíš vážně!",
+          "Jen ne kaktus!"
         ]
       },
       "toilet-paper": {
-        "name": "Toaletný papier",
+        "name": "Toaletní papír",
         "launch": [
           "Toaleťák letí!",
-          "Hádžem rolku!",
-          "Rolka v akcii!",
-          "Tento papier nie je na písanie."
+          "Házím roli!",
+          "Role v akci!",
+          "Tenhle papír není na psaní."
         ],
         "sound": [
-          "Fŕŕ!"
+          "Frrr!"
         ],
         "hit": [
-          "Spláchnuť a umyť ruky!",
-          "Kde je tu WC?",
-          "Mäkučké!",
-          "Ja na veľkú nechodím!",
-          "Ďakujem, ale bol som len cikať."
+          "Spláchnout a umýt ruce!",
+          "Kde je tu záchod?",
+          "Měkoučké!",
+          "Já na velkou nechodím!",
+          "Děkuju, ale byl jsem jen čurat."
         ]
       },
       "candle": {
-        "name": "Sviečka",
+        "name": "Svíčka",
         "launch": [
-          "Sviečka letí!",
-          "Svetielko na cestu!",
-          "Hádžem sviečku!",
-          "Osvetlím to tu.",
-          "Zhor, ak mi nedáš body!"
+          "Svíčka letí!",
+          "Světýlko na cestu!",
+          "Házím svíčku!",
+          "Posvítím si tu.",
+          "Shoř, jestli mi nedáš body!"
         ],
         "sound": [
           "Pšš!"
         ],
         "hit": [
-          "Páli, páli!",
-          "Žeravé!",
-          "Sfúknem ju a niečo si zaželám!",
-          "Som torta!"
+          "Pálí, pálí!",
+          "Žhavé!",
+          "Sfouknu ji a něco si přeju!",
+          "Jsem dort!"
         ]
       },
       "cheese": {
-        "name": "Kus syra",
+        "name": "Kus sýra",
         "launch": [
-          "Syr letí!",
-          "Hádžem syrček!",
-          "Pozor, voňavý syr!"
+          "Sýr letí!",
+          "Házím sýreček!",
+          "Pozor, voňavý sýr!"
         ],
         "sound": [
           "Fuj!"
         ],
         "hit": [
-          "Smradľavá bomba!",
-          "Takto prilákam myši!",
-          "Vyzretý ementál.",
-          "Ešte pohár vína, prosím."
+          "Smradlavá bomba!",
+          "Takhle přilákám myši!",
+          "Vyzrálý ementál.",
+          "Ještě sklenici vína, prosím."
         ]
       },
       "boomerang": {
         "name": "Bumerang",
         "launch": [
           "Bumerang letí!",
-          "Hádžem bumerang!",
-          "Leť a vráť sa!",
-          "Odhadzujem ťa preč!"
+          "Házím bumerang!",
+          "Leť a vrať se!",
+          "Odhazuju tě pryč!"
         ],
         "sound": [
           "Švih!"
         ],
         "hit": [
-          "No počkaj, to sa ti vráti!",
-          "Vraciam ti ho!",
-          "Spiatočná pošta!"
+          "Počkej, to se ti vrátí!",
+          "Vracím ti ho!",
+          "Zpáteční pošta!"
         ],
         "caught": [
           "Mám ho!",
-          "Chytené!",
-          "Znova si tu?",
-          "To snáď nie, zasa!"
+          "Chyceno!",
+          "Zase jsi tu?",
+          "To snad ne, zase!"
         ]
       },
       "ice": {
-        "name": "Kocka ľadu",
+        "name": "Kostka ledu",
         "launch": [
-          "Ľadová kocka letí!",
-          "Kocka do nápoja!",
-          "Osvieženie letí!",
-          "Toto mám z mrazáku."
+          "Ledová kostka letí!",
+          "Kostka do pití!",
+          "Osvěžení letí!",
+          "Tohle mám z mrazáku."
         ],
         "sound": [
           "Cink!"
         ],
         "hit": [
           "Brrrr!",
-          "Pošli aj limonádu!",
-          "Zamrzol som!"
+          "Pošli i limonádu!",
+          "Zamrzl jsem!"
         ]
       },
       "donut": {
-        "name": "Šiška",
+        "name": "Kobliha",
         "launch": [
-          "Šiška letí!",
-          "Hádžem šišku!",
-          "Sladká strela!"
+          "Kobliha letí!",
+          "Házím koblihu!",
+          "Sladká střela!"
         ],
         "sound": [
           "Mňam!"
         ],
         "hit": [
           "Mňam mňam!",
-          "Pošli viac!",
-          "Ešte, prosím!",
-          "Ďakujem!"
+          "Pošli víc!",
+          "Ještě, prosím!",
+          "Děkuju!"
         ],
         "expect": [
-          "Už sa teším!",
-          "Mmm, to vonia!"
+          "Už se těším!",
+          "Mmm, to voní!"
         ]
       },
       "bulb": {
-        "name": "Žiarovka",
+        "name": "Žárovka",
         "launch": [
-          "Žiarovka letí!",
-          "Žiarovka so závitom E27.",
-          "Svetlo, leť!"
+          "Žárovka letí!",
+          "Žárovka se závitem E27.",
+          "Světlo, leť!"
         ],
         "sound": [
           "Blik!"
         ],
         "hit": [
-          "Osvietilo ma!",
+          "Osvítilo mě to!",
           "Mám nápad!",
-          "A budeš po tme!"
+          "A budeš po tmě!"
         ]
       },
       "teeth": {
-        "name": "Zuby na kľúčik",
+        "name": "Zuby na klíček",
         "launch": [
-          "Zuby letia!",
-          "Hádžem úsmev!",
+          "Zuby letí!",
+          "Házím úsměv!",
           "Cvak-cvak, leť!"
         ],
         "sound": [
           "Cvak!"
         ],
         "hit": [
-          "Zub múdrosti!",
+          "Zub moudrosti!",
           "Mám chrup!",
           "Chrup chrup!",
-          "Nezabudni ich vyčistiť!"
+          "Nezapomeň je vyčistit!"
         ]
       },
       "diaper": {
-        "name": "Plienka",
+        "name": "Plena",
         "launch": [
-          "Plienka letí!",
-          "Hádžem plienku!",
-          "Pozor, plienka!"
+          "Plena letí!",
+          "Házím plenu!",
+          "Pozor, plena!"
         ],
         "sound": [
           "Plesk!"
         ],
         "hit": [
           "Biohazard!",
-          "Bleee!",
-          "Okamžite do koša!"
+          "Bléé!",
+          "Okamžitě do koše!"
         ],
         "expect": [
-          "To snáď nie!",
-          "Hádam je čistá!",
-          "Dúfam, že je nepoužitá."
+          "To snad ne!",
+          "Snad je čistá!",
+          "Doufám, že je nepoužitá."
         ]
       },
       "cloud": {
-        "name": "Obláčik",
+        "name": "Obláček",
         "launch": [
-          "Obláčik letí!",
-          "Hádžem obláčik!",
-          "Ľahučko, obláčik!"
+          "Obláček letí!",
+          "Házím obláček!",
+          "Lehoučce, obláčku!"
         ],
         "sound": [
           "Puf!"
         ],
         "hit": [
-          "To sú zrážky!",
-          "Ako z bavlnky.",
-          "Nič som necítil!",
+          "To jsou srážky!",
+          "Jako z vaty.",
+          "Nic jsem necítil!",
           "Vatička!"
         ]
       },
       "snack": {
-        "name": "Stará desiata",
+        "name": "Stará svačina",
         "launch": [
-          "Desiata letí!",
-          "Z dna tašky!",
-          "Hádžem desiatu!"
+          "Svačina letí!",
+          "Ze dna tašky!",
+          "Házím svačinu!"
         ],
         "sound": [
           "Plesk!"
         ],
         "hit": [
           "Živý ekosystém!",
-          "To jesť nebudem!",
+          "To jíst nebudu!",
           "Málo sladké!",
-          "Koľko týždňov to má?",
-          "Pleseň!",
-          "Pred sto rokmi bola určite chutná!"
+          "Kolik týdnů to má?",
+          "Plíseň!",
+          "Před sto lety byla určitě chutná!"
         ],
         "expect": [
-          "Čo je to za vôňu?",
-          "Tá je z čias Márie Terézie.",
-          "Archívny kúsok."
+          "Co je to za vůni?",
+          "Ta je z dob Marie Terezie.",
+          "Archivní kousek."
         ]
       },
       "bottle": {
-        "name": "Detská fľaša",
+        "name": "Dětská láhev",
         "launch": [
-          "Fľaška letí!",
-          "Hádžem mliečko!",
-          "Desiata pre bábo!"
+          "Lahvička letí!",
+          "Házím mlíčko!",
+          "Svačina pro mimino!"
         ],
         "sound": [
-          "Čľup!"
+          "Čvach!"
         ],
         "hit": [
-          "Čo som, bábätko?",
+          "Co jsem, miminko?",
           "Mňam!",
           "Grrrgg!"
         ],
         "expect": [
-          "Mliečna cesta!"
+          "Mléčná dráha!"
         ]
       },
       "pacifier": {
-        "name": "Cumlík",
+        "name": "Dudlík",
         "launch": [
-          "Cumlík letí!",
-          "Hádžem cumlík!",
+          "Dudlík letí!",
+          "Házím dudlík!",
           "Ticho, prosím!",
-          "Neplač už!"
+          "Už neplač!"
         ],
         "sound": [
           "Cmuk!"
         ],
         "hit": [
-          "Bééé, uááá!",
-          "Ja neplačem!",
+          "Béé, uááá!",
+          "Já nebrečím!",
           "A bude ticho!",
-          "Najprv sterilizovať, prosím!"
+          "Nejdřív sterilizovat, prosím!"
         ]
       },
       "chalk": {
-        "name": "Krieda",
+        "name": "Křída",
         "launch": [
-          "Krieda letí!",
-          "Hádžem kriedu!",
-          "Ako v škole pri tabuli!"
+          "Křída letí!",
+          "Házím křídu!",
+          "Jako ve škole u tabule!"
         ],
         "sound": [
           "Prášk!"
         ],
         "hit": [
-          "A teraz písomka!",
+          "A teď písemka!",
           "K tabuli!",
-          "Prach a krieda!",
-          "Domček jedným ťahom!",
-          "Zotri hubkou!"
+          "Prach a křída!",
+          "Domeček jedním tahem!",
+          "Smaž to houbou!"
         ]
       },
       "whistle": {
         "name": "Píšťalka",
         "launch": [
           "Píšťalka letí!",
-          "Hádžem píšťalku!",
-          "Rozhodca, pozor!"
+          "Házím píšťalku!",
+          "Rozhodčí, pozor!"
         ],
         "sound": [
           "Fííí!"
         ],
         "hit": [
           "Faul!",
-          "Žltá karta!",
+          "Žlutá karta!",
           "Červená karta!",
-          "Polčas!"
+          "Poločas!"
         ]
       },
       "pingpong": {
-        "name": "Pingpongová loptička",
+        "name": "Pingpongový míček",
         "launch": [
           "Ping!",
-          "Podanie!",
-          "Hádžem loptičku!"
+          "Podání!",
+          "Házím míček!"
         ],
         "sound": [
           "Ťuk!"
         ],
         "hit": [
           "Pong!",
-          "Ľahká váha!",
+          "Lehká váha!",
           "Ťuk-ťuk-ťuk!"
         ]
       },
       "bowling": {
-        "name": "Bowlingová guľa",
+        "name": "Bowlingová koule",
         "launch": [
-          "Guľa letí!",
-          "Hádžem bowlingovú guľu!",
-          "Pozor, ťažká váha!"
+          "Koule letí!",
+          "Házím bowlingovou kouli!",
+          "Pozor, těžká váha!"
         ],
         "sound": [
           "Bum!"
         ],
         "hit": [
-          "Lietajú mi triesky!",
-          "To je ťarcha!",
+          "Létají mi třísky!",
+          "To je tíha!",
           "Strike!",
           "Spare!"
         ],
         "expect": [
-          "Toto mi nerob!",
-          "Hádam to vydržím!"
+          "Tohle mi nedělej!",
+          "Snad to vydržím!"
         ]
       },
       "butterfly": {
-        "name": "Motýľ",
+        "name": "Motýl",
         "launch": [
-          "Púšťam motýlika!",
-          "Leť, motýlik!",
-          "Motýlik, leť na terč!"
+          "Pouštím motýlka!",
+          "Leť, motýlku!",
+          "Motýlku, leť na terč!"
         ],
         "sound": [
           "Šuch!"
         ],
         "hit": [
-          "Uletel mi!",
-          "Babôčka!",
-          "Nie som kvietok!",
+          "Uletěl mi!",
+          "Babočka!",
+          "Nejsem kytička!",
           "Brrr, hmyz!"
         ]
       },
       "spider": {
-        "name": "Pavúk",
+        "name": "Pavouk",
         "launch": [
-          "Pavúčik letí!",
-          "Hádžem pavúčika!",
-          "Osem nôh, vpred!"
+          "Pavoučka letí!",
+          "Házím pavoučka!",
+          "Osm nohou, vpřed!"
         ],
         "sound": [
           "Ťap!"
@@ -3002,175 +3002,175 @@
         "hit": [
           "Spiderman!",
           "Superhrdina!",
-          "Pošli muchu!",
-          "Rovno do siete!",
-          "Brrr, povymetaj rohy!"
+          "Pošli mouchu!",
+          "Rovnou do sítě!",
+          "Brrr, vymeť kouty!"
         ],
         "expect": [
-          "Len nie pavúka!",
-          "Máme babie leto?",
-          "Je to tarantula?"
+          "Jen ne pavouka!",
+          "Máme babí léto?",
+          "Je to tarantule?"
         ]
       },
       "hockey": {
         "name": "Hokejka",
         "launch": [
           "Hokejka letí!",
-          "Hádžem hokejku!",
-          "Strela od modrej!"
+          "Házím hokejku!",
+          "Střela od modré!"
         ],
         "sound": [
           "Klap!"
         ],
         "hit": [
-          "Sekera!",
-          "Hra vysokou hokejkou!",
-          "Zakázané uvoľnenie!",
-          "Na trestnú lavičku!",
-          "Strieľa sa predsa puk!"
+          "Sekáček!",
+          "Hra vysokou holí!",
+          "Zakázané uvolnění!",
+          "Na trestnou lavici!",
+          "Střílí se přece puk!"
         ]
       },
       "pillow": {
-        "name": "Vankúš",
+        "name": "Polštář",
         "launch": [
-          "Vankúšová bitka!",
-          "Hádžem vankúš!",
-          "Mäkká strela!"
+          "Polštářová bitva!",
+          "Házím polštář!",
+          "Měkká střela!"
         ],
         "sound": [
           "Puf!"
         ],
         "hit": [
-          "Mäkké pristátie!",
-          "Ešte si zdriemnem!",
-          "Perie všade!",
-          "Dobrú noc.",
-          "Sladké sníčky."
+          "Měkké přistání!",
+          "Ještě si zdřímnu!",
+          "Peří všude!",
+          "Dobrou noc.",
+          "Sladké sny."
         ],
         "expect": [
-          "Konečne niečo pre mňa.",
-          "Potrebujem oddych."
+          "Konečně něco pro mě.",
+          "Potřebuju odpočinek."
         ]
       },
       "chicken": {
-        "name": "Gumená sliepka",
+        "name": "Gumová slepice",
         "launch": [
-          "Gumená sliepka letí!",
-          "Kot-kot-kodák!",
-          "Sliepočka, leť!"
+          "Gumová slepice letí!",
+          "Ko-ko-kodák!",
+          "Slepičko, leť!"
         ],
         "sound": [
           "Kodák!"
         ],
         "hit": [
-          "Čo bolo prvé, sliepka či vajce?",
-          "Kot-kodák!",
-          "Tá je ale smiešna!",
-          "Táto mi vajíčko neznesie."
+          "Co bylo dřív, slepice, nebo vejce?",
+          "Ko-kodák!",
+          "Ta je ale legrační!",
+          "Tahle mi vajíčko nesnese."
         ]
       },
       "water-balloon": {
-        "name": "Balónik s vodou",
+        "name": "Balonek s vodou",
         "launch": [
-          "Vodný balónik!",
+          "Vodní balonek!",
           "Pozor, mokré!",
-          "Čľup-čľap, leť!"
+          "Čvach-čvach, leť!"
         ],
         "sound": [
-          "Čľap!"
+          "Čvach!"
         ],
         "hit": [
-          "Som celý mokrý!",
-          "Osvieženie!",
-          "Už sa nemusím kúpať."
+          "Jsem celý mokrý!",
+          "Osvěžení!",
+          "Už se nemusím koupat."
         ]
       },
       "banana": {
         "name": "Banán",
         "launch": [
           "Banán letí!",
-          "Hádžem banán!",
-          "Žltý bumerang!"
+          "Házím banán!",
+          "Žlutý bumerang!"
         ],
         "sound": [
           "Plesk!"
         ],
         "hit": [
-          "Ošúp mi ho, prosím!",
-          "Teraz hodíš opicu?",
-          "Vitamínová bomba!"
+          "Oloupej mi ho, prosím!",
+          "Teď hodíš opici?",
+          "Vitaminová bomba!"
         ]
       },
       "mouse": {
         "name": "Počítačová myš",
         "launch": [
-          "Lietajúca myš!",
-          "Nepotrebný hardvér.",
-          "Prepáč, chcem bezdrôtovú!"
+          "Létající myš!",
+          "Nepotřebný hardware.",
+          "Promiň, chci bezdrátovou!"
         ],
         "sound": [
           "Klik!"
         ],
         "hit": [
-          "Bál som sa, že bude živá!",
+          "Bál jsem se, že bude živá!",
           "Do šrotu!",
-          "Trojtlačidlová!",
-          "Koliesko nefunguje!",
+          "Třítlačítková!",
+          "Kolečko nefunguje!",
           "Nemám USB port."
         ],
         "expect": [
-          "Vidím biele myši.",
-          "Na toto mačka nestačí!"
+          "Vidím bílé myšky.",
+          "Na tohle kočka nestačí!"
         ]
       },
       "battery": {
-        "name": "Batéria",
+        "name": "Baterie",
         "launch": [
-          "Batéria letí!",
-          "Hádžem energiu!",
-          "Plne nabitá!"
+          "Baterie letí!",
+          "Házím energii!",
+          "Plně nabitá!"
         ],
         "sound": [
           "Bzz!"
         ],
         "hit": [
-          "Toto ma nabilo!",
-          "Energia na 100 percent!",
-          "Skrat!",
-          "Ja nie som na baterky!",
-          "Som pozitívne nabitý!"
+          "Tohle mě nabilo!",
+          "Energie na 100 procent!",
+          "Zkrat!",
+          "Já nejsem na baterky!",
+          "Jsem pozitivně nabitý!"
         ]
       },
       "magnet": {
         "name": "Magnet",
         "launch": [
           "Magnet letí!",
-          "Hádžem magnet!",
-          "Magnetická sila!"
+          "Házím magnet!",
+          "Magnetická síla!"
         ],
         "sound": [
           "Cvak!"
         ],
         "hit": [
-          "Priťahuješ ma!",
-          "Prilepil sa!",
-          "Mám magnetickú osobnosť!"
+          "Přitahuješ mě!",
+          "Přilepil se!",
+          "Mám magnetickou osobnost!"
         ]
       },
       "gear": {
-        "name": "Ozubené koliesko",
+        "name": "Ozubené kolečko",
         "launch": [
-          "Koliesko letí!",
-          "Hádžem ozubené koleso!",
-          "Točí sa to!"
+          "Kolečko letí!",
+          "Házím ozubené kolo!",
+          "Točí se to!"
         ],
         "sound": [
           "Cvak!"
         ],
         "hit": [
           "Zapadlo to!",
-          "Mám o koliesko navyše!",
-          "Klape to ako hodinky!"
+          "Mám o kolečko navíc!",
+          "Klape to jako hodinky!"
         ]
       },
       "note": {
@@ -3185,13 +3185,13 @@
         ],
         "hit": [
           "Do rytmu!",
-          "Falošný tón!",
-          "Spievam si!",
+          "Falešný tón!",
+          "Zpívám si!",
           "La-la-lá!",
           "Osminová!"
         ],
         "expect": [
-          "Stíš to rádio!",
+          "Ztiš to rádio!",
           "Do re mi fa!"
         ]
       },
@@ -3199,317 +3199,317 @@
         "name": "Busta Beethovena",
         "launch": [
           "Beethoven!",
-          "Leť, Beethoven!",
-          "Beethovenova busta vpred!"
+          "Leť, Beethovene!",
+          "Beethovenova busta vpřed!"
         ],
         "sound": [
           "Ta ta ta dáá!"
         ],
         "hit": [
-          "Poskladám sa z toho!",
-          "Osudová presnosť!",
-          "Nemáš niečo pre Elišku?",
-          "Virtuózny zásah!",
-          "Symfónia!"
+          "Poskládám se z toho!",
+          "Osudová přesnost!",
+          "Nemáš něco pro Elišku?",
+          "Virtuózní zásah!",
+          "Symfonie!"
         ],
         "expect": [
-          "Ludwig, si to ty?"
+          "Ludwigu, jsi to ty?"
         ]
       },
       "frog": {
         "name": "Žabka",
         "launch": [
-          "Hop, žabka!",
+          "Hop, žabko!",
           "Letí žabka!",
-          "Žabka, skoč!"
+          "Žabko, skoč!"
         ],
         "sound": [
           "Kvák!"
         ],
         "hit": [
           "Pusu ti nedám!",
-          "Princ to nie je!",
-          "Kvák! Je tu niekde rybník?"
+          "Princ to není!",
+          "Kvák! Je tu někde rybník?"
         ]
       },
       "wand": {
-        "name": "Čarovný prútik",
+        "name": "Kouzelná hůlka",
         "launch": [
-          "Čáry-máry, leť!",
-          "Prútik letí!",
-          "Hokus-pokus!"
+          "Čáry máry, leť!",
+          "Hůlka letí!",
+          "Hokus pokus!"
         ],
         "sound": [
-          "Cing!"
+          "Cink!"
         ],
         "hit": [
-          "Som začarovaný!",
-          "Som čarovný!",
-          "Čarovná desiatka!",
-          "Magický moment!"
+          "Jsem začarovaný!",
+          "Jsem kouzelný!",
+          "Kouzelná desítka!",
+          "Magický okamžik!"
         ]
       },
       "ladybug": {
-        "name": "Lienka",
+        "name": "Beruška",
         "launch": [
-          "Lienka, leť!",
-          "Leť, lienka, k terču!",
-          "Púšťam lienku!"
+          "Beruško, leť!",
+          "Leť, beruško, k terči!",
+          "Pouštím berušku!"
         ],
         "sound": [
           "Ťap!"
         ],
         "hit": [
-          "Lienka mi priniesla šťastie!",
-          "Bodka v strede!",
-          "Lienka, lienka, kam letíš?",
-          "Bude dneska krásne?"
+          "Beruška mi přinesla štěstí!",
+          "Tečka ve středu!",
+          "Beruško, beruško, kam letíš?",
+          "Bude dneska hezky?"
         ]
       },
       "rocket": {
         "name": "Raketka",
         "launch": [
-          "3, 2, 1, štart!",
-          "Raketa štartuje!",
+          "3, 2, 1, start!",
+          "Raketa startuje!",
           "Do vesmíru!"
         ],
         "sound": [
           "Vžum!"
         ],
         "hit": [
-          "Pristátie úspešné!",
-          "Houston, máme zásah!",
-          "Malý krok pre teba, veľký zásah pre terč!"
+          "Přistání úspěšné!",
+          "Houstone, máme zásah!",
+          "Malý krok pro tebe, velký zásah pro terč!"
         ]
       },
       "asteroid": {
         "name": "Asteroid",
         "launch": [
           "Asteroid letí!",
-          "Pozor, kameň z vesmíru!",
-          "Hádžem asteroid!"
+          "Pozor, kámen z vesmíru!",
+          "Házím asteroid!"
         ],
         "sound": [
           "Buch!"
         ],
         "hit": [
           "Dopad z vesmíru!",
-          "Ešte že nie som dinosaurus!",
+          "Ještě že nejsem dinosaurus!",
           "Mám kráter!"
         ]
       },
       "crystal": {
-        "name": "Kryštál",
+        "name": "Krystal",
         "launch": [
-          "Kryštál letí!",
-          "Ligotavý hod!",
-          "Hádžem vzácny materiál!"
+          "Krystal letí!",
+          "Třpytivý hod!",
+          "Házím vzácný materiál!"
         ],
         "sound": [
           "Cink!"
         ],
         "hit": [
-          "Kryštalizujem sa!",
-          "Som celý trblietavý!",
+          "Krystalizuju!",
+          "Jsem celý třpytivý!",
           "Rubín!",
-          "Chcel som diamant!",
-          "Krásny drahokam."
+          "Chtěl jsem diamant!",
+          "Krásný drahokam."
         ]
       },
       "flame": {
-        "name": "Ohník",
+        "name": "Ohníček",
         "launch": [
-          "Vyrob ohnivú obruč!",
-          "Hádžem ohník!",
-          "Pozor, horúce!",
-          "Páli, páli!"
+          "Udělej ohnivou obruč!",
+          "Házím ohníček!",
+          "Pozor, horké!",
+          "Pálí, pálí!"
         ],
         "sound": [
           "Fššš!"
         ],
         "hit": [
           "387 °C",
-          "Hreje to ako dračí dych!",
-          "Iskričky všade!",
-          "Horí, horí!",
-          "Volajte hasičov!",
+          "Hřeje to jako dračí dech!",
+          "Jiskřičky všude!",
+          "Hoří, hoří!",
+          "Volejte hasiče!",
           "Volám 150!",
-          "Som chrumkavý!"
+          "Jsem křupavý!"
         ],
         "expect": [
-          "Nebude to páliť?",
-          "Dúfam, že je to len malý ohník."
+          "Nebude to pálit?",
+          "Doufám, že je to jen malý ohníček."
         ]
       },
       "antler": {
-        "name": "Parohy",
+        "name": "Paroží",
         "launch": [
-          "Jeleň ich už nechcel!",
-          "Parohy z dvanástoráka!",
-          "Parožie z lesa!",
-          "Mám ich po jeleňovi!"
+          "Jelen ho už nechtěl!",
+          "Paroží z dvanácteráka!",
+          "Paroží z lesa!",
+          "Mám ho po jelenovi!"
         ],
         "sound": [
           "Grooóó!"
         ],
         "hit": [
-          "Som z toho jeleň!",
-          "Som kráľ lesa!",
-          "Ako pán zverov!",
-          "Radšej chcem zlatú korunu!"
+          "Jsem z toho jelen!",
+          "Jsem král lesa!",
+          "Jako pán zvířat!",
+          "Radši chci zlatou korunu!"
         ],
         "expect": [
-          "A kde je zvyšok?",
-          "Získal si ich dobrovoľne?"
+          "A kde je zbytek?",
+          "Dal ti ho jelen dobrovolně?"
         ]
       },
       "spring": {
         "name": "Pružina",
         "launch": [
           "Pružina letí!",
-          "Leť pružne a presne!",
-          "Hádžem pružinu!"
+          "Leť pružně a přesně!",
+          "Házím pružinu!"
         ],
         "sound": [
           "Boing!"
         ],
         "hit": [
           "Boing-boing!",
-          "Skáčem od radosti!",
-          "Pérovanie funguje!"
+          "Skáču radostí!",
+          "Pérování funguje!"
         ]
       },
       "wrench": {
-        "name": "Francúzsky kľúč",
+        "name": "Francouzský klíč",
         "launch": [
-          "Kľúč letí!",
-          "Hádžem francúzsky kľúč!",
-          "Treba niečo dotiahnuť!"
+          "Klíč letí!",
+          "Házím francouzský klíč!",
+          "Je třeba něco dotáhnout!"
         ],
         "sound": [
           "Cink!"
         ],
         "hit": [
-          "Dotiahnuté!",
-          "Nemám niekde uvoľnenú skrutku?",
-          "Šróbik by sa tešil!"
+          "Dotaženo!",
+          "Nemám někde uvolněný šroub?",
+          "Šroubek by měl radost!"
         ]
       },
       "umbrella": {
-        "name": "Dáždnik",
+        "name": "Deštník",
         "launch": [
-          "Dáždnik letí!",
-          "Hádžem dáždnik!",
+          "Deštník letí!",
+          "Házím deštník!",
           "Prší, prší!"
         ],
         "sound": [
           "Fup!"
         ],
         "hit": [
-          "Konečne som v suchu!",
-          "Nech si prší!",
-          "Pod dáždnikom je mi fajn!"
+          "Konečně jsem v suchu!",
+          "Ať si prší!",
+          "Pod deštníkem je mi fajn!"
         ]
       },
       "robot": {
-        "name": "Robotík",
+        "name": "Robůtek",
         "launch": [
-          "Robotík, leť!",
-          "Vrtuľka, štart!",
-          "Bip-bup, vpred!"
+          "Robůtku, leť!",
+          "Vrtulka, start!",
+          "Bip-bup, vpřed!"
         ],
         "sound": [
           "Bip!"
         ],
         "hit": [
-          "Bip-bup, pristátie!",
-          "Cieľ nájdený!",
-          "Výpočet presný!"
+          "Bip-bup, přistání!",
+          "Cíl nalezen!",
+          "Výpočet přesný!"
         ]
       },
       "toast": {
-        "name": "Hrianka",
+        "name": "Topinka",
         "launch": [
-          "Hrianka letí!",
-          "Hádžem hrianku!",
-          "Čerstvo opečená!"
+          "Topinka letí!",
+          "Házím topinku!",
+          "Čerstvě opečená!"
         ],
         "sound": [
-          "Chrum!"
+          "Křup!"
         ],
         "hit": [
-          "Hrianka s maslom!",
-          "Dobre opečené!",
-          "Maslom nahor, máme šťastie!"
+          "Topinka s máslem!",
+          "Dobře opečené!",
+          "Máslem nahoru, máme štěstí!"
         ]
       },
       "flower": {
-        "name": "Ruža",
+        "name": "Růže",
         "launch": [
-          "Ruža pre teba!",
-          "Hádžem ružu!",
-          "Leť, ruža!",
-          "K tvojmu sviatku."
+          "Růže pro tebe!",
+          "Házím růži!",
+          "Leť, růže!",
+          "K tvému svátku."
         ],
         "sound": [
           "Šuch!"
         ],
         "hit": [
-          "Ďakujem, je krásny!",
+          "Děkuju, je krásná!",
           "To je ale milé!",
-          "Vonia ako jar!"
+          "Voní jako jaro!"
         ],
         "expect": [
-          "To je pre mňa?"
+          "To je pro mě?"
         ]
       },
       "pinecone": {
-        "name": "Lesná šiška",
+        "name": "Šiška",
         "launch": [
           "Šiška letí!",
-          "Hádžem lesnú šišku!",
-          "Z lesa rovno na terč!"
+          "Házím lesní šišku!",
+          "Z lesa rovnou na terč!"
         ],
         "sound": [
           "Ťuk!"
         ],
         "hit": [
-          "Táto šiška sa jesť nedá!",
-          "Pichľavá, nie sladká!",
-          "Veverička ju bude hľadať!"
+          "Tahle šiška se jíst nedá!",
+          "Pichlavá, ne sladká!",
+          "Veverka ji bude hledat!"
         ]
       },
       "fish": {
-        "name": "Rybka",
+        "name": "Rybička",
         "launch": [
-          "Rybka letí!",
-          "Hádžem rybku!",
-          "Lietajúca ryba!"
+          "Rybička letí!",
+          "Házím rybičku!",
+          "Létající ryba!"
         ],
         "sound": [
-          "Čľup!"
+          "Žbluňk!"
         ],
         "hit": [
-          "Glg-glg, kde je voda?",
+          "Blub-blub, kde je voda?",
           "Fuj, šupiny!",
-          "Tá je ale čerstvá!",
-          "Pýta sa ma, kde je Nemo."
+          "Ta je ale čerstvá!",
+          "Ptá se mě, kde je Nemo."
         ]
       },
       "bird": {
-        "name": "Vtáčik",
+        "name": "Ptáček",
         "launch": [
-          "Leť, vtáčik!",
-          "Púšťam vtáčika!",
-          "Preleť kruhy, vrabček!"
+          "Leť, ptáčku!",
+          "Pouštím ptáčka!",
+          "Proleť kruhy, vrabčáku!"
         ],
         "sound": [
-          "Čvirik!"
+          "Čimčarára!"
         ],
         "hit": [
-          "Postavím si tu hniezdo!",
-          "Spievaš mi z duše!",
-          "Pristál priamo v strede!"
+          "Postavím si tu hnízdo!",
+          "Zpíváš mi z duše!",
+          "Přistál přímo ve středu!"
         ],
         "expect": [
           "Je to holub s poštou?"
@@ -3519,25 +3519,25 @@
         "name": "Korunka",
         "launch": [
           "Korunka letí!",
-          "Pre kráľa plesu!",
-          "Hádžem korunku!"
+          "Pro krále plesu!",
+          "Házím korunku!"
         ],
         "sound": [
-          "Cing!"
+          "Cink!"
         ],
         "hit": [
-          "Som kráľ plesu!",
-          "Korunovali ma!",
+          "Jsem král plesu!",
+          "Korunovali mě!",
           "Vaše veličenstvo, zásah!",
-          "Si kráľ presnosti!"
+          "Jsi král přesnosti!"
         ]
       },
       "compass": {
         "name": "Kompas",
         "launch": [
           "Leť na východ!",
-          "Kompas musí mať správny smer!",
-          "Hádam trafí!",
+          "Kompas musí mít správný směr!",
+          "Snad trefí!",
           "Kompas to tu roztočí!"
         ],
         "sound": [
@@ -3545,38 +3545,38 @@
         ],
         "hit": [
           "Ukazuje na sever!",
-          "Bol medzi nami magnetizmus!",
-          "Už sa nestratím!",
-          "Konečne trafím domov!"
+          "Byl mezi námi magnetismus!",
+          "Už se neztratím!",
+          "Konečně trefím domů!"
         ]
       },
       "poppy": {
-        "name": "Zrnko maku",
+        "name": "Zrnko máku",
         "launch": [
-          "Makové zrniečko, leť!",
-          "Hádžem zrnko maku!",
-          "Zrnko maku, čo ostalo z makovníka!"
+          "Makové zrníčko, leť!",
+          "Házím zrnko máku!",
+          "Zrnko máku, co zbylo z koláče!"
         ],
         "sound": [
           "???"
         ],
         "hit": [
-          "Myslím, že si trafil!",
+          "Myslím, že to trefilo!",
           "Ups, spadlo mi na zem.",
-          "Bol to zásah?",
-          "Nevidím to jasne."
+          "Byl to zásah?",
+          "Nevidím to jasně."
         ],
         "expect": [
-          "Stále nič nevidím.",
-          "Podajte mi mikroskop!",
-          "Určite zbadáme, či trafíš?"
+          "Pořád nic nevidím.",
+          "Podejte mi mikroskop!",
+          "Určitě poznáme, jestli trefíš?"
         ]
       },
       "map": {
         "name": "Mapa pokladu",
         "launch": [
           "Mapa pokladu!",
-          "Nájdi poklad podľa mapy!",
+          "Najdi poklad podle mapy!",
           "Mapa od piráta!",
           "Prastará mapa."
         ],
@@ -3584,39 +3584,39 @@
           "Arrrgh!"
         ],
         "hit": [
-          "Začína v Karibiku.",
-          "Truhlicu už niekto vykopal.",
-          "Končí na opustenom ostrove.",
-          "Toto si odložím."
+          "Začíná v Karibiku.",
+          "Truhlu už někdo vykopal.",
+          "Končí na opuštěném ostrově.",
+          "Tohle si schovám."
         ]
       },
       "snowflake": {
-        "name": "Snehová vločka",
+        "name": "Sněhová vločka",
         "launch": [
-          "Vločka, leť!",
-          "Snehová vločka, vpred!",
-          "Začína snežiť!"
+          "Vločko, leť!",
+          "Sněhová vločko, vpřed!",
+          "Začíná sněžit!"
         ],
         "sound": [
           "Pff."
         ],
         "hit": [
-          "Bŕŕŕ, studená!",
-          "Štípe ma na nose!",
-          "Zasnežilo ma!"
+          "Brrr, studená!",
+          "Štípe mě na nose!",
+          "Zasněžilo mě!"
         ],
         "melt": [
-          "Globálne oteplenie!",
-          "Náhla zmena skupenstva!"
+          "Globální oteplování!",
+          "Náhlá změna skupenství!"
         ],
         "dropSound": [
           "Ťap!"
         ],
         "dropHit": [
           "A kde je vločka?",
-          "Topím sa!",
-          "Kolobeh vody v prírode!",
-          "Ešte som smädný."
+          "Taju!",
+          "Koloběh vody v přírodě!",
+          "Ještě mám žízeň."
         ]
       }
     }

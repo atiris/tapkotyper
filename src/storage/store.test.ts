@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { LANGS, defaultLayout } from '../i18n/i18n';
 import { STORE_KEY, Store, applyImport, readStore, nameSeed, newProfile, nickname, parseImport, planImport } from './store';
 
 class MemStorage {
@@ -137,8 +138,8 @@ describe('stored data', () => {
     const stored = (language: unknown) => readStore({ profiles: [{ id: 'a', name: 'A', progress: {}, settings: {}, language }], theme: 'light' }).profiles[0];
     for (const language of [undefined, 'xx']) {
       const p = stored(language);
-      expect(['sk', 'en']).toContain(p.language);
-      expect(p.layout).toBe(p.language === 'sk' ? 'sk-qwertz' : 'us-qwerty');
+      expect(LANGS).toContain(p.language);
+      expect(p.layout).toBe(defaultLayout(p.language));
     }
     expect(stored('sk').layout).toBe('sk-qwertz');
   });

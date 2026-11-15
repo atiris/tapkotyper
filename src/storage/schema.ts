@@ -1,7 +1,7 @@
 // Storage schema. These types are the data contract of `localStorage['tapkotyper:v1']`
 // and of exported `.json` files. No migrations while the game is in alpha: missing fields get defaults.
 
-export type Lang = 'sk' | 'en';
+export type Lang = 'sk' | 'en' | 'cs';
 /** How much the game draws: automatic (simple once this device was measured slow), always full, or simple. */
 export type GraphicsChoice = 'auto' | 'full' | 'simple';
 /** A language as players and settings point to it: an official one, or an own one made in the translator (`own:<id>`). */

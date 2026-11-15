@@ -2,7 +2,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { IDBFactory } from 'fake-indexeddb';
-import { askedLanguage, detectLanguage, language, locale, ownDict, setLanguage, t, tMap, tn, useDictionaries } from './i18n';
+import { LANGS, askedLanguage, detectLanguage, language, locale, ownDict, setLanguage, t, tMap, tn, useDictionaries } from './i18n';
 import { newOwnLang, ownRef, saveOwnLang } from './own-langs';
 
 const load = (lang: string) => JSON.parse(readFileSync(`public/i18n/${lang}.json`, 'utf8'));
@@ -24,16 +24,15 @@ function sources(dir = 'src'): string[] {
 }
 
 describe('i18n', () => {
-  it('detects Slovak (and Czech) browsers, else English', () => {
+  it('detects Slovak and Czech browsers, else English', () => {
     expect(detectLanguage(['sk-SK'])).toBe('sk');
-    expect(detectLanguage(['cs'])).toBe('sk');
+    expect(detectLanguage(['cs'])).toBe('cs');
+    expect(detectLanguage(['cs-CZ', 'sk'])).toBe('cs');
     expect(detectLanguage(['de', 'en-GB'])).toBe('en');
     expect(detectLanguage(['fr'])).toBe('en');
-    expect(detectLanguage(['de', 'cs'])).toBe('sk');
+    expect(detectLanguage(['de', 'cs'])).toBe('cs');
     expect(detectLanguage(['de', 'fr'])).toBe('en');
     expect(detectLanguage(['en-GB', 'sk'])).toBe('en');
-    // A supported language anywhere in the list wins over a close one before it.
-    expect(detectLanguage(['cs', 'en'])).toBe('en');
   });
 
   it('fills placeholders and falls back to English', () => {
@@ -54,25 +53,25 @@ describe('i18n', () => {
     expect(count('sk')).toBeGreaterThan(0);
   });
 
-  it('has the same keys in Slovak and English', () => {
-    const sk = load('sk'), en = load('en');
-    expect(keys(sk).sort()).toEqual(keys(en).sort());
+  it('has the same keys in every language', () => {
+    const en = keys(load('en')).sort();
+    for (const lang of LANGS) expect(keys(load(lang)).sort(), lang).toEqual(en);
   });
 
-  it('has every literal key the code uses, in both languages', () => {
+  it('has every literal key the code uses, in every language', () => {
     const has = (d: any, key: string) => key.split('.').reduce((o, k) => (o && typeof o === 'object' ? o[k] : undefined), d) !== undefined;
     const used = new Set(sources().flatMap((f) => [...readFileSync(f, 'utf8').matchAll(/(?<![\w.$])(?:t|tList|pickLine)\('([^']+)'/g)].map((m) => m[1])));
     expect(used.size).toBeGreaterThan(300);
-    for (const lang of ['sk', 'en']) {
+    for (const lang of LANGS) {
       const d = load(lang);
       expect([...used].filter((k) => !has(d, k)), lang).toEqual([]);
     }
   });
 
   it('has at least 40 preparation tips per language', () => {
-    for (const lang of ['sk', 'en']) {
+    for (const lang of LANGS) {
       const d = load(lang);
-      useDictionaries(lang as 'sk', d);
+      useDictionaries(lang, d);
       expect(Object.keys(d.tips).length).toBeGreaterThanOrEqual(40);
     }
   });
@@ -104,7 +103,7 @@ describe('i18n', () => {
   it('plays a missing own language in the browser language and keeps asking for it', async () => {
     await setLanguage('own:gone');
     expect(askedLanguage()).toBe('own:gone');
-    expect(['sk', 'en']).toContain(language());
+    expect(LANGS).toContain(language());
   });
 
   it('keeps only whole ordered lists and the filled variants of a pool', () => {

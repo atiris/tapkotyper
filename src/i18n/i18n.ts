@@ -13,6 +13,7 @@ export interface LangInfo {
 export const LANGUAGES: Record<Lang, LangInfo> = {
   sk: { name: 'Slovenčina', layout: 'sk-qwertz', locale: 'sk_SK' },
   en: { name: 'English', layout: 'us-qwerty', locale: 'en_US' },
+  cs: { name: 'Čeština', layout: 'cz-qwertz', locale: 'cs_CZ' },
 };
 export const LANGS = Object.keys(LANGUAGES) as Lang[];
 /** The choices of a language select: every supported language by its own name. */
@@ -21,7 +22,7 @@ export function langOptions(): [Lang, string][] {
 }
 
 /** Languages whose readers read a supported one well. */
-export const CLOSE: Partial<Record<string, Lang>> = { cs: 'sk' };
+export const CLOSE: Partial<Record<string, Lang>> = {};
 
 /** The dictionaries a text is looked up in, first wins: an own language, its base, English; an official language alone. */
 let chain: Dict[] = [];

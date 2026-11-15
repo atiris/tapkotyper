@@ -4,7 +4,7 @@ import { installTheme } from './app/theme';
 import { installTestTyping } from './app/test-typing';
 import { loadManifest, preloadPlay } from './gfx/assets';
 import { GUEST_ID, SUPER_ID } from './storage/schema';
-import { allTexts, detectLanguage, onLateTexts } from './i18n/i18n';
+import { allTexts, askedLanguage, detectLanguage, onLateTexts } from './i18n/i18n';
 import { appShortcuts, blockPinchZoom, watchAutoFullscreen } from './ui/chrome';
 import { noteVisit } from './ui/install';
 import { firstVisit } from './ui/start-pictures';
@@ -34,6 +34,13 @@ const lazy = (load: () => Promise<Screen>, before?: (params: any) => Promise<boo
   return () => stop?.();
 };
 
+/** The start page speaks the start language (the one picked there, else the browser's), not the language of the player who just left. */
+const startLanguage = (s: Screen): Screen => (root, params) => {
+  const lang = app.store.data.language ?? detectLanguage();
+  if (askedLanguage() === lang) return s(root, params);
+  return lazy(() => useLanguage(lang).then(() => s))(root, params);
+};
+
 /** Screens that need a selected profile go back to the start without one. */
 const needsProfile = (s: Screen): Screen => (root, params) => {
   if (!app.profile) return go('start');
@@ -57,7 +64,7 @@ const askParent = (name: 'parent' | 'translate') => async (params: any): Promise
 const loadMap = () => import('./screens/map').then((m) => m.mapScreen);
 const loadLevel = () => import('./screens/level').then((m) => m.levelScreen);
 
-registerScreen('start', startScreen);
+registerScreen('start', startLanguage(startScreen));
 registerScreen('newProfile', lazy(() => import('./screens/new-profile').then((m) => m.newProfileScreen)));
 registerScreen('teacher', lazy(() => import('./screens/teacher').then((m) => m.teacherScreen)));
 registerScreen('taskImport', lazy(() => import('./screens/link-import').then((m) => m.taskImportScreen)));

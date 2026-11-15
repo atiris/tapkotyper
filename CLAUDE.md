@@ -30,7 +30,7 @@ TapkoTyper (Ťapko) is a static browser game that teaches children touch typing 
 - `npm run test:affected` - tsc + unit suite + only the Playwright specs that cover the changed files (`-- --dry` shows the choice, `-- --base <ref>` for a range, `-- <paths>`); a new spec or a new area gets its line in `RULES` in `scripts/test-affected.mjs`
 - `npx playwright test e2e/<name>.spec.ts` - one spec (the server builds the e2e bundle first, ~5 s); the whole e2e suite takes minutes
 - `node scripts/perf.mjs --budget` and `node scripts/perf.mjs --machine slow --low --budget` - frame budget, one to two minutes per scene; only before a world plan is finished
-- `npm run i18n -- <key or prefix>` / `-- --find <text>` / `-- --missing` - texts in every language side by side with their situation
+- `npm run i18n -- <key or prefix>` / `-- --find <text>` / `-- --missing` / `-- --same cs,sk` - texts in every language side by side with their situation; `--same` lists texts identical in two languages, counted per section
 
 ## Verify
 

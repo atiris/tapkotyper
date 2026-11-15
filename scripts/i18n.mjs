@@ -3,6 +3,7 @@
 //   node scripts/i18n.mjs <key or prefix>...    e.g. story.meadowStart  tips.  parent.preset
 //   node scripts/i18n.mjs --find <text>          texts whose key or value contains <text> (any case)
 //   node scripts/i18n.mjs --missing              keys an official language lacks against English
+//   node scripts/i18n.mjs --same cs,sk           texts identical in both languages (left untranslated?), with a count per section
 // Options: --lang sk,en (default: every file in public/i18n), --no-situation.
 import { readFileSync, readdirSync } from 'node:fs';
 
@@ -16,6 +17,7 @@ const flag = (name) => {
 };
 const langOpt = flag('--lang');
 const find = flag('--find');
+const same = flag('--same');
 const missing = args.includes('--missing') && args.splice(args.indexOf('--missing'), 1);
 const noSituation = args.includes('--no-situation') && args.splice(args.indexOf('--no-situation'), 1);
 
@@ -31,7 +33,12 @@ const flat = (o, path = '', out = new Map()) => {
   return out;
 };
 
-const langs = langOpt ? langOpt.split(',') : readdirSync(dir).filter((f) => f.endsWith('.json')).map((f) => f.slice(0, -5));
+/** Texts that are the same in every language on purpose: names of layouts and keys, file names. */
+const SAME = ['layouts.', 'layoutsShort.', 'keys.enter', 'about.readme'];
+/** Same on purpose too: no lower-case letter outside the placeholders (OK, ERG, numbers, a shout). */
+const noWords = (v) => !/\p{Ll}/u.test(show(v).replace(/\{[^}]*\}/g, ''));
+
+const langs = same ? same.split(',') : langOpt ? langOpt.split(',') : readdirSync(dir).filter((f) => f.endsWith('.json')).map((f) => f.slice(0, -5));
 const dicts = Object.fromEntries(langs.map((l) => [l, flat(JSON.parse(readFileSync(new URL(`${l}.json`, dir), 'utf8')))]));
 const situations = JSON.parse(readFileSync(new URL('translator/en.json', dir), 'utf8')).situations;
 const show = (v) => (typeof v === 'string' ? v : JSON.stringify(v));
@@ -42,6 +49,21 @@ if (missing) {
     const gone = [...en.keys()].filter((k) => !dicts[l].has(k));
     console.log(`${l}: ${gone.length} missing${gone.length ? `\n  ${gone.join('\n  ')}` : ''}`);
   }
+  process.exit(0);
+}
+
+if (same !== undefined) {
+  const [a, b] = langs;
+  const perSection = new Map();
+  for (const [k, v] of dicts[a]) {
+    if (!dicts[b].has(k) || show(v) !== show(dicts[b].get(k))) continue;
+    if (noWords(v) || SAME.some((s) => (s.endsWith('.') ? k.startsWith(s) : k === s))) continue;
+    console.log(`${k}: ${show(v)}`);
+    const section = k.split('.')[0];
+    perSection.set(section, (perSection.get(section) ?? 0) + 1);
+  }
+  const total = (section) => [...dicts[a].keys()].filter((k) => k.split('.')[0] === section).length;
+  console.log(perSection.size ? `\nsame in ${a} and ${b}: ${[...perSection].map(([s, n]) => `${s} ${n}/${total(s)}`).join(', ')}` : `no text is the same in ${a} and ${b}`);
   process.exit(0);
 }
 

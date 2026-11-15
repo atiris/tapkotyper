@@ -158,15 +158,23 @@ first level.
 ## Steps
 
 ### Step 1 - Specs, texts, map icons, Bolt out of world 6
-- [ ] Specs: `story-later.md` world 6 as above (WHAT and WHY), Bolt's intro paragraph (with the
+- [x] Specs: `story-later.md` world 6 as above (WHAT and WHY), Bolt's intro paragraph (with the
   child from world 7; found and woken in the junkyard), `story.md` built worlds, `mechanics.md`
   (icons, transcribe, magnet clock, gears' +2), `help.md`.
-- [ ] Texts sk/en/cs with situations: world story, the five level lines, end lines, the
+- [x] Texts sk/en/cs with situations: world story, the five level lines, end lines, the
   narrator's lines above, `map.act.ribbon`, `map.act.transcribe`; `help.games.*` situations.
-- [ ] `activityOf`: `ribbon` for `spell` (and later `junkpile`), `transcribe` for `code`; help's
+- [x] `activityOf`: `ribbon` for `spell` (and later `junkpile`), `transcribe` for `code`; help's
   games list unchanged in order; `friends.ts` without Bolt in world 6.
-- [ ] Checks: `npx tsc --noEmit`, `npm test`, `npm run i18n -- --missing`, map in the browser
+- [x] Checks: `npx tsc --noEmit`, `npm test`, `npm run i18n -- --missing`, map in the browser
   (5:5 shows the ribbon icon).
+
+- Progress (2026-11-15): done. Decisions: only the texts the step reads went in (the world story,
+  map.act.ribbon/transcribe, help.games situations, the transcribe help line naming Bolt's program);
+  the five level lines, end lines and narrator lines land with their modes in steps 3-5, because
+  unused-keys.test.ts fails on a text no code reads. activityOf maps spell to ribbon now; junkpile
+  (ribbon) and code (transcribe) get theirs when the kinds exist. Bolt is left out of the junkyard in
+  friends.ts by world id; robotFor keeps its broken look for the 6:4/6:5 modes. The e2e "robot
+  story" spec now checks Bolt walking in the workshop's first level.
 
 ### Step 2 - Pictures and backgrounds
 - [ ] Prompts into section 7, generation via skill `gemini-images` in a subagent, backgrounds by

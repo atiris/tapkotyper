@@ -82,18 +82,19 @@ test('the super password typed fast on the start page opens everything', async (
   await expect(page.locator('.top-right .round-btn.super')).toHaveCount(0);
 });
 
-test('the robot story is a second row on the map, and Bolt walks with the child in it', async ({ page }) => {
+test('the robot story is a second row on the map, and Bolt walks with the child from the workshop on', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await page.goto('./');
   await page.locator('.start-screen').waitFor();
   await page.keyboard.type('supertapkotyper', { delay: 40 });
   await expect(page.locator('.story-row')).toHaveCount(3);
-  await page.locator('.story-robot .level-node').first().click();
+  // The junkyard finds Bolt only in its own levels, so the walking friend starts in the workshop.
+  await page.locator('.story-robot .level-node[aria-label^="Workshop 1."]').click();
   // The world is not built yet: the card says so instead of its story.
   await expect(page.locator('.posture-card')).toContainText('still being made');
   await page.keyboard.press('Space');
-  await expect(page.locator('.level-screen.world-junkyard[data-bolt="broken"]')).toBeVisible();
+  await expect(page.locator('.level-screen.world-workshop[data-bolt="robot"]')).toBeVisible();
   await page.locator('.level-tapko:not(.waiting)').waitFor();
   await expect.poll(() => page.locator('.kb-guide').getAttribute('data-next')).not.toBe('');
   expect(errors).toEqual([]);

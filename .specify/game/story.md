@@ -14,7 +14,7 @@ tells the story to the child in the second person ("you catch the leaf", "Melody
 gives you a wreath"), never about the character as someone else.
 
 ### Worlds not built yet
-Only the first five worlds (meadow, rocket, planet, valley, egg mountain) are built on the agreed rules. Until a
+Only the first six worlds (meadow, rocket, planet, valley, egg mountain, junkyard) are built on the agreed rules. Until a
 world is redone, all five of its levels, the super level too, play one simple placeholder
 game, **cyclic copy** ([mechanics](mechanics.md)), so the child still progresses: playing a
 level's round time unlocks the next one, and new letters keep coming as in any level. The
@@ -25,7 +25,7 @@ as they are. The world descriptions marked *not built yet* ([later stories](stor
 
 ### The stories
 - [Story 1: The Dragon Egg](story-dragon-egg.md) - the meadow, the rocket, the planet, the valley and the egg mountain, world by world
-- [Later stories](story-later.md) - Bolt the Robot and Melody the Fairy (*not built yet*)
+- [Later stories](story-later.md) - Bolt the Robot (the junkyard built) and Melody the Fairy (*not built yet*)
 
 ### All stories
 - Story 2 opens when the child knows 10 keys, story 3 at 20; from then on the stories go

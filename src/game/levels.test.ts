@@ -263,8 +263,8 @@ describe('first level', () => {
 
   it('every level has an activity for its map dot', () => {
     expect(activityOf(levelById('w3-3')!)).toBe('crossroads');
-    // The super levels show their own game: the hedgehog and the asteroid chase, the spell ribbons are copying.
-    expect(['w1-5', 'w2-5', 'w5-5', 'w6-5'].map((id) => activityOf(levelById(id)!))).toEqual(['chase', 'chase', 'clean', 'clean']);
+    // The super levels show their own game: the hedgehog and the asteroid chase, the mountain's spell is the ribbon, the placeholder copies.
+    expect(['w1-5', 'w2-5', 'w5-5', 'w6-5'].map((id) => activityOf(levelById(id)!))).toEqual(['chase', 'chase', 'ribbon', 'clean']);
   });
 });
 
@@ -283,7 +283,7 @@ describe('the egg mountain', () => {
     const ids = ['w5-1', 'w5-2', 'w5-3', 'w5-4', 'w5-5'];
     expect(ids.map((id) => levelById(id)?.kind)).toEqual(['wind', 'mud', 'crossroads', 'boulders', 'spell']);
     expect(levelById('w5-3')?.variant).toBe('mountain');
-    expect(ids.map((id) => activityOf(levelById(id)!))).toEqual(['chase', 'catch', 'crossroads', 'chase', 'clean']);
+    expect(ids.map((id) => activityOf(levelById(id)!))).toEqual(['chase', 'catch', 'crossroads', 'chase', 'ribbon']);
     expect(ids.map((id) => minActiveS(levelById(id)!))).toEqual([120, 90, 120, 120, 150]);
     expect(ids.map((id) => minWords(levelById(id)!))).toEqual([16, 12, 16, 16, 20]);
   });

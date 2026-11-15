@@ -232,11 +232,12 @@ function plannedCount(l: LevelDef): number {
   return Math.max(1, Math.round(UNITS[l.kind]?.(w, l) ?? w));
 }
 
-/** What the child does in a level; the map shows it as the icon of the level's dot. Sticky finger has no level yet. */
-export type Activity = 'chase' | 'catch' | 'clean' | 'crossroads' | 'sticky';
+/** What the child does in a level; the map shows it as the icon of the level's dot. Sticky finger has no level yet, transcribe gets its first in the junkyard. */
+export type Activity = 'chase' | 'catch' | 'clean' | 'crossroads' | 'ribbon' | 'transcribe' | 'sticky';
 
 /** The super level shows its own game's picture too; the map adds its crown. */
 export function activityOf(l: LevelDef): Activity {
+  if (l.kind === 'spell') return 'ribbon';
   if (COPY_KINDS.includes(l.kind)) return 'clean';
   if (CALM_KINDS.includes(l.kind)) return 'catch';
   if (l.kind === 'crossroads') return 'crossroads';

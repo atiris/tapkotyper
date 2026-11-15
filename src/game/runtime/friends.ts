@@ -3,7 +3,7 @@ import type { G } from '../../gfx/draw';
 import { type FairyMood, drawFairy } from '../../gfx/fairy';
 import { LITTLE_DRAGON_PICTURES, type LittleDragonMood, drawLittleDragon } from '../../gfx/little-dragon';
 import { type RobotMood, type RobotState, drawRobot, robotFor } from '../../gfx/robot';
-import { type LevelDef, storyOf } from '../levels';
+import { type LevelDef, WORLDS, storyOf } from '../levels';
 import { TAPKO_X } from '../mode';
 import type { LevelRuntime } from '../runtime';
 
@@ -21,7 +21,7 @@ const LITTLE_HOP = 0.5;
 
 /** The story friends on the canvas next to Tapko: Bolt (story 2), Melody (story 3), the hatched little dragon (the dragon story's hero's journey). */
 export class Friends {
-  /** Bolt walks with Tapko in story 2 levels; null elsewhere. */
+  /** Bolt walks with Tapko in story 2 levels from the workshop on (the junkyard's levels find and wake him themselves); null elsewhere. */
   readonly robot: RobotState | null;
   /** Melody floats next to Tapko in story 3 levels. */
   readonly fairy: boolean;
@@ -38,7 +38,7 @@ export class Friends {
 
   constructor(private L: LevelRuntime, def: LevelDef) {
     const story = def.kind !== 'practice' && def.kind !== 'task' && def.kind !== 'freetype' && def.kind !== 'aim' && def.kind !== 'parrot' && def.kind !== 'rhythm';
-    this.robot = story && storyOf(def.world).id === 'robot' ? robotFor(def.world) : null;
+    this.robot = story && storyOf(def.world).id === 'robot' && WORLDS[def.world] !== 'junkyard' ? robotFor(def.world) : null;
     this.fairy = story && storyOf(def.world).id === 'fairy';
     this.little = def.journey?.story === 'dragon';
   }

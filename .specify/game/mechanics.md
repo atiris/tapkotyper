@@ -97,7 +97,8 @@
   session (about one world) goes up and down instead of repeating one game: 1 the world's
   main game, gently; 2 a calm step; 3 the main game, harder, with one short surprise; 4 a
   twist; 5 the super-obstacle. Each level dot on the map shows the icon of its activity
-  (main game a flying leaf, waiting words a chair, copy an envelope, crossroads a signpost);
+  (main game a flying leaf, waiting words a chair, copy an envelope, crossroads a signpost,
+  ribbon a ribbon, transcribe two open books);
   the super level shows the icon of its own game too, without a crown, named like the others
   with its number ("5. Finále: <game>"), so the child sees what the finale plays. The level
   to continue with is marked only while it is still unplayed: with everything played, no
@@ -129,6 +130,20 @@
     of the same kind joins the text right after it, the minimum time growing by one word's share
     (at most 10 words in a level; after that a slip only restarts the word). Sentences of 4-6
     known words come until both minimums are met; a restarted word counts once.
+    The junkyard's beeping pile (6:4) runs band and frame across the top of the whole stage
+    (minus the margins), its scene below them.
+  - *Transcribe* (the junkyard's super level, the first of its kind): the text stands in a
+    source block and the child copies it into an empty target block of another width, so the
+    lines break elsewhere and the child must keep their place in the source. The right letter
+    is written into the target behind a blinking cursor; the source greys the words already
+    copied, with no other mark. A wrong letter is not written and counts as a slip, adds one
+    word at the end of the source and one word's share of the minimum time (at most 10 words in
+    a level; after that a slip only counts); nothing is ever erased. Sentences of 4-6 known
+    words, as the ribbon's.
+  - *Junkyard's own rules*: a missed gear on 6:1 adds two gears and their time (at most 10 words
+    added, as the wind's push), the narrator says why the first time; on the magnet's crossroads
+    (6:3) the level's clock stops while the magnet is two steps off the centre (words still
+    count) until it comes back a step, and the way back to the centre carries the harder word.
   - *Cyclic copy* (the placeholder of every level of a world not built yet, see
     [story](story.md)): the world's own background bands, the near one drifting slowly, the character
     at his usual place, and a small sign at the top with the world's name and "Coming soon".
@@ -279,6 +294,11 @@
   jumps after a slip loses the child's place, so it glides. On the wind level a slip that only counted made the gust
   meaningless; restarting the word and a stronger, faster gust make the slip felt, and a few
   words more at most keep it small.
+- Transcribe trains the next step after the ribbon: copying from a text that breaks its lines
+  elsewhere, as from a book or the board, where the eyes must find their place again. The
+  magnet's crossroads makes the choice between an easy word and a hard one that is worth more;
+  stopping the clock while the magnet hangs off at the edge keeps the easy way out from
+  shortening the level (owner design, 2026-11-15).
 - Arcade-style typing is praised as motivating; the peaceful
   variant keeps the fun without destruction or stress.
 - Overlapping words cannot be read, and a child who cannot read the word cannot type it.

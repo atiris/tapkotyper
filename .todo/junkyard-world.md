@@ -37,7 +37,7 @@ first level.
   `copyloop` to the new kind in `LEVELS`; the placeholder stays only on the levels not done yet.
 
 ### 6:1 Sorting the gears (word stream, kind `gears`)
-- In front of the character (to his right) stands a wooden crate with a gear sign on it (open at the top, seen a little from the left); above
+- In front of the character (to his right) stands a wooden crate with a gear sign on it (lid closed, open on its right side where the gears roll in, seen a little from the left so that side never shows); above
   the path, over the place in front of the box, a magnet hangs from a crane cable from the top
   (cable drawn, magnet `obj-magnet`).
 - Gears of **four kinds** (four pictures, a longer word a little bigger) roll in from the right
@@ -128,7 +128,7 @@ first level.
   visible pixel is near magenta (r and b over 180, g under 90, alpha over 40) in mid and near.
   Record the lessons in "Lessons from generating".
 - **Objects** (on magenta, no face, no eyes, no text): `obj-gear-1..4` (four different gears:
-  golden, silver, copper, blue painted), `obj-gear-box` (a wooden crate open at the top with a gear sign
+  golden, silver, copper, blue painted), `obj-gear-box` (a wooden crate with a closed lid and a gear sign
   painted on its front, seen a little from the left so its right wall never shows; owner 2026-11-15), `obj-tire-pile-1..3` (one pile of old tires in three sizes,
   attach the first to the others), `obj-bin` (a round metal rubbish bin with a lid, open),
   `obj-screw-pile` (a low pile of screws, nuts and small gears), `obj-junk-pile-1..3` (one pile of
@@ -223,7 +223,7 @@ first level.
   `npm run test:affected`; both played in the browser to the reward scene.
 
 ### Step 5b - The pictures Gemini's limit left out
-- [ ] `obj-gear-4`, `obj-gear-box`, `obj-tire-pile-1..3`, `obj-bin`, `obj-screw-pile`,
+- [ ] `obj-gear-4` (`obj-gear-box` done in step 3: the owner's closed wooden crate), `obj-tire-pile-1..3`, `obj-bin`, `obj-screw-pile`,
   `obj-junk-pile-1..3`, `robot-broken-lying` (prompts in `assets-src/PROMPTS.md` section 7,
   "World 6 rework"). Seven were queued in the bridge on 2026-11-15 (gemini_status job ids
   gmwi4xykq24a3d8, gmwi4hrjl7383c5, gmwi4htpg27fd3f, gmwi4hvz9a6f022, gmwi4hydi6accd7,

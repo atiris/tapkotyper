@@ -54,6 +54,7 @@ Notes from real Gemini runs; add new ones here.
   (Ms Turtle came back standing the same way twice). Say "the body pose must be completely
   different from the attached picture" and describe the legs and the view concretely (sits
   with the hind legs stretched forward, walks on all four legs seen from the side).
+- A crate that a game must fill from the side: an "open top" prompt drew a plain open box. Ask for the closed object seen from the front-left and say nothing about the hidden side; Gemini then draws no right wall.
 - A motion word on an object ("bouncing", "running") makes Gemini add arms and legs. Say
   "no arms, no legs" when the object should stay an object.
 - The common prompt's "friendly faces ... where the object has a face" gives a face to things
@@ -992,7 +993,7 @@ first, then attach it to the other prompts ("the same robot as in the attached i
 | `obj-gear-2.jpg` | ONE old steel gear in blue-grey steel (#A9B7C6, darker #6F7F92, light #DCE4EC), with more and smaller teeth and a few round holes in its body; as gear 1 otherwise (done, first try) | magenta |
 | `obj-gear-3.jpg` | ONE old copper gear (warm copper #C8743E, darker #8E4A24, light #E9A06A) with a few big chunky teeth and spokes in the middle; as gear 1 otherwise (done, first try) | magenta |
 | `obj-gear-4.jpg` | ONE old gear painted bright blue (#3F7FD0, darker #2A5A9E), the paint a little chipped at the teeth so grey metal shows, with a round hole in the middle; as gear 1 otherwise | magenta |
-| `obj-gear-box.jpg` | ONE brown cardboard box, its four top flaps standing open upward, empty, with a simple dark brown gear sign printed on its front side. Front view, a little from above; NOTHING else, nothing in or around the box | magenta |
+| `obj-gear-box.jpg` | ONE old wooden crate made of planks, closed on top with a plank lid, with a simple dark brown gear sign painted on its front planks. Seen from the front and a little from the left, so a narrow strip of its left side shows; NOTHING else, nothing in or around the crate (owner 2026-11-15: a wooden crate, not cardboard, closed lid; the gears roll in from its right side, which stays hidden from view; do not mention an open or hidden right wall to Gemini, it draws it visibly). Done 2026-11-15, second try (the first, with an open top, was wrong) | magenta |
 | `obj-tire-pile-1.jpg` | ONE big pile of old dark grey rubber car tires stacked and leaning on each other, about as wide as tall. Side view; NOTHING else: no grass, no ground, no other junk | magenta |
 | `obj-tire-pile-2.jpg`, `-3` | **attach `obj-tire-pile-1.jpg`**: "draw a pile of old tires in exactly the same drawing style, colors and outline as the attached pile, but smaller: about half as big (2) / a small pile of only two or three tires (3); NO face, NOTHING else" | magenta |
 | `obj-bin.jpg` | ONE old round metal rubbish bin in blue-grey steel (#A9B7C6, darker #6F7F92), open: its round lid leans tilted on the bin's rim, empty inside. Side view, a little from above; NOTHING else, no rubbish around it | magenta |

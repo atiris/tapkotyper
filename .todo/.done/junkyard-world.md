@@ -279,11 +279,30 @@ first level.
   200), no page errors; the piles' stages and the lying Bolt sit on the path without overlaps.
 
 ### Step 6 - Full verification and done
-- [ ] `npm run build`, `npm test`, `npm run test:affected -- --base <commit before step 1>`, the
+- [x] `npm run build`, `npm test`, `npm run test:affected -- --base <commit before step 1>`, the
   e2e specs of the map, help and levels.
-- [ ] `node scripts/perf.mjs --budget --only junkyard-1,junkyard-2,junkyard-3,junkyard-4,junkyard-5`
+- [x] `node scripts/perf.mjs --budget --only junkyard-1,junkyard-2,junkyard-3,junkyard-4,junkyard-5`
   and the same with `--machine slow --low`.
-- [ ] Playwright MCP play-through of the whole world with the tester profile, checking texts in
+- [x] Playwright MCP play-through of the whole world with the tester profile, checking texts in
   sk, the icons on the map (5:5, 6:4, 6:5) and the end cards.
-- [ ] Move to `.todo/.done/` with `## Done - YYYY-MM-DD`, left-out items into the backlog, queue
+- [x] Move to `.todo/.done/` with `## Done - YYYY-MM-DD`, left-out items into the backlog, queue
   line removed.
+
+- Progress (2026-11-15): done. Build and unit suite green; `test:affected --base 14fa067` ran every
+  e2e spec (main.ts changed): 108 passed, `key-links.spec.ts` failed once on a 12 px alignment
+  check while a play-through ran beside it and passed alone (load, not the junkyard). Perf within
+  budget: normal p50 16.7 / p95 16.7-16.8 in all five; slow-low p50 16.7-33.3, p95 33.2-66.6,
+  junkyard-4 the heaviest (p50 33.3 of 34, busy 97.7 %). The shared MCP browser was held by another
+  session, so the play-through was a headless Playwright script (`.playwright-mcp/junk-final.mjs`)
+  with the tester profile: the map shows ribbon at 5:5 and 6:4 and transcribe at 6:5, the five sk
+  get-ready texts read right, every level reached its end card, no page errors.
+
+## Done - 2026-11-15
+Shipped: world 6 the junkyard with five new level kinds - 6:1 gears (word stream into a wooden
+crate, a miss adds two gears), 6:2 tires (waiting words, the pile shrinking in stages), 6:3 the
+magnet (crossroads with an ask ladder in `kit/ask.ts`, a held clock, plates easing after two
+slips), 6:4 the beeping pile (ribbon, things rolling to the bins, the robotSad beep), 6:5 Bolt's
+program (the first transcribe game, two screens breaking lines differently, Bolt waking); the
+ribbon and transcribe map icons, Bolt walking only from world 7, new backgrounds and pictures,
+specs, sk/en/cs texts, perf scenes junkyard-1..5 and an e2e spec playing the whole world.
+Left out: the hero's speech bubble covering the ribbon and the source screen in 6:4/6:5 (backlog).

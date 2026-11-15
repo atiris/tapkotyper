@@ -249,6 +249,26 @@ Notes from real Gemini runs; add new ones here.
   far itself as donor filled the middle with a slice of the same scene, the sky one tone across the gap
   (junkyard, 2026-11-15, when the daily limit stopped the seam repaint). A few barrels show twice, which
   reads as a row of barrels; a scene with one big landmark in the slice would show it twice.
+- Junkyard layers from scratch (2026-11-15), the owner's procedure for bands: cut the chosen strip of a
+  sheet, move it to the vertical middle of a magenta frame, `prep` it, then also paint white everything
+  below a row about 20 to 80 px above the strip's bottom, across the whole width; Gemini repaints the
+  seam and the ground down to the bottom edge in one go (full bands, no thin cut bottom). `merge` then
+  keeps only the middle, so first copy Gemini's bottom (shifted by `merge`'s reported shift, which was 11 px
+  once) into `rolled.png`, and even the bottom's left and right edges (Gemini's do not meet). The steps
+  ran as one-off scripts. A far with everything important high: say "two more layers will be drawn in
+  front of its lower half, EVERYTHING IMPORTANT IS PLACED HIGH" and describe each third; "the lower,
+  the less detail" worked. "A low crane with a flat boom" still came steep.
+- Seam repaint of a band: name the theme and the drawing style in the prompt (without them Gemini put a
+  wooden wine barrel into the junkyard), and give the white gap's upper border the exact shape of the top
+  edge: `prep` pads the drawing by 3 px, so Gemini drew the edge that much higher (a visible step); a
+  border running straight from one side's edge to the other gave a flat plane; soft bumps of 2 to 13 px
+  that end at both sides' heights, with "draw the line exactly along that upper border, following each
+  bump", joined cleanly. A 30 % gap with the bottom white from 20 px above the strip's bottom left a
+  visible horizontal border; 50 % with the bottom white from about 80 px up did not.
+- Strip prompts that worked (junkyard mid and near): a list of the things and "spread EVENLY from the left
+  edge through the MIDDLE" (the middle becomes the edges at `prep`), solid disc wheels instead of spokes,
+  dark solid car windows, flowers only low in the grass, "NO springs", "one VERY THIN black line as thin as
+  a fine pen" on the top edge; a sand color given in hex taken from the band behind (#E9D2A1) matched it.
 ---
 
 ## 1. Tapko and friends (companions)
@@ -505,22 +525,26 @@ Landscape image, 1376 x 768 pixels (16:9), background for a 2D side-scrolling pl
 
 ### Prompt for the seam (attach `seam-in.png`)
 ```
-Inpainting task on the attached image (1376 x 768 pixels), do not create a new picture. The attached drawing is unfinished: the white area in the middle is empty paper. Draw only into that white area. Everything outside it must stay pixel for pixel identical, with exactly the same colors: do not move, redraw, recolor or recompose anything. Inside the white area, draw the missing part of the same landscape so that everything from the left side continues smoothly into the right side, in exactly the same drawing style and colors: the sky in the middle has exactly the same color as on both sides, no lighter or darker stripe, no visible border. No white left anywhere. Output the whole image at exactly 1376 x 768 pixels.
+Inpainting task on the attached image (1376 x 768 pixels), do not create a new picture. The picture is THEME, drawn as STYLE. The attached drawing is unfinished: the white area in the middle is empty paper. Draw only into that white area. Everything outside it must stay pixel for pixel identical, with exactly the same colors: do not move, redraw, recolor or recompose anything. Inside the white area, draw the missing part of the same landscape, only things that belong to the theme, so that everything from the left side continues smoothly into the right side, in exactly the same drawing style and colors: the sky in the middle has exactly the same color as on both sides, no lighter or darker stripe, no visible border. No white left anywhere. Output the whole image at exactly 1376 x 768 pixels.
 ```
-Do not start it with "Generate an image": Gemini then draws a new picture.
+Do not start it with "Generate an image": Gemini then draws a new picture. THEME and STYLE are needed
+(the owner, 2026-11-15): without them the junkyard mid repaint got a wooden wine barrel and thicker
+lines; name the world's things and "very thin dark ink outlines, light watercolor shading".
 
 ### Prompt for `near` (a sheet of three strips; replace PLANTS)
 ```
 Generate an image: Three <world> strips
 
-Image 1376 x 768 pixels (16:9) on a flat solid pure magenta (#FF00FF) background. The image is a sheet with THREE separate long, low horizontal strips stacked above each other, with a clear band of flat magenta between the strips and above the top strip. Each strip runs all the way from the left edge to the right edge of the image, cut by both edges, no margin at the sides; the bottom strip continues down to the bottom edge. Each strip is about 190 pixels tall: a side view of the closest foreground of the world for a 2D side-scrolling platformer game, seen from a few metres away: PLANTS. The bottom of each strip is cut straight, with no line, no outline and no ground drawn under it. The top of each strip is uneven. The three strips are different from each other. The magenta touches the drawing directly, no halo, no glow, no white rim.
+Image 1376 x 768 pixels (16:9) on a flat solid pure magenta (#FF00FF) background. The image is a sheet with THREE separate long, low horizontal strips stacked above each other, with a clear band of flat magenta between the strips and above the top strip. Each strip runs all the way from the left edge to the right edge of the image, cut by both edges, no margin at the sides; the bottom strip continues down to the bottom edge. Each strip is about 190 pixels tall: a side view of the closest foreground of the world for a 2D side-scrolling platformer game, seen from a few metres away: PLANTS. The bottom of each strip is cut straight, with no line, no outline and no ground drawn under it. The top of each strip is uneven. The whole upper edge of each strip, everywhere the drawing touches the magenta, has one clear, continuous, solid black outline that separates it cleanly from the magenta. Along that upper edge nothing is thin, fine or see-through: no single thin leaves, twigs, grass blades or wires sticking out, no lace of branches or leaves with small gaps between them, every shape there solid and simple. A spring or anything with wires is drawn with thick wires and wide gaps between them, few turns, never many thin wires close together. The three strips are different from each other. The magenta touches the drawing directly, no halo, no glow, no white rim.
 
-Hand-drawn Japanese anime background art, clearly a drawing and not a photo: thin soft dark green outlines (not black), simple color areas with light watercolor shading, fresh natural colors, moderate detail. No pink, purple or violet. No text, no characters, no animals. Flat side view, no vanishing point.
+Hand-drawn Japanese anime background art, clearly a drawing and not a photo: thin soft dark green outlines inside the strips (the upper edge black, as said above), simple color areas with light watercolor shading, fresh natural colors, moderate detail. No pink, purple or violet. No text, no characters, no animals. Flat side view, no vanishing point.
 ```
 
 ### Prompt for `mid` (a sheet of two strips; replace BAND)
 Like the near prompt, with TWO strips of about 330 pixels, "a side view of a band of the world
-seen from some distance: BAND", "rich small details" and "clean thin dark ink outlines".
+seen from some distance: BAND", "rich small details" and "clean thin dark ink outlines". The sentences
+on the black upper edge and on thick, widely spaced wires stay: thin parts and small gaps at the top edge
+leave magenta or cyan fringes that the key cannot take out.
 
 The tables below (here and in the later sections) say what each world shows; all 16 worlds were
 redrawn on 2026-10-25 with the prompts above, so the Height and Status columns are from the earlier
@@ -963,9 +987,9 @@ first, then attach it to the other prompts ("the same robot as in the attached i
 ### Backgrounds (section 3 prompts)
 | File | SCENE / LAYER | Height | Status |
 |---|---|---|---|
-| `bg-junkyard-far.jpg` | a friendly junkyard in soft daylight with soft hills of old things far away, a rusty but cheerful crane and a light blue sky | full | redone 2026-11-15 (the old layer attached, "redraw clean, copying the composition is wanted"; seam by `quilt` from itself with a 14 % gap, as the daily limit was reached before a Gemini seam repaint: the sky stays one tone) |
-| `bg-junkyard-mid.jpg` | soft piles of old tires, wooden crates and round metal cans | 45 % | redone 2026-11-15 (the old sheet attached; sheet of two strips on a dull pink key, turned to #FF00FF locally; strip 1 quilted with itself, lifted 81 px) |
-| `bg-junkyard-near.jpg` | a few big coiled metal springs, large bolts and nuts and thick grass tufts | 25 % | redone 2026-11-15 (the old sheet attached; strip 3 of three quilted with itself; its sand from row 675 as before) |
+| `bg-junkyard-far.jpg` | (redone from scratch 2026-11-15, no attachment; prompt below the table) a junkyard seen from far, all of it in the upper part of the picture, a crawler crane loading a scrap heap, less detail the lower it goes | full | done 2026-11-15 (try 2; seam by Gemini) |
+| `bg-junkyard-mid.jpg` | (redone from scratch 2026-11-15, no attachment; prompt below the table) tires and rims, barrels, a heap of tires and crates, boxes of junk, a bicycle, a car body, a motorcycle, round bushes, flowers only low | 45 % | done 2026-11-15 (try 3, strip 1 centered, seam and ground by Gemini, moved down 4 px) |
+| `bg-junkyard-near.jpg` | (redone from scratch 2026-11-15, no attachment; prompt below the table) pale beige loose sand like the mid band's ground (#E9D2A1), a lying tin can at the top edge, a few bolts and low grass tufts, lower only soft wavy lines and pebbles | 25 % | done 2026-11-15 (try 3, strip 1 centered, seam with a bumpy edge and ground by Gemini, moved down 274 px; try 1: things only near the sides; try 2: the earth too brown) |
 | `bg-workshop-far.jpg` | the inside of a warm cozy workshop with wooden walls, shelves with jars of screws, hanging tools and a round window | full | |
 | `bg-workshop-mid.jpg` | a workbench with drawers and a vise, a tool cabinet, a mint toolbox, stacked crates, a pegboard with tools, a drill press, a stool and a barrel with rods | 45 % | done 2026-10-23 |
 | `bg-workshop-near.jpg` | a conveyor belt across the whole image with rollers below, and on it in one row a gear, an open crate, a robot arm part, copper wire, a box of bolts, a wheel, a battery and a small robot head; nothing behind them | 25 % | done 2026-10-23 |
@@ -978,6 +1002,41 @@ first, then attach it to the other prompts ("the same robot as in the attached i
 | `bg-robohome-far.jpg` | the inside of a cozy robot home: round windows, warm lamps, soft sofa, shelves with little gadgets, pastel colors | full | |
 | `bg-robohome-mid.jpg` | a row of cozy furniture: a low cabinet, a plant in a pot, a round rug | 40 % | |
 | `bg-robohome-near.jpg` | a warm wooden floor of vertical parallel planks, a book, a ball and a slipper | 20 % | redone 2026-10-26 (planks parallel, no V at the joins) |
+
+Prompt for `bg-junkyard-far` (the far prompt, rewritten so the scene sits high; two bands come in front):
+```
+Generate an image: A friendly junkyard seen from far
+
+Hand-drawn Japanese anime background art with clean thin dark ink line art, fresh saturated natural colors and light watercolor shading; not blurry, not pale, not washed out.
+
+Landscape image, 1376 x 768 pixels (16:9), the farthest background layer of a 2D side-scrolling platformer game for children and young teens aged 12 to 15. Two more layers will be drawn in front of its lower half, so EVERYTHING IMPORTANT IS PLACED HIGH IN THE PICTURE.
+Sky: only a thin strip of light blue sky at the very top, about 8 % of the image height, with two or three tiny clouds; the same brightness across the whole width, no sun, no sun glow, no bright spot.
+Right under the sky, in the upper third of the image: a big friendly junkyard seen from far away in soft daylight: low hills of old scrap on the horizon, then long rows of scrap heaps: old tires, rusty and teal oil barrels, wooden crates, bent pipes, old wheels and an old rusty car body. This upper third has the most detail.
+One rusty orange crawler crane on caterpillar tracks stands in this upper third, about a third of the image width from the left edge. It is low and small: its short lattice boom leans forward at a flat angle, and the tip of the boom rises only a little above the scrap hills, barely into the sky. The crane is whole and well drawn from its tracks to the tip of its boom; its cable holds an open grab bucket full of scrap just above a big scrap heap beside it, loading the heap.
+The middle third: a wide sandy yard with a few low scrap heaps, simpler and with less detail.
+The lower third: almost empty sand with a little grass and a few small stones, very simple, the least detail of the whole picture, no objects.
+The lower the part of the picture, the less detail it has. Near both the left and the right image edges only low scrap heaps and sand, no tall objects. One single continuous scene, not split into rows or panels, no line, frame or border anywhere. No large objects close to the viewer. No text, no letters, no numbers, no watermark, no characters, no people, no animals.
+```
+Done on try 2 (2026-11-15): sky 17 %, everything high; the boom still rose steep to near the top edge, the
+owner kept it. Seam by Gemini's repaint (`prep` 30 % gap, `merge` OK on the first answer).
+
+Prompt for `bg-junkyard-mid` (the mid prompt written out):
+```
+Generate an image: Two junkyard strips
+
+Image 1376 x 768 pixels (16:9) on a flat solid pure magenta (#FF00FF) background, exactly #FF00FF, not dull pink, not purple. The image is a sheet with TWO separate horizontal strips stacked above each other, with a narrow band of flat magenta between the strips and above the top strip. The two strips together fill most of the image: each strip is TALL, almost half of the image height (about 330 pixels). Each strip runs all the way from the left edge to the right edge of the image, cut by both edges, no margin at the sides; the bottom strip continues down to the bottom edge. Each strip is a side view of a band of a friendly junkyard seen from some distance, for a 2D side-scrolling platformer game, with these things one after another along it: old tires and loose old wheel rims, a few old rusty and teal oil barrels, a big heap of tires and wooden crates, cardboard boxes full of junk, an old very rusty half-eaten bicycle with thick tubes leaning on a crate, its wheels solid plastic disc wheels with NO spokes, an old rusty car body without wheels, its windows dark and solid (not see-through), an old rusty motorcycle whose whole back half is missing, a few round leafy bushes. Flowers grow only low at the bottom, in the grass in front of the things, with short stems; never on top of a bush or a heap, never near the upper edge. Some thick bent pipes may stick up out of the heaps in nice curves. A tire lying on top of a heap may show the magenta through its round middle, cleanly outlined; no other see-through parts: no spokes, no see-through windows, no wire mesh. The piles have different heights, so the top of each strip is uneven. On light sandy ground with short grass at the bottom, inside the strip, away from its upper edge. The two strips show the things in a different order and look clearly different. The bottom of each strip is cut straight, with no line, no outline and no ground drawn under it. The whole upper edge of each strip, everywhere the drawing touches the magenta, has one clear, continuous, solid black outline that separates it cleanly from the magenta. Along that upper edge nothing is thin, fine or see-through: no grass blades, no single thin leaves, twigs, wires or thin rods sticking out, no small holes or narrow gaps where the magenta shows through between parts; the bushes there are round and solid, every shape simple. NO springs anywhere. The two strips are different from each other. The magenta touches the drawing directly, no halo, no glow, no white rim, no shadow on the magenta.
+
+Hand-drawn Japanese anime background art, clearly a drawing and not a photo: clean thin dark ink outlines, simple color areas with light watercolor shading, fresh natural colors, rich small details but less than a far background. No pink, purple or violet in the drawing. No text, no letters, no numbers, no characters, no animals. Flat side view, no vanishing point.
+```
+
+Prompt for `bg-junkyard-near` (try 3, the near prompt written out):
+```
+Generate an image: Three junkyard ground strips
+
+Image 1376 x 768 pixels (16:9) on a flat solid pure magenta (#FF00FF) background, exactly #FF00FF, not dull pink, not purple. The image is a sheet with THREE separate long, low horizontal strips stacked above each other, with a clear band of flat magenta between the strips and above the top strip. Each strip runs all the way from the left edge to the right edge of the image, cut by both edges, no margin at the sides; the bottom strip continues down to the bottom edge. Each strip is about 190 pixels tall: a side view of the closest ground of a friendly junkyard for a 2D side-scrolling platformer game, seen from a few metres away: loose light sandy ground, pale warm beige sand (#E9D2A1, a little darker #D9BE8C in the shadows), NOT brown dirt. Near the top of each strip: an old rusty tin can lying on its side right at the upper edge, a few old bolts lying here and there, and a few low tufts of grass. Lower down, the lower the simpler: only plain loose sand with simple soft wavy lines, light watercolor shading of an ordinary unpaved ground and a few small pebbles, no other things. The things are spread evenly along the whole strip, from the left edge through the MIDDLE to the right edge, not only at the sides. Nothing sticks up above the upper edge except the low lying can. The upper edge of each strip is the top of the ground: gently uneven with soft low bumps. The whole upper edge, everywhere the drawing touches the magenta, is outlined by one VERY THIN, continuous, clean black line, as thin as a fine pen, separating the sand cleanly from the magenta. Along that upper edge nothing is thin or see-through: no grass blades, stems, twigs or wires sticking out, no holes or gaps where the magenta shows through. NO springs anywhere. The bottom of each strip is cut straight, with no line, no outline and no ground drawn under it. The three strips are different from each other, the things in a different order. The magenta touches the drawing directly, no halo, no glow, no white rim, no shadow on the magenta.
+
+Hand-drawn Japanese anime background art, clearly a drawing and not a photo: very thin soft brown ink outlines inside the strips (the upper edge a very thin black line), simple color areas with light watercolor shading, fresh natural colors, little detail: the closest layer is the simplest. No pink, purple or violet in the drawing. No text, no letters, no numbers, no characters, no animals. Flat side view, no vanishing point.
+```
 
 ### Game objects (section 4 prompt)
 | File | OBJECT | BG |

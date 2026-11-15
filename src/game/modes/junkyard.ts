@@ -215,7 +215,7 @@ export class GearsMode extends ApproachMode {
 
 /** The tire pile: its pictures by stage (big, half, small), their height, and the bin right of it. */
 const PILES = ['obj-tire-pile-1', 'obj-tire-pile-2', 'obj-tire-pile-3'];
-const PILE_H = [300, 220, 140];
+const PILE_H = [150, 110, 70];
 /** The pile stands this far right of him at most (on a wide stage the scene stays together), the bin this far right of the pile. */
 const PILE_FROM_HERO = 820;
 const BIN_FROM_PILE = 220;

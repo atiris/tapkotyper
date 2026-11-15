@@ -267,6 +267,13 @@ first level.
   with stage 1 attached; `npm run assets`, PROMPTS.md status. In a subagent.
 - [ ] Checks: the modes pick up the pictures (a screenshot of 6:1, 6:2, 6:4 in the browser).
 
+- Progress (2026-11-15 20:50): Gemini's limit again; the owner paused the picture work until
+  22:22. Meanwhile the gemini-bridge plugin changed (claude-workflow e55ac8b): a job that hits the
+  daily limit stays queued (reason `limit`) at the front of the queue instead of failing, and
+  `gemini_wait` returns at once with `limit: true`; failed jobs get **Retry** in the popup. The six
+  raw pictures in `assets-src/` were partly reviewed by a stopped subagent (no verdicts kept): review
+  them again from the start.
+
 ### Step 6 - Full verification and done
 - [ ] `npm run build`, `npm test`, `npm run test:affected -- --base <commit before step 1>`, the
   e2e specs of the map, help and levels.

@@ -14,8 +14,8 @@ test.describe('a phone without a keyboard', () => {
     await page.goto('./');
     const gate = page.locator('.teacher-big', { hasText: 'Chýba klávesnica' });
     await expect(gate).toContainText('TapkoTyper potrebuje skutočnú klávesnicu');
-    // Silent until the player turns the sound on.
-    await expect(page.locator('.sound-btn')).toHaveAttribute('data-level', 'off');
+    // Silent before a player is picked: no sound button.
+    await expect(page.locator('.sound-btn')).toHaveCount(0);
     // No players, no guest, no new player or import while the gate is up.
     await expect(page.locator('.profile-card, .start-card')).toHaveCount(0);
     await gate.tap();
@@ -111,7 +111,7 @@ test('the corner by width: the round buttons, then the Menu', async ({ page }) =
   await menu.click();
   await expect(menu).toHaveAttribute('aria-expanded', 'true');
   const items = page.locator('.corner-menu-panel [role=menuitem]');
-  await expect(items).toHaveText(['Jazyk: Slovenčina', 'Nastavenia pre rodičov', 'Pre učiteľov', 'Bez zvukov', 'Celá obrazovka', /režim$/, 'Pomoc']);
+  await expect(items).toHaveText(['Jazyk: Slovenčina', 'Nastavenia pre rodičov', 'Pre učiteľov', 'Celá obrazovka', /režim$/, 'Pomoc']);
   await expect(items.first()).toBeFocused();
   await page.keyboard.press('Escape');
   await expect(page.locator('.corner-menu-panel')).toHaveCount(0);

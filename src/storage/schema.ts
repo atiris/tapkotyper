@@ -100,7 +100,7 @@ export interface Settings {
   highContrast: boolean;
   /** How much the game draws (engine/graphics.ts); automatic turns simple on a device measured slow. */
   graphics: GraphicsChoice;
-  /** The player's look and quick sound level; picking the player brings them back, and the start page keeps the last player's. */
+  /** The player's look and quick sound level; picking the player brings them back, and the start page keeps the last player's look. */
   theme: Theme;
   sound: SoundLevel;
   /** Ask for fullscreen on the first key press or click after the app starts. */

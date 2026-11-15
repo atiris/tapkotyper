@@ -279,10 +279,17 @@ test('a player keeps the look, the sound and a hidden keyboard; the start page s
   });
   await page.reload();
   expect(await look(page)).toBe('light');
+  await expect(page.locator('.sound-btn')).toHaveCount(0);
   await page.locator('.profile-card').first().click();
   await page.locator('.map-screen').waitFor();
   expect(await look(page)).toBe('dark');
   await expect(page.locator('.sound-btn')).toHaveAttribute('data-level', 'quiet');
+  // Back on the start page the sound goes quiet and its button goes away; the map brings both back.
+  await page.goBack();
+  await page.locator('.start-screen').waitFor();
+  await expect(page.locator('.sound-btn')).toHaveCount(0);
+  await page.goForward();
+  await expect(page.locator('.map-screen .sound-btn')).toHaveAttribute('data-level', 'quiet');
   // The device keeps the last player's look for the start page.
   expect(await stored(page)).toBe('dark');
   await page.locator('.sound-btn').click();

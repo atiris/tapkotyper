@@ -30,8 +30,9 @@ test('the start screen does not scroll with 1, 5 and 7 profiles', async ({ page 
       await page.locator('.start-screen').waitFor();
       await noScroll(page);
       await expect(page.locator('.profile-row')).toHaveCount(rows[i]);
-      // The teacher, sound and help buttons are in the first viewport whatever the number of profiles.
-      await expect(page.locator('.top-right .help-btn, .top-right .sound-btn')).toHaveCount(2);
+      // The teacher and help buttons are in the first viewport whatever the number of profiles; no sound before a player.
+      await expect(page.locator('.top-right .help-btn')).toHaveCount(1);
+      await expect(page.locator('.top-right .sound-btn')).toHaveCount(0);
       for (const b of await page.locator('.top-right .round-btn:visible').all()) await expect(b).toBeInViewport();
       // New player is a button beside Try it; profiles are loaded in the settings, not here.
       await expect(page.locator('.start-ghosts .new-player')).toBeVisible();
@@ -64,28 +65,28 @@ test('the new key card and the get-ready card fit and Esc skips the key', async 
   }
 });
 
-/** The sound button's distance from the top and the right edge of the window. */
-async function soundOffset(page: Page): Promise<[number, number]> {
-  await page.locator('.top-right .sound-btn').waitFor();
+/** The help button's distance from the top and the right edge of the window (the start page has no sound button). */
+async function cornerOffset(page: Page): Promise<[number, number]> {
+  await page.locator('.top-right .help-btn').waitFor();
   return page.evaluate(() => {
-    const r = document.querySelector('.top-right .sound-btn')!.getBoundingClientRect();
+    const r = document.querySelector('.top-right .help-btn')!.getBoundingClientRect();
     return [Math.round(r.top), Math.round(document.documentElement.clientWidth - r.right)];
   });
 }
 
 test('the corner buttons sit at one offset and a level shows its place in the world', async ({ page }) => {
   await createProfile(page, 'Corner');
-  const map = await soundOffset(page);
+  const map = await cornerOffset(page);
   const id = page.url().split('/p/')[1];
   await page.evaluate((pid) => { location.hash = `#/p/${pid}/wardrobe`; }, id);
   await page.locator('.wardrobe-screen').waitFor();
-  expect(await soundOffset(page)).toEqual(map);
+  expect(await cornerOffset(page)).toEqual(map);
   await page.evaluate(() => { location.hash = '#/teacher'; });
   await page.locator('.teacher-screen').waitFor();
-  expect(await soundOffset(page)).toEqual(map);
+  expect(await cornerOffset(page)).toEqual(map);
   await page.evaluate(() => { location.hash = '#/'; });
   await page.locator('.start-screen').waitFor();
-  expect(await soundOffset(page)).toEqual(map);
+  expect(await cornerOffset(page)).toEqual(map);
 
   await page.evaluate((pid) => { location.hash = `#/p/${pid}`; }, id);
   await page.locator('.level-node.current').first().click({ force: true });

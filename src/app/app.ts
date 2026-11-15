@@ -32,6 +32,8 @@ let visits = 0;
 const NO_HELP_RETURN: ScreenName[] = ['level', 'story', 'help'];
 /** The settings and the translator opened from them play nothing; the music goes on after them. */
 const HUSHED: ScreenName[] = ['parent', 'translate'];
+/** Screens before a player is chosen play nothing either: sound starts on the player's map, with the player's level. */
+const NO_PLAYER: ScreenName[] = ['start', 'newProfile', 'taskImport', 'moveImport', 'teacher', 'taskNote'];
 
 /** App-wide state. */
 export const app = {
@@ -169,7 +171,7 @@ export function go(name: ScreenName, params: any = {}, push = true): void {
   if (name === 'help' && shown?.name !== 'help') app.helpReturn = shown && !NO_HELP_RETURN.includes(shown.name) ? shown : null;
   shown = { name, params };
   visits++;
-  audio.hush(HUSHED.includes(name));
+  audio.hush(HUSHED.includes(name) || NO_PLAYER.includes(name) || !app.profile);
   try { cleanup?.(); } catch (e) { console.error(e); }
   hideTip();
   closeModals();

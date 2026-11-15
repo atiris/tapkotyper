@@ -1,5 +1,5 @@
 import { musicTracks, musicUrl } from '../gfx/assets';
-import { SOUND_LEVELS, levelGain } from './levels';
+import { levelGain } from './levels';
 import { type MusicContext, type MusicEvent, emptyMusicContext, musicFor } from './context';
 import { nextTrack } from './tracks';
 import type { SoundLevel } from '../storage/schema';
@@ -12,7 +12,6 @@ export interface BeatOut {
 }
 
 export type Sfx = 'key' | 'wrong' | 'word' | 'reward' | 'whoosh' | 'pop' | 'cheer' | 'bzzt' | 'note' | 'plop' | 'squeak' | 'ring' | 'whistle' | 'crack' | 'thud' | 'squawk' | 'beep' | 'fate';
-const SOUND_KEY = 'tapkotyper:sound';
 /**
  * Rytmus plays through the music's volume, which is lower than the effects': a caught letter's bell peaks at
  * 0.09 x music 0.5 x 0.55 = 0.025, the story levels' key sound at 0.12 x effects 0.7 x 0.6 = 0.05 and a word at
@@ -33,7 +32,7 @@ class AudioEngine {
   private beatGain!: GainNode;
   private sfxVolume = 0.7;
   private musicVolume = 0.5;
-  /** The game starts silent until the player turns the sound on (the choice is kept). */
+  /** Silent until a player is picked; the player's own level comes with them. */
   level: SoundLevel = 'off';
   /** A level runs whose sound matters (Rytmus, dictation): the `important` level plays there. */
   private important = false;
@@ -45,10 +44,6 @@ class AudioEngine {
   private listeners: (() => void)[] = [];
 
   constructor() {
-    try {
-      const saved = localStorage.getItem(SOUND_KEY) as SoundLevel | null;
-      if (saved && SOUND_LEVELS.includes(saved)) this.level = saved;
-    } catch { /* private mode */ }
     // iOS Safari takes only a tap's end (pointerup, touchend, click) as the gesture that may start sound.
     const events = ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown'];
     const unlock = () => {
@@ -130,11 +125,10 @@ class AudioEngine {
     this.listeners.forEach((l) => l());
   }
 
-  /** The quick sound level, kept on this device for the start page. */
+  /** The quick sound level (the player keeps it, app.setSound). */
   setLevel(level: SoundLevel): void {
     if (level === this.level) return;
     this.level = level;
-    try { localStorage.setItem(SOUND_KEY, this.level); } catch { /* private mode */ }
     this.applyVolumes();
     this.silence();
     this.listeners.forEach((l) => l());

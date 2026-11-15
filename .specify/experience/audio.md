@@ -9,13 +9,16 @@
   the button; "only where it matters" is the sound sign with a small "!" badge, and its tooltip says
   that sound plays only in Rytmus and in dictation. That level is silent like off everywhere, except
   while a [Rytmus](../game/rhythm.md) round or a level with dictated words runs: there it plays like
-  normal. The game starts with the sound off
-  until the player turns it on (the choice is kept by the player and comes back when the player
-  is picked; the start page keeps the last player's; a new player starts with what the device has); audio starts only after the
-  first user interaction (on phones the first tap; see [devices.md](devices.md)). Off is real
+  normal. Each player starts with the sound off
+  until they turn it on (the choice is kept by the player and comes back when the player
+  is picked); audio starts only after the first user interaction (on phones the first tap; see [devices.md](devices.md)). Off is real
   silence: nothing plays at all, not even at zero volume; so is "only where it matters" outside those levels.
-- The music goes on until something really changes it. The start page and own practice play the
-  menu track. A level plays its world's track, and that track goes on over the map, the wardrobe and
+- Sound belongs to a picked player: the start page and every screen before a player is chosen (new
+  player, teacher, task and move links) play nothing and have no sound button, not on the first visit and
+  not on coming back to them; F4 and F8 do nothing there. Sound starts on the player's map with the
+  player's level.
+- The music goes on until something really changes it. The player's map after the start page and own
+  practice play the menu track. A level plays its world's track, and that track goes on over the map, the wardrobe and
   the other screens and into the next level of the same world without starting again; only a level
   of another world switches it. A reload straight onto the map starts the menu track.
 - A right click on the sound button (F8) plays another random track from the whole library; it stays
@@ -33,7 +36,8 @@
   "Quiet" keeps the feedback in a shared room without going silent. "Only where it matters" keeps
   the page silent but still plays the sound that a game needs: Rytmus is played to its music, a
   dictation is heard. Four levels are too many to guess by clicking round, so the button shows them in a list.
-- Starting silent never surprises a class, a library or a sleeping house with sound.
+- Starting silent never surprises a class, a library or a sleeping house with sound. The start page
+  is shared by every child on the device, so one child's sound choice must not play for the next.
 - A parent changing settings, or switching between children there, should not set off one child's
   music after another; the sound belongs to playing.
 - A phone shows a tab that plays sound even at zero volume, which looks like the switch does

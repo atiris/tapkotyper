@@ -8,7 +8,9 @@
   drills, practice tasks) its own word language, preset to the player's. Both lists can be
   loaded at once. Words with keys the player does not have yet are left out as always, so
   lessons and key unlocking do not change with the language.
-- Slovak words keep correct diacritics; with "words without diacritics" on, only words
+- Lists exist for Slovak, Czech and English, each written for this game from everyday words
+  a 10-15-year-old reads (no copied corpus), short home-row words first.
+- Slovak and Czech words keep correct diacritics; with "words without diacritics" on, only words
   without diacritics are used.
 - Selection respects: active keys, word length range (for example 2-5), difficulty 1-10,
   and weak-key weighting.
@@ -33,7 +35,9 @@
   voiced consonant at the end (dub sounds "dup"), none with a voiced and a voiceless consonant
   side by side (vták, kde), and none with i or y after a consonant that takes both (ryba, bili).
   A child who writes what was heard is always right. Fewer words is fine: below enough of them
-  single letters are dictated, as with too few keys. English keeps dictionary words, its spelling
+  single letters are dictated, as with too few keys. A Czech dictation follows the same rules
+  (i or y after b f l m p s v z) and also leaves out words with ů or ú (one sound) and with ě
+  after b p v f m (bě sounds "bje"). English keeps dictionary words, its spelling
   never follows the ear alone.
 - **One hand's words** (sticky finger): only letters one hand types alone, with no Shift, no
   accent key of the other hand and no space, so single words; when the dictionary has too few of

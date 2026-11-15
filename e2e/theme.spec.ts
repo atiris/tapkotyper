@@ -1,6 +1,7 @@
 import { type Page, expect, test } from '@playwright/test';
 import { contrastMisses } from './contrast';
 import { createProfile, playLevel, untilPlay } from './helpers';
+import { LANGUAGES } from '../src/i18n/i18n';
 
 test.use({ locale: 'sk-SK' });
 
@@ -163,7 +164,7 @@ test('the language button lists the languages by their own names', async ({ page
   await expect(button).toHaveAttribute('aria-label', 'Jazyk: Slovenčina');
   await button.click();
   const items = page.locator('.lang-list [role=option]');
-  await expect(items).toHaveText(['Slovenčina', 'English']);
+  await expect(items).toHaveText(Object.values(LANGUAGES).map((l) => l.name));
   await expect(items.first()).toHaveAttribute('aria-selected', 'true');
   await expect(items.first()).toBeFocused();
   await page.keyboard.press('Escape');
@@ -174,8 +175,7 @@ test('the language button lists the languages by their own names', async ({ page
   await button.click();
   await expect(page.locator('.lang-list')).toHaveCount(0);
   await button.click();
-  await page.keyboard.press('Tab');
-  await page.keyboard.press('Tab');
+  for (let i = 0; i < Object.keys(LANGUAGES).length; i++) await page.keyboard.press('Tab');
   await expect(page.locator('.lang-list')).toHaveCount(0);
   await button.click();
   await page.keyboard.press('ArrowDown');
@@ -191,7 +191,7 @@ test('the language button lists the languages by their own names', async ({ page
   await page.setViewportSize({ width: 390, height: 844 });
   await page.locator('.top-right .menu-btn').click();
   await page.locator('.corner-menu-panel [role=menuitem]', { hasText: 'Language: English' }).click();
-  await expect(page.locator('.lang-list [role=option]')).toHaveText(['Slovenčina', 'English']);
+  await expect(page.locator('.lang-list [role=option]')).toHaveText(Object.values(LANGUAGES).map((l) => l.name));
   await page.keyboard.press('Escape');
   await expect(page.locator('.top-right .menu-btn')).toBeFocused();
 });

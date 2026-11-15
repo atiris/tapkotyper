@@ -2,7 +2,8 @@
 
 ## What
 - Supported layouts: **Slovak QWERTZ** (default for Slovak), **Slovak QWERTY** (the same
-  with `y` and `z` in the English places) and **US QWERTY** (default for English). The
+  with `y` and `z` in the English places), **Czech QWERTZ** (default for Czech), **Czech
+  QWERTY** (the same with `y` and `z` swapped) and **US QWERTY** (default for English). The
   layout is a profile setting, independent from the UI language.
 - Slovak layout facts the game teaches:
   - Unshifted number row: `+ ľ š č ť ž ý á í é` (digits need Shift).
@@ -10,6 +11,17 @@
   - Dead keys: acute `´` (US `=` position, unshifted) and caron `ˇ` (same key with Shift).
     Typed first, then the letter: `ó ĺ ŕ` via acute, `ď` and capitals like `Ť Ľ Č` via caron.
   - On QWERTZ, `y` and `z` are swapped compared to US QWERTY.
+- Czech layout facts the game teaches:
+  - Unshifted number row: `; + ě š č ř ž ý á í é = ´` (digits need Shift).
+  - Keys right of the letters: `ú` (US `[` position), `)` (`]`), `ů` (`;`, the right
+    little finger's home key), `§` (`'`), dead diaeresis `¨` (`\`).
+  - Dead keys: acute `´` and caron `ˇ` on the same key as on Slovak, the ring on Shift left of
+    `1`; only Czech letters come through them (`ó ú ý`, `ď ť ň`, accented capitals, `Ů`).
+  - Taught in the Slovak order with Czech keys: home row with `ů`, the letters, then
+    `á í é ý ž ř č š ě ú`, then `ď ť ň ó`, then digits; `)` and `¨` are not taught.
+- Fingers follow the physical key, so every layout of the same keyboard shares the hands.
+- Preparation tips name the keys of the player's layout and appear only when the layout has
+  what they talk about (dead keys, letters on the number row, `y`/`z` swapped).
 - The game checks the **typed character** (so any OS variant of the layout works) and
   uses the **physical key position** for the finger guide.
 - Dead-key letters count as one target character; the guide shows the two steps
@@ -33,11 +45,11 @@
   The button and its panel lie over everything in the level, the get-ready card and the pause card
   too, so the keyboard can be set before play or in a pause. A new choice only draws the keyboard
   and the hands again and play goes on: a new fingering, or a layout that types the same characters
-  (Slovak QWERTZ and QWERTY); only a layout of other characters (Slovak and English) starts the level
+  (Slovak QWERTZ and QWERTY, or the two Czech ones); only a layout of other characters (Slovak, Czech, English) starts the level
   again, its words might not be typable. A new layout keeps the progress with the keys it teaches. The practice key picker has the same panel behind a button "Nastavenie klávesnice"
   on the right of Start, and opens again with the new choice.
 - If typed characters suggest a different layout than the profile setting (for example
-  `y`/`z` swapped, or digits instead of `ľščť`), the character says which one it looks like and points
+  `y`/`z` swapped, digits instead of `ľščť`, or `ě ř ů` on a Slovak layout), the character says which one it looks like and points
   to the button, which stands out until it is opened, and a tooltip over it asks "Chceš použiť
   rozloženie …?" for ten seconds, once per run of a level.
 - Parent toggle "words without diacritics" for beginners.
@@ -49,6 +61,7 @@
 - Slovak diacritics live on the number row and behind dead keys; that is the main pain
   point of Slovak learners, and no free, modern, child-friendly tool handles it.
   Many Slovak computers use the QWERTY variant, so both must be taught exactly.
+  The same holds for Czech, whose schools teach ten-finger typing on the Czech QWERTZ layout.
   This is TapkoTyper's main differentiator
   ([research](../../.research/features/slovak-keyboard-layout.md)).
 - A child at a school or a borrowed computer often meets another layout than at home; going to

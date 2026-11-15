@@ -15,4 +15,4 @@ paths:
 - "Ťapko" (Slovak) / "Tapko" (English) is the app; the animal the child plays is "postavička"/"character".
 - Never name other typing sites, companies or games, in texts or anywhere in the repo.
 - Plural forms are objects of `Intl.PluralRules` categories (`one`, `few`, `many`, `other`); a language takes the categories its rules have.
-- Word lists: lower-case words a child knows, no proper names, nothing in `BLOCK` (`src/words/words.ts`); `words.test.ts` checks how many words the first lessons get.
+- Word lists: lower-case words a child knows, then a short tail of first names, towns and places with their capital (the targets' capitals come from it), nothing in `BLOCK` (`src/words/words.ts`); `words.test.ts` checks how many words the first lessons get.

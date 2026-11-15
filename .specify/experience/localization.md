@@ -1,9 +1,10 @@
 # Localization
 
 ## What
-- UI languages: Slovak (complete) and English (complete), kept as one table of the supported
-  languages with each one's own name ("Slovenčina", "English") and a table of close languages
-  (Czech reads Slovak). Every place that offers a language (the language button, the new player
+- UI languages: Slovak, Czech and English (all complete), kept as one table of the supported
+  languages with each one's own name ("Slovenčina", "Čeština", "English"), its default keyboard
+  layout and its locale for search pages, and a table of close languages (empty today: a
+  language the project lacks that reads a supported one). Every place that offers a language (the language button, the new player
   form, the settings) reads the same table, so a new language shows up everywhere at once.
 - Default when nothing is stored: the browser's languages in their order, the first one that is
   supported, else the first whose close language is; else English. A stored choice wins.
@@ -37,14 +38,20 @@
   rodič" / "a typing teacher or a parent"). "Dieťa", "žiak", "child" are not banned, only not
   the default; a sentence is
   rephrased ("tvoje", "hráč") where it reads better. Slovak never uses a gendered
-  second-person past tense. Code names and addresses
+  second-person past tense. Czech uses the same terms (**student** / **učitel**, "Pro učitele")
+  and the same rules: Ťapko keeps its name, the animal is the "postavička", and a gendered past
+  tense ("Napsal jsi") is rephrased in the present ("Máš napsáno"). Code names and addresses
   (`teacher`, `#/teacher/child/<id>`) stay, nobody reads them.
-- **Address**: Slovak texts say "ty" to everyone, children, parents and teachers alike, never the
+- **Address**: Slovak and Czech texts say "ty" (tykání) to everyone, children, parents and teachers alike, never the
   formal "vy"; plural forms only where someone speaks to several (the child with a friend, the
   author's letter to all readers on the about page).
 
 ## Why
-- The main audience is Slovak; English opens the project to everyone else.
+- The main audience is Slovak; Czech is the largest group of readers next to it, and a Czech
+  child can read Slovak but cannot type it on a Czech keyboard; English opens the project to
+  everyone else.
+- One table per language and per layout keeps a new language an addition, not a hunt through
+  the code.
 - Own languages let a family play in a language the project does not have yet, and test a
   translation in the real game before sending it; keeping them out of the child's language
   button keeps an unfinished translation from reaching a child by accident.

@@ -306,11 +306,12 @@ describe('Czech word list', () => {
   const dict = raw.map((w) => w.normalize('NFC'));
   const letters = (n: number) => new Set(lessonOrder('cz-qwertz').filter((k) => k.length === 1).slice(0, n));
 
-  it('holds lower-case words, each once, none blocked, all typable on both Czech layouts', () => {
+  it('holds lower-case words and capitalised names, each once, none blocked, all typable on both Czech layouts', () => {
     expect(dict.length).toBeGreaterThan(6000);
     expect(new Set(dict).size).toBe(dict.length);
+    expect(dict.filter((w) => w[0] !== w[0].toLowerCase()).length).toBeGreaterThan(60);
     for (const w of dict) {
-      expect(w, w).toBe(w.toLowerCase());
+      expect(w.slice(1), w).toBe(w.slice(1).toLowerCase());
       expect(isBlocked(w), w).toBe(false);
       expect(untypableWords([w], LAYOUTS['cz-qwertz']).concat(untypableWords([w], LAYOUTS['cz-qwerty'])), w).toEqual([]);
     }

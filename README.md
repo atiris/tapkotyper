@@ -6,7 +6,10 @@ meadow animals, fly a rocket through a meteor belt, bring the light back to the 
 and teach the baby dragons to fly. Later stories (the little robot Bolt, the fairy Melody) are
 being made. No explosions, no punishment, no ads, no accounts.
 
-*Pokojná príbehová hra pre deti na nácvik písania všetkými desiatimi. Po slovensky aj po anglicky.*
+*Pokojná príbehová hra pre deti na nácvik písania všetkými desiatimi. Po slovensky, po česky aj po anglicky.*
+
+**Languages:** Slovak, Czech and English, each with its own word list and keyboards (Slovak
+QWERTZ/QWERTY, Czech QWERTZ/QWERTY, US QWERTY).
 
 **Play:** https://tapkotyper.com/ · **Support:** [Ko-fi](#support)
 
@@ -23,7 +26,7 @@ being made. No explosions, no punishment, no ads, no accounts.
   `fj jf` to short phrases like `Ema ide.`
 - **Every key has its finger.** Each new key gets its own card (where it is, which finger),
   and after `F` and `J` a card shows the home row. The on-screen keyboard shows finger colors
-  and numbers, lights up the next key (and both steps of Slovak accent keys), and two hands
+  and numbers, lights up the next key (and both steps of Slovak and Czech accent keys), and two hands
   show which finger to use. The guide fades for keys the child already masters.
 - **Accuracy before speed.** Stars come from accuracy, 1 to 5, each further star for half the mistakes; speed is
   only a personal trend. Mistakes never cost anything: the letter wobbles, the right key glows,
@@ -61,6 +64,8 @@ being made. No explosions, no punishment, no ads, no accounts.
 - **Slovak keyboards done right:** QWERTZ and QWERTY variants, `ľ š č ť ž ý á í é` on the
   number row, `ú ä ô ň`, dead keys for `ó ĺ ŕ ď` and accented capitals, and a hint when
   the real keyboard looks different.
+- **Czech keyboards too:** QWERTZ and QWERTY, `ě š č ř ž ý á í é` on the number row, `ú ů`,
+  dead keys for `ď ť ň ó` and accented capitals, Czech words and Czech texts.
 
 ## The game
 

@@ -836,6 +836,10 @@
    "w": 348,
    "h": 512
   },
+  "obj-bike-wheel": {
+   "w": 512,
+   "h": 511
+  },
   "obj-bin": {
    "w": 512,
    "h": 507
@@ -901,8 +905,12 @@
    "h": 406
   },
   "obj-can": {
-   "w": 512,
-   "h": 399
+   "w": 354,
+   "h": 512
+  },
+  "obj-chain": {
+   "w": 114,
+   "h": 196
   },
   "obj-console": {
    "w": 321,
@@ -914,7 +922,7 @@
   },
   "obj-crate": {
    "w": 512,
-   "h": 314
+   "h": 389
   },
   "obj-crystal-amber-cracked": {
    "w": 343,
@@ -1110,15 +1118,15 @@
   },
   "obj-junk-pile-1": {
    "w": 512,
-   "h": 335
+   "h": 372
   },
   "obj-junk-pile-2": {
    "w": 512,
-   "h": 451
+   "h": 335
   },
   "obj-junk-pile-3": {
    "w": 512,
-   "h": 225
+   "h": 373
   },
   "obj-ladybug": {
    "w": 512,
@@ -1425,7 +1433,7 @@
    "h": 370
   },
   "obj-spring": {
-   "w": 304,
+   "w": 319,
    "h": 512
   },
   "obj-storm-cloud": {
@@ -1473,7 +1481,7 @@
    "h": 356
   },
   "obj-tire": {
-   "w": 475,
+   "w": 478,
    "h": 512
   },
   "obj-toaster-robot": {
@@ -2239,10 +2247,6 @@
   "ui-start-meadow-night-low": {
    "w": 692,
    "h": 294
-  },
-  "obj-chain": {
-   "w": 114,
-   "h": 196
   }
  },
  "accessories": [

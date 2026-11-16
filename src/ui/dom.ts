@@ -3,6 +3,7 @@ import { imageUrl } from '../gfx/assets';
 import { small } from './start-pictures';
 import { t } from '../i18n/i18n';
 import { focusDefault, panelHotkeys } from './hotkeys';
+import { isEscape } from '../input/shortcuts';
 
 type Attrs = Record<string, string | number | boolean | ((e: any) => void) | undefined | null>;
 export type Child = Node | string | number | null | undefined | false;
@@ -161,7 +162,7 @@ export function bigButton(art: HTMLElement, title: string, sub: string, onClick:
 /** Escape goes back, like the screen's Back button; a dialog over the screen closes first. Returns the cleanup. */
 export function onEscape(back: () => void): () => void {
   const onKey = (e: KeyboardEvent) => {
-    if (e.key !== 'Escape' || document.querySelector('.modal-back')) return;
+    if (!isEscape(e) || document.querySelector('.modal-back')) return;
     e.preventDefault();
     back();
   };
@@ -244,7 +245,7 @@ export function modal(content: HTMLElement, opts: { onClose?: () => void; cls?: 
     prev?.focus?.();
   };
   const onKey = (e: KeyboardEvent) => {
-    if (e.key === 'Escape' && opts.closable !== false) {
+    if (isEscape(e) && opts.closable !== false) {
       e.stopPropagation();
       e.preventDefault();
       close();

@@ -13,6 +13,7 @@ import { barTabLinks, tabBar } from '../ui/tabs';
 import { appInstalled, installApp, openApp, standalone } from '../ui/install';
 import { imageUrl } from '../gfx/assets';
 import { CLOCK_R, drawClock } from '../game/modes/kit/clock';
+import { isEscape } from '../input/shortcuts';
 
 const TABS = ['ui', 'typing', 'progress', 'settings', 'mentoring', 'about'] as const;
 export type HelpTab = (typeof TABS)[number];
@@ -243,7 +244,7 @@ function helpPage(cls: string, tab: HelpTab, onBack: () => void, onTab: (tab: He
 /** Escape goes back, like the Back button; a dialog over the help closes first. */
 function escapeBack(el: HTMLElement, onBack: () => void): () => void {
   return captureKeys(el, (e) => {
-    if (e.key !== 'Escape' || document.querySelector('.modal-back')) return;
+    if (!isEscape(e) || document.querySelector('.modal-back')) return;
     e.preventDefault();
     e.stopPropagation();
     onBack();

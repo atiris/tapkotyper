@@ -1748,7 +1748,7 @@
       "help": "Táto pomoc. Otvorí ju aj **F1**.",
       "update": "Červené tlačidlo úplne vpravo sa ukáže, keď je pripravená nová verzia hry. Kliknutím ju nainštaluješ.",
       "timer": "Hodiny v šatníku ukazujú, koľko času ti ostáva. Kým je času dosť, usmievajú sa, potom v nich je číslo, ktoré každých 10 sekúnd klesne o jedna. Keď blikajú, čas sa končí. Keď čas uplynie, je v nich zámka a ich tip povie, koľko treba docvičiť. Čas v šatníku získaš cvičením.",
-      "pause": "Pauza. Rovnako ju zapne aj **kláves Esc**. V pauze sa dá úroveň ukončiť. Keď už je niečo napísané, najprv sa opýta, lebo sa nezapočíta.",
+      "pause": "Pauza. Rovnako ju zapne aj **kláves Esc**, alebo **Delete**, keď Esc zatvára celú obrazovku. V pauze sa dá úroveň ukončiť. Keď už je niečo napísané, najprv sa opýta, lebo sa nezapočíta.",
       "ring": "Krúžok s číslom ukazuje, ktorá úroveň sveta je táto. Zelené kúsky sa plnia až po túto úroveň, prázdne ťa ešte čakajú. Pri poslednej, veľkej výzve je plný celý.",
       "progress": "Pásik ukazuje, koľko z úrovne už máš za sebou.",
       "accuracy": "Presnosť: koľko klávesov stláčaš správne. Pri 100 % je v krúžku fajka.",
@@ -1893,7 +1893,8 @@
       "Hráča vyberieš jeho číslom **1 až 9**.",
       "**F1** otvorí pomoc, **F2** ukáže alebo skryje klávesnicu, **F3** zapne alebo vypne čítanie nahlas.",
       "**F4** prepína zvuk: zvuky, tiché zvuky, len kde je to dôležité, bez zvukov. **F8** pustí inú pesničku.",
-      "**Esc** zatvorí okno, ktoré je navrchu. Inak úroveň zastaví alebo pustí ďalej a z ostatných obrazoviek ide späť."
+      "**Esc** zatvorí okno, ktoré je navrchu. Inak úroveň zastaví alebo pustí ďalej a z ostatných obrazoviek ide späť.",
+      "Na celej obrazovke vo Firefoxe a Safari zatvorí Esc celú obrazovku. Tam použi **Delete** (Del), urobí to isté. V ostatných prehliadačoch celú obrazovku zatvorí až podržaný Esc."
     ],
     "starsTitle": "Hviezdičky za úroveň",
     "stars": [

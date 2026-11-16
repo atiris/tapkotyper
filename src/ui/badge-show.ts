@@ -6,6 +6,7 @@ import type { BadgeTier } from '../game/rewards';
 import { t } from '../i18n/i18n';
 import { badge } from './badge';
 import { h } from './dom';
+import { isEscape } from '../input/shortcuts';
 
 const TIERS: BadgeTier[] = ['bronze', 'silver', 'gold'];
 /** Sparkles twinkling around the badge. */
@@ -54,7 +55,7 @@ export function badgeShow(chosen?: { world: number; tier: BadgeTier }): void {
   const onKey = (e: KeyboardEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.key === 'Escape') close();
+    if (isEscape(e)) close();
   };
   const timer = window.setTimeout(close, SHOW_S * 1000);
   window.addEventListener('keydown', onKey, true);

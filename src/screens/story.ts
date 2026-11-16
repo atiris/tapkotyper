@@ -8,6 +8,7 @@ import { t, tList } from '../i18n/i18n';
 import { nickname } from '../storage/store';
 import { cornerControls } from '../ui/chrome';
 import { button, closeButton, h } from '../ui/dom';
+import { isEscape } from '../input/shortcuts';
 
 interface SceneDef {
   world: string;
@@ -92,7 +93,7 @@ export function storyScreen(root: HTMLElement, params: StoryParams): () => void 
     h('div', { class: 'story-box' }, closeButton(finish, t('common.skip')), text, dots, h('div', { class: 'row' }, button(t('common.skip'), finish), nextBtn)));
   root.append(screen);
   const onKey = (e: KeyboardEvent) => {
-    if (e.key === 'Escape') { e.preventDefault(); finish(); }
+    if (isEscape(e)) { e.preventDefault(); finish(); }
     else if ((e.key === ' ' || e.key === 'Enter') && document.activeElement !== nextBtn) { e.preventDefault(); i++; show(); }
   };
   window.addEventListener('keydown', onKey);

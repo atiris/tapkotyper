@@ -5,6 +5,7 @@ import { tapkoElement } from '../gfx/tapko';
 import { t } from '../i18n/i18n';
 import { button, closeButton, h, modal } from '../ui/dom';
 import { cornerControls } from '../ui/chrome';
+import { isEscape } from '../input/shortcuts';
 
 /** The warm-up's exercises on the feet, three of them at random, 30 seconds each. */
 const EXERCISES = ['stand', 'march', 'squat', 'jump', 'twist', 'water'];
@@ -75,7 +76,7 @@ export function openBreak(onDone: () => void, due = false): void {
     show();
   };
   const onKey = (e: KeyboardEvent) => {
-    if (e.key !== 'Escape') return;
+    if (!isEscape(e)) return;
     e.preventDefault();
     e.stopPropagation();
     if (!locked) leave();

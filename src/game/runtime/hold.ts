@@ -8,6 +8,7 @@ import type { WordSource } from '../../words/words';
 import { captureKeys } from '../cards';
 import { HoldRun, type HoldRound } from '../modes/kit/hold';
 import type { LevelState } from './state';
+import { isEscape } from '../../input/shortcuts';
 
 /** A held key as its cap shows it (J, Ô). */
 export function holdLabel(layout: Layout, code: string): string {
@@ -114,7 +115,7 @@ export function checkRollover(host: HTMLElement, layout: Layout): Promise<number
       resolve(most >= 2 ? most : null);
     };
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' || (e.key === 'Enter' && !e.repeat)) {
+      if (isEscape(e) || (e.key === 'Enter' && !e.repeat)) {
         e.preventDefault();
         e.stopPropagation();
         return finish();

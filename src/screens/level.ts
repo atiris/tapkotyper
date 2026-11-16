@@ -42,6 +42,7 @@ import { heldText } from './world-keys';
 import { openStats } from './stats';
 import { handInDialog, startTask } from './task';
 import { openBreak } from './break';
+import { isEscape } from '../input/shortcuts';
 
 interface LevelParams {
   id: string;
@@ -189,11 +190,11 @@ function peekable(overlay: HTMLElement, card: HTMLElement, type?: () => void): v
   const stop = captureKeys(overlay, (e) => {
     if (document.querySelector('.modal-back, .level-help') || MODIFIERS.includes(e.key)) return;
     const peeking = overlay.classList.contains('peek');
-    if (e.key !== 'Escape' && !peeking) return;
+    if (!isEscape(e) && !peeking) return;
     e.preventDefault();
     e.stopPropagation();
     if (e.repeat) return;
-    if (e.key !== 'Escape' && type && e.key.length === 1) {
+    if (!isEscape(e) && type && e.key.length === 1) {
       stop();
       // After this key is done, or the new run would take it as its first.
       setTimeout(type);

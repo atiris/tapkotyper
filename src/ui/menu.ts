@@ -3,6 +3,7 @@ import { h } from './dom';
 import { paintRound, roundButton } from './hud';
 import { tip } from './tooltip';
 import { updateButton } from './update';
+import { isEscape } from '../input/shortcuts';
 
 /** One entry of a menu panel: a round picture and its label. */
 export interface MenuEntry {
@@ -28,7 +29,7 @@ export function menuPanel(btn: HTMLButtonElement, label: string, entries: MenuEn
   const items = () => [...panel.querySelectorAll<HTMLButtonElement>('.menu-item:not(:disabled)')];
   const onKey = (e: KeyboardEvent) => {
     if (!panel.isConnected) return close(false);
-    if (e.key === 'Escape') {
+    if (isEscape(e)) {
       e.preventDefault();
       e.stopPropagation();
       close();

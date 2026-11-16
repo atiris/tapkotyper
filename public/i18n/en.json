@@ -1748,7 +1748,7 @@
       "help": "This help. **F1** opens it too.",
       "update": "The red button at the far right shows up when a new version of the game is ready. Click it to install it.",
       "timer": "The clock in the wardrobe shows how much time you have left. While there is plenty, it smiles; then a number drops by one every 10 seconds. When it blinks, the time is nearly over. When the time is up, it shows a lock, and its tip says how much more practice you need. You earn wardrobe time by practising.",
-      "pause": "Pause. The **Esc key** pauses too. In the pause you can end the level; once something is typed it asks first, because the level will not count.",
+      "pause": "Pause. The **Esc key** pauses too, or **Delete** where Esc leaves full screen. In the pause you can end the level; once something is typed it asks first, because the level will not count.",
       "ring": "The ring with the number shows which level of the world this is. Green pieces fill up to this level, empty ones are still to come. At the last one, the big challenge, it is full.",
       "progress": "The bar shows how much of the level is behind you.",
       "accuracy": "Accuracy: how many keys you press right. At 100 % the ring shows a check.",
@@ -1893,7 +1893,8 @@
       "Pick your player by its number **1 to 9**.",
       "**F1** opens help, **F2** shows or hides the keyboard, **F3** turns reading aloud on or off.",
       "**F4** switches the sound: sounds, quiet sounds, only where it matters, no sounds. **F8** plays another song.",
-      "**Esc** closes the window on top. Otherwise it pauses or resumes a level, and goes back from other screens."
+      "**Esc** closes the window on top. Otherwise it pauses or resumes a level, and goes back from other screens.",
+      "In full screen, Firefox and Safari leave full screen on Esc. Use **Delete** (Del) there, it does the same. In other browsers only holding Esc leaves full screen."
     ],
     "starsTitle": "Stars for a level",
     "stars": [

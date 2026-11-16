@@ -4,6 +4,7 @@ import type { LayoutId, Settings } from '../storage/schema';
 import { closeButton, h, icon } from './dom';
 import { check, segmented, select } from './form';
 import { flashTip } from './tooltip';
+import { isEscape } from '../input/shortcuts';
 
 export type Fingering = Settings['fingering'];
 export type HandsMode = Settings['hands'];
@@ -107,7 +108,7 @@ export class KeyboardSettings {
     // The keys belong to the panel: they work its controls (their own default actions) and reach nothing else.
     const onKey = (e: KeyboardEvent) => {
       e.stopImmediatePropagation();
-      if (e.key === 'Escape') {
+      if (isEscape(e)) {
         e.preventDefault();
         this.close();
       }

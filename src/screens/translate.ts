@@ -15,6 +15,7 @@ import { button, confirmDialog, download, h, icon, modal } from '../ui/dom';
 import { tipMachine } from '../ui/tooltip';
 import { fillRing, roundButton, roundTextSvg } from '../ui/hud';
 import { loadWords } from '../words/words';
+import { isEscape } from '../input/shortcuts';
 
 /** Where approved translations are asked for: a new issue of the project. */
 const ISSUES = 'https://github.com/atiris/tapkotyper/issues/new';
@@ -591,7 +592,7 @@ function translatorPage(screen: HTMLElement): () => void {
       else keysList();
       return;
     }
-    if (e.key !== 'Escape' || pop.hidden) return;
+    if (!isEscape(e) || pop.hidden) return;
     e.preventDefault();
     e.stopImmediatePropagation();
     hidePop();

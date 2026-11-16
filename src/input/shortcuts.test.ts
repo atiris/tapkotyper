@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { handleShortcut, setDefaultShortcuts, setShortcuts, withKey } from './shortcuts';
+import { handleShortcut, isEscape, setDefaultShortcuts, setShortcuts, withKey } from './shortcuts';
 
 const press = (key: string, extra: Record<string, unknown> = {}) => {
   const e = { key, target: null, repeat: false, altKey: false, ctrlKey: false, metaKey: false, preventDefault: vi.fn(), stopPropagation: vi.fn(), ...extra };
@@ -7,6 +7,12 @@ const press = (key: string, extra: Record<string, unknown> = {}) => {
 };
 
 describe('shortcuts', () => {
+  it('Delete stands in for Escape, except in a text field, where it deletes', () => {
+    const key = (k: string, target: unknown = null) => isEscape({ key: k, target } as any);
+    expect([key('Escape'), key('Delete'), key('Backspace'), key('Delete', { tagName: 'INPUT', type: 'text' }), key('Delete', { tagName: 'BUTTON' })])
+      .toEqual([true, true, false, false, true]);
+  });
+
   it('runs the shown screen\'s handler over the default, and the default again after it', () => {
     const appHelp = vi.fn(), levelHelp = vi.fn(), sound = vi.fn();
     setDefaultShortcuts({ help: appHelp, sound });

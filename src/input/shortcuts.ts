@@ -12,6 +12,21 @@ export interface ShortcutHandlers {
   track?: () => void;
 }
 
+/**
+ * Escape, or Delete in its place: in full screen Firefox and Safari keep Esc to leave it (other
+ * browsers hand a short press to the app, `lockEscape`). Delete in a text field still deletes.
+ */
+export function isEscape(e: KeyboardEvent): boolean {
+  return e.key === 'Escape' || (e.key === 'Delete' && !inTextField(e.target));
+}
+
+/** In full screen a short Esc press goes to the app and only holding it leaves full screen, where the browser can (Chromium). */
+function lockEscape(): void {
+  if (!document.fullscreenElement) return;
+  const kb = (navigator as Navigator & { keyboard?: { lock?: (keys: string[]) => Promise<void> } }).keyboard;
+  void kb?.lock?.(['Escape']).catch(() => undefined);
+}
+
 export const SHORTCUT_KEYS = { F1: 'help', F2: 'guide', F3: 'read', F4: 'sound', F8: 'track' } as const;
 export type ShortcutKey = keyof typeof SHORTCUT_KEYS;
 
@@ -60,6 +75,7 @@ export function handleShortcut(e: KeyEventLike): boolean {
 /** Starts listening; call once. */
 export function installShortcuts(): void {
   window.addEventListener('keydown', handleShortcut, true);
+  document.addEventListener('fullscreenchange', lockEscape);
 }
 
 /** A button's label with its key, for the tooltip: "Keyboard (F2)". */

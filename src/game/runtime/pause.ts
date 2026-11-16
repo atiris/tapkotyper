@@ -5,6 +5,7 @@ import { paintRound } from '../../ui/hud';
 import { tip } from '../../ui/tooltip';
 import type { LevelDef } from '../levels';
 import type { LevelState } from './state';
+import { isEscape } from '../../input/shortcuts';
 
 /** Stretches done sitting, one of them shown on the pause card. */
 const STRETCHES = ['arms', 'fists', 'shoulders', 'neck', 'wrists', 'eyes'];
@@ -54,7 +55,7 @@ export class PauseCard {
   open(): void {
     this.paint();
     this.el = h('div', { class: 'card pause-card', role: 'dialog', 'aria-label': t('level.paused') });
-    if (!this.state.started) this.el.addEventListener('keydown', (e) => { if (e.key === 'Escape') this.host.resume(); });
+    if (!this.state.started) this.el.addEventListener('keydown', (e) => { if (isEscape(e)) this.host.resume(); });
     this.card();
     this.state.stageWrap.append(this.el);
     this.focus();

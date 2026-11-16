@@ -37,6 +37,7 @@ import { taskCard } from './task';
 import { hasClef, untoldFades } from '../game/rhythm-notes';
 import { untoldMagpie } from '../game/magpie';
 import { whistle } from '../ui/whistle';
+import { isEscape } from '../input/shortcuts';
 
 /** Ms Turtle's pictures, one after another with her tips. */
 const TEACHER_PICTURES = ['ui-teacher', 'ui-teacher-2', 'ui-teacher-3'];
@@ -61,7 +62,7 @@ function teacherPanel(p: Profile): HTMLElement | null {
   };
   const onKey = (e: KeyboardEvent) => {
     if (!panel.isConnected) return window.removeEventListener('keydown', onKey, true);
-    if (e.key !== 'Escape' || document.querySelector('.modal-back') || tipShown()) return;
+    if (!isEscape(e) || document.querySelector('.modal-back') || tipShown()) return;
     e.preventDefault();
     e.stopImmediatePropagation();
     done();
@@ -127,7 +128,7 @@ function placementPanel(p: Profile): HTMLElement | null {
   };
   const onKey = (e: KeyboardEvent) => {
     if (!panel.isConnected) return window.removeEventListener('keydown', onKey, true);
-    if (e.key !== 'Escape' || document.querySelector('.modal-back') || tipShown()) return;
+    if (!isEscape(e) || document.querySelector('.modal-back') || tipShown()) return;
     e.preventDefault();
     e.stopImmediatePropagation();
     close();

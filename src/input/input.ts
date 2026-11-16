@@ -1,3 +1,4 @@
+import { isEscape } from './shortcuts';
 export interface TypedChar {
   ch: string;
   code: string;
@@ -83,7 +84,7 @@ export class KeyInput {
     }
     if (e.isComposing) return;
     const key = e.key;
-    if (key === 'Escape') {
+    if (isEscape(e)) {
       e.preventDefault();
       this.handlers.onEscape?.();
       return;

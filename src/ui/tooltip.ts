@@ -1,3 +1,4 @@
+import { isEscape } from '../input/shortcuts';
 /**
  * The app's one tooltip: it replaces every native `title`. An element asks for it with a
  * `data-tip` text; hover or keyboard focus shows it after a short wait, and right after one
@@ -171,6 +172,6 @@ export function installTooltips(): void {
   const cancelPress = () => clearTimeout(press);
   document.addEventListener('pointerup', cancelPress, true);
   document.addEventListener('pointercancel', cancelPress, true);
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') m.close(); }, true);
+  document.addEventListener('keydown', (e) => { if (isEscape(e)) m.close(); }, true);
   window.addEventListener('scroll', () => m.close(), { capture: true, passive: true });
 }

@@ -15,6 +15,7 @@ import { tapkoElement } from '../gfx/tapko';
 import { imageUrl } from '../gfx/assets';
 import { HANDS_ARRIVE_S, HANDS_GLIDE_S } from '../ui/hands';
 import { SHIFT_L, SHIFT_R, SPACE } from '../learning/lessons';
+import { isEscape } from '../input/shortcuts';
 
 interface CardOpts {
   button?: string;
@@ -49,7 +50,7 @@ export function showCard(host: HTMLElement, content: HTMLElement, o: CardOpts = 
     };
     const onKey = (e: KeyboardEvent) => {
       if (e.repeat || ['Shift', 'Control', 'Alt', 'Meta', 'Tab'].includes(e.key)) return;
-      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
+      if (e.key === 'Enter' || e.key === ' ' || isEscape(e)) {
         e.preventDefault();
         e.stopPropagation();
         done();
@@ -87,7 +88,7 @@ export function rhythmSoundCard(host: HTMLElement): Promise<SoundLevel | null> {
       h('p', {}, t('rhythm.soundAsk')), h('div', { class: 'row center' }, ...buttons));
     const overlay = h('div', { class: 'overlay' }, card);
     const stop = captureKeys(overlay, (e) => {
-      if (e.key !== 'Escape') return;
+      if (!isEscape(e)) return;
       e.preventDefault();
       e.stopPropagation();
       done(null);
@@ -189,7 +190,7 @@ export function showPosture(host: HTMLElement, p: Profile, tip?: string, surpris
     const overlay = h('div', { class: 'overlay' }, h('div', { class: 'posture-cards' }, side, card));
     const timer = setTimeout(() => fingers.classList.remove('later'), FINGERS_AFTER_S * 1000);
     const onKey = (e: KeyboardEvent) => {
-      if (away || e.repeat || (e.key !== ' ' && e.key !== 'Enter' && e.key !== 'Escape')) return;
+      if (away || e.repeat || (e.key !== ' ' && e.key !== 'Enter' && !isEscape(e))) return;
       e.preventDefault();
       e.stopPropagation();
       audio.sfx('pop');
@@ -245,7 +246,7 @@ export function showJourneyPanel(host: HTMLElement, world: string, text: string,
     const overlay = h('div', { class: 'overlay' }, panel);
     // Esc goes on; the space bar and Enter press the focused button (on the panel the main one). A dialog over it keeps its keys.
     const onKey = (e: KeyboardEvent) => {
-      if (e.repeat || e.key !== 'Escape' || document.querySelector('.modal-back') || !panel.isConnected) return;
+      if (e.repeat || !isEscape(e) || document.querySelector('.modal-back') || !panel.isConnected) return;
       e.preventDefault();
       e.stopPropagation();
       audio.sfx('pop');
@@ -278,7 +279,7 @@ export function showKeysIntro(host: HTMLElement, p: Profile): Promise<void> {
         h('button', { class: 'space-key', type: 'button', 'aria-label': t('posture.spaceKey'), onClick: close }, t('posture.spaceKey'))));
     const overlay = h('div', { class: 'overlay' }, card);
     const onKey = (e: KeyboardEvent) => {
-      if (e.repeat || (e.key !== ' ' && e.key !== 'Enter' && e.key !== 'Escape')) return;
+      if (e.repeat || (e.key !== ' ' && e.key !== 'Enter' && !isEscape(e))) return;
       e.preventDefault();
       e.stopPropagation();
       audio.sfx('pop');
@@ -390,7 +391,7 @@ export function showNewKey(host: HTMLElement, key: string, layout: Layout, guide
       tapko.append(el);
     };
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (isEscape(e)) {
         e.preventDefault();
         e.stopPropagation();
         return done();
@@ -462,7 +463,7 @@ export function showControlKey(host: HTMLElement, id: ControlKey, lay: Layout, p
     let n = 0;
     const onKey = (e: KeyboardEvent) => {
       const own = e.key === ck.key;
-      if (e.key === 'Escape' && !own) {
+      if (isEscape(e) && !own) {
         e.preventDefault();
         e.stopPropagation();
         return done();
@@ -533,7 +534,7 @@ export function showHomeRow(host: HTMLElement, lay: Layout): Promise<void> {
       h('button', { class: 'space-key', type: 'button', 'aria-label': t('posture.spaceKey'), onClick: close }, t('posture.spaceKey')));
     const overlay = h('div', { class: 'overlay' }, card);
     const onKey = (e: KeyboardEvent) => {
-      if (e.repeat || (e.key !== ' ' && e.key !== 'Enter' && e.key !== 'Escape')) return;
+      if (e.repeat || (e.key !== ' ' && e.key !== 'Enter' && !isEscape(e))) return;
       e.preventDefault();
       e.stopPropagation();
       audio.sfx('pop');

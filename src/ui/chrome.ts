@@ -5,7 +5,7 @@ import { SOUND_LEVELS } from '../audio/levels';
 import { imageUrl } from '../gfx/assets';
 import { MAX_LEVEL_STARS, WORLDS, worldName } from '../game/levels';
 import { LANGS, LANGUAGES, language, languageName, t } from '../i18n/i18n';
-import { installShortcuts, setDefaultShortcuts, withKey } from '../input/shortcuts';
+import { installShortcuts, setDefaultShortcuts, isEscape, withKey } from '../input/shortcuts';
 import type { Lang, SoundLevel } from '../storage/schema';
 import { type Child, ICONS, h, icon } from './dom';
 import { paintRound, roundButton } from './hud';
@@ -242,7 +242,7 @@ function dropList(b: HTMLButtonElement, cls: string, label: string, choices: Dro
   const onKey = (e: KeyboardEvent) => {
     // The screen went away with the list in it.
     if (!list.isConnected) return close(false);
-    if (e.key === 'Escape') {
+    if (isEscape(e)) {
       e.preventDefault();
       e.stopPropagation();
       close();
@@ -299,8 +299,8 @@ export function cornerControls(...lead: Child[]): HTMLElement {
  */
 export function watchAutoFullscreen(): void {
   const ask = (e: Event) => {
-    // Escape is no gesture for fullscreen; wait for the next key.
-    if (!app.profile?.settings.autoFullscreen || (e instanceof KeyboardEvent && e.key === 'Escape')) return;
+    // Escape (or Delete in its place) closes things, no gesture for fullscreen; wait for the next key.
+    if (!app.profile?.settings.autoFullscreen || (e instanceof KeyboardEvent && isEscape(e))) return;
     // F11 and the fullscreen button switch it themselves: asking too would switch it right back.
     const own = e instanceof KeyboardEvent ? e.key === 'F11' : (e.target as Element | null)?.closest?.('.fullscreen-btn');
     window.removeEventListener('keydown', ask, true);

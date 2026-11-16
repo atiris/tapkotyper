@@ -24,6 +24,10 @@
   move between the choices (the map's levels, the players, the characters, the tabs). The
   get-ready card starts with the space bar or Enter, the results and the story scenes go on by
   both, and Escape goes back or pauses.
+- **Escape in full screen.** In full screen a short Esc still pauses and closes (only holding
+  it leaves full screen) where the browser allows it; Firefox and Safari keep Esc to leave full
+  screen, so Delete does everything Esc does (outside text fields, where it deletes) and help
+  says so. A child in full screen must be able to pause without losing it (owner, 2026-11-16).
 - **Picking a player by keyboard.** On "Who will type to me today?" each of the first nine players
   shows its number on a playfully tilted badge; the number keys 1-9 pick (by the key, so a
   Slovak keyboard's top row works without Shift). Hovering or focusing a card says so in its

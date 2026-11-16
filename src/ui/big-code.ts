@@ -1,6 +1,7 @@
 import { t } from '../i18n/i18n';
 import { button, h } from './dom';
 import { qr } from './link-box';
+import { isEscape } from '../input/shortcuts';
 
 /**
  * A QR code over the whole screen, readable by a camera across a desk: the child's name (none for
@@ -41,7 +42,7 @@ export function bigCode(link: string, name: string, caption: string, kind: 'exer
     window.removeEventListener('resize', fit);
   };
   const onKey = (e: KeyboardEvent) => {
-    if (e.key !== 'Escape') return;
+    if (!isEscape(e)) return;
     e.stopPropagation();
     e.preventDefault();
     close();

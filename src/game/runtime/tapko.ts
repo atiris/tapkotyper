@@ -63,11 +63,15 @@ export class StageTapko {
     if (this.moodTimer > 0 && (this.moodTimer -= dt) <= 0) this.show('idle');
   }
 
-  /** The DOM Tapko keeps his size in game units, so he grows and shrinks with the scene; his feet stand where the mode's ground is. */
-  size(scale: number, feet: number): void {
+  /**
+   * The DOM Tapko keeps his size in game units, so he grows and shrinks with the scene; his feet stand where the mode's ground is.
+   * With `bubbleEnd` (stage units) the bubble is never wider than up to it.
+   */
+  size(scale: number, feet: number, bubbleEnd: number | null): void {
     const px = Math.round(TAPKO_H * scale);
     if (px === this.px) return;
     this.px = px;
+    if (bubbleEnd !== null) this.bubble.style.maxWidth = `min(360px, 60vw, ${Math.round(bubbleEnd * scale)}px - 0.8rem)`;
     this.el.style.setProperty('--size', `${px}px`);
     this.el.style.left = `${Math.round((TAPKO_X - TAPKO_H / 2) * scale)}px`;
     this.el.style.bottom = `${Math.round((TAPKO_FEET - feet) * scale)}px`;

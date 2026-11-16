@@ -1097,27 +1097,27 @@
     "spellCareful": "Careful, the spell must be exact!",
     "spellHello": "Hi!",
     "gearsStart": [
-      "Your first task in the junkyard: **sort the gears**. They roll toward you along the path, each with a word above it. Type it and a magnet comes down on its chain, lifts the gear and drops it into the crate. If one gets away, that's fine, a few more will come."
+      "You have a new job at the **junkyard!** Gears, old tires, screws and whole piles of junk are waiting to be sorted. Use the magnet and start it by **typing the word above a gear**, so the gear lands in the right crate. Type carefully, **accuracy counts the most here.**"
     ],
     "gearsLonger": "A gear got away, two more will come.",
     "gearsDone": [
       "The crate is full of gears!"
     ],
     "tiresStart": [
-      "A **big pile of old tires** blocks the way on. Two tires with words wait next to it. Pick either one and type its word: the tire rolls off into the bin, the other one moves up and another one rolls down from the pile. No hurry, the tires will wait."
+      "The metal sorting magnet needs a short break now. The junkyard boss already has a new task for you. You have to **move the whole pile of old tires.** That's a lot of work! Luckily the tires won't run away: they wait in place until you correctly name the tire you want to throw into the bin."
     ],
     "tiresDone": [
       "The pile is gone, the way is clear!"
     ],
     "magnetStart": [
-      "A magnet hangs on a chain over a **pile of screws**. Each arrow has a word: type it and the magnet moves that way and pulls something out. Over the middle of the pile it pulls the most, near the edge less, and right at the edge nothing."
+      "The magnet is ready again over a big pile of rusty screws. It looks for parts that could still be recycled and used in new machines. The **closer to the middle** of the pile it is, the easier it **pulls out** something useful. With up and down it stays in place. But watch out, **the controls sometimes break and the magnet moves by itself.** Always follow the arrows by the words and **move the magnet as close to the middle as you can.**"
     ],
     "magnetBack": "Pick the way that brings it back to the middle. It is harder, but it pulls out more.",
     "magnetDone": [
       "The magnet pulled out the last big gear too!"
     ],
     "junkpileStart": [
-      "Here is a **big pile of junk**, and something in it beeps sadly. Words run along the ribbon at the top: type them, spaces and periods too. For each word one thing pops off the pile and rolls into a bin. At a slip the word starts again and one more word is added, so **type exactly**."
+      "In this part of the junkyard there is a suspiciously **big pile of junk.** It sounds as if a faint beeping came from under it. You can't see what is hiding under it until you sort the whole pile. This time your typing runs a conveyor belt, and the things are sorted where they belong. Once the pile is cleared, maybe you'll find out what is beeping so softly. Type **slowly and exactly,** because at a slip the belt jams, gives you the word back and adds one more."
     ],
     "junkpileSlip": "Oops! One more word was added.",
     "junkpileCareful": "Careful, type exactly!",
@@ -1125,7 +1125,7 @@
       "A little robot lies under the pile! He beeped, but he does not move."
     ],
     "codeStart": [
-      "The little robot does not react. His **old screen** shows a program that will wake him: **copy it** onto the empty screen. The lines break differently there, so keep track of where you are in the program. A wrong letter is not written, but a word is added to the program."
+      "The **little robot** found under the pile beeps, but **does not react.** Its maker's label shows **the program that switches it on.** Copy it correctly with the keyboard onto the empty screen. Go carefully, **the robot must be programmed exactly!** A wrong letter is not written, but at each slip a word is added to the program to fix the wrong command."
     ],
     "codeSlip": "Oops! A word was added to the program.",
     "codeDone": [

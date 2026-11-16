@@ -1130,7 +1130,7 @@ export class LevelRuntime {
   }
 
   private render(): void {
-    this.tapko.size(this.stage.scale, this.mode.tapkoFeet);
+    this.tapko.size(this.stage.scale, this.mode.tapkoFeet, this.mode.bubbleEnd);
     // Read every frame, also before play, so the level's `covered` class follows the cards.
     const covered = this.covered;
     this.watchFrames();

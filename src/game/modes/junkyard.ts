@@ -57,7 +57,7 @@ const MAGNET_GAP = 14;
 const SHAKE_S = 0.45;
 /** The gears roll on the line in front of the crate (and of him). */
 const LOWER = FEET + 30;
-/** Seconds of the magnet's way down, its shake as the gear jumps up to it, the carry over the crate, the drop in and its way up. */
+/** Seconds of the magnet's way down, the gear's jump up to it, the carry over the crate, the drop in and its way up. */
 const LIFT_S = { down: 0.4, grab: 0.35, carry: 0.8, drop: 0.3, up: 0.5 };
 /** The carried gear goes over the crate this high above its top. */
 const OVER_CRATE = 50;
@@ -96,7 +96,7 @@ const SINK_TO = FEET + 6 - CRATE_H * 0.7;
 
 /**
  * Junkyard 1, sorting the gears (a word stream): gears of four kinds roll along the path toward a
- * wooden crate. Typed, a magnet comes down on its chain over the gear, shakes, lifts it over the
+ * wooden crate. Typed, a magnet comes down on its chain over the gear, lifts it over the
  * crate and drops it in, and the crate shows how many gears it holds; missed, it rolls on in front of
  * the crate, past him and away, and two more gears come (`Detour`, as the wind's push).
  */
@@ -253,8 +253,7 @@ export class GearsMode extends ApproachMode {
     for (const tg of list) {
       const l = lift(tg);
       if (!l) continue;
-      const dx = l.phase === 'grab' && !this.L.reduceMotion ? Math.sin(l.k * 40) * 5 : 0;
-      drawChainMagnet(g, l.x + dx, l.y, MAGNET_H);
+      drawChainMagnet(g, l.x, l.y, MAGNET_H);
     }
     for (const tg of list) {
       const m = tg.data as Mover;
@@ -269,7 +268,7 @@ export class GearsMode extends ApproachMode {
 
 /** The tire pile: its pictures by stage (the biggest first) and their height. */
 const PILES = ['obj-tire-pile-1', 'obj-tire-pile-2', 'obj-tire-pile-3'];
-const PILE_H = [175, 150, 120];
+const PILE_H = [193, 173, 144];
 /**
  * Five places in a row over the whole stage: him, the pile, two tires and the bin, the same gap
  * apart. The pile stands at least this far right of him, the bin this far from the stage's right edge.
@@ -281,12 +280,18 @@ const TIRE = 'obj-tire';
 const TIRE_H = 72;
 /** The pile fades away at its end in this many seconds. */
 const PILE_FADE_S = 0.8;
-/** Seconds of a tire's roll down from the pile or on to the next place, and its roll to the bin per stage width. */
-const ROLL_DOWN_S = 0.8;
-const TO_BIN_S = 1.4;
-/** The share of the way to the bin where the tire next to it hops over its rim; the one further hops over that tire. */
-const BIN_HOP = 0.6;
-const HOP_OVER = BIN_H * 1.15;
+/**
+ * Each place has its own lane: the left one this much further back (higher), so a tire rolls past
+ * the other one behind or in front of it and nothing moves aside.
+ */
+const BACK_LANE = 26;
+/** A new tire's roll off the pile: its seconds, the share of them down the pile's side, and its last little bounces. */
+const ROLL_DOWN_S = 1.3;
+const SLOPE = 0.4;
+const BOUNCE = 16;
+/** A typed tire rolls to the bin at this speed (stage units a second) and hops in from this far left of its middle. */
+const ROLL_SPEED = 320;
+const HOP_DX = 120;
 /** The words over the tires float this high above the path, at the labels' usual size; on a narrow stage the left one a row higher. */
 const WORD_UP = 120;
 const WORD_SIZE = 40;
@@ -312,29 +317,32 @@ function pileFallback(stage: number) {
   };
 }
 
-/** A tire in the scene (the screen shows it at x - scroll): rolling to its place, waiting with its word, or rolling to the bin. */
+/** A tire in the scene (the screen shows it at x - scroll): rolling off the pile to its place, waiting with its word, or rolling into the bin. */
 interface Tire {
   x: number;
   y: number;
   rot: number;
   tg: Target | null;
   state: 'roll' | 'wait' | 'bin';
-  k: number;
+  /** Seconds in its state. */
+  t: number;
   fromX: number;
   fromY: number;
+  /** Where a tire off the pile reaches the ground, and where it ends. */
+  footX: number;
   toX: number;
-  /** Its place: 0 next to the pile, 1 next to the bin. */
+  /** Its place (0 next to the pile, 1 next to the bin) and the height of the place's lane. */
   slot: number;
-  /** On its way to the bin it hops over the tire next to the bin. */
-  over: boolean;
+  laneY: number;
 }
 
 /**
  * Junkyard 2, the pile of tires (waiting words, a calm step): in a row stand him, a big pile of old
- * tires, two tires with a word each, and a bin. A typed tire rolls into the bin (the one further hops
- * over the other), the tire left of a free place rolls on into it, and a new one rolls down from the
- * pile next to it: the tires always go right. Nothing comes at the child, nothing is missed. The pile
- * shrinks with the level's share; at its end it fades away and he walks on.
+ * tires, two tires with a word each, and a bin. Each place has its own lane, the left one a little
+ * further back. A typed tire rolls along its lane into the bin, behind or in front of the other one,
+ * which stays where it is, and a new one rolls down the pile's side into the free place. Nothing
+ * comes at the child, nothing is missed. The pile shrinks with the level's share; at its end it
+ * fades away and he walks on.
  */
 export class TiresMode extends HeroMode {
   readonly world = 'junkyard';
@@ -370,8 +378,9 @@ export class TiresMode extends HeroMode {
     return this.pileX + ((this.binX - this.pileX) * (slot + 1)) / 3;
   }
 
-  private get restY(): number {
-    return FEET + 6 - TIRE_H / 2;
+  /** A tire's middle on its place's lane. */
+  private laneY(slot: number): number {
+    return FEET + 6 - TIRE_H / 2 - (slot === 0 ? BACK_LANE : 0);
   }
 
   start(): void {
@@ -381,24 +390,15 @@ export class TiresMode extends HeroMode {
     this.rollDown(1, true);
   }
 
-  /** A new tire rolls down from the pile's top to the free place `slot` (at the start it is there already). */
+  /** A new tire rolls down the pile's right side to the free place `slot` (at the start it is there already). */
   private rollDown(slot: number, there = false): void {
     if (this.spawned >= this.L.count || this.endT !== null) return;
     this.spawned++;
-    const toX = this.scroll + this.slotX(slot), y = this.restY;
-    const fromX = this.scroll + this.pileX, fromY = FEET - PILE_H[this.stage] * 0.8;
+    const h = PILE_H[this.stage], toX = this.scroll + this.slotX(slot), laneY = this.laneY(slot);
+    const fromX = this.scroll + this.pileX + h * 0.1, fromY = FEET - h * 0.8;
+    const footX = Math.min(this.scroll + this.pileX + h * 0.5, toX);
     const tg = this.L.core.add(this.L.word(6, 1), {}, there);
-    this.tires.push({ x: there ? toX : fromX, y: there ? y : fromY, rot: 0, tg, state: there ? 'wait' : 'roll', k: there ? 1 : 0, fromX, fromY, toX, slot, over: false });
-  }
-
-  /** A tire rolls on from where it is to the place `slot`; its word stays as it was. */
-  private rollTo(r: Tire, slot: number): void {
-    r.state = 'roll';
-    r.k = 0;
-    r.fromX = r.x;
-    r.fromY = r.y;
-    r.toX = this.scroll + this.slotX(slot);
-    r.slot = slot;
+    this.tires.push({ x: there ? toX : fromX, y: there ? laneY : fromY, rot: 0, tg, state: there ? 'wait' : 'roll', t: 0, fromX, fromY, footX, toX, slot, laneY });
   }
 
   onDone(tg: Target): void {
@@ -406,18 +406,14 @@ export class TiresMode extends HeroMode {
     if (!tire) return;
     this.done++;
     this.happy();
-    const next = this.tires.find((r) => r !== tire && r.state !== 'bin');
     tire.tg = null;
     tire.state = 'bin';
-    tire.k = 0;
+    tire.t = 0;
     tire.fromX = tire.x;
-    tire.fromY = tire.y;
     tire.toX = this.scroll + this.binX;
-    tire.over = tire.slot === 0 && next?.slot === 1;
     this.L.core.prune();
     if (this.done >= this.L.count) return this.end();
-    if (tire.slot === 1 && next) this.rollTo(next, 1);
-    this.rollDown(tire.slot === 1 && !next ? 1 : 0);
+    this.rollDown(tire.slot);
   }
 
   /** The last tire is in the bin: the pile fades away, the way is free, the bands glide and he walks a few steps on. */
@@ -452,32 +448,64 @@ export class TiresMode extends HeroMode {
     }
     if (this.stageK < 1) this.stageK = Math.min(1, this.stageK + dt / 0.5);
     for (const r of this.tires) this.moveTire(r, dt);
-    this.tires = this.tires.filter((r) => !(r.state === 'bin' && r.k >= 1));
+    this.tires = this.tires.filter((r) => !(r.state === 'bin' && r.t >= this.binTime(r)));
+  }
+
+  /** Where a tire into the bin starts its hop over the rim (at once when it waits closer). */
+  private hopFrom(r: Tire): number {
+    return Math.max(r.fromX, r.toX - HOP_DX);
+  }
+
+  /** Seconds of a typed tire's roll along its lane and of its hop into the bin. */
+  private rollTime(r: Tire): number {
+    return this.L.reduceMotion ? 0 : (this.hopFrom(r) - r.fromX) / ROLL_SPEED;
+  }
+
+  private hopTime(r: Tire): number {
+    return this.L.reduceMotion ? 0.01 : Math.max(0.3, (r.toX - this.hopFrom(r)) / ROLL_SPEED);
+  }
+
+  private binTime(r: Tire): number {
+    return this.rollTime(r) + this.hopTime(r);
   }
 
   private moveTire(r: Tire, dt: number): void {
-    const restY = this.restY, x0 = r.x;
+    const x0 = r.x;
+    r.t += dt;
     if (r.state === 'roll') {
-      r.k = Math.min(1, r.k + dt / (this.L.reduceMotion ? 0.01 : ROLL_DOWN_S));
-      r.x = r.fromX + (r.toX - r.fromX) * ease.outCubic(r.k);
-      r.y = r.fromY + (restY - r.fromY) * ease.inOutQuad(r.k);
-      if (r.k >= 1) {
+      // Faster and faster down the pile's side, then on along its lane with a few small bounces, slowing to its place.
+      const k = Math.min(1, r.t / (this.L.reduceMotion ? 0.01 : ROLL_DOWN_S));
+      if (k < SLOPE) {
+        const u = (k / SLOPE) ** 2;
+        r.x = r.fromX + (r.footX - r.fromX) * u;
+        r.y = r.fromY + (r.laneY - r.fromY) * u;
+      } else {
+        const v = (k - SLOPE) / (1 - SLOPE);
+        r.x = r.footX + (r.toX - r.footX) * ease.outQuad(v);
+        r.y = r.laneY - Math.abs(Math.sin(v * Math.PI * 2)) * BOUNCE * (1 - v);
+      }
+      if (k >= 1) {
         r.state = 'wait';
         if (r.tg) r.tg.selectable = true;
       }
     } else if (r.state === 'bin') {
-      const time = this.L.reduceMotion ? 0.01 : (TO_BIN_S * Math.abs(r.toX - r.fromX)) / this.L.vw + 0.4;
-      r.k = Math.min(1, r.k + dt / time);
-      const inY = FEET - BIN_H * 0.4;
-      r.x = r.fromX + (r.toX - r.fromX) * ease.inOutQuad(r.k);
-      if (r.over) r.y = r.fromY + (inY - r.fromY) * r.k - Math.sin(r.k * Math.PI) * HOP_OVER;
-      else {
-        // It rolls along the path, then hops over the bin's rim and drops in behind its front.
-        const u = Math.max(0, (r.k - BIN_HOP) / (1 - BIN_HOP));
-        r.y = r.fromY + (inY - r.fromY) * u - Math.sin(u * Math.PI) * BIN_H * 0.9;
+      // It gathers speed along its lane, then hops over the bin's rim and drops in behind its front.
+      const roll = this.rollTime(r), from = this.hopFrom(r), inY = FEET - BIN_H * 0.4;
+      if (r.t < roll) {
+        const u = r.t / roll;
+        r.x = r.fromX + (from - r.fromX) * u * u * (2 - u);
+      } else {
+        const w = Math.min(1, (r.t - roll) / this.hopTime(r));
+        r.x = from + (r.toX - from) * w;
+        r.y = r.laneY + (inY - r.laneY) * w - Math.sin(w * Math.PI) * BIN_H * 0.9;
       }
     }
     r.rot += (r.x - x0) / (TIRE_H / 2);
+  }
+
+  /** A tire into the bin is over its rim: from now on it is behind the bin's front. */
+  private inBin(r: Tire): boolean {
+    return r.state === 'bin' && r.t >= this.rollTime(r);
   }
 
   private drawPile(g: G, stage: number, alpha: number): void {
@@ -493,10 +521,11 @@ export class TiresMode extends HeroMode {
     // Before the stage changed, the old pile fades into the new one; at the end the last one fades away.
     if (this.oldStage >= 0 && this.stageK < 1) this.drawPile(g, this.oldStage, 1 - this.stageK);
     this.drawPile(g, this.stage, (this.oldStage >= 0 ? this.stageK : 1) * (1 - this.pileFade));
-    // The tires going into the bin are behind its front.
-    for (const r of this.tires) if (r.state === 'bin') drawSprite(g, TIRE, r.x - s, r.y, TIRE_H, { rot: r.rot }, tireFallback);
+    // The tires hopping into the bin are behind its front; the others by their lanes, the back one first.
+    const tire = (r: Tire) => drawSprite(g, TIRE, r.x - s, r.y, TIRE_H, { rot: r.rot }, tireFallback);
+    for (const r of this.tires) if (this.inBin(r)) tire(r);
     drawSprite(g, BIN, this.binX - s, FEET + 10, BIN_H, { ay: 1 }, binFallback);
-    for (const r of this.tires) if (r.state !== 'bin') drawSprite(g, TIRE, r.x - s, r.y, TIRE_H, { rot: r.rot }, tireFallback);
+    for (const r of this.tires.filter((t) => !this.inBin(t)).sort((p, q) => p.laneY - q.laneY)) tire(r);
     this.drawHero(g);
     const close = this.slotX(1) - this.slotX(0) < WORDS_CLOSE;
     for (const r of this.tires) if (r.tg?.selectable) this.L.label(g, r.tg, r.x - s, FEET - WORD_UP - (close && r.slot === 0 ? WORD_ROW : 0), WORD_SIZE);

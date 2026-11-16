@@ -1097,27 +1097,27 @@
     "spellCareful": "Pozor, kúzlo musí byť presné!",
     "spellHello": "Ahoj!",
     "gearsStart": [
-      "Prvá úloha na šrotisku: **roztrieď kolieska**. Kotúľajú sa k tebe po chodníku a nad každým je slovo. Keď ho napíšeš, zhora sa spustí magnet na retiazke, koliesko zdvihne a pustí ho do debny. Ak ti nejaké ujde, nič sa nedeje, len pribudnú ďalšie."
+      "Máš novú prácu na **šrotisku!** Čakajú ťa kolieska, staré pneumatiky, skrutky a celé kopy haraburdia, ktoré je potrebné roztriediť. Použi magnet a aktivuj ho **napísaním slova nad kolieskom**, aby koliesko skončilo v správnej debne. Píš opatrne, **presnosť sa tu cení najviac.**"
     ],
     "gearsLonger": "Koliesko ušlo, pribudnú dve ďalšie.",
     "gearsDone": [
       "Debna je plná koliesok!"
     ],
     "tiresStart": [
-      "Cestu ďalej zatarasila **veľká kopa starých pneumatík**. Vedľa nej čakajú dve pneumatiky so slovami. Vyber si ktorúkoľvek a napíš jej slovo: pneumatika sa odkotúľa do koša, druhá sa posunie k nemu a z kopy sa skotúľa ďalšia. Nikam sa neponáhľaj, pneumatiky počkajú."
+      "Magnet na triedenie kovov teraz potrebuje malú prestávku. Vedúci skládky má pre teba už novú úlohu. Musíš **presunúť celú kopu starých pneumatík.** Je to poriadny kus roboty! Našťastie pneumatiky nikam neutečú, čakajú na mieste, kým správne neuvedieš, ktorú pneumatiku chceš hodiť do koša."
     ],
     "tiresDone": [
       "Kopa je preč, cesta je voľná!"
     ],
     "magnetStart": [
-      "Nad **kopou skrutiek** visí magnet na retiazke. Pri každej šípke je slovo: napíš ho a magnet sa pohne tým smerom a niečo vytiahne. Nad stredom kopy vytiahne najviac, pri kraji menej a úplne na kraji nič."
+      "Magnet je znova pripravený nad veľkou kopou hrdzavých skrutiek. Hľadá v nej súčiastky, ktoré by sa ešte dali zrecyklovať a použiť v nových strojoch. Čím je **bližšie k stredu** kopy, tým ľahšie z nej **vytiahne** niečo užitočné. Pri smeroch hore a dole zostáva na mieste. Pozor však, **ovládanie sa niekedy pokazí a magnet sa posunie sám.** Vždy sa riaď šípkami, ktoré sú pri jednotlivých slovách, a **posuň magnet čo najviac do stredu.**"
     ],
     "magnetBack": "Vyber smer, ktorý ho vráti k stredu. Je ťažší, ale vytiahne viac.",
     "magnetDone": [
       "Magnet vytiahol aj posledné veľké koliesko!"
     ],
     "junkpileStart": [
-      "Tu je **veľká kopa haraburdia** a niečo v nej smutne pípa. Hore beží pás so slovami: píš ich, aj medzery a bodky. Za každé slovo vyskočí z kopy jedna vec a skotúľa sa do koša. Pri chybe začne slovo odznova a pribudne jedno slovo navyše, tak **píš presne**."
+      "V tejto časti šrotiska je nejaká podozrivo **veľká kopa haraburdia.** Akoby sa spod nej ozývalo slabučké pípanie. Čo presne sa pod ňou skrýva, sa však nedá pozrieť, kým ju celú neroztriediš. Tentoraz písaním spúšťaš bežiaci pás a predmety sa pri tom správne triedia, kam patria. Po vyčistení kopy možno zistíš, čo tam tak jemne pípa. Píš **pomaly a presne,** pretože pri chybe sa pás zasekne, vráti ti chybné slovo a ešte jedno ďalšie pridá."
     ],
     "junkpileSlip": "Chybička! Pribudlo jedno slovo.",
     "junkpileCareful": "Pozor, píš presne!",
@@ -1125,7 +1125,7 @@
       "Pod kopou leží malý robot! Pípol, ale nehýbe sa."
     ],
     "codeStart": [
-      "Malý robot nereaguje. Na jeho **starej obrazovke** je program, ktorý ho zobudí: **prepíš ho** na prázdnu obrazovku. Riadky sa tam lámu inak, tak si dávaj pozor, kde v programe práve si. Chybné písmeno sa nenapíše, ale do programu pribudne slovo."
+      "**Malý robot**, ktorý sa našiel pod kopou, pípa, ale **nereaguje.** Na výrobnom štítku má však poznačený **program, ktorý ho aktivuje.** Musíš ho správne prepísať pomocou klávesnice na prázdnu obrazovku. Postupuj opatrne, **robot musí byť naprogramovaný presne!** Chybné písmeno sa nenapíše, ale do programu vždy pri chybe pribudne slovo, ktoré chybný príkaz opraví."
     ],
     "codeSlip": "Chybička! Do programu pribudlo slovo.",
     "codeDone": [

@@ -1149,15 +1149,36 @@ describe('the junkyard', () => {
     expect([0, 0.32, 1 / 3, 0.5, 2 / 3, 1].map(pileStage)).toEqual([0, 0, 1, 1, 2, 2]);
   });
 
-  it("the magnet's plates: easy sideways at the centre, the way out tiny and the way back hard off it, no way out at the edge", async () => {
+  it("the magnet's plates: easy sideways at the centre, the way out easy and the way back two words off it, no way out at the edge", async () => {
     const { platesAt, moved, pullAt } = await import('./junkyard-magnet');
-    expect(platesAt(0)).toEqual({ left: 'easy', right: 'easy', up: 'twoLong', down: 'twoLong' });
-    expect(platesAt(-1)).toEqual({ left: 'tiny', right: 'extreme', up: 'normal', down: 'normal' });
-    expect(platesAt(1)).toEqual({ right: 'tiny', left: 'extreme', up: 'normal', down: 'normal' });
-    expect(platesAt(-2)).toEqual({ right: 'twoLong', up: 'normal', down: 'normal' });
-    expect(platesAt(2)).toEqual({ left: 'twoLong', up: 'normal', down: 'normal' });
+    expect(platesAt(0)).toEqual({ left: 'easy', right: 'easy', up: 'two', down: 'two' });
+    expect(platesAt(-1)).toEqual({ left: 'easy', right: 'two', up: 'normal', down: 'normal' });
+    expect(platesAt(1)).toEqual({ right: 'easy', left: 'two', up: 'normal', down: 'normal' });
+    expect(platesAt(-2)).toEqual({ right: 'two', up: 'normal', down: 'normal' });
+    expect(platesAt(2)).toEqual({ left: 'two', up: 'normal', down: 'normal' });
     expect([moved(0, 'left'), moved(-1, 'left'), moved(1, 'up'), moved(2, 'down'), moved(-2, 'right')]).toEqual([-1, -2, 1, 2, -1]);
     expect([-2, -1, 0, 1, 2].map(pullAt)).toEqual([null, 'small', 'big', 'small', null]);
+  });
+
+  it('the magnet drifts away from the centre on its own after each quarter of the level, three times', async () => {
+    const { driftDue, driftPlaces } = await import('./junkyard-magnet');
+    expect([2, 3].map((d) => driftDue(d, 12, 0))).toEqual([false, true]);
+    expect([5, 6, 9].map((d) => driftDue(d, 12, [5, 6, 9].indexOf(d) === 2 ? 2 : 1))).toEqual([false, true, true]);
+    expect([driftDue(11, 12, 3), driftDue(12, 12, 2)]).toEqual([false, false]);
+    expect([driftPlaces(0), driftPlaces(-1), driftPlaces(1), driftPlaces(2)]).toEqual([[-2, -1, 1, 2], [-2, 2], [-2, 2], [-2]]);
+    // Played to its end, the magnet drifted off three times.
+    const L = levelRuntime(levelById('w6-3')!);
+    const m = new MagnetMode(L);
+    mode = m;
+    m.start();
+    for (let i = 0; i < 200 && m.progress() < 1; i++) {
+      const tg = L.core.active.find((o) => o.selectable)!;
+      for (const ch of tg.word) {
+        const res = L.core.type(ch);
+        if (res.kind === 'done') m.onDone(res.target);
+      }
+    }
+    expect([m.progress(), (m as any).drifts]).toEqual([1, 3]);
   });
 
   it('the plates mix at two thirds and once more two words before the end, never on their own side or where they stood', async () => {

@@ -18,16 +18,29 @@ const DIRS: Dir[] = ['left', 'right', 'up', 'down'];
 export const EDGE = 2;
 
 /**
- * The plates around the magnet at `place` and how hard each one's word is: at the centre the
- * sideways ones are easy and up and down (which keep it there) hard; one step off the way out is
- * tiny and the way back super hard; two steps off only the way back (hard) and up and down.
+ * The plates around the magnet at `place` and how hard each one's word is, never far apart: at the
+ * centre the sideways ones are easy and up and down (which keep it there) two words; one step off the
+ * way out is easy and the way back two words; two steps off only the way back (two words) and up and down.
  */
 export function platesAt(place: number): Partial<Record<Dir, Ask>> {
   const off = Math.abs(place);
-  if (off === 0) return { left: 'easy', right: 'easy', up: 'twoLong', down: 'twoLong' };
+  if (off === 0) return { left: 'easy', right: 'easy', up: 'two', down: 'two' };
   const back: Dir = place < 0 ? 'right' : 'left', away: Dir = place < 0 ? 'left' : 'right';
-  if (off === 1) return { [away]: 'tiny', [back]: 'extreme', up: 'normal', down: 'normal' };
-  return { [back]: 'twoLong', up: 'normal', down: 'normal' };
+  if (off === 1) return { [away]: 'easy', [back]: 'two', up: 'normal', down: 'normal' };
+  return { [back]: 'two', up: 'normal', down: 'normal' };
+}
+
+/** The broken controls move the magnet away by themselves after each quarter of the level (three times). */
+export const DRIFTS = 3;
+export function driftDue(done: number, count: number, drifts: number): boolean {
+  return drifts < DRIFTS && done < count && done >= Math.ceil((count * (drifts + 1)) / (DRIFTS + 1));
+}
+
+/** The places a drift may take the magnet to: further from the centre, or from the edge over to the other edge. */
+export function driftPlaces(place: number): number[] {
+  const off = Math.abs(place);
+  if (off >= EDGE) return [-place];
+  return [-2, -1, 1, 2].filter((p) => Math.abs(p) > off);
 }
 
 /** The magnet's place after typing `dir` at `place` (up and down keep it). */
@@ -86,8 +99,9 @@ const PILE_EDGE = 330;
 const MAGNET_Y = 240;
 const MAGNET_H = 100;
 const NUDGE = 50;
-/** Seconds of a step sideways and of a lift or dip and back. */
+/** Seconds of a step sideways (a drift takes a little longer for each step) and of a lift or dip and back. */
 const MOVE_S = 0.6;
+const DRIFT_STEP_S = 0.35;
 const NUDGE_S = 0.7;
 /** The plates: their words sit this far from the magnet's middle, with a small arrow sign between. */
 const SIDE_GAP = 80;
@@ -193,7 +207,8 @@ function boltFallback(g: G, w: number, h: number): void {
  * a pile of screws and gears, on one of five places. Arrow plates around it carry words; a typed
  * plate moves it a step left or right, or lifts it up or dips it down and back. After each move it
  * pulls from the pile: a big piece over the centre, a small screw one step off, nothing at the edge.
- * Two steps off, the level's clock stands still until the magnet comes back. At two thirds of the
+ * Two steps off, the level's clock stands still until the magnet comes back. After each quarter of
+ * the level the broken controls glide it away from the centre on their own. At two thirds of the
  * level and once more before its end the plates swirl round the magnet to mixed places, none on its
  * own side, so the child reads the arrow, not the side.
  */
@@ -207,6 +222,7 @@ export class MagnetMode extends HeroMode {
   private mixedAt: number[] = [];
   private mixFrom: Places = OWN_PLACES;
   private mixK: number | null = null;
+  private drifts = 0;
   /** The magnet's offset now (stage units): sideways from its place's spot while it steps, up or down while it nudges. */
   private mx = 0;
   private my = 0;
@@ -290,32 +306,45 @@ export class MagnetMode extends HeroMode {
     this.move(plate.dir, () => {
       this.pull();
       if (this.done >= this.L.count) return this.end();
-      if (Math.abs(this.place) >= EDGE && hintAt(++this.edgeVisits)) this.L.say(t('story.magnetBack'), 4);
-      this.showPlates();
+      const next = () => {
+        if (Math.abs(this.place) >= EDGE && hintAt(++this.edgeVisits)) this.L.say(t('story.magnetBack'), 4);
+        this.showPlates();
+      };
+      if (driftDue(this.done, this.L.count, this.drifts)) this.driftAway(next);
+      else next();
+    });
+  }
+
+  /** The controls break for a moment: the magnet hums and glides away from the centre on its own. */
+  private driftAway(then: () => void): void {
+    this.drifts++;
+    this.L.sfx('bzzt');
+    const to = this.L.rng.pick(driftPlaces(this.place));
+    this.slide(to, MOVE_S + DRIFT_STEP_S * (Math.abs(to - this.place) - 1), then);
+  }
+
+  /** The magnet with its chain glides as one to the place `to`. */
+  private slide(to: number, seconds: number, then: () => void): void {
+    this.busy = true;
+    const from = (this.place - to) * STEP;
+    this.place = to;
+    this.mx = from;
+    this.L.tweens.add(this.L.reduceMotion ? 0.01 : seconds, (k) => { this.mx = from * (1 - k); }, ease.inOutQuad, () => {
+      this.mx = 0;
+      this.busy = false;
+      then();
     });
   }
 
   /** A step sideways, or a lift up or a dip down and back. */
   private move(dir: Dir, then: () => void): void {
+    if (dir === 'left' || dir === 'right') return this.slide(moved(this.place, dir), MOVE_S, then);
     this.busy = true;
-    const done = () => {
+    const dy = dir === 'up' ? -NUDGE : NUDGE;
+    this.L.tweens.add(this.L.reduceMotion ? 0.01 : NUDGE_S, (k) => { this.my = Math.sin(k * Math.PI) * dy; }, ease.linear, () => {
+      this.my = 0;
       this.busy = false;
       then();
-    };
-    if (dir === 'up' || dir === 'down') {
-      const dy = dir === 'up' ? -NUDGE : NUDGE;
-      this.L.tweens.add(this.L.reduceMotion ? 0.01 : NUDGE_S, (k) => { this.my = Math.sin(k * Math.PI) * dy; }, ease.linear, () => {
-        this.my = 0;
-        done();
-      });
-      return;
-    }
-    const to = moved(this.place, dir), from = (this.place - to) * STEP;
-    this.place = to;
-    this.mx = from;
-    this.L.tweens.add(this.L.reduceMotion ? 0.01 : MOVE_S, (k) => { this.mx = from * (1 - k); }, ease.inOutQuad, () => {
-      this.mx = 0;
-      done();
     });
   }
 
@@ -391,8 +420,8 @@ export class MagnetMode extends HeroMode {
       g.restore();
     }
     const x = this.magnetX, y = this.magnetY;
-    // The chain hangs from above the magnet's place, so it swings a little while it steps.
-    drawChainMagnet(g, x, y, MAGNET_H, this.pileX + this.place * STEP);
+    // The chain moves with the magnet as one.
+    drawChainMagnet(g, x, y, MAGNET_H);
     this.drawHero(g);
     if (this.busy || this.endT !== null) return;
     for (const p of this.plates) this.drawPlate(g, p, x, y + BODY_DY);

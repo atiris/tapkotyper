@@ -65,6 +65,8 @@ export abstract class Mode {
   readonly doneSfx: Sfx | null = 'word';
   /** The mode plays its own music (Rytmus), not the world's track. */
   readonly ownMusic: boolean = false;
+  /** The narrator's bubble ends left of this x (stage units), so it never covers what the mode shows right of it (Bolt's program); null for its usual width. */
+  readonly bubbleEnd: number | null = null;
 
   constructor(protected L: LevelRuntime) {}
 

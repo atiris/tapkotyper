@@ -143,7 +143,9 @@
   - *Junkyard's own rules*: a missed gear on 6:1 adds two gears and their time (at most 10 words
     added, as the wind's push), the narrator says why the first time; on the magnet's crossroads
     (6:3) the level's clock stops while the magnet is two steps off the centre (words still
-    count) until it comes back a step, and the way back to the centre carries the harder word;
+    count) until it comes back a step, and the way back to the centre carries the harder word
+    (two short words against one, never a tiny word against a long sentence); after each quarter
+    of 6:3 the broken controls glide the magnet away from the centre on their own;
     at two thirds of 6:3 and again two words before its end the plates are mixed up (never on
     their own side), their words typeable once they stand.
   - *Cyclic copy* (the placeholder of every level of a world not built yet, see
@@ -301,7 +303,10 @@
   magnet's crossroads makes the choice between an easy word and a hard one that is worth more;
   stopping the clock while the magnet hangs off at the edge keeps the easy way out from
   shortening the level (owner design, 2026-11-15). Mixing the plates late in the level makes
-  the child read the arrow instead of steering by habit (owner, 2026-11-16).
+  the child read the arrow instead of steering by habit (owner, 2026-11-16). A gentle gap
+  between the easy and the hard word keeps the choice a choice, not a jump from two letters to a
+  sentence, and the magnet drifting off now and then makes steering back part of the level
+  (owner, 2026-11-16).
 - Arcade-style typing is praised as motivating; the peaceful
   variant keeps the fun without destruction or stress.
 - Overlapping words cannot be read, and a child who cannot read the word cannot type it.

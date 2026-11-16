@@ -62,18 +62,18 @@ function drawLying(g: G, x: number, glow: number, alpha = 1): void {
   g.restore();
 }
 
-/** The beeping pile: its pictures by stage (big, half, small) and their heights; three bins right of it. */
+/** The beeping pile: its pictures by stage (big, middle, a last small heap) and their heights; three bins right of it. */
 const PILES = ['obj-junk-pile-1', 'obj-junk-pile-2', 'obj-junk-pile-3'];
-const PILE_H = [210, 160, 110];
+const PILE_H = [215, 168, 110];
 const BIN_H = 100;
 const BIN_GAP = 100;
 /** The last bin is this far from the stage's right edge at least, and this far right of him at most (a wide stage keeps the scene together). */
 const BIN_EDGE = 70;
 const BIN_FROM_HERO = 900;
-/** The things that pop off the pile, and their size. */
-const THINGS = ['obj-tire', 'obj-crate', 'obj-can', 'obj-spring', 'obj-nut'];
-const THING_INKS = ['#3a3a3e', '#c08a52', '#b9c2cc', '#8a8f98', '#9aa0a8'];
-const THING_H = 52;
+/** The things that pop off the pile and their heights, each about its size next to the tire (the first two draw as a tire while a picture is missing). */
+const THINGS = ['obj-tire', 'obj-bike-wheel', 'obj-crate', 'obj-can', 'obj-spring', 'obj-nut', 'obj-screw'];
+const THING_INKS = ['#3a3a3e', '#3a3a3e', '#c08a52', '#b9c2cc', '#8a8f98', '#9aa0a8', '#a9b1bb'];
+const THING_H = [56, 64, 50, 34, 42, 24, 30];
 /** Seconds of a thing's hop off the pile and roll into its bin, and of a slipped thing's fall onto the pile. */
 const OUT_S = 1.6;
 const OUT_HOP = 0.6;
@@ -103,7 +103,7 @@ export function pileLayout(vw: number): { pile: number; bins: number[] } {
 
 /** A thing off the pile while its picture is missing: a tire, or a small rounded block in the thing's colour. */
 function thingFallback(kind: number) {
-  if (kind === 0) return tireFallback;
+  if (kind <= 1) return tireFallback;
   return (g: G, w: number, h: number): void => {
     g.save();
     g.fillStyle = THING_INKS[kind];
@@ -320,7 +320,7 @@ export class JunkpileMode extends HeroMode {
       return;
     }
     // It hops off the pile to the ground, rolls along the path, and hops over the bin's rim into it.
-    const ground = FEET + 6 - THING_H / 2, hop = 0.25, k = th.k;
+    const ground = FEET + 6 - THING_H[th.kind] / 2, hop = 0.25, k = th.k;
     th.x = th.fromX + (th.toX - th.fromX) * ease.inOutQuad(k);
     if (k < hop) th.y = th.fromY + (ground - th.fromY) * (k / hop) - Math.sin((k / hop) * Math.PI) * 40;
     else if (k < OUT_HOP) th.y = ground;
@@ -328,7 +328,7 @@ export class JunkpileMode extends HeroMode {
       const u = (k - OUT_HOP) / (1 - OUT_HOP);
       th.y = ground + (th.toY - ground) * u - Math.sin(u * Math.PI) * BIN_H * 0.9;
     }
-    th.rot = (th.x - th.fromX) / (THING_H / 2);
+    th.rot = (th.x - th.fromX) / (THING_H[th.kind] / 2);
   }
 
   private drawPile(g: G, stage: number, alpha: number): void {
@@ -343,7 +343,7 @@ export class JunkpileMode extends HeroMode {
     g.save();
     // A slipped thing fades into the pile over its last third.
     if (!th.out) g.globalAlpha *= Math.min(1, (1 - th.k) * 3);
-    drawSprite(g, THINGS[th.kind], th.x, th.y, THING_H, { rot: th.rot }, thingFallback(th.kind));
+    drawSprite(g, THINGS[th.kind], th.x, th.y, THING_H[th.kind], { rot: th.rot }, thingFallback(th.kind));
     g.restore();
   }
 
@@ -468,6 +468,8 @@ export class CodeMode extends HeroMode {
   readonly world = 'junkyard';
   readonly tapkoFeet = FEET;
   readonly pictures = [LYING, 'robot-broken'];
+  /** The narrator's bubble stays left of the program, which the child copies from. */
+  readonly bubbleEnd = SCREENS_X - SCREEN_GAP;
   private words: string[] = [];
   private at = 0;
   private current: Target | null = null;

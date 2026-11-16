@@ -1097,27 +1097,27 @@
     "spellCareful": "Pozor, kouzlo musí být přesné!",
     "spellHello": "Ahoj!",
     "gearsStart": [
-      "První úkol na šrotišti: **roztřiď kolečka**. Koulejí se k tobě po cestě a nad každým je slovo. Když ho napíšeš, shora se spustí magnet na řetízku, kolečko zvedne a pustí ho do bedny. Když ti nějaké uteče, nic se neděje, jen přibudou další."
+      "Máš novou práci na **šrotišti!** Čekají tě kolečka, staré pneumatiky, šrouby a celé hromady haraburdí, které je potřeba roztřídit. Použij magnet a spusť ho **napsáním slova nad kolečkem**, aby kolečko skončilo ve správné bedně. Piš opatrně, **přesnost se tu cení nejvíc.**"
     ],
     "gearsLonger": "Kolečko uteklo, přibudou dvě další.",
     "gearsDone": [
       "Bedna je plná koleček!"
     ],
     "tiresStart": [
-      "Cestu dál zatarasila **velká hromada starých pneumatik**. Vedle ní čekají dvě pneumatiky se slovy. Vyber si kteroukoli a napiš její slovo: pneumatika se odkutálí do koše, druhá se posune k němu a z hromady se skutálí další. Nikam nespěchej, pneumatiky počkají."
+      "Magnet na třídění kovů teď potřebuje malou přestávku. Vedoucí skládky už pro tebe má nový úkol. Musíš **přesunout celou hromadu starých pneumatik.** Je to pořádný kus práce! Naštěstí pneumatiky nikam neutečou, čekají na místě, dokud správně neurčíš, kterou pneumatiku chceš hodit do koše."
     ],
     "tiresDone": [
       "Hromada je pryč, cesta je volná!"
     ],
     "magnetStart": [
-      "Nad **hromadou šroubů** visí magnet na řetízku. U každé šipky je slovo: napiš ho a magnet se pohne tím směrem a něco vytáhne. Nad středem hromady vytáhne nejvíc, u kraje méně a úplně na kraji nic."
+      "Magnet je znovu připravený nad velkou hromadou rezavých šroubů. Hledá v ní součástky, které by se ještě daly recyklovat a použít v nových strojích. Čím je **blíž ke středu** hromady, tím snáz z ní **vytáhne** něco užitečného. Při směrech nahoru a dolů zůstává na místě. Pozor ale, **ovládání se někdy pokazí a magnet se posune sám.** Vždy se řiď šipkami u jednotlivých slov a **posuň magnet co nejvíc do středu.**"
     ],
     "magnetBack": "Vyber směr, který ho vrátí ke středu. Je těžší, ale vytáhne víc.",
     "magnetDone": [
       "Magnet vytáhl i poslední velké kolečko!"
     ],
     "junkpileStart": [
-      "Tady je **velká hromada haraburdí** a něco v ní smutně pípá. Nahoře běží pás se slovy: piš je, i mezery a tečky. Za každé slovo vyskočí z hromady jedna věc a skutálí se do koše. Při chybě začne slovo znovu a přibude jedno slovo navíc, tak **piš přesně**."
+      "V této části šrotiště je nějaká podezřele **velká hromada haraburdí.** Jako by se zpod ní ozývalo slaboučké pípání. Co přesně se pod ní skrývá, se ale nedá zjistit, dokud ji celou neroztřídíš. Tentokrát psaním spouštíš běžící pás a předměty se přitom správně třídí, kam patří. Po vyčištění hromady možná zjistíš, co tam tak jemně pípá. Piš **pomalu a přesně,** protože při chybě se pás zasekne, vrátí ti chybné slovo a ještě jedno další přidá."
     ],
     "junkpileSlip": "Chybička! Přibylo jedno slovo.",
     "junkpileCareful": "Pozor, piš přesně!",
@@ -1125,7 +1125,7 @@
       "Pod hromadou leží malý robot! Pípl, ale nehýbe se."
     ],
     "codeStart": [
-      "Malý robot nereaguje. Na jeho **staré obrazovce** je program, který ho probudí: **přepiš ho** na prázdnou obrazovku. Řádky se tam lámou jinak, tak dávej pozor, kde v programu právě jsi. Chybné písmeno se nenapíše, ale do programu přibude slovo."
+      "**Malý robot**, který se našel pod hromadou, pípá, ale **nereaguje.** Na výrobním štítku má ale poznamenaný **program, který ho aktivuje.** Musíš ho správně přepsat pomocí klávesnice na prázdnou obrazovku. Postupuj opatrně, **robot musí být naprogramovaný přesně!** Chybné písmeno se nenapíše, ale do programu při každé chybě přibude slovo, které chybný příkaz opraví."
     ],
     "codeSlip": "Chybička! Do programu přibylo slovo.",
     "codeDone": [

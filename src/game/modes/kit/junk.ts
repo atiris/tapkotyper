@@ -70,7 +70,8 @@ function drawChainFallback(g: G, w: number, len: number): void {
 /** The magnet on a chain hanging from the top of the stage at `topX`, the magnet's middle at (x, y). */
 export function drawChainMagnet(g: G, x: number, y: number, h: number, topX = x): void {
   const endY = y - h / 2 + h * 0.06, dx = x - topX, len = Math.hypot(dx, endY);
-  if (len > 1) {
+  // Above the stage's top the chain is out of sight with the magnet (it would turn round and hang down).
+  if (endY > 0 && len > 1) {
     const w = h * CHAIN_W, img = sprite(CHAIN);
     g.save();
     g.translate(topX, 0);

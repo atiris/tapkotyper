@@ -280,7 +280,8 @@ const BIN_H = 130;
 const BIN_BACK = 50;
 const BIN_FOOT = FEET + 10 - BIN_BACK;
 const RIM_Y = BIN_FOOT - BIN_H * BIN_RIM;
-const TIRE = 'obj-tire';
+/** Three kinds of old tire, each new one picks one. */
+const TIRES = ['obj-tire', 'obj-tire-2', 'obj-tire-3'];
 const TIRE_H = 72;
 /** The pile fades away at its end in this many seconds. */
 const PILE_FADE_S = 0.8;
@@ -323,6 +324,7 @@ function pileFallback(stage: number) {
 
 /** A tire in the scene (the screen shows it at x - scroll): rolling off the pile to its place, waiting with its word, or rolling into the bin. */
 interface Tire {
+  pic: string;
   x: number;
   y: number;
   rot: number;
@@ -353,7 +355,7 @@ interface Tire {
 export class TiresMode extends HeroMode {
   readonly world = 'junkyard';
   readonly tapkoFeet = FEET;
-  readonly pictures = [...PILES, BIN, TIRE];
+  readonly pictures = [...PILES, BIN, ...TIRES];
   private tires: Tire[] = [];
   private spawned = 0;
   private stage = 0;
@@ -404,7 +406,9 @@ export class TiresMode extends HeroMode {
     const fromX = this.scroll + this.pileX + h * 0.1, fromY = FEET - h * 0.8;
     const footX = Math.min(this.scroll + this.pileX + h * 0.5, toX);
     const tg = this.L.core.add(this.L.word(6, 1), {}, there);
-    this.tires.push({ x: there ? toX : fromX, y: there ? laneY : fromY, rot: 0, tg, state: there ? 'wait' : 'roll', t: 0, fromX, fromY, footX, toX, slot, laneY, vanish: 0 });
+    // It starts turned at random, so it stops in its place turned at random too.
+    const rot = this.L.rng.range(0, Math.PI * 2), pic = this.L.rng.pick(TIRES);
+    this.tires.push({ pic, x: there ? toX : fromX, y: there ? laneY : fromY, rot, tg, state: there ? 'wait' : 'roll', t: 0, fromX, fromY, footX, toX, slot, laneY, vanish: 0 });
   }
 
   onDone(tg: Target): void {
@@ -530,7 +534,7 @@ export class TiresMode extends HeroMode {
       const look = vanishLook(r.vanish);
       g.save();
       g.globalAlpha *= look.alpha;
-      drawSprite(g, TIRE, r.x - s, r.y, TIRE_H * look.scale, { rot: r.rot }, tireFallback);
+      drawSprite(g, r.pic, r.x - s, r.y, TIRE_H * look.scale, { rot: r.rot }, tireFallback);
       g.restore();
     }
     this.drawHero(g);

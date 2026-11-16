@@ -1097,20 +1097,20 @@
     "spellCareful": "Pozor, kouzlo musí být přesné!",
     "spellHello": "Ahoj!",
     "gearsStart": [
-      "První úkol na šrotišti: **roztřiď kolečka**. Koulejí se k tobě po cestě a nad každým je slovo. Když ho napíšeš, magnet kolečko nadzvedne a to se skutálí rovnou do bedny. Když ti nějaké uteče, nic se neděje, jen přibudou další."
+      "První úkol na šrotišti: **roztřiď kolečka**. Koulejí se k tobě po cestě a nad každým je slovo. Když ho napíšeš, shora se spustí magnet na řetízku, kolečko zvedne a pustí ho do bedny. Když ti nějaké uteče, nic se neděje, jen přibudou další."
     ],
     "gearsLonger": "Kolečko uteklo, přibudou dvě další.",
     "gearsDone": [
       "Bedna je plná koleček!"
     ],
     "tiresStart": [
-      "Cestu dál zatarasila **velká hromada starých pneumatik**. U jejího úpatí leží pneumatiky se slovy. Vyber si kteroukoli a napiš její slovo: pneumatika se odkutálí do koše a z hromady se skutálí další. Nikam nespěchej, pneumatiky počkají."
+      "Cestu dál zatarasila **velká hromada starých pneumatik**. Vedle ní čekají dvě pneumatiky se slovy. Vyber si kteroukoli a napiš její slovo: pneumatika se odkutálí do koše, druhá se posune k němu a z hromady se skutálí další. Nikam nespěchej, pneumatiky počkají."
     ],
     "tiresDone": [
       "Hromada je pryč, cesta je volná!"
     ],
     "magnetStart": [
-      "Nad **hromadou šroubů** visí magnet na laně jeřábu. U každé šipky je slovo: napiš ho a magnet se pohne tím směrem a něco vytáhne. Nad středem hromady vytáhne nejvíc, u kraje méně a úplně na kraji nic."
+      "Nad **hromadou šroubů** visí magnet na řetízku. U každé šipky je slovo: napiš ho a magnet se pohne tím směrem a něco vytáhne. Nad středem hromady vytáhne nejvíc, u kraje méně a úplně na kraji nic."
     ],
     "magnetBack": "Vyber směr, který ho vrátí ke středu. Je těžší, ale vytáhne víc.",
     "magnetDone": [

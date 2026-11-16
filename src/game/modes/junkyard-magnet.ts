@@ -5,7 +5,7 @@ import { t } from '../../i18n/i18n';
 import type { Target } from '../typing';
 import { type Ask, EASIER_AFTER, askWord, easierAsk } from './kit/ask';
 import { HeroMode } from './kit/hero';
-import { JUNK_FEET, JUNK_HERO_X, MAGNET, drawCraneMagnet, gearFallback } from './kit/junk';
+import { CHAIN, JUNK_FEET, JUNK_HERO_X, MAGNET, drawChainMagnet, gearFallback } from './kit/junk';
 
 const FEET = JUNK_FEET;
 const HERO_X = JUNK_HERO_X;
@@ -47,6 +47,33 @@ export function hintAt(visit: number): boolean {
   return visit % 3 === 1;
 }
 
+/** Where each plate stands by its direction; at first every plate stands on its own side. */
+export type Places = Record<Dir, Dir>;
+export const OWN_PLACES: Places = { left: 'left', right: 'right', up: 'up', down: 'down' };
+
+/**
+ * The plates get mixed up at two thirds of the level and once more before its end (at two words
+ * before it, and at least one move after the first time). `mixedAt`: the words done at each mix so far.
+ */
+export function mixDue(done: number, count: number, mixedAt: number[]): boolean {
+  if (done >= count) return false;
+  if (mixedAt.length === 0) return done >= Math.ceil((count * 2) / 3);
+  if (mixedAt.length === 1) return done >= Math.max(mixedAt[0] + 1, count - 2);
+  return false;
+}
+
+/** All orders of the four directions. */
+function orders(list: Dir[]): Dir[][] {
+  if (list.length <= 1) return [list];
+  return list.flatMap((d, i) => orders([...list.slice(0, i), ...list.slice(i + 1)]).map((rest) => [d, ...rest]));
+}
+
+/** New places for the plates: none on its own side, none where it stood before. */
+export function mixedPlaces(before: Places, pick: (list: Places[]) => Places): Places {
+  const all = orders(DIRS).map((o) => Object.fromEntries(DIRS.map((d, i) => [d, o[i]])) as Places);
+  return pick(all.filter((p) => DIRS.every((d) => p[d] !== d && p[d] !== before[d])));
+}
+
 /** The pile: its picture, height, width, and the magnet's step (a third of its width). */
 const PILE = 'obj-screw-pile';
 const PILE_H = 120;
@@ -67,6 +94,11 @@ const SIDE_GAP = 80;
 const UP_DY = 120;
 const PLATE_SIZE = 34;
 const ARROW_AT = 72;
+/** The plates sit around the horseshoe's middle, a little below the picture's (its ring is on top). */
+const BODY_DY = MAGNET_H * 0.1;
+/** Seconds the plates swirl round the magnet to their mixed places, and how many turns a sign spins on the way. */
+const MIX_S = 1.2;
+const MIX_SPINS = 2;
 /** A pulled piece: its flight up, the moment it sticks, its fade; the big and small pieces' pictures and sizes. */
 const FLY_S = 0.5;
 const STICK_S = 0.6;
@@ -96,9 +128,9 @@ interface Piece {
   last: boolean;
 }
 
-/** A small round metal sign with a white arrow pointing `dir`. */
-function drawArrowSign(g: G, x: number, y: number, dir: Dir): void {
-  const r = 14, a = { right: 0, down: Math.PI / 2, left: Math.PI, up: -Math.PI / 2 }[dir];
+/** A small round metal sign with a dark arrow pointing `dir`, turned on by `spin` while it swirls. */
+function drawArrowSign(g: G, x: number, y: number, dir: Dir, spin = 0): void {
+  const r = 14, a = { right: 0, down: Math.PI / 2, left: Math.PI, up: -Math.PI / 2 }[dir] + spin;
   g.save();
   g.translate(x, y);
   g.fillStyle = '#e2b033';
@@ -161,13 +193,20 @@ function boltFallback(g: G, w: number, h: number): void {
  * a pile of screws and gears, on one of five places. Arrow plates around it carry words; a typed
  * plate moves it a step left or right, or lifts it up or dips it down and back. After each move it
  * pulls from the pile: a big piece over the centre, a small screw one step off, nothing at the edge.
- * Two steps off, the level's clock stands still until the magnet comes back.
+ * Two steps off, the level's clock stands still until the magnet comes back. At two thirds of the
+ * level and once more before its end the plates swirl round the magnet to mixed places, none on its
+ * own side, so the child reads the arrow, not the side.
  */
 export class MagnetMode extends HeroMode {
   readonly world = 'junkyard';
   readonly tapkoFeet = FEET;
-  readonly pictures = [PILE, MAGNET, ...BIG, SMALL];
+  readonly pictures = [PILE, MAGNET, CHAIN, ...BIG, SMALL];
   private place = 0;
+  private places: Places = OWN_PLACES;
+  /** The words done at each mix, the places before the last mix and 0..1 of its swirl (null when still). */
+  private mixedAt: number[] = [];
+  private mixFrom: Places = OWN_PLACES;
+  private mixK: number | null = null;
   /** The magnet's offset now (stage units): sideways from its place's spot while it steps, up or down while it nudges. */
   private mx = 0;
   private my = 0;
@@ -210,14 +249,28 @@ export class MagnetMode extends HeroMode {
 
   /** The plates of the magnet's place, in random order, every word with its own first letter. */
   private showPlates(): void {
-    const asks = platesAt(this.place);
+    const asks = platesAt(this.place), mix = mixDue(this.done, this.L.count, this.mixedAt);
     this.plates = [];
     for (const dir of this.L.rng.shuffle(DIRS.filter((d) => asks[d]))) {
       const ask = asks[dir]!;
-      this.plates.push({ dir, ask, tg: this.L.core.add(this.plateWord(ask), {}) });
+      this.plates.push({ dir, ask, tg: this.L.core.add(this.plateWord(ask), {}, !mix) });
     }
     this.slipped = null;
     this.slips = 0;
+    if (mix) this.mix();
+  }
+
+  /** The plates swirl round the magnet to new places; their words can be typed once they stand. */
+  private mix(): void {
+    this.mixedAt.push(this.done);
+    this.mixFrom = this.places;
+    this.places = mixedPlaces(this.places, (list) => this.L.rng.pick(list));
+    this.mixK = 0;
+    this.L.sfx('pop');
+    this.L.tweens.add(this.L.reduceMotion ? 0.01 : MIX_S, (k) => { this.mixK = k; }, ease.inOutQuad, () => {
+      this.mixK = null;
+      for (const p of this.plates) p.tg.selectable = true;
+    });
   }
 
   private plateWord(ask: Ask): string {
@@ -338,24 +391,41 @@ export class MagnetMode extends HeroMode {
       g.restore();
     }
     const x = this.magnetX, y = this.magnetY;
-    // The cable hangs from the crane over the magnet's place, so it swings a little while it steps.
-    drawCraneMagnet(g, x, y, MAGNET_H, this.pileX + this.place * STEP);
+    // The chain hangs from above the magnet's place, so it swings a little while it steps.
+    drawChainMagnet(g, x, y, MAGNET_H, this.pileX + this.place * STEP);
     this.drawHero(g);
     if (this.busy || this.endT !== null) return;
-    for (const p of this.plates) this.drawPlate(g, p, x, y);
+    for (const p of this.plates) this.drawPlate(g, p, x, y + BODY_DY);
   }
 
-  /** A plate's arrow sign beside the magnet and its word beyond it. */
+  /** Where a plate's sign and word sit at the place `at`, from the horseshoe's middle. */
+  private spot(at: Dir, word: string): { sx: number; sy: number; lx: number; ly: number } {
+    if (at === 'up' || at === 'down') {
+      const s = at === 'up' ? -1 : 1;
+      return { sx: 0, sy: s * ARROW_AT, lx: 0, ly: s * UP_DY };
+    }
+    const s = at === 'left' ? -1 : 1, w = wordBox(word, PLATE_SIZE, true).w;
+    return { sx: s * ARROW_AT, sy: 0, lx: s * (SIDE_GAP + 20 + w / 2), ly: 0 };
+  }
+
+  /** A plate's arrow sign by the magnet and its word beyond it; while mixing both swirl round the magnet to the new place. */
   private drawPlate(g: G, p: Plate, x: number, y: number): void {
-    if (p.dir === 'up' || p.dir === 'down') {
-      const s = p.dir === 'up' ? -1 : 1;
-      drawArrowSign(g, x, y + s * ARROW_AT, p.dir);
-      this.L.label(g, p.tg, x, y + s * UP_DY, PLATE_SIZE);
+    const to = this.spot(this.places[p.dir], p.tg.word);
+    if (this.mixK === null) {
+      drawArrowSign(g, x + to.sx, y + to.sy, p.dir);
+      this.L.label(g, p.tg, x + to.lx, y + to.ly, PLATE_SIZE);
       return;
     }
-    const s = p.dir === 'left' ? -1 : 1, w = wordBox(p.tg.word, PLATE_SIZE, true).w;
-    drawArrowSign(g, x + s * ARROW_AT, y, p.dir);
-    this.L.label(g, p.tg, x + s * (SIDE_GAP + 20 + w / 2), y, PLATE_SIZE);
+    const from = this.spot(this.mixFrom[p.dir], p.tg.word), k = this.mixK;
+    // Round the magnet clockwise: the angle and the distance from its middle go from the old place to the new one.
+    const swirl = (ax: number, ay: number, bx: number, by: number) => {
+      const a0 = Math.atan2(ay, ax), a1 = a0 + ((((Math.atan2(by, bx) - a0) % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2));
+      const r = Math.hypot(ax, ay) + (Math.hypot(bx, by) - Math.hypot(ax, ay)) * k, a = a0 + (a1 - a0) * k;
+      return { x: x + Math.cos(a) * r, y: y + Math.sin(a) * r };
+    };
+    const sign = swirl(from.sx, from.sy, to.sx, to.sy), word = swirl(from.lx, from.ly, to.lx, to.ly);
+    drawArrowSign(g, sign.x, sign.y, p.dir, k * MIX_SPINS * Math.PI * 2);
+    this.L.label(g, p.tg, word.x, word.y, PLATE_SIZE);
   }
 
   progress(): number {

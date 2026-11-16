@@ -1,4 +1,5 @@
 import { VH } from '../../../engine/loop';
+import { sprite } from '../../../gfx/assets';
 import { drawSprite, type G } from '../../../gfx/draw';
 
 /** He stands on the junkyard's sandy path, at his usual place on the left. */
@@ -45,17 +46,42 @@ function magnetFallback(g: G, w: number, h: number): void {
 }
 
 export const MAGNET = 'obj-magnet';
+/** One repeat of the chain the magnet hangs on; it is repeated as long as the chain must be. */
+export const CHAIN = 'obj-chain';
+/** The chain's width by the magnet's height. */
+const CHAIN_W = 0.13;
 
-/** The crane's cable from the top of the stage and the magnet on it, its middle at (x, y). */
-export function drawCraneMagnet(g: G, x: number, y: number, h: number, cableX = x): void {
+/** The chain while its picture is missing: a column of links, one flat and one edge-on. */
+function drawChainFallback(g: G, w: number, len: number): void {
   g.save();
-  g.strokeStyle = '#4a4a4a';
-  g.lineWidth = 3;
-  g.beginPath();
-  g.moveTo(cableX, 0);
-  g.lineTo(x, y - h / 2 + 4);
-  g.stroke();
+  g.strokeStyle = '#6f7f92';
+  g.lineWidth = Math.max(2, w * 0.22);
+  for (let y = 0, i = 0; y < len; y += w * 0.9, i++) {
+    g.beginPath();
+    if (i % 2) {
+      g.moveTo(0, y - w * 0.3);
+      g.lineTo(0, y + w * 0.9);
+    } else g.ellipse(0, y + w * 0.3, w * 0.32, w * 0.62, 0, 0, Math.PI * 2);
+    g.stroke();
+  }
   g.restore();
+}
+
+/** The magnet on a chain hanging from the top of the stage at `topX`, the magnet's middle at (x, y). */
+export function drawChainMagnet(g: G, x: number, y: number, h: number, topX = x): void {
+  const endY = y - h / 2 + h * 0.06, dx = x - topX, len = Math.hypot(dx, endY);
+  if (len > 1) {
+    const w = h * CHAIN_W, img = sprite(CHAIN);
+    g.save();
+    g.translate(topX, 0);
+    g.rotate(-Math.atan2(dx, endY));
+    // The repeats run up from the magnet, so the link at the magnet always sits the same.
+    if (img) {
+      const th = (w * img.naturalHeight) / img.naturalWidth;
+      for (let ty = len - th; ty > -th; ty -= th) g.drawImage(img, -w / 2, ty, w, th);
+    } else drawChainFallback(g, w, len);
+    g.restore();
+  }
   drawSprite(g, MAGNET, x, y, h, {}, magnetFallback);
 }
 

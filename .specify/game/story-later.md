@@ -18,22 +18,29 @@ he lies under the pile, and only the levels that find and wake him draw him.
    of its own that ends in the level; the same junkyard background (rows of piles, a crane far
    back, springs and bolts in front) in all five.
    1. *Sorting the gears* (word stream): gears of four kinds roll in along the path toward a
-      wooden crate with a gear sign, under a magnet on a crane cable. A typed gear hops up and
-      rolls into the box; a missed one rolls past the character and away, and two more gears
-      join the level (at most 10 words added), which the narrator explains the first time. A
+      wooden crate with a gear sign, open on top. Over a typed gear a magnet comes down on its
+      chain from above, shakes, lifts the gear over the crate and drops it in, and the crate shows
+      how many gears it holds (a big number, as the range's shouts), so every word visibly fills
+      it; a missed one rolls past the character and away, and two more gears join the level (at most 10 words added), which the narrator explains the first time. A
       missed gear is more practice, never a failure. At the end the crate is full.
-   2. *The pile of tires* (waiting words, calm step): a big pile of old tires blocks the path,
-      a bin stands behind it. Two or three tires at its foot carry a word each; a typed tire
-      rolls into the bin and a new one rolls down. The pile shrinks in three stages with the
-      time played; at the end the way is free and the character walks on.
-   3. *The magnet over the screws* (crossroads): a magnet on a crane cable hangs over a pile of
-      screws and gears, on one of five places (the centre, one or two steps left or right).
+   2. *The pile of tires* (waiting words, calm step): five places in a row: the character, a
+      big pile of old tires, two tires with a word each, and a bin. A typed tire rolls into the
+      bin (the further one hops over the other), the tire left of the free place rolls on into
+      it and a new one rolls down from the pile: the tires always go right, toward the bin. The
+      pile shrinks in three stages with the time played, from a very big heap to a smaller one
+      that is still a heap, never just a few tires; at the end the way is free and the
+      character walks on.
+   3. *The magnet over the screws* (crossroads): a magnet on a chain from above hangs over a
+      pile of screws and gears down in the middle, on one of five places (the centre, one or two steps left or right).
       Arrow plates around it carry words; a typed plate moves the magnet a step sideways or
       lifts and lowers it. After each move it pulls: a big screw or a gear at the centre, a
       small screw one step off, nothing two steps off. The way back to the centre is the hard
       word, the way out the easy one, so the child chooses between easy and worth more; two
       steps off the level's clock does not run on until the magnet comes back, and the
-      character says the harder signs pull more.
+      character says the harder signs pull more. The arrow plates sit level with the magnet
+      itself. At two thirds of the level and once more just before its end the plates swirl
+      round the magnet and land mixed up, none on its own side and none where it stood, so the
+      child must read the arrow, not the side (typing the left word no longer goes left).
    4. *The beeping pile* (ribbon): a big pile of mixed junk beeps softly now and then; the
       text runs as the ribbon across the top. Each finished word pops a thing off the pile
       into one of three bins, each slip drops a thing back onto it. The pile shrinks in three

@@ -1160,6 +1160,24 @@ describe('the junkyard', () => {
     expect([-2, -1, 0, 1, 2].map(pullAt)).toEqual([null, 'small', 'big', 'small', null]);
   });
 
+  it('the plates mix at two thirds and once more two words before the end, never on their own side or where they stood', async () => {
+    const { mixDue, mixedPlaces, OWN_PLACES } = await import('./junkyard-magnet');
+    expect([7, 8].map((d) => mixDue(d, 12, []))).toEqual([false, true]);
+    expect([9, 10, 11, 12].map((d) => mixDue(d, 12, [8]))).toEqual([false, true, true, false]);
+    expect(mixDue(11, 12, [8, 10])).toBe(false);
+    // A short level: the second mix still comes a move after the first.
+    expect([mixDue(4, 6, []), mixDue(4, 6, [4]), mixDue(5, 6, [4])]).toEqual([true, false, true]);
+    const dirs = ['left', 'right', 'up', 'down'] as const;
+    let before = OWN_PLACES;
+    for (let i = 0; i < 20; i++) {
+      const pick = <T,>(list: T[]) => list[i % list.length];
+      const after = mixedPlaces(before, pick);
+      expect(new Set(dirs.map((d) => after[d])).size).toBe(4);
+      for (const d of dirs) expect([after[d] !== d, after[d] !== before[d]]).toEqual([true, true]);
+      before = after;
+    }
+  });
+
   it("the magnet two steps off holds the level's clock until it is back, and the hint comes every third time", async () => {
     const { hintAt } = await import('./junkyard-magnet');
     expect([1, 2, 3, 4, 5, 6, 7].map(hintAt)).toEqual([true, false, false, true, false, false, true]);

@@ -1097,20 +1097,20 @@
     "spellCareful": "Careful, the spell must be exact!",
     "spellHello": "Hi!",
     "gearsStart": [
-      "Your first task in the junkyard: **sort the gears**. They roll toward you along the path, each with a word above it. Type it and the magnet lifts the gear, and it rolls straight into the crate. If one gets away, that's fine, a few more will come."
+      "Your first task in the junkyard: **sort the gears**. They roll toward you along the path, each with a word above it. Type it and a magnet comes down on its chain, lifts the gear and drops it into the crate. If one gets away, that's fine, a few more will come."
     ],
     "gearsLonger": "A gear got away, two more will come.",
     "gearsDone": [
       "The crate is full of gears!"
     ],
     "tiresStart": [
-      "A **big pile of old tires** blocks the way on. Tires with words lie at its foot. Pick any one and type its word: the tire rolls off into the bin and another one rolls down from the pile. No hurry, the tires will wait."
+      "A **big pile of old tires** blocks the way on. Two tires with words wait next to it. Pick either one and type its word: the tire rolls off into the bin, the other one moves up and another one rolls down from the pile. No hurry, the tires will wait."
     ],
     "tiresDone": [
       "The pile is gone, the way is clear!"
     ],
     "magnetStart": [
-      "A magnet hangs from the crane cable over a **pile of screws**. Each arrow has a word: type it and the magnet moves that way and pulls something out. Over the middle of the pile it pulls the most, near the edge less, and right at the edge nothing."
+      "A magnet hangs on a chain over a **pile of screws**. Each arrow has a word: type it and the magnet moves that way and pulls something out. Over the middle of the pile it pulls the most, near the edge less, and right at the edge nothing."
     ],
     "magnetBack": "Pick the way that brings it back to the middle. It is harder, but it pulls out more.",
     "magnetDone": [

@@ -54,6 +54,8 @@ const START_SMALL = {
 // The meadows keep their size for later visits; a first visit gets a coarser copy, `<name>-low`, at
 // this share of the height (still above the drawn size on most phones) and quality.
 const MEADOW_LOW = { scale: 0.75, quality: 60 };
+/** Pictures the game repeats downward: cut to one repeat (writeRepeatY). */
+const REPEAT_Y = ['obj-chain'];
 
 // Outfit sets: item ids, slots and a pixel classifier (normalized x, y in 0..1).
 // The first rule that matches wins; the last rule is the fallback.
@@ -165,6 +167,38 @@ function matchTone(frames, n) {
 
 const webp = (img) => img.webp({ quality: 84, alphaQuality: 90, effort: 5 });
 
+/**
+ * A picture the game repeats downward (the junkyard's chain): the shortest run of rows that repeats,
+ * found by comparing the alpha of each row with the row one period lower. It is cut from the middle at
+ * its narrowest row (the chain's edge-on link), so it starts and ends there and the repeats meet where
+ * little is drawn.
+ */
+async function writeRepeatY(name, data, w, h, manifest) {
+  const box = bbox(data, w, h);
+  const alpha = (x, y) => data[(y * w + x) * 4 + 3] / 255;
+  const diff = (lag) => {
+    let sum = 0, n = 0;
+    for (let y = box.top; y + lag < box.top + box.height; y++) for (let x = box.left; x < box.left + box.width; x += 2, n++) sum += Math.abs(alpha(x, y) - alpha(x, y + lag));
+    return sum / n;
+  };
+  const lags = [];
+  for (let lag = Math.ceil(box.height / 16); lag <= box.height / 2; lag++) lags.push({ lag, d: diff(lag) });
+  const best = Math.min(...lags.map((l) => l.d));
+  const period = lags.find((l) => l.d <= best * 1.25 + 0.002).lag;
+  const rowAlpha = (y) => {
+    let sum = 0;
+    for (let x = box.left; x < box.left + box.width; x++) sum += alpha(x, y);
+    return sum;
+  };
+  const mid = box.top + Math.floor((box.height - period) / 2);
+  let top = mid;
+  for (let y = mid; y < mid + period; y++) if (rowAlpha(y) < rowAlpha(top)) top = y;
+  if (top + period > box.top + box.height) top -= period;
+  const info = await webp(sharp(data, { raw: { width: w, height: h, channels: 4 } }).extract({ left: box.left, top, width: box.width, height: period }).resize(SPRITE_MAX, SPRITE_MAX, { fit: 'inside', withoutEnlargement: true })).toFile(join(OUT, `${name}.webp`));
+  manifest.images[name] = { w: info.width, h: info.height };
+  console.log(`  ${name}: repeats every ${period} of ${box.height} rows`);
+}
+
 async function writeSquare(name, data, w, h, manifest) {
   await webp(sharp(data, { raw: { width: w, height: h, channels: 4 } }).resize(BIG_MAX, BIG_MAX)).toFile(join(OUT, `${name}.webp`));
   manifest.images[name] = { w: BIG_MAX, h: BIG_MAX };
@@ -194,6 +228,7 @@ async function processImage(name, file, manifest) {
   // Bolt's pictures stay square, so the raincoat overlay fits every one of them; Melody's keep her size in every mood.
   if (name === 'base-template' || name.startsWith('tapko-') || name.startsWith('robot') || name.startsWith('fairy-')) return writeSquare(name, data, w, h, manifest);
   if (name.startsWith(MEADOW)) return writeTile(name, data, w, h, bbox(data, w, h), manifest);
+  if (REPEAT_Y.includes(name)) return writeRepeatY(name, data, w, h, manifest);
   if (name.startsWith('bg-')) {
     // A mid or near layer (1376 x 768, its band on the key; see scripts/bg-seam.mjs): the colors
     // bleed into the cleared key, so scaling in the game shows no key fringe.

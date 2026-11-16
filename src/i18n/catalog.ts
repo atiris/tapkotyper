@@ -70,6 +70,7 @@ const SECTIONS: { id: string; groups: GroupDef[] }[] = [
     g('worlds', 'worlds.*'),
     g('map-teacher', 'map.teacher.*'),
     g('map-buttons', 'map.hello', 'map.title', 'map.switchProfile', 'map.settings', 'map.warmUp', 'map.continue', 'map.practice', 'map.ownText', 'map.freeType', 'map.wardrobe'),
+    g('map-locks', 'map.storyOpens', 'map.lockWorld', 'map.lockKeys', 'map.lockNeed', 'map.keysOne', 'map.keysFew', 'map.keysMany', 'map.heldKeys', 'map.keysLocked', 'map.sideOpens', 'map.levelFirst', 'map.journeyFirst'),
     g('map-page', 'map.*'),
     g('world-keys', 'worldKeys.*'),
     g('surprise', 'surprise.*'),

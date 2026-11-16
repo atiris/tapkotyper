@@ -1,5 +1,5 @@
 import { expect, type Page, test } from '@playwright/test';
-import { createProfile } from './helpers';
+import { createProfile, editProfile } from './helpers';
 
 /** A browser voice for English that only writes down what it was asked to say. */
 async function fakeVoice(page: Page): Promise<void> {
@@ -14,17 +14,6 @@ async function fakeVoice(page: Page): Promise<void> {
       cancel: () => undefined,
     } });
   });
-}
-
-/** Changes the stored profile and reloads the map. */
-async function editProfile(page: Page, change: string): Promise<void> {
-  await page.evaluate((body) => {
-    const data = JSON.parse(localStorage.getItem('tapkotyper:v1')!);
-    new Function('p', body)(data.profiles[0]);
-    localStorage.setItem('tapkotyper:v1', JSON.stringify(data));
-  }, change);
-  await page.reload();
-  await page.locator('.map-screen').waitFor();
 }
 
 const shown = (page: Page) => page.locator('.level-screen .sr-only[role=status]');

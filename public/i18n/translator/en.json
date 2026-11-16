@@ -200,7 +200,11 @@
     },
     "map-page": {
       "title": "The map",
-      "about": "Texts of the main map: story names, level hints and hints about unlocking levels."
+      "about": "Texts of the main map: story names, level hints and what the map tells when it opens."
+    },
+    "map-locks": {
+      "title": "Closed places on the map",
+      "about": "Why a story, a world or a level is still closed and what opens it: hints, missing keys and the bubble after a link to a closed level."
     },
     "world-keys": {
       "title": "A world's keys",
@@ -619,6 +623,8 @@
     "map.parrotTip": "Tooltip of the Parrot node on the map; says what it is for. Its first word (the parrot's name), typed on the map, calls a parrot that flies around the page.",
     "map.parrotHome": "Hidden addition to the Parrot node label (screen reader) when the parrot is won.",
     "map.sideOpens": "Added to the tooltip of the grey Target range and Parrot nodes on the map while the world is not finished.",
+    "map.levelFirst": "Narrator's bubble on the map when a link named a level the player has not reached yet (the level before it is not finished).",
+    "map.journeyFirst": "Narrator's bubble on the map when a link named a story's hero's journey that is still closed; {world} is the name of the story's last world.",
     "map.surpriseHere": "Tooltip of a level on the map where a parent announced a surprise ahead (a golden box stands in place of the game's picture).",
     "map.surprisesWon": "Tooltip of the golden circle at the top left of a world's island: it opens the surprises won in this world.",
     "map.surprisesTitle": "Title of the window with the surprises won in one world; {world} is the world's name.",

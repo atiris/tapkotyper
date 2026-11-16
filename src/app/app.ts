@@ -18,6 +18,7 @@ import { closeModals } from '../ui/dom';
 import { hideTip } from '../ui/tooltip';
 import { fast } from './fast';
 import { keyboardGated, waitForKeyboard } from './keyboard-gate';
+import { type LevelRoute, levelPath, parseLevelPath, routeOpen } from './level-route';
 
 export type ScreenName = 'start' | 'newProfile' | 'map' | 'level' | 'story' | 'parent' | 'wardrobe' | 'teacher' | 'taskImport' | 'moveImport' | 'help' | 'translate' | 'progress' | 'tasks' | 'taskNote';
 export type Screen = (root: HTMLElement, params: any) => (() => void) | void;
@@ -92,7 +93,7 @@ const OWN_ROUTE: ScreenName[] = ['map', 'wardrobe', 'progress', 'tasks', 'parent
 const LINKS: Partial<Record<string, ScreenName>> = { task: 'taskImport', move: 'moveImport', result: 'teacher' };
 
 /** Address of a screen, so a player's map can be bookmarked or put on the desktop. */
-export function routeOf(name: ScreenName, params: { code?: string; tab?: string; key?: string; id?: string; world?: number; story?: string } = {}): string {
+export function routeOf(name: ScreenName, params: { code?: string; tab?: string; key?: string } & Partial<LevelRoute> = {}): string {
   if (name === 'newProfile') return '#/new';
   if (name === 'translate') return '#/translate';
   if (name === 'taskNote') return '#/note';
@@ -101,13 +102,10 @@ export function routeOf(name: ScreenName, params: { code?: string; tab?: string;
   if (name === 'taskImport') return `#/task/${params.code ?? ''}`;
   if (name === 'moveImport') return `#/move/${params.code ?? ''}`;
   const id = app.profile?.id;
-  // Help's tab; My progress's tab and the key whose statistics it shows (`keys/f`).
-  // A level's id, with its world as the map numbers it (`parrot/w6`) or its story: only so a reported address says where it was; it opens the map.
-  const tab = (name === 'help' || name === 'progress') && params.tab
-    ? [params.tab, ...(name === 'progress' && params.key ? [params.key] : [])].map((s) => `/${encodeURIComponent(s)}`).join('')
-    : name === 'level' && params.id
-      ? [params.id, ...(params.world != null ? [`w${params.world + 1}`] : []), ...(params.story ? [params.story] : [])].map((s) => `/${encodeURIComponent(s)}`).join('')
-      : '';
+  // Help's tab; My progress's tab and the key whose statistics it shows (`keys/f`); the level played (`w6/l3`).
+  const tab = ((name === 'help' || name === 'progress') && params.tab
+    ? [params.tab, ...(name === 'progress' && params.key ? [params.key] : [])]
+    : name === 'level' && params.id ? levelPath({ ...params, id: params.id }) : []).map((s) => `/${encodeURIComponent(s)}`).join('');
   // Help works before a player is chosen too.
   if (name === 'help' && !id) return `#/help${tab}`;
   // The settings without a profile: the device's own, opened from the start page.
@@ -117,7 +115,7 @@ export function routeOf(name: ScreenName, params: { code?: string; tab?: string;
   return `#/p/${encodeURIComponent(id)}${sub ? `/${sub}` : ''}${tab}`;
 }
 
-export function parseRoute(hash: string): { name: ScreenName; profileId: string | null; code?: string; tab?: string; key?: string } {
+export function parseRoute(hash: string): { name: ScreenName; profileId: string | null; code?: string; tab?: string; key?: string; level?: LevelRoute } {
   const parts = hash.replace(/^#\/?/, '').split('/').filter(Boolean).map(decodeURIComponent);
   if (parts[0] === 'new') return { name: 'newProfile', profileId: null };
   if (parts[0] === 'translate') return { name: 'translate', profileId: null };
@@ -132,6 +130,8 @@ export function parseRoute(hash: string): { name: ScreenName; profileId: string 
   const link = LINKS[parts[0]];
   if (link && parts[1]) return { name: link, profileId: null, code: parts[1] };
   if (parts[0] !== 'p' || !parts[1]) return { name: 'start', profileId: null };
+  const level = parts[2] === ROUTES.level ? parseLevelPath(parts.slice(3)) : null;
+  if (level) return { name: 'level', profileId: parts[1], level };
   const name = (Object.keys(ROUTES) as ScreenName[]).find((n) => ROUTES[n] === parts[2] && OWN_ROUTE.includes(n)) ?? 'map';
   const tab = (name === 'help' || name === 'progress') && parts[3] ? { tab: parts[3], ...(name === 'progress' && parts[4] ? { key: parts[4] } : {}) } : {};
   return { name, profileId: parts[1], ...tab };
@@ -143,6 +143,8 @@ export async function openRoute(hash: string): Promise<void> {
   const p = r.profileId === SUPER_ID ? app.superPlayer : r.profileId ? app.store.get(r.profileId) : null;
   if (r.profileId && !p) return go('start', {}, false);
   if (p && app.profile?.id !== p.id) await selectProfile(p);
+  // A level opens as from the map; a closed one shows the map and why it is closed.
+  if (r.level) return p && routeOpen(p, r.level) ? go('level', r.level, false) : go('map', { locked: r.level }, false);
   go(r.name, r.code ? { code: r.code } : r.tab ? { tab: r.tab, key: r.key } : {}, false);
 }
 

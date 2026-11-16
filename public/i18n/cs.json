@@ -179,6 +179,8 @@
     "rhythmTip": "Rytmus. Dokážeš psát ve stejném rytmu? Vyzkoušej si to v tomhle cvičení, můžeš získat notu tohoto světa.",
     "parrotHome": "papoušek je doma",
     "sideOpens": "Otevře se spolu s tímto světem.",
+    "levelFirst": "Tahle úroveň se otevře, až dohraješ tu před ní.",
+    "journeyFirst": "Cesta hrdiny se otevře, až dokončíš svět {world}.",
     "surpriseHere": "Tady na tebe čeká překvapení!",
     "surprisesWon": "Překvapení, která na tebe čekala v tomto světě",
     "surprisesTitle": "Překvapení ze světa {world}",

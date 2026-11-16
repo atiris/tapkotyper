@@ -38,6 +38,7 @@ import { hasClef, untoldFades } from '../game/rhythm-notes';
 import { untoldMagpie } from '../game/magpie';
 import { whistle } from '../ui/whistle';
 import { isEscape } from '../input/shortcuts';
+import { type LevelRoute, routeWorld } from '../app/level-route';
 
 /** Ms Turtle's pictures, one after another with her tips. */
 const TEACHER_PICTURES = ['ui-teacher', 'ui-teacher-2', 'ui-teacher-3'];
@@ -167,7 +168,8 @@ function placementPanel(p: Profile): HTMLElement | null {
 /** Milliseconds Aro waits after Tapko's line about flown parrots before he says goodbye. */
 const ARO_AFTER_MS = 1800;
 
-export function mapScreen(root: HTMLElement, { focus }: { focus?: 'language' } = {}): () => void {
+/** `locked`: a link named this level, closed for the player; the map says why. */
+export function mapScreen(root: HTMLElement, { focus, locked }: { focus?: 'language'; locked?: LevelRoute } = {}): () => void {
   const p = app.profile!;
   // Notes and parrots flew away, and the magpie came, when the player became active (selectProfile); the map tells it once.
   const notesFlown = untoldFades(p);
@@ -259,8 +261,20 @@ export function mapScreen(root: HTMLElement, { focus }: { focus?: 'language' } =
   // Tapko tells which parrots flew away first, then Aro says goodbye and leaves.
   if (aroLeaves) aro?.flyOff(tList('parrot.goodbye'), false, flown.length ? ARO_AFTER_MS : 0);
   if (aroArrives) aro?.arrive(tList('parrot.arrive'));
-  // One greeting at a time: the install offer waits for a map without the teacher's tip.
-  if (p.id !== SUPER_ID && !teacher) offerInstall(p.companion);
+  // A link to a closed level: why it is closed.
+  if (locked) {
+    const world = routeWorld(locked), level = levelById(locked.id);
+    const say = (line: string) => {
+      bubble.replaceChildren(h('p', {}, line));
+      bubble.hidden = false;
+    };
+    if (world != null && !isWorldUnlocked(p, world)) openWorldKeys(p, world);
+    else if (level && !isLevelReached(p, level)) say(t('map.levelFirst'));
+    else if (level && keysMissing(p, level)) keysBubble(keysMissing(p, level), level.world);
+    else if (world != null && locked.id === 'journey') say(t('map.journeyFirst', { world: worldName(world) }));
+  }
+  // One greeting at a time: the install offer waits for a map without the teacher's tip or a closed level's reason.
+  if (p.id !== SUPER_ID && !teacher && !locked) offerInstall(p.companion);
   // The first word of the parrot's hint typed on the map calls a parrot over the page, the range's sends one of its things across, the map title's opens the treasure map.
   const offParrot = onTypedWord([firstWord(t('map.parrotTip'))], parrotVisit);
   const offRange = onTypedWord([firstWord(t('map.aimTip'))], rangeVisit);

@@ -179,6 +179,8 @@
     "rhythmTip": "Rhythm. Can you type to an even beat? Try it in this game, and you can win this world's note.",
     "parrotHome": "the parrot is at home",
     "sideOpens": "Opens with this world.",
+    "levelFirst": "This level opens once you finish the one before it.",
+    "journeyFirst": "The hero's journey opens once you finish the world {world}.",
     "surpriseHere": "A surprise waits for you here!",
     "surprisesWon": "The surprises that waited for you in this world",
     "surprisesTitle": "Surprises from {world}",

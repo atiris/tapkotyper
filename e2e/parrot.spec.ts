@@ -1,16 +1,5 @@
-import { expect, type Page, test } from '@playwright/test';
-import { createProfile, typeChar } from './helpers';
-
-/** Changes the stored profile and reloads the map. */
-async function editProfile(page: Page, change: string): Promise<void> {
-  await page.evaluate((body) => {
-    const data = JSON.parse(localStorage.getItem('tapkotyper:v1')!);
-    new Function('p', body)(data.profiles[0]);
-    localStorage.setItem('tapkotyper:v1', JSON.stringify(data));
-  }, change);
-  await page.reload();
-  await page.locator('.map-screen').waitFor();
-}
+import { expect, test } from '@playwright/test';
+import { createProfile, editProfile, typeChar } from './helpers';
 
 test('a finished world\'s parrot learns the words and brings the badge', async ({ page }) => {
   const errors: string[] = [];

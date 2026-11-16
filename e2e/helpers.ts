@@ -101,3 +101,15 @@ export async function closeKeysIntro(page: Page): Promise<void> {
   await page.keyboard.press('Space');
   await page.locator('.homerow-card').waitFor({ state: 'detached' });
 }
+
+/** Changes the stored first profile (`change` is a function body getting it as `p`) and reloads the player's map, also from a level's address. */
+export async function editProfile(page: Page, change: string): Promise<void> {
+  await page.evaluate((body) => {
+    const data = JSON.parse(localStorage.getItem('tapkotyper:v1')!);
+    new Function('p', body)(data.profiles[0]);
+    localStorage.setItem('tapkotyper:v1', JSON.stringify(data));
+    history.replaceState(null, '', location.hash.replace(/^(#\/p\/[^/]+).*/, '$1'));
+  }, change);
+  await page.reload();
+  await page.locator('.map-screen').waitFor();
+}

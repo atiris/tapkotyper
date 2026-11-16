@@ -64,7 +64,7 @@ function drawLying(g: G, x: number, glow: number, alpha = 1): void {
 
 /** The beeping pile: its pictures by stage (big, middle, a last small heap) and their heights; three bins right of it. */
 const PILES = ['obj-junk-pile-1', 'obj-junk-pile-2', 'obj-junk-pile-3'];
-const PILE_H = [215, 168, 110];
+const PILE_H = [215, 168, 127];
 const BIN_H = 100;
 const BIN_GAP = 100;
 /** The last bin is this far from the stage's right edge at least, and this far right of him at most (a wide stage keeps the scene together). */

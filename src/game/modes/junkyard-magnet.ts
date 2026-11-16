@@ -18,20 +18,20 @@ const DIRS: Dir[] = ['left', 'right', 'up', 'down'];
 export const EDGE = 2;
 
 /**
- * The plates around the magnet at `place` and how hard each one's word is, never far apart: at the
- * centre the sideways ones are easy and up and down (which keep it there) two words; one step off the
- * way out is easy and the way back two words; two steps off only the way back (two words) and up and down.
+ * The plates around the magnet at `place` and how hard each one's word is, a step apart: the way out
+ * is an ordinary word, up and down (which keep it in place) a long one, and the way back to the centre
+ * a little harder still, two words. Two steps off there is no way out.
  */
 export function platesAt(place: number): Partial<Record<Dir, Ask>> {
   const off = Math.abs(place);
-  if (off === 0) return { left: 'easy', right: 'easy', up: 'two', down: 'two' };
+  if (off === 0) return { left: 'word', right: 'word', up: 'long', down: 'long' };
   const back: Dir = place < 0 ? 'right' : 'left', away: Dir = place < 0 ? 'left' : 'right';
-  if (off === 1) return { [away]: 'easy', [back]: 'two', up: 'normal', down: 'normal' };
-  return { [back]: 'two', up: 'normal', down: 'normal' };
+  if (off === 1) return { [away]: 'word', [back]: 'two', up: 'long', down: 'long' };
+  return { [back]: 'two', up: 'long', down: 'long' };
 }
 
-/** The broken controls move the magnet away by themselves after each quarter of the level (three times). */
-export const DRIFTS = 3;
+/** The broken controls move the magnet away by themselves after each fifth of the level (four times). */
+export const DRIFTS = 4;
 export function driftDue(done: number, count: number, drifts: number): boolean {
   return drifts < DRIFTS && done < count && done >= Math.ceil((count * (drifts + 1)) / (DRIFTS + 1));
 }
@@ -65,13 +65,13 @@ export type Places = Record<Dir, Dir>;
 export const OWN_PLACES: Places = { left: 'left', right: 'right', up: 'up', down: 'down' };
 
 /**
- * The plates get mixed up at two thirds of the level and once more before its end (at two words
- * before it, and at least one move after the first time). `mixedAt`: the words done at each mix so far.
+ * The plates get mixed up at half of the level and once more at three quarters (at least one move
+ * after the first time). `mixedAt`: the words done at each mix so far.
  */
 export function mixDue(done: number, count: number, mixedAt: number[]): boolean {
   if (done >= count) return false;
-  if (mixedAt.length === 0) return done >= Math.ceil((count * 2) / 3);
-  if (mixedAt.length === 1) return done >= Math.max(mixedAt[0] + 1, count - 2);
+  if (mixedAt.length === 0) return done >= Math.ceil(count / 2);
+  if (mixedAt.length === 1) return done >= Math.max(mixedAt[0] + 1, Math.ceil((count * 3) / 4));
   return false;
 }
 
@@ -207,10 +207,10 @@ function boltFallback(g: G, w: number, h: number): void {
  * a pile of screws and gears, on one of five places. Arrow plates around it carry words; a typed
  * plate moves it a step left or right, or lifts it up or dips it down and back. After each move it
  * pulls from the pile: a big piece over the centre, a small screw one step off, nothing at the edge.
- * Two steps off, the level's clock stands still until the magnet comes back. After each quarter of
- * the level the broken controls glide it away from the centre on their own. At two thirds of the
- * level and once more before its end the plates swirl round the magnet to mixed places, none on its
- * own side, so the child reads the arrow, not the side.
+ * Two steps off, the level's clock stands still until the magnet comes back. After each fifth of
+ * the level the broken controls glide it away from the centre on their own. At half of the level
+ * and at three quarters the plates swirl round the magnet to mixed places, none on its own side, so
+ * the child reads the arrow, not the side. Each fault calls out by the magnet.
  */
 export class MagnetMode extends HeroMode {
   readonly world = 'junkyard';
@@ -283,6 +283,7 @@ export class MagnetMode extends HeroMode {
     this.places = mixedPlaces(this.places, (list) => this.L.rng.pick(list));
     this.mixK = 0;
     this.L.sfx('pop');
+    this.fault();
     this.L.tweens.add(this.L.reduceMotion ? 0.01 : MIX_S, (k) => { this.mixK = k; }, ease.inOutQuad, () => {
       this.mixK = null;
       for (const p of this.plates) p.tg.selectable = true;
@@ -307,7 +308,7 @@ export class MagnetMode extends HeroMode {
       this.pull();
       if (this.done >= this.L.count) return this.end();
       const next = () => {
-        if (Math.abs(this.place) >= EDGE && hintAt(++this.edgeVisits)) this.L.say(t('story.magnetBack'), 4);
+        if (Math.abs(this.place) >= EDGE) this.atEdge();
         this.showPlates();
       };
       if (driftDue(this.done, this.L.count, this.drifts)) this.driftAway(next);
@@ -315,10 +316,25 @@ export class MagnetMode extends HeroMode {
     });
   }
 
+  /** At the edge: the first time he calls to come back, then the hint now and then. */
+  private atEdge(): void {
+    if (++this.edgeVisits === 1) {
+      const spot = this.heroSpot();
+      this.L.shout(t('story.magnetCentre'), spot.x, spot.y);
+    }
+    if (hintAt(this.edgeVisits)) this.L.say(t('story.magnetBack'), 4);
+  }
+
+  /** A fault of the controls calls out by the magnet. */
+  private fault(): void {
+    this.L.shout(pickLine('story.magnetFault'), this.magnetX, this.magnetY - MAGNET_H * 0.75);
+  }
+
   /** The controls break for a moment: the magnet hums and glides away from the centre on its own. */
   private driftAway(then: () => void): void {
     this.drifts++;
     this.L.sfx('bzzt');
+    this.fault();
     const to = this.L.rng.pick(driftPlaces(this.place));
     this.slide(to, MOVE_S + DRIFT_STEP_S * (Math.abs(to - this.place) - 1), then);
   }

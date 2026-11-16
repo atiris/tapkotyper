@@ -1113,6 +1113,13 @@
       "The magnet is ready again over a big pile of rusty screws. It looks for parts that could still be recycled and used in new machines. The **closer to the middle** of the pile it is, the easier it **pulls out** something useful. With up and down it stays in place. But watch out, **the controls sometimes break and the magnet moves by itself.** Always follow the arrows by the words and **move the magnet as close to the middle as you can.**"
     ],
     "magnetBack": "Pick the way that brings it back to the middle. It is harder, but it pulls out more.",
+    "magnetCentre": "Back to the middle!",
+    "magnetFault": [
+      "Glitch!",
+      "Error!",
+      "Whirr!",
+      "Grrr!"
+    ],
     "magnetDone": [
       "The magnet pulled out the last big gear too!"
     ],

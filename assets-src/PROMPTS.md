@@ -59,8 +59,8 @@ Notes from real Gemini runs; add new ones here.
 - A crate that a game must fill from the side: an "open top" prompt drew a plain open box. Ask for the closed object seen from the front-left and say nothing about the hidden side; Gemini then draws no right wall.
 - A motion word on an object ("bouncing", "running") makes Gemini add arms and legs. Say
   "no arms, no legs" when the object should stay an object.
-- The common prompt's "friendly faces ... where the object has a face" gives a face to things
-  that should have none (a stone of the fire pit). Say "NO face, no eyes" for every thing.
+- Until 2026-11-16 the common prompt had a "friendly faces ... where the object has a face"
+  sentence that gave faces to things (a fire-pit stone, a bolt, a gear); now it forbids them.
 - A word for a part is taken literally: "a pale cream heart" (the flame's core) drew a heart
   shape. Name the shape instead ("a soft pale cream teardrop core").
 - A near band the owner drew as one tall picture kept a soft pink halo on its grass tips that no
@@ -72,9 +72,8 @@ Notes from real Gemini runs; add new ones here.
 - A vague technical object ("a round gate with three panels") turns into a character with a
   face. Describe the shape concretely (material, how the parts are split, where they meet),
   add "no face" and "strictly front view, symmetrical".
-- The common sprite prompt ("faces where the object has a face", "side view facing right")
-  gives flat things like a picture frame a face and a skewed shape. For such objects say
-  "no face, no eyes" and "strictly front view, not tilted".
+- The common sprite prompt's "side view facing right" gives flat things like a picture frame
+  a skewed shape. For such objects say "strictly front view, not tilted".
 - When the game draws a state itself (battery charge bars, a glowing ring), ask for the
   empty or neutral state, otherwise Gemini fills it with colors.
 - The "flat" background is never perfectly flat: magenta varies by about 40 in the green
@@ -576,7 +575,7 @@ flat storybook style and no longer apply.
 
 ### Common prompt (replace OBJECT and BG)
 ```
-Cute, soft 2D children's storybook illustration, flat vector style with gentle gradients, rounded friendly shapes, soft dark-brown outlines (not black), warm pastel palette, light soft shading. Friendly faces with big eyes and small smiles where the object has a face. Calm, never scary, suitable for children and young teens aged 10 to 15. No text, no letters, no watermark.
+Cute, soft 2D children's storybook illustration, flat vector style with gentle gradients, rounded friendly shapes, soft dark-brown outlines (not black), warm pastel palette, light soft shading. Things are plain things: NO faces, NO eyes, no mouth on objects; only animals and characters have faces. Calm, never scary, suitable for children and young teens aged 10 to 15. No text, no letters, no watermark.
 
 A single game object, shown alone: OBJECT. Side view facing right unless said otherwise, centered, full object visible, wide empty margin. Background: one perfectly flat solid pure BG, no gradient, no shadow, no floor, no other objects. Square image.
 ```
@@ -1048,6 +1047,7 @@ Hand-drawn Japanese anime background art, clearly a drawing and not a photo: ver
 | `obj-can.jpg` | (redone 2026-11-16, no face) as the tire: ONE old rusty tin can standing. NO face, NO eyes, no mouth: it is a plain thing | magenta |
 | `obj-spring.jpg` | (redone 2026-11-16, no face) as the tire: ONE big coiled metal spring standing upright, thick wire, few turns. NO face, NO eyes, no mouth, no arms, no legs: it is a plain thing (no "bouncing") | magenta |
 | `obj-bike-wheel.jpg` | (2026-11-16) as the tire: ONE old bicycle wheel with thin spokes and a dark tire, a little bent. NO face, NO eyes, no mouth: it is a plain thing. Strictly side view of the wheel as a round disc | magenta |
+| `obj-wagon-wheel.jpg` | (the owner's picture, 2026-11-16; a junk thing in level 4) an old wooden wagon wheel seen straight from the side: a rim of wooden pieces with iron bands and nails, six wooden spokes, a round hub, no face | magenta |
 | `obj-cable-knot.jpg` | a big tangled knot of soft colorful cables with a friendly face | magenta |
 | | **World 6 rework (plan `.todo/junkyard-world.md`, 2026-11-15):** the section 4 prompt with "NO face, NO eyes, no mouth: it is a plain thing." instead of its friendly-faces sentence, and "no numbers" added to its no-text sentence | |
 | `obj-gear-1.jpg` | ONE old golden gear (warm gold #E8B848, darker #B8862E), a little worn, with a round hole in the middle. Strictly front view, not tilted; NOTHING else (done, first try) | magenta |
@@ -1064,11 +1064,11 @@ Hand-drawn Japanese anime background art, clearly a drawing and not a photo: ver
 | `obj-screw-pile.jpg` | ONE low wide pile of old screws, nuts and small gears in blue-grey steel (#A9B7C6, darker #6F7F92) with a few copper and brass ones, about three times wider than tall. Side view; NOTHING else: no ground, no grass (done, first try) | magenta |
 | `obj-junk-pile-1.jpg` | (2026-11-16, the first and biggest stage) **attach the old pile 1 (now `obj-junk-pile-2.jpg`)**: "the same pile, in exactly the same style, but bigger: add a few more screws lying on the ground in front of it, more metal sheets leaning on it, and a few more pipes on top. Everything in it is a plain thing: NO faces, NO eyes, no mouth. Side view, a bit wider than tall; NOTHING else: no grass, no ground, no shadow" | magenta |
 | `obj-junk-pile-2.jpg` | (the first pile until 2026-11-16, now the middle stage) ONE big pile of mixed old things in a junkyard: a wooden crate, an old tire, a rusty tin can, a bent pipe, a wheel, a spring and a metal plate, heaped together, a bit wider than tall. Side view; NOTHING else: no grass, no ground (done, first try) | magenta |
-| `obj-junk-pile-3.jpg` | (2026-11-16, the smallest stage) **no attachment**: a small low heap of old junk made of only these things: an old dark tire lying in an old cardboard box at the bottom, a metal spring, a small wheel and one smaller rusty grey metal sheet at the bottom; no pipes, no tin cans; NO faces, NO eyes; clearly wider than tall. Side view; NOTHING else: no grass, no ground | magenta |
+| `obj-junk-pile-3.jpg` | (the smallest stage; the owner's picture, 2026-11-16) a small heap of old rusty junk, a bit wider than tall: bent pipes and rusty cans on top, metal sheets behind, an old radio, a toaster, springs and two light bulbs in front, no faces | magenta |
 | `robot-broken-lying.jpg` | **attach `robot-broken.jpg`**, the section 4 prompt without its face sentence: "the same small round robot as in the attached picture, in exactly the same drawing style and colors (light grey-blue metal body, soft rust spots, one leg missing, bent antenna with a tiny orange ball, small claw hands, rivets), but switched off and lying flat on his back on the ground, seen from the side: his head on the left, his one leg on the right, his body horizontal, arms resting at his sides. The body pose must be completely different from the attached picture: clearly lying, not standing, not sitting. His dark glass face is dark and empty: the eyes are switched off, no glowing eyes, no light"; "no ground line" added to the background sentence (done, first try) | magenta |
 | **Workshop** | | |
-| `obj-gear.jpg` | a shiny golden gear | magenta |
-| `obj-bolt.jpg` | a big silver bolt with a nut | magenta |
+| `obj-gear.jpg` | (redone 2026-11-16, no face; first try) ONE shiny golden gear (warm gold), thick, seen a little from the side so its thickness shows, with a round hub and a round hole in the middle. NO face, NO eyes, no mouth: it is a plain thing; "no numbers" added | magenta |
+| `obj-bolt.jpg` | (redone 2026-11-16, no face; first try) ONE big silver bolt with a hexagonal head and a short threaded shank, with a hexagonal silver nut screwed onto the shank, lying on its side. NO face, NO eyes, no mouth: it is a plain thing; "no numbers" added | magenta |
 | `obj-wheel.jpg` | a small rubber wheel | magenta |
 | `obj-antenna.jpg` | a short robot antenna with a yellow ball on top | magenta |
 | `obj-battery.jpg` | a big friendly battery with four empty charge bars on its side | magenta |

@@ -1149,24 +1149,24 @@ describe('the junkyard', () => {
     expect([0, 0.32, 1 / 3, 0.5, 2 / 3, 1].map(pileStage)).toEqual([0, 0, 1, 1, 2, 2]);
   });
 
-  it("the magnet's plates: easy sideways at the centre, the way out easy and the way back two words off it, no way out at the edge", async () => {
+  it("the magnet's plates: an ordinary word out, a long one up and down, two words back to the centre, no way out at the edge", async () => {
     const { platesAt, moved, pullAt } = await import('./junkyard-magnet');
-    expect(platesAt(0)).toEqual({ left: 'easy', right: 'easy', up: 'two', down: 'two' });
-    expect(platesAt(-1)).toEqual({ left: 'easy', right: 'two', up: 'normal', down: 'normal' });
-    expect(platesAt(1)).toEqual({ right: 'easy', left: 'two', up: 'normal', down: 'normal' });
-    expect(platesAt(-2)).toEqual({ right: 'two', up: 'normal', down: 'normal' });
-    expect(platesAt(2)).toEqual({ left: 'two', up: 'normal', down: 'normal' });
+    expect(platesAt(0)).toEqual({ left: 'word', right: 'word', up: 'long', down: 'long' });
+    expect(platesAt(-1)).toEqual({ left: 'word', right: 'two', up: 'long', down: 'long' });
+    expect(platesAt(1)).toEqual({ right: 'word', left: 'two', up: 'long', down: 'long' });
+    expect(platesAt(-2)).toEqual({ right: 'two', up: 'long', down: 'long' });
+    expect(platesAt(2)).toEqual({ left: 'two', up: 'long', down: 'long' });
     expect([moved(0, 'left'), moved(-1, 'left'), moved(1, 'up'), moved(2, 'down'), moved(-2, 'right')]).toEqual([-1, -2, 1, 2, -1]);
     expect([-2, -1, 0, 1, 2].map(pullAt)).toEqual([null, 'small', 'big', 'small', null]);
   });
 
-  it('the magnet drifts away from the centre on its own after each quarter of the level, three times', async () => {
+  it('the magnet drifts away from the centre on its own after each fifth of the level, four times', async () => {
     const { driftDue, driftPlaces } = await import('./junkyard-magnet');
     expect([2, 3].map((d) => driftDue(d, 12, 0))).toEqual([false, true]);
-    expect([5, 6, 9].map((d) => driftDue(d, 12, [5, 6, 9].indexOf(d) === 2 ? 2 : 1))).toEqual([false, true, true]);
-    expect([driftDue(11, 12, 3), driftDue(12, 12, 2)]).toEqual([false, false]);
+    expect([4, 5, 7, 8, 9, 10].map((d, i) => driftDue(d, 12, i < 2 ? 1 : i < 4 ? 2 : 3))).toEqual([false, true, false, true, false, true]);
+    expect([driftDue(11, 12, 4), driftDue(12, 12, 3)]).toEqual([false, false]);
     expect([driftPlaces(0), driftPlaces(-1), driftPlaces(1), driftPlaces(2)]).toEqual([[-2, -1, 1, 2], [-2, 2], [-2, 2], [-2]]);
-    // Played to its end, the magnet drifted off three times.
+    // Played to its end, the magnet drifted off four times.
     const L = levelRuntime(levelById('w6-3')!);
     const m = new MagnetMode(L);
     mode = m;
@@ -1178,16 +1178,16 @@ describe('the junkyard', () => {
         if (res.kind === 'done') m.onDone(res.target);
       }
     }
-    expect([m.progress(), (m as any).drifts]).toEqual([1, 3]);
+    expect([m.progress(), (m as any).drifts]).toEqual([1, 4]);
   });
 
-  it('the plates mix at two thirds and once more two words before the end, never on their own side or where they stood', async () => {
+  it('the plates mix at half and at three quarters of the level, never on their own side or where they stood', async () => {
     const { mixDue, mixedPlaces, OWN_PLACES } = await import('./junkyard-magnet');
-    expect([7, 8].map((d) => mixDue(d, 12, []))).toEqual([false, true]);
-    expect([9, 10, 11, 12].map((d) => mixDue(d, 12, [8]))).toEqual([false, true, true, false]);
-    expect(mixDue(11, 12, [8, 10])).toBe(false);
+    expect([5, 6].map((d) => mixDue(d, 12, []))).toEqual([false, true]);
+    expect([8, 9, 12].map((d) => mixDue(d, 12, [6]))).toEqual([false, true, false]);
+    expect(mixDue(11, 12, [6, 9])).toBe(false);
     // A short level: the second mix still comes a move after the first.
-    expect([mixDue(4, 6, []), mixDue(4, 6, [4]), mixDue(5, 6, [4])]).toEqual([true, false, true]);
+    expect([mixDue(3, 6, []), mixDue(4, 6, [4]), mixDue(5, 6, [4])]).toEqual([true, false, true]);
     const dirs = ['left', 'right', 'up', 'down'] as const;
     let before = OWN_PLACES;
     for (let i = 0; i < 20; i++) {

@@ -1113,6 +1113,13 @@
       "Magnet je znova pripravený nad veľkou kopou hrdzavých skrutiek. Hľadá v nej súčiastky, ktoré by sa ešte dali zrecyklovať a použiť v nových strojoch. Čím je **bližšie k stredu** kopy, tým ľahšie z nej **vytiahne** niečo užitočné. Pri smeroch hore a dole zostáva na mieste. Pozor však, **ovládanie sa niekedy pokazí a magnet sa posunie sám.** Vždy sa riaď šípkami, ktoré sú pri jednotlivých slovách, a **posuň magnet čo najviac do stredu.**"
     ],
     "magnetBack": "Vyber smer, ktorý ho vráti k stredu. Je ťažší, ale vytiahne viac.",
+    "magnetCentre": "Vráť sa na stred!",
+    "magnetFault": [
+      "Porucha!",
+      "Chyba!",
+      "Wrrr!",
+      "Grrr!"
+    ],
     "magnetDone": [
       "Magnet vytiahol aj posledné veľké koliesko!"
     ],

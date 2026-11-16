@@ -143,11 +143,13 @@
   - *Junkyard's own rules*: a missed gear on 6:1 adds two gears and their time (at most 10 words
     added, as the wind's push), the narrator says why the first time; on the magnet's crossroads
     (6:3) the level's clock stops while the magnet is two steps off the centre (words still
-    count) until it comes back a step, and the way back to the centre carries the harder word
-    (two short words against one, never a tiny word against a long sentence); after each quarter
-    of 6:3 the broken controls glide the magnet away from the centre on their own;
-    at two thirds of 6:3 and again two words before its end the plates are mixed up (never on
-    their own side), their words typeable once they stand.
+    count) until it comes back a step; the words are a step apart: the way out an ordinary word,
+    up and down (staying in place) a longer one, the way back to the centre a little harder still
+    (two words), never a tiny word against a long sentence; after each fifth of 6:3 the broken
+    controls glide the magnet away from the centre on their own (four times); at half and at
+    three quarters of 6:3 the plates are mixed up (never on their own side), their words typeable
+    once they stand; each fault calls out by the magnet ("Porucha!", "Grrr!"), and the first time
+    the magnet reaches the edge the character calls to bring it back to the middle.
   - *Cyclic copy* (the placeholder of every level of a world not built yet, see
     [story](story.md)): the world's own background bands, the near one drifting slowly, the character
     at his usual place, and a small sign at the top with the world's name and "Coming soon".
@@ -306,7 +308,8 @@
   the child read the arrow instead of steering by habit (owner, 2026-11-16). A gentle gap
   between the easy and the hard word keeps the choice a choice, not a jump from two letters to a
   sentence, and the magnet drifting off now and then makes steering back part of the level
-  (owner, 2026-11-16).
+  (owner, 2026-11-16); the harder way must really be harder and the way back the hardest, so
+  coming back to the middle is worth it (owner, 2026-11-16).
 - Arcade-style typing is praised as motivating; the peaceful
   variant keeps the fun without destruction or stress.
 - Overlapping words cannot be read, and a child who cannot read the word cannot type it.

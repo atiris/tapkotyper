@@ -70,10 +70,10 @@ const BIN_GAP = 100;
 /** The last bin is this far from the stage's right edge at least, and this far right of him at most (a wide stage keeps the scene together). */
 const BIN_EDGE = 70;
 const BIN_FROM_HERO = 900;
-/** The things that pop off the pile and their heights, each about its size next to the tire (the first two draw as a tire while a picture is missing). */
-const THINGS = ['obj-tire', 'obj-bike-wheel', 'obj-crate', 'obj-can', 'obj-spring', 'obj-nut', 'obj-screw'];
-const THING_INKS = ['#3a3a3e', '#3a3a3e', '#c08a52', '#b9c2cc', '#8a8f98', '#9aa0a8', '#a9b1bb'];
-const THING_H = [56, 64, 50, 34, 42, 24, 30];
+/** The things that pop off the pile and their heights, each about its size next to the tire (the first three, wheels, draw as a tire while a picture is missing). */
+const THINGS = ['obj-tire', 'obj-bike-wheel', 'obj-wagon-wheel', 'obj-crate', 'obj-can', 'obj-spring', 'obj-nut', 'obj-screw'];
+const THING_INKS = ['#3a3a3e', '#3a3a3e', '#8a5a32', '#c08a52', '#b9c2cc', '#8a8f98', '#9aa0a8', '#a9b1bb'];
+const THING_H = [56, 64, 66, 50, 34, 42, 24, 30];
 /** Seconds of a thing's hop off the pile and roll into its bin, and of a slipped thing's fall onto the pile. */
 const OUT_S = 1.6;
 const OUT_HOP = 0.6;
@@ -103,7 +103,7 @@ export function pileLayout(vw: number): { pile: number; bins: number[] } {
 
 /** A thing off the pile while its picture is missing: a tire, or a small rounded block in the thing's colour. */
 function thingFallback(kind: number) {
-  if (kind <= 1) return tireFallback;
+  if (kind <= 2) return tireFallback;
   return (g: G, w: number, h: number): void => {
     g.save();
     g.fillStyle = THING_INKS[kind];

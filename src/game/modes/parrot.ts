@@ -1,5 +1,5 @@
 import { app, pickLine } from '../../app/app';
-import { VH } from '../../engine/loop';
+import { FRONT_W, VH } from '../../engine/loop';
 import { drawSprite, type G } from '../../gfx/draw';
 import { ease } from '../../engine/tween';
 import { t } from '../../i18n/i18n';
@@ -269,12 +269,28 @@ export class ParrotMode extends Mode {
     const x = (TAPKO_X + this.parrotX) / 2, y = VH * 0.36;
     if (this.current) this.L.label(g, this.current, x, y + (1 - this.pop) * 12, size);
     drawSprite(g, 'obj-parrot-perch', this.parrotX, this.perchFoot, PERCH_H, { ax: 0.5, ay: 1 });
-    if (this.flight?.kind !== 'home' || this.flight.t < 0) this.drawParrot(g);
+    if (!this.inFront) this.drawParrot(g);
   }
 
   /** The flight down to Tapko and the parrot on the grass by him are in front of him: it may cross him on the way. */
   renderFront(g: G): void {
-    if (this.flight?.kind === 'home' && this.flight.t >= 0) this.drawParrot(g);
+    if (this.inFront) this.drawParrot(g);
+  }
+
+  /** Share of the way home flown (0-1), eased. */
+  private homeK(t: number): number {
+    return ease.inOutQuad(Math.min(1, t / HOME_S));
+  }
+
+  /**
+   * The parrot on its way home, or home by Tapko, and wholly within the front layer, which reaches only FRONT_W from
+   * the left edge; further right it flies on the stage, else a wide screen would hide it until it came that close.
+   */
+  private get inFront(): boolean {
+    const f = this.flight;
+    if (f?.kind !== 'home' || f.t < 0) return false;
+    if (f.t >= HOME_S || this.L.reduceMotion) return true;
+    return this.parrotX + (this.sitX - this.parrotX) * this.homeK(f.t) + FLY_H <= FRONT_W;
   }
 
   /** The parrot sitting, claws at `y`, facing Tapko (its picture faces right, it is drawn mirrored). */
@@ -306,7 +322,7 @@ export class ParrotMode extends Mode {
       left = k < 0.5;
     } else if (f.kind === 'home') {
       // To the left in a low arc, down to the grass by Tapko.
-      const k = ease.inOutQuad(Math.min(1, f.t / HOME_S));
+      const k = this.homeK(f.t);
       x = px + (this.sitX - px) * k;
       y = py + (this.perchFoot - py) * k - Math.sin(Math.PI * k) * HOME_UP;
       left = true;

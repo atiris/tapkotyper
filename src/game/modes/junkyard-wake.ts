@@ -9,7 +9,7 @@ import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
 import { Detour, lengthen, secondsPerWord } from './kit/egg';
 import { HeroMode } from './kit/hero';
-import { BIN, JUNK_FEET, JUNK_HERO_X, binFallback, pileStage, tireFallback } from './kit/junk';
+import { BIN, BIN_MOUTH_DX, BIN_RIM, JUNK_FEET, JUNK_HERO_X, binFallback, binHop, pileStage, tireFallback, vanishLook } from './kit/junk';
 import { Ribbon, innerWord, knownSentence } from './kit/ribbon';
 
 const FEET = JUNK_FEET;
@@ -67,6 +67,10 @@ const PILES = ['obj-junk-pile-1', 'obj-junk-pile-2', 'obj-junk-pile-3'];
 const PILE_H = [215, 168, 127];
 const BIN_H = 100;
 const BIN_GAP = 100;
+/** The bins stand this much further back (higher) than the path, so the things roll past in front of them; their opening's height. */
+const BIN_BACK = 40;
+const BIN_FOOT = FEET + 10 - BIN_BACK;
+const RIM_Y = BIN_FOOT - BIN_H * BIN_RIM;
 /** The last bin is this far from the stage's right edge at least, and this far right of him at most (a wide stage keeps the scene together). */
 const BIN_EDGE = 70;
 const BIN_FROM_HERO = 900;
@@ -148,6 +152,8 @@ interface Thing {
   x: number;
   y: number;
   rot: number;
+  /** 0-1 of its vanishing at its bin's opening. */
+  vanish: number;
 }
 
 /**
@@ -256,15 +262,15 @@ export class JunkpileMode extends HeroMode {
   /** A thing pops out at the pile's right edge, hops off and rolls into the next bin. */
   private popOut(): void {
     const { pile, bins } = this.layout, h = PILE_H[this.stage];
-    const fromX = pile + h * 0.45, fromY = FEET - h * 0.45, toX = bins[this.nextBin++ % bins.length];
-    this.things.push({ kind: this.L.rng.int(0, THINGS.length - 1), out: true, k: 0, fromX, fromY, toX, toY: FEET - BIN_H * 0.45, x: fromX, y: fromY, rot: 0 });
+    const fromX = pile + h * 0.45, fromY = FEET - h * 0.45, toX = bins[this.nextBin++ % bins.length] + BIN_H * BIN_MOUTH_DX;
+    this.things.push({ kind: this.L.rng.int(0, THINGS.length - 1), out: true, k: 0, fromX, fromY, toX, toY: RIM_Y, x: fromX, y: fromY, rot: 0, vanish: 0 });
     this.L.sfx('pop');
   }
 
   /** A thing appears above the pile, falls onto it and vanishes into it. */
   private dropIn(): void {
     const { pile } = this.layout, h = PILE_H[this.stage], x = pile + this.L.rng.range(-h * 0.3, h * 0.3);
-    this.things.push({ kind: this.L.rng.int(0, THINGS.length - 1), out: false, k: 0, fromX: x, fromY: FEET - h - 150, toX: x, toY: FEET - h * 0.65, x, y: FEET - h - 150, rot: 0 });
+    this.things.push({ kind: this.L.rng.int(0, THINGS.length - 1), out: false, k: 0, fromX: x, fromY: FEET - h - 150, toX: x, toY: FEET - h * 0.65, x, y: FEET - h - 150, rot: 0, vanish: 0 });
   }
 
   /** The text is written: the last stage fades away and Bolt lies there. */
@@ -319,14 +325,15 @@ export class JunkpileMode extends HeroMode {
       th.y = th.fromY + (th.toY - th.fromY) * ease.inOutQuad(th.k);
       return;
     }
-    // It hops off the pile to the ground, rolls along the path, and hops over the bin's rim into it.
+    // It hops off the pile to the ground, rolls along the path in front of the bins, and hops in front of its bin's opening (`toY`), where it vanishes.
     const ground = FEET + 6 - THING_H[th.kind] / 2, hop = 0.25, k = th.k;
     th.x = th.fromX + (th.toX - th.fromX) * ease.inOutQuad(k);
     if (k < hop) th.y = th.fromY + (ground - th.fromY) * (k / hop) - Math.sin((k / hop) * Math.PI) * 40;
     else if (k < OUT_HOP) th.y = ground;
     else {
-      const u = (k - OUT_HOP) / (1 - OUT_HOP);
-      th.y = ground + (th.toY - ground) * u - Math.sin(u * Math.PI) * BIN_H * 0.9;
+      const into = binHop(ground, th.toY, THING_H[th.kind], (k - OUT_HOP) / (1 - OUT_HOP));
+      th.y = into.y;
+      th.vanish = into.vanish;
     }
     th.rot = (th.x - th.fromX) / (THING_H[th.kind] / 2);
   }
@@ -343,7 +350,9 @@ export class JunkpileMode extends HeroMode {
     g.save();
     // A slipped thing fades into the pile over its last third.
     if (!th.out) g.globalAlpha *= Math.min(1, (1 - th.k) * 3);
-    drawSprite(g, THINGS[th.kind], th.x, th.y, THING_H[th.kind], { rot: th.rot }, thingFallback(th.kind));
+    const look = vanishLook(th.vanish);
+    g.globalAlpha *= look.alpha;
+    drawSprite(g, THINGS[th.kind], th.x, th.y, THING_H[th.kind] * look.scale, { rot: th.rot }, thingFallback(th.kind));
     g.restore();
   }
 
@@ -370,10 +379,9 @@ export class JunkpileMode extends HeroMode {
     const fade = 1 - this.pileFade;
     if (this.oldStage >= 0 && this.stageK < 1) this.drawPile(g, this.oldStage, (1 - this.stageK) * fade);
     this.drawPile(g, this.stage, (this.oldStage >= 0 ? this.stageK : 1) * fade);
-    // Things going into a bin are behind its front.
-    for (const th of this.things) if (th.out && th.k >= OUT_HOP) this.drawThing(g, th);
-    for (const x of bins) drawSprite(g, BIN, x, FEET + 10, BIN_H, { ay: 1 }, binFallback);
-    for (const th of this.things) if (!th.out || th.k < OUT_HOP) this.drawThing(g, th);
+    // The bins stand further back: the things roll past in front of them and vanish at their openings.
+    for (const x of bins) drawSprite(g, BIN, x, BIN_FOOT, BIN_H, { ay: 1 }, binFallback);
+    for (const th of this.things) this.drawThing(g, th);
     this.drawWaves(g, pile + h * 0.3, FEET - (this.endT !== null ? LYING_H * 0.3 : h * 0.9));
     this.drawHero(g);
     this.ribbon.draw(g, this.endT === null);

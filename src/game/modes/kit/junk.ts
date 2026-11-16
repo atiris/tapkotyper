@@ -129,6 +129,29 @@ export function binFallback(g: G, w: number, h: number): void {
   g.restore();
 }
 
+/** A bin's open top is at this share of its height; its middle is this share of its height (about its width) left of the picture's, as the lid leans on its right. */
+export const BIN_RIM = 0.9;
+export const BIN_MOUTH_DX = -0.15;
+
+/** The last share of a hop into a bin, when the thing vanishes, and how much smaller it gets meanwhile. */
+const VANISH = 0.18;
+const VANISH_SHRINK = 0.25;
+
+/**
+ * A thing `h` high hopping from the height `y0` in front of a bin (which stands further back, higher
+ * up) up over its opening at `rimY` and down in front of it: its middle's height at `w` (0-1), and
+ * 0-1 of its vanishing at the opening's height, where it gets a little smaller and fades out fast.
+ */
+export function binHop(y0: number, rimY: number, h: number, w: number): { y: number; vanish: number } {
+  const lift = y0 + (rimY - y0) / 2 - (rimY - h * 0.6);
+  return { y: y0 + (rimY - y0) * w - Math.sin(w * Math.PI) * lift, vanish: Math.max(0, (w - 1 + VANISH) / VANISH) };
+}
+
+/** A vanishing thing's size factor and opacity (`binHop`). */
+export function vanishLook(vanish: number): { scale: number; alpha: number } {
+  return { scale: 1 - VANISH_SHRINK * vanish, alpha: (1 - vanish) ** 2 };
+}
+
 /** A pile shrinks at these shares of its level (the tire pile, the beeping pile). */
 export const PILE_STAGES = [1 / 3, 2 / 3];
 

@@ -92,7 +92,7 @@ const OWN_ROUTE: ScreenName[] = ['map', 'wardrobe', 'progress', 'tasks', 'parent
 const LINKS: Partial<Record<string, ScreenName>> = { task: 'taskImport', move: 'moveImport', result: 'teacher' };
 
 /** Address of a screen, so a player's map can be bookmarked or put on the desktop. */
-export function routeOf(name: ScreenName, params: { code?: string; tab?: string; key?: string } = {}): string {
+export function routeOf(name: ScreenName, params: { code?: string; tab?: string; key?: string; id?: string; world?: number; story?: string } = {}): string {
   if (name === 'newProfile') return '#/new';
   if (name === 'translate') return '#/translate';
   if (name === 'taskNote') return '#/note';
@@ -102,9 +102,12 @@ export function routeOf(name: ScreenName, params: { code?: string; tab?: string;
   if (name === 'moveImport') return `#/move/${params.code ?? ''}`;
   const id = app.profile?.id;
   // Help's tab; My progress's tab and the key whose statistics it shows (`keys/f`).
+  // A level's id, with its world as the map numbers it (`parrot/w6`) or its story: only so a reported address says where it was; it opens the map.
   const tab = (name === 'help' || name === 'progress') && params.tab
     ? [params.tab, ...(name === 'progress' && params.key ? [params.key] : [])].map((s) => `/${encodeURIComponent(s)}`).join('')
-    : '';
+    : name === 'level' && params.id
+      ? [params.id, ...(params.world != null ? [`w${params.world + 1}`] : []), ...(params.story ? [params.story] : [])].map((s) => `/${encodeURIComponent(s)}`).join('')
+      : '';
   // Help works before a player is chosen too.
   if (name === 'help' && !id) return `#/help${tab}`;
   // The settings without a profile: the device's own, opened from the start page.

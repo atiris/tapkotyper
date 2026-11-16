@@ -870,23 +870,6 @@
     "spaceStart": [
       "Dostal si špeciálnu úlohu: preskúmať zopár planét až k Planéte drakov, kde potrebujú tvoju pomoc. **Rýchlosť tvojho písania poháňa** vesmírnu **loď** na tejto ceste, ale oveľa lepšie je letieť pomalšie a bez chýb ako rýchlo s chybami. V prípade nebezpečenstva **zadaj** správny **príkaz** palubnému počítaču. Ak uvedieš **správny kód** asteroidu, ktorý ti skrížil cestu, **aktivuješ laser**, ktorý blížiaci sa balvan odrazí ako biliardovú guľu. Planéta drakov je však ďaleko. Čo ťa na tejto ceste čaká?"
     ],
-    "world": {
-      "meadow": "Popoludní bude na lúke futbalový zápas. Zvieratká by sa však chceli rozcvičiť a rozhodli sa, že si s tebou **zatrénujú**. Každý vykopnutý list môžeš chytiť tak, že **napíšeš slovo nad ním**. Ak ti niektoré prekĺznu až do brány, nevadí. Vo všetkých cvičeniach je najdôležitejšie písať presne. Nestihnuté slovo nevadí, ani pomalé písanie nevadí, vadí len chyba. Tak poď na to! **Pomaly a presne!**",
-      "space": "Tri, dva, jeden... **štart!** Letíš preskúmať zopár planét až k **Planéte drakov**. **Rýchlosť tvojho písania** poháňa raketu a jemný lúč odsúva meteority z cesty. Oveľa lepšie je letieť pomalšie a bez chýb ako rýchlo s chybami.",
-      "planet": "**Vitaj** na Planéte drakov, na ktorej existujú kúzla a život poháňajú kryštály! **Posledný kryštál** života však už **vyhasol.** Hrozí, že planéta stratí svetlo. Našťastie **máš mapu**, podľa ktorej treba prejsť močiar a lúku, **nájsť** aspoň tri **kryštály života** a prebudiť ich kúzlom. Keď sa ti ich podarí **odniesť** až **ku kamennému monolitu**, život na Planéte drakov **bude zachránený.** **Presnosť** je stále dôležitejšia ako rýchlosť.",
-      "dragons": "Kryštál života rozjasnil planétu, ale **v Údolí drakov je** stále **zhasnutý hrejivý plameň.** Aby sa dráčiky vrátili do údolia, musíš znova rozžiariť dračie ohnisko. **Chyť čo najviac plamienkov** a rozžiar ohnisko tak, aby znova prinieslo teplo a jas do tohto údolia. Potom sem určite prídu aj dráčiky.",
-      "egg": "Plamene, v ktorých sa dráčik zrodil, sú príliš slabé, aby ho prebudili. Vajíčko musíš vyniesť na **Horu prebudenia** do **ohniska drakov**. Cesta hore je dlhá: fúka **silný vietor**, sú tam **lepkavé mláky**, **rázcestia** a **padajúce balvany**. Na vrchole prednesieš **kúzlo prebudenia**.",
-      "junkyard": "Máš novú prácu: **roztriediť veľké šrotisko**. Čakajú ťa kolieska, staré pneumatiky, skrutky a celé kopy haraburdia. A odniekiaľ spod kôp počuť **smutné pípanie**…",
-      "workshop": "Šróbik chce ísť domov, ale **chýbajú mu súčiastky**. Po páse sa vezú kolieska, skrutky a pružiny. **Napíš slovo súčiastky** a hodíš ju do košíka.",
-      "raintown": "Ojoj, začína pršať! Roboti nesmú zmoknúť, inak **zhrdzavejú**. **Napíš slovo na kvapke** a tvoj dáždnik ju zachytí.",
-      "robocity": "Cesta domov vedie cez **Robotické mesto**. Všetky dvere sú zamknuté a na paneloch sú heslá. **Napíš heslo** a dvere sa so zvonením otvoria.",
-      "robohome": "Šróbikov dom je tmavý a všetci roboti spia. **Napíš slovo** a rozsvieti sa lampa. Pomocní roboti sa zobudia a zamávajú.",
-      "garden": "Les stíchol. Nespieva ani vtáčik, nezašumí ani lístok. Priletí malá víla s trblietavými krídlami: „Som **Melódia**. Les zabudol svoje piesne!“ **Napíš slovo** a spiaci púčik sa otvorí. Každý kvet zabzučí jeden tón.",
-      "forestpath": "Vtáčiky na lesnej cestičke zabudli svoje slová. Každý vtáčik potichu zaspieva slovo. **Dobre počúvaj a napíš, čo počuješ.** Ťukni na slovo vtáčika, keď ho chceš počuť znova.",
-      "lilylake": "Jazero je tiché ako zrkadlo. Na hladine sa ukáže slovo a malá vlnka ho zmyje. **Zapamätaj si ho a napíš ho** a rozkvitne lekno.",
-      "musictree": "Uprostred lesa stojí **Hudobný strom**. Na konároch visia nôtky: niektoré spievajú, iné zasvietia a zhasnú. **Počúvaj alebo si zapamätaj**, napíš a nôtka vyletí.",
-      "moonball": "Vychádza mesiac a svetlušky prichádzajú na **ples**. Melódia každej svetluške zaspieva krátku vetu. **Napíš ju** a tanečný parket sa rozžiari."
-    },
     "scenes": {
       "invitation": [
         "Popoludnie na lúke sa končí. Pozri, čo sa našlo v tráve!",

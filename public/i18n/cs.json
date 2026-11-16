@@ -870,23 +870,6 @@
     "spaceStart": [
       "Máš speciální úkol: prozkoumat pár planet až k Planetě draků, kde potřebují tvoji pomoc. **Rychlost tvého psaní pohání** vesmírnou **loď** na této cestě, ale mnohem lepší je letět pomaleji a bez chyb než rychle s chybami. V případě nebezpečí **zadej** správný **příkaz** palubnímu počítači. Když uvedeš **správný kód** asteroidu, který ti zkřížil cestu, **aktivuješ laser**, který blížící se balvan odrazí jako kulečníkovou kouli. Planeta draků je ale daleko. Co tě na téhle cestě čeká?"
     ],
-    "world": {
-      "meadow": "Odpoledne bude na louce fotbalový zápas. Zvířátka by se ale chtěla rozcvičit a rozhodla se, že si s tebou **zatrénují**. Každý vykopnutý list můžeš chytit tak, že **napíšeš slovo nad ním**. Když ti některé proklouznou až do branky, nevadí. Ve všech cvičeních je nejdůležitější psát přesně. Nestihnuté slovo nevadí, ani pomalé psaní nevadí, vadí jen chyba. Tak pojď na to! **Pomalu a přesně!**",
-      "space": "Tři, dva, jedna... **start!** Letíš prozkoumat pár planet až k **Planetě draků**. **Rychlost tvého psaní** pohání raketu a jemný paprsek odsouvá meteority z cesty. Mnohem lepší je letět pomaleji a bez chyb než rychle s chybami.",
-      "planet": "**Vítej** na Planetě draků, na které existují kouzla a život pohánějí krystaly! **Poslední krystal** života už ale **vyhasl.** Hrozí, že planeta ztratí světlo. Naštěstí **máš mapu**, podle které je potřeba projít močál a louku, **najít** aspoň tři **krystaly života** a probudit je kouzlem. Když se ti je podaří **odnést** až **ke kamennému monolitu**, život na Planetě draků **bude zachráněn.** **Přesnost** je pořád důležitější než rychlost.",
-      "dragons": "Krystal života rozjasnil planetu, ale **v Údolí draků je** pořád **zhasnutý hřejivý plamen.** Aby se dráčci vrátili do údolí, musíš znovu rozzářit dračí ohniště. **Chyť co nejvíc plamínků** a rozzař ohniště tak, aby znovu přineslo teplo a jas do tohoto údolí. Potom sem určitě přijdou i dráčci.",
-      "egg": "Plameny, ve kterých se dráček zrodil, jsou příliš slabé, aby ho probudily. Vajíčko musíš vynést na **Horu probuzení** do **ohniště draků**. Cesta nahoru je dlouhá: fouká **silný vítr**, jsou tam **lepkavé louže**, **rozcestí** a **padající balvany**. Na vrcholu přednese tvoje postavička **kouzlo probuzení**.",
-      "junkyard": "Máš novou práci: **roztřídit velké šrotiště**. Čekají tě kolečka, staré pneumatiky, šrouby a celé hromady haraburdí. A odněkud zpod hromad je slyšet **smutné pípání**…",
-      "workshop": "Šroubek chce jít domů, ale **chybějí mu součástky**. Po pásu se vezou kolečka, šroubky a pružiny. **Napiš slovo součástky** a hodíš ji do košíku.",
-      "raintown": "Jejda, začíná pršet! Roboti nesmí zmoknout, jinak **zrezivějí**. **Napiš slovo na kapce** a tvůj deštník ji zachytí.",
-      "robocity": "Cesta domů vede přes **Robotické město**. Všechny dveře jsou zamčené a na panelech jsou hesla. **Napiš heslo** a dveře se se zvoněním otevřou.",
-      "robohome": "Šroubkův dům je tmavý a všichni roboti spí. **Napiš slovo** a rozsvítí se lampa. Pomocní roboti se probudí a zamávají.",
-      "garden": "Les ztichl. Nezpívá ani ptáček, nezašumí ani lísteček. Přiletí malá víla s třpytivými křídly: „Jsem **Melodie**. Les zapomněl své písně!“ **Napiš slovo** a spící poupě se otevře. Každá květina zabzučí jeden tón.",
-      "forestpath": "Ptáčci na lesní cestičce zapomněli svá slova. Každý ptáček potichu zazpívá slovo. **Dobře poslouchej a napiš, co slyšíš.** Ťukni na slovo ptáčka, když ho chceš slyšet znovu.",
-      "lilylake": "Jezero je tiché jako zrcadlo. Na hladině se ukáže slovo a malá vlnka ho smyje. **Zapamatuj si ho a napiš ho** a rozkvete leknín.",
-      "musictree": "Uprostřed lesa stojí **Hudební strom**. Na větvích visí notičky: některé zpívají, jiné zasvítí a zhasnou. **Poslouchej nebo si zapamatuj**, napiš a notička vyletí.",
-      "moonball": "Vychází měsíc a světlušky přicházejí na **ples**. Melodie každé světlušce zazpívá krátkou větu. **Napiš ji** a taneční parket se rozzáří."
-    },
     "scenes": {
       "invitation": [
         "Odpoledne na louce končí. Podívej, co se našlo v trávě!",

@@ -4,9 +4,9 @@
 The child travels through worlds grouped into stories. Each world has several short
 levels and ends with a super-obstacle and a reward that opens the next world. The story
 is told on the get-ready card before each level, never in a scene of its own before play:
-the first time the first level of a world is played, the card tells the world's story (what
-happened, where the child is and what to type, the key phrases in bold); every other time the
-level's own story line. Only the reward of a finished world is a short scene (a few lines of
+always the level's own story line (what happened, where the child is and what to type, the key
+phrases in bold), the same every time the level is played, so the first run never differs from
+the later ones. Only the reward of a finished world is a short scene (a few lines of
 text and a simple animation), opened from the results; the round X of its text panel, Skip
 and Esc end it.
 The child plays as their character ([the character](../companion/tapko.md)); a narrator
@@ -18,8 +18,7 @@ Only the first six worlds (meadow, rocket, planet, valley, egg mountain, junkyar
 world is redone, all five of its levels, the super level too, play one simple placeholder
 game, **cyclic copy** ([mechanics](mechanics.md)), so the child still progresses: playing a
 level's round time unlocks the next one, and new letters keep coming as in any level. The
-get-ready card says the level is still being made instead of its story (the world's story is
-kept for when the world is built), and a small sign at the top says "Coming soon". World
+get-ready card says the level is still being made instead of its story, and a small sign at the top says "Coming soon". World
 names, map cards, badges, rewards, reward scenes, key needs and the story unlock rules stay
 as they are. The world descriptions marked *not built yet* ([later stories](story-later.md)) are the design to build.
 

@@ -27,7 +27,7 @@ import { accuracyRing, placeRing, rhythmRing, roundButton, speedRing } from '../
 import type { WordSource } from '../words/words';
 import { SUPER_ID, type Surprise, type TaskSpec } from '../storage/schema';
 import type { LevelDef } from './levels';
-import { WORLDS, grownCount, hasMinLength, journeyProgress, levelById, levelOver, minActiveS, playedStep, shownProgress, worldName, worldStory } from './levels';
+import { WORLDS, grownCount, hasMinLength, journeyProgress, levelOver, minActiveS, playedStep, shownProgress, worldName } from './levels';
 import { type Mode, driftOffset } from './mode';
 import { ENTER_MAX, EnterMarks } from './enter';
 import type { ModeMaker } from './modes';
@@ -387,12 +387,8 @@ export class LevelRuntime {
     // The `important` sound level plays here: Rytmus is played to its music, a dictation is heard.
     audio.setImportant(this.def.kind === 'rhythm' || this.reading.dictating);
     this.reading.paint();
-    // The level's story and what it asks in particular, both on the one get-ready card; the first
-    // level of a world tells the world's story instead of its own the first time.
-    // A world not built yet keeps its story for when it is: its placeholder says what it plays instead.
-    const opening = this.def.kind !== 'copyloop' && levelById(this.def.id)?.index === 0 ? `world-${WORLDS[this.def.world]}` : null;
-    const told = opening && !p.progress.scenesSeen.includes(opening) ? worldStory(this.def.world) : null;
-    const story = [told ?? (journey?.line ? t(journey.line) : this.mode.startLine()), this.mode.intro()].filter(Boolean).join(' ') || null;
+    // The level's story and what it asks in particular, both on the one get-ready card.
+    const story = [journey?.line ? t(journey.line) : this.mode.startLine(), this.mode.intro()].filter(Boolean).join(' ') || null;
     if (!this.opts.keys) await this.readyCard(() => showPosture(host, p, tip, this.surprise, voiceNote, story, journey ? t('journey.harder') : null, teaches ? undefined : t('level.placement')));
     if (this.disposed) return;
     // The first run on this device that holds several keys checks how many keys the keyboard reports at once.
@@ -407,10 +403,6 @@ export class LevelRuntime {
       const level = await rhythmSoundCard(host);
       if (this.disposed) return;
       if (level) setSound(level);
-    }
-    if (opening && told) {
-      p.progress.scenesSeen.push(opening);
-      saveProfile();
     }
     this.begin();
   }

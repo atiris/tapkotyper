@@ -16,7 +16,7 @@ The five built worlds of the first story, part of [the story](story.md); level b
    the hedgehog who missed the match and wants to play too, a good player, so it is harder (5). Typing the word sends the leaf faster into the gloves, which
    rise with it step by step and reach its height just as it arrives, so they always catch it: in the middle band when it was typed before the kick or kicked up there,
    else at its own height. The caught leaf fades away in the gloves, and its creature turns
-   and goes home. The world's story and the level's start line tell exactly this, on the get-ready
+   and goes home. The level's start line tells exactly this, on the get-ready
    card of every story level under its title; the training's text ends with the rule of every exercise: type accurately, a missed word or slow typing does not matter, only a mistake does ("Slowly and accurately!"). A leaf not typed in time flies past: a goal, everybody cheers (a "GOAL!" pop,
    the creature's joy before it leaves, but no words from the narrator, which would nag), so a miss is
    a laugh, not a failure. The leaf size shows the word length at a glance. Animals are

@@ -258,10 +258,6 @@
       "title": "The character and fairy Melody",
       "about": "Lines that the character or the fairy Melody say during and after play. One line from each group is picked at random."
     },
-    "story-worlds": {
-      "title": "World stories",
-      "about": "The story of each world, shown on the get-ready card before its first level the first time. **phrase** marks highlight a phrase in bold."
-    },
     "story-scenes": {
       "title": "Story scenes",
       "about": "Short reward scenes of a few lines, shown after a world is finished."
@@ -807,21 +803,6 @@
     "fairy.mistake": "Fairy Melody after two mistakes in a row in the fairy story; one line is picked at random.",
     "fairy.done": "Fairy Melody after finishing a level in the fairy story; one line is picked at random.",
     "story.next": "The Next button in a story scene; on the last line it becomes Continue.",
-    "story.world.meadow": "Story of the meadow (world 1), on the get-ready card before its first level the first time; **phrase** is shown in bold.",
-    "story.world.space": "Story of space (world 2), on the get-ready card before its first level the first time; **phrase** is shown in bold.",
-    "story.world.planet": "Story of the dragons' planet (world 3), on the get-ready card before its first level the first time; **phrase** is shown in bold.",
-    "story.world.dragons": "Story of Dragon Valley (world 4), on the get-ready card before its first level the first time; **phrase** is shown in bold.",
-    "story.world.egg": "Story of the egg mountain world (world 5), on the get-ready card before its first level the first time; **phrase** is shown in bold.",
-    "story.world.junkyard": "Story of the junkyard (world 6), the start of the robot story: the child got the job of sorting a big junkyard and hears a sad beeping under the piles (Bolt, not named yet); on the get-ready card before its first level the first time; **phrase** is shown in bold.",
-    "story.world.workshop": "Story of the workshop (world 7), on the get-ready card before its first level the first time; **phrase** is shown in bold.",
-    "story.world.raintown": "Story of the rain in town (world 8), on the get-ready card before its first level the first time; **phrase** is shown in bold.",
-    "story.world.robocity": "Story of Robot City (world 9), on the get-ready card before its first level the first time; **phrase** is shown in bold.",
-    "story.world.robohome": "Story of Bolt's home (world 10), on the get-ready card before its first level the first time; **phrase** is shown in bold.",
-    "story.world.garden": "Story of the garden (world 11), the start of the fairy story; Melody speaks too, on the get-ready card before its first level the first time; **phrase** is shown in bold.",
-    "story.world.forestpath": "Story of the forest path (world 12), on the get-ready card before its first level the first time; **phrase** is shown in bold.",
-    "story.world.lilylake": "Story of the lake (world 13), on the get-ready card before its first level the first time; **phrase** is shown in bold.",
-    "story.world.musictree": "Story of the Music Tree (world 14), on the get-ready card before its first level the first time; **phrase** is shown in bold.",
-    "story.world.moonball": "Story of the moonlit ball (world 15), on the get-ready card before its first level the first time; **phrase** is shown in bold.",
     "story.scenes.invitation": "Scene after finishing the meadow (world 1), a reward from the results screen.",
     "story.scenes.landing": "Scene after finishing space (world 2), a reward from the results screen.",
     "story.scenes.force": "Scene after finishing the new planet (world 3), a reward from the results screen.",

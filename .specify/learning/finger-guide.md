@@ -37,8 +37,7 @@
   session's preparation tip when one is due, else one random reminder (sit straight, feet on
   the floor, wrists relaxed, index fingers on the `F` and `J` bumps, eyes on the screen); a
   stretching tip says it is for a short break. On the right the title on the line of the close
-  button, under it the story in a larger paragraph centered in the room left, with its key phrases highlighted (the world's story the first time in a
-  world, else the level's: what happens and what to type, with what the level asks in
+  button, under it the story in a larger paragraph centered in the room left, with its key phrases highlighted (the level's story: what happens and what to type, with what the level asks in
   particular, such as the main gate's whole code without a mistake), no instructions in it;
   the story is not said again in a bubble when play starts. At the bottom, however short the
   story, the space bar, a drawn key. Under the picture, below its line and in its letters, "Fingers

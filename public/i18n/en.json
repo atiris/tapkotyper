@@ -870,23 +870,6 @@
     "spaceStart": [
       "You have a special mission: explore a few planets, all the way to the Dragons' Planet, where they need your help. **Your typing speed drives** the **spaceship** on this journey, but flying slower without mistakes is much better than fast with mistakes. When there is danger, **give** the right **command** to the ship's computer. If you enter the **right code** of the asteroid that crossed your way, you **switch on the laser**, which bounces the coming rock away like a billiard ball. But the Dragons' Planet is far away. What waits for you on this journey?"
     ],
-    "world": {
-      "meadow": "This afternoon there is a football match on the meadow. The animals would like to warm up first, so they decided to **train with you**. You catch every leaf they kick when you **type the word above it**. If some slip into the goal, never mind. In all exercises the most important thing is to type accurately. A missed word does not matter, slow typing does not matter either, only a mistake matters. So let us go! **Slowly and accurately!**",
-      "space": "Three, two, one... **lift off!** You fly off to explore a few planets, all the way to the **Dragons' Planet**. **Your typing speed** drives the rocket and a soft beam pushes meteors out of the way. Flying slower without mistakes is much better than fast with mistakes.",
-      "planet": "**Welcome** to the Dragons' Planet, where spells are real and crystals power life! But the **last crystal** of life has **gone dark.** The planet may lose its light. Luckily you **have a map**: cross the swamp and the meadow, **find** at least three **crystals of life** and wake them with a spell. When you **carry** them all the way **to the stone monolith**, life on the Dragons' Planet **will be saved.** **Accuracy** still matters more than speed.",
-      "dragons": "The crystal of life lit up the planet, but **in the Dragons' Valley** the **warm fire is** still **out.** For the baby dragons to come back to the valley, you must light the dragon fire pit again. **Catch as many little flames as you can** and light the fire pit, so it brings warmth and light back to this valley. Then the baby dragons will surely come too.",
-      "egg": "The flames the little dragon was born in are too weak to wake it. You must carry the egg up the **Mountain of Awakening** to the **dragons' hearth**. The way up is long: a **strong wind** blows, there are **sticky puddles**, **crossroads** and **rolling boulders**. On the summit you will say the **spell of awakening**.",
-      "junkyard": "You have a new job: **sorting a big junkyard**. Gears, old tires, screws and whole piles of junk are waiting for you. And from somewhere under the piles comes a **sad beeping**…",
-      "workshop": "Bolt wants to go home, but **he is missing some parts**. Gears, bolts and springs ride along the conveyor belt. **Type a part's word** and toss it into the basket.",
-      "raintown": "Oh no, it starts to rain! Robots must not get wet, or they **rust**. **Type the word on a raindrop** and your umbrella catches it.",
-      "robocity": "The way home leads through **Robot City**. All doors are locked and the panels show passwords. **Type a password** and the door opens with a chime.",
-      "robohome": "Bolt's home is dark and all the robots are asleep. **Type a word** and a lamp switches on. The helper robots wake up and wave hello.",
-      "garden": "The forest has gone quiet. Not a bird sings, not a leaf rustles. A tiny fairy with shimmering wings flies up to you: \"I am **Melody**. The forest forgot its songs!\" **Type a word** and a sleeping bud opens. Each flower hums one note.",
-      "forestpath": "The birds on the forest path forgot their words. Each bird sings a word quietly. **Listen well and type what you hear.** Tap a bird's word if you want to hear it again.",
-      "lilylake": "The lake is still as a mirror. A word shows on the water, then a little wave washes it away. **Remember it and type it**, and a lily blooms.",
-      "musictree": "In the middle of the forest stands the **Music Tree**. Its notes hang on the branches: some sing, some glow and then fade. **Listen or remember**, then type, and the note flies up.",
-      "moonball": "The moon rises and the fireflies come to the **ball**. Melody sings a short sentence for each firefly. **Type it** and the dance floor lights up."
-    },
     "scenes": {
       "invitation": [
         "The afternoon on the meadow is over. Look what you found in the grass!",

@@ -72,11 +72,6 @@ export function worldName(world: number): string {
   return t(`worlds.${WORLDS[world]}`);
 }
 
-/** A world's opening story, told on its first level. */
-export function worldStory(world: number): string {
-  return t(`story.world.${WORLDS[world]}`);
-}
-
 export interface StoryDef {
   id: 'dragon' | 'robot' | 'fairy';
   /** The story's difficulty step (0-2): its level lengths, words a minute, slips and parrot rounds. */

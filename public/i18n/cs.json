@@ -408,7 +408,7 @@
     "memoryTip": "Slovo se na chvíli ukáže a skryje se. Napiš ho zpaměti.",
     "sticky": "Lepivý prst",
     "stickyTip": "Jeden prst drží svou klávesu, ostatní píšou.",
-    "stickyNeeds": "Nejdřív si vyber aspoň {n} klávesy každé ruky.",
+    "stickyNeeds": "Nejdřív si vyber aspoň {n} klávesy každé ruky, mezi nimi a, e, i, o.",
     "start": "Začít"
   },
   "freeType": {
@@ -1799,7 +1799,7 @@
       "transcribe": "**Přepis**: cvičení na sledování, kde v předloze jsi. Blok, do kterého píšeš, je jinak široký, takže sleduješ víc míst na obrazovce najednou.",
       "listen": "**Odposlech**: slovo nevidíš, jen slyšíš. Napiš, co slyšíš. Když chvíli nepíšeš, zopakuje se.",
       "remember": "**Tajná slova**: slovo se ukáže jen na chvilku a schová se. Zapamatuj si ho a napiš ho zpaměti.",
-      "sticky": "**Lepivý prst**: jeden prst se přilepí na svou klávesu a drží ji, zatímco ostatní prsty píšou. Když ji pustíš, hra počká, až ji znovu stiskneš.",
+      "sticky": "**Lepivý prst**: jeden prst se přilepí na svou klávesu a drží ji, zatímco ostatní prsty píšou. Když ji pustíš, hra počká, až ji znovu stiskneš. Tahle hra vyžaduje znát klávesy a, e, i, o.",
       "aim": "**Střelnice**: slova plná písmen, která ti ještě nejdou. Každé slovo hodí věc přes kroužky až do terče.",
       "parrot": "**Papoušek**: pár slov mnohokrát za sebou. Papoušek každé zopakuje. Za chybu přijde slovo ještě dvakrát.",
       "rhythm": "**Rytmus**: písmena padají z obláčků, každé na úder hudby. Stiskni klávesu, když je písmeno v zářivém pásu nad košíkem, a košík ho chytí. Za výborný rytmus získáš rytmickou notu. Nejdřív přesně, potom do rytmu.",

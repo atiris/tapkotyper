@@ -788,7 +788,7 @@
     "practiceKeys.memoryTip": "Tooltip of the Remember it button, and the line under the buttons when it is selected.",
     "practiceKeys.sticky": "Button of the sticky finger way of typing: one finger holds its home key while the other fingers type.",
     "practiceKeys.stickyTip": "Tooltip of the Sticky finger button, and the line under the buttons when it is selected.",
-    "practiceKeys.stickyNeeds": "Tooltip of the Sticky finger button while too few keys of a hand are chosen; {n} is the minimum per hand.",
+    "practiceKeys.stickyNeeds": "Tooltip of the Sticky finger button while too few keys of a hand, or not all of a, e, i, o, are chosen; {n} is the minimum per hand.",
     "practiceKeys.start": "Button in the key-choosing window that starts the exercise.",
     "freeType.start": "The character, at the start of free typing.",
     "freeType.hint": "Quiet hint on the free typing screen while nothing is typed.",

@@ -408,7 +408,7 @@
     "memoryTip": "Slovo sa na chvíľu ukáže a skryje sa. Napíš ho spamäti.",
     "sticky": "Lepkavý prst",
     "stickyTip": "Jeden prst drží svoj kláves, ostatné píšu.",
-    "stickyNeeds": "Najprv si vyber aspoň {n} klávesy každej ruky.",
+    "stickyNeeds": "Najprv si vyber aspoň {n} klávesy každej ruky, medzi nimi a, e, i, o.",
     "start": "Začať"
   },
   "freeType": {
@@ -1799,7 +1799,7 @@
       "transcribe": "**Prepis**: cvičenie na sledovanie, kde si v predlohe. Blok, do ktorého píšeš, je inak široký, takže sleduješ viac miest na obrazovke naraz.",
       "listen": "**Odposluch**: slovo nevidíš, iba počuješ. Napíš, čo počuješ. Keď chvíľu nepíšeš, zopakuje sa.",
       "remember": "**Tajné slová**: slovo sa ukáže len na chvíľu a schová sa. Zapamätaj si ho a napíš ho spamäti.",
-      "sticky": "**Lepkavý prst**: jeden prst sa prilepí na svoj kláves a drží ho, kým ostatné prsty píšu. Keď ho pustíš, hra počká, kým ho znova stlačíš.",
+      "sticky": "**Lepkavý prst**: jeden prst sa prilepí na svoj kláves a drží ho, kým ostatné prsty píšu. Keď ho pustíš, hra počká, kým ho znova stlačíš. Táto hra vyžaduje poznať klávesy a, e, i, o.",
       "aim": "**Strelnica**: slová plné písmen, ktoré ti ešte nejdú. Každé slovo hodí vec cez krúžky až do terča.",
       "parrot": "**Papagáj**: pár slov veľakrát za sebou. Papagáj každé zopakuje. Za chybu príde slovo ešte dvakrát.",
       "rhythm": "**Rytmus**: písmená padajú z obláčikov, každé na úder hudby. Stlač kláves, keď je písmeno v žiarivom páse nad košíkom, a košík ho chytí. Za výborný rytmus získaš rytmickú notu. Najprv presne, potom do rytmu.",

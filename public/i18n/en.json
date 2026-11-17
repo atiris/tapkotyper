@@ -408,7 +408,7 @@
     "memoryTip": "The word shows for a moment and hides. Type it from memory.",
     "sticky": "Sticky finger",
     "stickyTip": "One finger holds its key, the others type.",
-    "stickyNeeds": "First choose at least {n} keys of each hand.",
+    "stickyNeeds": "First choose at least {n} keys of each hand, a, e, i and o among them.",
     "start": "Start"
   },
   "freeType": {
@@ -1799,7 +1799,7 @@
       "transcribe": "**Transcribe**: practice in keeping track of where you are in the original. The block you type into has a different width, so you watch several places on the screen.",
       "listen": "**Dictation**: you do not see the word, you only hear it. Type what you hear. When you wait a while, it is said again.",
       "remember": "**Secret words**: a word shows only for a moment and hides. Remember it and type it from memory.",
-      "sticky": "**Sticky finger**: one finger sticks to its key and holds it while the other fingers type. When you let go, the game waits until you press it again.",
+      "sticky": "**Sticky finger**: one finger sticks to its key and holds it while the other fingers type. When you let go, the game waits until you press it again. This game needs the keys a, e, i and o.",
       "aim": "**Target range**: words full of the letters you still miss. Each word throws a thing through the rings into the target.",
       "parrot": "**Parrot**: a few words many times in a row. The parrot repeats each one. A slip brings the word twice more.",
       "rhythm": "**Rhythm**: letters fall from the clouds, each on a beat of the music. Press the key while the letter is in the glowing band over the basket and the basket catches it. A great rhythm earns you a rhythm note. Accurate first, then in rhythm.",

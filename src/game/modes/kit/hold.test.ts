@@ -4,13 +4,13 @@ import { LAYOUTS } from '../../../keyboard/layouts';
 import { HoldRun, handKeys, holdRounds, holdsSeveral } from './hold';
 
 const SK = fingered(LAYOUTS['sk-qwertz'], 'ergonomic');
-const HOME = ['f', 'j', 'd', 'k', 's', 'l', 'a', 'ô', ' '];
-const MORE = [...HOME, 'g', 'h', 'r', 'u', 't', 'z', 'v', 'n', 'e', 'i'];
+const HOME = ['f', 'j', 'd', 'k', 's', 'l', 'a', 'ô', 'e', 'i', 'o', ' '];
+const MORE = [...HOME, 'g', 'h', 'r', 'u', 't', 'z', 'v', 'n'];
 
 describe('one hand\'s keys', () => {
   it('splits letters by the hand that types them', () => {
-    expect(handKeys(MORE, SK, 'left')).toEqual(['f', 'd', 's', 'a', 'g', 'r', 't', 'v', 'e']);
-    expect(handKeys(MORE, SK, 'right')).toEqual(['j', 'k', 'l', 'ô', 'h', 'u', 'z', 'n', 'i']);
+    expect(handKeys(MORE, SK, 'left')).toEqual(['f', 'd', 's', 'a', 'e', 'g', 'r', 't', 'v']);
+    expect(handKeys(MORE, SK, 'right')).toEqual(['j', 'k', 'l', 'ô', 'i', 'o', 'h', 'u', 'z', 'n']);
   });
 
   it('leaves out letters that need the other hand (an accent key, Shift) and the space bar', () => {
@@ -23,12 +23,13 @@ describe('one hand\'s keys', () => {
 });
 
 describe('sticky rounds', () => {
-  it('need four letter keys of each hand, F and J among them', () => {
+  it('need four letter keys of each hand, F and J and the vowels a, e, i, o among them', () => {
     expect(holdRounds(['f', 'j', 'd', 'k', 's', 'l'], SK, null)).toBeNull();
-    expect(holdRounds(['d', 'k', 's', 'l', 'a', 'ô', 'e', 'i'], SK, null)).toBeNull();
+    expect(holdRounds(['d', 'k', 's', 'l', 'a', 'ô', 'e', 'i', 'o'], SK, null)).toBeNull();
+    expect(holdRounds(['f', 'j', 'd', 'k', 's', 'l', 'a', 'ô', 'e', 'i'], SK, null)).toBeNull();
     const rounds = holdRounds(HOME, SK, null)!;
     expect(rounds.map((r) => [r.hold, r.side])).toEqual([[['KeyJ'], 'left'], [['KeyF'], 'right']]);
-    expect(rounds[0].keys).toEqual(['f', 'd', 's', 'a']);
+    expect(rounds[0].keys).toEqual(['f', 'd', 's', 'a', 'e']);
   });
 
   it('hold the other home keys while the index finger types once it has enough keys', () => {

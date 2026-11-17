@@ -18,6 +18,8 @@ export interface HoldRound {
 
 /** Fewest known letter keys of each hand a sticky run needs (F and J count). */
 export const MIN_HAND_KEYS = 4;
+/** Vowels a sticky run needs, two of each hand, so each hand's words are real words. */
+export const HOLD_VOWELS = ['a', 'e', 'i', 'o'];
 /** Fewest known letter keys of an index finger for a round where only it types. */
 export const MIN_INDEX_KEYS = 3;
 /** Seconds of active play in a round of a run without its own length. */
@@ -51,14 +53,14 @@ const keyAt = (layout: Layout, code: string): string | undefined => keyByCode(la
 
 /**
  * The rounds of a sticky run for the chosen keys, or null when they are too few (fewer than MIN_HAND_KEYS of a hand,
- * or F or J missing). `rollover`: how many keys this device's keyboard reports at once (null: not checked yet); a round
+ * F or J missing, or a vowel of HOLD_VOWELS). `rollover`: how many keys this device's keyboard reports at once (null: not checked yet); a round
  * never holds more than it lets the typing key through.
  */
 export function holdRounds(keys: readonly string[], layout: Layout, rollover: number | null): HoldRound[] | null {
   const chosen = new Set(keys);
   const left = handKeys(keys, layout, 'left'), right = handKeys(keys, layout, 'right');
   const f = keyAt(layout, INDEX_HOME.left), j = keyAt(layout, INDEX_HOME.right);
-  if (left.length < MIN_HAND_KEYS || right.length < MIN_HAND_KEYS || !f || !j || !chosen.has(f) || !chosen.has(j)) return null;
+  if (left.length < MIN_HAND_KEYS || right.length < MIN_HAND_KEYS || !f || !j || !chosen.has(f) || !chosen.has(j) || !HOLD_VOWELS.every((v) => chosen.has(v))) return null;
   const rounds: HoldRound[] = [
     { hold: [INDEX_HOME.right], side: 'left', keys: left },
     { hold: [INDEX_HOME.left], side: 'right', keys: right },

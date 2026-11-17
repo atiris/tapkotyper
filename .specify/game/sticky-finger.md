@@ -23,10 +23,12 @@
 - **What the child sees:** the on-screen keyboard draws a held key as pressed with a soft golden glow;
   a key that must be held but is up blinks gently (no blink with reduced motion). The hands rest a
   golden fingertip on each held key. The held key's own press is never a typed letter.
-- **Enough keys:** a run needs at least 4 known letter keys of each hand, F and J among them. With
+- **Enough keys:** a run needs at least 4 known letter keys of each hand, F and J among them, and
+  the vowels a, e (left hand) and i, o (right hand), so each hand's targets are real words. With
   fewer the button in the key picker is greyed out and its tooltip says "Najprv si vyber aspoň 4
-  klávesy každej ruky." / "First choose at least 4 keys of each hand."; a run asked anyway plays as
-  copy typing.
+  klávesy každej ruky, medzi nimi a, e, i, o." / "First choose at least 4 keys of each hand, a, e, i
+  and o among them."; a run asked anyway plays as copy typing. The help's line on the game says
+  it needs the keys a, e, i, o.
 - **The keyboard's limit:** not every keyboard reports several keys held at once (laptop and cheap
   keyboards lose a third or fourth key in some combinations). Before the first run on a device that
   holds two or more keys, a short card asks "Drž A S D a stlač F." and records how many keys arrived

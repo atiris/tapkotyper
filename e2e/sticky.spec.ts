@@ -12,8 +12,11 @@ test('sticky finger: the right index holds J while the left hand types, letting 
   const chip = picker.locator('.chip[data-style="sticky"]');
   // f, j and space only: too few keys of each hand, the chip says why.
   await expect(chip).toHaveAttribute('aria-disabled', 'true');
-  await expect(chip).toHaveAttribute('data-tip', 'First choose at least 4 keys of each hand.');
+  await expect(chip).toHaveAttribute('data-tip', 'First choose at least 4 keys of each hand, a, e, i and o among them.');
   for (const k of ['d', 'k', 's', 'l', 'a', 'h']) await picker.locator(`.kb-key[aria-label="${k}"]`).click();
+  // Enough keys of each hand, but without e, i, o the words would have no vowels.
+  await expect(chip).toHaveAttribute('aria-disabled', 'true');
+  for (const k of ['e', 'i', 'o']) await picker.locator(`.kb-key[aria-label="${k}"]`).click();
   await expect(chip).toHaveAttribute('aria-disabled', 'false');
   await chip.click();
   await expect(picker.locator('.pk-style-hint')).toHaveText('One finger holds its key, the others type.');
@@ -37,7 +40,7 @@ test('sticky finger: the right index holds J while the left hand types, letting 
     await typeChar(page, ch!);
     await page.waitForTimeout(60);
   }
-  expect(new Set(typed.filter((c) => !['f', 'd', 's', 'a'].includes(c)))).toEqual(new Set());
+  expect(new Set(typed.filter((c) => !['f', 'd', 's', 'a', 'e'].includes(c)))).toEqual(new Set());
 
   // Letting J go: the line asks for it back, keys meanwhile do nothing, the scene stands.
   await page.keyboard.up('j');

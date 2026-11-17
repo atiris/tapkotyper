@@ -15,7 +15,7 @@ import { nickname } from '../storage/store';
 import { type InputHandlers, KeyInput, type TypedChar } from '../input/input';
 import { setShortcuts, withKey } from '../input/shortcuts';
 import { ENTER, LAYOUTS, LayoutMismatchDetector, enterAfter, fingerFor, sameCharacters, stepsFor } from '../keyboard/layouts';
-import { SHIFT_L, SPACE, activeKeys, aimKeys, masteryLevel, shiftKeyOf, useLayout } from '../learning/lessons';
+import { SHIFT_L, SPACE, activeKeys, aimKeys, isLetterKey, masteryLevel, shiftKeyOf, useLayout } from '../learning/lessons';
 import { recentTyping, recordPress, recordSession, typingStep } from '../learning/stats';
 import { FINGER_KEYS, KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
 import { HANDS_ARRIVE_S, HANDS_GLIDE_S } from '../ui/hands';
@@ -47,7 +47,7 @@ import { Callouts } from './runtime/callouts';
 import { Friends } from './runtime/friends';
 import { keyCards } from './runtime/key-cards';
 import { Labels } from './runtime/labels';
-import { type RuntimeOptions, wordSource } from './runtime/options';
+import { type RuntimeOptions, targetKeys, wordSource } from './runtime/options';
 import { type Ending, PauseCard, endingOf } from './runtime/pause';
 import { Reading } from './runtime/reading';
 import { LevelState } from './runtime/state';
@@ -81,6 +81,9 @@ const HANDS_AWAY_S = 1;
 const HANDS_BACK_S = 0.5;
 /** Seconds free typing waits before the hands glide onto the keys. */
 const FREE_HANDS_S = 1;
+
+/** The fewest letters a level's targets are made of for its rhythm to be measured. */
+const RHYTHM_LETTERS = 6;
 
 /** A new rhythm measure on the child's current layout. */
 const evennessOf = () => new Evenness((key) => fingerFor(layout(), key));
@@ -159,6 +162,8 @@ export class LevelRuntime {
   readonly speed: Speed;
   /** How even the child's typing is (the rhythm). */
   private evenness = evennessOf();
+  /** Whether the level's targets have enough letters for a rhythm (ring and statistics). */
+  private readonly measuresRhythm: boolean;
   private wrongStreak = { ch: '', n: 0 };
   private wordStreak = 0;
   private lastCheer = 0;
@@ -243,9 +248,12 @@ export class LevelRuntime {
       onBreak: (back) => opts.onBreak(back),
     }, def.kind === 'freetype' ? null : pauseBtn);
     if (p.id === SUPER_ID && def.kind !== 'freetype') this.superHelp = new SuperHelp(this.state, { rng: this.rng, noPressure: this.noPressure, share: () => this.share(), type: (c) => this.onChar(c), beat: () => this.mode.beat, beatDue: () => this.mode.beatDue() });
-    // Rytmus always shows all three: its game is the beat.
+    // Rytmus always shows all three: its game is the beat. Targets of fewer letters than RHYTHM_LETTERS leave nothing
+    // even to measure; free typing, own text and a task type whatever they bring.
     const all = def.kind === 'rhythm', s = p.settings;
-    this.rings = { accuracy: all || s.hudAccuracy ? accuracyRing() : null, rhythm: all || s.hudRhythm ? rhythmRing() : null, speed: all || s.hudSpeed ? speedRing() : null };
+    const ownText = def.kind === 'freetype' || !!def.phrases || !!def.task;
+    this.measuresRhythm = all || ownText || targetKeys(p, opts.keys, opts.chosen).filter(isLetterKey).length >= RHYTHM_LETTERS;
+    this.rings = { accuracy: all || s.hudAccuracy ? accuracyRing() : null, rhythm: all || (s.hudRhythm && this.measuresRhythm) ? rhythmRing() : null, speed: all || s.hudSpeed ? speedRing() : null };
     const { accuracy, rhythm, speed } = this.rings;
     const hud = h('div', { class: 'hud' },
       pauseBtn,
@@ -1173,6 +1181,7 @@ export class LevelRuntime {
 
   /** The level's rhythm for the session: the mode's own (Rytmus' beat), else the evenness of the keys. */
   private get sessionRhythm(): number | null {
+    if (!this.measuresRhythm) return null;
     const own = this.mode.sessionRhythm();
     return own === undefined ? this.evenness.session(this.accuracy) : own;
   }

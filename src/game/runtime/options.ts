@@ -15,8 +15,7 @@ import type { Style } from '../typing';
  * words would bring other letters).
  */
 export function wordSource(p: Profile, lang: LangRef, drill?: string[], chosen?: string[], focus?: string[], hard = false): WordSource {
-  // Practice of space, punctuation or a Shift needs letters around it: the known ones.
-  const keys = chosen ?? (!drill ? activeKeys(p) : drill.every(isLetterKey) ? drill : [...new Set([...activeKeys(p), ...drill])]);
+  const keys = targetKeys(p, drill, chosen);
   const s = p.settings;
   return new WordSource(app.words[lang], {
     keys,
@@ -30,6 +29,12 @@ export function wordSource(p: Profile, lang: LangRef, drill?: string[], chosen?:
     own: drill || chosen || focus ? undefined : { words: s.ownWords, text: s.ownText, share: OWN_SHARE[s.ownMix] },
     pseudo: !!drill,
   });
+}
+
+/** The keys the targets are made of: the chosen ones, a drill's, else the active ones. */
+export function targetKeys(p: Profile, drill?: string[], chosen?: string[]): string[] {
+  // Practice of space, punctuation or a Shift needs letters around it: the known ones.
+  return chosen ?? (!drill ? activeKeys(p) : drill.every(isLetterKey) ? drill : [...new Set([...activeKeys(p), ...drill])]);
 }
 
 export interface RuntimeOptions {

@@ -31,6 +31,9 @@
   count as unevenness. One long hunt makes one bounded mark. The ring shows "…" until about ten pairs
   of strokes are measured, eases toward new values and never sinks while the child is not typing.
   Rhythm never shows better than accuracy allows (no cap from 95 %, at most 50 at 85 %, 0 at 75 %).
+  Rhythm is neither shown nor measured in a level of fewer than six letters (the first meadow levels,
+  a drill of one key): their targets are one letter or one key repeated, so there is nothing even to
+  measure, and a ring stuck on "…" only puzzles the child.
   Rhythm never changes stars and is not on the end card; it goes into the statistics. Rytmus (the
   game) shows its own beat accuracy, beat score and tempo in the same three rings.
 

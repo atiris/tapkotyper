@@ -77,18 +77,52 @@ A reverted change is listed in the stats file with its reason, so a later round 
   thread (meadow-1 at the 0.5 step 54 % busy vs 46 % with blurry labels); dirty-rect redraw of the
   scene canvas or labels as composited DOM may win it back.
 
+## Proposals
+From Fable's audit of the baseline dossier (estimates, not measurements; N normal, SL slow-low,
+SR slow-lowres, B big).
+- Decision: `big` (DPR 2, no GPU) stands for a high-DPI school Chromebook drawing in software, a
+  weak device too, so a gain on big beyond noise counts for the first gate like a slow gain.
+- Round 1 (canvas and pixels):
+  - P1 ribbon ends without the per-frame mask copy (`kit/ribbon.ts` `faded`): SL/SR -80 ms/s, junkyard-4 under budget.
+  - P2 ribbon frame text wrapped once per change, one `fillText` per line: SL/SR -30..60 ms/s.
+  - P3 words layer redrawn only when the labels' look or place changes: SL/SR -30..70 ms/s in calm scenes.
+  - P4 bands scaled once also when the screen is taller than the picture (DPR 2, 768 px stages): B p50 67-83 -> 17-33.
+  - P6 space tint baked into the far band's copy: N/B -30..60 ms/s Commit (with P4).
+  - P7 junkyard-5 monitors drawn once per content change (`drawCached`): SL/SR -80..100 ms/s.
+  - P8 copy row (valley-5) cached per state: SL/SR -40..50 ms/s.
+  - P9a range score text cached (`aim.ts`): SL -40 ms/s.
+- Round 2 (page and styles):
+  - P9b range: find the DOM read after write behind 1549 layouts and Paint 163 ms/s on N.
+  - P10 HUD rings compare before building the SVG and calling `t()`; `covered` from a flag, not a per-frame query: -10..18 ms/s slow, all levels.
+  - P11 Tapko mood without rebuilding the `<img>` stack, hop without a forced layout: SL/SR p95 -10..20 ms in valley-1, space-5.
+  - P12 idle screens: blur and drop-shadow baked or held still, the current node's pulse without box-shadow repaint, Simple floats less: slow busy 78-84 % -> ~45 %.
+- Round 3 (loading, memory, Automatic, looks):
+  - P13 free canvas pixels on leaving a level and find who keeps old stages alive (canvases 6 -> 31 over ten levels).
+  - P14 background picture downloads wait while a level is in play: slow first visit -10..20 ms/s.
+  - P15 Automatic third step, scene at 30 Hz with words every frame: SL Commit about halved; look slightly less fluid, pace unchanged; only if rounds 1-2 leave slow scenes over budget.
+- Dropped: P5 snapping fast-moving bands at DPR 1 in Full - gains only on normal and changes the
+  motion look; the sub-pixel steps at DPR 1 are a deliberate look choice (architecture).
+
 ### Step 1 - Baseline and audit
-- [ ] Opus: full measurement batch (all configurations), SEO guard copies, write the
+- [x] Opus: full measurement batch (all configurations), SEO guard copies, write the
       baseline into `.todo/113-perf-stats.md`.
-- [ ] Opus maps every performance-relevant part (frame loop, stage and scaling, background bands,
+- [x] Opus maps every performance-relevant part (frame loop, stage and scaling, background bands,
       particles, tweens, glows, labels, each mode's draw, HUD/keyboard/hands DOM and CSS, cards and
       blur, start page and map, asset loading and the service worker, memory over levels) to its
       cost in the traces and writes the dossier, all areas, ranked by measured cost.
-- [ ] Fable (audit only, no edits, one call): from the dossier, a ranked list of proposals: cost
+- [x] Fable (audit only, no edits, one call): from the dossier, a ranked list of proposals: cost
       now, expected gain per machine, risk, visual effect, which round.
-- [ ] Opus writes the list (one line each) under `## Proposals` in this plan, grouped into rounds
+- [x] Opus writes the list (one line each) under `## Proposals` in this plan, grouped into rounds
       1-3 below; proposals that break a gate are dropped with the reason.
 - Checks: none beyond the measurement. Commit plan, stats, dossier.
+- Notes: tools (git-ignored, local) `.e2e/perf-batch.mjs <label> [configs]` runs every
+  configuration twice into `.e2e/perf-113/<label>/` (a full batch takes about 2.5 h; pass config
+  names to narrow it); `.e2e/perf-table.mjs <label> [compare]` prints the best-of-two table;
+  `MAPDIR=.e2e/dist-map/assets node .e2e/trace-split.mjs <trace>` splits a trace and maps the top
+  functions to `src/` lines (rebuild `.e2e/dist-map` with `npx vite build --mode e2e --outDir
+  .e2e/dist-map --sourcemap` after code changes); `.e2e/trace-threads.mjs` shows per-thread time.
+  SEO guard copies and the chunk list are in `.e2e/seo-guard/`. In these traces the main
+  thread's `Commit` event is the software canvas raster (the dossier explains it).
 
 ### Step 2 - Round 1: canvas and pixels (scenes, bands, labels, particles, glows)
 - [ ] Opus refreshes the dossier for the round (only its hot spots and ranges, current numbers).

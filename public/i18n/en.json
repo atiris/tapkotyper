@@ -384,7 +384,9 @@
     "parts": "Parts: {n} of {total}",
     "left": "{s} seconds left",
     "words": "Words: {n}",
-    "backTip": "Ends the exercise and shows the results."
+    "backTip": "Ends the exercise and shows the results.",
+    "start": "This exercise is yours, you pick the keys. Type calmly and accurately, speed comes with time.",
+    "startText": "Your own text is waiting. You type all of it in order, part by part, to the very end."
   },
   "practiceKeys": {
     "title": "Which keys will you practise?",

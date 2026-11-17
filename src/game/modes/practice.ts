@@ -31,6 +31,11 @@ export class PracticeMode extends Mode {
     super(L);
   }
 
+  /** No story here: the get-ready card says what the exercise is. */
+  startLine(): string {
+    return t(this.phrases ? 'practice.startText' : 'practice.start');
+  }
+
   start(): void {
     this.next();
   }

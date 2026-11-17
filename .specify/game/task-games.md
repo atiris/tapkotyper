@@ -7,9 +7,10 @@ How a teacher's task plays (its making and hand-in: [teacher links](../profiles/
   only the task's run is kept (its best run counts). The lesson path may still advance after it,
   as after a practice. The parent's surprises and the story friends stay out of it.
 - **Before play:** the new-key cards the levels would show, then the get-ready card titled with
-  the task's name: "Po stlačení medzerníka sa ti spustí úloha na písanie, ktorú si dostal. Píš
-  pozorne a snaž sa písať čo najpresnejšie. Rýchlosť nie je taká dôležitá ako presnosť. Ak sa ti
-  cvičenie nepodarí podľa tvojich predstáv, môžeš to potom skúsiť znova. Veľa šťastia pri písaní."
+  the task's name: "Po stlačení medzerníka sa ti spustí úloha na písanie, ktorú máš od učiteľa.
+  Píš pozorne a snaž sa písať čo najpresnejšie. Rýchlosť nie je taká dôležitá ako presnosť. Ak sa
+  ti cvičenie nepodarí podľa tvojich predstáv, môžeš to potom skúsiť znova. Veľa šťastia pri
+  písaní." The teacher sets only the title; this text is the same for every task.
 - **The scene:** The character stands on the left and does not move; the world's background is drawn as
   in its levels, without its obstacles or other things. The world is the one of the child's next
   level, or for a random task any world of the game, a locked one too (only as a backdrop; nothing

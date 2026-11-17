@@ -767,6 +767,8 @@
     "practice.left": "Counter in timed practice; {s} is the number of seconds left.",
     "practice.words": "Counter in untimed practice; {n} is the number of words typed.",
     "practice.backTip": "Tooltip of the round X button in untimed practice.",
+    "practice.start": "Get-ready card before own typing on the keys the student picked: what this exercise is and how to type it.",
+    "practice.startText": "Get-ready card before the student types the own text added in the settings, whole and in order.",
     "practiceKeys.title": "Heading of the window for choosing keys before own typing.",
     "practiceKeys.about": "First paragraph of the key-choosing window: what own typing is, apart from the worlds.",
     "practiceKeys.intro": "Explanation under the heading of the key-choosing window.",

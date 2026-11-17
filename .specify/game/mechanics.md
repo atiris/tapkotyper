@@ -189,7 +189,9 @@
     never says it.
   - Own practice opens with a short general line: it is not part of going through the worlds,
     the child makes a short exercise to type more accurately and warm up, like a warm-up before
-    a hard mission.
+    a hard mission. Its get-ready card has a story line of its own too, as every level's: the
+    exercise is the child's, typed calmly and accurately; the parent's own text instead says it is
+    typed whole, in order, part by part. A teacher's task has its own fixed line (task games).
   - In own practice the child picks the way to type; each button has a tooltip and one line
     under them says what the chosen one asks: Copy "You see the word and type it.",
     Dictation "You hear the word without seeing it. Type what you hear.", Remember it "The

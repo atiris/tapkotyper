@@ -384,7 +384,9 @@
     "parts": "Části: {n} z {total}",
     "left": "Zbývá {s} sekund",
     "words": "Slova: {n}",
-    "backTip": "Ukončí cvičení a ukáže výsledky."
+    "backTip": "Ukončí cvičení a ukáže výsledky.",
+    "start": "Tohle cvičení je tvoje, klávesy si vybíráš ty. Piš klidně a přesně, rychlost přijde časem.",
+    "startText": "Čeká tě vlastní text. Napíšeš ho celý popořadě, kousek po kousku, až do konce."
   },
   "practiceKeys": {
     "title": "Které klávesy si procvičíš?",

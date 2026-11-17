@@ -125,7 +125,7 @@ SR slow-lowres, B big).
   thread's `Commit` event is the software canvas raster (the dossier explains it).
 
 ### Step 2 - Round 1: canvas and pixels (scenes, bands, labels, particles, glows)
-- [ ] Opus refreshes the dossier for the round (only its hot spots and ranges, current numbers).
+- [x] Opus refreshes the dossier for the round (only its hot spots and ranges, current numbers).
 - [ ] Fable implements the round-1 proposals in iterations; Opus checks and measures slow-low,
       slow-lowres, normal, big on the scenes they touch; keep/revert per gate.
 - Checks per iteration: `npx tsc --noEmit`, `npm test`; at the end `npm run test:affected`.

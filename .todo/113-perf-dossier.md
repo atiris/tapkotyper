@@ -187,3 +187,32 @@ Cells: p50/p95 ms, L long tasks, B busy %. Over budget: slow-low junkyard-4 p95 
   planet-5, junkyard-4, range.
 - Simple, slow: the sharp word-label layer costs 8-12 % of the main thread; dirty-rect redraw of
   the scene canvas or labels as composited DOM may win it back.
+
+## Round 1 (step 2): canvas and pixels - hot spots and ranges
+No source change since the baseline (commit 7fa8e4b), so every number above is current.
+Implement, in this order, one change per proposal (Opus measures each batch on the scenes named):
+- P1 ribbon ends (junkyard-4; SL/SR): `src/game/modes/kit/ribbon.ts:142-168` `faded` clears,
+  repaints and masks an offscreen canvas every frame (72-98 ms/s SL); called from `drawRibbon`
+  175-258. Idea: the fade as a fixed ramp over the ends (plate colour), no mask copy.
+- P2 ribbon frame text (junkyard-4): `drawFrame` 270-333 runs `wrapLines` (59-78) twice a frame
+  and `measureText`+`fillText` per letter; `trim` 335-. Wrap once per text change, one
+  `fillText` per line (ghost letters only where a restart fades them).
+- P3 words layer (Simple; all levels): `src/engine/loop.ts:106-120` `beginWords` +
+  `src/game/runtime/labels.ts:71-133` `Labels.draw`; called from `src/game/runtime.ts:1134-1153`
+  `render`. Redraw the layer only when the set of labels (word, typed, look, rect, clock) changes.
+- P4 bands at DPR 2 / tall stages (big meadow, space, range): `src/gfx/draw.ts:188-206`
+  `fittedTile` returns the picture when `px >= naturalHeight`; `tiled` 212-235 then draws it
+  scaled with `w + 1` each frame. Scale once at that height too (or copy 1:1 when equal).
+- P6 space tint (space; N/B): `src/gfx/draw.ts:321-337` `band` i=0 fills a full-screen rgba
+  over the far band every frame; bake it into the far band's fitted copy (with P4).
+- P7 junkyard-5 monitors: `src/game/modes/junkyard-wake.ts:594-595` render ->
+  `drawMonitor` 605-622 (shadowBlur 10 in Full), `drawSource` 627-648, `drawTarget` 650-;
+  draw each monitor through `drawCached` (`src/gfx/draw.ts:63-79`, keep 16) keyed by its
+  content; the blinking cursor stays live on top.
+- P8 copy row (valley-5): `src/game/modes/kit/copy-row.ts:112-131` `drawRow` fills each word every
+  frame (via `wordBox` per word twice); cache the row's words except the label and the fading slip.
+- P9a range score (`src/game/modes/aim.ts:785-801` `drawScore`): `t()` + strokeText/fillText each
+  frame; cache the text picture per (hits, points).
+Constraints for this round: labels and the word in progress stay drawn every frame where they
+move; every cache keys on device scale (`g.getTransform().a`) and high contrast; nothing changes
+what or when the child types.

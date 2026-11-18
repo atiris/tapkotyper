@@ -11,6 +11,8 @@ const RIBBON_SIZE = 40;
 const RIBBON_AT = 0.42;
 /** Its ends fade out over its round end cap and a little more. */
 const RIBBON_FADE = RIBBON_H / 2 + 10;
+/** The plate's colour (`WORD.plate`) solid and clear: the ramp that fades an end out. */
+const PLATE_ENDS = ['rgb(255,253,246)', 'rgba(255,253,246,0)'];
 /** Seconds of the ribbon's ease toward where it should be: it glides, never snaps. */
 const GLIDE_S = 0.25;
 /** A new word slides in from this far right and fades in over these seconds. */
@@ -73,6 +75,17 @@ export function wrapLines(g: G, text: string, width: number): { from: number; te
 }
 
 /**
+ * The frame's text laid out: its lines, the pieces to draw (a written piece, or a `ghost` one that
+ * fades out; `dx` from the text's left edge) and where the cursor stands.
+ */
+interface Laid {
+  key: string;
+  lines: { from: number; text: string }[];
+  runs: { text: string; dx: number; row: number; ghost: boolean }[];
+  cursor: { dx: number; row: number };
+}
+
+/**
  * An endless ribbon of words, spaces and periods too, in `area` of the stage, and a stone frame
  * under it with what is written: the word at `at` is the target `current`, the ones before it are
  * written. The mode decides which words come and what a slip does.
@@ -90,8 +103,10 @@ export class Ribbon {
   private ribbonAim = 0;
   private frameUp = 0;
   private frameAim = 0;
-  /** The picture the ribbon's letters go into before its ends fade out. */
-  private layer: HTMLCanvasElement | null = null;
+  /** The ramps of the plate's colour that fade the ribbon's ends out, and the box and look they were made for. */
+  private ends: { key: string; left: CanvasGradient; right: CanvasGradient } | null = null;
+  /** The frame's text laid out, kept until the text changes: measuring letters every frame costs. */
+  private laid: Laid | null = null;
 
   /** Words dropped from the front with the frame's lines long scrolled away. */
   dropped = 0;
@@ -136,35 +151,25 @@ export class Ribbon {
   }
 
   /**
-   * Draws what `paint` draws inside the box (x, y, w, h) through a picture of its own whose left
-   * and right ends fade out over `fade`, so nothing is ever cut off hard.
+   * The ribbon's ends fade out, so nothing is ever cut off hard: a ramp of the plate's own colour
+   * lies over the letters at each end, over `fade` of the box from x, `w` wide.
    */
-  private faded(g: G, x: number, y: number, w: number, h: number, fade: number, paint: (to: G) => void): void {
-    const m = g.getTransform(), res = Math.min(3, Math.hypot(m.a, m.b) || 1);
-    const c = (this.layer ??= document.createElement('canvas')), pw = Math.ceil(w * res), ph = Math.ceil(h * res);
-    if (c.width !== pw || c.height !== ph) {
-      c.width = pw;
-      c.height = ph;
+  private fadeEnds(g: G, x: number, y: number, w: number, h: number, fade: number, hc: boolean): void {
+    const key = `${x}|${w}|${fade}|${hc}`;
+    if (this.ends?.key !== key) {
+      const [solid, clear] = hc ? ['#ffffff', 'rgba(255,255,255,0)'] : PLATE_ENDS;
+      const left = g.createLinearGradient(x, 0, x + fade, 0), right = g.createLinearGradient(x + w, 0, x + w - fade, 0);
+      for (const ramp of [left, right]) {
+        ramp.addColorStop(0, solid);
+        ramp.addColorStop(1, clear);
+      }
+      this.ends = { key, left, right };
     }
-    const cg = c.getContext('2d')!;
-    cg.setTransform(1, 0, 0, 1, 0, 0);
-    cg.globalCompositeOperation = 'source-over';
-    cg.globalAlpha = 1;
-    cg.clearRect(0, 0, pw, ph);
-    cg.setTransform(res, 0, 0, res, -x * res, -y * res);
-    paint(cg);
-    cg.setTransform(res, 0, 0, res, 0, 0);
-    cg.globalAlpha = 1;
-    cg.globalCompositeOperation = 'destination-in';
-    const mask = cg.createLinearGradient(0, 0, w, 0), f = Math.min(0.5, fade / w);
-    mask.addColorStop(0, 'rgba(0,0,0,0)');
-    mask.addColorStop(f, '#000');
-    mask.addColorStop(1 - f, '#000');
-    mask.addColorStop(1, 'rgba(0,0,0,0)');
-    cg.fillStyle = mask;
-    cg.fillRect(0, 0, w, h);
-    cg.globalCompositeOperation = 'source-over';
-    g.drawImage(c, x, y, w, h);
+    g.globalAlpha = 1;
+    g.fillStyle = this.ends.left;
+    g.fillRect(x, y, fade, h);
+    g.fillStyle = this.ends.right;
+    g.fillRect(x + w - fade, y, fade, h);
   }
 
   /**
@@ -198,61 +203,70 @@ export class Ribbon {
     roundRect(g, box.x, top, box.w, RIBBON_H, RIBBON_H / 2);
     g.fill();
     g.shadowColor = 'transparent';
+    const origin = box.x + box.w * RIBBON_AT - this.ribbonX, grey = hc ? GREY_HC : GREY;
+    // The letters stay inside the plate's shape; its edge is drawn over them and the faded ends.
+    g.save();
+    g.clip();
+    this.drawWords(g, box, origin, typed, space, grey);
+    this.fadeEnds(g, box.x, top, box.w, RIBBON_H, Math.min(RIBBON_FADE, box.w / 2), hc);
+    g.restore();
+    roundRect(g, box.x, top, box.w, RIBBON_H, RIBBON_H / 2);
     g.lineWidth = 4;
     g.strokeStyle = '#ffb23e';
     g.stroke();
     g.restore();
-    const origin = box.x + box.w * RIBBON_AT - this.ribbonX, grey = hc ? GREY_HC : GREY;
-    this.faded(g, box.x, top, box.w, RIBBON_H, RIBBON_FADE, (cg) => {
-      cg.font = font;
-      cg.textBaseline = 'middle';
-      cg.textAlign = 'left';
-      this.words.forEach((w, i) => {
-        const wx = origin + w.x, now = i === this.at;
-        if (wx > box.x + box.w || wx + w.w + space < box.x) return;
-        const shown = this.L.reduceMotion ? 1 : Math.min(1, (this.t - w.born) / APPEAR_S);
-        cg.globalAlpha = shown;
-        if (now && tg && !this.L.core.letters(tg)) {
-          // A hidden word (dictation, memory) shows dots for the letters still to type.
-          let cx = wx;
-          [...w.text].forEach((ch, k) => {
-            const cw = cg.measureText(ch).width;
-            if (k < typed) {
-              cg.fillStyle = WORD.typed;
-              cg.fillText(ch, cx, RIBBON_Y + 2);
-            } else {
-              cg.fillStyle = WORD.ink;
-              cg.beginPath();
-              cg.arc(cx + cw / 2, RIBBON_Y + 2, size * 0.12, 0, Math.PI * 2);
-              cg.fill();
-            }
-            cx += cw;
-          });
-        } else if (now) {
-          const head = w.text.slice(0, typed), hw = cg.measureText(head).width;
-          cg.fillStyle = hc ? '#006b2e' : WORD.typed;
-          cg.fillText(head, wx, RIBBON_Y + 2);
-          if (typed < w.text.length) {
-            const ch = w.text[typed], cw = cg.measureText(ch).width;
-            cg.fillStyle = hc ? '#ffe066' : WORD.next;
-            roundRect(cg, wx + hw - size * 0.04, RIBBON_Y - size * 0.62, cw + size * 0.08, size * 1.24, size * 0.2);
-            cg.fill();
-            cg.fillStyle = WORD.nextInk;
-            cg.fillText(ch, wx + hw, RIBBON_Y + 2);
-            cg.fillStyle = hc ? '#000' : WORD.ink;
-            cg.fillText(w.text.slice(typed + 1), wx + hw + cw, RIBBON_Y + 2);
+  }
+
+  /** The ribbon's words from `origin` on, those in sight of `box`; `typed` letters of the word in progress are written. */
+  private drawWords(g: G, box: { x: number; w: number }, origin: number, typed: number, space: number, grey: string): void {
+    const tg = this.current, hc = this.L.highContrast, size = RIBBON_SIZE;
+    g.textBaseline = 'middle';
+    g.textAlign = 'left';
+    this.words.forEach((w, i) => {
+      const wx = origin + w.x, now = i === this.at;
+      if (wx > box.x + box.w || wx + w.w + space < box.x) return;
+      const shown = this.L.reduceMotion ? 1 : Math.min(1, (this.t - w.born) / APPEAR_S);
+      g.globalAlpha = shown;
+      if (now && tg && !this.L.core.letters(tg)) {
+        // A hidden word (dictation, memory) shows dots for the letters still to type.
+        let cx = wx;
+        [...w.text].forEach((ch, k) => {
+          const cw = g.measureText(ch).width;
+          if (k < typed) {
+            g.fillStyle = WORD.typed;
+            g.fillText(ch, cx, RIBBON_Y + 2);
+          } else {
+            g.fillStyle = WORD.ink;
+            g.beginPath();
+            g.arc(cx + cw / 2, RIBBON_Y + 2, size * 0.12, 0, Math.PI * 2);
+            g.fill();
           }
-        } else {
-          cg.fillStyle = grey;
-          cg.fillText(w.text, wx, RIBBON_Y + 2);
+          cx += cw;
+        });
+      } else if (now) {
+        const head = w.text.slice(0, typed), hw = g.measureText(head).width;
+        g.fillStyle = hc ? '#006b2e' : WORD.typed;
+        g.fillText(head, wx, RIBBON_Y + 2);
+        if (typed < w.text.length) {
+          const ch = w.text[typed], cw = g.measureText(ch).width;
+          g.fillStyle = hc ? '#ffe066' : WORD.next;
+          roundRect(g, wx + hw - size * 0.04, RIBBON_Y - size * 0.62, cw + size * 0.08, size * 1.24, size * 0.2);
+          g.fill();
+          g.fillStyle = WORD.nextInk;
+          g.fillText(ch, wx + hw, RIBBON_Y + 2);
+          g.fillStyle = hc ? '#000' : WORD.ink;
+          g.fillText(w.text.slice(typed + 1), wx + hw + cw, RIBBON_Y + 2);
         }
-        // The space after it: a gap with a soft pill, lit when it is the key to type.
-        const lit = now && !!tg && typed >= w.text.length;
-        cg.globalAlpha = shown * (lit ? 1 : 0.3);
-        cg.fillStyle = lit ? WORD.next : grey;
-        roundRect(cg, wx + w.w + space * 0.12, RIBBON_Y - size * 0.3, space * 0.76, size * 0.6, size * 0.2);
-        cg.fill();
-      });
+      } else {
+        g.fillStyle = grey;
+        g.fillText(w.text, wx, RIBBON_Y + 2);
+      }
+      // The space after it: a gap with a soft pill, lit when it is the key to type.
+      const lit = now && !!tg && typed >= w.text.length;
+      g.globalAlpha = shown * (lit ? 1 : 0.3);
+      g.fillStyle = lit ? WORD.next : grey;
+      roundRect(g, wx + w.w + space * 0.12, RIBBON_Y - size * 0.3, space * 0.76, size * 0.6, size * 0.2);
+      g.fill();
     });
   }
 
@@ -288,10 +302,10 @@ export class Ribbon {
     g.textBaseline = 'middle';
     g.textAlign = 'left';
     const inner = b.w - FRAME_PAD * 2;
-    if (this.trims) this.trim(wrapLines(g, this.frameText(), inner));
+    if (this.trims) this.trim(this.layout(g, this.frameText(), inner).lines);
     const shown = this.frameText(), ghost = this.ghost;
     const full = ghost && ghost.from + ghost.text.length > shown.length ? shown + ghost.text.slice(shown.length - ghost.from) : shown;
-    const lines = wrapLines(g, full, inner);
+    const { lines, runs, cursor } = this.layout(g, full, inner, shown.length);
     this.frameAim = Math.max(0, lines.length - LINES) * LINE_H;
     g.save();
     g.beginPath();
@@ -299,33 +313,44 @@ export class Ribbon {
     g.rect(b.x + 8, b.y + FRAME_PAD - 4, b.w - 16, LINES * LINE_H + 8);
     g.clip();
     const fade = ghost ? 1 - ghost.t / ERASE_S : 0;
-    let cursor: { x: number; y: number } | null = null;
-    lines.forEach((ln, i) => {
-      const y = b.y + FRAME_PAD + LINE_H * (i + 0.5) - this.frameUp;
-      let x = b.x + FRAME_PAD;
-      [...ln.text].forEach((ch, k) => {
-        const at = ln.from + k, cw = g.measureText(ch).width;
-        if (at === shown.length) cursor = { x, y };
-        g.globalAlpha = at < shown.length ? 1 : fade;
-        g.fillStyle = '#4a3a5c';
-        if (g.globalAlpha > 0) g.fillText(ch, x, y);
-        x += cw;
-      });
-      if (ln.from + ln.text.length === shown.length) cursor ??= { x, y };
-    });
-    if (!cursor) {
-      const last = lines[lines.length - 1];
-      cursor = { x: b.x + FRAME_PAD + g.measureText(last.text).width, y: b.y + FRAME_PAD + LINE_H * (lines.length - 0.5) - this.frameUp };
+    const x0 = b.x + FRAME_PAD, rowY = (row: number) => b.y + FRAME_PAD + LINE_H * (row + 0.5) - this.frameUp;
+    g.fillStyle = '#4a3a5c';
+    for (const run of runs) {
+      const y = rowY(run.row);
+      // A line scrolled out of the frame is not drawn.
+      if (y < b.y - LINE_H || y > b.y + b.h + LINE_H || (run.ghost && fade <= 0)) continue;
+      g.globalAlpha = run.ghost ? fade : 1;
+      g.fillText(run.text, x0 + run.dx, y);
     }
     // The cursor blinks.
     if (writing && (this.L.reduceMotion || Math.sin(this.t * 6) > -0.2)) {
-      const c = cursor as { x: number; y: number };
       g.globalAlpha = 1;
-      g.fillStyle = '#4a3a5c';
-      g.fillRect(c.x + 1, c.y - TEXT_SIZE * 0.55, 3, TEXT_SIZE * 1.1);
+      g.fillRect(x0 + cursor.dx + 1, rowY(cursor.row) - TEXT_SIZE * 0.55, 3, TEXT_SIZE * 1.1);
     }
     g.restore();
     g.restore();
+  }
+
+  /**
+   * `text` laid out for the frame's `width` in the font set on `g`, its first `shown` letters written and
+   * the rest a ghost; the cursor stands after the written ones. Kept until the text changes.
+   */
+  private layout(g: G, text: string, width: number, shown = text.length): Laid {
+    const key = `${shown}|${width}|${g.font}|${text}`;
+    if (this.laid?.key === key) return this.laid;
+    const lines = wrapLines(g, text, width), runs: Laid['runs'] = [];
+    let cursor: Laid['cursor'] | null = null;
+    lines.forEach((ln, row) => {
+      const end = ln.from + ln.text.length, cut = Math.max(0, Math.min(ln.text.length, shown - ln.from));
+      const head = ln.text.slice(0, cut), edge = shown >= ln.from && shown <= end;
+      const dx = edge && cut ? g.measureText(head).width : 0;
+      if (cut) runs.push({ text: head, dx: 0, row, ghost: false });
+      if (cut < ln.text.length) runs.push({ text: ln.text.slice(cut), dx, row, ghost: true });
+      // At a line's end the cursor waits there, unless the next line starts with the text to come.
+      if (edge && shown < end) cursor = { dx, row };
+      else if (edge) cursor ??= { dx, row };
+    });
+    return (this.laid = { key, lines, runs, cursor: cursor ?? { dx: 0, row: 0 } });
   }
 
   /**

@@ -5,7 +5,7 @@ import { ease } from '../../engine/tween';
 import type { ParticleShape } from '../../engine/particles';
 import { hasImage } from '../../gfx/assets';
 import { drawCompass } from '../../gfx/compass';
-import { drawSprite, fontFamily, type G, roundRect } from '../../gfx/draw';
+import { drawCached, drawSprite, fontFamily, type G, roundRect } from '../../gfx/draw';
 import { t, tList } from '../../i18n/i18n';
 import { SHIFT_L, SHIFT_R, SPACE, isKeyReady, keysAccuracy, notReadyKeys, recentAccuracy } from '../../learning/lessons';
 import { keyLabel } from '../../ui/keyboard-guide';
@@ -167,6 +167,8 @@ const WORD_OVER = 62;
 const SCORE_SIZE = 34;
 const SCORE_MARGIN = 18;
 const SCORE_INK = ['#1f4a5c', '#8fe3d0'];
+/** Room round the score's letters for their outline. */
+const SCORE_EDGE = 6;
 /** Chances of the eyes: with a line before the hit, at a hit that wobbles the target, at a bullseye. */
 const EYES_EXPECT = 0.6;
 const EYES_DIZZY = 0.3;
@@ -789,19 +791,31 @@ export class AimMode extends HeroMode {
 
   /** The hits and the points in the top right corner, over the target, in the shouts' rounded bold letters. */
   private drawScore(g: G): void {
-    const text = t('aim.score', { hits: this.hits, points: this.points });
-    g.save();
-    g.font = `800 ${SCORE_SIZE}px ${fontFamily()}`;
-    g.textAlign = 'right';
-    g.textBaseline = 'top';
-    g.lineJoin = 'round';
-    g.lineWidth = 7;
-    g.strokeStyle = SCORE_INK[0];
-    g.strokeText(text, this.L.vw - SCORE_MARGIN, SCORE_MARGIN);
-    g.fillStyle = SCORE_INK[1];
-    g.fillText(text, this.L.vw - SCORE_MARGIN, SCORE_MARGIN);
-    g.restore();
+    const font = `800 ${SCORE_SIZE}px ${fontFamily()}`, key = `${this.hits}|${this.points}|${font}`;
+    if (this.score?.key !== key) {
+      const text = t('aim.score', { hits: this.hits, points: this.points });
+      g.save();
+      g.font = font;
+      this.score = { key, text, w: g.measureText(text).width };
+      g.restore();
+    }
+    // Its picture is made once per score: outlined letters cost far more to draw than their copy.
+    const { text, w } = this.score, box = w + 2 * SCORE_EDGE;
+    drawCached(g, `aim-score|${text}|${font}`, this.L.vw - SCORE_MARGIN - w - SCORE_EDGE, SCORE_MARGIN - SCORE_EDGE, box, SCORE_SIZE * 1.4 + 2 * SCORE_EDGE, (c) => {
+      c.font = font;
+      c.textAlign = 'right';
+      c.textBaseline = 'top';
+      c.lineJoin = 'round';
+      c.lineWidth = 7;
+      c.strokeStyle = SCORE_INK[0];
+      c.strokeText(text, box - SCORE_EDGE, SCORE_EDGE);
+      c.fillStyle = SCORE_INK[1];
+      c.fillText(text, box - SCORE_EDGE, SCORE_EDGE);
+    }, true);
   }
+
+  /** The score's text and width, measured when the hits, the points or the font change. */
+  private score: { key: string; text: string; w: number } | null = null;
 
   private drawTarget(g: G): void {
     const { x, y } = this.target;

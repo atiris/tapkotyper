@@ -126,10 +126,26 @@ SR slow-lowres, B big).
 
 ### Step 2 - Round 1: canvas and pixels (scenes, bands, labels, particles, glows)
 - [x] Opus refreshes the dossier for the round (only its hot spots and ranges, current numbers).
-- [ ] Fable implements the round-1 proposals in iterations; Opus checks and measures slow-low,
+- [x] Fable implements the round-1 proposals in iterations; Opus checks and measures slow-low,
       slow-lowres, normal, big on the scenes they touch; keep/revert per gate.
 - Checks per iteration: `npx tsc --noEmit`, `npm test`; at the end `npm run test:affected`.
   Commit kept changes with the stats update.
+- Progress: iteration 1 landed all of P1-P4, P6-P9a in one batch, all kept (stats file, "Step 2,
+  round 1 iteration 1"); tsc, unit suite and test:affected (36 e2e) green; screenshots of the
+  changed scenes (normal, slow-low, big) judged clean. Decisions: the host ran low on memory
+  (another VM held 11 GB) and stopped the batch after run 1 of normal/slow-low/slow-lowres, so
+  big and the range normal row were measured alone with `--only`; single runs against the
+  baseline's better-of-two are conservative. P4 accepted with its memory cost (one scaled canvas
+  per band, at most 12 M pixels, 4 kept) for big p50 67-83 -> 16.7. `scripts/perf.mjs --shot`
+  added (a picture of each scene at its end) for look checks; `.e2e/perf-batch.mjs` takes
+  `ONLY=<scenes>`. The further iterations went to step 2b, as this session was long.
+
+### Step 2b - Round 1, iteration 2: what is left on the canvas
+- [ ] Opus traces slow-low and slow-lowres again on the scenes still at p95 50 (meadow-5,
+      valley-3, valley-5, junkyard-3, junkyard-4, junkyard-5, range; `.e2e/trace-split.mjs`),
+      refreshes the dossier's round-1 section with the new top functions and Commit share, and
+      gives Fable (new agent) the verdicts of iteration 1 for a second batch of canvas changes;
+      up to 3 iterations, stop when one gains less than noise. Same checks and commit as step 2.
 
 ### Step 3 - Round 2: page and styles (HUD, keyboard guide, hands, Tapko, cards, map, start)
 - [ ] Same loop (dossier refresh first) for round-2 proposals; include style recalc counts from

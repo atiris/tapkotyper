@@ -1,7 +1,7 @@
 import { pickLine } from '../../app/app';
 import { graphics } from '../../engine/graphics';
 import { ease } from '../../engine/tween';
-import { drawSprite, type G, roundRect } from '../../gfx/draw';
+import { WORD_SHADOW_PX, drawCached, drawSprite, type G, roundRect } from '../../gfx/draw';
 import { drawRobot, type RobotState } from '../../gfx/robot';
 import { t } from '../../i18n/i18n';
 import { TAPKO_H } from '../mode';
@@ -623,57 +623,77 @@ export class CodeMode extends HeroMode {
     g.restore();
   }
 
+  /**
+   * A monitor with what `write` writes on it, from a picture made once per `key` (what it shows): its
+   * letters and shadow cost far more to draw than their copy.
+   */
+  private drawScreen(g: G, key: string, b: Box, screen: string, write: (g: G) => void): void {
+    // Room for the shadow, which a canvas draws in device pixels.
+    const bleed = graphics.simple ? 2 : WORD_SHADOW_PX / g.getTransform().a;
+    drawCached(g, `wake-screen|${screen}|${graphics.simple}|${this.L.highContrast}|${key}`, b.x - bleed, b.y - bleed, b.w + 2 * bleed, b.h + 2 * bleed, (c) => {
+      c.translate(bleed - b.x, bleed - b.y);
+      this.drawMonitor(c, b, screen);
+      c.font = MONO;
+      c.textBaseline = 'middle';
+      c.textAlign = 'left';
+      write(c);
+    }, true);
+  }
+
   /** Bolt's program on the green screen: the copied words grey, the line in progress kept in view. */
   private drawSource(g: G, b: Box): void {
-    this.drawMonitor(g, b, '#0d2416');
     const lines = this.sourceLines(), rows = screenRows(b.h);
     // The line in progress (the last one once all is copied) is the second in view.
     const at = lines.findIndex((ln) => ln.to > this.at), cur = at < 0 ? lines.length - 1 : at;
     const first = Math.max(0, Math.min(cur - 1, lines.length - rows)), hc = this.L.highContrast;
-    g.save();
-    g.font = MONO;
-    g.textBaseline = 'middle';
-    g.textAlign = 'left';
-    lines.slice(first, first + rows).forEach((ln, i) => {
-      const y = b.y + BEZEL + SCREEN_PAD + MONO_LINE * (i + 0.5);
-      let x = b.x + BEZEL + SCREEN_PAD;
-      for (let k = ln.from; k < ln.to; k++) {
-        g.fillStyle = k < this.at ? (hc ? '#7f9a86' : '#3f6a4c') : hc ? '#b8ffcc' : '#5dff8a';
-        g.fillText(this.words[k], x, y);
-        x += g.measureText(`${this.words[k]} `).width;
-      }
+    const shown = lines.slice(first, first + rows);
+    this.drawScreen(g, `${this.at}|${shown.map((ln) => `${ln.from}:${this.words.slice(ln.from, ln.to).join(' ')}`).join('\n')}`, b, '#0d2416', (c) => {
+      shown.forEach((ln, i) => {
+        const y = b.y + BEZEL + SCREEN_PAD + MONO_LINE * (i + 0.5);
+        let x = b.x + BEZEL + SCREEN_PAD;
+        for (let k = ln.from; k < ln.to; k++) {
+          c.fillStyle = k < this.at ? (hc ? '#7f9a86' : '#3f6a4c') : hc ? '#b8ffcc' : '#5dff8a';
+          c.fillText(this.words[k], x, y);
+          x += c.measureText(`${this.words[k]} `).width;
+        }
+      });
     });
-    g.restore();
   }
 
   /** What is written, breaking at the target screen's own width, its last lines in view, with a blinking cursor. */
   private drawTarget(g: G, b: Box): void {
-    this.drawMonitor(g, b, '#1b2230');
     const tg = this.current, word = this.words[this.at] ?? '';
     const part = tg ? word.slice(0, Math.min(tg.typed, word.length)) : '';
     const written = part ? [...this.words.slice(0, this.at), part] : this.words.slice(0, this.at);
     const lines = breakLines(written, screenColumns(b.w)), rows = screenRows(b.h);
     const first = Math.max(0, lines.length - rows);
     const x0 = b.x + BEZEL + SCREEN_PAD, y0 = b.y + BEZEL + SCREEN_PAD;
-    g.save();
-    g.font = MONO;
-    g.textBaseline = 'middle';
-    g.textAlign = 'left';
-    g.fillStyle = '#e8f1ff';
-    lines.slice(first).forEach((ln, i) => g.fillText(written.slice(ln.from, ln.to).join(' '), x0, y0 + MONO_LINE * (i + 0.5)));
-    if (tg && (this.L.reduceMotion || Math.sin(this.t * 6) > -0.2)) {
+    const texts = lines.slice(first).map((ln) => written.slice(ln.from, ln.to).join(' ')), key = texts.join('\n');
+    this.drawScreen(g, key, b, '#1b2230', (c) => {
+      c.fillStyle = '#e8f1ff';
+      texts.forEach((text, i) => c.fillText(text, x0, y0 + MONO_LINE * (i + 0.5)));
+    });
+    if (!tg || !(this.L.reduceMotion || Math.sin(this.t * 6) > -0.2)) return;
+    const caretKey = `${b.w}|${b.h}|${part ? '' : word}|${key}`;
+    if (this.caret?.key !== caretKey) {
       // After a whole word (its space still to type) or at the start of the next line.
-      const last = lines[lines.length - 1];
-      let text = last ? written.slice(last.from, last.to).join(' ') : '', row = Math.max(0, lines.length - 1 - first);
+      let text = texts[texts.length - 1] ?? '', row = Math.max(0, texts.length - 1);
       if (!part && written.length) {
         const wraps = text.length + 1 + word.length > screenColumns(b.w) && row + 1 < rows;
         text = wraps ? '' : `${text} `;
         if (wraps) row++;
       }
-      g.fillRect(x0 + g.measureText(text).width + 1, y0 + MONO_LINE * (row + 0.5) - MONO_SIZE * 0.55, 3, MONO_SIZE * 1.1);
+      g.save();
+      g.font = MONO;
+      this.caret = { key: caretKey, dx: g.measureText(text).width, row };
+      g.restore();
     }
-    g.restore();
+    g.fillStyle = '#e8f1ff';
+    g.fillRect(x0 + this.caret.dx + 1, y0 + MONO_LINE * (this.caret.row + 0.5) - MONO_SIZE * 0.55, 3, MONO_SIZE * 1.1);
   }
+
+  /** Where the target screen's cursor stands (from the text's left edge, and its line), measured when what is written changes. */
+  private caret: { key: string; dx: number; row: number } | null = null;
 
   progress(): number {
     if (this.endT !== null) return 1;

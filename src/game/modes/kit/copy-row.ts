@@ -1,4 +1,4 @@
-import { fontFamily, type G, wordBox } from '../../../gfx/draw';
+import { drawCached, fontFamily, type G, wordBox } from '../../../gfx/draw';
 import { storyOf } from '../../levels';
 import type { LevelRuntime } from '../../runtime';
 import type { Target } from '../../typing';
@@ -110,22 +110,40 @@ export class CopyRow {
  * (its label), the ones before it in `ink`, the next ones faint; a slipped word (`slip` seconds) fades red to a trace. Returns its width.
  */
 export function drawRow(g: G, L: LevelRuntime, row: { word: string; slip: number }[], at: number, current: Target | null, cx: number, y: number, width: number, ink: string): number {
-  const widths = (size: number) => row.map((s) => wordBox(s.word, size).w);
-  const total = (size: number) => widths(size).reduce((a, b) => a + b, 0) + WORD_GAP * (row.length - 1);
-  const size = total(WORD_SIZE) > width ? Math.max(24, (WORD_SIZE * width) / total(WORD_SIZE)) : WORD_SIZE;
-  let x = cx - total(size) / 2;
-  widths(size).forEach((w, i) => {
+  const measure = (size: number) => {
+    const widths = row.map((s) => wordBox(s.word, size).w);
+    return { widths, total: widths.reduce((a, b) => a + b, 0) + WORD_GAP * (row.length - 1) };
+  };
+  const full = measure(WORD_SIZE);
+  const size = full.total > width ? Math.max(24, (WORD_SIZE * width) / full.total) : WORD_SIZE;
+  const { widths, total } = size === WORD_SIZE ? full : measure(size);
+  const font = `600 ${size}px ${fontFamily()}`, h = size * 1.45, x0 = cx - total / 2;
+  // Each word's middle from the row's left edge, and its look: the label, a slip still fading, or letters that stay as they are.
+  let x = 0;
+  const words = widths.map((w, i) => {
     const s = row[i], c = x + w / 2;
     x += w + WORD_GAP;
-    if (i === at && current) return L.label(g, current, c, y, size);
-    g.save();
-    g.font = `600 ${size}px ${fontFamily()}`;
-    g.textAlign = 'center';
-    g.textBaseline = 'middle';
-    g.fillStyle = s.slip >= 0 ? SLIP_INK : ink;
-    g.globalAlpha = s.slip >= 0 ? Math.max(SLIP_TRACE, 1 - (1 - SLIP_TRACE) * s.slip / SLIP_FADE) : i < at ? 1 : 0.35;
-    g.fillText(s.word, c, y);
-    g.restore();
+    const fading = s.slip >= 0 && s.slip < SLIP_FADE;
+    return { word: s.word, c, label: i === at && !!current, fading, ink: s.slip >= 0 ? SLIP_INK : ink, alpha: s.slip >= 0 ? Math.max(SLIP_TRACE, 1 - (1 - SLIP_TRACE) * s.slip / SLIP_FADE) : i < at ? 1 : 0.35 };
   });
-  return total(size);
+  const write = (to: G, word: (typeof words)[number], wx: number, wy: number) => {
+    to.font = font;
+    to.textAlign = 'center';
+    to.textBaseline = 'middle';
+    to.fillStyle = word.ink;
+    to.globalAlpha = word.alpha;
+    to.fillText(word.word, wx, wy);
+  };
+  // The letters that stay are one picture, made again when a word of the row changes its look.
+  const still = words.filter((w) => !w.label && !w.fading);
+  if (still.length) drawCached(g, `copy-row|${font}|${still.map((w) => `${w.word}@${w.c}:${w.ink}:${w.alpha}`).join('|')}`, x0, y - h / 2, total, h, (c) => still.forEach((w) => write(c, w, w.c, h / 2)), true);
+  for (const w of words) {
+    if (w.label) L.label(g, current!, x0 + w.c, y, size);
+    else if (w.fading) {
+      g.save();
+      write(g, w, x0 + w.c, y);
+      g.restore();
+    }
+  }
+  return total;
 }

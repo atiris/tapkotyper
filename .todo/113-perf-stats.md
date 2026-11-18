@@ -50,5 +50,37 @@ Cells: p50/p95 ms (better of two runs), L long tasks, B main thread busy %.
   dragons 6.01, dragons-flight 7.45, junkyard 3.63, junkyard-wake 4.51, aim 8.70, rhythm 7.22.
 - SEO guard copies: `.e2e/seo-guard/` (index, about pages, robots, sitemap, chunk list).
 
-## Verdicts per change
-(none yet)
+
+## Step 2, round 1 iteration 1 (P1-P4, P6-P9a together)
+
+One run per configuration (`.e2e/perf-113/r1a/`): the host ran out of memory (another VM held
+11 GB) and the batch was stopped after run 1 of normal, slow-low and slow-lowres; big and the
+range normal row were measured alone afterwards (`--only`). Compared with the baseline's
+better-of-two, so the gains are conservative.
+
+| scene | normal | slow-low | slow-lowres | big |
+|---|---|---|---|---|
+| meadow-1 | 16.7/16.8 L0 B55 | 16.7/33.4 L24 B94 | 16.7/33.4 L18 B85 | 16.7/33.3 L0 B91 (was 66.7/83.3) |
+| meadow-5 | 16.7/16.7 L0 B66 | 16.7/50 L41 B97 (was /66.6) | 16.7/50 L32 B95 | - |
+| space-1 | 16.7/16.7 L0 B62 | 16.7/33.4 L24 B93 | 16.7/33.3 L16 B88 | - |
+| space-5 | 16.7/16.8 L0 B66 | 16.7/33.4 L19 B95 (was /50) | 16.7/33.4 L24 B92 | 16.7/33.3 L1 B97 (was 66.7/66.8) |
+| planet-3 | 16.7/16.8 L0 B24 | 16.7/33.4 L22 B87 (was /50) | 16.7/33.4 L24 B83 | - |
+| valley-3 | 16.7/16.7 L0 B19 | 16.7/50 L30 B96 (was /66.6) | 16.7/49.9 L28 B92 | 16.7/16.8 L0 B70 (was /33.3) |
+| valley-5 | 16.7/16.8 L0 B18 | 16.7/50 L40 B97 | 16.7/33.4 L23 B92 (was /49.9) | - |
+| junkyard-3 | 16.7/16.8 L0 B18 | 16.7/50 L35 B96 | 16.7/33.4 L25 B90 | - |
+| junkyard-4 | 16.7/16.7 L0 B27 | 33.3/66.7 L48 B98 (was /83.3) | 16.7/50 L23 B97 (was 33.3/66.6) | 16.7/33.4 L0 B97 |
+| junkyard-5 | 16.7/16.7 L0 B18 | 16.7/50 L32 B92 (was /66.6) | 16.7/33.4 L8 B87 (was /50) | 16.7/16.8 L0 B77 (was 33.4/50) |
+| range | 16.7/16.7 L2 B41 (was B67) | 16.7/50 L48 B97 (was /66.7) | 16.7/50 L37 B94 | 16.7/33.4 L1 B97 (was 66.7/83.4) |
+
+Verdicts (all kept; no scene worse beyond noise; slow-low junkyard-4 back under the p95 80 budget):
+- P1 ribbon ends without the mask copy + P2 frame text wrapped once: junkyard-4 slow-low p95
+  83 -> 67, slow-lowres p50 33 -> 16.7. Look: the ends fade into the plate colour, not to see-through.
+- P3 words layer only redrawn when the labels change (Simple): slow-low p95 better in
+  meadow-5, space-5, planet-3, valley-3.
+- P4 bands scaled once at every height + P6 space tint baked in: big meadow, space, range p50
+  67-83 -> 16.7. Cost: one scaled canvas per band at the stage's device height (at most 12 M
+  pixels each, else the old scaled draw), up to 4 kept.
+- P7 junkyard-5 monitors cached per content: big p50 33 -> 16.7, slow p95 -16.
+- P8 copy row cached: valley-5 slow-lowres p95 50 -> 33.
+- P9a range score cached: range normal busy 67 -> 41 %, slow-low p95 67 -> 50.
+- A run-1 range normal row of p95 133 was the host under memory pressure; alone it measured 16.7.

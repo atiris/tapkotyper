@@ -3,7 +3,7 @@
 // times, long tasks and JS heap; a Chrome trace of each scene goes to test-results/perf/.
 //
 //   node scripts/perf.mjs [--machine normal|slow|big|all] [--only meadow-1,map] [--seconds 30]
-//                         [--no-build] [--no-trace] [--load] [--leak] [--budget] [--low | --lowres | --auto [--hiccup]] [--gpu] [--results]
+//                         [--no-build] [--no-trace] [--load] [--leak] [--budget] [--low | --lowres | --auto [--hiccup]] [--gpu] [--results] [--shot]
 //
 // Machines: normal = 1366 x 768 at DPR 1; slow = the same with CPU throttling x 6; big = 1920 x 1080
 // at DPR 2 (the largest canvas the stage makes). `--load` measures a cold first load and a level
@@ -12,7 +12,7 @@
 // with `--low`); `--low` sets the simple graphics, `--lowres` the simple ones at the lower resolution of a device
 // still slow with them, `--auto` the automatic choice on a device not measured yet (the row's `gfx` tells where it
 // ended; `--hiccup` adds a frozen second and a second of slow frames to its watch), else the full ones; `--results` adds a row of
-// the frames under the results card of a level that ended within the time. Needs the tester profile
+// the frames under the results card of a level that ended within the time; `--shot` saves a picture of each scene at its end. Needs the tester profile
 // `.e2e/tester-profile.json` (git-ignored).
 import { chromium } from '@playwright/test';
 import { spawn, execSync } from 'node:child_process';
@@ -233,6 +233,7 @@ async function measure(browser, machine, sc, low) {
     await page.waitForTimeout(level ? 330 : 500);
   }
   const p = await page.evaluate(() => { window.__perf.on = false; return window.__perf; });
+  if (flag('shot')) await page.screenshot({ path: `${OUT}/${machine}${low ? `-${low}` : ''}-${sc.name}.png` });
   const b1 = await busy(cdp);
   const wall = (Date.now() - t0) / 1000;
   if (trace) await browser.stopTracing();

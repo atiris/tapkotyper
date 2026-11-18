@@ -1144,7 +1144,7 @@ export class LevelRuntime {
     this.friends.draw(g);
     this.labels.begin();
     this.mode.render(g);
-    this.labels.draw(this.stage.beginWords(this.labels.area));
+    this.labels.draw(this.stage);
     this.particles.render(g);
     this.callouts.draw(g, this.labels.rects);
     this.mode.renderFront?.(this.stage.beginFront());

@@ -1,5 +1,5 @@
-import { VH } from '../../engine/loop';
-import { type G, WORD_SHADOW_PX, drawWord, wordBox } from '../../gfx/draw';
+import { type Stage, VH } from '../../engine/loop';
+import { WORD_SHADOW_PX, drawWord, wordBox } from '../../gfx/draw';
 import { CLOCK_R, drawClock } from '../modes/kit/clock';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
@@ -45,6 +45,8 @@ export class Labels {
   /** Vertical shift of each target's label, smoothed over frames. */
   private shift = new Map<number, number>();
   private time = 0;
+  /** All that decides how the last drawn labels look: with the same again, the simple drawing's layer keeps them. */
+  private look = '';
 
   constructor(private L: LevelRuntime) {}
 
@@ -67,8 +69,9 @@ export class Labels {
   /**
    * The locked and most urgent labels keep their place; each later one moves up (down
    * near the top) until it is clear of the placed ones. Far moves get a line to the object.
+   * They go where `stage` has its words; a layer that still shows the same labels is left as it is.
    */
-  draw(g: G): void {
+  draw(stage: Stage): void {
     const L = this.L, core = L.core;
     const now = performance.now();
     const dt = this.time ? Math.min(0.1, (now - this.time) / 1000) : 0;
@@ -79,8 +82,8 @@ export class Labels {
     const placed: Rect[] = [];
     const shifts = new Map<number, number>();
     const icon = L.style !== 'copy';
-    const area = { x0: Infinity, x1: -Infinity, y0: Infinity, y1: -Infinity };
-    const bleed = LABEL_BLEED + WORD_SHADOW_PX / g.getTransform().a;
+    const laid: { l: PendingLabel; w: number; h: number; shift: number; tail: number; locked: boolean; masked: boolean }[] = [];
+    let look = `${L.highContrast}`;
     for (const l of [...this.pending].sort((a, b) => rank(b) - rank(a))) {
       // Phrases shrink to fit: in calm modes the stage around their place, moving targets half of it.
       const room = L.mode.phraseWords > 2 ? Math.min(L.vw * 0.9, 2 * Math.min(l.x, L.vw - l.x) - 20) : L.vw * 0.5;
@@ -103,6 +106,18 @@ export class Labels {
       const shift = prev == null ? want : prev + (want - prev) * follow;
       shifts.set(l.tg.id, shift);
       this.rects.push({ id: l.tg.id, x0: l.x - w / 2, x1: l.x + w / 2, y0: l.y + shift - h / 2, y1: l.y + shift + h / 2 });
+      const tg = l.tg, locked = core.locked === tg, masked = !core.letters(tg);
+      laid.push({ l, w, h, shift, tail, locked, masked });
+      // A countdown clock moves with the time.
+      look += `|${tg.word}|${tg.typed}|${l.x}|${l.y}|${shift}|${l.size}|${w}|${tg.wobble}|${locked}|${masked}|${tg.style}|${tg.showLeft}|${l.clock === undefined ? '' : `${l.clock}@${now}`}`;
+    }
+    this.shift = shifts;
+    const g = stage.beginWords(this.area, look === this.look);
+    this.look = look;
+    if (!g) return;
+    const area = { x0: Infinity, x1: -Infinity, y0: Infinity, y1: -Infinity };
+    const bleed = LABEL_BLEED + WORD_SHADOW_PX / g.getTransform().a;
+    for (const { l, w, h, shift, tail, locked, masked } of laid) {
       if (Math.abs(shift) > LABEL_LINE_FROM) {
         g.save();
         g.strokeStyle = 'rgba(255,253,246,0.7)';
@@ -117,8 +132,8 @@ export class Labels {
       drawWord(g, l.tg.word, l.tg.typed, l.x, l.y + shift, l.tg.wobble, {
         size: l.size,
         highContrast: L.highContrast,
-        locked: core.locked === l.tg,
-        masked: !core.letters(l.tg),
+        locked,
+        masked,
         icon: l.tg.style === 'dictation' ? { kind: 'speaker' } : l.tg.style === 'memory' ? { kind: 'ring', left: l.tg.showFor ? l.tg.showLeft / l.tg.showFor : 0 } : undefined,
       });
       const y0 = Math.min(l.y, l.y + shift - h / 2), y1 = Math.max(l.y, l.y + shift + h / 2);
@@ -128,7 +143,6 @@ export class Labels {
       area.y1 = Math.max(area.y1, y1 + bleed);
       if (l.clock !== undefined) drawClock(g, l.x + w / 2 + CLOCK_GAP + CLOCK_R + 2, l.y + shift, l.clock, now / 1000, !L.reduceMotion);
     }
-    this.shift = shifts;
     this.area = area.x0 < area.x1 ? area : null;
   }
 }

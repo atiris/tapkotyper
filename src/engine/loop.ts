@@ -59,6 +59,8 @@ export class Stage {
    */
   private words: HTMLCanvasElement | null = null;
   private wg: CanvasRenderingContext2D | null = null;
+  /** A resize emptied the words layer: its labels are drawn again even when they did not change. */
+  private wordsBlank = true;
   /** Virtual width. */
   vw = 1280;
   scale = 1;
@@ -90,6 +92,7 @@ export class Stage {
     size(this.canvas, w, h, dpr);
     if (this.front) size(this.front, Math.min(w, Math.ceil(FRONT_W * this.scale)), h, dpr);
     if (this.words) size(this.words, w, h, this.screenDpr);
+    this.wordsBlank = true;
     this.dirty = true;
   }
 
@@ -102,8 +105,9 @@ export class Stage {
   /**
    * Where the word labels go: the scene's canvas, or in the simple drawing their own sharp layer with `last`
    * cleared, what the labels covered in the last frame (stage units): a whole screen cleared every frame costs.
+   * Null when the layer still shows these very labels (`same` as in the last frame): nothing is drawn again.
    */
-  beginWords(last: { x0: number; x1: number; y0: number; y1: number } | null): CanvasRenderingContext2D {
+  beginWords(last: { x0: number; x1: number; y0: number; y1: number } | null, same: boolean): CanvasRenderingContext2D | null {
     if (!graphics.simple) return this.g;
     if (!this.words) {
       this.words = document.createElement('canvas');
@@ -112,6 +116,8 @@ export class Stage {
       this.wg = this.words.getContext('2d')!;
       this.resize();
     }
+    if (same && !this.wordsBlank) return null;
+    this.wordsBlank = false;
     const g = this.wg!;
     g.setTransform(this.scale * this.screenDpr, 0, 0, this.scale * this.screenDpr, 0, 0);
     if (last) g.clearRect(last.x0, last.y0, last.x1 - last.x0, last.y1 - last.y0);

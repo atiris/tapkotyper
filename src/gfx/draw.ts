@@ -58,10 +58,11 @@ const CACHED_KEEP = 16;
 /**
  * Draws what `paint` draws in the box (x, y, w, h) from a canvas made once per key, size and
  * device scale: a blurred shadow costs far more to draw than its copy. `paint` draws in the box's
- * own units, from (0, 0).
+ * own units, from (0, 0). `sharp` is for letters: the canvas is copied unscaled onto whole device pixels,
+ * as a copy between them would blur them.
  */
-export function drawCached(g: G, key: string, x: number, y: number, w: number, h: number, paint: (g: G) => void): void {
-  const k = g.getTransform().a;
+export function drawCached(g: G, key: string, x: number, y: number, w: number, h: number, paint: (g: G) => void, sharp = false): void {
+  const m = g.getTransform(), k = m.a;
   const id = `${key}|${w}|${h}|${k}`;
   let c = cached.get(id);
   if (c) cached.delete(id);
@@ -70,12 +71,20 @@ export function drawCached(g: G, key: string, x: number, y: number, w: number, h
     c.width = Math.ceil(w * k);
     c.height = Math.ceil(h * k);
     const cg = c.getContext('2d')!;
-    cg.scale(c.width / w, c.height / h);
+    if (sharp) cg.scale(k, k);
+    else cg.scale(c.width / w, c.height / h);
     paint(cg);
     if (cached.size >= CACHED_KEEP) evictOldest(cached);
   }
   cached.set(id, c);
-  g.drawImage(c, x, y, w, h);
+  if (!sharp) {
+    g.drawImage(c, x, y, w, h);
+    return;
+  }
+  g.save();
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  g.drawImage(c, Math.round(k * x + m.e), Math.round(m.d * y + m.f));
+  g.restore();
 }
 
 export function roundRect(g: G, x: number, y: number, w: number, h: number, r: number): void {
@@ -181,12 +190,17 @@ export const PALETTES: Record<string, Palette> = {
 const fitted = new Map<HTMLImageElement, HTMLCanvasElement>();
 const FITTED_KEEP = 4;
 
+/** A scaled layer has at most this many pixels: a bigger canvas may not be made at all (phones, tablets). */
+const FITTED_MAX = 12e6;
+
 /**
- * The layer scaled once to the pixel height it is drawn at, so each frame is a plain 1:1 copy.
- * Its left and right edges join exactly (scripts/bg-seam.mjs), so copies sit side by side.
+ * The layer scaled once to the pixel height it is drawn at, smaller or bigger, so each frame is a plain
+ * 1:1 copy; with `tint` laid over it once too. Its left and right edges join exactly (scripts/bg-seam.mjs),
+ * so copies sit side by side. The picture itself when it has that height already, null when the copy would be too big.
  */
-function fittedTile(tile: HTMLImageElement, px: number): HTMLCanvasElement | HTMLImageElement {
-  if (px >= tile.naturalHeight) return tile;
+function fittedTile(tile: HTMLImageElement, px: number, tint: string): HTMLCanvasElement | HTMLImageElement | null {
+  if (px === tile.naturalHeight && !tint) return tile;
+  if (px * px * tile.naturalWidth / tile.naturalHeight > FITTED_MAX) return null;
   const hit = fitted.get(tile);
   fitted.delete(tile);
   if (hit && hit.height === px) {
@@ -201,6 +215,10 @@ function fittedTile(tile: HTMLImageElement, px: number): HTMLCanvasElement | HTM
   const cg = c.getContext('2d')!;
   cg.imageSmoothingQuality = 'high';
   cg.drawImage(tile, 0, 0, c.width, px);
+  if (tint) {
+    cg.fillStyle = tint;
+    cg.fillRect(0, 0, c.width, px);
+  }
   fitted.set(tile, c);
   return c;
 }
@@ -208,28 +226,33 @@ function fittedTile(tile: HTMLImageElement, px: number): HTMLCanvasElement | HTM
 /** Each layer's offset in the last frame: a layer that stands still is copied on whole pixels. */
 const lastOffset = new WeakMap<HTMLImageElement, number>();
 
-/** Draws a background layer at full screen height, repeated horizontally by `offset`; `dy` lowers it. */
-function tiled(g: G, img: HTMLImageElement, vw: number, offset: number, dy = 0): void {
+/** Draws a background layer at full screen height, repeated horizontally by `offset`; `dy` lowers it; `tint` is a colour laid over the whole screen with it. */
+function tiled(g: G, img: HTMLImageElement, vw: number, offset: number, dy = 0, tint = ''): void {
   const s = VH / img.naturalHeight;
   const m = g.getTransform();
-  const tile = fittedTile(img, Math.round(VH * m.d));
+  const px = Math.round(VH * m.d), tile = fittedTile(img, px, tint);
   const w = img.naturalWidth * s, h = img.naturalHeight * s;
   const from = -(((offset % w) + w) % w);
-  if (tile === img) {
-    for (let x = from; x < vw; x += w) g.drawImage(tile, x, VH - h + dy, w + 1, h);
+  if (!tile) {
+    for (let x = from; x < vw; x += w) g.drawImage(img, x, VH - h + dy, w + 1, h);
+    if (tint) {
+      g.fillStyle = tint;
+      g.fillRect(0, 0, vw, VH);
+    }
     return;
   }
+  const tileW = Math.round(img.naturalWidth * px / img.naturalHeight);
   // The scaled copy goes on unscaled, in device pixels, each copy right after the last one (bandCopies): a copy
   // on whole pixels is several times cheaper than a filtered one. A moving layer keeps sub-pixel steps where a pixel is big enough
   // to see (device pixel ratio under 2), else slow layers move in visible jumps.
   const still = lastOffset.get(img) === offset;
   lastOffset.set(img, offset);
   const snap = still || graphics.simple || window.devicePixelRatio >= 2;
-  const { xs, w: copyW } = bandCopies(m.a * from + m.e, m.a * vw + m.e, tile.width, snap);
-  const y = Math.round(m.d * (VH + dy) + m.f) - tile.height;
+  const { xs, w: copyW } = bandCopies(m.a * from + m.e, m.a * vw + m.e, tileW, snap);
+  const y = Math.round(m.d * (VH + dy) + m.f) - px;
   g.save();
   g.setTransform(1, 0, 0, 1, 0, 0);
-  for (const x of xs) g.drawImage(tile, x, y, copyW, tile.height);
+  for (const x of xs) g.drawImage(tile, x, y, copyW, px);
   g.restore();
 }
 
@@ -322,19 +345,20 @@ function band(g: G, i: number, world: string, vw: number, offset: number, ground
   const pal = PALETTES[world] ?? PALETTES.meadow;
   if (i === 0) {
     const far = sprite(`bg-${world}-far`);
-    if (far) tiled(g, far, vw, offset);
+    // Calm the space's busy sky so words stay readable.
+    const calm = world === 'space' ? 'rgba(24,18,60,0.35)' : '';
+    if (far) tiled(g, far, vw, offset, 0, calm);
     else {
       const grad = g.createLinearGradient(0, 0, 0, VH);
       grad.addColorStop(0, pal.sky[0]);
       grad.addColorStop(1, pal.sky[1]);
       g.fillStyle = grad;
       g.fillRect(0, 0, vw, VH);
-      if (world === 'space') starField(g, vw, offset);
-    }
-    if (world === 'space') {
-      // Calm the busy sky so words stay readable.
-      g.fillStyle = 'rgba(24,18,60,0.35)';
-      g.fillRect(0, 0, vw, VH);
+      if (world === 'space') {
+        starField(g, vw, offset);
+        g.fillStyle = calm;
+        g.fillRect(0, 0, vw, VH);
+      }
     }
     return;
   }

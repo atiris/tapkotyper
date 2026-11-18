@@ -56,8 +56,8 @@ test('a quick child plays the first level until its minimum length, and the bar 
   const start = Date.now();
   const played = playLevel(page, false);
   await page.waitForTimeout(25_000);
-  const width = await page.locator('.progress-fill').evaluate((el) => parseFloat((el as HTMLElement).style.width));
-  expect(width).toBeLessThan(60);
+  const filled = await page.locator('.progress-fill').evaluate((el) => 100 + parseFloat((el as HTMLElement).style.translate));
+  expect(filled).toBeLessThan(60);
   await played;
   expect(Date.now() - start).toBeGreaterThan(60_000);
 });

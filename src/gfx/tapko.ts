@@ -343,13 +343,20 @@ export function tapkoElement(c: Look, mood: Mood = 'idle', size = 160): HTMLElem
 export function renderTapkoInto(el: HTMLElement, c: Look, mood: Mood): void {
   const stack = tapkoStack(c, mood);
   if (stack.every((l) => imageUrl(l.name))) {
-    el.replaceChildren(...stack.map((l) => {
-      const img = document.createElement('img');
-      img.src = imageUrl(l.name)!;
-      img.alt = '';
-      img.draggable = false;
-      return img;
-    }));
+    // The pictures already there stay and only take a new address where it differs: a change of mood swaps one of them.
+    const old = [...el.children], urls = stack.map((l) => imageUrl(l.name)!);
+    if (old.length !== urls.length || old.some((c) => !(c instanceof HTMLImageElement))) {
+      el.replaceChildren(...urls.map(() => {
+        const img = document.createElement('img');
+        img.alt = '';
+        img.draggable = false;
+        return img;
+      }));
+    }
+    urls.forEach((url, i) => {
+      const img = el.children[i] as HTMLImageElement;
+      if (img.getAttribute('src') !== url) img.src = url;
+    });
   } else {
     const cv = document.createElement('canvas');
     cv.width = cv.height = 256;

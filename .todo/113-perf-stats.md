@@ -113,3 +113,39 @@ Verdicts (all kept; slow-low within noise against iteration 1, the GC gain count
 - H dragons' fire glow not done; iteration 4 found nothing more (big junkyard-5 `restore` is the
   frame raster flushed early, not extra work).
 - Look: junkyard-4, junkyard-5, range in normal, slow-low and big checked against `shots-r1a/`.
+
+## Step 3, round 2 (page and styles): iteration 1 kept, iteration 2 reverted
+
+Six scenes, best of two runs, `.e2e/perf-113/r2a/` (before) -> `r2b/` (after); style recalcs
+and main-thread ms/s from the run-1 traces (`.e2e/trace-split.mjs`, `.e2e/trace-roots.mjs`).
+
+| scene | normal | slow-low | slow-lowres | big | SL style recalcs/s, style ms/s |
+|---|---|---|---|---|---|
+| meadow-1 | 16.7/16.8 L0 B58 | 16.7/33.3 L16 B90 | 16.7/33.3 L20 B81 | 16.7/33.3 L1 B93 (noise, re-run 16.8) | - |
+| space-5 | 16.7/16.7 L0 B60 | 16.7/33.5 L30 B94 | 16.7/33.4 L25 B92 | 16.7/33.4 L1 B97 | 27 -> 19, 36 -> 35 |
+| valley-1 | 16.7/16.8 L0 B16 | 16.7/50 L43 B97 (noise, re-runs 33.3, 33.4) | 16.7/33.4 L26 B90 | 16.7/16.8 L0 B58 | 39 -> 23, 45 -> 37 |
+| range | 16.7/16.7 L0 B37 | 16.7/49.9 L30 B96 | 16.7/33.4 L25 B91 | 16.7/33.4 L0 B94 | 24 -> 17 |
+| map | 16.7/16.7 L0 B8 | 16.7/16.7 L0 B25 (was B70) | 16.7/16.7 L0 B27 (was B69) | 16.7/16.8 L0 B8 | 59 -> 8.5, 186 -> 9 |
+| start | 16.7/16.7 L0 B8 | 16.7/16.8 L0 B72 (was B78, Full) | 16.7/16.7 L0 B22 (was B59, Simple) | 16.7/16.7 L0 B8 | 59 -> 59, 179 -> 147 |
+
+Verdicts:
+- P9b range progress bar slides by `translate` instead of animating `width`: normal range
+  document layouts 1565 -> 196 in 30 s (layout+prepaint 33 -> 15 ms/s). Kept; a short fill now
+  shows the greener end of the gradient.
+- P10 HUD rings compare a number before building the SVG and calling `t()` (valley-1 SL `t` 15.6
+  ms/s gone); `covered` looks the cards up only after a MutationObserver saw a change. Kept.
+- P11 Tapko's mood swaps only the changed `<img>` src; the hop restarts by class, no forced
+  layout (3-5 ms per mood change on slow); a hop still in the air finishes. Kept.
+- P12 map (Simple: islands and the map Tapko still; Full: locked islands do not float): slow
+  busy 70 -> 25 %, style 186 -> 9 and PrePaint 211 -> 17 ms/s. Start page: the other look's
+  sky pieces stop 3 s after a theme change, fireflies one radial gradient instead of two blurred
+  shadows (looked at: same glow), Simple sky still: slow-lowres busy 59 -> 22 %. Kept.
+- Breathing of `.tapko-stack` off in Simple, levels included: level style recalcs down a third. Kept.
+- p95 rows of 33 -> 50 (slow-low valley-1, big meadow-1) were trace noise: alone without a
+  trace they measured 33.3/33.4 and 16.8.
+- Iteration 2 reverted: own layer (`will-change`) for the player card's breathing character and
+  the butterflies' trip as one `transform`: start slow-low busy 72 -> 70 %, Paint 104 -> 107
+  ms/s, no gain. The start page in Full on a slow device not yet marked slow stays ~70 % busy;
+  Fable's reading: the harness's own rAF tick forces a main frame each vsync, so composited
+  animations are restyled and pre-painted anyway in these traces (a device already marked slow
+  shows the start page in Simple).

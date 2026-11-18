@@ -24,6 +24,8 @@ export class StageTapko {
     this.el.classList.add('level-tapko', 'waiting');
     this.el.dataset.tip = t('tapko.statsHint');
     this.el.addEventListener('click', onClick);
+    // A finished hop takes its class away, so the next one starts by adding it again; the celebration ends the level and keeps its class.
+    this.el.addEventListener('animationend', () => this.el.classList.remove('jump'));
     this.bubble = h('div', { class: 'bubble hidden', role: 'status', 'aria-live': 'polite' });
   }
 
@@ -95,12 +97,11 @@ export class StageTapko {
   private show(mood: Mood): void {
     this.mood = mood;
     renderTapkoInto(this.el, app.profile!.companion, mood);
-    this.el.classList.remove('jump');
   }
 
-  /** Starts a CSS hop again even when it just ran. */
+  /** Starts a CSS hop; one still in the air goes on to its end (starting it over would need a forced layout). */
   private replay(cls: 'jump' | 'celebrate'): void {
-    void this.el.offsetWidth;
+    this.el.classList.remove('jump', 'celebrate');
     this.el.classList.add(cls);
   }
 }

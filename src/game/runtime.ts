@@ -215,6 +215,7 @@ export class LevelRuntime {
 
     // DOM: HUD, stage, Tapko, bubble, guide.
     this.el = h('div', { class: `level-screen world-${WORLDS[def.world]}` });
+    this.cardWatch.observe(this.el, { childList: true, attributes: true, attributeFilter: ['class'] });
     this.guide = new KeyboardGuide(lay);
     this.state = new LevelState(this.core, this.guide, this.el);
     if (rounds) this.makeHold(rounds);
@@ -222,7 +223,7 @@ export class LevelRuntime {
     if (this.friends.robot) this.el.dataset.bolt = this.friends.robot.look;
     if (this.friends.fairy) this.el.dataset.fairy = 'melody';
     // A later part of a hero's journey starts with the bar where the parts before it left it.
-    this.progressFill = h('div', { class: 'progress-fill', style: def.journey ? `width: ${Math.round(journeyProgress(def.journey, 0) * 100)}%` : '' });
+    this.progressFill = h('div', { class: 'progress-fill', style: def.journey ? `translate: ${Math.round(journeyProgress(def.journey, 0) * 100) - 100}% 0` : '' });
     const title = def.task ? def.task.title || t('task.untitled') : def.kind === 'placement' ? t('level.placement') : def.kind === 'practice' ? t(def.phrases ? 'level.ownText' : 'level.practice') : def.kind === 'freetype' ? t('level.freeType') : def.kind === 'aim' ? t('aim.title') : def.kind === 'parrot' ? t('parrot.title') : def.kind === 'rhythm' ? t('rhythm.title') : def.journey ? t('journey.title') : worldName(def.world);
     // Hiding the guide is the switch: the crossed keyboard, with the orange ring while the guide is hidden.
     const guideBtn = this.guideBtn = roundButton('control', 'keyboardOff', t('level.guide'), () => this.toggleGuide());
@@ -534,6 +535,7 @@ export class LevelRuntime {
     // Leaving by the browser's back button still keeps the time and keys typed.
     if (this.state.started && !this.state.finished) this.flushSession();
     this.disposed = true;
+    this.cardWatch.disconnect();
     clearTimeout(this.handsAway);
     clearTimeout(this.handsArrive);
     speech.stop();
@@ -1091,7 +1093,7 @@ export class LevelRuntime {
     const pct = Math.max(this.progressPct, Math.round((j ? journeyProgress(j, share) : share) * 100));
     if (pct !== this.progressPct) {
       this.progressPct = pct;
-      this.progressFill.style.width = `${pct}%`;
+      this.progressFill.style.translate = `${pct - 100}% 0`;
     }
     this.paintRings(dt);
     this.speed.idle(dt, performance.now());
@@ -1123,15 +1125,24 @@ export class LevelRuntime {
    * would re-blur it every frame for nothing seen. The simple drawing has no blur and stays live.
    */
   private get covered(): boolean {
-    const on = !!this.el.querySelector(':scope > .overlay:not(.peek)');
-    // The class stops the scene's CSS animations; a `:has()` rule would restyle the whole level on every change inside it.
-    if (this.el.classList.contains('covered') !== on) this.el.classList.toggle('covered', on);
-    return !graphics.simple && on;
+    if (this.cardsChanged || this.cardWatch.takeRecords().length) {
+      this.cardsChanged = false;
+      this.cardOn = !!this.el.querySelector(':scope > .overlay:not(.peek)');
+      // The class stops the scene's CSS animations; a `:has()` rule would restyle the whole level on every change inside it.
+      this.el.classList.toggle('covered', this.cardOn);
+    }
+    return !graphics.simple && this.cardOn;
   }
+
+  /** A card over the level that is not peeked under, as last looked up. */
+  private cardOn = false;
+  /** The level's cards are looked up again only after one came or went, or the end card was peeked under (that sets a class on the level). */
+  private cardsChanged = true;
+  private cardWatch = new MutationObserver(() => { this.cardsChanged = true; });
 
   private render(): void {
     this.tapko.size(this.stage.scale, this.mode.tapkoFeet, this.mode.bubbleEnd);
-    // Read every frame, also before play, so the level's `covered` class follows the cards.
+    // Asked every frame, also before play, so the level's `covered` class follows the cards.
     const covered = this.covered;
     this.watchFrames();
     // A paused level, the cards before play and a blurring card do not move: the last frame stays unless a resize cleared it or a picture came.

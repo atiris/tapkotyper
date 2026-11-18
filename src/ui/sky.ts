@@ -16,6 +16,8 @@ const ARC_STEPS = 24;
 const CLEAR = 14;
 /** The other look's pictures wait this long, so on a slow line the first screen's own pictures come first. */
 const OTHER_LOOK_AFTER_MS = 2000;
+/** After a change of look, the wait past `CHANGE_MS` until every fade of the look that left is over. */
+const SETTLE_MS = 500;
 
 /**
  * A sky piece: its width and center in units of the sun's size, from the band's left edge and
@@ -88,7 +90,7 @@ export function skyScene(screen: HTMLElement, under: () => (Element | null)[], b
         // They come after the day meadow, so they never hold it up.
         h('span', { class: 'bfly-trip' }, image('light', name, day.ready)))),
     ...fireflies.map(([x, y, at], i) => h('div', { class: 'ffly', style: `left: ${x * 100}%; top: ${y * 100}%; --in: ${at}s; --d: ${-i * 1.3}s` }, h('i'))));
-  const el = h('div', { class: 'start-sky still', 'aria-hidden': 'true', 'data-look': shownLook() },
+  const el = h('div', { class: 'start-sky still settled', 'aria-hidden': 'true', 'data-look': shownLook() },
     h('div', { class: 'sky-layer sky-day' }), h('div', { class: 'sky-layer sky-night' }),
     band, night.el, day.el, life);
   el.classList.toggle('calm', reduceMotion());
@@ -140,9 +142,14 @@ export function skyScene(screen: HTMLElement, under: () => (Element | null)[], b
     target.animate(frames, { duration, delay, easing: 'cubic-bezier(0.45, 0, 0.35, 1)', fill: 'backwards' });
   };
 
+  /** The look that left moves until it is out of sight; `settled` then stops its idle motion. */
+  let settling = 0;
   const change = (look: Look) => {
     loadLook(look);
     el.dataset.look = look;
+    el.classList.remove('settled');
+    clearTimeout(settling);
+    settling = window.setTimeout(() => el.classList.add('settled'), CHANGE_MS + SETTLE_MS);
     if (el.classList.contains('calm') || sun.hidden) return;
     for (const a of [...sun.getAnimations(), ...moon.getAnimations()]) a.cancel();
     const [rising, setting] = look === 'dark' ? [moon, sun] : [sun, moon];
@@ -165,6 +172,7 @@ export function skyScene(screen: HTMLElement, under: () => (Element | null)[], b
     el,
     destroy() {
       clearTimeout(later);
+      clearTimeout(settling);
       observer.disconnect();
       offTheme();
     },

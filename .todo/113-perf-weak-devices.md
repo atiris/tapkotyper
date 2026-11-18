@@ -161,9 +161,21 @@ SR slow-lowres, B big).
   left for a later round if valley-3/valley-5 stay over budget.
 
 ### Step 3 - Round 2: page and styles (HUD, keyboard guide, hands, Tapko, cards, map, start)
-- [ ] Same loop (dossier refresh first) for round-2 proposals; include style recalc counts from
+- [x] Same loop (dossier refresh first) for round-2 proposals; include style recalc counts from
       the traces in the table.
 - Checks as step 2. Commit.
+- Progress (2026-11-18): dossier rewritten under 250 lines (round 1 collapsed, round-2 hot spots
+  K-S). Traces of six scenes (meadow-1, space-5, valley-1, range, map, start) in four
+  configurations: `.e2e/perf-r2.mjs <label>` (git-ignored, ONLY=, RUNS=, NOBUILD=) into
+  `.e2e/perf-113/r2a` (before), `r2b` (iteration 1), `r2c` (iteration 2); new local tools
+  `.e2e/trace-layouts.mjs` (who schedules style/layout) and `.e2e/trace-roots.mjs` (layout roots).
+  Iteration 1 (P9b, P10, P11, P12 + breathe off in Simple) kept: map slow busy 70 -> 25 %, start
+  in Simple 59 -> 22 %, range normal layouts 1565 -> 196. Iteration 2 (start page in Full) gained
+  nothing and was reverted, which ends the loop. Decisions: the progress bar's gradient now
+  belongs to the whole bar (a short fill shows its greener end); a Tapko hop in the air finishes
+  instead of restarting; locked islands on the map do not float in Full; Q/R (keyboard guide,
+  hands) left as they are (cheap per key). Browser check: fireflies (dark start), map, a meadow
+  level (hop, mood pictures, bar) fine, no console errors.
 
 ### Step 4 - Round 3: loading, memory, Automatic graphics, looks
 - [ ] Same loop (dossier refresh first) for round-3 proposals: first load and level open (`--load`), heap (`--leak`),

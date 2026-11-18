@@ -87,15 +87,22 @@ export function accuracyFill(accuracy: number): number {
   return Math.max(0, 1 - Math.log10(1 + 99 * errors) / 2);
 }
 
-/** A measure of the top bar (a picture, not a button); `paint` redraws it (and its `band` class) only when `key` changed. */
-function measure(kind: RoundKind): { el: HTMLElement; paint(key: string, html: string, label: string, band?: string): void } {
+/**
+ * A measure of the top bar (a picture, not a button). It is set every frame, so `changed` tells
+ * whether `key` differs from the shown one before the caller builds the picture and the label
+ * for `paint` (which also sets the `band` class).
+ */
+function measure<K>(kind: RoundKind): { el: HTMLElement; changed(key: K): boolean; paint(html: string, label: string, band?: string): void } {
   const el = h('div', { class: `round-btn ${kind}`, role: 'img' });
-  let shown = '';
+  let shown: K | undefined;
   return {
     el,
-    paint(key, html, label, band) {
-      if (key === shown) return;
+    changed(key) {
+      if (key === shown) return false;
       shown = key;
+      return true;
+    },
+    paint(html, label, band) {
       if (band) el.className = `round-btn ${kind} ${band}`;
       el.innerHTML = html;
       tip(el, label);
@@ -106,39 +113,43 @@ function measure(kind: RoundKind): { el: HTMLElement; paint(key: string, html: s
 
 /** Presnosť: the share of right keys, the ring by `accuracyFill`; red below 80 %, orange below 90 %, yellow above; a check at 100. */
 export function accuracyRing(): { el: HTMLElement; set(accuracy: number): void } {
-  const m = measure('accuracy');
+  const m = measure<number>('accuracy');
   return {
     el: m.el,
     set(accuracy) {
       const pct = Math.round(accuracy * 100);
+      if (!m.changed(pct)) return;
       const ring = fillRing(accuracyFill(accuracy));
-      m.paint(String(pct), pct === 100 ? roundSvg('check', ring) : roundTextSvg(String(pct), ring), t('level.accuracy', { n: pct }), `acc-${pct < 80 ? 'low' : pct < 90 ? 'mid' : 'high'}`);
+      m.paint(pct === 100 ? roundSvg('check', ring) : roundTextSvg(String(pct), ring), t('level.accuracy', { n: pct }), `acc-${pct < 80 ? 'low' : pct < 90 ? 'mid' : 'high'}`);
     },
   };
 }
 
 /** Rytmus: how even the typing is (0-100), the ring by the score; "…" while there is none yet; a check at 100. */
 export function rhythmRing(): { el: HTMLElement; set(score: number | null): void } {
-  const m = measure('rhythm');
+  const m = measure<number | null>('rhythm');
   return {
     el: m.el,
     set(score) {
+      if (!m.changed(score)) return;
       const ring = fillRing(score === null ? 0 : score / 100);
       const html = score === 100 ? roundSvg('check', ring) : roundTextSvg(score === null ? '…' : String(score), ring);
-      m.paint(String(score), html, score === null ? t('level.rhythmListening') : t('level.rhythm', { n: score }));
+      m.paint(html, score === null ? t('level.rhythmListening') : t('level.rhythm', { n: score }));
     },
   };
 }
 
 /** Rýchlosť: letters a minute, the wave's ring filling from calm (`fill` 0) to its top (1). */
 export function speedRing(): { el: HTMLElement; set(fill: number, cpm: number): void } {
-  const m = measure('speed');
+  const m = measure<number>('speed');
   return {
     el: m.el,
     set(fill, cpm) {
       // The ring is redrawn only when its 1/40 step changes, not on every frame.
       const step = Math.round(Math.max(0, Math.min(1, fill)) * 40);
-      m.paint(`${step}|${cpm}`, roundSvg('wave', fillRing(0.25 + 0.7 * (step / 40))), t('level.speed', { n: cpm }));
+      // One number for the pair: the step is below 41.
+      if (!m.changed(cpm * 41 + step)) return;
+      m.paint(roundSvg('wave', fillRing(0.25 + 0.7 * (step / 40))), t('level.speed', { n: cpm }));
     },
   };
 }

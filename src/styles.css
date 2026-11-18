@@ -618,10 +618,13 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
   91.67% { transform: translate(1.7px, 4.5px) rotate(-5.1deg) scaleX(0.955); }
 }
 .ffly { width: 10px; height: 10px; opacity: 0; transform: translateY(calc(var(--meadow-h) * 0.4)); transition: transform 1s ease, opacity 0.7s ease; }
-.ffly > i { display: block; width: 100%; height: 100%; border-radius: 50%; background: #fff6b8; box-shadow: 0 0 6px 3px rgba(255, 226, 120, 0.85), 0 0 18px 8px rgba(255, 200, 90, 0.35); animation: drift 6s ease-in-out infinite, glow 2.4s ease-in-out infinite; animation-delay: var(--d, 0s); }
+/* The dot and its two glows are one gradient: blurred shadows would be blurred again on every frame of the drift. */
+.ffly > i { position: absolute; inset: -26px; border-radius: 50%; background: radial-gradient(circle closest-side, #fff6b8 0 16%, rgba(255, 226, 120, 0.8) 17%, rgba(255, 220, 112, 0.5) 27%, rgba(255, 205, 95, 0.2) 45%, rgba(255, 200, 90, 0.07) 70%, rgba(255, 200, 90, 0) 100%); animation: drift 6s ease-in-out infinite, glow 2.4s ease-in-out infinite; animation-delay: var(--d, 0s); }
 .start-sky[data-look='dark'] .ffly { opacity: 1; transform: none; transition: transform 1.2s ease var(--in, 1.2s), opacity 1s ease var(--in, 1.2s); }
 @keyframes drift { 0%, 100% { translate: 0 0; } 33% { translate: 10px -12px; } 66% { translate: -8px -4px; } }
 @keyframes glow { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+/* Once a look has settled (ui/sky.ts), the other look's unseen pieces stop moving. */
+.start-sky.settled:not([data-look='dark']) :is(.sky-star > img, .ffly > i), .start-sky.settled[data-look='dark'] :is(.sky-cloud > img, .bfly-trip, .bfly-trip > img) { animation: none; }
 /* A first paint and a resize show the look at once. */
 .start-sky.still, .start-sky.still * { transition: none !important; }
 /* Reduced motion: no travel, no idle motion, a short cross-fade. */
@@ -642,6 +645,8 @@ a:not(.btn):hover, a:not(.btn):focus-visible { text-decoration: underline; }
 .gfx-simple .kb-key { transition: none; }
 .gfx-simple .progress-fill { transition: none; }
 .gfx-simple .kb-hands .hand-pose { transition: none; }
+/* Nothing moves on its own on a waiting page (each idle move is a restyle and a repaint every frame): the character does not breathe, the worlds and the sky stand still. */
+.gfx-simple .tapko-stack, .gfx-simple .island-art > img, .gfx-simple .sky-cloud > img, .gfx-simple .sky-star > img { animation: none; }
 
 /* Room above the cards for the lift and the focus ring, which the scrolling list would clip. */
 .profile-list { display: flex; flex-direction: column; gap: 0.8rem; align-items: center; padding: 14px 12px 20px; }
@@ -775,7 +780,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .island:nth-child(4) .island-art > img { animation-delay: -3s; }
 .island-fallback { width: 120px; height: 80px; border-radius: 50% 50% 40% 40%; background: var(--green); }
 .island.locked .island-art { cursor: pointer; }
-.island.locked .island-art > img { filter: grayscale(0.85) opacity(0.55); }
+/* A closed world rests: it does not float, so its grey picture is painted once. */
+.island.locked .island-art > img { filter: grayscale(0.85) opacity(0.55); animation: none; }
 .island.locked h3 { color: var(--ink-soft); }
 .lock { position: absolute; inset: auto; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: var(--surface); color: var(--ink-soft); }
 .lock .icon { width: 26px; height: 26px; }
@@ -1010,7 +1016,8 @@ body:not(.gfx-simple) .level-screen.covered :is(.stage-wrap *, .overlay .tapko-s
 .hud-divider { width: 2px; align-self: stretch; margin: 0.2rem 0 0.2rem auto; background: var(--track); border-radius: 2px; }
 /* The target range: each weak key with a small bar of its recent accuracy. */
 .progress { flex: 1; min-width: 120px; height: 16px; border-radius: 999px; background: var(--track); overflow: hidden; }
-.progress-fill { height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, #8fd89f, var(--green)); transition: width 0.3s ease; }
+/* The fill is as wide as the bar and slides in from the left: a changing width would lay out the whole page on every frame of its move. */
+.progress-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #8fd89f, var(--green)); translate: -100% 0; transition: translate 0.3s ease; }
 .stage-wrap { position: relative; flex: 1; min-height: 0; }
 /* Sticky finger: the line over the scene while a held key is up. */
 .stage-wrap > .hold-line { position: absolute; left: 50%; top: 1rem; z-index: 3; translate: -50% 0; max-width: calc(100% - 2rem); margin: 0; padding: 0.55em 1.1em; border-radius: 999px; background: var(--tint-yellow); color: var(--ink); border: 3px solid #e8a23a; font-weight: 700; font-size: 1.15rem; text-align: center; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18); }

@@ -100,7 +100,7 @@ function levelIcons(): HTMLElement[] {
   return [
     iconLine(round('pause'), t('help.icons.pause')),
     iconLine(levelRing(5, 2), t('help.icons.ring')),
-    iconLine(h('div', { class: 'progress' }, h('div', { class: 'progress-fill', style: 'width: 60%' })), t('help.icons.progress')),
+    iconLine(h('div', { class: 'progress' }, h('div', { class: 'progress-fill', style: 'translate: -40% 0' })), t('help.icons.progress')),
     iconLine(accuracy.el, t('help.icons.accuracy')),
     iconLine(rhythm.el, t('help.icons.rhythm')),
     iconLine(speed.el, t('help.icons.speed')),

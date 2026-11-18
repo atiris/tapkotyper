@@ -15,7 +15,7 @@ Fable is expensive: it spends its tokens only on optimization thinking and edits
 - **This session (Opus) is the orchestrator.** It measures, analyses the traces, prepares the
   dossier, runs every check, decides keep/revert by the gates, reverts, commits, updates specs. It
   does not design optimizations itself.
-- **The dossier** `.todo/113-perf-dossier.md` (Opus writes it before Fable's first call of a
+- **The dossier** `.todo/.done/113-perf-dossier.md` (Opus writes it before Fable's first call of a
   step, under 250 lines), so Fable never has to search the repo:
   - per scene and machine the frame split from the traces: scripting / style recalc (count,
     elements) / layout / paint / raster-composite, the top 10 functions by self time with
@@ -29,7 +29,7 @@ Fable is expensive: it spends its tokens only on optimization thinking and edits
   one per step, continued with `SendMessage` inside the step (not relaunched). Its brief:
   - role: "expert in browser rendering performance (Canvas 2D software drawing, style recalcs,
     layout, GC, loading); improve smoothness on weak devices, keep or improve the look";
-  - read only `.todo/113-perf-dossier.md` and the `file:start-end` ranges it names; open other
+  - read only `.todo/.done/113-perf-dossier.md` and the `file:start-end` ranges it names; open other
     code only when a change needs it, never search the tree broadly;
   - edit the files; no test runs, no `perf.mjs`, no builds (Opus runs them and reports back);
   - return per change: files, what it saves (which part of the frame), expected effect per
@@ -56,7 +56,7 @@ Fable is expensive: it spends its tokens only on optimization thinking and edits
   `dist/robots.txt`, `dist/sitemap.xml`; a change that alters their `<head>`, visible text,
   links, `lang`, canonical/hreflang or structured data is reverted, unless it only reorders
   resource hints with equal content. `--load` first paint of the start page must not get worse.
-- `.todo/113-perf-stats.md` holds: the baseline table, then one table per kept batch (scene x
+- `.todo/.done/113-perf-stats.md` holds: the baseline table, then one table per kept batch (scene x
   configuration: p50, p95, long tasks; load; chunk sizes) and a one-line verdict per change.
   Keep it under 200 lines: older batches collapse into one "after step N" table.
 
@@ -105,7 +105,7 @@ SR slow-lowres, B big).
 
 ### Step 1 - Baseline and audit
 - [x] Opus: full measurement batch (all configurations), SEO guard copies, write the
-      baseline into `.todo/113-perf-stats.md`.
+      baseline into `.todo/.done/113-perf-stats.md`.
 - [x] Opus maps every performance-relevant part (frame loop, stage and scaling, background bands,
       particles, tweens, glows, labels, each mode's draw, HUD/keyboard/hands DOM and CSS, cards and
       blur, start page and map, asset loading and the service worker, memory over levels) to its
@@ -198,9 +198,9 @@ SR slow-lowres, B big).
   plays its first 9 s in Full by design (before 99.9 and 83.3).
 
 ### Step 5 - Full verification and close
-- [ ] Full measurement batch, final table vs baseline at the top of the stats file.
-- [ ] `npm run build`, `npm test`, the whole e2e suite (`npx playwright test`), SEO guard.
-- [ ] Browser check with the Playwright MCP: start page, map, meadow-1, valley-3 in Full and
+- [x] Full measurement batch, final table vs baseline at the top of the stats file.
+- [x] `npm run build`, `npm test`, the whole e2e suite (`npx playwright test`), SEO guard.
+- [x] Browser check with the Playwright MCP: start page, map, meadow-1, valley-3 in Full and
       Simple; screenshots only for scenes whose drawing changed (subagent returns a verdict).
 - [x] Update `.specify/architecture.md` "Performance on slow computers" with what is now true
       (WHAT/WHY); adjust the budget numbers only if they got stricter.
@@ -209,5 +209,23 @@ SR slow-lowres, B big).
   next session reruns the whole batch from scratch (`.e2e/perf-113/final/` partial, overwrite),
   then the budget-number check, build/tests/e2e, browser check, close. Run e2e and the browser
   check only after the batch (they skew the numbers).
-- [ ] Move plan, stats and dossier to `.todo/.done/`, `## Done - <date>`, leftovers to `BACKLOG.md`,
+- Progress (2026-11-18, closing session): batch `final` rerun; the host's memory ran low (two
+  other agents' WSL VM held 11 GB) and the batch was stopped after run 1 of every configuration
+  and run 2 of normal; slow-auto run 2 measured alone (space-1 99.9 in run 1 was noise, 66.7).
+  Owner's decision: run 1 is the result. No cell worse than the baseline; stats file "Final".
+  Budget numbers kept (slow-low p95 at 33 or 50 per run, a 50 budget would flap). Build, unit
+  suite (773), whole e2e suite (109) green; SEO guard unchanged but the build stamp. Browser
+  check (dev server, tester profile): start page, map, meadow-1 in Full, valley-3 in Simple
+  looked right, 60 fps in the page's own frame count, no console errors; the session judged the
+  four screenshots itself, no subagent.
+- [x] Move plan, stats and dossier to `.todo/.done/`, `## Done - <date>`, leftovers to `BACKLOG.md`,
       remove the `QUEUE.md` line.
+
+## Done - 2026-11-18
+Shipped: rounds 1-3 (canvas caches and per-frame garbage, page and style calm-downs, the left
+levels freed, Automatic steps down on steady stutter); slow-low p95 at most 50 ms everywhere
+(baseline up to 83), big p50 16.7 everywhere (baseline 67-83), normal unchanged at 60 fps, load
+unchanged; spec `.specify/architecture.md` updated. Left out: H dragons' fire glow and the
+start-page own layers (no gain, reverted), P14 pausing background downloads (slows the next
+cold level), P15 30 Hz scene (not needed), P5 band snapping (look choice); slow-auto meadow-5
+and range p95 just over 80 in the first 9 s in Full (backlog).

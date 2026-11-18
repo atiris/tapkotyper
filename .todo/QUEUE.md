@@ -7,4 +7,3 @@ listed here is never run. Lines whose plan has moved to `.todo/.done/` are
 skipped, and the session that finishes a plan removes its line.
 
 
-- [P2] 113-perf-weak-devices.md - the only open plan; smoother play on weak devices, Fable optimizes, Opus measures

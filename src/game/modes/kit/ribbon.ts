@@ -1,5 +1,5 @@
 import { graphics } from '../../../engine/graphics';
-import { WORD, fontFamily, type G, roundRect } from '../../../gfx/draw';
+import { WORD, WORD_SHADOW_PX, drawCached, fontFamily, type G, roundRect } from '../../../gfx/draw';
 import { ENTER } from '../../../keyboard/layouts';
 import type { LevelRuntime } from '../../runtime';
 import type { Target } from '../../typing';
@@ -31,6 +31,10 @@ const FRAME_GAP = 26;
 const KEPT_UP = 3;
 /** Seconds the letters of a restarted word fade back out of the frame. */
 const ERASE_S = 0.4;
+/** Room round the frame's picture for its thick edge. */
+const FRAME_EDGE = 6;
+/** Measured pieces kept; a longer list starts again. */
+const WIDTHS_MAX = 200;
 
 /** A word of the ribbon: its text (without the space after it) and its place on the ribbon. */
 export interface RibbonWord {
@@ -79,7 +83,10 @@ export function wrapLines(g: G, text: string, width: number): { from: number; te
  * fades out; `dx` from the text's left edge) and where the cursor stands.
  */
 interface Laid {
-  key: string;
+  text: string;
+  shown: number;
+  width: number;
+  font: string;
   lines: { from: number; text: string }[];
   runs: { text: string; dx: number; row: number; ghost: boolean }[];
   cursor: { dx: number; row: number };
@@ -107,6 +114,12 @@ export class Ribbon {
   private ends: { key: string; left: CanvasGradient; right: CanvasGradient } | null = null;
   /** The frame's text laid out, kept until the text changes: measuring letters every frame costs. */
   private laid: Laid | null = null;
+
+  /** The written words as one text, kept until another word is written or the front is trimmed: joining them every frame costs. */
+  private past: { at: number; dropped: number; text: string } | null = null;
+  /** Widths of the pieces of the word in progress in `widthsFont`, measured once each. */
+  private widths = new Map<string, number>();
+  private widthsFont = '';
 
   /** Words dropped from the front with the frame's lines long scrolled away. */
   dropped = 0;
@@ -147,7 +160,19 @@ export class Ribbon {
   /** What the frame shows: the written words and the letters of the word in progress. */
   private frameText(): string {
     const tg = this.current;
-    return this.written(this.at) + (tg ? tg.word.slice(0, tg.typed) : '');
+    let past = this.past;
+    if (!past || past.at !== this.at || past.dropped !== this.dropped) past = this.past = { at: this.at, dropped: this.dropped, text: this.written(this.at) };
+    return past.text + (tg ? tg.word.slice(0, tg.typed) : '');
+  }
+
+  private width(g: G, text: string): number {
+    let w = this.widths.get(text);
+    if (w === undefined) {
+      if (this.widths.size >= WIDTHS_MAX) this.widths.clear();
+      w = g.measureText(text).width;
+      this.widths.set(text, w);
+    }
+    return w;
   }
 
   /**
@@ -183,6 +208,10 @@ export class Ribbon {
     const font = `600 ${size}px ${fontFamily()}`, space = size * 0.5;
     g.save();
     g.font = font;
+    if (font !== this.widthsFont) {
+      this.widths.clear();
+      this.widthsFont = font;
+    }
     // Each word's start along the ribbon.
     let along = 0;
     for (const w of this.words) {
@@ -193,19 +222,23 @@ export class Ribbon {
     }
     const word = this.words[this.at];
     const typed = tg && word ? Math.min(tg.typed, word.text.length) : 0;
-    this.ribbonAim = word ? word.start + g.measureText(word.text.slice(0, typed)).width + (tg && tg.typed > word.text.length ? space : 0) : along;
-    if (!graphics.simple) {
-      g.shadowColor = 'rgba(40,30,20,0.25)';
-      g.shadowBlur = 8;
-      g.shadowOffsetY = 3;
-    }
-    g.fillStyle = hc ? '#ffffff' : WORD.plate;
-    roundRect(g, box.x, top, box.w, RIBBON_H, RIBBON_H / 2);
-    g.fill();
-    g.shadowColor = 'transparent';
+    this.ribbonAim = word ? word.start + this.width(g, word.text.slice(0, typed)) + (tg && tg.typed > word.text.length ? space : 0) : along;
+    // The plate and its shadow are a picture made once; room for the shadow, which a canvas draws in device pixels.
+    const bleed = graphics.simple ? 2 : WORD_SHADOW_PX / g.getTransform().a;
+    drawCached(g, `ribbon-plate|${graphics.simple}|${hc}`, box.x - bleed, top - bleed, box.w + 2 * bleed, RIBBON_H + 2 * bleed, (c) => {
+      if (!graphics.simple) {
+        c.shadowColor = 'rgba(40,30,20,0.25)';
+        c.shadowBlur = 8;
+        c.shadowOffsetY = 3;
+      }
+      c.fillStyle = hc ? '#ffffff' : WORD.plate;
+      roundRect(c, bleed, bleed, box.w, RIBBON_H, RIBBON_H / 2);
+      c.fill();
+    }, true);
     const origin = box.x + box.w * RIBBON_AT - this.ribbonX, grey = hc ? GREY_HC : GREY;
     // The letters stay inside the plate's shape; its edge is drawn over them and the faded ends.
     g.save();
+    roundRect(g, box.x, top, box.w, RIBBON_H, RIBBON_H / 2);
     g.clip();
     this.drawWords(g, box, origin, typed, space, grey);
     this.fadeEnds(g, box.x, top, box.w, RIBBON_H, Math.min(RIBBON_FADE, box.w / 2), hc);
@@ -231,7 +264,7 @@ export class Ribbon {
         // A hidden word (dictation, memory) shows dots for the letters still to type.
         let cx = wx;
         [...w.text].forEach((ch, k) => {
-          const cw = g.measureText(ch).width;
+          const cw = this.width(g, ch);
           if (k < typed) {
             g.fillStyle = WORD.typed;
             g.fillText(ch, cx, RIBBON_Y + 2);
@@ -244,11 +277,11 @@ export class Ribbon {
           cx += cw;
         });
       } else if (now) {
-        const head = w.text.slice(0, typed), hw = g.measureText(head).width;
+        const head = w.text.slice(0, typed), hw = this.width(g, head);
         g.fillStyle = hc ? '#006b2e' : WORD.typed;
         g.fillText(head, wx, RIBBON_Y + 2);
         if (typed < w.text.length) {
-          const ch = w.text[typed], cw = g.measureText(ch).width;
+          const ch = w.text[typed], cw = this.width(g, ch);
           g.fillStyle = hc ? '#ffe066' : WORD.next;
           roundRect(g, wx + hw - size * 0.04, RIBBON_Y - size * 0.62, cw + size * 0.08, size * 1.24, size * 0.2);
           g.fill();
@@ -284,28 +317,32 @@ export class Ribbon {
   private drawFrame(g: G, writing: boolean): void {
     const b = this.frameBox();
     g.save();
-    // The stone frame.
-    g.fillStyle = 'rgba(255,250,240,0.92)';
-    roundRect(g, b.x, b.y, b.w, b.h, 18);
-    g.fill();
-    g.lineWidth = 10;
-    g.strokeStyle = '#8d8478';
-    g.stroke();
-    g.lineWidth = 2;
-    g.strokeStyle = '#6a6259';
-    roundRect(g, b.x + 7, b.y + 7, b.w - 14, b.h - 14, 13);
-    g.stroke();
+    // The stone frame never changes: a picture made once, with room for its thick edge.
+    drawCached(g, 'ribbon-frame', b.x - FRAME_EDGE, b.y - FRAME_EDGE, b.w + 2 * FRAME_EDGE, b.h + 2 * FRAME_EDGE, (c) => {
+      c.translate(FRAME_EDGE, FRAME_EDGE);
+      c.fillStyle = 'rgba(255,250,240,0.92)';
+      roundRect(c, 0, 0, b.w, b.h, 18);
+      c.fill();
+      c.lineWidth = 10;
+      c.strokeStyle = '#8d8478';
+      c.stroke();
+      c.lineWidth = 2;
+      c.strokeStyle = '#6a6259';
+      roundRect(c, 7, 7, b.w - 14, b.h - 14, 13);
+      c.stroke();
+    }, true);
     const pulse = this.L.reduceMotion ? 0.7 : 0.55 + 0.3 * Math.sin(this.t * 2.2);
     for (const [cx, cy] of [[b.x, b.y], [b.x + b.w, b.y], [b.x, b.y + b.h], [b.x + b.w, b.y + b.h]]) this.drawRune(g, cx, cy, pulse);
     // The written words, their last lines in view.
-    g.font = `600 ${TEXT_SIZE}px ${fontFamily()}`;
+    const font = `600 ${TEXT_SIZE}px ${fontFamily()}`;
+    g.font = font;
     g.textBaseline = 'middle';
     g.textAlign = 'left';
     const inner = b.w - FRAME_PAD * 2;
-    if (this.trims) this.trim(this.layout(g, this.frameText(), inner).lines);
+    if (this.trims) this.trim(this.layout(g, font, this.frameText(), inner).lines);
     const shown = this.frameText(), ghost = this.ghost;
     const full = ghost && ghost.from + ghost.text.length > shown.length ? shown + ghost.text.slice(shown.length - ghost.from) : shown;
-    const { lines, runs, cursor } = this.layout(g, full, inner, shown.length);
+    const { lines, runs, cursor } = this.layout(g, font, full, inner, shown.length);
     this.frameAim = Math.max(0, lines.length - LINES) * LINE_H;
     g.save();
     g.beginPath();
@@ -332,12 +369,12 @@ export class Ribbon {
   }
 
   /**
-   * `text` laid out for the frame's `width` in the font set on `g`, its first `shown` letters written and
+   * `text` laid out for the frame's `width` in `font`, the font set on `g`, its first `shown` letters written and
    * the rest a ghost; the cursor stands after the written ones. Kept until the text changes.
    */
-  private layout(g: G, text: string, width: number, shown = text.length): Laid {
-    const key = `${shown}|${width}|${g.font}|${text}`;
-    if (this.laid?.key === key) return this.laid;
+  private layout(g: G, font: string, text: string, width: number, shown = text.length): Laid {
+    const laid = this.laid;
+    if (laid && laid.shown === shown && laid.width === width && laid.font === font && laid.text === text) return laid;
     const lines = wrapLines(g, text, width), runs: Laid['runs'] = [];
     let cursor: Laid['cursor'] | null = null;
     lines.forEach((ln, row) => {
@@ -350,7 +387,7 @@ export class Ribbon {
       if (edge && shown < end) cursor = { dx, row };
       else if (edge) cursor ??= { dx, row };
     });
-    return (this.laid = { key, lines, runs, cursor: cursor ?? { dx: 0, row: 0 } });
+    return (this.laid = { text, shown, width, font, lines, runs, cursor: cursor ?? { dx: 0, row: 0 } });
   }
 
   /**

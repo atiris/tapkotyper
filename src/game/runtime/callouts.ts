@@ -13,6 +13,8 @@ interface Shout {
   age: number;
   /** Its reading time; a newer shout cuts it to a short fade. */
   life: number;
+  /** Half the room it takes at its biggest, measured when it is first drawn. */
+  half?: number;
 }
 
 /** A speech bubble in the scene: who says it, centered near (x, y) (or ending at x), its tail toward (tx, ty). */
@@ -42,6 +44,13 @@ function speechLog(b: Rect, labels: Rect[]): void {
   const log = ((window as any).speechLog ??= { frames: 0, overlaps: 0 });
   log.frames++;
   if (labels.some((r) => r.x1 > b.x0 + LABEL_GAP && r.x0 < b.x1 - LABEL_GAP && r.y1 > b.y0 + LABEL_GAP && r.y0 < b.y1 - LABEL_GAP)) log.overlaps++;
+}
+
+/** The list `dt` older, without the ones whose time is over; the same list while all stay. */
+function aged<T extends { age: number; life: number }>(list: T[], dt: number): T[] {
+  let over = false;
+  for (const s of list) if ((s.age += dt) >= s.life) over = true;
+  return over ? list.filter((s) => s.age < s.life) : list;
 }
 
 /** Shouts and speech bubbles over the scene, drawn after the word labels and kept clear of them. */
@@ -77,10 +86,8 @@ export class Callouts {
   }
 
   update(dt: number): void {
-    for (const s of this.shouts) s.age += dt;
-    this.shouts = this.shouts.filter((s) => s.age < s.life);
-    for (const s of this.speeches) s.age += dt;
-    this.speeches = this.speeches.filter((s) => s.age < s.life);
+    this.shouts = aged(this.shouts, dt);
+    this.speeches = aged(this.speeches, dt);
   }
 
   /** `labels`: where this frame's word labels are. */
@@ -112,7 +119,7 @@ export class Callouts {
     g.globalAlpha = Math.max(0, Math.min(1, (s.life - s.age) / SHOUT_FADE));
     g.font = `800 58px ${fontFamily()}`;
     // Room for its pop (it grows a little past its size) keeps it wholly on the stage.
-    const half = (g.measureText(s.text).width / 2) * 1.12 + 10;
+    const half = (s.half ??= (g.measureText(s.text).width / 2) * 1.12 + 10);
     g.translate(Math.min(this.L.vw - half, Math.max(half, s.x)), Math.max(50, s.y - s.age * 12));
     g.scale(k, k);
     g.rotate(-0.06);

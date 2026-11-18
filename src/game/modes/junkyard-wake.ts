@@ -624,15 +624,19 @@ export class CodeMode extends HeroMode {
   }
 
   /**
-   * A monitor with what `write` writes on it, from a picture made once per `key` (what it shows): its
-   * letters and shadow cost far more to draw than their copy.
+   * A monitor with what `write` writes on it, from two pictures: the monitor with its shadow, made once, and
+   * its letters, made once per `key` (what it shows). Letters and a shadow cost far more to draw than their
+   * copy, and a new letter must not draw the shadow again.
    */
   private drawScreen(g: G, key: string, b: Box, screen: string, write: (g: G) => void): void {
     // Room for the shadow, which a canvas draws in device pixels.
     const bleed = graphics.simple ? 2 : WORD_SHADOW_PX / g.getTransform().a;
-    drawCached(g, `wake-screen|${screen}|${graphics.simple}|${this.L.highContrast}|${key}`, b.x - bleed, b.y - bleed, b.w + 2 * bleed, b.h + 2 * bleed, (c) => {
+    drawCached(g, `wake-monitor|${screen}|${graphics.simple}`, b.x - bleed, b.y - bleed, b.w + 2 * bleed, b.h + 2 * bleed, (c) => {
       c.translate(bleed - b.x, bleed - b.y);
       this.drawMonitor(c, b, screen);
+    }, true);
+    drawCached(g, `wake-text|${screen}|${this.L.highContrast}|${key}`, b.x + BEZEL, b.y + BEZEL, b.w - BEZEL * 2, b.h - BEZEL * 2, (c) => {
+      c.translate(-b.x - BEZEL, -b.y - BEZEL);
       c.font = MONO;
       c.textBaseline = 'middle';
       c.textAlign = 'left';
@@ -642,12 +646,19 @@ export class CodeMode extends HeroMode {
 
   /** Bolt's program on the green screen: the copied words grey, the line in progress kept in view. */
   private drawSource(g: G, b: Box): void {
-    const lines = this.sourceLines(), rows = screenRows(b.h);
-    // The line in progress (the last one once all is copied) is the second in view.
-    const at = lines.findIndex((ln) => ln.to > this.at), cur = at < 0 ? lines.length - 1 : at;
-    const first = Math.max(0, Math.min(cur - 1, lines.length - rows)), hc = this.L.highContrast;
-    const shown = lines.slice(first, first + rows);
-    this.drawScreen(g, `${this.at}|${shown.map((ln) => `${ln.from}:${this.words.slice(ln.from, ln.to).join(' ')}`).join('\n')}`, b, '#0d2416', (c) => {
+    const hc = this.L.highContrast;
+    let s = this.source;
+    if (!s || s.at !== this.at || s.count !== this.words.length || s.w !== b.w || s.h !== b.h) {
+      const lines = this.sourceLines(), rows = screenRows(b.h);
+      // The line in progress (the last one once all is copied) is the second in view.
+      const at = lines.findIndex((ln) => ln.to > this.at), cur = at < 0 ? lines.length - 1 : at;
+      const first = Math.max(0, Math.min(cur - 1, lines.length - rows));
+      const shown = lines.slice(first, first + rows);
+      const key = `${this.at}|${shown.map((ln) => `${ln.from}:${this.words.slice(ln.from, ln.to).join(' ')}`).join('\n')}`;
+      s = this.source = { at: this.at, count: this.words.length, w: b.w, h: b.h, shown, key };
+    }
+    const shown = s.shown;
+    this.drawScreen(g, s.key, b, '#0d2416', (c) => {
       shown.forEach((ln, i) => {
         const y = b.y + BEZEL + SCREEN_PAD + MONO_LINE * (i + 0.5);
         let x = b.x + BEZEL + SCREEN_PAD;
@@ -664,11 +675,16 @@ export class CodeMode extends HeroMode {
   private drawTarget(g: G, b: Box): void {
     const tg = this.current, word = this.words[this.at] ?? '';
     const part = tg ? word.slice(0, Math.min(tg.typed, word.length)) : '';
-    const written = part ? [...this.words.slice(0, this.at), part] : this.words.slice(0, this.at);
-    const lines = breakLines(written, screenColumns(b.w)), rows = screenRows(b.h);
-    const first = Math.max(0, lines.length - rows);
+    const rows = screenRows(b.h);
+    let d = this.target;
+    if (!d || d.at !== this.at || d.part !== part || d.w !== b.w || d.h !== b.h) {
+      const written = part ? [...this.words.slice(0, this.at), part] : this.words.slice(0, this.at);
+      const lines = breakLines(written, screenColumns(b.w));
+      const texts = lines.slice(Math.max(0, lines.length - rows)).map((ln) => written.slice(ln.from, ln.to).join(' '));
+      d = this.target = { at: this.at, part, w: b.w, h: b.h, count: written.length, texts, key: texts.join('\n') };
+    }
+    const { texts, key } = d;
     const x0 = b.x + BEZEL + SCREEN_PAD, y0 = b.y + BEZEL + SCREEN_PAD;
-    const texts = lines.slice(first).map((ln) => written.slice(ln.from, ln.to).join(' ')), key = texts.join('\n');
     this.drawScreen(g, key, b, '#1b2230', (c) => {
       c.fillStyle = '#e8f1ff';
       texts.forEach((text, i) => c.fillText(text, x0, y0 + MONO_LINE * (i + 0.5)));
@@ -678,7 +694,7 @@ export class CodeMode extends HeroMode {
     if (this.caret?.key !== caretKey) {
       // After a whole word (its space still to type) or at the start of the next line.
       let text = texts[texts.length - 1] ?? '', row = Math.max(0, texts.length - 1);
-      if (!part && written.length) {
+      if (!part && d.count) {
         const wraps = text.length + 1 + word.length > screenColumns(b.w) && row + 1 < rows;
         text = wraps ? '' : `${text} `;
         if (wraps) row++;
@@ -691,6 +707,10 @@ export class CodeMode extends HeroMode {
     g.fillStyle = '#e8f1ff';
     g.fillRect(x0 + this.caret.dx + 1, y0 + MONO_LINE * (this.caret.row + 0.5) - MONO_SIZE * 0.55, 3, MONO_SIZE * 1.1);
   }
+
+  /** What each screen shows and what it was laid out for (the word in progress, the words so far, the screen's size): breaking the lines again every frame costs. */
+  private source: { at: number; count: number; w: number; h: number; shown: { from: number; to: number }[]; key: string } | null = null;
+  private target: { at: number; part: string; w: number; h: number; count: number; texts: string[]; key: string } | null = null;
 
   /** Where the target screen's cursor stands (from the text's left edge, and its line), measured when what is written changes. */
   private caret: { key: string; dx: number; row: number } | null = null;

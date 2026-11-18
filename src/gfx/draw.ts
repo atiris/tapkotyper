@@ -87,6 +87,13 @@ export function drawCached(g: G, key: string, x: number, y: number, w: number, h
   g.restore();
 }
 
+/** Whether two lists hold the same values: what a frame shows is compared without building a string of it every frame. */
+export function sameList(a: readonly unknown[], b: readonly unknown[] | null): boolean {
+  if (!b || a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+  return true;
+}
+
 export function roundRect(g: G, x: number, y: number, w: number, h: number, r: number): void {
   g.beginPath();
   g.roundRect(x, y, w, h, Math.min(r, h / 2, w / 2));
@@ -302,12 +309,17 @@ export function drawBackground(g: G, world: string, vw: number, scroll: number, 
   lastAt = at;
   // One still band is one copy anyway. The backdrop is made once the same bands stood still two frames in a row, so a band that stops for one frame does not cost a backdrop.
   const m = g.getTransform();
-  const pics = ['far', 'mid', 'near', 'shore'].map((b) => (sprite(`bg-${world}${b === 'far' ? '' : ground}-${b}`) ? 1 : 0)).join('');
-  const key = held < 2 ? '' : `${world}${ground}|${g.canvas.width}x${g.canvas.height}|${m.a},${m.d}|${pics}|${at.slice(0, held)}|${held === 3 ? shore : ''}`;
-  const copied = key !== '' && (key === backdropKey || key === lastKey);
+  let key: BackdropKey | null = null;
+  if (held >= 2) {
+    let pics = 0;
+    for (let i = 0; i < PICTURES.length; i++) if (sprite(`bg-${world}${i ? ground : ''}-${PICTURES[i]}`)) pics |= 1 << i;
+    key = [world, ground, g.canvas.width, g.canvas.height, m.a, m.d, pics, held, at[0], at[1], held === 3 ? at[2] : 0, held === 3 ? shore : null];
+  }
+  const made = key !== null && sameList(key, backdropKey);
+  const copied = made || (key !== null && sameList(key, lastKey));
   lastKey = key;
-  if (copied) {
-    if (backdropKey !== key) {
+  if (key && copied) {
+    if (!made) {
       backdropKey = key;
       backdrop ??= document.createElement('canvas');
       backdrop.width = g.canvas.width;
@@ -325,17 +337,21 @@ export function drawBackground(g: G, world: string, vw: number, scroll: number, 
   for (let i = copied ? held : 0; i < 3; i++) band(g, i, world, vw, at[i], ground, shore);
 }
 
+/** A world's pictures that a backdrop may hold, and all that decides a backdrop's pixels: a list, as a string of it built every frame costs. */
+const PICTURES = ['far', 'mid', 'near', 'shore'];
+type BackdropKey = (string | number | null)[];
+
 /** The still bands drawn once, the key they were drawn for, and last frame's band offsets and key. */
 let backdrop: HTMLCanvasElement | null = null;
-let backdropKey = '';
+let backdropKey: BackdropKey | null = null;
 let lastAt: number[] = [];
-let lastKey = '';
+let lastKey: BackdropKey | null = null;
 
 /** Leaving the levels: the memory of the backdrop and the drawn labels goes. */
 export function releaseLevelPictures(): void {
   if (backdrop) release(backdrop);
   backdrop = null;
-  backdropKey = '';
+  backdropKey = null;
   for (const c of drawnWords.values()) release(c);
   drawnWords.clear();
 }
@@ -635,10 +651,29 @@ export function speechLayout(g: G, text: string, maxW: number, size = 30): Speec
 
 const SPEECH = { plate: 'rgba(255,253,246,0.96)', edge: 'rgba(90,61,43,0.7)', ink: '#3b2a1e' };
 
-/** A speech bubble centered at (x, y) with a short tail toward (tx, ty); the light plate keeps its daylight look on a dark page too. */
-export function drawSpeech(g: G, lay: SpeechLayout, x: number, y: number, tx: number, ty: number, alpha = 1, scale = 1): void {
+/** Half the width of a bubble tail's base, and the room its outline takes past its shape. */
+const TAIL_HALF = 10;
+const SPEECH_EDGE = 3;
+
+/** A bubble's plate, where its tail leaves it and where the tail ends. */
+interface SpeechShape {
+  x0: number;
+  y0: number;
+  x1: number;
+  y1: number;
+  r: number;
+  bx: number;
+  by: number;
+  tipX: number;
+  tipY: number;
+  above: boolean;
+  below: boolean;
+  left: boolean;
+}
+
+function speechShape(lay: SpeechLayout, x: number, y: number, tx: number, ty: number): SpeechShape {
   // The tail starts on the edge nearest its target and reaches at most TAIL toward it.
-  const TAIL = 34, half = 10;
+  const TAIL = 34, half = TAIL_HALF;
   const x0 = x - lay.w / 2, y0 = y - lay.h / 2, x1 = x0 + lay.w, y1 = y0 + lay.h;
   const below = ty > y1, above = ty < y0, along = below || above, left = !along && tx < x;
   // A tail on a side leaves the corner arcs a straight stretch for its base.
@@ -647,12 +682,36 @@ export function drawSpeech(g: G, lay: SpeechLayout, x: number, y: number, tx: nu
   const by = below ? y1 : above ? y0 : Math.max(y0 + r + half, Math.min(y1 - r - half, ty));
   const d = Math.hypot(tx - bx, ty - by) || 1;
   const k = Math.min(1, TAIL / d);
-  const tipX = bx + (tx - bx) * k, tipY = by + (ty - by) * k;
+  return { x0, y0, x1, y1, r, bx, by, tipX: bx + (tx - bx) * k, tipY: by + (ty - by) * k, above, below, left };
+}
+
+/**
+ * A speech bubble centered at (x, y) with a short tail toward (tx, ty); the light plate keeps its daylight look on a dark page too.
+ * Once it has popped in it is a picture made once: its outline and letters cost far more to draw than their copy.
+ */
+export function drawSpeech(g: G, lay: SpeechLayout, x: number, y: number, tx: number, ty: number, alpha = 1, scale = 1): void {
+  const s = speechShape(lay, x, y, tx, ty);
   g.save();
   g.globalAlpha *= alpha;
-  g.translate(tipX, tipY);
-  g.scale(scale, scale);
-  g.translate(-tipX, -tipY);
+  if (scale === 1) {
+    const left = Math.min(s.x0, s.tipX) - SPEECH_EDGE, top = Math.min(s.y0, s.tipY) - SPEECH_EDGE;
+    const w = Math.max(s.x1, s.tipX) + SPEECH_EDGE - left, h = Math.max(s.y1, s.tipY) + SPEECH_EDGE - top;
+    drawCached(g, `speech|${lay.lines.join('\n')}|${lay.size}|${tx - x}|${ty - y}|${fontFamily()}`, left, top, w, h, (c) => {
+      c.translate(-left, -top);
+      paintSpeech(c, lay, x, y, s);
+    }, true);
+  } else {
+    g.translate(s.tipX, s.tipY);
+    g.scale(scale, scale);
+    g.translate(-s.tipX, -s.tipY);
+    paintSpeech(g, lay, x, y, s);
+  }
+  g.restore();
+}
+
+function paintSpeech(g: G, lay: SpeechLayout, x: number, y: number, { x0, y0, x1, y1, r, bx, by, tipX, tipY, above, below, left }: SpeechShape): void {
+  const half = TAIL_HALF, along = above || below;
+  g.save();
   g.fillStyle = SPEECH.plate;
   g.strokeStyle = SPEECH.edge;
   g.lineWidth = 3;

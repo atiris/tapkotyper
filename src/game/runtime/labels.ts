@@ -1,5 +1,5 @@
 import { type Stage, VH } from '../../engine/loop';
-import { WORD_SHADOW_PX, drawWord, wordBox } from '../../gfx/draw';
+import { WORD_SHADOW_PX, drawWord, sameList, wordBox } from '../../gfx/draw';
 import { CLOCK_R, drawClock } from '../modes/kit/clock';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
@@ -46,7 +46,7 @@ export class Labels {
   private shift = new Map<number, number>();
   private time = 0;
   /** All that decides how the last drawn labels look: with the same again, the simple drawing's layer keeps them. */
-  private look = '';
+  private look: unknown[] = [];
 
   constructor(private L: LevelRuntime) {}
 
@@ -83,12 +83,14 @@ export class Labels {
     const shifts = new Map<number, number>();
     const icon = L.style !== 'copy';
     const laid: { l: PendingLabel; w: number; h: number; shift: number; tail: number; locked: boolean; masked: boolean }[] = [];
-    let look = `${L.highContrast}`;
+    const look: unknown[] = [L.highContrast];
     for (const l of [...this.pending].sort((a, b) => rank(b) - rank(a))) {
       // Phrases shrink to fit: in calm modes the stage around their place, moving targets half of it.
       const room = L.mode.phraseWords > 2 ? Math.min(L.vw * 0.9, 2 * Math.min(l.x, L.vw - l.x) - 20) : L.vw * 0.5;
       const full = wordBox(l.tg.word, l.size, icon).w;
       if (full > room) l.size = Math.max(LABEL_MIN_SIZE, Math.min(l.size, l.size * room / full));
+      // In half steps: a label whose size changes a little every frame would be measured and drawn anew every frame.
+      l.size = Math.floor(l.size * 2) / 2;
       const { w, h } = wordBox(l.tg.word, l.size, icon);
       // A word near an edge moves inward: the whole word, and its countdown, is always in sight.
       const tail = l.clock === undefined ? 0 : CLOCK_GAP + 2 * (CLOCK_R + 2);
@@ -98,8 +100,11 @@ export class Labels {
       const clear = (dy: number) => placed.every((b) => x1 <= b.x0 || x0 >= b.x1 || l.y + dy + h / 2 + LABEL_GAP <= b.y0 || l.y + dy - h / 2 - LABEL_GAP >= b.y1);
       let want = 0;
       if (!clear(0)) {
-        const up = Array.from({ length: Math.max(0, Math.floor((l.y - h / 2) / 4)) }, (_, i) => -(i + 1) * 4).find(clear);
-        want = up ?? Array.from({ length: Math.max(0, Math.floor((VH - l.y - h / 2) / 4)) }, (_, i) => (i + 1) * 4).find(clear) ?? 0;
+        const seek = (step: number, room: number): number | undefined => {
+          for (let dy = step; Math.abs(dy) <= room; dy += step) if (clear(dy)) return dy;
+          return undefined;
+        };
+        want = seek(-4, l.y - h / 2) ?? seek(4, VH - l.y - h / 2) ?? 0;
       }
       placed.push({ x0: x0 + LABEL_GAP, x1: x1 - LABEL_GAP, y0: l.y + want - h / 2, y1: l.y + want + h / 2 });
       const prev = this.shift.get(l.tg.id);
@@ -109,10 +114,10 @@ export class Labels {
       const tg = l.tg, locked = core.locked === tg, masked = !core.letters(tg);
       laid.push({ l, w, h, shift, tail, locked, masked });
       // A countdown clock moves with the time.
-      look += `|${tg.word}|${tg.typed}|${l.x}|${l.y}|${shift}|${l.size}|${w}|${tg.wobble}|${locked}|${masked}|${tg.style}|${tg.showLeft}|${l.clock === undefined ? '' : `${l.clock}@${now}`}`;
+      look.push(tg.word, tg.typed, l.x, l.y, shift, l.size, w, tg.wobble, locked, masked, tg.style, tg.showLeft, l.clock, l.clock === undefined ? 0 : now);
     }
     this.shift = shifts;
-    const g = stage.beginWords(this.area, look === this.look);
+    const g = stage.beginWords(this.area, sameList(look, this.look));
     this.look = look;
     if (!g) return;
     const area = { x0: Infinity, x1: -Infinity, y0: Infinity, y1: -Infinity };

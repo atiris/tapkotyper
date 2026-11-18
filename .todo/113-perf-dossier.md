@@ -180,39 +180,68 @@ Cells: p50/p95 ms, L long tasks, B busy %. Over budget: slow-low junkyard-4 p95 
 - Simple at 0.85 resolution: only slower; 0.75 kept (plan 90).
 - Sub-pixel x for still bands: keeps the whole cost; still bands and DPR 2 snap (plan 82).
 
-## Known leads from the plan
-- Simple, slow: p95 50-80 ms in valley-1 and space-5 from style recalcs of ~200 level elements
-  when Tapko's mood changes (`runtime/tapko.ts` `show` -> `renderTapkoInto`) and the SVG hands'
-  opacity transitions (`src/ui/hands.ts`). Traces: recalcs of 91-99 elements in valley-3,
-  planet-5, junkyard-4, range.
-- Simple, slow: the sharp word-label layer costs 8-12 % of the main thread; dirty-rect redraw of
-  the scene canvas or labels as composited DOM may win it back.
+## Round 1, iteration 2 (step 2b): what is left on the canvas
+Iteration 1 (P1-P4, P6-P9a) is in (commit 73dbe7a); line numbers below are of that code. Fresh
+single-run traces (`.e2e/perf-113/r1b/`) on the scenes still at p95 50+ on slow:
 
-## Round 1 (step 2): canvas and pixels - hot spots and ranges
-No source change since the baseline (commit 7fa8e4b), so every number above is current.
-Implement, in this order, one change per proposal (Opus measures each batch on the scenes named):
-- P1 ribbon ends (junkyard-4; SL/SR): `src/game/modes/kit/ribbon.ts:142-168` `faded` clears,
-  repaints and masks an offscreen canvas every frame (72-98 ms/s SL); called from `drawRibbon`
-  175-258. Idea: the fade as a fixed ramp over the ends (plate colour), no mask copy.
-- P2 ribbon frame text (junkyard-4): `drawFrame` 270-333 runs `wrapLines` (59-78) twice a frame
-  and `measureText`+`fillText` per letter; `trim` 335-. Wrap once per text change, one
-  `fillText` per line (ghost letters only where a restart fades them).
-- P3 words layer (Simple; all levels): `src/engine/loop.ts:106-120` `beginWords` +
-  `src/game/runtime/labels.ts:71-133` `Labels.draw`; called from `src/game/runtime.ts:1134-1153`
-  `render`. Redraw the layer only when the set of labels (word, typed, look, rect, clock) changes.
-- P4 bands at DPR 2 / tall stages (big meadow, space, range): `src/gfx/draw.ts:188-206`
-  `fittedTile` returns the picture when `px >= naturalHeight`; `tiled` 212-235 then draws it
-  scaled with `w + 1` each frame. Scale once at that height too (or copy 1:1 when equal).
-- P6 space tint (space; N/B): `src/gfx/draw.ts:321-337` `band` i=0 fills a full-screen rgba
-  over the far band every frame; bake it into the far band's fitted copy (with P4).
-- P7 junkyard-5 monitors: `src/game/modes/junkyard-wake.ts:594-595` render ->
-  `drawMonitor` 605-622 (shadowBlur 10 in Full), `drawSource` 627-648, `drawTarget` 650-;
-  draw each monitor through `drawCached` (`src/gfx/draw.ts:63-79`, keep 16) keyed by its
-  content; the blinking cursor stays live on top.
-- P8 copy row (valley-5): `src/game/modes/kit/copy-row.ts:112-131` `drawRow` fills each word every
-  frame (via `wordBox` per word twice); cache the row's words except the label and the fading slip.
-- P9a range score (`src/game/modes/aim.ts:785-801` `drawScore`): `t()` + strokeText/fillText each
-  frame; cache the text picture per (hits, points).
-Constraints for this round: labels and the word in progress stay drawn every frame where they
-move; every cache keys on device scale (`g.getTransform().a`) and high contrast; nothing changes
-what or when the child types.
+| scene | slow-low p50/p95, busy | SL main ms/s: Commit / script / style / layout+paint / GC | slow-lowres p50/p95 |
+|---|---|---|---|
+| meadow-5 | 16.7/50.1, 97 % | 434 / 228 / 52 (35/s) / 89 / 10 | 16.7/66.6 (GC 53) |
+| valley-3 | 16.7/50, 94 % | 367 / 242 / 59 (39/s) / 93 / 7 | 16.7/83.4 (GC 41, Paint 227) |
+| valley-5 | 16.7/33.4, 95 % | 397 / 266 / 49 (39/s) / 83 / 6 | 16.7/50 (GC 52) |
+| junkyard-3 | 16.7/49.9, 93 % | 445 / 224 / 30 / 71 / 8 | 16.7/66.7 (GC 41, style 139) |
+| junkyard-4 | 33.2/66.6, 97 % | 442 / 260 / 42 / 91 / 2 | 16.7/50 |
+| junkyard-5 | 16.7/50, 94 % | 366 / 236 / 44 / 107 / 11 | 16.7/33.4 |
+| range | 16.7/66.7, 97 % | 303 / 372 / 33 / 106 / 17 | 16.7/50 |
+
+(slow-lowres runs had host hiccups, long tasks up to 19 s; trust the ms/s split, not its p95.)
+Commit (raster of the scene, words and front canvases) is still the largest share everywhere.
+
+Hot spots now, slow-low self ms/s (SR = slow-lowres), caller -> callee:
+- A. Backdrop copy, every level: `drawImage` of the still backdrop 20-37
+  (`src/gfx/draw.ts:291-325` `drawBackground`, copy at 318-322, plus its per-frame key: `pics`
+  map/join and the template string at 305-306). Each frame in Simple: `Stage.begin` clears the
+  whole scene canvas (`src/engine/loop.ts:100-103,139-143`), then this full-screen copy, then the
+  moving near band, sprites, Tapko. The still backdrop is re-rastered into the scene canvas every
+  frame although its pixels never change.
+- B. Label pictures: `drawImage` 41 (meadow-5), 36 SR (`src/game/runtime/labels.ts:74-146`
+  `Labels.draw` -> `src/gfx/draw.ts:486-510` `drawWord`). The layer is redrawn whenever `look`
+  changes (P3); in meadow-5 the labels move every frame, so it is redrawn every frame.
+  `labels.ts:74` itself 5-18 (string `look` of every label every frame; `Array.from` in `clear`).
+- C. Label measuring thrash: `measureText` 35 SR in junkyard-3 (`src/gfx/draw.ts:446-457`
+  `letterWidths`, key `${size} ${word}`, cleared at MEASURED_MAX): a label whose size changes each
+  frame (magnet plates; `labels.ts` shrink at 98-100) misses the cache every frame.
+- D. Ribbon (junkyard-4): `drawRibbon` self 56-58 + its `fillText` 21 + `measureText` 8
+  (`src/game/modes/kit/ribbon.ts:180-218`, `drawWords` 221-270): every frame measures each word,
+  builds the plate with a clip, draws every word in sight; `drawFrame` 284- and `drawRune` 379- 13.
+  `junkyard-wake.ts:292-321` update 17.
+- E. Code monitors (junkyard-5): `drawTarget` 25-37 (`src/game/modes/junkyard-wake.ts:664-695`)
+  rebuilds `written`, `breakLines` and the joined key every frame before the cached screen.
+- F. Tapko drawn in the scene (`src/gfx/tapko.ts:242-` `drawTapko` from `src/game/modes/kit/hero.ts:76`):
+  `tapkoStack` (46-) -> `slotOf` (41-43) runs `accessories().find` per accessory per frame, plus
+  `accessories().filter` and new arrays: 15 in junkyard-5, 4-10 elsewhere.
+- G. Range (aim): sprites `drawImage` 37 + `drawSprite` 19 (`src/game/modes/aim.ts:820-855`
+  `drawTarget`, `drawStand` 957-984), `setTransform` 32 in `Stage.clear` (unusual: look whether
+  aim's render leaves a costly state, e.g. a huge path or shadow, that the next clear pays for);
+  speech bubble `drawSpeech` 26-30 + `measureText` 12.5 (`src/game/runtime/callouts.ts:93-107` ->
+  `src/gfx/draw.ts:639-` `drawSpeech`, `speechLayout` 617-632): the bubble's path, tail and text
+  are drawn every frame; it could be one cached picture per text, drawn scaled during its pop.
+- H. Dragons (valley-3, valley-5): fire `draw` sprites 35-40 (`src/game/modes/dragons.ts:320-345`):
+  radial glow gradient created and filled each frame + pit + 5 flame sprites each rotated/scaled.
+- I. Meadow-5: `callouts.ts:79-85` update 14 (two `filter` arrays per frame), sprites
+  `drawSprite` (`src/gfx/draw.ts:24-41`, `src/gfx/assets.ts:125`) 9.
+- J. GC 40-53 ms/s on slow-lowres (meadow-5, valley-3, valley-5, junkyard-3): per-frame garbage
+  from the strings and arrays above (A key, B `look`, E, F, I).
+- Per key, not per frame: `evenness.ts:68-103` 8 (`allKept` copies arrays), keyboard guide 12
+  (`src/ui/keyboard-guide.ts:256-`), hands `setAttribute` 4-16 (`src/ui/hands.ts:347-373`; round 2).
+- Not this round: background picture downloads `fetch` 10-30 (`src/gfx/assets.ts:75-85`, P14,
+  round 3); `runtime.ts:1125` `covered` querySelector (P10, round 2); Tapko DOM (P11, round 2).
+
+Verdicts of iteration 1 (all kept, `.todo/113-perf-stats.md`): P1+P2 ribbon junkyard-4 SL p95
+83 -> 67; P3 words layer SL p95 better in 4 scenes; P4+P6 big p50 67-83 -> 16.7; P7 monitors big
+p50 33 -> 16.7; P8 copy row SR p95 50 -> 33; P9a range score normal busy 67 -> 41 %.
+
+Constraints for this iteration: labels and the word in progress stay drawn every frame where they
+move, as sharp as now; every cache keys on device scale (`g.getTransform().a`) and high contrast;
+nothing changes what or when the child types; Full graphics must not look different; a new layer
+(canvas or DOM) costs compositor time on every machine, so it must pay for itself on normal too.

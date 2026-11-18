@@ -146,6 +146,18 @@ SR slow-lowres, B big).
       refreshes the dossier's round-1 section with the new top functions and Commit share, and
       gives Fable (new agent) the verdicts of iteration 1 for a second batch of canvas changes;
       up to 3 iterations, stop when one gains less than noise. Same checks and commit as step 2.
+- Progress (2026-11-18): traces in `.e2e/perf-113/r1b/`, dossier section "Round 1, iteration 2"
+  written; Fable iteration 2 (A, B, C, D, E, F, G, I, J; H not done) and iteration 3 (E monitor
+  bezel and letters as two cached pictures, fixing big junkyard-5 p95 33.3 -> 16.8) are in the
+  working tree; iteration 4 found nothing more (big junkyard-5 `restore` 544 ms/s is the frame
+  raster flushed early, not extra work). Measured `.e2e/perf-113/r1c/` (2 runs; normal run 1
+  failed to start the preview, its stale json deleted): GC on slow-lowres 36-53 -> 3-6 ms/s,
+  slow-lowres p95 better in 5 scenes (range 50 -> 33.4), slow-low within noise, normal same,
+  big junkyard-4 33.4 -> 16.8. tsc and unit suite green. Decision: C floors label sizes to
+  half units (a resizing label stopped missing the measure and picture caches).
+  Left: `npm run test:affected` (was running when the session hit its usage limit), look check
+  of junkyard-4, junkyard-5, range against `.e2e/perf-113/shots-r1a/` (`perf.mjs --shot`), the
+  stats file table for iteration 2, then mark this step done.
 
 ### Step 3 - Round 2: page and styles (HUD, keyboard guide, hands, Tapko, cards, map, start)
 - [ ] Same loop (dossier refresh first) for round-2 proposals; include style recalc counts from

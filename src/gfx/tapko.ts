@@ -1,6 +1,6 @@
 import type { Companion, CompanionKind } from '../storage/schema';
 import { accessories, hasImage, imageUrl, sprite, type Slot } from './assets';
-import { drawFace, drawSprite, evictOldest, type G } from './draw';
+import { drawFace, drawSprite, evictOldest, type G, sameList } from './draw';
 
 /** What a character's picture needs of it: a preview has no random choices. */
 export type Look = Pick<Companion, 'name' | 'kind' | 'accessories'>;
@@ -94,9 +94,9 @@ export interface TapkoMotion {
 const stacks = new Map<string, HTMLCanvasElement>();
 const STACKS_KEEP = 6;
 
-/** The layers drawn together at `px` device pixels; null while one is still loading. */
-function stackCanvas(layers: { name: string }[], px: number): HTMLCanvasElement | null {
-  const key = `${layers.map((l) => l.name).join(' ')}|${px}`;
+/** The layers (`names`: their names in one string) drawn together at `px` device pixels; null while one is still loading. */
+function stackCanvas(layers: { name: string }[], names: string, px: number): HTMLCanvasElement | null {
+  const key = `${names}|${px}`;
   let c = stacks.get(key);
   if (c) stacks.delete(key);
   else {
@@ -266,8 +266,8 @@ export function drawTapko(g: G, c: Look, mood: Mood, x: number, y: number, size:
   // The template's feet sit at 90 % of the image height.
   g.translate(-size / 2, -size * 0.9);
   if (m.carry === 'egg') drawEgg(g, c, size, m);
-  const layers = tapkoStack(c, mood);
-  const stack = stackCanvas(layers, px);
+  const { layers, names } = wornStack(c, mood);
+  const stack = stackCanvas(layers, names, px);
   if (stack) g.drawImage(stack, 0, 0, size, size);
   else for (const layer of layers) {
     const img = sprite(layer.name);
@@ -276,6 +276,18 @@ export function drawTapko(g: G, c: Look, mood: Mood, x: number, y: number, size:
     else drawFallbackAccessory(g, layer.slot, size);
   }
   g.restore();
+}
+
+/** Each drawn character's layers and what they were put together for: looking them up again every frame costs. */
+const worn = new WeakMap<Look, { kind: CompanionKind; mood: Mood; items: string[]; layers: ReturnType<typeof tapkoStack>; names: string }>();
+
+function wornStack(c: Look, mood: Mood): { layers: ReturnType<typeof tapkoStack>; names: string } {
+  const hit = worn.get(c);
+  if (hit && hit.kind === c.kind && hit.mood === mood && sameList(hit.items, c.accessories)) return hit;
+  const layers = tapkoStack(c, mood);
+  const made = { kind: c.kind, mood, items: [...c.accessories], layers, names: layers.map((l) => l.name).join(' ') };
+  worn.set(c, made);
+  return made;
 }
 
 /** An ellipse of a fallback drawing in shares of the picture: middle, radii and turn. */

@@ -141,7 +141,7 @@ SR slow-lowres, B big).
   `ONLY=<scenes>`. The further iterations went to step 2b, as this session was long.
 
 ### Step 2b - Round 1, iteration 2: what is left on the canvas
-- [ ] Opus traces slow-low and slow-lowres again on the scenes still at p95 50 (meadow-5,
+- [x] Opus traces slow-low and slow-lowres again on the scenes still at p95 50 (meadow-5,
       valley-3, valley-5, junkyard-3, junkyard-4, junkyard-5, range; `.e2e/trace-split.mjs`),
       refreshes the dossier's round-1 section with the new top functions and Commit share, and
       gives Fable (new agent) the verdicts of iteration 1 for a second batch of canvas changes;
@@ -155,9 +155,10 @@ SR slow-lowres, B big).
   slow-lowres p95 better in 5 scenes (range 50 -> 33.4), slow-low within noise, normal same,
   big junkyard-4 33.4 -> 16.8. tsc and unit suite green. Decision: C floors label sizes to
   half units (a resizing label stopped missing the measure and picture caches).
-  `npm run test:affected` green (30 e2e). Left: look check
-  of junkyard-4, junkyard-5, range against `.e2e/perf-113/shots-r1a/` (`perf.mjs --shot`), the
-  stats file table for iteration 2, then mark this step done.
+  `npm run test:affected` green (30 e2e). Look check of junkyard-4, junkyard-5, range in normal,
+  slow-low and big (`.e2e/perf-113/shots-r1c/` against `shots-r1a/`, subagent verdict): no defects;
+  a re-run confirmed big junkyard-5 p95 16.8. Stats table "Step 2b" written. H (dragons fire glow)
+  left for a later round if valley-3/valley-5 stay over budget.
 
 ### Step 3 - Round 2: page and styles (HUD, keyboard guide, hands, Tapko, cards, map, start)
 - [ ] Same loop (dossier refresh first) for round-2 proposals; include style recalc counts from

@@ -84,3 +84,32 @@ Verdicts (all kept; no scene worse beyond noise; slow-low junkyard-4 back under 
 - P8 copy row cached: valley-5 slow-lowres p95 50 -> 33.
 - P9a range score cached: range normal busy 67 -> 41 %, slow-low p95 67 -> 50.
 - A run-1 range normal row of p95 133 was the host under memory pressure; alone it measured 16.7.
+
+## Step 2b, round 1 iterations 2-3 (A-G, I, J; H not done)
+
+Best of two runs (`.e2e/perf-113/r1c/`, normal from run 2 only: run 1's preview did not start);
+big junkyard-5 and the look-check shots re-run alone after iteration 3 (`shots-r1c/`).
+Compared with the baseline's better-of-two (`node .e2e/perf-table.mjs baseline r1c`).
+
+| scene | normal | slow-low | slow-lowres | big |
+|---|---|---|---|---|
+| meadow-5 | 16.7/16.8 L0 B66 | 16.7/66.7 L60 B96 | 16.7/50.1 L50 B96 | 16.7/33.4 L1 B93 (+) |
+| valley-3 | 16.7/16.8 L0 B18 | 16.7/50 L44 B96 (+) | 16.7/50 L41 B93 | 16.7/16.8 L0 B70 (+) |
+| valley-5 | 16.7/16.7 L0 B17 | 16.7/50 L38 B96 | 16.7/33.4 L40 B92 (+) | 16.7/16.8 L0 B74 |
+| junkyard-3 | 16.7/16.7 L1 B19 | 16.7/50 L37 B96 | 16.7/49.9 L36 B90 (-, noise: GC 36 -> 4 ms/s) | 16.7/16.8 L0 B71 |
+| junkyard-4 | 16.7/16.8 L0 B24 | 33.3/66.6 L45 B98 (+) | 16.7/50 L43 B92 (+) | 16.7/16.8 L1 B91 (+, was 33.4) |
+| junkyard-5 | 16.7/16.8 L9 B42 | 16.7/50 L43 B96 (+) | 16.7/33.4 L16 B88 (+) | 16.7/16.8 L0 B79 (+, was 33.3 before E's bezel cache) |
+| range | 16.7/16.7 L0 B41 | 16.7/66.6 L52 B97 | 16.7/33.4 L28 B84 (+, was 50) | 16.7/33.4 L1 B97 (+) |
+
+Single re-run after iteration 3 (shots run, no trace): slow-low junkyard-4 16.7/50, junkyard-5
+16.7/33.4, range 16.7/33.5; big all p95 16.8 except range 33.4.
+
+Verdicts (all kept; slow-low within noise against iteration 1, the GC gain counts for slow-lowres):
+- A backdrop copy, B label pictures, C label measuring (sizes floored to half units so a resizing
+  label hits the caches), I callout filters, J per-frame garbage: slow-lowres GC 36-53 -> 3-6 ms/s.
+- D ribbon plate cached: junkyard-4 big p95 33.4 -> 16.8, slow-lowres p95 better.
+- E monitors: bezel and letters as two cached pictures (iteration 3): big junkyard-5 p95 33.3 -> 16.8.
+- F Tapko in the scene and G range sprites and speech bubble cached: range slow-lowres p95 50 -> 33.4.
+- H dragons' fire glow not done; iteration 4 found nothing more (big junkyard-5 `restore` is the
+  frame raster flushed early, not extra work).
+- Look: junkyard-4, junkyard-5, range in normal, slow-low and big checked against `shots-r1a/`.

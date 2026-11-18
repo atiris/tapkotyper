@@ -67,7 +67,10 @@
   ratio of 2 and more); two or more bands that stand still at the back (a hero who stops, a calm
   scene, reduced motion) are drawn once into one picture that each frame copies in one go, the same
   pixels for fewer full-screen copies; the layer in front of the character is only as wide as what he holds; big
-  blurred glows are drawn once per size and then copied; a scene that does not move (cards
+  blurred glows are drawn once per size and then copied; a part that changes only now and then
+  (a monitor's lines, a score, a sign's plate and text, the character standing in the scene) is
+  drawn once per change into a picture of its own and copied, and a frame makes almost no new objects
+  for the memory clean-up to collect; a scene that does not move (cards
   before play, the pause) is not drawn again, and with Full graphics a scene under a blurring
   card (the end card) stands still, the character on the card too: any move there would blur the stage
   again every frame. Peeking under the end card shows it live again. Drawing a frame never reads
@@ -80,7 +83,19 @@
 - **Small page changes stay small:** what changes during play (the next key, its fading as the
   key is mastered) changes only the elements it concerns, never a value that every
   key of the keyboard inherits: such a change made the browser recompute the whole keyboard
-  (about two hundred elements) on every new key.
+  (about two hundred elements) on every new key. The same holds for the rest of the page: a ring
+  or number of the HUD is rebuilt only when its value changed, the character's mood swaps only
+  the picture that changed, and the progress bar slides instead of changing its width, which
+  laid out the page on every frame of its growth. On the map with Simple graphics the islands
+  and the character stand still, and locked islands never float: their floating restyled the
+  whole map every frame.
+- **Leaving a level leaves nothing behind:** its canvases give their pixels back at once and no
+  button or listener of the page keeps the left level alive, so ten levels in a row use about
+  the memory of one, apart from small caches with a fixed size. A school computer short of
+  memory plays a whole lesson without slowing down.
+- **A high-resolution screen without a graphics card is a weak device too** (a school Chromebook
+  at a pixel ratio of 2 draws four times the pixels in software): the rules above hold for it,
+  and Full graphics there must still keep its frames.
 - **Simple graphics:** a teacher can set Graphics to Automatic (default), Full or Simple in the
   settings. Simple draws the scene at three quarters of the screen's resolution (scaled up; the character,
   the keyboard and the cards are page elements and stay sharp), fewer particles, no blurred

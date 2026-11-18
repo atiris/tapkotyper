@@ -202,7 +202,12 @@ SR slow-lowres, B big).
 - [ ] `npm run build`, `npm test`, the whole e2e suite (`npx playwright test`), SEO guard.
 - [ ] Browser check with the Playwright MCP: start page, map, meadow-1, valley-3 in Full and
       Simple; screenshots only for scenes whose drawing changed (subagent returns a verdict).
-- [ ] Update `.specify/architecture.md` "Performance on slow computers" with what is now true
+- [x] Update `.specify/architecture.md` "Performance on slow computers" with what is now true
       (WHAT/WHY); adjust the budget numbers only if they got stricter.
+- Progress (2026-11-18): spec text done (cached pictures, page changes, memory, DPR 2). Batch
+  `node .e2e/perf-batch.mjs final` was stopped by the owner after `normal` run 1 (restart);
+  next session reruns the whole batch from scratch (`.e2e/perf-113/final/` partial, overwrite),
+  then the budget-number check, build/tests/e2e, browser check, close. Run e2e and the browser
+  check only after the batch (they skew the numbers).
 - [ ] Move plan, stats and dossier to `.todo/.done/`, `## Done - <date>`, leftovers to `BACKLOG.md`,
       remove the `QUEUE.md` line.

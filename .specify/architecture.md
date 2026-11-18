@@ -96,7 +96,10 @@
   For the same reason the keys light up and the progress bar grows at once, without easing in.
   Automatic switches to it by itself only when play is slow all the time: after three seconds of
   play (pictures and fonts still load) it watches six seconds, and the middle frame of each two of
-  them must be over 24 ms (under about 42 frames a second). A strong computer must never step down
+  them must be over 24 ms (under about 42 frames a second), or each two of them must stutter: at
+  least 2.5 % of their frames over 42 ms. A slow computer can keep a fine middle frame in the full
+  drawing and still stutter all the time (4-7 % of its frames), which a child sees; the simple
+  drawing steps to its lower resolution by the middle frame alone. A strong computer must never step down
   for a moment of trouble, so a gap over a quarter of a second (a hidden or frozen tab, a long
   clean-up of memory) counts neither as a frame nor as time, and a short burst of slow frames
   cannot move a middle frame. The device keeps the decision for a week, then measures again, so a

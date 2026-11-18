@@ -61,81 +61,95 @@ sizes floored to half units, per-frame garbage removed (slow-lowres GC 36-53 -> 
 Left: H, the dragons' fire glow (`src/game/modes/dragons.ts:320-345`, a radial gradient and 5
 rotated flame sprites per frame; valley-1 slow-low 6 + 6 + 5 + 5 ms/s self in it).
 
-## Round 2: page and styles (step 3)
-Fresh traces `.e2e/perf-113/r2a/` (run 1) on meadow-1, space-5, valley-1, range, map, start.
+## Round 2 (done, step 3)
+Kept: range progress bar slides by `translate` (no width transition), HUD rings compare a number
+before building strings, `covered` from a MutationObserver flag, Tapko's mood swaps only changed
+`src` and hops by class, idle map/start page held still in Simple (map slow busy 70 -> 25 %),
+fireflies one radial gradient, breathing off in Simple. Reverted: `will-change` on the start
+page's breathing character and butterflies (no gain; the harness's rAF tick forces main frames).
+Left as they are: keyboard guide and hands per key (cheap).
 
-| scene | normal p50/p95 busy | slow-low p50/p95 busy | SL main ms/s: Commit / script / style (recalcs/s, el) / layout+prepaint+paint |
-|---|---|---|---|
-| meadow-1 | 16.7/16.7 56 % | 16.7/33.3 89 % | 396 / 233 / 40 (41/s, 1-24) / 74 |
-| space-5 | 16.7/16.7 59 % | 16.7/33.4 95 % | 447 / 239 / 36 (27/s, 1-30) / 85 |
-| valley-1 | 16.7/16.7 15 % | 16.7/33.4 96 % | 403 / 260 / 45 (39/s, 2-23) / 85 |
-| range | 16.7/16.7 35 % | 16.7/50 96 % | 427 / 249 / 36 (24/s, 1-97) / 102 |
-| map | 16.7/16.8 8 % | 16.7/16.7 70 % | 37 / 80 / 186 (59/s, 16 el) / 211 PrePaint |
-| start | 16.7/16.8 8 % | 16.7/16.8 78 % | 48 / 76 / 179 (59/s, 16 el) / 94 PrePaint + 104 Paint + 52 Layerize |
+## Round 3: loading, memory, Automatic, looks (step 4)
+Fresh numbers `.e2e/perf-113/r3a/` (build of commit e9307e2).
 
-The idle screens are the largest round-2 cost: on slow the thread is 70-78 % busy doing nothing
-but CSS animation (style + prepaint + paint every frame, no JS). In levels style is 36-45 ms/s,
-almost all of it from CSS animations (no JS stack), and layout+paint 74-102 ms/s.
+### T. Memory: a left level stays alive (P13) - root cause found
+`--leak` (ten levels opened and left, normal): heap 4.3 -> 6.0 MB, live canvases 6 -> 36; at
+the end alive: 10 detached `stage` 1366x455, 3 `stage-front` 486x455, 4 815x455, 10 0x0 and
+small ones (label/cache canvases). Every detached stage canvas has the same retainer path in a
+heap snapshot (after two forced GCs):
+`audio` (`src/audio/audio.ts:44` `listeners`, `onChange` 154-157) -> closure of
+`soundButton()` (`src/ui/chrome.ts:28-56`) -> its function Context holds `b` strongly (the
+`roundButton` click arrow and the `contextmenu` handler capture `b`, and V8 gives all closures of
+one function a single shared Context) -> the detached sound button -> its siblings and the whole
+detached level DOM -> click handlers -> `LevelRuntime` (`this`) -> `stage.canvas` / `front`.
+So the `WeakRef` in `soundButton` does not help: the listener closure's Context still holds
+`b`. The listener drops itself only on the next `audio` change (`!btn?.isConnected`), which
+during plain play never comes. `fullscreenButton()` (chrome.ts:59-88) has the same shape
+(`b` captured by `paint`/`roundButton` in the same scope as `onChange`) but its listener sits on
+`document`, check it too. Other module-level subscriber lists: `src/app/theme.ts:10,71`
+(`onThemeChange`), `src/audio/speech.ts:13,28`, `src/app/keyboard-gate.ts:7,55`.
+Also: `Stage.dispose` (`src/engine/loop.ts:145-150`) removes the canvases but keeps their pixels
+(1366x455x4 = 2.5 MB each, DPR 2 four times that) until GC; mode caches made by kit pieces
+(scaled bands, label/picture caches in `src/gfx/draw.ts`, `releaseLevelPictures` 351-357) are
+module level by design and released per level only partly.
+Leak tool (local): preview `.e2e/dist` on 4176, then `node .e2e/leak-retainers.mjs`
+(`LEVELS=meadow:0,...`, `MAX=`) prints each canvas's retainer path.
 
-Hot spots, caller -> callee (self ms/s, SL = slow-low, N = normal):
-- K. Range progress bar (P9b, found): N 1565 document layouts + 1573 HitTests in 30 s (52/s,
-  248 + 287 ms), every one without JS. The range's progress is time-based (`aim.ts:1164-1166`
-  `progress()` = time / AIM_SECONDS), so `runtime.ts:1088-1095` writes
-  `progressFill.style.width` about every 0.3 s and `.progress-fill` (`src/styles.css:1013`) has
-  `transition: width 0.3s ease` (none in Simple, 643): in Full the width is always animating, a
-  layout of the whole document plus a hover hit test each frame. Levels where progress moves by
-  targets pay the same only during each 0.3 s step (meadow-1 N 133 such layouts).
-- L. Idle map (P12): `src/styles.css` `.island-art > img` float + `filter: drop-shadow` (772,
-  delays 773-776), `.level-node.current` pulse (806-808, scale on an element with a 4 px
-  box-shadow ring), `.tapko-stack` breathe (705-706) on the map Tapko, `.surprises-box`
-  jump-small (748), compass needle WAAPI rotate (`src/screens/map.ts:375-392`, a 2.6 s swing
-  every 10-30 s). 59 recalcs/s of 16 elements = every animated element every frame; SL style 186
-  + PrePaint 211 ms/s, Commit 37. Normal 8 % busy.
-- M. Idle start page (P12): `src/ui/sky.ts:34-` builds the sky; CSS `src/styles.css:544`
-  gate logo float + drop-shadow, 551-627 sky clouds `filter: blur(2px)` + sail (573, 578),
-  stars `blur(1px)` + twinkle (575, 579), butterflies (595-596), fireflies with two box-shadow
-  glows animated by drift + glow (621); Simple drops butterflies, fireflies and the blur
-  (629-631). Profile cards' `.tapko-stack` breathe (705, one per player). SL style 179 + Paint
-  104 + PrePaint 94 + Layerize 52 ms/s.
-- N. HUD rings every frame (P10): `src/game/runtime.ts:1167-1178` `paintRings` ->
-  `src/ui/hud.ts:107-119` `accuracyRing().set` builds `fillRing` + `roundTextSvg` strings and
-  calls `t('level.accuracy')` (`src/i18n/i18n.ts:211-`) before `measure().paint` (91-104)
-  compares the key; same in `rhythmRing` (122-132) and `speedRing` (135-). SL valley-1: `t` self
-  15.6 ms/s from hud.ts:112.
-- O. `covered` getter every frame (P10): `src/game/runtime.ts:1125-1130` runs
-  `querySelector(':scope > .overlay:not(.peek)')` and reads/toggles the class, called from
-  `render` 1134-1135 and `watchFrames` 1110. SL 3.6-5 ms/s. Overlays are added and removed by the
-  runtime's cards (grep `overlay` in `src/game/runtime.ts` and `src/game/runtime/`).
-- P. Tapko mood (P11): `src/game/runtime/tapko.ts:47-51` `setMood` -> `show` (95-99) ->
-  `renderTapkoInto` (`src/gfx/tapko.ts:340-355`) replaces every `<img>` of the stack (new
-  elements, decode, restyle and layout of the level); a happy mood then `replay('jump')`
-  (102-105) reads `offsetWidth` = a forced style + layout: SL valley-1 8 of them cost 39 + 12
-  ms, space-5 15 cost 45 ms (3-5 ms each on slow). Mood changes on right/wrong keys and words.
-  `.level-tapko` has a `drop-shadow` filter in Full (`src/styles.css:1028`, none in Simple 637)
-  and its `.tapko-stack` breathes (705) all the time.
-- Q. Keyboard guide per key: `src/ui/keyboard-guide.ts:256-` `show` -> `paintLetter`/`draw`:
-  46-58 style schedules + 54-72 layout invalidations in 30 s, cheap per key (no forced layout).
-- R. Hands per key: `src/ui/hands.ts:347-373` `draw` setAttribute 4-5 ms/s SL; partial layout of
-  the `svg.kb-hands` (24 layouts, 59 ms in valley-1 SL, 2.5 ms each); fade by opacity
-  transitions in Full (`.kb-hands .hand-pose`, none in Simple 644).
-- S. Per-frame CSS animations inside a level (no JS stack; SL style 36-45 ms/s, ~1 recalc per
-  frame of 1-2 elements): `.tapko-stack` breathe on the level Tapko (705), the bubble's animation
-  in Full (`.stage-wrap > .bubble`, none in Simple 638), `.kb-key.next` key-glow in Full (1074,
-  none in Simple 641), `.round-btn.timer.ending` blink (274).
+### U. Automatic on a slow device now stays in Full in half the scenes (P15)
+`--machine slow --auto --hiccup` (one run; gfx = where it ended; the baseline ended `simple`
+everywhere, junkyard-4 `lowres`):
 
-Ideas from the audit to check against the code (Fable decides): animate only transform/opacity
-(composited) or hold still where nothing is lost, bake drop-shadows/blur into the pictures or
-static layers, `transform: scaleX` for the progress bar instead of width, compare before
-building HUD strings, a flag for `covered` set where overlays come and go, swap Tapko's mood by
-toggling prepared layers or `src` instead of rebuilding, restart the hop without a forced layout
-(e.g. Web Animations API).
+| scene | p50/p95 L busy gfx | slow-low (Simple) p50/p95 for comparison |
+|---|---|---|
+| meadow-1 | 16.7/66.7 L79 86 % simple | 16.7/33.3 |
+| meadow-5 | 16.7/99.9 L86 97 % simple | 16.7/66.7 |
+| space-1 / space-5 | 16.7/83.3, 16.7/66.7 simple | 16.7/33.4, 16.7/33.5 |
+| planet-2 / -3 / -5 | 16.7/49.9, 16.7/83.3 (L97), 16.7/66.6 full | 16.7/50, 16.7/33.4, 16.7/50 (baseline) |
+| valley-1 / -3 | 16.7/50, 16.7/66.6 full | 16.7/33.3, 16.7/50 |
+| valley-5 | 16.7/50 simple | 16.7/50 |
+| junkyard-1 / -3 / -5 | 16.7/50.1, 16.7/66.6, 33.2/66.7 full | 16.7/33.4, 16.7/50, 16.7/50 |
+| junkyard-2 / -4 | 16.7/50, 16.8/66.6 simple (junkyard-4 no longer steps to lowres) | 16.7/50, 33.3/66.6 |
+| placeholder | 16.7/66.7 L105 full | 16.7/50 |
+| range | 16.7/66.7 L110 simple | 16.7/49.9 |
+| map / start / rhythm | 16.8 full, busy 68 / 64 / 20 % | - |
 
-## Memory (round 3)
-- Ten levels opened and left: live canvases 6 -> 31, among them every level's stage
-  (1366x455) and a 815x455 canvas detached but alive; heap 4.3 -> 5.9 MB. `Stage.dispose`
-  (`src/engine/loop.ts`) removes the canvases without freeing their pixels; who keeps the old
-  stage alive is not traced yet. P4 added up to 4 scaled band canvases (at most 12 M px each).
+Reading: rounds 1-2 made Full cheap enough that the median frame on slow is 16.7 ms, so the
+watch (`src/engine/graphics.ts:73-102` `FrameWatch.frame`: after `WARM_UP_S` 3 s, `WATCH_S` 6 s
+split in `PARTS` 3, every part's median > `SLOW_MS` 24) no longer sees a slow device. But in
+Full the thread is 94-98 % busy and 4-7 % of frames take over 33 ms (`>33` 82-149 of ~1800),
+p95 50-83 (planet-3 83.3 over the slow p95 budget of 80). A median-only test cannot see this
+jank. The watch is called from `src/game/runtime.ts:1109-1118` `watchFrames` (resets with a new
+`FrameWatch` after the first step) in `render` 1140-. Its unit tests:
+`src/engine/graphics.test.ts`. Rule: never step down for one hiccup or a short burst (tests
+31-); the step is stored for 7 days (`SLOW_KEY`, 4-8, `markSlowDevice` 56-65).
+P15 (the scene at 30 Hz with words every frame) was for scenes still over budget; slow-low is
+within its budget in every scene now (worst p95 66.7).
 
-## Loading (round 3, Fast 3G, cold)
-- To the map 7.7 s: code 407 KB, data 261 KB (language + words), pictures 712 KB, other 183 KB.
-  Level open 13.9 s with 2617 KB of pictures (valley-1).
+### V. Loading on Fast 3G, cold (P14)
+`--load`: to the map 7.3 s (code 410 KB, data 261, pictures 679, other 183 KB); first card of
+valley-1 14.4 s, 2651 KB of pictures in the level phase (opened 5 s after the map appeared).
+Path: `src/main.ts:102-108` starts after `PRELOAD_AFTER_MS` the texts, the map and level code
+and `preloadPlay` (`src/gfx/assets.ts:71-86`: every `obj|robot|fairy|tapko-astronaut` picture
+of every world, 2 at a time, `fetch` priority low, waiting only while a screen's own `load` is
+in flight, `ownIdle` 89-103). The level's `prepare` (`src/game/runtime.ts:347-354`) waits for
+`preload(own)`: its 4 band pictures (valley 308 KB), the mode's `pictures`, every Tapko mood of
+the companion (`tapkoPictures`, `src/gfx/tapko.ts:68-70`) and `friendPictures()` (Bolt and
+Melody in every look and mood, 13 files, 420 KB, `assets.ts:104-107`) before the first card,
+at most `PICTURES_WAIT_S` 30 s (runtime.ts:71). Picture decode: `load` (assets.ts:109-122)
+decodes each before its first draw. On slow (CPU x6) `fetch`/`blob` of the background downloads
+cost 10-20 ms/s during measured play (perf runs block the service worker, so every run is a first
+visit). Constraint: the level opens with every picture it draws so none shows its fallback first;
+a picture that is not needed before the first card may still come later only if it is not
+visible until then (a friend who joins later, an object that comes later).
+
+### W. Looks the budget now allows (normal / big only, never slow)
+Normal Full busy 16-60 % with p95 16.8 everywhere, big p95 16.8 except range/meadow 33.4. Ideas
+must be gated on `!graphics.simple` and cost nothing in Simple; they must not move the labels or
+change pace. Candidates are yours to pick (e.g. H, the dragons' fire glow
+`src/game/modes/dragons.ts:320-345`, could be cached and so made richer at no frame cost).
+
+### Gates of this round (in addition to the general ones)
+- `--leak`: canvases after ten levels flat (no growth per level), heap not growing per level.
+- `--load`: to the map and to the level not slower beyond 5 %; SEO files unchanged.
+- `--auto --hiccup` on slow: every scene within the slow budget (p50 <= 34, p95 <= 80); a strong
+  machine (normal, big) must never step down: `--machine normal --auto --hiccup` stays `full`.

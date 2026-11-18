@@ -149,3 +149,48 @@ Verdicts:
   Fable's reading: the harness's own rAF tick forces a main frame each vsync, so composited
   animations are restyled and pre-painted anyway in these traces (a device already marked slow
   shows the start page in Simple).
+
+## Step 4, round 3 (loading, memory, Automatic): iteration 1 kept, iteration 2 reverted
+
+`.e2e/perf-113/r3a/` (before, one run each) -> `r3b/` (after). Automatic with `--hiccup`:
+gfx = the graphics it ended on.
+
+| scene | slow-auto before | slow-auto after | normal-auto after | big-auto after |
+|---|---|---|---|---|
+| meadow-1 | 16.7/66.7 simple | 16.7/66.7 simple | 16.7/16.8 full | 16.7/33.3 full |
+| meadow-5 | 16.7/99.9 simple | 16.7/83.4 simple | 16.7/16.8 full | 16.7/33.4 full |
+| space-1 / -5 | 83.3, 66.7 simple | 83.3, 66.7 simple | 16.8 full | -, 33.3 full |
+| planet-2 / -3 / -5 | 49.9, 83.3, 66.6 full | 33.4, 33.4, 49.9 simple | 16.8 full | - |
+| valley-1 / -3 / -5 | 50, 66.6 full, 50 simple | 33.4, 66.6, 50 simple | 16.8 full | - |
+| junkyard-1 / -2 / -3 | 50.1 full, 50 simple, 66.6 full | 50, 50, 66.7 simple | 16.8 full | - |
+| junkyard-4 / -5 | 66.6 simple, 66.7 (p50 33.2) full | 66.7 lowres, 66.7 (p50 16.7) simple | 16.8 full | 16.8 full |
+| placeholder / range | 66.7 full, 66.7 simple | 50, 66.7 simple | 16.8 full | -, 33.4 full |
+| map / start / rhythm | 16.8 full | 16.8 full | 16.8 full | - |
+
+Cells: p95 ms (p50 16.7 unless named). normal-auto before (r3a) was the same: Full, p95 16.8.
+
+- Load (Fast 3G, cold, three runs after): to the map 7.28-7.86 s (before 7.30), level 14.39-14.52
+  s (before 14.41): unchanged; the 7.86 run overlapped another measurement.
+- Leak (ten levels): before, a heap snapshot held every left level's stage and front canvas;
+  after, none. `--leak` counted wrong: its own `queryObjects` lists kept every canvas alive for
+  the next count (fixed in `scripts/perf.mjs`); with the fix, live canvases 3 -> 13, all bounded
+  caches (4 scaled bands 815x455, label pictures x44, 201x201 glows); heap 4.3 -> 5.8 MB (mode
+  chunks and stored data), window listeners flat 38.
+- SEO guard: index, about pages, robots, sitemap unchanged (only the build stamp).
+
+Verdicts:
+- P13 kept: the sound and fullscreen buttons have one module listener each that repaints every
+  button on the page (the per-button listener's closure context held the button, the left
+  level's DOM and its runtime, the `WeakRef` did not help); `Stage.dispose` sets its canvases to
+  0x0 so their pixels go at once.
+- U kept (P15 replaced): Automatic also steps down from Full when every watched part has at
+  least 2.5 % of frames over 42 ms. After rounds 1-2 the median frame on slow was 16.7 in Full,
+  so the median-only watch left 9 scenes in Full with p95 50-83 and 94-98 % busy; now every
+  level scene ends in Simple (junkyard-4 lowres), normal and big never step down. The 30 Hz
+  scene of P15 was not needed: slow-low is within budget everywhere.
+- P14 not done: the background downloads already wait for a level's own pictures and run at low
+  priority; pausing them during play would slow the next cold level (Fable's reading).
+- Iteration 2 reverted: H, the dragons' fire glow as a cached picture and upright flames in
+  Simple (`r3c0` before / `r3c` after, valley-1/3/5 and placeholder): slow-low and slow-lowres
+  p50/p95 the same, Commit -33 ms/s in valley-3 slow-lowres but +7 in valley-1 slow-low; no gain
+  beyond noise and a look change in Simple, so the loop ended.

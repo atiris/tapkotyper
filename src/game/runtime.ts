@@ -1106,7 +1106,7 @@ export class LevelRuntime {
 
   private frameWatch = new FrameWatch();
 
-  /** Automatic graphics: when the first seconds of play are too slow, this device switches to the simple drawing, and when that is still too slow, to its lower resolution. */
+  /** Automatic graphics: when the first seconds of play are too slow or stutter all the time, this device switches to the simple drawing, and when that is still too slow, to its lower resolution. */
   private watchFrames(): void {
     if (graphics.lowRes || app.profile!.settings.graphics !== 'auto') return;
     if (!this.state.started || this.state.paused || this.state.finished || this.covered) return this.frameWatch.pause();

@@ -35,26 +35,23 @@ export function soundButton(): HTMLButtonElement {
     e.preventDefault();
     audio.shuffleTrack(shownScreen() === 'level');
   });
-  const paint = (b: HTMLButtonElement) => {
-    const label = soundLabel();
-    b.setAttribute('aria-label', label);
-    const where = audio.level === 'important' ? `\n${t('common.soundImportantTip')}` : '';
-    const song = audio.playing && !audio.silent ? `\n${t('common.song', { name: trackName(audio.playing) })}` : '';
-    tip(b, `${withKey(label, 'F4')}${where}${song}\n${t('common.nextSong')}`);
-    b.dataset.level = audio.level;
-    b.setAttribute('aria-pressed', String(audio.level === 'normal'));
-    paintRound(b, LEVEL_ICON[audio.level]);
-  };
-  paint(b);
-  // Held weakly: a screen left behind is not kept in memory until the sound changes next.
-  const ref = new WeakRef(b);
-  const off = audio.onChange(() => {
-    const btn = ref.deref();
-    if (!btn?.isConnected) return off();
-    paint(btn);
-  });
+  paintSound(b);
   return b;
 }
+
+function paintSound(b: HTMLButtonElement): void {
+  const label = soundLabel();
+  b.setAttribute('aria-label', label);
+  const where = audio.level === 'important' ? `\n${t('common.soundImportantTip')}` : '';
+  const song = audio.playing && !audio.silent ? `\n${t('common.song', { name: trackName(audio.playing) })}` : '';
+  tip(b, `${withKey(label, 'F4')}${where}${song}\n${t('common.nextSong')}`);
+  b.dataset.level = audio.level;
+  b.setAttribute('aria-pressed', String(audio.level === 'normal'));
+  paintRound(b, LEVEL_ICON[audio.level]);
+}
+
+// One listener for every sound button on the page: a listener per button would keep its screen (a left level with its canvases) in memory.
+audio.onChange(() => document.querySelectorAll<HTMLButtonElement>('.sound-btn').forEach(paintSound));
 
 /** Fullscreen on or off; a refused request says so instead of doing nothing. */
 function toggleFullscreen(): void {
@@ -67,25 +64,21 @@ export function fullscreenButton(): HTMLButtonElement | null {
   if (!document.fullscreenEnabled) return null;
   const b = roundButton('control', 'fullscreen', '', toggleFullscreen);
   b.classList.add('fullscreen-btn');
-  const paint = (b: HTMLButtonElement) => {
-    const on = !!document.fullscreenElement;
-    const label = t(on ? 'common.fullscreenExit' : 'common.fullscreen');
-    b.setAttribute('aria-label', label);
-    b.setAttribute('aria-pressed', String(on));
-    tip(b, `${label} (F11)`);
-    paintRound(b, on ? 'fullscreenExit' : 'fullscreen');
-  };
-  // Held weakly, as the sound button.
-  const ref = new WeakRef(b);
-  const onChange = () => {
-    const btn = ref.deref();
-    if (btn?.isConnected) paint(btn);
-    else document.removeEventListener('fullscreenchange', onChange);
-  };
-  document.addEventListener('fullscreenchange', onChange);
-  paint(b);
+  paintFullscreen(b);
   return b;
 }
+
+function paintFullscreen(b: HTMLButtonElement): void {
+  const on = !!document.fullscreenElement;
+  const label = t(on ? 'common.fullscreenExit' : 'common.fullscreen');
+  b.setAttribute('aria-label', label);
+  b.setAttribute('aria-pressed', String(on));
+  tip(b, `${label} (F11)`);
+  paintRound(b, on ? 'fullscreenExit' : 'fullscreen');
+}
+
+// One listener for every fullscreen button on the page, as for the sound buttons.
+document.addEventListener('fullscreenchange', () => document.querySelectorAll<HTMLButtonElement>('.fullscreen-btn').forEach(paintFullscreen));
 
 /** The help tab that fits a screen; the others open help on its default tab. */
 const HELP_TAB: Partial<Record<ScreenName, string>> = { map: 'ui', progress: 'progress', parent: 'settings', teacher: 'mentoring' };
@@ -185,7 +178,7 @@ function paintTheme(b: HTMLButtonElement): void {
   paintRound(b, dark ? 'sun' : 'moon');
 }
 
-// One listener for every theme button on the page, so leaving a screen leaves nothing behind.
+// One listener for every theme button on the page, as for the sound buttons.
 onThemeChange(() => document.querySelectorAll<HTMLButtonElement>('.theme-btn').forEach(paintTheme));
 
 /** The language: the language symbol; a click opens the list of the official languages by their own names (own ones are picked in the settings), a second click closes it. */

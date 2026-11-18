@@ -322,13 +322,15 @@ async function leak(browser) {
     listeners.push(l.length);
     // Canvases still alive, attached or not: a level left behind keeps its stage's.
     const { result: proto } = await cdp.send('Runtime.evaluate', { expression: 'HTMLCanvasElement.prototype' });
-    const { objects } = await cdp.send('Runtime.queryObjects', { prototypeObjectId: proto.objectId });
+    // In its own group, released below: the list it returns would keep every canvas it holds alive for the next count.
+    const { objects } = await cdp.send('Runtime.queryObjects', { prototypeObjectId: proto.objectId, objectGroup: 'leak' });
     const { result: count } = await cdp.send('Runtime.callFunctionOn', { objectId: objects.objectId, functionDeclaration: 'function () { return this.length; }', returnByValue: true });
     canvases.push(count.value);
     if (i === LEAK_LEVELS - 1) {
       const { result: kinds } = await cdp.send('Runtime.callFunctionOn', { objectId: objects.objectId, returnByValue: true, functionDeclaration: 'function () { const n = {}; for (const c of this) { const k = `${c.isConnected ? "on page" : "detached"} ${c.className || "-"} ${c.width}x${c.height}`; n[k] = (n[k] || 0) + 1; } return n; }' });
       console.log('canvases at the end:', JSON.stringify(kinds.value));
     }
+    await cdp.send('Runtime.releaseObjectGroup', { objectGroup: 'leak' });
     // The player's stored data grows with every level played (sessions, key stats): part of the heap's growth.
     storeKB.push(await page.evaluate(() => Math.round((localStorage.getItem('tapkotyper:v1') ?? '').length / 1024)));
   }

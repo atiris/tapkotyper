@@ -142,11 +142,14 @@ export class Stage {
     return g;
   }
 
+  /** Takes the canvases off the page and frees their pixels at once: megabytes each, else held until the level is collected. */
   dispose(): void {
     this.observer.disconnect();
-    this.canvas.remove();
-    this.front?.remove();
-    this.words?.remove();
+    for (const c of [this.canvas, this.front, this.words]) {
+      if (!c) continue;
+      c.remove();
+      c.width = c.height = 0;
+    }
   }
 }
 

@@ -1,10 +1,17 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { FrameWatch, SLOW_MS, graphics, markSlowDevice, median, useGraphics } from './graphics';
+import { FrameWatch, JANK_MS, SLOW_MS, graphics, markSlowDevice, median, useGraphics } from './graphics';
 
 /** Frames `ms` apart for `seconds`, from `start`; returns what the watch said last and the time after. */
 function run(w: FrameWatch, ms: number, seconds: number, start = 1000): { slow: boolean; at: number } {
   let slow = false, at = start;
   for (; at < start + seconds * 1000; at += ms) slow = w.frame(at) || slow;
+  return { slow, at };
+}
+
+/** Smooth frames for `seconds` from `start`, every `every`-th one taking `long` ms; returns as `run`. */
+function runUneven(w: FrameWatch, every: number, long: number, seconds: number, start = 1000): { slow: boolean; at: number } {
+  let slow = false, at = start;
+  for (let i = 1; at < start + seconds * 1000; at += i++ % every ? 16.7 : long) slow = w.frame(at) || slow;
   return { slow, at };
 }
 
@@ -37,6 +44,37 @@ describe('the frame watch', () => {
     ({ at } = run(w, 60, 1, at));
     expect(run(w, 16.7, 8, at).slow).toBe(false);
     expect(w.done).toBe(true);
+  });
+
+  it('finds a computer slow when its middle frame is fine but it stutters all the time', () => {
+    // A slow computer in the full drawing: one frame in twenty misses two refreshes.
+    expect(runUneven(new FrameWatch(), 20, 50, 12).slow).toBe(true);
+    expect(runUneven(new FrameWatch(), 20, JANK_MS + 1, 12).slow).toBe(true);
+  });
+
+  it('does not step down for frames that miss one refresh, or for a rare stutter', () => {
+    // A strong computer with a big screen: one frame in fifteen takes two refreshes.
+    expect(runUneven(new FrameWatch(), 15, 33.4, 12).slow).toBe(false);
+    // One long frame a second.
+    expect(runUneven(new FrameWatch(), 60, 80, 12).slow).toBe(false);
+  });
+
+  it('does not step down for stutter that ends', () => {
+    const w = new FrameWatch();
+    // Four seconds of stutter after the start (pictures decoding, a busy tab), then smooth play.
+    const { at } = runUneven(w, 10, 60, 7);
+    expect(run(w, 16.7, 8, at).slow).toBe(false);
+    expect(w.done).toBe(true);
+  });
+
+  it('does not take the simple drawing to its lower resolution for stutter', () => {
+    graphics.simple = true;
+    try {
+      expect(runUneven(new FrameWatch(), 20, 50, 12).slow).toBe(false);
+      expect(run(new FrameWatch(), SLOW_MS + 10, 12).slow).toBe(true);
+    } finally {
+      graphics.simple = false;
+    }
   });
 
   it('decides only once', () => {

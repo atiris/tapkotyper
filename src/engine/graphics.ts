@@ -10,10 +10,20 @@ const RECHECK_DAYS = 7;
 /** Seconds of play before the frames count (pictures and fonts still load at the start), and the seconds of frames that decide. */
 const WARM_UP_S = 3;
 const WATCH_S = 6;
-/** The watched seconds split into this many parts; each part's middle frame must be slow. */
+/** The watched seconds split into this many parts; every part must be slow, by its middle frame or by its stutter. */
 const PARTS = 3;
 /** A middle frame longer than this (ms, under about 42 frames a second) is too slow for the full drawing. */
 export const SLOW_MS = 24;
+/**
+ * A frame longer than this (ms) stutters: it missed at least two screen refreshes at 60 Hz. A frame that missed
+ * one (33 ms) does not count: a strong computer with a big screen has some of those.
+ */
+export const JANK_MS = 42;
+/**
+ * This share of stuttering frames in a part is too much for the full drawing: a slow computer whose middle frame
+ * is fine has 4-7 % of them all the time (measured), a strong one none outside a hiccup.
+ */
+const JANK_SHARE = 0.025;
 /** A gap between frames longer than this (ms) is a hiccup, not the frame rate: a hidden tab, a long clean-up of memory, a load. */
 const HICCUP_MS = 250;
 
@@ -71,8 +81,11 @@ export function median(times: number[]): number {
 
 /**
  * Watches the frames of the first seconds of play and tells once whether they are too slow: only when they
- * are slow all the time, so a strong computer never steps down for a moment of trouble. Only frames of active
- * play count: a pause or a card in between starts a new gap, and a hiccup counts neither as a frame nor as time.
+ * are slow all the time, so a strong computer never steps down for a moment of trouble: every part's middle
+ * frame is slow, or (for the full drawing only) every part stutters. The simple drawing steps to its lower
+ * resolution by the middle frame alone: that step softens the scene, and stutter there stays within the budget.
+ * Only frames of active play count: a pause or a card in between starts a new gap, and a hiccup counts neither
+ * as a frame nor as time.
  */
 export class FrameWatch {
   private times: number[] = [];
@@ -92,7 +105,9 @@ export class FrameWatch {
     if (this.played < WARM_UP_S + WATCH_S) return false;
     this.done = true;
     const part = Math.ceil(this.times.length / PARTS);
-    return Array.from({ length: PARTS }, (_, i) => median(this.times.slice(i * part, (i + 1) * part))).every((m) => m > SLOW_MS);
+    const parts = Array.from({ length: PARTS }, (_, i) => this.times.slice(i * part, (i + 1) * part));
+    return parts.every((p) => median(p) > SLOW_MS)
+      || (!graphics.simple && parts.every((p) => p.filter((ms) => ms > JANK_MS).length >= p.length * JANK_SHARE));
   }
 
   /** Play stopped: the next frame starts a new gap. */

@@ -178,11 +178,24 @@ SR slow-lowres, B big).
   level (hop, mood pictures, bar) fine, no console errors.
 
 ### Step 4 - Round 3: loading, memory, Automatic graphics, looks
-- [ ] Same loop (dossier refresh first) for round-3 proposals: first load and level open (`--load`), heap (`--leak`),
+- [x] Same loop (dossier refresh first) for round-3 proposals: first load and level open (`--load`), heap (`--leak`),
       whether Automatic picks the right step on each machine (`--auto --hiccup`), and visual
       improvements (effects, glows, motion) that the budget now allows on normal/big, never at
       the cost of slow.
 - Checks as step 2, plus the SEO guard. Commit.
+- Progress (2026-11-18): dossier round-3 section (T-W) written; numbers in `.e2e/perf-113/r3a`
+  (before), `r3b` (after), `r3c0`/`r3c` (fire glow). Root cause of the memory growth found with a
+  heap snapshot (local tool `.e2e/leak-retainers.mjs`, preview on 4176): the sound button's audio
+  listener kept every left level alive. Iteration 1 kept (stats "Step 4"): one module listener
+  for the sound and fullscreen buttons, stage pixels freed on dispose, Automatic also steps down
+  on steady stutter (2.5 % of frames over 42 ms in every part; spec updated in
+  `.specify/architecture.md`). Iteration 2 (H, fire glow cached) gained nothing beyond noise and
+  was reverted, which ended the loop. Decisions: `--leak` in `scripts/perf.mjs` releases its
+  `queryObjects` lists (they kept canvases alive and inflated the count); P14 and P15 not done
+  (P15 replaced by the stutter rule, P14 would slow the next cold level); no look improvement
+  for normal/big this round (none that measured as free was found). The dossier's slow-auto
+  budget gate (p95 <= 80) stays slightly missed in meadow-5 83.4 and space-1 83.3, as Automatic
+  plays its first 9 s in Full by design (before 99.9 and 83.3).
 
 ### Step 5 - Full verification and close
 - [ ] Full measurement batch, final table vs baseline at the top of the stats file.

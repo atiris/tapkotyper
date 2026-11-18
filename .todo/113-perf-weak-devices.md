@@ -155,7 +155,7 @@ SR slow-lowres, B big).
   slow-lowres p95 better in 5 scenes (range 50 -> 33.4), slow-low within noise, normal same,
   big junkyard-4 33.4 -> 16.8. tsc and unit suite green. Decision: C floors label sizes to
   half units (a resizing label stopped missing the measure and picture caches).
-  Left: `npm run test:affected` (was running when the session hit its usage limit), look check
+  `npm run test:affected` green (30 e2e). Left: look check
   of junkyard-4, junkyard-5, range against `.e2e/perf-113/shots-r1a/` (`perf.mjs --shot`), the
   stats file table for iteration 2, then mark this step done.
 
